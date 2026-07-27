@@ -41,11 +41,13 @@ test.describe('T1B1 - Device settings', { tag: ['@T1B1'] }, () => {
             await page.getByTestId('@pin/input/1').click();
             await page.getByTestId('@pin/submit-button').click();
         });
+
         await test.step('Second input with two numbers', async () => {
             await page.getByTestId('@pin/input/1').click();
             await page.getByTestId('@pin/input/1').click();
             await page.getByTestId('@pin/submit-button').click();
         });
+
         await expect(page.getByTestId('@pin-mismatch')).toBeVisible();
         await page.getByTestId('@pin-mismatch/try-again-button').click();
         await devicePrompt.confirmOnDevicePromptIsShown();

@@ -1,15 +1,13 @@
-import { events } from '@suite/analytics';
+import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation, useTranslation } from '@suite/intl';
+import { Anchor, SettingsAnchor } from '@suite/router';
+import { selectAutodetectTheme, selectThemeSettings, suiteSettingsActions } from '@suite/settings';
+import { useServices } from '@suite-common/dependency-injection';
+import { ActionColumn, ActionSelect, SectionItem, TextColumn } from '@trezor/product-components';
 import { desktopApi } from '@trezor/suite-desktop-api';
-import { ThemeColorVariant } from '@trezor/theme';
+import { type ThemeColorVariant } from '@trezor/theme';
 
-import { setAutodetect, setTheme } from 'src/actions/suite/suiteActions';
-import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
-import { ActionColumn, ActionSelect, TextColumn } from 'src/components/suite';
-import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';
-import { useAnalytics } from 'src/support/useAnalytics';
 import { getOsTheme } from 'src/utils/suite/env';
 
 type ThemeColorVariantWithSystem = ThemeColorVariant | 'system';
@@ -17,7 +15,6 @@ type Option = { value: ThemeColorVariantWithSystem; label: string };
 
 const useThemeOptions = () => {
     const { translationString } = useTranslation();
-    const isDebug = useSelector(selectIsDebugModeActive);
 
     const systemOption: Option = {
         value: 'system',
@@ -28,16 +25,11 @@ const useThemeOptions = () => {
         value: 'standard',
         label: translationString('TR_COLOR_SCHEME_LIGHT'),
     };
-    const debugOption: Option = { value: 'debug', label: 'Debug' };
 
-    const optionGroups = [
-        { options: [systemOption] },
-        { options: [lightOption, darkOption, ...(isDebug ? [debugOption] : [])] },
-    ];
+    const optionGroups = [{ options: [systemOption] }, { options: [lightOption, darkOption] }];
 
     const getOption = (theme: ThemeColorVariantWithSystem) => {
         const map: Record<ThemeColorVariantWithSystem, Option> = {
-            debug: debugOption,
             standard: lightOption,
             dark: darkOption,
             system: systemOption,
@@ -53,9 +45,9 @@ const useThemeOptions = () => {
 };
 
 export const Theme = () => {
-    const analytics = useAnalytics();
-    const theme = useSelector(state => state.suite.settings.theme);
-    const autodetectTheme = useSelector(state => state.suite.settings.autodetect.theme);
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const theme = useSelector(selectThemeSettings);
+    const autodetectTheme = useSelector(selectAutodetectTheme);
     const dispatch = useDispatch();
     const { optionGroups, getOption } = useThemeOptions();
 
@@ -79,37 +71,43 @@ export const Theme = () => {
         });
 
         if ((themeValue === 'system') !== autodetectTheme) {
-            dispatch(setAutodetect({ theme: !autodetectTheme }));
+            dispatch(suiteSettingsActions.setAutodetect({ theme: !autodetectTheme }));
         }
 
         if (themeValue !== 'system') {
-            dispatch(setTheme(themeValue));
+            dispatch(suiteSettingsActions.setTheme(themeValue));
         }
 
         if (desktopApi.available) {
-            // Remove `debug` option
-            const nativeThemeValue = themeValue === 'debug' ? 'light' : themeValue;
-            desktopApi.themeChange(nativeThemeValue);
+            desktopApi.themeChange(themeValue);
         }
     };
 
     return (
         <>
-            <SettingsSectionItem anchorId={SettingsAnchor.Theme}>
-                <TextColumn
-                    title={<Translation id="TR_COLOR_SCHEME" />}
-                    description={<Translation id="TR_COLOR_SCHEME_DESCRIPTION" />}
-                />
+            <Anchor anchorId={SettingsAnchor.Theme}>
+                {({ anchorId, anchorRef, shouldHighlight }) => (
+                    <SectionItem
+                        data-testid={anchorId}
+                        ref={anchorRef}
+                        shouldHighlight={shouldHighlight}
+                    >
+                        <TextColumn
+                            title={<Translation id="TR_COLOR_SCHEME" />}
+                            description={<Translation id="TR_COLOR_SCHEME_DESCRIPTION" />}
+                        />
 
-                <ActionColumn>
-                    <ActionSelect
-                        value={selectedValue}
-                        options={optionGroups}
-                        onChange={onChange}
-                        data-testid="@theme/color-scheme-select"
-                    />
-                </ActionColumn>
-            </SettingsSectionItem>
+                        <ActionColumn>
+                            <ActionSelect
+                                value={selectedValue}
+                                options={optionGroups}
+                                onChange={onChange}
+                                data-testid="@theme/color-scheme-select"
+                            />
+                        </ActionColumn>
+                    </SectionItem>
+                )}
+            </Anchor>
         </>
     );
 };

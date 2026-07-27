@@ -1,73 +1,71 @@
-import { ERRORS } from '@trezor/connect-common/src/constants';
-import { Capability } from '@trezor/protobuf/src/messages';
-import { versionUtils } from '@trezor/utils';
-
-import type { Device } from '../device/Device';
-import {
+import { ERRORS, UI_REQUEST } from '@trezor/connect-common';
+import type {
     CallMethodPayload,
     CallMethodResponse,
+    CoinInfo,
     CoreEventMessage,
-    UI_REQUEST,
-    UiPromiseCreator,
+    DeviceState,
+    FirmwareCapability,
+    MethodInfo,
+    MethodPermission,
+    PermissionRequest,
+    PrecomposeResultFinal,
+    StaticSessionId,
     UiRequestButtonData,
     UiRequestConfirmation,
-} from '../events';
-import type { PrecomposeResultFinal } from '../types/api/composeTransaction';
-import type { DeviceState, StaticSessionId } from '../types/device';
-import type { FirmwareRange } from '../types/firmware';
+} from '@trezor/connect-common';
+import { isStaticSessionId } from '@trezor/device-utils';
+import type { Capability } from '@trezor/protobuf/src/definitions';
+import { isNotUndefined, isUUID, versionUtils } from '@trezor/utils';
+
+import { DEFAULT_FIRMWARE_RANGE, getFirmwareRange } from '../api/common/paramsValidator';
+import * as enabledNetworksStore from '../data/enabledNetworksStore';
+import type { Device } from '../device/Device';
+import type { UiPromiseCreator } from '../events/ui-promise';
+import { isDebugFirmware } from '../utils/firmwareUtils';
+
+export { DEFAULT_FIRMWARE_RANGE };
 
 export type Payload<M> = Extract<CallMethodPayload, { method: M }> & { override?: boolean };
 export type MethodReturnType<M extends CallMethodPayload['method']> = CallMethodResponse<M>;
 
-export type MethodPermission = 'read' | 'write' | 'management' | 'push_tx';
 export type DeviceMode =
     | typeof UI_REQUEST.SEEDLESS
     | typeof UI_REQUEST.BOOTLOADER
     | typeof UI_REQUEST.INITIALIZE;
 
-export type MethodInfo = {
-    // static fields
-    useUi: boolean;
-    useDevice: boolean;
-    useDeviceState: boolean;
-    name: string;
-    requiredPermissions: MethodPermission[];
-    // available after init
-    info: string;
-    precomposed?: PrecomposeResultFinal;
-    confirmation?: UiRequestConfirmation['payload'];
+export type MethodContext = {
+    sendCoreMessage: (message: CoreEventMessage) => void;
+    createUiPromise: UiPromiseCreator;
 };
 
-export const DEFAULT_FIRMWARE_RANGE: FirmwareRange = {
-    UNKNOWN: { min: '1.0.0', max: '0' },
-    T1B1: { min: '1.0.0', max: '0' },
-    T2T1: { min: '2.0.0', max: '0' },
-    T2B1: { min: '2.6.1', max: '0' },
-    T3B1: { min: '2.8.1', max: '0' },
-    T3T1: { min: '2.7.1', max: '0' },
-    T3W1: { min: '2.7.1', max: '0' }, // TODO T3W1
+export type MethodMessage<Name extends CallMethodPayload['method']> = {
+    id?: string;
+    payload: Payload<Name>;
 };
 
 function validateStaticSessionId(input: unknown): StaticSessionId {
-    if (typeof input !== 'string')
+    if (!isStaticSessionId(input)) {
         throw ERRORS.TypedError(
             'Method_InvalidParameter',
             'DeviceState: invalid staticSessionId: ' + input,
         );
-    const [firstTestnetAddress, rest] = input.split('@');
-    const [deviceId, instance] = rest.split(':');
-    if (
-        typeof firstTestnetAddress === 'string' &&
-        typeof deviceId === 'string' &&
-        typeof instance === 'string' &&
-        Number.parseInt(instance) >= 0
-    ) {
-        return input as StaticSessionId;
     }
-    throw ERRORS.TypedError(
-        'Method_InvalidParameter',
-        'DeviceState: invalid staticSessionId: ' + input,
-    );
+
+    return input;
+}
+
+function validateCallId(callId: unknown): string | undefined {
+    if (callId === undefined) return undefined;
+
+    if (!isUUID(callId)) {
+        throw ERRORS.TypedError(
+            'Method_InvalidParameter',
+            `callId must be a valid UUID, got: ${callId}`,
+        );
+    }
+
+    return callId;
 }
 
 // validate expected state from method parameter.
@@ -99,11 +97,12 @@ function validateDeviceState(device: CallMethodPayload['device']): DeviceState |
 }
 
 export abstract class AbstractMethod<Name extends CallMethodPayload['method'], Params = undefined> {
-    public responseID: number;
+    public responseID: string;
 
-    // @ts-expect-error: strictPropertyInitialization
-    public device: Device;
-    // @ts-expect-error: strictPropertyInitialization
+    public callId?: string;
+
+    public device: Device | undefined;
+
     protected params: Params;
 
     public deviceState?: DeviceState;
@@ -116,9 +115,7 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
 
     public overridden: boolean;
 
-    public name: Name; // method name
-
-    public payload: Payload<Name>; // method payload
+    public readonly name: Name; // method name
 
     protected get info() {
         return '';
@@ -138,13 +135,45 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
 
     public useEmptyPassphrase: boolean;
 
-    protected firmwareRange: FirmwareRange;
+    abstract get requiredPermissions(): PermissionRequest[];
 
-    abstract get requiredPermissions(): MethodPermission[];
+    // Build a `PermissionRequest` for a single coin (or coin-less when `coin`
+    // is undefined). The coin key is `coinInfo.shortcut`.
+    protected coinPerm(permission: MethodPermission, coin?: CoinInfo): PermissionRequest {
+        return coin ? { permission, coin: coin.shortcut } : { permission };
+    }
+
+    // Build a list of `PermissionRequest` entries from a list of coins,
+    // deduplicating by `coinInfo.shortcut`. Undefined coins collapse to a
+    // single coin-less entry.
+    protected coinPerms(
+        permission: MethodPermission,
+        coins: (CoinInfo | undefined)[],
+    ): PermissionRequest[] {
+        const seen = new Set<string>();
+        const out: PermissionRequest[] = [];
+        let hasCoinless = false;
+        for (const c of coins) {
+            if (!c) {
+                if (!hasCoinless) {
+                    hasCoinless = true;
+                    out.push({ permission });
+                }
+                continue;
+            }
+            if (seen.has(c.shortcut)) continue;
+            seen.add(c.shortcut);
+            out.push({ permission, coin: c.shortcut });
+        }
+
+        return out;
+    }
 
     public allowDeviceMode: DeviceMode[]; // used in device management (like ResetDevice allow !UI_REQUEST.INITIALIZED)
 
     protected requiredDeviceCapabilities: Capability[] = [];
+    protected requiredFirmwareCapabilities: FirmwareCapability[] = [];
+    protected requiredFirmwareCoins: (CoinInfo | undefined)[] = [];
 
     public useCardanoDerivation: boolean;
 
@@ -152,19 +181,14 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
 
     public getButtonRequestData?(code: string, name?: string): UiRequestButtonData | undefined;
 
-    // callbacks
-    // @ts-expect-error: strictPropertyInitialization
-    public postMessage: (message: CoreEventMessage) => void;
-    // @ts-expect-error: strictPropertyInitialization
-    public createUiPromise: UiPromiseCreator;
-
     public initAsync?(): Promise<void>;
 
-    constructor(message: { id?: number; payload: Payload<Name> }) {
+    constructor(message: MethodMessage<Name>, params: Params) {
         const { payload } = message;
         this.name = payload.method;
-        this.payload = payload;
-        this.responseID = message.id || 0;
+        this.params = params;
+        this.responseID = message.id ?? '';
+        this.callId = validateCallId(payload.callId);
         this.deviceState = validateDeviceState(payload.device);
         this.keepSession = typeof payload.keepSession === 'boolean' ? payload.keepSession : false;
         this.skipFinalReload = true;
@@ -177,35 +201,36 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
         this.allowDeviceMode = [UI_REQUEST.SEEDLESS]; // Allow seedless by default
 
         // default values for all methods
-        this.firmwareRange = DEFAULT_FIRMWARE_RANGE;
         this.useDevice = true;
         this.useDeviceState = true;
         this.useUi = true;
-        // should derive cardano seed? respect provided option or fall back to do it only when cardano method is called
-        this.useCardanoDerivation =
-            typeof payload.useCardanoDerivation === 'boolean'
-                ? payload.useCardanoDerivation
-                : payload.method.startsWith('cardano');
+        this.useCardanoDerivation = false;
         this.confirmMissingBackup = false;
     }
 
-    // Used in *getAddress methods
-    protected getUseUi(params: { address?: string; show_display?: boolean }[]) {
-        const useEventListener =
-            this.payload.useEventListener &&
-            params.length === 1 &&
-            typeof params[0].address === 'string' &&
-            params[0].show_display;
-
-        return !useEventListener;
+    // Resolves the Cardano session capability against the runtime enabled-networks set. MUST run on
+    // the real device-call path (NOT the constructor): keeps `__info` unblocked, and reflects any
+    // enablement applied between introspection and the call (e.g. a permission grant projected into
+    // the store). Sets `useCardanoDerivation` (→ `derive_cardano` at session create).
+    public resolveCardanoCapability(): void {
+        this.useCardanoDerivation =
+            enabledNetworksStore.has('ada') || enabledNetworksStore.has('tada');
     }
 
     public setDevice(device: Device) {
         this.device = device;
     }
 
+    public getDevice() {
+        if (!this.device) {
+            throw ERRORS.TypedError('Device_NotFound');
+        }
+
+        return this.device;
+    }
+
     public checkFirmwareRange() {
-        const { device } = this;
+        const device = this.getDevice();
 
         // do not do fw range check for devices in BL mode as fw version of T1B1 in BL mode is not defined
         if (!device.features || device.isBootloader()) return;
@@ -213,7 +238,13 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
         // seedless devices do not offer firmware update - it is not desirable to update something that does not have seed
         if (device.isSeedless()) return;
 
-        const range = this.firmwareRange[device.features.internal_model];
+        const firmwareRange = getFirmwareRange(
+            [this.name, ...this.requiredFirmwareCapabilities],
+            this.requiredFirmwareCoins.filter(isNotUndefined),
+            DEFAULT_FIRMWARE_RANGE,
+            isDebugFirmware(device.features),
+        );
+        const range = firmwareRange[device.features.internal_model];
 
         if (device.firmwareStatus === 'none') {
             return UI_REQUEST.FIRMWARE_NOT_INSTALLED;
@@ -243,8 +274,6 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
         }
     }
 
-    public abstract init(): void;
-
     public getMethodInfo(): MethodInfo {
         return {
             useUi: this.useUi,
@@ -265,10 +294,10 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
 
     public checkDeviceCapability() {
         const deviceHasAllRequiredCapabilities = (this.requiredDeviceCapabilities || []).every(
-            capability => this.device.features.capabilities.includes(capability),
+            capability => this.getDevice().features.capabilities.includes(capability),
         );
         if (!deviceHasAllRequiredCapabilities) {
-            if (this.device.firmwareType === 'bitcoin-only') {
+            if (this.getDevice().firmwareType === 'bitcoin-only') {
                 throw ERRORS.TypedError(
                     'Device_MissingCapabilityBtcOnly',
                     `Trezor has Bitcoin-only firmware installed, which does not support this operation. Please install Universal firmware through Trezor Suite.`,
@@ -281,7 +310,7 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
         }
     }
 
-    public abstract run(): Promise<MethodReturnType<Name>>;
+    public abstract run(context: MethodContext): Promise<MethodReturnType<Name>>;
 
     public dispose() {}
 }

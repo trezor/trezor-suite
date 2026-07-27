@@ -1,69 +1,61 @@
 import { Translation } from '@suite/intl';
-import { EarnAccountRef, EarnFlow, EarnProvider } from '@suite-common/suite-types/src/staking';
+import {
+    EarnFlow,
+    type EarnModalAction,
+    type EarnProvider,
+    type EarnYieldContext,
+} from '@suite-common/suite-types/src/staking';
+import { type Account } from '@suite-common/wallet-types';
 import { isStakingNetworkType } from '@suite-common/wallet-utils';
 import { Divider } from '@trezor/components';
 
-import { formatApyValue } from 'src/views/wallet/staking/utils/formatStakeValues';
-
 import { EarnInANutshellModalLayout } from './components/EarnInANutshellModalLayout';
 import {
-    EarnInANutshellProcess,
+    type EarnInANutshellProcess,
     EarnInANutshellProcesses,
 } from './components/EarnInANutshellProcesses';
 import { EarnInANutshellWithdrawalBadge } from './components/EarnInANutshellWithdrawalBadge';
-import { EarnSupplyingInfo } from './components/EarnSupplyingInfo';
+import { EarnStakingInfo } from './components/EarnStakingInfo';
 import { EarnWithdrawingInfo } from './components/EarnWithdrawingInfo';
 import { UpdateEarnInANutshellHighlights } from './components/UpdateEarnInANutshellHighlights';
-import { useEarnInANutshellActions } from './hooks/useEarnInANutshellActions';
-import { useEarnInANutshellData } from './hooks/useEarnInANutshellData';
+import { useEarnInANutshell } from './hooks/useEarnInANutshell';
 
 interface UpdateEarnInANutshellModalProps {
+    account: Account;
     onCancel: () => void;
     provider: EarnProvider;
-    accountRef?: EarnAccountRef;
-    yieldId?: string;
-    tokenContractAddress?: string;
+    actionType?: EarnModalAction;
+    yieldContext?: EarnYieldContext;
 }
 
 export const UpdateEarnInANutshellModal = ({
+    account,
     onCancel,
     provider,
-    accountRef,
-    yieldId,
-    tokenContractAddress,
+    actionType,
+    yieldContext,
 }: UpdateEarnInANutshellModalProps) => {
-    const { handleContinue, onCancelClick } = useEarnInANutshellActions({
+    const { handleAction, onCancelClick, apy } = useEarnInANutshell({
         flow: EarnFlow.UpdateProvider,
         provider,
         onCancel,
-        accountRef,
-        yieldId,
-        tokenContractAddress,
+        account,
+        actionType,
+        yieldContext,
     });
 
-    const data = useEarnInANutshellData();
-
-    if (!data || (data.account && !isStakingNetworkType(data.account.networkType))) {
-        return null;
-    }
-
-    const { account: selectedAccount, displaySymbol, apy } = data;
-
-    if (!selectedAccount || !displaySymbol) return null;
-    if (!isStakingNetworkType(selectedAccount.networkType)) return null;
-
-    const apyValue = formatApyValue(apy);
+    if (!isStakingNetworkType(account.networkType)) return null;
 
     const processes: EarnInANutshellProcess[] = [
         {
             heading: <Translation id="TR_EARN_PROVIDER_UPDATE" />,
-            badge: <Translation id="TR_TX_FEE" />,
-            content: <EarnSupplyingInfo flow={EarnFlow.UpdateProvider} />,
+            badge: <Translation id="TR_TX_FEE_COUNT" values={{ count: 1 }} />,
+            content: <EarnStakingInfo account={account} flow={EarnFlow.UpdateProvider} />,
         },
         {
             heading: <Translation id="TR_EARN_UNSTAKING_PROCESS" />,
-            badge: <EarnInANutshellWithdrawalBadge networkType={selectedAccount.networkType} />,
-            content: <EarnWithdrawingInfo flow={EarnFlow.UpdateProvider} />,
+            badge: <EarnInANutshellWithdrawalBadge networkType={account.networkType} />,
+            content: <EarnWithdrawingInfo account={account} flow={EarnFlow.UpdateProvider} />,
         },
     ];
 
@@ -71,12 +63,13 @@ export const UpdateEarnInANutshellModal = ({
         <EarnInANutshellModalLayout
             heading={<Translation id="TR_EARN_STAKING_IN_A_NUTSHELL" />}
             onCancel={onCancelClick}
-            onContinue={handleContinue}
+            actionType={actionType}
+            onAction={handleAction}
         >
             <UpdateEarnInANutshellHighlights
-                networkType={selectedAccount.networkType}
-                displaySymbol={displaySymbol}
-                apy={apyValue}
+                networkType={account.networkType}
+                networkSymbol={account.symbol}
+                apy={apy}
             />
             <Divider margin={{ top: 24, bottom: 16 }} />
             <EarnInANutshellProcesses items={processes} />

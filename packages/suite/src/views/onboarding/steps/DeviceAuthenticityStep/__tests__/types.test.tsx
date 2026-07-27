@@ -1,6 +1,7 @@
 import { Icon } from '@trezor/components';
+import { GradientIcon } from '@trezor/icons';
 
-import { SecurityChecklistItem } from '../types';
+import { type SecurityChecklistItem } from '../types';
 
 describe('SecurityChecklistItem', () => {
     describe('type tests', () => {
@@ -16,7 +17,7 @@ describe('SecurityChecklistItem', () => {
 
         it('should accept icon: ReactElement<<Icon />> as an icon prop', () => {
             const x: SecurityChecklistItem = {
-                icon: <Icon name="gradient" />,
+                icon: <Icon as={GradientIcon} />,
                 content: <div />,
             };
 

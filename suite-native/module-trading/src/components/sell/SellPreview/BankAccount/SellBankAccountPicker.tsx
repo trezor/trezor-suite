@@ -3,8 +3,8 @@ import { useSelector } from 'react-redux';
 
 import type { BankAccount } from 'invity-api';
 
-import { TradingRootState, selectTradingTradeByOrderId } from '@suite-common/trading';
-import { AnimatedCard, useBottomSheetModal } from '@suite-native/atoms';
+import { type TradingRootState, selectTradingTradeByOrderId } from '@suite-common/trading';
+import { AnimatedContainerCard, useBottomSheetModal } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { TradeInfoHeader } from '@suite-native/trading-atoms';
 
@@ -26,7 +26,7 @@ type MemoizedSellBankAccountPickerProps = {
 // memoize the component because useWatchTrade needs useTimer and it causes re-renders
 const MemoizedSellBankAccountPicker = memo(
     ({ bankAccount, onPress = () => {}, hasCaret }: MemoizedSellBankAccountPickerProps) => (
-        <AnimatedCard noPadding>
+        <AnimatedContainerCard noPadding>
             <TradeInfoHeader
                 title={<Translation id="moduleTrading.tradingSellPreviewScreen.bankAccount" />}
             />
@@ -35,7 +35,7 @@ const MemoizedSellBankAccountPicker = memo(
                 accessoryType={hasCaret ? 'caret' : 'none'}
                 onPress={onPress}
             />
-        </AnimatedCard>
+        </AnimatedContainerCard>
     ),
 );
 
@@ -59,6 +59,11 @@ export const SellBankAccountPicker = ({
     }
 
     const { bankAccounts } = trade.data;
+    const firstBankAccount = bankAccounts[0];
+
+    if (!firstBankAccount) {
+        return null;
+    }
 
     const handleBankAccountSelect = (bankAccount: BankAccount) => {
         onBankAccountSelect(bankAccount);
@@ -68,7 +73,7 @@ export const SellBankAccountPicker = ({
     return (
         <>
             <MemoizedSellBankAccountPicker
-                bankAccount={bankAccounts[0]}
+                bankAccount={firstBankAccount}
                 onPress={openModal}
                 hasCaret={bankAccounts.length > 1}
             />

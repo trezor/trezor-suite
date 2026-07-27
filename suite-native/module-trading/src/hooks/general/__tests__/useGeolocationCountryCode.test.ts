@@ -1,5 +1,18 @@
-import { geolocationActions, selectCountryCode } from '@suite-common/geolocation';
-import { TestStore, initStore, renderHookWithStoreProviderAsync } from '@suite-native/test-utils';
+import { combineReducers } from '@reduxjs/toolkit';
+
+import {
+    geolocationActions,
+    geolocationReducer,
+    selectCountryCode,
+} from '@suite-common/geolocation';
+import { initialWalletSettingsState } from '@suite-common/wallet-core';
+import { localeReducer } from '@suite-native/intl';
+import {
+    type TestStore,
+    createLightStore,
+    createStaticReducer,
+    renderHookWithStoreProvider,
+} from '@suite-native/test-utils-store';
 
 import { useGeolocationCountryCode } from '../useGeolocationCountryCode';
 
@@ -15,22 +28,33 @@ jest.mock('@suite-common/geolocation', () => {
 });
 
 describe('useGeolocationCountryCode', () => {
+    const createGeolocationTestStore = () =>
+        createLightStore({
+            reducer: {
+                geolocation: geolocationReducer,
+                locale: localeReducer,
+                wallet: combineReducers({
+                    settings: createStaticReducer(initialWalletSettingsState),
+                }),
+            },
+        });
+
     const renderUseGeolocationCountryCode = (store: TestStore) =>
-        renderHookWithStoreProviderAsync(() => useGeolocationCountryCode(), { store });
+        renderHookWithStoreProvider(() => useGeolocationCountryCode(), { store });
 
-    it('should call geolocation thunk on mount', async () => {
-        const { store } = initStore();
+    it('should call geolocation thunk on mount', () => {
+        const store = createGeolocationTestStore();
 
-        await renderUseGeolocationCountryCode(store);
+        renderUseGeolocationCountryCode(store);
 
         expect(selectCountryCode(store.getState())).toBe('US');
     });
 
-    it('should not call geolocation thunk if country code is already known', async () => {
-        const { store } = initStore();
+    it('should not call geolocation thunk if country code is already known', () => {
+        const store = createGeolocationTestStore();
         store.dispatch(geolocationActions.setCountryCode('CZ'));
 
-        await renderUseGeolocationCountryCode(store);
+        renderUseGeolocationCountryCode(store);
 
         expect(selectCountryCode(store.getState())).toBe('CZ');
     });

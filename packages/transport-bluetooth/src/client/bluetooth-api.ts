@@ -1,16 +1,18 @@
 import {
     AbstractApi,
-    AbstractApiConstructorParams,
-    OpenDeviceChannel,
-} from '@trezor/transport/src/api/abstract';
-import { DEVICE_TYPE } from '@trezor/transport/src/constants';
-import * as ERRORS from '@trezor/transport/src/errors';
-import { PathInternal } from '@trezor/transport/src/types';
-import { getBLEDescriptorModel } from '@trezor/transport/src/utils/descriptor';
-import { readMessageBuffer } from '@trezor/transport/src/utils/readMessageBuffer';
+    type AbstractApiArgs,
+    type AbstractApiConstructorParams,
+    DEVICE_TYPE,
+    TRANSPORT_ERROR as ERRORS,
+    type PathInternal,
+    error,
+    getBLEDescriptorModel,
+    readMessageBuffer,
+    success,
+} from '@trezor/transport-common';
 
 import { TrezorBluetooth } from './trezor-bluetooth';
-import { BluetoothDevice, TrezorBluetoothSettings } from './types';
+import { type BluetoothDevice, type TrezorBluetoothSettings } from './types';
 
 // implementation of @trezor/transport/src/api/abstract
 
@@ -45,18 +47,18 @@ export class BluetoothApi extends AbstractApi {
         const { api } = this;
         try {
             await api.connect();
-        } catch (error) {
-            return this.error({ error: ERRORS.UNEXPECTED_ERROR, message: error.message });
+        } catch (err) {
+            return error({ code: ERRORS.UNEXPECTED_ERROR, message: err.message });
         }
 
-        return this.success(true);
+        return success(true);
     }
 
     enumerate() {
         return this.api
             .send('enumerate')
-            .then(({ devices }) => this.success(this.devicesToDescriptors(devices)))
-            .catch(() => this.success([]));
+            .then(({ devices }) => success(this.devicesToDescriptors(devices)))
+            .catch(() => success([]));
     }
 
     listen() {
@@ -98,27 +100,27 @@ export class BluetoothApi extends AbstractApi {
         return this.api.disconnect();
     }
 
-    read(path: string, signal?: AbortSignal) {
-        return this.readBuffer.read(path, signal);
+    read(...[path, options]: AbstractApiArgs<'read'>) {
+        return this.readBuffer.read(path, options?.signal);
     }
 
-    write(path: string, buffer: Buffer) {
+    write(...[path, buffer]: AbstractApiArgs<'write'>) {
         const chunk = Buffer.alloc(this.chunkSize);
         buffer.copy(chunk);
 
         return this.api
             .send('write', { id: path, data: Array.from(chunk) })
-            .then(() => this.success(undefined))
-            .catch(e => this.error({ error: ERRORS.INTERFACE_DATA_TRANSFER, message: e.message }));
+            .then(() => success(undefined))
+            .catch(e => error({ code: ERRORS.INTERFACE_DATA_TRANSFER, message: e.message }));
     }
 
-    openDevice(path: string, options?: { channel?: OpenDeviceChannel }) {
+    openDevice(...[path, options]: AbstractApiArgs<'openDevice'>) {
         const isReadChannel = !options?.channel || options.channel === 'read';
         if (isReadChannel) {
             this.readBuffer.cancelRead(path);
             if (this.readSubscription[path]) {
                 // already subscribed to TX (read) characteristics
-                return Promise.resolve(this.success(undefined));
+                return Promise.resolve(success(undefined));
             } else {
                 this.readSubscription[path] = true;
             }
@@ -126,26 +128,26 @@ export class BluetoothApi extends AbstractApi {
 
         return this.api
             .send('open_device', { id: path, characteristic: options?.channel })
-            .then(() => this.success(undefined))
+            .then(() => success(undefined))
             .catch(e =>
-                this.error({ error: ERRORS.INTERFACE_UNABLE_TO_OPEN_DEVICE, message: e.message }),
+                error({ code: ERRORS.INTERFACE_UNABLE_TO_OPEN_DEVICE, message: e.message }),
             );
     }
 
-    closeDevice(path: string, options?: { channel?: OpenDeviceChannel }) {
+    closeDevice(...[path, options]: AbstractApiArgs<'closeDevice'>) {
         const isReadChannel = !options?.channel || options.channel === 'read';
         if (isReadChannel) {
             // do not close subscriptions to TX (read) characteristics
             this.readBuffer.cancelRead(path);
 
-            return Promise.resolve(this.success(undefined));
+            return Promise.resolve(success(undefined));
         }
 
         return this.api
             .send('close_device', { id: path, characteristic: options?.channel })
-            .then(() => this.success(undefined))
+            .then(() => success(undefined))
             .catch(e =>
-                this.error({ error: ERRORS.INTERFACE_UNABLE_TO_CLOSE_DEVICE, message: e.message }),
+                error({ code: ERRORS.INTERFACE_UNABLE_TO_CLOSE_DEVICE, message: e.message }),
             );
     }
 }

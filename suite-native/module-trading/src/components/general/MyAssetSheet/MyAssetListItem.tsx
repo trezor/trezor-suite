@@ -1,7 +1,8 @@
 import { useSelector } from 'react-redux';
 
-import { TradingRootState, selectTradingCoinInfoByCryptoId } from '@suite-common/trading';
-import { Account } from '@suite-common/wallet-types';
+import { type TradingRootState, selectTradingCoinInfoByCryptoId } from '@suite-common/trading';
+import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { type Account } from '@suite-common/wallet-types';
 import { Text, VStack } from '@suite-native/atoms';
 import {
     BaseCurrencyAmountFormatter,
@@ -11,7 +12,7 @@ import {
 import { Translation } from '@suite-native/intl';
 import { useToast } from '@suite-native/toasts';
 import { coinInfoToTradeableAsset } from '@suite-native/trading-atoms';
-import { MyAsset, TradeableAsset } from '@suite-native/trading-types';
+import { type MyAsset, type TradeableAsset } from '@suite-native/trading-types';
 
 import { AssetListItem } from '../AssetListItem';
 
@@ -38,7 +39,7 @@ export const MyAssetListItem = ({ account, asset, onPress }: MyAssetListItemProp
             onPress(tradeableAsset, account);
         } else {
             showToast({
-                variant: 'default',
+                intent: 'neutral',
                 message: <Translation id="moduleTrading.myAssetSheet.noPair.toast" />,
             });
         }
@@ -52,7 +53,7 @@ export const MyAssetListItem = ({ account, asset, onPress }: MyAssetListItemProp
                     tokenSymbol={tokenSymbol}
                     numberOfLines={1}
                     ellipsizeMode="tail"
-                    color="textDefault"
+                    color="contentPrimary"
                     variant="body-md"
                 />
             ) : (
@@ -61,7 +62,7 @@ export const MyAssetListItem = ({ account, asset, onPress }: MyAssetListItemProp
                     symbol={symbol}
                     numberOfLines={1}
                     adjustsFontSizeToFit
-                    color="textDefault"
+                    color="contentPrimary"
                     variant="body-md"
                 />
             )}
@@ -72,10 +73,10 @@ export const MyAssetListItem = ({ account, asset, onPress }: MyAssetListItemProp
                         symbol={symbol}
                         value={fiatBalance}
                         variant="body-sm"
-                        color="textSubdued"
+                        color="contentSecondary"
                     />
                 ) : (
-                    <Text variant="body-xs" color="textSubdued">
+                    <Text variant="body-xs" color="contentSecondary">
                         <Translation id="moduleTrading.myAssetSheet.noPair.note" />
                     </Text>
                 ))}
@@ -85,7 +86,7 @@ export const MyAssetListItem = ({ account, asset, onPress }: MyAssetListItemProp
     return (
         <AssetListItem
             name={name}
-            symbol={tokenSymbol ?? symbol}
+            symbol={tokenSymbol ?? getNetworkDisplaySymbol(symbol)}
             contractAddress={contract}
             networkSymbol={symbol}
             onPress={handlePress}

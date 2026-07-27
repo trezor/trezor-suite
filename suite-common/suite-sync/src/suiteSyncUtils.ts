@@ -1,8 +1,8 @@
-import { TrezorDevice } from '@suite-common/suite-types';
-import { Device } from '@trezor/connect';
+import { type TrezorDevice } from '@suite-common/suite-types';
+import { type Device } from '@trezor/connect';
 import { exhaustive } from '@trezor/type-utils';
 
-import { SuiteSyncInteraction } from './suiteSyncTypes';
+import { type SuiteSyncInteraction } from './suiteSyncTypes';
 
 export const isFwUpgradeNeededForSuiteSync = (device: Device | TrezorDevice | undefined): boolean =>
     device?.unavailableCapabilities?.evolu !== undefined &&

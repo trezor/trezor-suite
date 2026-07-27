@@ -20,6 +20,7 @@ export {
     selectNearbyDevices,
     selectAutoConnectPolicy,
     selectIsDeviceOsUnpairingRequired,
+    selectKnownDeviceByDeviceId,
 } from './bluetoothSelectors';
 
 export { filterOutOldDuplicates } from './filterOutOldDuplicates';

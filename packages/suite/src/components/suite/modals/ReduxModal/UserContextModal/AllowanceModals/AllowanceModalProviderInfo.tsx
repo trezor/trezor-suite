@@ -1,42 +1,60 @@
-import { ProviderMetadata } from 'invity-api';
 import styled from 'styled-components';
 
-import { Translation } from '@suite/intl';
-import { invityAPI } from '@suite-common/trading';
-import { Box, Column, Row, Text } from '@trezor/components';
-import { borders } from '@trezor/theme';
+import { Translation, type TranslationKey } from '@suite/intl';
+import { CardList, Column, Image, Row, Text } from '@trezor/components';
+
+export type AllowanceModalProvider = {
+    name?: string;
+    companyName?: string;
+    logo?: string;
+    label: TranslationKey;
+};
 
 interface AllowanceModalProviderInfoProps {
-    provider: ProviderMetadata;
+    provider: AllowanceModalProvider;
     spender: string;
+    showSpender?: boolean;
 }
 
-const ProviderLogo = styled.img`
-    flex: none;
-    width: 24px;
-    height: 24px;
+const Logo = styled.div`
+    display: grid;
+    grid-template-columns: 1.25rem auto;
+    align-items: center;
+    gap: 8px;
 `;
 
 export const AllowanceModalProviderInfo = ({
     provider,
     spender,
-}: AllowanceModalProviderInfoProps) => (
-    <Box padding={12} borderWidth={borders.widths.large} borderRadius={borders.radii.sm}>
-        <Column gap={12}>
-            <Text>
-                <Translation id="TR_EXCHANGE_APPROVAL_PROVIDER" />
+    showSpender,
+}: AllowanceModalProviderInfoProps) => {
+    const providerName = provider.companyName ?? provider.name;
+
+    return (
+        <CardList.Item paddingType={showSpender ? 'medium' : 'normal'}>
+            <Text typographyStyle="body-sm">
+                <Translation id={provider.label} />
             </Text>
-            <Row gap={8}>
-                {provider.logo && (
-                    <ProviderLogo src={invityAPI.getProviderLogoUrl(provider.logo)} alt="" />
-                )}
-                <Column>
-                    {provider.companyName && <Text>{provider.companyName}</Text>}
-                    <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
+            <Column alignItems="flex-end" gap={2}>
+                <Logo>
+                    {provider.logo && (
+                        <Row alignItems="center" justifyContent="center">
+                            <Image imageSrc={provider.logo} maxHeight={20} borderRadius={4} />
+                        </Row>
+                    )}
+                    <Text typographyStyle="body-sm">{providerName}</Text>
+                </Logo>
+                {showSpender && (
+                    <Text
+                        typographyStyle="body-xs"
+                        intent="neutral"
+                        priority="secondary"
+                        wordBreak="break-all"
+                    >
                         {spender}
                     </Text>
-                </Column>
-            </Row>
-        </Column>
-    </Box>
-);
+                )}
+            </Column>
+        </CardList.Item>
+    );
+};

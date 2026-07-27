@@ -1,6 +1,6 @@
 import { createMigration } from '@suite/idb-migration-utils';
 
-import { SuiteDBSchema } from 'src/storage/definitions';
+import { type SuiteDBSchema } from 'src/storage/definitions';
 
 export default createMigration<SuiteDBSchema>('25.9.2', async (db, tx) => {
     // @ts-expect-error security no longer exists

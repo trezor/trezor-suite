@@ -1,10 +1,12 @@
+import { TrezorLink } from '@suite/external-links';
 import { Translation } from '@suite/intl';
-import { TrezorDevice } from '@suite-common/suite-types';
+import { type TrezorDevice } from '@suite-common/suite-types';
 import { Banner, Button, Column, H3, Icon, List, Paragraph, Text } from '@trezor/components';
-import { spacings } from '@trezor/theme';
+import { CopyIcon, EyeSlashIcon, NewspaperIcon, WarningCircleIcon } from '@trezor/icons';
+import { HELP_CENTER_PASSPHRASE_URL } from '@trezor/urls';
 
-import { CardWithDevice } from '../../../../../views/suite/SwitchDevice/CardWithDevice';
-import { SwitchDeviceModal } from '../../../../../views/suite/SwitchDevice/SwitchDeviceModal';
+import { CardWithDevice } from 'src/views/suite/SwitchDevice/CardWithDevice';
+import { SwitchDeviceModal } from 'src/views/suite/SwitchDevice/SwitchDeviceModal';
 
 type PassphraseWalletBestPracticesProps = {
     onCancel: () => void;
@@ -20,23 +22,39 @@ type PassphraseWalletBestPracticesContentProps = {
 const PassphraseWalletBestPracticesContent = ({
     onNext,
 }: PassphraseWalletBestPracticesContentProps) => (
-    <Column gap={spacings.sm}>
-        <Column gap={spacings.md} padding={{ horizontal: spacings.xs }}>
+    <Column gap={12}>
+        <Column gap={16} padding={{ horizontal: 8 }}>
             <H3>
                 <Translation id="TR_PASSPHRASE_WALLET_CONFIRMATION_STEP2_TITLE" />
             </H3>
-            <List gap={spacings.sm} bulletGap={spacings.md} typographyStyle="body-sm">
-                <List.Item bulletComponent={<Icon name="newspaper" size={16} />}>
+            <List gap={12} bulletGap={16} typographyStyle="body-sm">
+                <List.Item
+                    bulletComponent={<Icon intent="info" as={WarningCircleIcon} size={16} />}
+                >
+                    <Paragraph intent="info" typographyStyle="body-sm-strong">
+                        <Translation
+                            id="TR_PASSPHRASE_DESCRIPTION_ITEM1"
+                            values={{
+                                a: text => (
+                                    <TrezorLink href={HELP_CENTER_PASSPHRASE_URL}>
+                                        {text}
+                                    </TrezorLink>
+                                ),
+                            }}
+                        />
+                    </Paragraph>
+                </List.Item>
+                <List.Item bulletComponent={<Icon as={NewspaperIcon} size={16} />}>
                     <Paragraph intent="neutral" priority="secondary">
                         <Translation id="TR_PASSPHRASE_WALLET_CONFIRMATION_STEP2_ITEM1_DESCRIPTION" />
                     </Paragraph>
                 </List.Item>
-                <List.Item bulletComponent={<Icon name="copy" size={16} />}>
+                <List.Item bulletComponent={<Icon as={CopyIcon} size={16} />}>
                     <Paragraph intent="neutral" priority="secondary">
                         <Translation id="TR_PASSPHRASE_WALLET_CONFIRMATION_STEP2_ITEM2_DESCRIPTION" />
                     </Paragraph>
                 </List.Item>
-                <List.Item bulletComponent={<Icon name="eyeSlash" size={16} />}>
+                <List.Item bulletComponent={<Icon as={EyeSlashIcon} size={16} />}>
                     <Paragraph intent="neutral" priority="secondary">
                         <Translation id="TR_PASSPHRASE_WALLET_CONFIRMATION_STEP2_ITEM3_DESCRIPTION" />
                     </Paragraph>
@@ -44,7 +62,7 @@ const PassphraseWalletBestPracticesContent = ({
             </List>
         </Column>
         <Banner
-            margin={{ top: spacings.sm }}
+            margin={{ top: 12 }}
             description={
                 <Text intent="warning" typographyStyle="body-sm-strong">
                     <Translation id="TR_PASSPHRASE_WALLET_CONFIRMATION_STEP2_WARNING" />

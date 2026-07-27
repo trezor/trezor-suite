@@ -1,6 +1,6 @@
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
-const TEARDOWN_TIMEOUT = 5_000;
+const TEARDOWN_TIMEOUT = 30_000;
 
 // We want to stop trezor at two places:
 // 1) afterAll - to cover normal test run teardowns
@@ -27,11 +27,12 @@ afterAll(async () => {
     let timer: ReturnType<typeof setTimeout>;
     const timeoutPromise = new Promise<void>(resolve => {
         timer = setTimeout(resolve, TEARDOWN_TIMEOUT);
-        (timer as any).unref?.();
+        timer.unref?.();
     });
     await Promise.race([teardownPromises(), timeoutPromise]);
 });
 
 beforeEach(async () => {
+    await device.terminateApp();
     await stopTrezorUserEnv();
 });

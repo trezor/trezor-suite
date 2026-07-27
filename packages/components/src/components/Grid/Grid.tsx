@@ -1,15 +1,15 @@
 import styled from 'styled-components';
 
-import { SpacingValues, SpacingValuesNew } from '@trezor/theme';
+import { type SpacingValue } from '@trezor/theme';
 
-import { GridAlignItems, GridJustifyContent } from './types';
+import { type GridAlignItems, type GridJustifyContent } from './types';
 import {
-    FrameProps,
-    FramePropsKeys,
+    type FrameProps,
+    type FramePropsKeys,
     pickAndPrepareFrameProps,
     withFrameProps,
 } from '../../utils/frameProps';
-import { TransientProps } from '../../utils/transientProps';
+import { type TransientProps } from '../../utils/transientProps';
 
 export const allowedGridFrameProps: FramePropsKeys[] = [
     'margin',
@@ -17,14 +17,16 @@ export const allowedGridFrameProps: FramePropsKeys[] = [
     'width',
     'height',
     'flex',
+    'overflow',
+    'borderRadius',
 ];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedGridFrameProps)[number]>;
 
 const Container = styled.div<
     TransientProps<AllowedFrameProps> & {
         $columns: number | string;
-        $rowGap: SpacingValues | SpacingValuesNew;
-        $columnGap: SpacingValues | SpacingValuesNew;
+        $rowGap: SpacingValue;
+        $columnGap: SpacingValue;
         $alignItems: GridAlignItems;
         $justifyContent: GridJustifyContent;
         $forceEqualColumns: boolean;
@@ -43,9 +45,9 @@ const Container = styled.div<
 `;
 
 export type GridProps = AllowedFrameProps & {
-    gap?: SpacingValues | SpacingValuesNew;
-    rowGap?: SpacingValues | SpacingValuesNew;
-    columnGap?: SpacingValues | SpacingValuesNew;
+    gap?: SpacingValue;
+    rowGap?: SpacingValue;
+    columnGap?: SpacingValue;
     alignItems?: GridAlignItems;
     justifyContent?: GridJustifyContent;
     columns: number | string;

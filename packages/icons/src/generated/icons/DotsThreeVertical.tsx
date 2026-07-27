@@ -1,0 +1,10 @@
+import type { SVGProps } from 'react';
+const SvgDotsThreeVertical = (props: SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" {...props}>
+        <path
+            fill="currentColor"
+            d="M17.5 16a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0M16 9a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3m0 14a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3"
+        />
+    </svg>
+);
+export { SvgDotsThreeVertical as ReactComponent };

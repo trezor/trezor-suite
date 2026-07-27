@@ -7,11 +7,16 @@ type AccountHeaderContextValue = {
 const AccountHeaderContext = createContext<AccountHeaderContextValue | null>(null);
 
 interface AccountHeaderProviderProps {
+    balanceSectionRef?: React.RefObject<HTMLDivElement | null>;
     children: React.ReactNode;
 }
 
-export const AccountHeaderProvider = ({ children }: AccountHeaderProviderProps) => {
-    const balanceSectionRef = useRef<HTMLDivElement>(null);
+export const AccountHeaderProvider = ({
+    balanceSectionRef: providedBalanceSectionRef,
+    children,
+}: AccountHeaderProviderProps) => {
+    const internalBalanceSectionRef = useRef<HTMLDivElement>(null);
+    const balanceSectionRef = providedBalanceSectionRef ?? internalBalanceSectionRef;
 
     return (
         <AccountHeaderContext.Provider value={{ balanceSectionRef }}>

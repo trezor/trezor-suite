@@ -14,13 +14,13 @@ jobs:
       version: ${{ steps.set-version.outputs.version }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v6
         with:
           # Number of commits to fetch. 0 indicates all history for all branches and tags.
           fetch-depth: 0
 
       - name: Setup node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
         with:
           node-version-file: ".nvmrc"
           registry-url: "https://registry.npmjs.org"
@@ -33,7 +33,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [extract-version]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v6
 
       - name: Check connect version match
         uses: ./.github/actions/check-connect-version-match
@@ -49,13 +49,18 @@ jobs:
       deploymentType: ${{ steps.determine-deployment-type.outputs.deploymentType }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v6
 
       - name: Setup node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
         with:
           node-version-file: ".nvmrc"
 
+      - name: Install SafeDep PMG
+        uses: safedep/pmg@26d5c0ad71fd0e5f48c3183c9c74d4b3eb7f57c8 # v0.19.1
+        continue-on-error: true
+        with:
+          version: v0.19.1
       - name: Install dependencies
         run: yarn install
 
@@ -94,7 +99,7 @@ jobs:
       matrix:
         package: ${{ fromJson(needs.identify-release-packages.outputs.packagesNeedRelease) }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v6
         if: matrix.package != 'no-packages-to-release'
         with:
           ref: develop
@@ -103,7 +108,9 @@ jobs:
         if: matrix.package != 'no-packages-to-release'
         id: set_deployment_type
         run: |
-          if [ "${{ needs.identify-release-packages.outputs.deploymentType }}" == "canary" ]; then
+          if [ "${{ needs.identify-release-packages.outputs.deploymentType }}" == "alpha" ]; then
+            echo "DEPLOYMENT_TYPE=alpha" >> $GITHUB_ENV
+          elif [ "${{ needs.identify-release-packages.outputs.deploymentType }}" == "canary" ]; then
             echo "DEPLOYMENT_TYPE=beta" >> $GITHUB_ENV
           else
             echo "DEPLOYMENT_TYPE=latest" >> $GITHUB_ENV
@@ -127,14 +134,16 @@ jobs:
       matrix:
         package: ["connect", "connect-web", "connect-webextension", "connect-mobile"]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v6
         with:
           ref: develop
 
       - name: Set deployment type
         id: set_deployment_type
         run: |
-          if [ "${{ needs.identify-release-packages.outputs.deploymentType }}" == "canary" ]; then
+          if [ "${{ needs.identify-release-packages.outputs.deploymentType }}" == "alpha" ]; then
+            echo "DEPLOYMENT_TYPE=alpha" >> $GITHUB_ENV
+          elif [ "${{ needs.identify-release-packages.outputs.deploymentType }}" == "canary" ]; then
             echo "DEPLOYMENT_TYPE=beta" >> $GITHUB_ENV
           else
             echo "DEPLOYMENT_TYPE=latest" >> $GITHUB_ENV

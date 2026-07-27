@@ -1,8 +1,8 @@
 import { type DeviceRootState, selectDeviceId } from '@suite-common/device';
 import { createWeakMapSelector } from '@suite-common/redux-utils';
-import { WalletDescriptor } from '@suite-common/wallet-types';
+import { type WalletDescriptor } from '@trezor/device-utils';
 
-import { SuiteSyncQuotaManagerState } from './quotaManagerReducer';
+import { type SuiteSyncQuotaManagerState } from './quotaManagerReducer';
 
 export type WithSuiteSyncQuotaManagerState = {
     suiteSyncQuotaManager: SuiteSyncQuotaManagerState;
@@ -11,9 +11,6 @@ export type WithSuiteSyncQuotaManagerState = {
 const createMemoizedSelector = createWeakMapSelector.withTypes<
     DeviceRootState & WithSuiteSyncQuotaManagerState
 >();
-
-export const selectQuotaManagerBaseUrl = (state: WithSuiteSyncQuotaManagerState) =>
-    state.suiteSyncQuotaManager.baseUrl;
 
 export const selectIsDeviceRegistered = (state: WithSuiteSyncQuotaManagerState, deviceId: string) =>
     state.suiteSyncQuotaManager.registeredDevices.find(device => device.deviceId === deviceId) !==
@@ -44,7 +41,10 @@ export const selectDeviceDismissedNoQuotaLeftWarning = (
     state.suiteSyncQuotaManager.registeredDevices.find(d => d.deviceId === deviceId)
         ?.dismissedNoQuotaLeftWarning;
 
-export const selectHasDeviceAllowance = (
+export const selectEnforceQuotaManager = (state: WithSuiteSyncQuotaManagerState) =>
+    state.suiteSyncQuotaManager.enforceQuotaManager;
+
+export const selectHasDeviceRegisteredAndOwnerHasAllowance = (
     state: WithSuiteSyncQuotaManagerState,
     deviceId: string,
     walletDescriptor: WalletDescriptor,

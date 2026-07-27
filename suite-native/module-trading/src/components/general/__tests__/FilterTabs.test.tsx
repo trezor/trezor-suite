@@ -1,9 +1,13 @@
-import { fireEvent, renderWithStoreProviderAsync, within } from '@suite-native/test-utils';
-import { FilterItem, FilterTabs } from '@suite-native/trading-atoms';
+import { getTranslation } from '@suite-native/intl';
+import { fireEvent, renderWithStoreProvider, within } from '@suite-native/test-utils-store';
+import { type FilterItem, FilterTabs } from '@suite-native/trading-atoms';
 
 describe('FilterTabs', () => {
     const items: FilterItem<string>[] = [
-        { label: 'All', value: 'all' },
+        {
+            label: getTranslation('moduleTrading.tradeableAssetsSheet.allFilterTabTitle'),
+            value: 'all',
+        },
         { label: 'Bitcoin', value: 'btc' },
         { label: 'Ethereum', value: 'eth' },
     ];
@@ -13,7 +17,7 @@ describe('FilterTabs', () => {
         value = 'all',
         keyExtractor?: (item: FilterItem<string>) => string,
     ) =>
-        renderWithStoreProviderAsync(
+        renderWithStoreProvider(
             <FilterTabs
                 items={items}
                 onChange={onChange}
@@ -22,17 +26,19 @@ describe('FilterTabs', () => {
             />,
         );
 
-    it('should render all filter tabs', async () => {
-        const { getByText } = await renderComponent();
+    it('should render all filter tabs', () => {
+        const { getByText } = renderComponent();
 
-        expect(getByText('All')).toBeTruthy();
+        expect(
+            getByText(getTranslation('moduleTrading.tradeableAssetsSheet.allFilterTabTitle')),
+        ).toBeTruthy();
         expect(getByText('Bitcoin')).toBeTruthy();
         expect(getByText('Ethereum')).toBeTruthy();
     });
 
-    it('should call onChange with the correct value when a tab is pressed', async () => {
+    it('should call onChange with the correct value when a tab is pressed', () => {
         const onChange = jest.fn();
-        const { getByText } = await renderComponent(onChange);
+        const { getByText } = renderComponent(onChange);
 
         const bitcoinTab = getByText('Bitcoin');
         expect(bitcoinTab).toBeTruthy();
@@ -41,19 +47,26 @@ describe('FilterTabs', () => {
         expect(onChange).toHaveBeenCalledWith('btc');
     });
 
-    it('should have the correct tab active based on the value prop', async () => {
-        const { getByRole } = await renderComponent(jest.fn(), 'btc');
+    it('should have the correct tab active based on the value prop', () => {
+        const { getByRole } = renderComponent(jest.fn(), 'btc');
 
         const activeTab = getByRole('tab', { selected: true });
         expect(within(activeTab).getByText('Bitcoin')).toBeTruthy();
 
-        const inactiveTab = getByRole('tab', { selected: false, name: 'All' });
-        expect(within(inactiveTab).getByText('All')).toBeTruthy();
+        const inactiveTab = getByRole('tab', {
+            selected: false,
+            name: getTranslation('moduleTrading.tradeableAssetsSheet.allFilterTabTitle'),
+        });
+        expect(
+            within(inactiveTab).getByText(
+                getTranslation('moduleTrading.tradeableAssetsSheet.allFilterTabTitle'),
+            ),
+        ).toBeTruthy();
     });
 
-    it('should use custom keyExtractor if provided', async () => {
+    it('should use custom keyExtractor if provided', () => {
         const keyExtractor = jest.fn(item => item.label);
-        await renderComponent(jest.fn(), 'all', keyExtractor);
+        renderComponent(jest.fn(), 'all', keyExtractor);
         expect(keyExtractor).toHaveBeenCalledWith(items[0]);
         expect(keyExtractor).toHaveBeenCalledWith(items[1]);
         expect(keyExtractor).toHaveBeenCalledWith(items[2]);

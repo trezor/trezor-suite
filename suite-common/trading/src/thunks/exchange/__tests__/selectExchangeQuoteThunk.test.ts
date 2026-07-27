@@ -1,15 +1,15 @@
 import { combineReducers } from '@reduxjs/toolkit';
-import { CryptoId, ExchangeTradeQuoteRequest } from 'invity-api';
+import { type CryptoId, type ExchangeTradeQuoteRequest } from 'invity-api';
 
 import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
 
 import { exchangeThunks } from '../';
 import { MIN_MAX_QUOTES_OK } from '../../../__fixtures__/exchangeUtils';
+import { CONTRACT_ADDRESS_FOR_NATIVE_TOKEN } from '../../../constants';
 import { invityAPI } from '../../../invityAPI';
-import { ExchangeInfo, TradingExchangeState } from '../../../reducers/exchangeReducer';
-import { initialState } from '../../../reducers/tradingCommonReducer';
+import { type ExchangeInfo, type TradingExchangeState } from '../../../reducers/exchangeReducer';
+import { type QuoteRefetchingState, initialState } from '../../../reducers/tradingCommonReducer';
 import { prepareTradingReducer } from '../../../reducers/tradingReducer';
-import { SelectExchangeQuoteThunkProps } from '../selectExchangeQuoteThunk';
 
 const tradingReducer = prepareTradingReducer(extraDependenciesCommonMock);
 
@@ -25,6 +25,7 @@ describe('selectExchangeQuoteThunk', () => {
 
     const getDataMocks = () => {
         const quote = MIN_MAX_QUOTES_OK[0];
+        if (!quote) throw new Error('Missing test fixture');
         const quoteExchange = quote.exchange as string;
         const send = quote.send as CryptoId;
         const receive = quote.receive as CryptoId;
@@ -73,7 +74,10 @@ describe('selectExchangeQuoteThunk', () => {
         };
     };
 
-    const getMocks = (initialExchangeState?: Partial<TradingExchangeState>) => {
+    const getMocks = (
+        initialExchangeState?: Partial<TradingExchangeState>,
+        refetchQuotesOverride?: Partial<QuoteRefetchingState>,
+    ) => {
         const store = configureMockStore({
             extra: {},
             reducer: combineReducers({
@@ -89,49 +93,123 @@ describe('selectExchangeQuoteThunk', () => {
                             ...initialState.exchange,
                             ...(initialExchangeState ?? {}),
                         },
+                        refetchQuotes: {
+                            ...initialState.quoteRefetchingState,
+                            ...refetchQuotesOverride,
+                        },
                     },
                 },
             },
         });
 
-        const mockTimerStop = jest.fn();
-        const mockTimer = {
-            stop: mockTimerStop,
-        } as unknown as SelectExchangeQuoteThunkProps['timer'];
-
         const mockNextStep = jest.fn();
 
         return {
             store,
-            mockTimer,
-            mockTimerStop,
             mockNextStep,
         };
     };
 
     it('should successfully select quote', async () => {
         const { quote, state } = getDataMocks();
-        const { store, mockTimer, mockNextStep, mockTimerStop } = getMocks(state);
+        const { store, mockNextStep } = getMocks(state, { status: 'running' });
 
         await store
             .dispatch(
                 exchangeThunks.selectQuoteThunk({
                     quote,
-                    timer: mockTimer,
                     nextStep: mockNextStep,
                 }),
             )
             .unwrap();
 
         expect(mockNextStep).toHaveBeenCalledTimes(1);
-        expect(mockTimerStop).toHaveBeenCalledTimes(1);
+        expect(store.getState().wallet.trading.quoteRefetchingState.status).toBe('stopped');
         expect(store.getState().wallet.trading.exchange.selectedQuote).toEqual(quote);
+    });
+
+    it('should save DEX quote when status is CONFIRM', async () => {
+        const { quote, state } = getDataMocks();
+        const dexQuote = { ...quote, isDex: true, status: 'CONFIRM' as const };
+        const { store, mockNextStep } = getMocks(state, { status: 'running' });
+
+        await store
+            .dispatch(
+                exchangeThunks.selectQuoteThunk({
+                    quote: dexQuote,
+                    nextStep: mockNextStep,
+                }),
+            )
+            .unwrap();
+
+        expect(mockNextStep).toHaveBeenCalledTimes(1);
+        expect(store.getState().wallet.trading.exchange.selectedQuote).toEqual(dexQuote);
+    });
+
+    it('should save DEX quote when status is SIGN_DATA', async () => {
+        const { quote, state } = getDataMocks();
+        const dexQuote = { ...quote, isDex: true, status: 'SIGN_DATA' as const };
+        const { store, mockNextStep } = getMocks(state, { status: 'running' });
+
+        await store
+            .dispatch(
+                exchangeThunks.selectQuoteThunk({
+                    quote: dexQuote,
+                    nextStep: mockNextStep,
+                }),
+            )
+            .unwrap();
+
+        expect(mockNextStep).toHaveBeenCalledTimes(1);
+        expect(store.getState().wallet.trading.exchange.selectedQuote).toEqual(dexQuote);
+    });
+
+    it('should not save DEX quote with other statuses but still call nextStep', async () => {
+        const { quote, state } = getDataMocks();
+        const dexQuote = { ...quote, isDex: true, status: 'APPROVAL_REQ' as const };
+        const { store, mockNextStep } = getMocks(state, { status: 'running' });
+
+        await store
+            .dispatch(
+                exchangeThunks.selectQuoteThunk({
+                    quote: dexQuote,
+                    nextStep: mockNextStep,
+                }),
+            )
+            .unwrap();
+
+        expect(mockNextStep).toHaveBeenCalledTimes(1);
+        expect(store.getState().wallet.trading.exchange.selectedQuote).toBeUndefined();
+    });
+
+    it('should save DEX quote when sending EVM native coin (no approval) before CONFIRM', async () => {
+        const { quote, state } = getDataMocks();
+        const nativeEthSend = `ethereum--${CONTRACT_ADDRESS_FOR_NATIVE_TOKEN}` as CryptoId;
+        const dexQuote = {
+            ...quote,
+            isDex: true,
+            send: nativeEthSend,
+            status: undefined,
+        };
+        const { store, mockNextStep } = getMocks(state, { status: 'running' });
+
+        await store
+            .dispatch(
+                exchangeThunks.selectQuoteThunk({
+                    quote: dexQuote,
+                    nextStep: mockNextStep,
+                }),
+            )
+            .unwrap();
+
+        expect(mockNextStep).toHaveBeenCalledTimes(1);
+        expect(store.getState().wallet.trading.exchange.selectedQuote).toEqual(dexQuote);
     });
 
     describe('should not be possible to save selected quote', () => {
         it('when exchangeInfo is undefined', async () => {
             const { quote, state } = getDataMocks();
-            const { store, mockTimer, mockNextStep, mockTimerStop } = getMocks({
+            const { store, mockNextStep } = getMocks({
                 ...state,
                 exchangeInfo: undefined,
             });
@@ -140,20 +218,18 @@ describe('selectExchangeQuoteThunk', () => {
                 .dispatch(
                     exchangeThunks.selectQuoteThunk({
                         quote,
-                        timer: mockTimer,
                         nextStep: mockNextStep,
                     }),
                 )
                 .unwrap();
 
             expect(mockNextStep).toHaveBeenCalledTimes(0);
-            expect(mockTimerStop).toHaveBeenCalledTimes(0);
             expect(store.getState().wallet.trading.exchange.selectedQuote).toEqual(undefined);
         });
 
         it('when quote send is undefined', async () => {
             const { quote, state } = getDataMocks();
-            const { store, mockTimer, mockNextStep, mockTimerStop } = getMocks(state);
+            const { store, mockNextStep } = getMocks(state);
 
             await store
                 .dispatch(
@@ -162,20 +238,18 @@ describe('selectExchangeQuoteThunk', () => {
                             ...quote,
                             send: undefined,
                         },
-                        timer: mockTimer,
                         nextStep: mockNextStep,
                     }),
                 )
                 .unwrap();
 
             expect(mockNextStep).toHaveBeenCalledTimes(0);
-            expect(mockTimerStop).toHaveBeenCalledTimes(0);
             expect(store.getState().wallet.trading.exchange.selectedQuote).toEqual(undefined);
         });
 
         it('when quote receive is undefined', async () => {
             const { quote, state } = getDataMocks();
-            const { store, mockTimer, mockNextStep, mockTimerStop } = getMocks(state);
+            const { store, mockNextStep } = getMocks(state);
 
             await store
                 .dispatch(
@@ -184,14 +258,12 @@ describe('selectExchangeQuoteThunk', () => {
                             ...quote,
                             receive: undefined,
                         },
-                        timer: mockTimer,
                         nextStep: mockNextStep,
                     }),
                 )
                 .unwrap();
 
             expect(mockNextStep).toHaveBeenCalledTimes(0);
-            expect(mockTimerStop).toHaveBeenCalledTimes(0);
             expect(store.getState().wallet.trading.exchange.selectedQuote).toEqual(undefined);
         });
     });

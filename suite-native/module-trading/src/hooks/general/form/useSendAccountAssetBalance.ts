@@ -2,25 +2,28 @@ import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
 import type { DeviceRootState } from '@suite-common/device';
-import { TokenDefinitionsRootState } from '@suite-common/token-definitions';
+import { type TokenDefinitionsRootState } from '@suite-common/token-definitions';
 import {
-    AccountsRootState,
-    TransactionsRootState,
+    type AccountsRootState,
+    type TransactionsRootState,
     selectAccountFormattedBalance,
 } from '@suite-common/wallet-core';
+import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import type { UseFormReturn } from '@suite-native/forms';
 import { selectAccountTokenBalance } from '@suite-native/tokens';
 import {
-    ExchangeFormType,
-    ExchangeFormValues,
-    SellFormType,
-    SellFormValues,
+    type ExchangeFormType,
+    type ExchangeFormValues,
+    type SellFormType,
+    type SellFormValues,
 } from '@suite-native/trading-types';
 
 export const useSendAccountAssetBalance = (
     form: ExchangeFormType | SellFormType,
     setBalance: (balance: string | undefined) => unknown,
     setSendSymbol: (currency: string | undefined) => unknown,
+    setContractAddress: (contractAddress: TokenAddress | undefined) => unknown,
+    setAccountKey: (accountKey: AccountKey | undefined) => void,
 ) => {
     const { watch } = form as UseFormReturn<ExchangeFormValues | SellFormValues>;
     const [sendAccount, sendAsset] = watch(['sendAccount', 'sendAsset']);
@@ -50,6 +53,15 @@ export const useSendAccountAssetBalance = (
     }, [setBalance, balance]);
 
     useEffect(() => {
-        setSendSymbol(sendAsset?.symbol);
-    }, [setSendSymbol, sendAsset]);
+        setSendSymbol(sendAccount?.symbol);
+        setContractAddress(sendAsset?.contractAddress);
+        setAccountKey(accountKey);
+    }, [
+        setSendSymbol,
+        setContractAddress,
+        setAccountKey,
+        sendAsset?.contractAddress,
+        sendAccount?.symbol,
+        accountKey,
+    ]);
 };

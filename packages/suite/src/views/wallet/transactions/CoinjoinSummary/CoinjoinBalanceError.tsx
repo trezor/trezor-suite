@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { Translation, TranslationKey } from '@suite/intl';
+import { Translation, type TranslationKey } from '@suite/intl';
 import { typography } from '@trezor/theme';
 
 const StyledBalanceContainer = styled.div`
@@ -9,7 +9,7 @@ const StyledBalanceContainer = styled.div`
 
 const Heading = styled.p<{ $color?: string }>`
     margin-bottom: 4px;
-    color: ${({ theme, color }) => color || theme.textSubdued};
+    color: ${({ theme, color }) => color || theme.contentSecondary};
     ${typography['body-xs']}
 `;
 

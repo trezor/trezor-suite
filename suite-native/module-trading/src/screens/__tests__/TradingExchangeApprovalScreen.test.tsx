@@ -1,28 +1,50 @@
-import { RouteProp } from '@react-navigation/native';
+import { type NavigationAction, type RouteProp } from '@react-navigation/native';
 
 import { selectTradingExchangeSelectedQuote, tradingExchangeActions } from '@suite-common/trading';
-import { AccountKey } from '@suite-common/wallet-types';
-import { TradingStackParamList, TradingStackRoutes } from '@suite-native/navigation';
+import { getTranslation } from '@suite-native/intl';
 import {
-    TestStore,
-    fireEvent,
-    initStore,
-    renderWithStoreProviderAsync,
-} from '@suite-native/test-utils';
-import { exchangeQuotes, getWalletState } from '@suite-native/trading-fixtures';
+    type RootStackParamList,
+    RootStackRoutes,
+    useNavigationRemoveActionInterceptor,
+} from '@suite-native/navigation';
+import { type TestStore, fireEvent } from '@suite-native/test-utils-store';
+import { eth1NormalAccount, mercuryoFixedWorstQuote } from '@suite-native/trading-fixtures';
 
+import {
+    createTradingLightStore,
+    renderWithTradingProvider,
+} from '../../__tests__/tradingTestUtils';
 import { TradingExchangeApprovalScreen } from '../TradingExchangeApprovalScreen';
 
 const mockShowSheet = jest.fn();
 const mockHideSheet = jest.fn();
 const mockConfirmApproval = jest.fn().mockResolvedValue({});
+const mockOnApprovalTypeChange = jest.fn();
+const mockNavigationDispatch = jest.fn();
+
+jest.mock('@suite-native/navigation', () => ({
+    ...jest.requireActual('@suite-native/navigation'),
+    useNavigationRemoveActionInterceptor: jest.fn(),
+}));
+
+const mockedUseNavigationRemoveActionInterceptor = jest.mocked(
+    useNavigationRemoveActionInterceptor,
+);
+
+const triggerPreventNavigationRemove = (action: NavigationAction = { type: 'GO_BACK' }) => {
+    const params = mockedUseNavigationRemoveActionInterceptor.mock.calls.at(-1)?.[0];
+
+    params?.onInterceptedAction?.(action);
+};
 
 jest.mock('../../hooks/exchange/Approval/useApprovalFlow', () => ({
     useApprovalFlow: () => ({
         quote: undefined,
+        isReady: true,
         isConfirming: false,
         error: null,
         confirmApproval: mockConfirmApproval,
+        onApprovalTypeChange: mockOnApprovalTypeChange,
     }),
 }));
 
@@ -39,8 +61,22 @@ jest.mock('@react-navigation/native', () => ({
     ...jest.requireActual('@react-navigation/native'),
     useRoute: () =>
         ({
-            params: undefined,
-        }) as RouteProp<TradingStackParamList, TradingStackRoutes.TradingHistory>,
+            key: RootStackRoutes.TradingExchangeApproval,
+            name: RootStackRoutes.TradingExchangeApproval,
+            params: {},
+        }) as RouteProp<RootStackParamList, RootStackRoutes.TradingExchangeApproval>,
+    useNavigation: () => ({
+        setOptions: jest.fn(),
+    }),
+}));
+
+const mockAnalyticsReport = jest.fn();
+jest.mock('@suite-native/trading-analytics', () => ({
+    ...jest.requireActual('@suite-native/trading-analytics'),
+    useExchangeAnalyticsStepReport:
+        (action: unknown) =>
+        (...args: unknown[]) =>
+            mockAnalyticsReport(action, ...args),
 }));
 
 jest.mock('@suite-native/trading-atoms', () => ({
@@ -52,16 +88,27 @@ jest.mock('@suite-native/trading-atoms', () => ({
     }),
 }));
 
-const testQuote = exchangeQuotes[0];
+let mockIsDeviceConnected = true;
+jest.mock('@suite-common/device', () => ({
+    ...jest.requireActual('@suite-common/device'),
+    selectIsDeviceConnected: () => mockIsDeviceConnected,
+}));
+
+const testQuote = mercuryoFixedWorstQuote;
 
 describe('TradingExchangeApprovalScreen', () => {
     let store: TestStore;
     let unmount: (() => void) | undefined;
 
-    const renderScreen = async () => {
-        const result = await renderWithStoreProviderAsync(
-            <TradingExchangeApprovalScreen route={{ params: {} } as any} navigation={{} as any} />,
-            { store },
+    const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+
+    const renderScreen = (params: Record<string, unknown> = {}) => {
+        const result = renderWithTradingProvider(
+            <TradingExchangeApprovalScreen
+                route={{ params } as any}
+                navigation={{ dispatch: mockNavigationDispatch } as any}
+            />,
+            { store, tradeType: 'exchange' },
         );
 
         ({ unmount } = result);
@@ -72,19 +119,11 @@ describe('TradingExchangeApprovalScreen', () => {
     beforeEach(() => {
         jest.clearAllMocks();
 
-        const preloadedState = {
-            wallet: getWalletState({
-                tradeType: 'exchange',
-            }),
-        };
+        mockIsDeviceConnected = true;
 
-        store = initStore(preloadedState).store;
-        store.dispatch(tradingExchangeActions.savePreselectedQuote(testQuote));
-        store.dispatch(
-            tradingExchangeActions.setTradingAccountKey(
-                'eth-account-1' as AccountKey, // Todo: create properly via `createAccountKey()`
-            ),
-        );
+        store = createTradingLightStore({ tradeType: 'exchange' });
+        store.dispatch(tradingExchangeActions.saveSelectedQuote(testQuote));
+        store.dispatch(tradingExchangeActions.setTradingAccountKey(eth1NormalAccount.key));
     });
 
     afterEach(() => {
@@ -94,58 +133,109 @@ describe('TradingExchangeApprovalScreen', () => {
         }
     });
 
-    it('should render the approval screen with quote details', async () => {
-        const { getByText } = await renderScreen();
+    it('should confirm approval on mount', () => {
+        renderScreen();
 
-        expect(getByText('Ethereum #1')).toBeOnTheScreen();
+        expect(mockConfirmApproval).toHaveBeenCalledTimes(1);
+        expect(mockConfirmApproval).toHaveBeenCalledWith(
+            expect.objectContaining({ approvalType: 'MINIMAL' }),
+        );
+    });
+
+    it('should render the approval screen with quote details', () => {
+        const { getByText } = renderScreen();
+
+        expect(getByText('ETH Account #1')).toBeOnTheScreen();
         expect(getByText('Mercuryo')).toBeOnTheScreen();
+        expect(errorSpy).not.toHaveBeenCalled();
     });
 
-    it('should show network information when network symbol is available', async () => {
-        const { getByText } = await renderScreen();
-
-        expect(getByText('Ethereum')).toBeOnTheScreen();
-    });
-
-    it('should display provider information correctly', async () => {
-        const { getByText } = await renderScreen();
+    it('should display provider information correctly', () => {
+        const { getByText } = renderScreen();
 
         expect(getByText('Mercuryo')).toBeOnTheScreen();
     });
 
     it('should open bottom sheet when limit row is pressed', async () => {
-        const { findByText } = await renderScreen();
+        const { findByText } = renderScreen();
 
-        const pressableElement = await findByText('Limit');
+        const pressableElement = await findByText(
+            getTranslation('moduleTrading.tradingExchangeApprovalScreen.limitLabel'),
+        );
 
         fireEvent.press(pressableElement);
         expect(mockShowSheet).toHaveBeenCalledTimes(1);
     });
 
-    it('should render continue button', async () => {
-        const { getByText } = await renderScreen();
+    it('should render continue button', () => {
+        const { getByText } = renderScreen();
 
-        const buttons = getByText('Continue');
-        expect(buttons).toBeTruthy();
+        expect(getByText(getTranslation('generic.buttons.continue'))).toBeOnTheScreen();
     });
 
-    it('should render nothing when no quote is provided', async () => {
-        store.dispatch(tradingExchangeActions.savePreselectedQuote(undefined));
+    it('should render alert when no quote is provided', () => {
         store.dispatch(tradingExchangeActions.saveSelectedQuote(undefined));
 
-        const { toJSON } = await renderScreen();
+        const { getByText, queryByText } = renderScreen();
 
-        expect(toJSON()).toBeNull();
+        expect(
+            getByText(
+                getTranslation('moduleTrading.tradingExchangeApprovalScreen.approveErrorAlert'),
+            ),
+        ).toBeOnTheScreen();
+        expect(queryByText(getTranslation('generic.buttons.continue'))).toBeNull();
+        expect(errorSpy).toHaveBeenCalledTimes(1);
+        expect(errorSpy).toHaveBeenCalledWith('No quote to confirm approval');
     });
 
-    it('should clear selected quote on unmount', async () => {
+    it('should clear selected quote on back navigation', () => {
         store.dispatch(tradingExchangeActions.saveSelectedQuote(testQuote));
-        const { unmount: localUnmount } = await renderScreen();
+        renderScreen();
 
-        localUnmount();
-        unmount = undefined;
+        const backAction: NavigationAction = { type: 'GO_BACK' };
+
+        triggerPreventNavigationRemove(backAction);
 
         const selectedQuote = selectTradingExchangeSelectedQuote(store.getState());
         expect(selectedQuote).toBeUndefined();
+        expect(mockNavigationDispatch).toHaveBeenCalledWith(backAction);
+    });
+
+    it('should render revoke success alert when isRevoked is true', () => {
+        const { getByText } = renderScreen({ isRevoked: true });
+
+        expect(
+            getByText(
+                getTranslation('moduleTrading.tradingExchangeApprovalScreen.revokeSuccessAlert'),
+            ),
+        ).toBeOnTheScreen();
+    });
+
+    it('should display device guard when device is not connected', () => {
+        mockIsDeviceConnected = false;
+
+        const { getByText } = renderScreen();
+
+        expect(
+            getByText(getTranslation('moduleConnectDevice.connectAndUnlockScreen.title')),
+        ).toBeOnTheScreen();
+    });
+
+    describe('analytics', () => {
+        it('should report approval-preview visit ', () => {
+            renderScreen();
+
+            expect(mockAnalyticsReport).toHaveBeenCalledWith('approval-preview', 'visit');
+            expect(mockAnalyticsReport).toHaveBeenCalledTimes(1);
+        });
+
+        it('should report approval-preview cancel on back navigation', () => {
+            store.dispatch(tradingExchangeActions.saveSelectedQuote(testQuote));
+            renderScreen();
+
+            triggerPreventNavigationRemove({ type: 'GO_BACK' });
+
+            expect(mockAnalyticsReport).toHaveBeenCalledWith('approval-preview', 'cancel');
+        });
     });
 });

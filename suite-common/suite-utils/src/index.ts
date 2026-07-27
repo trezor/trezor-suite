@@ -11,3 +11,4 @@ export * from './pollingController';
 export * from './triggerWebDownloadFile';
 export * from './translations';
 export * from './userAgent';
+export * from './listFilterUtils';

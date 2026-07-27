@@ -1,12 +1,12 @@
 import { useSelector } from 'react-redux';
 
-import { NetworkType, networks } from '@suite-common/wallet-config';
+import { type NetworkType, networks } from '@suite-common/wallet-config';
 import {
-    BlockchainRootState,
-    TransactionsRootState,
+    type BlockchainRootState,
+    type TransactionsRootState,
     selectTransactionConfirmations,
 } from '@suite-common/wallet-core';
-import { AccountKey, WalletAccountTransaction } from '@suite-common/wallet-types';
+import { type AccountKey, type WalletAccountTransaction } from '@suite-common/wallet-types';
 import { Box, Card, IconButton, Text, VStack } from '@suite-native/atoms';
 import { useCopyToClipboard } from '@suite-native/clipboard';
 import { FeeFormatter, TransactionIdFormatter } from '@suite-native/formatters';
@@ -132,16 +132,30 @@ export const TransactionDetailParametersSheet = ({
                             <Text numberOfLines={1} style={{ flexShrink: 1 }}>
                                 <TransactionIdFormatter value={transaction.txid} />
                             </Text>
+
                             <Box marginLeft="sp8">
                                 <IconButton
                                     iconName="copy"
                                     onPress={handleClickCopy}
-                                    colorScheme="tertiaryElevation1"
-                                    size="medium"
+                                    intent="neutral"
+                                    priority="secondary"
+                                    // @ts-expect-error `small` icon button size was deprecated, but there is no replacement for this usage yet.
+                                    size="small"
                                 />
                             </Box>
                         </Box>
                     </TransactionDetailRow>
+
+                    {transaction.tronSpecific?.note && (
+                        <TransactionDetailRow
+                            title={translate(
+                                'transactions.TransactionDetailScreen.parametersSheet.tronNote',
+                            )}
+                        >
+                            <Text>{transaction.tronSpecific.note}</Text>
+                        </TransactionDetailRow>
+                    )}
+
                     <TransactionDetailRow
                         title={translate(
                             'transactions.TransactionDetailScreen.parametersSheet.confirmations',
@@ -155,6 +169,42 @@ export const TransactionDetailParametersSheet = ({
                         </Box>
                     </TransactionDetailRow>
                 </Card>
+
+                {transaction.solanaSpecific?.memo && (
+                    <Card>
+                        <TransactionDetailRow
+                            title={translate(
+                                'transactions.TransactionDetailScreen.parametersSheet.memo',
+                            )}
+                        >
+                            <Box
+                                flexDirection="row"
+                                alignItems="center"
+                                paddingLeft="sp16"
+                                justifyContent="flex-end"
+                            >
+                                <Text numberOfLines={1} style={{ flexShrink: 1 }}>
+                                    {transaction.solanaSpecific.memo}
+                                </Text>
+                                <Box marginLeft="sp8">
+                                    <IconButton
+                                        iconName="copy"
+                                        onPress={() =>
+                                            copyToClipboard(
+                                                transaction.solanaSpecific!.memo!,
+                                                translate(
+                                                    'transactions.TransactionDetailScreen.parametersSheet.memoCopied',
+                                                ),
+                                            )
+                                        }
+                                        intent="neutral"
+                                        priority="secondary"
+                                    />
+                                </Box>
+                            </Box>
+                        </TransactionDetailRow>
+                    </Card>
+                )}
 
                 {parametersCardIsDisplayed && (
                     <Card>

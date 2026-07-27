@@ -1,13 +1,13 @@
 import { selectCoinDefinitions } from '@suite-common/token-definitions';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { selectBaseCurrency, selectCurrentFiatRates } from '@suite-common/wallet-core';
-import { Account } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 import { TokenIconSet } from '@trezor/product-components';
 import { BigNumber } from '@trezor/utils';
 
 import { useSelector } from 'src/hooks/suite';
 import {
-    TokensWithRates,
+    type TokensWithRates,
     enhanceTokensWithRates,
     getTokens,
     sortTokensWithRates,
@@ -58,10 +58,11 @@ export const TokenIconSetWrapper = ({ accounts, symbol }: TokenIconSetWrapperPro
     );
 
     const sortedAggregatedTokens = aggregatedTokens.sort(sortTokensWithRates);
+    const size = sortedAggregatedTokens.length === 1 ? 24 : 20;
 
     return (
         <TokenIconSet
-            size={20}
+            size={size}
             gap={6}
             symbol={symbol}
             tokens={sortedAggregatedTokens}

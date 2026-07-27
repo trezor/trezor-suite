@@ -11,11 +11,14 @@ export const settingsDeviceChangeOrientationEvent: EventDef<
     EventType.SettingsDeviceChangeOrientation
 > = {
     name: EventType.SettingsDeviceChangeOrientation,
-    descriptionTrigger: 'Settings > Device > CUSTOMIZATION > Orientation',
+    descriptionTrigger:
+        'User changes the device display orientation in Settings > Device > Customization > Orientation',
     changelog: [{ version: '1.0.0', notes: 'added' }],
 
     attributes: {
         value: {
+            description:
+                'The screen rotation angle: 0 for normal, 90 for 90 degrees clockwise, 180 for upside down, 270 for 90 degrees counter-clockwise',
             changelog: [{ version: '1.0.0', notes: 'added' }],
         },
     },

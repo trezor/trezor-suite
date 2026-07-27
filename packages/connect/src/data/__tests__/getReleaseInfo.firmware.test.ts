@@ -1,12 +1,15 @@
-import { DeviceModelInternal, FirmwareRelease, FirmwareType } from '@trezor/device-utils';
+import type { FirmwareRelease } from '@trezor/device-utils';
+import { DeviceModelInternal, FirmwareType } from '@trezor/device-utils';
 import type { VersionArray } from '@trezor/utils/src/versionUtils';
 
 import { getReleaseInfo } from '../firmwareInfo';
 
 const { getDeviceFeatures, releasesT1B1, releasesT2T1 } = global.JestMocks;
 
-const [latestT1B1] = releasesT1B1;
-const [latestT2T1] = releasesT2T1;
+// @ts-expect-error: indexing with noUncheckedIndexedAccess
+const [latestT1B1]: [FirmwareRelease] = releasesT1B1;
+// @ts-expect-error: indexing with noUncheckedIndexedAccess
+const [latestT2T1]: [FirmwareRelease] = releasesT2T1;
 
 const fixtures = [
     {

@@ -1,13 +1,10 @@
-import { ReactNode } from 'react';
-import { Dimensions, GestureResponderEvent, Modal, Pressable, StatusBar } from 'react-native';
+import { type ReactNode } from 'react';
+import { Dimensions, type GestureResponderEvent, Modal, Pressable, StatusBar } from 'react-native';
 import Animated, { FadeIn, LinearTransition, SlideInUp } from 'react-native-reanimated';
-import { EdgeInsets, useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useSelector } from 'react-redux';
+import { type EdgeInsets, useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { selectDeviceState } from '@suite-common/device';
 import { Box, HStack, ScreenHeaderWrapper } from '@suite-native/atoms';
-import { selectShouldFactoryResetBeVisible } from '@suite-native/device';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { nativeBorders } from '@trezor/theme';
 
 import { useDeviceManager } from '../hooks/useDeviceManager';
@@ -26,7 +23,7 @@ const SCREEN_SIZE = Dimensions.get('screen');
 
 const modalBackgroundOverlayStyle = prepareNativeStyle(utils => ({
     flex: 1,
-    backgroundColor: utils.transparentize(0.25, utils.colors.backgroundNeutralBold),
+    backgroundColor: utils.transparentize(0.25, utils.colors.legacyBackgroundNeutralBold),
     // this need to be here so the background does not stretch out when appearing
     // new RN architecture might fix this, so evaluate later
     width: SCREEN_SIZE.width,
@@ -34,29 +31,29 @@ const modalBackgroundOverlayStyle = prepareNativeStyle(utils => ({
 }));
 
 const deviceManagerModalWrapperStyle = prepareNativeStyle(utils => ({
-    backgroundColor: utils.colors.backgroundSurfaceElevation1,
+    backgroundColor: utils.colors.surfaceFillRaised,
     borderBottomLeftRadius: MANAGER_MODAL_BOTTOM_RADIUS,
     borderBottomRightRadius: MANAGER_MODAL_BOTTOM_RADIUS,
 }));
 
 const deviceManagerHeaderStyle = prepareNativeStyle(utils => ({
-    backgroundColor: utils.colors.backgroundSurfaceElevation1,
+    backgroundColor: utils.colors.surfaceFillRaised,
     borderWidth: utils.borders.widths.small,
     borderBottomLeftRadius: utils.borders.radii.r12,
     borderBottomRightRadius: utils.borders.radii.r12,
-    borderColor: utils.colors.borderOnElevation0,
+    borderColor: utils.colors.borderNeutral,
     borderTopWidth: 0,
 }));
 
 const deviceSwitchWrapperStyle = prepareNativeStyle<{ insets: EdgeInsets }>(
     (utils, { insets }) => ({
         marginTop: insets.top + (StatusBar.currentHeight ?? 0),
-        backgroundColor: utils.colors.backgroundSurfaceElevation0,
+        backgroundColor: utils.colors.surfaceFillPage,
         borderBottomLeftRadius: MANAGER_MODAL_BOTTOM_RADIUS,
         borderBottomRightRadius: MANAGER_MODAL_BOTTOM_RADIUS,
         borderWidth: utils.borders.widths.small,
         borderTopWidth: 0,
-        borderColor: utils.colors.borderElevation0,
+        borderColor: utils.colors.borderNeutral,
         zIndex: 20,
     }),
 );
@@ -68,8 +65,6 @@ export const DeviceManagerModal = ({
     footer,
 }: DeviceManagerModalProps) => {
     const { applyStyle } = useNativeStyles();
-    const deviceState = useSelector(selectDeviceState);
-    const shouldFactoryResetBeVisible = useSelector(selectShouldFactoryResetBeVisible);
 
     const insets = useSafeAreaInsets();
 
@@ -114,15 +109,12 @@ export const DeviceManagerModal = ({
                                         spacing="sp16"
                                         flex={1}
                                     >
-                                        {(deviceState || shouldFactoryResetBeVisible) && (
-                                            <Box flexShrink={1}>
-                                                <DeviceItemContent
-                                                    deviceState={deviceState ?? undefined}
-                                                    headerTextVariant="headline-sm"
-                                                    isCompact={false}
-                                                />
-                                            </Box>
-                                        )}
+                                        <Box flexShrink={1}>
+                                            <DeviceItemContent
+                                                headerTextVariant="headline-sm"
+                                                isCompact={false}
+                                            />
+                                        </Box>
                                         {customSwitchRightView}
                                     </HStack>
                                 </ScreenHeaderWrapper>

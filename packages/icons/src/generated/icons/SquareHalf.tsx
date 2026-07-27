@@ -1,0 +1,10 @@
+import type { SVGProps } from 'react';
+const SvgSquareHalf = (props: SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" {...props}>
+        <path
+            fill="currentColor"
+            d="M25 5H7a2 2 0 0 0-2 2v18a2 2 0 0 0 2 2h18a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2m-8 10h8v2h-8zm0-2v-2h8v2zm0 6h8v2h-8zm8-10h-8V7h8zM7 7h8v18H7zm18 18h-8v-2h8z"
+        />
+    </svg>
+);
+export { SvgSquareHalf as ReactComponent };

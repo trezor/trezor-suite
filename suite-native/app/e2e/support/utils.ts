@@ -7,11 +7,13 @@ type ElementAttributes = {
     text?: string;
     label?: string;
     value?: string;
+    enabled?: boolean;
+    disabled?: boolean;
 };
 
-type ElementOrMatcher = Detox.IndexableNativeElement | Detox.NativeMatcher;
+type ElementOrMatcher = Detox.NativeElement | Detox.NativeMatcher;
 
-const isIndexableNativeElement = (v: ElementOrMatcher): v is Detox.IndexableNativeElement => {
+const isIndexableNativeElement = (v: ElementOrMatcher): v is Detox.NativeElement => {
     const anyV = v as any;
 
     return !!anyV && (typeof anyV.tap === 'function' || typeof anyV.atIndex === 'function');
@@ -19,13 +21,13 @@ const isIndexableNativeElement = (v: ElementOrMatcher): v is Detox.IndexableNati
 
 export const platform = device.getPlatform();
 
-// There is inconsistency between platforms. Android needs to have 100% of an element visible to be able to interact with it.
+// There is inconsistency between platforms. Android needs to have at least 75% of an element visible to be able to interact with it.
 // On the other hand, if we are trying to scroll to 100% visibility on iOS, it causes scrolling more than height of the screen and it makes Detox crash.
-const SCROLL_VISIBILITY_THRESHOLD = platform === 'android' ? 100 : undefined;
+const SCROLL_VISIBILITY_THRESHOLD = platform === 'android' ? 95 : undefined;
 
 export const RETRY_CONF = {
     attempts: 5,
-    gap: 500,
+    gap: 2_000,
 };
 
 export const wait = async (ms: number) => {
@@ -40,7 +42,7 @@ function pruneToAppStack(invocationStack: string): string {
     for (const l of lines) {
         const m = l.match(/\s+at (?:.+ \()?(.*?):\d+:\d+\)?/);
         if (!m) continue;
-        const file = path.normalize(m[1]);
+        const file = path.normalize(m[1] ?? '');
         if (
             file.includes('node:') ||
             file.includes(`${path.sep}node_modules${path.sep}`) ||
@@ -62,12 +64,15 @@ function getTarget(elementOrMatcher: ElementOrMatcher) {
 
 export const waitForVisible = async (
     elementOrMatcher: ElementOrMatcher,
-    { timeout = 30_000 }: { timeout?: number } = {},
+    {
+        timeout = 30_000,
+        visibilityThreshold,
+    }: { timeout?: number; visibilityThreshold?: number } = {},
 ) => {
     const target = getTarget(elementOrMatcher);
     const invocationStack = new Error().stack || '';
     try {
-        await waitFor(target).toBeVisible().withTimeout(timeout);
+        await waitFor(target).toBeVisible(visibilityThreshold).withTimeout(timeout);
     } catch (error) {
         const details = `waitForVisible(): target not visible after ${timeout}ms`;
         const appStackError = new Error(details, { cause: error as Error });
@@ -123,18 +128,46 @@ export const waitToHaveRegex = async (
     }, RETRY_CONF);
 };
 
+export const waitForEnabled = async (
+    elementOrMatcher: ElementOrMatcher,
+    { timeout = 30_000 }: { timeout?: number } = {},
+) => {
+    const target = getTarget(elementOrMatcher);
+    const invocationStack = new Error().stack || '';
+
+    await waitForVisible(target, { timeout });
+
+    try {
+        await scheduleAction(async () => {
+            const attributes = await target.getAttributes();
+            const { disabled, enabled } = attributes as ElementAttributes;
+
+            if (!enabled || disabled) {
+                throw new Error(
+                    `waitForEnabled(): target attributes ${JSON.stringify(attributes)} are not enabled`,
+                );
+            }
+        }, RETRY_CONF);
+    } catch (error) {
+        const details = `waitForEnabled(): target not enabled after ${timeout}ms`;
+        const appStackError = new Error(details, { cause: error as Error });
+        appStackError.stack = `${appStackError.name}: ${appStackError.message}\n${pruneToAppStack(invocationStack)}`;
+        throw appStackError;
+    }
+};
+
 export const appIsFullyLoaded = async () => {
     await waitForVisible(by.id('@screen/mainScrollView'), { timeout: 35_000 });
 };
 
 export const scrollUntilVisible = async (
     target: Detox.IndexableNativeElement,
-    scrollViewTestId: string = '@screen/mainScrollView',
+    options?: { scrollViewTestId?: string; startPositionX?: number; startPositionY?: number },
 ) => {
     await waitFor(target)
         .toBeVisible(SCROLL_VISIBILITY_THRESHOLD)
-        .whileElement(by.id(scrollViewTestId))
-        .scroll(300, 'down', 0.5, 0.5);
+        .whileElement(by.id(options?.scrollViewTestId ?? '@screen/mainScrollView'))
+        .scroll(300, 'down', options?.startPositionX ?? 0.5, options?.startPositionY ?? 0.5);
 };
 
 export const inputTextToElement = async (element: Detox.IndexableNativeElement, text: string) => {

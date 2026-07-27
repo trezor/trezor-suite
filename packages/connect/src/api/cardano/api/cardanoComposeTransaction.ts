@@ -1,45 +1,39 @@
-import { CoinSelectionError, trezorUtils } from '@fivebinaries/coin-selection';
-
-import { AssertWeak } from '@trezor/schema-utils';
-
-import { AbstractMethod, MethodPermission, Payload } from '../../../core/AbstractMethod';
+import { type PermissionRequest } from '@trezor/connect-common';
 import {
     type CardanoComposeTransactionParams,
     CardanoComposeTransactionParamsSchema,
     type PrecomposedTransactionCardano,
-} from '../../../types/api/cardanoComposeTransaction';
-import { composeTxPlan } from '../cardanoUtils';
+} from '@trezor/connect-common/src/types/api/cardano/cardanoComposeTransaction';
+import cardano from '@trezor/network-cardano/runtime';
+import { Assert } from '@trezor/schema-utils';
+
+import type { MethodMessage } from '../../../core/AbstractMethod';
+import { AbstractMethod } from '../../../core/AbstractMethod';
+import { getCoinSelectionParams } from '../cardanoUtils';
 
 export default class CardanoComposeTransaction extends AbstractMethod<
     'cardanoComposeTransaction',
     CardanoComposeTransactionParams
 > {
-    constructor(message: { id?: number; payload: Payload<'cardanoComposeTransaction'> }) {
-        super(message);
+    constructor(message: MethodMessage<'cardanoComposeTransaction'>) {
+        // validate incoming parameters
+        Assert(CardanoComposeTransactionParamsSchema, message.payload);
+
+        super(message, message.payload);
         this.useDevice = false;
         this.useDeviceState = false;
         this.useUi = false;
     }
 
-    get requiredPermissions(): MethodPermission[] {
+    get requiredPermissions(): PermissionRequest[] {
         return [];
-    }
-
-    init() {
-        const { payload } = this;
-
-        // validate incoming parameters
-        // TODO: weak assert for compatibility purposes (issue #10841)
-        AssertWeak(CardanoComposeTransactionParamsSchema, payload);
-
-        this.params = payload;
     }
 
     get info() {
         return 'Compose Cardano transaction';
     }
 
-    run() {
+    async run() {
         const {
             feeLevels = [{}],
             account,
@@ -51,16 +45,20 @@ export default class CardanoComposeTransaction extends AbstractMethod<
             testnet,
         } = this.params;
 
+        const { trezorUtils, asCoinSelectionError, coinSelection } = await cardano();
+
         const result = feeLevels.map<PrecomposedTransactionCardano>(({ feePerUnit }) => {
             try {
-                const txPlan = composeTxPlan(
-                    account.descriptor,
-                    account.utxo,
-                    outputs,
-                    certificates,
-                    withdrawals,
-                    changeAddress.address,
-                    !!testnet,
+                const txPlan = coinSelection(
+                    getCoinSelectionParams(
+                        account.descriptor,
+                        account.utxo,
+                        outputs,
+                        certificates,
+                        withdrawals,
+                        changeAddress.address,
+                        !!testnet,
+                    ),
                     { feeParams: feePerUnit ? { a: feePerUnit } : undefined },
                 );
 
@@ -91,13 +89,10 @@ export default class CardanoComposeTransaction extends AbstractMethod<
                           }),
                 };
             } catch (error) {
-                if (
-                    error instanceof CoinSelectionError &&
-                    error.code === 'UTXO_BALANCE_INSUFFICIENT'
-                ) {
+                if (asCoinSelectionError(error)?.code === 'UTXO_BALANCE_INSUFFICIENT') {
                     return { type: 'error', error: 'UTXO_BALANCE_INSUFFICIENT' };
                 }
-                if (error instanceof CoinSelectionError && error.code === 'UTXO_VALUE_TOO_SMALL') {
+                if (asCoinSelectionError(error)?.code === 'UTXO_VALUE_TOO_SMALL') {
                     return { type: 'error', error: 'UTXO_VALUE_TOO_SMALL' };
                 }
 
@@ -106,6 +101,6 @@ export default class CardanoComposeTransaction extends AbstractMethod<
             }
         });
 
-        return Promise.resolve(result);
+        return result;
     }
 }

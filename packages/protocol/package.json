@@ -1,7 +1,8 @@
 {
     "name": "@trezor/protocol",
     "version": "10.0.0-alpha.1",
-    "license": "See LICENSE.md in repo root",
+    "type": "module",
+    "license": "MIT",
     "repository": {
         "type": "git",
         "url": "git://github.com/trezor/trezor-suite.git"
@@ -16,39 +17,36 @@
         "types": "./lib/index.d.ts",
         "exports": {
             ".": {
-                "import": "./libESM/index.js",
-                "require": "./lib/index.js",
-                "types": "./lib/index.d.ts"
+                "types": "./lib/index.d.ts",
+                "default": "./lib/index.js"
             },
-            "./lib/*": "./lib/*.js",
-            "./libESM/*.js": "./libESM/*.js",
-            "./lib/protocol-thp": "./lib/protocol-thp/index.js",
-            "./lib/protocol-thp/messages": "./lib/protocol-thp/messages/index.js",
-            "./lib/protocol-tpn": "./lib/protocol-tpn/index.js",
-            "./libESM/protocol-thp/*": "./libESM/protocol-thp/*",
-            "./libESM/protocol-thp/messages/*": "./libESM/protocol-thp/messages/*",
-            "./libESM/protocol-tpn/*": "./lib/protocol-tpn/*"
+            "./lib/*": "./lib/*",
+            "./lib/protocol-thp": {
+                "types": "./lib/protocol-thp/index.d.ts",
+                "default": "./lib/protocol-thp/index.js"
+            },
+            "./lib/protocol-thp/messages": {
+                "types": "./lib/protocol-thp/messages/index.d.ts",
+                "default": "./lib/protocol-thp/messages/index.js"
+            },
+            "./lib/protocol-tpn": {
+                "types": "./lib/protocol-tpn/index.d.ts",
+                "default": "./lib/protocol-tpn/index.js"
+            }
         }
     },
-    "npmPublishAccess": "public",
     "files": [
         "lib/",
-        "libESM/",
         "CHANGELOG.md"
     ],
     "scripts": {
-        "test:unit": "yarn g:jest -c ../../jest.config.base.js",
+        "test:unit": "yarn g:jest",
         "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build",
-        "build:lib": "yarn build:lib:cjs && yarn build:lib:esm",
-        "build:lib:cjs": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib cjs",
-        "build:lib:esm": "yarn g:rimraf ./libESM && yarn g:tsc --build tsconfig.libESM.json && ../../scripts/publish/replace-imports.sh ./libESM esm",
-        "prepublishOnly": "yarn tsx ../../scripts/publish/prepublishNPM.js"
+        "build:lib": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "peerDependencies": {
         "tslib": "^2.6.2"
-    },
-    "devDependencies": {
-        "tsx": "^4.21.0"
     }
 }

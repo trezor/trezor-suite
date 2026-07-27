@@ -1,13 +1,14 @@
-import { DEVICE } from '../../events/device';
-import type { Device } from '../Device';
+import { DEVICE } from '@trezor/connect-common';
+
 import { createThpChannel, thpHandshake } from './handshake';
 import { thpPairing } from './pairing';
+import type { IDevice } from '../../types/idevice';
 
 export { abortThpWorkflow } from './thpCall';
 export { getThpCredentials } from './pairing';
 export { createThpSession } from './session';
 
-export const getThpChannel = async (device: Device, withInteraction?: boolean) => {
+export const getThpChannel = async (device: IDevice, withInteraction?: boolean) => {
     const thpState = device.getThpState();
 
     if (!thpState) return;

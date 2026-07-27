@@ -1,18 +1,17 @@
 import { Translation } from '@suite/intl';
-import { NetworkType } from '@suite-common/wallet-config';
+import { type NetworkType } from '@suite-common/wallet-config';
 import { isStakingNetworkType } from '@suite-common/wallet-utils';
 import { Banner } from '@trezor/components';
+import { FileFilledIcon, ShieldWarningFilledIcon, WarningCircleFilledIcon } from '@trezor/icons';
 import { exhaustive } from '@trezor/type-utils';
 
 interface YieldProviderConsentBannersProps {
     networkType: NetworkType;
-    displaySymbol: string;
     providerName: string;
 }
 
 export const YieldProviderConsentBanners = ({
     networkType,
-    displaySymbol,
     providerName,
 }: YieldProviderConsentBannersProps) => {
     if (!isStakingNetworkType(networkType)) return null;
@@ -24,31 +23,29 @@ export const YieldProviderConsentBanners = ({
             return (
                 <>
                     <Banner
-                        icon="fileFilled"
+                        icon={FileFilledIcon}
                         intent="info"
                         description={
                             <Translation
-                                id="TR_EARN_SUPPLY_PROVIDER_MANAGES"
-                                values={{
-                                    providerName,
-                                    networkDisplaySymbol: displaySymbol,
-                                    t: text => <strong>{text}</strong>,
-                                }}
-                            />
-                        }
-                    />
-                    <Banner
-                        icon="shieldWarningFilled"
-                        intent="info"
-                        description={
-                            <Translation
-                                id="TR_EARN_SUPPLY_PROVIDER_NO_LIABILITY"
+                                id="TR_EARN_DEPOSIT_RECEIPT_TOKENS_INFO"
                                 values={{ providerName }}
                             />
                         }
                     />
+                    <Banner
+                        icon={ShieldWarningFilledIcon}
+                        intent="info"
+                        description={<Translation id="TR_EARN_DEPOSIT_FULL_CONTROL_INFO" />}
+                    />
+                    <Banner
+                        icon={WarningCircleFilledIcon}
+                        intent="info"
+                        description={<Translation id="TR_EARN_DEPOSIT_PROTOCOL_RISKS_INFO" />}
+                    />
                 </>
             );
+        case 'tron':
+            return null;
         default:
             return exhaustive(networkType);
     }

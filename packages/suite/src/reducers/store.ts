@@ -1,71 +1,111 @@
 // fixes bindActionCreators() https://github.com/reduxjs/redux-thunk/blob/e3d452948d5562b9ce871cc9391403219f83b4ff/extend-redux.d.ts#L11
 import {
-    DevToolsEnhancerOptions,
-    Dispatch,
-    Middleware,
-    MiddlewareAPI,
-    Reducer,
+    type DevToolsEnhancerOptions,
+    type Dispatch,
+    type EnhancedStore,
+    type Middleware,
+    type MiddlewareAPI,
+    type Reducer,
+    type ReducersMapObject,
+    type UnknownAction,
     combineReducers,
     configureStore,
 } from '@reduxjs/toolkit';
 import { createLogger } from 'redux-logger';
 
-import { prepareFirmwareReducer } from '@suite-common/firmware';
-import { geolocationReducer } from '@suite-common/geolocation';
+import { type BackupState, backupMiddleware, backupReducer } from '@suite/backup';
+import { MODAL_OPEN_USER_CONTEXT } from '@suite/modal';
+import { type RecoveryState, recoveryReducer } from '@suite/recovery';
+import { type HistoryDep } from '@suite/router';
+import { type DesktopSuiteSyncState, prepareSuiteSyncReducer } from '@suite/suite-sync';
+import { type FirmwareUpdateState, prepareFirmwareReducer } from '@suite-common/firmware';
+import { type GeolocationState, geolocationReducer } from '@suite-common/geolocation';
 import { addLog } from '@suite-common/logger';
+import { type PlatformEncryptionDep } from '@suite-common/platform-encryption';
+import { type ReceiveState, prepareReceiveReducer } from '@suite-common/receive';
 import {
-    ExtraDependencies,
+    type ExtraDependencies,
+    type ExtraDependenciesStatic,
+    type GetTransportsFactoriesDep,
+    type ThpHostNameDep,
     castExtraStore,
     createStoreWithExtraStoreMiddleware,
 } from '@suite-common/redux-utils';
-import { suiteSyncDataReducer } from '@suite-common/suite-sync';
-import { SuiteSyncAppReloaderDep } from '@suite-common/suite-sync-types';
-import { prepareThpReducer } from '@suite-common/thp';
-import { prepareTokenDefinitionsReducer } from '@suite-common/token-definitions';
-import { accountsActions } from '@suite-common/wallet-core';
+import { type SuiteSyncDataState, suiteSyncDataReducer } from '@suite-common/suite-sync';
+import { type SuiteSyncQuotaManagerState } from '@suite-common/suite-sync-quota-manager';
+import { type ReloadAppDep } from '@suite-common/suite-types';
+import { type ThpState, prepareThpReducer } from '@suite-common/thp';
+import {
+    type TokenDefinitionsState,
+    prepareTokenDefinitionsReducer,
+} from '@suite-common/token-definitions';
 import { isCodesignBuild } from '@trezor/env-utils';
 import { mergeDeepObject } from '@trezor/utils';
 
-import { OPEN_USER_CONTEXT } from 'src/actions/suite/constants/modalConstants';
-import { suiteSyncSlice } from 'src/actions/suiteSync/suiteSyncSlice';
 import { suiteSyncQuotaManagerSlice } from 'src/actions/suiteSyncQuotaManager/suiteSyncQuotaManagerSlice';
-import backupMiddlewares from 'src/middlewares/backup';
 import onboardingMiddlewares from 'src/middlewares/onboarding';
-import recoveryMiddlewares from 'src/middlewares/recovery';
 import { getSuiteMiddleware } from 'src/middlewares/suite';
 import { toastMiddleware } from 'src/middlewares/suite/toastMiddleware';
 import { getWalletMiddlewares } from 'src/middlewares/wallet';
-import backupReducers from 'src/reducers/backup';
 import onboardingReducers from 'src/reducers/onboarding';
-import recoveryReducers from 'src/reducers/recovery';
-import suiteReducers from 'src/reducers/suite';
-import walletReducers from 'src/reducers/wallet';
-import { globalSendReceiveFilters } from 'src/slices/wallet/globalSendReceiveFilters';
-import type { PreloadStoreAction } from 'src/support/suite/preloadStore';
-import { HistoryDep } from 'src/support/suite/suiteRouterHistory';
-
-import { prepareBioAuthReducer } from './bioAuth';
-import { desktopReducer } from './desktop';
-import { bluetoothSlice } from '../actions/bluetooth/desktopBluetoothReducer';
+import { type OnboardingState } from 'src/reducers/onboarding/onboardingReducer';
+import { type SuiteReducersState, suiteReducers } from 'src/reducers/suite';
+import { type WalletState, walletReducers } from 'src/reducers/wallet';
 import {
+    type GlobalSendReceiveFiltersState,
+    globalSendReceiveFiltersReducer,
+} from 'src/slices/wallet/globalSendReceiveFilters';
+import type { PreloadStoreAction } from 'src/support/suite/preloadStore';
+import { type Action } from 'src/types/suite';
+
+import { type BioAuthState, prepareBioAuthReducer } from './bioAuth';
+import { type DesktopState, desktopReducer } from './desktop';
+import {
+    type DesktopBluetoothState,
+    prepareDesktopBluetoothReducer,
+} from '../actions/bluetooth/desktopBluetoothReducer';
+import { type CreateConnectLoggerFactoryDep } from '../support/createConnectLoggerFactory';
+import {
+    type SuiteServices,
     createSuiteServicesCompositionRoot,
     extraDependencies,
 } from '../support/extraDependencies';
 
 const firmwareReducer = prepareFirmwareReducer(extraDependencies);
 const tokenDefinitionsReducer = prepareTokenDefinitionsReducer(extraDependencies);
-const bluetoothReducer = bluetoothSlice.prepareReducer(extraDependencies);
+const bluetoothReducer = prepareDesktopBluetoothReducer(extraDependencies);
 const thpReducer = prepareThpReducer(extraDependencies);
-const suiteSyncReducer = suiteSyncSlice.prepareReducer(extraDependencies);
+const suiteSyncReducer = prepareSuiteSyncReducer(extraDependencies);
 const suiteSyncQuotaManagerReducer = suiteSyncQuotaManagerSlice.prepareReducer(extraDependencies);
+const receiveReducer = prepareReceiveReducer(extraDependencies);
+
+export type AppState = SuiteReducersState & {
+    onboarding: OnboardingState;
+    receive: ReceiveState;
+    wallet: WalletState;
+    recovery: RecoveryState;
+    firmware: FirmwareUpdateState;
+    backup: BackupState;
+    desktop: DesktopState;
+    bioAuth: BioAuthState;
+    tokenDefinitions: Partial<TokenDefinitionsState>;
+    bluetooth: DesktopBluetoothState;
+    thp: ThpState;
+    suiteSync: DesktopSuiteSyncState;
+    suiteSyncQuotaManager: SuiteSyncQuotaManagerState;
+    suiteSyncData: SuiteSyncDataState;
+    geolocation: GeolocationState;
+    globalSendReceiveFilters: GlobalSendReceiveFiltersState;
+};
 
 const rootReducer = combineReducers({
     ...suiteReducers,
     onboarding: onboardingReducers,
+    receive: receiveReducer,
     wallet: walletReducers,
-    recovery: recoveryReducers,
+    recovery: recoveryReducer,
     firmware: firmwareReducer,
-    backup: backupReducers,
+    backup: backupReducer,
     desktop: desktopReducer,
     bioAuth: prepareBioAuthReducer(extraDependencies),
     tokenDefinitions: tokenDefinitionsReducer,
@@ -75,12 +115,10 @@ const rootReducer = combineReducers({
     suiteSyncQuotaManager: suiteSyncQuotaManagerReducer,
     suiteSyncData: suiteSyncDataReducer,
     geolocation: geolocationReducer,
-    globalSendReceiveFilters: globalSendReceiveFilters.reducer,
-});
+    globalSendReceiveFilters: globalSendReceiveFiltersReducer,
+} satisfies ReducersMapObject<AppState, never, Record<keyof AppState, never>>);
 
-export type AppState = ReturnType<typeof rootReducer>;
-
-const loggerExcludedActions = [addLog.type, accountsActions.updateAccountRefreshTimestamp.type];
+const loggerExcludedActions = [addLog.type];
 
 const getCustomMiddleware = (getExtra: () => ExtraDependencies | null) => {
     const middleware = [
@@ -88,8 +126,7 @@ const getCustomMiddleware = (getExtra: () => ExtraDependencies | null) => {
         ...getSuiteMiddleware(getExtra),
         ...getWalletMiddlewares(getExtra),
         ...onboardingMiddlewares,
-        ...backupMiddlewares,
-        ...recoveryMiddlewares,
+        backupMiddleware,
     ];
 
     if (!isCodesignBuild()) {
@@ -98,7 +135,7 @@ const getCustomMiddleware = (getExtra: () => ExtraDependencies | null) => {
             // https://redux-toolkit.js.org/api/createAsyncThunk#promise-lifecycle-actions
             !action?.meta?.requestId &&
             // explicitly excluded actions
-            !loggerExcludedActions.some(act => action.type === act);
+            !loggerExcludedActions.includes(action.type);
 
         const logger = createLogger({
             level: 'info',
@@ -112,7 +149,9 @@ const getCustomMiddleware = (getExtra: () => ExtraDependencies | null) => {
 };
 
 const devTools: DevToolsEnhancerOptions | false =
-    typeof window === 'object' && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
+    typeof window === 'object' &&
+    '__REDUX_DEVTOOLS_EXTENSION_COMPOSE__' in window &&
+    window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
         ? {
               actionsDenylist: loggerExcludedActions,
           }
@@ -129,13 +168,26 @@ type RootReducerShape = typeof rootReducer;
 export type PreloadedState = Partial<AppState>;
 type InferredAction = Parameters<RootReducerShape>[1];
 
-export type SuiteStoreDeps = HistoryDep & SuiteSyncAppReloaderDep;
+export type SuiteStoreDeps = HistoryDep &
+    PlatformEncryptionDep &
+    CreateConnectLoggerFactoryDep &
+    ReloadAppDep &
+    ThpHostNameDep &
+    GetTransportsFactoriesDep;
+
+type SuiteExtra = ExtraDependenciesStatic & { services: SuiteServices };
+
+export type SuiteStore = ReturnType<
+    typeof castExtraStore<SuiteExtra, EnhancedStore<AppState, Action | UnknownAction>>
+> & {
+    services: SuiteServices;
+};
 
 export const initStore = (
     deps: SuiteStoreDeps,
     preloadStoreAction?: PreloadStoreAction,
     options: { statePatch?: Record<string, any> } = {},
-) => {
+): SuiteStore => {
     // get initial state by calling STORAGE.LOAD action with optional payload
     // payload will be processed in each reducer explicitly
     const preloadedState = preloadStoreAction
@@ -156,8 +208,12 @@ export const initStore = (
         services: createSuiteServicesCompositionRoot({
             getState: api.getState,
             dispatch: api.dispatch,
-            reloadApp: deps.reloadApp,
             history: deps.history,
+            platformEncryption: deps.platformEncryption,
+            reloadApp: deps.reloadApp,
+            createLogger: deps.createConnectLoggerFactory?.({ getState: api.getState }),
+            thpHostName: deps.thpHostName,
+            getTransportsFactories: deps.getTransportsFactories,
         }),
     });
 
@@ -172,7 +228,7 @@ export const initStore = (
             getDefaultMiddleware({
                 immutableCheck: false,
                 serializableCheck: {
-                    ignoredActions: [OPEN_USER_CONTEXT],
+                    ignoredActions: [MODAL_OPEN_USER_CONTEXT],
                     ignoredPaths: [
                         'modal.payload.decision.promise',
                         'modal.payload.decision.resolve',

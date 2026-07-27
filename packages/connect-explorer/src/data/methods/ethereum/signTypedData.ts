@@ -1,5 +1,4 @@
 const name = 'ethereumSignTypedData';
-const docs = 'methods/ethereumSignTypedData.md';
 
 const eip712Data = {
     types: {
@@ -12,14 +11,11 @@ const eip712Data = {
 
 export default [
     {
-        url: '/method/ethereumSignTypedData',
         name,
-        docs,
         submitButton: 'Submit',
         fields: [
             {
                 name: 'path',
-                label: 'Bip44 path',
                 type: 'input',
                 value: `m/44'/60'/0'/0/0`,
             },

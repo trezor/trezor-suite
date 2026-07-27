@@ -1,36 +1,41 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
-import { Translation, TranslationKey } from '@suite/intl';
+import { TrezorLink } from '@suite/external-links';
+import { Translation, type TranslationKey } from '@suite/intl';
 import {
-    BulletList,
-    BulletListItemState,
     Card,
     Flex,
-    FlexDirection,
+    type FlexDirection,
     Grid,
     Icon,
-    IconName,
+    type IconComponent,
     Note,
     Paragraph,
     Row,
+    StepList,
+    type StepListItemState,
 } from '@trezor/components';
-import { spacings } from '@trezor/theme';
+import {
+    CameraSlashIcon,
+    EyeSlashIcon,
+    PencilIcon,
+    RecoverySeedIcon,
+    TimerIcon,
+} from '@trezor/icons';
 import { ESHOP_KEEP_METAL_MULTI_SHARE_URL, HELP_CENTER_SEED_CARD_URL } from '@trezor/urls';
 
-import { TrezorLink } from 'src/components/suite/TrezorLink';
-
-import type { Steps } from './MultiShareBackupModal';
+import type { Steps } from './steps';
 
 type InstructionItemProps = {
     direction?: FlexDirection;
-    icon: IconName;
+    icon: IconComponent;
     children: ReactNode;
 };
 
 const InstructionItem = ({ direction = 'row', icon, children }: InstructionItemProps) => (
     <Card paddingType="normal">
-        <Flex direction={direction} alignItems="center" gap={spacings.xs} height="100%">
-            <Icon size={32} name={icon} />
+        <Flex direction={direction} alignItems="center" gap={8} height="100%">
+            <Icon size={32} as={icon} />
             <Paragraph
                 typographyStyle="body-sm"
                 intent="neutral"
@@ -47,16 +52,16 @@ type StepProps = {
     time: number;
     title: TranslationKey;
     children: ReactNode;
-    state: BulletListItemState;
+    state: StepListItemState;
 };
 
 const Step = ({ title, time, children, state }: StepProps) => (
-    <BulletList.Item
+    <StepList.Item
         title={
-            <Row gap={spacings.sm}>
+            <Row gap={12}>
                 <Translation id={title} />
                 {state !== 'done' && (
-                    <Note iconName="timer">
+                    <Note icon={TimerIcon}>
                         <Translation id="TR_N_MIN" values={{ n: time }} />
                     </Note>
                 )}
@@ -65,7 +70,7 @@ const Step = ({ title, time, children, state }: StepProps) => (
         state={state}
     >
         {state === 'default' && children}
-    </BulletList.Item>
+    </StepList.Item>
 );
 
 type MultiShareBackupStep2to4Props = {
@@ -73,7 +78,7 @@ type MultiShareBackupStep2to4Props = {
 };
 
 export const MultiShareBackupStep2to4 = ({ step }: MultiShareBackupStep2to4Props) => (
-    <BulletList isOrdered margin={{ top: spacings.md }}>
+    <StepList isOrdered margin={{ top: 16 }}>
         <Step
             time={2}
             title="TR_VERIFY_TREZOR_OWNERSHIP"
@@ -82,11 +87,11 @@ export const MultiShareBackupStep2to4 = ({ step }: MultiShareBackupStep2to4Props
             <Paragraph intent="neutral" priority="secondary">
                 <Translation id="TR_VERIFY_TREZOR_OWNERSHIP_EXPLANATION" />
             </Paragraph>
-            <Grid margin={{ top: spacings.md }} columns={2} gap={spacings.sm}>
-                <InstructionItem icon="recoverySeed">
+            <Grid margin={{ top: 16 }} columns={2} gap={12}>
+                <InstructionItem icon={RecoverySeedIcon}>
                     <Translation id="TR_VERIFY_TREZOR_OWNERSHIP_CARD_1" />
                 </InstructionItem>
-                <InstructionItem icon="cameraSlash">
+                <InstructionItem icon={CameraSlashIcon}>
                     <Translation id="TR_VERIFY_TREZOR_OWNERSHIP_CARD_2" />
                 </InstructionItem>
             </Grid>
@@ -100,8 +105,8 @@ export const MultiShareBackupStep2to4 = ({ step }: MultiShareBackupStep2to4Props
                 <Translation id="TR_CREATE_SHARES_EXPLANATION" />{' '}
                 <Translation id="TR_CREATE_SHARES_EXAMPLE" />
             </Paragraph>
-            <Grid margin={{ top: spacings.lg }} columns={3} gap={spacings.sm}>
-                <InstructionItem direction="column" icon="pencil">
+            <Grid margin={{ top: 20 }} columns={3} gap={12}>
+                <InstructionItem direction="column" icon={PencilIcon}>
                     <Translation
                         id="TR_CREATE_SHARES_CARD_1"
                         values={{
@@ -116,13 +121,13 @@ export const MultiShareBackupStep2to4 = ({ step }: MultiShareBackupStep2to4Props
                         }}
                     />
                 </InstructionItem>
-                <InstructionItem direction="column" icon="cameraSlash">
+                <InstructionItem direction="column" icon={CameraSlashIcon}>
                     <Translation id="TR_CREATE_SHARES_CARD_2" />
                 </InstructionItem>
-                <InstructionItem direction="column" icon="eyeSlash">
+                <InstructionItem direction="column" icon={EyeSlashIcon}>
                     <Translation id="TR_CREATE_SHARES_CARD_3" />
                 </InstructionItem>
             </Grid>
         </Step>
-    </BulletList>
+    </StepList>
 );

@@ -1,7 +1,11 @@
-import { SellFiatTrade, SellFiatTradeQuoteRequest, SellTradeStatus } from 'invity-api';
+import {
+    type SellFiatTrade,
+    type SellFiatTradeQuoteRequest,
+    type SellTradeStatus,
+} from 'invity-api';
 
-import { TradingSellInfoSelector } from '../../selectors/tradingSelectors';
-import { TradingAmountLimitProps } from '../../types';
+import { type TradingSellInfoSelector } from '../../selectors/tradingSelectors';
+import { type TradingAmountLimitProps } from '../../types';
 
 type GetAmountLimitsProps = {
     request: SellFiatTradeQuoteRequest;
@@ -89,8 +93,9 @@ const needToRegisterOrVerifyBankAccount = ({
 
     // for BANK_ACCOUNT flow a message is shown if bank account is not verified
     if (provider?.flow === 'BANK_ACCOUNT') {
-        const isSomeBankAccountVerified =
-            quote.bankAccounts && quote.bankAccounts.some(bankAccount => bankAccount.verified);
+        const isSomeBankAccountVerified = quote.bankAccounts?.some(
+            bankAccount => bankAccount.verified,
+        );
 
         return !!quote.quoteId && !isSomeBankAccountVerified;
     }

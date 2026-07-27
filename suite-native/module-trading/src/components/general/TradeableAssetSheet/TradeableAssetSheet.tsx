@@ -1,14 +1,15 @@
 import { memo, useCallback } from 'react';
 
-import { NetworkSymbol } from '@suite-common/wallet-config';
-import { BottomSheetSectionList, ItemRenderConfig } from '@suite-native/trading-atoms';
-import { TradeableAsset } from '@suite-native/trading-types';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type BottomSheetFlashListHandleProps } from '@suite-native/atoms';
+import { BottomSheetSectionList, type ItemRenderConfig } from '@suite-native/trading-atoms';
+import { type TradeableAsset } from '@suite-native/trading-types';
 
 import { TradeableAssetListEmptyComponent } from './TradeableAssetListEmptyComponent';
 import { TradeableAssetListItem } from './TradeableAssetListItem';
 import { TradeableAssetSheetHeader } from './TradeableAssetSheetHeader';
 import {
-    ListItemExtraData,
+    type ListItemExtraData,
     useFavouriteAssetsSectionList,
 } from '../../../hooks/general/useFavouriteAssetsSectionList';
 
@@ -20,7 +21,7 @@ export type TradeableAssetsSheetProps = {
     assets: TradeableAsset[];
     onFilterChange: (value: string) => void;
     onSelectedNetworkFilter: (symbol: NetworkSymbol | undefined) => void;
-    flashListKey: string;
+    scrollResetKey: string;
     testID?: string;
 };
 
@@ -41,41 +42,41 @@ export const TradeableAssetSheet = memo(
         assets,
         onFilterChange,
         onSelectedNetworkFilter,
-        flashListKey,
+        scrollResetKey,
         testID,
     }: TradeableAssetsSheetProps) => {
-        const onAssetSelectCallback = (asset: TradeableAsset) => {
-            onAssetSelect(asset);
-            onClose(hideKeyboardOnAssetSelect);
-        };
-
         const listData = useFavouriteAssetsSectionList(assets);
 
         const headerTestID = testID ? `${testID}/header` : undefined;
 
         // we need to keep stable callback reference, otherwise header will be re-mounted on every keystroke
         const renderHandle = useCallback(
-            () => (
+            ({ closeSheet }: BottomSheetFlashListHandleProps) => (
                 <TradeableAssetSheetHeader
-                    onClose={onClose}
+                    onClose={closeSheet}
                     onFilterChange={onFilterChange}
                     onSelectedNetworkFilter={onSelectedNetworkFilter}
                     testID={headerTestID}
                 />
             ),
-            [onClose, onFilterChange, onSelectedNetworkFilter, headerTestID],
+            [onFilterChange, onSelectedNetworkFilter, headerTestID],
         );
 
         return (
             <BottomSheetSectionList<TradeableAsset, ListItemExtraData>
                 isVisible={isVisible}
-                onClose={onClose}
+                onClose={() => onClose(hideKeyboardOnAssetSelect)}
                 ListEmptyComponent={<TradeableAssetListEmptyComponent />}
                 handleComponent={renderHandle}
                 data={listData}
                 keyExtractor={keyExtractor}
-                renderItem={(item, config) => renderItem(item, config, onAssetSelectCallback)}
-                flashListKey={flashListKey}
+                renderItem={(item, config, { closeSheet }) =>
+                    renderItem(item, config, selectedAsset => {
+                        onAssetSelect(selectedAsset);
+                        closeSheet();
+                    })
+                }
+                scrollResetKey={scrollResetKey}
                 noSingletonSectionHeader
                 testID={testID}
             />

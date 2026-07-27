@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
-import { TouchableHighlight, TouchableHighlightProps } from 'react-native';
+import { TouchableHighlight, type TouchableHighlightProps } from 'react-native';
 
-import { NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { type NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { Text } from './Text';
 
@@ -12,7 +12,7 @@ export type NumPadButtonProps = {
 } & TouchableHighlightProps;
 
 export const numPadButtonStyle = prepareNativeStyle(utils => ({
-    backgroundColor: utils.colors.backgroundTertiaryDefaultOnElevation1,
+    backgroundColor: utils.colors.legacyBackgroundTertiaryDefaultOnElevation1,
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
@@ -30,7 +30,7 @@ export const NumPadButton = ({ value, onPress, style, ...props }: NumPadButtonPr
         <TouchableHighlight
             style={[applyStyle(numPadButtonStyle), style]}
             onPress={handlePress}
-            underlayColor={utils.colors.backgroundTertiaryPressedOnElevation0}
+            underlayColor={utils.colors.legacyBackgroundTertiaryPressedOnElevation0}
             {...props}
         >
             <Text>{'\u2022'}</Text>

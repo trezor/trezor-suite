@@ -1,19 +1,18 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/helpers/uploadFirmware.js
 
+import { DEVICE, UI_REQUEST, createUiMessage } from '@trezor/connect-common';
+import type { CoreEventMessage, FirmwareUpdateFlowType, PROTO } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { getFirmwareVersionArray } from '@trezor/device-utils';
-import { TRANSPORT } from '@trezor/transport';
+import { TRANSPORT } from '@trezor/transport-common';
 import { isWithinRange } from '@trezor/utils/src/versionUtils';
 
-import { PROTO } from '../../constants';
-import type { Device } from '../../device/Device';
 import type { TypedCall } from '../../device/DeviceCommands';
-import { CoreEventMessage, DEVICE, UI_REQUEST, createUiMessage } from '../../events';
-import { FirmwareUpdateFlowType } from '../../types';
+import type { IDevice } from '../../types/idevice';
 
 // Each FW update flow starts with confirmation to restart into bootloader, and in some cases a confirmation for the FW
 // update itself. But device sends no ButtonRequest at that point, so create a synthethic ButtonRequest.
-const postConfirmationMessage = (device: Device, updateFlowType: FirmwareUpdateFlowType) => {
+const postConfirmationMessage = (device: IDevice, updateFlowType: FirmwareUpdateFlowType) => {
     // Device does not require confirmation if fresh install, or if the flow is 'reboot_and_upgrade'.
     const freshInstall = device.features.firmware_present === false;
     if (freshInstall || updateFlowType === 'reboot_and_upgrade') return;
@@ -22,7 +21,7 @@ const postConfirmationMessage = (device: Device, updateFlowType: FirmwareUpdateF
 };
 
 const postProgressMessage = (
-    device: Device,
+    device: IDevice,
     progress: number,
     postMessage: (message: CoreEventMessage) => void,
 ) => {
@@ -42,7 +41,7 @@ const TIMEOUT_MAX_FW_VERSION = '1.13.0';
 type UploadFirmwareProps = {
     typedCall: TypedCall;
     postMessage: (message: CoreEventMessage) => void;
-    device: Device;
+    device: IDevice;
     firmwareUploadRequest: PROTO.FirmwareUpload;
     updateFlowType: FirmwareUpdateFlowType;
 };

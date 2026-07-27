@@ -1,15 +1,13 @@
 import { useSelector } from 'react-redux';
 
-import { SuiteSyncDataRootState, selectSuiteSyncOutputLabel } from '@suite-common/suite-sync';
-import { HStack, Text, TextProps } from '@suite-native/atoms';
+import { type SuiteSyncDataRootState, selectSuiteSyncOutputLabel } from '@suite-common/suite-sync';
+import { AddressLabel } from '@suite-native/address';
+import { HStack, Text, type TextProps } from '@suite-native/atoms';
 import { AddressFormatter } from '@suite-native/formatters';
-import {
-    AddressLabel,
-    TransactionOutputLabel,
-    selectIsLabellingAllowed,
-} from '@suite-native/labeling';
+import { selectIsLabellingAllowed } from '@suite-native/labeling';
+import { TransactionOutputLabel } from '@suite-native/transactions';
 import type { StaticSessionId } from '@trezor/connect';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 const ADDRESS_LABEL_MAX_LENGTH = 25;
 
@@ -18,7 +16,7 @@ const flexStyle = prepareNativeStyle(() => ({
 }));
 
 const LabelText = (props: TextProps) => (
-    <Text variant="body-sm" color="textSubdued" numberOfLines={1} {...props} />
+    <Text variant="body-sm" color="contentSecondary" numberOfLines={1} {...props} />
 );
 
 type UtxoCoinControlLabelProps = {
@@ -50,14 +48,15 @@ export const UtxoCoinControlLabel = ({
                 address={address}
                 deviceStaticSessionId={deviceStaticSessionId}
                 variant="body-sm"
-                color="textSubdued"
+                color="contentSecondary"
                 style={hasOutputLabel ? undefined : applyStyle(flexStyle)}
                 maxLength={hasOutputLabel ? ADDRESS_LABEL_MAX_LENGTH : undefined}
                 fallback={
                     <AddressFormatter
+                        format="long"
                         value={address}
                         variant="body-sm"
-                        color="textSubdued"
+                        color="contentSecondary"
                         style={applyStyle(flexStyle)}
                     />
                 }
@@ -70,7 +69,7 @@ export const UtxoCoinControlLabel = ({
                         outputIndex={outputIndex}
                         deviceStaticSessionId={deviceStaticSessionId}
                         variant="body-sm"
-                        color="textSubdued"
+                        color="contentSecondary"
                         style={applyStyle(flexStyle)}
                     />
                 </>

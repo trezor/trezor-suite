@@ -2,8 +2,6 @@ import { Alice } from '../../src/client/Alice';
 import { CoinjoinPrison } from '../../src/client/CoinjoinPrison';
 import { CoinjoinRound } from '../../src/client/CoinjoinRound';
 import {
-    AliceGenerator,
-    CoinjoinRoundGenerator,
     getAccountCandidates,
     getRoundCandidates,
     getUnregisteredAccounts,
@@ -12,6 +10,8 @@ import {
 } from '../../src/client/round/selectRound';
 import { ROUND_SELECTION_MAX_OUTPUTS } from '../../src/constants';
 import { SessionPhase, WabiSabiProtocolErrorCode } from '../../src/enums';
+import type { AliceGenerator } from '../../src/types/alice';
+import type { CoinjoinRoundGenerator } from '../../src/types/round';
 import {
     DEFAULT_ROUND,
     ROUND_CREATION_EVENT,
@@ -500,7 +500,10 @@ describe('selectRound', () => {
         expect(spy).toHaveBeenCalledTimes(9);
 
         ['AA', 'AB', 'AC', 'CA'].forEach((outpoint, index) => {
-            expect(result!.inputs[index].outpoint).toEqual(outpoint);
+            const { inputs } = result!;
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const input: (typeof result)['inputs'][number] = inputs[index];
+            expect(input.outpoint).toEqual(outpoint);
         });
 
         expect(result).toMatchObject({

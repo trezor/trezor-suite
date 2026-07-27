@@ -1,0 +1,23 @@
+{
+    "name": "@trezor/icons",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "sideEffects": false,
+    "main": "src/generated/icons/index",
+    "types": "src/index.ts",
+    "scripts": {
+        "depcheck": "yarn g:depcheck",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "type-check": "yarn g:tsc --build",
+        "generate-icons": "yarn g:rimraf src/generated/icons && yarn svgr --config-file svgr.web.config.mjs -- assets && node generateIconTypes.mjs && prettier --write --log-level silent 'src/generated/icons/**/*.{ts,tsx}' 'src/index.ts'"
+    },
+    "dependencies": {
+        "react": "19.2.3"
+    },
+    "devDependencies": {
+        "@svgr/cli": "^8.1.0",
+        "@trezor/eslint": "workspace:*",
+        "prettier": "^3.8.4"
+    }
+}

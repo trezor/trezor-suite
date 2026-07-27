@@ -1,16 +1,16 @@
+import { MessageSystemButton } from '@suite/message-system';
+import { selectLanguage } from '@suite/settings';
 import {
     Feature,
-    TradingSurveyPayload,
+    type TradingSurveyPayload,
     resolveMessageContent,
     selectFeatureConfig,
     validateTradingSurvey,
 } from '@suite-common/message-system';
-import { Card, Column, Paragraph, Text } from '@trezor/components';
-import { spacings } from '@trezor/theme';
+import { Card, Column, H2, Paragraph } from '@trezor/components';
+import { ArrowSquareOutIcon } from '@trezor/icons';
 
-import { MessageSystemButton } from 'src/components/suite/banners/MessageSystemButton';
 import { useSelector } from 'src/hooks/suite';
-import { selectLanguage } from 'src/selectors/suite/suiteSelectors';
 
 const safeValidateTradingSurvey = (data: unknown): TradingSurveyPayload | null => {
     try {
@@ -40,12 +40,19 @@ export const TradingDetailSurvey = () => {
 
     return (
         <Card>
-            <Column gap={spacings.lg}>
-                <Column gap={spacings.xs}>
-                    <Text typographyStyle="headline-sm">{title}</Text>
-                    <Paragraph maxWidth={400}>{description}</Paragraph>
+            <Column gap={20} padding={8}>
+                <Column gap={8}>
+                    <H2 typographyStyle="headline-sm">{title}</H2>
+                    <Paragraph typographyStyle="body-sm" color="contentSecondary">
+                        {description}
+                    </Paragraph>
                 </Column>
-                <MessageSystemButton cta={survey.cta} iconRight="arrowSquareOut" />
+                <MessageSystemButton
+                    cta={survey.cta}
+                    iconRight={ArrowSquareOutIcon}
+                    intent="brand"
+                    size="large"
+                />
             </Column>
         </Card>
     );

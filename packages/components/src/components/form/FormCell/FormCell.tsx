@@ -1,18 +1,16 @@
-import { ReactNode, useState } from 'react';
+import { type ReactNode, useState } from 'react';
 
 import styled from 'styled-components';
 
-import { spacings } from '@trezor/theme';
-
 import {
-    FrameProps,
-    FramePropsKeys,
+    type FrameProps,
+    type FramePropsKeys,
     pickAndPrepareFrameProps,
     withFrameProps,
 } from '../../../utils/frameProps';
-import { TransientProps } from '../../../utils/transientProps';
+import { type TransientProps } from '../../../utils/transientProps';
 import { Column } from '../../Flex/Flex';
-import { IconName } from '../../Icon/Icon';
+import { type IconComponent } from '../../Icon/Icon';
 import { BottomText } from '../BottomText';
 import { TopAddons } from '../TopAddons';
 
@@ -30,10 +28,9 @@ const formCellProps = [
     'labelRight',
     'bottomText',
     'bottomTextIconComponent',
-    'bottomTextIconName',
+    'bottomTextIcon',
     'hasError',
     'isDisabled',
-    'className',
     ...allowedFormCellFrameProps,
 ] as const satisfies (keyof FormCellProps)[];
 
@@ -55,11 +52,10 @@ export type FormCellProps = AllowedFrameProps & {
     labelRight?: React.ReactNode;
     bottomText?: ReactNode;
     bottomTextIconComponent?: ReactNode;
-    bottomTextIconName?: IconName;
+    bottomTextIcon?: IconComponent;
     hasError?: boolean;
     isDisabled?: boolean;
     children: ReactNode;
-    className?: string;
     'data-testid'?: string;
 };
 
@@ -70,10 +66,9 @@ export const FormCell = ({
     labelHoverRight,
     bottomText,
     bottomTextIconComponent,
-    bottomTextIconName,
+    bottomTextIcon,
     hasError,
     isDisabled,
-    className,
     'data-testid': dataTestId,
     ...rest
 }: FormCellProps) => {
@@ -83,11 +78,10 @@ export const FormCell = ({
     return (
         <Wrapper
             {...frameProps}
-            className={className}
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
         >
-            <Column gap={spacings.xs}>
+            <Column gap={8}>
                 <TopAddons
                     isHovered={isHovered}
                     addonLeft={labelLeft}
@@ -100,7 +94,7 @@ export const FormCell = ({
                         hasError={hasError}
                         isDisabled={isDisabled}
                         iconComponent={bottomTextIconComponent}
-                        iconName={bottomTextIconName}
+                        icon={bottomTextIcon}
                         data-testid={dataTestId ? `${dataTestId}/bottom-text` : undefined}
                     >
                         {bottomText}

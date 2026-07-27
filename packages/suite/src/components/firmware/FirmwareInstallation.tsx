@@ -1,15 +1,14 @@
+import { FirmwareProgressBar, useFirmwareDesktopUpdate } from '@suite/firmware-upgrade';
 import { Translation } from '@suite/intl';
 import { Banner, Card, Column } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
-import type TrezorConnectBrowser from '@trezor/connect/src/index-browser';
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports -- TODO: expose the browser-specific TrezorConnect type via the @trezor/connect barrel and remove this exception (see #27376)
+import type TrezorConnectBrowser from '@trezor/connect/src/index.browser';
+import { BluetoothIcon, TrezorDevicesFilledIcon } from '@trezor/icons';
 
-import {
-    FirmwareOffer,
-    FirmwareProgressBar,
-    ReconnectDevicePrompt,
-    RotatingPhrases,
-} from 'src/components/firmware';
-import { useFirmwareDesktopUpdate } from 'src/hooks/suite/useFirmwareDesktopUpdate';
+import { FirmwareOffer } from 'src/components/firmware/FirmwareOffer';
+import { ReconnectDevicePrompt } from 'src/components/firmware/ReconnectDevicePrompt';
+import { RotatingPhrases } from 'src/components/firmware/RotatingPhrases';
 import { useSelector } from 'src/hooks/suite/useSelector';
 import { selectHasTransportOfType } from 'src/selectors/suite/suiteSelectors';
 
@@ -53,7 +52,7 @@ export const FirmwareInstallation = ({
                 {isDeviceNotSelected && (
                     <Banner
                         intent="info"
-                        icon="trezorDevicesFilled"
+                        icon={TrezorDevicesFilledIcon}
                         rightContent={
                             <Banner.Button
                                 onClick={() => {
@@ -71,7 +70,7 @@ export const FirmwareInstallation = ({
                 {displayIsSlow && (
                     <Banner
                         intent="info"
-                        icon="bluetooth"
+                        icon={BluetoothIcon}
                         description={<Translation id="TR_INSTALLATION_FW_SLOW_TIP_BANNER" />}
                     />
                 )}

@@ -1,34 +1,15 @@
-import { TrezorDevice } from '@suite-common/suite-types';
-import { Account } from '@suite-common/wallet-types';
+import { type TrezorDevice } from '@suite-common/suite-types';
+import { type Account } from '@suite-common/wallet-types';
 import { getDerivationType } from '@suite-common/wallet-utils';
-import TrezorConnect, { Success, Unsuccessful } from '@trezor/connect';
 
-export const showXpubOnDevice = async (device: TrezorDevice, account: Account) => {
-    const params = {
+import { getPublicKeyForNetworkType } from './deviceAddressUtils';
+
+export const showXpubOnDevice = (device: TrezorDevice, account: Account) =>
+    getPublicKeyForNetworkType({
         device,
+        networkType: account.networkType,
         path: account.path,
+        coin: account.symbol,
         showOnTrezor: true,
         derivationType: getDerivationType(account.accountType),
-        coin: account.symbol,
-    };
-
-    let response: Success<unknown> | Unsuccessful;
-    switch (account.networkType) {
-        case 'bitcoin':
-            response = await TrezorConnect.getPublicKey(params);
-            break;
-        case 'cardano':
-            response = await TrezorConnect.cardanoGetPublicKey(params);
-            break;
-        case 'solana':
-            response = await TrezorConnect.solanaGetPublicKey(params);
-            break;
-        default:
-            response = {
-                success: false,
-                payload: { error: 'Method for getPublicKey not defined', code: undefined },
-            };
-    }
-
-    return response;
-};
+    });

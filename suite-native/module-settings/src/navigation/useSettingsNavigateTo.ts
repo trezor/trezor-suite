@@ -3,17 +3,19 @@ import { useCallback } from 'react';
 import { useNavigation } from '@react-navigation/native';
 
 import {
-    RootStackParamList,
+    type RootStackParamList,
     RootStackRoutes,
-    SettingsStackRoutes,
-    StackNavigationProps,
+    type SettingsStackRoutes,
+    type StackNavigationProps,
 } from '@suite-native/navigation';
 
 export const useSettingsNavigateTo = () => {
     const navigation = useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes>>();
 
     return useCallback(
-        (routeName: SettingsStackRoutes): void => {
+        (
+            routeName: Exclude<SettingsStackRoutes, SettingsStackRoutes.SettingsNetworkBackends>,
+        ): void => {
             navigation.navigate(RootStackRoutes.SettingsScreenStack, { screen: routeName });
         },
         [navigation],

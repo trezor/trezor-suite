@@ -1,5 +1,5 @@
-import { SuiteSyncStorage } from '@suite-common/suite-sync-storage';
-import { Branded } from '@trezor/type-utils';
+import { type SuiteSyncStorage } from '@suite-common/suite-sync-storage';
+import { type Branded } from '@trezor/type-utils';
 
 export type StorageId = string & Branded<'StorageId'>;
 

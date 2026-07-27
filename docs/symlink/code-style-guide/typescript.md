@@ -1,1 +1,1 @@
-../../../skills/typescript.md
+../../../skills/typescript/SKILL.md

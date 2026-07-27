@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
 import { useAlert } from '@suite-native/alerts';
 import { PressableOpacity } from '@suite-native/atoms';
@@ -26,7 +26,7 @@ export const AddressReviewHelpSheet = ({ body, title, subtitle }: AddressReviewH
 
     return (
         <PressableOpacity onPress={handleOpen}>
-            <Icon name="question" size="large" color="iconSubdued" />
+            <Icon name="question" size="large" color="contentSecondary" />
         </PressableOpacity>
     );
 };

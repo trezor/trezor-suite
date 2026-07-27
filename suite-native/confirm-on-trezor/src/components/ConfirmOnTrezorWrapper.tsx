@@ -9,7 +9,7 @@ import {
     createRenderer,
     prepareNativeStyle,
     useNativeStyles,
-} from '@trezor/styles';
+} from '@trezor/styles-native';
 import { prepareNativeTheme } from '@trezor/theme';
 
 import { ConfirmOnTrezorContent, type ConfirmOnTrezorWrapperProps } from './ConfirmOnTrezorContent';
@@ -21,7 +21,7 @@ const instructionsContainerStyle = prepareNativeStyle<{
     paddingTop: number;
 }>((utils, { paddingTop }) => ({
     paddingTop,
-    backgroundColor: utils.colors.backgroundSurfaceElevation0,
+    backgroundColor: utils.colors.surfaceFillPage,
 }));
 
 const REVEAL_TIMEOUT = isDetoxTestBuild() ? 0 : 1500;
@@ -33,6 +33,7 @@ const ConfirmOnTrezor = ({
     controlRef,
     isManualControlEnabled = false,
     defaultHeader,
+    shouldKeepScrolledToEnd,
     ...headerProps
 }: ConfirmOnTrezorWrapperProps) => {
     const { applyStyle } = useNativeStyles();
@@ -93,6 +94,7 @@ const ConfirmOnTrezor = ({
                         snapPoints={snapPoints}
                         isFullscreen={isFullscreen}
                         defaultHeader={defaultHeader}
+                        shouldKeepScrolledToEnd={shouldKeepScrolledToEnd}
                     >
                         {children}
                     </ConfirmOnTrezorContent>

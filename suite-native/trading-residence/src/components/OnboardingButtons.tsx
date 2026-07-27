@@ -19,8 +19,11 @@ export const OnboardingButtons = ({ afterPress }: OnboardingButtonsProps) => {
 
     return (
         <>
-            <ConfirmLocationButton afterConfirm={handleOnboardingComplete} />
-            <SkipButton onPress={handleOnboardingComplete} />
+            <ConfirmLocationButton
+                afterConfirm={handleOnboardingComplete}
+                testId="@onboarding/confirmLocation"
+            />
+            <SkipButton onPress={handleOnboardingComplete} testId="@onboarding/skipLocation" />
         </>
     );
 };

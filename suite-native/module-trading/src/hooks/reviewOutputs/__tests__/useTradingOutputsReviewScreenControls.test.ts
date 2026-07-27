@@ -1,15 +1,24 @@
-import { sendFormActions } from '@suite-common/wallet-core';
-import { AccountKey } from '@suite-common/wallet-types';
-import {
-    TestStore,
-    act,
-    initStore,
-    renderHookWithStoreProviderAsync,
-} from '@suite-native/test-utils';
-import { getWalletState } from '@suite-native/trading-fixtures';
-import { transactionManagementActions } from '@suite-native/transaction-management';
+import { combineReducers } from '@reduxjs/toolkit';
 
-import { TradingExchangeSignAndSendTransactionProps } from '../../exchange/useExchangeFlow';
+import { extraDependenciesCommonMock } from '@suite-common/test-utils';
+import { initialWalletSettingsState, sendFormActions } from '@suite-common/wallet-core';
+import { mockAccountKey } from '@suite-common/wallet-types/mocks';
+import { localeReducer } from '@suite-native/intl';
+import {
+    type TestStore,
+    act,
+    createLightStore,
+    createStaticReducer,
+    renderHookWithStoreProvider,
+} from '@suite-native/test-utils-store';
+import { getWalletState } from '@suite-native/trading-fixtures';
+import { tradingSlice } from '@suite-native/trading-state';
+import {
+    prepareSendFormReducer,
+    transactionManagementActions,
+} from '@suite-native/transaction-management';
+
+import { type TradingExchangeSignAndSendTransactionProps } from '../../exchange/useExchangeFlow';
 import { useTradingOutputsReviewScreenControls } from '../useTradingOutputsReviewScreenControls';
 
 const mockReportToAnalytics = jest.fn();
@@ -54,12 +63,33 @@ jest.mock('@suite-native/alerts', () => ({
 describe('useTradingOutputsReviewScreenControls', () => {
     let store: TestStore;
 
+    const reducer = {
+        locale: localeReducer,
+        wallet: combineReducers({
+            settings: createStaticReducer(initialWalletSettingsState),
+            accounts: createStaticReducer(getWalletState({ tradeType: 'exchange' }).accounts),
+            send: prepareSendFormReducer(extraDependenciesCommonMock),
+            trading: tradingSlice.prepareReducer(extraDependenciesCommonMock),
+        }),
+    } as const;
+
+    const createTestStore = (tradeType: 'exchange' | 'sell' = 'exchange') => {
+        const { settings, accounts, send, trading } = getWalletState({ tradeType });
+
+        return createLightStore({
+            reducer,
+            preloadedState: {
+                wallet: { settings, accounts, send, trading },
+            },
+        });
+    };
+
     const renderUseTradingOutputsReviewScreenControls = () =>
-        renderHookWithStoreProviderAsync(
+        renderHookWithStoreProvider(
             () =>
                 useTradingOutputsReviewScreenControls({
                     orderId: 'orderId',
-                    accountKey: 'btc-account-1' as AccountKey, // Todo: create properly via `createAccountKey()`
+                    accountKey: mockAccountKey({ symbol: 'btc', descriptor: 'btc1normal' }),
                     signAndSendTransaction: mockSignAndSendTransaction,
                     reportToAnalytics: mockReportToAnalytics,
                 }),
@@ -70,11 +100,11 @@ describe('useTradingOutputsReviewScreenControls', () => {
 
     beforeEach(() => {
         jest.clearAllMocks();
-        store = initStore({ wallet: getWalletState({ tradeType: 'exchange' }) }).store;
+        store = createTestStore();
     });
 
-    it('should return confirmOnTrezorRef', async () => {
-        const { result } = await renderUseTradingOutputsReviewScreenControls();
+    it('should return confirmOnTrezorRef', () => {
+        const { result } = renderUseTradingOutputsReviewScreenControls();
 
         expect(result.current.confirmOnTrezorRef).toBe(
             mockUseConfirmOnTrezorController.confirmOnTrezorRef,
@@ -82,20 +112,20 @@ describe('useTradingOutputsReviewScreenControls', () => {
     });
 
     describe('without signed transaction', () => {
-        it('should call signAndSendTransaction on mount', async () => {
-            await renderUseTradingOutputsReviewScreenControls();
+        it('should call signAndSendTransaction on mount', () => {
+            renderUseTradingOutputsReviewScreenControls();
 
             expect(mockSignAndSendTransaction).toHaveBeenCalledTimes(1);
         });
 
-        it('should not call closeSheet', async () => {
-            await renderUseTradingOutputsReviewScreenControls();
+        it('should not call closeSheet', () => {
+            renderUseTradingOutputsReviewScreenControls();
 
             expect(mockUseConfirmOnTrezorController.closeSheet).not.toHaveBeenCalled();
         });
 
-        it('should navigate to trade detail', async () => {
-            await renderUseTradingOutputsReviewScreenControls();
+        it('should navigate to trade detail', () => {
+            renderUseTradingOutputsReviewScreenControls();
 
             expect(mockSignAndSendTransaction).toHaveBeenCalledWith(
                 expect.objectContaining({
@@ -117,9 +147,9 @@ describe('useTradingOutputsReviewScreenControls', () => {
             expect(mockReportToAnalytics).toHaveBeenCalledWith('sign-and-send', 'continue');
         });
 
-        it('should navigate to trade detail and report sell analytics', async () => {
-            store = (await initStore({ wallet: getWalletState({ tradeType: 'sell' }) })).store;
-            await renderUseTradingOutputsReviewScreenControls();
+        it('should navigate to trade detail and report sell analytics', () => {
+            store = createTestStore('sell');
+            renderUseTradingOutputsReviewScreenControls();
 
             expect(mockSignAndSendTransaction).toHaveBeenCalledWith(
                 expect.objectContaining({
@@ -141,8 +171,8 @@ describe('useTradingOutputsReviewScreenControls', () => {
             expect(mockReportToAnalytics).toHaveBeenLastCalledWith('sign-and-send', 'continue');
         });
 
-        it('should display alert on thunk error', async () => {
-            await renderUseTradingOutputsReviewScreenControls();
+        it('should display alert on thunk error', () => {
+            renderUseTradingOutputsReviewScreenControls();
 
             expect(mockSignAndSendTransaction).toHaveBeenCalledWith(
                 expect.objectContaining({
@@ -170,9 +200,9 @@ describe('useTradingOutputsReviewScreenControls', () => {
             );
         });
 
-        it('should offer pop and popToTop action on thunk error', async () => {
+        it('should offer pop and popToTop action on thunk error', () => {
             const dispatchSpy = jest.spyOn(store, 'dispatch');
-            await renderUseTradingOutputsReviewScreenControls();
+            renderUseTradingOutputsReviewScreenControls();
 
             expect(mockSignAndSendTransaction).toHaveBeenCalledWith(
                 expect.objectContaining({
@@ -227,22 +257,22 @@ describe('useTradingOutputsReviewScreenControls', () => {
             });
         });
 
-        it('should not call signAndSendTransaction', async () => {
-            await renderUseTradingOutputsReviewScreenControls();
+        it('should not call signAndSendTransaction', () => {
+            renderUseTradingOutputsReviewScreenControls();
 
             expect(mockSignAndSendTransaction).not.toHaveBeenCalled();
         });
 
-        it('should closeSheet', async () => {
-            await renderUseTradingOutputsReviewScreenControls();
+        it('should closeSheet', () => {
+            renderUseTradingOutputsReviewScreenControls();
 
             expect(mockUseConfirmOnTrezorController.closeSheet).toHaveBeenCalledTimes(1);
         });
     });
 
     describe('useOutputsReviewBackInterceptor', () => {
-        it('should be initialized with popToTop navigation callback and report cancel for exchange', async () => {
-            await renderUseTradingOutputsReviewScreenControls();
+        it('should be initialized with popToTop navigation callback and report cancel for exchange', () => {
+            renderUseTradingOutputsReviewScreenControls();
 
             act(() => {
                 const onReviewCanceled = mockUseOutputsReviewBackInterceptor.mock.lastCall?.[0];
@@ -253,9 +283,9 @@ describe('useTradingOutputsReviewScreenControls', () => {
             expect(mockReportToAnalytics).toHaveBeenCalledWith('sign-and-send', 'cancel');
         });
 
-        it('should report cancel for sell', async () => {
-            store = (await initStore({ wallet: getWalletState({ tradeType: 'sell' }) })).store;
-            await renderUseTradingOutputsReviewScreenControls();
+        it('should report cancel for sell', () => {
+            store = createTestStore('sell');
+            renderUseTradingOutputsReviewScreenControls();
 
             act(() => {
                 const onReviewCanceled = mockUseOutputsReviewBackInterceptor.mock.lastCall?.[0];
@@ -267,8 +297,8 @@ describe('useTradingOutputsReviewScreenControls', () => {
         });
     });
 
-    it('should report visit to analytics on mount for exchange', async () => {
-        await renderUseTradingOutputsReviewScreenControls();
+    it('should report visit to analytics on mount for exchange', () => {
+        renderUseTradingOutputsReviewScreenControls();
 
         expect(mockReportToAnalytics).toHaveBeenCalledWith('sign-and-send', 'visit');
     });

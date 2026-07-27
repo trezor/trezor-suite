@@ -1,11 +1,10 @@
 import { selectDeviceLabelOrNameById } from '@suite-common/device';
-import { Row, Tooltip } from '@trezor/components';
-import { DeviceModelInternal, getDeviceColorVariant } from '@trezor/device-utils';
+import { Row, ShortcutBadge, TOOLTIP_DELAY_LONG, Tooltip } from '@trezor/components';
+import { type DeviceModelInternal, getDeviceColorVariant } from '@trezor/device-utils';
 import { RotateDeviceImage } from '@trezor/product-components';
-import { spacings } from '@trezor/theme';
 
 import { useSelector } from 'src/hooks/suite';
-import { TrezorDevice } from 'src/types/suite';
+import { type TrezorDevice } from 'src/types/suite';
 import { DeviceDetail } from 'src/views/suite/SwitchDevice/DeviceItem/DeviceDetail';
 import { DeviceStatusText } from 'src/views/suite/SwitchDevice/DeviceItem/DeviceStatusText';
 
@@ -49,17 +48,29 @@ export const DeviceStatus = ({
     );
 
     return (
-        <Row flex="1" gap={spacings.sm} justifyContent="center">
+        <>
             {isDeviceDetailVisible ? (
-                <>
+                <Row justifyContent="space-between" gap={12} overflow="hidden">
                     {image}
                     {content}
-                </>
+                </Row>
             ) : (
-                <Tooltip hasArrow cursor="inherit" placement="right" content={content}>
-                    {image}
-                </Tooltip>
+                <Row justifyContent="center">
+                    <Tooltip
+                        cursor="inherit"
+                        placement="right"
+                        delayShow={TOOLTIP_DELAY_LONG}
+                        content={
+                            <Row gap={16} alignItems="center">
+                                {content}
+                                <ShortcutBadge shortcut={['ALT', 'KEY_W']} isInverse />
+                            </Row>
+                        }
+                    >
+                        {image}
+                    </Tooltip>
+                </Row>
             )}
-        </Row>
+        </>
     );
 };

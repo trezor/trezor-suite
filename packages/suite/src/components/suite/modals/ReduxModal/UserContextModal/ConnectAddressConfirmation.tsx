@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 
+import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import {
     connectPopupActions,
@@ -11,13 +12,13 @@ import { selectSelectedDeviceLabelOrName } from '@suite-common/device';
 import { Badge, Button, Card, Column, H3, Icon, Modal, Paragraph, Row } from '@trezor/components';
 import { TypedError } from '@trezor/connect-common/src/constants/errors';
 import { DeviceModelInternal } from '@trezor/device-utils';
+import { CheckCircleIcon, CheckIcon, WarningIcon } from '@trezor/icons';
 import { ConfirmOnDevicePill, mapTrezorModelToIcon } from '@trezor/product-components';
-import { spacings } from '@trezor/theme';
 
 import { ConnectCallSource } from 'src/components/suite/ConnectCallSource';
 import { ConnectModalBackdrop } from 'src/components/suite/ConnectModalBackdrop';
-import { WalletLabeling } from 'src/components/suite/labeling';
-import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
+import { WalletLabeling } from 'src/components/suite/labeling/WalletLabeling';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 
 export const ConnectAddressConfirmation = () => {
     const { device } = useDevice();
@@ -73,7 +74,7 @@ export const ConnectAddressConfirmation = () => {
                 isConfirmed={!isLoading}
             />
             <Modal.ModalBase
-                variant="primary"
+                intent="brand"
                 bottomContent={
                     <>
                         {!popupCall.exported && (
@@ -98,10 +99,10 @@ export const ConnectAddressConfirmation = () => {
                     </>
                 }
             >
-                <Column gap={spacings.xs}>
+                <Column gap={8}>
                     {popupCall.exported ? (
-                        <Row alignItems="center" gap={spacings.sm}>
-                            <Icon name="checkCircle" size={32} intent="brand" />
+                        <Row alignItems="center" gap={12}>
+                            <Icon as={CheckCircleIcon} size={32} intent="brand" />
                             <H3 intent="brand">
                                 <Translation id="TR_CONNECT_ADDRESS_CONFIRMATION_SUCCESS" />
                             </H3>
@@ -144,24 +145,24 @@ export const ConnectAddressConfirmation = () => {
                                 <Translation id="TR_ADDRESSES" />
                             )
                         }
-                        margin={{ top: spacings.md }}
+                        margin={{ top: 16 }}
                     >
-                        <Column gap={spacings.sm}>
+                        <Column gap={12}>
                             {popupCall?.addresses.map((address, index) => (
                                 <Row
                                     key={index}
                                     alignItems="center"
                                     justifyContent="space-between"
-                                    gap={spacings.sm}
+                                    gap={12}
                                 >
-                                    <Row gap={spacings.sm} alignItems="center" flex="1">
-                                        <Paragraph overflowWrap="break-word">
+                                    <Row gap={12} alignItems="center" flex="1" minWidth={0}>
+                                        <Paragraph overflowWrap="anywhere">
                                             {address.address}
                                         </Paragraph>
                                         {address.validated === 'valid' && (
                                             <Badge
                                                 intent="brand"
-                                                iconLeft="check"
+                                                iconLeft={CheckIcon}
                                                 size="small"
                                                 data-testid={`@connect-address-confirmation/verified-badge/${index}`}
                                             >
@@ -171,7 +172,7 @@ export const ConnectAddressConfirmation = () => {
                                         {address.validated === 'failed' && (
                                             <Badge
                                                 intent="warning"
-                                                iconLeft="warning"
+                                                iconLeft={WarningIcon}
                                                 size="small"
                                                 data-testid={`@connect-address-confirmation/error-badge/${index}`}
                                             >

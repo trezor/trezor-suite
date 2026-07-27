@@ -1,6 +1,6 @@
 import {
-    BackendType,
-    NetworkSymbol,
+    type BackendType,
+    type NetworkSymbol,
     TREZOR_CONNECT_BACKENDS,
     getNetworkType,
     networkSymbolCollection,

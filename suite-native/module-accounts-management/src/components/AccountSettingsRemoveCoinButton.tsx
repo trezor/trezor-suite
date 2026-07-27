@@ -1,7 +1,11 @@
 import { useDispatch, useSelector } from 'react-redux';
 
-import { AccountsRootState, accountsActions, selectAccountByKey } from '@suite-common/wallet-core';
-import { AccountKey } from '@suite-common/wallet-types';
+import {
+    type AccountsRootState,
+    accountsActions,
+    selectAccountByKey,
+} from '@suite-common/wallet-core';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { useAlert } from '@suite-native/alerts';
 import { Button, TrezorSuiteHeader } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
@@ -44,19 +48,19 @@ export const AccountSettingsRemoveCoinButton = ({
             primaryButtonTitle: (
                 <Translation id="moduleAccountManagement.accountSettingsScreen.removeAccountAlert.primaryButton" />
             ),
-            primaryButtonVariant: 'redBold',
+            primaryButtonColorProps: { intent: 'critical', priority: 'primary' },
             onPressPrimaryButton: handleRemoveAccount,
             secondaryButtonTitle: <Translation id="generic.buttons.cancel" />,
-            secondaryButtonVariant: 'redElevation0',
+            secondaryButtonColorProps: { intent: 'critical', priority: 'secondary' },
             onPressSecondaryButton: hideAlert,
         });
     };
 
     return (
         <Button
-            size="large"
             onPress={handleShowAlert}
-            colorScheme="redElevation0"
+            intent="critical"
+            priority="secondary"
             testID="@account-detail/settings/remove-coin-button"
         >
             <Translation id="moduleAccountManagement.accountSettingsScreen.removeAccountAlert.primaryButton" />

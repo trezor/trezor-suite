@@ -11,12 +11,12 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
-        "@react-navigation/native": "7.1.26",
-        "@reduxjs/toolkit": "2.11.2",
-        "@shopify/react-native-skia": "2.2.12",
+        "@react-navigation/native": "7.1.28",
+        "@reduxjs/toolkit": "2.12.0",
+        "@shopify/react-native-skia": "2.5.1",
+        "@suite-common/dependency-injection": "workspace:*",
         "@suite-common/device": "workspace:*",
         "@suite-common/firmware": "workspace:*",
-        "@suite-common/icons": "workspace:*",
         "@suite-common/message-system": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
         "@suite-common/suite-types": "workspace:*",
@@ -32,18 +32,18 @@
         "@suite-native/link": "workspace:*",
         "@suite-native/navigation": "workspace:*",
         "@suite-native/sentry": "workspace:*",
-        "@suite-native/services": "workspace:*",
         "@suite-native/toasts": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/device-utils": "workspace:*",
+        "@trezor/icons": "workspace:*",
         "@trezor/react-native-usb": "workspace:*",
-        "@trezor/styles": "workspace:*",
+        "@trezor/styles-native": "workspace:*",
         "@trezor/theme": "workspace:*",
         "@trezor/utils": "workspace:^",
-        "expo-keep-awake": "~15.0.8",
-        "react": "19.1.0",
-        "react-native": "0.81.5",
-        "react-native-reanimated": "~4.1.5",
-        "react-redux": "9.2.0"
+        "expo-keep-awake": "~56.0.3",
+        "react": "19.2.3",
+        "react-native": "0.85.3",
+        "react-native-reanimated": "4.3.1",
+        "react-redux": "9.3.0"
     }
 }

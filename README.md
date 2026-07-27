@@ -16,6 +16,7 @@ Welcome to the Trezor Suite repository! This repository contains the source code
     - _Hint: you can have your shell [automatically switch versions](https://github.com/nvm-sh/nvm/blob/master/README.md#calling-nvm-use-automatically-in-a-directory-with-a-nvmrc-file) in each repo_
 - Enable [Yarn](https://yarnpkg.com/getting-started/install) through npm
 - Install [Git LFS](https://git-lfs.github.com/) (For Linux/Ubuntu, [after adding the repository](https://packagecloud.io/github/git-lfs/install) do `sudo apt-get install git-lfs`, more info [here](https://github.com/git-lfs/git-lfs/blob/main/INSTALLING.md))
+- Optional recommended: [setup PMG](https://docs.trezor.io/trezor-suite/misc/local-development-security.html)
 
 ### Getting started
 
@@ -32,11 +33,11 @@ It's recommended to enable `git config --global submodule.recurse true` so you d
 
 > You don't need a Trezor device to get into the app, you can use emulator. There is a [Trezor User Env](https://github.com/trezor/trezor-user-env) to help you set it up and run emulator for any Trezor model 🎉
 
-> You can use Nix to set up the repository — see [Nix Documentation](docs/nix.md).
+> You can use Nix to set up the repository — see [Nix Documentation](docs/misc/development-on-nix.md).
 
 ## **Connect** @trezor/connect
 
-This repository is used for development of version 9 of @trezor/connect. For detailed documentation, please refer to this [page](./docs/packages/connect/index.md).
+This repository is used for development of version 10 of @trezor/connect. For detailed documentation, please refer to this [page](./docs/packages/connect/index.md).
 
 Historically, Trezor Connect had its [own repository](https://github.com/trezor/connect). This repository is now archived.
 
@@ -57,6 +58,7 @@ Local `.env` setup (optional):
 
 - Rename `env.local.example` to `.env.local` in the repo root.
 - Set `TANSTACK_REACT_QUERY_DEV_TOOLS=true` to enable TanStack React Query Devtools on localhost.
+- Set `TRANSPORT_BROWSER_PING=false` to disable transport period ping.
 
 ## **Trezor Suite Mobile** @suite-native/app
 
@@ -70,7 +72,7 @@ Using [Conventional Commits](COMMITS.md) is required.
 
 ## Security vulnerability disclosure
 
-Please report suspected security vulnerabilities in private to [security@satoshilabs.com](mailto:security@satoshilabs.com), also see [the disclosure section on the Trezor.io website](https://trezor.io/support/a/how-to-report-a-security-issue). Please do NOT create publicly viewable issues for suspected security vulnerabilities.
+Please report suspected security vulnerabilities in private to [security@satoshilabs.com](mailto:security@satoshilabs.com), also see [the disclosure section on the Trezor.io website](https://trezor.io/security). Please do NOT create publicly viewable issues for suspected security vulnerabilities.
 
 ## IDE specific settings
 

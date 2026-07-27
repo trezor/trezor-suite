@@ -1,28 +1,25 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
-import { AnimatePresence } from 'framer-motion';
 import styled from 'styled-components';
 
-import { selectDevicesCount, selectSelectedDevice } from '@suite-common/device';
-import { Box, ElevationUp, Icon, ResizableBox, useElevation } from '@trezor/components';
+import { selectShouldDisplayDeviceCompromised } from '@suite/authenticity-checks';
+import { TrafficLightOffset } from '@suite/macos';
+import { suiteSettingsActions } from '@suite/settings';
+import { selectIsAnyDeviceSelected, selectSelectedDevice } from '@suite-common/device';
+import { Box, Icon, ResizableBox } from '@trezor/components';
 import { isDesktop } from '@trezor/env-utils';
+import { TrezorLogoIcon } from '@trezor/icons';
 import { TrezorLogo } from '@trezor/product-components';
-import {
-    Elevation,
-    mapElevationToBackground,
-    mapElevationToBorder,
-    spacingsPx,
-    zIndices,
-} from '@trezor/theme';
+import { zIndices } from '@trezor/theme';
 
-import { setSidebarWidth as setSidebarWidthInRedux } from 'src/actions/suite/suiteActions';
 import { AccountsMenu } from 'src/components/wallet/WalletLayout/AccountsMenu/AccountsMenu';
+import { MIN_CONTENT_WIDTH } from 'src/constants/suite/layout';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectShouldDisplayDeviceCompromised } from 'src/selectors/suite/suiteAuthenticityChecksSelectors';
 import { useResponsiveContext } from 'src/support/suite/ResponsiveContext';
 
 import { Navigation } from './Navigation';
 import { QuickActions } from './QuickActions/QuickActions';
+import { SidebarBanners } from './SidebarBanners';
 import {
     SIDEBAR_AUTO_COLLAPSE_BREAKPOINT,
     SIDEBAR_COLLAPSED_WIDTH,
@@ -30,24 +27,21 @@ import {
     SIDEBAR_MIN_WIDTH,
 } from './consts';
 import { DeviceSelector } from '../DeviceSelector/DeviceSelector';
-import { UpdateNotificationBanner } from './QuickActions/Update/UpdateNotificationBanner';
-import { TrafficLightOffset } from '../../../TrafficLightOffset';
-import { useUpdateStatus } from './QuickActions/Update/useUpdateStatus';
 
-const Container = styled.nav<{ $elevation: Elevation }>`
-    overflow-x: hidden;
+const Container = styled.nav`
     display: flex;
     flex-direction: column;
     flex: 0 0 auto;
     height: 100%;
-    background: ${mapElevationToBackground};
-    border-right: 1px solid ${mapElevationToBorder};
+    background: ${({ theme }) => theme.surfaceFillSunken};
+    border-right: 1px solid ${({ theme }) => theme.surfaceBorderSunken};
 `;
 
 const Wrapper = styled.div`
     display: flex;
     flex-direction: column;
 `;
+
 const Content = styled.div`
     height: 100%;
     display: flex;
@@ -60,7 +54,7 @@ const HorizontalSpacer = styled.div`
     flex: 1;
     z-index: ${zIndices.expandableNavigationHeader};
     overflow: auto;
-    gap: ${spacingsPx.sm};
+    gap: 12px;
 `;
 
 type WalletSwitcherProps = {
@@ -68,15 +62,15 @@ type WalletSwitcherProps = {
 };
 
 const WalletSwitcher = ({ isCollapsed }: WalletSwitcherProps) => {
-    const devicesCount = useSelector(selectDevicesCount);
+    const isAnyDeviceSelected = useSelector(selectIsAnyDeviceSelected);
 
-    if (devicesCount > 0) {
+    if (isAnyDeviceSelected) {
         return <DeviceSelector />;
     }
 
     return isCollapsed ? (
         <Box margin={{ left: 'auto', right: 'auto', top: isDesktop() ? 24 : 12, bottom: 12 }}>
-            <Icon name="trezorLogo" size={24} pointerEvents="none" />
+            <Icon as={TrezorLogoIcon} size={24} pointerEvents="none" />
         </Box>
     ) : (
         <Box margin={{ left: 20, right: 12, top: isDesktop() ? 24 : 12, bottom: 12 }}>
@@ -90,10 +84,6 @@ type SidebarProps = {
 };
 
 export const Sidebar = ({ showAccounts = true }: SidebarProps) => {
-    const [closedNotificationDevice, setClosedNotificationDevice] = useState(false);
-    const [closedNotificationSuite, setClosedNotificationSuite] = useState(false);
-    const [isBannerVisible, setIsBannerVisible] = useState(true);
-
     const {
         isSidebarCollapsed,
         setSidebarWidth,
@@ -111,15 +101,15 @@ export const Sidebar = ({ showAccounts = true }: SidebarProps) => {
     } = useResponsiveContext();
     const dispatch = useDispatch();
 
-    const { elevation } = useElevation();
-    const { updateStatusDevice, updateStatusSuite } = useUpdateStatus();
+    const [maxResizableSidebarWidth, setMaxResizableSidebarWidth] =
+        useState<number>(SIDEBAR_MAX_WIDTH);
 
     const shouldDisplayDeviceCompromised = useSelector(selectShouldDisplayDeviceCompromised);
     const selectedDevice = useSelector(selectSelectedDevice);
 
     const handleSidebarWidthChanged = (width: number) => {
         setSidebarWidth(width);
-        dispatch(setSidebarWidthInRedux({ width }));
+        dispatch(suiteSettingsActions.setSidebarWidth(width));
     };
     const handleSidebarWidthUpdate = (width: number) => {
         if (userResizingSidebar && typeof forcedSidebarWidth === 'number') {
@@ -139,26 +129,8 @@ export const Sidebar = ({ showAccounts = true }: SidebarProps) => {
         return () => window.removeEventListener('resize', onResize);
     }, [setAutoCollapseSuppressed]);
 
-    const onNotificationBannerClosed = () => {
-        if (updateStatusSuite !== 'up-to-date') {
-            setClosedNotificationSuite(true);
-        }
-        if (updateStatusDevice !== 'up-to-date') {
-            setClosedNotificationDevice(true);
-        }
-    };
-
-    const isUpdateAvailable =
-        (updateStatusSuite !== 'up-to-date' && !closedNotificationSuite) ||
-        (!['up-to-date', 'disconnected'].includes(updateStatusDevice) && !closedNotificationDevice);
-    const showUpdateBannerNotification =
-        !isSidebarCollapsed && isBannerVisible && isUpdateAvailable;
-
     const showAccountsAndIsDeviceReady =
-        !shouldDisplayDeviceCompromised &&
-        selectedDevice !== undefined &&
-        selectedDevice.mode === 'normal' &&
-        showAccounts;
+        !shouldDisplayDeviceCompromised && selectedDevice?.mode === 'normal' && showAccounts;
 
     useEffect(() => {
         if (contentWidth == null) return;
@@ -175,9 +147,9 @@ export const Sidebar = ({ showAccounts = true }: SidebarProps) => {
 
         if (autoCollapsed) {
             const delta = Math.max(0, lastManualSidebarWidth - SIDEBAR_MIN_WIDTH);
-            const uncollapseThreshold = SIDEBAR_AUTO_COLLAPSE_BREAKPOINT + delta;
+            const expandThreshold = SIDEBAR_AUTO_COLLAPSE_BREAKPOINT + delta;
 
-            if (contentWidth > uncollapseThreshold) {
+            if (contentWidth > expandThreshold) {
                 setAutoCollapsed(false);
                 if (typeof forcedSidebarWidth === 'number') {
                     setForcedSidebarWidth(undefined);
@@ -201,7 +173,7 @@ export const Sidebar = ({ showAccounts = true }: SidebarProps) => {
                 directions={['right']}
                 width={sidebarWidth}
                 minWidth={SIDEBAR_MIN_WIDTH}
-                maxWidth={SIDEBAR_MAX_WIDTH}
+                maxWidth={maxResizableSidebarWidth}
                 zIndex={zIndices.draggableComponent}
                 onWidthResizeEnd={handleSidebarWidthChanged}
                 onWidthResizeMove={handleSidebarWidthUpdate}
@@ -209,38 +181,36 @@ export const Sidebar = ({ showAccounts = true }: SidebarProps) => {
                     if (direction === 'left' || direction === 'right') {
                         setUserResizingSidebar(true);
                         setAutoCollapseSuppressed(true);
+                        // Cap growth so contentWidth can't shrink below MIN_CONTENT_WIDTH.
+                        // Captured at gesture start to stay stable despite ResizeObserver debounce lag.
+                        const limit =
+                            contentWidth != null
+                                ? sidebarWidth + contentWidth - MIN_CONTENT_WIDTH
+                                : SIDEBAR_MAX_WIDTH;
+                        setMaxResizableSidebarWidth(
+                            Math.min(SIDEBAR_MAX_WIDTH, Math.max(sidebarWidth, limit)),
+                        );
                     }
                 }}
                 onResizeStop={() => {
                     setUserResizingSidebar(false);
+                    setMaxResizableSidebarWidth(SIDEBAR_MAX_WIDTH);
                 }}
                 disabledWidthInterval={[SIDEBAR_MIN_WIDTH, SIDEBAR_COLLAPSED_WIDTH]}
                 flex="1"
                 forcedWidth={forcedSidebarWidth}
             >
-                <Container $elevation={elevation}>
+                <Container>
                     <TrafficLightOffset>
                         <Content>
                             <WalletSwitcher isCollapsed={isSidebarCollapsed} />
-                            <ElevationUp>
-                                <Navigation />
-                            </ElevationUp>
+
+                            <Navigation />
                             <HorizontalSpacer>
                                 {showAccountsAndIsDeviceReady && <AccountsMenu />}
                             </HorizontalSpacer>
-                            <AnimatePresence onExitComplete={onNotificationBannerClosed}>
-                                {isUpdateAvailable && showUpdateBannerNotification && (
-                                    <UpdateNotificationBanner
-                                        updateStatusDevice={updateStatusDevice}
-                                        updateStatusSuite={updateStatusSuite}
-                                        onClose={() => setIsBannerVisible(false)}
-                                    />
-                                )}
-                            </AnimatePresence>
-                            <QuickActions
-                                isSidebarCollapsed={isSidebarCollapsed}
-                                hideUpdateQuickAction={showUpdateBannerNotification}
-                            />
+                            {!isSidebarCollapsed && <SidebarBanners />}
+                            <QuickActions isSidebarCollapsed={isSidebarCollapsed} />
                         </Content>
                     </TrafficLightOffset>
                 </Container>

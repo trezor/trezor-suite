@@ -1,20 +1,22 @@
 import { useEffect, useMemo } from 'react';
 
+import { useEthereumValidatorsQueue } from '@suite-common/earn-staking-api/src/staking';
 import { getDaysToAddToPool, getDaysToUnstake } from '@suite-common/staking';
 import {
     fetchAllTransactionsForAccountThunk,
     selectAccountIsStakingActive,
     selectAccountStakeTransactions,
     selectAccountUnstakeTransactions,
+    selectEthNextRewardPayout,
     selectHasRunningDiscovery,
-    selectPoolStatsApyData,
-    selectPoolStatsNextRewardPayout,
-    selectValidatorsQueue,
+    selectPoolStatsApy,
 } from '@suite-common/wallet-core';
-import { SelectedAccountLoaded } from '@suite-common/wallet-types';
-import { getStakingDataForNetwork } from '@suite-common/wallet-utils';
+import { type SelectedAccountLoaded } from '@suite-common/wallet-types';
+import {
+    getStakingDataForNetwork,
+    hasStakeInPendingDepositedState,
+} from '@suite-common/wallet-utils';
 import { Column, Flex, Grid } from '@trezor/components';
-import { spacings } from '@trezor/theme';
 
 import { DashboardSection } from 'src/components/dashboard';
 import { useDispatch, useLayoutSize, useSelector } from 'src/hooks/suite';
@@ -24,7 +26,7 @@ import { StakingDashboard } from '../StakingDashboard/StakingDashboard';
 import { ApyCard } from '../StakingDashboard/components/ApyCard';
 import { ClaimCard } from '../StakingDashboard/components/ClaimCard';
 import { DiscoveryWarning } from '../StakingDashboard/components/DiscoveryWarning';
-import { EmptyStakingCard } from '../StakingDashboard/components/EmptyStakingCard';
+import { EmptyStakingCard } from '../StakingDashboard/components/EmptyStakingCard/EmptyStakingCard';
 import { PayoutCardNextRewards } from '../StakingDashboard/components/PayoutCardNextRewards';
 import { StakingCard } from '../StakingDashboard/components/StakingCard';
 import { Transactions } from '../StakingDashboard/components/Transactions';
@@ -36,22 +38,23 @@ interface EthStakingDashboardProps {
 export const EthStakingDashboard = ({ selectedAccount }: EthStakingDashboardProps) => {
     const { account } = selectedAccount;
 
-    const accountKey = account?.key ?? '';
+    const accountKey = account.key;
     const { isBelowLaptop } = useLayoutSize();
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
 
-    const { data, isLoading } =
-        useSelector(state => selectValidatorsQueue(state, account?.symbol)) || {};
-
-    const apy = useSelector(state => selectPoolStatsApyData(state, account));
-    const nextRewardPayout = useSelector(state =>
-        selectPoolStatsNextRewardPayout(state, account?.symbol),
-    );
+    const apy = useSelector(state => selectPoolStatsApy(state, { account }));
+    const nextRewardPayout = useSelector(selectEthNextRewardPayout);
 
     const stakeTxs = useSelector(state => selectAccountStakeTransactions(state, accountKey));
     const unstakeTxs = useSelector(state => selectAccountUnstakeTransactions(state, accountKey));
 
     const dispatch = useDispatch();
+
+    const lastTxBlockTime = stakeTxs[0]?.blockTime;
+    const timestamp = hasStakeInPendingDepositedState(account) ? lastTxBlockTime : undefined;
+
+    const { data: validatorQueueData, isLoading: isValidatorQueueLoading } =
+        useEthereumValidatorsQueue({ account, timestamp });
 
     useEffect(() => {
         if (accountKey) {
@@ -66,8 +69,8 @@ export const EthStakingDashboard = ({ selectedAccount }: EthStakingDashboardProp
 
     const txs = useMemo(() => [...stakeTxs, ...unstakeTxs], [stakeTxs, unstakeTxs]);
 
-    const daysToAddToPool = getDaysToAddToPool(stakeTxs, data);
-    const daysToUnstake = getDaysToUnstake(unstakeTxs, data);
+    const daysToAddToPool = getDaysToAddToPool(stakeTxs, validatorQueueData);
+    const daysToUnstake = getDaysToUnstake(unstakeTxs, validatorQueueData);
 
     const { canClaim = false } = getStakingDataForNetwork(account) ?? {};
 
@@ -77,10 +80,10 @@ export const EthStakingDashboard = ({ selectedAccount }: EthStakingDashboardProp
         <StakingDashboard
             selectedAccount={selectedAccount}
             dashboard={
-                <Column gap={spacings.xxxxl}>
+                <Column gap={48}>
                     {isStakingActive ? (
                         <DashboardSection>
-                            <Column gap={spacings.sm}>
+                            <Column gap={12}>
                                 {isDiscoveryRunning && <DiscoveryWarning />}
 
                                 <InstantStakeBanner
@@ -88,23 +91,20 @@ export const EthStakingDashboard = ({ selectedAccount }: EthStakingDashboardProp
                                     daysToAddToPool={daysToAddToPool}
                                     daysToUnstake={daysToUnstake}
                                 />
-                                <Grid
-                                    columns={isBelowLaptop || !canClaim ? 1 : 2}
-                                    gap={spacings.sm}
-                                >
+                                <Grid columns={isBelowLaptop || !canClaim ? 1 : 2} gap={12}>
                                     <ClaimCard />
-                                    <Flex direction={canClaim ? 'column' : 'row'} gap={spacings.sm}>
+                                    <Flex direction={canClaim ? 'column' : 'row'} gap={12}>
                                         <ApyCard apy={apy} />
                                         <PayoutCardNextRewards
                                             nextRewardPayout={nextRewardPayout}
                                             daysToAddToPool={daysToAddToPool}
-                                            validatorWithdrawTime={data?.validatorWithdrawTime}
+                                            validatorWithdrawTime={validatorQueueData?.withdrawTime}
                                         />
                                     </Flex>
                                 </Grid>
                                 <StakingCard
                                     account={account}
-                                    isValidatorsQueueLoading={isLoading}
+                                    isValidatorsQueueLoading={isValidatorQueueLoading}
                                     daysToAddToPool={daysToAddToPool}
                                     daysToUnstake={daysToUnstake}
                                 />

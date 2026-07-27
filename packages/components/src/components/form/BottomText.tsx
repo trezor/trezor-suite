@@ -1,11 +1,9 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
 import styled, { keyframes } from 'styled-components';
 
-import { spacings } from '@trezor/theme';
-
 import { Row } from '../Flex/Flex';
-import { Icon, IconName, IconProps } from '../Icon/Icon';
+import { Icon, type IconComponent, type IconProps } from '../Icon/Icon';
 import { Text } from '../typography/Text/Text';
 
 const slideDown = keyframes`
@@ -27,7 +25,7 @@ type BottomTextProps = {
     hasError?: boolean;
     isDisabled?: boolean;
     iconComponent?: ReactNode;
-    iconName?: IconName;
+    icon?: IconComponent;
     children: ReactNode;
     'data-testid'?: string;
 };
@@ -36,7 +34,7 @@ export const BottomText = ({
     hasError,
     isDisabled,
     iconComponent,
-    iconName,
+    icon,
     children,
     'data-testid': dataTestId,
 }: BottomTextProps) => {
@@ -50,8 +48,8 @@ export const BottomText = ({
 
     return (
         <Container>
-            <Row gap={spacings.xxs}>
-                {iconComponent ?? (iconName && <Icon name={iconName} size={16} {...iconProps} />)}
+            <Row gap={4}>
+                {iconComponent ?? (icon && <Icon as={icon} size={16} {...iconProps} />)}
                 <Text
                     data-testid={dataTestId}
                     intent={textIntent}
@@ -60,6 +58,7 @@ export const BottomText = ({
                     typographyStyle="body-sm"
                     as="div"
                     flex="auto"
+                    overflowWrap="anywhere"
                 >
                     {children}
                 </Text>

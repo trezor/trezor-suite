@@ -1,10 +1,10 @@
 import { useCallback } from 'react';
 
-import { CryptoId } from 'invity-api';
+import { type CryptoId } from 'invity-api';
 
 import { cryptoIdToNetwork } from '@suite-common/trading';
 import { getNetwork } from '@suite-common/wallet-config';
-import { AccountKey } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 
 import { useTradingFindAccountOrToken } from './useTradingFindAccountOrToken';
 

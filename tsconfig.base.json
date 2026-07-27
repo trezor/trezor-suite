@@ -14,6 +14,7 @@
         "sourceMap": true,
         "strict": true,
         "strictNullChecks": true,
+        "noUncheckedIndexedAccess": true,
         "noErrorTruncation": true,
         "noFallthroughCasesInSwitch": true,
         "useUnknownInCatchVariables": false,
@@ -32,7 +33,6 @@
     "exclude": [
         "**/node_modules",
         "**/lib",
-        "**/libESM",
         "**/libDev",
         "**/build",
         "**/build-electron",
@@ -42,12 +42,14 @@
         "**/public",
         "**/protobuf-patches",
         "**/trezor-common",
-        "**/jest.config.*js"
+        "**/jest.config.*js",
+        "**/rollup.*.config.mjs"
     ],
     "ts-node": {
         "compilerOptions": {
-            "module": "CommonJS",
-            "moduleResolution": "node"
+            "module": "Node16",
+            "moduleResolution": "node16",
+            "rootDir": "."
         }
     }
 }

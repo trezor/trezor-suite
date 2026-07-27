@@ -9,7 +9,7 @@ import {
 import { Card, Column, Text } from '@trezor/components';
 
 import { useSelector } from 'src/hooks/suite';
-import { Account, WalletAccountTransaction } from 'src/types/wallet';
+import { type Account, type WalletAccountTransaction } from 'src/types/wallet';
 
 import { TransactionList } from './TransactionList';
 import { useVisibleTransactions } from './useFetchTransactions';

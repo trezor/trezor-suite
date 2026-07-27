@@ -3,19 +3,20 @@ docker
 docs
 
 packages/connect-cli/
+packages/connect-electron/
 packages/ipc-proxy/
 packages/suite/
 packages/suite-analytics/
 packages/suite-build/
 packages/suite-data/
 packages/suite-desktop/
+packages/suite-desktop-api/
 packages/suite-desktop-core/
 packages/suite-desktop-ui/
 packages/suite-storage/
 packages/suite-web/
 packages/transport-bluetooth/
-suite/e2e/
-suite/test-utils/
+suite/
 
 
 ### content of all .gitignore files is not applied if .easignore is present
@@ -76,7 +77,6 @@ test-results
 
 lib
 libDev
-libESM
 dist
 public
 coverage

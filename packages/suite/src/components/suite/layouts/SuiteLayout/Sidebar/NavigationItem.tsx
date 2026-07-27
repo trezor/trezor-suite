@@ -1,96 +1,70 @@
-import { MouseEvent } from 'react';
+import { type MouseEvent } from 'react';
 
 import styled, { css } from 'styled-components';
 
-import { ExtendedMessageDescriptor, Translation, TranslationKey } from '@suite/intl';
-import { Route } from '@suite-common/suite-types';
-import { Icon, IconName, IconSize, Paragraph, Tooltip, useElevation } from '@trezor/components';
-import { getFocusShadowStyle } from '@trezor/components/src/utils/utils';
+import { type ExtendedMessageDescriptor, Translation, type TranslationKey } from '@suite/intl';
+import { type Route, goto, selectRouteName } from '@suite/router';
 import {
-    Elevation,
-    TypographyStyle,
-    borders,
-    mapElevationToBackground,
-    spacingsPx,
-} from '@trezor/theme';
+    Icon,
+    type IconComponent,
+    Paragraph,
+    Row,
+    ShortcutBadge,
+    type ShortcutBadgeProps,
+    StatusBadge,
+    TOOLTIP_DELAY_LONG,
+    TOOLTIP_DELAY_SHORT,
+    Tooltip,
+} from '@trezor/components';
+import { commonFocusStyles } from '@trezor/components/src/utils/utils';
 
-import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectRouteName } from 'src/reducers/suite/routerReducer';
 import { useResponsiveContext } from 'src/support/suite/ResponsiveContext';
 
-export const NavigationItemBase = styled.div.attrs(() => ({
-    tabIndex: 0,
-}))`
+const Container = styled.button<{ $isActive?: boolean }>`
     flex: 1;
     display: flex;
-    flex-direction: row;
     align-items: center;
-    padding: ${spacingsPx.xs};
-    border-radius: ${borders.radii.sm};
-    color: ${({ theme }) => theme.textSubdued};
-    transition:
-        color 0.15s,
-        background 0.15s;
+    gap: 16px;
+    padding: 8px;
+    border-radius: 12px;
+    transition: 0.2s ease-in-out;
     cursor: pointer;
-    border: 1px solid transparent;
+    border: 0;
+    background: none;
     -webkit-app-region: no-drag;
-    ${getFocusShadowStyle()}
-`;
 
-const Container = styled(NavigationItemBase)<{
-    $elevation: Elevation;
-    $isActive?: boolean;
-    $isRounded?: boolean;
-    $typographyStyle?: TypographyStyle;
-}>`
-    gap: ${({ $typographyStyle }) =>
-        $typographyStyle === 'body-sm' ? spacingsPx.xs : spacingsPx.md};
-    ${({ theme, $isActive }) =>
-        $isActive
-            ? css<{ $elevation: Elevation }>`
-                  background-color: ${mapElevationToBackground};
-                  box-shadow: ${theme.boxShadowBase};
-                  color: ${theme.textDefault};
+    &:focus-visible {
+        ${commonFocusStyles}
+    }
 
-                  path {
-                      fill: ${theme.iconDefault};
-                  }
-              `
-            : css`
-                  &:hover {
-                      color: ${theme.textDefault};
+    &:hover {
+        background: ${({ theme }) => theme.elementFillGhostHovered};
+    }
 
-                      path {
-                          fill: ${theme.iconDefault};
-                      }
-                  }
-              `}
-    ${({ $isRounded }) =>
-        $isRounded &&
+    ${({ $isActive, theme }) =>
+        $isActive &&
         css`
-            border-radius: ${borders.radii.full};
-            padding: ${spacingsPx.xs} ${spacingsPx.md};
+            background: ${theme.elementFillElevated} !important;
+            box-shadow: ${theme.elementShadowElevated};
         `}
 `;
 
-export interface NavigationItemProps {
+export type NavigationItemProps = {
     nameId: TranslationKey;
-    icon: IconName;
+    icon: IconComponent;
     expanded?: boolean;
     routes?: Route['name'][];
     goToRoute?: Route['name'];
     preserveParams?: boolean;
     isActive?: boolean;
+    hasIndicator?: boolean;
     'data-testid'?: string;
     className?: string;
     values?: ExtendedMessageDescriptor['values'];
-    iconSize?: IconSize;
-    itemsCount?: number;
-    isRounded?: boolean;
-    typographyStyle?: TypographyStyle;
     onClick?: () => void;
-}
+    shortcut?: ShortcutBadgeProps['shortcut'];
+};
 
 type TitleProps = {
     nameId: TranslationKey;
@@ -99,27 +73,21 @@ type TitleProps = {
 
 const Title = ({ nameId, values }: TitleProps) => <Translation id={nameId} values={values} />;
 
-export const NavItem = (props: NavigationItemProps) => {
-    const {
-        nameId,
-        icon,
-        expanded,
-        routes,
-        goToRoute,
-        isActive,
-        'data-testid': dataTest,
-        className,
-        values,
-        preserveParams,
-        iconSize = 24,
-        itemsCount,
-        isRounded = false,
-        typographyStyle = 'body-md',
-        onClick,
-    } = props;
-
+const NavItem = ({
+    nameId,
+    icon,
+    expanded,
+    routes,
+    goToRoute,
+    isActive,
+    hasIndicator,
+    'data-testid': dataTest,
+    values,
+    preserveParams,
+    onClick,
+    shortcut,
+}: NavigationItemProps) => {
     const activeRoute = useSelector(selectRouteName);
-    const { elevation } = useElevation();
     const dispatch = useDispatch();
 
     const handleClick = (e: MouseEvent) => {
@@ -128,56 +96,64 @@ export const NavItem = (props: NavigationItemProps) => {
         onClick?.();
 
         if (goToRoute !== undefined) {
-            dispatch(goto(goToRoute, preserveParams === true ? { preserveParams } : undefined));
+            dispatch(
+                goto({
+                    routeName: goToRoute,
+                    ...(preserveParams === true ? { preserveParams } : undefined),
+                }),
+            );
         }
     };
 
     const isActiveRoute = routes?.some(route => route === activeRoute);
+    const isItemActive = isActive || isActiveRoute;
+
+    const isTooltipActive = expanded ? shortcut !== undefined : true;
 
     return (
-        <Container
-            $isActive={isActive || isActiveRoute}
-            onClick={handleClick}
-            data-testid={dataTest || `@suite/menu/${goToRoute}`}
-            className={className}
-            tabIndex={0}
-            $elevation={elevation}
-            $isRounded={isRounded}
-            $typographyStyle={typographyStyle}
+        <Tooltip
+            cursor="pointer"
+            flex="1"
+            content={
+                shortcut ? (
+                    <Row gap={12}>
+                        <Title nameId={nameId} values={values} />
+                        <ShortcutBadge shortcut={shortcut} isInverse />
+                    </Row>
+                ) : (
+                    <Title nameId={nameId} values={values} />
+                )
+            }
+            isActive={isTooltipActive}
+            delayShow={expanded ? TOOLTIP_DELAY_LONG : TOOLTIP_DELAY_SHORT}
+            placement="right"
         >
-            <Tooltip
-                cursor="pointer"
-                content={<Title nameId={nameId} values={values} />}
-                isActive={!expanded}
-                placement="right"
-                hasArrow
+            <Container
+                $isActive={isItemActive}
+                onClick={handleClick}
+                data-testid={dataTest || `@suite/menu/${goToRoute}`}
+                type="button"
             >
-                <Icon
-                    name={icon}
-                    size={iconSize}
-                    intent="neutral"
-                    priority="secondary"
-                    pointerEvents="none"
-                />
-            </Tooltip>
-            {expanded && (
-                <>
-                    <Paragraph typographyStyle={typographyStyle}>
+                <StatusBadge isShown={hasIndicator} intent="critical">
+                    <Icon
+                        as={icon}
+                        size={24}
+                        intent="neutral"
+                        priority={isItemActive ? 'primary' : 'secondary'}
+                        pointerEvents="none"
+                    />
+                </StatusBadge>
+                {expanded && (
+                    <Paragraph
+                        typographyStyle="body-md"
+                        intent="neutral"
+                        priority={isItemActive ? 'primary' : 'secondary'}
+                    >
                         <Translation id={nameId} values={values} />
                     </Paragraph>
-
-                    {itemsCount && (
-                        <Paragraph
-                            intent="neutral"
-                            priority="secondary"
-                            typographyStyle={typographyStyle}
-                        >
-                            {itemsCount}
-                        </Paragraph>
-                    )}
-                </>
-            )}
-        </Container>
+                )}
+            </Container>
+        </Tooltip>
     );
 };
 

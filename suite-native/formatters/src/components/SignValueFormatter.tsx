@@ -1,8 +1,8 @@
 import { isSignValuePositive, useFormatters } from '@suite-common/formatters';
-import { SignValue } from '@suite-common/suite-types';
-import { Text, TextProps } from '@suite-native/atoms';
+import { type SignValue } from '@suite-common/suite-types';
+import { Text, type TextProps } from '@suite-native/atoms';
 
-import { FormatterProps } from '../types';
+import { type FormatterProps } from '../types';
 
 type SignValueFormatterProps = FormatterProps<SignValue | undefined> & TextProps;
 
@@ -11,7 +11,7 @@ export const SignValueFormatter = ({ value, ...textProps }: SignValueFormatterPr
 
     if (!value) return null;
 
-    const signColor = isSignValuePositive(value) ? 'textSecondaryHighlight' : 'textAlertRed';
+    const signColor = isSignValuePositive(value) ? 'contentBrand' : 'contentCritical';
 
     return (
         <Text color={signColor} {...textProps}>

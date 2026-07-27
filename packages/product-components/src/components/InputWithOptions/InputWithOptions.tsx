@@ -1,12 +1,17 @@
 import React, { useEffect } from 'react';
-import { FieldValues } from 'react-hook-form';
+import { type FieldValues } from 'react-hook-form';
 
 import styled from 'styled-components';
 
-import { Column, FractionButton, FractionButtonProps, Row, TextButton } from '@trezor/components';
-import { spacings } from '@trezor/theme';
+import {
+    Column,
+    FractionButton,
+    type FractionButtonProps,
+    Row,
+    TextButton,
+} from '@trezor/components';
 
-import { NumberInput, NumberInputProps } from '../NumberInput/NumberInput';
+import { NumberInput, type NumberInputProps } from '../NumberInput/NumberInput';
 
 const InputWithOptionsContainer = styled.div`
     width: 100%;
@@ -77,10 +82,10 @@ export const InputWithOptions = <TFieldValues extends FieldValues>({
 
     return (
         <InputWithOptionsContainer>
-            <Column gap={spacings.xs}>
+            <Column gap={8}>
                 {numberInputs}
-                <Row justifyContent="space-between">
-                    <Row gap={spacings.xs} data-testid={`${dataTest}/fraction-buttons`}>
+                <Row justifyContent="space-between" gap={12}>
+                    <Row gap={8} data-testid={`${dataTest}/fraction-buttons`}>
                         {options.map(button => (
                             <FractionButton key={button.id} {...button} />
                         ))}

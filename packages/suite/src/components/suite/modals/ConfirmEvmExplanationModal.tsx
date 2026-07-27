@@ -1,32 +1,12 @@
-import styled from 'styled-components';
-
-import { Translation, TranslationKey } from '@suite/intl';
+import { Translation, type TranslationKey } from '@suite/intl';
+import { closeModal } from '@suite/modal';
 import { networks } from '@suite-common/wallet-config';
-import { Account } from '@suite-common/wallet-types';
-import { Image, Modal, Paragraph } from '@trezor/components';
-import { CoinLogo } from '@trezor/product-components';
-import { spacings } from '@trezor/theme';
+import { type Account } from '@suite-common/wallet-types';
+import { Column, H2, Modal, Paragraph } from '@trezor/components';
+import { WarningIcon } from '@trezor/icons';
 
 import { SUITE } from 'src/actions/suite/constants';
-import { onCancel } from 'src/actions/suite/modalActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-
-const ImageWrapper = styled.div`
-    position: relative;
-    width: 97.5%;
-`;
-
-const CoinLogoLeft = styled.div<{ $isETH: boolean }>`
-    position: absolute;
-    top: 20%;
-    left: ${({ $isETH }) => ($isETH ? '6.75%' : '5.5%')};
-`;
-
-const CoinLogoRight = styled.div`
-    position: absolute;
-    top: 34%;
-    right: 5.5%;
-`;
 
 export interface ConfirmNetworkExplanationModalProps {
     account: Account | undefined;
@@ -39,7 +19,7 @@ export const ConfirmEvmExplanationModal = ({
 }: ConfirmNetworkExplanationModalProps) => {
     const dispatch = useDispatch();
     const close = () => {
-        dispatch(onCancel());
+        dispatch(closeModal());
         if (!account?.symbol) {
             return;
         }
@@ -88,46 +68,27 @@ export const ConfirmEvmExplanationModal = ({
                 </Modal.Button>
             }
             width={600}
-            heading={
-                <Translation
-                    id={titleTranslationsIds[route]}
-                    values={{
-                        network: network.name,
-                    }}
-                />
-            }
+            icon={WarningIcon}
+            intent="warning"
         >
-            <ImageWrapper>
-                <Image
-                    image={
-                        account.symbol === 'eth'
-                            ? 'CONFIRM_EVM_EXPLANATION_ETH'
-                            : 'CONFIRM_EVM_EXPLANATION_OTHER'
-                    }
-                    width="100%"
-                />
-                <CoinLogoLeft $isETH={account.symbol === 'eth'}>
-                    <CoinLogo size={80} symbol={account.symbol} />
-                </CoinLogoLeft>
-                {account.symbol !== 'eth' && (
-                    <CoinLogoRight>
-                        <CoinLogo size={80} symbol="eth" />
-                    </CoinLogoRight>
-                )}
-            </ImageWrapper>
-            <Paragraph
-                intent="neutral"
-                priority="secondary"
-                typographyStyle="body-sm"
-                margin={{ top: spacings.xl }}
-            >
-                <Translation
-                    id={descriptionTranslationsIds[route]}
-                    values={{
-                        network: network.name,
-                    }}
-                />
-            </Paragraph>
+            <Column gap={8}>
+                <H2 typographyStyle="headline-sm">
+                    <Translation
+                        id={titleTranslationsIds[route]}
+                        values={{
+                            network: network.name,
+                        }}
+                    />
+                </H2>
+                <Paragraph intent="neutral" priority="secondary" typographyStyle="body-sm">
+                    <Translation
+                        id={descriptionTranslationsIds[route]}
+                        values={{
+                            network: network.name,
+                        }}
+                    />
+                </Paragraph>
+            </Column>
         </Modal>
     );
 };

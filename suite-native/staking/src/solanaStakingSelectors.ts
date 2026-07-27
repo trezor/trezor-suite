@@ -1,32 +1,34 @@
-import { createWeakMapSelector } from '@suite-common/redux-utils';
+import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import {
-    AccountsRootState,
-    StakeRootState,
+    type AccountsRootState,
+    type StakeRootState,
     selectAccountByKey,
     selectDeviceAccounts,
-    selectPoolStatsApyData,
+    selectPoolStatsApy,
 } from '@suite-common/wallet-core';
-import { AccountKey } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 import {
     calculateSolanaStakingReward,
     getSolStakingAccountsInfo,
 } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { NativeStakingRootState } from './types';
+import { type NativeStakingRootState } from './types';
 
-export const createMemoizedSelector = createWeakMapSelector.withTypes<NativeStakingRootState>();
+const createMemoizedSelector = createWeakMapSelector.withTypes<NativeStakingRootState>();
 
 export const selectVisibleDeviceSolanaAccountsWithStakingByNetworkSymbol = createMemoizedSelector(
     [selectDeviceAccounts, (_state, symbol: NetworkSymbol) => symbol],
     (accounts, symbol) =>
-        accounts.filter(
-            account =>
-                account.symbol === symbol &&
-                account.visible &&
-                account.networkType === 'solana' &&
-                !!account.misc?.solStakingAccounts?.length,
+        returnStableArrayIfEmpty(
+            accounts.filter(
+                account =>
+                    account.symbol === symbol &&
+                    account.visible &&
+                    account.networkType === 'solana' &&
+                    !!account.misc?.solStakingAccounts?.length,
+            ),
         ),
 );
 
@@ -61,7 +63,7 @@ export const selectSolanaAPYByAccountKey = (
     const account = selectAccountByKey(state, accountKey);
     if (!account) return 0;
 
-    return selectPoolStatsApyData(state, account);
+    return selectPoolStatsApy(state, { account });
 };
 
 export const selectSolanaStakedBalanceByAccountKey = (
@@ -69,13 +71,11 @@ export const selectSolanaStakedBalanceByAccountKey = (
     accountKey: AccountKey,
 ) => {
     const stakingInfo = selectSolStakingAccountsInfoByAccountKey(state, accountKey);
-    if (!stakingInfo) {
+    if (!stakingInfo?.solStakedBalance) {
         return '0';
     }
 
-    return new BigNumber(stakingInfo.solStakedBalance)
-        .plus(stakingInfo.solPendingUnstakeBalance)
-        .toString();
+    return stakingInfo.solStakedBalance;
 };
 
 export const selectExpectedRewardsForEpoch = (
@@ -89,8 +89,8 @@ export const selectExpectedRewardsForEpoch = (
         return '0';
     }
 
-    const yieldBearingBalance = new BigNumber(stakingInfo.solStakedBalance)
-        .plus(stakingInfo.solPendingUnstakeBalance)
+    const yieldBearingBalance = new BigNumber(stakingInfo.solStakedBalance ?? '0')
+        .plus(stakingInfo.solPendingUnstakeBalance ?? '0')
         .toString();
 
     return calculateSolanaStakingReward(yieldBearingBalance, apy);
@@ -130,4 +130,16 @@ export const selectSolanaCanClaimByAccountKey = (
     }
 
     return stakingInfo.canClaimSol;
+};
+
+export const selectSolanaUnstakingBalanceByAccountKey = (
+    state: AccountsRootState,
+    accountKey: AccountKey,
+) => {
+    const stakingInfo = selectSolStakingAccountsInfoByAccountKey(state, accountKey);
+    if (!stakingInfo) {
+        return '0';
+    }
+
+    return stakingInfo.solPendingUnstakeBalance;
 };

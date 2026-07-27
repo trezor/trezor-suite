@@ -1,42 +1,40 @@
-import { AcquiredDevice, TrezorDevice } from '@suite-common/suite-types';
+import { type AcquiredDevice, type TrezorDevice } from '@suite-common/suite-types';
 import {
     DEVICE,
-    Device,
-    DeviceEvent,
-    DeviceMode,
-    KnownDevice,
-    PROTO,
-    UnavailableCapability,
+    type Device,
+    type DeviceEvent,
+    type DeviceMode,
+    type KnownDevice,
+    type PROTO,
+    type UnavailableCapability,
 } from '@trezor/connect';
 import { DeviceModelInternal, getNarrowedDeviceModelInternal } from '@trezor/device-utils';
 import { exhaustive } from '@trezor/type-utils';
 import * as URLS from '@trezor/urls';
-import { hasProp, isArrayMember } from '@trezor/utils';
+import { hasProp, isArrayMember, unique } from '@trezor/utils';
 
-export const deviceStatuses = [
-    'acquired',
-    'unacquired',
-    'unreadable',
-    'disconnected',
-    'unavailable',
-    'bootloader',
-    'initialize',
-    'seedless',
-    'firmware-required',
-    'used-in-other-window',
-    'was-used-in-other-window',
-    'firmware-recommended',
-    'connected',
-    'device-busy',
-    'device-rebooting',
-    'device-bootloader-locked',
-    'device-hard-locked',
-    'device-pin-locked',
-    'device-thp-locked',
-    'firmware-corrupted',
-    'unknown',
-] as const;
-export type DeviceStatus = (typeof deviceStatuses)[number];
+export type DeviceStatus =
+    | 'acquired'
+    | 'unacquired'
+    | 'unreadable'
+    | 'disconnected'
+    | 'unavailable'
+    | 'bootloader'
+    | 'initialize'
+    | 'seedless'
+    | 'firmware-required'
+    | 'used-in-other-window'
+    | 'was-used-in-other-window'
+    | 'firmware-recommended'
+    | 'connected'
+    | 'device-busy'
+    | 'device-rebooting'
+    | 'device-bootloader-locked'
+    | 'device-hard-locked'
+    | 'device-pin-locked'
+    | 'device-thp-locked'
+    | 'firmware-corrupted'
+    | 'unknown';
 
 export const getStatus = (device: TrezorDevice): DeviceStatus => {
     if (!device.connected) {
@@ -163,7 +161,7 @@ export const shouldDisplayInitialWarningIcon = (deviceStatus: DeviceStatus | nul
     }
 };
 
-export const isDeviceRemembered = (device?: TrezorDevice): boolean => !!device?.remember;
+export const getIsDeviceRemembered = (device?: TrezorDevice): boolean => !!device?.remember;
 
 // Is a Suite extended device acquired (corresponds to Connect "known")
 export const isDeviceAcquired = (device?: TrezorDevice): device is AcquiredDevice =>
@@ -262,11 +260,7 @@ export const getSelectedDevice = (
         }
 
         // special case we need to use after wipe device (which changes device_id)
-        if (d.instance === instance && d.path.length > 0 && d.path === device.path) {
-            return true;
-        }
-
-        return false;
+        return d.instance === instance && d.path.length > 0 && d.path === device.path;
     });
 };
 
@@ -407,22 +401,23 @@ export const getDeviceInstances = (
  * * @param {TrezorDevice[]} devices
  * @returns {AcquiredDevice[][]}
  */
-export const getDeviceInstancesGroupedByDeviceId = (devices: TrezorDevice[]): AcquiredDevice[][] =>
+export const getDeviceInstancesGroupedByDeviceId = (devices: TrezorDevice[]): TrezorDevice[][] =>
     devices.reduce((deviceGroups, device) => {
         if (!isDeviceAcquired(device) || !device.id) {
-            return deviceGroups;
-        }
-        const existingGroupIndex = deviceGroups.findIndex(group => group[0].id === device.id);
-        if (existingGroupIndex === -1) {
-            // If the device ID is not yet in the accumulator, add a new group
-            const newGroup = getDeviceInstances(device, devices);
-            if (newGroup.length > 0) {
-                deviceGroups.push(newGroup);
+            deviceGroups.push([device]);
+        } else {
+            const existingGroupIndex = deviceGroups.findIndex(group => group[0]?.id === device.id);
+            if (existingGroupIndex === -1) {
+                // If the device ID is not yet in the accumulator, add a new group
+                const newGroup = getDeviceInstances(device, devices);
+                if (newGroup.length > 0) {
+                    deviceGroups.push(newGroup);
+                }
             }
         }
 
         return deviceGroups;
-    }, [] as AcquiredDevice[][]);
+    }, [] as TrezorDevice[][]);
 
 /**
  * Returns first available instance for each device sorted by priority
@@ -447,24 +442,34 @@ export const getFirstDeviceInstance = (
             const alreadyExists = result.find(r => r.features && dev.features && r.id === dev.id);
             if (alreadyExists) return result;
 
-            // base (np passphrase) or first passphrase instance
-            return result.concat(instances[0]);
+            // base (no passphrase) or first passphrase instance
+            const firstInstance = instances[0];
+            if (firstInstance) {
+                return result.concat(firstInstance);
+            }
+
+            return result;
         }, [] as TrezorDevice[])
         .sort(options.sortingFn);
 
 export const getPhysicalDeviceUniqueIds = (devices: TrezorDevice[]) =>
-    [...new Set(devices.map(d => d.id))].filter(id => id) as string[];
+    unique(devices.map(d => d.id).filter((id): id is string => !!id));
 
 export const getPhysicalDeviceCount = (devices: TrezorDevice[]) =>
     getPhysicalDeviceUniqueIds(devices).length;
 
 export const getSortedDevicesWithoutInstances = (
     devices: TrezorDevice[],
-    excludedDeviceId?: string | null,
+    excludedDeviceId: string | null,
 ) =>
     getDeviceInstancesGroupedByDeviceId(devices)
-        .flatMap(group => group[0])
-        .filter(d => d?.id !== excludedDeviceId && d?.id)
+        .flatMap(group => {
+            const first = group[0];
+            if (!first) return [];
+
+            return first;
+        })
+        .filter(d => d.id !== excludedDeviceId)
         .sort((a, b) => {
             if (!a.connected) return -1;
             if (!b.connected) return 1;
@@ -525,7 +530,7 @@ export const getIsDeviceConnectedAndAuthorized = ({
 }) => !!deviceState && !!deviceFeatures;
 
 export const getIsDeviceDescriptorApiTypeBluetooth = (device: Device | TrezorDevice) =>
-    device.descriptor.apiType === 'bluetooth';
+    device.descriptor?.apiType === 'bluetooth';
 
 export const getIsDeviceConnectedViaBluetooth = (device?: TrezorDevice): boolean =>
     !!device?.connected && getIsDeviceDescriptorApiTypeBluetooth(device);

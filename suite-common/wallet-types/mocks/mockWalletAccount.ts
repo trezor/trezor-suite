@@ -1,54 +1,55 @@
-import { NetworkSymbol } from '@suite-common/wallet-config';
-import { StaticSessionId } from '@trezor/connect';
+import type { NetworkSymbol } from '@suite-common/wallet-config';
+import type { StaticSessionId } from '@trezor/connect';
 
 import {
     Account,
     AccountBase,
     AccountFailureSpecific,
-    AccountNetworkSpecific,
-    AccountNetworkSpecificBitcoin,
-    AccountNetworkSpecificCardano,
-    AccountNetworkSpecificEthereum,
-    AccountNetworkSpecificRipple,
-    AccountNetworkSpecificSolana,
-    AccountNetworkSpecificStellar,
     asAccountDescriptor,
     createAccountKey,
 } from '../src/account';
 
-const networkSpecificDefaultBitcoin: AccountNetworkSpecificBitcoin = {
-    networkType: 'bitcoin',
+const networkSpecificDefaultBitcoin = {
+    networkType: 'bitcoin' as const,
     misc: undefined,
     marker: undefined,
     stellarCursor: undefined,
     page: { index: 1, size: 25, total: 1 },
 };
 
-export const networkSpecificDefaultEthereum: AccountNetworkSpecificEthereum = {
-    networkType: 'ethereum',
+export const networkSpecificDefaultEthereum = {
+    networkType: 'ethereum' as const,
     misc: { nonce: '6' },
     marker: undefined,
     stellarCursor: undefined,
     page: { index: 1, size: 25, total: 1 },
 };
 
-export const networkSpecificDefaultSolana: AccountNetworkSpecificSolana = {
-    networkType: 'solana',
+export const networkSpecificDefaultTron = {
+    networkType: 'tron' as const,
+    misc: {},
     marker: undefined,
     stellarCursor: undefined,
     page: { index: 1, size: 25, total: 1 },
 };
 
-export const networkSpecificDefaultRipple: AccountNetworkSpecificRipple = {
-    networkType: 'ripple',
+export const networkSpecificDefaultSolana = {
+    networkType: 'solana' as const,
+    marker: undefined,
+    stellarCursor: undefined,
+    page: { index: 1, size: 25, total: 1 },
+};
+
+export const networkSpecificDefaultRipple = {
+    networkType: 'ripple' as const,
     marker: undefined,
     stellarCursor: undefined,
     misc: { sequence: 0, reserve: '21' },
     page: undefined,
 };
 
-export const networkSpecificDefaultCardano: AccountNetworkSpecificCardano = {
-    networkType: 'cardano',
+export const networkSpecificDefaultCardano = {
+    networkType: 'cardano' as const,
     marker: undefined,
     stellarCursor: undefined,
     misc: {
@@ -63,15 +64,24 @@ export const networkSpecificDefaultCardano: AccountNetworkSpecificCardano = {
     page: undefined,
 };
 
-export const networkSpecificDefaultStellar: AccountNetworkSpecificStellar = {
+export const networkSpecificDefaultStellar = {
     marker: undefined,
-    misc: { reserve: '100', stellarSequence: '0' },
+    misc: { reserve: '100', baseReserve: '50', stellarSequence: '0' },
     page: undefined,
     stellarCursor: undefined,
-    networkType: 'stellar',
+    networkType: 'stellar' as const,
 };
 
-const networkTypeMap: Record<NetworkSymbol, AccountNetworkSpecific> = {
+type NetworkSpecificDefault =
+    | typeof networkSpecificDefaultBitcoin
+    | typeof networkSpecificDefaultEthereum
+    | typeof networkSpecificDefaultTron
+    | typeof networkSpecificDefaultSolana
+    | typeof networkSpecificDefaultRipple
+    | typeof networkSpecificDefaultCardano
+    | typeof networkSpecificDefaultStellar;
+
+const networkTypeMap: Record<NetworkSymbol, NetworkSpecificDefault> = {
     // Bitcoin-like
     btc: networkSpecificDefaultBitcoin,
     regtest: networkSpecificDefaultBitcoin,
@@ -83,6 +93,10 @@ const networkTypeMap: Record<NetworkSymbol, AccountNetworkSpecific> = {
     // Eth
     eth: networkSpecificDefaultEthereum,
     etc: networkSpecificDefaultEthereum,
+
+    // Testnet Eth
+    tsep: networkSpecificDefaultEthereum,
+    thod: networkSpecificDefaultEthereum,
 
     // Solana
     sol: networkSpecificDefaultSolana,
@@ -100,10 +114,10 @@ const networkTypeMap: Record<NetworkSymbol, AccountNetworkSpecific> = {
     arb: networkSpecificDefaultBitcoin,
     base: networkSpecificDefaultBitcoin,
     op: networkSpecificDefaultBitcoin,
+    rhc: networkSpecificDefaultEthereum,
     avax: networkSpecificDefaultBitcoin,
-    trx: networkSpecificDefaultBitcoin,
-    tsep: networkSpecificDefaultBitcoin,
-    thod: networkSpecificDefaultBitcoin,
+    trx: networkSpecificDefaultTron,
+    ttrx: networkSpecificDefaultTron,
     txrp: networkSpecificDefaultBitcoin,
     txlm: networkSpecificDefaultBitcoin,
 };
@@ -121,7 +135,7 @@ export const mockWalletAccount = (
         | 'symbol'
     > &
         MandatoryAccountData,
-    networkSpecific?: AccountNetworkSpecific,
+    networkSpecific?: NetworkSpecificDefault,
 ): Account => {
     const descriptor = account.descriptor ?? asAccountDescriptor(account.symbol);
 
@@ -140,7 +154,6 @@ export const mockWalletAccount = (
         utxo: undefined,
         addresses: undefined,
         metadata: { key: 'xpub' },
-        ts: 0,
         ...account,
 
         // This is mandatory to pass to enforce consistency

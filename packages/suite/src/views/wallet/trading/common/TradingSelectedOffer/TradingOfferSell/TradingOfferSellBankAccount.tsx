@@ -1,44 +1,20 @@
 import { useState } from 'react';
 
-import { BankAccount } from 'invity-api';
+import { type BankAccount } from 'invity-api';
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
-import { type TradingSellType, sellUtils } from '@suite-common/trading';
-import { Button, Icon, Row, Select } from '@trezor/components';
-import { fontWeights, spacingsPx, typography } from '@trezor/theme';
+import {
+    selectTradingSellIsLoading,
+    selectTradingSellSelectedQuote,
+    sellUtils,
+} from '@suite-common/trading';
+import { Button, Column, Divider, Icon, Row, Select, Text } from '@trezor/components';
+import { CheckIcon, PlusIcon } from '@trezor/icons';
 
 import { QuestionTooltip } from 'src/components/suite';
-import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
-
-const Wrapper = styled.div`
-    display: flex;
-    flex-direction: column;
-    margin-top: ${spacingsPx.xs};
-`;
-
-const CardContent = styled.div`
-    display: flex;
-    flex-direction: column;
-    padding: ${spacingsPx.xl};
-`;
-
-const Label = styled.div`
-    display: flex;
-    align-items: center;
-    font-weight: ${fontWeights.medium};
-`;
-
-const StyledQuestionTooltip = styled(QuestionTooltip)`
-    padding-left: ${spacingsPx.xxxs};
-`;
-
-const CustomLabel = styled(Label)`
-    padding: ${spacingsPx.sm} 0;
-    color: ${({ theme }) => theme.textSubdued};
-`;
-
-const LabelText = styled.div``;
+import { useSelector } from 'src/hooks/suite';
+import { useTradingSellTradeActions } from 'src/hooks/wallet/trading/useTradingSellTradeActions';
 
 const SelectWrapper = styled.div`
     width: 100%;
@@ -47,116 +23,49 @@ const SelectWrapper = styled.div`
     .react-select__single-value {
         width: 100%;
     }
-`;
-
-const Option = styled.div`
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    padding: 0 0 0 ${spacingsPx.xxs};
-    width: 100%;
-`;
-
-const AccountInfo = styled.div`
-    display: flex;
-    flex-direction: column;
-    flex: 2;
-`;
-
-const AccountName = styled.div`
-    display: flex;
-    color: ${({ theme }) => theme.textSubdued};
-`;
-
-const AccountNumber = styled.div`
-    display: flex;
-    font-weight: ${fontWeights.medium};
-`;
-
-const AccountVerified = styled.div`
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    ${typography['body-xs']}
-    color: ${({ theme }) => theme.textPrimaryDefault};
-`;
-
-const AccountNotVerified = styled(AccountVerified)`
-    color: ${({ theme }) => theme.textSubdued};
-`;
-
-const ButtonWrapper = styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding-top: ${spacingsPx.lg};
-    border-top: 1px solid ${({ theme }) => theme.borderElevation1};
-    margin: ${spacingsPx.lg} 0;
-`;
-
-const RowWrapper = styled.div`
-    margin: ${spacingsPx.xxs} 0;
-    display: flex;
 
     .react-select__value-container {
-        padding-right: ${spacingsPx.lg};
+        padding-right: 20px;
     }
 `;
 
-const Left = styled.div`
-    display: flex;
-    flex: 1;
-    justify-content: flex-start;
-    flex-wrap: wrap;
-`;
-
-const IconWrapper = styled.div`
-    flex: none;
-    margin-right: ${spacingsPx.xxxs};
-`;
-
 export const TradingOfferSellBankAccount = () => {
-    const {
-        form: {
-            state: { isFormLoading },
-        },
-        confirmTrade,
-        addBankAccount,
-        selectedQuote,
-    } = useTradingFormContext<TradingSellType>();
+    const { confirmTrade, addBankAccount } = useTradingSellTradeActions();
+    const isLoading = useSelector(selectTradingSellIsLoading);
+    const selectedQuote = useSelector(selectTradingSellSelectedQuote);
     const [bankAccount, setBankAccount] = useState<BankAccount | undefined>(
         selectedQuote?.bankAccounts ? selectedQuote?.bankAccounts[0] : undefined,
     );
 
-    if (!selectedQuote || !selectedQuote.bankAccounts) return null;
+    if (!selectedQuote?.bankAccounts) return null;
 
     const { bankAccounts } = selectedQuote;
 
     return (
-        <Wrapper>
-            <CardContent>
-                <RowWrapper>
-                    <Left>
-                        <CustomLabel>
-                            <LabelText>
+        <Column margin={{ top: 8 }}>
+            <Column padding={24}>
+                <Row margin={{ vertical: 4 }}>
+                    <Row flex="1" flexWrap="wrap">
+                        <Row alignItems="center" gap={2} padding={{ vertical: 12 }}>
+                            <Text typographyStyle="body-md" color="contentSecondary">
                                 <Translation id="TR_SELL_BANK_ACCOUNT" />
-                            </LabelText>
-                            <StyledQuestionTooltip tooltip="TR_SELL_BANK_ACCOUNT_TOOLTIP" />
-                        </CustomLabel>
-                    </Left>
+                            </Text>
+                            <QuestionTooltip tooltip="TR_SELL_BANK_ACCOUNT_TOOLTIP" />
+                        </Row>
+                    </Row>
                     <Row alignItems="center">
                         <Button
                             intent="neutral"
                             priority="secondary"
-                            iconLeft="plus"
+                            iconLeft={PlusIcon}
                             data-testid="add-output"
                             onClick={addBankAccount}
                         >
                             <Translation id="TR_SELL_ADD_BANK_ACCOUNT" />
                         </Button>
                     </Row>
-                </RowWrapper>
-                <RowWrapper>
+                </Row>
+                <Row margin={{ vertical: 4 }}>
                     <SelectWrapper>
                         <Select
                             onChange={(selected: BankAccount) => {
@@ -167,44 +76,52 @@ export const TradingOfferSellBankAccount = () => {
                             options={bankAccounts}
                             minValueWidth={70}
                             formatOptionLabel={(option: BankAccount) => (
-                                <Option>
-                                    <AccountInfo>
-                                        <AccountName>{option.holder}</AccountName>
-                                        <AccountNumber>
+                                <Row alignItems="center" padding={{ left: 4 }} width="100%">
+                                    <Column flex="2">
+                                        <Text typographyStyle="body-md" color="contentSecondary">
+                                            {option.holder}
+                                        </Text>
+                                        <Text typographyStyle="body-md">
                                             {sellUtils.formatIban(option.bankAccount)}
-                                        </AccountNumber>
-                                    </AccountInfo>
+                                        </Text>
+                                    </Column>
                                     {option.verified ? (
-                                        <AccountVerified>
-                                            <IconWrapper>
-                                                <Icon intent="brand" size={15} name="check" />
-                                            </IconWrapper>
-                                            <Translation id="TR_SELL_BANK_ACCOUNT_VERIFIED" />
-                                        </AccountVerified>
+                                        <Row alignItems="center" justifyContent="flex-end" gap={2}>
+                                            <Icon intent="brand" size={15} as={CheckIcon} />
+                                            <Text typographyStyle="body-xs" color="contentBrand">
+                                                <Translation id="TR_SELL_BANK_ACCOUNT_VERIFIED" />
+                                            </Text>
+                                        </Row>
                                     ) : (
-                                        <AccountNotVerified>
-                                            <Translation id="TR_SELL_BANK_ACCOUNT_NOT_VERIFIED" />
-                                        </AccountNotVerified>
+                                        <Row justifyContent="flex-end">
+                                            <Text
+                                                typographyStyle="body-xs"
+                                                color="contentSecondary"
+                                            >
+                                                <Translation id="TR_SELL_BANK_ACCOUNT_NOT_VERIFIED" />
+                                            </Text>
+                                        </Row>
                                     )}
-                                </Option>
+                                </Row>
                             )}
                             isDisabled={bankAccounts.length < 2}
                         />
                     </SelectWrapper>
-                </RowWrapper>
-            </CardContent>
-            <ButtonWrapper>
+                </Row>
+            </Column>
+            <Divider margin={{ top: 20 }} />
+            <Column alignItems="center" margin={{ vertical: 20 }}>
                 <Button
                     minWidth={200}
-                    isLoading={isFormLoading}
+                    isLoading={isLoading}
                     onClick={() => {
                         if (bankAccount) confirmTrade(bankAccount);
                     }}
-                    isDisabled={isFormLoading || !bankAccount}
+                    isDisabled={isLoading || !bankAccount}
                 >
                     <Translation id="TR_SELL_GO_TO_TRANSACTION" />
                 </Button>
-            </ButtonWrapper>
-        </Wrapper>
+            </Column>
+        </Column>
     );
 };

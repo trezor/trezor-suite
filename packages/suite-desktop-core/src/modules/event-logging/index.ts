@@ -1,5 +1,5 @@
 import { ipcMain } from '../../typed-electron';
-import type { ModuleInit } from '../index';
+import type { ModuleInit } from '../module';
 
 export const SERVICE_NAME = 'event-logging';
 

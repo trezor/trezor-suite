@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
 import { Box } from './Box';
 import { HStack } from './Stack';
@@ -15,7 +15,7 @@ export const Td = ({ children }: TdProps) => <Box flex={1}>{children}</Box>;
 
 export const Th = ({ children }: TdProps) => (
     <Box flex={1}>
-        <Text variant="body-sm" color="textSubdued">
+        <Text variant="body-sm" color="contentSecondary">
             {children}
         </Text>
     </Box>

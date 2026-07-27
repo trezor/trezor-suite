@@ -1,8 +1,8 @@
 import { View } from 'react-native';
 
 import { PressableOpacity, TITLE_MAX_FONT_MULTIPLIER, Text } from '@suite-native/atoms';
-import { Icon, IconName } from '@suite-native/icons';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { Icon, type IconName } from '@suite-native/icons';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 type TabBarItemProps = {
     isFocused: boolean;
@@ -59,14 +59,14 @@ export const TabBarItem = ({
                 <Icon
                     name={isFocused ? focusedIconName : iconName}
                     size="large"
-                    color={isFocused ? 'iconPrimaryDefault' : 'iconDisabled'}
+                    color={isFocused ? 'contentBrand' : 'contentDisabled'}
                 />
                 {title && (
                     <Text
                         maxFontSizeMultiplier={TITLE_MAX_FONT_MULTIPLIER}
                         variant="body-xs"
                         textAlign="center"
-                        color={isFocused ? 'textPrimaryDefault' : 'textDisabled'}
+                        color={isFocused ? 'contentBrand' : 'contentDisabled'}
                         testID={`@tabBar/${testID}/title`}
                     >
                         {title}

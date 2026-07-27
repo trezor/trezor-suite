@@ -4,14 +4,11 @@ import { Translation, useTranslation } from '@suite/intl';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { walletConnectPairThunk } from '@suite-common/walletconnect';
 import { Button, Input, Modal } from '@trezor/components';
+import { PlusIcon } from '@trezor/icons';
 
 import { useDispatch } from 'src/hooks/suite';
 
-interface WalletConnectButtonProps {
-    handleOpened: () => void;
-}
-
-export const WalletConnectButton = ({ handleOpened }: WalletConnectButtonProps) => {
+export const WalletConnectButton = () => {
     const dispatch = useDispatch();
     const [connectionUrl, setConnectionUrl] = useState('');
     const [modalOpened, setModalOpened] = useState(false);
@@ -34,10 +31,7 @@ export const WalletConnectButton = ({ handleOpened }: WalletConnectButtonProps) 
         setLoading(false);
         setModalOpened(false);
     };
-    const handleOpen = () => {
-        setModalOpened(true);
-        handleOpened();
-    };
+    const handleOpen = () => setModalOpened(true);
     const onCancel = () => setModalOpened(false);
 
     return (
@@ -55,6 +49,7 @@ export const WalletConnectButton = ({ handleOpened }: WalletConnectButtonProps) 
                                     onClick={handleConnect}
                                     isDisabled={!connectionUrl}
                                     isLoading={isLoading}
+                                    data-testid="@walletconnect/connect-button"
                                 >
                                     <Translation id="TR_CONNECT" />
                                 </Modal.Button>
@@ -62,6 +57,7 @@ export const WalletConnectButton = ({ handleOpened }: WalletConnectButtonProps) 
                                     intent="neutral"
                                     priority="secondary"
                                     onClick={onCancel}
+                                    data-testid="@walletconnect/cancel-button"
                                 >
                                     <Translation id="TR_CANCEL" />
                                 </Modal.Button>
@@ -74,17 +70,19 @@ export const WalletConnectButton = ({ handleOpened }: WalletConnectButtonProps) 
                             placeholder={translationString(
                                 'TR_WALLETCONNECT_ADD_CONNECTION_PLACEHOLDER',
                             )}
+                            data-testid="@walletconnect/string-input"
                         />
                     </Modal.ModalBase>
                 </Modal.Backdrop>
             )}
 
             <Button
-                iconLeft="plus"
+                iconLeft={PlusIcon}
                 intent="neutral"
                 priority="secondary"
                 size="small"
                 onClick={() => handleOpen()}
+                data-testid="@settings/walletconnect/add-with-button"
             >
                 <Translation id="TR_ADD_WALLETCONNECT" />
             </Button>

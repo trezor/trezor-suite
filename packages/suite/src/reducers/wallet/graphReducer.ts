@@ -5,27 +5,25 @@ import { accountsActions } from '@suite-common/wallet-core';
 import { STORAGE } from 'src/actions/suite/constants';
 import { GRAPH } from 'src/actions/wallet/constants';
 import { SETTINGS } from 'src/config/suite';
-import { Action as SuiteAction } from 'src/types/suite';
-import { Account, WalletAction } from 'src/types/wallet';
-import { AccountIdentifier, GraphData, GraphRange, GraphScale } from 'src/types/wallet/graph';
+import { type Action as SuiteAction } from 'src/types/suite';
+import { type Account, type WalletAction } from 'src/types/wallet';
+import { type AccountIdentifier, type GraphData, type GraphRange } from 'src/types/wallet/graph';
 
-export interface State {
+export interface GraphState {
     data: GraphData[];
     error: null | AccountIdentifier[];
     isLoading: boolean;
     selectedRange: GraphRange;
-    selectedView: GraphScale;
 }
 
-const initialState: State = {
+const initialState: GraphState = {
     data: [],
     selectedRange: SETTINGS.DEFAULT_GRAPH_RANGE,
-    selectedView: 'linear',
     error: null,
     isLoading: false,
 };
 
-const updateError = (draft: State) => {
+const updateError = (draft: GraphState) => {
     const failedGraphData = draft.data.filter(d => d.error);
     if (failedGraphData.length > 0) {
         draft.error = failedGraphData.map(a => a.account);
@@ -34,7 +32,7 @@ const updateError = (draft: State) => {
     }
 };
 
-const update = (draft: State, payload: GraphData) => {
+const update = (draft: GraphState, payload: GraphData) => {
     const { account, data, error, isLoading } = payload;
     const dataIndex = draft.data.findIndex(
         d =>
@@ -43,9 +41,12 @@ const update = (draft: State, payload: GraphData) => {
             d.account.symbol === account.symbol,
     );
     if (dataIndex !== -1) {
-        draft.data[dataIndex].data = data;
-        draft.data[dataIndex].error = error;
-        draft.data[dataIndex].isLoading = isLoading;
+        const entry = draft.data[dataIndex];
+        if (entry) {
+            entry.data = data;
+            entry.error = error;
+            entry.isLoading = isLoading;
+        }
     } else {
         draft.data.push({
             account,
@@ -58,12 +59,12 @@ const update = (draft: State, payload: GraphData) => {
     updateError(draft);
 };
 
-const loadFromStorage = (draft: State, payload: GraphData[] = []) => {
+const loadFromStorage = (draft: GraphState, payload: GraphData[] = []) => {
     draft.data = payload;
     updateError(draft);
 };
 
-const remove = (draft: State, accounts: Account[]) => {
+const remove = (draft: GraphState, accounts: Account[]) => {
     accounts.forEach(account => {
         const affected = draft.data.filter(
             d =>
@@ -79,7 +80,10 @@ const remove = (draft: State, accounts: Account[]) => {
     updateError(draft);
 };
 
-const graphReducer = (state: State = initialState, action: WalletAction | SuiteAction): State =>
+const graphReducer = (
+    state: GraphState = initialState,
+    action: WalletAction | SuiteAction,
+): GraphState =>
     produce(state, draft => {
         switch (action.type) {
             case STORAGE.LOAD:
@@ -102,9 +106,6 @@ const graphReducer = (state: State = initialState, action: WalletAction | SuiteA
                 break;
             case GRAPH.SET_SELECTED_RANGE:
                 draft.selectedRange = action.payload;
-                break;
-            case GRAPH.SET_SELECTED_VIEW:
-                draft.selectedView = action.payload;
                 break;
             case accountsActions.removeAccount.type: {
                 if (accountsActions.removeAccount.match(action)) {

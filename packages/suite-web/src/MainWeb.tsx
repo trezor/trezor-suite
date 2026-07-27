@@ -5,6 +5,9 @@ import { Provider as ReduxProvider } from 'react-redux';
 
 import { createRoot } from 'react-dom/client';
 
+import { useDebugLanguageShortcut } from '@suite/debug';
+import { ServicesProvider } from '@suite-common/dependency-injection';
+
 import {
     AppRouter,
     BundleLoader,
@@ -12,12 +15,11 @@ import {
     Preloader,
     ToasterProvider,
 } from 'src/components/suite';
-import { useDebugLanguageShortcut } from 'src/hooks/suite';
-import { SuiteServicesProvider } from 'src/support/SuiteServicesProvider';
 import { Main } from 'src/support/suite/Main';
 import { preloadStore } from 'src/support/suite/preloadStore';
 import { LoadingScreen } from 'src/support/suite/screens/LoadingScreen';
 import { useConnectPopupWeb } from 'src/support/suite/useConnectPopupWeb';
+import { useConnectPopupWebextension } from 'src/support/suite/useConnectPopupWebextension';
 import { useTor } from 'src/support/suite/useTor';
 
 import { createSuiteWebCompositionRoot } from './createSuiteWebCompositionRoot';
@@ -30,6 +32,7 @@ const MainWeb = () => {
     useTor();
     useDebugLanguageShortcut();
     useConnectPopupWeb();
+    useConnectPopupWebextension();
 
     return (
         <Main>
@@ -58,10 +61,10 @@ export const init = async (container: HTMLElement) => {
     const { store, services } = createSuiteWebCompositionRoot(preloadAction);
 
     root.render(
-        <SuiteServicesProvider services={services}>
+        <ServicesProvider services={services}>
             <ReduxProvider store={store}>
                 <MainWeb />
             </ReduxProvider>
-        </SuiteServicesProvider>,
+        </ServicesProvider>,
     );
 };

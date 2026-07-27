@@ -1,6 +1,7 @@
 import React from 'react';
 
-import { IconButton, Tooltip } from '@trezor/components';
+import { IconButton } from '@trezor/components';
+import { ClockCounterClockwiseIcon } from '@trezor/icons';
 
 export const useChangelogButton = () => {
     const [isChangelogOpened, setIsChangelogOpened] = React.useState<boolean>(false);
@@ -8,17 +9,16 @@ export const useChangelogButton = () => {
     return {
         isChangelogOpened,
         ChangelogButton: () => (
-            <Tooltip content={`${isChangelogOpened ? 'Hide' : 'Show'} changelog`}>
-                <IconButton
-                    onClick={() => {
-                        setIsChangelogOpened(!isChangelogOpened);
-                    }}
-                    icon="clockCounterClockwise"
-                    intent={isChangelogOpened ? 'brand' : 'neutral'}
-                    size="small"
-                    priority="secondary"
-                />
-            </Tooltip>
+            <IconButton
+                onClick={() => {
+                    setIsChangelogOpened(!isChangelogOpened);
+                }}
+                icon={ClockCounterClockwiseIcon}
+                intent={isChangelogOpened ? 'brand' : 'neutral'}
+                size="small"
+                priority="secondary"
+                tooltip={{ content: `${isChangelogOpened ? 'Hide' : 'Show'} changelog` }}
+            />
         ),
     };
 };

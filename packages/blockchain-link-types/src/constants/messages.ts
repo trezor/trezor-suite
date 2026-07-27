@@ -11,6 +11,7 @@ export const GET_BLOCK_HASH = 'm_get_block_hash';
 export const GET_BLOCK = 'm_get_block';
 export const GET_ACCOUNT_INFO = 'm_get_account_info';
 export const GET_ACCOUNT_UTXO = 'm_get_account_utxo';
+export const GET_CONTRACT_INFO = 'm_get_contract_info';
 export const GET_TRANSACTION = 'm_get_transaction';
 export const GET_TRANSACTION_HEX = 'm_get_transaction_hex';
 export const ESTIMATE_FEE = 'm_estimate_fee';

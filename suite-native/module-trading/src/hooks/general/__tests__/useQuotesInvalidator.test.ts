@@ -1,9 +1,13 @@
-import { ActionCreatorWithoutPayload } from '@reduxjs/toolkit';
+import { type ActionCreatorWithoutPayload } from '@reduxjs/toolkit';
 
-import { TestStore, initStore, renderHookWithStoreProviderAsync } from '@suite-native/test-utils';
-import { AbortablePromise } from '@suite-native/trading-types';
+import { type TestStore } from '@suite-native/test-utils-store';
+import { type AbortablePromise } from '@suite-native/trading-types';
 
-import { UseQuotesInvalidatorProps, useQuotesInvalidator } from '../useQuotesInvalidator';
+import {
+    createTradingLightStore,
+    renderHookWithTradingProvider,
+} from '../../../__tests__/tradingTestUtils';
+import { type UseQuotesInvalidatorProps, useQuotesInvalidator } from '../useQuotesInvalidator';
 
 describe('useQuotesInvalidator', () => {
     let store: TestStore;
@@ -19,7 +23,7 @@ describe('useQuotesInvalidator', () => {
         })) as ActionCreatorWithoutPayload,
         getClearStateAction = (() => ({ type: 'clearStateAction' })) as ActionCreatorWithoutPayload,
     }: Partial<UseQuotesInvalidatorProps>) =>
-        renderHookWithStoreProviderAsync(props => useQuotesInvalidator(props), {
+        renderHookWithTradingProvider(props => useQuotesInvalidator(props), {
             store,
             initialProps: {
                 isFormValid,
@@ -33,21 +37,21 @@ describe('useQuotesInvalidator', () => {
         });
 
     beforeEach(() => {
-        store = initStore().store;
+        store = createTradingLightStore();
     });
 
-    it('should call debounce with empty method when form is not valid', async () => {
+    it('should call debounce with empty method when form is not valid', () => {
         const debounceMock = jest.fn();
-        await renderUseQuotesInvalidator({
+        renderUseQuotesInvalidator({
             debounce: debounceMock,
         });
 
         expect(debounceMock).toHaveBeenCalledWith(expect.any(Function));
     });
 
-    it('should not call debounce when form is valid', async () => {
+    it('should not call debounce when form is valid', () => {
         const debounceMock = jest.fn();
-        await renderUseQuotesInvalidator({
+        renderUseQuotesInvalidator({
             debounce: debounceMock,
             isFormValid: true,
         });
@@ -56,12 +60,12 @@ describe('useQuotesInvalidator', () => {
     });
 
     describe('promise aborting', () => {
-        it('should abort quotesPromise when form is invalid and quotes are loading', async () => {
+        it('should abort quotesPromise when form is invalid and quotes are loading', () => {
             const abortMock = jest.fn();
             const quotesPromiseRef = {
                 current: { abort: abortMock } as unknown as AbortablePromise,
             };
-            await renderUseQuotesInvalidator({
+            renderUseQuotesInvalidator({
                 isFormValid: false,
                 isLoading: true,
                 quotesPromiseRef,
@@ -70,12 +74,12 @@ describe('useQuotesInvalidator', () => {
             expect(abortMock).toHaveBeenCalledWith('Invalidating quotes');
         });
 
-        it('should abort quotesPromise on unmount', async () => {
+        it('should abort quotesPromise on unmount', () => {
             const abortMock = jest.fn();
             const quotesPromiseRef = {
                 current: { abort: abortMock } as unknown as AbortablePromise,
             };
-            const { unmount } = await renderUseQuotesInvalidator({
+            const { unmount } = renderUseQuotesInvalidator({
                 isFormValid: true,
                 quotesPromiseRef,
             });
@@ -85,12 +89,12 @@ describe('useQuotesInvalidator', () => {
             expect(abortMock).toHaveBeenCalledWith('Component unmounted');
         });
 
-        it('should not abort quotesPromise when form is valid', async () => {
+        it('should not abort quotesPromise when form is valid', () => {
             const abortMock = jest.fn();
             const quotesPromiseRef = {
                 current: { abort: abortMock } as unknown as AbortablePromise,
             };
-            await renderUseQuotesInvalidator({
+            renderUseQuotesInvalidator({
                 isFormValid: true,
                 quotesPromiseRef,
             });
@@ -98,12 +102,12 @@ describe('useQuotesInvalidator', () => {
             expect(abortMock).not.toHaveBeenCalled();
         });
 
-        it('should not abort quotesPromise when form is invalid but quotes are not loading', async () => {
+        it('should not abort quotesPromise when form is invalid but quotes are not loading', () => {
             const abortMock = jest.fn();
             const quotesPromiseRef = {
                 current: { abort: abortMock } as unknown as AbortablePromise,
             };
-            await renderUseQuotesInvalidator({
+            renderUseQuotesInvalidator({
                 isFormValid: false,
                 isLoading: false,
                 quotesPromiseRef,
@@ -114,9 +118,9 @@ describe('useQuotesInvalidator', () => {
     });
 
     describe('getClearRequestAction', () => {
-        it('should dispatch clear request action', async () => {
+        it('should dispatch clear request action', () => {
             const dispatchSpy = jest.spyOn(store, 'dispatch');
-            await renderUseQuotesInvalidator({
+            renderUseQuotesInvalidator({
                 isFormValid: false,
                 anyQuotesLoaded: true,
             });
@@ -124,9 +128,9 @@ describe('useQuotesInvalidator', () => {
             expect(dispatchSpy).toHaveBeenCalledWith({ type: 'clearRequestAction' });
         });
 
-        it('should not dispatch clear request when no quotes are loaded', async () => {
+        it('should not dispatch clear request when no quotes are loaded', () => {
             const dispatchSpy = jest.spyOn(store, 'dispatch');
-            await renderUseQuotesInvalidator({
+            renderUseQuotesInvalidator({
                 isFormValid: false,
                 anyQuotesLoaded: false,
             });
@@ -134,9 +138,9 @@ describe('useQuotesInvalidator', () => {
             expect(dispatchSpy).not.toHaveBeenCalledWith({ type: 'clearStateAction' });
         });
 
-        it('should not dispatch clear request when form is valid', async () => {
+        it('should not dispatch clear request when form is valid', () => {
             const dispatchSpy = jest.spyOn(store, 'dispatch');
-            await renderUseQuotesInvalidator({
+            renderUseQuotesInvalidator({
                 isFormValid: true,
                 anyQuotesLoaded: true,
             });
@@ -146,9 +150,9 @@ describe('useQuotesInvalidator', () => {
     });
 
     describe('getClearStateAction', () => {
-        it('should dispatch clear state action on unmount', async () => {
+        it('should dispatch clear state action on unmount', () => {
             const dispatchSpy = jest.spyOn(store, 'dispatch');
-            const { unmount } = await renderUseQuotesInvalidator({});
+            const { unmount } = renderUseQuotesInvalidator({});
 
             unmount();
 

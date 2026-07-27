@@ -1,4 +1,4 @@
-import { TrezorDevice } from '@suite-common/suite-types';
+import { type TrezorDevice } from '@suite-common/suite-types';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
 
 export const backfillDeviceAuthenticityChecks = (devices: TrezorDevice[]): TrezorDevice[] =>

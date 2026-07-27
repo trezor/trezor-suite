@@ -4,46 +4,63 @@ import path from 'node:path';
 // Match relative imports without extension: "./x", "../x", "./x/y"
 const isRelativeImport = src => src.startsWith('.') && !path.extname(src);
 
-// Match @trezor package imports to libESM without extension: "@trezor/utils/libESM/bigNumber"
-const trezorLibESMPattern = /^@trezor\/[^/]+\/libESM\/[^.]+$/;
-const isTrezorLibESMImport = src => trezorLibESMPattern.test(src);
+// Match @trezor package imports to lib without extension: "@trezor/utils/lib/bigNumber"
+const trezorLibPattern = /^@trezor\/[^/]+\/lib\/[^.]+$/;
+const isTrezorLibImport = src => trezorLibPattern.test(src);
 
 // External CJS packages that need .js extension for Node ESM compatibility
 // These packages don't have proper "exports" in their package.json
-const externalCjsSubpaths = ['protobufjs/light', 'protobufjs/minimal'];
+const externalCjsSubpaths = [];
 const isExternalCjsSubpath = src => externalCjsSubpaths.includes(src);
 
+const externalJsonImports = [];
+
 /**
- * Babel plugin to add .js extension to import/export statements, used for valid ESM builds.
+ * Babel plugin to rewrite import/export statements to their runtime ESM extensions.
  * This way we can keep our codebase with moduleResolution: bundler (imports without extensions).
  *
  * For Node.js ESM compatibility:
  * - File imports: ./utils/helper → ./utils/helper.js
  * - Directory imports: ./constants → ./constants/index.js
- * - @trezor package imports: @trezor/utils/libESM/bigNumber → @trezor/utils/libESM/bigNumber.js
+ * - @trezor package imports: @trezor/utils/lib/bigNumber → @trezor/utils/lib/bigNumber.js
+ * - External CJS subpaths: some-package/subpath → some-package/subpath.js
  */
-const addJSExtensionPlugin = ({ types }) => {
+const addEsmExtensionPlugin = ({ types }) => {
     const modifyPath = (nodePath, state) => {
         const src = nodePath.node.source?.value;
         if (!src) return;
 
-        // Handle @trezor package imports to libESM
-        if (isTrezorLibESMImport(src)) {
-            const match = src.match(/^@trezor\/([^/]+)\/libESM\/(.+)$/);
+        // Add with { type: 'json' } to JSON imports for Node.js ESM compatibility
+        if (
+            (src.endsWith('.json') || externalJsonImports.includes(src)) &&
+            !nodePath.node.attributes?.length
+        ) {
+            nodePath.node.attributes = [
+                types.importAttribute(types.identifier('type'), types.stringLiteral('json')),
+            ];
+
+            return;
+        }
+
+        // Handle @trezor package imports to lib
+        if (isTrezorLibImport(src)) {
+            const match = src.match(/^@trezor\/([^/]+)\/lib\/(.+)$/);
             const [, packageName, subpath] = match;
 
-            // Find packages/ root from the current file's absolute path by locating the libESM/ segment.
-            // e.g., /packages/connect/libESM/device/thp/pairing.js → /packages/
-            const libESMIndex = state.filename.indexOf(`${path.sep}libESM${path.sep}`);
-            const packageDir = state.filename.substring(0, libESMIndex);
+            // Find packages/ root from the current file's absolute path by locating the lib/ segment.
+            // e.g., /packages/connect/lib/device/thp/pairing.js → /packages/
+            const libIndex = state.filename.indexOf(`${path.sep}lib${path.sep}`);
+            const packageDir = state.filename.substring(0, libIndex);
             const packagesRoot = path.dirname(packageDir);
-            const resolvedPath = path.join(packagesRoot, packageName, 'libESM', subpath);
+            // Check src/ instead of lib/ — src/ is always present in the repo regardless of
+            // build order, whereas lib/ may not exist yet in CI when this package is compiled.
+            const resolvedSrcPath = path.join(packagesRoot, packageName, 'src', subpath);
 
             const isDirectory =
-                fs.existsSync(resolvedPath) && fs.statSync(resolvedPath).isDirectory();
+                fs.existsSync(resolvedSrcPath) && fs.statSync(resolvedSrcPath).isDirectory();
 
-            // e.g., @trezor/protocol/libESM/protocol-tpn -> @trezor/protocol/libESM/protocol-tpn/index.js
-            // e.g., @trezor/protocol/libESM/bigNumber -> @trezor/protocol/libESM/bigNumber.js
+            // e.g., @trezor/protocol/lib/protocol-tpn -> @trezor/protocol/lib/protocol-tpn/index.js
+            // e.g., @trezor/protocol/lib/bigNumber -> @trezor/protocol/lib/bigNumber.js
             if (isDirectory) {
                 nodePath.node.source = types.stringLiteral(src + '/index.js');
             } else {
@@ -53,7 +70,7 @@ const addJSExtensionPlugin = ({ types }) => {
             return;
         }
 
-        // External CJS subpaths (protobufjs/light, protobufjs/minimal) need .js for ESM
+        // External CJS subpaths need .js for ESM
         if (isExternalCjsSubpath(src)) {
             nodePath.node.source = types.stringLiteral(src + '.js');
 
@@ -72,11 +89,13 @@ const addJSExtensionPlugin = ({ types }) => {
             } else {
                 nodePath.node.source = types.stringLiteral(src + '.js');
             }
+
+            return;
         }
     };
 
     return {
-        name: 'add-js-extension',
+        name: 'add-esm-extension',
         visitor: {
             ImportDeclaration(nodePath, state) {
                 modifyPath(nodePath, state);
@@ -91,4 +110,4 @@ const addJSExtensionPlugin = ({ types }) => {
     };
 };
 
-export default addJSExtensionPlugin;
+export default addEsmExtensionPlugin;

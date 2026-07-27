@@ -4,7 +4,7 @@ import { selectSellSupportedFiatCurrenciesList } from '@suite-native/trading-sta
 
 import {
     FiatCurrencySheet,
-    FiatCurrencySheetProps,
+    type FiatCurrencySheetProps,
 } from '../../general/FiatCurrencySheet/FiatCurrencySheet';
 
 export type SellFiatCurrencySheetProps = Omit<FiatCurrencySheetProps, 'supportedFiatCurrencies'>;

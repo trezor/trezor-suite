@@ -3,7 +3,7 @@ import { createGlobalStyle } from 'styled-components';
 import {
     FIND_HIGHLIGHT_SELECTOR,
     MARK_HIGHLIGHT_PULSE_SELECTOR,
-} from '../../suite/src/components/suite/FindBar/consts';
+} from 'src/components/suite/FindBar/consts';
 
 export const GlobalStyle = createGlobalStyle`
 
@@ -11,7 +11,7 @@ export const GlobalStyle = createGlobalStyle`
         position: relative;
         background: yellow;
         color: black;
-        border-radius: 2px;
+        border-radius: 4px;
         transition: transform 0.16s ease, background 0.16s ease;
     }
 

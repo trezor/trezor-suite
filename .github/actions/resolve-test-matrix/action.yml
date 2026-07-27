@@ -1,0 +1,64 @@
+name: "Resolve Test Matrix"
+description: >
+  Computes proportional matrix sizes for e2e test sharding based on the number
+  of selected specs. When a spec-list is provided the worker count is capped at
+  the number of specs (but never exceeds max-desktop / max-web). When spec-list
+  is empty (full run) the maximums are used directly.
+inputs:
+  spec-list:
+    description: "Comma-separated list of spec files to run, or empty for all tests"
+    required: false
+    default: ""
+  max-desktop:
+    description: "Maximum number of desktop workers"
+    required: false
+    default: "7"
+  max-web:
+    description: "Maximum number of web workers"
+    required: false
+    default: "5"
+outputs:
+  matrix-desktop:
+    description: "JSON array of worker indices for the desktop matrix, e.g. [1,2,3]"
+    value: ${{ steps.compute.outputs.matrix-desktop }}
+  matrix-web:
+    description: "JSON array of worker indices for the web matrix, e.g. [1,2,3]"
+    value: ${{ steps.compute.outputs.matrix-web }}
+runs:
+  using: "composite"
+  steps:
+    - name: Compute matrix
+      id: compute
+      shell: bash
+      env:
+        SPEC_LIST: ${{ inputs.spec-list }}
+        MAX_DESKTOP: ${{ inputs.max-desktop }}
+        MAX_WEB: ${{ inputs.max-web }}
+      run: |
+        if [[ -z "$SPEC_LIST" ]]; then
+          DESKTOP_COUNT=$MAX_DESKTOP
+          WEB_COUNT=$MAX_WEB
+        else
+          SPEC_COUNT=$(echo "$SPEC_LIST" | tr ',' '\n' | grep -c .)
+          # ceil(n/3): 1-3 specs → 1 worker, 4-6 → 2, 7-9 → 3, …
+          WORKERS=$(( (SPEC_COUNT + 2) / 3 ))
+          DESKTOP_COUNT=$(( WORKERS < MAX_DESKTOP ? WORKERS : MAX_DESKTOP ))
+          WEB_COUNT=$(( WORKERS < MAX_WEB ? WORKERS : MAX_WEB ))
+        fi
+
+        build_matrix() {
+          local n=$1
+          local arr="["
+          for i in $(seq 1 "$n"); do
+            [[ $i -gt 1 ]] && arr="$arr,"
+            arr="$arr$i"
+          done
+          echo "$arr]"
+        }
+
+        DESKTOP_MATRIX=$(build_matrix "$DESKTOP_COUNT")
+        WEB_MATRIX=$(build_matrix "$WEB_COUNT")
+        echo "Desktop workers: $DESKTOP_COUNT  matrix: $DESKTOP_MATRIX"
+        echo "Web workers: $WEB_COUNT  matrix: $WEB_MATRIX"
+        echo "matrix-desktop=$DESKTOP_MATRIX" >> "$GITHUB_OUTPUT"
+        echo "matrix-web=$WEB_MATRIX" >> "$GITHUB_OUTPUT"

@@ -1,6 +1,6 @@
-import type { AccountTxTransaction, ServerInfoResponse } from 'xrpl';
-
 import type { ServerInfo, Transaction } from '@trezor/blockchain-link-types';
+import { RIPPLE_DECIMALS, getUnixTimestamp } from '@trezor/network-ripple/constants';
+import type { AccountTxTransaction, ServerInfoResponse } from '@trezor/network-ripple/types';
 
 export const transformServerInfo = (payload: ServerInfoResponse): Omit<ServerInfo, 'url'> => ({
     name: 'Ripple',
@@ -8,23 +8,10 @@ export const transformServerInfo = (payload: ServerInfoResponse): Omit<ServerInf
     network: 'xrp',
     testnet: false,
     version: payload.result.info.build_version,
-    decimals: 6,
+    decimals: RIPPLE_DECIMALS,
     blockHeight: payload.result.info.validated_ledger?.seq ?? 0,
     blockHash: payload.result.info.validated_ledger?.hash ?? '',
 });
-
-// XRPL timestamps are based on the Ripple Epoch (2000-01-01T00:00:00Z).
-// To convert to a standard Unix timestamp, add this offset.
-// https://xrpl.org/docs/references/protocol/data-types/basic-data-types#specifying-time
-const BLOCKTIME_OFFSET = 946684800;
-
-const getUnixTimestamp = (xrplTimestamp?: number): number => {
-    if (!xrplTimestamp || xrplTimestamp <= 0) {
-        return 0;
-    }
-
-    return xrplTimestamp + BLOCKTIME_OFFSET;
-};
 
 export const transformTransaction = (
     hash: string | undefined,

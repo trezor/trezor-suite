@@ -2,48 +2,48 @@ import { useMemo } from 'react';
 
 import styled from 'styled-components';
 
-import { spacingsPx } from '@trezor/theme';
-import {
-    HELP_CENTER_ADA_STAKING,
-    HELP_CENTER_ETH_STAKING,
-    HELP_CENTER_SOL_STAKING,
-} from '@trezor/urls';
+import { selectSelectedAccount } from '@suite/account';
+import { Translation } from '@suite/intl';
+import { Button } from '@trezor/components';
 
 import { PoweredByBadge } from 'src/components/earn';
-import { LearnMoreButton } from 'src/components/suite/LearnMoreButton';
+import { getStakingGuideLink } from 'src/components/earn/utils/getStakingGuideLink';
+import { useGuideOpenNode } from 'src/hooks/guide';
 import { useSelector } from 'src/hooks/suite';
-import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 
 const Wrapper = styled.div`
     display: flex;
     align-items: center;
     flex-wrap: wrap;
-    gap: ${spacingsPx.md};
+    gap: 16px;
     justify-content: space-between;
-    border-top: 1px solid ${({ theme }) => theme.borderElevation2};
-    margin-top: ${spacingsPx.xxl};
+    border-top: 1px solid ${({ theme }) => theme.surfaceBorderRaised};
+    margin-top: 32px;
 `;
 
 export const EverstakeFooter = () => {
     const account = useSelector(selectSelectedAccount);
+    const { openNodeById } = useGuideOpenNode();
 
-    const learnMoreLink = useMemo(() => {
-        switch (account?.networkType) {
-            case 'ethereum':
-                return HELP_CENTER_ETH_STAKING;
-            case 'solana':
-                return HELP_CENTER_SOL_STAKING;
-            case 'cardano':
-                return HELP_CENTER_ADA_STAKING;
-            default:
-                return undefined;
-        }
-    }, [account]);
+    const moreInfoLink = useMemo(
+        () => getStakingGuideLink(account?.networkType),
+        [account?.networkType],
+    );
 
     return (
         <Wrapper>
             <PoweredByBadge provider="everstake" />
-            {learnMoreLink && <LearnMoreButton url={learnMoreLink} />}
+
+            {moreInfoLink && (
+                <Button
+                    onClick={() => openNodeById(moreInfoLink)}
+                    intent="neutral"
+                    priority="secondary"
+                    size="small"
+                >
+                    <Translation id="TR_LEARN_MORE" />
+                </Button>
+            )}
         </Wrapper>
     );
 };

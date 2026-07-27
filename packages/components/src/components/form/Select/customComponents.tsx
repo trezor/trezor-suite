@@ -1,20 +1,22 @@
-import { ReactNode, useEffect, useRef } from 'react';
+import { type ReactNode, useEffect, useRef } from 'react';
 import {
-    ControlProps,
-    DropdownIndicatorProps,
-    GroupHeadingProps,
-    GroupProps,
-    IndicatorsContainerProps,
-    MenuListProps,
-    MenuProps,
-    OptionProps,
-    PlaceholderProps,
-    SingleValueProps,
-    ValueContainerProps,
+    type ControlProps,
+    type DropdownIndicatorProps,
+    type GroupHeadingProps,
+    type GroupProps,
+    type IndicatorsContainerProps,
+    type MenuListProps,
+    type MenuProps,
+    type OptionProps,
+    type PlaceholderProps,
+    type SingleValueProps,
+    type ValueContainerProps,
     components,
 } from 'react-select';
 
-import styled, { useTheme } from 'styled-components';
+import styled from 'styled-components';
+
+import { CaretDownIcon } from '@trezor/icons';
 
 import type { Option as OptionType } from './types';
 import { Box } from '../../Box/Box';
@@ -24,7 +26,7 @@ import { Spinner } from '../../loaders/Spinner/Spinner';
 import { Text } from '../../typography/Text/Text';
 import { FloatingLabel } from '../FloatingLabel';
 import { InputWrapper } from '../InputWrapper';
-import { InputSize } from '../types';
+import { type InputSize } from '../types';
 import {
     INPUT_PADDING,
     mapSizeToHeight,
@@ -91,27 +93,23 @@ export const Control = ({
     );
 };
 
-export const Menu = ({ children, ...props }: MenuProps<OptionType, boolean>) => {
-    const theme = useTheme();
-
-    return (
-        <components.Menu {...props}>
-            <Box
-                flex="1"
-                minWidth={140}
-                borderRadius={16}
-                backgroundColor="baseFillSurfaceModeless"
-                borderColor="baseBorderSurfaceModeless"
-                borderWidth={1}
-                shadow={theme.boxShadowElevated}
-                overflow="auto"
-                width="fit-content"
-            >
-                {children}
-            </Box>
-        </components.Menu>
-    );
-};
+export const Menu = ({ children, ...props }: MenuProps<OptionType, boolean>) => (
+    <components.Menu {...props}>
+        <Box
+            flex="1"
+            minWidth={140}
+            borderRadius={16}
+            backgroundColor="surfaceFillModeless"
+            borderColor="surfaceBorderModeless"
+            borderWidth={1}
+            shadow="surfaceShadowModeless"
+            overflow="auto"
+            width="fit-content"
+        >
+            {children}
+        </Box>
+    </components.Menu>
+);
 
 export const MenuList = ({ children, ...props }: MenuListProps<OptionType, boolean>) => {
     const isGrouped = props.selectProps.options.some(option => option.options);
@@ -168,7 +166,7 @@ export const Option = ({
 
     useEffect(() => {
         if (props.isSelected) {
-            ref.current?.scrollIntoView();
+            ref.current?.scrollIntoView({ block: 'nearest' });
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
@@ -193,9 +191,7 @@ export const Option = ({
             <Box
                 borderRadius={8}
                 backgroundColor={
-                    props.isFocused && !props.isDisabled
-                        ? 'stateFillElementGhostHovered'
-                        : undefined
+                    props.isFocused && !props.isDisabled ? 'elementFillGhostHovered' : undefined
                 }
                 cursor={props.isDisabled ? 'default' : 'pointer'}
                 padding={{ vertical: 6, horizontal: 8 }}
@@ -241,7 +237,7 @@ export const ValueContainer = ({
     );
 
 export const SingleValue = ({ children }: SingleValueProps<OptionType>) => (
-    <Text ellipsisLineCount={1} as="div" maxWidth="100%">
+    <Text ellipsisLineCount={1} as="div" maxWidth="100%" intent="neutral" priority="primary">
         {children}
     </Text>
 );
@@ -258,7 +254,7 @@ export const IndicatorsContainer = ({
 export const DropdownIndicator = (props: DropdownIndicatorProps) => (
     <DropdownWrapper $isOpen={props.selectProps.menuIsOpen}>
         <Icon
-            name="caretDown"
+            as={CaretDownIcon}
             size={20}
             {...(props.isDisabled
                 ? { isDisabled: true }

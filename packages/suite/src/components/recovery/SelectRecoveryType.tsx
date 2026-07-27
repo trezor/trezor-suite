@@ -1,5 +1,6 @@
 import { Translation } from '@suite/intl';
 import { Grid } from '@trezor/components';
+import { RecoverySeedFilledIcon, TrezorModelOneFilledIcon } from '@trezor/icons';
 
 import { OnboardingOption } from 'src/components/onboarding/OnboardingOption';
 import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
@@ -15,14 +16,14 @@ export const SelectRecoveryType = ({ onSelect }: SelectRecoveryTypeProps) => {
         <Grid columns={isBelowTablet ? 1 : 2} gap={20}>
             <OnboardingOption
                 onClick={() => onSelect('standard')}
-                iconName="recoverySeedFilled"
+                icon={RecoverySeedFilledIcon}
                 heading={<Translation id="TR_BASIC_RECOVERY" />}
                 description={<Translation id="TR_BASIC_RECOVERY_OPTION" />}
                 data-testid="@recovery/select-type/standard"
             />
             <OnboardingOption
                 onClick={() => onSelect('advanced')}
-                iconName="trezorModelOneFilled"
+                icon={TrezorModelOneFilledIcon}
                 heading={<Translation id="TR_ADVANCED_RECOVERY" />}
                 description={<Translation id="TR_ADVANCED_RECOVERY_OPTION" />}
                 data-testid="@recovery/select-type/advanced"

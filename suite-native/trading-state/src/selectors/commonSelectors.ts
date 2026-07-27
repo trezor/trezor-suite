@@ -2,23 +2,25 @@ import type { CryptoId } from 'invity-api';
 
 import {
     Feature,
-    MessageSystemRootState,
+    type MessageSystemRootState,
     selectIsFeatureEnabled,
 } from '@suite-common/message-system';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import {
-    TokenDefinitionsRootState,
+    type TokenDefinitionsRootState,
     filterKnownTokens,
     getSimpleCoinDefinitionsByNetwork,
     selectTokenDefinitions,
 } from '@suite-common/token-definitions';
 import {
-    TradingRootStateWithDeviceAndAccounts,
-    TradingTransaction,
-    TradingType,
+    type TradingRootStateWithDeviceAndAccounts,
+    type TradingTransaction,
+    type TradingType,
+    type TradingTypeWithConcierge,
     cryptoIdToSymbol,
     isFinalStatus,
     selectDeviceTradingTrades,
+    selectTradingIsSlip24Allowed,
     selectTradingSupportedSymbols,
     toTokenCryptoId,
 } from '@suite-common/trading';
@@ -28,39 +30,44 @@ import {
     getNetworkType,
 } from '@suite-common/wallet-config';
 import {
-    AccountsRootState,
-    FiatRatesRootState,
-    WalletSettingsRootState,
+    type AccountsRootState,
+    type FiatRatesRootState,
+    type WalletSettingsRootState,
     selectBaseCurrency,
     selectCurrentFiatRates,
     selectVisibleDeviceAccounts,
     selectVisibleDeviceAccountsByNetworkSymbol,
     selectVisibleDeviceAccountsMap,
 } from '@suite-common/wallet-core';
-import { Account, AccountKey, TokenAddress, TokenSymbol } from '@suite-common/wallet-types';
+import {
+    type Account,
+    type AccountKey,
+    type TokenAddress,
+    type TokenSymbol,
+} from '@suite-common/wallet-types';
 import {
     getAccountFiatBalance,
     getFiatRateKey,
     parseAccountKey,
     toFiatCurrency,
 } from '@suite-common/wallet-utils';
-import { sortAccountsByNetworksAndAccountTypes } from '@suite-native/accounts';
+import { selectAccountLabel, sortAccountsByNetworksAndAccountTypes } from '@suite-native/accounts';
 import {
     FeatureFlag,
-    FeatureFlagsRootState,
+    type FeatureFlagsRootState,
     selectIsFeatureFlagEnabled,
 } from '@suite-native/feature-flags';
-import { CombinedLabelingState, selectAccountLabel } from '@suite-native/labeling';
-import { TokensRootState } from '@suite-native/tokens';
+import { type CombinedLabelingState } from '@suite-native/labeling';
+import { type TokensRootState } from '@suite-native/tokens';
 import {
-    SectionListData,
+    type SectionListData,
     getSymbolFromTradeableAsset,
     toCaseAwareCryptoId,
 } from '@suite-native/trading-atoms';
-import { MyAsset, MyAssetRow, TradeableAsset } from '@suite-native/trading-types';
+import { type MyAsset, type MyAssetRow, type TradeableAsset } from '@suite-native/trading-types';
 
 import { selectIsTradingEnabledForCountry } from './residenceSelectors';
-import { TradingRootState } from '../reducers';
+import { type TradingRootState } from '../reducers';
 
 export type CombinedSelectorsRootState = TradingRootStateWithDeviceAndAccounts &
     TokenDefinitionsRootState &
@@ -86,19 +93,55 @@ const createFiatRatesMemoizedSelector = createWeakMapSelector.withTypes<
 export const selectTradingEnvironment = (state: TradingRootState) =>
     state.wallet.trading.tradingEnvironment;
 
-export const selectIsTradingBuyEnabled = (state: MessageSystemRootState & FeatureFlagsRootState) =>
-    selectIsFeatureFlagEnabled(state, FeatureFlag.IsTradingBuyEnabled) ||
-    selectIsFeatureEnabled(state, Feature.trading.buy, true);
+const createTradingMemoizedSelector = createWeakMapSelector.withTypes<TradingRootState>();
 
+export const selectTradedAccountKeys = createTradingMemoizedSelector(
+    [state => state.wallet.trading.trades],
+    trades =>
+        returnStableArrayIfEmpty<AccountKey>(
+            trades.length
+                ? Array.from(
+                      new Set(
+                          trades.flatMap(trade =>
+                              [
+                                  'selectedAccountKey' in trade
+                                      ? trade.selectedAccountKey
+                                      : undefined,
+                                  'receiveAccountKey' in trade
+                                      ? trade.receiveAccountKey
+                                      : undefined,
+                                  'sendAccountKey' in trade ? trade.sendAccountKey : undefined,
+                              ].filter((key): key is AccountKey => !!key),
+                          ),
+                      ),
+                  )
+                : undefined,
+        ),
+);
+
+export const selectIsTradingBuyEnabled = (state: MessageSystemRootState & FeatureFlagsRootState) =>
+    selectIsFeatureEnabled(state, Feature.trading.buy, true);
 export const selectIsTradingExchangeEnabled = (
     state: MessageSystemRootState & FeatureFlagsRootState,
-) =>
-    selectIsFeatureFlagEnabled(state, FeatureFlag.IsTradingExchangeEnabled) ||
-    selectIsFeatureEnabled(state, Feature.trading.exchange, true);
+) => selectIsFeatureEnabled(state, Feature.trading.exchange, true);
 
 export const selectIsTradingSellEnabled = (state: MessageSystemRootState & FeatureFlagsRootState) =>
-    selectIsFeatureFlagEnabled(state, FeatureFlag.IsTradingSellEnabled) ||
     selectIsFeatureEnabled(state, Feature.trading.sell, true);
+
+export const selectIsTradingConciergeEnabled = (
+    state: MessageSystemRootState & FeatureFlagsRootState,
+) => selectIsFeatureEnabled(state, Feature.trading.concierge, true);
+
+export const selectIsTradingSlip24Enabled = (
+    state: MessageSystemRootState & FeatureFlagsRootState & TradingRootStateWithDeviceAndAccounts,
+    account: Account | undefined | null,
+) =>
+    selectTradingIsSlip24Allowed(
+        state,
+        account,
+        selectIsFeatureEnabled(state, Feature.trading.slip24, true) &&
+            selectIsFeatureFlagEnabled(state, FeatureFlag.IsTradingSlip24Enabled),
+    );
 
 export const selectIsTradingEnabled = (
     state: MessageSystemRootState & FeatureFlagsRootState & TradingRootState,
@@ -110,23 +153,37 @@ export const selectIsTradingEnabled = (
     return (
         selectIsTradingBuyEnabled(state) ||
         selectIsTradingExchangeEnabled(state) ||
-        selectIsTradingSellEnabled(state)
+        selectIsTradingSellEnabled(state) ||
+        selectIsTradingConciergeEnabled(state)
     );
 };
 
 export const selectEnabledTradingTypes = createFeatureFlagsMemoizedSelector(
-    [selectIsTradingBuyEnabled, selectIsTradingExchangeEnabled, selectIsTradingSellEnabled],
-    (isTradingBuyEnabled, isTradingExchangeEnabled, isTradingSellEnabled) => {
-        const enabledTypes: TradingType[] = [];
+    [
+        selectIsTradingBuyEnabled,
+        selectIsTradingExchangeEnabled,
+        selectIsTradingSellEnabled,
+        selectIsTradingConciergeEnabled,
+    ],
+    (
+        isTradingBuyEnabled,
+        isTradingExchangeEnabled,
+        isTradingSellEnabled,
+        isTradingConciergeEnabled,
+    ) => {
+        const enabledTypes: TradingTypeWithConcierge[] = [];
 
-        if (isTradingBuyEnabled) {
-            enabledTypes.push('buy');
-        }
         if (isTradingExchangeEnabled) {
             enabledTypes.push('exchange');
         }
+        if (isTradingBuyEnabled) {
+            enabledTypes.push('buy');
+        }
         if (isTradingSellEnabled) {
             enabledTypes.push('sell');
+        }
+        if (isTradingConciergeEnabled) {
+            enabledTypes.push('concierge');
         }
 
         return enabledTypes;
@@ -149,6 +206,9 @@ export const selectIsAmountInputActive = (state: TradingRootState) =>
 
 export const selectActiveTradingType = (state: TradingRootState) =>
     state.wallet.trading.activeTradingType;
+
+export const selectHasActiveTradingType = (state: TradingRootState) =>
+    state.wallet.trading.activeTradingType !== null;
 
 export const selectAmountInBaseFiatCurrency = createFiatRatesMemoizedSelector(
     [
@@ -205,6 +265,9 @@ export const selectAccountsWithTokensToSellSectionListByTradingType =
             // TODO: Remove this filter when Cardano send is implemented (#15068)
             // Currently filtering out Cardano accounts and tokens from trading until Cardano send is supported
             const filteredAccounts = accounts.filter(account => {
+                if (!getNetwork(account.symbol).tradeCryptoId) {
+                    return false;
+                }
                 const networkType = getNetworkType(account.symbol);
 
                 return networkType !== 'cardano' || isCardanoSendEnabled;

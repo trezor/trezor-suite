@@ -1,21 +1,21 @@
-import { useDispatch } from 'react-redux';
+import { type useDispatch } from 'react-redux';
 
 import { A, pipe } from '@mobily/ts-belt';
 import { fromUnixTime, getUnixTime } from 'date-fns';
 
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import type { NetworkSymbol } from '@suite-common/wallet-config';
 import { fetchTransactionsFromNowUntilTimestamp } from '@suite-common/wallet-core';
-import { AccountKey, Timestamp, TokenAddress } from '@suite-common/wallet-types';
-import { AccountBalanceHistory as AccountMovementHistory } from '@trezor/blockchain-link';
+import type { AccountKey, Timestamp, TokenAddress } from '@suite-common/wallet-types';
+import { type AccountBalanceHistory as AccountMovementHistory } from '@trezor/blockchain-link';
 import TrezorConnect from '@trezor/connect';
 
 import { getAccountHistoryMovementFromTransactions } from './balanceHistoryUtils';
 import { isIgnoredBalanceHistoryCoin, isLocalBalanceHistoryCoin } from './constants';
 import {
-    AccountHistoryMovementItem,
-    AccountItem,
-    BalanceMovementEvent,
-    GroupedBalanceMovementEvent,
+    type AccountHistoryMovementItem,
+    type AccountItem,
+    type BalanceMovementEvent,
+    type GroupedBalanceMovementEvent,
 } from './types';
 
 /**
@@ -38,7 +38,7 @@ export const formatBalanceMovementEventsAmounts = (
                 sent: Math.abs(sentTotal - sentToSelf),
                 received: Math.abs(receivedTotal - sentToSelf),
             },
-        } as BalanceMovementEvent;
+        };
     });
 
 /**
@@ -55,7 +55,8 @@ export const groupBalanceMovementEvents = (
     balanceMovements.forEach(balanceMovement => {
         if (
             A.isEmpty(currentGroup) ||
-            balanceMovement.date - currentGroup[currentGroup.length - 1].date < groupingThreshold
+            balanceMovement.date - (currentGroup[currentGroup.length - 1]?.date ?? 0) <
+                groupingThreshold
         ) {
             currentGroup.push(balanceMovement);
 
@@ -116,7 +117,7 @@ export const mergeGroups = ({
                     accountKey,
                 },
             ),
-        } as GroupedBalanceMovementEvent;
+        };
     });
 
 /**  Relative number that ensure that there is no more than 30 points in each graph.  */
@@ -174,7 +175,7 @@ export const getAccountMovementEvents = async ({
 
         if (!connectBalanceHistory?.success) {
             throw new Error(
-                `Get account balance movement error: ${connectBalanceHistory.payload.error}`,
+                `Get account balance movement error: ${connectBalanceHistory.error.message}`,
             );
         }
 
@@ -183,10 +184,14 @@ export const getAccountMovementEvents = async ({
 
     const accountHistoryMovements = await getBalanceHistory();
 
+    if (accountHistoryMovements.length === 0) {
+        return [];
+    }
+
     /** Determines relative maximum distance of adjacent balance movements to be grouped together. */
     const GROUPING_THRESHOLD =
         (endOfTimeFrameDate.getTime() -
-            (startOfTimeFrameDate?.getTime() ?? accountHistoryMovements[0].time * 1000)) /
+            (startOfTimeFrameDate?.getTime() ?? (accountHistoryMovements[0]?.time ?? 0) * 1000)) /
         GROUPING_DIVISOR;
 
     return pipe(

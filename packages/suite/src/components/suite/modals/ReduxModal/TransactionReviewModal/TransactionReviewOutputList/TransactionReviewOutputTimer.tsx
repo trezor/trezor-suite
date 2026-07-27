@@ -4,6 +4,7 @@ import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
 import { Badge, Banner, Button, Text } from '@trezor/components';
+import { HourglassIcon, RepeatIcon } from '@trezor/icons';
 import { useClickCooldown } from '@trezor/react-utils';
 
 import { CountdownTimer } from 'src/components/suite/CountdownTimer';
@@ -31,7 +32,7 @@ export const TransactionReviewOutputTimer = ({
         return (
             <>
                 <Button
-                    iconLeft="repeat"
+                    iconLeft={RepeatIcon}
                     intent="neutral"
                     priority="secondary"
                     type="button"
@@ -39,7 +40,7 @@ export const TransactionReviewOutputTimer = ({
                     isDisabled={isSending || disabled}
                     onClick={() => handleClick(() => onTryAgain(true))}
                 >
-                    <Translation id="TR_RETRY" />
+                    <Translation id="TR_TRY_AGAIN" />
                 </Button>
                 <Badge intent="warning">
                     <TimerBox>
@@ -50,7 +51,7 @@ export const TransactionReviewOutputTimer = ({
                                 deadline={deadline}
                                 unitDisplay="narrow"
                                 message="TR_TX_CONFIRMATION_TIMER_SHORT"
-                                pastDeadlineMessage="TR_TX_SEND_FAILED_TITLE"
+                                pastDeadlineMessage="TR_TX_SEND_FAILED"
                             />
                         )}
                     </TimerBox>
@@ -61,10 +62,10 @@ export const TransactionReviewOutputTimer = ({
 
     return (
         <Banner
-            icon="hourglass"
+            icon={HourglassIcon}
             rightContent={
                 <Banner.Button isDisabled={isSending} onClick={() => onTryAgain(true)}>
-                    <Translation id="TR_RETRY" />
+                    <Translation id="TR_TRY_AGAIN" />
                 </Banner.Button>
             }
             description={
@@ -74,7 +75,7 @@ export const TransactionReviewOutputTimer = ({
                             deadline={deadline}
                             unitDisplay="long"
                             message="TR_TX_CONFIRMATION_TIMER"
-                            pastDeadlineMessage="TR_TX_SEND_FAILED_TITLE"
+                            pastDeadlineMessage="TR_TX_SEND_FAILED"
                         />
                     </Text>
                     <Translation id="TR_SOLANA_TX_CONFIRMATION_TIMER_DESCRIPTION" />

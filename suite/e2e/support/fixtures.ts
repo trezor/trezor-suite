@@ -1,14 +1,19 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import { AnalyticsFixture } from './analytics';
+import { checkEvoluRelayServerRunning } from '@suite-common/e2e-evolu-client';
+
+import { AnalyticsFixture, AnalyticsHelper } from './analytics';
 import { EvoluClient } from './helpers/evoluClient';
 import { IndexedDbFixture } from './indexedDb';
 import { BlockbookMock } from './mocks/blockBookMock';
 import { MetadataMock } from './mocks/metadataMock';
+import { PassthruTradingMock } from './mocks/passthruTradingMock';
 import { SolanaStakingMock } from './mocks/solanaStakingMock';
 import { TradingMock } from './mocks/tradingMock';
+import { YieldMock } from './mocks/yieldMock';
 import { AnalyticsSection } from './pageObjects/analyticsSection';
 import { AssetsSection } from './pageObjects/assetsSection';
 import { ConnectPermissionsModal } from './pageObjects/connectPermissionsModal';
+import { ConnectSelectAccountModal } from './pageObjects/connectSelectAccountModal';
 import { DashboardPage } from './pageObjects/dashboardPage';
 import { DevicePrompt } from './pageObjects/devicePrompt';
 import { GuidePanel } from './pageObjects/guidePanel';
@@ -21,8 +26,14 @@ import { StakingSection } from './pageObjects/staking/stakingSection';
 import { FeeSection } from './pageObjects/trading/feeSection';
 import { TradingPage } from './pageObjects/trading/tradingPage';
 import { TrezorInput } from './pageObjects/trezorInput';
+import { TxSimulationModal } from './pageObjects/txSimulationModal';
 import { WalletPage } from './pageObjects/walletPage';
+import { YieldConsentModal } from './pageObjects/yield/yieldConsentModal';
+import { YieldFlowSection } from './pageObjects/yield/yieldFlowSection';
+import { YieldNutshellModal } from './pageObjects/yield/yieldNutshellModal';
+import { YieldSection } from './pageObjects/yield/yieldSection';
 import { suiteBaseTest } from './testExtends/suiteBaseFixture';
+import { TradingStoreFixture } from './tradingStore';
 
 type Fixtures = {
     dashboardPage: DashboardPage;
@@ -39,13 +50,23 @@ type Fixtures = {
     metadataPage: MetadataPage;
     trezorInput: TrezorInput;
     analytics: AnalyticsFixture;
+    analyticsHelper: AnalyticsHelper;
     indexedDb: IndexedDbFixture;
+    tradingStore: TradingStoreFixture;
     metadataMock: MetadataMock;
     blockbookMock: BlockbookMock;
     solanaStakingMock: SolanaStakingMock;
     tradingMock: TradingMock;
+    passthruTradingMock: PassthruTradingMock;
     connectPermissionsModal: ConnectPermissionsModal;
+    connectSelectAccountModal: ConnectSelectAccountModal;
     stakingSection: StakingSection;
+    yieldSection: YieldSection;
+    yieldFlowSection: YieldFlowSection;
+    yieldNutshellModal: YieldNutshellModal;
+    yieldConsentModal: YieldConsentModal;
+    yieldMock: YieldMock;
+    txSimulationModal: TxSimulationModal;
     paginationControl: PaginationControl;
     evoluClient: EvoluClient;
 };
@@ -93,8 +114,14 @@ const test = suiteBaseTest.extend<Fixtures>({
     analytics: async ({ page }, use) => {
         await use(new AnalyticsFixture(page));
     },
+    analyticsHelper: async ({ page }, use) => {
+        await use(new AnalyticsHelper(page));
+    },
     indexedDb: async ({ page }, use) => {
         await use(new IndexedDbFixture(page));
+    },
+    tradingStore: async ({ page }, use) => {
+        await use(new TradingStoreFixture(page));
     },
     metadataMock: async ({ page }, use) => {
         const metadataMock = new MetadataMock(page);
@@ -106,11 +133,22 @@ const test = suiteBaseTest.extend<Fixtures>({
         await use(blockbookMock);
         blockbookMock.stop();
     },
-    solanaStakingMock: async ({ page }, use) => {
-        await use(new SolanaStakingMock(page));
+    solanaStakingMock: async ({ target }, use) => {
+        const solanaStakingMock = new SolanaStakingMock(target);
+        await solanaStakingMock.start();
+        await use(solanaStakingMock);
+        await solanaStakingMock.stop();
     },
     tradingMock: async ({ page }, use) => {
         await use(new TradingMock(page));
+    },
+    passthruTradingMock: async ({ page }, use) => {
+        const passthruTradingMock = new PassthruTradingMock(page);
+        await use(passthruTradingMock);
+        await passthruTradingMock.stop();
+    },
+    connectSelectAccountModal: async ({ page }, use) => {
+        await use(new ConnectSelectAccountModal(page));
     },
     connectPermissionsModal: async ({ page }, use) => {
         await use(new ConnectPermissionsModal(page));
@@ -118,13 +156,34 @@ const test = suiteBaseTest.extend<Fixtures>({
     stakingSection: async ({ page }, use) => {
         await use(new StakingSection(page));
     },
+    yieldSection: async ({ page }, use) => {
+        await use(new YieldSection(page));
+    },
+    yieldFlowSection: async ({ page }, use) => {
+        await use(new YieldFlowSection(page));
+    },
+    yieldNutshellModal: async ({ page }, use) => {
+        await use(new YieldNutshellModal(page));
+    },
+    yieldConsentModal: async ({ page }, use) => {
+        await use(new YieldConsentModal(page));
+    },
+    yieldMock: async ({ page }, use) => {
+        const yieldMock = new YieldMock(page);
+        await use(yieldMock);
+        await yieldMock.stop();
+    },
+    txSimulationModal: async ({ page }, use) => {
+        await use(new TxSimulationModal(page));
+    },
     paginationControl: async ({ page }, use) => {
         await use(new PaginationControl(page));
     },
     evoluClient: async ({}, use) => {
+        await checkEvoluRelayServerRunning();
         const evoluClient = new EvoluClient();
-        await evoluClient.checkServerRunning();
         await use(evoluClient);
+        await evoluClient.dispose();
     },
 });
 

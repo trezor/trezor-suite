@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo } from 'react';
-import { AccessibilityProps } from 'react-native';
+import { type AccessibilityProps } from 'react-native';
 import {
+    cancelAnimation,
     interpolate,
     useDerivedValue,
     useSharedValue,
@@ -18,11 +19,11 @@ import {
     vec,
 } from '@shopify/react-native-skia';
 
-import { useNativeStyles } from '@trezor/styles';
-import { Color, NativeRadius } from '@trezor/theme';
+import { useNativeStyles } from '@trezor/styles-native';
+import { type Color, type NativeRadius } from '@trezor/theme';
 
 import { ENDLESS_ANIMATION_VALUE } from '../constants';
-import { SurfaceElevation } from '../types';
+import { type SurfaceElevation } from '../types';
 import { nativeRadiusToNumber } from '../utils';
 
 type BoxSkeletonProps = {
@@ -35,16 +36,8 @@ type BoxSkeletonProps = {
 const ANIMATION_DURATION = 1200;
 
 const elevationToGradientColors = {
-    0: [
-        'backgroundSurfaceElevation0',
-        'backgroundSurfaceElevationNegative',
-        'backgroundSurfaceElevation0',
-    ],
-    1: [
-        'backgroundSurfaceElevation1',
-        'backgroundSurfaceElevationNegative',
-        'backgroundSurfaceElevation1',
-    ],
+    0: ['surfaceFillPage', 'surfaceFillSunken', 'surfaceFillPage'],
+    1: ['surfaceFillRaised', 'surfaceFillSunken', 'surfaceFillRaised'],
 } as const satisfies Record<SurfaceElevation, Color[]>;
 
 export const BoxSkeleton = ({
@@ -65,6 +58,8 @@ export const BoxSkeleton = ({
             ENDLESS_ANIMATION_VALUE,
         );
     }, [width, progress]);
+
+    useEffect(() => () => cancelAnimation(progress), [progress]);
 
     const position = useDerivedValue(() => [
         {

@@ -1,6 +1,6 @@
 import { getWeakRandomId } from '@trezor/utils';
 
-import { ExperimentId } from '../messageSystemTypes';
+import { type ExperimentId } from '../messageSystemTypes';
 
 // getWeakRandomId is also used for generating instanceId
 export const getArrayOfInstanceIds = (count: number) =>
@@ -17,5 +17,5 @@ export const experimentTest = {
             variant: 'B',
             percentage: 80,
         },
-    ],
+    ] satisfies [{ variant: string; percentage: number }, { variant: string; percentage: number }],
 };

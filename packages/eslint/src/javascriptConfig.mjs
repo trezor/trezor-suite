@@ -3,6 +3,32 @@ import pluginJs from '@eslint/js';
  * @typedef {import('eslint').Linter.Config} Config
  */
 
+/**
+ * Cast bans for the result of `Object.keys/entries/values(...) as …` — steer them to the
+ * typedObject* helpers. Exported separately so packages that switch the rest of
+ * `no-restricted-syntax` off can still opt back into just these selectors.
+ */
+export const noCastedObjectHelpersSyntax = [
+    {
+        selector:
+            "TSAsExpression[expression.type='CallExpression'][expression.callee.type='MemberExpression'][expression.callee.object.name='Object'][expression.callee.property.name='keys']",
+        message:
+            'Use typedObjectKeys from @trezor/utils instead of casting the result of Object.keys(). The `as` assertion just re-spells `keyof typeof`, which typedObjectKeys provides safely.',
+    },
+    {
+        selector:
+            "TSAsExpression[expression.type='CallExpression'][expression.callee.type='MemberExpression'][expression.callee.object.name='Object'][expression.callee.property.name='entries']",
+        message:
+            'Use typedObjectEntries from @trezor/utils instead of casting the result of Object.entries(). The `as` assertion just re-spells the entry tuple type, which typedObjectEntries provides safely.',
+    },
+    {
+        selector:
+            "TSAsExpression[expression.type='CallExpression'][expression.callee.type='MemberExpression'][expression.callee.object.name='Object'][expression.callee.property.name='values']",
+        message:
+            'Use typedObjectValues from @trezor/utils instead of casting the result of Object.values(). The `as` assertion just re-spells the value type, which typedObjectValues provides safely.',
+    },
+];
+
 /** @type {Config[]} */
 export const javascriptConfig = [
     pluginJs.configs.recommended,
@@ -56,6 +82,18 @@ export const javascriptConfig = [
                     selector:
                         "CallExpression[callee.name='useSelector'] MemberExpression[object.name='state']:matches([property.type='Identifier'])",
                 },
+                {
+                    message:
+                        'Use Array/String .includes() instead of .indexOf() comparison (e.g. `arr.indexOf(x) >= 0` → `arr.includes(x)`, `arr.indexOf(x) === -1` → `!arr.includes(x)`).',
+                    selector:
+                        "BinaryExpression[left.type='CallExpression'][left.callee.type='MemberExpression'][left.callee.property.name='indexOf']:matches([operator='>='][right.value=0], [operator='<'][right.value=0], [operator='>'][right.type='UnaryExpression'][right.operator='-'][right.argument.value=1], [operator='==='][right.type='UnaryExpression'][right.operator='-'][right.argument.value=1], [operator='!=='][right.type='UnaryExpression'][right.operator='-'][right.argument.value=1], [operator='=='][right.type='UnaryExpression'][right.operator='-'][right.argument.value=1], [operator='!='][right.type='UnaryExpression'][right.operator='-'][right.argument.value=1])",
+                },
+                {
+                    selector: "TSTypeQuery > Identifier[name='undefined']",
+                    message:
+                        'Use `undefined` (or `never` in discriminated unions) instead of `typeof undefined` in type position.',
+                },
+                ...noCastedObjectHelpersSyntax,
             ],
             'object-shorthand': [
                 'error',

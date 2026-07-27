@@ -1,9 +1,10 @@
 import { useSelector } from 'react-redux';
 
-import { AccountKey } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { BottomSheetModal, Box, IconButton, useBottomSheetModal } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import { selectIsLabellingAllowed, useTurnOnSuiteSyncGuard } from '@suite-native/labeling';
+import { selectIsLabellingAllowed } from '@suite-native/labeling';
+import { useTurnOnSuiteSyncGuard } from '@suite-native/suite-sync';
 
 import { AccountRenameForm } from './AccountRenameForm';
 
@@ -15,12 +16,17 @@ export const AccountRenameButton = ({ accountKey }: AccountRenameModalProps) => 
     const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
 
     const isLabellingAllowed = useSelector(selectIsLabellingAllowed);
-    const { handleAddLabel } = useTurnOnSuiteSyncGuard();
+    const { handleAddLabel, isInProgress } = useTurnOnSuiteSyncGuard();
 
     const handleTriggerAccountRename = () => {
         if (isLabellingAllowed) {
             handleAddLabel(openModal);
         } else {
+            /*
+             This flow edits the legacy MMKV labelling. It is reached by connecting T1B1 or T2T1 with Suite Sync turned off.
+             Only Account labels were implemented in the legacy system, that's why other labelling UI is simply hidden in this case.
+             Note that labels created/edited this way will be overidden by Suite Sync, if it is turned on on the same wallet.
+            */
             openModal();
         }
     };
@@ -28,10 +34,13 @@ export const AccountRenameButton = ({ accountKey }: AccountRenameModalProps) => 
     return (
         <Box>
             <IconButton
-                colorScheme="tertiaryElevation0"
+                intent="neutral"
+                priority="secondary"
                 iconName="pencilSimple"
+                size="medium"
                 onPress={handleTriggerAccountRename}
                 testID="@account-detail/settings/edit-button"
+                isLoading={isInProgress}
             />
             <BottomSheetModal
                 isCloseDisplayed

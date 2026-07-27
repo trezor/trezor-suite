@@ -6,6 +6,9 @@ on:
   push:
     branches:
       - release-native/*
+  pull_request:
+    paths:
+      - .github/workflows/test-suite-native-e2e-ios.yml
   workflow_dispatch:
     inputs:
       publish_results_to_github:
@@ -33,33 +36,37 @@ jobs:
     runs-on: macos-latest
     steps:
       - name: Checkout project
-        uses: actions/checkout@v4
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v6
         with:
           submodules: "true"
 
       - name: Install node and yarn
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
         with:
           node-version-file: ".nvmrc"
           cache: yarn
 
       - name: Setup node_modules cache
-        uses: actions/cache@v4
+        id: node-modules-cache
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v5
         with:
-          path: node_modules
-          key: node_modules-${{ hashFiles('yarn.lock') }}
-          restore-keys: node_modules-
+          path: |
+            node_modules
+            suite-native/app/node_modules
+          key: node_modules-native-full-${{ hashFiles('yarn.lock') }}
+
+      # safedep/pmg not available on macOS (that's ok, PMG must be run on PR workflows but here it's optional)
+      - name: Disable Yarn hardened mode
+        run: |
+          echo -e "\nenableHardenedMode: false" >> .yarnrc.yml
 
       - name: Install Yarn dependencies
-        run: |
-          echo -e "\nenableScripts: false" >> .yarnrc.yml
-          echo -e "\nenableHardenedMode: false" >> .yarnrc.yml
-          yarn install
+        run: yarn install --immutable
 
       - name: Use latest stable Xcode
-        uses: maxim-lobanov/setup-xcode@v1
+        uses: maxim-lobanov/setup-xcode@ed7a3b1fda3918c0306d1b724322adc0b8cc0a90 # v1
         with:
-          xcode-version: "26.0.1"
+          xcode-version: "26.5"
 
       - name: Prebuild native expo project
         working-directory: ./suite-native/app
@@ -71,14 +78,14 @@ jobs:
         run: yarn sign-config
 
       - name: Cache CocoaPods
-        uses: actions/cache@v4
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v5
         with:
           path: suite-native/app/ios/Pods
           key: pods-${{ hashFiles('suite-native/app/ios/Podfile.lock') }}
           restore-keys: pods-
 
       - name: Cache Xcode DerivedData
-        uses: actions/cache@v4
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v5
         with:
           path: suite-native/app/ios/build
           key: xcode-derived-${{ hashFiles('suite-native/app/ios/Podfile.lock') }}-${{ github.sha }}
@@ -86,10 +93,10 @@ jobs:
 
       - name: Build a Detox test app
         working-directory: ./suite-native/app
-        run: npx detox build --configuration ios.sim.release
+        run: yarn exec detox build --configuration ios.sim.release
 
       - name: Store build artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
           name: ios-test-build
           path: |
@@ -104,28 +111,32 @@ jobs:
     needs: prepare_ios_test_app
     steps:
       - name: Checkout project
-        uses: actions/checkout@v4
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v6
         with:
           submodules: "true"
 
       - name: Install node and yarn
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
         with:
           node-version-file: ".nvmrc"
           cache: yarn
 
       - name: Load node modules cache
-        uses: actions/cache@v4
+        id: node-modules-cache
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v5
         with:
-          path: node_modules
-          key: node_modules-${{ hashFiles('yarn.lock') }}
-          restore-keys: node_modules-
+          path: |
+            node_modules
+            suite-native/app/node_modules
+          key: node_modules-native-full-${{ hashFiles('yarn.lock') }}
+
+      # safedep/pmg not available on macOS (that's ok, PMG must be run on PR workflows but here it's optional)
+      - name: Disable Yarn hardened mode
+        run: |
+          echo -e "\nenableHardenedMode: false" >> .yarnrc.yml
 
       - name: Install Yarn dependencies
-        run: |
-          echo -e "\nenableScripts: false" >> .yarnrc.yml
-          echo -e "\nenableHardenedMode: false" >> .yarnrc.yml
-          yarn install
+        run: yarn install --immutable
 
       # Detox runtime may indirectly import the built config, and that would crash if message-system is not built
       - name: Sign message system config
@@ -134,9 +145,9 @@ jobs:
 
       - name: Generate GitHub App token
         id: trezor-bot-token
-        uses: actions/create-github-app-token@v1
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3
         with:
-          app-id: ${{ secrets.TREZOR_BOT_APP_ID }}
+          client-id: ${{ secrets.TREZOR_BOT_APP_ID }}
           private-key: ${{ secrets.TREZOR_BOT_PRIVATE_KEY }}
 
       # Used by github reporter when publishing results of release run
@@ -155,17 +166,17 @@ jobs:
           HOMEBREW_NO_INSTALL_CLEANUP: 1
 
       - name: Cache Detox framework
-        uses: actions/cache@v4
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v5
         with:
           path: ~/Library/Detox
           key: detox-framework-${{ hashFiles('**/node_modules/detox/package.json') }}
 
       - name: Build Detox framework cache
-        run: npx detox clean-framework-cache && npx detox build-framework-cache
+        run: yarn exec detox clean-framework-cache && yarn exec detox build-framework-cache
         working-directory: ./suite-native/app
 
       - name: Download app build artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
         with:
           name: ios-test-build
           path: |
@@ -189,7 +200,7 @@ jobs:
 
       - name: "Store test artifacts"
         if: ${{ !cancelled() }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
           name: ios-tests-${{ matrix.TEST_GROUP }}
           path: suite-native/app/artifacts

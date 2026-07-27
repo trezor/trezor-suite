@@ -4,6 +4,7 @@ import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
 import type { EventDef } from '@suite-common/analytics';
+import { typedObjectValues, unique } from '@trezor/utils';
 
 import type { EventDoc } from '../src/types';
 import {
@@ -51,9 +52,11 @@ const loadEventsFromPackage = async (
 ): Promise<Array<EventDef<unknown, string>>> => {
     const packageRoot = getPackageRoot(packageName);
     const eventsPath = path.join(packageRoot, 'src', 'events', 'index.ts');
-    const module = await import(pathToFileURL(eventsPath).href);
+    const module: Record<string, EventDef<unknown, string>> = await import(
+        pathToFileURL(eventsPath).href
+    );
 
-    return Object.values(module) as Array<EventDef<unknown, string>>;
+    return typedObjectValues(module);
 };
 
 const loadAllEvents = async (): Promise<
@@ -84,7 +87,7 @@ const getPackageRoots = (): string[] => {
         findPackageRoot(path.join(getPackageRoot(name), 'package.json')),
     ).filter((x): x is string => Boolean(x));
 
-    return [...new Set(roots)];
+    return unique(roots);
 };
 
 const getEventFileGlobs = (packageRoots: string[]): string[] =>

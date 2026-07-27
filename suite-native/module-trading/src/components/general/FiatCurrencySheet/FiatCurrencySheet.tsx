@@ -2,9 +2,10 @@ import { memo, useCallback } from 'react';
 
 import type { FiatCurrencyCode } from 'invity-api';
 
+import { type BottomSheetFlashListHandleProps, Divider } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { BottomSheetSectionList, SearchableSheetHeader } from '@suite-native/trading-atoms';
-import { FiatCurrencyItem } from '@suite-native/trading-types';
+import { type FiatCurrencyItem } from '@suite-native/trading-types';
 
 import { FiatCurrencyListEmptyComponent } from './FiatCurrencyListEmptyComponent';
 import { FiatCurrencyListItem } from './FiatCurrencyListItem';
@@ -19,6 +20,7 @@ export type FiatCurrencySheetProps = {
 };
 
 const keyExtractor = (item: FiatCurrencyItem) => item.value;
+const ItemSeparator = () => <Divider />;
 
 export const FiatCurrencySheet = memo(
     ({
@@ -32,12 +34,11 @@ export const FiatCurrencySheet = memo(
             useFiatCurrencyFilteredData(supportedFiatCurrencies);
         const { translate } = useTranslate();
 
-        // we need to keep stable callback reference, otherwise header will be re-mounted on every keystroke
         const renderHandle = useCallback(
-            () => (
+            ({ closeSheet }: BottomSheetFlashListHandleProps) => (
                 <SearchableSheetHeader
                     key="fiat_currency"
-                    onClose={onClose}
+                    onClose={closeSheet}
                     title={<Translation id="moduleTrading.fiatCurrencySheet.title" />}
                     onFilterChange={setFilterValue}
                     searchInputPlaceholder={translate(
@@ -46,16 +47,8 @@ export const FiatCurrencySheet = memo(
                     searchInputTestId={searchInputTestId}
                 />
             ),
-            [onClose, setFilterValue, translate, searchInputTestId],
+            [setFilterValue, translate, searchInputTestId],
         );
-
-        const onFiatSelectCallback = (currency: FiatCurrencyCode) => {
-            onFiatSelect(currency);
-            onClose();
-        };
-
-        // re-mount FLashList component when filterValue changes (resets scroll position)
-        const flashListKey = 'fiat_currencies_list-' + filterValue;
 
         return (
             <BottomSheetSectionList<FiatCurrencyItem>
@@ -63,12 +56,21 @@ export const FiatCurrencySheet = memo(
                 onClose={onClose}
                 ListEmptyComponent={<FiatCurrencyListEmptyComponent />}
                 handleComponent={renderHandle}
-                renderItem={({ value, ...rest }) => (
-                    <FiatCurrencyListItem {...rest} onPress={() => onFiatSelectCallback(value)} />
+                renderItem={({ value, ...rest }, _config, { closeSheet }) => (
+                    <FiatCurrencyListItem
+                        {...rest}
+                        value={value}
+                        onPress={() => {
+                            onFiatSelect(value);
+                            closeSheet();
+                        }}
+                    />
                 )}
                 data={filteredData}
                 keyExtractor={keyExtractor}
-                flashListKey={flashListKey}
+                // reset scroll position when filterValue changes
+                scrollResetKey={filterValue}
+                ItemSeparatorComponent={ItemSeparator}
                 noSingletonSectionHeader
             />
         );

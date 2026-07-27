@@ -1,8 +1,8 @@
+import type { CoreCallMessage } from '@trezor/connect-common';
 import { TypedError } from '@trezor/connect-common/src/constants/errors';
+import { MODULES } from '@trezor/connect-common/src/constants/network';
 
 import * as Methods from '../api';
-import { MODULES } from '../constants/network';
-import type { CoreCallMessage } from '../events';
 import type { AbstractMethod } from './AbstractMethod';
 
 const getMethodModule = (method: CoreCallMessage['payload']['method']) =>
@@ -17,7 +17,7 @@ export const getMethod = async (message: CoreCallMessage): Promise<AbstractMetho
     const methodModule = getMethodModule(method);
     const methods = methodModule
         ? await import(
-              /* webpackChunkName: "[request]" */ /* @vite-ignore */ `../api/${methodModule}/api/index.ts`
+              /* webpackChunkName: "coins/[request]" */ /* @vite-ignore */ `../api/${methodModule}/api/index.ts`
           )
         : Methods;
     const MethodConstructor = methods[method];

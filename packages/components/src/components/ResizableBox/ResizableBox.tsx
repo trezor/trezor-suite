@@ -2,16 +2,16 @@ import { useCallback, useEffect, useReducer, useRef } from 'react';
 
 import styled, { css } from 'styled-components';
 
-import { ZIndexValues, zIndices } from '@trezor/theme';
+import { type ZIndexValues, zIndices } from '@trezor/theme';
 import { createCooldown } from '@trezor/utils';
 
 import {
-    FrameProps,
-    FramePropsKeys,
+    type FrameProps,
+    type FramePropsKeys,
     pickAndPrepareFrameProps,
     withFrameProps,
 } from '../../utils/frameProps';
-import { TransientProps } from '../../utils/transientProps';
+import { type TransientProps } from '../../utils/transientProps';
 
 export const allowedResizableBoxFrameProps = ['margin', 'flex'] as const satisfies FramePropsKeys[];
 type AllowedResizableBoxFrameProps = Pick<
@@ -124,7 +124,7 @@ const TopHandler = styled.div<ResizerHandlersProps>(
             width: 100%;
             ${
                 $highlightDirection === 'top' &&
-                `border-${$highlightDirection}: ${BORDER_WIDTH}px solid ${theme.borderFocus};`
+                `border-${$highlightDirection}: ${BORDER_WIDTH}px solid ${theme.elementBorderFieldFocused};`
             };
         }
     `,
@@ -144,7 +144,7 @@ const BottomHandler = styled.div<ResizerHandlersProps>(
             width: 100%;
             ${
                 $highlightDirection === 'bottom' &&
-                `border-${$highlightDirection}: ${BORDER_WIDTH}px solid ${theme.borderFocus};`
+                `border-${$highlightDirection}: ${BORDER_WIDTH}px solid ${theme.elementBorderFieldFocused};`
             };
         }
     `,
@@ -165,7 +165,7 @@ const LeftHandler = styled.div<ResizerHandlersProps>(
             height: 100%;
             ${
                 $highlightDirection === 'left' &&
-                `border-${$highlightDirection}: ${BORDER_WIDTH}px solid ${theme.borderFocus};`
+                `border-${$highlightDirection}: ${BORDER_WIDTH}px solid ${theme.elementBorderFieldFocused};`
             };
         }
     `,
@@ -186,21 +186,17 @@ const RightHandler = styled.div<ResizerHandlersProps>(
             height: 100%;
             ${
                 $highlightDirection === 'right' &&
-                `border-${$highlightDirection}: ${BORDER_WIDTH}px solid ${theme.borderFocus};`
+                `border-${$highlightDirection}: ${BORDER_WIDTH}px solid ${theme.elementBorderFieldFocused};`
             };
         }
     `,
 );
 
-const Child = styled(Resizers)(
-    ({ $isResizing }) => `
+const Child = styled(Resizers)`
     position: relative;
     width: 100%;
     height: 100%;
-    overflow: auto;
-    ${$isResizing && `overflow: hidden;`};
-`,
-);
+`;
 
 const ensureMinimalSize = (size: number): number =>
     size < MINIMAL_BOX_SIZE ? MINIMAL_BOX_SIZE : size;
@@ -300,6 +296,9 @@ export const ResizableBox = ({
 }: ResizableBoxProps) => {
     const resizableBoxRef = useRef<HTMLDivElement>(null);
     const rafRef = useRef<number | null>(null);
+    // Captured at gesture start so resize math is stable even when the box's
+    // layout position shifts during the gesture (e.g. right-aligned + left handler).
+    const anchorRef = useRef<{ x: number; y: number; right: number; bottom: number } | null>(null);
     const frameProps = pickAndPrepareFrameProps(rest, allowedResizableBoxFrameProps);
 
     const initialState: ResizeState = {
@@ -313,15 +312,7 @@ export const ResizableBox = ({
     };
 
     const [state, dispatch] = useReducer(resizeReducer, initialState);
-    const {
-        x,
-        y,
-        width: widthState,
-        height: heightState,
-        isResizing,
-        isHovering,
-        direction,
-    } = state;
+    const { width: widthState, height: heightState, isResizing, isHovering, direction } = state;
 
     const effectiveWidth = typeof forcedWidth === 'number' ? forcedWidth : widthState;
 
@@ -343,7 +334,8 @@ export const ResizableBox = ({
 
     const handleResize = useCallback(
         (e: ResizePointerEvent) => {
-            if (!direction || !resizeCooldown()) return;
+            const anchor = anchorRef.current;
+            if (!direction || !anchor || !resizeCooldown()) return;
 
             const coords = getPageCoords(e);
             if (!coords) return;
@@ -353,39 +345,47 @@ export const ResizableBox = ({
             if (rafRef.current) cancelAnimationFrame(rafRef.current);
 
             rafRef.current = requestAnimationFrame(() => {
-                const difX = mouseX - x - effectiveWidth;
-                const difY = mouseY - y - heightState;
+                const originalWidth = anchor.right - anchor.x;
+                const originalHeight = anchor.bottom - anchor.y;
 
                 let nextWidth = effectiveWidth;
                 let nextHeight = heightState;
 
                 if (direction === 'top') {
-                    let result = ensureMinimalSize(-difY);
+                    const diff = anchor.bottom - mouseY;
+                    let result = ensureMinimalSize(diff);
                     result = calculateDisabledInterval(result, disabledHeightInterval);
                     nextHeight =
-                        difY < 0
+                        result > originalHeight
                             ? getMaxResult(maxHeight, result)
                             : getMinResult(minHeight, result);
                     dispatch({ type: 'SET_HEIGHT', height: nextHeight });
                 } else if (direction === 'bottom') {
-                    let result = ensureMinimalSize(heightState + difY);
+                    const diff = mouseY - anchor.y;
+                    let result = ensureMinimalSize(diff);
                     result = calculateDisabledInterval(result, disabledHeightInterval);
                     nextHeight =
-                        difY > 0
+                        result > originalHeight
                             ? getMaxResult(maxHeight, result)
                             : getMinResult(minHeight, result);
                     dispatch({ type: 'SET_HEIGHT', height: nextHeight });
                 } else if (direction === 'left') {
-                    let result = ensureMinimalSize(-difX);
+                    const diff = anchor.right - mouseX;
+                    let result = ensureMinimalSize(diff);
                     result = calculateDisabledInterval(result, disabledWidthInterval);
                     nextWidth =
-                        difX < 0 ? getMaxResult(maxWidth, result) : getMinResult(minWidth, result);
+                        result > originalWidth
+                            ? getMaxResult(maxWidth, result)
+                            : getMinResult(minWidth, result);
                     dispatch({ type: 'SET_WIDTH', width: nextWidth });
                 } else if (direction === 'right') {
-                    let result = ensureMinimalSize(effectiveWidth + difX);
+                    const diff = mouseX - anchor.x;
+                    let result = ensureMinimalSize(diff);
                     result = calculateDisabledInterval(result, disabledWidthInterval);
                     nextWidth =
-                        difX > 0 ? getMaxResult(maxWidth, result) : getMinResult(minWidth, result);
+                        result > originalWidth
+                            ? getMaxResult(maxWidth, result)
+                            : getMinResult(minWidth, result);
                     dispatch({ type: 'SET_WIDTH', width: nextWidth });
                 }
 
@@ -395,8 +395,6 @@ export const ResizableBox = ({
         },
         [
             direction,
-            x,
-            y,
             effectiveWidth,
             heightState,
             minWidth,
@@ -455,6 +453,15 @@ export const ResizableBox = ({
 
     const handleMouseDown = useCallback(
         (handlerDirection: Direction) => () => {
+            if (resizableBoxRef.current) {
+                const rect = resizableBoxRef.current.getBoundingClientRect();
+                anchorRef.current = {
+                    x: rect.x,
+                    y: rect.y,
+                    right: rect.right,
+                    bottom: rect.bottom,
+                };
+            }
             onResizeStart?.(handlerDirection);
             dispatch({ type: 'START_RESIZE', direction: handlerDirection });
         },

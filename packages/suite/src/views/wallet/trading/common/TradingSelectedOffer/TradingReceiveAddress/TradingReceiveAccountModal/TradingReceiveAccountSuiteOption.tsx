@@ -1,12 +1,15 @@
+import { Address } from '@suite/address';
 import { useFormatters } from '@suite-common/formatters';
 import { getUnusedAddressFromAccount } from '@suite-common/trading';
 import { selectBaseCurrency, selectHasRunningDiscovery } from '@suite-common/wallet-core';
-import { Account } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 import { BASE_CURRENCY_ZERO, isUtxoBased } from '@suite-common/wallet-utils';
 import { Column, Icon, Row, Text } from '@trezor/components';
-import { CoinLogo } from '@trezor/product-components';
+import { CaretRightIcon } from '@trezor/icons';
+import { TokenIcon } from '@trezor/product-components';
 
-import { AccountLabeling, Address, CoinBalance, HiddenPlaceholder } from 'src/components/suite';
+import { CoinBalance, HiddenPlaceholder } from 'src/components/suite';
+import { AccountLabeling } from 'src/components/suite/labeling/AccountLabeling';
 import { useSelector } from 'src/hooks/suite';
 import { useFiatFromCryptoValue } from 'src/hooks/suite/useFiatFromCryptoValue';
 import { TradingReceiveOptionRow } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingReceiveAddress/TradingReceiveOptionRow';
@@ -60,10 +63,14 @@ export const TradingReceiveAccountSuiteOption = ({
             onClick={onOptionClick}
         >
             <Row gap={12}>
-                <CoinLogo size={24} symbol={account.symbol} />
+                <TokenIcon size={24} symbol={account.symbol} />
 
                 <Column>
-                    <Text maxWidth={200} as="div">
+                    <Text
+                        maxWidth={200}
+                        as="div"
+                        data-testid="@trading/receive-account-modal/option/suite/name"
+                    >
                         <AccountLabeling
                             account={account}
                             accountTypeBadgeSize="small"
@@ -97,7 +104,7 @@ export const TradingReceiveAccountSuiteOption = ({
                 </Column>
 
                 {(isUtxoBasedNetwork || requiresExtraField) && (
-                    <Icon name="caretRight" size={20} intent="neutral" priority="secondary" />
+                    <Icon as={CaretRightIcon} size={20} intent="neutral" priority="secondary" />
                 )}
             </Row>
         </TradingReceiveOptionRow>

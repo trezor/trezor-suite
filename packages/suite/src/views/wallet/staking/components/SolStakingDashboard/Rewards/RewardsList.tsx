@@ -1,50 +1,52 @@
 import React, { useRef } from 'react';
 
 import { Translation } from '@suite/intl';
-import { SOLANA_EPOCH_DAYS } from '@suite-common/wallet-constants';
+import { type SolanaRewardsHistory } from '@suite-common/earn-staking-api/src/staking';
 import { formatNetworkAmount, isTestnet } from '@suite-common/wallet-utils';
-import {
-    Card,
-    Column,
-    Grid,
-    IconCircle,
-    Row,
-    SkeletonStack,
-    Text,
-    Tooltip,
-} from '@trezor/components';
+import { Card, Column, Grid, IconCircle, Row, Text } from '@trezor/components';
+import { PiggyBankIcon } from '@trezor/icons';
 
 import { DashboardSection } from 'src/components/dashboard';
 import { BaseCurrencyValue, FormattedCryptoAmount, FormattedDate } from 'src/components/suite';
 import { Pagination } from 'src/components/wallet';
 import { TransactionTargetLayout } from 'src/components/wallet/TransactionItem/TransactionTargetLayout';
-import { type SolanaRewards } from 'src/hooks/wallet/useSolanaRewards';
-import { Account } from 'src/types/wallet';
+import { type UsePagination } from 'src/hooks/general/usePagination';
+import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
+import { type Account } from 'src/types/wallet';
 import SkeletonTransactionItem from 'src/views/wallet/transactions/TransactionList/SkeletonTransactionItem';
 
 import { RewardsEmpty } from './RewardsEmpty';
 
-interface RewardsListProps {
-    account: Account;
-    rewards: SolanaRewards;
-}
-
 const TEST_ID = '@staking/rewards-item';
 
-export const RewardsList = ({ account, rewards }: RewardsListProps) => {
+interface RewardsListProps {
+    account: Account;
+    rewardsQueryResult: SolanaRewardsHistory;
+    pagination: UsePagination;
+}
+
+export const RewardsList = ({ account, rewardsQueryResult, pagination }: RewardsListProps) => {
     const sectionRef = useRef<HTMLDivElement>(null);
+    const { isBelowTablet } = useLayoutSize();
     const isSolanaMainnet = !isTestnet(account.symbol);
 
     const onPageSelected = (page: number) => {
-        rewards.setSelectedPage(page);
+        pagination.changePage(page);
         if (sectionRef.current) {
             sectionRef.current.scrollIntoView();
         }
     };
 
-    const noRewards = !isSolanaMainnet || rewards.selectedAccountRewards?.length === 0;
-    if (noRewards && !rewards.isLoading) {
+    const noRewards =
+        !isSolanaMainnet ||
+        (rewardsQueryResult.data?.rewards?.length === 0 && rewardsQueryResult.isSuccess);
+
+    if (noRewards) {
         return <RewardsEmpty />;
+    }
+
+    if (rewardsQueryResult.isError) {
+        // TODO: handle failed request
     }
 
     return (
@@ -54,15 +56,15 @@ export const RewardsList = ({ account, rewards }: RewardsListProps) => {
             data-testid="@wallet/accounts/rewards-list"
         >
             <Column gap={32}>
-                {rewards.isLoading || rewards.selectedAccountRewards === undefined ? (
-                    <SkeletonStack $col $childMargin="0px 0px 16px 0px">
+                {rewardsQueryResult.isLoading || rewardsQueryResult.data === undefined ? (
+                    <Column gap={16}>
                         <SkeletonTransactionItem />
                         <SkeletonTransactionItem />
                         <SkeletonTransactionItem />
-                    </SkeletonStack>
+                    </Column>
                 ) : (
                     <Column gap={40}>
-                        {rewards.slicedRewards?.map(reward => (
+                        {rewardsQueryResult.data.rewards.map(reward => (
                             <Column gap={10} key={reward.epoch} data-testid={TEST_ID}>
                                 <Text
                                     typographyStyle="body-sm-strong"
@@ -77,45 +79,36 @@ export const RewardsList = ({ account, rewards }: RewardsListProps) => {
                                         year="numeric"
                                     />
                                 </Text>
+
                                 <Card paddingType="none">
                                     <Row gap={32} padding={{ vertical: 16, horizontal: 24 }}>
                                         <IconCircle
-                                            name="piggyBank"
-                                            variant="tertiary"
-                                            size={42}
-                                            hasBorder={false}
+                                            icon={PiggyBankIcon}
+                                            intent="neutral"
+                                            size={40}
                                         />
                                         <Column flex="1" gap={4}>
                                             <Text typographyStyle="body-md">
                                                 <Translation id="TR_REWARD" />
                                             </Text>
                                             <Grid
-                                                columns="1fr max-content minmax(110px, max-content)"
+                                                columns={
+                                                    isBelowTablet
+                                                        ? '1fr max-content'
+                                                        : '1fr max-content minmax(110px, max-content)'
+                                                }
                                                 rowGap={6}
                                                 columnGap={24}
                                                 flex="1"
                                             >
                                                 <TransactionTargetLayout
                                                     addressLabel={
-                                                        <Tooltip
-                                                            maxWidth={250}
-                                                            content={
-                                                                <Translation
-                                                                    id="TR_STAKE_REWARDS_TOOLTIP"
-                                                                    values={{
-                                                                        count: SOLANA_EPOCH_DAYS,
-                                                                    }}
-                                                                />
-                                                            }
-                                                            hasIcon
-                                                        >
-                                                            <span data-testid={`${TEST_ID}/epoch`}>
-                                                                <Translation
-                                                                    id="TR_STAKE_REWARDS_BADGE"
-                                                                    values={{ count: reward.epoch }}
-                                                                />
-                                                            </span>
-                                                        </Tooltip>
+                                                        <span data-testid={`${TEST_ID}/epoch`}>
+                                                            <Translation
+                                                                id="TR_STAKE_REWARDS_BADGE"
+                                                                values={{ count: reward.epoch }}
+                                                            />
+                                                        </span>
                                                     }
                                                     amount={
                                                         reward?.amount && (
@@ -151,13 +144,13 @@ export const RewardsList = ({ account, rewards }: RewardsListProps) => {
                     </Column>
                 )}
 
-                {rewards.showPagination && !rewards.isLoading && rewards.slicedRewards?.length && (
+                {pagination.showPagination && !rewardsQueryResult.isLoading && (
                     <Pagination
                         hasPages={true}
-                        currentPage={rewards.currentPage}
-                        isLastPage={rewards.isLastPage}
-                        perPage={rewards.itemsPerPage}
-                        totalItems={rewards.totalItems}
+                        currentPage={pagination.page}
+                        isLastPage={pagination.isLastPage}
+                        perPage={pagination.pageSize}
+                        totalItems={pagination.totalCount}
                         onPageSelected={onPageSelected}
                         explicitNavigation
                     />

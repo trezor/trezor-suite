@@ -5,7 +5,7 @@ import WebSocket from 'ws';
 import { TorController, createInterceptor } from '../src';
 import { torRunner } from './torRunner';
 import { TorIdentities } from '../src/torIdentities';
-import { InterceptorOptions } from '../src/types';
+import type { InterceptorOptions } from '../src/types';
 
 const hostIp = '127.0.0.1';
 const port = 38835;
@@ -14,6 +14,7 @@ const processId = process.pid;
 
 // 1 minute before timeout, because Tor might be slow to start.
 jest.setTimeout(60000);
+jest.retryTimes(3, { logErrorsBeforeRetry: true });
 
 // Because tmp/control_auth_cookie is shared by other tests, this test should not run in parallel
 // using `--runInBand` option with jest.
@@ -22,7 +23,9 @@ const ipRegex = /\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/;
 
 const testGetUrlHttp = 'http://check.torproject.org/';
 const testGetUrlHttps = 'https://check.torproject.org/';
-const testPostUrlHttps = 'https://httpbin.org/post';
+const testPostUrlHttps = 'https://httpbingo.org/post';
+
+const conditionalTest = process.env.SKIP_FLAKY_TESTS ? describe.skip : describe;
 
 describe('Interceptor', () => {
     let torProcess: ReturnType<typeof torRunner> | null;
@@ -34,7 +37,7 @@ describe('Interceptor', () => {
     const interceptorOptions: InterceptorOptions = {
         getWhitelistedDomains: () => [
             'check.torproject.org',
-            'httpbin.org',
+            'httpbingo.org',
             'tbtc1.trezor.io',
             'localhost',
             '127.0.0.1',
@@ -70,22 +73,30 @@ describe('Interceptor', () => {
         }
     });
 
-    describe('GET method', () => {
-        it('HTTP - Each identity has different ip address', async () => {
+    afterEach(async () => {
+        await torController.controlPort.closeActiveCircuits();
+    });
+
+    // The tests below are somehow useful but their nature is flaky since we can not
+    // guarantee that the IPs of 2 different Tor circuits are different. And this is
+    // part of the Tor nature.
+    conditionalTest('Check if IPs are different', () => {
+        it('HTTP GET - Each identity has different ip address', async () => {
             const identityDefault = await fetch(testGetUrlHttp, {
-                headers: { 'Proxy-Authorization': 'Basic default' },
+                headers: { 'proxy-authorization': 'Basic default' },
             });
             const identityDefault2 = await fetch(testGetUrlHttp, {
                 headers: { 'Proxy-Authorization': 'Basic user' },
             });
             const iPIdentitieA = ((await identityDefault.text()) as any).match(ipRegex)[0];
+
             const iPIdentitieB = ((await identityDefault2.text()) as any).match(ipRegex)[0];
             expect(iPIdentitieA).not.toEqual(iPIdentitieB);
         });
 
-        it('HTTPS - Each identity has different ip address', async () => {
+        it('HTTPS GET - Each identity has different ip address', async () => {
             const identityA = await fetch(testGetUrlHttps, {
-                headers: { 'Proxy-Authorization': 'Basic default' },
+                headers: { 'proxy-authorization': 'Basic default' },
             });
             const identityB = await fetch(testGetUrlHttps, {
                 headers: { 'Proxy-Authorization': 'Basic user' },
@@ -104,14 +115,12 @@ describe('Interceptor', () => {
             // ip for "user" did change
             expect(iPIdentitieB2).not.toEqual(iPIdentitieB);
         });
-    });
 
-    describe('POST method', () => {
-        it('HTTPS - Each identity has different ip address', async () => {
+        it('HTTPS POST - Each identity has different ip address', async () => {
             const identityA = await fetch(testPostUrlHttps, {
                 method: 'POST',
                 body: JSON.stringify({ test: 'test' }),
-                headers: { 'Proxy-Authorization': 'Basic default' },
+                headers: { 'proxy-authorization': 'Basic default' },
             });
             const identityB = await fetch(testPostUrlHttps, {
                 method: 'POST',
@@ -170,8 +179,7 @@ describe('Interceptor', () => {
         });
     });
 
-    // TODO: Skipping this for now, since I want to get the most critical tests to run in CI.
-    describe.skip('TorControl', () => {
+    conditionalTest('TorControl', () => {
         it('closing circuits', async () => {
             await fetch(testGetUrlHttps, {
                 headers: { 'Proxy-Authorization': 'Basic user-circuit-1' },
@@ -206,7 +214,9 @@ describe('Interceptor', () => {
 
             // and validate state afterward
             const circuits3 = await torController.controlPort.getCircuits();
-            expect(circuits3.length).toEqual(0);
+            expect(circuits3.map(c => c.username)).not.toEqual(
+                expect.arrayContaining(['user-circuit-1', 'user-circuit-2']),
+            );
         });
     });
 
@@ -253,15 +263,15 @@ describe('Interceptor', () => {
                     body: JSON.stringify({ test: 'test' }),
                     headers: { 'User-Agent': 'TrezorSuite' },
                 }),
-            ).resolves.toEqual({
-                host,
-                accept: '*/*',
-                'accept-encoding': 'gzip,deflate',
-                connection: 'keep-alive',
-                'content-length': '15',
-                'content-type': 'text/plain;charset=UTF-8',
-                'user-agent': 'TrezorSuite',
-            });
+            ).resolves.toEqual(
+                expect.objectContaining({
+                    host,
+                    accept: '*/*',
+                    'content-length': '15',
+                    'content-type': 'text/plain;charset=UTF-8',
+                    'user-agent': 'TrezorSuite',
+                }),
+            );
 
             // restricted headers
             await expect(
@@ -273,12 +283,13 @@ describe('Interceptor', () => {
                         'Allowed-Headers': 'AcCePt-EnCoDiNg;content-type;Content-Length;HOST', // case insensitive
                     },
                 }),
-            ).resolves.toEqual({
-                host,
-                'accept-encoding': 'gzip,deflate',
-                'content-length': '15',
-                'content-type': 'text/plain;charset=UTF-8',
-            });
+            ).resolves.toEqual(
+                expect.objectContaining({
+                    host,
+                    'content-length': '15',
+                    'content-type': 'text/plain;charset=UTF-8',
+                }),
+            );
         });
 
         it('GET request headers', async () => {
@@ -290,13 +301,13 @@ describe('Interceptor', () => {
                     method: 'GET',
                     headers: { 'User-Agent': 'TrezorSuite' },
                 }),
-            ).resolves.toEqual({
-                host,
-                accept: '*/*',
-                'accept-encoding': 'gzip,deflate',
-                connection: 'keep-alive',
-                'user-agent': 'TrezorSuite',
-            });
+            ).resolves.toEqual(
+                expect.objectContaining({
+                    host,
+                    accept: '*/*',
+                    'user-agent': 'TrezorSuite',
+                }),
+            );
 
             // restricted headers
             await expect(
@@ -307,10 +318,11 @@ describe('Interceptor', () => {
                         'Allowed-Headers': 'Accept-Encoding;Content-Type;Content-Length;Host',
                     },
                 }),
-            ).resolves.toEqual({
-                host,
-                'accept-encoding': 'gzip,deflate',
-            });
+            ).resolves.toEqual(
+                expect.objectContaining({
+                    host,
+                }),
+            );
         });
     });
 
@@ -323,6 +335,6 @@ describe('Interceptor', () => {
                 body: JSON.stringify({ test: 'test' }),
                 headers: { 'Proxy-Authorization': 'Basic default' },
             }),
-        ).rejects.toThrow('Blocked request with Proxy-Authorization');
+        ).rejects.toThrow('Blocked request with Proxy-Authorization. TOR not enabled.');
     });
 });

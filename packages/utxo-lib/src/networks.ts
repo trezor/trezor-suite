@@ -1,10 +1,10 @@
 // upstream: https://github.com/bitcoinjs/bitcoinjs-lib/blob/master/ts_src/networks.ts
 // fork: https://github.com/trezor/trezor-utxo-lib/blob/trezor/src/networks.js
 // differences:
-// - more specific networks (zcash/komodo, dash, peercoin, decred)
+// - more specific networks (zcash/komodo, dash, decred)
 // - network type validation function.
 
-import { typeforce } from './types/typeforce';
+import { Type, UInt16, UInt32, UInt8, checkType } from './types/validation';
 
 export interface Bip32 {
     public: number;
@@ -168,30 +168,6 @@ export const zcashTest: Network = {
     wif: 0xef,
 };
 
-export const peercoin: Network = {
-    messagePrefix: '\x18Peercoin Signed Message:\n',
-    bech32: 'pc',
-    bip32: {
-        public: 0x488b21e,
-        private: 0x0488ade4,
-    },
-    pubKeyHash: 0x37,
-    scriptHash: 0x75,
-    wif: 0,
-};
-
-export const peercoinTest: Network = {
-    messagePrefix: '\x18Peercoin Signed Message:\n',
-    bech32: 'tpc',
-    bip32: {
-        public: 0x43587cf,
-        private: 0x04358394,
-    },
-    pubKeyHash: 0x6f,
-    scriptHash: 0xc4,
-    wif: 0,
-};
-
 export const komodo: Network = {
     messagePrefix: '\x18Komodo Signed Message:\n',
     bech32: '',
@@ -256,7 +232,6 @@ const NETWORK_TYPES = {
     bitcoinCash: [bitcoincash, bitcoincashTest],
     dash: [dash, dashTest],
     decred: [decred, decredTest, decredSim],
-    peercoin: [peercoin, peercoinTest],
     zcash: [zcash, zcashTest, komodo],
     litecoin: [litecoin, litecoinTest],
     doge: [doge],
@@ -264,23 +239,25 @@ const NETWORK_TYPES = {
 
 export type NetworkTypes = keyof typeof NETWORK_TYPES;
 
+const networkSchema = Type.Object(
+    {
+        bip32: Type.Object(
+            {
+                public: UInt32,
+                private: UInt32,
+            },
+            { additionalProperties: true },
+        ),
+        pubKeyHash: Type.Union([UInt8, UInt16]),
+        scriptHash: Type.Union([UInt8, UInt16]),
+    },
+    { additionalProperties: true },
+);
+
 export function isNetworkType(type: NetworkTypes, network?: Network) {
     if (typeof type !== 'string' || !network || !NETWORK_TYPES[type]) return false;
-    try {
-        typeforce(
-            {
-                bip32: {
-                    public: typeforce.UInt32,
-                    private: typeforce.UInt32,
-                },
-                pubKeyHash: typeforce.anyOf(typeforce.UInt8, typeforce.UInt16),
-                scriptHash: typeforce.anyOf(typeforce.UInt8, typeforce.UInt16),
-            },
-            network,
-        );
-    } catch {
-        return false;
-    }
+
+    if (!checkType(networkSchema, network)) return false;
 
     return !!NETWORK_TYPES[type].find(
         n =>

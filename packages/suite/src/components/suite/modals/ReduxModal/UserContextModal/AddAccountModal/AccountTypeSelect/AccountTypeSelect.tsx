@@ -1,35 +1,23 @@
 import { memo } from 'react';
 
-import styled from 'styled-components';
-
 import { Translation } from '@suite/intl';
-import { NetworkAccount, NetworkSymbol, NetworkType } from '@suite-common/wallet-config';
+import {
+    type NetworkAccount,
+    type NetworkSymbol,
+    type NetworkType,
+} from '@suite-common/wallet-config';
 import { getAccountTypeName, getAccountTypeTech } from '@suite-common/wallet-utils';
-import { Column, Paragraph, Select } from '@trezor/components';
-import { spacings, typography } from '@trezor/theme';
+import { Column, Paragraph, Row, Select, Text } from '@trezor/components';
 
 import { AccountTypeDescription } from './AccountTypeDescription';
 
-const LabelWrapper = styled.div`
-    display: flex;
-    align-items: baseline;
-`;
-
-const TypeInfo = styled.div`
-    display: flex;
-    flex: 1;
-    margin-left: 1ch;
-    color: ${({ theme }) => theme.textSubdued};
-    ${typography['body-xs']}
-`;
-
-interface AccountTypeSelectProps {
+type AccountTypeSelectProps = {
     accountTypes: NetworkAccount[];
     networkType: NetworkType;
     symbol: NetworkSymbol;
     onSelectAccountType: (account: NetworkAccount) => void;
     selectedAccountType?: NetworkAccount;
-}
+};
 
 const AccountTypeSelectComponent = ({
     selectedAccountType,
@@ -53,27 +41,30 @@ const AccountTypeSelectComponent = ({
         });
 
         return (
-            <LabelWrapper>
+            <Row alignItems="baseline" gap={8}>
                 {accountTypeName && <Translation id={accountTypeName} />}
-                <TypeInfo>
+                <Text typographyStyle="body-xs" intent="neutral" priority="secondary">
                     <Translation id={getAccountTypeTech(option.value.bip43Path)} />
-                </TypeInfo>
-            </LabelWrapper>
+                </Text>
+            </Row>
         );
     };
 
     const options = accountTypes.map(buildAccountTypeOption);
     // the default, 'normal' account type is expected to be the first one
     const defaultAccountType = accountTypes[0];
+
+    if (!defaultAccountType) return null;
+
     const value = buildAccountTypeOption(selectedAccountType ?? defaultAccountType);
 
     const bip43PathToDescribe = selectedAccountType?.bip43Path ?? defaultAccountType.bip43Path;
 
     return (
-        <Column alignItems="center" gap={spacings.md}>
+        <Column alignItems="center" gap={16}>
             <Select
                 data-testid="@add-account-type/select"
-                label={<Translation id="TR_ACCOUNT_TYPE" />}
+                labelLeft={<Translation id="TR_SELECT_TYPE" />}
                 isSearchable={false}
                 isClearable={false}
                 value={value}

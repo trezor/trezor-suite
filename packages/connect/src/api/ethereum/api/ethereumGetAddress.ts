@@ -1,93 +1,90 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/EthereumGetAddress.js
 
+import {
+    Bundle,
+    GetAddress as GetAddressSchema,
+    UI_REQUEST,
+    createUiMessage,
+} from '@trezor/connect-common';
+import type {
+    EthereumNetworkInfoDefinitionValues,
+    PROTO,
+    PermissionRequest,
+} from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { Assert } from '@trezor/schema-utils';
 
-import { PROTO } from '../../../constants';
-import {
-    AbstractMethod,
-    MethodPermission,
-    MethodReturnType,
-    Payload,
-} from '../../../core/AbstractMethod';
+import type { MethodContext, MethodMessage, MethodReturnType } from '../../../core/AbstractMethod';
+import { AbstractMethod } from '../../../core/AbstractMethod';
 import { getEthereumNetwork, getUniqueNetworks } from '../../../data/coinInfo';
-import { UI_REQUEST, createUiMessage } from '../../../events';
-import type { EthereumNetworkInfoDefinitionValues } from '../../../types';
-import { Bundle } from '../../../types';
-import { GetAddress as GetAddressSchema } from '../../../types/api/getAddress';
 import { getNetworkLabel } from '../../../utils/ethereumUtils';
 import { stripHexPrefix } from '../../../utils/formatUtils';
 import { getSerializedPath, getSlip44ByPath, validatePath } from '../../../utils/pathUtils';
-import { getFirmwareRange } from '../../common/paramsValidator';
+import { bundlify } from '../../common/paramsValidator';
 import {
     decodeEthereumDefinition,
     ethereumNetworkInfoFromDefinition,
     getEthereumDefinitions,
 } from '../ethereumDefinitions';
 
-type Params = PROTO.EthereumGetAddress & {
+type Params = {
+    proto: PROTO.EthereumGetAddress;
     address?: string;
     network?: EthereumNetworkInfoDefinitionValues;
-    encoded_network?: ArrayBuffer;
 };
 
 export default class EthereumGetAddress extends AbstractMethod<'ethereumGetAddress', Params[]> {
     hasBundle?: boolean;
     progress = 0;
 
-    constructor(message: { id?: number; payload: Payload<'ethereumGetAddress'> }) {
-        super(message);
-        this.confirmMissingBackup = true;
-        this.requiredDeviceCapabilities = ['Capability_Ethereum'];
-    }
-
-    get requiredPermissions(): MethodPermission[] {
-        return ['read'];
-    }
-
-    init() {
-        // create a bundle with only one batch if bundle doesn't exists
-        this.hasBundle = !!this.payload.bundle;
-        const payload = !this.payload.bundle
-            ? { ...this.payload, bundle: [this.payload] }
-            : this.payload;
+    constructor(message: MethodMessage<'ethereumGetAddress'>) {
+        const { hasBundle, payload } = bundlify(message.payload);
 
         // validate bundle type
         Assert(Bundle(GetAddressSchema), payload);
 
-        this.params = payload.bundle.map(batch => {
+        const params = payload.bundle.map(batch => {
             const path = validatePath(batch.path, 3);
             const network = getEthereumNetwork(path);
-            this.firmwareRange = getFirmwareRange(this.name, network, this.firmwareRange);
 
-            return {
+            const proto = {
                 address_n: path,
                 show_display: typeof batch.showOnTrezor === 'boolean' ? batch.showOnTrezor : true,
-                address: batch.address,
-                network,
                 chunkify: typeof batch.chunkify === 'boolean' ? batch.chunkify : false,
             };
+
+            return { proto, address: batch.address, network };
         });
 
-        this.useUi = this.getUseUi(this.params);
+        super(message, params);
+
+        this.requiredFirmwareCoins = params.map(({ network }) => network);
+        this.hasBundle = hasBundle;
+        this.confirmMissingBackup = true;
+        this.requiredDeviceCapabilities = ['Capability_Ethereum'];
+    }
+
+    get requiredPermissions(): PermissionRequest[] {
+        return this.coinPerms('read_address', this.requiredFirmwareCoins);
     }
 
     async initAsync(): Promise<void> {
         for (let i = 0; i < this.params.length; i++) {
+            const { params } = this;
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const param: (typeof params)[number] = params[i];
             // network was maybe already set from 'well-known' definition in init method.
-            if (!this.params[i].network) {
-                const slip44 = getSlip44ByPath(this.params[i].address_n);
+            if (!param.network) {
+                const slip44 = getSlip44ByPath(param.proto.address_n);
 
-                const definitions = await getEthereumDefinitions({
-                    slip44,
-                });
+                const definitions = await getEthereumDefinitions({ slip44 });
 
                 const decoded = decodeEthereumDefinition(definitions);
                 if (decoded.network) {
-                    this.params[i].network = ethereumNetworkInfoFromDefinition(decoded.network);
+                    param.network = ethereumNetworkInfoFromDefinition(decoded.network);
                 }
                 if (definitions.encoded_network) {
-                    this.params[i].encoded_network = definitions.encoded_network;
+                    param.proto.encoded_network = definitions.encoded_network;
                 }
             }
         }
@@ -95,7 +92,11 @@ export default class EthereumGetAddress extends AbstractMethod<'ethereumGetAddre
 
     get info() {
         if (this.params.length === 1) {
-            return getNetworkLabel('Export #NETWORK address', this.params[0].network);
+            const { params } = this;
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const first: (typeof params)[number] = params[0];
+
+            return getNetworkLabel('Export #NETWORK address', first.network);
         }
         const requestedNetworks = this.params.map(b => b.network);
         const uniqNetworks = getUniqueNetworks(requestedNetworks);
@@ -108,10 +109,14 @@ export default class EthereumGetAddress extends AbstractMethod<'ethereumGetAddre
 
     getButtonRequestData(code: string) {
         if (code === 'ButtonRequest_Address') {
+            const { params } = this;
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const current: (typeof params)[number] = params[this.progress];
+
             return {
                 type: 'address' as const,
-                serializedPath: getSerializedPath(this.params[this.progress].address_n),
-                address: this.params[this.progress].address || 'not-set',
+                serializedPath: getSerializedPath(current.proto.address_n),
+                address: current.address || 'not-set',
             };
         }
     }
@@ -124,28 +129,30 @@ export default class EthereumGetAddress extends AbstractMethod<'ethereumGetAddre
     }
 
     private async _call(params: Params) {
-        const response = await this.device.getCommands().ethereumGetAddress(params);
+        const response = await this.getDevice().getCommands().ethereumGetAddress(params.proto);
 
         return {
-            path: params.address_n,
-            serializedPath: getSerializedPath(params.address_n),
+            path: params.proto.address_n,
+            serializedPath: getSerializedPath(params.proto.address_n),
             address: response.address,
             mac: response.mac,
         };
     }
 
-    async run() {
+    async run({ sendCoreMessage }: MethodContext) {
         const responses: MethodReturnType<typeof this.name> = [];
 
         for (let i = 0; i < this.params.length; i++) {
-            const batch = this.params[i];
+            const { params } = this;
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const batch: (typeof params)[number] = params[i];
 
             // silently get address and compare with requested address
             // or display as default inside popup
-            if (batch.show_display) {
+            if (batch.proto.show_display) {
                 const silent = await this._call({
                     ...batch,
-                    show_display: false,
+                    proto: { ...batch.proto, show_display: false },
                 });
                 if (typeof batch.address === 'string') {
                     if (
@@ -167,7 +174,7 @@ export default class EthereumGetAddress extends AbstractMethod<'ethereumGetAddre
 
             if (this.hasBundle) {
                 // send progress
-                this.postMessage(
+                sendCoreMessage(
                     createUiMessage(UI_REQUEST.BUNDLE_PROGRESS, {
                         total: this.params.length,
                         progress: i,
@@ -179,6 +186,9 @@ export default class EthereumGetAddress extends AbstractMethod<'ethereumGetAddre
             this.progress++;
         }
 
-        return this.hasBundle ? responses : responses[0];
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const first: (typeof responses)[number] = responses[0];
+
+        return this.hasBundle ? responses : first;
     }
 }

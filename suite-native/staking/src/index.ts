@@ -1,8 +1,34 @@
-// Do not export anything from coin specific files like ethereumSelectors.ts etc.
-// This package should be expose only coin agnostic staking functionality.
-// Exposing coin specific selectors is not a good practice and should be last resort.
+// Coin-specific selector files (e.g. cardanoStakingSelectors.ts) are intentionally not
+// re-exported whole. However, since selectors.ts already imports from these files,
+// they are always included in the bundle regardless. Selectors needed by external consumers
+// are therefore explicitly exported below rather than forcing deep imports.
 
 export * from './utils';
 export * from './selectors';
-export * from './types';
+export {
+    pushStakeTransactionNativeThunk,
+    signStakeTransactionNativeThunk,
+} from './stakeNativeThunks';
+export {
+    composeSolanaStakingTransactionFeeLevelsNativeThunk,
+    signSolanaStakingTransactionNativeThunk,
+} from './stakeFormSolanaNativeThunks';
+export type * from './types';
+export type * from './stakeFormSolanaNativeTypes';
 export * from './hooks/useSelector';
+
+export {
+    selectFirstCardanoAccountStakedWithFiveBinaries,
+    selectIsCardanoStakedOutsideEverstake,
+    selectIsCardanoStakedWithFiveBinaries,
+} from './cardanoStakingSelectors';
+export {
+    selectTronAccountHasStaked,
+    selectTronAvailableVotingPowerByAccountKey,
+    selectTronPendingUnstakeBalanceByAccountKey,
+    selectTronRewardsBalanceByAccountKey,
+    selectTronStakedBalanceByAccountKey,
+    selectTronTotalVotingPowerByAccountKey,
+    selectTronUnstakedBalanceByAccountKey,
+    selectTronVotesByAccountKey,
+} from './tronStakingSelectors';

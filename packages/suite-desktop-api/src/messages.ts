@@ -1,5 +1,6 @@
-import { TorStatus } from './enums';
-import { ExtractUndefined } from './methods';
+import { type TorStatus } from '@suite/tor';
+
+import { type ExtractUndefined } from './methods';
 
 export type SuiteThemeVariant = 'light' | 'dark' | 'system';
 
@@ -138,6 +139,8 @@ export type ConnectPopupCall = {
     id: string;
     method: string;
     payload: any;
+    sourceType?: string;
+    silent?: boolean;
     process?: {
         name: string;
         warning: boolean;
@@ -156,10 +159,19 @@ export type ConnectPopupCall = {
 
 export type ConnectPopupCancel = {
     error?: string;
+    callId?: string;
 };
 
 export type ConnectPopupResponse = {
     id: string;
-    success: boolean;
-    payload: any;
-};
+} & (
+    | {
+          success: true;
+          payload: any;
+      }
+    | {
+          success: false;
+          payload: any; // for backward compatibility with v9
+          error: any;
+      }
+);

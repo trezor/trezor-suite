@@ -1,16 +1,17 @@
-import { selectLabelingDataForAccount } from '@suite/metadata';
 import { createThunk } from '@suite-common/redux-utils';
 import { selectNetworkTokenDefinitions } from '@suite-common/token-definitions';
 import { advancedSearchTransactions } from '@suite-common/transaction-search';
 import {
     TRANSACTIONS_MODULE_PREFIX,
+    selectAccountTransactionsMarkedAsNotScam,
     selectBaseCurrency,
     selectHistoricFiatRates,
     selectTransactions,
 } from '@suite-common/wallet-core';
-import { Account, ExportFileType } from '@suite-common/wallet-types';
+import { type Account, type ExportFileType } from '@suite-common/wallet-types';
 import { getAccountTransactions } from '@suite-common/wallet-utils';
 
+import { selectAccountLabelsForSearch } from 'src/selectors/suite/selectAccountLabelsForSearch';
 import { formatData, getExportedFileName } from 'src/utils/wallet/exportTransactionsUtils';
 
 export const exportTransactionsThunk = createThunk(
@@ -30,12 +31,15 @@ export const exportTransactionsThunk = createThunk(
         { getState, extra },
     ) => {
         const { services } = extra;
-        const accountMetadata = selectLabelingDataForAccount(getState(), account.key);
         // Get state of transactions
         const allTransactions = selectTransactions(getState());
         const historicFiatRates = selectHistoricFiatRates(getState());
         const baseCurrencyCode = selectBaseCurrency(getState());
         const tokenDefinitions = selectNetworkTokenDefinitions(getState(), account.symbol) || {};
+        const txsMarkedAsNotScam = selectAccountTransactionsMarkedAsNotScam(
+            getState(),
+            account.key,
+        );
 
         // TODO: this is not nice (copy-paste)
         // metadata reducer is still not part of trezor-common and I can not import it
@@ -46,7 +50,7 @@ export const exportTransactionsThunk = createThunk(
         );
         const metadataKeys = account?.metadata[1];
         let labels = {};
-        if (!metadataKeys || !metadataKeys?.fileName || !provider?.data[metadataKeys.fileName]) {
+        if (!metadataKeys?.fileName || !provider?.data[metadataKeys.fileName]) {
             labels = { outputLabels: {} };
         } else {
             labels = provider.data[metadataKeys.fileName];
@@ -63,9 +67,11 @@ export const exportTransactionsThunk = createThunk(
                 })),
             }));
 
+        const searchLabels = selectAccountLabelsForSearch(getState(), account);
+
         const filteredTransaction =
             searchQuery.trim() !== ''
-                ? advancedSearchTransactions(transactions, accountMetadata, searchQuery)
+                ? advancedSearchTransactions(transactions, searchLabels, searchQuery)
                 : transactions;
 
         // getAccountTransactions doesn't guarantee transactions will be sorted
@@ -81,6 +87,7 @@ export const exportTransactionsThunk = createThunk(
                 baseCurrencyCode,
             },
             tokenDefinitions,
+            txsMarkedAsNotScam,
             historicFiatRates,
         );
 

@@ -1,13 +1,17 @@
+import { isCountrySubdivisionEmpty } from '@suite-common/trading';
 import {
     FeatureFlag,
-    FeatureFlagsRootState,
+    type FeatureFlagsRootState,
     selectIsFeatureFlagEnabled,
 } from '@suite-native/feature-flags';
 import { tradingCountriesWhitelistSet } from '@suite-native/trading-consts';
-import { TradingResidenceRootState } from '@suite-native/trading-types';
+import { type TradingResidenceRootState } from '@suite-native/trading-types';
 
 export const selectTradingResidenceCountry = (state: TradingResidenceRootState) =>
     state.wallet.trading.residence.country;
+
+export const selectTradingResidenceCountrySubdivision = (state: TradingResidenceRootState) =>
+    state.wallet.trading.residence.countrySubdivision;
 
 export const selectWasTradingResidenceOnboardingVisited = (state: TradingResidenceRootState) =>
     state.wallet.trading.residence.wasOnboardingVisited;
@@ -24,16 +28,27 @@ export const selectIsTradingEnabledForCountry = (
     }
 
     const country = selectTradingResidenceCountry(state);
+
     if (!country) {
+        return false;
+    }
+    const countrySubdivision = selectTradingResidenceCountrySubdivision(state);
+
+    if (isCountrySubdivisionEmpty(country, countrySubdivision)) {
         return false;
     }
 
     return tradingCountriesWhitelistSet.has(country);
 };
 
-export const selectIsTradingCountrySet = (state: TradingResidenceRootState) =>
-    selectTradingResidenceCountry(state) !== undefined;
+export const selectIsTradingCountrySet = (state: TradingResidenceRootState) => {
+    const country = selectTradingResidenceCountry(state);
 
+    return (
+        country !== undefined &&
+        !isCountrySubdivisionEmpty(country, selectTradingResidenceCountrySubdivision(state))
+    );
+};
 export const selectShouldDisplayTradingResidenceOnboarding = (
     state: TradingResidenceRootState & FeatureFlagsRootState,
 ) => {

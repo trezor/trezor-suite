@@ -1,13 +1,14 @@
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import type { FiatRatesBySymbol } from '@trezor/connect';
-import { Branded } from '@trezor/type-utils';
+import { type Branded } from '@trezor/type-utils';
 
-import { TokenAddress } from './account';
+import { type TokenAddress } from './account';
 
 export interface TickerId {
     symbol: NetworkSymbol;
     tokenAddress?: TokenAddress;
+    protocols?: 'erc4626'[];
 }
 
 export interface TimestampedRates {
@@ -28,7 +29,7 @@ export const asCryptoBaseCurrencyCode = (value: string) => value as CryptoBaseCu
 export type Timestamp = number & Branded<'Timestamp'>;
 export const asTimestamp = (number: number) => number as Timestamp;
 
-export type RateType = 'current' | 'lastWeek' | 'historic';
+type RateType = 'current' | 'lastWeek' | 'historic';
 export type RateTypeWithoutHistoric = Exclude<RateType, 'historic'>;
 
 export type Rate = {

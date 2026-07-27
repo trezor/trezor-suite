@@ -8,7 +8,12 @@ import {
     composeSendFormTransactionFeeLevelsThunk,
     selectConvertedNetworkFeeInfo,
 } from '@suite-common/wallet-core';
-import { Account, FormOptions, FormState, FormStateTrading } from '@suite-common/wallet-types';
+import {
+    type Account,
+    type FormOptions,
+    type FormState,
+    type FormStateTrading,
+} from '@suite-common/wallet-types';
 import {
     asAmountSubunit,
     isEvmApprovalTx,
@@ -123,6 +128,7 @@ export const recomposeAndSignTxThunk = createThunk<
                     ...DEFAULT_PAYMENT,
                     address,
                     amount,
+                    currency: DEFAULT_PAYMENT.currency,
                     token: shouldIncludeToken ? (composed.token?.contract ?? null) : null,
                 },
             ],
@@ -154,12 +160,7 @@ export const recomposeAndSignTxThunk = createThunk<
                 }),
             ).unwrap();
 
-            if (
-                !normalLevels ||
-                !normalLevels.normal ||
-                normalLevels.normal.type !== 'final' ||
-                !normalLevels.normal.feeLimit
-            ) {
+            if (normalLevels?.normal?.type !== 'final' || !normalLevels.normal.feeLimit) {
                 const error: TradingSendRejectedProps['error'] =
                     normalLevels?.normal?.type === 'error' && normalLevels?.normal?.errorMessage
                         ? {
@@ -176,7 +177,10 @@ export const recomposeAndSignTxThunk = createThunk<
                 });
             }
 
-            formState.feeLimit = normalLevels.normal.feeLimit;
+            formState.feeLimit = BigNumber.max(
+                formState.feeLimit || '0',
+                normalLevels.normal.feeLimit,
+            ).toString();
         }
 
         // compose transaction again to recalculate fees based on real account values
@@ -198,7 +202,7 @@ export const recomposeAndSignTxThunk = createThunk<
 
         const precomposedToSign = composedLevels.payload[selectedFee];
 
-        if (!precomposedToSign || precomposedToSign.type !== 'final') {
+        if (precomposedToSign?.type !== 'final') {
             const error: TradingSendRejectedProps['error'] =
                 precomposedToSign?.type === 'error' && precomposedToSign.errorMessage
                     ? {
@@ -215,6 +219,11 @@ export const recomposeAndSignTxThunk = createThunk<
             });
         }
 
+        // Tron fee limit is SUN and recipient-dependent — use the recomposed (real recipient) estimate.
+        if (network.networkType === 'tron') {
+            formState.feeLimit = precomposedToSign.estimatedFeeLimit ?? precomposedToSign.fee ?? '';
+        }
+
         /*
             SLIP-24 to achieve the consistent trade data
             ---
@@ -222,9 +231,12 @@ export const recomposeAndSignTxThunk = createThunk<
             the formState (displayed in the UI) and for the payment requests to
             ensure that the payment requests are created with the correct amount.
         */
-        const isTradedWholeBalance = precomposedToSign.outputs.length === 1; // sending whole balance
+        const { outputs: precomposedOutputs } = precomposedToSign;
+        const isTradedWholeBalance = precomposedOutputs.length === 1; // sending whole balance
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const firstPrecomposedOutput: (typeof precomposedOutputs)[number] = precomposedOutputs[0];
         const sendAmount = isTradedWholeBalance
-            ? precomposedToSign.outputs[0].amount.toString()
+            ? firstPrecomposedOutput.amount.toString()
             : undefined;
         const formattedMaxAmount = sendAmount
             ? subunitsToUnits({
@@ -258,6 +270,7 @@ export const recomposeAndSignTxThunk = createThunk<
                       account,
                       composedLevels: precomposedToSign,
                       formattedMaxAmount,
+                      destinationTag,
                   }),
               ).unwrap()
             : [];

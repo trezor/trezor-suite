@@ -1,7 +1,7 @@
 import { BackendWebsocketServerMock } from '@trezor/e2e-utils';
 
 import workers from './worker';
-import BlockchainLink from '../../src';
+import { BlockchainLink } from '../../src';
 import fixtures from './fixtures/subscribe';
 
 // this test covers application live cycle

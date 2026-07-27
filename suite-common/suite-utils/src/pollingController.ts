@@ -1,4 +1,4 @@
-import { IntervalId } from '@trezor/type-utils';
+import { type IntervalId } from '@trezor/type-utils';
 
 type PollingCallback = () => Promise<void> | void;
 
@@ -37,9 +37,5 @@ export class PollingController {
             console.error(error);
         }
         this.start(callback, intervalMs);
-    }
-
-    isScheduled() {
-        return this.intervalId !== null;
     }
 }

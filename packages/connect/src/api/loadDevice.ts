@@ -1,28 +1,17 @@
+import { type PermissionRequest, UI_REQUEST } from '@trezor/connect-common';
 import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 
-import { AbstractMethod, MethodPermission, Payload } from '../core/AbstractMethod';
-import { UI_REQUEST } from '../events';
-import { getFirmwareRange } from './common/paramsValidator';
+import type { MethodMessage } from '../core/AbstractMethod';
+import { AbstractMethod } from '../core/AbstractMethod';
 
 export default class LoadDevice extends AbstractMethod<'loadDevice', PROTO.LoadDevice> {
-    constructor(message: { id?: number; payload: Payload<'loadDevice'> }) {
-        super(message);
-        this.allowDeviceMode = [UI_REQUEST.INITIALIZE];
-        this.useDeviceState = false;
-        this.skipFinalReload = false;
-        this.firmwareRange = getFirmwareRange(this.name, null, this.firmwareRange);
-    }
-    get requiredPermissions(): MethodPermission[] {
-        return ['management'];
-    }
-
-    init() {
-        const { payload } = this;
+    constructor(message: MethodMessage<'loadDevice'>) {
+        const { payload } = message;
         // validate bundle type
         Assert(PROTO.LoadDevice, payload);
 
-        this.params = {
+        const params = {
             mnemonics: payload.mnemonics,
             pin: payload.pin,
             passphrase_protection: payload.passphrase_protection,
@@ -33,6 +22,14 @@ export default class LoadDevice extends AbstractMethod<'loadDevice', PROTO.LoadD
             needs_backup: payload.needs_backup,
             no_backup: payload.no_backup,
         };
+
+        super(message, params);
+        this.allowDeviceMode = [UI_REQUEST.INITIALIZE];
+        this.useDeviceState = false;
+        this.skipFinalReload = false;
+    }
+    get requiredPermissions(): PermissionRequest[] {
+        return [{ permission: 'management' }];
     }
 
     get info() {
@@ -47,7 +44,7 @@ export default class LoadDevice extends AbstractMethod<'loadDevice', PROTO.LoadD
     }
 
     async run() {
-        const cmd = this.device.getCommands();
+        const cmd = this.getDevice().getCommands();
         const response = await cmd.typedCall('LoadDevice', 'Success', this.params);
 
         return response.message;

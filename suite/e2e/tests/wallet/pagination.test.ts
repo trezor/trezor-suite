@@ -28,15 +28,15 @@ test.describe('Pagination', { tag: ['@T3W1', '@T3T1'] }, () => {
             }),
         },
 
-        async ({ onboardingPage, walletPage, paginationControl }) => {
+        async ({ onboardingPage, walletPage, paginationControl, settingsPage }) => {
             await test.step('Complete onboarding', async () => {
                 await onboardingPage.completeOnboarding();
-                await walletPage.expandAllAccountsInMenu();
+                await settingsPage.changeNetworks({ enableNetworks: ['btc'] });
                 await walletPage.openAccount({ symbol: 'btc', type: 'legacy', atIndex: 0 });
             });
 
             await test.step('Go to page with pagination button', async () => {
-                await paginationControl.pageButtonSelector(5).click();
+                await paginationControl.paginationButton(5).click();
                 await paginationControl.checkIfPageIsActive(5);
                 await paginationControl.checkIfPageIsInactive(1);
 

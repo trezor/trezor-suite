@@ -1,21 +1,20 @@
-import { TradingType } from '@suite-common/trading';
-import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
+import { memo } from 'react';
+
+import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import { Box, VStack } from '@suite-native/atoms';
 import { ConfirmOnTrezorWrapper } from '@suite-native/confirm-on-trezor';
 import { Translation } from '@suite-native/intl';
-import { ScreenHeader } from '@suite-native/navigation';
-import { ReviewOutputItemList } from '@suite-native/transaction-management';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { type ExchangeFlowType, ScreenHeader } from '@suite-native/navigation';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
+import { ReviewOutputsBody } from './ReviewOutputsBody';
 import { ReviewOutputsFooter } from './ReviewOutputsFooter';
-import { ReviewOutputsSkeleton } from './ReviewOutputsSkeleton';
 import type { UseTradingTransactionReturnProps } from '../../hooks/general/useTradingTransaction';
 import { useDelayedReviewOutputListDisplayFlag } from '../../hooks/reviewOutputs/useDelayedReviewOutputListDisplayFlag';
 import {
-    UseTradingOutputsReviewScreenControlsProps,
+    type UseTradingOutputsReviewScreenControlsProps,
     useTradingOutputsReviewScreenControls,
 } from '../../hooks/reviewOutputs/useTradingOutputsReviewScreenControls';
-import { getFormDraftKeyPrefixFromTradingType } from '../../utils/general/utils';
 
 const spacerStyle = prepareNativeStyle(_ => ({
     height: 150,
@@ -29,67 +28,74 @@ export type ReviewOutputsContentProps = UseTradingOutputsReviewScreenControlsPro
         accountKey: AccountKey;
         tokenContract?: TokenAddress;
         orderId: string;
-        tradingType: TradingType;
-    };
+    } & (
+        | {
+              tradingType: 'sell';
+              exchangeFlowType?: undefined;
+          }
+        | {
+              tradingType: 'exchange';
+              exchangeFlowType: ExchangeFlowType;
+          }
+    );
 
-export const ReviewOutputsContent = ({
-    accountKey,
-    tokenContract,
-    orderId,
-    tradingType,
-    signAndSendTransaction,
-    isTransactionSendConsentRequested,
-    resolveTransactionSendConsent,
-    reportToAnalytics,
-}: ReviewOutputsContentProps) => {
-    const { applyStyle } = useNativeStyles();
-    const { isTransactionAlreadySigned, confirmOnTrezorRef } =
-        useTradingOutputsReviewScreenControls({
-            orderId,
-            accountKey,
-            signAndSendTransaction,
-            reportToAnalytics,
-        });
-    const shouldDisplayReviewList = useDelayedReviewOutputListDisplayFlag();
+export const ReviewOutputsContent = memo(
+    ({
+        accountKey,
+        tokenContract,
+        orderId,
+        tradingType,
+        signAndSendTransaction,
+        isTransactionSendConsentRequested,
+        resolveTransactionSendConsent,
+        reportToAnalytics,
+        exchangeFlowType,
+    }: ReviewOutputsContentProps) => {
+        const { applyStyle } = useNativeStyles();
+        const { isTransactionAlreadySigned, confirmOnTrezorRef } =
+            useTradingOutputsReviewScreenControls({
+                orderId,
+                accountKey,
+                signAndSendTransaction,
+                reportToAnalytics,
+            });
+        const shouldDisplayReviewList = useDelayedReviewOutputListDisplayFlag();
 
-    const prefix = getFormDraftKeyPrefixFromTradingType(tradingType);
-
-    return (
-        <ConfirmOnTrezorWrapper
-            controlRef={confirmOnTrezorRef}
-            closeActionType="close"
-            defaultHeader={
-                <ScreenHeader
-                    title={<Translation id="moduleTrading.tradingReviewOutputs.title" />}
-                    closeActionType="close"
-                />
-            }
-        >
-            <VStack
-                flex={1}
-                spacing="sp16"
-                justifyContent="space-between"
-                testID="@trading/outputs-review"
+        return (
+            <ConfirmOnTrezorWrapper
+                controlRef={confirmOnTrezorRef}
+                closeActionType="close"
+                defaultHeader={
+                    <ScreenHeader
+                        title={<Translation id="moduleTrading.tradingReviewOutputs.title" />}
+                        closeActionType="close"
+                    />
+                }
             >
-                {shouldDisplayReviewList ? (
-                    <ReviewOutputItemList
-                        prefix={prefix}
+                <VStack
+                    flex={1}
+                    spacing="sp16"
+                    justifyContent="space-between"
+                    testID="@trading/outputs-review"
+                >
+                    <ReviewOutputsBody
                         accountKey={accountKey}
                         tokenContract={tokenContract}
+                        exchangeFlowType={exchangeFlowType}
+                        shouldDisplayReviewList={shouldDisplayReviewList}
+                        tradingType={tradingType}
                     />
-                ) : (
-                    <ReviewOutputsSkeleton />
-                )}
-                {isTransactionAlreadySigned ? (
-                    <ReviewOutputsFooter
-                        isConsentRequested={isTransactionSendConsentRequested}
-                        resolveConsent={resolveTransactionSendConsent}
-                        testID="@trading/outputs-review/footer"
-                    />
-                ) : (
-                    <Box style={applyStyle(spacerStyle)} />
-                )}
-            </VStack>
-        </ConfirmOnTrezorWrapper>
-    );
-};
+                    {isTransactionAlreadySigned ? (
+                        <ReviewOutputsFooter
+                            isConsentRequested={isTransactionSendConsentRequested}
+                            resolveConsent={resolveTransactionSendConsent}
+                            testID="@trading/outputs-review/footer"
+                        />
+                    ) : (
+                        <Box style={applyStyle(spacerStyle)} />
+                    )}
+                </VStack>
+            </ConfirmOnTrezorWrapper>
+        );
+    },
+);

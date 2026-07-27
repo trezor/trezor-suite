@@ -1,157 +1,191 @@
 import { Form } from '@suite-native/forms';
-import {
-    PreloadedState,
-    act,
-    renderHookWithStoreProviderAsync,
-    renderWithStoreProviderAsync,
-    userEvent,
-} from '@suite-native/test-utils';
-import { btcAsset, getInitializedTradingState } from '@suite-native/trading-fixtures';
-import { BuyFormType } from '@suite-native/trading-types';
+import { getTranslation } from '@suite-native/intl';
+import { act, userEvent } from '@suite-native/test-utils-store';
+import { btcAsset } from '@suite-native/trading-fixtures';
+import { type BuyFormType } from '@suite-native/trading-types';
 import { PROTO } from '@trezor/connect';
 
+import {
+    type PreloadedStatePartial,
+    type TradingTestPreloadedState,
+    renderHookWithTradingProvider,
+    renderWithTradingProvider,
+} from '../../../__tests__/tradingTestUtils';
 import { useBuyForm } from '../../../hooks/buy/useBuyForm';
-import { BuyCryptoAmountInput, CryptoAmountInputProps } from '../BuyCryptoAmountInput';
+import { BuyCryptoAmountInput, type CryptoAmountInputProps } from '../BuyCryptoAmountInput';
 
 describe('BuyCryptoAmountInput', () => {
     const renderCryptoAmountInput = (
         props: Partial<CryptoAmountInputProps>,
         form: BuyFormType,
-        preloadedState: PreloadedState = {},
+        overrides: PreloadedStatePartial<TradingTestPreloadedState> = {},
     ) =>
-        renderWithStoreProviderAsync(
+        renderWithTradingProvider(
             <Form form={form}>
                 <BuyCryptoAmountInput showAssetsSheet={jest.fn()} {...props} />
             </Form>,
-            { preloadedState },
+            { overrides },
         );
 
-    const renderUseTradingBuyForm = async (preloadedState: PreloadedState = {}) => {
-        const { result } = await renderHookWithStoreProviderAsync(() => useBuyForm(), {
-            preloadedState,
+    const renderUseTradingBuyForm = (
+        overrides: PreloadedStatePartial<TradingTestPreloadedState> = {},
+    ) => {
+        const { result } = renderHookWithTradingProvider(() => useBuyForm(), {
+            overrides,
         });
 
         return result.current;
     };
 
     it('should set fiat value in form', async () => {
-        const form = await renderUseTradingBuyForm();
+        const form = renderUseTradingBuyForm();
         act(() => {
             form.setValue('asset', btcAsset);
         });
-        const { getByLabelText } = await renderCryptoAmountInput({}, form);
+        const { getByLabelText } = renderCryptoAmountInput({}, form);
 
-        await userEvent.type(getByLabelText('You get'), '100');
+        await userEvent.type(
+            getByLabelText(getTranslation('moduleTrading.selectCoin.amountLabel')),
+            '100',
+        );
 
         expect(form.getValues('cryptoValue')).toEqual('100');
     });
 
-    it('should be disabled when asset is not selected', async () => {
-        const form = await renderUseTradingBuyForm();
-        const { getByLabelText } = await renderCryptoAmountInput({}, form);
+    it('should be disabled when asset is not selected', () => {
+        const form = renderUseTradingBuyForm();
+        const { getByLabelText } = renderCryptoAmountInput({}, form);
 
-        expect(getByLabelText('You get')).toBeDisabled();
+        expect(
+            getByLabelText(getTranslation('moduleTrading.selectCoin.amountLabel')),
+        ).toBeDisabled();
     });
 
     it('should call showAssetsSheet when disabled and pressed', async () => {
         const showAssetsSheet = jest.fn();
-        const form = await renderUseTradingBuyForm();
-        const { getByLabelText } = await renderCryptoAmountInput({ showAssetsSheet }, form);
+        const form = renderUseTradingBuyForm();
+        const { getByLabelText } = renderCryptoAmountInput({ showAssetsSheet }, form);
 
-        await userEvent.press(getByLabelText('You get'));
+        await userEvent.press(
+            getByLabelText(getTranslation('moduleTrading.selectCoin.amountLabel')),
+        );
 
         expect(showAssetsSheet).toHaveBeenCalledTimes(1);
     });
 
     it('should not call showAssetsSheet when enabled and pressed', async () => {
         const showAssetsSheet = jest.fn();
-        const form = await renderUseTradingBuyForm();
+        const form = renderUseTradingBuyForm();
         act(() => {
             form.setValue('asset', btcAsset);
         });
-        const { getByLabelText } = await renderCryptoAmountInput({ showAssetsSheet }, form);
+        const { getByLabelText } = renderCryptoAmountInput({ showAssetsSheet }, form);
 
-        await userEvent.press(getByLabelText('You get'));
+        await userEvent.press(
+            getByLabelText(getTranslation('moduleTrading.selectCoin.amountLabel')),
+        );
 
         expect(showAssetsSheet).not.toHaveBeenCalled();
     });
 
     it('should format input value to be decimal by default', async () => {
-        const form = await renderUseTradingBuyForm();
+        const form = renderUseTradingBuyForm();
         act(() => {
             form.setValue('asset', btcAsset);
         });
-        const { getByLabelText } = await renderCryptoAmountInput({}, form);
+        const { getByLabelText } = renderCryptoAmountInput({}, form);
 
-        await userEvent.type(getByLabelText('You get'), 'asd1.123');
+        await userEvent.type(
+            getByLabelText(getTranslation('moduleTrading.selectCoin.amountLabel')),
+            'asd1.123',
+        );
 
         expect(form.getValues('cryptoValue')).toEqual('1.123');
-        expect(getByLabelText('You get')).toHaveDisplayValue('1.123');
+        expect(
+            getByLabelText(getTranslation('moduleTrading.selectCoin.amountLabel')),
+        ).toHaveDisplayValue('1.123');
     });
 
     it('should format input value to be integer when BTC asset is selected and value should be displayed in sats', async () => {
         const preloadedState = {
             wallet: { settings: { bitcoinAmountUnit: PROTO.AmountUnit.SATOSHI } },
         };
-        const form = await renderUseTradingBuyForm();
+        const form = renderUseTradingBuyForm();
         act(() => {
             form.setValue('asset', btcAsset);
         });
-        const { getByLabelText } = await renderCryptoAmountInput({}, form, preloadedState);
+        const { getByLabelText } = renderCryptoAmountInput({}, form, preloadedState);
 
-        await userEvent.type(getByLabelText('You get'), 'asd1.123');
+        await userEvent.type(
+            getByLabelText(getTranslation('moduleTrading.selectCoin.amountLabel')),
+            'asd1.123',
+        );
 
         expect(form.getValues('cryptoValue')).toEqual('1123');
-        expect(getByLabelText('You get')).toHaveDisplayValue('1123');
+        expect(
+            getByLabelText(getTranslation('moduleTrading.selectCoin.amountLabel')),
+        ).toHaveDisplayValue('1123');
     });
 
     it('should always escape non-numeric characters', async () => {
         const preloadedState = {
             wallet: { settings: { bitcoinAmountUnit: PROTO.AmountUnit.SATOSHI } },
         };
-        const form = await renderUseTradingBuyForm();
+        const form = renderUseTradingBuyForm();
         act(() => {
             form.setValue('asset', btcAsset);
         });
-        const { getByLabelText } = await renderCryptoAmountInput({}, form, preloadedState);
+        const { getByLabelText } = renderCryptoAmountInput({}, form, preloadedState);
 
-        await userEvent.type(getByLabelText('You get'), 'asd');
+        await userEvent.type(
+            getByLabelText(getTranslation('moduleTrading.selectCoin.amountLabel')),
+            'asd',
+        );
 
         expect(form.getValues('cryptoValue')).toBeUndefined();
-        expect(getByLabelText('You get')).toHaveDisplayValue('');
+        expect(
+            getByLabelText(getTranslation('moduleTrading.selectCoin.amountLabel')),
+        ).toHaveDisplayValue('');
     });
 
-    it('should display loading skeleton while amountInCrypto is false and buyInfo is loading', async () => {
-        const preloadedState = { wallet: { trading: getInitializedTradingState() } };
-        preloadedState.wallet.trading.buy.isLoading = true;
-        const form = await renderUseTradingBuyForm();
+    it('should display loading skeleton while amountInCrypto is false and buyInfo is loading', () => {
+        const form = renderUseTradingBuyForm();
 
-        const { getByLabelText } = await renderCryptoAmountInput({}, form, preloadedState);
+        const { getByLabelText } = renderCryptoAmountInput({}, form, {
+            wallet: { trading: { buy: { isLoading: true } } },
+        });
 
-        expect(getByLabelText('Fetching offers...')).toBeTruthy();
+        expect(
+            getByLabelText(getTranslation('moduleTrading.tradingScreen.quotesLoadingLabel')),
+        ).toBeTruthy();
     });
 
-    it('should not display loading skeleton while amountInCrypto is true and buyInfo is loading', async () => {
-        const preloadedState = { wallet: { trading: getInitializedTradingState() } };
-        preloadedState.wallet.trading.buy.isLoading = true;
-        const form = await renderUseTradingBuyForm();
+    it('should not display loading skeleton while amountInCrypto is true and buyInfo is loading', () => {
+        const form = renderUseTradingBuyForm();
         act(() => {
             form.setValue('amountInCrypto', true);
         });
 
-        const { queryByLabelText } = await renderCryptoAmountInput({}, form, preloadedState);
+        const { queryByLabelText } = renderCryptoAmountInput({}, form, {
+            wallet: { trading: { buy: { isLoading: true } } },
+        });
 
-        expect(queryByLabelText('Fetching offers...')).toBeNull();
+        expect(
+            queryByLabelText(getTranslation('moduleTrading.tradingScreen.quotesLoadingLabel')),
+        ).toBeNull();
     });
 
     it('should limit value to 9 decimals', async () => {
-        const form = await renderUseTradingBuyForm();
+        const form = renderUseTradingBuyForm();
         act(() => {
             form.setValue('asset', btcAsset);
         });
-        const { getByLabelText } = await renderCryptoAmountInput({}, form);
+        const { getByLabelText } = renderCryptoAmountInput({}, form);
 
-        await userEvent.type(getByLabelText('You get'), '1.0123456789');
+        await userEvent.type(
+            getByLabelText(getTranslation('moduleTrading.selectCoin.amountLabel')),
+            '1.0123456789',
+        );
 
         expect(form.getValues('cryptoValue')).toEqual('1.012345678');
     });

@@ -1,19 +1,27 @@
-import { MouseEvent } from 'react';
+import { type MouseEvent } from 'react';
 
+import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
+import { goto } from '@suite/router';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectSelectedDevice } from '@suite-common/device';
 import { Banner } from '@trezor/components';
+import { DeviceModelInternal } from '@trezor/device-utils';
+import { TrezorBodyIcon } from '@trezor/icons';
 
 import {
     enableOnboardingReducer,
     resetOnboarding,
     updateAnalytics,
 } from 'src/actions/onboarding/onboardingActions';
-import { goto } from 'src/actions/suite/routerActions';
 import { TroubleshootingTips } from 'src/components/suite/troubleshooting/TroubleshootingTips';
 import { useDispatch } from 'src/hooks/suite';
+import { useStore } from 'src/hooks/suite/useStore';
 
 export const DeviceInitialize = () => {
     const dispatch = useDispatch();
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { getState } = useStore();
 
     const handleCtaClick = (e: MouseEvent) => {
         e.stopPropagation();
@@ -24,7 +32,18 @@ export const DeviceInitialize = () => {
 
         dispatch(updateAnalytics({ startTime: Date.now() }));
 
-        dispatch(goto('onboarding-index'));
+        const device = selectSelectedDevice(getState());
+
+        analytics.report(
+            {
+                type: events.deviceSetupStartedEvent.name,
+                payload: {
+                    deviceModel: device?.features?.internal_model || DeviceModelInternal.UNKNOWN,
+                },
+            },
+            { force: true },
+        );
+        dispatch(goto({ routeName: 'onboarding-index' }));
     };
 
     return (
@@ -41,7 +60,7 @@ export const DeviceInitialize = () => {
                     key: 'device-initialize',
                     heading: <Translation id="TR_DEVICE_NOT_INITIALIZED" />,
                     description: <Translation id="TR_DEVICE_NOT_INITIALIZED_TEXT" />,
-                    icon: 'trezorBody',
+                    icon: TrezorBodyIcon,
                 },
             ]}
         />

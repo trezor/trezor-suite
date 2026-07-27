@@ -2,6 +2,7 @@ import { useWatch } from 'react-hook-form';
 
 import { Translation } from '@suite/intl';
 import { Button, Column, Row, Tooltip } from '@trezor/components';
+import { CircleDashedIcon, PlusIcon } from '@trezor/icons';
 
 import { OpenGuideFromTooltip } from 'src/components/guide';
 import { useSendFormContext } from 'src/hooks/wallet';
@@ -57,7 +58,7 @@ export const BitcoinOptions = () => {
                         <Button
                             intent="neutral"
                             priority="secondary"
-                            iconLeft="circleDashed"
+                            iconLeft={CircleDashedIcon}
                             onClick={toggleUtxoSelection}
                             data-testid="coin-control-button"
                         >
@@ -72,7 +73,7 @@ export const BitcoinOptions = () => {
                 <Button
                     intent="neutral"
                     priority="secondary"
-                    iconLeft="plus"
+                    iconLeft={PlusIcon}
                     data-testid="add-output"
                     onClick={addOutput}
                     margin={{ left: 'auto' }}

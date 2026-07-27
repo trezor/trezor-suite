@@ -1,7 +1,7 @@
 import type { NavigationState } from '@react-navigation/routers';
 
 import { navigationContainerRef } from './components/NavigationContainerWithAnalytics';
-import { AppTabsParamList } from './navigators';
+import { type AppTabsParamList } from './navigators';
 import {
     AppTabsRoutes,
     DeviceOnboardingStackRoutes,
@@ -15,9 +15,11 @@ export type AppNavigationState = NavigationState<AppTabsParamList>;
  * Recursively get the most specific active route name from the hierarchy of navigation states.
  */
 export const getActiveRouteName = (state: AppNavigationState): string | undefined => {
-    if (!state || !state.routes || state.index == null) return undefined;
+    if (!state?.routes || state.index == null) return undefined;
 
-    const route = state.routes[state.index];
+    const { routes, index } = state;
+    // @ts-expect-error: noUncheckedIndexedAccess
+    const route: (typeof routes)[number] = routes[index];
 
     if (route.state) return getActiveRouteName(route.state as AppNavigationState);
 

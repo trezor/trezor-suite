@@ -2,6 +2,12 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
+        {
+            "path": "../../suite-common/analytics"
+        },
+        {
+            "path": "../../suite-common/dependency-injection"
+        },
         { "path": "../../suite-common/device" },
         {
             "path": "../../suite-common/message-system"
@@ -13,12 +19,10 @@
             "path": "../../suite-common/suite-types"
         },
         { "path": "../../suite-common/thp" },
-        {
-            "path": "../../suite-common/wallet-core"
-        },
         { "path": "../alerts" },
         { "path": "../analytics" },
         { "path": "../atoms" },
+        { "path": "../banner-flags" },
         { "path": "../config" },
         { "path": "../device" },
         { "path": "../device-authorization" },
@@ -30,7 +34,6 @@
         { "path": "../intl" },
         { "path": "../link" },
         { "path": "../navigation" },
-        { "path": "../services" },
         { "path": "../settings" },
         { "path": "../swipeable-walkthrough" },
         { "path": "../thp" },
@@ -44,10 +47,14 @@
         },
         { "path": "../../packages/device-utils" },
         { "path": "../../packages/env-utils" },
-        { "path": "../../packages/styles" },
+        {
+            "path": "../../packages/styles-native"
+        },
         { "path": "../../packages/theme" },
         { "path": "../../packages/urls" },
-        { "path": "../../packages/utils" }
+        { "path": "../../packages/utils" },
+        { "path": "../test-utils-store" },
+        { "path": "../../packages/requirements" }
     ],
     "include": [".", "**/*.json"]
 }

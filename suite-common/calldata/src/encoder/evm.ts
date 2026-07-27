@@ -1,15 +1,7 @@
-import { Abi, AbiFunction, AbiParameter, encodeFunctionData } from 'viem';
+import { type Abi, type AbiFunction, encodeFunctionData } from 'viem';
 
-import { Encoder } from '../types/encoder';
-
-type ExtractAbiFunction<T extends Abi> = Extract<T[number], AbiFunction>;
-
-type NamedAbiParameter = AbiParameter & { name: string };
-
-type AbiParamName<T extends Abi> =
-    ExtractAbiFunction<T> extends infer F extends AbiFunction
-        ? Extract<F['inputs'][number], NamedAbiParameter>['name']
-        : never;
+import { type AbiParamName } from '../types/abi';
+import { type Encoder } from '../types/encoder';
 
 export const createEvmEncoder = <const T extends Abi>(
     abi: T,
@@ -19,6 +11,7 @@ export const createEvmEncoder = <const T extends Abi>(
     if (functions.length > 1) throw new Error('ABI must contain exactly one function');
 
     const fn = functions[0];
+    if (!fn) throw new Error('No function in ABI');
 
     const paramNames = fn.inputs.map(input => {
         if (!input.name) {
@@ -46,6 +39,9 @@ export const createEvmEncoder = <const T extends Abi>(
             }
         }
 
+        // Load-bearing: without the assertion the inferred argument type does not satisfy
+        // viem's EncodeFunctionDataParameters (TS2345); the lint rule mis-reports it as a no-op.
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
         return encodeFunctionData({
             abi,
             functionName: fn.name,

@@ -1,6 +1,6 @@
 import fs from 'fs';
 
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import type { NetworkSymbol } from '@suite-common/wallet-config';
 import { TestCategory, TestPriority } from '@trezor/e2e-utils';
 
 import { expect, test } from '../../support/fixtures';
@@ -13,9 +13,44 @@ test.describe('Export transactions', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, ()
             mnemonic: 'town grace cat forest dress dust trick practice hair survey pupil regular',
         },
     });
+
     test.beforeEach(async ({ onboardingPage }) => {
         await onboardingPage.completeOnboarding();
     });
+
+    const runExport = async (
+        symbols: NetworkSymbol[],
+        {
+            page,
+            settingsPage,
+            walletPage,
+            onboardingPage,
+        }: Pick<
+            Parameters<Parameters<typeof test>[2]>[0],
+            'page' | 'settingsPage' | 'walletPage' | 'onboardingPage'
+        >,
+    ) => {
+        await settingsPage.changeNetworks({ enableNetworks: symbols });
+
+        for (const symbol of symbols) {
+            await walletPage.openAccount({ symbol });
+
+            const typesOfExport: ExportType[] = ['pdf', 'csv', 'json'];
+            await onboardingPage.completeTransactionOnboarding();
+            for (const type of typesOfExport) {
+                await walletPage.exportTransactions(type);
+                const download = await page.waitForEvent('download');
+                expect(await download.failure()).toBeNull();
+
+                const fileName = download.suggestedFilename();
+                expect(fileName).toMatch(new RegExp(`.(${type})`));
+
+                const downloadPath = await download.path();
+                const stats = fs.statSync(downloadPath);
+                expect(stats.size).toBeGreaterThan(0);
+            }
+        }
+    };
 
     test(
         'Go to account and try to export all possible variants (pdf, csv, json)',
@@ -27,29 +62,27 @@ test.describe('Export transactions', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, ()
             }),
         },
         async ({ page, settingsPage, walletPage, onboardingPage }) => {
-            const symbols: NetworkSymbol[] = ['btc', 'ltc', 'eth', 'ada'];
-            await settingsPage.changeNetworks({
-                enableNetworks: symbols.filter(symbol => symbol !== 'btc'),
+            await runExport(['btc', 'ltc', 'eth'], {
+                page,
+                settingsPage,
+                walletPage,
+                onboardingPage,
             });
+        },
+    );
 
-            for (const symbol of symbols) {
-                await walletPage.openAccount({ symbol });
-
-                const typesOfExport: ExportType[] = ['pdf', 'csv', 'json'];
-                await onboardingPage.completeTransactionOnboarding();
-                for (const type of typesOfExport) {
-                    await walletPage.exportTransactions(type);
-                    const download = await page.waitForEvent('download');
-                    expect(await download.failure()).toBeNull();
-
-                    const fileName = download.suggestedFilename();
-                    expect(fileName).toMatch(new RegExp(`.(${type})`));
-
-                    const downloadPath = await download.path();
-                    const stats = fs.statSync(downloadPath);
-                    expect(stats.size).toBeGreaterThan(0);
-                }
-            }
+    test(
+        'Go to account and try to export all possible variants (pdf, csv, json) - ada',
+        {
+            tag: ['@nightlyOnly'],
+            annotation: createTestAnnotation({
+                testCase: 'Verify that a user can successfully export transactions in all formats.',
+                category: TestCategory.Wallets,
+                priority: TestPriority.Medium,
+            }),
+        },
+        async ({ page, settingsPage, walletPage, onboardingPage }) => {
+            await runExport(['ada'], { page, settingsPage, walletPage, onboardingPage });
         },
     );
 });

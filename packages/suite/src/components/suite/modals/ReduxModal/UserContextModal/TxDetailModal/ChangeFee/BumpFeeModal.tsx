@@ -1,16 +1,18 @@
 import { Translation } from '@suite/intl';
 import { selectTransactionConfirmations } from '@suite-common/wallet-core';
 import {
-    ChainedTransactions,
-    SelectedAccountLoaded,
-    WalletAccountTransactionWithRequiredRbfParams,
+    type Account,
+    type ChainedTransactions,
+    type WalletAccountTransactionWithRequiredRbfParams,
 } from '@suite-common/wallet-types';
+import { type PendingEvmNonceStatus } from '@suite-common/wallet-utils';
 import { Modal } from '@trezor/components';
+
+import { useSelector } from 'src/hooks/suite';
+import { RbfContext, useRbf } from 'src/hooks/wallet/useRbfForm';
 
 import { ChangeFee } from './ChangeFee';
 import { ReplaceTxButton } from './ReplaceTxButton';
-import { useSelector } from '../../../../../../../hooks/suite';
-import { RbfContext, useRbf } from '../../../../../../../hooks/wallet/useRbfForm';
 import { ReplaceByFeeFailedOriginalTxConfirmed } from '../ReplaceByFeeFailedOriginalTxConfirmed';
 import { TxDetailModalBase } from '../TxDetailModalBase';
 
@@ -20,7 +22,9 @@ type BumpFeeModalProps = {
     onBackClick: () => void;
     onShowChained: () => void;
     chainedTxs?: ChainedTransactions;
-    selectedAccount: SelectedAccountLoaded;
+    account: Account;
+    nonceStatus?: PendingEvmNonceStatus;
+    nextNonce?: number;
 };
 
 export const BumpFeeModal = ({
@@ -29,10 +33,11 @@ export const BumpFeeModal = ({
     onBackClick,
     onShowChained,
     chainedTxs,
-    selectedAccount,
+    account,
+    nonceStatus,
+    nextNonce,
 }: BumpFeeModalProps) => {
-    const { account } = selectedAccount;
-    const contextValues = useRbf({ rbfParams: tx.rbfParams, chainedTxs, selectedAccount });
+    const contextValues = useRbf({ rbfParams: tx.rbfParams, chainedTxs, account });
 
     const confirmations = useSelector(state =>
         selectTransactionConfirmations(state, tx.txid, account.key),
@@ -56,6 +61,8 @@ export const BumpFeeModal = ({
                     )
                 }
                 onBackClick={onBackClick}
+                nonceStatus={nonceStatus}
+                nextNonce={nextNonce}
             >
                 {isTxConfirmed ? (
                     <ReplaceByFeeFailedOriginalTxConfirmed
@@ -63,7 +70,7 @@ export const BumpFeeModal = ({
                         networkType={account.networkType}
                     />
                 ) : (
-                    <ChangeFee tx={tx} chainedTxs={chainedTxs} showChained={onShowChained} />
+                    <ChangeFee tx={tx} showChained={onShowChained} />
                 )}
             </TxDetailModalBase>
         </RbfContext.Provider>

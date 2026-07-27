@@ -1,14 +1,18 @@
-import { ReactElement, ReactNode } from 'react';
+import { type ReactElement, type ReactNode } from 'react';
 import { Dimensions } from 'react-native';
 
-import { BottomSheetFlashList, BottomSheetFlashListProps } from '@suite-native/atoms';
-import { NativeStyle } from '@trezor/styles';
+import {
+    BottomSheetFlashList,
+    type BottomSheetFlashListControls,
+    type BottomSheetFlashListProps,
+} from '@suite-native/atoms';
+import { type NativeStyle } from '@trezor/styles-native';
 
 import {
-    ItemRenderConfig,
-    ListInternalItemShape,
-    SectionHeaderRenderConfig,
-    SectionListData,
+    type ItemRenderConfig,
+    type ListInternalItemShape,
+    type SectionHeaderRenderConfig,
+    type SectionListData,
     useSectionList,
 } from '../hooks/useSectionList';
 
@@ -18,8 +22,6 @@ export type TradingBottomSheetSectionListProps<T, U> = Omit<
     | 'keyExtractor'
     | 'data'
     | 'estimatedItemSize'
-    // computed automatically
-    | 'estimatedListHeight'
     // not supported
     | 'getItemType'
     | 'overrideItemLayout'
@@ -27,7 +29,11 @@ export type TradingBottomSheetSectionListProps<T, U> = Omit<
     | 'viewabilityConfigCallbackPairs'
 > & {
     data: SectionListData<T, U>;
-    renderItem: (item: T, config: ItemRenderConfig<U>) => ReactElement;
+    renderItem: (
+        item: T,
+        config: ItemRenderConfig<U>,
+        sheetControls: BottomSheetFlashListControls,
+    ) => ReactElement;
     renderSectionHeader?: (label: ReactNode, config: SectionHeaderRenderConfig<U>) => ReactElement;
     keyExtractor: (item: T, sectionData: U) => string;
     noSingletonSectionHeader?: boolean;
@@ -43,6 +49,7 @@ export const BottomSheetSectionList = <T, U = undefined>({
     noSingletonSectionHeader,
     itemStyle,
     SectionEmptyComponent,
+    estimatedListHeight,
     ...rest
 }: TradingBottomSheetSectionListProps<T, U>) => {
     const {
@@ -59,7 +66,7 @@ export const BottomSheetSectionList = <T, U = undefined>({
         SectionEmptyComponent,
     });
 
-    const listHeight = Dimensions.get('window').height * 0.9;
+    const listHeight = estimatedListHeight ?? Dimensions.get('window').height * 0.9;
 
     return (
         <BottomSheetFlashList<ListInternalItemShape<T, U>>

@@ -1,15 +1,15 @@
-import { PayloadAction } from '@reduxjs/toolkit';
+import { type PayloadAction } from '@reduxjs/toolkit';
 
 import {
-    BluetoothState,
+    type BluetoothState,
     prepareBluetoothReducerCreator,
     prepareInitialState,
 } from '@suite-common/bluetooth';
 import { createSliceWithExtraDeps } from '@suite-common/redux-utils';
-import { FirmwareDisconnect, UI_REQUEST } from '@trezor/connect';
+import { type FirmwareDisconnect, UI_REQUEST } from '@trezor/connect';
 import { bluetoothManager } from '@trezor/transport-native-bluetooth';
 
-import { BluetoothDevice, BluetoothPermissionStatus } from './types';
+import { type BluetoothDevice, type BluetoothPermissionStatus } from './types';
 
 export type NativeBluetoothState = BluetoothState<BluetoothDevice> & {
     permissionStatus: BluetoothPermissionStatus;
@@ -24,7 +24,7 @@ export const bluetoothInitialState: NativeBluetoothState = {
     permissionStatus: 'unavailable',
 };
 
-export const bluetoothSlice = createSliceWithExtraDeps({
+const bluetoothSlice = createSliceWithExtraDeps({
     name: 'bluetooth',
     initialState: bluetoothInitialState,
     reducers: {
@@ -40,7 +40,8 @@ export const bluetoothSlice = createSliceWithExtraDeps({
         const commonReducer = prepareBluetoothReducerCreator<BluetoothDevice>()(extra);
         builder
             .addCase(UI_REQUEST.FIRMWARE_DISCONNECT, (_, action: FirmwareDisconnect) => {
-                const deviceId = action.payload.device.bluetoothProps?.id;
+                const { descriptor } = action.payload.device;
+                const deviceId = descriptor.apiType === 'bluetooth' ? descriptor.id : undefined;
                 if (deviceId) {
                     bluetoothManager.disconnectDevice({ deviceId });
                 }
@@ -52,3 +53,4 @@ export const bluetoothSlice = createSliceWithExtraDeps({
 });
 
 export const { updatePermissionStatus } = bluetoothSlice.actions;
+export const prepareBluetoothReducer = bluetoothSlice.prepareReducer;

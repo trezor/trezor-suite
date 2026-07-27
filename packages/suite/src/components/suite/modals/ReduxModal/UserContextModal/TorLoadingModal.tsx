@@ -1,4 +1,4 @@
-import { UserContextPayload } from '@suite-common/suite-types';
+import { type UserContextPayload } from '@suite-common/suite-types';
 
 import { TorLoader } from 'src/components/suite/TorLoader/TorLoader';
 

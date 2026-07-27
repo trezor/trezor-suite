@@ -1,5 +1,5 @@
-import { SuiteSyncStorage } from '@suite-common/suite-sync-storage';
-import { StorageId, SuiteSyncStorageRepository } from '@suite-common/suite-sync-types';
+import { type SuiteSyncStorage } from '@suite-common/suite-sync-storage';
+import { type StorageId, type SuiteSyncStorageRepository } from '@suite-common/suite-sync-types';
 
 export const asStorageId = (value: string) => value as StorageId;
 

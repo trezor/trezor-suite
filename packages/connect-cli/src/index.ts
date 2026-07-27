@@ -1,7 +1,12 @@
 import fs from 'fs';
 import path from 'path';
 
-import TrezorConnect, { Device, ThpPairingMethod, UiRequestThpPairing } from '@trezor/connect';
+import TrezorConnect, {
+    type Device,
+    ThpPairingMethod,
+    type UiRequestThpPairing,
+    initLog,
+} from '@trezor/connect';
 
 import { HELP, args } from './args';
 import { stdioManager } from './stdio';
@@ -97,17 +102,68 @@ const runTestCase = async (device: Device) => {
         process.exit(1);
     }
 
-    // device is ready, start workflow
+    const params = args.params ? JSON.parse(args.params) : {};
+
     let result;
-    if (method === 'fw-update') {
-        result = await fwUpdate(device);
-    } else if (method === 'get-credentials') {
-        result = await TrezorConnect.thpGetCredentials({ device });
-    } else {
-        result = await TrezorConnect.getAddress({
-            device,
-            path: "m/44'/0'/0'/0/0",
-        });
+    switch (method) {
+        case 'fw-update':
+            result = await fwUpdate(device);
+            break;
+        case 'get-credentials':
+            result = await TrezorConnect.thpGetCredentials({ device });
+            break;
+        case 'get-account-info':
+            result = await TrezorConnect.getAccountInfo({
+                device,
+                coin: 'btc',
+                path: "m/84'/0'/0'",
+                ...params,
+            });
+            break;
+        case 'get-features':
+            result = await TrezorConnect.getFeatures({ device, ...params });
+            break;
+        case 'apply-settings':
+            result = await TrezorConnect.applySettings({ device, ...params });
+            break;
+        case 'ping-device':
+            // NOTE:
+            // firmware _PROTOBUF_BUFFER_SIZE = const(8704)
+            // T1B1 firmware Ping.message max_size:256
+            result = await TrezorConnect.pingDevice({
+                device,
+                message: 'a'.repeat(8000),
+                // button_protection: true,
+            });
+            break;
+        case 'authenticate-device':
+            result = await TrezorConnect.authenticateDevice({
+                device,
+                allowDebugKeys: true,
+            });
+            break;
+        case 'nostr-get-public-key':
+            result = await TrezorConnect.nostrGetPublicKey({
+                device,
+                __experimental: true,
+                path: "m/44'/1237'/0'/0/0",
+                ...params,
+            });
+            break;
+        case 'nostr-sign-event':
+            result = await TrezorConnect.nostrSignEvent({
+                device,
+                __experimental: true,
+                path: "m/44'/1237'/0'/0/0",
+                created_at: Math.floor(Date.now() / 1000),
+                kind: 1,
+                tags: [],
+                content: 'Hello from @trezor/connect-cli',
+                ...params,
+            });
+            break;
+        default:
+            result = await TrezorConnect.getAddress({ device, path: "m/44'/0'/0'/0/0", ...params });
     }
 
     console.warn(result);
@@ -126,6 +182,7 @@ const run = async () => {
     console.log('Running @trezor/connect CLI with args', args);
 
     TrezorConnect.on('DEVICE_EVENT', async event => {
+        console.info('DEVICE_EVENT', event);
         if (event.type === 'device-connect_unacquired' || event.type === 'device-connect') {
             if (testIsRunning) {
                 return;
@@ -176,12 +233,13 @@ const run = async () => {
     });
 
     TrezorConnect.on('UI_EVENT', async event => {
-        console.warn('UI_EVENT', event.type);
+        console.info('UI_EVENT', event);
 
         if (event.type === 'ui-request_confirmation') {
             return TrezorConnect.uiResponse({
                 type: 'ui-receive_confirmation',
                 payload: true,
+                requestId: event.requestId,
             });
         }
 
@@ -194,6 +252,7 @@ const run = async () => {
                 // @ts-expect-error
                 return TrezorConnect.uiResponse({
                     type: 'ui-receive_passphrase',
+                    requestId: event.requestId,
                 });
             }
 
@@ -201,6 +260,7 @@ const run = async () => {
             TrezorConnect.uiResponse({
                 type: 'ui-receive_passphrase',
                 payload: { value, passphraseOnDevice: args['passphrase-on-device'] },
+                requestId: event.requestId,
             });
         }
 
@@ -210,6 +270,7 @@ const run = async () => {
                 TrezorConnect.uiResponse({
                     type: 'ui-receive_thp_pairing_tag',
                     payload: { tag },
+                    requestId: event.requestId,
                 });
             } else {
                 return TrezorConnect.cancel();
@@ -249,6 +310,9 @@ const run = async () => {
         transports: [transport],
         pendingTransportEvent: false,
         debug: args.debug,
+        // connect runs in-process here, so supply the core logger factory directly.
+        // TODO(logger-unification): build from a unified app-wide logger instead of initLog.
+        createLogger: (prefix: string) => initLog(prefix, !!args.debug),
         thp: {
             appName: 'TrezorConnect Cli',
             hostName: 'localhost',

@@ -1,12 +1,16 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/helpers/Discovery.js
 
+import type {
+    CoinInfo,
+    DiscoveryAccount,
+    DiscoveryAccountType,
+    GetAccountInfo,
+} from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { TypedEmitter } from '@trezor/utils';
 
-import { Blockchain } from '../../backend/BlockchainLink';
+import type { Blockchain } from '../../backend/BlockchainLink';
 import type { DeviceCommands } from '../../device/DeviceCommands';
-import type { CoinInfo, DiscoveryAccount, DiscoveryAccountType } from '../../types';
-import type { GetAccountInfo } from '../../types/api/getAccountInfo';
 import { getAccountAddressN } from '../../utils/accountUtils';
 import { formatAmount } from '../../utils/formatUtils';
 
@@ -107,7 +111,9 @@ export class Discovery extends TypedEmitter<Events> {
         const limit = 10; // TODO: move to options
         this.interrupted = false;
         while (!this.completed && !this.interrupted) {
-            const accountType = this.types[this.typeIndex];
+            const { types } = this;
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const accountType: (typeof types)[number] = types[this.typeIndex];
             const label = `Account #${this.index + 1}`;
             const overTheLimit = this.index >= limit;
 
@@ -177,9 +183,5 @@ export class Discovery extends TypedEmitter<Events> {
 
     stop() {
         this.interrupted = !this.completed;
-    }
-
-    dispose() {
-        this.accounts = [];
     }
 }

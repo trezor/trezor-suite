@@ -1,7 +1,9 @@
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { useMemo } from 'react';
+
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { selectBaseCurrency, selectFiatRatesByFiatRateKey } from '@suite-common/wallet-core';
-import { RateTypeWithoutHistoric, TokenAddress } from '@suite-common/wallet-types';
-import { AmountUnit, getFiatRateKey, toFiatCurrency } from '@suite-common/wallet-utils';
+import { type RateTypeWithoutHistoric, type TokenAddress } from '@suite-common/wallet-types';
+import { type AmountUnit, getFiatRateKey, toFiatCurrency } from '@suite-common/wallet-utils';
 
 import { useSelector } from 'src/hooks/suite';
 
@@ -33,7 +35,10 @@ export const useFiatFromCryptoValue = ({
     );
 
     const rate = useHistoricRate ? historicRate : currentRate?.rate;
-    const fiatAmount = rate ? toFiatCurrency({ amount, rate }) : null;
+    const fiatAmount = useMemo(
+        () => (rate ? toFiatCurrency({ amount, rate }) : null),
+        [amount, rate],
+    );
 
     return { baseCurrencyCode, fiatAmount, rate, currentRate };
 };

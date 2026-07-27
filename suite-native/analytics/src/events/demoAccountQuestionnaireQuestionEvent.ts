@@ -24,15 +24,16 @@ export const demoAccountQuestionnaireQuestionEvent: EventDef<
 > = {
     name: EventType.DemoAccountQuestionnaireQuestion,
     descriptionTrigger: 'User selects one of the options and clicks continue or clicks None',
-    changelog: [{ version: '25.12.0', notes: 'added' }],
+    changelog: [{ version: '25.12.1', notes: 'added' }],
     attributes: {
         option: {
-            changelog: [{ version: '25.12.0', notes: 'added' }],
-            description: 'The selected option',
+            changelog: [{ version: '25.12.1', notes: 'added' }],
+            description: `The selected option. For the \`reason\` question: \`considering\` (considering a hardware wallet), \`ad\` (saw an ad online), \`friend\` (a friend told them about Trezor). For the \`suiteAction\` question: \`explore\` (wanted to explore the app), \`transaction\` (wanted to try sending/receiving crypto), \`hardwareWallet\` (wanted to understand how a hardware wallet works with Suite). \`none\` is available on either question via the "None of the above" button.`,
         },
         question: {
-            changelog: [{ version: '25.12.0', notes: 'added' }],
-            description: 'The question identifier',
+            changelog: [{ version: '25.12.1', notes: 'added' }],
+            description:
+                'The question type: `reason` (why interested in Trezor), `suiteAction` (what they want to do in Suite)',
         },
     },
 };

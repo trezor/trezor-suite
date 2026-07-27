@@ -1,6 +1,11 @@
-import { AccountType, NetworkSymbol, StakingNetworkSymbol } from '@suite-common/wallet-config';
+import { type TradingType } from '@suite-common/suite-types';
+import {
+    type AccountType,
+    type NetworkSymbol,
+    type StakingNetworkSymbol,
+} from '@suite-common/wallet-config';
 
-import { Context, GeneralContextKey, SettingsCategory } from '../messageSystemTypes';
+import { Context, type GeneralContextKey, type SettingsCategory } from '../messageSystemTypes';
 
 describe('Message system types', () => {
     describe('Context', () => {
@@ -32,6 +37,7 @@ describe('Message system types', () => {
             it.each([
                 ['eth', 'accounts.eth.staking'],
                 ['sol', 'accounts.sol.staking'],
+                ['trx', 'accounts.trx.staking'],
             ] as const satisfies [StakingNetworkSymbol, string][])(
                 'getStaking(%s) → %s',
                 (symbol, expected) => {
@@ -45,13 +51,33 @@ describe('Message system types', () => {
                 ['buy', 'trading.buy'],
                 ['sell', 'trading.sell'],
                 ['exchange', 'trading.exchange'],
-                // Todo: fix TradingType see: https://github.com/trezor/trezor-suite/pull/21265
-            ] as const satisfies ['buy' | 'sell' | 'exchange', string][])(
+                ['concierge', 'trading.concierge'],
+            ] as const satisfies [TradingType, string][])(
                 'getTrading(%s) → %s',
                 (type, expected) => {
                     expect(Context.getTrading(type)).toBe(expected);
                 },
             );
+        });
+
+        describe('getEarnDashboard', () => {
+            it.each([
+                ['staking', 'earn.dashboard.staking'],
+                ['yield', 'earn.dashboard.yield'],
+            ] as const)('getEarnDashboard(%s) → %s', (type, expected) => {
+                expect(Context.getEarnDashboard(type)).toBe(expected);
+            });
+        });
+
+        describe('getEarnYield', () => {
+            it.each([
+                ['deposit', 'earn.yield.deposit'],
+                ['withdraw', 'earn.yield.withdraw'],
+                ['redeem', 'earn.yield.redeem'],
+                ['claim', 'earn.yield.claim'],
+            ] as const)('getEarnYield(%s) → %s', (type, expected) => {
+                expect(Context.getEarnYield(type)).toBe(expected);
+            });
         });
 
         describe('getSettings', () => {

@@ -1,7 +1,7 @@
 import { Slide, ToastContainer } from 'react-toastify/unstyled';
 import styled from 'styled-components';
 
-import { spacingsPx, zIndices } from '@trezor/theme';
+import { zIndices } from '@trezor/theme';
 
 import { HEADER_HEIGHT } from 'src/constants/suite/layout';
 
@@ -10,8 +10,8 @@ import { ReactToastifyStyles } from './ReactToastifyStyles';
 const StyledToastContainer = styled(ToastContainer)`
     --toastify-font-family: var(--font-sans);
     --toastify-z-index: ${zIndices.toast};
-    --toastify-toast-top: calc(${HEADER_HEIGHT} + ${spacingsPx.md});
-    --toastify-toast-right: ${spacingsPx.md};
+    --toastify-toast-top: calc(${HEADER_HEIGHT} + 16px);
+    --toastify-toast-right: 16px;
     --toastify-toast-bd-radius: 0;
     --toastify-toast-shadow: none;
     --toastify-toast-padding: 0;
@@ -28,7 +28,7 @@ export const ToasterProvider = () => (
         <StyledToastContainer
             toastStyle={{
                 margin: 0,
-                marginBottom: spacingsPx.sm,
+                marginBottom: '12px',
                 padding: 0,
                 borderRadius: 0,
                 boxShadow: 'none',

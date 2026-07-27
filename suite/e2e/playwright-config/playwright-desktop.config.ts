@@ -20,7 +20,7 @@ const definition: PlaywrightProjectDefinition[] = [
     { model: Model.T3B1, currentsTags: tagsRelease },
     { model: Model.T2T1, currentsTags: tagsRelease },
     { model: Model.T1B1, currentsTags: tagsRelease },
-    { name: 'no_device', currentsTags: tagsRelease, grep: /(?=.*@noDevice)/ },
+    { name: 'no_device', currentsTags: tagsRelease, grep: /^(?=.*@noDevice)/ },
 ];
 
 const config = defineConfig({

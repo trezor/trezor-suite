@@ -1,49 +1,59 @@
-import { evoluWebDeps } from '@evolu/web';
-import { Dispatch } from '@reduxjs/toolkit';
+import { type Dispatch } from '@reduxjs/toolkit';
 
-import { DesktopAnalyticsDep } from '@suite/analytics';
-import { EnsureDelegatedIdentityKeyDep } from '@suite-common/delegated-identity-key-types';
-import { PlatformEncryptionDep } from '@suite-common/platform-encryption';
-import { createSuiteSyncCompositionRoot } from '@suite-common/suite-sync';
+import { type DesktopAnalyticsDep } from '@suite/analytics';
+import { selectIsTorEnabled } from '@suite/tor';
+import { type EnsureDelegatedIdentityKeyDep } from '@suite-common/delegated-identity-key-types';
+import { toGetter } from '@suite-common/dependency-injection';
+import { type PlatformEncryptionDep } from '@suite-common/platform-encryption';
 import {
-    createEvoluInstanceFactory,
-    createEvoluStorageFactory,
-    evoluCreateSuiteSyncOwner,
-} from '@suite-common/suite-sync-evolu';
-import { SuiteSync, SuiteSyncAppReloaderDep } from '@suite-common/suite-sync-types';
-import { TrezorConnect } from '@trezor/connect';
+    createSuiteSyncCompositionRoot,
+    createUpdateRelayConnectionStatus,
+} from '@suite-common/suite-sync';
+import { evoluCreateSuiteSyncOwner } from '@suite-common/suite-sync-evolu';
+import { type FetchDep } from '@suite-common/suite-sync-quota-manager';
+import { type OnStorageEnsured, type SuiteSync } from '@suite-common/suite-sync-types';
+import { type TrezorConnectPrivilegedAPI } from '@trezor/connect';
 
-import {
-    DisableLegacyMetadataIfNeededDep,
-    createTurnOnDesktopSuiteSync,
-} from './turnOnDesktopSuiteSync';
+import { createEvoluDeps } from './evolu/createEvoluDeps';
+import { suiteSyncErrorHandler } from './suiteSyncErrorHandler';
+import { createTurnOnDesktopSuiteSync } from './turnOnDesktopSuiteSync';
 
 type SuiteSyncDesktopCompositionRootDeps = {
     getState: () => any;
     dispatch: Dispatch;
-    trezorConnect: TrezorConnect;
+    trezorConnect: TrezorConnectPrivilegedAPI;
+    onStorageEnsured: OnStorageEnsured;
 } & PlatformEncryptionDep &
     EnsureDelegatedIdentityKeyDep &
     DesktopAnalyticsDep &
-    DisableLegacyMetadataIfNeededDep &
-    SuiteSyncAppReloaderDep;
+    FetchDep;
 
 export const createSuiteSyncDesktopCompositionRoot = (
     deps: SuiteSyncDesktopCompositionRootDeps,
 ): SuiteSync => {
+    const updateRelayConnectionStatus = createUpdateRelayConnectionStatus({
+        dispatch: deps.dispatch,
+    });
+    const { createSuiteStorage, subscribeError } = createEvoluDeps({
+        dispatch: deps.dispatch,
+        updateRelayConnectionStatus,
+    });
+
     // This sets up Evolu as a SuiteSync Storage. We provide a factory that
     // accepts `suiteSyncErrorHandler` and creates the evolu instance accordingly.
     const suiteSync = createSuiteSyncCompositionRoot({
         ...deps,
-        createSuiteStorageFactory: ({ suiteSyncErrorHandler }) => {
-            const createEvoluInstance = createEvoluInstanceFactory({
-                evoluDeps: evoluWebDeps,
-                suiteSyncErrorHandler,
-            });
-
-            return createEvoluStorageFactory({ createEvoluInstance });
-        },
+        createSuiteStorage,
         createSuiteSyncOwner: evoluCreateSuiteSyncOwner,
+        getIsTorEnabled: toGetter(deps.getState, selectIsTorEnabled),
+        analytics: deps.analytics,
+        subscribeError,
+        suiteSyncUncontrolledErrorHandler: ({ device, error }) =>
+            suiteSyncErrorHandler({
+                error,
+                dispatch: deps.dispatch,
+                deviceStaticSessionId: device?.state?.staticSessionId ?? null,
+            }),
     });
 
     return {
@@ -51,7 +61,6 @@ export const createSuiteSyncDesktopCompositionRoot = (
         turnOnSuiteSync: createTurnOnDesktopSuiteSync({
             turnOnSuiteSync: suiteSync.turnOnSuiteSync,
             analytics: deps.analytics,
-            disableLegacyMetadataIfNeeded: deps.disableLegacyMetadataIfNeeded,
         }),
     };
 };

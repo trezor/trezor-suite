@@ -1,4 +1,4 @@
-import { NetworkType } from '@suite-common/wallet-config';
+import { type NetworkType } from '@suite-common/wallet-config';
 import { EVM_FEE_RATE_DECIMALS } from '@suite-common/wallet-core/src/fees/feesConstants';
 import { getFeeUnits } from '@suite-common/wallet-utils/src/feeUnitUtils';
 import { BigNumber } from '@trezor/utils';

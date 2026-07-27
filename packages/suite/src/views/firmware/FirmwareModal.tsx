@@ -1,22 +1,25 @@
-import { ReactNode, useState } from 'react';
+import { type ReactNode, useState } from 'react';
 
+import {
+    useFirmwareDesktopUpdate,
+    useFirmwareInstallationProgressCheck,
+} from '@suite/firmware-upgrade';
+import { closeModal } from '@suite/modal';
+import { closeModalApp } from '@suite/router';
+import { ThpPairingStep } from '@suite/thp';
 import { selectSelectedDevice } from '@suite-common/device';
 import { acquireDevice } from '@suite-common/wallet-core';
 import { Modal } from '@trezor/components';
 import { exhaustive } from '@trezor/type-utils';
 
-import { closeModalApp } from 'src/actions/suite/routerActions';
-import { ThpPairingStep } from 'src/components/firmware/ThpPairingStep/ThpPairingStep';
-import { useDispatch, useFirmwareInstallationProgressCheck, useSelector } from 'src/hooks/suite';
-import { useFirmwareDesktopUpdate } from 'src/hooks/suite/useFirmwareDesktopUpdate';
+import { FirmwareInstallationProgressCheck } from 'src/components/firmware/ProgressCheck/FirmwareInstallationProgressCheck';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 
 import { StepCheckSeed } from './Steps/StepCheckSeed';
 import { StepDone } from './Steps/StepDone';
 import { StepError } from './Steps/StepError';
 import { StepInitial } from './Steps/StepInitial';
 import { StepStarted } from './Steps/StepStarted';
-import * as modalActions from '../../actions/suite/modalActions';
-import { FirmwareInstallationProgressCheck } from '../../components/firmware';
 
 type FirmwareModalProps = {
     children: ReactNode;
@@ -48,7 +51,7 @@ export const FirmwareModal = ({
         if (device?.status !== 'available') {
             dispatch(acquireDevice({ requestedDevice: device }));
         }
-        dispatch(modalActions.onCancel());
+        dispatch(closeModal());
         dispatch(closeModalApp());
         resetReducer();
     };

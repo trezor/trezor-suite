@@ -1,12 +1,17 @@
+import { messages } from '@suite/intl';
 import { TestCategory, TestPriority } from '@trezor/e2e-utils';
 
 import { expect, test } from '../../../support/fixtures';
 import { createTestAnnotation } from '../../../support/reporters/annotations';
 
-test.describe('Onboarding - create wallet', { tag: ['@desktopOnly', '@T3T1', '@smoke'] }, () => {
+test.describe('Onboarding - create wallet', { tag: ['@desktopOnly', '@T3T1'] }, () => {
     test.use({
         setupEmulator: false,
         electronConf: { offlineMode: true },
+        ignoreToastErrors: [
+            messages.TR_FIRMWARE_REVISION_CHECK_OTHER_ERROR.defaultMessage,
+            'Network request failed',
+        ],
     });
 
     test.beforeEach(async ({ onboardingPage }) => {
@@ -23,7 +28,15 @@ test.describe('Onboarding - create wallet', { tag: ['@desktopOnly', '@T3T1', '@s
                 priority: TestPriority.Critical,
             }),
         },
-        async ({ page, onboardingPage, devicePrompt, analyticsSection, device }) => {
+        async ({
+            page,
+            onboardingPage,
+            devicePrompt,
+            analyticsSection,
+            device,
+            settingsPage,
+            dashboardPage,
+        }) => {
             await expect(page.getByTestId('@suite/no-connection-banner')).toHaveTranslation(
                 'TR_YOU_WERE_DISCONNECTED_DOT',
             );
@@ -36,46 +49,41 @@ test.describe('Onboarding - create wallet', { tag: ['@desktopOnly', '@T3T1', '@s
 
             await test.step('Device onboarding steps', async () => {
                 await onboardingPage.firmware.continueThroughFirmware();
-                await onboardingPage.passThroughAuthenticityCheck();
-                await page.waitForTimeout(500);
                 await onboardingPage.tutorial.skip();
             });
 
-            await test.step('Create wallet with Shamir backup', async () => {
+            await test.step('Select backup type and create wallet with backup', async () => {
                 await onboardingPage.createWalletButton.click();
                 await onboardingPage.selectSeedType('shamir-advanced');
-            });
 
-            await test.step('Accept ToS and confirm wallet creation', async () => {
-                // Accept ToS
-                await devicePrompt.confirmOnDevicePromptIsShown();
-                await device.pressYes();
-
-                // Confirm wallet created
-                await devicePrompt.confirmOnDevicePromptIsShown();
-                await device.pressYes();
-                await onboardingPage.createBackupButton.click();
-            });
-
-            await test.step('Create backup with Shamir shares and threshold', async () => {
-                const shares = 3;
-                const threshold = 2;
-                await onboardingPage.backup.passThroughShamirBackup(shares, threshold);
+                await onboardingPage.backup.passThroughShamirBackup({
+                    shares: 3,
+                    threshold: 2,
+                    deviceConfirmations: 3,
+                });
             });
 
             await test.step('Set PIN', async () => {
                 await onboardingPage.pin.setPinButton.click();
                 await devicePrompt.confirmOnDevicePromptIsShown();
                 await device.pressYes();
-                await device.selectNumberOfWords(12);
-                await device.selectNumberOfWords(12);
+                await device.inputPin('12');
+                await device.inputPin('12');
 
                 await devicePrompt.confirmOnDevicePromptIsShown();
                 await device.pressYes();
+                await onboardingPage.finalButton.click();
             });
 
-            await test.step('Complete onboarding and verify offline state', async () => {
-                await onboardingPage.completeOnboardingButton.click();
+            await test.step('Enable Bitcoin so discovery can be attempted', async () => {
+                await settingsPage.changeNetworks({
+                    enableNetworks: ['btc'],
+                    skipDiscovery: true,
+                });
+                await dashboardPage.navigateTo();
+            });
+
+            await test.step('Verify offline state after onboarding completes', async () => {
                 await expect(page.getByTestId('@suite/no-connection-banner')).toHaveTranslation(
                     'TR_YOU_WERE_DISCONNECTED_DOT',
                 );

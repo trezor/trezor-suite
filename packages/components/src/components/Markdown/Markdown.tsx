@@ -1,4 +1,4 @@
-import ReactMarkdown, { Options } from 'react-markdown';
+import ReactMarkdown, { type Options } from 'react-markdown';
 
 import styled from 'styled-components';
 
@@ -7,7 +7,7 @@ import { typography } from '@trezor/theme';
 const StyledMarkdown = styled.div`
     ${typography['body-sm']}
 
-    color: ${({ theme }) => theme.textSubdued};
+    color: currentcolor;
 
     h1,
     h2,
@@ -15,7 +15,7 @@ const StyledMarkdown = styled.div`
     h4,
     h5,
     h6 {
-        color: ${({ theme }) => theme.textDefault};
+        color: currentcolor;
     }
 
     h1 {
@@ -44,7 +44,7 @@ const StyledMarkdown = styled.div`
 
     ul,
     ol {
-        padding: 0 0 0 16px;
+        padding: 0 0 0 24px;
     }
 
     li {
@@ -52,10 +52,20 @@ const StyledMarkdown = styled.div`
     }
 
     a {
-        color: ${({ theme }) => theme.textPrimaryDefault};
+        color: ${({ theme }) => theme.contentBrand};
 
         &:hover {
             text-decoration: underline;
+        }
+    }
+
+    section[data-testid='guide-banner'] {
+        p {
+            margin: 0;
+        }
+
+        a {
+            color: inherit;
         }
     }
 

@@ -1,3 +1,17 @@
+# 10.0.0-alpha.1 — DEPRECATED
+
+This package is deprecated. EIP-712 hash construction has been inlined into `@trezor/connect@10`; callers should pass the `data` object directly to `TrezorConnect.ethereumSignTypedData` and the hashes are computed internally when the device requires them (T1B1 firmware).
+
+The 10.x release is a stub: `transformTypedData` throws a deprecation error pointing at the migration in [PR #27091](https://github.com/trezor/trezor-suite/pull/27091). The implementation now lives in `packages/connect/src/api/ethereum/ethereumSignTypedData.ts`, where it is used internally by the lazy-loaded ethereum module, and is powered by `viem` instead of `@metamask/eth-sig-util` — byte-identical output, no Buffer polyfills, no React Native compatibility issues.
+
+Migration:
+
+- Upgrade `@trezor/connect` to 10.x.
+- Stop calling `transformTypedData`. Remove `domain_separator_hash` and `message_hash` from your `ethereumSignTypedData` call.
+- Remove `@trezor/connect-plugin-ethereum` from your `dependencies`.
+
+If you stay on `@trezor/connect@9`, keep this package pinned to the 9.x line.
+
 # 9.1.3
 
 - fix: add depcheck scripts for all the package.json-s (a4f8b09e38)

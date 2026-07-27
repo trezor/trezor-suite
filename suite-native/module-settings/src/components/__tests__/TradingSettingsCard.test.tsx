@@ -1,6 +1,7 @@
-import { renderWithStoreProviderAsync } from '@suite-native/test-utils';
+import { getTranslation } from '@suite-native/intl';
+import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 
-import { TradingSettingsCard, TradingSettingsCardProps } from '../TradingSettingsCard';
+import { TradingSettingsCard, type TradingSettingsCardProps } from '../TradingSettingsCard';
 
 let mockIsTradingCountrySet: boolean;
 let mockIsTradingResidenceCheckEnabled: boolean;
@@ -13,15 +14,15 @@ jest.mock('@suite-native/trading-state', () => ({
 
 describe('TradingSettingsCard', () => {
     const renderTradingSettingsCard = (props: Partial<TradingSettingsCardProps> = {}) =>
-        renderWithStoreProviderAsync(<TradingSettingsCard onPress={jest.fn()} {...props} />);
+        renderWithStoreProvider(<TradingSettingsCard onPress={jest.fn()} {...props} />);
 
     beforeEach(() => {
         mockIsTradingCountrySet = false;
         mockIsTradingResidenceCheckEnabled = false;
     });
 
-    it('should not render trading settings button when selectIsTradingResidenceCheckEnabled is false', async () => {
-        const { toJSON } = await renderTradingSettingsCard();
+    it('should not render trading settings button when selectIsTradingResidenceCheckEnabled is false', () => {
+        const { toJSON } = renderTradingSettingsCard();
 
         expect(toJSON()).toBeNull();
     });
@@ -31,25 +32,33 @@ describe('TradingSettingsCard', () => {
             mockIsTradingResidenceCheckEnabled = true;
         });
 
-        it('should render "Enable trading" button when selectIsTradingCountrySet is false', async () => {
-            const { getByTestId, getByText } = await renderTradingSettingsCard({
+        it('should render "Enable trading" button when selectIsTradingCountrySet is false', () => {
+            const { getByTestId, getByText } = renderTradingSettingsCard({
                 testID: '@settings/trading',
             });
 
             expect(getByTestId('@settings/trading')).toBeOnTheScreen();
-            expect(getByText('Enable trading')).toBeOnTheScreen();
-            expect(getByText('Confirm your country of residence')).toBeOnTheScreen();
+            expect(
+                getByText(getTranslation('moduleSettings.items.general.trading.titleInactive')),
+            ).toBeOnTheScreen();
+            expect(
+                getByText(getTranslation('moduleSettings.items.general.trading.subtitleInactive')),
+            ).toBeOnTheScreen();
         });
 
-        it('should render "Trading" button when selectIsTradingCountrySet is true', async () => {
+        it('should render "Trading" button when selectIsTradingCountrySet is true', () => {
             mockIsTradingCountrySet = true;
-            const { getByTestId, getByText } = await renderTradingSettingsCard({
+            const { getByTestId, getByText } = renderTradingSettingsCard({
                 testID: '@settings/trading',
             });
 
             expect(getByTestId('@settings/trading')).toBeOnTheScreen();
-            expect(getByText('Trading')).toBeOnTheScreen();
-            expect(getByText('Country of residence')).toBeOnTheScreen();
+            expect(
+                getByText(getTranslation('moduleSettings.items.general.trading.title')),
+            ).toBeOnTheScreen();
+            expect(
+                getByText(getTranslation('moduleSettings.items.general.trading.subtitle')),
+            ).toBeOnTheScreen();
         });
     });
 });

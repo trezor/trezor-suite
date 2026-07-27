@@ -20,8 +20,9 @@ test.use({
     startEmulator: false,
     ...devices['Desktop Safari'],
     channel: 'webkit',
-    exceptionLogger: skipFixture,
+    jsExceptionWatcher: skipFixture,
 });
+
 test.describe('Safari', { tag: ['@webOnly', '@noDevice'] }, () => {
     test('Suite does not support Safari', async ({ page, onboardingPage }) => {
         await expect(page.locator('body')).toMatchAriaSnapshot(safariAria);

@@ -5,30 +5,29 @@ import type {
     ButtonRequest,
     PersistentDeviceData,
     StoredAuthenticateDeviceResult,
-    ThpSuiteCredentials,
     TrezorDevice,
 } from '@suite-common/suite-types';
 import {
     DEVICE,
-    DecodedTrezorPushNotification,
-    Device,
-    DeviceState,
-    StaticSessionId,
-    Unsuccessful,
+    type DecodedTrezorPushNotification,
+    type Device,
+    type DeviceState,
+    type EntropyCheckResult,
+    type StaticSessionId,
 } from '@trezor/connect';
+import { type SerializedError } from '@trezor/connect-common/src/constants/errors';
+import { type Err } from '@trezor/type-utils';
 
 export const DEVICE_MODULE_PREFIX = '@suite/device';
 
 export type DeviceConnectActionPayload = {
     device: Device;
-    isAutoEjectEnabled: boolean;
 };
 
 export type DeviceStateActionPayload = {
     device: AcquiredDevice;
     state: DeviceState & { staticSessionId: StaticSessionId };
     useEmptyPassphrase: boolean;
-    isAutoEjectEnabled: boolean;
 };
 
 const connectDevice = createAction(DEVICE.CONNECT, (payload: DeviceConnectActionPayload) => ({
@@ -93,6 +92,8 @@ const forgetDevicePersistentData = createAction(
     (payload: { deviceId: AcquiredDevice['id'] }) => ({ payload }),
 );
 
+const clearDevicePersistentData = createAction(`${DEVICE_MODULE_PREFIX}/clearDevicePersistentData`);
+
 const addButtonRequest = createAction(
     `${DEVICE_MODULE_PREFIX}/addButtonRequest`,
     (payload: { device?: TrezorDevice; buttonRequest: ButtonRequest }) => ({ payload }),
@@ -113,7 +114,7 @@ const updateSelectedDevice = createAction(
 );
 
 // Remove button requests for specific device by button request code or all button requests if no code is provided.
-export const removeButtonRequests = createAction(
+const removeButtonRequests = createAction(
     `${DEVICE_MODULE_PREFIX}/removeButtonRequests`,
     (payload: { device?: TrezorDevice; buttonRequestCode?: ButtonRequest['code'] }) => ({
         payload,
@@ -125,16 +126,10 @@ const dismissFirmwareAuthenticityCheck = createAction(
     (payload: string) => ({ payload }),
 );
 
+type SetEntropyCheckResultParams = { deviceId: AcquiredDevice['id'] } & EntropyCheckResult;
 const setEntropyCheckResult = createAction(
     `${DEVICE_MODULE_PREFIX}/setEntropyCheckResult`,
-    (payload: { deviceId: AcquiredDevice['id']; success: boolean }) => ({ payload }),
-);
-
-const setThpCredentials = createAction(
-    `${DEVICE_MODULE_PREFIX}/setThpCredentials`,
-    ({ credentials }: { credentials: ThpSuiteCredentials[] }) => ({
-        payload: { credentials },
-    }),
+    (payload: SetEntropyCheckResultParams) => ({ payload }),
 );
 
 type SetDelegatedIdentityKeyParams = {
@@ -158,15 +153,20 @@ const setDiscovered = createAction(
 
 const setDeviceAuthenticityResult = createAction(
     `${DEVICE_MODULE_PREFIX}/setDeviceAuthenticityResult`,
-    (payload: { device: TrezorDevice; result: StoredAuthenticateDeviceResult }) => ({
+    (payload: { deviceId: TrezorDevice['id']; result: StoredAuthenticateDeviceResult }) => ({
         payload,
     }),
+);
+
+const setManualDeviceCheckSuccess = createAction(
+    `${DEVICE_MODULE_PREFIX}/setManualDeviceCheckSuccess`,
+    (payload: { deviceId: TrezorDevice['id'] }) => ({ payload }),
 );
 
 // Use in tests only! See deviceReducer for the property definition.
 const setSimulatedEntropyCheckFail = createAction(
     `${DEVICE_MODULE_PREFIX}/setSimulatedEntropyCheckFail`,
-    (payload: Unsuccessful) => ({ payload }),
+    (payload: Err<SerializedError>) => ({ payload }),
 );
 
 export const deviceActions = {
@@ -182,16 +182,17 @@ export const deviceActions = {
     setTemporaryRememberedDevice,
     forgetDevice,
     forgetDevicePersistentData,
+    clearDevicePersistentData,
     addButtonRequest,
     requestDeviceReconnect,
     selectDevice,
     updateSelectedDevice,
     removeButtonRequests,
     setEntropyCheckResult,
-    setThpCredentials,
     setDelegatedIdentityKey,
     setDiscovered,
     devicePushNotification,
     setDeviceAuthenticityResult,
+    setManualDeviceCheckSuccess,
     setSimulatedEntropyCheckFail,
 };

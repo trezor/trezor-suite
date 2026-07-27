@@ -1,25 +1,31 @@
-import { useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
+import { useWatch } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { AccountsRootState, accountsActions, selectAccountByKey } from '@suite-common/wallet-core';
-import { AccountKey } from '@suite-common/wallet-types';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectUpdateAccountLabelDep } from '@suite-common/suite-sync-types';
 import {
-    AccountFormValues,
-    AccountLabelFieldHint,
+    type AccountsRootState,
+    accountsActions,
+    selectAccountByKey,
+} from '@suite-common/wallet-core';
+import { type AccountKey } from '@suite-common/wallet-types';
+import {
+    type AccountFormValues,
     MAX_ACCOUNT_LABEL_LENGTH,
+    selectAccountLabel,
     useAccountLabelForm,
 } from '@suite-native/accounts';
-import { Box, Button, InputType, VStack } from '@suite-native/atoms';
+import { Box, Button, type InputType, VStack } from '@suite-native/atoms';
+import { featureUsed } from '@suite-native/feature-feedback';
 import { Form, TextInputField } from '@suite-native/forms';
 import { Translation, useTranslate } from '@suite-native/intl';
 import {
-    CombinedLabelingState,
-    selectAccountLabel,
+    type CombinedLabelingState,
     selectIsLabellingAllowed,
+    useSyncLabelForm,
 } from '@suite-native/labeling';
-import { useNativeServices } from '@suite-native/services';
-import { useToast } from '@suite-native/toasts';
-import { exhaustive } from '@trezor/type-utils';
+import { useSuiteSyncErrorHandler } from '@suite-native/suite-sync';
 
 type AccountRenameFormProps = {
     accountKey: AccountKey;
@@ -29,8 +35,10 @@ type AccountRenameFormProps = {
 export const AccountRenameForm = ({ accountKey, onSubmit }: AccountRenameFormProps) => {
     const { translate } = useTranslate();
     const dispatch = useDispatch();
-    const { suiteSync } = useNativeServices();
-    const { showToast } = useToast();
+
+    const { updateAccountLabel } = useServices(selectUpdateAccountLabelDep);
+
+    const { handleSuiteSyncError } = useSuiteSyncErrorHandler();
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
@@ -46,9 +54,20 @@ export const AccountRenameForm = ({ accountKey, onSubmit }: AccountRenameFormPro
     const form = useAccountLabelForm(accountLabel ?? undefined);
     const {
         handleSubmit,
-        formState: { isValid },
+        formState: { errors },
         control,
     } = form;
+
+    const hasErrors = Object.keys(errors).length > 0;
+
+    const accountLabelLength = useWatch({ control, name: 'accountLabel' })?.length ?? 0;
+
+    const getResetValues = useCallback(
+        (newLabel: string | null): AccountFormValues => ({ accountLabel: newLabel ?? '' }),
+        [],
+    );
+
+    useSyncLabelForm({ form, label: accountLabel, getResetValues });
 
     useEffect(() => {
         // Focus account label input field and open keyboard on the first render.
@@ -56,7 +75,7 @@ export const AccountRenameForm = ({ accountKey, onSubmit }: AccountRenameFormPro
         // Also, it's needed to prevent the keyboard from opening when the modal is animating.
         const timeout = setTimeout(() => {
             inputRef.current?.focus();
-        }, 300);
+        }, 1000); // If this is lower, than the position is sometimes miscalculated and the keybord jumps behind the keyboard.
 
         return () => clearTimeout(timeout);
     }, [inputRef]);
@@ -67,35 +86,26 @@ export const AccountRenameForm = ({ accountKey, onSubmit }: AccountRenameFormPro
         if (isLabellingAllowed) {
             if (!account.deviceState) return;
 
-            const result = await suiteSync.labeling.updateAccountLabel({
+            const result = await updateAccountLabel({
                 deviceStaticSessionId: account.deviceState,
                 accountKey,
                 label: formValues.accountLabel,
             });
 
             if (!result.success) {
-                const { type } = result.error;
-                switch (type) {
-                    case 'SuiteSyncUnavailableOnDeviceError':
-                    case 'SuiteSyncFirmwareUpgradeNeededDeviceErrorType':
-                    case 'DeviceCancelled':
-                    case 'DeviceError':
-                    case 'SuiteSyncUpdateError':
-                        showToast({ variant: 'error', icon: 'warning', message: type });
-
-                        return;
-                    case 'WriteModeRequiredForAllocation':
-                        // Do nothing, this is expected control flow error when we want allocate on-demand.
-                        return;
-
-                    default:
-                        return exhaustive(type);
-                }
+                return handleSuiteSyncError(result.error);
             }
+
+            dispatch(featureUsed('suite-sync'));
         } else {
             dispatch(accountsActions.renameAccount(accountKey, formValues.accountLabel));
         }
         onSubmit();
+    });
+
+    const hint = translate('accounts.accountLabelFieldHint.letterCount', {
+        current: accountLabelLength,
+        max: MAX_ACCOUNT_LABEL_LENGTH,
     });
 
     const coinLabelFieldLabel = translate(
@@ -110,15 +120,14 @@ export const AccountRenameForm = ({ accountKey, onSubmit }: AccountRenameFormPro
                         ref={inputRef}
                         name="accountLabel"
                         label={coinLabelFieldLabel}
+                        hint={hasErrors ? undefined : hint}
                         maxLength={MAX_ACCOUNT_LABEL_LENGTH}
                         asBottomSheetInput
                         testID="@account-detail/settings/account-rename/input"
                     />
-                    <AccountLabelFieldHint formControl={control} />
                     <Button
                         onPress={handleRenameAccount}
-                        size="large"
-                        isDisabled={!isValid}
+                        isDisabled={hasErrors}
                         testID="@account-detail/settings/account-rename/confirm-button"
                     >
                         <Translation id="generic.buttons.confirm" />

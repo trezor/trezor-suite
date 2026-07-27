@@ -1,14 +1,12 @@
-import { JSX, ReactNode, useState } from 'react';
+import { type JSX, type ReactNode, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import { Button, Card, Center, Column, Icon, List, Row, Switch, Text } from '@trezor/components';
-import { spacings } from '@trezor/theme';
-
+import { BugIcon, EyeSlashIcon } from '@trezor/icons';
 type DataAnalyticsProps = {
     onConfirm: (trackingEnabled: boolean) => void;
     analyticsLink?: (chunks: ReactNode[]) => JSX.Element;
     tosLink?: (chunks: ReactNode[]) => JSX.Element;
-    className?: string;
     isInitialTrackingEnabled?: boolean;
 };
 
@@ -16,20 +14,14 @@ export const DataAnalytics = ({
     onConfirm,
     analyticsLink,
     tosLink,
-    className,
     isInitialTrackingEnabled = true,
 }: DataAnalyticsProps) => {
     const [trackingEnabled, setTrackingEnabled] = useState<boolean>(isInitialTrackingEnabled);
 
     return (
-        <Card
-            data-testid="@analytics/consent"
-            className={className}
-            paddingType="large"
-            maxWidth={550}
-        >
-            <Column gap={spacings.md}>
-                <Column gap={spacings.md}>
+        <Card data-testid="@analytics/consent" paddingType="large" maxWidth={550}>
+            <Column gap={16}>
+                <Column gap={16}>
                     <Text typographyStyle="body-sm-strong" data-testid="@analytics/consent/heading">
                         <FormattedMessage
                             id="TR_ONBOARDING_DATA_COLLECTION_HEADING"
@@ -47,11 +39,11 @@ export const DataAnalytics = ({
                         />
                     </Text>
 
-                    <Card>
-                        <Column gap={spacings.lg}>
-                            <List gap={spacings.md}>
-                                <List.Item bulletComponent={<Icon size={16} name="eyeSlash" />}>
-                                    <Column gap={spacings.xxxs} flex="1">
+                    <Card type="contrast">
+                        <Column gap={20}>
+                            <List gap={16}>
+                                <List.Item bulletComponent={<Icon size={16} as={EyeSlashIcon} />}>
+                                    <Column gap={2} flex="1">
                                         <Text typographyStyle="body-sm-strong">
                                             <FormattedMessage
                                                 id="TR_ALLOW_ANALYTICS_PRIVACY_TITLE"
@@ -70,8 +62,8 @@ export const DataAnalytics = ({
                                         </Text>
                                     </Column>
                                 </List.Item>
-                                <List.Item bulletComponent={<Icon size={16} name="bug" />}>
-                                    <Column gap={spacings.xxxs} flex="1">
+                                <List.Item bulletComponent={<Icon size={16} as={BugIcon} />}>
+                                    <Column gap={2} flex="1">
                                         <Text typographyStyle="body-sm-strong">
                                             <FormattedMessage
                                                 id="TR_WHAT_DATA_WE_COLLECT"

@@ -1,7 +1,13 @@
+import { messages } from '@suite/intl';
 import { localizeNumber } from '@suite-common/wallet-utils';
 
-import { formatAddressWithNewlines } from '../../support/common';
+import { formatAddressWithNewlines, replaceTemplatesInTranslation } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
+
+const signTxErrorMessage = replaceTemplatesInTranslation(
+    messages.TOAST_SIGN_TX_ERROR.defaultMessage,
+    { error: 'Invalid amount specified' },
+);
 
 test.describe('Doge Send', { tag: ['@T3W1', '@T3T1'] }, () => {
     test.use({
@@ -9,6 +15,7 @@ test.describe('Doge Send', { tag: ['@T3W1', '@T3T1'] }, () => {
             mnemonic:
                 'fantasy auto fancy access ring spring patrol expect common tape talent annual',
         },
+        ignoreToastErrors: [signTxErrorMessage],
     });
 
     const recipientAddress = 'DJk8vtoEuNGtT4YRNoqVxWyRh6kM3s8bzc';
@@ -16,19 +23,16 @@ test.describe('Doge Send', { tag: ['@T3W1', '@T3T1'] }, () => {
     const feeAmount = '0.01450643';
     const totalAmount = '115,568,568,500.01450643';
 
-    test.beforeEach(
-        async ({ page, onboardingPage, settingsPage, dashboardPage, blockbookMock }) => {
-            await blockbookMock.start('doge');
-            await onboardingPage.completeOnboarding();
-            await settingsPage.navigateTo('coins');
-            await settingsPage.coinsTab.disableNetwork('btc');
-            await settingsPage.coinsTab.enableNetwork('doge');
-            await settingsPage.coinsTab.openNetworkAdvanceSettings('doge');
-            await settingsPage.coinsTab.changeBackend('blockbook', blockbookMock.url);
-            await dashboardPage.navigateTo();
-            await page.discoveryShouldFinish();
-        },
-    );
+    test.beforeEach(async ({ onboardingPage, settingsPage, blockbookMock }) => {
+        await blockbookMock.start('doge');
+        await onboardingPage.completeOnboarding();
+        await settingsPage.navigateTo('coins');
+        await settingsPage.changeNetworks({
+            enableNetworks: [
+                { symbol: 'doge', backend: { type: 'blockbook', url: blockbookMock.url } },
+            ],
+        });
+    });
 
     test('Cannot send amount exceeding MAX_SAFE_INTEGER', async ({
         page,
@@ -65,8 +69,6 @@ test.describe('Doge Send', { tag: ['@T3W1', '@T3T1'] }, () => {
             await device.pressYes();
         });
 
-        await expect(page.getByTestId('@toast/sign-tx-error')).toHaveText(
-            'Transaction signing error: Invalid amount specified',
-        );
+        await expect(page.getByTestId('@toast/sign-tx-error')).toHaveText(signTxErrorMessage);
     });
 });

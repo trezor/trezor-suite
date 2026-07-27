@@ -1,25 +1,23 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 import { FormProvider } from 'react-hook-form';
 
 import { Translation } from '@suite/intl';
-import { NetworkType, getNetwork } from '@suite-common/wallet-config';
-import { WalletAccountTransaction } from '@suite-common/wallet-types';
+import { type NetworkType, getNetwork } from '@suite-common/wallet-config';
+import { type WalletAccountTransaction } from '@suite-common/wallet-types';
 import { formatNetworkAmount, isEip1559 } from '@suite-common/wallet-utils';
 import { Card, Divider, InfoItem, Row, Text } from '@trezor/components';
 import { FeeRate } from '@trezor/product-components';
-import { spacings } from '@trezor/theme';
 
 import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
 import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
-import { useSelector } from 'src/hooks/suite';
-import { UseRbfProps, useRbfContext } from 'src/hooks/wallet/useRbfForm';
+import { useRbfContext } from 'src/hooks/wallet/useRbfForm';
 
 import { RbfFees } from './RbfFees';
 import { AffectedTransactions } from '../AffectedTransactions/AffectedTransactions';
 import { DecreasedOutputs } from '../AffectedTransactions/DecreasedOutputs';
 
 /* children are only for test purposes, this prop is not available in regular build */
-interface ChangeFeeProps extends UseRbfProps {
+interface ChangeFeeProps {
     tx: WalletAccountTransaction;
     children?: ReactNode;
     showChained: () => void;
@@ -60,7 +58,7 @@ const ChangeFeeLoaded = (props: ChangeFeeProps) => {
     return (
         <FormProvider {...methods}>
             <Card
-                fillType="flat"
+                type="contrast"
                 paddingType="small"
                 header={<Translation id="TR_BUMP_FEE_SUBTEXT" />}
             >
@@ -82,7 +80,7 @@ const ChangeFeeLoaded = (props: ChangeFeeProps) => {
                     }
                     typographyStyle="body-md"
                 >
-                    <Row gap={spacings.md} alignItems="baseline">
+                    <Row gap={16} alignItems="baseline">
                         <FormattedCryptoAmount
                             disableHiddenPlaceholder
                             value={fee}
@@ -113,17 +111,10 @@ const ChangeFeeLoaded = (props: ChangeFeeProps) => {
     );
 };
 
-export const ChangeFee = (props: Omit<ChangeFeeProps, 'selectedAccount' | 'rbfParams'>) => {
-    const selectedAccount = useSelector(state => state.wallet.selectedAccount);
-    if (selectedAccount.status !== 'loaded' || !props.tx.rbfParams) {
+export const ChangeFee = (props: ChangeFeeProps) => {
+    if (!props.tx.rbfParams) {
         return null;
     }
 
-    return (
-        <ChangeFeeLoaded
-            selectedAccount={selectedAccount}
-            rbfParams={props.tx.rbfParams}
-            {...props}
-        />
-    );
+    return <ChangeFeeLoaded {...props} />;
 };

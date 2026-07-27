@@ -1,26 +1,26 @@
 import styled from 'styled-components';
 
+import {
+    selectCurrentCoinjoinWheelStates,
+    selectCurrentSessionDeadlineInfo,
+} from '@suite/coinjoin';
 import { Translation } from '@suite/intl';
-import { AccountKey } from '@suite-common/wallet-types';
-import { spacingsPx, typography } from '@trezor/theme';
+import { type AccountKey } from '@suite-common/wallet-types';
+import { typography } from '@trezor/theme';
 
 import { CountdownTimer } from 'src/components/suite';
 import { SESSION_PHASE_MESSAGES } from 'src/constants/suite/coinjoin';
 import { useCoinjoinSessionPhase } from 'src/hooks/coinjoin';
 import { useSelector } from 'src/hooks/suite/useSelector';
-import {
-    selectCurrentCoinjoinWheelStates,
-    selectCurrentSessionDeadlineInfo,
-} from 'src/reducers/wallet/coinjoinReducer';
 
 const Cointainer = styled.div`
     height: 40px;
-    margin-top: ${spacingsPx.xxs};
+    margin-top: 4px;
     ${typography['body-xs']}
 `;
 
 const CountdownWrapper = styled.p`
-    margin-top: ${spacingsPx.xxs};
+    margin-top: 4px;
 `;
 
 interface CoinjoinStatusMessageProps {

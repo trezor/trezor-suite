@@ -51,9 +51,30 @@ const fixtures = [...ethereumDefinitionFixture, ...commonFixtures.tests]
             ];
         }
 
+        // Upstream fixture has show_message_hash as a hash string,
+        // but TrezorConnect API expects show_message_hash?: boolean.
+        // Normalize: string → true, null/undefined → omit the key entirely.
+        const { show_message_hash: rawShowHash, ...restParams } =
+            parameters as typeof parameters & { show_message_hash?: string | null };
+        const params =
+            typeof rawShowHash === 'string'
+                ? { ...restParams, show_message_hash: true }
+                : restParams;
+
+        if (typeof rawShowHash === 'string') {
+            legacyResults = [
+                ...legacyResults,
+                {
+                    // show_message_hash proto field added in firmware 2.10.0
+                    rules: ['<2.10.0'],
+                    success: false,
+                },
+            ];
+        }
+
         const fixture: Fixture = {
             description: `${name}`,
-            params: parameters,
+            params,
             legacyResults,
             result: {
                 address: result.address,
@@ -61,13 +82,43 @@ const fixtures = [...ethereumDefinitionFixture, ...commonFixtures.tests]
             },
         };
 
-        return fixture;
+        // Parallel variant without precomputed domain_separator_hash / message_hash.
+        // Connect 10 derives the hashes internally (required for T1B1 firmware,
+        // ignored by core firmwares which compute from `data` on-device), so the
+        // resulting signature must match the precomputed-hashes variant byte-for-byte.
+        // This proves the same payload works across all supported models.
+        // Skipped for v3-only fixtures (auto-compute supports v4 only, matching firmware).
+        if (!parameters.metamask_v4_compat) {
+            return fixture;
+        }
+
+        const {
+            domain_separator_hash: _dsh,
+            message_hash: _mh,
+            ...paramsWithoutHashes
+        } = params as typeof params & {
+            domain_separator_hash?: string;
+            message_hash?: string;
+        };
+        const autoComputeFixture: Fixture = {
+            description: `${name} (auto-computed hashes)`,
+            params: paramsWithoutHashes,
+            legacyResults,
+            result: {
+                address: result.address,
+                signature: result.sig,
+            },
+        };
+
+        return [fixture, autoComputeFixture];
     });
 
-export default {
+const ethereumSignTypedData: TestCase = {
     method: 'ethereumSignTypedData',
     setup: {
         mnemonic: commonFixtures.setup.mnemonic,
     },
     tests: fixtures,
-} satisfies TestCase;
+};
+
+export default ethereumSignTypedData;

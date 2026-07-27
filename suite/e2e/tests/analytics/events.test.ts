@@ -7,101 +7,99 @@ import { expect, test } from '../../support/fixtures';
 import { Language, Theme } from '../../support/pageObjects/settings/settingsPage';
 import { ExtractByEventType } from '../../support/types';
 
-test.describe(
-    'Analytics Events',
-    { tag: ['@webOnly', '@specificFirmware', '@T3T1', '@smoke'] },
-    () => {
-        const firmwareVersion = findLatestVersionForModel(Model.T3T1); // Specific firmware is needed to have predictable firmware version in analytics and unfortunately I can't get the PW project defined device model here, so this test is limited to T3T1 only.
-        test.use({ firmwareVersion });
-        test.beforeEach(async ({ analytics, onboardingPage }) => {
-            await analytics.interceptAnalytics();
-            await onboardingPage.completeOnboarding();
-        });
+test.describe('Analytics Events', { tag: ['@webOnly', '@specificFirmware', '@T3T1'] }, () => {
+    const firmwareVersion = findLatestVersionForModel(Model.T3T1); // Specific firmware is needed to have predictable firmware version in analytics and unfortunately I can't get the PW project defined device model here, so this test is limited to T3T1 only.
+    test.use({ firmwareVersion });
 
-        test(
-            'Analytics captures important events when started enabled by default',
-            {
-                annotation: createTestAnnotation({
-                    testCase:
-                        'Verify that analytics captures SuiteReady, DeviceConnect, TransportType, and DeviceDisconnect events when analytics is enabled by default',
-                    category: TestCategory.General,
-                    priority: TestPriority.High,
-                    stream: TestStream.Foundation,
-                }),
-            },
-            async ({ device, analytics }) => {
-                await analytics.waitForAnalyticsRequests(3);
+    test.beforeEach(async ({ analytics, onboardingPage }) => {
+        await analytics.interceptAnalytics();
+        await onboardingPage.completeOnboarding();
+    });
 
-                await test.step('Validate SuiteReady event', () => {
-                    const suiteReadyEvent = analytics.findAnalyticsEventByType<
-                        ExtractByEventType<(typeof events.suiteReadyEvent)['name']>
-                    >(events.suiteReadyEvent.name);
-                    expect(suiteReadyEvent).toContainSubObject({
-                        language: 'en-US',
-                        enabledNetworks: 'btc',
-                        customBackends: '',
-                        localCurrency: 'usd',
-                        bitcoinUnit: 'BTC',
-                        discreetMode: 'false',
-                        screenWidth: '1280',
-                        screenHeight: '720',
-                        platformLanguages: 'en-US',
-                        tor: 'false',
-                        labeling: 'off',
-                        rememberedStandardWallets: '0',
-                        rememberedHiddenWallets: '0',
-                        theme: 'light',
-                        earlyAccessProgram: 'false',
-                        experimentalFeatures: '',
-                        autodetectLanguage: 'true',
-                        autodetectTheme: 'true',
-                        isAutomaticUpdateEnabled: 'false',
-                    });
+    test(
+        'Analytics captures important events when started enabled by default',
+        {
+            annotation: createTestAnnotation({
+                testCase:
+                    'Verify that analytics captures SuiteReady, DeviceConnect, TransportType, and DeviceDisconnect events when analytics is enabled by default',
+                category: TestCategory.General,
+                priority: TestPriority.High,
+                stream: TestStream.Foundation,
+            }),
+        },
+        async ({ device, analytics }) => {
+            await analytics.waitForAnalyticsRequests(3);
+
+            await test.step('Validate SuiteReady event', () => {
+                const suiteReadyEvent = analytics.findAnalyticsEventByType<
+                    ExtractByEventType<(typeof events.suiteReadyEvent)['name']>
+                >(events.suiteReadyEvent.name);
+                expect(suiteReadyEvent).toMatchObject({
+                    language: 'en-US',
+                    enabledNetworks: '',
+                    customBackends: '',
+                    localCurrency: 'usd',
+                    bitcoinUnit: 'BTC',
+                    discreetMode: 'false',
+                    screenWidth: '1280',
+                    screenHeight: '720',
+                    platformLanguages: 'en-US',
+                    tor: 'false',
+                    labeling: 'off',
+                    rememberedStandardWallets: '0',
+                    rememberedHiddenWallets: '0',
+                    theme: 'light',
+                    earlyAccessProgram: 'false',
+                    experimentalFeatures: '',
+                    autodetectLanguage: 'true',
+                    autodetectTheme: 'true',
+                    isAutomaticUpdateEnabled: 'false',
                 });
+            });
 
-                await test.step('Validate DeviceConnect event', () => {
-                    const deviceConnectEvent = analytics.findAnalyticsEventByType<
-                        ExtractByEventType<(typeof events.deviceConnectEvent)['name']>
-                    >(events.deviceConnectEvent.name);
-                    expect(deviceConnectEvent).toContainSubObject({
-                        mode: 'normal',
-                        firmware: firmwareVersion,
-                        bootloaderHash: '',
-                        backup_type: 'Bip39',
-                        pin_protection: 'false',
-                        passphrase_protection: 'false',
-                        totalInstances: '1',
-                        isBitcoinOnly: 'false',
-                        isBitcoinOnlyDevice: 'false',
-                        totalDevices: '1',
-                        language: 'en-US',
-                        model: Model.T3T1,
-                        optiga_sec: '0',
-                    });
+            await test.step('Validate DeviceConnect event', () => {
+                const deviceConnectEvent = analytics.findAnalyticsEventByType<
+                    ExtractByEventType<(typeof events.deviceConnectEvent)['name']>
+                >(events.deviceConnectEvent.name);
+                expect(deviceConnectEvent).toMatchObject({
+                    mode: 'normal',
+                    firmware: firmwareVersion,
+                    bootloaderHash: '',
+                    backup_type: 'Bip39',
+                    pin_protection: 'false',
+                    passphrase_protection: 'false',
+                    totalInstances: '1',
+                    isBitcoinOnly: 'false',
+                    isBitcoinOnlyDevice: 'false',
+                    totalDevices: '1',
+                    language: 'en-US',
+                    model: Model.T3T1,
+                    optiga_sec: '0',
                 });
+            });
 
-                await test.step('Validate TransportType event', () => {
-                    const transportTypeEvent = analytics.findAnalyticsEventByType<
-                        ExtractByEventType<(typeof events.transportTypeEvent)['name']>
-                    >(events.transportTypeEvent.name);
-                    expect(transportTypeEvent.type).toBe('BridgeTransport');
-                    expect(parseInt(transportTypeEvent.version, 10)).not.toBeNaN();
-                });
+            await test.step('Validate TransportType event', () => {
+                const transportTypeEvent = analytics.findAnalyticsEventByType<
+                    ExtractByEventType<(typeof events.transportTypeEvent)['name']>
+                >(events.transportTypeEvent.name);
+                expect(transportTypeEvent.type).toBe('BridgeTransport');
+                expect(parseInt(transportTypeEvent.version, 10)).not.toBeNaN();
+            });
 
-                await test.step('Stop emulator and validate DeviceDisconnect event', async () => {
-                    await device.powerOff();
-                    await analytics.waitForAnalyticsRequests(1); // Poll to prevent race condition
-                    expect(
-                        analytics.findLatestRequestByLegacyType(events.deviceDisconnectEvent.name),
-                    ).toBeDefined();
-                });
-            },
-        );
-    },
-);
+            await test.step('Stop emulator and validate DeviceDisconnect event', async () => {
+                await device.powerOff();
+                await analytics.waitForAnalyticsRequests(1); // Poll to prevent race condition
+                expect(
+                    analytics.findLatestRequestByLegacyType(events.deviceDisconnectEvent.name),
+                ).toBeDefined();
+            });
+        },
+    );
+});
 
-test.describe('Analytics Events', { tag: ['@webOnly', '@T3W1', '@T3T1', '@smoke'] }, () => {
+test.describe('Analytics Events', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
     test.use({ startEmulator: false });
+
     test.beforeEach(async ({ onboardingPage }) => {
         await onboardingPage.disableNecessaryFirmwareChecks();
         await onboardingPage.disableAuthenticityCheck();
@@ -139,6 +137,8 @@ test.describe('Analytics Events', { tag: ['@webOnly', '@T3W1', '@T3T1', '@smoke'
         });
 
         await test.step('Change settings before enabling analytics', async () => {
+            await settingsPage.navigateTo('coins');
+            await settingsPage.coinsTab.enableNetwork('btc');
             await settingsPage.navigateTo('application');
             await settingsPage.changeLanguage(Language.Czech);
             await settingsPage.changeLanguage(Language.English);
@@ -188,7 +188,7 @@ test.describe('Analytics Events', { tag: ['@webOnly', '@T3W1', '@T3T1', '@smoke'
             const suiteReadyEvent = analytics.findAnalyticsEventByType<
                 ExtractByEventType<(typeof events.suiteReadyEvent)['name']>
             >(events.suiteReadyEvent.name);
-            expect(suiteReadyEvent).toContainSubObject({
+            expect(suiteReadyEvent).toMatchObject({
                 language: 'en-US',
                 enabledNetworks: 'eth,thod',
                 customBackends: 'eth',
@@ -204,7 +204,7 @@ test.describe('Analytics Events', { tag: ['@webOnly', '@T3W1', '@T3T1', '@smoke'
                 rememberedHiddenWallets: '0',
                 theme: 'dark',
                 earlyAccessProgram: 'false',
-                experimentalFeatures: 'testnet-networks',
+                experimentalFeatures: '',
                 autodetectLanguage: 'false',
                 autodetectTheme: 'false',
                 isAutomaticUpdateEnabled: 'false',

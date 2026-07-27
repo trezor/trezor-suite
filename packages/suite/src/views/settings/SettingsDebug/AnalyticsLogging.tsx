@@ -1,23 +1,25 @@
 import { useState } from 'react';
 
+import { selectDesktopAnalyticsDep } from '@suite/analytics';
 import {
     analyticsActions,
     selectCustomAnalyticsUrl,
     selectIsAnalyticsEnabled,
     selectLoggerEnabled,
 } from '@suite-common/analytics-redux';
+import { useServices } from '@suite-common/dependency-injection';
 import { Badge, Button, Column, Input, Switch } from '@trezor/components';
+import { InfoIcon } from '@trezor/icons';
+import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
-import { ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { useAnalytics } from 'src/support/useAnalytics';
 
 export const AnalyticsLogging = () => {
     const customAnalyticsUrl = useSelector(selectCustomAnalyticsUrl);
     const loggerEnabled = useSelector(selectLoggerEnabled);
     const isAnalyticsEnabled = useSelector(selectIsAnalyticsEnabled);
     const dispatch = useDispatch();
-    const analytics = useAnalytics();
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
 
     const [inputValue, setInputValue] = useState(customAnalyticsUrl ?? '');
 
@@ -35,7 +37,7 @@ export const AnalyticsLogging = () => {
     };
 
     const renderAnalyticsDisabledBadge = () => (
-        <Badge size="small" intent="warning" iconLeft="info">
+        <Badge size="small" intent="warning" iconLeft={InfoIcon}>
             Enable analytics to see the events.
         </Badge>
     );

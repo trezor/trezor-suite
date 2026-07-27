@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import {
     cancelDiscoveryThunk,
@@ -10,17 +11,16 @@ import {
     startDiscoveryThunk,
 } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
-import { events } from '@suite-native/analytics';
+import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { Translation } from '@suite-native/intl';
 import {
-    AuthorizeDeviceStackParamList,
+    type AuthorizeDeviceStackParamList,
     AuthorizeDeviceStackRoutes,
-    RootStackParamList,
+    type RootStackParamList,
     RootStackRoutes,
-    StackToStackCompositeNavigationProps,
+    type StackToStackCompositeNavigationProps,
     useNavigateToInitialScreen,
 } from '@suite-native/navigation';
-import { useAnalytics } from '@suite-native/services';
 
 import { selectHasPassphraseMismatchError } from '../passphraseSelectors';
 
@@ -32,7 +32,7 @@ type NavigationProp = StackToStackCompositeNavigationProps<
 
 export const PassphraseMismatchAlert = ({ children }: { children?: React.ReactNode }) => {
     const dispatch = useDispatch();
-    const analytics = useAnalytics();
+    const { analytics } = useServices(selectNativeAnalyticsDep);
     const navigation = useNavigation<NavigationProp>();
     const device = useSelector(selectSelectedDevice);
     const navigateToInitialScreen = useNavigateToInitialScreen();
@@ -66,12 +66,12 @@ export const PassphraseMismatchAlert = ({ children }: { children?: React.ReactNo
                             isAddingExistingWallet: false,
                         }),
                     );
-                    dispatch(runDiscoveryThunk(device));
+                    dispatch(runDiscoveryThunk({ device }));
                     navigation.navigate(RootStackRoutes.AuthorizeDeviceStack, {
                         screen: AuthorizeDeviceStackRoutes.PassphraseForm,
                     });
                 },
-                primaryButtonVariant: 'redBold',
+                primaryButtonColorProps: { intent: 'critical', priority: 'primary' },
                 secondaryButtonTitle: (
                     <Translation id="modulePassphrase.emptyPassphraseWallet.verifyEmptyWallet.passphraseMismatchAlert.secondaryButton" />
                 ),
@@ -85,7 +85,7 @@ export const PassphraseMismatchAlert = ({ children }: { children?: React.ReactNo
                         payload: { screen: AuthorizeDeviceStackRoutes.PassphraseConfirmOnTrezor },
                     });
                 },
-                secondaryButtonVariant: 'redElevation0',
+                secondaryButtonColorProps: { intent: 'critical', priority: 'secondary' },
                 pictogramVariant: 'critical',
             });
         }

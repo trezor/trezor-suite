@@ -1,9 +1,8 @@
 import { activateKeepAwakeAsync, deactivateKeepAwake } from 'expo-keep-awake';
-import { v4 as uuidv4 } from 'uuid';
 
 import { deviceAccessMutex } from './DeviceAccessMutex';
 import { DEVICE_ACCESS_ERROR } from './constants';
-import { DeviceAccessResponse } from './types';
+import { type DeviceAccessResponse } from './types';
 
 /**
  * Puts the callback to the end of the queue and waits for its turn to execute.
@@ -17,7 +16,7 @@ export const requestDeviceAccess = async <TReturnType>(
         : deviceAccessMutex.lock());
     if (!wasLockSuccessful) return DEVICE_ACCESS_ERROR;
 
-    const keepAwakeTag = uuidv4();
+    const keepAwakeTag = crypto.randomUUID();
 
     try {
         activateKeepAwakeAsync(keepAwakeTag); // Prevents screen from sleeping while app interacts with device.

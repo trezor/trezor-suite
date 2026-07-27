@@ -1,14 +1,12 @@
 import { selectSelectedDevice } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
-import { TrezorDevice } from '@suite-common/suite-types';
+import { type TrezorDevice } from '@suite-common/suite-types';
 import TrezorConnect, { FirmwareType } from '@trezor/connect';
 import { hasBitcoinOnlyFirmware, isBitcoinOnlyDevice } from '@trezor/device-utils';
 
 import { FIRMWARE_MODULE_PREFIX, firmwareActions } from './firmwareActions';
 import { selectFirmware } from './firmwareReducer';
 import { getBinFilesBaseUrlThunk } from './getBinFilesBaseUrlThunk';
-
-export const INVALID_HASH_ERROR = 'Invalid hash';
 
 export type FirmwareUpdateProps = {
     firmwareType?: FirmwareType;
@@ -116,12 +114,12 @@ export const firmwareUpdate = createThunk<
 
         if (!firmwareUpdateResponse.success) {
             dispatch(firmwareActions.setStatus('error'));
-            dispatch(firmwareActions.setFirmwareUpdateError(firmwareUpdateResponse.payload.error));
+            dispatch(firmwareActions.setFirmwareUpdateError(firmwareUpdateResponse.error.message));
 
             return rejectWithValue({
                 device,
                 ...targetProperties,
-                ...firmwareUpdateResponse.payload,
+                error: firmwareUpdateResponse.error.message,
                 connectResponse: firmwareUpdateResponse,
             });
         } else {

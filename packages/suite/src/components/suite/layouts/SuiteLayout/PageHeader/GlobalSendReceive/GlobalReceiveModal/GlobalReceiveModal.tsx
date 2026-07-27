@@ -1,17 +1,19 @@
 import { useRef } from 'react';
 
-import { events } from '@suite/analytics';
+import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
+import { openModal } from '@suite/modal';
+import { useServices } from '@suite-common/dependency-injection';
 import { CardList, Column, IconCircle, Link, Modal, Paragraph, Row } from '@trezor/components';
+import { PlusIcon } from '@trezor/icons';
 import { HOW_TO_CHOOSE_RIGHT_NETWORK_URL } from '@trezor/urls';
 
-import { openModal } from 'src/actions/suite/modalActions';
 import { useModal } from 'src/components/suite/asset-picker/hooks/useModal';
 import { AddAccountModal } from 'src/components/suite/modals/ReduxModal/UserContextModal/AddAccountModal/AddAccountModal';
-import { useDevice, useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
-import { globalSendReceiveFilters } from 'src/slices/wallet/globalSendReceiveFilters';
-import { useAnalytics } from 'src/support/useAnalytics';
-import { Account, AccountItemType } from 'src/types/wallet';
+import { useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
+import { globalSendReceiveFiltersSelectors } from 'src/slices/wallet/globalSendReceiveFilters';
+import { type Account, type AccountItemType } from 'src/types/wallet';
 
 import { GlobalReceiveAccountListItem } from './components/GlobalReceiveAccountListItem';
 import { useAccountsOptions } from './hooks/useAccountsOptions';
@@ -24,17 +26,17 @@ type GlobalReceiveModalProps = {
 };
 
 export const GlobalReceiveModal = ({ onCancel, onSubmit }: GlobalReceiveModalProps) => {
-    const analytics = useAnalytics();
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
     const { device } = useDevice();
     const { isDiscoveryRunning } = useDiscovery();
-    const isAddAccountDisabled = isDiscoveryRunning || !device || !device.connected;
+    const isAddAccountDisabled = isDiscoveryRunning || !device?.connected;
     const accountModal = useModal(false);
     const dispatch = useDispatch();
 
     const listRef = useRef<HTMLDivElement>(null);
     const accountsOptions = useAccountsOptions();
     const filteredAccounts = useFilterAccounts(accountsOptions);
-    const filledSearch = useSelector(globalSendReceiveFilters.selectors.filledSearch);
+    const filledSearch = useSelector(globalSendReceiveFiltersSelectors.filledSearch);
 
     return (
         <>
@@ -116,10 +118,9 @@ export const GlobalReceiveModal = ({ onCancel, onSubmit }: GlobalReceiveModalPro
                                     >
                                         <Row gap={12}>
                                             <IconCircle
-                                                name="plus"
+                                                icon={PlusIcon}
                                                 size={40}
-                                                variant="tertiary"
-                                                hasBorder={false}
+                                                intent="neutral"
                                             />
                                             <Translation id="TR_ADD_ACCOUNT" />
                                         </Row>

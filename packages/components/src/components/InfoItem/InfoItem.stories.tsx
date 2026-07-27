@@ -1,8 +1,9 @@
 import React from 'react';
 
-import { Meta, StoryObj } from '@storybook/react';
+import { type Meta, type StoryObj } from '@storybook/react';
 
-import { spacings } from '@trezor/theme';
+import * as generatedIcons from '@trezor/icons';
+import { spacingValues } from '@trezor/theme';
 
 import {
     InfoItem as InfoItemComponent,
@@ -10,7 +11,6 @@ import {
     allowedInfoItemTextProps,
 } from './InfoItem';
 import { infoItemVerticalAlignments } from './types';
-import { variables } from '../../config';
 import { getFramePropsStory } from '../../utils/frameProps';
 import { flexDirection } from '../Flex/FlexProp';
 import { textIntents, textPriorities } from '../typography/Text/Text';
@@ -28,11 +28,17 @@ export const InfoItem: StoryObj<typeof InfoItemComponent> = {
         ...getFramePropsStory(allowedInfoItemFrameProps).args,
         direction: 'column',
         label: 'Label',
+        icon: generatedIcons.InfoIcon,
         intent: 'neutral',
         priority: 'secondary',
         typographyStyle: 'body-sm',
     },
     argTypes: {
+        icon: {
+            options: ['none', ...Object.keys(generatedIcons)],
+            mapping: { none: undefined, ...generatedIcons },
+            control: { type: 'select' },
+        },
         direction: {
             options: flexDirection,
             control: {
@@ -42,16 +48,6 @@ export const InfoItem: StoryObj<typeof InfoItemComponent> = {
         label: {
             control: {
                 type: 'text',
-            },
-        },
-        iconName: {
-            options: ['none', ...variables.ICONS],
-            mapping: {
-                ...variables.ICONS,
-                none: undefined,
-            },
-            control: {
-                type: 'select',
             },
         },
         labelWidth: {
@@ -78,12 +74,9 @@ export const InfoItem: StoryObj<typeof InfoItemComponent> = {
             },
         },
         gap: {
-            options: Object.values(spacings),
+            options: spacingValues,
             control: {
                 type: 'select',
-                labels: Object.fromEntries(
-                    Object.entries(spacings).map(([key, value]) => [value, `${key}: ${value}`]),
-                ),
             },
         },
         ...getTextPropsStory(allowedInfoItemTextProps).argTypes,

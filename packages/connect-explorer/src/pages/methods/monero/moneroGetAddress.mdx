@@ -1,5 +1,5 @@
-import { Bundle } from '@trezor/connect/src/types';
-import { MoneroGetAddress } from '@trezor/connect/src/types/api/monero';
+import { Bundle } from '@trezor/connect-common/src/types';
+import { MoneroGetAddress } from '@trezor/connect-common/src/types/api/monero/common';
 
 import { ApiPlayground } from '../../../components/ApiPlayground';
 import { CommonParamsLink } from '../../../components/CommonParamsLink';
@@ -142,8 +142,8 @@ Error
 ```javascript
 {
     success: false,
-    payload: {
-        error: string // error message
+    error: {
+        message: string // error message
     }
 }
 ```

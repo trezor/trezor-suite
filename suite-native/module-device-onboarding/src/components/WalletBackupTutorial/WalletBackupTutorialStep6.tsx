@@ -3,19 +3,19 @@ import { useDerivedValue } from 'react-native-reanimated';
 import { useNavigation } from '@react-navigation/native';
 import { useSetAtom } from 'jotai';
 
-import { BackupType } from '@suite-common/suite-types';
+import { type BackupType } from '@suite-common/suite-types';
 import { HoldToConfirmButton } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
-    DeviceOnboardingStackParamList,
+    type DeviceOnboardingStackParamList,
     DeviceOnboardingStackRoutes,
-    RootStackParamList,
-    StackToStackCompositeNavigationProps,
+    type RootStackParamList,
+    type StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 
 import { WalletBackupInstructionCards } from './WalletBackupInstructionCards';
 import { WalletBackupTutorialStep } from './WalletBackupTutorialStep';
-import { WalletBackupTutorialNumberedStepProps } from './WalletBackupTutorialStep1';
+import { type WalletBackupTutorialNumberedStepProps } from './WalletBackupTutorialStep1';
 import { updateOnboardingAnalyticsAtom } from '../../../atoms';
 
 type WalletBackupTutorialStep6Props = WalletBackupTutorialNumberedStepProps & {

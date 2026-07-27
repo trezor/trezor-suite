@@ -1,6 +1,4 @@
-import fetch from 'cross-fetch';
-
-import { ScheduleActionParams, getWeakRandomId } from '@trezor/utils';
+import { type ScheduleActionParams, capitalizeFirstLetter, getWeakRandomId } from '@trezor/utils';
 
 export interface RequestOptions extends ScheduleActionParams {
     method?: 'POST' | 'GET';
@@ -10,8 +8,6 @@ export interface RequestOptions extends ScheduleActionParams {
     userAgent?: string;
 }
 
-const camelCaseToPascalCase = (key: string) => key.charAt(0).toUpperCase() + key.slice(1);
-
 export const patchResponse = (obj: any) => {
     if (Array.isArray(obj)) {
         for (let i = 0; i < obj.length; i++) {
@@ -19,7 +15,7 @@ export const patchResponse = (obj: any) => {
         }
     } else if (obj && typeof obj === 'object') {
         Object.keys(obj).forEach(key => {
-            const newKey = camelCaseToPascalCase(key);
+            const newKey = capitalizeFirstLetter(key);
             obj[newKey] = obj[key];
             if (key !== newKey) {
                 delete obj[key];

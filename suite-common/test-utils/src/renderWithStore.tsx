@@ -1,7 +1,7 @@
 import { Provider } from 'react-redux';
 
 import { type Store } from '@reduxjs/toolkit';
-import { RenderHookOptions, renderHook } from '@testing-library/react';
+import { type RenderHookOptions, renderHook } from '@testing-library/react';
 
 export type TestStore = Store;
 

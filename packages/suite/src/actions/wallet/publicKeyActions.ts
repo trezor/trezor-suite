@@ -1,10 +1,10 @@
+import { closeModal, openModal, preserveModal } from '@suite/modal';
 import { selectSelectedDevice } from '@suite-common/device';
-import { UserContextPayload } from '@suite-common/suite-types';
+import { type UserContextPayload } from '@suite-common/suite-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { showXpubOnDevice } from '@suite-common/wallet-core';
 
-import { onCancel, openModal, preserve } from 'src/actions/suite/modalActions';
-import { Dispatch, GetState } from 'src/types/suite';
+import { type Dispatch, type GetState } from 'src/types/suite';
 
 export const openXpubModal =
     (params?: Pick<Extract<UserContextPayload, { type: 'xpub' }>, 'isConfirmed'>) =>
@@ -26,7 +26,7 @@ export const showXpub = () => async (dispatch: Dispatch, getState: GetState) => 
     }
 
     // Prevent flickering screen when modal changes.
-    dispatch(preserve());
+    dispatch(preserveModal());
 
     const response = await showXpubOnDevice(device, account);
 
@@ -34,13 +34,13 @@ export const showXpub = () => async (dispatch: Dispatch, getState: GetState) => 
         // Show second part of the "confirm XPUB" modal.
         dispatch(openXpubModal({ isConfirmed: true }));
     } else {
-        dispatch(onCancel());
+        dispatch(closeModal());
         // Special case: closing no-backup warning modal should not show a toast.
-        if (response.payload.code === 'Method_PermissionsNotGranted') return;
+        if (response.error.code === 'Method_PermissionsNotGranted') return;
         dispatch(
             notificationsActions.addToast({
                 type: 'verify-xpub-error',
-                error: response.payload.error,
+                error: response.error.message,
             }),
         );
     }

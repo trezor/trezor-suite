@@ -1,13 +1,14 @@
 import { Translation } from '@suite/intl';
+import { openModal } from '@suite/modal';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { IconCircle, Link } from '@trezor/components';
+import { ShuffleIcon } from '@trezor/icons';
 import { BigNumber } from '@trezor/utils';
 
-import { openModal } from 'src/actions/suite/modalActions';
 import { FormattedCryptoAmount } from 'src/components/suite';
 import { TransactionTimestamp } from 'src/components/wallet/TransactionTimestamp';
 import { useDispatch } from 'src/hooks/suite';
-import { WalletAccountTransaction } from 'src/types/wallet/index';
+import { type WalletAccountTransaction } from 'src/types/wallet/index';
 
 import { TransactionLayout } from './TransactionLayout';
 import { TransactionTargetLayout } from './TransactionTargetLayout';
@@ -22,14 +23,15 @@ export const CoinjoinBatchItem = ({ transactions, isPending }: CoinjoinBatchItem
 
     return (
         <TransactionLayout
-            timestamp={<TransactionTimestamp transaction={transactions[0]} />}
+            timestamp={
+                transactions[0] ? <TransactionTimestamp transaction={transactions[0]} /> : null
+            }
             heading={<Translation id="TR_COINJOIN_TRANSACTION_BATCH" />}
             icon={
                 <IconCircle
-                    name="shuffle"
-                    variant={isPending ? 'warning' : 'tertiary'}
-                    size={42}
-                    hasBorder={false}
+                    icon={ShuffleIcon}
+                    intent={isPending ? 'warning' : 'neutral'}
+                    size={40}
                 />
             }
         >

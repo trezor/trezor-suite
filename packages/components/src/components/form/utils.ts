@@ -1,8 +1,9 @@
 import { css } from 'styled-components';
 
-import { SpacingValuesNew, TypographyStyle } from '@trezor/theme';
+import { type SpacingValue, type TypographyStyle } from '@trezor/theme';
 
-import { InputSize } from './types';
+import { type InputSize } from './types';
+import { commonFocusStyles } from '../../utils/utils';
 
 const heightMap: Record<InputSize, number> = {
     small: 36,
@@ -11,12 +12,12 @@ const heightMap: Record<InputSize, number> = {
 
 export const mapSizeToHeight = (size: InputSize): number => heightMap[size];
 
-const paddingTopMap: Record<InputSize, SpacingValuesNew> = {
+const paddingTopMap: Record<InputSize, SpacingValue> = {
     small: 16,
     large: 20,
 };
 
-export const mapSizeToPaddingTop = (size: InputSize): SpacingValuesNew => paddingTopMap[size];
+export const mapSizeToPaddingTop = (size: InputSize): SpacingValue => paddingTopMap[size];
 
 const typographyStyleMap: Record<InputSize, TypographyStyle> = {
     small: 'body-sm',
@@ -32,7 +33,7 @@ export const commonInputStyles = css`
     border: none;
     background: transparent;
     outline: none;
-    color: inherit;
+    color: ${({ theme }) => theme.contentPrimary};
     font-size: inherit;
     letter-spacing: inherit;
     font-weight: inherit;
@@ -43,8 +44,48 @@ export const commonInputStyles = css`
         'ss03' 1;
 
     &::placeholder {
-        color: ${({ theme }) => theme.textDisabled};
+        color: ${({ theme }) => theme.contentDisabled};
     }
 `;
 
-export const INPUT_PADDING: SpacingValuesNew = 16;
+export const INPUT_PADDING: SpacingValue = 16;
+
+export const commonCheckInputStyles = css`
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border: 2px solid;
+    transition: 0.1s ease-in-out;
+
+    ${({ theme }) => css`
+        border-color: ${theme.elementBorderField};
+        background-color: ${theme.elementFillField};
+
+        input:hover + & {
+            background-color: ${theme.elementFillFieldHovered};
+            border-color: ${theme.elementBorderFieldHovered};
+        }
+
+        input:checked + & {
+            border-color: ${theme.elementFillFieldSelected};
+            background-color: ${theme.elementFillFieldSelected};
+        }
+
+        input:checked:hover + & {
+            background-color: ${theme.elementFillFieldSelectedHovered};
+            border-color: ${theme.elementFillFieldSelectedHovered};
+        }
+
+        input:disabled:not(:checked) + & {
+            border-color: ${theme.elementBorderFieldDisabled};
+            background-color: ${theme.elementFillFieldDisabled};
+        }
+
+        input:focus-visible + & {
+            ${commonFocusStyles}
+        }
+    `}
+`;

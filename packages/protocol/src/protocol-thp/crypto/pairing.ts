@@ -3,11 +3,11 @@ import { createHash, randomBytes } from 'crypto';
 import { aesgcm } from './aesgcm';
 import { curve25519, elligator2, getCurve25519KeyPair } from './curve25519';
 import { bigEndianBytesToBigInt, getIvFromNonce, hashOfTwo, hkdf, sha256 } from './tools';
-import { ThpState } from '../ThpState';
+import { type ThpState } from '../ThpState';
 import {
-    ThpCredentials,
-    ThpHandshakeCredentials,
-    ThpHandshakeInitResponse,
+    type ThpCredentials,
+    type ThpHandshakeCredentials,
+    type ThpHandshakeInitResponse,
     ThpPairingMethod,
 } from '../messages';
 
@@ -48,8 +48,7 @@ export const getTrezorState = (credentials: ThpHandshakeCredentials, payload: Bu
 type Curve25519KeyPair = ReturnType<typeof getCurve25519KeyPair>;
 
 // State HH1
-// TODO: link-to-public-docs
-// https://www.notion.so/satoshilabs/THP-Specification-2-0-18fdc5260606806ab573d0a7cba1897a#193dc526060681b4b871e6b761107fba
+// https://github.com/trezor/trezor-firmware/blob/41692dc2cdb937564abe7fecd4bfc3e508adc8d4/docs/common/thp/specification.md#state-hh1
 export const handleHandshakeInit = ({
     handshakeInitResponse,
     thpState,
@@ -88,7 +87,11 @@ export const handleHandshakeInit = ({
     h = hashOfTwo(h, trezorEphemeralPubkey);
     // 5. Set ck, k = HKDF(protocol_name, X25519(host_ephemeral_privkey, trezor_ephemeral_pubkey)).
     point = curve25519(hostEphemeralKeys.privateKey, trezorEphemeralPubkey);
-    let [ck, k] = hkdf(getProtocolName(), point);
+    const hkdf1 = hkdf(getProtocolName(), point);
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    let ck: Buffer = hkdf1[0];
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    let k: Buffer = hkdf1[1];
 
     // 6. Set trezor_masked_static_pubkey, success = AES-GCM-DECRYPT(key=k, IV=0^96 (bits, 12 bytes), ad=h, plaintext=encrypted_trezor_static_pubkey). Assert that success is True.
     aes = aesgcm(k, iv0);
@@ -100,7 +103,11 @@ export const handleHandshakeInit = ({
     h = hashOfTwo(h, trezorEncryptedStaticPubkey);
     // 8. Set ck, k = HKDF(ck, X25519(host_ephemeral_privkey, trezor_masked_static_pubkey))
     point = curve25519(hostEphemeralKeys.privateKey, trezorMaskedStaticPubkey);
-    [ck, k] = hkdf(ck, point);
+    const hkdf2 = hkdf(ck, point);
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    ck = hkdf2[0];
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    k = hkdf2[1];
 
     // 9. Set tag_of_empty_string, success = AES-GCM-DECRYPT(key=k, IV=0^96 (bits, 12 bytes), ad=h, plaintext=empty_string). Assert that success is True.
     aes = aesgcm(k, iv0);
@@ -138,7 +145,11 @@ export const handleHandshakeInit = ({
     h = hashOfTwo(h, hostEncryptedStaticPubkey);
     // 14. Set ck, k = HKDF(ck, X25519(temp_host_static_privkey, trezor_ephemeral_pubkey)).
     point = curve25519(hostStaticKeys.privateKey, trezorEphemeralPubkey);
-    [ck, k] = hkdf(ck, point);
+    const hkdf3 = hkdf(ck, point);
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    ck = hkdf3[0];
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    k = hkdf3[1];
     // 15. Set payload_binary = PROTOBUF-ENCODE(type=HandshakeCompletionReqNoisePayload, host_pairing_credential).
     const { message } = protobufEncoder('ThpHandshakeCompletionReqNoisePayload', {
         host_pairing_credential: credentials?.credential,
@@ -151,7 +162,11 @@ export const handleHandshakeInit = ({
 
     // HH2 and HH3
     // 1. Set key_request, key_response = HKDF(ck, empty_string).
-    const [hostKey, trezorKey] = hkdf(ck, Buffer.alloc(0));
+    const hkdf4 = hkdf(ck, Buffer.alloc(0));
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const hostKey: Buffer = hkdf4[0];
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const trezorKey: Buffer = hkdf4[1];
 
     return {
         trezorMaskedStaticPubkey,
@@ -169,8 +184,7 @@ export const handleHandshakeInit = ({
 };
 
 export const getCpaceHostKeys = (code: Buffer, handshakeHash: Buffer) => {
-    // TODO: link-to-public-docs
-    // https://www.notion.so/satoshilabs/Pairing-phase-996b0e879fff4ebd9460ae27376fce76
+    // https://github.com/trezor/trezor-firmware/blob/41692dc2cdb937564abe7fecd4bfc3e508adc8d4/docs/common/thp/specification.md#state-hp4
     // If the user enters code, take the following actions:
     // 2. Compute *pregenerator* as the first 32 bytes of SHA-512(*prefix* || *code* - 6 bytes || *padding || h*), where *prefix* is the byte-string  0x08 || 0x43 || 0x50 || 0x61 || 0x63 || 0x65 || 0x32 || 0x35 || 0x35 || 0x06 and *padding* is the byte-string 0x50 || 0x00 ^ 80 || 0x20.
     // 3. Set *generator =* ELLIGATOR2(*pregenerator*).
@@ -232,35 +246,15 @@ export const validateCodeEntryTag = (
     }
 };
 
-export const validateQrCodeTag = (
-    { handshakeHash }: ThpHandshakeCredentials,
+const validatePairingTag = (
+    handshakeHash: Buffer,
+    method: ThpPairingMethod,
+    secret: Buffer,
     value: string,
-    secret: string, // ThpQrCodeSecret.secret
+    errorCode: string,
 ) => {
-    // Assert that value = SHA-256(ThpPairingMethod.QrCode || h || secret)
     const shaCtx = createHash('sha256');
-    shaCtx.update(Buffer.from([ThpPairingMethod.QrCode]));
-    shaCtx.update(handshakeHash);
-    shaCtx.update(Buffer.from(secret, 'hex'));
-
-    const calculatedValue = shaCtx.digest().subarray(0, 16);
-    const expectedValue = Buffer.from(value, 'hex').subarray(0, 16);
-    if (calculatedValue.compare(expectedValue) !== 0) {
-        throw new Error(
-            `HP6: code mismatch ${calculatedValue.toString('hex')} != ${expectedValue.toString('hex')}`,
-        );
-    }
-};
-
-// validate ThpNfcTagTrezor
-export const validateNfcTag = (
-    { handshakeHash }: ThpHandshakeCredentials,
-    value: string, // ThpNfcTagTrezor.tag
-    secret: Buffer, // ThpState.nfcSecret
-) => {
-    // Assert that value = SHA-256(ThpPairingMethod.NFC || h || secret)
-    const shaCtx = createHash('sha256');
-    shaCtx.update(Buffer.from([ThpPairingMethod.NFC]));
+    shaCtx.update(Buffer.from([method]));
     shaCtx.update(handshakeHash);
     shaCtx.update(secret);
 
@@ -268,7 +262,30 @@ export const validateNfcTag = (
     const expectedValue = Buffer.from(value, 'hex').subarray(0, 16);
     if (calculatedValue.compare(expectedValue) !== 0) {
         throw new Error(
-            `HP7: code mismatch ${calculatedValue.toString('hex')} != ${expectedValue.toString('hex')}`,
+            `${errorCode}: code mismatch ${calculatedValue.toString('hex')} != ${expectedValue.toString('hex')}`,
         );
     }
 };
+
+export const validateQrCodeTag = (
+    { handshakeHash }: ThpHandshakeCredentials,
+    value: string,
+    secret: string, // ThpQrCodeSecret.secret
+) =>
+    // Assert that value = SHA-256(ThpPairingMethod.QrCode || h || secret)
+    validatePairingTag(
+        handshakeHash,
+        ThpPairingMethod.QrCode,
+        Buffer.from(secret, 'hex'),
+        value,
+        'HP6',
+    );
+
+// validate ThpNfcTagTrezor
+export const validateNfcTag = (
+    { handshakeHash }: ThpHandshakeCredentials,
+    value: string, // ThpNfcTagTrezor.tag
+    secret: Buffer, // ThpState.nfcSecret
+) =>
+    // Assert that value = SHA-256(ThpPairingMethod.NFC || h || secret)
+    validatePairingTag(handshakeHash, ThpPairingMethod.NFC, secret, value, 'HP7');

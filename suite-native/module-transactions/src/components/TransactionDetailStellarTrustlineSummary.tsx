@@ -1,6 +1,6 @@
 import { Box, Text } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import { WalletAccountTransaction } from '@suite-native/tokens';
+import { type WalletAccountTransaction } from '@suite-native/tokens';
 
 import { TransactionDetailStepper } from './TransactionDetailStepper';
 import { SummaryRow } from './TransactionSummaryRow';
@@ -26,10 +26,10 @@ export const TransactionDetailStellarTrustlineSummary = ({
     return (
         <SummaryRow leftComponent={<TransactionDetailStepper />}>
             <Box>
-                <Text color="textSubdued" variant="body-sm">
+                <Text color="contentSecondary" variant="body-sm">
                     {assetCode}
                 </Text>
-                <Text variant="body-md" color="textDefault">
+                <Text variant="body-md" color="contentPrimary">
                     <Translation id={translationId} values={{ assetCode }} />
                 </Text>
             </Box>

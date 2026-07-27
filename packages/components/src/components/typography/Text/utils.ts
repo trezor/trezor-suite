@@ -1,34 +1,35 @@
-import { DefaultTheme } from 'styled-components';
+import { type DefaultTheme } from 'styled-components';
 
-import { CSSColor, Color } from '@trezor/theme';
+import { type CSSColor, type Color } from '@trezor/theme';
 
-import { TextIntent, TextPriority } from './types';
+import { type TextIntent, type TextPriority } from './types';
+import { addAlphaToHex } from '../../../utils/utils';
 
-const colorMap: Record<Exclude<TextIntent, 'neutral'>, Color> = {
-    brand: 'textPrimaryDefault',
-    info: 'textAlertBlue',
-    warning: 'textAlertYellow',
-    critical: 'textAlertRed',
-    accentViolet: 'baseContentAccentViolet',
-    accentOrange: 'baseContentAccentOrange',
+const colorMap: Record<TextIntent, Color> = {
+    brand: 'contentBrand',
+    neutral: 'contentPrimary',
+    info: 'contentInfo',
+    warning: 'contentWarning',
+    critical: 'contentCritical',
+    accentViolet: 'contentAccentViolet',
 };
 
-const neutralColorMap: Record<TextPriority, Color> = {
-    primary: 'textDefault',
-    secondary: 'textSubdued',
+const inverseColorMap: Record<TextIntent, Color> = {
+    brand: 'contentOnDarkBrand',
+    neutral: 'contentOnDarkPrimary',
+    info: 'contentOnDarkInfo',
+    warning: 'contentOnDarkWarning',
+    critical: 'contentOnDarkCritical',
+    accentViolet: 'contentOnDarkAccentViolet',
 };
 
 export const mapIntentToCSS = (
     intent: TextIntent,
     priority: TextPriority,
-    isDisabled: boolean,
+    isInverse: boolean,
     theme: DefaultTheme,
 ): CSSColor => {
-    if (isDisabled) {
-        return theme.textDisabled;
-    }
+    const color = theme[(isInverse ? inverseColorMap : colorMap)[intent]];
 
-    const token = intent === 'neutral' ? neutralColorMap[priority] : colorMap[intent];
-
-    return theme[token];
+    return priority === 'primary' ? color : addAlphaToHex(color, 0.74);
 };

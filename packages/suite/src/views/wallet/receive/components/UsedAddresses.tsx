@@ -1,21 +1,22 @@
 import { useState } from 'react';
 
+import { Address, selectAddressLabelsForAccount } from '@suite/address';
 import { Translation, useTranslation } from '@suite/intl';
-import { selectLabelingDataForSelectedAccount } from '@suite/metadata';
-import { MetadataAddPayload } from '@suite-common/metadata-types';
-import { selectSuiteSyncAddressLabels } from '@suite-common/suite-sync';
-import { NetworkSymbol } from '@suite-common/wallet-config';
-import { Account } from '@suite-common/wallet-types';
+import { Labeling } from '@suite/labeling';
+import { showAddressThunk, useReceiveDisabled } from '@suite/receive';
+import { getUsedAddressesList } from '@suite-common/address';
+import { type MetadataAddPayload } from '@suite-common/metadata-types';
+import { selectCurrentFreshAddress, selectTouchedAddresses } from '@suite-common/receive';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type Account } from '@suite-common/wallet-types';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { Button, Card, Column, Row, Table, Text } from '@trezor/components';
-import { AccountAddress } from '@trezor/connect';
-import { spacings } from '@trezor/theme';
+import { type AccountAddress } from '@trezor/connect';
+import { getAddressPathIndex } from '@trezor/crypto-utils';
+import { CaretDownIcon, CaretUpIcon } from '@trezor/icons';
 
-import { showAddress } from 'src/actions/wallet/receiveActions';
-import { Address, FormattedCryptoAmount, Labeling } from 'src/components/suite';
+import { FormattedCryptoAmount } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { useReceiveDisabled } from 'src/hooks/suite/useReceiveDisabled';
-import { AppState } from 'src/types/suite';
 
 const DEFAULT_LIMIT = 10;
 
@@ -36,14 +37,21 @@ const Item = ({ account, addr, locked, symbol, onClick, metadataPayload, index }
     const amount = formatNetworkAmount(addr.received || '0', symbol);
     const fresh = !addr.transfers;
     const isDisabled = locked || isReceiveDisabled;
+    const addressPathIndex = getAddressPathIndex(addr.path);
 
     return (
         <Table.Row>
             <Table.Cell>
-                <Text
-                    typographyStyle="body-md"
+                <Row
+                    gap={4}
+                    alignItems="center"
                     data-testid={`@wallet/receive/used-address/${index}`}
                 >
+                    {addressPathIndex !== undefined && (
+                        <Text typographyStyle="body-md" intent="neutral" priority="secondary">
+                            {addressPathIndex} /
+                        </Text>
+                    )}
                     <Labeling
                         payload={{
                             ...metadataPayload,
@@ -56,7 +64,7 @@ const Item = ({ account, addr, locked, symbol, onClick, metadataPayload, index }
                     >
                         {metadataPayload.value}
                     </Labeling>
-                </Text>
+                </Row>
             </Table.Cell>
             <Table.Cell align="end">
                 <ReceiveDisabledWrapper>
@@ -90,24 +98,29 @@ const Item = ({ account, addr, locked, symbol, onClick, metadataPayload, index }
 
 interface UsedAddressesProps {
     account: Account;
-    addresses: AppState['wallet']['receive'];
     locked: boolean;
     pendingAddresses: string[];
 }
 
-export const UsedAddresses = ({
-    account,
-    addresses,
-    pendingAddresses,
-    locked,
-}: UsedAddressesProps) => {
+export const UsedAddresses = ({ account, pendingAddresses, locked }: UsedAddressesProps) => {
     const [limit, setLimit] = useState(DEFAULT_LIMIT);
     const dispatch = useDispatch();
-    const { addressLabels } = useSelector(selectLabelingDataForSelectedAccount);
-    const suiteSyncAddressLabels = useSelector(state =>
-        selectSuiteSyncAddressLabels(state, account.deviceState),
+    const currentFreshAddress = useSelector(state => selectCurrentFreshAddress(state, account.key));
+    const touchedAddresses = useSelector(state => selectTouchedAddresses(state, account.key));
+
+    const accountAddresses = account.addresses
+        ? account.addresses.used.concat(account.addresses.unused).map(({ address }) => address)
+        : [];
+
+    const addressLabels = useSelector(state =>
+        selectAddressLabelsForAccount(state, {
+            addresses: accountAddresses,
+            accountKey: account.key,
+            deviceStaticId: account.deviceState,
+        }),
     );
 
+    // For account based networks, the unuses addresses does not make sense.
     if (
         (account.networkType !== 'bitcoin' && account.networkType !== 'cardano') ||
         !account.addresses
@@ -115,21 +128,13 @@ export const UsedAddresses = ({
         return null;
     }
 
-    const { used, unused } = account.addresses;
-    // find revealed addresses in `unused` list
-    const revealed = unused.reduce(
-        (result, addr) => {
-            const r = addresses.find(u => u.path === addr.path);
-            const p = pendingAddresses.find(u => u === addr.address);
-            const f = r || p;
-
-            return f ? result.concat(addr) : result;
-        },
-        [] as typeof unused,
-    );
-    // TODO: add skipped addresses?
-    // add revealed addresses to `used` list
-    const list = used.concat(revealed).reverse();
+    const list = getUsedAddressesList({
+        account,
+        touchedAddresses,
+        pendingAddresses,
+        addressLabels,
+        currentFreshAddress,
+    });
 
     if (list.length < 1) {
         return null;
@@ -141,8 +146,8 @@ export const UsedAddresses = ({
 
     return (
         <Card paddingType="none">
-            <Column gap={spacings.md}>
-                <Table margin={{ top: spacings.xs, bottom: spacings.xs }}>
+            <Column gap={16}>
+                <Table margin={{ top: 8, bottom: 8 }}>
                     <Table.Header>
                         <Table.Row>
                             <Table.Cell>
@@ -168,24 +173,28 @@ export const UsedAddresses = ({
                                     defaultValue: addr.address,
                                     networkSymbol: account.symbol,
                                     accountDescriptor: account.descriptor,
-                                    value:
-                                        suiteSyncAddressLabels.find(
-                                            it => it.address === addr.address,
-                                        )?.label ?? addressLabels[addr.address],
+                                    value: addressLabels[addr.address] ?? undefined,
                                 }}
-                                onClick={() => dispatch(showAddress(addr.path, addr.address))}
+                                onClick={() =>
+                                    dispatch(
+                                        showAddressThunk({
+                                            path: addr.path,
+                                            address: addr.address,
+                                        }),
+                                    )
+                                }
                             />
                         ))}
                     </Table.Body>
                 </Table>
 
                 {actionButtonsVisible && (
-                    <Row justifyContent="center" gap={spacings.md} margin={{ bottom: spacings.md }}>
+                    <Row justifyContent="center" gap={16} margin={{ bottom: 16 }}>
                         {actionShowVisible && (
                             <Button
                                 intent="neutral"
                                 priority="secondary"
-                                iconRight="caretDown"
+                                iconRight={CaretDownIcon}
                                 onClick={() => setLimit(limit + 20)}
                                 data-testid="@wallet/receive/used-address/show-more"
                             >
@@ -197,7 +206,7 @@ export const UsedAddresses = ({
                             <Button
                                 intent="neutral"
                                 priority="secondary"
-                                iconLeft="caretUp"
+                                iconLeft={CaretUpIcon}
                                 onClick={() => setLimit(DEFAULT_LIMIT)}
                             >
                                 <Translation id="TR_SHOW_LESS" />

@@ -8,10 +8,9 @@ import { selectTradingSellFormStep } from '@suite-common/trading';
 import { AnimatedVStack, InlineAlertBox } from '@suite-native/atoms';
 
 import { SellBankAccountPicker } from './BankAccount/SellBankAccountPicker';
-import { SellFeePickerCard } from './SellFeePickerCard';
 import { SellFromAccountTradePreviewCard } from './SellFromAccountTradePreviewCard';
+import { SellInfo } from './SellInfo';
 import { SellToFiatTradePreviewCard } from './SellToFiatTradePreviewCard';
-import { useChangeStringsExtractor } from '../../../hooks/history/useChangeStringsExtractor';
 
 export type SellPreviewViewProps = {
     quote: SellFiatTrade | undefined;
@@ -21,9 +20,11 @@ export type SellPreviewViewProps = {
 export const SellPreviewView = memo(({ quote, txnErrorString }: SellPreviewViewProps) => {
     const formStep = useSelector(selectTradingSellFormStep);
 
-    const { fromStringValue, toStringValue } = useChangeStringsExtractor(quote);
+    const quoteBankAccounts = quote?.bankAccounts;
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const firstBankAccount: NonNullable<typeof quoteBankAccounts>[number] = quoteBankAccounts?.[0];
     const [selectedBankAccountIban, setSelectedBankAccountIban] = useState(
-        quote?.bankAccounts?.[0].bankAccount,
+        firstBankAccount?.bankAccount,
     );
 
     const isTxnError = !!txnErrorString;
@@ -39,15 +40,12 @@ export const SellPreviewView = memo(({ quote, txnErrorString }: SellPreviewViewP
         <AnimatedVStack spacing="sp20" paddingVertical="sp20" layout={LinearTransition}>
             {isTxnError && (
                 <Animated.View>
-                    <InlineAlertBox variant="critical" title={txnErrorString} />
+                    <InlineAlertBox intent="critical" title={txnErrorString} />
                 </Animated.View>
             )}
-            <SellFromAccountTradePreviewCard
-                cryptoId={quote?.cryptoCurrency}
-                fromStringValue={fromStringValue}
-            />
-            <SellToFiatTradePreviewCard quote={quote} toStringValue={toStringValue} />
-            <SellFeePickerCard quote={quote} isTxnError={isTxnError} />
+            <SellFromAccountTradePreviewCard quote={quote} />
+            <SellToFiatTradePreviewCard quote={quote} />
+            <SellInfo quote={quote} isTxnError={isTxnError} />
             {showBankAccountPicker && (
                 <SellBankAccountPicker
                     orderId={quote?.orderId}

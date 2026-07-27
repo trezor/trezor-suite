@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 
 import { AnimatePresence, motion } from 'framer-motion';
 
-import { Translation, TranslationKey } from '@suite/intl';
+import { Translation, type TranslationKey } from '@suite/intl';
 import { Card, H4, Paragraph, motionEasing } from '@trezor/components';
 
 const PHRASES: TranslationKey[] = [
@@ -35,7 +35,7 @@ export const RotatingPhrases = ({ interval = 10000 }: RotatingPhrasesProps) => {
     }, [interval]);
 
     return (
-        <Card fillType="flat" paddingType="large">
+        <Card type="contrast" paddingType="large">
             <H4
                 typographyStyle="body-sm-strong"
                 intent="neutral"
@@ -55,7 +55,7 @@ export const RotatingPhrases = ({ interval = 10000 }: RotatingPhrasesProps) => {
                         transition={{ duration: 0.3, ease: motionEasing.enter }}
                     >
                         <Paragraph align="center">
-                            <Translation id={PHRASES[index]} />
+                            <Translation id={PHRASES[index] ?? 'TR_DYK_ITEM_1'} />
                         </Paragraph>
                     </motion.div>
                 </AnimatePresence>

@@ -20,7 +20,8 @@ export const settingsGeneralLabelingProviderEvent: EventDef<
     EventType.SettingsGeneralLabelingProvider
 > = {
     name: EventType.SettingsGeneralLabelingProvider,
-    descriptionTrigger: 'when user select some provider, or when close the modal',
+    descriptionTrigger:
+        'User selects a labeling provider (Dropbox, Google Drive, file system, Suite-sync, etc.) in Settings or closes the provider selection modal',
     changelog: [
         { version: '1.21.0', notes: 'added' },
         {
@@ -32,7 +33,14 @@ export const settingsGeneralLabelingProviderEvent: EventDef<
 
     attributes: {
         provider: {
-            changelog: [{ version: '?', notes: 'added' }],
+            changelog: [{ version: '1.21.0', notes: 'added' }],
+            description: `The selected labeling provider:
+- \`dropbox\`: Dropbox
+- \`google\`: Google Drive
+- \`fileSystem\`: local file system
+- \`evolu\`: Suite Sync (Evolu-backed)
+- \`legacy\`: legacy provider
+- \`missing-provider\`: labeling is enabled but no provider is configured`,
         },
     },
 };

@@ -1,6 +1,7 @@
 import { Locator, Page, expect } from '@playwright/test';
 
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import type { NetworkSymbol } from '@suite-common/wallet-config';
+import { isTestnet } from '@suite-common/wallet-utils';
 
 import { step } from '../common';
 
@@ -16,12 +17,12 @@ type WalletParams = {
 export class WalletPage {
     readonly transactionSearch: Locator;
     readonly accountSearch: Locator;
-    readonly accountChevron: Locator;
     readonly walletStakingButton: Locator;
     readonly stakeAddress: Locator;
     readonly walletExtraDropDown: Locator;
     readonly openTradingGlobalButton: Locator;
-    readonly openSwapGlobalButton: Locator;
+    readonly openSellGlobalButton: Locator;
+    readonly openSwapSidebarButton: Locator;
     readonly tradingDropdownBuyButton: Locator;
     readonly balanceOfAccount = (params: WalletParams) =>
         this.accountButton(params).getByTestId(`@wallet/coin-balance/value-${params.symbol}`);
@@ -35,6 +36,7 @@ export class WalletPage {
     readonly copyPublicKeyButton: Locator;
     readonly openSendFormButton: Locator;
     readonly sendForm: Locator;
+    readonly sendFormHeader: Locator;
     readonly totalSent: Locator;
     readonly receiveButton: Locator;
     readonly revealAddressButton: Locator;
@@ -51,11 +53,16 @@ export class WalletPage {
     readonly showMoreButton: Locator;
     readonly topPanelBalance: Locator;
     readonly topPanelBalanceWithSymbol: Locator;
-    readonly segwitGroupButton: Locator;
     readonly addAccountButton: Locator;
+    readonly addAccountConfirmButton: Locator;
+    readonly filterAccountsButton: Locator;
+    readonly addAccountTypeSelectInput: Locator;
+    readonly addAccountTypeSelectOption = (type: string) =>
+        this.page.getByTestId(`@add-account-type/select/option/${type}`);
     readonly copyToCliboardToast: Locator;
     readonly verifyAddressErrorToast: Locator;
     readonly accountNotLoaded: Locator;
+    readonly retryLoadingAccount: Locator;
     readonly emptyAccount: Locator;
     readonly buyButton: Locator;
     readonly sellButton: Locator;
@@ -66,16 +73,18 @@ export class WalletPage {
     readonly discoveryWarning: Locator;
     readonly usedAddress = (index: number) =>
         this.page.getByTestId(`@wallet/receive/used-address/${index}`);
+    readonly usedAddressRevealButton = (index: number) =>
+        this.page.getByTestId(`@wallet/receive/reveal-address-button/${index}`);
 
     constructor(private readonly page: Page) {
         this.transactionSearch = this.page.getByTestId('@wallet/accounts/search-icon');
         this.accountSearch = this.page.getByTestId('@account-menu/search-input');
-        this.accountChevron = this.page.getByTestId('@account-menu/arrow');
         this.walletStakingButton = this.page.getByTestId('@wallet/menu/staking');
         this.stakeAddress = this.page.getByTestId('@cardano/staking/address');
         this.walletExtraDropDown = this.page.getByTestId('@wallet/menu/extra-dropdown');
         this.openTradingGlobalButton = this.page.getByTestId('@wallet/menu/wallet-trading-buy');
-        this.openSwapGlobalButton = this.page.getByTestId('@wallet/menu/wallet-trading-exchange');
+        this.openSellGlobalButton = this.page.getByTestId('@wallet/menu/wallet-trading-sell');
+        this.openSwapSidebarButton = this.page.getByTestId('@suite/menu/wallet-trading-exchange');
         this.tradingDropdownBuyButton = this.page
             .getByRole('list')
             .getByTestId('@wallet/menu/wallet-trading-buy');
@@ -85,6 +94,7 @@ export class WalletPage {
         this.copyPublicKeyButton = this.page.getByTestId('@metadata/copy-xpub-button');
         this.openSendFormButton = this.page.getByTestId('@wallet/menu/wallet-send');
         this.sendForm = this.page.getByTestId('@wallet/send/outputs-and-options');
+        this.sendFormHeader = this.page.getByTestId('@wallet/send-header');
         this.totalSent = this.page.getByTestId('@wallet/send/total-sent');
         this.receiveButton = this.page.getByTestId('@wallet/menu/wallet-receive');
         this.revealAddressButton = this.page.getByTestId('@wallet/receive/reveal-address-button');
@@ -97,17 +107,22 @@ export class WalletPage {
         );
         this.transactionItem = this.page.getByTestId('@wallet/transaction-item');
         this.transactionAddress = this.page.getByTestId('@wallet/transaction/target-address');
-        this.fiatAmount = this.page.getByTestId('@wallet/account-top-panel/fiat-amount');
+        this.fiatAmount = this.page.getByTestId('@wallet/account/fiat-amount').first();
         this.showMoreButton = this.page.getByTestId('@wallet/receive/used-address/show-more');
-        this.topPanelBalance = this.page.getByTestId('@wallet/account-top-panel/crypto-balance');
+        this.topPanelBalance = this.page.getByTestId('@wallet/account/crypto-balance');
         this.topPanelBalanceWithSymbol = this.page.getByTestId(
-            '@wallet/account-top-panel/crypto-balance-with-symbol',
+            '@wallet/account/crypto-balance-with-symbol',
         );
         this.copyToCliboardToast = this.page.getByTestId('@toast/copy-to-clipboard');
         this.verifyAddressErrorToast = this.page.getByTestId('@toast/verify-address-error');
-        this.segwitGroupButton = this.page.getByTestId('@account-menu/segwit');
         this.addAccountButton = this.page.getByTestId('@account-menu/add-account');
+        this.addAccountConfirmButton = this.page.getByTestId('@add-account');
+        this.filterAccountsButton = this.page.getByTestId('@account-menu/filter-accounts');
+        this.addAccountTypeSelectInput = this.page.getByTestId('@add-account-type/select/input');
         this.accountNotLoaded = this.page.getByTestId('@accounts/account-not-loaded');
+        this.retryLoadingAccount = this.page.getByTestId(
+            '@accounts/account-not-loaded/retry-button',
+        );
         this.emptyAccount = this.page.getByTestId('@accounts/empty-account');
         this.buyButton = this.page.getByTestId('@accounts/empty-account/buy');
         this.sellButton = this.page.getByTestId('@trading/menu/wallet-trading-sell');
@@ -138,20 +153,16 @@ export class WalletPage {
     @step()
     async openAccount(params: WalletParams = {}) {
         await this.accountButton(params).click();
-        await expect(this.fiatAmount).toBeVisible();
+
+        if (!params.symbol || !isTestnet(params.symbol)) {
+            await expect(this.fiatAmount).toBeVisible({ timeout: 25_000 });
+        }
     }
 
     @step()
     async filterTransactions(transaction: string) {
         await this.transactionSearch.click();
         await this.transactionSearch.fill(transaction, { force: true });
-    }
-
-    @step()
-    async expandAllAccountsInMenu() {
-        for (const chevron of await this.accountChevron.all()) {
-            await chevron.click();
-        }
     }
 
     @step()
@@ -173,6 +184,16 @@ export class WalletPage {
         return await this.page
             .locator(`[data-testid*="@account-menu/${symbol}"][tabindex]`)
             .count();
+    }
+
+    @step()
+    getAccountsInTypeCount(type: string) {
+        return this.page.getByTestId(new RegExp(`^@account-menu/[^/]+/${type}/\\d+$`)).count();
+    }
+
+    @step()
+    getAccountsForCoinInTypeCount(type: string, symbol: NetworkSymbol) {
+        return this.page.getByTestId(new RegExp(`^@account-menu/${symbol}/${type}/\\d+$`)).count();
     }
 
     @step()
@@ -204,7 +225,7 @@ export class WalletPage {
     @step()
     async openSwapTrading(params: WalletParams = {}) {
         await this.openAccount(params);
-        await this.openSwapGlobalButton.click();
+        await this.openSwapSidebarButton.click();
     }
 
     @step()

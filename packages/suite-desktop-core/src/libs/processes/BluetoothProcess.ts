@@ -1,7 +1,7 @@
 import { isDevEnv } from '@suite-common/suite-utils';
 import { isWindows } from '@trezor/env-utils';
 
-import { BaseProcess, Status } from './BaseProcess';
+import { BaseProcess, type Status } from './BaseProcess';
 import { getSwitchValue } from '../process-switches';
 
 export class BluetoothProcess extends BaseProcess {
@@ -25,10 +25,6 @@ export class BluetoothProcess extends BaseProcess {
 
     getUrl() {
         return `http://localhost:${this.port}/`;
-    }
-
-    getPort() {
-        return this.port;
     }
 
     async status(): Promise<Status> {

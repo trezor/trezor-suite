@@ -3,15 +3,14 @@ import React, { useEffect, useState } from 'react';
 import { Object, type TSchema } from '@sinclair/typebox';
 import styled from 'styled-components';
 
-import { CollapsibleBox, Select, Switch, useElevation, variables } from '@trezor/components';
-import { Elevation, mapElevationToBorder, spacingsPx } from '@trezor/theme';
+import { CollapsibleBox, Select, Switch, variables } from '@trezor/components';
 
 import { Method, MethodContent } from './Method';
 import * as methodActions from '../actions/methodActions';
 import { useActions, useSelector } from '../hooks';
-import { MethodState } from '../reducers/methodCommon';
+import { type MethodState } from '../reducers/methodCommon';
 
-const ApiPlaygroundWrapper = styled.div<{ $elevation: Elevation }>`
+const ApiPlaygroundWrapper = styled.div`
     display: block;
     position: fixed;
     z-index: 10;
@@ -21,10 +20,10 @@ const ApiPlaygroundWrapper = styled.div<{ $elevation: Elevation }>`
     max-width: 71rem;
     overflow: hidden;
     overscroll-behavior: contain;
-    border-radius: 1rem;
+    border-radius: 16px;
     padding: 0;
-    border: 1px solid ${mapElevationToBorder};
-    box-shadow: ${({ theme }) => theme.boxShadowElevated};
+    border: 1px solid ${({ theme }) => theme.surfaceBorderFixed};
+    box-shadow: ${({ theme }) => theme.surfaceShadowFixed};
 
     @media (min-width: ${variables.SCREEN_SIZE.LG}) {
         left: 18rem;
@@ -45,7 +44,7 @@ const ContentWrapper = styled.div`
 `;
 
 const OptionsRow = styled(MethodContent)`
-    margin-bottom: ${spacingsPx.md};
+    margin-bottom: 16px;
     align-items: center;
 
     > div:last-child {
@@ -60,10 +59,10 @@ const SelectWrapper = styled.div`
     .react-select__control:read-only:not(:disabled) {
         background: transparent;
         border-style: solid;
-        border-color: ${({ theme }) => theme.borderElevation1};
+        border-color: ${({ theme }) => theme.borderNeutral};
 
         &:hover {
-            border-color: ${({ theme }) => theme.borderElevation2};
+            border-color: ${({ theme }) => theme.elementBorderFieldHovered};
         }
     }
 `;
@@ -82,12 +81,8 @@ interface ApiPlaygroundProps {
     )[];
 }
 export const ApiPlayground = ({ options }: ApiPlaygroundProps) => {
-    const { elevation } = useElevation();
-
     const [selectedOption, setSelectedOption] = useState(0);
-    const { method } = useSelector(state => ({
-        method: state.method,
-    }));
+    const method = useSelector(state => state.method);
     const actions = useActions({
         onSetSchema: methodActions.onSetSchema,
         onSetMethod: methodActions.onSetMethod,
@@ -97,7 +92,8 @@ export const ApiPlayground = ({ options }: ApiPlaygroundProps) => {
     const { manualMode } = method;
 
     useEffect(() => {
-        const option = options[selectedOption];
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const option: (typeof options)[number] = options[selectedOption];
         if ('legacyConfig' in option) {
             actions.onSetMethod(option.legacyConfig);
         } else {
@@ -121,7 +117,7 @@ export const ApiPlayground = ({ options }: ApiPlaygroundProps) => {
     }, [options]);
 
     return (
-        <ApiPlaygroundWrapper $elevation={elevation}>
+        <ApiPlaygroundWrapper>
             <CollapsibleBox
                 heading="Method testing tool"
                 paddingType="large"
@@ -136,7 +132,7 @@ export const ApiPlayground = ({ options }: ApiPlaygroundProps) => {
                                         label="Select method"
                                         value={{
                                             value: selectedOption,
-                                            label: options[selectedOption].title,
+                                            label: options[selectedOption]?.title ?? '',
                                         }}
                                         onChange={option => setSelectedOption(option.value)}
                                         options={options.map((option, index) => ({

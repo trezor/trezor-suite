@@ -4,10 +4,10 @@ import { asDeviceUniquePath } from '@trezor/connect';
 import { err, ok } from '@trezor/type-utils';
 
 import {
-    CreateEnsureSuiteSyncOwnerDeps,
+    type CreateEnsureSuiteSyncOwnerDeps,
     createEnsureSuiteSyncOwner,
 } from '../createEnsureSuiteSyncOwner';
-import { RetrieveSuiteSyncOwnerParams } from '../createRetrieveSuiteSyncOwner';
+import { type RetrieveSuiteSyncOwnerParams } from '../createRetrieveSuiteSyncOwner';
 
 const device: RetrieveSuiteSyncOwnerParams['device'] = {
     instance: 0,
@@ -16,6 +16,7 @@ const device: RetrieveSuiteSyncOwnerParams['device'] = {
         staticSessionId: 'A@B:0',
     },
     useEmptyPassphrase: false,
+    connected: true,
 };
 
 const owner = {

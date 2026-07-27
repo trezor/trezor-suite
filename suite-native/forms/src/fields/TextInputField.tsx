@@ -1,63 +1,74 @@
 import { forwardRef } from 'react';
 
-import { RequireOneOrNone } from 'type-fest';
-
-import { Input, InputProps, InputType, InputWrapper, InputWrapperProps } from '@suite-native/atoms';
+import {
+    Input,
+    type InputLabelVariantProps,
+    type InputProps,
+    type InputType,
+    InputWrapper,
+    type InputWrapperProps,
+} from '@suite-native/atoms';
 
 import { useField } from '../hooks/useField';
-import { FieldName } from '../types';
+import { type FieldName } from '../types';
 
 type AllowedTextInputFieldProps = Omit<
     Partial<InputProps>,
-    keyof ReturnType<typeof useField> | 'defaultValue'
+    keyof ReturnType<typeof useField> | 'defaultValue' | 'label' | 'placeholder' | 'labelType'
 >;
 type AllowedInputWrapperProps = Pick<InputWrapperProps, 'hint'>;
+
 export type FieldProps = AllowedTextInputFieldProps &
     AllowedInputWrapperProps &
-    RequireOneOrNone<
-        {
-            name: FieldName;
-            label?: string;
-            placeholder?: string;
-            onBlur?: () => void;
-            defaultValue?: string;
-            valueTransformer?: (value: string) => string;
-        },
-        'label' | 'placeholder'
-    >;
+    InputLabelVariantProps & {
+        name: FieldName;
+        onBlur?: () => void;
+        defaultValue?: string;
+        valueTransformer?: (value: string) => string;
+    };
 
 export const TextInputField = forwardRef<InputType, FieldProps>(
     (
-        { name, hint, onBlur, defaultValue = '', valueTransformer, onChangeText, ...otherProps },
+        {
+            name,
+            hint,
+            label,
+            placeholder,
+            onBlur,
+            valueTransformer,
+            onChangeText,
+            defaultValue = '',
+            labelType = 'innerLabel',
+            ...otherProps
+        },
         ref,
     ) => {
         const field = useField({
             name,
             defaultValue,
             valueTransformer,
-            // Accessing `label` from destructured props does break the `RequireOneOrNone` validation of `Input` props.
-            label: otherProps.label,
         });
         const { errorMessage, onBlur: hookFormOnBlur, onChange, value, hasError } = field;
 
         const handleOnBlur = () => {
             hookFormOnBlur();
-            if (onBlur) {
-                onBlur();
-            }
+            onBlur?.();
         };
 
         const handleOnChange = (text: string) => {
             onChange(text);
-            if (onChangeText) {
-                onChangeText(text);
-            }
+            onChangeText?.(text);
         };
 
+        const innerLabelOrPlaceholderProps =
+            labelType === 'innerLabel' ? { labelType, label } : { labelType, placeholder };
+        const wrapperLabel = labelType === 'outsideLabel' ? label : undefined;
+
         return (
-            <InputWrapper error={errorMessage} hint={hint}>
+            <InputWrapper error={errorMessage} hint={hint} label={wrapperLabel}>
                 <Input
                     {...otherProps}
+                    {...innerLabelOrPlaceholderProps}
                     onBlur={handleOnBlur}
                     onChangeText={handleOnChange}
                     value={value}

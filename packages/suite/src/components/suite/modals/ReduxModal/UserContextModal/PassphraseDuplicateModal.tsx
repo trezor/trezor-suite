@@ -1,16 +1,15 @@
+import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import {
     cancelDiscoveryThunk,
-    runDiscoveryThunk,
-    startDiscoveryThunk,
+    startAddWalletDiscoveryThunk,
     switchToDuplicatedWallet,
 } from '@suite-common/wallet-core';
-import { DiscoveryStatus } from '@suite-common/wallet-types';
+import { type DiscoveryStatus } from '@suite-common/wallet-types';
 import { Button, Column, H3, Text, Tooltip } from '@trezor/components';
-import { spacings } from '@trezor/theme';
 
-import { useDevice, useDispatch } from 'src/hooks/suite';
-import { TrezorDevice } from 'src/types/suite';
+import { useDispatch } from 'src/hooks/suite';
+import { type TrezorDevice } from 'src/types/suite';
 import { CardWithDevice } from 'src/views/suite/SwitchDevice/CardWithDevice';
 import { SwitchDeviceModal } from 'src/views/suite/SwitchDevice/SwitchDeviceModal';
 
@@ -35,10 +34,10 @@ export const PassphraseDuplicateModal = ({
     const onTryDifferentPassphrase = () => {
         dispatch(cancelDiscoveryThunk(device));
         dispatch(
-            startDiscoveryThunk({
+            startAddWalletDiscoveryThunk({
                 device,
                 isAddingHiddenWallet: true,
-                isAddingExistingWallet: !!discovery.isAddingExistingWallet,
+                isAddingExistingWallet: discovery.isAddingExistingWallet,
             }),
         );
     };
@@ -46,19 +45,18 @@ export const PassphraseDuplicateModal = ({
     const onBack = () => {
         dispatch(cancelDiscoveryThunk(device));
         dispatch(
-            startDiscoveryThunk({
+            startAddWalletDiscoveryThunk({
                 device,
-                ...discovery,
+                isAddingHiddenWallet: discovery.isAddingHiddenWallet,
+                isAddingExistingWallet: discovery.isAddingExistingWallet,
             }),
         );
-
-        dispatch(runDiscoveryThunk(device));
     };
 
     return (
         <SwitchDeviceModal>
             <CardWithDevice device={device} onBackButtonClick={onBack}>
-                <Column gap={spacings.xs}>
+                <Column gap={8}>
                     <H3 data-testid="@passphrase-duplicate-header">
                         <Translation id="TR_WALLET_DUPLICATE_TITLE" />
                     </H3>
@@ -69,7 +67,7 @@ export const PassphraseDuplicateModal = ({
                     >
                         <Translation id="TR_WALLET_DUPLICATE_DESC" />
                     </Text>
-                    <Column gap={spacings.xs} margin={{ top: spacings.lg }} alignItems="stretch">
+                    <Column gap={8} margin={{ top: 20 }} alignItems="stretch">
                         <Tooltip
                             isActive={isDeviceLocked}
                             content={

@@ -3,7 +3,10 @@ import type { Meta, StoryObj } from '@storybook/react-native';
 import { ICON_NAMES } from '@suite-native/icons';
 
 import { Card } from './Card.stories';
-import { HeaderedCard as HeaderedCardComponent, HeaderedCardProps } from '../../Card/HeaderedCard';
+import {
+    HeaderedCard as HeaderedCardComponent,
+    type HeaderedCardProps,
+} from '../../Card/HeaderedCard';
 import { Text } from '../../Text';
 
 type HeaderedCardStory = StoryObj<HeaderedCardProps>;

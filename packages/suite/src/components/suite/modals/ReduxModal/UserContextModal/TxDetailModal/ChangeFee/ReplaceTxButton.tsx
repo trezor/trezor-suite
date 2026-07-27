@@ -1,8 +1,9 @@
+import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { selectAreFeesLoading } from '@suite-common/wallet-core';
 import { Modal } from '@trezor/components';
 
-import { useDevice, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { useRbfContext } from 'src/hooks/wallet/useRbfForm';
 
 export const ReplaceTxButton = () => {
@@ -12,8 +13,7 @@ export const ReplaceTxButton = () => {
 
     const values = getValues();
     const composedTx = composedLevels ? composedLevels[values.selectedFee || 'normal'] : undefined;
-    const isDisabled =
-        !composedTx || composedTx.type !== 'final' || isLocked() || (device && !device.available);
+    const isDisabled = composedTx?.type !== 'final' || isLocked() || (device && !device.available);
 
     const areFeesLoading = useSelector(state => selectAreFeesLoading(state, account.symbol));
 

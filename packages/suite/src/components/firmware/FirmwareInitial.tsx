@@ -1,12 +1,17 @@
+import { useDevice } from '@suite/device';
+import {
+    FirmwareWarningsList,
+    FirmwareWipeWarning,
+    useFirmwareDesktopUpdate,
+} from '@suite/firmware-upgrade';
 import { Translation } from '@suite/intl';
 import { getFwUpdateVersion } from '@suite-common/suite-utils';
 import { Banner, Card, Column } from '@trezor/components';
 import { FirmwareType } from '@trezor/connect';
 import { getFirmwareVersion } from '@trezor/device-utils';
+import { InfoIcon } from '@trezor/icons';
 
-import { FirmwareOffer, FirmwareWarningsList, FirmwareWipeWarning } from 'src/components/firmware';
-import { useDevice } from 'src/hooks/suite';
-import { useFirmwareDesktopUpdate } from 'src/hooks/suite/useFirmwareDesktopUpdate';
+import { FirmwareOffer } from 'src/components/firmware/FirmwareOffer';
 
 type GetDescriptionProps = {
     required: boolean;
@@ -64,7 +69,7 @@ export const FirmwareInitial = () => {
         <Column gap={16}>
             <Banner
                 intent="info"
-                icon="info"
+                icon={InfoIcon}
                 description={
                     <Translation
                         id={getDescription({

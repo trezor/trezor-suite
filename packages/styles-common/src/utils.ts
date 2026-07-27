@@ -1,0 +1,40 @@
+import { getLuminance } from 'polished';
+
+import { type CSSColor } from '@trezor/theme';
+
+export const getValueAndUnit = (valueAndUnit: string): [value: number, unit: string] => {
+    const value = parseFloat(valueAndUnit);
+    const [unit] = valueAndUnit.match(/([a-zA-Z]{1,4}|%)$/) ?? ['']; // CSS units shouldn't have more than 4 characters.
+
+    return [value, unit];
+};
+
+export const multiply = (ratio: number, valueAndUnit: string) => {
+    const [value, unit] = getValueAndUnit(valueAndUnit);
+
+    return ratio * Number(value) + unit;
+};
+
+export const sum = (valuesAndUnits: string[]) => {
+    const valueUnitPairs = valuesAndUnits.map(getValueAndUnit);
+
+    if (valueUnitPairs.length === 0) {
+        return '';
+    }
+
+    const firstUnit = valueUnitPairs[0]?.[1] ?? '';
+
+    return `${valueUnitPairs.reduce((accumulator, [value]) => accumulator + value, 0)}${firstUnit}`;
+};
+
+export const negative = (value: number): number => {
+    if (value <= 0) return value;
+
+    return value * -1;
+};
+
+export const isDarkColor = (color: CSSColor) => {
+    const luminance = getLuminance(color);
+
+    return luminance < 0.5;
+};

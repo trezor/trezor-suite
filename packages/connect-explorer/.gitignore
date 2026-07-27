@@ -1,3 +1,4 @@
 # NextJS ignore file
 .next/
+out/
 !public/

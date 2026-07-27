@@ -1,8 +1,8 @@
-import { TokenAddress, WalletAccountTransaction } from '@suite-common/wallet-types';
+import type { TokenAddress, WalletAccountTransaction } from '@suite-common/wallet-types';
 import { BigNumber } from '@trezor/utils';
 
-import { LocalBalanceHistoryCoin } from './constants';
-import { AccountHistoryMovement, AccountHistoryMovementItem } from './types';
+import { type LocalBalanceHistoryCoin } from './constants';
+import type { AccountHistoryMovement, AccountHistoryMovementItem } from './types';
 
 /*
 Logic for calculating account history movement (BTC + ETH) from transactions is nearly identical as we use on blockbook
@@ -135,7 +135,7 @@ const getAccountHistoryMovementItemMisc = ({
 };
 
 // this can be also used for networks of Ethereum type (like ETH, POL or BNB)
-export const getAccountHistoryMovementItemETH = ({
+const getAccountHistoryMovementItemETH = ({
     transactions,
     from,
     to,
@@ -171,18 +171,20 @@ export const getAccountHistoryMovementItemETH = ({
         ) {
             if (tx.details.vout.length > 0) {
                 const bchainVout = tx.details.vout[0];
-                const value = new BigNumber(bchainVout.value || '0');
+                if (bchainVout) {
+                    const value = new BigNumber(bchainVout.value || '0');
 
-                if (bchainVout.addresses && bchainVout.addresses.length > 0) {
-                    const txAddrDesc = bchainVout.addresses[0];
+                    if (bchainVout.addresses && bchainVout.addresses.length > 0) {
+                        const txAddrDesc = bchainVout.addresses[0];
 
-                    if (tx.descriptor === txAddrDesc) {
-                        // Check if address is in selfAddrDesc
-                        bh.received = bh.received.plus(value);
-                    }
+                        if (tx.descriptor === txAddrDesc) {
+                            // Check if address is in selfAddrDesc
+                            bh.received = bh.received.plus(value);
+                        }
 
-                    if (tx.descriptor === txAddrDesc) {
-                        countSentToSelf = true;
+                        if (tx.descriptor === txAddrDesc) {
+                            countSentToSelf = true;
+                        }
                     }
                 }
             }
@@ -331,6 +333,7 @@ export const getAccountHistoryMovementFromTransactions = ({
         case 'arb':
         case 'op':
         case 'base':
+        case 'rhc':
         case 'avax':
             return getAccountHistoryMovementItemETH({ transactions, from, to });
 

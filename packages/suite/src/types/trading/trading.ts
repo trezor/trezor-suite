@@ -1,21 +1,18 @@
 import {
-    BuyProviderInfo,
-    BuyTrade,
-    CryptoId,
-    ExchangeProviderInfo,
-    FiatCurrencyCode,
-    SellFiatTrade,
-    SellProviderInfo,
+    type BuyTrade,
+    type CryptoId,
+    type ExchangeProviderInfo,
+    type FiatCurrencyCode,
+    type SellFiatTrade,
 } from 'invity-api';
 
-import { ExtendedMessageDescriptor } from '@suite/intl';
+import { type ExtendedMessageDescriptor } from '@suite/intl';
 import type {
     TradingBuyInfoSelector,
     TradingBuyType,
     TradingExchangeInfoSelector,
     TradingExchangeType,
-    TradingPaymentMethodType,
-    TradingSelectAssetOptionGroupProps,
+    TradingProviderInfo,
     TradingSellInfoSelector,
     TradingSellType,
     TradingStateSelector,
@@ -25,24 +22,8 @@ import type {
     TradingTransactionSell,
     TradingType,
 } from '@suite-common/trading';
-import { Account, SelectedAccountLoaded } from '@suite-common/wallet-types';
-import { AssetLogoProps, AssetOptionBaseProps } from '@trezor/product-components';
-
-export type TradingPageType = 'form' | 'offers' | 'confirm' | 'retry';
-
-export type UseTradingProps = { selectedAccount: SelectedAccountLoaded };
-
-export type UseTradingFormCommonProps = {
-    /**
-     * Difference between form and offers is that on the offers page are used all data filled in the form
-     * but on the form page we prefill form with only some data from draft
-     *
-     * default value is 'form'
-     */
-    pageType?: TradingPageType;
-};
-
-export type UseTradingFormProps = UseTradingProps & UseTradingFormCommonProps;
+import { type Account } from '@suite-common/wallet-types';
+import { type TokenIconProps } from '@trezor/product-components';
 
 export type TradingTradeBuySellType = Exclude<TradingType, TradingExchangeType>;
 export type TradingTradeSellExchangeType = Exclude<TradingType, TradingBuyType>;
@@ -92,8 +73,8 @@ export interface TradingCryptoListProps {
 export type TradingCoinLogoProps = {
     cryptoId: CryptoId;
     className?: string;
-    size?: AssetLogoProps['size'];
-} & Pick<AssetLogoProps, 'showNetworkIcon' | 'margin'>;
+    size?: TokenIconProps['size'];
+} & Pick<TokenIconProps, 'showNetworkIcon' | 'margin'>;
 
 export interface TradingGetAmountLabelsProps {
     type: TradingType;
@@ -118,7 +99,7 @@ export interface TradingGetAmountLabelsReturnProps {
 
 export type TradingGetProvidersInfoProps =
     | {
-          [name: string]: BuyProviderInfo | SellProviderInfo | ExchangeProviderInfo;
+          [name: string]: TradingProviderInfo;
       }
     | undefined;
 
@@ -140,11 +121,6 @@ export interface TradingGetCryptoQuoteAmountProps {
     networkFee?: string | undefined;
 }
 
-export interface TradingGetPaymentMethodProps {
-    paymentMethod?: TradingPaymentMethodType;
-    paymentMethodName?: string;
-}
-
 export interface TradingCryptoAmountProps {
     amountInCrypto?: boolean | undefined;
     sendAmount: string | number | undefined;
@@ -153,14 +129,3 @@ export interface TradingCryptoAmountProps {
     receiveCurrency: CryptoId | undefined;
     className?: string;
 }
-
-export interface SelectAssetOptionCurrencyProps extends AssetOptionBaseProps {
-    type: 'currency';
-    label?: string;
-    balance?: string;
-    networkName?: string;
-}
-
-export type SelectAssetOptionProps =
-    | SelectAssetOptionCurrencyProps
-    | TradingSelectAssetOptionGroupProps;

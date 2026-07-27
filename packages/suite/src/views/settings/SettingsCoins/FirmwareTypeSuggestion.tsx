@@ -1,11 +1,12 @@
+import { useDevice } from '@suite/device';
+import { setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
+import { SettingsAnchor, goto } from '@suite/router';
 import { Banner, Paragraph } from '@trezor/components';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
+import { CurrencyBtcIcon } from '@trezor/icons';
 
-import { goto } from 'src/actions/suite/routerActions';
-import { setFlag } from 'src/actions/suite/suiteActions';
-import { SettingsAnchor } from 'src/constants/suite/anchors';
-import { useDevice, useDispatch } from 'src/hooks/suite';
+import { useDispatch } from 'src/hooks/suite';
 
 export const FirmwareTypeSuggestion = () => {
     const dispatch = useDispatch();
@@ -15,15 +16,15 @@ export const FirmwareTypeSuggestion = () => {
         ? 'TR_SETTINGS_COINS_REGULAR_FIRMWARE_SUGGESTION'
         : 'TR_SETTINGS_COINS_BITCOIN_ONLY_FIRMWARE_SUGGESTION';
 
-    const handleClose = () => dispatch(setFlag('firmwareTypeBannerClosed', true));
+    const handleClose = () => dispatch(setFlag({ key: 'firmwareTypeBannerClosed', value: true }));
 
     const goToFirmwareType = () =>
-        dispatch(goto('settings-device', { anchor: SettingsAnchor.FirmwareType }));
+        dispatch(goto({ routeName: 'settings-device', anchor: SettingsAnchor.FirmwareType }));
 
     return (
         <Banner
             intent="info"
-            icon="currencyBtc"
+            icon={CurrencyBtcIcon}
             rightContent={
                 <Banner.Button onClick={handleClose}>
                     <Translation id="TR_GOT_IT" />

@@ -1,11 +1,11 @@
 import { useCallback, useEffect } from 'react';
 
+import { selectURLSearchParams } from '@suite/router';
 import { isDesktop, isWeb } from '@trezor/env-utils';
 import { desktopApi } from '@trezor/suite-desktop-api';
 
 import * as protocolActions from 'src/actions/suite/protocolActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectURLSearchParams } from 'src/reducers/suite/routerReducer';
 
 const Protocol = () => {
     const dispatch = useDispatch();
@@ -45,6 +45,8 @@ const Protocol = () => {
 
         if (isDesktop()) {
             desktopApi.on('protocol/open', handleProtocolRequest);
+
+            return () => desktopApi.removeAllListeners('protocol/open');
         }
     }, [handleProtocolRequest]);
 

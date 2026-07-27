@@ -1,8 +1,8 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
 import { Translation } from '@suite/intl';
-import { Banner, BannerProps, Column, Margin, Text } from '@trezor/components';
-import { spacings } from '@trezor/theme/src';
+import { Banner, type BannerProps, Column, type Margin, Text } from '@trezor/components';
+import { ShareNetworkIcon } from '@trezor/icons';
 
 interface Props {
     onClose: () => void;
@@ -28,10 +28,10 @@ export const CloseableBanner = ({
                 <Translation id="TR_GOT_IT" />
             </Banner.Button>
         }
-        icon={hasIcon ? 'shareNetwork' : undefined}
+        icon={hasIcon ? ShareNetworkIcon : undefined}
         margin={margin}
         description={
-            <Column gap={spacings.xxs} flex="1" alignItems="flex-start" justifyContent="stretch">
+            <Column gap={4} flex="1" alignItems="flex-start" justifyContent="stretch">
                 <Text typographyStyle="body-md-strong" intent="info">
                     {title}
                 </Text>

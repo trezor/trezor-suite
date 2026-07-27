@@ -1,6 +1,6 @@
 import path from 'path';
 
-import { ElectronIpcMainInvokeEvent } from './types';
+import { type ElectronIpcMainInvokeEvent } from './types';
 
 const defaultDirnameProvider = () => __dirname;
 

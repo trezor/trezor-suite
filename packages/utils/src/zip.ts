@@ -1,6 +1,8 @@
+type BlobableBuffer = ArrayBuffer | Uint8Array<ArrayBuffer>; // only those subtypes of BlobPart that are buffers, not strings or Blobs
+
 export const createZip = (buffers: { name: string; content: ArrayBuffer }[]) => {
-    const fileEntries: ArrayBuffer[] = [];
-    const centralDirectory: ArrayBuffer[] = [];
+    const fileEntries: BlobableBuffer[] = [];
+    const centralDirectory: BlobableBuffer[] = [];
     let offset = 0;
 
     buffers.forEach(({ name, content }) => {

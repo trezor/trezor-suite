@@ -3,6 +3,15 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         { "path": "../env-utils" },
+        {
+            "path": "../../networks/ripple/network-ripple"
+        },
+        {
+            "path": "../../networks/solana/network-solana"
+        },
+        {
+            "path": "../../networks/stellar/network-stellar"
+        },
         { "path": "../utils" },
         { "path": "../blockchain-link-types" },
         { "path": "../eslint" },

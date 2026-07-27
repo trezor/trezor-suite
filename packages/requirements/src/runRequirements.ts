@@ -22,13 +22,21 @@ type RunRequirementsProps = {
     readonly mode: RequirementMode;
 };
 
-const executeRequirement = <T extends RequirementScope>(
-    requirement: Requirement<T>,
-    context: T extends 'workspace' ? WorkspaceContext : RepoContext,
-    mode: RequirementMode,
-): Promise<ReadonlyArray<string>> => {
-    if (mode === 'fix' && requirement.fix !== undefined) {
-        return requirement.fix(context);
+type ExecuteRequirementProps<T extends RequirementScope> = {
+    readonly requirement: Requirement<T>;
+    readonly context: T extends 'workspace' ? WorkspaceContext : RepoContext;
+    readonly mode: RequirementMode;
+};
+
+const executeRequirement = <T extends RequirementScope>({
+    requirement,
+    context,
+    mode,
+}: ExecuteRequirementProps<T>): Promise<ReadonlyArray<string>> => {
+    if (mode === 'fix') {
+        if (requirement.fix !== undefined) {
+            return requirement.fix(context);
+        }
     }
 
     return requirement.verify(context);
@@ -41,14 +49,19 @@ export const runRequirements = async ({
     filter,
     mode,
 }: RunRequirementsProps): Promise<ReadonlyArray<RequirementResult>> => {
-    const filtered =
-        filter !== undefined ? requirements.filter(r => r.name === filter) : requirements;
+    const filtered = requirements.filter(requirement =>
+        filter !== undefined ? requirement.name === filter : requirement.runByDefault !== false,
+    );
 
     const results: RequirementResult[] = [];
 
     for (const requirement of filtered) {
         if (requirement.scope === 'repo') {
-            const errors = await executeRequirement(requirement, { repoRoot }, mode);
+            const errors = await executeRequirement({
+                requirement,
+                context: { repoRoot },
+                mode,
+            });
 
             results.push({
                 requirement: requirement.name,
@@ -67,7 +80,11 @@ export const runRequirements = async ({
                     continue;
                 }
 
-                const errors = await executeRequirement(requirement, context, mode);
+                const errors = await executeRequirement({
+                    requirement,
+                    context,
+                    mode,
+                });
 
                 results.push({
                     requirement: requirement.name,

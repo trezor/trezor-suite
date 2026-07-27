@@ -3,9 +3,9 @@ import { useNavigation } from '@react-navigation/native';
 import { CompactCardWithIconLayout, TitledSection } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
-    SettingsStackParamList,
+    type SettingsStackParamList,
     SettingsStackRoutes,
-    StackNavigationProps,
+    type StackNavigationProps,
 } from '@suite-native/navigation';
 
 import { useContactSupportAlert } from './useContactSupportAlert';

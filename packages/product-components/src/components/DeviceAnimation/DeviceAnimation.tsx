@@ -1,11 +1,11 @@
-import { MouseEventHandler, forwardRef } from 'react';
+import { type MouseEventHandler, forwardRef } from 'react';
 
 import { useTheme } from 'styled-components';
 
 import {
-    AllowedAnimationPrimitiveFrameProps,
+    type AllowedAnimationPrimitiveFrameProps,
     AnimationWrapper,
-    Shape,
+    type Shape,
     allowedAnimationPrimitivesFrameProps,
     pickAndPrepareFrameProps,
 } from '@trezor/components';
@@ -13,10 +13,10 @@ import { DeviceModelInternal, getNarrowedDeviceModelInternal } from '@trezor/dev
 
 import { Video } from './Video';
 import {
-    AnimationType,
-    ColorsFor,
+    type AnimationType,
+    type ColorsFor,
     DEVICE_ANIMATION_CONFIG,
-    ModelFor,
+    type ModelFor,
 } from './deviceAnimationConfig';
 
 const getThemeVariant = (theme: any) =>
@@ -27,7 +27,6 @@ type Base = AllowedAnimationPrimitiveFrameProps & {
     shape?: Shape;
     onEnded?: () => void;
     autoPlay?: boolean;
-    className?: string;
     onVideoMouseOver?: MouseEventHandler<HTMLVideoElement>;
 };
 
@@ -35,10 +34,10 @@ type GenericDeviceAnimationProps<T extends AnimationType> = {
     [M in ModelFor<T>]: Base & {
         type: T;
         deviceModelInternal: M;
-    } & (ColorsFor<T, M> extends never ? {} : { deviceUnitColor?: ColorsFor<T, M> }) &
+    } & (ColorsFor<T, M> extends never ? unknown : { deviceUnitColor?: ColorsFor<T, M> }) &
         ((typeof DEVICE_ANIMATION_CONFIG)[T] extends { hasSize: true }
             ? { sizeVariant?: 'LARGE' }
-            : {});
+            : unknown);
 }[ModelFor<T>];
 
 export type DeviceAnimationProps = {
@@ -105,10 +104,7 @@ export const DeviceAnimation = forwardRef<HTMLVideoElement, DeviceAnimationProps
                         { type: 'ROTATE' }
                     >;
 
-                    const modelConfig =
-                        DEVICE_ANIMATION_CONFIG.ROTATE.models[
-                            deviceModelInternal as keyof typeof DEVICE_ANIMATION_CONFIG.ROTATE.models
-                        ];
+                    const modelConfig = DEVICE_ANIMATION_CONFIG.ROTATE.models[deviceModelInternal];
 
                     const allowedColors = modelConfig.colors ?? [1];
                     const color = deviceUnitColor ?? allowedColors[0];

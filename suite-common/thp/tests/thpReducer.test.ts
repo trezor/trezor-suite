@@ -6,7 +6,7 @@ import { DEVICE, createDeviceMessage } from '@trezor/connect';
 
 import { createCredential, createDeviceThp } from '../mocks';
 import { thpActions } from '../src/thpActions';
-import { ThpState, prepareThpReducer } from '../src/thpReducer';
+import { type ThpState, prepareThpReducer } from '../src/thpReducer';
 import {
     selectThpAutoconnectStep,
     selectThpCredentials,

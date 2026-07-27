@@ -1,9 +1,8 @@
+import type { AccountAddresses, PROTO } from '@trezor/connect-common';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
-import { Transaction as BitcoinJsTransaction } from '@trezor/utxo-lib';
+import type { Transaction as BitcoinJsTransaction } from '@trezor/utxo-lib';
 
-import { PROTO } from '../../constants';
-import type { AccountAddresses } from '../../types';
-import { getSerializedPath } from '../../utils/pathUtils';
+import { __btcUnknownTxDebug__, getSerializedPath } from '../../utils/pathUtils';
 
 export const createPendingTransaction = (
     tx: BitcoinJsTransaction,
@@ -33,6 +32,8 @@ export const createPendingTransaction = (
             .filter(address => address.path === path)
             .map(address => address.address);
     };
+
+    __btcUnknownTxDebug__('createPendingTransaction', inputs, addresses);
 
     return {
         txid: tx.getId(),

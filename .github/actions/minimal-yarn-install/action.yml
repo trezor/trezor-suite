@@ -6,7 +6,7 @@ runs:
   using: "composite"
   steps:
     - name: Setup Node.js
-      uses: actions/setup-node@v4
+      uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6
       with:
         node-version-file: ".nvmrc"
 
@@ -16,23 +16,24 @@ runs:
       run: echo "dir=$(yarn config get cacheFolder)" >> $GITHUB_OUTPUT
 
     - name: Yarn Cache
-      uses: actions/cache@v4
+      uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5
       with:
         path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
         key: yarn-cache-folder-${{ hashFiles('**/yarn.lock', '.yarnrc.yml') }}
         restore-keys: |
           yarn-cache-folder-
 
-    - name: Modify .yarnrc.yml to disable scripts
-      shell: bash
-      run: |
-        echo -e "\nenableScripts: false" >> .yarnrc.yml
-
     # We don't need to run in hardened mode because it's enough to run hardened install only in "Setup and Cache Dependencies" step
     - name: Modify .yarnrc.yml to disable hardened mode
       shell: bash
       run: |
         echo -e "\nenableHardenedMode: false" >> .yarnrc.yml
+
+    - name: Install SafeDep PMG
+      uses: safedep/pmg@26d5c0ad71fd0e5f48c3183c9c74d4b3eb7f57c8 # v0.19.1
+      continue-on-error: true
+      with:
+        version: v0.19.1
 
     - name: Install dependencies using Yarn
       shell: bash

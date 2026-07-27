@@ -1,18 +1,14 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/tx/inputs.js
 
-import { MessagesSchema as PROTO } from '@trezor/protobuf';
-import { Transaction as BitcoinJsTransaction } from '@trezor/utxo-lib';
+import type {
+    BitcoinNetworkInfo,
+    ComposeUtxo,
+    ProtoWithDerivationPath,
+} from '@trezor/connect-common';
+import type { MessagesSchema as PROTO } from '@trezor/protobuf';
 
-import type { BitcoinNetworkInfo, ProtoWithDerivationPath } from '../../types';
-import type { ComposeUtxo } from '../../types/api/composeTransaction';
 import { convertMultisigPubKey } from '../../utils/hdnodeUtils';
-import {
-    fixPath,
-    getHDPath,
-    getScriptType,
-    isSegwitPath,
-    validatePath,
-} from '../../utils/pathUtils';
+import { fixPath, getHDPath, getScriptType, validatePath } from '../../utils/pathUtils';
 import { validateParams } from '../common/paramsValidator';
 
 /** *****
@@ -26,14 +22,10 @@ export const validateTrezorInputs = (
         .map(i => fixPath(i))
         .map(i => convertMultisigPubKey(coinInfo.network, i))
         .map(input => {
-            const useAmount = input.script_type === 'EXTERNAL' || isSegwitPath(input.address_n);
-            // since 2.3.5 amount is required for all inputs.
-            // this change however is breaking 3rd party implementations
-            // missing amount will be delivered by refTx object
             validateParams(input, [
                 { name: 'prev_hash', type: 'string', required: true },
                 { name: 'prev_index', type: 'number', required: true },
-                { name: 'amount', type: 'uint', required: useAmount },
+                { name: 'amount', type: 'uint', required: true },
                 { name: 'script_type', type: 'string' },
                 { name: 'sequence', type: 'number' },
                 { name: 'multisig', type: 'object' },
@@ -54,23 +46,6 @@ export const validateTrezorInputs = (
 
             return input;
         });
-
-// this method exist as a workaround for breaking change described in validateTrezorInputs
-// TODO: it could be removed after another major version release.
-export const enhanceTrezorInputs = (
-    inputs: PROTO.TxInputType[],
-    rawTxs: BitcoinJsTransaction[],
-) => {
-    inputs.forEach(input => {
-        if (!input.amount) {
-            console.warn('TrezorConnect.signTransaction deprecation: missing input amount.');
-            const refTx = rawTxs.find(t => t.getId() === input.prev_hash);
-            if (refTx && refTx.outs[input.prev_index]) {
-                input.amount = refTx.outs[input.prev_index].value;
-            }
-        }
-    });
-};
 
 /** *****
  * Transform from @trezor/utxo-lib/compose format to Trezor

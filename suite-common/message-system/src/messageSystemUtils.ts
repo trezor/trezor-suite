@@ -1,23 +1,22 @@
 import * as semver from 'semver';
-import { v4 as uuidv4 } from 'uuid';
 
 import type { CountryCode } from '@suite-common/geolocation';
-import { Localization } from '@suite-common/suite-types';
-import type {
-    Action,
-    Category,
-    Condition,
-    Device,
-    Duration,
-    Environment,
-    Experiments,
-    Message,
-    MessageSystem,
-    Settings,
-    Transport,
-    TrezorDevice,
-    TrezorHostProtocolTHPProperties,
-    Version,
+import {
+    type Action,
+    type Category,
+    type Condition,
+    type Device,
+    type Duration,
+    type Environment,
+    type Experiments,
+    type Localization,
+    type Message,
+    type MessageSystem,
+    type Settings,
+    type Transport,
+    type TrezorDevice,
+    type TrezorHostProtocolTHPProperties,
+    type Version,
 } from '@suite-common/suite-types';
 import { getBrowserName, getBrowserVersion } from '@suite-common/suite-utils';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
@@ -28,7 +27,7 @@ import {
     getFirmwareVersion,
 } from '@trezor/device-utils';
 import {
-    Environment as EnvironmentType,
+    type Environment as EnvironmentType,
     getCommitHash,
     getEnvironment,
     getOsName,
@@ -37,7 +36,7 @@ import {
 import { exhaustive } from '@trezor/type-utils';
 
 import { getCachedOsVersion } from './cachedEnvData';
-import { ValidMessagesPayload } from './messageSystemActions';
+import { type ValidMessagesPayload } from './messageSystemActions';
 
 export const categorizeMessages = (messages: Message[]): ValidMessagesPayload => {
     const validMessages: ValidMessagesPayload = {
@@ -203,7 +202,7 @@ export const isDeviceCompatible = (deviceConditions: Device[], device?: TrezorDe
     if (!deviceConditions.length) {
         return !device;
     }
-    if (!device || !device.features) {
+    if (!device?.features) {
         return false;
     }
 
@@ -212,7 +211,7 @@ export const isDeviceCompatible = (deviceConditions: Device[], device?: TrezorDe
     const deviceFwRevision = getFirmwareRevision(device);
     const deviceFwType = device.firmwareType;
     const deviceInternalModel = device.features.internal_model.toLowerCase();
-    const deviceVendor = device.features.vendor.toLowerCase();
+    const deviceVendor = device.features.vendor?.toLowerCase();
 
     return deviceConditions.some(deviceCondition => {
         const {
@@ -376,7 +375,9 @@ export const resolveMessageContent = (localizedMessages: Localization, language:
 
     const fallbackLanguage = language.split('-')[0];
 
-    return localizedMessages[fallbackLanguage] ?? localizedMessages.en;
+    return (
+        (fallbackLanguage ? localizedMessages[fallbackLanguage] : undefined) ?? localizedMessages.en
+    );
 };
 
 export const toMessageSystemOptions = <T extends string>(
@@ -415,7 +416,7 @@ type ExtraByCategory = {
     modal: { modal: { title: Localization; image: string } };
     context: { context: { domain: string } };
     feature: { feature: Array<{ domain: string; flag: boolean }> };
-    banner: {};
+    banner: Record<never, never>;
 };
 
 const EXTRA_BY_CATEGORY = {
@@ -443,7 +444,7 @@ const EXTRA_BY_CATEGORY = {
 
 export const getDefaultActionByCategory = (category: Category): Action => {
     const baseMessage = {
-        id: uuidv4(),
+        id: crypto.randomUUID(),
         priority: 100,
         dismissible: true,
         variant: 'info' as const,
@@ -462,7 +463,7 @@ export const getDefaultActionByCategory = (category: Category): Action => {
 
 export const getDefaultExperiment = (): Experiments => ({
     experiment: {
-        id: uuidv4(),
+        id: crypto.randomUUID(),
         groups: [
             {
                 variant: 'A',

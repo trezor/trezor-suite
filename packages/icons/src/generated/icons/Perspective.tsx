@@ -1,0 +1,10 @@
+import type { SVGProps } from 'react';
+const SvgPerspective = (props: SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" {...props}>
+        <path
+            fill="currentColor"
+            d="M30 15h-2V6a2 2 0 0 0-2.358-1.967l-20 3.636A2 2 0 0 0 4 9.636V15H2a1 1 0 0 0 0 2h2v5.364a2 2 0 0 0 1.643 1.967l20 3.637A2 2 0 0 0 28 26v-9h1.999a1 1 0 0 0 0-2zM6 9.636 26 6v9H6zM26 26 6 22.364V17h20z"
+        />
+    </svg>
+);
+export { SvgPerspective as ReactComponent };

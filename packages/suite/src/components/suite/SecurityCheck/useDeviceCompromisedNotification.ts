@@ -1,14 +1,15 @@
 import { useEffect } from 'react';
 
-import { TranslationKey } from '@suite/intl';
+import { useDevice } from '@suite/device';
+import { type TranslationKey } from '@suite/intl';
 import {
-    RevisionCheckErrorWithNotification,
-    isRevisionCheckErrorWithNotification,
+    type RevisionCheckErrorWithNotification,
+    getIsRevisionCheckErrorWithNotification,
 } from '@suite-common/firmware-authenticity';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 
-import { useDevice, useDispatch } from 'src/hooks/suite';
+import { useDispatch } from 'src/hooks/suite';
 
 const revisionCheckNotifications: Record<RevisionCheckErrorWithNotification, TranslationKey> = {
     'other-error': 'TR_FIRMWARE_REVISION_CHECK_OTHER_ERROR',
@@ -29,7 +30,7 @@ export const useDeviceCompromisedNotification = () => {
 
     useEffect(() => {
         if (errorType === null) return;
-        if (isRevisionCheckErrorWithNotification(errorType)) {
+        if (getIsRevisionCheckErrorWithNotification(errorType)) {
             dispatch(
                 notificationsActions.addToast({
                     type: 'firmware-authenticity-check-error',

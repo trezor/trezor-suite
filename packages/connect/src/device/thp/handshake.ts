@@ -1,12 +1,13 @@
-import { randomBytes } from 'crypto';
+import { randomBytes } from '@noble/hashes/utils.js';
 
 import { ERRORS } from '@trezor/connect-common/src/constants';
-import { encodeMessage } from '@trezor/protobuf';
-import { ThpPairingMethod, thp as protocolThp } from '@trezor/protocol';
+import { protobufManager } from '@trezor/protobuf';
+import type { ThpPairingMethod } from '@trezor/protocol';
+import { thp as protocolThp } from '@trezor/protocol';
 
 import { thpCall } from './thpCall';
-import { DataManager } from '../../data/DataManager';
-import type { Device } from '../Device';
+import * as settingsStore from '../../data/settingsStore';
+import type { IDevice } from '../../types/idevice';
 
 // intersection of device acceptable methods and host acceptable methods
 const getPairingMethods = (
@@ -15,17 +16,16 @@ const getPairingMethods = (
 ) =>
     deviceMethods?.flatMap(dm => {
         const value = protocolThp.getThpPairingMethod(dm);
-        const isRequested =
-            settingsMethods &&
-            settingsMethods.find(sm => value === protocolThp.getThpPairingMethod(sm));
+        const isRequested = settingsMethods?.find(
+            sm => value === protocolThp.getThpPairingMethod(sm),
+        );
 
         return isRequested ? value : [];
     });
 
 // State HH0
-// TODO: link-to-public-docs
-// https://www.notion.so/satoshilabs/THP-Specification-2-1-203dc5260606804192aecaa58fb961ca
-export const createThpChannel = async (device: Device) => {
+// https://github.com/trezor/trezor-firmware/blob/41692dc2cdb937564abe7fecd4bfc3e508adc8d4/docs/common/thp/specification.md#state-hh0
+export const createThpChannel = async (device: IDevice) => {
     const thpState = device.getThpState();
     if (!thpState) {
         throw ERRORS.TypedError('Device_ThpStateMissing');
@@ -33,12 +33,12 @@ export const createThpChannel = async (device: Device) => {
 
     // set default channel and create random nonce
     thpState.setChannel(protocolThp.constants.THP_DEFAULT_CHANNEL);
-    const nonce = randomBytes(8);
+    const nonce = Buffer.from(randomBytes(8));
     const createChannel = await thpCall(device, 'ThpCreateChannelRequest', { nonce });
 
     const { properties, ...resp } = createChannel.message;
 
-    // TODO: link-to-public-docs nonce validation is not mentioned by the docs
+    // NOTE: nonce validation is not mentioned by the docs
     if (nonce.compare(resp.nonce) !== 0) {
         throw new Error(
             'Nonce not meet' + nonce.toString('hex') + ' ' + resp.nonce.toString('hex'),
@@ -46,7 +46,7 @@ export const createThpChannel = async (device: Device) => {
     }
 
     // find common pairing methods
-    const settings = DataManager.getSettings('thp');
+    const settings = settingsStore.get('thp');
     const pairingMethods = getPairingMethods(properties.pairing_methods, settings?.pairingMethods);
     if (!pairingMethods?.length) {
         throw ERRORS.TypedError('Device_ThpPairingMethodsException');
@@ -64,15 +64,14 @@ export const createThpChannel = async (device: Device) => {
 };
 
 // State HH1 and HH2
-// TODO: link-to-public-docs
-// https://www.notion.so/satoshilabs/THP-Specification-2-1-203dc5260606804192aecaa58fb961ca
-export const thpHandshake = async (device: Device, unlockPin = false) => {
+// https://github.com/trezor/trezor-firmware/blob/41692dc2cdb937564abe7fecd4bfc3e508adc8d4/docs/common/thp/specification.md#state-hh1
+export const thpHandshake = async (device: IDevice, unlockPin = false) => {
     const thpState = device.getThpState();
     if (!thpState?.handshakeCredentials) {
         throw ERRORS.TypedError('Device_ThpStateMissing');
     }
 
-    const settings = DataManager.getSettings('thp');
+    const settings = settingsStore.get('thp');
     // sort credentials by autoconnect field
     const knownCredentials = (settings?.knownCredentials || []).sort(cre =>
         cre.autoconnect ? -1 : 1,
@@ -80,7 +79,7 @@ export const thpHandshake = async (device: Device, unlockPin = false) => {
     const tryToUnlock = unlockPin ? 1 : 0;
 
     // 1. Generate a new ephemeral X25519 key pair (host_ephemeral_privkey, host_ephemeral_pubkey).
-    const hostEphemeralKeys = protocolThp.getCurve25519KeyPair(randomBytes(32));
+    const hostEphemeralKeys = protocolThp.getCurve25519KeyPair(Buffer.from(randomBytes(32)));
 
     // 2. Send the message HandshakeInitiationReq(host_ephemeral_pubkey) to the host.
     const handshakeInit = await thpCall(device, 'ThpHandshakeInitRequest', {
@@ -97,7 +96,7 @@ export const thpHandshake = async (device: Device, unlockPin = false) => {
         hostEphemeralKeys,
         knownCredentials,
         tryToUnlock,
-        protobufEncoder: (name, data) => encodeMessage(device.transport.getMessages(), name, data),
+        protobufEncoder: (name, data) => protobufManager.encode(name, data),
     });
 
     // update thpState

@@ -1,12 +1,15 @@
 import { useMemo } from 'react';
 
-import { events } from '@suite/analytics';
+import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { selectFlags, setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
+import { goto } from '@suite/router';
+import { useServices } from '@suite-common/dependency-injection';
 import { useFormatters } from '@suite-common/formatters';
 import { getNetworkAdjustedStakingBalance } from '@suite-common/staking';
-import { NetworkType, getDisplaySymbol } from '@suite-common/wallet-config';
-import { selectAccountIsStakingActive, selectPoolStatsApyData } from '@suite-common/wallet-core';
-import { Account } from '@suite-common/wallet-types';
+import { type NetworkType, getDisplaySymbol } from '@suite-common/wallet-config';
+import { selectAccountIsStakingActive } from '@suite-common/wallet-core';
+import { type Account } from '@suite-common/wallet-types';
 import {
     calculateRewards,
     getStakingDataForNetwork,
@@ -14,28 +17,30 @@ import {
     isSupportedStakingNetworkSymbol,
 } from '@suite-common/wallet-utils';
 import { Banner } from '@trezor/components';
+import { PiggyBankIcon, XIcon } from '@trezor/icons';
 import { exhaustive } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { goto } from 'src/actions/suite/routerActions';
-import { setFlag } from 'src/actions/suite/suiteActions';
+import { formatApyValue } from 'src/components/earn/utils/earnApyUtils';
+import { useStakingRate } from 'src/hooks/earn/useStakingRate';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectSuiteFlags } from 'src/selectors/suite/suiteSelectors';
-import { useAnalytics } from 'src/support/useAnalytics';
-import { formatApyValue } from 'src/views/wallet/staking/utils/formatStakeValues';
 
 type StakingBannerProps = {
     account: Account;
 };
 
 export const StakingBanner = ({ account }: StakingBannerProps) => {
-    const analytics = useAnalytics();
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
     const dispatch = useDispatch();
     const { CryptoAmountFormatter } = useFormatters();
-    const { stakeEthBannerClosed, stakeSolBannerClosed, stakeCardanoBannerClosed } =
-        useSelector(selectSuiteFlags);
+    const {
+        stakeEthBannerClosed,
+        stakeSolBannerClosed,
+        stakeCardanoBannerClosed,
+        stakeTronBannerClosed,
+    } = useSelector(selectFlags);
     const { route } = useSelector(state => state.router);
-    const apy = useSelector(state => selectPoolStatsApyData(state, account));
+    const { rate } = useStakingRate({ symbol: account.symbol, accountKey: account.key });
     const isStakingActive = useSelector(state => selectAccountIsStakingActive(state, account.key));
 
     const displaySymbol = getDisplaySymbol(account.symbol);
@@ -48,7 +53,7 @@ export const StakingBanner = ({ account }: StakingBannerProps) => {
         const totalBalance = new BigNumber(stakingBalance || '0').plus(accountBalance).toString();
         const amount = calculateRewards(
             getNetworkAdjustedStakingBalance(totalBalance, account),
-            apy,
+            rate,
         );
 
         return CryptoAmountFormatter.format(amount, {
@@ -58,18 +63,21 @@ export const StakingBanner = ({ account }: StakingBannerProps) => {
             isEllipsisAppended: false,
             maxDisplayedDecimals: 8,
         });
-    }, [accountBalance, stakingBalance, apy, account, CryptoAmountFormatter]);
+    }, [accountBalance, stakingBalance, rate, account, CryptoAmountFormatter]);
 
     const closeBanner = () => {
         switch (account.networkType) {
             case 'ethereum':
-                dispatch(setFlag('stakeEthBannerClosed', true));
+                dispatch(setFlag({ key: 'stakeEthBannerClosed', value: true }));
                 break;
             case 'solana':
-                dispatch(setFlag('stakeSolBannerClosed', true));
+                dispatch(setFlag({ key: 'stakeSolBannerClosed', value: true }));
                 break;
             case 'cardano':
-                dispatch(setFlag('stakeCardanoBannerClosed', true));
+                dispatch(setFlag({ key: 'stakeCardanoBannerClosed', value: true }));
+                break;
+            case 'tron':
+                dispatch(setFlag({ key: 'stakeTronBannerClosed', value: true }));
                 break;
             default:
                 if (isSupportedStakingNetworkSymbol(account.symbol)) {
@@ -91,7 +99,7 @@ export const StakingBanner = ({ account }: StakingBannerProps) => {
     };
 
     const goToStakingTab = () => {
-        dispatch(goto('wallet-staking', { preserveParams: true }));
+        dispatch(goto({ routeName: 'wallet-staking', preserveParams: true }));
 
         analytics.report({
             type: events.stakingNavigateEvent.name,
@@ -111,6 +119,8 @@ export const StakingBanner = ({ account }: StakingBannerProps) => {
                 return stakeSolBannerClosed;
             case 'cardano':
                 return stakeCardanoBannerClosed;
+            case 'tron':
+                return stakeTronBannerClosed;
             default:
                 if (isSupportedStakingNetworkSymbol(account.symbol)) {
                     exhaustive(
@@ -142,12 +152,12 @@ export const StakingBanner = ({ account }: StakingBannerProps) => {
 
     return (
         <Banner
-            icon="piggyBank"
+            icon={PiggyBankIcon}
             intent="brand"
             title={
                 <Translation
                     id="TR_STAKING_BANNER_DETAIL_TITLE"
-                    values={{ apy: formatApyValue(apy), displaySymbol }}
+                    values={{ apy: formatApyValue(rate), displaySymbol }}
                 />
             }
             description={
@@ -169,10 +179,10 @@ export const StakingBanner = ({ account }: StakingBannerProps) => {
                         <Translation id="TR_STAKING_BANNER_DETAIL_EXPLORE_STAKING" />
                     </Banner.Button>
                     <Banner.IconButton
-                        intent="neutral"
                         priority="secondary"
-                        icon="x"
+                        icon={XIcon}
                         onClick={closeBanner}
+                        tooltip={{ content: <Translation id="TR_DISMISS" /> }}
                     />
                 </>
             }

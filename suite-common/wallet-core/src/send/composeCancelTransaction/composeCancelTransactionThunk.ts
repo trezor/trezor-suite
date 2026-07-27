@@ -1,15 +1,21 @@
 import { isRejected } from '@reduxjs/toolkit';
 
 import { createThunk } from '@suite-common/redux-utils';
-import { ChainedTransactions, WalletAccountTransaction } from '@suite-common/wallet-types';
+import {
+    type ChainedTransactions,
+    type WalletAccountTransaction,
+} from '@suite-common/wallet-types';
 import { getMyInputsFromTransaction } from '@suite-common/wallet-utils';
-import TrezorConnect, { DEFAULT_SORTING_STRATEGY, PrecomposeResultFinal } from '@trezor/connect';
+import TrezorConnect, {
+    DEFAULT_SORTING_STRATEGY,
+    type PrecomposeResultFinal,
+} from '@trezor/connect';
 
 import { SEND_MODULE_PREFIX } from '../sendFormConstants';
 import { calculateNewFee } from './calculateNewFee';
 import {
-    ComposeCancelTransactionPartialAccount,
-    ConnectComposeTxCallParams,
+    type ComposeCancelTransactionPartialAccount,
+    type ConnectComposeTxCallParams,
 } from './cancelTransactionTypes';
 import { resolveCancelAddress } from './resolveCancelAddress';
 
@@ -73,10 +79,12 @@ const calculateNewTransactionSize = createThunk<
         });
 
         if (!tempCancelTxResult.success) {
-            return rejectWithValue(`Unexpected compose error: ${tempCancelTxResult.payload.error}`);
+            return rejectWithValue(`Unexpected compose error: ${tempCancelTxResult.error.message}`);
         }
 
-        const tempCancelTx = tempCancelTxResult.payload[0];
+        const { payload } = tempCancelTxResult;
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const tempCancelTx: (typeof payload)[number] = payload[0];
 
         if (tempCancelTx.type !== 'final') {
             return rejectWithValue('Unexpected compose tempCancelTxResult (non-final)');
@@ -128,7 +136,9 @@ export const composeCancelTransactionThunk = createThunk<
             return rejectWithValue('Unexpected compose result (error)');
         }
 
-        const composedTx = sizeCalculationResponse.payload[0];
+        const { payload: sizeCalculationPayload } = sizeCalculationResponse;
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const composedTx: (typeof sizeCalculationPayload)[number] = sizeCalculationPayload[0];
 
         if (composedTx.type !== 'final') {
             return rejectWithValue('Unexpected compose result (non-final)');

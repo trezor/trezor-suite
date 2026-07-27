@@ -1,6 +1,6 @@
 import { Box, PressableOpacity } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 type SwitchAmountsButtonProps = { onPress: () => void };
 
@@ -15,8 +15,8 @@ const buttonWrapperStyle = prepareNativeStyle(() => ({
 
 const buttonStyle = prepareNativeStyle(utils => ({
     padding: BUTTON_PADDING,
-    backgroundColor: utils.colors.backgroundTertiaryDefaultOnElevation1,
-    borderColor: utils.colors.borderDashed,
+    backgroundColor: utils.colors.legacyBackgroundTertiaryDefaultOnElevation1,
+    borderColor: utils.colors.borderNeutral,
     borderWidth: utils.borders.widths.small,
     borderRadius: utils.borders.radii.round,
 }));

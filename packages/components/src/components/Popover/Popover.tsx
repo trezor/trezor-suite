@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { CSSProperties, HTMLProps, forwardRef, useImperativeHandle } from 'react';
+import { type CSSProperties, type HTMLProps, forwardRef, useImperativeHandle } from 'react';
 
 import {
     FloatingFocusManager,
@@ -18,10 +18,10 @@ import {
 import { useTheme } from 'styled-components';
 
 import { zIndices } from '@trezor/theme';
+import { throwError } from '@trezor/utils';
 
-import { PopoverPlacement, convertPopoverPlacement } from './utils';
+import { type PopoverPlacement, convertPopoverPlacement } from './utils';
 import { intermediaryTheme } from '../../config/colors';
-import { ElevationContext } from '../ElevationContext/ElevationContext';
 
 const DEFAULT_POPOVER_PLACEMENT: PopoverPlacement = {
     position: 'bottom',
@@ -108,15 +108,9 @@ type ContextType =
 
 const PopoverContext = React.createContext<ContextType>(null);
 
-export const usePopoverContext = () => {
-    const context = React.useContext(PopoverContext);
-
-    if (context == null) {
-        throw new Error('Popover components must be wrapped in <Popover />');
-    }
-
-    return context;
-};
+export const usePopoverContext = () =>
+    React.useContext(PopoverContext) ??
+    throwError('Popover components must be wrapped in <Popover />');
 
 type PopoverTriggerProps = {
     children: React.ReactNode;
@@ -155,7 +149,7 @@ export const PopoverContent = forwardRef<HTMLDivElement, PopoverContentProps>((p
     const themeVariant: keyof typeof intermediaryTheme =
         theme.variant === 'standard' ? 'light' : theme.variant;
 
-    const color = intermediaryTheme[themeVariant]?.textDefault;
+    const color = intermediaryTheme[themeVariant]?.contentPrimary;
 
     if (!floatingContext.open) return null;
 
@@ -217,9 +211,7 @@ export const Popover = forwardRef(
         return (
             <PopoverContext.Provider value={popover}>
                 <PopoverTrigger>{children}</PopoverTrigger>
-                <PopoverContent style={{ zIndex }}>
-                    <ElevationContext baseElevation={0}>{content}</ElevationContext>
-                </PopoverContent>
+                <PopoverContent style={{ zIndex }}>{content}</PopoverContent>
             </PopoverContext.Provider>
         );
     },

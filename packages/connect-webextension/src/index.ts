@@ -1,10 +1,17 @@
-// NOTE: @trezor/connect part is intentionally not imported from the index so we do include the whole library.
-import { POPUP } from '@trezor/connect/src/exports';
-import { factory } from '@trezor/connect/src/factory';
-import { ConnectDynamicSettings, TrezorConnectDynamic } from '@trezor/connect/src/impl/dynamic';
+// note: at the moment, there is something in the root of @trezor/connect-common that pulls entire PROTO runtime, thus
+// these targeted imports
+import { CORE_CALL_CANCEL, POPUP } from '@trezor/connect-common/src/events';
+import { factoryPublic } from '@trezor/connect-common/src/factory';
+import { TrezorConnectDynamic } from '@trezor/connect-common/src/impl/dynamic';
 // Import as src not lib due to webpack issues with inlining content script later
 import { ServiceWorkerWindowChannel } from '@trezor/connect-common/src/messageChannel/serviceworker-window';
+import type {
+    ConnectDynamicSettings,
+    TrezorConnectPublicAPI,
+} from '@trezor/connect-common/src/types';
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports -- intra-tier wiring: connect-webextension composes implementations from connect-web (see #27376)
 import { CoreInSuiteDesktop } from '@trezor/connect-web/src/impl/core-in-suite-desktop';
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports -- intra-tier wiring: connect-webextension composes implementations from connect-web (see #27376)
 import { CoreInSuiteWeb } from '@trezor/connect-web/src/impl/core-in-suite-web';
 
 const impl = new TrezorConnectDynamic({
@@ -15,21 +22,17 @@ const impl = new TrezorConnectDynamic({
 });
 
 // Bind all methods due to shadowing `this`
-const TrezorConnect = factory({
-    eventEmitter: impl.eventEmitter,
-    init: impl.init.bind(impl),
-    call: impl.call.bind(impl),
-    uiResponse: impl.uiResponse.bind(impl),
-    updateConnectSettings: impl.updateConnectSettings.bind(impl),
-    cancel: impl.cancel.bind(impl),
-    dispose: impl.dispose.bind(impl),
-});
+const TrezorConnect: TrezorConnectPublicAPI<ConnectDynamicSettings> = factoryPublic(impl);
 
 const initProxyChannel = () => {
     const channel = new ServiceWorkerWindowChannel<{
         type: string;
         method: keyof typeof TrezorConnect;
         settings: ConnectDynamicSettings;
+        reason?: string;
+        // We need `error` field for backward compatibility, for connect10 with older clients.
+        error?: string;
+        callId?: string;
     }>({
         name: 'trezor-connect-proxy',
         channel: {
@@ -45,6 +48,20 @@ const initProxyChannel = () => {
     channel.init();
     channel.on('message', message => {
         const { id, payload, type } = message;
+
+        // Handle cancel before the payload guard — cancel messages may
+        // carry no meaningful payload.
+        if (type === POPUP.CLOSED) {
+            TrezorConnect.cancel({ reason: payload?.error, callId: payload?.callId });
+
+            return;
+        }
+        if (type === CORE_CALL_CANCEL) {
+            TrezorConnect.cancel({ reason: payload?.reason, callId: payload?.callId });
+
+            return;
+        }
+
         if (!payload) return;
         const { method, settings } = payload;
 
@@ -55,14 +72,33 @@ const initProxyChannel = () => {
         }
 
         // Core is loaded in popup and initialized every time, so we send the settings from here.
-        impl.init({ env: 'webextension', ...proxySettings }).then(() => {
-            (TrezorConnect as any)[method](payload).then((response: any) => {
-                channel.postMessage({
-                    ...response,
-                    id,
-                });
+        impl.init({ env: 'webextension', ...proxySettings })
+            .then(() =>
+                (TrezorConnect as any)[method](payload).then((response: any) => {
+                    // Response must use usePromise: false so the original
+                    // message `id` from the proxy is preserved.  The default
+                    // (usePromise: true) would overwrite `id` with the SW's
+                    // own counter, which can desynchronize from the proxy's
+                    // counter and leave the proxy's call() promise unresolved.
+                    channel.postMessage(
+                        {
+                            ...response,
+                            id,
+                        },
+                        { usePromise: false },
+                    );
+                }),
+            )
+            .catch((error: any) => {
+                channel.postMessage(
+                    {
+                        success: false,
+                        payload: { error: error?.message ?? String(error) },
+                        id,
+                    },
+                    { usePromise: false },
+                );
             });
-        });
     });
 };
 
@@ -70,4 +106,6 @@ initProxyChannel();
 
 // eslint-disable-next-line import/no-default-export
 export default TrezorConnect;
-export * from '@trezor/connect/src/exports';
+export * from '@trezor/connect-common/src/constants';
+export * from '@trezor/connect-common/src/events';
+export type * from '@trezor/connect-common/src/types';

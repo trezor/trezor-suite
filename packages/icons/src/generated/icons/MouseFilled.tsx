@@ -1,0 +1,10 @@
+import type { SVGProps } from 'react';
+const SvgMouseFilled = (props: SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" {...props}>
+        <path
+            fill="currentColor"
+            d="M18 2h-4a8.01 8.01 0 0 0-8 8v12a8.01 8.01 0 0 0 8 8h4a8.01 8.01 0 0 0 8-8V10a8.01 8.01 0 0 0-8-8m6 8v3h-7V4h1a6.006 6.006 0 0 1 6 6M14 4h1v9H8v-3a6.006 6.006 0 0 1 6-6"
+        />
+    </svg>
+);
+export { SvgMouseFilled as ReactComponent };

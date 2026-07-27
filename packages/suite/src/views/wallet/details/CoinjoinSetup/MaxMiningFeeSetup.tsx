@@ -1,12 +1,12 @@
-import { Translation } from '@suite/intl';
-import { AccountKey } from '@suite-common/wallet-types';
-
-import { coinjoinAccountUpdateMaxMiningFee } from 'src/actions/wallet/coinjoinAccountActions';
-import { useDispatch, useSelector } from 'src/hooks/suite';
 import {
+    coinjoinAccountUpdateMaxMiningFee,
     selectDefaultMaxMiningFeeByAccountKey,
     selectFeeRateMedianByAccountKey,
-} from 'src/reducers/wallet/coinjoinReducer';
+} from '@suite/coinjoin';
+import { Translation } from '@suite/intl';
+import { type AccountKey } from '@suite-common/wallet-types';
+
+import { useDispatch, useSelector } from 'src/hooks/suite';
 
 import { SetupSlider } from './SetupSlider/SetupSlider';
 import {

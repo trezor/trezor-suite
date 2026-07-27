@@ -1,6 +1,5 @@
 import { Translation } from '@suite/intl';
 import { Button, Column, Divider, H2, Image, Paragraph, Row } from '@trezor/components';
-import { borders, spacings } from '@trezor/theme';
 
 import { SecurityCheckLayout } from '../../suite/SecurityCheck/SecurityCheckLayout';
 
@@ -19,11 +18,11 @@ export const FirmwareInstallationProgressCheckPrompt = ({
     toggleView,
 }: FirmwareInstallationProgressCheckProps) => (
     <SecurityCheckLayout>
-        <Column gap={spacings.md} padding={{ top: spacings.xs }}>
+        <Column gap={16} padding={{ top: 8 }}>
             <H2>
                 <Translation id="TR_FIRMWARE_INSTALLATION_PROGRESS_CHECK_HEADING" />
             </H2>
-            <Divider margin={{ vertical: spacings.xl }} />
+            <Divider margin={{ vertical: 24 }} />
             <Paragraph>
                 <Translation id="TR_FIRMWARE_INSTALLATION_PROGRESS_CHECK_TEXT_BEFORE_IMAGE" />
             </Paragraph>
@@ -31,20 +30,14 @@ export const FirmwareInstallationProgressCheckPrompt = ({
                 <Image
                     image="CONFIRM_FW_INSTALLATION_SCREEN_T1B1"
                     alt={imageAltText}
-                    borderRadius={borders.radii.xxs}
+                    borderRadius={4}
                 />
             </div>
             <Paragraph>
                 <Translation id="TR_FIRMWARE_INSTALLATION_PROGRESS_CHECK_TEXT_AFTER_IMAGE" />
             </Paragraph>
         </Column>
-        <Row
-            alignItems="stretch"
-            flexWrap="wrap"
-            gap={spacings.xl}
-            width="100%"
-            margin={{ top: spacings.xxxxl }}
-        >
+        <Row alignItems="stretch" flexWrap="wrap" gap={24} width="100%" margin={{ top: 48 }}>
             <Button intent="neutral" priority="secondary" onClick={toggleView} flex="1">
                 <Translation id="TR_FIRMWARE_INSTALLATION_PROGRESS_CHECK_NO_BUTTON" />
             </Button>

@@ -1,15 +1,14 @@
 import styled from 'styled-components';
 
-import { PasswordTag } from '@suite-common/metadata-types';
-import { spacingsPx } from '@trezor/theme';
+import { type PasswordTag } from '@suite-common/metadata-types';
 
 import { Tag } from './Tag';
 
 const TagsListWrapper = styled.div`
     display: flex;
     flex-direction: row;
-    margin-bottom: ${spacingsPx.xs};
-    gap: ${spacingsPx.xxs};
+    margin-bottom: 8px;
+    gap: 4px;
 `;
 
 interface TagsListProps {
@@ -44,7 +43,7 @@ export const TagsList = ({ tags, selectedTags, setSelectedTags }: TagsListProps)
                             });
                         }
                     }}
-                    isSelected={selectedTags[key]}
+                    isSelected={selectedTags[key] ?? false}
                 />
             ))}
     </TagsListWrapper>

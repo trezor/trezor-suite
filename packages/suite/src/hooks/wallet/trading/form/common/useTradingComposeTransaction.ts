@@ -1,7 +1,7 @@
-import { useEffect, useMemo, useState } from 'react';
-import { UseFormReturn } from 'react-hook-form';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { type UseFormReturn, useWatch } from 'react-hook-form';
 
-import { useTranslation } from '@suite/intl';
+import { isTranslationKey, useTranslation } from '@suite/intl';
 import { selectSelectedDevice } from '@suite-common/device';
 import {
     TRADING_FORM_OUTPUT_ADDRESS,
@@ -11,19 +11,24 @@ import {
     tradingActions,
 } from '@suite-common/trading';
 import { COMPOSE_ERROR_TYPES } from '@suite-common/wallet-constants';
-import { selectAccounts, selectRawNetworkFeeInfo } from '@suite-common/wallet-core';
+import {
+    deriveTronColdRecipient,
+    selectAccounts,
+    selectAddressDisplayType,
+    selectRawNetworkFeeInfo,
+} from '@suite-common/wallet-core';
 import { AddressDisplayOptions } from '@suite-common/wallet-types';
 import { getConvertedOrDefaultFeeInfo } from '@suite-common/wallet-utils';
+import { BigNumber } from '@trezor/utils';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useCompose } from 'src/hooks/wallet/form/useCompose';
 import { useFees } from 'src/hooks/wallet/form/useFees';
-import { selectAddressDisplayType } from 'src/selectors/suite/suiteSelectors';
 import {
-    TradingSellExchangeFormProps,
-    TradingUseComposeTransactionProps,
-    TradingUseComposeTransactionReturnProps,
-    TradingUseComposeTransactionStateProps,
+    type TradingSellExchangeFormProps,
+    type TradingUseComposeTransactionProps,
+    type TradingUseComposeTransactionReturnProps,
+    type TradingUseComposeTransactionStateProps,
 } from 'src/types/trading/tradingForm';
 import { getComposeAddressPlaceholder } from 'src/utils/wallet/trading/tradingUtils';
 
@@ -32,9 +37,9 @@ export const useTradingComposeTransaction = <T extends TradingSellExchangeFormPr
     type,
     account,
     network,
-    values,
     methods,
     setShowReserveBanner,
+    shouldSuppressComposeErrors,
 }: TradingUseComposeTransactionProps<T>): TradingUseComposeTransactionReturnProps => {
     const dispatch = useDispatch();
     const accounts = useSelector(selectAccounts);
@@ -42,24 +47,78 @@ export const useTradingComposeTransaction = <T extends TradingSellExchangeFormPr
     const addressDisplayType = useSelector(selectAddressDisplayType);
     const { translationString } = useTranslation();
 
-    const { getValues, setValue, setError, clearErrors } = methods as unknown as UseFormReturn<
-        TradingSellFormProps | TradingExchangeFormProps
-    >;
+    const { getValues, setValue, setError, clearErrors, control } =
+        methods as unknown as UseFormReturn<TradingSellFormProps | TradingExchangeFormProps>;
     const chunkify = addressDisplayType === AddressDisplayOptions.CHUNKED;
-    const { symbol, networkType } = account;
+    const symbol = account?.symbol;
+    const networkType = account?.networkType;
     const rawFeeInfo = useSelector(state => selectRawNetworkFeeInfo(state, symbol));
     const feeInfo = useMemo(
         () =>
             getConvertedOrDefaultFeeInfo({
-                networkType,
+                networkType: networkType ?? 'bitcoin',
                 feeInfo: rawFeeInfo,
             }),
         [networkType, rawFeeInfo],
     );
     const initState = useMemo(() => ({ account, network, feeInfo }), [account, network, feeInfo]);
-    const outputAddress = values?.outputs?.[0].address;
+    const outputAddress = useWatch({ control, name: TRADING_FORM_OUTPUT_ADDRESS });
     const [state, setState] = useState<TradingUseComposeTransactionStateProps>(initState);
-    const [shouldUpdateMaxAmount, setShouldUpdateMaxAmount] = useState(true);
+
+    // Tron: derive a cold recipient for the offers fee estimate, passed via compose context.
+    // Keyed on device?.state (not the device object) so signing doesn't re-fire the device call.
+    const accountsRef = useRef(accounts);
+    accountsRef.current = accounts;
+    const deviceRef = useRef(device);
+    deviceRef.current = device;
+    const [feeEstimationRecipient, setFeeEstimationRecipient] = useState<string | undefined>(
+        undefined,
+    );
+
+    useEffect(() => {
+        const currentDevice = deviceRef.current;
+        if (networkType !== 'tron' || !currentDevice || !account || !network) {
+            setFeeEstimationRecipient(undefined);
+
+            return;
+        }
+        let isMounted = true;
+        deriveTronColdRecipient({
+            account,
+            network,
+            accounts: accountsRef.current,
+            device: currentDevice,
+            chunkify,
+        }).then(recipient => {
+            if (isMounted) setFeeEstimationRecipient(recipient);
+        });
+
+        return () => {
+            isMounted = false;
+        };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [
+        account?.descriptor,
+        account?.symbol,
+        account?.accountType,
+        networkType,
+        device?.state,
+        network,
+        chunkify,
+    ]);
+
+    const composeContext = useMemo(() => {
+        if (!state.account || !state.network) {
+            return undefined;
+        }
+
+        return {
+            account: state.account,
+            network: state.network,
+            feeInfo: state.feeInfo,
+            feeEstimationRecipient,
+        };
+    }, [state, feeEstimationRecipient]);
 
     // sub-hook, Composing transaction
     const {
@@ -70,7 +129,7 @@ export const useTradingComposeTransaction = <T extends TradingSellExchangeFormPr
         setComposedLevels,
     } = useCompose({
         ...methods,
-        state,
+        state: composeContext,
     });
 
     // sub-hook, FeeLevels handler
@@ -83,8 +142,17 @@ export const useTradingComposeTransaction = <T extends TradingSellExchangeFormPr
     });
 
     useEffect(() => {
+        let isMounted = true;
+
+        if (!account || !network) {
+            setState(initState);
+            setComposedLevels(undefined);
+
+            return;
+        }
+
         const setStateAsync = async () => {
-            const address = await getComposeAddressPlaceholder(
+            const address: string = await getComposeAddressPlaceholder(
                 account,
                 network,
                 device,
@@ -92,16 +160,22 @@ export const useTradingComposeTransaction = <T extends TradingSellExchangeFormPr
                 chunkify,
             );
 
-            if (values?.outputs?.[0] && typeof address === 'string') {
-                if (!values.outputs[0].address) {
+            if (!isMounted) {
+                return;
+            }
+
+            const currentOutput = getValues('outputs')?.[0];
+
+            if (currentOutput && typeof address === 'string') {
+                if (!currentOutput.address) {
                     setValue(TRADING_FORM_OUTPUT_ADDRESS, address);
                 }
                 setState(initState);
             }
         };
         const hasAccountChanged = !(
-            state.account.descriptor === initState.account.descriptor &&
-            state.account.symbol === initState.account.symbol
+            state.account?.descriptor === initState.account?.descriptor &&
+            state.account?.symbol === initState.account?.symbol
         );
 
         // update fee info only if the block height has increased.
@@ -115,18 +189,22 @@ export const useTradingComposeTransaction = <T extends TradingSellExchangeFormPr
         ) {
             setStateAsync();
         }
+
+        return () => {
+            isMounted = false;
+        };
         // call effect only when listed dependencies will change
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [
-        account.symbol,
-        account.descriptor,
+        account?.symbol,
+        account?.descriptor,
         chunkify,
         device,
         network,
-        state.account.descriptor,
-        state.account.symbol,
-        initState.account.descriptor,
-        initState.account.symbol,
+        state.account?.descriptor,
+        state.account?.symbol,
+        initState.account?.descriptor,
+        initState.account?.symbol,
         initState.feeInfo,
         outputAddress,
         type,
@@ -142,24 +220,35 @@ export const useTradingComposeTransaction = <T extends TradingSellExchangeFormPr
 
         if (!composed) return;
 
-        if (composed.type === 'error' && composed.errorMessage) {
-            setError(TRADING_FORM_OUTPUT_AMOUNT, {
-                type: COMPOSE_ERROR_TYPES.COMPOSE,
-                message: translationString(composed.errorMessage.id, composed.errorMessage.values),
-            });
+        if (composed.type === 'error') {
+            if (shouldSuppressComposeErrors) {
+                clearErrors(TRADING_FORM_OUTPUT_AMOUNT);
+            } else if (isTranslationKey(composed.errorMessage?.id)) {
+                setError(TRADING_FORM_OUTPUT_AMOUNT, {
+                    type: COMPOSE_ERROR_TYPES.COMPOSE,
+                    message: translationString(
+                        composed.errorMessage.id,
+                        composed.errorMessage.values,
+                    ),
+                });
+            }
         }
 
         if (composed.type === 'final' || composed.type === 'nonfinal') {
-            if (typeof setMaxOutputId === 'number' && composed.max && shouldUpdateMaxAmount) {
-                setShouldUpdateMaxAmount(false);
-                setShowReserveBanner(true);
-                setValue(TRADING_FORM_OUTPUT_AMOUNT, composed.max, {
-                    shouldValidate: true,
-                    shouldDirty: true,
-                });
+            const currentOutputAmount = values.outputs?.[0]?.amount;
+
+            if (typeof setMaxOutputId === 'number' && composed.max) {
+                const currentBN = new BigNumber(currentOutputAmount || '0');
+                const composedMaxBN = new BigNumber(composed.max);
+
+                if (!currentBN.isEqualTo(composedMaxBN)) {
+                    setShowReserveBanner(true);
+                    setValue(TRADING_FORM_OUTPUT_AMOUNT, composed.max, {
+                        shouldValidate: true,
+                        shouldDirty: true,
+                    });
+                }
                 clearErrors(TRADING_FORM_OUTPUT_AMOUNT);
-            } else {
-                setShouldUpdateMaxAmount(true);
             }
 
             dispatch(
@@ -173,7 +262,7 @@ export const useTradingComposeTransaction = <T extends TradingSellExchangeFormPr
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [
-        account.symbol,
+        account?.symbol,
         composedLevels,
         selectedFee,
         clearErrors,
@@ -182,6 +271,7 @@ export const useTradingComposeTransaction = <T extends TradingSellExchangeFormPr
         setError,
         setValue,
         translationString,
+        shouldSuppressComposeErrors,
     ]);
 
     return {

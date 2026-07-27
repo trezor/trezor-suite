@@ -1,12 +1,17 @@
-import { Dispatch, useCallback } from 'react';
+import { type Dispatch, useCallback } from 'react';
 
 import type { FieldPathValue, Path, UseFormReturn } from '@suite-native/forms';
 import { useBottomSheetControls } from '@suite-native/trading-atoms';
-import { BuyFormValues, ExchangeFormValues, SellFormValues } from '@suite-native/trading-types';
+import {
+    type BuyFormValues,
+    type ExchangeFormValues,
+    type SellFormValues,
+} from '@suite-native/trading-types';
 
 type BottomSheetControls = ReturnType<typeof useBottomSheetControls>;
 type FormUnion = BuyFormValues | ExchangeFormValues | SellFormValues;
-// explicit return type declaration, because typescript reaches its limits when trying to infer type
+// [typescript-performace]: Keep this explicit type to prevent TypeScript from expanding the
+// inferred type in the emitted declaration.
 type SheetControls<
     FormValues extends FormUnion,
     Key extends Path<FormValues>,

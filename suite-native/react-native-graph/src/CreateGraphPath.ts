@@ -1,4 +1,4 @@
-import { SkPath, SkPoint, Skia } from '@shopify/react-native-skia';
+import { type SkPath, type SkPoint, Skia } from '@shopify/react-native-skia';
 
 import type {
     GraphPathRange,
@@ -121,7 +121,7 @@ function createGraphPathBase({
 
     const points: SkPoint[] = [];
 
-    const startX = getXInRange(drawingWidth, graphData[0]!.date, range.x) + horizontalPadding;
+    const startX = getXInRange(drawingWidth, graphData[0].date, range.x) + horizontalPadding;
     const endX =
         getXInRange(drawingWidth, graphData[graphData.length - 1]!.date, range.x) +
         horizontalPadding;

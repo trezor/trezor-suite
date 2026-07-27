@@ -1,25 +1,25 @@
-import { Dispatch } from '@reduxjs/toolkit';
+import { type Dispatch } from '@reduxjs/toolkit';
 import crypto from 'crypto';
 
 import { selectSelectedDevice } from '@suite-common/device';
 import {
-    LabelableEntityKeys,
-    PasswordEntry,
+    type LabelableEntityKeys,
+    type PasswordEntry,
     ProviderErrorAction,
 } from '@suite-common/metadata-types';
 import TrezorConnect from '@trezor/connect';
 import { cloneObject } from '@trezor/utils';
 
 import * as METADATA from './metadataConstants';
+import * as metadataDataThunks from './metadataDataThunks';
 import * as METADATA_PASSWORDS from './metadataPasswordsConstants';
 import * as METADATA_PROVIDER from './metadataProviderConstants';
 import * as metadataProviderActions from './metadataProviderThunks';
-import { MetadataRootState, selectSelectedProviderForPasswords } from './metadataReducer';
-import * as metadataThunks from './metadataThunks';
+import { type MetadataRootState, selectSelectedProviderForPasswords } from './metadataReducer';
 import * as metadataUtils from './metadataUtils';
-import { FetchIntervalTrackingId } from './metadataUtils';
+import { type FetchIntervalTrackingId } from './metadataUtils';
 
-export const fetchPasswords =
+const fetchPasswords =
     (keys: LabelableEntityKeys) =>
     async (dispatch: Dispatch, _getState: () => MetadataRootState) => {
         const provider = dispatch(
@@ -114,7 +114,7 @@ export const init = () => async (dispatch: Dispatch, getState: () => MetadataRoo
             askOnDecrypt: true,
         });
         if (!res.success) {
-            throw new Error(res.payload.error);
+            throw new Error(res.error.message);
         }
         const encryptionKey = res.payload.value.substring(
             res.payload.value.length / 2,
@@ -218,26 +218,26 @@ export const addPasswordMetadata =
             cloneObject(provider.data[fileName]) ||
             METADATA_PASSWORDS.DEFAULT_PASSWORD_MANAGER_STATE;
 
-        if ('config' in metadata) {
-            metadata.entries[nextId] = payload;
-
-            dispatch(
-                metadataThunks.setMetadata({
-                    provider,
-                    fileName,
-                    data: metadata,
-                }),
-            );
-
-            metadataThunks.encryptAndSaveMetadata({
-                providerInstance,
-                fileName,
-                data: metadata,
-                aesKey,
-            });
-        } else {
+        if (!('config' in metadata)) {
             return Promise.resolve({ success: false, error: 'trying to edit wrong object' });
         }
+
+        metadata.entries[nextId] = payload;
+
+        dispatch(
+            metadataDataThunks.setMetadata({
+                provider,
+                fileName,
+                data: metadata,
+            }),
+        );
+
+        metadataDataThunks.encryptAndSaveMetadata({
+            providerInstance,
+            fileName,
+            data: metadata,
+            aesKey,
+        });
     };
 
 export const removePasswordMetadata =
@@ -259,24 +259,24 @@ export const removePasswordMetadata =
 
         const metadata = cloneObject(provider.data[fileName]);
 
-        if (metadata && 'config' in metadata) {
-            delete metadata.entries[index];
-
-            dispatch(
-                metadataThunks.setMetadata({
-                    provider,
-                    fileName,
-                    data: metadata,
-                }),
-            );
-
-            metadataThunks.encryptAndSaveMetadata({
-                providerInstance,
-                fileName,
-                data: metadata,
-                aesKey,
-            });
-        } else {
+        if (!metadata || !('config' in metadata)) {
             return Promise.resolve({ success: false, error: 'trying to edit wrong object' });
         }
+
+        delete metadata.entries[index];
+
+        dispatch(
+            metadataDataThunks.setMetadata({
+                provider,
+                fileName,
+                data: metadata,
+            }),
+        );
+
+        metadataDataThunks.encryptAndSaveMetadata({
+            providerInstance,
+            fileName,
+            data: metadata,
+            aesKey,
+        });
     };

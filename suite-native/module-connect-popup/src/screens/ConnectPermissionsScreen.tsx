@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { connectPopupActions, selectConnectAppPermissions } from '@suite-common/connect-popup';
 // TODO fix deep import
 // eslint-disable-next-line local-rules/no-package-deep-imports
-import { AppRememberedPermission } from '@suite-common/connect-popup/src/connectPopupTypes';
+import { type AppRememberedPermission } from '@suite-common/connect-popup/src/connectPopupTypes';
 import {
     AnimatedBox,
     Button,
@@ -23,6 +23,7 @@ import { Translation } from '@suite-native/intl';
 import { Screen, ScreenHeader } from '@suite-native/navigation';
 
 import { ConnectAppIcon } from '../components/ConnectAppIcon';
+import { GroupedPermissionsList } from '../components/GroupedPermissionsList';
 
 const PermissionDetailCard = ({ app }: { app: AppRememberedPermission }) => {
     const dispatch = useDispatch();
@@ -53,7 +54,7 @@ const PermissionDetailCard = ({ app }: { app: AppRememberedPermission }) => {
                         <VStack flex={1} spacing="sp1">
                             <Text numberOfLines={1}>{app.manifest?.appName ?? app.origin}</Text>
                             {app.manifest?.appName && (
-                                <Text color="textSubdued" numberOfLines={1}>
+                                <Text color="contentSecondary" numberOfLines={1}>
                                     {app.origin}
                                 </Text>
                             )}
@@ -66,7 +67,8 @@ const PermissionDetailCard = ({ app }: { app: AppRememberedPermission }) => {
                 <AccordionContent isOpened={isExpanded}>
                     <VStack spacing="sp16" paddingTop="sp16">
                         <CardDivider />
-                        <Button onPress={handleDisconnect} colorScheme="tertiaryElevation0">
+                        <GroupedPermissionsList permissions={app.allowedPermissions} />
+                        <Button onPress={handleDisconnect} intent="neutral" priority="secondary">
                             <Translation id="moduleConnectPopup.trezorConnect.forget" />
                         </Button>
                     </VStack>
@@ -101,7 +103,7 @@ export const ConnectPermissionsScreen = () => {
                         <Text textAlign="center" variant="headline-sm">
                             <Translation id="moduleConnectPopup.noConnectedApps" />
                         </Text>
-                        <Text textAlign="center" color="textSubdued">
+                        <Text textAlign="center" color="contentSecondary">
                             <Translation id="moduleConnectPopup.noConnectedAppsDescription" />
                         </Text>
                     </>

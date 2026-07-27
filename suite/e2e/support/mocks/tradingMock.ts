@@ -1,15 +1,22 @@
 import { Page } from '@playwright/test';
 import { cloneDeep } from 'lodash';
 
+import { typedObjectEntries } from '@trezor/utils';
+
 import { invityEndpoint, invityGeneralResponses } from '../../fixtures/invity';
-import { SellTradeResponse, SwapTradeResponse, TradeResponse } from '../../fixtures/invity/types';
+import {
+    SellTradeResponse,
+    SwapDexTradeResponse,
+    SwapTradeResponse,
+    TradeResponse,
+} from '../../fixtures/invity/types';
 import {
     getSignatureStatusesResponse,
     sendTransactionResponse,
 } from '../../fixtures/solana-responses';
 import { step } from '../common';
 
-export const solanaUrlPattern = /^https:\/\/sol\d+\.trezor\.io\//;
+export const solanaUrlPattern = /^https:\/\/sol\d*\.trezor\.io\//;
 
 export class TradingMock {
     readonly watchPeriod = '00:30';
@@ -21,7 +28,7 @@ export class TradingMock {
     // Common responses for all trading tests.
     @step()
     async routeInvityGeneralEndpoints() {
-        for (const [url, response] of Object.entries(invityGeneralResponses)) {
+        for (const [url, response] of typedObjectEntries(invityGeneralResponses)) {
             await this.page.route(url, async route => {
                 await route.fulfill({ json: response });
             });
@@ -44,7 +51,7 @@ export class TradingMock {
     }
 
     @step()
-    async routeSwapTrade(tradeResponse: SwapTradeResponse) {
+    async routeSwapTrade(tradeResponse: SwapTradeResponse | SwapDexTradeResponse) {
         await this.routeInvityGeneralEndpoints();
         await this.page.route(invityEndpoint.swapTrade, async (route, request) => {
             const modifiedTradeResponse = this.updateSwapTradeResponseIds(tradeResponse, request);
@@ -115,7 +122,10 @@ export class TradingMock {
         return modifiedResponse;
     };
 
-    updateSwapTradeResponseIds = (response: SwapTradeResponse, request: any) => {
+    updateSwapTradeResponseIds = (
+        response: SwapTradeResponse | SwapDexTradeResponse,
+        request: any,
+    ) => {
         const modifiedTradeResponse = cloneDeep(response);
         const requestPayload = request.postDataJSON();
         modifiedTradeResponse.orderId = requestPayload.trade.orderId;

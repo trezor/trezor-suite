@@ -7,13 +7,14 @@ type Attributes = {
 
 export const settingsAppLogExportedEvent: EventDef<Attributes, EventType.SettingsAppLogExported> = {
     name: EventType.SettingsAppLogExported,
-    descriptionTrigger: 'App logs exported by user action.',
+    descriptionTrigger: 'User exports application debug logs from the settings menu',
     changelog: [{ version: '26.2.1', notes: 'added' }],
 
     attributes: {
         isRedacted: {
             changelog: [{ version: '26.2.1', notes: 'added' }],
-            description: 'Whether the sensitive data is excluded.',
+            description:
+                'Whether sensitive data was redacted from the exported logs (`true`) or included (`false`)',
         },
     },
 };

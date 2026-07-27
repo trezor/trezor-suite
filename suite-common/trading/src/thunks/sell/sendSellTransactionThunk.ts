@@ -1,30 +1,27 @@
 import { isRejectedWithValue } from '@reduxjs/toolkit';
-import { SellFiatTrade } from 'invity-api';
+import { type SellFiatTrade } from 'invity-api';
 
 import { createThunk } from '@suite-common/redux-utils';
-import { Account } from '@suite-common/wallet-types';
-import { convertAmountUnitsToSubunits } from '@suite-common/wallet-utils';
+import { type Account } from '@suite-common/wallet-types';
 
 import { TRADING_SELL_THUNK_PREFIX } from '../../constants';
 import { invityAPI } from '../../invityAPI';
 import { tradingSellActions } from '../../reducers/sellReducer';
 import { tradingActions } from '../../reducers/tradingCommonReducer';
 import {
-    selectTradingSellInfo,
     selectTradingSellProviders,
     selectTradingSellSelectedQuote,
 } from '../../selectors/tradingSelectors';
-import { TradingSellFormProps } from '../../types';
 import { getTradingFormState } from '../../utils';
 import { tradingThunks } from '../common';
-import { RecomposeAndSignTxThunkProps } from '../common/recomposeAndSignTxThunk';
+import { buildRecomposeInputsFromTrade } from '../common/buildRecomposeInputsFromTrade';
+import { type RecomposeAndSignTxThunkProps } from '../common/recomposeAndSignTxThunk';
 
 export type SendSellTransactionThunkProps = {
     account: Account;
     trade: SellFiatTrade | undefined;
     shouldSendInSats: boolean | undefined;
     decimals: number;
-    formValues: TradingSellFormProps;
     isSlip24Active?: boolean;
 
     nextStep: () => void;
@@ -39,7 +36,6 @@ export const sendSellTransactionThunk = createThunk(
             trade,
             shouldSendInSats,
             decimals,
-            formValues,
             isSlip24Active,
             nextStep,
             signAndPushSendFormTransaction,
@@ -47,22 +43,14 @@ export const sendSellTransactionThunk = createThunk(
         { dispatch, getState, rejectWithValue },
     ) => {
         const selectedQuote = selectTradingSellSelectedQuote(getState());
-        const sellInfo = selectTradingSellInfo(getState());
         const providers = selectTradingSellProviders(getState());
         const selectedTrade = trade ?? selectedQuote;
         // destinationAddress may be set by useTradingWatchTrade hook to the trade object
         const destinationAddress = selectedTrade?.destinationAddress ?? trade?.destinationAddress;
-        const lockSendAmount =
-            !!sellInfo?.providerInfos[selectedTrade?.exchange ?? '']?.lockSendAmount;
 
         dispatch(tradingActions.setModalAccountKey(account.key));
 
-        if (
-            !selectedTrade ||
-            !selectedTrade.orderId ||
-            !destinationAddress ||
-            !selectedTrade.cryptoStringAmount
-        ) {
+        if (!selectedTrade?.orderId || !destinationAddress || !selectedTrade.cryptoStringAmount) {
             return rejectWithValue({
                 type: 'error',
                 error: { id: 'TR_TRADING_CANNOT_SEND_TRANSACTION' },
@@ -75,21 +63,21 @@ export const sendSellTransactionThunk = createThunk(
             isSlip24Active,
             sendAccountKey: account.key,
         });
-        const cryptoStringAmount = shouldSendInSats
-            ? convertAmountUnitsToSubunits(selectedTrade.cryptoStringAmount, decimals)
-            : selectedTrade.cryptoStringAmount;
         const { destinationPaymentExtraId } = selectedTrade;
+        const recomposeInputs = buildRecomposeInputsFromTrade({
+            destinationAddress,
+            cryptoStringAmount: selectedTrade.cryptoStringAmount,
+            destinationPaymentExtraId,
+            shouldSendInSats,
+            decimals,
+        });
 
         const recomposeAndSignTx = await dispatch(
             tradingThunks.recomposeAndSignTxThunk({
                 account,
-                address: destinationAddress,
-                amount: cryptoStringAmount,
-                destinationTag: destinationPaymentExtraId,
+                ...recomposeInputs,
                 isSlip24Active,
                 signAndPushSendFormTransaction,
-                // when lockSendAmount is true, the amount should not be recomputed based on the maximum balance.
-                setMaxOutputId: lockSendAmount ? undefined : formValues.setMaxOutputId,
                 tradingFormState,
             }),
         );

@@ -1,25 +1,26 @@
-/* eslint-disable camelcase */
-
-import semver from 'semver';
 import child_process from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
+import semver from 'semver';
 
 const args = process.argv.slice(2);
 
 if (args.length < 2)
     throw new Error(
-        'Version check script requires 2 parameters: package name and dist tag (beta | latest)',
+        'Version check script requires 2 parameters: package name and dist tag (alpha | beta | latest)',
     );
 
 const [packageName, distTag] = args;
 
-if (!['latest', 'beta'].includes(distTag)) {
-    throw new Error('distTag (3rd parameter) must be either "beta" or "latest"');
+if (!['latest', 'beta', 'alpha'].includes(distTag)) {
+    throw new Error('distTag (3rd parameter) must be "alpha", "beta", or "latest"');
 }
 
 const ROOT = path.join(import.meta.dirname, '..', '..');
-const PACKAGE_PATH = path.join(ROOT, 'packages', packageName);
+const NETWORK_MATCH = packageName.match(/^network-([^-]+)(-(.+))?$/);
+const PACKAGE_PATH = NETWORK_MATCH
+    ? path.join(ROOT, 'networks', NETWORK_MATCH[1], packageName)
+    : path.join(ROOT, 'packages', packageName);
 
 // read package version
 const packageJSONRaw = fs.readFileSync(path.join(PACKAGE_PATH, 'package.json'), {
@@ -35,7 +36,7 @@ const npmInfoRaw = child_process.spawnSync('npm', ['view', '--json'], {
 }).stdout;
 
 const npmInfo = JSON.parse(npmInfoRaw);
-if (npmInfo && npmInfo.error && npmInfo.error.code === 'E404') {
+if (npmInfo?.error?.[packageJSON.name]?.code === 'E404') {
     // exit 0, its ok, we probably did not publish it yet
     process.exit(0);
 }

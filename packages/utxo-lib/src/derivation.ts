@@ -1,9 +1,9 @@
-import bs58 from 'bs58';
+import { base58 } from '@scure/base';
 
 import { throwError } from '@trezor/utils';
 
 import { fromBase58 } from './bip32';
-import { Network, bitcoin } from './networks';
+import { type Network, bitcoin } from './networks';
 import { p2pkh, p2sh, p2tr, p2wpkh } from './payments';
 
 const BIP32_PAYMENT_TYPES = {
@@ -42,7 +42,7 @@ const validateVersion = (version: number): version is VersionBytes =>
     !!BIP32_PAYMENT_TYPES[version as VersionBytes];
 
 const getVersion = (xpub: string) => {
-    const version = Buffer.from(bs58.decode(xpub)).readUInt32BE();
+    const version = Buffer.from(base58.decode(xpub)).readUInt32BE();
     if (!validateVersion(version)) throw new Error(`Unknown xpub version: ${xpub}`);
 
     return version;
@@ -98,10 +98,14 @@ const getXpubInfo = (xpub: string, network: Network) => {
 };
 
 const getDescriptorInfo = (paymentType: PaymentType, descriptor: string, network: Network) => {
-    const [_match, _script, path, xpub, _checksum] =
+    const matchResult =
         descriptor.match(
             /^([a-z]+\()+\[([a-z0-9]{8}(?:\/[0-9]+'?){3,})\]([xyztuv]pub[a-zA-Z0-9]*)\/<0;1>\/\*\)+(#[a-z0-9]{8})?$/,
         ) || throwError(`Descriptor cannot be parsed: ${descriptor}`);
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const path: string = matchResult[2];
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const xpub: string = matchResult[3];
     const [_fingerprint, ...levels] = path.split('/');
     const version = getVersion(xpub);
     const node = getBip32Node(xpub, version, network);

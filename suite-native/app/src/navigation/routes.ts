@@ -1,4 +1,4 @@
-import { AccountsStackRoutes, AppTabsRoutes } from '@suite-native/navigation';
+import { AccountsStackRoutes, AppTabsRoutes, type TabsOptions } from '@suite-native/navigation';
 
 import { enhanceTabOption } from './enhanceTabOption';
 
@@ -25,8 +25,8 @@ const earnStack = enhanceTabOption({
 
 const tradeStack = enhanceTabOption({
     routeName: AppTabsRoutes.TradeStack,
-    iconName: 'arrowsLeftRight',
-    focusedIconName: 'arrowsLeftRight',
+    iconName: 'repeat',
+    focusedIconName: 'repeat',
 });
 
 const settings = enhanceTabOption({
@@ -35,10 +35,14 @@ const settings = enhanceTabOption({
     focusedIconName: 'gearFilled',
 });
 
-export const rootTabsOptions = {
+export const rootTabsOptionsWithoutEarn: TabsOptions = {
     ...homeStack,
     ...accountsStack,
     ...tradeStack,
-    ...earnStack,
     ...settings,
+};
+
+export const rootTabsOptions: TabsOptions = {
+    ...rootTabsOptionsWithoutEarn,
+    ...earnStack,
 };

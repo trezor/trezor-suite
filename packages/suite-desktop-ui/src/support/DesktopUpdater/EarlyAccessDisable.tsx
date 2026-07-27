@@ -1,13 +1,12 @@
 import { useCallback, useState } from 'react';
 
-import { events } from '@suite/analytics';
+import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
 import { Column, H3, Modal, Paragraph } from '@trezor/components';
+import { StarFourIcon } from '@trezor/icons';
 import { desktopApi } from '@trezor/suite-desktop-api';
-import { spacings } from '@trezor/theme';
 import { SUITE_URL } from '@trezor/urls';
-
-import { useAnalytics } from 'src/support/useAnalytics';
 
 interface EarlyAccessDisableProps {
     hideWindow: () => void;
@@ -15,7 +14,7 @@ interface EarlyAccessDisableProps {
 
 export const EarlyAccessDisable = ({ hideWindow }: EarlyAccessDisableProps) => {
     const [enabled, setEnabled] = useState(true);
-    const analytics = useAnalytics();
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
 
     const allowPrerelease = useCallback(() => {
         analytics.report({
@@ -30,8 +29,8 @@ export const EarlyAccessDisable = ({ hideWindow }: EarlyAccessDisableProps) => {
 
     return enabled ? (
         <Modal
-            iconName="starFour"
-            variant="info"
+            icon={StarFourIcon}
+            intent="info"
             onCancel={hideWindow}
             bottomContent={
                 <>
@@ -44,7 +43,7 @@ export const EarlyAccessDisable = ({ hideWindow }: EarlyAccessDisableProps) => {
                 </>
             }
         >
-            <Column gap={spacings.xxs}>
+            <Column gap={4}>
                 <H3>
                     <Translation id="TR_EARLY_ACCESS" />
                 </H3>
@@ -57,8 +56,8 @@ export const EarlyAccessDisable = ({ hideWindow }: EarlyAccessDisableProps) => {
         </Modal>
     ) : (
         <Modal
-            iconName="starFour"
-            variant="info"
+            icon={StarFourIcon}
+            intent="info"
             onCancel={hideWindow}
             bottomContent={
                 <>
@@ -71,7 +70,7 @@ export const EarlyAccessDisable = ({ hideWindow }: EarlyAccessDisableProps) => {
                 </>
             }
         >
-            <Column gap={spacings.xxs}>
+            <Column gap={4}>
                 <H3>
                     <Translation id="TR_EARLY_ACCESS" />
                 </H3>

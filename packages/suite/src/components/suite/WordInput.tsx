@@ -1,18 +1,22 @@
 import { memo } from 'react';
-import { SelectInstance, createFilter } from 'react-select';
+import { createFilter } from 'react-select';
 
 import { useTranslation } from '@suite/intl';
-import { Select } from '@trezor/components';
+import { selectModalRequestId } from '@suite/modal';
+import { Select, type SelectRef } from '@trezor/components';
 import TrezorConnect, { UI_RESPONSE } from '@trezor/connect';
-import { bip39 } from '@trezor/crypto-utils';
+import { bip39EnglishWordlist } from '@trezor/crypto-utils';
 import { resolveAfter } from '@trezor/utils';
 
-const options = bip39.map(item => ({ label: item, value: item }));
+import { useSelector } from 'src/hooks/suite';
+
+const options = bip39EnglishWordlist.map(item => ({ label: item, value: item }));
 
 type Option = { label: string; value: string };
 
 export const WordInput = memo(() => {
     const { translationString } = useTranslation();
+    const requestId = useSelector(selectModalRequestId);
 
     return (
         <Select
@@ -24,9 +28,13 @@ export const WordInput = memo(() => {
             noOptionsMessage={({ inputValue }: { inputValue: string }) =>
                 translationString('TR_WORD_DOES_NOT_EXIST', { word: inputValue })
             }
-            onChange={async (item: Option, ref?: SelectInstance<Option, boolean> | null) => {
+            onChange={async (item: Option, ref?: SelectRef | null) => {
                 await resolveAfter(600);
-                TrezorConnect.uiResponse({ type: UI_RESPONSE.RECEIVE_WORD, payload: item.value });
+                TrezorConnect.uiResponse({
+                    type: UI_RESPONSE.RECEIVE_WORD,
+                    payload: item.value,
+                    requestId,
+                });
                 ref?.clearValue();
             }}
             options={options}

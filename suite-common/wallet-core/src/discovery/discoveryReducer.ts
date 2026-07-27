@@ -1,6 +1,6 @@
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
-import { Discovery, DiscoveryStatus, Timestamp } from '@suite-common/wallet-types';
-import { DeviceUniquePath } from '@trezor/connect';
+import { type Discovery, type DiscoveryStatus } from '@suite-common/wallet-types';
+import { type DeviceUniquePath } from '@trezor/connect';
 
 import { discoveryActions } from './discoveryActions';
 
@@ -13,11 +13,12 @@ export type DiscoveryRootState = {
 export const discoveryInitialState: Discovery = {};
 
 const update = (draft: Discovery, payload: { status: DiscoveryStatus; path: DeviceUniquePath }) => {
-    if (!draft[payload.path]) {
+    const { path } = payload;
+    if (!draft[path]) {
         return;
     }
 
-    const currentStatus = draft[payload.path];
+    const currentStatus: (typeof draft)[DeviceUniquePath] = draft[path];
     const hasLoadedAnyNonEmptyAccount =
         currentStatus.hasLoadedAnyNonEmptyAccount || payload.status.hasLoadedAnyNonEmptyAccount;
 
@@ -45,7 +46,8 @@ export const prepareDiscoveryReducer = createReducerWithExtraDeps(
                 status: 'starting',
                 isAddingHiddenWallet: payload.isAddingHiddenWallet,
                 isAddingExistingWallet: payload.isAddingExistingWallet,
-                startTimestamp: Date.now() as Timestamp,
+                useScopedCallIds: payload.useScopedCallIds,
+                startTimestamp: Date.now(),
             };
         });
         builder.addCase(discoveryActions.updateDiscovery, (state, { payload }) => {

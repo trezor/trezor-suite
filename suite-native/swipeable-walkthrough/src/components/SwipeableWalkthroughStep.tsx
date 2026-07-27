@@ -1,10 +1,10 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 import { ScrollView } from 'react-native-gesture-handler';
-import { SharedValue, useAnimatedStyle, withSpring } from 'react-native-reanimated';
+import { type SharedValue, useAnimatedStyle, withSpring } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { AnimatedBox, IconButton, VStack } from '@suite-native/atoms';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { SwipeableWalkthroughStepHeader } from './SwipeableWalkthroughStepHeader';
 import { useSwipeableWalkthroughStepHeight } from '../hooks/useSwipeableWalkthroughStepHeight';
@@ -102,8 +102,9 @@ export const SwipeableWalkthroughStep = ({
                     {continueButton ?? (
                         <IconButton
                             iconName="caretDown"
-                            colorScheme="tertiaryElevation0"
-                            size="large"
+                            intent="neutral"
+                            priority="secondary"
+                            size="medium"
                             onPress={handleNextButtonPress}
                             testID={`@swipeableWalkthroughStep/${stepId}/nextButton`}
                         />

@@ -18,6 +18,8 @@ export const tradeConfirmTradeEvent: EventDef<Attributes, EventType.TradeConfirm
     attributes: {
         action: {
             changelog: [{ version: '24.10.0', notes: 'added' }],
+            description:
+                'The type of trading action being confirmed: `buy` for buying crypto, `sell` for selling crypto, `exchange` for exchanging between cryptocurrencies',
         },
     },
 };

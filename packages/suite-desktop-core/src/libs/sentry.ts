@@ -1,5 +1,5 @@
 import {
-    ElectronMainOptions,
+    type ElectronMainOptions,
     IPCMode,
     captureConsoleIntegration,
     init,
@@ -7,7 +7,7 @@ import {
 import { session } from 'electron';
 
 import { SENTRY_CONFIG } from '@suite/sentry';
-import { TorStatus } from '@trezor/suite-desktop-api';
+import { TorStatus } from '@suite/tor';
 
 import type { Store } from './store';
 import type { MainThreadEmitter } from '../modules';
@@ -19,6 +19,7 @@ interface InitSentryParams {
 
 const ELECTRON_MAIN_SENTRY_CONFIG = {
     ...SENTRY_CONFIG,
+    // Important: must be a function to keep default Sentry integrations; an array would mean ONLY those specific integrations.
     integrations: defaults => [
         ...defaults.filter(i => i.name !== 'MainProcessSession'),
         captureConsoleIntegration({ levels: ['error'] }),
@@ -26,6 +27,13 @@ const ELECTRON_MAIN_SENTRY_CONFIG = {
 
     ipcMode: IPCMode.Classic,
     getSessions: () => [session.defaultSession],
+    // Required for renderer (browser) profiling: the renderer collects profiles via
+    // browserProfilingIntegration and ships them to the main process over IPC, but they are
+    // only re-attached to transaction envelopes (and thus actually sent to Sentry) when the
+    // main process runs rendererProfilingIntegration, which is added by this flag. Enabling it
+    // also makes the SDK inject the `Document-Policy: js-profiling` response header required by
+    // the JS Self-Profiling API into every session returned by getSessions().
+    enableRendererProfiling: true,
 } as ElectronMainOptions;
 
 export const initSentry = ({ mainThreadEmitter, store }: InitSentryParams) => {

@@ -1,11 +1,11 @@
 // https://zips.z.cash/zip-0243
 // https://zips.z.cash/zip-0225 version 5 format
 
-import { blake2b } from 'blakejs';
+import { blake2b } from '@noble/hashes/blake2.js';
 import * as varuint from 'varuint-bitcoin';
 
 import { BufferReader, BufferWriter, varIntSize } from '../bufferutils';
-import { EMPTY_SCRIPT, TransactionBase, TransactionOptions, varSliceSize } from './base';
+import { EMPTY_SCRIPT, TransactionBase, type TransactionOptions, varSliceSize } from './base';
 import { hash256 } from '../crypto';
 
 const ZCASH_JOINSPLITS_SUPPORT_VERSION = 2;
@@ -312,7 +312,7 @@ function getExtraData(tx: TransactionBase<ZcashSpecific>) {
 function getBlake2bDigestHash(buffer: Buffer, personalization: string | Buffer<ArrayBufferLike>) {
     const personalizedBuffer =
         typeof personalization === 'string' ? Buffer.from(personalization) : personalization;
-    const hash = blake2b(buffer, undefined, 32, undefined, personalizedBuffer);
+    const hash = blake2b(buffer, { dkLen: 32, personalization: personalizedBuffer });
 
     return Buffer.from(hash);
 }

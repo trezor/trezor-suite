@@ -2,12 +2,7 @@ import { useRoute } from '@react-navigation/native';
 
 import { useAlert } from '@suite-native/alerts';
 import { Form } from '@suite-native/forms';
-import {
-    PreloadedState,
-    act,
-    renderHookWithStoreProviderAsync,
-    waitFor,
-} from '@suite-native/test-utils';
+import { act, renderHookWithStoreProvider, waitFor } from '@suite-native/test-utils-store';
 import TrezorConnect from '@trezor/connect';
 
 import { useAddressValidationAlerts } from '../useAddressValidationAlerts';
@@ -40,7 +35,7 @@ const mockAccountInfoResponses = {
     },
     networkError: {
         success: false,
-        payload: { error: 'Network error' },
+        error: { message: 'Network error', code: 'Backend_Disconnected' },
     },
 } as const;
 
@@ -75,7 +70,7 @@ describe('useAddressValidationAlerts', () => {
         },
     };
 
-    const defaultPreloadedState: PreloadedState = {
+    const defaultPreloadedState: Record<string, unknown> = {
         wallet: {
             accounts: [
                 {
@@ -88,10 +83,10 @@ describe('useAddressValidationAlerts', () => {
     };
 
     const renderHookWithForm = async (
-        preloadedState: PreloadedState = defaultPreloadedState,
+        preloadedState: Record<string, unknown> = defaultPreloadedState,
         { inputIndex = 0 } = {},
     ) => {
-        const result = await renderHookWithStoreProviderAsync(
+        const result = renderHookWithStoreProvider(
             () => useAddressValidationAlerts({ inputIndex }),
             {
                 preloadedState,
@@ -220,7 +215,7 @@ describe('useAddressValidationAlerts', () => {
         });
 
         it('should not show checksum alert for non-Ethereum networks', async () => {
-            const btcPreloadedState: PreloadedState = {
+            const btcPreloadedState: Record<string, unknown> = {
                 wallet: {
                     accounts: [
                         {
@@ -316,7 +311,7 @@ describe('useAddressValidationAlerts', () => {
         });
 
         it('should not check contract address for non-Ethereum networks', async () => {
-            const btcPreloadedState: PreloadedState = {
+            const btcPreloadedState: Record<string, unknown> = {
                 wallet: {
                     accounts: [
                         {

@@ -2,14 +2,19 @@ import { combineReducers, createReducer } from '@reduxjs/toolkit';
 
 import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
 import { prepareAccountsReducer } from '@suite-common/wallet-core';
-import { Account } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 
 import { accountBtc, accountEth } from '../../../__fixtures__/utils';
+import { TRADING_FALLBACK_API_KEY } from '../../../constants';
 import { invityAPI } from '../../../invityAPI';
 import { tradingBuyActions } from '../../../reducers/buyReducer';
 import { exchangeInitialState, tradingExchangeActions } from '../../../reducers/exchangeReducer';
-import { SellInfo, tradingSellActions } from '../../../reducers/sellReducer';
-import { TradingState, initialState, tradingActions } from '../../../reducers/tradingCommonReducer';
+import { type SellInfo, tradingSellActions } from '../../../reducers/sellReducer';
+import {
+    type TradingState,
+    initialState,
+    tradingActions,
+} from '../../../reducers/tradingCommonReducer';
 import { prepareTradingReducer } from '../../../reducers/tradingReducer';
 import { regional } from '../../../regional';
 import { buyThunks } from '../../buy';
@@ -24,7 +29,7 @@ const tradingReducer = prepareTradingReducer(extraDependenciesCommonMock);
 
 type SelectedAccountStatus = {
     status: string;
-    account: Account;
+    account: Account | undefined;
 };
 type SelectedAccountState = SelectedAccountStatus;
 const mockedSelectedAccountReducer = createReducer<SelectedAccountState>(
@@ -48,12 +53,15 @@ const mockedSuiteReducer = createReducer(
     () => {},
 );
 
-const initStore = (localInitialState?: Partial<TradingState>) =>
+const initStore = (
+    localInitialState?: Partial<TradingState>,
+    selectedAccount: SelectedAccountStatus = { status: 'loaded', account: accountBtc as Account },
+) =>
     configureMockStore({
         extra: {
             selectors: {
                 ...extraDependenciesCommonMock.selectors,
-                selectSelectedAccount: () => ({ status: 'loaded', account: accountBtc }) as any,
+                selectSelectedAccount: () => selectedAccount as any,
             },
         },
         reducer: combineReducers({
@@ -82,6 +90,7 @@ const testUpdatedInfoData = async (type: 'outdated' | 'account-changed') => {
         Promise.resolve({
             coins: {},
             platforms: {},
+            config: {},
         });
 
     const getCurrentAccountDescriptorMock = jest.spyOn(invityAPI, 'getCurrentAccountDescriptor');
@@ -91,9 +100,7 @@ const testUpdatedInfoData = async (type: 'outdated' | 'account-changed') => {
     jest.spyOn(Date, 'now').mockImplementation(() => mockedLastLoadedTimestamp);
 
     const store = initStore({
-        info: {
-            paymentMethods: [],
-        },
+        info: {},
         lastLoadedTimestamp: type === 'outdated' ? 0 : mockedLastLoadedTimestamp,
     });
 
@@ -148,6 +155,7 @@ const testUpdatedInfoData = async (type: 'outdated' | 'account-changed') => {
             payload: {
                 coins: {},
                 platforms: {},
+                config: {},
             },
         },
         { type: buyThunks.loadInfoThunk.pending.type, payload: undefined },
@@ -254,6 +262,32 @@ describe('loadInitialDataThunk', () => {
         ]);
         expect(getCurrentAccountDescriptorMock).toHaveBeenCalledTimes(1);
         expect(setInvityServersEnvironmentMock).toHaveBeenCalledTimes(0);
+    });
+
+    it('should reload with the fallback api key when the account disconnects while cached data is fresh', async () => {
+        invityAPI.getCurrentAccountDescriptor = () => accountBtc.descriptor;
+        invityAPI.getInfo = () =>
+            Promise.resolve({
+                coins: {},
+                platforms: {},
+                config: {},
+            });
+
+        const createInvityAPIKeyMock = jest.spyOn(invityAPI, 'createInvityAPIKey');
+
+        const mockedLastLoadedTimestamp = new Date().getTime();
+        jest.spyOn(Date, 'now').mockImplementation(() => mockedLastLoadedTimestamp);
+
+        const store = initStore(
+            { info: {}, lastLoadedTimestamp: mockedLastLoadedTimestamp },
+            { status: 'none', account: undefined },
+        );
+
+        await store.dispatch(loadInitialDataThunk({ activeSection: 'buy' }));
+
+        const dispatchedTypes = store.getActions().map(action => action.type);
+        expect(dispatchedTypes).toContain(tradingActions.setLoading.type);
+        expect(createInvityAPIKeyMock).toHaveBeenCalledWith(TRADING_FALLBACK_API_KEY);
     });
 
     it('should update active section', async () => {

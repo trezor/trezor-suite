@@ -1,12 +1,12 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
+import { goto } from '@suite/router';
 import { TOOLTIP_DELAY_NONE, TOOLTIP_DELAY_NORMAL, Tooltip } from '@trezor/components';
 import { mediaQueries } from '@trezor/styles';
 
-import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch } from 'src/hooks/suite';
 
 const Container = styled.div`
@@ -21,7 +21,7 @@ const Container = styled.div`
     cursor: pointer;
     ${mediaQueries.hover} {
         :hover {
-            background: ${({ theme }) => theme.backgroundNeutralBoldInverted};
+            background: ${({ theme }) => theme.surfaceFillRaised};
         }
     }
 `;
@@ -32,7 +32,8 @@ interface StakeAmountWrapperProps {
 
 export const StakeAmountWrapper = ({ children }: StakeAmountWrapperProps) => {
     const dispatch = useDispatch();
-    const goToStakingTab = () => dispatch(goto('wallet-staking', { preserveParams: true }));
+    const goToStakingTab = () =>
+        dispatch(goto({ routeName: 'wallet-staking', preserveParams: true }));
 
     return (
         <Tooltip

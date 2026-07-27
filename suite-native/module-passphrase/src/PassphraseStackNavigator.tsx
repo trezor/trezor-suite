@@ -5,7 +5,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { selectSelectedDevice } from '@suite-common/device';
 import { selectDiscoveryForSelectedDevice } from '@suite-common/wallet-core';
 import {
-    PassphraseStackParamList,
+    type PassphraseStackParamList,
     PassphraseStackRoutes,
     stackNavigationOptionsConfig,
 } from '@suite-native/navigation';
@@ -23,7 +23,7 @@ import { PassphraseFormScreen } from './screens/PassphraseFormScreen';
 import { PassphraseLoadingScreen } from './screens/PassphraseLoadingScreen';
 import { PassphraseVerifyEmptyWalletScreen } from './screens/PassphraseVerifyEmptyWalletScreen';
 
-export const PassphraseStack = createNativeStackNavigator<PassphraseStackParamList>();
+const PassphraseStack = createNativeStackNavigator<PassphraseStackParamList>();
 
 export const PassphraseStackNavigator = () => {
     const selectedDevice = useSelector(selectSelectedDevice);

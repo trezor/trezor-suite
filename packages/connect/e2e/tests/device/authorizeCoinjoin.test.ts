@@ -1,3 +1,5 @@
+import { vi } from 'vitest';
+
 // eslint-disable-next-line import/no-extraneous-dependencies
 import TrezorConnect from '@trezor/connect';
 
@@ -42,7 +44,7 @@ describe('TrezorConnect.authorizeCoinjoin', () => {
             const unlockPath = await TrezorConnect.unlockPath({
                 path: "m/10025'",
             });
-            if (!unlockPath.success) throw new Error(unlockPath.payload.error);
+            if (!unlockPath.success) throw new Error(unlockPath.error.message);
 
             const auth = await TrezorConnect.authorizeCoinjoin({
                 coordinator: 'www.example.com',
@@ -50,11 +52,12 @@ describe('TrezorConnect.authorizeCoinjoin', () => {
                 maxCoordinatorFeeRate: 500000, // 5% => 0.005 * 10**8;
                 maxFeePerKvbyte: 3500,
                 path: "m/10025'/1'/0'/1'",
-                coin: 'Testnet',
+                coin: 'test',
                 scriptType: 'SPENDTAPROOT',
             });
 
             expect(auth.success).toBe(true);
+            if (!auth.success) throw new Error(auth.error.message);
             expect(auth.payload).toEqual({ message: 'Coinjoin authorized' });
 
             await new Promise(resolve => setTimeout(resolve, 11000)); // wait for auto-lock
@@ -69,7 +72,7 @@ describe('TrezorConnect.authorizeCoinjoin', () => {
                 '0f7777772e6578616d706c652e636f6d0000000000000000000000000000000000000000000000000000000000000001';
 
             const proof = await TrezorConnect.getOwnershipProof({
-                coin: 'Testnet',
+                coin: 'test',
                 path: "m/10025'/1'/0'/1'/1/0",
                 scriptType: 'SPENDTAPROOT',
                 userConfirmation: true, // ButtonRequest is not emitted because of preauthorization
@@ -156,7 +159,7 @@ describe('TrezorConnect.authorizeCoinjoin', () => {
                     },
                 ],
                 coinjoinRequest,
-                coin: 'testnet',
+                coin: 'test',
                 preauthorized: true,
                 unlockPath: unlockPath.payload, // NOTE: unlock path is required for validation, it will be removed in future
                 serialize: false,
@@ -165,6 +168,7 @@ describe('TrezorConnect.authorizeCoinjoin', () => {
             // ButtonRequests during signing is not emitted because of preauthorization
 
             const round1 = await TrezorConnect.signTransaction(params);
+            if (!round1.success) throw new Error(round1.error.message);
             expect(round1.payload).toMatchObject({
                 signatures: [
                     undefined,
@@ -187,7 +191,8 @@ describe('TrezorConnect.authorizeCoinjoin', () => {
             });
             const round3 = await TrezorConnect.signTransaction(params);
             expect(round3.success).toBe(false);
-            expect(round3.payload).toMatchObject({ error: 'No preauthorized operation' });
+            if (round3.success) throw new Error('Expected failure');
+            expect(round3.error).toMatchObject({ message: 'No preauthorized operation' });
         },
         40000, // extended timeout due to wait for auto-lock
     );
@@ -231,12 +236,12 @@ describe('TrezorConnect.authorizeCoinjoin', () => {
             maxCoordinatorFeeRate: 500000, // 5% => 0.005 * 10**8;
             maxFeePerKvbyte: 3500,
             path: "m/10025'/1'/0'/1'",
-            coin: 'Testnet',
+            coin: 'test',
             scriptType: 'SPENDTAPROOT',
         } as const;
 
         // watch for button requests
-        const spy = typeof jest !== 'undefined' ? jest.fn() : jasmine.createSpy('on.button');
+        const spy = vi.fn();
         TrezorConnect.on('button', spy);
 
         // authorize no passphrase wallet

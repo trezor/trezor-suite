@@ -2,10 +2,13 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 
 import { useDebounce } from '@trezor/react-utils';
 
-import type { Sort } from '../types';
+import type { SearchMode, Sort } from '../types';
 import {
     compareVersionsDesc,
-    fuzzyMatch,
+    eventHasVersion,
+    eventMatchesFullText,
+    eventNameMatchesQuery,
+    getAllVersions,
     getEventAddedVersion,
     getEventUpdatedVersion,
     getEventsFromJson,
@@ -14,13 +17,25 @@ import { getParamsFromUrl, updateUrl } from './urlParams';
 
 const ANALYTICS_JSON_URL = `${import.meta.env.BASE_URL}analytics.json`;
 
+const SEARCH_MODE_STORAGE_KEY = 'analytics-docs:search-mode';
+
+const getInitialSearchMode = (): SearchMode => {
+    if (typeof window === 'undefined') return 'fulltext';
+    const stored = window.localStorage.getItem(SEARCH_MODE_STORAGE_KEY);
+
+    return stored === 'name' || stored === 'fulltext' ? stored : 'fulltext';
+};
+
 export const useFilteredEvents = () => {
     const initial = useMemo(getParamsFromUrl, []);
     const [query, setQuery] = useState(initial.query);
     const [sort, setSort] = useState<Sort>(initial.sort);
     const [debouncedQuery, setDebouncedQuery] = useState(initial.query);
     const [platform, setPlatform] = useState<string>(initial.platform);
+    const [version, setVersion] = useState<string>(initial.version);
+    const [searchMode, setSearchMode] = useState<SearchMode>(getInitialSearchMode);
     const [isSidebarOpen, setIsSidebarOpen] = useState(initial.sidebarOpen);
+    const [isLiveLogOpen, setIsLiveLogOpen] = useState(initial.liveLogOpen);
     const [isSidebarLoading, setIsSidebarLoading] = useState(false);
     const [isPlatformSortFiltering, setIsPlatformSortFiltering] = useState(false);
     const [analyticsData, setAnalyticsData] = useState<unknown | null>(null);
@@ -35,6 +50,7 @@ export const useFilteredEvents = () => {
     }, []);
 
     const allEvents = useMemo(() => getEventsFromJson(analyticsData ?? {}), [analyticsData]);
+    const availableVersions = useMemo(() => getAllVersions(allEvents), [allEvents]);
     const isAnalyticsDataGenerated =
         analyticsData !== null &&
         typeof analyticsData === 'object' &&
@@ -47,8 +63,16 @@ export const useFilteredEvents = () => {
     }, [query, debounce]);
 
     useEffect(() => {
-        updateUrl(debouncedQuery, platform, sort, isSidebarOpen);
-    }, [debouncedQuery, platform, sort, isSidebarOpen]);
+        updateUrl(debouncedQuery, platform, sort, version, isSidebarOpen, isLiveLogOpen);
+    }, [debouncedQuery, platform, sort, version, isSidebarOpen, isLiveLogOpen]);
+
+    useEffect(() => {
+        try {
+            window.localStorage.setItem(SEARCH_MODE_STORAGE_KEY, searchMode);
+        } catch {
+            return;
+        }
+    }, [searchMode]);
 
     useEffect(() => {
         const id = setTimeout(() => setIsSidebarLoading(false), 200);
@@ -67,14 +91,19 @@ export const useFilteredEvents = () => {
         const id = setTimeout(() => setIsPlatformSortFiltering(false), 300);
 
         return () => clearTimeout(id);
-    }, [debouncedQuery, platform, sort]);
+    }, [debouncedQuery, platform, sort, version]);
 
     const isFiltering = isPlatformSortFiltering;
 
     const filteredEvents = useMemo(() => {
         const byPlatformAndQuery = allEvents
             .filter(e => (platform === 'all' ? true : e.platform.includes(platform)))
-            .filter(e => (normalizedQuery ? fuzzyMatch(normalizedQuery, e.name) : true));
+            .filter(e => (version === 'all' ? true : eventHasVersion(e, version)))
+            .filter(e =>
+                searchMode === 'fulltext'
+                    ? eventMatchesFullText(normalizedQuery, e)
+                    : eventNameMatchesQuery(normalizedQuery, e),
+            );
 
         return byPlatformAndQuery.sort((a, b) => {
             const an = a.name ?? '';
@@ -97,12 +126,13 @@ export const useFilteredEvents = () => {
 
             return an.localeCompare(bn);
         });
-    }, [allEvents, platform, normalizedQuery, sort]);
+    }, [allEvents, platform, version, normalizedQuery, sort, searchMode]);
 
     const clearAll = () => {
         setQuery('');
         setPlatform('all');
         setSort('az');
+        setVersion('all');
         setIsPlatformSortFiltering(true);
         setTimeout(() => setIsPlatformSortFiltering(false), 300);
     };
@@ -120,20 +150,27 @@ export const useFilteredEvents = () => {
         setQuery,
         setSort,
         setPlatform,
+        setVersion,
+        setSearchMode,
         clearAll,
         query,
         platform,
         sort,
+        version,
+        searchMode,
+        availableVersions,
         allEvents,
         debouncedQuery,
         normalizedQuery,
         isFiltering,
         isSidebarOpen,
+        isLiveLogOpen,
         isSidebarLoading,
         isAnalyticsDataGenerated,
         isAnalyticsDataLoading: analyticsData === null,
         generatedAt,
         setIsSidebarOpen,
+        setIsLiveLogOpen,
         setIsSidebarLoading,
     };
 };

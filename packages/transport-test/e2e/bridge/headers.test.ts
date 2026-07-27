@@ -45,7 +45,7 @@ describe('headers test', () => {
     fixturesForbidden.forEach(f => {
         test(`origin: https://spoofedtrezor.io and endpoint ${f.endpoint} is forbidden`, async () => {
             // invalid
-            const response = await fetch(`http://localhost:21325/${f.endpoint}`, {
+            const response = await fetch(`http://localhost:21328/${f.endpoint}`, {
                 method: 'POST',
                 headers: {
                     Origin: 'https://spoofedtrezor.io',
@@ -58,7 +58,7 @@ describe('headers test', () => {
 
         test(`origin: https://zor.io and endpoint ${f.endpoint} is forbidden`, async () => {
             // invalid
-            const response = await fetch(`http://localhost:21325/${f.endpoint}`, {
+            const response = await fetch(`http://localhost:21328/${f.endpoint}`, {
                 method: 'POST',
                 headers: {
                     Origin: 'https://zor.io',
@@ -80,7 +80,7 @@ describe('headers test', () => {
 
     fixturesAllowed.forEach(f => {
         test(`endpoint ${f.endpoint} with allowed origin`, async () => {
-            const response = await fetch(`http://localhost:21325/${f.endpoint}`, {
+            const response = await fetch(`http://localhost:21328/${f.endpoint}`, {
                 method: 'POST',
                 headers: {
                     Origin: 'https://trezor.io',

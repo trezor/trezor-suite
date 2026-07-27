@@ -7,6 +7,14 @@ dependencies_in_lists=()
 dependencies_missing_from_lists=()
 dependencies_listed_but_unused=()
 
+normalize_package_name() {
+    local package_name=$1
+
+    package_name=$(printf '%s' "$package_name" | sed -E 's/^[^a-zA-Z@"]*//; s/^"//; s/"$//; s/^((@[^/]+\/[^@]+)|([^@"]+)).*$/\1/')
+
+    printf '%s\n' "$package_name"
+}
+
 read_file_into_array() {
     local file=$1
     # Check if the file exists before trying to read it
@@ -28,10 +36,15 @@ for domain in "${domains[@]}"; do
 done
 
 # Get an array of all direct dependencies
-all_packages=$(yarn info --all --json --name-only | grep -E -v '@workspace:' | sed 's/^[^a-zA-Z@]*//; s/@patch:[^ ]*//; s/@npm:[^ ]*//g')
+all_packages_array=()
 
-# Convert package names to an array
-IFS=$'\n' read -r -d '' -a all_packages_array <<< "$all_packages"
+while IFS= read -r package_line; do
+    normalized_package=$(normalize_package_name "$package_line")
+
+    if [[ -n "$normalized_package" ]]; then
+        all_packages_array+=("$normalized_package")
+    fi
+done < <(yarn info --all --json --name-only | grep -E -v '@workspace:')
 
 # Check each dependency against domain lists
 for installed_package in "${all_packages_array[@]}"; do

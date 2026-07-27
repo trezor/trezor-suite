@@ -1,10 +1,8 @@
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
-import { GeneralPrecomposedTransactionFinal } from '@suite-common/wallet-types';
+import { type GeneralPrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import { Card, Column, InfoItem, Text } from '@trezor/components';
-import { spacings } from '@trezor/theme';
-
 const Pre = styled.pre`
     text-align: left;
     word-break: break-all;
@@ -24,7 +22,7 @@ export const TransactionReviewDetails = ({ tx, txHash }: TransactionReviewDetail
 
     return (
         <Card>
-            <Column gap={spacings.lg}>
+            <Column gap={20}>
                 <InfoItem label={<Translation id="TR_SIZE" />}>
                     <Text typographyStyle="body-sm">
                         {tx.bytes} <Translation id="TR_BYTES" />
@@ -46,7 +44,7 @@ export const TransactionReviewDetails = ({ tx, txHash }: TransactionReviewDetail
                 </InfoItem>
                 {txHash && (
                     <InfoItem label={<Translation id="RAW_TRANSACTION" />}>
-                        <Card paddingType="small">
+                        <Card paddingType="small" type="contrast">
                             <Text typographyStyle="body-xs" as="div">
                                 <Pre>{txHash}</Pre>
                             </Text>

@@ -1,7 +1,12 @@
-import { NetworkSymbol, getCoingeckoId, getNetworkFeatures } from '@suite-common/wallet-config';
+import {
+    type NetworkSymbol,
+    getCoingeckoId,
+    getNetworkFeatures,
+} from '@suite-common/wallet-config';
 import { getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
-import { TokenInfo } from '@trezor/connect';
+import { type TokenInfo } from '@trezor/connect';
 import { isCodesignBuild } from '@trezor/env-utils';
+import { isSafeObjectKey } from '@trezor/utils';
 
 import {
     TOKEN_DEFINITIONS_PREFIX_URL,
@@ -9,11 +14,11 @@ import {
 } from './tokenDefinitionsConstants';
 import {
     DefinitionType,
-    SimpleTokenStructure,
-    TokenDefinitionsState,
-    TokenManagementAction,
-    TokenManagementStorage,
-    TokenStructureType,
+    type SimpleTokenStructure,
+    type TokenDefinitionsState,
+    type TokenManagementAction,
+    type TokenManagementStorage,
+    type TokenStructureType,
 } from './tokenDefinitionsTypes';
 
 // Using Set greatly improves performance of this function because of O(1) complexity instead of O(n) for Array.includes
@@ -55,11 +60,7 @@ type TokenDefinitionsParameters = [NetworkSymbol, DefinitionType, TokenManagemen
 const getSafeDefinitionParameters = (
     definitionKey: string,
 ): TokenDefinitionsParameters | undefined => {
-    const safeDefinitions = definitionKey
-        .split('-')
-        .filter(
-            definitionPart => !['__proto__', 'constructor', 'prototype'].includes(definitionPart),
-        );
+    const safeDefinitions = definitionKey.split('-').filter(isSafeObjectKey);
 
     if (safeDefinitions.length !== 3) return undefined;
 

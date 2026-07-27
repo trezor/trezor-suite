@@ -1,8 +1,8 @@
 import { useFormatters } from '@suite-common/formatters';
-import { MonthKey, parseTransactionMonthKey } from '@suite-common/wallet-utils';
+import { type MonthKey, parseTransactionMonthKey } from '@suite-common/wallet-utils';
 import { Box, Text } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 type TransactionListGroupProps = {
     monthKey: MonthKey;
@@ -26,7 +26,7 @@ export const TransactionListGroupTitle = ({ monthKey }: TransactionListGroupProp
 
     return (
         <Box paddingLeft="sp16">
-            <Text color="textSubdued" variant="body-sm" style={applyStyle(dateTextStyle)}>
+            <Text color="contentSecondary" variant="body-sm" style={applyStyle(dateTextStyle)}>
                 {sectionTitle}
             </Text>
         </Box>

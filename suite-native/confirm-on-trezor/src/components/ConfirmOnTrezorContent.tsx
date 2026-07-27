@@ -1,10 +1,10 @@
 import { type PropsWithChildren } from 'react';
-import { GestureDetector, GestureType } from 'react-native-gesture-handler';
+import { GestureDetector, type GestureType } from 'react-native-gesture-handler';
 import {
     FadeIn,
     FadeOut,
     LinearTransition,
-    SharedValue,
+    type SharedValue,
     interpolate,
     useAnimatedStyle,
 } from 'react-native-reanimated';
@@ -15,10 +15,10 @@ import { AnimatedBox, useBannerAwareSafeAreaInsets } from '@suite-native/atoms';
 import { Screen, type ScreenHeaderProps } from '@suite-native/navigation';
 import { useActiveColorScheme } from '@suite-native/theme';
 import { getScreenWidth, getWindowWidth } from '@trezor/env-utils';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { ThemeColorVariant } from '@trezor/theme';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
+import { type ThemeColorVariant } from '@trezor/theme';
 
-import { BottomSheetControlProps } from '../hooks/useConfirmOnTrezorSheet';
+import { type BottomSheetControlProps } from '../hooks/useConfirmOnTrezorSheet';
 
 const SCREEN_WIDTH = getScreenWidth();
 const WINDOW_WIDTH = getWindowWidth();
@@ -36,10 +36,10 @@ const gradientStyle = prepareNativeStyle(() => ({
 const contentContainerStyle = prepareNativeStyle<{ colorVariant: ThemeColorVariant }>(
     (utils, { colorVariant }) => ({
         flex: 1,
-        backgroundColor: utils.colors.backgroundSurfaceElevation0,
+        backgroundColor: utils.colors.surfaceFillPage,
         borderWidth: utils.borders.widths.small,
         width: SCREEN_WIDTH + utils.borders.widths.small * 2,
-        borderColor: colorVariant === 'dark' ? utils.colors.borderOnElevation1 : 'transparent',
+        borderColor: colorVariant === 'dark' ? utils.colors.borderNeutral : 'transparent',
         position: 'absolute',
         top: 0,
         bottom: 0,
@@ -67,12 +67,13 @@ export type ConfirmOnTrezorWrapperProps = PropsWithChildren<{
     isManualControlEnabled?: boolean;
     defaultHeader?: React.ReactNode;
     isCloseButtonDisabled?: boolean;
+    shouldKeepScrolledToEnd?: boolean;
 }> &
     ScreenHeaderProps;
 
 type ConfirmOnTrezorContentProps = ConfirmOnTrezorWrapperProps & {
     translateY: SharedValue<number>;
-    snapPoints: number[];
+    snapPoints: [number, number, number];
     isFullscreen: boolean;
     panGesture: GestureType;
 };
@@ -84,24 +85,23 @@ export const ConfirmOnTrezorContent = ({
     panGesture,
     children,
     defaultHeader,
+    shouldKeepScrolledToEnd,
 }: ConfirmOnTrezorContentProps) => {
     const { applyStyle, utils } = useNativeStyles();
     const colorVariant = useActiveColorScheme();
 
     const insets = useBannerAwareSafeAreaInsets();
 
-    const gradientColor = utils.colors.backgroundSurfaceElevation0;
+    const gradientColor = utils.colors.surfaceFillPage;
+
+    const [snap0, snap1, snap2] = snapPoints;
 
     const animatedSheetStyle = useAnimatedStyle(() => {
-        const paddingTop = interpolate(
-            translateY.value,
-            [snapPoints[2], snapPoints[1], snapPoints[0]],
-            [insets.top, 0, 0],
-        );
+        const paddingTop = interpolate(translateY.value, [snap2, snap1, snap0], [insets.top, 0, 0]);
 
         const borderRadius = interpolate(
             translateY.value,
-            [snapPoints[2], snapPoints[1], snapPoints[0]],
+            [snap2, snap1, snap0],
             [0, utils.borders.radii.r16, utils.borders.radii.r16],
         );
 
@@ -114,28 +114,20 @@ export const ConfirmOnTrezorContent = ({
     });
 
     const animatedHandleStyle = useAnimatedStyle(() => ({
-        opacity: interpolate(
-            translateY.value,
-            [snapPoints[2], snapPoints[1], snapPoints[0]],
-            [0, 1, 1],
-        ),
+        opacity: interpolate(translateY.value, [snap2, snap1, snap0], [0, 1, 1]),
         padding: interpolate(
             translateY.value,
-            [snapPoints[2], snapPoints[1], snapPoints[0]],
+            [snap2, snap1, snap0],
             [0, utils.spacings.sp16, utils.spacings.sp16],
         ),
     }));
 
     const animatedIndicatorStyle = useAnimatedStyle(() => ({
-        height: interpolate(
-            translateY.value,
-            [snapPoints[2], snapPoints[1], snapPoints[0]],
-            [0, 4, 4],
-        ),
+        height: interpolate(translateY.value, [snap2, snap1, snap0], [0, 4, 4]),
     }));
 
     const animatedGradientStyle = useAnimatedStyle(() => ({
-        opacity: interpolate(translateY.value, [snapPoints[1], snapPoints[0]], [0, 1]),
+        opacity: interpolate(translateY.value, [snap1, snap0], [0, 1]),
     }));
 
     return (
@@ -147,15 +139,12 @@ export const ConfirmOnTrezorContent = ({
                     locations={[0, 1]}
                 />
             </AnimatedBox>
-            <GestureDetector gesture={panGesture}>
-                <AnimatedBox
-                    flex={1}
-                    style={[
-                        applyStyle(contentContainerStyle, { colorVariant }),
-                        animatedSheetStyle,
-                    ]}
-                    layout={LinearTransition}
-                >
+            <AnimatedBox
+                flex={1}
+                style={[applyStyle(contentContainerStyle, { colorVariant }), animatedSheetStyle]}
+                layout={LinearTransition}
+            >
+                <GestureDetector gesture={panGesture}>
                     <AnimatedBox style={animatedHandleStyle}>
                         <AnimatedBox
                             style={[
@@ -164,19 +153,20 @@ export const ConfirmOnTrezorContent = ({
                             ]}
                         />
                     </AnimatedBox>
-                    {isFullscreen && (
-                        <AnimatedBox exiting={FadeOut} entering={FadeIn}>
-                            {defaultHeader}
-                        </AnimatedBox>
-                    )}
-                    <Screen
-                        systemThemeStyle={!isFullscreen ? 'light' : undefined}
-                        containerStyle={applyStyle(innerContainerStyle)}
-                    >
-                        {children}
-                    </Screen>
-                </AnimatedBox>
-            </GestureDetector>
+                </GestureDetector>
+                {isFullscreen && (
+                    <AnimatedBox exiting={FadeOut} entering={FadeIn}>
+                        {defaultHeader}
+                    </AnimatedBox>
+                )}
+                <Screen
+                    systemThemeStyle={!isFullscreen ? 'light' : undefined}
+                    containerStyle={applyStyle(innerContainerStyle)}
+                    shouldKeepScrolledToEnd={shouldKeepScrolledToEnd}
+                >
+                    {children}
+                </Screen>
+            </AnimatedBox>
         </>
     );
 };

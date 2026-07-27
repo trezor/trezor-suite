@@ -1,20 +1,19 @@
-import { ReactNode, useEffect, useMemo, useRef, useState } from 'react';
+import { type ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 
 import useDebounce from 'react-use/lib/useDebounce';
 
 import { Translation } from '@suite/intl';
-import { selectLabelingDataForAccount } from '@suite/metadata';
+import { findAnchorTransactionPage, selectRouterAnchor } from '@suite/router';
 import { getTxsPerPage } from '@suite-common/suite-utils';
 import { advancedSearchTransactions } from '@suite-common/transaction-search';
 import { groupTransactionsByDate, isPending } from '@suite-common/wallet-utils';
-import { Column, SkeletonStack } from '@trezor/components';
-import { arrayPartition } from '@trezor/utils';
+import { Column } from '@trezor/components';
 
 import { DashboardSection } from 'src/components/dashboard';
 import { Pagination } from 'src/components/wallet';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { Account, WalletAccountTransaction } from 'src/types/wallet';
-import { findAnchorTransactionPage } from 'src/utils/suite/anchor';
+import { selectAccountLabelsForSearch } from 'src/selectors/suite/selectAccountLabelsForSearch';
+import { type Account, type WalletAccountTransaction } from 'src/types/wallet';
 
 import { NoSearchResults } from './NoSearchResults';
 import { SkeletonTransactionItem } from './SkeletonTransactionItem';
@@ -52,9 +51,9 @@ export const TransactionList = ({
     isTxFilteringEnabled = true,
     customPageFetching,
 }: TransactionListProps) => {
-    const anchor = useSelector(state => state.router.anchor);
+    const anchor = useSelector(selectRouterAnchor);
     const dispatch = useDispatch();
-    const accountMetadata = useSelector(state => selectLabelingDataForAccount(state, account.key));
+    const searchLabels = useSelector(state => selectAccountLabelsForSearch(state, account));
 
     const { fetchPage, fetchedAll, fetchAll } = useFetchTransactions(account, allTransactions);
 
@@ -66,11 +65,11 @@ export const TransactionList = ({
 
     useDebounce(
         () => {
-            const results = advancedSearchTransactions(transactions, accountMetadata, searchQuery);
+            const results = advancedSearchTransactions(transactions, searchLabels, searchQuery);
             setSearchedTransactions(results);
         },
         200,
-        [transactions, account.metadata, searchQuery, accountMetadata],
+        [transactions, searchQuery, searchLabels],
     );
 
     useEffect(() => {
@@ -95,9 +94,20 @@ export const TransactionList = ({
         onPageRequested?.(startPage);
     }, [account.descriptor, account.symbol, onPageRequested, startPage]);
 
+    // Pending txs are not part of the paginated history yet and keep their own chronological order, so
+    // they are rendered above the list on every page.
+    const pendingTxs = useMemo(
+        () => searchedTransactions.filter(isPending),
+        [searchedTransactions],
+    );
+
     const isSearching = searchQuery.trim() !== '';
     const defaultTotalItems = customTotalItems ?? account.history.total;
-    const totalItems = isSearching ? searchedTransactions.length : defaultTotalItems;
+    // account.history.total counts confirmed txs only, but pending txs occupy slots in the sliced
+    // array, so include them in the page count to keep the last confirmed tx reachable.
+    const totalItems = isSearching
+        ? searchedTransactions.length
+        : defaultTotalItems + pendingTxs.length;
 
     const onPageSelected = (page: number) => {
         setSelectedPage(page);
@@ -115,13 +125,16 @@ export const TransactionList = ({
     const startIndex = (currentPage - 1) * perPage;
     const stopIndex = startIndex + perPage;
 
+    // searchedTransactions is a sparse array - not-yet-fetched pages are holes - so it has to be sliced
+    // by index before filtering. Filtering first would drop the holes and shift the page offsets.
     const slicedTransactions = useMemo(
         () => searchedTransactions.slice(startIndex, stopIndex),
         [searchedTransactions, startIndex, stopIndex],
     );
 
-    const [pendingTxs, confirmedTxs] = useMemo(
-        () => arrayPartition(slicedTransactions, isPending),
+    // Only confirmed txs are paginated; pending txs are rendered above the list on every page.
+    const confirmedTxs = useMemo(
+        () => slicedTransactions.filter(tx => !isPending(tx)),
         [slicedTransactions],
     );
 
@@ -163,11 +176,11 @@ export const TransactionList = ({
                 {/* TODO: show this skeleton also while searching in txs */}
                 {isLoading ||
                 (!areAllTransactionsLoaded && searchQuery && searchedTransactions.length === 0) ? (
-                    <SkeletonStack $col $childMargin="0px 0px 16px 0px">
+                    <Column gap={16}>
                         <SkeletonTransactionItem />
                         <SkeletonTransactionItem />
                         <SkeletonTransactionItem />
-                    </SkeletonStack>
+                    </Column>
                 ) : (
                     <Column gap={40}>
                         {areTransactionsAvailable && <NoSearchResults />}

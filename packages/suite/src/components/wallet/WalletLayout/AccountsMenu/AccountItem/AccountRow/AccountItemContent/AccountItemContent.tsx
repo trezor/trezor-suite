@@ -1,9 +1,11 @@
-import { selectIsDiscreteModeActive } from '@suite-common/wallet-core';
-import { Account, BaseCurrencyAmount } from '@suite-common/wallet-types';
+import { selectIsDiscreteModeActive } from '@suite-common/discreet-mode';
+import { type Account, type BaseCurrencyAmount } from '@suite-common/wallet-types';
+import { getTronAvailableVotingPower } from '@suite-common/wallet-utils';
 import { Column, Row, Text } from '@trezor/components';
+import { BigNumber } from '@trezor/utils';
 
 import { useSelector } from 'src/hooks/suite';
-import { AccountItemType } from 'src/types/wallet';
+import { type AccountItemType } from 'src/types/wallet';
 
 import { AccountItemBottomLine } from './AccountItemBottomLine';
 import { AccountItemLabel } from './AccountItemLabel';
@@ -16,6 +18,7 @@ type AccountItemContentProps = {
     formattedBalance: string;
     dataTestKey?: string;
     isFiatLoading?: boolean;
+    showAccountTypeBadge?: boolean;
 };
 
 export const AccountItemContent = ({
@@ -25,8 +28,14 @@ export const AccountItemContent = ({
     formattedBalance,
     dataTestKey,
     isFiatLoading,
+    showAccountTypeBadge,
 }: AccountItemContentProps) => {
     const discreetMode = useSelector(selectIsDiscreteModeActive);
+
+    const isTronStakingRow = account.symbol === 'trx' && type === 'staking';
+    const tronAvailableVotingPower = getTronAvailableVotingPower(account);
+    const tronHasActiveVotes = new BigNumber(tronAvailableVotingPower).gt(0);
+    const isTronStakingRowWithActiveVotes = isTronStakingRow && tronHasActiveVotes;
 
     const isCardanoStakingRow = account.networkType === 'cardano' && type === 'staking';
     const isFailed = !!account.failed;
@@ -34,7 +43,11 @@ export const AccountItemContent = ({
     const canShowBalance = account.backendType !== 'coinjoin' || account.status !== 'initial';
 
     const shouldShowCryptoBalance =
-        !isCardanoStakingRow && !isFailed && canShowBalance && type !== 'tokens';
+        !isTronStakingRowWithActiveVotes &&
+        !isCardanoStakingRow &&
+        !isFailed &&
+        canShowBalance &&
+        type !== 'tokens';
 
     const shouldShowBalancePlaceholder = !isCardanoStakingRow && !isFailed && !canShowBalance;
 
@@ -53,12 +66,17 @@ export const AccountItemContent = ({
                     ellipsisLineCount={1}
                     data-testid={`${dataTestKey}/label`}
                 >
-                    <AccountItemLabel account={account} type={type} />
+                    <AccountItemLabel
+                        account={account}
+                        type={type}
+                        showAccountTypeBadge={showAccountTypeBadge}
+                    />
                 </Text>
 
                 <AccountItemRightSide
                     account={account}
                     isCardanoStakingRow={isCardanoStakingRow}
+                    isTronStakingRowWithActiveVotes={isTronStakingRowWithActiveVotes}
                     isFailed={isFailed}
                     formattedBalance={formattedBalance}
                     customFiatValue={customFiatValue}

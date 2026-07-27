@@ -1,6 +1,6 @@
 import Svg, { Path } from 'react-native-svg';
 
-import { PictogramIconSvgProps } from './types';
+import { type PictogramIconSvgProps } from './types';
 
 export const SuccessIconSvg = ({ color }: PictogramIconSvgProps) => (
     <Svg width={54} height={54} fill="none">

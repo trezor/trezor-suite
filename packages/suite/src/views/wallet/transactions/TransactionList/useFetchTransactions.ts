@@ -1,21 +1,20 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { getTxsPerPage } from '@suite-common/suite-utils';
-import {
-    getIsPhishingTransaction,
-    selectNetworkTokenDefinitions,
-} from '@suite-common/token-definitions';
+import { isPhishingTransaction } from '@suite-common/token-definitions';
 import {
     fetchAllTransactionsForAccountThunk,
     fetchTransactionsPageThunk,
     selectAccountTotalTransactions,
     selectAccountTransactionsWithNulls,
+    selectActiveDustPhishingThreshold,
     selectIsLoadingAccountTransactions,
+    selectPhishingTransactionsContext,
 } from '@suite-common/wallet-core';
 import { getSynchronize } from '@trezor/utils';
 
 import { useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
-import { Account, WalletAccountTransaction } from 'src/types/wallet';
+import { type Account, type WalletAccountTransaction } from 'src/types/wallet';
 
 import { shouldAttemptToLoadNextPageForVisibleTransactions } from './transaction-fetch-utils';
 
@@ -173,22 +172,33 @@ export const useVisibleTransactions = ({
     const transactionsIsLoading = useSelector(state =>
         selectIsLoadingAccountTransactions(state, account.key),
     );
-    const tokenDefinitions = useSelector(state =>
-        selectNetworkTokenDefinitions(state, account.symbol),
+    const { tokenDefinitions, txsMarkedAsNotScam, historicRates } = useSelector(state =>
+        selectPhishingTransactionsContext(state, account.key, account.symbol),
     );
+    const dustThreshold = useSelector(selectActiveDustPhishingThreshold);
 
     const visibleTransactions = useMemo(
         () =>
-            tokenDefinitions && enableFiltering
+            enableFiltering
                 ? allTransactions.filter(
                       transaction =>
-                          // NOTE: due to some weirdness, the transaction here can be `undefined`!
-                          transaction
-                              ? !getIsPhishingTransaction(transaction, tokenDefinitions)
-                              : false, // NOTE: when transaction is falsy, hide it
+                          !isPhishingTransaction({
+                              transaction,
+                              tokenDefinitions,
+                              txsMarkedAsNotScam,
+                              historicRates,
+                              dustThreshold,
+                          }).isPhishing,
                   )
                 : allTransactions,
-        [allTransactions, tokenDefinitions, enableFiltering],
+        [
+            enableFiltering,
+            allTransactions,
+            tokenDefinitions,
+            txsMarkedAsNotScam,
+            historicRates,
+            dustThreshold,
+        ],
     );
 
     const perPage = getTxsPerPage(account.networkType);

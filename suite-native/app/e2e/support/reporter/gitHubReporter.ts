@@ -12,16 +12,17 @@ class GitHubReporter extends GitHubReporterBase implements LoggingFunctions {
         await this.init();
     }
 
-    // Processes test completion by creating a GitHub issue with test results and metadata
-    // eslint-disable-next-line require-await
+    // Processes test completion by creating a GitHub issue per finished test case
     async onTestResult(_test: Test, testResult: TestResult): Promise<void> {
-        const testTitle = testResult.testResults[0]?.title;
-        this.log(`Processing test end for "${testTitle}"`);
-        const metadata = readMetadataForTest(testTitle);
-        // this.log(`Metadata for test "${testTitle}":`, metadata);
-        const report = new TestReportProvider(testResult, metadata);
+        for (const assertionResult of testResult.testResults) {
+            const testTitle = assertionResult.title;
 
-        return this.processTestResult(report);
+            this.log(`Processing test end for "${testTitle}"`);
+            const metadata = readMetadataForTest(testTitle);
+            const report = new TestReportProvider(testResult, assertionResult, metadata);
+
+            await this.processTestResult(report);
+        }
     }
 
     async onRunComplete(): Promise<void> {

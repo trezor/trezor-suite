@@ -1,9 +1,12 @@
+export * from './phishing';
+export * from './phishing/constants';
+export type * from './phishing/types';
+export * from './phishing/utils';
 export * from './tokenDefinitionsActions';
 export * from './tokenDefinitionsConstants';
-export * from './tokenDefinitionsSelectors';
-export * from './tokenDefinitionsReducer';
-export * from './tokenDefinitionsThunks';
 export * from './tokenDefinitionsMiddleware';
+export * from './tokenDefinitionsReducer';
+export * from './tokenDefinitionsSelectors';
+export * from './tokenDefinitionsThunks';
 export * from './tokenDefinitionsTypes';
 export * from './tokenDefinitionsUtils';
-export * from './antiFraud';

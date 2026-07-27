@@ -1,9 +1,9 @@
 import { Translation } from '@suite/intl';
-import { FeeInfo } from '@suite-common/wallet-types';
+import { type FeeInfo } from '@suite-common/wallet-types';
 import { isEip1559 } from '@suite-common/wallet-utils';
 import { Icon, Row, Text } from '@trezor/components';
+import { GasPumpIcon, ReceiptIcon } from '@trezor/icons';
 import { FeeRate } from '@trezor/product-components';
-import { spacings } from '@trezor/theme';
 
 import { useFeesContext } from '../../context/FeesContext';
 
@@ -40,11 +40,11 @@ export const CurrentFee = () => {
                 <Translation id={currentFeeRateLabel} />
             </Text>
             <Text intent="neutral" typographyStyle="body-sm">
-                <Row alignItems="center" gap={spacings.xxs}>
+                <Row alignItems="center" gap={4}>
                     <Text>
                         <FeeRate feeRate={currentFeeRate} networkType={networkType} />
                     </Text>
-                    <Icon name={networkType === 'ethereum' ? 'gasPump' : 'receipt'} size={20} />
+                    <Icon as={networkType === 'ethereum' ? GasPumpIcon : ReceiptIcon} size={20} />
                 </Row>
             </Text>
         </Row>

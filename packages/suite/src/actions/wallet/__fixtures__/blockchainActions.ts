@@ -1,16 +1,16 @@
-import { DeepPartial } from 'react-hook-form';
-
-import { AnyAction } from '@suite-common/redux-utils';
+import { type AnyAction } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
-    AccountsState,
-    BlockchainState,
+    type AccountsState,
+    type BlockchainState,
     accountsActions,
     blockchainActions,
     feesActions,
     transactionsActions,
 } from '@suite-common/wallet-core';
 import { analyzeTransactions } from '@suite-common/wallet-utils/src/__fixtures__/transactionUtils';
+import { type BlockchainBlock, type BlockchainNotification } from '@trezor/connect-common';
+import { type DeepPartial } from '@trezor/type-utils';
 
 const DEFAULT_ACCOUNT = {
     deviceState: '1stTestnetAddress@device_id:0',
@@ -18,6 +18,7 @@ const DEFAULT_ACCOUNT = {
     networkType: 'bitcoin',
     descriptor: 'xpub',
     key: 'xpub-btc-deviceState',
+    visible: true,
     history: {
         total: 0,
     },
@@ -227,8 +228,61 @@ const analyzeTransactionsExtended = [
     },
 ];
 
+/** Partial state passed directly to the test store initializer. */
+type FixtureState = unknown;
+
+/** Opaque mock responses passed directly to setTrezorConnectFixtures. */
+type ConnectFixtures = unknown;
+
+type OnBlockFixture = {
+    description: string;
+    connect?: ConnectFixtures;
+    block: DeepPartial<BlockchainBlock>;
+    state: FixtureState;
+    result?: string[];
+    resultTxs?: {
+        'xpub-btc-deviceState': Array<{
+            blockHeight: number | undefined;
+            blockHash: string | undefined;
+            txid: string;
+        }>;
+    };
+};
+
+type OnConnectFixture = {
+    description: string;
+    connect?: ConnectFixtures;
+    initialState?: FixtureState;
+    symbol: string;
+    actions: AnyAction[];
+    blockchainEstimateFee: number;
+    blockchainSubscribe: number;
+};
+
+type OnDisconnectFixture = {
+    description: string;
+    initialState?: FixtureState;
+    symbol: string;
+    actions: AnyAction[];
+};
+
+type OnNotificationFixture = {
+    description: string;
+    initialState?: FixtureState;
+    params: DeepPartial<BlockchainNotification>;
+    actions: AnyAction[];
+    getAccountInfo: number;
+};
+
+type CustomBackendFixture = {
+    description: string;
+    initialState: FixtureState;
+    symbol: 'btc';
+    blockchainSetCustomBackend: number;
+};
+
 // A little bit crazy test to avoid fixtures duplication
-export const onBlock = analyzeTransactions
+export const onBlock: OnBlockFixture[] = analyzeTransactions
     // extend @wallet-utils/__fixtures__/transactionUtils
     .map((f, i) => ({
         description: f.description,
@@ -345,6 +399,28 @@ export const onBlock = analyzeTransactions
             },
             result: [blockchainActions.synced.type],
         },
+        {
+            description: 'external backend network is skipped without a custom backend',
+            block: { coin: { shortcut: 'pol' } },
+            state: {
+                accounts: [{ ...DEFAULT_ACCOUNT, symbol: 'pol', networkType: 'ethereum' }],
+            },
+        },
+        {
+            description: 'external backend network syncs when a custom backend is configured',
+            block: { coin: { shortcut: 'pol' } },
+            state: {
+                accounts: [
+                    { ...DEFAULT_ACCOUNT, symbol: 'pol', networkType: 'ethereum', visible: false },
+                ],
+                blockchain: {
+                    pol: {
+                        backends: { selected: 'blockbook', urls: { blockbook: ['http://url'] } },
+                    },
+                },
+            },
+            result: [blockchainActions.synced.type],
+        },
     ] as any);
 
 const seedBackends = (coins: string[]): DeepPartial<BlockchainState> =>
@@ -403,7 +479,7 @@ export const init: InitFixture[] = [
     },
 ];
 
-export const onConnect = [
+export const onConnect: OnConnectFixture[] = [
     {
         description: 'unknown coin',
         symbol: 'btc-invalid',
@@ -501,7 +577,7 @@ export const onConnect = [
     },
 ];
 
-export const onDisconnect = [
+export const onDisconnect: OnDisconnectFixture[] = [
     {
         description: 'unknown coin',
         symbol: 'btc-invalid',
@@ -538,7 +614,7 @@ export const onDisconnect = [
     },
 ];
 
-export const onNotification = [
+export const onNotification: OnNotificationFixture[] = [
     {
         description: 'no accounts',
         initialState: {
@@ -552,7 +628,7 @@ export const onNotification = [
         getAccountInfo: 0,
     },
     {
-        description: 'pending btc tx, multiple accounts update',
+        description: 'pending btc tx, only matched account refetched',
         initialState: {
             accounts: [
                 DEFAULT_ACCOUNT,
@@ -567,10 +643,10 @@ export const onNotification = [
         actions: [
             { type: notificationsActions.addEvent.type, payload: { formattedAmount: '0.001 BTC' } },
         ],
-        getAccountInfo: 3,
+        getAccountInfo: 1,
     },
     {
-        description: 'pending token tx, one account update',
+        description: 'pending token tx, only matched account refetched',
         initialState: {
             accounts: [
                 { ...DEFAULT_ACCOUNT, symbol: 'eth', networkType: 'ethereum' },
@@ -590,10 +666,10 @@ export const onNotification = [
                 payload: { formattedAmount: '0.001 erc20' },
             },
         ],
-        getAccountInfo: 2,
+        getAccountInfo: 1,
     },
     {
-        description: 'sent btc, multiple accounts update',
+        description: 'sent btc, only matched account refetched',
         initialState: {
             accounts: [
                 DEFAULT_ACCOUNT,
@@ -606,10 +682,10 @@ export const onNotification = [
             coin: { shortcut: 'btc' },
         },
         actions: [],
-        getAccountInfo: 3,
+        getAccountInfo: 1,
     },
     {
-        description: 'sent eth, one account update',
+        description: 'sent eth, only matched account refetched',
         initialState: {
             accounts: [
                 { ...DEFAULT_ACCOUNT, symbol: 'eth', networkType: 'ethereum' },
@@ -621,7 +697,7 @@ export const onNotification = [
             coin: { shortcut: 'eth' },
         },
         actions: [],
-        getAccountInfo: 2,
+        getAccountInfo: 1,
     },
     {
         description: 'sent ripple, no account update',
@@ -637,7 +713,7 @@ export const onNotification = [
     },
 ];
 
-export const customBackend = [
+export const customBackend: CustomBackendFixture[] = [
     {
         description: 'enable coin with custom backend',
         initialState: {

@@ -1,0 +1,10 @@
+import type { SVGProps } from 'react';
+const SvgExcludeSquareFilled = (props: SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" {...props}>
+        <path
+            fill="currentColor"
+            d="M11 11v10H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h15a1 1 0 0 1 1 1v6zm16 0h-6v10H11v6a1 1 0 0 0 1 1h15a1 1 0 0 0 1-1V12a1 1 0 0 0-1-1"
+        />
+    </svg>
+);
+export { SvgExcludeSquareFilled as ReactComponent };

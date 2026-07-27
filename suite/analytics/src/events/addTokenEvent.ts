@@ -10,12 +10,15 @@ type Attributes = {
 
 export const addTokenEvent: EventDef<Attributes, EventType.AddToken> = {
     name: EventType.AddToken,
-    descriptionTrigger: 'Accounts > Ethereum account > ... > Add token',
+    descriptionTrigger:
+        'User adds a custom token to their Ethereum account via the account menu (Accounts > Select Ethereum account > ... > Add token)',
     possibleImprovements: 'Rename to accounts/add-token',
     changelog: [{ version: '1.6.0', notes: 'added' }],
 
     attributes: {
         networkSymbol: {
+            description:
+                'The blockchain network symbol of the account where the token is being added',
             changelog: [{ version: '1.6.0', notes: 'added' }],
         },
         addedNth: {
@@ -23,6 +26,8 @@ export const addTokenEvent: EventDef<Attributes, EventType.AddToken> = {
             description: 'if the user added 1st, 2nd,... token in his account',
         },
         token: {
+            description:
+                'Identifier of the token being added (token symbol for EVM networks, contract address for Stellar)',
             changelog: [{ version: '1.9.0', notes: 'added' }],
         },
     },

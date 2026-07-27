@@ -5,13 +5,13 @@ import { useNavigation } from '@react-navigation/native';
 import { Box, Button, IconListTextItem, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
-    DeviceAuthenticityStackParamList,
-    DeviceAuthenticityStackRoutes,
-    DeviceSettingsStackParamList,
+    type DeviceAuthenticityStackParamList,
+    type DeviceAuthenticityStackRoutes,
+    type DeviceSettingsStackParamList,
     DeviceSettingsStackRoutes,
     DynamicScreenHeader,
     Screen,
-    StackToStackCompositeNavigationProps,
+    type StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 
 type NavigationProp = StackToStackCompositeNavigationProps<

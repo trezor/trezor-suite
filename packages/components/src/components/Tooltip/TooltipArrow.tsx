@@ -1,20 +1,11 @@
 import { FloatingArrow } from '@floating-ui/react';
 
-import { paletteV2 } from '@trezor/theme';
+import { type ArrowProps } from './TooltipFloatingUi';
 
-import { TOOLTIP_BORDER_RADIUS } from './TooltipBox';
-import { ArrowProps } from './TooltipFloatingUi';
+type TooltipArrowProps = ArrowProps & {
+    fill: string;
+};
 
-export const TooltipArrow = ({ ref, context }: ArrowProps) => (
-    <FloatingArrow
-        ref={ref}
-        context={context}
-        fill={paletteV2.darkCoolGrey50}
-        staticOffset={TOOLTIP_BORDER_RADIUS}
-        strokeWidth={0}
-        tipRadius={1}
-        style={{
-            transform: 'translateY(-2px)',
-        }}
-    />
+export const TooltipArrow = ({ ref, context, fill }: TooltipArrowProps) => (
+    <FloatingArrow ref={ref} context={context} fill={fill} strokeWidth={0} tipRadius={1} />
 );

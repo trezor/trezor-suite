@@ -1,8 +1,9 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/helpers/cardanoWitnesses.js
 
+import { MessagesSchema as PROTO } from '@trezor/protobuf';
+
 import type { CertificateWithPoolOwnersAndRelays } from './cardanoCertificate';
 import type { CollateralInputWithPath, InputWithPath, Path } from './cardanoInputs';
-import { PROTO } from '../../constants';
 
 export const gatherWitnessPaths = (
     inputsWithPath: InputWithPath[],

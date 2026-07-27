@@ -1,10 +1,11 @@
-import { SuiteSyncUpdateError } from '@suite-common/suite-sync-storage';
+import { type SuiteSyncUpdateError } from '@suite-common/suite-sync-storage';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
-import { AccountDescriptor, TxTargetId } from '@suite-common/wallet-types';
+import { type AccountDescriptor, type TxTargetId } from '@suite-common/wallet-types';
 import type { StaticSessionId } from '@trezor/connect';
-import { Result } from '@trezor/type-utils';
+import { type Result } from '@trezor/type-utils';
 
-import { EnsureWalletSuiteSyncOnErrors } from '../storage/ensureWalletSuiteSyncOn';
+import { type WithSuiteSyncStorage } from './withSuiteSyncStorage';
+import { type EnsureWalletSuiteSyncOnErrors } from '../storage/ensureWalletSuiteSyncOn';
 
 export type UpdateOutputLabelParams = {
     deviceStaticSessionId: StaticSessionId;
@@ -20,3 +21,15 @@ export type UpdateOutputLabel = (
 ) => Promise<Result<void, EnsureWalletSuiteSyncOnErrors | SuiteSyncUpdateError>>;
 
 export type UpdateOutputLabelDep = { updateOutputLabel: UpdateOutputLabel };
+
+export const selectUpdateOutputLabelDep = (services: any): UpdateOutputLabelDep => ({
+    updateOutputLabel: services.suiteSync.labeling.updateOutputLabel,
+});
+
+export type WriteOutputLabelParams = WithSuiteSyncStorage<UpdateOutputLabelParams>;
+
+export type WriteOutputLabel = (
+    params: WriteOutputLabelParams,
+) => Result<void, SuiteSyncUpdateError>;
+
+export type WriteOutputLabelDep = { writeOutputLabel: WriteOutputLabel };

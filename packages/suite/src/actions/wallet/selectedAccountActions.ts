@@ -1,4 +1,10 @@
 import { metadataActions } from '@suite/metadata';
+import {
+    routerLocationChange,
+    selectRouteName,
+    selectRouterApp,
+    selectRouterParams,
+} from '@suite/router';
 import { deviceActions, selectSelectedDevice } from '@suite-common/device';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
@@ -10,12 +16,11 @@ import {
     selectDiscoveryForSelectedDevice,
     selectEnabledNetworks,
 } from '@suite-common/wallet-core';
-import { SelectedAccountStatus, WalletParams } from '@suite-common/wallet-types';
+import { type SelectedAccountStatus, type WalletParams } from '@suite-common/wallet-types';
 import { isChanged } from '@trezor/utils';
 
-import { ROUTER } from 'src/actions/suite/constants';
 import { accountSearchActions } from 'src/reducers/wallet/accountSearchReducer';
-import { Action, AppState, Dispatch, GetState } from 'src/types/suite';
+import { type Action, type AppState, type Dispatch, type GetState } from 'src/types/suite';
 import { getSelectedAccount } from 'src/utils/wallet/accountUtils';
 
 // move to selector!!!!
@@ -51,8 +56,8 @@ export const getAccountState = (state: AppState): SelectedAccountStatus => {
     // get params from router
     // or set first default account from discovery list
     const params = (
-        state.router.app === 'wallet' && state.router.params
-            ? state.router.params
+        selectRouterApp(state) === 'wallet' && selectRouterParams(state)
+            ? selectRouterParams(state)
             : {
                   accountIndex: 0,
                   accountType: 'normal' as const,
@@ -85,6 +90,7 @@ export const getAccountState = (state: AppState): SelectedAccountStatus => {
         return {
             status: 'exception',
             loader: 'account-not-loaded',
+            account: matchedFailed,
             network,
             params,
         };
@@ -93,7 +99,7 @@ export const getAccountState = (state: AppState): SelectedAccountStatus => {
     // get selected account
     const account = getSelectedAccount(device.state.staticSessionId, state.wallet.accounts, params);
     // account does exist
-    if (account && account.visible) {
+    if (account?.visible) {
         if (account.backendType === 'coinjoin') {
             if (account.status === 'initial' || (account.status === 'error' && account.syncing)) {
                 return {
@@ -107,6 +113,7 @@ export const getAccountState = (state: AppState): SelectedAccountStatus => {
                 return {
                     status: 'exception',
                     loader: 'account-not-loaded',
+                    account,
                     network,
                     params,
                 };
@@ -130,6 +137,7 @@ export const getAccountState = (state: AppState): SelectedAccountStatus => {
         return {
             status: 'exception',
             loader: 'discovery-error',
+            account: account ?? undefined,
             network,
             params,
         };
@@ -154,7 +162,7 @@ export const getAccountState = (state: AppState): SelectedAccountStatus => {
 // list of all actions which has influence on "selectedAccount" reducer
 // other actions will be ignored
 const actions = new Set<Action['type']>([
-    ROUTER.LOCATION_CHANGE,
+    routerLocationChange.type,
     deviceActions.selectDevice.type,
     deviceActions.updateSelectedDevice.type,
     metadataActions.setAccountAdd.type,
@@ -168,7 +176,6 @@ const actions = new Set<Action['type']>([
     blockchainActions.synced.type,
     blockchainActions.connected.type,
     discoveryActions.updateDiscovery.type,
-    feesActions.updateFee.type,
     feesActions.updateMultipleFees.type,
 ]);
 
@@ -179,10 +186,18 @@ export const syncSelectedAccount = (action: Action) => (dispatch: Dispatch, getS
     // ignore not listed actions
     if (!actions.has(action.type)) return;
     const state = getState();
-    // ignore if not in wallet or in swap trading
+    // ignore if not in wallet or in global trading routes (buy, sell, exchange, redirect)
+    if (selectRouterApp(state) !== 'wallet') {
+        return;
+    }
+
+    const routeName = selectRouteName(state);
+
     if (
-        state.router.app !== 'wallet' ||
-        state.router.route.name.startsWith('wallet-trading-exchange')
+        routeName?.startsWith('wallet-trading-buy') ||
+        routeName?.startsWith('wallet-trading-sell') ||
+        routeName?.startsWith('wallet-trading-exchange') ||
+        routeName === 'wallet-trading-redirect'
     ) {
         return;
     }

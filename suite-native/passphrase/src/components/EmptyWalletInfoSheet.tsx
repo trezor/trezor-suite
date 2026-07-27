@@ -1,6 +1,6 @@
 import { forwardRef } from 'react';
 
-import { BottomSheetModalMethods } from '@gorhom/bottom-sheet/lib/typescript/types';
+import { type BottomSheetModalMethods } from '@gorhom/bottom-sheet/lib/typescript/types';
 import { useNavigation } from '@react-navigation/native';
 
 import {
@@ -14,12 +14,12 @@ import {
 } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
-    PassphraseStackParamList,
+    type PassphraseStackParamList,
     PassphraseStackRoutes,
-    RootStackParamList,
-    StackToStackCompositeNavigationProps,
+    type RootStackParamList,
+    type StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 const bottomSheetStyle = prepareNativeStyle(utils => ({
     gap: utils.spacings.sp24,
@@ -70,27 +70,27 @@ export const EmptyWalletInfoSheet = forwardRef<BottomSheetModalMethods, EmptyWal
                         iconName="pencilSimpleLine"
                         translationKey="modulePassphrase.emptyPassphraseWallet.confirmEmptyWalletSheet.list.backup"
                         iconSize="medium"
-                        iconBackgroundColor="backgroundTertiaryDefaultOnElevation0"
-                        iconBorderColor="borderElevation0"
+                        iconBackgroundColor="legacyBackgroundTertiaryDefaultOnElevation0"
+                        iconBorderColor="borderNeutral"
                     />
                     <BottomSheetListItem
                         iconName="copy"
                         translationKey="modulePassphrase.emptyPassphraseWallet.confirmEmptyWalletSheet.list.store"
                         iconSize="medium"
-                        iconBackgroundColor="backgroundTertiaryDefaultOnElevation0"
-                        iconBorderColor="borderElevation0"
+                        iconBackgroundColor="legacyBackgroundTertiaryDefaultOnElevation0"
+                        iconBorderColor="borderNeutral"
                     />
                     <BottomSheetListItem
                         iconName="eyeSlash"
                         translationKey="modulePassphrase.emptyPassphraseWallet.confirmEmptyWalletSheet.list.neverShare"
                         iconSize="medium"
-                        iconBackgroundColor="backgroundTertiaryDefaultOnElevation0"
-                        iconBorderColor="borderElevation0"
+                        iconBackgroundColor="legacyBackgroundTertiaryDefaultOnElevation0"
+                        iconBorderColor="borderNeutral"
                     />
                 </VStack>
                 <VStack style={applyStyle(bottomSheetBottomStyle)}>
                     <InlineAlertBox
-                        variant="warning"
+                        intent="warning"
                         title={
                             <Translation id="modulePassphrase.emptyPassphraseWallet.confirmEmptyWalletSheet.alertTitle" />
                         }

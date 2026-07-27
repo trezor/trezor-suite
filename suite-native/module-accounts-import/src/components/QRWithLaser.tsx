@@ -17,14 +17,14 @@ import {
     Mask,
     Rect,
     RoundedRect,
-    RoundedRectProps,
+    type RoundedRectProps,
     Skia,
     useSVG,
     vec,
 } from '@shopify/react-native-skia';
 
 import { ENDLESS_ANIMATION_VALUE } from '@suite-native/atoms';
-import { useNativeStyles } from '@trezor/styles';
+import { useNativeStyles } from '@trezor/styles-native';
 
 const ROUNDED_CORNER_SIZE = 15;
 
@@ -103,16 +103,18 @@ export const QrWithLaser = () => {
     const laserOpacity = useDerivedValue(() => interpolate(progress.value, [0, 0.5, 1], [0, 1, 0]));
 
     useEffect(() => {
-        progress.value = withRepeat(
-            withTiming(1, { duration: 1200, easing: Easing.bezier(0, 0, 0.3, 1) }),
-            ENDLESS_ANIMATION_VALUE,
-            false,
+        progress.set(
+            withRepeat(
+                withTiming(1, { duration: 1200, easing: Easing.bezier(0, 0, 0.3, 1) }),
+                ENDLESS_ANIMATION_VALUE,
+                false,
+            ),
         );
     }, [progress]);
 
     const paint = useMemo(() => Skia.Paint(), []);
     paint.setColorFilter(
-        Skia.ColorFilter.MakeBlend(Skia.Color(colors.backgroundNeutralBold), BlendMode.SrcIn),
+        Skia.ColorFilter.MakeBlend(Skia.Color(colors.legacyBackgroundNeutralBold), BlendMode.SrcIn),
     );
 
     return (
@@ -121,11 +123,7 @@ export const QrWithLaser = () => {
                 <LinearGradient
                     start={vec(0, 0)}
                     end={vec(width, 0)}
-                    colors={[
-                        colors.backgroundSurfaceElevation0,
-                        'red',
-                        colors.backgroundSurfaceElevation0,
-                    ]}
+                    colors={[colors.surfaceFillPage, 'red', colors.surfaceFillPage]}
                 />
             </Rect>
 

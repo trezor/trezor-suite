@@ -3,6 +3,7 @@ import type { TradingResidenceState, TradingState } from '@suite-native/trading-
 
 export const residenceInitialState: TradingResidenceState = {
     country: undefined,
+    countrySubdivision: undefined,
     wasOnboardingVisited: false,
 };
 

@@ -1,150 +1,91 @@
-import { useEffect, useState } from 'react';
+import styled, { type DefaultTheme } from 'styled-components';
 
-import styled, { DefaultTheme, keyframes } from 'styled-components';
-
-import { events } from '@suite/analytics';
+import { Address } from '@suite/address';
+import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
+import { openModal } from '@suite/modal';
+import { useServices } from '@suite-common/dependency-injection';
 import {
-    TradingExchangeType,
+    type TradingExchangeType,
+    requiresTokenApproval,
+    selectTradingSendAccount,
     tokenSupportsIncreasingAllowance,
+    useApprovalStep,
     useTradingUtils,
 } from '@suite-common/trading';
-import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
-import { AllowanceType } from '@suite-common/wallet-types';
-import { Banner, Button, Column, Icon, Link, Paragraph, Row } from '@trezor/components';
-import { useCurrentRef } from '@trezor/react-utils';
+import { selectAreFeesLoading, selectHasRunningDiscovery } from '@suite-common/wallet-core';
+import { Banner, Button, Column } from '@trezor/components';
+import { WarningIcon } from '@trezor/icons';
+import { PendingTransactionInfo } from '@trezor/product-components';
+import { useAsyncClickHandler } from '@trezor/react-utils';
 
-import { openModal } from 'src/actions/suite/modalActions';
-import { Address } from 'src/components/suite/Address';
+import { selectExchangeQuoteThunk } from 'src/actions/wallet/trading/exchange/selectExchangeQuoteThunk';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useAllowanceContext } from 'src/hooks/wallet/allowance';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { useTradingExchangeCryptoAndProviderInfo } from 'src/hooks/wallet/trading/form/useTradingExchangeCryptoAndProviderInfo';
-import { useAnalytics } from 'src/support/useAnalytics';
 
 const TextButton = styled.div<{ $disabled: boolean }>`
     color: ${({ theme, $disabled }) =>
-        $disabled ? theme.textDisabled : theme['textPrimaryDefault' as keyof DefaultTheme]};
+        $disabled ? theme.contentDisabled : theme['contentBrand' as keyof DefaultTheme]};
     cursor: pointer;
 
     &:hover {
         color: ${({ theme, $disabled }) =>
-            $disabled ? theme.textDisabled : theme['textPrimaryPressed' as keyof DefaultTheme]};
+            $disabled ? theme.contentDisabled : theme['contentBrandPressed' as keyof DefaultTheme]};
     }
 `;
-
-const loadingAnimation = keyframes`
-    from {
-        transform: rotate(0deg);
-    }
-    to {
-        transform: rotate(360deg);
-    }
-`;
-
-const IconWrapper = styled.div`
-    background-color: inherit;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transform: translateY(2px);
-
-    animation: ${loadingAnimation} 1s linear infinite;
-`;
-
-type ApprovalStep = 'REQUIRED' | 'APPROVED' | 'LOADING' | 'ERROR';
 
 export const TradingFormApproval = () => {
     const context = useTradingFormContext<TradingExchangeType>();
     const dispatch = useDispatch();
-    const analytics = useAnalytics();
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
 
     const { tx, state: allowanceState } = useAllowanceContext();
 
     const {
-        selectQuote,
+        watch,
         approveTransaction,
         revokeApproval,
         refreshQuotes,
         confirmApproval,
         resetSelectedOffer,
         selectedQuote,
-        preselectedQuote,
         isScheduledQuotesRefresh,
+        isComposing,
         form: {
-            state: { isFormLoading },
+            state: { isFormLoading, isFormInvalid },
+            helpers,
         },
-        account,
     } = context;
+    const account = useSelector(reduxState => selectTradingSendAccount(reduxState, 'exchange'));
+
+    const { exchangeType, rateType } = watch();
 
     const getCryptoInfo = useTradingExchangeCryptoAndProviderInfo();
 
-    const refreshQuotesRef = useCurrentRef(refreshQuotes);
-
-    const currentQuoteStatus = selectedQuote?.status;
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
+    const areFeesLoading = useSelector(state => selectAreFeesLoading(state, account?.symbol));
 
-    const [isApproveButtonLoading, setIsApproveButtonLoading] = useState(false);
-    const [isRevokeButtonLoading, setIsRevokeButtonLoading] = useState(false);
-    const [isSwapButtonLoading, setIsSwapButtonLoading] = useState(false);
-    const [isRefreshButtonLoading, setIsRefreshButtonLoading] = useState(false);
-
-    const [approvalStep, setApprovalStep] = useState<ApprovalStep | undefined>();
+    const { handleClick: handleApproveClick, disabled: isApproveButtonLoading } =
+        useAsyncClickHandler();
+    const { handleClick: handleRevokeClick, disabled: isRevokeButtonLoading } =
+        useAsyncClickHandler();
+    const { handleClick: handleSwapClick, disabled: isSwapButtonLoading } = useAsyncClickHandler();
+    const { handleClick: handleRefreshClick, disabled: isRefreshButtonLoading } =
+        useAsyncClickHandler();
 
     const { cryptoIdToSymbolAndContractAddress } = useTradingUtils();
 
-    const [txApprovalType, setTxApprovalType] = useState<AllowanceType | null>(null);
-
-    useEffect(() => {
-        if (tx.approvalTxid && tx.status.isPending && !txApprovalType) {
-            setTxApprovalType(allowanceState.approvalType);
-        }
-    }, [tx.approvalTxid, tx.status.isPending, allowanceState.approvalType, txApprovalType]);
-
-    useEffect(() => {
-        if (!tx.approvalTxid) return;
-
-        if (tx.status.isPending) {
-            setApprovalStep('LOADING');
-
-            return;
-        }
-
-        if (tx.status.isFailed) {
-            setApprovalStep('REQUIRED');
-
-            return;
-        }
-
-        if (tx.status.isConfirmed && txApprovalType) {
-            setApprovalStep(txApprovalType === 'APPROVE' ? 'APPROVED' : 'REQUIRED');
-
-            refreshQuotesRef.current().finally(() => {
-                tx.setApprovalTxid(null);
-                setTxApprovalType(null);
-            });
-        }
-    }, [tx, txApprovalType, refreshQuotesRef]);
-
-    useEffect(() => {
-        if (tx.approvalTxid) return;
-
-        if (currentQuoteStatus === 'ERROR') {
-            return setApprovalStep('ERROR');
-        }
-
-        if (currentQuoteStatus === 'APPROVAL_REQ') {
-            return setApprovalStep('REQUIRED');
-        }
-
-        if (currentQuoteStatus === 'CONFIRM' || currentQuoteStatus === 'SIGN_DATA') {
-            return setApprovalStep('APPROVED');
-        }
-    }, [currentQuoteStatus, tx.approvalTxid]);
+    const { approvalStep } = useApprovalStep({
+        tx,
+        currentApprovalType: allowanceState.approvalType,
+        quoteStatus: selectedQuote?.status,
+        refreshQuotes,
+    });
 
     const onApproveTransactionClick = async () => {
-        if (!selectedQuote || !selectedQuote.isDex) {
+        if (!selectedQuote || !requiresTokenApproval(selectedQuote)) {
             return;
         }
 
@@ -158,17 +99,15 @@ export const TradingFormApproval = () => {
         });
 
         allowanceState.setApprovalType('APPROVE');
-        setIsApproveButtonLoading(true);
 
         await approveTransaction(selectedQuote);
 
-        setIsApproveButtonLoading(false);
         context.setIsApproval(true);
         allowanceState.openApproveModal();
     };
 
-    const onRevokeApprovalClick = async () => {
-        if (!selectedQuote || !selectedQuote.receiveAddress) {
+    const onRevokeClick = async () => {
+        if (!selectedQuote?.receiveAddress) {
             return;
         }
 
@@ -182,17 +121,15 @@ export const TradingFormApproval = () => {
         });
 
         allowanceState.setApprovalType('REVOKE');
-        setIsRevokeButtonLoading(true);
 
         await revokeApproval(selectedQuote);
 
-        setIsRevokeButtonLoading(false);
         context.setIsApproval(true);
         allowanceState.openRevokeModal();
     };
 
     const onProceedToSwapClick = async () => {
-        if (!selectedQuote || !selectedQuote.receiveAddress) {
+        if (!selectedQuote?.receiveAddress) {
             return;
         }
 
@@ -205,20 +142,23 @@ export const TradingFormApproval = () => {
             },
         });
 
-        setIsSwapButtonLoading(true);
-
         const newTrade = await confirmApproval({
             trade: { ...selectedQuote, status: 'CONFIRM', approvalType: undefined },
             receiveAddress: selectedQuote.receiveAddress,
         });
 
-        setIsSwapButtonLoading(false);
-
         if (!newTrade || newTrade.status === 'ERROR') {
             return;
         }
 
-        selectQuote(selectedQuote);
+        dispatch(
+            selectExchangeQuoteThunk({
+                quote: selectedQuote,
+                exchangeType,
+                rateType,
+                fractionButton: helpers.fractionButton,
+            }),
+        );
     };
 
     const onRefreshClick = async () => {
@@ -231,37 +171,31 @@ export const TradingFormApproval = () => {
             },
         });
 
-        setIsRefreshButtonLoading(true);
-
         resetSelectedOffer();
         await refreshQuotes();
-
-        setIsRefreshButtonLoading(false);
     };
 
-    const isApproveButtonDisabled =
-        isApproveButtonLoading ||
-        (approvalStep === 'LOADING' && allowanceState.approvalType === 'REVOKE') ||
+    const isCommonButtonBusy =
+        !account ||
         isFormLoading ||
+        isFormInvalid ||
+        areFeesLoading ||
+        isComposing ||
         isScheduledQuotesRefresh ||
         isDiscoveryRunning ||
         allowanceState.isWaitingForDevice;
 
-    const isSwapButtonDisabled =
-        isSwapButtonLoading ||
-        (approvalStep === 'LOADING' && allowanceState.approvalType === 'APPROVE') ||
-        isFormLoading ||
-        isScheduledQuotesRefresh ||
-        isDiscoveryRunning ||
-        allowanceState.isWaitingForDevice;
+    const isActionButtonDisabled = (
+        isButtonLoading: boolean,
+        blockingApprovalType: 'APPROVE' | 'REVOKE',
+    ) =>
+        isButtonLoading ||
+        (approvalStep === 'LOADING' && allowanceState.approvalType === blockingApprovalType) ||
+        isCommonButtonBusy;
 
-    const isRevokeButtonDisabled =
-        isRevokeButtonLoading ||
-        (approvalStep === 'LOADING' && allowanceState.approvalType === 'APPROVE') ||
-        isFormLoading ||
-        isScheduledQuotesRefresh ||
-        isDiscoveryRunning ||
-        allowanceState.isWaitingForDevice;
+    const isApproveButtonDisabled = isActionButtonDisabled(isApproveButtonLoading, 'REVOKE');
+    const isSwapButtonDisabled = isActionButtonDisabled(isSwapButtonLoading, 'APPROVE');
+    const isRevokeButtonDisabled = isActionButtonDisabled(isRevokeButtonLoading, 'APPROVE');
 
     const isRefreshButtonDisabled =
         isRefreshButtonLoading || isFormLoading || isScheduledQuotesRefresh || isDiscoveryRunning;
@@ -281,7 +215,7 @@ export const TradingFormApproval = () => {
                             {!isIncreasingAllowanceSupported ? (
                                 <>
                                     <Button
-                                        onClick={onRevokeApprovalClick}
+                                        onClick={() => handleRevokeClick(onRevokeClick)}
                                         intent="brand"
                                         size="large"
                                         width="100%"
@@ -293,7 +227,7 @@ export const TradingFormApproval = () => {
 
                                     <Banner
                                         intent="warning"
-                                        icon="warning"
+                                        icon={WarningIcon}
                                         description={
                                             <Translation id="TR_EXCHANGE_APPROVAL_FORM_REVOKE_BANNER" />
                                         }
@@ -302,14 +236,18 @@ export const TradingFormApproval = () => {
                             ) : (
                                 <>
                                     <Button
-                                        onClick={onApproveTransactionClick}
+                                        onClick={() =>
+                                            handleApproveClick(onApproveTransactionClick)
+                                        }
                                         intent="brand"
                                         size="large"
                                         width="100%"
                                         isLoading={
                                             isApproveButtonLoading ||
                                             isRevokeButtonLoading ||
-                                            (preselectedQuote && isFormLoading)
+                                            isFormLoading ||
+                                            areFeesLoading ||
+                                            isComposing
                                         }
                                         isDisabled={
                                             isApproveButtonDisabled || isRevokeButtonDisabled
@@ -325,7 +263,7 @@ export const TradingFormApproval = () => {
                                             isApproveButtonDisabled ||
                                             isApproveButtonLoading
                                                 ? null
-                                                : onRevokeApprovalClick()
+                                                : handleRevokeClick(onRevokeClick)
                                         }
                                         $disabled={
                                             isRevokeButtonDisabled || isApproveButtonDisabled
@@ -338,11 +276,11 @@ export const TradingFormApproval = () => {
                         </>
                     ) : (
                         <Button
-                            onClick={onApproveTransactionClick}
+                            onClick={() => handleApproveClick(onApproveTransactionClick)}
                             intent="brand"
                             size="large"
                             width="100%"
-                            isLoading={isApproveButtonLoading}
+                            isLoading={isApproveButtonLoading || areFeesLoading || isComposing}
                             isDisabled={isApproveButtonDisabled}
                         >
                             <Translation id="TR_EXCHANGE_APPROVAL_FORM_APPROVE_BUTTON" />
@@ -354,14 +292,16 @@ export const TradingFormApproval = () => {
             {approvalStep === 'APPROVED' && (
                 <>
                     <Button
-                        onClick={onProceedToSwapClick}
+                        onClick={() => handleSwapClick(onProceedToSwapClick)}
                         intent="brand"
                         size="large"
                         width="100%"
                         isLoading={
                             isSwapButtonLoading ||
                             isRevokeButtonLoading ||
-                            (preselectedQuote && isFormLoading)
+                            isFormLoading ||
+                            areFeesLoading ||
+                            isComposing
                         }
                         isDisabled={isSwapButtonDisabled || isRevokeButtonDisabled}
                     >
@@ -375,7 +315,7 @@ export const TradingFormApproval = () => {
                             isSwapButtonDisabled ||
                             isSwapButtonLoading
                                 ? null
-                                : onRevokeApprovalClick()
+                                : handleRevokeClick(onRevokeClick)
                         }
                         $disabled={isRevokeButtonDisabled || isSwapButtonDisabled}
                     >
@@ -392,7 +332,7 @@ export const TradingFormApproval = () => {
 
             {(!approvalStep || approvalStep === 'ERROR') && (
                 <Button
-                    onClick={onRefreshClick}
+                    onClick={() => handleRefreshClick(onRefreshClick)}
                     intent="brand"
                     size="large"
                     width="100%"
@@ -404,66 +344,45 @@ export const TradingFormApproval = () => {
             )}
 
             {approvalStep === 'LOADING' && (
-                <Column width="100%" alignItems="flex-start">
-                    <Row alignItems="flex-start" gap={12}>
-                        <IconWrapper>
-                            <Icon name="spinnerGap" size={20} />
-                        </IconWrapper>
-
-                        <Column>
-                            <Paragraph
+                <PendingTransactionInfo
+                    title={
+                        <Translation
+                            id={
+                                allowanceState.approvalType === 'APPROVE'
+                                    ? 'TR_EXCHANGE_APPROVAL_FORM_CONFIRMING_APPROVAL'
+                                    : 'TR_EXCHANGE_APPROVAL_FORM_REVOKING_APPROVAL'
+                            }
+                        />
+                    }
+                    txidLabel={<Translation id="TR_EXCHANGE_APPROVAL_FORM_TRANSACTION_ID" />}
+                    txidComponent={
+                        tx.approvalTxid ? (
+                            <Address
+                                isTruncated
+                                value={tx.approvalTxid}
+                                intent="brand"
                                 typographyStyle="body-md"
-                                intent="neutral"
-                                priority="secondary"
-                                align="start"
-                            >
-                                <Translation
-                                    id={
-                                        allowanceState.approvalType === 'APPROVE'
-                                            ? 'TR_EXCHANGE_APPROVAL_FORM_CONFIRMING_APPROVAL'
-                                            : 'TR_EXCHANGE_APPROVAL_FORM_REVOKING_APPROVAL'
-                                    }
-                                />
-                            </Paragraph>
-
-                            <Paragraph
-                                typographyStyle="body-md"
-                                intent="neutral"
-                                priority="secondary"
-                                align="start"
-                            >
-                                <Translation id="TR_EXCHANGE_APPROVAL_FORM_TRANSACTION_ID" />
-                            </Paragraph>
-
-                            {tx.approvalTxid && (
-                                <Link
-                                    onClick={() => {
-                                        const txid = tx.approvalTxid;
-                                        if (txid) {
-                                            dispatch(
-                                                openModal({
-                                                    type: 'transaction-detail',
-                                                    txid,
-                                                    descriptor: account.descriptor,
-                                                    symbol: account.symbol,
-                                                    deviceState: account.deviceState,
-                                                    flow: 'detail',
-                                                }),
-                                            );
-                                        }
-                                    }}
-                                >
-                                    <Address
-                                        isTruncated
-                                        value={tx.approvalTxid}
-                                        intent="brand"
-                                        typographyStyle="body-md"
-                                    />
-                                </Link>
-                            )}
-                        </Column>
-                    </Row>
-                </Column>
+                            />
+                        ) : (
+                            <Translation id="TR_UNKNOWN" />
+                        )
+                    }
+                    onTxClick={
+                        tx.approvalTxid && account
+                            ? () =>
+                                  dispatch(
+                                      openModal({
+                                          type: 'transaction-detail',
+                                          txid: tx.approvalTxid!,
+                                          descriptor: account.descriptor,
+                                          symbol: account.symbol,
+                                          deviceState: account.deviceState,
+                                          flow: 'detail',
+                                      }),
+                                  )
+                            : undefined
+                    }
+                />
             )}
         </Column>
     );

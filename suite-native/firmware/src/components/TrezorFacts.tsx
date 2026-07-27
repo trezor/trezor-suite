@@ -2,8 +2,9 @@ import { useEffect, useState } from 'react';
 import Animated, { FadeIn, FadeInUp, FadeOut, FadeOutDown } from 'react-native-reanimated';
 
 import { Text, VStack } from '@suite-native/atoms';
-import { Translation, TxKeyPath } from '@suite-native/intl';
-import { useNativeStyles } from '@trezor/styles';
+import { Translation, type TxKeyPath } from '@suite-native/intl';
+import { useNativeStyles } from '@trezor/styles-native';
+import { arrayShuffle, getWeakRandomInt } from '@trezor/utils';
 
 import { firmwareTitlesWrapperStyle } from './FirmwareInstallationProgressTitles';
 
@@ -25,7 +26,9 @@ const FACTS_TRANSLATION_KEYS: TxKeyPath[] = [
 const FACTS_COUNT = FACTS_TRANSLATION_KEYS.length;
 
 // Randomly shuffle facts, so it do not always start with the same fact
-const SHUFFLED_FACTS_TRANSLATION_KEYS = FACTS_TRANSLATION_KEYS.sort(() => Math.random() - 0.5);
+const SHUFFLED_FACTS_TRANSLATION_KEYS = arrayShuffle(FACTS_TRANSLATION_KEYS, {
+    randomInt: getWeakRandomInt,
+});
 
 export const TrezorFacts = () => {
     const { applyStyle } = useNativeStyles();
@@ -53,7 +56,12 @@ export const TrezorFacts = () => {
                     exiting={FadeOut.duration(ANIMATION_DURATION)}
                 >
                     <Text variant="headline-sm" textAlign="center">
-                        <Translation id={SHUFFLED_FACTS_TRANSLATION_KEYS[factIndex]} />
+                        <Translation
+                            id={
+                                SHUFFLED_FACTS_TRANSLATION_KEYS[factIndex] ??
+                                'firmware.firmwareUpdateProgress.trezorFacts.1'
+                            }
+                        />
                     </Text>
                 </Animated.View>
             </VStack>

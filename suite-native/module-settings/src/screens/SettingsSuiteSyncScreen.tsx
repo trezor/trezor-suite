@@ -1,6 +1,8 @@
+import { VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { DynamicScreenHeader, Screen } from '@suite-native/navigation';
 
+import { SuiteSyncRelayUrlCard } from '../components/SuiteSyncRelayUrlCard';
 import { ToggleSuiteSyncCard } from '../components/ToggleSuiteSyncCard';
 
 export const SettingsSuiteSyncScreen = () => (
@@ -14,6 +16,9 @@ export const SettingsSuiteSyncScreen = () => (
             />
         }
     >
-        <ToggleSuiteSyncCard />
+        <VStack spacing="sp16">
+            <ToggleSuiteSyncCard />
+            <SuiteSyncRelayUrlCard />
+        </VStack>
     </Screen>
 );

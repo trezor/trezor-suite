@@ -1,12 +1,12 @@
 import { sanitizeUrl } from '@braintree/sanitize-url';
 import * as http from 'http';
-import * as net from 'net';
-import * as url from 'url';
+import type * as net from 'net';
 
 import type { RequiredKey } from '@trezor/type-utils';
-import { Log, TypedEmitter, arrayPartition } from '@trezor/utils';
+import { type Log, TypedEmitter, arrayPartition } from '@trezor/utils';
 
 import { findProcessFromIncomingPort } from './findProcessFromIncomingPort';
+import { formatRequestUrl, parseRequestUrl } from './parseRequestUrl';
 
 type Request = RequiredKey<http.IncomingMessage, 'url'>;
 const isRequest = (request: http.IncomingMessage): request is Request => request.url !== undefined;
@@ -97,6 +97,8 @@ export class HttpServer<T extends EventMap> extends TypedEmitter<T & BaseEvents>
     private port: number | undefined;
     private address: string;
     private sockets: Record<number, net.Socket> = {};
+    private onConnection?: (socket: net.Socket) => void;
+    private onError?: (e: Error) => void;
 
     constructor({
         logger,
@@ -180,7 +182,7 @@ export class HttpServer<T extends EventMap> extends TypedEmitter<T & BaseEvents>
               }
         >(resolve => {
             let nextSocketId = 0;
-            this.server.on('connection', socket => {
+            this.onConnection = socket => {
                 // Add a newly connected socket
                 const socketId = nextSocketId++;
                 this.sockets[socketId] = socket;
@@ -188,9 +190,10 @@ export class HttpServer<T extends EventMap> extends TypedEmitter<T & BaseEvents>
                 socket.on('close', () => {
                     delete this.sockets[socketId];
                 });
-            });
+            };
+            this.server.on('connection', this.onConnection);
 
-            this.server.on('error', async e => {
+            this.onError = async e => {
                 this.server.close();
                 // @ts-expect-error - type is missing
                 const errorCode: string = e.code;
@@ -222,7 +225,8 @@ export class HttpServer<T extends EventMap> extends TypedEmitter<T & BaseEvents>
                     error: 'other error',
                     message: `Start error code: ${errorCode}`,
                 };
-            });
+            };
+            this.server.on('error', this.onError);
 
             this.server.listen(port, this.address, undefined, () => {
                 this.logger.info('Server started, listening on port: ', port);
@@ -241,6 +245,14 @@ export class HttpServer<T extends EventMap> extends TypedEmitter<T & BaseEvents>
     public stop() {
         // note that this method only stops listening but keeps existing connections open and thus port blocked
         this.emitter.removeAllListeners();
+        if (this.onConnection) {
+            this.server.off('connection', this.onConnection);
+            this.onConnection = undefined;
+        }
+        if (this.onError) {
+            this.server.off('error', this.onError);
+            this.onError = undefined;
+        }
 
         return new Promise<void>(resolve => {
             this.emitter.emit('server/closing');
@@ -272,8 +284,12 @@ export class HttpServer<T extends EventMap> extends TypedEmitter<T & BaseEvents>
         return [baseSegments, paramsSegments];
     }
 
-    private registerRoute(pathname: string, method: 'POST' | 'GET', handler: AnyRequestHandler[]) {
-        const [baseSegments, paramsSegments] = this.splitSegments(pathname);
+    private registerRoute(pathname: string, method: Route['method'], handler: AnyRequestHandler[]) {
+        const segments = this.splitSegments(pathname);
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const baseSegments: string[] = segments[0];
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const paramsSegments: string[] = segments[1];
         const basePathname = baseSegments.join('/');
         this.routes.push({
             method,
@@ -295,7 +311,9 @@ export class HttpServer<T extends EventMap> extends TypedEmitter<T & BaseEvents>
         this.registerRoute(pathname, 'GET', handler);
     }
 
-    // PUT, DELETE etc are not used anywhere in our codebase, so no need to implement them now
+    public delete(pathname: string, handler: AnyRequestHandler[]) {
+        this.registerRoute(pathname, 'DELETE', handler);
+    }
 
     /**
      * Register common handlers that are run for all requests before route handlers
@@ -406,7 +424,7 @@ export class HttpServer<T extends EventMap> extends TypedEmitter<T & BaseEvents>
             this.logger.info(`Request ${request.method} ${request.url} aborted`);
         });
 
-        const { protocol, hostname, pathname, query } = url.parse(request.url, true);
+        const { protocol, hostname, pathname, query } = parseRequestUrl(request.url);
 
         if (query) {
             for (const key in query) {
@@ -417,7 +435,8 @@ export class HttpServer<T extends EventMap> extends TypedEmitter<T & BaseEvents>
                     query[key] = allParamsOfSameKey.map(singleParam => {
                         const decoded = this.getSafeDecodedURI(singleParam);
                         const sanitized = sanitizeUrl(decoded);
-                        if (sanitized !== decoded) isParamInvalid = true;
+                        // remove trailing slash from sanitized URL
+                        if (sanitized.replace(/\/$/, '') !== decoded) isParamInvalid = true;
 
                         return sanitized;
                     });
@@ -430,7 +449,7 @@ export class HttpServer<T extends EventMap> extends TypedEmitter<T & BaseEvents>
                 }
             }
         }
-        request.url = url.format({ protocol, hostname, pathname, query });
+        request.url = formatRequestUrl({ protocol, hostname, pathname, query });
 
         if (!pathname) {
             const msg = `url ${request.url} could not be parsed`;
@@ -670,6 +689,62 @@ export const parseBodyJSON: RequestHandler<unknown, JSON> = (request, response, 
             response.end(JSON.stringify({ error: `Invalid json body: ${error.message}` }));
         });
 };
+
+/**
+ * Factory that creates a body parser middleware with a maximum body size limit.
+ * Returns 413 if the body exceeds the limit.
+ */
+export const parseBodyJSONWithLimit =
+    (maxBytes: number): RequestHandler<unknown, JSON> =>
+    (request, response, next) => {
+        const hasData =
+            (request.headers['content-length'] &&
+                Number.parseInt(request.headers['content-length']) > 0) ||
+            request.headers['transfer-encoding'] === 'chunked';
+
+        if (!hasData) {
+            next(
+                Object.assign(request, { body: {} }) as unknown as RequestWithParams<JSON>,
+                response,
+            );
+
+            return;
+        }
+
+        const chunks: Buffer[] = [];
+        let size = 0;
+        let rejected = false;
+
+        request
+            .on('data', (chunk: Buffer) => {
+                if (rejected) return;
+                size += chunk.length;
+                if (size > maxBytes) {
+                    rejected = true;
+                    request.resume();
+                    response.statusCode = 413;
+                    response.end(JSON.stringify({ error: 'Payload too large' }));
+
+                    return;
+                }
+                chunks.push(chunk);
+            })
+            .on('end', () => {
+                if (rejected) return;
+                try {
+                    const text = Buffer.concat(chunks).toString();
+                    const body = text ? JSON.parse(text) : {};
+                    next(Object.assign(request, { body }), response);
+                } catch (error) {
+                    response.statusCode = 400;
+                    response.end(
+                        JSON.stringify({
+                            error: `Invalid json body: ${error instanceof Error ? error.message : String(error)}`,
+                        }),
+                    );
+                }
+            });
+    };
 
 /**
  * set request.body as string

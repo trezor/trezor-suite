@@ -2,22 +2,21 @@ import { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { selectBaseCurrency } from '@suite-common/wallet-core';
-import { SpinnerLoadingState } from '@suite-native/atoms';
+import { type SpinnerLoadingState } from '@suite-native/atoms';
 import {
-    AccountsImportStackParamList,
+    type AccountsImportStackParamList,
     AccountsImportStackRoutes,
-    RootStackParamList,
+    type RootStackParamList,
     Screen,
-    StackToStackCompositeScreenProps,
+    type StackToStackCompositeScreenProps,
     useInterceptNativeNavigation,
 } from '@suite-native/navigation';
-import { AccountInfo } from '@trezor/connect';
+import { type AccountInfo } from '@trezor/connect';
+import { resolveAfter } from '@trezor/utils';
 
 import { getAccountInfoThunk } from '../accountsImportThunks';
 import { AccountImportLoader } from '../components/AccountImportLoader';
 import { useShowImportError } from '../useShowImportError';
-
-const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 export const AccountImportLoadingScreen = ({
     navigation,
@@ -58,14 +57,14 @@ export const AccountImportLoadingScreen = ({
         async (onRetry?: () => Promise<void>) => {
             // Delay displaying the error message to avoid freezing the app on iOS. If an error occurs too quickly during the
             // transition from ScanQRCodeModalScreen, the error modal won't appear, resulting in a frozen app.
-            await sleep(1000);
+            await resolveAfter(1000);
             showImportError(error, () => {
                 if (!onRetry) return;
                 onRetry();
 
                 // This is needed because handleResult calls safelyShowImportError, which calls handleResult,
                 // so one of them is always going to be used before it was defined. However, the functionality is fine here so it's not a problem.
-                // eslint-disable-next-line @typescript-eslint/no-use-before-define
+                // eslint-disable-next-line @typescript-eslint/no-use-before-define, react-hooks/immutability
                 handleResult();
             });
         },

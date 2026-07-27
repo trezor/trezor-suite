@@ -1,20 +1,25 @@
-import { AccountKey } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
+import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { Form } from '@suite-native/forms';
+import { getTranslation } from '@suite-native/intl';
 import {
-    PreloadedState,
     renderHookWithStoreProvider,
     renderWithStoreProvider,
     userEvent,
-} from '@suite-native/test-utils';
+} from '@suite-native/test-utils-store';
 
-import { getWalletState } from '../../../../__fixtures__/walletState';
-import { FeesFormType } from '../../../../feesFormSchema';
+import {
+    BTC_ACCOUNT_KEY,
+    ETH_ACCOUNT_KEY,
+    getWalletState,
+} from '../../../../__fixtures__/walletState';
+import { type FeesFormType } from '../../../../feesFormSchema';
 import { useFeesForm } from '../../../../hooks';
-import { CustomFeeCard, CustomFeeCardProps } from '../CustomFeeCard';
+import { CustomFeeCard, type CustomFeeCardProps } from '../CustomFeeCard';
 
 describe('CustomFeeCard', () => {
     const defaultProps = {
-        accountKey: 'eth-account-1' as AccountKey,
+        accountKey: ETH_ACCOUNT_KEY,
         onEdit: jest.fn(),
         onCancel: jest.fn(),
     };
@@ -23,19 +28,15 @@ describe('CustomFeeCard', () => {
         wallet: getWalletState(),
     };
 
-    const renderUseFeesForm = (
-        accountKey: AccountKey = 'eth-account-1' as AccountKey, // Todo: create properly via `createAccountKey()`,
-        preloadedState?: PreloadedState,
-        defaultFeePerUnit?: string,
-    ) => {
+    const renderUseFeesForm = (accountKey: AccountKey = ETH_ACCOUNT_KEY) => {
         const { result } = renderHookWithStoreProvider(
             () =>
                 useFeesForm({
                     accountKey,
-                    defaultFeePerUnit: defaultFeePerUnit || '1',
+                    defaultFeePerUnit: '1',
                 }),
             {
-                preloadedState: preloadedState || defaultState,
+                preloadedState: defaultState,
             },
         );
 
@@ -44,17 +45,15 @@ describe('CustomFeeCard', () => {
 
     const renderCustomFeeCard = ({
         form,
-        preloadedState,
         props,
     }: {
         form: FeesFormType;
-        preloadedState?: PreloadedState;
         props?: Partial<CustomFeeCardProps>;
     }) => {
         const finalProps = { ...defaultProps, ...props };
 
         return renderWithStoreProvider(<CustomFeeCard {...finalProps} />, {
-            preloadedState: preloadedState || defaultState,
+            preloadedState: defaultState,
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
         });
     };
@@ -71,8 +70,8 @@ describe('CustomFeeCard', () => {
             });
 
             expect(getByText(/Custom/)).toBeTruthy();
-            expect(getByText('Cancel')).toBeTruthy();
-            expect(getByText('Edit')).toBeTruthy();
+            expect(getByText(getTranslation('generic.buttons.cancel'))).toBeTruthy();
+            expect(getByText(getTranslation('generic.buttons.edit'))).toBeTruthy();
         });
 
         it('should display fee amount correctly', () => {
@@ -94,7 +93,7 @@ describe('CustomFeeCard', () => {
         });
 
         it('should not render if using wrong accountKey', () => {
-            const accountKey = 'wrong-key' as AccountKey;
+            const accountKey = mockAccountKey({ descriptor: 'wrongKey' });
             const form = renderUseFeesForm(accountKey);
             const { toJSON } = renderCustomFeeCard({
                 form,
@@ -114,7 +113,7 @@ describe('CustomFeeCard', () => {
                 form,
             });
 
-            await userEvent.press(getByText('Edit'));
+            await userEvent.press(getByText(getTranslation('generic.buttons.edit')));
 
             expect(defaultProps.onEdit).toHaveBeenCalledTimes(1);
         });
@@ -125,14 +124,14 @@ describe('CustomFeeCard', () => {
                 form,
             });
 
-            await userEvent.press(getByText('Cancel'));
+            await userEvent.press(getByText(getTranslation('generic.buttons.cancel')));
 
             expect(defaultProps.onCancel).toHaveBeenCalledTimes(1);
         });
     });
 
     it('should render for bitcoin network', () => {
-        const accountKey = 'btc-account-1' as AccountKey;
+        const accountKey = BTC_ACCOUNT_KEY;
         const form = renderUseFeesForm(accountKey);
         const { getByText } = renderCustomFeeCard({
             form,

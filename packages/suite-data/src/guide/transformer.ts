@@ -2,8 +2,7 @@ import { pipe } from '@mobily/ts-belt';
 import * as fs from 'fs-extra';
 import { join } from 'path';
 
-import { GuideNode } from '@suite-common/suite-types';
-import { resolveStaticPath } from '@trezor/env-utils';
+import { type GuideNode } from '@suite-common/suite-types';
 
 /** Removes the front-matter from beginning of a string. */
 const clean = (markdown: string): string => markdown.replace(/^---\n.*?\n---\n/s, '');
@@ -12,20 +11,28 @@ const clean = (markdown: string): string => markdown.replace(/^---\n.*?\n---\n/s
  * Transforms HTML notation produced by GitBook to stadard markdown which can be parsed by react-markdown lib.
  *
  * <figure><img src=".gitbook/assets/example.png" alt=""><figcaption></figcaption></figure> to ![](.gitbook/assets/example.png)
+ *
+ * The `<img>` tag may carry extra attributes (e.g. `width`), so anything after the `src` up to the closing `>` is ignored.
  */
 export const transformImagesMarkdown = (markdown: string) =>
     markdown.replace(
-        /<figure><img src="([^"]+)" alt=""><figcaption><\/figcaption><\/figure>/g,
+        /<figure><img src="([^"]+)"[^>]*><figcaption><\/figcaption><\/figure>/g,
         '![]($1)',
     );
 
 /**
- * Transforms GitBook images path to Suite images path.
+ * Transforms GitBook images path to a stable Suite-internal path.
  *
- * ![](../../.gitbook/assets/example.png) to ![](static/guide/assets/example.png)
+ * ![](../../.gitbook/assets/example.png) to ![](/guide/assets/example.png)
+ *
+ * The ASSET_PREFIX/static prefix is intentionally applied at runtime
+ * (see GuideImage) — the build-time and runtime ASSET_PREFIX can differ
+ * (e.g. CI desktop builds run suite-data without ASSET_PREFIX, but the
+ * renderer bundle is built with ASSET_PREFIX=.), and baking it here
+ * would produce paths that don't resolve under file:// in the packaged app.
  */
 const transformImagesPath = (markdown: string) =>
-    markdown.replace(/(?<=\]\()(.*?)(?=\/assets)/g, resolveStaticPath('/guide'));
+    markdown.replace(/(?<=\]\()(.*?)(?=\/assets)/g, '/guide');
 
 /**
  * Given index of GitBook content transforms the content

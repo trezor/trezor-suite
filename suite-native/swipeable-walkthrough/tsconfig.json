@@ -4,6 +4,6 @@
     "references": [
         { "path": "../atoms" },
         { "path": "../navigation" },
-        { "path": "../../packages/styles" }
+        { "path": "../../packages/styles-native" }
     ]
 }

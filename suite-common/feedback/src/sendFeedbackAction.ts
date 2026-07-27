@@ -1,7 +1,7 @@
 import { createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 
-import { Feedback } from './feedback';
+import { type Feedback } from './feedback';
 import { getFeedbackUrl } from './getFeedbackUrl';
 
 const FEEDBACK_MODULE_PREFIX = '@suite/feedback';

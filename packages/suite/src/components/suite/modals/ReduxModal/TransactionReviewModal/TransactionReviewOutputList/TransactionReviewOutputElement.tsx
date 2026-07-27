@@ -1,42 +1,32 @@
-import { ReactNode, useState } from 'react';
+import { type ReactNode, useState } from 'react';
 
 import styled, { css } from 'styled-components';
 
+import { Address } from '@suite/address';
 import { Translation } from '@suite/intl';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { useDisplayBaseCurrency } from '@suite-common/wallet-core';
-import { TokenAddress } from '@suite-common/wallet-types';
+import { type TokenAddress } from '@suite-common/wallet-types';
 import { convertAmountSubunitsToUnits, formatNetworkAmount } from '@suite-common/wallet-utils';
-import {
-    Box,
-    Card,
-    Column,
-    H4,
-    InfoItem,
-    Note,
-    Row,
-    Text,
-    TextButton,
-    useElevation,
-} from '@trezor/components';
-import { TokenInfo } from '@trezor/connect';
-import { Elevation, mapElevationToBackground, spacings } from '@trezor/theme';
+import { Box, Card, Column, H4, InfoItem, Note, Row, Text, TextButton } from '@trezor/components';
+import { type TokenInfo } from '@trezor/connect';
+import { CaretDownIcon, CaretUpIcon } from '@trezor/icons';
+import { type Color } from '@trezor/theme';
 import { exhaustive } from '@trezor/type-utils';
 
-import { Address } from 'src/components/suite/Address';
 import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
 import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
 import { TransactionReviewOutputStatus } from 'src/components/suite/modals/ReduxModal/TransactionReviewModal/TransactionReviewOutputList/TransactionReviewOutputStatus';
-import { Account } from 'src/types/wallet';
+import { type Account } from 'src/types/wallet';
 
-const DataWrapper = styled.p<{ $isExpanded: boolean; $elevation: Elevation }>`
+const DataWrapper = styled.p<{ $isExpanded: boolean; $fadeColor: Color }>`
     word-break: break-all;
     font-variant-numeric: tabular-nums;
     letter-spacing: 0;
     cursor: pointer;
     position: relative;
 
-    ${({ $isExpanded, $elevation, theme }) =>
+    ${({ $isExpanded, $fadeColor, theme }) =>
         !$isExpanded &&
         css`
             max-height: 100px;
@@ -54,7 +44,7 @@ const DataWrapper = styled.p<{ $isExpanded: boolean; $elevation: Elevation }>`
                 background: linear-gradient(
                     to bottom,
                     rgb(0 0 0 / 0%) 0%,
-                    ${mapElevationToBackground({ theme, $elevation })} 100%
+                    ${theme[$fadeColor]} 100%
                 );
                 pointer-events: none;
             }
@@ -63,14 +53,20 @@ const DataWrapper = styled.p<{ $isExpanded: boolean; $elevation: Elevation }>`
 
 const MAX_COLLAPSED_DATA_LENGTH = 400;
 
-const Data = ({ value }: { value: string }) => {
+const Data = ({
+    value,
+    state,
+}: {
+    value: string;
+    state: TransactionReviewOutputElementProps['state'];
+}) => {
     const [isExpanded, setIsExpanded] = useState(false);
-    const { parentElevation } = useElevation();
     const isTooLong = value.length > MAX_COLLAPSED_DATA_LENGTH;
+    const fadeColor = state === 'confirmed' ? 'elementFillNeutralSofter' : 'surfaceFillRaised';
 
     if (!isTooLong) {
         return (
-            <DataWrapper $isExpanded $elevation={parentElevation}>
+            <DataWrapper $isExpanded $fadeColor={fadeColor}>
                 {value}
             </DataWrapper>
         );
@@ -81,14 +77,14 @@ const Data = ({ value }: { value: string }) => {
             <DataWrapper
                 onClick={() => setIsExpanded(!isExpanded)}
                 $isExpanded={isExpanded}
-                $elevation={parentElevation}
+                $fadeColor={fadeColor}
             >
                 {isExpanded ? value : value.slice(0, MAX_COLLAPSED_DATA_LENGTH)}
             </DataWrapper>
             <Row justifyContent="center">
                 <TextButton
                     intent="neutral"
-                    iconLeft={isExpanded ? 'caretUp' : 'caretDown'}
+                    iconLeft={isExpanded ? CaretUpIcon : CaretDownIcon}
                     onClick={() => setIsExpanded(!isExpanded)}
                 >
                     <Translation id={isExpanded ? 'TR_SHOW_LESS' : 'TR_SHOW_MORE'} />
@@ -105,9 +101,10 @@ type ValueProps = {
     isFiatVisible: boolean;
     state: TransactionReviewOutputElementProps['state'];
     token?: TokenInfo;
+    isChunked?: boolean;
 };
 
-const Value = ({ value, type, symbol, token, isFiatVisible, state }: ValueProps) => {
+const Value = ({ value, type, symbol, token, isFiatVisible, state, isChunked }: ValueProps) => {
     const { shallDisplayBaseCurrency } = useDisplayBaseCurrency(symbol);
 
     switch (type) {
@@ -120,9 +117,11 @@ const Value = ({ value, type, symbol, token, isFiatVisible, state }: ValueProps)
                 <Address value={value} isDeviceRendered />
             );
         case 'safe-address':
-            return <Address value={value} isDeviceRendered />;
+            return <Address value={value} isDeviceRendered isChunked={isChunked} />;
+        case 'note':
+            return <Text>{value}</Text>;
         case 'data':
-            return <Data value={value} />;
+            return <Data value={value} state={state} />;
         case 'amount': {
             const formattedValue = token
                 ? convertAmountSubunitsToUnits(value, token.decimals)
@@ -166,8 +165,9 @@ export type OutputElementLine = {
     id: string;
     value: string;
     token?: TokenInfo;
-    type: 'default' | 'address' | 'safe-address' | 'data' | 'amount';
+    type: 'default' | 'address' | 'safe-address' | 'note' | 'data' | 'amount';
     label?: ReactNode;
+    isChunked?: boolean;
 };
 
 export type TransactionReviewOutputElementProps = {
@@ -190,12 +190,12 @@ export const TransactionReviewOutputElement = ({
     return (
         <Card
             paddingType="small"
-            fillType={state === 'confirmed' ? 'flat' : 'default'}
+            type={state === 'confirmed' ? 'contrast' : 'raised'}
             header={
-                <Row gap={spacings.sm}>
+                <Row gap={12}>
                     <TransactionReviewOutputStatus state={state} />
                     <H4
-                        margin={{ left: spacings.xxs }}
+                        margin={{ left: 4 }}
                         typographyStyle={state !== 'unconfirmed' ? 'body-sm-strong' : 'body-sm'}
                     >
                         {title}
@@ -203,7 +203,7 @@ export const TransactionReviewOutputElement = ({
                 </Row>
             }
         >
-            <Column gap={spacings.md} padding={{ left: spacings.xxl }}>
+            <Column gap={16} padding={{ left: 32 }}>
                 {lines.map(line => {
                     const value = (
                         <Value
@@ -213,6 +213,7 @@ export const TransactionReviewOutputElement = ({
                             token={line.token}
                             isFiatVisible={fiatVisible}
                             state={state}
+                            isChunked={line.isChunked}
                         />
                     );
 

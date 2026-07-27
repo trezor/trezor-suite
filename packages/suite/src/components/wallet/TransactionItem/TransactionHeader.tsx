@@ -1,16 +1,21 @@
 import { Translation, useTranslation } from '@suite/intl';
+import { redactNumericalSubstring, useDiscreetMode } from '@suite-common/discreet-mode';
 import { getNetworkDisplaySymbol, isNetworkSymbol } from '@suite-common/wallet-config';
-import { StakeType } from '@suite-common/wallet-types';
+import { type TronTxContractType } from '@suite-common/wallet-constants';
+import { type StakeType } from '@suite-common/wallet-types';
 import {
+    getNativeWrapTxKind,
     getTxHeaderSymbol,
     isCardanoStakingTx,
     isSupportedEthStakingNetworkSymbol,
     isSupportedSolStakingNetworkSymbol,
 } from '@suite-common/wallet-utils';
-import { AccountTransaction } from '@trezor/connect';
+import { type AccountTransaction } from '@trezor/connect';
+import { BigNumber } from '@trezor/utils';
 
 import { UnstakingTxAmount } from 'src/components/suite/UnstakingTxAmount';
-import { WalletAccountTransaction } from 'src/types/wallet';
+import { WrapTxAmount } from 'src/components/suite/WrapTxAmount';
+import { type WalletAccountTransaction } from 'src/types/wallet';
 import { BlurUrls } from 'src/views/wallet/tokens/common/BlurUrls';
 
 type TransactionHeaderProps = {
@@ -78,19 +83,66 @@ const getTransactionMessageId = ({ transaction, isPending }: GetTransactionMessa
 const getSolTransactionStakeTypeName = (stakeType: StakeType) => {
     switch (stakeType) {
         case 'stake':
-            return 'Stake';
+            return 'TR_TX_STAKE_STAKE';
         case 'unstake':
-            return 'Unstake';
+            return 'TR_TX_STAKE_UNSTAKE';
         case 'claim':
-            return 'Claim Withdraw Request';
+            return 'TR_TX_STAKE_CLAIM';
+    }
+};
+
+const getTronTransactionMessageId = (transaction: WalletAccountTransaction) => {
+    const contractType = transaction.tronSpecific?.contractType as TronTxContractType;
+
+    switch (contractType) {
+        case 'AccountCreateContract':
+            return 'TR_TRON_TX_CREATE_ACCOUNT';
+        case 'AccountUpdateContract':
+            return 'TR_TRON_TX_UPDATE_ACCOUNT';
+        case 'CreateSmartContract':
+            return 'TR_TRON_TX_DEPLOY_SMART_CONTRACT';
+        case 'VoteWitnessContract':
+            return 'TR_TRON_TX_VOTE_WITNESS';
+        case 'FreezeBalanceContract':
+        case 'FreezeBalanceV2Contract':
+            return 'TR_TRON_TX_FREEZE_BALANCE';
+        case 'UnfreezeBalanceContract':
+        case 'UnfreezeBalanceV2Contract':
+            return 'TR_TRON_TX_UNFREEZE_BALANCE';
+        case 'WithdrawExpireUnfreezeContract':
+            return 'TR_TRON_TX_WITHDRAW_BALANCE';
+        case 'WithdrawBalanceContract':
+            return 'TR_TRON_TX_CLAIM_REWARDS';
+        case 'DelegateResourceContract':
+            return 'TR_TRON_TX_DELEGATE_RESOURCE';
+        case 'UnDelegateResourceContract':
+            return 'TR_TRON_TX_UNDELEGATE_RESOURCE';
+        default:
+            return undefined;
     }
 };
 
 export const TransactionHeader = ({ transaction, isPending }: TransactionHeaderProps) => {
     const { translationString } = useTranslation();
+    const { isDiscreetMode } = useDiscreetMode();
 
     if (isPending && (transaction.ethereumSpecific || transaction.cardanoSpecific)) {
         return <Translation id="TR_UNCONFIRMED_TX_LONG" />;
+    }
+
+    // WETH wrap/unwrap are shown as their own labels (with the amount) instead of the generic
+    // contract-call name ("deposit"/"withdraw") that the indexer parses.
+    const wrapKind = getNativeWrapTxKind(transaction);
+    if (wrapKind) {
+        return (
+            <Translation
+                id={wrapKind === 'wrap' ? 'TR_TX_WRAP' : 'TR_TX_UNWRAP'}
+                values={{
+                    nativeAmount: <WrapTxAmount transaction={transaction} />,
+                    wrappedAmount: <WrapTxAmount transaction={transaction} wrapped />,
+                }}
+            />
+        );
     }
 
     if (
@@ -109,11 +161,45 @@ export const TransactionHeader = ({ transaction, isPending }: TransactionHeaderP
         );
     }
 
-    const solanaStakeType = transaction?.solanaSpecific?.stakeOperation?.type;
-    if (solanaStakeType) {
+    const tronTransactionMessageId = getTronTransactionMessageId(transaction);
+    if (tronTransactionMessageId) {
+        const contractType = transaction.tronSpecific?.contractType;
+
+        const votes = transaction.tronSpecific?.votes;
+        if (contractType === 'VoteWitnessContract' && votes?.length) {
+            const totalVotes = votes
+                .reduce((sum, vote) => sum.plus(vote.count ?? '0'), new BigNumber(0))
+                .toString();
+            const displayedVotes = isDiscreetMode
+                ? redactNumericalSubstring(totalVotes)
+                : totalVotes;
+
+            return (
+                <BlurUrls
+                    text={translationString('TR_TRON_TX_VOTED_VOTES', { votes: displayedVotes })}
+                />
+            );
+        }
+
+        const isUnfreeze =
+            contractType === 'UnfreezeBalanceContract' ||
+            contractType === 'UnfreezeBalanceV2Contract';
+
         return (
             <>
-                {getSolTransactionStakeTypeName(solanaStakeType)}
+                <BlurUrls text={translationString(tronTransactionMessageId)} />
+                {isUnfreeze && <UnstakingTxAmount transaction={transaction} />}
+            </>
+        );
+    }
+
+    const solanaStakeType = transaction?.solanaSpecific?.stakeOperation?.type;
+    if (solanaStakeType) {
+        const translationId = getSolTransactionStakeTypeName(solanaStakeType);
+
+        return (
+            <>
+                {translationId && <Translation id={translationId} />}
                 {isSupportedSolStakingNetworkSymbol(transaction.symbol) && (
                     <UnstakingTxAmount transaction={transaction} />
                 )}

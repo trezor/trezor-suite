@@ -1,19 +1,26 @@
 import {
-    AcquiredDevice,
-    ExperimentsItem,
-    Localization,
-    Message,
-    MessageSystem,
+    type AcquiredDevice,
+    type ExperimentsItem,
+    type Localization,
+    type Message,
+    type MessageSystem,
 } from '@suite-common/suite-types';
 import { mockConnectDevice } from '@suite-common/suite-types/mocks';
 import { testMocks } from '@suite-common/test-utils';
-import { FirmwareType, TransportInfo } from '@trezor/connect';
+import { FirmwareType, type TransportInfo } from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
-import { EnvUtils } from '@trezor/env-utils';
+import { type EnvUtils } from '@trezor/env-utils';
 
-import { Options } from '../messageSystemUtils';
+import { type Options } from '../messageSystemUtils';
 
 const { getDeviceFeatures, getMessageSystemConfig } = testMocks;
+
+const getSecondActionMessage = () => {
+    const action = getMessageSystemConfig().actions[1];
+    if (!action) throw new Error('Expected action at index 1');
+
+    return action.message;
+};
 
 const defaultOptions: Options = {
     settings: { tor: false, enabledNetworks: ['btc'] },
@@ -22,8 +29,7 @@ const defaultOptions: Options = {
 const defaultTransportsOption: TransportInfo = {
     type: 'BridgeTransport',
     apiType: 'usb',
-    version: '2.0.33',
-    outdated: false,
+    version: '3.0.0',
 };
 type GetConnectAcquiredDevice = (...args: Parameters<typeof mockConnectDevice>) => AcquiredDevice;
 const getConnectAcquiredDevice = mockConnectDevice as GetConnectAcquiredDevice;
@@ -1389,7 +1395,7 @@ export const getValidMessages: GetValidMessagesFixture[] = [
         suiteVersion: '',
         config: getMessageSystemConfig(),
         options: defaultOptions,
-        result: [getMessageSystemConfig().actions[1].message],
+        result: [getSecondActionMessage()],
     },
     {
         description: 'getValidMessages case 3',
@@ -1423,7 +1429,7 @@ export const getValidMessages: GetValidMessagesFixture[] = [
             ],
         }),
         options: defaultOptions,
-        result: [getMessageSystemConfig().actions[1].message],
+        result: [getSecondActionMessage()],
     },
     {
         description: 'getValidMessages case 5',
@@ -1440,7 +1446,7 @@ export const getValidMessages: GetValidMessagesFixture[] = [
             ],
         }),
         options: defaultOptions,
-        result: [getMessageSystemConfig().actions[1].message],
+        result: [getSecondActionMessage()],
     },
     {
         description: 'getValidMessages case 6',
@@ -1464,7 +1470,7 @@ export const getValidMessages: GetValidMessagesFixture[] = [
             ],
         }),
         options: { settings: { tor: false, enabledNetworks: [] }, countryCode: 'US' },
-        result: [getMessageSystemConfig().actions[1].message],
+        result: [getSecondActionMessage()],
     },
     {
         description: 'getValidMessages case 7',
@@ -1514,7 +1520,7 @@ export const getValidMessages: GetValidMessagesFixture[] = [
             ],
         }),
         options: defaultOptions,
-        result: [getMessageSystemConfig().actions[1].message],
+        result: [getSecondActionMessage()],
     },
     {
         description: 'getValidMessages case 9',
@@ -1563,7 +1569,7 @@ export const getValidMessages: GetValidMessagesFixture[] = [
             ],
         }),
         options: defaultOptions,
-        result: [getMessageSystemConfig().actions[1].message],
+        result: [getSecondActionMessage()],
     },
     {
         description: 'getValidMessages case 11',
@@ -1586,7 +1592,7 @@ export const getValidMessages: GetValidMessagesFixture[] = [
             ],
         }),
         options: defaultOptions,
-        result: [getMessageSystemConfig().actions[1].message],
+        result: [getSecondActionMessage()],
     },
     {
         description: 'getValidMessages case 12',
@@ -1647,7 +1653,7 @@ export const getValidMessages: GetValidMessagesFixture[] = [
             ],
         }),
         options: { settings: { tor: false, enabledNetworks: ['btc'] }, countryCode: 'US' },
-        result: [getMessageSystemConfig().actions[1].message],
+        result: [getSecondActionMessage()],
     },
     {
         description: 'getValidMessages case 15',
@@ -1673,7 +1679,7 @@ export const getValidMessages: GetValidMessagesFixture[] = [
             transports: [{ ...defaultTransportsOption, version: '2.3.4' }],
             countryCode: 'US',
         },
-        result: [getMessageSystemConfig().actions[1].message],
+        result: [getSecondActionMessage()],
     },
     {
         description: 'getValidMessages case 16',
@@ -1739,7 +1745,7 @@ export const getValidMessages: GetValidMessagesFixture[] = [
             device: getConnectAcquiredDevice(),
             countryCode: 'US',
         },
-        result: [getMessageSystemConfig().actions[1].message],
+        result: [getSecondActionMessage()],
     },
     {
         description: 'getValidMessages case 18',
@@ -1807,7 +1813,7 @@ export const getValidMessages: GetValidMessagesFixture[] = [
             },
             countryCode: 'US',
         },
-        result: [getMessageSystemConfig().actions[1].message],
+        result: [getSecondActionMessage()],
     },
     {
         description: 'getValidMessages case 20',
@@ -1843,7 +1849,7 @@ export const getValidMessages: GetValidMessagesFixture[] = [
             },
             countryCode: 'US',
         },
-        result: [getMessageSystemConfig().actions[1].message],
+        result: [getSecondActionMessage()],
     },
     {
         description: 'getValidMessages case 21',
@@ -1903,7 +1909,7 @@ export const getValidMessages: GetValidMessagesFixture[] = [
             },
             countryCode: 'US',
         },
-        result: [getMessageSystemConfig().actions[1].message],
+        result: [getSecondActionMessage()],
     },
     {
         description: 'getValidMessages case 23',
@@ -1939,134 +1945,7 @@ export const getValidMessages: GetValidMessagesFixture[] = [
             device: getConnectAcquiredDevice(),
             countryCode: 'US',
         },
-        result: [getMessageSystemConfig().actions[1].message],
-    },
-];
-
-export const validateExperiments = [
-    {
-        conditions: [
-            {
-                environment: {
-                    desktop: '*',
-                    mobile: '!',
-                    web: '*',
-                },
-            },
-        ],
-        experiment: {
-            id: 'experiment - case 1',
-            groups: [
-                {
-                    variant: 'A',
-                    percentage: 30,
-                },
-                {
-                    variant: 'B',
-                    percentage: 70,
-                },
-            ],
-        },
-    },
-    {
-        conditions: [
-            {
-                environment: {
-                    desktop: '*',
-                    mobile: '!',
-                    web: '*',
-                },
-            },
-        ],
-        experiment: {
-            id: 'experiment - case 3',
-            groups: [
-                {
-                    variant: 'A',
-                    percentage: 70,
-                },
-            ],
-        },
-    },
-    {
-        conditions: [
-            {
-                environment: {
-                    desktop: '*',
-                    mobile: '!',
-                    web: '*',
-                },
-            },
-        ],
-        experiment: {
-            id: 'experiment - case 4',
-            groups: [
-                {
-                    variant: 'A',
-                    percentage: 70,
-                },
-                {
-                    variant: 'B',
-                    percentage: 29,
-                },
-                {
-                    variant: 'C',
-                    percentage: 1,
-                },
-            ],
-        },
-    },
-    {
-        conditions: [
-            {
-                environment: {
-                    desktop: '*',
-                    mobile: '!',
-                    web: '*',
-                },
-            },
-        ],
-        experiment: {
-            id: 'experiment - case 5',
-            groups: [
-                {
-                    variant: 'A',
-                    percentage: 70,
-                },
-                {
-                    variant: 'B',
-                    percentage: 29,
-                },
-            ],
-        },
-    },
-    {
-        conditions: [
-            {
-                environment: {
-                    desktop: '*',
-                    mobile: '!',
-                    web: '*',
-                },
-            },
-        ],
-        experiment: {
-            id: 'experiment - case 6',
-            groups: [
-                {
-                    variant: 'A',
-                    percentage: 70,
-                },
-                {
-                    variant: 'B',
-                    percentage: 70,
-                },
-                {
-                    variant: 'C',
-                    percentage: 20,
-                },
-            ],
-        },
+        result: [getSecondActionMessage()],
     },
 ];
 

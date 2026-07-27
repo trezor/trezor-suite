@@ -3,20 +3,20 @@ import { useSelector } from 'react-redux';
 import { useFormatters } from '@suite-common/formatters';
 import { invariant } from '@suite-common/suite-utils';
 import { selectTradingSellIsLoading } from '@suite-common/trading';
-import { FiatRatesRootState, WalletSettingsRootState } from '@suite-common/wallet-core';
+import { type FiatRatesRootState, type WalletSettingsRootState } from '@suite-common/wallet-core';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { Badge } from '@suite-native/atoms';
 import { useField } from '@suite-native/forms';
+import { truncateDecimals } from '@suite-native/helpers';
 import { useTranslate } from '@suite-native/intl';
 import { getSymbolFromTradeableAsset } from '@suite-native/trading-atoms';
 import { MAX_CRYPTO_DECIMALS, MAX_FIAT_DECIMALS } from '@suite-native/trading-consts';
-import { TradingRootState, selectAmountInBaseFiatCurrency } from '@suite-native/trading-state';
-import { SellFormValues, TradeableAsset } from '@suite-native/trading-types';
+import { type TradingRootState, selectAmountInBaseFiatCurrency } from '@suite-native/trading-state';
+import { type SellFormValues, type TradeableAsset } from '@suite-native/trading-types';
 import { BigNumber } from '@trezor/utils';
 
 import { useConvertFormValueToBaseUnit } from '../../hooks/general/useConvertFormValueToBaseUnit';
 import { useSellFormContext } from '../../hooks/sell/useSellFormContext';
-import { truncateDecimals } from '../../utils/general/amountUtils';
 import { FiatAmountBadge } from '../general/FiatAmountBadge';
 
 export type SellFormFieldErrorBadgeProps = {
@@ -117,11 +117,11 @@ export const SellFormFieldErrorBadge = ({ fieldName }: SellFormFieldErrorBadgePr
 
     if (!isLoading) {
         if (hasError) {
-            return <Badge label={errorMessage} variant="red" size="small" />;
+            return <Badge label={errorMessage} intent="critical" size="small" />;
         }
 
         if (mismatchedAmountMessage) {
-            return <Badge label={mismatchedAmountMessage} variant="neutral" size="small" />;
+            return <Badge label={mismatchedAmountMessage} intent="neutral" size="small" />;
         }
     }
 

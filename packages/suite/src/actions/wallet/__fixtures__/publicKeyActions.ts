@@ -1,8 +1,8 @@
+import { MODAL_CLOSE, MODAL_OPEN_USER_CONTEXT, MODAL_PRESERVE } from '@suite/modal';
 import { connectInitThunk } from '@suite-common/connect-init';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { notificationsActions } from '@suite-common/toast-notifications';
 
-import { MODAL } from 'src/actions/suite/constants';
 import * as publicKeyActions from 'src/actions/wallet/publicKeyActions';
 
 const LOCK_DEVICE = 'notImplemented/lockDevice';
@@ -17,7 +17,7 @@ export default [
             actions: [
                 { type: connectInitThunk.pending.type, payload: undefined },
                 { type: connectInitThunk.fulfilled.type, payload: undefined },
-                { type: MODAL.OPEN_USER_CONTEXT },
+                { type: MODAL_OPEN_USER_CONTEXT },
             ],
         },
     },
@@ -30,12 +30,12 @@ export default [
             actions: [
                 { type: connectInitThunk.pending.type, payload: undefined },
                 { type: connectInitThunk.fulfilled.type, payload: undefined },
-                { type: MODAL.PRESERVE },
+                { type: MODAL_PRESERVE },
                 { type: LOCK_DEVICE },
                 { type: LOCK_DEVICE },
                 { type: '@suite/device/removeButtonRequests' },
 
-                { type: MODAL.OPEN_USER_CONTEXT },
+                { type: MODAL_OPEN_USER_CONTEXT },
             ],
         },
     },
@@ -50,11 +50,11 @@ export default [
             actions: [
                 { type: connectInitThunk.pending.type, payload: undefined },
                 { type: connectInitThunk.fulfilled.type, payload: undefined },
-                { type: MODAL.PRESERVE },
+                { type: MODAL_PRESERVE },
                 { type: LOCK_DEVICE },
                 { type: LOCK_DEVICE },
                 { type: '@suite/device/removeButtonRequests' },
-                { type: MODAL.OPEN_USER_CONTEXT },
+                { type: MODAL_OPEN_USER_CONTEXT },
             ],
         },
     },
@@ -69,8 +69,8 @@ export default [
             actions: [
                 { type: connectInitThunk.pending.type, payload: undefined },
                 { type: connectInitThunk.fulfilled.type, payload: undefined },
-                { type: MODAL.PRESERVE },
-                { type: MODAL.CLOSE },
+                { type: MODAL_PRESERVE },
+                { type: MODAL_CLOSE },
                 {
                     type: notificationsActions.addToast.type,
                     payload: {
@@ -96,7 +96,7 @@ export default [
                 { type: connectInitThunk.pending.type, payload: undefined },
                 { type: connectInitThunk.fulfilled.type, payload: undefined },
                 {
-                    type: MODAL.OPEN_USER_CONTEXT,
+                    type: MODAL_OPEN_USER_CONTEXT,
                 },
             ],
         },
@@ -122,19 +122,19 @@ export default [
         description: 'Show public key, @trezor/connect error',
         initialState: undefined,
         mocks: {
-            getPublicKey: { success: false, payload: { error: 'Runtime error' } },
+            getPublicKey: { success: false, error: { message: 'Runtime error' } },
         },
         action: publicKeyActions.showXpub,
         result: {
             actions: [
                 { type: connectInitThunk.pending.type, payload: undefined },
                 { type: connectInitThunk.fulfilled.type, payload: undefined },
-                { type: MODAL.PRESERVE },
+                { type: MODAL_PRESERVE },
                 { type: LOCK_DEVICE },
                 { type: LOCK_DEVICE },
                 { type: '@suite/device/removeButtonRequests' },
 
-                { type: MODAL.CLOSE },
+                { type: MODAL_CLOSE },
                 {
                     type: notificationsActions.addToast.type,
                     payload: { type: 'verify-xpub-error', error: 'Runtime error' },
@@ -148,7 +148,7 @@ export default [
         mocks: {
             getPublicKey: {
                 success: false,
-                payload: { error: 'Runtime error', code: 'Method_PermissionsNotGranted' },
+                error: { message: 'Runtime error', code: 'Method_PermissionsNotGranted' },
             },
         },
         action: publicKeyActions.showXpub,
@@ -156,12 +156,12 @@ export default [
             actions: [
                 { type: connectInitThunk.pending.type, payload: undefined },
                 { type: connectInitThunk.fulfilled.type, payload: undefined },
-                { type: MODAL.PRESERVE },
+                { type: MODAL_PRESERVE },
                 { type: LOCK_DEVICE },
                 { type: LOCK_DEVICE },
                 { type: '@suite/device/removeButtonRequests' },
 
-                { type: MODAL.CLOSE },
+                { type: MODAL_CLOSE },
             ],
         },
     },

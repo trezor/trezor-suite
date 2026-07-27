@@ -1,23 +1,23 @@
 import { Translation } from '@suite/intl';
-import { IconButton, Tooltip } from '@trezor/components';
+import { goto } from '@suite/router';
+import { IconButton } from '@trezor/components';
+import { GearIcon } from '@trezor/icons';
 
-import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch } from 'src/hooks/suite';
 
 export const NavSettings = () => {
     const dispatch = useDispatch();
 
-    const handleClick = () => dispatch(goto('settings-index'));
+    const handleClick = () => dispatch(goto({ routeName: 'settings-index' }));
 
     return (
-        <Tooltip content={<Translation id="TR_SETTINGS" />}>
-            <IconButton
-                icon="gear"
-                intent="neutral"
-                priority="secondary"
-                onClick={handleClick}
-                data-testid="@suite/menu/settings"
-            />
-        </Tooltip>
+        <IconButton
+            icon={GearIcon}
+            intent="neutral"
+            priority="secondary"
+            onClick={handleClick}
+            data-testid="@suite/menu/settings"
+            tooltip={{ content: <Translation id="TR_SETTINGS" /> }}
+        />
     );
 };

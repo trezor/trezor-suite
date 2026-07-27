@@ -2,24 +2,20 @@ import { satisfies } from 'semver';
 
 import { Translation } from '@suite/intl';
 import { selectSelectedDevice } from '@suite-common/device';
-import { BackupType } from '@suite-common/suite-types';
+import { type BackupType } from '@suite-common/suite-types';
 import { Badge, Tooltip } from '@trezor/components';
 import { getFirmwareVersion } from '@trezor/device-utils';
-import { spacings } from '@trezor/theme';
+
+import { useLayoutSize, useSelector } from 'src/hooks/suite';
 
 import { DefaultTag } from './DefaultTag';
 import { OptionWithContent } from './OptionWithContent';
-import { useLayoutSize, useSelector } from '../../../../hooks/suite';
 
 const UpgradableToMultiTag = () => {
     const { isBelowTablet } = useLayoutSize();
 
     return (
-        <Badge
-            intent="neutral"
-            margin={{ left: spacings.xs }}
-            size={isBelowTablet ? 'small' : undefined}
-        >
+        <Badge intent="neutral" margin={{ left: 8 }} size={isBelowTablet ? 'small' : undefined}>
             <Translation id="TR_ONBOARDING_BACKUP_TYPE_UPGRADABLE_TO_MULTI" />
         </Badge>
     );
@@ -29,11 +25,7 @@ const AdvancedTag = () => {
     const { isBelowTablet } = useLayoutSize();
 
     return (
-        <Badge
-            intent="neutral"
-            margin={{ left: spacings.xs }}
-            size={isBelowTablet ? 'small' : undefined}
-        >
+        <Badge intent="neutral" margin={{ left: 8 }} size={isBelowTablet ? 'small' : undefined}>
             <Translation id="TR_ONBOARDING_BACKUP_TYPE_ADVANCED" />
         </Badge>
     );

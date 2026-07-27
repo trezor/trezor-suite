@@ -1,4 +1,4 @@
-import { UIIntent } from '../../config/types';
+import { type UIIntent } from '../../config/types';
 
 export const componentWithSubIconIntents = [
     'brand',
@@ -7,7 +7,6 @@ export const componentWithSubIconIntents = [
     'warning',
     'critical',
     'accentViolet',
-    'accentOrange',
 ] as const satisfies UIIntent[];
 export type ComponentWithSubIconIntent = Extract<
     UIIntent,

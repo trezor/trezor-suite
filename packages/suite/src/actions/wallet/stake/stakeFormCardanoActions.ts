@@ -1,31 +1,30 @@
 import { asTypedDesktopAnalytics, events } from '@suite/analytics';
 import { selectSelectedDevice } from '@suite-common/device';
-import { ExtraDependencies } from '@suite-common/redux-utils';
+import { type AdaPools } from '@suite-common/earn-staking-api';
+import { type ExtraDependencies } from '@suite-common/redux-utils';
 import {
     calculate,
     composeStakingTransaction,
 } from '@suite-common/staking/src/actions/stakeFormActions';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     CARDANO_EVERSTAKE_DREP,
     MIN_CARDANO_AMOUNT_FOR_STAKING,
     MIN_CARDANO_BALANCE_FOR_STAKING,
     MIN_CARDANO_FOR_WITHDRAWALS,
 } from '@suite-common/wallet-constants';
-import { VotingDelegationOption, selectCardanoPoolsInfo } from '@suite-common/wallet-core';
+import { type VotingDelegationOption, selectCardanoPoolsInfo } from '@suite-common/wallet-core';
 import {
-    Account,
-    CardanoAction,
-    CardanoPoolInfo,
-    ComposeActionContext,
-    EstimatedFee,
-    ExternalOutput,
-    PrecomposedTransaction,
-    PrecomposedTransactionFinal,
-    SelectedAccountStatus,
-    StakeFormState,
-    StakeType,
+    type Account,
+    type CardanoAction,
+    type ComposeActionContext,
+    type ExternalOutput,
+    type PrecomposedTransaction,
+    type PrecomposedTransactionFinal,
+    type SelectedAccountStatus,
+    type StakeFormState,
+    type StakeType,
 } from '@suite-common/wallet-types';
 import {
     asAmountSubunit,
@@ -44,10 +43,11 @@ import {
     subunitsToUnits,
     validateCardanoDrep,
 } from '@suite-common/wallet-utils';
-import TrezorConnect, { FeeLevel, PROTO } from '@trezor/connect';
+import TrezorConnect, { type FeeLevel, PROTO } from '@trezor/connect';
+import type { EstimatedFee } from '@trezor/network-solana/types'; // TODO should be Cardano instead?
 import { BigNumber } from '@trezor/utils';
 
-import { Dispatch, GetState } from 'src/types/suite';
+import { type Dispatch, type GetState } from 'src/types/suite';
 
 const calculateTransaction = (
     availableBalance: string,
@@ -91,10 +91,10 @@ const calculateTransaction = (
 export const prepareTxPlan = async (
     account: Account,
     action: CardanoAction,
-    cardanoPools: CardanoPoolInfo[],
+    cardanoPools: AdaPools['pools'],
     votingDelegation?: VotingDelegationOption,
 ) => {
-    if (!account || account.networkType !== 'cardano') return;
+    if (account?.networkType !== 'cardano') return;
 
     const changeAddress = getUnusedChangeAddress(account);
     const stakingPath = getStakingPath(account);
@@ -174,7 +174,7 @@ export const prepareTxPlan = async (
         testnet: isTestnet(account.symbol),
     });
 
-    if (!response.success) throw new Error(response.payload.error);
+    if (!response.success) throw new Error(response.error.message);
 
     return { txPlan: response.payload[0], certificates, withdrawals };
 };
@@ -182,7 +182,7 @@ export const prepareTxPlan = async (
 const getTransactionData = (
     formValues: StakeFormState,
     selectedAccount: SelectedAccountStatus,
-    cardanoPools: CardanoPoolInfo[],
+    cardanoPools: AdaPools['pools'],
     votingDelegation?: VotingDelegationOption,
 ) => {
     const { stakeType } = formValues;
@@ -260,19 +260,22 @@ export const composeTransaction =
             txPlan?.totalSpent,
         );
 
+        const firstOutput = formValues.outputs[0];
+        if (!firstOutput) return;
+
         const outputExtended = {
-            ...formValues.outputs[0],
+            ...firstOutput,
             amount: amountAda,
         };
 
-        const formValuesExtended = {
+        const formValuesExtended: StakeFormState = {
             ...formValues,
             cryptoInput: amountAda,
             outputs: [outputExtended],
         };
 
         const estimatedFee =
-            txData?.txPlan.type === 'final'
+            txData?.txPlan?.type === 'final'
                 ? {
                       success: true,
                       payload: {
@@ -304,15 +307,10 @@ export const signTransaction =
     async (dispatch: Dispatch, getState: GetState, extra: ExtraDependencies) => {
         const { selectedAccount, stake } = getState().wallet;
         const cardanoPools = selectCardanoPoolsInfo(getState());
-        if (!selectedAccount || !selectedAccount.account) return;
+        if (!selectedAccount?.account) return;
 
         const device = selectSelectedDevice(getState());
-        if (
-            selectedAccount.status !== 'loaded' ||
-            !device ||
-            !transactionInfo ||
-            transactionInfo.type !== 'final'
-        ) {
+        if (selectedAccount.status !== 'loaded' || !device || transactionInfo?.type !== 'final') {
             return;
         }
 
@@ -381,15 +379,15 @@ export const signTransaction =
             });
 
             // catch manual error from TransactionReviewModal
-            if (signedTx.payload.error === 'tx-cancelled') {
+            if (signedTx.error.message === 'tx-cancelled') {
                 return;
             }
 
-            if (signedTx.payload.error !== 'tx-timeout') {
+            if (signedTx.error.message !== 'tx-timeout') {
                 dispatch(
                     notificationsActions.addToast({
                         type: 'sign-tx-error',
-                        error: signedTx.payload.error,
+                        error: signedTx.error.message,
                     }),
                 );
             }

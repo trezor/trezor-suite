@@ -1,0 +1,10 @@
+import type { SVGProps } from 'react';
+const SvgTerminalWindowFilled = (props: SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" {...props}>
+        <path
+            fill="currentColor"
+            d="M27 5H5a2 2 0 0 0-2 2v18a2 2 0 0 0 2 2h22a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2M15.625 16.781l-5 4a1.002 1.002 0 1 1-1.25-1.562L13.399 16l-4.024-3.219a1 1 0 1 1 1.25-1.562l5 4a1 1 0 0 1 0 1.562M22 21h-5a1 1 0 0 1 0-2h5a1 1 0 0 1 0 2"
+        />
+    </svg>
+);
+export { SvgTerminalWindowFilled as ReactComponent };

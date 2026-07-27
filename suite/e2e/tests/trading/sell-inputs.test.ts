@@ -1,32 +1,30 @@
+import { messages } from '@suite/intl';
 import { localizeNumber } from '@suite-common/wallet-utils';
 
 import { expect, test } from '../../support/fixtures';
-import { fulfillWithResult } from '../../support/mocks/solanaStakingMock';
 
 const solanaBalanceAddress = '41baq3croaLZEj8dPWZnXn8e6xdAtvtWu2h941vm3Ngw';
 const customFeeRate = 1;
 let bitcoinBalance: string | null;
 let solanaBalance: string | null;
 
-test.describe('Trading - Sell inputs', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
+test.describe('Trading - Sell inputs', { tag: ['@T3W1', '@T3T1'] }, () => {
     test.use({
         deviceSetup: { mnemonic: 'mnemonic_academic', passphrase_protection: true },
     });
+
     test.beforeEach(async ({ onboardingPage, dashboardPage, settingsPage, solanaStakingMock }) => {
         await onboardingPage.completeOnboarding();
-        await test.step('Mock Solana account to have 5 SOL', async ({}) => {
-            await solanaStakingMock.replaceRoute('getBalance', {
-                predicate: params => params?.[0] === solanaBalanceAddress,
-                respond: async (route, body) => {
-                    await fulfillWithResult(route, body, {
-                        context: { slot: 0 },
-                        value: 5_000_000_000,
-                    });
-                },
+
+        solanaStakingMock.setBalance(solanaBalanceAddress, 5_000_000_000);
+
+        await test.step('Enable Bitcoin and Solana', async () => {
+            await settingsPage.changeNetworks({
+                enableNetworks: [
+                    'btc',
+                    { symbol: 'sol', backend: { type: 'solana', url: solanaStakingMock.url } },
+                ],
             });
-        });
-        await test.step('Enable Solana', async () => {
-            await settingsPage.changeNetworks({ enableNetworks: ['sol'] });
             await dashboardPage.deviceSwitchingOpenButton.click();
             await dashboardPage.addHiddenWallet(process.env.PASSPHRASE!);
         });
@@ -40,18 +38,11 @@ test.describe('Trading - Sell inputs', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, 
             solanaBalance = await walletPage.topPanelBalance.textContent();
             await walletPage.openTrading();
             await tradingPage.sellTabButton.click();
+            const worldwideOption = messages['TR_TRADING_COUNTRY_WORLD'].defaultMessage;
+            await expect(tradingPage.inputs.countryValue).not.toHaveText(worldwideOption);
         });
 
         await test.step('Check limits for BTC input', async () => {
-            //TODO: Bug https://github.com/trezor/trezor-suite/issues/21932
-            await test.step.skip('Below minimum', async () => {
-                await tradingPage.fillSellFormMinimumQuoteError();
-
-                await expect
-                    .soft(tradingPage.inputs.bottomText)
-                    .toHaveText(/Minimum is 0\.\d+( BTC)?/, { timeout: 15_000 });
-            });
-
             await test.step('Too many decimal digits', async () => {
                 await tradingPage.inputs.cryptoAmount.fill('0.000000001');
                 await expect
@@ -87,6 +78,7 @@ test.describe('Trading - Sell inputs', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, 
                     });
                 });
             }
+            await tradingPage.quotes.waitForSync();
             await tradingPage.fees.switchToCustom();
             await tradingPage.fees.customInput.fill(customFeeRate.toString());
 
@@ -129,14 +121,14 @@ test.describe('Trading - Sell inputs', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, 
             }
 
             //TODO: Bug in production
-            await test.step.skip('Max of Solana balance', async () => {
-                await page.getByRole('button', { name: 'Max' }).click();
-                const resultingFee = await tradingPage.fees.getSolanaFee();
-                const maxValue = (parseFloat(solanaBalance!) - resultingFee).toString();
-                await expect
-                    .soft(tradingPage.inputs.cryptoAmount)
-                    .toHaveValue(localizeNumber(maxValue, 'en-US', 0, 9));
-            });
+            // await test.step('Max of Solana balance', async () => {
+            //     await page.getByRole('button', { name: 'Max' }).click();
+            //     const resultingFee = await tradingPage.fees.getSolanaFee();
+            //     const maxValue = (parseFloat(solanaBalance!) - resultingFee).toString();
+            //     await expect
+            //         .soft(tradingPage.inputs.cryptoAmount)
+            //         .toHaveValue(localizeNumber(maxValue, 'en-US', 0, 9));
+            // });
         });
     });
 });

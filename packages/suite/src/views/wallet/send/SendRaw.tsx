@@ -1,7 +1,8 @@
-import { useForm } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 
-import { events } from '@suite/analytics';
+import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation, useTranslation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
 import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
 import {
     pushSendFormRawTransactionThunk,
@@ -10,12 +11,11 @@ import {
 } from '@suite-common/wallet-core';
 import { isHexValid, tryGetAccountIdentity } from '@suite-common/wallet-utils';
 import { Button, Card, H3, IconButton, Row, Textarea, Tooltip } from '@trezor/components';
-import { spacings } from '@trezor/theme';
+import { XIcon } from '@trezor/icons';
 
 import { OpenGuideFromTooltip } from 'src/components/guide';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { useAnalytics } from 'src/support/useAnalytics';
-import { Account } from 'src/types/wallet';
+import { type Account } from 'src/types/wallet';
 
 const INPUT_NAME = 'rawTx';
 
@@ -27,7 +27,7 @@ export const SendRaw = ({ account }: SendRawProps) => {
     const {
         register,
         setValue,
-        watch,
+        control,
         formState: { errors },
     } = useForm({
         mode: 'onChange',
@@ -37,8 +37,8 @@ export const SendRaw = ({ account }: SendRawProps) => {
     });
     const dispatch = useDispatch();
     const { translationString } = useTranslation();
-    const analytics = useAnalytics();
-    const inputValue = watch(INPUT_NAME);
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const inputValue = useWatch({ control, name: INPUT_NAME });
     const error = errors[INPUT_NAME];
     const hasError = !!error;
     const prefix = account.networkType === 'ethereum' ? '0x' : undefined;
@@ -59,6 +59,7 @@ export const SendRaw = ({ account }: SendRawProps) => {
             pushSendFormRawTransactionThunk({
                 tx: inputValue,
                 symbol: account.symbol,
+                descriptor: account.descriptor,
                 identity: tryGetAccountIdentity(account),
                 isMevProtectionEnabled: isMevProtectionEnabled && isMevProtectionFeatureEnabled,
             }),
@@ -79,7 +80,7 @@ export const SendRaw = ({ account }: SendRawProps) => {
 
     return (
         <Card>
-            <Row justifyContent="space-between" margin={{ bottom: spacings.md }}>
+            <Row justifyContent="space-between" margin={{ bottom: 16 }}>
                 <H3>
                     <Tooltip
                         addon={
@@ -92,7 +93,13 @@ export const SendRaw = ({ account }: SendRawProps) => {
                     </Tooltip>
                 </H3>
 
-                <IconButton intent="neutral" priority="secondary" icon="x" onClick={cancel} />
+                <IconButton
+                    intent="neutral"
+                    priority="secondary"
+                    icon={XIcon}
+                    onClick={cancel}
+                    tooltip={{ content: <Translation id="TR_CLOSE" /> }}
+                />
             </Row>
 
             <Textarea
@@ -105,7 +112,7 @@ export const SendRaw = ({ account }: SendRawProps) => {
                 {...inputField}
             />
 
-            <Button isDisabled={isSubmitDisabled} onClick={send} margin={{ top: spacings.lg }}>
+            <Button isDisabled={isSubmitDisabled} onClick={send} margin={{ top: 20 }}>
                 <Translation id="SEND_TRANSACTION" />
             </Button>
         </Card>

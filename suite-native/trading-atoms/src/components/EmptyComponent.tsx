@@ -1,7 +1,7 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
 import { Text, VStack } from '@suite-native/atoms';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 export type TradingEmptyComponentProps = {
     title: ReactNode;
@@ -20,10 +20,10 @@ export const EmptyComponent = ({ title, description }: TradingEmptyComponentProp
 
     return (
         <VStack style={applyStyle(emptyComponentStyle)}>
-            <Text variant="body-md" color="textDefault" textAlign="center">
+            <Text variant="body-md" color="contentPrimary" textAlign="center">
                 {title}
             </Text>
-            <Text variant="body-sm" color="textSubdued" textAlign="center">
+            <Text variant="body-sm" color="contentSecondary" textAlign="center">
                 {description}
             </Text>
         </VStack>

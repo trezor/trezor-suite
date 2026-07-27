@@ -4,8 +4,8 @@ import { sentryWebpackPlugin } from '@sentry/webpack-plugin';
 import childProcess from 'child_process';
 import fs from 'fs';
 import { sync } from 'glob';
+import TerserPlugin from 'minimizer-webpack-plugin';
 import path from 'path';
-import TerserPlugin from 'terser-webpack-plugin';
 import webpack from 'webpack';
 
 import { suiteVersion } from '../../suite/package.json';
@@ -76,6 +76,7 @@ const dependencies = Object.keys(pkg.dependencies);
 const config: webpack.Configuration = {
     target: 'electron-main',
     mode: isDev ? 'development' : 'production',
+    ...(isDev ? { parallelism: 3 } : {}),
     devtool: 'source-map',
     // Note that the entries key is important, it sets the the output file name in dist/
     entry: [
@@ -83,29 +84,27 @@ const config: webpack.Configuration = {
         { app: isDev ? 'app-with-devtools' : 'app' },
         { preload: 'preload' },
         ...threads.map(thread => ({ [String(thread)]: thread })),
-        { [winHelloChildProcessKey]: winHelloChildProcessPath },
     ].reduce(
         (prev, cur) => ({
             ...prev,
             ...Object.entries(cur).reduce(
                 (acc, [key, value]) => ({
                     ...acc,
-                    [key]:
-                        key === winHelloChildProcessKey
-                            ? value
-                            : path.resolve(__dirname, `../src/${value}.ts`),
+                    [key]: path.resolve(__dirname, `../src/${value}.ts`),
                 }),
                 {},
             ),
         }),
-        {},
+        { [winHelloChildProcessKey]: winHelloChildProcessPath },
     ),
     output: {
         filename: '[name].js',
         chunkFilename: a => {
-            const chunkName = a.chunk?.name;
-            if (chunkName && /-worker$/.test(chunkName)) return `workers/${chunkName}.js`;
-            if (chunkName && /-api$/.test(chunkName)) return `coins/${chunkName}.js`;
+            const { name, id } = a.chunk ?? {};
+
+            if (id && typeof id === 'string' && /node_modules/.test(id)) return `vendor/[name].js`;
+
+            if (name && /-api-index-ts$/.test(name)) return `${name.replace(/-index-ts$/, '')}.js`;
 
             return '[name].js';
         },
@@ -158,9 +157,11 @@ const config: webpack.Configuration = {
         splitChunks: {
             chunks: 'all',
             name(_: any, chunks: any) {
-                return chunks.length === 1
-                    ? chunks[0].name
-                    : `shared/${chunks.map((item: any) => item.name.split('/').pop()).join('~')}`;
+                if (chunks.every((item: any) => item.name)) {
+                    return chunks.length > 1
+                        ? `shared/${chunks.map((item: any) => item.name.split('/').pop()).join('~')}`
+                        : chunks[0].name;
+                }
             },
         },
         minimizer: [

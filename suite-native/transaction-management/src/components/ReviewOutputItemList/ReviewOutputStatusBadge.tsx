@@ -6,10 +6,10 @@ import Animated, {
     withTiming,
 } from 'react-native-reanimated';
 
-import { ReviewOutputState } from '@suite-common/wallet-types';
+import { type ReviewOutputState } from '@suite-common/wallet-types';
 import { ENDLESS_ANIMATION_VALUE } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 export type ReviewOutputStatusBadgeProps = {
     status: ReviewOutputState;
@@ -24,14 +24,14 @@ const badgeStyle = prepareNativeStyle<{ isActive: boolean }>((utils, { isActive 
     width: BADGE_SIZE,
     height: BADGE_SIZE,
     borderRadius: utils.borders.radii.round,
-    backgroundColor: utils.colors.backgroundTertiaryDefaultOnElevation0,
-    borderColor: utils.colors.backgroundTertiaryDefaultOnElevation0,
+    backgroundColor: utils.colors.legacyBackgroundTertiaryDefaultOnElevation0,
+    borderColor: utils.colors.legacyBackgroundTertiaryDefaultOnElevation0,
 
     extend: {
         condition: isActive,
         style: {
-            backgroundColor: utils.colors.backgroundSecondaryDefault,
-            borderColor: utils.colors.backgroundPrimarySubtleOnElevationNegative,
+            backgroundColor: utils.colors.legacyBackgroundSecondaryDefault,
+            borderColor: utils.colors.legacyBackgroundPrimarySubtleOnElevationNegative,
         },
     },
 }));
@@ -54,7 +54,9 @@ export const ReviewOutputStatusBadge = ({ status }: ReviewOutputStatusBadgeProps
     }));
 
     if (status === 'success') {
-        return <Icon name="checkCircleFilled" color="backgroundSecondaryDefault" size="medium" />;
+        return (
+            <Icon name="checkCircleFilled" color="legacyBackgroundSecondaryDefault" size="medium" />
+        );
     }
 
     const isActive = status === 'active';

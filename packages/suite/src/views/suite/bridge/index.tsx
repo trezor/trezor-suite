@@ -1,8 +1,8 @@
 import { Translation } from '@suite/intl';
+import { goto } from '@suite/router';
 import { Column, H3, Modal, Paragraph } from '@trezor/components';
-import { spacings } from '@trezor/theme';
+import { AppWindowIcon, CaretLeftIcon } from '@trezor/icons';
 
-import { goto } from 'src/actions/suite/routerActions';
 import { Metadata } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useOpenSuiteDesktop } from 'src/hooks/suite/useOpenSuiteDesktop';
@@ -21,7 +21,7 @@ export const BridgeUnavailable = () => {
 
     const handleOpenSuite = useOpenSuiteDesktop();
 
-    const goToWallet = () => dispatch(goto('wallet-index'));
+    const goToWallet = () => dispatch(goto({ routeName: 'wallet-index' }));
 
     // if bridge is running, user will never be directed to this page, but since this page is accessible directly over /bridge url
     // it makes sense to show some meaningful information here
@@ -32,7 +32,7 @@ export const BridgeUnavailable = () => {
     return (
         <Modal
             data-testid="@modal/bridge"
-            iconName="appWindow"
+            icon={AppWindowIcon}
             width={600}
             bottomContent={
                 <>
@@ -41,7 +41,7 @@ export const BridgeUnavailable = () => {
                     </Modal.Button>
                     {hasTransport && (
                         <Modal.Button
-                            iconLeft="caretLeft"
+                            iconLeft={CaretLeftIcon}
                             intent="neutral"
                             priority="secondary"
                             onClick={goToWallet}
@@ -54,7 +54,7 @@ export const BridgeUnavailable = () => {
             }
         >
             <Metadata title="Bridge | Trezor Suite" />
-            <Column gap={spacings.xxs}>
+            <Column gap={4}>
                 <H3>
                     <Translation id="TR_BRIDGE" />
                 </H3>

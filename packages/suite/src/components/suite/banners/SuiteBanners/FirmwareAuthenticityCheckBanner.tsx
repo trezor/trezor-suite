@@ -1,24 +1,25 @@
-import { Translation, TranslationKey } from '@suite/intl';
-import { selectWasFwHashCheckOtherErrorLastTime } from '@suite-common/device';
-import {
-    SkippedHashCheckError,
-    SkippedRevisionCheckError,
-} from '@suite-common/firmware-authenticity';
-import { Banner } from '@trezor/components';
-import { FirmwareHashCheckError, FirmwareRevisionCheckError } from '@trezor/connect';
-import { TREZOR_SUPPORT_FW_REVISION_CHECK_FAILED_URL } from '@trezor/urls';
-
-import { useSelector } from 'src/hooks/suite';
 import {
     selectFirmwareHashCheckErrorIfEnabled,
     selectFirmwareRevisionCheckErrorIfEnabled,
-} from 'src/selectors/suite/suiteAuthenticityChecksSelectors';
+} from '@suite/authenticity-checks';
+import { Translation, type TranslationKey } from '@suite/intl';
+import { selectWasFwHashCheckOtherErrorLastTime } from '@suite-common/device';
+import {
+    type SkippedHashCheckError,
+    type SkippedRevisionCheckError,
+} from '@suite-common/firmware-authenticity';
+import { Banner } from '@trezor/components';
+import { type FirmwareHashCheckError, type FirmwareRevisionCheckError } from '@trezor/connect';
+import { TREZOR_SUPPORT_FW_REVISION_CHECK_FAILED_URL } from '@trezor/urls';
+
+import { useSelector } from 'src/hooks/suite';
 
 const revisionCheckMessages: Record<
     Exclude<FirmwareRevisionCheckError, SkippedRevisionCheckError>,
     TranslationKey
 > = {
     'cannot-perform-check-offline': 'TR_DEVICE_FIRMWARE_REVISION_CHECK_UNABLE_TO_PERFORM',
+    'bootloader-hash-mismatch': 'TR_FIRMWARE_REVISION_CHECK_FAILED',
     'revision-mismatch': 'TR_FIRMWARE_REVISION_CHECK_FAILED',
     'firmware-version-unknown': 'TR_FIRMWARE_REVISION_CHECK_FAILED',
 };

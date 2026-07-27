@@ -1,12 +1,16 @@
-import { createContext, useContext, useMemo } from 'react';
+import { createContext, useContext, useEffect } from 'react';
 
+import { useDevice } from '@suite/device';
 import {
     type TradingType,
     type TradingUseDetailOutputProps,
-    type TradingUseDetailProps,
+    type TradingUseDetailPropsWithoutAccount,
     useTradingDetail as useTradingDetailCommon,
 } from '@suite-common/trading';
+import { throwError } from '@trezor/utils';
 
+import { setConnectionModal } from 'src/actions/device/deviceSlice';
+import { useDispatch } from 'src/hooks/suite';
 import { useServerEnvironment } from 'src/hooks/wallet/trading/useServerEnviroment';
 import { useTradingWatchTrade } from 'src/hooks/wallet/trading/useTradingWatchTrade';
 import type { TradingDetailContextValues } from 'src/types/trading/tradingDetail';
@@ -18,19 +22,18 @@ import { useTradingFormAccount } from './form/useTradingFormAccount';
  * Adds platform-specific functionality like server environment setup and trade watching
  */
 export const useTradingDetail = <T extends TradingType>(
-    props: TradingUseDetailProps & { tradeType: T },
+    props: TradingUseDetailPropsWithoutAccount & { tradeType: T },
 ): TradingUseDetailOutputProps<T> => {
-    const { tradeType, account: accountProps } = props;
-    const { account: formAccount } = useTradingFormAccount('exchange');
-
-    // For exchange trades, use the account from the trading form context
-    // For buy/sell trades, use the account passed as a prop
-    const account = useMemo(
-        () => (tradeType === 'exchange' ? formAccount : accountProps),
-        [tradeType, formAccount, accountProps],
-    );
+    const { tradeType } = props;
+    const { account } = useTradingFormAccount(tradeType);
+    const { device } = useDevice();
+    const dispatch = useDispatch();
 
     const result = useTradingDetailCommon<T>({ tradeType });
+
+    useEffect(() => {
+        dispatch(setConnectionModal(!device?.connected));
+    }, [device?.connected, dispatch]);
 
     // Setup server environment from suite settings
     useServerEnvironment();
@@ -44,9 +47,6 @@ export const useTradingDetail = <T extends TradingType>(
 export const TradingDetailContext = createContext<TradingDetailContextValues<any> | null>(null);
 TradingDetailContext.displayName = 'TradingDetailContext';
 
-export const useTradingDetailContext = <T extends TradingType>() => {
-    const context = useContext<TradingDetailContextValues<T> | null>(TradingDetailContext);
-    if (context === null) throw Error('TradingDetailContext used without Context');
-
-    return context;
-};
+export const useTradingDetailContext = <T extends TradingType>() =>
+    useContext<TradingDetailContextValues<T> | null>(TradingDetailContext) ??
+    throwError('TradingDetailContext used without Context');

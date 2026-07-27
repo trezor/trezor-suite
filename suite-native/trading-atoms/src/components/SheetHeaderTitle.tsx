@@ -1,9 +1,9 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
-import { RequireAllOrNone } from 'type-fest';
+import { type RequireAllOrNone } from 'type-fest';
 
 import { HStack, IconButton, Text } from '@suite-native/atoms';
-import { IconName } from '@suite-native/icons';
+import { type IconName } from '@suite-native/icons';
 
 export type SheetHeaderTitleProps = {
     children: ReactNode;
@@ -34,7 +34,8 @@ export const SheetHeaderTitle = ({
             <IconButton
                 iconName={rightButtonIcon}
                 onPress={onRightButtonPress}
-                colorScheme="tertiaryElevation0"
+                intent="neutral"
+                priority="secondary"
                 size="medium"
                 accessibilityRole="button"
                 accessibilityLabel={rightButtonA11yLabel}

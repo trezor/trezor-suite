@@ -1,17 +1,25 @@
 import { combineReducers, createReducer } from '@reduxjs/toolkit';
 
-import { SuiteSyncDataState, SuiteSyncState } from '@suite-common/suite-sync';
+import { debugInitialState } from '@suite/debug';
+import { locksReducer } from '@suite/locks';
+import { suiteSettingsInitialState } from '@suite/settings';
+import { torReducer } from '@suite/tor';
+import { type SuiteSyncDataState, type SuiteSyncState } from '@suite-common/suite-sync';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { testMocks } from '@suite-common/test-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { Network, getNetwork } from '@suite-common/wallet-config';
+import { type Network, getNetwork } from '@suite-common/wallet-config';
 import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants';
-import { accountsActions, prepareSendFormReducer } from '@suite-common/wallet-core';
 import {
-    FeesState,
-    FormState,
-    SelectedAccountStatus,
-    SendFormDraftKey,
+    accountsActions,
+    prepareSendFormReducer,
+    stakeInitialState,
+} from '@suite-common/wallet-core';
+import {
+    type FeesState,
+    type FormState,
+    type SelectedAccountStatus,
+    type SendFormDraftKey,
     asAccountDescriptor,
 } from '@suite-common/wallet-types';
 import {
@@ -20,11 +28,10 @@ import {
     networkSpecificDefaultRipple,
 } from '@suite-common/wallet-types/mocks';
 import { PROTO } from '@trezor/connect';
-import { DeepPartial } from '@trezor/type-utils';
+import { type DeepPartial } from '@trezor/type-utils';
 
+import { type AppState } from 'src/reducers/store';
 import { extraDependencies } from 'src/support/extraDependencies';
-
-import { AppState } from '../../../reducers/store';
 
 const sendFormReducer = prepareSendFormReducer(extraDependencies);
 
@@ -67,7 +74,8 @@ const UTXO = {
     }),
 };
 
-// The type was needed because of error TS7056: The inferred type of this node exceeds the maximum length the compiler will serialize. An explicit type annotation is needed.
+// [typescript-performace]: Keep this explicit type to prevent TypeScript from expanding the
+// inferred type in the emitted declaration.
 export const BTC_ACCOUNT: Omit<SelectedAccountStatus, 'network'> & { network: Partial<Network> } = {
     status: 'loaded',
     account: mockWalletAccount({
@@ -265,20 +273,28 @@ const DEFAULT_FEES: FeesState = {
 
 // - default selectedAccount needs to be explicitly passed from test. merging default with custom will override custom
 // - default fees needs to be explicitly passed from test. merge Arrays will add items, not replace them
-// Todo: Type properly as the Error: "The inferred type of this node exceeds the maximum length the compiler will serialize. An explicit type annotation is needed."
+// [typescript-performace]: Keep this explicit type to prevent TypeScript from expanding the
+// inferred type in the emitted declaration.
+// Todo: Replace `any` with an accurate type.
 export const getRootReducer: any = (selectedAccount = BTC_ACCOUNT, fees = DEFAULT_FEES) =>
     combineReducers({
         suite: createReducer(
             {
-                locks: [],
                 online: true,
-                settings: { debug: {}, theme: { variant: 'light' } },
                 evmSettings: { confirmExplanationModalClosed: {}, explanationBannerClosed: {} },
                 prefillFields: { sendForm: '', transactionHistory: '' },
-                flags: { stakeEthBannerClosed: false, stakeSolBannerClosed: false },
                 countryCode: null,
             },
             () => ({}),
+        ),
+        suiteSettings: createReducer(suiteSettingsInitialState, state => state),
+        debug: createReducer(debugInitialState, state => state),
+        discreetMode: createReducer({ isActive: false }, () => {}),
+        tor: torReducer,
+        locks: locksReducer,
+        flags: createReducer(
+            { stakeEthBannerClosed: false, stakeSolBannerClosed: false },
+            () => {},
         ),
         device: createReducer({ selectedDevice: DEVICE, devices: [DEVICE] }, () => {}),
         wallet: combineReducers({
@@ -294,6 +310,7 @@ export const getRootReducer: any = (selectedAccount = BTC_ACCOUNT, fees = DEFAUL
             ),
             selectedAccount: createReducer(selectedAccount, () => ({})),
             coinjoin: createReducer({ accounts: [] }, () => ({})),
+            stake: createReducer(stakeInitialState, () => ({})),
             discovery: createReducer([], () => ({})),
             settings: createReducer(
                 {
@@ -429,6 +446,7 @@ export const getRootReducer: any = (selectedAccount = BTC_ACCOUNT, fees = DEFAUL
         ),
         suiteSync: createReducer(
             {
+                relayConnectionStatuses: [],
                 settings: {
                     isSuiteSyncEnabled: false,
                     isSuiteSyncDebugEnabled: false,
@@ -707,7 +725,7 @@ export const composeDebouncedTransaction = [
         description: '@trezor/connect call respond with success:false',
         connect: {
             success: false,
-            payload: { error: 'error' },
+            error: { message: 'error' },
         },
         actions: [{ type: 'input', element: 'outputs.0.amount', value: '1' }],
         finalResult: {
@@ -1446,6 +1464,7 @@ export const signAndPush: SignAndPush[] = [
         connect: [
             undefined, // updateFeeInfoThunk
             undefined, // estimateFee
+            undefined, // getAccountInfo (signing-time confirmed-nonce check; falls back to local)
             {
                 success: true,
                 payload: {
@@ -1694,8 +1713,8 @@ export const signAndPush: SignAndPush[] = [
             getComposeResponse(),
             {
                 success: false,
-                payload: {
-                    error: 'signTx error',
+                error: {
+                    message: 'signTx error',
                 },
             },
         ],
@@ -1723,8 +1742,8 @@ export const signAndPush: SignAndPush[] = [
             getComposeResponse(),
             {
                 success: false,
-                payload: {
-                    error: 'tx-cancelled',
+                error: {
+                    message: 'tx-cancelled',
                 },
             },
         ],
@@ -1753,8 +1772,8 @@ export const signAndPush: SignAndPush[] = [
             },
             {
                 success: false,
-                payload: {
-                    error: 'pushTx error',
+                error: {
+                    message: 'pushTx error',
                 },
             },
         ],
@@ -1812,8 +1831,8 @@ export const feeChange: FeeChangeFixture[] = [
             success: false,
             payload: {
                 success: false,
-                payload: {
-                    error: 'compose-response-is-irrelevant',
+                error: {
+                    message: 'compose-response-is-irrelevant',
                 },
             },
         },
@@ -1955,8 +1974,8 @@ export const feeChange: FeeChangeFixture[] = [
         connect: [
             {
                 success: false,
-                payload: {
-                    error: 'irrelevant',
+                error: {
+                    message: 'irrelevant',
                 },
             },
             {

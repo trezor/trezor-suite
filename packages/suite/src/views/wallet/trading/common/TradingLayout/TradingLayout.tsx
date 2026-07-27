@@ -1,22 +1,20 @@
-import { PropsWithChildren } from 'react';
+import { type PropsWithChildren } from 'react';
 
+import { selectRouteName } from '@suite/router';
 import { Column } from '@trezor/components';
-import { spacings } from '@trezor/theme';
 
 import { useSelector } from 'src/hooks/suite';
-import { selectRouteName } from 'src/reducers/suite/routerReducer';
 import { TradingLayoutNavigation } from 'src/views/wallet/trading/common/TradingLayout/TradingLayoutNavigation';
+import { useTradingPageHeader } from 'src/views/wallet/trading/common/TradingLayout/useTradingPageHeader';
 
-interface TradingLayoutProps extends PropsWithChildren {}
-
-export const TradingLayout = ({ children }: TradingLayoutProps) => {
+export const TradingLayout = ({ children }: PropsWithChildren) => {
     const routeName = useSelector(selectRouteName);
 
+    useTradingPageHeader();
+
     return (
-        <Column data-testid="@trading" gap={spacings.xl}>
-            {!routeName?.includes(`wallet-trading-exchange`) && (
-                <TradingLayoutNavigation route={routeName} />
-            )}
+        <Column data-testid="@trading" gap={24}>
+            <TradingLayoutNavigation route={routeName} />
             {children}
         </Column>
     );

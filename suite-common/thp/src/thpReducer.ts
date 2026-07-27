@@ -1,17 +1,17 @@
-import { AnyAction } from '@reduxjs/toolkit';
+import { type AnyAction } from '@reduxjs/toolkit';
 
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
-import { ThpSuiteCredentials } from '@suite-common/suite-types';
+import { type ThpSuiteCredentials } from '@suite-common/suite-types';
 import {
     DEVICE,
-    DeviceThpCredentialsChanged,
-    DeviceThpPairingStatusChanged,
+    type DeviceThpCredentialsChanged,
+    type DeviceThpPairingStatusChanged,
     UI_REQUEST,
 } from '@trezor/connect';
 import type { ThpCredentials } from '@trezor/protocol';
 
 import { thpActions } from './thpActions';
-import { CONNECTION_COUNTER_LIMIT, THP_BUTTON_REQUESTS_NAMES } from './thpConstants';
+import { CONNECTION_COUNTER_LIMIT, type THP_BUTTON_REQUESTS_NAMES } from './thpConstants';
 
 export type THPButtonRequestName = (typeof THP_BUTTON_REQUESTS_NAMES)[number];
 
@@ -35,6 +35,8 @@ export type ThpState = {
     autoconnectStep: ThpAutoconnectStep | null;
     lastThpCode?: string;
     credentials: ThpSuiteCredentials[];
+    pairingRequestId?: string;
+    confirmationRequestId?: string;
 };
 
 export const initialThpState: ThpState = {
@@ -79,8 +81,9 @@ export const prepareThpReducer = createReducerWithExtraDeps<ThpState>(
             })
             .addMatcher(
                 action => action.type === UI_REQUEST.REQUEST_THP_PAIRING,
-                state => {
+                (state, action: { type: string; requestId?: string }) => {
                     state.step = 'CodeEntry';
+                    state.pairingRequestId = action.requestId;
                 },
             )
             .addMatcher(
@@ -145,10 +148,11 @@ export const prepareThpReducer = createReducerWithExtraDeps<ThpState>(
             // This is the THP flow in Firmware Update
             .addMatcher(
                 action => action.type === UI_REQUEST.REQUEST_CONFIRMATION,
-                state => {
+                (state, action: { type: string; requestId?: string }) => {
                     if (state.step !== 'CodeInvalid') {
                         state.step = 'BeforeConnectionInfo';
                     }
+                    state.confirmationRequestId = action.requestId;
                 },
             )
             .addMatcher(

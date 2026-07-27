@@ -3,7 +3,7 @@ import { isFulfilled } from '@reduxjs/toolkit';
 import { createThunk } from '@suite-common/redux-utils';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
-    FormDraftRootState,
+    type FormDraftRootState,
     composeSendFormTransactionFeeLevelsThunk,
     formDraftActions,
     selectAccountByKey,
@@ -11,14 +11,13 @@ import {
     selectDeepCopyOfFormDraft,
 } from '@suite-common/wallet-core';
 import {
-    AccountKey,
-    FormState,
-    PrecomposedTransactionFinal,
-    TokenAddress,
+    type AccountKey,
+    type FormState,
+    type TokenAddress,
     isFinalPrecomposedTransaction,
 } from '@suite-common/wallet-types';
 import {
-    UpdateSelectedFeeLevelThunkParams,
+    type UpdateSelectedFeeLevelThunkParams,
     transactionManagementActions,
 } from '@suite-native/transaction-management';
 
@@ -91,7 +90,6 @@ const createTrustlineFormState = (address: string, feePerUnit: string): FormStat
     bitcoinLocktimeBlockHeight: '',
     bitcoinLocktimeDatetime: '',
     ethereumNonce: '',
-    ethereumDataAscii: '',
     ethereumAdjustGasLimit: '',
     transactionData: '',
     rbfParams: undefined,
@@ -148,7 +146,7 @@ export const composeStellarTrustlineFeesThunk = createThunk(
 
             // Get the actual composed normal fee to use as default for custom fee
             const composedNormalFee = isFinalPrecomposedTransaction(result.payload.normal)
-                ? (result.payload.normal as PrecomposedTransactionFinal).feePerByte
+                ? result.payload.normal.feePerByte
                 : normalFeePerUnit;
 
             // Store form draft for fee selection with the composed fee

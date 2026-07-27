@@ -3,7 +3,7 @@ import {
     renderHook,
     renderWithBasicProvider,
 } from '@suite-native/test-utils';
-import { NativeStyleUtils, useNativeStyles } from '@trezor/styles';
+import { type NativeStyleUtils, useNativeStyles } from '@trezor/styles-native';
 
 import { Box as MockBox } from '../Box';
 import { PriceChangeBadge } from '../PriceChangeBadge';
@@ -25,7 +25,7 @@ describe('PriceChangeBadge', () => {
             <PriceChangeBadge valuePercentageChange={0.01} />,
         );
 
-        expect(getByText('1.00%')).toHaveStyle({ color: colors.textPrimaryDefault });
+        expect(getByText('1.00%')).toHaveStyle({ color: colors.contentBrand });
     });
 
     it('should render green badge for change = 0', () => {
@@ -33,7 +33,7 @@ describe('PriceChangeBadge', () => {
             <PriceChangeBadge valuePercentageChange={0} />,
         );
 
-        expect(getByText('0.00%')).toHaveStyle({ color: colors.textPrimaryDefault });
+        expect(getByText('0.00%')).toHaveStyle({ color: colors.contentBrand });
     });
 
     it('should render red badge for change < 0', () => {
@@ -41,7 +41,7 @@ describe('PriceChangeBadge', () => {
             <PriceChangeBadge valuePercentageChange={-0.01} />,
         );
 
-        expect(getByText('-1.00%')).toHaveStyle({ color: colors.textAlertRed });
+        expect(getByText('-1.00%')).toHaveStyle({ color: colors.contentCritical });
     });
 
     it('should render skeleton when value is null', () => {

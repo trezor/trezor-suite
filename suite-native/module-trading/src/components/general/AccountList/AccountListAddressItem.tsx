@@ -1,15 +1,13 @@
-import { useSelector } from 'react-redux';
-
-import { SuiteSyncDataRootState, selectSuiteSyncAddressLabel } from '@suite-common/suite-sync';
+import { AddressLabel } from '@suite-native/address';
 import { Text } from '@suite-native/atoms';
-import { AccountAddress } from '@suite-native/trading-atoms';
-import { ReceiveAccount } from '@suite-native/trading-types';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { AddressFormatter } from '@suite-native/formatters';
+import { type ReceiveAccount } from '@suite-native/trading-types';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { AccountListBaseItem } from './AccountListBaseItem';
 
 const labelTextStyle = prepareNativeStyle(utils => ({
-    color: utils.colors.textSubdued,
+    color: utils.colors.contentSecondary,
     flex: 1,
 }));
 
@@ -25,16 +23,6 @@ export const AccountListAddressItem = ({
     const { applyStyle } = useNativeStyles();
     const { address } = receiveAccount;
 
-    const addressLabel = useSelector((state: SuiteSyncDataRootState) =>
-        address
-            ? selectSuiteSyncAddressLabel(
-                  state,
-                  receiveAccount.account.deviceState,
-                  address.address,
-              )
-            : null,
-    );
-
     if (!address) {
         return null;
     }
@@ -42,7 +30,13 @@ export const AccountListAddressItem = ({
     return (
         <AccountListBaseItem
             receiveAccount={receiveAccount}
-            label={<AccountAddress address={addressLabel ?? address.address} form="full" />}
+            label={
+                <AddressLabel
+                    address={address.address}
+                    deviceStaticSessionId={receiveAccount.account.deviceState}
+                    fallback={<AddressFormatter value={address.address} format="full" />}
+                />
+            }
             isAddressDetail={true}
             info={
                 <Text variant="body-sm" style={applyStyle(labelTextStyle)}>

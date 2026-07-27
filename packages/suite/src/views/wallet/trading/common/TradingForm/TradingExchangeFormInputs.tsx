@@ -1,29 +1,33 @@
 import { useCallback, useMemo } from 'react';
 import { useFormContext } from 'react-hook-form';
 
-import { events } from '@suite/analytics';
 import {
     TRADING_FORM_OUTPUT_AMOUNT,
     TRADING_FORM_OUTPUT_FIAT,
     TRADING_FORM_PROVIDER_SELECT,
     TRADING_FORM_RECEIVE_CRYPTO_CURRENCY_SELECT,
     TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT,
-    TradingExchangeFormProps,
-    TradingExchangeType,
+    type TradingExchangeFormProps,
+    type TradingExchangeType,
+    getDisplayComposedLevels,
     selectTradingExchangeBuyCryptoIds,
+    selectTradingExchangeQuotes,
+    selectTradingExchangeSelectedQuote,
     selectTradingExchangeSellCryptoIds,
     selectTradingLoadingAndTimestamp,
+    selectTradingSendAccount,
     tradingActions,
 } from '@suite-common/trading';
-import { TokenAddress } from '@suite-common/wallet-types';
-import { convertAmountSubunitsToUnits } from '@suite-common/wallet-utils';
-import { Column, FractionButton, Row } from '@trezor/components';
+import { type TokenAddress } from '@suite-common/wallet-types';
+import { asAmountSubunit, subunitsToUnits } from '@suite-common/wallet-utils';
+import { Column, Row } from '@trezor/components';
 import { useCurrentRef } from '@trezor/react-utils';
+import { BigNumber } from '@trezor/utils';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelectedTradingAsset } from 'src/hooks/wallet/trading/form/common/useSelectedTradingAsset';
 import { useTradingAssetDecimals } from 'src/hooks/wallet/trading/form/common/useTradingAssetDecimals';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
-import { useAnalytics } from 'src/support/useAnalytics';
 import { TradingBalance } from 'src/views/wallet/trading/common/TradingBalance';
 import { TradingFormInputFiatCrypto } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputFiatCrypto/TradingFormInputFiatCrypto';
 
@@ -34,25 +38,28 @@ import { TradingSelectedOfferProvider } from '../TradingSelectedOffer/TradingSel
 import { AssetPickerInputBalance } from './TradingFormInput/TradingFormInputAssetPicker';
 import {
     TradingFormInputBuyAsset,
-    TradingFormInputBuyAssetProps,
+    type TradingFormInputBuyAssetProps,
 } from './TradingFormInput/TradingFormInputBuyAsset/TradingFormInputBuyAsset';
 import {
     TradingFormInputSellAsset,
-    TradingFormInputSellAssetProps,
+    type TradingFormInputSellAssetProps,
 } from './TradingFormInput/TradingFormInputSellAsset/TradingFormInputSellAsset';
 import { TradingFormSection } from './TradingFormSection';
+import { TradingFractionButtons } from './TradingFractionButtons';
 import { TradingNetworkReserveBanner } from './TradingNetworkReserveBanner';
-import { generateFractionButtons } from './tradingFormInputsUtils';
 
 export const TradingExchangeFormInputs = () => {
     const context = useTradingFormContext<TradingExchangeType>();
-    const analytics = useAnalytics();
 
     const { isLoading } = useSelector(selectTradingLoadingAndTimestamp);
+    const exchangeBuySupportedCryptoIds = useSelector(selectTradingExchangeBuyCryptoIds);
+    const exchangeSellSupportedCryptoIds = useSelector(selectTradingExchangeSellCryptoIds);
+    const quotes = useSelector(selectTradingExchangeQuotes);
+    const selectedQuote = useSelector(selectTradingExchangeSelectedQuote);
 
     const {
+        type,
         feeInfo,
-        account,
         composedLevels,
         form: { helpers },
         changeFeeLevel,
@@ -61,6 +68,13 @@ export const TradingExchangeFormInputs = () => {
         resetSelectedOffer,
         setAmountLimits,
     } = context;
+    const asset = useSelectedTradingAsset(type);
+    const account = useSelector(state => selectTradingSendAccount(state, type));
+
+    const displayComposedLevels = useMemo(
+        () => getDisplayComposedLevels(selectedQuote, composedLevels),
+        [selectedQuote, composedLevels],
+    );
     const { getValues, setValue } = useFormContext<TradingExchangeFormProps>();
     const {
         [TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT]: sendCryptoSelect,
@@ -70,8 +84,8 @@ export const TradingExchangeFormInputs = () => {
     } = getValues();
 
     const output = outputs[0];
-    const currencySelect = output.currency;
-    const tokenAddress = (output.token ?? undefined) as TokenAddress | undefined;
+    const currencySelect = output?.currency;
+    const tokenAddress = (output?.token ?? undefined) as TokenAddress | undefined;
 
     const { getAssetDecimals } = useTradingAssetDecimals();
     const sendAssetDecimals = useMemo(
@@ -83,9 +97,12 @@ export const TradingExchangeFormInputs = () => {
         [getAssetDecimals, sendCryptoSelect?.accountKey, sendCryptoSelect?.id],
     );
     const outputAmount =
-        shouldSendInSats && output.amount
-            ? convertAmountSubunitsToUnits(output.amount, sendAssetDecimals)
-            : output.amount;
+        shouldSendInSats && output?.amount
+            ? subunitsToUnits({
+                  value: asAmountSubunit(new BigNumber(output.amount)),
+                  decimals: sendAssetDecimals,
+              }).toString()
+            : output?.amount;
 
     const dispatch = useDispatch();
     // `useTradingExchangeForm` has some re-rendering issues, use refs to avoid them
@@ -117,96 +134,79 @@ export const TradingExchangeFormInputs = () => {
         [dispatch, setAmountLimitsRef, setValueRef, resetSelectedOfferRef],
     );
 
-    const exchangeBuySupportedCryptoIds = useSelector(selectTradingExchangeBuyCryptoIds);
-    const exchangeSellSupportedCryptoIds = useSelector(selectTradingExchangeSellCryptoIds);
-
     return (
-        <TradingFormCard>
-            <TradingFormSection>
-                <TradingFormInputSellAsset
-                    inputName={TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT}
-                    inputLabel="TR_FROM"
-                    inputBottomText={
-                        <AssetPickerInputBalance
-                            name={TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT}
-                            showOnlyAmount
-                        />
-                    }
-                    includedCryptoIds={exchangeSellSupportedCryptoIds}
-                    excludedCryptoId={receiveCryptoSelect?.id}
-                    onAssetSelect={handleSellAssetSelect}
-                />
-                <Column gap={8}>
-                    <TradingFormInputFiatCrypto
-                        cryptoInputName={TRADING_FORM_OUTPUT_AMOUNT}
-                        fiatInputName={TRADING_FORM_OUTPUT_FIAT}
-                        cryptoSelectName={TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT}
-                        currencySelectLabel={currencySelect.label}
-                        cryptoCurrencyLabel={sendCryptoSelect?.id}
-                    />
-                    {amountInCrypto && (
-                        <Row justifyContent="space-between" alignItems="flex-start">
-                            <Row gap={8} data-testid="@trading/form/fraction-buttons">
-                                {generateFractionButtons(helpers).map(button => {
-                                    const { percentValue, ...buttonProps } = button;
-
-                                    return (
-                                        <FractionButton
-                                            key={buttonProps.id}
-                                            {...buttonProps}
-                                            onClick={() => {
-                                                analytics.report({
-                                                    type: events.appFormPercentButtonsEvent.name,
-                                                    payload: {
-                                                        type: 'swap',
-                                                        value: percentValue,
-                                                    },
-                                                });
-                                                button.onClick();
-                                                context.resetSelectedOffer();
-                                            }}
-                                        />
-                                    );
-                                })}
-                            </Row>
-                            <TradingBalance
-                                balance={outputAmount}
-                                displaySymbol={sendCryptoSelect?.displaySymbol}
-                                symbol={account.symbol}
-                                tokenAddress={tokenAddress}
-                                showOnlyAmount
-                                amountInCrypto={amountInCrypto}
-                                decimals={sendAssetDecimals}
+        <Column gap={20}>
+            <TradingFormCard>
+                <TradingFormSection>
+                    <TradingFormInputSellAsset
+                        inputName={TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT}
+                        inputLabel="TR_FROM"
+                        inputBottomText={
+                            <AssetPickerInputBalance
+                                name={TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT}
                             />
-                        </Row>
-                    )}
-                </Column>
-
-                {showReserveBanner && (
-                    <TradingNetworkReserveBanner
-                        symbol={account.symbol}
-                        contractAddress={tokenAddress}
+                        }
+                        includedCryptoIds={exchangeSellSupportedCryptoIds}
+                        excludedCryptoId={receiveCryptoSelect?.id}
+                        inputPlaceholder="TR_SELECT_TOKEN"
+                        onAssetSelect={handleSellAssetSelect}
                     />
-                )}
+                    <Column gap={8}>
+                        <TradingFormInputFiatCrypto
+                            cryptoInputName={TRADING_FORM_OUTPUT_AMOUNT}
+                            fiatInputName={TRADING_FORM_OUTPUT_FIAT}
+                            cryptoSelectName={TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT}
+                            currencySelectLabel={currencySelect?.value.toUpperCase()}
+                            cryptoCurrencyLabel={sendCryptoSelect?.id}
+                        />
+                        {amountInCrypto && asset && (
+                            <Row justifyContent="space-between" alignItems="center" gap={8}>
+                                <TradingFractionButtons />
+                                <TradingBalance
+                                    balance={outputAmount}
+                                    displaySymbol={sendCryptoSelect?.displaySymbol}
+                                    symbol={asset.symbol}
+                                    tokenAddress={tokenAddress}
+                                    showOnlyAmount
+                                    amountInCrypto={amountInCrypto}
+                                    decimals={sendAssetDecimals}
+                                />
+                            </Row>
+                        )}
+                    </Column>
 
-                <TradingFormInputBuyAsset
-                    inputPlaceholder="TR_SELECT_TOKEN"
-                    inputLabel="TR_TO"
-                    inputName={TRADING_FORM_RECEIVE_CRYPTO_CURRENCY_SELECT}
-                    includedCryptoIds={exchangeBuySupportedCryptoIds}
-                    excludedCryptoId={sendCryptoSelect?.id}
-                    onAssetSelect={handleReceiveAssetSelect}
-                />
-            </TradingFormSection>
+                    {showReserveBanner && asset && (
+                        <TradingNetworkReserveBanner
+                            symbol={asset.symbol}
+                            contractAddress={tokenAddress}
+                        />
+                    )}
 
-            {receiveCryptoSelect && !isLoading && <TradingReceiveAddress />}
-            <TradingFormFees
-                feeInfo={feeInfo}
-                account={account}
-                composedLevels={composedLevels}
-                changeFeeLevel={changeFeeLevel}
-            />
-            <TradingSelectedOfferProvider />
-        </TradingFormCard>
+                    <TradingFormInputBuyAsset
+                        inputPlaceholder="TR_SELECT_TOKEN"
+                        inputLabel="TR_TO"
+                        inputName={TRADING_FORM_RECEIVE_CRYPTO_CURRENCY_SELECT}
+                        includedCryptoIds={exchangeBuySupportedCryptoIds}
+                        excludedCryptoId={sendCryptoSelect?.id}
+                        onAssetSelect={handleReceiveAssetSelect}
+                    />
+                </TradingFormSection>
+            </TradingFormCard>
+
+            {receiveCryptoSelect && (
+                <TradingFormCard>
+                    {!isLoading && <TradingReceiveAddress />}
+                    {!!quotes.length && account && (
+                        <TradingFormFees
+                            feeInfo={feeInfo}
+                            account={account}
+                            composedLevels={displayComposedLevels}
+                            changeFeeLevel={changeFeeLevel}
+                        />
+                    )}
+                    <TradingSelectedOfferProvider />
+                </TradingFormCard>
+            )}
+        </Column>
     );
 };

@@ -2,22 +2,27 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": {
         "outDir": "libDev",
-        "baseUrl": "../suite"
+        "paths": { "src/*": ["../suite/src/*"] }
     },
-    "include": [
-        ".",
-        "../suite/src/components/suite/BioAuthGuard"
-    ],
+    "include": ["."],
     "references": [
         {
-            "path": "../../suite-common/suite-types"
+            "path": "../../suite-common/dependency-injection"
         },
         { "path": "../../suite/analytics" },
+        { "path": "../../suite/debug" },
+        { "path": "../../suite/desktop-update" },
+        { "path": "../../suite/flags" },
+        { "path": "../../suite/github" },
         { "path": "../../suite/intl" },
+        {
+            "path": "../../suite/platform-encryption-electron"
+        },
+        { "path": "../../suite/router" },
         { "path": "../../suite/sentry" },
         { "path": "../components" },
-        { "path": "../connect" },
-        { "path": "../ipc-proxy" },
+        { "path": "../connect-electron" },
+        { "path": "../icons" },
         { "path": "../suite" },
         { "path": "../suite-desktop-api" },
         { "path": "../theme" },

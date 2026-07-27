@@ -1,15 +1,18 @@
 import {
-    FieldError,
-    FieldErrors,
-    FieldErrorsImpl,
-    FieldPath,
-    FieldValues,
-    Merge,
+    type FieldError,
+    type FieldErrors,
+    type FieldErrorsImpl,
+    type FieldPath,
+    type FieldValues,
+    type Merge,
 } from 'react-hook-form';
 
-import { fromWei, numberToHex, padLeft, toWei } from 'web3-utils';
-
-import { Network, NetworkSymbol, NetworkType, getNetwork } from '@suite-common/wallet-config';
+import {
+    type Network,
+    type NetworkSymbol,
+    type NetworkType,
+    getNetwork,
+} from '@suite-common/wallet-config';
 import {
     COMPOSE_ERROR_TYPES,
     DEFAULT_PAYMENT,
@@ -32,14 +35,18 @@ import type {
     SendFormDraftKey,
     TokenAddress,
 } from '@suite-common/wallet-types';
-import { BaseCurrencyCode, baseCurrencies } from '@trezor/blockchain-link-types';
 import {
-    ComposeOutput,
-    EthereumTransaction,
-    EthereumTransactionEIP1559,
-    FeeLevel,
-    PROTO,
-    TokenInfo,
+    type BaseCurrencyCode,
+    baseCurrencies,
+    isBaseCurrencyCode,
+} from '@trezor/blockchain-link-types';
+import {
+    type ComposeOutput,
+    type EthereumTransaction,
+    type EthereumTransactionEIP1559,
+    type FeeLevel,
+    type PROTO,
+    type TokenInfo,
 } from '@trezor/connect';
 import { BigNumber, typedObjectKeys } from '@trezor/utils';
 
@@ -49,12 +56,8 @@ import {
     networkAmountToSmallestUnit,
 } from './amountUtils';
 import { isBaseCurrencyWithSats } from './baseCurrency';
-import {
-    getEvmTransactionTextSignature,
-    isEip1559,
-    isEvmApprovalTxByTextSignature,
-    sanitizeHex,
-} from './ethUtils';
+import { fromEther, fromGwei, fromIntegerString, fromWei } from './ethConverter';
+import { isEip1559, isEvmApprovalTx, sanitizeHex, strip } from './ethUtils';
 
 export const calculateTotal = (amount: string, fee: string): string => {
     try {
@@ -120,16 +123,15 @@ export const calculateTotalGasCost = (gasPriceInWei?: string, gasLimit?: string)
     return fee.toFixed();
 };
 
-const getSerializedAmount = (amount?: string) =>
-    amount ? numberToHex(toWei(amount, 'ether')) : '0x00';
+const getSerializedAmount = (amount?: string) => (amount ? fromEther(amount).toWei('hex') : '0x00');
 
 const getSerializedErc20Transfer = (token: TokenInfo, to: string, amount: string) => {
     // 32 bytes address parameter, remove '0x' prefix
-    const erc20recipient = padLeft(to, 64).substring(2);
+    const erc20recipient = strip(to).padStart(64, '0');
     // convert amount to satoshi
     const tokenAmount = convertAmountUnitsToSubunits(amount, token.decimals);
     // 32 bytes amount paramter, remove '0x' prefix
-    const erc20amount = padLeft(numberToHex(tokenAmount), 64).substring(2);
+    const erc20amount = fromIntegerString(tokenAmount).toHex().substring(2).padStart(64, '0');
 
     // join data
     return `0x${ERC20_TRANSFER}${erc20recipient}${erc20amount}`;
@@ -176,8 +178,8 @@ export const prepareEthereumTransaction = (
         to: txInfo.to,
         value: getSerializedAmount(txInfo.amount),
         chainId: txInfo.chainId,
-        nonce: numberToHex(txInfo.nonce),
-        gasLimit: numberToHex(txInfo.gasLimit),
+        nonce: fromIntegerString(txInfo.nonce).toHex(),
+        gasLimit: fromIntegerString(txInfo.gasLimit).toHex(),
         payment_req: txInfo.payment_req,
     };
 
@@ -185,16 +187,16 @@ export const prepareEthereumTransaction = (
         result = {
             ...commonTxData,
             gasPrice: undefined,
-            maxFeePerGas: numberToHex(toWei(txInfo.maxFeePerGas, 'gwei')),
-            maxPriorityFeePerGas: numberToHex(toWei(txInfo.maxPriorityFeePerGas || '0', 'gwei')),
-        } as EthereumTransactionEIP1559;
+            maxFeePerGas: fromGwei(txInfo.maxFeePerGas).toWei('hex'),
+            maxPriorityFeePerGas: fromGwei(txInfo.maxPriorityFeePerGas || '0').toWei('hex'),
+        } satisfies EthereumTransactionEIP1559;
     } else if (txInfo.gasPrice) {
         result = {
             ...commonTxData,
-            gasPrice: numberToHex(toWei(txInfo.gasPrice, 'gwei')),
+            gasPrice: fromGwei(txInfo.gasPrice).toWei('hex'),
             maxFeePerGas: undefined,
             maxPriorityFeePerGas: undefined,
-        } as EthereumTransaction;
+        } satisfies EthereumTransaction;
     } else {
         throw new Error('No gas price or maxFeePerGas and maxPriorityFeePerGas provided');
     }
@@ -203,18 +205,17 @@ export const prepareEthereumTransaction = (
         result.data = sanitizeHex(txInfo.data);
     }
 
-    // Build erc20 'transfer' method or use provided data in case of approve/revoke transaction
     if (txInfo.token) {
-        // join data
-        const evmTxTextSignature = getEvmTransactionTextSignature(txInfo.data);
+        const isApprovalTx = isEvmApprovalTx(txInfo.data);
 
-        result.data = isEvmApprovalTxByTextSignature(evmTxTextSignature)
-            ? txInfo.data
-            : getSerializedErc20Transfer(txInfo.token, txInfo.to, txInfo.amount);
-
-        // replace tx recipient to smart contract address
-        result.to = txInfo.token.contract;
-        // replace tx value
+        if (txInfo.data && txInfo.data !== '0x' && !isApprovalTx) {
+            result.data = sanitizeHex(txInfo.data);
+        } else {
+            result.data = isApprovalTx
+                ? txInfo.data
+                : getSerializedErc20Transfer(txInfo.token, txInfo.to, txInfo.amount);
+            result.to = txInfo.token.contract;
+        }
         result.value = '0x00';
     }
 
@@ -242,12 +243,12 @@ const getConvertedOrDefaultFeeLevels = ({
         return levels.map(level => {
             const { feePerUnit, maxFeePerGas, maxPriorityFeePerGas, baseFeePerGas } = level;
 
-            const feePerUnitInGwei = fromWei(feePerUnit, 'gwei');
-            const maxFeePerGasInGwei = maxFeePerGas ? fromWei(maxFeePerGas, 'gwei') : undefined;
+            const feePerUnitInGwei = fromWei(feePerUnit).toGwei();
+            const maxFeePerGasInGwei = maxFeePerGas ? fromWei(maxFeePerGas).toGwei() : undefined;
             const maxPriorityFeePerGasInGwei = maxPriorityFeePerGas
-                ? fromWei(maxPriorityFeePerGas, 'gwei')
+                ? fromWei(maxPriorityFeePerGas).toGwei()
                 : undefined;
-            const baseFeePerGasInGwei = baseFeePerGas ? fromWei(baseFeePerGas, 'gwei') : undefined;
+            const baseFeePerGasInGwei = baseFeePerGas ? fromWei(baseFeePerGas).toGwei() : undefined;
 
             return {
                 ...level,
@@ -280,7 +281,7 @@ export const isLowAnonymityWarning = (error?: Merge<FieldError, FieldErrorsImpl<
     error?.amount?.type === COMPOSE_ERROR_TYPES.ANONYMITY;
 
 export const getFee = (networkType: NetworkType, tx: GeneralPrecomposedTransactionFinal) => {
-    if (networkType === 'solana') {
+    if (networkType === 'solana' || networkType === 'tron') {
         return tx.fee;
     }
 
@@ -392,7 +393,7 @@ export const getBitcoinComposeOutputs = (
     // one Output is valid and "final" but other has only address
     // to prevent composing "final" transaction switch it to not-final (noaddress)
     const hasIncompleteOutput = values.outputs.find(
-        (o, i) => setMaxOutputId !== i && o && o.address && !o.amount,
+        (o, i) => setMaxOutputId !== i && o?.address && !o.amount,
     );
     if (hasIncompleteOutput) {
         const finalOutput = result.find(o => o.type === 'send-max' || o.type === 'payment');
@@ -486,7 +487,7 @@ export const restoreOrigOutputsOrder = (
     outputs: PROTO.TxOutputType[],
     origOutputs: RbfTransactionParams['outputs'],
     origTxid: string,
-) => {
+): PROTO.TxOutputType[] => {
     const usedIndex: number[] = []; // collect used indexes to avoid duplicates
 
     return outputs
@@ -519,15 +520,22 @@ export const restoreOrigOutputsOrder = (
         });
 };
 
-export const getDefaultValues = (currency: Output['currency']): FormState => ({
-    ...DEFAULT_VALUES,
-    options: ['broadcast', 'destinationTag'],
-    outputs: [{ ...DEFAULT_PAYMENT, currency }],
-    selectedUtxos: [],
-});
+export const getDefaultValues = (
+    currency: Output['currency'],
+    networkType?: NetworkType,
+): FormState => {
+    const isDestinationTagEnabledByDefault = networkType === 'ripple' || networkType === 'stellar';
+
+    return {
+        ...DEFAULT_VALUES,
+        options: isDestinationTagEnabledByDefault ? ['broadcast', 'destinationTag'] : ['broadcast'],
+        outputs: [{ ...DEFAULT_PAYMENT, currency }],
+        selectedUtxos: [],
+    };
+};
 
 type BuildCurrencyOptionParams = {
-    currency: BaseCurrencyCode | '';
+    currency: BaseCurrencyCode | '' | undefined;
     areSatsDisplayed: boolean;
 };
 
@@ -535,7 +543,7 @@ export const buildCurrencyShortOption = ({
     currency,
     areSatsDisplayed,
 }: BuildCurrencyOptionParams): BaseCurrencyOption => {
-    if (currency === '') return { value: '', label: '' };
+    if (!currency || !isBaseCurrencyCode(currency)) return { value: '', label: '' };
 
     return {
         value: currency,
@@ -550,7 +558,7 @@ export const buildCurrencyLongOption = ({
 }: BuildCurrencyOptionParams): BaseCurrencyOption => {
     const shortOption = buildCurrencyShortOption({ currency, areSatsDisplayed });
 
-    if (currency === '') return shortOption;
+    if (!currency || !isBaseCurrencyCode(currency)) return shortOption;
     else {
         return {
             value: shortOption.value,
@@ -752,4 +760,29 @@ export const getCryptoMaxAmountWithReserve = ({
     }
 
     return amount;
+};
+
+interface IsAmountWithinNetworkReserveProps {
+    reserve?: string;
+    balance?: string;
+    fee?: string;
+    amount: string;
+}
+
+/**
+ * Returns true if the amount does not violate the network reserve constraint,
+ * i.e. balance - amount - fee >= reserve.
+ */
+export const isAmountWithinNetworkReserve = ({
+    reserve,
+    balance,
+    fee = '0',
+    amount,
+}: IsAmountWithinNetworkReserveProps): boolean => {
+    if (!reserve || !balance || !amount) return true;
+
+    const sendAmount = new BigNumber(amount);
+    const accountBalance = new BigNumber(balance);
+
+    return sendAmount.lte(accountBalance.minus(reserve).minus(fee));
 };

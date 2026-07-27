@@ -12,20 +12,23 @@ export const walletConnectSessionRequestEvent: EventDef<
     EventType.WalletConnectSessionRequest
 > = {
     name: EventType.WalletConnectSessionRequest,
-    descriptionTrigger: 'WalletConnect DApp call to device',
+    descriptionTrigger:
+        'A WalletConnect DApp session request is successfully responded to by the device. Only successful responses are reported; requests that throw an error are not.',
     changelog: [{ version: '25.5.0', notes: 'added' }],
 
     attributes: {
         origin: {
             changelog: [{ version: '25.5.0', notes: 'added' }],
-            description: 'Source of the call (URL)',
+            description: 'The origin or URL of the DApp making the request',
         },
         chainId: {
             changelog: [{ version: '25.5.0', notes: 'added' }],
-            description: 'Connect method name',
+            description: 'The blockchain chain ID for which the session request is intended',
         },
         method: {
             changelog: [{ version: '25.5.0', notes: 'added' }],
+            description:
+                'The WalletConnect RPC method name being requested (e.g., `eth_sign`, `eth_sendTransaction`)',
         },
     },
 };

@@ -1,21 +1,37 @@
-import { Dispatch, SetStateAction, useEffect } from 'react';
+import { type Dispatch, type SetStateAction, useEffect } from 'react';
 
-import { events } from '@suite/analytics';
-import { Translation, TranslationKey, useTranslation } from '@suite/intl';
-import { Route } from '@suite-common/suite-types';
+import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { selectIsDebugModeActive } from '@suite/debug';
+import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
+import { openModal } from '@suite/modal';
+import { type Route, goto, selectRouteName } from '@suite/router';
+import { useServices } from '@suite-common/dependency-injection';
 import { selectCoinDefinitions, selectNftDefinitions } from '@suite-common/token-definitions';
-import { NetworkType } from '@suite-common/wallet-config';
-import { SelectedAccountLoaded } from '@suite-common/wallet-types';
-import { Button, Icon, IconButton, IconName, Input, Row, SubTabs } from '@trezor/components';
-import { spacings } from '@trezor/theme';
+import { type NetworkType } from '@suite-common/wallet-config';
+import { type SelectedAccountLoaded } from '@suite-common/wallet-types';
+import { isErc4626 } from '@suite-common/wallet-utils';
+import {
+    Button,
+    Icon,
+    IconButton,
+    type IconComponent,
+    Input,
+    Row,
+    SubTabs,
+} from '@trezor/components';
+import {
+    CoinSlashIcon,
+    CoinsIcon,
+    EyeSlashIcon,
+    MagnifyingGlassIcon,
+    PercentIcon,
+    PictureFrameIcon,
+    PlusIcon,
+} from '@trezor/icons';
+import { arrayPartition } from '@trezor/utils';
 
-import { openModal } from 'src/actions/suite/modalActions';
-import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectRouteName } from 'src/reducers/suite/routerReducer';
-import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';
-import { useAnalytics } from 'src/support/useAnalytics';
-import { GetTokensOutputType, getTokens } from 'src/utils/wallet/tokenUtils';
+import { type GetTokensOutputType, getTokens } from 'src/utils/wallet/tokenUtils';
 
 type SubTabConfig = {
     isNft: boolean;
@@ -26,24 +42,39 @@ type SubTabConfig = {
 
 type SubTabItem = {
     id: string;
-    iconName: IconName;
+    iconName: IconComponent;
     onClick: () => void;
     count?: number;
     labelId: TranslationKey;
 };
 
 const getSubTabConfig = ({ isNft, tokens, goToRoute, networkType }: SubTabConfig) => {
+    const [erc4626Tokens, normalTokens] = arrayPartition(tokens.shownWithBalance, isErc4626);
+    // DeFi section is relevant only for EVM networks, but there it is always available.
+    const showDefiTab = !isNft && networkType === 'ethereum';
+
     const baseConfig: SubTabItem[] = [
         {
             id: isNft ? 'wallet-nfts' : 'wallet-tokens',
-            iconName: isNft ? 'pictureFrame' : 'coins',
+            iconName: isNft ? PictureFrameIcon : CoinsIcon,
             onClick: goToRoute(isNft ? 'wallet-nfts' : 'wallet-tokens'),
-            count: tokens.shownWithBalance.length,
+            count: normalTokens.length,
             labelId: isNft ? 'TR_NAV_COLLECTIONS' : 'TR_NAV_TOKENS',
         },
+        ...(showDefiTab
+            ? [
+                  {
+                      id: 'wallet-tokens-defi',
+                      iconName: PercentIcon,
+                      onClick: goToRoute('wallet-tokens-defi'),
+                      count: erc4626Tokens.length,
+                      labelId: 'TR_DEFI',
+                  } as const,
+              ]
+            : []),
         {
             id: isNft ? 'wallet-nfts-hidden' : 'wallet-tokens-hidden',
-            iconName: 'eyeSlash',
+            iconName: EyeSlashIcon,
             onClick: goToRoute(isNft ? 'wallet-nfts-hidden' : 'wallet-tokens-hidden'),
             count: tokens.hiddenWithBalance.length,
             labelId: 'TR_HIDDEN',
@@ -54,7 +85,7 @@ const getSubTabConfig = ({ isNft, tokens, goToRoute, networkType }: SubTabConfig
     if (networkType === 'stellar' && !isNft) {
         baseConfig.push({
             id: 'wallet-tokens-inactive',
-            iconName: 'coinSlash',
+            iconName: CoinSlashIcon,
             onClick: goToRoute('wallet-tokens-inactive'),
             labelId: 'TR_NAV_INACTIVE_TOKENS',
         });
@@ -82,7 +113,7 @@ export const TokensNavigation = ({
 }: TokensNavigationProps) => {
     const { account } = selectedAccount;
     const routeName = useSelector(selectRouteName);
-    const analytics = useAnalytics();
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
     const tokenDefinitions = useSelector(state =>
         isNft
             ? selectNftDefinitions(state, selectedAccount.account.symbol)
@@ -112,7 +143,7 @@ export const TokensNavigation = ({
     };
 
     const goToRoute = (route: Route['name']) => () => {
-        dispatch(goto(route, { preserveParams: true }));
+        dispatch(goto({ routeName: route, preserveParams: true }));
     };
 
     useEffect(() => {
@@ -126,7 +157,7 @@ export const TokensNavigation = ({
                     <SubTabs.Item
                         key={tab.id}
                         id={tab.id}
-                        iconName={tab.iconName}
+                        icon={tab.iconName}
                         onClick={tab.onClick}
                         count={tab.count}
                     >
@@ -134,7 +165,7 @@ export const TokensNavigation = ({
                     </SubTabs.Item>
                 ))}
             </SubTabs>
-            <Row gap={spacings.sm}>
+            <Row gap={12}>
                 {showManualActivation && onManualActivation && (
                     <Button
                         intent="neutral"
@@ -156,7 +187,7 @@ export const TokensNavigation = ({
                     size="small"
                     leftContent={
                         <Icon
-                            name="magnifyingGlass"
+                            as={MagnifyingGlassIcon}
                             intent="neutral"
                             priority="secondary"
                             size={16}
@@ -165,11 +196,12 @@ export const TokensNavigation = ({
                 />
                 {showAddToken && (
                     <IconButton
-                        icon="plus"
+                        icon={PlusIcon}
                         size="medium"
                         intent="neutral"
                         priority="secondary"
                         onClick={handleAddToken}
+                        tooltip={{ content: <Translation id="TR_ADD_TOKEN_SUBMIT" /> }}
                     />
                 )}
             </Row>

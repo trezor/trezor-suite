@@ -1,31 +1,36 @@
 {
     "extends": "../../tsconfig.base.json",
-    "compilerOptions": {
-        "outDir": "libDev",
-        "exactOptionalPropertyTypes": true
-    },
+    "compilerOptions": { "outDir": "libDev" },
     "references": [
+        { "path": "../analytics" },
         { "path": "../delegated-identity-key" },
         {
             "path": "../delegated-identity-key-types"
         },
         { "path": "../dependency-injection" },
         { "path": "../device" },
-        { "path": "../metadata-types" },
+        { "path": "../message-system" },
         { "path": "../platform-encryption" },
         { "path": "../redux-utils" },
         { "path": "../suite-sync-quota-manager" },
         { "path": "../suite-sync-storage" },
         { "path": "../suite-sync-types" },
         { "path": "../suite-types" },
-        { "path": "../suite-utils" },
         { "path": "../toast-notifications" },
+        { "path": "../transaction-search" },
+        { "path": "../validators" },
         { "path": "../wallet-config" },
         { "path": "../wallet-core" },
         { "path": "../wallet-types" },
         { "path": "../wallet-utils" },
+        {
+            "path": "../../packages/analytics-uploader"
+        },
         { "path": "../../packages/connect" },
+        { "path": "../../packages/device-utils" },
+        { "path": "../../packages/env-utils" },
         { "path": "../../packages/type-utils" },
+        { "path": "../../packages/urls" },
         { "path": "../../packages/utils" }
     ]
 }

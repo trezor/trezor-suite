@@ -2,6 +2,9 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
+        {
+            "path": "../../suite-common/dependency-injection"
+        },
         { "path": "../../suite-common/device" },
         {
             "path": "../../suite-common/redux-utils"
@@ -30,24 +33,30 @@
         { "path": "../alerts" },
         { "path": "../analytics" },
         { "path": "../atoms" },
+        { "path": "../clipboard" },
+        { "path": "../feature-feedback" },
         { "path": "../formatters" },
         { "path": "../forms" },
         { "path": "../helpers" },
         { "path": "../icons" },
         { "path": "../intl" },
+        { "path": "../link" },
         { "path": "../navigation" },
         { "path": "../scrollview" },
-        { "path": "../services" },
         { "path": "../tokens" },
         { "path": "../../packages/connect" },
         { "path": "../../packages/react-utils" },
-        { "path": "../../packages/styles" },
+        {
+            "path": "../../packages/styles-native"
+        },
         { "path": "../../packages/theme" },
+        { "path": "../../packages/type-utils" },
         { "path": "../../packages/utils" },
         {
             "path": "../../suite-common/test-utils"
         },
-        { "path": "../test-utils" }
+        { "path": "../test-utils" },
+        { "path": "../test-utils-store" }
     ],
     "include": [".", "**/*.json"]
 }

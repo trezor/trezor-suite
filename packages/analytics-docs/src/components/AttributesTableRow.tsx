@@ -1,4 +1,4 @@
-import { JSX } from 'react';
+import { type JSX } from 'react';
 
 import styled from 'styled-components';
 
@@ -108,8 +108,9 @@ const renderRuntimeType = (t?: string) => {
 
 export const AttributesTableRow = ({ attributeKey, attributes }: AttributesTableRowProps) => {
     const attribute = attributes[attributeKey];
-    const { changelog } = attribute;
     const { ChangelogButton, isChangelogOpened } = useChangelogButton();
+    if (!attribute) return null;
+    const { changelog } = attribute;
 
     return (
         <>

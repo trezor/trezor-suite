@@ -1,18 +1,17 @@
 import { useEffect, useState } from 'react';
 
-import { events } from '@suite/analytics';
+import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
+import { closeModal } from '@suite/modal';
+import { useServices } from '@suite-common/dependency-injection';
 import { Card, Checkbox, Column, Modal, Paragraph } from '@trezor/components';
 import { desktopApi } from '@trezor/suite-desktop-api';
-import { spacings } from '@trezor/theme';
 
-import * as modalActions from 'src/actions/suite/modalActions';
 import { useDispatch } from 'src/hooks/suite';
-import { useAnalytics } from 'src/support/useAnalytics';
 
 export const AutoStartBeforeQuitModal = () => {
     const dispatch = useDispatch();
-    const analytics = useAnalytics();
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
     const [dontAskAgain, setDontAskAgain] = useState(false);
     useEffect(() => {
         if (desktopApi.available) desktopApi.appAutoStartPopupAck();
@@ -24,7 +23,7 @@ export const AutoStartBeforeQuitModal = () => {
         action: 'background-always' | 'background-now' | 'quit-always' | 'quit-now',
     ) => {
         desktopApi.appAutoStartPopupResponse(action);
-        dispatch(modalActions.onCancel());
+        dispatch(closeModal());
         analytics.report({
             type: events.autostartModalEvent.name,
             payload: {
@@ -42,7 +41,7 @@ export const AutoStartBeforeQuitModal = () => {
     return (
         <Modal
             data-testid="@auto-start-before-quit"
-            variant="primary"
+            intent="brand"
             onCancel={() => handleQuit()}
             heading={<Translation id="TR_RUN_IN_BACKGROUND_TITLE" />}
             bottomContent={
@@ -64,7 +63,7 @@ export const AutoStartBeforeQuitModal = () => {
                 </>
             }
         >
-            <Column gap={spacings.md}>
+            <Column gap={16}>
                 <Paragraph>
                     <Translation id="TR_RUN_IN_BACKGROUND_DESCRIPTION" />
                 </Paragraph>
@@ -72,7 +71,7 @@ export const AutoStartBeforeQuitModal = () => {
                     <Checkbox
                         data-testid="auto-start-before-quit/dont-ask-again-checkbox"
                         isChecked={dontAskAgain}
-                        onClick={() => setDontAskAgain(!dontAskAgain)}
+                        onChange={() => setDontAskAgain(!dontAskAgain)}
                     >
                         <Translation id="TR_DONT_ASK_AGAIN" />
                     </Checkbox>

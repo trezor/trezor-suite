@@ -1,17 +1,17 @@
 import { useDispatch, useSelector } from 'react-redux';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { selectIsNoPhysicalDeviceConnected } from '@suite-common/device';
 import { selectIsDeviceAutoEjectEnabled, toggleAutoEjectThunk } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
-import { events } from '@suite-native/analytics';
+import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { TouchableSwitchRow } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import { useAnalytics } from '@suite-native/services';
 import { useToast } from '@suite-native/toasts';
 
 export const AutoEjectSwitch = () => {
     const dispatch = useDispatch();
-    const analytics = useAnalytics();
+    const { analytics } = useServices(selectNativeAnalyticsDep);
     const { showAlert, hideAlert } = useAlert();
 
     const { showToast } = useToast();
@@ -23,7 +23,7 @@ export const AutoEjectSwitch = () => {
     const onToggleAutoEject = () => {
         if (!isAutoEjectEnabled) {
             showToast({
-                variant: 'default',
+                intent: 'neutral',
                 message: isNoPhysicalDeviceConnected ? (
                     <Translation id="moduleSettings.viewOnly.autoEject.toast.walletsEjected" />
                 ) : (
@@ -46,19 +46,20 @@ export const AutoEjectSwitch = () => {
         } else {
             showAlert({
                 title: (
-                    <>
-                        <Translation id="moduleSettings.viewOnly.autoEject.switch.alert.titleNoConnectedTrezor" />
-                        {!isNoPhysicalDeviceConnected && (
-                            <Translation id="moduleSettings.viewOnly.autoEject.switch.alert.titleConnectedTrezor" />
-                        )}
-                    </>
+                    <Translation
+                        id={
+                            isNoPhysicalDeviceConnected
+                                ? 'moduleSettings.viewOnly.autoEject.switch.alert.disconnectedTrezorTitle'
+                                : 'moduleSettings.viewOnly.autoEject.switch.alert.connectedTrezorTitle'
+                        }
+                    />
                 ),
                 primaryButtonTitle: (
                     <Translation id="moduleSettings.viewOnly.autoEject.switch.alert.primaryButtonTitle" />
                 ),
-                primaryButtonVariant: 'redBold',
+                primaryButtonColorProps: { intent: 'critical', priority: 'primary' },
                 secondaryButtonTitle: <Translation id="generic.buttons.cancel" />,
-                secondaryButtonVariant: 'redElevation0',
+                secondaryButtonColorProps: { intent: 'critical', priority: 'secondary' },
                 onPressSecondaryButton: hideAlert,
                 onPressPrimaryButton: onToggleAutoEject,
             });

@@ -1,7 +1,7 @@
 import { memo, useCallback, useState } from 'react';
 
-import { TranslationKey } from '@suite/intl';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { type TranslationKey } from '@suite/intl';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Box, Divider } from '@trezor/components';
 import { TopAssets } from '@trezor/product-components';
 
@@ -17,10 +17,10 @@ import { useSearchFilter } from 'src/components/suite/asset-picker/hooks';
 
 import { AssetListWrapper } from './AssetListWrapper';
 import {
-    TradingAssetListItem,
+    type TradingAssetListItem,
     useBuildTradingAssetOptions,
 } from './hooks/useBuildTradingAssetOptions';
-import { UseUpdateFormInputProps, useUpdateFormInput } from './hooks/useUpdateFormInput';
+import { type UseUpdateFormInputProps, useUpdateFormInput } from './hooks/useUpdateFormInput';
 import { AssetSearchWithNetworkFilter } from '../../TradingFormInputAssetPicker';
 
 export type AssetPickerModalProps = {
@@ -108,6 +108,8 @@ export const AssetPickerModal = memo(function AssetPickerModalInner({
                 networkFilter={networkSymbol}
                 setNetworkFilter={setNetworkSymbol}
                 networks={networks}
+                // eslint-disable-next-line jsx-a11y/no-autofocus
+                autoFocus
             />
 
             <Divider margin={{ top: 16 }} />

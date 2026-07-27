@@ -1,7 +1,8 @@
 import { Keyboard } from 'react-native';
 import { useSelector } from 'react-redux';
 
-import { BlockchainRootState, selectNetworkBlockchainInfo } from '@suite-common/wallet-core';
+import { type Network } from '@suite-common/wallet-config';
+import { type BlockchainRootState, selectNetworkBlockchainInfo } from '@suite-common/wallet-core';
 import {
     BottomSheetModal,
     IconButton,
@@ -9,7 +10,11 @@ import {
     VStack,
     useBottomSheetModal,
 } from '@suite-native/atoms';
-import { Translation, TxKeyPath } from '@suite-native/intl';
+import { Translation, type TxKeyPath } from '@suite-native/intl';
+
+type ConnectionInfoButtonProps = {
+    network: Network;
+};
 
 type InfoLineProps = {
     title: TxKeyPath;
@@ -18,18 +23,18 @@ type InfoLineProps = {
 
 const InfoLine = ({ title, value }: InfoLineProps) => (
     <VStack spacing="sp2">
-        <Text color="textSubdued">
+        <Text color="contentSecondary">
             <Translation id={title} />
         </Text>
         <Text>{value}</Text>
     </VStack>
 );
 
-export const ConnectionInfoButton = () => {
+export const ConnectionInfoButton = ({ network }: ConnectionInfoButtonProps) => {
     const { bottomSheetRef, openModal } = useBottomSheetModal();
 
     const { connected, url, blockHash, blockHeight, version } = useSelector(
-        (state: BlockchainRootState) => selectNetworkBlockchainInfo(state, 'btc'),
+        (state: BlockchainRootState) => selectNetworkBlockchainInfo(state, network.symbol),
     );
 
     const openBottomSheet = () => {
@@ -40,41 +45,43 @@ export const ConnectionInfoButton = () => {
     return (
         <>
             <IconButton
-                colorScheme="tertiaryElevation0"
-                size="medium"
                 iconName="info"
+                intent="neutral"
+                priority="secondary"
+                size="medium"
                 onPress={openBottomSheet}
             />
             <BottomSheetModal
                 ref={bottomSheetRef}
-                title={
-                    <Translation id="moduleSettings.advanced.bitcoinBackends.connectionInfo.title" />
-                }
+                title={<Translation id="moduleSettings.networkBackends.connectionInfo.title" />}
                 isCloseDisplayed
             >
                 <VStack marginHorizontal="sp8" spacing="sp16">
                     {connected ? (
                         <>
                             <InfoLine
-                                title="moduleSettings.advanced.bitcoinBackends.connectionInfo.connectedTo"
+                                title="moduleSettings.networkBackends.connectionInfo.connectedTo"
                                 value={url}
                             />
                             <InfoLine
-                                title="moduleSettings.advanced.bitcoinBackends.connectionInfo.blockHash"
+                                title="moduleSettings.networkBackends.connectionInfo.blockHash"
                                 value={blockHash}
                             />
                             <InfoLine
-                                title="moduleSettings.advanced.bitcoinBackends.connectionInfo.blockHeight"
+                                title="moduleSettings.networkBackends.connectionInfo.blockHeight"
                                 value={blockHeight}
                             />
                             <InfoLine
-                                title="moduleSettings.advanced.bitcoinBackends.connectionInfo.backendVersion"
+                                title="moduleSettings.networkBackends.connectionInfo.backendVersion"
                                 value={version}
                             />
                         </>
                     ) : (
                         <Text>
-                            <Translation id="moduleSettings.advanced.bitcoinBackends.connectionInfo.disconnected" />
+                            <Translation
+                                id="moduleSettings.networkBackends.connectionInfo.disconnected"
+                                values={{ networkName: network.name }}
+                            />
                         </Text>
                     )}
                 </VStack>

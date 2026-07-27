@@ -1,7 +1,9 @@
-import { ReactNode, createContext, useCallback, useContext, useState } from 'react';
+import { type ReactNode, createContext, useCallback, useContext, useState } from 'react';
 
-import { NativeScrollEvent } from 'react-native/Libraries/Components/ScrollView/ScrollView';
-import { NativeSyntheticEvent } from 'react-native/Libraries/Types/CoreEventTypes';
+import { type NativeScrollEvent } from 'react-native/Libraries/Components/ScrollView/ScrollView';
+import { type NativeSyntheticEvent } from 'react-native/Libraries/Types/CoreEventTypes';
+
+import { throwError } from '@trezor/utils';
 
 type HeaderContextType = {
     setScrollableHeaderHeight: (height: number) => void;
@@ -40,12 +42,6 @@ export const DynamicHeaderProvider = ({ children }: HeaderProviderProps) => {
     );
 };
 
-export const useDynamicHeader = () => {
-    const context = useContext(HeaderContext);
-
-    if (!context) {
-        throw new Error('useHeader must be used within a HeaderProvider');
-    }
-
-    return context;
-};
+export const useDynamicHeader = () =>
+    useContext(HeaderContext) ??
+    throwError('useDynamicHeader must be used within a HeaderProvider');

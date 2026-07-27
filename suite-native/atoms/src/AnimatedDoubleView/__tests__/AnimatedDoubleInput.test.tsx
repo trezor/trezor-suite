@@ -1,7 +1,7 @@
 import { renderWithBasicProvider, userEvent } from '@suite-native/test-utils';
 
 import { Input } from '../../Input/Input';
-import { AnimatedDoubleInput, AnimatedDoubleInputProps } from '../AnimatedDoubleInput';
+import { AnimatedDoubleInput, type AnimatedDoubleInputProps } from '../AnimatedDoubleInput';
 
 describe('AnimatedDoubleInput', () => {
     const renderAnimatedDoubleInput = (props: Partial<AnimatedDoubleInputProps>) =>
@@ -38,6 +38,20 @@ describe('AnimatedDoubleInput', () => {
 
         expect(onInputSwitch).toHaveBeenCalledTimes(1);
         expect(onInputSwitch).toHaveBeenCalledWith('secondary');
+    });
+
+    it('should derive the next view from the controlled activeView', async () => {
+        const onInputSwitch = jest.fn();
+        const { getByLabelText } = renderAnimatedDoubleInput({
+            onInputSwitch,
+            activeView: 'secondary',
+        });
+
+        const switchButton = getByLabelText('Switch');
+        await userEvent.press(switchButton);
+
+        expect(onInputSwitch).toHaveBeenCalledTimes(1);
+        expect(onInputSwitch).toHaveBeenCalledWith('primary');
     });
 
     it('should propagate switch label', () => {

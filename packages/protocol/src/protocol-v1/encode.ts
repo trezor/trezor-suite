@@ -1,5 +1,5 @@
 import { HEADER_SIZE, MESSAGE_HEADER_BYTE, MESSAGE_MAGIC_HEADER_BYTE } from './constants';
-import { TransportProtocol } from '../types';
+import { type TransportProtocol } from '../types';
 
 // header: 3f2323 `?##` and chunkHeader: 3f `?`
 export const getHeaders: TransportProtocol['getHeaders'] = () => {

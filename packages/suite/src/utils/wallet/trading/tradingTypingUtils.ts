@@ -1,25 +1,27 @@
-import { BuyTrade, CryptoId, ExchangeTrade, SellFiatTrade } from 'invity-api';
+import { type BuyTrade, type CryptoId, type ExchangeTrade, type SellFiatTrade } from 'invity-api';
 
 import {
+    TRADING_EXCHANGE_FORM_DEX,
     TRADING_FORM_FIAT_CURRENCY_SELECT,
     TRADING_FORM_OUTPUT_CURRENCY,
     type TradingBuyType,
     type TradingExchangeType,
-    TradingFiatCurrencyOption,
+    type TradingFiatCurrencyOption,
     type TradingSellType,
-    type TradingTradeMapProps,
     type TradingTradeType,
     type TradingType,
 } from '@suite-common/trading';
-import { BaseCurrencyOption } from '@suite-common/wallet-types';
+import { type BaseCurrencyOption } from '@suite-common/wallet-types';
 
 import {
-    TradingGetCryptoQuoteAmountProps,
-    TradingGetFiatCurrenciesProps,
-    TradingGetPaymentMethodProps,
-    TradingGetProvidersInfoProps,
+    type TradingGetCryptoQuoteAmountProps,
+    type TradingGetFiatCurrenciesProps,
+    type TradingGetProvidersInfoProps,
 } from 'src/types/trading/trading';
-import { TradingFormContextValues, TradingFormMapProps } from 'src/types/trading/tradingForm';
+import {
+    type TradingFormContextValues,
+    type TradingFormMapProps,
+} from 'src/types/trading/tradingForm';
 
 export const isTradingBuyContext = (
     context: TradingFormMapProps[keyof TradingFormMapProps],
@@ -32,6 +34,11 @@ export const isTradingSellContext = (
 export const isTradingExchangeContext = (
     context: TradingFormMapProps[keyof TradingFormMapProps],
 ): context is TradingFormMapProps[TradingExchangeType] => context.type === 'exchange';
+
+export const isTradingExchangeOrSellContext = (
+    context: TradingFormMapProps[keyof TradingFormMapProps],
+): context is TradingFormMapProps[TradingExchangeType] | TradingFormMapProps[TradingSellType] =>
+    isTradingExchangeContext(context) || isTradingSellContext(context);
 
 export const getCryptoQuoteAmountProps = (
     quoteInput: TradingTradeType | undefined,
@@ -117,16 +124,6 @@ export const getFiatCurrenciesProps = (
     return null;
 };
 
-export const getSelectQuoteTyped = (
-    context: TradingFormContextValues<TradingType>,
-): ((quote: TradingTradeMapProps[typeof context.type]) => void) => {
-    const selectQuote = context.selectQuote as (
-        quote: TradingTradeMapProps[typeof context.type],
-    ) => void;
-
-    return selectQuote;
-};
-
 export const getSelectedCryptoId = (
     context: TradingFormContextValues<TradingType>,
 ): CryptoId | null => {
@@ -155,16 +152,48 @@ export const getSelectedTradingCurrency = (
     return context.getValues(TRADING_FORM_FIAT_CURRENCY_SELECT);
 };
 
-export const getPaymentMethod = (
-    selectedQuote: SellFiatTrade | ExchangeTrade | BuyTrade,
+const getQuotesFilteredByProviderAndPaymentMethod = <T extends BuyTrade | SellFiatTrade>(
+    quotes: T[],
+    provider: string | undefined,
+    paymentMethod: string | undefined,
+): T[] => {
+    let result = quotes;
+    if (paymentMethod !== undefined) {
+        result = result.filter(quote => quote.paymentMethod === paymentMethod);
+    }
+    if (provider !== undefined) {
+        result = result.filter(quote => quote.exchange === provider);
+    }
+
+    return result;
+};
+
+export const getSelectedQuote = (
     context: TradingFormContextValues<TradingType>,
-): TradingGetPaymentMethodProps => {
-    if (isTradingExchangeContext(context)) return {};
+): BuyTrade | SellFiatTrade | ExchangeTrade | undefined => {
+    const { provider } = context.getValues();
 
-    const selectedQuoteTyped = selectedQuote as SellFiatTrade | BuyTrade;
+    if (isTradingExchangeContext(context)) {
+        const { exchangeType } = context.getValues();
+        const quotes =
+            exchangeType === TRADING_EXCHANGE_FORM_DEX ? context.dexQuotes : context.cexQuotes;
 
-    return {
-        paymentMethod: selectedQuoteTyped.paymentMethod,
-        paymentMethodName: selectedQuoteTyped.paymentMethodName,
-    };
+        return quotes?.find(quote => !provider || quote.exchange === provider) ?? quotes?.[0];
+    }
+
+    const { paymentMethod } = context.getValues();
+
+    if (isTradingBuyContext(context)) {
+        return getQuotesFilteredByProviderAndPaymentMethod<BuyTrade>(
+            context.quotes,
+            provider,
+            paymentMethod?.value,
+        )?.[0];
+    }
+
+    return getQuotesFilteredByProviderAndPaymentMethod<SellFiatTrade>(
+        context.quotes,
+        provider,
+        paymentMethod?.value,
+    )?.[0];
 };

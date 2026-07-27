@@ -1,5 +1,5 @@
 import { PORTFOLIO_TRACKER_DEVICE_ID } from '@suite-common/device';
-import { TrezorDevice } from '@suite-common/suite-types';
+import { type TrezorDevice } from '@suite-common/suite-types';
 
 import { backfillPortfolioTrackerUnavailableCapabilities } from '../../migrations/device/v4';
 
@@ -13,7 +13,7 @@ describe('backfillPortfolioTrackerUnavailableCapabilities', () => {
             },
         ] as unknown as TrezorDevice[];
 
-        const migratedDevices = backfillPortfolioTrackerUnavailableCapabilities(oldDevices as any);
+        const migratedDevices = backfillPortfolioTrackerUnavailableCapabilities(oldDevices);
 
         expect(migratedDevices).toEqual([
             {
@@ -36,7 +36,7 @@ describe('backfillPortfolioTrackerUnavailableCapabilities', () => {
             },
         ] as unknown as TrezorDevice[];
 
-        const migratedDevices = backfillPortfolioTrackerUnavailableCapabilities(oldDevices as any);
+        const migratedDevices = backfillPortfolioTrackerUnavailableCapabilities(oldDevices);
 
         expect(migratedDevices).toEqual([
             {
@@ -60,7 +60,7 @@ describe('backfillPortfolioTrackerUnavailableCapabilities', () => {
             },
         ] as unknown as TrezorDevice[];
 
-        const migratedDevices = backfillPortfolioTrackerUnavailableCapabilities(oldDevices as any);
+        const migratedDevices = backfillPortfolioTrackerUnavailableCapabilities(oldDevices);
 
         expect(migratedDevices).toEqual([
             {
@@ -86,7 +86,7 @@ describe('backfillPortfolioTrackerUnavailableCapabilities', () => {
             },
         ] as unknown as TrezorDevice[];
 
-        const migratedDevices = backfillPortfolioTrackerUnavailableCapabilities(oldDevices as any);
+        const migratedDevices = backfillPortfolioTrackerUnavailableCapabilities(oldDevices);
 
         expect(migratedDevices).toEqual(oldDevices);
     });

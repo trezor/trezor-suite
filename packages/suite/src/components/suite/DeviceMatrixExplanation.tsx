@@ -1,9 +1,9 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
 import styled from 'styled-components';
 
-import { Icon, IconName, IconProps, Image, variables } from '@trezor/components';
-import { DeviceModelInternal } from '@trezor/device-utils';
+import { Icon, type IconComponent, type IconProps, Image, variables } from '@trezor/components';
+import { type DeviceModelInternal } from '@trezor/device-utils';
 import { typography } from '@trezor/theme';
 
 import { useGuide } from 'src/hooks/guide';
@@ -12,12 +12,12 @@ const Wrapper = styled.div<{ $isGuideOpen?: boolean }>`
     display: flex;
     flex-direction: column;
     align-items: center;
-    background: ${({ theme }) => theme.backgroundNeutralBoldInverted};
+    background: ${({ theme }) => theme.surfaceFillRaised};
     padding: 20px 24px;
-    margin-right: 34px;
+    margin-right: 32px;
     width: 100%;
     max-width: 360px;
-    border-radius: 5px;
+    border-radius: 4px;
 
     @media only screen and (max-width: ${props =>
             props.$isGuideOpen ? variables.SCREEN_SIZE.XL : variables.SCREEN_SIZE.MD}) {
@@ -41,9 +41,9 @@ const ItemIconWrapper = styled.div`
 
 const ItemText = styled.div`
     width: 100%;
-    color: ${({ theme }) => theme.textDefault};
+    color: ${({ theme }) => theme.contentPrimary};
     ${typography['body-sm']}
-    padding: 26px 0;
+    padding: 24px 0;
     text-align: left;
 `;
 
@@ -60,7 +60,7 @@ interface DeviceImageItem extends CommonItemProps {
 
 interface IconItem extends CommonItemProps {
     deviceModelInternal?: DeviceModelInternal;
-    icon: IconName;
+    icon: IconComponent;
     iconColor?: IconProps['color'];
     iconSize?: IconProps['size'];
 }
@@ -81,7 +81,7 @@ export const DeviceMatrixExplanation = ({ items }: DeviceMatrixExplanationProps)
                     <ItemIconWrapper>
                         {item.icon ? (
                             <Icon
-                                name={item.icon}
+                                as={item.icon}
                                 color={item.iconColor}
                                 size={item.iconSize ?? 26}
                             />

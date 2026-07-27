@@ -1,6 +1,6 @@
-import { Translation, TxKeyPath } from '@suite-native/intl';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Color } from '@trezor/theme';
+import { Translation, type TxKeyPath } from '@suite-native/intl';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
+import { type Color } from '@trezor/theme';
 
 import { Box } from './Box';
 import { HStack } from './Stack';
@@ -31,8 +31,8 @@ const separatorTitleStyle = prepareNativeStyle(utils => ({
 export const TextDivider = ({
     title = 'generic.orSeparator',
     horizontalMargin = 0,
-    lineColor = 'borderElevation1',
-    textColor = 'textDefault',
+    lineColor = 'borderNeutral',
+    textColor = 'contentPrimary',
 }: TextDividerProps) => {
     const { applyStyle } = useNativeStyles();
 

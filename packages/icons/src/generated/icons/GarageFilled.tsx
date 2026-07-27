@@ -1,0 +1,10 @@
+import type { SVGProps } from 'react';
+const SvgGarageFilled = (props: SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" {...props}>
+        <path
+            fill="currentColor"
+            d="M30 24h-1V12.334a2 2 0 0 0-.89-1.664l-11-7.334a2 2 0 0 0-2.219 0l-11 7.334A2 2 0 0 0 3 12.334V24H2a1 1 0 0 0 0 2h28a1 1 0 0 0 0-2m-13-8h7v3h-7zm-2 3H8v-3h7zm-7 2h7v3H8zm9 0h7v3h-7z"
+        />
+    </svg>
+);
+export { SvgGarageFilled as ReactComponent };

@@ -1,15 +1,21 @@
+import { Calldata, asEvmAddress } from '@suite-common/calldata';
 import { UINT256_MAX } from '@suite-common/suite-constants';
+import { type WalletAccountTransaction } from '@suite-common/wallet-types';
 import { BigNumber } from '@trezor/utils';
 
 import {
     buildApprovalTransactionData,
-    getEvmApprovalTxData,
     getEvmTransactionTextSignature,
-    getEvmTransferTxData,
+    getNativeWrapTxKind,
+    getUnwrapAmountByEthereumDataHex,
+    isUnwrapNativeTx,
+    isWrapNativeTx,
     padLeftEven,
     sanitizeHex,
     strip,
 } from '../ethUtils';
+
+const VALID_CLAIM_ADDRESS = asEvmAddress('0x1111111111111111111111111111111111111111');
 
 describe('eth utils', () => {
     it('padLeftEven', () => {
@@ -30,101 +36,6 @@ describe('eth utils', () => {
         expect(strip('0x')).toBe('');
         expect(strip('0x2540be3ff')).toBe('02540be3ff');
         expect(strip('2540be3ff')).toBe('02540be3ff');
-    });
-
-    describe('getEvmApprovalTxData', () => {
-        it('returns null if data is underfined or empty', () => {
-            expect(getEvmApprovalTxData(undefined)).toBeNull();
-            expect(getEvmApprovalTxData('')).toBeNull();
-        });
-
-        it('returns "approval" for approve transactions', () => {
-            const approveData =
-                '0x095ea7b3' +
-                '000000000000000000000000742d35cc6634c0532925a3b8d40e592e43a73654' + // spender
-                '0000000000000000000000000000000000000000000000000de0b6b3a7640000'; // amount (32 bytes) - 1 ETH in wei
-
-            const result = getEvmApprovalTxData(approveData);
-
-            expect(result).toEqual({
-                type: 'approve',
-                spender: '0x742d35cc6634c0532925a3b8d40e592e43a73654',
-                amount: '1000000000000000000',
-            });
-        });
-
-        it('returns "revoke" for approve transactions with zero amount', () => {
-            const revokeData =
-                '0x095ea7b3' +
-                '000000000000000000000000742d35cc6634c0532925a3b8d40e592e43a73654' + // spender
-                '0000000000000000000000000000000000000000000000000000000000000000'; // amount (32 bytes) - 0
-            const result = getEvmApprovalTxData(revokeData);
-
-            expect(result).toEqual({
-                type: 'revoke',
-                spender: '0x742d35cc6634c0532925a3b8d40e592e43a73654',
-                amount: '0',
-            });
-        });
-
-        it('returns "approval" for maximum uint256 approval', () => {
-            const maxApprovalData =
-                '0x095ea7b3' +
-                '000000000000000000000000742d35cc6634c0532925a3b8d40e592e43a73654' + // spender
-                'ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff'; // max uint256
-
-            const result = getEvmApprovalTxData(maxApprovalData);
-            expect(result?.type).toBe('approve');
-        });
-
-        it('should handle data without 0x prefix', () => {
-            const dataWithoutPrefix =
-                '095ea7b3' +
-                '000000000000000000000000742d35cc6634c0532925a3b8d40e592e43a73654' +
-                '0000000000000000000000000000000000000000000000000de0b6b3a7640000';
-
-            const result = getEvmApprovalTxData(dataWithoutPrefix);
-
-            expect(result?.type).toEqual('approve');
-        });
-
-        it('should handle uppercase hex data', () => {
-            const uppercaseData =
-                '0X095EA7B3' +
-                '000000000000000000000000742D35CC6634C0532925A3B8D40E592E43A73654' +
-                '0000000000000000000000000000000000000000000000000000000000000000';
-
-            expect(getEvmApprovalTxData(uppercaseData)?.type).toBe('revoke');
-        });
-
-        it('returns null for invalid hex input', () => {
-            expect(getEvmApprovalTxData('0xZZZ')).toBeNull();
-            expect(getEvmApprovalTxData('ZZZ')).toBeNull();
-        });
-
-        it('returns null for data shorter than selector', () => {
-            expect(getEvmApprovalTxData('0x09')).toBeNull();
-            expect(getEvmApprovalTxData('09')).toBeNull();
-        });
-
-        it('returns null for selector present but parameters too short', () => {
-            const tooShort = '0x095ea7b3' + '00'.repeat(10); // way less than 2 * 32 bytes
-            expect(getEvmApprovalTxData(tooShort)).toBeNull();
-        });
-
-        it('returns null when decoded parameter types are invalid (garbage after selector)', () => {
-            // not enough bytes to form valid address+uint256
-            const invalidParams = '0x095ea7b3' + 'ff'.repeat(31);
-            expect(getEvmApprovalTxData(invalidParams)).toBeNull();
-        });
-
-        it('handles uppercase without 0x prefix', () => {
-            const data =
-                '095EA7B3' +
-                '000000000000000000000000742D35CC6634C0532925A3B8D40E592E43A73654' +
-                '0000000000000000000000000000000000000000000000000DE0B6B3A7640000';
-            expect(getEvmApprovalTxData(data)?.type).toBe('approve');
-        });
     });
 
     describe('getEvmTransactionTextSignature', () => {
@@ -233,6 +144,133 @@ describe('eth utils', () => {
                 '00000000000000000000000000000000000000000000000000000000000003E8';
             expect(getEvmTransactionTextSignature(upperNoPrefix)).toBe('transfer');
         });
+
+        it('returns "claim" for valid distributor claim call', () => {
+            const claimData = Calldata.evm.distributor.claim.encode(
+                {
+                    users: [VALID_CLAIM_ADDRESS],
+                    tokens: [VALID_CLAIM_ADDRESS],
+                    amounts: [new BigNumber(1)],
+                    proofs: [[]],
+                },
+                { sender: VALID_CLAIM_ADDRESS },
+            ).data;
+
+            expect(getEvmTransactionTextSignature(claimData ?? undefined)).toBe('claim');
+        });
+
+        it('returns "unknown" for selector-only claim (too short)', () => {
+            expect(getEvmTransactionTextSignature('0x71ee95c0')).toBe('unknown');
+        });
+    });
+
+    describe('wrapped-native tx detection', () => {
+        const WETH = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2';
+        const OTHER = '0x1111111111111111111111111111111111111111';
+        const DEPOSIT = '0xd0e30db0'; // WETH deposit()
+        const WITHDRAW =
+            '0x2e1a7d4d0000000000000000000000000000000000000000000000000de0b6b3a7640000'; // withdraw(1e18)
+        const ERC4626_DEPOSIT =
+            '0x6e553f65' + // deposit(uint256,address) — different selector, must not be treated as a wrap
+            '00000000000000000000000000000000000000000000000000000000004c4b40' +
+            '0000000000000000000000009ea3721b5bf3b64b4418c38b603154d2d597fae3';
+
+        const wrap = (to: string | null, data: string | null) =>
+            isWrapNativeTx({ networkSymbol: 'eth', to, data });
+        const unwrap = (to: string | null, data: string | null) =>
+            isUnwrapNativeTx({ networkSymbol: 'eth', to, data });
+
+        it('isWrapNativeTx detects deposit() to the wrapped-native contract', () => {
+            expect(wrap(WETH, DEPOSIT)).toBe(true);
+        });
+
+        it('isWrapNativeTx ignores deposit() to a non-WETH contract (target guard)', () => {
+            expect(wrap(OTHER, DEPOSIT)).toBe(false);
+        });
+
+        it('isWrapNativeTx ignores other selectors on the WETH contract', () => {
+            expect(wrap(WETH, WITHDRAW)).toBe(false);
+            expect(wrap(WETH, ERC4626_DEPOSIT)).toBe(false);
+        });
+
+        it('isWrapNativeTx returns false for a missing target or data', () => {
+            expect(wrap(null, DEPOSIT)).toBe(false);
+            expect(wrap(WETH, null)).toBe(false);
+        });
+
+        it('isUnwrapNativeTx detects withdraw() to the wrapped-native contract', () => {
+            expect(unwrap(WETH, WITHDRAW)).toBe(true);
+        });
+
+        it('isUnwrapNativeTx ignores withdraw() to a non-WETH contract', () => {
+            expect(unwrap(OTHER, WITHDRAW)).toBe(false);
+        });
+
+        it('isUnwrapNativeTx ignores the deposit() selector', () => {
+            expect(unwrap(WETH, DEPOSIT)).toBe(false);
+        });
+
+        it('getUnwrapAmountByEthereumDataHex returns the wad amount for withdraw()', () => {
+            expect(getUnwrapAmountByEthereumDataHex(WITHDRAW)).toBe('1000000000000000000');
+        });
+
+        it('getUnwrapAmountByEthereumDataHex returns null for non-withdraw data', () => {
+            expect(getUnwrapAmountByEthereumDataHex(DEPOSIT)).toBe(null);
+            expect(getUnwrapAmountByEthereumDataHex('0xdeadbeef')).toBe(null);
+            expect(getUnwrapAmountByEthereumDataHex(undefined)).toBe(null);
+        });
+    });
+
+    describe('getNativeWrapTxKind', () => {
+        const WETH = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2';
+        const OTHER = '0x1111111111111111111111111111111111111111';
+        const DEPOSIT = '0xd0e30db0';
+        const WITHDRAW =
+            '0x2e1a7d4d0000000000000000000000000000000000000000000000000de0b6b3a7640000';
+
+        const tx = ({
+            targets = [],
+            internalTransfers = [],
+            data,
+        }: {
+            targets?: { addresses?: string[] }[];
+            internalTransfers?: { from: string }[];
+            data?: string;
+        }) =>
+            ({
+                symbol: 'eth',
+                targets,
+                internalTransfers,
+                ethereumSpecific: data ? { data } : undefined,
+            }) as unknown as WalletAccountTransaction;
+
+        it('detects a wrap when the WETH contract is the value target', () => {
+            expect(
+                getNativeWrapTxKind(tx({ targets: [{ addresses: [WETH] }], data: DEPOSIT })),
+            ).toBe('wrap');
+        });
+
+        it('detects an unwrap when the WETH contract is the internal ETH sender', () => {
+            expect(
+                getNativeWrapTxKind(tx({ internalTransfers: [{ from: WETH }], data: WITHDRAW })),
+            ).toBe('unwrap');
+        });
+
+        it('ignores a deposit() to a non-WETH contract', () => {
+            expect(
+                getNativeWrapTxKind(tx({ targets: [{ addresses: [OTHER] }], data: DEPOSIT })),
+            ).toBeUndefined();
+        });
+
+        it('ignores a WETH interaction with an unrelated selector', () => {
+            expect(
+                getNativeWrapTxKind(tx({ targets: [{ addresses: [WETH] }], data: '0xdeadbeef' })),
+            ).toBeUndefined();
+        });
+
+        it('returns undefined without a WETH target or data', () => {
+            expect(getNativeWrapTxKind(tx({}))).toBeUndefined();
+        });
     });
 
     describe('buildApprovalTransactionData', () => {
@@ -283,9 +321,7 @@ describe('eth utils', () => {
             ['non-hex characters', '0xZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ'],
             ['empty string', ''],
         ])('throws for invalid spender address (%s)', (_, spender) => {
-            expect(() => buildApprovalTransactionData({ amount: '1000', spender })).toThrow(
-                'Invalid spender address',
-            );
+            expect(() => buildApprovalTransactionData({ amount: '1000', spender })).toThrow();
         });
 
         it.each([
@@ -294,83 +330,23 @@ describe('eth utils', () => {
             ['decimal', '1.5'],
             ['exceeds uint256 max', new BigNumber(UINT256_MAX).plus(1).toString(10)],
         ])('throws for invalid amount (%s)', (_, amount) => {
-            expect(() => buildApprovalTransactionData({ amount, spender: VALID_SPENDER })).toThrow(
-                'Invalid amount',
-            );
+            expect(() =>
+                buildApprovalTransactionData({ amount, spender: VALID_SPENDER }),
+            ).toThrow();
         });
 
-        it('produces calldata that getEvmApprovalTxData can decode', () => {
+        it('produces calldata that the calldata decoder can decode', () => {
             const amount = '1000000000000000000';
             const calldata = buildApprovalTransactionData({
                 amount,
                 spender: VALID_SPENDER,
             });
 
-            const decoded = getEvmApprovalTxData(calldata);
+            const decoded = Calldata.evm.erc20.approve.decode(calldata);
 
             expect(decoded).not.toBeNull();
             expect(decoded?.spender).toBe(VALID_SPENDER.toLowerCase());
-            expect(decoded?.amount).toBe(amount);
-            expect(decoded?.type).toBe('approve');
-        });
-    });
-
-    describe('getEvmTransferTxData', () => {
-        it('returns transfer for valid ERC-20 transfer', () => {
-            const data =
-                '0xa9059cbb' +
-                '000000000000000000000000742d35cc6634c0532925a3b8d40e592e43a73654' + // to
-                '00000000000000000000000000000000000000000000000000000000000003e8'; // 1000
-            const res = getEvmTransferTxData(data);
-            expect(res).toEqual({
-                type: 'transfer',
-                recipient: '0x742d35cc6634c0532925a3b8d40e592e43a73654',
-                amount: '1000',
-            });
-        });
-
-        it('handles zero-amount transfer', () => {
-            const data =
-                '0xa9059cbb' +
-                '000000000000000000000000742d35cc6634c0532925a3b8d40e592e43a73654' +
-                '0000000000000000000000000000000000000000000000000000000000000000';
-            const res = getEvmTransferTxData(data);
-            expect(res).toEqual({
-                type: 'transfer',
-                recipient: '0x742d35cc6634c0532925a3b8d40e592e43a73654',
-                amount: '0',
-            });
-        });
-
-        it('returns null for data without 0x prefix (still valid)', () => {
-            const noPrefix =
-                'a9059cbb' +
-                '000000000000000000000000742d35cc6634c0532925a3b8d40e592e43a73654' +
-                '00000000000000000000000000000000000000000000000000000000000003e8';
-            const res = getEvmTransferTxData(noPrefix);
-            expect(res?.type).toBe('transfer');
-        });
-
-        it('handles uppercase hex (with 0X prefix)', () => {
-            const upper =
-                '0XA9059CBB' +
-                '000000000000000000000000742D35CC6634C0532925A3B8D40E592E43A73654' +
-                '00000000000000000000000000000000000000000000000000000000000003E8';
-            expect(getEvmTransferTxData(upper)?.type).toBe('transfer');
-        });
-
-        it('returns null for selector only (too short)', () => {
-            expect(getEvmTransferTxData('0xa9059cbb')).toBeNull();
-        });
-
-        it('returns null for invalid hex payload', () => {
-            expect(
-                getEvmTransferTxData(
-                    '0xa9059cbb' +
-                        '000000000000000000000000742d35cc6634c0532925a3b8d40e592e43a73654' +
-                        'GGGG000000000000000000000000000000000000000000000000000000000000',
-                ),
-            ).toBeNull();
+            expect(decoded?.amount.toString()).toBe(amount);
         });
     });
 });

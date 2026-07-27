@@ -32,32 +32,36 @@ jobs:
       SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
       EXPO_PUBLIC_ENVIRONMENT: preview
       BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
-      COMMIT_HASH: ${{ github.sha }}
+      COMMIT_HASH: "e2e-test" # it has to be hardcoded to avoid the fingerprint change
     permissions:
       contents: read
       pull-requests: write
       actions: write
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v6
+      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
         with:
           node-version-file: ".nvmrc"
           cache: yarn
       - name: Setup EAS
-        uses: expo/expo-github-action@v8
+        uses: expo/expo-github-action@eab7a230208c952974db8c3245cfd78402c7b385 # v9
         with:
-          eas-version: 16.24.1
+          eas-version: latest
           token: ${{ secrets.EXPO_TOKEN_DEVELOP }}
+      - name: Install SafeDep PMG
+        uses: safedep/pmg@26d5c0ad71fd0e5f48c3183c9c74d4b3eb7f57c8 # v0.19.1
+        continue-on-error: true
+        with:
+          version: v0.19.1
       - name: Install libs
         run: |
           yarn workspaces focus @suite-native/app
-          npx patch-package # Apply global patches.
 
       - name: Check runtimeVersion builds
         run: |
           cd suite-native/app
           # Read runtimeVersion from dynamic app.json
-          RUNTIME_VERSION=$(npx expo config --json | jq -r '.runtimeVersion')
+          RUNTIME_VERSION=$(yarn exec expo config --json | jq -r '.runtimeVersion')
           echo "Current runtimeVersion is $RUNTIME_VERSION"
           # Check if there is a build with the same runtimeVersion on EAS already
           EXISTING_BUILD=$(eas build:list --status=finished  --build-profile=preview --channel=preview --limit=1  --non-interactive --json --runtime-version=$RUNTIME_VERSION)
@@ -73,7 +77,7 @@ jobs:
       - name: Create preview builds if fingerprint changed
         # Only create preview builds if there is no build with the same runtimeVersion on EAS already
         if: env.RUNTIME_BUILD_EXISTS == 'false'
-        uses: expo/expo-github-action/preview-build@main
+        uses: expo/expo-github-action/preview-build@eab7a230208c952974db8c3245cfd78402c7b385 # main
         with:
           command: eas build --profile preview --platform all
           working-directory: suite-native/app
@@ -82,7 +86,7 @@ jobs:
         run: yarn message-system-sign-config
 
       - name: Create preview update
-        uses: expo/expo-github-action/preview@v8
+        uses: expo/expo-github-action/preview@eab7a230208c952974db8c3245cfd78402c7b385 # v9
         with:
           command: eas update --auto --branch ${{ env.BRANCH_NAME }}
           working-directory: suite-native/app

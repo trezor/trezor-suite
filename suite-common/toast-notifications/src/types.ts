@@ -1,12 +1,12 @@
 import { type CSSProperties } from 'react';
 
-// eslint-disable-next-line local-rules/no-suite-imports-in-suite-common
-import { TranslationKey } from '@suite/intl';
-import { DesktopAppUpdateState, Protocol } from '@suite-common/suite-constants';
-import { TrezorDevice } from '@suite-common/suite-types';
-import { NetworkSymbol } from '@suite-common/wallet-config';
-import { FormStateTradingExchange } from '@suite-common/wallet-types';
-import { DEVICE, TokenInfo } from '@trezor/connect';
+import { type DesktopAppUpdateState, type Protocol } from '@suite-common/suite-constants';
+import { type TrezorDevice } from '@suite-common/suite-types';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type FormStateTradingExchange } from '@suite-common/wallet-types';
+import { type DEVICE, type TokenInfo } from '@trezor/connect';
+
+export type UnknownTranslationKey = string;
 
 export type NotificationId = number;
 
@@ -24,10 +24,17 @@ type TransactionNotificationPayload = {
     symbol: NetworkSymbol;
     txid: string;
 };
+
+type BaseTransactionNotificationPayload = Omit<TransactionNotificationPayload, 'formattedAmount'>;
+
 type SentTransactionNotification = {
     type: 'tx-sent';
     token?: TokenInfo;
 } & TransactionNotificationPayload;
+
+type RawSentTransactionNotification = {
+    type: 'raw-tx-sent';
+} & BaseTransactionNotificationPayload;
 
 type RevokeTransactionNotification = {
     type: 'tx-revoked';
@@ -62,6 +69,18 @@ type ClaimedTransactionNotification = {
     type: 'tx-claimed';
 } & TransactionNotificationPayload;
 
+type YieldDepositTransactionNotification = {
+    type: 'tx-yield-deposit';
+} & BaseTransactionNotificationPayload;
+
+type YieldWithdrawTransactionNotification = {
+    type: 'tx-yield-withdraw';
+} & BaseTransactionNotificationPayload;
+
+type YieldClaimTransactionNotification = {
+    type: 'tx-yield-claim';
+} & BaseTransactionNotificationPayload;
+
 export type ErrorToastPayload = {
     type:
         | 'error'
@@ -80,7 +99,7 @@ export type ErrorToastPayload = {
     error: string;
 };
 
-export type ToastPayload = (
+export type ToastPayload<TranslationKey extends UnknownTranslationKey = UnknownTranslationKey> = (
     | {
           type: 'acquire-error';
           error: string;
@@ -97,6 +116,7 @@ export type ToastPayload = (
               | 'wipe-code-changed'
               | 'wipe-code-removed'
               | 'device-wiped'
+              | 'device-forgotten'
               | 'backup-success'
               | 'backup-failed'
               | 'sign-message-success'
@@ -119,17 +139,27 @@ export type ToastPayload = (
               | 'could-not-parse-csv'
               | 'thp-credentials-reset'
               | 'sign-transaction-timeout'
-              | 'suite-sync-keys-error';
+              | 'suite-sync-keys-error'
+              | 'suite-sync-enabled'
+              | 'bip-329-labels-imported';
+      }
+    | {
+          type: 'legacy-labeling-migration-success';
+          added: number;
+          skipped: number;
       }
     | SentTransactionNotification
     | ApproveTransactionNotification
     | RevokeTransactionNotification
     | ExchangeTransactionNotification
-    | {
-          type: 'raw-tx-sent';
-          txid: string;
-      }
+    | RawSentTransactionNotification
     | ErrorToastPayload
+    | {
+          type: 'trading-error';
+          errorCode: string;
+          values?: Record<string, string | number | boolean | undefined>;
+          message?: string;
+      }
     | {
           type: 'auto-updater-error';
           state: DesktopAppUpdateState;
@@ -154,7 +184,7 @@ export type ToastPayload = (
           type: 'coin-scheme-protocol';
           scheme: Protocol;
           address: string;
-          amount?: number;
+          amount?: string;
       }
     | {
           type: 'suite-sync-keys-error';
@@ -174,6 +204,9 @@ export type ToastPayload = (
     | StakedTransactionNotification
     | UnstakedTransactionNotification
     | ClaimedTransactionNotification
+    | YieldDepositTransactionNotification
+    | YieldWithdrawTransactionNotification
+    | YieldClaimTransactionNotification
     | {
           type: 'cannot-open-bluetooth-settings-error';
       }
@@ -205,16 +238,28 @@ export interface CommonNotificationPayload {
     error?: string;
 }
 
-export type ToastNotification = { context: 'toast' } & CommonNotificationPayload & ToastPayload;
-export type EventNotification = { context: 'event' } & CommonNotificationPayload &
+export type ToastNotification<
+    TranslationKey extends UnknownTranslationKey = UnknownTranslationKey,
+> = {
+    context: 'toast';
+} & CommonNotificationPayload &
+    ToastPayload<TranslationKey>;
+type EventNotification = { context: 'event' } & CommonNotificationPayload &
     NotificationEventPayload;
 
-export type NotificationEntry = ToastNotification | EventNotification;
+export type NotificationEntry<TranslationKey extends string = UnknownTranslationKey> =
+    | ToastNotification<TranslationKey>
+    | EventNotification;
 
-export type NotificationsState = NotificationEntry[];
+export type AddNotificationAction<TranslationKey extends string = UnknownTranslationKey> = {
+    payload: NotificationEntry<TranslationKey>;
+};
 
-export type NotificationsRootState = {
-    notifications: NotificationsState;
+export type NotificationsState<TranslationKey extends string = UnknownTranslationKey> =
+    NotificationEntry<TranslationKey>[];
+
+export type NotificationsRootState<TranslationKey extends string = UnknownTranslationKey> = {
+    notifications: NotificationsState<TranslationKey>;
 };
 
 export type TransactionNotification = (

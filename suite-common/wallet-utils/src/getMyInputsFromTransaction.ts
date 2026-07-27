@@ -1,5 +1,5 @@
-import { Account } from '@suite-common/wallet-types';
-import { AccountTransaction } from '@trezor/connect';
+import type { Account } from '@suite-common/wallet-types';
+import type { AccountTransaction } from '@trezor/connect';
 
 export type GetMyInputsFromTransactionParams = {
     account: Pick<Account, 'addresses'>;
@@ -22,8 +22,8 @@ export const getMyInputsFromTransaction = ({ account, tx }: GetMyInputsFromTrans
             amount: input.value!,
             txid: input.txid!,
             vout: input.vout || 0,
-            address: addr!.address,
-            path: addr!.path,
+            address: addr.address,
+            path: addr.path,
             blockHeight: 0,
             confirmations: 0,
             required: true,

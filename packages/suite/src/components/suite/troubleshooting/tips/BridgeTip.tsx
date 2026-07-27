@@ -1,6 +1,6 @@
+import { TrezorLink } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 
-import { TrezorLink } from 'src/components/suite/TrezorLink';
 import { useOpenSuiteDesktop } from 'src/hooks/suite/useOpenSuiteDesktop';
 
 export const SuiteDesktopTip = () => {

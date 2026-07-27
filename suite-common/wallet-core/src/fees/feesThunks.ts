@@ -1,10 +1,12 @@
 import { selectSelectedDevice } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
-import { NetworkSymbol, getNetwork, networksCollection } from '@suite-common/wallet-config';
-import { FeeInfo, FeesState } from '@suite-common/wallet-types';
+import { type NetworkSymbol, getNetwork, networksCollection } from '@suite-common/wallet-config';
+import { type FeeInfo, type FeesState } from '@suite-common/wallet-types';
 import TrezorConnect from '@trezor/connect';
+import { isNotUndefined, resolveAfter, typedObjectFromEntries } from '@trezor/utils';
 
 import { FEES_MODULE_PREFIX, feesActions } from './feesActions';
+import { DEFAULT_FEE_INFO } from './feesConstants';
 import { getNewFeeInfo, sortLevels } from './feesUtils';
 import { selectNetworkBlockchainInfo } from '../blockchain/blockchainReducer';
 import { selectEnabledNetworks } from '../settings/walletSettingsReducer';
@@ -23,41 +25,38 @@ export const preloadFeeInfoThunk = createThunk(
         const networks = networksCollection.filter(
             n => !n.isHidden && enabledNetworks?.includes(n.symbol),
         );
-        const promises = networks.map(network =>
-            TrezorConnect.blockchainEstimateFee({
-                coin: network.symbol,
-                request: {
-                    feeLevels: 'preloaded',
-                },
+
+        const levels = await Promise.all(
+            networks.map(async network => {
+                const result = await TrezorConnect.blockchainEstimateFee({
+                    coin: network.symbol,
+                    request: { feeLevels: 'preloaded' },
+                });
+
+                return result.success ? ([network, result] as const) : undefined;
             }),
         );
-        const levels = await Promise.all(promises);
 
-        const partial: Partial<FeesState> = {};
-        networks.forEach((network, index) => {
-            const result = levels[index];
-
-            if (result.success) {
+        const partial = typedObjectFromEntries(
+            levels.filter(isNotUndefined).map(([network, result]) => {
                 const { payload } = result;
                 const feeInfo: FeeInfo = {
                     blockHeight: 0,
                     ...payload,
-                    levels: sortLevels(
-                        payload.levels
-                            // hack to hide "low" fee option
-                            // (we do not want to change the connect API as it is a potentially breaking change)
-                            .filter(level => level.label !== 'low'),
-                    ).map(level => ({
-                        ...level,
-                        label: level.label || 'normal',
-                    })),
+                    levels: payload.levels
+                        // hack to hide "low" fee option
+                        // (we do not want to change the connect API as it is a potentially breaking change)
+                        .filter(level => level.label !== 'low')
+                        .sort(sortLevels)
+                        .map(level => ({
+                            ...level,
+                            label: level.label || 'normal',
+                        })),
                 };
-                partial[network.symbol] = {
-                    status: 'preloaded',
-                    data: feeInfo,
-                };
-            }
-        });
+
+                return [network.symbol, { status: 'preloaded' as const, data: feeInfo }];
+            }),
+        );
 
         dispatch(feesActions.updateMultipleFees(partial));
     },
@@ -67,11 +66,6 @@ type UpdateFeeInfoThunkProps = {
     networkSymbol: NetworkSymbol;
     artificialDelay?: number;
 };
-
-const getArtificialDelayPromise = (artificialDelay?: number): Promise<void> =>
-    artificialDelay === undefined
-        ? Promise.resolve()
-        : new Promise(resolve => setTimeout(resolve, artificialDelay));
 
 /**
  * Fetches feeInfo for a given network from backend.
@@ -88,11 +82,24 @@ export const updateFeeInfoThunk = createThunk<
         const network = getNetwork(networkSymbol);
         const { symbol } = network;
         const blockchainInfo = selectNetworkBlockchainInfo(getState(), symbol);
+
+        // Tron fees are derived per transaction from bandwidth/energy, there is no
+        // network-level fee estimate to fetch. Keep the current (preloaded) data.
+        if (network.networkType === 'tron') {
+            const currentFeeInfo = (getState() as { wallet: { fees: FeesState } }).wallet.fees[
+                symbol
+            ]?.data;
+
+            return fulfillWithValue(
+                currentFeeInfo ?? { ...DEFAULT_FEE_INFO, blockHeight: blockchainInfo.blockHeight },
+            );
+        }
+
         const device = selectSelectedDevice(getState());
 
         const [newFeeInfo] = await Promise.all([
             getNewFeeInfo({ network, device }),
-            getArtificialDelayPromise(artificialDelay),
+            resolveAfter(artificialDelay ?? 0),
         ]);
 
         if (newFeeInfo === undefined) {

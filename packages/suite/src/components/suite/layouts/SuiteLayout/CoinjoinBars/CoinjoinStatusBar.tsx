@@ -1,30 +1,26 @@
 import styled, { css } from 'styled-components';
 
+import { selectRoundsDurationInHours, selectSessionProgressByAccountKey } from '@suite/coinjoin';
+import { type CoinjoinSession } from '@suite/coinjoin';
 import { Translation } from '@suite/intl';
+import { goto, selectRouterParams } from '@suite/router';
 import { selectDevices, selectSelectedDevice } from '@suite-common/device';
 import { selectAccountByKey, selectDeviceThunk } from '@suite-common/wallet-core';
-import { AccountKey, WalletParams } from '@suite-common/wallet-types';
+import { type AccountKey, type WalletParams } from '@suite-common/wallet-types';
 import { ProgressPie } from '@trezor/components';
 import { typography } from '@trezor/theme';
 
-import { goto } from 'src/actions/suite/routerActions';
 import { CountdownTimer } from 'src/components/suite/CountdownTimer';
-import { WalletLabeling } from 'src/components/suite/labeling';
+import { WalletLabeling } from 'src/components/suite/labeling/WalletLabeling';
 import { ROUND_PHASE_MESSAGES } from 'src/constants/suite/coinjoin';
 import { useDispatch } from 'src/hooks/suite';
 import { useSelector } from 'src/hooks/suite/useSelector';
-import { selectRouterParams } from 'src/reducers/suite/routerReducer';
-import {
-    selectRoundsDurationInHours,
-    selectSessionProgressByAccountKey,
-} from 'src/reducers/wallet/coinjoinReducer';
-import { CoinjoinSession } from 'src/types/wallet/coinjoin';
 
 const SPACING = 6;
 
 const ViewText = styled.div`
     margin-left: auto;
-    color: ${({ theme }) => theme.textSubdued};
+    color: ${({ theme }) => theme.contentSecondary};
     transition: transform 0.15s ease-in-out;
 `;
 
@@ -34,8 +30,8 @@ const Container = styled.div<{ $isClickable: boolean }>`
     align-items: center;
     height: 28px;
     padding: 0 ${SPACING}px;
-    background: ${({ theme }) => theme.backgroundSurfaceElevationNegative};
-    border-bottom: 1px solid ${({ theme }) => theme.borderElevation1};
+    background: ${({ theme }) => theme.surfaceFillSunken};
+    border-bottom: 1px solid ${({ theme }) => theme.borderNeutral};
     ${typography['body-xs']}
     transition: background 0.15s;
     ${({ $isClickable, theme }) =>
@@ -44,7 +40,7 @@ const Container = styled.div<{ $isClickable: boolean }>`
             cursor: pointer;
 
             &:hover {
-                background: ${theme.backgroundSurfaceElevation0};
+                background: ${theme.surfaceFillPage};
                 ${ViewText} {
                     text-decoration: underline;
                     transform: translateX(-4px);
@@ -54,11 +50,11 @@ const Container = styled.div<{ $isClickable: boolean }>`
 `;
 
 const StatusText = styled.span`
-    color: ${({ theme }) => theme.textPrimaryDefault};
+    color: ${({ theme }) => theme.contentBrand};
 `;
 
 const Note = styled.span`
-    color: ${({ theme }) => theme.textSubdued};
+    color: ${({ theme }) => theme.contentSecondary};
 `;
 
 const Separator = styled.span`
@@ -104,7 +100,8 @@ export const CoinjoinStatusBar = ({ accountKey, session, isSingle }: CoinjoinSta
         }
 
         dispatch(
-            goto('wallet-index', {
+            goto({
+                routeName: 'wallet-index',
                 params: {
                     symbol,
                     accountIndex: index,

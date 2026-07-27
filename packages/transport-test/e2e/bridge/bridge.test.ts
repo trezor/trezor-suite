@@ -1,6 +1,4 @@
-import * as messages from '@trezor/protobuf/messages.json';
-import { BridgeTransport, Descriptor } from '@trezor/transport';
-import { Session } from '@trezor/transport/src/types';
+import { BridgeTransport, type Descriptor, Session } from '@trezor/transport-common';
 import { Model } from '@trezor/trezor-user-env-link';
 
 import { controller as TrezorUserEnvLink, env } from './controller';
@@ -20,7 +18,7 @@ describe('bridge', () => {
         await TrezorUserEnvLink.startEmu(emulatorStartOpts);
         await TrezorUserEnvLink.startBridge();
 
-        bridge = new BridgeTransport({ messages, id: '' });
+        bridge = new BridgeTransport({ id: '' });
         await bridge.init();
 
         const enumerateResult = await bridge.enumerate();
@@ -37,14 +35,18 @@ describe('bridge', () => {
             ],
         });
 
-        const { path } = enumerateResult.payload[0];
+        const firstDescriptor = enumerateResult.payload[0];
+        if (!firstDescriptor) {
+            throw new Error('Expected at least one descriptor');
+        }
+        const { path } = firstDescriptor;
         // eslint-disable-next-line jest/no-standalone-expect
         expect(path.length).toEqual(pathLength);
 
         descriptors = enumerateResult.payload;
 
         const acquireResult = await bridge.acquire({
-            input: { path: descriptors[0].path, previous: session },
+            input: { path: firstDescriptor.path, previous: session },
         });
         assertSuccess(acquireResult);
         // eslint-disable-next-line jest/no-standalone-expect
@@ -139,7 +141,7 @@ describe('bridge', () => {
     });
 
     // todo: udp not implemented correctly yet in new bridge
-    if (!env.USE_NODE_BRIDGE || env.USE_HW) {
+    if (env.USE_HW) {
         test(`send(RebootToBootloader) - send(Cancel) - receive`, async () => {
             // special case - a procedure on device is initiated by SEND method.
             await bridge.send({ session, name: 'RebootToBootloader', data: {} });
@@ -149,7 +151,8 @@ describe('bridge', () => {
 
             // documenting model One odd behavior
             // old bridge does not return rich descriptor so I am using env.USE_HW here
-            if (!env.USE_HW || descriptors[0].type === 1) {
+            const firstDesc = descriptors[0];
+            if (!env.USE_HW || firstDesc?.type === 1) {
                 // receive response
                 const receiveResponse1 = await bridge.receive({ session });
                 // we did 2x send, but no read. it means that now the next receive read the response from the first send
@@ -188,21 +191,25 @@ describe('bridge', () => {
     }
 
     test(`concurrent acquire`, async () => {
-        const { path } = descriptors[0];
+        const currentDescriptor = descriptors[0];
+        if (!currentDescriptor) {
+            throw new Error('Expected at least one descriptor');
+        }
+        const { path } = currentDescriptor;
         const results = await Promise.all([
             bridge.acquire({ input: { path, previous: session } }),
             bridge.acquire({ input: { path, previous: session } }),
         ]);
         expect(results).toIncludeAllPartialMembers([
             { success: true, payload: `${Number.parseInt(session) + 1}` },
-            { success: false, error: 'wrong previous session' },
+            { success: false, error: { code: 'wrong previous session' } },
         ]);
         assertSuccess(results[0]);
         session = results[0].payload;
     });
 
     // todo: udp not implemented correctly yet in new bridge
-    if (!env.USE_NODE_BRIDGE || env.USE_HW) {
+    if (env.USE_HW) {
         test(`concurrent receive - other call in progress`, async () => {
             await bridge.send({ session, name: 'GetFeatures', data: {} });
 
@@ -213,7 +220,7 @@ describe('bridge', () => {
 
             expect(results).toIncludeAllPartialMembers([
                 { success: true, payload: { type: 'Features', message: expect.any(Object) } },
-                { success: false, error: 'other call in progress' },
+                { success: false, error: { code: 'other call in progress' } },
             ]);
         });
     }
@@ -225,7 +232,7 @@ describe('bridge', () => {
         ]);
         expect(results).toIncludeAllPartialMembers([
             { success: true, payload: { type: 'Features', message: expect.any(Object) } },
-            { success: false, error: 'other call in progress' },
+            { success: false, error: { code: 'other call in progress' } },
         ]);
     });
 
@@ -279,7 +286,7 @@ describe('bridge', () => {
     });
 
     // todo: udp not implemented correctly yet in new bridge
-    if (!env.USE_NODE_BRIDGE || env.USE_HW) {
+    if (env.USE_HW) {
         test('acquire (wrong session) and concurrent call. what has priority in error handling?', async () => {
             const results = await Promise.all([
                 // send a session which is wrong
@@ -291,13 +298,12 @@ describe('bridge', () => {
 
             expect(results[0]).toMatchObject({
                 success: false,
-                error: 'session not found',
-                message: undefined,
+                error: { code: 'session not found' },
             });
 
             expect([results[1], results[2]]).toIncludeAllPartialMembers([
                 { success: true, payload: { type: 'Features', message: expect.any(Object) } },
-                { success: false, error: 'other call in progress' },
+                { success: false, error: { code: 'other call in progress' } },
             ]);
         });
     }
@@ -322,7 +328,7 @@ describe('bridge', () => {
     });
 
     // todo: udp not implemented correctly yet in new bridge
-    if (!env.USE_NODE_BRIDGE || env.USE_HW) {
+    if (env.USE_HW) {
         test('send and enumerate, receive and enumerate', async () => {
             const results = await Promise.all([
                 bridge.send({ session, name: 'GetFeatures', data: {} }),

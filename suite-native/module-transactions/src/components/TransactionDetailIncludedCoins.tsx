@@ -1,4 +1,4 @@
-import { AccountKey } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 import {
     BottomSheetModal,
     Box,
@@ -9,8 +9,8 @@ import {
     useBottomSheetModal,
 } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
-import { TypedTokenTransfer, WalletAccountTransaction } from '@suite-native/tokens';
-import { useNativeStyles } from '@trezor/styles';
+import { type TypedTokenTransfer, type WalletAccountTransaction } from '@suite-native/tokens';
+import { useNativeStyles } from '@trezor/styles-native';
 
 import { TransactionDetailListItem } from './TransactionDetailListItem';
 import { cardStyle } from './TransactionOverview';
@@ -19,6 +19,7 @@ type TransactionDetailIncludedCoinsProps = {
     accountKey: AccountKey;
     transaction: WalletAccountTransaction;
     tokenTransfer?: TypedTokenTransfer;
+    isPhishingTransaction: boolean;
 };
 
 const isSameTokenTransfer = (
@@ -36,7 +37,7 @@ const IncludedCoinsSheetTrigger = ({ title, onPress }: { title: string; onPress:
     const { applyStyle } = useNativeStyles();
 
     return (
-        <Card borderColor="borderElevation1" style={applyStyle(cardStyle)}>
+        <Card borderColor="borderNeutral" style={applyStyle(cardStyle)}>
             <PressableOpacity onPress={onPress}>
                 <Box flexDirection="row" alignItems="center" justifyContent="space-between">
                     <Box flexDirection="row" alignItems="center">
@@ -45,7 +46,7 @@ const IncludedCoinsSheetTrigger = ({ title, onPress }: { title: string; onPress:
                         </Box>
                         <Text>{title}</Text>
                     </Box>
-                    <Icon name="caretCircleRight" color="iconPrimaryDefault" />
+                    <Icon name="caretCircleRight" color="contentBrand" />
                 </Box>
             </PressableOpacity>
         </Card>
@@ -56,6 +57,7 @@ export const TransactionDetailIncludedCoins = ({
     accountKey,
     transaction,
     tokenTransfer,
+    isPhishingTransaction,
 }: TransactionDetailIncludedCoinsProps) => {
     const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
 
@@ -95,9 +97,11 @@ export const TransactionDetailIncludedCoins = ({
                         onPress={closeModal}
                         accountKey={accountKey}
                         transaction={transaction}
+                        isPhishingTransaction={isPhishingTransaction}
                         isFirst
                     />
                 )}
+
                 {includedTokens.map((token, index) => (
                     <TransactionDetailListItem
                         onPress={closeModal}
@@ -105,6 +109,7 @@ export const TransactionDetailIncludedCoins = ({
                         accountKey={accountKey}
                         transaction={transaction}
                         tokenTransfer={token}
+                        isPhishingTransaction={isPhishingTransaction}
                         isFirst={!isEthereumCoinDisplayed && index === 0}
                         isLast={index === includedTokens.length - 1}
                     />

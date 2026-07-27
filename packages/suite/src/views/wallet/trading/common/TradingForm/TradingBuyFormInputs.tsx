@@ -1,15 +1,18 @@
 import { useCallback } from 'react';
 
+import { useDevice } from '@suite/device';
 import {
+    TRADING_FORM_COUNTRY_SELECT,
     TRADING_FORM_CRYPTO_CURRENCY_SELECT,
     TRADING_FORM_CRYPTO_INPUT,
     TRADING_FORM_FIAT_INPUT,
-    TradingBuyType,
+    type TradingBuyType,
+    isCountrySubdivisionRequired,
+    selectTradingBuyQuotes,
     selectTradingBuySupportedCryptoIds,
-    selectTradingLoadingAndTimestamp,
     tradingActions,
 } from '@suite-common/trading';
-import { TokenAddress } from '@suite-common/wallet-types';
+import { type TokenAddress } from '@suite-common/wallet-types';
 import { Column, Row } from '@trezor/components';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils/src/firmwareUtils';
 import { useCurrentRef } from '@trezor/react-utils';
@@ -26,19 +29,22 @@ import { TradingFormSection } from './TradingFormSection';
 import { TradingSelectedOfferProvider } from '../TradingSelectedOffer/TradingSelectedOfferProvider';
 import {
     TradingFormInputBuyAsset,
-    TradingFormInputBuyAssetProps,
+    type TradingFormInputBuyAssetProps,
 } from './TradingFormInput/TradingFormInputBuyAsset/TradingFormInputBuyAsset';
+import { TradingFormInputCountrySubdivision } from './TradingFormInput/TradingFormInputCountry/TradingFormInputCountrySubdivision';
 import { TradingReceiveAddress } from '../TradingSelectedOffer/TradingReceiveAddress/TradingReceiveAddress';
 
 export const TradingBuyFormInputs = () => {
     const context = useTradingFormContext<TradingBuyType>();
+    const buySupportedCryptoIds = useSelector(selectTradingBuySupportedCryptoIds);
+    const quotes = useSelector(selectTradingBuyQuotes);
 
-    const { isLoading } = useSelector(selectTradingLoadingAndTimestamp);
-
-    const { device, setAmountLimits, getValues, setValue, quotes } = context;
+    const { device } = useDevice();
+    const { setAmountLimits, getValues, setValue } = context;
     const {
         [TRADING_FORM_CRYPTO_CURRENCY_SELECT]: cryptoSelect,
         [TRADING_FORM_CRYPTO_INPUT]: cryptoInput,
+        [TRADING_FORM_COUNTRY_SELECT]: countrySelect,
         amountInCrypto,
         currencySelect,
     } = getValues();
@@ -51,6 +57,8 @@ export const TradingBuyFormInputs = () => {
 
     const handleCryptoSelect = useCallback<TradingFormInputBuyAssetProps['onAssetSelect']>(
         asset => {
+            setValueRef.current(TRADING_FORM_CRYPTO_INPUT, '', { shouldDirty: true });
+            setValueRef.current(TRADING_FORM_FIAT_INPUT, '', { shouldDirty: true });
             setValueRef.current(TRADING_FORM_CRYPTO_CURRENCY_SELECT, asset, { shouldDirty: true });
             setAmountLimitsRef.current(undefined);
             dispatch(tradingActions.setModalCryptoCurrency(asset.id));
@@ -58,18 +66,25 @@ export const TradingBuyFormInputs = () => {
         [dispatch, setAmountLimitsRef, setValueRef],
     );
 
-    const buySupportedCryptoIds = useSelector(selectTradingBuySupportedCryptoIds);
+    const countryRequiresSubdivision = isCountrySubdivisionRequired(countrySelect?.value);
 
     return (
-        <Column gap={20}>
+        <Column gap={16}>
             <TradingFormCard>
                 <TradingFormSection>
+                    <TradingFormInputBuyAsset
+                        inputLabel="TR_TRADING_YOU_BUY"
+                        inputName={TRADING_FORM_CRYPTO_CURRENCY_SELECT}
+                        inputDisabled={hasBitcoinOnlyFirmware(device)}
+                        onAssetSelect={handleCryptoSelect}
+                        includedCryptoIds={buySupportedCryptoIds}
+                    />
                     <Column gap={8}>
                         <TradingFormInputFiatCrypto
                             cryptoInputName={TRADING_FORM_CRYPTO_INPUT}
                             fiatInputName={TRADING_FORM_FIAT_INPUT}
                             cryptoSelectName={TRADING_FORM_CRYPTO_CURRENCY_SELECT}
-                            currencySelectLabel={currencySelect.label}
+                            currencySelectLabel={currencySelect.value.toUpperCase()}
                             cryptoCurrencyLabel={cryptoSelect.id}
                         />
 
@@ -88,23 +103,21 @@ export const TradingBuyFormInputs = () => {
                             </Row>
                         )}
                     </Column>
-
-                    <TradingFormInputBuyAsset
-                        inputLabel="TR_TRADING_YOU_BUY"
-                        inputName={TRADING_FORM_CRYPTO_CURRENCY_SELECT}
-                        inputDisabled={hasBitcoinOnlyFirmware(device)}
-                        onAssetSelect={handleCryptoSelect}
-                        includedCryptoIds={buySupportedCryptoIds}
-                    />
                 </TradingFormSection>
-                {cryptoSelect && !isLoading && <TradingReceiveAddress />}
             </TradingFormCard>
 
             <TradingFormCard>
-                {quotes?.length > 0 && (
+                {cryptoSelect && <TradingReceiveAddress />}
+                <TradingFormInputCountry label="TR_TRADING_COUNTRY" />
+                {countrySelect && countryRequiresSubdivision && (
+                    <TradingFormInputCountrySubdivision
+                        label="TR_TRADING_COUNTRY_SUBDIVISION"
+                        country={countrySelect}
+                    />
+                )}
+                {!!quotes.length && (
                     <TradingFormInputPaymentMethod label="TR_TRADING_PAYMENT_METHOD" />
                 )}
-                <TradingFormInputCountry label="TR_TRADING_COUNTRY" />
                 <TradingSelectedOfferProvider />
             </TradingFormCard>
         </Column>

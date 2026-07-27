@@ -1,0 +1,10 @@
+import type { SVGProps } from 'react';
+const SvgPhosphorLogoFilled = (props: SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" {...props}>
+        <path
+            fill="currentColor"
+            d="M18 3H8a1 1 0 0 0-1 1v16a10.01 10.01 0 0 0 10 10 1 1 0 0 0 1-1v-8a9 9 0 0 0 0-18m-2 24.938A8.02 8.02 0 0 1 9.064 21H16zm0-11.75L9.71 5H16zM18 19V5a7 7 0 1 1 0 14"
+        />
+    </svg>
+);
+export { SvgPhosphorLogoFilled as ReactComponent };

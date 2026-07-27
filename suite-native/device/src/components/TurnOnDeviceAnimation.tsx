@@ -3,7 +3,7 @@ import React from 'react';
 import { useEventListener } from 'expo';
 
 import { useActiveColorScheme } from '@suite-native/theme';
-import { ThemeColorVariant } from '@trezor/theme';
+import { type ThemeColorVariant } from '@trezor/theme';
 
 import { TrezorAnimation } from './TrezorAnimation';
 import { useMutedVideoPlayer } from '../hooks/useMutedVideoPlayer';
@@ -11,7 +11,6 @@ import { useMutedVideoPlayer } from '../hooks/useMutedVideoPlayer';
 const LOOP_DURATION = 4.5; // seconds
 
 const turnOnDeviceAnimations = {
-    debug: require('../assets/turn-on-device-standard.mp4'),
     standard: require('../assets/turn-on-device-standard.mp4'),
     dark: require('../assets/turn-on-device-dark.mp4'),
 } as const satisfies Record<ThemeColorVariant, string>;

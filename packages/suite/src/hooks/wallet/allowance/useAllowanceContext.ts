@@ -1,7 +1,9 @@
 import { createContext, useContext } from 'react';
 
-import { useAllowanceState } from './useAllowanceState';
-import { useAllowanceTxTracking } from './useAllowanceTxTracking';
+import { type useAllowanceTxTracking } from '@suite-common/trading';
+import { throwError } from '@trezor/utils';
+
+import { type useAllowanceState } from './useAllowanceState';
 
 export interface AllowanceContextValue {
     tx: ReturnType<typeof useAllowanceTxTracking>;
@@ -11,11 +13,6 @@ export interface AllowanceContextValue {
 export const AllowanceContext = createContext<AllowanceContextValue | null>(null);
 AllowanceContext.displayName = 'AllowanceContext';
 
-export const useAllowanceContext = () => {
-    const context = useContext(AllowanceContext);
-    if (context === null) {
-        throw new Error('useAllowanceContext must be used within AllowanceContext.Provider');
-    }
-
-    return context;
-};
+export const useAllowanceContext = () =>
+    useContext(AllowanceContext) ??
+    throwError('useAllowanceContext must be used within AllowanceContext.Provider');

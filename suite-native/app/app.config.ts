@@ -137,9 +137,15 @@ const getPlugins = (): ExpoPlugins => {
                     // this fixes expo-updates build error
                     kotlinVersion: '2.1.20',
                     ndkVersion: '27.0.12077973',
+                    // react-native-quick-crypto (since v1) and expo-sqlite both bundle their
+                    // own OpenSSL libcrypto.so, which collides during mergeDebugNativeLibs.
+                    // pickFirst resolves the duplicate-.so packaging conflict.
+                    packagingOptions: {
+                        pickFirst: ['**/libcrypto.so'],
+                    },
                 },
                 ios: {
-                    deploymentTarget: '15.1',
+                    deploymentTarget: '16.4',
                 },
             },
         ],
@@ -182,9 +188,9 @@ const getPlugins = (): ExpoPlugins => {
             },
         ],
         [
-            'expo-web-browser',
+            'expo-dev-client',
             {
-                experimentalLauncherActivity: true,
+                toolsButton: false,
             },
         ],
     ];
@@ -207,11 +213,11 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     return {
         ...config,
         name,
-        scheme: buildType === 'production' ? undefined : 'trezorsuite',
+        scheme: 'trezorsuite',
         slug: appSlugs[buildType],
         owner: appOwners[buildType],
         version: suiteNativeVersion,
-        runtimeVersion: '47',
+        runtimeVersion: '49',
         ...(buildType === 'production'
             ? {}
             : {
@@ -241,7 +247,9 @@ export default ({ config }: ConfigContext): ExpoConfig => {
                                   {
                                       scheme: 'https',
                                       host: 'connect.trezor.io',
-                                      pathPattern: '/9/deeplink/.*',
+                                      // Universal pattern to match any Connect version (e.g. /9/deeplink/..., /10/deeplink/...).
+                                      // Android pathPattern only supports '.' (any char) and '*' (repeat), not character classes.
+                                      pathPattern: '/.*/deeplink/.*',
                                   },
                                   {
                                       scheme: 'https',
@@ -314,7 +322,11 @@ export default ({ config }: ConfigContext): ExpoConfig => {
                     : ['applinks:dev.suite.sldev.cz', 'applinks:dev.trezorio.sldev.cz'],
         },
         plugins: getPlugins(),
+        experiments: {
+            reactCompiler: true,
+        },
         extra: {
+            // FIXME: Fingerprint is always changed between commits because of this. We need to find a better solution.
             commitHash:
                 process.env.EAS_BUILD_GIT_COMMIT_HASH ||
                 process.env.COMMIT_HASH ||

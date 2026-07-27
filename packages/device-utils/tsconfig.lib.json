@@ -1,15 +1,13 @@
 {
     "extends": "../../tsconfig.lib.json",
-    "compilerOptions": {
-        "outDir": "./lib"
-    },
     "include": ["./src"],
+    "compilerOptions": {
+        "outDir": "./lib",
+        "rootDir": "./src"
+    },
     "references": [
-        {
-            "path": "../protobuf"
-        },
-        {
-            "path": "../utils"
-        }
+        { "path": "../protobuf" },
+        { "path": "../type-utils" },
+        { "path": "../utils" }
     ]
 }

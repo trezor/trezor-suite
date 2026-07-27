@@ -1,10 +1,13 @@
 import { yup } from '@suite-common/validators';
-import { AccountKey, FormState } from '@suite-common/wallet-types';
+import { type FormState } from '@suite-common/wallet-types';
+import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { Form, useForm } from '@suite-native/forms';
-import { renderWithStoreProvider } from '@suite-native/test-utils';
+import { getTranslation } from '@suite-native/intl';
+import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 
+import { createFeeLevels } from '../../../__fixtures__/feeLevels';
 import { getWalletState } from '../../../__fixtures__/walletState';
-import { FeesContent, FeesContentProps } from '../FeesContent';
+import { FeesContent, type FeesContentProps } from '../FeesContent';
 
 // Create a simple validation schema for testing
 const testValidationSchema = yup.object({
@@ -28,31 +31,23 @@ const TestFormWrapper = ({ children }: { children: React.ReactNode }) => {
 };
 
 describe('FeesContent', () => {
-    const mockAccountKey: AccountKey = 'btc1' as AccountKey; // Todo: create properly via `createAccountKey()`
+    const accountKey = mockAccountKey({ symbol: 'btc', descriptor: 'btc1' });
     const mockOnSelectedFeeLevel = jest.fn();
     const mockOnCustomFeeSet = jest.fn();
 
-    const createMockFeeLevel = () =>
-        ({
-            type: 'final',
-            totalSpent: '100000',
-            fee: '1000',
-            feePerByte: '10',
-            bytes: 250,
-        }) as any;
-
-    const createMockFeeLevels = () => ({
-        economy: { ...createMockFeeLevel(), feePerByte: '4', fee: '1000', bytes: 250 },
-        normal: { ...createMockFeeLevel(), feePerByte: '10', fee: '2000', bytes: 250 },
-        high: { ...createMockFeeLevel(), feePerByte: '30', fee: '3000', bytes: 250 },
-    });
+    const createMockFeeLevels = () =>
+        createFeeLevels({
+            economy: { totalSpent: '100000', feePerByte: '4', fee: '1000' },
+            normal: { totalSpent: '100000', feePerByte: '10', fee: '2000' },
+            high: { totalSpent: '100000', feePerByte: '30', fee: '3000' },
+        });
 
     const defaultProps: FeesContentProps = {
         selectedFeeLevel: 'normal',
         feeLevels: createMockFeeLevels(),
         symbol: 'btc',
         networkType: 'bitcoin',
-        accountKey: mockAccountKey,
+        accountKey,
         areFeesLoading: false,
         onSelectedFeeLevel: mockOnSelectedFeeLevel,
         onCustomFeeSet: mockOnCustomFeeSet,
@@ -83,9 +78,11 @@ describe('FeesContent', () => {
     it('should render title and description', () => {
         const { getByText } = renderFeesContent();
 
-        expect(getByText('Transaction fee')).toBeTruthy();
         expect(
-            getByText('Fees are paid directly to validators for processing your transactions.'),
+            getByText(getTranslation('transactionManagement.fees.description.title.general')),
+        ).toBeTruthy();
+        expect(
+            getByText(getTranslation('transactionManagement.fees.description.body')),
         ).toBeTruthy();
     });
 
@@ -132,7 +129,9 @@ describe('FeesContent', () => {
             symbol: 'eth',
         });
 
-        expect(getByText('Transaction fee')).toBeTruthy();
+        expect(
+            getByText(getTranslation('transactionManagement.fees.description.title.general')),
+        ).toBeTruthy();
     });
 
     it('should render with form draft data', () => {

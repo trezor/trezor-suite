@@ -1,5 +1,5 @@
-import { Bundle } from '@trezor/connect/src/types';
-import { GetAddress } from '@trezor/connect/src/types/params';
+import { Bundle } from '@trezor/connect-common/src/types';
+import { GetAddress } from '@trezor/connect-common/src/types/params';
 
 import { ApiPlayground } from '../../../components/ApiPlayground';
 import { CommonParamsLink } from '../../../components/CommonParamsLink';
@@ -67,26 +67,9 @@ TrezorConnect.stellarGetAddress({
 });
 ```
 
-Validate address using custom UI inside of your application:
-
-```javascript
-import TrezorConnect, { UI } from '@trezor/connect';
-
-TrezorConnect.on(UI.ADDRESS_VALIDATION, data => {
-    console.log('Handle button request', data.address, data.serializedPath);
-    // here you can display custom UI inside of your app
-});
-
-const result = await TrezorConnect.stellarGetAddress({
-    path: "m/44'/148'/0'/0/0",
-    address: 'GAXSFOOGF4ELO5HT5PTN23T5XE6D5QWL3YBHSVQ2HWOFEJNYYMRJENBV',
-});
-// dont forget to hide your custom UI after you get the result!
-```
-
 ### Result
 
-[Address type](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/params.ts)
+[Address type](https://github.com/trezor/trezor-suite/blob/develop/packages/connect-common/src/types/params.ts)
 
 Result with only one address
 
@@ -119,8 +102,8 @@ Error
 ```javascript
 {
     success: false,
-    payload: {
-        error: string // error message
+    error: {
+        message: string // error message
     }
 }
 ```

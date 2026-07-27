@@ -1,9 +1,11 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
+import { Address } from '@suite/address';
 import { Translation } from '@suite/intl';
 import { Column, GhostContainer, Icon, Row, Text } from '@trezor/components';
+import { CaretRightIcon } from '@trezor/icons';
 
-import { AccountLabeling, Address } from 'src/components/suite';
+import { AccountLabeling } from 'src/components/suite/labeling/AccountLabeling';
 
 import { useReceiveAddressModalControls } from './useReceiveAddressModalControls';
 import { useTradingReceiveAddressValues } from './useTradingReceiveAddressValues';
@@ -43,11 +45,11 @@ export const TradingReceiveAddress = () => {
                 alignItems="center"
                 justifyContent="space-between"
                 padding={{
-                    vertical: selectedAccount && receiveAddress ? 12 : 16,
+                    vertical: selectedAccount && receiveAddress ? 20 : 16,
                     horizontal: 20,
                 }}
             >
-                <Text typographyStyle="body-md" align="start">
+                <Text typographyStyle="body-md" align="start" intent="neutral" priority="secondary">
                     <Translation
                         id={
                             selectedAccount || !receiveAddress
@@ -59,28 +61,19 @@ export const TradingReceiveAddress = () => {
                 <Row gap={16}>
                     <Column alignItems="flex-end">
                         {selectedAccount && receiveAddress ? (
-                            <>
-                                <Text
-                                    typographyStyle="body-md"
-                                    as="div"
-                                    data-testid="@trading/selected-receive-account"
-                                    ellipsisLineCount={1}
-                                    maxWidth={200}
-                                >
-                                    <AccountLabeling
-                                        account={selectedAccount}
-                                        accountTypeBadgeSize="small"
-                                        showAccountTypeBadge
-                                    />
-                                </Text>
-                                <Address
-                                    value={receiveAddress}
-                                    typographyStyle="body-sm"
-                                    intent="neutral"
-                                    priority="secondary"
-                                    isTruncated
+                            <Text
+                                typographyStyle="body-md"
+                                as="div"
+                                data-testid="@trading/selected-receive-account"
+                                ellipsisLineCount={1}
+                                maxWidth={200}
+                            >
+                                <AccountLabeling
+                                    account={selectedAccount}
+                                    accountTypeBadgeSize="small"
+                                    showAccountTypeBadge
                                 />
-                            </>
+                            </Text>
                         ) : (
                             <>
                                 {receiveAddress ? (
@@ -103,7 +96,7 @@ export const TradingReceiveAddress = () => {
                         )}
                     </Column>
 
-                    <Icon name="caretRight" size={20} intent="neutral" priority="secondary" />
+                    <Icon as={CaretRightIcon} size={20} intent="neutral" priority="secondary" />
                 </Row>
             </Row>
         </GhostContainer>

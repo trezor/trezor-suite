@@ -19,7 +19,7 @@ export const useLocalNetworkAccessPermission = () => {
                     permission.onchange = ev => {
                         if (ev?.target && 'state' in ev.target) {
                             // @ts-expect-error outdated type definitions
-                            setLocalNetworkAccessPermission(ev!.target!.state);
+                            setLocalNetworkAccessPermission(ev.target.state);
                         }
                     };
                 })

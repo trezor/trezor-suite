@@ -1,4 +1,4 @@
-import { ReactNode, createContext, useMemo, useRef, useState } from 'react';
+import { type ReactNode, createContext, useMemo, useRef, useState } from 'react';
 
 import {
     DarkTheme,
@@ -8,13 +8,13 @@ import {
 } from '@react-navigation/native';
 import { useReactNavigationDevTools } from '@rozenite/react-navigation-plugin';
 
-import { events } from '@suite-native/analytics';
+import { useServices } from '@suite-common/dependency-injection';
+import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { addSentryBreadcrumb, setSentryTag } from '@suite-native/sentry';
-import { useAnalytics } from '@suite-native/services';
-import { useNativeStyles } from '@trezor/styles';
+import { useNativeStyles } from '@trezor/styles-native';
 
 import { useReportSendFlowExitToAnalytics } from '../hooks/useReportSendFlowExitToAnalytics';
-import { RootStackParamList } from '../navigators';
+import { type RootStackParamList } from '../navigators';
 
 export const IsNavigationReadyContext = createContext(false);
 
@@ -23,7 +23,7 @@ export const navigationContainerRef = createNavigationContainerRef<RootStackPara
 export const NavigationContainerWithAnalytics = ({ children }: { children: ReactNode }) => {
     const [isNavigationReady, setIsNavigationReady] = useState(false);
     const routeNameRef = useRef<string | undefined>(undefined);
-    const analytics = useAnalytics();
+    const { analytics } = useServices(selectNativeAnalyticsDep);
     const {
         utils: { colors, isDarkColor },
     } = useNativeStyles();
@@ -34,13 +34,13 @@ export const NavigationContainerWithAnalytics = ({ children }: { children: React
 
     const themeColors = useMemo(() => {
         // setting theme colors to match the background color of the screen to prevent white flash on screen change in dark mode
-        const isDarkTheme = isDarkColor(colors.backgroundSurfaceElevation0);
+        const isDarkTheme = isDarkColor(colors.surfaceFillPage);
         if (isDarkTheme) {
             return {
                 ...DarkTheme,
                 colors: {
                     ...DarkTheme.colors,
-                    background: colors.backgroundSurfaceElevation0,
+                    background: colors.surfaceFillPage,
                 },
             };
         }
@@ -49,7 +49,7 @@ export const NavigationContainerWithAnalytics = ({ children }: { children: React
             ...DefaultTheme,
             colors: {
                 ...DefaultTheme.colors,
-                background: colors.backgroundSurfaceElevation0,
+                background: colors.surfaceFillPage,
             },
         };
     }, [colors, isDarkColor]);

@@ -4,7 +4,7 @@ import { COLOR_TOKENS, nativeTypographyStyles } from '@trezor/theme';
 
 import {
     BulletListItem as BulletListItemComponent,
-    BulletListItemProps,
+    type BulletListItemProps,
 } from '../../BulletListItem';
 
 type BulletListItemStory = StoryObj<BulletListItemProps>;
@@ -21,7 +21,7 @@ export const BulletListItem: BulletListItemStory = {
     args: {
         children: 'textual bullet point',
         variant: 'body-md',
-        color: 'textDefault',
+        color: 'contentPrimary',
     },
     argTypes: {
         children: {

@@ -1,0 +1,39 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": { "outDir": "libDev" },
+    "references": [
+        { "path": "../../suite-common/address" },
+        { "path": "../../suite-common/device" },
+        { "path": "../../suite-common/receive" },
+        {
+            "path": "../../suite-common/redux-utils"
+        },
+        {
+            "path": "../../suite-common/suite-types"
+        },
+        {
+            "path": "../../suite-common/toast-notifications"
+        },
+        {
+            "path": "../../suite-common/wallet-config"
+        },
+        {
+            "path": "../../suite-common/wallet-core"
+        },
+        {
+            "path": "../../suite-common/wallet-types"
+        },
+        { "path": "../account" },
+        { "path": "../address" },
+        { "path": "../analytics" },
+        { "path": "../authenticity-checks" },
+        { "path": "../external-links" },
+        { "path": "../intl" },
+        { "path": "../labeling" },
+        { "path": "../modal" },
+        { "path": "../../packages/components" },
+        {
+            "path": "../../packages/product-components"
+        }
+    ]
+}

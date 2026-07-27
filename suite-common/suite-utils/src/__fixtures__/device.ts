@@ -1,4 +1,4 @@
-import { TrezorDevice } from '@suite-common/suite-types';
+import { type TrezorDevice } from '@suite-common/suite-types';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import * as URLS from '@trezor/urls';
@@ -71,6 +71,30 @@ const getStatus: Array<{ device: TrezorDevice; status: string }> = [
             status: 'thp-locked',
         }),
         status: 'device-thp-locked',
+    },
+];
+
+const getIsDeviceDescriptorApiTypeBluetooth = [
+    {
+        description: 'device descriptor is missing',
+        device: mockSuiteDevice({
+            descriptor: undefined,
+        }),
+        result: false,
+    },
+    {
+        description: 'device api type is usb',
+        device: mockSuiteDevice({
+            descriptor: { apiType: 'usb' },
+        }),
+        result: false,
+    },
+    {
+        description: 'device api type is bluetooth',
+        device: mockSuiteDevice({
+            descriptor: { apiType: 'bluetooth' },
+        }),
+        result: true,
     },
 ];
 
@@ -507,6 +531,58 @@ const getDeviceInstances = [
     },
 ];
 
+const getDeviceInstancesGroupedByDeviceId = [
+    { description: 'No devices', devices: [], result: [] },
+    {
+        description: 'Two acquired devices',
+        devices: [d({ id: '1', inst: 2 }), d({ id: '1', inst: 1 })],
+        result: [[d({ id: '1', inst: 1 }), d({ id: '1', inst: 2 })]],
+    },
+    {
+        description: 'One unacquired device, one acquired device',
+        devices: [d({ path: 'a' }), d({ id: '1', inst: 1 })],
+        result: [[d({ path: 'a' })], [d({ id: '1', inst: 1 })]],
+    },
+    {
+        description: 'Two unacquired devices, three acquired devices',
+        devices: [
+            d({ path: 'a' }),
+            d({ id: '1', inst: 2 }),
+            d({ path: 'b' }),
+            d({ id: '2', inst: 1 }),
+            d({ id: '1', inst: 1 }),
+        ],
+        result: [
+            [d({ path: 'a' })],
+            [d({ id: '1', inst: 1 }), d({ id: '1', inst: 2 })],
+            [d({ path: 'b' })],
+            [d({ id: '2', inst: 1 })],
+        ],
+    },
+];
+
+const getSortedDevicesWithoutInstances = [
+    { description: 'No devices', devices: [], excludedDeviceId: null, result: [] },
+    {
+        description: 'One unacquired device, one acquired device',
+        devices: [d({ path: 'a' }), d({ id: '1', inst: 1 })],
+        excludedDeviceId: null,
+        result: [d({ id: '1', inst: 1 }), d({ path: 'a' })],
+    },
+    {
+        description: 'Two unacquired devices, three acquired devices',
+        devices: [
+            d({ path: 'a' }),
+            d({ id: '1', inst: 2 }),
+            d({ path: 'b' }),
+            d({ id: '2', inst: 1 }),
+            d({ id: '1', inst: 1 }),
+        ],
+        excludedDeviceId: '2',
+        result: [d({ path: 'b' }), d({ id: '1', inst: 1 }), d({ path: 'a' })],
+    },
+];
+
 const getChangelogUrl = [
     {
         description: 'Revision set, core firmware',
@@ -597,6 +673,7 @@ const getFirmwareDowngradeUrl = [
 
 export default {
     getStatus,
+    getIsDeviceDescriptorApiTypeBluetooth,
     getIsDeviceConnectedViaBluetooth,
     isSelectedDevice,
     isSelectedInstance,
@@ -607,6 +684,8 @@ export default {
     sortByTimestamp,
     getFirstDeviceInstance,
     getDeviceInstances,
+    getDeviceInstancesGroupedByDeviceId,
+    getSortedDevicesWithoutInstances,
     isDeviceRemembered,
     getChangelogUrl,
     getCheckBackupUrl,

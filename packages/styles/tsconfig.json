@@ -4,5 +4,5 @@
         "noImplicitAny": false,
         "outDir": "libDev"
     },
-    "references": [{ "path": "../theme" }]
+    "references": []
 }

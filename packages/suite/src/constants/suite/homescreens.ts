@@ -100,7 +100,6 @@ export const getDefaultHomeScreenImage = ({
         case DeviceModelInternal.T2T1:
             return 'original_t2t1';
         case DeviceModelInternal.T2B1:
-            return 'original_t3b1';
         case DeviceModelInternal.T3B1:
             return 'original_t3b1';
         case DeviceModelInternal.T3T1:

@@ -1,13 +1,14 @@
 import assert from 'assert';
 
+import type { SuiteSettingsState } from '@suite/settings';
 import { deviceActions, deviceInitialState, prepareDeviceReducer } from '@suite-common/device';
-import { TrezorDevice } from '@suite-common/suite-types';
+import { type TrezorDevice } from '@suite-common/suite-types';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { wipeDeviceThunk } from '@suite-common/wallet-core';
-import { Response } from '@trezor/connect';
+import { type Response } from '@trezor/connect';
 
-import suiteReducer from 'src/reducers/suite/suiteReducer';
+import type suiteReducer from 'src/reducers/suite/suiteReducer';
 import { extraDependencies } from 'src/support/extraDependencies';
 
 import * as deviceSettingsActions from '../deviceSettingsActions';
@@ -16,6 +17,7 @@ export const deviceReducer = prepareDeviceReducer(extraDependencies);
 
 export type DeviceSettingsFixtureState = {
     suite: ReturnType<typeof suiteReducer>;
+    suiteSettings: SuiteSettingsState;
     device: ReturnType<typeof deviceReducer>;
 };
 
@@ -227,7 +229,7 @@ const fixture: Fixture[] = [
     {
         description: 'Wipe device errored',
         action: () => wipeDeviceThunk(),
-        mocks: { success: false, payload: { error: 'fuuu' } },
+        mocks: { success: false, error: { message: 'fuuu', code: 'Failure_UnknownCode' } },
         result: {
             actions: [
                 {
@@ -265,7 +267,7 @@ const fixture: Fixture[] = [
     {
         description: 'Apply settings - connect error',
         action: () => deviceSettingsActions.applySettings({ label: 'foo' }),
-        mocks: { success: false, payload: { error: 'eeeh' } },
+        mocks: { success: false, error: { message: 'eeeh', code: 'Failure_UnknownCode' } },
         result: {
             actions: [
                 {
@@ -298,7 +300,7 @@ const fixture: Fixture[] = [
     {
         description: 'Change pin - connect error',
         action: () => deviceSettingsActions.changePin({}),
-        mocks: { success: false, payload: { error: 'eeeh' } },
+        mocks: { success: false, error: { message: 'eeeh', code: 'Failure_UnknownCode' } },
         result: {
             actions: [
                 {
@@ -317,7 +319,7 @@ const fixture: Fixture[] = [
     {
         description: 'Reset device - Cancel - Entropy check not triggered',
         action: () => deviceSettingsActions.resetDevice(),
-        mocks: { success: false, payload: { error: 'Canceled', code: 'Method_Cancel' } },
+        mocks: { success: false, error: { message: 'Canceled', code: 'Method_Cancel' } },
         result: {
             actions: [
                 {
@@ -364,7 +366,7 @@ const fixture: Fixture[] = [
         action: () => deviceSettingsActions.resetDevice(),
         mocks: {
             success: false,
-            payload: { error: 'Entropy check failed', code: 'Failure_EntropyCheck' },
+            error: { message: 'Entropy check failed', code: 'Failure_EntropyCheck' },
         },
         result: {
             actions: [

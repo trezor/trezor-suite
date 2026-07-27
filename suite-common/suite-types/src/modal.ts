@@ -1,11 +1,23 @@
-import { RequestEnableTorResponse } from '@suite-common/suite-config';
+import { type RequestEnableTorResponse } from '@suite-common/suite-config';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { Account, AddressType } from '@suite-common/wallet-types';
-import { UI_REQUEST } from '@trezor/connect';
-import { Deferred } from '@trezor/utils';
+import {
+    type Account,
+    type AccountKey,
+    type AddressType,
+    type EvmSelectedFee,
+} from '@suite-common/wallet-types';
+import { type UI_REQUEST } from '@trezor/connect';
+import { type Deferred } from '@trezor/utils';
 
-import { TrezorDevice } from './device';
-import { EarnAccountRef, EarnFlow, EarnProvider } from './staking';
+import { type TrezorDevice } from './device';
+import {
+    type EarnAnalyticsStep,
+    type EarnFlow,
+    type EarnModalAction,
+    type EarnProvider,
+    type EarnYieldContext,
+    type StakeModalFlow,
+} from './staking';
 
 export type UserContextPayload =
     | {
@@ -14,6 +26,7 @@ export type UserContextPayload =
       }
     | {
           type: 'unverified-address';
+          accountKey: AccountKey;
           value: string;
           addressPath: string;
       }
@@ -54,6 +67,10 @@ export type UserContextPayload =
           symbol: Account['symbol'];
           deviceState: Account['deviceState'];
           flow: 'detail' | 'bump-fee' | 'cancel-transaction';
+          // Cancel is only offered from the account tx list; other entry points (trade detail,
+          // trading approval, earn, notifications, coin control) can't reflect a cancel, so they
+          // leave this unset and the Cancel button stays hidden.
+          showCancelButton?: boolean;
       }
     | {
           type: 'review-transaction';
@@ -89,6 +106,9 @@ export type UserContextPayload =
     | {
           type: 'advanced-coin-settings';
           symbol: NetworkSymbol;
+      }
+    | {
+          type: 'activate-assets';
       }
     | {
           type: 'add-token';
@@ -131,45 +151,54 @@ export type UserContextPayload =
       }
     | {
           type: 'earn-in-a-nutshell';
-          flow: EarnFlow;
+          flow: EarnFlow.Stake | EarnFlow.UpdateProvider;
           provider: EarnProvider;
-          account?: EarnAccountRef;
-          yieldId?: string;
-          tokenContractAddress?: string;
+          account: Account;
+          analyticsStep: Extract<EarnAnalyticsStep, 'staking-dashboard'>;
+          actionType?: EarnModalAction;
+          yieldContext?: EarnYieldContext;
       }
     | {
-          type: 'supply';
-          flow: EarnFlow;
-          account?: EarnAccountRef;
-          yieldId?: string;
-          tokenContractAddress?: string;
+          type: 'earn-in-a-nutshell';
+          flow: EarnFlow.Yield;
+          provider: EarnProvider;
+          account: Account;
+          analyticsStep: Extract<
+              EarnAnalyticsStep,
+              'earn-dashboard' | 'yield-deposit' | 'yield-withdraw'
+          >;
+          actionType?: EarnModalAction;
+          yieldContext?: EarnYieldContext;
+      }
+    | {
+          type: 'tron-stake-in-a-nutshell';
+          actionType?: EarnModalAction;
+      }
+    | {
+          type: 'tron-vote-consent';
+          representativeName: string;
+          termsOfServiceUrl: string;
+          decision: Deferred<boolean>;
       }
     | {
           type: 'stake';
-          flow: EarnFlow;
-          account?: EarnAccountRef;
-          yieldId?: string;
-          tokenContractAddress?: string;
-      }
-    | {
-          type: 'withdraw';
-          account?: EarnAccountRef;
+          flow: StakeModalFlow;
+          account: Account;
       }
     | {
           type: 'unstake';
-          account?: EarnAccountRef;
+          account: Account;
       }
     | {
           type: 'claim';
-          account?: EarnAccountRef;
+          account: Account;
       }
     | {
           type: 'earn-provider-consent';
           flow: EarnFlow;
           provider: EarnProvider;
-          account?: EarnAccountRef;
-          yieldId?: string;
-          tokenContractAddress?: string;
+          account: Account;
+          yieldContext?: EarnYieldContext;
       }
     | {
           type: 'change-delegate';
@@ -198,6 +227,9 @@ export type UserContextPayload =
           type: 'connect-address-confirmation';
       }
     | {
+          type: 'connect-select-account';
+      }
+    | {
           type: 'connect-error';
       }
     | {
@@ -207,7 +239,33 @@ export type UserContextPayload =
           type: 'auto-start-before-quit';
       }
     | {
-          type: 'tx-simulation';
+          type: 'connect-popup-tx-simulation';
+      }
+    | {
+          type: 'earn-yield-tx-simulation';
+          data: unknown;
+          decision: Deferred<
+              | {
+                    value: true;
+                    selectedFee: EvmSelectedFee | null;
+                    /**
+                     * Send a signal from the thunk to the modal that the related business logic has finished.
+                     * Used for tracking the loading state of the confirm button in the modal.
+                     */
+                    resolve: () => void;
+                }
+              | {
+                    value: false;
+                }
+          >;
+      }
+    | {
+          type: 'wrap-native-token';
+          account: Account;
+          /** Max native amount that can be wrapped (balance minus the gas reserve), display units. */
+          maxWrapAmount: string;
+          nativeSymbol: string;
+          wrappedSymbol: string;
       }
     | {
           type: 'wipe-device-success';

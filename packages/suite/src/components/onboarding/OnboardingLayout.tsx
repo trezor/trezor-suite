@@ -1,19 +1,21 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
+import { TRAFFIC_LIGHT_DEFAULT_OFFSET } from '@suite/macos';
+import { MODAL_CONTEXT_USER } from '@suite/modal';
 import { Box, Button, Column, Row } from '@trezor/components';
 import { isDesktop, isMacOs } from '@trezor/env-utils';
+import { XIcon } from '@trezor/icons';
 import { TREZOR_SUPPORT_URL } from '@trezor/urls';
 
-import { MODAL } from 'src/actions/suite/constants';
 import { GuideButton, GuideRouter } from 'src/components/guide';
 import { OnboardingProgressBar } from 'src/components/onboarding/OnboardingProgressBar';
 import { SuiteBanners } from 'src/components/suite/banners';
 import { ReduxModal } from 'src/components/suite/modals/ReduxModal/ReduxModal';
 import { MAX_ONBOARDING_WIDTH } from 'src/constants/suite/layout';
-import { useFilteredModal, useSelector } from 'src/hooks/suite';
+import { useFilteredModal } from 'src/hooks/suite';
 
 import {
     OnboardingCancelButtonContext,
@@ -21,8 +23,6 @@ import {
 } from './OnboardingCancelButtonContext';
 import { SmallDeviceItem } from '../../views/suite/SwitchDevice/DeviceItem/SmallDeviceItem';
 import { ConnectionGlobalModalManager } from '../connection/ConnectionGlobalModalManager';
-import { TRAFFIC_LIGHT_DEFAULT_OFFSET } from '../suite/TrafficLightOffset';
-import { DebugLegend } from '../suite/layouts/SuiteLayout/DebugLegend';
 
 const OnboardingSpacer = styled.div`
     height: ${TRAFFIC_LIGHT_DEFAULT_OFFSET}px;
@@ -37,8 +37,8 @@ const OnboardingContent = ({ children }: OnboardingContentProps) => {
     const { onCancelHandler } = useOnboardingCancelButtonContext();
 
     return (
-        <Column gap={60}>
-            <Column gap={48}>
+        <Column gap={40}>
+            <Column gap={32}>
                 <Row justifyContent="space-between">
                     <SmallDeviceItem />
                     <Row gap={12}>
@@ -54,7 +54,7 @@ const OnboardingContent = ({ children }: OnboardingContentProps) => {
                             <Button
                                 intent="neutral"
                                 priority="secondary"
-                                iconRight="x"
+                                iconRight={XIcon}
                                 size="small"
                                 onClick={onCancelHandler}
                             >
@@ -75,13 +75,11 @@ type OnboardingLayoutProps = {
 };
 
 export const OnboardingLayout = ({ children }: OnboardingLayoutProps) => {
-    const theme = useSelector(state => state.suite.settings.theme);
-
     const isMac = isMacOs();
     const isDesktopApp = isDesktop();
 
     const allowedModal = useFilteredModal(
-        [MODAL.CONTEXT_USER],
+        [MODAL_CONTEXT_USER],
         ['advanced-coin-settings', 'disable-tor'],
     );
 
@@ -108,7 +106,6 @@ export const OnboardingLayout = ({ children }: OnboardingLayoutProps) => {
                 <GuideButton />
                 <GuideRouter />
             </Row>
-            {theme.variant === 'debug' && <DebugLegend layout={OnboardingLayout.name} />}
         </>
     );
 };

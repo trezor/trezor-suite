@@ -1,22 +1,27 @@
 import {
-    DeviceRootState,
+    type DeviceRootState,
     selectHasOnlyPortfolioDevice,
     selectSelectedDevice,
 } from '@suite-common/device';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
-import { TrezorDevice } from '@suite-common/suite-types';
-import { NetworkSymbol, networks, networksCollection } from '@suite-common/wallet-config';
-import { Account, ReviewOutput } from '@suite-common/wallet-types';
+import { type TrezorDevice } from '@suite-common/suite-types';
+import { type NetworkSymbol, networks, networksCollection } from '@suite-common/wallet-config';
+import {
+    type Account,
+    type ReviewOutput,
+    type SuccessfulAccount,
+} from '@suite-common/wallet-types';
 import {
     findAccountsByAddress,
     isAccountDiscoverable,
-    sortByCoin,
+    isAccountFailed,
     tryGetAccountIdentity,
 } from '@suite-common/wallet-utils';
-import { StaticSessionId, type TrezorConnect } from '@trezor/connect';
+import { type ContractInfoProtocol } from '@trezor/blockchain-link-types/src/blockbook';
+import { type StaticSessionId, type TrezorConnectCallable } from '@trezor/connect';
 import { arrayToDictionary } from '@trezor/utils';
 
-import { AccountsRootState } from './accounts/accountsReducer';
+import { type AccountsRootState } from './accounts/accountsReducer';
 import {
     selectAccounts,
     selectAccountsByDeviceState,
@@ -24,10 +29,14 @@ import {
     selectIsDeviceAccountless,
     selectVisibleDeviceAccounts,
 } from './accounts/accountsSelectors';
+import { type BlockchainRootState, selectGapLimit } from './blockchain/blockchainReducer';
 import { selectSupportedNetworkByDevice } from './device/deviceSelectors';
-import { DiscoveryRootState } from './discovery/discoveryReducer';
+import { type DiscoveryRootState } from './discovery/discoveryReducer';
 import { selectHasRunningDiscovery } from './discovery/discoverySelectors';
-import { WalletSettingsRootState, selectEnabledNetworks } from './settings/walletSettingsReducer';
+import {
+    type WalletSettingsRootState,
+    selectEnabledNetworks,
+} from './settings/walletSettingsReducer';
 
 /*
 This file is for selectors that reach into more than one wallet-core reduce
@@ -37,7 +46,8 @@ to prevent circular dependencies between reducers
 export type WalletCoreCompoundRootState = AccountsRootState &
     DeviceRootState &
     DiscoveryRootState &
-    WalletSettingsRootState;
+    WalletSettingsRootState &
+    BlockchainRootState;
 const createMemoizedSelector = createWeakMapSelector.withTypes<WalletCoreCompoundRootState>();
 
 const selectEnabledSupportedNetworks = createMemoizedSelector(
@@ -61,22 +71,20 @@ export const selectAllAccountsToList = createMemoizedSelector(
             enabledSupportedNetworks.includes(symbol),
         );
 
-        const sortedAccounts = sortByCoin(filteredAccounts);
-
-        return returnStableArrayIfEmpty(sortedAccounts);
+        return returnStableArrayIfEmpty(filteredAccounts);
     },
 );
 
 export const selectAllSuccessfulAccountsToList = createMemoizedSelector(
     [selectAllAccountsToList],
-    accounts => {
+    (accounts): SuccessfulAccount[] => {
         const filteredAccounts = accounts.filter(account => !account.failed);
 
         return returnStableArrayIfEmpty(filteredAccounts);
     },
 );
 
-type DiscoveryAccountsParam = Parameters<TrezorConnect['discoverAccounts']>[0]['coins'];
+type DiscoveryAccountsParam = Parameters<TrezorConnectCallable['discoverAccounts']>[0]['coins'];
 
 const getDeviceAccountsPerEnabledNetwork = (
     state: WalletCoreCompoundRootState,
@@ -90,7 +98,7 @@ const getDeviceAccountsPerEnabledNetwork = (
     return symbols.map(symbol => ({ symbol, accounts: symbolMap[symbol] }));
 };
 
-const getLastAccountsPerAccountType = (accounts: Account[]) =>
+const getAccountChainsPerAccountType = (accounts: Account[]) =>
     Object.entries(arrayToDictionary(accounts, acc => acc.accountType, true)).map(
         ([type, accs]) => ({
             type,
@@ -98,6 +106,13 @@ const getLastAccountsPerAccountType = (accounts: Account[]) =>
             lastAccount: accs.reduce((last, current) =>
                 current.index > last.index ? current : last,
             ),
+            // failed account with the lowest index; a failed account may sit below other known
+            // accounts when a known-accounts refresh fails for some of them (e.g. flaky backend)
+            firstFailedAccount: accs
+                .filter(isAccountFailed)
+                .reduce<
+                    Account | undefined
+                >((first, current) => (!first || current.index < first.index ? current : first), undefined),
         }),
     );
 
@@ -109,20 +124,39 @@ export const selectDiscoveryAccountsParam = (
     getDeviceAccountsPerEnabledNetwork(state, deviceState).map(({ symbol, accounts }) => {
         const { networkType } = networks[symbol];
         const identity = tryGetAccountIdentity({ networkType, deviceState });
+        const bitcoinGap = networkType === 'bitcoin' ? selectGapLimit(state, symbol) : undefined;
+
+        const protocols: ContractInfoProtocol[] | undefined =
+            networkType === 'ethereum' ? ['erc4626'] : undefined;
 
         // undiscovered network; discover as a whole
-        if (!accounts) return { symbol, identity };
+        if (!accounts)
+            return {
+                symbol,
+                identity,
+                protocols,
+                gap: bitcoinGap,
+            } as DiscoveryAccountsParam[number];
 
-        const known = getLastAccountsPerAccountType(accounts).map(({ type, lastAccount }) => {
-            // last account is a failed one; try to discover it again
-            if (lastAccount.failed) return { type, skip: lastAccount.index };
-            // last account is a used one; skip it and try to discover next one
-            else if (!lastAccount.empty) return { type, skip: lastAccount.index + 1 };
-            // last account is an empty one; skip this type completely
-            else return { type };
-        });
+        const known = getAccountChainsPerAccountType(accounts).map(
+            ({ type, lastAccount, firstFailedAccount }) => {
+                // some account failed; rediscover the whole chain from the first failed one
+                if (firstFailedAccount) return { type, skip: firstFailedAccount.index };
+                // last account is a used one; skip it and try to discover next one
+                else if (!lastAccount.empty) return { type, skip: lastAccount.index + 1 };
+                // last account is an empty one; skip this type completely
+                else return { type };
+            },
+        );
 
-        return { symbol, identity, known, knownOnly } as DiscoveryAccountsParam[number];
+        return {
+            symbol,
+            identity,
+            protocols,
+            known,
+            knownOnly,
+            gap: bitcoinGap,
+        } as DiscoveryAccountsParam[number];
     });
 
 export const selectShowRediscoverButton = (
@@ -155,7 +189,7 @@ export const selectShouldRediscover = (
     return getDeviceAccountsPerEnabledNetwork(state, staticSessionId).some(
         ({ accounts }) =>
             !accounts ||
-            getLastAccountsPerAccountType(accounts).some(
+            getAccountChainsPerAccountType(accounts).some(
                 ({ lastAccount }) => !lastAccount.failed && !lastAccount.empty,
             ),
     );
@@ -201,7 +235,7 @@ export const selectIsTxOutputInternal = createMemoizedSelector(
         }),
     ],
     (accounts, { symbol, output }) => {
-        if (!symbol || !output || output.type !== 'address') return false;
+        if (!symbol || output?.type !== 'address') return false;
         const matchingAccounts = findAccountsByAddress(symbol, output.value, accounts);
 
         return matchingAccounts.length > 0;

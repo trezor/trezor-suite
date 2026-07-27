@@ -1,8 +1,9 @@
 import { createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
-    PrecomposedLevelsCardano,
-    PrecomposedTransactionCardano,
+    AddressDisplayOptions,
+    type PrecomposedLevelsCardano,
+    type PrecomposedTransactionCardano,
 } from '@suite-common/wallet-types';
 import {
     formatMaxOutputAmount,
@@ -14,15 +15,16 @@ import {
     isTestnet,
     transformUserOutputs,
 } from '@suite-common/wallet-utils';
-import TrezorConnect, { PROTO, PrecomposedTransactionFinalCardano } from '@trezor/connect';
+import TrezorConnect, { PROTO, type PrecomposedTransactionFinalCardano } from '@trezor/connect';
 
 import { SEND_MODULE_PREFIX } from './sendFormConstants';
 import {
-    ComposeFeeLevelsError,
-    ComposeTransactionThunkArguments,
-    SignTransactionError,
-    SignTransactionThunkArguments,
+    type ComposeFeeLevelsError,
+    type ComposeTransactionThunkArguments,
+    type SignTransactionError,
+    type SignTransactionThunkArguments,
 } from './sendFormTypes';
+import { selectAddressDisplayType } from '../settings/walletSettingsReducer';
 
 export const composeCardanoTransactionFeeLevelsThunk = createThunk<
     PrecomposedLevelsCardano,
@@ -70,16 +72,18 @@ export const composeCardanoTransactionFeeLevelsThunk = createThunk<
         });
 
         if (!response.success) {
-            dispatch(
-                notificationsActions.addToast({
-                    type: 'sign-tx-error',
-                    error: response.payload.error,
-                }),
-            );
+            if (response.error.code !== 'Method_InvalidParameter') {
+                dispatch(
+                    notificationsActions.addToast({
+                        type: 'sign-tx-error',
+                        error: response.error.message,
+                    }),
+                );
+            }
 
             return rejectWithValue({
                 error: 'fee-levels-compose-failed',
-                message: response.payload.error,
+                message: response.error.message,
             });
         }
 
@@ -124,7 +128,9 @@ export const composeCardanoTransactionFeeLevelsThunk = createThunk<
                 // no default
             }
 
-            const feeLabel = predefinedLevels[index].label;
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const predefinedLevel: (typeof predefinedLevels)[number] = predefinedLevels[index];
+            const feeLabel = predefinedLevel.label;
             resultLevels[feeLabel] = tx;
         });
 
@@ -145,7 +151,10 @@ export const signCardanoSendFormTransactionThunk = createThunk<
     { rejectValue: SignTransactionError }
 >(
     `${SEND_MODULE_PREFIX}/signCardanoSendFormTransactionThunk`,
-    async ({ precomposedTransaction, selectedAccount, device }, { rejectWithValue }) => {
+    async (
+        { precomposedTransaction, selectedAccount, device, paymentRequests },
+        { getState, rejectWithValue },
+    ) => {
         const { symbol, accountType } = selectedAccount;
 
         if (selectedAccount.networkType !== 'cardano')
@@ -153,6 +162,9 @@ export const signCardanoSendFormTransactionThunk = createThunk<
                 error: 'sign-transaction-failed',
                 message: 'Account network type is not Cardano.',
             });
+
+        const payment_req = paymentRequests?.[0];
+        const addressDisplayType = selectAddressDisplayType(getState());
 
         // todo: add chunkify once we allow it for Cardano
         const response = await TrezorConnect.cardanoSignTransaction({
@@ -173,13 +185,15 @@ export const signCardanoSendFormTransactionThunk = createThunk<
             fee: precomposedTransaction.fee,
             ttl: precomposedTransaction.ttl?.toString(),
             derivationType: getDerivationType(accountType),
+            payment_req,
+            chunkify: addressDisplayType == AddressDisplayOptions.CHUNKED,
         });
 
         if (!response.success) {
             return rejectWithValue({
                 error: 'sign-transaction-failed',
-                errorCode: response.payload.code,
-                message: response.payload.error,
+                errorCode: response.error.code,
+                message: response.error.message,
             });
         }
 

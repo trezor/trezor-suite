@@ -1,9 +1,15 @@
-import { selectAccountNetworkSymbol, useAccoutsSelector } from '@suite-common/wallet-core';
-import { AccountKey } from '@suite-common/wallet-types';
+import {
+    formatTronApr,
+    getTronVotedApr,
+    useTronStakingStats,
+} from '@suite-common/earn-staking-api';
+import { selectAccountNetworkSymbol, useAccountsSelector } from '@suite-common/wallet-core';
+import { type AccountKey } from '@suite-common/wallet-types';
 import {
     AUTO_STAKED_SYMBOLS,
-    selectAPYByAccountKey,
+    selectApy,
     selectRewardsBalanceByAccountKey,
+    selectTronVotesByAccountKey,
     useSelector as useNativeStakingSelector,
 } from '@suite-native/staking';
 
@@ -19,9 +25,26 @@ export const StakingBalancesOverviewCard = ({
     accountKey,
     handleToggleBottomSheet,
 }: StakingBalancesCardProps) => {
-    const symbol = useAccoutsSelector(state => selectAccountNetworkSymbol(state, accountKey));
+    const symbol = useAccountsSelector(state => selectAccountNetworkSymbol(state, accountKey));
 
-    const apy = useNativeStakingSelector(state => selectAPYByAccountKey(state, accountKey));
+    const apy = useNativeStakingSelector(state =>
+        selectApy(state, { accountKey, networkSymbol: symbol ?? undefined }),
+    );
+
+    const { stats: tronStats, formattedMaxApr: tronMaxApr } = useTronStakingStats({
+        enabled: symbol === 'trx',
+    });
+
+    const tronVotes = useNativeStakingSelector(state =>
+        selectTronVotesByAccountKey(state, accountKey),
+    );
+
+    const votedTronApr = getTronVotedApr(
+        tronStats.data,
+        tronVotes.map(({ address }) => address),
+    );
+
+    const tronApr = formatTronApr(votedTronApr ?? tronMaxApr);
 
     const rewardsBalance = useNativeStakingSelector(state =>
         selectRewardsBalanceByAccountKey(state, accountKey),
@@ -30,13 +53,14 @@ export const StakingBalancesOverviewCard = ({
     if (!symbol) return null;
 
     const isAutoStaked = AUTO_STAKED_SYMBOLS.includes(symbol);
+    const apyValue = symbol === 'trx' ? tronApr : apy;
 
     return isAutoStaked ? (
         <AutoStakedBalancesCard
             accountKey={accountKey}
             symbol={symbol}
             rewardsBalance={rewardsBalance}
-            apy={apy}
+            apy={apyValue}
             handleToggleBottomSheet={handleToggleBottomSheet}
         />
     ) : (
@@ -44,7 +68,7 @@ export const StakingBalancesOverviewCard = ({
             accountKey={accountKey}
             symbol={symbol}
             rewardsBalance={rewardsBalance}
-            apy={apy}
+            apy={apyValue}
             handleToggleBottomSheet={handleToggleBottomSheet}
         />
     );

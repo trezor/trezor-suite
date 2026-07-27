@@ -8,7 +8,6 @@ import { selectIsDiscoveryStatusConfirmEmptyPassphrase } from '@suite-common/wal
 import { H2, Modal, Paragraph } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
 import { ConfirmOnDevicePill } from '@trezor/product-components';
-import { spacings } from '@trezor/theme';
 
 import { DeviceConfirmImage } from 'src/components/suite/DeviceConfirmImage';
 import { useSelector } from 'src/hooks/suite';
@@ -32,7 +31,8 @@ export const PassphraseOnDeviceModal = ({ device }: PassphraseOnDeviceModalProps
     const confirmEmptyPassphrase = useSelector(selectIsDiscoveryStatusConfirmEmptyPassphrase);
     const deviceLabel = useSelector(selectSelectedDeviceLabelOrName);
 
-    const onCancel = () => TrezorConnect.cancel(intl.formatMessage(messages.TR_CANCELLED));
+    const onCancel = () =>
+        TrezorConnect.cancel({ reason: intl.formatMessage(messages.TR_CANCELLED) });
 
     return (
         <Modal.Backdrop onClick={onCancel}>
@@ -63,7 +63,7 @@ export const PassphraseOnDeviceModal = ({ device }: PassphraseOnDeviceModalProps
                     typographyStyle="body-xs"
                     intent="neutral"
                     priority="secondary"
-                    margin={{ top: spacings.md }}
+                    margin={{ top: 16 }}
                 >
                     <Translation
                         id={

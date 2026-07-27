@@ -4,6 +4,9 @@
     "include": ["src", "e2e", "**/*.json"],
     "references": [
         {
+            "path": "../../suite-common/connect-popup"
+        },
+        {
             "path": "../../suite-common/platform-encryption"
         },
         { "path": "../../suite-common/sentry" },
@@ -13,9 +16,17 @@
         {
             "path": "../../suite-common/suite-utils"
         },
+        {
+            "path": "../../suite-common/wallet-config"
+        },
+        {
+            "path": "../../suite-common/wallet-utils"
+        },
         { "path": "../../suite/sentry" },
+        { "path": "../../suite/tor" },
         { "path": "../coinjoin" },
         { "path": "../connect" },
+        { "path": "../connect-common" },
         { "path": "../env-utils" },
         { "path": "../eslint" },
         { "path": "../ipc-proxy" },
@@ -24,8 +35,10 @@
         { "path": "../suite-desktop-api" },
         { "path": "../suite-desktop-native" },
         { "path": "../theme" },
+        { "path": "../transport" },
         { "path": "../transport-bluetooth" },
         { "path": "../transport-bridge" },
+        { "path": "../transport-common" },
         { "path": "../urls" },
         { "path": "../utils" },
         { "path": "../type-utils" }

@@ -2,9 +2,10 @@ import { useState } from 'react';
 
 import { AnimatePresence, motion } from 'framer-motion';
 
-import { events } from '@suite/analytics';
+import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { selectAdapterStatus, selectIsDeviceOsUnpairingRequired } from '@suite-common/bluetooth';
+import { useServices } from '@suite-common/dependency-injection';
 import {
     Box,
     Button,
@@ -22,6 +23,7 @@ import {
 } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { isDesktop } from '@trezor/env-utils';
+import { BluetoothIcon, CableUsbCIcon, QuestionIcon } from '@trezor/icons';
 import { getLargeModelImagePath } from '@trezor/product-components';
 
 import {
@@ -29,7 +31,6 @@ import {
     selectIsUnpairingDevice,
 } from 'src/actions/bluetooth/desktopBluetoothSelectors';
 import { useSelector } from 'src/hooks/suite';
-import { useAnalytics } from 'src/support/useAnalytics';
 
 import { BluetoothAdapterStatusModal } from './BluetoothAdapterStatusModal';
 import { BluetoothConnectionModal } from './BluetoothConnectionModal';
@@ -47,12 +48,9 @@ type DontSeeTrezorPillProps = {
 };
 
 const DontSeeTrezorPill = ({ onClick }: DontSeeTrezorPillProps) => (
-    // A little hack so we can use the subtle variant of the button instead of creating a brand new variant for a single use case
-    <Box backgroundColor="backgroundSurfaceElevation1" borderRadius={10}>
-        <Button onClick={onClick} iconLeft="question" intent="info" priority="secondary">
-            <Translation id="TR_STILL_DONT_SEE_YOUR_TREZOR" />
-        </Button>
-    </Box>
+    <Button onClick={onClick} iconLeft={QuestionIcon} intent="info" priority="secondary" isFloating>
+        <Translation id="TR_STILL_DONT_SEE_YOUR_TREZOR" />
+    </Button>
 );
 
 type ConnectModalContentProps = {
@@ -121,13 +119,7 @@ const ViaBluetoothCard = ({ onClick }: ConnectionModeCardProps) => (
                         <Text>
                             <Translation id="TR_VIA_BLUETOOTH" />
                         </Text>
-                        <IconCircle
-                            variant="tertiary"
-                            hasBorder={false}
-                            name="bluetooth"
-                            size={28}
-                            paddingType="small"
-                        />
+                        <IconCircle intent="neutral" icon={BluetoothIcon} size={32} />
                     </Row>
                 </Column>
             </H3>
@@ -202,13 +194,7 @@ const ViaCableCard = ({ onClick }: ConnectionModeCardProps) => (
                         <Text>
                             <Translation id="TR_VIA_CABLE" />
                         </Text>
-                        <IconCircle
-                            variant="tertiary"
-                            hasBorder={false}
-                            name="cableUsbC"
-                            size={28}
-                            paddingType="small"
-                        />
+                        <IconCircle intent="neutral" icon={CableUsbCIcon} size={32} />
                     </Row>
                 </Column>
             </H3>
@@ -217,7 +203,7 @@ const ViaCableCard = ({ onClick }: ConnectionModeCardProps) => (
 );
 
 export const ConnectDeviceGlobalModal = ({ onCancel }: { onCancel: () => void }) => {
-    const analytics = useAnalytics();
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
     const [isModeSelected, setIsModeSelected] = useState(false);
     const isWebUsbTransport = useSelector(selectHasTransportOfType('WebUsbTransport'));
     const {
@@ -241,7 +227,7 @@ export const ConnectDeviceGlobalModal = ({ onCancel }: { onCancel: () => void })
 
     const bluetoothAdapterStatus = useSelector(selectAdapterStatus);
 
-    if (wasBluetoothDeviceWiped || isUnpairingDevice) return null;
+    if (wasBluetoothDeviceWiped?.isRequired || isUnpairingDevice) return null;
 
     if (isBluetoothMode && isManualPairingRequired) {
         return <BluetoothManualPairingModal onCancel={onCancel} />;

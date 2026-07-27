@@ -1,0 +1,10 @@
+import type { SVGProps } from 'react';
+const SvgCaretDoubleUpFilled = (props: SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" {...props}>
+        <path
+            fill="currentColor"
+            d="M26.707 25.293A1 1 0 0 1 26 27H6a1 1 0 0 1-.708-1.707L13.586 17H6a1 1 0 0 1-.708-1.707l10-10a1 1 0 0 1 1.415 0l10 10A1 1 0 0 1 26 17h-7.586z"
+        />
+    </svg>
+);
+export { SvgCaretDoubleUpFilled as ReactComponent };

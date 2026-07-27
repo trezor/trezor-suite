@@ -1,3 +1,4 @@
+import { getTranslation } from '@suite-native/intl';
 import { renderWithBasicProvider } from '@suite-native/test-utils';
 
 import { FeeOptionErrorMessage } from '../FeeOptionErrorMessage';
@@ -9,8 +10,8 @@ describe('FeeOptionErrorMessage', () => {
     it('should render error message when visible', () => {
         const { getByText, queryByTestId } = renderFeeOptionErrorMessage(true);
 
-        expect(getByText('You don’t have enough balance to use this fee.')).toBeTruthy();
-        expect(queryByTestId('@transactionManagement/fee-option-error-message')).toBeTruthy();
+        expect(getByText(getTranslation('transactionManagement.fees.error'))).toBeOnTheScreen();
+        expect(queryByTestId('@transactionManagement/fee-option-error-message')).toBeOnTheScreen();
     });
 
     it('should have height 0 when not visible', () => {

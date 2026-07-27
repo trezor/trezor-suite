@@ -11,7 +11,8 @@ import { colorVariants } from '@trezor/theme';
 import { createDeferred, resolveAfter } from '@trezor/utils';
 
 import { handshakeAndHangDetect } from './handshake-and-hang-detect';
-import { processStatePatch, removeElectronAppData, restartApp } from './libs/app-utils';
+import { processStatePatch, restartApp } from './libs/app-utils';
+import { isAutoStartEnabled, promptForAutoStartBeforeQuit } from './libs/auto-start';
 import { APP_NAME } from './libs/constants';
 import { createElectronSessionInterceptor } from './libs/create-electron-session-interceptor';
 import { getBuildInfo, getComputerInfo } from './libs/info';
@@ -21,10 +22,9 @@ import { MainWindowProxy } from './libs/main-window-proxy';
 import { hasSwitch } from './libs/process-switches';
 import { MIN_HEIGHT, MIN_WIDTH } from './libs/screen';
 import { initSentry } from './libs/sentry';
-import { Store, WinBoundsCoords } from './libs/store';
-import { clearAppCache, initUserData } from './libs/user-data';
+import { Store, type WinBoundsCoords } from './libs/store';
+import { clearAppCache, clearUserDataOptimistically, initUserData } from './libs/user-data';
 import { initBackgroundModules, initModules } from './modules';
-import { isAutoStartEnabled, promptForAutoStartBeforeQuit } from './modules/auto-start';
 // todo: why is this separated here? shoudlnt it be part of modules?
 import { initBioAuthModule } from './modules/bioAuthModule';
 import { mainThreadEmitter } from './modules/module';
@@ -43,7 +43,7 @@ global.resourcesPath = isDevEnv
 
 const parseRemoveUserDataSwitch = () => {
     if (hasSwitch('remove-user-data-on-start')) {
-        removeElectronAppData();
+        clearUserDataOptimistically();
     }
 };
 parseRemoveUserDataSwitch();
@@ -53,6 +53,9 @@ type CreateMainWindowParams = {
     store: Store;
     cspNonce: string;
 };
+
+const isMainWindowUsable = (mainWindow: BrowserWindow | undefined): mainWindow is BrowserWindow =>
+    !!mainWindow && !mainWindow.isDestroyed();
 
 const createMainWindow = ({ winBounds, cspNonce, store }: CreateMainWindowParams) => {
     const darkTheme =
@@ -74,6 +77,9 @@ const createMainWindow = ({ winBounds, cspNonce, store }: CreateMainWindowParams
               }
             : {}),
         webPreferences: {
+            nodeIntegration: false,
+            contextIsolation: true,
+            sandbox: true,
             webSecurity: !isDevEnv,
             allowRunningInsecureContent: isDevEnv,
             preload: path.join(__dirname, 'preload.js'),
@@ -84,14 +90,16 @@ const createMainWindow = ({ winBounds, cspNonce, store }: CreateMainWindowParams
             ],
         },
         icon: path.join(global.resourcesPath, 'images', 'icons', '512x512.png'),
-        backgroundColor: colorVariants[darkTheme ? 'dark' : 'standard'].backgroundSurfaceElevation0,
+        backgroundColor: colorVariants[darkTheme ? 'dark' : 'standard'].surfaceFillPage,
     });
 
     // Ensure all network requests from the renderer report a custom user-agent identifying Suite and its version.
     mainWindow.webContents.setUserAgent(`Trezor Suite ${app.getVersion()}`);
 
     const debouncedStoreWinBounds = debounce(() => {
-        if (!mainWindow) return;
+        // The trailing debounced call can fire after the window was destroyed within the debounce
+        // window; getBounds() on a destroyed BrowserWindow throws "Object has been destroyed".
+        if (!isMainWindowUsable(mainWindow)) return;
         const winBound = mainWindow.getBounds();
         Store.getStore().setWinBounds(winBound);
         logger.debug('app', 'new winBounds saved');
@@ -347,18 +355,21 @@ const init = async () => {
 
         const mainWindow = mainWindowProxy.getInstance();
         const windowExists =
-            mainWindow &&
-            !mainWindow.isDestroyed() &&
+            isMainWindowUsable(mainWindow) &&
             mainWindow.isClosable() &&
             (!isMacOs() || !app.isHidden());
         logger.info('main', `Before quit, window exists: ${windowExists}`);
 
         if (windowExists) {
             const continued = await promptForAutoStartBeforeQuit(mainWindow, store);
+
+            // Immediately hide the main window for the better closing UX.
+            // For daemon mode, it doesn't matter.
             logger.info('main', 'Hiding main window');
-            // NOTE: immediatly hide the main window for the better closing UX
-            // for daemon mode, it doesn't matter
-            mainWindow?.hide();
+            // Check again after async/await call.
+            if (isMainWindowUsable(mainWindow)) {
+                mainWindow.hide();
+            }
             if (!continued) return;
         }
 
@@ -371,7 +382,9 @@ const init = async () => {
             // Prevent quitting app when in daemon mode, unless the UI is already closed
             logger.info('main', 'Preventing app quit in daemon mode');
             app.dock?.hide();
-            mainWindow?.close();
+            if (isMainWindowUsable(mainWindow)) {
+                mainWindow.close();
+            }
 
             return;
         }
@@ -386,10 +399,12 @@ const init = async () => {
 
         // global cleanup
         logger.info('modules', 'All modules quit, exiting');
-        mainWindow?.removeAllListeners();
+        if (isMainWindowUsable(mainWindow)) {
+            mainWindow.removeAllListeners();
+        }
         logger.exit();
 
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        await resolveAfter(1000);
 
         readyToQuit = true;
         app.quit();
@@ -401,9 +416,16 @@ const init = async () => {
         // load and wait for handshake message from renderer
 
         // Refresh if it failed to load
-        mainWindow.webContents.on('did-fail-load', () => {
-            loadIndex(mainWindow);
-        });
+        mainWindow.webContents.on(
+            'did-fail-load',
+            (_event, errorCode, _desc, _url, isMainFrame) => {
+                // ERR_ABORTED (-3) fires when a new load cancels an in-progress one — ignore it to avoid an infinite loop.
+                // https://source.chromium.org/chromium/chromium/src/+/main:net/base/net_error_list.h
+                if (!isMainFrame || errorCode === -3) return;
+                // Delay retry to avoid a busy loop if the failure persists.
+                setTimeout(() => loadIndex(mainWindow), 1000);
+            },
+        );
 
         const { handshake, cleanup } = handshakeAndHangDetect({ mainWindow, statePatch });
         mainWindowProxy.once('destroy', cleanup);

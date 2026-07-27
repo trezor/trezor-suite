@@ -31,7 +31,12 @@ export interface DecodedTrezorPushNotification {
 }
 
 export const decode = (message: number[]) => {
-    const [version, type, mode] = message;
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const version: number = message[0];
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const type: number = message[1];
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const mode: number = message[2];
     if (!version || version !== TPN_VERSION) {
         return { success: false, error: PROTOCOL_MISSMATCH_VERSION } as const;
     }

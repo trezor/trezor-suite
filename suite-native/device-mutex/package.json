@@ -7,12 +7,12 @@
     "sideEffects": false,
     "dependencies": {
         "@mobily/ts-belt": "^3.13.1",
-        "expo-keep-awake": "~15.0.8",
-        "uuid": "^13.0.0"
+        "expo-keep-awake": "~56.0.3"
     },
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build",
-        "test:unit": "yarn g:jest -c ../../jest.config.native.js"
+        "test:unit": "yarn g:jest:native",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     }
 }

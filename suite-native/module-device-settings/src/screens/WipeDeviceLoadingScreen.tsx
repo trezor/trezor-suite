@@ -6,13 +6,13 @@ import { selectIsDeviceInBootloader } from '@suite-common/device';
 import { Translation } from '@suite-native/intl';
 import {
     AppTabsRoutes,
-    DeviceSettingsStackParamList,
-    DeviceSettingsStackRoutes,
+    type DeviceSettingsStackParamList,
+    type DeviceSettingsStackRoutes,
     HomeStackRoutes,
     LoadingSuccessScreen,
-    RootStackParamList,
+    type RootStackParamList,
     RootStackRoutes,
-    StackToStackCompositeNavigationProps,
+    type StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 
 type NavigationProps = StackToStackCompositeNavigationProps<

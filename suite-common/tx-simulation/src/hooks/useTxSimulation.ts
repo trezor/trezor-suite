@@ -1,29 +1,27 @@
-import { TxSimulationAction } from '@suite-common/wallet-types';
+import { type TxSimulationAction } from '@suite-common/wallet-types';
 
-import { type TxSimulationEVMResult, useTxSimulationEVM } from './useTxSimulationEVM';
 import {
     getNetworkFromTxSimulationAction,
     getTargetContractFromTxSimulationAction,
+    getTxSimulationParams,
 } from '../utils';
-import { useTxSimulationPayload } from './useTxSimulationPayload';
+import { type UseTxSimulationProps, useNetworkTxSimulation } from './useNetworkTxSimulation';
 
-interface UseTxSimulationConnectProps {
-    onSuccess?: (result: TxSimulationEVMResult) => void;
+/**
+ * @url https://docs.blockaid.io/docs/api-reference/end-user-protection/transaction-scanning/evm/transaction-scanning-evm/evm-scan-transaction
+ */
+export function useTxSimulation(
+    action: TxSimulationAction | null,
+    { onSuccess }: Pick<UseTxSimulationProps, 'onSuccess'> = {},
+) {
+    const input = getTxSimulationParams(action);
+    const txSimulationQuery = useNetworkTxSimulation(input, { onSuccess });
+    const network = action ? getNetworkFromTxSimulationAction(action) : null;
+    const targetContract = action ? getTargetContractFromTxSimulationAction(action) : null;
+
+    if (!network || !input) {
+        return null;
+    }
+
+    return { txSimulationQuery, network, targetContract };
 }
-
-export const useTxSimulation = (
-    action: TxSimulationAction,
-    { onSuccess }: UseTxSimulationConnectProps = {},
-) => {
-    const network = getNetworkFromTxSimulationAction(action);
-    const targetContract = getTargetContractFromTxSimulationAction(action);
-
-    const payload = useTxSimulationPayload(action);
-    const txSimulationQuery = useTxSimulationEVM(payload, onSuccess);
-
-    return {
-        txSimulationQuery,
-        network,
-        targetContract,
-    };
-};

@@ -1,15 +1,17 @@
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 import {
-    Expression,
+    type Expression,
     Node,
     Project,
-    SourceFile,
-    Symbol,
-    Type,
-    VariableDeclaration,
+    type SourceFile,
+    type Symbol,
+    type Type,
+    type VariableDeclaration,
     ts,
 } from 'ts-morph';
+
+import { unique } from '@trezor/utils';
 
 /** Options for the attribute type extraction (tsconfig path and globs for event files). */
 type ExtractOptions = {
@@ -109,7 +111,10 @@ const stripUndefinedFromUnion = (t: Type): Type => {
     if (!t.isUnion()) return t;
     const nonUndef = t.getUnionTypes().filter(u => !u.isUndefined());
 
-    return nonUndef.length === 1 ? nonUndef[0] : t;
+    // @ts-expect-error noUncheckedIndexedAccess
+    const firstNoUndefed: Type = nonUndef[0];
+
+    return nonUndef.length === 1 ? firstNoUndefed : t;
 };
 
 /** Gets the inner value type from an attribute type (handles optional and generic types like EventDef<T>). */
@@ -142,7 +147,7 @@ const formatTypeAsString = (t: Type, contextNode: Node): string => {
         const parts = t.getUnionTypes();
         if (parts.length > 80) return t.getText(contextNode, FORMAT_FLAGS);
         const rendered = parts.map(p => formatTypeAsString(p, contextNode));
-        const uniq = [...new Set(rendered)];
+        const uniq = unique(rendered);
 
         return uniq.join('\n| ');
     }
@@ -184,20 +189,26 @@ const getEventDefTypeArgs = (
         if (Node.isIdentifier(typeName) && typeName.getText() === 'EventDef') {
             const typeArgs = typeRef.getTypeArguments();
             if (typeArgs.length >= 1) {
-                return {
-                    attributesType: typeArgs[0].getType(),
-                    nameType: typeArgs[1]?.getType(),
-                };
+                const firstArg = typeArgs[0];
+                if (firstArg) {
+                    return {
+                        attributesType: firstArg.getType(),
+                        nameType: typeArgs[1]?.getType(),
+                    };
+                }
             }
         }
     }
     const t = varDecl.getType();
     const alias = t.getAliasSymbol();
-    if (!alias || alias.getName() !== 'EventDef') return undefined;
+    if (alias?.getName() !== 'EventDef') return undefined;
     const args = t.getAliasTypeArguments();
     if (args.length < 1) return undefined;
 
-    return { attributesType: args[0], nameType: args[1] };
+    const firstArg = args[0];
+    if (!firstArg) return undefined;
+
+    return { attributesType: firstArg, nameType: args[1] };
 };
 
 /** Key used for events whose attributes type is a single Record/index type (no named properties). */
@@ -220,8 +231,10 @@ const extractAttributeTypesFromType = (
 
         return out;
     }
-    // No named properties – type is e.g. Record<string, number>; show the whole type as one row.
-    out[RECORD_TYPE_ATTRIBUTE_KEY] = formatTypeAsString(attributesType, varDecl);
+    // No named properties – empty object {} has no attributes to show; Record<K,V> has one row.
+    const formatted = formatTypeAsString(attributesType, varDecl);
+    if (formatted === '{}') return out;
+    out[RECORD_TYPE_ATTRIBUTE_KEY] = formatted;
 
     return out;
 };

@@ -1,23 +1,24 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/GetAddress.js
 
+import {
+    type BitcoinNetworkInfo,
+    Bundle,
+    type PROTO,
+    type PermissionRequest,
+} from '@trezor/connect-common';
+import { UI_REQUEST, createUiMessage } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
+import { GetAddress as GetAddressSchema } from '@trezor/connect-common/src/types/api/account/getAddress';
 import { Assert } from '@trezor/schema-utils';
 
-import { PROTO } from '../constants';
-import { getFirmwareRange, validateCoinPath } from './common/paramsValidator';
-import {
-    AbstractMethod,
-    MethodPermission,
-    MethodReturnType,
-    Payload,
-} from '../core/AbstractMethod';
+import { bundlify, validateCoinPath } from './common/paramsValidator';
+import type { MethodContext, MethodMessage, MethodReturnType } from '../core/AbstractMethod';
+import { AbstractMethod } from '../core/AbstractMethod';
 import { fixCoinInfoNetwork, getBitcoinNetwork, getUniqueNetworks } from '../data/coinInfo';
-import { UI_REQUEST, createUiMessage } from '../events';
-import { type BitcoinNetworkInfo, Bundle } from '../types';
-import { GetAddress as GetAddressSchema } from '../types/api/getAddress';
 import { getLabel, getSerializedPath, validatePath } from '../utils/pathUtils';
 
-type Params = PROTO.GetAddress & {
+type Params = {
+    proto: PROTO.GetAddress;
     address?: string;
     coinInfo: BitcoinNetworkInfo;
     unlockPath?: PROTO.UnlockPath;
@@ -27,24 +28,11 @@ export default class GetAddress extends AbstractMethod<'getAddress', Params[]> {
     hasBundle?: boolean;
     progress = 0;
 
-    constructor(message: { id?: number; payload: Payload<'getAddress'> }) {
-        super(message);
-        this.confirmMissingBackup = true;
-    }
-
-    get requiredPermissions(): MethodPermission[] {
-        return ['read'];
-    }
-
-    init() {
-        // create a bundle with only one batch if bundle doesn't exists
-        this.hasBundle = !!this.payload.bundle;
-        const payload = !this.payload.bundle
-            ? { ...this.payload, bundle: [this.payload] }
-            : this.payload;
+    constructor(message: MethodMessage<'getAddress'>) {
+        const { hasBundle, payload } = bundlify(message.payload);
 
         // Workaround to allow empty signature in multisig (issue #10841)
-        payload?.bundle.forEach(bundleElement => {
+        payload.bundle.forEach(bundleElement => {
             if (bundleElement.multisig && bundleElement.multisig?.signatures === undefined) {
                 bundleElement.multisig.signatures = Array(
                     bundleElement.multisig?.pubkeys.length,
@@ -54,7 +42,7 @@ export default class GetAddress extends AbstractMethod<'getAddress', Params[]> {
         // validate bundle type
         Assert(Bundle(GetAddressSchema), payload);
 
-        this.params = payload.bundle.map(batch => {
+        const params = payload.bundle.map(batch => {
             const path = validatePath(batch.path, 1);
             let coinInfo: BitcoinNetworkInfo | undefined;
             if (batch.coin) {
@@ -69,33 +57,45 @@ export default class GetAddress extends AbstractMethod<'getAddress', Params[]> {
 
             if (!coinInfo) {
                 throw ERRORS.TypedError('Method_UnknownCoin');
-            } else if (coinInfo) {
-                // set required firmware from coinInfo support
-                this.firmwareRange = getFirmwareRange(this.name, coinInfo, this.firmwareRange);
             }
 
             // fix coinInfo network values (segwit/legacy)
             coinInfo = fixCoinInfoNetwork(coinInfo, path);
-
-            return {
+            const proto = {
                 address_n: path,
-                address: batch.address,
                 show_display: typeof batch.showOnTrezor === 'boolean' ? batch.showOnTrezor : true,
                 multisig: batch.multisig,
                 script_type: batch.scriptType,
+                chunkify: typeof batch.chunkify === 'boolean' ? batch.chunkify : false,
+            };
+
+            return {
+                proto,
+                address: batch.address,
                 coinInfo,
                 unlockPath: batch.unlockPath,
-                chunkify: typeof batch.chunkify === 'boolean' ? batch.chunkify : false,
             };
         });
 
-        this.useUi = this.getUseUi(this.params);
+        super(message, params);
+
+        this.hasBundle = hasBundle;
+        this.requiredFirmwareCoins = params.map(({ coinInfo }) => coinInfo);
+        this.confirmMissingBackup = true;
+    }
+
+    get requiredPermissions(): PermissionRequest[] {
+        return this.coinPerms('read_address', this.requiredFirmwareCoins);
     }
 
     get info() {
         // set info
         if (this.params.length === 1) {
-            return getLabel('Export #NETWORK address', this.params[0].coinInfo);
+            const { params } = this;
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const first: (typeof params)[number] = params[0];
+
+            return getLabel('Export #NETWORK address', first.coinInfo);
         }
         const requestedNetworks = this.params.map(b => b.coinInfo);
         const uniqNetworks = getUniqueNetworks(requestedNetworks);
@@ -108,10 +108,14 @@ export default class GetAddress extends AbstractMethod<'getAddress', Params[]> {
 
     getButtonRequestData(code: string) {
         if (code === 'ButtonRequest_Address') {
+            const { params } = this;
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const current: (typeof params)[number] = params[this.progress];
+
             return {
                 type: 'address' as const,
-                serializedPath: getSerializedPath(this.params[this.progress].address_n),
-                address: this.params[this.progress].address || 'not-set',
+                serializedPath: getSerializedPath(current.proto.address_n),
+                address: current.address || 'not-set',
             };
         }
     }
@@ -125,44 +129,35 @@ export default class GetAddress extends AbstractMethod<'getAddress', Params[]> {
               };
     }
 
-    async _call({
-        address_n,
-        show_display,
-        multisig,
-        script_type,
-        coinInfo,
-        unlockPath,
-        chunkify,
-    }: Params) {
-        const cmd = this.device.getCommands();
+    async _call({ proto, coinInfo, unlockPath }: Params) {
+        const cmd = this.getDevice().getCommands();
         if (unlockPath) {
             await cmd.unlockPath(unlockPath);
         }
 
-        const response = await cmd.getAddress(
-            { address_n, show_display, multisig, script_type, chunkify },
-            coinInfo,
-        );
+        const response = await cmd.getAddress(proto, coinInfo);
 
         return {
-            path: address_n,
-            serializedPath: getSerializedPath(address_n),
+            path: proto.address_n,
+            serializedPath: getSerializedPath(proto.address_n),
             address: response.address,
             mac: response.mac,
         };
     }
 
-    async run() {
+    async run({ sendCoreMessage }: MethodContext) {
         const responses: MethodReturnType<typeof this.name> = [];
 
         for (let i = 0; i < this.params.length; i++) {
-            const batch = this.params[i];
+            const { params } = this;
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const batch: (typeof params)[number] = params[i];
             // silently get address and compare with requested address
             // or display as default inside popup
-            if (batch.show_display) {
+            if (batch.proto.show_display) {
                 const silent = await this._call({
                     ...batch,
-                    show_display: false,
+                    proto: { ...batch.proto, show_display: false },
                 });
                 if (typeof batch.address === 'string') {
                     if (batch.address !== silent.address) {
@@ -178,7 +173,7 @@ export default class GetAddress extends AbstractMethod<'getAddress', Params[]> {
 
             if (this.hasBundle) {
                 // send progress
-                this.postMessage(
+                sendCoreMessage(
                     createUiMessage(UI_REQUEST.BUNDLE_PROGRESS, {
                         total: this.params.length,
                         progress: i,
@@ -190,6 +185,9 @@ export default class GetAddress extends AbstractMethod<'getAddress', Params[]> {
             this.progress++;
         }
 
-        return this.hasBundle ? responses : responses[0];
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const first: (typeof responses)[number] = responses[0];
+
+        return this.hasBundle ? responses : first;
     }
 }

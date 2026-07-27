@@ -13,9 +13,9 @@ import {
     Paragraph,
     Row,
     TOOLTIP_DELAY_LONG,
-    Tooltip,
 } from '@trezor/components';
-import { borders, zIndices } from '@trezor/theme';
+import { ArrowDownIcon, ArrowUpIcon, MagnifyingGlassIcon, XIcon } from '@trezor/icons';
+import { zIndices } from '@trezor/theme';
 
 import { useFindBarShortcuts } from './useFindBarShortcuts';
 import { useFindInPage } from './useFindInPage';
@@ -25,10 +25,10 @@ const Wrapper = styled.div`
     -webkit-app-region: no-drag;
     top: 10px;
     right: 16px;
-    background: ${({ theme }) => theme.backgroundSurfaceElevation1};
-    border: 1px solid ${({ theme }) => theme.borderElevation1};
-    border-radius: ${borders.radii.sm};
-    box-shadow: ${({ theme }) => theme.boxShadowElevated};
+    background: ${({ theme }) => theme.surfaceFillRaised};
+    border: 1px solid ${({ theme }) => theme.borderNeutral};
+    border-radius: 12px;
+    box-shadow: ${({ theme }) => theme.surfaceShadowFixed};
     z-index: ${zIndices.windowControls};
 `;
 
@@ -88,7 +88,7 @@ export const FindBarForm = ({ setIsVisible }: FindBarFormProps) => {
                                 height="100%"
                                 cursor="pointer"
                             >
-                                <Icon name="magnifyingGlass" size={12} />
+                                <Icon as={MagnifyingGlassIcon} size={12} />
                             </Row>
                         }
                         rightContent={
@@ -119,31 +119,34 @@ export const FindBarForm = ({ setIsVisible }: FindBarFormProps) => {
                     />
                     <Row gap={8} justifyContent="flex-end">
                         <ButtonGroup intent="neutral" priority="secondary" size="small">
-                            <Tooltip
-                                content={<Translation id="TR_FIND_PREV" />}
-                                delayShow={TOOLTIP_DELAY_LONG}
-                            >
-                                <IconButton icon="arrowUp" onClick={prev} />
-                            </Tooltip>
-                            <Tooltip
-                                content={<Translation id="TR_FIND_NEXT" />}
-                                delayShow={TOOLTIP_DELAY_LONG}
-                            >
-                                <IconButton icon="arrowDown" onClick={next} />
-                            </Tooltip>
-                        </ButtonGroup>
-                        <Tooltip
-                            content={<Translation id="TR_FIND_CLOSE" />}
-                            delayShow={TOOLTIP_DELAY_LONG}
-                        >
                             <IconButton
-                                icon="x"
-                                size="small"
-                                intent="neutral"
-                                priority="secondary"
-                                onClick={handleCloseFindBar}
+                                icon={ArrowUpIcon}
+                                onClick={prev}
+                                tooltip={{
+                                    content: <Translation id="TR_FIND_PREV" />,
+                                    delayShow: TOOLTIP_DELAY_LONG,
+                                }}
                             />
-                        </Tooltip>
+                            <IconButton
+                                icon={ArrowDownIcon}
+                                onClick={next}
+                                tooltip={{
+                                    content: <Translation id="TR_FIND_NEXT" />,
+                                    delayShow: TOOLTIP_DELAY_LONG,
+                                }}
+                            />
+                        </ButtonGroup>
+                        <IconButton
+                            icon={XIcon}
+                            size="small"
+                            intent="neutral"
+                            priority="secondary"
+                            onClick={handleCloseFindBar}
+                            tooltip={{
+                                content: <Translation id="TR_FIND_CLOSE" />,
+                                delayShow: TOOLTIP_DELAY_LONG,
+                            }}
+                        />
                     </Row>
                 </Row>
             </Wrapper>

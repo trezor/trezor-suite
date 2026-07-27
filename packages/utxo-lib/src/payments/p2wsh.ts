@@ -1,13 +1,14 @@
 // upstream: https://github.com/bitcoinjs/bitcoinjs-lib/blob/master/ts_src/payments/p2wsh.ts
 
-import { bech32 } from 'bech32';
-import ecc from 'tiny-secp256k1';
+import { bech32 } from '@scure/base';
 
 import * as bcrypto from '../crypto';
 import { bitcoin as BITCOIN_NETWORK } from '../networks';
+import * as ecc from '../noble-compatibility';
 import * as bscript from '../script';
 import * as lazy from './lazy';
-import { Payment, PaymentOpts, StackElement, StackFunction, typeforce } from '../types';
+import { type Payment, type PaymentOpts, type StackElement } from '../types';
+import { BufferNSchema, BufferSchema, Nullable, Type, assertType } from '../types/validation';
 
 const { OPS } = bscript;
 
@@ -16,7 +17,12 @@ const EMPTY_BUFFER = Buffer.alloc(0);
 function stacksEqual(a: Buffer[], b: Buffer[]): boolean {
     if (a.length !== b.length) return false;
 
-    return a.every((x, i) => x.equals(b[i]));
+    return a.every((x, i) => {
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const bItem: Buffer = b[i];
+
+        return x.equals(bItem);
+    });
 }
 
 function chunkHasUncompressedPubkey(chunk: StackElement): boolean {
@@ -36,28 +42,34 @@ export function p2wsh(a: Payment, opts?: PaymentOpts): Payment {
 
     opts = Object.assign({ validate: true }, opts || {});
 
-    typeforce(
-        {
-            network: typeforce.maybe(typeforce.Object),
-
-            address: typeforce.maybe(typeforce.String),
-            hash: typeforce.maybe(typeforce.BufferN(32)),
-            output: typeforce.maybe(typeforce.BufferN(34)),
-
-            redeem: typeforce.maybe({
-                input: typeforce.maybe(typeforce.Buffer),
-                network: typeforce.maybe(typeforce.Object),
-                output: typeforce.maybe(typeforce.Buffer),
-                witness: typeforce.maybe(typeforce.arrayOf(typeforce.Buffer)),
-            }),
-            input: typeforce.maybe(typeforce.BufferN(0)),
-            witness: typeforce.maybe(typeforce.arrayOf(typeforce.Buffer)),
-        },
+    assertType(
+        Type.Object(
+            {
+                network: Type.Optional(Type.Object({}, { additionalProperties: true })),
+                address: Type.Optional(Type.String()),
+                hash: Type.Optional(BufferNSchema(32)),
+                output: Type.Optional(BufferNSchema(34)),
+                redeem: Type.Optional(
+                    Type.Object(
+                        {
+                            input: Type.Optional(BufferSchema),
+                            network: Type.Optional(Type.Object({}, { additionalProperties: true })),
+                            output: Type.Optional(BufferSchema),
+                            witness: Nullable(Type.Array(BufferSchema)),
+                        },
+                        { additionalProperties: true },
+                    ),
+                ),
+                input: Type.Optional(BufferNSchema(0)),
+                witness: Type.Optional(Type.Array(BufferSchema)),
+            },
+            { additionalProperties: true },
+        ),
         a,
     );
 
     const _address = lazy.value(() => {
-        const result = bech32.decode(a.address!);
+        const result = bech32.decode(a.address! as `${string}1${string}`);
         const version = result.words.shift();
         const data = bech32.fromWords(result.words);
 
@@ -68,11 +80,11 @@ export function p2wsh(a: Payment, opts?: PaymentOpts): Payment {
         };
     });
 
-    const _rchunks = lazy.value(() => bscript.decompile(a.redeem!.input!)) as StackFunction;
+    const _rchunks = lazy.value(() => bscript.decompile(a.redeem!.input!));
 
     let { network } = a;
     if (!network) {
-        network = (a.redeem && a.redeem.network) || BITCOIN_NETWORK;
+        network = a.redeem?.network || BITCOIN_NETWORK;
     }
 
     const o: Payment = { name: 'p2wsh', network };
@@ -82,12 +94,12 @@ export function p2wsh(a: Payment, opts?: PaymentOpts): Payment {
         const words = bech32.toWords(o.hash);
         words.unshift(0x00);
 
-        return bech32.encode(network!.bech32, words);
+        return bech32.encode(network.bech32, words);
     });
     lazy.prop(o, 'hash', () => {
         if (a.output) return a.output.subarray(2);
         if (a.address) return _address().data;
-        if (o.redeem && o.redeem.output) return bcrypto.sha256(o.redeem.output);
+        if (o.redeem?.output) return bcrypto.sha256(o.redeem.output);
     });
     lazy.prop(o, 'output', () => {
         if (!o.hash) return;
@@ -111,8 +123,7 @@ export function p2wsh(a: Payment, opts?: PaymentOpts): Payment {
     lazy.prop(o, 'witness', () => {
         // transform redeem input to witness stack?
         if (
-            a.redeem &&
-            a.redeem.input &&
+            a.redeem?.input &&
             a.redeem.input.length > 0 &&
             a.redeem.output &&
             a.redeem.output.length > 0
@@ -134,14 +145,14 @@ export function p2wsh(a: Payment, opts?: PaymentOpts): Payment {
     });
     lazy.prop(o, 'name', () => {
         const nameParts = ['p2wsh'];
-        if (o.redeem !== undefined && o.redeem.name !== undefined) nameParts.push(o.redeem.name!);
+        if (o.redeem?.name !== undefined) nameParts.push(o.redeem.name);
 
         return nameParts.join('-');
     });
 
     // extended validation
     if (opts.validate) {
-        let hash = Buffer.from([]);
+        let hash: Buffer = Buffer.from([]);
         if (a.address) {
             const { prefix, version, data } = _address();
             if (prefix !== network.bech32)
@@ -179,7 +190,7 @@ export function p2wsh(a: Payment, opts?: PaymentOpts): Payment {
 
             // is the redeem output non-empty?
             if (a.redeem.output) {
-                if (bscript.decompile(a.redeem.output)!.length === 0)
+                if (bscript.decompile(a.redeem.output).length === 0)
                     throw new TypeError('Redeem.output is invalid');
 
                 // match hash against other sources
@@ -202,8 +213,10 @@ export function p2wsh(a: Payment, opts?: PaymentOpts): Payment {
         }
 
         if (a.witness && a.witness.length > 0) {
-            const wScript = a.witness[a.witness.length - 1];
-            if (a.redeem && a.redeem.output && !a.redeem.output.equals(wScript))
+            const aWitnessIndex = a.witness.length - 1;
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const wScript: Buffer = a.witness[aWitnessIndex];
+            if (a.redeem?.output && !a.redeem.output.equals(wScript))
                 throw new TypeError('Witness and redeem.output mismatch');
             if (
                 a.witness.some(chunkHasUncompressedPubkey) ||

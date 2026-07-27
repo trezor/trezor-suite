@@ -1,15 +1,15 @@
+import { selectSelectedAccount } from '@suite/account';
+import { UNECONOMICAL_COINJOIN_THRESHOLD } from '@suite/coinjoin';
 import { Translation } from '@suite/intl';
+import { closeModal } from '@suite/modal';
+import { goto } from '@suite/router';
 import { convertAmountSubunitsToUnits, getAccountDecimals } from '@suite-common/wallet-utils';
 import { Column, H3, Modal, Paragraph } from '@trezor/components';
-import { spacings } from '@trezor/theme';
+import { ArrowsInIcon } from '@trezor/icons';
 
-import { onCancel } from 'src/actions/suite/modalActions';
-import { goto } from 'src/actions/suite/routerActions';
 import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
 import { useDispatch } from 'src/hooks/suite';
 import { useSelector } from 'src/hooks/suite/useSelector';
-import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
-import { UNECONOMICAL_COINJOIN_THRESHOLD } from 'src/services/coinjoin';
 
 export const UnecoCoinjoinModal = () => {
     const account = useSelector(selectSelectedAccount);
@@ -23,12 +23,12 @@ export const UnecoCoinjoinModal = () => {
     const decimals = getAccountDecimals(symbol) || 8;
 
     const handleContinue = () => {
-        dispatch(onCancel());
-        dispatch(goto('wallet-anonymize', { preserveParams: true }));
+        dispatch(closeModal());
+        dispatch(goto({ routeName: 'wallet-anonymize', preserveParams: true }));
     };
 
     const handleCancel = () => {
-        dispatch(onCancel());
+        dispatch(closeModal());
     };
 
     return (
@@ -45,10 +45,10 @@ export const UnecoCoinjoinModal = () => {
                 </>
             }
             width={600}
-            variant="warning"
-            iconName="arrowsIn"
+            intent="warning"
+            icon={ArrowsInIcon}
         >
-            <Column gap={spacings.xs}>
+            <Column gap={8}>
                 <H3>
                     <Translation id="TR_UNECO_COINJOIN_TITLE" />
                 </H3>

@@ -1,3 +1,4 @@
+import { useExternalLink } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { selectSelectedDevice } from '@suite-common/device';
 import {
@@ -5,9 +6,10 @@ import {
     selectShouldDisplayOutOfQuotaAlert,
 } from '@suite-common/suite-sync-quota-manager';
 import { Banner, Button, IconButton } from '@trezor/components';
+import { InfoIcon, XIcon } from '@trezor/icons';
 import { TREZOR_SUPPORT_URL } from '@trezor/urls';
 
-import { useDispatch, useExternalLink, useSelector } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 
 export const OutOfQuotaBanner = () => {
     const dispatch = useDispatch();
@@ -20,7 +22,7 @@ export const OutOfQuotaBanner = () => {
     if (shouldDisplay === false) return null;
 
     const handleDismiss = () => {
-        if (!device || !device.id) return false;
+        if (!device?.id) return false;
 
         dispatch(noQuotaLeftWarningDismissed({ deviceId: device.id }));
     };
@@ -28,7 +30,7 @@ export const OutOfQuotaBanner = () => {
     return (
         <Banner
             intent="info"
-            icon="info"
+            icon={InfoIcon}
             description={<Translation id="TR_SUITE_SYNC_OUT_OF_QUOTA_BANNER_DESCRIPTION" />}
             rightContent={
                 <>
@@ -36,10 +38,11 @@ export const OutOfQuotaBanner = () => {
                         <Translation id="TR_CONTACT_SUPPORT" />
                     </Button>
                     <IconButton
-                        icon="x"
+                        icon={XIcon}
                         intent="info"
                         priority="secondary"
                         onClick={handleDismiss}
+                        tooltip={{ content: <Translation id="TR_DISMISS" /> }}
                     />
                 </>
             }

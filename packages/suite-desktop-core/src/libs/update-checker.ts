@@ -13,18 +13,24 @@ if (signingKey === undefined) {
 
 type GetSignatureFileProps = { feedURL: string; downloadedFile: string };
 
+const GET_SIGNATURE_TIMEOUT = 10_000; // [ms]
 /**
  * Get signature files, which are available next to installation files.
  */
 export const getSignatureFile = async ({ downloadedFile, feedURL }: GetSignatureFileProps) => {
+    const abortController = new AbortController();
+    const timeoutId = setTimeout(() => abortController.abort(), GET_SIGNATURE_TIMEOUT);
+
     try {
         const filename = path.basename(downloadedFile);
         const signatureFileURL = `${removeTrailingSlashes(feedURL)}/${filename}.asc`;
-        const signatureFile = await fetch(signatureFileURL);
+        const signatureFile = await fetch(signatureFileURL, { signal: abortController.signal });
 
-        return signatureFile.text();
+        return await signatureFile.text();
     } catch {
         return null;
+    } finally {
+        clearTimeout(timeoutId);
     }
 };
 
@@ -50,7 +56,11 @@ export const verifySignature = async ({ downloadedFile, signatureFile }: VerifyS
     });
 
     // Get result (validity of the signature)
-    const valid = await verified.signatures[0].verified;
+    const firstSignature = verified.signatures[0];
+    if (!firstSignature) {
+        throw new Error('No signatures found.');
+    }
+    const valid = await firstSignature.verified;
     if (!valid) {
         throw new Error('Invalid signature.');
     }

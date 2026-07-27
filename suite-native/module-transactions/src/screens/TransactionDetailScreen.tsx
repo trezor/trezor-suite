@@ -1,32 +1,34 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
 import { useNavigation, usePreventRemove } from '@react-navigation/native';
 
-import { getExplorerUrl } from '@suite-common/wallet-config';
+import { useServices } from '@suite-common/dependency-injection';
 import {
-    ExplorerState,
-    TransactionsRootState,
-    selectExplorer,
-    selectIsTransactionPending,
-    selectTransactionByAccountKeyAndTxid,
+    type AccountsRootState,
+    createTargets,
+    selectAccountByKey,
 } from '@suite-common/wallet-core';
-import { events } from '@suite-native/analytics';
+import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { Button, HStack, Text, VStack } from '@suite-native/atoms';
-import { CryptoIconWithNetwork } from '@suite-native/icons';
+import { TokenIcon } from '@suite-native/icons';
 import { useInAppRating } from '@suite-native/in-app-rating';
 import { Translation } from '@suite-native/intl';
-import { useOpenLink } from '@suite-native/link';
 import {
     Screen,
     ScreenHeader,
-    StackProps,
-    TransactionDetailStackParamList,
-    TransactionDetailStackRoutes,
+    type StackProps,
+    type TransactionDetailStackParamList,
+    type TransactionDetailStackRoutes,
 } from '@suite-native/navigation';
-import { useAnalytics } from '@suite-native/services';
-import { TypedTokenTransfer, WalletAccountTransaction } from '@suite-native/tokens';
-import { TransactionName } from '@suite-native/transactions';
+import { useTransactionDetails } from '@suite-native/transaction-management';
+import {
+    InstantStakeBanner,
+    TransactionName,
+    UnstakeTransactionDetailTitle,
+    getUnstakeTxAmount,
+    useFetchMissingTransactionFiatRates,
+} from '@suite-native/transactions';
 
 import { TransactionDetailData } from '../components/TransactionDetailData';
 import { TransactionDetailHeader } from '../components/TransactionDetailHeader';
@@ -36,25 +38,24 @@ export const TransactionDetailScreen = ({
 }: StackProps<TransactionDetailStackParamList, TransactionDetailStackRoutes.TransactionDetail>) => {
     const { askForRating } = useInAppRating();
     const navigation = useNavigation();
-    const analytics = useAnalytics();
+    const { analytics } = useServices(selectNativeAnalyticsDep);
     const { txid, accountKey, tokenContract, closeActionType = 'back', source } = route.params;
-    const openLink = useOpenLink();
-    const transaction = useSelector((state: TransactionsRootState) =>
-        selectTransactionByAccountKeyAndTxid(state, accountKey, txid),
-    ) as WalletAccountTransaction;
-    const blockchainExplorer = useSelector((state: ExplorerState) =>
-        selectExplorer(state, transaction?.symbol),
-    );
-    const isPending = useSelector((state: TransactionsRootState) =>
-        selectIsTransactionPending(state, accountKey, txid),
-    );
 
-    const tokenTransfer = transaction?.tokens.find(token => token.contract === tokenContract);
+    const { transaction, isPending, tokenTransfer, openInBlockchain } = useTransactionDetails({
+        accountKey,
+        txid,
+        tokenContract,
+    });
 
     usePreventRemove(source === 'send', ({ data }) => {
         navigation.dispatch(data.action);
         askForRating();
     });
+
+    useFetchMissingTransactionFiatRates({ accountKey, isEnabled: !!transaction });
+    const account = useSelector((state: AccountsRootState) =>
+        selectAccountByKey(state, accountKey),
+    );
 
     useEffect(() => {
         if (transaction) {
@@ -71,14 +72,17 @@ export const TransactionDetailScreen = ({
 
     if (!transaction) return null;
 
+    const unstakeAmount = getUnstakeTxAmount(transaction);
+    const isUnstakeTransaction = unstakeAmount !== undefined;
+
     const handleOpenBlockchain = () => {
-        if (!blockchainExplorer) return;
         analytics.report({
             type: events.transactionDetailExploreInBlockchainEvent.name,
         });
-        const explorerUrl = getExplorerUrl(blockchainExplorer, 'tx');
-        openLink(`${explorerUrl}${transaction.txid}`);
+        openInBlockchain();
     };
+
+    const allOutputs = account !== null ? createTargets({ transaction, account }) : [];
 
     return (
         <Screen
@@ -87,47 +91,62 @@ export const TransactionDetailScreen = ({
                     closeActionType={closeActionType}
                     customContent={
                         <HStack spacing="sp8" alignItems="center" justifyContent="center">
-                            <CryptoIconWithNetwork
-                                symbol={transaction.symbol}
-                                contractAddress={tokenTransfer?.contract}
-                            />
-                            <Text variant="body-md-strong">
-                                <Translation
-                                    id="transactions.detail.header"
-                                    values={{
-                                        transactionType: _ => (
-                                            <TransactionName
-                                                key={transaction.txid}
-                                                transaction={transaction}
-                                                isPending={isPending}
-                                                variant="body-md-strong"
-                                            />
-                                        ),
-                                    }}
+                            {isUnstakeTransaction ? (
+                                <UnstakeTransactionDetailTitle
+                                    unstakeAmount={unstakeAmount}
+                                    symbol={transaction.symbol}
+                                    variant="body-md-strong"
                                 />
-                            </Text>
+                            ) : (
+                                <>
+                                    <TokenIcon
+                                        symbol={transaction.symbol}
+                                        contractAddress={tokenTransfer?.contract}
+                                        showNetworkIcon
+                                    />
+                                    <Text variant="body-md-strong">
+                                        <Translation
+                                            id="transactions.detail.header"
+                                            values={{
+                                                transactionType: () => (
+                                                    <TransactionName
+                                                        key={transaction.txid}
+                                                        transaction={transaction}
+                                                        isPending={isPending}
+                                                        variant="body-md-strong"
+                                                    />
+                                                ),
+                                            }}
+                                        />
+                                    </Text>
+                                </>
+                            )}
                         </HStack>
                     }
                 />
             }
         >
             <VStack spacing="sp24">
-                <VStack spacing="sp32">
+                <VStack spacing="sp24">
                     <TransactionDetailHeader
                         transaction={transaction}
-                        tokenTransfer={tokenTransfer as TypedTokenTransfer}
+                        tokenTransfer={tokenTransfer}
+                        allOutputs={allOutputs}
                     />
+                    {isUnstakeTransaction && (
+                        <InstantStakeBanner accountKey={accountKey} transaction={transaction} />
+                    )}
                     <TransactionDetailData
                         transaction={transaction}
                         accountKey={accountKey}
-                        tokenTransfer={tokenTransfer as TypedTokenTransfer}
+                        tokenTransfer={tokenTransfer}
                     />
                 </VStack>
                 <Button
-                    size="large"
-                    viewRight="arrowUpRight"
+                    iconRight="arrowUpRight"
                     onPress={handleOpenBlockchain}
-                    colorScheme="tertiaryElevation0"
+                    intent="neutral"
+                    priority="secondary"
                 >
                     <Translation id="transactions.detail.exploreButton" />
                 </Button>

@@ -1,6 +1,8 @@
+import type { CoinSymbol } from '@trezor/connect-common';
+
 import { select } from './common';
 
-const examples = {
+const examples: Partial<Record<CoinSymbol, Array<{ amount: string; address: string }>>> = {
     btc: [
         {
             amount: '498066',
@@ -37,7 +39,7 @@ const examples = {
             address: 'XdTw4G5AWW4cogGd7ayybyBNDbuB45UpgH',
         },
     ],
-    zcash: [
+    zec: [
         {
             amount: '20000',
             address: 't1Lv2EguMkaZwvtFQW5pmbUsBw59KfTEhf4',
@@ -49,31 +51,11 @@ const examples = {
             address: 'DUCd1B3YBiXL5By15yXgSLZtEkvwsgEdqS',
         },
     ],
-    nmc: [
-        {
-            amount: '20000',
-            address: 'N4n9hyYH5EDfhmCRS3qqzh7crLbuXrku6d',
-        },
-    ],
-    vtc: [
-        {
-            amount: '20000',
-            address: '33GN5Aq3tqBbF3f2HBfCRZi6fyS3baEQWH',
-        },
-    ],
-    cpc: [
-        {
-            amount: '20000',
-            address: 'CMSgH7wq4kV9ogmSPB5rBmPceQJy3oA9Bu',
-        },
-    ],
 };
 
 export default [
     {
-        url: '/method/composeTransaction',
         name: 'composeTransaction',
-        docs: 'methods/composeTransaction.md',
         submitButton: 'Compose transaction',
         fields: [
             {
@@ -82,7 +64,7 @@ export default [
                 value: 'test',
                 affect: 'outputs',
                 data: select.map(v => {
-                    const example = examples[v.value as keyof typeof examples];
+                    const example = examples[v.value];
 
                     return {
                         ...v,
@@ -97,7 +79,6 @@ export default [
             },
             {
                 name: 'push',
-                label: 'Push transaction',
                 type: 'checkbox',
                 defaultValue: false,
                 value: false,

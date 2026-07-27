@@ -1,14 +1,18 @@
 import { expect as detoxExpect } from 'detox';
 
+import { wait, waitForEnabled, waitForVisible } from '../../support/utils';
 import { onTabBar } from '../tabBarActions';
 import { TradingActions } from './TradingActions';
-import { wait, waitForVisible } from '../../support/utils';
 
 export abstract class TradingFormActions extends TradingActions {
     abstract waitForQuotesToLoad(): Promise<void>;
 
     getSearchReceiveCryptoElement() {
         return this.getElementById('receive-asset-sheet/header/search-input');
+    }
+
+    getSearchSendCryptoElement() {
+        return this.getElementById('send-asset-sheet/header/search-input');
     }
 
     getSearchFiatElement() {
@@ -133,7 +137,20 @@ export abstract class TradingFormActions extends TradingActions {
         await waitForVisible(providersPicker);
     }
 
-    async selectReceiveAsset(asset: string, network?: string) {
+    async selectProvider(providerName: string, filter: 'DEX' | 'CEX' | 'FIXED') {
+        const providersPicker = this.getElementById('provider-picker');
+        await waitForVisible(providersPicker, { timeout: this.SHORT_TIMEOUT });
+        await providersPicker.tap();
+
+        await wait(this.BOTTOM_SHEET_ANIMATION_DURATION);
+        await this.expectSheetHeaderTitle('Providers');
+        await element(by.id(`@trading/provider-sheet/filter-tab/${filter}`)).tap();
+        await element(by.text(providerName)).tap();
+
+        await waitForVisible(providersPicker);
+    }
+
+    async selectReceiveAsset(asset: string, network?: string, searchString?: string) {
         const receiveAssetButton = this.getElementById('asset-receive-button');
         await waitForVisible(receiveAssetButton, { timeout: this.SHORT_TIMEOUT });
         await receiveAssetButton.tap();
@@ -143,7 +160,8 @@ export abstract class TradingFormActions extends TradingActions {
         const searchReceiveCryptoInput = this.getSearchReceiveCryptoElement();
         await searchReceiveCryptoInput.tap();
         await wait(this.BOTTOM_SHEET_ANIMATION_DURATION);
-        await searchReceiveCryptoInput.replaceText(asset.slice(0, -1));
+        const searchForStr = searchString ?? asset;
+        await searchReceiveCryptoInput.replaceText(searchForStr);
 
         if (network) {
             const networkFilterTab = element(
@@ -161,17 +179,45 @@ export abstract class TradingFormActions extends TradingActions {
             .withTimeout(this.SHORT_TIMEOUT);
     }
 
-    async selectSendAsset(asset: string) {
-        await this.getElementById('asset-send-button').tap();
+    async selectSendAsset(asset: string, network?: string, searchString?: string) {
+        const sendAssetButton = this.getElementById('asset-send-button');
+        await waitForVisible(sendAssetButton, { timeout: this.SHORT_TIMEOUT });
+        await sendAssetButton.tap();
+
         await this.expectSheetHeaderTitle('Your assets');
 
-        await element(by.text(asset)).atIndex(0).tap();
+        const searchSendCryptoInput = this.getSearchSendCryptoElement();
+        await searchSendCryptoInput.tap();
+        await wait(this.BOTTOM_SHEET_ANIMATION_DURATION);
+        const searchForStr = searchString ?? asset;
+        await searchSendCryptoInput.replaceText(searchForStr.slice(0, -1));
 
-        await detoxExpect(this.getElementById('asset-send-button/symbol')).toHaveText(asset);
+        if (network) {
+            const networkFilterTab = element(
+                by.text(network).withAncestor(by.id(this.getTestId('send-asset-sheet/header'))),
+            );
+            await waitForVisible(networkFilterTab);
+            await networkFilterTab.tap();
+        }
+
+        await waitForVisible(by.text(asset));
+        await element(by.text(asset)).tap();
+
+        await waitFor(this.getElementById('asset-send-button/symbol'))
+            .toHaveText(asset)
+            .withTimeout(this.SHORT_TIMEOUT);
     }
 
     async confirmTradingForm() {
-        await this.getElementById('continue-button').tap();
+        const continueButton = this.getElementById('continue-button');
+        await waitForEnabled(continueButton, { timeout: this.SHORT_TIMEOUT });
+        await continueButton.tap();
+    }
+
+    async revokeApproval() {
+        const revokeButton = this.getElementById('revoke-button');
+        await waitForVisible(revokeButton, { timeout: this.SHORT_TIMEOUT });
+        await revokeButton.tap();
     }
 
     async tapTradingSectionHeaderTab() {

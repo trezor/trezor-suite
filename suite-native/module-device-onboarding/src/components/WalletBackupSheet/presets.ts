@@ -1,5 +1,5 @@
-import { BackupType } from '@suite-common/suite-types';
-import { TxKeyPath } from '@suite-native/intl';
+import { type BackupType } from '@suite-common/suite-types';
+import { type TxKeyPath } from '@suite-native/intl';
 
 type TranslationKeys =
     | 'submitButton'

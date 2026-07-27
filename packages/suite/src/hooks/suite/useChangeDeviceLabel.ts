@@ -1,9 +1,11 @@
-import { UseFormReturn, useForm } from 'react-hook-form';
+import { type UseFormReturn, useForm, useWatch } from 'react-hook-form';
 
 import { yupResolver } from '@hookform/resolvers/yup';
 
-import { TranslationFunction, useTranslation } from '@suite/intl';
+import { selectDesktopAnalyticsDep } from '@suite/analytics';
+import { type TranslationFunction, useTranslation } from '@suite/intl';
 import { events } from '@suite-common/analytics';
+import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDeviceLabelOrName } from '@suite-common/device';
 import { yup } from '@suite-common/validators';
 import { isAscii } from '@trezor/utils';
@@ -11,7 +13,6 @@ import { isAscii } from '@trezor/utils';
 import { applySettings } from 'src/actions/settings/deviceSettingsActions';
 import { MAX_LABEL_LENGTH } from 'src/constants/suite/device';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { useAnalytics } from 'src/support/useAnalytics';
 
 const changeDeviceLabelSchema = (t: TranslationFunction) =>
     yup.object({
@@ -41,7 +42,7 @@ export const useChangeDeviceLabel = (): {
     >;
     handleSubmit: (onSuccess?: () => void) => void;
 } => {
-    const analytics = useAnalytics();
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
     const { translationString } = useTranslation();
     const deviceLabel = useSelector(selectSelectedDeviceLabelOrName);
     const dispatch = useDispatch();
@@ -55,8 +56,8 @@ export const useChangeDeviceLabel = (): {
         reValidateMode: 'onChange',
     });
 
-    const { watch } = form;
-    const currentLabel = watch('deviceLabel');
+    const { control } = form;
+    const currentLabel = useWatch({ control, name: 'deviceLabel' });
 
     const onSubmit = form.handleSubmit(({ deviceLabel }) => {
         dispatch(applySettings({ label: deviceLabel }));

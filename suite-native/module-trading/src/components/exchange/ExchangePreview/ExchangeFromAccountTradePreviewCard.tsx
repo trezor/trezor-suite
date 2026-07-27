@@ -2,37 +2,29 @@ import { useSelector } from 'react-redux';
 
 import type { ExchangeTrade } from 'invity-api';
 
-import { Text } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import { AccountLabel } from '@suite-native/labeling';
-import { TradeSideCard } from '@suite-native/trading-atoms';
+import { useChangeStringsExtractor } from '@suite-native/trading-quote-utils';
 import { selectExchangeSelectedSendAccount } from '@suite-native/trading-state';
+
+import { TradingAccountCard } from '../../general/TradingAccountCard';
 
 export type ExchangeFromAccountTradePreviewCardProps = {
     quote?: ExchangeTrade;
-    fromStringValue: string | undefined;
 };
 
 export const ExchangeFromAccountTradePreviewCard = ({
     quote,
-    fromStringValue,
 }: ExchangeFromAccountTradePreviewCardProps) => {
     const fromAccount = useSelector(selectExchangeSelectedSendAccount);
-
-    if (!quote?.send || !fromAccount) {
-        return null;
-    }
+    const { fromValue } = useChangeStringsExtractor(quote);
 
     return (
-        <TradeSideCard
-            accountLabel={<AccountLabel account={fromAccount} />}
-            cryptoId={quote.send}
-            amount={
-                <Text variant="body-sm" color="textAlertRed">
-                    -{fromStringValue}
-                </Text>
-            }
+        <TradingAccountCard
             title={<Translation id="moduleTrading.tradingExchangePreviewScreen.fromAccount" />}
+            account={fromAccount}
+            amount={fromValue}
+            direction="from"
+            cryptoId={quote?.send}
         />
     );
 };

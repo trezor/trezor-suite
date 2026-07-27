@@ -7,6 +7,13 @@ export type {
     FirmwareUpdatePayload,
     FirmwareUpdateStartType,
     FirmwareUpdateStuckedState,
+    StakingClaimStep,
+    StakingConfirmAction,
+    StakingNavigateFrom,
+    StakingStakeStep,
+    StakingUnstakeStep,
+    TradingBuyAction,
+    TradingBuyStep,
     TradingExchangeAction,
     TradingExchangeStep,
     TradingNavigateFrom,
@@ -22,7 +29,7 @@ export { type DeviceSetupInfoLocation } from './events/deviceSetupInfoEvent';
 
 export type { AutoEjectModalValue } from './events/autoEjectModalEvent';
 export type { DemoAccountQuestionnaireLinkKey } from './events/demoAccountQuestionnaireLinksEvent';
-export { analytics, type NativeAnalyticsDep } from './createAnalytics';
+export { analytics, type NativeAnalyticsDep, selectNativeAnalyticsDep } from './createAnalytics';
 export { asTypedNativeAnalytics } from './asTypedNativeAnalytics';
 export type { AnalyticsNativeEvents } from './analyticsEvents';
 

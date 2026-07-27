@@ -1,15 +1,21 @@
 import { useSelector } from 'react-redux';
 
 import { type SuiteSyncDataRootState, selectSuiteSyncAccountLabel } from '@suite-common/suite-sync';
-import { AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
-import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
-import { parseAccountKey, parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
-import { Badge, Box, ErrorMessage, Text, VStack } from '@suite-native/atoms';
+import {
+    type AccountsRootState,
+    selectAccountByKey,
+    selectAccountNetworkSymbol,
+    selectFormattedAccountType,
+} from '@suite-common/wallet-core';
+import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
+import { parseAccountKey } from '@suite-common/wallet-utils';
+import { Badge, Box, ErrorMessage, HStack, Text, VStack } from '@suite-native/atoms';
 import { TokenAmountFormatter, TokenToFiatAmountFormatter } from '@suite-native/formatters';
-import { CryptoIconWithNetwork } from '@suite-native/icons';
+import { TokenIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
-import { TokensRootState, getTokenName, selectAccountTokenInfo } from '@suite-native/tokens';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { type TokensRootState, getTokenName, selectAccountTokenInfo } from '@suite-native/tokens';
+import { parseStaticSessionId } from '@trezor/device-utils';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 type TokenReceiveCardProps = {
     accountKey: AccountKey;
@@ -31,11 +37,21 @@ export const TokenReceiveCard = ({ contract, accountKey }: TokenReceiveCardProps
     const { applyStyle } = useNativeStyles();
 
     const { accountDescriptor, networkSymbol, deviceStaticSessionId } = parseAccountKey(accountKey);
-    const { walletDescriptor } = parseDeviceStaticSessionId(deviceStaticSessionId);
+    const { walletDescriptor } = parseStaticSessionId(deviceStaticSessionId);
 
-    const accountLabel = useSelector((state: AccountsRootState & SuiteSyncDataRootState) =>
-        selectSuiteSyncAccountLabel(state, walletDescriptor, accountDescriptor, networkSymbol),
+    const account = useSelector((state: AccountsRootState) =>
+        selectAccountByKey(state, accountKey),
     );
+    const formattedAccountType = useSelector((state: AccountsRootState) =>
+        selectFormattedAccountType(state, accountKey),
+    );
+    const accountLabel =
+        useSelector((state: AccountsRootState & SuiteSyncDataRootState) =>
+            selectSuiteSyncAccountLabel(state, walletDescriptor, accountDescriptor, networkSymbol),
+        ) ??
+        account?.accountLabel ??
+        '';
+
     const symbol = useSelector((state: AccountsRootState) =>
         selectAccountNetworkSymbol(state, accountKey),
     );
@@ -56,20 +72,25 @@ export const TokenReceiveCard = ({ contract, accountKey }: TokenReceiveCardProps
             <Box flexDirection="row" justifyContent="space-between" alignItems="center">
                 <Box flex={1} flexDirection="row" alignItems="center">
                     <Box marginRight="sp16">
-                        <CryptoIconWithNetwork symbol={symbol} contractAddress={contract} />
+                        <TokenIcon symbol={symbol} contractAddress={contract} showNetworkIcon />
                     </Box>
                     <Box style={applyStyle(tokenDescriptionStyle)}>
                         <Text>{tokenName}</Text>
-                        <Badge
-                            label={
-                                <Translation
-                                    id="moduleAccounts.tokens.runOn"
-                                    values={{ accountLabel }}
-                                />
-                            }
-                            size="small"
-                            iconSize="extraSmall"
-                        />
+
+                        <HStack alignItems="center" spacing="sp4">
+                            <Text
+                                variant="body-xs"
+                                color="contentSecondary"
+                                numberOfLines={1}
+                                ellipsizeMode="tail"
+                            >
+                                {accountLabel}
+                            </Text>
+
+                            {formattedAccountType && (
+                                <Badge label={formattedAccountType} size="small" />
+                            )}
+                        </HStack>
                     </Box>
                 </Box>
                 <Box style={applyStyle(valuesContainerStyle)}>

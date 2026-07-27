@@ -1,18 +1,19 @@
 import { captureMessage } from '@sentry/electron/main';
 import {
     CancellationToken,
-    ProgressInfo,
-    UpdateDownloadedEvent,
-    UpdateInfo,
+    type ProgressInfo,
+    type UpdateDownloadedEvent,
+    type UpdateInfo,
     autoUpdater,
 } from 'electron-updater';
 import { unlinkSync } from 'fs';
 
 import { isDevEnv, isFeatureFlagEnabled } from '@suite-common/suite-utils';
-import { HandshakeElectron } from '@trezor/suite-desktop-api';
+import { validateIpcMessage } from '@trezor/ipc-proxy';
+import { type HandshakeElectron } from '@trezor/suite-desktop-api';
 import { bytesToHumanReadable, serializeError } from '@trezor/utils';
 
-import { ModuleInit, mainThreadEmitter } from './module';
+import { type ModuleInit, mainThreadEmitter } from './module';
 import { getSwitchValue, hasSwitch } from '../libs/process-switches';
 import { getSignatureFile, verifySignature } from '../libs/update-checker';
 import { b2t } from '../libs/utils';
@@ -76,7 +77,7 @@ export const init: ModuleInit = ({ mainWindowProxy, store }) => {
     // possibility to override the default behavior. This wraps the original function, bypassing it if `isManualCheck`
     const isUserWithinRolloutDefaultMethod = autoUpdater.isUserWithinRollout;
     autoUpdater.isUserWithinRollout = async updateInfo =>
-        isManualCheck === true
+        isManualCheck
             ? // do not force if it is set to exactly 0, so we can completely stop distributing a release in case of trouble
               updateInfo.stagingPercentage !== 0
             : await isUserWithinRolloutDefaultMethod(updateInfo);
@@ -186,6 +187,19 @@ export const init: ModuleInit = ({ mainWindowProxy, store }) => {
     autoUpdater.on('update-downloaded', async (info: UpdateDownloadedEvent) => {
         const { version, releaseDate, downloadedFile, releaseNotes } = info;
 
+        // Need to make the event handler async before setting `autoInstallOnAppQuit = false` here, because the Node.js
+        // EventEmitter is synchronous, and it would cause a macOS specific bug during app update, see upstream code:
+        // https://github.com/electron-userland/electron-builder/blob/a5121de49582eaa8870d4c05e6ae55eff160a592/packages/electron-updater/src/MacUpdater.ts#L253-L255
+        // autoInstallOnAppQuit is considered a permanent setting, not something that can toggle on/off during the process.
+        // → we need to make sure the MacUpdater code finishes with previous `autoInstallOnAppQuit` value.
+        await Promise.resolve();
+
+        // Disable installation of the downloaded file before our own verification is complete, it's quite hacky but
+        // electron-updater doesn't have an interface to delay the installation with an arbitrary async function.
+        // TODO refactor https://github.com/electron-userland/electron-builder/issues/10010
+        const previousAutoInstallOnAppQuit = autoUpdater.autoInstallOnAppQuit;
+        autoUpdater.autoInstallOnAppQuit = false;
+
         logger.info(SERVICE_NAME, [
             'Update downloaded:',
             `- Last version: ${version}`,
@@ -220,6 +234,7 @@ export const init: ModuleInit = ({ mainWindowProxy, store }) => {
             });
 
             logger.info(SERVICE_NAME, 'Signature of update file is valid');
+            autoUpdater.autoInstallOnAppQuit = previousAutoInstallOnAppQuit;
 
             mainWindowProxy.getInstance()?.webContents.send('update/downloaded', {
                 version,
@@ -238,7 +253,8 @@ export const init: ModuleInit = ({ mainWindowProxy, store }) => {
         );
     });
 
-    ipcMain.on('update/check', (_, { isManual }) => {
+    ipcMain.on('update/check', (ipcEvent, { isManual }) => {
+        validateIpcMessage({ ipcEvent });
         if (isManual === true) {
             isManualCheck = true;
         }
@@ -247,16 +263,21 @@ export const init: ModuleInit = ({ mainWindowProxy, store }) => {
         autoUpdater.checkForUpdates();
     });
 
-    ipcMain.on('update/download', startDownload);
+    ipcMain.on('update/download', ipcEvent => {
+        validateIpcMessage({ ipcEvent });
+        startDownload();
+    });
 
-    ipcMain.on('update/set-auto-install-on-app-quit', () => {
+    ipcMain.on('update/set-auto-install-on-app-quit', ipcEvent => {
+        validateIpcMessage({ ipcEvent });
         // If the update is triggered manually by the button in the app, we want to force update,
         // because it may have been disabled by the user switch the automatic update off. But because the user deliberately
         // clicked the "Update on quit" button, we want to install it.
         autoUpdater.autoInstallOnAppQuit = true;
     });
 
-    ipcMain.on('update/install', () => {
+    ipcMain.on('update/install', ipcEvent => {
+        validateIpcMessage({ ipcEvent });
         logger.info(SERVICE_NAME, 'Restart and update request');
 
         setImmediate(() => {
@@ -271,7 +292,8 @@ export const init: ModuleInit = ({ mainWindowProxy, store }) => {
         });
     });
 
-    ipcMain.on('update/cancel', () => {
+    ipcMain.on('update/cancel', ipcEvent => {
+        validateIpcMessage({ ipcEvent });
         logger.info(
             SERVICE_NAME,
             `Cancel update request (in progress: ${b2t(!!updateCancellationToken)})`,
@@ -281,7 +303,8 @@ export const init: ModuleInit = ({ mainWindowProxy, store }) => {
         }
     });
 
-    ipcMain.on('update/allow-prerelease', (_, value = true) => {
+    ipcMain.on('update/allow-prerelease', (ipcEvent, value = true) => {
+        validateIpcMessage({ ipcEvent });
         logger.info(SERVICE_NAME, `${value ? 'allow' : 'disable'} prerelease!`);
         mainWindowProxy.getInstance()?.webContents.send('update/allow-prerelease', value);
         const settings = store.getUpdateSettings();
@@ -293,7 +316,8 @@ export const init: ModuleInit = ({ mainWindowProxy, store }) => {
         logger.info(SERVICE_NAME, `New feed url: ${feedURL}`);
     });
 
-    ipcMain.on('update/set-automatic-update-enabled', (_, value = true) => {
+    ipcMain.on('update/set-automatic-update-enabled', (ipcEvent, value = true) => {
+        validateIpcMessage({ ipcEvent });
         logger.info(SERVICE_NAME, `set-automatic-update-enabled: ${value ? 'true' : 'false'}`);
 
         mainWindowProxy

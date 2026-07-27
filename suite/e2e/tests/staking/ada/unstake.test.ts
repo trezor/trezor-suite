@@ -16,49 +16,44 @@ const finalBalanceFormatted = toADA(finalBalance);
 test.describe('Staking - Cardano', { tag: ['@T3W1', '@T3T1'] }, () => {
     test.use({ deviceSetup: { mnemonic: 'mnemonic_academic' } });
 
-    test.beforeEach(
-        async ({ page, onboardingPage, dashboardPage, settingsPage, blockbookMock }) => {
-            await onboardingPage.completeOnboarding();
+    test.beforeEach(async ({ onboardingPage, settingsPage, blockbookMock }) => {
+        await onboardingPage.completeOnboarding();
 
-            await test.step('Enable Cardano and set mocked backend', async () => {
-                await settingsPage.navigateTo('coins');
-                await blockbookMock.start('ada', 'blockfrost');
-                // staked account
-                blockbookMock.updateAccountState({
-                    availableBalance: startingBalance.toString(),
-                    balance: startingBalance.toString(),
-                    misc: {
-                        staking: {
-                            address: 'stake1uytalm0k75njyj7v8z580ajs09v5v4lz6yp9akh8cgty43qunjqys',
-                            rewards: '0',
-                            isActive: true,
-                            poolId: 'pool1n0uxgs5qfk5n9xl7qvq9jt8zuu02cntrsjnjayjlqtejyffnemj',
-                            drep: {
-                                drep_id:
-                                    'drep1yt8p080ajks6zdnxd9z6a6q60p9sm9j5rl7tc63mfna8r6cnp4wr3',
-                                hex: '22ce179dfd95a1a136666945aee81a784b0d96541ffcbc6a3b4cfa71eb',
-                                amount: startingBalance.toString(),
-                                active: true,
-                                active_epoch: 573,
-                                has_script: false,
-                                retired: false,
-                                expired: false,
-                                last_active_epoch: 601,
-                            },
+        await test.step('Enable Cardano and set mocked backend', async () => {
+            await settingsPage.navigateTo('coins');
+            await blockbookMock.start('ada', 'blockfrost');
+            // staked account
+            blockbookMock.updateAccountState({
+                availableBalance: startingBalance.toString(),
+                balance: startingBalance.toString(),
+                misc: {
+                    staking: {
+                        address: 'stake1uytalm0k75njyj7v8z580ajs09v5v4lz6yp9akh8cgty43qunjqys',
+                        rewards: '0',
+                        isActive: true,
+                        poolId: 'pool1n0uxgs5qfk5n9xl7qvq9jt8zuu02cntrsjnjayjlqtejyffnemj',
+                        drep: {
+                            drep_id: 'drep1yt8p080ajks6zdnxd9z6a6q60p9sm9j5rl7tc63mfna8r6cnp4wr3',
+                            hex: '22ce179dfd95a1a136666945aee81a784b0d96541ffcbc6a3b4cfa71eb',
+                            amount: startingBalance.toString(),
+                            active: true,
+                            active_epoch: 573,
+                            has_script: false,
+                            retired: false,
+                            expired: false,
+                            last_active_epoch: 601,
                         },
                     },
-                });
-
-                await settingsPage.coinsTab.disableNetwork('btc');
-                await settingsPage.coinsTab.enableNetwork('ada');
-                await settingsPage.coinsTab.openNetworkAdvanceSettings('ada');
-                await settingsPage.coinsTab.changeBackend('blockfrost', blockbookMock.url);
-
-                await dashboardPage.dashboardMenuButton.click();
-                await page.discoveryShouldFinish();
+                },
             });
-        },
-    );
+
+            await settingsPage.changeNetworks({
+                enableNetworks: [
+                    { symbol: 'ada', backend: { type: 'blockfrost', url: blockbookMock.url } },
+                ],
+            });
+        });
+    });
 
     test(
         'Unstake Cardano',
@@ -85,6 +80,7 @@ test.describe('Staking - Cardano', { tag: ['@T3W1', '@T3T1'] }, () => {
                 atIndex: 0,
                 subAccount: 'staking',
             });
+
             await test.step('Verify staked account', async () => {
                 await walletPage.openAccount({ symbol: 'ada', type: 'normal', atIndex: 0 });
                 await stakingSection.stakingTabButton.click();
@@ -117,9 +113,9 @@ test.describe('Staking - Cardano', { tag: ['@T3W1', '@T3T1'] }, () => {
                     T3W1: {
                         header: { title: 'Confirm transaction' },
                         body: [
-                            ['Confirm:'],
+                            ['Confirm'],
                             ['Stake key', '\n', 'deregistration'],
-                            ['for account #1:'],
+                            ['For account #1'],
                             device.wrapText("m/1852'/1815'/0'/2/0"),
                         ],
                         actions: { right_button: 'Confirm' },
@@ -131,13 +127,26 @@ test.describe('Staking - Cardano', { tag: ['@T3W1', '@T3T1'] }, () => {
                     T3W1: {
                         header: { title: 'Confirm transaction' },
                         body: [
-                            ['Transaction fee:'],
+                            ['Transaction fee'],
                             [toADA(feeAmount)],
-                            ['Network: Mainnet'],
-                            ['Valid since: n/a'],
-                            [/^TTL: \d{9}$/],
+                            ['Network'],
+                            ['Mainnet'],
+                            ['Valid since'],
+                            ['n/a'],
+                            ['TTL'],
+                            [/\d{9}$/],
                         ],
                         actions: { right_button: 'Hold to confirm' },
+                    },
+                    T3T1: {
+                        body: [
+                            ['Transaction fee'],
+                            [toADA(feeAmount)],
+                            ['Network'],
+                            ['Mainnet'],
+                            ['Valid since'],
+                            ['n/a'],
+                        ],
                     },
                 });
 
@@ -159,10 +168,11 @@ test.describe('Staking - Cardano', { tag: ['@T3W1', '@T3T1'] }, () => {
             });
 
             await test.step('Verify unstaked account', async () => {
-                await expect(stakingSection.unstakedToastAccount).toContainText('Cardano #1');
-                await expect(stakingSection.unstakedToastAmount).toContainText(
-                    unstakedAmountFormatted,
-                );
+                await stakingSection.verifyStakingToast({
+                    type: 'unstaked',
+                    account: 'Cardano #1',
+                    amount: unstakedAmountFormatted,
+                });
                 await expect(walletPage.topPanelBalanceWithSymbol).toHaveText(
                     finalBalanceFormatted,
                 );

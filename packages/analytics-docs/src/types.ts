@@ -6,6 +6,8 @@ export type Sort = (typeof sorts)[number];
 export const platforms = ['desktop', 'mobile', 'shared'];
 export type Platform = (typeof platforms)[number];
 
+export type SearchMode = 'name' | 'fulltext';
+
 export const allPlatforms = [...platforms, 'all'];
 export type AllPlatform = (typeof allPlatforms)[number];
 
@@ -32,4 +34,20 @@ export type EventDoc = {
     changelog: NormalizedChangelog;
     attributes: Record<string, AttributeDoc>;
     platform: string;
+};
+
+/** Event received by the live log server from Suite (GET /log). */
+export type LiveLogEvent = {
+    id: string;
+    type: string;
+    timestamp: string;
+    payload: Record<string, string>;
+    meta: {
+        version?: string;
+        commit?: string;
+        instanceId?: string;
+        sessionId?: string;
+        messageId?: string;
+    };
+    receivedAt: number;
 };

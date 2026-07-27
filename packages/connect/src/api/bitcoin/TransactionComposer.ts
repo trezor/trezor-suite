@@ -1,17 +1,24 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/tx/TransactionComposer.js
 
-import { BigNumber } from '@trezor/utils/src/bigNumber';
-import { ComposeOutput, TransactionInputOutputSortingStrategy, composeTx } from '@trezor/utxo-lib';
-
-import { Blockchain } from '../../backend/BlockchainLink';
-import { getOrInitBitcoinFeeLevels } from '../../backend/fees';
-import { BitcoinFeeLevels } from '../../backend/fees/BitcoinFeeLevels';
-import type { BitcoinNetworkInfo, DiscoveryAccount, SelectFeeLevel } from '../../types';
 import type {
+    BitcoinNetworkInfo,
     ComposeResult,
     ComposeUtxo,
     ComposedInputs,
-} from '../../types/api/composeTransaction';
+    DiscoveryAccount,
+    SelectFeeLevel,
+} from '@trezor/connect-common';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
+import type {
+    ComposeFeePolicy,
+    ComposeOutput,
+    TransactionInputOutputSortingStrategy,
+} from '@trezor/utxo-lib';
+import { composeTx, networks } from '@trezor/utxo-lib';
+
+import type { Blockchain } from '../../backend/BlockchainLink';
+import { getOrInitBitcoinFeeLevels } from '../../backend/fees';
+import type { BitcoinFeeLevels } from '../../backend/fees/BitcoinFeeLevels';
 
 type Options = {
     account: DiscoveryAccount;
@@ -97,7 +104,8 @@ export class TransactionComposer {
         });
 
         if (!atLeastOneValid) {
-            const lastLevel = levels[levels.length - 1];
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const lastLevel: (typeof levels)[number] = levels[levels.length - 1];
             let lastFee = new BigNumber(lastLevel.feePerUnit);
             while (lastFee.gt(this.coinInfo.minFee) && this.composed.custom === undefined) {
                 lastFee = lastFee.minus(1);
@@ -132,7 +140,7 @@ export class TransactionComposer {
         const { levels } = this.feeLevels;
         levels.forEach(level => {
             const tx = this.composed[level.label];
-            if (tx && tx.type === 'final') {
+            if (tx?.type === 'final') {
                 list.push({
                     name: level.label,
                     fee: tx.fee,
@@ -158,10 +166,18 @@ export class TransactionComposer {
         const { addresses } = account;
         if (!addresses) return { type: 'error', error: 'ADDRESSES-NOT-SET' };
         // find not used change address or fallback to the last in the list
-        const changeAddress =
-            addresses.change.find(a => !a.transfers) ||
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const lastChange: (typeof addresses.change)[number] =
             addresses.change[addresses.change.length - 1];
+        const changeAddress = addresses.change.find(a => !a.transfers) || lastChange;
         // const inputAmounts = coinInfo.segwit || coinInfo.forkid !== null || coinInfo.network.consensusBranchId !== null;
+
+        let feePolicy: ComposeFeePolicy | undefined;
+        if (networks.isNetworkType('doge', coinInfo.network)) {
+            feePolicy = 'doge';
+        } else if (networks.isNetworkType('zcash', coinInfo.network)) {
+            feePolicy = 'zcash';
+        }
 
         return composeTx({
             txType: account.type,
@@ -174,6 +190,7 @@ export class TransactionComposer {
             changeAddress,
             dustThreshold: coinInfo.dustLimit,
             baseFee,
+            feePolicy,
         });
     }
 

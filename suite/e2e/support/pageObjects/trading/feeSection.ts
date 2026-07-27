@@ -86,11 +86,12 @@ export class FeeSection {
         }
 
         const feeParts = feeWithSymbol.split(' ');
-        if (feeParts.length === 0 || isNaN(parseFloat(feeParts[0]))) {
+        const feeValue = feeParts[0];
+        if (!feeValue || isNaN(parseFloat(feeValue))) {
             throw new Error('Fee amount is invalid');
         }
 
-        return parseFloat(feeParts[0]);
+        return parseFloat(feeValue);
     }
 
     @step()

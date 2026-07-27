@@ -1,20 +1,31 @@
+import { AccountLabel } from '@suite/account';
 import { Translation } from '@suite/intl';
-import { Account } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 import { isCardanoStakedWithFiveBinaries } from '@suite-common/wallet-utils';
 import { Column, Text } from '@trezor/components';
 
-import { AccountLabel } from 'src/components/suite';
-import { AccountItemType } from 'src/types/wallet';
+import { type AccountItemType } from 'src/types/wallet';
 
 type AccountItemLabelProps = {
     account: Account;
     type: AccountItemType;
+    showAccountTypeBadge?: boolean;
 };
 
-export const AccountItemLabel = ({ account, type }: AccountItemLabelProps) => {
+export const AccountItemLabel = ({
+    account,
+    type,
+    showAccountTypeBadge,
+}: AccountItemLabelProps) => {
     switch (type) {
         case 'coin':
-            return <AccountLabel account={account} />;
+            return (
+                <AccountLabel
+                    account={account}
+                    showAccountTypeBadge={showAccountTypeBadge}
+                    accountTypeBadgeSize="small"
+                />
+            );
 
         case 'staking':
             return (

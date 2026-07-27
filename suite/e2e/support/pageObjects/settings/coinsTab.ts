@@ -1,6 +1,6 @@
 import { Locator, Page } from '@playwright/test';
 
-import { BackendType, NetworkSymbol } from '@suite-common/wallet-config';
+import type { BackendType, NetworkSymbol } from '@suite-common/wallet-config';
 
 import { step } from '../../common';
 import { expect } from '../../testExtends/customMatchers';
@@ -8,11 +8,19 @@ import { expect } from '../../testExtends/customMatchers';
 export class CoinsTab {
     readonly networkButton = (symbol: NetworkSymbol) =>
         this.page.getByTestId(`@settings/wallet/network/${symbol}`);
+    readonly networkAddButton = (symbol: NetworkSymbol) =>
+        this.page.getByTestId(`@settings/wallet/network/${symbol}/add-button`);
+    readonly networkSwitch = (symbol: NetworkSymbol) =>
+        this.page.getByTestId(`@settings/wallet/network/${symbol}/switch`);
+    readonly networkSwitchInput = (symbol: NetworkSymbol) =>
+        this.networkSwitch(symbol).getByRole('switch');
+    readonly networkBackendStatus = (symbol: NetworkSymbol) =>
+        this.page.getByTestId(`@settings/wallet/network/${symbol}/backend-status`);
     readonly networkSymbolAdvanceSettingsButton = (symbol: NetworkSymbol) =>
         this.page.getByTestId(`@settings/wallet/network/${symbol}/advance`);
     readonly coinBackendSelector: Locator;
     readonly coinBackendSelectorOption = (backend: BackendType) =>
-        this.page.getByTestId(`@settings/advance/${backend}`);
+        this.page.getByTestId(`@settings/advance/select-type/option/${backend}`);
     readonly coinAddressInput: Locator;
     readonly coinAdvanceSettingSaveButton: Locator;
     readonly modal: Locator;
@@ -28,8 +36,7 @@ export class CoinsTab {
 
     @step()
     async openNetworkAdvanceSettings(symbol: NetworkSymbol) {
-        const isNetworkActive = await this.networkButton(symbol).getAttribute('data-active');
-        if (isNetworkActive === 'false') {
+        if (!(await this.isNetworkEnabled(symbol))) {
             await this.enableNetwork(symbol);
         }
         await this.networkButton(symbol).hover();
@@ -38,15 +45,41 @@ export class CoinsTab {
     }
 
     @step()
+    async isNetworkEnabled(symbol: NetworkSymbol) {
+        return (await this.networkSwitchInput(symbol).getAttribute('aria-checked')) === 'true';
+    }
+
+    @step()
+    async expectNetworkEnabled(symbol: NetworkSymbol) {
+        await expect(this.networkSwitchInput(symbol)).toHaveAttribute('aria-checked', 'true');
+    }
+
+    @step()
+    async expectNetworkDisabled(symbol: NetworkSymbol) {
+        await expect(this.networkSwitchInput(symbol)).toHaveAttribute('aria-checked', 'false');
+    }
+
+    @step()
+    async expectCustomBackendIndicator(symbol: NetworkSymbol) {
+        await expect(this.networkBackendStatus(symbol)).toBeVisible();
+    }
+
+    @step()
     async enableNetwork(symbol: NetworkSymbol) {
-        await this.networkButton(symbol).click();
-        await expect(this.networkButton(symbol)).toBeEnabledCoin();
+        const networkSwitch = this.networkSwitch(symbol);
+        if (!(await this.isNetworkEnabled(symbol))) {
+            await networkSwitch.click();
+        }
+        await this.expectNetworkEnabled(symbol);
     }
 
     @step()
     async disableNetwork(symbol: NetworkSymbol) {
-        await this.networkButton(symbol).click();
-        await expect(this.networkButton(symbol)).toBeDisabledCoin();
+        const networkSwitch = this.networkSwitch(symbol);
+        if (await this.isNetworkEnabled(symbol)) {
+            await networkSwitch.click();
+        }
+        await this.expectNetworkDisabled(symbol);
     }
 
     @step()

@@ -1,6 +1,8 @@
-import { FunctionComponent } from 'react';
+import { type FunctionComponent } from 'react';
 
-import { closeModalApp } from 'src/actions/suite/routerActions';
+import { CreateWalletBackupModal } from '@suite/backup';
+import { closeModalApp } from '@suite/router';
+
 import { useDispatch } from 'src/hooks/suite';
 import type { ForegroundAppRoute } from 'src/types/suite';
 import { Backup } from 'src/views/backup/Backup';
@@ -28,10 +30,11 @@ const getForegroundApp = (app: ForegroundAppRoute['app']) => {
         'bridge-requested': BridgeRequested,
         'bridge-deprecated': BridgeDeprecated,
         udev: UdevRules,
-        'switch-device': null, // extracted to PassphraseFlow.tsx
+        'switch-device': null, // extracted to SwitchDeviceLayer.tsx
         recovery: Recovery,
         backup: Backup,
         'create-multi-share-backup': MultiShareBackupModal,
+        'create-wallet-backup': CreateWalletBackupModal,
     };
 
     return map[app];

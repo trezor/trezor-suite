@@ -1,6 +1,9 @@
-import { Account, asAccountDescriptor } from '@suite-common/wallet-types';
-import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
-import { StaticSessionId } from '@trezor/connect';
+import { type Account, asAccountDescriptor } from '@suite-common/wallet-types';
+import {
+    mockWalletAccount,
+    networkSpecificDefaultEthereum,
+} from '@suite-common/wallet-types/mocks';
+import { type StaticSessionId } from '@trezor/device-utils';
 
 export const MOCK_ACCOUNT_DEVICE_SESSION_ID: StaticSessionId = '1@2:3';
 
@@ -9,7 +12,10 @@ export const btc1NormalAccount = mockWalletAccount({
     accountLabel: 'BTC Account #1',
     deviceState: MOCK_ACCOUNT_DEVICE_SESSION_ID,
     accountType: 'normal',
-    descriptor: asAccountDescriptor('btc1-normal'),
+    descriptor: asAccountDescriptor('btc1normal'),
+    balance: '1000000',
+    availableBalance: '1000000',
+    formattedBalance: '0.01',
     addresses: {
         used: [
             {
@@ -67,7 +73,7 @@ export const btc2legacyAccount = mockWalletAccount({
     deviceState: MOCK_ACCOUNT_DEVICE_SESSION_ID,
 
     accountType: 'legacy',
-    descriptor: asAccountDescriptor('btc2-legacy'),
+    descriptor: asAccountDescriptor('btc2legacy'),
     addresses: {
         used: [],
         change: [],
@@ -82,7 +88,17 @@ export const eth1NormalAccount = mockWalletAccount({
     deviceState: MOCK_ACCOUNT_DEVICE_SESSION_ID,
 
     accountType: 'normal',
-    descriptor: asAccountDescriptor('eth1-normal'),
+    descriptor: asAccountDescriptor('eth1normal'),
+    tokens: [
+        {
+            standard: 'ERC20',
+            name: 'USDC',
+            contract: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+            symbol: 'usdc',
+            decimals: 6,
+            balance: '1',
+        },
+    ],
     visible: true,
 });
 
@@ -91,7 +107,7 @@ export const eth2legacyAccount = mockWalletAccount({
     accountLabel: 'ETH Account #2',
     deviceState: MOCK_ACCOUNT_DEVICE_SESSION_ID,
     accountType: 'legacy',
-    descriptor: asAccountDescriptor('eth2-legacy'),
+    descriptor: asAccountDescriptor('eth2legacy'),
     visible: true,
 });
 
@@ -100,16 +116,31 @@ export const eth3legacyAccount = mockWalletAccount({
     accountLabel: 'ETH Account #3 HIDDEN',
     deviceState: MOCK_ACCOUNT_DEVICE_SESSION_ID,
     accountType: 'legacy',
-    descriptor: asAccountDescriptor('eth3-legacy'),
+    descriptor: asAccountDescriptor('eth3legacy'),
     visible: false,
 });
+
+export const base1NormalAccount = mockWalletAccount(
+    {
+        symbol: 'base',
+        accountLabel: 'Base Account #1',
+        deviceState: MOCK_ACCOUNT_DEVICE_SESSION_ID,
+        accountType: 'normal',
+        descriptor: asAccountDescriptor('base1normal'),
+        balance: '1000000000000000000',
+        availableBalance: '1000000000000000000',
+        formattedBalance: '1',
+        visible: true,
+    },
+    networkSpecificDefaultEthereum,
+);
 
 export const sol1normalAccount = mockWalletAccount({
     symbol: 'sol',
     accountLabel: 'SOL Account #1',
     deviceState: MOCK_ACCOUNT_DEVICE_SESSION_ID,
     accountType: 'normal',
-    descriptor: asAccountDescriptor('sol1-normal'),
+    descriptor: asAccountDescriptor('sol1normal'),
     visible: true,
 });
 

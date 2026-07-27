@@ -11,8 +11,8 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
-        "@react-navigation/native": "7.1.26",
-        "@reduxjs/toolkit": "2.11.2",
+        "@react-navigation/native": "7.1.28",
+        "@reduxjs/toolkit": "2.12.0",
         "@suite-common/device": "workspace:*",
         "@suite-common/suite-utils": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
@@ -23,8 +23,11 @@
         "@suite-native/navigation": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "@trezor/urls": "workspace:*",
-        "react": "19.1.0",
-        "react-native": "0.81.5",
-        "react-redux": "9.2.0"
+        "react": "19.2.3",
+        "react-native": "0.85.3",
+        "react-redux": "9.3.0"
+    },
+    "devDependencies": {
+        "@trezor/requirements": "workspace:*"
     }
 }

@@ -1,8 +1,8 @@
 import { createAction } from '@reduxjs/toolkit';
 
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 
-import { DefinitionType, TokenManagementAction } from './tokenDefinitionsTypes';
+import { type DefinitionType, type TokenManagementAction } from './tokenDefinitionsTypes';
 
 export const TOKEN_DEFINITIONS_PREFIX = '@common/token-definitions';
 

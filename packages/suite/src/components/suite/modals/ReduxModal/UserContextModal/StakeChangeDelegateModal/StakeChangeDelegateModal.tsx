@@ -5,13 +5,13 @@ import { Translation } from '@suite/intl';
 import { CARDANO_EVERSTAKE_DREP } from '@suite-common/wallet-constants';
 import {
     DEFAULT_VOTING_OPTION,
-    VotingDelegationOption,
+    type VotingDelegationOption,
     selectVotingDelegationOption,
     stakeActions,
 } from '@suite-common/wallet-core';
-import { SelectedAccountLoaded } from '@suite-common/wallet-types';
+import { type SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { validateCardanoDrep } from '@suite-common/wallet-utils';
-import { Card, Column, Modal } from '@trezor/components';
+import { Card, Column, Modal, Tooltip } from '@trezor/components';
 
 import { VotingDelegationsOptions } from 'src/components/earn';
 import { Fees } from 'src/components/wallet/Fees/Fees';
@@ -62,20 +62,31 @@ export const StakeChangeDelegateModalLoaded = ({
         onCancel?.();
     };
 
-    const isDisabled = useMemo(() => {
+    const { isDisabled, errorType } = useMemo(() => {
         switch (selectedVotingDelegation.type) {
-            case 'everstake':
-                return isEverstake;
+            case 'everstake': {
+                if (isEverstake) {
+                    return { isDisabled: true, errorType: 'current_delegate' as const };
+                }
 
+                break;
+            }
             case 'another_drep': {
                 const { drepId } = selectedVotingDelegation;
 
-                return drepId === currentDrepId || !validateCardanoDrep(drepId);
-            }
+                if (drepId === currentDrepId) {
+                    return { isDisabled: true, errorType: 'current_delegate' as const };
+                }
 
-            default:
-                return false;
+                if (!validateCardanoDrep(drepId)) {
+                    return { isDisabled: true, errorType: 'invalid_drep' as const };
+                }
+
+                break;
+            }
         }
+
+        return { isDisabled: false };
     }, [selectedVotingDelegation, currentDrepId, isEverstake]);
 
     return (
@@ -85,18 +96,28 @@ export const StakeChangeDelegateModalLoaded = ({
                     heading={<Translation id="TR_STAKE_CHANGE_DELEGATE" />}
                     onCancel={handleCancel}
                     bottomContent={
-                        <Modal.Button
-                            isDisabled={isDisabled}
-                            onClick={() => handleSubmit(signTx)()}
+                        <Tooltip
+                            isActive={isDisabled && errorType === 'current_delegate'}
+                            content={<Translation id="TR_STAKE_CHANGE_DELEGATE_DISABLED_TOOLTIP" />}
                         >
-                            <Translation id="TR_CONTINUE" />
-                        </Modal.Button>
+                            <Modal.Button
+                                isDisabled={isDisabled}
+                                onClick={() => handleSubmit(signTx)()}
+                            >
+                                <Translation id="TR_CONTINUE" />
+                            </Modal.Button>
+                        </Tooltip>
                     }
                 >
                     <Card>
                         <Column gap={20} hasDivider>
                             <CurrentDelegate account={account} />
-                            <VotingDelegationsOptions initialValue={drepIdOptionValue} hasTitle />
+                            <VotingDelegationsOptions
+                                networkType={account.networkType}
+                                initialValue={drepIdOptionValue}
+                                hasTitle
+                                resetOnMount
+                            />
 
                             <Fees
                                 feeInfo={feeInfo}
@@ -124,10 +145,5 @@ export const StakeChangeDelegateModal = ({
         return null;
     }
 
-    return (
-        <StakeChangeDelegateModalLoaded
-            onCancel={onCancel}
-            selectedAccount={selectedAccount as SelectedAccountLoaded}
-        />
-    );
+    return <StakeChangeDelegateModalLoaded onCancel={onCancel} selectedAccount={selectedAccount} />;
 };

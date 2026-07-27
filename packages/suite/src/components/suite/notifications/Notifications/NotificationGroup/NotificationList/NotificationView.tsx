@@ -1,10 +1,18 @@
-import { JSX } from 'react';
+import { type ReactNode } from 'react';
 
-import { ExtendedMessageDescriptor, Translation } from '@suite/intl';
+import { type ExtendedMessageDescriptor, Translation } from '@suite/intl';
 import type { NotificationEntry } from '@suite-common/toast-notifications';
-import { Button, ButtonProps, Column, Icon, IconName, Paragraph, Row } from '@trezor/components';
-import { ButtonPriority } from '@trezor/components/src/components/buttons/types';
-import { spacings } from '@trezor/theme';
+import {
+    Button,
+    type ButtonProps,
+    Column,
+    Icon,
+    type IconComponent,
+    Paragraph,
+    Row,
+} from '@trezor/components';
+import { type ButtonPriority } from '@trezor/components/src/components/buttons/types';
+import { CaretRightIcon } from '@trezor/icons';
 
 import { FormattedDateWithBullet } from 'src/components/suite/FormattedDateWithBullet';
 import { useLayoutSize } from 'src/hooks/suite';
@@ -22,7 +30,7 @@ export interface NotificationAction {
 export interface NotificationViewProps {
     notification: NotificationEntry;
     variant: ToastNotificationVariant;
-    icon?: IconName | JSX.Element;
+    icon?: IconComponent | ReactNode;
     message: ExtendedMessageDescriptor['id'];
     messageValues: ExtendedMessageDescriptor['values'];
     action?: NotificationAction | NotificationAction[];
@@ -47,14 +55,14 @@ export const NotificationView = ({
     const action = Array.isArray(actionProp) ? actionProp[0] : actionProp;
 
     return (
-        <Row gap={spacings.sm}>
+        <Row gap={12}>
             {defaultIcon &&
-                (typeof defaultIcon === 'string' ? (
-                    <Icon size={20} name={defaultIcon} {...colorProps} />
+                (typeof defaultIcon === 'function' ? (
+                    <Icon size={20} as={defaultIcon} {...colorProps} />
                 ) : (
                     defaultIcon
                 ))}
-            <Column gap={spacings.xxs} margin={{ right: 'auto' }}>
+            <Column gap={4} margin={{ right: 'auto' }}>
                 <Paragraph
                     typographyStyle={seen ? 'body-sm' : 'body-sm-strong'}
                     intent="neutral"
@@ -72,11 +80,11 @@ export const NotificationView = ({
             </Column>
             {action?.onClick &&
                 (isBelowTablet ? (
-                    <Icon name="caretRight" onClick={action.onClick} size={18} />
+                    <Icon as={CaretRightIcon} onClick={action.onClick} size={18} />
                 ) : (
                     <Button
                         intent={action.intent ?? 'neutral'}
-                        priority={action.priority}
+                        priority={action.priority ?? 'secondary'}
                         size="small"
                         onClick={action.onClick}
                         minWidth={80}

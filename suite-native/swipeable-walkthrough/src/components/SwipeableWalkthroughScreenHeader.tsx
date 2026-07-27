@@ -1,10 +1,10 @@
 import { useCallback } from 'react';
-import Animated, { SharedValue, useAnimatedStyle, withTiming } from 'react-native-reanimated';
+import Animated, { type SharedValue, useAnimatedStyle, withTiming } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Box, IconButton } from '@suite-native/atoms';
 import { ScreenHeader, useOverrideBackNavigation } from '@suite-native/navigation';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 type SwipeableWalkthroughScreenHeaderProps = {
     currentStepIndex: SharedValue<number>;
@@ -25,7 +25,7 @@ const statusBarStyle = prepareNativeStyle<{ topSafeAreaInset: number }>(
         position: 'absolute',
         height: topSafeAreaInset,
         width: '100%',
-        backgroundColor: utils.colors.backgroundSurfaceElevation0,
+        backgroundColor: utils.colors.surfaceFillPage,
     }),
 );
 
@@ -51,8 +51,9 @@ const SwipeableWalkthroughBackButton = ({
         <Animated.View style={animatedButtonStyle}>
             <IconButton
                 iconName="caretLeft"
+                intent="neutral"
+                priority="secondary"
                 size="medium"
-                colorScheme="tertiaryElevation0"
                 onPress={onPressBack}
                 accessibilityRole="button"
                 accessibilityLabel="Go back"

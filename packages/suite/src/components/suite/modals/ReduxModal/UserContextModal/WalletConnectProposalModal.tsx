@@ -2,43 +2,43 @@ import { useMemo, useState } from 'react';
 
 import styled from 'styled-components';
 
+import { AccountLabel } from '@suite/account';
 import { Translation } from '@suite/intl';
-import { TxSimulationBanner } from '@suite/tx-simulation';
+import { closeModal } from '@suite/modal';
+import { goto } from '@suite/router';
+import { TxSimulationBanner } from '@suite/tx-simulation/src/common';
 import { useDappScan } from '@suite-common/tx-simulation';
 import { selectAllAccountsToList } from '@suite-common/wallet-core';
-import { Account } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
+import { sortByCoin } from '@suite-common/wallet-utils';
 import {
     selectPendingProposal,
     sessionProposalApproveThunk,
     sessionProposalRejectThunk,
 } from '@suite-common/walletconnect';
-import { PendingConnectionProposalNetwork } from '@suite-common/walletconnect/src/walletConnectTypes';
+import { type PendingConnectionProposalNetwork } from '@suite-common/walletconnect/src/walletConnectTypes';
 import {
     Badge,
     Banner,
     Card,
     Column,
-    ElevationUp,
     Modal,
-    Option,
+    type Option,
     Row,
     Select,
     Text,
     Tooltip,
 } from '@trezor/components';
-import { CoinLogo } from '@trezor/product-components';
-import { spacings, spacingsPx } from '@trezor/theme';
+import { ShieldCheckFilledIcon, ShieldWarningFilledIcon } from '@trezor/icons';
+import { NetworkIcon, TokenIcon } from '@trezor/product-components';
 
-import { onCancel } from 'src/actions/suite/modalActions';
-import { goto } from 'src/actions/suite/routerActions';
-import { AccountLabel } from 'src/components/suite/AccountLabel';
 import { ConnectAppIcon } from 'src/components/suite/ConnectAppIcon';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
 const NetworkItemWrapper = styled.div<{ $isDisabled: boolean }>`
     display: flex;
     flex-direction: row;
-    gap: ${spacingsPx.xs};
+    gap: 8px;
     align-items: center;
     opacity: ${props => (props.$isDisabled ? 0.5 : 1)};
 `;
@@ -53,11 +53,13 @@ export const WalletConnectProposalModal = ({ eventId }: WalletConnectProposalMod
     const accounts = useSelector(selectAllAccountsToList);
     const selectableAccounts = useMemo<Account[]>(
         () =>
-            pendingProposal?.networks
-                .filter(network => network.status === 'active')
-                .flatMap(network =>
-                    accounts.filter(account => account.symbol === network.symbol),
-                ) ?? [],
+            sortByCoin(
+                pendingProposal?.networks
+                    .filter(network => network.status === 'active')
+                    .flatMap(network =>
+                        accounts.filter(account => account.symbol === network.symbol),
+                    ) ?? [],
+            ),
         [accounts, pendingProposal?.networks],
     );
     const [selectedDefaultAccount, setSelectedDefaultAccount] = useState<Account | null>(
@@ -73,15 +75,15 @@ export const WalletConnectProposalModal = ({ eventId }: WalletConnectProposalMod
                 selectedDefaultAccount,
             }),
         );
-        dispatch(onCancel());
+        dispatch(closeModal());
     };
     const handleReject = () => {
         dispatch(sessionProposalRejectThunk({ eventId }));
-        dispatch(onCancel());
+        dispatch(closeModal());
     };
     const handleGoToCoinSettings = async () => {
-        await dispatch(onCancel());
-        dispatch(goto('settings-coins'));
+        await dispatch(closeModal());
+        dispatch(goto({ routeName: 'settings-coins' }));
     };
 
     const getTooltipContent = (network: PendingConnectionProposalNetwork) => {
@@ -120,6 +122,7 @@ export const WalletConnectProposalModal = ({ eventId }: WalletConnectProposalMod
                                 !ignoreWarning)
                         }
                         isLoading={dappScanQuery.isLoading}
+                        data-testid="@walletconnect-proposal/confirm-button"
                     >
                         <Translation id="TR_CONFIRM" />
                     </Modal.Button>
@@ -136,41 +139,41 @@ export const WalletConnectProposalModal = ({ eventId }: WalletConnectProposalMod
             heading={<Translation id="TR_WALLETCONNECT" />}
             description={<Translation id="TR_WALLETCONNECT_REQUEST" />}
         >
-            <Column gap={spacings.xs}>
+            <Column gap={8}>
                 <Text>
                     <Translation id="TR_APP" />
                 </Text>
                 <Card>
-                    <Row gap={spacings.md}>
+                    <Row gap={16}>
                         <ConnectAppIcon
                             src={pendingProposal.params.proposer.metadata.icons?.[0]}
-                            size={spacings.xxxxl}
+                            size={48}
                             type="walletConnect"
                         />
 
-                        <Column gap={spacings.xxs}>
-                            <Row gap={spacings.sm}>
+                        <Column gap={4}>
+                            <Row gap={12}>
                                 <Text>{pendingProposal.params.proposer.metadata.name}</Text>
                                 <Text intent="neutral" priority="secondary">
                                     {pendingProposal.params.proposer.metadata.url}
                                 </Text>
                             </Row>
-                            <Row gap={spacings.sm}>
+                            <Row gap={12}>
                                 {!pendingProposal.isScam &&
                                     pendingProposal.validation === 'VALID' && (
-                                        <Badge intent="info" iconLeft="shieldCheckFilled">
+                                        <Badge intent="info" iconLeft={ShieldCheckFilledIcon}>
                                             <Translation id="TR_WALLETCONNECT_SERVICE_VERIFIED" />
                                         </Badge>
                                     )}
                                 {!pendingProposal.isScam &&
                                     pendingProposal.validation === 'UNKNOWN' && (
-                                        <Badge intent="warning" iconLeft="shieldWarningFilled">
+                                        <Badge intent="warning" iconLeft={ShieldWarningFilledIcon}>
                                             <Translation id="TR_WALLETCONNECT_SERVICE_UNKNOWN" />
                                         </Badge>
                                     )}
                                 {(pendingProposal.isScam ||
                                     pendingProposal.validation === 'INVALID') && (
-                                    <Badge intent="critical" iconLeft="shieldWarningFilled">
+                                    <Badge intent="critical" iconLeft={ShieldWarningFilledIcon}>
                                         <Translation id="TR_WALLETCONNECT_SERVICE_DANGEROUS" />
                                     </Badge>
                                 )}
@@ -183,7 +186,7 @@ export const WalletConnectProposalModal = ({ eventId }: WalletConnectProposalMod
                     <Translation id="TR_REQUESTED_NETWORKS" />
                 </Text>
                 <Card>
-                    <Row rowGap={spacings.xs} columnGap={spacings.sm} flexWrap="wrap">
+                    <Row rowGap={8} columnGap={12} flexWrap="wrap">
                         {pendingProposal.networks
                             .filter(network => network.status !== 'unsupported')
                             .map(network => (
@@ -193,9 +196,8 @@ export const WalletConnectProposalModal = ({ eventId }: WalletConnectProposalMod
                                 >
                                     <NetworkItemWrapper $isDisabled={network.status !== 'active'}>
                                         {network.symbol && (
-                                            <CoinLogo
-                                                type="network"
-                                                symbol={network.symbol as any}
+                                            <NetworkIcon
+                                                networkSymbol={network.symbol as any}
                                                 size={24}
                                             />
                                         )}
@@ -214,34 +216,28 @@ export const WalletConnectProposalModal = ({ eventId }: WalletConnectProposalMod
                 </Text>
                 {selectableAccounts.length > 0 && (
                     <Card paddingType="none">
-                        {/* Wrapped to keep consistent styling */}
-                        <ElevationUp>
-                            <Select
-                                isSearchable={false}
-                                isClearable={false}
-                                size="large"
-                                value={selectedDefaultAccount}
-                                options={selectableAccounts}
-                                formatOptionLabel={(account: Account) => (
-                                    <Row gap={spacings.xs}>
-                                        {account.symbol && (
-                                            <CoinLogo
-                                                type="token"
-                                                symbol={account.symbol}
-                                                size={24}
-                                            />
-                                        )}
-                                        <AccountLabel
-                                            account={account}
-                                            key={account.descriptor}
-                                            showAccountTypeBadge
-                                            accountTypeBadgeSize="small"
-                                        />
-                                    </Row>
-                                )}
-                                onChange={(option: Option) => setSelectedDefaultAccount(option)}
-                            />
-                        </ElevationUp>
+                        <Select
+                            isSearchable={false}
+                            isClearable={false}
+                            size="large"
+                            value={selectedDefaultAccount}
+                            options={selectableAccounts}
+                            formatOptionLabel={(account: Account) => (
+                                <Row gap={8}>
+                                    {account.symbol && (
+                                        <TokenIcon symbol={account.symbol} size={24} />
+                                    )}
+                                    <AccountLabel
+                                        account={account}
+                                        key={account.descriptor}
+                                        showAccountTypeBadge
+                                        accountTypeBadgeSize="small"
+                                    />
+                                </Row>
+                            )}
+                            onChange={(option: Option) => setSelectedDefaultAccount(option)}
+                            closeMenuOnScroll={false}
+                        />
                     </Card>
                 )}
 
@@ -272,8 +268,8 @@ export const WalletConnectProposalModal = ({ eventId }: WalletConnectProposalMod
                         type="error"
                         title="TR_WALLETCONNECT_IS_SCAM"
                         description={<></>}
-                        disclaimerAccepted={ignoreWarning}
-                        setDisclaimerAccepted={setIgnoreWarning}
+                        isAccepted={ignoreWarning}
+                        onChange={setIgnoreWarning}
                     />
                 )}
                 {pendingProposal.validation === 'INVALID' && (

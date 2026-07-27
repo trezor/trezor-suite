@@ -1,13 +1,14 @@
 import { Locator, Page, test } from '@playwright/test';
 
-import { NetworkSymbol } from '@suite-common/wallet-config';
-import { BaseCurrencyCode } from '@trezor/blockchain-link-types';
-import { LabelingSelectValue } from '@trezor/suite/src/constants/suite/labeling';
+import type { LabelingSelectValue } from '@suite/labeling';
+import type { BackendType, NetworkSymbol } from '@suite-common/wallet-config';
+import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { capitalizeFirstLetter } from '@trezor/utils';
 
 import { CoinsTab } from './coinsTab';
 import { DebugTab } from './debugTab';
 import { DeviceTab } from './deviceTab';
+import { WalletConnectTab } from './walletConnectTab';
 import { step } from '../../common';
 import { DeviceFixture } from '../../device';
 import { expect } from '../../testExtends/customMatchers';
@@ -36,13 +37,19 @@ const backgroundImageButton = {
     nyancat: '@modal/gallery/bw_64x128/nyancat',
 };
 
+export type NetworkToEnable =
+    | NetworkSymbol
+    | { symbol: NetworkSymbol; backend: { type: BackendType; url: string } };
+
 export class SettingsPage {
     private readonly TIMES_CLICK_TO_SET_DEBUG_MODE = 5;
-    readonly coinsTab: CoinsTab;
     readonly deviceTab: DeviceTab;
+    readonly coinsTab: CoinsTab;
+    readonly walletConnectTab: WalletConnectTab;
     readonly debugTab: DebugTab;
 
     readonly settingsMenuButton: Locator;
+    readonly settingsMenu: Locator;
     readonly settingsHeader: Locator;
     readonly debugTabButton: Locator;
     readonly connectTabButton: Locator;
@@ -87,21 +94,25 @@ export class SettingsPage {
             ? this.page.locator('[data-testid*="@radio-button"]')
             : this.page.getByTestId(`@radio-button-${level}`);
     readonly safetyChecksRadioButtonCheck = (check: boolean): Locator =>
-        this.page.locator(`[data-testid*="@radio-button"][data-checked="${check}"]`);
+        this.page.locator(
+            `[data-testid*="@radio-button"]:has(input${check ? ':checked' : ':not(:checked)'})`,
+        );
     readonly settingsLoader: Locator;
     readonly experimentalFeaturesSwitch: Locator;
-    readonly suiteSyncCheckbox: Locator;
     readonly resetAppButton: Locator;
+    readonly autoEjectWalletSwitch: Locator;
 
     constructor(
         private readonly page: Page,
         private readonly device: DeviceFixture,
     ) {
-        this.coinsTab = new CoinsTab(page);
         this.deviceTab = new DeviceTab(page);
+        this.coinsTab = new CoinsTab(page);
+        this.walletConnectTab = new WalletConnectTab(page);
         this.debugTab = new DebugTab(page);
 
         this.settingsMenuButton = this.page.getByTestId('@suite/menu/settings');
+        this.settingsMenu = this.page.getByTestId('@settings/menu');
         this.settingsHeader = this.page.getByTestId('@settings/menu/title');
         this.debugTabButton = this.page.getByTestId('@settings/menu/debug');
         this.connectTabButton = this.page.getByTestId('@settings/menu/connected-apps');
@@ -141,10 +152,8 @@ export class SettingsPage {
         this.experimentalFeaturesSwitch = this.page.getByTestId(
             '@settings/experimental-features/toggle-switch',
         );
-        this.suiteSyncCheckbox = this.page.getByTestId(
-            '@settings/experimental-features/suite-sync-checkbox',
-        );
         this.resetAppButton = this.page.getByTestId('@settings/reset-app-button');
+        this.autoEjectWalletSwitch = this.page.getByTestId('@settings/auto-eject-switch');
     }
 
     @step()
@@ -152,7 +161,9 @@ export class SettingsPage {
         const notInSettings = !(await this.settingsHeader.isVisible());
         if (notInSettings) {
             await this.settingsMenuButton.click();
+
             await expect(this.settingsHeader).toHaveTranslation('TR_SETTINGS', { timeout: 10000 });
+            await expect(this.settingsMenu).toBeVisible();
         }
         const tabNavigation: { [key: string]: () => Promise<void> } = {
             application: () => this.applicationTabButton.click(),
@@ -161,7 +172,7 @@ export class SettingsPage {
             debug: () => this.debugTabButton.click(),
             connect: () => this.connectTabButton.click(),
         };
-        await tabNavigation[tab]();
+        await tabNavigation[tab]?.();
     }
 
     @step()
@@ -245,27 +256,46 @@ export class SettingsPage {
     @step()
     async toggleTestnetNetworks() {
         await this.navigateTo('application');
-        await this.page.getByTestId('@settings/experimental-features/toggle-switch').click();
-        await this.page
-            .getByTestId('@settings/experimental-features/testnet-networks-checkbox')
-            .click();
+        await this.page.getByTestId('@settings/testnet-networks-switch').click();
     }
 
+    /**
+     * Enables and disables specified networks, then conditionally activates coins and waits for discovery.
+     * @example
+     * // Enable eth and btc with a custom backend (opens advanced settings and sets it)
+     * await settingsPage.changeNetworks({
+     *     enableNetworks: ['eth', { symbol: 'btc', backend: { type: 'blockbook', url: 'http://localhost:19121' } }],
+     * });
+     * // Enable by symbol
+     * await settingsPage.changeNetworks({ enableNetworks: ['btc', 'eth'] });
+     */
     @step()
     async changeNetworks(options: {
-        enableNetworks: NetworkSymbol[];
+        enableNetworks: NetworkToEnable[];
         disableNetworks?: NetworkSymbol[];
+        skipActivation?: boolean;
+        skipDiscovery?: boolean;
     }) {
         await this.navigateTo('coins');
-        for (const network of options.enableNetworks) {
-            await this.coinsTab.enableNetwork(network);
+        for (const entry of options.enableNetworks) {
+            const inputWithCustomBackend = typeof entry !== 'string';
+            const symbol = inputWithCustomBackend ? entry.symbol : entry;
+            await this.coinsTab.enableNetwork(symbol);
+            if (inputWithCustomBackend) {
+                await this.coinsTab.openNetworkAdvanceSettings(symbol);
+                await this.coinsTab.changeBackend(entry.backend.type, entry.backend.url);
+                await expect(this.coinsTab.modal).toBeHidden();
+            }
         }
 
         for (const network of options.disableNetworks ?? []) {
             await this.coinsTab.disableNetwork(network);
         }
 
+        if (options.skipActivation) return;
         await this.coinsTab.activateCoinsButton.click();
+
+        if (options.skipDiscovery) return;
         await this.page.discoveryShouldFinish();
     }
 

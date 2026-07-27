@@ -1,6 +1,14 @@
+import { selectFlags, setFlag } from '@suite/flags';
 import { metadataLabelingActions } from '@suite/metadata';
+import { initialRedirection, routerInit } from '@suite/router';
+import { selectEarnYieldWorkerBaseUrl, suiteSettingsActions } from '@suite/settings';
 import * as trezorConnectActions from '@suite-common/connect-init';
-import { initMessageSystemThunk, prepareCachedEnvData } from '@suite-common/message-system';
+import { earnYieldWorkerBaseUrl } from '@suite-common/earn-stablecoin-api';
+import {
+    initMessageSystemThunk,
+    prepareCachedEnvData,
+    selectActiveKillswitchMessage,
+} from '@suite-common/message-system';
 import { periodicCheckTokenDefinitionsThunk } from '@suite-common/token-definitions';
 import {
     initBlockchainThunk,
@@ -10,36 +18,33 @@ import {
     updateMissingTxFiatRatesThunk,
 } from '@suite-common/wallet-core';
 import * as walletConnectActions from '@suite-common/walletconnect';
-import { DEVICE, UI_REQUEST } from '@trezor/connect';
 import { isDesktop } from '@trezor/env-utils';
 import { desktopApi } from '@trezor/suite-desktop-api';
 
-import { bluetoothOnDeviceConnectedThunk } from 'src/actions/bluetooth/bluetoothOnDeviceConnectedThunk';
-import * as languageActions from 'src/actions/settings/languageActions';
 import * as bioAuthThunks from 'src/actions/suite/bioAuthThunks';
-import * as modalActions from 'src/actions/suite/modalActions';
-import * as routerActions from 'src/actions/suite/routerActions';
-import { markDeviceAsRecentlyConnectedThunk } from 'src/actions/wallet/markDeviceAsRecentlyConnectedThunk';
 import type { Dispatch, GetState } from 'src/types/suite';
 
 import { SUITE } from './constants';
-import { onSuiteReady, setFlag } from './suiteActions';
+import { onSuiteReady } from './suiteActions';
 
 export const init = () => async (dispatch: Dispatch, getState: GetState) => {
     const {
         suite: {
-            settings: { language },
             lifecycle: { status },
-            flags: { enableAutoupdateOnNextRun },
         },
+        suiteSettings: { language },
         wallet: {
             settings: { localCurrency },
         },
     } = getState();
+    const { enableAutoupdateOnNextRun } = selectFlags(getState());
 
     if (status !== 'initial') return;
 
     dispatch({ type: SUITE.INIT });
+
+    // apply the earn yield worker base url from debug settings (or the default for this build)
+    earnYieldWorkerBaseUrl.set(selectEarnYieldWorkerBaseUrl(getState()));
 
     await dispatch(initDevices());
 
@@ -54,7 +59,7 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
      */
 
     // 2. fetching locales
-    dispatch(languageActions.setLanguage(language));
+    dispatch(suiteSettingsActions.setLanguage(language));
 
     // 3. fetch message system config
     await prepareCachedEnvData();
@@ -62,35 +67,22 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
 
     // 4. turn on auto updates if needed
     if (isDesktop() && enableAutoupdateOnNextRun) {
-        dispatch(setFlag('enableAutoupdateOnNextRun', false));
+        dispatch(setFlag({ key: 'enableAutoupdateOnNextRun', value: false }));
         desktopApi.setAutomaticUpdateEnabled(true);
     }
 
     // 5. redirecting user into welcome screen (if needed)
-    dispatch(routerActions.initialRedirection());
+    dispatch(initialRedirection({ isInitialRun: selectFlags(getState()).initialRun }));
 
-    // 6. init connect (could throw an error,
-    // then the error is caught in <ErrorBoundary /> in Main.tsx
+    // Do not initialize Connect or anything else related to it, if there is an app-wide killswitch via message-system.
+    const activeKillswitchMessage = selectActiveKillswitchMessage(getState());
+    if (activeKillswitchMessage) return;
+
+    // 6. init connect (could throw an error, then the error is caught in <ErrorBoundary /> in Main.tsx.
     try {
         // it is necessary to unwrap the result here because init calls async thunk from redux-toolkit which is always resolved
         // see more details here: https://redux-toolkit.js.org/api/createAsyncThunk#unwrapping-result-actions
-        await dispatch(
-            trezorConnectActions.connectInitThunk({
-                [DEVICE.CONNECT]: device => {
-                    dispatch(markDeviceAsRecentlyConnectedThunk(device));
-                    dispatch(bluetoothOnDeviceConnectedThunk(device));
-                },
-                [DEVICE.CONNECT_UNACQUIRED]: device => {
-                    dispatch(markDeviceAsRecentlyConnectedThunk(device));
-                },
-                [UI_REQUEST.INVALID_PIN_ATTEMPTS_DEPLETED]: () => {
-                    dispatch(
-                        modalActions.openModal({ type: UI_REQUEST.INVALID_PIN_ATTEMPTS_DEPLETED }),
-                    );
-                    dispatch(modalActions.preserve());
-                },
-            }),
-        ).unwrap();
+        await dispatch(trezorConnectActions.connectInitThunk()).unwrap();
     } catch (err) {
         dispatch({ type: SUITE.ERROR, error: err.message });
 
@@ -123,7 +115,7 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
     await dispatch(updateMissingTxFiatRatesThunk({ localCurrency }));
 
     // 11. dispatch initial location change
-    dispatch(routerActions.init());
+    dispatch(routerInit());
 
     // 12. fetch metadata. metadata is not saved together with other data in storage.
     // historically it was saved in indexedDB together with devices and accounts and we did not need to load them

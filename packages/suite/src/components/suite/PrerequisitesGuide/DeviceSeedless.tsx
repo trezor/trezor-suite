@@ -1,4 +1,5 @@
 import { Translation } from '@suite/intl';
+import { TrezorBodyIcon } from '@trezor/icons';
 
 import { TroubleshootingTips } from 'src/components/suite/troubleshooting/TroubleshootingTips';
 
@@ -11,7 +12,7 @@ export const DeviceSeedless = () => (
                 key: 'device-seedless',
                 heading: <Translation id="TR_SEEDLESS_SETUP_IS_NOT_SUPPORTED_TITLE" />,
                 description: <Translation id="TR_SEEDLESS_SETUP_IS_NOT_SUPPORTED_DESCRIPTION" />,
-                icon: 'trezorBody',
+                icon: TrezorBodyIcon,
             },
         ]}
     />

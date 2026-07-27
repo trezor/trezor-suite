@@ -8,12 +8,15 @@ type Attributes = {
 
 export const passphraseExitEvent: EventDef<Attributes, EventType.PassphraseExit> = {
     name: EventType.PassphraseExit,
-    descriptionTrigger: 'Exit from passphrase flow without adding wallet.',
+    descriptionTrigger:
+        'User exits the passphrase creation flow without completing wallet addition',
     changelog: [{ version: '24.7.2', notes: 'added' }],
     attributes: {
         screen: {
             changelog: [{ version: '24.7.2', notes: 'added' }],
-            description: 'Route name of the screen from which user exited the flow.',
+
+            description:
+                'Screen route name or identifier where the user exited the passphrase flow (e.g., `PassphraseForm`, `PassphraseConfirmOnTrezor`, `PassphraseEmptyWallet`, `PassphraseLoading`, `PassphraseStack`, `PassphraseVerifyEmptyWallet`, `PassphraseRedirecting`)',
         },
     },
 };

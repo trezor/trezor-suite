@@ -2,10 +2,10 @@ import { useSelector } from 'react-redux';
 
 import { selectDeviceModel } from '@suite-common/device';
 import { Box, HStack, Image, InlineAlertBox, VStack } from '@suite-native/atoms';
-import { SetupSupportingDeviceModel } from '@suite-native/device';
+import { type SetupSupportingDeviceModel } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';
 import { DeviceModelInternal } from '@trezor/device-utils';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 const securitySealImagesMap = {
     [DeviceModelInternal.T2T1]: [require('../assets/t2t1-seal.webp')],
@@ -56,7 +56,7 @@ export const SecuritySealImages = () => {
                 <Image source={images[1]} contentFit="contain" style={applyStyle(duoImageStyle)} />
             </HStack>
             <InlineAlertBox
-                variant="info"
+                intent="info"
                 title={
                     <Translation id="moduleDeviceOnboarding.securityCheckScreen.step2.modal.alertBox" />
                 }

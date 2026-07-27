@@ -1,42 +1,39 @@
-import React from 'react';
+import { memo, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { BASE_CRYPTO_MAX_DISPLAYED_DECIMALS, useFormatters } from '@suite-common/formatters';
-import { useSelectorDeepComparison } from '@suite-common/redux-utils';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
-import { AccountsListItemBase, StakingBadge } from '@suite-native/accounts';
-import { Badge, Box, Text } from '@suite-native/atoms';
-import { BaseCurrencyAmountFormatter, CryptoAmountFormatter } from '@suite-native/formatters';
-import { CryptoIconWithPercentage, Icon } from '@suite-native/icons';
-import { Translation } from '@suite-native/intl';
 import {
-    AppTabsParamList,
+    AccountsListItemBase,
+    type NativeAccountsRootState,
+    selectHasDeviceAnyFailedAccountForNetworkSymbol,
+} from '@suite-native/accounts';
+import { Icon } from '@suite-native/icons';
+import {
+    AccountsStackRoutes,
+    type AppTabsParamList,
     AppTabsRoutes,
-    RootStackParamList,
+    type RootStackParamList,
     RootStackRoutes,
-    TabToStackCompositeNavigationProp,
+    type TabToStackCompositeNavigationProp,
 } from '@suite-native/navigation';
 import {
-    NativeStakingRootState,
+    type NativeStakingRootState,
     selectHasAnyDeviceAccountsWithStaking,
 } from '@suite-native/staking';
-import { TokensRootState, selectHasDeviceAnyTokensForNetwork } from '@suite-native/tokens';
-import { BigNumber } from '@trezor/utils';
+import { type TokensRootState, selectHasDeviceAnyTokensForNetwork } from '@suite-native/tokens';
 
-import {
-    AssetsRootState,
-    selectAssetCryptoValue,
-    selectAssetFiatValue,
-    selectAssetFiatValuePercentage,
-    selectVisibleDeviceAccountsKeysByNetworkSymbol,
-} from '../assetsSelectors';
+import { selectSingleDeviceAccountKeyForNetworkSymbol } from '../assetsSelectors';
+import { type AssetsRootState } from '../types';
+import { AssetItemBadges } from './AssetItemBadges';
+import { AssetItemTitle } from './AssetItemTitle';
+import { CryptoAmount } from './CryptoAmount';
+import { FiatAmount } from './FiatAmount';
+import { PercentageIcon } from './PercentageIcon';
 
 type AssetItemProps = {
     cryptoCurrencySymbol: NetworkSymbol;
-    onPress?: (symbol: NetworkSymbol) => void;
 };
 
 type NavigationType = TabToStackCompositeNavigationProp<
@@ -45,103 +42,60 @@ type NavigationType = TabToStackCompositeNavigationProp<
     RootStackParamList
 >;
 
-type AssetItemSubComponentProps = { symbol: NetworkSymbol };
-
-const CryptoAmount = React.memo(({ symbol }: AssetItemSubComponentProps) => {
-    const cryptoValue = useSelector((state: AssetsRootState) =>
-        selectAssetCryptoValue(state, symbol),
-    );
-
-    return (
-        <CryptoAmountFormatter
-            value={cryptoValue}
-            symbol={symbol}
-            // Every asset crypto amount is rounded to 8 decimals to prevent UI overflow.
-            decimals={BASE_CRYPTO_MAX_DISPLAYED_DECIMALS}
-            testID={`@assets/cryptoAmount/${symbol}`}
-        />
-    );
-});
-
-const FiatAmount = React.memo(({ symbol }: AssetItemSubComponentProps) => {
-    const fiatValue = useSelector((state: AssetsRootState) => selectAssetFiatValue(state, symbol));
-
-    return (
-        <BaseCurrencyAmountFormatter
-            symbol={symbol}
-            value={fiatValue !== null ? asBaseCurrencyAmount(new BigNumber(fiatValue)) : null}
-        />
-    );
-});
-
-const PercentageIcon = React.memo(({ symbol }: AssetItemSubComponentProps) => {
-    const assetPercentages = useSelector((state: AssetsRootState) =>
-        selectAssetFiatValuePercentage(state, symbol),
-    );
-
-    return (
-        <CryptoIconWithPercentage
-            iconName={symbol}
-            percentage={assetPercentages?.fiatPercentage}
-            percentageOffset={assetPercentages?.fiatPercentageOffset}
-        />
-    );
-});
-
-export const AssetItem = React.memo(({ cryptoCurrencySymbol, onPress }: AssetItemProps) => {
+export const AssetItem = memo(({ cryptoCurrencySymbol }: AssetItemProps) => {
     const navigation = useNavigation<NavigationType>();
-    const { NetworkNameFormatter } = useFormatters();
-    const accountsKeysForNetworkSymbol = useSelectorDeepComparison((state: AssetsRootState) =>
-        selectVisibleDeviceAccountsKeysByNetworkSymbol(state, cryptoCurrencySymbol),
+    const singleAccountKey = useSelector((state: AssetsRootState) =>
+        selectSingleDeviceAccountKeyForNetworkSymbol(state, cryptoCurrencySymbol),
     );
-
-    const accountsPerAsset = accountsKeysForNetworkSymbol.length;
     const hasAnyTokens = useSelector((state: TokensRootState) =>
         selectHasDeviceAnyTokensForNetwork(state, cryptoCurrencySymbol),
     );
     const hasAnyAccountsWithStaking = useSelector((state: NativeStakingRootState) =>
         selectHasAnyDeviceAccountsWithStaking(state, cryptoCurrencySymbol),
     );
+    const hasAnyFailedAccount = useSelector((state: NativeAccountsRootState) =>
+        selectHasDeviceAnyFailedAccountForNetworkSymbol(state, cryptoCurrencySymbol),
+    );
 
-    const handleAssetPress = () => {
-        if (accountsPerAsset === 1 && !hasAnyTokens) {
+    const handleAssetPress = useCallback(() => {
+        // A single tokenless account opens its detail directly; anything else opens the list.
+        if (singleAccountKey && !hasAnyTokens && !hasAnyAccountsWithStaking) {
             navigation.navigate(RootStackRoutes.AccountDetail, {
-                accountKey: accountsKeysForNetworkSymbol[0],
+                accountKey: singleAccountKey,
                 closeActionType: 'back',
             });
-        } else if (onPress) {
-            onPress(cryptoCurrencySymbol);
+
+            return;
         }
-    };
+
+        navigation.navigate(AppTabsRoutes.AccountsStack, {
+            screen: AccountsStackRoutes.Accounts,
+            params: { networksFilter: [cryptoCurrencySymbol] },
+        });
+    }, [
+        cryptoCurrencySymbol,
+        hasAnyAccountsWithStaking,
+        hasAnyTokens,
+        navigation,
+        singleAccountKey,
+    ]);
 
     return (
         <AccountsListItemBase
-            disabled={!onPress}
             onPress={handleAssetPress}
             icon={<PercentageIcon symbol={cryptoCurrencySymbol} />}
-            title={<NetworkNameFormatter value={cryptoCurrencySymbol} />}
-            badges={
-                <>
-                    <Box>
-                        <Icon size="medium" color="iconSubdued" name="wallet" />
-                    </Box>
-                    <Text variant="body-sm" color="textSubdued">
-                        {accountsPerAsset}
-                    </Text>
-                    {hasAnyAccountsWithStaking && (
-                        <StakingBadge networkSymbol={cryptoCurrencySymbol} />
-                    )}
-                    {hasAnyTokens && (
-                        <Badge
-                            elevation="1"
-                            size="small"
-                            label={<Translation id="generic.tokens" />}
-                        />
-                    )}
-                </>
+            title={<AssetItemTitle symbol={cryptoCurrencySymbol} />}
+            badges={<AssetItemBadges symbol={cryptoCurrencySymbol} />}
+            mainValue={
+                hasAnyFailedAccount ? (
+                    <Icon name="warning" color="contentWarning" size="medium" />
+                ) : (
+                    <FiatAmount symbol={cryptoCurrencySymbol} />
+                )
             }
-            mainValue={<FiatAmount symbol={cryptoCurrencySymbol} />}
-            secondaryValue={<CryptoAmount symbol={cryptoCurrencySymbol} />}
+            secondaryValue={
+                hasAnyFailedAccount ? undefined : <CryptoAmount symbol={cryptoCurrencySymbol} />
+            }
         />
     );
 });

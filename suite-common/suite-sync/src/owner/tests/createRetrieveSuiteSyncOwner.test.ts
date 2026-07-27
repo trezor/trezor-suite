@@ -1,6 +1,6 @@
 import { DELEGATED_IDENTITY_KEY } from '@suite-common/delegated-identity-key-types/mocks';
 import {
-    SuiteSyncOwner,
+    type SuiteSyncOwner,
     asSuiteSyncOwnerId,
     asSuiteSyncOwnerSecretHex,
 } from '@suite-common/suite-sync-storage';
@@ -9,8 +9,8 @@ import { asDeviceUniquePath } from '@trezor/connect';
 import { ok } from '@trezor/type-utils';
 
 import {
-    RetrieveSuiteSyncOwnerDeps,
-    RetrieveSuiteSyncOwnerParams,
+    type RetrieveSuiteSyncOwnerDeps,
+    type RetrieveSuiteSyncOwnerParams,
     createRetrieveSuiteSyncOwner,
 } from '../createRetrieveSuiteSyncOwner';
 
@@ -21,6 +21,7 @@ const device: RetrieveSuiteSyncOwnerParams['device'] = {
         staticSessionId: 'A@B:0',
     },
     useEmptyPassphrase: false,
+    connected: true,
 };
 
 const owner1: SuiteSyncOwner = {
@@ -61,5 +62,22 @@ describe(createRetrieveSuiteSyncOwner.name, () => {
 
         expect(result.success).toBe(false);
         expect(!result.success && result.error.type).toBe('ProofOfDelegatedSignFailed');
+    });
+
+    it('returns DeviceNotConnectedError without calling Connect when device is not connected', async () => {
+        const evoluGetNode = jest.fn();
+        const ensureSuiteSyncOwner = createRetrieveSuiteSyncOwner({
+            createSuiteSyncOwner: () => ok(owner1),
+            trezorConnect: { evoluGetNode },
+        });
+
+        const result = await ensureSuiteSyncOwner({
+            device: { ...device, connected: false },
+            delegatedKey: DELEGATED_IDENTITY_KEY,
+        });
+
+        expect(result.success).toBe(false);
+        expect(!result.success && result.error.type).toBe('DeviceNotConnectedError');
+        expect(evoluGetNode).not.toHaveBeenCalled();
     });
 });

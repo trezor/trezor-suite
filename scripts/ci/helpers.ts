@@ -1,8 +1,8 @@
+import fetch from 'cross-fetch';
+import { ChildProcessWithoutNullStreams, spawn } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
 import semver from 'semver';
-import fetch from 'cross-fetch';
-import { ChildProcessWithoutNullStreams, spawn } from 'node:child_process';
 
 const ROOT = path.join(import.meta.dirname, '..', '..');
 
@@ -24,15 +24,38 @@ export const getNpmRemoteGreatestVersion = async (moduleName: string) => {
         const distributionTags = await gettingNpmDistributionTags(moduleName);
 
         const versionArray: string[] = Object.values(distributionTags);
-        const greatestVersion = versionArray.reduce((max, current) => {
-            return semver.gt(current, max) ? current : max;
-        });
+        const greatestVersion = versionArray.reduce((max, current) =>
+            semver.gt(current, max) ? current : max,
+        );
 
         return greatestVersion;
     } catch (error) {
         console.error('error:', error);
         throw new Error('Not possible to get remote greatest version');
     }
+};
+
+export const getTrezorPackageDir = (packageName: string) => {
+    const networkMatch = packageName.match(/^network-([^-]+)(-(.+))?$/);
+
+    return networkMatch
+        ? path.join(ROOT, 'networks', networkMatch[1]!, packageName)
+        : path.join(ROOT, 'packages', packageName);
+};
+
+export const getTrezorDependencies = async (packageNameWithoutTrezorPrefix: string) => {
+    const packageJsonPath = path.join(
+        getTrezorPackageDir(packageNameWithoutTrezorPrefix),
+        'package.json',
+    );
+    const packageJsonContent = await fs.promises.readFile(packageJsonPath, 'utf-8');
+    const packageJson = JSON.parse(packageJsonContent);
+    // We should ignore devDependencies.
+    const dependencies = packageJson.dependencies ? Object.keys(packageJson.dependencies) : [];
+
+    return dependencies
+        .filter(dep => dep.startsWith('@trezor/'))
+        .map(dep => dep.replace('@trezor/', ''));
 };
 
 /**
@@ -46,10 +69,9 @@ export const getPackageDependencies = async (
     console.info('-------------------------------------------------------------------------');
     console.info(`Getting @trezor dependencies of package ${packageNameWithoutTrezorPrefix}`);
 
-    const trezorDependencies = await getTrezorDependencies(ROOT, packageNameWithoutTrezorPrefix);
+    const trezorDependencies = await getTrezorDependencies(packageNameWithoutTrezorPrefix);
     console.info(`Trezor dependencies: ${trezorDependencies.join(', ')}`);
 
-    // eslint-disable-next-line no-restricted-syntax
     for await (const trezorDependencyNameWithoutPrefix of trezorDependencies) {
         // trezorDependencyNameWithoutPrefix is like 'connect', 'suite', etc.
 
@@ -70,10 +92,7 @@ export const getPackageDependencies = async (
     };
 };
 
-export const exec = async (
-    cmd: string,
-    params: any[],
-): Promise<{ stdout: string; stderr: string }> => {
+export const exec = (cmd: string, params: any[]): Promise<{ stdout: string; stderr: string }> => {
     console.info(cmd, ...params);
 
     const res: ChildProcessWithoutNullStreams = spawn(cmd, params, {
@@ -125,29 +144,11 @@ export const comment = async ({ prNumber, body }: { prNumber: string; body: stri
 };
 
 export const getLocalVersion = (packageName: string) => {
-    const packageJsonPath = path.join(ROOT, 'packages', packageName, 'package.json');
+    const packageJsonPath = path.join(getTrezorPackageDir(packageName), 'package.json');
     if (!fs.existsSync(packageJsonPath)) {
         throw new Error(`package.json not found for package: ${packageName}`);
     }
     const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
-    return packageJson.version;
-};
 
-export const getTrezorDependencies = async (
-    rootDir: string,
-    packageNameWithoutTrezorPrefix: string,
-) => {
-    const packageJsonPath = path.join(
-        rootDir,
-        'packages',
-        packageNameWithoutTrezorPrefix,
-        'package.json',
-    );
-    const packageJsonContent = await fs.promises.readFile(packageJsonPath, 'utf-8');
-    const packageJson = JSON.parse(packageJsonContent);
-    // We should ignore devDependencies.
-    const dependencies = packageJson.dependencies ? Object.keys(packageJson.dependencies) : [];
-    return dependencies
-        .filter(dep => dep.startsWith('@trezor/'))
-        .map(dep => dep.replace('@trezor/', ''));
+    return packageJson.version;
 };

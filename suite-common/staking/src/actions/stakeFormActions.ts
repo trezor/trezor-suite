@@ -1,11 +1,10 @@
-import { NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
-    ComposeActionContext,
-    EstimatedFee,
-    ExternalOutput,
-    PrecomposedLevels,
-    PrecomposedTransaction,
-    StakeFormState,
+    type ComposeActionContext,
+    type ExternalOutput,
+    type PrecomposedLevels,
+    type PrecomposedTransaction,
+    type StakeFormState,
 } from '@suite-common/wallet-types';
 import {
     calculateMax,
@@ -13,7 +12,8 @@ import {
     convertAmountSubunitsToUnits,
     getExternalComposeOutput,
 } from '@suite-common/wallet-utils';
-import { FeeLevel } from '@trezor/connect';
+import { type FeeLevel } from '@trezor/connect';
+import type { EstimatedFee } from '@trezor/network-solana/types';
 import { BigNumber } from '@trezor/utils';
 
 type StakingParams = {
@@ -153,14 +153,15 @@ export const composeStakingTransaction = (
         ),
     );
     response.forEach((tx, index) => {
-        const feeLabel = predefinedLevels[index].label as FeeLevel['label'];
+        const level = predefinedLevels[index];
+        if (!level) return;
+        const feeLabel = level.label;
         wrappedResponse[feeLabel] = tx;
     });
 
     // format max (calculate sends it as satoshi)
     // update errorMessage values (symbol)
-    Object.keys(wrappedResponse).forEach(key => {
-        const tx = wrappedResponse[key];
+    Object.entries(wrappedResponse).forEach(([_key, tx]) => {
         if (tx.type !== 'error') {
             tx.max = tx.max ? convertAmountSubunitsToUnits(tx.max, decimals) : undefined;
             tx.estimatedFeeLimit = customFeeLimit ?? tx.estimatedFeeLimit;

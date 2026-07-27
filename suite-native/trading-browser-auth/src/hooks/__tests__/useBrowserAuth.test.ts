@@ -1,13 +1,24 @@
+import { type StateFromReducersMapObject, combineReducers } from '@reduxjs/toolkit';
 import { WebBrowserResultType } from 'expo-web-browser';
 
+import { extraDependenciesCommonMock } from '@suite-common/test-utils';
 import { type TradingType, selectTradingSellLastErrorMessage } from '@suite-common/trading';
-import { getTranslation } from '@suite-native/intl';
-import { TestStore, act, initStore, renderHookWithStoreProvider } from '@suite-native/test-utils';
+import { initialWalletSettingsState } from '@suite-common/wallet-core';
+import { getTranslation, localeReducer } from '@suite-native/intl';
+import {
+    type PreloadedStatePartial,
+    type TestStore,
+    act,
+    createLightStore,
+    createStaticReducer,
+    renderHookWithStoreProvider,
+} from '@suite-native/test-utils-store';
 import { getWalletState } from '@suite-native/trading-fixtures';
 import {
     selectTradeToBeOpened,
     selectTradingProviderConfirmationStatus,
     tradingActions,
+    tradingSlice,
 } from '@suite-native/trading-state';
 
 import { TRADING_URL_DEFAULT_BACK } from '../../consts';
@@ -50,24 +61,36 @@ describe('useBrowserAuth', () => {
     let store: TestStore;
 
     const renderUseBrowserAuth = (tradingType: TradingType = 'sell') =>
-        renderHookWithStoreProvider(
-            () =>
-                useBrowserAuth(
-                    tradingType === 'buy'
-                        ? {
-                              orderId: 'trade-order-id-1',
-                              tradingType,
-                          }
-                        : { tradingType },
-                ),
-            { store },
-        );
+        renderHookWithStoreProvider(() => useBrowserAuth(tradingType), { store });
+
+    const defaultWalletState = getWalletState();
+
+    const reducer = {
+        locale: localeReducer,
+        wallet: combineReducers({
+            settings: createStaticReducer(initialWalletSettingsState),
+            trading: tradingSlice.prepareReducer(extraDependenciesCommonMock),
+            accounts: createStaticReducer(defaultWalletState.accounts),
+            fiat: createStaticReducer(defaultWalletState.fiat),
+            send: createStaticReducer(defaultWalletState.send),
+        }),
+    } as const;
 
     beforeEach(() => {
         jest.clearAllMocks();
         mockLinkingURL = null;
         mockDismissBrowser.mockReturnValue(Promise.resolve({ type: WebBrowserResultType.DISMISS }));
-        ({ store } = initStore({ wallet: getWalletState() }));
+        store = createLightStore({
+            reducer,
+            preloadedState: {
+                wallet: {
+                    trading: defaultWalletState.trading,
+                    accounts: defaultWalletState.accounts,
+                    fiat: defaultWalletState.fiat,
+                    send: defaultWalletState.send,
+                },
+            } satisfies PreloadedStatePartial<StateFromReducersMapObject<typeof reducer>>,
+        });
     });
 
     it('should return openBrowser callback', () => {
@@ -80,10 +103,9 @@ describe('useBrowserAuth', () => {
         it('should log error to sentry and return early when called with undefined tradingType', async () => {
             const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
             mockOpenBrowserAsync.mockResolvedValue({ type: WebBrowserResultType.OPENED });
-            const { result } = renderHookWithStoreProvider(
-                () => useBrowserAuth({ tradingType: undefined }),
-                { store },
-            );
+            const { result } = renderHookWithStoreProvider(() => useBrowserAuth(undefined), {
+                store,
+            });
 
             await act(async () => {
                 await result.current.openBrowser('URL', 'CALLBACK_URL');
@@ -227,7 +249,7 @@ describe('useBrowserAuth', () => {
             const { result } = renderUseBrowserAuth('buy');
 
             act(() => {
-                result.current.openBrowser('URL', TRADING_URL_DEFAULT_BACK);
+                result.current.openBrowser('URL', TRADING_URL_DEFAULT_BACK, 'trade-order-id-1');
             });
 
             expect(selectTradeToBeOpened(store.getState())).toEqual(
@@ -302,6 +324,31 @@ describe('useBrowserAuth', () => {
             expect(selectTradingSellLastErrorMessage(store.getState())).toBe(
                 getTranslation('moduleTrading.browser.noURL'),
             );
+        });
+
+        it('should call handleBrowserSuccess and set tradeToBeOpened for buy ', () => {
+            mockLinkingURL = TRADING_URL_DEFAULT_BACK;
+            mockOpenBrowserAsync.mockResolvedValue({ type: WebBrowserResultType.CANCEL });
+            const { result } = renderUseBrowserAuth('buy');
+
+            act(() => {
+                result.current.openBrowserForFormData(
+                    {
+                        formMethod: 'GET',
+                        formAction: 'URL',
+                        fields: {},
+                    },
+                    TRADING_URL_DEFAULT_BACK,
+                    'trade-order-id-1',
+                );
+            });
+
+            expect(selectTradeToBeOpened(store.getState())).toEqual(
+                expect.objectContaining({
+                    data: expect.objectContaining({ orderId: 'trade-order-id-1' }),
+                }),
+            );
+            expect(mockDismissBrowser).toHaveBeenCalledTimes(1);
         });
     });
 });

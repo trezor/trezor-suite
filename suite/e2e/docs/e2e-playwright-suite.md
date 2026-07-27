@@ -6,25 +6,15 @@
 
 _Note: All paths below are relative to the root of trezor-suite repository, if not specified otherwise._
 
-### Common
+### Prerequisites
 
 - [Docker](https://docs.docker.com/desktop/mac/install/)
-- macOS only: [XQuartz](https://www.xquartz.org/) (to share your screen with Docker)
 - [Trezor user env](https://github.com/trezor/trezor-user-env)
 - No other instance of `Suite` or `trezord` service is running
 
-**Full steps:**<br />
-_(in case of Linux with X11 support, skip to step 6.)_
+### Common steps
 
-1. Run XQuartz. Wait till it is launched. Leave it running in the background.
-1. In XQuartz settings go to Preferences -> Security and enable "Allow connections from network clients".
-1. Open a new terminal window (not in XQuartz) and add yourself to the X access control list:
-    - `xhost +127.0.0.1`
-    - You will probably need to logout/login after XQuartz installation to have `xhost` command available.
-1. Run Docker and go to Preferences -> Resources -> Advanced and increase RAM to at least 4GB. Otherwise, the app during tests does not even load.
-1. In the terminal window, set two environment variables:
-    - ``export HOSTNAME=`hostname` ``
-    - `export DISPLAY=:0`
+1. _macOS only:_ Run Docker and go to Preferences -> Resources -> Advanced and increase RAM to at least 4GB. Otherwise, the app during tests does not even load.
 1. In terminal window, navigate to `trezor-user-env` repo root and run `./run.sh`.
 1. In another terminal window, run `yarn workspace @trezor/suite-e2e docker:suite-sync` to have local Relay server instance
 1. In workspace `@trezor/suite-e2e` create a `.env` file according to the `.example.env`
@@ -96,16 +86,21 @@ Each test must be assigned a tag according to what device model it is supported 
 
 At the moment, there are these additional tags:
 
-- @smoke
 - @desktopOnly
 - @webOnly
 - @nightlyOnly
 - @specificFirmware
 - @firmware-ready
 
-#### @smoke
+#### Device coverage on PR
 
-Tests belonging to a smoke set are executed on all supported devices in PR pipelines. Otherwise only T3W1 is used.
+Most E2E tests are specified to cover T3T1 and T3W1, the two flagship models.
+But to save Currents quota, T3T1 is skipped on PR test runs, and only T3W1 is covered, unless the test is exclusive (T3T1-only) test. Meanwhile, nightly tests provide full coverage, i.e. they run both flagship models. This is configured entirely in the Playwright project configs.
+To summarize:
+
+- in PR run, if a test specifies T3T1 alongside any other models, T3T1 is skipped, and only other models are covered (usually just T3W1)
+- in PR run, if a test specifies T3T1 as its only model, it is covered
+- in nightly run, all models specified in the test are covered
 
 #### @desktopOnly or @webOnly
 

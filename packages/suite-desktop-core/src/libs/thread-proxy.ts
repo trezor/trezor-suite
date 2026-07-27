@@ -1,10 +1,10 @@
-import { UtilityProcess, utilityProcess } from 'electron';
+import { type UtilityProcess, utilityProcess } from 'electron';
 import { EventEmitter } from 'events';
 import path from 'path';
 
-import { Deferred, createDeferred, promiseAllSequence } from '@trezor/utils';
+import { type Deferred, createDeferred, promiseAllSequence } from '@trezor/utils';
 
-import { ThreadRequestType, isValidThreadEvent, isValidThreadResponse } from './thread';
+import { type ThreadRequestType, isValidThreadEvent, isValidThreadResponse } from './thread';
 
 const THREADS_DIR_PATH = path.join(__dirname, 'threads');
 
@@ -90,10 +90,6 @@ export class ThreadProxy<_Target extends object> {
 
     watch(event: LifecycleEvent, listener: () => void) {
         this.lifecycle.on(event, listener);
-    }
-
-    unwatch(event: LifecycleEvent) {
-        this.lifecycle.removeAllListeners(event);
     }
 
     /** Removes all the listeners and kills the process (ignoring possible `keepAlive`) */

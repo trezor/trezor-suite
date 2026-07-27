@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
 import { Dimensions, Platform } from 'react-native';
 
-import { BarcodeScanningResult, CameraView, PermissionStatus } from 'expo-camera';
+import { type BarcodeScanningResult, CameraView, PermissionStatus } from 'expo-camera';
 
 import { Box, HStack, Loader, Text, VStack } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation, useTranslate } from '@suite-native/intl';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { nativeSpacings } from '@trezor/theme';
 
 import { CameraPermissionError } from './CameraPermissionError';
@@ -72,10 +72,10 @@ export const QRCodeScanner = ({ onCodeScanned }: QRCodeScannerProps) => {
                     <HStack alignItems="center" justifyContent="center">
                         <Icon
                             name="lightbulb"
-                            color="backgroundSecondaryDefault"
+                            color="legacyBackgroundSecondaryDefault"
                             size="mediumLarge"
                         />
-                        <Text color="backgroundSecondaryDefault">
+                        <Text color="legacyBackgroundSecondaryDefault">
                             <Translation id="qrCode.qrCodeHint" />
                         </Text>
                     </HStack>

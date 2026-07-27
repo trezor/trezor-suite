@@ -14,17 +14,14 @@ export const useNotificationForDisconnectedDevice = () => {
         state => state.suite.seenDisconnectNotificationForDeviceIds,
     );
     const recentlyDisconnectedDevice = useSelector(state => state.suite.recentlyDisconnectedDevice);
-    const hasSeenDisconnectTooltip = useSelector(
-        state => state.suite.flags.hasSeenDisconnectTooltip,
-    );
+    const hasSeenDisconnectTooltip = useSelector(state => state.flags.hasSeenDisconnectTooltip);
 
     useEffect(() => {
         const deviceId = selectedDevice?.id;
 
         if (deviceId) {
-            const isNotificationSeenOnThisDevice = seenDisconnectNotificationForDeviceIds
-                ? seenDisconnectNotificationForDeviceIds.some(id => id === selectedDevice?.id)
-                : false;
+            const isNotificationSeenOnThisDevice =
+                seenDisconnectNotificationForDeviceIds?.includes(deviceId) ?? false;
 
             const isNotificationVisible =
                 recentlyDisconnectedDevice === deviceId &&

@@ -26,6 +26,7 @@ export enum EventType {
     // eslint-disable-next-line local-rules/analytics-event-name
     CreateReceiveAddressShowAddress = 'create-receive-address/show-address',
     DashboardActions = 'dashboard/actions',
+    DashboardActivateAssetsModal = 'dashboard/activate-assets-modal',
     DashboardReceiveModal = 'dashboard/receive-modal',
     DashboardReceiveModalOptions = 'dashboard/receive-modal/options',
     DashboardSendModal = 'dashboard/send-modal',
@@ -95,6 +96,7 @@ export enum EventType {
     SettingsGeneralLabelingProvider = 'settings/general/labeling-provider',
     SettingsGeneralMevProtection = 'settings/general/mev-protection',
     SettingsGeneralNetworkReserve = 'settings/general/network-reserve',
+    SettingsLoadNetworksClicked = 'settings/load-networks-clicked',
     SettingsTor = 'settings/tor',
     SettingsTorOnionLinks = 'settings/tor/onion-links',
     StakingChangeDelegate = 'staking/change-delegate',
@@ -104,7 +106,7 @@ export enum EventType {
     StakingStake = 'staking/stake',
     StakingUnstake = 'staking/unstake',
     StakingUpdateProvider = 'staking/update-provider',
-    StakingYield = 'staking/yield',
+    YieldEarnEntry = 'yield/earn-entry',
     // eslint-disable-next-line local-rules/analytics-event-name
     SuiteReady = 'suite-ready',
     // eslint-disable-next-line local-rules/analytics-event-name
@@ -117,8 +119,6 @@ export enum EventType {
     TradeApproval = 'trade/approval',
     // eslint-disable-next-line local-rules/analytics-event-name
     TradeBuy = 'trade/buy',
-    // eslint-disable-next-line local-rules/analytics-event-name
-    TradeCompareOffers = 'trade/compare-offers',
     // eslint-disable-next-line local-rules/analytics-event-name
     TradeConfirmTrade = 'trade/confirm-trade',
     // eslint-disable-next-line local-rules/analytics-event-name

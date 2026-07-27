@@ -1,8 +1,9 @@
-import BlockchainLink from '@trezor/blockchain-link';
-import { MESSAGES } from '@trezor/blockchain-link-types/src/constants';
-import { ValidateEvmRpc } from '@trezor/blockchain-link-types/src/responses';
+import { BlockchainLink } from '@trezor/blockchain-link';
+import { MESSAGES, type ResponseTypes } from '@trezor/blockchain-link-types';
+import { type PermissionRequest } from '@trezor/connect-common';
 
-import { AbstractMethod, MethodPermission, Payload } from '../core/AbstractMethod';
+import type { MethodMessage } from '../core/AbstractMethod';
+import { AbstractMethod } from '../core/AbstractMethod';
 import { EvmRpcWorker } from '../workers/workers';
 import { validateParams } from './common/paramsValidator';
 
@@ -11,32 +12,32 @@ type Params = {
     chainId: number;
 };
 
+type ValidateEvmRpc = ResponseTypes.ValidateEvmRpc;
+
 export default class BlockchainValidateEvmRpcUrl extends AbstractMethod<
     'blockchainValidateEvmRpcUrl',
     Params
 > {
-    constructor(message: { id?: number; payload: Payload<'blockchainValidateEvmRpcUrl'> }) {
-        super(message);
-        this.useDevice = false;
-        this.useUi = false;
-    }
-
-    get requiredPermissions(): MethodPermission[] {
-        return [];
-    }
-
-    init() {
-        const { payload } = this;
+    constructor(message: MethodMessage<'blockchainValidateEvmRpcUrl'>) {
+        const { payload } = message;
 
         validateParams(payload, [
             { name: 'url', type: 'string', required: true },
             { name: 'chainId', type: 'number', required: true },
         ]);
 
-        this.params = {
+        const params = {
             url: payload.url,
             chainId: payload.chainId,
         };
+
+        super(message, params);
+        this.useDevice = false;
+        this.useUi = false;
+    }
+
+    get requiredPermissions(): PermissionRequest[] {
+        return [];
     }
 
     get info() {

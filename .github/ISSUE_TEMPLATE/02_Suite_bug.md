@@ -2,7 +2,8 @@
 name: Trezor Suite - bug report
 about: Something does not work as expected
 title: ''
-labels: bug,
+labels: ''
+type: Bug
 assignees: ''
 ---
 

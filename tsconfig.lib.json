@@ -1,21 +1,21 @@
 {
     "extends": "./tsconfig.base.json",
     "compilerOptions": {
-        "module": "commonjs",
-        "moduleResolution": "node",
-        "target": "ES2022",
+        "module": "ESNext",
+        "moduleResolution": "Bundler",
+        "target": "ES2023",
         "importHelpers": true,
 
         "composite": false,
         "incremental": false,
-        "declarationMap": true,
+        "declarationMap": false,
+        "sourceMap": false,
         "noEmit": false,
         "emitDeclarationOnly": false
     },
     "exclude": [
         "**/node_modules",
         "**/lib",
-        "**/libESM",
         "**/libDev",
         "**/build",
         "**/build-electron",

@@ -6,13 +6,16 @@ test.describe('Without device', { tag: ['@T3W1', '@T3T1'] }, () => {
     test.beforeEach(
         async ({ page, onboardingPage, settingsPage, trezorUserEnv, dashboardPage }) => {
             await onboardingPage.completeOnboarding();
+
             await test.step('Enable regtest network with balance', async () => {
                 await settingsPage.navigateTo('application');
                 await settingsPage.toggleDebugModeInSettings();
 
                 await settingsPage.toggleTestnetNetworks();
-                await settingsPage.navigateTo('coins');
-                await settingsPage.coinsTab.enableNetwork('regtest');
+                await settingsPage.changeNetworks({
+                    enableNetworks: ['regtest'],
+                    skipActivation: true,
+                });
 
                 await trezorUserEnv.sendToAddressAndMineBlock({
                     address: ADDRESS_INDEX_1,

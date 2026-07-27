@@ -1,16 +1,13 @@
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useSelector } from 'react-redux';
 
-import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
+import { type BottomTabBarProps } from '@react-navigation/bottom-tabs';
 
-import { selectHasBitcoinOnlyFirmware } from '@suite-common/device';
 import { Box } from '@suite-native/atoms';
-import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
-import { TxKeyPath, useTranslate } from '@suite-native/intl';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { type TxKeyPath, useTranslate } from '@suite-native/intl';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { AppTabsRoutes } from '../routes';
-import { TabsOptions } from '../types';
+import { type TabsOptions } from '../types';
 import { TabBarItem } from './TabBarItem';
 interface TabBarProps extends BottomTabBarProps {
     tabItemOptions: TabsOptions;
@@ -22,8 +19,8 @@ const tabBarStyle = prepareNativeStyle<{
     insetsBottom: number;
 }>((utils, { insetLeft, insetRight, insetsBottom }) => ({
     width: '100%',
-    backgroundColor: utils.colors.backgroundSurfaceElevation0,
-    borderTopColor: utils.colors.borderElevation0,
+    backgroundColor: utils.colors.surfaceFillPage,
+    borderTopColor: utils.colors.borderNeutral,
     borderTopWidth: utils.borders.widths.small,
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -46,11 +43,6 @@ export const TabBar = ({ state, navigation, tabItemOptions }: TabBarProps) => {
     const { applyStyle } = useNativeStyles();
     const insets = useSafeAreaInsets();
 
-    const isBitcoinOnlyFirmware = useSelector(selectHasBitcoinOnlyFirmware);
-    const isEarnEnabled = useFeatureFlag(FeatureFlag.IsEarnEnabled);
-
-    const shouldHideEarnTab = isBitcoinOnlyFirmware || !isEarnEnabled;
-
     return (
         <Box
             style={applyStyle(tabBarStyle, {
@@ -60,12 +52,10 @@ export const TabBar = ({ state, navigation, tabItemOptions }: TabBarProps) => {
             })}
         >
             {state.routes.map((route, index) => {
-                if (route.name === AppTabsRoutes.EarnStack && shouldHideEarnTab) {
-                    return null;
-                }
-
                 const isFocused = state.index === index;
-                const { routeName, iconName, focusedIconName, params } = tabItemOptions[route.name];
+                const tabOption = tabItemOptions[route.name];
+                if (!tabOption) return null;
+                const { routeName, iconName, focusedIconName, params } = tabOption;
                 const tabBarLabelTxKey = TabBarLabelTxKeys[routeName];
 
                 const handleTabBarItemPress = () => {

@@ -1,0 +1,51 @@
+{
+    "name": "@trezor/network-cardano",
+    "version": "10.0.0-alpha.1",
+    "license": "MIT",
+    "sideEffects": false,
+    "main": "./src/index.ts",
+    "type": "module",
+    "exports": {
+        "./constants": "./src/constants/index.ts",
+        "./runtime": "./src/runtime/index.ts",
+        "./types": "./src/types/index.ts",
+        ".": "./src/index.ts"
+    },
+    "publishConfig": {
+        "main": "./lib/index.js",
+        "types": "./lib/index.d.ts",
+        "exports": {
+            "./constants": {
+                "types": "./lib/constants/index.d.ts",
+                "default": "./lib/constants/index.js"
+            },
+            "./runtime": {
+                "types": "./lib/runtime/index.d.ts",
+                "default": "./lib/runtime/index.js"
+            },
+            "./types": {
+                "types": "./lib/types/index.d.ts",
+                "default": "./lib/types/index.js"
+            },
+            ".": {
+                "types": "./lib/index.d.ts",
+                "default": "./lib/index.js"
+            }
+        }
+    },
+    "files": [
+        "lib/",
+        "CHANGELOG.md"
+    ],
+    "scripts": {
+        "depcheck": "yarn g:depcheck",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "test:unit": "yarn g:jest --passWithNoTests",
+        "type-check": "yarn g:tsc --build tsconfig.json",
+        "build:lib": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../../scripts/publish/replace-imports.sh ./lib"
+    },
+    "dependencies": {
+        "@fivebinaries/coin-selection": "3.0.0",
+        "cbor": "^10.0.12"
+    }
+}

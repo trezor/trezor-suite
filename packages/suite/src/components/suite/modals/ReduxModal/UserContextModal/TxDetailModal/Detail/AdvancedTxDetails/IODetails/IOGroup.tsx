@@ -1,12 +1,13 @@
+import { selectFullSelectedAccount } from '@suite/account';
 import { Translation } from '@suite/intl';
-import { NetworkSymbolExtended } from '@suite-common/wallet-config';
-import { WalletAccountTransaction } from '@suite-common/wallet-types';
+import { type NetworkSymbolExtended } from '@suite-common/wallet-config';
+import { type WalletAccountTransaction } from '@suite-common/wallet-types';
 import { Column, Icon, InfoSegments, Row, Text } from '@trezor/components';
+import { ArrowRightIcon } from '@trezor/icons';
 
 import { useSelector } from 'src/hooks/suite/useSelector';
-import { selectFullSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 
-import { IODetails } from './IODetails';
+import { type IODetailsType } from './IODetailsType';
 import { IOItem } from './IOItem';
 
 export type IOGroupProps = {
@@ -15,8 +16,8 @@ export type IOGroupProps = {
      */
     tx: Omit<WalletAccountTransaction, 'symbol'> & { symbol: NetworkSymbolExtended };
     contractAddress?: string;
-    inputs: IODetails[];
-    outputs: IODetails[];
+    inputs: IODetailsType[];
+    outputs: IODetailsType[];
     hasHeadings?: boolean;
     isUtxoBased?: boolean;
     isPhishingTransaction?: boolean;
@@ -40,7 +41,7 @@ export const IOGroup = ({
     if (!hasInputs && !hasOutputs) return null;
 
     return (
-        <Row gap={60} alignItems="stretch" justifyContent="space-between">
+        <Row gap={64} alignItems="stretch" justifyContent="space-between">
             {hasInputs && (
                 <Column width="40%" flex="0 0 40%" gap={8}>
                     {hasHeadings && (
@@ -71,7 +72,7 @@ export const IOGroup = ({
             )}
             {hasInputs && hasOutputs && (
                 <Row alignSelf="center">
-                    <Icon name="arrowRight" size={16} intent="neutral" priority="secondary" />
+                    <Icon as={ArrowRightIcon} size={16} intent="neutral" priority="secondary" />
                 </Row>
             )}
             {hasOutputs && (

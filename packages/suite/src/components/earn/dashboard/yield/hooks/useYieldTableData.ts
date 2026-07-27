@@ -1,0 +1,241 @@
+import { useMemo } from 'react';
+
+import { type TokenDtoV2, type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
+import { type NetworkSymbol, getNetworkByYieldXyzId } from '@suite-common/wallet-config';
+import {
+    doTokensMatch,
+    getConvertedOutputTokenBalanceToInputTokenAmount,
+    selectDeviceSupportedNetworks,
+} from '@suite-common/wallet-core';
+import { type Account, type TokenInfoBranded, toTokenSymbol } from '@suite-common/wallet-types';
+import {
+    compareEarnByAmountDesc,
+    compareEarnByApyDesc,
+    compareEarnByNetwork,
+    compareEarnByNetworkTokenOrder,
+    getApyPercent,
+} from '@suite-common/wallet-utils';
+import { BigNumber } from '@trezor/utils';
+
+import { useSelector } from 'src/hooks/suite';
+
+import {
+    type YieldAccountOpportunity,
+    type YieldInactiveVaultOpportunity,
+    type YieldOpportunityData,
+} from '../types';
+
+const hasTokenSymbol = (
+    accountToken: NonNullable<Account['tokens']>[number],
+): accountToken is TokenInfoBranded => accountToken.symbol !== undefined;
+
+const getMatchedAccountToken = ({
+    account,
+    networkSymbol,
+    token,
+}: {
+    account: Account;
+    networkSymbol: NetworkSymbol;
+    token?: Pick<TokenDtoV2, 'address' | 'symbol' | 'decimals'>;
+}): TokenInfoBranded | undefined => {
+    if (!account.tokens?.length || !token) {
+        return undefined;
+    }
+
+    return account.tokens.find(
+        (accountToken): accountToken is TokenInfoBranded =>
+            hasTokenSymbol(accountToken) &&
+            doTokensMatch({
+                networkSymbol,
+                firstToken: {
+                    address: accountToken.contract,
+                    symbol: accountToken.symbol,
+                    decimals: accountToken.decimals,
+                },
+                secondToken: token,
+            }),
+    );
+};
+
+const getYieldOpportunityData = ({
+    account,
+    networkSymbol,
+    vault,
+}: {
+    account: Account;
+    networkSymbol: NetworkSymbol;
+    vault: YieldDtoV2;
+}): YieldOpportunityData => {
+    const matchedInputToken = getMatchedAccountToken({
+        account,
+        networkSymbol,
+        token: vault.token,
+    });
+    const matchedOutputToken = getMatchedAccountToken({
+        account,
+        networkSymbol,
+        token: vault.outputToken,
+    });
+    const hasVaultPosition = new BigNumber(matchedOutputToken?.balance ?? '0').gt(0);
+    const depositedAmount = getConvertedOutputTokenBalanceToInputTokenAmount({
+        networkSymbol,
+        token: vault.token,
+        outputToken: vault.outputToken,
+        outputTokenBalance: matchedOutputToken?.balance,
+        pricePerShareState: vault.state?.pricePerShareState,
+    });
+    const additionalDepositAmount = matchedInputToken?.balance ?? '0';
+    const hasRewardsData =
+        new BigNumber(depositedAmount).gt(0) || new BigNumber(additionalDepositAmount).gt(0);
+
+    return {
+        matchedInputToken,
+        hasVaultPosition,
+        hasRewardsData,
+        depositedAmount,
+        additionalDepositAmount,
+        depositedSymbol: matchedInputToken?.symbol ?? toTokenSymbol(vault.token.symbol),
+        depositedContractAddress: matchedInputToken?.contract ?? vault.token.address ?? null,
+    };
+};
+
+const getAvailableBalanceForSorting = (opportunity: YieldAccountOpportunity) =>
+    opportunity.matchedInputToken
+        ? opportunity.additionalDepositAmount
+        : (opportunity.account?.formattedBalance ?? '0');
+
+const toNetworkTokenSortKey = (opportunity: YieldAccountOpportunity) =>
+    opportunity.account && {
+        symbol: opportunity.account.symbol,
+        tokenSymbol: opportunity.depositedSymbol,
+        accountType: opportunity.account.accountType,
+        index: opportunity.account.index,
+    };
+
+type UseYieldTableDataProps = {
+    availableVaults: YieldDtoV2[];
+    visibleAccounts: Account[];
+    visibleAccountSymbols: Set<NetworkSymbol>;
+};
+
+export const useYieldTableData = ({
+    availableVaults,
+    visibleAccounts,
+    visibleAccountSymbols,
+}: UseYieldTableDataProps) => {
+    const yieldAccountOpportunities = useMemo<YieldAccountOpportunity[]>(() => {
+        const allOpportunities = availableVaults.flatMap(vault => {
+            const network = getNetworkByYieldXyzId(vault.network);
+
+            if (!network || !visibleAccountSymbols.has(network.symbol)) {
+                return [];
+            }
+
+            const networkAccounts = visibleAccounts.filter(
+                account => account.symbol === network.symbol,
+            );
+
+            return networkAccounts.map(account => ({
+                key: `${vault.id}:${account.key}`,
+                account,
+                networkSymbol: network.symbol,
+                vault,
+                ...getYieldOpportunityData({
+                    account,
+                    networkSymbol: network.symbol,
+                    vault,
+                }),
+                apyPercentage: getApyPercent(vault.rewardRate.total),
+            }));
+        });
+
+        const activeOpportunities: YieldAccountOpportunity[] = [];
+        const depositableOpportunities: YieldAccountOpportunity[] = [];
+        const noBalanceOpportunities: YieldAccountOpportunity[] = [];
+
+        allOpportunities.forEach(opportunity => {
+            const hasMatchedInputToken = opportunity.matchedInputToken !== undefined;
+            const hasDepositableBalance = new BigNumber(opportunity.additionalDepositAmount).gt(0);
+
+            if (opportunity.hasVaultPosition) {
+                activeOpportunities.push(opportunity);
+
+                return;
+            }
+
+            if (hasMatchedInputToken && hasDepositableBalance) {
+                depositableOpportunities.push(opportunity);
+
+                return;
+            }
+
+            noBalanceOpportunities.push(opportunity);
+        });
+
+        return [
+            ...activeOpportunities
+                .toSorted(compareEarnByAmountDesc(opportunity => opportunity.depositedAmount))
+                .toSorted(compareEarnByNetwork(opportunity => opportunity.account?.symbol)),
+            ...depositableOpportunities
+                .toSorted(compareEarnByAmountDesc(getAvailableBalanceForSorting))
+                .toSorted(compareEarnByNetworkTokenOrder(toNetworkTokenSortKey)),
+            ...noBalanceOpportunities.toSorted(
+                compareEarnByNetworkTokenOrder(toNetworkTokenSortKey),
+            ),
+        ];
+    }, [availableVaults, visibleAccounts, visibleAccountSymbols]);
+
+    const deviceSupportedNetworkSymbols = useSelector(selectDeviceSupportedNetworks);
+    const yieldInactiveVaultOpportunities = useMemo<YieldInactiveVaultOpportunity[]>(() => {
+        const opportunities = availableVaults.flatMap(vault => {
+            const network = getNetworkByYieldXyzId(vault.network);
+
+            if (!network) {
+                return [];
+            }
+
+            const isNetworkActivated = visibleAccountSymbols.has(network.symbol);
+            const isNetworkSupported = deviceSupportedNetworkSymbols.includes(network.symbol);
+
+            if (isNetworkActivated || !isNetworkSupported) {
+                return [];
+            }
+
+            return [
+                {
+                    key: `${vault.id}:${network.symbol}:inactive`,
+                    networkSymbol: network.symbol,
+                    vault,
+                    apyPercentage: getApyPercent(vault.rewardRate.total),
+                },
+            ];
+        });
+
+        return opportunities.toSorted(
+            compareEarnByApyDesc(opportunity => opportunity.apyPercentage),
+        );
+    }, [availableVaults, deviceSupportedNetworkSymbols, visibleAccountSymbols]);
+
+    const isYieldActive = useMemo(
+        () => yieldAccountOpportunities.some(opportunity => opportunity.hasVaultPosition),
+        [yieldAccountOpportunities],
+    );
+
+    const hasAnyRewardsData = useMemo(
+        () => yieldAccountOpportunities.some(opportunity => opportunity.hasRewardsData),
+        [yieldAccountOpportunities],
+    );
+
+    const yieldAccounts = useMemo(
+        () => yieldAccountOpportunities.map(opportunity => opportunity.account),
+        [yieldAccountOpportunities],
+    );
+
+    return {
+        isYieldActive,
+        hasAnyRewardsData,
+        yieldAccountOpportunities,
+        yieldInactiveVaultOpportunities,
+        yieldAccounts,
+    };
+};

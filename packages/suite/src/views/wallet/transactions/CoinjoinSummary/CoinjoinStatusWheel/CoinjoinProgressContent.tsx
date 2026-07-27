@@ -2,24 +2,25 @@ import { FormattedNumber } from 'react-intl';
 
 import styled from 'styled-components';
 
-import { Translation } from '@suite/intl';
-import { AccountKey } from '@suite-common/wallet-types';
-import { Icon, Spinner, Tooltip } from '@trezor/components';
-import { spacings, spacingsPx, typography } from '@trezor/theme';
-
-import { CountdownTimer } from 'src/components/suite/CountdownTimer';
-import { useCoinjoinSessionBlockers } from 'src/hooks/coinjoin/useCoinjoinSessionBlockers';
-import { useSelector } from 'src/hooks/suite/useSelector';
 import {
     selectCurrentCoinjoinWheelStates,
     selectCurrentSessionDeadlineInfo,
     selectRoundsDurationInHours,
-} from 'src/reducers/wallet/coinjoinReducer';
+} from '@suite/coinjoin';
+import { Translation } from '@suite/intl';
+import { type AccountKey } from '@suite-common/wallet-types';
+import { Icon, Spinner, Tooltip } from '@trezor/components';
+import { PauseIcon, PlayIcon, StopIcon } from '@trezor/icons';
+import { typography } from '@trezor/theme';
+
+import { CountdownTimer } from 'src/components/suite/CountdownTimer';
+import { useCoinjoinSessionBlockers } from 'src/hooks/coinjoin/useCoinjoinSessionBlockers';
+import { useSelector } from 'src/hooks/suite/useSelector';
 
 export const Container = styled.div<{ $isWide: boolean }>`
     width: ${({ $isWide }) => `calc(100% - ${$isWide ? 12 : 8}px)`};
     height: ${({ $isWide }) => `calc(100% - ${$isWide ? 12 : 8}px)`};
-    background: ${({ theme }) => theme.backgroundNeutralBoldInverted};
+    background: ${({ theme }) => theme.surfaceFillRaised};
     border-radius: 50%;
     transition:
         background 0.15s ease-out,
@@ -40,8 +41,8 @@ const CenteringContainer = styled.div`
 `;
 
 const AllPrivateContent = styled.div`
-    padding-top: ${spacingsPx.xxxs};
-    color: ${({ theme }) => theme.textPrimaryDefault};
+    padding-top: 2px;
+    color: ${({ theme }) => theme.contentBrand};
 `;
 
 const ProgressPercentage = styled.p`
@@ -56,7 +57,7 @@ const TooltipChildren = styled.div`
 
 const TimeLeft = styled.p`
     max-width: 80%;
-    color: ${({ theme }) => theme.textDefault};
+    color: ${({ theme }) => theme.contentPrimary};
     ${typography['body-md-strong']}
 `;
 
@@ -87,7 +88,7 @@ export const CoinjoinProgressContent = ({
     const getProgressContent = () => {
         const iconConfig = {
             size: 25,
-            color: 'iconDefault' as const,
+            color: 'contentPrimary' as const,
         };
 
         const isLoadingIndicatorShown =
@@ -97,13 +98,7 @@ export const CoinjoinProgressContent = ({
         const isRunningAndBlocked = isSessionActive && isCoinjoinSessionBlocked && isPaused;
 
         if (isAccountEmpty || coinjoinSessionBlocker === 'ANONYMITY_ERROR') {
-            return (
-                <Icon
-                    name="play"
-                    margin={{ bottom: spacings.xxs, left: spacings.xxs }}
-                    {...iconConfig}
-                />
-            );
+            return <Icon as={PlayIcon} margin={{ bottom: 4, left: 4 }} {...iconConfig} />;
         }
 
         if (isLoadingIndicatorShown) {
@@ -124,7 +119,7 @@ export const CoinjoinProgressContent = ({
         if (isRunningAndBlocked) {
             return (
                 <>
-                    <Icon name="pause" margin={{ bottom: spacings.xxs }} {...iconConfig} />
+                    <Icon as={PauseIcon} margin={{ bottom: 4 }} {...iconConfig} />
                     <Translation id="TR_PAUSED" />
                 </>
             );
@@ -134,7 +129,7 @@ export const CoinjoinProgressContent = ({
             if (isWheelHovered) {
                 return (
                     <>
-                        <Icon name="play" margin={{ bottom: spacings.xxs }} {...iconConfig} />
+                        <Icon as={PlayIcon} margin={{ bottom: 4 }} {...iconConfig} />
                         <Translation id="TR_RESUME" />
                     </>
                 );
@@ -142,7 +137,7 @@ export const CoinjoinProgressContent = ({
 
             return (
                 <>
-                    <Icon name="stop" margin={{ bottom: spacings.xxs }} {...iconConfig} />
+                    <Icon as={StopIcon} margin={{ bottom: 4 }} {...iconConfig} />
                     <Translation id="TR_STOPPING" />
                 </>
             );
@@ -158,7 +153,7 @@ export const CoinjoinProgressContent = ({
                         content={<Translation id="TR_AUTO_STOP_TOOLTIP" />}
                     >
                         <TooltipChildren>
-                            <Icon name="stop" margin={{ bottom: spacings.xxs }} {...iconConfig} />
+                            <Icon as={StopIcon} margin={{ bottom: 4 }} {...iconConfig} />
                             <Translation id="TR_STOP" />
                         </TooltipChildren>
                     </Tooltip>
@@ -167,7 +162,7 @@ export const CoinjoinProgressContent = ({
 
             return (
                 <>
-                    <Icon name="stop" margin={{ bottom: spacings.xxs }} {...iconConfig} />
+                    <Icon as={StopIcon} margin={{ bottom: 4 }} {...iconConfig} />
                     <Translation id="TR_STOP" />
                 </>
             );
@@ -193,12 +188,7 @@ export const CoinjoinProgressContent = ({
 
         return (
             <>
-                <Icon
-                    name="play"
-                    margin={{ bottom: spacings.xxs }}
-                    {...iconConfig}
-                    color="iconPrimaryDefault"
-                />
+                <Icon as={PlayIcon} margin={{ bottom: 4 }} {...iconConfig} color="contentBrand" />
                 <Translation id="TR_START" />
             </>
         );

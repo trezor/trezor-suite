@@ -16,7 +16,9 @@ yup.addMethod<yup.StringSchema>(yup.string, 'isAscii', function () {
 });
 
 yup.addMethod<yup.StringSchema>(yup.string, 'isHex', function () {
-    return this.test('isHex', 'DATA_NOT_VALID_HEX', value => isHex(value as string));
+    return this.test('isHex', 'DATA_NOT_VALID_HEX', value =>
+        isHex(value, { prefix: 'optional', allowEmpty: false }),
+    );
 });
 
 export { yup };

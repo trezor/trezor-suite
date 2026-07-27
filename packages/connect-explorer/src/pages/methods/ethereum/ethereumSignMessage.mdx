@@ -1,4 +1,4 @@
-import { EthereumSignMessage } from '@trezor/connect/src/types/api/ethereum';
+import { EthereumSignMessage } from '@trezor/connect-common/src/types/api/ethereum/common';
 
 import { ApiPlayground } from '../../../components/ApiPlayground';
 import { CommonParamsLink } from '../../../components/CommonParamsLink';
@@ -49,7 +49,7 @@ TrezorConnect.ethereumSignMessage({
 
 ### Result
 
-[MessageSignature type](https://github.com/trezor/trezor-suite/blob/develop/packages/protobuf/src/messages.ts)
+[MessageSignature type](https://github.com/trezor/trezor-suite/blob/develop/packages/protobuf/src/definitions/messages-bitcoin.ts)
 
 ```javascript
 {
@@ -66,8 +66,8 @@ Error
 ```javascript
 {
     success: false,
-    payload: {
-        error: string // error message
+    error: {
+        message: string // error message
     }
 }
 ```

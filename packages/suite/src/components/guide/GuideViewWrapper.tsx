@@ -1,41 +1,41 @@
-import { ReactNode, UIEventHandler, createContext, useCallback, useState } from 'react';
+import { Children, type ReactNode } from 'react';
 
 import styled from 'styled-components';
 
 import { variables } from '@trezor/components';
 
 const Wrapper = styled.div`
-    background: ${({ theme }) => theme.backgroundSurfaceElevation0};
+    background: ${({ theme }) => theme.surfaceFillSunken};
+    border-left: 1px solid ${({ theme }) => theme.surfaceBorderSunken};
     display: flex;
     height: 100%;
     flex-direction: column;
-    overflow: hidden scroll;
+    overflow: hidden;
     -webkit-app-region: no-drag;
-    min-width: ${variables.LAYOUT_SIZE.GUIDE_PANEL_CONTENT_WIDTH};
+    min-width: ${variables.LAYOUT_SIZE.GUIDE_PANEL_MIN_WIDTH - 1}px;
 `;
 
-export const ContentScrolledContext = createContext<boolean>(false);
+// Only the content scrolls (and rubber-bands on overscroll); the header stays fixed above it.
+const ScrollableContent = styled.div`
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    overflow: hidden scroll;
+`;
 
 type GuideViewWrapperProps = {
     children: ReactNode;
 };
 
 export const GuideViewWrapper = ({ children }: GuideViewWrapperProps) => {
-    const [isScrolled, setIsScrolled] = useState<boolean>(false);
-
-    const onScroll: UIEventHandler<HTMLDivElement> = useCallback(e => {
-        if (e?.currentTarget?.scrollTop) {
-            setIsScrolled(true);
-        } else {
-            setIsScrolled(false);
-        }
-    }, []);
+    // Every view renders the GuideHeader as its first child; keep it out of the
+    // scroll container so the overscroll bounce only affects the content below it.
+    const [header, ...content] = Children.toArray(children);
 
     return (
-        <Wrapper onScroll={onScroll}>
-            <ContentScrolledContext.Provider value={isScrolled}>
-                {children}
-            </ContentScrolledContext.Provider>
+        <Wrapper>
+            {header}
+            <ScrollableContent>{content}</ScrollableContent>
         </Wrapper>
     );
 };

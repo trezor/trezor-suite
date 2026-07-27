@@ -11,13 +11,15 @@ export const settingsDeviceUpdateAutoLockEvent: EventDef<
     EventType.SettingsDeviceUpdateAutoLock
 > = {
     name: EventType.SettingsDeviceUpdateAutoLock,
-    descriptionTrigger: 'Settings > Device > CUSTOMIZATION > Auto-lock time (PIN required)',
+    descriptionTrigger:
+        'User changes the device auto-lock timeout setting in Settings > Device > Customization > Auto-lock time',
     changelog: [{ version: '1.8.0', notes: 'added' }],
 
     attributes: {
         value: {
+            description:
+                'The auto-lock timeout duration in milliseconds (e.g., 60000 for 1 minute, 300000 for 5 minutes)',
             changelog: [{ version: '1.8.0', notes: 'added' }],
-            description: 'number in milliseconds',
         },
     },
 };

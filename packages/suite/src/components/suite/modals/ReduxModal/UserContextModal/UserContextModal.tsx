@@ -1,30 +1,36 @@
 import { MetadataProviderModal } from '@suite/metadata';
-import { AccountKey } from '@suite-common/wallet-types';
+import { type MODAL_CONTEXT_USER, closeModal as closeModalAction } from '@suite/modal';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { UI_REQUEST } from '@trezor/connect';
 import { exhaustive } from '@trezor/type-utils';
 
-import { MODAL } from 'src/actions/suite/constants';
-import { onCancel as onCancelAction } from 'src/actions/suite/modalActions';
-import { EarnInANutshellModal, EarnProviderConsentModal } from 'src/components/earn';
-import { EarnClaimModal } from 'src/components/earn/modals/EarnClaimModal/EarnClaimModal';
-import { EarnSupplyModal } from 'src/components/earn/modals/EarnSupplyModal/EarnSupplyModal';
-import { EarnWithdrawalModal } from 'src/components/earn/modals/EarnWithdrawalModal/EarnWithdrawalModal';
+import {
+    EarnClaimModal,
+    EarnInANutshellModal,
+    EarnProviderConsentModal,
+    StakeModal,
+    TronStakeInANutshellModal,
+    TronVoteConsentModal,
+    UnstakeModal,
+} from 'src/components/earn';
+import { ConnectPopupTxSimulationModal } from 'src/components/tx-simulation/connect-popup';
+import { EarnYieldTxSimulationModal } from 'src/components/tx-simulation/earn-stablecoin';
 import { useDispatch } from 'src/hooks/suite';
-import type { AcquiredDevice } from 'src/types/suite';
 
 import { ConfirmAddressModal } from '../ConfirmAddressModal';
 import { ConfirmXpubModal } from '../ConfirmXpubModal';
 import { CopyAddressModal } from '../CopyAddressModal';
-import { PinInvalidModal } from '../DeviceContextModal/PinInvalidModal';
-import type { ReduxModalProps } from '../ReduxModal';
-import { TransactionReviewModal } from '../TransactionReviewModal/TransactionReviewModal';
-import { UnhideTokenModal } from '../UnhideTokenModal';
+import { ActivateAssetsModal } from './ActivateAssetsModal';
 import { AddAccountModal } from './AddAccountModal/AddAccountModal';
 import { AddTokenModal } from './AddTokenModal';
+import type { ReduxModalProps } from '../ReduxModalProps';
 import { AdvancedCoinSettingsModal } from './AdvancedCoinSettingsModal/AdvancedCoinSettingsModal';
 import { ApplicationLogModal } from './ApplicationLogModal';
-import { AutoStartBeforeQuitModal } from './AutoStartBeforeQuitModal';
 import { BackgroundGalleryModal } from './BackgroundGalleryModal';
+import { PinInvalidModal } from '../DeviceContextModal/PinInvalidModal';
+import { TransactionReviewModal } from '../TransactionReviewModal/TransactionReviewModal';
+import { UnhideTokenModal } from '../UnhideTokenModal';
+import { AutoStartBeforeQuitModal } from './AutoStartBeforeQuitModal';
 import { CancelCoinjoinModal } from './CancelCoinjoinModal';
 import { CoinjoinSuccessModal } from './CoinjoinSuccessModal';
 import { ConfirmUnverifiedAddressModal } from './ConfirmUnverifiedAddressModal';
@@ -34,6 +40,7 @@ import { ConnectAddressConfirmation } from './ConnectAddressConfirmation';
 import { ConnectErrorModal } from './ConnectErrorModal';
 import { ConnectLoadingModal } from './ConnectLoadingModal';
 import { ConnectPermissionsModal } from './ConnectPermissionsModal';
+import { ConnectSelectAccount } from './ConnectSelectAccount/ConnectSelectAccount';
 import { CriticalCoinjoinPhaseModal } from './CriticalCoinjoinPhaseModal/CriticalCoinjoinPhaseModal';
 import { DeviceAuthenticityOptOutModal } from './DeviceAuthenticityOptOutModal';
 import { DisableTorModal } from './DisableTorModal';
@@ -42,29 +49,29 @@ import { FirmwareRevisionOptOutModal } from './FirmwareRevisionOptOutModal';
 import { ImportTransactionModal } from './ImportTransactionModal/ImportTransactionModal';
 import { MoreRoundsNeededModal } from './MoreRoundsNeededModal';
 import { PinMismatchModal } from './PinMismatchModal';
-import { QrScannerModal } from './QrScannerModal';
+import { QrScannerModal } from './QrScannerModal/QrScannerModal';
 import { RequestEnableTorModal } from './RequestEnableTorModal';
 import { SafetyChecksModal } from './SafetyChecksModal';
 import { StakeChangeDelegateModal } from './StakeChangeDelegateModal/StakeChangeDelegateModal';
 import { TorLoadingModal } from './TorLoadingModal';
 import { TxDetailModal } from './TxDetailModal/TxDetailModal';
-import { TxSimulationModal } from './TxSimulationModal';
 import { UnecoCoinjoinModal } from './UnecoCoinjoinModal';
 import { WalletConnectProposalModal } from './WalletConnectProposalModal';
 import { WalletConnectSwitchAccountModal } from './WalletConnectSwitchAccountModal';
 import { WipeDeviceSuccessModal } from './WipeDeviceSuccessModal';
+import { WrapNativeTokenModal } from './WrapNativeTokenModal';
 
 /** Modals opened as a result of user action */
-export const UserContextModal = ({ payload }: ReduxModalProps<typeof MODAL.CONTEXT_USER>) => {
+export const UserContextModal = ({ payload }: ReduxModalProps<typeof MODAL_CONTEXT_USER>) => {
     const dispatch = useDispatch();
 
-    const onCancel = () => dispatch(onCancelAction());
+    const onCancel = () => dispatch(closeModalAction());
 
     switch (payload.type) {
         case 'add-account':
             return (
                 <AddAccountModal
-                    device={payload.device as AcquiredDevice}
+                    device={payload.device}
                     symbol={payload.symbol}
                     noRedirect={payload.noRedirect}
                     isCoinjoinDisabled={payload.isCoinjoinDisabled}
@@ -76,6 +83,7 @@ export const UserContextModal = ({ payload }: ReduxModalProps<typeof MODAL.CONTE
         case 'unverified-address':
             return (
                 <ConfirmUnverifiedAddressModal
+                    accountKey={payload.accountKey}
                     addressPath={payload.addressPath}
                     value={payload.value}
                 />
@@ -114,6 +122,8 @@ export const UserContextModal = ({ payload }: ReduxModalProps<typeof MODAL.CONTE
             return <MetadataProviderModal onCancel={onCancel} decision={payload.decision} />;
         case 'advanced-coin-settings':
             return <AdvancedCoinSettingsModal {...payload} onCancel={onCancel} />;
+        case 'activate-assets':
+            return <ActivateAssetsModal onCancel={onCancel} />;
         case 'add-token':
             return <AddTokenModal {...payload} onCancel={onCancel} />;
         case 'safety-checks':
@@ -143,41 +153,17 @@ export const UserContextModal = ({ payload }: ReduxModalProps<typeof MODAL.CONTE
         case 'uneco-coinjoin-warning':
             return <UnecoCoinjoinModal />;
         case 'earn-in-a-nutshell':
-            return (
-                <EarnInANutshellModal
-                    onCancel={onCancel}
-                    flow={payload.flow}
-                    provider={payload.provider}
-                    account={payload.account}
-                    yieldId={payload.yieldId}
-                    tokenContractAddress={payload.tokenContractAddress}
-                />
-            );
+            return <EarnInANutshellModal {...payload} onCancel={onCancel} />;
+        case 'tron-stake-in-a-nutshell':
+            return <TronStakeInANutshellModal {...payload} onCancel={onCancel} />;
+        case 'tron-vote-consent':
+            return <TronVoteConsentModal {...payload} onCancel={onCancel} />;
         case 'earn-provider-consent':
-            return (
-                <EarnProviderConsentModal
-                    onCancel={onCancel}
-                    flow={payload.flow}
-                    provider={payload.provider}
-                    account={payload.account}
-                    yieldId={payload.yieldId}
-                    tokenContractAddress={payload.tokenContractAddress}
-                />
-            );
-        case 'supply':
+            return <EarnProviderConsentModal {...payload} onCancel={onCancel} />;
         case 'stake':
-            return (
-                <EarnSupplyModal
-                    onCancel={onCancel}
-                    flow={payload.flow}
-                    account={payload.account}
-                    yieldId={payload.yieldId}
-                    tokenContractAddress={payload.tokenContractAddress}
-                />
-            );
-        case 'withdraw':
+            return <StakeModal {...payload} onCancel={onCancel} />;
         case 'unstake':
-            return <EarnWithdrawalModal onCancel={onCancel} account={payload.account} />;
+            return <UnstakeModal onCancel={onCancel} account={payload.account} />;
         case 'claim':
             return <EarnClaimModal onCancel={onCancel} account={payload.account} />;
         case 'change-delegate':
@@ -200,16 +186,36 @@ export const UserContextModal = ({ payload }: ReduxModalProps<typeof MODAL.CONTE
             return <WalletConnectSwitchAccountModal sessionTopic={payload.sessionTopic} />;
         case 'connect-address-confirmation':
             return <ConnectAddressConfirmation />;
+        case 'connect-select-account':
+            return <ConnectSelectAccount />;
         case 'connect-error':
             return <ConnectErrorModal />;
         case 'connect-loading':
             return <ConnectLoadingModal />;
         case 'auto-start-before-quit':
             return <AutoStartBeforeQuitModal />;
-        case 'tx-simulation':
-            return <TxSimulationModal />;
+        case 'connect-popup-tx-simulation':
+            return <ConnectPopupTxSimulationModal />;
+        case 'earn-yield-tx-simulation':
+            return (
+                <EarnYieldTxSimulationModal
+                    decision={payload.decision}
+                    data={payload.data}
+                    closeModal={onCancel}
+                />
+            );
         case 'wipe-device-success':
             return <WipeDeviceSuccessModal />;
+        case 'wrap-native-token':
+            return (
+                <WrapNativeTokenModal
+                    account={payload.account}
+                    maxWrapAmount={payload.maxWrapAmount}
+                    nativeSymbol={payload.nativeSymbol}
+                    wrappedSymbol={payload.wrappedSymbol}
+                    onCancel={onCancel}
+                />
+            );
         default:
             return exhaustive(payload);
     }

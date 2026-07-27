@@ -1,8 +1,8 @@
-import { ReactNode, useContext } from 'react';
-import { ScrollViewProps, View, ViewProps } from 'react-native';
+import { type ReactNode, useContext } from 'react';
+import { type ScrollViewProps, View, type ViewProps } from 'react-native';
 import { SystemBars } from 'react-native-edge-to-edge';
 import { KeyboardStickyView } from 'react-native-keyboard-controller';
-import { EdgeInsets } from 'react-native-safe-area-context';
+import { type EdgeInsets } from 'react-native-safe-area-context';
 import { useSelector } from 'react-redux';
 
 import { BottomTabBarHeightContext } from '@react-navigation/bottom-tabs';
@@ -10,16 +10,16 @@ import { useRoute } from '@react-navigation/native';
 
 import { selectIsAnyBannerMessageActive } from '@suite-common/message-system';
 import { Box, useBannerAwareSafeAreaInsets } from '@suite-native/atoms';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Color } from '@trezor/theme';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
+import { type Color } from '@trezor/theme';
 
-import { DynamicScreenHeaderProps } from './DynamicHeader/DynamicScreenHeader';
+import { type DynamicScreenHeaderProps } from './DynamicHeader/DynamicScreenHeader';
 import { DynamicHeaderProvider } from './DynamicHeader/DynamicScreenHeaderContext';
+import { DynamicScrollableScreenContentHeader } from './DynamicHeader/DynamicScrollableScreenContentHeader';
+import { isScreenHeaderPropDynamic } from './DynamicHeader/dynamicHeaderUtils';
 import { ScreenContentWrapper } from './ScreenContentWrapper';
 import { useAndroidNavigationBarStyle } from '../hooks/useAndroidNavigationBarStyle';
 import { useIsKeyboardShown } from '../hooks/useIsKeyboardShown';
-import { DynamicScrollableScreenContentHeader } from './DynamicHeader/DynamicScrollableScreenContentHeader';
-import { isScreenHeaderPropDynamic } from './DynamicHeader/dynamicHeaderUtils';
 
 export type ScreenProps = {
     children: ReactNode;
@@ -34,6 +34,7 @@ export type ScreenProps = {
     hasBottomInset?: boolean;
     refreshControl?: ScrollViewProps['refreshControl'];
     containerStyle?: ViewProps['style'];
+    shouldKeepScrolledToEnd?: boolean;
 };
 
 const screenContainerStyle = prepareNativeStyle<{
@@ -88,11 +89,12 @@ export const Screen = ({
     containerStyle,
     systemThemeStyle,
     isScrollable = true,
-    backgroundColor = 'backgroundSurfaceElevation0',
+    backgroundColor = 'surfaceFillPage',
     noHorizontalPadding = false,
     noBottomPadding = false,
     focusedInputBottomOffset,
     hasBottomInset = true,
+    shouldKeepScrolledToEnd = false,
 }: ScreenProps) => {
     const {
         applyStyle,
@@ -115,7 +117,7 @@ export const Screen = ({
     // We have to extract dynamic header props from header prop. While not ideal, this allows us to only send one header prop to the screen.
     const dynamicHeaderProps = ((): DynamicScreenHeaderProps | null => {
         if (isScreenHeaderPropDynamic(header)) {
-            return header.props as DynamicScreenHeaderProps;
+            return header.props;
         }
 
         return null;
@@ -146,6 +148,7 @@ export const Screen = ({
                     focusedInputBottomOffset={focusedInputBottomOffset}
                     refreshControl={refreshControl}
                     isDynamicHeader={isScreenHeaderPropDynamic(header)}
+                    shouldKeepScrolledToEnd={shouldKeepScrolledToEnd}
                 >
                     {shouldRenderDynamicScrollableHeader && (
                         <DynamicScrollableScreenContentHeader {...dynamicHeaderProps} />

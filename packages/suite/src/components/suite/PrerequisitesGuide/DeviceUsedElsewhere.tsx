@@ -1,17 +1,18 @@
-import { MouseEventHandler } from 'react';
+import { type MouseEventHandler } from 'react';
 
+import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { isDesktop } from '@trezor/env-utils';
+import { TrezorBodyIcon } from '@trezor/icons';
 
 import { TroubleshootingTips } from 'src/components/suite/troubleshooting/TroubleshootingTips';
 import {
     TROUBLESHOOTING_TIP_CLOSE_ALL_TABS,
     TROUBLESHOOTING_TIP_RECONNECT,
 } from 'src/components/suite/troubleshooting/tips';
-import { useDevice } from 'src/hooks/suite';
 
 import { AcquireDeviceButton } from '../AcquireDeviceButton';
-import { TroubleshootingTipsItem } from '../troubleshooting/TroubleshootingTips';
+import { type TroubleshootingTipsItem } from '../troubleshooting/TroubleshootingTipsItem';
 
 export const DeviceUsedElsewhere = () => {
     const { device } = useDevice();
@@ -32,7 +33,7 @@ export const DeviceUsedElsewhere = () => {
                     }}
                 />
             ),
-            icon: 'trezorBody',
+            icon: TrezorBodyIcon,
         },
         TROUBLESHOOTING_TIP_CLOSE_ALL_TABS,
         TROUBLESHOOTING_TIP_RECONNECT,

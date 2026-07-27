@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 
-import { useCurrentRef } from '@trezor/react-utils';
+import { useFreshRef } from '@trezor/react-utils';
 
 import { useSelector } from './useSelector';
 import { selectTradingInfo } from '../selectors/tradingSelectors';
@@ -9,7 +9,7 @@ export function useCoinsAndPlatforms() {
     const info = useSelector(selectTradingInfo);
 
     // Prevent unnecessary re-renders
-    const infoRef = useCurrentRef(info);
+    const infoRef = useFreshRef(info);
 
     const getCoinsAndPlatforms = useCallback(() => {
         const coins = infoRef.current.coins ?? {};

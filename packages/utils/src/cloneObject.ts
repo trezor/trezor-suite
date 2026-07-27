@@ -15,7 +15,7 @@ export const cloneObject = <T>(obj: T, seen = new WeakMap<object, any>()): T => 
     if (ArrayBuffer.isView(obj)) {
         const TypedArrayConstructor = obj.constructor as new (...args: any[]) => typeof obj;
 
-        return new TypedArrayConstructor(obj) as any;
+        return new TypedArrayConstructor(obj);
     }
 
     const clone: any = Array.isArray(obj) ? [] : {};
@@ -29,7 +29,7 @@ export const cloneObject = <T>(obj: T, seen = new WeakMap<object, any>()): T => 
                 continue;
             }
 
-            (clone as any)[key] = cloneObject(value, seen);
+            clone[key] = cloneObject(value, seen);
         }
     }
 

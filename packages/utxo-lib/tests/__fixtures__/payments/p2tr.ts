@@ -68,7 +68,7 @@ export const fixtures = {
             },
         },
         {
-            exception: 'Invalid checksum for bc1qafk4yhqvj4wep57m62dgrmutldusqde8adh20d',
+            exception: 'Invalid checksum',
             arguments: {
                 address: 'bc1qafk4yhqvj4wep57m62dgrmutldusqde8adh20d',
             },

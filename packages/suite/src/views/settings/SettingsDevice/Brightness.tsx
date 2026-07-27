@@ -1,11 +1,9 @@
-import { events } from '@suite/analytics';
+import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
 import TrezorConnect from '@trezor/connect';
-
-import { ActionButton, ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
-import { useAnalytics } from 'src/support/useAnalytics';
-
-import { useDevice } from '../../../hooks/suite';
+import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
 interface DeviceLabelProps {
     isDeviceLocked: boolean;
@@ -13,7 +11,7 @@ interface DeviceLabelProps {
 
 export const Brightness = ({ isDeviceLocked }: DeviceLabelProps) => {
     const { device } = useDevice();
-    const analytics = useAnalytics();
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
     const isSupportedDevice = device?.features?.capabilities?.includes('Capability_Brightness');
 
     if (!isSupportedDevice) {

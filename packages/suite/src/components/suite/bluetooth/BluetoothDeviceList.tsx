@@ -1,17 +1,17 @@
-import { Card, Column, Row, SkeletonRectangle } from '@trezor/components';
-import { spacings } from '@trezor/theme';
+import { Card, Column, Row, Skeleton } from '@trezor/components';
+
+import { type DesktopBluetoothDevice } from 'src/actions/bluetooth/DesktopBluetoothDevice';
 
 import { BluetoothDeviceListItem } from './BluetoothDeviceListItem';
-import { DesktopBluetoothDevice } from '../../../actions/bluetooth/DesktopBluetoothDevice';
 
 const SkeletonDevice = () => (
-    <Row width="100%" gap={spacings.md} justifyContent="stretch" height="44px" alignItems="center">
-        <SkeletonRectangle width="44px" height="36px" animate />
-        <Column alignItems="start" gap={spacings.xxxs} flex="1">
-            <SkeletonRectangle width="105px" height="18px" animate />
-            <SkeletonRectangle width="55px" height="18px" animate />
+    <Row width="100%" gap={16} justifyContent="stretch" height="44px" alignItems="center">
+        <Skeleton width={44} height={36} animate />
+        <Column alignItems="start" gap={2} flex="1">
+            <Skeleton width={105} height={18} animate />
+            <Skeleton width={55} height={18} animate />
         </Column>
-        <SkeletonRectangle width="86px" height="36px" animate />
+        <Skeleton width={86} height={36} animate />
     </Row>
 );
 

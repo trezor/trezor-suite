@@ -1,6 +1,5 @@
 import { Translation } from '@suite/intl';
-import { BulletList, Card, Column, H3, H4 } from '@trezor/components';
-import { spacings } from '@trezor/theme';
+import { Card, Column, H3, H4, StepList } from '@trezor/components';
 
 import { TransactionReviewOutputTimer } from './TransactionReviewOutputTimer';
 
@@ -18,8 +17,8 @@ export const TransactionReviewVerifyAddress = ({
     isSending,
 }: VerifyAddressProps) => (
     <Card>
-        <Column gap={spacings.xxl}>
-            <Column gap={spacings.md}>
+        <Column gap={32}>
+            <Column gap={16}>
                 <H3>
                     <Translation id="TR_SEND_ADDRESS_CONFIRMATION_HEADING" />
                 </H3>
@@ -31,27 +30,22 @@ export const TransactionReviewVerifyAddress = ({
                     />
                 )}
             </Column>
-            <BulletList
-                isOrdered
-                bulletGap={spacings.md}
-                titleGap={spacings.zero}
-                gap={spacings.xxl}
-            >
-                <BulletList.Item
+            <StepList isOrdered bulletGap={16} titleGap={0} gap={32}>
+                <StepList.Item
                     title={
                         <H4 typographyStyle="body-sm">
                             <Translation id="TR_SEND_ADDRESS_CONFIRMATION_ITEM_1_HEADING" />
                         </H4>
                     }
                 />
-                <BulletList.Item
+                <StepList.Item
                     title={
                         <H4 typographyStyle="body-sm">
                             <Translation id="TR_SEND_ADDRESS_CONFIRMATION_ITEM_2_HEADING" />
                         </H4>
                     }
                 />
-                <BulletList.Item
+                <StepList.Item
                     state="done"
                     title={
                         <H4 typographyStyle="body-sm">
@@ -59,7 +53,7 @@ export const TransactionReviewVerifyAddress = ({
                         </H4>
                     }
                 />
-            </BulletList>
+            </StepList>
         </Column>
     </Card>
 );

@@ -1,5 +1,5 @@
 import {
-    CreateSuiteSyncOwner,
+    type CreateSuiteSyncOwner,
     CreateSuiteSyncOwnerError,
     asSuiteSyncOwnerId,
     asSuiteSyncOwnerSecretHex,

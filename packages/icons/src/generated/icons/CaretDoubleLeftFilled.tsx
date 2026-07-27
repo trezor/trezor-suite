@@ -1,0 +1,10 @@
+import type { SVGProps } from 'react';
+const SvgCaretDoubleLeftFilled = (props: SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" {...props}>
+        <path
+            fill="currentColor"
+            d="M26 6v20a1.001 1.001 0 0 1-1.707.707L16 18.415V26a1.001 1.001 0 0 1-1.707.707l-10-10a1 1 0 0 1 0-1.415l10-10A1 1 0 0 1 16 6v7.586l8.293-8.294A1 1 0 0 1 26 6"
+        />
+    </svg>
+);
+export { SvgCaretDoubleLeftFilled as ReactComponent };

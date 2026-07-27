@@ -3,14 +3,14 @@ import { useDispatch } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { events } from '@suite-native/analytics';
+import { useServices } from '@suite-common/dependency-injection';
+import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import {
-    DeviceCheckBackupStackParamList,
+    type DeviceCheckBackupStackParamList,
     DeviceCheckBackupStackRoutes,
-    StackNavigationProps,
+    type StackNavigationProps,
 } from '@suite-native/navigation';
-import { useAnalytics } from '@suite-native/services';
-import { ERRORS } from '@trezor/connect-common/src/constants';
+import { type ERRORS } from '@trezor/connect-common/src/constants';
 
 import { checkBackupThunk } from '../checkBackupThunks';
 
@@ -25,7 +25,7 @@ const DEFINITIVE_ERRORS: ERRORS.ErrorCode[] = ['Method_Interrupted', 'Failure_Ac
 export const useCheckBackupOnMount = () => {
     const dispatch = useDispatch();
     const navigation = useNavigation<NavigationProps>();
-    const analytics = useAnalytics();
+    const { analytics } = useServices(selectNativeAnalyticsDep);
     useEffect(() => {
         const startCheckBackup = async () => {
             const response = await dispatch(checkBackupThunk()).unwrap();
@@ -44,7 +44,7 @@ export const useCheckBackupOnMount = () => {
             if (
                 // The backup do no match.
                 response.success === false &&
-                response.payload.code === 'Failure_ProcessError'
+                response.error.code === 'Failure_ProcessError'
             ) {
                 analytics.report({
                     type: events.deviceSettingsCheckBackupFinishedEvent.name,
@@ -56,7 +56,7 @@ export const useCheckBackupOnMount = () => {
 
                 return;
             }
-            if (response.payload.code && DEFINITIVE_ERRORS.includes(response.payload.code)) return;
+            if (response.error.code && DEFINITIVE_ERRORS.includes(response.error.code)) return;
 
             startCheckBackup(); // In case any other error occurs, retry the check.
         };

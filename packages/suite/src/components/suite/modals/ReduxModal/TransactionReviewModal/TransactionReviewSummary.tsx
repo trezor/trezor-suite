@@ -1,33 +1,30 @@
+import { AccountLabel } from '@suite/account';
+import { DebugOnlyBadge, selectIsDebugModeActive } from '@suite/debug';
 import { Translation } from '@suite/intl';
 import { selectConnectPopupCall } from '@suite-common/connect-popup';
 import { formatDurationStrict } from '@suite-common/suite-utils';
-import { NetworkType, networks } from '@suite-common/wallet-config';
+import { type NetworkType, networks } from '@suite-common/wallet-config';
 import { selectRawNetworkFeeInfo } from '@suite-common/wallet-core';
 import {
-    FeeInfo,
-    GeneralPrecomposedTransactionFinal,
-    SendFormDraftKey,
-    StakeType,
+    type FeeInfo,
+    type GeneralPrecomposedTransactionFinal,
+    type SendFormDraftKey,
+    type StakeType,
 } from '@suite-common/wallet-types';
-import {
-    asAmountUnit,
-    getFee,
-    hasEip1559MaxPriorityFee,
-    isEip1559,
-    unitsToSubunits,
-} from '@suite-common/wallet-utils';
+import { asAmountUnit, getFee, unitsToSubunits } from '@suite-common/wallet-utils';
 import { Box, IconButton, Note, Row, Text } from '@trezor/components';
-import { CoinLogo, FeeRate } from '@trezor/product-components';
-import { spacings } from '@trezor/theme';
+import { BroadcastIcon, ClockIcon, ComputerTowerIcon, InfoIcon, ReceiptIcon } from '@trezor/icons';
+import { FeeRate, TokenIcon } from '@trezor/product-components';
 import { BigNumber } from '@trezor/utils';
 
-import { AccountLabel } from 'src/components/suite/AccountLabel';
 import { ConnectCallSource } from 'src/components/suite/ConnectCallSource';
-import { DebugOnlyBadge } from 'src/components/suite/DebugOnlyBadge';
 import { useLocales } from 'src/hooks/suite';
 import { useSelector } from 'src/hooks/suite/useSelector';
-import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';
-import { Account } from 'src/types/wallet';
+import { type AppState } from 'src/types/suite';
+import { type Account } from 'src/types/wallet';
+
+import { TransactionReviewEthereumNotes } from './TransactionReviewEthereumNotes';
+import { TransactionReviewTronFeeNotes } from './TransactionReviewTronFeeNotes';
 
 const getEstimatedTime = (
     networkType: NetworkType,
@@ -43,6 +40,9 @@ const getEstimatedTime = (
 
     return matchedFeeLevel.blocks * feeInfo.blockTime * 60;
 };
+
+const selectSendFormDrafts = (state: AppState) => state.wallet.send.drafts;
+const selectCurrentAccountKey = (state: AppState) => state.wallet.selectedAccount.account?.key;
 
 type TransactionReviewSummaryProps = {
     tx: GeneralPrecomposedTransactionFinal;
@@ -61,10 +61,8 @@ export const TransactionReviewSummary = ({
     stakeType,
     timer,
 }: TransactionReviewSummaryProps) => {
-    const drafts = useSelector(state => state.wallet.send.drafts);
-    const currentAccountKey = useSelector(
-        state => state.wallet.selectedAccount.account?.key,
-    ) as string;
+    const drafts = useSelector(selectSendFormDrafts);
+    const currentAccountKey = useSelector(selectCurrentAccountKey) as string;
     const rawFeeInfo = useSelector(state => selectRawNetworkFeeInfo(state, account.symbol));
     const locale = useLocales();
     const { symbol, networkType } = account;
@@ -83,9 +81,9 @@ export const TransactionReviewSummary = ({
     return (
         <>
             <Row justifyContent="space-between">
-                <Row columnGap={spacings.md} rowGap={spacings.xxs} flexWrap="wrap">
-                    <Row gap={spacings.xxs}>
-                        <CoinLogo size={14} symbol={symbol} />
+                <Row columnGap={16} rowGap={4} flexWrap="wrap">
+                    <Row gap={4}>
+                        <TokenIcon size={16} symbol={symbol} />
                         <AccountLabel
                             account={account}
                             showAccountTypeBadge
@@ -94,46 +92,24 @@ export const TransactionReviewSummary = ({
                     </Row>
 
                     {estimateTime !== undefined && (
-                        <Note iconName="clock">
+                        <Note icon={ClockIcon}>
                             {'≈ '}
                             {formatDurationStrict(estimateTime, locale)}
                         </Note>
                     )}
 
                     {isEthereumNetworkType && (
-                        <>
-                            <Note data-testid="@modal/ethereum/gas-limit" iconName="gasPump">
-                                <Translation id="TR_GAS_LIMIT" />
-                                {': '}
-                                {tx.feeLimit}
-                            </Note>
-                            <Note data-testid="@modal/ethereum/fee" iconName="gasPump">
-                                {isEip1559(tx) ? (
-                                    <Translation id="TR_MAX_FEE_PER_GAS" />
-                                ) : (
-                                    <Translation id="TR_GAS_PRICE" />
-                                )}
-                                {': '}
-                                <FeeRate feeRate={fee} networkType={network.networkType} />
-                            </Note>
-                            {hasEip1559MaxPriorityFee(tx) ? (
-                                <Note data-testid="@modal/ethereum/priority-fee" iconName="gasPump">
-                                    <Translation id="TR_MAX_PRIORITY_FEE_PER_GAS" />
-
-                                    {': '}
-                                    <FeeRate
-                                        feeRate={tx.maxPriorityFeePerGas}
-                                        networkType={network.networkType}
-                                    />
-                                </Note>
-                            ) : undefined}
-                        </>
+                        <TransactionReviewEthereumNotes account={account} tx={tx} />
                     )}
 
-                    {!['ethereum', 'solana'].includes(networkType) && (
-                        <Note iconName="receipt">
+                    {!['ethereum', 'solana', 'tron'].includes(networkType) && (
+                        <Note icon={ReceiptIcon}>
                             <FeeRate feeRate={fee} networkType={network.networkType} />
                         </Note>
+                    )}
+
+                    {networkType === 'tron' && (
+                        <TransactionReviewTronFeeNotes tx={tx} account={account} />
                     )}
 
                     {isComposedFeeRateDifferent && network.networkType === 'bitcoin' && (
@@ -141,7 +117,7 @@ export const TransactionReviewSummary = ({
                     )}
 
                     {!stakeType && !broadcast && connectPopupCall?.state !== 'ongoing' && (
-                        <Note iconName="broadcast">
+                        <Note icon={BroadcastIcon}>
                             <Translation id="BROADCAST" />
                             {': '}
                             <Text intent="critical">
@@ -159,7 +135,10 @@ export const TransactionReviewSummary = ({
                                 onClick={() => onDetailsClick()}
                                 intent="neutral"
                                 priority="secondary"
-                                icon="info"
+                                icon={InfoIcon}
+                                tooltip={{
+                                    content: <Translation id="TR_TRANSACTION_DETAILS" />,
+                                }}
                             />
                         </Box>
                     )}
@@ -167,14 +146,14 @@ export const TransactionReviewSummary = ({
                 {timer}
             </Row>
             {networkType === 'solana' && isDebug && (
-                <Row margin={{ top: spacings.xs }} gap={spacings.xs}>
+                <Row margin={{ top: 8 }} gap={8}>
                     <DebugOnlyBadge />
-                    <Note iconName="computerTower">
+                    <Note icon={ComputerTowerIcon}>
                         CU Limit
                         {': '}
                         {tx.feeLimit} CU
                     </Note>
-                    <Note iconName="computerTower">
+                    <Note icon={ComputerTowerIcon}>
                         CU Price
                         {': '}
                         <FeeRate

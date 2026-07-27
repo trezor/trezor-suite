@@ -1,7 +1,7 @@
-import { ReactNode, useRef } from 'react';
-import { View } from 'react-native';
+import { type ReactNode, useRef } from 'react';
+import { type View } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
-import { SharedValue } from 'react-native-reanimated';
+import { type SharedValue } from 'react-native-reanimated';
 
 import { AnimatedBox } from '@suite-native/atoms';
 
@@ -29,9 +29,9 @@ export const SwipeableWalkthrough = ({
             translationY < -PAN_GESTURE_DETECTION_THRESHOLD &&
             currentStepIndex.value < totalSteps - 1
         ) {
-            currentStepIndex.value += 1;
+            currentStepIndex.set(value => value + 1);
         } else if (translationY > PAN_GESTURE_DETECTION_THRESHOLD && currentStepIndex.value > 0) {
-            currentStepIndex.value -= 1;
+            currentStepIndex.set(value => value - 1);
         }
     });
 

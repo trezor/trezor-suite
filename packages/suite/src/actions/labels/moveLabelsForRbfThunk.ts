@@ -1,13 +1,13 @@
 import { moveLabelsForRbfOldMetadataThunk } from '@suite/metadata';
-import { ExtraDependencies } from '@suite-common/redux-utils';
+import { type ExtraDependencies } from '@suite-common/redux-utils';
 import { findLabelsToBeMovedOrDeleted } from '@suite-common/suite-rbf-labels-migrations';
 import { selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
 import { selectTransactions } from '@suite-common/wallet-core';
-import { StaticSessionId } from '@trezor/connect';
-import { Branded } from '@trezor/type-utils';
+import { type StaticSessionId } from '@trezor/connect';
+import { type Branded } from '@trezor/type-utils';
 import { typedObjectEntries } from '@trezor/utils';
 
-import { Dispatch, GetState } from 'src/types/suite';
+import { type Dispatch, type GetState } from 'src/types/suite';
 
 export type StateBeforePush = ReturnType<GetState> & Branded<'StateBeforePush'>;
 

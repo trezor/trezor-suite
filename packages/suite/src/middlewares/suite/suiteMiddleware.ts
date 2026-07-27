@@ -1,8 +1,11 @@
 import { isAnyOf } from '@reduxjs/toolkit';
 
+import { disconnectDeviceThunk } from '@suite/device';
 import { METADATA } from '@suite/metadata';
+import { recoveryActions } from '@suite/recovery';
+import { goto, routerAppChanged } from '@suite/router';
 import { deviceActions, isTrezorDeviceWithState } from '@suite-common/device';
-import { AnyAction, createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
+import { type AnyAction, createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
 import { isAnyDeviceEventAction } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
@@ -14,10 +17,9 @@ import {
 } from '@suite-common/wallet-core';
 import { DEVICE } from '@trezor/connect';
 
-import { ROUTER, SUITE } from 'src/actions/suite/constants';
+import { SUITE } from 'src/actions/suite/constants';
 import { handleProtocolRequest } from 'src/actions/suite/protocolActions';
-import { goto } from 'src/actions/suite/routerActions';
-import { appChanged, setRecentlyDisconnectedDevice } from 'src/actions/suite/suiteActions';
+import { setRecentlyDisconnectedDevice } from 'src/actions/suite/suiteActions';
 
 const isActionDeviceRelated = (action: AnyAction): boolean => {
     if (
@@ -45,9 +47,11 @@ const isActionDeviceRelated = (action: AnyAction): boolean => {
 
 export const prepareSuiteMiddleware = createMiddlewareWithExtraDeps(
     (action, { dispatch, next, getState, extra }) => {
-        const prevApp = getState().router.app;
-        if (action.type === ROUTER.LOCATION_CHANGE && action.payload.app !== prevApp) {
-            dispatch(appChanged(action.payload.app));
+        if (
+            action.type === routerAppChanged.type &&
+            (action.payload === 'recovery' || action.payload === 'onboarding')
+        ) {
+            dispatch(recoveryActions.resetReducer());
         }
 
         // this action needs to be processed before propagation to deviceReducer
@@ -74,11 +78,16 @@ export const prepareSuiteMiddleware = createMiddlewareWithExtraDeps(
                     const isModalActive = hasModalContext || isForegroundApp;
 
                     if (
-                        !state.suite.flags.hasSeenDisconnectTooltip &&
+                        !state.flags.hasSeenDisconnectTooltip &&
                         state.wallet.accounts.length > 0 &&
                         !isModalActive
                     ) {
-                        dispatch(goto('suite-switch-device', { params: { cancelable: true } }));
+                        dispatch(
+                            goto({
+                                routeName: 'suite-switch-device',
+                                params: { cancelable: true },
+                            }),
+                        );
                     }
                 }, 1000);
             }
@@ -90,7 +99,7 @@ export const prepareSuiteMiddleware = createMiddlewareWithExtraDeps(
         if (deviceActions.forgetDevice.match(action)) {
             const { device } = action.payload;
 
-            dispatch(handleDeviceDisconnect(device));
+            dispatch(disconnectDeviceThunk(device));
             if (isTrezorDeviceWithState(device)) {
                 extra.services.suiteSync.turnOffSuiteSyncForWallet({
                     deviceStaticSessionId: device.state.staticSessionId,

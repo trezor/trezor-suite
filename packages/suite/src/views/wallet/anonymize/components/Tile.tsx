@@ -1,8 +1,8 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
 import styled, { css } from 'styled-components';
 
-import { Card, IconCircle, IconName, variables } from '@trezor/components';
+import { Card, IconCircle, type IconComponent, variables } from '@trezor/components';
 import { typography } from '@trezor/theme';
 
 const containerGridStyle = css`
@@ -11,11 +11,9 @@ const containerGridStyle = css`
     gap: 0 14px;
 `;
 
-// eslint-disable-next-line local-rules/no-override-ds-component
-const Container = styled(Card)`
-    background: ${({ theme }) => theme.backgroundNeutralBoldInverted};
-    box-shadow: none;
-    display: block;
+const Container = styled.div`
+    padding: 16px;
+    background: ${({ theme }) => theme.surfaceFillRaised};
 
     ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
         ${containerGridStyle}
@@ -83,7 +81,7 @@ const descriptionGridStyle = css`
 `;
 
 const Description = styled.p`
-    color: ${({ theme }) => theme.textSubdued};
+    color: ${({ theme }) => theme.contentSecondary};
     ${typography['body-sm']}
 
     ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
@@ -103,16 +101,18 @@ const Description = styled.p`
 
 export interface TileProps {
     description: ReactNode;
-    iconName: IconName;
+    iconName: IconComponent;
     title: ReactNode;
 }
 
 export const Tile = ({ description, iconName, title }: TileProps) => (
-    <Container>
-        <Image>
-            <IconCircle name={iconName} size={72} />
-        </Image>
-        <Title>{title}</Title>
-        <Description>{description}</Description>
-    </Container>
+    <Card paddingType="none">
+        <Container>
+            <Image>
+                <IconCircle icon={iconName} size={96} />
+            </Image>
+            <Title>{title}</Title>
+            <Description>{description}</Description>
+        </Container>
+    </Card>
 );

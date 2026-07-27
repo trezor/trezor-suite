@@ -1,8 +1,9 @@
 import { type ReactNode, useMemo } from 'react';
 
-import { NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
-import { PrecomposedTransactionError } from '@suite-common/wallet-types';
+import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { type PrecomposedTransactionError } from '@suite-common/wallet-types';
 import { Translation } from '@suite-native/intl';
+import { isArrayMember } from '@trezor/utils';
 
 export type UsePrecomposedTransactionErrorProps = {
     error: string | null | undefined;
@@ -17,6 +18,7 @@ const VALID_PRECOMPOSED_ERRORS: PrecomposedTransactionError['error'][] = [
     'TR_STAKE_NOT_ENOUGH_FUNDS',
     'REMAINING_BALANCE_LESS_THAN_RENT',
     'AMOUNT_NOT_ENOUGH_CURRENCY_FEE_WITH_ETH_AMOUNT',
+    'NOT-ENOUGH-FUNDS',
 ];
 
 /**
@@ -24,8 +26,7 @@ const VALID_PRECOMPOSED_ERRORS: PrecomposedTransactionError['error'][] = [
  */
 export const isPrecomposedTransactionError = (
     error: string,
-): error is PrecomposedTransactionError['error'] =>
-    VALID_PRECOMPOSED_ERRORS.includes(error as PrecomposedTransactionError['error']);
+): error is PrecomposedTransactionError['error'] => isArrayMember(error, VALID_PRECOMPOSED_ERRORS);
 
 /**
  * Hook to get precomposed transaction error translation with proper values
@@ -43,6 +44,7 @@ export const usePrecomposedTransactionError = ({
 
         switch (error) {
             case 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE':
+            case 'NOT-ENOUGH-FUNDS':
                 return (
                     <Translation
                         id="transactionManagement.precomposedTransaction.errors.amountNotEnoughCurrencyFee"

@@ -7,19 +7,21 @@
     "main": "src/index",
     "scripts": {
         "depcheck": "yarn g:depcheck",
-        "type-check": "yarn g:tsc --build"
+        "type-check": "yarn g:tsc --build",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
         "@mobily/ts-belt": "^3.13.1",
-        "@react-navigation/native": "7.1.26",
-        "@reduxjs/toolkit": "2.11.2",
+        "@react-navigation/native": "7.1.28",
+        "@reduxjs/toolkit": "2.12.0",
+        "@suite-common/dependency-injection": "workspace:*",
         "@suite-common/device": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
         "@suite-common/suite-sync": "workspace:*",
         "@suite-common/suite-types": "workspace:*",
+        "@suite-common/suite-utils": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
         "@suite-common/wallet-types": "workspace:^",
-        "@suite-common/wallet-utils": "workspace:*",
         "@suite-native/analytics": "workspace:*",
         "@suite-native/atoms": "workspace:*",
         "@suite-native/device": "workspace:*",
@@ -28,15 +30,15 @@
         "@suite-native/intl": "workspace:*",
         "@suite-native/labeling": "workspace:*",
         "@suite-native/navigation": "workspace:*",
-        "@suite-native/services": "workspace:*",
+        "@suite-native/wallet": "workspace:*",
         "@trezor/device-utils": "workspace:*",
-        "@trezor/styles": "workspace:*",
+        "@trezor/styles-native": "workspace:*",
         "@trezor/theme": "workspace:*",
-        "jotai": "2.15.0",
-        "react": "19.1.0",
-        "react-native": "0.81.5",
-        "react-native-reanimated": "~4.1.5",
+        "jotai": "2.17.1",
+        "react": "19.2.3",
+        "react-native": "0.85.3",
+        "react-native-reanimated": "4.3.1",
         "react-native-safe-area-context": "5.6.2",
-        "react-redux": "9.2.0"
+        "react-redux": "9.3.0"
     }
 }

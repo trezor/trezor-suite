@@ -6,12 +6,7 @@
             "path": "../../suite-common/connect-popup"
         },
         { "path": "../../suite-common/device" },
-        {
-            "path": "../../suite-common/formatters"
-        },
-        {
-            "path": "../../suite-common/tx-simulation"
-        },
+        { "path": "../../suite-common/icons" },
         {
             "path": "../../suite-common/wallet-config"
         },
@@ -25,31 +20,28 @@
             "path": "../../suite-common/wallet-types"
         },
         {
-            "path": "../../suite-common/wallet-utils"
-        },
-        {
             "path": "../../suite-common/walletconnect"
         },
         { "path": "../accounts" },
         { "path": "../atoms" },
-        { "path": "../clipboard" },
         { "path": "../config" },
         { "path": "../confirm-on-trezor" },
         { "path": "../device-manager" },
+        { "path": "../formatters" },
         { "path": "../icons" },
         { "path": "../intl" },
         { "path": "../navigation" },
         { "path": "../qr-code" },
         { "path": "../toasts" },
+        { "path": "../tx-simulation" },
         { "path": "../../packages/connect" },
         {
             "path": "../../packages/connect-common"
         },
         {
-            "path": "../../packages/connect-mobile"
+            "path": "../../packages/styles-native"
         },
-        { "path": "../../packages/styles" },
         { "path": "../../packages/urls" },
-        { "path": "../../packages/utils" }
+        { "path": "../../packages/requirements" }
     ]
 }

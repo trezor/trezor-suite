@@ -1,19 +1,28 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useCallback, useEffect, useEffectEvent, useRef, useState } from 'react';
+import { useDispatch, useSelector, useStore } from 'react-redux';
 
 import { useNetInfo } from '@react-native-community/netinfo';
 import { useFocusEffect } from '@react-navigation/native';
 
-import { isFinalStatus, selectTradingExchangeSelectedQuote } from '@suite-common/trading';
+import {
+    type TradingRootState,
+    hasEip712SignData,
+    isFinalStatus,
+    selectTradingExchangeFormStep,
+    selectTradingExchangeSelectedQuote,
+} from '@suite-common/trading';
 import { useAlert } from '@suite-native/alerts';
+import { VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
+    type RootStackParamList,
+    RootStackRoutes,
     Screen,
-    StackProps,
-    TradingStackParamList,
-    TradingStackRoutes,
+    type StackProps,
 } from '@suite-native/navigation';
-import { useExchangeAnalyticReportCallback } from '@suite-native/trading-analytics';
+import { useExchangeAnalyticsStepReport } from '@suite-native/trading-analytics';
+import { Footer } from '@suite-native/trading-provider-utils';
+import { useSlippageLifecycle } from '@suite-native/trading-slippage';
 import {
     selectExchangeSelectedReceiveAccount,
     selectExchangeSelectedSendAccount,
@@ -26,15 +35,14 @@ import {
     ExchangePreviewScreenHeader,
     ExchangePreviewView,
 } from '../components/exchange/ExchangePreview';
-import { Footer } from '../components/general/Footer';
 import { TradingDeviceConnectionGuard } from '../components/general/TradingDeviceConnectionGuard';
 import { useExchangeFlow } from '../hooks/exchange/useExchangeFlow';
 import { clearTradingStateThunk } from '../thunks';
 import { getReceiveAccountAddressText } from '../utils/general/receiveAccountUtils';
 
 export type TradingExchangePreviewScreenProps = StackProps<
-    TradingStackParamList,
-    TradingStackRoutes.TradingExchangePreview
+    RootStackParamList,
+    RootStackRoutes.TradingExchangePreview
 >;
 
 const TradingExchangePreviewScreenContent = ({
@@ -51,14 +59,19 @@ const TradingExchangePreviewScreenContent = ({
     const toAccount = useSelector(selectExchangeSelectedReceiveAccount);
     const hasRequestedTradeConfirmation = useRef(false);
 
-    const reportToAnalytics = useExchangeAnalyticReportCallback();
+    const reportToAnalytics = useExchangeAnalyticsStepReport('transaction-preview');
+    const reportVisit = useEffectEvent(() => {
+        reportToAnalytics('visit');
+    });
     useEffect(() => {
-        reportToAnalytics('transaction-preview', 'visit');
-    }, [reportToAnalytics]);
+        reportVisit();
+    }, []);
 
     useSubscribeForSolanaBlockUpdates(fromAccount ?? null);
 
-    const { txnErrorString, confirmTrade, fetchFeesAndCompose } = useExchangeFlow();
+    const { txnErrorString, confirmTrade, abortConfirmTrade, composeTradingTransaction } =
+        useExchangeFlow();
+    const store = useStore<TradingRootState>();
 
     const [isConfirmationErrorRequested, setIsConfirmationErrorRequested] =
         useState<boolean>(false);
@@ -82,7 +95,10 @@ const TradingExchangePreviewScreenContent = ({
             });
 
             if (success) {
-                await fetchFeesAndCompose();
+                const currentFormStep = selectTradingExchangeFormStep(store.getState());
+                if (currentFormStep !== 'SIGN_DATA') {
+                    await composeTradingTransaction();
+                }
             }
         } catch (e) {
             debounce(() => {
@@ -91,29 +107,41 @@ const TradingExchangePreviewScreenContent = ({
 
             console.error('Failed to confirm trade', e);
         }
-    }, [confirmTrade, debounce, fetchFeesAndCompose, quote, toAccount]);
+    }, [confirmTrade, debounce, composeTradingTransaction, store, quote, toAccount]);
+
+    useSlippageLifecycle(handleConfirmTrade);
 
     const onSignTransactionNavigation = useCallback(() => {
         hasRequestedTradeConfirmation.current = false;
-        reportToAnalytics('transaction-preview', 'continue');
+        reportToAnalytics('continue');
     }, [reportToAnalytics]);
 
     useFocusEffect(
         useCallback(() => {
+            if (quote?.isDex && !quote.swapSlippage) {
+                return;
+            }
             if (!hasRequestedTradeConfirmation.current && !isFinalized) {
                 hasRequestedTradeConfirmation.current = true;
 
                 handleConfirmTrade();
             }
-        }, [handleConfirmTrade, isFinalized]),
+        }, [handleConfirmTrade, isFinalized, quote]),
     );
+
+    useEffect(() => {
+        if (quote?.status === 'APPROVAL_REQ') {
+            navigation.navigate(RootStackRoutes.TradingExchangeApproval, {});
+        }
+    }, [navigation, quote?.status]);
 
     // clear trading state on unmount
     useEffect(
         () => () => {
+            abortConfirmTrade();
             dispatch(clearTradingStateThunk());
         },
-        [dispatch],
+        [abortConfirmTrade, dispatch],
     );
 
     useEffect(() => {
@@ -129,16 +157,16 @@ const TradingExchangePreviewScreenContent = ({
                 ),
                 description,
                 primaryButtonTitle: <Translation id="generic.buttons.tryAgain" />,
-                primaryButtonVariant: 'redBold',
+                primaryButtonColorProps: { intent: 'critical', priority: 'primary' },
                 onPressPrimaryButton: () => {
                     handleConfirmTrade();
-                    reportToAnalytics('transaction-preview', 'retry');
+                    reportToAnalytics('retry');
                 },
                 secondaryButtonTitle: <Translation id="generic.buttons.cancel" />,
-                secondaryButtonVariant: 'redElevation0',
+                secondaryButtonColorProps: { intent: 'critical', priority: 'secondary' },
                 onPressSecondaryButton: () => {
                     navigation.popToTop();
-                    reportToAnalytics('transaction-preview', 'cancel');
+                    reportToAnalytics('cancel');
                 },
             });
             setIsConfirmationErrorRequested(false);
@@ -152,24 +180,28 @@ const TradingExchangePreviewScreenContent = ({
         reportToAnalytics,
     ]);
 
-    const errorString = txnErrorString ?? quote?.error;
+    // EIP-712 signing has no on-chain transaction, so fee composition errors
+    // (e.g. insufficient gas) are irrelevant.
+    const errorString = hasEip712SignData(quote) ? null : (txnErrorString ?? quote?.error);
 
     return (
-        <Screen header={<ExchangePreviewScreenHeader />}>
-            <ExchangePreviewView
-                quote={quote}
-                txnErrorString={errorString}
-                isApproved={isApproved}
-            />
-            {!isFinalized && (
+        <Screen
+            header={<ExchangePreviewScreenHeader />}
+            footer={
                 <ExchangePreviewContinueButton
-                    quote={quote}
                     isDisabled={!!errorString}
                     onSignTransactionNavigation={onSignTransactionNavigation}
                 />
-            )}
-
-            <Footer />
+            }
+        >
+            <VStack spacing="sp16" flex={1}>
+                <ExchangePreviewView
+                    quote={quote}
+                    txnErrorString={errorString}
+                    isApproved={isApproved}
+                />
+                <Footer />
+            </VStack>
         </Screen>
     );
 };

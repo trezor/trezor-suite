@@ -1,7 +1,7 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
-import { ExtendedMessageDescriptor, Translation } from '@suite/intl';
-import { Modal, ModalWidth } from '@trezor/components';
+import { type ExtendedMessageDescriptor, Translation } from '@suite/intl';
+import { Modal, type ModalWidth } from '@trezor/components';
 
 interface AssetsModalProps {
     children: ReactNode;
@@ -17,7 +17,7 @@ export function AssetsModal({
     heading,
     description,
     onClose,
-    width = 480,
+    width = 600,
     bottomContent,
 }: AssetsModalProps) {
     return (

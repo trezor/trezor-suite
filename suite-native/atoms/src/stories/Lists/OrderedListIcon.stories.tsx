@@ -5,7 +5,7 @@ import { COLOR_TOKENS, nativeBorders } from '@trezor/theme';
 
 import {
     OrderedListIcon as OrderedListIconComponent,
-    OrderedListIconProps,
+    type OrderedListIconProps,
 } from '../../OrderedListIcon';
 import { HStack } from '../../Stack';
 import { Text } from '../../Text';
@@ -31,10 +31,10 @@ export const OrderedListIcon: OrderedListIconStory = {
     name: 'OrderedListIcon',
     args: {
         iconNumber: 1,
-        iconBackgroundColor: 'backgroundTertiaryDefaultOnElevation1',
-        iconBorderColor: 'borderElevation0',
+        iconBackgroundColor: 'legacyBackgroundTertiaryDefaultOnElevation1',
+        iconBorderColor: 'borderNeutral',
         iconBorderRadius: 'r12',
-        iconColor: 'textDefault',
+        iconColor: 'contentPrimary',
         iconSize: 'mediumLarge',
     },
     argTypes: {

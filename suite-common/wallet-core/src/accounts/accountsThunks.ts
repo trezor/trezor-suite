@@ -1,8 +1,11 @@
+import { events } from '@suite-common/analytics';
 import { selectDevices } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
 import { getTxsPerPage } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { Account, AccountKey } from '@suite-common/wallet-types';
+import { selectCoinDefinitions } from '@suite-common/token-definitions';
+import { getNetworkFeatures } from '@suite-common/wallet-config';
+import { type Account, type AccountKey } from '@suite-common/wallet-types';
 import {
     analyzeTransactions,
     findAccountDevice,
@@ -15,12 +18,18 @@ import {
     isTrezorConnectBackendType,
     tryGetAccountIdentity,
 } from '@suite-common/wallet-utils';
-import TrezorConnect, { AccountInfo, TokenInfo } from '@trezor/connect';
+import TrezorConnect, { type AccountInfo, type TokenInfo } from '@trezor/connect';
 
+import { reportWalletBalanceDebounced } from './accountBalanceAnalytics';
 import { accountsActions } from './accountsActions';
 import { ACCOUNTS_MODULE_PREFIX } from './accountsConstants';
+import {
+    getAccountInfoAnalyticsPayload,
+    isAccountActiveForAnalytics,
+} from './accountsInfoAnalytics';
+import { accountRefreshed } from './accountsRefreshTimeReducer';
 import { selectAccountByKey } from './accountsSelectors';
-import { selectBlockchainHeightBySymbol } from '../blockchain/blockchainReducer';
+import { selectBlockchainHeightBySymbol, selectGapLimit } from '../blockchain/blockchainReducer';
 import { selectBitcoinAmountUnit } from '../settings/walletSettingsReducer';
 import { transactionsActions } from '../transactions/transactionsActions';
 import { selectTransactions } from '../transactions/transactionsSelectors';
@@ -54,6 +63,7 @@ const fetchAccountTokens = async (account: Account, payloadTokens: AccountInfo['
             details: 'tokenBalances',
             contractFilter: t.contract,
             suppressBackupWarning: true,
+            protocols: isEvmNetwork ? ['erc4626'] : undefined,
         }),
     );
 
@@ -67,6 +77,39 @@ const fetchAccountTokens = async (account: Account, payloadTokens: AccountInfo['
 
     return tokens;
 };
+
+export const reportWalletBalanceThunk = createThunk(
+    `${ACCOUNTS_MODULE_PREFIX}/reportWalletBalance`,
+    (_, { getState, extra }) => {
+        reportWalletBalanceDebounced({
+            getState,
+            analytics: extra.services.analytics,
+        });
+    },
+);
+
+export const reportAccountInfoThunk = createThunk(
+    `${ACCOUNTS_MODULE_PREFIX}/reportAccountInfo`,
+    (accountKey: AccountKey, { getState, extra }) => {
+        const account = selectAccountByKey(getState(), accountKey);
+        if (!account || !isAccountActiveForAnalytics(account)) return;
+
+        const tokenDefinitions = selectCoinDefinitions(getState(), account.symbol);
+        // wait for token definitions before reporting, otherwise the account would be deduped with an
+        // incorrect token list with phishing tokens could be reported
+        const requiresTokenDefinitions = getNetworkFeatures(account.symbol).includes(
+            'coin-definitions',
+        );
+        if (requiresTokenDefinitions && !tokenDefinitions?.data) return;
+
+        const hasTraded = extra.selectors.selectTradedAccountKeys(getState()).includes(account.key);
+
+        extra.services.analytics.report({
+            type: events.accountsInfoEvent.name,
+            payload: getAccountInfoAnalyticsPayload(account, tokenDefinitions, hasTraded),
+        });
+    },
+);
 
 // Left here for clarity, but shouldn't be called anywhere but in blockchainActions.syncAccounts
 // as we usually want to update all accounts for a single coin at once
@@ -84,6 +127,10 @@ export const fetchAndUpdateAccountThunk = createThunk(
             account.networkType === 'solana'
                 ? account.tokens?.flatMap(t => t.accounts ?? []).map(a => a.publicKey)
                 : undefined;
+        const gap =
+            account.networkType === 'bitcoin'
+                ? selectGapLimit(getState(), account.symbol)
+                : undefined;
 
         const basic = await TrezorConnect.getAccountInfo({
             coin: account.symbol,
@@ -92,6 +139,8 @@ export const fetchAndUpdateAccountThunk = createThunk(
             details: account.networkType === 'solana' ? 'txids' : 'basic',
             suppressBackupWarning: true,
             tokenAccountsPubKeys,
+            protocols: account.networkType === 'ethereum' ? ['erc4626'] : undefined,
+            gap,
         });
 
         if (!basic.success) return;
@@ -102,8 +151,9 @@ export const fetchAndUpdateAccountThunk = createThunk(
 
         // stop here if account is not outdated and there are no pending transactions
 
-        if (!accountOutdated && !accountTxs.find(isPending)) {
-            dispatch(accountsActions.updateAccountRefreshTimestamp(account));
+        if (!accountOutdated && !accountTxs.some(isPending)) {
+            // refreshed, nothing changed - restart the throttle window (old code bumped account.ts)
+            dispatch(accountRefreshed(accountKey));
 
             return;
         }
@@ -122,6 +172,11 @@ export const fetchAndUpdateAccountThunk = createThunk(
             page: 1, // useful for every network except ripple and stellar
             pageSize,
             suppressBackupWarning: true,
+            protocols: account.networkType === 'ethereum' ? ['erc4626'] : undefined,
+            gap:
+                account.networkType === 'bitcoin'
+                    ? selectGapLimit(getState(), account.symbol)
+                    : undefined,
         });
 
         if (response.success) {
@@ -136,9 +191,24 @@ export const fetchAndUpdateAccountThunk = createThunk(
                 dispatch(transactionsActions.removeTransaction({ account, txs: analyze.remove }));
             }
             if (analyze.add.length > 0) {
+                // Blockbook returns empty tokens for pending contract calls. Copy them
+                // from our fake tx (identified by `deadline`) so RBF on this pending tx still
+                // has token + amount.
+                const enrichedAdd = analyze.add.map(freshTx => {
+                    if ((freshTx.tokens?.length ?? 0) > 0) return freshTx;
+                    const fakeMatch = accountTxs.find(
+                        t =>
+                            t.txid === freshTx.txid &&
+                            'deadline' in t &&
+                            (t.tokens?.length ?? 0) > 0,
+                    );
+
+                    return fakeMatch ? { ...freshTx, tokens: fakeMatch.tokens } : freshTx;
+                });
+
                 dispatch(
                     transactionsActions.addTransaction({
-                        transactions: analyze.add.reverse(),
+                        transactions: enrichedAdd.reverse(),
                         account,
                     }),
                 );
@@ -147,7 +217,7 @@ export const fetchAndUpdateAccountThunk = createThunk(
             const devices = selectDevices(getState());
             const accountDevice = findAccountDevice(account, devices);
             analyze.newTransactions.forEach(tx => {
-                const token = tx.tokens && tx.tokens.length ? tx.tokens[0] : undefined;
+                const token = tx.tokens?.[0];
 
                 const bitcoinAmountUnit = selectBitcoinAmountUnit(getState());
                 const areSatoshisUsed = getAreSatoshisUsed(bitcoinAmountUnit, account);
@@ -181,10 +251,16 @@ export const fetchAndUpdateAccountThunk = createThunk(
                 isAccountOutdated(account, payload) ||
                 customTokens.length > 0
             ) {
+                // updateAccount restarts the throttle window via the accountsRefreshTime slice
+                // (mirrors old account.ts)
                 dispatch(accountsActions.updateAccount(account, payload));
+                dispatch(reportAccountInfoThunk(account.key));
             } else {
-                dispatch(accountsActions.updateAccountRefreshTimestamp(account));
+                // refreshed, nothing changed - restart the throttle window directly
+                dispatch(accountRefreshed(accountKey));
             }
+
+            dispatch(reportWalletBalanceThunk());
         }
     },
 );

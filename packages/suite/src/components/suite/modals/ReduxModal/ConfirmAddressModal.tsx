@@ -1,20 +1,21 @@
 import { useCallback } from 'react';
 
+import { selectAccountIncludingChosenInTrading } from '@suite/account';
 import { Translation } from '@suite/intl';
+import { showAddressThunk } from '@suite/receive';
 import { selectConnectPopupCall } from '@suite-common/connect-popup';
 import { selectSelectedDevice } from '@suite-common/device';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config/src/utils';
 import { hasNetworkFeatures } from '@suite-common/wallet-utils';
 
-import { showAddress } from 'src/actions/wallet/receiveActions';
 import {
     ConfirmValueModal,
-    ConfirmValueModalProps,
+    type ConfirmValueModalProps,
 } from 'src/components/suite/modals/ReduxModal/ConfirmValueModal/ConfirmValueModal';
 import { useSelector } from 'src/hooks/suite';
-import { selectAccountIncludingChosenInTrading } from 'src/reducers/wallet/selectedAccountReducer';
 
 import { ConnectAddressConfirmation } from './UserContextModal/ConnectAddressConfirmation';
+import { ConnectSelectAccount } from './UserContextModal/ConnectSelectAccount/ConnectSelectAccount';
 
 interface ConfirmAddressModalProps extends Pick<
     ConfirmValueModalProps,
@@ -26,16 +27,15 @@ interface ConfirmAddressModalProps extends Pick<
 export const ConfirmAddressModal = ({ addressPath, value, ...props }: ConfirmAddressModalProps) => {
     const device = useSelector(selectSelectedDevice);
     const account = useSelector(selectAccountIncludingChosenInTrading);
-    const isConnectPopup = useSelector(
-        state => selectConnectPopupCall(state)?.state === 'address-confirmation',
-    );
+    const popupCallState = useSelector(state => selectConnectPopupCall(state)?.state);
 
     const validateAddress = useCallback(
-        () => showAddress(addressPath, value),
+        () => showAddressThunk({ path: addressPath, address: value }),
         [addressPath, value],
     );
 
-    if (isConnectPopup) return <ConnectAddressConfirmation />;
+    if (popupCallState === 'address-confirmation') return <ConnectAddressConfirmation />;
+    if (popupCallState === 'select-account') return <ConnectSelectAccount />;
     if (!device) return null;
 
     const getHeading = () => {

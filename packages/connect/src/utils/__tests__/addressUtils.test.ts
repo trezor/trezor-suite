@@ -1,25 +1,24 @@
-import coinsJSON from '@trezor/connect-data/files/coins.json';
+import type { CoinSymbol } from '@trezor/connect-common/src/types/coinInfo';
 
-import { getBitcoinNetwork, parseCoinsJson } from '../../data/coinInfo';
+import { getBitcoinNetwork } from '../../data/coinInfo';
 import * as fixtures from '../__fixtures__/addressUtils';
 import * as utils from '../addressUtils';
 
 describe('utils/addressUtils', () => {
-    beforeAll(() => {
-        // load coin definitions
-        parseCoinsJson(coinsJSON);
-    });
-
     describe('isValidAddress', () => {
         fixtures.validAddresses.forEach(f => {
             it(`${f.description} ${f.address}`, () => {
-                expect(utils.isValidAddress(f.address, getBitcoinNetwork(f.coin)!)).toEqual(true);
+                expect(
+                    utils.isValidAddress(f.address, getBitcoinNetwork(f.coin as CoinSymbol)!),
+                ).toEqual(true);
             });
         });
 
         fixtures.invalidAddresses.forEach(f => {
             it(`Invalid ${f.coin} ${f.address}`, () => {
-                expect(utils.isValidAddress(f.address, getBitcoinNetwork(f.coin)!)).toEqual(false);
+                expect(
+                    utils.isValidAddress(f.address, getBitcoinNetwork(f.coin as CoinSymbol)!),
+                ).toEqual(false);
             });
         });
     });

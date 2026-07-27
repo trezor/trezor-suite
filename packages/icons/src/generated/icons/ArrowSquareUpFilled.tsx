@@ -1,0 +1,10 @@
+import type { SVGProps } from 'react';
+const SvgArrowSquareUpFilled = (props: SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" {...props}>
+        <path
+            fill="currentColor"
+            d="M26 4H6a2 2 0 0 0-2 2v20a2 2 0 0 0 2 2h20a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2m-5.293 11.707a1 1 0 0 1-1.415 0L17 13.415V21a1 1 0 0 1-2 0v-7.586l-2.293 2.293a1 1 0 1 1-1.415-1.415l4-4a1 1 0 0 1 1.415 0l4 4a1 1 0 0 1 0 1.415"
+        />
+    </svg>
+);
+export { SvgArrowSquareUpFilled as ReactComponent };

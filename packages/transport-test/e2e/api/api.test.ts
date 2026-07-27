@@ -1,4 +1,9 @@
-import { UsbApi } from '@trezor/transport/src/api/usb';
+// Deep imports bypass the `@trezor/transport-common` barrel so esbuild does
+// not pull THP code (and its transitive `@trezor/protocol/protocol-thp/crypto`
+// node-only `crypto` import) into the browser bundle.
+import { UsbApi } from '@trezor/transport-common/src/api/usb';
+import type { PathInternal } from '@trezor/transport-common/src/types';
+import type { UsbInterfaceApi } from '@trezor/transport-common/src/types/usbInterface';
 
 import { debug, error, info, sharedTest, success } from './shared';
 import { assertEquals, assertFailure, assertMessage, assertSuccess, buildMessage } from './utils';
@@ -11,7 +16,10 @@ const setupApisUnderTest = async () => {
 
     if (typeof window !== 'undefined' && 'usb' in window.navigator) {
         window.Buffer = (await import('buffer')).Buffer;
-        usbInterface = window.navigator.usb;
+        // TS does not narrow `Navigator` to our structural `UsbInterfaceApi`,
+        // and we intentionally avoid the `@types/w3c-web-usb` ambient `USB`
+        // type so `transport-common` consumers stay free of DOM lib refs.
+        usbInterface = (window.navigator as unknown as { usb: UsbInterfaceApi }).usb;
     } else {
         usbInterface = await import('usb').then(lib => new lib.WebUSB({ allowAllDevices: true }));
     }
@@ -46,7 +54,7 @@ const runTests = async () => {
         info(`Running tests for ${f.description}`);
 
         const { api } = f;
-        let path: string;
+        let path: PathInternal;
 
         const getConnectedDevicePath = async () => {
             info('getConnectedDevicePath...');
@@ -54,11 +62,12 @@ const runTests = async () => {
             debug('getConnectedDevicePath: discovered devices', res);
 
             assertSuccess(res);
-            if (res.payload.length !== 1) {
+            const firstDevice = res.payload[0];
+            if (!firstDevice || res.payload.length !== 1) {
                 throw new Error(error('Expected exactly one device to be connected'));
             }
-            debug('getConnectedDevicePath: path set to: ', res.payload[0].path);
-            path = res.payload[0].path;
+            debug('getConnectedDevicePath: path set to: ', firstDevice.path);
+            path = firstDevice.path;
         };
 
         const pingPong = async () => {
@@ -106,7 +115,7 @@ const runTests = async () => {
 
             const abortController = new AbortController();
             debug('read with abort signal');
-            const readPromise = api.read(path, abortController.signal);
+            const readPromise = api.read(path, { signal: abortController.signal });
             debug('trigger abort');
             abortController.abort();
             const abortedResponse = await readPromise;

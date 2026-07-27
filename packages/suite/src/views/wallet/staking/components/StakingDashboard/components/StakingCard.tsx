@@ -1,15 +1,16 @@
-import { events } from '@suite/analytics';
+import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
-import { getStakingTotalRewards } from '@suite-common/staking';
-import { EarnFlow, createEarnAccountRef } from '@suite-common/suite-types/src/staking';
+import { openModal } from '@suite/modal';
+import { useServices } from '@suite-common/dependency-injection';
+import { useSolanaRewardsTotal } from '@suite-common/earn-staking-api/src/staking';
+import { EarnFlow } from '@suite-common/suite-types/src/staking';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     selectAccountIsStakingActive,
     selectAccountStakeTypeTransactions,
     selectCardanoPoolsInfo,
-    selectStakingTotalRewards,
 } from '@suite-common/wallet-core';
-import { Account } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 import {
     getStakingDataForNetwork,
     isCardanoStakedWithEverstake,
@@ -21,28 +22,28 @@ import {
     Card,
     Column,
     Grid,
-    IconName,
+    type IconComponent,
     InfoItem,
     Paragraph,
     Row,
-    SkeletonRectangle,
+    Skeleton,
     Tooltip,
 } from '@trezor/components';
+import { CheckIcon, InfoIcon, LockIcon, PlusCircleIcon, SpinnerGapIcon } from '@trezor/icons';
 import { BigNumber } from '@trezor/utils';
 
-import { openModal } from 'src/actions/suite/modalActions';
 import { BaseCurrencyValue, FormattedCryptoAmount } from 'src/components/suite';
 import { useDispatch, useLayoutSize, useSelector } from 'src/hooks/suite';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
-import { useAnalytics } from 'src/support/useAnalytics';
 
 import { useIsTxStatusShown } from '../hooks/useIsTxStatusShown';
 import { useProgressLabelsData } from '../hooks/useProgressLabelsData';
 import { ProgressLabels } from './ProgressLabels/ProgressLabels';
+import { getStakingTotalRewards } from './utils/stakingTotalRewards';
 
 type ItemProps = {
     label: React.ReactNode;
-    iconName: IconName;
+    icon: IconComponent;
     title: React.ReactNode;
     description: React.ReactNode;
     isReward?: boolean;
@@ -52,18 +53,18 @@ type ItemProps = {
 
 const Item = ({
     label,
-    iconName,
+    icon,
     isReward = false,
     isLoading = false,
     title,
     description,
     'data-testid': dataTestId,
 }: ItemProps) => (
-    <InfoItem label={label} iconName={iconName}>
+    <InfoItem label={label} icon={icon}>
         {isLoading ? (
             <>
-                <SkeletonRectangle width="150px" height="32px" animate />
-                <SkeletonRectangle width="50px" height="18px" animate />
+                <Skeleton width={150} height={32} animate />
+                <Skeleton width={50} height={18} animate />
             </>
         ) : (
             <>
@@ -94,18 +95,16 @@ export const StakingCard = ({
     daysToUnstake,
     account,
 }: StakingCardProps) => {
-    const analytics = useAnalytics();
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
     const { isBelowLaptop } = useLayoutSize();
 
-    const selectedStakingTotalRewards = useSelector(state =>
-        selectStakingTotalRewards(state, account?.symbol, account.descriptor),
-    );
     const cardanoStakingPools = useSelector(selectCardanoPoolsInfo);
     const isStakingActive = useSelector(state => selectAccountIsStakingActive(state, account.key));
 
-    const { totalRewards = '0', isTotalRewardsLoading } = getStakingTotalRewards(
+    const solanaRewardsTotalQuery = useSolanaRewardsTotal(account);
+    const { totalRewards, isTotalRewardsLoading } = getStakingTotalRewards(
         account,
-        selectedStakingTotalRewards,
+        solanaRewardsTotalQuery,
     );
 
     const {
@@ -168,9 +167,9 @@ export const StakingCard = ({
         if (!isStakingDisabled) {
             dispatch(
                 openModal({
-                    type: 'supply',
+                    type: 'stake',
                     flow: EarnFlow.Stake,
-                    account: createEarnAccountRef(account),
+                    account,
                 }),
             );
 
@@ -187,7 +186,7 @@ export const StakingCard = ({
 
     const openClaimModal = () => {
         if (canClaimRewards) {
-            dispatch(openModal({ type: 'claim', account: createEarnAccountRef(account) }));
+            dispatch(openModal({ type: 'claim', account }));
 
             analytics.report({
                 type: events.stakingClaimEvent.name,
@@ -202,7 +201,7 @@ export const StakingCard = ({
 
     const openUnstakeModal = () => {
         if (!isUnstakingDisabled) {
-            dispatch(openModal({ type: 'withdraw', account: createEarnAccountRef(account) }));
+            dispatch(openModal({ type: 'unstake', account }));
 
             analytics.report({
                 type: events.stakingUnstakeEvent.name,
@@ -239,7 +238,7 @@ export const StakingCard = ({
                     {isStakePending && !isCardanoNetworkType && (
                         <Item
                             label={<Translation id="TR_STAKE_TOTAL_PENDING" />}
-                            iconName="spinnerGap"
+                            icon={SpinnerGapIcon}
                             title={
                                 <FormattedCryptoAmount
                                     data-testid="@account/staking/pending"
@@ -260,7 +259,7 @@ export const StakingCard = ({
                     {isCardanoNetworkType ? (
                         <Item
                             label={<Translation id="TR_STAKE_STAKED_AUTOMATICALLY" />}
-                            iconName="check"
+                            icon={CheckIcon}
                             title={<Translation id="TR_STAKE_FULL_BALANCE" />}
                             description={
                                 <Translation
@@ -277,7 +276,7 @@ export const StakingCard = ({
                     ) : (
                         <Item
                             label={<Translation id="TR_STAKE_STAKE" />}
-                            iconName="lock"
+                            icon={LockIcon}
                             title={
                                 <FormattedCryptoAmount
                                     data-testid="@account/staking/staked"
@@ -313,14 +312,14 @@ export const StakingCard = ({
                                     }
                                 >
                                     {!isCardanoNetworkType && (
-                                        <Badge intent="brand" iconRight="info" size="small">
+                                        <Badge intent="brand" iconRight={InfoIcon} size="small">
                                             <Translation id="TR_STAKE_RESTAKED_BADGE" />
                                         </Badge>
                                     )}
                                 </Tooltip>
                             </Row>
                         }
-                        iconName="plusCircle"
+                        icon={PlusCircleIcon}
                         isReward
                         title={
                             <FormattedCryptoAmount
@@ -359,7 +358,7 @@ export const StakingCard = ({
                                     )}
                                 </>
                             }
-                            iconName="spinnerGap"
+                            icon={SpinnerGapIcon}
                             title={
                                 <FormattedCryptoAmount
                                     data-testid="@account/staking/unstaking"
@@ -384,7 +383,7 @@ export const StakingCard = ({
                             <Button
                                 onClick={openStakeModal}
                                 isDisabled={isStakingDisabled}
-                                iconLeft={isStakingDisabled ? 'info' : undefined}
+                                iconLeft={isStakingDisabled ? InfoIcon : undefined}
                                 intent="neutral"
                                 priority="secondary"
                                 data-testid="@account/staking/stake-more-button"
@@ -399,14 +398,14 @@ export const StakingCard = ({
                             intent="brand"
                             data-testid="@account/staking/claim-rewards-button"
                         >
-                            <Translation id="TR_STAKE_CLAIM_REWARDS" />
+                            <Translation id="TR_EARN_CLAIM_REWARDS" />
                         </Button>
                     )}
                     <Tooltip content={unstakingMessageContent}>
                         <Button
                             isDisabled={!canUnstake || isUnstakingDisabled}
                             onClick={openUnstakeModal}
-                            iconLeft={isUnstakingDisabled ? 'info' : undefined}
+                            iconLeft={isUnstakingDisabled ? InfoIcon : undefined}
                             intent="neutral"
                             priority="secondary"
                             data-testid="@account/staking/unstake-button"

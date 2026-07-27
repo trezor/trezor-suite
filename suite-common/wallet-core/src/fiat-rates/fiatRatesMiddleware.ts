@@ -1,7 +1,7 @@
 import { isAnyOf } from '@reduxjs/toolkit';
 
 import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
-import { Timestamp, TokenAddress } from '@suite-common/wallet-types';
+import { type TickerId, type Timestamp, type TokenAddress } from '@suite-common/wallet-types';
 import { isNative } from '@trezor/env-utils';
 
 import {
@@ -111,9 +111,10 @@ export const prepareFiatRatesMiddleware = createMiddlewareWithExtraDeps(
             const tokenTickers = tokens.map(token => ({
                 symbol,
                 tokenAddress: token.contract as TokenAddress,
-            }));
-            // include main account fiat rate ticker
-            const tickers = [...tokenTickers, { symbol }];
+                protocols: token.protocols,
+            })) satisfies TickerId[];
+            // include main account fiat rate ticker first so its rate is fetched before tokens
+            const tickers = [{ symbol }, ...tokenTickers];
 
             dispatch(
                 updateFiatRatesThunk({

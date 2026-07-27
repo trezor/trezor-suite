@@ -5,8 +5,10 @@ import { createTestAnnotation } from '../../support/reporters/annotations';
 
 test.describe('TrezorConnect', { tag: ['@T3T1', '@T3W1', '@desktopOnly'] }, () => {
     test.use({ electronConf: { exposeConnectWs: true } });
+
     test.beforeEach(async ({ onboardingPage }) => {
         await onboardingPage.completeOnboarding();
+
         await test.step('Initialize TrezorConnect', async () => {
             await TrezorConnect.init({
                 manifest: {

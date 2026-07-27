@@ -11,12 +11,12 @@ import {
 import { Translation } from '@suite-native/intl';
 import {
     ScreenHeader,
-    SendStackParamList,
+    type SendStackParamList,
     SendStackRoutes,
-    StackProps,
+    type StackProps,
 } from '@suite-native/navigation';
 import {
-    TransactionReviewOutputsState,
+    type TransactionReviewOutputsState,
     selectIsReceiveAddressOutputConfirmed,
     selectIsTransactionReviewInProgress,
 } from '@suite-native/transaction-management';

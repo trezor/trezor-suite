@@ -1,35 +1,18 @@
+import { type Network, networks } from '@suite-common/wallet-config';
+import { asAccountDescriptor } from '@suite-common/wallet-types';
+import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
+
+import { type Account } from 'src/types/wallet';
 import { FIXTURE_ACCOUNT_OPTIONS } from 'src/utils/wallet/trading/__fixtures__/tradingUtils';
 import {
-    buildTradingFiatOption,
-    getCountryLabelParts,
-    getTradeTypeByRoute,
+    getComposeAddressPlaceholder,
     resolveAddressAndToken,
     tradingGetAccountLabel,
     tradingGetAmountLabels,
     tradingGetRoundedFiatAmount,
 } from 'src/utils/wallet/trading/tradingUtils';
 
-jest.mock('src/hooks/suite/useDefaultAccountLabel', () => ({
-    ...jest.requireActual('src/hooks/suite/useDefaultAccountLabel'),
-    useDefaultAccountLabel: jest.fn(),
-}));
-
 describe('trading utils', () => {
-    it('buildFiatOption', () => {
-        expect(buildTradingFiatOption('czk')).toStrictEqual({ value: 'czk', label: 'CZK' });
-    });
-
-    it('getCountryLabelParts', () => {
-        expect(getCountryLabelParts('🇨🇿 Czech Republic')).toStrictEqual({
-            flag: '🇨🇿',
-            text: 'Czech Republic',
-        });
-        expect(getCountryLabelParts('aaa')).toStrictEqual({
-            flag: '',
-            text: 'aaa',
-        });
-    });
-
     it('tradingGetAmountLabels', () => {
         expect(tradingGetAmountLabels({ type: 'sell', amountInCrypto: true })).toEqual({
             inputLabel: 'TR_TRADING_YOU_PAY',
@@ -95,22 +78,77 @@ describe('trading utils', () => {
         });
     });
 
-    it('getTradeTypeByRoute - testing correct returning trade section according to route', () => {
-        expect(getTradeTypeByRoute('wallet-trading-buy')).toEqual('buy');
-        expect(getTradeTypeByRoute('wallet-trading-buy-detail')).toEqual('buy');
-        expect(getTradeTypeByRoute('wallet-trading-buy-offers')).toEqual('buy');
-        expect(getTradeTypeByRoute('wallet-trading-buy-confirm')).toEqual('buy');
+    describe('getComposeAddressPlaceholder', () => {
+        describe('bitcoin', () => {
+            it('returns change address as fallback when no device is provided', async () => {
+                const account = {
+                    networkType: 'bitcoin',
+                    symbol: 'btc',
+                    addresses: {
+                        change: [{ address: 'bc1qChangeAddress' }],
+                    },
+                } as unknown as Account;
 
-        expect(getTradeTypeByRoute('wallet-trading-sell')).toEqual('sell');
-        expect(getTradeTypeByRoute('wallet-trading-sell-detail')).toEqual('sell');
-        expect(getTradeTypeByRoute('wallet-trading-sell-offers')).toEqual('sell');
-        expect(getTradeTypeByRoute('wallet-trading-sell-confirm')).toEqual('sell');
+                const network = networks.btc;
 
-        expect(getTradeTypeByRoute('wallet-trading-exchange')).toEqual('exchange');
-        expect(getTradeTypeByRoute('wallet-trading-exchange-detail')).toEqual('exchange');
-        expect(getTradeTypeByRoute('wallet-trading-exchange-offers')).toEqual('exchange');
-        expect(getTradeTypeByRoute('wallet-trading-exchange-confirm')).toEqual('exchange');
+                const result = await getComposeAddressPlaceholder(account, network);
 
-        expect(getTradeTypeByRoute('wallet-index')).toEqual(undefined);
+                expect(result).toBe('bc1qChangeAddress');
+            });
+        });
+
+        describe('ethereum', () => {
+            it('returns empty string', async () => {
+                const ethereumAccount = {
+                    networkType: 'ethereum',
+                    descriptor: asAccountDescriptor('0xEthAddress'),
+                } as unknown as Account;
+
+                const result = await getComposeAddressPlaceholder(ethereumAccount, {} as Network);
+
+                expect(result).toBe('');
+            });
+        });
+
+        describe('cardano', () => {
+            it('returns empty string', async () => {
+                const cardanoAccount = {
+                    networkType: 'cardano',
+                    descriptor: asAccountDescriptor('addr1CardanoAddress'),
+                } as unknown as Account;
+
+                const result = await getComposeAddressPlaceholder(cardanoAccount, {} as Network);
+
+                expect(result).toBe('');
+            });
+        });
+
+        describe.each([
+            { networkType: 'solana', descriptor: 'SolanaAddress123' },
+            { networkType: 'ripple', descriptor: 'rRippleAddress123' },
+            { networkType: 'stellar', descriptor: 'GStellarAddress123' },
+        ] as const)('$networkType', ({ networkType, descriptor }) => {
+            it('returns account descriptor', async () => {
+                const account = {
+                    networkType,
+                    descriptor: asAccountDescriptor(descriptor),
+                } as unknown as Account;
+
+                const result = await getComposeAddressPlaceholder(account, {} as Network);
+
+                expect(result).toBe(descriptor);
+            });
+        });
+
+        it('returns empty string for tron (fee uses compose context recipient)', async () => {
+            const account = mockWalletAccount({
+                symbol: 'trx',
+                descriptor: asAccountDescriptor('TTronAddress123'),
+            });
+
+            const result = await getComposeAddressPlaceholder(account, {} as Network);
+
+            expect(result).toBe('');
+        });
     });
 });

@@ -1,20 +1,21 @@
-import { JSX } from 'react';
+import { type JSX } from 'react';
 
+import { selectShouldAnimateLoadingSkeleton } from '@suite/ui-animations';
+import { selectIsDiscreteModeActive } from '@suite-common/discreet-mode';
 import { useFormatters } from '@suite-common/formatters';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     selectAreSatsAmountUnit,
     selectBaseCurrency,
-    selectIsDiscreteModeActive,
     useDisplayBaseCurrency,
 } from '@suite-common/wallet-core';
-import { BaseCurrencyAmount } from '@suite-common/wallet-types';
+import { type BaseCurrencyAmount } from '@suite-common/wallet-types';
 import { valuablesBaseCurrencyCodes } from '@trezor/blockchain-link-types';
-import { SkeletonRectangle, TOOLTIP_DELAY_LONG, TruncateWithTooltip } from '@trezor/components';
+import { Skeleton, TOOLTIP_DELAY_LONG, TruncateWithTooltip } from '@trezor/components';
 import { isArrayMember } from '@trezor/utils';
 
 import { BaseCurrencyValue, HiddenPlaceholder } from 'src/components/suite';
-import { useLoadingSkeleton, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 const FiatValueRenderComponent = ({ value }: { value: JSX.Element | null }) => {
     const discreetMode = useSelector(selectIsDiscreteModeActive);
@@ -38,7 +39,7 @@ export const BaseCurrency = ({
 }: BaseCurrencyProps) => {
     const { BaseCurrencyAmountFormatter } = useFormatters();
     const baseCurrencyCode = useSelector(selectBaseCurrency);
-    const { shouldAnimate } = useLoadingSkeleton();
+    const shouldAnimate = useSelector(selectShouldAnimateLoadingSkeleton);
     const { shallDisplayBaseCurrency } = useDisplayBaseCurrency(symbol);
     const isBtcAmountInSats = useSelector(selectAreSatsAmountUnit);
 
@@ -56,7 +57,7 @@ export const BaseCurrency = ({
     return shallDisplayBaseCurrency && customFiatValue !== undefined ? (
         <HiddenPlaceholder>
             {isLoading ? (
-                <SkeletonRectangle animate={shouldAnimate} />
+                <Skeleton animate={shouldAnimate} />
             ) : (
                 <BaseCurrencyAmountFormatter
                     value={customFiatValue}

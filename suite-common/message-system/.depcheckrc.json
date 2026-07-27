@@ -1,7 +1,0 @@
-{
-    "ignore-patterns": ["libDev", "lib"],
-    "ignores": [
-        "// Todo: This need so be solved. See: https://github.com/trezor/trezor-suite/issues/21552",
-        "@suite-common/analytics-redux"
-    ]
-}

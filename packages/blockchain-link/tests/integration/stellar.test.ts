@@ -1,26 +1,26 @@
-import { Horizon, Keypair } from '@stellar/stellar-sdk';
-
-import { toStroops } from '@trezor/blockchain-link-utils/src/stellar';
 import * as utils from '@trezor/blockchain-link-utils/src/stellar';
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports
+import { getStellarConnection, identifyTransaction, toStroops } from '@trezor/network-stellar';
+import type { StellarAPI } from '@trezor/network-stellar/types';
 
-import BlockchainLink from '../../src';
+import { BlockchainLink } from '../../src';
 import StellarWorker from '../../src/workers/stellar';
 
 const HORIZON_URL = 'https://horizon.stellar.org';
 
 describe('Stellar', () => {
     let blockchain: BlockchainLink;
-    let horizonServer: Horizon.Server;
-    const worker = StellarWorker();
+    let horizonServer: StellarAPI;
 
-    beforeAll(() => {
+    beforeAll(async () => {
         blockchain = new BlockchainLink({
             name: 'Stellar',
-            worker: () => worker,
+            worker: StellarWorker,
             server: [HORIZON_URL],
             debug: false,
         });
-        horizonServer = new Horizon.Server(HORIZON_URL);
+        const { api } = await getStellarConnection(HORIZON_URL);
+        horizonServer = api;
     });
 
     it('getInfo', async () => {
@@ -44,13 +44,24 @@ describe('Stellar', () => {
     });
 
     it('pushTransaction', async () => {
-        const latestTx = (
-            await horizonServer.transactions().order('desc').limit(200).includeFailed(false).call()
-        ).records.find(tx => !tx.fee_bump_transaction);
+        // Stellar mainnet traffic is sometimes dominated by fee-bump transactions; paginate
+        // until a non-fee-bump tx is found so the test doesn't flake when the first page is
+        // all fee-bumps.
+        const maxPages = 5;
+        let page = await horizonServer
+            .transactions()
+            .order('desc')
+            .limit(200)
+            .includeFailed(false)
+            .call();
+        let latestTx = page.records.find(tx => !tx.fee_bump_transaction);
+        for (let i = 1; !latestTx && i < maxPages; i++) {
+            page = await page.next();
+            if (!page.records.length) break;
+            latestTx = page.records.find(tx => !tx.fee_bump_transaction);
+        }
         if (!latestTx) {
-            // This error may be thrown with a small probability and can be resolved by retrying.
-            // For simplicity, no extensive design is implemented here.
-            throw new Error('No transactions found');
+            throw new Error(`No non-fee-bump transactions found in the last ${maxPages} pages`);
         }
         const xdr = Buffer.from(latestTx.envelope_xdr, 'base64').toString('hex');
         const result = await blockchain.pushTransaction({ hex: xdr });
@@ -64,9 +75,10 @@ describe('Stellar', () => {
         const result = await blockchain.getAccountInfo({
             descriptor,
         });
-        const expectedBalance = toStroops(
-            accountRawResp.balances[accountRawResp.balances.length - 1].balance,
-        );
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const lastBalance: (typeof accountRawResp.balances)[number] =
+            accountRawResp.balances[accountRawResp.balances.length - 1];
+        const expectedBalance = toStroops(lastBalance.balance);
         const expectedReverse = '20000000';
         const expectedAvailableBalance = expectedBalance.minus(expectedReverse).toString();
         expect(result).toEqual({
@@ -80,6 +92,7 @@ describe('Stellar', () => {
                 unconfirmed: 0,
             },
             misc: {
+                baseReserve: '5000000',
                 reserve: expectedReverse,
                 stellarSequence: accountRawResp.sequence,
             },
@@ -90,15 +103,14 @@ describe('Stellar', () => {
                     decimals: 7,
                     name: 'USDC',
                     standard: 'STELLAR-CLASSIC',
-                    symbol: 'usdc',
+                    symbol: 'USDC',
                 },
             ],
         });
     });
 
     it('getAccountInfo (Empty Account)', async () => {
-        const descriptor = Keypair.random().publicKey();
-
+        const descriptor = 'GD22QZ5Q3X4PEDGYYN6HBPJL6DA6UE7X4WMPGPV5RNOKGK6DSYXFMOJC';
         const result = await blockchain.getAccountInfo({
             descriptor,
         });
@@ -115,6 +127,7 @@ describe('Stellar', () => {
             },
             misc: {
                 reserve: '10000000',
+                baseReserve: '5000000',
                 stellarSequence: '0',
             },
         });
@@ -134,19 +147,23 @@ describe('Stellar', () => {
             .includeFailed(true)
             .call();
 
-        const expectedCursor = txRawResp.records[txRawResp.records.length - 1].paging_token;
-        const expectedTxs = txRawResp.records.map(record =>
-            utils.transformTransaction(record, descriptor, {}),
-        );
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const lastRecord: (typeof txRawResp.records)[number] =
+            txRawResp.records[txRawResp.records.length - 1];
+        const expectedCursor = lastRecord.paging_token;
+        const expectedTxs = txRawResp.records
+            .map(identifyTransaction)
+            .map(record => utils.transformTransaction(record, descriptor, {}));
 
         const result = await blockchain.getAccountInfo({
             descriptor,
             details: 'txs',
             pageSize,
         });
-        const expectedBalance = toStroops(
-            accountRawResp.balances[accountRawResp.balances.length - 1].balance,
-        );
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const lastBalance2: (typeof accountRawResp.balances)[number] =
+            accountRawResp.balances[accountRawResp.balances.length - 1];
+        const expectedBalance = toStroops(lastBalance2.balance);
         const expectedReverse = '20000000';
         const expectedAvailableBalance = expectedBalance.minus(expectedReverse).toString();
         expect(result).toEqual({
@@ -160,6 +177,7 @@ describe('Stellar', () => {
                 unconfirmed: 0,
             },
             misc: {
+                baseReserve: '5000000',
                 reserve: expectedReverse,
                 stellarSequence: accountRawResp.sequence,
             },
@@ -171,7 +189,7 @@ describe('Stellar', () => {
                     decimals: 7,
                     name: 'USDC',
                     standard: 'STELLAR-CLASSIC',
-                    symbol: 'usdc',
+                    symbol: 'USDC',
                 },
             ],
         });

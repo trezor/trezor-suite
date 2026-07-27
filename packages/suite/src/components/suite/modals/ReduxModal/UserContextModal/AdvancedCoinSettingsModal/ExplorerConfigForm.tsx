@@ -1,12 +1,13 @@
-import { ReactNode, useMemo } from 'react';
-import { RefCallBack } from 'react-hook-form';
+import { type ReactNode, useMemo } from 'react';
+import { type RefCallBack } from 'react-hook-form';
 
 import { Translation } from '@suite/intl';
-import { Explorer } from '@suite-common/wallet-config';
+import { type Explorer } from '@suite-common/wallet-config';
 import { Button, Column, InfoItem, Input, Row, Text } from '@trezor/components';
-import { spacings } from '@trezor/theme';
+import { ChangeIcon } from '@trezor/icons';
+import { typedObjectKeys } from '@trezor/utils';
 
-import { useExplorerForm } from 'src/hooks/settings/useExplorerForm';
+import { type useExplorerForm } from 'src/hooks/settings/useExplorerForm';
 
 type InputRowProps = {
     value: { ref: RefCallBack; field: Omit<RefCallBack, 'ref'>; error?: string };
@@ -18,10 +19,10 @@ type InputRowProps = {
 
 const InputRow = ({ value, title, placeholder, base, defaultBase }: InputRowProps) => (
     <InfoItem label={title}>
-        <Row gap={spacings.sm} alignItems="flex-start">
+        <Row gap={12} alignItems="flex-start">
             <Input value={base} type="text" placeholder={defaultBase} isDisabled={true} />
 
-            <Text intent="neutral" priority="secondary" margin={{ top: spacings.md }}>
+            <Text intent="neutral" priority="secondary" margin={{ top: 16 }}>
                 /
             </Text>
 
@@ -45,7 +46,7 @@ export const ExplorerConfigForm = ({ form }: ExplorerConfigProps) => {
     const { explorerConfig, setDefaultValues, usesDefaultExplorer, input, explorer } = form;
 
     const explorerKeys = useMemo(() => {
-        const keys = Object.keys(explorer) as (keyof Explorer)[];
+        const keys = typedObjectKeys(explorer);
 
         return keys.filter(key => key !== 'base' && input.fields[key].value !== undefined);
     }, [explorer, input]);
@@ -66,7 +67,7 @@ export const ExplorerConfigForm = ({ form }: ExplorerConfigProps) => {
     };
 
     return (
-        <Column gap={spacings.sm}>
+        <Column gap={12}>
             <InfoItem label={<Translation id="TR_EXPLORER_BASE_URL" />}>
                 <Input
                     type="text"
@@ -79,7 +80,7 @@ export const ExplorerConfigForm = ({ form }: ExplorerConfigProps) => {
                             intent="neutral"
                             priority="secondary"
                             size="small"
-                            iconLeft="change"
+                            iconLeft={ChangeIcon}
                             isDisabled={usesDefaultExplorer}
                             onClick={setDefaultValues}
                         >

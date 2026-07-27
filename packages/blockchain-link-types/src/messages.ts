@@ -1,5 +1,6 @@
+import { type ContractInfoParams } from './blockbook';
 import type { BlockchainSettings, ChannelMessage, SubscriptionAccountInfo } from './common';
-import * as MESSAGES from './constants/messages';
+import type * as MESSAGES from './constants/messages';
 import type {
     AccountBalanceHistoryParams,
     AccountInfoParams,
@@ -45,7 +46,7 @@ export interface GetAccountUtxo {
 
 export interface GetTransaction {
     type: typeof MESSAGES.GET_TRANSACTION;
-    payload: string;
+    payload: { txid: string; descriptor?: string };
 }
 
 export interface GetTransactionHex {
@@ -144,8 +145,13 @@ export interface ValidateEvmRpc {
     };
 }
 
+export interface GetContractInfo {
+    type: typeof MESSAGES.GET_CONTRACT_INFO;
+    payload: ContractInfoParams;
+}
+
 export type Message =
-    | ChannelMessage<{ type: typeof MESSAGES.TERMINATE; payload?: typeof undefined }>
+    | ChannelMessage<{ type: typeof MESSAGES.TERMINATE; payload?: never }>
     | ChannelMessage<{ type: typeof MESSAGES.HANDSHAKE; settings: BlockchainSettings }>
     | ChannelMessage<Connect>
     | ChannelMessage<Disconnect>
@@ -165,4 +171,5 @@ export type Message =
     | ChannelMessage<Subscribe>
     | ChannelMessage<Unsubscribe>
     | ChannelMessage<PushTransaction>
-    | ChannelMessage<ValidateEvmRpc>;
+    | ChannelMessage<ValidateEvmRpc>
+    | ChannelMessage<GetContractInfo>;

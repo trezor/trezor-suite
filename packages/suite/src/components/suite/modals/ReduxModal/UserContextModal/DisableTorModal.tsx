@@ -1,16 +1,15 @@
 import { useState } from 'react';
 
 import { Translation } from '@suite/intl';
-import { UserContextPayload } from '@suite-common/suite-types';
+import { isOnionUrl } from '@suite/tor';
+import { type UserContextPayload } from '@suite-common/suite-types';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
-import { blockchainActions } from '@suite-common/wallet-core';
+import { blockchainActions, selectCustomBackends } from '@suite-common/wallet-core';
 import { Banner, Button, Card, Column, H3, Modal, Paragraph, Row } from '@trezor/components';
-import { CoinLogo } from '@trezor/product-components';
-import { spacings } from '@trezor/theme';
+import { GearIcon, TorBrowserIcon } from '@trezor/icons';
+import { TokenIcon } from '@trezor/product-components';
 
-import { useCustomBackends } from 'src/hooks/settings/backends';
-import { useDispatch } from 'src/hooks/suite';
-import { isOnionUrl } from 'src/utils/suite/tor';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 
 import { AdvancedCoinSettingsModal } from './AdvancedCoinSettingsModal/AdvancedCoinSettingsModal';
 
@@ -21,7 +20,8 @@ type DisableTorModalProps = Omit<Extract<UserContextPayload, { type: 'disable-to
 export const DisableTorModal = ({ onCancel, decision }: DisableTorModalProps) => {
     const dispatch = useDispatch();
     const [symbol, setSymbol] = useState<NetworkSymbol>();
-    const onionBackends = useCustomBackends().filter(({ urls }) => urls.every(isOnionUrl));
+    const customBackends = useSelector(selectCustomBackends);
+    const onionBackends = customBackends.filter(({ urls }) => urls.every(isOnionUrl));
 
     const onDisableTor = () => {
         onionBackends.forEach(({ symbol, type, urls }) =>
@@ -38,13 +38,17 @@ export const DisableTorModal = ({ onCancel, decision }: DisableTorModalProps) =>
     };
 
     return symbol ? (
-        <AdvancedCoinSettingsModal symbol={symbol} onCancel={() => setSymbol(undefined)} />
+        <AdvancedCoinSettingsModal
+            symbol={symbol}
+            onCancel={() => setSymbol(undefined)}
+            onBackClick={() => setSymbol(undefined)}
+        />
     ) : (
         <Modal
             onCancel={onCancel}
-            variant={onionBackends.length ? 'warning' : 'primary'}
+            intent={onionBackends.length ? 'warning' : 'brand'}
             width={600}
-            iconName={onionBackends.length ? undefined : 'torBrowser'}
+            icon={onionBackends.length ? undefined : TorBrowserIcon}
             heading={
                 onionBackends.length ? <Translation id="TR_TOR_DISABLE_ONIONS_ONLY" /> : undefined
             }
@@ -66,10 +70,10 @@ export const DisableTorModal = ({ onCancel, decision }: DisableTorModalProps) =>
             }
         >
             {onionBackends.length ? (
-                <Column gap={spacings.md}>
+                <Column gap={16}>
                     <Banner
                         intent="warning"
-                        icon="torBrowser"
+                        icon={TorBrowserIcon}
                         description={
                             <>
                                 <Translation id="TR_TOR_DISABLE_ONIONS_ONLY_TITLE" />{' '}
@@ -78,10 +82,10 @@ export const DisableTorModal = ({ onCancel, decision }: DisableTorModalProps) =>
                         }
                     />
                     <Card>
-                        <Column gap={spacings.xxl} hasDivider>
+                        <Column gap={32} hasDivider>
                             {onionBackends.map(({ symbol, urls }) => (
-                                <Row key={symbol} gap={spacings.md}>
-                                    <CoinLogo symbol={symbol} />
+                                <Row key={symbol} gap={16}>
+                                    <TokenIcon symbol={symbol} />
                                     <Column>
                                         <Paragraph>{getNetwork(symbol).name}</Paragraph>
                                         <Paragraph
@@ -97,7 +101,7 @@ export const DisableTorModal = ({ onCancel, decision }: DisableTorModalProps) =>
                                         intent="neutral"
                                         priority="secondary"
                                         onClick={() => setSymbol(symbol)}
-                                        iconLeft="gear"
+                                        iconLeft={GearIcon}
                                         size="small"
                                         margin={{ left: 'auto' }}
                                     >
@@ -109,7 +113,7 @@ export const DisableTorModal = ({ onCancel, decision }: DisableTorModalProps) =>
                     </Card>
                 </Column>
             ) : (
-                <Column gap={spacings.xxs}>
+                <Column gap={4}>
                     <H3>
                         <Translation id="TR_TOR_DISABLE_ONIONS_ONLY_NO_MORE_DESCRIPTION" />
                     </H3>

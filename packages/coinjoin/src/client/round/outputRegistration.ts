@@ -1,14 +1,14 @@
 import { arrayShuffle, getWeakRandomId, getWeakRandomInt } from '@trezor/utils';
 
 import { SessionPhase, WabiSabiProtocolErrorCode } from '../../enums';
-import { AccountAddress } from '../../types';
+import type { AccountAddress } from '../../types/account';
+import type { AliceShape } from '../../types/alice';
 import * as coordinator from '../coordinator';
 import * as middleware from '../middleware';
-import { Bob, outputDecomposition } from './outputDecomposition';
+import { type Bob, outputDecomposition } from './outputDecomposition';
+import type { CoinjoinRoundOptions, CoinjoinRoundShape } from '../../types/round';
 import { scheduleDelay } from '../../utils/roundUtils';
 import type { Account } from '../Account';
-import type { Alice } from '../Alice';
-import type { CoinjoinRound, CoinjoinRoundOptions } from '../CoinjoinRound';
 
 /**
  * RoundPhase: 2, OutputRegistration
@@ -21,7 +21,7 @@ import type { CoinjoinRound, CoinjoinRoundOptions } from '../CoinjoinRound';
  */
 
 const registerOutput = async (
-    round: CoinjoinRound,
+    round: CoinjoinRoundShape,
     { accountKey, changeAddresses }: Account,
     { amountCredentials, vsizeCredentials }: Bob,
     assignedAddresses: AccountAddress[],
@@ -95,8 +95,10 @@ const registerOutput = async (
                         return tryToRegisterOutput(false);
                     }
                     if (error.errorCode === WabiSabiProtocolErrorCode.NotEnoughFunds) {
+                        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+                        const firstCred: (typeof amountCredentials)[number] = amountCredentials[0];
                         logger.error(
-                            `NotEnoughFunds. Amount: ${amountCredentials[0].Value} Delta: ${outputAmountCredentials.CredentialsRequest.Delta} FeeRate: ${roundParameters.MiningFeeRate}`,
+                            `NotEnoughFunds. Amount: ${firstCred.Value} Delta: ${outputAmountCredentials.CredentialsRequest.Delta} FeeRate: ${roundParameters.MiningFeeRate}`,
                         );
                     }
                 }
@@ -118,8 +120,8 @@ const registerOutput = async (
 };
 
 const readyToSign = (
-    { id, phaseDeadline }: CoinjoinRound,
-    input: Alice,
+    { id, phaseDeadline }: CoinjoinRoundShape,
+    input: AliceShape,
     { signal, coordinatorUrl }: CoinjoinRoundOptions,
 ) =>
     coordinator.readyToSign(id, input.registrationData!.AliceId, !!input.affiliationFlag, {
@@ -131,7 +133,7 @@ const readyToSign = (
     });
 
 export const outputRegistration = async (
-    round: CoinjoinRound,
+    round: CoinjoinRoundShape,
     accounts: Account[],
     options: CoinjoinRoundOptions,
 ) => {

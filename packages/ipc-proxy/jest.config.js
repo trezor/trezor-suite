@@ -1,4 +1,4 @@
-const { testPathIgnorePatterns, ...baseConfig } = require('../../jest.config.base');
+const { testPathIgnorePatterns, ...baseConfig } = require('../../jest.config.base.swc');
 
 module.exports = {
     ...baseConfig,

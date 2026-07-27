@@ -1,0 +1,10 @@
+import type { SVGProps } from 'react';
+const SvgArrowLineUpLeft = (props: SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" {...props}>
+        <path
+            fill="currentColor"
+            d="M28 27a1 1 0 0 1-1 1H5a1 1 0 0 1 0-2h22a1 1 0 0 1 1 1M8 20a1 1 0 0 0 1-1V9.414l12.293 12.293a1 1 0 0 0 1.415-1.415L10.413 8H20a1 1 0 1 0 0-2H8a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1"
+        />
+    </svg>
+);
+export { SvgArrowLineUpLeft as ReactComponent };

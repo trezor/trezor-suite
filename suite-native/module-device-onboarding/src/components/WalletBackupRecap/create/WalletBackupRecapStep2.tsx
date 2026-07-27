@@ -7,7 +7,7 @@ import { Translation, selectLocale } from '@suite-native/intl';
 import { SwipeableWalkthroughStep } from '@suite-native/swipeable-walkthrough';
 
 import { Underline } from './Underline';
-import { WalletBackupTutorialNumberedStepProps } from './WalletBackupRecapStep1';
+import { type WalletBackupTutorialNumberedStepProps } from './WalletBackupRecapStep1';
 import { WalletRecapStepContent } from '../WalletRecapStepContent';
 import { WALLET_BACKUP_RECAP_STEPS } from './presets';
 
@@ -32,11 +32,7 @@ export const WalletBackupRecapStep2 = ({
         >
             <WalletRecapStepContent>
                 <VStack spacing="sp12" alignItems="center">
-                    <Text
-                        variant="body-md-strong"
-                        color="textSecondaryHighlight"
-                        textAlign="center"
-                    >
+                    <Text variant="body-md-strong" color="contentBrand" textAlign="center">
                         <Translation id="moduleDeviceOnboarding.walletBackupRecapScreen.step2.callout" />
                     </Text>
                     <Box>

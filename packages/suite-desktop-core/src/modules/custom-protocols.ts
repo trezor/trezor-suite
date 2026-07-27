@@ -29,11 +29,10 @@ export const init: ModuleInit = ({ mainWindowProxy }) => {
                 ...protocols.map(protocol => argv.filter(arg => arg.startsWith(`${protocol}:`))),
             );
 
-            if (urls.length) {
+            // if there is custom protocol, then there is just one
+            const protocol = urls[0];
+            if (protocol) {
                 event.preventDefault();
-
-                // if there is custom protocol, then there is just one
-                const protocol = urls[0];
 
                 global.logger.debug(
                     SERVICE_NAME,

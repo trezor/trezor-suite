@@ -1,5 +1,6 @@
 import { useCallback, useEffect } from 'react';
 
+import { useExternalLink } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { formInputsMaxLength } from '@suite-common/validators';
 import {
@@ -8,15 +9,15 @@ import {
     Card,
     Column,
     Grid,
+    H4,
     IconButton,
     Input,
     KEYBOARD_CODE,
     Paragraph,
     Row,
 } from '@trezor/components';
+import { CaretLeftIcon, DotOutlineFilledIcon, PasswordIcon } from '@trezor/icons';
 import { HELP_CENTER_PIN_URL } from '@trezor/urls';
-
-import { useExternalLink } from 'src/hooks/suite';
 
 type PinMatrixProps = {
     pin: string;
@@ -115,7 +116,7 @@ export const PinMatrix = ({
             {showExplanation && (
                 <Banner
                     intent="info"
-                    icon="password"
+                    icon={PasswordIcon}
                     rightContent={
                         <Banner.Button href={learnMoreUrl} size="small">
                             <Translation id="TR_LEARN_MORE" />
@@ -128,7 +129,15 @@ export const PinMatrix = ({
                     }
                 />
             )}
-            <Card label={showLabel ? <Translation id="TR_ENTER_PIN" /> : undefined}>
+            <Card
+                header={
+                    showLabel ? (
+                        <H4>
+                            <Translation id="TR_ENTER_PIN" />
+                        </H4>
+                    ) : undefined
+                }
+            >
                 <Column gap={40} padding={16} data-testid="@pin" alignItems="center">
                     <Grid columns={3} gap={20}>
                         {
@@ -138,12 +147,13 @@ export const PinMatrix = ({
                                     size="large"
                                     key={value}
                                     data-value={value}
-                                    icon="dotOutlineFilled"
+                                    icon={DotOutlineFilledIcon}
                                     intent="neutral"
                                     priority="secondary"
                                     onClick={() => onPinAdd(value)}
                                     isDisabled={isDisabled}
                                     data-testid={`@pin/input/${value}`}
+                                    tooltip={{ isActive: false }}
                                 />
                             ))
                         }
@@ -159,7 +169,7 @@ export const PinMatrix = ({
                             intent="neutral"
                             priority="secondary"
                             onClick={onPinBackspace}
-                            iconLeft="caretLeft"
+                            iconLeft={CaretLeftIcon}
                             isDisabled={isDisabled}
                         >
                             <Translation id="TR_BACKSPACE" />

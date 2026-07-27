@@ -1,16 +1,16 @@
-import { TranslationKey } from '@suite/intl';
-import { DeviceModelInternal, FirmwareType } from '@trezor/device-utils';
-import { FirmwareVersionString } from '@trezor/device-utils/src/types';
+import { type TranslationKey } from '@suite/intl';
+import { type DeviceModelInternal, type FirmwareType } from '@trezor/device-utils';
+import { type FirmwareVersionString } from '@trezor/device-utils/src/types';
 
-import * as STEP from 'src/constants/onboarding/steps';
-import { PrerequisiteType } from 'src/utils/suite/prerequisites';
+import type * as STEP from 'src/constants/onboarding/steps';
+import { type PrerequisiteType } from 'src/utils/suite/prerequisites';
 
 type ModelWithFirmwareVersion = {
     model: DeviceModelInternal;
     minFwVersion: FirmwareVersionString;
 };
 
-export type StepCategoryKey = 'device' | 'wallet' | 'pin' | 'coins' | 'final';
+export type StepCategoryKey = 'device' | 'wallet' | 'pin' | 'final';
 
 export type StepCategory = {
     id: StepCategoryKey;
@@ -29,14 +29,13 @@ export type Step = {
 // todo: remove, improve typing
 export type AnyStepId =
     | typeof STEP.ID_CREATE_OR_RECOVER
-    | typeof STEP.ID_BACKUP_STEP
+    | typeof STEP.ID_FINAL_STEP
     | typeof STEP.ID_FIRMWARE_STEP
     | typeof STEP.ID_AUTHENTICATE_DEVICE_STEP
     | typeof STEP.ID_TUTORIAL_STEP
     | typeof STEP.ID_SET_PIN_STEP
     | typeof STEP.ID_SECURITY_STEP
-    | typeof STEP.ID_RESET_DEVICE_STEP
-    | typeof STEP.ID_RECOVERY_STEP
-    | typeof STEP.ID_COINS_STEP;
+    | typeof STEP.ID_BACKUP_TYPE_STEP
+    | typeof STEP.ID_RECOVERY_STEP;
 
 export type AnyPath = typeof STEP.PATH_CREATE | typeof STEP.PATH_RECOVERY;

@@ -113,7 +113,6 @@ export const regtestDiscoveryFinishedStateT1B1: PreloadedState = {
                 metadata: {
                     key: 'tpubDCKpwiaxUvejaVwzGE9mjZQ5rHm2DwCTYDM3cYDYW5eG5V99uc34W4YZz1PYsWndPMD9PwcrBPV6C92zgP8Z1PHwrMEGFDeGp5YvFLxtP2P',
                 },
-                ts: 1758269690638,
                 networkType: 'bitcoin',
                 page: {
                     index: 1,
@@ -158,7 +157,6 @@ export const regtestDiscoveryFinishedStateT1B1: PreloadedState = {
                     release: {
                         required: false,
                         version: [1, 13, 1],
-                        min_bridge_version: [2, 0, 25],
                         min_bootloader_version: [1, 12, 0],
                         min_firmware_version: [1, 12, 0],
                         bootloader_version: [1, 12, 1],
@@ -208,7 +206,6 @@ export const regtestDiscoveryFinishedStateT1B1: PreloadedState = {
                         'Capability_Bitcoin_like',
                         'Capability_Crypto',
                         'Capability_Ethereum',
-                        'Capability_NEM',
                         'Capability_Stellar',
                         'Capability_U2F',
                     ],
@@ -239,7 +236,6 @@ export const regtestDiscoveryFinishedStateT1B1: PreloadedState = {
                     ada: 'no-support',
                     bnb: 'no-support',
                     dsol: 'no-support',
-                    eos: 'no-support',
                     sol: 'no-support',
                     tada: 'no-support',
                     txrp: 'no-support',

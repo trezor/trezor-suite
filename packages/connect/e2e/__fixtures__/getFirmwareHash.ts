@@ -1,4 +1,4 @@
-export default {
+const getFirmwareHash: TestCase = {
     method: 'getFirmwareHash',
     setup: {
         mnemonic: 'mnemonic_all',
@@ -24,4 +24,6 @@ export default {
             },
         },
     ],
-} satisfies TestCase;
+};
+
+export default getFirmwareHash;

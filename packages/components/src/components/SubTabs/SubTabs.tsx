@@ -1,19 +1,17 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
 import styled from 'styled-components';
 
-import { spacings } from '@trezor/theme';
-
 import { SubTabsContext } from './SubTabsContext';
 import { SubTabsItem } from './SubTabsItem';
-import { SubTabsSize } from './types';
+import { type SubTabsSize } from './types';
 import {
-    FrameProps,
-    FramePropsKeys,
+    type FrameProps,
+    type FramePropsKeys,
     pickAndPrepareFrameProps,
     withFrameProps,
 } from '../../utils/frameProps';
-import { TransientProps } from '../../utils/transientProps';
+import { type TransientProps } from '../../utils/transientProps';
 import { Row } from '../Flex/Flex';
 
 export const allowedSubTabsFrameProps = ['margin'] as const satisfies FramePropsKeys[];
@@ -35,7 +33,7 @@ const SubTabs = ({ activeItemId, size = 'medium', children, ...rest }: SubTabsPr
     return (
         <SubTabsContext.Provider value={{ activeItemId, size }}>
             <Container {...frameProps}>
-                <Row alignItems="stretch" gap={spacings.xxs}>
+                <Row alignItems="stretch" gap={4}>
                     {children}
                 </Row>
             </Container>

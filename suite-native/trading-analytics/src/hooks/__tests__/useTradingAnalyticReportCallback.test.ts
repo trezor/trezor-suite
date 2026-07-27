@@ -1,50 +1,53 @@
 import {
-    TradingExchangeAction,
-    TradingExchangeStep,
-    TradingSellAction,
-    TradingSellStep,
+    type NativeAnalyticsDep,
+    type TradingExchangeAction,
+    type TradingExchangeStep,
+    type TradingSellAction,
+    type TradingSellStep,
     events,
 } from '@suite-native/analytics';
-import { useAnalytics } from '@suite-native/services';
-import { PreloadedState, renderHookWithStoreProvider } from '@suite-native/test-utils';
-import { exchangeQuotes, getWalletState, sellQuotes } from '@suite-native/trading-fixtures';
+import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
+import { renderHookWithStoreProvider } from '@suite-native/test-utils-store';
+import {
+    banxaCreditCardSellQuote,
+    getWalletState,
+    mercuryoFixedWorstQuote,
+} from '@suite-native/trading-fixtures';
 
 import { useTradingAnalyticReportCallback } from '../useTradingAnalyticReportCallback';
 
 const reportMock = jest.fn();
-
-jest.mock('@suite-native/services', () => {
-    const original = jest.requireActual('@suite-native/services');
-
-    return {
-        ...original,
-        useAnalytics: jest.fn(),
-    };
-});
+const services: NativeAnalyticsDep = {
+    analytics: mockNativeAnalytics(reportMock),
+};
 
 describe('useTradingAnalyticReportCallback', () => {
-    let preloadedState: PreloadedState;
+    let preloadedState: Record<string, unknown>;
 
     beforeEach(() => {
         jest.clearAllMocks();
-
-        (useAnalytics as jest.Mock).mockReturnValue({
-            report: reportMock,
-        });
     });
 
     describe('when tradingType is "sell"', () => {
         beforeEach(() => {
             preloadedState = {
-                wallet: getWalletState({ tradeType: 'sell' }),
+                wallet: {
+                    ...getWalletState({ tradeType: 'sell' }),
+                    trading: {
+                        ...getWalletState({ tradeType: 'sell' }).trading,
+                        sell: {
+                            ...getWalletState({ tradeType: 'sell' }).trading.sell,
+                            selectedQuote: banxaCreditCardSellQuote,
+                        },
+                    },
+                },
             };
-            preloadedState.wallet!.trading!.sell!.selectedQuote = sellQuotes[0];
         });
 
         it('should return sell analytics callback', () => {
             const { result } = renderHookWithStoreProvider(
                 () => useTradingAnalyticReportCallback('sell'),
-                { preloadedState },
+                { preloadedState, services },
             );
 
             (result.current as (step: TradingSellStep, action: TradingSellAction) => void)(
@@ -65,15 +68,23 @@ describe('useTradingAnalyticReportCallback', () => {
     describe('when tradingType is "exchange"', () => {
         beforeEach(() => {
             preloadedState = {
-                wallet: getWalletState({ tradeType: 'exchange' }),
+                wallet: {
+                    ...getWalletState({ tradeType: 'exchange' }),
+                    trading: {
+                        ...getWalletState({ tradeType: 'exchange' }).trading,
+                        exchange: {
+                            ...getWalletState({ tradeType: 'exchange' }).trading.exchange,
+                            selectedQuote: mercuryoFixedWorstQuote,
+                        },
+                    },
+                },
             };
-            preloadedState.wallet!.trading!.exchange!.selectedQuote = exchangeQuotes[0];
         });
 
         it('should return exchange analytics callback', () => {
             const { result } = renderHookWithStoreProvider(
                 () => useTradingAnalyticReportCallback('exchange'),
-                { preloadedState },
+                { preloadedState, services },
             );
 
             (result.current as (step: TradingExchangeStep, action: TradingExchangeAction) => void)(
@@ -102,7 +113,7 @@ describe('useTradingAnalyticReportCallback', () => {
         it('should return null action (no analytics)', () => {
             const { result } = renderHookWithStoreProvider(
                 () => useTradingAnalyticReportCallback(undefined),
-                { preloadedState },
+                { preloadedState, services },
             );
 
             result.current('fee-selection', 'visit');
@@ -121,7 +132,7 @@ describe('useTradingAnalyticReportCallback', () => {
         it('should return null action (no analytics)', () => {
             const { result } = renderHookWithStoreProvider(
                 () => useTradingAnalyticReportCallback('buy'),
-                { preloadedState },
+                { preloadedState, services },
             );
 
             result.current('fee-selection', 'visit');

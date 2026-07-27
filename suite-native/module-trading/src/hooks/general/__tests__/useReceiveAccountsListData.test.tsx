@@ -1,6 +1,5 @@
-import { NetworkSymbol } from '@suite-common/wallet-config';
-import { Account } from '@suite-common/wallet-types';
-import { PreloadedState, renderHookWithStoreProviderAsync } from '@suite-native/test-utils';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type Account } from '@suite-common/wallet-types';
 import {
     MOCK_ACCOUNT_DEVICE_SESSION_ID,
     accounts,
@@ -10,13 +9,22 @@ import {
     eth2legacyAccount,
 } from '@suite-native/trading-fixtures';
 
+import {
+    type PreloadedStatePartial,
+    type TradingTestPreloadedState,
+    renderHookWithTradingProvider,
+} from '../../../__tests__/tradingTestUtils';
+import {
+    type ReceiveAccountsListMode,
+    useReceiveAccountsListData,
+} from '../useReceiveAccountsListData';
+
 const ADDRESS_COMMON = { received: '0', sent: '0', transfers: 0 };
 
-import { ReceiveAccountsListMode, useReceiveAccountsListData } from '../useReceiveAccountsListData';
-
 describe('useReceiveAccountsListData', () => {
-    const defaultPreloadedState = {
+    const defaultOverrides: PreloadedStatePartial<TradingTestPreloadedState> = {
         device: {
+            devices: [],
             selectedDevice: {
                 state: {
                     staticSessionId: MOCK_ACCOUNT_DEVICE_SESSION_ID,
@@ -30,13 +38,13 @@ describe('useReceiveAccountsListData', () => {
         initialSymbol: NetworkSymbol,
         initialSelectedAccount: undefined | Account,
         initialMode: ReceiveAccountsListMode,
-        preloadedState: PreloadedState = defaultPreloadedState,
+        overrides: PreloadedStatePartial<TradingTestPreloadedState> = defaultOverrides,
     ) =>
-        renderHookWithStoreProviderAsync(
+        renderHookWithTradingProvider(
             ({ symbol, selectedAccount, mode }) =>
                 useReceiveAccountsListData({ symbol, selectedAccount, mode }),
             {
-                preloadedState,
+                overrides,
                 initialProps: {
                     symbol: initialSymbol,
                     selectedAccount: initialSelectedAccount,
@@ -46,12 +54,8 @@ describe('useReceiveAccountsListData', () => {
         );
 
     describe('without account selected', () => {
-        it('should display all accounts for given symbol', async () => {
-            const { result } = await renderUseReceiveAccountsListDataHook(
-                'btc',
-                undefined,
-                'account',
-            );
+        it('should display all accounts for given symbol', () => {
+            const { result } = renderUseReceiveAccountsListDataHook('btc', undefined, 'account');
 
             expect(result.current).toEqual([
                 {
@@ -65,8 +69,8 @@ describe('useReceiveAccountsListData', () => {
             ]);
         });
 
-        it('should react to symbol change', async () => {
-            const { result, rerender } = await renderUseReceiveAccountsListDataHook(
+        it('should react to symbol change', () => {
+            const { result, rerender } = renderUseReceiveAccountsListDataHook(
                 'btc',
                 undefined,
                 'account',
@@ -86,24 +90,21 @@ describe('useReceiveAccountsListData', () => {
             ]);
         });
 
-        it('should render empty array when wallet accounts are not initialized', async () => {
-            const { result } = await renderUseReceiveAccountsListDataHook(
-                'btc',
-                undefined,
-                'account',
-                {
-                    ...defaultPreloadedState,
-                    wallet: undefined,
+        it('should render empty array when wallet accounts are empty', () => {
+            const { result } = renderUseReceiveAccountsListDataHook('btc', undefined, 'account', {
+                ...defaultOverrides,
+                wallet: {
+                    accounts: [],
                 },
-            );
+            });
 
             expect(result.current).toEqual([]);
         });
     });
 
     describe('with account selected', () => {
-        it('should be empty array for non BTC like assets', async () => {
-            const { result } = await renderUseReceiveAccountsListDataHook(
+        it('should be empty array for non BTC like assets', () => {
+            const { result } = renderUseReceiveAccountsListDataHook(
                 'eth',
                 eth1NormalAccount,
                 'address',
@@ -112,8 +113,8 @@ describe('useReceiveAccountsListData', () => {
             expect(result.current).toEqual([]);
         });
 
-        it('should return 1 unused address and all used addresses for BTC like assets', async () => {
-            const { result } = await renderUseReceiveAccountsListDataHook(
+        it('should return 1 unused address and all used addresses for BTC like assets', () => {
+            const { result } = renderUseReceiveAccountsListDataHook(
                 'btc',
                 btc1NormalAccount,
                 'address',
@@ -164,8 +165,8 @@ describe('useReceiveAccountsListData', () => {
             ]);
         });
 
-        it('should not return empty sections', async () => {
-            const { result } = await renderUseReceiveAccountsListDataHook(
+        it('should not return empty sections', () => {
+            const { result } = renderUseReceiveAccountsListDataHook(
                 'btc',
                 btc2legacyAccount,
                 'address',
@@ -174,9 +175,10 @@ describe('useReceiveAccountsListData', () => {
             expect(result.current).toEqual([]);
         });
 
-        it('should not display not visible accounts', async () => {
-            const preloadedState = {
+        it('should not display not visible accounts', () => {
+            const overrides: PreloadedStatePartial<TradingTestPreloadedState> = {
                 device: {
+                    devices: [],
                     selectedDevice: {
                         state: {
                             staticSessionId: MOCK_ACCOUNT_DEVICE_SESSION_ID,
@@ -188,7 +190,7 @@ describe('useReceiveAccountsListData', () => {
                         {
                             symbol: 'eth',
                             accountLabel: 'ETH Account #1',
-                            deviceState: 'staticSessionId',
+                            deviceState: 'testWallet@testDevice:0',
                             addresses: undefined,
                             key: eth1NormalAccount.key,
                             visible: false,
@@ -196,11 +198,11 @@ describe('useReceiveAccountsListData', () => {
                     ] as unknown as Account[],
                 },
             };
-            const { result } = await renderUseReceiveAccountsListDataHook(
+            const { result } = renderUseReceiveAccountsListDataHook(
                 'eth',
                 undefined,
                 'account',
-                preloadedState,
+                overrides,
             );
 
             expect(result.current).toEqual([]);

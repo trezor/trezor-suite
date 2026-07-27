@@ -1,4 +1,4 @@
-import { TransactionReviewOutputElementProps } from './TransactionReviewOutputElement';
+import { type TransactionReviewOutputElementProps } from './TransactionReviewOutputElement';
 
 type GetTransactionReviewStateParams = {
     index: number; // index is either the current output index or the total number of outputs

@@ -3,20 +3,21 @@ import { useMemo } from 'react';
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
+import { selectLanguage } from '@suite/settings';
 import { localizeNumber } from '@suite-common/wallet-utils';
 import { Card, Column, H3, Icon, LottieAnimation, ProgressBar } from '@trezor/components';
-import { spacings, typography } from '@trezor/theme';
+import { StarFourIcon } from '@trezor/icons';
+import { typography } from '@trezor/theme';
 
 import { useCoinjoinAccountLoadingProgress } from 'src/hooks/coinjoin';
 import { useSelector } from 'src/hooks/suite';
-import { selectLanguage } from 'src/selectors/suite/suiteSelectors';
 
 import { RotatingFacts } from './RotatingFacts';
 
 const Subheader = styled.div`
     display: flex;
     align-items: center;
-    color: ${({ theme }) => theme.textSubdued};
+    color: ${({ theme }) => theme.contentSecondary};
     ${typography['body-sm']}
     text-align: center;
     margin-top: 8px;
@@ -26,31 +27,26 @@ const Subheader = styled.div`
     }
 `;
 
-// eslint-disable-next-line local-rules/no-override-ds-component
-const DiscoveryProgress = styled(ProgressBar)`
+const DiscoveryProgressWrapper = styled.div`
+    width: 100%;
     max-width: 440px;
-    margin: 18px 0 28px;
-
-    ${ProgressBar.Value} {
-        transition: width 30s cubic-bezier(0.3, 1, 0.3, 1);
-    }
+    margin: 20px 0 28px;
 `;
 
 const FactHeading = styled.div`
     display: flex;
     align-items: center;
-    color: ${({ theme }) => theme.textAlertYellow};
+    color: ${({ theme }) => theme.contentWarning};
     ${typography['body-xs']}
     text-transform: uppercase;
 `;
 
-// eslint-disable-next-line local-rules/no-override-ds-component
-const StyledLottieAnimation = styled(LottieAnimation)`
+const LottieWrapper = styled.div`
     margin: -32px -8px -32px -20px;
 
     path {
-        stroke: ${({ theme }) => theme.iconSubdued};
-        fill: ${({ theme }) => theme.iconDefaultInverted};
+        stroke: ${({ theme }) => theme.contentSecondary};
+        fill: ${({ theme }) => theme.contentPrimaryInverse};
     }
 `;
 
@@ -67,25 +63,29 @@ export const CoinjoinAccountDiscoveryProgress = () => {
     );
 
     return (
-        <Card margin={{ bottom: spacings.xl }}>
-            <Column alignItems="center" margin={{ top: spacings.xl, bottom: spacings.xl }}>
+        <Card margin={{ bottom: 24 }}>
+            <Column alignItems="center" margin={{ top: 24, bottom: 24 }}>
                 <H3>
                     <Translation id="TR_LOADING_FUNDS" />
                 </H3>
                 <Subheader>
-                    <StyledLottieAnimation
-                        type={stage === 'block' ? 'BLOCK' : 'MEMPOOL'}
-                        size={64}
-                        loop
-                    />
+                    <LottieWrapper>
+                        <LottieAnimation
+                            type={stage === 'block' ? 'BLOCK' : 'MEMPOOL'}
+                            size={64}
+                            loop
+                        />
+                    </LottieWrapper>
                     {messageId && <Translation id={messageId} values={messageValues} />}
                 </Subheader>
 
-                <DiscoveryProgress max={1.01} value={progress} />
+                <DiscoveryProgressWrapper>
+                    <ProgressBar max={1.01} value={progress} />
+                </DiscoveryProgressWrapper>
 
                 <FactHeading>
                     <Icon
-                        name="starFour"
+                        as={StarFourIcon}
                         size={13}
                         intent="warning"
                         margin={{ right: 4, bottom: 2 }}

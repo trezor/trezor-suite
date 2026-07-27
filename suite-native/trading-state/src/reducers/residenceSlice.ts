@@ -1,18 +1,28 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-import { TradingCountryCode } from '@suite-common/trading';
+import { type TradingCountryCode } from '@suite-common/trading';
 import { tradingInitialState } from '@suite-native/trading-consts';
+import { type TradingResidenceState } from '@suite-native/trading-types';
 
 export const TRADING_RESIDENCE = 'tradingResidence';
+
+type SetResidenceCountryPayload = {
+    country: TradingCountryCode;
+    countrySubdivision?: string;
+};
 
 const residenceSlice = createSlice({
     name: TRADING_RESIDENCE,
     initialState: tradingInitialState.residence,
     reducers: {
-        setResidenceCountry(state, action: { payload: TradingCountryCode }) {
-            state.country = action.payload;
+        setResidenceCountry(
+            state: TradingResidenceState,
+            action: { payload: SetResidenceCountryPayload },
+        ) {
+            state.country = action.payload.country;
+            state.countrySubdivision = action.payload.countrySubdivision;
         },
-        setOnboardingVisited(state) {
+        setOnboardingVisited(state: TradingResidenceState) {
             state.wasOnboardingVisited = true;
         },
     },

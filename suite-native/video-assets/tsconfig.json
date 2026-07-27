@@ -2,6 +2,6 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
-        { "path": "../../packages/styles" }
+        { "path": "../../packages/styles-native" }
     ]
 }

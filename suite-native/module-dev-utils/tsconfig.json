@@ -5,6 +5,13 @@
         {
             "path": "../../suite-common/analytics-redux"
         },
+        {
+            "path": "../../suite-common/dependency-injection"
+        },
+        { "path": "../../suite-common/device" },
+        {
+            "path": "../../suite-common/earn-stablecoin-api"
+        },
         { "path": "../../suite-common/firmware" },
         {
             "path": "../../suite-common/message-system"
@@ -14,6 +21,12 @@
         },
         {
             "path": "../../suite-common/suite-sync-quota-manager"
+        },
+        {
+            "path": "../../suite-common/suite-sync-types"
+        },
+        {
+            "path": "../../suite-common/suite-types"
         },
         { "path": "../../suite-common/trading" },
         {
@@ -25,11 +38,8 @@
         { "path": "../clipboard" },
         { "path": "../config" },
         { "path": "../feature-flags" },
-        { "path": "../firmware" },
         { "path": "../forms" },
-        { "path": "../icons" },
         { "path": "../intl" },
-        { "path": "../link" },
         { "path": "../navigation" },
         { "path": "../sentry" },
         { "path": "../services" },
@@ -37,10 +47,10 @@
         { "path": "../storage" },
         { "path": "../toasts" },
         { "path": "../trading-state" },
-        { "path": "../../packages/connect" },
+        {
+            "path": "../../packages/connect-common"
+        },
         { "path": "../../packages/env-utils" },
-        { "path": "../../packages/styles" },
-        { "path": "../../packages/theme" },
-        { "path": "../../packages/urls" }
+        { "path": "../../packages/requirements" }
     ]
 }

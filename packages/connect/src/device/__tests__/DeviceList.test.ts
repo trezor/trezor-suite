@@ -1,8 +1,13 @@
-import { DataManager } from '../../data/DataManager';
-import { parseConnectSettings } from '../../data/connectSettings';
+import { parseConnectSettings } from '@trezor/connect-common/src/data/connectSettings';
+import { noopCreateLogger } from '@trezor/connect-common/src/utils/debug';
+
+import { initializeFirmwareConfig } from '../../data/firmwareInfo';
+import * as firmwareReleaseStore from '../../data/firmwareReleaseStore';
+import { loadProtobufModules } from '../../data/protobufLoader';
+import * as settingsStore from '../../data/settingsStore';
 import { DeviceList } from '../DeviceList';
 
-const { createTestTransport, createTestTransportClass } = global.JestMocks;
+const { createTestTransport } = global.JestMocks;
 
 const waitForNthEventOfType = (
     emitter: { on: (...args: any[]) => any },
@@ -22,13 +27,10 @@ const waitForNthEventOfType = (
 describe('DeviceList', () => {
     beforeAll(async () => {
         // todo: I don't get it. If we pass empty messages: {} (see getDeviceListParams), tests behave differently.
-        await DataManager.load(
-            {
-                ...parseConnectSettings({}),
-            },
-            true,
-            true,
-        );
+        const settings = { ...parseConnectSettings({}) };
+        settingsStore.set(settings);
+        await firmwareReleaseStore.init(settings.firmwareChannel, true, initializeFirmwareConfig);
+        await loadProtobufModules();
     });
 
     let list: DeviceList;
@@ -37,8 +39,7 @@ describe('DeviceList', () => {
     beforeEach(() => {
         list = new DeviceList({
             ...parseConnectSettings({}),
-            priority: 0,
-            messages: DataManager.getProtobufMessages(),
+            createLogger: noopCreateLogger,
         });
         eventsSpy = jest.fn();
         list.on('transport-start', ({ apiType }) => eventsSpy('transport-start', apiType));
@@ -67,21 +68,21 @@ describe('DeviceList', () => {
                 // @ts-expect-error
                 transports: ['FooBarTransport'],
             }),
-        ).rejects.toThrow('unexpected type: FooBarTransport');
+        ).rejects.toThrow('init({ transports }) entry is not a valid Transport instance');
     });
 
-    it('.init() throws error on unknown transport (class)', async () => {
+    it('.init() throws error on unknown transport (non-Transport object)', async () => {
         await expect(() =>
             list.init({
                 // @ts-expect-error
-                transports: [{}, () => {}, [], String, 1, 'meow-non-existent'],
+                transports: [{}],
             }),
-        ).rejects.toThrow('DeviceList.init: transports[] of unexpected type');
+        ).rejects.toThrow('init({ transports }) entry is not a valid Transport instance');
     });
 
-    it('.init() accepts transports in form of transport class', async () => {
-        const classConstructor = createTestTransportClass();
-        await expect(list.init({ transports: [classConstructor] })).resolves.not.toThrow();
+    it('.init() accepts a pre-built transport instance', async () => {
+        const transport = createTestTransport();
+        await expect(list.init({ transports: [transport] })).resolves.not.toThrow();
     });
 
     it('.init() throws async error from transport.init()', async () => {
@@ -121,7 +122,8 @@ describe('DeviceList', () => {
 
     it('.init() with pendingTransportEvent (unacquired device)', async () => {
         const transport = createTestTransport({
-            openDevice: () => Promise.resolve({ success: false, error: 'wrong previous session' }),
+            openDevice: () =>
+                Promise.resolve({ success: false, error: { code: 'wrong previous session' } }),
         });
 
         list.init({ transports: [transport], pendingTransportEvent: true });
@@ -133,7 +135,8 @@ describe('DeviceList', () => {
 
     it('.init() with pendingTransportEvent (disconnected device)', async () => {
         const transport = createTestTransport({
-            openDevice: () => Promise.resolve({ success: false, error: 'device not found' }),
+            openDevice: () =>
+                Promise.resolve({ success: false, error: { code: 'device not found' } }),
         });
 
         list.init({ transports: [transport], pendingTransportEvent: true });
@@ -196,7 +199,7 @@ describe('DeviceList', () => {
             }),
             openDevice: (path: string) =>
                 path === '2'
-                    ? Promise.resolve({ success: false, error: 'device not found' })
+                    ? Promise.resolve({ success: false, error: { code: 'device not found' } })
                     : Promise.resolve({ success: true, payload: [{ path }] }),
             type: 'usb2',
         });

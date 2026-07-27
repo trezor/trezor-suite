@@ -1,11 +1,11 @@
 import { useSelector } from 'react-redux';
 
-import { AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
-import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
-import { TextProps } from '@suite-native/atoms';
-import { TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
+import { type AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
+import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
+import { type TextProps } from '@suite-native/atoms';
+import { type TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
 
-import { FormatterProps } from '../types';
+import { type FormatterProps } from '../types';
 import { CryptoToFiatAmountFormatter } from './CryptoToFiatAmountFormatter';
 import { TokenToFiatAmountFormatter } from './TokenToFiatAmountFormatter';
 

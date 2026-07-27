@@ -1,148 +1,66 @@
-import { useSelector } from 'react-redux';
+import { useMemo } from 'react';
 
-import { FiatRatesRootState, WalletSettingsRootState } from '@suite-common/wallet-core';
+import { type Target } from '@suite-common/wallet-core';
 import { isPending } from '@suite-common/wallet-utils';
-import { Badge, Box, DiscreetTextTrigger, Text, VStack } from '@suite-native/atoms';
-import {
-    CryptoAmountFormatter,
-    CryptoToFiatAmountFormatter,
-    SignValueFormatter,
-    TokenAmountFormatter,
-    TokenToFiatAmountFormatter,
-} from '@suite-native/formatters';
+import { Badge, Box, DiscreetTextTrigger } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import { TypedTokenTransfer, WalletAccountTransaction } from '@suite-native/tokens';
-import {
-    TransactionIcon,
-    getTransactionValueSign,
-    selectTransactionFiatRate,
-} from '@suite-native/transactions';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { type TypedTokenTransfer, type WalletAccountTransaction } from '@suite-native/tokens';
+import { TransactionIcon } from '@suite-native/transactions';
+
+import { TransactionDetailTargets } from './TransactionDetailTargets';
 
 type TransactionDetailHeaderProps = {
     transaction: WalletAccountTransaction;
     tokenTransfer?: TypedTokenTransfer;
+    allOutputs: Target[];
 };
-
-const failedTxStyle = prepareNativeStyle<{ isFailedTx: boolean }>((_, { isFailedTx }) => ({
-    extend: {
-        condition: isFailedTx,
-        style: {
-            textDecorationLine: 'line-through',
-        },
-    },
-}));
-
-const fiatValueStyle = prepareNativeStyle(utils => ({
-    marginTop: -utils.spacings.sp4,
-}));
 
 export const TransactionDetailHeader = ({
     transaction,
     tokenTransfer,
+    allOutputs,
 }: TransactionDetailHeaderProps) => {
-    const { applyStyle } = useNativeStyles();
-    const historicRate = useSelector((state: WalletSettingsRootState & FiatRatesRootState) =>
-        selectTransactionFiatRate(state, transaction, tokenTransfer?.contract),
-    );
-
     const { type } = transaction;
 
     const isPendingTx = isPending(transaction);
     const isFailedTx = transaction.type === 'failed';
-    const signValue = getTransactionValueSign(tokenTransfer?.type ?? transaction.type);
     const isTokenOnlyTransaction = transaction.amount === '0' && transaction.tokens.length !== 0;
-    const txType = isTokenOnlyTransaction ? transaction.tokens[0].type : type;
+
+    const firstToken = transaction.tokens[0];
+    const txType = isTokenOnlyTransaction && firstToken ? firstToken.type : type;
+
+    const iconComponent = useMemo(
+        () => (
+            <>
+                <TransactionIcon transactionType={txType} isAnimated={isPendingTx} size={48} />
+
+                {isPendingTx ? (
+                    <Badge
+                        intent="warning"
+                        label={<Translation id="transactions.status.pending" />}
+                    />
+                ) : (
+                    !isFailedTx && (
+                        <Badge
+                            intent="brand"
+                            label={<Translation id="transactions.status.confirmed" />}
+                        />
+                    )
+                )}
+            </>
+        ),
+        [txType, isPendingTx, isFailedTx],
+    );
 
     return (
         <DiscreetTextTrigger>
             <Box alignItems="center">
-                <VStack spacing="sp16" alignItems="center" justifyContent="center">
-                    <TransactionIcon
-                        transactionType={txType}
-                        isAnimated={isPendingTx}
-                        containerSize={56}
-                        iconSize="extraLarge"
-                        backgroundColor="backgroundSurfaceElevation1"
-                    />
-
-                    {isPendingTx ? (
-                        <Badge
-                            variant="yellow"
-                            label={<Translation id="transactions.status.pending" />}
-                            elevation="1"
-                        />
-                    ) : (
-                        !isFailedTx && (
-                            <Badge
-                                variant="green"
-                                label={<Translation id="transactions.status.confirmed" />}
-                            />
-                        )
-                    )}
-
-                    <Box flexDirection="row">
-                        {!isFailedTx && (
-                            <SignValueFormatter
-                                color="textDefault"
-                                value={signValue}
-                                variant="headline-md"
-                            />
-                        )}
-                        <Text> </Text>
-
-                        {tokenTransfer ? (
-                            <TokenAmountFormatter
-                                value={tokenTransfer.amount}
-                                tokenSymbol={tokenTransfer.symbol}
-                                decimals={tokenTransfer.decimals}
-                                variant="headline-md"
-                                color="textDefault"
-                                numberOfLines={1}
-                                adjustsFontSizeToFit
-                                style={applyStyle(failedTxStyle, { isFailedTx })}
-                            />
-                        ) : (
-                            <CryptoAmountFormatter
-                                value={transaction.amount}
-                                symbol={transaction.symbol}
-                                isBalance={false}
-                                variant="headline-md"
-                                color="textDefault"
-                                numberOfLines={1}
-                                adjustsFontSizeToFit
-                                style={applyStyle(failedTxStyle, { isFailedTx })}
-                            />
-                        )}
-                    </Box>
-                </VStack>
-
-                {historicRate !== undefined && historicRate !== 0 && (
-                    <Box flexDirection="row" style={applyStyle(fiatValueStyle)}>
-                        <Text color="textSubdued">≈ </Text>
-                        {tokenTransfer ? (
-                            <TokenToFiatAmountFormatter
-                                symbol={transaction.symbol}
-                                contract={tokenTransfer.contract}
-                                value={tokenTransfer.amount}
-                                decimals={tokenTransfer.decimals}
-                                historicRate={historicRate}
-                                color="textSubdued"
-                                useHistoricRate
-                                style={applyStyle(failedTxStyle, { isFailedTx })}
-                            />
-                        ) : (
-                            <CryptoToFiatAmountFormatter
-                                value={transaction.amount}
-                                symbol={transaction.symbol}
-                                historicRate={historicRate}
-                                color="textSubdued"
-                                useHistoricRate
-                                style={applyStyle(failedTxStyle, { isFailedTx })}
-                            />
-                        )}
-                    </Box>
-                )}
+                <TransactionDetailTargets
+                    iconComponent={iconComponent}
+                    targets={allOutputs}
+                    transaction={transaction}
+                    selectedTokenContract={tokenTransfer?.contract}
+                />
             </Box>
         </DiscreetTextTrigger>
     );

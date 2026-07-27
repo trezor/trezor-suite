@@ -1,19 +1,14 @@
-import {
-    BuyProviderInfo,
-    BuyTrade,
-    ExchangeProviderInfo,
-    ExchangeTrade,
-    SellFiatTrade,
-    SellProviderInfo,
-} from 'invity-api';
-
 import { Translation } from '@suite/intl';
 import { notificationsActions } from '@suite-common/toast-notifications';
+import type {
+    TradingProviderInfo as TradingProviderInfoType,
+    TradingTradeType,
+} from '@suite-common/trading';
 import { Button, Column, InfoItem, Row, Text } from '@trezor/components';
 import { copyToClipboard } from '@trezor/dom-utils';
 
 import { useDispatch } from 'src/hooks/suite';
-import { Account } from 'src/types/wallet';
+import { type Account } from 'src/types/wallet';
 
 import { TradingDetailTxId } from './TradingDetailTxId';
 import { TradingProviderInfo } from '../TradingProviderInfo';
@@ -22,8 +17,8 @@ type TradingDetailProviderInfoProps = {
     account?: Account;
     estimatedTime?: string;
     orderId?: string;
-    provider: BuyProviderInfo | SellProviderInfo | ExchangeProviderInfo;
-    trade: BuyTrade | ExchangeTrade | SellFiatTrade;
+    provider: TradingProviderInfoType;
+    trade: TradingTradeType;
     txId?: string;
 };
 
@@ -63,7 +58,9 @@ export const TradingDetailProviderInfo = ({
                 {orderId && (
                     <InfoItem label={<Translation id="TR_TRADE_ID" />} direction="row">
                         <Row gap={12}>
-                            <Text>{orderId}</Text>
+                            <Text data-testid="@trading/transaction/detail/order-id">
+                                {orderId}
+                            </Text>
                             <Button
                                 size="small"
                                 intent="neutral"

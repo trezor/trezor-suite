@@ -1,18 +1,21 @@
 import { Translation } from '@suite/intl';
-import { Explorer, getNetwork } from '@suite-common/wallet-config';
+import { type Explorer, getNetwork } from '@suite-common/wallet-config';
 import { getExplorerUrl } from '@suite-common/wallet-config/src/getExplorerUrls';
 import { selectAccountByKey, selectExplorer } from '@suite-common/wallet-core';
 import {
-    Account,
-    ChainedTransactions,
-    WalletAccountTransaction,
+    type Account,
+    type ChainedTransactions,
+    type WalletAccountTransaction,
     createAccountKey,
 } from '@suite-common/wallet-types';
+import { type PendingEvmNonceStatus } from '@suite-common/wallet-utils';
 import { Modal } from '@trezor/components';
+import { GaugeIcon, XIcon } from '@trezor/icons';
 
-import { AdvancedTxDetails, TabID } from './AdvancedTxDetails/AdvancedTxDetails';
-import { useSelector } from '../../../../../../../hooks/suite';
+import { useSelector } from 'src/hooks/suite';
+
 import { TxDetailModalBase } from '../TxDetailModalBase';
+import { AdvancedTxDetails, type TabID } from './AdvancedTxDetails/AdvancedTxDetails';
 
 type DetailModalProps = {
     tx: WalletAccountTransaction;
@@ -23,6 +26,8 @@ type DetailModalProps = {
     chainedTxs?: ChainedTransactions;
     canReplaceTransaction: boolean;
     canCancelTransaction: boolean;
+    nonceStatus?: PendingEvmNonceStatus;
+    nextNonce?: number;
 };
 
 export const DetailModal = ({
@@ -34,6 +39,8 @@ export const DetailModal = ({
     chainedTxs,
     canReplaceTransaction,
     canCancelTransaction,
+    nonceStatus,
+    nextNonce,
 }: DetailModalProps) => {
     const accountKey = createAccountKey({
         accountDescriptor: tx.descriptor,
@@ -50,19 +57,21 @@ export const DetailModal = ({
             onCancel={onCancel}
             heading={<Translation id="TR_TRANSACTION_DETAILS" />}
             bottomContent={
-                canReplaceTransaction ? (
+                canReplaceTransaction || canCancelTransaction ? (
                     <>
-                        <Modal.Button
-                            iconLeft="gauge"
-                            intent="neutral"
-                            priority="secondary"
-                            onClick={onChangeFeeClick}
-                        >
-                            <Translation id="TR_BUMP_FEE" />
-                        </Modal.Button>
+                        {canReplaceTransaction && (
+                            <Modal.Button
+                                iconLeft={GaugeIcon}
+                                intent="neutral"
+                                priority="secondary"
+                                onClick={onChangeFeeClick}
+                            >
+                                <Translation id="TR_BUMP_FEE" />
+                            </Modal.Button>
+                        )}
                         {canCancelTransaction && (
                             <Modal.Button
-                                iconLeft="x"
+                                iconLeft={XIcon}
                                 intent="neutral"
                                 priority="secondary"
                                 onClick={onCancelTxClick}
@@ -74,6 +83,8 @@ export const DetailModal = ({
                 ) : null
             }
             onBackClick={undefined}
+            nonceStatus={nonceStatus}
+            nextNonce={nextNonce}
         >
             <AdvancedTxDetails
                 explorerUrl={getExplorerUrl(explorer, 'tx')!}

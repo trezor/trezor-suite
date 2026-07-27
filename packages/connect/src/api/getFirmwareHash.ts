@@ -1,37 +1,32 @@
+import { type PermissionRequest, UI_REQUEST } from '@trezor/connect-common';
 import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 
-import { AbstractMethod, MethodPermission, Payload } from '../core/AbstractMethod';
-import { UI_REQUEST } from '../events';
-import { getFirmwareRange } from './common/paramsValidator';
+import type { MethodMessage } from '../core/AbstractMethod';
+import { AbstractMethod } from '../core/AbstractMethod';
 
 export default class GetFirmwareHash extends AbstractMethod<
     'getFirmwareHash',
     PROTO.GetFirmwareHash
 > {
-    constructor(message: { id?: number; payload: Payload<'getFirmwareHash'> }) {
-        super(message);
-        this.useEmptyPassphrase = true;
-        this.useDeviceState = false;
-        this.allowDeviceMode = [UI_REQUEST.INITIALIZE];
-        this.firmwareRange = getFirmwareRange(this.name, null, this.firmwareRange);
-    }
-    get requiredPermissions(): MethodPermission[] {
-        return ['management'];
-    }
-
-    init() {
-        const { payload } = this;
+    constructor(message: MethodMessage<'getFirmwareHash'>) {
+        const { payload } = message;
 
         Assert(PROTO.GetFirmwareHash, payload);
 
-        this.params = {
-            challenge: payload.challenge,
-        };
+        const params = { challenge: payload.challenge };
+
+        super(message, params);
+        this.useEmptyPassphrase = true;
+        this.useDeviceState = false;
+        this.allowDeviceMode = [UI_REQUEST.INITIALIZE];
+    }
+    get requiredPermissions(): PermissionRequest[] {
+        return [{ permission: 'management' }];
     }
 
     async run() {
-        const cmd = this.device.getCommands();
+        const cmd = this.getDevice().getCommands();
         const response = await cmd.typedCall('GetFirmwareHash', 'FirmwareHash', this.params);
 
         return response.message;

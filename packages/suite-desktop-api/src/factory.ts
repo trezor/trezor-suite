@@ -54,6 +54,7 @@ export const factory = <R extends StrictIpcRenderer<any, IpcRendererEvent>>(
         appAutoStartPopupResponse: response =>
             ipcRenderer.invoke('app/auto-start/popup-response', response),
         appIsVisible: () => ipcRenderer.invoke('app/is-visible'),
+        appIsFullScreen: () => ipcRenderer.invoke('app/is-fullscreen'),
 
         // Auto-updater
         checkForUpdates: ({ isManual }) => {
@@ -207,6 +208,17 @@ export const factory = <R extends StrictIpcRenderer<any, IpcRendererEvent>>(
         // safeStorage
         safeStoreEncrypt: ({ value }) => ipcRenderer.invoke('safe-storage/encrypt', { value }),
         safeStoreDecrypt: ({ value }) => ipcRenderer.invoke('safe-storage/decrypt', { value }),
+
+        // MCP server
+        mcpGetSettings: () => ipcRenderer.invoke('mcp/get-settings'),
+        mcpSetEnabled: (enabled: boolean) => {
+            if (validation.isPrimitive('boolean', enabled)) {
+                return ipcRenderer.invoke('mcp/set-enabled', enabled);
+            }
+
+            return Promise.resolve();
+        },
+        mcpRegenerateToken: () => ipcRenderer.invoke('mcp/regenerate-token'),
 
         // Browser Window
         reloadBrowserWindow: () => ipcRenderer.invoke('browser-window/reload'),

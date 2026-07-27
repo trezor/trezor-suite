@@ -7,9 +7,9 @@ import { selectSelectedDevice } from '@suite-common/device';
 import { ContinueOnTrezorScreenContent } from '@suite-native/device';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import {
-    DeviceOnboardingStackParamList,
+    type DeviceOnboardingStackParamList,
     DeviceOnboardingStackRoutes,
-    StackProps,
+    type StackProps,
     useInterceptNativeNavigation,
 } from '@suite-native/navigation';
 import TrezorConnect from '@trezor/connect';

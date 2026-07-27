@@ -1,12 +1,18 @@
+import { parseConnectSettings } from '@trezor/connect-common/src/data/connectSettings';
 import { firmwareAssets } from '@trezor/connect-data';
+import type { FirmwareRelease } from '@trezor/device-utils';
 import { FirmwareType } from '@trezor/device-utils';
-import { DeviceModelInternal } from '@trezor/protobuf/src/messages-schema';
+import { DeviceModelInternal } from '@trezor/protobuf/src/definitions';
 import { versionUtils } from '@trezor/utils';
 
 import { getDeviceFeatures } from '../../../setupJest';
-import { DataManager } from '../DataManager';
-import { parseConnectSettings } from '../connectSettings';
-import { getFirmwareReleaseConfigInfo, getFirmwareStatus } from '../firmwareInfo';
+import {
+    getFirmwareReleaseConfigInfo,
+    getFirmwareStatus,
+    initializeFirmwareConfig,
+} from '../firmwareInfo';
+import * as firmwareReleaseStore from '../firmwareReleaseStore';
+import * as settingsStore from '../settingsStore';
 
 describe('data/firmwareInfo', () => {
     describe('getFirmwareStatus', () => {
@@ -30,7 +36,13 @@ describe('data/firmwareInfo', () => {
     });
     describe('getFirmwareReleaseConfigInfo', () => {
         beforeAll(async () => {
-            await DataManager.load(parseConnectSettings({}), true, true);
+            const settings = parseConnectSettings({});
+            settingsStore.set(settings);
+            await firmwareReleaseStore.init(
+                settings.firmwareChannel,
+                true,
+                initializeFirmwareConfig,
+            );
         });
         it('should offer latest compatible relase when latest one is not compatible', () => {
             const features = getDeviceFeatures({
@@ -48,9 +60,13 @@ describe('data/firmwareInfo', () => {
         });
 
         it('should offer lastest release and intermediary v2 for T1B1 <  1.12.0', () => {
-            const [latestRelase] = Object.values(firmwareAssets.t1b1.universal).sort((a, b) =>
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const t1b1Assets: { [file: string]: FirmwareRelease } = firmwareAssets.t1b1.universal;
+            const sorted = Object.values(t1b1Assets).sort((a, b) =>
                 versionUtils.isNewer(b.version, a.version) ? 1 : -1,
             );
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const [latestRelase]: [FirmwareRelease] = sorted;
             const features = getDeviceFeatures({
                 bootloader_mode: null,
                 major_version: 1,

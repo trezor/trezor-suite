@@ -2,7 +2,6 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
-        { "path": "../device" },
         { "path": "../fiat-services" },
         { "path": "../wallet-config" },
         { "path": "../wallet-core" },

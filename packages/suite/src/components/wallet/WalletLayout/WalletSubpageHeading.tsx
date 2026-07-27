@@ -1,9 +1,7 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
-import { Translation, TranslationKey } from '@suite/intl';
+import { Translation, type TranslationKey } from '@suite/intl';
 import { H2, Row } from '@trezor/components';
-import { spacings } from '@trezor/theme';
-
 type WalletSubpageHeadingProps = {
     title: TranslationKey;
     children?: ReactNode;
@@ -19,6 +17,6 @@ export const WalletSubpageHeading = ({
         <H2 data-testid={dataTestId}>
             <Translation id={title} />
         </H2>
-        <Row gap={spacings.xs}>{children}</Row>
+        <Row gap={8}>{children}</Row>
     </Row>
 );

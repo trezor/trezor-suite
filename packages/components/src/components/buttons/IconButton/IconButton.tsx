@@ -1,16 +1,23 @@
 import styled from 'styled-components';
 
 import {
-    FrameProps,
-    FramePropsKeys,
+    type FrameProps,
+    type FramePropsKeys,
     pickAndPrepareFrameProps,
     withFrameProps,
 } from '../../../utils/frameProps';
-import { TransientProps } from '../../../utils/transientProps';
+import { type TransientProps } from '../../../utils/transientProps';
 import { Box } from '../../Box/Box';
-import { Icon, IconName } from '../../Icon/Icon';
+import { Icon, type IconComponent } from '../../Icon/Icon';
+import { Tooltip, type UnmanagedTooltipProps } from '../../Tooltip/Tooltip';
+import { TOOLTIP_DELAY_NORMAL } from '../../Tooltip/TooltipDelay';
 import { Spinner } from '../../loaders/Spinner/Spinner';
-import { ButtonIntent, ButtonPriority, ButtonSize, CommonButtonProps } from '../types';
+import {
+    type ButtonIntent,
+    type ButtonPriority,
+    type ButtonSize,
+    type CommonButtonProps,
+} from '../types';
 import {
     commonButtonStyles,
     mapPropsToCSS,
@@ -32,31 +39,41 @@ type ButtonContainerProps = TransientProps<AllowedIconButtonFrameProps> & {
     $priority: ButtonPriority;
     $intent: ButtonIntent;
     $isInverse: boolean;
+    $isFloating: boolean;
     disabled: boolean;
 };
 
 const Container = styled.button<ButtonContainerProps>`
     ${commonButtonStyles}
 
-    border-radius: ${({ $size }) => mapSizeToBorderRadius($size)};
+    border-radius: ${({ $size }) => mapSizeToBorderRadius($size)}px;
 
-    ${({ $intent, $priority, disabled, $isInverse, theme }) =>
-        mapPropsToCSS($intent, $priority, disabled, $isInverse, theme)}
+    ${({ $intent, $priority, disabled, $isInverse, $isFloating, theme }) =>
+        mapPropsToCSS($intent, $priority, disabled, $isInverse, theme, $isFloating)}
 
     ${withFrameProps}
 `;
 
+export type IconButtonTooltipProps = Omit<UnmanagedTooltipProps, 'children' | 'content'> & {
+    content?: UnmanagedTooltipProps['content'];
+};
+
 export type IconButtonProps = CommonButtonProps &
     AllowedIconButtonFrameProps & {
         size?: ButtonSize;
-        icon: IconName;
+        icon: IconComponent;
+        tooltip: IconButtonTooltipProps;
         'data-testid'?: string;
+        'aria-label'?: string;
     };
 
 export const IconButton = ({
     'data-testid': dataTestId,
+    'aria-label': ariaLabel,
     icon,
     size = 'medium',
+    isFloating = false,
+    tooltip,
     ...props
 }: IconButtonProps) => {
     const frameProps = pickAndPrepareFrameProps(props, allowedIconButtonFrameProps);
@@ -71,24 +88,28 @@ export const IconButton = ({
     return (
         <Container
             data-testid={dataTestId}
+            aria-label={ariaLabel}
             $size={size}
             $priority={priority}
             $intent={intent}
             $isInverse={isInverse}
+            $isFloating={isFloating}
             {...buttonProps}
             {...frameProps}
         >
-            <Box padding={mapSizeToPadding(size)}>
-                {props.isLoading ? (
-                    <Spinner
-                        isDisabled={true}
-                        size={mapSizeToIconSize(size)}
-                        data-testid={`${dataTestId}/spinner`}
-                    />
-                ) : (
-                    <Icon name={icon} {...iconProps} />
-                )}
-            </Box>
+            <Tooltip delayShow={TOOLTIP_DELAY_NORMAL} content={null} {...tooltip}>
+                <Box padding={mapSizeToPadding(size)}>
+                    {props.isLoading ? (
+                        <Spinner
+                            isDisabled={true}
+                            size={mapSizeToIconSize(size)}
+                            data-testid={`${dataTestId}/spinner`}
+                        />
+                    ) : (
+                        <Icon as={icon} {...iconProps} />
+                    )}
+                </Box>
+            </Tooltip>
         </Container>
     );
 };

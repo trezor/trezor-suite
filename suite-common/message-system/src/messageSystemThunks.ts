@@ -1,5 +1,5 @@
 import { createThunk } from '@suite-common/redux-utils';
-import { MessageSystem } from '@suite-common/suite-types';
+import { type MessageSystem } from '@suite-common/suite-types';
 import { PollingController, decodeJws, verifyJws } from '@suite-common/suite-utils';
 import { isCodesignBuild, isNative } from '@trezor/env-utils';
 import { scheduleAction } from '@trezor/utils';
@@ -22,7 +22,7 @@ import {
 } from './messageSystemSelectors';
 import { jws as configJwsLocal } from '../files/config.v1';
 
-export const messageSystemPolling = new PollingController();
+const messageSystemPolling = new PollingController();
 
 const getConfigJws = async (forceLocalJws: boolean) => {
     if (forceLocalJws) {

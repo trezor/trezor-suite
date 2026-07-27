@@ -1,10 +1,11 @@
-import { ERRORS } from '@trezor/connect-common/src/constants';
+import { BLOCKCHAIN, createBlockchainMessage } from '@trezor/connect-common';
+import type { BlockchainLink, CoinInfo, Proxy } from '@trezor/connect-common';
 import type { TimerId } from '@trezor/type-utils';
+import { deepEqual } from '@trezor/utils';
 
-import { Blockchain, BlockchainOptions } from './Blockchain';
-import { DataManager } from '../data/DataManager';
-import { BLOCKCHAIN, createBlockchainMessage } from '../events';
-import type { BlockchainLink, CoinInfo } from '../types';
+import type { BlockchainOptions } from './Blockchain';
+import { Blockchain } from './Blockchain';
+import * as settingsStore from '../data/settingsStore';
 
 type CoinShortcut = CoinInfo['shortcut'];
 type Identity = string;
@@ -15,6 +16,8 @@ type BackendParams = Pick<BlockchainOptions, 'coinInfo' | 'postMessage' | 'ident
 const DEFAULT_IDENTITY = 'default';
 
 export class BackendManager {
+    private proxy?: Proxy;
+
     private readonly instances: { [shortcut: CoinShortcutIdentity]: Blockchain } = {};
     private readonly reconnect: { [shortcut: CoinShortcutIdentity]: Reconnect } = {};
     private readonly custom: { [shortcut: CoinShortcut]: BlockchainLink } = {};
@@ -31,8 +34,8 @@ export class BackendManager {
             backend = new Blockchain({
                 coinInfo: this.patchCoinInfo(coinInfo),
                 identity,
-                debug: DataManager.getSettings('debug'),
-                proxy: DataManager.getSettings('proxy'),
+                debug: settingsStore.get('debug'),
+                proxy: this.proxy,
                 postMessage,
                 onDisconnected: pendingSubscriptions => {
                     const reconnectAttempts = pendingSubscriptions ? 0 : undefined;
@@ -76,9 +79,8 @@ export class BackendManager {
 
     isSupported(coinInfo: CoinInfo) {
         const info = this.custom[coinInfo.shortcut] || coinInfo.blockchainLink;
-        if (!info) {
-            throw ERRORS.TypedError('Backend_NotSupported');
-        }
+
+        return !!info;
     }
 
     setCustom(shortcut: CoinShortcut, blockchainLink?: BlockchainLink) {
@@ -87,6 +89,13 @@ export class BackendManager {
             this.custom[shortcut] = blockchainLink;
         } else {
             delete this.custom[shortcut];
+        }
+    }
+
+    async updateProxy(proxy: Proxy | undefined) {
+        if (proxy !== undefined && !deepEqual(this.proxy, proxy)) {
+            this.proxy = proxy;
+            await this.reconnectAll();
         }
     }
 
@@ -141,17 +150,24 @@ export class BackendManager {
     }
 
     private patchCoinInfo(coinInfo: CoinInfo): CoinInfo {
-        const custom = this.custom[coinInfo.shortcut];
-        const preferred = this.preferred[coinInfo.shortcut];
-        const url = preferred ? [preferred] : (custom?.url ?? coinInfo.blockchainLink?.url);
+        const thisCustom = this.custom;
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const custom: BlockchainLink = thisCustom[coinInfo.shortcut];
+        const thisPreferred = this.preferred;
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const preferred: string = thisPreferred[coinInfo.shortcut];
+
+        const url = preferred ? [preferred] : (custom?.url ?? coinInfo.blockchainLink?.url ?? []);
+
+        const patchedBlockchainLink: CoinInfo['blockchainLink'] = {
+            ...coinInfo.blockchainLink,
+            ...custom,
+            url,
+        };
 
         return {
             ...coinInfo,
-            blockchainLink: {
-                ...coinInfo.blockchainLink,
-                ...custom,
-                url,
-            },
+            blockchainLink: patchedBlockchainLink,
         };
     }
 

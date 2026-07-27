@@ -13,8 +13,12 @@
     },
     "include": [".", "**/*.json"],
     "references": [
-        { "path": "../../suite-common/icons" },
+        { "path": "../../suite-common/flags" },
+        {
+            "path": "../../suite-common/illustrations"
+        },
         { "path": "../env-utils" },
+        { "path": "../icons" },
         { "path": "../theme" },
         { "path": "../type-utils" },
         { "path": "../utils" },

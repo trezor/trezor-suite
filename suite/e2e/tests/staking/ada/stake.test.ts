@@ -8,6 +8,7 @@ import { ADA_MOCKED_ACCOUNT } from '../../../support/mocks/ada-endpoints';
 // mocked and expected values
 const startingBalance = Number(ADA_MOCKED_ACCOUNT.balance);
 const startingBalanceFormatted = toADA(startingBalance);
+const EXPECTED_CARDANO_POOL_ID = 'pool1k2qhlrrweu8fecd4hx4hn22lv00nrd3rjdxj6durax7m78q7ynu';
 const feeAmount = 177601; // mocked 44 lovelace/byte
 const finalBalance =
     startingBalance - feeAmount - Number(CARDANO_STAKING_REGISTRATION_DEPOSIT) * 1_000_000;
@@ -16,24 +17,34 @@ const finalBalanceFormatted = toADA(finalBalance);
 test.describe('Staking - Cardano', { tag: ['@T3W1', '@T3T1'] }, () => {
     test.use({ deviceSetup: { mnemonic: 'mnemonic_academic' } });
 
-    test.beforeEach(
-        async ({ page, onboardingPage, dashboardPage, settingsPage, blockbookMock }) => {
-            await onboardingPage.completeOnboarding();
-
-            await test.step('Enable Cardano and set mocked backend', async () => {
-                await settingsPage.navigateTo('coins');
-                await blockbookMock.start('ada', 'blockfrost');
-
-                await settingsPage.coinsTab.disableNetwork('btc');
-                await settingsPage.coinsTab.enableNetwork('ada');
-                await settingsPage.coinsTab.openNetworkAdvanceSettings('ada');
-                await settingsPage.coinsTab.changeBackend('blockfrost', blockbookMock.url);
-
-                await dashboardPage.dashboardMenuButton.click();
-                await page.discoveryShouldFinish();
+    test.beforeEach(async ({ page, onboardingPage, settingsPage, blockbookMock }) => {
+        await test.step('Mock Cardano pool address', async () => {
+            await page.route(/\/staking\/v1\/\?networks=/, async route => {
+                const response = await route.fetch();
+                const body = await response.json();
+                const adaData = body.data?.find(
+                    (item: { symbol: string }) => item.symbol === 'ada',
+                );
+                if (adaData) {
+                    adaData.pools = [{ apy: 3.9, saturation: 50, id: EXPECTED_CARDANO_POOL_ID }];
+                }
+                await route.fulfill({ body: JSON.stringify(body) });
             });
-        },
-    );
+        });
+
+        await onboardingPage.completeOnboarding();
+
+        await test.step('Enable Cardano and set mocked backend', async () => {
+            await settingsPage.navigateTo('coins');
+            await blockbookMock.start('ada', 'blockfrost');
+
+            await settingsPage.changeNetworks({
+                enableNetworks: [
+                    { symbol: 'ada', backend: { type: 'blockfrost', url: blockbookMock.url } },
+                ],
+            });
+        });
+    });
 
     test(
         'Stake Cardano',
@@ -52,6 +63,7 @@ test.describe('Staking - Cardano', { tag: ['@T3W1', '@T3T1'] }, () => {
             walletPage,
             feeSection,
             stakingSection,
+            yieldNutshellModal,
             blockbookMock,
         }) => {
             const stakingAccountItemInLeftSection = walletPage.accountButton({
@@ -66,18 +78,18 @@ test.describe('Staking - Cardano', { tag: ['@T3W1', '@T3T1'] }, () => {
                 await walletPage.openAccount({ symbol: 'ada', type: 'normal', atIndex: 0 });
                 await stakingSection.stakingTabButton.click();
                 await expect(walletPage.discoveryWarning).toBeHidden();
-                await expect(walletPage.topPanelBalanceWithSymbol).toHaveText(
-                    startingBalanceFormatted,
-                );
                 await expect(stakingSection.claimRewardsButton).toBeHidden();
                 await expect(stakingSection.unstakeToClaimButton).toBeHidden();
                 await expect(stakingAccountItemInLeftSection).toBeHidden();
+                await expect(walletPage.topPanelBalanceWithSymbol).toHaveText(
+                    startingBalanceFormatted,
+                );
             });
 
             await test.step('Initiate staking flow', async () => {
                 await stakingSection.startStakingButton.click();
                 await expect(page.modalHeader).toHaveTranslation('TR_EARN_STAKING_IN_A_NUTSHELL');
-                await expect(page.modal).toContainTranslation(
+                await expect(yieldNutshellModal.modalContainer).toContainTranslation(
                     'TR_EARN_YOUR_FUNDS_STAY_ACCESSIBLE',
                     {
                         values: { networkDisplaySymbol: 'ADA' },
@@ -104,9 +116,9 @@ test.describe('Staking - Cardano', { tag: ['@T3W1', '@T3T1'] }, () => {
                     T3W1: {
                         header: { title: 'Confirm transaction' },
                         body: [
-                            ['Confirm:'],
+                            ['Confirm'],
                             ['Stake key', '\n', 'registration'],
-                            ['for account #1:'],
+                            ['For account #1'],
                             device.wrapText("m/1852'/1815'/0'/2/0"),
                         ],
                         actions: { right_button: 'Confirm' },
@@ -118,18 +130,18 @@ test.describe('Staking - Cardano', { tag: ['@T3W1', '@T3T1'] }, () => {
                     T3W1: {
                         header: { title: 'Confirm transaction' },
                         body: [
-                            ['Confirm:'],
+                            ['Confirm'],
                             ['Stake', '\n', 'delegation'],
-                            ['for account #1:'],
+                            ['For account #1'],
                             ["m/1852'/1815'/", '\n', "0'/2/0"],
                         ],
                         actions: { right_button: 'Confirm' },
                     },
                     T3T1: {
                         body: [
-                            ['Confirm:'],
+                            ['Confirm'],
                             ['Stake delegation'],
-                            ['for account #1:'],
+                            ['For account #1'],
                             ["m/1852'/1815'/0'/2", '\n', '/0'],
                         ],
                     },
@@ -139,12 +151,7 @@ test.describe('Staking - Cardano', { tag: ['@T3W1', '@T3T1'] }, () => {
                 await expect(device).toShowOnDisplay({
                     T3W1: {
                         header: { title: 'Confirm transaction' },
-                        body: [
-                            ['to pool:'],
-                            device.wrapText(
-                                'pool1n0uxgs5qfk5n9xl7qvq9jt8zuu02cntrsjnjayjlqtejyffnemj',
-                            ),
-                        ],
+                        body: [['To pool'], device.wrapText(EXPECTED_CARDANO_POOL_ID)],
                         actions: { right_button: 'Confirm' },
                     },
                 });
@@ -154,18 +161,18 @@ test.describe('Staking - Cardano', { tag: ['@T3W1', '@T3T1'] }, () => {
                     T3W1: {
                         header: { title: 'Confirm transaction' },
                         body: [
-                            ['Confirm:'],
+                            ['Confirm'],
                             ['Vote', '\n', 'delegation'],
-                            ['for account #1:'],
+                            ['For account #1'],
                             ["m/1852'/1815'/", '\n', "0'/2/0"],
                         ],
                         actions: { right_button: 'Confirm' },
                     },
                     T3T1: {
                         body: [
-                            ['Confirm:'],
+                            ['Confirm'],
                             ['Vote delegation'],
-                            ['for account #1:'],
+                            ['For account #1'],
                             ["m/1852'/1815'/0'/2", '\n', '/0'],
                         ],
                     },
@@ -176,7 +183,7 @@ test.describe('Staking - Cardano', { tag: ['@T3W1', '@T3T1'] }, () => {
                     T3W1: {
                         header: { title: 'Confirm transaction' },
                         body: [
-                            ['Delegating to key hash:'],
+                            ['Delegating to key hash'],
                             device.wrapText(
                                 'drep1ectemlv45xsnvenfgkhwsxncfvxev4qllj7x5w6vlfc7kmd9zcs',
                             ),
@@ -190,13 +197,26 @@ test.describe('Staking - Cardano', { tag: ['@T3W1', '@T3T1'] }, () => {
                     T3W1: {
                         header: { title: 'Confirm transaction' },
                         body: [
-                            ['Transaction fee:'],
+                            ['Transaction fee'],
                             [toADA(feeAmount)],
-                            ['Network: Mainnet'],
-                            ['Valid since: n/a'],
-                            [/^TTL: \d{9}$/],
+                            ['Network'],
+                            ['Mainnet'],
+                            ['Valid since'],
+                            ['n/a'],
+                            ['TTL'],
+                            [/\d{9}$/],
                         ],
                         actions: { right_button: 'Hold to confirm' },
+                    },
+                    T3T1: {
+                        body: [
+                            ['Transaction fee'],
+                            [toADA(feeAmount)],
+                            ['Network'],
+                            ['Mainnet'],
+                            ['Valid since'],
+                            ['n/a'],
+                        ],
                     },
                 });
 
@@ -209,7 +229,7 @@ test.describe('Staking - Cardano', { tag: ['@T3W1', '@T3T1'] }, () => {
                             address: 'stake1uytalm0k75njyj7v8z580ajs09v5v4lz6yp9akh8cgty43qunjqys',
                             rewards: '0',
                             isActive: true,
-                            poolId: 'pool1n0uxgs5qfk5n9xl7qvq9jt8zuu02cntrsjnjayjlqtejyffnemj',
+                            poolId: EXPECTED_CARDANO_POOL_ID,
                             drep: {
                                 drep_id: 'drep1ectemlv45xsnvenfgkhwsxncfvxev4qllj7x5w6vlfc7kmd9zcs',
                                 hex: '22ce179dfd95a1a136666945aee81a784b0d96541ffcbc6a3b4cfa71eb',
@@ -225,8 +245,11 @@ test.describe('Staking - Cardano', { tag: ['@T3W1', '@T3T1'] }, () => {
                     },
                 });
                 await devicePrompt.waitForPromptAndConfirm();
-                await expect(stakingSection.stakedToastAccount).toContainText('Cardano #1');
-                await expect(stakingSection.stakedToastAmount).toContainText(finalBalanceFormatted);
+                await stakingSection.verifyStakingToast({
+                    type: 'staked',
+                    account: 'Cardano #1',
+                    amount: finalBalanceFormatted,
+                });
             });
 
             await test.step('Verify account is staked', async () => {

@@ -1,40 +1,100 @@
 import { selectTradingExchangeSelectedQuote, tradingExchangeActions } from '@suite-common/trading';
+import { getTranslation } from '@suite-native/intl';
 import {
-    TestStore,
-    initStore,
-    renderWithStoreProviderAsync,
+    type TestStore,
+    renderWithStoreProvider,
     userEvent,
     within,
-} from '@suite-native/test-utils';
-import { exchangeQuotes, getWalletState } from '@suite-native/trading-fixtures';
+} from '@suite-native/test-utils-store';
+import { mercuryoFixedWorstQuote } from '@suite-native/trading-fixtures';
 
+import { createTradingLightStore } from '../../../../__tests__/tradingTestUtils';
 import { LimitPicker } from '../LimitPicker';
 
 describe('LimitPicker', () => {
     let store: TestStore;
+    const mockOnApprovalTypeChange = jest.fn();
 
-    const renderLimitPicker = () => renderWithStoreProviderAsync(<LimitPicker />, { store });
+    const renderLimitPicker = () =>
+        renderWithStoreProvider(
+            <LimitPicker
+                onApprovalTypeChange={approvalType => {
+                    mockOnApprovalTypeChange(approvalType);
+                    const quote = selectTradingExchangeSelectedQuote(store.getState());
+                    if (!quote) {
+                        return;
+                    }
+                    store.dispatch(
+                        tradingExchangeActions.saveSelectedQuote({ ...quote, approvalType }),
+                    );
+                }}
+            />,
+            { store },
+        );
 
     beforeEach(() => {
-        const preloadedState = {
-            wallet: getWalletState({
-                tradeType: 'exchange',
-            }),
-        };
+        mockOnApprovalTypeChange.mockReset();
 
-        preloadedState!.wallet!.trading.exchange.preselectedQuote = exchangeQuotes[0];
+        const quote = { ...mercuryoFixedWorstQuote, approvalStringAmount: '100' };
 
-        store = initStore(preloadedState).store;
+        store = createTradingLightStore({
+            tradeType: 'exchange',
+            overrides: {
+                wallet: {
+                    trading: {
+                        exchange: {
+                            selectedQuote: quote,
+                        },
+                    },
+                },
+            },
+        });
+        store.dispatch(tradingExchangeActions.saveSelectedQuote(quote));
     });
 
-    it('should render Unlimited when no limit is specified', async () => {
-        const { getByTestId } = await renderLimitPicker();
+    it('should render limit by default', () => {
+        const { getByTestId } = renderLimitPicker();
 
         const picker = getByTestId('ExchangeApproval/LimitPicker');
 
-        expect(within(picker).getByText('Unlimited')).toBeOnTheScreen();
+        expect(within(picker).getByText('100 USDC')).toBeOnTheScreen();
         expect(
-            within(picker).getByText(/^Approve unlimited USDC to skip future approval requests/),
+            within(picker).getByText(
+                getTranslation('moduleTrading.exchangeApprovalLimitSheet.limitedCard.info'),
+            ),
+        ).toBeOnTheScreen();
+    });
+
+    it('should render Unlimited when selected by user', async () => {
+        const { getByTestId } = renderLimitPicker();
+
+        const picker = getByTestId('ExchangeApproval/LimitPicker');
+        const sheet = getByTestId('ExchangeApproval/LimitSheet');
+
+        await userEvent.press(
+            within(sheet).getByText(
+                getTranslation('moduleTrading.tradingExchangeApprovalScreen.unlimitedLabel'),
+            ),
+        );
+
+        expect(mockOnApprovalTypeChange).toHaveBeenCalledTimes(1);
+        expect(mockOnApprovalTypeChange).toHaveBeenCalledWith('INFINITE');
+        expect(
+            within(picker).getByText(
+                getTranslation('moduleTrading.tradingExchangeApprovalScreen.unlimitedLabel'),
+            ),
+        ).toBeOnTheScreen();
+        expect(
+            within(picker).getByText(
+                getTranslation('moduleTrading.exchangeApprovalLimitSheet.unlimitedCard.info'),
+            ),
+        ).toBeOnTheScreen();
+        expect(
+            within(picker).getByText(
+                getTranslation('moduleTrading.exchangeApprovalLimitSheet.unlimitedCard.alert', {
+                    coinSymbol: 'USDC',
+                }),
+            ),
         ).toBeOnTheScreen();
         expect(selectTradingExchangeSelectedQuote(store.getState())).toEqual(
             expect.objectContaining({ approvalType: 'INFINITE' }),
@@ -42,26 +102,30 @@ describe('LimitPicker', () => {
     });
 
     it('should update limit when users selects new value', async () => {
-        const { getByTestId } = await renderLimitPicker();
+        const { getByTestId } = renderLimitPicker();
 
         const picker = getByTestId('ExchangeApproval/LimitPicker');
         const sheet = getByTestId('ExchangeApproval/LimitSheet');
 
         await userEvent.press(within(sheet).getByText('100 USDC'));
 
+        expect(mockOnApprovalTypeChange).toHaveBeenCalledTimes(1);
+        expect(mockOnApprovalTypeChange).toHaveBeenCalledWith('MINIMAL');
         expect(within(picker).getByText('100 USDC')).toBeOnTheScreen();
         expect(
-            within(picker).getByText(/^Approve only the amount needed for this swap/),
+            within(picker).getByText(
+                getTranslation('moduleTrading.exchangeApprovalLimitSheet.limitedCard.info'),
+            ),
         ).toBeOnTheScreen();
         expect(selectTradingExchangeSelectedQuote(store.getState())).toEqual(
             expect.objectContaining({ approvalType: 'MINIMAL' }),
         );
     });
 
-    it('should render nothing without quote', async () => {
-        store.dispatch(tradingExchangeActions.savePreselectedQuote(undefined));
+    it('should render nothing without quote', () => {
+        store.dispatch(tradingExchangeActions.saveSelectedQuote(undefined));
 
-        const { toJSON } = await renderLimitPicker();
+        const { toJSON } = renderLimitPicker();
 
         expect(toJSON()).toBeNull();
     });

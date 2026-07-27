@@ -2,17 +2,19 @@ import { useMemo } from 'react';
 import { useWatch } from 'react-hook-form';
 
 import { Translation } from '@suite/intl';
-import { NetworkSymbol, NetworkType } from '@suite-common/wallet-config';
-import { FormState } from '@suite-common/wallet-types';
+import { type NetworkSymbol, type NetworkType } from '@suite-common/wallet-config';
+import { type FormState } from '@suite-common/wallet-types';
+import { type TronAccountExtraData } from '@trezor/blockchain-link-types';
 import { Button, Collapsible, Column, Row, TextButton } from '@trezor/components';
 
 import {
     CollapsibleFeesHeaderContent,
-    CollapsibleFeesHeaderContentProps,
+    type CollapsibleFeesHeaderContentProps,
 } from './CollapsibleFeesHeaderContent';
 import { CustomFee } from './CustomFee/CustomFee';
+import { CustomFeeTron } from './CustomFee/CustomFeeTron';
 import { StandardFee } from './StandardFee/StandardFee';
-import { FeesContext, FeesContextType } from '../context/FeesContext';
+import { FeesContext, type FeesContextType } from '../context/FeesContext';
 import { useTransactionMaxFee } from './hooks/useTransactionMaxFee';
 
 export type CollapsibleFeesProps = {
@@ -20,6 +22,7 @@ export type CollapsibleFeesProps = {
     networkType: NetworkType;
     rbfForm?: boolean;
     isOpen?: boolean;
+    tronResources?: TronAccountExtraData;
 } & Pick<FeesContextType, 'feeInfo' | 'composedLevels' | 'changeFeeLevel'> &
     Omit<CollapsibleFeesHeaderContentProps, 'supportsAdjustableFees' | 'txMaxFee' | 'isOpen'>;
 
@@ -33,12 +36,24 @@ export function CollapsibleFees({
     rbfForm,
     headerTypographyStyle = 'body-md',
     isOpen,
+    tronResources,
 }: CollapsibleFeesProps) {
     const selectedFee = useWatch<FormState, 'selectedFee'>({
         name: 'selectedFee',
         defaultValue: 'normal',
     });
-    const supportsAdjustableFees = networkType !== 'solana';
+
+    const isTrc20Transfer = useMemo(() => {
+        if (networkType !== 'tron' || composedLevels == null) return false;
+        const { normal } = composedLevels;
+
+        return (
+            normal != null && normal.type !== 'error' && 'token' in normal && normal.token != null
+        );
+    }, [networkType, composedLevels]);
+
+    const supportsAdjustableFees =
+        networkType !== 'solana' && (networkType !== 'tron' || isTrc20Transfer);
     const isCustomFee = supportsAdjustableFees && selectedFee === 'custom';
 
     // when fees are loading, feeInfo.levels = [], but CustomFee requires at least the 'normal' level to have some default
@@ -67,6 +82,7 @@ export function CollapsibleFees({
                 changeFeeLevel,
                 selectedFeeLevel,
                 composedLevels,
+                tronResources,
             }}
         >
             <Collapsible gap={12} isOpen={isOpen} data-testid="@wallet/fees/collapsible-fees">
@@ -81,34 +97,40 @@ export function CollapsibleFees({
                 {supportsAdjustableFees && (
                     <Collapsible.Content overflow="unset" onClick={ev => ev.stopPropagation()}>
                         <Column gap={16}>
-                            <Column gap={16}>
-                                {!isCustomFee && <StandardFee />}
-                                {isCustomFee && <CustomFee showCurrentFee={!rbfForm} />}
-                            </Column>
+                            {isTrc20Transfer ? (
+                                <CustomFeeTron />
+                            ) : (
+                                <>
+                                    <Column gap={16}>
+                                        {!isCustomFee && <StandardFee />}
+                                        {isCustomFee && <CustomFee showCurrentFee={!rbfForm} />}
+                                    </Column>
 
-                            <Row justifyContent="center" margin={{ bottom: 8 }}>
-                                {isCustomFee && (
-                                    <Button
-                                        intent="neutral"
-                                        priority="secondary"
-                                        onClick={() => changeFeeLevel('normal')}
-                                        data-testid="@wallet/fees/select-standard-fee"
-                                    >
-                                        <Translation id="FEE_LEVEL_STANDARD" />
-                                    </Button>
-                                )}
-                                {!isCustomFee && hasNormalFeeLevel && (
-                                    <TextButton
-                                        onClick={() => changeFeeLevel('custom')}
-                                        data-testid="@wallet/fees/select-custom-fee"
-                                        intent="neutral"
-                                        size="small"
-                                        isUnderlined
-                                    >
-                                        <Translation id="FEE_LEVEL_ADVANCED" />
-                                    </TextButton>
-                                )}
-                            </Row>
+                                    <Row justifyContent="center" margin={{ bottom: 8 }}>
+                                        {isCustomFee && (
+                                            <Button
+                                                intent="neutral"
+                                                priority="secondary"
+                                                onClick={() => changeFeeLevel('normal')}
+                                                data-testid="@wallet/fees/select-standard-fee"
+                                            >
+                                                <Translation id="FEE_LEVEL_STANDARD" />
+                                            </Button>
+                                        )}
+                                        {!isCustomFee && hasNormalFeeLevel && (
+                                            <TextButton
+                                                onClick={() => changeFeeLevel('custom')}
+                                                data-testid="@wallet/fees/select-custom-fee"
+                                                intent="neutral"
+                                                size="small"
+                                                isUnderlined
+                                            >
+                                                <Translation id="FEE_LEVEL_ADVANCED" />
+                                            </TextButton>
+                                        )}
+                                    </Row>
+                                </>
+                            )}
                         </Column>
                     </Collapsible.Content>
                 )}

@@ -1,42 +1,32 @@
-import styled from 'styled-components';
-
+import { ContextMessage } from '@suite/message-system';
 import { Context } from '@suite-common/message-system';
 import { Column } from '@trezor/components';
-import { spacings, spacingsPx } from '@trezor/theme';
 
-import { EarnDashboard } from 'src/components/earn';
 import { OutOfQuotaBanner } from 'src/components/suite/banners/SuiteBanners/OutOfQuotaBanner';
 import { PageHeader } from 'src/components/suite/layouts/SuiteLayout';
-import { ContextMessage } from 'src/components/wallet/WalletLayout/AccountBanners/ContextMessage';
 import { useLayout } from 'src/hooks/suite';
 
 import { AssetsView } from './AssetsView/AssetsView';
 import { DashboardFooter } from './DashboardFooter';
 import { DashboardPromoBanner } from './DashboardPromoBanner/DashboardPromoBanner';
+import { OnboardingFeedbackBanner } from './OnboardingFeedbackBanner/OnboardingFeedbackBanner';
 import { PortfolioCard } from './PortfolioCard/PortfolioCard';
 import { useNotificationForDisconnectedDevice } from './useNotificationForDisconnectedDevice';
 
-const Container = styled.div`
-    display: flex;
-    flex-direction: column;
-    gap: ${spacingsPx.xl};
-`;
-
 export const Dashboard = () => {
-    useLayout('Home', <PageHeader />);
+    useLayout('Home', <PageHeader />, <DashboardFooter />);
     useNotificationForDisconnectedDevice();
 
     return (
-        <Column gap={spacings.xxxxl} data-testid="@dashboard/index">
-            <Container>
+        <Column gap={48} data-testid="@dashboard/index">
+            <Column gap={24}>
                 <OutOfQuotaBanner />
                 <ContextMessage context={Context.getGeneral('dashboard')} />
                 <PortfolioCard />
-            </Container>
+                <OnboardingFeedbackBanner />
+            </Column>
             <DashboardPromoBanner />
             <AssetsView />
-            <EarnDashboard />
-            <DashboardFooter />
         </Column>
     );
 };

@@ -1,12 +1,12 @@
 import { createThunk } from '@suite-common/redux-utils';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
-import { SOL_COMPUTE_UNIT_LIMIT } from '@suite-common/wallet-constants';
 import {
-    Account,
-    ComposeActionContext,
-    ExternalOutput,
-    PrecomposedLevels,
-    PrecomposedTransaction,
+    type Account,
+    AddressDisplayOptions,
+    type ComposeActionContext,
+    type ExternalOutput,
+    type PrecomposedLevels,
+    type PrecomposedTransaction,
 } from '@suite-common/wallet-types';
 import {
     asAmountSubunit,
@@ -22,18 +22,20 @@ import {
     unitsToSubunits,
 } from '@suite-common/wallet-utils';
 import type { TokenInfo } from '@trezor/blockchain-link-types';
-import { tokenStandardToTokenProgramName } from '@trezor/blockchain-link-utils/src/solana';
-import TrezorConnect, { FeeLevel } from '@trezor/connect';
+import { solanaUtils } from '@trezor/blockchain-link-utils';
+import TrezorConnect, { type FeeLevel } from '@trezor/connect';
+import { SOL_COMPUTE_UNIT_LIMIT } from '@trezor/network-solana/constants';
 import { BigNumber } from '@trezor/utils';
 
 import { SEND_MODULE_PREFIX } from './sendFormConstants';
 import {
-    ComposeFeeLevelsError,
-    ComposeTransactionThunkArguments,
-    SignTransactionError,
-    SignTransactionThunkArguments,
+    type ComposeFeeLevelsError,
+    type ComposeTransactionThunkArguments,
+    type SignTransactionError,
+    type SignTransactionThunkArguments,
 } from './sendFormTypes';
 import { selectBlockchainBlockInfoBySymbol } from '../blockchain/blockchainReducer';
+import { selectAddressDisplayType } from '../settings/walletSettingsReducer';
 
 const calculate = (
     availableBalance: string,
@@ -191,12 +193,15 @@ export const composeSolanaTransactionFeeLevelsThunk = createThunk<
                 message: 'Token accounts not found.',
             });
 
-        if (formState.setMaxOutputId !== undefined && !formState.outputs[0].amount) {
+        const { outputs: composeOutputsList } = formState;
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const firstOutput: (typeof composeOutputsList)[number] = composeOutputsList[0];
+        if (formState.setMaxOutputId !== undefined && !firstOutput.amount) {
             if (tokenInfo?.balance) {
-                formState.outputs[0].amount = tokenInfo.balance;
+                firstOutput.amount = tokenInfo.balance;
             } else {
                 // minimal amount for purpose of fee estimation, at least to cover rent + 1 lamport
-                formState.outputs[0].amount = convertAmountSubunitsToUnits(
+                firstOutput.amount = convertAmountSubunitsToUnits(
                     (account.misc?.rent ?? 0) + 1,
                     decimals,
                 );
@@ -209,18 +214,19 @@ export const composeSolanaTransactionFeeLevelsThunk = createThunk<
         // The real transaction is constructed in `signTransaction`, this one is used solely for fee estimation and is never submitted.
         const transaction = await TrezorConnect.solanaComposeTransaction({
             fromAddress: account.descriptor,
-            toAddress: formState.outputs[0].address,
-            amount: formState.outputs[0].amount,
+            toAddress: firstOutput.address,
+            amount: firstOutput.amount,
             token: tokenInfo
                 ? {
                       mint: tokenInfo.contract,
-                      program: tokenStandardToTokenProgramName(tokenInfo.standard),
+                      program: solanaUtils.tokenStandardToTokenProgramName(tokenInfo.standard),
                       decimals: tokenInfo.decimals,
                       accounts: tokenInfo.accounts ?? [],
                   }
                 : undefined,
             blockHash,
             lastValidBlockHeight,
+            memo: formState.destinationTag || undefined,
             coin: account.symbol,
             identity: getAccountIdentity(account),
             priorityFees: {
@@ -234,7 +240,7 @@ export const composeSolanaTransactionFeeLevelsThunk = createThunk<
         if (!transaction.success) {
             return rejectWithValue({
                 error: 'fee-levels-compose-failed',
-                message: transaction.payload.error,
+                message: transaction.error.message,
             });
         }
 
@@ -253,13 +259,15 @@ export const composeSolanaTransactionFeeLevelsThunk = createThunk<
         let fetchedFeeLimit: string | undefined;
         if (estimatedFee.success) {
             // We access the array directly like this because the fee response from the solana worker always returns an array of size 1
-            const feeLevel = estimatedFee.payload.levels[0];
+            const { levels: estimatedFeeLevels } = estimatedFee.payload;
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const feeLevel: (typeof estimatedFeeLevels)[number] = estimatedFeeLevels[0];
             fetchedFee = feeLevel.feePerTx;
             fetchedFeePerUnit = feeLevel.feePerUnit;
             fetchedFeeLimit = feeLevel.feeLimit;
         } else {
             // Error fetching fee, fall back on default values defined in `/packages/connect/src/data/defaultFeeLevels.ts`
-            console.warn('Error fetching fee, using default values.', estimatedFee.payload.error);
+            console.warn('Error fetching fee, using default values.', estimatedFee.error.message);
         }
 
         // FeeLevels are read-only, so we create a copy if need be
@@ -289,14 +297,17 @@ export const composeSolanaTransactionFeeLevelsThunk = createThunk<
             ),
         );
         response.forEach((tx, index) => {
-            const feeLabel = predefinedLevels[index].label as FeeLevel['label'];
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const predefinedLevel: (typeof predefinedLevels)[number] = predefinedLevels[index];
+            const feeLabel = predefinedLevel.label;
             resultLevels[feeLabel] = tx;
         });
 
         // format max (calculate sends it as lamports)
         // update errorMessage values (symbol)
         Object.keys(resultLevels).forEach(key => {
-            const tx = resultLevels[key];
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const tx: (typeof resultLevels)[string] = resultLevels[key];
             if (tx.type !== 'error') {
                 tx.max = tx.max ? convertAmountSubunitsToUnits(tx.max, decimals) : undefined;
             }
@@ -320,7 +331,10 @@ export const signSolanaSendFormTransactionThunk = createThunk<
     { rejectValue: SignTransactionError }
 >(
     `${SEND_MODULE_PREFIX}/signSolanaSendFormTransactionThunk`,
-    async ({ formState, precomposedTransaction, selectedAccount, device }, { rejectWithValue }) => {
+    async (
+        { formState, precomposedTransaction, selectedAccount, device, paymentRequests },
+        { getState, rejectWithValue },
+    ) => {
         if (precomposedTransaction.feeLimit == null)
             return rejectWithValue({
                 error: 'sign-transaction-failed',
@@ -352,20 +366,24 @@ export const signSolanaSendFormTransactionThunk = createThunk<
                 message: 'Missing token accounts.',
             });
 
+        const { outputs: signOutputs } = formState;
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const firstSignOutput: (typeof signOutputs)[number] = signOutputs[0];
         const transaction = await TrezorConnect.solanaComposeTransaction({
             fromAddress: selectedAccount.descriptor,
-            toAddress: formState.outputs[0].address,
-            amount: formState.outputs[0].amount,
+            toAddress: firstSignOutput.address,
+            amount: firstSignOutput.amount,
             token: token
                 ? {
                       mint: token.contract,
-                      program: tokenStandardToTokenProgramName(token.standard),
+                      program: solanaUtils.tokenStandardToTokenProgramName(token.standard),
                       decimals: token.decimals,
                       accounts: token.accounts ?? [],
                   }
                 : undefined,
             blockHash,
             lastValidBlockHeight,
+            memo: formState.destinationTag || undefined,
             priorityFees: {
                 computeUnitPrice: precomposedTransaction.feePerByte,
                 computeUnitLimit: precomposedTransaction.feeLimit,
@@ -378,9 +396,11 @@ export const signSolanaSendFormTransactionThunk = createThunk<
         if (!transaction.success) {
             return rejectWithValue({
                 error: 'sign-transaction-failed',
-                message: transaction.payload.error,
+                message: transaction.error.message,
             });
         }
+
+        const payment_req = paymentRequests?.[0];
 
         const response = await TrezorConnect.solanaSignTransaction({
             device: {
@@ -391,20 +411,22 @@ export const signSolanaSendFormTransactionThunk = createThunk<
             },
             path: selectedAccount.path,
             serializedTx: transaction.payload.serializedTx,
+            payment_req,
             serialize: true,
             additionalInfo: transaction.payload.additionalInfo.tokenAccountInfo
                 ? {
                       tokenAccountsInfos: [transaction.payload.additionalInfo.tokenAccountInfo],
                   }
                 : undefined,
+            chunkify: selectAddressDisplayType(getState()) === AddressDisplayOptions.CHUNKED,
         });
 
         if (!response.success) {
             // catch manual error from TransactionReviewModal
             return rejectWithValue({
                 error: 'sign-transaction-failed',
-                errorCode: response.payload.code,
-                message: response.payload.error,
+                errorCode: response.error.code,
+                message: response.error.message,
             });
         }
 

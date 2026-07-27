@@ -19,6 +19,13 @@ export { Button, type ButtonProps, type ButtonIntent } from './components/button
 export { IconButton, type IconButtonProps } from './components/buttons/IconButton/IconButton';
 export * from './components/Icon/Icon';
 export {
+    Illustration,
+    allowedIllustrationFrameProps,
+    type IllustrationProps,
+    type IllustrationName,
+} from './components/Illustration/Illustration';
+export { illustrationIntents, type IllustrationIntent } from './components/Illustration/types';
+export {
     ComponentWithSubIcon,
     type ComponentWithSubIconProps,
 } from './components/ComponentWithSubIcon/ComponentWithSubIcon';
@@ -29,10 +36,10 @@ export {
 export * from './components/buttons/TextButton/TextButton';
 export { Box, type BoxProps } from './components/Box/Box';
 export {
-    BulletList,
-    type BulletListProps,
-    type BulletListItemState,
-} from './components/BulletList/BulletList';
+    StepList,
+    type StepListProps,
+    type StepListItemState,
+} from './components/StepList/StepList';
 export { Card, type CardProps } from './components/Card/Card';
 export {
     CardList,
@@ -59,7 +66,6 @@ export {
 } from './components/GhostContainer/GhostContainer';
 export * from './components/Divider/Divider';
 export * from './components/Dropdown/Dropdown';
-export * from './components/ElevationContext/ElevationContext';
 export * from './components/Flex/Flex';
 export {
     FormCell,
@@ -75,16 +81,18 @@ export * from './components/form/SelectBar/SelectBar';
 export * from './components/form/Switch/Switch';
 export * from './components/form/Textarea/Textarea';
 export * from './components/form/FractionButton/FractionButton';
-export * from './components/GradientOverlay/GradientOverlay';
 export { Grid, type GridProps } from './components/Grid/Grid';
 export * from './components/ShortcutBadge/ShortcutBadge';
 export * from './components/Image/Image';
+export * from './components/Image/SvgImage';
 export * from './components/Image/images';
 export { DotIndicator, type DotIndicatorProps } from './components/DotIndicator/DotIndicator';
+export { Dot, dotIntents, type DotProps, type DotIntent } from './components/Dot/Dot';
+export { StatusBadge, type StatusBadgeProps } from './components/StatusBadge/StatusBadge';
 export {
     IconCircle,
     type IconCircleProps,
-    type IconCircleVariant,
+    type IconCircleIntent,
 } from './components/IconCircle/IconCircle';
 export { InfoSegments, type InfoSegmentsProps } from './components/InfoSegments/InfoSegments';
 export { InfoItem, type InfoItemProps } from './components/InfoItem/InfoItem';
@@ -100,12 +108,8 @@ export * from './components/Note/Note';
 export * from './components/Popover/Popover';
 export * from './components/Popover/utils';
 export * from './components/ResizableBox/ResizableBox';
-export * from './components/skeletons/SkeletonCircle';
-export * from './components/skeletons/SkeletonRectangle';
-export * from './components/skeletons/SkeletonSpread';
-export * from './components/skeletons/SkeletonStack';
-export * from './components/skeletons/types';
 export * from './components/Timerange/Timerange';
+export * from './components/Skeleton/Skeleton';
 export * from './components/Toast/Toast';
 export * from './components/Toast/types';
 export * from './components/Tooltip/Tooltip';
@@ -148,6 +152,7 @@ export * from './constants/keyboardEvents';
 export * from './utils/useScrollShadow';
 export * from './utils/transientProps';
 export { useMediaQuery } from './utils/useMediaQuery';
+export { commonFocusStyles } from './utils/utils';
 
 export { intermediaryTheme } from './config/colors';
 export type { SuiteThemeColors } from './config/colors';
@@ -155,4 +160,4 @@ export type { SuiteThemeColors } from './config/colors';
 export { RadioCard } from './components/RadioCard/RadioCard';
 export { PinInput } from './components/PinInput/PinInput';
 
-export { type UIIntent } from './config/types';
+export { type UIIntent, type UIVariant } from './config/types';

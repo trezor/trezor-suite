@@ -1,26 +1,25 @@
-import React, { ReactNode, useCallback, useEffect, useRef, useState } from 'react';
+import React, { type ReactNode, useCallback, useEffect, useRef, useState } from 'react';
 
 import styled, { css } from 'styled-components';
 
 import {
-    FrameProps,
-    FramePropsKeys,
+    type FrameProps,
+    type FramePropsKeys,
     Row,
     Text,
     Tooltip,
-    TransientProps,
+    type TransientProps,
     pickAndPrepareFrameProps,
     withFrameProps,
 } from '@trezor/components';
-import { SpacingValuesNew, borders, zIndices } from '@trezor/theme';
+import { type SpacingValue, zIndices } from '@trezor/theme';
 
 import { ActionsContainer } from './ActionsContainer';
-import { SavingStatus } from './types';
+import { type SavingStatus } from './types';
 import {
     SAVED_STATUS_TIMEOUT,
     escapeCssContent,
     extractTextFromNode,
-    useShortcuts,
     useTextTruncation,
 } from './utils';
 
@@ -42,7 +41,7 @@ export type EditableTextProps = AllowedFrameProps & {
     placeholder?: string;
     leftAddon?: ReactNode;
     rightAddon?: ReactNode;
-    gap?: SpacingValuesNew;
+    gap?: SpacingValue;
     'data-testid'?: string;
 } & (
         | { defaultValue?: undefined; displayValue?: undefined }
@@ -54,7 +53,6 @@ const EditableContainer = styled.span<{
     $isEditable: boolean;
     $isEmpty: boolean;
     $placeholder: string | undefined;
-    $isDisabled: boolean;
     $hasDisplayValue: boolean;
     $isActive: boolean;
 }>`
@@ -65,7 +63,7 @@ const EditableContainer = styled.span<{
     ${({ $isActive }) =>
         $isActive &&
         css`
-            color: ${({ theme }) => theme.baseContentPrimary};
+            color: ${({ theme }) => theme.contentPrimary};
         `}
 
     ${({ $isEditable }) =>
@@ -95,7 +93,7 @@ const EditableContainer = styled.span<{
 
             &::after {
                 content: '${escapedPlaceholder}';
-                color: ${({ theme }) => theme.stateContentDisabled};
+                color: ${({ theme }) => theme.contentDisabled};
             }
         `;
     }}
@@ -108,10 +106,9 @@ const EditableContainer = styled.span<{
 `;
 
 type ContainerProps = {
-    $gap: SpacingValuesNew;
+    $gap: SpacingValue;
     $isActive: boolean;
     $isAlwaysActive: boolean;
-    $isDisabled: boolean;
 } & TransientProps<AllowedFrameProps>;
 
 const Container = styled.span<ContainerProps>`
@@ -127,14 +124,14 @@ const Container = styled.span<ContainerProps>`
     box-sizing: content-box;
     padding: var(--padding);
     padding-left: ${({ $gap }) => $gap}px;
-    cursor: ${({ $isDisabled }) => ($isDisabled ? 'inherit' : 'pointer')};
+    cursor: ${({ $isAlwaysActive }) => ($isAlwaysActive ? 'pointer' : 'inherit')};
 
     &::before {
         content: '';
         position: absolute;
         inset: 0;
-        background: ${({ theme }) => theme.baseFillElementNeutralSofter};
-        border-radius: ${borders.radii.xs};
+        background: ${({ theme }) => theme.elementFillNeutralSofter};
+        border-radius: 4px;
         pointer-events: none;
         opacity: 0;
         transform-origin: left;
@@ -157,7 +154,7 @@ const Container = styled.span<ContainerProps>`
               `
             : css`
                   &:hover::before {
-                      background: ${({ theme }) => theme.stateFillElementNeutralSoftestHovered};
+                      background: ${({ theme }) => theme.elementFillFieldHovered};
                   }
               `}
 
@@ -263,7 +260,12 @@ export const EditableText = ({
     }, [onCancel, isDirty]);
 
     const handleEdit = useCallback(async () => {
-        await onEdit?.();
+        const result = await onEdit?.();
+
+        // Needed in case onEdit is undefined
+        if (result === false) {
+            return;
+        }
 
         setIsEditable(true);
         focus();
@@ -334,17 +336,37 @@ export const EditableText = ({
         setSavingStatus('idle');
     }, []);
 
-    const handleContainerClick = useCallback(
-        (e: React.MouseEvent<HTMLElement>) => {
+    const handleKeyDown = useCallback(
+        (e: React.KeyboardEvent<HTMLElement>) => {
+            if (e.key !== 'Enter' && e.key !== 'Escape') return;
+
+            e.preventDefault();
             e.stopPropagation();
 
+            if (e.key === 'Enter' && isDirty) {
+                handleSave();
+            } else if (e.key === 'Enter' || e.key === 'Escape') {
+                handleCancel();
+            }
+        },
+        [handleSave, handleCancel, isDirty],
+    );
+
+    const handleContainerClick = useCallback(
+        (e: React.MouseEvent<HTMLElement>) => {
             if (isEditable) {
+                e.stopPropagation();
+
                 return;
             }
 
-            handleEdit();
+            if (isAlwaysActive) {
+                e.stopPropagation();
+
+                handleEdit();
+            }
         },
-        [handleEdit, isEditable],
+        [handleEdit, isEditable, isAlwaysActive],
     );
 
     const handlePaste = (e: React.ClipboardEvent<HTMLElement>) => {
@@ -371,7 +393,11 @@ export const EditableText = ({
 
         const handleOuterClick = (e: MouseEvent) => {
             if (!containerRef?.current?.contains(e.target as Node)) {
-                handleCancel();
+                if (isDirty) {
+                    handleSave();
+                } else {
+                    handleCancel();
+                }
             }
         };
 
@@ -380,9 +406,7 @@ export const EditableText = ({
         return () => {
             document.removeEventListener('click', handleOuterClick);
         };
-    }, [isEditable, handleCancel]);
-
-    useShortcuts({ isEditable, isDirty, handleSave, handleCancel });
+    }, [isEditable, handleCancel, handleSave, isDirty]);
 
     return (
         <Container
@@ -394,7 +418,6 @@ export const EditableText = ({
             $gap={gap}
             $isActive={isActive && !isDisabled}
             $isAlwaysActive={isAlwaysActive && !isDisabled}
-            $isDisabled={isDisabled}
             {...frameProps}
         >
             {leftAddon && (
@@ -429,11 +452,11 @@ export const EditableText = ({
                         onInput={e => {
                             setCurrentValueTextContent(e.currentTarget.textContent || '');
                         }}
+                        onKeyDown={handleKeyDown}
                         onPaste={handlePaste}
                         $placeholder={placeholder}
                         $isEmpty={isEmpty}
                         $isEditable={isEditable}
-                        $isDisabled={isDisabled}
                         $isActive={isActive}
                         $hasDisplayValue={hasDisplayValue}
                         autoCapitalize="off"
@@ -447,7 +470,7 @@ export const EditableText = ({
                             ellipsisLineCount={1}
                             as="div"
                             pointerEvents="none"
-                            color={isActive ? 'baseContentPrimary' : undefined}
+                            color={isActive ? 'contentPrimary' : undefined}
                         >
                             {displayValue}
                         </Text>

@@ -6,7 +6,8 @@ import path from 'path';
 
 import { isDevEnv } from '@suite-common/suite-utils';
 import { ensureDirectoryExists } from '@trezor/node-utils';
-import { TimerId } from '@trezor/type-utils';
+import { type TimerId } from '@trezor/type-utils';
+import { isArrayMember } from '@trezor/utils';
 
 import { getBuildInfo, getComputerInfo } from './info';
 import { getSwitchValue, hasSwitch } from './process-switches';
@@ -14,8 +15,7 @@ import { getSwitchValue, hasSwitch } from './process-switches';
 const logLevels = ['mute', 'error', 'warn', 'info', 'debug'] as const;
 
 export type LogLevel = (typeof logLevels)[number];
-const isLogLevel = (level: string): level is LogLevel =>
-    !!level && logLevels.includes(level as LogLevel);
+const isLogLevel = (level: string): level is LogLevel => isArrayMember(level, logLevels);
 
 export type Options = {
     colors: boolean; // Console output has colors
@@ -199,7 +199,7 @@ export class Logger implements ILogger {
         const params = {
             dt: date.toISOString(),
             ts: (+date).toString(),
-            tt: date.toISOString().split('.')[0].replace(/:/g, '-'),
+            tt: (date.toISOString().split('.')[0] ?? '').replace(/:/g, '-'),
             ...strings,
         };
 
@@ -252,8 +252,8 @@ export class Logger implements ILogger {
         this.log('debug', topic, message);
     }
 
-    public get level() {
-        return logLevels[this.logLevel];
+    public get level(): LogLevel {
+        return logLevels[this.logLevel] ?? 'mute';
     }
 
     public set level(level: LogLevel) {

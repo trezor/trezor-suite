@@ -1,16 +1,18 @@
 import { Locator, Page } from '@playwright/test';
 
 import { messages } from '@suite/intl';
-import { TradingCountryCode } from '@suite-common/trading';
+import type { TradingCountryCode } from '@suite-common/trading';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 
 import { TradingAssetPicker } from './assetsModal';
 import { TradingConfirmationModal } from './confirmationModal';
+import { TradingTransactionsSection } from './transactionsSection';
 import { DevicePrompt } from '../devicePrompt';
 import { FeeSection } from './feeSection';
 import { TradingFormInputs } from './formInputs';
 import { TradingQuotesSection } from './quotesSection';
 import { TradingReceiveAccount } from './receiveAccount';
+import { TransactionDetailSidebar } from './transactionDetailSidebar';
 import { invityEndpoint } from '../../../fixtures/invity';
 import { step } from '../../common';
 import { expect } from '../../testExtends/customMatchers';
@@ -23,6 +25,7 @@ export class TradingPage {
     readonly quotes: TradingQuotesSection;
     readonly confirmation: TradingConfirmationModal;
     readonly inputs: TradingFormInputs;
+    readonly transactionDetailSidebar: TransactionDetailSidebar;
 
     // Navigation and action buttons
     readonly section: Locator;
@@ -31,7 +34,7 @@ export class TradingPage {
     readonly buyBestOfferButton: Locator;
     readonly sellBestOfferButton: Locator;
     readonly swapBestOfferButton: Locator;
-    readonly buyOffersPage: Locator;
+    readonly kycWarning: Locator;
     readonly proceedToPayButton: Locator;
     readonly backToAccountButton = (type: 'Buy' | 'Sell' | 'Swap') =>
         this.page.getByRole('button', { name: `Make another ${type}` });
@@ -44,7 +47,16 @@ export class TradingPage {
     readonly setMax: Locator;
 
     // Transactions
+    readonly backButton: Locator;
     readonly transactionDetailStatus: Locator;
+    readonly transactionDetailHeader: Locator;
+    readonly transactionDetail: Locator;
+    readonly transactions: TradingTransactionsSection;
+
+    // Swap toast notifications
+    readonly swapToastMessage: Locator;
+    readonly swapToastSendAmount: Locator;
+    readonly swapToastReceiveAmount: Locator;
 
     constructor(
         private page: Page,
@@ -56,6 +68,7 @@ export class TradingPage {
         this.quotes = new TradingQuotesSection(page);
         this.confirmation = new TradingConfirmationModal(page, devicePrompt);
         this.inputs = new TradingFormInputs(page);
+        this.transactionDetailSidebar = new TransactionDetailSidebar(page);
 
         this.section = this.page.getByTestId('@trading');
         this.buyButton = this.page.getByTestId('@trading/menu/wallet-trading-buy');
@@ -63,7 +76,7 @@ export class TradingPage {
         this.buyBestOfferButton = this.page.getByTestId('@trading/form/buy-button');
         this.sellBestOfferButton = this.page.getByTestId('@trading/form/sell-button');
         this.swapBestOfferButton = this.page.getByTestId('@trading/form/exchange-button');
-        this.buyOffersPage = this.page.getByTestId('@trading/buy-offers');
+        this.kycWarning = this.page.getByTestId('@trading/form/kyc-warning');
         this.proceedToPayButton = this.page.getByRole('button', { name: 'Proceed to pay' });
 
         // Swap
@@ -73,8 +86,16 @@ export class TradingPage {
         this.sendBalance = this.page.getByTestId('outputs.0.token');
         this.setMax = this.page.getByTestId('outputs.0.setMax');
 
-        // Transactions
+        this.backButton = this.page.getByTestId('@account-subpage/back');
         this.transactionDetailStatus = this.page.getByTestId('@trading/transaction/detail/status');
+        this.transactionDetailHeader = this.page.getByTestId('@trading/transaction/detail/header');
+        this.transactionDetail = this.page.getByTestId('@trading/transaction/detail');
+        this.transactions = new TradingTransactionsSection(page);
+
+        // Swap toast notifications
+        this.swapToastMessage = this.page.getByTestId('@toast/tx-exchange/message');
+        this.swapToastSendAmount = this.page.getByTestId('@toast/tx-exchange/send-amount');
+        this.swapToastReceiveAmount = this.page.getByTestId('@toast/tx-exchange/receive-amount');
     }
 
     /**
@@ -86,6 +107,7 @@ export class TradingPage {
      * @param params.wantCrypto - Whether the amount is specified in crypto (true) or fiat (false). Default: false
      * @param params.fiatCurrencyCode - The fiat currency code (e.g., 'czk', 'eur', 'usd'). Default: 'czk'
      * @param params.country - The country code for residence (e.g., 'CZ', 'US', 'GB'). Default: 'CZ'
+     * @param params.countrySubdivision - Optional subdivision code, required for countries with subdivisions (e.g., 'CA', 'NY' for US states)
      * @param params.selectReceiveAddress - Optional async callback to select a custom receive address
      *
      * @example
@@ -112,12 +134,14 @@ export class TradingPage {
         wantCrypto = false,
         fiatCurrencyCode = 'czk',
         country = 'CZ',
+        countrySubdivision,
         selectReceiveAddress,
     }: {
         amount: string;
         wantCrypto?: boolean;
         fiatCurrencyCode?: BaseCurrencyCode;
         country?: TradingCountryCode;
+        countrySubdivision?: string;
         selectReceiveAddress?: () => Promise<void>;
     }) {
         const inputField = wantCrypto ? this.inputs.cryptoAmount : this.inputs.fiatAmount;
@@ -129,6 +153,9 @@ export class TradingPage {
         }
 
         await this.inputs.selectCountryOfResidence(country);
+        if (countrySubdivision) {
+            await this.inputs.selectCountrySubdivision(countrySubdivision);
+        }
         await this.inputs.selectFiatCurrency(fiatCurrencyCode);
 
         if (selectReceiveAddress) {
@@ -306,6 +333,34 @@ export class TradingPage {
         await this.quotes.waitForSync();
     }
 
+    /**
+     * @param params.sendAccount - The account label the swap is sent from (e.g., 'Solana #1')
+     * @param params.receiveAccount - The account label the swap is received to (e.g., 'Bitcoin #1')
+     * @param params.sendAmount - The expected send amount (e.g., '0.001')
+     * @param params.receiveAmount - The expected receive amount (localized, e.g., '0.00002')
+     */
+    @step()
+    async verifySwapToast({
+        sendAccount,
+        receiveAccount,
+        sendAmount,
+        receiveAmount,
+    }: {
+        sendAccount: string;
+        receiveAccount: string;
+        sendAmount: string;
+        receiveAmount: string;
+    }) {
+        await expect(this.swapToastMessage).toHaveTranslation('TOAST_TX_EXCHANGE_BROADCASTED', {
+            values: {
+                sendAccount,
+                receiveAccount,
+            },
+        });
+        await expect(this.swapToastSendAmount).toHaveText(sendAmount);
+        await expect(this.swapToastReceiveAmount).toHaveText(receiveAmount);
+    }
+
     @step()
     async waitForSolanaFeesAndClickSwapBestOffer() {
         // The suite does not wait for solana fees to be calculated and it causes flakiness in automation.
@@ -317,8 +372,10 @@ export class TradingPage {
 
     @step()
     async waitForRedirectCompletion() {
-        await expect(this.page.getByText('Buy & sell')).toBeHidden();
-        await expect(this.page.getByText('Buy & sell')).toBeVisible({ timeout: 30_000 });
+        const tradeHeading = this.page.getByRole('heading', { name: 'Trade' });
+
+        await expect(tradeHeading).toBeHidden();
+        await expect(tradeHeading).toBeVisible({ timeout: 30_000 });
     }
 
     @step()

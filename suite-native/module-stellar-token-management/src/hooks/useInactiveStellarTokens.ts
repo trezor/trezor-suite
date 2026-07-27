@@ -1,21 +1,20 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { TokenDefinitionsRootState, selectCoinDefinitions } from '@suite-common/token-definitions';
-import { AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
-import { AccountKey } from '@suite-common/wallet-types';
-import { TokenDetailByMint, TokenInfo } from '@trezor/blockchain-link-types';
-import { STELLAR_DECIMALS, getTokenMetadata } from '@trezor/blockchain-link-utils/src/stellar';
+import {
+    type TokenDefinitionsRootState,
+    selectCoinDefinitions,
+} from '@suite-common/token-definitions';
+import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
+import { type AccountKey, type StellarTokenInfo } from '@suite-common/wallet-types';
+import { type TokenDetailByMint } from '@trezor/blockchain-link-types';
+import { getTokenMetadata } from '@trezor/blockchain-link-utils/src/stellar';
+import { STELLAR_DECIMALS } from '@trezor/network-stellar/constants';
 import { createLazy } from '@trezor/utils';
-
-export interface StellarTokenInfo extends TokenInfo {
-    homeDomain?: string;
-    rating?: number;
-}
 
 export const lazyTokenMetadata = createLazy(getTokenMetadata);
 
-export const useInactiveStellarTokens = (accountKey: AccountKey) => {
+export const useInactiveStellarTokens = (accountKey?: AccountKey) => {
     const [tokenMetadata, setTokenMetadata] = useState<TokenDetailByMint | null>(
         lazyTokenMetadata.get() ?? null,
     );
@@ -42,11 +41,12 @@ export const useInactiveStellarTokens = (accountKey: AccountKey) => {
         }
     }, [tokenMetadata]);
 
+    const tokens = account?.tokens;
     const activatedTokenContracts = useMemo(() => {
-        if (!account?.tokens) return new Set<string>();
+        if (!tokens) return new Set<string>();
 
-        return new Set(account.tokens.map(token => token.contract));
-    }, [account?.tokens]);
+        return new Set(tokens.map(token => token.contract));
+    }, [tokens]);
 
     const inactiveTokens = useMemo(() => {
         const tokenAddresses = coinDefinitions?.data ?? [];

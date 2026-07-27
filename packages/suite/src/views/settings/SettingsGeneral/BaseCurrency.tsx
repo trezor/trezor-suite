@@ -1,24 +1,23 @@
 import { useMemo } from 'react';
 
-import { events } from '@suite/analytics';
+import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation, useTranslation } from '@suite/intl';
+import { Anchor, SettingsAnchor } from '@suite/router';
+import { useServices } from '@suite-common/dependency-injection';
 import { selectBaseCurrency, setBaseCurrency } from '@suite-common/wallet-core';
 import { buildCurrencyLongOption, buildCurrencyShortOption } from '@suite-common/wallet-utils';
 import {
-    BaseCurrencyCode,
+    type BaseCurrencyCode,
     fiatBaseCurrencies,
     valuablesBaseCurrencies,
 } from '@trezor/blockchain-link-types';
+import { ActionColumn, ActionSelect, SectionItem, TextColumn } from '@trezor/product-components';
 import { typedObjectKeys } from '@trezor/utils';
 
-import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
-import { ActionColumn, ActionSelect, TextColumn } from 'src/components/suite';
-import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { useAnalytics } from 'src/support/useAnalytics';
 
 export const BaseCurrency = () => {
-    const analytics = useAnalytics();
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
     const { translationString } = useTranslation();
     const baseCurrencyCode = useSelector(selectBaseCurrency);
     const dispatch = useDispatch();
@@ -54,17 +53,25 @@ export const BaseCurrency = () => {
     );
 
     return (
-        <SettingsSectionItem anchorId={SettingsAnchor.Fiat}>
-            <TextColumn title={<Translation id="TR_BASE_CURRENCY" />} />
-            <ActionColumn>
-                <ActionSelect
-                    isSearchable
-                    onChange={handleChange}
-                    value={value}
-                    options={options}
-                    data-testid="@settings/fiat-select"
-                />
-            </ActionColumn>
-        </SettingsSectionItem>
+        <Anchor anchorId={SettingsAnchor.Fiat}>
+            {({ anchorId, anchorRef, shouldHighlight }) => (
+                <SectionItem
+                    data-testid={anchorId}
+                    ref={anchorRef}
+                    shouldHighlight={shouldHighlight}
+                >
+                    <TextColumn title={<Translation id="TR_BASE_CURRENCY" />} />
+                    <ActionColumn>
+                        <ActionSelect
+                            isSearchable
+                            onChange={handleChange}
+                            value={value}
+                            options={options}
+                            data-testid="@settings/fiat-select"
+                        />
+                    </ActionColumn>
+                </SectionItem>
+            )}
+        </Anchor>
     );
 };

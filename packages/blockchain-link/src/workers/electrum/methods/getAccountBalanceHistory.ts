@@ -1,13 +1,26 @@
-import { AccountAddresses, Address, Transaction } from '@trezor/blockchain-link-types/src/common';
-import type { HistoryTx } from '@trezor/blockchain-link-types/src/electrum';
-import type { GetAccountBalanceHistory as Req } from '@trezor/blockchain-link-types/src/messages';
-import type { GetAccountBalanceHistory as Res } from '@trezor/blockchain-link-types/src/responses';
+import {
+    type AccountAddresses,
+    type Address,
+    type ElectrumHistoryTx as HistoryTx,
+    type MessageTypes,
+    type ResponseTypes,
+    type Transaction,
+} from '@trezor/blockchain-link-types';
 import { sumVinVout } from '@trezor/blockchain-link-utils';
 import { transformTransaction } from '@trezor/blockchain-link-utils/src/blockbook';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { discovery } from '@trezor/utxo-lib';
 
-import { AddressHistory, Api, discoverAddress, getTransactions, tryGetScripthash } from '../utils';
+import {
+    type AddressHistory,
+    type Api,
+    discoverAddress,
+    getTransactions,
+    tryGetScripthash,
+} from '../utils';
+
+type Req = MessageTypes.GetAccountBalanceHistory;
+type Res = ResponseTypes.GetAccountBalanceHistory;
 
 const transformAddress = (addr: AddressHistory): Address => ({
     address: addr.address,
@@ -22,18 +35,23 @@ const aggregateTransactions = (txs: (Transaction & { blockTime: number })[], gro
     const result: Res['payload'] = [];
     let i = 0;
     while (i < txs.length) {
-        const time = Math.floor(txs[i].blockTime / groupBy) * groupBy;
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const currentTx: (typeof txs)[number] = txs[i];
+        const time = Math.floor(currentTx.blockTime / groupBy) * groupBy;
         let j = i;
         let received = 0;
         let sent = 0;
         let sentToSelf = 0;
-        while (j < txs.length && txs[j].blockTime < time + groupBy) {
+        while (j < txs.length) {
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const jTx: (typeof txs)[number] = txs[j];
+            if (jTx.blockTime >= time + groupBy) break;
             const {
                 type,
                 amount,
                 fee,
                 details: { vin, vout, totalInput, totalOutput },
-            } = txs[j];
+            } = jTx;
             if (type === 'recv') received += Number.parseInt(amount, 10);
             else if (type === 'sent')
                 sent += Number.parseInt(amount, 10) + Number.parseInt(fee, 10);

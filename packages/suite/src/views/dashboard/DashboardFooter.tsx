@@ -1,16 +1,18 @@
-import { useState } from 'react';
-
+import { AnimatePresence, motion } from 'framer-motion';
 import styled from 'styled-components';
 
-import { events } from '@suite/analytics';
+import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
 import {
     selectRememberedHiddenWalletsCount,
     selectRememberedStandardWalletsCount,
 } from '@suite-common/device';
-import { Box, Button, Column, Divider, Image, Row, Tooltip } from '@trezor/components';
+import { Box, Button, Column, Divider, Row, SvgImage, Tooltip } from '@trezor/components';
 import { isWeb } from '@trezor/env-utils';
-import { spacings } from '@trezor/theme';
+import { UsersFilledIcon } from '@trezor/icons';
+import { QrCode } from '@trezor/product-components';
+import { breakpoints } from '@trezor/theme';
 import {
     SUITE_MOBILE_APP_STORE,
     SUITE_MOBILE_PLAY_STORE,
@@ -18,142 +20,66 @@ import {
     SUITE_URL,
 } from '@trezor/urls';
 
-import { QrCode } from 'src/components/suite';
-import { MAX_CONTENT_WIDTH_NUMERIC } from 'src/constants/suite/layout';
+import { useGuide } from 'src/hooks/guide';
 import { useSelector } from 'src/hooks/suite';
 import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
-import { useAnalytics } from 'src/support/useAnalytics';
 
 import { StoreBadge } from '../../components/suite/StoreBadge';
 import { ContentFlex, useIsContentBelowBreakpoint } from '../../support/suite/ContentFlex';
-import { useResponsiveContext } from '../../support/suite/ResponsiveContext';
 
-const Container = styled.div`
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
+const Container = styled.footer`
     width: 100%;
-    height: 70px;
+    flex-shrink: 0;
 `;
-
-const Interaction = styled.span`
-    display: flex;
-`;
-
-const ImageContainer = styled.div`
-    img {
-        filter: invert(1);
-    }
-`;
-
-type QrType = 'app-store' | 'play-store';
 
 type StoreBadgeWithQrProps = {
     url: string;
     image: 'APP_STORE' | 'PLAY_STORE';
-    type: QrType;
     analyticsPayload: 'ios' | 'android';
-    shownQRState: [QrType | undefined, (type: QrType | undefined) => void];
 };
 
-const StoreBadgeWithQr = ({
-    url,
-    image,
-    type,
-    analyticsPayload,
-    shownQRState: [showQR, setShowQr],
-}: StoreBadgeWithQrProps) => {
+const StoreBadgeWithQr = ({ url, image, analyticsPayload }: StoreBadgeWithQrProps) => {
     const { isBelowTablet } = useLayoutSize();
-    const [isTooltipOpen, setIsTooltipOpen] = useState(false);
-    const analytics = useAnalytics();
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
 
     return (
         <Tooltip
-            isOpen={isTooltipOpen}
+            delayShow={0}
+            isActive={!isBelowTablet}
             cursor={isBelowTablet ? 'not-allowed' : undefined}
-            hasArrow
             content={
-                <Column alignItems="center">
-                    <ImageContainer>
-                        <Image
-                            margin={{ bottom: spacings.xs, top: spacings.xxxs }}
-                            image={image}
-                            height={26}
-                        />
-                    </ImageContainer>
+                <Column alignItems="center" gap={10} padding={{ top: 4 }}>
+                    <SvgImage image={image} height={26} color="contentOnDarkPrimary" />
                     <Box
                         height={140}
                         width={140}
                         padding={4}
-                        backgroundColor="baseFillElementContrast"
+                        backgroundColor="elementFillOnDarkContrast"
                         borderRadius={6}
                     >
-                        <QrCode value={url} />
+                        <QrCode value={url} color="contentOnDarkPrimaryInverse" />
                     </Box>
                 </Column>
             }
         >
-            <Interaction
-                onMouseEnter={() => {
-                    setIsTooltipOpen(true);
-                    setShowQr(type);
-                }}
-                onMouseLeave={() => {
-                    setIsTooltipOpen(false);
-                    setShowQr(undefined);
-                }}
-            >
-                <StoreBadge
-                    url={url}
-                    onClick={() =>
-                        analytics.report({
-                            type: events.promoMobileEvent.name,
-                            payload: {
-                                platform: analyticsPayload,
-                            },
-                        })
-                    }
-                    isHighlighted={showQR === type}
-                    image={image}
-                />
-            </Interaction>
+            <StoreBadge
+                url={url}
+                onClick={() =>
+                    analytics.report({
+                        type: events.promoMobileEvent.name,
+                        payload: {
+                            platform: analyticsPayload,
+                        },
+                    })
+                }
+                image={image}
+            />
         </Tooltip>
     );
 };
 
-const MobileAppPromo = ({ hasRightMargin }: { hasRightMargin: boolean }) => {
-    const shownQRState = useState<QrType>();
-
-    return (
-        <Row
-            gap={spacings.xs}
-            margin={{
-                right: hasRightMargin ? spacings.xxxxxl : 0,
-            }}
-        >
-            <StoreBadgeWithQr
-                url={SUITE_MOBILE_APP_STORE}
-                image="APP_STORE"
-                type="app-store"
-                analyticsPayload="ios"
-                shownQRState={shownQRState}
-            />
-            <StoreBadgeWithQr
-                url={SUITE_MOBILE_PLAY_STORE}
-                image="PLAY_STORE"
-                type="play-store"
-                analyticsPayload="android"
-                shownQRState={shownQRState}
-            />
-        </Row>
-    );
-};
-
 const ReferralButton = () => {
-    const analytics = useAnalytics();
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
     const hasAtLeastOneRememberedWallet = useSelector(
         state =>
             selectRememberedStandardWalletsCount(state) > 0 ||
@@ -165,7 +91,7 @@ const ReferralButton = () => {
             href={SUITE_REFERRAL}
             intent="neutral"
             priority="secondary"
-            iconLeft="usersFilled"
+            iconLeft={UsersFilledIcon}
             size="small"
             onClick={() => {
                 analytics.report({
@@ -179,57 +105,95 @@ const ReferralButton = () => {
     );
 };
 
-export const DashboardFooter = () => {
-    const analytics = useAnalytics();
+const DesktopAppPromoButton = () => {
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
     const { isBelowTablet } = useLayoutSize();
-    const { contentWidth } = useResponsiveContext();
 
-    const isVerticalLayout = useIsContentBelowBreakpoint();
+    if (!isWeb() || isBelowTablet) {
+        return null;
+    }
 
-    const isGuideIconInContent =
-        contentWidth && !isVerticalLayout && !isBelowTablet
-            ? contentWidth < MAX_CONTENT_WIDTH_NUMERIC + spacings.xxxxxl
-            : false;
+    return (
+        <Button
+            href={SUITE_URL}
+            intent="neutral"
+            priority="secondary"
+            size="small"
+            onClick={() =>
+                analytics.report({
+                    type: events.promoDesktopEvent.name,
+                    payload: { placement: 'footer' },
+                })
+            }
+        >
+            <Translation id="TR_DESKTOP_APP_PROMO_GET" />
+        </Button>
+    );
+};
+
+export const DashboardFooter = () => {
+    const breakpoint = isWeb() ? breakpoints.laptop : breakpoints.tablet;
+    const isVerticalLayout = useIsContentBelowBreakpoint(breakpoint);
+    const { isBelowTablet } = useLayoutSize();
+    const { isGuideOpen } = useGuide();
 
     return (
         <Container>
-            <Divider margin={{ bottom: 0 }} />
+            <Divider margin={0} strokeWidth={1} />
             <ContentFlex
-                margin={{ left: spacings.md, right: spacings.md }}
-                gap={isVerticalLayout ? 0 : spacings.md}
+                padding={{ horizontal: isVerticalLayout ? 0 : 16 }}
+                gap={isVerticalLayout ? 0 : 32}
                 flex="1"
-                height="100%"
+                hasDivider
+                alignItems="stretch"
+                breakpoint={breakpoint}
             >
                 <Row
-                    flex="1"
-                    gap={spacings.xs}
-                    margin={{ vertical: spacings.xs }}
-                    justifyContent={isVerticalLayout ? 'center' : 'space-between'}
+                    flex="1 1 50%"
+                    gap={isVerticalLayout ? 12 : 16}
+                    justifyContent={isVerticalLayout ? 'center' : 'flex-start'}
+                    padding={{ vertical: 12 }}
+                    flexWrap="wrap"
                 >
                     <ReferralButton />
-                    {isWeb() && !isBelowTablet && (
-                        <Button
-                            href={SUITE_URL}
-                            intent="neutral"
-                            priority="secondary"
-                            size="small"
-                            onClick={() =>
-                                analytics.report({
-                                    type: events.promoDesktopEvent.name,
-                                })
-                            }
-                        >
-                            <Translation id="TR_DESKTOP_APP_PROMO_GET" />
-                        </Button>
-                    )}
+                    <DesktopAppPromoButton />
                 </Row>
-                {!isVerticalLayout && <Divider orientation="vertical" />}
                 <Row
-                    margin={{ vertical: spacings.xs }}
-                    flex="1"
-                    justifyContent={isVerticalLayout ? 'center' : 'flex-end'}
+                    flex="1 1 50%"
+                    padding={{
+                        bottom: 16,
+                        top: isVerticalLayout ? 12 : 16,
+                    }}
                 >
-                    <MobileAppPromo hasRightMargin={isGuideIconInContent} />
+                    <Row
+                        justifyContent={isVerticalLayout ? 'center' : 'flex-end'}
+                        gap={isVerticalLayout ? 12 : 16}
+                        width="100%"
+                    >
+                        <StoreBadgeWithQr
+                            url={SUITE_MOBILE_APP_STORE}
+                            image="APP_STORE"
+                            analyticsPayload="ios"
+                        />
+                        <StoreBadgeWithQr
+                            url={SUITE_MOBILE_PLAY_STORE}
+                            image="PLAY_STORE"
+                            analyticsPayload="android"
+                        />
+                    </Row>
+                    {/* Spacer to avoid overlapping with the guide button */}
+                    {!isBelowTablet && !isVerticalLayout && (
+                        <AnimatePresence>
+                            <motion.div
+                                animate={{
+                                    width: isGuideOpen ? 0 : 68,
+                                }}
+                                transition={{ duration: 0.3 }}
+                            >
+                                <Box width={68} flex="0" />
+                            </motion.div>
+                        </AnimatePresence>
+                    )}
                 </Row>
             </ContentFlex>
         </Container>

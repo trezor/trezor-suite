@@ -40,6 +40,7 @@ expo-linear-gradient
 expo-linking
 expo-local-authentication
 expo-localization
+expo-mcp
 expo-secure-store
 expo-sharing
 expo-splash-screen
@@ -59,7 +60,6 @@ react
 react-dom
 react-error-boundary
 react-native
-react-native-get-random-values
 react-native-launch-arguments
 react-native-performance
 react-native-permissions
@@ -72,3 +72,5 @@ type-fest
 typescript
 typescript-styled-plugin
 ua-parser-js
+@react-native/jest-preset
+@svgr/cli

@@ -1,10 +1,13 @@
-import { TranslationKey } from '@suite/intl';
+import { type TranslationKey } from '@suite/intl';
 import { Collapsible, Row } from '@trezor/components';
-import { TypographyStyle } from '@trezor/theme';
+import { CaretDownIcon } from '@trezor/icons';
+import { type TypographyStyle } from '@trezor/theme';
 
 import { CollapsibleFeesHeader } from './CollapsibleFeesHeader';
 import { MaximumFee } from './MaximumFee';
-import { useTransactionMaxFee } from './hooks/useTransactionMaxFee';
+import { TronFee } from './TronFee/TronFee';
+import { useFeesContext } from '../context/FeesContext';
+import { type useTransactionMaxFee } from './hooks/useTransactionMaxFee';
 
 export type CollapsibleFeesHeaderContentProps = {
     label?: TranslationKey;
@@ -21,21 +24,35 @@ export const CollapsibleFeesHeaderContent = ({
     txMaxFee,
     isOpen,
 }: CollapsibleFeesHeaderContentProps) => {
+    const { networkType } = useFeesContext();
+
     const content = (
         <Row
             justifyContent="space-between"
             gap={12}
             data-testid="@wallet/fees/collapsible-fees-toggle"
         >
-            <CollapsibleFeesHeader label={label} typographyStyle={headerTypographyStyle} />
+            <CollapsibleFeesHeader
+                label={label}
+                typographyStyle={headerTypographyStyle}
+                supportsAdjustableFees={supportsAdjustableFees}
+            />
             <Row gap={16}>
-                <MaximumFee typographyStyle={headerTypographyStyle} txMaxFee={txMaxFee} />
+                {networkType === 'tron' ? (
+                    <TronFee typographyStyle={headerTypographyStyle} />
+                ) : (
+                    <MaximumFee typographyStyle={headerTypographyStyle} txMaxFee={txMaxFee} />
+                )}
                 {supportsAdjustableFees && (
-                    <Collapsible.ToggleIcon iconName="caretDown" size={20} />
+                    <Collapsible.ToggleIcon icon={CaretDownIcon} size={20} />
                 )}
             </Row>
         </Row>
     );
 
-    return isOpen !== undefined ? content : <Collapsible.Toggle>{content}</Collapsible.Toggle>;
+    return isOpen !== undefined || !supportsAdjustableFees ? (
+        content
+    ) : (
+        <Collapsible.Toggle>{content}</Collapsible.Toggle>
+    );
 };

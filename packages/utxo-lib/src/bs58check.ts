@@ -1,5 +1,7 @@
-import bs58 from 'bs58';
-import bs58check from 'bs58check';
+import { sha256 as nobleSha256 } from '@noble/hashes/sha2.js';
+import { base58, base58check as createBase58check } from '@scure/base';
+
+const bs58check = createBase58check(nobleSha256);
 
 import { isCashAddress, toCashAddress, toLegacyAddress } from './bchUtils';
 import { blake256 } from './crypto';
@@ -10,21 +12,36 @@ export function decodeBlake(buffer: Buffer) {
     const payload = buffer.subarray(0, -4);
     const got = blake256(blake256(payload)).subarray(0, 4);
 
-    if ((want[0] ^ got[0]) | (want[1] ^ got[1]) | (want[2] ^ got[2]) | (want[3] ^ got[3]))
-        throw new Error('invalid checksum');
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const w0: number = want[0];
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const w1: number = want[1];
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const w2: number = want[2];
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const w3: number = want[3];
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const g0: number = got[0];
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const g1: number = got[1];
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const g2: number = got[2];
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const g3: number = got[3];
+    if ((w0 ^ g0) | (w1 ^ g1) | (w2 ^ g2) | (w3 ^ g3)) throw new Error('invalid checksum');
 
     return payload;
 }
 
 export function decodeBlake256Key(key: string) {
-    const bytes = bs58.decode(key);
+    const bytes = base58.decode(key);
     const buffer = Buffer.from(bytes);
 
     return decodeBlake(buffer);
 }
 
 export function decodeBlake256(address: string) {
-    const bytes = bs58.decode(address);
+    const bytes = base58.decode(address);
     const buffer = Buffer.from(bytes);
     if (buffer.length !== 26) throw new Error(`${address} invalid address length`);
     let payload;
@@ -43,7 +60,7 @@ export function decodeBlake256(address: string) {
 export function encodeBlake256(payload: Buffer) {
     const checksum = blake256(blake256(payload)).subarray(0, 4);
 
-    return bs58.encode(Buffer.concat([payload, checksum]));
+    return base58.encode(Buffer.concat([payload, checksum]));
 }
 
 export function encode(payload: Buffer, network = BITCOIN_NETWORK) {
@@ -72,7 +89,9 @@ export function decodeAddress(address: string, network = BITCOIN_NETWORK) {
     const multibyte = payload.length === 22;
     const offset = multibyte ? 2 : 1;
 
-    const version = multibyte ? payload.readUInt16BE(0) : payload[0];
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const indexedByte: number = payload[0];
+    const version: number = multibyte ? payload.readUInt16BE(0) : indexedByte;
     const hash = payload.subarray(offset);
 
     return { version, hash };

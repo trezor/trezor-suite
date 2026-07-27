@@ -1,12 +1,12 @@
 {
     "trade": {
         "exchange": "mercuryo",
-        "fiatCurrency": "CZK",
+        "fiatCurrency": "USD",
         "receiveCurrency": "solana--JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN",
         "rate": 20.89,
         "wantCrypto": true,
         "exp": "BnQKmcAplN2vtGap8BF0Vg==",
-        "country": "CZ",
+        "country": "US",
         "paymentMethodName": "Credit/Debit Card",
         "tags": ["wantCrypto"],
         "fiatStringAmount": "2165.03",

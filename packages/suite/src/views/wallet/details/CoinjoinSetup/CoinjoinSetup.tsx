@@ -3,28 +3,19 @@ import { useDispatch } from 'react-redux';
 import { AnimatePresence, motion } from 'framer-motion';
 import styled from 'styled-components';
 
+import { coinjoinAccountUpdateSetupOption, selectCoinjoinAccountByKey } from '@suite/coinjoin';
 import { Translation } from '@suite/intl';
-import { AccountKey } from '@suite-common/wallet-types';
-import {
-    Banner,
-    Card,
-    Radio,
-    motionAnimation,
-    motionEasing,
-    useElevation,
-} from '@trezor/components';
-import { Elevation, mapElevationToBorder } from '@trezor/theme';
+import { type AccountKey } from '@suite-common/wallet-types';
+import { Banner, Card, Radio, motionAnimation, motionEasing } from '@trezor/components';
 
-import { coinjoinAccountUpdateSetupOption } from 'src/actions/wallet/coinjoinAccountActions';
 import { useSelector } from 'src/hooks/suite/useSelector';
-import { selectCoinjoinAccountByKey } from 'src/reducers/wallet/coinjoinReducer';
 
 import { AnonymityLevelSetup } from './AnonymityLevelSetup';
 import { MaxMiningFeeSetup } from './MaxMiningFeeSetup';
 import { SkipRoundsSetup } from './SkipRoundsSetup';
 
 const SetupContainer = styled.div`
-    padding: 18px;
+    padding: 20px;
 `;
 
 const SetupOptions = styled.div`
@@ -33,8 +24,8 @@ const SetupOptions = styled.div`
     gap: 40px;
 `;
 
-const CustomSetup = styled.div<{ $elevation: Elevation }>`
-    border-top: 1px solid ${mapElevationToBorder};
+const CustomSetup = styled.div`
+    border-top: 1px solid ${({ theme }) => theme.surfaceBorderRaised};
     display: flex;
     flex-direction: column;
     gap: 32px;
@@ -47,7 +38,6 @@ interface CoinjoinSetupProps {
 }
 
 export const CoinjoinSetup = ({ accountKey }: CoinjoinSetupProps) => {
-    const { elevation } = useElevation();
     const coinjoinAccount = useSelector(state => selectCoinjoinAccountByKey(state, accountKey));
 
     const dispatch = useDispatch();
@@ -78,14 +68,14 @@ export const CoinjoinSetup = ({ accountKey }: CoinjoinSetupProps) => {
                 <SetupOptions>
                     <Radio
                         isChecked={!coinjoinAccount.setup}
-                        onClick={setRecommendedSetup}
+                        onChange={setRecommendedSetup}
                         isDisabled={hasSession}
                     >
                         <Translation id="TR_RECOMMENDED" />
                     </Radio>
                     <Radio
                         isChecked={!!coinjoinAccount.setup}
-                        onClick={setCustomSetup}
+                        onChange={setCustomSetup}
                         isDisabled={hasSession}
                     >
                         <Translation id="TR_CUSTOM" />
@@ -97,7 +87,7 @@ export const CoinjoinSetup = ({ accountKey }: CoinjoinSetupProps) => {
                             {...motionAnimation.expand}
                             transition={{ duration: 0.4, ease: motionEasing.transition }}
                         >
-                            <CustomSetup $elevation={elevation}>
+                            <CustomSetup>
                                 <AnonymityLevelSetup
                                     accountKey={accountKey}
                                     targetAnonymity={coinjoinAccount.setup.targetAnonymity}

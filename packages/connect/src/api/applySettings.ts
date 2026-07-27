@@ -1,32 +1,36 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/ApplySettings.js
 
-import { MessagesSchema as PROTO } from '@trezor/protobuf';
+import {
+    ApplySettings as ApplySettingsSchema,
+    type PermissionRequest,
+} from '@trezor/connect-common';
+import type { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 
-import { AbstractMethod, MethodPermission, Payload } from '../core/AbstractMethod';
-import { ApplySettings as ApplySettingsSchema } from '../types/api/applySettings';
+import type { MethodMessage } from '../core/AbstractMethod';
+import { AbstractMethod } from '../core/AbstractMethod';
 
 export default class ApplySettings extends AbstractMethod<'applySettings', PROTO.ApplySettings> {
-    constructor(message: { id?: number; payload: Payload<'applySettings'> }) {
-        super(message);
+    constructor(message: MethodMessage<'applySettings'>) {
+        const { payload } = message;
+
+        Assert(ApplySettingsSchema, payload);
+
+        const params = {
+            ...payload,
+            _passphrase_source: payload.passphrase_source,
+        };
+
+        super(message, params);
         this.useDeviceState = false;
         this.skipFinalReload = false;
     }
 
-    get requiredPermissions(): MethodPermission[] {
-        return ['management'];
+    get requiredPermissions(): PermissionRequest[] {
+        return [{ permission: 'management' }];
     }
 
-    init() {
-        const { payload } = this;
-
-        Assert(ApplySettingsSchema, payload);
-
-        this.params = {
-            ...payload,
-            _passphrase_source: payload.passphrase_source,
-        };
-    }
+    init() {}
 
     get confirmation() {
         return {
@@ -40,17 +44,22 @@ export default class ApplySettings extends AbstractMethod<'applySettings', PROTO
     }
 
     async run() {
-        const cmd = this.device.getCommands();
+        const device = this.getDevice();
+        const cmd = device.getCommands();
 
         // https://github.com/trezor/trezor-firmware/pull/5015
         // homescreen bytes are streamed in smaller data chunks
         const homescreenBytes = this.params.homescreen
             ? Buffer.from(this.params.homescreen, 'hex')
             : undefined;
-        if (this.device.atLeast('2.9.0') && homescreenBytes) {
+        if (device.atLeast('2.9.0') && homescreenBytes) {
             // cannot use both. Failure: Mutually exclusive settings
             this.params.homescreen = undefined;
             this.params.homescreen_length = homescreenBytes.length;
+        }
+
+        if (homescreenBytes !== undefined) {
+            device.startPiggybackAck();
         }
 
         let response = await cmd.typedCall(
@@ -68,6 +77,8 @@ export default class ApplySettings extends AbstractMethod<'applySettings', PROTO
                 data_chunk,
             });
         }
+
+        await device.stopPiggybackAck();
 
         return response.message;
     }

@@ -1,8 +1,8 @@
 import { Translation } from '@suite/intl';
+import { closeModal } from '@suite/modal';
 import { Column, H3, Modal, Paragraph } from '@trezor/components';
-import { spacings } from '@trezor/theme';
+import { ArrowsInIcon } from '@trezor/icons';
 
-import { onCancel as closeModal } from 'src/actions/suite/modalActions';
 import { useDispatch } from 'src/hooks/suite';
 
 export const MoreRoundsNeededModal = () => {
@@ -19,10 +19,10 @@ export const MoreRoundsNeededModal = () => {
                 </Modal.Button>
             }
             width={600}
-            iconName="arrowsIn"
-            variant="info"
+            icon={ArrowsInIcon}
+            intent="info"
         >
-            <Column gap={spacings.xs}>
+            <Column gap={8}>
                 <H3>
                     <Translation id="TR_COINJOIN_ENDED" />
                 </H3>

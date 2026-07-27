@@ -1,19 +1,18 @@
 import { useEffect, useState } from 'react';
 
+import { goto, selectRouteName } from '@suite/router';
 import { hasNetworkFeatures } from '@suite-common/wallet-utils';
 import { Column } from '@trezor/components';
-import { spacings } from '@trezor/theme';
 
-import { goto } from 'src/actions/suite/routerActions';
 import { Route } from 'src/components/suite/Route';
 import { StellarManageTokenModal } from 'src/components/suite/modals/ReduxModal/UserContextModal/StellarManageTokenModal';
 import { StellarTokenInputModal } from 'src/components/suite/modals/ReduxModal/UserContextModal/StellarTokenInputModal';
 import { WalletLayout } from 'src/components/wallet';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectRouteName } from 'src/reducers/suite/routerReducer';
 
 import { TokensNavigation } from './TokensNavigation';
 import { CoinsTable } from './coins/CoinsTable';
+import { DefiTokensTable } from './defi/DefiTokensTable';
 import { HiddenTokensTable } from './hidden-tokens/HiddenTokensTable';
 import { InactiveTokensTable } from './inactive-tokens/InactiveTokensTable';
 
@@ -32,7 +31,7 @@ export const Tokens = () => {
             !hasNetworkFeatures(selectedAccount.account, 'tokens') &&
             routeName !== 'wallet-index'
         ) {
-            dispatch(goto('wallet-index', { preserveParams: true }));
+            dispatch(goto({ routeName: 'wallet-index', preserveParams: true }));
         }
     }, [selectedAccount, dispatch, routeName]);
 
@@ -64,7 +63,7 @@ export const Tokens = () => {
 
     return (
         <WalletLayout title="TR_TOKENS" account={selectedAccount}>
-            <Column gap={spacings.lg}>
+            <Column gap={20}>
                 <TokensNavigation
                     selectedAccount={selectedAccount}
                     searchQuery={searchQuery}
@@ -86,6 +85,9 @@ export const Tokens = () => {
                         selectedAccount={selectedAccount}
                         searchQuery={searchQuery}
                     />
+                </Route>
+                <Route name="wallet-tokens-defi">
+                    <DefiTokensTable selectedAccount={selectedAccount} searchQuery={searchQuery} />
                 </Route>
             </Column>
 

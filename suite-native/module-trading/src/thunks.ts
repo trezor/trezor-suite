@@ -1,12 +1,13 @@
 import { isFulfilled, isRejected } from '@reduxjs/toolkit';
-import { DexApprovalType, ExchangeTrade } from 'invity-api';
+import { type DexApprovalType, type ExchangeTrade } from 'invity-api';
 
+import { Calldata } from '@suite-common/calldata';
 import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
 import { createThunk } from '@suite-common/redux-utils';
 import {
-    TradingExchangeType,
-    TradingSellType,
-    TradingSignAndPushSendFormTransactionProps,
+    type TradingExchangeType,
+    type TradingSellType,
+    type TradingSignAndPushSendFormTransactionProps,
     parseCryptoId,
     selectTradingExchangeProviders,
     selectTradingExchangeReceiveAccountKey,
@@ -18,7 +19,7 @@ import {
     tradingExchangeActions,
     tradingSellActions,
 } from '@suite-common/trading';
-import { Network } from '@suite-common/wallet-config';
+import { type Network } from '@suite-common/wallet-config';
 import {
     composeAllowanceTransactionThunk,
     composeSendFormTransactionFeeLevelsThunk,
@@ -31,31 +32,29 @@ import {
     signTransactionThunk,
 } from '@suite-common/wallet-core';
 import {
-    Account,
-    FeeInfo,
-    FeeLevelLabel,
-    PrecomposedTransactionFinal,
-    TokenAddress,
+    type Account,
+    type FeeInfo,
+    type FeeLevelLabel,
+    type PrecomposedTransactionFinal,
     isFinalPrecomposedTransaction,
 } from '@suite-common/wallet-types';
 import {
     buildApprovalTransactionData,
     getAllowanceAmount,
-    getEvmApprovalTxData,
     tryGetAccountIdentity,
 } from '@suite-common/wallet-utils';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import { selectAccountTokenInfo } from '@suite-native/tokens';
+import { getErrorStrFromThunkRejectedValue } from '@suite-native/trading-quote-utils';
 import { getFormDraftKeyByTradeType } from '@suite-native/trading-state';
 import {
-    UpdateSelectedFeeLevelThunkParams,
+    type UpdateSelectedFeeLevelThunkParams,
     addTransactionLabelingThunk,
     transactionManagementActions,
 } from '@suite-native/transaction-management';
 import TrezorConnect from '@trezor/connect';
 
 import { createFormStateForSendForm } from './utils';
-import { getErrorStrFromThunkRejectedValue } from './utils/general/utils';
 
 const NATIVE_TRADING_EXCHANGE_THUNK_PREFIX = 'trading/native';
 
@@ -106,7 +105,7 @@ export const pushTradingTxnThunk = createThunk(
             });
 
             if (!pushTxResponse.success) {
-                return rejectWithValue(pushTxResponse.payload ?? 'Push transaction failed');
+                return rejectWithValue(pushTxResponse.error ?? 'Push transaction failed');
             }
 
             return fulfillWithValue(pushTxResponse);
@@ -205,7 +204,7 @@ export const composeTradingTransactionThunk = createThunk(
                     const composed = (await dispatch(
                         enhancePrecomposedTransactionThunk({
                             transactionFormValues: formState,
-                            precomposedTransaction: selectedLevel as PrecomposedTransactionFinal,
+                            precomposedTransaction: selectedLevel,
                             selectedAccount: account,
                         }),
                     ).unwrap()) as PrecomposedTransactionFinal;
@@ -227,7 +226,7 @@ export const composeTradingTransactionThunk = createThunk(
 
                     const formDraftKey = getFormDraftKeyByTradeType(tradeType);
 
-                    // Store the form state in trading draft so it's available for TradingFeesForm
+                    // Store the form state in trading draft so it's available for FeeSelector
                     dispatch(
                         formDraftActions.storeDraft({
                             key: formDraftKey,
@@ -288,8 +287,9 @@ export const composeEvmApprovalFeeLevelsThunk = createThunk(
                 return rejectWithValue('DEX quote with dexTx data is required');
             }
 
-            const approvalData = getEvmApprovalTxData(dexTx.data);
-            if (!approvalData?.spender) {
+            const approvalData = Calldata.evm.erc20.approve.decode(dexTx.data);
+            const spender = approvalData?.spender;
+            if (!spender) {
                 return rejectWithValue('Could not extract spender from dexTx data');
             }
 
@@ -298,18 +298,13 @@ export const composeEvmApprovalFeeLevelsThunk = createThunk(
                 return rejectWithValue('Could not extract token contract address');
             }
 
-            const token = selectAccountTokenInfo(
-                getState(),
-                account.key,
-                contractAddress as TokenAddress,
-            );
+            const token = selectAccountTokenInfo(getState(), account.key, contractAddress);
 
             if (!token) {
                 return rejectWithValue('Token not found in account');
             }
 
-            const approvalType =
-                approvalTypeOverride ?? ((quoteApprovalType ?? 'INFINITE') as DexApprovalType);
+            const approvalType = approvalTypeOverride ?? quoteApprovalType ?? 'INFINITE';
             const { allowanceAmount } = getAllowanceAmount({
                 rawAmount: sendStringAmount,
                 approvalType,
@@ -322,7 +317,7 @@ export const composeEvmApprovalFeeLevelsThunk = createThunk(
 
             const data = buildApprovalTransactionData({
                 amount: allowanceAmount,
-                spender: approvalData.spender,
+                spender,
             });
 
             const response = await dispatch(
@@ -342,7 +337,7 @@ export const composeEvmApprovalFeeLevelsThunk = createThunk(
 
                 const selectedLevel = feeLevels[selectedFeeLevel];
                 if (selectedLevel && isFinalPrecomposedTransaction(selectedLevel)) {
-                    const composed = selectedLevel as PrecomposedTransactionFinal;
+                    const composed = selectedLevel;
 
                     dispatch(
                         tradingCommonActions.saveComposedTransactionInfo({
@@ -360,11 +355,30 @@ export const composeEvmApprovalFeeLevelsThunk = createThunk(
                     );
 
                     const formDraftKey = getFormDraftKeyByTradeType('exchange');
+                    const existingDraft = selectDeepCopyOfFormDraft(getState(), formDraftKey) ?? {};
+                    // Preserve swap form fields (especially outputs[0].token). A full replace would drop
+                    // outputs; composeSendFormTransactionFeeLevelsThunk then cannot resolve the ERC-20
+                    // contract for approval fee composition and custom gas shows insufficient balance.
+                    const outputs =
+                        existingDraft.outputs?.[0]?.token != null
+                            ? existingDraft.outputs
+                            : [
+                                  {
+                                      type: 'payment' as const,
+                                      address: '',
+                                      amount: '0',
+                                      fiat: '',
+                                      currency: { label: '', value: '' },
+                                      label: '',
+                                      token: contractAddress,
+                                  },
+                              ];
 
                     dispatch(
                         formDraftActions.storeDraft({
                             key: formDraftKey,
                             formDraft: {
+                                ...existingDraft,
                                 selectedFee: selectedFeeLevel,
                                 feePerUnit: composed.feePerByte,
                                 feeLimit: composed.feeLimit ?? '',
@@ -372,6 +386,7 @@ export const composeEvmApprovalFeeLevelsThunk = createThunk(
                                 maxPriorityFeePerGas: composed.maxPriorityFeePerGas ?? '',
                                 estimatedFeeLimit: composed.estimatedFeeLimit,
                                 transactionData: data,
+                                outputs,
                             },
                         }),
                     );
@@ -444,10 +459,24 @@ export const signAndPushSendFormTransactionThunk = createThunk(
         },
         { dispatch, getState, rejectWithValue, fulfillWithValue },
     ) => {
+        const enhanceResponse = await dispatch(
+            enhancePrecomposedTransactionThunk({
+                transactionFormValues: formState,
+                precomposedTransaction,
+                selectedAccount,
+            }),
+        );
+
+        if (isRejected(enhanceResponse)) {
+            return rejectWithValue(enhanceResponse.payload);
+        }
+
+        const enhancedPrecomposedTransaction = enhanceResponse.payload;
+
         const signResult = await dispatch(
             signTradingTransactionThunk({
                 formState,
-                precomposedTransaction,
+                precomposedTransaction: enhancedPrecomposedTransaction,
                 selectedAccount,
                 paymentRequests,
             }),
@@ -482,10 +511,7 @@ export const signAndPushSendFormTransactionThunk = createThunk(
             }),
         );
 
-        return fulfillWithValue({
-            success: true,
-            payload: pushResult.payload,
-        });
+        return fulfillWithValue(pushResult.payload);
     },
 );
 

@@ -1,12 +1,16 @@
-import { ComponentType, createElement, memo } from 'react';
+import { type ComponentType, createElement, memo } from 'react';
 
-import { PageName } from '@suite-common/suite-types';
+import {
+    type PageName,
+    resolveEffectiveBackgroundRouteName,
+    selectRoute,
+    selectRouteName,
+    selectSuiteRouterHistoryDep,
+    suiteRoutes,
+} from '@suite/router';
+import { useServices } from '@suite-common/dependency-injection';
 
-import routes from 'src/constants/suite/routes';
 import { useSelector } from 'src/hooks/suite';
-import { selectRouteName } from 'src/reducers/suite/routerReducer';
-import { useSuiteServices } from 'src/support/SuiteServicesProvider';
-import { resolveEffectiveBackgroundRouteName } from 'src/utils/suite/router';
 
 type AppRouterProps = {
     components: Record<PageName, ComponentType>;
@@ -14,19 +18,19 @@ type AppRouterProps = {
 
 export const AppRouter = memo(({ components }: AppRouterProps) => {
     const routeName = useSelector(selectRouteName);
-    const route = useSelector(state => state.router.route);
-    const { suiteRouterHistory } = useSuiteServices();
+    const route = useSelector(selectRoute);
+    const { suiteRouterHistory } = useServices(selectSuiteRouterHistoryDep);
 
     const resolvedRouteName =
         resolveEffectiveBackgroundRouteName(route, suiteRouterHistory.getLocation()) ?? routeName;
 
     // Resolve component by route name, with nested routes falling back to parent component
     let componentName = resolvedRouteName;
-    // NOTE: This throws a TS error becuase routeNames also contain foreground app names
+    // NOTE: This throws a TS error because routeNames also contain foreground app names
     if (resolvedRouteName && !Object.prototype.hasOwnProperty.call(components, resolvedRouteName)) {
-        const current = routes.find(r => r.name === resolvedRouteName);
+        const current = suiteRoutes.find(r => r.name === resolvedRouteName);
         if (current?.isNestedRoute) {
-            const parent = routes.find(
+            const parent = suiteRoutes.find(
                 r => r.hasNestedRoutes && current.pattern.startsWith(`${r.pattern}/`),
             );
             if (parent) componentName = parent.name;

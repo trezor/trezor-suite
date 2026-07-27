@@ -1,13 +1,54 @@
 {
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
+    "include": [".", "**/*.json"],
     "references": [
+        {
+            "path": "../../suite-common/analytics"
+        },
+        { "path": "../../suite-common/calldata" },
+        {
+            "path": "../../suite-common/dependency-injection"
+        },
         { "path": "../../suite-common/device" },
+        {
+            "path": "../../suite-common/earn-stablecoin"
+        },
+        {
+            "path": "../../suite-common/earn-stablecoin-api"
+        },
+        {
+            "path": "../../suite-common/earn-staking-api"
+        },
         {
             "path": "../../suite-common/formatters"
         },
         {
+            "path": "../../suite-common/message-system"
+        },
+        { "path": "../../suite-common/mev" },
+        {
+            "path": "../../suite-common/react-query"
+        },
+        {
+            "path": "../../suite-common/redux-utils"
+        },
+        { "path": "../../suite-common/schemas" },
+        { "path": "../../suite-common/staking" },
+        {
+            "path": "../../suite-common/suite-types"
+        },
+        {
+            "path": "../../suite-common/test-utils"
+        },
+        {
+            "path": "../../suite-common/validators"
+        },
+        {
             "path": "../../suite-common/wallet-config"
+        },
+        {
+            "path": "../../suite-common/wallet-constants"
         },
         {
             "path": "../../suite-common/wallet-core"
@@ -18,21 +59,45 @@
         {
             "path": "../../suite-common/wallet-utils"
         },
+        { "path": "../accounts" },
+        { "path": "../alerts" },
         { "path": "../analytics" },
         { "path": "../atoms" },
         { "path": "../clipboard" },
+        { "path": "../confirm-on-trezor" },
         { "path": "../device-manager" },
-        { "path": "../feature-flags" },
+        { "path": "../device-mutex" },
         { "path": "../formatters" },
+        { "path": "../forms" },
+        { "path": "../helpers" },
         { "path": "../icons" },
         { "path": "../intl" },
-        { "path": "../labeling" },
         { "path": "../link" },
+        { "path": "../message-system" },
         { "path": "../navigation" },
-        { "path": "../services" },
+        { "path": "../settings" },
         { "path": "../staking" },
-        { "path": "../../packages/styles" },
+        { "path": "../test-utils" },
+        { "path": "../test-utils-store" },
+        { "path": "../transaction-management" },
+        { "path": "../transactions" },
+        { "path": "../tx-simulation" },
+        {
+            "path": "../../packages/blockchain-link-types"
+        },
+        { "path": "../../packages/connect" },
+        { "path": "../../packages/device-utils" },
+        {
+            "path": "../../networks/solana/network-solana"
+        },
+        { "path": "../../packages/react-utils" },
+        {
+            "path": "../../packages/styles-native"
+        },
         { "path": "../../packages/theme" },
-        { "path": "../../packages/urls" }
+        { "path": "../../packages/type-utils" },
+        { "path": "../../packages/urls" },
+        { "path": "../../packages/utils" },
+        { "path": "../../packages/requirements" }
     ]
 }

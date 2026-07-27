@@ -1,18 +1,18 @@
 import { useNavigation } from '@react-navigation/native';
 
-import { Account } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 import { AccountsListItem } from '@suite-native/accounts';
 import { Button, Card, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
-    AccountsImportStackParamList,
+    type AccountsImportStackParamList,
     AccountsImportStackRoutes,
-    RootStackParamList,
+    type RootStackParamList,
     RootStackRoutes,
-    StackToTabCompositeProps,
+    type StackToTabCompositeProps,
     useNavigateToInitialScreen,
 } from '@suite-native/navigation';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { AccountImportSummaryScreen } from './AccountImportSummaryScreen';
 
@@ -51,14 +51,10 @@ export const AccountAlreadyImportedScreen = ({ account }: AccountAlreadyImported
             subtitle={<Translation id="moduleAccountImport.summaryScreen.subtitle" />}
             footer={
                 <VStack spacing="sp16">
-                    <Button size="large" onPress={handleSyncAnotherAsset}>
+                    <Button onPress={handleSyncAnotherAsset}>
                         <Translation id="moduleAccountImport.summaryScreen.syncAnotherCoinButton" />
                     </Button>
-                    <Button
-                        size="large"
-                        colorScheme="tertiaryElevation0"
-                        onPress={navigateToInitialScreen}
-                    >
+                    <Button intent="neutral" priority="secondary" onPress={navigateToInitialScreen}>
                         <Translation id="generic.buttons.cancel" />
                     </Button>
                 </VStack>

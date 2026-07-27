@@ -1,56 +1,42 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/GetAccountInfo.js
 
+import { UI_REQUEST, createUiMessage } from '@trezor/connect-common';
+import type {
+    AccountInfo,
+    AccountUtxo,
+    CoinInfo,
+    DerivationPath,
+    GetAccountInfo as GetAccountInfoParams,
+    PermissionRequest,
+} from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
-import { resolveAfter } from '@trezor/utils/src/resolveAfter';
+import { fromHardenedPathPart } from '@trezor/crypto-utils';
 
-import { initBlockchain, isBackendSupported } from '../backend/BlockchainLink';
-import {
-    AbstractMethod,
-    DEFAULT_FIRMWARE_RANGE,
-    MethodPermission,
-    MethodReturnType,
-    Payload,
-} from '../core/AbstractMethod';
-import { getCoinInfo } from '../data/coinInfo';
-import { UI_REQUEST, UI_RESPONSE, createUiMessage } from '../events';
-import type { AccountInfo, AccountUtxo, CoinInfo, DerivationPath } from '../types';
-import { Discovery } from './common/Discovery';
-import { getFirmwareRange, validateParams } from './common/paramsValidator';
-import type { GetAccountInfo as GetAccountInfoParams } from '../types/api/getAccountInfo';
+import { assertBackendSupported, initBlockchain } from '../backend/BlockchainLink';
+import type { MethodContext, MethodMessage, MethodReturnType } from '../core/AbstractMethod';
+import { AbstractMethod } from '../core/AbstractMethod';
+import { getCoinInfoOrThrow } from '../data/coinInfo';
+import { bundlify, validateParams } from './common/paramsValidator';
 import { getAccountLabel, isUtxoBased } from '../utils/accountUtils';
-import { getSerializedPath, validatePath } from '../utils/pathUtils';
+import { buildOutputDescriptor } from '../utils/buildOutputDescriptor';
+import { getScriptType, validatePath } from '../utils/pathUtils';
 
 type Request = GetAccountInfoParams & { address_n: number[]; coinInfo: CoinInfo };
 
 export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Request[]> {
     disposed = false;
     hasBundle?: boolean;
-    discovery?: Discovery;
 
-    constructor(message: { id?: number; payload: Payload<'getAccountInfo'> }) {
-        super(message);
-        this.useDevice = true;
-        this.useUi = true;
-    }
-
-    get requiredPermissions(): MethodPermission[] {
-        return ['read'];
-    }
-
-    init() {
+    constructor(message: MethodMessage<'getAccountInfo'>) {
         // assume that device will not be used
         let willUseDevice = false;
 
-        // create a bundle with only one batch if bundle doesn't exists
-        this.hasBundle = !!this.payload.bundle;
-        const payload = !this.payload.bundle
-            ? { ...this.payload, bundle: [this.payload] }
-            : this.payload;
+        const { hasBundle, payload } = bundlify(message.payload);
 
         // validate bundle type
         validateParams(payload, [{ name: 'bundle', type: 'array' }]);
 
-        this.params = payload.bundle.map(batch => {
+        const params = payload.bundle.map(batch => {
             // validate incoming parameters
             validateParams(batch, [
                 { name: 'coin', type: 'string', required: true },
@@ -67,18 +53,17 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
                 { name: 'contractFilter', type: 'string' },
                 { name: 'gap', type: 'number' },
                 { name: 'marker', type: 'object' },
+                { name: 'protocols', type: 'array' },
+                { name: 'confirmedNonce', type: 'boolean' },
                 { name: 'defaultAccountType', type: 'string' },
                 { name: 'derivationType', type: 'number' },
                 { name: 'suppressBackupWarning', type: 'boolean' },
             ]);
 
             // validate coin info
-            const coinInfo = getCoinInfo(batch.coin);
-            if (!coinInfo) {
-                throw ERRORS.TypedError('Method_UnknownCoin');
-            }
+            const coinInfo = getCoinInfoOrThrow(batch.coin);
             // validate backend
-            isBackendSupported(coinInfo);
+            assertBackendSupported(coinInfo);
             // validate path if exists
             let address_n: number[] = [];
             if (batch.path) {
@@ -87,15 +72,11 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
                 willUseDevice = typeof batch.descriptor !== 'string';
             }
             if (!batch.path && !batch.descriptor) {
-                if (payload.bundle.length > 1) {
-                    throw Error('Discovery for multiple coins in not supported');
-                }
-                // device will be used in Discovery
-                willUseDevice = true;
+                throw ERRORS.TypedError(
+                    'Method_InvalidParameter',
+                    'GetAccountInfo: path or descriptor is required',
+                );
             }
-
-            // set firmware range
-            this.firmwareRange = getFirmwareRange(this.name, coinInfo, this.firmwareRange);
 
             return {
                 ...batch,
@@ -104,10 +85,18 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
             };
         });
 
+        super(message, params);
+
+        this.hasBundle = hasBundle;
         this.useDevice = willUseDevice;
         this.useDeviceState = willUseDevice;
         this.useUi = willUseDevice;
-        this.confirmMissingBackup = !this.params.every(batch => batch.suppressBackupWarning);
+        this.confirmMissingBackup = !params.every(batch => batch.suppressBackupWarning);
+        this.requiredFirmwareCoins = params.map(({ coinInfo }) => coinInfo);
+    }
+
+    get requiredPermissions(): PermissionRequest[] {
+        return this.coinPerms('read_account_info', this.requiredFirmwareCoins);
     }
 
     get info() {
@@ -115,97 +104,50 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
     }
 
     get confirmation() {
-        if (this.params.length === 1 && !this.params[0].path && !this.params[0].descriptor) {
-            return {
-                view: 'export-account-info' as const,
-                label: `Export info for ${this.params[0].coinInfo.label} account of your selection`,
-                customConfirmButton: {
-                    label: 'Proceed to account selection',
-                    className: 'not-empty-css',
-                },
-            };
-        } else {
-            const keys: {
-                [coin: string]: { coinInfo: CoinInfo; values: DerivationPath[] };
-            } = {};
-            this.params.forEach(b => {
-                if (!keys[b.coinInfo.label]) {
-                    keys[b.coinInfo.label] = {
-                        coinInfo: b.coinInfo,
-                        values: [],
-                    };
-                }
-                keys[b.coinInfo.label].values.push(b.descriptor || b.address_n);
-            });
-
-            // prepare html for popup
-            const str: string[] = [];
-            Object.keys(keys).forEach((k, _i, _a) => {
-                const details = keys[k];
-                details.values.forEach(acc => {
-                    // if (i === 0) str += this.params.length > 1 ? ': ' : ' ';
-                    // if (i > 0) str += ', ';
-                    str.push(k);
-                    str.push(' ');
-                    if (typeof acc === 'string') {
-                        str.push(acc);
-                    } else {
-                        str.push(getAccountLabel(acc, details.coinInfo));
-                    }
-                });
-            });
-
-            return {
-                view: 'export-account-info' as const,
-                label: `Export info for: ${str.join('')}`,
-            };
-        }
-    }
-
-    // override AbstractMethod function
-    // this is a special case where we want to check firmwareRange in bundle
-    // and return error with bundle indexes
-    checkFirmwareRange() {
-        if (this.params.length === 1) {
-            return super.checkFirmwareRange();
-        }
-        // for trusted mode check each batch and return error with invalid bundle indexes
-        // find invalid ranges
-        const invalid = [];
-        for (let i = 0; i < this.params.length; i++) {
-            // set FW range for current batch
-            this.firmwareRange = getFirmwareRange(
-                this.name,
-                this.params[i].coinInfo,
-                DEFAULT_FIRMWARE_RANGE,
-            );
-            const exception = super.checkFirmwareRange();
-            if (exception) {
-                invalid.push({
-                    index: i,
-                    exception,
-                    coin: this.params[i].coin,
-                });
+        const keys: {
+            [coin: string]: { coinInfo: CoinInfo; values: DerivationPath[] };
+        } = {};
+        this.params.forEach(b => {
+            if (!keys[b.coinInfo.label]) {
+                keys[b.coinInfo.label] = {
+                    coinInfo: b.coinInfo,
+                    values: [],
+                };
             }
-        }
-        // return invalid ranges in custom error
-        if (invalid.length > 0) {
-            throw ERRORS.TypedError('Method_Discovery_BundleException', JSON.stringify(invalid));
-        }
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const entry: (typeof keys)[string] = keys[b.coinInfo.label];
+            entry.values.push(b.descriptor || b.address_n);
+        });
+
+        // prepare html for popup
+        const str: string[] = [];
+        Object.keys(keys).forEach((k, _i, _a) => {
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const details: (typeof keys)[string] = keys[k];
+            details.values.forEach(acc => {
+                str.push(k);
+                str.push(' ');
+                if (typeof acc === 'string') {
+                    str.push(acc);
+                } else {
+                    str.push(getAccountLabel(acc, details.coinInfo));
+                }
+            });
+        });
+
+        return {
+            view: 'export-account-info' as const,
+            label: `Export info for: ${str.join('')}`,
+        };
     }
 
-    async run() {
-        // address_n and descriptor are not set. use discovery
-        if (this.params.length === 1 && !this.params[0].path && !this.params[0].descriptor) {
-            return this.discover(this.params[0]);
-        }
-
+    async run(context: MethodContext) {
         const responses: MethodReturnType<typeof this.name> = [];
 
         const sendProgress = (progress: number, response: AccountInfo | null, error?: string) => {
-            if (!this.hasBundle || this.device?.getCurrentSession().isDisposed()) return;
+            if (!this.hasBundle || this.getDevice()?.getCurrentSession().isDisposed()) return;
             // send progress to UI
-            this.postMessage(
+            context.sendCoreMessage(
                 createUiMessage(UI_REQUEST.BUNDLE_PROGRESS, {
                     total: this.params.length,
                     progress,
@@ -216,24 +158,48 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
         };
 
         for (let i = 0; i < this.params.length; i++) {
-            const request = this.params[i];
+            const allParams = this.params;
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const request: (typeof allParams)[number] = allParams[i];
             const { address_n } = request;
             let { descriptor } = request;
             let legacyXpub: string | undefined;
             let descriptorChecksum: string | undefined;
+            let rootFingerprint: number | undefined;
+            let outputDescriptorBip380: string | undefined;
 
             if (this.disposed) break;
 
             // get descriptor from device
             if (address_n && typeof descriptor !== 'string') {
                 try {
-                    const accountDescriptor = await this.device
+                    const accountDescriptor = await this.getDevice()
                         .getCommands()
                         .getAccountDescriptor(request.coinInfo, address_n, request.derivationType);
                     if (accountDescriptor) {
                         descriptor = accountDescriptor.descriptor;
                         legacyXpub = accountDescriptor.legacyXpub;
                         descriptorChecksum = accountDescriptor.descriptorChecksum;
+                        rootFingerprint = accountDescriptor.rootFingerprint;
+                        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+                        const accountIndex: number = address_n[2];
+                        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+                        const purposeIndex: number = address_n[0];
+
+                        // outputDescriptorBip380 is provided by firmware >= 2.6.5.
+                        // For older firmware, build it from the available data (bitcoin only).
+                        outputDescriptorBip380 =
+                            accountDescriptor.outputDescriptorBip380 ??
+                            (request.coinInfo.type === 'bitcoin' && legacyXpub
+                                ? buildOutputDescriptor({
+                                      coin: request.coinInfo.name,
+                                      account: fromHardenedPathPart(accountIndex),
+                                      purpose: fromHardenedPathPart(purposeIndex),
+                                      scriptType: getScriptType(address_n),
+                                      xpub: legacyXpub,
+                                      rootFingerprint,
+                                  })
+                                : undefined);
                     }
                 } catch (error) {
                     if (this.hasBundle) {
@@ -257,7 +223,7 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
                 // initialize backend
                 const blockchain = await initBlockchain(
                     request.coinInfo,
-                    this.postMessage,
+                    context.sendCoreMessage,
                     request.identity,
                 );
 
@@ -277,6 +243,8 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
                     gap: request.gap,
                     marker: request.marker,
                     tokenAccountsPubKeys: request.tokenAccountsPubKeys,
+                    protocols: request.protocols,
+                    confirmedNonce: request.confirmedNonce,
                 });
 
                 if (this.disposed) break;
@@ -300,6 +268,7 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
                     legacyXpub,
                     utxo,
                     descriptorChecksum,
+                    outputDescriptorBip380,
                 };
                 responses.push(account);
 
@@ -320,97 +289,7 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
         return this.hasBundle ? responses : responses[0]!;
     }
 
-    async discover(request: Request) {
-        const { coinInfo, identity, defaultAccountType, derivationType } = request;
-        const blockchain = await initBlockchain(coinInfo, this.postMessage, identity);
-        const dfd = this.createUiPromise(UI_RESPONSE.RECEIVE_ACCOUNT, this.device);
-
-        const discovery = new Discovery({
-            blockchain,
-            getDescriptor: path =>
-                this.device.getCommands().getAccountDescriptor(coinInfo, path, derivationType),
-        });
-
-        discovery.on('progress', accounts => {
-            this.postMessage(
-                createUiMessage(UI_REQUEST.SELECT_ACCOUNT, {
-                    type: 'progress',
-                    coinInfo,
-                    accounts,
-                }),
-            );
-        });
-        discovery.on('complete', () => {
-            this.postMessage(
-                createUiMessage(UI_REQUEST.SELECT_ACCOUNT, {
-                    type: 'end',
-                    coinInfo,
-                }),
-            );
-        });
-        // catch error from discovery process
-        discovery.start().catch(error => {
-            dfd.reject(error);
-        });
-
-        // set select account view
-        // this view will be updated from discovery events
-        this.postMessage(
-            createUiMessage(UI_REQUEST.SELECT_ACCOUNT, {
-                type: 'start',
-                accountTypes: discovery.types.map(t => t.type),
-                defaultAccountType,
-                coinInfo,
-            }),
-        );
-
-        // wait for user action
-        const uiResp = await dfd.promise;
-        discovery.stop();
-
-        const account = discovery.accounts[uiResp.payload];
-
-        if (!discovery.completed) {
-            await resolveAfter(501); // temporary solution, TODO: immediately resolve will cause "device call in progress"
-        }
-
-        // get account info from backend
-        const info = await blockchain.getAccountInfo({
-            descriptor: account.descriptor,
-            details: request.details,
-            tokens: request.tokens,
-            page: request.page,
-            pageSize: request.pageSize,
-            pageCursor: request.pageCursor,
-            from: request.from,
-            to: request.to,
-            contractFilter: request.contractFilter,
-            gap: request.gap,
-            marker: request.marker,
-        });
-
-        let utxo: AccountUtxo[] | undefined;
-        if (
-            isUtxoBased(coinInfo) &&
-            typeof request.details === 'string' &&
-            request.details !== 'basic'
-        ) {
-            utxo = await blockchain.getAccountUtxo(account.descriptor);
-        }
-
-        return {
-            path: getSerializedPath(account.address_n),
-            ...info,
-            utxo,
-        };
-    }
-
     dispose() {
         this.disposed = true;
-        const { discovery } = this;
-        if (discovery) {
-            discovery.removeAllListeners();
-            discovery.stop();
-        }
     }
 }

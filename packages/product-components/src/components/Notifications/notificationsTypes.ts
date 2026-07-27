@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
 import type { NotificationEntry } from '@suite-common/toast-notifications';
 
@@ -18,13 +18,17 @@ export type ExchangeInfoAsset = Pick<ExchangeToastAssetData, 'symbol' | 'contrac
 
 export type TransactionNotificationType =
     | 'tx-sent'
+    | 'raw-tx-sent'
     | 'tx-received'
     | 'tx-confirmed'
     | 'tx-staked'
     | 'tx-unstaked'
     | 'tx-claimed'
     | 'tx-approved'
-    | 'tx-revoked';
+    | 'tx-revoked'
+    | 'tx-yield-deposit'
+    | 'tx-yield-withdraw'
+    | 'tx-yield-claim';
 
 type TransactionNotificationWithToken = Extract<
     NotificationEntry,

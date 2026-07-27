@@ -1,13 +1,17 @@
 import { useCallback, useContext } from 'react';
 
-import { CountryChangeAction, events } from '@suite-native/analytics';
-import { useAnalytics } from '@suite-native/services';
+import { useServices } from '@suite-common/dependency-injection';
+import {
+    type CountryChangeAction,
+    events,
+    selectNativeAnalyticsDep,
+} from '@suite-native/analytics';
 
 import { CountryChangeContextCheckContext } from '../components/CountryChangeContextCheckContext';
 
 export const useCountrySelectionAnalyticsReport = () => {
     const type = useContext(CountryChangeContextCheckContext);
-    const analytics = useAnalytics();
+    const { analytics } = useServices(selectNativeAnalyticsDep);
 
     return useCallback(
         (action: CountryChangeAction) => {

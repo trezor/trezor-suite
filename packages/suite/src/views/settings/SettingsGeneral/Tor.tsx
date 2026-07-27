@@ -1,25 +1,23 @@
 import { useEffect, useState } from 'react';
 
+import { selectCoinjoinAccounts } from '@suite/coinjoin';
+import { LearnMoreButton } from '@suite/external-links';
 import { Translation } from '@suite/intl';
+import { openDeferredModal, selectModalType } from '@suite/modal';
+import { Anchor, SettingsAnchor } from '@suite/router';
+import { TorStatus, getIsTorEnabled, getIsTorLoading } from '@suite/tor';
 import { Switch } from '@trezor/components';
+import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 import { HELP_CENTER_TOR_URL } from '@trezor/urls';
 
-import { openDeferredModal } from 'src/actions/suite/modalActions';
 import { toggleTor } from 'src/actions/suite/suiteActions';
-import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
-import { ActionColumn, TextColumn } from 'src/components/suite';
-import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectModalType } from 'src/reducers/suite/modalReducer';
-import { selectCoinjoinAccounts } from 'src/reducers/wallet/coinjoinReducer';
-import { TorStatus } from 'src/types/suite';
-import { getIsTorEnabled, getIsTorLoading } from 'src/utils/suite/tor';
 
 export const Tor = () => {
     const [hasTorError, setHasTorError] = useState(false);
     const coinjoinAccounts = useSelector((state: any) => selectCoinjoinAccounts(state));
     const isCoinjoinAccount = coinjoinAccounts.length > 0;
-    const torStatus = useSelector(state => state.suite.torStatus);
+    const torStatus = useSelector(state => state.tor.torStatus);
     const modalType = useSelector(selectModalType);
     const dispatch = useDispatch();
 
@@ -57,26 +55,34 @@ export const Tor = () => {
     };
 
     return (
-        <SettingsSectionItem anchorId={SettingsAnchor.Tor}>
-            <TextColumn
-                title={<Translation id="TR_TOR_TITLE" />}
-                description={
-                    <Translation
-                        id="TR_TOR_DESCRIPTION"
-                        values={{
-                            lineBreak: <br />,
-                        }}
+        <Anchor anchorId={SettingsAnchor.Tor}>
+            {({ anchorId, anchorRef, shouldHighlight }) => (
+                <SectionItem
+                    data-testid={anchorId}
+                    ref={anchorRef}
+                    shouldHighlight={shouldHighlight}
+                >
+                    <TextColumn
+                        title={<Translation id="TR_TOR_TITLE" />}
+                        description={
+                            <Translation
+                                id="TR_TOR_DESCRIPTION"
+                                values={{
+                                    lineBreak: <br />,
+                                }}
+                            />
+                        }
+                        bottomContent={<LearnMoreButton url={HELP_CENTER_TOR_URL} />}
                     />
-                }
-                buttonLink={HELP_CENTER_TOR_URL}
-            />
-            <ActionColumn>
-                <Switch
-                    data-testid="@settings/general/tor-switch"
-                    isChecked={isTorEnabled || torStatus === TorStatus.Enabling}
-                    onChange={handleTorSwitch}
-                />
-            </ActionColumn>
-        </SettingsSectionItem>
+                    <ActionColumn>
+                        <Switch
+                            data-testid="@settings/general/tor-switch"
+                            isChecked={isTorEnabled || torStatus === TorStatus.Enabling}
+                            onChange={handleTorSwitch}
+                        />
+                    </ActionColumn>
+                </SectionItem>
+            )}
+        </Anchor>
     );
 };

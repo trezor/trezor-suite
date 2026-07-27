@@ -1,4 +1,6 @@
-import { TestDetailsAnnotation, TestMetadataInput } from './types';
+import { capitalizeFirstLetter } from '@trezor/utils';
+
+import { type TestDetailsAnnotation, type TestMetadataInput } from './types';
 import {
     DeviceModel,
     TestAnnotationType,
@@ -108,7 +110,7 @@ export abstract class TestReportProviderBase {
             // Capitalize first letter of testProject
             const project = this.testProject;
 
-            return project.charAt(0).toUpperCase() + project.slice(1);
+            return capitalizeFirstLetter(project);
         }
     }
 

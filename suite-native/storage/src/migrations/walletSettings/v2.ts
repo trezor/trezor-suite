@@ -1,6 +1,6 @@
-import { PersistedState } from 'redux-persist';
+import { type PersistedState } from 'redux-persist';
 
-import { WalletSettings } from '@suite-common/wallet-types';
+import { type WalletSettings } from '@suite-common/wallet-types';
 
 import type { MigrationDeps } from './v1';
 import { isPersistedState } from '../../migrationTypes';
@@ -20,7 +20,7 @@ export const migrateAutoEjectToWalletSettings =
         });
 
         if (!devicesState || !('isDeviceAutoEjectEnabled' in devicesState)) {
-            return oldState as MigratedState; // no new migration, just pass the previous one
+            return oldState; // no new migration, just pass the previous one
         }
 
         return {

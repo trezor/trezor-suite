@@ -1,25 +1,25 @@
-import EventEmitter from 'events';
-
-// NOTE: @trezor/connect part is intentionally not imported from the index
-import { CORE_CALL, CallMethod, POPUP, createErrorMessage } from '@trezor/connect/src/exports';
-import { factory } from '@trezor/connect/src/factory';
-import { ConnectDynamicSettings } from '@trezor/connect/src/impl/dynamic';
-import type { UpdateConnectSettings } from '@trezor/connect/src/types/api/updateConnectSettings';
-import { ERRORS, WEBEXTENSION } from '@trezor/connect-common/src/constants';
+import { ERRORS } from '@trezor/connect-common/src/constants';
+import { CORE_CALL, POPUP, createErrorMessage } from '@trezor/connect-common/src/events';
+import { factoryPublic } from '@trezor/connect-common/src/factory';
 import { WindowServiceWorkerChannel } from '@trezor/connect-common/src/messageChannel/window-serviceworker';
+import type {
+    ConnectDynamicSettings,
+    TrezorConnectPublicAPI,
+} from '@trezor/connect-common/src/types';
+import {
+    type CancelParams,
+    createCoreCallCancelMessage,
+} from '@trezor/connect-common/src/utils/cancelParams';
 
-const eventEmitter = new EventEmitter();
 let _channel: any;
 
-const dispose = () => {
-    eventEmitter.removeAllListeners();
+const dispose = () => Promise.resolve(undefined);
 
-    return Promise.resolve(undefined);
-};
-
-const cancel = () => {
+const cancel = (params?: CancelParams) => {
     if (_channel) {
-        _channel.clear();
+        _channel.postMessage(createCoreCallCancelMessage(params), { usePromise: false });
+
+        return Promise.resolve(_channel.clear());
     }
 };
 
@@ -33,12 +33,6 @@ const init = (settings: ConnectDynamicSettings): Promise<void> => {
             },
         });
     }
-
-    _channel.port.onMessage.addListener((message: any) => {
-        if (message.type === WEBEXTENSION.CHANNEL_HANDSHAKE_CONFIRM) {
-            eventEmitter.emit(WEBEXTENSION.CHANNEL_HANDSHAKE_CONFIRM, message);
-        }
-    });
 
     const reconnect = () => {
         // By connecting again we keep the service worker active.
@@ -61,16 +55,7 @@ const init = (settings: ConnectDynamicSettings): Promise<void> => {
     );
 };
 
-const updateConnectSettings = (_params: UpdateConnectSettings) =>
-    Promise.resolve(
-        createErrorMessage(
-            ERRORS.TypedError(
-                'Method_InvalidPackage',
-                'updateConnectSettings is not supported in this implementation',
-            ),
-        ),
-    );
-const call: CallMethod = async (params: any) => {
+const call = async (params: any) => {
     try {
         const response = await _channel.postMessage({
             type: CORE_CALL,
@@ -88,21 +73,15 @@ const call: CallMethod = async (params: any) => {
     }
 };
 
-const uiResponse = () => {
-    // Not needed here.
-    throw ERRORS.TypedError('Method_InvalidPackage');
-};
-
-const TrezorConnect = factory({
-    eventEmitter,
+const TrezorConnect: TrezorConnectPublicAPI<ConnectDynamicSettings> = factoryPublic({
     init,
     call,
-    uiResponse,
-    updateConnectSettings,
     cancel,
     dispose,
 });
 
 // eslint-disable-next-line import/no-default-export
 export default TrezorConnect;
-export * from '@trezor/connect/src/exports';
+export * from '@trezor/connect-common/src/constants';
+export * from '@trezor/connect-common/src/events';
+export * from '@trezor/connect-common/src/types';

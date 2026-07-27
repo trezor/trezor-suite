@@ -1,3 +1,5 @@
+import type { WalletDescriptor } from '@trezor/device-utils';
+
 export interface LabelableEntityKeys {
     fileName: string; // file name in data provider
     aesKey: string; // symmetric key for file encryption
@@ -103,6 +105,8 @@ export type Error = {
 export type Result<T> = Promise<Success<T> | Error>;
 
 export abstract class AbstractMetadataProvider {
+    private apiRequestQueue: Promise<unknown> = Promise.resolve();
+
     /* isCloud means that this provider is not local and allows multi client sync. These providers are suitable for backing up data. */
     abstract isCloud: boolean;
 
@@ -126,7 +130,7 @@ export abstract class AbstractMetadataProvider {
     /**
      * Upload metadata content in cloud provider for given filename and content
      */
-    abstract setFileContent(file: string, content: any): Result<void>;
+    abstract setFileContent(file: string, content: Buffer): Result<void>;
     /**
      * Get a list of metadata file names if any
      */
@@ -158,9 +162,9 @@ export abstract class AbstractMetadataProvider {
         } as const;
     }
 
-    scheduleApiRequest<T extends () => ReturnType<R>, R extends (...args: any) => Result<any>>(
+    private runApiRequest<T extends () => ReturnType<R>, R extends (...args: any) => Result<any>>(
         fn: T,
-        options: { retries: number; delay: number } = { retries: 3, delay: 1000 },
+        options: { retries: number; delay: number },
     ) {
         let retried = 0;
 
@@ -184,6 +188,16 @@ export abstract class AbstractMetadataProvider {
             run();
         });
     }
+
+    scheduleApiRequest<T extends () => ReturnType<R>, R extends (...args: any) => Result<any>>(
+        fn: T,
+        options: { retries: number; delay: number } = { retries: 3, delay: 1000 },
+    ) {
+        const request = this.apiRequestQueue.then(() => this.runApiRequest<T, R>(fn, options));
+        this.apiRequestQueue = request;
+
+        return request;
+    }
 }
 
 export type AccountOutputLabels = { [index: string]: MetadataItem };
@@ -197,6 +211,9 @@ export interface AccountLabels {
     addressLabels: Record<string, MetadataItem>;
 }
 
+/**
+ * @deprecated Legacy Labeling
+ */
 export interface WalletLabels {
     walletLabel?: string;
 }
@@ -235,6 +252,7 @@ export type MetadataProvider = {
 export interface MetadataState {
     enabled: boolean; // global for all devices
     providers: MetadataProvider[];
+    hasLegacyLabelsMigrated: Partial<Record<WalletDescriptor, true>>;
     // being selected means:
     // - see data from this provider
     // - save data to this provider when making changes
@@ -293,11 +311,4 @@ export type PasswordManagerState = {
     // legacy value, not used
     extVersion?: string;
     tags: Record<number, PasswordTag>;
-};
-
-export type Bip329Label = {
-    type: 'tx' | 'addr' | 'wallet' | 'xpub' | 'pubkey' | 'input' | 'output';
-    ref?: string; // The identifier for the object being labeled (e.g., txid, address, txid:vout)
-    label: string; // The label text
-    spendable?: boolean;
 };

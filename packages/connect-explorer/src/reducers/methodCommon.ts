@@ -1,18 +1,17 @@
-import type { TrezorConnect } from '@trezor/connect-web';
-import { TSchema } from '@trezor/schema-utils';
+import type { TrezorConnectPublicAPI } from '@trezor/connect-web';
+import { type TSchema } from '@trezor/schema-utils';
 import { setDeepValue } from '@trezor/schema-utils/src/utils';
 
 import type { Field, FieldBasic } from '../types/common';
 import { isFieldBasic } from '../types/common';
 
 export interface MethodState {
-    name?: keyof TrezorConnect;
+    name?: keyof TrezorConnectPublicAPI<any>;
     submitButton?: string;
     fields: Field<unknown>[];
     params: Record<string, unknown>;
     response?: unknown;
     javascriptCode?: string;
-    addressValidation?: boolean;
     schema?: TSchema;
     manualMode?: boolean;
     processing: boolean;
@@ -25,7 +24,6 @@ export const initialState: MethodState = {
     params: {},
     javascriptCode: undefined,
     response: undefined,
-    addressValidation: false,
     manualMode: false,
     processing: false,
 };
@@ -33,9 +31,6 @@ export const initialState: MethodState = {
 // Converts the fields into a params object
 export const getParam = (field: FieldBasic<any>, $params: Record<string, any> = {}) => {
     const params = $params;
-    if (field.omit) {
-        return params;
-    }
     if (
         field.optional &&
         ((!field.value && field.value !== 0 && field.value !== false) || field.value === '')
@@ -85,7 +80,10 @@ export const getParam = (field: FieldBasic<any>, $params: Record<string, any> = 
         }
     } else if (field.type === 'select') {
         if ((field.value === null || field.value === undefined) && !field.optional) {
-            value = field.data ? field.data[0].value : '';
+            const fieldData = field.data;
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const firstData: (typeof field.data)[number] = fieldData?.[0];
+            value = firstData ? firstData.value : '';
         } else {
             value = field.value;
         }
@@ -171,7 +169,7 @@ export const setAffectedValues = (state: MethodState, field: Field<unknown>) => 
     if (!field.affect) return field;
 
     const data = field.data?.find(d => d.value === field.value);
-    if (data && data.affectedValue) {
+    if (data?.affectedValue) {
         const affectedFieldNames = !Array.isArray(field.affect) ? [field.affect] : field.affect;
         const values = !Array.isArray(data.affectedValue)
             ? [data.affectedValue]

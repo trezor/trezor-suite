@@ -1,22 +1,21 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { FieldPath, UseFormReturn } from 'react-hook-form';
+import { type FieldPath, type UseFormReturn } from 'react-hook-form';
 
-import { useTranslation } from '@suite/intl';
+import { isTranslationKey, useTranslation } from '@suite/intl';
 import { COMPOSE_ERROR_TYPES } from '@suite-common/wallet-constants';
 import {
-    ComposeActionContext,
-    PrecomposedLevels,
-    PrecomposedTransaction,
-    StakeFormState,
+    type ComposeActionContext,
+    type PrecomposedLevels,
+    type PrecomposedTransaction,
+    type StakeFormState,
 } from '@suite-common/wallet-types';
 import { findComposeErrors } from '@suite-common/wallet-utils';
-import { FeeLevel } from '@trezor/connect';
+import { type FeeLevel } from '@trezor/connect';
 import { useDebounce } from '@trezor/react-utils';
 
 import { composeTransaction } from 'src/actions/wallet/stakeActions';
+import { type StakeContextValues } from 'src/components/earn/forms/StakeFormContext';
 import { useDispatch } from 'src/hooks/suite';
-
-import { StakeContextValues } from '../../../components/wallet/stakeForm/StakeContext';
 
 const DEFAULT_FIELD = 'outputs.0.amount';
 
@@ -107,7 +106,7 @@ export const useStakeCompose = <TFieldValues extends StakeFormState>({
 
             if (composed.type === 'error') {
                 const { error, errorMessage } = composed;
-                if (!errorMessage) {
+                if (!errorMessage || !isTranslationKey(errorMessage.id)) {
                     // composed tx doesn't have an errorMessage (Translation props)
                     // this error is unexpected and should be handled in sendFormActions
                     console.warn('Compose unexpected error', error);
@@ -159,7 +158,9 @@ export const useStakeCompose = <TFieldValues extends StakeFormState>({
                 const levels = {
                     ...composedLevels,
                     custom: prevLevel,
-                } as PrecomposedLevels & { custom: PrecomposedTransaction };
+                } as PrecomposedLevels & {
+                    custom: PrecomposedTransaction;
+                };
                 setComposedLevels(levels);
             } else {
                 const currentLevel = composedLevels[current || 'normal'];

@@ -1,18 +1,22 @@
 import { useNavigation } from '@react-navigation/native';
 
-import { DemoAccountQuestionnaireLinkKey, events } from '@suite-native/analytics';
+import { useServices } from '@suite-common/dependency-injection';
+import {
+    type DemoAccountQuestionnaireLinkKey,
+    events,
+    selectNativeAnalyticsDep,
+} from '@suite-native/analytics';
 import { Button, PictogramTitleHeader, TextDivider, VStack } from '@suite-native/atoms';
-import { IconName } from '@suite-native/icons';
-import { Translation, TxKeyPath } from '@suite-native/intl';
+import { type IconName } from '@suite-native/icons';
+import { Translation, type TxKeyPath } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
 import {
-    DemoAccountQuestionnaireStackParamList,
-    DemoAccountQuestionnaireStackRoutes,
+    type DemoAccountQuestionnaireStackParamList,
+    type DemoAccountQuestionnaireStackRoutes,
     Screen,
     ScreenHeader,
-    StackNavigationProps,
+    type StackNavigationProps,
 } from '@suite-native/navigation';
-import { useAnalytics } from '@suite-native/services';
 import {
     ESHOP_WHAT_IS_A_HARDWARE_WALLET_URL,
     ESHOP_WHY_TREZOR_IS_SECURE_URL,
@@ -57,7 +61,7 @@ type NavigationProp = StackNavigationProps<
 export const DemoAccountQuestionnaireSuccessScreen = () => {
     const navigation = useNavigation<NavigationProp>();
     const openLink = useOpenLink();
-    const analytics = useAnalytics();
+    const { analytics } = useServices(selectNativeAnalyticsDep);
     const handleOpenUrl = (recommendation: Recommendation) => {
         analytics.report(
             {
@@ -108,8 +112,8 @@ export const DemoAccountQuestionnaireSuccessScreen = () => {
 
                     <TextDivider
                         title="moduleDemoAccountQuestionnaire.success.recommendationsHeading"
-                        lineColor="borderOnElevation0"
-                        textColor="textSubdued"
+                        lineColor="borderNeutral"
+                        textColor="contentSecondary"
                     />
 
                     <VStack spacing="sp12">
@@ -123,7 +127,7 @@ export const DemoAccountQuestionnaireSuccessScreen = () => {
                         ))}
                     </VStack>
                 </VStack>
-                <Button onPress={handleBackToDashboard} colorScheme="tertiaryElevation0">
+                <Button onPress={handleBackToDashboard} intent="neutral" priority="secondary">
                     <Translation id="moduleDemoAccountQuestionnaire.success.backCta" />
                 </Button>
             </VStack>

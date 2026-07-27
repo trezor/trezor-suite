@@ -1,33 +1,55 @@
+import Animated, { FadeInDown } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
 import { parseCryptoId, selectTradingExchangeSelectedQuote } from '@suite-common/trading';
-import { TokenAddress } from '@suite-common/wallet-types';
-import { Box, Button } from '@suite-native/atoms';
+import { type TokenAddress } from '@suite-common/wallet-types';
+import { Box, Button, ScreenFooterGradient } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
-    StackNavigationProps,
-    TradingStackParamList,
-    TradingStackRoutes,
+    type ExchangeFlowType,
+    type RootStackParamList,
+    RootStackRoutes,
+    type StackNavigationProps,
 } from '@suite-native/navigation';
+import { useExchangeAnalyticsStepReport } from '@suite-native/trading-analytics';
 import { selectExchangeSelectedSendAccount } from '@suite-native/trading-state';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
+
+const footerStyle = prepareNativeStyle(utils => ({
+    paddingHorizontal: utils.spacings.sp16,
+    paddingBottom: utils.spacings.sp16,
+}));
 
 export type ApprovalButtonProps = {
     isReady: boolean;
     isDisabled?: boolean;
+    flowType: Exclude<ExchangeFlowType, 'swap'>;
 };
 
-export const ApprovalButton = ({ isReady, isDisabled }: ApprovalButtonProps) => {
+const getApprovalButtonTestID = (flowType: ApprovalButtonProps['flowType']) => {
+    if (flowType === 'approve') {
+        return '@trading/exchange-approval/continue-button';
+    }
+
+    return '@trading/exchange-revoke/continue-button';
+};
+
+export const ApprovalButton = ({ isReady, isDisabled, flowType }: ApprovalButtonProps) => {
     const navigation =
         useNavigation<
-            StackNavigationProps<TradingStackParamList, TradingStackRoutes.TradingExchangeApproval>
+            StackNavigationProps<RootStackParamList, RootStackRoutes.TradingExchangeApproval>
         >();
 
     const quote = useSelector(selectTradingExchangeSelectedQuote);
     const fromAccount = useSelector(selectExchangeSelectedSendAccount);
+    const { applyStyle } = useNativeStyles();
+    const reportToAnalytics = useExchangeAnalyticsStepReport(
+        flowType === 'approve' ? 'approval-preview' : 'revoke-preview',
+    );
 
-    if (!quote || !isReady) {
+    if (!quote) {
         return null;
     }
 
@@ -40,18 +62,28 @@ export const ApprovalButton = ({ isReady, isDisabled }: ApprovalButtonProps) => 
 
             return;
         }
-        navigation.navigate(TradingStackRoutes.TradingExchangeOutputsReview, {
+        reportToAnalytics('continue');
+        navigation.navigate(RootStackRoutes.TradingExchangeOutputsReview, {
             accountKey: fromAccount.key,
             tokenContract,
             orderId: quote.orderId ?? '',
+            flowType,
         });
     };
 
     return (
-        <Box paddingTop="sp20">
-            <Button onPress={handleContinue} isDisabled={isDisabled}>
-                <Translation id="generic.buttons.continue" />
-            </Button>
-        </Box>
+        <Animated.View entering={FadeInDown}>
+            <ScreenFooterGradient />
+            <Box style={applyStyle(footerStyle)}>
+                <Button
+                    onPress={handleContinue}
+                    isDisabled={isDisabled}
+                    isLoading={!isReady}
+                    testID={getApprovalButtonTestID(flowType)}
+                >
+                    <Translation id="generic.buttons.continue" />
+                </Button>
+            </Box>
+        </Animated.View>
     );
 };

@@ -1,62 +1,72 @@
-import { DefaultTheme } from 'styled-components';
+import { type Color } from '@trezor/theme';
 
-import { CSSColor, Color } from '@trezor/theme';
+import { type IconCircleIntent, type IconCircleSize } from './types';
+import { type IconSize } from '../Icon/types';
 
-import { IconCirclePaddingType, IconCircleVariant } from './types';
-
-type VariantMapArgs = {
-    theme: DefaultTheme;
-    $hasBorder: boolean;
-    $variant: IconCircleVariant;
-};
-
-type PaddingTypeMap = {
-    $paddingType: IconCirclePaddingType;
-    $size: number;
-};
-
-export const mapVariantToIconBorderColor = ({ $variant, theme }: VariantMapArgs): CSSColor => {
-    const colorMap: Record<IconCircleVariant, Color> = {
-        primary: 'backgroundPrimarySubtleOnElevation0',
-        warning: 'backgroundAlertYellowSubtleOnElevation0',
-        destructive: 'backgroundAlertRedSubtleOnElevation0',
-        info: 'backgroundAlertBlueSubtleOnElevation0',
-        tertiary: 'baseFillElementNeutralSofter',
+export const mapIntentToBorderColor = (intent: IconCircleIntent): Color => {
+    const colorMap: Record<IconCircleIntent, Color> = {
+        brand: 'elementBorderBrandSofter',
+        warning: 'elementBorderWarningSofter',
+        critical: 'elementBorderCriticalSofter',
+        info: 'elementBorderInfoSofter',
+        neutral: 'elementBorderNeutralSofter',
+        accentViolet: 'elementBorderAccentVioletSofter',
     };
 
-    return theme[colorMap[$variant]];
+    return colorMap[intent];
 };
 
-export const mapVariantToIconBackground = ({
-    theme,
-    $hasBorder,
-    $variant,
-}: VariantMapArgs): CSSColor => {
-    const noBorderColorMap: Record<IconCircleVariant, Color> = {
-        primary: 'backgroundPrimarySubtleOnElevation0',
-        warning: 'backgroundAlertYellowSubtleOnElevation0',
-        destructive: 'backgroundAlertRedSubtleOnElevation0',
-        info: 'backgroundAlertBlueSubtleOnElevation0',
-        tertiary: 'baseFillElementNeutralSofter',
-    };
+export const mapSizeToBorderWidth = (size: IconCircleSize) => {
+    const borderWidthMap = {
+        16: 0,
+        24: 0,
+        32: 0,
+        40: 0,
+        48: 0,
+        64: 6,
+        96: 10,
+        112: 12,
+    } as const satisfies Record<IconCircleSize, number>;
 
-    const borderColorMap: Record<IconCircleVariant, Color> = {
-        primary: 'backgroundPrimarySubtleOnElevation1',
-        warning: 'backgroundAlertYellowSubtleOnElevation1',
-        destructive: 'backgroundAlertRedSubtleOnElevation1',
-        info: 'backgroundAlertBlueSubtleOnElevation1',
-        tertiary: 'baseFillElementNeutralSoftest',
-    };
-
-    return theme[($hasBorder ? borderColorMap : noBorderColorMap)[$variant]];
+    return borderWidthMap[size];
 };
 
-export const mapPaddingTypeToDimensions = ({ $paddingType }: PaddingTypeMap): string => {
-    const dimensionsMap: Record<IconCirclePaddingType, string> = {
-        small: '70%',
-        medium: '60%',
-        large: '50%',
+export const mapIntentToBackgroundColor = (
+    intent: IconCircleIntent,
+    size: IconCircleSize,
+): Color => {
+    const noBorderColorMap: Record<IconCircleIntent, Color> = {
+        brand: 'elementFillBrandSoft',
+        warning: 'elementFillWarningSoft',
+        critical: 'elementFillCriticalSoft',
+        info: 'elementFillInfoSoft',
+        neutral: 'elementFillNeutralSoft',
+        accentViolet: 'elementFillAccentVioletSofter',
     };
 
-    return dimensionsMap[$paddingType];
+    const borderColorMap: Record<IconCircleIntent, Color> = {
+        brand: 'elementFillBrandSofter',
+        warning: 'elementFillWarningSofter',
+        critical: 'elementFillCriticalSofter',
+        info: 'elementFillInfoSofter',
+        neutral: 'elementFillField',
+        accentViolet: 'elementFillAccentVioletSoft',
+    };
+
+    return (mapSizeToBorderWidth(size) === 0 ? noBorderColorMap : borderColorMap)[intent];
+};
+
+export const mapSizeToIconSize = (size: IconCircleSize): IconSize => {
+    const iconSizeMap: Record<IconCircleSize, IconSize> = {
+        16: 8,
+        24: 12,
+        32: 20,
+        40: 24,
+        48: 28,
+        64: 32,
+        96: 40,
+        112: 48,
+    };
+
+    return iconSizeMap[size];
 };

@@ -55,12 +55,13 @@ const checkNodeForAvoidStyledComponent = (node, context, nodeRef, importedCompon
 
 /**
  * Returns the suggested import path for a deep import, or null if the import is allowed.
- * Handles the mocks convention: `@scope/pkg/mocks` is allowed, but `@scope/pkg/mocks/deep` suggests `@scope/pkg/mocks`.
+ * Imports below a configured entry point suggest that entry point instead of the package root.
  */
 const getSuggestedImportPath = (
     sourcePath: string,
     packageScopes: string[],
     ignoredPackages: string[],
+    allowedEntryPointPatterns: RegExp[],
 ): string | null => {
     const sourcePathParts = sourcePath.split('/');
 
@@ -82,13 +83,16 @@ const getSuggestedImportPath = (
         return null;
     }
 
-    // Allow @scope/pkg/mocks as a valid entry point
-    if (sourcePathParts[2] === 'mocks') {
-        if (sourcePathParts.length === 3) {
-            return null;
-        }
+    // Check the full import path and each of its parent paths against the allowed entry points.
+    const sourcePathPrefixes = sourcePathParts.map((_, index) =>
+        sourcePathParts.slice(0, index + 1).join('/'),
+    );
+    const allowedEntryPoint = sourcePathPrefixes.find(entryPoint =>
+        allowedEntryPointPatterns.some(entryPointPattern => entryPointPattern.test(entryPoint)),
+    );
 
-        return `${packageImportPath}/mocks`;
+    if (allowedEntryPoint !== undefined) {
+        return sourcePath === allowedEntryPoint ? null : allowedEntryPoint;
     }
 
     return packageImportPath;
@@ -115,7 +119,7 @@ const isSuiteCommonFile = (filename: string) => filename.includes('/suite-common
 const isSuiteOrSuiteNativeImport = (sourcePath: string) =>
     sourcePath.startsWith('@suite/') || sourcePath.startsWith('@suite-native/');
 
-export default {
+export const rules = {
     'no-override-ds-component': {
         meta: {
             type: 'problem',
@@ -154,16 +158,22 @@ export default {
 
             return {
                 ImportDeclaration(node) {
-                    if (packageNames.includes(node.source.value)) {
+                    const sourceValue = node.source.value;
+
+                    if (typeof sourceValue === 'string' && packageNames.includes(sourceValue)) {
                         node.specifiers.forEach(specifier => {
                             if (
                                 specifier.type === 'ImportSpecifier' ||
                                 specifier.type === 'ImportDefaultSpecifier'
                             ) {
-                                if (!importedComponents.has(node.source.value)) {
-                                    importedComponents.set(node.source.value, new Set<string>());
+                                let components = importedComponents.get(sourceValue);
+
+                                if (components === undefined) {
+                                    components = new Set<string>();
+                                    importedComponents.set(sourceValue, components);
                                 }
-                                importedComponents.get(node.source.value).add(specifier.local.name);
+
+                                components.add(specifier.local.name);
                             }
                         });
                     }
@@ -207,6 +217,10 @@ export default {
                             type: 'array',
                             items: { type: 'string' },
                         },
+                        allowedEntryPointPatterns: {
+                            type: 'array',
+                            items: { type: 'object' },
+                        },
                     },
                     additionalProperties: false,
                 },
@@ -220,6 +234,7 @@ export default {
                 '@trezor',
             ];
             const ignoredPackages = context.options[0]?.ignoredPackages ?? [];
+            const allowedEntryPointPatterns = context.options[0]?.allowedEntryPointPatterns ?? [];
 
             const checkNode = (node: Rule.Node) => {
                 const sourcePath = getNodeSourcePath(node);
@@ -232,6 +247,7 @@ export default {
                     sourcePath,
                     packageScopes,
                     ignoredPackages,
+                    allowedEntryPointPatterns,
                 );
 
                 if (packageImportPath === null) {
@@ -332,17 +348,18 @@ export default {
                 'firmware',
                 'guide',
                 'menu',
+                'onboarding',
                 'passphrase',
                 'promo',
                 'receive',
                 'send',
                 'settings',
                 'staking',
+                'yield',
                 'trading',
                 'transaction',
                 'wallet-connect',
             ]);
-
             const KEBAB_CASE_SEGMENT = /^[a-z0-9]+(-[a-z0-9]+)*$/;
 
             function validateEventName(
@@ -351,15 +368,16 @@ export default {
                 if (!value.includes('/')) {
                     return { messageId: 'invalidFormat' };
                 }
-
                 const parts = value.split('/');
                 const domain = parts[0];
                 const eventSegments = parts.slice(1);
+                if (domain === undefined) {
+                    return { messageId: 'invalidFormat' };
+                }
 
                 if (!ALLOWED_DOMAINS.has(domain)) {
                     return { messageId: 'invalidDomain', data: { domain } };
                 }
-
                 for (const segment of eventSegments) {
                     if (!KEBAB_CASE_SEGMENT.test(segment)) {
                         return { messageId: 'notKebabCase', data: { eventPart: value } };
@@ -382,7 +400,7 @@ export default {
                     }
 
                     for (const member of enumNode.members ?? []) {
-                        const initializer = member.initializer;
+                        const { initializer } = member;
                         if (
                             initializer?.type !== 'Literal' ||
                             typeof initializer.value !== 'string'
@@ -403,4 +421,4 @@ export default {
             };
         },
     },
-} satisfies Record<string, Rule.RuleModule>;
+} as const satisfies Record<string, Rule.RuleModule>;

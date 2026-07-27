@@ -1,15 +1,15 @@
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
 import { Box, HStack, Text } from '@suite-native/atoms';
-import { Icon, IconColor, IconName } from '@suite-native/icons';
-import { Translation, TxKeyPath } from '@suite-native/intl';
+import { Icon, type IconColor, type IconName } from '@suite-native/icons';
+import { Translation, type TxKeyPath } from '@suite-native/intl';
 import { Link } from '@suite-native/link';
-import { Color } from '@trezor/theme';
+import { type Color } from '@trezor/theme';
 
 type AddressInfoMessageType = 'info' | 'warning';
 type AddressInfoMessageProps = {
     txId: TxKeyPath;
-    link: string;
+    link?: string;
     type?: AddressInfoMessageType;
 };
 
@@ -18,14 +18,14 @@ const stylesByType: Record<
     { color: Color; icon: IconName; iconColor: IconColor }
 > = {
     info: {
-        color: 'textSubdued',
+        color: 'contentSecondary',
         icon: 'info',
-        iconColor: 'textSubdued',
+        iconColor: 'contentSecondary',
     },
     warning: {
-        color: 'textAlertYellow',
+        color: 'contentWarning',
         icon: 'warning',
-        iconColor: 'iconAlertYellow',
+        iconColor: 'contentWarning',
     },
 };
 
@@ -41,15 +41,18 @@ export const AddressInfoMessage = ({ txId, link, type = 'info' }: AddressInfoMes
                         <Translation
                             id={txId}
                             values={{
-                                link: linkChunk => (
-                                    <Link
-                                        href={link}
-                                        label={linkChunk}
-                                        textVariant="body-xs"
-                                        isUnderlined
-                                        textColor={color}
-                                    />
-                                ),
+                                link: linkChunk =>
+                                    link ? (
+                                        <Link
+                                            href={link}
+                                            label={linkChunk}
+                                            textVariant="body-xs"
+                                            isUnderlined
+                                            textColor={color}
+                                        />
+                                    ) : (
+                                        linkChunk
+                                    ),
                             }}
                         />
                     </Text>

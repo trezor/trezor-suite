@@ -6,7 +6,7 @@ const legacyResults = [
     },
 ];
 
-export default {
+const tezosGetAddress: TestCase = {
     method: 'tezosGetAddress',
     setup: {
         mnemonic: 'mnemonic_12',
@@ -49,4 +49,6 @@ export default {
             result: false,
         },
     ].map(fixture => ({ ...fixture, legacyResults })),
-} satisfies TestCase;
+};
+
+export default tezosGetAddress;

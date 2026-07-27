@@ -3,7 +3,7 @@ import { accumulative } from './inputs/accumulative';
 import { branchAndBound } from './inputs/branchAndBound';
 import { split } from './outputs/split';
 import { tryConfirmed } from './tryconfirmed';
-import { CoinSelectRequest } from '../types';
+import { type CoinSelectRequest } from '../types';
 
 export function coinselect({ inputs, outputs, feeRate, ...options }: CoinSelectRequest) {
     if (options.sendMaxOutputIndex >= 0) {

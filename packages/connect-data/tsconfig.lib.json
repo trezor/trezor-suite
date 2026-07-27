@@ -1,10 +1,10 @@
 {
     "extends": "../../tsconfig.lib.json",
+    "include": ["./src", "./files"],
     "compilerOptions": {
         "outDir": "./lib",
-        "esModuleInterop": false,
+        "rootDir": "./src",
         "types": ["node", "chrome", "jest"]
     },
-    "include": ["./src"],
     "references": []
 }

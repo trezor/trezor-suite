@@ -1,15 +1,15 @@
-import { SendState, StakeState, sendFormActions } from '@suite-common/wallet-core';
-import { FormState, SelectedAccountLoaded } from '@suite-common/wallet-types';
+import { sendFormActions } from '@suite-common/wallet-core';
+import { type FormState } from '@suite-common/wallet-types';
 
 import { useDispatch } from 'src/hooks/suite';
-import { useTradingSellForm } from 'src/hooks/wallet/trading/form/useTradingSellForm';
+import { useTradingSellTradeActions } from 'src/hooks/wallet/trading/useTradingSellTradeActions';
 
-import { TransactionReviewModalProps } from './TransactionReviewModal';
 import { TransactionReviewModalBody } from './TransactionReviewModalBody';
+import { type TransactionReviewModalProps } from './TransactionReviewModalProps';
+import { type TxInfoState } from './utils';
 
 type TransactionReviewModalSellProps = {
-    selectedAccount: SelectedAccountLoaded;
-    txInfoState: SendState | StakeState;
+    txInfoState: TxInfoState;
     isRbfConfirmedError: boolean;
     cancelSignTx: () => void;
     precomposedForm?: FormState;
@@ -17,18 +17,17 @@ type TransactionReviewModalSellProps = {
 
 export const TransactionReviewModalSell = ({
     decision,
-    selectedAccount,
     txInfoState,
     cancelSignTx,
     isRbfConfirmedError,
     precomposedForm,
 }: TransactionReviewModalSellProps) => {
     const dispatch = useDispatch();
-    const tradingExchangeForm = useTradingSellForm({ selectedAccount, pageType: 'retry' });
+    const { sendTransaction } = useTradingSellTradeActions();
 
     const handleTryAgainSignTx = async () => {
         dispatch(sendFormActions.discardTransaction());
-        await tradingExchangeForm.sendTransaction();
+        await sendTransaction();
     };
 
     return (

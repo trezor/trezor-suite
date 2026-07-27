@@ -1,6 +1,9 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
-import TrezorConnect, { ConnectSettings, Device, UiEvent } from '@trezor/connect';
+import { vi } from 'vitest';
 
+// eslint-disable-next-line import/no-extraneous-dependencies
+import TrezorConnect, { type Device, type ThpSettings, type UiEvent } from '@trezor/connect';
+
+import { THP_CREDENTIALS } from '../../common-thp-credentials';
 import { getController, initTrezorConnect, restartEmu, setup } from '../../common.setup';
 
 describe('THP pairing', () => {
@@ -14,7 +17,7 @@ describe('THP pairing', () => {
         TrezorConnect.dispose();
     });
 
-    const waitForDevice = async (settings: Partial<ConnectSettings['thp']>) => {
+    const waitForDevice = async (settings: Partial<ThpSettings>) => {
         await initTrezorConnect(controller, {
             pendingTransportEvent: false,
             thp: {
@@ -52,7 +55,7 @@ describe('THP pairing', () => {
         });
 
     it('ThpPairing SkipPairing', async () => {
-        const spy = typeof jest !== 'undefined' ? jest.fn() : jasmine.createSpy('on.button');
+        const spy = vi.fn();
         const device = await waitForDevice({ pairingMethods: ['SkipPairing'] });
         TrezorConnect.on('ui-request_thp_pairing', spy);
 
@@ -97,29 +100,10 @@ describe('THP pairing', () => {
     it('ThpPairing with credentials (autoconnect: false)', async () => {
         const device = await waitForDevice({
             pairingMethods: ['CodeEntry'],
-            knownCredentials: [
-                {
-                    host_static_key:
-                        '0007070707070707070707070707070707070707070707070707070707070747',
-                    trezor_static_public_key:
-                        '566f6976fd42cafadf1b843ce4e6275c930d52efac878217df0ea2a23933b07d',
-                    credential:
-                        '0a180a064368726f6d6510001a0c5472657a6f722053756974651220884364860fbccd18f6c14890ee4cf427c6a1e7e7a4cba91866474b4b7d73cb00',
-                    autoconnect: false,
-                },
-                {
-                    host_static_key:
-                        '0007070707070707070707070707070707070707070707070707070707070747',
-                    trezor_static_public_key:
-                        'ca9a6e4682ac461c59d75a8625c05bf3a4af01e084abc5a7fe8ad126c2d6f772',
-                    credential:
-                        '0a1c0a0974657374733a65326510001a0d5472657a6f72436f6e6e65637412203a4826fcf4d107240c1b9aa0c4bec6abab95e50b35950b5da8a648da135ae96d',
-                    autoconnect: false,
-                },
-            ],
+            knownCredentials: THP_CREDENTIALS,
         });
 
-        const pairingSpy = typeof jest !== 'undefined' ? jest.fn() : jasmine.createSpy('pairing');
+        const pairingSpy = vi.fn();
         TrezorConnect.on('ui-request_thp_pairing', pairingSpy);
 
         const address = await TrezorConnect.getAddress({
@@ -134,9 +118,12 @@ describe('THP pairing', () => {
     it('ThpPairing with credentials (autoconnect: true)', async () => {
         const device = await waitForDevice({ pairingMethods: ['CodeEntry'] });
 
-        const credentialsSpy =
-            typeof jest !== 'undefined' ? jest.fn() : jasmine.createSpy('credentials');
-        TrezorConnect.on('device-thp_credentials_changed', credentialsSpy);
+        const credentialsSpy = vi.fn();
+        TrezorConnect.on('device-thp_credentials_changed', event => {
+            credentialsSpy(event);
+            // uncomment this line to generate fixtures for e2e/common-thp-credentials.ts
+            // console.log('Credentials', event.credentials);
+        });
 
         TrezorConnect.on('ui-request_thp_pairing', async event => {
             const state = await getPairingInfo(event);
@@ -177,7 +164,7 @@ describe('THP pairing', () => {
     const cancelOnHost = async () => {
         // events are emitted before ButtonAck is sent to device
         await new Promise(resolve => setTimeout(resolve, 10));
-        TrezorConnect.cancel(CANCEL_ERR);
+        TrezorConnect.cancel({ reason: CANCEL_ERR });
     };
     const buttonRequestHandler =
         (cancelOnButtonRequestName?: string) => (br: { name?: string }) => {
@@ -208,7 +195,7 @@ describe('THP pairing', () => {
         if (result.success) throw ERR;
 
         expect(statusChangeEvents).toEqual(['started', 'invalid-tag']);
-        expect(result.payload.code).toMatch('Device_ThpPairingTagInvalid');
+        expect(result.error.code).toMatch('Device_ThpPairingTagInvalid');
     });
 
     it('ThpPairing cancel workflow', async () => {
@@ -230,7 +217,7 @@ describe('THP pairing', () => {
         TrezorConnect.on('ui-request_thp_pairing', cancelOnHost);
         result = await TrezorConnect.getFeatures({ device });
         if (result.success) throw ERR;
-        expect(result.payload.error).toMatch(CANCEL_ERR);
+        expect(result.error.message).toMatch(CANCEL_ERR);
         expect(statusChangeEvents).toEqual(expectedStatusChangeEvents(1));
 
         // Emulate user interaction delay in order to let the device recover with ThpTransportBusy
@@ -243,7 +230,7 @@ describe('THP pairing', () => {
         });
         result = await TrezorConnect.getFeatures({ device });
         if (result.success) throw ERR;
-        expect(result.payload.error).toMatch(FW_CANCEL_ERR);
+        expect(result.error.message).toMatch(FW_CANCEL_ERR);
         expect(statusChangeEvents).toEqual(expectedStatusChangeEvents(2));
 
         // Emulate user interaction delay in order to let the device recover with ThpTransportBusy
@@ -256,7 +243,7 @@ describe('THP pairing', () => {
         });
         result = await TrezorConnect.getFeatures({ device });
         if (result.success) throw ERR;
-        expect(result.payload.error).toMatch(FW_CANCEL_ERR);
+        expect(result.error.message).toMatch(FW_CANCEL_ERR);
         expect(statusChangeEvents).toEqual(expectedStatusChangeEvents(3));
 
         // 3. reject pairing confirmation from host
@@ -264,7 +251,7 @@ describe('THP pairing', () => {
         TrezorConnect.on('ui-button', cancelOnHost);
         result = await TrezorConnect.getFeatures({ device });
         if (result.success) throw ERR;
-        expect(result.payload.error).toMatch(FW_CANCEL_ERR); // canceled gracefully on Trezor
+        expect(result.error.message).toMatch(FW_CANCEL_ERR); // canceled gracefully on Trezor
         expect(statusChangeEvents).toEqual(expectedStatusChangeEvents(4));
 
         // check if pairing is still responsive
@@ -321,7 +308,7 @@ describe('THP pairing', () => {
             showOnTrezor: true,
         });
         if (result.success) throw ERR;
-        expect(result.payload.error).toMatch(CANCEL_ERR);
+        expect(result.error.message).toMatch(CANCEL_ERR);
 
         // 4. reject ButtonRequest from Trezor
         TrezorConnect.removeAllListeners('ui-button');
@@ -334,7 +321,7 @@ describe('THP pairing', () => {
             showOnTrezor: true,
         });
         if (result.success) throw ERR;
-        expect(result.payload.error).toMatch(FW_CANCEL_ERR);
+        expect(result.error.message).toMatch(FW_CANCEL_ERR);
 
         // 5. reject passphrase from host
         TrezorConnect.removeAllListeners('ui-request_passphrase');
@@ -350,7 +337,7 @@ describe('THP pairing', () => {
             showOnTrezor: true,
         });
         if (result.success) throw ERR;
-        expect(result.payload.error).toMatch(CANCEL_ERR);
+        expect(result.error.message).toMatch(CANCEL_ERR);
 
         // 6. reject passphrase from Trezor
         TrezorConnect.removeAllListeners('ui-request_passphrase');
@@ -366,7 +353,7 @@ describe('THP pairing', () => {
             showOnTrezor: true,
         });
         if (result.success) throw ERR;
-        expect(result.payload.error).toMatch(FW_CANCEL_ERR);
+        expect(result.error.message).toMatch(FW_CANCEL_ERR);
 
         // and finally check if device is still responsive
         TrezorConnect.removeAllListeners('ui-button');

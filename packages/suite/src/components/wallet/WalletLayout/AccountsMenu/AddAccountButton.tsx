@@ -1,9 +1,10 @@
 import { Translation } from '@suite/intl';
-import { Button, Icon, TOOLTIP_DELAY_NORMAL, Tooltip } from '@trezor/components';
+import { openModal } from '@suite/modal';
+import { Icon, Row, ShortcutBadge, TOOLTIP_DELAY_NORMAL, Tooltip } from '@trezor/components';
+import { PlusIcon } from '@trezor/icons';
 
-import { openModal } from 'src/actions/suite/modalActions';
 import { useDiscovery, useDispatch } from 'src/hooks/suite';
-import { TrezorDevice } from 'src/types/suite';
+import { type TrezorDevice } from 'src/types/suite';
 
 const getExplanationMessage = (device: TrezorDevice | undefined, discoveryIsRunning: boolean) => {
     if (device && !device.connected) {
@@ -15,15 +16,14 @@ const getExplanationMessage = (device: TrezorDevice | undefined, discoveryIsRunn
 
 type AddAccountButtonProps = {
     device: TrezorDevice | undefined;
-    isIconOnly?: boolean;
 };
 
-export const AddAccountButton = ({ device, isIconOnly }: AddAccountButtonProps) => {
+export const AddAccountButton = ({ device }: AddAccountButtonProps) => {
     const { isDiscoveryRunning } = useDiscovery();
     const dispatch = useDispatch();
 
     // TODO: add more cases when adding account is not possible
-    const addAccountDisabled = isDiscoveryRunning || !device || !device.connected;
+    const addAccountDisabled = isDiscoveryRunning || !device?.connected;
     const tooltipMessage = getExplanationMessage(device, isDiscoveryRunning);
     const dataTestId = '@account-menu/add-account';
 
@@ -40,11 +40,19 @@ export const AddAccountButton = ({ device, isIconOnly }: AddAccountButtonProps) 
         );
     };
 
-    const ButtonComponent = isIconOnly ? (
-        <Tooltip isActive={!tooltipMessage} content={<Translation id="TR_ADD_ACCOUNT" />}>
+    const ButtonComponent = (
+        <Tooltip
+            isActive={!tooltipMessage}
+            content={
+                <Row gap={12}>
+                    <Translation id="TR_ADD_ACCOUNT" />
+                    <ShortcutBadge shortcut={['ALT', 'KEY_A']} isInverse />
+                </Row>
+            }
+        >
             <Icon
                 onClick={device ? handleOnClick : undefined}
-                name="plus"
+                as={PlusIcon}
                 size={16}
                 {...(addAccountDisabled
                     ? { isDisabled: true }
@@ -52,18 +60,6 @@ export const AddAccountButton = ({ device, isIconOnly }: AddAccountButtonProps) 
                 data-testid={dataTestId}
             />
         </Tooltip>
-    ) : (
-        <Button
-            onClick={device ? handleOnClick : undefined}
-            iconLeft="plus"
-            isDisabled={addAccountDisabled}
-            intent="neutral"
-            priority="secondary"
-            width="100%"
-            data-testid={dataTestId}
-        >
-            <Translation id="TR_ADD_ACCOUNT" />
-        </Button>
     );
 
     return (

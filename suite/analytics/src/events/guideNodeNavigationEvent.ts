@@ -9,15 +9,18 @@ type Attributes = {
 
 export const guideNodeNavigationEvent: EventDef<Attributes, EventType.GuideNodeNavigation> = {
     name: EventType.GuideNodeNavigation,
-    descriptionTrigger: 'Fired on navigation to categories and articles in Guide',
+    descriptionTrigger: 'User navigates to categories and articles within the in-app Guide',
     changelog: [{ version: '1.11.0', notes: 'added' }],
 
     attributes: {
         type: {
             changelog: [{ version: '1.11.0', notes: 'added' }],
+            description:
+                'The type of navigation target: `page` for individual articles, `category` for guide categories',
         },
         id: {
             changelog: [{ version: '1.11.0', notes: 'added' }],
+            description: 'The identifier of the guide page or category being navigated to',
         },
     },
 };

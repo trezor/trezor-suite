@@ -1,5 +1,5 @@
-import { EvmAddress } from '../../../types/evm';
-import { IssueCode } from '../../../types/validation';
+import { type EvmAddress, asEvmAddress } from '../../../types/evm';
+import { type IssueCode } from '../../../types/validation';
 
 type IsValidAddressTestCase = {
     description: string;
@@ -20,9 +20,9 @@ type IsSameAsSenderTestCase = {
     expected: IssueCode | null;
 };
 
-const SENDER = '0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa' as EvmAddress;
+const SENDER = asEvmAddress('0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa');
 
-export const isValidAddressTestCases: IsValidAddressTestCase[] = [
+export const findAddressIssueTestCases: IsValidAddressTestCase[] = [
     {
         description: 'valid lowercase address',
         input: '0x1111111111111111111111111111111111111111',
@@ -60,68 +60,68 @@ export const isValidAddressTestCases: IsValidAddressTestCase[] = [
     },
 ];
 
-export const isZeroAddressTestCases: IsZeroAddressTestCase[] = [
+export const findZeroAddressIssueTestCases: IsZeroAddressTestCase[] = [
     {
         description: 'zero address returns ZERO_ADDRESS',
-        input: '0x0000000000000000000000000000000000000000' as EvmAddress,
+        input: asEvmAddress('0x0000000000000000000000000000000000000000'),
         expected: 'ZERO_ADDRESS',
     },
     {
         description: 'non-zero address returns null',
-        input: '0x1111111111111111111111111111111111111111' as EvmAddress,
+        input: asEvmAddress('0x1111111111111111111111111111111111111111'),
         expected: null,
     },
 ];
 
-export const isSameAsSenderTestCases: IsSameAsSenderTestCase[] = [
+export const findSelfAddressIssueTestCases: IsSameAsSenderTestCase[] = [
     {
         description: 'same address same case returns SELF_ADDRESS',
-        input: '0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa' as EvmAddress,
+        input: asEvmAddress('0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'),
         context: { sender: SENDER },
         expected: 'SELF_ADDRESS',
     },
     {
         description: 'same address different case returns SELF_ADDRESS',
-        input: '0xAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA' as EvmAddress,
+        input: asEvmAddress('0xAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'),
         context: { sender: SENDER },
         expected: 'SELF_ADDRESS',
     },
     {
         description: 'different address returns null',
-        input: '0x1111111111111111111111111111111111111111' as EvmAddress,
+        input: asEvmAddress('0x1111111111111111111111111111111111111111'),
         context: { sender: SENDER },
         expected: null,
     },
     {
         description: 'no sender in context returns null',
-        input: '0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa' as EvmAddress,
+        input: asEvmAddress('0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'),
         context: {},
         expected: null,
     },
 ];
 
-export const isNotSameAsSenderTestCases: IsSameAsSenderTestCase[] = [
+export const findSenderMismatchIssueTestCases: IsSameAsSenderTestCase[] = [
     {
         description: 'different address returns NOT_SAME_AS_SENDER',
-        input: '0x1111111111111111111111111111111111111111' as EvmAddress,
+        input: asEvmAddress('0x1111111111111111111111111111111111111111'),
         context: { sender: SENDER },
         expected: 'NOT_SAME_AS_SENDER',
     },
     {
         description: 'same address different case returns null',
-        input: '0xAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA' as EvmAddress,
+        input: asEvmAddress('0xAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'),
         context: { sender: SENDER },
         expected: null,
     },
     {
         description: 'same address returns null',
-        input: '0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa' as EvmAddress,
+        input: asEvmAddress('0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'),
         context: { sender: SENDER },
         expected: null,
     },
     {
         description: 'no sender in context returns null',
-        input: '0x1111111111111111111111111111111111111111' as EvmAddress,
+        input: asEvmAddress('0x1111111111111111111111111111111111111111'),
         context: {},
         expected: null,
     },
@@ -135,38 +135,38 @@ type IsNotWhitelistedTestCase = {
 };
 
 const WHITELIST: EvmAddress[] = [
-    '0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa' as EvmAddress,
-    '0xbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb' as EvmAddress,
+    asEvmAddress('0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'),
+    asEvmAddress('0xbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb'),
 ];
 
-export const isNotWhitelistedTestCases: IsNotWhitelistedTestCase[] = [
+export const findWhitelistIssueTestCases: IsNotWhitelistedTestCase[] = [
     {
         description: 'address in whitelist returns null',
-        input: '0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa' as EvmAddress,
+        input: asEvmAddress('0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'),
         context: { addressWhitelist: WHITELIST },
         expected: null,
     },
     {
         description: 'address not in whitelist returns ADDRESS_NOT_WHITELISTED',
-        input: '0x1111111111111111111111111111111111111111' as EvmAddress,
+        input: asEvmAddress('0x1111111111111111111111111111111111111111'),
         context: { addressWhitelist: WHITELIST },
         expected: 'ADDRESS_NOT_WHITELISTED',
     },
     {
         description: 'address in whitelist different case returns null',
-        input: '0xAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA' as EvmAddress,
+        input: asEvmAddress('0xAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'),
         context: { addressWhitelist: WHITELIST },
         expected: null,
     },
     {
         description: 'no whitelist in context returns null',
-        input: '0x1111111111111111111111111111111111111111' as EvmAddress,
+        input: asEvmAddress('0x1111111111111111111111111111111111111111'),
         context: {},
         expected: null,
     },
     {
         description: 'empty whitelist rejects all addresses',
-        input: '0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa' as EvmAddress,
+        input: asEvmAddress('0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'),
         context: { addressWhitelist: [] },
         expected: 'ADDRESS_NOT_WHITELISTED',
     },

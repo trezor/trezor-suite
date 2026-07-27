@@ -1,23 +1,23 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
 import styled, { css } from 'styled-components';
 
 import { Column, IconButton, Row, Text } from '@trezor/components';
-import { DeviceModelInternal } from '@trezor/device-utils';
-import { borders, spacings, spacingsPx } from '@trezor/theme';
+import { type DeviceModelInternal } from '@trezor/device-utils';
+import { XIcon } from '@trezor/icons';
 
 import { RotateDeviceImage } from '../RotateDeviceImage/RotateDeviceImage';
 
 const Step = styled.div<{ $isActive: boolean }>`
     flex: 1;
-    height: ${spacingsPx.xxs};
-    border-radius: ${borders.radii.xxs};
-    background: ${({ theme }) => theme.backgroundNeutralSubdued};
+    height: 4px;
+    border-radius: 4px;
+    background: ${({ theme }) => theme.elementFillNeutralBold};
 
     ${({ $isActive }) =>
         $isActive &&
         css`
-            background: ${({ theme }) => theme.iconPrimaryDefault};
+            background: ${({ theme }) => theme.contentBrand};
         `}
 `;
 
@@ -77,7 +77,7 @@ export const ConfirmOnDevicePillContent = ({
                 )}
 
                 {hasSteps && activeStep <= steps && (
-                    <Row gap={spacings.xxs} width={70} margin={{ top: spacings.xs }}>
+                    <Row gap={4} width={70} margin={{ top: 8 }}>
                         {Array.from(Array(steps).keys()).map((step, index) => (
                             <Step
                                 key={step}
@@ -93,12 +93,13 @@ export const ConfirmOnDevicePillContent = ({
 
             {onCancel && (
                 <IconButton
-                    icon="x"
+                    icon={XIcon}
                     onClick={onCancel}
                     data-testid="@confirm-on-device/close-button"
                     intent="neutral"
                     priority="secondary"
                     size="small"
+                    tooltip={{ isActive: false }}
                 />
             )}
         </Row>

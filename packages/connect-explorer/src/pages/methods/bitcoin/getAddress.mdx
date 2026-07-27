@@ -1,5 +1,5 @@
-import { Bundle } from '@trezor/connect/src/types';
-import { GetAddress } from '@trezor/connect/src/types/api/getAddress';
+import { Bundle } from '@trezor/connect-common/src/types';
+import { GetAddress } from '@trezor/connect-common/src/types/api/account/getAddress';
 
 import { ApiPlayground } from '../../../components/ApiPlayground';
 import { CommonParamsLink } from '../../../components/CommonParamsLink';
@@ -20,7 +20,7 @@ export const paramDescriptions = {
     path: 'minimum length is `5`. [read more](/details/path)',
     address: 'address for validation (read `Handle button request` section below)',
     showOnTrezor: 'determines if address will be displayed on device. Default is set to `true`',
-    coin: 'determines network definition specified in [coins.json](https://github.com/trezor/trezor-suite/blob/develop/packages/connect-data/files/coins.json) file. Coin `shortcut`, `name` or `label` can be used. If `coin` is not set API will try to get network definition from `path`.',
+    coin: 'determines network definition specified in [coins.json](https://github.com/trezor/trezor-suite/blob/develop/packages/connect-data/files/coins.json) file. Coin `shortcut` (a `CoinSymbol`, e.g. `btc`) is used. If `coin` is not set API will try to get network definition from `path`.',
     crossChain:
         'Advanced feature. Use it only if you are know what you are doing. Allows to generate address between chains. For example Bitcoin path on Litecoin network will display cross chain address in Litecoin format.',
     chunkify:
@@ -71,26 +71,9 @@ TrezorConnect.getAddress({
 });
 ```
 
-Validate address using custom UI inside of your application:
-
-```javascript
-import TrezorConnect, { UI } from '@trezor/connect';
-
-TrezorConnect.on(UI.ADDRESS_VALIDATION, data => {
-    console.log('Handle button request', data.address, data.serializedPath);
-    // here you can display custom UI inside of your app
-});
-
-const result = await TrezorConnect.getAddress({
-    path: "m/49'/0'/0'/0/0",
-    address: '3L6TyTisPBmrDAj6RoKmDzNnj4eQi54gD2',
-});
-// dont forget to hide your custom UI after you get the result!
-```
-
 ### Result
 
-[Address type](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/params.ts)
+[Address type](https://github.com/trezor/trezor-suite/blob/develop/packages/connect-common/src/types/params.ts)
 
 Result with only one address
 
@@ -123,8 +106,8 @@ Error
 ```javascript
 {
     success: false,
-    payload: {
-        error: string // error message
+    error: {
+        message: string // error message
     }
 }
 ```

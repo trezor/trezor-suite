@@ -1,71 +1,56 @@
-import { useEffect } from 'react';
-
-import { EarnAccountRef, EarnFlow, EarnProvider } from '@suite-common/suite-types/src/staking';
+import {
+    EarnFlow,
+    type EarnProvider,
+    type EarnYieldContext,
+} from '@suite-common/suite-types/src/staking';
+import { type Account } from '@suite-common/wallet-types';
 import { exhaustive } from '@trezor/type-utils';
 
 import { StakingEarnProviderConsentModal } from './StakingEarnProviderConsentModal';
 import { UpdateEarnProviderConsentModal } from './UpdateEarnProviderConsentModal';
 import { YieldEarnProviderConsentModal } from './YieldEarnProviderConsentModal';
-import { useEarnModalAccount } from '../common/useEarnModalAccount';
 
 interface EarnProviderConsentModalProps {
     flow: EarnFlow;
     provider: EarnProvider;
+    account: Account;
+    yieldContext?: EarnYieldContext;
     onCancel: () => void;
-    account?: EarnAccountRef;
-    yieldId?: string;
-    tokenContractAddress?: string;
 }
 
 export const EarnProviderConsentModal = ({
     flow,
     provider,
-    onCancel,
     account,
-    yieldId,
-    tokenContractAddress,
+    yieldContext,
+    onCancel,
 }: EarnProviderConsentModalProps) => {
-    const selectedAccount = useEarnModalAccount({ account, shouldSyncSelectedAccount: true });
-
-    useEffect(() => {
-        if (!selectedAccount) {
-            onCancel();
-        }
-    }, [selectedAccount, onCancel]);
-
-    if (!selectedAccount) {
-        return null;
-    }
-
     switch (flow) {
         case EarnFlow.Stake:
             return (
                 <StakingEarnProviderConsentModal
+                    account={account}
                     onCancel={onCancel}
                     provider={provider}
-                    accountRef={account}
-                    yieldId={yieldId}
-                    tokenContractAddress={tokenContractAddress}
+                    yieldContext={yieldContext}
                 />
             );
         case EarnFlow.Yield:
             return (
                 <YieldEarnProviderConsentModal
+                    account={account}
                     onCancel={onCancel}
                     provider={provider}
-                    accountRef={account}
-                    yieldId={yieldId}
-                    tokenContractAddress={tokenContractAddress}
+                    yieldContext={yieldContext}
                 />
             );
         case EarnFlow.UpdateProvider:
             return (
                 <UpdateEarnProviderConsentModal
+                    account={account}
                     onCancel={onCancel}
                     provider={provider}
-                    accountRef={account}
-                    yieldId={yieldId}
-                    tokenContractAddress={tokenContractAddress}
+                    yieldContext={yieldContext}
                 />
             );
         default:

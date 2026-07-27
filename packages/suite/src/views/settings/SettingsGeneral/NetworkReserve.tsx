@@ -1,26 +1,27 @@
-import { FormattedList } from 'react-intl';
-
-import { events } from '@suite/analytics';
+import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { LearnMoreButton } from '@suite/external-links';
 import { Translation } from '@suite/intl';
-import { networksCollection } from '@suite-common/wallet-config';
+import { Anchor, SettingsAnchor } from '@suite/router';
+import { useServices } from '@suite-common/dependency-injection';
+import { getNetworksWithNativeTokenReserve } from '@suite-common/wallet-config';
 import { selectIsNetworkReserveEnabled, setNetworkReserve } from '@suite-common/wallet-core';
-import { Switch } from '@trezor/components';
+import { Column, Switch } from '@trezor/components';
+import {
+    ActionColumn,
+    SectionItem,
+    SettingsRequirementBanner,
+    TextColumn,
+} from '@trezor/product-components';
 import { NETWORK_RESERVE_URL } from '@trezor/urls';
 
-import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
-import { ActionColumn, TextColumn } from 'src/components/suite';
-import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { useAnalytics } from 'src/support/useAnalytics';
 
 export const NetworkReserve = () => {
-    const analytics = useAnalytics();
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
     const dispatch = useDispatch();
     const isNetworkReserveEnabled = useSelector(selectIsNetworkReserveEnabled);
 
-    const supportedNetworks = networksCollection
-        .filter(network => !!network.nativeTokenReserve)
-        .map(network => network.name);
+    const supportedNetworks = getNetworksWithNativeTokenReserve();
 
     const handleSwitchChange = () => {
         const nextIsNetworkReserveEnabled = !isNetworkReserveEnabled;
@@ -34,24 +35,38 @@ export const NetworkReserve = () => {
     };
 
     return (
-        <SettingsSectionItem anchorId={SettingsAnchor.NetworkReserve}>
-            <TextColumn
-                title={<Translation id="TR_NETWORK_RESERVE" />}
-                description={
-                    <Translation
-                        id="TR_NETWORK_RESERVE_DESCRIPTION"
-                        values={{
-                            supportedNetworks: (
-                                <FormattedList type="conjunction" value={supportedNetworks} />
-                            ),
-                        }}
+        <Anchor anchorId={SettingsAnchor.NetworkReserve}>
+            {({ anchorId, anchorRef, shouldHighlight }) => (
+                <SectionItem
+                    data-testid={anchorId}
+                    ref={anchorRef}
+                    shouldHighlight={shouldHighlight}
+                >
+                    <TextColumn
+                        title={<Translation id="TR_NETWORK_RESERVE" />}
+                        description={
+                            <Translation
+                                id="TR_NETWORK_RESERVE_DESCRIPTION"
+                                values={{ supportedNetworks }}
+                            />
+                        }
+                        bottomContent={
+                            <Column gap={8} alignItems="flex-start">
+                                <SettingsRequirementBanner>
+                                    <Translation
+                                        id="TR_MEV_AVAILABLE_ON"
+                                        values={{ supportedNetworks }}
+                                    />
+                                </SettingsRequirementBanner>
+                                <LearnMoreButton url={NETWORK_RESERVE_URL} />
+                            </Column>
+                        }
                     />
-                }
-                buttonLink={NETWORK_RESERVE_URL}
-            />
-            <ActionColumn>
-                <Switch isChecked={isNetworkReserveEnabled} onChange={handleSwitchChange} />
-            </ActionColumn>
-        </SettingsSectionItem>
+                    <ActionColumn>
+                        <Switch isChecked={isNetworkReserveEnabled} onChange={handleSwitchChange} />
+                    </ActionColumn>
+                </SectionItem>
+            )}
+        </Anchor>
     );
 };

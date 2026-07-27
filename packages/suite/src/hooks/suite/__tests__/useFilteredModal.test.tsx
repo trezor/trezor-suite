@@ -2,7 +2,8 @@ import { Provider } from 'react-redux';
 
 import { render } from '@testing-library/react';
 
-import type { State as ModalState } from 'src/reducers/suite/modalReducer';
+import type { State as ModalState } from '@suite/modal';
+
 import { configureStore } from 'src/support/tests/configureStore';
 
 import { filters, fixtures } from '../__fixtures__/useFilteredModal';

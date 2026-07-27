@@ -5,8 +5,8 @@ import styled from 'styled-components';
 import { Translation } from '@suite/intl';
 import type { PasswordEntry as PasswordEntryType } from '@suite-common/metadata-types';
 import { Button, Column, H3, Modal, Paragraph } from '@trezor/components';
-import TrezorConnect, { DeviceUniquePath } from '@trezor/connect';
-import { spacings, spacingsPx } from '@trezor/theme';
+import TrezorConnect, { type DeviceUniquePath } from '@trezor/connect';
+import { PencilIcon, TrashIcon } from '@trezor/icons';
 
 import { EntryForm } from './EntryForm';
 import { getDisplayKey } from './passwords';
@@ -15,10 +15,10 @@ import { PATH } from '../metadataPasswordsConstants';
 import * as metadataUtils from '../metadataUtils';
 
 export const PasswordEntryRow = styled.div`
-    margin-bottom: ${spacingsPx.xxs};
+    margin-bottom: 4px;
     display: grid;
     grid-template-columns: repeat(5, 1fr);
-    margin-left: ${spacingsPx.xs};
+    margin-left: 8px;
 `;
 
 export const PasswordEntryCol = styled.div`
@@ -30,7 +30,7 @@ export const PasswordEntryCol = styled.div`
 const Row = styled.div`
     display: flex;
     flex-direction: row;
-    gap: ${spacingsPx.xxs};
+    gap: 4px;
 `;
 
 interface PasswordEntryProps extends PasswordEntryType {
@@ -104,8 +104,8 @@ export const PasswordEntry = ({
         <>
             {confirmRemove != null && (
                 <Modal
-                    variant="destructive"
-                    iconName="trash"
+                    intent="critical"
+                    icon={TrashIcon}
                     bottomContent={
                         <>
                             <Modal.Button
@@ -127,7 +127,7 @@ export const PasswordEntry = ({
                         </>
                     }
                 >
-                    <Column gap={spacings.xs}>
+                    <Column gap={8}>
                         <H3>Remove password entry</H3>
                         <Paragraph>{`Really remove ${note || title}?`}</Paragraph>
                     </Column>
@@ -179,7 +179,7 @@ export const PasswordEntry = ({
                                         type="button"
                                         intent="neutral"
                                         priority="secondary"
-                                        iconLeft="pencil"
+                                        iconLeft={PencilIcon}
                                     >
                                         Edit
                                     </Button>

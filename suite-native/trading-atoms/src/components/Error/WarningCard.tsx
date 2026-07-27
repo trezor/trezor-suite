@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
 import { Card, PictogramTitleHeader, Text, VStack } from '@suite-native/atoms';
 
@@ -17,7 +17,7 @@ export const WarningCard = ({ title, description, children }: WarningCardProps) 
                 titleVariant="body-md-strong"
                 subtitle={
                     !!description && (
-                        <Text variant="body-sm" color="textSubdued" textAlign="center">
+                        <Text variant="body-sm" color="contentSecondary" textAlign="center">
                             {description}
                         </Text>
                     )

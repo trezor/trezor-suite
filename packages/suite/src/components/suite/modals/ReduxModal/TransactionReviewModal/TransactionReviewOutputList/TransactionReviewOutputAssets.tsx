@@ -1,18 +1,19 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
-import { CryptoId } from 'invity-api';
+import { type CryptoId } from 'invity-api';
 
+import { Address } from '@suite/address';
+import { Translation } from '@suite/intl';
 import { selectTradingCoinSymbolByCryptoId, toTokenCryptoId } from '@suite-common/trading';
 import { getCoingeckoId, getNetwork } from '@suite-common/wallet-config';
 import {
-    FormStateTradingCryptoCurrency,
-    FormStateTradingFiatCurrency,
-    TokenAddress,
+    type FormStateTradingCryptoCurrency,
+    type FormStateTradingFiatCurrency,
+    type TokenAddress,
 } from '@suite-common/wallet-types';
+import { localizeNumber } from '@suite-common/wallet-utils';
 import { Card, Column, Divider, H4, InfoItem, Row, Text } from '@trezor/components';
-import { mapPaddingTypeToPadding } from '@trezor/components/src/components/Card/utils';
-import { AssetLogo, CoinLogo, isCoinSymbol } from '@trezor/product-components';
-import { spacings } from '@trezor/theme';
+import { TokenIcon, isCoinSymbol, shouldShowNetworkIcon } from '@trezor/product-components';
 
 import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
 import { TransactionReviewOutputStatus } from 'src/components/suite/modals/ReduxModal/TransactionReviewModal/TransactionReviewOutputList/TransactionReviewOutputStatus';
@@ -22,7 +23,8 @@ export type TransactionReviewOutputAssetsProps = {
     title: ReactNode;
     state: 'active' | 'confirmed' | 'unconfirmed';
     send: FormStateTradingCryptoCurrency;
-    receive: FormStateTradingCryptoCurrency | FormStateTradingFiatCurrency;
+    receive?: FormStateTradingCryptoCurrency | FormStateTradingFiatCurrency;
+    receiveAddress?: string;
 };
 
 type TransactionReviewOutputAssetsCryptoCurrencyProps = {
@@ -41,38 +43,48 @@ const TransactionReviewOutputAssetsCryptoCurrency = ({
     const { symbol, contractAddress, amount } = cryptoCurrency;
     const network = getNetwork(symbol);
     const isTokenAmount = !!cryptoCurrency.contractAddress;
+    const formattedAmount = localizeNumber(amount, 'en-US');
 
     const cryptoId = contractAddress
         ? toTokenCryptoId(symbol, contractAddress)
         : (getCoingeckoId(symbol) as CryptoId);
-    const displaySymbol = useSelector(state => selectTradingCoinSymbolByCryptoId(state, cryptoId));
+    const displaySymbol = useSelector(state =>
+        contractAddress
+            ? selectTradingCoinSymbolByCryptoId(state, cryptoId)
+            : network.displaySymbol,
+    );
 
-    const getCoinLogo = () =>
-        isCoinSymbol(symbol) ? (
-            <CoinLogo size={20} symbol={symbol} type="tokenWithNetwork" />
-        ) : null;
+    const renderAssetLogo = () => {
+        if (contractAddress) {
+            return (
+                <TokenIcon
+                    size={24}
+                    symbol={symbol}
+                    contractAddress={contractAddress}
+                    placeholder={displaySymbol ?? ''}
+                    showNetworkIcon={shouldShowNetworkIcon(symbol, contractAddress)}
+                />
+            );
+        }
+
+        if (isCoinSymbol(symbol)) {
+            return <TokenIcon size={24} symbol={symbol} showNetworkIcon />;
+        }
+
+        return null;
+    };
 
     return (
         <InfoItem
             label={
-                <Row alignItems="center" gap={spacings.sm}>
-                    {network.coingeckoId ? (
-                        <AssetLogo
-                            size={20}
-                            coingeckoId={network.coingeckoId}
-                            symbol={symbol}
-                            contractAddress={contractAddress}
-                            placeholder={displaySymbol ?? ''}
-                        />
-                    ) : (
-                        getCoinLogo()
-                    )}
+                <Row alignItems="center" gap={12} margin={{ left: 32 }}>
+                    {renderAssetLogo()}
                     <Text
                         intent={type === 'receive' ? 'brand' : 'critical'}
                         data-testid={`@modal/assets/${type}/crypto`}
                     >
                         {type === 'receive' ? ' + ' : ' - '}
-                        {amount} {displaySymbol}
+                        {formattedAmount} {displaySymbol}
                     </Text>
                 </Row>
             }
@@ -104,11 +116,11 @@ const TransactionReviewOutputAssetsTo = ({ receive }: TransactionReviewOutputAss
             <InfoItem
                 label={
                     <Text
-                        margin={{ left: spacings.xxl }}
+                        margin={{ left: 32 }}
                         intent="brand"
                         data-testid="@modal/assets/receive/label"
                     >
-                        + {receive.amount} {receive.fiatCurrency}
+                        + {localizeNumber(receive.amount, 'en-US')} {receive.fiatCurrency}
                     </Text>
                 }
                 data-testid="@modal/assets/receive"
@@ -125,31 +137,65 @@ export const TransactionReviewOutputAssets = ({
     title,
     send,
     receive,
+    receiveAddress,
     state,
 }: TransactionReviewOutputAssetsProps) => (
-    <Card
-        paddingType="none"
-        fillType={state === 'confirmed' ? 'flat' : 'default'}
-        header={
-            <Row gap={spacings.sm} padding={mapPaddingTypeToPadding({ paddingType: 'small' })}>
-                <TransactionReviewOutputStatus state={state} />
-                <H4
-                    margin={{ left: spacings.xxs }}
-                    typographyStyle={state !== 'unconfirmed' ? 'body-sm-strong' : 'body-sm'}
-                >
-                    {title}
-                </H4>
-            </Row>
-        }
-    >
-        <Column>
-            <Column padding={mapPaddingTypeToPadding({ paddingType: 'small' })}>
-                <TransactionReviewOutputAssetsCryptoCurrency cryptoCurrency={send} type="send" />
+    <>
+        <Card
+            paddingType="none"
+            type={state === 'confirmed' ? 'contrast' : 'raised'}
+            header={
+                <Row gap={12} padding={12}>
+                    <TransactionReviewOutputStatus state={state} />
+                    <H4
+                        margin={{ left: 4 }}
+                        typographyStyle={state !== 'unconfirmed' ? 'body-sm-strong' : 'body-sm'}
+                    >
+                        {title}
+                    </H4>
+                </Row>
+            }
+        >
+            <Column>
+                <Column padding={12}>
+                    <TransactionReviewOutputAssetsCryptoCurrency
+                        cryptoCurrency={send}
+                        type="send"
+                    />
+                </Column>
+                {receive && (
+                    <>
+                        <Divider margin={{}} />
+                        <Column padding={12}>
+                            <TransactionReviewOutputAssetsTo receive={receive} />
+                        </Column>
+                    </>
+                )}
+                {receiveAddress && (
+                    <>
+                        <Divider margin={{}} />
+                        <Column padding={12}>
+                            <InfoItem
+                                label={
+                                    <Text intent="neutral" padding={{ left: 32 }}>
+                                        <Translation id="TR_RECIPIENT" />
+                                    </Text>
+                                }
+                                direction="row"
+                                verticalAlignment="start"
+                            >
+                                <Address
+                                    typographyStyle="body-sm"
+                                    value={receiveAddress}
+                                    isChunked={false}
+                                    isDeviceRendered
+                                    data-testid="@modal/assets/receive/address"
+                                />
+                            </InfoItem>
+                        </Column>
+                    </>
+                )}
             </Column>
-            <Divider margin={{}} />
-            <Column padding={mapPaddingTypeToPadding({ paddingType: 'small' })}>
-                <TransactionReviewOutputAssetsTo receive={receive} />
-            </Column>
-        </Column>
-    </Card>
+        </Card>
+    </>
 );

@@ -1,6 +1,3 @@
-export const CUSTOM_FEE = 'custom' as const;
-export const FIRST_OUTPUT_ID = 0;
-
 // A popular choice is to use 0xFFFFFFFD for your sequence fields,
 // as this enables both the locktime field (in case you want to use it)
 // and also replace-by-fee (which is generally useful).
@@ -10,7 +7,6 @@ export const BTC_RBF_SEQUENCE = 0xffffffff - 2;
 export const BTC_LOCKTIME_SEQUENCE = 0xffffffff - 1;
 
 export const BTC_LOCKTIME_VALUE = 500000000; // if locktime is equal/greater than this then it's a timestamp
-export const XRP_FLAG = 0x80000000;
 export const U_INT_32 = 0xffffffff;
 
 export const ETH_SPEED_UP_TX_MULTIPLIER = '1.2'; // multiply max fee and max priority fee per gas when speeding up tx
@@ -48,7 +44,6 @@ export const DEFAULT_VALUES = {
     bitcoinLocktimeBlockHeight: '',
     bitcoinLocktimeDatetime: '',
     ethereumNonce: '',
-    ethereumDataAscii: '',
     transactionData: '',
     destinationTag: '',
     outputs: [],
@@ -60,8 +55,6 @@ export const DEFAULT_VALUES = {
 // Time-to-live (TTL) in cardano represents a slot, or deadline by which a transaction must be submitted.
 // By setting offset to 7200s transaction sent from Suite will be valid for 2h.
 // If it is not included in a block until then it will be rejected by the network.
-export const CARDANO_DEFAULT_TTL_OFFSET = 7200;
-
 export const COMPOSE_ERROR_TYPES = {
     COMPOSE: 'compose',
     COIN_CONTROL: 'coinControl',

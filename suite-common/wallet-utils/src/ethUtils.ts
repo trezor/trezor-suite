@@ -1,15 +1,17 @@
-import { decodeParameters } from 'web3-eth-abi';
-import { sha3 } from 'web3-utils';
-
+import { Calldata } from '@suite-common/calldata';
 import { UINT256_MAX } from '@suite-common/suite-constants';
-import { EvmTransactionPurpose } from '@suite-common/wallet-types';
-import { TokenInfo } from '@trezor/blockchain-link-types';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
+import {
+    type EvmTransactionPurpose,
+    type WalletAccountTransaction,
+} from '@suite-common/wallet-types';
+import { type TokenInfo } from '@trezor/blockchain-link-types';
 import { exhaustive } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { asAmountSubunit, asAmountUnit } from './AmountTypes';
 import { unitsToSubunits } from './amountUtils';
-import { isAddressValid } from './validationUtils';
+import { isWrappedNativeToken } from './tokenUtils';
 
 export const isEip1559 = (
     tx: Record<string, any> | null | undefined,
@@ -36,101 +38,81 @@ export const strip = (str: string): string => {
     return padLeftEven(str);
 };
 
-interface EvmTxData {
-    type: EvmTransactionPurpose;
-    amount: string;
-}
-
-interface EvmTxApprovalData extends EvmTxData {
-    spender: string;
-}
-
-interface EvmTxTransferData extends EvmTxData {
-    recipient: string;
-}
-
-const normalizeHex = (data: string) =>
-    data.toLowerCase().startsWith('0x') ? data.toLowerCase() : `0x${data.toLowerCase()}`;
-
-const ERC20_APPROVE_SELECTOR = sha3('approve(address,uint256)')!.slice(0, 10);
-const ERC20_TRANSFER_SELECTOR = sha3('transfer(address,uint256)')!.slice(0, 10);
-
-export const getEvmApprovalTxData = (data?: string): EvmTxApprovalData | null => {
-    if (!data) return null;
-
-    const dataWithPrefix = normalizeHex(data);
-    const dataLowercase = dataWithPrefix.toLowerCase();
-    try {
-        const hasApprovalPrefix = dataLowercase.startsWith(ERC20_APPROVE_SELECTOR);
-
-        if (!hasApprovalPrefix) return null;
-
-        const decodedData = decodeParameters(['address', 'uint256'], dataLowercase.slice(10)); // [spender, approval_amount]
-
-        if (typeof decodedData[0] !== 'string' || typeof decodedData[1] !== 'bigint') return null;
-
-        return {
-            type: decodedData[1] === 0n ? 'revoke' : 'approve',
-            spender: decodedData[0].toLowerCase(),
-            amount: decodedData[1].toString(),
-        };
-    } catch {
-        return null;
-    }
-};
-
-export const getEvmTransferTxData = (data?: string): EvmTxTransferData | null => {
-    if (!data) return null;
-
-    const d = normalizeHex(data);
-
-    try {
-        if (!d.startsWith(ERC20_TRANSFER_SELECTOR)) return null;
-
-        const decoded = decodeParameters(['address', 'uint256'], d.slice(10)); // [to, amount]
-
-        if (typeof decoded[0] !== 'string' || typeof decoded[1] !== 'bigint') return null;
-
-        return {
-            type: 'transfer',
-            recipient: decoded[0].toLowerCase(),
-            amount: decoded[1].toString(),
-        };
-    } catch {
-        return null;
-    }
-};
-
 export const getEvmTransactionTextSignature = (data?: string): EvmTransactionPurpose => {
-    // no data -> no method > no text signature
-    if (!data) {
-        return '';
-    }
+    if (!data) return '';
 
-    const tokenTransferTxData = getEvmTransferTxData(data);
-    if (tokenTransferTxData?.type) {
-        return tokenTransferTxData.type;
-    }
+    if (Calldata.evm.erc20.transfer.decode(data)) return 'transfer';
 
-    const approvalTxData = getEvmApprovalTxData(data);
-    if (approvalTxData?.type) {
-        return approvalTxData.type;
-    }
+    const approve = Calldata.evm.erc20.approve.decode(data);
+    if (approve) return approve.amount === 0n ? 'revoke' : 'approve';
+
+    if (Calldata.evm.erc4626.deposit.decode(data)) return 'deposit';
+    if (Calldata.evm.erc4626.withdraw.decode(data)) return 'withdraw';
+    if (Calldata.evm.erc4626.redeem.decode(data)) return 'redeem';
+
+    if (Calldata.evm.distributor.claim.decode(data)) return 'claim';
 
     return 'unknown';
 };
 
-export const isEvmApprovalTx = (data?: string): boolean => {
-    const result = getEvmApprovalTxData(data);
-
-    return result !== null;
+type WrappedNativeTxParams = {
+    networkSymbol: NetworkSymbol;
+    to?: string | null;
+    data?: string | null;
 };
+
+// deposit() (0xd0e30db0) is a generic selector shared by many contracts, so the selector alone is
+// not enough — the target must also be the chain's wrapped-native contract.
+export const isWrapNativeTx = ({ networkSymbol, to, data }: WrappedNativeTxParams): boolean =>
+    isWrappedNativeToken(networkSymbol, to) &&
+    Calldata.evm.weth.deposit.decode(data ?? undefined) !== null;
+
+export const isUnwrapNativeTx = ({ networkSymbol, to, data }: WrappedNativeTxParams): boolean =>
+    isWrappedNativeToken(networkSymbol, to) &&
+    Calldata.evm.weth.withdraw.decode(data ?? undefined) !== null;
+
+// Amount (in wei) unwrapped by a WETH withdraw(uint256) call, or null when data is not one.
+export const getUnwrapAmountByEthereumDataHex = (data?: string): string | null =>
+    Calldata.evm.weth.withdraw.decode(data)?.wad.toString() ?? null;
+
+/**
+ * Classifies an EVM transaction as a native wrap/unwrap for display. The wrapped-native (WETH)
+ * contract shows up as the value recipient for a wrap and as the internal ETH sender for an
+ * unwrap, so both `targets` and `internalTransfers` are considered when resolving the target.
+ */
+export const getNativeWrapTxKind = (
+    transaction: WalletAccountTransaction,
+): 'wrap' | 'unwrap' | undefined => {
+    const { symbol } = transaction;
+    const data = transaction.ethereumSpecific?.data;
+
+    const candidateAddresses = [
+        ...transaction.targets.flatMap(target => target.addresses ?? []),
+        ...transaction.internalTransfers.map(transfer => transfer.from),
+    ];
+    const to = candidateAddresses.find(address => isWrappedNativeToken(symbol, address));
+
+    if (!to) return undefined;
+    if (isWrapNativeTx({ networkSymbol: symbol, to, data })) return 'wrap';
+    if (isUnwrapNativeTx({ networkSymbol: symbol, to, data })) return 'unwrap';
+
+    return undefined;
+};
+
+export const isEvmApprovalTx = (data?: string): boolean =>
+    Calldata.evm.erc20.approve.decode(data) !== null;
+
+export const getErc20ApproveSpender = (data?: string): string | undefined =>
+    Calldata.evm.erc20.approve.decode(data)?.spender;
 
 export type EvmApprovalPurpose = Extract<EvmTransactionPurpose, 'approve' | 'revoke'>;
 
 export const isEvmApprovalTxByTextSignature = (
     textSignature?: EvmTransactionPurpose,
 ): textSignature is EvmApprovalPurpose => textSignature === 'approve' || textSignature === 'revoke';
+
+export const isEvmYieldTxByTextSignature = (textSignature?: EvmTransactionPurpose) =>
+    textSignature === 'deposit' || textSignature === 'withdraw' || textSignature === 'redeem';
 
 export const ensureHexPrefix = (hex?: string): string => {
     if (!hex) return '';
@@ -143,24 +125,21 @@ interface BuildTransactionDataParams {
     spender: string;
 }
 
+// TODO: drop this wrapper and migrate callers to `Calldata.evm.erc20.approve.encode` directly.
 export const buildApprovalTransactionData = ({
     amount: rawAmount,
     spender: rawSpender,
 }: BuildTransactionDataParams): string => {
-    if (!isAddressValid(rawSpender, 'base')) {
-        throw new Error('Invalid spender address');
+    const result = Calldata.evm.erc20.approve.encode({
+        spender: rawSpender,
+        amount: new BigNumber(rawAmount),
+    });
+
+    if (!result.isValid || !result.data) {
+        throw new Error(result.errors[0]?.code ?? 'INVALID_APPROVAL_PARAMS');
     }
 
-    const amount = new BigNumber(rawAmount);
-    const spender = rawSpender.toLowerCase().replace(/^0x/, '').padStart(64, '0');
-
-    if (amount.isNaN() || !amount.isInteger() || amount.isNegative() || amount.gt(UINT256_MAX)) {
-        throw new Error('Invalid amount');
-    }
-
-    const amountHex = amount.toString(16).padStart(64, '0');
-
-    return `${ERC20_APPROVE_SELECTOR}${spender}${amountHex}`;
+    return result.data;
 };
 
 interface GetAllowanceAmountParams {

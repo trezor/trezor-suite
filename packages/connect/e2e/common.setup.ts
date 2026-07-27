@@ -1,19 +1,21 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import TrezorConnect from '@trezor/connect';
-import { ApplySettings } from '@trezor/protobuf/src/messages-schema';
-import {
-    EmuStartOptsType,
-    MNEMONICS,
-    TrezorUserEnvLink,
-    type TrezorUserEnvLinkClass,
-} from '@trezor/trezor-user-env-link';
+import { UI_REQUEST, UI_RESPONSE } from '@trezor/connect-common';
+import type { ApplySettings } from '@trezor/protobuf/src/definitions';
+import { BridgeTransport } from '@trezor/transport-common';
+import type { EmuStartOptsType, TrezorUserEnvLinkClass } from '@trezor/trezor-user-env-link';
+import { MNEMONICS, TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 import { versionUtils } from '@trezor/utils';
 
-// import TrezorConnect from '../src';
-import { UI_REQUEST, UI_RESPONSE } from '../src/events';
+import { THP_CREDENTIALS_AUTOCONNECT } from './common-thp-credentials';
 
-const emulatorStartOpts: EmuStartOptsType =
-    (process.env.emulatorStartOpts as any) || global.emulatorStartOpts || {};
+// import TrezorConnect from '../src';
+
+// Read emulator start options from EMULATOR_START_OPTS env var (JSON string set by run.ts).
+// In browser mode, Vite's `define` replaces process.env.EMULATOR_START_OPTS at build time.
+const emulatorStartOpts: EmuStartOptsType = process.env.EMULATOR_START_OPTS
+    ? JSON.parse(process.env.EMULATOR_START_OPTS)
+    : {};
 
 const emuStartType = emulatorStartOpts.type;
 const firmware: string | null =
@@ -51,6 +53,22 @@ export const getController = () => {
     });
 
     return TrezorUserEnvLink;
+};
+
+// Captures device screen content at every ButtonRequest the autoConfirm handler
+// processes — but only when explicitly enabled per-test via
+// setScreenCaptureEnabled(true). getScreenContent() is a round-trip to
+// trezor-user-env (~500ms) so we don't pay it for tests that don't assert on
+// it. Stored as JSON strings so structural fields (e.g. {lines, title})
+// survive substring assertions. Reset per-test by methods.test.ts.
+const capturedScreens: string[] = [];
+let screenCaptureEnabled = false;
+export const resetCapturedScreens = () => {
+    capturedScreens.length = 0;
+};
+export const getCapturedScreens = () => [...capturedScreens];
+export const setScreenCaptureEnabled = (enabled: boolean) => {
+    screenCaptureEnabled = enabled;
 };
 
 type Options = {
@@ -187,9 +205,20 @@ export const initTrezorConnect = async (
     });
 
     if (autoConfirm) {
-        TrezorConnect.on(UI_REQUEST.REQUEST_BUTTON, e => {
+        TrezorConnect.on(UI_REQUEST.REQUEST_BUTTON, async e => {
             if (e.code === 'ButtonRequest_PinEntry') return;
-            setTimeout(() => TrezorUserEnvLink.send({ type: 'emulator-press-yes' }), 1);
+            if (screenCaptureEnabled) {
+                try {
+                    const screen = await TrezorUserEnvLink.getScreenContent();
+                    capturedScreens.push(
+                        typeof screen === 'string' ? screen : JSON.stringify(screen),
+                    );
+                } catch (err) {
+                    // capture failure shouldn't block the press-yes path
+                    capturedScreens.push(`<getScreenContent error: ${(err as Error).message}>`);
+                }
+            }
+            TrezorUserEnvLink.send({ type: 'emulator-press-yes' });
         });
     }
 
@@ -199,36 +228,14 @@ export const initTrezorConnect = async (
             appUrl: 'tests.connect.trezor.io',
             email: 'tests@connect.trezor.io',
         },
-        transports: ['BridgeTransport'],
+        transports: [new BridgeTransport({ id: 'bridge', port: 21328 })],
         debug: true,
         pendingTransportEvent: true,
         transportReconnect: false,
-        coreMode: 'core-in-module', // for connect-web
         thp: {
             appName: 'TrezorConnect',
             hostName: 'tests:e2e',
-            knownCredentials: [
-                // all all seed credential generated from thpPairing.test
-                {
-                    host_static_key:
-                        '0007070707070707070707070707070707070707070707070707070707070747',
-                    trezor_static_public_key:
-                        '566f6976fd42cafadf1b843ce4e6275c930d52efac878217df0ea2a23933b07d',
-                    credential:
-                        '0a1c0a0974657374733a65326510011a0d5472657a6f72436f6e6e65637412203fa725f325ba34cce19e39e6c87f573a9db1a532c28f67a363f0ea8317f64af9',
-                    autoconnect: true,
-                },
-                // credential for newer TENV image
-                {
-                    host_static_key:
-                        '0007070707070707070707070707070707070707070707070707070707070747',
-                    trezor_static_public_key:
-                        'ca9a6e4682ac461c59d75a8625c05bf3a4af01e084abc5a7fe8ad126c2d6f772',
-                    credential:
-                        '0a1c0a0974657374733a65326510011a0d5472657a6f72436f6e6e65637412204cd0d3ccab3d615430d218e96d78cd5b89a06783581e5948d8cc532e423bd145',
-                    autoconnect: true,
-                },
-            ],
+            knownCredentials: THP_CREDENTIALS_AUTOCONNECT,
             pairingMethods: ['CodeEntry'],
         },
         ...options,
@@ -294,16 +301,7 @@ export const skipTest = (rules: string[]) => {
 };
 
 export const conditionalTest = (rules: string[], ...args: any) => {
-    const skipMethod = typeof jest !== 'undefined' ? it.skip : xit;
-    const testMethod = skipTest(rules) ? skipMethod : it;
-
-    // @ts-expect-error
-    return testMethod(...args);
-};
-
-export const conditionalDescribe = (rules: string[], ...args: any) => {
-    const skipMethod = typeof jest !== 'undefined' ? describe.skip : xdescribe;
-    const testMethod = skipTest(rules) ? skipMethod : describe;
+    const testMethod = skipTest(rules) ? it.skip : it;
 
     // @ts-expect-error
     return testMethod(...args);

@@ -5,11 +5,11 @@ import {
     Kind,
     Optional,
     OptionalKind,
-    Static,
-    TObject,
-    TSchema,
+    type Static,
+    type TObject,
+    type TSchema,
 } from '@sinclair/typebox';
-import { Errors, ValueError, ValueErrorType } from '@sinclair/typebox/errors';
+import { Errors, type ValueError, ValueErrorType } from '@sinclair/typebox/errors';
 import { Mixin } from 'ts-mixer';
 
 import { ArrayBufferBuilder, BufferBuilder, KeyofEnumBuilder, UintBuilder } from './custom-types';
@@ -48,9 +48,10 @@ function FindErrorInUnion(error: ValueError) {
                     propertySchema.const && propertySchema.const !== currentValue[property],
             );
         });
-        if (possibleMatchesByLiterals.length === 1) {
+        const singleMatch = possibleMatchesByLiterals[0];
+        if (possibleMatchesByLiterals.length === 1 && singleMatch) {
             // There is only one possible match
-            Assert(possibleMatchesByLiterals[0], currentValue);
+            Assert(singleMatch, currentValue);
         } else if (possibleMatchesByLiterals.length > 1) {
             // Find match with least amount of errors
             const errorsOfPossibleMatches = possibleMatchesByLiterals.map(
@@ -62,8 +63,10 @@ function FindErrorInUnion(error: ValueError) {
             const sortedErrors = errorsOfPossibleMatches.sort(
                 (a, b) => a.errors.length - b.errors.length,
             );
-            const [bestMatch] = sortedErrors;
-            Assert(bestMatch.schema, currentValue);
+            const bestMatch = sortedErrors[0];
+            if (bestMatch) {
+                Assert(bestMatch.schema, currentValue);
+            }
         }
 
         throw new InvalidParameter(error.message, error.path, error.type, error.value);
@@ -97,25 +100,6 @@ export function Assert<T extends TSchema>(schema: T, value: unknown): asserts va
         }
         errors.shift();
         [error] = errors;
-    }
-}
-
-export function AssertWeak<T extends TSchema>(
-    schema: T,
-    value: unknown,
-): asserts value is Static<T> {
-    try {
-        Assert(schema, value);
-    } catch (e) {
-        if (e instanceof InvalidParameter) {
-            if (e.type === ValueErrorType.ObjectRequiredProperty) {
-                // We consider this error to be serious
-                throw e;
-            }
-            console.warn('Method params validation failed', e);
-        } else {
-            throw e;
-        }
     }
 }
 

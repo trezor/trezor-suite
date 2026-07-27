@@ -4,13 +4,20 @@ import tls, { TLSSocket } from 'tls';
 import WebSocket from 'ws';
 
 import { createInterceptor } from '../src';
-import { InterceptorOptions } from '../src/types';
+import type { InterceptorOptions } from '../src/types';
 
 const WHITELISTED_DOMAIN = 'url-that-is-valid-and-white-listed-but-does-not-exists.com';
 const NOT_WHITELISTED_DOMAIN = 'not-white-listed-but-does-not-exists.com';
 
-const OK_ERROR_SHORT = `getaddrinfo ENOTFOUND ${WHITELISTED_DOMAIN}`;
-const OK_ERROR_HTTPS = new RegExp(`.*${OK_ERROR_SHORT}`);
+// The specific DNS error code (ENOTFOUND, EBUSY, etc.) is irrelevant.
+// what matters is that the error is not "Request blocked, not whitelisted domain: ...".
+const OK_ERROR_SHORT = new RegExp(`getaddrinfo E\\w+ ${WHITELISTED_DOMAIN}`);
+
+// Needed if your environment uses a local HTTPS proxy (e.g. PMG by SafeDep)
+const LOCALHOST_DOMAINS = ['localhost', '127.0.0.1'];
+const OK_ERROR_WITH_PROXY = new RegExp(`Failed to establish tunnel to ${WHITELISTED_DOMAIN}`);
+
+const OK_ERROR_HTTPS = new RegExp(`${OK_ERROR_SHORT.source}|${OK_ERROR_WITH_PROXY.source}`);
 
 const createWebSocket = (url: string) =>
     new Promise<void>((resolve, reject) => {
@@ -58,7 +65,7 @@ describe('Interceptor', () => {
     const torSettings = { running: false };
 
     const interceptorOptions: InterceptorOptions = {
-        getWhitelistedDomains: () => [WHITELISTED_DOMAIN],
+        getWhitelistedDomains: () => [...LOCALHOST_DOMAINS, WHITELISTED_DOMAIN],
         handler: () => {},
         getTorSettings: () => torSettings,
     };

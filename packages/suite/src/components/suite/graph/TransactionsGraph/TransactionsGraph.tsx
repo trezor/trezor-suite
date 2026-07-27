@@ -4,20 +4,13 @@ import { Bar, CartesianGrid, Cell, ComposedChart, Line, Tooltip, XAxis, YAxis } 
 import styled, { useTheme } from 'styled-components';
 
 import { selectAccountTransactionsWithNulls } from '@suite-common/wallet-core';
-import { BaseCurrencyAmount } from '@suite-common/wallet-types';
 import { isPending } from '@suite-common/wallet-utils';
-import { Icon } from '@trezor/components';
 import { typography, zIndices } from '@trezor/theme';
 
-import { GraphRangeSelector } from 'src/components/suite/graph/GraphRangeSelector';
 import { GraphSkeleton } from 'src/components/suite/graph/GraphSkeleton';
-import { useGraph, useSelector } from 'src/hooks/suite';
-import { Account, WalletAccountTransaction } from 'src/types/wallet';
-import {
-    AggregatedAccountHistory,
-    AggregatedDashboardHistory,
-    GraphRange,
-} from 'src/types/wallet/graph';
+import type { TransactionsGraphProps } from 'src/components/suite/graph/types';
+import { useSelector } from 'src/hooks/suite';
+import { type Account, type WalletAccountTransaction } from 'src/types/wallet';
 import { calcFakeGraphDataForTimestamps, calcXDomain, calcYDomain } from 'src/utils/wallet/graph';
 
 import { GraphBar } from './GraphBar';
@@ -49,62 +42,26 @@ const Wrapper = styled.div`
     }
 `;
 
-const Toolbar = styled.div`
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-`;
-
 const Description = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
     text-align: center;
-    color: ${({ theme }) => theme.textSubdued};
+    color: ${({ theme }) => theme.contentSecondary};
     flex: 1;
 `;
-
-interface CommonProps {
-    isLoading?: boolean;
-    selectedRange: GraphRange;
-    xTicks: number[];
-    localCurrency: string;
-    minMaxValues: [number, number];
-    hideToolbar?: boolean;
-    onRefresh?: (abortController?: AbortController) => Promise<any>;
-}
-
-export interface CryptoGraphProps extends CommonProps {
-    variant: 'one-asset';
-    account: Account;
-    data: AggregatedAccountHistory[];
-    receivedValueFn: (data: AggregatedAccountHistory) => string | undefined;
-    sentValueFn: (data: AggregatedAccountHistory) => string | undefined;
-    balanceValueFn: (data: AggregatedAccountHistory) => string | undefined;
-}
-
-export interface FiatGraphProps extends CommonProps {
-    variant: 'all-assets';
-    data: AggregatedDashboardHistory[];
-    receivedValueFn: (data: AggregatedDashboardHistory) => BaseCurrencyAmount | undefined;
-    sentValueFn: (data: AggregatedDashboardHistory) => BaseCurrencyAmount | undefined;
-    balanceValueFn: (data: AggregatedDashboardHistory) => BaseCurrencyAmount | undefined;
-    account?: never;
-}
-
-export type TransactionsGraphProps = CryptoGraphProps | FiatGraphProps;
 
 const emptyList: ReturnType<typeof selectAccountTransactionsWithNulls>[] = [];
 const useTransactionGraphUpdater = ({
     onRequestGraphUpdate,
     account,
 }: {
-    onRequestGraphUpdate: (abortController: AbortController) => Promise<any> | undefined;
+    onRequestGraphUpdate: (abortController: AbortController) => Promise<unknown> | undefined;
     account: Account | undefined;
 }) => {
     const [currentPromise, setCurrentPromise] = useState<{
         promiseId: string;
-        promise: Promise<any>;
+        promise: Promise<unknown>;
         abortController: AbortController;
     } | null>(null);
 
@@ -161,7 +118,6 @@ export const TransactionsGraph = memo(
         account,
         balanceValueFn,
         data,
-        hideToolbar,
         isLoading,
         localCurrency,
         minMaxValues,
@@ -175,13 +131,7 @@ export const TransactionsGraph = memo(
         const [maxYTickWidth, setMaxYTickWidth] = useState(20);
 
         const theme = useTheme();
-        const { selectedView } = useGraph();
-        const yDomain = calcYDomain(
-            variant === 'all-assets' ? 'fiat' : 'crypto',
-            selectedView,
-            minMaxValues,
-            account?.formattedBalance,
-        );
+        const yDomain = calcYDomain(minMaxValues, account?.formattedBalance);
 
         const setWidth = (n: number) => {
             setMaxYTickWidth(prevValue => (prevValue > n ? prevValue : n));
@@ -213,17 +163,6 @@ export const TransactionsGraph = memo(
 
         return (
             <Wrapper>
-                {!hideToolbar && (
-                    <Toolbar>
-                        <GraphRangeSelector
-                            placement={{
-                                position: 'bottom',
-                                alignment: 'start',
-                            }}
-                        />
-                        {onRefresh && <Icon size={14} name="repeat" onClick={onRefresh} />}
-                    </Toolbar>
-                )}
                 <Description>
                     {isLoading && <GraphSkeleton animate />}
 
@@ -241,7 +180,7 @@ export const TransactionsGraph = memo(
                                 }}
                                 onMouseLeave={() => setHovered(-1)}
                             >
-                                <CartesianGrid vertical={false} stroke={theme.borderDashed} />
+                                <CartesianGrid vertical={false} stroke={theme.borderNeutral} />
 
                                 <XAxis
                                     // xAxisId="primary"
@@ -249,7 +188,7 @@ export const TransactionsGraph = memo(
                                     type="number"
                                     domain={calcXDomain(xTicks, data, selectedRange)}
                                     // width={10}
-                                    stroke={theme.borderFocus}
+                                    stroke={theme.elementBorderFieldFocused}
                                     interval="preserveEnd"
                                     tick={<GraphXAxisTick selectedRange={selectedRange} />}
                                     ticks={xTicks}
@@ -260,9 +199,9 @@ export const TransactionsGraph = memo(
                                 <YAxis
                                     type="number"
                                     orientation="right"
-                                    scale={selectedView}
+                                    scale="linear"
                                     domain={yDomain}
-                                    allowDataOverflow={selectedView === 'log'}
+                                    allowDataOverflow={false}
                                     stroke="transparent"
                                     tick={
                                         variant === 'one-asset' ? (
@@ -283,7 +222,7 @@ export const TransactionsGraph = memo(
                                     position={{ y: 0, x: 0 }}
                                     wrapperStyle={{ zIndex: zIndices.tooltip }}
                                     cursor={{
-                                        stroke: theme.backgroundNeutralSubdued,
+                                        stroke: theme.elementFillNeutralBold,
                                         strokeWidth: 1,
                                     }}
                                     content={
@@ -308,12 +247,8 @@ export const TransactionsGraph = memo(
                                 {variant === 'one-asset' && (
                                     <Line
                                         type="linear"
-                                        dataKey={(data: any) =>
-                                            selectedView === 'log'
-                                                ? Number(balanceValueFn(data)) || yDomain[0]
-                                                : Number(balanceValueFn(data))
-                                        }
-                                        stroke={theme.baseBorderWarning}
+                                        dataKey={(data: any) => Number(balanceValueFn(data))}
+                                        stroke={theme.borderWarning}
                                         dot={false}
                                         activeDot={false}
                                     />
@@ -341,9 +276,7 @@ export const TransactionsGraph = memo(
                                             key={`cell-${entry}`}
                                             filter={isBarColored(index) ? 'url(#shadow)' : ''}
                                             fill={
-                                                isBarColored(index)
-                                                    ? theme.baseBorderBrand
-                                                    : '#aeaeae'
+                                                isBarColored(index) ? theme.borderBrand : '#aeaeae'
                                             }
                                         />
                                     ))}
@@ -359,7 +292,7 @@ export const TransactionsGraph = memo(
                                             filter={isBarColored(index) ? 'url(#shadow)' : ''}
                                             fill={
                                                 isBarColored(index)
-                                                    ? theme.baseBorderNegative
+                                                    ? theme.borderCritical
                                                     : '#dfdfdf'
                                             }
                                         />

@@ -1,12 +1,11 @@
 import { useState } from 'react';
 
+import { useExternalLink } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { getOsFamily, getUserAgent } from '@suite-common/suite-utils';
 import { Column, Modal, Paragraph, Select, Spinner } from '@trezor/components';
-import { spacings } from '@trezor/theme';
 import { DATA_URL, HELP_CENTER_UDEV_URL } from '@trezor/urls';
 
-import { useExternalLink } from 'src/hooks/suite';
 import type { ForegroundAppProps } from 'src/types/suite';
 
 type Installer = {
@@ -74,7 +73,7 @@ export const UdevRules = ({ onCancel }: ForegroundAppProps) => {
     const installers: Installer[] = udev.packages.map(p => ({
         label: p.name,
         value: DATA_URL + p.url.substring(1),
-        preferred: platform ? p.platform.indexOf(platform) >= 0 : false,
+        preferred: platform ? p.platform.includes(platform) : false,
     }));
     const [selectedTarget, setSelectedTarget] = useState<Installer | null>(null);
     const preferredTarget = installers.find(i => i.preferred);
@@ -87,7 +86,7 @@ export const UdevRules = ({ onCancel }: ForegroundAppProps) => {
             heading={<Translation id="TR_UDEV_DOWNLOAD_TITLE" />}
             bottomContent={
                 <>
-                    <Modal.Button href={target.value}>
+                    <Modal.Button href={target?.value}>
                         <Translation id="TR_DOWNLOAD" />
                     </Modal.Button>
                     <Modal.Button intent="neutral" priority="secondary" href={udevManualUrl}>
@@ -97,7 +96,7 @@ export const UdevRules = ({ onCancel }: ForegroundAppProps) => {
             }
             width={600}
         >
-            <Column gap={spacings.sm}>
+            <Column gap={12}>
                 <Paragraph intent="neutral" priority="secondary">
                     <Translation id="TR_UDEV_DOWNLOAD_DESC" />
                 </Paragraph>

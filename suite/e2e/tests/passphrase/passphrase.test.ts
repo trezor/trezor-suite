@@ -11,8 +11,10 @@ const defAddr = 'bc1qek0hazgrelpuce8anp72ur4kpgel74ype3pw52';
 
 test.describe('Passphrase', { tag: ['@T3W1', '@T3T1'] }, () => {
     test.use({ deviceSetup: { mnemonic: 'mnemonic_all', passphrase_protection: true } });
-    test.beforeEach(async ({ onboardingPage }) => {
+
+    test.beforeEach(async ({ onboardingPage, settingsPage }) => {
         await onboardingPage.completeOnboarding();
+        await settingsPage.changeNetworks({ enableNetworks: ['btc'] });
     });
 
     test(
@@ -74,6 +76,7 @@ test.describe('Passphrase', { tag: ['@T3W1', '@T3T1'] }, () => {
 
             await test.step('Open receive address of wallet #2', async () => {
                 await walletPage.receiveButton.click();
+
                 await test.step('Verify no address is yet in table', async () => {
                     await expect(walletPage.usedAddress(0)).toBeHidden();
                 });
@@ -97,11 +100,11 @@ test.describe('Passphrase', { tag: ['@T3W1', '@T3T1'] }, () => {
                 await walletPage.receiveButton.click();
             });
 
-            await test.step('No address is yet in table of wallet #1', async () => {
-                await expect(walletPage.usedAddress(0)).toBeHidden();
+            await test.step('Revealed address stays visible in table of wallet #1', async () => {
+                await expect(walletPage.usedAddress(0)).toBeVisible();
                 await expect(walletPage.revealAddressButton).toBeEnabled();
 
-                await walletPage.revealAddressButton.click();
+                await walletPage.usedAddressRevealButton(0).click();
                 await expect(devicePrompt.outputValue).toHaveText(formatAddress(abcAddr));
                 await devicePrompt.confirmOnDevicePromptIsShown();
                 await expect(device).toShowReceiveAddress(abcAddr);

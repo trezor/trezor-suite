@@ -2,16 +2,16 @@ import styled from 'styled-components';
 
 import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
 import {
-    FrameProps,
-    FramePropsKeys,
+    type FrameProps,
+    type FramePropsKeys,
     Image,
-    ObjectFit,
-    TransientProps,
+    type ObjectFit,
+    type TransientProps,
     pickAndPrepareFrameProps,
     withFrameProps,
 } from '@trezor/components';
-import { DeviceModelInternal } from '@trezor/device-utils';
-import { borders, paletteV2 } from '@trezor/theme';
+import { type DeviceModelInternal } from '@trezor/device-utils';
+import { paletteV2 } from '@trezor/theme';
 
 import { getLargeModelImagePath } from '../../utils/getModelFrontColor';
 
@@ -39,7 +39,7 @@ const GhostsContainer = styled.div``;
 const GhostContainer = styled.div<{ $rotate: number; $x: string; $y: string }>`
     transform: rotate(${({ $rotate }) => $rotate}deg);
     background-color: ${paletteV2.lightRed600};
-    border-radius: ${borders.radii.full};
+    border-radius: calc(infinity * 1px);
     position: absolute;
     top: ${({ $y }) => $y};
     left: ${({ $x }) => $x};

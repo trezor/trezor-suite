@@ -1,8 +1,6 @@
 import { getWeakRandomNumberInRange } from '@trezor/utils';
 
-import { ROUND_REGISTRATION_END_OFFSET } from '../../src/constants';
 import {
-    estimatePhaseDeadline,
     getAffiliateRequest,
     getCommitmentData,
     getRoundParams,
@@ -10,7 +8,7 @@ import {
     scheduleDelay,
     transformStatus,
 } from '../../src/utils/roundUtils';
-import { DEFAULT_ROUND, STATUS_EVENT, STATUS_TRANSFORMED } from '../fixtures/round.fixture';
+import { STATUS_EVENT, STATUS_TRANSFORMED } from '../fixtures/round.fixture';
 
 // mock random delay function
 jest.mock('@trezor/utils', () => {
@@ -36,66 +34,6 @@ describe('roundUtils', () => {
         expect(readTimeSpan('1d 2h 0m 0s')).toEqual(26 * 60 * 60000);
         expect(readTimeSpan('1d 2h 3m 30s')).toEqual(26 * 60 * 60000 + 3 * 60000 + 30000);
         expect(readTimeSpan('d h m s')).toEqual(0);
-    });
-
-    it('estimatePhaseDeadline', () => {
-        const round = {
-            ...DEFAULT_ROUND,
-            CoinjoinState: {
-                Events: [
-                    {
-                        Type: 'RoundCreated',
-                        RoundParameters: {
-                            ConnectionConfirmationTimeout: '0d 0h 1m 0s',
-                            OutputRegistrationTimeout: '0d 0h 2m 0s',
-                            TransactionSigningTimeout: '0d 0h 3m 0s',
-                        },
-                    },
-                ],
-            },
-        } as typeof DEFAULT_ROUND;
-
-        const base = new Date(round.InputRegistrationEnd).getTime() + ROUND_REGISTRATION_END_OFFSET;
-        expect(estimatePhaseDeadline(DEFAULT_ROUND)).toEqual(base);
-
-        // result may vary +-5 milliseconds
-        const expectInRange = (result: number, expected: number) => {
-            expect(result).toBeGreaterThanOrEqual(expected - 5);
-            expect(result).toBeLessThan(expected + 5);
-        };
-
-        const timeouts = 60000; // each phase timeout of DEFAULT_ROUND is set to 1 min.
-        expectInRange(
-            estimatePhaseDeadline({
-                ...round,
-                Phase: 1,
-            }),
-            Date.now() + timeouts,
-        );
-
-        expectInRange(
-            estimatePhaseDeadline({
-                ...round,
-                Phase: 2,
-            }),
-            Date.now() + timeouts * 2,
-        );
-
-        expectInRange(
-            estimatePhaseDeadline({
-                ...round,
-                Phase: 3,
-            }),
-            Date.now() + timeouts * 3,
-        );
-
-        expectInRange(
-            estimatePhaseDeadline({
-                ...round,
-                Phase: 4,
-            }),
-            Date.now() + timeouts * 3,
-        );
     });
 
     describe('transformStatus', () => {

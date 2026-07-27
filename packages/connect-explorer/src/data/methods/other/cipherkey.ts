@@ -1,16 +1,12 @@
 const name = 'cipherKeyValue';
-const docs = 'methods/cipherKeyValue.md';
 
 export default [
     {
-        url: '/method/cipherKeyValue',
         name,
-        docs,
         submitButton: 'Call',
         fields: [
             {
                 name: 'path',
-                label: 'Bip44 path',
                 type: 'input',
                 value: `m/49'/1'/0'`,
             },
@@ -28,21 +24,18 @@ export default [
             },
             {
                 name: 'encrypt',
-                label: 'Encrypt',
                 type: 'checkbox',
                 defaultValue: true,
                 value: true,
             },
             {
                 name: 'askOnEncrypt',
-                label: 'Ask on encrypt',
                 type: 'checkbox',
                 defaultValue: false,
                 value: true,
             },
             {
                 name: 'askOnDecrypt',
-                label: 'Ask on decrypt',
                 type: 'checkbox',
                 defaultValue: false,
                 value: true,

@@ -1,20 +1,22 @@
+import { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 import { isFulfilled } from '@reduxjs/toolkit';
 
 import { events } from '@suite-common/analytics';
+import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import { wipeDeviceThunk } from '@suite-common/wallet-core';
+import { selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import { setWasDeviceOnboardingCancelled } from '@suite-native/device-onboarding';
 import {
-    DeviceSettingsStackParamList,
+    type DeviceSettingsStackParamList,
     DeviceSettingsStackRoutes,
-    StackNavigationProps,
+    type StackNavigationProps,
     WipeDeviceStackRoutes,
 } from '@suite-native/navigation';
-import { useAnalytics } from '@suite-native/services';
 
 type NavigationProps = StackNavigationProps<
     DeviceSettingsStackParamList,
@@ -23,10 +25,14 @@ type NavigationProps = StackNavigationProps<
 
 export const useWipeDevice = () => {
     const dispatch = useDispatch();
-    const analytics = useAnalytics();
+    const { analytics } = useServices(selectNativeAnalyticsDep);
     const navigation = useNavigation<NavigationProps>();
 
     const device = useSelector(selectSelectedDevice);
+
+    const navigateToWipeDeviceStack = useCallback(() => {
+        navigation.navigate(DeviceSettingsStackRoutes.WipeDeviceStack);
+    }, [navigation]);
 
     const wipeDevice = async () => {
         if (!device) return;
@@ -55,5 +61,5 @@ export const useWipeDevice = () => {
         }
     };
 
-    return { wipeDevice };
+    return { navigateToWipeDeviceStack, wipeDevice };
 };

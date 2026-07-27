@@ -1,20 +1,17 @@
-import { TranslationKey } from '@suite/intl';
-import {
-    getIsDeviceIdValid,
-    selectIsDeviceInvariabilityCheckSuccess,
-    selectSelectedDevice,
-    selectWasFwHashCheckOtherErrorLastTime,
-} from '@suite-common/device';
-import { SkippedHashCheckError } from '@suite-common/firmware-authenticity';
-import { Card } from '@trezor/components';
-import { FirmwareHashCheckError } from '@trezor/connect';
-
-import { useSelector } from 'src/hooks/suite';
 import {
     selectFirmwareHashCheckErrorIfEnabled,
     selectFirmwareRevisionCheckErrorIfEnabled,
+    selectIsDeviceIdCheckEnabledAndFailed,
+    selectIsDeviceInvariabilityEnabledAndFailed,
     selectIsEntropyCheckEnabledAndFailed,
-} from 'src/selectors/suite/suiteAuthenticityChecksSelectors';
+} from '@suite/authenticity-checks';
+import { type TranslationKey } from '@suite/intl';
+import { selectWasFwHashCheckOtherErrorLastTime } from '@suite-common/device';
+import { type SkippedHashCheckError } from '@suite-common/firmware-authenticity';
+import { Card } from '@trezor/components';
+import { type FirmwareHashCheckError } from '@trezor/connect';
+
+import { useSelector } from 'src/hooks/suite';
 
 import { SecurityCheckFail } from './SecurityCheckFail';
 import { hardFailureChecklistItems, softFailureChecklistItems } from './checklistItems';
@@ -36,15 +33,15 @@ const hashCheckSubtitleMap: Record<
 };
 
 const DeviceCompromisedContent = () => {
-    const isValidId = getIsDeviceIdValid(useSelector(selectSelectedDevice));
-    const isDeviceInvariabilityCheckSuccess = useSelector(selectIsDeviceInvariabilityCheckSuccess);
+    const isIdCheckFailure = useSelector(selectIsDeviceIdCheckEnabledAndFailed);
+    const isInvariabilityCheckFailure = useSelector(selectIsDeviceInvariabilityEnabledAndFailed);
     const revisionCheckError = useSelector(selectFirmwareRevisionCheckErrorIfEnabled);
     const hashCheckError = useSelector(selectFirmwareHashCheckErrorIfEnabled);
     const isEntropyCheckFailed = useSelector(selectIsEntropyCheckEnabledAndFailed);
     const wasHashCheckOtherErrorLastTime = useSelector(selectWasFwHashCheckOtherErrorLastTime);
 
-    // this check is only a precaution, not expected to be seen often
-    if (!isValidId) {
+    // this check is only a precaution, not expected to be seen often. This one cannot be dismissed (need id to register dismissal)
+    if (isIdCheckFailure) {
         return (
             <SecurityCheckFail
                 ctaSection={<FwAuthenticityCheckSupportButton />}
@@ -55,10 +52,10 @@ const DeviceCompromisedContent = () => {
         );
     }
     // this check is only a precaution, not expected to be seen often
-    if (!isDeviceInvariabilityCheckSuccess) {
+    if (isInvariabilityCheckFailure) {
         return (
             <SecurityCheckFail
-                ctaSection={<FwAuthenticityCheckSupportButton />}
+                ctaSection={<FwAuthencityChecksCtas />}
                 heading="TR_DEVICE_COMPROMISED_HEADING"
                 text="TR_DEVICE_COMPROMISED_INVARIABILITY_CHECK_FAILED_TEXT"
                 checklistItems={hardFailureChecklistItems}

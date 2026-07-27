@@ -1,19 +1,17 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
-import { NetworkSymbol, getCoingeckoId } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 
 import {
     type TransactionNotificationToken,
     type TransactionNotificationType,
 } from './notificationsTypes';
-import { AssetLogo } from '../AssetLogo/AssetLogo';
-import { CoinLogo } from '../CoinLogo/CoinLogo';
+import { TokenIcon } from '../TokenIcon/TokenIcon';
 
 type TransactionIconProps = {
     icon?: ReactNode;
     notificationType: TransactionNotificationType;
     symbol: NetworkSymbol;
-    accountSymbol: NetworkSymbol;
     token?: TransactionNotificationToken;
 };
 
@@ -26,15 +24,18 @@ const shouldDisplayAssetLogo = ({ notificationType, token }: ShouldDisplayAssetL
     const isApprovalType = notificationType === 'tx-approved' || notificationType === 'tx-revoked';
     const isTransferTokenType =
         notificationType === 'tx-sent' || notificationType === 'tx-received';
+    const isYieldType =
+        notificationType === 'tx-yield-deposit' ||
+        notificationType === 'tx-yield-withdraw' ||
+        notificationType === 'tx-yield-claim';
 
-    return (isApprovalType || isTransferTokenType) && !!token;
+    return (isApprovalType || isTransferTokenType || isYieldType) && !!token;
 };
 
 export const TransactionIcon = ({
     icon,
     notificationType,
     symbol,
-    accountSymbol,
     token,
 }: TransactionIconProps) => {
     if (icon) {
@@ -43,9 +44,8 @@ export const TransactionIcon = ({
 
     if (shouldDisplayAssetLogo({ notificationType, token }) && token) {
         return (
-            <AssetLogo
+            <TokenIcon
                 symbol={symbol}
-                coingeckoId={getCoingeckoId(accountSymbol) ?? ''}
                 contractAddress={token.contract ?? null}
                 placeholder={token.symbol ?? token.name ?? symbol}
                 size={20}
@@ -54,5 +54,5 @@ export const TransactionIcon = ({
         );
     }
 
-    return <CoinLogo symbol={symbol} size={20} />;
+    return <TokenIcon symbol={symbol} size={20} />;
 };

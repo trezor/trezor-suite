@@ -84,10 +84,16 @@ describe('outputRegistration', () => {
 
             expect(response.length).toBe(f.result.length);
             response.forEach((r, i) => {
-                expect(r.outputs.length).toBe(f.result[i].outputs.length);
-                expect(r).toMatchObject(f.result[i]);
+                const { result } = f;
+                // @ts-expect-error: indexing with noUncheckedIndexedAccess
+                const expected: (typeof result)[number] = result[i];
+                expect(r.outputs.length).toBe(expected.outputs.length);
+                expect(r).toMatchObject(expected);
             });
-            expect(availableVsize).toEqual(f.availableVsize);
+            // per-account requests run concurrently (Promise.all), so their arrival order is not
+            // guaranteed; compare as a multiset rather than a sequence
+            const byValue = (a: number, b: number) => a - b;
+            expect([...availableVsize].sort(byValue)).toEqual([...f.availableVsize].sort(byValue));
             expect(spy).toHaveBeenCalledTimes(f.credentialIssuanceCalls);
         });
     });

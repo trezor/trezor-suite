@@ -1,3 +1,11 @@
+# 10.0.0-alpha.1
+
+Part of the Connect 10 ecosystem release.
+
+Breaking changes:
+
+- `BridgeTransport` has moved to `@trezor/transport-common` (the environment-agnostic transport package). `@trezor/transport` now provides only the Node-only `NodeUsbTransport` and `UdpTransport`. See the `@trezor/transport-common` changelog for the `BridgeTransport` breaking changes (`DEFAULT_PORT`, `isOutdated`, `useProtocolMessages`).
+
 # 1.6.1
 
 - npm-prerelease: @trezor/transport 1.6.1-beta.1 (08e1bf9846)

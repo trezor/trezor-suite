@@ -1,5 +1,5 @@
 import {
-    CanLocktimeTxBeBroadcastParams,
+    type CanLocktimeTxBeBroadcastParams,
     canLocktimeTxBeBroadcast,
 } from '../canLocktimeTxBeBroadcast';
 

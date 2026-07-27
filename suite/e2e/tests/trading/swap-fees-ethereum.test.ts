@@ -18,6 +18,7 @@ const maxPriorityFeePerGasRounded = new BigNumber(maxPriorityFeePerGas).decimalP
 
 test.describe('Trading - Swap fees', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
     test.use({ deviceSetup: { mnemonic: 'mnemonic_academic', passphrase_protection: true } });
+
     test.beforeEach(
         async ({ page, onboardingPage, dashboardPage, walletPage, settingsPage, tradingMock }) => {
             await test.step('Mocking responses', async () => {
@@ -27,8 +28,10 @@ test.describe('Trading - Swap fees', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, ()
                 });
                 await tradingMock.routeSwapTrade(swapTradeEthereumBTC);
             });
+
             await onboardingPage.completeOnboarding();
-            await settingsPage.changeNetworks({ enableNetworks: ['eth'] });
+            await settingsPage.changeNetworks({ enableNetworks: ['eth', 'btc'] });
+            await dashboardPage.navigateTo();
             await dashboardPage.deviceSwitchingOpenButton.click();
             await dashboardPage.addHiddenWallet(process.env.PASSPHRASE!);
             await walletPage.openSwapTrading({ symbol: 'eth' });
@@ -108,20 +111,12 @@ test.describe('Trading - Swap fees', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, ()
                         ['Gas limit'],
                         [`${gasLimit} units`],
                         ['Max fee per gas'],
-                        [maxFeePerGas, '\n', 'Gwei'],
-                        ['Max priority fee'],
-                        [maxPriorityFeePerGas, '\n', 'Gwei'],
-                    ],
-                },
-                T3T1: {
-                    body: [
-                        ['Gas limit'],
-                        [`${gasLimit} units`],
-                        ['Max fee per gas'],
                         [`${maxFeePerGas} Gwei`],
                         ['Max priority fee'],
                         [`${maxPriorityFeePerGas} Gwei`],
                     ],
+                },
+                T3T1: {
                     footer: undefined,
                 },
             });

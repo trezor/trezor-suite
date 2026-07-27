@@ -1,7 +1,7 @@
-import { StaticSessionId } from '@trezor/connect';
-import { Result } from '@trezor/type-utils';
+import { type StaticSessionId } from '@trezor/connect';
+import { type Result } from '@trezor/type-utils';
 
-import { EnsureWalletSuiteSyncOnErrors } from './storage/ensureWalletSuiteSyncOn';
+import { type EnsureWalletSuiteSyncOnErrors } from './storage/ensureWalletSuiteSyncOn';
 
 type TurnOnSuiteSyncParams = {
     /**
@@ -18,3 +18,7 @@ export type TurnOnSuiteSync = (
 ) => Promise<Result<void, EnsureWalletSuiteSyncOnErrors>>;
 
 export type TurnOnSuiteSyncDep = { turnOnSuiteSync: TurnOnSuiteSync };
+
+export const selectTurnOnSuiteSyncDep = (services: any): TurnOnSuiteSyncDep => ({
+    turnOnSuiteSync: services.suiteSync.turnOnSuiteSync,
+});

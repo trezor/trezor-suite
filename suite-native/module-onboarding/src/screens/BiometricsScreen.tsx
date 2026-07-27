@@ -1,20 +1,24 @@
 import { useSelector } from 'react-redux';
 
-import { events } from '@suite-native/analytics';
+import { useServices } from '@suite-common/dependency-injection';
+import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { Box, Button, HStack, Text, VStack } from '@suite-native/atoms';
-import { BiometricsSvg, useBiometricsSettings } from '@suite-native/biometrics';
+import {
+    BiometricsSvg,
+    BiometricsToggleResult,
+    useBiometricsSettings,
+} from '@suite-native/biometrics';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import {
-    OnboardingStackParamList,
+    type OnboardingStackParamList,
     OnboardingStackRoutes,
     Screen,
     ScreenHeader,
-    StackProps,
+    type StackProps,
 } from '@suite-native/navigation';
-import { useAnalytics } from '@suite-native/services';
 import { selectIsTradingResidenceCheckEnabled } from '@suite-native/trading-state';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { useExitOnboardingFlow } from '../hooks/useExitOnboardingFlow';
 
@@ -30,7 +34,7 @@ const titleStyle = prepareNativeStyle(_ => ({
 
 export const BiometricsScreen = ({ navigation }: BiometricsScreenProps) => {
     const { applyStyle } = useNativeStyles();
-    const analytics = useAnalytics();
+    const { analytics } = useServices(selectNativeAnalyticsDep);
     const { toggleBiometricsOption } = useBiometricsSettings();
     const exitOnboardingFlow = useExitOnboardingFlow();
 
@@ -38,7 +42,7 @@ export const BiometricsScreen = ({ navigation }: BiometricsScreenProps) => {
 
     const enableBiometrics = async () => {
         const result = await toggleBiometricsOption();
-        if (result === 'enabled') {
+        if (result === BiometricsToggleResult.Enabled) {
             analytics.report({
                 type: events.biometricsChangeEvent.name,
                 payload: {
@@ -75,12 +79,8 @@ export const BiometricsScreen = ({ navigation }: BiometricsScreenProps) => {
                 <VStack spacing="sp40">
                     <VStack spacing="sp16">
                         <HStack spacing="sp8" alignItems="center">
-                            <Icon
-                                name="fingerprint"
-                                color="textSecondaryHighlight"
-                                size="mediumLarge"
-                            />
-                            <Text color="textSecondaryHighlight">
+                            <Icon name="fingerprint" color="contentBrand" size="mediumLarge" />
+                            <Text color="contentBrand">
                                 <Translation id="moduleOnboarding.biometricsScreen.title" />
                             </Text>
                         </HStack>
@@ -96,7 +96,8 @@ export const BiometricsScreen = ({ navigation }: BiometricsScreenProps) => {
                             <Translation id="generic.buttons.enable" />
                         </Button>
                         <Button
-                            colorScheme="tertiaryElevation0"
+                            intent="neutral"
+                            priority="secondary"
                             testID="@onboarding/Biometrics/skipBtn"
                             onPress={handleNotNowButtonPress}
                         >

@@ -11,13 +11,13 @@ import { useSelector } from 'react-redux';
 import { type NetworkSymbol, type NetworkType, getNetworkType } from '@suite-common/wallet-config';
 import {
     EVM_FEE_RATE_DECIMALS,
-    FeesRootState,
+    type FeesRootState,
     selectConvertedNetworkFeeLevelFeePerUnit,
     selectConvertedNetworkFeeLevelTimeEstimate,
 } from '@suite-common/wallet-core';
 import {
-    GeneralPrecomposedTransaction,
-    GeneralPrecomposedTransactionFinal,
+    type GeneralPrecomposedTransaction,
+    type GeneralPrecomposedTransactionFinal,
     isFinalPrecomposedTransaction,
 } from '@suite-common/wallet-types';
 import { getFeeUnits, isEip1559 } from '@suite-common/wallet-utils';
@@ -28,12 +28,12 @@ import {
     EmptyAmountSkeleton,
 } from '@suite-native/formatters';
 import { FormContext } from '@suite-native/forms';
-import { Translation, TxKeyPath } from '@suite-native/intl';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Color } from '@trezor/theme';
+import { Translation, type TxKeyPath } from '@suite-native/intl';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
+import { type Color } from '@trezor/theme';
 
 import { FeeOptionErrorMessage } from './FeeOptionErrorMessage';
-import { NativeSupportedPredefinedFeeLevel } from '../../../types';
+import { type NativeSupportedPredefinedFeeLevel } from '../../../types';
 
 export type FeeOptionProps = {
     feeKey: NativeSupportedPredefinedFeeLevel;
@@ -42,7 +42,7 @@ export type FeeOptionProps = {
     transactionBytes: number;
     isInteractive?: boolean;
     isLoading?: boolean;
-    onSelectedFeeLevel: (feeKey: NativeSupportedPredefinedFeeLevel) => void;
+    onSelectedFeeLevel?: (feeKey: NativeSupportedPredefinedFeeLevel) => void;
 };
 
 const feeLabelsMap = {
@@ -56,8 +56,8 @@ const wrapperStyle = prepareNativeStyle(utils => ({
     overflow: 'hidden',
     borderRadius: utils.borders.radii.r16,
     borderWidth: utils.borders.widths.large,
-    backgroundColor: utils.colors.backgroundSurfaceElevation1,
-    borderColor: utils.colors.backgroundSurfaceElevation0,
+    backgroundColor: utils.colors.surfaceFillRaised,
+    borderColor: utils.colors.surfaceFillPage,
 }));
 
 const valuesWrapperStyle = prepareNativeStyle(utils => ({
@@ -120,8 +120,8 @@ export const FeeOption = ({
     const isChecked = selectedLevel === feeKey;
 
     const highlightColor: Color = areFeeValuesComplete
-        ? 'backgroundSecondaryDefault'
-        : 'backgroundAlertRedBold';
+        ? 'legacyBackgroundSecondaryDefault'
+        : 'legacyBackgroundAlertRedBold';
 
     const borderAnimationValue = useDerivedValue(
         () => (isChecked ? withTiming(1) : withTiming(0)),
@@ -133,7 +133,7 @@ export const FeeOption = ({
             borderColor: interpolateColor(
                 isInteractive ? borderAnimationValue.value : 0,
                 [0, 1],
-                [utils.colors.backgroundSurfaceElevation0, utils.colors[highlightColor]],
+                [utils.colors.surfaceFillPage, utils.colors[highlightColor]],
             ),
         }),
         [borderAnimationValue, highlightColor, isInteractive],
@@ -158,20 +158,19 @@ export const FeeOption = ({
     const formattedFeePerUnit = `${feePerUnit} ${feeUnits}`;
 
     const handleSelectFeeLevel = () => {
-        setValue('feeLevel', feeKey, {
-            shouldValidate: true,
-        });
+        if (feeKey === selectedLevel) return;
 
-        onSelectedFeeLevel(feeKey);
+        setValue('feeLevel', feeKey, { shouldValidate: true, shouldDirty: true });
+        onSelectedFeeLevel?.(feeKey);
 
-        // Update also custom fee form so user can see the current values there.
-        setValue('customFeePerUnit', feePerUnit, {
-            shouldValidate: true,
-        });
-
-        setValue('customFeeLimit', feeLevel.feeLimit, {
-            shouldValidate: true,
-        });
+        // Update custom fee form so user sees current values when switching to Custom tab.
+        setValue('customFeePerUnit', feePerUnit, { shouldValidate: true, shouldDirty: true });
+        if (feeLevel.feeLimit !== undefined) {
+            setValue('customFeeLimit', feeLevel.feeLimit, {
+                shouldValidate: true,
+                shouldDirty: true,
+            });
+        }
     };
 
     return (
@@ -194,7 +193,7 @@ export const FeeOption = ({
                                     <Translation id={label} />
                                     {' • '}
                                 </Text>
-                                <Text variant="body-sm" color="textSubdued">
+                                <Text variant="body-sm" color="contentSecondary">
                                     {isLoading ? (
                                         <EmptyAmountSkeleton variant="body-sm" />
                                     ) : (
@@ -202,7 +201,7 @@ export const FeeOption = ({
                                     )}
                                 </Text>
                             </Box>
-                            <Text variant="body-sm" color="textSubdued">
+                            <Text variant="body-sm" color="contentSecondary">
                                 {isLoading ? (
                                     <EmptyAmountSkeleton variant="body-sm" />
                                 ) : (
@@ -213,31 +212,28 @@ export const FeeOption = ({
                         <VStack flex={1} alignItems="flex-end" spacing="sp4">
                             <CryptoToFiatAmountFormatter
                                 variant="body-md"
-                                color="textDefault"
+                                color="contentPrimary"
                                 value={fee}
                                 symbol={symbol}
                                 isLoading={isLoading}
+                                isDiscreetText={false}
                             />
                             <CryptoAmountFormatter
                                 variant="body-sm"
-                                color="textSubdued"
+                                color="contentSecondary"
                                 value={fee}
                                 symbol={symbol}
                                 isBalance={false}
                                 adjustsFontSizeToFit
                                 numberOfLines={1}
                                 isLoading={isLoading}
+                                isDiscreetText={false}
                             />
                         </VStack>
                         {isInteractive && (
                             <Radio
                                 isChecked={isChecked}
                                 value={feeKey}
-                                activeColor={
-                                    areFeeValuesComplete
-                                        ? 'backgroundPrimaryDefault'
-                                        : 'iconAlertRed'
-                                }
                                 onPress={handleSelectFeeLevel}
                                 testID={`@transactionManagement/fees-level-radio-${feeKey}`}
                             />

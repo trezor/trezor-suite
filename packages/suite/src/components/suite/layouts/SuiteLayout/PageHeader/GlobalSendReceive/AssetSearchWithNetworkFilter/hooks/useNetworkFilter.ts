@@ -1,12 +1,15 @@
-import { RefObject, useEffect, useMemo, useState } from 'react';
+import { type RefObject, useEffect, useMemo, useState } from 'react';
 
-import { NetworkSymbol } from '@suite-common/wallet-config';
-import { GlobalSendReceiveType } from '@suite-common/wallet-types';
+import { goto, parseDashboardParams, selectRouterParams } from '@suite/router';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { selectEnabledNetworks } from '@suite-common/wallet-core';
+import { type GlobalSendReceiveType } from '@suite-common/wallet-types';
 
-import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { globalSendReceiveFilters } from 'src/slices/wallet/globalSendReceiveFilters';
-import { parseDashboardParams } from 'src/utils/suite/router';
+import {
+    globalSendReceiveFiltersActions,
+    globalSendReceiveFiltersSelectors,
+} from 'src/slices/wallet/globalSendReceiveFilters';
 
 export interface UseNetworkFilterProps {
     modal?: NonNullable<GlobalSendReceiveType>;
@@ -15,22 +18,29 @@ export interface UseNetworkFilterProps {
 }
 
 export function useNetworkFilter({ listRef, resetSearch, modal }: UseNetworkFilterProps) {
-    const routerParams = useSelector(state => state.router.params);
+    const routerParams = useSelector(selectRouterParams);
     const networkSymbolUrlParam = useMemo(
         () => parseDashboardParams(routerParams)?.networkSymbol,
         [routerParams],
     );
 
-    const defaultNetwork = useSelector(globalSendReceiveFilters.selectors.selectNetworkSymbol);
+    const defaultNetwork = useSelector(globalSendReceiveFiltersSelectors.selectNetworkSymbol);
+    const enabledNetworks = useSelector(selectEnabledNetworks);
     const [networkFilter, setNetworkFilter] = useState<NetworkSymbol | undefined>(defaultNetwork);
 
     const dispatch = useDispatch();
 
     useEffect(() => {
-        if (networkSymbolUrlParam && defaultNetwork === undefined) {
+        // Only preselect a network from the URL if it is actually enabled, otherwise the list shows
+        // "no accounts" under a filter the user never chose (e.g. send/sol while Solana is disabled).
+        if (
+            networkSymbolUrlParam &&
+            defaultNetwork === undefined &&
+            enabledNetworks.includes(networkSymbolUrlParam)
+        ) {
             setNetworkFilter(networkSymbolUrlParam);
         }
-    }, [networkSymbolUrlParam, defaultNetwork]);
+    }, [networkSymbolUrlParam, defaultNetwork, enabledNetworks]);
 
     useEffect(() => {
         if (networkFilter === defaultNetwork) {
@@ -39,10 +49,11 @@ export function useNetworkFilter({ listRef, resetSearch, modal }: UseNetworkFilt
 
         resetSearch();
 
-        dispatch(globalSendReceiveFilters.actions.setNetworkSymbol(networkFilter));
+        dispatch(globalSendReceiveFiltersActions.setNetworkSymbol(networkFilter));
 
         dispatch(
-            goto('suite-index', {
+            goto({
+                routeName: 'suite-index',
                 params: {
                     modal,
                     ...(networkFilter ? { networkSymbol: networkFilter } : {}),

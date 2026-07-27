@@ -6,7 +6,7 @@ const legacyResults = [
     },
 ];
 
-export default {
+const rippleGetAddress: TestCase = {
     method: 'rippleGetAddress',
     setup: {
         mnemonic: 'mnemonic_12',
@@ -48,4 +48,6 @@ export default {
             },
         },
     ].map(fixture => ({ ...fixture, legacyResults })),
-} satisfies TestCase;
+};
+
+export default rippleGetAddress;

@@ -1,9 +1,9 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
 import { Translation } from '@suite/intl';
 import { Modal } from '@trezor/components';
 
-import { FirmwareInstallation } from '../../../components/firmware';
+import { FirmwareInstallation } from 'src/components/firmware/FirmwareInstallation';
 
 type StepDoneProps = {
     onClose: () => void;

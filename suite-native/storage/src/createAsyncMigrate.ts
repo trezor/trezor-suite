@@ -1,6 +1,6 @@
-import { DEFAULT_VERSION, PersistedState } from 'redux-persist';
+import { DEFAULT_VERSION, type PersistedState } from 'redux-persist';
 
-import { MigrationsManifest } from './migrationTypes';
+import { type MigrationsManifest } from './migrationTypes';
 
 type MigratedState<TReducerInitialState> = Partial<TReducerInitialState> & PersistedState;
 
@@ -47,9 +47,12 @@ export const createAsyncMigrate =
 
             // Run migrations sequentially.
             for (const versionKey of migrationKeys) {
-                migratedState = (await migrations[versionKey](
-                    migratedState,
-                )) as MigratedState<TReducerInitialState>;
+                const migration = migrations[versionKey];
+                if (migration) {
+                    migratedState = (await migration(
+                        migratedState,
+                    )) as MigratedState<TReducerInitialState>;
+                }
             }
 
             return Promise.resolve(migratedState);

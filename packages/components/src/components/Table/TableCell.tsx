@@ -1,16 +1,18 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
 import styled from 'styled-components';
 
-import { Elevation, mapElevationToBackground, spacings } from '@trezor/theme';
-
 import { useTable } from './TableContext';
 import { useTableHeader } from './TableHeader';
-import { UIAlignment } from '../../config/types';
-import { FrameProps, FramePropsKeys, withFrameProps } from '../../utils/frameProps';
-import { TransientProps } from '../../utils/transientProps';
-import { useElevation } from '../ElevationContext/ElevationContext';
-import { FlexJustifyContent } from '../Flex/FlexProp';
+import { type UIAlignment } from '../../config/types';
+import {
+    type FrameProps,
+    type FramePropsKeys,
+    type Padding,
+    withFrameProps,
+} from '../../utils/frameProps';
+import { type TransientProps } from '../../utils/transientProps';
+import { type FlexJustifyContent } from '../Flex/FlexProp';
 import { Text } from '../typography/Text/Text';
 
 export const allowedTableCellFrameProps = [
@@ -32,7 +34,6 @@ const mapAlignmentToJustifyContent = (align: UIAlignment): FlexJustifyContent =>
 };
 
 type CellProps = TransientProps<AllowedFrameProps> & {
-    $elevation: Elevation;
     $hasBorder: boolean;
 };
 
@@ -41,15 +42,6 @@ const Cell = styled.td<CellProps>`
     overflow: hidden;
 
     ${withFrameProps}
-
-    &:first-child {
-        position: sticky;
-        left: 0;
-        z-index: 2;
-        background: linear-gradient(to right, ${mapElevationToBackground} 90%, rgb(0 0 0 / 0%));
-
-        ${({ $hasBorder }) => !$hasBorder && 'padding-left: 0;'}
-    }
 
     &:last-child {
         ${({ $hasBorder }) => !$hasBorder && 'padding-right: 0;'}
@@ -78,18 +70,16 @@ export const TableCell = ({
 }: TableCellProps) => {
     const isHeader = useTableHeader();
     const { hasBorders, typographyStyle = 'body-md' } = useTable();
-    const { parentElevation } = useElevation();
 
     const defaultPadding = {
-        vertical: hasBorders ? spacings.sm : spacings.xs,
-        horizontal: spacings.lg,
-    };
+        vertical: hasBorders ? 12 : 8,
+        horizontal: 20,
+    } satisfies Padding;
 
     return (
         <Cell
             as={isHeader ? 'th' : 'td'}
             colSpan={colSpan}
-            $elevation={parentElevation}
             $padding={padding ?? defaultPadding}
             $maxWidth={maxWidth}
             $hasBorder={hasBorders}

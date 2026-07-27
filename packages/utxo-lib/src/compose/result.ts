@@ -1,20 +1,18 @@
-import BN from 'bn.js';
-
 import { createTransaction } from './transaction';
 import { transactionBytes } from '../coinselect/coinselectUtils';
 import {
     COMPOSE_ERROR_TYPES,
-    CoinSelectRequest,
-    CoinSelectResult,
-    ComposeChangeAddress,
-    ComposeFinalOutput,
-    ComposeInput,
-    ComposeNotFinalOutput,
-    ComposeOutput,
-    ComposeRequest,
-    ComposeResult,
-    ComposeResultError,
-    ComposeResultFinal,
+    type CoinSelectRequest,
+    type CoinSelectResult,
+    type ComposeChangeAddress,
+    type ComposeFinalOutput,
+    type ComposeInput,
+    type ComposeNotFinalOutput,
+    type ComposeOutput,
+    type ComposeRequest,
+    type ComposeResult,
+    type ComposeResultError,
+    type ComposeResultFinal,
 } from '../types';
 
 export function getErrorResult(error: unknown): ComposeResultError {
@@ -60,21 +58,29 @@ export function getResult<
 
     const totalSpent = result.outputs.reduce((total, output, index) => {
         if (request.outputs[index]) {
-            return total.add(output.value);
+            return total + output.value;
         }
 
         return total;
-    }, new BN(result.fee));
+    }, BigInt(result.fee));
 
-    const max =
-        sendMaxOutputIndex >= 0 ? result.outputs[sendMaxOutputIndex].value.toString() : undefined;
+    const { outputs } = result;
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const sendMaxOutput: (typeof outputs)[number] = outputs[sendMaxOutputIndex];
+    const max = sendMaxOutputIndex >= 0 ? sendMaxOutput.value.toString() : undefined;
     const bytes = transactionBytes(result.inputs, result.outputs);
     const feePerByte = result.fee / bytes;
 
     const { complete, incomplete } = splitByCompleteness(request.outputs);
 
     if (incomplete.length > 0) {
-        const inputs = result.inputs.map(input => request.utxos[input.i]);
+        const inputs = result.inputs.map(input => {
+            const { utxos } = request;
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const utxo: Input = utxos[input.i];
+
+            return utxo;
+        });
 
         return {
             type: 'nonfinal',

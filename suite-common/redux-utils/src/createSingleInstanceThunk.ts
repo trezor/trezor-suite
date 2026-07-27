@@ -1,10 +1,10 @@
 import {
-    AsyncThunkOptions,
-    AsyncThunkPayloadCreator,
+    type AsyncThunkOptions,
+    type AsyncThunkPayloadCreator,
     createAsyncThunk as createAsyncThunkReduxToolkit,
 } from '@reduxjs/toolkit';
 
-import { CustomThunkAPI } from './extraDependenciesType'; // Adjust the import path according to your project structure
+import { type CustomThunkAPI } from './extraDependenciesType'; // Adjust the import path according to your project structure
 
 /**
  * @description This function will ensure that there is only one ongoing promise for a given function with given arguments.

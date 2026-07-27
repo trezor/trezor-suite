@@ -1,13 +1,20 @@
 import { useState } from 'react';
+import { type Control, useWatch } from 'react-hook-form';
 
 import { Translation, useTranslation } from '@suite/intl';
+import { useGetCountryName } from '@suite/trading';
+import { getCountryFlag } from '@suite-common/flags';
 import { TRADING_FORM_COUNTRY_SELECT } from '@suite-common/trading';
-import { GhostContainer, Icon, Row, Text } from '@trezor/components';
+import { Flag, GhostContainer, Icon, Row, Text } from '@trezor/components';
+import { CaretRightIcon } from '@trezor/icons';
 
 import { FakeSelect } from 'src/components/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
-import { TradingTradeBuySellType } from 'src/types/trading/trading';
-import { TradingFormInputDefaultProps } from 'src/types/trading/tradingForm';
+import { type TradingTradeBuySellType } from 'src/types/trading/trading';
+import {
+    type TradingBuySellFormProps,
+    type TradingFormInputDefaultProps,
+} from 'src/types/trading/tradingForm';
 
 import { CountrySelectModal } from './CountrySelectModal';
 
@@ -21,16 +28,24 @@ export const TradingFormInputCountry = ({
 }: TradingFormInputCountryProps) => {
     const { translationString } = useTranslation();
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const { watch, defaultCountry } = useTradingFormContext<TradingTradeBuySellType>();
+    const { control } = useTradingFormContext<TradingTradeBuySellType>();
+    const getCountryName = useGetCountryName();
 
-    const countryValue = watch()[TRADING_FORM_COUNTRY_SELECT];
+    const country = useWatch({
+        control: control as Control<TradingBuySellFormProps>,
+        name: TRADING_FORM_COUNTRY_SELECT,
+    });
+
+    const countryFlag = getCountryFlag(country?.value);
+    const countryName = getCountryName(country);
 
     return (
         <>
             {renderInput && (
                 <FakeSelect
-                    value={countryValue?.shortLabel ?? defaultCountry?.shortLabel ?? ''}
+                    value={countryName}
                     placeholder={label ? translationString(label) : undefined}
+                    leftContent={countryFlag && <Flag country={countryFlag} size={24} />}
                     onClick={() => setIsModalOpen(true)}
                     data-testid="@trading/form/country-select"
                 />
@@ -42,18 +57,26 @@ export const TradingFormInputCountry = ({
                     data-testid="@trading/form/country-select"
                 >
                     <Row justifyContent="space-between" padding={20}>
-                        <Text typographyStyle="body-md" align="start">
+                        <Text
+                            typographyStyle="body-md"
+                            align="start"
+                            intent="neutral"
+                            priority="secondary"
+                        >
                             {label && <Translation id={label} />}
                         </Text>
                         <Row gap={16}>
-                            <Text
-                                typographyStyle="body-md"
-                                data-testid="@trading/form/country-select/value"
-                            >
-                                {countryValue?.shortLabel ?? defaultCountry?.shortLabel ?? ''}
-                            </Text>
+                            <Row gap={8}>
+                                {countryFlag && <Flag country={countryFlag} size={24} />}
+                                <Text
+                                    typographyStyle="body-md"
+                                    data-testid="@trading/form/country-select/value"
+                                >
+                                    {countryName}
+                                </Text>
+                            </Row>
                             <Icon
-                                name="caretRight"
+                                as={CaretRightIcon}
                                 size={20}
                                 intent="neutral"
                                 priority="secondary"

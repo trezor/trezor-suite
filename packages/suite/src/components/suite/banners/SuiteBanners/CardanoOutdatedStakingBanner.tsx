@@ -1,16 +1,15 @@
 import { Translation } from '@suite/intl';
+import { goto } from '@suite/router';
 import { Feature, selectIsFeatureEnabled } from '@suite-common/message-system';
-import { selectPoolStatsApyData } from '@suite-common/wallet-core';
+import { selectPoolStatsApy } from '@suite-common/wallet-core';
 import { Banner } from '@trezor/components';
 
-import { goto } from 'src/actions/suite/routerActions';
-import { DashboardAnchor } from 'src/constants/suite/anchors';
+import { formatApyValue } from 'src/components/earn/utils/earnApyUtils';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { formatApyValue } from 'src/views/wallet/staking/utils/formatStakeValues';
 
 export const CardanoOutdatedStakingBanner = () => {
     const dispatch = useDispatch();
-    const apy = useSelector(state => selectPoolStatsApyData(state, undefined, 'ada'));
+    const apy = useSelector(state => selectPoolStatsApy(state, { networkSymbol: 'ada' }));
 
     const isNewProviderBannerEnabled = useSelector(state =>
         selectIsFeatureEnabled(state, Feature.banners.staking.ada.newProvider, true),
@@ -25,12 +24,7 @@ export const CardanoOutdatedStakingBanner = () => {
             icon
             intent="warning"
             rightContent={
-                <Banner.Button
-                    onClick={() =>
-                        dispatch(goto('suite-index', { anchor: DashboardAnchor.Staking }))
-                    }
-                    data-testid="@notification/bridge-deprecated/button"
-                >
+                <Banner.Button onClick={() => dispatch(goto({ routeName: 'suite-earn' }))}>
                     <Translation id="TR_STAKING_MODAL_OUTDATED_BUTTON" />
                 </Banner.Button>
             }

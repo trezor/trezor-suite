@@ -1,21 +1,21 @@
-// origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/helpers/ethereumSignTx.js
+/* eslint-disable @typescript-eslint/no-use-before-define */
 
-import { Common, Hardfork, Mainnet, createCustomCommon } from '@ethereumjs/common';
-import { FeeMarketEIP1559TxData, LegacyTxData, createTx } from '@ethereumjs/tx';
+import { serializeTransaction } from 'viem';
 
-import { ERRORS } from '@trezor/connect-common/src/constants';
-import { MessagesSchema } from '@trezor/protobuf';
-
-import { PROTO } from '../../constants';
-import type { TypedCall } from '../../device/DeviceCommands';
 import type {
     EthereumAccessList,
     EthereumTransaction,
     EthereumTransactionEIP1559,
-} from '../../types/api/ethereum';
-import { addHexPrefix, deepTransform } from '../../utils/formatUtils';
+    PROTO,
+} from '@trezor/connect-common';
+import { ERRORS } from '@trezor/connect-common/src/constants';
+import type { MessagesSchema } from '@trezor/protobuf';
 
-const splitString = (str?: string, len?: number) => {
+import { getEthereumDefinitions } from './ethereumDefinitions';
+import type { TypedCall } from '../../device/DeviceCommands';
+import { addHexPrefix } from '../../utils/formatUtils';
+
+const splitString = (str?: string, len?: number): [string, string] => {
     if (str == null) {
         return ['', ''];
     }
@@ -25,16 +25,18 @@ const splitString = (str?: string, len?: number) => {
     return [first, second];
 };
 
-const processTxRequest = async (
+type TxSignature = { v: `0x${string}`; r: `0x${string}`; s: `0x${string}` };
+
+type TxFlowResponse =
+    | { type: 'EthereumTxRequest'; message: PROTO.EthereumTxRequest }
+    | { type: 'EthereumDefinitionRequest'; message: PROTO.EthereumDefinitionRequest };
+
+async function processTxRequest(
     typedCall: TypedCall,
     request: PROTO.EthereumTxRequest,
     data?: string,
     chain_id?: number,
-): Promise<{
-    v: `0x${string}`;
-    r: `0x${string}`;
-    s: `0x${string}`;
-}> => {
+): Promise<TxSignature> {
     if (!request.data_length) {
         let v = request.signature_v;
         const r = request.signature_r;
@@ -57,61 +59,86 @@ const processTxRequest = async (
     }
 
     const [first, rest] = splitString(data, request.data_length * 2);
-    const response = await typedCall('EthereumTxAck', 'EthereumTxRequest', { data_chunk: first });
+    const nextResponse = await typedCall(
+        'EthereumTxAck',
+        ['EthereumTxRequest', 'EthereumDefinitionRequest'],
+        { data_chunk: first },
+    );
 
-    return processTxRequest(typedCall, response.message, rest, chain_id);
-};
+    return handleTxFlowResponse(typedCall, nextResponse, rest, chain_id);
+}
 
-const deepHexPrefix = deepTransform(addHexPrefix);
+async function processDefinitionRequest(
+    typedCall: TypedCall,
+    request: PROTO.EthereumDefinitionRequest,
+    data?: string,
+    chain_id?: number,
+): Promise<TxSignature> {
+    const definitions = await getEthereumDefinitions({
+        chainId: request.chain_id,
+        contractAddress: request.token_address,
+        functionSignature: request.func_sig,
+    });
 
-export const getCommonForChain = (chainId: number): Common => {
-    // @ethereumjs/tx doesn't support ETC (chain 61) by default
-    // see: https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/tx/examples/custom-chain-id-tx.ts
-    if (chainId === 61) {
-        return createCustomCommon(
-            {
-                chainId: 61,
-                // last hardfork shared with Ethereum
-                defaultHardfork: Hardfork.Petersburg,
-            },
-            Mainnet,
-        );
+    const nextResponse = await typedCall(
+        'EthereumDefinitionAck',
+        ['EthereumTxRequest', 'EthereumDefinitionRequest'],
+        { definitions },
+    );
+
+    return handleTxFlowResponse(typedCall, nextResponse, data, chain_id);
+}
+
+function handleTxFlowResponse(
+    typedCall: TypedCall,
+    response: TxFlowResponse,
+    data?: string,
+    chain_id?: number,
+): Promise<TxSignature> {
+    if (response.type === 'EthereumDefinitionRequest') {
+        return processDefinitionRequest(typedCall, response.message, data, chain_id);
     }
 
-    return createCustomCommon({ chainId }, Mainnet);
-};
+    return processTxRequest(typedCall, response.message, data, chain_id);
+}
+
+const ifNotUndefined = <T, U>(value: T | undefined, convert: (value: T) => U): U | undefined =>
+    value === undefined ? undefined : convert(value);
+
+const toBigInt = (value: string) => BigInt(addHexPrefix(value));
 
 export const serializeEthereumTx = (
     tx: EthereumTransactionEIP1559 | EthereumTransaction,
     signature: { v: `0x${string}`; r: `0x${string}`; s: `0x${string}` },
     isLegacy: boolean,
-) => {
-    const txData = deepHexPrefix({
-        ...tx,
-        ...signature,
-        to: tx.to || undefined,
-        type: isLegacy ? 0 : 2, // 0 for legacy, 2 for EIP-1559
-        ...(isLegacy
-            ? {
-                  gasPrice: tx.gasPrice,
-                  maxFeePerGas: undefined,
-                  maxPriorityFeePerGas: undefined,
-              }
-            : {
-                  gasPrice: undefined,
-                  maxFeePerGas: tx.maxFeePerGas,
-                  maxPriorityFeePerGas: tx.maxPriorityFeePerGas,
-              }),
-    }) satisfies LegacyTxData | FeeMarketEIP1559TxData;
-
-    const txOptions = {
-        common: getCommonForChain(tx.chainId),
-    };
-
-    const ethTx = createTx(txData, txOptions);
-
-    return `0x${Buffer.from(ethTx.serialize()).toString('hex')}`;
-};
+) =>
+    serializeTransaction(
+        {
+            value: toBigInt(tx.value),
+            nonce: Number(addHexPrefix(tx.nonce)),
+            data: ifNotUndefined(tx.data, addHexPrefix),
+            to: ifNotUndefined(tx.to || undefined, addHexPrefix), // empty ("") address must be omitted completely
+            gas: ifNotUndefined(tx.gasLimit, toBigInt),
+            chainId: tx.chainId,
+            ...(isLegacy
+                ? {
+                      type: 'legacy',
+                      gasPrice: ifNotUndefined(tx.gasPrice, toBigInt),
+                  }
+                : {
+                      type: 'eip1559',
+                      maxFeePerGas: ifNotUndefined(tx.maxFeePerGas, toBigInt),
+                      maxPriorityFeePerGas: ifNotUndefined(tx.maxPriorityFeePerGas, toBigInt),
+                      accessList: ('accessList' in tx ? tx.accessList : undefined)?.map(
+                          ({ address, storageKeys }) => ({
+                              address: addHexPrefix(address),
+                              storageKeys: storageKeys.map(addHexPrefix),
+                          }),
+                      ),
+                  }),
+        },
+        { ...signature, v: toBigInt(signature.v) },
+    );
 
 const stripLeadingZeroes = (str: string) => {
     while (/^00/.test(str)) {
@@ -152,6 +179,7 @@ export const ethereumSignTx = async (
         definitions,
         chunkify,
         payment_req,
+        supports_definition_request: true,
     };
 
     if (length !== 0) {
@@ -169,9 +197,13 @@ export const ethereumSignTx = async (
         };
     }
 
-    const response = await typedCall('EthereumSignTx', 'EthereumTxRequest', message);
+    const response = await typedCall(
+        'EthereumSignTx',
+        ['EthereumTxRequest', 'EthereumDefinitionRequest'],
+        message,
+    );
 
-    return processTxRequest(typedCall, response.message, rest, chain_id);
+    return handleTxFlowResponse(typedCall, response, rest, chain_id);
 };
 
 export const ethereumSignTxEIP1559 = async (
@@ -213,9 +245,14 @@ export const ethereumSignTxEIP1559 = async (
         definitions,
         chunkify,
         payment_req,
+        supports_definition_request: true,
     };
 
-    const response = await typedCall('EthereumSignTxEIP1559', 'EthereumTxRequest', message);
+    const response = await typedCall(
+        'EthereumSignTxEIP1559',
+        ['EthereumTxRequest', 'EthereumDefinitionRequest'],
+        message,
+    );
 
-    return processTxRequest(typedCall, response.message, rest);
+    return handleTxFlowResponse(typedCall, response, rest);
 };

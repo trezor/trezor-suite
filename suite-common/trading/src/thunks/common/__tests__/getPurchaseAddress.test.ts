@@ -2,8 +2,11 @@ import { combineReducers } from '@reduxjs/toolkit';
 
 import { createThunk } from '@suite-common/redux-utils';
 import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
-import { confirmAddressOnDeviceThunk } from '@suite-common/wallet-core';
-import { Account, AddressDisplayOptions } from '@suite-common/wallet-types';
+import {
+    confirmAddressOnDeviceThunk,
+    prepareWalletSettingsReducer,
+} from '@suite-common/wallet-core';
+import { type Account, AddressDisplayOptions } from '@suite-common/wallet-types';
 
 import { accounts } from '../../../reducers/__fixtures__/account';
 import { initialState } from '../../../reducers/tradingCommonReducer';
@@ -11,14 +14,17 @@ import { prepareTradingReducer } from '../../../reducers/tradingReducer';
 import { getPurchaseAddress } from '../getPurchaseAddress';
 
 const tradingReducer = prepareTradingReducer(extraDependenciesCommonMock);
+const walletSettingsReducer = prepareWalletSettingsReducer(extraDependenciesCommonMock);
 
 jest.mock('@suite-common/wallet-core', () => ({
     ...jest.requireActual('@suite-common/wallet-core'),
     confirmAddressOnDeviceThunk: jest.fn(),
 }));
 
+const baseAccount = accounts[0];
+if (!baseAccount) throw new Error('Missing test fixture');
 const mockAccount: Account = {
-    ...accounts[0],
+    ...baseAccount,
     addresses: {
         change: [],
         used: [],
@@ -46,16 +52,10 @@ describe('getPurchaseAddress thunk', () => {
 
     const createMockStore = (preloadedState = {}) =>
         configureMockStore({
-            extra: {
-                ...extraDependenciesCommonMock,
-                selectors: {
-                    selectAddressDisplayType: jest
-                        .fn()
-                        .mockReturnValue(AddressDisplayOptions.CHUNKED),
-                },
-            },
+            extra: extraDependenciesCommonMock,
             reducer: combineReducers({
                 wallet: combineReducers({
+                    settings: walletSettingsReducer,
                     trading: tradingReducer,
                 }),
             }),
@@ -115,21 +115,16 @@ describe('getPurchaseAddress thunk', () => {
             );
 
             const storeWithNonChunked = configureMockStore({
-                extra: {
-                    ...extraDependenciesCommonMock,
-                    selectors: {
-                        selectAddressDisplayType: jest
-                            .fn()
-                            .mockReturnValue(AddressDisplayOptions.ORIGINAL),
-                    },
-                },
+                extra: extraDependenciesCommonMock,
                 reducer: combineReducers({
                     wallet: combineReducers({
+                        settings: walletSettingsReducer,
                         trading: tradingReducer,
                     }),
                 }),
                 preloadedState: {
                     wallet: {
+                        settings: { addressDisplayType: AddressDisplayOptions.ORIGINAL },
                         trading: initialState,
                     },
                 },
@@ -172,7 +167,7 @@ describe('getPurchaseAddress thunk', () => {
             (confirmAddressOnDeviceThunk as unknown as jest.Mock).mockImplementation(
                 createThunk('@suite/device/confirmAddressOnDeviceThunk', () => ({
                     success: false,
-                    payload: { error: 'Device confirmation failed' },
+                    error: { message: 'Device confirmation failed' },
                 })),
             );
 

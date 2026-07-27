@@ -1,6 +1,7 @@
+import { getTranslation } from '@suite-native/intl';
 import { fireEvent, renderWithBasicProvider } from '@suite-native/test-utils';
 
-import { SimpleSheetHeader, SimpleSheetHeaderProps } from '../SimpleSheetHeader';
+import { SimpleSheetHeader, type SimpleSheetHeaderProps } from '../SimpleSheetHeader';
 
 describe('SimpleSheetHeader', () => {
     const renderSimpleSheetHeader = (props: SimpleSheetHeaderProps) =>
@@ -21,7 +22,7 @@ describe('SimpleSheetHeader', () => {
             onClose: onCloseMock,
         });
 
-        const closeButton = getByLabelText('Close');
+        const closeButton = getByLabelText(getTranslation('generic.buttons.close'));
         fireEvent.press(closeButton);
 
         expect(onCloseMock).toHaveBeenCalledTimes(1);

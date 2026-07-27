@@ -1,0 +1,337 @@
+/**
+ * Goals:
+ * - synchronize exclusive access to device (locks)
+ * - ensure device has not changed without other clients realizing (sessions).
+ *
+ * Concepts:
+ * - we have no control about the async process between lock and unlock, it happens elsewhere
+ * - caller has the responsibility to lock and unlock
+ * - we can say we trust the caller but not really thats why we implement auto-unlock
+ */
+
+import { type TimerId } from '@trezor/type-utils';
+import { type Deferred, TypedEmitter, createDeferred, typedObjectKeys } from '@trezor/utils';
+
+import type {
+    AcquireDoneRequest,
+    AcquireIntentRequest,
+    EnumerateDoneRequest,
+    GetPathBySessionRequest,
+    HandleMessageParams,
+    HandleMessageResponse,
+    ReleaseDoneRequest,
+    ReleaseIntentRequest,
+    SessionsBackgroundInterface,
+} from './types';
+import * as ERRORS from '../errors';
+import type { Descriptor, PathInternal } from '../types';
+import { PathPublic, Session } from '../types';
+import { error, success } from '../utils/result';
+
+type DescriptorsDict = Record<PathInternal, Descriptor>;
+
+// in nodeusb, enumeration operation takes ~3 seconds
+const lockDuration = 1000 * 4;
+
+export class SessionsBackground
+    extends TypedEmitter<{
+        /**
+         * updated descriptors (session has changed)
+         * note: we can't send diff from here (see abstract transport) although it would make sense, because we need to support also bridge which does not use this sessions background.
+         */
+        descriptors: Descriptor[];
+        releaseRequest: Descriptor;
+    }>
+    implements SessionsBackgroundInterface
+{
+    /**
+     * Dictionary where key is path and value is Descriptor
+     */
+    private descriptors: DescriptorsDict = {};
+    private pathInternalPathPublicMap: Record<PathInternal, PathPublic> = {};
+
+    // if lock is set, somebody is doing something with device. we have to wait
+    private locksQueue: { id: TimerId; dfd: Deferred<void> }[] = [];
+    private locksTimeoutQueue: TimerId[] = [];
+    private lastSessionId = 0;
+    private lastPathId = 0;
+
+    public async handleMessage<M extends HandleMessageParams>(
+        message: M,
+    ): Promise<HandleMessageResponse<M>> {
+        let result;
+
+        try {
+            // future:
+            // once we decide that we want to have sessions synchronization also between browser tabs and
+            // desktop application, here should go code that will check if some "master" sessions background
+            // is alive (websocket server in suite desktop). If yes, it will simply forward request
+
+            switch (message.type) {
+                case 'handshake':
+                    result = this.handshake();
+                    break;
+                case 'enumerateDone':
+                    result = await this.enumerateDone(message.payload);
+                    break;
+                case 'acquireIntent':
+                    result = await this.acquireIntent(message.payload);
+                    break;
+                case 'acquireDone':
+                    result = await this.acquireDone(message.payload);
+                    break;
+                case 'getSessions':
+                    result = await this.getSessions();
+                    break;
+                case 'releaseIntent':
+                    result = await this.releaseIntent(message.payload);
+                    break;
+                case 'releaseDone':
+                    result = await this.releaseDone(message.payload);
+                    break;
+                case 'getPathBySession':
+                    result = this.getPathBySession(message.payload);
+                    break;
+                case 'dispose':
+                    this.dispose();
+                    break;
+                default:
+                    throw new Error(ERRORS.UNEXPECTED_ERROR);
+            }
+
+            result = JSON.parse(JSON.stringify({ ...result, id: message.id }));
+
+            return result;
+        } catch (err) {
+            // if you are running this in a Sharedworker, you will find logs from here in chrome://inspect/#workers
+            console.error('Session background error', err);
+
+            // catch unexpected errors and notify client.
+            // background should never stay in "hanged" state
+            return {
+                ...error({ code: ERRORS.UNEXPECTED_ERROR }),
+                id: message.type,
+            } as HandleMessageResponse<M>;
+        } finally {
+            if (result?.success && result.payload) {
+                if ('descriptors' in result.payload) {
+                    const { descriptors } = result.payload;
+                    this.emit('descriptors', descriptors);
+                }
+                if ('releaseRequest' in result.payload && result.payload.releaseRequest) {
+                    const { releaseRequest } = result.payload;
+                    this.emit('releaseRequest', releaseRequest);
+                }
+            }
+        }
+    }
+
+    private handshake() {
+        return success(undefined);
+    }
+
+    /**
+     * enumerate done
+     * - caller informs about current descriptors
+     */
+    private enumerateDone(payload: EnumerateDoneRequest) {
+        const disconnectedDevices = typedObjectKeys(this.descriptors).filter(
+            pathInternal => !payload.descriptors.find(d => d.path === pathInternal),
+        );
+
+        disconnectedDevices.forEach(d => {
+            delete this.descriptors[d];
+            delete this.pathInternalPathPublicMap[d];
+        });
+
+        payload.descriptors.forEach(d => {
+            if (!this.pathInternalPathPublicMap[d.path]) {
+                this.pathInternalPathPublicMap[d.path] = PathPublic(`${(this.lastPathId += 1)}`);
+            }
+            if (!this.descriptors[d.path]) {
+                const { pathInternalPathPublicMap } = this;
+                // @ts-expect-error: indexing with noUncheckedIndexedAccess
+                const publicPath: PathPublic = pathInternalPathPublicMap[d.path];
+                this.descriptors[d.path] = {
+                    ...d,
+                    path: publicPath,
+                    session: null,
+                    apiType: d.apiType,
+                };
+            }
+        });
+
+        return Promise.resolve(success({ descriptors: Object.values(this.descriptors) }));
+    }
+
+    /**
+     * acquire intent
+     */
+    private async acquireIntent(payload: AcquireIntentRequest) {
+        const pathInternal = this.getInternal(payload.path);
+
+        if (!pathInternal) {
+            return error({ code: ERRORS.DEVICE_NOT_FOUND });
+        }
+
+        const previous = this.descriptors[pathInternal];
+
+        if (!previous) {
+            return error({ code: ERRORS.DEVICE_NOT_FOUND });
+        }
+
+        if (payload.previous !== previous.session) {
+            return error({ code: ERRORS.SESSION_WRONG_PREVIOUS });
+        }
+
+        // Snapshot the session value before yielding: `previous` is a live
+        // reference to the descriptor, so comparing previous.session after the
+        // await would compare the post-await value against itself and let two
+        // concurrent acquires of a free device both pass the guard below.
+        const previousSession = previous.session;
+
+        await this.waitInQueue();
+
+        // in case there are 2 simultaneous acquireIntents, one goes through, the other one waits and gets error here
+        if (previousSession !== this.descriptors[pathInternal]?.session) {
+            this.clearLock();
+
+            return error({ code: ERRORS.SESSION_WRONG_PREVIOUS });
+        }
+
+        this.lastSessionId++;
+        const session = Session(`${this.lastSessionId}`);
+        const releaseRequest =
+            previous.session !== null ? this.descriptors[pathInternal] : undefined;
+
+        return success({ session, path: pathInternal, releaseRequest });
+    }
+
+    /**
+     * client notified backend that he is able to talk to device
+     * - assign client a new "session". this session will be used in all subsequent communication
+     */
+    private acquireDone(payload: AcquireDoneRequest) {
+        this.clearLock();
+        const pathInternal = this.getInternal(payload.path);
+
+        if (!pathInternal || !this.descriptors[pathInternal]) {
+            return error({ code: ERRORS.DEVICE_NOT_FOUND });
+        }
+
+        // abort: openDevice failed after acquireIntent reserved the session. The
+        // lock is already released above; do not commit a phantom session.
+        if (!payload.abort) {
+            this.descriptors[pathInternal].session = Session(`${this.lastSessionId}`);
+            this.descriptors[pathInternal].sessionOwner = payload.sessionOwner;
+        }
+
+        return Promise.resolve(success({ descriptors: Object.values(this.descriptors) }));
+    }
+
+    private async releaseIntent(payload: ReleaseIntentRequest) {
+        const pathResult = this.getPathBySession({ session: payload.session });
+
+        if (!pathResult.success) {
+            return pathResult;
+        }
+        const { path } = pathResult.payload;
+
+        await this.waitInQueue();
+
+        // Re-check ownership after the lock: the session may have been stolen
+        // while we waited. Without this, releaseDone (which clears the session
+        // unconditionally) would destroy the new owner's session.
+        if (this.descriptors[path]?.session !== payload.session) {
+            this.clearLock();
+
+            return error({ code: ERRORS.SESSION_NOT_FOUND });
+        }
+
+        return success({ path });
+    }
+
+    private releaseDone(payload: ReleaseDoneRequest) {
+        const { descriptors } = this;
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const descriptor: Descriptor = descriptors[payload.path];
+        descriptor.session = null;
+        descriptor.sessionOwner = undefined;
+
+        this.clearLock();
+
+        return Promise.resolve(success({ descriptors: Object.values(this.descriptors) }));
+    }
+
+    private getSessions() {
+        return Promise.resolve(success({ descriptors: Object.values(this.descriptors) }));
+    }
+
+    private getPathBySession({ session }: GetPathBySessionRequest) {
+        const path = typedObjectKeys(this.descriptors).find(
+            pathKey => this.descriptors[pathKey]?.session === session,
+        );
+
+        if (!path) {
+            return error({ code: ERRORS.SESSION_NOT_FOUND });
+        }
+
+        return success({ path });
+    }
+
+    private startLock() {
+        // todo: create a deferred with built-in timeout functionality (util)
+        const dfd = createDeferred();
+
+        // to ensure that communication with device will not get stuck forever,
+        // lock times out:
+        // - if cleared by client (enumerateDone)
+        // - after n second automatically
+        const timeout = setTimeout(() => {
+            dfd.resolve(undefined);
+        }, lockDuration);
+
+        this.locksQueue.push({ id: timeout, dfd });
+        this.locksTimeoutQueue.push(timeout);
+
+        return this.locksQueue.length - 1;
+    }
+
+    private clearLock() {
+        const lock = this.locksQueue[0];
+        if (lock) {
+            lock.dfd.resolve(undefined);
+            this.locksQueue.shift();
+            clearTimeout(this.locksTimeoutQueue[0]);
+            this.locksTimeoutQueue.shift();
+        }
+    }
+
+    private async waitForUnlocked(myIndex: number) {
+        if (myIndex > 0) {
+            const beforeMe = this.locksQueue.slice(0, myIndex);
+            if (beforeMe.length) {
+                await Promise.all(beforeMe.map(lock => lock.dfd.promise));
+            }
+        }
+    }
+
+    private async waitInQueue() {
+        const myIndex = this.startLock();
+        await this.waitForUnlocked(myIndex);
+    }
+
+    private getInternal(pathPublic: PathPublic): PathInternal | undefined {
+        return typedObjectKeys(this.pathInternalPathPublicMap).find(
+            internal => this.pathInternalPathPublicMap[internal] === pathPublic,
+        );
+    }
+
+    dispose() {
+        this.locksQueue.forEach(lock => clearTimeout(lock.id));
+        this.locksTimeoutQueue.forEach(timeout => clearTimeout(timeout));
+        this.descriptors = {};
+        this.lastSessionId = 0;
+        this.removeAllListeners();
+    }
+}

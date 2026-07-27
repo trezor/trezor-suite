@@ -1,13 +1,14 @@
 import { useEffect, useState } from 'react';
 
 import { Translation } from '@suite/intl';
+import { selectModalRequestId } from '@suite/modal';
+import { OnboardingCard } from '@suite/onboarding-components';
 import { selectSelectedDevice } from '@suite-common/device';
 import { Button, Column } from '@trezor/components';
 import TrezorConnect, { UI_RESPONSE } from '@trezor/connect';
-import { spacings } from '@trezor/theme';
+import { LockKeyIcon } from '@trezor/icons';
 
 import { changePin } from 'src/actions/settings/deviceSettingsActions';
-import { OnboardingCard } from 'src/components/onboarding/OnboardingCard/OnboardingCard';
 import { SkipStepConfirmation } from 'src/components/onboarding/SkipStepConfirmation';
 import { PinMatrix } from 'src/components/suite';
 import { useDispatch, useOnboarding, useSelector } from 'src/hooks/suite';
@@ -20,6 +21,7 @@ export const PinStep = () => {
     const [pin, setPin] = useState('');
     const device = useSelector(selectSelectedDevice);
     const modal = useSelector(state => state.modal);
+    const requestId = useSelector(selectModalRequestId);
     const dispatch = useDispatch();
 
     const { goToNextStep, showPinMatrix, updateAnalytics } = useOnboarding();
@@ -39,7 +41,7 @@ export const PinStep = () => {
     };
 
     const handlePinSubmit = () => {
-        TrezorConnect.uiResponse({ type: UI_RESPONSE.RECEIVE_PIN, payload: pin });
+        TrezorConnect.uiResponse({ type: UI_RESPONSE.RECEIVE_PIN, payload: pin, requestId });
 
         setPin('');
     };
@@ -60,14 +62,14 @@ export const PinStep = () => {
                 }
             }
 
-            if (device && device.features.pin_protection) {
+            if (device?.features.pin_protection) {
                 setStatus('success');
                 goToNextStep();
             }
         }
     }, [device, goToNextStep]);
 
-    if (!device || !device.features) {
+    if (!device?.features) {
         return null;
     }
 
@@ -85,7 +87,7 @@ export const PinStep = () => {
         // Used only on T1B1, T2T1 shows pins mismatch error on its display
         return (
             <OnboardingCard
-                iconName="lockKey"
+                icon={LockKeyIcon}
                 heading={<Translation id="TR_PIN_MISMATCH_HEADING" />}
                 data-testid="@pin-mismatch"
                 innerActions={
@@ -111,7 +113,7 @@ export const PinStep = () => {
                 <SkipStepConfirmation onCancel={() => setShowSkipConfirmation(false)} />
             )}
             <OnboardingCard
-                iconName="lockKey"
+                icon={LockKeyIcon}
                 heading={
                     <>
                         {status === 'initial' && <Translation id="TR_PIN_HEADING_INITIAL" />}
@@ -149,7 +151,7 @@ export const PinStep = () => {
             >
                 {/* // device requested showing a pin matrix, show the matrix also on "repeat-pin" status until we get fail or success response from the device */}
                 {(showPinMatrix || status === 'repeat-pin') && (
-                    <Column gap={spacings.md}>
+                    <Column gap={16} alignItems="center">
                         <PinMatrix pin={pin} setPin={setPin} onSubmit={handlePinSubmit} />
                         <Button onClick={handlePinSubmit} data-testid="@pin/submit-button">
                             <Translation id="TR_CONFIRM" />

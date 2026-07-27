@@ -1,37 +1,30 @@
-import { A, D, F, pipe } from '@mobily/ts-belt';
+import { A, F, pipe } from '@mobily/ts-belt';
 
 import {
-    TokenDefinitionsRootState,
+    type TokenDefinitionsRootState,
     selectIsSpecificCoinDefinitionKnown,
 } from '@suite-common/token-definitions';
 import {
-    Account,
-    AccountKey,
-    CryptoBaseCurrencyPair,
-    Rate,
-    RateTypeWithoutHistoric,
-    RatesByKey,
-    RatesByTimestamps,
-    TickerId,
-    Timestamp,
-    TokenAddress,
-    WalletAccountTransaction,
+    type CryptoBaseCurrencyPair,
+    type Rate,
+    type RateTypeWithoutHistoric,
+    type RatesByKey,
+    type RatesByTimestamps,
+    type TickerId,
+    type Timestamp,
+    type TokenAddress,
 } from '@suite-common/wallet-types';
 import {
-    getFiatRateKey,
     getFiatRateKeyFromTicker,
-    isNftTokenTransfer,
     roundTimestampToNearestPastHour,
 } from '@suite-common/wallet-utils';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { BigNumber } from '@trezor/utils';
 
 import { MAX_AGE } from './fiatRatesConstants';
-import { FiatRatesRootState } from './fiatRatesTypes';
-import { AccountsRootState } from '../accounts/accountsReducer';
-import { selectAccountByKey, selectDeviceAccounts } from '../accounts/accountsSelectors';
-import { TransactionsRootState } from '../transactions/transactionsReducer';
-import { selectTransactions } from '../transactions/transactionsSelectors';
+import { type FiatRatesRootState } from './fiatRatesTypes';
+import { type AccountsRootState } from '../accounts/accountsReducer';
+import { selectAccounts } from '../accounts/accountsSelectors';
 
 export const selectCurrentFiatRates = (state: FiatRatesRootState): RatesByKey | undefined =>
     state.wallet.fiat?.['current'];
@@ -48,8 +41,10 @@ export const selectFiatRatesByFiatRateKey = (
 export const selectHistoricFiatRatesByTimestamp = (
     state: FiatRatesRootState,
     fiatRateKey: CryptoBaseCurrencyPair,
-    timestamp: Timestamp,
+    timestamp: Timestamp | undefined,
 ): number | undefined => {
+    if (timestamp === undefined) return undefined;
+
     const roundedTimestamp = roundTimestampToNearestPastHour(timestamp);
 
     return state.wallet.fiat?.['historic']?.[fiatRateKey]?.[roundedTimestamp];
@@ -94,24 +89,28 @@ export const selectShouldUpdateFiatRate = (
 };
 
 export const selectTickerFromAccounts = (
-    state: FiatRatesRootState & TokenDefinitionsRootState,
+    state: FiatRatesRootState & TokenDefinitionsRootState & AccountsRootState,
 ): TickerId[] => {
-    const accounts = selectDeviceAccounts(state as any);
+    // Use accounts of all remembered devices/wallets, not just the selected one, so that
+    // token fiat rates are fetched for every wallet. Otherwise tokens that exist only on a
+    // non-selected wallet (e.g. a passphrase wallet) never get a rate fetched on launch.
+    const accounts = selectAccounts(state);
 
     return pipe(
         accounts,
-        A.map(account => [
+        A.map((account): TickerId[] => [
             {
                 symbol: account.symbol,
-            } as TickerId,
+            },
             ...(account.tokens || [])
                 .filter(token => new BigNumber(token.balance ?? '0').gt(0))
                 .map(
                     token =>
                         ({
                             symbol: account.symbol,
-                            tokenAddress: token.contract,
-                        }) as TickerId,
+                            tokenAddress: token.contract as TokenAddress,
+                            protocols: token.protocols,
+                        }) satisfies TickerId,
                 ),
         ]),
         A.flat,
@@ -123,12 +122,13 @@ export const selectTickerFromAccounts = (
         A.uniqBy(ticker =>
             ticker.tokenAddress ? `${ticker.symbol}-${ticker.tokenAddress}` : ticker.symbol,
         ),
+        A.sortBy(ticker => (ticker.tokenAddress ? 1 : 0)),
         F.toMutable,
     );
 };
 
 export const selectTickersToBeUpdated = (
-    state: FiatRatesRootState & TokenDefinitionsRootState,
+    state: FiatRatesRootState & TokenDefinitionsRootState & AccountsRootState,
     currentTimestamp: Timestamp,
     fiatCurrency: BaseCurrencyCode,
     rateType: RateTypeWithoutHistoric,
@@ -143,47 +143,4 @@ export const selectTickersToBeUpdated = (
             !selectIsTickerLoading(state, ticker, fiatCurrency, rateType)
         );
     });
-};
-
-export const selectTransactionsWithMissingRates = (
-    state: FiatRatesRootState & TransactionsRootState & AccountsRootState,
-    localCurrency: BaseCurrencyCode,
-    accountKey?: AccountKey,
-) => {
-    const transactions = selectTransactions(state);
-    const historicFiatRates = selectHistoricFiatRates(state);
-
-    return pipe(
-        accountKey ? { [accountKey]: transactions[accountKey] } : transactions,
-        D.mapWithKey((key, txs) => ({
-            account: selectAccountByKey(state, key as AccountKey),
-            txs: txs.filter(tx => {
-                const fiatRateKey = getFiatRateKey(tx.symbol, localCurrency as BaseCurrencyCode);
-                const roundedTimestamp = roundTimestampToNearestPastHour(tx.blockTime as Timestamp);
-                const historicRate = historicFiatRates?.[fiatRateKey]?.[roundedTimestamp];
-
-                const isMissingTokenRate = tx.tokens
-                    .filter(token => !isNftTokenTransfer(token))
-                    .some(token => {
-                        const tokenFiatRateKey = getFiatRateKey(
-                            tx.symbol,
-                            localCurrency,
-                            token.contract as TokenAddress,
-                        );
-                        const historicTokenRate =
-                            historicFiatRates?.[tokenFiatRateKey]?.[roundedTimestamp];
-
-                        return historicTokenRate === undefined || historicTokenRate === 0;
-                    });
-
-                return historicRate === undefined || historicRate === 0 || isMissingTokenRate;
-            }),
-        })),
-        D.filter(({ account, txs }) => !!account && !!txs.length),
-        D.values,
-        A.filter(value => !!value),
-    ) as {
-        account: Account;
-        txs: WalletAccountTransaction[];
-    }[];
 };

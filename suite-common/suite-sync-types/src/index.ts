@@ -1,4 +1,11 @@
-export type { SuiteSync, SuiteSyncDep } from './SuiteSync';
+export {
+    type LabelingDep,
+    type WriteLabelsDep,
+    type SuiteSync,
+    type SuiteSyncDep,
+} from './SuiteSync';
+export type { GetAllDeviceSessionIdsDep } from './getAllDeviceSessionIds';
+export type { GetIsTorEnabledDep } from './getIsTorEnabled';
 
 export type {
     SuiteSyncStorageRepositoryDep,
@@ -8,16 +15,37 @@ export type {
 } from './storage/suiteSyncStorageRepository';
 
 export type {
-    RefreshSuiteSyncKeys,
-    RefreshSuiteSyncKeysDep,
-    RefreshSuiteSyncKeysResult,
-} from './refreshSuiteSyncKeys';
-export type { WriteModeRequiredForAllocationErrType } from './quotaManager/quotaManagerTypes';
-export type { TurnOffSuiteSyncDep, TurnOffSuiteSync } from './turnOffSuiteSync';
-export type { TurnOnSuiteSyncDep, TurnOnSuiteSync } from './turnOnSuiteSync';
-export type { SuiteSyncUnavailableOnDeviceErrorType } from './refreshSuiteSyncKeys';
-export type { ChangeRelayUrl, ChangeRelayUrlDep } from './relay/changeRelayUrl';
-export type { ProofOfDelegatedSignFailed } from './getProofOfDelegatedIdentity';
+    EnsureSuiteSyncKeys,
+    EnsureSuiteSyncKeysDep,
+    EnsureSuiteSyncKeysResult,
+} from './ensureSuiteSyncKeys';
+export {
+    type TurnOffSuiteSyncDep,
+    type TurnOffSuiteSync,
+    selectTurnOffSuiteSyncDep,
+} from './turnOffSuiteSync';
+export {
+    type TurnOnSuiteSyncDep,
+    type TurnOnSuiteSync,
+    selectTurnOnSuiteSyncDep,
+} from './turnOnSuiteSync';
+export type { SuiteSyncUnavailableOnDeviceErrorType } from './ensureSuiteSyncKeys';
+export {
+    type ChangeRelayUrl,
+    type ChangeRelayUrlDep,
+    selectChangeRelayUrlDep,
+} from './relay/changeRelayUrl';
+export {
+    type DisconnectAllRelays,
+    type DisconnectAllRelaysDep,
+    selectDisconnectAllRelaysDep,
+} from './relay/disconnectAllRelays';
+export {
+    type ReconnectAllRelays,
+    type ReconnectAllRelaysDep,
+    type ReconnectAllRelaysParams,
+    selectReconnectAllRelaysDep,
+} from './relay/reconnectAllRelays';
 
 export type {
     EnsureSuiteSyncOwnerDep,
@@ -30,62 +58,87 @@ export type {
     SubscriptionStorage,
     SubscriptionStorageParams,
 } from './storage/subscriptionStorage';
-export type {
-    TurnOffSuiteSyncForWallet,
-    TurnOffSuiteSyncForWalletDep,
+export {
+    type DangerouslyWipeAllLabelsFromWallet,
+    type DangerouslyWipeAllLabelsFromWalletDep,
+    type DangerouslyWipeAllLabelsFromWalletParams,
+    selectDangerouslyWipeAllLabelsFromWalletDep,
+} from './data/dangerouslyWipeAllLabelsFromWallet';
+export {
+    type TurnOffSuiteSyncForWallet,
+    type TurnOffSuiteSyncForWalletDep,
 } from './storage/turnOffSuiteSyncForWallet';
-export type {
-    EnsureWalletSuiteSyncOn,
-    EnsureWalletSuiteSyncOnErrors,
-    EnsureWalletSuiteSyncOnDep,
-    EnsureWalletSuiteSyncOnParams,
-    SuiteSyncFirmwareUpgradeNeededDeviceErrorType,
+export {
+    type EnsureWalletSuiteSyncOnUncontrolled,
+    type EnsureWalletSuiteSyncOnUncontrolledDep,
+    type EnsureWalletSuiteSyncOn,
+    type EnsureWalletSuiteSyncOnErrors,
+    type EnsureWalletSuiteSyncOnDep,
+    type EnsureWalletSuiteSyncOnParams,
+    type SuiteSyncFirmwareUpgradeNeededDeviceErrorType,
+    type SuiteSyncUserFacingErrorType,
+    type OnStorageEnsured,
+    type OnStorageEnsuredDep,
+    type OnStorageEnsuredParams,
+    selectEnsureWalletSuiteSyncOnDep,
 } from './storage/ensureWalletSuiteSyncOn';
 
 export type {
     Subscriptions,
     SuiteSyncListener,
-    SubscribeSuiteSyncData,
-    SubscribeSuiteSyncDataDep,
+    EnsureSubscribedStorage,
+    EnsureSubscribedStorageDep,
     SuiteSyncListenerDep,
-} from './data/subscribeSuiteSyncData';
+} from './data/ensureSubscribedStorage';
 
 // Labeling
-export type {
-    UpdateAccountLabel,
-    UpdateAccountLabelDep,
-    UpdateAccountLabelParams,
+export { type WithSuiteSyncStorage } from './data/withSuiteSyncStorage';
+export {
+    type UpdateAccountLabel,
+    type UpdateAccountLabelDep,
+    type UpdateAccountLabelParams,
+    type WriteAccountLabel,
+    type WriteAccountLabelDep,
+    type WriteAccountLabelParams,
+    selectUpdateAccountLabelDep,
 } from './data/updateAccountLabel';
-export type {
-    UpdateAddressLabel,
-    UpdateAddressLabelDep,
-    UpdateAddressLabelParams,
+export {
+    type UpdateAddressLabel,
+    type UpdateAddressLabelDep,
+    type UpdateAddressLabelParams,
+    type WriteAddressLabel,
+    type WriteAddressLabelDep,
+    type WriteAddressLabelParams,
+    selectUpdateAddressLabelDep,
 } from './data/updateAddressLabel';
-export type {
-    UpdateOutputLabelDep,
-    UpdateOutputLabel,
-    UpdateOutputLabelParams,
+export {
+    type UpdateOutputLabelDep,
+    type UpdateOutputLabel,
+    type UpdateOutputLabelParams,
+    type WriteOutputLabel,
+    type WriteOutputLabelDep,
+    type WriteOutputLabelParams,
+    selectUpdateOutputLabelDep,
 } from './data/updateOutputLabel';
-export type {
-    UpdateWalletLabel,
-    UpdateWalletLabelDep,
-    UpdateWalletLabelParams,
+export {
+    type UpdateWalletLabel,
+    type UpdateWalletLabelDep,
+    type UpdateWalletLabelParams,
+    type WriteWalletLabel,
+    type WriteWalletLabelDep,
+    type WriteWalletLabelParams,
+    selectUpdateWalletLabelDep,
 } from './data/updateWalletLabel';
 
-export type { SuiteSyncAppReloader, SuiteSyncAppReloaderDep } from './suiteSyncAppReloader';
-
 export type {
-    SuiteSyncErrorHandler,
+    SuiteSyncInternalErrorHandler,
+    SubscribeSuiteSyncInternalErrorHandler,
     SuiteSyncOtherError,
     RelayQuotaExceededError,
     Errors,
-    CreateSuiteSyncErrorHandlerDep,
 } from './SuiteSyncErrorHandler';
 
 export type {
-    EnsureOwnerHasAllocatedQuotaParams,
-    EnsureOwnerHasAllocatedQuota,
-    ChallengeFailedErrType,
-    HttpErrType,
-    ProofOfDelegatedIdentityFailedErrType,
-} from './quotaManager/ensureOwnerHasAllocatedQuotaThunk';
+    QuotaManagerCommunicationFailedErrType,
+    WriteModeRequiredForAllocationErrType,
+} from './quotaManager/errors';

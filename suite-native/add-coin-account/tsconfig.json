@@ -1,0 +1,36 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": {
+        "noImplicitAny": false,
+        "outDir": "libDev"
+    },
+    "references": [
+        { "path": "../../suite-common/device" },
+        {
+            "path": "../../suite-common/wallet-config"
+        },
+        {
+            "path": "../../suite-common/wallet-core"
+        },
+        {
+            "path": "../../suite-common/wallet-types"
+        },
+        {
+            "path": "../../suite-common/wallet-utils"
+        },
+        { "path": "../accounts" },
+        { "path": "../alerts" },
+        { "path": "../atoms" },
+        { "path": "../discovery" },
+        { "path": "../intl" },
+        { "path": "../link" },
+        { "path": "../module-earn" },
+        { "path": "../navigation" },
+        {
+            "path": "../../packages/styles-native"
+        },
+        { "path": "../../packages/type-utils" },
+        { "path": "../../packages/urls" },
+        { "path": "../../packages/utils" }
+    ]
+}

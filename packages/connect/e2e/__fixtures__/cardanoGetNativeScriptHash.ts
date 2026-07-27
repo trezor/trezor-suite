@@ -10,8 +10,9 @@ const legacyResults = {
     },
 };
 
-export default {
+const cardanoGetNativeScriptHash: TestCase = {
     method: 'cardanoGetNativeScriptHash',
+    enabledCoins: ['ada'] as const,
     setup: {
         mnemonic: 'mnemonic_all',
     },
@@ -315,4 +316,6 @@ export default {
             },
         },
     ].map(test => ({ ...test, legacyResults: [legacyResults.minConnectVersion] })),
-} satisfies TestCase;
+};
+
+export default cardanoGetNativeScriptHash;

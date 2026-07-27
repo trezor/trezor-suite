@@ -1,16 +1,19 @@
-import { formInputsMaxLength, yup } from '@suite-common/validators';
-import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
-import { U_INT_32 } from '@suite-common/wallet-constants';
-import { FeeInfo, Output } from '@suite-common/wallet-types';
 import {
-    formatNetworkAmount,
     isAddressDeprecated,
     isAddressValid,
     isBech32AddressUppercase,
-    isDecimalsValid,
     isTaprootAddress,
+} from '@suite-common/address';
+import { formInputsMaxLength, yup } from '@suite-common/validators';
+import { type NetworkSymbol, getDisplaySymbol, getNetworkType } from '@suite-common/wallet-config';
+import { U_INT_32 } from '@suite-common/wallet-constants';
+import { type FeeInfo, type Output } from '@suite-common/wallet-types';
+import {
+    formatNetworkAmount,
+    isAmountWithinNetworkReserve,
+    isDecimalsValid,
 } from '@suite-common/wallet-utils';
-import { FeeLevelsMaxAmount } from '@suite-native/transaction-management';
+import { type FeeLevelsMaxAmount } from '@suite-native/transaction-management';
 import { BigNumber, isNotNullOrUndefined } from '@trezor/utils';
 
 export type SendFormFormContext = {
@@ -24,6 +27,8 @@ export type SendFormFormContext = {
     accountDescriptor?: string;
     isTaprootAvailable?: boolean;
     accountNativeAvailableBalance?: string;
+    networkReserve?: string;
+    rippleReserve?: string;
 };
 
 const isAmountDust = (amount: string, context?: SendFormFormContext) => {
@@ -138,6 +143,19 @@ const outputSchema = yup.object({
 
                 return value !== accountDescriptor;
             },
+        )
+        .test(
+            'tron-is-sending-to-self',
+            'Can`t send to myself.',
+            (value, { options: { context } }: yup.TestContext<SendFormFormContext>) => {
+                const { symbol, accountDescriptor, isTokenFlow } = context!;
+                if (!symbol || !accountDescriptor) return true;
+
+                if (getNetworkType(symbol) !== 'tron') return true;
+                if (isTokenFlow) return true;
+
+                return value !== accountDescriptor;
+            },
         ),
     amount: yup
         .string()
@@ -151,9 +169,9 @@ const outputSchema = yup.object({
         )
         .test(
             'ripple-higher-than-reserve',
-            'Amount is above the required unspendable reserve (1 XRP)',
+            'Amount is above the required unspendable reserve',
             function (value, { options: { context } }: yup.TestContext<SendFormFormContext>) {
-                const { symbol, availableBalance, feeLevelsMaxAmount } = context!;
+                const { symbol, availableBalance, feeLevelsMaxAmount, rippleReserve } = context!;
 
                 if (!availableBalance || !symbol || getNetworkType(symbol) !== 'ripple')
                     return true;
@@ -170,7 +188,11 @@ const outputSchema = yup.object({
                         ),
                     )
                 ) {
-                    return false;
+                    const displaySymbol = getDisplaySymbol(symbol);
+
+                    return this.createError({
+                        message: `Amount is above the required unspendable reserve${rippleReserve ? ` (${rippleReserve} ${displaySymbol})` : ''}`,
+                    });
                 }
 
                 return true;
@@ -181,6 +203,43 @@ const outputSchema = yup.object({
             `Insufficient balance to cover the transaction fees.`,
             function (_, { options: { context } }: yup.TestContext<SendFormFormContext>) {
                 return hasEnoughBalanceForFees(context);
+            },
+        )
+        .test(
+            'network-reserve',
+            'Not enough funds remaining after reserving network fees',
+            function (value, { options: { context } }: yup.TestContext<SendFormFormContext>) {
+                if (!value || !context) return true;
+
+                const {
+                    symbol,
+                    availableBalance,
+                    networkReserve,
+                    isTokenFlow,
+                    feeLevelsMaxAmount,
+                } = context;
+
+                if (!symbol || !availableBalance || !networkReserve || isTokenFlow) return true;
+
+                const formattedBalance = formatNetworkAmount(availableBalance, symbol);
+                if (new BigNumber(value).gt(formattedBalance)) return true;
+
+                const isSendMaxEnabled = isNotNullOrUndefined(this.from?.[1]?.value.setMaxOutputId);
+                const feeLevelMaxAmount = isSendMaxEnabled
+                    ? feeLevelsMaxAmount?.economy
+                    : feeLevelsMaxAmount?.normal;
+
+                if (!feeLevelMaxAmount) return true;
+
+                const feeWithReserve = new BigNumber(formattedBalance)
+                    .minus(feeLevelMaxAmount)
+                    .toString();
+
+                return isAmountWithinNetworkReserve({
+                    reserve: feeWithReserve,
+                    balance: formattedBalance,
+                    amount: value,
+                });
             },
         )
         .test(
@@ -216,6 +275,7 @@ export type OutputsFormValues = yup.InferType<typeof outputSchema>;
 
 export const sendOutputsFormValidationSchema = yup.object({
     outputs: yup.array(outputSchema).required(),
+    transactionData: yup.string(),
     isDestinationTagEnabled: yup.boolean(),
     destinationTag: yup
         .string()
@@ -232,7 +292,7 @@ export const sendOutputsFormValidationSchema = yup.object({
 
                 if (!symbol) return true;
                 const networkType = getNetworkType(symbol);
-                if (networkType === 'stellar') return true;
+                if (['solana', 'stellar', 'tron'].includes(networkType)) return true;
 
                 if (!value) return true;
 
@@ -255,7 +315,12 @@ export const sendOutputsFormValidationSchema = yup.object({
 
                 if (!symbol) return true;
                 const networkType = getNetworkType(symbol);
-                if (networkType !== 'ripple' && networkType !== 'stellar') return true;
+                if (
+                    networkType !== 'ripple' &&
+                    networkType !== 'stellar' &&
+                    networkType !== 'solana'
+                )
+                    return true;
 
                 // isDestinationTagEnabled is enabled, tag should be set
                 if (!value && isDestinationTagEnabled) return false;
@@ -290,15 +355,23 @@ export const sendOutputsFormValidationSchema = yup.object({
                 const { symbol } = context!;
 
                 if (!symbol) return true;
-                if (getNetworkType(symbol) !== 'stellar') return true;
+                const networkType = getNetworkType(symbol);
+                if (networkType !== 'stellar' && networkType !== 'solana') return true;
 
                 if (!value) return true;
 
-                if (value.length > formInputsMaxLength.stellarTextMemo) {
-                    return false;
-                }
+                const destinationTagMaxLength = (() => {
+                    switch (networkType) {
+                        case 'stellar':
+                            return formInputsMaxLength.stellarTextMemo;
+                        case 'solana':
+                            return formInputsMaxLength.solanaMemo;
+                        default:
+                            throw new Error(`Unsupported network type: ${networkType}`);
+                    }
+                })();
 
-                return true;
+                return value.length <= destinationTagMaxLength;
             },
         ),
     setMaxOutputId: yup.number(),

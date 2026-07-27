@@ -1,13 +1,13 @@
 import { useSelector } from 'react-redux';
 
 import { convertCryptoToFiatAmount } from '@suite-common/formatters';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
-    FiatRatesRootState,
+    type FiatRatesRootState,
     selectBaseCurrency,
     selectFiatRatesByFiatRateKey,
 } from '@suite-common/wallet-core';
-import { TokenAddress } from '@suite-common/wallet-types';
+import { type TokenAddress } from '@suite-common/wallet-types';
 import { getFiatRateKey, isTestnet, toFiatCurrency } from '@suite-common/wallet-utils';
 
 import { convertTokenValueToDecimal } from '../utils';
@@ -41,13 +41,19 @@ export const useFiatFromCryptoValue = ({
 
     const isTestnetCoin = isTestnet(symbol);
 
-    if (!cryptoValue || !rate || currentRate?.error || isTestnetCoin) return null;
+    if (!cryptoValue || isTestnetCoin) return null;
 
     if (tokenAddress) {
         const decimalValue = convertTokenValueToDecimal(cryptoValue, tokenDecimals);
 
+        // Zero balance always yields zero fiat regardless of rate — rate: 1 is a dummy (0 × n = 0).
+        if (decimalValue.isZero()) return toFiatCurrency({ amount: '0', rate: 1 });
+        if (!rate || currentRate?.error) return null;
+
         return toFiatCurrency({ amount: decimalValue.toString(), rate });
     }
+
+    if (!rate || currentRate?.error) return null;
 
     return convertCryptoToFiatAmount({
         amount: cryptoValue,

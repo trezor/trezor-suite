@@ -4,8 +4,9 @@ import { MetadataProvider } from '../../../support/mocks/metadataMock';
 
 // Metadata is by default disabled, this means, that application does not try to generate master key and connect to cloud.
 // Hovering over fields that may be labeled shows "add label" button upon which is clicked, Suite initiates metadata flow
-test.describe('Account metadata', { tag: ['@webOnly', '@T3W1', '@T3T1', '@smoke'] }, () => {
+test.describe('Account metadata', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
     test.use({ deviceSetup: { mnemonic: 'mnemonic_all' } });
+
     test.beforeEach(async ({ metadataMock }) => {
         await metadataMock.start(MetadataProvider.DROPBOX);
     });
@@ -19,6 +20,8 @@ test.describe('Account metadata', { tag: ['@webOnly', '@T3W1', '@T3T1', '@smoke'
         walletPage,
     }) => {
         await onboardingPage.completeOnboarding();
+        await settingsPage.changeNetworks({ enableNetworks: ['btc'] });
+        await metadataPage.enableLegacyLabeling(MetadataProvider.DROPBOX);
 
         await test.step('Open account and initialize metadata flow', async () => {
             await walletPage.accountLabel({ symbol: 'btc', type: 'normal', atIndex: 0 }).click();
@@ -29,7 +32,6 @@ test.describe('Account metadata', { tag: ['@webOnly', '@T3W1', '@T3T1', '@smoke'
             // wait until account page is fully loaded
             await expect(walletPage.fiatAmount).toBeVisible();
             await metadataPage.account.clickEditLabelButton(AccountLabelId.BitcoinDefault1);
-            await metadataPage.passThroughInitMetadata(MetadataProvider.DROPBOX);
         });
 
         await test.step('Edit label with Enter submit', async () => {
@@ -97,7 +99,7 @@ test.describe('Account metadata', { tag: ['@webOnly', '@T3W1', '@T3T1', '@smoke'
             const newAccountLabelId = `m/84'/0'/${newAccountIndex}'` as AccountLabelId;
             await walletPage.openAccount();
             await walletPage.addAccountButton.click();
-            await settingsPage.coinsTab.networkButton('btc').click();
+            await settingsPage.coinsTab.networkAddButton('btc').click();
             await page.getByTestId('@add-account').click();
             await metadataPage.account.changeLabel({
                 accountId: newAccountLabelId,

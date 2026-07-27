@@ -1,13 +1,13 @@
 import { useCallback, useImperativeHandle, useMemo, useState } from 'react';
-import { LayoutChangeEvent } from 'react-native';
+import { type LayoutChangeEvent } from 'react-native';
 import { Gesture } from 'react-native-gesture-handler';
 import { clamp, useSharedValue, withSpring } from 'react-native-reanimated';
 
-import { RouteProp, useRoute } from '@react-navigation/native';
+import { type RouteProp, useRoute } from '@react-navigation/native';
 import * as Haptics from 'expo-haptics';
 
 import { useBannerAwareSafeAreaInsets } from '@suite-native/atoms';
-import { SendStackParamList, SendStackRoutes } from '@suite-native/navigation';
+import { type SendStackParamList, type SendStackRoutes } from '@suite-native/navigation';
 import { getScreenHeight } from '@trezor/env-utils';
 
 const SCREEN_HEIGHT = getScreenHeight();
@@ -35,13 +35,13 @@ export const useConfirmOnTrezorSheet = ({ controlRef }: Props) => {
     const [containerHeight, setContainerHeight] = useState(SCREEN_HEIGHT);
     const [headerHeight, setHeaderHeight] = useState(params?.prevHeaderHeight ?? 0);
 
-    const snapPoints = useMemo(() => {
+    const snapPoints: [number, number, number] = useMemo(() => {
         const totalHeaderHeight = headerHeight + inset.top;
 
         return [containerHeight * 0.8, totalHeaderHeight, 0];
     }, [containerHeight, headerHeight, inset.top]);
 
-    const translateY = useSharedValue(snapPoints[defaultIndex]);
+    const translateY = useSharedValue(snapPoints[defaultIndex] ?? 0);
     const prevTranslationY = useSharedValue(0);
 
     const [isFullscreen, setIsFullscreen] = useState(!params?.initialSnapIndex);
@@ -51,13 +51,16 @@ export const useConfirmOnTrezorSheet = ({ controlRef }: Props) => {
     const snapToIndex = useCallback(
         (index: number) => {
             'worklet';
-            const targetY = snapPoints[index];
-            translateY.value = withSpring(targetY, {
-                damping: 20,
-                stiffness: 180,
-                mass: 1,
-            });
-            currentIndex.value = index;
+            // @ts-expect-error: noUncheckedIndexedAccess
+            const targetY: number = snapPoints[index];
+            translateY.set(
+                withSpring(targetY, {
+                    damping: 20,
+                    stiffness: 180,
+                    mass: 1,
+                }),
+            );
+            currentIndex.set(index);
         },
         [snapPoints, translateY, currentIndex],
     );
@@ -106,13 +109,11 @@ export const useConfirmOnTrezorSheet = ({ controlRef }: Props) => {
     const panGesture = Gesture.Pan()
         .enabled(!isFullscreen)
         .onStart(() => {
-            prevTranslationY.value = translateY.value;
+            prevTranslationY.set(translateY.value);
         })
         .onUpdate(e => {
-            translateY.value = clamp(
-                prevTranslationY.value + e.translationY,
-                snapPoints[1],
-                snapPoints[0],
+            translateY.set(
+                clamp(prevTranslationY.value + e.translationY, snapPoints[1], snapPoints[0]),
             );
         })
         .onEnd(e => {

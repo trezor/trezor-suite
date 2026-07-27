@@ -1,6 +1,6 @@
 import { createAction } from '@reduxjs/toolkit';
 
-import { ThpCredentials } from '@trezor/protocol';
+import { type ThpCredentials } from '@trezor/protocol';
 
 export const THP_PREFIX = '@suite/thp';
 

@@ -1,7 +1,7 @@
 import { useTranslate } from '@suite-native/intl';
-import { FilterItem, FilterTabs } from '@suite-native/trading-atoms';
+import { type FilterItem, FilterTabs } from '@suite-native/trading-atoms';
 
-import { FilterValue } from '../../../hooks/general/useProviderFilters';
+import { type FilterValue } from '../../../hooks/general/useProviderFilters';
 import { SimpleSheetHeader } from '../SimpleSheetHeader';
 import { TradingTypeAwareContextMessage } from '../TradingTypeAwareContextMessage';
 
@@ -30,6 +30,7 @@ export const ProviderSheetHandle = ({
             >
                 {shouldShowFilters && (
                     <FilterTabs
+                        testID="@trading/provider-sheet/"
                         items={filterItems}
                         onChange={setSelectedFilter}
                         value={selectedFilter}

@@ -1,14 +1,15 @@
 import { IntlProvider } from 'react-intl';
 
-import { Meta, StoryObj } from '@storybook/react';
+import { type Meta, type StoryObj } from '@storybook/react';
 import { action } from 'storybook/actions';
 
 import { Badge, Box, Button, Column, Icon, Text, getFramePropsStory } from '@trezor/components';
-import { spacingsNew } from '@trezor/theme';
+import { TagIcon } from '@trezor/icons';
+import { spacingValues } from '@trezor/theme';
 
 import {
     EditableText as EditableTextComponent,
-    EditableTextProps,
+    type EditableTextProps,
     allowedEditableTextFrameProps,
 } from './EditableText';
 
@@ -29,7 +30,7 @@ const StoryWrapper = ({ children }: { children: React.ReactNode }) => (
     <Box
         width="100%"
         maxWidth={400}
-        backgroundColor="baseFillElementNeutralSoftest"
+        backgroundColor="elementFillField"
         padding={12}
         borderRadius={8}
     >
@@ -125,7 +126,7 @@ export const EditableText: StoryObj<EditableTextProps> = {
             options: [undefined, 'example with icon', 'example with text'],
             mapping: {
                 undefined,
-                'example with icon': <Icon name="tag" size={16} />,
+                'example with icon': <Icon as={TagIcon} size={16} />,
                 'example with text': 'Foo:',
             },
         },
@@ -155,7 +156,7 @@ export const EditableText: StoryObj<EditableTextProps> = {
             },
         },
         gap: {
-            options: spacingsNew,
+            options: spacingValues,
             control: {
                 type: 'select',
             },

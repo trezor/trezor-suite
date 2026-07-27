@@ -1,17 +1,19 @@
 import { VStack } from '@suite-native/atoms';
+import { isDevelopOrDebugEnv } from '@suite-native/config';
 import { Translation } from '@suite-native/intl';
 import { DynamicScreenHeader, Screen } from '@suite-native/navigation';
 
 import { AnalyticsLogging } from '../components/AnalyticsLogging';
+import { ComponentDemoCard } from '../components/ComponentDemoCard';
 import { DangerZoneCard } from '../components/DangerZoneCard';
 import { DebuggingCard } from '../components/DebuggingCard';
+import { EarnCard } from '../components/EarnCard';
 import { FeatureFlagsCard } from '../components/FeatureFlagsCard';
 import { FirmwareSourceCard } from '../components/FirmwareSourceCard';
 import { InfoCard } from '../components/InfoCard';
 import { MessageSystemCard } from '../components/MessageSystemCard';
 import { SuiteSyncQuotaManager } from '../components/SuiteSyncQuotaManager';
 import { SuiteSyncRelaySettings } from '../components/SuiteSyncRelaySettings';
-import { TestnetsToggle } from '../components/TestnetsToggle';
 import { TradingCard } from '../components/TradingCard';
 
 export const DevUtilsScreen = () => (
@@ -25,10 +27,11 @@ export const DevUtilsScreen = () => (
     >
         <VStack spacing="sp16">
             <InfoCard />
+            {isDevelopOrDebugEnv() && <ComponentDemoCard />}
             <FeatureFlagsCard />
-            <TestnetsToggle />
             <AnalyticsLogging />
             <TradingCard />
+            <EarnCard />
             <MessageSystemCard />
             <FirmwareSourceCard />
             <SuiteSyncRelaySettings />

@@ -1,5 +1,5 @@
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
-import { SelectedAccountStatus } from '@suite-common/wallet-types';
+import { type SelectedAccountStatus } from '@suite-common/wallet-types';
 
 import { WalletLayout } from 'src/components/wallet';
 

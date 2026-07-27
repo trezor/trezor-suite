@@ -1,12 +1,12 @@
 import crypto from 'crypto';
 import fs from 'fs';
-import net, { Socket } from 'net';
+import net, { type Socket } from 'net';
 import path from 'path';
 import util from 'util';
 
 import { promiseAllSequence } from '@trezor/utils';
 
-import { TorCommandResponse, TorConnectionOptions } from './types';
+import { type TorCommandResponse, type TorConnectionOptions } from './types';
 
 const readFile = util.promisify(fs.readFile);
 const randomBytes = util.promisify(crypto.randomBytes);
@@ -29,7 +29,6 @@ export class TorControlPort {
     options: TorConnectionOptions;
     socket: Socket;
     isSocketConnected = false;
-    isCircuitDone = false;
     clientNonce = '';
 
     onMessageReceived: (message: string) => void;
@@ -207,7 +206,9 @@ export class TorControlPort {
         const circuits = await this.getCircuits();
         const circuitsToClose = identity
             ? circuits.filter(circuit => circuit.username === identity)
-            : circuits.filter(circuit => !circuit.username || circuit.username === 'Default');
+            : circuits.filter(
+                  circuit => !circuit.username || circuit.username.toLowerCase() === 'default',
+              );
 
         return promiseAllSequence(
             circuitsToClose.map(circuit => () => this.sendCommand(`closecircuit ${circuit.id}`)),

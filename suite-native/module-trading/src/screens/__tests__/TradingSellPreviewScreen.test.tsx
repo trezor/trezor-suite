@@ -1,13 +1,18 @@
 import type { TradingTransactionSell } from '@suite-common/trading';
 import { getTranslation } from '@suite-native/intl';
+import { act, waitFor } from '@suite-native/test-utils-store';
 import {
-    PreloadedState,
-    act,
-    renderWithStoreProviderAsync,
-    waitFor,
-} from '@suite-native/test-utils';
-import { getSellTrade, getWalletState, sellQuotes } from '@suite-native/trading-fixtures';
+    banxaBankTransferSellQuote,
+    banxaCreditCardSellQuote,
+    getSellTrade,
+    moonpayCreditCardSellQuote,
+} from '@suite-native/trading-fixtures';
 
+import {
+    type PreloadedStatePartial,
+    type TradingTestPreloadedState,
+    renderWithTradingProvider,
+} from '../../__tests__/tradingTestUtils';
 import { TradingSellPreviewScreen } from '../TradingSellPreviewScreen';
 
 jest.mock('@react-navigation/native', () => ({
@@ -19,7 +24,7 @@ jest.mock('@react-navigation/native', () => ({
 }));
 
 const mockDoBankAccountVerificationCheck = jest.fn();
-const mockFetchFeesAndCompose = jest.fn();
+const mockComposeTradingTransaction = jest.fn();
 const mockTxnErrorString = null;
 const mockRetryDoSellTrade = jest.fn();
 
@@ -27,7 +32,7 @@ jest.mock('../../hooks/sell/useSellFlow', () => ({
     useSellFlow: () => ({
         txnErrorString: mockTxnErrorString,
         doBankAccountVerificationCheck: mockDoBankAccountVerificationCheck,
-        fetchFeesAndCompose: mockFetchFeesAndCompose,
+        composeTradingTransaction: mockComposeTradingTransaction,
         retryDoSellTrade: mockRetryDoSellTrade,
     }),
 }));
@@ -54,9 +59,12 @@ jest.mock('@suite-common/device', () => ({
 describe('TradingSellPreviewScreen', () => {
     let unmount: (() => void) | undefined;
 
-    const renderTradingSellPreviewScreen = async (preloadedState?: PreloadedState) => {
-        const result = await renderWithStoreProviderAsync(<TradingSellPreviewScreen />, {
-            preloadedState,
+    const renderTradingSellPreviewScreen = async (
+        overrides?: PreloadedStatePartial<TradingTestPreloadedState>,
+    ) => {
+        const result = renderWithTradingProvider(<TradingSellPreviewScreen />, {
+            overrides,
+            tradeType: 'sell',
         });
 
         unmount = result.unmount;
@@ -88,57 +96,44 @@ describe('TradingSellPreviewScreen', () => {
     });
 
     it('should render screen with header and preview view', async () => {
-        const preloadedState: PreloadedState = {
-            wallet: getWalletState({ tradeType: 'sell' }),
-        };
-        preloadedState.wallet!.trading!.sell!.selectedQuote = sellQuotes[0];
+        const { getByText } = await renderTradingSellPreviewScreen({
+            wallet: { trading: { sell: { selectedQuote: banxaCreditCardSellQuote } } },
+        });
 
-        const { getByText } = await renderTradingSellPreviewScreen(preloadedState);
-
-        expect(getByText('Sell')).toBeOnTheScreen();
-        expect(getByText('To')).toBeOnTheScreen();
-        expect(getByText('Credit/Debit Card')).toBeOnTheScreen();
+        expect(
+            getByText(getTranslation('moduleTrading.tradingSellPreviewScreen.title')),
+        ).toBeOnTheScreen();
+        expect(
+            getByText(getTranslation('moduleTrading.tradingExchangePreviewScreen.toAccount')),
+        ).toBeOnTheScreen();
+        expect(
+            getByText(getTranslation('moduleTrading.paymentMethods.creditCard')),
+        ).toBeOnTheScreen();
     });
 
     it('should call doBankAccountVerificationCheck on mount', async () => {
-        const preloadedState: PreloadedState = {
-            wallet: getWalletState({ tradeType: 'sell' }),
-        };
-        preloadedState.wallet!.trading!.sell!.selectedQuote = sellQuotes[0];
-
-        await renderTradingSellPreviewScreen(preloadedState);
+        await renderTradingSellPreviewScreen({
+            wallet: { trading: { sell: { selectedQuote: banxaCreditCardSellQuote } } },
+        });
 
         await waitFor(() => expect(mockDoBankAccountVerificationCheck).toHaveBeenCalled());
         expect(mockDoBankAccountVerificationCheck).toHaveBeenCalledTimes(1);
     });
 
     it('should use selectedQuote when trade data is not available', async () => {
-        const preloadedState: PreloadedState = {
-            wallet: getWalletState({ tradeType: 'sell' }),
-        };
-        preloadedState.wallet!.trading!.sell!.selectedQuote = sellQuotes[0];
-
-        const { getByText } = await renderTradingSellPreviewScreen(preloadedState);
+        const { getByText } = await renderTradingSellPreviewScreen({
+            wallet: { trading: { sell: { selectedQuote: banxaCreditCardSellQuote } } },
+        });
 
         // Should render with selectedQuote
-        expect(getByText('To')).toBeOnTheScreen();
+        expect(
+            getByText(getTranslation('moduleTrading.tradingExchangePreviewScreen.toAccount')),
+        ).toBeOnTheScreen();
     });
 
     it('should use trade data when available', async () => {
-        const preloadedState: PreloadedState = {
-            wallet: getWalletState({ tradeType: 'sell' }),
-        };
-        preloadedState.wallet!.trading!.sell!.selectedQuote = sellQuotes[0];
-
         // Add trade to trades array so SellBankAccountPicker can find it
-        const tradeData = sellQuotes[1];
-        preloadedState.wallet!.trading!.trades = [
-            {
-                tradeType: 'sell',
-                data: tradeData,
-                sendAccountKey: 'eth-account-1',
-            } as any,
-        ];
+        const tradeData = banxaBankTransferSellQuote;
 
         mockUseTradingDetailData.trade = {
             tradeType: 'sell',
@@ -146,98 +141,132 @@ describe('TradingSellPreviewScreen', () => {
             sendAccountKey: 'eth-account-1',
         } as any;
 
-        const { getByText } = await renderTradingSellPreviewScreen(preloadedState);
+        const { getByText } = await renderTradingSellPreviewScreen({
+            wallet: {
+                trading: {
+                    sell: { selectedQuote: banxaCreditCardSellQuote },
+                    trades: [
+                        {
+                            tradeType: 'sell',
+                            data: tradeData,
+                            sendAccountKey: 'eth-account-1',
+                        } as any,
+                    ],
+                },
+            },
+        });
 
         // Should render with trade data
-        expect(getByText('To')).toBeOnTheScreen();
+        expect(
+            getByText(getTranslation('moduleTrading.tradingExchangePreviewScreen.toAccount')),
+        ).toBeOnTheScreen();
     });
 
     it('should render SellPreviewContinueButton with correct props', async () => {
-        const preloadedState: PreloadedState = {
-            wallet: getWalletState({ tradeType: 'sell' }),
-        };
-        preloadedState.wallet!.trading!.sell!.selectedQuote = sellQuotes[0];
-
-        const { getByText } = await renderTradingSellPreviewScreen(preloadedState);
+        const { getByText } = await renderTradingSellPreviewScreen({
+            wallet: { trading: { sell: { selectedQuote: banxaCreditCardSellQuote } } },
+        });
 
         // SellPreviewContinueButton should be rendered (it's part of the screen)
         // We can verify by checking that the screen renders without errors
-        expect(getByText('To')).toBeOnTheScreen();
+        expect(
+            getByText(getTranslation('moduleTrading.tradingExchangePreviewScreen.toAccount')),
+        ).toBeOnTheScreen();
     });
 
-    it('should call fetchFeesAndCompose when quote has SEND_CRYPTO status on mount', async () => {
-        const preloadedState: PreloadedState = {
-            wallet: getWalletState({ tradeType: 'sell' }),
-        };
+    it('should call composeTradingTransaction when quote has SEND_CRYPTO status on mount', async () => {
         const quoteWithSendCryptoStatus = {
-            ...sellQuotes[0],
+            ...banxaCreditCardSellQuote,
             status: 'SEND_CRYPTO' as const,
         };
-        preloadedState.wallet!.trading!.sell!.selectedQuote = quoteWithSendCryptoStatus;
 
-        await renderTradingSellPreviewScreen(preloadedState);
+        await renderTradingSellPreviewScreen({
+            wallet: { trading: { sell: { selectedQuote: quoteWithSendCryptoStatus } } },
+        });
 
-        await waitFor(() => expect(mockFetchFeesAndCompose).toHaveBeenCalled());
-        expect(mockFetchFeesAndCompose).toHaveBeenCalledTimes(1);
+        await waitFor(() => expect(mockComposeTradingTransaction).toHaveBeenCalled());
+        expect(mockComposeTradingTransaction).toHaveBeenCalledTimes(1);
     });
 
-    it('should call fetchFeesAndCompose when trade data has SEND_CRYPTO status on mount', async () => {
-        const preloadedState: PreloadedState = {
-            wallet: getWalletState({ tradeType: 'sell' }),
-        };
+    it('should call composeTradingTransaction when trade data has SEND_CRYPTO status on mount', async () => {
         const trade = getSellTrade({ status: 'SEND_CRYPTO' });
-        preloadedState.wallet!.trading!.trades = [trade];
-        preloadedState.wallet!.trading!.sell!.selectedQuote = sellQuotes[0];
-
         mockUseTradingDetailData.trade = trade;
 
-        await renderTradingSellPreviewScreen(preloadedState);
+        await renderTradingSellPreviewScreen({
+            wallet: {
+                trading: {
+                    sell: { selectedQuote: banxaCreditCardSellQuote },
+                    trades: [trade],
+                },
+            },
+        });
 
-        await waitFor(() => expect(mockFetchFeesAndCompose).toHaveBeenCalled());
-        expect(mockFetchFeesAndCompose).toHaveBeenCalledTimes(1);
+        await waitFor(() => expect(mockComposeTradingTransaction).toHaveBeenCalled());
+        expect(mockComposeTradingTransaction).toHaveBeenCalledTimes(1);
     });
 
-    it('should not call fetchFeesAndCompose when status is not SEND_CRYPTO', async () => {
-        const preloadedState: PreloadedState = {
-            wallet: getWalletState({ tradeType: 'sell' }),
-        };
+    it('should not call composeTradingTransaction when status is not SEND_CRYPTO', async () => {
         const quoteWithOtherStatus = {
-            ...sellQuotes[0],
+            ...banxaCreditCardSellQuote,
             status: 'SUBMITTED' as const,
         };
-        preloadedState.wallet!.trading!.sell!.selectedQuote = quoteWithOtherStatus;
 
-        await renderTradingSellPreviewScreen(preloadedState);
+        await renderTradingSellPreviewScreen({
+            wallet: { trading: { sell: { selectedQuote: quoteWithOtherStatus } } },
+        });
 
-        expect(mockFetchFeesAndCompose).not.toHaveBeenCalled();
+        expect(mockComposeTradingTransaction).not.toHaveBeenCalled();
     });
 
-    it('should call fetchFeesAndCompose only once per orderId', async () => {
-        const preloadedState: PreloadedState = {
-            wallet: getWalletState({ tradeType: 'sell' }),
-        };
+    it('should call composeTradingTransaction only once per orderId', async () => {
         const quoteWithSendCryptoStatus = {
-            ...sellQuotes[0],
+            ...moonpayCreditCardSellQuote,
             status: 'SEND_CRYPTO' as const,
             orderId: 'test_order_id_1',
         };
-        preloadedState.wallet!.trading!.sell!.selectedQuote = quoteWithSendCryptoStatus;
 
-        await renderTradingSellPreviewScreen(preloadedState);
+        await renderTradingSellPreviewScreen({
+            wallet: { trading: { sell: { selectedQuote: quoteWithSendCryptoStatus } } },
+        });
 
-        await waitFor(() => expect(mockFetchFeesAndCompose).toHaveBeenCalled());
+        await waitFor(() => expect(mockComposeTradingTransaction).toHaveBeenCalled());
         // Should be called exactly once for this orderId
-        expect(mockFetchFeesAndCompose).toHaveBeenCalledTimes(1);
+        expect(mockComposeTradingTransaction).toHaveBeenCalledTimes(1);
     });
 
     it('should render last error message', async () => {
-        const preloadedState: PreloadedState = {
-            wallet: getWalletState({ tradeType: 'sell' }),
-        };
-        preloadedState.wallet!.trading!.sell!.lastErrorMessage = 'last error message';
-
-        const { getByText } = await renderTradingSellPreviewScreen(preloadedState);
+        const { getByText } = await renderTradingSellPreviewScreen({
+            wallet: { trading: { sell: { lastErrorMessage: 'last error message' } } },
+        });
 
         expect(getByText('last error message')).toBeOnTheScreen();
+    });
+
+    it('should show the error banner and hide the continue button when the quote has final ERROR status', async () => {
+        const trade = getSellTrade({ status: 'ERROR' });
+        mockUseTradingDetailData.trade = trade;
+
+        const { getByText, queryByTestId } = await renderTradingSellPreviewScreen({
+            wallet: {
+                trading: {
+                    sell: {
+                        selectedQuote: {
+                            ...banxaCreditCardSellQuote,
+                            status: 'ERROR',
+                        },
+                    },
+                },
+            },
+        });
+
+        expect(
+            getByText(
+                getTranslation(
+                    'moduleTrading.tradingSellPreviewScreen.providerStatus.cannotBeCompletedAlert.button',
+                ),
+            ),
+        ).toBeOnTheScreen();
+        expect(queryByTestId('@transactionManagement/fee-selector-row')).toBeNull();
+        expect(queryByTestId('@trading/sell-preview/continue-button')).toBeNull();
     });
 });

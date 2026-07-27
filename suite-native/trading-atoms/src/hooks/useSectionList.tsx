@@ -1,8 +1,7 @@
-import { ReactElement, ReactNode, useMemo } from 'react';
-import { FadeIn, FadeOut } from 'react-native-reanimated';
+import { type ReactElement, type ReactNode, useMemo } from 'react';
 
-import { AnimatedBox, Text } from '@suite-native/atoms';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { type BottomSheetFlashListControls, Box, Text } from '@suite-native/atoms';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { exhaustive } from '@trezor/type-utils';
 
 export type ItemRenderConfig<U> = {
@@ -46,7 +45,11 @@ export type ListInternalItemShape<T, U> =
 
 export type UseSectionListProps<T, U> = {
     data: SectionListData<T, U>;
-    renderItem: (item: T, config: ItemRenderConfig<U>) => ReactElement;
+    renderItem: (
+        item: T,
+        config: ItemRenderConfig<U>,
+        sheetControls: BottomSheetFlashListControls,
+    ) => ReactElement;
     renderSectionHeader?: (label: ReactNode, config: SectionHeaderRenderConfig<U>) => ReactElement;
     SectionEmptyComponent?: ReactElement;
     keyExtractor: (item: T, sectionData: U) => string;
@@ -64,18 +67,23 @@ type TransformToInternalFlatListDataProps<T, U> = {
 
 type RenderInternalItemProps<T, U> = {
     item: ListInternalItemShape<T, U>;
-    renderItem: (item: T, config: ItemRenderConfig<U>) => ReactElement;
+    renderItem: (
+        item: T,
+        config: ItemRenderConfig<U>,
+        sheetControls: BottomSheetFlashListControls,
+    ) => ReactElement;
     renderSectionHeader:
         | ((label: ReactNode, config: SectionHeaderRenderConfig<U>) => ReactElement)
         | undefined;
     SectionEmptyComponent: ReactElement | undefined;
     applyStyle: ReturnType<typeof useNativeStyles>['applyStyle'];
     itemStyle?: ReturnType<typeof prepareNativeStyle<ItemRenderConfig<unknown>>>;
+    sheetControls: BottomSheetFlashListControls;
 };
 
 const defaultItemStyle = prepareNativeStyle<ItemRenderConfig<unknown>>(
     ({ colors, spacings, borders }, { isFirst, isLast, isEnabled }) => ({
-        backgroundColor: colors.backgroundSurfaceElevation1,
+        backgroundColor: colors.surfaceFillRaised,
         paddingHorizontal: spacings.sp12,
         extend: [
             {
@@ -95,7 +103,7 @@ const defaultItemStyle = prepareNativeStyle<ItemRenderConfig<unknown>>(
             {
                 condition: !isEnabled,
                 style: {
-                    backgroundColor: colors.baseFillSurfacePage,
+                    backgroundColor: colors.surfaceFillPage,
                 },
             },
         ],
@@ -179,6 +187,7 @@ const renderInternalItem = <T, U>({
     SectionEmptyComponent,
     applyStyle,
     itemStyle,
+    sheetControls,
 }: RenderInternalItemProps<T, U>): ReactElement => {
     const { type } = item;
 
@@ -187,42 +196,30 @@ const renderInternalItem = <T, U>({
             const { key, sectionData, title } = item;
 
             return (
-                <AnimatedBox
-                    paddingVertical={renderSectionHeader ? undefined : 'sp12'}
-                    entering={FadeIn}
-                    exiting={FadeOut}
-                >
+                <Box paddingVertical={renderSectionHeader ? undefined : 'sp12'}>
                     {renderSectionHeader ? (
                         renderSectionHeader(title, { sectionData, key })
                     ) : (
-                        <Text variant="body-sm" color="textSubdued">
+                        <Text variant="body-sm" color="contentSecondary">
                             {item.title}
                         </Text>
                     )}
-                </AnimatedBox>
+                </Box>
             );
         }
 
         case 'item':
             return (
-                <AnimatedBox
-                    entering={FadeIn}
-                    exiting={FadeOut}
-                    style={applyStyle(itemStyle ?? defaultItemStyle, item.config)}
-                >
-                    {renderItem(item.item, item.config)}
-                </AnimatedBox>
+                <Box style={applyStyle(itemStyle ?? defaultItemStyle, item.config)}>
+                    {renderItem(item.item, item.config, sheetControls)}
+                </Box>
             );
 
         case 'emptySection':
             return (
-                <AnimatedBox
-                    entering={FadeIn}
-                    exiting={FadeOut}
-                    style={applyStyle(itemStyle ?? defaultItemStyle, item.config)}
-                >
+                <Box style={applyStyle(itemStyle ?? defaultItemStyle, item.config)}>
                     {SectionEmptyComponent}
-                </AnimatedBox>
+                </Box>
             );
 
         default:
@@ -271,7 +268,10 @@ export const useSectionList = <T, U = undefined>({
         itemsCount,
         keyExtractor: (item: ListInternalItemShape<T, U>) =>
             internalKeyExtractor(item, keyExtractor),
-        renderItem: ({ item }: { item: ListInternalItemShape<T, U> }) =>
+        renderItem: (
+            { item }: { item: ListInternalItemShape<T, U> },
+            sheetControls: BottomSheetFlashListControls = { closeSheet: () => {} },
+        ) =>
             renderInternalItem({
                 item,
                 renderItem,
@@ -279,6 +279,7 @@ export const useSectionList = <T, U = undefined>({
                 SectionEmptyComponent,
                 applyStyle,
                 itemStyle,
+                sheetControls,
             }),
     };
 };

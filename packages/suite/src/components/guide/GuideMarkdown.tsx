@@ -1,11 +1,12 @@
 import { useEffect, useRef } from 'react';
 
+import { TrezorLink } from '@suite/external-links';
 import { Markdown } from '@trezor/components';
 
 import { useGuideOpenNode } from 'src/hooks/guide';
 
 import { GuideHint } from './GuideHint';
-import { TrezorLink } from '../suite';
+import { GuideImage } from './GuideImage';
 
 interface GuideMarkdownProps {
     markdown: string | undefined;
@@ -42,6 +43,7 @@ export const GuideMarkdown = ({ markdown }: GuideMarkdownProps) => {
                             );
                         },
                         blockquote: props => <GuideHint {...props} />,
+                        img: ({ src, alt }) => <GuideImage src={src} alt={alt} />,
                     }}
                 >
                     {markdown}

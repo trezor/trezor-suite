@@ -1,0 +1,1 @@
+export { httpRequest } from './assetUtils';

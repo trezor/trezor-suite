@@ -1,11 +1,12 @@
+import { type ExchangeTrade } from 'invity-api';
+
 import { createThunk } from '@suite-common/redux-utils';
-import { TrezorDevice } from '@suite-common/suite-types';
-import { Account } from '@suite-common/wallet-types';
+import { type TrezorDevice } from '@suite-common/suite-types';
+import { type Account } from '@suite-common/wallet-types';
 import TrezorConnect, {
-    EthereumSignTypedDataMessage,
-    EthereumSignTypedDataTypes,
+    type EthereumSignTypedDataMessage,
+    type EthereumSignTypedDataTypes,
 } from '@trezor/connect';
-import { transformTypedData } from '@trezor/connect-plugin-ethereum';
 
 import { confirmExchangeTradeThunk } from './confirmExchangeTradeThunk';
 import { TRADING_EXCHANGE_THUNK_PREFIX } from '../../constants';
@@ -15,6 +16,7 @@ import {
     selectTradingExchangeReceiveAccountKey,
     selectTradingExchangeSelectedQuote,
 } from '../../selectors/tradingSelectors';
+import { type TradingSendRejectedProps } from '../../types';
 import { logErrorThunk } from '../common/logErrorThunk';
 
 export type SignDataAndConfirmThunkProps = {
@@ -23,11 +25,22 @@ export type SignDataAndConfirmThunkProps = {
 
     returnUrl: string;
     triggerAnalyticsTradeConfirmation: () => void;
-    processResponseData: (response: any) => void;
+    processResponseData: (response: ExchangeTrade) => void;
     nextStep: () => void;
 };
 
-export const signDataAndConfirmThunk = createThunk(
+const signDataRejectedValue: TradingSendRejectedProps = {
+    type: 'sign-tx-error',
+    error: { id: 'TR_TRADING_CANNOT_SEND_TRANSACTION' },
+};
+
+export const signDataAndConfirmThunk = createThunk<
+    undefined,
+    SignDataAndConfirmThunkProps,
+    {
+        rejectValue: TradingSendRejectedProps;
+    }
+>(
     `${TRADING_EXCHANGE_THUNK_PREFIX}/signDataAndConfirm`,
     async (
         {
@@ -38,7 +51,7 @@ export const signDataAndConfirmThunk = createThunk(
             processResponseData,
             nextStep,
         }: SignDataAndConfirmThunkProps,
-        { dispatch, getState },
+        { dispatch, getState, rejectWithValue },
     ) => {
         const selectedQuote = selectTradingExchangeSelectedQuote(getState());
         const sendAccountKey = selectTradingExchangeAccountKey(getState());
@@ -52,7 +65,7 @@ export const signDataAndConfirmThunk = createThunk(
                 }),
             );
 
-            return;
+            return rejectWithValue(signDataRejectedValue);
         }
 
         if (
@@ -66,34 +79,17 @@ export const signDataAndConfirmThunk = createThunk(
                 }),
             );
 
-            return;
+            return rejectWithValue(signDataRejectedValue);
         }
 
         const typedData = selectedQuote?.signData
             .data as EthereumSignTypedDataMessage<EthereumSignTypedDataTypes>;
-
-        let hashes;
-        try {
-            hashes = transformTypedData(typedData as any, true);
-        } catch (error) {
-            dispatch(
-                logErrorThunk({
-                    errorMessage: error.message,
-                    tradingType: 'exchange',
-                    toastType: 'sign-message-error',
-                }),
-            );
-
-            return;
-        }
 
         dispatch(tradingActions.setModalAccountKey(account.key));
         const result = await TrezorConnect.ethereumSignTypedData({
             path: account.path,
             metamask_v4_compat: true,
             data: typedData,
-            domain_separator_hash: hashes.domain_separator_hash,
-            message_hash: hashes.message_hash || undefined,
             device: {
                 path: device?.path,
                 instance: device?.instance,
@@ -105,13 +101,13 @@ export const signDataAndConfirmThunk = createThunk(
         if (!result.success) {
             dispatch(
                 logErrorThunk({
-                    errorMessage: result.payload.error,
+                    errorMessage: result.error.message,
                     tradingType: 'exchange',
                     toastType: 'sign-message-error',
                 }),
             );
 
-            return;
+            return rejectWithValue(signDataRejectedValue);
         }
 
         const trade = {
@@ -121,7 +117,7 @@ export const signDataAndConfirmThunk = createThunk(
         };
 
         if (!trade.receiveAddress) {
-            return;
+            return rejectWithValue(signDataRejectedValue);
         }
 
         dispatch(
@@ -141,10 +137,11 @@ export const signDataAndConfirmThunk = createThunk(
                 returnUrl,
                 receiveAddress: trade.receiveAddress,
                 account,
+                isTradeSubmitted: true,
                 triggerAnalyticsTradeConfirmation,
                 processResponseData,
                 nextStep,
             }),
-        );
+        ).unwrap();
     },
 );

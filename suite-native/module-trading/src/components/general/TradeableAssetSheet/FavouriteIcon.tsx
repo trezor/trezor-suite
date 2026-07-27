@@ -1,7 +1,7 @@
 import { Pressable } from 'react-native';
 
 import { Box } from '@suite-native/atoms';
-import { Icon, IconProps } from '@suite-native/icons';
+import { Icon, type IconProps } from '@suite-native/icons';
 import { useTranslate } from '@suite-native/intl';
 
 export type FavouriteIconProps = {
@@ -11,8 +11,8 @@ export type FavouriteIconProps = {
 
 const getIconProps = (isFavourite: boolean): IconProps =>
     isFavourite
-        ? { name: 'starFilled', color: 'backgroundAlertYellowBold' }
-        : { name: 'star', color: 'textSubdued' };
+        ? { name: 'starFilled', color: 'legacyBackgroundAlertYellowBold' }
+        : { name: 'star', color: 'contentSecondary' };
 
 const useA11yButtonHint = (isFavourite: boolean): string => {
     const { translate } = useTranslate();

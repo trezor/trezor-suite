@@ -1,14 +1,14 @@
 import { EventType } from '../constants';
 import type { EventDef } from '../eventDefinition';
 
-type Attributes = {};
+type Attributes = Record<never, never>;
 
 export const deviceConnectionDevicePairedEvent: EventDef<
     Attributes,
     EventType.DeviceConnectionDevicePaired
 > = {
     name: EventType.DeviceConnectionDevicePaired,
-    descriptionTrigger: ' User successfully finish bluetooth pairing',
+    descriptionTrigger: 'User successfully completes Bluetooth pairing with a device',
     changelog: [{ version: '25.11.1', notes: 'added' }],
     attributes: {},
 };

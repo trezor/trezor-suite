@@ -1,7 +1,11 @@
-import { TokenTransfer, Transaction } from '@trezor/blockchain-link-types/src';
+import { type TokenTransfer, type Transaction } from '@trezor/blockchain-link-types/src';
+import type {
+    ParsedTransactionWithMeta,
+    SolanaValidParsedTxWithMeta,
+} from '@trezor/network-solana/types';
 
 import {
-    ApiTokenAccount,
+    type ApiTokenAccount,
     extractAccountBalanceDiff,
     getAmount,
     getDetails,
@@ -13,7 +17,6 @@ import {
     transformTokenInfo,
     transformTransaction,
 } from '../solana';
-import { ParsedTransactionWithMeta, SolanaValidParsedTxWithMeta } from '../solana-types';
 import { fixtures } from './fixtures/solana';
 
 describe('solana/utils', () => {
@@ -144,7 +147,10 @@ describe('solana/utils', () => {
         fixtures.transformTokenInfo.forEach(({ description, input, expectedOutput }) => {
             it(description, () => {
                 expect(
-                    transformTokenInfo(input.accountInfo as ApiTokenAccount[], input.map),
+                    transformTokenInfo(
+                        input.accountInfo as unknown as ApiTokenAccount[],
+                        input.map,
+                    ),
                 ).toEqual(expectedOutput);
             });
         });

@@ -32,4 +32,3 @@ export const bootstrapParser = (message: string): BootstrapEvent[] => {
 export const BOOTSTRAP_EVENT_PROGRESS = {
     Done: '100',
 } as const;
-export type BootstrapEventProgress = keyof typeof BOOTSTRAP_EVENT_PROGRESS;

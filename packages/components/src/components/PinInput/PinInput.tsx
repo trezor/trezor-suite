@@ -1,17 +1,17 @@
-import { ChangeEvent, ClipboardEvent, useEffect, useRef, useState } from 'react';
+import { type ChangeEvent, type ClipboardEvent, useEffect, useRef, useState } from 'react';
 
 import styled from 'styled-components';
 
-import { borders, typography } from '@trezor/theme';
+import { typography } from '@trezor/theme';
 
 import { Row } from '../Flex/Flex';
 
 const SymbolBox = styled.input<{ $fakeDisabled?: boolean }>`
     height: 60px;
     width: 50px;
-    background: ${({ theme }) => theme.backgroundNeutralSubtleOnElevation0};
-    border: 1px solid ${({ theme }) => theme.borderInputDefault};
-    border-radius: ${borders.radii.lg};
+    background: ${({ theme }) => theme.elementFillField};
+    border: 1px solid ${({ theme }) => theme.elementBorderField};
+    border-radius: 20px;
     outline: 0;
     text-align: center;
     caret-color: transparent;
@@ -24,7 +24,7 @@ const SymbolBox = styled.input<{ $fakeDisabled?: boolean }>`
 
     &:focus,
     &:focus-within {
-        border: 2px solid ${({ theme }) => theme.borderSecondary};
+        border: 2px solid ${({ theme }) => theme.elementBorderFieldFocused};
     }
 
     ${({ theme, $fakeDisabled }) =>
@@ -35,8 +35,9 @@ const SymbolBox = styled.input<{ $fakeDisabled?: boolean }>`
         `
         pointer-events: none;
         cursor: default;
-        border: 0;
-        color: ${theme.textDisabled};
+        color: ${theme.contentDisabled};
+        background: ${theme.elementFillFieldDisabled};
+        border-color: ${theme.elementBorderFieldDisabled};
     `}
 `;
 

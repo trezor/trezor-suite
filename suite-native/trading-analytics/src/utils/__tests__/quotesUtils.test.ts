@@ -1,13 +1,17 @@
-import type { CoinInfo, SellFiatTrade } from 'invity-api';
+import type { BuyTrade, CoinInfo, SellFiatTrade } from 'invity-api';
 
-import { coins, sellQuotes } from '@suite-native/trading-fixtures';
+import {
+    banxaCreditCardSellQuote,
+    coins,
+    mercuryoApplePayBuyQuote,
+} from '@suite-native/trading-fixtures';
 
-import { getAnalyticsTradingSellPayload } from '../quotesUtils';
+import { getAnalyticsTradingBuyPayload, getAnalyticsTradingSellPayload } from '../quotesUtils';
 
 describe('quotesUtils', () => {
     describe('getAnalyticsTradingSellPayload', () => {
         it('should return null when coinInfo is undefined', () => {
-            const quote = sellQuotes[0];
+            const quote = banxaCreditCardSellQuote;
             const result = getAnalyticsTradingSellPayload({
                 quote,
                 coinInfo: undefined,
@@ -28,7 +32,7 @@ describe('quotesUtils', () => {
 
         it('should return null when quote.cryptoCurrency is undefined', () => {
             const quote = {
-                ...sellQuotes[0],
+                ...banxaCreditCardSellQuote,
                 cryptoCurrency: undefined,
             } as unknown as SellFiatTrade;
             const coinInfo = coins.ethereum as CoinInfo;
@@ -42,7 +46,7 @@ describe('quotesUtils', () => {
         });
 
         it('should return correct payload otherwise', () => {
-            const quote = sellQuotes[0];
+            const quote = banxaCreditCardSellQuote;
             const coinInfo = coins.ethereum as CoinInfo;
 
             const result = getAnalyticsTradingSellPayload({
@@ -57,6 +61,60 @@ describe('quotesUtils', () => {
                 receiveMethod: 'creditCard',
                 countryOfResidence: 'CZ',
                 exchangeName: 'banxa-sell',
+            });
+        });
+    });
+
+    describe('getAnalyticsTradingBuyPayload', () => {
+        it('should return null when coinInfo is undefined', () => {
+            const result = getAnalyticsTradingBuyPayload({
+                quote: mercuryoApplePayBuyQuote,
+                coinInfo: undefined,
+            });
+
+            expect(result).toBeNull();
+        });
+
+        it('should return null when quote is undefined', () => {
+            const coinInfo = coins.bitcoin as CoinInfo;
+            const result = getAnalyticsTradingBuyPayload({
+                quote: undefined,
+                coinInfo,
+            });
+
+            expect(result).toBeNull();
+        });
+
+        it('should return null when quote.receiveCurrency is undefined', () => {
+            const quote = {
+                ...mercuryoApplePayBuyQuote,
+                receiveCurrency: undefined,
+            } as unknown as BuyTrade;
+            const coinInfo = coins.bitcoin as CoinInfo;
+
+            const result = getAnalyticsTradingBuyPayload({
+                quote,
+                coinInfo,
+            });
+
+            expect(result).toBeNull();
+        });
+
+        it('should return correct payload otherwise', () => {
+            const coinInfo = coins.bitcoin as CoinInfo;
+
+            const result = getAnalyticsTradingBuyPayload({
+                quote: mercuryoApplePayBuyQuote,
+                coinInfo,
+            });
+
+            expect(result).toEqual({
+                cryptoLabel: 'BTC',
+                cryptoNetworkSymbol: 'btc',
+                cryptoContractAddress: undefined,
+                paymentMethod: 'applePay',
+                countryOfResidence: undefined,
+                exchangeName: 'mercuryo',
             });
         });
     });

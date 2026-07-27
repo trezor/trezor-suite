@@ -6,15 +6,19 @@ import fs from 'fs';
 import path from 'path';
 import prettier from 'prettier';
 import { optimize } from 'svgo';
+import { fileURLToPath } from 'url';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const iconsFilePath = './src/icons.ts';
 const cryptoIconsPath = './src/cryptoIcons.ts';
 const networkIconsPath = './src/networkIcons.ts';
+const paymentMethodLogosPath = './src/paymentMethodLogos.ts';
 
 const assetTypesConfig = [
     {
         name: 'icons',
-        dirname: 'assets',
+        dirname: '../../packages/icons/assets',
         typeName: 'IconName',
     },
 ];
@@ -24,6 +28,15 @@ const cryptoAssetsTypesConfig = [
         name: 'cryptoIcons',
         dirname: 'cryptoAssets/cryptoIcons',
         typeName: 'CryptoIconName',
+    },
+];
+
+const paymentMethodLogosAssetsTypesConfig = [
+    {
+        name: 'paymentMethodLogos',
+        dirname: 'paymentMethods',
+        typeName: 'PaymentMethodLogoName',
+        raster: true,
     },
 ];
 
@@ -49,6 +62,12 @@ const svgoConfig = {
             name: 'removeViewBox',
             active: false,
         },
+        {
+            name: 'addAttributesToSVGElement',
+            params: {
+                attributes: [{ xmlns: 'http://www.w3.org/2000/svg' }],
+            },
+        },
         'prefixIds',
         // it's necessary to remove all dimension tags to allow resizing
         'removeDimensions',
@@ -59,7 +78,7 @@ const svgoConfig = {
 };
 
 const optimizeSvgAssets = assetsDirname => {
-    const assetsDir = path.join(import.meta.dirname, assetsDirname);
+    const assetsDir = path.join(__dirname, assetsDirname);
     const assetFileNames = fs.readdirSync(assetsDir);
 
     return assetFileNames
@@ -74,10 +93,21 @@ const optimizeSvgAssets = assetsDirname => {
         }));
 };
 
+const listRasterAssets = assetsDirname => {
+    const assetsDir = path.join(__dirname, assetsDirname);
+
+    return fs
+        .readdirSync(assetsDir)
+        .filter(fileName => fileName.endsWith('.webp'))
+        .map(fileName => ({ fileName }));
+};
+
 const getOptimizedAssetTypes = assetTypesArray =>
     assetTypesArray.map(config => ({
         ...config,
-        assets: optimizeSvgAssets(config.dirname),
+        assets: config.raster
+            ? listRasterAssets(config.dirname)
+            : optimizeSvgAssets(config.dirname),
     }));
 
 const generateIconsFileContent = assetTypesArray => {
@@ -87,7 +117,7 @@ const generateIconsFileContent = assetTypesArray => {
             ${assets
                 .map(
                     ({ fileName }) =>
-                        `${fileName.replace('.svg', '')}: require('../${dirname}/${fileName}')`,
+                        `${fileName.replace(/\.(svg|webp)$/, '')}: require('../${dirname}/${fileName}')`,
                 )
                 .join(',')}
         } as const;
@@ -104,7 +134,10 @@ const generateIconsFileContent = assetTypesArray => {
 };
 
 const writeOptimizedAssets = assetTypesArray => {
-    assetTypesArray.forEach(({ assets, dirname }) => {
+    assetTypesArray.forEach(({ assets, dirname, raster }) => {
+        if (raster) {
+            return;
+        }
         assets.forEach(({ fileName, content }) =>
             fs.writeFileSync(path.resolve(dirname, fileName), content),
         );
@@ -139,4 +172,7 @@ const generateFileForAssetTypes = async (assetTypesArray, outputFilePath) => {
     console.log('Generating network icons TS file...');
     await generateFileForAssetTypes(networkAssetsTypesConfig, networkIconsPath);
     console.log(chalk.green('Network icons TS file generated successfully'));
+    console.log('Generating payment method logos TS file...');
+    await generateFileForAssetTypes(paymentMethodLogosAssetsTypesConfig, paymentMethodLogosPath);
+    console.log(chalk.green('Payment method logos TS file generated successfully'));
 })();

@@ -39,7 +39,8 @@ export const FirmwareInfoScreenFooter = ({
                 testID="@firmware-info-footer/cancel-button"
                 isDisabled={isDiscoveryRunning || !isFirmwareUpdateEnabled}
                 isLoading={isDiscoveryRunning}
-                colorScheme="tertiaryElevation0"
+                intent="neutral"
+                priority="secondary"
             >
                 <Translation id="firmware.firmwareInfoScreen.cancelButton" />
             </Button>

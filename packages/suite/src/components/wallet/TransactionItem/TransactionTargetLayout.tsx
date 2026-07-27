@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
 import { Column, Text } from '@trezor/components';
 
@@ -22,7 +22,7 @@ export const TransactionTargetLayout = ({
     useHiddenPlaceholder,
     isPhishingTransaction,
 }: TransactionTargetLayoutProps) => {
-    const { isBelowLaptop } = useLayoutSize();
+    const { isBelowTablet } = useLayoutSize();
 
     const commonProps = {
         typographyStyle: 'body-md',
@@ -31,9 +31,14 @@ export const TransactionTargetLayout = ({
         as: 'div',
     } as const;
 
+    const cryptoAmountProps = {
+        ...commonProps,
+        priority: 'primary',
+    } as const;
+
     const amounts = (
         <>
-            <Text {...commonProps} align="end">
+            <Text {...cryptoAmountProps} align="end">
                 {amount && (
                     <BlurWrapper $isBlurred={isPhishingTransaction ?? false}>{amount}</BlurWrapper>
                 )}
@@ -54,7 +59,7 @@ export const TransactionTargetLayout = ({
                 )}
             </Text>
 
-            {isBelowLaptop ? <Column>{amounts}</Column> : amounts}
+            {isBelowTablet ? <Column>{amounts}</Column> : amounts}
         </>
     );
 };

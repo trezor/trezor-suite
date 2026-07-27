@@ -1,26 +1,28 @@
 import { Form } from '@suite-native/forms';
-import {
-    act,
-    renderHookWithStoreProviderAsync,
-    renderWithBasicProvider,
-} from '@suite-native/test-utils';
-import { SellFormType } from '@suite-native/trading-types';
+import { renderWithBasicProvider } from '@suite-native/test-utils';
+import { act, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
+import { getWalletState } from '@suite-native/trading-fixtures';
+import { type SellFormType } from '@suite-native/trading-types';
 
 import { useSellForm } from '../../../hooks/sell/useSellForm';
 import { SellAlert } from '../SellAlert';
 
 describe('SellAlert', () => {
     let form: SellFormType;
+    const preloadedState = { wallet: getWalletState({ tradeType: 'sell' }) };
 
-    const renderFormHook = () => renderHookWithStoreProviderAsync(() => useSellForm());
+    const renderFormHook = () =>
+        renderHookWithStoreProvider(() => useSellForm(), {
+            preloadedState,
+        });
 
     const renderTradingAlert = () =>
         renderWithBasicProvider(<SellAlert />, {
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
         });
 
-    beforeEach(async () => {
-        const { result } = await renderFormHook();
+    beforeEach(() => {
+        const { result } = renderFormHook();
         form = result.current;
     });
 

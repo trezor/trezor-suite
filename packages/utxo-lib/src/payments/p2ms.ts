@@ -1,20 +1,23 @@
 // upstream: https://github.com/bitcoinjs/bitcoinjs-lib/blob/master/ts_src/payments/p2ms.ts
 
-import ecc from 'tiny-secp256k1';
-
 import { bitcoin as BITCOIN_NETWORK } from '../networks';
+import * as ecc from '../noble-compatibility';
 import * as bscript from '../script';
 import * as lazy from './lazy';
-import { Payment, PaymentOpts, Stack, typeforce } from '../types';
+import { type Payment, type PaymentOpts, type Stack } from '../types';
+import { BufferSchema, Point, Type, assertType, isNumber } from '../types/validation';
 
 const { OPS } = bscript;
-
-const OP_INT_BASE = OPS.OP_RESERVED; // OP_1 - 1
 
 function stacksEqual(a: Buffer[], b: Buffer[]): boolean {
     if (a.length !== b.length) return false;
 
-    return a.every((x, i) => x.equals(b[i]));
+    return a.every((x, i) => {
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const bItem: Buffer = b[i];
+
+        return x.equals(bItem);
+    });
 }
 
 // input: OP_0 [signatures ...]
@@ -31,19 +34,24 @@ export function p2ms(a: Payment, opts?: PaymentOpts): Payment {
         );
     }
 
-    typeforce(
-        {
-            network: typeforce.maybe(typeforce.Object),
-            m: typeforce.maybe(typeforce.Number),
-            n: typeforce.maybe(typeforce.Number),
-            output: typeforce.maybe(typeforce.Buffer),
-            pubkeys: typeforce.maybe(typeforce.arrayOf(ecc.isPoint)),
-
-            signatures: typeforce.maybe(typeforce.arrayOf(isAcceptableSignature)),
-            input: typeforce.maybe(typeforce.Buffer),
-        },
+    assertType(
+        Type.Object(
+            {
+                network: Type.Optional(Type.Object({}, { additionalProperties: true })),
+                m: Type.Optional(Type.Number()),
+                n: Type.Optional(Type.Number()),
+                output: Type.Optional(BufferSchema),
+                pubkeys: Type.Optional(Type.Array(Point)),
+                signatures: Type.Optional(Type.Array(Type.Union([BufferSchema, Type.Number()]))),
+                input: Type.Optional(BufferSchema),
+            },
+            { additionalProperties: true },
+        ),
         a,
     );
+
+    if (a.signatures && !a.signatures.every(isAcceptableSignature))
+        throw new TypeError('Input has invalid signature(s)');
 
     const network = a.network || BITCOIN_NETWORK;
     const o: Payment = { name: 'p2ms', network };
@@ -53,9 +61,13 @@ export function p2ms(a: Payment, opts?: PaymentOpts): Payment {
     function decode(output: Buffer | Stack): void {
         if (decoded) return;
         decoded = true;
-        chunks = bscript.decompile(output) as Stack;
-        o.m = (chunks[0] as number) - OP_INT_BASE;
-        o.n = (chunks[chunks.length - 2] as number) - OP_INT_BASE;
+        chunks = bscript.decompile(output);
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const firstChunk: number = chunks[0];
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const nChunk: number = chunks[chunks.length - 2];
+        o.m = firstChunk - OPS.OP_RESERVED;
+        o.n = nChunk - OPS.OP_RESERVED;
         o.pubkeys = chunks.slice(1, -2) as Buffer[];
     }
 
@@ -66,9 +78,9 @@ export function p2ms(a: Payment, opts?: PaymentOpts): Payment {
 
         return bscript.compile(
             ([] as Stack).concat(
-                OP_INT_BASE + a.m,
+                OPS.OP_RESERVED + a.m,
                 a.pubkeys,
-                OP_INT_BASE + o.n,
+                OPS.OP_RESERVED + o.n,
                 OPS.OP_CHECKMULTISIG,
             ),
         );
@@ -93,7 +105,7 @@ export function p2ms(a: Payment, opts?: PaymentOpts): Payment {
     lazy.prop(o, 'signatures', () => {
         if (!a.input) return;
 
-        return bscript.decompile(a.input)!.slice(1);
+        return bscript.decompile(a.input).slice(1);
     });
     lazy.prop(o, 'input', () => {
         if (!a.signatures) return;
@@ -115,9 +127,8 @@ export function p2ms(a: Payment, opts?: PaymentOpts): Payment {
     if (opts.validate) {
         if (a.output) {
             decode(a.output);
-            if (!typeforce.Number(chunks[0])) throw new TypeError('Output is invalid');
-            if (!typeforce.Number(chunks[chunks.length - 2]))
-                throw new TypeError('Output is invalid');
+            if (!isNumber(chunks[0])) throw new TypeError('Output is invalid');
+            if (!isNumber(chunks[chunks.length - 2])) throw new TypeError('Output is invalid');
             if (chunks[chunks.length - 1] !== OPS.OP_CHECKMULTISIG)
                 throw new TypeError('Output is invalid');
 

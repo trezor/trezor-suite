@@ -1,4 +1,6 @@
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { type SelectedAccountState } from '@suite/account';
+import { type RouterState } from '@suite/router';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     WALLET_SETTINGS,
     accountsActions,
@@ -6,17 +8,14 @@ import {
     sendFormActions,
 } from '@suite-common/wallet-core';
 import {
-    Account,
-    AccountBase,
-    AccountKey,
-    Output,
-    FormState as SendFormState,
+    type Account,
+    type AccountBase,
+    type Output,
+    type FormState as SendFormState,
     asAccountDescriptor,
 } from '@suite-common/wallet-types';
+import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { PROTO } from '@trezor/connect';
-
-import { RouterState } from 'src/reducers/suite/routerReducer';
-import { State as SelectedAccountState } from 'src/reducers/wallet/selectedAccountReducer';
 
 export const blockchainSubscription: Array<{
     description: string;
@@ -131,6 +130,9 @@ export const blockchainSubscription: Array<{
     },
 ];
 
+const accountOneKey = mockAccountKey({ descriptor: 'one' });
+const accountTwoKey = mockAccountKey({ descriptor: 'two', symbol: 'regtest' });
+
 export const draftsFixtures = [
     {
         initialState: {
@@ -142,13 +144,13 @@ export const draftsFixtures = [
             settings: { bitcoinAmountUnit: PROTO.AmountUnit.BITCOIN },
             accounts: [
                 {
-                    key: 'one' as AccountKey, // Todo: create properly via `createAccountKey()`
+                    key: accountOneKey,
                     networkType: 'bitcoin',
                     symbol: 'btc',
                     accountType: 'normal',
                 } as Account,
                 {
-                    key: 'two' as AccountKey, // Todo: create properly via `createAccountKey()`
+                    key: accountTwoKey,
                     networkType: 'bitcoin',
                     symbol: 'regtest',
                     accountType: 'normal',
@@ -157,7 +159,7 @@ export const draftsFixtures = [
             selectedAccount: {
                 status: 'loaded',
                 account: {
-                    key: 'one' as AccountKey, // Todo: create properly via `createAccountKey()`
+                    key: accountOneKey,
                     networkType: 'bitcoin',
                     symbol: 'btc',
                     accountType: 'normal',
@@ -165,7 +167,7 @@ export const draftsFixtures = [
             } as SelectedAccountState,
             send: {
                 drafts: {
-                    one: {
+                    [accountOneKey]: {
                         outputs: [
                             {
                                 amount: '0.00001',
@@ -175,7 +177,7 @@ export const draftsFixtures = [
                             } as Output,
                         ],
                     } as SendFormState,
-                    two: {
+                    [accountTwoKey]: {
                         outputs: [
                             {
                                 amount: '0.00003',
@@ -203,7 +205,7 @@ export const draftsFixtures = [
             {
                 type: sendFormActions.storeDraft.type,
                 payload: {
-                    accountKey: 'two',
+                    accountKey: accountTwoKey,
                     formState: {
                         outputs: [
                             {
@@ -218,7 +220,7 @@ export const draftsFixtures = [
             },
         ],
         expectedDrafts: {
-            one: {
+            [accountOneKey]: {
                 outputs: [
                     {
                         amount: '0.00001',
@@ -228,7 +230,7 @@ export const draftsFixtures = [
                     },
                 ],
             },
-            two: {
+            [accountTwoKey]: {
                 outputs: [
                     {
                         amount: '3000',

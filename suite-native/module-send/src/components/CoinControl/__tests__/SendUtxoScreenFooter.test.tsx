@@ -1,4 +1,5 @@
-import { renderWithStoreProviderAsync } from '@suite-native/test-utils';
+import { getTranslation } from '@suite-native/intl';
+import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 
 import { SendUtxoScreenFooter } from '../SendUtxoScreenFooter';
 
@@ -7,18 +8,18 @@ jest.mock('../../../hooks/useUtxoSelection', () => ({
 }));
 
 describe('SendUtxosScreenFooter', () => {
-    it('should render footer with selected total and continue button', async () => {
-        const { getByText } = await renderWithStoreProviderAsync(
+    it('should render footer with selected total and continue button', () => {
+        const { getByText } = renderWithStoreProvider(
             <SendUtxoScreenFooter symbol="btc" selectedTotal="800000000" onSubmit={jest.fn()} />,
         );
 
-        expect(getByText('Selected')).toBeTruthy();
+        expect(getByText(getTranslation('moduleSend.coinControl.utxos.selected'))).toBeTruthy();
         expect(getByText('8 BTC')).toBeTruthy();
-        expect(getByText('Confirm selection')).toBeTruthy();
+        expect(getByText(getTranslation('generic.buttons.confirm'))).toBeTruthy();
     });
 
-    it('should show remaining amount when amount is provided and selected total is less than amount', async () => {
-        const { getByText } = await renderWithStoreProviderAsync(
+    it('should show remaining amount when amount is provided and selected total is less than amount', () => {
+        const { getByText } = renderWithStoreProvider(
             <SendUtxoScreenFooter
                 symbol="btc"
                 selectedTotal="500000000"
@@ -27,12 +28,12 @@ describe('SendUtxosScreenFooter', () => {
             />,
         );
 
-        expect(getByText('Remaining to select')).toBeTruthy();
+        expect(getByText(getTranslation('moduleSend.coinControl.utxos.remaining'))).toBeTruthy();
         expect(getByText('3 BTC')).toBeTruthy(); // 800000000 - 500000000 = 300000000 (3 BTC)
     });
 
-    it('should not show remaining amount when selected total is equal to or greater than amount', async () => {
-        const { queryByText } = await renderWithStoreProviderAsync(
+    it('should not show remaining amount when selected total is equal to or greater than amount', () => {
+        const { queryByText } = renderWithStoreProvider(
             <SendUtxoScreenFooter
                 symbol="btc"
                 selectedTotal="800000000"
@@ -41,6 +42,6 @@ describe('SendUtxosScreenFooter', () => {
             />,
         );
 
-        expect(queryByText('Remaining to select')).toBeNull();
+        expect(queryByText(getTranslation('moduleSend.coinControl.utxos.remaining'))).toBeNull();
     });
 });

@@ -1,23 +1,23 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
+import { useServices } from '@suite-common/dependency-injection';
 import {
-    TradingTransaction,
-    TradingTransactionBuy,
-    TradingTransactionExchange,
-    TradingTransactionSell,
+    type TradingTransaction,
+    type TradingTransactionBuy,
+    type TradingTransactionExchange,
+    type TradingTransactionSell,
     selectTradingTradeByOrderId,
     tradeFinalStatuses,
     tradingThunks,
 } from '@suite-common/trading';
-import { AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
-import { AccountKey } from '@suite-common/wallet-types';
-import { events } from '@suite-native/analytics';
-import { useAnalytics } from '@suite-native/services';
-import { TradingRootState } from '@suite-native/trading-state';
+import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
+import { type AccountKey } from '@suite-common/wallet-types';
+import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { getTradeStatusStep } from '@suite-native/trading-quote-utils';
+import { type TradingRootState } from '@suite-native/trading-state';
 
 import { useReloadTimer } from './useReloadTimer';
-import { getTradeStatusStep } from '../../utils/general/utils';
 
 export type TradingTradeMapProps = {
     buy: TradingTransactionBuy;
@@ -34,11 +34,11 @@ const REFRESH_SECONDS_BASE = 30;
 const REFRESH_SECONDS_IN_PROGRESS = 10;
 
 export const shouldRefreshTrade = (trade: TradingTransaction | undefined) =>
-    trade && trade.data.status && !tradeFinalStatuses[trade.tradeType].includes(trade.data.status);
+    trade?.data.status && !tradeFinalStatuses[trade.tradeType].includes(trade.data.status);
 
 export const useWatchTrade = ({ accountKey, orderId, isInProgress }: TradingUseWatchTradeProps) => {
     const dispatch = useDispatch();
-    const analytics = useAnalytics();
+    const { analytics } = useServices(selectNativeAnalyticsDep);
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );

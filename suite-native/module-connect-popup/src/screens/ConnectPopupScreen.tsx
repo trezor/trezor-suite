@@ -6,7 +6,7 @@ import { useNavigation } from '@react-navigation/native';
 import { connectPopupActions, selectConnectPopupCall } from '@suite-common/connect-popup';
 // TODO fix deep import
 // eslint-disable-next-line local-rules/no-package-deep-imports
-import { ConnectPopupCall } from '@suite-common/connect-popup/src/connectPopupTypes';
+import { type ConnectPopupCall } from '@suite-common/connect-popup/src/connectPopupTypes';
 import {
     selectIsDeviceConnectedAndAuthorized,
     selectIsPortfolioTrackerDevice,

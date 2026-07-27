@@ -1,9 +1,9 @@
+import type { BitcoinNetworkInfo, CoinInfo } from '@trezor/connect-common';
 import { exhaustive } from '@trezor/type-utils';
 
 import { BitcoinFeeLevels } from './BitcoinFeeLevels';
 import { EthereumFeeLevels } from './EthereumFeeLevels';
 import { MiscFeeLevels } from './MiscFeeLevels';
-import type { BitcoinNetworkInfo, CoinInfo } from '../../types';
 
 const instancesPerCoin: { [shortcut: CoinInfo['shortcut']]: MiscFeeLevels } = {};
 
@@ -31,7 +31,10 @@ export const getOrInitFeeLevels = (coinInfo: CoinInfo): MiscFeeLevels => {
         instancesPerCoin[shortcut] = feeLevelsPerTypeFactory(coinInfo);
     }
 
-    return instancesPerCoin[shortcut];
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const instance: MiscFeeLevels = instancesPerCoin[shortcut];
+
+    return instance;
 };
 
 export const getOrInitBitcoinFeeLevels = (coinInfo: BitcoinNetworkInfo) =>

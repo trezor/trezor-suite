@@ -1,4 +1,4 @@
-import { DefaultTheme, createGlobalStyle } from 'styled-components';
+import { type DefaultTheme, createGlobalStyle } from 'styled-components';
 
 import { typography } from '@trezor/theme';
 

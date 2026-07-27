@@ -13,14 +13,17 @@
     },
     "main": "./src/main.ts",
     "browser": "./src/renderer.ts",
+    "types": "./libDev/src/types.d.ts",
     "scripts": {
-        "test:unit": "yarn g:jest --verbose -c jest.config.js",
+        "test:unit": "yarn g:jest",
         "type-check": "yarn g:tsc --build tsconfig.json",
-        "depcheck": "yarn g:depcheck"
+        "depcheck": "yarn g:depcheck",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
         "@suite-common/platform-encryption": "workspace:*",
+        "@suite/tor": "workspace:*",
         "@trezor/type-utils": "workspace:*",
-        "electron": "40.1.0"
+        "electron": "42.5.0"
     }
 }

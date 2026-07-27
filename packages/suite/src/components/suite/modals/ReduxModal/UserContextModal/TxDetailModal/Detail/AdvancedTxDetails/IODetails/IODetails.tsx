@@ -1,17 +1,13 @@
 import { Translation } from '@suite/intl';
 import { selectIsPhishingTransaction } from '@suite-common/wallet-core';
-import { WalletAccountTransaction, createAccountKey } from '@suite-common/wallet-types';
+import { type WalletAccountTransaction, createAccountKey } from '@suite-common/wallet-types';
 import { Column, Divider } from '@trezor/components';
-import { spacings } from '@trezor/theme';
 
 import { useSelector } from 'src/hooks/suite/useSelector';
 
-import { AnalyzeInExplorerBanner } from './AnalyzeInExplorerBanner';
 import { CollapsibleIOSection } from './CollapsibleIOSection';
 import { IOGroup } from './IOGroup';
 import { TokenSpecificBalanceDetailsRow } from './TokenSpecificBalanceDetailsRow';
-
-export type IODetails = WalletAccountTransaction['details']['vin'][number];
 
 type IODetailsProps = {
     tx: WalletAccountTransaction;
@@ -25,7 +21,7 @@ export const IODetails = ({ tx }: IODetailsProps) => {
         networkSymbol: tx.symbol,
         deviceStaticSessionId: tx.deviceState,
     });
-    const isPhishingTransaction = useSelector(state =>
+    const { isPhishing: isPhishingTransaction } = useSelector(state =>
         selectIsPhishingTransaction(state, tx.txid, accountKey),
     );
 
@@ -71,7 +67,7 @@ export const IODetails = ({ tx }: IODetailsProps) => {
                         outputs={tx.details.vout?.filter(vout => vout.isAccountOwned)}
                         isPhishingTransaction={isPhishingTransaction}
                     />
-                    <Divider margin={{ top: spacings.xs, bottom: spacings.xxs }} />
+                    <Divider margin={{ top: 8, bottom: 4 }} />
                     <CollapsibleIOSection
                         heading={<Translation id="TR_OTHER_INPUTS_AND_OUTPUTS" />}
                         tx={tx}
@@ -94,10 +90,5 @@ export const IODetails = ({ tx }: IODetailsProps) => {
         }
     };
 
-    return (
-        <Column gap={24}>
-            <AnalyzeInExplorerBanner txid={tx.txid} symbol={tx.symbol} />
-            <Column gap={20}>{getContent()}</Column>
-        </Column>
-    );
+    return <Column gap={20}>{getContent()}</Column>;
 };

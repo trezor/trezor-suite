@@ -1,0 +1,10 @@
+import type { SVGProps } from 'react';
+const SvgNotchesFilled = (props: SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" {...props}>
+        <path
+            fill="currentColor"
+            d="M25 5v19a1 1 0 0 1-1 1H5a1.001 1.001 0 0 1-.708-1.707l19-19A1 1 0 0 1 25 5"
+        />
+    </svg>
+);
+export { SvgNotchesFilled as ReactComponent };

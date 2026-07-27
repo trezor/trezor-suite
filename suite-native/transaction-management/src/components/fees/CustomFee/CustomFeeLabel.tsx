@@ -4,7 +4,7 @@ import { HStack, Text } from '@suite-native/atoms';
 import { useFormContext } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 
-import { FeesFormValues } from '../../../feesFormSchema';
+import { type FeesFormValues } from '../../../feesFormSchema';
 
 type CustomFeeLabelProps = {
     networkType: NetworkType;
@@ -34,7 +34,7 @@ export const CustomFeeLabel = ({ networkType }: CustomFeeLabelProps) => {
                     <Translation id="transactionManagement.fees.custom.card.label" />
                 </Text>
                 <Text>•</Text>
-                <Text variant="body-sm" color="textSubdued">
+                <Text variant="body-sm" color="contentSecondary">
                     {formattedFeePerUnit}
                 </Text>
             </HStack>
@@ -45,7 +45,7 @@ export const CustomFeeLabel = ({ networkType }: CustomFeeLabelProps) => {
         <Text variant="body-md-strong">
             <Translation id="transactionManagement.fees.custom.card.label" />
             {' • '}
-            <Text color="textSubdued">{formattedFeePerUnit}</Text>
+            <Text color="contentSecondary">{formattedFeePerUnit}</Text>
         </Text>
     );
 };

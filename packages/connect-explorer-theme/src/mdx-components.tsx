@@ -3,6 +3,7 @@ import type { ComponentProps, HTMLProps, PropsWithChildren, ReactElement, ReactN
 import { Children, cloneElement, useEffect, useRef, useState } from 'react';
 
 import cn from 'clsx';
+import type { FrontMatter } from 'nextra';
 import { Code, Pre, Table, Td, Th, Tr } from 'nextra/components';
 import type { Components } from 'nextra/mdx';
 
@@ -31,11 +32,11 @@ function HeadingLink({
     const observer = useIntersectionObserver();
     const obRef = useRef<HTMLAnchorElement>(null);
 
+    /* eslint-disable react-hooks/immutability */
     useEffect(() => {
         if (!id) return;
         const heading = obRef.current;
         if (!heading) return;
-        // eslint-disable-next-line react-hooks/immutability
         slugs.set(heading, [id, (context.index += 1)]);
         observer?.observe(heading);
 
@@ -50,6 +51,7 @@ function HeadingLink({
             });
         };
     }, [id, context, slugs, observer, setActiveAnchor]);
+    /* eslint-enable react-hooks/immutability */
 
     return (
         <Tag
@@ -185,7 +187,7 @@ export const getComponents = ({
     isRawLayout,
     components,
 }: {
-    frontMatter: any;
+    frontMatter: FrontMatter;
     isRawLayout?: boolean;
     components?: DocsThemeConfig['components'];
 }): Components => {

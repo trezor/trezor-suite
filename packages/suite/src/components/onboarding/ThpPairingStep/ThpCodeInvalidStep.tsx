@@ -1,14 +1,14 @@
 import { useState } from 'react';
 
 import { Translation } from '@suite/intl';
+import { OnboardingCard } from '@suite/onboarding-components';
+import { ThpPairingFailedForFirmwareInstallation, startThpSessionThunk } from '@suite/thp';
 import { Column, Paragraph } from '@trezor/components';
+import { PlugsConnectedIcon } from '@trezor/icons';
 
-import { startThpSessionThunk } from 'src/actions/thp/startThpSessionThunk';
-import { ThpPairingFailedForFirmwareInstallation } from 'src/components/connection/thp/ThpPairingFailedForFirmwareInstallation';
-import { OnboardingCard } from 'src/components/onboarding/OnboardingCard/OnboardingCard';
 import { useDispatch } from 'src/hooks/suite';
 
-// reflection of components/firmware/ThpPairing/ThpCodeInvalidStep
+// reflection of suite/thp/src/firmware/ThpCodeInvalidStep.tsx
 export const ThpCodeInvalidStep = () => {
     const dispatch = useDispatch();
     const [isLoading, setIsLoading] = useState(false);
@@ -22,7 +22,7 @@ export const ThpCodeInvalidStep = () => {
 
     return (
         <OnboardingCard
-            iconName="plugsConnected"
+            icon={PlugsConnectedIcon}
             heading={<Translation id="TR_THP_ENTER_ONE_TIME_CODE" />}
             description={<Translation id="TR_THP_CHECK_TREZOR_FOR_CODE" />}
             innerActions={

@@ -1,6 +1,7 @@
 import { createReducer } from '@reduxjs/toolkit';
 
 import {
+    enforceQuotaManagerUpdated,
     eraseFetchedData,
     noQuotaLeftWarningDismissed,
     quotaManagerDeviceFetched,
@@ -12,6 +13,7 @@ import { type OwnerAllowance, type RegisteredDevice } from './types';
 
 export type SuiteSyncQuotaManagerState = {
     baseUrl: string | null;
+    enforceQuotaManager: boolean;
 
     registeredDevices: RegisteredDevice[];
     ownersAllowance: OwnerAllowance[];
@@ -19,6 +21,7 @@ export type SuiteSyncQuotaManagerState = {
 
 export const quotaManagerInitialState: SuiteSyncQuotaManagerState = {
     baseUrl: null,
+    enforceQuotaManager: false,
     registeredDevices: [],
     ownersAllowance: [],
 };
@@ -84,5 +87,8 @@ export const suiteSyncQuotaManagerReducer = createReducer<SuiteSyncQuotaManagerS
                 if (existingDevice) {
                     existingDevice.dismissedNoQuotaLeftWarning = true;
                 }
+            })
+            .addCase(enforceQuotaManagerUpdated, (state, { payload }) => {
+                state.enforceQuotaManager = payload.enforce;
             }),
 );

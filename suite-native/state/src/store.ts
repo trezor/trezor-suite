@@ -1,8 +1,18 @@
-import { Middleware, MiddlewareAPI, StoreEnhancer, configureStore } from '@reduxjs/toolkit';
+import {
+    type EnhancedStore,
+    type Middleware,
+    type MiddlewareAPI,
+    type StoreEnhancer,
+    type UnknownAction,
+    configureStore,
+} from '@reduxjs/toolkit';
+import { type Persistor, persistStore } from 'redux-persist';
 
 import { logsMiddleware } from '@suite-common/logger';
 import {
-    ExtraDependencies,
+    type ExtraDependencies,
+    type ExtraDependenciesStatic,
+    type ReducerState,
     castExtraStore,
     createStoreWithExtraStoreMiddleware,
 } from '@suite-common/redux-utils';
@@ -16,18 +26,20 @@ import { deviceConnectionMiddleware, prepareDeviceMiddleware } from '@suite-nati
 import { prepareDiscoveryMiddleware } from '@suite-native/discovery';
 import { messageSystemMiddleware } from '@suite-native/message-system';
 import { sendFormMiddleware } from '@suite-native/send';
+import { type NativeServices } from '@suite-native/services';
 import { createEnsureEncryptionKey, createMMKVStorage } from '@suite-native/storage';
 import {
     prepareTradingLastErrorSentryMiddleware,
     prepareTradingMiddleware,
 } from '@suite-native/trading-state';
-import { DeepPartial } from '@trezor/type-utils';
+import { type DeepPartial } from '@trezor/type-utils';
 
 import { createNativeCompositionRoot, extraDependencies } from './extraDependencies';
 import { prepareRootReducers } from './reducers';
 
-type RootReducerShape = Awaited<ReturnType<typeof prepareRootReducers>>;
-export type FullPersistedAppState = Parameters<RootReducerShape>[0];
+type RootReducerShape = ReturnType<typeof prepareRootReducers>;
+
+export type FullPersistedAppState = ReducerState<RootReducerShape>;
 
 type ExcludePersist<T> = Omit<T, '_persist'>;
 type ExcludeChildPersists<T> = {
@@ -48,6 +60,15 @@ export type FullAppState = ExcludeChildPersists<
 >;
 
 export type PreloadedState = DeepPartial<FullPersistedAppState> | undefined;
+
+type NativeExtra = ExtraDependenciesStatic & { services: NativeServices };
+
+export type StoreWithExtra = ReturnType<
+    typeof castExtraStore<NativeExtra, EnhancedStore<FullPersistedAppState, UnknownAction>>
+> & {
+    persistor: Persistor;
+    services: NativeServices;
+};
 
 const ENABLE_REDUX_LOGGER = false;
 const enhancers: Array<StoreEnhancer<any, any>> = [];
@@ -81,7 +102,7 @@ const getMiddlewares = (getExtra: () => ExtraDependencies | null) => {
     return middlewares;
 };
 
-export const initStore = (preloadedState?: PreloadedState) => {
+export const initStore = (preloadedState?: PreloadedState): StoreWithExtra => {
     let extra: ReturnType<typeof extraFactory> | null = null as ReturnType<
         typeof extraFactory
     > | null;
@@ -124,9 +145,9 @@ export const initStore = (preloadedState?: PreloadedState) => {
 
     return {
         ...castedStore,
+        persistor: persistStore(castedStore.store),
         services: castedStore.extra.services,
     };
 };
 
-export type StoreWithExtra = Awaited<ReturnType<typeof initStore>>;
 export type Store = StoreWithExtra['store'];

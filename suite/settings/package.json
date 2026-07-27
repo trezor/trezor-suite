@@ -1,0 +1,28 @@
+{
+    "name": "@suite/settings",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "sideEffects": false,
+    "main": "src/index",
+    "scripts": {
+        "depcheck": "yarn g:depcheck",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "test:unit": "yarn g:jest",
+        "type-check": "yarn g:tsc --build"
+    },
+    "dependencies": {
+        "@reduxjs/toolkit": "2.12.0",
+        "@suite-common/earn-stablecoin-api": "workspace:*",
+        "@suite-common/earn-stablecoin-defs": "workspace:*",
+        "@suite-common/metadata-types": "workspace:*",
+        "@suite-common/redux-utils": "workspace:*",
+        "@suite-common/suite-types": "workspace:*",
+        "@suite-common/test-utils": "workspace:*",
+        "@suite-common/trading": "workspace:*",
+        "@suite/experimental": "workspace:*",
+        "@trezor/connect-common": "workspace:*",
+        "@trezor/env-utils": "workspace:*",
+        "@trezor/suite-desktop-api": "workspace:*"
+    }
+}

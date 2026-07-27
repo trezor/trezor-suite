@@ -10,14 +10,10 @@ import {
     getNetworkId,
     getProtocolMagic,
     getShortFingerprint,
-    getStakePoolForDelegation,
     getStakingPath,
     getUnusedChangeAddress,
     getVotingCertificates,
-    isCardanoExternalOutput,
     isCardanoTx,
-    isPoolOverSaturated,
-    parseAsset,
     transformUserOutputs,
 } from '../cardanoUtils';
 
@@ -58,10 +54,6 @@ describe('cardano utils', () => {
         expect(isCardanoTx({ networkType: 'cardano' }, {})).toBe(true);
         // @ts-expect-error params are partial
         expect(isCardanoTx({ networkType: 'bitcoin' }, {})).toBe(false);
-        // @ts-expect-error params are partial
-        expect(isCardanoExternalOutput({ address: 'addr1' }, {})).toBe(true);
-        // @ts-expect-error params are partial
-        expect(isCardanoExternalOutput({ addressParameters: {} }, {})).toBe(false);
     });
 
     fixtures.getChangeAddressParameters.forEach(f => {
@@ -69,7 +61,6 @@ describe('cardano utils', () => {
             const address = getUnusedChangeAddress(f.account);
             const res = address && {
                 address: address.address,
-                // @ts-expect-error params are partial
                 addressParameters: getAddressParameters(f.account, address.path),
             };
             expect(res).toMatchObject(f.result);
@@ -99,26 +90,6 @@ describe('cardano utils', () => {
         });
     });
 
-    fixtures.parseAsset.forEach(f => {
-        it(`parseAsset: ${f.description}`, () => {
-            expect(parseAsset(f.hex)).toMatchObject(f.result);
-        });
-    });
-
-    fixtures.isPoolOverSaturated.forEach(f => {
-        it(`isPoolOverSaturated: ${f.description}`, () => {
-            // @ts-expect-error params are partial
-            expect(isPoolOverSaturated(f.pool, f.additionalStake)).toBe(f.result);
-        });
-    });
-
-    fixtures.getStakePoolForDelegation.forEach(f => {
-        it(`getStakePoolForDelegation: ${f.description}`, () => {
-            expect(getStakePoolForDelegation(f.trezorPools, f.accountBalance)).toMatchObject(
-                f.result,
-            );
-        });
-    });
     fixtures.getDelegationCertificates.forEach(f => {
         it(`getDelegationCertificates: ${f.description}`, () => {
             expect(

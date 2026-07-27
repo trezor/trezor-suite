@@ -8,6 +8,9 @@
         {
             "path": "../../suite-common/bluetooth"
         },
+        {
+            "path": "../../suite-common/dependency-injection"
+        },
         { "path": "../../suite-common/device" },
         { "path": "../../suite-common/thp" },
         {
@@ -28,15 +31,17 @@
         { "path": "../module-connect-popup" },
         { "path": "../navigation" },
         { "path": "../passphrase" },
-        { "path": "../services" },
         { "path": "../theme" },
         { "path": "../thp" },
         { "path": "../../packages/connect" },
         { "path": "../../packages/device-utils" },
         { "path": "../../packages/env-utils" },
-        { "path": "../../packages/styles" },
+        {
+            "path": "../../packages/styles-native"
+        },
         { "path": "../../packages/theme" },
-        { "path": "../../packages/urls" }
+        { "path": "../../packages/urls" },
+        { "path": "../../packages/requirements" }
     ],
     "include": [".", "**/*.json"]
 }

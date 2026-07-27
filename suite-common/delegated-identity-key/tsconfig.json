@@ -1,13 +1,11 @@
 {
     "extends": "../../tsconfig.base.json",
-    "compilerOptions": {
-        "outDir": "libDev",
-        "exactOptionalPropertyTypes": true
-    },
+    "compilerOptions": { "outDir": "libDev" },
     "references": [
         {
             "path": "../delegated-identity-key-types"
         },
+        { "path": "../dependency-injection" },
         { "path": "../device" },
         { "path": "../platform-encryption" },
         { "path": "../suite-types" },

@@ -1,14 +1,19 @@
 import React, { useState } from 'react';
 
-import { Meta, StoryObj } from '@storybook/react';
+import { type Meta, type StoryObj } from '@storybook/react';
 import styled from 'styled-components';
 
-// TODO: suite-common imports in non-suite packages should not be allowed
-// eslint-disable-next-line @typescript-eslint/no-restricted-imports
-import { IconName, icons } from '@suite-common/icons/src/icons';
+import * as generatedIcons from '@trezor/icons';
 import { typography } from '@trezor/theme';
+import { typedObjectEntries } from '@trezor/utils';
 
-import { Icon, IconProps, allowedIconFrameProps, iconIntents, iconPriorities } from './Icon';
+import {
+    Icon,
+    type IconSharedProps,
+    allowedIconFrameProps,
+    iconIntents,
+    iconPriorities,
+} from './Icon';
 import { iconSizes } from './types';
 import { getFramePropsStory } from '../../utils/frameProps';
 import { Input } from '../form/Input/Input';
@@ -20,7 +25,7 @@ const CopiedText = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    color: ${({ theme }) => theme.textAlertBlue};
+    color: ${({ theme }) => theme.contentInfo};
     ${typography['body-sm']}
 `;
 
@@ -33,14 +38,14 @@ const FloatingWrapper = styled.div`
     width: 100%;
     top: 0;
     padding: 10px 0;
-    background: ${({ theme }) => theme.backgroundSurfaceElevation0};
-    box-shadow: 0 5px 10px ${({ theme }) => theme.backgroundSurfaceElevation0};
+    background: ${({ theme }) => theme.surfaceFillPage};
+    box-shadow: 0 5px 10px ${({ theme }) => theme.surfaceFillPage};
 `;
 
 const Wrapper = styled.div`
     display: grid;
     width: 100%;
-    gap: 5px;
+    gap: 4px;
     grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
     margin-top: 8px;
 `;
@@ -52,8 +57,8 @@ const IconWrapper = styled.div`
     justify-content: center;
     align-items: center;
     cursor: pointer;
-    border-radius: 2px;
-    padding: 5px;
+    border-radius: 4px;
+    padding: 4px;
     gap: 8px;
 
     &:hover {
@@ -66,7 +71,7 @@ const IconText = styled.div`
     flex-direction: column;
     align-items: center;
     ${typography['body-xs']}
-    color: ${({ theme }) => theme.textSubdued};
+    color: ${({ theme }) => theme.contentSecondary};
     overflow-wrap: anywhere;
     word-break: normal;
     text-align: center;
@@ -77,7 +82,7 @@ const meta: Meta<typeof Render> = {
 };
 export default meta;
 
-const Render = (props: IconProps) => {
+const Render = (props: IconSharedProps) => {
     const [search, setSearch] = useState('');
     const [copied, setCopied] = useState<string | null>(null);
 
@@ -87,12 +92,12 @@ const Render = (props: IconProps) => {
         setTimeout(() => setCopied(null), 1000);
     };
 
-    const iconKeys = Object.keys(icons);
-    const filteredIconKeys = (iconKeys as IconName[]).filter(iconKey =>
+    const iconEntries = typedObjectEntries(generatedIcons);
+    const filteredIconEntries = iconEntries.filter(([iconKey]) =>
         new RegExp(search, 'i').test(iconKey),
     );
-    const filteredIconKeysWithLimit = filteredIconKeys.slice(0, MAX_RENDERED_ICONS);
-    const filteredIconsCount = filteredIconKeys.length;
+    const filteredIconEntriesWithLimit = filteredIconEntries.slice(0, MAX_RENDERED_ICONS);
+    const filteredIconsCount = filteredIconEntries.length;
 
     return (
         <>
@@ -108,12 +113,12 @@ const Render = (props: IconProps) => {
                 />
             </FloatingWrapper>
             <Wrapper>
-                {filteredIconKeysWithLimit.map(iconKey =>
+                {filteredIconEntriesWithLimit.map(([iconKey, IconComponent]) =>
                     copied === iconKey ? (
                         <CopiedText key={iconKey}>Copied to clipboard!</CopiedText>
                     ) : (
                         <IconWrapper key={iconKey} onClick={() => copy(iconKey)}>
-                            <Icon {...props} name={iconKey} />
+                            <Icon {...props} as={IconComponent} />
                             <IconText>{iconKey}</IconText>
                         </IconWrapper>
                     ),

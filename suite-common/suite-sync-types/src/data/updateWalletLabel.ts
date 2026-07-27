@@ -1,8 +1,9 @@
-import { SuiteSyncUpdateError } from '@suite-common/suite-sync-storage';
+import { type SuiteSyncUpdateError } from '@suite-common/suite-sync-storage';
 import type { StaticSessionId } from '@trezor/connect';
-import { Result } from '@trezor/type-utils';
+import { type Result } from '@trezor/type-utils';
 
-import { EnsureWalletSuiteSyncOnErrors } from '../storage/ensureWalletSuiteSyncOn';
+import { type WithSuiteSyncStorage } from './withSuiteSyncStorage';
+import { type EnsureWalletSuiteSyncOnErrors } from '../storage/ensureWalletSuiteSyncOn';
 
 export type UpdateWalletLabelParams = {
     deviceStaticSessionId: StaticSessionId;
@@ -14,3 +15,15 @@ export type UpdateWalletLabel = (
 ) => Promise<Result<void, EnsureWalletSuiteSyncOnErrors | SuiteSyncUpdateError>>;
 
 export type UpdateWalletLabelDep = { updateWalletLabel: UpdateWalletLabel };
+
+export const selectUpdateWalletLabelDep = (services: any): UpdateWalletLabelDep => ({
+    updateWalletLabel: services.suiteSync.labeling.updateWalletLabel,
+});
+
+export type WriteWalletLabelParams = WithSuiteSyncStorage<UpdateWalletLabelParams>;
+
+export type WriteWalletLabel = (
+    params: WriteWalletLabelParams,
+) => Result<void, SuiteSyncUpdateError>;
+
+export type WriteWalletLabelDep = { writeWalletLabel: WriteWalletLabel };

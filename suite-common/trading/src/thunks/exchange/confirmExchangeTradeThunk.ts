@@ -1,18 +1,20 @@
-import { ExchangeTrade } from 'invity-api';
+import { type CryptoId, type ExchangeTrade } from 'invity-api';
 
 import { createThunk } from '@suite-common/redux-utils';
-import { Account } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 
 import { TRADING_EXCHANGE_THUNK_PREFIX } from '../../constants';
 import { invityAPI } from '../../invityAPI';
 import { tradingExchangeActions } from '../../reducers/exchangeReducer';
 import { tradingActions } from '../../reducers/tradingCommonReducer';
 import {
+    selectTradingCoinSymbolByCryptoId,
     selectTradingExchangeAccountKey,
     selectTradingExchangeReceiveAccountKey,
     selectTradingExchangeSelectedQuote,
 } from '../../selectors/tradingSelectors';
 import { getUnusedAddressFromAccount } from '../../utils';
+import { resolveExchangeTradeError } from '../../utils/exchange/resolveExchangeTradeError';
 import { logErrorThunk } from '../common/logErrorThunk';
 
 export type ConfirmExchangeTradeThunkProps = {
@@ -22,10 +24,11 @@ export type ConfirmExchangeTradeThunkProps = {
     extraField?: string;
     trade?: ExchangeTrade;
     approvalFlow?: boolean;
+    isTradeSubmitted?: boolean;
 
     triggerAnalyticsTradeConfirmation: () => void;
     processResponseData: (response: ExchangeTrade) => void;
-    nextStep: () => void;
+    nextStep?: () => void;
 };
 
 export const confirmExchangeTradeThunk = createThunk(
@@ -38,12 +41,16 @@ export const confirmExchangeTradeThunk = createThunk(
             account,
             extraField,
             approvalFlow = false,
+            isTradeSubmitted = false,
             triggerAnalyticsTradeConfirmation,
             processResponseData,
             nextStep,
         }: ConfirmExchangeTradeThunkProps,
-        { dispatch, getState },
+        { dispatch, getState, signal },
     ) => {
+        const getCoinSymbol = (cryptoId: CryptoId) =>
+            selectTradingCoinSymbolByCryptoId(getState(), cryptoId);
+
         triggerAnalyticsTradeConfirmation();
 
         const selectedQuote = selectTradingExchangeSelectedQuote(getState());
@@ -67,16 +74,27 @@ export const confirmExchangeTradeThunk = createThunk(
             }
         }
 
-        dispatch(tradingExchangeActions.saveTransactionId(undefined));
+        const rawResponse = await invityAPI.doExchangeTrade(
+            {
+                trade,
+                receiveAddress,
+                refundAddress,
+                extraField,
+                returnUrl,
+                approvalFlow,
+            },
+            signal,
+        );
 
-        const response = await invityAPI.doExchangeTrade({
-            trade,
-            receiveAddress,
-            refundAddress,
-            extraField,
-            returnUrl,
-            approvalFlow,
-        });
+        if (signal.aborted) {
+            return undefined;
+        }
+
+        // invity drops DEX-specific fields on the response — preserve those the review flow needs
+        const response = rawResponse && {
+            ...rawResponse,
+            swapSlippage: rawResponse.swapSlippage ?? trade.swapSlippage,
+        };
 
         if (!response) {
             dispatch(
@@ -95,13 +113,34 @@ export const confirmExchangeTradeThunk = createThunk(
             !response.orderId ||
             response.status === 'ERROR'
         ) {
+            dispatch(tradingExchangeActions.saveSelectedQuote(response));
+
+            const shouldRouteFailedTradeToDetail =
+                isTradeSubmitted && response.status === 'ERROR' && !!response.orderId;
+
+            if (shouldRouteFailedTradeToDetail) {
+                dispatch(
+                    tradingActions.saveTrade({
+                        tradeType: 'exchange',
+                        date: new Date().toISOString(),
+                        key: response.orderId,
+                        data: response,
+                        sendAccountKey,
+                        receiveAccountKey,
+                    }),
+                );
+                dispatch(tradingExchangeActions.saveTransactionId(response.orderId));
+                nextStep?.();
+
+                return undefined;
+            }
+
             dispatch(
                 logErrorThunk({
-                    errorMessage: response.error || 'Error response from the server',
+                    errorMessage: resolveExchangeTradeError(response, { getCoinSymbol }),
                     tradingType: 'exchange',
                 }),
             );
-            dispatch(tradingExchangeActions.saveSelectedQuote(response));
 
             return undefined;
         }
@@ -127,6 +166,7 @@ export const confirmExchangeTradeThunk = createThunk(
         }
 
         // CONFIRMING, SUCCESS, LOADING
+        dispatch(tradingExchangeActions.saveSelectedQuote(response));
         dispatch(
             tradingActions.saveTrade({
                 tradeType: 'exchange',
@@ -150,7 +190,7 @@ export const confirmExchangeTradeThunk = createThunk(
             return response;
         }
 
-        nextStep();
+        nextStep?.();
 
         return response;
     },

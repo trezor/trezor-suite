@@ -9,7 +9,7 @@ import {
 } from '@suite-common/wallet-utils';
 import { PROTO } from '@trezor/connect';
 
-import { Dispatch, GetState } from 'src/types/suite';
+import { type Dispatch, type GetState } from 'src/types/suite';
 import { submitRequestForm as envSubmitRequestForm } from 'src/utils/suite/env';
 
 type FormState = {
@@ -56,7 +56,7 @@ export const convertDrafts = () => (dispatch: Dispatch, getState: GetState) => {
             const conversion = areSatsSelected
                 ? convertAmountUnitsToSubunits
                 : convertAmountSubunitsToUnits;
-            const decimals = getAccountDecimals(relatedAccount.symbol)!;
+            const decimals = getAccountDecimals(relatedAccount.symbol);
 
             if (draft.cryptoInput) {
                 draft.cryptoInput = conversion(draft.cryptoInput, decimals);

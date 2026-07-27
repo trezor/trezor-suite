@@ -1,0 +1,10 @@
+import type { SVGProps } from 'react';
+const SvgBank = (props: SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" {...props}>
+        <path
+            fill="currentColor"
+            d="M3 13h3v8H4a1 1 0 1 0 0 2h24a1 1 0 0 0 0-2h-2v-8h3a1 1 0 0 0 .524-1.851l-13-8a1 1 0 0 0-1.048 0l-13 8A1 1 0 0 0 3 12.999zm5 0h4v8H8zm10 0v8h-4v-8zm6 8h-4v-8h4zM16 5.174 25.468 11H6.532zM31 26a1 1 0 0 1-1 1H2a1 1 0 0 1 0-2h28a1 1 0 0 1 1 1"
+        />
+    </svg>
+);
+export { SvgBank as ReactComponent };

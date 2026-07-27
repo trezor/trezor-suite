@@ -1,13 +1,13 @@
 import { useCallback, useState } from 'react';
 
-import { events } from '@suite/analytics';
+import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
 import { Card, Column, H3, Modal, Paragraph, Tooltip } from '@trezor/components';
+import { StarFourIcon } from '@trezor/icons';
 import { desktopApi } from '@trezor/suite-desktop-api';
-import { spacings } from '@trezor/theme';
 
 import { CheckItem } from 'src/components/suite';
-import { useAnalytics } from 'src/support/useAnalytics';
 
 interface EarlyAccessEnableProps {
     hideWindow: () => void;
@@ -16,7 +16,7 @@ interface EarlyAccessEnableProps {
 export const EarlyAccessEnable = ({ hideWindow }: EarlyAccessEnableProps) => {
     const [understood, setUnderstood] = useState(false);
     const [enabled, setEnabled] = useState(false);
-    const analytics = useAnalytics();
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
     const allowPrerelease = useCallback(() => {
         analytics.report({
             type: events.settingsGeneralEarlyAccessEvent.name,
@@ -32,8 +32,8 @@ export const EarlyAccessEnable = ({ hideWindow }: EarlyAccessEnableProps) => {
 
     return enabled ? (
         <Modal
-            iconName="starFour"
-            variant="info"
+            icon={StarFourIcon}
+            intent="info"
             onCancel={hideWindow}
             bottomContent={
                 <>
@@ -51,7 +51,7 @@ export const EarlyAccessEnable = ({ hideWindow }: EarlyAccessEnableProps) => {
                 </>
             }
         >
-            <Column gap={spacings.xxs}>
+            <Column gap={4}>
                 <H3>
                     <Translation id="TR_EARLY_ACCESS_JOINED_TITLE" />
                 </H3>
@@ -62,8 +62,8 @@ export const EarlyAccessEnable = ({ hideWindow }: EarlyAccessEnableProps) => {
         </Modal>
     ) : (
         <Modal
-            iconName="starFour"
-            variant="info"
+            icon={StarFourIcon}
+            intent="info"
             onCancel={hideWindow}
             bottomContent={
                 <>
@@ -89,7 +89,7 @@ export const EarlyAccessEnable = ({ hideWindow }: EarlyAccessEnableProps) => {
                 </>
             }
         >
-            <Column gap={spacings.xxs}>
+            <Column gap={4}>
                 <H3>
                     <Translation id="TR_EARLY_ACCESS" />
                 </H3>
@@ -99,7 +99,7 @@ export const EarlyAccessEnable = ({ hideWindow }: EarlyAccessEnableProps) => {
                     <Translation id="TR_EARLY_ACCESS_ENABLE_CONFIRM_DESCRIPTION" />
                 </Paragraph>
             </Column>
-            <Card margin={{ top: spacings.xl }}>
+            <Card margin={{ top: 24 }}>
                 <CheckItem
                     data-testid="@settings/early-access-confirm-check"
                     title={<Translation id="TR_EARLY_ACCESS_ENABLE_CONFIRM_CHECK" />}

@@ -5,6 +5,9 @@
         {
             "path": "../../suite-common/analytics"
         },
+        {
+            "path": "../../suite-common/dependency-injection"
+        },
         { "path": "../analytics" },
         { "path": "../app-init" },
         { "path": "../atoms" },
@@ -13,7 +16,6 @@
         { "path": "../intl" },
         { "path": "../link" },
         { "path": "../navigation" },
-        { "path": "../services" },
         { "path": "../settings" },
         { "path": "../trading-residence" },
         { "path": "../trading-state" },
@@ -21,10 +23,17 @@
             "path": "../../packages/analytics-uploader"
         },
         { "path": "../../packages/env-utils" },
-        { "path": "../../packages/styles" },
+        {
+            "path": "../../packages/styles-native"
+        },
         { "path": "../../packages/theme" },
         { "path": "../../packages/urls" },
         { "path": "../../packages/utils" },
-        { "path": "../test-utils" }
+        {
+            "path": "../../suite-common/message-system"
+        },
+        { "path": "../feature-flags" },
+        { "path": "../test-utils-store" },
+        { "path": "../../packages/requirements" }
     ]
 }

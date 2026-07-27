@@ -1,6 +1,7 @@
 {
     "name": "@trezor/crypto-utils",
     "version": "10.0.0-alpha.1",
+    "type": "module",
     "author": "Trezor <info@trezor.io>",
     "homepage": "https://github.com/trezor/trezor-suite/tree/develop/packages/crypto-utils",
     "keywords": [
@@ -14,14 +15,12 @@
     "bugs": {
         "url": "https://github.com/trezor/trezor-suite/issues"
     },
-    "npmPublishAccess": "public",
     "license": "SEE LICENSE IN LICENSE.md",
     "description": "Collection of crypto utilities",
     "sideEffects": false,
     "main": "src/index",
     "files": [
         "lib/",
-        "libESM/",
         "CHANGELOG.md"
     ],
     "publishConfig": {
@@ -29,26 +28,23 @@
         "types": "./lib/index.d.ts",
         "exports": {
             ".": {
-                "import": "./libESM/index.js",
-                "require": "./lib/index.js",
-                "types": "./lib/index.d.ts"
+                "types": "./lib/index.d.ts",
+                "default": "./lib/index.js"
             },
-            "./lib/*": "./lib/*.js",
-            "./libESM/*.js": "./libESM/*.js"
+            "./lib/*": "./lib/*"
         }
     },
     "scripts": {
-        "build:lib": "yarn build:lib:cjs && yarn build:lib:esm",
-        "build:lib:cjs": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib cjs",
-        "build:lib:esm": "yarn g:rimraf ./libESM && yarn g:tsc --build tsconfig.libESM.json && ../../scripts/publish/replace-imports.sh ./libESM esm",
+        "build:lib": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib",
         "depcheck": "yarn g:depcheck",
+        "test:unit": "yarn g:jest",
         "type-check": "yarn g:tsc --build",
-        "prepublishOnly": "yarn tsx ../../scripts/publish/prepublishNPM.js"
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
+    },
+    "dependencies": {
+        "@trezor/type-utils": "workspace:*"
     },
     "peerDependencies": {
         "tslib": "^2.6.2"
-    },
-    "devDependencies": {
-        "tsx": "^4.21.0"
     }
 }

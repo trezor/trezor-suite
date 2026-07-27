@@ -1,9 +1,9 @@
-import React from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import styled, { css } from 'styled-components';
 
-import { IconButton, IconButtonProps, Spinner, Tooltip } from '@trezor/components';
+import { IconButton, type IconButtonProps, Spinner } from '@trezor/components';
+import { ArrowsClockwiseIcon, CheckIcon, PencilSimpleIcon, TrashIcon, XIcon } from '@trezor/icons';
 
 import type { SavingStatus } from './types';
 
@@ -27,6 +27,7 @@ const Container = styled.div<{
 }>`
     display: flex;
     align-items: center;
+    /* stylelint-disable-next-line trezor/dimension-token-values -- Keep spacing relative to the text size. */
     gap: calc(0.1em + 2px);
     transform-origin: left;
     transform: translateX(-5px);
@@ -85,22 +86,21 @@ export const ActionsContainer = ({
 
         if (savingStatus === 'error') {
             return (
-                <Tooltip
-                    content={
-                        <FormattedMessage
-                            id="TR_LABELING_ERROR"
-                            defaultMessage="There was an error saving the label. Please try again."
-                        />
-                    }
-                    delayShow={0}
-                >
-                    <IconButton
-                        intent="critical"
-                        icon="arrowsClockwise"
-                        onClick={onError}
-                        {...commonProps}
-                    />
-                </Tooltip>
+                <IconButton
+                    intent="critical"
+                    icon={ArrowsClockwiseIcon}
+                    onClick={onError}
+                    tooltip={{
+                        content: (
+                            <FormattedMessage
+                                id="TR_LABELING_ERROR"
+                                defaultMessage="There was an error saving the label. Please try again."
+                            />
+                        ),
+                        delayShow: 0,
+                    }}
+                    {...commonProps}
+                />
             );
         }
 
@@ -110,16 +110,18 @@ export const ActionsContainer = ({
                     {isSubmitButtonVisible && (
                         <IconButton
                             data-testid="@metadata/submit"
-                            icon="check"
+                            icon={CheckIcon}
                             onClick={onSubmit}
+                            tooltip={{ isActive: false }}
                             {...commonProps}
                         />
                     )}
                     <IconButton
                         data-testid="@metadata/cancel"
-                        icon="x"
+                        icon={XIcon}
                         intent="neutral"
                         onClick={onCancel}
+                        tooltip={{ isActive: false }}
                         {...commonProps}
                     />
                 </>
@@ -127,37 +129,39 @@ export const ActionsContainer = ({
         } else {
             return (
                 <>
-                    <Tooltip
-                        content={
-                            <FormattedMessage id="TR_LABELING_EDIT_LABEL" defaultMessage="Edit" />
-                        }
-                        delayShow={1000}
-                    >
+                    <IconButton
+                        data-testid="@metadata/edit"
+                        intent="neutral"
+                        icon={PencilSimpleIcon}
+                        onClick={onEdit}
+                        tooltip={{
+                            content: (
+                                <FormattedMessage
+                                    id="TR_LABELING_EDIT_LABEL"
+                                    defaultMessage="Edit"
+                                />
+                            ),
+                            delayShow: 1000,
+                        }}
+                        {...commonProps}
+                    />
+                    {isDeleteButtonVisible && (
                         <IconButton
-                            data-testid="@metadata/edit"
-                            intent="neutral"
-                            icon="pencilSimple"
-                            onClick={onEdit}
+                            data-testid="@metadata/delete"
+                            intent="critical"
+                            icon={TrashIcon}
+                            onClick={onDelete}
+                            tooltip={{
+                                content: (
+                                    <FormattedMessage
+                                        id="TR_LABELING_REMOVE_LABEL"
+                                        defaultMessage="Remove"
+                                    />
+                                ),
+                                delayShow: 1000,
+                            }}
                             {...commonProps}
                         />
-                    </Tooltip>
-                    {isDeleteButtonVisible && (
-                        <Tooltip
-                            content={
-                                <FormattedMessage
-                                    id="TR_LABELING_REMOVE_LABEL"
-                                    defaultMessage="Remove"
-                                />
-                            }
-                            delayShow={1000}
-                        >
-                            <IconButton
-                                intent="critical"
-                                icon="trash"
-                                onClick={onDelete}
-                                {...commonProps}
-                            />
-                        </Tooltip>
                     )}
                 </>
             );

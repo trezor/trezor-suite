@@ -1,27 +1,24 @@
-import { Translation } from '@suite/intl';
+import { getDefaultAccountLabel } from '@suite/account';
+import { selectCoinjoinIsPreloading } from '@suite/coinjoin';
+import { Translation, useTranslation } from '@suite/intl';
 import { selectAccountLabelsLegacy } from '@suite/metadata';
+import { type RouteParams, selectRouterParams } from '@suite/router';
 import { selectSelectedDevice } from '@suite-common/device';
 import { selectAccountsWithSuiteSyncLabel } from '@suite-common/suite-sync';
-import { AccountType } from '@suite-common/wallet-config';
-import { selectAllAccountsToList } from '@suite-common/wallet-core';
-import { Account } from '@suite-common/wallet-types';
-import { accountSearchFn } from '@suite-common/wallet-utils';
+import { selectTokenDefinitions } from '@suite-common/token-definitions';
+import { getTokens, selectAllAccountsToList } from '@suite-common/wallet-core';
+import { type Account } from '@suite-common/wallet-types';
+import { accountSearchFn, getAccountTypeName } from '@suite-common/wallet-utils';
 import { Column } from '@trezor/components';
-import { spacings } from '@trezor/theme';
 
-import { useAccountSearch, useDefaultAccountLabel, useSelector } from 'src/hooks/suite';
-import { selectRouterParams } from 'src/reducers/suite/routerReducer';
-import { AccountItemType } from 'src/types/wallet';
-import { RouteParams } from 'src/utils/suite/router';
+import { useAccountSearch, useSelector } from 'src/hooks/suite';
+import { useResponsiveContext } from 'src/support/suite/ResponsiveContext';
+import { type AccountItemType } from 'src/types/wallet';
+import { selectDiscoveryOverallStatus } from 'src/utils/wallet/selectDiscoveryOverallStatus';
 
-import { AccountGroup } from './AccountGroup';
 import { AccountItemSkeleton } from './AccountItemSkeleton';
 import { AccountSection } from './AccountSection';
 import { AccountsMenuNotice } from './AccountsMenuNotice';
-import { useResponsiveContext } from '../../../../support/suite/ResponsiveContext';
-import { selectDiscoveryOverallStatus } from '../../../../utils/wallet/selectDiscoveryOverallStatus';
-import { CollapsedSidebarOnly } from '../../../suite/layouts/SuiteLayout/Sidebar/CollapsedSidebarOnly';
-import { ExpandedSidebarOnly } from '../../../suite/layouts/SuiteLayout/Sidebar/ExpandedSidebarOnly';
 
 interface AccountListProps {
     forceOnlyItemClick?: boolean;
@@ -31,37 +28,22 @@ interface AccountListProps {
 
 type AccountsProps = {
     accounts: Account[];
-    coinjoinIsPreloading?: boolean;
-    discoveryInProgress?: boolean;
     hideStaking?: boolean;
-    type: AccountType;
     // NOTE: this is to disable completely default click behavior of the item
     forceOnlyItemClick?: boolean;
     onItemClick?: (account: Account, type: AccountItemType) => void;
 };
 
-const Accounts = ({
-    accounts,
-    forceOnlyItemClick,
-    hideStaking,
-    coinjoinIsPreloading,
-    discoveryInProgress,
-    type,
-    onItemClick,
-}: AccountsProps) => {
-    const isSkeletonShown = discoveryInProgress || (type === 'coinjoin' && coinjoinIsPreloading);
+const Accounts = ({ accounts, forceOnlyItemClick, hideStaking, onItemClick }: AccountsProps) => {
     const params = useSelector(selectRouterParams) as RouteParams;
 
     return (
         <>
             {accounts.map(account => {
-                const isSelected = (account: Account) =>
-                    params &&
-                    account.symbol === params.symbol &&
+                const selected =
+                    account.symbol === params?.symbol &&
                     account.accountType === params.accountType &&
                     account.index === params.accountIndex;
-
-                const selected = !!isSelected(account);
 
                 return (
                     <AccountSection
@@ -74,7 +56,6 @@ const Accounts = ({
                     />
                 );
             })}
-            {isSkeletonShown && <AccountItemSkeleton />}
         </>
     );
 };
@@ -86,9 +67,8 @@ export const AccountsList = ({
 }: AccountListProps) => {
     const device = useSelector(selectSelectedDevice);
     const baseAccounts = useSelector(selectAllAccountsToList);
-    const selectedAccount = useSelector(state => state.wallet.selectedAccount);
 
-    const coinjoinIsPreloading = useSelector(state => state.wallet.coinjoin.isPreloading);
+    const coinjoinIsPreloading = useSelector(selectCoinjoinIsPreloading);
     const accountLegacyLabels = useSelector(selectAccountLabelsLegacy);
 
     const accounts = useSelector(state =>
@@ -99,11 +79,12 @@ export const AccountsList = ({
         ),
     );
 
-    const { getDefaultAccountLabel } = useDefaultAccountLabel();
+    const { translationString } = useTranslation();
     const { isSidebarCollapsed } = useResponsiveContext();
     const { coinFilter, searchString } = useAccountSearch();
     const discoveryStatus = useSelector(selectDiscoveryOverallStatus);
-    const discoveryInProgress = discoveryStatus && discoveryStatus.status === 'loading';
+    const discoveryInProgress = discoveryStatus?.status === 'loading';
+    const tokenDefinitions = useSelector(selectTokenDefinitions);
 
     if (!device) {
         return null;
@@ -112,91 +93,52 @@ export const AccountsList = ({
     const filteredAccounts =
         searchString || coinFilter
             ? accounts.filter(account => {
-                  const { key, accountType, symbol, index } = account;
+                  const { key } = account;
 
                   const accountLabel =
                       account.label ??
                       (Object.prototype.hasOwnProperty.call(accountLegacyLabels, key)
                           ? accountLegacyLabels[key]
-                          : getDefaultAccountLabel({ accountType, symbol, index })) ??
+                          : getDefaultAccountLabel(translationString, account)) ??
                       '';
+
+                  const { shownWithBalance } = getTokens({
+                      tokens: account.tokens ?? [],
+                      symbol: account.symbol,
+                      tokenDefinitions: tokenDefinitions[account.symbol]?.coin,
+                  });
+
+                  // Mirror the account type badge, which is hidden for normal accounts.
+                  const accountTypeTranslationId =
+                      account.accountType === 'normal'
+                          ? null
+                          : getAccountTypeName({
+                                path: account.path,
+                                accountType: account.accountType,
+                                networkType: account.networkType,
+                            });
 
                   return accountSearchFn(account, searchString, {
                       coinsFilter: coinFilter,
                       accountLabel,
+                      searchableTokens: shownWithBalance,
+                      accountTypeName: accountTypeTranslationId
+                          ? translationString(accountTypeTranslationId)
+                          : undefined,
                   });
               })
             : accounts;
 
-    const filterAccountsByType = (type: Account['accountType']) =>
-        filteredAccounts.filter(a => a.accountType === type);
-
-    // always show first "normal" account even if they are empty
-    const normalAccounts = filteredAccounts.filter(a => a.accountType === 'normal');
-    const coinjoinAccounts = filterAccountsByType('coinjoin');
-    const taprootAccounts = filterAccountsByType('taproot');
-    const segwitAccounts = filterAccountsByType('segwit');
-    const legacyAccounts = filterAccountsByType('legacy');
-    const ledgerAccounts = filterAccountsByType('ledger');
-
-    const hasMultipleAccounts = filteredAccounts.some(a => a.accountType !== 'normal');
-
-    const keepOpen = (type: Account['accountType']) =>
-        selectedAccount.account?.accountType === type || // selected account is from this group
-        (type === 'coinjoin' && coinjoinIsPreloading) || // coinjoin account is requested but not yet created
-        (!!searchString && searchString.length > 0) || // filter by search string is active
-        (type === 'normal' && !hasMultipleAccounts); // always keep normal accounts open
-
-    const buildGroup = (type: Account['accountType'], accounts: Account[], hideLabel?: boolean) => {
-        const groupHasBalance = accounts.some(account => account.availableBalance !== '0');
-
-        if (
-            !accounts.length &&
-            type !== 'normal' &&
-            (type !== 'coinjoin' || !coinjoinIsPreloading)
-        ) {
-            // hide empty groups except normal and preloading coinjoin to show skeletons
-            return;
-        }
-
-        const accountProps: AccountsProps = {
-            forceOnlyItemClick,
-            accounts,
-            onItemClick,
-            coinjoinIsPreloading,
-            discoveryInProgress: false,
-            type,
-        };
-
-        return (
-            <>
-                <ExpandedSidebarOnly>
-                    <AccountGroup
-                        key={type}
-                        type={type}
-                        hideLabel={hideLabel}
-                        hasBalance={groupHasBalance}
-                        keepOpen={hideLabel || keepOpen(type)}
-                    >
-                        <Accounts hideStaking={hideStaking} {...accountProps} />
-                    </AccountGroup>
-                </ExpandedSidebarOnly>
-                <CollapsedSidebarOnly>
-                    <Accounts hideStaking={hideStaking} {...accountProps} />
-                </CollapsedSidebarOnly>
-            </>
-        );
-    };
-
     if (filteredAccounts.length > 0) {
         return (
-            <Column gap={spacings.xs} margin={{ bottom: spacings.lg }}>
-                {buildGroup('coinjoin', coinjoinAccounts)}
-                {buildGroup('normal', normalAccounts, true)}
-                {buildGroup('taproot', taprootAccounts)}
-                {buildGroup('segwit', segwitAccounts)}
-                {buildGroup('legacy', legacyAccounts)}
-                {buildGroup('ledger', ledgerAccounts)}
+            <Column gap={4} margin={{ bottom: 20, left: 8, right: 8 }}>
+                <Accounts
+                    accounts={filteredAccounts}
+                    hideStaking={hideStaking}
+                    forceOnlyItemClick={forceOnlyItemClick}
+                    onItemClick={onItemClick}
+                />
+                {coinjoinIsPreloading && !searchString && !coinFilter && <AccountItemSkeleton />}
             </Column>
         );
     }
@@ -207,11 +149,11 @@ export const AccountsList = ({
 
     if (isSidebarCollapsed) return <AccountsMenuNotice />;
 
+    if (!searchString) return null;
+
     return (
         <AccountsMenuNotice>
-            <Translation
-                id={!searchString ? 'TR_ACCOUNT_NO_ACCOUNTS' : 'TR_ACCOUNT_SEARCH_NO_RESULTS'}
-            />
+            <Translation id="TR_ACCOUNT_SEARCH_NO_RESULTS" />
         </AccountsMenuNotice>
     );
 };

@@ -1,8 +1,8 @@
 import { useMemo } from 'react';
 
-import { Translation, TranslationKey } from '@suite/intl';
-import { Icon, Link, Row, Text, Tooltip } from '@trezor/components';
-import { TypographyStyle } from '@trezor/theme';
+import { Translation, type TranslationKey } from '@suite/intl';
+import { Row, Text, TextButton, Tooltip } from '@trezor/components';
+import { type TypographyStyle } from '@trezor/theme';
 import { HELP_CENTER_TRANSACTION_FEES_URL } from '@trezor/urls';
 
 import { useFeesContext } from '../context/FeesContext';
@@ -10,9 +10,14 @@ import { useFeesContext } from '../context/FeesContext';
 export interface CollapsibleFeesHeaderProps {
     label?: TranslationKey;
     typographyStyle: TypographyStyle;
+    supportsAdjustableFees?: boolean;
 }
 
-export function CollapsibleFeesHeader({ label, typographyStyle }: CollapsibleFeesHeaderProps) {
+export function CollapsibleFeesHeader({
+    label,
+    typographyStyle,
+    supportsAdjustableFees,
+}: CollapsibleFeesHeaderProps) {
     const { networkType } = useFeesContext();
 
     const feeTooltipTextId = useMemo(() => {
@@ -23,6 +28,8 @@ export function CollapsibleFeesHeader({ label, typographyStyle }: CollapsibleFee
                 return 'TR_STELLAR_FEE_DESC';
             case 'solana':
                 return 'TR_SOL_FEE_DESC';
+            case 'ripple':
+                return 'TR_XRP_FEE_DESC';
             default:
                 return 'TR_TRANSACTION_FEE_DESC';
         }
@@ -32,29 +39,36 @@ export function CollapsibleFeesHeader({ label, typographyStyle }: CollapsibleFee
         switch (networkType) {
             case 'ethereum':
                 return 'MAX_FEE';
+            case 'tron':
+                return supportsAdjustableFees ? 'MAX_FEE' : 'NETWORK_FEE';
             case 'solana':
                 return 'TR_TX_FEE_INCLUDING_RENT';
             default:
                 return 'FEE';
         }
-    }, [networkType]);
+    }, [networkType, supportsAdjustableFees]);
 
     return (
         <Row flexWrap="wrap" justifyContent="space-between" gap={12} minHeight={44}>
             <Tooltip
                 addon={
                     networkType === 'ethereum' && (
-                        <Link href={HELP_CENTER_TRANSACTION_FEES_URL} target="_blank">
-                            <Icon size={12} intent="warning" name="lightbulb" />
+                        <TextButton
+                            size="small"
+                            intent="neutral"
+                            priority="secondary"
+                            href={HELP_CENTER_TRANSACTION_FEES_URL}
+                            isInverse
+                        >
                             <Translation id="TR_LEARN" />
-                        </Link>
+                        </TextButton>
                     )
                 }
                 hasIcon
                 maxWidth={328}
                 content={<Translation id={feeTooltipTextId} values={{ br: <br /> }} />}
             >
-                <Text typographyStyle={typographyStyle}>
+                <Text typographyStyle={typographyStyle} intent="neutral" priority="secondary">
                     <Translation id={label ?? feeLabelId} />
                 </Text>
             </Tooltip>

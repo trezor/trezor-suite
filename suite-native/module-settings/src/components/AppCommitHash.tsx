@@ -13,7 +13,7 @@ export const AppCommitHash = () => {
     return (
         <Box alignItems="center">
             <ProductionDebug>
-                <Text variant="body-sm" color="textDisabled">
+                <Text variant="body-sm" color="contentDisabled">
                     <Translation
                         id="moduleSettings.aboutUs.lastCommitHash"
                         values={{ lastCommitHash }}

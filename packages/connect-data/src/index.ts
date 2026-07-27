@@ -1,2 +1,2 @@
 export * from './firmware-jws';
-export * from './map-releases';
+export { firmwareAssets } from './map-releases';

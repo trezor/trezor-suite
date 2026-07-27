@@ -5,7 +5,7 @@ const legacyResults = [
     },
 ];
 
-export default {
+const moneroKeyImageSync: TestCase = {
     method: 'moneroKeyImageSync',
     setup: {
         mnemonic: 'mnemonic_all',
@@ -202,4 +202,6 @@ export default {
             legacyResults,
         },
     ],
-} satisfies TestCase;
+};
+
+export default moneroKeyImageSync;

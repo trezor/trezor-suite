@@ -7,16 +7,17 @@
     "main": "src/index",
     "scripts": {
         "depcheck": "yarn g:depcheck",
-        "test:unit": "yarn g:jest",
-        "type-check": "yarn g:tsc --build"
+        "test:unit": "yarn g:jest:native",
+        "type-check": "yarn g:tsc --build",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
-        "@react-navigation/bottom-tabs": "7.9.0",
-        "@react-navigation/native": "7.1.26",
-        "@react-navigation/native-stack": "7.9.0",
+        "@react-navigation/bottom-tabs": "7.13.0",
+        "@react-navigation/native": "7.1.28",
+        "@react-navigation/native-stack": "7.12.0",
         "@react-navigation/routers": "^7.5.3",
-        "@rozenite/react-navigation-plugin": "^1.2.0",
-        "@suite-common/device": "workspace:*",
+        "@rozenite/react-navigation-plugin": "^1.4.0",
+        "@suite-common/dependency-injection": "workspace:*",
         "@suite-common/message-system": "workspace:*",
         "@suite-common/suite-types": "workspace:*",
         "@suite-common/trading": "workspace:*",
@@ -24,26 +25,27 @@
         "@suite-common/wallet-types": "workspace:*",
         "@suite-native/analytics": "workspace:*",
         "@suite-native/atoms": "workspace:*",
-        "@suite-native/feature-flags": "workspace:*",
         "@suite-native/icons": "workspace:*",
         "@suite-native/intl": "workspace:*",
         "@suite-native/scrollview": "workspace:*",
         "@suite-native/sentry": "workspace:*",
-        "@suite-native/services": "workspace:*",
+        "@suite-native/settings": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/device-utils": "workspace:*",
-        "@trezor/styles": "workspace:*",
+        "@trezor/styles-native": "workspace:*",
         "@trezor/theme": "workspace:*",
         "@trezor/utils": "workspace:*",
-        "@types/invity-api": "^1.1.13",
-        "expo-system-ui": "~6.0.9",
-        "react": "19.1.0",
-        "react-native": "0.81.5",
+        "expo-system-ui": "~56.0.5",
+        "react": "19.2.3",
+        "react-native": "0.85.3",
         "react-native-edge-to-edge": "1.7.0",
         "react-native-keyboard-controller": "1.20.7",
-        "react-native-reanimated": "~4.1.5",
+        "react-native-reanimated": "4.3.1",
         "react-native-safe-area-context": "5.6.2",
-        "react-redux": "9.2.0",
-        "type-fest": "4.24.0"
+        "react-redux": "9.3.0",
+        "type-fest": "5.5.0"
+    },
+    "devDependencies": {
+        "@suite-native/test-utils": "workspace:*"
     }
 }

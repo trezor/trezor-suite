@@ -1,8 +1,8 @@
 import { Box, PressableOpacity, Text } from '@suite-native/atoms';
-import { Translation, TxKeyPath } from '@suite-native/intl';
-import { AppColorScheme, useSystemColorScheme, useUserColorScheme } from '@suite-native/theme';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { CSSColor, colorVariants } from '@trezor/theme';
+import { Translation, type TxKeyPath } from '@suite-native/intl';
+import { type AppColorScheme, useSystemColorScheme, useUserColorScheme } from '@suite-native/theme';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
+import { type CSSColor, colorVariants } from '@trezor/theme';
 
 type ColorSchemePickerItemProps = {
     colorScheme: AppColorScheme;
@@ -11,15 +11,13 @@ type ColorSchemePickerItemProps = {
 
 const pickerItemWrapperStyle = prepareNativeStyle<{ isColorSchemeActive: boolean }>(
     (utils, { isColorSchemeActive }) => ({
-        backgroundColor: utils.colors.backgroundSurfaceElevationNegative,
+        backgroundColor: utils.colors.surfaceFillSunken,
         borderRadius: utils.borders.radii.r16,
         minHeight: 114,
         flex: 1,
         paddingTop: 33,
         borderWidth: utils.borders.widths.medium,
-        borderColor: isColorSchemeActive
-            ? utils.colors.borderSecondary
-            : utils.colors.borderElevation1,
+        borderColor: isColorSchemeActive ? utils.colors.borderBrand : utils.colors.borderNeutral,
     }),
 );
 
@@ -74,26 +72,26 @@ export const ColorSchemePickerItem = ({
             <Box flexDirection="row" justifyContent="center">
                 <Box
                     style={applyStyle(pickerItemDotStyle, {
-                        backgroundColor: colorVariants[colorVariant].backgroundSurfaceElevation0,
+                        backgroundColor: colorVariants[colorVariant].surfaceFillPage,
                         isFirstItem: true,
                     })}
                 />
                 <Box
                     style={applyStyle(pickerItemDotStyle, {
-                        backgroundColor: colorVariants[colorVariant].backgroundNeutralSubdued,
+                        backgroundColor: colorVariants[colorVariant].elementFillNeutralBold,
                         isFirstItem: false,
                     })}
                 />
                 <Box
                     style={applyStyle(pickerItemDotStyle, {
-                        backgroundColor: colorVariants[colorVariant].backgroundNeutralBold,
+                        backgroundColor: colorVariants[colorVariant].legacyBackgroundNeutralBold,
                         isFirstItem: false,
                     })}
                 />
             </Box>
             <Text
                 style={applyStyle(textStyle)}
-                color={isColorSchemeActive ? 'textSecondaryHighlight' : 'textSubdued'}
+                color={isColorSchemeActive ? 'contentBrand' : 'contentSecondary'}
             >
                 <Translation id={translationId} />
             </Text>

@@ -1,1 +1,1 @@
-../../../skills/components.md
+../../../skills/components/SKILL.md

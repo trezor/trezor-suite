@@ -1,8 +1,9 @@
-import { Meta, StoryObj } from '@storybook/react';
+import { type Meta, type StoryObj } from '@storybook/react';
 import { action } from 'storybook/actions';
 
-import { Button as ButtonComponent, ButtonProps, allowedButtonFrameProps } from './Button';
-import { variables } from '../../../config';
+import * as generatedIcons from '@trezor/icons';
+
+import { Button as ButtonComponent, type ButtonProps, allowedButtonFrameProps } from './Button';
 import { getFramePropsStory } from '../../../utils/frameProps';
 import { buttonIntents, buttonPriorities, buttonSizes } from '../types';
 
@@ -23,6 +24,7 @@ export const Button: StoryObj<ButtonProps> = {
         isDisabled: false,
         isLoading: false,
         isInverse: false,
+        isFloating: false,
         shortcut: undefined,
         ...getFramePropsStory(allowedButtonFrameProps).args,
     },
@@ -57,12 +59,17 @@ export const Button: StoryObj<ButtonProps> = {
         isInverse: {
             type: 'boolean',
         },
+        isFloating: {
+            type: 'boolean',
+        },
         iconLeft: {
-            options: [null, ...variables.ICONS],
+            options: ['none', ...Object.keys(generatedIcons)],
+            mapping: { none: undefined, ...generatedIcons },
             control: { type: 'select' },
         },
         iconRight: {
-            options: [null, ...variables.ICONS],
+            options: ['none', ...Object.keys(generatedIcons)],
+            mapping: { none: undefined, ...generatedIcons },
             control: { type: 'select' },
         },
         shortcut: {

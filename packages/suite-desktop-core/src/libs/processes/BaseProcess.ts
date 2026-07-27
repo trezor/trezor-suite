@@ -1,8 +1,8 @@
-import { ChildProcess, IOType, spawn } from 'child_process';
+import { type ChildProcess, type IOType, spawn } from 'child_process';
 import { app } from 'electron';
 import path from 'path';
 
-import { TimerId } from '@trezor/type-utils';
+import { type TimerId } from '@trezor/type-utils';
 
 import { b2t } from '../utils';
 
@@ -221,16 +221,6 @@ export abstract class BaseProcess {
                 }
             }, 1000);
         });
-    }
-
-    /**
-     * Restart the process
-     * @param force Force the restart
-     */
-    async restart() {
-        this.logger.info(this.logTopic, 'Restarting');
-        await this.stop();
-        await this.start();
     }
 
     private onError(err: Error) {

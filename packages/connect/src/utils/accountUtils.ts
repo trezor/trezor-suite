@@ -1,10 +1,10 @@
 //  origin: https://github.com/trezor/connect/blob/develop/src/js/utils/accountUtils.js
 
+import type { BitcoinNetworkInfo, CoinInfo } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
+import { fromHardenedPathPart, toHardenedPathPart } from '@trezor/crypto-utils';
 
-import { fromHardened, toHardened } from './pathUtils';
 import { getCoinName } from '../data/coinInfo';
-import type { BitcoinNetworkInfo, CoinInfo } from '../types';
 
 type Bip44Options = {
     purpose?: number;
@@ -27,28 +27,58 @@ export const getAccountAddressN = (
     };
 
     if (coinInfo.type === 'bitcoin') {
-        return [toHardened(options.purpose), toHardened(options.coinType), toHardened(index)];
+        return [
+            toHardenedPathPart(options.purpose),
+            toHardenedPathPart(options.coinType),
+            toHardenedPathPart(index),
+        ];
     }
     // see: https://github.com/cardano-foundation/CIPs/blob/master/CIP-1852/CIP-1852.md
     if (coinInfo.shortcut === 'ADA' || coinInfo.shortcut === 'tADA') {
-        return [toHardened(1852), toHardened(options.coinType), toHardened(index)];
+        return [
+            toHardenedPathPart(1852),
+            toHardenedPathPart(options.coinType),
+            toHardenedPathPart(index),
+        ];
     }
     if (coinInfo.type === 'ethereum') {
-        return [toHardened(options.purpose), toHardened(options.coinType), toHardened(0), 0, index];
+        return [
+            toHardenedPathPart(options.purpose),
+            toHardenedPathPart(options.coinType),
+            toHardenedPathPart(0),
+            0,
+            index,
+        ];
     }
     if (coinInfo.shortcut === 'tXRP') {
         // FW bug: https://github.com/trezor/trezor-firmware/issues/321
-        return [toHardened(options.purpose), toHardened(144), toHardened(index), 0, 0];
+        return [
+            toHardenedPathPart(options.purpose),
+            toHardenedPathPart(144),
+            toHardenedPathPart(index),
+            0,
+            0,
+        ];
     }
 
     // TODO: cover all misc coins or throw error
-    return [toHardened(options.purpose), toHardened(options.coinType), toHardened(index), 0, 0];
+    return [
+        toHardenedPathPart(options.purpose),
+        toHardenedPathPart(options.coinType),
+        toHardenedPathPart(index),
+        0,
+        0,
+    ];
 };
 
 export const getAccountLabel = (path: number[], coinInfo: CoinInfo) => {
     if (coinInfo.type === 'bitcoin') {
-        const accountType = fromHardened(path[0]);
-        const account = fromHardened(path[2]);
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const path0: number = path[0];
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const path2: number = path[2];
+        const accountType = fromHardenedPathPart(path0);
+        const account = fromHardenedPathPart(path2);
         let prefix = '';
 
         if (accountType === 48) {
@@ -61,7 +91,9 @@ export const getAccountLabel = (path: number[], coinInfo: CoinInfo) => {
 
         return `${prefix} account #${account + 1}`;
     }
-    const account = fromHardened(path[4]);
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const path4: number = path[4];
+    const account = fromHardenedPathPart(path4);
 
     return `account #${account + 1}`;
 };
@@ -76,16 +108,24 @@ export const getPublicKeyLabel = (path: number[], coinInfo?: BitcoinNetworkInfo)
         coinLabel = getCoinName(path);
     }
 
-    const p1 = fromHardened(path[0]);
-    let account = path.length >= 3 ? fromHardened(path[2]) : -1;
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const pubKeyPath0: number = path[0];
+    const p1 = fromHardenedPathPart(pubKeyPath0);
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const pubKeyPath2: number = path[2];
+    let account = path.length >= 3 ? fromHardenedPathPart(pubKeyPath2) : -1;
     let realAccountId = account + 1;
     let prefix = 'Export public key';
     let accountType = '';
 
     // Copay id
     if (p1 === 45342) {
-        const p2 = fromHardened(path[1]);
-        account = fromHardened(path[3]);
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const pubKeyPath1: number = path[1];
+        const p2 = fromHardenedPathPart(pubKeyPath1);
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const pubKeyPath3: number = path[3];
+        account = fromHardenedPathPart(pubKeyPath3);
         realAccountId = account + 1;
         prefix = 'Export Copay ID of';
         if (p2 === 48) {

@@ -1,8 +1,6 @@
-import { isHex } from 'viem';
-
-import { CustomError } from '@trezor/blockchain-link-types/src/constants/errors';
-import type * as MessageTypes from '@trezor/blockchain-link-types/src/messages';
-import type * as Responses from '@trezor/blockchain-link-types/src/responses';
+import { CustomError } from '@trezor/blockchain-link-types';
+import type { MessageTypes, ResponseTypes as Responses } from '@trezor/blockchain-link-types';
+import { isHex } from '@trezor/utils';
 
 import { mapGetBlockResponse } from '../mappers/block';
 import type { Request } from '../types';
@@ -13,11 +11,16 @@ export const getBlock = async (
     const client = await request.connect();
     const blockId = request.payload;
 
-    const block = await client.getBlock(
-        isHex(blockId)
-            ? { blockHash: blockId, includeTransactions: true }
-            : { blockNumber: BigInt(blockId), includeTransactions: true },
-    );
+    let blockParams: Parameters<typeof client.getBlock>[0];
+    if (blockId === 'latest') {
+        blockParams = { blockTag: 'latest', includeTransactions: true };
+    } else if (isHex(blockId)) {
+        blockParams = { blockHash: blockId, includeTransactions: true };
+    } else {
+        blockParams = { blockNumber: BigInt(blockId), includeTransactions: true };
+    }
+
+    const block = await client.getBlock(blockParams);
 
     if (!block) {
         throw new CustomError('worker_runtime', `Block ${blockId} not found`);

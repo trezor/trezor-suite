@@ -99,4 +99,8 @@ export const init: ModuleInit = ({ mainWindowProxy }) => {
     });
 
     ipcMain.handle('app/is-visible', () => mainWindowProxy?.getInstance()?.isVisible() ?? false);
+    ipcMain.handle(
+        'app/is-fullscreen',
+        () => mainWindowProxy?.getInstance()?.isFullScreen() ?? false,
+    );
 };

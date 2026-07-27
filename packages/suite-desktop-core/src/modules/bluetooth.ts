@@ -2,10 +2,14 @@ import { exec } from 'child_process';
 import { ipcMain } from 'electron';
 
 import { isMacOs } from '@trezor/env-utils';
-import { IpcProxyHandlerOptions, createIpcProxyHandler } from '@trezor/ipc-proxy';
+import { type IpcProxyHandlerOptions, createIpcProxyHandler } from '@trezor/ipc-proxy';
 import { getFreePort } from '@trezor/node-utils';
-import { InvokeResult } from '@trezor/suite-desktop-api';
-import { BluetoothIpc, BluetoothIpcApi, BluetoothTransport } from '@trezor/transport-bluetooth';
+import { type InvokeResult } from '@trezor/suite-desktop-api';
+import {
+    BluetoothIpc,
+    type BluetoothIpcApi,
+    BluetoothTransport,
+} from '@trezor/transport-bluetooth';
 import { createLazy, throwError } from '@trezor/utils';
 
 import type { ModuleInit } from './module';
@@ -26,12 +30,14 @@ export const bluetoothModuleState: BluetoothModuleState = {
 export const init: ModuleInit = () => {
     const { logger } = global;
 
+    // BluetoothTransport's Logger types args as unknown[]; Suite's global logger
+    // expects string[]. In practice BluetoothTransport only ever passes strings.
     const desktopLogger: ConstructorParameters<typeof BluetoothTransport>[0]['logger'] = {
-        info: (...args) => logger.info(SERVICE_NAME, args),
-        debug: (...args) => logger.debug(SERVICE_NAME, args),
-        log: (...args) => logger.debug(SERVICE_NAME, args),
-        warn: (...args) => logger.warn(SERVICE_NAME, args),
-        error: (...args) => logger.error(SERVICE_NAME, args),
+        info: (...args) => logger.info(SERVICE_NAME, args as string[]),
+        debug: (...args) => logger.debug(SERVICE_NAME, args as string[]),
+        log: (...args) => logger.debug(SERVICE_NAME, args as string[]),
+        warn: (...args) => logger.warn(SERVICE_NAME, args as string[]),
+        error: (...args) => logger.error(SERVICE_NAME, args as string[]),
     };
 
     const lazyBluetooth = createLazy(
@@ -63,7 +69,6 @@ export const init: ModuleInit = () => {
                   id: 'BluetoothTransport',
                   url: api.process.getUrl(),
                   logger: desktopLogger,
-                  messages: {}, // will be added by @trezor/connect transport initialization
                   // writeWithResponse: isMacOs(),
                   // writeWithDelay: isWindows(),
               })

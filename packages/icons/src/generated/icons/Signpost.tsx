@@ -1,0 +1,10 @@
+import type { SVGProps } from 'react';
+const SvgSignpost = (props: SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" {...props}>
+        <path
+            fill="currentColor"
+            d="m30.75 13.331-4.5-5A1 1 0 0 0 25.5 8H17V4a1 1 0 0 0-2 0v4H5a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h10v8a1 1 0 0 0 2 0v-8h8.5a1 1 0 0 0 .744-.331l4.5-5a1 1 0 0 0 .006-1.338M25.055 18H5v-8h20.055l3.6 4z"
+        />
+    </svg>
+);
+export { SvgSignpost as ReactComponent };

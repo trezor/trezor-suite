@@ -1,21 +1,22 @@
-import * as cbor from 'cbor';
-
+import {
+    CARDANO,
+    type CardanoMessageHeaders,
+    CardanoSignMessage as CardanoSignMessageSchema,
+    type CardanoSignedMessage,
+    type PermissionRequest,
+} from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
+import cardano from '@trezor/network-cardano/runtime';
+import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 
-import { CARDANO, PROTO } from '../../../constants';
-import { AbstractMethod, MethodPermission, Payload } from '../../../core/AbstractMethod';
+import type { MethodMessage } from '../../../core/AbstractMethod';
+import { AbstractMethod } from '../../../core/AbstractMethod';
 import { getMiscNetwork } from '../../../data/coinInfo';
-import {
-    CardanoMessageHeaders,
-    CardanoSignMessage as CardanoSignMessageSchema,
-    CardanoSignedMessage,
-} from '../../../types/api/cardano';
 import { hasHexPrefix, isHexString } from '../../../utils/formatUtils';
 import { validatePath } from '../../../utils/pathUtils';
-import { getFirmwareRange } from '../../common/paramsValidator';
 import { addressParametersToProto } from '../cardanoAddressParameters';
-import { Path } from '../cardanoInputs';
+import type { Path } from '../cardanoInputs';
 import { hexStringByteLength } from '../cardanoUtils';
 
 export type CardanoSignMessageParams = {
@@ -34,32 +35,23 @@ export default class CardanoSignMessage extends AbstractMethod<
 > {
     static readonly VERSION = 1;
 
-    constructor(message: { id?: number; payload: Payload<'cardanoSignMessage'> }) {
-        super(message);
-        this.firmwareRange = getFirmwareRange(
-            this.name,
-            getMiscNetwork('Cardano'),
-            this.firmwareRange,
-        );
-    }
-
-    get requiredPermissions(): MethodPermission[] {
-        return ['read', 'write'];
-    }
-
-    init(): void {
-        const { payload } = this;
+    constructor(message: MethodMessage<'cardanoSignMessage'>) {
+        const { payload } = message;
 
         Assert(CardanoSignMessageSchema, payload);
 
-        if (!isHexString(payload.payload) || hasHexPrefix(payload.payload)) {
+        if (
+            !isHexString(payload.payload) ||
+            hasHexPrefix(payload.payload) ||
+            payload.payload.length % 2 !== 0
+        ) {
             throw ERRORS.TypedError(
                 'Method_InvalidParameter',
-                'Message payload must be a hexadecimal string without a "0x" prefix.',
+                'Message payload must be a byte-aligned hexadecimal string (even number of characters) without a "0x" prefix.',
             );
         }
 
-        this.params = {
+        const params = {
             path: validatePath(payload.path, 5),
             payload: payload.payload,
             preferHexDisplay: payload.preferHexDisplay ?? false,
@@ -69,10 +61,20 @@ export default class CardanoSignMessage extends AbstractMethod<
                 payload.addressParameters && addressParametersToProto(payload.addressParameters),
             derivationType: payload.derivationType ?? PROTO.CardanoDerivationType.ICARUS_TREZOR,
         };
+
+        super(message, params);
+
+        this.requiredFirmwareCoins = [getMiscNetwork('ada')];
+    }
+
+    get requiredPermissions(): PermissionRequest[] {
+        return this.coinPerms('sign', this.requiredFirmwareCoins);
     }
 
     async run(): Promise<CardanoSignedMessage> {
-        const typedCall = this.device.getCommands().typedCall.bind(this.device.getCommands());
+        const typedCall = this.getDevice()
+            .getCommands()
+            .typedCall.bind(this.getDevice().getCommands());
         const payloadSize = hexStringByteLength(this.params.payload);
 
         let response = await typedCall(
@@ -99,12 +101,14 @@ export default class CardanoSignMessage extends AbstractMethod<
         }
         const { signature, address, pub_key } = response.message;
 
+        const { createCose } = await cardano();
+
         return {
             signature,
             payload: this.params.payload,
             headers: this._createHeaders(address),
             pubKey: pub_key,
-            ...this._createCose(this.params.payload, signature, address, pub_key),
+            ...createCose(this.params.payload, signature, address, pub_key),
         };
     }
 
@@ -118,33 +122,6 @@ export default class CardanoSignMessage extends AbstractMethod<
                 hashed: false,
                 version: CardanoSignMessage.VERSION,
             },
-        };
-    }
-
-    _createCose(payload: string, signature: string, address: string, pubKey: string) {
-        const coseSignature = cbor.encode([
-            Buffer.from(
-                cbor.encode(
-                    new Map()
-                        .set(1, -8) // alg: EdDSA
-                        .set('address', Buffer.from(address, 'hex')),
-                ),
-            ),
-            new Map().set('hashed', false),
-            Buffer.from(payload, 'hex'),
-            Buffer.from(signature, 'hex'),
-        ]);
-        const coseKey = cbor.encode(
-            new Map()
-                .set(1, 1) // kty: OKP
-                .set(3, -8) // alg: EdDSA
-                .set(-1, 6) // crv: Ed25519
-                .set(-2, Buffer.from(pubKey, 'hex')),
-        );
-
-        return {
-            coseSignature: Buffer.from(coseSignature).toString('hex'),
-            coseKey: Buffer.from(coseKey).toString('hex'),
         };
     }
 

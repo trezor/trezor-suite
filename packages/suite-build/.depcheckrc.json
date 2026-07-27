@@ -1,4 +1,10 @@
 {
     "ignore-patterns": ["libDev", "lib"],
-    "ignores": ["raw-loader", "babel-loader", "babel-plugin-styled-components", "worker-loader"]
+    "ignores": [
+        "raw-loader",
+        "babel-loader",
+        "babel-plugin-styled-components",
+        "worker-loader",
+        "buffer"
+    ]
 }

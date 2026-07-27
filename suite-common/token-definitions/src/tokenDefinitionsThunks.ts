@@ -1,26 +1,26 @@
 import { D } from '@mobily/ts-belt';
 
 import { createThunk } from '@suite-common/redux-utils';
-import { NetworkSymbol } from '@suite-common/wallet-config';
-import { TimerId } from '@trezor/type-utils';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type TimerId } from '@trezor/type-utils';
 
 import { selectNetworkTokenDefinitions } from './tokenDefinitionsSelectors';
-import { DefinitionType, TokenStructureType } from './tokenDefinitionsTypes';
+import { type DefinitionType, TokenStructureType } from './tokenDefinitionsTypes';
 import { fetchTokenDefinitions, getSupportedDefinitionTypes } from './tokenDefinitionsUtils';
 
 const TOKEN_DEFINITIONS_MODULE = '@common/wallet-core/token-definitions';
 
-export const getTokenDefinitionThunk = createThunk(
-    `${TOKEN_DEFINITIONS_MODULE}/getNftTokenDefinition`,
-    async (
-        params: {
-            symbol: NetworkSymbol;
-            type: DefinitionType;
-        },
-        { fulfillWithValue, rejectWithValue },
-    ) => {
+export const getTokenDefinitionThunk = createThunk<
+    string[],
+    {
+        symbol: NetworkSymbol;
+        type: DefinitionType;
+    }
+>(
+    `${TOKEN_DEFINITIONS_MODULE}/getTokenDefinitionsThunk`,
+    async (params, { fulfillWithValue, rejectWithValue }) => {
         try {
-            const data = await fetchTokenDefinitions(
+            const data: string[] = await fetchTokenDefinitions(
                 params.symbol,
                 params.type,
                 TokenStructureType.SIMPLE,

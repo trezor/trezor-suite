@@ -1,8 +1,8 @@
-export * from './array';
+export type * from './array';
 export * from './branded';
 export * from './exhaustive';
-export * from './object';
-export * from './overloads';
+export type * from './object';
+export type * from './overloads';
 export * from './result';
-export * from './timeout';
-export * from './utils';
+export type * from './timeout';
+export type * from './utils';

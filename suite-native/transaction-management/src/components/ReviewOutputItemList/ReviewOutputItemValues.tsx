@@ -1,7 +1,7 @@
-import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
+import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import { Box, HStack, Text, VStack } from '@suite-native/atoms';
 import { CoinAmountFormatter, CoinToFiatAmountFormatter } from '@suite-native/formatters';
-import { Translation, TxKeyPath } from '@suite-native/intl';
+import { Translation, type TxKeyPath } from '@suite-native/intl';
 
 export type ReviewOutputItemValuesProps = {
     accountKey: AccountKey;
@@ -25,22 +25,24 @@ export const ReviewOutputItemValues = ({
         <VStack flex={0.6} alignItems="flex-end" spacing="sp4">
             <CoinToFiatAmountFormatter
                 variant="body-sm"
-                color="textDefault"
+                color="contentPrimary"
                 value={value}
                 accountKey={accountKey}
                 tokenContract={tokenContract}
                 adjustsFontSizeToFit
                 numberOfLines={1}
+                isDiscreetText={false}
             />
             <CoinAmountFormatter
                 variant="body-sm"
-                color="textSubdued"
+                color="contentSecondary"
                 value={value}
                 accountKey={accountKey}
                 tokenContract={tokenContract}
                 isBalance={false}
                 adjustsFontSizeToFit
                 numberOfLines={1}
+                isDiscreetText={false}
             />
         </VStack>
     </HStack>

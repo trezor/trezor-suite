@@ -1,25 +1,26 @@
 import styled from 'styled-components';
 
+import { HiddenPlaceholder } from '@suite/discreet-mode';
+import { Translation } from '@suite/intl';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import type { TokenAddress } from '@suite-common/wallet-types';
+import { LastUpdateTooltip } from '@trezor/product-components';
 import { typography } from '@trezor/theme';
 
 import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
-import { HiddenPlaceholder } from 'src/components/suite/HiddenPlaceholder';
 
-import { LastUpdateTooltip } from './LastUpdateTooltip';
 import { NoRatesTooltip } from './NoRatesTooltip';
 
 const FiatRateWrapper = styled.span`
     ${typography['body-sm-strong']}
     display: flex;
     align-items: center;
-    color: ${({ theme }) => theme.textDefault};
+    color: ${({ theme }) => theme.contentPrimary};
 `;
 
 const Empty = styled.div`
     ${typography['body-sm-strong']}
-    color: ${({ theme }) => theme.textSubdued};
+    color: ${({ theme }) => theme.contentSecondary};
 `;
 
 interface PriceTickerProps {
@@ -51,7 +52,12 @@ export const PriceTicker = ({
             >
                 {({ rate, timestamp }) =>
                     rate && timestamp ? (
-                        <LastUpdateTooltip timestamp={timestamp}>
+                        <LastUpdateTooltip
+                            timestamp={timestamp}
+                            renderTooltipContent={relativeTime => (
+                                <Translation id="TR_LAST_UPDATE" values={{ value: relativeTime }} />
+                            )}
+                        >
                             <FiatRateWrapper>{rate}</FiatRateWrapper>
                         </LastUpdateTooltip>
                     ) : (

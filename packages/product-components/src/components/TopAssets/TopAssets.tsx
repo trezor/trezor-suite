@@ -1,11 +1,13 @@
-import { Box, Column, GhostContainer, Row, Text } from '@trezor/components';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { Card, Column, GhostContainer, Row, Text } from '@trezor/components';
 
-import { AssetLogo, AssetLogoProps } from '../AssetLogo/AssetLogo';
-import { CoinLogo } from '../CoinLogo/CoinLogo';
+import { TokenIcon } from '../TokenIcon/TokenIcon';
+import { type TokenIconProps } from '../TokenIcon/tokenIconTypes';
 
 export type Asset = {
     id: string;
     symbol: string;
+    networkSymbol: NetworkSymbol;
     displaySymbol: string;
     contractAddress: string | null;
     coingeckoId: string;
@@ -15,7 +17,7 @@ export type Asset = {
 export type TopAssetsProps = {
     assets: Asset[];
     onAssetClick: (asset: Asset) => void;
-    logoSize?: AssetLogoProps['size'];
+    logoSize?: TokenIconProps['size'];
     'data-testid'?: string;
 };
 
@@ -26,15 +28,14 @@ export function TopAssets({
     'data-testid': dataTestId,
 }: TopAssetsProps) {
     return (
-        <Box
-            borderRadius={12}
-            borderWidth={1}
-            borderColor="baseBorderElementNeutralSoftest"
+        <Card
+            type="flat"
             width="100%"
             overflow="hidden"
+            paddingType="none"
             data-testid={dataTestId}
         >
-            <Row hasDivider dividerColor="baseBorderElementNeutralSoftest" alignItems="stretch">
+            <Row hasDivider alignItems="stretch">
                 {assets.map(asset => (
                     <GhostContainer
                         key={asset.id}
@@ -46,17 +47,16 @@ export function TopAssets({
                     >
                         <Column alignItems="center" justifyContent="center" gap={4}>
                             {asset.isNativeToken ? (
-                                <CoinLogo
+                                <TokenIcon
                                     size={logoSize}
                                     // @ts-expect-error
                                     symbol={asset.symbol}
-                                    type="tokenWithNetwork"
+                                    showNetworkIcon
                                 />
                             ) : (
-                                <AssetLogo
+                                <TokenIcon
                                     size={logoSize}
-                                    coingeckoId={asset.coingeckoId}
-                                    symbol={asset.symbol}
+                                    symbol={asset.networkSymbol}
                                     contractAddress={asset.contractAddress}
                                     placeholder={asset.displaySymbol}
                                 />
@@ -68,6 +68,6 @@ export function TopAssets({
                     </GhostContainer>
                 ))}
             </Row>
-        </Box>
+        </Card>
     );
 }

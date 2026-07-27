@@ -1,59 +1,56 @@
 import type { SellFiatTrade } from 'invity-api';
 
 import { tradingSellActions } from '@suite-common/trading';
-import { AccountKey } from '@suite-common/wallet-types';
-import { events } from '@suite-native/analytics';
+import { asAccountDescriptor } from '@suite-common/wallet-types';
+import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
+import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { Form, useField } from '@suite-native/forms';
 import {
-    PreloadedState,
-    TestStore,
+    type TestStore,
     act,
-    initStore,
     renderHook,
     renderHookWithStoreProvider,
     screen,
     waitFor,
-} from '@suite-native/test-utils';
+} from '@suite-native/test-utils-store';
 import {
+    banxaBankTransferSellQuote,
+    banxaCreditCardSellQuote,
     btcAsset,
     getBtcAccount,
-    getWalletState,
+    getEthAccount,
+    moonpayCreditCardSellQuote,
     sellQuotes,
     usdcAsset,
 } from '@suite-native/trading-fixtures';
 import { selectTradingResidenceCountry, sellActions } from '@suite-native/trading-state';
-import { SellFormType } from '@suite-native/trading-types';
+import { type SellFormType } from '@suite-native/trading-types';
 import { PROTO } from '@trezor/connect';
 
+import { createTradingLightStore } from '../../../__tests__/tradingTestUtils';
 import { useSellForm } from '../useSellForm';
 
 const mockReport = jest.fn();
+const services: NativeAnalyticsDep = {
+    analytics: mockNativeAnalytics(mockReport),
+};
 
-jest.mock('@suite-native/services', () => {
-    const original = jest.requireActual('@suite-native/services');
-
-    return {
-        ...original,
-        useAnalytics: () => ({
-            report: mockReport,
-        }),
-    };
-});
-
-const btc1account = 'btc-account-1' as AccountKey; // Todo: create properly via `createAccountKey()`
+const btc1Account = getBtcAccount({ descriptor: asAccountDescriptor('btc1normal') });
+const eth1Account = getEthAccount({ descriptor: asAccountDescriptor('eth1normal') });
 
 describe('useSellForm', () => {
     let store: TestStore;
 
-    const renderUseSellForm = () => renderHookWithStoreProvider(() => useSellForm(), { store });
+    const renderUseSellForm = () =>
+        renderHookWithStoreProvider(() => useSellForm(), { services, store });
 
-    const getInitializedStore = (bitcoinAmountUnit = PROTO.AmountUnit.BITCOIN) => {
-        const preloadedState: PreloadedState = {
-            wallet: getWalletState({ tradeType: 'sell', bitcoinAmountUnit }),
-        };
-
-        return initStore(preloadedState).store;
-    };
+    const getInitializedStore = (bitcoinAmountUnit = PROTO.AmountUnit.BITCOIN) =>
+        createTradingLightStore({
+            tradeType: 'sell',
+            overrides: {
+                wallet: { settings: { bitcoinAmountUnit } },
+            },
+        });
 
     beforeEach(() => {
         store = getInitializedStore();
@@ -74,10 +71,10 @@ describe('useSellForm', () => {
             const { result } = renderUseSellForm();
 
             act(() => {
-                store.dispatch(tradingSellActions.setTradingAccountKey(btc1account));
+                store.dispatch(tradingSellActions.setTradingAccountKey(btc1Account.key));
             });
 
-            expect(result.current.getValues('sendAccount')).toEqual(getBtcAccount(btc1account));
+            expect(result.current.getValues('sendAccount')).toEqual(btc1Account);
         });
     });
 
@@ -260,11 +257,11 @@ describe('useSellForm', () => {
             it.each([
                 ['0.00001', 'Minimum is 0.0001 BTC'],
                 ['100', 'Maximum is 50 BTC'],
-                ['1', 'Insufficient balance'],
+                ['1', 'Insufficient funds'],
             ])('should display error for crypto amount %s BTC', async (amount, expectedValue) => {
                 const { result } = renderUseSellForm();
                 act(() => {
-                    store.dispatch(tradingSellActions.setTradingAccountKey(btc1account));
+                    store.dispatch(tradingSellActions.setTradingAccountKey(btc1Account.key));
                     result.current.setValue('amountInCrypto', true);
                     result.current.setValue('sendAsset', btcAsset);
                     result.current.setValue('cryptoStringAmount', amount);
@@ -287,12 +284,12 @@ describe('useSellForm', () => {
             it.each([
                 ['100', 'Minimum is 10,000 sat'],
                 ['10000000000', 'Maximum is 5,000,000,000 sat'],
-                ['10000000', 'Insufficient balance'],
+                ['10000000', 'Insufficient funds'],
             ])('should display error for crypto amount %s SATS', async (amount, expectedValue) => {
                 store = getInitializedStore(PROTO.AmountUnit.SATOSHI);
                 const { result } = renderUseSellForm();
                 act(() => {
-                    store.dispatch(tradingSellActions.setTradingAccountKey(btc1account));
+                    store.dispatch(tradingSellActions.setTradingAccountKey(btc1Account.key));
                     result.current.setValue('amountInCrypto', true);
                     result.current.setValue('sendAsset', btcAsset);
                     result.current.setValue('cryptoStringAmount', amount);
@@ -320,11 +317,7 @@ describe('useSellForm', () => {
                 async (amount, expectedInvalid) => {
                     const { result } = renderUseSellForm();
                     act(() => {
-                        store.dispatch(
-                            tradingSellActions.setTradingAccountKey(
-                                'eth-account-1' as AccountKey, // Todo: create properly via `createAccountKey()`
-                            ),
-                        );
+                        store.dispatch(tradingSellActions.setTradingAccountKey(eth1Account.key));
                         result.current.setValue('amountInCrypto', true);
                         result.current.setValue('sendAsset', usdcAsset);
                         result.current.setValue('cryptoStringAmount', amount);
@@ -340,11 +333,7 @@ describe('useSellForm', () => {
             it("should be validated once the quote is selected and it changes it's value", async () => {
                 const { result } = renderUseSellForm();
                 act(() => {
-                    store.dispatch(
-                        tradingSellActions.setTradingAccountKey(
-                            'eth-account-1' as AccountKey, // Todo: create properly via `createAccountKey()`
-                        ),
-                    );
+                    store.dispatch(tradingSellActions.setTradingAccountKey(eth1Account.key));
                     result.current.setValue('amountInCrypto', false);
                     result.current.setValue('sendAsset', usdcAsset);
                     result.current.setValue('fiatStringAmount', '100');
@@ -352,7 +341,7 @@ describe('useSellForm', () => {
 
                 await act(async () => {
                     result.current.setValue('quote', {
-                        ...sellQuotes[0],
+                        ...banxaCreditCardSellQuote,
                         cryptoStringAmount: '2',
                     });
                     // settle validations
@@ -363,7 +352,7 @@ describe('useSellForm', () => {
                 expect(invalid).toBe(true);
                 expect(error).toEqual(
                     expect.objectContaining({
-                        message: 'Insufficient balance',
+                        message: 'Insufficient funds',
                         type: 'insufficient-balance',
                     }),
                 );
@@ -377,7 +366,7 @@ describe('useSellForm', () => {
             ])('should display fiat error for amount %s', async (amount, expectedValue) => {
                 const { result } = renderUseSellForm();
                 act(() => {
-                    store.dispatch(tradingSellActions.setTradingAccountKey(btc1account));
+                    store.dispatch(tradingSellActions.setTradingAccountKey(btc1Account.key));
                     result.current.setValue('amountInCrypto', false);
                     result.current.setValue('sendAsset', btcAsset);
                     result.current.setValue('fiatStringAmount', amount);
@@ -401,7 +390,7 @@ describe('useSellForm', () => {
         it('should trigger validation once limits are loaded', async () => {
             act(() => {
                 store.dispatch(tradingSellActions.setAmountLimits(undefined));
-                store.dispatch(tradingSellActions.setTradingAccountKey(btc1account));
+                store.dispatch(tradingSellActions.setTradingAccountKey(btc1Account.key));
             });
             const { result } = renderUseSellForm();
             act(() => {
@@ -450,7 +439,7 @@ describe('useSellForm', () => {
                 });
 
                 expect(result.current.getValues('generalAlert')).toEqual(
-                    'No offers available for your request. Change amount or currency.',
+                    'No offers found. Adjust the currency, assets, or amounts.',
                 );
             });
 
@@ -523,7 +512,7 @@ describe('useSellForm', () => {
         const initFormAndQuoteRequest = (form: SellFormType) => {
             act(() => {
                 form.setValue('sendAsset', btcAsset);
-                form.setValue('sendAccount', getBtcAccount(btc1account));
+                form.setValue('sendAccount', btc1Account);
                 form.setValue('amountInCrypto', false);
                 form.setValue('fiatStringAmount', '10');
             });
@@ -546,7 +535,7 @@ describe('useSellForm', () => {
                 store.dispatch(tradingSellActions.saveQuotes(sellQuotes));
             });
 
-            expect(result.current.getValues('quote')).toEqual(sellQuotes[1]);
+            expect(result.current.getValues('quote')).toEqual(banxaBankTransferSellQuote);
         });
 
         it('if no quote is selected and no bankTransferQuote is available should select first quote', () => {
@@ -554,10 +543,15 @@ describe('useSellForm', () => {
             initFormAndQuoteRequest(result.current);
 
             act(() => {
-                store.dispatch(tradingSellActions.saveQuotes([sellQuotes[0], sellQuotes[2]]));
+                store.dispatch(
+                    tradingSellActions.saveQuotes([
+                        banxaCreditCardSellQuote,
+                        moonpayCreditCardSellQuote,
+                    ]),
+                );
             });
 
-            expect(result.current.getValues('quote')).toEqual(sellQuotes[0]);
+            expect(result.current.getValues('quote')).toEqual(banxaCreditCardSellQuote);
         });
 
         describe('when quote is selected and new quotes are fetched', () => {
@@ -566,7 +560,7 @@ describe('useSellForm', () => {
                 initFormAndQuoteRequest(result.current);
 
                 act(() => {
-                    result.current.setValue('quote', sellQuotes[0]);
+                    result.current.setValue('quote', banxaCreditCardSellQuote);
                 });
 
                 act(() => {
@@ -581,14 +575,17 @@ describe('useSellForm', () => {
                 initFormAndQuoteRequest(result.current);
 
                 act(() => {
-                    result.current.setValue('quote', { ...sellQuotes[2], orderId: 'test1' });
+                    result.current.setValue('quote', {
+                        ...moonpayCreditCardSellQuote,
+                        orderId: 'test1',
+                    });
                 });
 
                 act(() => {
                     store.dispatch(tradingSellActions.saveQuotes(sellQuotes));
                 });
 
-                expect(result.current.getValues('quote')).toEqual(sellQuotes[2]);
+                expect(result.current.getValues('quote')).toEqual(moonpayCreditCardSellQuote);
             });
 
             it('should select quote with same payment method if provider is not available', () => {
@@ -596,14 +593,17 @@ describe('useSellForm', () => {
                 initFormAndQuoteRequest(result.current);
 
                 act(() => {
-                    result.current.setValue('quote', { ...sellQuotes[2], orderId: 'test1' });
+                    result.current.setValue('quote', {
+                        ...moonpayCreditCardSellQuote,
+                        orderId: 'test1',
+                    });
                 });
 
                 act(() => {
                     store.dispatch(tradingSellActions.saveQuotes(sellQuotes.slice(0, 2)));
                 });
 
-                expect(result.current.getValues('quote')).toEqual(sellQuotes[0]);
+                expect(result.current.getValues('quote')).toEqual(banxaCreditCardSellQuote);
             });
 
             it('should select best rated quote if neither same payment method nor provider are available', () => {
@@ -611,14 +611,17 @@ describe('useSellForm', () => {
                 initFormAndQuoteRequest(result.current);
 
                 act(() => {
-                    result.current.setValue('quote', { ...sellQuotes[2], orderId: 'test1' });
+                    result.current.setValue('quote', {
+                        ...moonpayCreditCardSellQuote,
+                        orderId: 'test1',
+                    });
                 });
 
                 act(() => {
-                    store.dispatch(tradingSellActions.saveQuotes([sellQuotes[1]]));
+                    store.dispatch(tradingSellActions.saveQuotes([banxaBankTransferSellQuote]));
                 });
 
-                expect(result.current.getValues('quote')).toEqual(sellQuotes[1]);
+                expect(result.current.getValues('quote')).toEqual(banxaBankTransferSellQuote);
             });
 
             it('should update cryptoValue when selected quote is changed and truncate it to 9 decimals', () => {
@@ -629,7 +632,7 @@ describe('useSellForm', () => {
                 });
 
                 act(() => {
-                    result.current.setValue('quote', sellQuotes[1]);
+                    result.current.setValue('quote', banxaBankTransferSellQuote);
                 });
 
                 expect(result.current.getValues('cryptoStringAmount')).toBe('0.025396001');
@@ -644,7 +647,7 @@ describe('useSellForm', () => {
                 });
 
                 act(() => {
-                    result.current.setValue('quote', sellQuotes[2]);
+                    result.current.setValue('quote', moonpayCreditCardSellQuote);
                 });
 
                 expect(result.current.getValues('fiatStringAmount')).toBe('100.062');

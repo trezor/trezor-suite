@@ -7,8 +7,9 @@ export LC_ALL=C  # force `sort` to work the same way (ASCII order)
 SNAPSHOT_FILE="scripts/circular-dependencies/madge-snapshot.txt"
 TMP_FILE="$(mktemp)"
 
-# Run madge, allow it to fail
-if ! npx madge --circular --extensions ts,tsx --exclude "node_modules|lib|libDev" packages suite suite-native suite-common | tail -n +2 | sed 's/^[0-9][0-9]*) *//' | sort > "$TMP_FILE"; then
+npm i -g madge@8.0.0
+# Run madge, allow it to fail. `npx` is used because `yarn` may not be installed when running this script.
+if ! npx madge@8.0.0 --circular --extensions ts,tsx --exclude "node_modules|lib|libDev" packages suite suite-native suite-common | tail -n +2 | sed 's/^[0-9][0-9]*) *//' | sort > "$TMP_FILE"; then
   echo "⚠️ madge exited with non-zero status, continuing to compare results..."
   echo
 fi
@@ -18,7 +19,7 @@ if ! git diff --no-index --color=always "$SNAPSHOT_FILE" "$TMP_FILE"; then
   echo
   echo "❌ Circular dependency snapshot mismatch!"
   echo "Update the snapshot with:"
-  echo "  npx madge --circular --extensions ts,tsx --exclude \"node_modules|lib|libDev\" packages suite suite-native suite-common | tail -n +2 | sed 's/^[0-9][0-9]*) *//' | LC_ALL=C sort > $SNAPSHOT_FILE"
+  echo "  npx madge@8.0.0 --circular --extensions ts,tsx --exclude \"node_modules|lib|libDev\" packages suite suite-native suite-common | tail -n +2 | sed 's/^[0-9][0-9]*) *//' | LC_ALL=C sort > $SNAPSHOT_FILE"
   rm -f "$TMP_FILE"
   exit 1
 fi

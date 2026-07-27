@@ -11,18 +11,8 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
-        "@suite-native/atoms": "workspace:*",
-        "@suite-native/icons": "workspace:*",
         "@suite-native/intl": "workspace:*",
-        "@suite-native/link": "workspace:*",
-        "@suite-native/services": "workspace:*",
         "@suite-native/settings": "workspace:*",
-        "@trezor/styles": "workspace:*",
-        "@trezor/urls": "workspace:*",
-        "@trezor/utils": "workspace:*",
-        "react": "19.1.0",
-        "react-native": "0.81.5",
-        "react-native-reanimated": "~4.1.5",
-        "react-redux": "9.2.0"
+        "react": "19.2.3"
     }
 }

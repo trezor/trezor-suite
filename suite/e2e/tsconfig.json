@@ -11,7 +11,17 @@
         "scripts/**/*.ts"
     ],
     "references": [
+        { "path": "../../suite-common/address" },
+        {
+            "path": "../../suite-common/analytics"
+        },
         { "path": "../../suite-common/device" },
+        {
+            "path": "../../suite-common/e2e-evolu-client"
+        },
+        {
+            "path": "../../suite-common/earn-staking-api"
+        },
         { "path": "../../suite-common/feedback" },
         {
             "path": "../../suite-common/message-system"
@@ -39,19 +49,32 @@
             "path": "../../suite-common/wallet-utils"
         },
         { "path": "../analytics" },
+        { "path": "../debug" },
+        { "path": "../flags" },
         { "path": "../intl" },
+        { "path": "../labeling" },
         { "path": "../metadata" },
+        { "path": "../router-config" },
+        { "path": "../settings" },
         {
             "path": "../../packages/blockchain-link-types"
         },
         { "path": "../../packages/connect-web" },
+        { "path": "../../packages/device-utils" },
         { "path": "../../packages/e2e-utils" },
         { "path": "../../packages/eslint" },
+        {
+            "path": "../../networks/solana/network-solana"
+        },
         { "path": "../../packages/protobuf" },
-        { "path": "../../packages/suite" },
         { "path": "../../packages/suite-data" },
+        {
+            "path": "../../packages/suite-desktop"
+        },
         { "path": "../../packages/theme" },
-        { "path": "../../packages/transport" },
+        {
+            "path": "../../packages/transport-common"
+        },
         {
             "path": "../../packages/trezor-user-env-link"
         },

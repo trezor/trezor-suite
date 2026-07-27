@@ -1,12 +1,10 @@
-import { Translation, TranslationKey } from '@suite/intl';
-import { TradingType } from '@suite-common/trading';
+import { Translation, type TranslationKey } from '@suite/intl';
+import { SettingsAnchor, goto } from '@suite/router';
+import { selectTorState } from '@suite/tor';
+import { type TradingType } from '@suite-common/trading';
 import { Banner, Column } from '@trezor/components';
-import { spacings } from '@trezor/theme';
 
-import { goto } from 'src/actions/suite/routerActions';
-import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectTorState } from 'src/selectors/suite/suiteSelectors';
 
 interface TradingUtilsTorWarningProps {
     tradingType: TradingType;
@@ -41,7 +39,7 @@ export const TradingUtilsTorWarning = ({
     if (!isTorEnabled) return null;
 
     const handleGoToSettings = () => {
-        dispatch(goto('settings-index', { anchor: SettingsAnchor.Tor }));
+        dispatch(goto({ routeName: 'settings-index', anchor: SettingsAnchor.Tor }));
     };
 
     const translationId = getTorWarningTranslationId(tradingType, noOffer);
@@ -57,7 +55,7 @@ export const TradingUtilsTorWarning = ({
                 )
             }
             description={
-                <Column gap={spacings.sm}>
+                <Column gap={12}>
                     <Translation id={translationId} />
                 </Column>
             }

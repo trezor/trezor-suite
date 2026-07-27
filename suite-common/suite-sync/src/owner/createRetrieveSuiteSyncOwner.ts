@@ -1,23 +1,27 @@
 import { getProofOfDelegatedIdentity } from '@suite-common/delegated-identity-key';
-import { ProofOfDelegatedSignFailedType } from '@suite-common/delegated-identity-key-types';
-import { DeviceError } from '@suite-common/device';
+import { type ProofOfDelegatedSignFailedType } from '@suite-common/delegated-identity-key-types';
+import { DeviceError, DeviceNotConnectedError } from '@suite-common/device';
 import {
-    CreateSuiteSyncOwner,
-    CreateSuiteSyncOwnerError,
-    SuiteSyncOwner,
+    type CreateSuiteSyncOwner,
+    type CreateSuiteSyncOwnerError,
+    type SuiteSyncOwner,
 } from '@suite-common/suite-sync-storage';
 import {
-    DelegatedIdentityKey,
-    DeviceErrorType,
-    TrezorDeviceWithState,
+    type DelegatedIdentityKey,
+    type DeviceErrorType,
+    type DeviceNotConnectedErrorType,
+    type TrezorDeviceWithState,
 } from '@suite-common/suite-types';
-import TrezorConnect from '@trezor/connect';
-import { Result, err } from '@trezor/type-utils';
+import type TrezorConnect from '@trezor/connect';
+import { type Result, err } from '@trezor/type-utils';
 
 const PROOF_OF_DELEGATED_IDENTITY_HEADER = 'EvoluGetNode';
 
 export type RetrieveSuiteSyncOwnerParams = {
-    device: Pick<TrezorDeviceWithState, 'useEmptyPassphrase' | 'path' | 'state' | 'instance'>;
+    device: Pick<
+        TrezorDeviceWithState,
+        'useEmptyPassphrase' | 'path' | 'state' | 'instance' | 'connected'
+    >;
     delegatedKey: DelegatedIdentityKey;
 };
 
@@ -26,7 +30,10 @@ export type RetrieveSuiteSyncOwner = (
 ) => Promise<
     Result<
         SuiteSyncOwner,
-        DeviceErrorType | ProofOfDelegatedSignFailedType | CreateSuiteSyncOwnerError
+        | DeviceErrorType
+        | ProofOfDelegatedSignFailedType
+        | CreateSuiteSyncOwnerError
+        | DeviceNotConnectedErrorType
     >
 >;
 
@@ -42,6 +49,12 @@ export type RetrieveSuiteSyncOwnerDeps = {
 export const createRetrieveSuiteSyncOwner =
     (deps: RetrieveSuiteSyncOwnerDeps): RetrieveSuiteSyncOwner =>
     async ({ device, delegatedKey }) => {
+        if (!device.connected) {
+            return err(
+                DeviceNotConnectedError('Device not connected: createRetrieveSuiteSyncOwner'),
+            );
+        }
+
         const proofOfDelegatedIdentity = getProofOfDelegatedIdentity({
             delegatedKey,
             header: PROOF_OF_DELEGATED_IDENTITY_HEADER,
@@ -67,5 +80,5 @@ export const createRetrieveSuiteSyncOwner =
             return deps.createSuiteSyncOwner({ data: result.payload.data });
         }
 
-        return err(DeviceError(result.payload.error));
+        return err(DeviceError(result.error.message));
     };

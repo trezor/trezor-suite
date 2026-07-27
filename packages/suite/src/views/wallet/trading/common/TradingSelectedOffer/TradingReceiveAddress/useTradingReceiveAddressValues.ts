@@ -1,14 +1,24 @@
-import { ExchangeTrade } from 'invity-api';
+import { type BuyTrade, type CoinExtraField, type CryptoId, type ExchangeTrade } from 'invity-api';
 
 import {
     TRADING_EXCHANGE_FORM,
     TRADING_EXCHANGE_FORM_DEX,
-    TradingTradeBuyExchangeType,
+    type TradingTradeBuyExchangeType,
 } from '@suite-common/trading';
 
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
+import { type useTradingReceiveAddress } from 'src/hooks/wallet/trading/form/useTradingReceiveAddress';
 import { isTradingExchangeContext } from 'src/utils/wallet/trading/tradingTypingUtils';
-export const useTradingReceiveAddressValues = () => {
+
+type TradingReceiveAddressValues = {
+    cryptoId: CryptoId;
+    tradingReceiveAddress: ReturnType<typeof useTradingReceiveAddress>;
+    quote: BuyTrade | ExchangeTrade | undefined;
+    extraFieldDescription: CoinExtraField | undefined;
+    isLoading: boolean;
+};
+
+export const useTradingReceiveAddressValues = (): TradingReceiveAddressValues => {
     const context = useTradingFormContext<TradingTradeBuyExchangeType>();
     const {
         tradingReceiveAddress,
@@ -31,10 +41,6 @@ export const useTradingReceiveAddressValues = () => {
 
     const getQuote = () => {
         if (isTradingExchangeContext(context)) {
-            if (context.preselectedQuote) {
-                return context.preselectedQuote;
-            }
-
             if (context.getValues(TRADING_EXCHANGE_FORM) === TRADING_EXCHANGE_FORM_DEX) {
                 return context.dexQuotes?.[0];
             }

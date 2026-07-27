@@ -1,0 +1,10 @@
+import type { SVGProps } from 'react';
+const SvgCaretDown = (props: SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" {...props}>
+        <path
+            fill="currentColor"
+            d="m26.707 12.708-10 10a1 1 0 0 1-1.415 0l-10-10a1 1 0 0 1 1.416-1.415L16 20.586l9.293-9.293a1 1 0 0 1 1.415 1.415z"
+        />
+    </svg>
+);
+export { SvgCaretDown as ReactComponent };

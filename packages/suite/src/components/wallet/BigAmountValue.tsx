@@ -1,10 +1,9 @@
 import styled from 'styled-components';
 
-import { Locale } from '@suite-common/suite-types';
-import { redactNumericalSubstring, useShouldRedactNumbers } from '@suite-common/wallet-utils';
+import { selectLanguage } from '@suite/settings';
+import { redactNumericalSubstring, useShouldRedactNumbers } from '@suite-common/discreet-mode';
+import { type Locale } from '@suite-common/suite-types';
 import { Row, Text } from '@trezor/components';
-
-import { selectLanguage } from 'src/selectors/suite/suiteSelectors';
 
 import { useSelector } from '../../hooks/suite';
 
@@ -32,9 +31,12 @@ export const BigAmountValue = ({
 
     // Todo: this is ugly hack, shall be refactored to some more safe alternative
     const shouldFormatLocale: Locale[] = ['en-US', 'ja-JP', 'ko-KR', 'zh-CN', 'zh-TW'];
-    const [whole, separator, fractional] = shouldFormatLocale.includes(language)
+    const parts = shouldFormatLocale.includes(language)
         ? formattedStringAmount.split(/(\.)/)
         : formattedStringAmount.split(/(,)/);
+    const whole = parts[0] ?? '';
+    const separator = parts[1];
+    const fractional = parts[2];
 
     const shouldRedactNumbers = useShouldRedactNumbers();
 

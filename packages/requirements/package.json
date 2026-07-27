@@ -15,7 +15,8 @@
     },
     "dependencies": {
         "@trezor/utils": "workspace:*",
-        "chalk": "^5.6.2"
+        "chalk": "^5.6.2",
+        "semver": "^7.7.1"
     },
     "devDependencies": {
         "tsx": "^4.21.0"

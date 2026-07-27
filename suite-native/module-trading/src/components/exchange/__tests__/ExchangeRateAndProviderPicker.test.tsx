@@ -1,98 +1,114 @@
-import { events } from '@suite-native/analytics';
+import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
+import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
+import { FeatureFlag, featureFlagsInitialState } from '@suite-native/feature-flags';
 import { Form } from '@suite-native/forms';
-import { useAnalytics } from '@suite-native/services';
-import {
-    PreloadedState,
-    act,
-    renderHookWithStoreProviderAsync,
-    renderWithStoreProviderAsync,
-    screen,
-    userEvent,
-} from '@suite-native/test-utils';
-import { exchangeQuotes, getWalletState } from '@suite-native/trading-fixtures';
-import { ExchangeFormType } from '@suite-native/trading-types';
+import { getTranslation } from '@suite-native/intl';
+import { act, userEvent } from '@suite-native/test-utils-store';
+import { exchangeQuotes, mercuryoFixedWorstQuote } from '@suite-native/trading-fixtures';
+import { type ExchangeFormType } from '@suite-native/trading-types';
+import { getIndexOrThrow } from '@trezor/utils';
 
+import {
+    type PreloadedStatePartial,
+    type TradingTestPreloadedState,
+    renderHookWithTradingProvider,
+    renderWithTradingProvider,
+} from '../../../__tests__/tradingTestUtils';
 import { useExchangeForm } from '../../../hooks/exchange/useExchangeForm';
 import { ExchangeRateAndProviderPicker } from '../ExchangeRateAndProviderPicker';
 
 const reportMock = jest.fn();
-
-jest.mock('@suite-native/services', () => {
-    const original = jest.requireActual('@suite-native/services');
-
-    return {
-        ...original,
-        useAnalytics: jest.fn(),
-    };
-});
+const services: NativeAnalyticsDep = {
+    analytics: mockNativeAnalytics(reportMock),
+};
 
 describe('ExchangeRateAndProviderPicker', () => {
     let exchangeForm: ExchangeFormType;
-    let preloadedState: PreloadedState;
+    let unmount: (() => void) | undefined;
 
-    const renderExchangeForm = () => renderHookWithStoreProviderAsync(() => useExchangeForm());
+    const baseOverrides: PreloadedStatePartial<TradingTestPreloadedState> = {
+        featureFlags: {
+            ...featureFlagsInitialState,
+            [FeatureFlag.IsTradingResidenceCheckEnabled]: false,
+        },
+    };
 
-    const renderExchangeRateAndProviderPicker = () =>
-        renderWithStoreProviderAsync(<ExchangeRateAndProviderPicker />, {
-            preloadedState,
+    const renderExchangeRateAndProviderPicker = (
+        extraOverrides: PreloadedStatePartial<TradingTestPreloadedState> = {},
+    ) => {
+        const result = renderWithTradingProvider(<ExchangeRateAndProviderPicker />, {
+            services,
+            tradeType: 'exchange',
+            overrides: { ...baseOverrides, ...extraOverrides },
             wrapper: ({ children }) => <Form form={exchangeForm}>{children}</Form>,
         });
 
-    beforeEach(async () => {
+        ({ unmount } = result);
+
+        return result;
+    };
+
+    beforeEach(() => {
         jest.clearAllMocks();
 
-        (useAnalytics as jest.Mock).mockReturnValue({
-            report: reportMock,
+        const { result } = renderHookWithTradingProvider(() => useExchangeForm(), {
+            services,
+            tradeType: 'exchange',
+            overrides: baseOverrides,
         });
-
-        const { result } = await renderExchangeForm();
         exchangeForm = result.current;
-
-        preloadedState = { wallet: getWalletState({ tradeType: 'exchange' }) };
     });
 
     afterEach(() => {
-        screen.unmount();
+        if (unmount) {
+            unmount();
+            unmount = undefined;
+        }
     });
 
-    it('should render nothing when no quote is selected and quotes are not loading', async () => {
-        const { toJSON } = await renderExchangeRateAndProviderPicker();
+    it('should render nothing when no quote is selected and quotes are not loading', () => {
+        const { toJSON } = renderExchangeRateAndProviderPicker();
 
         expect(toJSON()).toBeNull();
     });
 
-    it('should render provider picker when no quote is selected and quotes are loading', async () => {
-        preloadedState!.wallet!.trading!.exchange!.isLoading = true;
-
-        const { getByText } = await renderExchangeRateAndProviderPicker();
-
-        expect(getByText('Provider')).toBeOnTheScreen();
-    });
-
-    it('should render provider when quote is selected', async () => {
-        act(() => {
-            exchangeForm.setValue('quote', exchangeQuotes[0]);
+    it('should render provider picker when no quote is selected and quotes are loading', () => {
+        const { getByText } = renderExchangeRateAndProviderPicker({
+            wallet: { trading: { exchange: { isLoading: true } } },
         });
 
-        const { getByText } = await renderExchangeRateAndProviderPicker();
+        expect(getByText(getTranslation('moduleTrading.tradingScreen.provider'))).toBeOnTheScreen();
+    });
 
-        expect(getByText('Provider')).toBeOnTheScreen();
+    it('should render provider when quote is selected', () => {
+        act(() => {
+            exchangeForm.setValue('quote', mercuryoFixedWorstQuote);
+        });
+
+        const { getByText } = renderExchangeRateAndProviderPicker();
+
+        expect(getByText(getTranslation('moduleTrading.tradingScreen.provider'))).toBeOnTheScreen();
         expect(getByText('Mercuryo')).toBeOnTheScreen();
     });
 
     describe('analytics', () => {
+        const withQuotes: PreloadedStatePartial<TradingTestPreloadedState> = {
+            wallet: { trading: { exchange: { quotes: exchangeQuotes } } },
+        };
+
         beforeEach(() => {
-            preloadedState!.wallet!.trading!.exchange!.quotes = exchangeQuotes;
             act(() => {
-                exchangeForm.setValue('quote', exchangeQuotes[0]);
+                exchangeForm.setValue('quote', mercuryoFixedWorstQuote);
             });
             reportMock.mockClear();
         });
 
         it('should fire analytics event on provider select', async () => {
-            const { getByText } = await renderExchangeRateAndProviderPicker();
+            const { getByText } = renderExchangeRateAndProviderPicker(withQuotes);
 
-            await userEvent.press(getByText('Provider'));
+            await userEvent.press(
+                getByText(getTranslation('moduleTrading.tradingScreen.provider')),
+            );
             await userEvent.press(getByText('Cexdirect'));
 
             expect(reportMock).toHaveBeenCalledTimes(2);
@@ -112,10 +128,12 @@ describe('ExchangeRateAndProviderPicker', () => {
         });
 
         it('should not fire analytics event when same provider is selected', async () => {
-            const { getByText, getAllByText } = await renderExchangeRateAndProviderPicker();
+            const { getByText, getAllByText } = renderExchangeRateAndProviderPicker(withQuotes);
 
-            await userEvent.press(getByText('Provider'));
-            await userEvent.press(getAllByText('Mercuryo')[1]);
+            await userEvent.press(
+                getByText(getTranslation('moduleTrading.tradingScreen.provider')),
+            );
+            await userEvent.press(getIndexOrThrow(getAllByText('Mercuryo'), 1));
 
             expect(reportMock).toHaveBeenCalledTimes(1);
             expect(reportMock).not.toHaveBeenCalledWith({

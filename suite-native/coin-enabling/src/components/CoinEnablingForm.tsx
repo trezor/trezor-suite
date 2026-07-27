@@ -3,26 +3,32 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
+import { useServices } from '@suite-common/dependency-injection';
+import { networkSymbolCollection } from '@suite-common/wallet-config';
 import { changeCoinVisibility } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
-import { events } from '@suite-native/analytics';
-import {
-    selectDeviceEnabledDiscoveryNetworkSymbols,
-    selectDiscoveryNetworkSymbols,
-} from '@suite-native/discovery';
+import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { selectDeviceEnabledDiscoveryNetworkSymbols } from '@suite-native/discovery';
 import { Form, useForm } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
-import { useAnalytics } from '@suite-native/services';
 
+import {
+    type CoinEnablingFormValues,
+    getEnabledCoinsFromNetworkSymbols,
+    getNetworkSymbolsFromEnabledCoins,
+} from '../coinEnablingFormUtils';
+import { coinEnablingFormValidationSchema } from '../coinEnablingSchema';
 import { DiscoveryCoinsFilter } from './DiscoveryCoinsFilter';
-import { CoinEnablingFormValues, coinEnablingFormValidationSchema } from '../coinEnablingSchema';
 
-export const CoinEnablingForm = () => {
+type CoinEnablingFormProps = {
+    searchQuery: string;
+};
+
+export const CoinEnablingForm = ({ searchQuery }: CoinEnablingFormProps) => {
     const dispatch = useDispatch();
     const navigation = useNavigation();
-    const analytics = useAnalytics();
+    const { analytics } = useServices(selectNativeAnalyticsDep);
     const enabledNetworkSymbols = useSelector(selectDeviceEnabledDiscoveryNetworkSymbols);
-    const networkSymbols = useSelector(selectDiscoveryNetworkSymbols);
 
     const { showAlert } = useAlert();
 
@@ -34,28 +40,28 @@ export const CoinEnablingForm = () => {
                     <Translation id="moduleSettings.coinEnabling.oneNetworkSymbolAlert.description" />
                 ),
                 primaryButtonTitle: <Translation id="generic.buttons.gotIt" />,
-                primaryButtonVariant: 'redBold',
+                primaryButtonColorProps: { intent: 'critical', priority: 'primary' },
             }),
         [showAlert],
     );
 
     const form = useForm<CoinEnablingFormValues>({
         defaultValues: {
-            enabledCoins: enabledNetworkSymbols,
+            enabledCoins: getEnabledCoinsFromNetworkSymbols(enabledNetworkSymbols),
         },
         validation: coinEnablingFormValidationSchema,
     });
 
-    const handleSubmit = form.handleSubmit(values => {
-        const changedCoins = networkSymbols.filter(
-            symbol =>
-                enabledNetworkSymbols.includes(symbol) !== values.enabledCoins.includes(symbol),
+    const handleSubmit = form.handleSubmit((values: CoinEnablingFormValues) => {
+        const enabledCoins = getNetworkSymbolsFromEnabledCoins(values.enabledCoins);
+        const changedCoins = networkSymbolCollection.filter(
+            symbol => enabledNetworkSymbols.includes(symbol) !== enabledCoins.includes(symbol),
         );
 
         if (changedCoins.length === 0) return;
 
         changedCoins.forEach(symbol => {
-            const isEnabled = values.enabledCoins.includes(symbol);
+            const isEnabled = enabledCoins.includes(symbol);
             dispatch(changeCoinVisibility({ symbol, shouldBeVisible: isEnabled }));
 
             analytics.report({
@@ -79,7 +85,7 @@ export const CoinEnablingForm = () => {
     return (
         <Form form={form}>
             <DiscoveryCoinsFilter
-                networkSymbols={networkSymbols}
+                searchQuery={searchQuery}
                 onDisablingLastCoin={showLastNetworkAlert}
             />
         </Form>

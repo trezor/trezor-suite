@@ -1,6 +1,6 @@
 const isJest = typeof jest !== 'undefined';
 
-export class InvariantError extends Error {
+class InvariantError extends Error {
     constructor(message: string = 'Invariant Violation') {
         super(message);
     }

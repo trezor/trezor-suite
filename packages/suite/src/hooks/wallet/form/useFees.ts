@@ -1,18 +1,17 @@
 import { useEffect, useRef } from 'react';
-import { FieldPath, UseFormReturn } from 'react-hook-form';
+import { type FieldPath, type UseFormReturn } from 'react-hook-form';
 
 import {
-    FeeInfo,
-    FormState,
-    PrecomposedLevels,
-    PrecomposedLevelsCardano,
+    type FeeInfo,
+    type FormState,
+    type PrecomposedLevels,
+    type PrecomposedLevelsCardano,
 } from '@suite-common/wallet-types';
 import { isEip1559 } from '@suite-common/wallet-utils';
-import { FeeLevel } from '@trezor/connect';
+import { type FeeLevel } from '@trezor/connect';
 
 import { useDispatch } from 'src/hooks/suite';
-
-import { SendContextValues } from '../../../types/wallet/sendForm';
+import { type SendContextValues } from 'src/types/wallet/sendForm';
 
 export type FeesFormValues = Pick<
     FormState,
@@ -31,7 +30,7 @@ interface Props<TFieldValues extends FeesFormValues> extends UseFormReturn<TFiel
     defaultValue?: FeeLevel['label'];
     feeInfo?: FeeInfo;
     onChange?: (prev?: FeeLevel['label'], current?: FeeLevel['label']) => void;
-    composeRequest: SendContextValues['composeTransaction'];
+    composeRequest?: SendContextValues['composeTransaction'];
     composedLevels?: PrecomposedLevels | PrecomposedLevelsCardano;
 }
 
@@ -141,7 +140,7 @@ export const useFees = <TFieldValues extends FeesFormValues>({
             )!;
             // set custom values from a previously selected composed transaction
             // or from previously selected FeeLevel
-            const transactionInfo = composedLevels && composedLevels[currentLevel.label];
+            const transactionInfo = composedLevels?.[currentLevel.label];
 
             const hasNoError = !baseFee && transactionInfo && transactionInfo.type !== 'error';
 
@@ -162,7 +161,7 @@ export const useFees = <TFieldValues extends FeesFormValues>({
             feePerUnit = '';
             feeLimit = '';
             clearErrors(['feePerUnit', 'feeLimit', 'maxPriorityFeePerGas', 'maxFeePerGas']);
-            composeRequest();
+            composeRequest?.();
         }
 
         setValue('selectedFee', level);
@@ -188,7 +187,7 @@ export const useFees = <TFieldValues extends FeesFormValues>({
         }
 
         // on change callback
-        if (onChange) onChange(selectedFeeRef.current, level);
+        onChange?.(selectedFeeRef.current, level);
 
         selectedFeeRef.current = selectedFee;
     };

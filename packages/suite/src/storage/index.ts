@@ -1,9 +1,8 @@
-import { IDBPDatabase, IDBPTransaction, StoreNames } from 'idb';
+import { type IDBPDatabase, type IDBPTransaction, type StoreNames } from 'idb';
 
 import { idbVersionToString } from '@suite/idb-migration-utils';
-import SuiteDB, { OnUpgradeFunc } from '@trezor/suite-storage';
-
-import { reloadApp } from 'src/utils/suite/reload';
+import { desktopApi } from '@trezor/suite-desktop-api';
+import SuiteDB, { type OnUpgradeFunc } from '@trezor/suite-storage';
 
 import type { SuiteDBSchema } from './definitions';
 import { runLegacyMigrations } from './migrations';
@@ -22,7 +21,7 @@ const MIGRATIONS = Object.values(migrations)
     .sort((a, b) => a.threshold - b.threshold);
 
 const LATEST_MIGRATION_VERSION = MIGRATIONS.length
-    ? MIGRATIONS[MIGRATIONS.length - 1].threshold
+    ? (MIGRATIONS[MIGRATIONS.length - 1]?.threshold ?? 0)
     : 0;
 
 const runMigrations = async (
@@ -68,9 +67,22 @@ const onUpgrade: OnUpgradeFunc<SuiteDBSchema> = async (db, oldVersion, newVersio
     await runMigrations(db, oldVersion, transaction);
 };
 
+/**
+ * Downgrading is not supported – it resets IDB, that's why we need to reload afterwards.
+ * Cannot use services here, because db is instantiated before composition roots are composed.
+ * TODO when the statically imported `db` singleton is refactored to DI, use services.reloadApp here.
+ */
+const onDowngrade = () => {
+    if (desktopApi.available) {
+        desktopApi.appRestart();
+    } else if (typeof window !== 'undefined') {
+        window.location.reload();
+    }
+};
+
 export const db = new SuiteDB<SuiteDBSchema>(
     'trezor-suite',
     LATEST_MIGRATION_VERSION,
     onUpgrade,
-    reloadApp,
+    onDowngrade,
 );

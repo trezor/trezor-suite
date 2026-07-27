@@ -8,10 +8,12 @@ const SIGNATURE =
 const ELECTRUM_SIGNATURE =
     'HxpInbBQH8LYgBBnRt4/QCV+HBW3hL1o1Yg85biWX1DdBTbfN96pyLL7tLQdYn+VtjvuZWJhEYbUCasjZLmih6w=';
 
-test.describe('Sign and verify', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () => {
+test.describe('Sign and verify', { tag: ['@T3W1', '@T3T1'] }, () => {
     test.use({ deviceSetup: { mnemonic: 'mnemonic_all' } });
-    test.beforeEach(async ({ page, walletPage, onboardingPage }) => {
+
+    test.beforeEach(async ({ page, walletPage, onboardingPage, settingsPage }) => {
         await onboardingPage.completeOnboarding();
+        await settingsPage.changeNetworks({ enableNetworks: ['btc'] });
         await walletPage.openAccount();
         await page.waitForTimeout(500); // wait until is the dropdown loaded
         await walletPage.walletExtraDropDown.click();
@@ -32,7 +34,16 @@ test.describe('Sign and verify', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () => {
         await page.getByTestId('@sign-verify/message').fill(MESSAGE);
         await page.getByTestId('@sign-verify/sign-address/input').click();
         await page.getByTestId(`@sign-verify/sign-address/option/${PATH}`).click();
-        await expect(page.getByTestId('@sign-verify/sign-address/input')).toContainText(ADDRESS);
+        // The selected address is rendered truncated + chunked (e.g. "/3bc1q 6hr6 … jq45 0u"),
+        // so match its non-elided beginning after stripping whitespace.
+        await expect
+            .poll(async () =>
+                (await page.getByTestId('@sign-verify/sign-address/input').innerText()).replace(
+                    /\s/g,
+                    '',
+                ),
+            )
+            .toContain(ADDRESS.slice(0, 8));
         await page.getByTestId('@sign-verify/submit').click();
 
         await devicePrompt.waitForPromptAndConfirm(); // Confirm signing address
@@ -48,9 +59,18 @@ test.describe('Sign and verify', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () => {
         await page.getByTestId('@sign-verify/message').fill(MESSAGE);
         await page.getByTestId('@sign-verify/sign-address/input').click();
         await page.getByTestId(`@sign-verify/sign-address/option/${PATH}`).click();
-        await expect(page.getByTestId('@sign-verify/sign-address/input')).toContainText(ADDRESS);
+        // The selected address is rendered truncated + chunked (e.g. "/3bc1q 6hr6 … jq45 0u"),
+        // so match its non-elided beginning after stripping whitespace.
+        await expect
+            .poll(async () =>
+                (await page.getByTestId('@sign-verify/sign-address/input').innerText()).replace(
+                    /\s/g,
+                    '',
+                ),
+            )
+            .toContain(ADDRESS.slice(0, 8));
         await page.getByTestId('@sign-verify/format').click();
-        await page.getByTestId('select-bar/true').click();
+        await page.getByTestId('@sign-verify/format/true').click();
         await page.getByTestId('@sign-verify/submit').click();
         await devicePrompt.waitForPromptAndConfirm(); // Confirm signing address
         await devicePrompt.waitForPromptAndConfirm(); // Confirm message

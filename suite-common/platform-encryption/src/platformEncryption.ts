@@ -1,4 +1,4 @@
-import { Branded, BrandedArity2, Result } from '@trezor/type-utils';
+import { type Branded, type BrandedArity2, type Result } from '@trezor/type-utils';
 
 export type EncryptableBranded = string & Branded<string>;
 
@@ -28,6 +28,10 @@ export type EncryptionError = EncryptionUnavailable;
 export type DecryptionError = EncryptionUnavailable | DecryptionFailed;
 
 export type PlatformEncryptionDep = { platformEncryption: PlatformEncryption };
+
+export const selectPlatformEncryptionDep = (services: any): PlatformEncryptionDep => ({
+    platformEncryption: services.platformEncryption,
+});
 
 export interface PlatformEncryption {
     encrypt: <T extends EncryptableBranded>(params: {

@@ -1,14 +1,13 @@
-import { randomBytes } from 'crypto';
+import { randomBytes } from '@noble/hashes/utils.js';
 
-import { serializeError } from '@trezor/utils';
+import type { FirmwareHashCheckError, FirmwareHashCheckResult } from '@trezor/connect-common';
+import { type Logger, serializeError } from '@trezor/utils';
 
 import { calculateFirmwareHash, getBinaryOptional, stripFwHeaders } from '../../api/firmware';
-import { DataManager } from '../../data/DataManager';
 import { getFirmwareLocation, getReleaseByVersion } from '../../data/firmwareInfo';
-import { FirmwareHashCheckError, FirmwareHashCheckResult } from '../../types';
-import { Log } from '../../utils/debug';
+import * as settingsStore from '../../data/settingsStore';
+import type { IDevice } from '../../types/idevice';
 import { getFirmwareType } from '../../utils/firmwareUtils';
-import type { Device } from '../Device';
 
 const createFailResult = (error: FirmwareHashCheckError, errorPayload?: unknown) => ({
     success: false,
@@ -17,15 +16,15 @@ const createFailResult = (error: FirmwareHashCheckError, errorPayload?: unknown)
 });
 
 type Context = {
-    device: Device;
-    logger: Log;
+    device: IDevice;
+    logger: Logger;
 };
 
 export const checkFirmwareHash = async ({
     device,
     logger,
 }: Context): Promise<FirmwareHashCheckResult | null> => {
-    const enabled = DataManager.getSettings('enableFirmwareHashCheck');
+    const enabled = settingsStore.get('enableFirmwareHashCheck');
     if (!enabled) return createFailResult('check-skipped');
 
     const firmwareVersion = device.getVersion();
@@ -48,7 +47,7 @@ export const checkFirmwareHash = async ({
     });
     const { baseUrl, path } = firmwareLocation;
 
-    const timeoutThresholdsPerModel = DataManager.getSettings('firmwareHashCheckTimeouts');
+    const timeoutThresholdsPerModel = settingsStore.get('firmwareHashCheckTimeouts');
     // device has no features (not yet connected) or no firmware
     if (firmwareVersion === undefined || !device.features || device.features.bootloader_mode) {
         return null;
@@ -78,8 +77,8 @@ export const checkFirmwareHash = async ({
     const { hash: expectedHash, challenge } = calculateFirmwareHash({
         internal_model: device.features.internal_model,
         firmwareVersion,
-        fw: strippedBinary,
-        key: randomBytes(32),
+        fw: Buffer.from(strippedBinary),
+        key: Buffer.from(randomBytes(32)),
     });
 
     // handle rejection of call by a counterfeit device. If unhandled, it crashes device initialization,

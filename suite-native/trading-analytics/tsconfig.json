@@ -2,11 +2,14 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
+        {
+            "path": "../../suite-common/dependency-injection"
+        },
         { "path": "../../suite-common/trading" },
         { "path": "../analytics" },
-        { "path": "../services" },
         { "path": "../trading-atoms" },
         { "path": "../test-utils" },
+        { "path": "../test-utils-store" },
         { "path": "../trading-fixtures" }
     ]
 }

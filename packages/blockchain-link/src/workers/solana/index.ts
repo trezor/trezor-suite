@@ -1,83 +1,36 @@
-import {
-    AccountInfoBase,
-    Address,
-    ClusterUrl,
-    RpcMainnet,
-    RpcSubscriptionsMainnet,
-    RpcTransportMainnet,
-    SOLANA_ERROR__BLOCK_HEIGHT_EXCEEDED,
-    SOLANA_ERROR__JSON_RPC__SERVER_ERROR_SEND_TRANSACTION_PREFLIGHT_FAILURE,
-    SOLANA_ERROR__RPC_SUBSCRIPTIONS__CHANNEL_CONNECTION_CLOSED,
-    SOLANA_ERROR__RPC_SUBSCRIPTIONS__CHANNEL_FAILED_TO_CONNECT,
-    SOLANA_ERROR__RPC__TRANSPORT_HTTP_ERROR,
-    SOLANA_ERROR__TRANSACTION_ERROR__BLOCKHASH_NOT_FOUND,
-    Signature,
-    Slot,
-    SolanaRpcApiMainnet,
-    SolanaRpcResponse,
-    SolanaRpcSubscriptionsApi,
-    TransactionWithBlockhashLifetime,
-    address,
-    assertTransactionIsFullySigned,
-    createDefaultRpcTransport,
-    createSolanaRpcFromTransport,
-    createSolanaRpcSubscriptions,
-    decompileTransactionMessageFetchingLookupTables,
-    getBase16Encoder,
-    getBase64Encoder,
-    getCompiledTransactionMessageDecoder,
-    getSignatureFromTransaction,
-    getTransactionDecoder,
-    isDurableNonceTransaction,
-    isSolanaError,
-    mainnet,
-    pipe,
-    sendAndConfirmTransactionFactory,
-} from '@solana/kit';
-import { getTokenSize as _getTokenSize } from '@solana-program/token';
-import { getTokenSize as _getToken2022Size } from '@solana-program/token-2022';
-
 import type {
     AccountInfo,
+    MessageTypes,
     Response,
     SubscriptionAccountInfo,
     TokenDetailByMint,
     TokenInfo,
     Transaction,
 } from '@trezor/blockchain-link-types';
-import { MESSAGES, RESPONSES } from '@trezor/blockchain-link-types/src/constants';
-import { CustomError } from '@trezor/blockchain-link-types/src/constants/errors';
-import type * as MessageTypes from '@trezor/blockchain-link-types/src/messages';
-import type { SolanaTokenAccountInfo } from '@trezor/blockchain-link-types/src/solana';
+import { CustomError, MESSAGES, RESPONSES } from '@trezor/blockchain-link-types';
 import { solanaUtils } from '@trezor/blockchain-link-utils';
-import {
-    type TokenProgramName,
-    tokenProgramsInfo,
-    transformTokenInfo,
-} from '@trezor/blockchain-link-utils/src/solana';
-import type {
-    ParsedTransactionWithMeta,
-    SolanaValidParsedTxWithMeta,
-} from '@trezor/blockchain-link-utils/src/solana-types';
 import { getSuiteVersion } from '@trezor/env-utils';
-import { IntervalId } from '@trezor/type-utils';
-import { BigNumber, createDeferred, createLazy } from '@trezor/utils';
+import {
+    SOLANA_DECIMALS,
+    SOLANA_MAINNET_GENESIS_HASH,
+    tokenProgramsInfo,
+} from '@trezor/network-solana/constants';
+import solana from '@trezor/network-solana/runtime';
+import type {
+    AccountInfoBase,
+    Address,
+    ParsedTransactionWithMeta,
+    Signature,
+    Slot,
+    SolanaAPI,
+    SolanaRpcResponse,
+    SolanaTokenAccountInfo,
+    SolanaValidParsedTxWithMeta,
+} from '@trezor/network-solana/types';
+import { type IntervalId } from '@trezor/type-utils';
+import { BigNumber, createDeferred, createLazy, isNotNullOrUndefined } from '@trezor/utils';
 
-import { BaseWorker, CONTEXT, ContextType } from '../baseWorker';
-import { getBaseFee, getPriorityFee } from './utils/fee';
-import { ThrottledTransportOptions, getThrottledTransport } from './utils/getThrottledTransport';
-import { STAKE_ACCOUNT_V2_SIZE, getSolanaStakingData } from './utils/stakingAccounts';
-
-const THROTTLE_OPTIONS: ThrottledTransportOptions = {
-    maxRps: 4,
-    interval: 100,
-};
-
-export type SolanaAPI = Readonly<{
-    clusterUrl: ClusterUrl;
-    rpc: RpcMainnet<SolanaRpcApiMainnet>;
-    rpcSubscriptions: RpcSubscriptionsMainnet<SolanaRpcSubscriptionsApi>;
-}>;
+import { BaseWorker, CONTEXT, type ContextType } from '../baseWorker';
 
 type Context = ContextType<SolanaAPI> & {
     getTokenMetadata: () => Promise<TokenDetailByMint>;
@@ -90,15 +43,12 @@ type SignatureWithSlot = {
     slot: Slot;
 };
 
-function nonNullable<T>(value: T): value is NonNullable<T> {
-    return value !== null && value !== undefined;
-}
-
 const getAllSignatures = async (
     api: SolanaAPI,
     descriptor: MessageTypes.GetAccountInfo['payload']['descriptor'],
     fullHistory = false,
 ) => {
+    const { address } = await solana();
     let lastSignature: SignatureWithSlot | undefined;
     let keepFetching = true;
     let allSignatures: SignatureWithSlot[] = [];
@@ -140,98 +90,31 @@ const fetchTransactionPage = async (
                     .send(),
             ),
         )
-    ).filter(nonNullable);
+    ).filter(isNotNullOrUndefined);
 
 const isValidTransaction = (tx: ParsedTransactionWithMeta): tx is SolanaValidParsedTxWithMeta =>
-    !!(tx && tx.meta && tx.transaction && tx.blockTime);
+    !!(tx?.meta && tx.transaction && tx.blockTime);
 
 const pushTransaction = async (request: Request<MessageTypes.PushTransaction>) => {
     const rawTx = request.payload.hex.startsWith('0x')
         ? request.payload.hex.slice(2)
         : request.payload.hex;
     const api = await request.connect();
+    const { sendAndConfirmTransaction } = await solana();
 
-    const txByteArray = getBase16Encoder().encode(rawTx);
-    const transaction = getTransactionDecoder().decode(txByteArray);
-    assertTransactionIsFullySigned(transaction);
+    const signature = await sendAndConfirmTransaction(rawTx, api);
 
-    const compiledMessage = getCompiledTransactionMessageDecoder().decode(transaction.messageBytes);
-    const message = await decompileTransactionMessageFetchingLookupTables(compiledMessage, api.rpc);
-    if (isDurableNonceTransaction(message)) {
-        // TODO: Handle durable nonce transactions.
-        throw new Error('Unimplemented: Confirming durable nonce transactions');
-    }
-
-    let transactionWithBlockhashLifetime = transaction as typeof transaction &
-        TransactionWithBlockhashLifetime;
-
-    // If lifetimeConstraint is not provided, fetch the latest blockhash and lastValidBlockHeight
-    if (message.lifetimeConstraint === undefined) {
-        const {
-            value: { blockhash, lastValidBlockHeight },
-        } = await api.rpc.getLatestBlockhash({ commitment: 'confirmed' }).send();
-        transactionWithBlockhashLifetime = {
-            ...transactionWithBlockhashLifetime,
-            lifetimeConstraint: { blockhash, lastValidBlockHeight },
-        };
-    } else {
-        transactionWithBlockhashLifetime = {
-            ...transactionWithBlockhashLifetime,
-            lifetimeConstraint: message.lifetimeConstraint,
-        };
-    }
-
-    try {
-        const signature = getSignatureFromTransaction(transaction);
-        const sendAndConfirmTransaction = sendAndConfirmTransactionFactory(api);
-        await sendAndConfirmTransaction(transactionWithBlockhashLifetime, {
-            commitment: 'confirmed',
-            skipPreflight: false,
-        });
-
-        return {
-            type: RESPONSES.PUSH_TRANSACTION,
-            payload: signature,
-        } as const;
-    } catch (error) {
-        if (isSolanaError(error, SOLANA_ERROR__BLOCK_HEIGHT_EXCEEDED)) {
-            throw new Error(
-                'Please make sure that you submit the transaction within 1 minute after signing.',
-            );
-        }
-        if (
-            isSolanaError(error, SOLANA_ERROR__RPC_SUBSCRIPTIONS__CHANNEL_FAILED_TO_CONNECT) ||
-            isSolanaError(error, SOLANA_ERROR__RPC_SUBSCRIPTIONS__CHANNEL_CONNECTION_CLOSED) ||
-            isSolanaError(error, SOLANA_ERROR__RPC__TRANSPORT_HTTP_ERROR)
-        ) {
-            throw new Error(
-                'Solana backend connection failure. The backend might be inaccessible or the connection is unstable.',
-            );
-        }
-        if (
-            isSolanaError(
-                error,
-                SOLANA_ERROR__JSON_RPC__SERVER_ERROR_SEND_TRANSACTION_PREFLIGHT_FAILURE,
-            ) &&
-            isSolanaError(error.cause, SOLANA_ERROR__TRANSACTION_ERROR__BLOCKHASH_NOT_FOUND)
-        ) {
-            throw new Error(
-                'The transaction has expired because too much time passed between signing and sending. Please try again.',
-            );
-        }
-        if (isSolanaError(error)) {
-            throw new Error(
-                `Solana error code: ${error.context.__code}. Please try again or contact support.`,
-            );
-        }
-        throw error;
-    }
+    return {
+        type: RESPONSES.PUSH_TRANSACTION,
+        payload: signature,
+    } as const;
 };
 
 const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => {
     const { payload } = request;
     const { details = 'basic' } = payload;
     const api = await request.connect();
+    const { address, getSolanaStakingData } = await solana();
 
     const publicKey = address(payload.descriptor);
 
@@ -246,9 +129,7 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
             .getTokenAccountsByOwner(
                 publicKey,
                 { programId: address(programPublicKey) } /* filter */,
-                {
-                    encoding: 'jsonParsed',
-                },
+                { encoding: 'jsonParsed' },
             )
             .send();
 
@@ -316,7 +197,7 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
     // Fetch token info only if the account owns tokens
     let tokens: TokenInfo[] = [];
     if (tokenAccounts.length > 0) {
-        tokens = transformTokenInfo(tokenAccounts, tokenMetadata);
+        tokens = solanaUtils.transformTokenInfo(tokenAccounts, tokenMetadata);
     }
 
     if (details === 'txids') {
@@ -378,7 +259,7 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
                     tokenMetadata,
                 ),
             )
-            .filter((tx): tx is Transaction => !!tx);
+            .filter(isNotNullOrUndefined);
 
         const transactions: Transaction[] = await Promise.all(
             page.map(async tx => {
@@ -422,8 +303,8 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
 
     const tokenAccountsInfos = tokenAccounts.map(a => ({
         address: a.pubkey,
-        mint: a.account.data.parsed?.info?.mint as string | undefined,
-        decimals: a.account.data.parsed?.info?.tokenAmount?.decimals as number | undefined,
+        mint: a.account.data.parsed?.info?.mint,
+        decimals: a.account.data.parsed?.info?.tokenAmount?.decimals,
     }));
 
     const transactionPage =
@@ -436,16 +317,20 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
     // Not necessary for basic and tokens details
     if (!['basic', 'tokens'].includes(details)) {
         const solEpoch = await getEpoch();
-        const solStakingAccounts = await getSolanaStakingData(api?.rpc, publicKey, solEpoch);
+        const [solStakingAccounts, solExternalStakingAccounts] = await Promise.all([
+            getSolanaStakingData(api?.rpc, publicKey, solEpoch, 'everstake'),
+            getSolanaStakingData(api?.rpc, publicKey, solEpoch, 'non-everstake'),
+        ]);
 
         misc = {
             solStakingAccounts,
+            solExternalStakingAccounts,
             solEpoch,
         };
 
         if (accountInfo) {
             const [accountDataEncoded] = accountInfo.data;
-            const accountDataBytes = getBase64Encoder().encode(accountDataEncoded);
+            const accountDataBytes = Buffer.from(accountDataEncoded, 'base64'); // Previously `getBase64Encoder().encode(bytes)` was used
             const accountDataLength = BigInt(accountDataBytes.byteLength);
             const rent = await api.rpc.getMinimumBalanceForRentExemption(accountDataLength).send();
 
@@ -508,7 +393,7 @@ const getInfo = async (request: Request<MessageTypes.GetInfo>, isTestnet: boolea
         url: api.clusterUrl,
         name: 'Solana',
         version: '1', // saving request api.rpc.getVersion().send(), version is not used anyways
-        decimals: 9,
+        decimals: SOLANA_DECIMALS,
     };
 
     return {
@@ -517,17 +402,9 @@ const getInfo = async (request: Request<MessageTypes.GetInfo>, isTestnet: boolea
     } as const;
 };
 
-export type AccountProgramName = TokenProgramName | 'staking';
-
-const getAccountProgramSize = (programName: AccountProgramName) =>
-    ({
-        staking: STAKE_ACCOUNT_V2_SIZE,
-        'spl-token': _getTokenSize(),
-        'spl-token-2022': _getToken2022Size(),
-    })[programName];
-
 const estimateFee = async (request: Request<MessageTypes.EstimateFee>) => {
     const api = await request.connect();
+    const { getFees } = await solana();
 
     const { data: messageHex, newAccountProgramName } = request.payload.specific ?? {};
 
@@ -535,30 +412,8 @@ const estimateFee = async (request: Request<MessageTypes.EstimateFee>) => {
         throw new Error('Could not estimate fee for transaction.');
     }
 
-    const transaction = pipe(messageHex, getBase16Encoder().encode, getTransactionDecoder().decode);
-    const message = pipe(transaction.messageBytes, getCompiledTransactionMessageDecoder().decode);
-
-    const decompiledTransactionMessage = await decompileTransactionMessageFetchingLookupTables(
-        message,
-        api.rpc,
-    );
-
-    const priorityFee = await getPriorityFee(
-        api.rpc,
-        decompiledTransactionMessage,
-        message,
-        transaction.signatures,
-    );
-
-    const baseFee = await getBaseFee(api.rpc, message);
-
-    const accountCreationFee = newAccountProgramName
-        ? await api.rpc
-              .getMinimumBalanceForRentExemption(
-                  BigInt(getAccountProgramSize(newAccountProgramName)),
-              )
-              .send()
-        : BigInt(0);
+    const { baseFee, priorityFee, accountCreationFee, decompiledTransactionMessage } =
+        await getFees(messageHex, newAccountProgramName, api);
 
     const payload = [
         {
@@ -662,6 +517,7 @@ const handleAccountNotification = async (
     account: SubscriptionAccountInfo,
 ) => {
     const { connect, state, post, getTokenMetadata } = context;
+    const { address, isConnectionClosedError } = await solana();
     try {
         for await (const _ of accountNotifications) {
             const api = await connect();
@@ -714,7 +570,7 @@ const handleAccountNotification = async (
             });
         }
     } catch (error) {
-        if (isSolanaError(error, SOLANA_ERROR__RPC_SUBSCRIPTIONS__CHANNEL_CONNECTION_CLOSED)) {
+        if (isConnectionClosedError(error)) {
             // The WS was closed, we should unsubscribe
             if (account.subscriptionId) abortSubscription(account.subscriptionId);
             state.removeAccounts([account]);
@@ -736,6 +592,8 @@ const subscribeAccounts = async (context: Context, accounts: SubscriptionAccount
                 subscribedAccount => account.descriptor === subscribedAccount.descriptor,
             ),
     );
+
+    const { address } = await solana();
 
     await Promise.all(
         newAccounts.map(async a => {
@@ -848,32 +706,10 @@ class SolanaWorker extends BaseWorker<SolanaAPI> {
     private isTestnet = false;
 
     async tryConnect(url: string): Promise<SolanaAPI> {
-        const clusterUrl = mainnet(url);
-        const transport = createDefaultRpcTransport({
-            url: clusterUrl,
-            headers: {
-                'User-Agent': `Trezor Suite ${getSuiteVersion()}`,
-            },
-        });
+        const { getApi } = await solana();
+        const api = getApi(url, `Trezor Suite ${getSuiteVersion()}`);
 
-        const throttledTransport = getThrottledTransport(
-            transport,
-            THROTTLE_OPTIONS,
-        ) as RpcTransportMainnet;
-        const throttledRpc = createSolanaRpcFromTransport(throttledTransport);
-
-        const api = {
-            clusterUrl,
-            rpc: throttledRpc,
-            rpcSubscriptions: createSolanaRpcSubscriptions(mainnet(url.replace('http', 'ws')), {
-                intervalMs: 60 * 60 * 1000,
-            }),
-        };
-
-        // genesisHash is reliable identifier of the network, for mainnet the genesis hash is 5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d
-        this.isTestnet =
-            (await api.rpc.getGenesisHash().send()) !==
-            '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d';
+        this.isTestnet = (await api.rpc.getGenesisHash().send()) !== SOLANA_MAINNET_GENESIS_HASH;
 
         this.post({ id: -1, type: RESPONSES.CONNECTED });
 

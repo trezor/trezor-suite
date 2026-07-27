@@ -2,11 +2,12 @@ import { Translation } from '@suite/intl';
 import { selectDeviceLabelOrNameById, selectSelectedDevice } from '@suite-common/device';
 import { getDeviceInternalModel } from '@suite-common/suite-utils';
 import { Image, Row } from '@trezor/components';
-import { spacings } from '@trezor/theme';
+import { LinkBreakIcon, LinkIcon } from '@trezor/icons';
+
+import { useSelector } from 'src/hooks/suite';
 
 import { DeviceConnectionText } from './DeviceConnectionText';
 import { DeviceDetail } from './DeviceDetail';
-import { useSelector } from '../../../../hooks/suite';
 
 type SmallDeviceItemProps = {
     forceAlternativeDeviceLabel?: string;
@@ -23,11 +24,7 @@ export const SmallDeviceItem = ({ forceAlternativeDeviceLabel }: SmallDeviceItem
     const selectedDeviceModelInternal = getDeviceInternalModel(selectedDevice);
 
     return (
-        <Row
-            gap={spacings.xs}
-            padding={{ vertical: spacings.xs, horizontal: spacings.xs }}
-            alignItems="center"
-        >
+        <Row gap={8} padding={{ vertical: 8, horizontal: 8 }} alignItems="center">
             <Image
                 width={18}
                 objectFit="contain"
@@ -37,7 +34,7 @@ export const SmallDeviceItem = ({ forceAlternativeDeviceLabel }: SmallDeviceItem
 
             <DeviceDetail label={forceAlternativeDeviceLabel || deviceLabel || 'Trezor'}>
                 <DeviceConnectionText
-                    icon={isConnected ? 'link' : 'linkBreak'}
+                    icon={isConnected ? LinkIcon : LinkBreakIcon}
                     intent={isConnected ? 'brand' : 'critical'}
                 >
                     <Translation id={isConnected ? 'TR_CONNECTED' : 'TR_DISCONNECTED'} />

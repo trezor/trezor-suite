@@ -1,14 +1,69 @@
-import { AccountAddress } from './account';
-import { CoinjoinAffiliateRequest } from './coordinator';
-import { RawLiquidityClue } from './middleware';
-import { EndRoundState, RoundPhase } from '../enums';
+import type { Network } from '@trezor/utxo-lib';
 
-export interface SerializedAlice {
-    accountKey: string;
-    path: string;
-    outpoint: string;
-    error?: string;
+import type { AccountAddress } from './account';
+import type { AliceShape, SerializedAlice } from './alice';
+import type {
+    AffiliationId,
+    CoinjoinAffiliateRequest,
+    CoinjoinRoundParameters,
+    Round,
+} from './coordinator';
+import type { Logger } from './logger';
+import type { RawLiquidityClue } from './middleware';
+import type { CoinjoinPrisonShape } from './prison';
+import type { EndRoundState, RoundPhase, SessionPhase } from '../enums';
+
+export type SessionPhaseEvent = {
+    phase: SessionPhase;
+    accountKeys: string[];
+};
+
+export interface CoinjoinRoundOptions {
+    network: Network;
+    signal: AbortSignal;
+    coordinatorName: string;
+    coordinatorUrl: string;
+    middlewareUrl: string;
+    logger: Logger;
+    affiliationId?: AffiliationId;
+    setSessionPhase: (event: SessionPhaseEvent) => void;
 }
+
+// shape if src/client/CoinjoinRound.ts
+export interface CoinjoinRoundShape {
+    readonly prison: CoinjoinPrisonShape;
+    id: string;
+    blameOf: string;
+    phase: RoundPhase;
+    endRoundState: EndRoundState;
+    coinjoinState: Round['CoinjoinState'];
+    inputRegistrationEnd: string;
+    amountCredentialIssuerParameters: Round['AmountCredentialIssuerParameters'];
+    vsizeCredentialIssuerParameters: Round['VsizeCredentialIssuerParameters'];
+    affiliateRequest: Round['AffiliateRequest'];
+
+    roundParameters: CoinjoinRoundParameters;
+    inputs: AliceShape[]; // list of registered inputs
+    failed: AliceShape[]; // list of failed inputs
+    phaseDeadline: number; // deadline is inaccurate, phase may change earlier
+    roundDeadline: number; // deadline is inaccurate,round may end earlier
+    commitmentData: string; // commitment data used for ownership proof and witness requests
+    addresses: (AccountAddress & { accountKey: string })[]; // list of addresses (outputs) used in this round in outputRegistration phase
+    transactionSignTries: number[]; // timestamps for processing transactionSigning phase
+    transactionData?: CoinjoinTransactionData; // transaction to sign
+    broadcastedTxDetails?: BroadcastedTransactionDetails; // transaction broadcasted
+    liquidityClues?: CoinjoinTransactionLiquidityClue[]; // updated liquidity clues
+
+    setSessionPhase(phase: SessionPhase): void;
+    signedSuccessfully(): void;
+    isSignedSuccessfully(): boolean;
+}
+
+export type CoinjoinRoundGenerator = (
+    round: Round,
+    prison: CoinjoinPrisonShape,
+    options: CoinjoinRoundOptions,
+) => CoinjoinRoundShape;
 
 export interface SerializedCoinjoinRound {
     id: string;

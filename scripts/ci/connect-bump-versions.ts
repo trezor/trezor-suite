@@ -1,17 +1,17 @@
-import path from 'node:path';
 import fs from 'node:fs';
-
+import path from 'node:path';
 import { promisify } from 'node:util';
+
 import {
-    getPackageDependencies,
-    gettingNpmDistributionTags,
-    exec,
-    commit,
     comment,
+    commit,
+    exec,
+    getPackageDependencies,
+    getTrezorPackageDir,
+    gettingNpmDistributionTags,
 } from './helpers';
 
 const readFile = promisify(fs.readFile);
-const existsDirectory = promisify(fs.exists);
 const writeFile = promisify(fs.writeFile);
 
 const args = process.argv.slice(2);
@@ -31,6 +31,9 @@ const [semver] = args;
 
  */
 const allowedSemvers = ['patch', 'prepatch', 'minor', 'preminor', 'prerelease'];
+if (!semver) {
+    throw new Error('Check npm dependencies requires 1 parameter: semver');
+}
 if (!allowedSemvers.includes(semver)) {
     throw new Error(`provided semver: ${semver} must be one of ${allowedSemvers.join(', ')}`);
 }
@@ -119,8 +122,12 @@ const updateConnectChangelog = async (
 
 const bumpConnect = async () => {
     try {
+        // connect-plugin-ethereum is deprecated in 10.x (its hashing logic was
+        // inlined into @trezor/connect). The 10.x release is a stub and the
+        // package source is frozen — no need to auto-bump it on every connect
+        // release. Keep it removed from this list unless the stub itself changes.
+        // TODO The same applies to connect-plugin-stellar.
         const mainPackages = [
-            'connect-plugin-ethereum',
             'connect-plugin-stellar',
             'connect-webextension',
             'connect-mobile',
@@ -132,6 +139,7 @@ const bumpConnect = async () => {
             mainPackages.map(async pkg => {
                 const result = await getPackageDependencies(pkg);
                 console.log(`${pkg} dependencies to update:`, result);
+
                 return result.update;
             }),
         );
@@ -151,7 +159,7 @@ const bumpConnect = async () => {
         console.log('allUniquePackagesToUpdate', allUniquePackagesToUpdate);
 
         for (const packageName of allUniquePackagesToUpdate) {
-            const PACKAGE_PATH = path.join(ROOT, 'packages', packageName);
+            const PACKAGE_PATH = getTrezorPackageDir(packageName);
             const PACKAGE_JSON_PATH = path.join(PACKAGE_PATH, 'package.json');
 
             // This uses dependency version-bump-prompt.
@@ -178,7 +186,7 @@ const bumpConnect = async () => {
             // We do that so we can generate the complete CHANGELOG automatically when doing stable release.
             if (newCommits.length && deploymentType === 'stable') {
                 const CHANGELOG_PATH = path.join(PACKAGE_PATH, 'CHANGELOG.md');
-                if (!(await existsDirectory(CHANGELOG_PATH))) {
+                if (!fs.existsSync(CHANGELOG_PATH)) {
                     await writeFile(CHANGELOG_PATH, '');
                 }
 
@@ -197,7 +205,7 @@ const bumpConnect = async () => {
             });
         }
 
-        const CONNECT_PACKAGE_PATH = path.join(ROOT, 'packages', 'connect');
+        const CONNECT_PACKAGE_PATH = getTrezorPackageDir('connect');
         const CONNECT_PACKAGE_JSON_PATH = path.join(CONNECT_PACKAGE_PATH, 'package.json');
         const CONNECT_CHANGELOG_PATH = path.join(CONNECT_PACKAGE_PATH, 'CHANGELOG.md');
 
@@ -296,6 +304,7 @@ const bumpConnect = async () => {
 
             if (!connectGitLogText) {
                 console.info('no changelog for @trezor/connect');
+
                 return;
             }
 

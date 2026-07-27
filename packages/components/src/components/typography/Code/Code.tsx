@@ -1,8 +1,6 @@
-import React, { type ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
 import styled from 'styled-components';
-
-import { borders, spacingsPx } from '@trezor/theme';
 
 const StyledCode = styled.code`
     font-family: RobotoMono, 'PixelOperatorMono8', monospace;
@@ -11,12 +9,10 @@ const StyledCode = styled.code`
     line-height: 1.5;
     font-weight: 400;
     letter-spacing: -0.4px;
-    padding: 0 ${() => spacingsPx.xxxs};
-    background-color: ${({ theme }) => theme.backgroundNeutralSubtleOnElevation1};
-    box-shadow: inset 0 0 0 1px ${({ theme }) => theme.borderElevation0};
-    border-radius: ${() => borders.radii.xxs};
+    padding: 0 ${() => '2px'};
+    background-color: ${({ theme }) => theme.elementFillNeutralSoft};
+    box-shadow: inset 0 0 0 1px ${({ theme }) => theme.borderNeutral};
+    border-radius: 4px;
 `;
 
-export const Code: React.FC<{ children: ReactNode }> = ({ children }) => (
-    <StyledCode>{children}</StyledCode>
-);
+export const Code = ({ children }: { children: ReactNode }) => <StyledCode>{children}</StyledCode>;

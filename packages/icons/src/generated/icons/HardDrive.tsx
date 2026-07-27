@@ -1,0 +1,10 @@
+import type { SVGProps } from 'react';
+const SvgHardDrive = (props: SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" {...props}>
+        <path
+            fill="currentColor"
+            d="M28 8H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h24a2 2 0 0 0 2-2V10a2 2 0 0 0-2-2m0 14H4V10h24zm-3-6a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0"
+        />
+    </svg>
+);
+export { SvgHardDrive as ReactComponent };

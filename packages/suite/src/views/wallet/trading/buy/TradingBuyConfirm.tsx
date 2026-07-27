@@ -1,40 +1,43 @@
-import { FormProvider } from 'react-hook-form';
+import {
+    selectTradingBuySelectedQuote,
+    selectTradingProviderByNameAndTradeType,
+} from '@suite-common/trading';
+import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
+import { Column } from '@trezor/components';
 
 import { useSelector } from 'src/hooks/suite';
-import { useTradingBuyForm } from 'src/hooks/wallet/trading/form/useTradingBuyForm';
-import { TradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
-import { UseTradingProps } from 'src/types/trading/trading';
-import { getProvidersInfoProps } from 'src/utils/wallet/trading/tradingTypingUtils';
-import { getTradeProvider } from 'src/utils/wallet/trading/tradingUtils';
-import { TradingContainer } from 'src/views/wallet/trading/common/TradingContainer';
-import { TradingSelectedOffer } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingSelectedOffer';
-
-const TradingBuyConfirmLoaded = ({ selectedAccount }: UseTradingProps) => {
-    const tradingBuyContextValues = useTradingBuyForm({
-        selectedAccount,
-        pageType: 'confirm',
-    });
-
-    const provider = getTradeProvider({
-        trade: tradingBuyContextValues.selectedQuote,
-        providerInfo: getProvidersInfoProps(tradingBuyContextValues),
-    });
-
-    return (
-        <TradingFormContext.Provider value={tradingBuyContextValues}>
-            <FormProvider {...tradingBuyContextValues.methods}>
-                <TradingContainer SectionComponent={TradingSelectedOffer} provider={provider} />
-            </FormProvider>
-        </TradingFormContext.Provider>
-    );
-};
+import { useTradingBuyConfirm } from 'src/hooks/wallet/trading/useTradingBuyConfirm';
+import { DiscoveryWarning } from 'src/views/wallet/staking/components/StakingDashboard/components/DiscoveryWarning';
+import { TradingFooter } from 'src/views/wallet/trading/common/TradingFooter/TradingFooter';
+import { useTradingPageHeader } from 'src/views/wallet/trading/common/TradingLayout/useTradingPageHeader';
+import { TradingOfferBuy } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingOfferBuy/TradingOfferBuy';
 
 export const TradingBuyConfirm = () => {
-    const selectedAccount = useSelector(state => state.wallet.selectedAccount);
+    const { confirmTrade, isConfirmDisabled } = useTradingBuyConfirm();
+    const selectedQuote = useSelector(selectTradingBuySelectedQuote);
+    const provider = useSelector(state =>
+        selectTradingProviderByNameAndTradeType(state, selectedQuote?.exchange, 'buy'),
+    );
+    const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
+    useTradingPageHeader();
 
-    if (selectedAccount.status !== 'loaded') {
+    if (!selectedQuote) {
         return null;
     }
 
-    return <TradingBuyConfirmLoaded selectedAccount={selectedAccount} />;
+    return (
+        <>
+            {isDiscoveryRunning && (
+                <Column margin={{ bottom: 16 }}>
+                    <DiscoveryWarning />
+                </Column>
+            )}
+            <TradingOfferBuy
+                selectedQuote={selectedQuote}
+                confirmTrade={confirmTrade}
+                isConfirmDisabled={isConfirmDisabled}
+            />
+            <TradingFooter provider={provider} />
+        </>
+    );
 };

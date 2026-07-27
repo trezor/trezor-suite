@@ -1,23 +1,24 @@
 import { useCallback } from 'react';
 
-import { Translation, TranslationKey } from '@suite/intl';
+import { selectDesktopAnalyticsDep } from '@suite/analytics';
+import { Translation, type TranslationKey } from '@suite/intl';
 import { events } from '@suite-common/analytics';
 import {
-    DeviceBluetoothConnectionStatusType,
+    type DeviceBluetoothConnectionStatusType,
     bluetoothActions,
     selectKnownDevices,
     selectNearbyDevices,
 } from '@suite-common/bluetooth';
+import { useServices } from '@suite-common/dependency-injection';
 import { Button, Row } from '@trezor/components';
-import { BluetoothDeviceId } from '@trezor/connect';
+import { type BluetoothDeviceId } from '@trezor/connect';
 
-import { useAnalytics } from 'src/support/useAnalytics';
+import { type DesktopBluetoothDevice } from 'src/actions/bluetooth/DesktopBluetoothDevice';
+import { selectConnectingDevices } from 'src/actions/bluetooth/desktopBluetoothSelectors';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 
 import { BluetoothDeviceComponent } from './BluetoothDeviceComponent';
 import { PairingState } from './PairingState';
-import { DesktopBluetoothDevice } from '../../../actions/bluetooth/DesktopBluetoothDevice';
-import { selectConnectingDevices } from '../../../actions/bluetooth/desktopBluetoothSelectors';
-import { useDispatch, useSelector } from '../../../hooks/suite';
 import { useConnectionGlobalModalContext } from '../../connection/context/ConnectionGlobalModalContext';
 
 const connectionStatusMap: Record<
@@ -78,7 +79,7 @@ const ActionButton = ({
 }: ActionButtonProps) => {
     const connectingDevicesIds = useSelector(selectConnectingDevices);
     const { onConnect } = useConnectionGlobalModalContext();
-    const analytics = useAnalytics();
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
     const isSuiteTryingToConnectToDevice = connectingDevicesIds.includes(device.id);
     const connectionStatus = connectionStatusMap[device.connectionStatus.type];
     const isClickable = connectionStatus?.component === 'button';

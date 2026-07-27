@@ -2,10 +2,10 @@ import type { Meta, StoryObj } from '@storybook/react-native';
 
 import { ICON_NAMES } from '@suite-native/icons';
 
-import { FULL_ALERT_BOX_VARIANTS } from '../../FullAlertBox/presets';
+import { ALERT_BOX_INTENTS } from '../../FullAlertBox/types';
 import {
     InlineAlertBox as InlineAlertBoxComponent,
-    InlineAlertBoxProps,
+    type InlineAlertBoxProps,
 } from '../../InlineAlertBox/InlineAlertBox';
 
 type InlineAlertBoxStory = StoryObj<InlineAlertBoxProps>;
@@ -20,29 +20,34 @@ export default meta;
 export const InlineAlertBox: InlineAlertBoxStory = {
     name: 'InlineAlertBox',
     args: {
-        title: 'Something very important to communicate.',
+        title: 'New version available (2.8.1).',
         buttonLabel: 'Button',
-        variant: 'info',
+        intent: 'info',
         iconName: undefined,
         buttonProps: undefined,
+        isCloseButtonDisplayed: undefined,
     },
     argTypes: {
         title: {
             control: { type: 'text' },
         },
+        intent: {
+            control: { type: 'select' },
+            options: ALERT_BOX_INTENTS,
+        },
         buttonLabel: {
             control: { type: 'text' },
         },
-        viewLeft: {
-            control: false,
-        },
-        variant: {
-            control: { type: 'select' },
-            options: FULL_ALERT_BOX_VARIANTS,
-        },
+        isCloseButtonDisplayed: { type: 'boolean' },
         iconName: {
             control: { type: 'select' },
             options: ICON_NAMES,
+        },
+        onButtonPress: {
+            table: { disable: true },
+        },
+        buttonProps: {
+            table: { disable: true },
         },
     },
 };

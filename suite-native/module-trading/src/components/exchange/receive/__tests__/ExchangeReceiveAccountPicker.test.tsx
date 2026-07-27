@@ -1,21 +1,26 @@
 import { Form } from '@suite-native/forms';
+import { getTranslation } from '@suite-native/intl';
+import { act, fireEvent } from '@suite-native/test-utils-store';
+import { btc1NormalAccount, btcAsset } from '@suite-native/trading-fixtures';
 import {
-    PreloadedState,
-    act,
-    fireEvent,
-    renderHookWithStoreProviderAsync,
-    renderWithStoreProviderAsync,
-} from '@suite-native/test-utils';
-import { btcAsset, getBtcAccount } from '@suite-native/trading-fixtures';
-import { tradingInitialState } from '@suite-native/trading-state';
-import { ExchangeFormType, ReceiveAccount, TradeableAsset } from '@suite-native/trading-types';
+    type ExchangeFormType,
+    type ReceiveAccount,
+    type TradeableAsset,
+} from '@suite-native/trading-types';
+import { mergeDeepObject } from '@trezor/utils';
 
+import {
+    type PreloadedStatePartial,
+    type TradingTestPreloadedState,
+    createTradingFeatureFlags,
+    renderHookWithTradingProvider,
+    renderWithTradingProvider,
+} from '../../../../__tests__/tradingTestUtils';
 import { useExchangeForm } from '../../../../hooks/exchange/useExchangeForm';
 import { ExchangeReceiveAccountPicker } from '../ExchangeReceiveAccountPicker';
 
 const mockNavigate = jest.fn();
 const btcAccountName1 = 'BTC Account #1';
-const btcAddressAddress = '1BTC';
 
 jest.mock('@react-navigation/native', () => ({
     ...jest.requireActual('@react-navigation/native'),
@@ -24,32 +29,40 @@ jest.mock('@react-navigation/native', () => ({
     }),
 }));
 
-const getExchangeState = (selectedReceiveAccount: ReceiveAccount | undefined) => ({
+const exchangeStateWithReceiveAccount = (
+    selectedReceiveAccount: ReceiveAccount | undefined,
+): PreloadedStatePartial<TradingTestPreloadedState> => ({
     wallet: {
         trading: {
-            ...tradingInitialState,
             exchange: {
-                ...tradingInitialState.exchange,
                 receiveAddress: selectedReceiveAccount?.address?.address,
                 receiveAccountKey: selectedReceiveAccount?.account.key,
             },
         },
-        accounts: [getBtcAccount()],
+        accounts: [btc1NormalAccount],
     },
 });
 
 describe('ExchangeReceiveAccountPicker', () => {
     let exchangeForm: ExchangeFormType;
 
-    const renderExchangeForm = async () => {
-        const { result } = await renderHookWithStoreProviderAsync(() => useExchangeForm());
+    const baseOverrides: PreloadedStatePartial<TradingTestPreloadedState> = {
+        featureFlags: createTradingFeatureFlags(),
+    };
+
+    const renderExchangeForm = () => {
+        const { result } = renderHookWithTradingProvider(() => useExchangeForm(), {
+            tradeType: 'exchange',
+            overrides: baseOverrides,
+        });
 
         return result.current;
     };
 
-    const renderPicker = ({ preloadedState }: { preloadedState?: PreloadedState } = {}) =>
-        renderWithStoreProviderAsync(<ExchangeReceiveAccountPicker />, {
-            preloadedState,
+    const renderPicker = (overrides: PreloadedStatePartial<TradingTestPreloadedState> = {}) =>
+        renderWithTradingProvider(<ExchangeReceiveAccountPicker />, {
+            tradeType: 'exchange',
+            overrides: mergeDeepObject(baseOverrides, overrides),
             wrapper: ({ children }) => <Form form={exchangeForm}>{children}</Form>,
         });
 
@@ -59,50 +72,46 @@ describe('ExchangeReceiveAccountPicker', () => {
         });
     };
 
-    beforeEach(async () => {
-        jest.resetAllMocks();
-        exchangeForm = await renderExchangeForm();
+    beforeEach(() => {
+        jest.clearAllMocks();
+        exchangeForm = renderExchangeForm();
     });
 
-    it('should display nothing when selectedSymbol is not specified', async () => {
-        const { toJSON } = await renderPicker();
+    it('should display nothing when selectedSymbol is not specified', () => {
+        const { toJSON } = renderPicker();
 
         expect(toJSON()).toBeNull();
     });
 
-    it('should display "Not selected" when asset is not specified', async () => {
+    it('should display "Not selected" when asset is not specified', () => {
         setSelectedAsset(btcAsset);
-        const { getByText } = await renderPicker();
+        const { getByText } = renderPicker();
 
-        expect(getByText('Not selected')).toBeTruthy();
+        expect(getByText(getTranslation('moduleTrading.notSelected'))).toBeTruthy();
     });
 
-    // Todo: https://github.com/trezor/trezor-suite/issues/24906
-    it.skip('should display selected account name and address', async () => {
+    it('should display selected account name', () => {
         setSelectedAsset(btcAsset);
-        const btcAccount = getBtcAccount();
-        const { getByText } = await renderPicker({
-            preloadedState: getExchangeState({
-                account: btcAccount,
-                address: btcAccount.addresses?.used[0],
+        const { getByText } = renderPicker(
+            exchangeStateWithReceiveAccount({
+                account: btc1NormalAccount,
+                address: btc1NormalAccount.addresses?.used[0],
             }),
-        });
+        );
 
         expect(getByText(btcAccountName1)).toBeTruthy();
-        expect(getByText(btcAddressAddress)).toBeTruthy();
     });
 
-    it('should call navigate with correct params on press', async () => {
+    it('should call navigate with correct params on press', () => {
         setSelectedAsset(btcAsset);
-        const btcAccount = getBtcAccount();
-        const { getByText } = await renderPicker({
-            preloadedState: getExchangeState({
-                account: btcAccount,
-                address: btcAccount.addresses?.used[0],
+        const { getByText } = renderPicker(
+            exchangeStateWithReceiveAccount({
+                account: btc1NormalAccount,
+                address: btc1NormalAccount.addresses?.used[0],
             }),
-        });
+        );
 
-        fireEvent.press(getByText('Receive account'));
+        fireEvent.press(getByText(getTranslation('moduleTrading.tradingScreen.receiveAccount')));
 
         expect(mockNavigate).toHaveBeenCalledTimes(1);
         expect(mockNavigate).toHaveBeenCalledWith('ReceiveAccounts', {

@@ -1,10 +1,7 @@
 import { Locator, Page } from '@playwright/test';
 
-import { getCompanyNameFromList } from '../../../fixtures/invity';
 import { step } from '../../common';
 import { expect } from '../../testExtends/customMatchers';
-
-const quoteProviderLocator = '@trading/offers/quote/provider';
 
 export class TradingQuotesSection {
     readonly list: Locator;
@@ -12,18 +9,18 @@ export class TradingQuotesSection {
     readonly providerOfQuote = (provider: string) =>
         this.page.getByTestId(`@trading/offers/quote-${provider}`);
     readonly selectedProvider: Locator;
+    readonly selectedProviderName: Locator;
     readonly loadingSpinner: Locator;
-    readonly refreshTime: Locator;
-    readonly selectButton: Locator;
     readonly bestOfferAmount: Locator;
 
     constructor(private readonly page: Page) {
         this.list = this.page.getByTestId('@trading/offers/quote');
-        this.provider = this.page.getByTestId(quoteProviderLocator);
+        this.provider = this.page.getByTestId('@trading/offers/quote/provider');
         this.selectedProvider = this.page.getByTestId('@trading/selected-offer-provider');
+        this.selectedProviderName = this.selectedProvider.getByTestId(
+            '@trading/offers/quote/provider',
+        );
         this.loadingSpinner = this.page.getByTestId('@trading/offers/loading-spinner');
-        this.refreshTime = this.page.getByTestId('@trading/refresh-time-text');
-        this.selectButton = this.page.getByTestId('@trading/offers/get-this-deal-button');
         this.bestOfferAmount = this.page.getByTestId('@trading/best-offer/amount');
     }
 
@@ -34,66 +31,47 @@ export class TradingQuotesSection {
         await expect(this.bestOfferAmount).not.toHaveText(/^0( w+)?$/);
     }
 
-    private async validateQuotes({
-        quotesResponse,
-        listType,
-        amountElementID,
-        formatExpectedAmount,
-        getSelectedPaymentMethod,
-    }: {
-        quotesResponse: any[];
-        listType: 'buyList' | 'sellList';
-        amountElementID: string;
-        formatExpectedAmount: (quote: any) => string;
-        getSelectedPaymentMethod: () => Promise<string>;
-    }) {
-        const paymentMethod = await getSelectedPaymentMethod();
-        const expectedQuotes = quotesResponse.filter(
-            quote => quote.paymentMethod === paymentMethod && quote.error === undefined,
-        );
-        expect.soft(await this.list.count()).toBe(expectedQuotes.length);
+    @step()
+    async selectQuoteByProvider(provider: string) {
+        await this.provider.filter({ hasText: provider }).click();
+    }
 
-        const displayedQuotes = await this.list.all();
-        for (const [index, quote] of displayedQuotes.entries()) {
-            // Validate provider of the quote row
-            const provider = quote.getByTestId(quoteProviderLocator);
-            const expectedProvider = getCompanyNameFromList(
-                expectedQuotes[index].exchange,
-                listType,
-            );
-            await expect.soft(provider).toHaveText(expectedProvider);
-            // Validate amount of the quote row
-            const amount = quote.getByTestId(amountElementID);
-            const expectedAmount = formatExpectedAmount(expectedQuotes[index]);
-            await expect.soft(amount).toHaveText(expectedAmount);
+    //  When `provider` is given, that specific provider is selected(must be
+    //  present in the list) Otherwise a random provider different from the currently
+    //  selected one is picked. When only a single provider is available it re-selects it
+
+    @step()
+    async chooseDifferentOfferIfAvailable(provider?: string): Promise<void> {
+        const initialProvider = (await this.selectedProviderName.textContent())?.trim();
+        if (!initialProvider) {
+            throw new Error('Cannot get text content from the initial provider.');
         }
-    }
 
-    @step('TradingQuotesSection.validateBuyQuotes()')
-    async validateBuyQuotes(
-        quotesResponse: any[],
-        getSelectedPaymentMethod: () => Promise<string>,
-    ) {
-        await this.validateQuotes({
-            quotesResponse,
-            listType: 'buyList',
-            amountElementID: '@trading/offers/quote/crypto-amount-with-symbol',
-            formatExpectedAmount: quote => `${quote.receiveStringAmount} BTC`,
-            getSelectedPaymentMethod,
-        });
-    }
+        await this.selectedProvider.click();
+        await expect(this.list.first()).toBeVisible();
 
-    @step('TradingQuotesSection.validateSellQuotes()')
-    async validateSellQuotes(
-        quotesResponse: any[],
-        getSelectedPaymentMethod: () => Promise<string>,
-    ) {
-        await this.validateQuotes({
-            quotesResponse,
-            listType: 'sellList',
-            amountElementID: '@trading/offers/quote/amount',
-            formatExpectedAmount: quote => `€${parseFloat(quote.fiatStringAmount).toFixed(2)}`,
-            getSelectedPaymentMethod,
-        });
+        const offerProviderNames = (
+            await this.list.getByTestId('@trading/offers/quote/provider').allTextContents()
+        ).map(name => name.trim());
+
+        let differentProvider: string | undefined;
+        if (provider) {
+            differentProvider = offerProviderNames.find(name => name === provider);
+            if (!differentProvider) {
+                throw new Error(
+                    `Provider "${provider}" not found in offers. Available: ${offerProviderNames.join(', ')}`,
+                );
+            }
+        } else {
+            const candidates = offerProviderNames.filter(name => name && name !== initialProvider);
+            differentProvider = candidates[Math.floor(Math.random() * candidates.length)];
+        }
+
+        const providerToSelect = differentProvider ?? initialProvider;
+        await this.list
+            .filter({ has: this.provider.filter({ hasText: providerToSelect }) })
+            .first()
+            .click();
+        await expect(this.selectedProviderName).toHaveText(providerToSelect);
     }
 }

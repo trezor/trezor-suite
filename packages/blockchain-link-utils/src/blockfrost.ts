@@ -1,21 +1,20 @@
-import type { VinVout } from '@trezor/blockchain-link-types/src/blockbook';
 import type {
+    AccountAddresses,
+    AccountInfo,
     AssetBalance,
     BlockfrostAccountInfo,
     BlockfrostTransaction,
     BlockfrostUtxos,
     ParseAssetResult,
-} from '@trezor/blockchain-link-types/src/blockfrost';
-import type {
-    AccountAddresses,
-    AccountInfo,
     TokenInfo,
     TokenTransfer,
     Transaction,
     TransferType,
     Utxo,
-} from '@trezor/blockchain-link-types/src/common';
-import { BigNumber, BigNumberValue } from '@trezor/utils/src/bigNumber';
+    VinVout,
+} from '@trezor/blockchain-link-types';
+import { isNotNullOrUndefined } from '@trezor/utils';
+import { BigNumber, type BigNumberValue } from '@trezor/utils/src/bigNumber';
 
 import { enhanceVinVout, filterTargets, sumVinVout, transformTarget } from './utils';
 
@@ -211,7 +210,7 @@ export const filterTokenTransfers = (
             });
     });
 
-    return transfers.filter(t => !!t) as TokenTransfer[];
+    return transfers.filter(isNotNullOrUndefined);
 };
 
 export const transformTransaction = (
@@ -270,7 +269,7 @@ export const transformTransaction = (
     ) {
         // all inputs and outputs are mine
         type = 'self';
-        targets = outputs.filter(o => internal.indexOf(o) < 0);
+        targets = outputs.filter(o => !internal.includes(o));
         // recalculate amount, amount spent is just a fee
         amount = blockfrostTxData.txData.fees;
 
@@ -300,7 +299,7 @@ export const transformTransaction = (
         }
     } else {
         type = 'sent';
-        targets = outputs.filter(o => internal.indexOf(o) < 0);
+        targets = outputs.filter(o => !internal.includes(o));
         // regular targets
         if (voutLength) {
             // bitcoin-like transaction

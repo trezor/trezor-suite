@@ -1,6 +1,6 @@
-import { PropsWithChildren } from 'react';
+import { type PropsWithChildren } from 'react';
 
-import { Box, FrameProps } from '@trezor/components';
+import { Box, type FrameProps } from '@trezor/components';
 
 type AnimationCardProps = PropsWithChildren<{
     aspectRatio: FrameProps['aspectRatio'];
@@ -11,8 +11,8 @@ export const AnimationCard = ({ aspectRatio, maxHeight, children }: AnimationCar
     <Box
         borderRadius={16}
         borderWidth={1}
-        borderColor="borderOnElevationNegative"
-        backgroundColor="backgroundTertiaryDefaultOnElevation0"
+        borderColor="elementBorderNeutralSofterAlt"
+        backgroundColor="elementFillNeutralSofter"
         overflow="hidden"
         aspectRatio={aspectRatio}
         maxHeight={maxHeight}

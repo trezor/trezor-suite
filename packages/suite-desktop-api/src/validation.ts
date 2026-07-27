@@ -1,5 +1,5 @@
-import { RendererChannels } from './api';
-import { SuiteThemeVariant } from './messages';
+import { type RendererChannels } from './api';
+import { type SuiteThemeVariant } from './messages';
 
 type Primitive = 'boolean' | 'string' | 'number';
 type OptionalPrimitive = Primitive | [Primitive, boolean];
@@ -48,8 +48,12 @@ const validChannels: Array<keyof RendererChannels> = [
     'connect-popup/cancel',
     'app/auto-start/popup-request',
     'power-monitor/suspend',
+    'guide/open',
+    'guide/open-support-feedback',
+    'guide/open-shortcuts',
     'bio-auth/validation-status-changed',
     'bio-auth/bio-auth-availability-changed',
     'bio-auth/settings-changed',
+    'theme/system-change',
 ];
 export const isValidChannel = (channel: any) => validChannels.includes(channel);

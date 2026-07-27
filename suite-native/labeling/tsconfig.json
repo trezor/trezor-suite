@@ -4,32 +4,21 @@
     "references": [
         { "path": "../../suite-common/device" },
         {
+            "path": "../../suite-common/message-system"
+        },
+        {
             "path": "../../suite-common/suite-sync"
         },
         {
             "path": "../../suite-common/validators"
         },
         {
-            "path": "../../suite-common/wallet-config"
-        },
-        {
             "path": "../../suite-common/wallet-core"
         },
-        {
-            "path": "../../suite-common/wallet-types"
-        },
-        {
-            "path": "../../suite-common/wallet-utils"
-        },
-        { "path": "../alerts" },
         { "path": "../atoms" },
         { "path": "../forms" },
         { "path": "../intl" },
-        { "path": "../navigation" },
-        { "path": "../services" },
         { "path": "../settings" },
-        { "path": "../toasts" },
-        { "path": "../../packages/connect" },
-        { "path": "../../packages/type-utils" }
+        { "path": "../suite-sync" }
     ]
 }

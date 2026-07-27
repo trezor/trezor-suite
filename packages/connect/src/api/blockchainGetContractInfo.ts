@@ -1,0 +1,61 @@
+import type { CoinInfo, PermissionRequest } from '@trezor/connect-common';
+
+import { assertBackendSupported, initBlockchain } from '../backend/BlockchainLink';
+import type { MethodContext, MethodMessage, Payload } from '../core/AbstractMethod';
+import { AbstractMethod } from '../core/AbstractMethod';
+import { getCoinInfoOrThrow } from '../data/coinInfo';
+import { validateParams } from './common/paramsValidator';
+
+type Params = {
+    coinInfo: CoinInfo;
+    identity?: string;
+    request: Pick<Payload<'blockchainGetContractInfo'>, 'contract' | 'currency' | 'protocols'>;
+};
+
+export default class BlockchainGetContractInfo extends AbstractMethod<
+    'blockchainGetContractInfo',
+    Params
+> {
+    constructor(message: MethodMessage<'blockchainGetContractInfo'>) {
+        const { payload } = message;
+
+        validateParams(payload, [
+            { name: 'coin', type: 'string', required: true },
+            { name: 'contract', type: 'string', required: true },
+            { name: 'identity', type: 'string' },
+        ]);
+
+        const coinInfo = getCoinInfoOrThrow(payload.coin);
+
+        assertBackendSupported(coinInfo);
+
+        const request = {
+            contract: payload.contract,
+            currency: payload.currency,
+            protocols: payload.protocols,
+        };
+
+        super(message, {
+            coinInfo,
+            identity: payload.identity,
+            request,
+        });
+
+        this.useDevice = false;
+        this.useUi = false;
+    }
+
+    get requiredPermissions(): PermissionRequest[] {
+        return [];
+    }
+
+    async run({ sendCoreMessage }: MethodContext) {
+        const backend = await initBlockchain(
+            this.params.coinInfo,
+            sendCoreMessage,
+            this.params.identity,
+        );
+
+        return backend.getContractInfo(this.params.request);
+    }
+}

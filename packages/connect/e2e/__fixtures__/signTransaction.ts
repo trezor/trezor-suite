@@ -21,7 +21,7 @@ serializedTx += 'd91b0000000000001976a9145a9452b8db22e7fb606adafc731f5d4b482f9e8
 );
 serializedTx += '00000000';
 
-export default {
+const signTransaction: TestCase = {
     method: 'signTransaction',
     setup: {
         mnemonic: 'mnemonic_all',
@@ -79,7 +79,7 @@ export default {
                     },
                 ],
                 refTxs: TX_CACHE(['e5040e']),
-                coin: 'Testnet',
+                coin: 'test',
             },
             result: {
                 serializedTx:
@@ -106,7 +106,7 @@ export default {
                     },
                 ],
                 refTxs: TX_CACHE(['25fee5']),
-                coin: 'Testnet',
+                coin: 'test',
             },
             result: {
                 serializedTx:
@@ -175,7 +175,7 @@ export default {
                     },
                 ],
                 refTxs: TX_CACHE(['bb5169']),
-                coin: 'testnet',
+                coin: 'test',
             },
             result: {
                 serializedTx:
@@ -239,7 +239,7 @@ export default {
                 ],
                 outputs,
                 refTxs: TX_CACHE(['58d56a']),
-                coin: 'testnet',
+                coin: 'test',
             },
             result: {
                 serializedTx,
@@ -250,7 +250,7 @@ export default {
         {
             description: 'Bitcoin (P2PKH): fee too high',
             params: {
-                coin: 'Bitcoin',
+                coin: 'btc',
                 inputs: [
                     {
                         address_n: "m/44'/0'/0'/0/10",
@@ -278,7 +278,7 @@ export default {
         {
             description: 'Bitcoin (P2PKH): not enough funds',
             params: {
-                coin: 'Bitcoin',
+                coin: 'btc',
                 inputs: [
                     {
                         address_n: "m/44'/0'/0'/0/0",
@@ -302,7 +302,7 @@ export default {
         {
             description: 'Testnet (P2PKH): spend coinbase',
             params: {
-                coin: 'Testnet',
+                coin: 'test',
                 inputs: [
                     {
                         address_n: "m/44'/1'/0'/0/0",
@@ -330,7 +330,7 @@ export default {
             // tx e5040e1bc1ae766v7ffb9e5248e90b2fb93cd9150234151ce90e14ab2f5933bcd
             description: 'Testnet (P2PKH): two changes',
             params: {
-                coin: 'Testnet',
+                coin: 'test',
                 inputs: [
                     {
                         address_n: "m/44'/1'/0'/0/0",
@@ -369,7 +369,7 @@ export default {
         {
             description: 'Testnet (P2PKH): p2pkh input, p2sh output',
             params: {
-                coin: 'testnet',
+                coin: 'test',
                 inputs: [
                     {
                         address_n: "m/44'/1'/0'/0/2",
@@ -396,7 +396,7 @@ export default {
         {
             description: 'Testnet (P2PKH): big amount',
             params: {
-                coin: 'testnet',
+                coin: 'test',
                 inputs: [
                     {
                         address_n: "m/44'/1'/0'/0/6",
@@ -423,7 +423,7 @@ export default {
         {
             description: 'Testnet (P2PKH): change on mainchain allowed',
             params: {
-                coin: 'Testnet',
+                coin: 'test',
                 inputs: [
                     {
                         address_n: "m/44'/1'/0'/0/0",
@@ -454,4 +454,6 @@ export default {
             },
         },
     ],
-} satisfies TestCase;
+};
+
+export default signTransaction;

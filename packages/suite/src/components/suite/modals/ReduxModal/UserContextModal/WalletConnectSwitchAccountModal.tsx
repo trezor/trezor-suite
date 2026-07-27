@@ -1,22 +1,21 @@
 import { useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
+import { AccountLabel, AccountTypeBadge } from '@suite/account';
 import { Translation } from '@suite/intl';
+import { closeModal } from '@suite/modal';
 import { selectAllAccountsToList } from '@suite-common/wallet-core';
-import { Account } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
+import { sortByCoin } from '@suite-common/wallet-utils';
 import {
     getSessionNetworks,
     selectSessions,
     switchSelectedAccountThunk,
     walletConnectActions,
 } from '@suite-common/walletconnect';
-import { Column, Modal, Option, Row, Select } from '@trezor/components';
-import { CoinLogo } from '@trezor/product-components';
-import { spacings } from '@trezor/theme';
+import { Column, Modal, type Option, Row, Select } from '@trezor/components';
+import { TokenIcon } from '@trezor/product-components';
 
-import * as modalActions from 'src/actions/suite/modalActions';
-import { AccountLabel } from 'src/components/suite/AccountLabel';
-import { AccountTypeBadge } from 'src/components/suite/AccountTypeBadge';
 import { useSelector } from 'src/hooks/suite';
 
 interface WalletConnectSwitchAccountModalProps {
@@ -34,11 +33,13 @@ export const WalletConnectSwitchAccountModal = ({
     const selectableAccounts = useMemo<Account[]>(
         () =>
             session
-                ? getSessionNetworks(session)
-                      .filter(network => network.status === 'active')
-                      .flatMap(network =>
-                          accounts.filter(account => account.symbol === network.symbol),
-                      )
+                ? sortByCoin(
+                      getSessionNetworks(session)
+                          .filter(network => network.status === 'active')
+                          .flatMap(network =>
+                              accounts.filter(account => account.symbol === network.symbol),
+                          ),
+                  )
                 : [],
         [accounts, session],
     );
@@ -56,10 +57,10 @@ export const WalletConnectSwitchAccountModal = ({
                 }),
             );
         }
-        dispatch(modalActions.onCancel());
+        dispatch(closeModal());
     };
     const handleCancel = () => {
-        dispatch(modalActions.onCancel());
+        dispatch(closeModal());
     };
 
     return (
@@ -74,7 +75,7 @@ export const WalletConnectSwitchAccountModal = ({
             heading={<Translation id="TR_SWITCH_ACCOUNT" />}
             onCancel={handleCancel}
         >
-            <Column gap={spacings.xs}>
+            <Column gap={8}>
                 <Select
                     isSearchable={false}
                     isClearable={false}
@@ -82,10 +83,8 @@ export const WalletConnectSwitchAccountModal = ({
                     value={selectedDefaultAccount}
                     options={selectableAccounts}
                     formatOptionLabel={(account: Account) => (
-                        <Row gap={spacings.xs}>
-                            {account.symbol && (
-                                <CoinLogo type="token" symbol={account.symbol} size={24} />
-                            )}
+                        <Row gap={8}>
+                            {account.symbol && <TokenIcon symbol={account.symbol} size={24} />}
                             <AccountLabel account={account} key={account.descriptor} />
                             <AccountTypeBadge
                                 accountType={account.accountType}

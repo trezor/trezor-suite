@@ -1,4 +1,5 @@
-import { NetworkDtoId } from '@suite-common/earn-api';
+import { type TokenDtoV2 } from '@suite-common/earn-stablecoin-defs';
+import { exhaustive } from '@trezor/type-utils';
 
 import { networks } from './networksConfig';
 import {
@@ -54,7 +55,7 @@ export const getTestnets = ({
 }: GetTestnetsProps) =>
     allNetworks.filter(
         n =>
-            n.testnet === true &&
+            n.testnet &&
             useTestnetNetworks &&
             (!n.isDebugOnlyNetwork || debug) &&
             (!n.isExperimentalOnlyNetwork || useExperimentalNetworks),
@@ -62,28 +63,47 @@ export const getTestnets = ({
 
 export const getTestnetSymbols = () => getTestnets({ useTestnetNetworks: true }).map(n => n.symbol);
 
+export const filterNetworksByName = (someNetworks: Network[], searchQuery: string) => {
+    const normalizedQuery = searchQuery.trim().toLowerCase();
+
+    if (!normalizedQuery) {
+        return someNetworks;
+    }
+
+    return someNetworks.filter(
+        ({ symbol, name }) =>
+            symbol.includes(normalizedQuery) || name.toLowerCase().includes(normalizedQuery),
+    );
+};
+
 export const isBlockbookBasedNetwork = (symbol: NetworkSymbol) =>
-    networks[symbol]?.backendTypes.some(backend => backend === 'blockbook');
+    networks[symbol]?.backendOptions.some(option => option.type === 'blockbook');
 
-// TODO: move to networksConfig
-export const externalBackendTypeNetworks: NetworkSymbol[] = [
-    'bsc',
-    'pol',
-    'op',
-    'arb',
-    'base',
-    'avax',
-];
-
-export const isTrezorInfraBasedNetwork = (symbol: NetworkSymbol) =>
-    // https://github.com/trezor/trezor-suite/issues/18843
-    networks[symbol]?.backendTypes.some(
-        backend =>
-            ['blockbook', 'stellar'].includes(backend) &&
-            !externalBackendTypeNetworks.includes(symbol),
+export const isNetworkUsingExternalBackend = (symbol: NetworkSymbol) =>
+    !!networks[symbol]?.backendOptions.some(
+        option => 'isExternalBackend' in option && option.isExternalBackend,
     );
 
 export const getNetworkType = (symbol: NetworkSymbol) => networks[symbol]?.networkType;
+
+export const isAccountBasedNetwork = (symbol: NetworkSymbol) => {
+    const networkType = getNetworkType(symbol);
+    switch (networkType) {
+        case 'ethereum':
+        case 'ripple':
+        case 'solana':
+        case 'stellar':
+        case 'tron':
+            return true;
+
+        case 'bitcoin':
+        case 'cardano':
+            return false;
+
+        default:
+            return exhaustive(networkType);
+    }
+};
 
 // Takes into account just network features, not features for specific accountTypes.
 export const getNetworkFeatures = (symbol: NetworkSymbol): NetworkFeature[] =>
@@ -102,14 +122,6 @@ export const isNetworkSymbol = (symbol: NetworkSymbolExtended): symbol is Networ
 export const getNetwork = (symbol: NetworkSymbol): Network => networks[symbol];
 
 /**
- * Check wether the network has a settlement layer. Used to check Ethereum L2s.
- * @param symbol
- * @returns boolean
- */
-export const hasNetworkSettlementLayer = (symbol: NetworkSymbol) =>
-    !!getNetwork(symbol).settlementLayer;
-
-/**
  * Use instead of getNetwork, if there is not a guarantee that the symbol is a valid network symbol.
  * @param symbol
  */
@@ -126,8 +138,8 @@ export const isAccountOfNetwork = (
 export const getNetworkByCoingeckoId = (coingeckoId: string) =>
     networksCollection.find(n => n.coingeckoId === coingeckoId);
 
-export const getNetworkByTradeCryptoId = (coingeckoId: string) =>
-    networksCollection.find(n => n.tradeCryptoId === coingeckoId);
+export const getNetworkByTradeCryptoId = (tradeCryptoId: string) =>
+    networksCollection.find(n => n.tradeCryptoId === tradeCryptoId);
 
 export const getNetworkByEvmChainId = (chainId: number) =>
     networksCollection.find(n => n.chainId === chainId);
@@ -135,7 +147,7 @@ export const getNetworkByEvmChainId = (chainId: number) =>
 export const getNetworkDisplaySymbol = (symbol: NetworkSymbol) => getNetwork(symbol).displaySymbol;
 
 export const getDisplaySymbol = (coinSymbol: string, contractAddress?: string | null) => {
-    const MAX_SYMBOL_LENGTH = 8;
+    const MAX_SYMBOL_LENGTH = 10;
     const isTokenSymbolLong = coinSymbol.length > MAX_SYMBOL_LENGTH;
 
     const symbol = coinSymbol.toLowerCase();
@@ -163,5 +175,16 @@ export const getNetworkDecimals = (symbol: NetworkSymbolExtended) => {
     return undefined;
 };
 
-export const getNetworkByYieldXyzId = (yieldXyzId: NetworkDtoId) =>
+export const getNetworkByYieldXyzId = (yieldXyzId: TokenDtoV2['network']) =>
     networksCollection.find(n => n.yieldXyzId === yieldXyzId) ?? null;
+
+const formatNetworksAsString = (someNetworks: Network[]): string =>
+    someNetworks.map(network => network.name).join(', ');
+
+export const getNetworksWithMevProtection = () =>
+    formatNetworksAsString(
+        networksCollection.filter(network => network.features.includes('mev-protection')),
+    );
+
+export const getNetworksWithNativeTokenReserve = () =>
+    formatNetworksAsString(networksCollection.filter(network => !!network.nativeTokenReserve));

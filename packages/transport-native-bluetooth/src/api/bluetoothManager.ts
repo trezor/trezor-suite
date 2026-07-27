@@ -1,25 +1,25 @@
 import {
-    BleError,
+    type BleError,
     BleErrorCode,
     BleManager,
-    Characteristic,
-    ConnectionOptions,
-    Device,
+    type Characteristic,
+    type ConnectionOptions,
+    type Device,
     LogLevel,
-    State,
-    Subscription,
+    type State,
+    type Subscription,
 } from 'react-native-ble-plx';
 
 import { EventEmitter } from 'events';
 
-import { readMessageBuffer } from '@trezor/transport/src/utils/readMessageBuffer';
+import { readMessageBuffer } from '@trezor/transport-common';
 import type { TimerId } from '@trezor/type-utils';
 
 import {
-    BluetoothDevice,
-    DeviceBatteryLevelChangeEvent,
-    DeviceConnectionStatusChangeEvent,
-    DevicePushNotificationEvent,
+    type BluetoothDevice,
+    type DeviceBatteryLevelChangeEvent,
+    type DeviceConnectionStatusChangeEvent,
+    type DevicePushNotificationEvent,
 } from './types';
 import { base64ToByteArray, toBluetoothDevice } from './utils';
 
@@ -161,7 +161,9 @@ class BluetoothManager {
                         d => d.id === nearbyDevice.id,
                     );
                     if (nearbyDeviceIndex >= 0) {
-                        const oldNearbyDevice = this.nearbyDevices[nearbyDeviceIndex];
+                        const { nearbyDevices } = this;
+                        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+                        const oldNearbyDevice: BluetoothDevice = nearbyDevices[nearbyDeviceIndex];
                         nearbyDevice.connectionStatus = oldNearbyDevice.connectionStatus;
                         this.nearbyDevices[nearbyDeviceIndex] = nearbyDevice;
                         if (
@@ -240,6 +242,7 @@ class BluetoothManager {
         // Get a list of known devices by their identifiers.
         const devices = await this.getBleManager().devices([deviceId]);
         debugLog(`Found ${devices.length} already known device(s)`);
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
         [device] = devices;
 
         if (!device) {
@@ -250,6 +253,7 @@ class BluetoothManager {
             ]);
             const matchingConnectedDevices = connectedDevices.filter(d => d.id === deviceId);
             debugLog(`Found ${matchingConnectedDevices.length} already connected device(s)`);
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
             [device] = matchingConnectedDevices;
         }
 

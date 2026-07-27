@@ -1,23 +1,22 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/StellarSignTransaction.js
 
+import { StellarSignTransaction as StellarSignTransactionSchema } from '@trezor/connect-common';
+import type { PermissionRequest, StellarOperation } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
-import { AssertWeak } from '@trezor/schema-utils';
+import stellar from '@trezor/network-stellar/runtime';
+import { Assert } from '@trezor/schema-utils';
 
-import { AbstractMethod, MethodPermission, Payload } from '../../../core/AbstractMethod';
+import type { MethodMessage } from '../../../core/AbstractMethod';
+import { AbstractMethod } from '../../../core/AbstractMethod';
 import { getMiscNetwork } from '../../../data/coinInfo';
-import {
-    StellarSignTransaction as StellarSignTransactionSchema,
-    StellarTransaction,
-} from '../../../types/api/stellar';
 import { validatePath } from '../../../utils/pathUtils';
-import { getFirmwareRange } from '../../common/paramsValidator';
+import {
+    PAYMENT_REQUEST_AMOUNT_BYTES,
+    encodePaymentRequestAmount,
+} from '../../../utils/paymentRequest';
 import * as helper from '../stellarSignTx';
 
-type Params = {
-    path: number[];
-    networkPassphrase: string;
-    transaction: StellarTransaction;
-};
+type Params = { path: number[] } & StellarSignTransactionSchema;
 
 const StellarSignTransactionFeatures = Object.freeze({
     manageBuyOffer: ['1.10.4', '2.4.3'],
@@ -28,46 +27,45 @@ export default class StellarSignTransaction extends AbstractMethod<
     'stellarSignTransaction',
     Params
 > {
-    constructor(message: { id?: number; payload: Payload<'stellarSignTransaction'> }) {
-        super(message);
-        this.requiredDeviceCapabilities = ['Capability_Stellar'];
-        this.firmwareRange = getFirmwareRange(
-            this.name,
-            getMiscNetwork('Stellar'),
-            this.firmwareRange,
-        );
-    }
-
-    get requiredPermissions(): MethodPermission[] {
-        return ['read', 'write'];
-    }
-
-    init() {
-        const { payload } = this;
+    constructor(message: MethodMessage<'stellarSignTransaction'>) {
+        const { payload } = message;
         // validate incoming parameters
-        // TODO: weak assert for compatibility purposes (issue #10841)
-        AssertWeak(StellarSignTransactionSchema, payload);
+        Assert(StellarSignTransactionSchema, payload);
 
         const path = validatePath(payload.path, 3);
-        // incoming data should be in stellar-sdk format
-        const { transaction } = payload;
-        this.params = {
+        const { payment_req } = payload;
+
+        const params: Params = {
+            ...payload,
             path,
-            networkPassphrase: payload.networkPassphrase,
-            transaction,
+            payment_req: payment_req
+                ? encodePaymentRequestAmount(payment_req, PAYMENT_REQUEST_AMOUNT_BYTES.DEFAULT)
+                : undefined,
         };
+
+        super(message, params);
+
+        this.requiredDeviceCapabilities = ['Capability_Stellar'];
+        this.requiredFirmwareCoins = [getMiscNetwork('xlm')];
+    }
+
+    get requiredPermissions(): PermissionRequest[] {
+        return this.coinPerms('sign', this.requiredFirmwareCoins);
     }
 
     get info() {
         return 'Sign Stellar transaction';
     }
 
-    _isFeatureSupported(feature: keyof typeof StellarSignTransactionFeatures) {
-        return this.device.atLeast(StellarSignTransactionFeatures[feature]);
+    private _isFeatureSupported(feature: keyof typeof StellarSignTransactionFeatures) {
+        return this.getDevice().atLeast(StellarSignTransactionFeatures[feature]);
     }
 
-    _ensureFeatureIsSupported(feature: keyof typeof StellarSignTransactionFeatures) {
-        if (!this._isFeatureSupported(feature)) {
+    private _ensureFirmwareSupportsOperation(
+        feature: keyof typeof StellarSignTransactionFeatures,
+        operations: StellarOperation[] = [],
+    ) {
+        if (operations.find(o => o.type === feature) && !this._isFeatureSupported(feature)) {
             throw ERRORS.TypedError(
                 'Method_InvalidParameter',
                 `Feature ${feature} not supported by device firmware`,
@@ -75,31 +73,29 @@ export default class StellarSignTransaction extends AbstractMethod<
         }
     }
 
-    _ensureFirmwareSupportsParams() {
-        const { params } = this;
-        if (
-            params.transaction.operations &&
-            params.transaction.operations.find(o => o.type === 'manageBuyOffer')
-        ) {
-            this._ensureFeatureIsSupported('manageBuyOffer');
-        }
+    private async parseFromXdr(xdrBase64: string, testnet: boolean) {
+        const { parseTransactionFromXDR, transformTransaction } = await stellar();
 
-        if (
-            params.transaction.operations &&
-            params.transaction.operations.find(o => o.type === 'pathPaymentStrictSend')
-        ) {
-            this._ensureFeatureIsSupported('pathPaymentStrictSend');
-        }
+        const nativeTx = parseTransactionFromXDR(xdrBase64, testnet);
+
+        return [transformTransaction(nativeTx), nativeTx.networkPassphrase] as const;
     }
 
     async run() {
-        this._ensureFirmwareSupportsParams();
+        const [transaction, networkPassphrase] =
+            'xdrBase64' in this.params
+                ? await this.parseFromXdr(this.params.xdrBase64, this.params.testnet)
+                : [this.params.transaction, this.params.networkPassphrase];
+
+        this._ensureFirmwareSupportsOperation('manageBuyOffer', transaction.operations);
+        this._ensureFirmwareSupportsOperation('pathPaymentStrictSend', transaction.operations);
 
         const response = await helper.stellarSignTx(
-            this.device.getCommands().typedCall,
+            this.getDevice().getCommands().typedCall,
             this.params.path,
-            this.params.networkPassphrase,
-            this.params.transaction,
+            networkPassphrase,
+            transaction,
+            this.params.payment_req,
         );
 
         return {

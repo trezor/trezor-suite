@@ -1,14 +1,12 @@
 import React from 'react';
 
+import { getTranslation } from '@suite-native/intl';
 import { renderWithBasicProvider, userEvent } from '@suite-native/test-utils';
-import { bankAccounts } from '@suite-native/trading-fixtures';
+import { unverifiedBankAccount, verifiedBankAccount } from '@suite-native/trading-fixtures';
 
 import { BANK_ACCOUNT_ITEM_TEST_ID, SellBankAccountItem } from '../SellBankAccountItem';
 
 describe('SellBankAccountItem', () => {
-    const verifiedBankAccount = bankAccounts[0]; // John Doe - verified
-    const unverifiedBankAccount = bankAccounts[1]; // Jane Smith - not verified
-
     const renderSellBankAccountItem = (props = {}) =>
         renderWithBasicProvider(
             <SellBankAccountItem
@@ -36,7 +34,9 @@ describe('SellBankAccountItem', () => {
                 bankAccount: verifiedBankAccount,
             });
 
-            expect(getByText('Verified')).toBeOnTheScreen();
+            expect(
+                getByText(getTranslation('moduleTrading.tradingSellPreviewScreen.verified')),
+            ).toBeOnTheScreen();
             expect(getByTestId('check-icon')).toBeOnTheScreen();
         });
 
@@ -45,7 +45,9 @@ describe('SellBankAccountItem', () => {
                 bankAccount: unverifiedBankAccount,
             });
 
-            expect(getByText('Not verified')).toBeOnTheScreen();
+            expect(
+                getByText(getTranslation('moduleTrading.tradingSellPreviewScreen.notVerified')),
+            ).toBeOnTheScreen();
             expect(queryByTestId('check-icon')).not.toBeOnTheScreen();
         });
     });

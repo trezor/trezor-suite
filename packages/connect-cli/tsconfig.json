@@ -3,8 +3,8 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         { "path": "../connect" },
-        { "path": "../protobuf" },
         { "path": "../transport" },
-        { "path": "../transport-bluetooth" }
+        { "path": "../transport-bluetooth" },
+        { "path": "../transport-common" }
     ]
 }

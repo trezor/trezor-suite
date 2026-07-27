@@ -1,6 +1,6 @@
-import { AnchorHTMLAttributes, ButtonHTMLAttributes, HTMLAttributes } from 'react';
+import { type AnchorHTMLAttributes, type ButtonHTMLAttributes, type HTMLAttributes } from 'react';
 
-import { UIIntent, UIPriority, UISize } from '../../config/types';
+import { type UIIntent, type UIPriority, type UISize } from '../../config/types';
 
 export const buttonIntents = [
     'brand',
@@ -9,7 +9,6 @@ export const buttonIntents = [
     'warning',
     'critical',
     'accentViolet',
-    'accentOrange',
 ] as const;
 export type ButtonIntent = Extract<UIIntent, (typeof buttonIntents)[number]>;
 
@@ -22,6 +21,7 @@ export type ButtonPriority = Extract<UIPriority, (typeof buttonPriorities)[numbe
 export type CommonButtonProps = {
     intent?: ButtonIntent;
     priority?: ButtonPriority;
+    isFloating?: boolean;
     isLoading?: boolean;
     isDisabled?: boolean;
     isInverse?: boolean;

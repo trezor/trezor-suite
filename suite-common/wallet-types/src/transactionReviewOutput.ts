@@ -1,12 +1,14 @@
-import { TokenInfo } from '@trezor/connect';
+import type { TokenInfo } from '@trezor/connect';
 
-import { FormStateTradingCryptoCurrency, FormStateTradingFiatCurrency } from './sendForm';
+import { type FormStateTradingCryptoCurrency, type FormStateTradingFiatCurrency } from './sendForm';
+import type { YieldClaimReward } from './stablecoinYield';
 
 export type ReviewOutput =
     | {
           type:
               | 'opreturn'
               | 'data'
+              | 'note'
               | 'locktime'
               | 'fee'
               | 'destination-tag'
@@ -20,13 +22,19 @@ export type ReviewOutput =
               | 'contract'
               | 'regular_legacy'
               | 'approve_data'
-              | 'recipient_name';
+              | 'recipient_name'
+              | 'swap_intent'
+              | 'tron-vote'
+              | 'tron-withdraw'
+              | 'tron-claim'
+              | 'fee-limit';
           label?: string;
           value: string;
           value2?: string;
           token?: TokenInfo;
           send?: undefined;
           receive?: undefined;
+          receiveAddress?: undefined;
       }
     | {
           type: 'fee-replace';
@@ -36,6 +44,7 @@ export type ReviewOutput =
           token?: undefined;
           send?: undefined;
           receive?: undefined;
+          receiveAddress?: undefined;
       }
     | {
           type: 'reduce-output';
@@ -45,6 +54,7 @@ export type ReviewOutput =
           token?: undefined;
           send?: undefined;
           receive?: undefined;
+          receiveAddress?: undefined;
       }
     | {
           type: 'traded_assets';
@@ -53,7 +63,19 @@ export type ReviewOutput =
           label?: undefined;
           token?: undefined;
           send: FormStateTradingCryptoCurrency;
-          receive: FormStateTradingCryptoCurrency | FormStateTradingFiatCurrency;
+          receive?: FormStateTradingCryptoCurrency | FormStateTradingFiatCurrency;
+          receiveAddress?: string;
+      }
+    | {
+          type: 'rewards';
+          rewards: YieldClaimReward[];
+          value?: undefined;
+          value2?: undefined;
+          label?: undefined;
+          token?: undefined;
+          send?: undefined;
+          receive?: undefined;
+          receiveAddress?: undefined;
       };
 
 export type ReviewOutputType = ReviewOutput['type'];

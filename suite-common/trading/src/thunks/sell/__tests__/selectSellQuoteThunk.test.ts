@@ -1,15 +1,14 @@
 import { combineReducers } from '@reduxjs/toolkit';
-import { CryptoId, SellFiatTradeQuoteRequest } from 'invity-api';
+import { type CryptoId, type SellFiatTradeQuoteRequest } from 'invity-api';
 
 import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
 
 import { sellThunks } from '../';
 import { invityAPI } from '../../../invityAPI';
-import { SellInfo, TradingSellState } from '../../../reducers/sellReducer';
+import { type SellInfo, type TradingSellState } from '../../../reducers/sellReducer';
 import { initialState } from '../../../reducers/tradingCommonReducer';
 import { prepareTradingReducer } from '../../../reducers/tradingReducer';
 import { sellUtilsFixtures } from '../../../utils/sell/__fixtures__/sellUtils';
-import { SelectSellQuoteThunkProps } from '../selectSellQuoteThunk';
 
 const tradingReducer = prepareTradingReducer(extraDependenciesCommonMock);
 
@@ -25,6 +24,7 @@ describe('selectSellQuoteThunk', () => {
 
     const getDataMocks = () => {
         const quote = sellUtilsFixtures.MIN_MAX_QUOTES_LOW[0];
+        if (!quote) throw new Error('Missing test fixture');
         const quoteExchange = quote.exchange as string;
         const cryptoCurrency = quote.cryptoCurrency as CryptoId;
         const fiatCurrency = quote.fiatCurrency as string;
@@ -89,44 +89,35 @@ describe('selectSellQuoteThunk', () => {
             },
         });
 
-        const mockTimerStop = jest.fn();
-        const mockTimer = {
-            stop: mockTimerStop,
-        } as unknown as SelectSellQuoteThunkProps['timer'];
-
         const mockNextStep = jest.fn();
 
         return {
             store,
-            mockTimer,
-            mockTimerStop,
             mockNextStep,
         };
     };
 
     it('should successfully select quote', async () => {
         const { quote, state } = getDataMocks();
-        const { store, mockTimer, mockNextStep, mockTimerStop } = getMocks(state);
+        const { store, mockNextStep } = getMocks(state);
 
         await store
             .dispatch(
                 sellThunks.selectQuoteThunk({
                     quote,
-                    timer: mockTimer,
                     nextStep: mockNextStep,
                 }),
             )
             .unwrap();
 
         expect(mockNextStep).toHaveBeenCalledTimes(1);
-        expect(mockTimerStop).toHaveBeenCalledTimes(1);
         expect(store.getState().wallet.trading.sell.selectedQuote).toEqual(quote);
     });
 
     describe('should not be possible to save selected quote', () => {
         it('when sellInfo is undefined', async () => {
             const { quote, state } = getDataMocks();
-            const { store, mockTimer, mockNextStep, mockTimerStop } = getMocks({
+            const { store, mockNextStep } = getMocks({
                 ...state,
                 sellInfo: undefined,
             });
@@ -135,20 +126,18 @@ describe('selectSellQuoteThunk', () => {
                 .dispatch(
                     sellThunks.selectQuoteThunk({
                         quote,
-                        timer: mockTimer,
                         nextStep: mockNextStep,
                     }),
                 )
                 .unwrap();
 
             expect(mockNextStep).toHaveBeenCalledTimes(0);
-            expect(mockTimerStop).toHaveBeenCalledTimes(0);
             expect(store.getState().wallet.trading.sell.selectedQuote).toEqual(undefined);
         });
 
         it('when quote exchange is undefined', async () => {
             const { quote, state } = getDataMocks();
-            const { store, mockTimer, mockNextStep, mockTimerStop } = getMocks({
+            const { store, mockNextStep } = getMocks({
                 ...state,
                 quotesRequest: undefined,
             });
@@ -160,20 +149,18 @@ describe('selectSellQuoteThunk', () => {
                             ...quote,
                             exchange: undefined,
                         },
-                        timer: mockTimer,
                         nextStep: mockNextStep,
                     }),
                 )
                 .unwrap();
 
             expect(mockNextStep).toHaveBeenCalledTimes(0);
-            expect(mockTimerStop).toHaveBeenCalledTimes(0);
             expect(store.getState().wallet.trading.sell.selectedQuote).toEqual(undefined);
         });
 
         it('when quoteRequest is undefined', async () => {
             const { quote, state } = getDataMocks();
-            const { store, mockTimer, mockNextStep, mockTimerStop } = getMocks({
+            const { store, mockNextStep } = getMocks({
                 ...state,
                 quotesRequest: undefined,
             });
@@ -182,20 +169,18 @@ describe('selectSellQuoteThunk', () => {
                 .dispatch(
                     sellThunks.selectQuoteThunk({
                         quote,
-                        timer: mockTimer,
                         nextStep: mockNextStep,
                     }),
                 )
                 .unwrap();
 
             expect(mockNextStep).toHaveBeenCalledTimes(0);
-            expect(mockTimerStop).toHaveBeenCalledTimes(0);
             expect(store.getState().wallet.trading.sell.selectedQuote).toEqual(undefined);
         });
 
         it('when quote cryptoCurrency is undefined', async () => {
             const { quote, state } = getDataMocks();
-            const { store, mockTimer, mockNextStep, mockTimerStop } = getMocks(state);
+            const { store, mockNextStep } = getMocks(state);
 
             await store
                 .dispatch(
@@ -204,14 +189,12 @@ describe('selectSellQuoteThunk', () => {
                             ...quote,
                             cryptoCurrency: undefined,
                         },
-                        timer: mockTimer,
                         nextStep: mockNextStep,
                     }),
                 )
                 .unwrap();
 
             expect(mockNextStep).toHaveBeenCalledTimes(0);
-            expect(mockTimerStop).toHaveBeenCalledTimes(0);
             expect(store.getState().wallet.trading.sell.selectedQuote).toEqual(undefined);
         });
     });

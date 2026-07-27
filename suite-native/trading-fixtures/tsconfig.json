@@ -4,14 +4,22 @@
     "references": [
         { "path": "../../suite-common/trading" },
         {
+            "path": "../../suite-common/wallet-config"
+        },
+        {
             "path": "../../suite-common/wallet-core"
         },
         {
             "path": "../../suite-common/wallet-types"
         },
+        {
+            "path": "../../suite-common/wallet-utils"
+        },
         { "path": "../feature-flags" },
         { "path": "../trading-consts" },
         { "path": "../../packages/connect" },
+        { "path": "../../packages/device-utils" },
+        { "path": "../../packages/utils" },
         { "path": "../trading-types" }
     ]
 }

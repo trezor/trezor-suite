@@ -1,8 +1,6 @@
 {
     "extends": "../../tsconfig.base.json",
     "compilerOptions": {
-        "module": "commonjs",
-        "moduleResolution": "node",
         "outDir": "libDev",
         "types": [
             "chrome",
@@ -14,7 +12,6 @@
     },
     "include": ["."],
     "references": [
-        { "path": "../connect" },
         { "path": "../connect-common" },
         { "path": "../utils" },
         { "path": "../websocket-client" },

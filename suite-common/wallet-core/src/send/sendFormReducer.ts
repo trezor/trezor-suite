@@ -1,29 +1,32 @@
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 import {
-    AccountKey,
-    FormState,
-    GeneralPrecomposedTransactionFinal,
-    SendFormDraftKey,
+    type AccountKey,
+    type FormState,
+    type GeneralPrecomposedTransactionFinal,
+    type SendFormDraftKey,
 } from '@suite-common/wallet-types';
 import { getSendFormDraftKey } from '@suite-common/wallet-utils';
-import { BlockbookTransaction } from '@trezor/blockchain-link-types';
+import { type BlockbookTransaction } from '@trezor/blockchain-link-types';
 import { cloneObject } from '@trezor/utils';
 
 import { sendFormActions } from './sendFormActions';
-import { SerializedTx } from './sendFormTypes';
+import { type SerializedTx } from './sendFormTypes';
 import { accountsActions } from '../accounts/accountsActions';
 
+export type SendFormDrafts = {
+    // Note: suite-native store drafts per tokens, desktop and web store drafts per accountKey only
+    [key: SendFormDraftKey]: FormState;
+};
+
 export type SendState = {
-    drafts: {
-        // Note: suite-native store drafts per tokens, desktop and web store drafts per accountKey only
-        [key: SendFormDraftKey]: FormState;
-    };
+    drafts: SendFormDrafts;
     sendRaw?: boolean;
     precomposedTx?: GeneralPrecomposedTransactionFinal;
     precomposedForm?: FormState; // Used to pass the form state to the review modal. Holds similar data as drafts, but drafts are not used in RBF form.
     signedTx?: BlockbookTransaction;
     serializedTx?: SerializedTx; // Hexadecimal representation of signed transaction (payload for TrezorConnect.pushTransaction).
     accountKey?: AccountKey; // Account key for the transaction being processed.
+    resolvedEthereumNonce?: string; // EVM nonce resolved at signing time, shown in the review modal.
 };
 
 export const initialState: SendState = {
@@ -81,12 +84,23 @@ export const prepareSendFormReducer = createReducerWithExtraDeps(initialState, (
                 state.signedTx = signedTx;
             },
         )
+        .addCase(sendFormActions.storeResolvedEthereumNonce, (state, { payload: nonce }) => {
+            state.resolvedEthereumNonce = nonce;
+        })
         .addCase(sendFormActions.discardTransaction, state => {
             delete state.precomposedTx;
             delete state.precomposedForm;
             delete state.serializedTx;
             delete state.signedTx;
             delete state.accountKey;
+            delete state.resolvedEthereumNonce;
+        })
+        .addCase(sendFormActions.clearSignedTransactionData, state => {
+            delete state.serializedTx;
+            delete state.signedTx;
+            // Otherwise a retry after a failed push would briefly show the previous attempt's
+            // nonce in the review modal before signing resolves and stores a fresh one.
+            delete state.resolvedEthereumNonce;
         })
         .addCase(sendFormActions.sendRaw, (state, { payload: sendRaw }) => {
             state.sendRaw = sendRaw;
@@ -98,6 +112,7 @@ export const prepareSendFormReducer = createReducerWithExtraDeps(initialState, (
             delete state.serializedTx;
             delete state.signedTx;
             delete state.accountKey;
+            delete state.resolvedEthereumNonce;
         })
         .addCase(extra.actionTypes.storageLoad, extra.reducers.storageLoadFormDrafts)
         .addCase(accountsActions.removeAccount, (state, { payload }) => {

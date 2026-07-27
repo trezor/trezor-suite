@@ -11,9 +11,9 @@ import { formatAddressWithNewlines } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
 
 // Expected values based on our mocked responses
-const fiatAmount = sellQuotesEthereum[0].fiatStringAmount;
-const cryptoAmount = sellQuotesEthereum[0].cryptoStringAmount;
-const provider = getCompanyNameFromList(sellQuotesEthereum[0].exchange, 'sellList');
+const fiatAmount = sellQuotesEthereum[0]?.fiatStringAmount ?? '';
+const cryptoAmount = sellQuotesEthereum[0]?.cryptoStringAmount ?? '';
+const provider = getCompanyNameFromList(sellQuotesEthereum[0]?.exchange ?? '', 'sellList');
 const providerAddress = sellWatchEthereum.destinationAddress;
 const formattedCryptoAmount = `${cryptoAmount} ETH`;
 const formattedFiatAmount = `€${fiatAmount}`;
@@ -36,6 +36,7 @@ test.describe('Trading - Sell Ethereum', { tag: ['@webOnly', '@T3W1', '@T3T1'] }
     test.use({
         deviceSetup: { mnemonic: 'mnemonic_academic', passphrase_protection: true },
     });
+
     test.beforeEach(
         async ({
             page,
@@ -55,6 +56,7 @@ test.describe('Trading - Sell Ethereum', { tag: ['@webOnly', '@T3W1', '@T3T1'] }
                     await route.fulfill({ json: sellWatchEthereum });
                 });
             });
+
             await onboardingPage.completeOnboarding();
 
             await test.step('Enable Ethereum and open its token sell trading', async () => {

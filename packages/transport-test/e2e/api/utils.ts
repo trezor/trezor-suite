@@ -25,7 +25,9 @@ export const assertMessage = (message: Buffer, expected: keyof typeof MESSAGES) 
 };
 export function assertSuccess(result: any): asserts result is { success: true; payload: any } {
     if (!result.success) {
-        throw new Error(error(`${result.error}${result.message ? `: ${result.message}` : ''}`));
+        throw new Error(
+            error(`${result.error.code}${result.error.message ? `: ${result.error.message}` : ''}`),
+        );
     }
 }
 export function assertFailure(result: any): asserts result is { success: false; error: any } {

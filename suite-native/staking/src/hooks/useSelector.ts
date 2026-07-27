@@ -1,6 +1,10 @@
-import { TypedUseSelectorHook, shallowEqual, useSelector as useReduxSelector } from 'react-redux';
+import {
+    type TypedUseSelectorHook,
+    shallowEqual,
+    useSelector as useReduxSelector,
+} from 'react-redux';
 
-import { NativeStakingRootState } from '../types';
+import { type NativeStakingRootState } from '../types';
 
 /**
  * Properly typed useSelector hook, use this one instead of directly importing it from react-redux.

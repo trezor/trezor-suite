@@ -1,11 +1,11 @@
-import { ArgTypes, Meta, StoryObj } from '@storybook/react';
+import { type ArgTypes, type Meta, type StoryObj } from '@storybook/react';
 import styled from 'styled-components';
 
-import { spacings } from '@trezor/theme';
+import { spacingValues } from '@trezor/theme';
 
 import {
     Column as ColumnComponent,
-    FlexProps,
+    type FlexProps,
     Row as RowComponent,
     allowedFlexFrameProps,
 } from './Flex';
@@ -57,19 +57,19 @@ const argTypes: Partial<ArgTypes<FlexProps>> = {
         },
     },
     gap: {
-        options: Object.values(spacings),
+        options: spacingValues,
         control: {
             type: 'select',
         },
     },
     rowGap: {
-        options: Object.values(spacings),
+        options: spacingValues,
         control: {
             type: 'select',
         },
     },
     columnGap: {
-        options: Object.values(spacings),
+        options: spacingValues,
         control: {
             type: 'select',
         },
@@ -97,7 +97,7 @@ const argTypes: Partial<ArgTypes<FlexProps>> = {
 
 const meta: Meta = {
     title: 'Layout',
-} as Meta;
+};
 export default meta;
 
 export const Row: StoryObj<FlexProps> = {

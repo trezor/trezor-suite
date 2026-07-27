@@ -1,15 +1,15 @@
-import { asAmountSubunit } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { buildWithdraw } from '../../../builder/evm/withdraw';
+import { asEvmAddress } from '../../../types/evm';
 
-const SENDER = '0x22E228AdE324185123A54Ad25F3459a99CF51E7a';
+const SENDER = asEvmAddress('0x22E228AdE324185123A54Ad25F3459a99CF51E7a');
 
 describe('buildWithdraw', () => {
     it('encodes valid withdraw calldata', () => {
         const result = buildWithdraw(
             {
-                assets: asAmountSubunit(new BigNumber('1507906')),
+                assets: new BigNumber('1507906'),
                 receiver: '0x22E228AdE324185123A54Ad25F3459a99CF51E7a',
                 owner: '0x22E228AdE324185123A54Ad25F3459a99CF51E7a',
             },
@@ -27,7 +27,7 @@ describe('buildWithdraw', () => {
     it('returns error for zero address receiver', () => {
         const result = buildWithdraw(
             {
-                assets: asAmountSubunit(new BigNumber('1507906')),
+                assets: new BigNumber('1507906'),
                 receiver: '0x0000000000000000000000000000000000000000',
                 owner: '0x22E228AdE324185123A54Ad25F3459a99CF51E7a',
             },
@@ -46,7 +46,7 @@ describe('buildWithdraw', () => {
     it('returns error for zero address owner', () => {
         const result = buildWithdraw(
             {
-                assets: asAmountSubunit(new BigNumber('1507906')),
+                assets: new BigNumber('1507906'),
                 receiver: '0x22E228AdE324185123A54Ad25F3459a99CF51E7a',
                 owner: '0x0000000000000000000000000000000000000000',
             },
@@ -65,7 +65,7 @@ describe('buildWithdraw', () => {
     it('returns error when receiver is different from sender', () => {
         const result = buildWithdraw(
             {
-                assets: asAmountSubunit(new BigNumber('1507906')),
+                assets: new BigNumber('1507906'),
                 receiver: '0x1111111111111111111111111111111111111111',
                 owner: '0x22E228AdE324185123A54Ad25F3459a99CF51E7a',
             },
@@ -83,7 +83,7 @@ describe('buildWithdraw', () => {
     it('returns error when owner is different from sender', () => {
         const result = buildWithdraw(
             {
-                assets: asAmountSubunit(new BigNumber('1507906')),
+                assets: new BigNumber('1507906'),
                 receiver: '0x22E228AdE324185123A54Ad25F3459a99CF51E7a',
                 owner: '0x1111111111111111111111111111111111111111',
             },
@@ -101,7 +101,7 @@ describe('buildWithdraw', () => {
     it('returns error for zero assets', () => {
         const result = buildWithdraw(
             {
-                assets: asAmountSubunit(new BigNumber('0')),
+                assets: new BigNumber('0'),
                 receiver: '0x22E228AdE324185123A54Ad25F3459a99CF51E7a',
                 owner: '0x22E228AdE324185123A54Ad25F3459a99CF51E7a',
             },

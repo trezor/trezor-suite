@@ -2,10 +2,11 @@ name: "NPM Connect Deploy Action"
 description: "Releases to NPM any Connect package or Trezor dependency"
 inputs:
   deploymentType:
-    description: "Specifies the deployment type for the npm package. Choose 'beta' for pre-release versions that are not ready for production use, and 'production' for stable versions intended for end-users."
+    description: "Specifies the deployment type for the npm package. Use 'alpha' for early prereleases, 'beta' for prereleases close to production, and 'latest' for stable versions intended for end-users."
     required: true
     type: choice
     options:
+      - alpha
       - beta
       - latest
   packageName:
@@ -31,6 +32,7 @@ inputs:
       - crypto-utils
       - device-utils
       - device-authenticity
+      - network-solana
       - connect
       - connect-web
       - connect-webextension
@@ -39,7 +41,7 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
       with:
         submodules: recursive
 
@@ -49,10 +51,16 @@ runs:
       id: extract_branch
 
     - name: Setup Node.js
-      uses: actions/setup-node@v4
+      uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6
       with:
         node-version-file: ".nvmrc"
         cache: yarn
+
+    - name: Install SafeDep PMG
+      uses: safedep/pmg@26d5c0ad71fd0e5f48c3183c9c74d4b3eb7f57c8 # v0.19.1
+      continue-on-error: true
+      with:
+        version: v0.19.1
 
     - name: Install dependencies
       shell: bash
@@ -65,6 +73,17 @@ runs:
     - name: Publish to NPM
       shell: bash
       run: |
-        cd ./packages/${{ inputs.packageName }}
+        if [[ "${{ inputs.packageName }}" == network-* ]]; then
+          # e.g. "network-solana-sdk"
+          remainder="${{ inputs.packageName }}"
+          # Strip "network-" prefix -> "solana-sdk"
+          remainder="${remainder#network-}"
+          # Strip from first dash onward -> "solana"
+          network="${remainder%%-*}"
+          # Result: ./networks/solana/network-solana-sdk
+          cd "./networks/${network}/${{ inputs.packageName }}"
+        else
+          cd ./packages/${{ inputs.packageName }}
+        fi
         yarn build:lib
-        yarn npm publish --tag ${{ inputs.deploymentType }} --access public
+        yarn npm publish --tag ${{ inputs.deploymentType }} --access public --provenance

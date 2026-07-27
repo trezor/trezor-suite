@@ -1,43 +1,46 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 import { useSelector } from 'react-redux';
 
+import { shouldDisplayExportImportBip329Labels } from '@suite-common/bip329';
 import { selectIsPortfolioTrackerDevice } from '@suite-common/device';
-import { NetworkSymbol, networks } from '@suite-common/wallet-config';
+import { selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
+import { type NetworkSymbol, networks } from '@suite-common/wallet-config';
 import {
-    AccountsRootState,
+    type AccountsRootState,
     selectAccountByKey,
-    selectFormattedAccountType,
+    selectFormattedAccountTypeWithDefault,
+    selectIsAccountUtxoBased,
 } from '@suite-common/wallet-core';
+import { AccountLabel } from '@suite-native/accounts';
 import { Box, Card, HStack, Text, VStack } from '@suite-native/atoms';
-import { CryptoIcon } from '@suite-native/icons';
+import { Bip329ManageLabelsCard } from '@suite-native/bip329';
+import { TokenIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
-import { AccountLabel } from '@suite-native/labeling';
 import {
-    RootStackParamList,
-    RootStackRoutes,
+    type RootStackParamList,
+    type RootStackRoutes,
     Screen,
     ScreenHeader,
-    StackProps,
+    type StackProps,
 } from '@suite-native/navigation';
 
 import { AccountRenameButton } from '../components/AccountRenameButton';
 import { AccountSettingsRemoveCoinButton } from '../components/AccountSettingsRemoveCoinButton';
 import { AccountSettingsShowXpubButton } from '../components/AccountSettingsShowXpubButton';
 
-const AccountDetailSettingsRow = ({
-    title,
-    children,
-}: {
+interface AccountDetailSettingsRowProps {
     title: ReactNode;
     children: ReactNode;
-}) => (
+}
+
+const AccountDetailSettingsRow = ({ title, children }: AccountDetailSettingsRowProps) => (
     <Box
         paddingVertical="sp8"
         flexDirection="row"
         alignItems="center"
         justifyContent="space-between"
     >
-        <Text variant="body-sm" color="textSubdued">
+        <Text variant="body-sm" color="contentSecondary">
             {title}
         </Text>
         {children}
@@ -47,7 +50,7 @@ const AccountDetailSettingsRow = ({
 const CryptoNameWithIcon = ({ symbol }: { symbol: NetworkSymbol }) => (
     <HStack spacing="sp8" flexDirection="row" alignItems="center" justifyContent="flex-end">
         <Text variant="body-sm">{networks[symbol].name}</Text>
-        <CryptoIcon symbol={symbol} size="extraSmall" />
+        <TokenIcon symbol={symbol} size="extraSmall" />
     </HStack>
 );
 
@@ -63,10 +66,20 @@ export const AccountSettingsScreen = ({
     );
 
     const formattedAccountType = useSelector((state: AccountsRootState) =>
-        selectFormattedAccountType(state, accountKey),
+        selectFormattedAccountTypeWithDefault(state, accountKey),
     );
 
+    const isUtxoBasedAccount = useSelector((state: AccountsRootState) =>
+        selectIsAccountUtxoBased(state, accountKey),
+    );
+
+    const isSuiteSyncEnabled = useSelector(selectIsSuiteSyncEnabled);
     if (!account) return null;
+
+    const shouldDisplayExportImport = shouldDisplayExportImportBip329Labels({
+        account,
+        isSuiteSyncEnabled,
+    });
 
     return (
         <Screen
@@ -78,28 +91,50 @@ export const AccountSettingsScreen = ({
             }
         >
             <Box flex={1} justifyContent="space-between">
-                <Card>
-                    <VStack spacing="sp4">
-                        <AccountDetailSettingsRow
-                            title={
-                                <Translation id="moduleAccountManagement.accountSettingsScreen.coin" />
-                            }
-                        >
-                            <CryptoNameWithIcon symbol={account.symbol} />
-                        </AccountDetailSettingsRow>
-                        {formattedAccountType && (
+                <VStack spacing="sp12">
+                    <Card>
+                        <VStack spacing="sp4">
                             <AccountDetailSettingsRow
                                 title={
-                                    <Translation id="moduleAccountManagement.accountSettingsScreen.accountType" />
+                                    <Translation id="moduleAccountManagement.accountSettingsScreen.coin" />
                                 }
                             >
-                                <Text variant="body-sm">{formattedAccountType}</Text>
+                                <CryptoNameWithIcon symbol={account.symbol} />
                             </AccountDetailSettingsRow>
-                        )}
-                    </VStack>
-                </Card>
+
+                            {!!formattedAccountType && (
+                                <AccountDetailSettingsRow
+                                    title={
+                                        <Translation id="moduleAccountManagement.accountSettingsScreen.accountType" />
+                                    }
+                                >
+                                    <Text variant="body-sm">{formattedAccountType}</Text>
+                                </AccountDetailSettingsRow>
+                            )}
+
+                            {account.path && (
+                                <AccountDetailSettingsRow
+                                    title={
+                                        <Translation id="moduleAccountManagement.accountSettingsScreen.derivationPath" />
+                                    }
+                                >
+                                    <Text variant="body-sm">{account.path}</Text>
+                                </AccountDetailSettingsRow>
+                            )}
+                        </VStack>
+                    </Card>
+                    {shouldDisplayExportImport && (
+                        <Bip329ManageLabelsCard
+                            accountDescriptor={account.descriptor}
+                            networkSymbol={account.symbol}
+                            deviceStaticSessionId={account.deviceState}
+                        />
+                    )}
+                </VStack>
                 <VStack spacing="sp16">
-                    <AccountSettingsShowXpubButton accountKey={account.key} />
+                    {isUtxoBasedAccount && (
+                        <AccountSettingsShowXpubButton accountKey={account.key} />
+                    )}
                     {isPortfolioTrackerDevice && (
                         <AccountSettingsRemoveCoinButton accountKey={account.key} />
                     )}

@@ -1,5 +1,6 @@
 import { useRef } from 'react';
 
+import { TrezorLink } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { selectSelectedDevice } from '@suite-common/device';
 import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
@@ -9,7 +10,6 @@ import { DeviceModelInternal } from '@trezor/device-utils';
 import { DeviceAnimation } from '@trezor/product-components';
 import { TREZOR_RESELLERS_URL, TREZOR_SUPPORT_URL } from '@trezor/urls';
 
-import { TrezorLink } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
 
 export const Hologram = () => {

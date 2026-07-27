@@ -1,14 +1,13 @@
-import { NetworkSymbol } from '@suite-common/wallet-config';
-import { AccountKey } from '@suite-common/wallet-types';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { Box, Card, PressableOpacity, Text } from '@suite-native/atoms';
 import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
-import { useSelector } from '@suite-native/staking';
-// TODO fix deep import
-// eslint-disable-next-line local-rules/no-package-deep-imports
-import { selectIsCardanoStakedOutsideEverstake } from '@suite-native/staking/src/cardanoStakingSelectors';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { selectIsCardanoStakedOutsideEverstake, useSelector } from '@suite-native/staking';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
+
+import { ApyValue } from './ApyValue';
 
 const stakingItemStyle = prepareNativeStyle(utils => ({
     flexDirection: 'row',
@@ -33,7 +32,7 @@ const stakingWrapperStyle = prepareNativeStyle(utils => ({
 
 const separatorStyle = prepareNativeStyle(utils => ({
     borderBottomWidth: utils.borders.widths.small,
-    borderBottomColor: utils.colors.borderElevation1,
+    borderBottomColor: utils.colors.borderNeutral,
 }));
 
 type AutoStakedBalancesCardProps = {
@@ -67,20 +66,20 @@ export const AutoStakedBalancesCard = ({
                 <Box style={applyStyle(stakingWrapperStyle)}>
                     <Box flex={1}>
                         <Box style={applyStyle(stakingItemStyle)}>
-                            <Icon name="check" color="textSubdued" size="medium" />
-                            <Text color="textSubdued" variant="body-xs">
+                            <Icon name="check" color="contentSecondary" size="medium" />
+                            <Text color="contentSecondary" variant="body-xs">
                                 <Translation id="earn.stakedAutomatically" />
                             </Text>
                         </Box>
 
-                        <Text color="textDefault" variant="headline-sm">
+                        <Text color="contentPrimary" variant="headline-sm">
                             <Translation id="earn.fullBalance" />
                         </Text>
                     </Box>
                     <Box flex={1}>
                         <Box style={applyStyle(stakingItemStyle)}>
-                            <Icon name="plusCircle" color="textSubdued" size="medium" />
-                            <Text color="textSubdued" variant="body-xs">
+                            <Icon name="plusCircle" color="contentSecondary" size="medium" />
+                            <Text color="contentSecondary" variant="body-xs">
                                 <Translation id="earn.rewards" />
                             </Text>
                         </Box>
@@ -88,15 +87,15 @@ export const AutoStakedBalancesCard = ({
                             value={rewardsBalance}
                             symbol={symbol}
                             decimals={CRYPTO_BALANCE_DECIMALS}
-                            color="textSecondaryHighlight"
+                            color="contentBrand"
                             variant="headline-sm"
                         />
                         <Box flexDirection="row">
-                            <Text color="textSubdued">≈</Text>
+                            <Text color="contentSecondary">≈</Text>
                             <CryptoToFiatAmountFormatter
                                 value={rewardsBalance}
                                 symbol={symbol}
-                                color="textSubdued"
+                                color="contentSecondary"
                                 isBalance
                             />
                         </Box>
@@ -110,12 +109,12 @@ export const AutoStakedBalancesCard = ({
                     justifyContent="space-between"
                     paddingTop="sp16"
                 >
-                    <Text color="textSubdued">
+                    <Text color="contentSecondary">
                         <Translation id="earn.apy" />
                     </Text>
                     <Text>
                         {!isAdaStakedOutsideEverstake && apy ? (
-                            `${apy}%`
+                            <ApyValue apy={apy} />
                         ) : (
                             <Translation id="earn.notAvailable" />
                         )}
@@ -126,9 +125,9 @@ export const AutoStakedBalancesCard = ({
                     <Box style={applyStyle(separatorStyle)} />
 
                     <Box style={applyStyle(infoItemStyle)}>
-                        <Icon name="info" color="textSubdued" size="mediumLarge" />
+                        <Icon name="info" color="contentSecondary" size="mediumLarge" />
                         <Box flexShrink={1}>
-                            <Text color="textSubdued" variant="body-sm" numberOfLines={0}>
+                            <Text color="contentSecondary" variant="body-sm" numberOfLines={0}>
                                 <Translation id="earn.adaStaysFullyAccessuble" />
                             </Text>
                         </Box>

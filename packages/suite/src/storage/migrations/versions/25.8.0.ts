@@ -2,7 +2,7 @@ import { createMigration } from '@suite/idb-migration-utils';
 import { LANGUAGES } from '@suite-common/suite-types';
 import { typedObjectKeys } from '@trezor/utils';
 
-import { SuiteDBSchema } from 'src/storage/definitions';
+import { type SuiteDBSchema } from 'src/storage/definitions';
 
 import { updateAll } from '../utils';
 
@@ -11,7 +11,7 @@ export default createMigration<SuiteDBSchema>('25.8.0', async (db, tx) => {
         const store = tx.objectStore('suiteSettings');
         const suiteSettings = await store.get('suite');
 
-        if (suiteSettings && suiteSettings.settings) {
+        if (suiteSettings?.settings) {
             if (
                 typeof suiteSettings.settings.language === 'string' &&
                 suiteSettings.settings.language.length === 2

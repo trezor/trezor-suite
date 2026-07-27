@@ -3,6 +3,9 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         {
+            "path": "../../suite-common/dependency-injection"
+        },
+        {
             "path": "../../suite-common/formatters"
         },
         {
@@ -20,6 +23,7 @@
         {
             "path": "../../suite-common/wallet-utils"
         },
+        { "path": "../address" },
         { "path": "../analytics" },
         { "path": "../atoms" },
         { "path": "../clipboard" },
@@ -31,11 +35,14 @@
         { "path": "../labeling" },
         { "path": "../link" },
         { "path": "../navigation" },
-        { "path": "../services" },
         { "path": "../tokens" },
+        { "path": "../transaction-management" },
         { "path": "../transactions" },
         { "path": "../../packages/connect" },
-        { "path": "../../packages/styles" },
-        { "path": "../../packages/urls" }
+        {
+            "path": "../../packages/styles-native"
+        },
+        { "path": "../../packages/urls" },
+        { "path": "../../packages/requirements" }
     ]
 }

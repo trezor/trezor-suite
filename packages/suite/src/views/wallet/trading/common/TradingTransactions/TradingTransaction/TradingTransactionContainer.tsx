@@ -1,7 +1,6 @@
-import { JSX } from 'react';
+import { type JSX } from 'react';
 
 import { Card, Column, Row } from '@trezor/components';
-import { spacings } from '@trezor/theme';
 
 import { useLayoutSize } from 'src/hooks/suite';
 
@@ -9,17 +8,19 @@ interface TradingTransactionContainerProps {
     TradeDetail: JSX.Element;
     TradeProviders: JSX.Element;
     TradeButton: JSX.Element;
+    'data-testid'?: string;
 }
 
 export const TradingTransactionContainer = ({
     TradeDetail,
     TradeProviders,
     TradeButton,
+    'data-testid': dataTestId,
 }: TradingTransactionContainerProps) => {
     const { isBelowDesktop, isBelowMobile } = useLayoutSize();
 
     return (
-        <Card fillType="flat" margin={{ bottom: spacings.lg }}>
+        <Card type="sunken" margin={{ bottom: 20 }} data-testid={dataTestId}>
             <Row flexWrap={isBelowDesktop ? 'wrap' : undefined}>
                 <Column flex="auto" width={isBelowDesktop ? 'calc(100% - 180px)' : '100%'}>
                     {TradeDetail}
@@ -32,8 +33,8 @@ export const TradingTransactionContainer = ({
                     margin={
                         isBelowDesktop
                             ? {
-                                  top: spacings.xs,
-                                  bottom: spacings.xs,
+                                  top: 8,
+                                  bottom: 8,
                               }
                             : undefined
                     }

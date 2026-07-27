@@ -1,15 +1,18 @@
+import {
+    type BackupDeviceParams,
+    type BackupState,
+    type ConfirmKey,
+    backupDeviceThunk,
+} from '@suite/backup';
 import { Translation } from '@suite/intl';
+import { selectIsDeviceLocked } from '@suite/locks';
 import { selectSelectedDevice } from '@suite-common/device';
-import { Modal, Paragraph } from '@trezor/components';
-import { spacings } from '@trezor/theme';
+import { Badge, Column, Modal, Paragraph } from '@trezor/components';
 
-import { ConfirmKey, backupDevice } from 'src/actions/backup/backupActions';
 import { PreBackupCheckboxes } from 'src/components/backup';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectIsDeviceLocked } from 'src/selectors/suite/suiteSelectors';
 
 import { BackupStepDescription } from './BackupStepDescription';
-import { BackupState } from '../../reducers/backup/backupReducer';
 
 const canStart = (userConfirmed: ConfirmKey[], isDeviceLocked: boolean) =>
     (['has-enough-time', 'is-in-private', 'understands-what-seed-is'] as const).every(e =>
@@ -27,7 +30,7 @@ export const BackupStep1Initial = ({
     const isDeviceLocked = useSelector(selectIsDeviceLocked);
     const dispatch = useDispatch();
 
-    const backupParams: Parameters<typeof backupDevice>[0] =
+    const params: BackupDeviceParams =
         device?.features?.backup_type === 'Slip39_Basic' ||
         device?.features?.backup_type === 'Slip39_Basic_Extendable'
             ? {
@@ -39,15 +42,22 @@ export const BackupStep1Initial = ({
     return (
         <Modal
             onCancel={onCancel}
-            variant="primary"
+            intent="brand"
             data-testid="@backup"
-            heading={<Translation id="TR_CREATE_BACKUP" />}
+            heading={
+                <Column gap={8} alignItems="center" justifyContent="center">
+                    <Badge intent="neutral" size="medium">
+                        <Translation id="TR_NEW_WALLET" />
+                    </Badge>
+                    <Translation id="TR_CREATE_BACKUP" />
+                </Column>
+            }
             description={<BackupStepDescription />}
             bottomContent={
                 <>
                     <Modal.Button
                         data-testid="@backup/start-button"
-                        onClick={() => dispatch(backupDevice(backupParams))}
+                        onClick={() => dispatch(backupDeviceThunk({ params }))}
                         isDisabled={!canStart(backup.userConfirmed, isDeviceLocked)}
                     >
                         <Translation id="TR_CREATE_BACKUP" />
@@ -67,7 +77,7 @@ export const BackupStep1Initial = ({
                 intent="neutral"
                 priority="secondary"
                 typographyStyle="body-sm"
-                margin={{ bottom: spacings.xl }}
+                margin={{ bottom: 24 }}
             >
                 <Translation id="TR_BACKUP_SUBHEADING_1" />
             </Paragraph>

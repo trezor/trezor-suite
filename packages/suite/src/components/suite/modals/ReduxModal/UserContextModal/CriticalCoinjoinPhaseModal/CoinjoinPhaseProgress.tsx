@@ -1,18 +1,17 @@
+import { type CoinjoinSession } from '@suite/coinjoin';
 import { Translation } from '@suite/intl';
 import { RoundPhase } from '@trezor/coinjoin';
-import { BulletList, BulletListItemState, Column } from '@trezor/components';
-import { spacings } from '@trezor/theme';
+import { Column, StepList, type StepListItemState } from '@trezor/components';
 
 import { CountdownTimer } from 'src/components/suite/CountdownTimer';
 import { ROUND_PHASE_MESSAGES } from 'src/constants/suite/coinjoin';
-import { CoinjoinSession } from 'src/types/wallet/coinjoin';
 
 type CoinjoinPhaseProgressProps = {
     roundPhase: RoundPhase;
     phaseDeadline: CoinjoinSession['roundPhaseDeadline'];
 };
 
-const getBulletListItemState = (phase: RoundPhase, roundPhase: RoundPhase): BulletListItemState => {
+const getStepListItemState = (phase: RoundPhase, roundPhase: RoundPhase): StepListItemState => {
     if (phase === roundPhase) return 'default';
     if (phase < roundPhase) return 'done';
 
@@ -23,16 +22,16 @@ export const CoinjoinPhaseProgress = ({
     roundPhase,
     phaseDeadline,
 }: CoinjoinPhaseProgressProps) => (
-    <Column gap={spacings.md}>
-        <BulletList gap={spacings.md} bulletSize="medium">
+    <Column gap={16}>
+        <StepList gap={16} bulletSize="medium">
             {Object.values(RoundPhase).map(phase => (
-                <BulletList.Item
+                <StepList.Item
                     key={phase}
-                    state={getBulletListItemState(phase, roundPhase)}
+                    state={getStepListItemState(phase, roundPhase)}
                     title={<Translation id={ROUND_PHASE_MESSAGES[phase]} />}
                 />
             ))}
-        </BulletList>
+        </StepList>
         {phaseDeadline && (
             <CountdownTimer
                 isApproximate

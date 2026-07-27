@@ -1,4 +1,4 @@
-import { BluetoothDeviceCommon } from './types';
+import { type BluetoothDeviceCommon } from './types';
 
 // There is a UX need to remap devices that are in pairing mode and emit more than once
 // we do this by filtering out duplicates by name, color and model

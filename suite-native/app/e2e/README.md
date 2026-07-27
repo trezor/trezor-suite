@@ -14,7 +14,7 @@ To run the tests locally, you need to have the following installed:
     - Installed Xcode with iPhone 11 simulator created
     - Installed applesimutils with `brew tap wix/brew && brew install applesimutils`
 
-- for **Android** build: Installed Android Studio with existing emulator device named `Pixel_3a_API_31`. You can do it via Android Studio UI. If you want to do it via the command line, please follow [this guide](https://wix.github.io/Detox/docs/guide/android-dev-env#heres-how-to-install-them-using-the-command-line). You can also use another emulator device, but you have to map its name to the `devices.emulator.device.avdName` value in the `.detoxrc.js` config file.
+- for **Android** build: Installed Android Studio with existing emulator device named `Pixel_6_API_34`. You can do it via Android Studio UI. If you want to do it via the command line, please follow [this guide](https://wix.github.io/Detox/docs/guide/android-dev-env#heres-how-to-install-them-using-the-command-line). You can also use another emulator device, but you have to map its name to the `devices.emulator.device.avdName` value in the `.detoxrc.js` config file.
 
 ### Debug build
 

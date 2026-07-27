@@ -1,5 +1,5 @@
-import { getWeakRandomNumberInRange } from '@trezor/utils';
-import { Network, Transaction, bufferutils } from '@trezor/utxo-lib';
+import { clamp, getWeakRandomNumberInRange } from '@trezor/utils';
+import { type Network, Transaction, bufferutils } from '@trezor/utxo-lib';
 
 import {
     COORDINATOR_FEE_RATE_FALLBACK,
@@ -10,15 +10,15 @@ import {
     ROUND_REGISTRATION_END_OFFSET,
 } from '../constants';
 import { RoundPhase } from '../enums';
-import { CoinjoinTransactionData } from '../types';
+import { type CoinjoinTransactionData } from '../types';
 import {
-    CoinjoinRoundParameters,
-    CoinjoinState,
-    CoinjoinStateEvent,
-    CoinjoinStatus,
-    Round,
+    type CoinjoinRoundParameters,
+    type CoinjoinState,
+    type CoinjoinStateEvent,
+    type CoinjoinStatus,
+    type Round,
 } from '../types/coordinator';
-import { Credentials } from '../types/middleware';
+import { type Credentials } from '../types/middleware';
 
 export const getRoundEvents = <T extends CoinjoinStateEvent['Type']>(
     type: T,
@@ -29,9 +29,10 @@ export const getRoundParameters = (round: Round) => {
     const events = getRoundEvents('RoundCreated', round.CoinjoinState.Events);
     if (events.length < 1) return;
 
-    const [{ RoundParameters }] = events;
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const firstEvent: (typeof events)[number] = events[0];
 
-    return RoundParameters;
+    return firstEvent.RoundParameters;
 };
 
 // round commitmentData used in request for input ownershipProof
@@ -45,11 +46,14 @@ export const getCommitmentData = (identifier: string, roundId: string) => {
 
 // transform '0d 0h 1m 0s' (WabiSabi TimeSpan) to milliseconds
 export const readTimeSpan = (ts: string) => {
-    const span = ts.split(' ').map(v => parseInt(v, 10));
+    const parts = ts.split(' ').map(v => parseInt(v, 10));
+    const days = parts[0] ?? 0;
+    const hours = parts[1] ?? 0;
+    const minutes = parts[2] ?? 0;
+    const seconds = parts[3] ?? 0;
 
     const date = new Date();
     const now = date.getTime();
-    const [days, hours, minutes, seconds] = span;
 
     if (days > 0) {
         date.setDate(date.getDate() + days);
@@ -70,9 +74,6 @@ export const readTimeSpan = (ts: string) => {
     return date.getTime() - now;
 };
 
-const clamp = (value: number, min = Number.NEGATIVE_INFINITY, max = Number.POSITIVE_INFINITY) =>
-    Math.min(Math.max(value, min), max);
-
 export const scheduleDelay = (
     deadline: number,
     minimumDelay = 0,
@@ -92,7 +93,7 @@ export const scheduleDelay = (
 };
 
 // NOTE: deadlines are not accurate. phase may change earlier
-// accept CoinjoinRound or modified coordinator Round (see estimatePhaseDeadline below)
+// accept CoinjoinRound or modified coordinator Round
 type PartialCoinjoinRound = {
     Phase: RoundPhase;
     InputRegistrationEnd: string;
@@ -153,30 +154,6 @@ export const getCoinjoinRoundDeadlines = (round: PartialCoinjoinRound) => {
     }
 };
 
-export const estimatePhaseDeadline = (round: Round) => {
-    const roundParameters = getRoundParameters(round);
-    if (!roundParameters) return 0;
-
-    const { phaseDeadline } = getCoinjoinRoundDeadlines({
-        ...round,
-        RoundParameters: roundParameters,
-    });
-
-    return phaseDeadline;
-};
-
-export const findNearestDeadline = (rounds: Round[]) => {
-    const now = Date.now();
-    const deadlines = rounds.map(r => {
-        const phaseDeadline = estimatePhaseDeadline(r);
-        const timeLeft = phaseDeadline ? new Date(phaseDeadline).getTime() - now : 0;
-
-        return timeLeft > 0 ? timeLeft : now;
-    });
-
-    return Math.min(...deadlines);
-};
-
 // get relevant round data from the most recent round
 const getDataFromRounds = (rounds: Round[]) => {
     const lastRound = rounds.at(-1);
@@ -208,7 +185,9 @@ export const transformStatus = ({
     const { allowedInputAmounts, coordinationFeeRate } = getDataFromRounds(rounds);
     // coinJoinFeeRateMedians include an array of medians per day, week and month - we take the first (day) median as the recommended fee rate base.
     // The value is converted from kvBytes (kilo virtual bytes) to vBytes (how the value is displayed in UI).
-    const feeRateMedian = Math.round(CoinJoinFeeRateMedians[0].MedianFeeRate / 1000);
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const firstMedian: (typeof CoinJoinFeeRateMedians)[number] = CoinJoinFeeRateMedians[0];
+    const feeRateMedian = Math.round(firstMedian.MedianFeeRate / 1000);
 
     return {
         rounds,
@@ -273,12 +252,14 @@ export const getBroadcastedTxDetails = ({
     const sequence = 4294967295;
 
     transactionData.inputs.forEach((input, index) => {
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const witnessHex: string = Witnesses[index];
         tx.ins.push({
             hash: reverseBuffer(Buffer.from(input.hash, 'hex')),
             index: input.index,
             script: Buffer.allocUnsafe(0), // script is not used in calculation
             sequence,
-            witness: new BufferReader(Buffer.from(Witnesses[index], 'hex')).readVector(),
+            witness: new BufferReader(Buffer.from(witnessHex, 'hex')).readVector(),
         });
     });
 

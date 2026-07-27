@@ -1,12 +1,12 @@
-import { Dispatch } from '@reduxjs/toolkit';
+import { type Dispatch } from '@reduxjs/toolkit';
 
 import {
-    EnsureWalletSuiteSyncOn,
-    EnsureWalletSuiteSyncOnDep,
+    type EnsureWalletSuiteSyncOn,
+    type EnsureWalletSuiteSyncOnDep,
 } from '@suite-common/suite-sync-types';
 import { exhaustive } from '@trezor/type-utils';
 
-import { setSuiteSyncError } from '../suiteSyncSlice';
+import { resetSuiteSyncError, setSuiteSyncError } from '../suiteSyncSlice';
 
 export type CreateEnsureWalletSuiteSyncOnWithFwCheckDeps = {
     dispatch: Dispatch;
@@ -26,8 +26,10 @@ export const createEnsureWalletSuiteSyncOnWithErrorHandler =
 
             switch (type) {
                 case 'SuiteSyncFirmwareUpgradeNeededDeviceErrorType':
+                case 'SuiteSyncUnavailableOnDeviceError':
                 case 'DeviceCancelled':
                 case 'DeviceError':
+                case 'DeviceNotConnectedError':
                     deps.dispatch(
                         setSuiteSyncError({
                             deviceStaticSessionId: params.deviceStaticSessionId,
@@ -36,28 +38,20 @@ export const createEnsureWalletSuiteSyncOnWithErrorHandler =
                     );
                     break;
 
-                case 'SuiteSyncUnavailableOnDeviceError':
-                    // This error is now not handled in the UI, so we don't need to set the error. It will probably be added as a follow up.
-                    deps.dispatch(
-                        setSuiteSyncError({
-                            deviceStaticSessionId: params.deviceStaticSessionId,
-                            error: null,
-                        }),
-                    );
-                    break;
-
                 case 'WriteModeRequiredForAllocation':
                     // Do nothing, this is expected control flow error when we want allocate on-demand.
                     break;
+
+                case 'QuotaManagerCommunicationFailed':
+                    return result; // This is edge-case handled only imperatively by showing the toast notification.
 
                 default:
                     exhaustive(type);
             }
         } else {
             deps.dispatch(
-                setSuiteSyncError({
+                resetSuiteSyncError({
                     deviceStaticSessionId: params.deviceStaticSessionId,
-                    error: null,
                 }),
             );
         }

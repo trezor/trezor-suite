@@ -1,4 +1,4 @@
-import { memo, useEffect } from 'react';
+import { memo, useEffect, useEffectEvent } from 'react';
 import { FadeIn, FadeInDown, LinearTransition } from 'react-native-reanimated';
 
 import { AnimatedBox, VStack } from '@suite-native/atoms';
@@ -8,11 +8,13 @@ import { AmountEditingDoneButton } from '@suite-native/trading-atoms';
 import { SellAlert } from './SellAlert';
 import { SellCard } from './SellCard';
 import { SellConfirmation } from './SellConfirmation';
+import { SellKYCWarning } from './SellKYCWarning';
 import { SellPaymentCard } from './payment/SellPaymentCard';
 import { useFocusedValueWatch } from '../../hooks/general/useFocusedValueWatch';
 import { useMountedRecentlyFlag } from '../../hooks/general/useMountedRecentlyFlag';
 import { useSellFormContext } from '../../hooks/sell/useSellFormContext';
 import { useSellQuotes } from '../../hooks/sell/useSellQuotes';
+import { ConciergeAlert } from '../concierge/ConciergeAlert';
 
 type SellFormProps = {
     shouldAnimateEntering?: boolean;
@@ -64,7 +66,9 @@ const SellFormMemoized = memo(
                                 shouldAnimateEntering={shouldAnimateEntering}
                                 isFormMountedRecently={isFormMountedRecently}
                             />
+                            <SellKYCWarning />
                             <SellConfirmation enteringAnimation={enteringAnimation} />
+                            <ConciergeAlert tradingType="sell" />
                         </>
                     )}
                 </VStack>
@@ -80,9 +84,12 @@ export const SellForm = ({ shouldAnimateEntering }: SellFormProps) => {
 
     useSellQuotes(sellForm);
 
-    useEffect(() => {
+    const reportVisit = useEffectEvent(() => {
         reportToAnalytics('sell-form', 'visit');
-    }, [reportToAnalytics]);
+    });
+    useEffect(() => {
+        reportVisit();
+    }, []);
 
     return (
         <SellFormMemoized

@@ -1,8 +1,8 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useEffectEvent } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import {
-    TradingSellType,
+    type TradingSellType,
     isFinalStatus,
     selectTradingSellSelectedQuote,
     useTradingDetailData,
@@ -13,9 +13,9 @@ import {
     ProviderConfirmationStatusInfo,
     ProviderStatusDevButtons,
 } from '@suite-native/trading-browser-auth';
+import { Footer } from '@suite-native/trading-provider-utils';
 
 import { LastErrorMessage } from '../components/general/Error/LastErrorMessage';
-import { Footer } from '../components/general/Footer';
 import { TradingDeviceConnectionGuard } from '../components/general/TradingDeviceConnectionGuard';
 import {
     SellPreviewContinueButton,
@@ -28,18 +28,13 @@ import { clearTradingStateThunk } from '../thunks';
 
 const TradingSellPreviewScreenContent = () => {
     const dispatch = useDispatch();
-    const { txnErrorString, doBankAccountVerificationCheck, fetchFeesAndCompose } = useSellFlow();
+    const { txnErrorString, doBankAccountVerificationCheck, composeTradingTransaction } =
+        useSellFlow();
     const { trade } = useTradingDetailData<TradingSellType>('sell');
     const selectedQuote = useSelector(selectTradingSellSelectedQuote);
-    const [shouldFetchFees, setShouldFetchFees] = useState(false);
 
     const currentQuote = trade?.data ? trade.data : selectedQuote;
     const isFinalized = isFinalStatus('sell', currentQuote?.status);
-
-    const reportToAnalytics = useSellAnalyticReportCallback();
-    useEffect(() => {
-        reportToAnalytics('transaction-preview', 'visit');
-    }, [reportToAnalytics]);
 
     useWatchTrade({
         accountKey: trade?.sendAccountKey,
@@ -47,25 +42,27 @@ const TradingSellPreviewScreenContent = () => {
         isInProgress: true,
     });
 
+    const reportToAnalytics = useSellAnalyticReportCallback();
+    const reportVisit = useEffectEvent(() => {
+        reportToAnalytics('transaction-preview', 'visit');
+    });
     useEffect(() => {
-        doBankAccountVerificationCheck();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+        reportVisit();
     }, []);
 
-    // Fetch fees and compose when status is SEND_CRYPTO
+    const runBankAccountVerificationCheck = useEffectEvent(() => {
+        doBankAccountVerificationCheck();
+    });
+    useEffect(() => {
+        runBankAccountVerificationCheck();
+    }, []);
+
+    // Compose transaction when status is SEND_CRYPTO
     useEffect(() => {
         if (currentQuote?.status === 'SEND_CRYPTO') {
-            setShouldFetchFees(true);
+            composeTradingTransaction();
         }
-    }, [currentQuote?.status, currentQuote?.orderId]);
-
-    // unfortunately fetchFeesAndCompose is too unstable to be used directly in above useEffect
-    useEffect(() => {
-        if (shouldFetchFees) {
-            setShouldFetchFees(false);
-            fetchFeesAndCompose();
-        }
-    }, [shouldFetchFees, fetchFeesAndCompose]);
+    }, [currentQuote?.status, composeTradingTransaction]);
 
     // clear trading state on unmount
     useEffect(
@@ -85,7 +82,7 @@ const TradingSellPreviewScreenContent = () => {
         <Screen header={<SellPreviewScreenHeader />}>
             <ProviderStatusDevButtons />
             <LastErrorMessage tradingType="sell" />
-            <ProviderConfirmationStatusInfo />
+            <ProviderConfirmationStatusInfo quoteStatus={currentQuote?.status} />
             <SellPreviewView quote={currentQuote} txnErrorString={errorString} />
             {!isFinalized && (
                 <SellPreviewContinueButton

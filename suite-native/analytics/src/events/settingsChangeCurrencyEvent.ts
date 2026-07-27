@@ -9,13 +9,14 @@ type Attributes = {
 
 export const settingsChangeCurrencyEvent: EventDef<Attributes, EventType.SettingsChangeCurrency> = {
     name: EventType.SettingsChangeCurrency,
-    descriptionTrigger: 'On changing fiat currency settings.',
+    descriptionTrigger:
+        'User selects a different fiat currency for price display in mobile app settings',
     changelog: [{ version: '23.4.1', notes: 'added' }],
 
     attributes: {
         localCurrency: {
             changelog: [{ version: '23.4.1', notes: 'added' }],
-            description: 'The selected fiat currency code',
+            description: 'The ISO 4217 fiat currency code selected (e.g., `USD`, `EUR`, `GBP`)',
         },
     },
 };

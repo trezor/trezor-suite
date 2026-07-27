@@ -1,14 +1,19 @@
 import styled from 'styled-components';
 
+import { useDevice } from '@suite/device';
 import { Grid } from '@trezor/components';
-import { DeviceModelInternal, hasBitcoinOnlyFirmware } from '@trezor/device-utils';
+import {
+    DeviceModelInternal,
+    getFirmwareVersionArray,
+    hasBitcoinOnlyFirmware,
+} from '@trezor/device-utils';
 import { resolveStaticPath } from '@trezor/env-utils';
-import { borders, spacings } from '@trezor/theme';
 import { exhaustive } from '@trezor/type-utils';
+import { versionUtils } from '@trezor/utils';
 
 import { applySettings } from 'src/actions/settings/deviceSettingsActions';
 import { getDefaultHomeScreenImage, getHomescreens } from 'src/constants/suite/homescreens';
-import { useDevice, useDispatch } from 'src/hooks/suite';
+import { useDispatch } from 'src/hooks/suite';
 import { imagePathToHex } from 'src/utils/suite/homescreen';
 
 type HomescreensType = ReturnType<typeof getHomescreens>;
@@ -35,7 +40,7 @@ const HomescreenImage = styled.img`
     display: block;
     width: 100%;
     cursor: pointer;
-    border-radius: ${borders.radii.xs};
+    border-radius: 4px;
 `;
 
 type HomescreenGalleryProps = {
@@ -54,20 +59,29 @@ export const HomescreenGallery = ({ onConfirm }: HomescreenGalleryProps) => {
     const setHomescreen = async (imagePath: string, image: AnyImageName) => {
         if (isLocked()) return;
 
-        // original image is the default image already available in device, set it by empty string
         const isOriginalImage =
             getDefaultHomeScreenImage({ deviceModelInternal, isBitcoinOnlyFirmware }) === image;
 
         if (isOriginalImage) {
-            dispatch(applySettings({ homescreen_length: 0 }));
+            // Reset homescreen to factory default. Firmware >= 2.9.0 expects
+            // homescreen_length: 0; older firmware (e.g. Trezor One 1.x) does
+            // not recognize that field and returns "No setting provided", so
+            // fall back to an empty homescreen string.
+            const fwVersion = getFirmwareVersionArray(device);
+            const supportsHomescreenLength =
+                fwVersion !== null && versionUtils.isNewerOrEqual(fwVersion, '2.9.0');
+
+            dispatch(
+                applySettings(
+                    supportsHomescreenLength ? { homescreen_length: 0 } : { homescreen: '' },
+                ),
+            );
         } else {
-            const hex = isOriginalImage ? '' : await imagePathToHex(imagePath, deviceModelInternal);
+            const hex = await imagePathToHex(imagePath, deviceModelInternal);
             dispatch(applySettings({ homescreen: hex }));
         }
 
-        if (onConfirm) {
-            onConfirm();
-        }
+        onConfirm?.();
     };
 
     const homescreens = getHomescreens(isBitcoinOnlyFirmware); // Get the homescreens based on the firmware type
@@ -75,7 +89,7 @@ export const HomescreenGallery = ({ onConfirm }: HomescreenGalleryProps) => {
     const isColorScreen = path.startsWith('COLOR');
 
     return (
-        <Grid gap={spacings.md} columns={4}>
+        <Grid gap={16} columns={4}>
             {homescreens[deviceModelInternal].map(image => {
                 const src = resolveStaticPath(
                     `images/homescreens/${path}/${image}.${isColorScreen ? 'jpg' : 'png'}`,

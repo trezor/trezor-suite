@@ -4,15 +4,16 @@ import path from 'path';
 import { TestCategory, TestPriority } from '@trezor/e2e-utils';
 
 import { csvToJson } from '../../support/csvToJson';
-import { AccountLabelId } from '../../support/enums/accountLabelId';
 import { expect, test } from '../../support/fixtures';
 import { MetadataProvider } from '../../support/mocks/metadataMock';
 import { createTestAnnotation } from '../../support/reporters/annotations';
 
 test.describe('Import a BTC csv file', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
-    test.beforeEach(async ({ metadataMock, onboardingPage }) => {
+    test.beforeEach(async ({ metadataMock, onboardingPage, settingsPage, metadataPage }) => {
         await metadataMock.start(MetadataProvider.DROPBOX);
         await onboardingPage.completeOnboarding();
+        await settingsPage.changeNetworks({ enableNetworks: ['btc'] });
+        await metadataPage.enableLegacyLabeling(MetadataProvider.DROPBOX);
     });
 
     test(
@@ -24,11 +25,8 @@ test.describe('Import a BTC csv file', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, 
                 priority: TestPriority.Low,
             }),
         },
-        async ({ page, dashboardPage, metadataPage, walletPage }) => {
+        async ({ page, dashboardPage, walletPage }) => {
             await walletPage.openAccount();
-            await metadataPage.account.clickEditLabelButton(AccountLabelId.BitcoinDefault1);
-            await metadataPage.passThroughInitMetadata(MetadataProvider.DROPBOX);
-
             await walletPage.openSendFormButton.click();
 
             await page.getByTestId('@send/header-dropdown').click();
@@ -42,22 +40,33 @@ test.describe('Import a BTC csv file', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, 
             const convertedData = csvToJson(csvData);
             await expect(page.getByTestId('outputs.0.address')).toBeVisible();
             await expect(page.getByTestId('outputs.0.address')).toHaveValue(
-                convertedData[0].address,
+                convertedData[0]?.address ?? '',
             );
             await expect(page.getByTestId('outputs.0.amount')).toBeVisible();
-            await expect(page.getByTestId('outputs.0.amount')).toHaveValue(convertedData[0].amount);
+            await expect(page.getByTestId('outputs.0.amount')).toHaveValue(
+                convertedData[0]?.amount ?? '',
+            );
             await expect(page.getByTestId('outputs.0.fiat')).toBeVisible();
-            // TODO: Uncomment this when https://github.com/trezor/trezor-suite/issues/19146 is fixed
-            //await expect(page.getByTestId('outputs.0.fiat')).toHaveValue(/^\d+(\.\d+)?$/);
+            await expect(page.getByTestId('outputs.0.fiat')).toHaveValue(/^[\d,]+(\.\d+)?$/);
+            await expect(page.getByTestId('@metadata/outputLabel/0/hover-container')).toBeVisible();
+            await expect(page.getByTestId('@metadata/outputLabel/0/hover-container')).toHaveText(
+                convertedData[0]?.label ?? '',
+            );
 
             await expect(page.getByTestId('outputs.1.address')).toBeVisible();
             await expect(page.getByTestId('outputs.1.address')).toHaveValue(
-                convertedData[1].address,
+                convertedData[1]?.address ?? '',
             );
             await expect(page.getByTestId('outputs.1.amount')).toBeVisible();
             await expect(page.getByTestId('outputs.1.amount')).toHaveValue(/^\d+(\.\d+)?$/);
             await expect(page.getByTestId('outputs.1.fiat')).toBeVisible();
-            await expect(page.getByTestId('outputs.1.fiat')).toHaveValue(convertedData[1].amount);
+            await expect(page.getByTestId('outputs.1.fiat')).toHaveValue(
+                convertedData[1]?.amount ?? '',
+            );
+            await expect(page.getByTestId('@metadata/outputLabel/1/hover-container')).toBeVisible();
+            await expect(page.getByTestId('@metadata/outputLabel/1/hover-container')).toHaveText(
+                convertedData[1]?.label ?? '',
+            );
         },
     );
 });

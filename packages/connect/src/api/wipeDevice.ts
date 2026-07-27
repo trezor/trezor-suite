@@ -1,25 +1,21 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/WipeDevice.js
 
-import { AbstractMethod, MethodPermission, Payload } from '../core/AbstractMethod';
-import { Device } from '../device/Device';
-import { DEVICE, UI_REQUEST } from '../events';
-import { getFirmwareRange } from './common/paramsValidator';
+import { DEVICE, type PermissionRequest, UI_REQUEST } from '@trezor/connect-common';
+
+import type { MethodMessage } from '../core/AbstractMethod';
+import { AbstractMethod } from '../core/AbstractMethod';
+import type { Device } from '../device/Device';
 
 export default class WipeDevice extends AbstractMethod<'wipeDevice'> {
-    constructor(message: { id?: number; payload: Payload<'wipeDevice'> }) {
-        super(message);
+    constructor(message: MethodMessage<'wipeDevice'>) {
+        super(message, undefined);
 
         this.allowDeviceMode = [UI_REQUEST.INITIALIZE, UI_REQUEST.SEEDLESS, UI_REQUEST.BOOTLOADER];
         this.useDeviceState = false;
         this.skipFinalReload = false;
-        this.firmwareRange = getFirmwareRange(this.name, null, this.firmwareRange);
     }
-    get requiredPermissions(): MethodPermission[] {
-        return ['management'];
-    }
-
-    init() {
-        // Configuration already set in constructor
+    get requiredPermissions(): PermissionRequest[] {
+        return [{ permission: 'management' }];
     }
 
     get confirmation() {
@@ -46,18 +42,18 @@ export default class WipeDevice extends AbstractMethod<'wipeDevice'> {
     }
 
     async run() {
-        const cmd = this.device.getCommands();
+        const cmd = this.getDevice().getCommands();
 
-        if (this.device.isBootloader()) {
+        if (this.getDevice().isBootloader()) {
             // firmware doesn't send this button request in bootloader mode
-            this.device.emit(DEVICE.BUTTON, {
-                device: this.device,
+            this.getDevice().emit(DEVICE.BUTTON, {
+                device: this.getDevice(),
                 payload: { code: 'ButtonRequest_WipeDevice' },
             });
         }
 
         const response = await cmd.typedCall('WipeDevice', 'Success');
-        const thpState = this.device.getThpState();
+        const thpState = this.getDevice().getThpState();
         if (thpState) {
             // device will require THP pairing in the next call
             // reset state and do not call GetFeatures (finalReload)

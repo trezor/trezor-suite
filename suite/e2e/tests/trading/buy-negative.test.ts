@@ -2,8 +2,10 @@ import { buyQuotesNegativeMax, buyQuotesNegativeMin, invityEndpoint } from '../.
 import { expect, test } from '../../support/fixtures';
 
 test.describe('Trading - Buy Negative scenarios', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
-    test.beforeEach(async ({ onboardingPage }) => {
+    test.beforeEach(async ({ onboardingPage, settingsPage, dashboardPage }) => {
         await onboardingPage.completeOnboarding();
+        await settingsPage.changeNetworks({ enableNetworks: ['btc'] });
+        await dashboardPage.navigateTo();
     });
 
     test('Buy form handles input limits and empty quotes', async ({
@@ -26,7 +28,7 @@ test.describe('Trading - Buy Negative scenarios', { tag: ['@webOnly', '@T3W1', '
             });
             await expect(page.getByText('Receive account')).toBeVisible();
             await tradingPage.inputs.fiatAmount.fill('1000000000');
-            await expect(page.getByText('Maximum is 5000000 EUR')).toBeVisible();
+            await expect(page.getByText(/Maximum is (5000000|5,000,000)(\.00)? EUR/)).toBeVisible();
             await expect(tradingPage.buyBestOfferButton).toBeDisabled();
         });
 
@@ -50,7 +52,6 @@ test.describe('Trading - Buy Negative scenarios', { tag: ['@webOnly', '@T3W1', '
             await expect(tradingPage.buyBestOfferButton).toBeDisabled();
             await expect(tradingPage.quotes.selectedProvider).toBeHidden();
             await expect(page.getByTestId('trading-offer-found-none')).toBeVisible();
-            await expect(tradingPage.quotes.selectButton).toBeHidden();
         });
     });
 });

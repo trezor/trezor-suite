@@ -5,13 +5,20 @@
         {
             "path": "../../suite-common/analytics-redux"
         },
+        { "path": "../../suite-common/bip329" },
         {
             "path": "../../suite-common/connect-popup"
         },
         {
             "path": "../../suite-common/delegated-identity-key"
         },
+        {
+            "path": "../../suite-common/dependency-injection"
+        },
         { "path": "../../suite-common/device" },
+        {
+            "path": "../../suite-common/discreet-mode"
+        },
         { "path": "../../suite-common/firmware" },
         {
             "path": "../../suite-common/geolocation"
@@ -35,9 +42,6 @@
         {
             "path": "../../suite-common/suite-sync-quota-manager"
         },
-        {
-            "path": "../../suite-common/suite-types"
-        },
         { "path": "../../suite-common/thp" },
         {
             "path": "../../suite-common/toast-notifications"
@@ -49,20 +53,18 @@
             "path": "../../suite-common/wallet-core"
         },
         {
-            "path": "../../suite-common/wallet-types"
-        },
-        {
             "path": "../../suite-common/walletconnect"
         },
         { "path": "../analytics" },
         { "path": "../banner-flags" },
+        { "path": "../biometrics" },
         { "path": "../blockchain" },
         { "path": "../bluetooth" },
-        { "path": "../config" },
         { "path": "../device" },
         { "path": "../device-authorization" },
         { "path": "../device-onboarding" },
         { "path": "../discovery" },
+        { "path": "../feature-feedback" },
         { "path": "../feature-flags" },
         { "path": "../firmware" },
         { "path": "../graph" },
@@ -77,8 +79,9 @@
         { "path": "../trading-state" },
         { "path": "../transaction-management" },
         { "path": "../../packages/connect" },
-        { "path": "../../packages/protobuf" },
-        { "path": "../../packages/transport" },
+        {
+            "path": "../../packages/transport-common"
+        },
         {
             "path": "../../packages/transport-native-bluetooth"
         },

@@ -7,28 +7,26 @@
     "main": "src/index",
     "scripts": {
         "depcheck": "yarn g:depcheck",
-        "type-check": "yarn g:tsc --build"
+        "type-check": "yarn g:tsc --build",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
         "@suite-common/device": "workspace:*",
-        "@suite-common/wallet-config": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
         "@suite-common/wallet-types": "workspace:*",
-        "@suite-common/wallet-utils": "workspace:*",
         "@suite-native/atoms": "workspace:*",
         "@suite-native/clipboard": "workspace:*",
         "@suite-native/icons": "workspace:*",
         "@suite-native/intl": "workspace:*",
-        "@suite-native/labeling": "workspace:*",
         "@suite-native/toasts": "workspace:*",
         "@trezor/connect": "workspace:*",
-        "@trezor/styles": "workspace:*",
+        "@trezor/styles-native": "workspace:*",
         "@trezor/theme": "workspace:*",
-        "expo-camera": "~17.0.10",
-        "expo-image-picker": "~17.0.10",
-        "react": "19.1.0",
-        "react-native": "0.81.5",
+        "expo-camera": "~56.0.7",
+        "expo-image-picker": "~56.0.14",
+        "react": "19.2.3",
+        "react-native": "0.85.3",
         "react-qr-code": "2.0.18",
-        "react-redux": "9.2.0"
+        "react-redux": "9.3.0"
     }
 }

@@ -2,8 +2,11 @@ import { combineReducers } from '@reduxjs/toolkit';
 
 import { createThunk } from '@suite-common/redux-utils';
 import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
-import { confirmAddressOnDeviceThunk } from '@suite-common/wallet-core';
-import { Account, AddressDisplayOptions } from '@suite-common/wallet-types';
+import {
+    confirmAddressOnDeviceThunk,
+    prepareWalletSettingsReducer,
+} from '@suite-common/wallet-core';
+import { type Account, AddressDisplayOptions } from '@suite-common/wallet-types';
 
 import { accounts } from '../../../reducers/__fixtures__/account';
 import { initialState } from '../../../reducers/tradingCommonReducer';
@@ -11,6 +14,7 @@ import { prepareTradingReducer } from '../../../reducers/tradingReducer';
 import { getRefundAddress } from '../getRefundAddress';
 
 const tradingReducer = prepareTradingReducer(extraDependenciesCommonMock);
+const walletSettingsReducer = prepareWalletSettingsReducer(extraDependenciesCommonMock);
 
 // Mock external dependencies
 jest.mock('@suite-common/wallet-core', () => ({
@@ -25,7 +29,9 @@ jest.mock('../../../utils', () => ({
 const { getUnusedAddressFromAccount } = require('../../../utils');
 
 describe('getRefundAddress thunk', () => {
-    const mockAccount: Account = accounts[0];
+    const baseAccount = accounts[0];
+    if (!baseAccount) throw new Error('Missing test fixture');
+    const mockAccount: Account = baseAccount;
 
     const mockPath = "m/84'/0'/0'/0/5";
     const mockAddress = 'tb1qw508d6qejxtdg4y5r3zarvary0c5xw7kxpjzsx';
@@ -43,16 +49,10 @@ describe('getRefundAddress thunk', () => {
 
     const createMockStore = (preloadedState = {}) =>
         configureMockStore({
-            extra: {
-                ...extraDependenciesCommonMock,
-                selectors: {
-                    selectAddressDisplayType: jest
-                        .fn()
-                        .mockReturnValue(AddressDisplayOptions.CHUNKED),
-                },
-            },
+            extra: extraDependenciesCommonMock,
             reducer: combineReducers({
                 wallet: combineReducers({
+                    settings: walletSettingsReducer,
                     trading: tradingReducer,
                 }),
             }),
@@ -110,21 +110,16 @@ describe('getRefundAddress thunk', () => {
             );
 
             const storeWithNonChunked = configureMockStore({
-                extra: {
-                    ...extraDependenciesCommonMock,
-                    selectors: {
-                        selectAddressDisplayType: jest
-                            .fn()
-                            .mockReturnValue(AddressDisplayOptions.ORIGINAL),
-                    },
-                },
+                extra: extraDependenciesCommonMock,
                 reducer: combineReducers({
                     wallet: combineReducers({
+                        settings: walletSettingsReducer,
                         trading: tradingReducer,
                     }),
                 }),
                 preloadedState: {
                     wallet: {
+                        settings: { addressDisplayType: AddressDisplayOptions.ORIGINAL },
                         trading: initialState,
                     },
                 },
@@ -188,7 +183,7 @@ describe('getRefundAddress thunk', () => {
             (confirmAddressOnDeviceThunk as unknown as jest.Mock).mockImplementation(
                 createThunk('@suite/device/confirmAddressOnDeviceThunk', () => ({
                     success: false,
-                    payload: { error: 'Device confirmation failed' },
+                    error: { message: 'Device confirmation failed' },
                 })),
             );
 
@@ -331,7 +326,9 @@ describe('getRefundAddress thunk', () => {
 
             // Check if the action is in pending state
             const actions = store.getActions();
-            expect(actions[0].type).toBe(getRefundAddress.pending.type);
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const firstAction: (typeof actions)[number] = actions[0];
+            expect(firstAction.type).toBe(getRefundAddress.pending.type);
 
             const result = await promise;
             expect(result.type).toBe(getRefundAddress.fulfilled.type);

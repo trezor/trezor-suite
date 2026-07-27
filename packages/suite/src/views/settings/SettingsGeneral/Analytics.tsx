@@ -2,14 +2,13 @@ import { useSelector } from 'react-redux';
 
 import styled from 'styled-components';
 
+import { selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
+import { Anchor, SettingsAnchor } from '@suite/router';
 import { selectIsAnalyticsEnabled } from '@suite-common/analytics-redux';
+import { useServices } from '@suite-common/dependency-injection';
 import { Switch } from '@trezor/components';
-
-import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
-import { ActionColumn, TextColumn } from 'src/components/suite';
-import { SettingsAnchor } from 'src/constants/suite/anchors';
-import { useAnalytics } from 'src/support/useAnalytics';
+import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
 const PositionedSwitch = styled.div`
     align-self: center;
@@ -17,29 +16,37 @@ const PositionedSwitch = styled.div`
 
 export const Analytics = () => {
     const isAnalyticsEnabled = useSelector(selectIsAnalyticsEnabled);
-    const analytics = useAnalytics();
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
 
     return (
-        <SettingsSectionItem anchorId={SettingsAnchor.Analytics}>
-            <TextColumn
-                title={<Translation id="TR_ALLOW_ANALYTICS" />}
-                description={<Translation id="TR_ALLOW_ANALYTICS_DESCRIPTION" />}
-            />
-            <ActionColumn>
-                <PositionedSwitch>
-                    <Switch
-                        data-testid="@analytics/toggle-switch"
-                        isChecked={isAnalyticsEnabled}
-                        onChange={() => {
-                            if (isAnalyticsEnabled) {
-                                analytics.disable();
-                            } else {
-                                analytics.enable();
-                            }
-                        }}
+        <Anchor anchorId={SettingsAnchor.Analytics}>
+            {({ anchorId, anchorRef, shouldHighlight }) => (
+                <SectionItem
+                    data-testid={anchorId}
+                    ref={anchorRef}
+                    shouldHighlight={shouldHighlight}
+                >
+                    <TextColumn
+                        title={<Translation id="TR_ALLOW_ANALYTICS" />}
+                        description={<Translation id="TR_ALLOW_ANALYTICS_DESCRIPTION" />}
                     />
-                </PositionedSwitch>
-            </ActionColumn>
-        </SettingsSectionItem>
+                    <ActionColumn>
+                        <PositionedSwitch>
+                            <Switch
+                                data-testid="@analytics/toggle-switch"
+                                isChecked={isAnalyticsEnabled}
+                                onChange={() => {
+                                    if (isAnalyticsEnabled) {
+                                        analytics.disable();
+                                    } else {
+                                        analytics.enable();
+                                    }
+                                }}
+                            />
+                        </PositionedSwitch>
+                    </ActionColumn>
+                </SectionItem>
+            )}
+        </Anchor>
     );
 };

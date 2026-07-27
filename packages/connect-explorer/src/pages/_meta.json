@@ -13,5 +13,9 @@
     "callback": {
         "title": "Callback",
         "display": "hidden"
+    },
+    "deeplink": {
+        "title": "Deeplink",
+        "display": "hidden"
     }
 }

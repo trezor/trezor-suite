@@ -1,29 +1,30 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/ChangeLanguage.js
 
+import {
+    ChangeLanguage as ChangeLanguageSchema,
+    type PermissionRequest,
+    UI_REQUEST,
+} from '@trezor/connect-common';
 import { Assert } from '@trezor/schema-utils';
 
-import { AbstractMethod, MethodPermission, Payload } from '../core/AbstractMethod';
-import { UI_REQUEST } from '../events';
-import { ChangeLanguage as ChangeLanguageSchema } from '../types/api/changeLanguage';
+import type { MethodMessage } from '../core/AbstractMethod';
+import { AbstractMethod } from '../core/AbstractMethod';
+import { changeLanguage } from '../device/workflow/changeLanguage';
 
 export default class ChangeLanguage extends AbstractMethod<'changeLanguage', ChangeLanguageSchema> {
-    constructor(message: { id?: number; payload: Payload<'changeLanguage'> }) {
-        super(message);
+    constructor(message: MethodMessage<'changeLanguage'>) {
+        const { payload } = message;
+
+        Assert(ChangeLanguageSchema, payload);
+
+        super(message, payload);
         this.allowDeviceMode = [UI_REQUEST.INITIALIZE, UI_REQUEST.SEEDLESS];
         this.useEmptyPassphrase = true;
         this.skipFinalReload = false;
         this.useDeviceState = false;
     }
-    get requiredPermissions(): MethodPermission[] {
-        return ['management'];
-    }
-
-    init() {
-        const { payload } = this;
-
-        Assert(ChangeLanguageSchema, payload);
-
-        this.params = payload;
+    get requiredPermissions(): PermissionRequest[] {
+        return [{ permission: 'management' }];
     }
 
     get confirmation() {
@@ -41,9 +42,9 @@ export default class ChangeLanguage extends AbstractMethod<'changeLanguage', Cha
         const { language, binary } = this.params;
 
         if (binary) {
-            return this.device.changeLanguage({ binary });
+            return changeLanguage({ device: this.getDevice(), binary });
         } else {
-            return this.device.changeLanguage({ language });
+            return changeLanguage({ device: this.getDevice(), language });
         }
     }
 }

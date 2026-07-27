@@ -1,8 +1,8 @@
-import { TxTargetId } from '@suite-common/wallet-types';
+import { type TxTargetId } from '@suite-common/wallet-types';
 import {
-    InternalTransfer as InternalTransferType,
-    TokenTransfer as TokenTransferType,
-    Transaction,
+    type InternalTransfer as InternalTransferType,
+    type TokenTransfer as TokenTransferType,
+    type Transaction,
 } from '@trezor/blockchain-link-types';
 
 /**

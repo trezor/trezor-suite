@@ -1,14 +1,11 @@
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
-import {
-    TestStore,
-    fireEvent,
-    initStore,
-    renderWithStoreProviderAsync,
-} from '@suite-native/test-utils';
-import { ReceiveAccount } from '@suite-native/trading-types';
-import { StaticSessionId } from '@trezor/connect';
+import { getTranslation } from '@suite-native/intl';
+import { type TestStore, fireEvent, renderWithStoreProvider } from '@suite-native/test-utils-store';
+import { type ReceiveAccount } from '@suite-native/trading-types';
+import { type StaticSessionId } from '@trezor/connect';
 
+import { createTradingTestStore } from '../../../../__tests__/tradingTestUtils';
 import { AccountListItem } from '../AccountListItem';
 
 const DEVICE_SESSION_ID: StaticSessionId = '1@2:3';
@@ -21,8 +18,9 @@ const btc10000000Account = mockWalletAccount({
     availableBalance: '10000000',
 });
 
-const defaultPreloadedState = {
+const defaultOverrides = {
     device: {
+        devices: [],
         selectedDevice: {
             state: {
                 staticSessionId: DEVICE_SESSION_ID,
@@ -63,45 +61,53 @@ describe('AccountListItem', () => {
 
     const renderAccountListItem = (
         receiveAccount: ReceiveAccount,
-        preloadedState = defaultPreloadedState,
+        overrides: Record<string, unknown> = defaultOverrides,
     ) => {
-        store = initStore(preloadedState).store;
+        store = createTradingTestStore({ overrides });
 
-        return renderWithStoreProviderAsync(
+        return renderWithStoreProvider(
             <AccountListItem onPress={onPressMock} receiveAccount={receiveAccount} />,
             { store },
         );
     };
 
     beforeEach(() => {
-        jest.resetAllMocks();
+        jest.clearAllMocks();
     });
 
-    it('should call onPress callback when pressed', async () => {
+    it('should call onPress callback when pressed', () => {
         const receiveAccount: ReceiveAccount = {
             account: btc10000000Account,
         };
-        const { getByText } = await renderAccountListItem(receiveAccount);
+        const { getByText } = renderAccountListItem(receiveAccount);
 
         fireEvent.press(getByText('My BTC account'));
 
         expect(onPressMock).toHaveBeenCalled();
     });
 
-    it('should render account name', async () => {
+    it('should render account name', () => {
         const receiveAccount: ReceiveAccount = {
             account: btc10000000Account,
         };
         const { getByText, queryByAccessibilityHint, getByLabelText } =
-            await renderAccountListItem(receiveAccount);
+            renderAccountListItem(receiveAccount);
 
         expect(getByText('My BTC account')).toBeTruthy();
         expect(queryByAccessibilityHint('Select to display account addresses')).toBeNull();
-        expect(getByLabelText('Balance in fiat')).toHaveTextContent('$10,000,000.00');
-        expect(getByLabelText('Balance in crypto')).toHaveTextContent('0.1 BTC');
+        expect(
+            getByLabelText(getTranslation('moduleTrading.accountScreen.balanceFiat')),
+        ).toHaveTextContent('$10,000,000.00');
+        expect(
+            getByLabelText(
+                getTranslation('moduleTrading.accountScreen.balanceCrypto', {
+                    coinLabel: 'crypto',
+                }),
+            ),
+        ).toHaveTextContent('0.1 BTC');
     });
 
-    it('should display caret when account defines addresses', async () => {
+    it('should display caret when account defines addresses', () => {
         const receiveAccount: ReceiveAccount = {
             account: {
                 ...btc10000000Account,
@@ -112,7 +118,7 @@ describe('AccountListItem', () => {
                 },
             },
         };
-        const { getByText, getByAccessibilityHint } = await renderAccountListItem(receiveAccount);
+        const { getByText, getByAccessibilityHint } = renderAccountListItem(receiveAccount);
 
         expect(getByText('My BTC account')).toBeTruthy();
         expect(getByAccessibilityHint('Select to display account addresses')).toBeTruthy();

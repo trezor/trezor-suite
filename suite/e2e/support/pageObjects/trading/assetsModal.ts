@@ -1,7 +1,7 @@
 import { Locator, Page } from '@playwright/test';
-import { CryptoId } from 'invity-api';
+import type { CryptoId } from 'invity-api';
 
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import type { NetworkSymbol } from '@suite-common/wallet-config';
 
 import { step } from '../../common';
 import { AssetPickerNetworkFilter, BuyAsset, SellAsset } from '../../types';
@@ -50,8 +50,8 @@ export class TradingAssetPicker {
         );
 
     constructor(private readonly page: Page) {
-        this.openSellModal = this.page.getByTestId('@trading/sell/asset-picker/input');
-        this.openBuyModal = this.page.getByTestId('@trading/buy/asset-picker/input');
+        this.openSellModal = this.page.getByTestId('@trading/sell/asset-picker');
+        this.openBuyModal = this.page.getByTestId('@trading/buy/asset-picker');
         this.searchInput = this.page.getByTestId('@asset-picker/search/input');
         this.displaySymbol = this.page.getByTestId('@asset-picker/display-symbol');
         this.networkFilterButton = this.page.getByTestId('@asset-picker/search/filter/input');

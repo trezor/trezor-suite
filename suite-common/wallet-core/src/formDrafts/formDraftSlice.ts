@@ -1,6 +1,6 @@
 import type { FieldValues } from 'react-hook-form';
 
-import { PayloadAction, createSlice } from '@reduxjs/toolkit';
+import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
 
 export interface FormDraftState {
     [key: string]: FieldValues;

@@ -2,8 +2,24 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
-        { "path": "../earn-api" },
+        { "path": "../earn-stablecoin-defs" },
+        { "path": "../wallet-constants" },
         { "path": "../../packages/device-utils" },
+        {
+            "path": "../../networks/cardano/network-cardano"
+        },
+        {
+            "path": "../../networks/ripple/network-ripple"
+        },
+        {
+            "path": "../../networks/solana/network-solana"
+        },
+        {
+            "path": "../../networks/stellar/network-stellar"
+        },
+        {
+            "path": "../../networks/tron/network-tron"
+        },
         { "path": "../../packages/type-utils" },
         { "path": "../../packages/utils" }
     ]

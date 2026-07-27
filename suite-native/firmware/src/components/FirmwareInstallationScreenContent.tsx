@@ -16,14 +16,17 @@ import { SUITE_MOBILE_SUPPORT_URL, useOpenLink } from '@suite-native/link';
 import { DynamicScreenHeader } from '@suite-native/navigation';
 import { reportSecurityCheck } from '@suite-native/sentry';
 import TrezorConnect from '@trezor/connect';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { setTemporaryRememberedDeviceThunk } from '../firmwareThunks';
 import { DoNotCloseAppBottomSheetTrigger } from './DoNotCloseAppBottomSheetTrigger';
 import { FirmwareInstallationProgressTitles } from './FirmwareInstallationProgressTitles';
 import { MayBeStuckedBottomSheet } from './MayBeStuckedBottomSheet';
 import { TrezorFacts } from './TrezorFacts';
-import { UpdateProgressIndicator, UpdateProgressIndicatorStatus } from './UpdateProgressIndicator';
+import {
+    UpdateProgressIndicator,
+    type UpdateProgressIndicatorStatus,
+} from './UpdateProgressIndicator';
 import { useFirmware } from '../hooks/useFirmware';
 import { useFirmwareAnalytics } from '../hooks/useFirmwareAnalytics';
 
@@ -145,7 +148,7 @@ export const FirmwareInstallationScreenContent = ({
         if (!result.success) {
             if (
                 // Action cancelled on device
-                result.payload?.code === 'Failure_ActionCancelled'
+                result.error?.code === 'Failure_ActionCancelled'
             ) {
                 handleAnalyticsReportCancelled();
                 onFirmwareInstallationFailure?.();
@@ -153,7 +156,7 @@ export const FirmwareInstallationScreenContent = ({
                 return;
             }
 
-            handleAnalyticsReportFinished({ error: result.payload?.error ?? 'Unknown error' });
+            handleAnalyticsReportFinished({ error: result.error?.message ?? 'Unknown error' });
 
             return;
         }
@@ -219,16 +222,15 @@ export const FirmwareInstallationScreenContent = ({
 
     const indicatorStatus: UpdateProgressIndicatorStatus = useMemo(() => {
         const isStarting = (status === 'started' && operation === null) || status === 'initial';
-        const isSuccess = operation === 'completed';
 
         if (isError) return 'error';
         if (isStarting) return 'starting';
-        if (isSuccess) return 'success';
-        if (!isStarting && !isSuccess && !isError) return 'inProgress';
+        if (isDone) return 'success';
+        if (!isStarting && !isError && !isDone) return 'inProgress';
 
         // shouldn't happen, but just to be safe
         return 'starting';
-    }, [status, operation, isError]);
+    }, [status, operation, isError, isDone]);
 
     const indicatorProgress = useMemo(() => {
         switch (indicatorStatus) {
@@ -291,11 +293,15 @@ export const FirmwareInstallationScreenContent = ({
                 {isError && (
                     <VStack spacing="sp12" style={buttonStyle}>
                         {isRetryAllowed && (
-                            <Button onPress={handleRetry} colorScheme="redBold">
+                            <Button onPress={handleRetry} intent="critical" priority="primary">
                                 <Translation id="firmware.firmwareUpdateProgress.retryButton" />
                             </Button>
                         )}
-                        <Button onPress={handleContactSupport} colorScheme="tertiaryElevation0">
+                        <Button
+                            onPress={handleContactSupport}
+                            intent="neutral"
+                            priority="secondary"
+                        >
                             <Translation id="firmware.firmwareUpdateProgress.contactSupportButton" />
                         </Button>
                     </VStack>
@@ -309,7 +315,8 @@ export const FirmwareInstallationScreenContent = ({
                     >
                         <Button
                             onPress={openMayBeStuckBottomSheet}
-                            colorScheme="tertiaryElevation0"
+                            intent="neutral"
+                            priority="secondary"
                         >
                             <Translation id="firmware.firmwareUpdateProgress.stuckButton" />
                         </Button>

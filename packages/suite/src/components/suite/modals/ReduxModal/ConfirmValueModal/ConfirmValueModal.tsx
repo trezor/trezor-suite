@@ -1,18 +1,23 @@
-import { ReactNode, useEffect, useState } from 'react';
+import { type ReactNode, useEffect, useState } from 'react';
 
-import { events } from '@suite/analytics';
+import { AccountLabel } from '@suite/account';
+import { Address, selectAddressLabel } from '@suite/address';
+import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { useDevice } from '@suite/device';
 import { Translation, useTranslation } from '@suite/intl';
-import { selectLabelingDataForSelectedAccount } from '@suite/metadata';
+import { Labeling } from '@suite/labeling';
+import { selectIsMetadataEnabled } from '@suite/metadata';
+import { MODAL_CONTEXT_USER } from '@suite/modal';
+import { selectDesktopSuiteSyncInteraction } from '@suite/suite-sync';
+import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDeviceLabelOrName } from '@suite-common/device';
-import { selectIsSuiteSyncEnabled, selectSuiteSyncAddressLabels } from '@suite-common/suite-sync';
 import { getDeviceInternalModel } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
-import { Account } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 import {
     Banner,
     Box,
-    BulletList,
     Button,
     Card,
     Column,
@@ -21,25 +26,28 @@ import {
     IconCircle,
     Link,
     Modal,
-    ModalProps,
+    type ModalProps,
     Paragraph,
     Row,
+    StepList,
     Text,
 } from '@trezor/components';
 import { getDeviceColorVariant } from '@trezor/device-utils';
 import { copyToClipboard } from '@trezor/dom-utils';
-import { CoinLogo, ConfirmOnDevicePill } from '@trezor/product-components';
-import { spacings } from '@trezor/theme';
+import {
+    CheckIcon,
+    CopyIcon,
+    InfoIcon,
+    TagFilledIcon,
+    TagIcon,
+    WarningFilledIcon,
+    WarningIcon,
+} from '@trezor/icons';
+import { ConfirmOnDevicePill, QrCode, TokenIcon } from '@trezor/product-components';
 
-import { MODAL } from 'src/actions/suite/constants';
-import { AccountLabel } from 'src/components/suite/AccountLabel';
-import { Address } from 'src/components/suite/Address';
-import { QrCode } from 'src/components/suite/QrCode';
-import { Labeling } from 'src/components/suite/labeling';
 import { useGuideOpenNode } from 'src/hooks/guide';
-import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
-import { useAnalytics } from 'src/support/useAnalytics';
-import { ThunkAction } from 'src/types/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
+import { type ThunkAction } from 'src/types/suite';
 import { DESTINATION_TAG_GUIDE_PATH } from 'src/views/wallet/send/Options/MiscNetworkOptions/DestinationTag';
 
 export type ConfirmValueModalProps = Pick<ModalProps, 'onCancel' | 'heading'> & {
@@ -66,29 +74,33 @@ export const ConfirmValueModal = ({
     value,
 }: ConfirmValueModalProps) => {
     const [isCopied, setIsCopied] = useState(false);
-    const { device, isLocked } = useDevice();
-    const isDeviceLocked = isLocked();
+    const { device } = useDevice();
     const modalContext = useSelector(state => state.modal.context);
     const deviceLabel = useSelector(selectSelectedDeviceLabelOrName);
-    const { addressLabels } = useSelector(selectLabelingDataForSelectedAccount);
+    const isMetadataEnabled = useSelector(selectIsMetadataEnabled);
     const dispatch = useDispatch();
     const { openNodeById } = useGuideOpenNode();
     const { translationString } = useTranslation();
-    const analytics = useAnalytics();
-    const isSuiteSyncEnabled = useSelector(selectIsSuiteSyncEnabled);
-    const legacyMetadataState = useSelector(state => state.metadata);
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
 
-    // block labeling if metadata needs to be enabled on device until receive address is confirmed (device locked)
-    const isMetadataBlockedByDeviceCall =
-        isDeviceLocked &&
-        !isSuiteSyncEnabled &&
-        (!legacyMetadataState.enabled || legacyMetadataState.providers.length === 0);
+    const suiteSyncInteraction = useSelector(state =>
+        account
+            ? selectDesktopSuiteSyncInteraction(state, account.deviceState, isMetadataEnabled)
+            : null,
+    );
 
-    const suiteSyncAddressLabels = useSelector(state =>
-        account ? selectSuiteSyncAddressLabels(state, account.deviceState) : undefined,
+    const addressLabel = useSelector(state =>
+        account && isAddress
+            ? selectAddressLabel(state, {
+                  address: value,
+                  deviceStaticId: account.deviceState,
+              })
+            : null,
     );
 
     const canConfirmOnDevice = !!(device?.connected && device?.available);
+    // Do not show Add address label button if there is device interaction needed and device is not connected.
+    const shouldShowAddressLabelAction = suiteSyncInteraction === null || !!device?.connected;
 
     const copy = () => {
         const result = copyToClipboard(value);
@@ -113,13 +125,10 @@ export const ConfirmValueModal = ({
 
     // Device connected while the modal is open -> validate on device.
     useEffect(() => {
-        if (canConfirmOnDevice && modalContext === MODAL.CONTEXT_USER && !isConfirmed) {
+        if (canConfirmOnDevice && modalContext === MODAL_CONTEXT_USER && !isConfirmed) {
             dispatch(validateOnDevice());
         }
     }, [canConfirmOnDevice, dispatch, isConfirmed, modalContext, validateOnDevice]);
-
-    const addressLabel =
-        suiteSyncAddressLabels?.find(it => it.address === value)?.label ?? addressLabels[value];
 
     return (
         <Modal.Backdrop onClick={onCancel}>
@@ -135,8 +144,8 @@ export const ConfirmValueModal = ({
                 heading={heading}
                 description={
                     account && (
-                        <Row gap={spacings.xxs}>
-                            <CoinLogo size={14} symbol={account.symbol} />
+                        <Row gap={4}>
+                            <TokenIcon size={16} symbol={account.symbol} />
                             <AccountLabel
                                 account={account}
                                 accountTypeBadgeSize="small"
@@ -148,10 +157,10 @@ export const ConfirmValueModal = ({
                 onCancel={onCancel}
                 width={600}
             >
-                <Column gap={spacings.md}>
+                <Column gap={16}>
                     {!device?.connected && (
                         <Banner
-                            icon="warning"
+                            icon={WarningIcon}
                             intent="warning"
                             description={
                                 <>
@@ -171,7 +180,7 @@ export const ConfirmValueModal = ({
                     {(account?.networkType === 'ripple' || account?.networkType === 'stellar') && (
                         <Banner
                             intent="info"
-                            icon="info"
+                            icon={InfoIcon}
                             description={
                                 <Translation
                                     id="DESTINATION_TAG_BANNER_RECEIVE"
@@ -185,48 +194,42 @@ export const ConfirmValueModal = ({
                             }
                         />
                     )}
-                    <Card fillType="flat" paddingType="large">
+                    <Card paddingType="large">
                         <Row gap={32} alignItems="stretch" data-testid="@modal/output-address">
                             <Box aspectRatio="1" width={170} height={170}>
                                 <QrCode value={value} />
                             </Box>
                             <Column gap={12} alignItems="flex-start">
-                                {isAddress &&
-                                    (account ? (
-                                        <Labeling
-                                            deviceStaticSessionId={account.deviceState}
-                                            isDisabled={isMetadataBlockedByDeviceCall}
-                                            displayValue={
-                                                <Text typographyStyle="body-md-strong">
-                                                    <Translation id="TR_LABELING_ADD_ADDRESS_LABEL" />
-                                                </Text>
-                                            }
-                                            placeholder={translationString(
-                                                'TR_LABELING_ADDRESS_LABEL',
-                                            )}
-                                            leftAddon={
-                                                <Icon
-                                                    name={addressLabel ? 'tagFilled' : 'tag'}
-                                                    size={16}
-                                                    intent="neutral"
-                                                    priority="secondary"
-                                                />
-                                            }
-                                            payload={{
-                                                type: 'addressLabel',
-                                                entityKey: account.key,
-                                                defaultValue: value,
-                                                networkSymbol: account.symbol,
-                                                accountDescriptor: account.descriptor,
-                                                value: addressLabel,
-                                            }}
-                                            maxWidth={290}
-                                        >
-                                            {addressLabel}
-                                        </Labeling>
-                                    ) : (
-                                        label
-                                    ))}
+                                {isAddress && !account && label}
+                                {isAddress && !!account && shouldShowAddressLabelAction && (
+                                    <Labeling
+                                        deviceStaticSessionId={account.deviceState}
+                                        displayValue={
+                                            <Text typographyStyle="body-md-strong">
+                                                <Translation id="TR_LABELING_ADD_ADDRESS_LABEL" />
+                                            </Text>
+                                        }
+                                        placeholder={translationString('TR_LABELING_ADDRESS_LABEL')}
+                                        leftAddon={
+                                            <Icon
+                                                as={addressLabel ? TagFilledIcon : TagIcon}
+                                                size={16}
+                                                intent="neutral"
+                                                priority="secondary"
+                                            />
+                                        }
+                                        payload={{
+                                            type: 'addressLabel',
+                                            entityKey: account.key,
+                                            defaultValue: value,
+                                            networkSymbol: account.symbol,
+                                            accountDescriptor: account.descriptor,
+                                        }}
+                                        maxWidth={290}
+                                    >
+                                        {addressLabel}
+                                    </Labeling>
+                                )}
                                 <Address
                                     value={value}
                                     data-testid="@modal/output-value"
@@ -239,7 +242,7 @@ export const ConfirmValueModal = ({
                                     priority="secondary"
                                     data-testid={copyButtonDataTest}
                                     size="small"
-                                    iconLeft={isCopied ? 'check' : 'copy'}
+                                    iconLeft={isCopied ? CheckIcon : CopyIcon}
                                     margin={{ top: 'auto' }}
                                 >
                                     <Translation
@@ -254,26 +257,21 @@ export const ConfirmValueModal = ({
                         </Row>
                     </Card>
                     {isAddress && (
-                        <Card>
-                            <Row gap={spacings.lg}>
-                                <IconCircle
-                                    hasBorder={false}
-                                    variant="info"
-                                    size={32}
-                                    name="warningFilled"
-                                />
+                        <Card type="contrast">
+                            <Row gap={20}>
+                                <IconCircle intent="neutral" size={32} icon={WarningFilledIcon} />
                                 <H3>
                                     <Translation id="TR_RECEIVE_ADDRESS_CONFIRMATION_HEADING" />
                                 </H3>
                             </Row>
-                            <BulletList
+                            <StepList
                                 isOrdered
-                                margin={{ top: spacings.xxxl }}
-                                gap={spacings.xl}
-                                titleGap={spacings.zero}
-                                bulletGap={spacings.lg}
+                                margin={{ top: 32 }}
+                                gap={20}
+                                titleGap={0}
+                                bulletGap={20}
                             >
-                                <BulletList.Item
+                                <StepList.Item
                                     title={
                                         <Translation id="TR_RECEIVE_ADDRESS_CONFIRMATION_ITEM_1_HEADING" />
                                     }
@@ -285,8 +283,8 @@ export const ConfirmValueModal = ({
                                     >
                                         <Translation id="TR_RECEIVE_ADDRESS_CONFIRMATION_ITEM_1_DESCRIPTION" />
                                     </Paragraph>
-                                </BulletList.Item>
-                                <BulletList.Item
+                                </StepList.Item>
+                                <StepList.Item
                                     title={
                                         <Translation id="TR_RECEIVE_ADDRESS_CONFIRMATION_ITEM_2_HEADING" />
                                     }
@@ -298,8 +296,8 @@ export const ConfirmValueModal = ({
                                     >
                                         <Translation id="TR_RECEIVE_ADDRESS_CONFIRMATION_ITEM_2_DESCRIPTION" />
                                     </Paragraph>
-                                </BulletList.Item>
-                                <BulletList.Item
+                                </StepList.Item>
+                                <StepList.Item
                                     title={
                                         <Translation id="TR_RECEIVE_ADDRESS_CONFIRMATION_ITEM_3_HEADING" />
                                     }
@@ -311,8 +309,8 @@ export const ConfirmValueModal = ({
                                     >
                                         <Translation id="TR_RECEIVE_ADDRESS_CONFIRMATION_ITEM_3_DESCRIPTION" />
                                     </Paragraph>
-                                </BulletList.Item>
-                            </BulletList>
+                                </StepList.Item>
+                            </StepList>
                         </Card>
                     )}
                 </Column>

@@ -3,13 +3,13 @@ import { View } from 'react-native';
 import { HStack, Text, VStack } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { useIsFwRevisionCheckOfflineError } from './useIsFwRevisionCheckOfflineError';
 import { useIsOfflineBannerVisible } from './useIsOfflineBannerVisible';
 
 const containerStyle = prepareNativeStyle(utils => ({
-    backgroundColor: utils.colors.backgroundAlertYellowBold,
+    backgroundColor: utils.colors.legacyBackgroundAlertYellowBold,
 }));
 
 const contentStyle = prepareNativeStyle<{ topSafeAreaInset: number }>(

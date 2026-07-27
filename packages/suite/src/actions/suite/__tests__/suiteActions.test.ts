@@ -1,73 +1,45 @@
 // unit test for suite actions
 // data provided by TrezorConnect are mocked
+import { flagsInitialState, prepareFlagsReducer } from '@suite/flags';
+import { modalReducer } from '@suite/modal';
+import { routerReducer } from '@suite/router';
+import { type RouterStateOverrides, createRouterStateMock } from '@suite/router/mocks';
+import { torReducer } from '@suite/tor';
 import { connectInitThunk } from '@suite-common/connect-init';
 import { deviceActions, prepareDeviceReducer } from '@suite-common/device';
 import { prepareFirmwareReducer } from '@suite-common/firmware';
 import { suiteSyncReducer } from '@suite-common/suite-sync';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
-import { testMocks } from '@suite-common/test-utils';
+import { filterThunkActionTypes, testMocks } from '@suite-common/test-utils';
 import {
     acquireDevice,
     forgetDisconnectedDevices,
-    handleDeviceDisconnect,
     observeSelectedDevice,
     selectDeviceThunk,
     selectNewlyConnectedDeviceThunk,
 } from '@suite-common/wallet-core';
-import { DEVICE } from '@trezor/connect';
 
 import { markDeviceAsRecentlyConnectedThunk } from 'src/actions/wallet/markDeviceAsRecentlyConnectedThunk';
-import modalReducer from 'src/reducers/suite/modalReducer';
-import routerReducer from 'src/reducers/suite/routerReducer';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
 import { extraDependencies } from 'src/support/extraDependencies';
-import { configureStore, filterThunkActionTypes } from 'src/support/tests/configureStore';
+import { configureStore } from 'src/support/tests/configureStore';
 import { discardMockedConnectInitActions } from 'src/utils/suite/storage';
 
 import fixtures from '../__fixtures__/suiteActions';
 import { SUITE } from '../constants';
-import * as suiteActions from '../suiteActions';
 
 const firmwareReducer = prepareFirmwareReducer(extraDependencies);
 const deviceReducer = prepareDeviceReducer(extraDependencies);
-
-const TrezorConnect = testMocks.getTrezorConnectMock();
-
-const setTrezorConnectFixtures = (fixture: any) => {
-    jest.spyOn(TrezorConnect, 'getFeatures').mockImplementation(
-        () =>
-            fixture || {
-                success: true,
-            },
-    );
-    jest.spyOn(TrezorConnect, 'getDeviceState').mockImplementation(
-        ({ device }: any) =>
-            fixture || {
-                success: true,
-                payload: {
-                    state: {
-                        staticSessionId: `state@device-id:${device ? device.instance : undefined}`,
-                    },
-                },
-            },
-    );
-    jest.spyOn(TrezorConnect, 'applySettings').mockImplementation(
-        () =>
-            fixture || {
-                success: true,
-            },
-    );
-};
+const flagsReducer = prepareFlagsReducer(extraDependencies);
 
 type SuiteState = ReturnType<typeof suiteReducer>;
 type DevicesState = ReturnType<typeof deviceReducer>;
-type RouterState = ReturnType<typeof routerReducer>;
 type FirmwareState = ReturnType<typeof firmwareReducer>;
 
 const getInitialState = (
     suite?: Partial<SuiteState>,
     device?: Partial<DevicesState>,
-    router?: RouterState,
+    router?: RouterStateOverrides,
     firmware?: Partial<FirmwareState>,
     suiteSyncData?: Partial<ReturnType<typeof suiteSyncReducer>>,
 ) => ({
@@ -75,14 +47,14 @@ const getInitialState = (
         ...suiteReducer(undefined, { type: 'foo' } as any),
         ...suite,
     },
+    tor: torReducer(undefined, { type: 'foo' } as any),
+    discreetMode: { isActive: false },
+    flags: flagsInitialState,
     device: {
         ...deviceReducer(undefined, { type: 'foo' } as any),
         ...device,
     },
-    router: {
-        ...routerReducer(undefined, { type: 'foo' } as any),
-        ...router,
-    },
+    router: createRouterStateMock(router),
     modal: modalReducer(undefined, { type: 'foo' } as any),
     firmware: {
         ...firmwareReducer(undefined, { type: 'foo' } as any),
@@ -108,8 +80,9 @@ const initStore = (state: State) => {
     const store = mockStore(state);
     store.subscribe(() => {
         const action = store.getActions().pop();
-        const { suite, device, router } = store.getState();
+        const { suite, flags, device, router } = store.getState();
         store.getState().suite = suiteReducer(suite, action);
+        store.getState().flags = flagsReducer(flags, action);
         store.getState().device = deviceReducer(device, action);
         store.getState().router = routerReducer(router, action);
         // add action back to stack
@@ -126,17 +99,10 @@ describe('Suite Actions', () => {
             const store = initStore(state);
             f.actions.forEach((action: any, i: number) => {
                 store.dispatch(action);
-                expect(store.getState().suite).toMatchObject(f.result[i]);
+                const result = f.result[i];
+                if (!result) throw new Error(`Missing expected result at index ${i}`);
+                expect(store.getState().suite).toMatchObject(result);
             });
-        });
-    });
-
-    fixtures.initialRun.forEach(f => {
-        it(f.description, () => {
-            const state = getInitialState(f.state);
-            const store = initStore(state);
-            store.dispatch(suiteActions.initialRunCompleted());
-            expect(store.getState().suite.flags.initialRun).toBe(false);
         });
     });
 
@@ -179,29 +145,6 @@ describe('Suite Actions', () => {
         });
     });
 
-    fixtures.handleDeviceDisconnect.forEach(f => {
-        it(`handleDeviceDisconnect: ${f.description}`, () => {
-            const state = getInitialState(f.state.suite, f.state.device);
-            const store = initStore(state);
-            store.dispatch({
-                type: DEVICE.DISCONNECT, // TrezorConnect event to affect "deviceReducer"
-                payload: f.device,
-            });
-            store.dispatch(handleDeviceDisconnect(f.device));
-            if (!f.result) {
-                expect(filterThunkActionTypes(store.getActions()).pop()?.type).toEqual(
-                    deviceActions.deviceDisconnect.type,
-                );
-            } else {
-                const action = store.getActions().pop();
-                if (f.result.type) {
-                    expect(action.type).toEqual(f.result.type);
-                }
-                expect(action.payload).toEqual(f.result.payload);
-            }
-        });
-    });
-
     fixtures.forgetDisconnectedDevices.forEach(f => {
         it(`forgetDisconnectedDevices: ${f.description}`, () => {
             const state = getInitialState(f.state.suite, f.state.device);
@@ -210,7 +153,9 @@ describe('Suite Actions', () => {
             const actions = filterThunkActionTypes(store.getActions());
             expect(actions.length).toEqual(f.result.length);
             actions.forEach((a, i) => {
-                expect(a.payload.device).toMatchObject(f.result[i]);
+                const result = f.result[i];
+                if (!result) throw new Error(`Missing expected result at index ${i}`);
+                expect(a.payload.device).toMatchObject(result);
             });
         });
     });
@@ -232,7 +177,7 @@ describe('Suite Actions', () => {
 
     fixtures.acquireDevice.forEach(f => {
         it(`acquireDevice: ${f.description}`, async () => {
-            setTrezorConnectFixtures(f.getFeatures);
+            testMocks.setTrezorConnectFixtures(f.getFeatures || { success: true });
             const state = getInitialState(undefined, f.state.device);
             const store = initStore(state);
             store.dispatch(connectInitThunk()); // trezorConnectActions.connectInitThunk needs to be called in order to wrap "getFeatures" with lockUi action
@@ -255,9 +200,6 @@ describe('Suite Actions', () => {
         const SUITE_DEVICE = mockSuiteDevice({ path: '1' });
         expect(deviceActions.forgetDevice({ device: SUITE_DEVICE })).toMatchObject({
             type: deviceActions.forgetDevice.type,
-        });
-        expect(suiteActions.setDebugMode({ showDebugMenu: true })).toMatchObject({
-            type: SUITE.SET_DEBUG_MODE,
         });
     });
 });

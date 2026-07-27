@@ -1,5 +1,5 @@
 import { CardListItem } from './CardListItem';
-import { FrameProps, FramePropsKeys } from '../../utils/frameProps';
+import { type FrameProps, type FramePropsKeys } from '../../utils/frameProps';
 import { Card, type CardProps } from '../Card/Card';
 import { Column } from '../Flex/Flex';
 import { Text } from '../typography/Text/Text';
@@ -16,6 +16,7 @@ export const allowedCardListFrameProps = [
     'position',
     'flex',
     'zIndex',
+    'borderRadius',
 ] as const satisfies FramePropsKeys[];
 export type AllowedCardListFrameProps = Pick<
     FrameProps,
@@ -38,10 +39,9 @@ export type CardListProps = AllowedCardListFrameProps &
         | 'footer'
         | 'label'
         | 'onClick'
-        | 'className'
         | 'tabIndex'
         | 'variant'
-        | 'fillType'
+        | 'type'
     >;
 
 export const CardList = ({ children, typographyStyle = 'body-md', ...rest }: CardListProps) => (

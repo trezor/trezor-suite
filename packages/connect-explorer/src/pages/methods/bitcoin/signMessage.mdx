@@ -1,4 +1,4 @@
-import { SignMessage } from '@trezor/connect/src/types/api/bitcoin';
+import { SignMessage } from '@trezor/connect-common/src/types/api/bitcoin/common';
 
 import { ApiPlayground } from '../../../components/ApiPlayground';
 import { CommonParamsLink } from '../../../components/CommonParamsLink';
@@ -15,7 +15,7 @@ import signMessage from '../../../data/methods/bitcoin/signMessage.ts';
 export const paramDescriptions = {
     path: 'minimum length is `3`. [read more](/details/path)',
     message: '',
-    coin: 'Determines network definition specified in [coins.json](https://github.com/trezor/trezor-suite/blob/develop/packages/connect-data/files/coins.json) file. Coin `shortcut`, `name` or `label` can be used. If `coin` is not set API will try to get network definition from `path`.',
+    coin: 'Determines network definition specified in [coins.json](https://github.com/trezor/trezor-suite/blob/develop/packages/connect-data/files/coins.json) file. Coin `shortcut` (a `CoinSymbol`, e.g. `btc`) is used. If `coin` is not set API will try to get network definition from `path`.',
     hex: 'convert message from hex',
 };
 
@@ -46,7 +46,7 @@ TrezorConnect.signMessage({
 
 ### Result
 
-[MessageSignature type](https://github.com/trezor/trezor-suite/blob/develop/packages/protobuf/src/messages.ts)
+[MessageSignature type](https://github.com/trezor/trezor-suite/blob/develop/packages/protobuf/src/definitions/messages-bitcoin.ts)
 
 ```javascript
 {
@@ -63,8 +63,8 @@ Error
 ```javascript
 {
     success: false,
-    payload: {
-        error: string // error message
+    error: {
+        message: string // error message
     }
 }
 ```

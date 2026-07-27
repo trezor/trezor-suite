@@ -1,26 +1,28 @@
-import { ReactNode } from 'react';
-
-import { RequireOneOrNone } from 'type-fest';
+import { type ReactNode } from 'react';
 
 import { Box } from '@suite-native/atoms';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { GoBackIcon } from './GoBackIcon';
-import { CloseActionType } from '../navigators';
+import { type CloseActionType } from '../navigators';
 import { ScreenHeaderContent, type ScreenHeaderContentProps } from './ScreenHeaderContent';
 
 export type ScreenHeaderProps = ScreenHeaderContentProps &
-    RequireOneOrNone<
-        {
-            leftIcon?: ReactNode;
-            closeActionType?: CloseActionType;
-            rightIcon?: ReactNode;
-            closeAction?: () => void;
-        },
-        'leftIcon' | 'closeActionType'
-    >;
+    (
+        | {
+              leftIcon?: ReactNode;
+              closeActionType?: never;
+          }
+        | {
+              leftIcon?: never;
+              closeActionType?: CloseActionType;
+          }
+    ) & {
+        closeAction?: () => void;
+        rightIcon?: ReactNode;
+    };
 
-const ICON_SIZE = 48;
+const ICON_SIZE = 40;
 
 const headerStyle = prepareNativeStyle(utils => ({
     flexDirection: 'row',
@@ -29,7 +31,7 @@ const headerStyle = prepareNativeStyle(utils => ({
     paddingTop: utils.spacings.sp8,
     paddingHorizontal: utils.spacings.sp16,
     paddingBottom: utils.spacings.sp16,
-    backgroundColor: utils.colors.backgroundSurfaceElevation0,
+    backgroundColor: utils.colors.surfaceFillPage,
     minHeight: ICON_SIZE,
 }));
 

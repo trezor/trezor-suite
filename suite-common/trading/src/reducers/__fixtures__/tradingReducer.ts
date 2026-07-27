@@ -1,21 +1,19 @@
-import { CryptoId, InfoResponse } from 'invity-api';
+import { type CryptoId, type InfoResponse } from 'invity-api';
 
 import { extraDependenciesCommonMock } from '@suite-common/test-utils';
-import { AccountKey } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 
+import { accounts } from './account';
+// @ts-expect-error: indexing with noUncheckedIndexedAccess
+const firstAccount: (typeof accounts)[number] = accounts[0];
 import { buyThunks } from '../../thunks/buy';
 import { exchangeThunks } from '../../thunks/exchange';
+import { type TradingTransactionBuy, type TradingTransactionExchange } from '../../types';
 import {
-    TradingComposedTransactionInfo,
+    type TradingComposedTransactionInfo,
     initialState,
     tradingActions,
 } from '../tradingCommonReducer';
-import { accounts } from './account';
-import {
-    TradingPaymentMethodListProps,
-    TradingTransactionBuy,
-    TradingTransactionExchange,
-} from '../../types';
 
 const tradeBuy: TradingTransactionBuy = {
     date: 'ddd',
@@ -76,18 +74,8 @@ const symbolsInfo: InfoResponse = {
             },
         },
     },
+    config: {},
 };
-
-const paymentMethods: TradingPaymentMethodListProps[] = [
-    {
-        value: '',
-        label: '',
-    },
-    {
-        value: 'creditCard',
-        label: 'Credit Card',
-    },
-];
 
 const composedTransactionInfo: TradingComposedTransactionInfo = {
     selectedFee: 'normal',
@@ -156,19 +144,19 @@ export const tradingFixtures = [
         actions: [
             {
                 type: tradingActions.setModalAccountKey.type,
-                payload: accounts[0].key,
+                payload: firstAccount.key,
             },
         ],
         result: {
             ...initialState,
-            modalAccountKey: accounts[0].key,
+            modalAccountKey: firstAccount.key,
         },
     },
     {
         description: 'should clear modal account',
         initialState: {
             ...initialState,
-            modalAccountKey: accounts[0].key,
+            modalAccountKey: firstAccount.key,
         },
         actions: [
             {
@@ -240,7 +228,6 @@ export const tradingFixtures = [
             info: {
                 platforms: symbolsInfo.platforms,
                 coins: symbolsInfo.coins,
-                paymentMethods: [],
             },
         },
     },
@@ -287,23 +274,6 @@ export const tradingFixtures = [
         result: {
             ...initialState,
             trades: [tradeBuy, tradeExchange],
-        },
-    },
-    {
-        description: 'should save payment methods',
-        initialState,
-        actions: [
-            {
-                type: tradingActions.savePaymentMethods.type,
-                payload: paymentMethods,
-            },
-        ],
-        result: {
-            ...initialState,
-            info: {
-                ...initialState.info,
-                paymentMethods,
-            },
         },
     },
     {

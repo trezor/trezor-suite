@@ -1,13 +1,12 @@
-import { isArrayMember } from '@trezor/utils';
+import { FIRMWARE } from '@trezor/connect-common';
+import { type Logger, isArrayMember } from '@trezor/utils';
 
-import { FIRMWARE } from '../../constants';
-import { Log } from '../../utils/debug';
-import type { Device } from '../Device';
 import { checkFirmwareHash } from './checkFirmwareHash';
+import type { IDevice } from '../../types/idevice';
 
 type Context = {
-    device: Device;
-    logger: Log;
+    device: IDevice;
+    logger: Logger;
 };
 
 const PROBE_CHECK_TIME_RETRIES = 4;

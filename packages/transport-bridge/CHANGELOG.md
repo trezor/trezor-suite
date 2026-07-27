@@ -1,3 +1,8 @@
+# 3.2.1
+
+- added: `/abort` endpoint
+- fixed: http route matching
+
 # 3.2.0
 
 - breaking: return processed `ThpState` 8e9501f5c9cfd6c6751ec2318c43398b47a814bc

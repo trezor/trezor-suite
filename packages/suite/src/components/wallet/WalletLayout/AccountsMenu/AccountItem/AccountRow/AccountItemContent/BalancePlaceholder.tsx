@@ -1,23 +1,23 @@
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { selectShouldAnimateLoadingSkeleton } from '@suite/ui-animations';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { isTestnet } from '@suite-common/wallet-utils';
-import { Column, SkeletonRectangle } from '@trezor/components';
-import { spacings } from '@trezor/theme';
+import { Column, Skeleton } from '@trezor/components';
 
-import { useLoadingSkeleton } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 type BalancePlaceholderProps = {
     networkSymbol: NetworkSymbol;
 };
 
 export function BalancePlaceholder({ networkSymbol }: BalancePlaceholderProps) {
-    const { shouldAnimate } = useLoadingSkeleton();
+    const shouldAnimate = useSelector(selectShouldAnimateLoadingSkeleton);
 
     return (
-        <Column gap={spacings.xs}>
-            <SkeletonRectangle width="100px" height="16px" animate={shouldAnimate} />
+        <Column gap={8}>
+            <Skeleton width={100} height={16} animate={shouldAnimate} />
 
             {!isTestnet(networkSymbol) && (
-                <SkeletonRectangle width="100px" height="16px" animate={shouldAnimate} />
+                <Skeleton width={100} height={16} animate={shouldAnimate} />
             )}
         </Column>
     );

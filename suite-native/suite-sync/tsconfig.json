@@ -6,6 +6,13 @@
             "path": "../../suite-common/delegated-identity-key-types"
         },
         {
+            "path": "../../suite-common/dependency-injection"
+        },
+        { "path": "../../suite-common/device" },
+        {
+            "path": "../../suite-common/message-system"
+        },
+        {
             "path": "../../suite-common/platform-encryption"
         },
         {
@@ -15,8 +22,19 @@
             "path": "../../suite-common/suite-sync-evolu"
         },
         {
+            "path": "../../suite-common/suite-sync-quota-manager"
+        },
+        {
+            "path": "../../suite-common/suite-sync-storage"
+        },
+        {
             "path": "../../suite-common/suite-sync-types"
         },
-        { "path": "../../packages/connect" }
+        { "path": "../alerts" },
+        { "path": "../intl" },
+        { "path": "../navigation" },
+        { "path": "../toasts" },
+        { "path": "../../packages/connect" },
+        { "path": "../../packages/type-utils" }
     ]
 }

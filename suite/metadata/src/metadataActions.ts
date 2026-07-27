@@ -1,14 +1,15 @@
 import { createAction } from '@reduxjs/toolkit';
 
 import {
-    DataType,
-    DeviceMetadata,
-    Labels,
-    MetadataProvider,
-    PasswordManagerState,
+    type DataType,
+    type DeviceMetadata,
+    type Labels,
+    type MetadataProvider,
+    type PasswordManagerState,
 } from '@suite-common/metadata-types';
-import { Account } from '@suite-common/wallet-types';
-import { StaticSessionId } from '@trezor/connect';
+import { type Account } from '@suite-common/wallet-types';
+import { type StaticSessionId } from '@trezor/connect';
+import { type WalletDescriptor } from '@trezor/device-utils';
 
 import * as METADATA from './metadataConstants';
 
@@ -52,6 +53,10 @@ export type MetadataAction =
           payload: { deviceState: StaticSessionId; failed: boolean };
       }
     | {
+          type: typeof METADATA.SET_LEGACY_LABELS_MIGRATION_FOR_WALLET;
+          payload: { walletDescriptor: WalletDescriptor };
+      }
+    | {
           type: typeof METADATA.ACCOUNT_ADD;
           payload: Account;
       }
@@ -68,7 +73,15 @@ export const enableMetadata = (): MetadataAction => ({
     type: METADATA.ENABLE,
 });
 
+export const setLegacyLabelsMigrationForWallet = (walletDescriptor: WalletDescriptor) => ({
+    type: METADATA.SET_LEGACY_LABELS_MIGRATION_FOR_WALLET,
+    payload: {
+        walletDescriptor,
+    },
+});
+
 export const metadataActions = {
     setAccountAdd,
     enableMetadata,
+    setLegacyLabelsMigrationForWallet,
 };

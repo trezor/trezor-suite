@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react';
 
 import { Translation } from '@suite/intl';
+import { OnboardingCard } from '@suite/onboarding-components';
+import { startThpSessionThunk } from '@suite/thp';
+import { PlugsConnectedIcon } from '@trezor/icons';
 
-import { startThpSessionThunk } from 'src/actions/thp/startThpSessionThunk';
-import { OnboardingCard } from 'src/components/onboarding/OnboardingCard/OnboardingCard';
 import { useDispatch } from 'src/hooks/suite';
 
-// reflection of components/firmware/ThpPairing/ThpPairingStartStep
+// reflection of suite/thp/src/firmware/ThpPairingStartStep.tsx
 export const ThpPairingStartStep = (props: { isLoading?: boolean }) => {
     const [isLoading, setIsLoading] = useState(props.isLoading);
     const dispatch = useDispatch();
@@ -21,7 +22,7 @@ export const ThpPairingStartStep = (props: { isLoading?: boolean }) => {
 
     return (
         <OnboardingCard
-            iconName="plugsConnected"
+            icon={PlugsConnectedIcon}
             description={<Translation id="TR_THP_CREATE_SECURE_CONNECTION_DESCRIPTION" />}
             heading={<Translation id="TR_THP_CREATE_SECURE_CONNECTION" />}
             innerActions={

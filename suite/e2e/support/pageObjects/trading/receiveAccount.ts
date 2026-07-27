@@ -1,6 +1,6 @@
 import { Locator, Page, expect } from '@playwright/test';
 
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import type { NetworkSymbol } from '@suite-common/wallet-config';
 
 import { step } from '../../common';
 
@@ -25,7 +25,9 @@ export class TradingReceiveAccount {
     readonly bitcoinReceiveAddressModal: Locator;
     readonly bitcoinReceiveAddressModalOption: Locator;
 
-    readonly findAccountButton: Locator;
+    readonly addAccountButton: Locator;
+    readonly addAccountModalNetworkButton = (symbol: NetworkSymbol) =>
+        this.page.getByTestId(`@settings/wallet/network/${symbol}/add-button`);
 
     constructor(private readonly page: Page) {
         // receive account & receive address
@@ -63,7 +65,7 @@ export class TradingReceiveAccount {
             '@trading/bitcoin-receive-address-modal/option',
         );
 
-        this.findAccountButton = this.page.getByTestId('@find-account');
+        this.addAccountButton = this.page.getByTestId('@add-account');
     }
 
     @step()
@@ -71,7 +73,15 @@ export class TradingReceiveAccount {
         await this.receiveAddressPicker.click();
         await expect(this.receiveAccountModal).toBeVisible();
 
-        await this.receiveAccountModalSuiteOption.nth(index).click();
+        const selectedOption = this.receiveAccountModalSuiteOption.nth(index);
+        // Capture the option's account name (not the balance/address)
+        const selectedAccountName =
+            (
+                await selectedOption
+                    .getByTestId('@trading/receive-account-modal/option/suite/name')
+                    .textContent()
+            )?.trim() ?? '';
+        await selectedOption.click();
 
         if (symbol === 'btc') {
             await expect(this.bitcoinReceiveAddressModal).toBeVisible();
@@ -80,6 +90,10 @@ export class TradingReceiveAccount {
         }
 
         await expect(this.receiveAccountModal).toBeHidden();
+
+        // Verify the picker now reflects the account we just selected
+        await expect(this.selectedReceiveAccount).not.toBeEmpty();
+        await expect(this.selectedReceiveAccount).toContainText(selectedAccountName);
     }
 
     @step()
@@ -100,12 +114,17 @@ export class TradingReceiveAccount {
     }
 
     @step()
-    async selectAddSuiteReceiveAccount(index: number) {
+    async selectAddSuiteReceiveAccount(index: number, symbol?: NetworkSymbol) {
         await this.receiveAddressPicker.click();
         await expect(this.receiveAccountModal).toBeVisible();
 
         await this.receiveAccountModalAddSuiteOption.nth(0).click();
-        await this.findAccountButton.click();
+
+        if (symbol) {
+            await this.addAccountModalNetworkButton(symbol).click();
+        } else {
+            await this.addAccountButton.click();
+        }
 
         await this.page.discoveryShouldFinish();
 

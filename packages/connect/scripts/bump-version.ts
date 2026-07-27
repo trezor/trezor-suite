@@ -2,8 +2,9 @@
 
 import child_process from 'child_process';
 import path from 'path';
+import { fileURLToPath } from 'url';
 
-const REPO_ROOT = path.join(__dirname, '..', '..', '..');
+const REPO_ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', '..', '..');
 
 const args = process.argv.slice(2);
 
@@ -11,7 +12,7 @@ if (args.length !== 1) {
     throw new Error('semver arg is missing');
 }
 
-const [semver] = args;
+const semver = args[0] ?? '';
 
 const allowedSemvers = ['patch', 'prepatch', 'minor', 'preminor', 'prerelease'];
 if (!allowedSemvers.includes(semver)) {

@@ -1,11 +1,11 @@
+import { useDevice } from '@suite/device';
+import { LearnMoreButton } from '@suite/external-links';
 import { Translation } from '@suite/intl';
+import { Anchor, SettingsAnchor, goto } from '@suite/router';
 import { getFirmwareDowngradeUrl } from '@suite-common/suite-utils';
+import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
-import { goto } from 'src/actions/suite/routerActions';
-import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
-import { ActionButton, ActionColumn, TextColumn } from 'src/components/suite';
-import { SettingsAnchor } from 'src/constants/suite/anchors';
-import { useDevice, useDispatch } from 'src/hooks/suite';
+import { useDispatch } from 'src/hooks/suite';
 
 export const CustomFirmware = () => {
     const dispatch = useDispatch();
@@ -14,27 +14,44 @@ export const CustomFirmware = () => {
     const isDeviceLocked = isLocked();
     const firmwareDowngradeUrl = getFirmwareDowngradeUrl(device);
 
-    const openModal = () => dispatch(goto('firmware-custom', { params: { cancelable: true } }));
+    const openModal = () =>
+        dispatch(goto({ routeName: 'firmware-custom', params: { cancelable: true } }));
 
     return (
-        <SettingsSectionItem anchorId={SettingsAnchor.CustomFirmware}>
-            <TextColumn
-                title={<Translation id="TR_DEVICE_SETTINGS_CUSTOM_FIRMWARE_TITLE" />}
-                description={<Translation id="TR_DEVICE_SETTINGS_CUSTOM_FIRMWARE_DESCRIPTION" />}
-                buttonLink={firmwareDowngradeUrl}
-            />
-            <ActionColumn>
-                <ActionButton
-                    onClick={openModal}
-                    intent="critical"
-                    isDisabled={isDeviceLocked}
-                    data-testid="@settings/device/custom-firmware-modal-button"
-                    isTooltipActive={isDeviceLocked}
-                    tooltipContent={<Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED" />}
+        <Anchor anchorId={SettingsAnchor.CustomFirmware}>
+            {({ anchorId, anchorRef, shouldHighlight }) => (
+                <SectionItem
+                    data-testid={anchorId}
+                    ref={anchorRef}
+                    shouldHighlight={shouldHighlight}
                 >
-                    <Translation id="TR_DEVICE_SETTINGS_CUSTOM_FIRMWARE_BUTTON" />
-                </ActionButton>
-            </ActionColumn>
-        </SettingsSectionItem>
+                    <TextColumn
+                        title={<Translation id="TR_DEVICE_SETTINGS_CUSTOM_FIRMWARE_TITLE" />}
+                        description={
+                            <Translation id="TR_DEVICE_SETTINGS_CUSTOM_FIRMWARE_DESCRIPTION" />
+                        }
+                        bottomContent={
+                            firmwareDowngradeUrl ? (
+                                <LearnMoreButton url={firmwareDowngradeUrl} />
+                            ) : undefined
+                        }
+                    />
+                    <ActionColumn>
+                        <ActionButton
+                            onClick={openModal}
+                            intent="critical"
+                            isDisabled={isDeviceLocked}
+                            data-testid="@settings/device/custom-firmware-modal-button"
+                            isTooltipActive={isDeviceLocked}
+                            tooltipContent={
+                                <Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED" />
+                            }
+                        >
+                            <Translation id="TR_DEVICE_SETTINGS_CUSTOM_FIRMWARE_BUTTON" />
+                        </ActionButton>
+                    </ActionColumn>
+                </SectionItem>
+            )}
+        </Anchor>
     );
 };

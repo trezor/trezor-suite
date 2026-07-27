@@ -1,11 +1,11 @@
 const legacyResults = [
     {
-        rules: ['<2.10.1', '1'],
+        rules: ['<2.11.0', '1'],
         success: false,
     },
 ];
 
-export default {
+const tronGetAddress: TestCase = {
     method: 'tronGetAddress',
     setup: {
         mnemonic: 'mnemonic_all',
@@ -32,4 +32,6 @@ export default {
             legacyResults,
         },
     ],
-} satisfies TestCase;
+};
+
+export default tronGetAddress;

@@ -2,8 +2,8 @@ import { getFirmwareVersion } from '@trezor/device-utils';
 import { versionUtils } from '@trezor/utils';
 
 import { ID_AUTHENTICATE_DEVICE_STEP, ID_SET_PIN_STEP } from 'src/constants/onboarding/steps';
-import { AnyPath, AnyStepId, Step, StepCategory } from 'src/types/onboarding';
-import { TrezorDevice } from 'src/types/suite';
+import { type AnyPath, type AnyStepId, type Step, type StepCategory } from 'src/types/onboarding';
+import { type TrezorDevice } from 'src/types/suite';
 
 import { stepCategories } from '../../config/onboarding/steps';
 
@@ -79,9 +79,7 @@ export const isStepUsed = (step: Step, props: IsStepUsedProps): boolean => {
         return true;
     }
 
-    return onboardingPath.every((pathMember: AnyPath) =>
-        step.path?.some((stepPathMember: AnyPath) => stepPathMember === pathMember),
-    );
+    return onboardingPath.every((pathMember: AnyPath) => step.path?.includes(pathMember));
 };
 
 export const isStepCategoryUsed = (stepCategory: StepCategory, props: IsStepUsedProps): boolean =>
@@ -109,7 +107,7 @@ export const resolveNextAvailableStep = (
     if (nextStep.id === ID_SET_PIN_STEP && device) {
         // Skip PIN setup step only if device has PIN protection explicitly enabled
         if (device?.features?.pin_protection === true) {
-            return resolveNextAvailableStep(steps[currentIndex + 1]?.id, steps, device);
+            return resolveNextAvailableStep(steps[currentIndex + 1]?.id ?? null, steps, device);
         }
     }
 

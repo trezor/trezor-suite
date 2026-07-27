@@ -1,0 +1,260 @@
+import { useCallback, useEffect } from 'react';
+
+import { selectDesktopAnalyticsDep } from '@suite/analytics';
+import { useDevice } from '@suite/device';
+import { FirmwareUpgradeNeededModal } from '@suite/firmware-upgrade';
+import { Translation, useTranslation } from '@suite/intl';
+import { ContextMessage } from '@suite/message-system';
+import { openModal } from '@suite/modal';
+import { events } from '@suite-common/analytics';
+import { useServices } from '@suite-common/dependency-injection';
+import { type YieldAccountRewards } from '@suite-common/earn-stablecoin-api';
+import { Context } from '@suite-common/message-system';
+import {
+    YIELD_FLOW_AVAILABLE_STEPS,
+    isStablecoinYieldSupported,
+    selectStablecoinYieldSession,
+    selectStablecoinYieldTxReview,
+    stablecoinYieldActions,
+} from '@suite-common/wallet-core';
+import { type Account } from '@suite-common/wallet-types';
+import { Banner, Button, Card, Column, Text } from '@trezor/components';
+import { WarningIcon } from '@trezor/icons';
+
+import { setConnectionModal, setConnectionMode } from 'src/actions/device/deviceSlice';
+import { claimMerklRewardsThunk } from 'src/actions/wallet/stablecoin-yield';
+import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useFirmwareUpgradeModal } from 'src/hooks/suite/useFirmwareUpgradeModal';
+import { useMessageSystemYield } from 'src/hooks/suite/useMessageSystemYield';
+
+import { YieldRewardsList } from './YieldRewardsList';
+import { useMerklRewards } from './hooks';
+import { YieldDisabledBanner } from '../common/YieldDisabledBanner';
+import { YieldFlowCompleteClaim } from '../common/YieldFlowCompleteClaim';
+import { YieldFlowStepList } from '../common/YieldFlowStepList';
+import { YieldPendingTransaction } from '../common/YieldPendingTransaction';
+import { useEnsureYieldDeviceSession } from '../hooks/useEnsureYieldDeviceSession';
+import { useYieldPendingTransactionTracking } from '../hooks/useYieldPendingTransactionTracking';
+
+type YieldClaimProps = {
+    account: Account;
+};
+
+export const YieldClaim = ({ account }: YieldClaimProps) => {
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const dispatch = useDispatch();
+    const { device } = useDevice();
+    const { translationString } = useTranslation();
+    const flowKey = account.key;
+    const { isDisabled, content, variant } = useMessageSystemYield('claim');
+    const { isFirmwareModalOpen, openFirmwareModal, closeFirmwareModal, updateFirmware } =
+        useFirmwareUpgradeModal();
+
+    const yieldTxReview = useSelector(selectStablecoinYieldTxReview);
+    const claimSession = useSelector(state =>
+        selectStablecoinYieldSession(state, 'claim', flowKey),
+    );
+    const isClaimSubmitting =
+        claimSession.action.isSubmitting ||
+        (!!yieldTxReview.precomposedTx && yieldTxReview.accountKey === account.key);
+    const isClaiming = isClaimSubmitting || !!claimSession.action.pendingTransaction;
+    const isDeviceConnected = !!device?.connected && device.available;
+    const isClaimFirmwareOutdated = !isStablecoinYieldSupported(device, 'claim');
+
+    const ensureDeviceSession = useEnsureYieldDeviceSession({ flowType: 'claim', flowKey });
+    const { merklRewardsQuery, missingRateTickersQuery } = useMerklRewards(account);
+    const accountRewards: YieldAccountRewards | undefined =
+        merklRewardsQuery.data?.accountsRewards[0];
+    const isRewardsLoading = merklRewardsQuery.isLoading || missingRateTickersQuery.isLoading;
+
+    // Completion shows the claimed-rewards snapshot; until it is available, keep the claim screen.
+    const currentStep = claimSession.step === 'complete' && accountRewards ? 'complete' : 'action';
+
+    useEffect(() => {
+        dispatch(stablecoinYieldActions.initSession({ flowType: 'claim', flowKey }));
+
+        return () => {
+            dispatch(stablecoinYieldActions.disposeSession({ flowType: 'claim', flowKey }));
+        };
+    }, [dispatch, flowKey]);
+
+    useYieldPendingTransactionTracking({
+        account,
+        flowType: 'claim',
+        flowKey,
+        waitForMerklToResolveClaim: merklRewardsQuery.waitForMerklToResolveClaim,
+    });
+
+    const handleClaim = async () => {
+        if (!accountRewards) return;
+
+        if (isClaimFirmwareOutdated) {
+            openFirmwareModal();
+
+            return;
+        }
+
+        if (!isDeviceConnected) {
+            if (device?.descriptor?.apiType === 'bluetooth') {
+                dispatch(setConnectionMode('bluetooth'));
+            }
+            dispatch(setConnectionModal(true));
+
+            return;
+        }
+
+        const { account, rewards } = accountRewards;
+
+        analytics.report({
+            type: events.yieldClaimEvent.name,
+            payload: {
+                action: 'continue',
+                type: 'claim',
+                networkSymbol: account.symbol,
+                rewardCount: rewards.length,
+            },
+        });
+
+        const isSessionReady = await ensureDeviceSession();
+
+        if (!isSessionReady) {
+            return;
+        }
+
+        try {
+            await dispatch(claimMerklRewardsThunk({ account, flowKey, rewards })).unwrap();
+        } catch {
+            // cancelled or rejected — isClaiming resets via Redux (discardTransaction in finally)
+        }
+    };
+
+    const handleTxClick = useCallback(
+        (txid: string) => {
+            analytics.report({
+                type: events.yieldInteractionEvent.name,
+                payload: {
+                    element: 'pending-tx-open',
+                    value: 'claim',
+                    networkSymbol: account.symbol,
+                },
+            });
+
+            dispatch(
+                openModal({
+                    type: 'transaction-detail',
+                    txid,
+                    descriptor: account.descriptor,
+                    symbol: account.symbol,
+                    deviceState: account.deviceState,
+                    flow: 'detail',
+                }),
+            );
+        },
+        [account, analytics, dispatch],
+    );
+
+    return (
+        <Column width="100%" alignItems="center">
+            {currentStep !== 'complete' && isFirmwareModalOpen && (
+                <FirmwareUpgradeNeededModal
+                    onClose={closeFirmwareModal}
+                    onUpdate={updateFirmware}
+                    featureName={translationString('TR_EARN_DEFI_YIELD_TITLE')}
+                />
+            )}
+            <Column gap={24} width="100%" maxWidth={500}>
+                {currentStep !== 'complete' && (
+                    <>
+                        <ContextMessage context={Context.getEarnYield('claim')} />
+
+                        <Text typographyStyle="headline-md">
+                            <Translation id="TR_EARN_CLAIM_REWARDS" />
+                        </Text>
+                    </>
+                )}
+
+                {isDisabled && currentStep !== 'complete' ? (
+                    <YieldDisabledBanner type="claim" content={content} variant={variant} />
+                ) : (
+                    <YieldFlowStepList
+                        sequence={YIELD_FLOW_AVAILABLE_STEPS.claim}
+                        currentStep={currentStep}
+                        steps={{
+                            action: {
+                                title: <Translation id="TR_EARN_CLAIM_REWARDS" />,
+                                content: () => (
+                                    <>
+                                        <Card>
+                                            <Column gap={24}>
+                                                <Text typographyStyle="body-md-strong">
+                                                    <Translation id="TR_STAKE_REWARDS" />
+                                                </Text>
+
+                                                <YieldRewardsList
+                                                    accountRewards={accountRewards}
+                                                    isLoading={isRewardsLoading}
+                                                />
+                                            </Column>
+                                        </Card>
+
+                                        {merklRewardsQuery.isSuccess &&
+                                            (accountRewards?.rewards?.length ?? 0) > 0 &&
+                                            !claimSession.action.pendingTransaction && (
+                                                <Banner
+                                                    intent="warning"
+                                                    icon={WarningIcon}
+                                                    description={
+                                                        <Translation id="TR_EARN_REWARDS_NETWORK_FEE_WARNING" />
+                                                    }
+                                                />
+                                            )}
+
+                                        {claimSession.error && (
+                                            <Banner
+                                                intent="warning"
+                                                description={
+                                                    <Translation id={claimSession.error} />
+                                                }
+                                            />
+                                        )}
+
+                                        <Button
+                                            size="large"
+                                            width="100%"
+                                            isDisabled={
+                                                isRewardsLoading ||
+                                                !accountRewards?.rewards.length ||
+                                                isClaiming
+                                            }
+                                            isLoading={
+                                                isClaimSubmitting || merklRewardsQuery.isLoading
+                                            }
+                                            onClick={handleClaim}
+                                        >
+                                            <Translation id="TR_EARN_YIELD_CLAIM" />
+                                        </Button>
+                                        {claimSession.action.pendingTransaction && (
+                                            <YieldPendingTransaction
+                                                pendingTransaction={
+                                                    claimSession.action.pendingTransaction
+                                                }
+                                                onTxClick={handleTxClick}
+                                            />
+                                        )}
+                                    </>
+                                ),
+                            },
+                            complete: {
+                                isListItem: false,
+                                content: () =>
+                                    accountRewards ? (
+                                        <YieldFlowCompleteClaim accountRewards={accountRewards} />
+                                    ) : null,
+                            },
+                        }}
+                    />
+                )}
+            </Column>
+        </Column>
+    );
+};

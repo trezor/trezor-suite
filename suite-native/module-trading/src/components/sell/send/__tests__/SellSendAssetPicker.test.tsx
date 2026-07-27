@@ -3,21 +3,21 @@ import type { CryptoId } from 'invity-api';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { Form } from '@suite-native/forms';
 import {
-    TestStore,
-    initStore,
-    renderHookWithStoreProviderAsync,
-    renderWithStoreProviderAsync,
+    type TestStore,
+    renderHookWithStoreProvider,
+    renderWithStoreProvider,
     userEvent,
-} from '@suite-native/test-utils';
+} from '@suite-native/test-utils-store';
 import {
     getBtcAccount,
     getEthAccount,
     getInitializedTradingState,
 } from '@suite-native/trading-fixtures';
 import { selectAccountsWithTokensToSellSectionCondensedListByTradingType } from '@suite-native/trading-state';
-import { MyAssetTradeable, SellFormType } from '@suite-native/trading-types';
+import { type MyAssetTradeable, type SellFormType } from '@suite-native/trading-types';
 import { BigNumber } from '@trezor/utils';
 
+import { createTradingLightStore } from '../../../../__tests__/tradingTestUtils';
 import { useSellForm } from '../../../../hooks/sell/useSellForm';
 import { SellSendAssetPicker } from '../SellSendAssetPicker';
 
@@ -59,24 +59,25 @@ describe('SellSendAssetPicker', () => {
         },
     ];
 
-    const getPreloadedState = () => ({
-        wallet: {
-            trading: getInitializedTradingState(),
-            accounts: [btcAccount, ethAccount],
-        },
-    });
-
-    const renderSellForm = () => renderHookWithStoreProviderAsync(() => useSellForm(), { store });
+    const renderSellForm = () => renderHookWithStoreProvider(() => useSellForm(), { store });
 
     const renderSellSendAssetPicker = () =>
-        renderWithStoreProviderAsync(<SellSendAssetPicker />, {
+        renderWithStoreProvider(<SellSendAssetPicker />, {
             store,
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
         });
 
-    beforeEach(async () => {
-        store = initStore(getPreloadedState()).store;
-        const { result } = await renderSellForm();
+    beforeEach(() => {
+        store = createTradingLightStore({
+            tradeType: 'sell',
+            overrides: {
+                wallet: {
+                    trading: getInitializedTradingState(),
+                    accounts: [btcAccount, ethAccount],
+                },
+            },
+        });
+        const { result } = renderSellForm();
         form = result.current;
 
         mockedSelectAccountsWithTokensToSellSectionListByTradingType.mockReturnValue(
@@ -85,7 +86,7 @@ describe('SellSendAssetPicker', () => {
     });
 
     it('should select asset on item press', async () => {
-        const { getByText } = await renderSellSendAssetPicker();
+        const { getByText } = renderSellSendAssetPicker();
 
         await userEvent.press(getByText('BTC'));
 
@@ -99,7 +100,7 @@ describe('SellSendAssetPicker', () => {
     });
 
     it('should select account on item press', async () => {
-        const { getByText } = await renderSellSendAssetPicker();
+        const { getByText } = renderSellSendAssetPicker();
 
         await userEvent.press(getByText('BTC'));
 

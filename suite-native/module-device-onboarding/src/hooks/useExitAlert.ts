@@ -10,12 +10,12 @@ import { useFirmware } from '@suite-native/firmware';
 import { useTranslate } from '@suite-native/intl';
 import {
     AppTabsRoutes,
-    DeviceOnboardingStackParamList,
-    DeviceOnboardingStackRoutes,
+    type DeviceOnboardingStackParamList,
+    type DeviceOnboardingStackRoutes,
     HomeStackRoutes,
-    RootStackParamList,
+    type RootStackParamList,
     RootStackRoutes,
-    StackToStackCompositeNavigationProps,
+    type StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 import TrezorConnect from '@trezor/connect';
 type NavigationProps = StackToStackCompositeNavigationProps<
@@ -42,11 +42,11 @@ export const useExitAlert = (handleContinueButtonPress?: () => void) => {
             primaryButtonTitle: translate(
                 'moduleDeviceOnboarding.cancelOnboardingAlert.cancelButton',
             ),
-            primaryButtonVariant: 'redBold',
+            primaryButtonColorProps: { intent: 'critical', priority: 'primary' },
             secondaryButtonTitle: translate(
                 'moduleDeviceOnboarding.cancelOnboardingAlert.continueButton',
             ),
-            secondaryButtonVariant: 'redElevation0',
+            secondaryButtonColorProps: { intent: 'critical', priority: 'secondary' },
             onPressPrimaryButton: () => {
                 if (selectedDevice) {
                     setIsFirmwareInstallationRunning(false);
@@ -61,9 +61,7 @@ export const useExitAlert = (handleContinueButtonPress?: () => void) => {
                 }
             },
             onPressSecondaryButton: () => {
-                if (handleContinueButtonPress) {
-                    handleContinueButtonPress();
-                }
+                handleContinueButtonPress?.();
             },
         });
     }, [

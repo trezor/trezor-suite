@@ -1,0 +1,58 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": { "outDir": "libDev" },
+    "include": ["src/**/*.ts", "redux.d.ts"],
+    "exclude": ["**/node_modules", "**/libDev"],
+    "references": [
+        { "path": "../../suite-common/device" },
+        {
+            "path": "../../suite-common/message-system"
+        },
+        {
+            "path": "../../suite-common/redux-utils"
+        },
+        {
+            "path": "../../suite-common/suite-constants"
+        },
+        {
+            "path": "../../suite-common/suite-utils"
+        },
+        {
+            "path": "../../suite-common/toast-notifications"
+        },
+        {
+            "path": "../../suite-common/wallet-config"
+        },
+        {
+            "path": "../../suite-common/wallet-core"
+        },
+        {
+            "path": "../../suite-common/wallet-types"
+        },
+        {
+            "path": "../../suite-common/wallet-utils"
+        },
+        { "path": "../account" },
+        { "path": "../locks" },
+        { "path": "../modal" },
+        { "path": "../router" },
+        { "path": "../tor" },
+        {
+            "path": "../../packages/blockchain-link"
+        },
+        { "path": "../../packages/coinjoin" },
+        { "path": "../../packages/connect" },
+        { "path": "../../packages/env-utils" },
+        { "path": "../../packages/ipc-proxy" },
+        { "path": "../../packages/type-utils" },
+        { "path": "../../packages/utils" },
+        {
+            "path": "../../suite-common/suite-types"
+        },
+        {
+            "path": "../../suite-common/test-utils"
+        },
+        { "path": "../../packages/device-utils" },
+        { "path": "../../packages/eslint" }
+    ]
+}

@@ -1,11 +1,21 @@
-import { ProofOfDelegatedSignFailedType } from '@suite-common/delegated-identity-key-types';
-import { CreateSuiteSyncOwnerError, type SuiteSyncOwner } from '@suite-common/suite-sync-storage';
-import { DelegatedIdentityKey, TrezorDeviceWithState } from '@suite-common/suite-types';
-import type { DeviceErrorType } from '@suite-common/suite-types';
-import { Result } from '@trezor/type-utils';
+import { type ProofOfDelegatedSignFailedType } from '@suite-common/delegated-identity-key-types';
+import {
+    type CreateSuiteSyncOwnerError,
+    type SuiteSyncOwner,
+} from '@suite-common/suite-sync-storage';
+import {
+    type DelegatedIdentityKey,
+    type DeviceErrorType,
+    type DeviceNotConnectedErrorType,
+    type TrezorDeviceWithState,
+} from '@suite-common/suite-types';
+import { type Result } from '@trezor/type-utils';
 
 export type EnsureSuiteSyncOwnerParams = {
-    device: Pick<TrezorDeviceWithState, 'useEmptyPassphrase' | 'path' | 'state' | 'instance'>;
+    device: Pick<
+        TrezorDeviceWithState,
+        'useEmptyPassphrase' | 'path' | 'state' | 'instance' | 'connected'
+    >;
     delegatedKey: DelegatedIdentityKey;
 };
 
@@ -14,7 +24,10 @@ export type EnsureSuiteSyncOwner = (
 ) => Promise<
     Result<
         SuiteSyncOwner,
-        DeviceErrorType | ProofOfDelegatedSignFailedType | CreateSuiteSyncOwnerError
+        | DeviceErrorType
+        | ProofOfDelegatedSignFailedType
+        | CreateSuiteSyncOwnerError
+        | DeviceNotConnectedErrorType
     >
 >;
 

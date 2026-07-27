@@ -9,6 +9,11 @@ const publishableTrezorPackages = [
     '@trezor/blockchain-link',
     '@trezor/blockchain-link-types',
     '@trezor/blockchain-link-utils',
+    '@trezor/network-cardano',
+    '@trezor/network-ripple',
+    '@trezor/network-solana',
+    '@trezor/network-stellar',
+    '@trezor/network-tron',
     '@trezor/connect',
     '@trezor/connect-common',
     '@trezor/connect-data',
@@ -29,6 +34,12 @@ const publishableTrezorPackages = [
     '@trezor/utils',
     '@trezor/utxo-lib',
     '@trezor/websocket-client',
+    '@suite-common/schemas',
+];
+
+const packagesWithSectionEntryPoints = [
+    '@suite-common/earn-stablecoin',
+    '@suite-common/earn-stablecoin-api',
 ];
 
 /** @type {Config[]} */
@@ -55,7 +66,16 @@ export const localRulesConfig = [
                 'error',
                 {
                     packageScopes: ['@suite-native', '@suite', '@suite-common', '@trezor'],
-                    ignoredPackages: publishableTrezorPackages,
+                    ignoredPackages: [
+                        ...publishableTrezorPackages,
+                        ...packagesWithSectionEntryPoints,
+                    ],
+                    allowedEntryPointPatterns: [
+                        // Packages expose reusable test mocks through dedicated public entry points.
+                        /^@(?:suite-native|suite|suite-common|trezor)\/[^/]+\/mocks$/,
+                        // Suite test setup imports global polyfills through this side-effect-only entry point.
+                        /^@suite-common\/test-utils\/globalOverrides$/,
+                    ],
                 },
             ],
             'local-rules/analytics-event-name': 'error',

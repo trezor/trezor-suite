@@ -1,7 +1,7 @@
 import { BackendWebsocketServerMock } from '@trezor/e2e-utils';
 
 import workers from './worker';
-import BlockchainLink from '../../src';
+import { BlockchainLink } from '../../src';
 import fixturesBlockbook from './fixtures/notifications-blockbook';
 import fixturesBlockfrost from './fixtures/notifications-blockfrost';
 import fixturesRipple from './fixtures/notifications-ripple';
@@ -40,6 +40,16 @@ workers.forEach(instance => {
         describe('Addresses and accounts', () => {
             beforeAll(setup);
             afterAll(teardown);
+
+            // [btc-unknown-tx-debug] notification txs are parsed through transformTransaction, which emits
+            // a temporary console.error for txs classified as 'unknown' with account context. Silence the
+            // JestCustomEnv console.error trap for these fixtures.
+            beforeEach(() => {
+                jest.spyOn(console, 'error').mockImplementation(() => {});
+            });
+            afterEach(() => {
+                jest.restoreAllMocks();
+            });
 
             // NOTE: do not skip any test because id's sequence must be continuous!
             fixtures[instance.name].notifyAddresses.forEach((f, id) => {

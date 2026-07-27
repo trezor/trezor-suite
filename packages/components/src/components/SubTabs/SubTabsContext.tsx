@@ -1,18 +1,14 @@
 import { createContext, useContext } from 'react';
 
-import { SubTabsSize } from './types';
+import { throwError } from '@trezor/utils';
+
+import { type SubTabsSize } from './types';
 
 export const SubTabsContext = createContext<{
     activeItemId?: string;
     size: SubTabsSize;
 }>({ size: 'medium' });
 
-export const useSubTabsContext = () => {
-    const context = useContext(SubTabsContext);
-
-    if (!context) {
-        throw new Error('useSubTabsContext must be used within a SubTabsContext');
-    }
-
-    return context;
-};
+export const useSubTabsContext = () =>
+    useContext(SubTabsContext) ??
+    throwError('useSubTabsContext must be used within a SubTabsContext');

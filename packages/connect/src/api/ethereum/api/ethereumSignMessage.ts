@@ -1,67 +1,67 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/EthereumSignMessage.js
 
-import { MessagesSchema, MessagesSchema as PROTO } from '@trezor/protobuf';
+import type { EthereumNetworkInfo, PermissionRequest } from '@trezor/connect-common';
+import { EthereumSignMessage as EthereumSignMessageSchema } from '@trezor/connect-common';
+import type { MessagesSchema, MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 
-import { AbstractMethod, MethodPermission, Payload } from '../../../core/AbstractMethod';
+import type { MethodMessage } from '../../../core/AbstractMethod';
+import { AbstractMethod } from '../../../core/AbstractMethod';
 import { getEthereumNetwork } from '../../../data/coinInfo';
 import { validateModelOneMessageSize } from '../../../device/validateMessageSize';
-import {
-    EthereumNetworkInfo,
-    EthereumSignMessage as EthereumSignMessageSchema,
-} from '../../../types';
 import { getNetworkLabel } from '../../../utils/ethereumUtils';
 import { hexToText, messageToHex } from '../../../utils/formatUtils';
 import { getSerializedPath, getSlip44ByPath, validatePath } from '../../../utils/pathUtils';
-import { getFirmwareRange } from '../../common/paramsValidator';
 import { getEthereumDefinitions } from '../ethereumDefinitions';
 
-type Params = PROTO.EthereumSignMessage & {
+type Params = {
+    proto: PROTO.EthereumSignMessage;
+    readableMessage: string;
     network?: EthereumNetworkInfo;
     definitions?: MessagesSchema.EthereumDefinitions;
 };
 
 export default class EthereumSignMessage extends AbstractMethod<'ethereumSignMessage', Params> {
-    constructor(message: { id?: number; payload: Payload<'ethereumSignMessage'> }) {
-        super(message);
-        this.requiredDeviceCapabilities = ['Capability_Ethereum'];
-    }
-
-    get requiredPermissions(): MethodPermission[] {
-        return ['read', 'write'];
-    }
-
-    init() {
-        const { payload } = this;
+    constructor(message: MethodMessage<'ethereumSignMessage'>) {
+        const { payload } = message;
 
         // validate incoming parameters
         Assert(EthereumSignMessageSchema, payload);
 
-        const path = validatePath(payload.path, 3);
-        const network = getEthereumNetwork(path);
-        this.firmwareRange = getFirmwareRange(this.name, network, this.firmwareRange);
+        const address_n = validatePath(payload.path, 3);
+        const network = getEthereumNetwork(address_n);
 
         const messageHex = payload.hex
             ? messageToHex(payload.message)
             : Buffer.from(payload.message, 'utf8').toString('hex');
-        this.params = {
-            address_n: path,
-            message: messageHex,
-        };
+
+        const readableMessage = payload.hex ? hexToText(payload.message) : payload.message;
+
+        const params = { proto: { address_n, message: messageHex }, readableMessage };
+
+        super(message, params);
+        this.requiredFirmwareCoins = [network];
+        this.requiredDeviceCapabilities = ['Capability_Ethereum'];
+    }
+
+    get requiredPermissions(): PermissionRequest[] {
+        return this.coinPerms('sign', this.requiredFirmwareCoins);
     }
 
     async initAsync() {
         if (this.params.network) return;
 
-        const { address_n } = this.params;
+        const { address_n } = this.params.proto;
         const slip44 = getSlip44ByPath(address_n);
-        this.params.definitions = await getEthereumDefinitions({
-            slip44,
-        });
+        const definitions = await getEthereumDefinitions({ slip44 });
+        this.params.proto.encoded_network = definitions.encoded_network;
     }
 
     get info() {
-        return getNetworkLabel('Sign #NETWORK message', getEthereumNetwork(this.params.address_n));
+        return getNetworkLabel(
+            'Sign #NETWORK message',
+            getEthereumNetwork(this.params.proto.address_n),
+        );
     }
 
     getButtonRequestData(code: string, name?: string) {
@@ -69,23 +69,22 @@ export default class EthereumSignMessage extends AbstractMethod<'ethereumSignMes
             return {
                 type: 'message' as const,
                 coin: this.params.network?.shortcut ?? 'ETH',
-                serializedPath: getSerializedPath(this.params.address_n),
-                message: this.payload.hex ? hexToText(this.payload.message) : this.payload.message,
+                serializedPath: getSerializedPath(this.params.proto.address_n),
+                message: this.params.readableMessage,
             };
         }
     }
 
     async run() {
-        validateModelOneMessageSize(this.device, this.params.message);
+        validateModelOneMessageSize(this.getDevice(), this.params.proto.message);
 
-        const cmd = this.device.getCommands();
-        const { address_n, message } = this.params;
+        const cmd = this.getDevice().getCommands();
 
-        const response = await cmd.typedCall('EthereumSignMessage', 'EthereumMessageSignature', {
-            encoded_network: this.params.definitions?.encoded_network,
-            address_n,
-            message,
-        });
+        const response = await cmd.typedCall(
+            'EthereumSignMessage',
+            'EthereumMessageSignature',
+            this.params.proto,
+        );
 
         return response.message;
     }

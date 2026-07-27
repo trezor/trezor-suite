@@ -1,42 +1,37 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/GetPublicKey.js
 
-import { MessagesSchema as PROTO } from '@trezor/protobuf';
+import type { BitcoinNetworkInfo, PermissionRequest } from '@trezor/connect-common';
+import {
+    Bundle,
+    GetPublicKey as GetPublicKeySchema,
+    UI_REQUEST,
+    createUiMessage,
+} from '@trezor/connect-common';
+import type { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 
-import { AbstractMethod, MethodPermission, MethodReturnType } from '../core/AbstractMethod';
+import type { MethodContext, MethodMessage, MethodReturnType } from '../core/AbstractMethod';
+import { AbstractMethod } from '../core/AbstractMethod';
 import { getBitcoinNetwork } from '../data/coinInfo';
-import { UI_REQUEST, createUiMessage } from '../events';
-import type { BitcoinNetworkInfo } from '../types';
-import { Bundle } from '../types';
-import { getFirmwareRange, validateCoinPath } from './common/paramsValidator';
-import { GetPublicKey as GetPublicKeySchema } from '../types/api/getPublicKey';
+import { bundlify, validateCoinPath } from './common/paramsValidator';
 import { getPublicKeyLabel } from '../utils/accountUtils';
 import { validatePath } from '../utils/pathUtils';
 
-type Params = PROTO.GetPublicKey & {
+type Params = {
+    proto: PROTO.GetPublicKey;
     coinInfo?: BitcoinNetworkInfo;
     suppressBackupWarning?: boolean;
     unlockPath?: PROTO.UnlockPath;
 };
 
 export default class GetPublicKey extends AbstractMethod<'getPublicKey', Params[]> {
-    hasBundle?: boolean;
-
-    get requiredPermissions(): MethodPermission[] {
-        return ['read'];
-    }
-
-    init() {
-        // create a bundle with only one batch if bundle doesn't exists
-        this.hasBundle = !!this.payload.bundle;
-        const payload = !this.payload.bundle
-            ? { ...this.payload, bundle: [this.payload] }
-            : this.payload;
+    constructor(message: MethodMessage<'getPublicKey'>) {
+        const { hasBundle, payload } = bundlify(message.payload);
 
         // validate bundle type
         Assert(Bundle(GetPublicKeySchema), payload);
 
-        this.params = payload.bundle.map(batch => {
+        const params = payload.bundle.map(batch => {
             let coinInfo: BitcoinNetworkInfo | undefined;
             if (batch.coin) {
                 coinInfo = getBitcoinNetwork(batch.coin);
@@ -53,25 +48,36 @@ export default class GetPublicKey extends AbstractMethod<'getPublicKey', Params[
                 coinInfo = getBitcoinNetwork(address_n); // ?? getBitcoinNetwork('btc')!;
             }
 
-            // set required firmware from coinInfo support
-            this.firmwareRange = getFirmwareRange(this.name, coinInfo, this.firmwareRange);
-
-            return {
+            const proto = {
                 address_n,
                 coin_name: coinInfo?.name,
                 show_display: batch.showOnTrezor,
                 script_type: batch.scriptType,
                 ignore_xpub_magic: batch.ignoreXpubMagic,
                 ecdsa_curve_name: batch.ecdsaCurveName,
+            };
+
+            return {
+                proto,
                 coinInfo,
                 unlockPath: batch.unlockPath,
-                suppress_backup_warning: batch.suppressBackupWarning,
+                suppressBackupWarning: batch.suppressBackupWarning,
             };
         });
 
+        super(message, params);
+
+        this.requiredFirmwareCoins = params.map(({ coinInfo }) => coinInfo);
+        this.hasBundle = hasBundle;
         this.confirmMissingBackup = !this.params.every(
-            batch => batch.suppressBackupWarning || !batch.show_display,
+            batch => batch.suppressBackupWarning || !batch.proto.show_display,
         );
+    }
+
+    hasBundle?: boolean;
+
+    get requiredPermissions(): PermissionRequest[] {
+        return this.coinPerms('read_xpub', this.requiredFirmwareCoins);
     }
 
     get info() {
@@ -79,28 +85,38 @@ export default class GetPublicKey extends AbstractMethod<'getPublicKey', Params[
     }
 
     get confirmation() {
+        if (this.params.length > 1) {
+            return {
+                view: 'export-xpub' as const,
+                label: 'Export multiple public keys',
+            };
+        }
+        const { params } = this;
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const first: (typeof params)[number] = params[0];
+
         return {
             view: 'export-xpub' as const,
-            label:
-                this.params.length > 1
-                    ? 'Export multiple public keys'
-                    : getPublicKeyLabel(this.params[0].address_n, this.params[0].coinInfo),
+            label: getPublicKeyLabel(first.proto.address_n, first.coinInfo),
         };
     }
 
-    async run() {
+    async run({ sendCoreMessage }: MethodContext) {
         const responses: MethodReturnType<typeof this.name> = [];
-        const cmd = this.device.getCommands();
+        const cmd = this.getDevice().getCommands();
         for (let i = 0; i < this.params.length; i++) {
-            const { coinInfo, unlockPath, ...batch } = this.params[i];
+            const { params } = this;
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const batch: (typeof params)[number] = params[i];
+            const { coinInfo, unlockPath, proto } = batch;
             // if coinInfo is not provided, use fallback (see above in init method)
             const coinInfoFallback = coinInfo ?? getBitcoinNetwork('btc')!;
-            const response = await cmd.getHDNode(batch, { coinInfo: coinInfoFallback, unlockPath });
+            const response = await cmd.getHDNode(proto, { coinInfo: coinInfoFallback, unlockPath });
             responses.push(response);
 
             if (this.hasBundle) {
                 // send progress
-                this.postMessage(
+                sendCoreMessage(
                     createUiMessage(UI_REQUEST.BUNDLE_PROGRESS, {
                         total: this.params.length,
                         progress: i,
@@ -110,6 +126,9 @@ export default class GetPublicKey extends AbstractMethod<'getPublicKey', Params[
             }
         }
 
-        return this.hasBundle ? responses : responses[0];
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const first: (typeof responses)[number] = responses[0];
+
+        return this.hasBundle ? responses : first;
     }
 }

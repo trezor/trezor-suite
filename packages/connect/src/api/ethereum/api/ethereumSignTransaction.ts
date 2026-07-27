@@ -1,21 +1,27 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/EthereumSignTransaction.js
 
-import { MessagesSchema } from '@trezor/protobuf';
+import { EthereumSignTransaction as EthereumSignTransactionSchema } from '@trezor/connect-common';
+import type {
+    EthereumNetworkInfoDefinitionValues,
+    EthereumTransaction,
+    EthereumTransactionEIP1559,
+    PermissionRequest,
+    TokenInfo,
+} from '@trezor/connect-common';
+import type { MessagesSchema } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { AbstractMethod, MethodPermission, Payload } from '../../../core/AbstractMethod';
+import type { MethodMessage } from '../../../core/AbstractMethod';
+import { AbstractMethod } from '../../../core/AbstractMethod';
 import { getEthereumNetwork } from '../../../data/coinInfo';
-import {
-    EthereumNetworkInfoDefinitionValues,
-    EthereumSignTransaction as EthereumSignTransactionSchema,
-    TokenInfo,
-} from '../../../types';
-import type { EthereumTransaction, EthereumTransactionEIP1559 } from '../../../types/api/ethereum';
 import { getNetworkLabel } from '../../../utils/ethereumUtils';
 import { deepTransform, stripHexPrefix } from '../../../utils/formatUtils';
 import { getSlip44ByPath, validatePath } from '../../../utils/pathUtils';
-import { getFirmwareRange } from '../../common/paramsValidator';
+import {
+    PAYMENT_REQUEST_AMOUNT_BYTES,
+    encodePaymentRequestAmount,
+} from '../../../utils/paymentRequest';
 import {
     decodeEthereumDefinition,
     ethereumNetworkInfoFromDefinition,
@@ -32,10 +38,12 @@ type Params = {
     | {
           type: 'legacy';
           tx: EthereumTransaction;
+          originalTx: EthereumTransaction;
       }
     | {
           type: 'eip1559';
           tx: EthereumTransactionEIP1559;
+          originalTx: EthereumTransactionEIP1559;
       }
 );
 
@@ -53,17 +61,8 @@ export default class EthereumSignTransaction extends AbstractMethod<
     'ethereumSignTransaction',
     Params
 > {
-    constructor(message: { id?: number; payload: Payload<'ethereumSignTransaction'> }) {
-        super(message);
-        this.requiredDeviceCapabilities = ['Capability_Ethereum'];
-    }
-
-    get requiredPermissions(): MethodPermission[] {
-        return ['read', 'write'];
-    }
-
-    init() {
-        const { payload } = this;
+    constructor(message: MethodMessage<'ethereumSignTransaction'>) {
+        const { payload } = message;
         // validate incoming parameters
         Assert(EthereumSignTransactionSchema, payload);
 
@@ -77,37 +76,19 @@ export default class EthereumSignTransaction extends AbstractMethod<
         const isEIP1559 =
             typeof tx.maxFeePerGas === 'string' && typeof tx.maxPriorityFeePerGas === 'string';
 
-        // get firmware range depending on used transaction type
-        // eip1559 is possible since 2.4.2
-        this.firmwareRange = getFirmwareRange(
-            isEIP1559 ? 'eip1559' : this.name,
+        const params = {
+            path,
             network,
-            this.firmwareRange,
-        );
-
-        if (isEIP1559) {
-            this.params = {
-                path,
-                network,
-                type: 'eip1559',
-                tx: {
-                    ...strip(tx),
-                    payment_req: tx.payment_req,
-                },
-                chunkify,
-            };
-        } else {
-            this.params = {
-                path,
-                network,
-                type: 'legacy',
-                tx: {
-                    ...strip(tx),
-                    payment_req: tx.payment_req,
-                },
-                chunkify,
-            };
-        }
+            type: isEIP1559 ? 'eip1559' : 'legacy',
+            tx: {
+                ...strip(tx),
+                payment_req: tx.payment_req
+                    ? encodePaymentRequestAmount(tx.payment_req, PAYMENT_REQUEST_AMOUNT_BYTES.EVM)
+                    : undefined,
+            },
+            originalTx: tx,
+            chunkify,
+        } as Params;
 
         // Since FW 2.4.3+ chainId will be required
         // TODO: this should be removed after next major/minor version (or after few months)
@@ -115,6 +96,20 @@ export default class EthereumSignTransaction extends AbstractMethod<
         if (typeof tx.chainId !== 'number') {
             console.warn('TrezorConnect.ethereumSignTransaction: Missing chainId parameter!');
         }
+
+        super(message, params);
+
+        this.requiredFirmwareCoins = [network];
+        this.requiredDeviceCapabilities = ['Capability_Ethereum'];
+        // get firmware range depending on used transaction type
+        // eip1559 is possible since 2.4.2
+        if (isEIP1559) {
+            this.requiredFirmwareCapabilities = ['eip1559'];
+        }
+    }
+
+    get requiredPermissions(): PermissionRequest[] {
+        return this.coinPerms('sign', this.requiredFirmwareCoins);
     }
 
     async initAsync(): Promise<void> {
@@ -144,26 +139,26 @@ export default class EthereumSignTransaction extends AbstractMethod<
         return getNetworkLabel('Sign #NETWORK transaction', this.params.network);
     }
 
-    async payloadToPrecomposed() {
+    payloadToPrecomposed() {
         try {
-            const feePerByte = new BigNumber(
-                this.payload.transaction.gasPrice || this.payload.transaction.maxFeePerGas!,
-            );
-            const fee = feePerByte.multipliedBy(this.payload.transaction.gasLimit);
-            const data = this.payload.transaction.data?.replace(/^0x/, '');
-            let recipient = this.payload.transaction.to!;
-            let amount = new BigNumber(this.payload.transaction.value);
+            const transaction = this.params.originalTx;
+            const feePerByte = new BigNumber(transaction.gasPrice || transaction.maxFeePerGas!);
+            const fee = feePerByte.multipliedBy(transaction.gasLimit);
+            const { data } = transaction;
+            let recipient = transaction.to!;
+            let amount = new BigNumber(transaction.value);
             let totalSpent = amount.plus(fee);
             let token: TokenInfo | undefined;
 
             // ERC-20 transfer
             // TODO: consider refactoring to shared util package together with `suite-common/wallet-constants/src/sendForm.ts`
-            if (this.payload.transaction.to && data?.startsWith('a9059cbb') && amount.eq(0)) {
-                const definitions = await getEthereumDefinitions({
-                    chainId: this.payload.transaction.chainId,
-                    contractAddress: this.payload.transaction.to.replace(/^0x/, ''),
-                });
-                const decoded = decodeEthereumDefinition(definitions);
+            if (
+                transaction.to &&
+                data?.startsWith('a9059cbb') &&
+                amount.eq(0) &&
+                this.params.definitions
+            ) {
+                const decoded = decodeEthereumDefinition(this.params.definitions);
                 if (decoded.token) {
                     recipient = '0x' + data.slice(32, 72);
                     amount = new BigNumber(data.slice(72, 136), 16);
@@ -176,7 +171,7 @@ export default class EthereumSignTransaction extends AbstractMethod<
                 }
             }
 
-            return {
+            const result = {
                 type: 'final' as const,
                 inputs: [],
                 outputsPermutation: [0],
@@ -192,17 +187,17 @@ export default class EthereumSignTransaction extends AbstractMethod<
                 feePerByte: feePerByte
                     .dividedBy(1e9) // wei to Gwei
                     .toString(),
-                maxFeePerGas: this.payload.transaction.maxFeePerGas
-                    ? new BigNumber(this.payload.transaction.maxFeePerGas)
+                maxFeePerGas: transaction.maxFeePerGas
+                    ? new BigNumber(transaction.maxFeePerGas)
                           .dividedBy(1e9) // wei to Gwei
                           .toString()
                     : undefined,
-                maxPriorityFeePerGas: this.payload.transaction.maxPriorityFeePerGas
-                    ? new BigNumber(this.payload.transaction.maxPriorityFeePerGas)
+                maxPriorityFeePerGas: transaction.maxPriorityFeePerGas
+                    ? new BigNumber(transaction.maxPriorityFeePerGas)
                           .dividedBy(1e9) // wei to Gwei
                           .toString()
                     : undefined,
-                feeLimit: new BigNumber(this.payload.transaction.gasLimit).toString(),
+                feeLimit: new BigNumber(transaction.gasLimit).toString(),
                 bytes: 0,
                 max: undefined,
                 isTokenKnown: !!token,
@@ -219,6 +214,8 @@ export default class EthereumSignTransaction extends AbstractMethod<
                     : undefined,
                 network: this.params.network,
             };
+
+            return Promise.resolve(result);
         } catch (e) {
             // Don't throw errors from this method
             console.error('Error in payloadToPrecomposed', e);
@@ -234,7 +231,7 @@ export default class EthereumSignTransaction extends AbstractMethod<
 
         const signature = isLegacy
             ? await helper.ethereumSignTx(
-                  this.device.getCommands().typedCall,
+                  this.getDevice().getCommands().typedCall,
                   this.params.path,
                   tx.to,
                   tx.value,
@@ -249,7 +246,7 @@ export default class EthereumSignTransaction extends AbstractMethod<
                   tx.payment_req,
               )
             : await helper.ethereumSignTxEIP1559(
-                  this.device.getCommands().typedCall,
+                  this.getDevice().getCommands().typedCall,
                   this.params.path,
                   tx.to,
                   tx.value,

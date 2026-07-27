@@ -1,78 +1,161 @@
+import { selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
-import { EarnAccountRef, EarnFlow, EarnProvider } from '@suite-common/suite-types/src/staking';
-import { isStakingNetworkType } from '@suite-common/wallet-utils';
+import { events } from '@suite-common/analytics';
+import { useServices } from '@suite-common/dependency-injection';
+import { useYieldOpportunity } from '@suite-common/earn-stablecoin-api';
+import {
+    EarnFlow,
+    type EarnModalAction,
+    type EarnProvider,
+    type EarnYieldContext,
+} from '@suite-common/suite-types/src/staking';
+import { type YieldFlowType } from '@suite-common/wallet-core';
+import { type Account } from '@suite-common/wallet-types';
+import { getApyPercent, isStakingNetworkType } from '@suite-common/wallet-utils';
 import { Divider } from '@trezor/components';
 
 import { EarnInANutshellModalLayout } from './components/EarnInANutshellModalLayout';
 import {
-    EarnInANutshellProcess,
+    type EarnInANutshellProcess,
     EarnInANutshellProcesses,
 } from './components/EarnInANutshellProcesses';
-import { EarnInANutshellWithdrawalBadge } from './components/EarnInANutshellWithdrawalBadge';
-import { EarnSupplyingInfo } from './components/EarnSupplyingInfo';
-import { EarnWithdrawingInfo } from './components/EarnWithdrawingInfo';
+import { YieldClaimingInfo } from './components/YieldClaimingInfo';
+import { YieldDepositingInfo } from './components/YieldDepositingInfo';
 import { YieldEarnInANutshellHighlights } from './components/YieldEarnInANutshellHighlights';
-import { useEarnInANutshellActions } from './hooks/useEarnInANutshellActions';
-import { useEarnInANutshellData } from './hooks/useEarnInANutshellData';
+import { YieldWithdrawingInfo } from './components/YieldWithdrawingInfo';
+import { useEarnInANutshell } from './hooks/useEarnInANutshell';
 
 interface YieldEarnInANutshellModalProps {
+    account: Account;
     onCancel: () => void;
     provider: EarnProvider;
-    accountRef?: EarnAccountRef;
-    yieldId?: string;
-    tokenContractAddress?: string;
+    actionType?: EarnModalAction;
+    yieldContext?: EarnYieldContext;
 }
 
 export const YieldEarnInANutshellModal = ({
+    account,
     onCancel,
     provider,
-    accountRef,
-    yieldId,
-    tokenContractAddress,
+    actionType,
+    yieldContext,
 }: YieldEarnInANutshellModalProps) => {
-    const { handleContinue, onCancelClick } = useEarnInANutshellActions({
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
+
+    const { handleAction, onCancelClick } = useEarnInANutshell({
         flow: EarnFlow.Yield,
         provider,
         onCancel,
-        accountRef,
-        yieldId,
-        tokenContractAddress,
+        account,
+        actionType,
+        yieldContext,
     });
-    const data = useEarnInANutshellData();
+    const { data: vault } = useYieldOpportunity(yieldContext?.id);
 
-    if (!data) return null;
+    if (!isStakingNetworkType(account.networkType)) return null;
 
-    const { account: selectedAccount, displaySymbol, unstakingPeriod } = data;
-
-    if (!selectedAccount || !displaySymbol) return null;
-    if (!isStakingNetworkType(selectedAccount.networkType)) return null;
+    const depositSymbol = vault?.token.symbol ?? '';
+    const vaultSymbol = vault?.outputToken?.symbol;
+    const rewardsSymbols = vault?.rewardRate.components
+        .filter(c => c.yieldSource === 'protocol_incentive')
+        .map(c => c.token.symbol);
+    const yieldApy =
+        vault?.rewardRate?.total != null ? getApyPercent(vault.rewardRate.total) : null;
 
     const processes: EarnInANutshellProcess[] = [
         {
-            heading: <Translation id="TR_EARN_SUPPLYING_PROCESS" />,
-            badge: <Translation id="TR_TX_FEE" />,
-            content: <EarnSupplyingInfo flow={EarnFlow.Yield} />,
+            processType: 'deposit',
+            'data-testid': '@modal/earn-in-a-nutshell/deposit-process',
+            heading: <Translation id="TR_EARN_DEPOSITING_PROCESS" />,
+            badge: <Translation id="TR_TX_FEE_COUNT" values={{ count: 2 }} />,
+            content: (
+                <YieldDepositingInfo
+                    apy={yieldApy}
+                    vault={vault}
+                    networkSymbol={account.symbol}
+                    depositSymbol={depositSymbol}
+                    vaultSymbol={vaultSymbol}
+                />
+            ),
         },
         {
+            processType: 'withdraw',
+            'data-testid': '@modal/earn-in-a-nutshell/withdraw-process',
             heading: <Translation id="TR_EARN_WITHDRAWING_PROCESS" />,
-            badge: <EarnInANutshellWithdrawalBadge networkType={selectedAccount.networkType} />,
-            content: <EarnWithdrawingInfo flow={EarnFlow.Yield} />,
+            badge: <Translation id="TR_TX_FEE_COUNT" values={{ count: 1 }} />,
+            content: <YieldWithdrawingInfo depositSymbol={depositSymbol} />,
         },
+        ...(rewardsSymbols !== undefined && rewardsSymbols.length > 0
+            ? [
+                  {
+                      processType: 'claim' as const,
+                      'data-testid': '@modal/earn-in-a-nutshell/claim-process',
+                      heading: <Translation id="TR_EARN_CLAIMING_PROCESS" />,
+                      badge: <Translation id="TR_TX_FEE_COUNT" values={{ count: 1 }} />,
+                      content: <YieldClaimingInfo rewardsSymbols={rewardsSymbols} />,
+                  },
+              ]
+            : []),
     ];
+
+    const handleProcessToggle = (processType: YieldFlowType, isOpen: boolean) => {
+        if (!isOpen) return;
+
+        analytics.report({
+            type: events.yieldInteractionEvent.name,
+            payload: {
+                element: 'in-a-nutshell-process-tab',
+                value: processType,
+                networkSymbol: account.symbol,
+                vaultId: vault?.id,
+            },
+        });
+    };
+
+    const handleOnAction = () => {
+        analytics.report({
+            type: events.yieldNavigateEvent.name,
+            payload: {
+                action: 'continue',
+                from: 'deposit-in-a-nutshell-modal',
+                to: 'deposit-legal-modal',
+                networkSymbol: account.symbol,
+                vaultId: vault?.id,
+            },
+        });
+
+        handleAction();
+    };
+
+    const handleOnCancel = () => {
+        analytics.report({
+            type: events.yieldNavigateEvent.name,
+            payload: {
+                action: 'cancel',
+                from: 'deposit-in-a-nutshell-modal',
+                to: 'deposit-in-a-nutshell-modal',
+                networkSymbol: account.symbol,
+                vaultId: vault?.id,
+            },
+        });
+
+        onCancelClick();
+    };
 
     return (
         <EarnInANutshellModalLayout
-            heading={<Translation id="TR_EARN_SUPPLYING_IN_A_NUTSHELL" />}
-            onCancel={onCancelClick}
-            onContinue={handleContinue}
+            heading={<Translation id="TR_EARN_DEFI_YIELD_IN_A_NUTSHELL" />}
+            onCancel={handleOnCancel}
+            actionType={actionType}
+            onAction={handleOnAction}
         >
             <YieldEarnInANutshellHighlights
-                networkType={selectedAccount.networkType}
-                displaySymbol={displaySymbol}
-                unstakingPeriod={unstakingPeriod}
+                depositSymbol={depositSymbol}
+                vaultSymbol={vaultSymbol}
+                rewardsSymbols={rewardsSymbols}
             />
             <Divider margin={{ top: 24, bottom: 16 }} />
-            <EarnInANutshellProcesses items={processes} />
+            <EarnInANutshellProcesses items={processes} onItemToggle={handleProcessToggle} />
         </EarnInANutshellModalLayout>
     );
 };

@@ -13,8 +13,9 @@ import {
     useSVG,
 } from '@shopify/react-native-skia';
 
-import { CryptoIconName, cryptoIcons } from '@suite-common/icons';
-import { useNativeStyles } from '@trezor/styles';
+import { type CryptoIconName, cryptoIcons } from '@suite-common/icons';
+import { useActiveColorScheme } from '@suite-native/theme';
+import { useNativeStyles } from '@trezor/styles-native';
 import { paletteV1 } from '@trezor/theme';
 
 import { PizzaIcon, usePizzaAnimation } from './PizzaIcon';
@@ -36,9 +37,10 @@ export const CryptoIconWithPercentage = ({
 }: CryptoIconProps) => {
     const iconSvg = useSVG(cryptoIcons[iconName]);
     const { utils } = useNativeStyles();
+    const colorScheme = useActiveColorScheme();
     // @ts-expect-error: coinsColors uses "NetworkSymbol" type. However, here we use deprecated "CryptoIconName".
     // Not worth fixing it as this package will be removed soon.
-    const percentageColor = utils.coinsColors[iconName] ?? utils.colors.textSubdued;
+    const percentageColor = utils.coinsColors[iconName] ?? utils.colors.contentSecondary;
 
     const path = Skia.Path.Make();
     path.addCircle(CANVAS_SIZE / 2, CANVAS_SIZE / 2, RADIUS);
@@ -63,15 +65,20 @@ export const CryptoIconWithPercentage = ({
     const percentageFill = useDerivedValue(() => mix(animationProgress.value, 0, 0.999));
 
     useEffect(() => {
-        animationProgress.value = withTiming(percentage / 100, {
-            duration: 2000,
-            easing: Easing.ease,
-        });
+        animationProgress.set(
+            withTiming(percentage / 100, {
+                duration: 2000,
+                easing: Easing.ease,
+            }),
+        );
     }, [animationProgress, percentage]);
 
     return (
         <Pressable onPress={handleIconPress}>
-            <Canvas style={{ height: CANVAS_SIZE, width: CANVAS_SIZE }}>
+            {/* key forces the canvas to remount on theme change so Skia picks up the new colors.
+                Without this, the canvas in sometime won't repaint the colors when the
+                animation has already completed and no shared values are actively changing.*/}
+            <Canvas key={colorScheme} style={{ height: CANVAS_SIZE, width: CANVAS_SIZE }}>
                 {/* show pizza instead of BTC icon on pizza day. */}
                 {isPizzaDay && isBitcoin && isPizzaIconSelected ? (
                     <PizzaIcon
@@ -94,7 +101,7 @@ export const CryptoIconWithPercentage = ({
                                 r={RADIUS}
                                 style="stroke"
                                 strokeWidth={6}
-                                color={utils.colors.backgroundSurfaceElevation2}
+                                color={utils.colors.legacyBackgroundSurfaceElevation2}
                             />
                             {/* Helps to brighten up the stroke color in dark mode */}
                             <Path

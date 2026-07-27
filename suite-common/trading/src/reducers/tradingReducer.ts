@@ -1,4 +1,4 @@
-import { PayloadAction } from '@reduxjs/toolkit';
+import { type PayloadAction } from '@reduxjs/toolkit';
 
 import { createSliceWithExtraDeps } from '@suite-common/redux-utils';
 
@@ -8,16 +8,14 @@ import {
     TRADING_EXTENDED_PREFIX,
     TRADING_PREFIX,
     TRADING_SELL_PREFIX,
-    TRADING_SETTINGS_PREFIX,
 } from '../constants';
 import { buyThunks } from '../thunks/buy';
 import { exchangeThunks } from '../thunks/exchange';
 import { sellThunks } from '../thunks/sell';
-import { TradingTransaction } from '../types';
+import { type TradingTransaction } from '../types';
 import { tradingBuyReducer } from './buyReducer';
 import { tradingExchangeReducer } from './exchangeReducer';
 import { tradingSellReducer } from './sellReducer';
-import { tradingSettingsReducer } from './settingsReducer';
 import { initialState, tradingCommonReducer } from './tradingCommonReducer';
 
 type StorageActionPayload = {
@@ -44,16 +42,22 @@ const tradingSlice = createSliceWithExtraDeps({
                 state.buy.isLoading = false;
             })
             .addCase(buyThunks.handleRequestThunk.rejected, state => {
+                state.buy.isLoading = false;
                 state.buy.amountLimits = undefined;
                 state.buy.quotes = [];
                 state.buy.quotesRequest = undefined;
-                state.info.paymentMethods = [];
             })
             .addCase(exchangeThunks.handleRequestThunk.pending, state => {
                 state.exchange.isLoading = true;
             })
             .addCase(exchangeThunks.handleRequestThunk.fulfilled, state => {
                 state.exchange.isLoading = false;
+            })
+            .addCase(exchangeThunks.handleRequestThunk.rejected, state => {
+                state.exchange.isLoading = false;
+                state.exchange.amountLimits = undefined;
+                state.exchange.quotes = [];
+                state.exchange.quotesRequest = undefined;
             })
             .addCase(sellThunks.handleRequestThunk.pending, state => {
                 state.sell.isLoading = true;
@@ -66,7 +70,6 @@ const tradingSlice = createSliceWithExtraDeps({
                 state.sell.quotes = [];
                 state.sell.quotesRequest = undefined;
                 state.sell.isLoading = false;
-                state.info.paymentMethods = [];
             })
             .addCase(sellThunks.handleTradeThunk.pending, state => {
                 state.exchange.isLoading = true;
@@ -80,12 +83,9 @@ const tradingSlice = createSliceWithExtraDeps({
             .addCase(exchangeThunks.confirmTradeThunk.fulfilled, state => {
                 state.exchange.isLoading = false;
             })
-            .addMatcher(
-                action => action.type.startsWith(TRADING_SETTINGS_PREFIX),
-                (state, action) => {
-                    tradingSettingsReducer(state.settings, action);
-                },
-            )
+            .addCase(exchangeThunks.confirmTradeThunk.rejected, state => {
+                state.exchange.isLoading = false;
+            })
             .addMatcher(
                 action => action.type.startsWith(TRADING_BUY_PREFIX),
                 (state, action) => {

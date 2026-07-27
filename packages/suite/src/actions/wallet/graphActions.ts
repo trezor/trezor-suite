@@ -1,16 +1,15 @@
 import { createThunk } from '@suite-common/redux-utils';
 import { selectBaseCurrency, selectIsElectrumBackendSelected } from '@suite-common/wallet-core';
-import { AccountKey, createAccountKey } from '@suite-common/wallet-types';
+import { type AccountKey, createAccountKey } from '@suite-common/wallet-types';
 import { isTrezorConnectBackendType, tryGetAccountIdentity } from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
 
 import { type Dispatch, type GetState } from 'src/types/suite';
 import { type Account } from 'src/types/wallet';
 import {
-    AccountHistoryWithBalance,
+    type AccountHistoryWithBalance,
     type GraphData,
     type GraphRange,
-    type GraphScale,
 } from 'src/types/wallet/graph';
 import {
     enhanceBlockchainAccountHistory,
@@ -25,7 +24,6 @@ import {
     AGGREGATED_GRAPH_START,
     AGGREGATED_GRAPH_SUCCESS,
     SET_SELECTED_RANGE,
-    SET_SELECTED_VIEW,
 } from './constants/graphConstants';
 
 export type GraphAction =
@@ -50,20 +48,11 @@ export type GraphAction =
     | {
           type: typeof SET_SELECTED_RANGE;
           payload: GraphRange;
-      }
-    | {
-          type: typeof SET_SELECTED_VIEW;
-          payload: GraphScale;
       };
 
 export const setSelectedRange = (range: GraphRange): GraphAction => ({
     type: SET_SELECTED_RANGE,
     payload: range,
-});
-
-export const setSelectedView = (view: GraphScale): GraphAction => ({
-    type: SET_SELECTED_VIEW,
-    payload: view,
 });
 
 /**

@@ -3,27 +3,28 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation, useRoute } from '@react-navigation/native';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
-import { cancelDiscoveryThunk } from '@suite-common/wallet-core';
+import {
+    cancelDiscoveryThunk,
+    selectIsCreatingNewPassphraseWallet,
+} from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
-import { events } from '@suite-native/analytics';
+import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { IconButton, ScreenHeaderWrapper } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
     AppTabsRoutes,
-    AuthorizeDeviceStackParamList,
-    AuthorizeDeviceStackRoutes,
+    type AuthorizeDeviceStackParamList,
+    type AuthorizeDeviceStackRoutes,
     HomeStackRoutes,
-    RootStackParamList,
+    type RootStackParamList,
     RootStackRoutes,
-    StackToTabCompositeProps,
+    type StackToTabCompositeProps,
     useInterceptNativeNavigation,
     useNavigateToInitialScreen,
 } from '@suite-native/navigation';
-import { useAnalytics } from '@suite-native/services';
 import TrezorConnect from '@trezor/connect';
-
-import { selectIsCreatingNewPassphraseWallet } from '../passphraseSelectors';
 
 type NavigationProp = StackToTabCompositeProps<
     AuthorizeDeviceStackParamList,
@@ -35,7 +36,7 @@ export const PassphraseScreenHeader = () => {
     const navigation = useNavigation<NavigationProp>();
     const route = useRoute();
     const device = useSelector(selectSelectedDevice);
-    const analytics = useAnalytics();
+    const { analytics } = useServices(selectNativeAnalyticsDep);
     const dispatch = useDispatch();
 
     const { showAlert } = useAlert();
@@ -69,12 +70,12 @@ export const PassphraseScreenHeader = () => {
                 primaryButtonTitle: (
                     <Translation id="modulePassphrase.confirmOnDevice.warningSheet.primaryButton" />
                 ),
-                primaryButtonVariant: 'redBold',
+                primaryButtonColorProps: { intent: 'critical', priority: 'primary' },
                 onPressPrimaryButton: handleClose,
                 secondaryButtonTitle: (
                     <Translation id="modulePassphrase.confirmOnDevice.warningSheet.secondaryButton" />
                 ),
-                secondaryButtonVariant: 'redElevation0',
+                secondaryButtonColorProps: { intent: 'critical', priority: 'secondary' },
             });
         } else {
             TrezorConnect.cancel();
@@ -88,8 +89,9 @@ export const PassphraseScreenHeader = () => {
         <ScreenHeaderWrapper>
             <IconButton
                 iconName="x"
+                intent="neutral"
+                priority="secondary"
                 size="medium"
-                colorScheme="tertiaryElevation0"
                 accessibilityRole="button"
                 accessibilityLabel="close"
                 onPress={handleCancel}

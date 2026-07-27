@@ -1,10 +1,10 @@
-import { EnsureDelegatedIdentityKeyParams } from '@suite-common/delegated-identity-key-types';
+import { type EnsureDelegatedIdentityKeyParams } from '@suite-common/delegated-identity-key-types';
 import { asDelegatedIdentityKey } from '@suite-common/suite-types';
 import { asDeviceUniquePath } from '@trezor/connect';
 import { ok } from '@trezor/type-utils';
 
 import {
-    EnsureDelegatedIdentityKeyDeps,
+    type EnsureDelegatedIdentityKeyDeps,
     createEnsureDelegatedIdentityKey,
 } from '../ensureDelegatedIdentityKey';
 
@@ -22,6 +22,7 @@ const device: EnsureDelegatedIdentityKeyParams['device'] = {
     state: {
         staticSessionId: '1@2:3',
     },
+    connected: true,
 };
 
 describe(createEnsureDelegatedIdentityKey.name, () => {

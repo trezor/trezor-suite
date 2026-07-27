@@ -1,5 +1,5 @@
-import { Branded } from '@trezor/type-utils';
-import { BigNumber } from '@trezor/utils';
+import { type Branded } from '@trezor/type-utils';
+import { type BigNumber } from '@trezor/utils';
 
 /**
  * Value in EUR, USD, ... but also it can be in BTC, currently the global BaseCurrency from the Settings is used.
@@ -7,3 +7,8 @@ import { BigNumber } from '@trezor/utils';
  */
 export type BaseCurrencyAmount = BigNumber & Branded<`base-currency-amount`>;
 export const asBaseCurrencyAmount = (value: BigNumber) => value as BaseCurrencyAmount;
+
+export const areBaseCurrencyAmountsEqual = (
+    a: BaseCurrencyAmount | undefined,
+    b: BaseCurrencyAmount | undefined,
+) => a === b || (a !== undefined && b !== undefined && a.eq(b));

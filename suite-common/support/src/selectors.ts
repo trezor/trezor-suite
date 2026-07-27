@@ -1,16 +1,16 @@
 import {
-    DeviceRootState,
+    type DeviceRootState,
     selectDeviceFirmwareRevision,
     selectDeviceFirmwareVersion,
     selectDeviceInternalModel,
-    selectIsDeviceUsingPassphrase,
+    selectIsDeviceProtectedByPassphrase,
     selectIsPortfolioTrackerDevice,
 } from '@suite-common/device';
 import { createWeakMapSelector } from '@suite-common/redux-utils';
 import { getSuiteVersion } from '@trezor/env-utils';
 import { HELP_CENTER_WHAT_IS_TREZOR_SUITE_URL, withOpenChat, withUtmParams } from '@trezor/urls';
 
-import { SupportChatUtmParams } from './types';
+import { type SupportChatUtmParams } from './types';
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<DeviceRootState>();
 
@@ -19,7 +19,7 @@ export const selectSupportChatUrl = createMemoizedSelector(
         selectDeviceInternalModel,
         selectDeviceFirmwareVersion,
         selectDeviceFirmwareRevision,
-        selectIsDeviceUsingPassphrase,
+        selectIsDeviceProtectedByPassphrase,
         selectIsPortfolioTrackerDevice,
         (_state, isSystemInfoShared) => isSystemInfoShared,
     ],
@@ -27,7 +27,7 @@ export const selectSupportChatUrl = createMemoizedSelector(
         deviceModel,
         firmwareVersion,
         firmwareRevision,
-        isDeviceUsingPassphrase,
+        isDeviceProtectedByPassphrase,
         isPortfolioTrackerDevice,
         isSystemInfoShared,
     ) => {
@@ -49,9 +49,7 @@ export const selectSupportChatUrl = createMemoizedSelector(
             if (firmwareRevision) {
                 deviceUtmParams.utm_rev = firmwareRevision;
             }
-            if (isDeviceUsingPassphrase) {
-                deviceUtmParams.utm_passphrase = isDeviceUsingPassphrase ? 'true' : 'false';
-            }
+            deviceUtmParams.utm_passphrase = isDeviceProtectedByPassphrase ? 'true' : 'false';
         }
 
         return withUtmParams(supportChatUrl, deviceUtmParams);

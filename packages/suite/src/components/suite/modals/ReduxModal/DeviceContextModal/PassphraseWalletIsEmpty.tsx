@@ -1,17 +1,16 @@
 import { Translation } from '@suite/intl';
-import { TrezorDevice } from '@suite-common/suite-types';
+import { closeModal as closeModalAction } from '@suite/modal';
+import { goto } from '@suite/router';
+import { type TrezorDevice } from '@suite-common/suite-types';
 import { selectEnabledNetworks } from '@suite-common/wallet-core';
 import { Button, Card, Column, H3, Paragraph, Row } from '@trezor/components';
-import { CoinLogo } from '@trezor/product-components';
-import { spacings } from '@trezor/theme';
-import { HELP_CENTER_PASSPHRASE_URL } from '@trezor/urls';
+import { PlusIcon } from '@trezor/icons';
+import { TokenIcon } from '@trezor/product-components';
 
-import { onCancel as onCancelModal } from '../../../../../actions/suite/modalActions';
-import { goto } from '../../../../../actions/suite/routerActions';
-import { useNetworkSupport } from '../../../../../hooks/settings/useNetworkSupport';
-import { useDispatch, useSelector } from '../../../../../hooks/suite';
-import { CardWithDevice } from '../../../../../views/suite/SwitchDevice/CardWithDevice';
-import { SwitchDeviceModal } from '../../../../../views/suite/SwitchDevice/SwitchDeviceModal';
+import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
+import { useDispatch, useSelector } from 'src/hooks/suite';
+import { CardWithDevice } from 'src/views/suite/SwitchDevice/CardWithDevice';
+import { SwitchDeviceModal } from 'src/views/suite/SwitchDevice/SwitchDeviceModal';
 
 type PassphraseWalletIsEmptyProps = {
     onRetry: () => void;
@@ -26,7 +25,6 @@ type PassphraseWalletIsEmptyContentProps = {
     onNext: () => void;
     onRetry: () => void;
     onCancel: () => void;
-    'data-testid'?: string;
     accountFailed?: boolean;
 };
 
@@ -34,7 +32,6 @@ const PassphraseWalletIsEmptyContent = ({
     onNext,
     onRetry,
     onCancel,
-    'data-testid': dataTest,
     accountFailed,
 }: PassphraseWalletIsEmptyContentProps) => {
     const { supportedMainnets } = useNetworkSupport();
@@ -46,7 +43,7 @@ const PassphraseWalletIsEmptyContent = ({
     );
 
     return (
-        <Column gap={spacings.sm}>
+        <Column gap={12}>
             <H3>
                 <Translation
                     id={
@@ -56,26 +53,8 @@ const PassphraseWalletIsEmptyContent = ({
                     }
                 />
             </H3>
-            <Card
-                paddingType="small"
-                label={
-                    <Row
-                        justifyContent="space-between"
-                        margin={{ top: spacings.xxxs, bottom: spacings.xxs }}
-                    >
-                        <Translation id="TR_PASSPHRASE_WALLET_CONFIRMATION_STEP1_HINT" />
-                        <Button
-                            size="small"
-                            intent="info"
-                            data-testid={dataTest}
-                            href={HELP_CENTER_PASSPHRASE_URL}
-                        >
-                            <Translation id="TR_PASSPHRASE_WALLET_CONFIRMATION_STEP1_HINT_LINK" />
-                        </Button>
-                    </Row>
-                }
-            >
-                <Column gap={spacings.sm} alignItems="center">
+            <Card paddingType="small">
+                <Column gap={12} alignItems="center">
                     <Paragraph typographyStyle="body-md-strong">
                         <Translation
                             id={
@@ -96,34 +75,34 @@ const PassphraseWalletIsEmptyContent = ({
                 </Column>
             </Card>
             <Card paddingType="small">
-                <Column gap={spacings.xxxs} alignItems="flex-start">
+                <Column gap={2} alignItems="flex-start">
                     <Paragraph typographyStyle="body-md-strong">
                         <Translation id="TR_PASSPHRASE_WALLET_CONFIRMATION_STEP1_OPEN_WITH_FUNDS_DESCRIPTION" />
                     </Paragraph>
                     {!areAllNetworksEnabled && (
-                        <Row gap={spacings.xs} flexWrap="wrap">
+                        <Row gap={8} flexWrap="wrap">
                             <Paragraph
                                 intent="neutral"
                                 priority="secondary"
                                 typographyStyle="body-sm"
                             >
-                                <Translation id="TR_CHECKED_BALANCES_ON" />:
+                                <Translation id="TR_READY_ON" />:
                             </Paragraph>
-                            <Row gap={spacings.xxs} flexWrap="wrap">
+                            <Row gap={4} flexWrap="wrap">
                                 {enabledNetworks.map(network => (
-                                    <CoinLogo key={network} symbol={network} size={16} />
+                                    <TokenIcon key={network} symbol={network} size={16} />
                                 ))}
                             </Row>
                             {onCancel && (
                                 <Button
                                     intent="neutral"
                                     priority="secondary"
-                                    iconLeft="plus"
+                                    iconLeft={PlusIcon}
                                     size="small"
                                     onClick={() => {
                                         onCancel();
-                                        dispatch(onCancelModal());
-                                        dispatch(goto('settings-coins'));
+                                        dispatch(closeModalAction());
+                                        dispatch(goto({ routeName: 'settings-coins' }));
                                     }}
                                 >
                                     <Translation id="TR_ADD" />
@@ -136,7 +115,7 @@ const PassphraseWalletIsEmptyContent = ({
                         intent="neutral"
                         priority="secondary"
                         onClick={onRetry}
-                        margin={{ top: spacings.md }}
+                        margin={{ top: 16 }}
                         data-testid="@passphrase-confirmation/step1-retry-button"
                     >
                         <Translation id="TR_PASSPHRASE_WALLET_CONFIRMATION_STEP1_OPEN_WITH_FUNDS_BUTTON" />

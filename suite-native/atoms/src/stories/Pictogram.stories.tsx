@@ -5,7 +5,7 @@ import { ICON_NAMES } from '@suite-native/icons';
 import {
     PICTOGRAM_VARIANTS,
     Pictogram as PictogramComponent,
-    PictogramProps,
+    type PictogramProps,
 } from '../Pictogram/Pictogram';
 
 type PictogramStory = StoryObj<PictogramProps>;

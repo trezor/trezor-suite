@@ -1,7 +1,8 @@
 import { isDevEnv } from '@suite-common/suite-utils';
 import { TOR_URLS } from '@trezor/urls';
 
-export const onionDomain = TOR_URLS['trezor.io'];
+export const trezorIoOnionDomain = TOR_URLS['trezor.io'];
+export const sldevOnionDomain = TOR_URLS['sldev.cz'];
 
 export const oauthUrls = [
     'https://accounts.google.com',
@@ -30,19 +31,16 @@ export const allowedDomains = [
     'o117836.ingest.sentry.io', // TODO is this needed? Seems that the Sentry SDK bypasses interceptor
     'oauth2.googleapis.com',
     'googleapis.com',
-    onionDomain,
-    'eth-api-b2c-stage.everstake.one', // staking endpoint for Hoodi testnet, works only with VPN
-    'eth-api-b2c.everstake.one', // staking endpoint for Ethereum mainnet
-    'dashboard-api.everstake.one', // staking endpoint for Solana
-    'stake-sync-api.everstake.one', // staking rewards endpoint for Solana
-    'stats.everstake.one', // staking endpoint for Cardano
+    trezorIoOnionDomain,
+    sldevOnionDomain,
+    'earn.trezor.io',
     'verify.walletconnect.org', // WalletConnect
     'horizon.stellar.org', // Stellar Horizon, hosted by SDF
     'horizon-testnet.stellar.org', // Stellar Horizon (testnet), hosted by SDF
     'xrplcluster.com', // XRP Ledger cluster, hosted by XRP Ledger Foundation
     'xrpl.ws', // XRP Ledger cluster, hosted by XRP Ledger Foundation
     's2.ripple.com', // XRP Ledger cluster, hosted by Ripple
-    ...(isDevEnv === true ? allowedDomainsDev : []),
+    ...(isDevEnv ? allowedDomainsDev : []),
 ];
 
 export const silentlyBlockedDomains = [

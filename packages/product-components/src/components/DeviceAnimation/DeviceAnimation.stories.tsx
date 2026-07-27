@@ -1,6 +1,6 @@
-import { Meta, StoryObj } from '@storybook/react';
+import { type Meta, type StoryObj } from '@storybook/react';
 
-import { DeviceModelInternal } from '@trezor/device-utils';
+import { type DeviceModelInternal } from '@trezor/device-utils';
 
 import { DeviceAnimation as DeviceAnimationComponent } from './DeviceAnimation';
 import { DEVICE_ANIMATION_CONFIG } from './deviceAnimationConfig';
@@ -11,8 +11,9 @@ const createDeviceAnimationStory = (
 ): StoryObj<typeof DeviceAnimationComponent> => {
     const animationType = DEVICE_ANIMATION_TYPES[type];
     const config = DEVICE_ANIMATION_CONFIG[animationType];
+    // eslint-disable-next-line no-restricted-syntax -- config.models is a union of per-animation shapes, so typedObjectEntries would collapse keyof to `never`; the cast keeps the model key usable
     const modelEntries = Object.entries(config.models) as [DeviceModelInternal, any][];
-    const [firstModel, firstModelCfg] = modelEntries[0];
+    const [firstModel, firstModelCfg] = modelEntries[0] ?? [];
     const colors: number[] = (firstModelCfg?.colors as number[]) ?? [1];
     const hasSize = (config as { hasSize?: boolean }).hasSize ?? false;
 

@@ -1,4 +1,4 @@
-import { JSX, useCallback, useEffect, useMemo, useState } from 'react';
+import { type JSX, useCallback, useEffect, useMemo, useState } from 'react';
 import { RefreshControl } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -6,27 +6,26 @@ import { FlashList } from '@shopify/flash-list';
 
 import { getTxsPerPage } from '@suite-common/suite-utils';
 import {
-    AccountsRootState,
-    TransactionsRootState,
+    type AccountsRootState,
+    type TransactionsRootState,
     fetchAndUpdateAccountThunk,
     fetchTransactionsPageThunk,
-    selectAccountByKey,
-    selectBaseCurrency,
+    selectAreAllAccountTransactionsLoaded,
     selectIsLoadingAccountTransactions,
     selectIsPageAlreadyFetched,
-    updateMissingTxFiatRatesThunk,
 } from '@suite-common/wallet-core';
-import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
-import { MonthKey, groupTransactionsByDate, isPending } from '@suite-common/wallet-utils';
+import { type Account, type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
+import { type MonthKey, groupTransactionsByDate, isPending } from '@suite-common/wallet-utils';
 import { Box } from '@suite-native/atoms';
 import { useScrollDivider } from '@suite-native/scrollview';
 import {
-    TokensRootState,
-    TypedTokenTransfer,
-    WalletAccountTransaction,
+    type TokensRootState,
+    type TypedTokenTransfer,
+    type WalletAccountTransaction,
+    selectAccountStakeTypeTransactionsWithTokenTransfers,
     selectAccountTransactionsWithTokenTransfers,
 } from '@suite-native/tokens';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { arrayPartition } from '@trezor/utils';
 
 import { TokenTransferListItem } from './TokenTransferListItem';
@@ -34,11 +33,13 @@ import { TransactionListGroupTitle } from './TransactionListGroupTitle';
 import { TransactionListItem } from './TransactionListItem';
 import { TransactionsEmptyState } from './TransactionsEmptyState';
 import { TransactionsListFooter } from './TransactionsListFooter';
+import { useFetchMissingTransactionFiatRates } from '../hooks/useFetchMissingTransactionFiatRates';
 
 type AccountTransactionProps = {
     listHeaderComponent: JSX.Element;
-    accountKey: AccountKey;
+    account: Account;
     tokenContract?: TokenAddress;
+    stakingOnly?: boolean;
 };
 
 type RenderSectionHeaderParams = {
@@ -55,13 +56,12 @@ type RenderTransactionItemParams = {
     isLast: boolean;
 };
 
-type TypedTokenTransferWithTx = TypedTokenTransfer & {
-    originalTransaction: WalletAccountTransaction;
-};
-
 type RenderTokenTransferItemParams = Omit<RenderTransactionItemParams, 'item'> & {
     item: TypedTokenTransferWithTx;
-    txid: string;
+};
+
+type TypedTokenTransferWithTx = TypedTokenTransfer & {
+    originalTransaction: WalletAccountTransaction;
 };
 
 type TransactionListItem =
@@ -70,6 +70,10 @@ type TransactionListItem =
 
 const sectionListContainerStyle = prepareNativeStyle(utils => ({
     paddingTop: utils.spacings.sp8,
+}));
+
+const listFooterStyle = prepareNativeStyle(utils => ({
+    paddingBottom: utils.spacings.sp32,
 }));
 
 const sortKeysPendingFirst = (a: string, b: string) => {
@@ -110,12 +114,10 @@ const renderTokenTransferItem = ({
     isLast,
     isFirst,
     accountKey,
-    txid,
 }: RenderTokenTransferItemParams) => (
     <TokenTransferListItem
         transaction={tokenTransfer.originalTransaction}
         tokenTransfer={tokenTransfer}
-        txid={txid}
         accountKey={accountKey}
         isFirst={isFirst}
         isLast={isLast}
@@ -128,9 +130,11 @@ const renderSectionHeader = ({ section: { monthKey } }: RenderSectionHeaderParam
 
 export const TransactionList = ({
     listHeaderComponent,
-    accountKey,
+    account,
     tokenContract,
+    stakingOnly = false,
 }: AccountTransactionProps) => {
+    const accountKey = account.key;
     const dispatch = useDispatch();
     const [isRefreshing, setIsRefreshing] = useState(false);
 
@@ -139,19 +143,21 @@ export const TransactionList = ({
         utils: { colors },
     } = useNativeStyles();
 
-    const localCurrency = useSelector(selectBaseCurrency);
-    const account = useSelector((state: AccountsRootState) =>
-        selectAccountByKey(state, accountKey),
-    );
     const isLoadingTransactions = useSelector((state: TransactionsRootState) =>
         selectIsLoadingAccountTransactions(state, accountKey),
     );
-
-    const transactions = useSelector((state: TransactionsRootState & TokensRootState) =>
-        selectAccountTransactionsWithTokenTransfers(state, accountKey),
+    const shouldDeferEmptyState = useSelector(
+        (state: TransactionsRootState & AccountsRootState) =>
+            stakingOnly && !selectAreAllAccountTransactionsLoaded(state, accountKey),
     );
 
-    const txnsPerPage = account ? getTxsPerPage(account.networkType) : 25;
+    const transactions = useSelector((state: TransactionsRootState & TokensRootState) =>
+        stakingOnly
+            ? selectAccountStakeTypeTransactionsWithTokenTransfers(state, accountKey)
+            : selectAccountTransactionsWithTokenTransfers(state, accountKey),
+    );
+
+    const txnsPerPage = getTxsPerPage(account.networkType);
 
     const isFirstPageAlreadyFetched = useSelector((state: TransactionsRootState) =>
         selectIsPageAlreadyFetched(state, accountKey, 1, txnsPerPage),
@@ -223,7 +229,7 @@ export const TransactionList = ({
         if (tokenContract) {
             return transactionMonthKeys.flatMap(monthKey => [
                 monthKey,
-                ...accountTransactionsByMonth[monthKey].flatMap(transaction =>
+                ...(accountTransactionsByMonth[monthKey] ?? []).flatMap(transaction =>
                     transaction.tokens
                         .filter(token => token.contract === tokenContract)
                         .map(
@@ -239,15 +245,11 @@ export const TransactionList = ({
 
         return transactionMonthKeys.flatMap(monthKey => [
             monthKey,
-            ...accountTransactionsByMonth[monthKey],
+            ...(accountTransactionsByMonth[monthKey] ?? []),
         ]) as TransactionListItem[];
     }, [transactions, tokenContract]);
 
-    useEffect(() => {
-        if (data.length > 0) {
-            dispatch(updateMissingTxFiatRatesThunk({ localCurrency, accountKey }));
-        }
-    }, [data, dispatch, localCurrency, accountKey]);
+    useFetchMissingTransactionFiatRates({ accountKey, isEnabled: data.length > 0 });
 
     const renderItem = useCallback(
         ({ item, index }: { item: TransactionListItem; index: number }) => {
@@ -255,9 +257,7 @@ export const TransactionList = ({
                 // month with only month name and without token txn
                 const isEmptyMonth = typeof data.at(index + 1) === 'string' || !data.at(index + 1);
 
-                return isEmptyMonth
-                    ? null
-                    : renderSectionHeader({ section: { monthKey: item as MonthKey } });
+                return isEmptyMonth ? null : renderSectionHeader({ section: { monthKey: item } });
             }
 
             const isFirstInSection = typeof data.at(index - 1) === 'string';
@@ -272,7 +272,6 @@ export const TransactionList = ({
                 ? renderTokenTransferItem({
                       item,
                       accountKey,
-                      txid: item.originalTransaction.txid,
                       isFirst: isFirstInSection,
                       isLast: isLastInSection,
                   })
@@ -293,7 +292,11 @@ export const TransactionList = ({
                 data={data}
                 renderItem={renderItem}
                 contentContainerStyle={applyStyle(sectionListContainerStyle)}
-                ListEmptyComponent={<TransactionsEmptyState accountKey={accountKey} />}
+                ListEmptyComponent={
+                    shouldDeferEmptyState ? null : (
+                        <TransactionsEmptyState accountKey={accountKey} />
+                    )
+                }
                 ListHeaderComponent={listHeaderComponent}
                 ListFooterComponent={
                     <TransactionsListFooter
@@ -302,11 +305,12 @@ export const TransactionList = ({
                         onButtonPress={handleOnLoadMore}
                     />
                 }
+                ListFooterComponentStyle={applyStyle(listFooterStyle)}
                 refreshControl={
                     <RefreshControl
                         refreshing={isRefreshing}
                         onRefresh={handleOnRefresh}
-                        colors={[colors.backgroundPrimaryDefault]}
+                        colors={[colors.legacyBackgroundPrimaryDefault]}
                     />
                 }
                 refreshing={isRefreshing}

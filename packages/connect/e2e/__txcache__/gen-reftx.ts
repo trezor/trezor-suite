@@ -1,8 +1,8 @@
 import { bufferUtils } from '@trezor/utils';
 import * as BitcoinJs from '@trezor/utxo-lib';
-import type { TxInput, TxOutput } from '@trezor/utxo-lib/src/transaction/base';
+import type { TxInput, TxOutput } from '@trezor/utxo-lib';
 
-import { RefTransaction } from '../../src';
+import type { RefTransaction } from '../../src';
 
 // Referenced transaction generator script.
 // Transform bitcoin-like transaction data in to format required by tests of signTransaction method.

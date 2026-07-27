@@ -1,18 +1,18 @@
 import { getFiatRatesForTimestamps } from '@suite-common/fiat-services';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol, isNetworkSymbol } from '@suite-common/wallet-config';
 import {
-    CryptoBaseCurrencyPair,
-    RatesByTimestamps,
-    TickerId,
-    TickerResult,
-    Timestamp,
-    TokenAddress,
-    WalletAccountTransaction,
+    type CryptoBaseCurrencyPair,
+    type RatesByTimestamps,
+    type TickerId,
+    type TickerResult,
+    type Timestamp,
+    type TokenAddress,
+    type WalletAccountTransaction,
     asCryptoBaseCurrencyCode,
     asTimestamp,
 } from '@suite-common/wallet-types';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
-import { typedObjectKeys } from '@trezor/utils';
+import { typedObjectKeys, unique } from '@trezor/utils';
 
 const ONE_HOUR_IN_SECONDS = 60 * 60;
 
@@ -37,6 +37,23 @@ export const getFiatRateKeyFromTicker = (
     return getFiatRateKey(symbol, fiatCurrency, tokenAddress);
 };
 
+export function getTickerFromFiatRateKey(fiatRateKey: CryptoBaseCurrencyPair): TickerId | null {
+    const parts = fiatRateKey.split('-');
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const [symbol, tokenAddress]: [string, string] = parts;
+
+    if (!isNetworkSymbol(symbol)) {
+        console.error(`Failed to get ticker from fiat rate key: ${fiatRateKey}`);
+
+        return null;
+    }
+
+    return {
+        symbol,
+        tokenAddress: tokenAddress as TokenAddress,
+    };
+}
+
 export const roundTimestampToNearestPastHour = (timestamp: Timestamp): Timestamp =>
     asTimestamp(Math.floor(timestamp / ONE_HOUR_IN_SECONDS) * ONE_HOUR_IN_SECONDS);
 
@@ -47,17 +64,19 @@ const combineFiatRates = (fiatRates: RatesByTimestamps, accountRates: RatesByTim
     for (const fiatRateKey of typedObjectKeys(accountRates)) {
         if (Object.prototype.hasOwnProperty.call(accountRates, fiatRateKey)) {
             if (!fiatRates[fiatRateKey]) {
+                // @ts-expect-error: indexing with noUncheckedIndexedAccess
                 fiatRates[fiatRateKey] = accountRates[fiatRateKey];
             } else {
-                for (const timestamp of typedObjectKeys(accountRates[fiatRateKey])) {
+                // @ts-expect-error: indexing with noUncheckedIndexedAccess
+                const innerAccountRates: Record<Timestamp, number> = accountRates[fiatRateKey];
+                const innerFiatRates: Record<Timestamp, number> = fiatRates[fiatRateKey];
+                for (const timestamp of typedObjectKeys(innerAccountRates)) {
                     if (
-                        Object.prototype.hasOwnProperty.call(
-                            accountRates[fiatRateKey],
-                            timestamp,
-                        ) &&
-                        !fiatRates[fiatRateKey][timestamp]
+                        Object.prototype.hasOwnProperty.call(innerAccountRates, timestamp) &&
+                        !innerFiatRates[timestamp]
                     ) {
-                        fiatRates[fiatRateKey][timestamp] = accountRates[fiatRateKey][timestamp];
+                        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+                        innerFiatRates[timestamp] = innerAccountRates[timestamp];
                     }
                 }
             }
@@ -72,9 +91,13 @@ export const buildHistoricRatesFromStorage = (storageHistoricRates: RatesByTimes
         for (const fiatRateKey of typedObjectKeys(fiatRates)) {
             if (Object.prototype.hasOwnProperty.call(fiatRates, fiatRateKey)) {
                 if (!historicFiatRates[fiatRateKey]) {
+                    // @ts-expect-error: indexing with noUncheckedIndexedAccess
                     historicFiatRates[fiatRateKey] = fiatRates[fiatRateKey];
                 } else {
-                    combineFiatRates(historicFiatRates[fiatRateKey], fiatRates[fiatRateKey]);
+                    const target: Record<Timestamp, number> = historicFiatRates[fiatRateKey];
+                    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+                    const source: Record<Timestamp, number> = fiatRates[fiatRateKey];
+                    combineFiatRates(target, source);
                 }
             }
         }
@@ -98,11 +121,15 @@ export const selectHistoricRatesByTransactions = (
                 fiatRateKey.startsWith(symbol) ||
                 tokens.some(token => fiatRateKey.startsWith(`[${symbol}-${token.contract}]`))
             ) {
-                if (historicRates[fiatRateKey][timestamp]) {
+                // @ts-expect-error: indexing with noUncheckedIndexedAccess
+                const historicRatesForKey: Record<Timestamp, number> = historicRates[fiatRateKey];
+                if (historicRatesForKey[timestamp]) {
                     if (!selectedRates[fiatRateKey]) {
                         selectedRates[fiatRateKey] = {};
                     }
-                    selectedRates[fiatRateKey][timestamp] = historicRates[fiatRateKey][timestamp];
+                    const selectedRatesForKey: Record<Timestamp, number> =
+                        selectedRates[fiatRateKey];
+                    selectedRatesForKey[timestamp] = historicRatesForKey[timestamp];
                 }
             }
         });
@@ -119,7 +146,7 @@ export const fetchTransactionsRates = async (
     rates: TickerResult[],
 ) => {
     const roundedTimestamps = roundTimestampsToNearestPastHour(timestamps);
-    const uniqueTimestamps = [...new Set(roundedTimestamps)];
+    const uniqueTimestamps = unique(roundedTimestamps);
 
     try {
         const results = await getFiatRatesForTimestamps(
@@ -133,10 +160,15 @@ export const fetchTransactionsRates = async (
             rates.push({
                 tickerId,
                 localCurrency,
-                rates: results.tickers.map((ticker, index) => ({
-                    rate: ticker?.rates[localCurrency],
-                    lastTickerTimestamp: uniqueTimestamps[index],
-                })),
+                rates: results.tickers.map((ticker, index) => {
+                    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+                    const lastTickerTimestamp: Timestamp = uniqueTimestamps[index];
+
+                    return {
+                        rate: ticker?.rates[localCurrency],
+                        lastTickerTimestamp,
+                    };
+                }),
             });
         }
     } catch (error) {

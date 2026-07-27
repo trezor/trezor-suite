@@ -1,7 +1,7 @@
 import type { MessagesSchema as PROTO } from '@trezor/protobuf';
 import type { VersionArray } from '@trezor/utils/src/versionUtils';
 
-import { DeviceModelInternal } from './deviceModelInternal';
+import { type DeviceModelInternal } from './deviceModelInternal';
 
 export type FirmwareVersionString = `${number}.${number}.${number}`;
 
@@ -96,6 +96,7 @@ export type FirmwareRelease = {
     min_bootloader_version: VersionArray;
     translations: Record<string, string>;
     firmware_revision?: string;
+    bootloader_hash?: string;
     fingerprint: string;
     changelog?: string;
 };

@@ -1,11 +1,11 @@
+import type { ConnectSettings, DeviceUniquePath } from '@trezor/connect-common';
 import { DeviceModelInternal } from '@trezor/device-utils';
-import type { FirmwareHash } from '@trezor/protobuf/src/messages';
-import type { Descriptor } from '@trezor/transport';
+import type { FirmwareHash } from '@trezor/protobuf/src/definitions';
+import type { Descriptor } from '@trezor/transport-common';
 import { Log } from '@trezor/utils';
 
-import { DataManager } from '../../data/DataManager';
 import { getReleaseByVersion } from '../../data/firmwareInfo';
-import type { ConnectSettings, DeviceUniquePath } from '../../types';
+import * as settingsStore from '../../data/settingsStore';
 import { Device } from '../Device';
 import type { TypedCallProvider } from '../DeviceCurrentSession';
 import { checkFirmwareHash } from '../workflow/checkFirmwareHash';
@@ -20,6 +20,7 @@ const getMockedDevice = (typedCallMock?: TypedCallProvider['typedCall']): Device
         id: 'mock-device-id' as DeviceUniquePath,
         transport,
         descriptor: {} as Descriptor,
+        createLogger: () => logger,
     });
 
     device.getCurrentSession = () => ({ typedCall: typedCallMock }) as TypedCallProvider;
@@ -35,7 +36,7 @@ const getMockedDevice = (typedCallMock?: TypedCallProvider['typedCall']): Device
     return device;
 };
 
-jest.mock('../../api/firmware', () => ({
+jest.mock('../../api/firmware/getBinary', () => ({
     getBinaryOptional: jest.fn(() =>
         Promise.resolve({
             binary: new ArrayBuffer(1024),
@@ -43,7 +44,13 @@ jest.mock('../../api/firmware', () => ({
             releaseVersion: [1, 13, 1],
         }),
     ),
+}));
+
+jest.mock('../../api/firmware/modifyFirmware', () => ({
     stripFwHeaders: jest.fn((b: any) => b),
+}));
+
+jest.mock('../../api/firmware/calculateFirmwareHash', () => ({
     calculateFirmwareHash: jest.fn(() => ({ hash: 'expected-hash', challenge: 'challenge' })),
 }));
 
@@ -57,12 +64,11 @@ jest.mock('../../data/firmwareInfo', () => ({
     ]),
 }));
 
-// @ts-expect-error setting a private property
-DataManager.settings = {
+settingsStore.set({
     binFilesBaseUrl: 'https://example.com',
     enableFirmwareHashCheck: true,
     firmwareHashCheckTimeouts: { T1B1: 1000 },
-} as ConnectSettings;
+} as ConnectSettings);
 
 describe(checkFirmwareHash.name, () => {
     afterEach(() => jest.clearAllMocks());

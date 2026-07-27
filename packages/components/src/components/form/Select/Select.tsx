@@ -1,19 +1,19 @@
-import { ReactNode, useCallback, useMemo, useRef } from 'react';
+import { type ReactNode, useCallback, useId, useMemo, useRef } from 'react';
 import ReactSelect, {
-    ControlProps,
-    OptionProps,
-    Props as ReactSelectProps,
-    SelectInstance,
-    ValueContainerProps,
+    type ControlProps,
+    type OptionProps,
+    type Props as ReactSelectProps,
+    type SelectInstance,
+    type ValueContainerProps,
 } from 'react-select';
 
 import {
     FormCell,
-    FormCellProps,
+    type FormCellProps,
     allowedFormCellFrameProps,
     pickFormCellProps,
 } from '../FormCell/FormCell';
-import { InputSize } from '../types';
+import { type InputSize } from '../types';
 import {
     Control,
     DropdownIndicator,
@@ -28,14 +28,21 @@ import {
     SingleValue,
     ValueContainer,
 } from './customComponents';
-import { Option as OptionType } from './types';
+import { type Option as OptionType } from './types';
 import { createSharedMenuStyles } from './utils';
-import { FrameProps } from '../../../utils/frameProps';
+import { type FrameProps } from '../../../utils/frameProps';
 
 export const allowedSelectFrameProps = allowedFormCellFrameProps;
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedSelectFrameProps)[number]>;
 
 export type { Option } from './types';
+export { Option as SelectOption } from './customComponents';
+
+// This intentionally exposes only the capability used by consumers instead of deriving it from
+// react-select's generic SelectInstance, which would leak that implementation type into our public API.
+export type SelectRef = {
+    clearValue: () => void;
+};
 
 export type SelectProps = AllowedFrameProps &
     Omit<FormCellProps, 'children'> &
@@ -46,9 +53,11 @@ export type SelectProps = AllowedFrameProps &
         isClean?: boolean;
         isMenuOpen?: boolean;
         isLoading?: boolean;
-        onChange?: (value: OptionType, ref?: SelectInstance<OptionType, boolean> | null) => void;
+        onChange?: (value: OptionType, ref?: SelectRef | null) => void;
         'data-testid'?: string;
         openMenuOnFocus?: boolean;
+        /** When using menuPortalTarget (e.g. in modals), set this so the menu appears above the modal */
+        menuPortalZIndex?: number;
     };
 
 export const Select = ({
@@ -62,11 +71,13 @@ export const Select = ({
     placeholder,
     isLoading = false,
     openMenuOnFocus = true,
+    menuPortalZIndex,
     components,
     'data-testid': dataTest,
     ...rest
 }: SelectProps) => {
     const selectRef = useRef<SelectInstance<OptionType, boolean>>(null);
+    const autoInstanceId = useId();
 
     const formCellProps = pickFormCellProps(rest);
     const { isDisabled, hasError } = formCellProps;
@@ -80,6 +91,11 @@ export const Select = ({
             return props;
         },
         {} as Omit<ReactSelectProps<OptionType>, 'onChange' | 'menuIsOpen' | 'styles'>,
+    );
+
+    const menuStyles = useMemo(
+        () => createSharedMenuStyles<OptionType>(menuPortalZIndex),
+        [menuPortalZIndex],
     );
 
     const closeMenuOnScroll = (e: Event) => {
@@ -152,8 +168,9 @@ export const Select = ({
                 menuPlacement="auto"
                 placeholder={placeholder ?? ''}
                 unstyled
-                styles={createSharedMenuStyles<OptionType>()}
+                styles={menuStyles}
                 components={memoizedComponents}
+                instanceId={autoInstanceId}
                 {...reactSelectProps}
             />
         </FormCell>

@@ -1,4 +1,4 @@
-export default {
+const telemetryGet: TestCase = {
     method: 'telemetryGet',
     setup: {
         mnemonic: 'mnemonic_12',
@@ -15,10 +15,12 @@ export default {
             },
             legacyResults: [
                 {
-                    rules: ['<2.10.1', '1'],
+                    rules: ['<2.11.0', '*T3W1'],
                     success: false,
                 },
             ],
         },
     ],
-} satisfies TestCase;
+};
+
+export default telemetryGet;

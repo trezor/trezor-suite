@@ -1,25 +1,43 @@
+import {
+    BackupFailed,
+    BackupRecoverySeed,
+    CreateWalletBackup,
+    MultiShareBackup,
+} from '@suite/backup';
+import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
-import { selectIsDeviceConnectedViaBluetooth } from '@suite-common/device';
+import { ContextMessage } from '@suite/message-system';
+import { isRecoveryInProgress } from '@suite/recovery';
+import { selectIsDeviceAuthenticityCheckSupported } from '@suite-common/device';
 import { Context } from '@suite-common/message-system';
-import { SUPPORTS_DEVICE_AUTHENTICITY_CHECK } from '@suite-common/suite-constants';
-import { isDeviceRemembered } from '@suite-common/suite-utils';
+import { getIsDeviceRemembered } from '@suite-common/suite-utils';
+import { Banner } from '@trezor/components';
 import { isBitcoinOnlyDevice } from '@trezor/device-utils';
+import {
+    GhostIcon,
+    NewspaperIcon,
+    PaletteIcon,
+    PasswordIcon,
+    PlugsIcon,
+    PuzzlePieceIcon,
+    ShieldCheckIcon,
+    ShieldWarningIcon,
+    TrezorLogoIcon,
+} from '@trezor/icons';
+import { SettingsSection } from '@trezor/product-components';
+import { breakpoints } from '@trezor/theme';
 
+import { setConnectionModal } from 'src/actions/device/deviceSlice';
 import { DeviceBanner } from 'src/components/settings/DeviceBanner';
 import { SettingsLayout } from 'src/components/settings/SettingsLayout';
-import { SettingsSection } from 'src/components/settings/SettingsSection';
-import { ContextMessage } from 'src/components/wallet/WalletLayout/AccountBanners/ContextMessage';
-import { useDevice, useSelector } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectHasActiveTransport } from 'src/selectors/suite/suiteSelectors';
+import { useIsContentBelowBreakpoint } from 'src/support/suite/ContentFlex';
 import type { TrezorDevice } from 'src/types/suite';
 import { getHowToGetFromBootloaderInstructionsMap } from 'src/utils/device/bootloader';
-import { isRecoveryInProgress } from 'src/utils/device/isRecoveryInProgress';
 
 import { AuthenticateDevice } from './AuthenticateDevice';
 import { AutoLock } from './AutoLock';
-import { BackupFailed } from './BackupFailed';
-import { BackupRecoverySeed } from './BackupRecoverySeed';
-import { BluetoothEraseBonds } from './BluetoothEraseBonds';
 import { Brightness } from './Brightness';
 import { ChangeLanguage } from './ChangeLanguage';
 import { ChangePin } from './ChangePin';
@@ -34,7 +52,10 @@ import { FirmwareVersion } from './FirmwareVersion';
 import { ForgetDevice } from './ForgetDevice';
 import { HapticFeedback } from './HapticFeedback';
 import { Homescreen } from './Homescreen';
-import { MultiShareBackup } from './MultiShareBackup';
+import {
+    NoDeviceEshopSettingsBanner,
+    selectShouldShowNoDeviceEshopSettingsBanner,
+} from './NoDeviceEshopSettingsBanner';
 import { Passphrase } from './Passphrase';
 import { PinProtection } from './PinProtection';
 import { SafetyChecks } from './SafetyChecks';
@@ -53,6 +74,9 @@ const deviceSettingsUnavailable = (device?: TrezorDevice) => {
 };
 
 export const SettingsDevice = () => {
+    const dispatch = useDispatch();
+    const hasContentBelowTabletWidth = useIsContentBelowBreakpoint(breakpoints.tablet);
+    const hasContentBelowLaptopWidth = useIsContentBelowBreakpoint(breakpoints.laptop);
     const { device, isLocked } = useDevice();
     const noTransportAvailable = !useSelector(selectHasActiveTransport);
     const deviceUnavailable = !device?.features;
@@ -60,9 +84,10 @@ export const SettingsDevice = () => {
     const bootloaderMode = device?.mode === 'bootloader';
     const initializeMode = device?.mode === 'initialize';
     const isNormalMode = !bootloaderMode && !initializeMode;
-    const deviceRemembered = isDeviceRemembered(device) && !device?.connected;
-    const isDeviceConnectedViaBluetooth = useSelector(selectIsDeviceConnectedViaBluetooth);
+    const deviceRemembered = getIsDeviceRemembered(device) && !device?.connected;
     const bitcoinOnlyDevice = isBitcoinOnlyDevice(device);
+    const shouldShowNoDeviceEshopBanner = useSelector(selectShouldShowNoDeviceEshopSettingsBanner);
+    const supportsDeviceAuthentication = useSelector(selectIsDeviceAuthenticityCheckSupported);
 
     if (noTransportAvailable || deviceSettingsUnavailable(device)) {
         return (
@@ -81,8 +106,27 @@ export const SettingsDevice = () => {
         return (
             <SettingsLayout>
                 <DeviceBanner
+                    intent="info"
                     title={<Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_DISCONNECTED" />}
+                    description={
+                        <Translation id="TR_SETTINGS_DEVICE_BANNER_DESCRIPTION_DISCONNECTED" />
+                    }
+                    rightContent={
+                        <Banner.Button onClick={() => dispatch(setConnectionModal(true))}>
+                            <Translation id="TR_CONNECT" />
+                        </Banner.Button>
+                    }
                 />
+                {shouldShowNoDeviceEshopBanner && (
+                    <SettingsSection
+                        title={<Translation id="TR_TREZOR_WALLET" />}
+                        hasContainer={false}
+                        icon={TrezorLogoIcon}
+                        hasVerticalLayout={hasContentBelowLaptopWidth}
+                    >
+                        <NoDeviceEshopSettingsBanner />
+                    </SettingsSection>
+                )}
             </SettingsLayout>
         );
     }
@@ -95,7 +139,6 @@ export const SettingsDevice = () => {
 
     const deviceModelInternal = device.features.internal_model;
 
-    const supportsDeviceAuthentication = SUPPORTS_DEVICE_AUTHENTICITY_CHECK[deviceModelInternal];
     // because Device authenticity check is something you can (and have to) do on a device with FW but without seed
     const isSecuritySectionVisible =
         isNormalMode || (initializeMode && supportsDeviceAuthentication);
@@ -126,7 +169,11 @@ export const SettingsDevice = () => {
             )}
 
             {isNormalMode && (
-                <SettingsSection title={<Translation id="TR_BACKUP" />} icon="newspaper">
+                <SettingsSection
+                    hasVerticalLayout={hasContentBelowTabletWidth}
+                    title={<Translation id="TR_BACKUP" />}
+                    icon={NewspaperIcon}
+                >
                     {unfinishedBackup ? (
                         <BackupFailed />
                     ) : (
@@ -134,16 +181,25 @@ export const SettingsDevice = () => {
                             <BackupRecoverySeed isDeviceLocked={isDeviceLocked} />
                             <MultiShareBackup isDeviceLocked={isDeviceLocked} />
                             <CheckRecoverySeed isDeviceLocked={isDeviceLocked} />
+                            <CreateWalletBackup isDeviceLocked={isDeviceLocked} />
                         </>
                     )}
                 </SettingsSection>
             )}
 
-            <SettingsSection title={<Translation id="TR_PASSPHRASE" />} icon="password">
+            <SettingsSection
+                hasVerticalLayout={hasContentBelowTabletWidth}
+                title={<Translation id="TR_PASSPHRASE" />}
+                icon={PasswordIcon}
+            >
                 <Passphrase isDeviceLocked={isDeviceLocked} />
             </SettingsSection>
 
-            <SettingsSection title={<Translation id="TR_FIRMWARE" />} icon="puzzlePiece">
+            <SettingsSection
+                hasVerticalLayout={hasContentBelowTabletWidth}
+                title={<Translation id="TR_FIRMWARE" />}
+                icon={PuzzlePieceIcon}
+            >
                 <FirmwareVersion isDeviceLocked={isDeviceLocked} />
                 {(!bootloaderMode || bitcoinOnlyDevice) && (
                     <FirmwareTypeChange isDeviceLocked={isDeviceLocked} />
@@ -152,7 +208,11 @@ export const SettingsDevice = () => {
             </SettingsSection>
 
             {isSecuritySectionVisible && (
-                <SettingsSection title={<Translation id="TR_DEVICE_SECURITY" />} icon="shieldCheck">
+                <SettingsSection
+                    hasVerticalLayout={hasContentBelowTabletWidth}
+                    title={<Translation id="TR_DEVICE_SECURITY" />}
+                    icon={ShieldCheckIcon}
+                >
                     {isNormalMode && (
                         <>
                             <PinProtection isDeviceLocked={isDeviceLocked} />
@@ -167,7 +227,11 @@ export const SettingsDevice = () => {
             )}
 
             {isNormalMode && (
-                <SettingsSection title={<Translation id="TR_PERSONALIZATION" />} icon="palette">
+                <SettingsSection
+                    hasVerticalLayout={hasContentBelowTabletWidth}
+                    title={<Translation id="TR_PERSONALIZATION" />}
+                    icon={PaletteIcon}
+                >
                     <DeviceLabel isDeviceLocked={isDeviceLocked} />
                     <Homescreen isDeviceLocked={isDeviceLocked} />
                     <DisplayRotation isDeviceLocked={isDeviceLocked} />
@@ -177,20 +241,34 @@ export const SettingsDevice = () => {
                 </SettingsSection>
             )}
 
-            <SettingsSection title={<Translation id="TR_DEVICE_CONNECTION" />} icon="plugs">
+            <SettingsSection
+                hasVerticalLayout={hasContentBelowTabletWidth}
+                title={<Translation id="TR_DEVICE_CONNECTION" />}
+                icon={PlugsIcon}
+            >
                 {isThpDevice && <ThpAutoconnect isDeviceLocked={isDeviceLocked} />}
-                {isDeviceConnectedViaBluetooth && (
-                    <BluetoothEraseBonds isDeviceLocked={isDeviceLocked} />
-                )}
                 <ForgetDevice />
             </SettingsSection>
 
-            <SettingsSection title={<Translation id="TR_ADVANCED" />} icon="ghost">
+            <SettingsSection
+                hasVerticalLayout={hasContentBelowTabletWidth}
+                title={<Translation id="TR_SETTINGS_ADVANCED" />}
+                icon={ShieldWarningIcon}
+            >
+                <DeviceAuthenticityOptOut
+                    isDeviceAuthenticityCheckSupported={supportsDeviceAuthentication}
+                />
+                <FirmwareAuthenticityChecks />
+            </SettingsSection>
+
+            <SettingsSection
+                hasVerticalLayout={hasContentBelowTabletWidth}
+                title={<Translation id="TR_ADVANCED" />}
+                icon={GhostIcon}
+            >
                 <WipeDevice isDeviceLocked={isDeviceLocked} />
                 {isNormalMode && <WipeCode isDeviceLocked={isDeviceLocked} />}
                 <CustomFirmware />
-                {supportsDeviceAuthentication && <DeviceAuthenticityOptOut />}
-                <FirmwareAuthenticityChecks />
             </SettingsSection>
         </SettingsLayout>
     );

@@ -8,7 +8,8 @@ type Attributes = {
 export const settingsGeneralLabelingEvent: EventDef<Attributes, EventType.SettingsGeneralLabeling> =
     {
         name: EventType.SettingsGeneralLabeling,
-        descriptionTrigger: 'Toggle labeling in application settings',
+        descriptionTrigger:
+            'User changes the labeling method in Settings > General > Labeling (off, legacy, or Suite Sync)',
         changelog: [
             { version: '1.21.0', notes: 'added' },
             { version: '25.11.1', notes: 'updated' },

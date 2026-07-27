@@ -2,9 +2,9 @@ import { useMemo } from 'react';
 
 import { useAtom } from 'jotai';
 
-import { AccountKey } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { isSameUtxo } from '@suite-common/wallet-utils';
-import { Utxo } from '@trezor/blockchain-link-types';
+import { type Utxo } from '@trezor/blockchain-link-types';
 import { BigNumber } from '@trezor/utils';
 
 import { selectedUtxosAtom } from '../atoms/coinControlAtoms';

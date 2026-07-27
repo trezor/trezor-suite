@@ -1,15 +1,15 @@
 import { arrayPartition } from '@trezor/utils';
-import { Network, address as addressBjs } from '@trezor/utxo-lib';
+import { type Network, address as addressBjs } from '@trezor/utxo-lib';
 
-import type { CoinjoinClient } from './CoinjoinClient';
 import * as middleware from './middleware';
-import { EnhancedVinVout, Transaction } from '../types/backend';
-import { AnalyzeExternalVinVout, AnalyzeInternalVinVout } from '../types/middleware';
+import { type EnhancedVinVout, type Transaction } from '../types/backend';
+import { type Logger } from '../types/logger';
+import { type AnalyzeExternalVinVout, type AnalyzeInternalVinVout } from '../types/middleware';
 
 interface AnalyzeTransactionsOptions {
     network: Network;
     middlewareUrl: string;
-    logger: CoinjoinClient['logger'];
+    logger: Logger;
     signal: AbortSignal;
 }
 
@@ -21,24 +21,26 @@ export interface AnalyzeTransactionsResult {
 const transformVinVout = (vinvout: EnhancedVinVout, network: Network) => {
     if (!vinvout.isAddress || !vinvout.addresses || vinvout.addresses.length > 1) return [];
 
-    const Address = vinvout.addresses[0];
+    const { addresses } = vinvout;
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const Address: string = addresses[0];
     const Value = Number(vinvout.value);
 
-    if (vinvout.isAccountOwned) return { Address, Value } as AnalyzeInternalVinVout;
+    if (vinvout.isAccountOwned) return { Address, Value };
 
     const ScriptPubKey = addressBjs.toOutputScript(Address, network).toString('hex');
 
     return {
         ScriptPubKey,
         Value,
-    } as AnalyzeExternalVinVout;
+    };
 };
 
 const isInternal = (
     vinvout: AnalyzeInternalVinVout | AnalyzeExternalVinVout,
 ): vinvout is AnalyzeInternalVinVout => 'Address' in vinvout;
 
-export const getRawLiquidityClue = (
+const getRawLiquidityClue = (
     transactions: Transaction[],
     options: AnalyzeTransactionsOptions,
 ): Promise<middleware.RawLiquidityClue> => {

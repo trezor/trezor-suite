@@ -1,15 +1,20 @@
-import { AccountKey, asAccountDescriptor } from '@suite-common/wallet-types';
+import { asAccountDescriptor } from '@suite-common/wallet-types';
+import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 
-import { Account } from 'src/types/wallet';
+import { type Account } from 'src/types/wallet';
 
 export const BTC_ACCOUNT: Account = {
     networkType: 'bitcoin',
     symbol: 'btc',
-    descriptor: asAccountDescriptor('btc-descriptor'),
+    descriptor: asAccountDescriptor('btcDescriptor'),
     deviceState: '1stTestnetAddress@device_id:0',
     index: 0,
     path: "m/84'/0'/0'",
-    key: 'descriptor-btc-1stTestnetAddress@device_id:0' as AccountKey, // Todo: create properly via `createAccountKey()`,
+    key: mockAccountKey({
+        descriptor: 'btcDescriptor',
+        symbol: 'btc',
+        deviceStaticSessionId: '1stTestnetAddress@device_id:0',
+    }),
     accountType: 'normal',
     empty: true,
     visible: true,
@@ -47,7 +52,6 @@ export const BTC_ACCOUNT: Account = {
     misc: undefined,
     marker: undefined,
     stellarCursor: undefined,
-    ts: 0,
 };
 
 export const ETH_ACCOUNT: Account = {
@@ -55,7 +59,11 @@ export const ETH_ACCOUNT: Account = {
     networkType: 'ethereum',
     descriptor: asAccountDescriptor('0xdB09b793984B862C430b64B9ed53AcF867cC041F'),
     deviceState: '1stTestnetAddress@device_id:0',
-    key: '0xdB09b793984B862C430b64B9ed53AcF867cC041F-eth-deviceState' as AccountKey, // Todo: create properly via `createAccountKey()`
+    key: mockAccountKey({
+        descriptor: '0xdB09b793984B862C430b64B9ed53AcF867cC041F',
+        symbol: 'eth',
+        deviceStaticSessionId: '1stTestnetAddress@device_id:0',
+    }),
     accountType: 'normal',
     index: 0,
     path: "m/44'/60'/0'/0/0",
@@ -86,7 +94,6 @@ export const ETH_ACCOUNT: Account = {
     misc: { nonce: '1' },
     marker: undefined,
     stellarCursor: undefined,
-    ts: 0,
 };
 
 export const XRP_ACCOUNT: Account = {
@@ -94,7 +101,11 @@ export const XRP_ACCOUNT: Account = {
     networkType: 'ripple',
     descriptor: asAccountDescriptor('rAPERVgXZavGgiGv6xBgtiZurirW2yAmY'),
     deviceState: '1stTestnetAddress@device_id:0',
-    key: 'rAPERVgXZavGgiGv6xBgtiZurirW2yAmY-xrp-deviceState' as AccountKey, // Todo: create properly via `createAccountKey()`
+    key: mockAccountKey({
+        descriptor: 'rAPERVgXZavGgiGv6xBgtiZurirW2yAmY',
+        symbol: 'xrp',
+        deviceStaticSessionId: '1stTestnetAddress@device_id:0',
+    }),
     availableBalance: '100000000000',
     accountType: 'normal',
     index: 0,
@@ -128,5 +139,4 @@ export const XRP_ACCOUNT: Account = {
     },
     marker: undefined,
     stellarCursor: undefined,
-    ts: 0,
 };

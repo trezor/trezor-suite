@@ -1,8 +1,9 @@
+import type { CoreCallMessage } from '@trezor/connect-common';
 import { TypedError } from '@trezor/connect-common/src/constants/errors';
+import type { ModuleName } from '@trezor/connect-common/src/constants/network';
+import { MODULES } from '@trezor/connect-common/src/constants/network';
 
 import * as Methods from '../api';
-import { MODULES, ModuleName } from '../constants/network';
-import type { CoreCallMessage } from '../events';
 
 const moduleMethods = {
     cardano: require('../api/cardano/api'),
@@ -30,7 +31,7 @@ export const getMethod = async (message: CoreCallMessage) => {
     const MethodConstructor = methods[method];
 
     if (MethodConstructor) {
-        return new MethodConstructor(message as any);
+        return new MethodConstructor(message);
     }
 
     throw TypedError('Method_InvalidParameter', `Method ${method} not found`);

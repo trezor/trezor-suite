@@ -1,11 +1,12 @@
-import { useSelector } from 'react-redux';
-
-import { TradingTradeMapProps, TradingTradeType, TradingType } from '@suite-common/trading';
-import { FeatureFlag, selectIsFeatureFlagEnabled } from '@suite-native/feature-flags';
+import {
+    type TradingTradeMapProps,
+    type TradingTradeType,
+    type TradingType,
+} from '@suite-common/trading';
+import { type BottomSheetFlashListHandleProps } from '@suite-native/atoms';
 import { BottomSheetSectionList } from '@suite-native/trading-atoms';
-import { TradingWithFeatureFlagsRootState } from '@suite-native/trading-state';
-import { QuotesByCategories, QuotesCategory } from '@suite-native/trading-types';
-import { prepareNativeStyle } from '@trezor/styles';
+import { type QuotesByCategories, type QuotesCategory } from '@suite-native/trading-types';
+import { prepareNativeStyle } from '@trezor/styles-native';
 
 import { useProviderFilters } from '../../../hooks/general/useProviderFilters';
 import { LegalGatewayContextMessage } from '../LegalGatewayContextMessage';
@@ -38,37 +39,33 @@ export const ProviderSheet = <
     selectedQuote,
     tradingType,
 }: ProviderSheetProps<K, T>) => {
-    const areTradingExchangeDexesEnabled = useSelector((state: TradingWithFeatureFlagsRootState) =>
-        selectIsFeatureFlagEnabled(state, FeatureFlag.AreTradingExchangeDexesEnabled),
-    );
-    const shouldShowFilters = tradingType === 'exchange' && areTradingExchangeDexesEnabled;
+    const shouldShowFilters = tradingType === 'exchange';
+    const shouldShowExchangeType = tradingType === 'exchange';
 
     const { filterItems, filteredSections, selectedFilter, setSelectedFilter } = useProviderFilters(
         quotes,
         shouldShowFilters,
-        areTradingExchangeDexesEnabled,
     );
-
-    const onQuoteSelectCallback = (quote: T) => {
-        onQuoteSelect(quote);
-        onClose();
-    };
 
     return (
         <BottomSheetSectionList<T, QuotesCategory>
             isVisible={isVisible}
             onClose={onClose}
-            renderItem={item => (
+            renderItem={(item, _config, { closeSheet }) => (
                 <ProviderListItem
-                    onPress={onQuoteSelectCallback}
+                    onPress={quote => {
+                        onQuoteSelect(quote);
+                        closeSheet();
+                    }}
                     isSelected={item.orderId === selectedQuote?.orderId}
                     quote={item}
+                    shouldShowExchangeType={shouldShowExchangeType}
                     tradingType={tradingType}
                 />
             )}
-            handleComponent={() => (
+            handleComponent={({ closeSheet }: BottomSheetFlashListHandleProps) => (
                 <ProviderSheetHandle
-                    onClose={onClose}
+                    onClose={closeSheet}
                     shouldShowFilters={shouldShowFilters}
                     filterItems={filterItems}
                     selectedFilter={selectedFilter}

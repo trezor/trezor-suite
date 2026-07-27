@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
 
 import { Translation } from '@suite/intl';
+import { goto } from '@suite/router';
 import { Column, Icon, Row, SubTabs } from '@trezor/components';
-import { isDesktop } from '@trezor/env-utils';
-import { spacings } from '@trezor/theme';
+import { TrezorLogoIcon, WalletConnectIcon } from '@trezor/icons';
 
-import { goto } from 'src/actions/suite/routerActions';
+import { SettingsLayout } from 'src/components/settings/SettingsLayout';
 import { useDispatch } from 'src/hooks/suite';
 
 import { ConnectPermissions } from './ConnectPermissions';
@@ -18,48 +18,50 @@ export const SettingsConnectedApps = () => {
     const tabs = [
         {
             id: 'walletconnect',
-            icon: 'walletConnect' as const,
+            icon: WalletConnectIcon,
             title: <Translation id="TR_WALLETCONNECT" />,
             component: <WalletConnectList />,
             isEnabled: true,
         },
         {
             id: 'trezor-connect',
-            icon: 'trezorLogo' as const,
+            icon: TrezorLogoIcon,
             title: <Translation id="TR_TREZOR_CONNECT" />,
             component: <ConnectPermissions />,
-            isEnabled: isDesktop(),
+            isEnabled: true,
         },
     ].filter(tab => tab.isEnabled);
-    const [activeItemdId, setActiveItemId] = useState(tabs[0]?.id ?? 0);
+    const [activeItemdId, setActiveItemId] = useState(tabs[0]?.id);
 
     useEffect(() => {
         if (tabs.length === 0) {
-            dispatch(goto('settings-index'));
+            dispatch(goto({ routeName: 'settings-index' }));
         }
     }, [tabs.length, dispatch]);
 
     return (
-        <Column gap={spacings.md} margin={{ top: spacings.md }} flex="1">
-            <Row justifyContent="space-between" flexWrap="wrap" gap={spacings.sm}>
-                <SubTabs size="large" activeItemId={activeItemdId}>
-                    {tabs.map(tab => (
-                        <SubTabs.Item
-                            key={tab.id}
-                            id={tab.id}
-                            data-testid={`@settings/connect-apps/tabs/${tab.id}`}
-                            onClick={() => setActiveItemId(tab.id)}
-                        >
-                            <Row alignItems="center" gap={spacings.xs}>
-                                <Icon name={tab.icon} />
-                                {tab.title}
-                            </Row>
-                        </SubTabs.Item>
-                    ))}
-                </SubTabs>
-                <WalletConnectButton handleOpened={() => setActiveItemId('walletconnect')} />
-            </Row>
-            {tabs.find(tab => tab.id === activeItemdId)?.component}
-        </Column>
+        <SettingsLayout>
+            <Column gap={16} flex="1">
+                <Row justifyContent="space-between" flexWrap="wrap" gap={12}>
+                    <SubTabs size="large" activeItemId={activeItemdId}>
+                        {tabs.map(tab => (
+                            <SubTabs.Item
+                                key={tab.id}
+                                id={tab.id}
+                                data-testid={`@settings/connect-apps/tabs/${tab.id}`}
+                                onClick={() => setActiveItemId(tab.id)}
+                            >
+                                <Row alignItems="center" gap={8}>
+                                    <Icon as={tab.icon} />
+                                    {tab.title}
+                                </Row>
+                            </SubTabs.Item>
+                        ))}
+                    </SubTabs>
+                    {activeItemdId === 'walletconnect' && <WalletConnectButton />}
+                </Row>
+                {tabs.find(tab => tab.id === activeItemdId)?.component}
+            </Column>
+        </SettingsLayout>
     );
 };

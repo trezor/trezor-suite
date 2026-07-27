@@ -1,12 +1,13 @@
-import { Children, Fragment, ReactNode, useId } from 'react';
+import { Children, Fragment, type ReactNode, useId } from 'react';
 
-import { SpacingValuesNew } from '@trezor/theme';
+import { DotOutlineFilledIcon } from '@trezor/icons';
+import { type SpacingValue } from '@trezor/theme';
 
-import { FrameProps, FramePropsKeys } from '../../utils/frameProps';
+import { type FrameProps, type FramePropsKeys } from '../../utils/frameProps';
 import { Row } from '../Flex/Flex';
-import { Icon, IconProps } from '../Icon/Icon';
-import { Text, TextIntent, TextProps } from '../typography/Text/Text';
-import { TextProps as TextPropsCommon, TextPropsKeys } from '../typography/utils';
+import { Icon, type IconProps } from '../Icon/Icon';
+import { Text, type TextIntent, type TextProps } from '../typography/Text/Text';
+import { type TextProps as TextPropsCommon, type TextPropsKeys } from '../typography/utils';
 
 export const allowedInfoSegmentsTextProps = ['typographyStyle'] as const satisfies TextPropsKeys[];
 type AllowedTextProps = Pick<TextPropsCommon, (typeof allowedInfoSegmentsTextProps)[number]>;
@@ -20,7 +21,7 @@ export type InfoSegmentsProps = AllowedFrameProps &
         priority?: TextProps['priority'];
         isDisabled?: TextProps['isDisabled'];
         'data-testid'?: string;
-        gap?: SpacingValuesNew;
+        gap?: SpacingValue;
         children: Array<ReactNode>;
     };
 
@@ -57,7 +58,7 @@ export const InfoSegments = ({
                     <Fragment key={`${id}-${index}`}>
                         {child}
                         {index < validChildren.length - 1 && (
-                            <Icon name="dotOutlineFilled" size={16} {...iconProps} />
+                            <Icon as={DotOutlineFilledIcon} size={16} {...iconProps} />
                         )}
                     </Fragment>
                 ))}

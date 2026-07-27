@@ -1,14 +1,14 @@
 import { combineReducers } from '@reduxjs/toolkit';
-import { CryptoId, ExchangeTrade } from 'invity-api';
+import { type CryptoId, type ExchangeTrade } from 'invity-api';
 
 import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
-import { Account } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 
 import { exchangeThunks } from '../';
 import { MIN_MAX_QUOTES_OK } from '../../../__fixtures__/exchangeUtils';
 import { accountBtc } from '../../../__fixtures__/utils';
 import { invityAPI } from '../../../invityAPI';
-import { TradingExchangeState } from '../../../reducers/exchangeReducer';
+import { type TradingExchangeState } from '../../../reducers/exchangeReducer';
 import { initialState } from '../../../reducers/tradingCommonReducer';
 import { prepareTradingReducer } from '../../../reducers/tradingReducer';
 import { getUnusedAddressFromAccount } from '../../../utils';
@@ -35,6 +35,7 @@ describe('confirmExchangeTradeThunk', () => {
 
     const getMocks = (initialExchangeState?: Partial<TradingExchangeState>) => {
         const quoteNotTyped = MIN_MAX_QUOTES_OK[0];
+        if (!quoteNotTyped) throw new Error('Missing test fixture');
         const quote = {
             ...quoteNotTyped,
             send: quoteNotTyped.send as CryptoId,
@@ -263,39 +264,83 @@ describe('confirmExchangeTradeThunk', () => {
         });
 
         expect(mockTriggerAnalyticsTradeConfirmation).toHaveBeenCalledTimes(1);
-        expect(store.getActions().length).toEqual(4);
+        expect(store.getActions().length).toEqual(3);
         expect(exchange.transactionId).toBeUndefined();
         expect(exchange.isLoading).toBeFalsy();
         expect(!!response).toBeFalsy();
+    });
+
+    it('should return undefined when request is aborted', async () => {
+        const {
+            store,
+            returnUrl,
+            receiveAddress,
+            account,
+            trade,
+            mockProcessResponseData,
+            mockNextStep,
+            mockTriggerAnalyticsTradeConfirmation,
+        } = getMocks();
+
+        invityAPI.doExchangeTrade = () =>
+            new Promise<ExchangeTrade>(resolve => {
+                resolve(undefined as unknown as ExchangeTrade);
+            });
+
+        const promise = store.dispatch(
+            exchangeThunks.confirmTradeThunk({
+                returnUrl,
+                receiveAddress,
+                account,
+                trade,
+                nextStep: mockNextStep,
+                triggerAnalyticsTradeConfirmation: mockTriggerAnalyticsTradeConfirmation,
+                processResponseData: mockProcessResponseData,
+            }),
+        );
+
+        promise.abort();
+
+        const action = await promise;
+
+        expect(exchangeThunks.confirmTradeThunk.rejected.match(action)).toBe(true);
+
+        if (!exchangeThunks.confirmTradeThunk.rejected.match(action)) {
+            throw new Error('Expected confirmTradeThunk to be rejected');
+        }
+
+        expect(action.meta.aborted).toBe(true);
+        expect(action.payload).toBeUndefined();
     });
 
     describe('should return false from confirmation', () => {
         it.each([
             [
                 'when response.error is defined',
-                {
-                    error: 'Server error',
-                },
+                { error: 'Server error' },
+                { code: 'unknown', message: 'Server error' },
             ],
+            ['when response.state is undefined', { status: undefined }, { code: 'unknown' }],
+            ['when response.orderId is undefined', { orderId: undefined }, { code: 'unknown' }],
+            ['when response.status is ERROR', { status: 'ERROR' }, { code: 'unknown' }],
             [
-                'when response.state is undefined',
-                {
-                    status: undefined,
-                },
-            ],
-            [
-                'when response.orderId is undefined',
-                {
-                    orderId: undefined,
-                },
-            ],
-            [
-                'when response.status is ERROR',
+                'when response has errorDetails but no error string',
                 {
                     status: 'ERROR',
+                    errorDetails: {
+                        origin: 'partner',
+                        externalCode: '-100',
+                        code: 'invalid_amount',
+                        amount: { key: 'BTC', value: '0.00001', min: '0.001', max: '5' },
+                    },
+                },
+                {
+                    code: 'invalid_amount',
+                    message: '-100',
+                    values: { min: '0.001', max: '5' },
                 },
             ],
-        ])(`%s`, async (_, mockResponse) => {
+        ])(`%s`, async (_, mockResponse, expectedErrorMessage) => {
             const {
                 store,
                 returnUrl,
@@ -331,20 +376,128 @@ describe('confirmExchangeTradeThunk', () => {
 
             expect(actionToast?.payload).toEqual({
                 tradingType: 'exchange',
-                errorMessage:
-                    'error' in mockResponse
-                        ? mockResponse?.error
-                        : 'Error response from the server',
+                errorMessage: expectedErrorMessage,
             });
 
             expect(mockTriggerAnalyticsTradeConfirmation).toHaveBeenCalledTimes(1);
-            expect(store.getActions().length).toEqual(5);
+            expect(store.getActions().length).toEqual(4);
             expect(exchange.transactionId).toBeUndefined();
 
             expect(exchange.isLoading).toBeFalsy();
             expect(exchange.selectedQuote).toEqual(tradeResponse);
             expect(!!response).toBeFalsy();
         });
+    });
+
+    it('should route a failed submitted trade with orderId to the detail page instead of a toast', async () => {
+        const {
+            store,
+            returnUrl,
+            receiveAddress,
+            account,
+            trade,
+            mockProcessResponseData,
+            mockNextStep,
+            mockTriggerAnalyticsTradeConfirmation,
+        } = getMocks();
+
+        const dateString = new Date().toISOString();
+        jest.spyOn(Date.prototype, 'toISOString').mockImplementation(() => dateString);
+
+        const mockResponse = {
+            status: 'ERROR',
+            orderId: 'orderId',
+            error: 'Server error',
+        };
+        const tradeResponse = { ...trade, ...mockResponse } as ExchangeTrade;
+
+        invityAPI.doExchangeTrade = () => Promise.resolve(tradeResponse);
+
+        const response = await store
+            .dispatch(
+                exchangeThunks.confirmTradeThunk({
+                    returnUrl,
+                    receiveAddress,
+                    account,
+                    trade,
+                    isTradeSubmitted: true,
+                    nextStep: mockNextStep,
+                    triggerAnalyticsTradeConfirmation: mockTriggerAnalyticsTradeConfirmation,
+                    processResponseData: mockProcessResponseData,
+                }),
+            )
+            .unwrap();
+
+        const { trading } = store.getState().wallet;
+        const { exchange } = trading;
+
+        const toastAction = store
+            .getActions()
+            .find(action => action.type === 'mockedLogErrorThunk');
+
+        expect(toastAction).toBeUndefined();
+        expect(exchange.transactionId).toBe(mockResponse.orderId);
+        expect(mockNextStep).toHaveBeenCalledTimes(1);
+        expect(trading.trades[0]).toEqual({
+            tradeType: 'exchange',
+            date: dateString,
+            data: tradeResponse,
+            key: mockResponse.orderId,
+        });
+        expect(!!response).toBeFalsy();
+    });
+
+    it('should keep a failed trade with orderId on the form instead of routing to detail when it is not submitted', async () => {
+        const {
+            store,
+            returnUrl,
+            receiveAddress,
+            account,
+            trade,
+            mockProcessResponseData,
+            mockNextStep,
+            mockTriggerAnalyticsTradeConfirmation,
+        } = getMocks();
+
+        const mockResponse = {
+            status: 'ERROR',
+            orderId: 'orderId',
+            error: 'Server error',
+        };
+        const tradeResponse = { ...trade, ...mockResponse } as ExchangeTrade;
+
+        invityAPI.doExchangeTrade = () => Promise.resolve(tradeResponse);
+
+        const response = await store
+            .dispatch(
+                exchangeThunks.confirmTradeThunk({
+                    returnUrl,
+                    receiveAddress,
+                    account,
+                    trade,
+                    nextStep: mockNextStep,
+                    triggerAnalyticsTradeConfirmation: mockTriggerAnalyticsTradeConfirmation,
+                    processResponseData: mockProcessResponseData,
+                }),
+            )
+            .unwrap();
+
+        const { trading } = store.getState().wallet;
+        const { exchange } = trading;
+
+        const toastAction = store
+            .getActions()
+            .find(action => action.type === 'mockedLogErrorThunk');
+
+        expect(toastAction?.payload).toEqual({
+            tradingType: 'exchange',
+            errorMessage: { code: 'unknown', message: 'Server error' },
+        });
+        expect(exchange.transactionId).toBeUndefined();
+        expect(exchange.selectedQuote).toEqual(tradeResponse);
+        expect(mockNextStep).not.toHaveBeenCalled();
+        expect(trading.trades).toEqual([]);
+        expect(!!response).toBeFalsy();
     });
 
     describe('should return true from confirmation for approval and sign transaction', () => {
@@ -390,7 +543,7 @@ describe('confirmExchangeTradeThunk', () => {
             const { exchange } = store.getState().wallet.trading;
 
             expect(mockTriggerAnalyticsTradeConfirmation).toHaveBeenCalledTimes(1);
-            expect(store.getActions().length).toEqual(5);
+            expect(store.getActions().length).toEqual(4);
             expect(exchange.transactionId).toBeUndefined();
 
             expect(exchange.isLoading).toBeFalsy();
@@ -438,7 +591,7 @@ describe('confirmExchangeTradeThunk', () => {
         const { exchange } = store.getState().wallet.trading;
 
         expect(mockTriggerAnalyticsTradeConfirmation).toHaveBeenCalledTimes(1);
-        expect(store.getActions().length).toEqual(5);
+        expect(store.getActions().length).toEqual(4);
         expect(exchange.transactionId).toBeUndefined();
         expect(exchange.isLoading).toBeFalsy();
         expect(exchange.selectedQuote).toEqual(tradeResponse);
@@ -486,7 +639,7 @@ describe('confirmExchangeTradeThunk', () => {
             const { exchange } = store.getState().wallet.trading;
 
             expect(mockTriggerAnalyticsTradeConfirmation).toHaveBeenCalledTimes(1);
-            expect(store.getActions().length).toEqual(5);
+            expect(store.getActions().length).toEqual(4);
             expect(exchange.transactionId).toBeUndefined();
             expect(exchange.isLoading).toBeFalsy();
             expect(exchange.selectedQuote).toEqual(tradeResponse);
@@ -534,7 +687,7 @@ describe('confirmExchangeTradeThunk', () => {
         const { exchange } = store.getState().wallet.trading;
 
         expect(mockTriggerAnalyticsTradeConfirmation).toHaveBeenCalledTimes(1);
-        expect(store.getActions().length).toEqual(5);
+        expect(store.getActions().length).toEqual(4);
         expect(exchange.transactionId).toBeUndefined();
         expect(exchange.isLoading).toBeFalsy();
         expect(exchange.selectedQuote).toEqual(tradeResponse);
@@ -587,7 +740,7 @@ describe('confirmExchangeTradeThunk', () => {
         expect(store.getActions().length).toEqual(5);
         expect(exchange.transactionId).toBe(mockResponse.orderId);
         expect(exchange.isLoading).toBeFalsy();
-        expect(exchange.selectedQuote).toEqual(exchange.selectedQuote);
+        expect(exchange.selectedQuote).toEqual(tradeResponse);
         expect(mockNextStep).toHaveBeenCalledTimes(1);
         expect(trading.trades[0]).toEqual({
             tradeType: 'exchange',
@@ -783,5 +936,90 @@ describe('confirmExchangeTradeThunk', () => {
         });
         expect(exchange.formStep).toEqual('SEND_TRANSACTION');
         expect(!!response).toBeTruthy();
+    });
+
+    describe('approvalFlow', () => {
+        it('should forward approvalFlow: true to doExchangeTrade', async () => {
+            const {
+                store,
+                returnUrl,
+                receiveAddress,
+                account,
+                trade,
+                mockProcessResponseData,
+                mockNextStep,
+                mockTriggerAnalyticsTradeConfirmation,
+            } = getMocks();
+
+            const tradeResponse = {
+                ...trade,
+                status: 'CONFIRM',
+                orderId: 'orderId',
+            } as ExchangeTrade;
+
+            const doExchangeTradeSpy = jest.fn().mockResolvedValue(tradeResponse);
+            invityAPI.doExchangeTrade = doExchangeTradeSpy;
+
+            await store
+                .dispatch(
+                    exchangeThunks.confirmTradeThunk({
+                        returnUrl,
+                        receiveAddress,
+                        account,
+                        trade,
+                        approvalFlow: true,
+                        nextStep: mockNextStep,
+                        triggerAnalyticsTradeConfirmation: mockTriggerAnalyticsTradeConfirmation,
+                        processResponseData: mockProcessResponseData,
+                    }),
+                )
+                .unwrap();
+
+            expect(doExchangeTradeSpy).toHaveBeenCalledWith(
+                expect.objectContaining({ approvalFlow: true }),
+                expect.anything(),
+            );
+        });
+
+        it('should default approvalFlow to false when omitted', async () => {
+            const {
+                store,
+                returnUrl,
+                receiveAddress,
+                account,
+                trade,
+                mockProcessResponseData,
+                mockNextStep,
+                mockTriggerAnalyticsTradeConfirmation,
+            } = getMocks();
+
+            const tradeResponse = {
+                ...trade,
+                status: 'CONFIRM',
+                orderId: 'orderId',
+            } as ExchangeTrade;
+
+            const doExchangeTradeSpy = jest.fn().mockResolvedValue(tradeResponse);
+            invityAPI.doExchangeTrade = doExchangeTradeSpy;
+
+            await store
+                .dispatch(
+                    exchangeThunks.confirmTradeThunk({
+                        returnUrl,
+                        receiveAddress,
+                        account,
+                        trade,
+                        nextStep: mockNextStep,
+                        triggerAnalyticsTradeConfirmation: mockTriggerAnalyticsTradeConfirmation,
+                        processResponseData: mockProcessResponseData,
+                    }),
+                )
+                .unwrap();
+
+            expect(doExchangeTradeSpy).toHaveBeenCalledWith(
+                expect.objectContaining({ approvalFlow: false }),
+                expect.anything(),
+            );
+        });
     });
 });

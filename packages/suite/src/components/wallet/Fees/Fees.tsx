@@ -1,13 +1,13 @@
 import { Column } from '@trezor/components';
 
-import { Account } from 'src/types/wallet';
+import { type Account } from 'src/types/wallet';
 
-import { CollapsibleFees, CollapsibleFeesProps } from './CollapsibleFees/CollapsibleFees';
+import { CollapsibleFees, type CollapsibleFeesProps } from './CollapsibleFees/CollapsibleFees';
 import { useFetchFees } from './CollapsibleFees/hooks/useFetchFees';
 import { FieldErrorBanner } from './FieldErrorBanner';
 
 export type FeesProps = {
-    account: Pick<Account, 'symbol' | 'networkType'>;
+    account: Pick<Account, 'symbol' | 'networkType' | 'misc'>;
 } & Pick<
     CollapsibleFeesProps,
     | 'label'
@@ -20,7 +20,7 @@ export type FeesProps = {
 >;
 
 export const Fees = ({
-    account: { symbol: networkSymbol, networkType },
+    account: { symbol: networkSymbol, networkType, misc },
     feeInfo,
     changeFeeLevel,
     composedLevels,
@@ -29,6 +29,7 @@ export const Fees = ({
     headerTypographyStyle,
     isOpen,
 }: FeesProps) => {
+    const tronResources = misc && 'tronResources' in misc ? misc.tronResources : undefined;
     useFetchFees({ networkSymbol });
 
     return (
@@ -43,6 +44,7 @@ export const Fees = ({
                 rbfForm={rbfForm}
                 headerTypographyStyle={headerTypographyStyle}
                 isOpen={isOpen}
+                tronResources={tronResources}
             />
 
             <FieldErrorBanner fieldName="selectedFee" />

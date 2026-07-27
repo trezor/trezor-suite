@@ -1,4 +1,4 @@
-import { Button, ButtonProps, IconButton, IconName } from '@trezor/components';
+import { Button, type ButtonProps, IconButton, type IconComponent } from '@trezor/components';
 import { breakpoints } from '@trezor/theme';
 
 import { ConditionalRender } from 'src/support/suite/ConditionalRender';
@@ -7,7 +7,7 @@ type HeaderActionButtonProps = Pick<
     ButtonProps,
     'onClick' | 'data-testid' | 'size' | 'isDisabled' | 'children' | 'intent' | 'priority'
 > & {
-    icon: IconName;
+    icon: IconComponent;
 };
 
 export const HeaderActionButton = ({
@@ -30,6 +30,7 @@ export const HeaderActionButton = ({
                 size={size}
                 isDisabled={isDisabled}
                 priority={priority}
+                tooltip={{ content: children }}
             />
         </ConditionalRender>
         <ConditionalRender container="content" minWidth={breakpoints.mobile}>

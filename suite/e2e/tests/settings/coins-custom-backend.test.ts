@@ -1,4 +1,4 @@
-import { BackendType, NetworkSymbol } from '@suite-common/wallet-config';
+import type { BackendType, NetworkSymbol } from '@suite-common/wallet-config';
 import { TestCategory, TestPriority, TestStream } from '@trezor/e2e-utils';
 
 import { expect, test } from '../../support/fixtures';
@@ -11,7 +11,7 @@ type Coin = {
     customBackendUrlWrong: string;
 };
 
-test.describe('Coin Settings', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () => {
+test.describe('Coin Settings', { tag: ['@T3W1', '@T3T1'] }, () => {
     test.use({
         deviceSetup: {
             mnemonic:
@@ -51,21 +51,18 @@ test.describe('Coin Settings', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () => {
                 }),
             },
             async ({ page, settingsPage, walletPage }) => {
-                if (coin === 'btc') {
-                    await settingsPage.coinsTab.disableNetwork(coin);
-                }
                 await test.step(`Enable ${coin.toUpperCase()} asset`, async () => {
-                    await expect(settingsPage.coinsTab.networkButton(coin)).toBeDisabledCoin();
+                    await settingsPage.coinsTab.expectNetworkDisabled(coin);
                     await settingsPage.coinsTab.enableNetwork(coin);
-                    await expect(settingsPage.coinsTab.networkButton(coin)).toBeEnabledCoin();
+                    await settingsPage.coinsTab.expectNetworkEnabled(coin);
                 });
+
                 await test.step(`Enable custom ${backendType} server`, async () => {
                     await settingsPage.coinsTab.openNetworkAdvanceSettings(coin);
                     await settingsPage.coinsTab.changeBackend(backendType, customBackendUrlRight);
-                    await expect(settingsPage.coinsTab.networkButton(coin)).toContainTranslation(
-                        'TR_CUSTOM_BACKEND',
-                    );
+                    await settingsPage.coinsTab.expectCustomBackendIndicator(coin);
                 });
+
                 await test.step('Refresh coins', async () => {
                     await settingsPage.coinsTab.activateCoinsButton.click();
                     await Promise.all([
@@ -73,6 +70,7 @@ test.describe('Coin Settings', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () => {
                         page.discoveryShouldFinish(),
                     ]);
                 });
+
                 await test.step(`Open ${coin.toUpperCase()} account & verify it is loaded successfully`, async () => {
                     await walletPage.openAccount({ symbol: coin });
                     await expect(walletPage.emptyAccount).toContainTranslation(
@@ -93,21 +91,18 @@ test.describe('Coin Settings', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () => {
                 }),
             },
             async ({ page, settingsPage, walletPage }) => {
-                if (coin === 'btc') {
-                    await settingsPage.coinsTab.disableNetwork(coin);
-                }
                 await test.step(`Enable ${coin.toUpperCase()} asset`, async () => {
-                    await expect(settingsPage.coinsTab.networkButton(coin)).toBeDisabledCoin();
+                    await settingsPage.coinsTab.expectNetworkDisabled(coin);
                     await settingsPage.coinsTab.enableNetwork(coin);
-                    await expect(settingsPage.coinsTab.networkButton(coin)).toBeEnabledCoin();
+                    await settingsPage.coinsTab.expectNetworkEnabled(coin);
                 });
+
                 await test.step(`Enable custom ${backendType} server`, async () => {
                     await settingsPage.coinsTab.openNetworkAdvanceSettings(coin);
                     await settingsPage.coinsTab.changeBackend(backendType, customBackendUrlWrong);
-                    await expect(settingsPage.coinsTab.networkButton(coin)).toContainTranslation(
-                        'TR_CUSTOM_BACKEND',
-                    );
+                    await settingsPage.coinsTab.expectCustomBackendIndicator(coin);
                 });
+
                 await test.step('Refresh coins', async () => {
                     await settingsPage.coinsTab.activateCoinsButton.click();
                     await Promise.all([
@@ -115,6 +110,7 @@ test.describe('Coin Settings', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () => {
                         page.discoveryShouldFinish(),
                     ]);
                 });
+
                 await test.step(`Open ${coin.toUpperCase()} account & verify it errors to load`, async () => {
                     await walletPage.accountButton({ symbol: coin }).click();
                     await expect(walletPage.accountNotLoaded).toContainTranslation(

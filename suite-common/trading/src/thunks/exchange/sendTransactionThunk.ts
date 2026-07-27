@@ -1,8 +1,7 @@
 import { isRejectedWithValue } from '@reduxjs/toolkit';
-import { ExchangeTrade } from 'invity-api';
+import { type ExchangeTrade } from 'invity-api';
 
 import { createThunk } from '@suite-common/redux-utils';
-import { convertAmountUnitsToSubunits } from '@suite-common/wallet-utils';
 
 import { tradingThunks } from '../common';
 import {
@@ -18,8 +17,9 @@ import {
     selectTradingExchangeReceiveAccountKey,
     selectTradingExchangeSelectedQuote,
 } from '../../selectors/tradingSelectors';
-import { TradingSendRejectedProps } from '../../types';
+import { type TradingSendRejectedProps } from '../../types';
 import { getTradingFormState } from '../../utils';
+import { buildRecomposeInputsFromTrade } from '../common/buildRecomposeInputsFromTrade';
 
 export type SendTransactionThunkProps = {
     trade: ExchangeTrade | undefined;
@@ -83,12 +83,7 @@ export const sendTransactionThunk = createThunk<
             }
         }
 
-        if (
-            !selectedTrade ||
-            !selectedTrade.orderId ||
-            !selectedTrade.sendStringAmount ||
-            !sendAddress
-        ) {
+        if (!selectedTrade?.orderId || !selectedTrade.sendStringAmount || !sendAddress) {
             return rejectWithValue({
                 type: 'error',
                 error: { id: 'TR_TRADING_CANNOT_SEND_TRANSACTION' },
@@ -104,17 +99,18 @@ export const sendTransactionThunk = createThunk<
             receiveAccountKey,
         });
 
-        const sendStringAmount = shouldSendInSats
-            ? convertAmountUnitsToSubunits(selectedTrade.sendStringAmount, decimals)
-            : selectedTrade.sendStringAmount;
-        const sendPaymentExtraId =
-            selectedTrade.partnerPaymentExtraId || trade?.partnerPaymentExtraId;
+        const recomposeInputs = buildRecomposeInputsFromTrade({
+            sendAddress,
+            sendStringAmount: selectedTrade.sendStringAmount,
+            partnerPaymentExtraId:
+                selectedTrade.partnerPaymentExtraId || trade?.partnerPaymentExtraId,
+            shouldSendInSats,
+            decimals,
+        });
         const recomposeAndSignTx = await dispatch(
             tradingThunks.recomposeAndSignTxThunk({
                 account,
-                address: sendAddress,
-                amount: sendStringAmount,
-                destinationTag: sendPaymentExtraId,
+                ...recomposeInputs,
                 signAndPushSendFormTransaction,
                 setMaxOutputId,
                 isSlip24Active,
@@ -128,7 +124,7 @@ export const sendTransactionThunk = createThunk<
             return rejectWithValue({
                 type: payload && 'type' in payload ? payload.type : 'sign-tx-error',
                 error:
-                    payload && 'error' in payload
+                    payload && 'error' in payload && 'id' in payload.error
                         ? payload.error
                         : { id: 'TR_TRADING_CANNOT_SEND_TRANSACTION' },
             });

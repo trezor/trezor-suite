@@ -1,15 +1,17 @@
 import React, { useState } from 'react';
 
-import { Meta, StoryObj } from '@storybook/react';
+import { type Meta, type StoryObj } from '@storybook/react';
 
-import { spacings } from '@trezor/theme';
+import { CheckIcon, DotsThreeIcon, InfoIcon, WarningIcon } from '@trezor/icons';
 
-import { SubTabs as SubTabsComponent, SubTabsProps, allowedSubTabsFrameProps } from './SubTabs';
+import {
+    SubTabs as SubTabsComponent,
+    type SubTabsProps,
+    allowedSubTabsFrameProps,
+} from './SubTabs';
 import { subtabsSizes } from './types';
-import { variables } from '../../config';
 import { getFramePropsStory } from '../../utils/frameProps';
 import { Column } from '../Flex/Flex';
-import { IconName } from '../Icon/Icon';
 
 const meta: Meta<typeof SubTabsComponent> = {
     title: 'SubTabs',
@@ -18,6 +20,7 @@ export default meta;
 
 const SubTabsApp = (props: Partial<SubTabsProps>) => {
     const [selectedTab, setSelectedTab] = useState(0);
+    const tabIcons = [CheckIcon, DotsThreeIcon, InfoIcon, WarningIcon];
 
     const items = ['Lorem', 'Ipsum', 'Dolor Sit', 'Amet'].map((title, index) => ({
         title,
@@ -25,7 +28,7 @@ const SubTabsApp = (props: Partial<SubTabsProps>) => {
         onClick: () => {
             setSelectedTab(index);
         },
-        iconName: variables.ICONS[index * 2] as IconName,
+        icon: tabIcons[index],
         'data-testid': title.toLowerCase(),
     }));
 
@@ -83,8 +86,8 @@ const SubTabsApp = (props: Partial<SubTabsProps>) => {
     };
 
     return (
-        <Column gap={spacings.md}>
-            <SubTabsComponent activeItemId={items[selectedTab].id} {...props}>
+        <Column gap={16}>
+            <SubTabsComponent activeItemId={items[selectedTab]?.id ?? ''} {...props}>
                 {items.map(item => (
                     <SubTabsComponent.Item key={item.id} {...item}>
                         {item.title}

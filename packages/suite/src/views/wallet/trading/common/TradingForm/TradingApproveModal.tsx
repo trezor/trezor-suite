@@ -1,16 +1,19 @@
 import { useCallback, useMemo } from 'react';
 
-import { CryptoId, DexApprovalType } from 'invity-api';
+import { type CryptoId, type DexApprovalType } from 'invity-api';
 
-import { events } from '@suite/analytics';
-import { getEvmApprovalTxData } from '@suite-common/wallet-utils';
+import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { Calldata } from '@suite-common/calldata';
+import { useServices } from '@suite-common/dependency-injection';
+import { invityAPI, selectTradingSendAccount } from '@suite-common/trading';
 import { useCurrentRef } from '@trezor/react-utils';
 
 import { ApproveModal } from 'src/components/suite/modals/ReduxModal/UserContextModal/AllowanceModals/ApproveModal';
+import { useSelector } from 'src/hooks/suite';
 import { useAllowanceContext } from 'src/hooks/wallet/allowance';
+import { useModalLastValidParams } from 'src/hooks/wallet/trading/form/useModalLastValidParams';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { useTradingExchangeCryptoAndProviderInfo } from 'src/hooks/wallet/trading/form/useTradingExchangeCryptoAndProviderInfo';
-import { useAnalytics } from 'src/support/useAnalytics';
 import {
     getProvidersInfoProps,
     isTradingExchangeContext,
@@ -24,7 +27,8 @@ interface TradingApproveModalProps {
 export const TradingApproveModal = ({ amount, cryptoId }: TradingApproveModalProps) => {
     const { state } = useAllowanceContext();
     const context = useTradingFormContext();
-    const analytics = useAnalytics();
+    const account = useSelector(reduxState => selectTradingSendAccount(reduxState, context.type));
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
     const getCryptoInfo = useTradingExchangeCryptoAndProviderInfo();
 
     const contextRef = useCurrentRef(context);
@@ -84,34 +88,42 @@ export const TradingApproveModal = ({ amount, cryptoId }: TradingApproveModalPro
 
     const approveParams = useMemo(() => {
         const ctx = contextRef.current;
-        if (!isTradingExchangeContext(ctx)) {
-            return null;
-        }
+        if (!isTradingExchangeContext(ctx)) return null;
 
         const providersInfo = getProvidersInfoProps(ctx);
         const exchange = selectedQuote?.exchange;
         const provider = exchange ? providersInfo?.[exchange] : null;
 
-        const approvalData = getEvmApprovalTxData(selectedQuote?.dexTx?.data);
+        const approvalData = Calldata.evm.erc20.approve.decode(selectedQuote?.dexTx?.data);
         const spender = approvalData?.spender ?? null;
+        const preapprovedAmount = selectedQuote?.preapprovedStringAmount;
 
-        return {
-            provider,
-            spender,
-        };
+        return provider && spender ? { provider, spender, preapprovedAmount } : null;
     }, [selectedQuote, contextRef]);
 
-    const { provider, spender } = approveParams ?? {};
+    const { provider, spender, preapprovedAmount } =
+        useModalLastValidParams(approveParams, state.isApproveModalOpen) ?? {};
 
-    if (!state.isApproveModalOpen || !provider || !spender) return null;
+    if (!state.isApproveModalOpen || !provider || !spender || !account) {
+        return null;
+    }
+
+    const providerLogo = provider.logo ? invityAPI.getProviderLogoUrl(provider.logo) : undefined;
 
     return (
         <ApproveModal
             amount={amount}
             cryptoId={cryptoId}
-            account={context.account}
-            provider={provider}
+            account={account}
+            provider={{
+                ...provider,
+                logo: providerLogo,
+                label: 'TR_TRADING_PROVIDER',
+            }}
             spender={spender}
+            preapprovedAmount={preapprovedAmount}
+            heading="TR_APPROVAL_APPROVE_TOKEN_SPENDING"
+            description="TR_EXCHANGE_APPROVAL_APPROVE_TOKEN_SPENDING_DESCRIPTION"
             onSelectApprovalType={onSelectApprovalType}
             onConfirm={onConfirm}
             onCancel={handleCancel}

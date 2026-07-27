@@ -1,19 +1,26 @@
 import styled from 'styled-components';
 
+import { ArrowLineUpRightIcon } from '@trezor/icons';
+
 import {
-    FrameProps,
-    FramePropsKeys,
+    type FrameProps,
+    type FramePropsKeys,
     pickAndPrepareFrameProps,
     withFrameProps,
 } from '../../../utils/frameProps';
-import { TransientProps } from '../../../utils/transientProps';
+import { type TransientProps } from '../../../utils/transientProps';
 import { Box } from '../../Box/Box';
 import { Row } from '../../Flex/Flex';
-import { Icon, IconName } from '../../Icon/Icon';
+import { Icon, type IconComponent } from '../../Icon/Icon';
 import { ShortcutBadge } from '../../ShortcutBadge/ShortcutBadge';
 import { Spinner } from '../../loaders/Spinner/Spinner';
 import { Text } from '../../typography/Text/Text';
-import { ButtonIntent, ButtonPriority, ButtonSize, CommonButtonProps } from '../types';
+import {
+    type ButtonIntent,
+    type ButtonPriority,
+    type ButtonSize,
+    type CommonButtonProps,
+} from '../types';
 import {
     commonButtonStyles,
     mapPropsToCSS,
@@ -24,7 +31,7 @@ import {
     pickButtonProps,
 } from '../utils';
 import { mapSizeToGap, mapSizeToPadding } from './utils';
-import { Keys } from '../../ShortcutBadge/keyboardKeys';
+import { type Keys } from '../../ShortcutBadge/keyboardKeys';
 
 export const allowedButtonFrameProps = [
     'margin',
@@ -40,16 +47,17 @@ type ButtonContainerProps = TransientProps<AllowedButtonFrameProps> & {
     $priority: ButtonPriority;
     $intent: ButtonIntent;
     $isInverse: boolean;
+    $isFloating: boolean;
     disabled: boolean;
 };
 
 const Container = styled.button<ButtonContainerProps>`
     ${commonButtonStyles}
 
-    border-radius: ${({ $size }) => mapSizeToBorderRadius($size)};
+    border-radius: ${({ $size }) => mapSizeToBorderRadius($size)}px;
 
-    ${({ $intent, $priority, disabled, $isInverse, theme }) =>
-        mapPropsToCSS($intent, $priority, disabled, $isInverse, theme)}
+    ${({ $intent, $priority, disabled, $isInverse, $isFloating, theme }) =>
+        mapPropsToCSS($intent, $priority, disabled, $isInverse, theme, $isFloating)}
 
     ${withFrameProps}
 `;
@@ -57,8 +65,8 @@ const Container = styled.button<ButtonContainerProps>`
 export type ButtonProps = CommonButtonProps &
     AllowedButtonFrameProps & {
         size?: ButtonSize;
-        iconLeft?: IconName;
-        iconRight?: IconName;
+        iconLeft?: IconComponent;
+        iconRight?: IconComponent;
         children: React.ReactNode;
         'data-testid'?: string;
         shortcut?: Keys[];
@@ -71,6 +79,7 @@ export const Button = ({
     iconRight,
     shortcut,
     size = 'medium',
+    isFloating = false,
     ...props
 }: ButtonProps) => {
     const frameProps = pickAndPrepareFrameProps(props, allowedButtonFrameProps);
@@ -89,6 +98,7 @@ export const Button = ({
             $priority={priority}
             $isInverse={isInverse}
             $intent={intent}
+            $isFloating={isFloating}
             {...frameProps}
             {...buttonProps}
         >
@@ -106,7 +116,7 @@ export const Button = ({
                         data-testid={`${dataTestId}/spinner`}
                     />
                 )}
-                {iconLeft && !props.isLoading && <Icon name={iconLeft} {...iconProps} />}
+                {iconLeft && !props.isLoading && <Icon as={iconLeft} {...iconProps} />}
                 <Box padding={{ horizontal: 4 }} overflow="hidden">
                     <Text
                         as="div"
@@ -118,9 +128,9 @@ export const Button = ({
                     </Text>
                 </Box>
                 {(iconRight || buttonProps.target === '_blank') && (
-                    <Icon name={iconRight ?? 'arrowLineUpRight'} {...iconProps} />
+                    <Icon as={iconRight ?? ArrowLineUpRightIcon} {...iconProps} />
                 )}
-                {shortcut?.length && (
+                {!!shortcut?.length && (
                     <Text as="div" color={colorToken}>
                         <ShortcutBadge shortcut={shortcut} />
                     </Text>

@@ -8,8 +8,21 @@ export const FILES_CRYPTOICONS_PATH = join(PACKAGE_ROOT, 'files', 'cryptoIcons')
 export const UPDATED_ICONS_LIST_FILE = join(FILES_CRYPTOICONS_PATH, 'icons.json');
 export const UPDATED_ICONS_LIST_URL = join(ICONS_URL_BASE, 'icons.json');
 
-export const COIN_LIST_URL = 'https://pro-api.coingecko.com/api/v3/coins/list';
-export const COIN_DATA_URL = 'https://pro-api.coingecko.com/api/v3/coins/';
+const COINGECKO_MODE: string = 'pro' satisfies 'pro' | 'demo';
+
+export const COINGECKO_API_BASE_URL =
+    COINGECKO_MODE === 'pro'
+        ? 'https://pro-api.coingecko.com/api/v3'
+        : 'https://api.coingecko.com/api/v3';
+
+export const COINGECKO_API_KEY_HEADER =
+    COINGECKO_MODE === 'pro' ? 'x-cg-pro-api-key' : 'x-cg-demo-api-key';
+
+export const COINGECKO_API_KEY_VALUE = process.env.COINGECKO_API_KEY;
 
 export const RATE_LIMIT_PER_MINUTE = 240;
 export const RUN_LIMIT_SECONDS = 4 * 60 * 60; // 4 hour
+
+// /coins/markets returns image URLs in bulk (max 250 per page), letting us avoid one
+// /coins/{id} call per coin (~72 pages cover the ~18k coins with market data).
+export const COIN_MARKETS_PER_PAGE = 250;

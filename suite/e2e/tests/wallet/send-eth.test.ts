@@ -19,15 +19,12 @@ const maxPriorityFeePerGasRounded = new BigNumber(maxPriorityFeePerGas).decimalP
     BigNumber.ROUND_UP,
 );
 
-test.describe('Send Eth', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () => {
+test.describe('Send Eth', { tag: ['@T3W1', '@T3T1'] }, () => {
     test.use({ deviceSetup: { mnemonic: 'mnemonic_academic', passphrase_protection: true } });
 
     test.beforeEach(async ({ onboardingPage, dashboardPage, walletPage, settingsPage }) => {
         await onboardingPage.completeOnboarding();
-        await settingsPage.changeNetworks({
-            enableNetworks: ['eth'],
-            disableNetworks: ['btc'],
-        });
+        await settingsPage.changeNetworks({ enableNetworks: ['eth'] });
         await dashboardPage.deviceSwitchingOpenButton.click();
         await dashboardPage.addHiddenWallet(process.env.PASSPHRASE!);
         await walletPage.openAccount({ symbol: 'eth', type: 'normal', atIndex: 0 });
@@ -66,12 +63,12 @@ test.describe('Send Eth', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () => {
             await expect(device).toShowOnDisplay({
                 T3W1: {
                     header: { title: 'Send' },
-                    body: [transformAddress(sendAddress)],
+                    body: [transformAddress(sendAddress, 'evmTetragrams')],
                     actions: { right_button: 'Continue' },
                 },
                 T3T1: {
                     header: { title: 'Address', subtitle: 'Recipient' },
-                    body: [transformAddress(sendAddress)],
+                    body: [transformAddress(sendAddress, 'evmTetragrams')],
                 },
             });
         });
@@ -113,21 +110,12 @@ test.describe('Send Eth', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () => {
                         ['Gas limit'],
                         [`${gasLimit} units`],
                         ['Max fee per gas'],
-                        [maxFeePerGas, '\n', 'Gwei'],
-                        ['Max priority fee'],
-                        [maxPriorityFeePerGas, '\n', 'Gwei'],
-                    ],
-                },
-                T3T1: {
-                    header: { title: 'Fee info' },
-                    body: [
-                        ['Gas limit'],
-                        [`${gasLimit} units`],
-                        ['Max fee per gas'],
                         [`${maxFeePerGas} Gwei`],
                         ['Max priority fee'],
                         [`${maxPriorityFeePerGas} Gwei`],
                     ],
+                },
+                T3T1: {
                     footer: undefined,
                 },
             });

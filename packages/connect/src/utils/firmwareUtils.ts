@@ -1,11 +1,11 @@
-import { FirmwareType } from '@trezor/device-utils';
-import type { DeviceModelInternal, FirmwareRelease } from '@trezor/device-utils';
-import { versionUtils } from '@trezor/utils';
-import type { VersionArray } from '@trezor/utils/src/versionUtils';
-
-import { DataManager } from '../data/DataManager';
-import type { CurrentVersion } from '../data/firmwareInfo';
-import type { Features, StrictFeatures } from '../types/device';
+import type {
+    CurrentVersion,
+    Features,
+    FirmwareChannel,
+    StrictFeatures,
+} from '@trezor/connect-common';
+import { type DeviceModelInternal, type FirmwareRelease, FirmwareType } from '@trezor/device-utils';
+import { type VersionArray, versionUtils } from '@trezor/utils';
 
 export const isStrictFeatures = (extFeatures: Features): extFeatures is StrictFeatures =>
     [1, 2].includes(extFeatures.major_version) &&
@@ -111,6 +111,13 @@ export const getFirmwareMode = (features: Features) => {
     return 'normal';
 };
 
+// Vendor headers used by officially signed Trezor firmware.
+// Anything else (emulator, locally-signed debug builds, etc.) is considered a debug build.
+const PRODUCTION_FIRMWARE_VENDORS = new Set(['Trezor', 'Trezor Bitcoin-only']);
+
+export const isDebugFirmware = (features: Features) =>
+    !PRODUCTION_FIRMWARE_VENDORS.has(features.fw_vendor ?? '');
+
 export const getFirmwareType = (features: Features) => {
     let type = FirmwareType.Universal;
     // Vendor headers have been changed in 2.6.3.
@@ -134,5 +141,11 @@ export const getFirmwareType = (features: Features) => {
     return type;
 };
 
-export const isFirmwareCacheUsedForSelectedSource = () =>
-    DataManager.getSettings('firmwareChannel') === 'production';
+// Bundled release JSONs are the production assets, valid only for production-like channels.
+export const isProductionFirmwareChannel = (firmwareChannel?: FirmwareChannel) =>
+    firmwareChannel === undefined ||
+    firmwareChannel === 'production' ||
+    firmwareChannel === 'production-early-access';
+
+export const isFirmwareCacheUsedForSelectedSource = (firmwareChannel?: FirmwareChannel) =>
+    isProductionFirmwareChannel(firmwareChannel);

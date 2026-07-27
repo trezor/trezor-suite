@@ -1,29 +1,46 @@
 import { useState } from 'react';
 
 import { Translation } from '@suite/intl';
+import { selectModalType } from '@suite/modal';
+import { selectHasExperimentalFeature } from '@suite/settings';
+import { selectTorState } from '@suite/tor';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
-import { Badge, Banner, Card, CollapsibleBox, Column, Modal, Row, Text } from '@trezor/components';
-import { spacings } from '@trezor/theme';
+import {
+    Badge,
+    Banner,
+    Card,
+    CollapsibleBox,
+    Column,
+    Input,
+    Modal,
+    Paragraph,
+    Row,
+    Text,
+} from '@trezor/components';
 
 import { toggleTor } from 'src/actions/suite/suiteActions';
 import { useBackendsForm } from 'src/hooks/settings/backends';
 import { useExplorerForm } from 'src/hooks/settings/useExplorerForm';
+import { useGapLimitForm } from 'src/hooks/settings/useGapLimitForm';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectModalType } from 'src/reducers/suite/modalReducer';
-import { selectTorState } from 'src/selectors/suite/suiteSelectors';
 
 import { BackendUrls } from './BackendUrls/BackendUrls';
 import { BackendTypeSelect } from './CustomBackends/BackendTypeSelect';
 import ConnectionInfo from './CustomBackends/ConnectionInfo';
-import { TorModal, TorResult } from './CustomBackends/TorModal';
+import { TorModal, type TorResult } from './CustomBackends/TorModal';
 import { ExplorerConfigForm } from './ExplorerConfigForm';
 
 type AdvancedCoinSettingsModalProps = {
     symbol: NetworkSymbol;
     onCancel: () => void;
+    onBackClick?: () => void;
 };
 
-export const AdvancedCoinSettingsModal = ({ symbol, onCancel }: AdvancedCoinSettingsModalProps) => {
+export const AdvancedCoinSettingsModal = ({
+    symbol,
+    onCancel,
+    onBackClick,
+}: AdvancedCoinSettingsModalProps) => {
     const network = getNetwork(symbol);
     const { isTorEnabled } = useSelector(selectTorState);
     const modalType = useSelector(selectModalType);
@@ -33,11 +50,19 @@ export const AdvancedCoinSettingsModal = ({ symbol, onCancel }: AdvancedCoinSett
     const explorer = useSelector(state => state.wallet.explorer[symbol]);
     const usesCustomExplorer = explorer.custom !== undefined;
 
+    const isBitcoinNetwork = network.networkType === 'bitcoin';
+    const isGapLimitEnabled = useSelector(selectHasExperimentalFeature('gap-limit'));
+
+    const gapLimitForm = useGapLimitForm(symbol);
     const explorerForm = useExplorerForm(symbol);
     const backendsForm = useBackendsForm(symbol);
 
     const onSaveClick = async () => {
         explorerForm.save();
+
+        if (isBitcoinNetwork && isGapLimitEnabled) {
+            gapLimitForm.save();
+        }
 
         if (!isTorEnabled && backendsForm.hasOnlyOnions()) {
             setTorModalOpen(true);
@@ -75,6 +100,7 @@ export const AdvancedCoinSettingsModal = ({ symbol, onCancel }: AdvancedCoinSett
     const isSubmitButtonDisabled =
         (isEditable && !!backendsForm.input.error) ||
         !explorerForm.isValid ||
+        (isBitcoinNetwork && isGapLimitEnabled && !!gapLimitForm.error) ||
         backendsForm.isValidating;
 
     if (torModalOpen) {
@@ -84,12 +110,12 @@ export const AdvancedCoinSettingsModal = ({ symbol, onCancel }: AdvancedCoinSett
     return (
         <Modal
             onCancel={onCancel}
+            onBackClick={onBackClick}
             heading={
                 <Text as="p">
                     {network.name} <Translation id="TR_BACKENDS" />
                 </Text>
             }
-            description={<Translation id="SETTINGS_BACKEND_SETTINGS_DESCRIPTION" />}
             width={600}
             bottomContent={
                 <>
@@ -109,7 +135,10 @@ export const AdvancedCoinSettingsModal = ({ symbol, onCancel }: AdvancedCoinSett
                 </>
             }
         >
-            <Column gap={spacings.lg}>
+            <Column gap={20}>
+                <Paragraph intent="neutral" priority="secondary" typographyStyle="body-sm">
+                    <Translation id="SETTINGS_BACKEND_SETTINGS_DESCRIPTION" />
+                </Paragraph>
                 <Card
                     header={
                         <BackendTypeSelect
@@ -138,7 +167,7 @@ export const AdvancedCoinSettingsModal = ({ symbol, onCancel }: AdvancedCoinSett
 
                 <CollapsibleBox
                     heading={
-                        <Row gap={spacings.sm}>
+                        <Row gap={12}>
                             <Translation id="TR_EXPLORER" />
 
                             {usesCustomExplorer ? (
@@ -155,6 +184,31 @@ export const AdvancedCoinSettingsModal = ({ symbol, onCancel }: AdvancedCoinSett
                 >
                     <ExplorerConfigForm form={explorerForm} />
                 </CollapsibleBox>
+
+                {isBitcoinNetwork && isGapLimitEnabled && (
+                    <CollapsibleBox
+                        heading={<Translation id="SETTINGS_BACKEND_SETTINGS_CUSTOM_GAP_LIMIT" />}
+                    >
+                        <Column gap={12} alignItems="flex-start">
+                            <Input
+                                type="number"
+                                value={gapLimitForm.value}
+                                size="small"
+                                onChange={e => gapLimitForm.setValue(e.target.value)}
+                                hasError={!!gapLimitForm.error}
+                                bottomText={
+                                    gapLimitForm.error ? (
+                                        <Translation
+                                            id={gapLimitForm.error.id}
+                                            values={gapLimitForm.error.values}
+                                        />
+                                    ) : undefined
+                                }
+                                width={125}
+                            />
+                        </Column>
+                    </CollapsibleBox>
+                )}
 
                 <CollapsibleBox heading={<Translation id="SETTINGS_ADV_COIN_CONN_INFO_TITLE" />}>
                     <ConnectionInfo symbol={symbol} />

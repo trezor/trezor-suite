@@ -1,19 +1,28 @@
-import { Dispatch } from '@reduxjs/toolkit';
+import { type Dispatch } from '@reduxjs/toolkit';
 
-import { EnsureWalletSuiteSyncOnDep, TurnOnSuiteSync } from '@suite-common/suite-sync-types';
+import { PORTFOLIO_TRACKER_DEVICE_STATE } from '@suite-common/device';
+import {
+    type EnsureWalletSuiteSyncOnDep,
+    type TurnOnSuiteSync,
+} from '@suite-common/suite-sync-types';
 import { ok } from '@trezor/type-utils';
 
-import { updateSuiteSyncEnabled } from './suiteSyncSlice';
+import { type GetDeviceForStaticSessionIdDep } from './getDeviceForStaticSessionId';
+import { setSuiteSyncError, updateSuiteSyncEnabled } from './suiteSyncSlice';
 
 export type CreateTurnOnSuiteSyncDeps = {
     getIsSuiteSyncEnabled: () => boolean;
     dispatch: Dispatch;
-} & EnsureWalletSuiteSyncOnDep;
+} & EnsureWalletSuiteSyncOnDep &
+    GetDeviceForStaticSessionIdDep;
 
 export const createTurnOnSuiteSync =
     (deps: CreateTurnOnSuiteSyncDeps): TurnOnSuiteSync =>
     async ({ deviceStaticSessionId }) => {
         const isSuiteSyncEnabled = deps.getIsSuiteSyncEnabled();
+        const isDeviceConnected = deviceStaticSessionId
+            ? deps.getDeviceForStaticSessionId(deviceStaticSessionId)?.connected === true
+            : false;
 
         if (isSuiteSyncEnabled) {
             return ok();
@@ -21,7 +30,14 @@ export const createTurnOnSuiteSync =
 
         deps.dispatch(updateSuiteSyncEnabled({ isEnabled: true }));
 
-        if (deviceStaticSessionId !== undefined) {
+        if (
+            deviceStaticSessionId === undefined ||
+            deviceStaticSessionId === PORTFOLIO_TRACKER_DEVICE_STATE
+        ) {
+            return ok();
+        }
+
+        if (isDeviceConnected) {
             const result = await deps.ensureWalletSuiteSyncOn({
                 deviceStaticSessionId,
                 isWriteMode: false,
@@ -30,6 +46,13 @@ export const createTurnOnSuiteSync =
             if (!result.success) {
                 return result;
             }
+        } else {
+            deps.dispatch(
+                setSuiteSyncError({
+                    deviceStaticSessionId,
+                    error: { type: 'DeviceError', message: 'Device not connected.' },
+                }),
+            );
         }
 
         return ok();

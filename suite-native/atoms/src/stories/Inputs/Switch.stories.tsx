@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-native';
 import { useArgs } from 'storybook/preview-api';
 
-import { Switch as SwitchComponent, SwitchProps } from '../../Switch';
+import { Switch as SwitchComponent, type SwitchProps } from '../../Switch';
 
 type SwitchStory = StoryObj<SwitchProps>;
 

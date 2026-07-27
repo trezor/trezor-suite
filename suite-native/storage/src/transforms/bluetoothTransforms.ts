@@ -1,6 +1,6 @@
 import { createTransform } from 'redux-persist';
 
-import { BluetoothDevice } from '@trezor/transport-native-bluetooth';
+import { type BluetoothDevice } from '@trezor/transport-native-bluetooth';
 
 export const bluetoothPersistTransform = createTransform<BluetoothDevice[], BluetoothDevice[]>(
     inboundState => {

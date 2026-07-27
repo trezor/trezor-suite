@@ -13,7 +13,7 @@ const PRODUCTION_SECURITY_HEADERS = {
     /**
      * @link https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Strict-Transport-Security
      */
-    'strict-transport-security': 'max-age=31536000',
+    'strict-transport-security': 'max-age=31536000; includeSubDomains; preload',
 
     /**
      * @link https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Upgrade-Insecure-Requests
@@ -30,6 +30,16 @@ const PRODUCTION_SECURITY_HEADERS = {
      * Prevent non-https://suite.trezor.io websites from embedding our website in their iframe.
      */
     'x-frame-options': 'SAMEORIGIN',
+
+    /**
+     * @link https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Permissions_Policy
+     * Restrict browser powerful features to the minimum required set.
+     * - Keep WebUSB, camera, clipboard write and local network access available only for this origin.
+     * - Explicitly disable unrelated features.
+     * It's experimental feature and not supported by all browsers.
+     */
+    'permissions-policy':
+        'usb=(self), camera=(self), clipboard-write=(self), local-network-access=(self), geolocation=(), microphone=(), payment=(), hid=(), serial=(), fullscreen=(), accelerometer=(), gyroscope=(), magnetometer=(), storage-access=(), bluetooth=(), clipboard-read=(), display-capture=(), picture-in-picture=(), idle-detection=(), screen-wake-lock=()',
 
     /**
      * @link https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Referrer-Policy
@@ -52,9 +62,17 @@ const PRODUCTION_SECURITY_HEADERS = {
         'style-src': ['self', 'unsafe-inline'],
         'style-src-elem': ['self', 'unsafe-inline'],
         'img-src': ['self', 'blob:', 'data:', 'https://*.trezor.io'],
+        // connect-src is permissive because custom backends need arbitrary domains.
+        // Note that connect-src is a CSP policy that has nothing to do with the former TrezorConnect parameter of the same name
         'connect-src': ['data:', '*'],
         'upgrade-insecure-requests': true,
-        'script-src': ['self', 'unsafe-eval'],
+        'script-src': ['self'],
+        'form-action': ['self'],
+        'frame-ancestors': ['self'],
+        'base-uri': ['none'],
+        'object-src': ['none'],
+        // trezorsuite deeplinks are opened using iframes to avoid issues with navigation
+        'frame-src': ['self', 'trezorsuite://*'],
         'report-uri': SENTRY_REPORT_URL,
         'report-to': 'csp-endpoint',
     },

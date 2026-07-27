@@ -1,0 +1,75 @@
+name: "Determine E2E Test Strategy"
+description: >
+  Classifies PR changes into one of three strategies:
+  run-everything (e2e framework changed, mixed framework+production, or CI-only changes),
+  analyze (production code changed → LLM analysis needed),
+  or specific-tests (only e2e test files changed).
+outputs:
+  strategy:
+    description: "specific-tests | run-everything | analyze"
+    value: ${{ steps.classify.outputs.strategy }}
+  spec-list:
+    description: "Comma-separated list of test file paths (only set when strategy=specific-tests)"
+    value: ${{ steps.classify.outputs.spec-list }}
+runs:
+  using: "composite"
+  steps:
+    - name: Classify changed files
+      id: classify
+      shell: bash
+      run: |
+        set -euo pipefail
+
+        # Fetch the base branch so git can walk its ancestry and find the merge-base.
+        # Fetching only BASE_SHA (even with --depth=1) leaves it parentless, making
+        # three-dot diff impossible. Fetching the full ref gives the connected history.
+        # The calling workflow must use fetch-depth: 0 on the PR head so the merge-base
+        # is reachable from both sides.
+        BASE_SHA="${{ github.event.pull_request.base.sha }}"
+        git fetch origin "${{ github.base_ref }}"
+
+        CHANGED=$(git diff "$BASE_SHA"...HEAD --name-only)
+        echo "Changed files:"
+        echo "$CHANGED"
+
+        if [[ -z "$CHANGED" ]]; then
+          echo "No changed files detected. Running everything."
+          echo "strategy=run-everything" >> "$GITHUB_OUTPUT"
+          echo "spec-list=" >> "$GITHUB_OUTPUT"
+          exit 0
+        fi
+
+        # Any CI file change means we can't trust LLM analysis — run everything
+        CI_CHANGED=$(echo "$CHANGED" | grep '^\.github/' || true)
+        if [[ -n "$CI_CHANGED" ]]; then
+          echo "CI workflow/action files changed — running everything, skipping analysis."
+          echo "strategy=run-everything" >> "$GITHUB_OUTPUT"
+          echo "spec-list=" >> "$GITHUB_OUTPUT"
+          exit 0
+        fi
+
+        NON_CI="$CHANGED"
+
+        # Check if any e2e framework files changed (takes priority over production analysis)
+        OUTSIDE_TESTS=$(echo "$NON_CI" | grep '^suite/e2e/' | grep -v '^suite/e2e/tests/' || true)
+        if [[ -n "$OUTSIDE_TESTS" ]]; then
+          echo "E2E framework files changed — running everything."
+          echo "strategy=run-everything" >> "$GITHUB_OUTPUT"
+          echo "spec-list=" >> "$GITHUB_OUTPUT"
+          exit 0
+        fi
+
+        # Check if any file is outside suite/e2e/ entirely (production code)
+        OUTSIDE_E2E=$(echo "$NON_CI" | grep -v '^suite/e2e/' || true)
+        if [[ -n "$OUTSIDE_E2E" ]]; then
+          echo "Production code changed — proceeding to LLM analysis."
+          echo "strategy=analyze" >> "$GITHUB_OUTPUT"
+          echo "spec-list=" >> "$GITHUB_OUTPUT"
+          exit 0
+        fi
+
+        # All changed files are under suite/e2e/tests/ — run only those
+        TEST_FILES=$(echo "$NON_CI" | grep '^suite/e2e/tests/' | tr '\n' ',' | sed 's/,$//')
+        echo "Only test files changed. Running: $TEST_FILES"
+        echo "strategy=specific-tests" >> "$GITHUB_OUTPUT"
+        echo "spec-list=$TEST_FILES" >> "$GITHUB_OUTPUT"

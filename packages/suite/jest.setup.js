@@ -1,6 +1,12 @@
 require('@testing-library/jest-dom');
 const { TextEncoder, TextDecoder } = require('util');
 
+// Polyfill crypto.randomUUID for jsdom test environment
+if (!globalThis.crypto?.randomUUID) {
+    const { randomUUID } = require('crypto');
+    globalThis.crypto.randomUUID = randomUUID;
+}
+
 Object.assign(global, { TextDecoder, TextEncoder });
 
 // Fixes issues with Buffer instanceof Uint8Array checks relevant for Solana tests.

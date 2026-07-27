@@ -1,4 +1,4 @@
-import { CryptoId } from 'invity-api';
+import type { CryptoId } from 'invity-api';
 
 import { localizeNumber } from '@suite-common/wallet-utils';
 import { capitalizeFirstLetter } from '@trezor/utils';
@@ -12,11 +12,11 @@ import {
 import { expect, test } from '../../support/fixtures';
 
 // Expected values based on our mocked responses
-const fiatAmount = localizeNumber(buyQuotesSolanaToken[0].fiatStringAmount, 'en-US', 2);
-const cryptoAmount = buyQuotesSolanaToken[0].receiveStringAmount;
-const provider = capitalizeFirstLetter(buyQuotesSolanaToken[0].exchange);
+const fiatAmount = localizeNumber(buyQuotesSolanaToken[0]?.fiatStringAmount ?? '', 'en-US', 2);
+const cryptoAmount = buyQuotesSolanaToken[0]?.receiveStringAmount ?? '';
+const provider = capitalizeFirstLetter(buyQuotesSolanaToken[0]?.exchange ?? '');
 const formattedCryptoAmount = `${cryptoAmount} JUP`;
-const formattedFiatAmount = `CZK ${fiatAmount}`;
+const formattedFiatAmount = `$${fiatAmount}`;
 
 test.describe('Trading - Buy Solana', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
     test.beforeEach(async ({ page, tradingMock, onboardingPage, settingsPage, walletPage }) => {
@@ -46,6 +46,9 @@ test.describe('Trading - Buy Solana', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, (
             await tradingPage.fillBuyForm({
                 amount: cryptoAmount,
                 wantCrypto: isCryptoInput,
+                fiatCurrencyCode: 'usd',
+                country: 'US',
+                countrySubdivision: 'CA',
                 selectReceiveAddress: async () => {
                     await tradingPage.receiveAccount.selectSuiteReceiveAccount(0);
                 },
@@ -54,9 +57,17 @@ test.describe('Trading - Buy Solana', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, (
             await expect(tradingPage.quotes.provider).toHaveText(provider);
         });
 
+        await test.step('Continue to the preview', async () => {
+            await tradingPage.buyBestOfferButton.click();
+
+            await expect(tradingPage.confirmation.fiatAmount).toHaveText(formattedFiatAmount);
+            await expect(tradingPage.confirmation.cryptoAmount).toHaveText(formattedCryptoAmount);
+            await expect(tradingPage.confirmation.provider).toHaveText(provider);
+        });
+
         await test.step('Confirm the trade', async () => {
             const tradeRequestPromise = page.waitForRequest(invityEndpoint.buyTrade);
-            await tradingPage.buyBestOfferButton.click();
+            await tradingPage.confirmation.buyButton.click();
 
             await expect
                 .soft(tradeRequestPromise)
@@ -78,7 +89,7 @@ test.describe('Trading - Buy Solana', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, (
 
         await test.step('Return to account buy form', async () => {
             await tradingPage.backToAccountButton('Buy').click();
-            await expect(page).toHaveURL(/\/accounts\/coinmarket\/buy#\/sol\/0\/normal$/);
+            await expect(page).toHaveURL(/\/accounts\/coinmarket\/buy$/);
         });
     });
 });

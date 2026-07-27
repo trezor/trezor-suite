@@ -1,14 +1,14 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/helpers/signtx.js
-import { ERRORS } from '@trezor/connect-common/src/constants';
-
-import { PROTO } from '../../constants';
-import type { TypedCall } from '../../device/DeviceCommands';
-import type { BitcoinNetworkInfo } from '../../types';
 import type {
+    BitcoinNetworkInfo,
+    PROTO,
     RefTransaction,
     SignedTransaction,
     TransactionOptions,
-} from '../../types/api/bitcoin';
+} from '@trezor/connect-common';
+import { ERRORS } from '@trezor/connect-common/src/constants';
+
+import type { TypedCall } from '../../device/DeviceCommands';
 
 export interface SignTxHelperProps {
     typedCall: TypedCall;
@@ -36,10 +36,10 @@ const requestPrevTxInfo = ({
     txRequest: { request_type, details },
     refTxs,
 }: SignTxHelperProps) => {
-    const { tx_hash } = details;
-    if (!tx_hash) {
+    if (!details?.tx_hash) {
         throw ERRORS.TypedError('Runtime', 'requestPrevTxInfo: unknown details.tx_hash');
     }
+    const { tx_hash } = details;
     const tx = refTxs[tx_hash.toLowerCase()];
     if (!tx) {
         throw ERRORS.TypedError('Runtime', `requestPrevTxInfo: Requested unknown tx: ${tx_hash}`);
@@ -52,8 +52,12 @@ const requestPrevTxInfo = ({
                 `requestPrevTxInfo: Requested unknown TXINPUT: ${tx_hash}`,
             );
 
+        const { inputs } = tx;
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const prevInput: (typeof inputs)[number] = inputs[details.request_index];
+
         return typedCall('TxAckPrevInput', 'TxRequest', {
-            tx: { input: tx.inputs[details.request_index] },
+            tx: { input: prevInput },
         });
     }
     if (request_type === 'TXOUTPUT') {
@@ -64,8 +68,12 @@ const requestPrevTxInfo = ({
                 `requestPrevTxInfo: Requested unknown TXOUTPUT: ${tx_hash}`,
             );
 
+        const { bin_outputs } = tx;
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const prevOutput: (typeof bin_outputs)[number] = bin_outputs[details.request_index];
+
         return typedCall('TxAckPrevOutput', 'TxRequest', {
-            tx: { output: tx.bin_outputs[details.request_index] },
+            tx: { output: prevOutput },
         });
     }
     if (request_type === 'TXORIGINPUT') {
@@ -76,8 +84,12 @@ const requestPrevTxInfo = ({
                 `requestPrevTxInfo: Requested unknown TXORIGINPUT: ${tx_hash}`,
             );
 
+        const { inputs } = tx;
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const origInput: (typeof inputs)[number] = inputs[details.request_index];
+
         return typedCall('TxAckInput', 'TxRequest', {
-            tx: { input: tx.inputs[details.request_index] },
+            tx: { input: origInput },
         });
     }
     if (request_type === 'TXORIGOUTPUT') {
@@ -88,8 +100,12 @@ const requestPrevTxInfo = ({
                 `requestPrevTxInfo: Requested unknown TXORIGOUTPUT: ${tx_hash}`,
             );
 
+        const { outputs } = tx;
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const origOutput: (typeof outputs)[number] = outputs[details.request_index];
+
         return typedCall('TxAckOutput', 'TxRequest', {
-            tx: { output: tx.outputs[details.request_index] },
+            tx: { output: origOutput },
         });
     }
     if (request_type === 'TXEXTRADATA') {
@@ -139,21 +155,28 @@ const requestSignedTxInfo = ({
     paymentRequests,
 }: SignTxHelperProps) => {
     if (request_type === 'TXINPUT') {
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const input: (typeof inputs)[number] = inputs[details.request_index];
+
         return typedCall('TxAckInput', 'TxRequest', {
-            tx: { input: inputs[details.request_index] },
+            tx: { input },
         });
     }
     if (request_type === 'TXOUTPUT') {
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const output: (typeof outputs)[number] = outputs[details.request_index];
+
         return typedCall('TxAckOutput', 'TxRequest', {
-            tx: { output: outputs[details.request_index] },
+            tx: { output },
         });
     }
     if (request_type === 'TXPAYMENTREQ') {
-        const req = paymentRequests[details.request_index];
+        const request_index = details?.request_index;
+        const req = typeof request_index === 'number' ? paymentRequests[request_index] : undefined;
         if (!req) {
             throw ERRORS.TypedError(
                 'Runtime',
-                `requestPrevTxInfo: Requested unknown payment request at ${details.request_index}`,
+                `requestSignedTxInfo: Requested unknown payment request at ${request_index}`,
             );
         }
 
@@ -186,8 +209,7 @@ const requestSignedTxInfo = ({
 // requests information about a transaction
 // can be either signed transaction itself of prev transaction
 const requestTxAck = (props: SignTxHelperProps) => {
-    const { tx_hash } = props.txRequest.details;
-    if (tx_hash) {
+    if (props.txRequest.details?.tx_hash) {
         return requestPrevTxInfo(props);
     }
 

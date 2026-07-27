@@ -1,5 +1,11 @@
 import Ajv from 'ajv';
 
+const getDuplicateIds = (ids: string[]) => {
+    const seenIds = new Set<string>();
+
+    return [...new Set(ids.filter(id => seenIds.size === seenIds.add(id).size))];
+};
+
 // checks that a config meets the criteria specified by the schema
 export const validateJsonSchema = (config: string, schema: string) => {
     const ajv = new Ajv();
@@ -42,6 +48,30 @@ export const validateJsonSchema = (config: string, schema: string) => {
         const details = invalidExperiments.map(exp => `id=${exp.id}, sum=${exp.sum}`).join('; ');
         throw new Error(
             `Config is invalid: percentages must sum to 100. Failed experiments: ${details}`,
+        );
+    }
+
+    const duplicateMessageIds = getDuplicateIds(
+        (parsedConfig as { actions?: unknown[] }).actions
+            ?.map((action: any) => action?.message?.id)
+            .filter((id): id is string => typeof id === 'string') ?? [],
+    );
+
+    if (duplicateMessageIds.length > 0) {
+        throw new Error(
+            `Config is invalid: message ids must be unique. Duplicate ids: ${duplicateMessageIds.join(', ')}`,
+        );
+    }
+
+    const duplicateExperimentIds = getDuplicateIds(
+        (parsedConfig as { experiments?: unknown[] }).experiments
+            ?.map((experiment: any) => experiment?.experiment?.id)
+            .filter((id): id is string => typeof id === 'string') ?? [],
+    );
+
+    if (duplicateExperimentIds.length > 0) {
+        throw new Error(
+            `Config is invalid: experiment ids must be unique. Duplicate ids: ${duplicateExperimentIds.join(', ')}`,
         );
     }
 };

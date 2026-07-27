@@ -2,36 +2,24 @@ import { createReducer } from '@reduxjs/toolkit';
 
 import { createWeakMapSelector } from '@suite-common/redux-utils';
 import { formatDurationStrict } from '@suite-common/suite-utils';
-import { NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
-import { FeeInfo, FeeLevelLabel, FeesState, FeesStatus } from '@suite-common/wallet-types';
-import { getConvertedOrDefaultFeeInfo } from '@suite-common/wallet-utils';
-import { FeeLevel } from '@trezor/connect';
+import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
+import {
+    type FeeInfo,
+    type FeeLevelLabel,
+    type FeesState,
+    type FeesStatus,
+} from '@suite-common/wallet-types';
+import { getConvertedOrDefaultFeeInfo, isEip1559 } from '@suite-common/wallet-utils';
+import { type FeeLevel } from '@trezor/connect';
 
 import { feesActions } from './feesActions';
 import { updateFeeInfoThunk } from './feesThunks';
 
-export type FeesRootState = {
-    wallet: {
-        fees: FeesState;
-    };
-};
-
-export const DEFAULT_FEE_INFO: FeeInfo = {
-    blockHeight: 0,
-    blockTime: 10,
-    minFee: 1,
-    maxFee: 100,
-    minPriorityFee: 0,
-    levels: [{ label: 'normal', feePerUnit: '1', blocks: 0 }],
-};
+export type FeesRootState = { wallet: { fees: FeesState } };
 
 export const feesInitialState: FeesState = {};
 
 export const feesReducer = createReducer<FeesState>(feesInitialState, builder => {
-    builder.addCase(feesActions.updateFee, (state, { payload: { symbol, data } }) => {
-        const defaultStatus = 'loaded'; // in case the object doesn't exist yet (shouldn't happen)
-        state[symbol] = { status: defaultStatus, ...state[symbol], data };
-    });
     builder.addCase(feesActions.updateMultipleFees, (state, { payload }) => ({
         ...state,
         ...payload,
@@ -81,6 +69,18 @@ export const selectConvertedNetworkFeeInfo = createMemoizedSelector(
         });
 
         return feeInfo;
+    },
+);
+
+/**
+ * Returns whether the network supports EIP-1559 based on the fee info.
+ */
+export const selectIsEip1559Fee = createMemoizedSelector(
+    [(_state: FeesRootState, symbol?: NetworkSymbol) => symbol, selectConvertedNetworkFeeInfo],
+    (symbol, feeInfo): boolean => {
+        if (!symbol || !feeInfo?.levels?.[0]) return false;
+
+        return isEip1559(feeInfo.levels[0]);
     },
 );
 

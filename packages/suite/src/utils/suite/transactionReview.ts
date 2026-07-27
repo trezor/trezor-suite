@@ -1,14 +1,15 @@
-import { ExtendedMessageDescriptor } from '@suite/intl';
-import { NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
-import { FormState, StakeFormState } from '@suite-common/wallet-types';
+import { type ExtendedMessageDescriptor } from '@suite/intl';
+import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { type FormState, type StakeFormState } from '@suite-common/wallet-types';
 import { getEvmTransactionTextSignature } from '@suite-common/wallet-utils';
-import { TokenInfo } from '@trezor/blockchain-link-types';
+import { type TokenInfo } from '@trezor/blockchain-link-types';
 
 interface GetTransactionReviewModalActionTranslationParams {
     symbol: NetworkSymbol;
     stakeType: StakeFormState['stakeType'] | null;
     precomposedForm: FormState | StakeFormState;
     tradingToken: TokenInfo | undefined;
+    routeName?: string;
     isBumpFeeRbfAction: boolean;
     isCancelRbfAction: boolean;
     isSending?: boolean;
@@ -20,11 +21,14 @@ export const getTransactionReviewModalActionTranslation = ({
     stakeType,
     precomposedForm,
     tradingToken,
+    routeName,
     isBumpFeeRbfAction,
     isCancelRbfAction,
     isSending,
     source,
 }: GetTransactionReviewModalActionTranslationParams): ExtendedMessageDescriptor => {
+    const txSignature = getEvmTransactionTextSignature(precomposedForm.transactionData);
+
     switch (stakeType) {
         case 'stake':
             return {
@@ -49,9 +53,7 @@ export const getTransactionReviewModalActionTranslation = ({
     }
 
     if (precomposedForm?.trading?.activeSection === 'exchange') {
-        const transactionPurpose = getEvmTransactionTextSignature(precomposedForm.transactionData);
-
-        switch (transactionPurpose) {
+        switch (txSignature) {
             case 'approve':
                 return {
                     id:
@@ -73,12 +75,59 @@ export const getTransactionReviewModalActionTranslation = ({
         }
     }
 
+    if (
+        (routeName === 'earn-yield-deposit' || routeName === 'earn-yield-withdraw') &&
+        (txSignature === 'approve' || txSignature === 'revoke')
+    ) {
+        return {
+            id: txSignature === 'approve' ? 'TR_APPROVE_DATA_TITLE' : 'TR_REVOKE_DATA_TITLE',
+        };
+    }
+
     if (isBumpFeeRbfAction) {
         return { id: 'TR_REPLACE_TX' };
     }
 
     if (isCancelRbfAction) {
         return { id: 'TR_CANCEL_TX_BUTTON' };
+    }
+
+    if (routeName === 'earn-yield-deposit') {
+        return { id: 'TR_EARN_YIELD_DEPOSIT' };
+    }
+
+    if (routeName === 'earn-yield-withdraw') {
+        return {
+            id: txSignature === 'redeem' ? 'TR_EARN_YIELD_REDEEM' : 'TR_EARN_YIELD_WITHDRAW',
+        };
+    }
+
+    if (routeName === 'earn-yield-claim') {
+        return { id: source === 'heading' ? 'TR_EARN_CLAIM_REWARDS' : 'TR_EARN_YIELD_CLAIM' };
+    }
+
+    if (routeName === 'earn-tron-withdraw') {
+        return { id: 'TR_EARN_TRON_WITHDRAW_TITLE' };
+    }
+
+    if (routeName === 'earn-tron-claim') {
+        return { id: 'TR_EARN_TRON_CLAIM_TITLE' };
+    }
+
+    if (
+        precomposedForm.tronStaking?.kind === 'freeze' ||
+        precomposedForm.tronStaking?.kind === 'unstake'
+    ) {
+        return {
+            id:
+                precomposedForm.tronStaking.kind === 'unstake'
+                    ? 'TR_EARN_TRON_UNSTAKE_TITLE'
+                    : 'TR_EARN_TRON_FREEZE',
+        };
+    }
+
+    if (precomposedForm.tronStaking?.kind === 'vote') {
+        return { id: 'TR_EARN_TRON_VOTE' };
     }
 
     if (isSending) {

@@ -1,4 +1,4 @@
-import { ComponentProps } from 'react';
+import { type ComponentProps } from 'react';
 import { FormattedDate as IntlFormattedDate } from 'react-intl';
 
 const defaultDateFormat = {

@@ -18,8 +18,9 @@ export const AuthorizeDeviceScreenHeader = () => {
         <ScreenHeaderWrapper>
             <IconButton
                 iconName="x"
+                intent="neutral"
+                priority="secondary"
                 size="medium"
-                colorScheme="tertiaryElevation0"
                 accessibilityRole="button"
                 accessibilityLabel="close"
                 onPress={handleCancel}

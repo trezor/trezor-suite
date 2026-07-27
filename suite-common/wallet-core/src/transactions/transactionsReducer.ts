@@ -1,53 +1,22 @@
 import { isAnyOf } from '@reduxjs/toolkit';
 
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
-import { AccountKey, WalletAccountTransaction } from '@suite-common/wallet-types';
+import type { AccountKey } from '@suite-common/wallet-types';
 import { findTransaction } from '@suite-common/wallet-utils';
 
 import { transactionsActions } from './transactionsActions';
+import type { TransactionsState } from './transactionsReducerTypes';
 import {
     fetchAllTransactionsForAccountThunk,
     fetchTransactionsPageThunk,
 } from './transactionsThunks';
 import { accountsActions } from '../accounts/accountsActions';
-import { AccountsRootState } from '../accounts/accountsReducer';
-
-export type AccountTransactionsFetchStatusDetail =
-    | {
-          status: 'loading' | 'idle';
-          error: null;
-      }
-    | {
-          status: 'error';
-          error: string;
-      };
-
-export type AccountTransactionsFetchAllStatus = {
-    areAllTransactionsLoaded: boolean;
-};
-
-export interface TransactionsState {
-    transactions: { [key: AccountKey]: WalletAccountTransaction[] };
-    fetchStatusDetail: {
-        [key: AccountKey]: AccountTransactionsFetchStatusDetail &
-            Partial<AccountTransactionsFetchAllStatus>;
-    };
-}
 
 export const transactionsInitialState: TransactionsState = {
     transactions: {},
+    phishing: {},
     fetchStatusDetail: {},
 };
-
-export type TransactionsRootState = {
-    wallet: {
-        transactions: TransactionsState & {
-            // We need to override types because there could be nulls/undefined in transactions array because of pagination
-            // This should be fixed in TransactionsState but it will throw lot of errors then in desktop Suite
-            transactions: { [key: AccountKey]: (WalletAccountTransaction | null | undefined)[] };
-        };
-    };
-} & AccountsRootState;
 
 const initializeAccount = (state: TransactionsState, accountKey: AccountKey) => {
     // initialize an empty array at 'accountKey' index if not yet initialized
@@ -65,19 +34,28 @@ export const prepareTransactionsReducer = createReducerWithExtraDeps(
             .addCase(transactionsActions.resetTransaction, (state, { payload }) => {
                 const { account } = payload;
                 delete state.transactions[account.key];
+                delete state.phishing[account.key];
             })
             .addCase(transactionsActions.replaceTransaction, (state, { payload }) => {
                 const { key, txid, tx } = payload;
                 const accountTxs = initializeAccount(state, key);
-                const index = accountTxs.findIndex(t => t && t.txid === txid);
+                const index = accountTxs.findIndex(t => t?.txid === txid);
                 if (accountTxs[index]) accountTxs[index] = tx;
             })
             .addCase(transactionsActions.removeTransaction, (state, { payload }) => {
                 const { account, txs } = payload;
+
                 const transactions = state.transactions[account.key];
                 if (transactions) {
                     state.transactions[account.key] = transactions.filter(
                         tx => !txs.some(t => t.txid === tx?.txid),
+                    );
+                }
+
+                const phishing = state.phishing[account.key];
+                if (phishing) {
+                    state.phishing[account.key] = phishing.filter(
+                        tx => !txs.some(t => t.txid === tx),
                     );
                 }
             })
@@ -95,7 +73,6 @@ export const prepareTransactionsReducer = createReducerWithExtraDeps(
                         // add a new transaction
                         if (page && perPage) {
                             // insert a tx object at correct index
-                            // TODO settingsCommonConfig.TXS_PER_PAGE musi chodit z payloadu, jinak failuje (chodi do thunku, sem ne)
                             const txIndex = (page - 1) * perPage + i; // Needs to be same as TX_PER_PAGE
                             accountTxs[txIndex] = transaction;
                         } else {
@@ -105,7 +82,7 @@ export const prepareTransactionsReducer = createReducerWithExtraDeps(
                     } else {
                         // update the transaction if conditions are met
                         const existingTxIndex = accountTxs.findIndex(
-                            t => t && t.txid === existingTx.txid,
+                            t => t?.txid === existingTx.txid,
                         );
                         const existingBlockHeight = existingTx.blockHeight ?? 0;
                         const incomingBlockHeight = transaction.blockHeight ?? 0;
@@ -127,9 +104,22 @@ export const prepareTransactionsReducer = createReducerWithExtraDeps(
                     }
                 });
             })
+            .addCase(transactionsActions.markTransactionAsNotScam, (state, { payload }) => {
+                const { key, txid, isMarkedAsNotScam } = payload;
+                const transactionIdList = state.phishing[key] || [];
+
+                if (isMarkedAsNotScam && !transactionIdList.includes(txid)) {
+                    state.phishing[key] = [...transactionIdList, txid];
+                } else if (!isMarkedAsNotScam && transactionIdList.includes(txid)) {
+                    state.phishing[key] = transactionIdList.filter(
+                        transactionId => transactionId !== txid,
+                    );
+                }
+            })
             .addCase(accountsActions.removeAccount, (state, { payload }) => {
                 payload.forEach(a => {
                     delete state.transactions[a.key];
+                    delete state.phishing[a.key];
                     delete state.fetchStatusDetail[a.key];
                 });
             })
@@ -142,10 +132,11 @@ export const prepareTransactionsReducer = createReducerWithExtraDeps(
                 };
             })
             .addCase(fetchAllTransactionsForAccountThunk.fulfilled, (state, { meta }) => {
-                state.fetchStatusDetail[meta.arg.accountKey] = {
-                    ...state.fetchStatusDetail[meta.arg.accountKey],
-                    areAllTransactionsLoaded: true,
-                };
+                const { accountKey } = meta.arg;
+                const previousDetail = state.fetchStatusDetail[accountKey];
+                const updatedDetail = { ...previousDetail, areAllTransactionsLoaded: true };
+                // @ts-expect-error: indexing with noUncheckedIndexedAccess widens fetchStatusDetail
+                state.fetchStatusDetail[accountKey] = updatedDetail;
             })
             .addMatcher(
                 isAnyOf(

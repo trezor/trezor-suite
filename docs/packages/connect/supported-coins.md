@@ -1,44 +1,20 @@
 # Supported coins
 
-## The pipeline
+## Ownership
 
-Do not change `@trezor/connect-data/files/coins.json` manually.
+The coin definitions live in `@trezor/connect-data` and are owned there. The files are:
 
-The one and only source of truth are `*.json` definitions declared and maintained in the [firmware repository](https://github.com/trezor/trezor-firmware/tree/main/common/defs).
+- `packages/connect-data/files/coins.json` — Bitcoin-like and miscellaneous coins.
+- `packages/connect-data/files/coins-eth.json` — Ethereum networks.
 
-These are exported to a read-only [trezor-common](https://github.com/trezor/trezor-common) repository.
+These files are the source of truth. They are committed to this repository and edited directly here; there is no generation step and no automatic sync from an upstream source.
 
-`trezor-common` is included as git submodule mounted at `submodules/trezor-common`.
+> Historically these files were regenerated from the [trezor-firmware](https://github.com/trezor/trezor-firmware/tree/main/common/defs) definitions via the `trezor-common` submodule and a `cointool.py` pipeline. That sync has been retired — `@trezor/connect-data` now owns the definitions outright, so edit the JSON files directly instead of regenerating them. Upstream coin-definition changes are no longer pulled in automatically; if a relevant upstream change lands, port it by hand into the JSON files.
 
-## Update and maintenance in @trezor/connect
+## Editing the definitions
 
-_Make sure that desired `[coin].json` definition is present in `trezor-firmware` repository *and* corresponding [support for connect](https://github.com/trezor/trezor-firmware/blob/4e005de02fbb9db11a304587ec1abe8aab80cdfd/common/defs/support.json#L3) is enabled._
+Edit the relevant file directly: `packages/connect-data/files/coins.json` for Bitcoin-like and miscellaneous coins, or `packages/connect-data/files/coins-eth.json` for Ethereum networks.
 
-1. Update `trezor-common` submodule:
+> Warning: the retired pipeline used to drop any coin whose `support` map was `false` for every device model. Nothing filters those out anymore, so a coin present in the JSON is parsed by `packages/connect/src/data/coinInfo.ts` and surfaces in `getAllNetworks()` regardless of its `support` values. When adding a coin, make sure its `support` map reflects reality — a coin unsupported on all models should not be added.
 
-```
- yarn update-submodules
-```
-
-2. Build `src/data/coins.json` file using `trezor-common/cointool`:
-
-You need to have a python3 environment setup in order to be able to run it.
-
-Create a python `virtualenv`:
-
-```bash
-python3 -m venv .venv
-. .venv/bin/activate
-```
-
-Then you run pip with the `requirements.txt` file form the trezor-common submodule:
-
-```bash
-pip install -r submodules/trezor-common/tools/requirements.txt
-```
-
-Now you have all the required dependencies install so you can finally run the script that will update the coins:
-
-```bash
-yarn update-coins
-```
+> Note: the `submodules/trezor-common` submodule is still required for other purposes (e2e test vectors and `yarn update-models`) and is unaffected by coin-definition edits.

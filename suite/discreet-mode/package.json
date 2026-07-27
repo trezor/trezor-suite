@@ -1,0 +1,19 @@
+{
+    "name": "@suite/discreet-mode",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "sideEffects": false,
+    "main": "src/index",
+    "scripts": {
+        "depcheck": "yarn g:depcheck",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "type-check": "yarn g:tsc --build"
+    },
+    "dependencies": {
+        "@suite-common/discreet-mode": "workspace:*",
+        "react": "19.2.3",
+        "react-redux": "9.3.0",
+        "styled-components": "^6.3.9"
+    }
+}

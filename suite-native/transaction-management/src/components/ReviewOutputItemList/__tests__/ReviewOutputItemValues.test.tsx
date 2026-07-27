@@ -1,21 +1,23 @@
-import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
-import { PreloadedState, renderWithStoreProvider } from '@suite-native/test-utils';
+import { type TokenAddress } from '@suite-common/wallet-types';
+import { getTranslation } from '@suite-native/intl';
+import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 
-import { getWalletState } from '../../../__fixtures__/walletState';
-import { ReviewOutputItemValues, ReviewOutputItemValuesProps } from '../ReviewOutputItemValues';
+import { ETH_ACCOUNT_KEY, getWalletState } from '../../../__fixtures__/walletState';
+import {
+    ReviewOutputItemValues,
+    type ReviewOutputItemValuesProps,
+} from '../ReviewOutputItemValues';
 
 const oneUsdc = '1000000'; // 1 USDC in smallest unit
 
 describe('ReviewOutputItemValues', () => {
     const renderReviewOutputItemValues = (
         props: Partial<ReviewOutputItemValuesProps> = {},
-        preloadedState: PreloadedState = {},
+        preloadedState = {},
     ) =>
         renderWithStoreProvider(
             <ReviewOutputItemValues
-                accountKey={
-                    'eth-account-1' as AccountKey // Todo: create properly via `createAccountKey()`
-                }
+                accountKey={ETH_ACCOUNT_KEY}
                 value={oneUsdc}
                 translationKey="transactionManagement.review.outputs.summary.totalAmount"
                 {...props}
@@ -28,7 +30,9 @@ describe('ReviewOutputItemValues', () => {
     it('should render translated title', () => {
         const { getByText } = renderReviewOutputItemValues({}, { wallet: getWalletState() });
 
-        expect(getByText('Total amount')).toBeOnTheScreen();
+        expect(
+            getByText(getTranslation('transactionManagement.review.outputs.summary.totalAmount')),
+        ).toBeOnTheScreen();
     });
 
     it('should render token balance', () => {

@@ -1,29 +1,19 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/RecoveryDevice.js
 
-import { MessagesSchema as PROTO } from '@trezor/protobuf';
+import { type PermissionRequest, UI_REQUEST } from '@trezor/connect-common';
+import { RecoveryDevice as RecoveryDeviceSchema } from '@trezor/connect-common/src/types/api/management/recoveryDevice';
+import type { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 
-import { AbstractMethod, MethodPermission, Payload } from '../core/AbstractMethod';
-import { UI_REQUEST } from '../events';
-import { RecoveryDevice as RecoveryDeviceSchema } from '../types/api/recoveryDevice';
+import type { MethodMessage } from '../core/AbstractMethod';
+import { AbstractMethod } from '../core/AbstractMethod';
 
 export default class RecoveryDevice extends AbstractMethod<'recoveryDevice', PROTO.RecoveryDevice> {
-    constructor(message: { id?: number; payload: Payload<'recoveryDevice'> }) {
-        super(message);
-        this.allowDeviceMode = [...this.allowDeviceMode, UI_REQUEST.INITIALIZE];
-        this.useDeviceState = false;
-        this.skipFinalReload = false;
-        this.useEmptyPassphrase = true;
-    }
-    get requiredPermissions(): MethodPermission[] {
-        return ['management'];
-    }
-
-    init() {
-        const { payload } = this;
+    constructor(message: MethodMessage<'recoveryDevice'>) {
+        const { payload } = message;
 
         Assert(RecoveryDeviceSchema, payload);
-        this.params = {
+        const params = {
             word_count: payload.word_count,
             passphrase_protection: payload.passphrase_protection,
             pin_protection: payload.pin_protection,
@@ -33,7 +23,17 @@ export default class RecoveryDevice extends AbstractMethod<'recoveryDevice', PRO
             input_method: payload.input_method,
             type: payload.type,
             u2f_counter: payload.u2f_counter,
+            backup_method: payload.backup_method,
         };
+
+        super(message, params);
+        this.allowDeviceMode = [...this.allowDeviceMode, UI_REQUEST.INITIALIZE];
+        this.useDeviceState = false;
+        this.skipFinalReload = false;
+        this.useEmptyPassphrase = true;
+    }
+    get requiredPermissions(): PermissionRequest[] {
+        return [{ permission: 'management' }];
     }
 
     get confirmation() {
@@ -48,7 +48,7 @@ export default class RecoveryDevice extends AbstractMethod<'recoveryDevice', PRO
     }
 
     async run() {
-        const cmd = this.device.getCommands();
+        const cmd = this.getDevice().getCommands();
         const response = await cmd.typedCall('RecoveryDevice', 'Success', this.params);
 
         return response.message;

@@ -1,7 +1,9 @@
-import { ExtraDependenciesStatic } from '@suite-common/redux-utils';
-import { analyticsMock, extraDependenciesCommonMock } from '@suite-common/test-utils';
+import { mockDesktopAnalytics } from '@suite/analytics/mocks';
+import { type ExtraDependenciesStatic } from '@suite-common/redux-utils';
+import { extraDependenciesCommonMock } from '@suite-common/test-utils';
+import { ok } from '@trezor/type-utils';
 
-import { SuiteServices } from '../extraDependencies';
+import { type SuiteServices } from '../extraDependencies';
 
 type ExtraDependenciesSuiteMock = ExtraDependenciesStatic & { services: SuiteServices };
 
@@ -9,7 +11,7 @@ export const extraDependenciesDesktopMock: ExtraDependenciesSuiteMock = {
     ...extraDependenciesCommonMock,
     services: {
         ...extraDependenciesCommonMock.services,
-        analytics: analyticsMock, // To satisfy Suite specific type as ExtraDependenciesStatic tightness it
+        analytics: mockDesktopAnalytics(),
         suiteRouterHistory: {
             getLocation: () => ({
                 pathname: '/mocked_path',
@@ -17,8 +19,8 @@ export const extraDependenciesDesktopMock: ExtraDependenciesSuiteMock = {
                 search: '?mocked_search',
             }),
             navigate: (to, state) => console.warn(`Mock navigating to ${to} with state`, state),
-            listen: (_: {}) => () => {},
+            listen: (_: unknown) => () => {},
         },
-        disableLegacyMetadataIfNeeded: () => {},
+        migrateLegacyLabelsToSuiteSync: () => Promise.resolve(ok({ changed: 0, skipped: 0 })),
     },
 };

@@ -1,44 +1,48 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
-import { SpacingValues, spacings } from '@trezor/theme';
+import { InfoIcon } from '@trezor/icons';
+import { type SpacingValue } from '@trezor/theme';
 
-import { FrameProps, FramePropsKeys } from '../../utils/frameProps';
+import { type FrameProps, type FramePropsKeys } from '../../utils/frameProps';
 import { Row } from '../Flex/Flex';
-import { Icon, IconName } from '../Icon/Icon';
+import { Icon, type IconComponent } from '../Icon/Icon';
 import { Paragraph } from '../typography/Paragraph/Paragraph';
-import { TextIntent, TextPriority } from '../typography/Text/Text';
+import { type TextIntent, type TextPriority } from '../typography/Text/Text';
 
 export const allowedNoteFrameProps = ['margin', 'minWidth'] as const satisfies FramePropsKeys[];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedNoteFrameProps)[number]>;
 
 export type NoteProps = AllowedFrameProps & {
-    iconName?: IconName;
+    icon?: IconComponent;
     intent?: TextIntent;
     priority?: TextPriority;
     isDisabled?: boolean;
-    gap?: SpacingValues;
+    gap?: SpacingValue;
     children: ReactNode;
     'data-testid'?: string;
+    isInverse?: boolean;
 };
 
 export const Note = ({
     children,
-    iconName = 'info',
+    icon = InfoIcon,
     margin,
-    gap = spacings.xxs,
+    gap = 4,
     minWidth,
     intent = 'neutral',
     priority = 'secondary',
     isDisabled = false,
+    isInverse = false,
     'data-testid': dataTestId,
 }: NoteProps) => (
     <Row gap={gap} margin={margin} minWidth={minWidth}>
         <Icon
-            name={iconName}
+            as={icon}
             size={16}
             intent={intent}
             priority={priority}
             isDisabled={isDisabled}
+            isInverse={isInverse}
         />
         <Paragraph
             data-testid={dataTestId}
@@ -46,6 +50,7 @@ export const Note = ({
             intent={intent}
             priority={priority}
             isDisabled={isDisabled}
+            isInverse={isInverse}
         >
             {children}
         </Paragraph>

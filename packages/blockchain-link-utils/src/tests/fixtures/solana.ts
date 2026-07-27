@@ -1,6 +1,5 @@
+import { TOKEN_PROGRAM_PUBLIC_KEY } from '@trezor/network-solana/constants';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
-
-import { TOKEN_PROGRAM_PUBLIC_KEY } from '../../solana';
 
 const instructions = {
     transfer: {
@@ -272,6 +271,7 @@ const tokenAccountInfo = [
             lamports: 2039280n,
             owner: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
             rentEpoch: 0n,
+            space: 165n,
         },
         pubkey: 'ETxHeBBcuw9Yu4dGuP3oXrD12V5RECvmi8ogQ9PkjyVF',
     },
@@ -303,6 +303,7 @@ const tokenAccountInfoWithDuplicateTokenAccount = [
             lamports: 2039280n,
             owner: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
             rentEpoch: 0n,
+            space: 165n,
         },
         pubkey: 'ETxHeBBcuw9Yu4dGuP3oXrD12V5RECvmi8ogQ9PkjyVF',
     },
@@ -331,6 +332,7 @@ const tokenAccountInfoWithDuplicateTokenAccount = [
             lamports: 2039280n,
             owner: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
             rentEpoch: 0n,
+            space: 165n,
         },
         pubkey: 'CR6QfobBidQTSYdR6jihKTfMnHkRUtw8cLDCxENDVYmd',
     },

@@ -1,18 +1,18 @@
-import { NetworkSymbol } from '@suite-common/wallet-config';
-import { AccountKey } from '@suite-common/wallet-types';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { Form } from '@suite-native/forms';
+import { getTranslation } from '@suite-native/intl';
 import {
-    PreloadedState,
-    TestStore,
-    initStore,
+    type TestStore,
+    createStoreFromPreloadedState,
     renderHookWithStoreProvider,
     renderWithStoreProvider,
-} from '@suite-native/test-utils';
+} from '@suite-native/test-utils-store';
 
-import { FeesFormType } from '../../../..';
-import { getWalletState } from '../../../../__fixtures__/walletState';
+import { type FeesFormType } from '../../../..';
+import { ETH_ACCOUNT_KEY, getWalletState } from '../../../../__fixtures__/walletState';
 import { useFeesForm } from '../../../../hooks';
-import { CustomFeeInputs, CustomFeeInputsProps } from '../CustomFeeInputs';
+import { CustomFeeInputs, type CustomFeeInputsProps } from '../CustomFeeInputs';
 
 // Mock the selectors
 jest.mock('@suite-common/wallet-core', () => ({
@@ -34,20 +34,16 @@ describe('CustomFeeInputs', () => {
         wallet: getWalletState(),
     };
 
-    const renderUseFeesForm = (
-        accountKey: AccountKey = 'eth-account-1' as AccountKey, // Todo: create properly via `createAccountKey()`,
-        preloadedState?: PreloadedState,
-        defaultFeePerUnit?: string,
-    ) => {
+    const renderUseFeesForm = (accountKey: AccountKey = ETH_ACCOUNT_KEY) => {
         const { result } = renderHookWithStoreProvider(
             () =>
                 useFeesForm({
                     accountKey,
-                    defaultFeePerUnit: defaultFeePerUnit || '1',
+                    defaultFeePerUnit: '1',
                 }),
             {
                 store,
-                preloadedState: preloadedState || defaultState,
+                preloadedState: defaultState,
             },
         );
 
@@ -56,24 +52,22 @@ describe('CustomFeeInputs', () => {
 
     const renderCustomFeeInputs = ({
         form,
-        preloadedState,
         props,
     }: {
         form: FeesFormType;
-        preloadedState?: PreloadedState;
         props?: Partial<CustomFeeInputsProps>;
     }) => {
         const finalProps = { ...defaultProps, ...props };
 
         return renderWithStoreProvider(<CustomFeeInputs {...finalProps} />, {
-            preloadedState: preloadedState || defaultState,
+            preloadedState: defaultState,
             store,
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
         });
     };
 
     beforeEach(() => {
-        store = initStore(defaultState).store;
+        store = createStoreFromPreloadedState(defaultState);
         // Default mock implementations
         mockSelectConvertedNetworkFeeInfo.mockReturnValue({
             minFee: '1',
@@ -89,7 +83,11 @@ describe('CustomFeeInputs', () => {
             const { getByText, getByTestId } = renderCustomFeeInputs({
                 form,
             });
-            expect(getByText('Fee rate')).toBeTruthy();
+            expect(
+                getByText(
+                    getTranslation('transactionManagement.fees.custom.bottomSheet.label.feeRate'),
+                ),
+            ).toBeTruthy();
             expect(getByTestId('@transactionManagement/customFeePerUnit-input')).toBeTruthy();
         });
 
@@ -100,7 +98,11 @@ describe('CustomFeeInputs', () => {
                 props: { symbol: 'eth' },
             });
 
-            expect(getByText('Gas price')).toBeTruthy();
+            expect(
+                getByText(
+                    getTranslation('transactionManagement.fees.custom.bottomSheet.label.gasPrice'),
+                ),
+            ).toBeTruthy();
             expect(getByTestId('@transactionManagement/customFeePerUnit-input')).toBeTruthy();
         });
 
@@ -111,7 +113,11 @@ describe('CustomFeeInputs', () => {
                 props: { symbol: 'eth' },
             });
 
-            expect(getByText('Gas limit')).toBeTruthy();
+            expect(
+                getByText(
+                    getTranslation('transactionManagement.fees.custom.bottomSheet.label.gasLimit'),
+                ),
+            ).toBeTruthy();
             expect(getByTestId('@transactionManagement/customFeeLimit-input')).toBeTruthy();
         });
 
@@ -121,7 +127,11 @@ describe('CustomFeeInputs', () => {
                 form,
                 props: { symbol: 'btc' },
             });
-            expect(queryByText('Gas limit')).toBeNull();
+            expect(
+                queryByText(
+                    getTranslation('transactionManagement.fees.custom.bottomSheet.label.gasLimit'),
+                ),
+            ).toBeNull();
             expect(queryByTestId('@transactionManagement/customFeeLimit-input')).toBeNull();
         });
 
@@ -146,7 +156,13 @@ describe('CustomFeeInputs', () => {
                 form,
                 props: { symbol: 'btc' },
             });
-            expect(getByText('The minimum fee rate is 1 sat/vB')).toBeTruthy();
+            expect(
+                getByText(
+                    getTranslation('transactionManagement.fees.custom.bottomSheet.minimumLabel', {
+                        feePerUnit: '1 sat/vB',
+                    }),
+                ),
+            ).toBeTruthy();
         });
 
         it('should not show minimum fee hint for ethereum', () => {
@@ -155,7 +171,13 @@ describe('CustomFeeInputs', () => {
                 form,
                 props: { symbol: 'eth' },
             });
-            expect(queryByText('The minimum fee rate is 1 Gwei')).toBeNull();
+            expect(
+                queryByText(
+                    getTranslation('transactionManagement.fees.custom.bottomSheet.minimumLabel', {
+                        feePerUnit: '1 Gwei',
+                    }),
+                ),
+            ).toBeNull();
         });
     });
 });

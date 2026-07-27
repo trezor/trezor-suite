@@ -1,4 +1,7 @@
+import { HiddenPlaceholder } from '@suite/discreet-mode';
 import { Translation } from '@suite/intl';
+import { openModal } from '@suite/modal';
+import { getTxAnchor, goto, selectRouteName, selectRouterApp } from '@suite/router';
 import { selectDevices, selectSelectedDevice } from '@suite-common/device';
 import {
     selectAccounts,
@@ -16,29 +19,18 @@ import {
     isStakeTypeTx,
 } from '@suite-common/wallet-utils';
 import { Row } from '@trezor/components';
-import { TransactionNotification } from '@trezor/product-components';
+import {
+    TransactionNotification,
+    type TransactionNotificationType,
+} from '@trezor/product-components';
 
-import { openModal } from 'src/actions/suite/modalActions';
-import { goto } from 'src/actions/suite/routerActions';
-import { HiddenPlaceholder } from 'src/components/suite/HiddenPlaceholder';
-import { AccountLabeling } from 'src/components/suite/labeling';
+import { AccountLabeling } from 'src/components/suite/labeling/AccountLabeling';
 import type { NotificationRendererProps } from 'src/components/suite/notifications/NotificationRenderer/NotificationRenderer';
 import type { NotificationViewProps } from 'src/components/suite/notifications/Notifications/NotificationGroup/NotificationList/NotificationView';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectRouteName } from 'src/reducers/suite/routerReducer';
-import { getTxAnchor } from 'src/utils/suite/anchor';
 
 type TransactionRendererProps = NotificationViewProps &
-    NotificationRendererProps<
-        | 'tx-sent'
-        | 'tx-received'
-        | 'tx-confirmed'
-        | 'tx-staked'
-        | 'tx-unstaked'
-        | 'tx-claimed'
-        | 'tx-approved'
-        | 'tx-revoked'
-    >;
+    NotificationRendererProps<TransactionNotificationType>;
 
 export const TransactionRenderer = ({ render: View, ...props }: TransactionRendererProps) => {
     const { symbol, descriptor, txid, device } = props.notification;
@@ -48,6 +40,7 @@ export const TransactionRenderer = ({ render: View, ...props }: TransactionRende
     const devices = useSelector(selectDevices);
     const currentDevice = useSelector(selectSelectedDevice);
     const routeName = useSelector(selectRouteName);
+    const routerApp = useSelector(selectRouterApp);
     const dispatch = useDispatch();
 
     const networkAccounts = findAccountsByNetwork(symbol, accounts);
@@ -64,6 +57,9 @@ export const TransactionRenderer = ({ render: View, ...props }: TransactionRende
         ? 'wallet-staking'
         : 'wallet-index';
     const isTradingRoute = !!routeName?.includes('wallet-trading');
+    // Keep the user inside the yield flow: the toast action navigates away (goto) which makes
+    // users think the approve step is the whole transaction. Mirror the trading behavior above.
+    const isYieldRoute = routerApp === 'earn-yield';
     const transactionToken = 'token' in props.notification ? props.notification.token : undefined;
     const toastTestIdPrefix = `@toast/${props.notification.type}`;
 
@@ -75,7 +71,8 @@ export const TransactionRenderer = ({ render: View, ...props }: TransactionRende
 
         const txAnchor = getTxAnchor(tx?.txid);
         dispatch(
-            goto(destinationRoute, {
+            goto({
+                routeName: destinationRoute,
                 params: {
                     accountIndex: account.index,
                     accountType: account.accountType,
@@ -106,6 +103,7 @@ export const TransactionRenderer = ({ render: View, ...props }: TransactionRende
             messageValues={{
                 content: (
                     <TransactionNotification
+                        data-testid={toastTestIdPrefix}
                         message={
                             <Translation
                                 id={props.message}
@@ -130,9 +128,12 @@ export const TransactionRenderer = ({ render: View, ...props }: TransactionRende
                         }
                         notificationType={props.notification.type}
                         symbol={props.notification.symbol}
-                        accountSymbol={account.symbol}
                         token={transactionToken}
-                        amount={props.notification.formattedAmount}
+                        amount={
+                            'formattedAmount' in props.notification
+                                ? props.notification.formattedAmount
+                                : undefined
+                        }
                         isInfiniteApproval={
                             props.notification.type === 'tx-approved' &&
                             props.notification.isInfiniteApproval
@@ -147,7 +148,7 @@ export const TransactionRenderer = ({ render: View, ...props }: TransactionRende
                 ),
             }}
             action={
-                tx && !isTradingRoute
+                tx && !isTradingRoute && !isYieldRoute
                     ? {
                           onClick: handleTransactionClick,
                           label: 'TOAST_TX_BUTTON',

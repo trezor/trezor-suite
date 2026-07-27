@@ -1,9 +1,10 @@
-import type { BlockchainSettings } from '@trezor/blockchain-link-types';
-import { MESSAGES, RESPONSES } from '@trezor/blockchain-link-types/src/constants';
-import { CustomError } from '@trezor/blockchain-link-types/src/constants/errors';
-import type { Events } from '@trezor/blockchain-link-types/src/events';
-import type * as MessageTypes from '@trezor/blockchain-link-types/src/messages';
-import type * as ResponseTypes from '@trezor/blockchain-link-types/src/responses';
+import { CustomError, MESSAGES, RESPONSES } from '@trezor/blockchain-link-types';
+import type {
+    BlockchainSettings,
+    Events,
+    MessageTypes,
+    ResponseTypes,
+} from '@trezor/blockchain-link-types';
 import {
     Throttler,
     TypedEmitter,
@@ -63,7 +64,7 @@ const initWorker = async (settings: BlockchainSettings) => {
     return dfd.promise;
 };
 
-class BlockchainLink extends TypedEmitter<Events> {
+export class BlockchainLink extends TypedEmitter<Events> {
     settings: BlockchainSettings;
 
     private lazyWorker = createLazy(this.initWorker.bind(this), this.disposeWorker.bind(this));
@@ -236,6 +237,15 @@ class BlockchainLink extends TypedEmitter<Events> {
         });
     }
 
+    getContractInfo(
+        payload: MessageTypes.GetContractInfo['payload'],
+    ): Promise<ResponseTypes.GetContractInfo['payload']> {
+        return this.sendMessage({
+            type: MESSAGES.GET_CONTRACT_INFO,
+            payload,
+        });
+    }
+
     /**
      * Subscribe for live changes in
      * - blockchain i.e new blocks mined.
@@ -341,8 +351,6 @@ class BlockchainLink extends TypedEmitter<Events> {
     }
 }
 
-export default BlockchainLink;
-
 export type BlockchainLinkInterface = (typeof BlockchainLink)['prototype'];
 
 export type BlockchainLinkParams<T extends keyof BlockchainLinkInterface> =
@@ -357,14 +365,16 @@ export type BlockchainLinkResponse<T extends keyof BlockchainLinkInterface> =
             : never
         : never;
 
+export { sumAddressValues } from './workers/electrum/methods/getAccountInfo';
+
 // reexport types
-export type { Message } from '@trezor/blockchain-link-types/src/messages';
+export type { Message } from '@trezor/blockchain-link-types';
 export type {
     Response,
     BlockEvent,
     NotificationEvent,
     FiatRatesEvent,
-} from '@trezor/blockchain-link-types/src/responses';
+} from '@trezor/blockchain-link-types';
 export type {
     Address,
     AccountAddresses,
@@ -382,4 +392,4 @@ export type {
     Transaction,
     TransactionDetail,
     Utxo,
-} from '@trezor/blockchain-link-types/src/common';
+} from '@trezor/blockchain-link-types';

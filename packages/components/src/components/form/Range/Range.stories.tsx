@@ -1,4 +1,4 @@
-import { Meta, StoryObj } from '@storybook/react';
+import { type Meta, type StoryObj } from '@storybook/react';
 import { useArgs } from 'storybook/preview-api';
 
 import { Range as RangeComponent } from './Range';
@@ -78,9 +78,6 @@ export const Range: StoryObj<typeof meta> = {
         },
         step: {
             control: { type: 'text' },
-        },
-        className: {
-            control: false,
         },
         onChange: {
             control: false,

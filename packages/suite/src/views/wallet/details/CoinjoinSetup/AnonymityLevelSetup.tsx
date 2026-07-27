@@ -1,12 +1,13 @@
 import { useMemo, useState } from 'react';
 
-import { AnimatePresence, MotionProps, motion } from 'framer-motion';
+import { AnimatePresence, type MotionProps, motion } from 'framer-motion';
 import styled from 'styled-components';
 
+import { coinjoinAccountUpdateAnonymity } from '@suite/coinjoin';
 import { Translation } from '@suite/intl';
 import { Banner, Icon, motionEasing } from '@trezor/components';
+import { UserIcon, UsersFourIcon, UsersIcon, UsersThreeIcon } from '@trezor/icons';
 
-import { coinjoinAccountUpdateAnonymity } from 'src/actions/wallet/coinjoinAccountActions';
 import { AnonymityStatus } from 'src/constants/suite/coinjoin';
 import { useAnonymityStatus, useDispatch } from 'src/hooks/suite';
 
@@ -28,7 +29,7 @@ const Label = styled.span`
 
 const RedText = styled.span`
     margin-right: 2px;
-    color: ${({ theme }) => theme.textAlertRed};
+    color: ${({ theme }) => theme.contentCritical};
 `;
 
 const expandAnimation: Partial<MotionProps> = {
@@ -92,7 +93,7 @@ export const AnonymityLevelSetup = ({ accountKey, targetAnonymity }: AnonymityLe
                 max: 1,
                 component: (
                     <Label>
-                        <Icon name="user" size={14} intent="neutral" /> 1
+                        <Icon as={UserIcon} size={14} intent="neutral" /> 1
                     </Label>
                 ),
             },
@@ -101,7 +102,7 @@ export const AnonymityLevelSetup = ({ accountKey, targetAnonymity }: AnonymityLe
                 max: 3,
                 component: (
                     <Label>
-                        <Icon name="users" size={14} intent="neutral" /> 3
+                        <Icon as={UsersIcon} size={14} intent="neutral" /> 3
                     </Label>
                 ),
             },
@@ -110,7 +111,7 @@ export const AnonymityLevelSetup = ({ accountKey, targetAnonymity }: AnonymityLe
                 max: 10,
                 component: (
                     <Label>
-                        <Icon name="usersThree" size={14} intent="neutral" /> 10
+                        <Icon as={UsersThreeIcon} size={14} intent="neutral" /> 10
                     </Label>
                 ),
             },
@@ -119,7 +120,7 @@ export const AnonymityLevelSetup = ({ accountKey, targetAnonymity }: AnonymityLe
                 max: 30,
                 component: (
                     <Label>
-                        <Icon name="usersFour" size={14} intent="neutral" /> 30
+                        <Icon as={UsersFourIcon} size={14} intent="neutral" /> 30
                     </Label>
                 ),
             },
@@ -128,7 +129,7 @@ export const AnonymityLevelSetup = ({ accountKey, targetAnonymity }: AnonymityLe
                 max: 100,
                 component: (
                     <Label>
-                        <Icon name="usersFour" size={14} intent="neutral" /> 100
+                        <Icon as={UsersFourIcon} size={14} intent="neutral" /> 100
                     </Label>
                 ),
             },

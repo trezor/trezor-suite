@@ -8,7 +8,7 @@ import {
     Paragraph,
     Text,
 } from '@trezor/components';
-import { borders } from '@trezor/theme';
+import { CircleFilledIcon } from '@trezor/icons';
 
 const Code = styled.span`
     margin: 2px;
@@ -19,9 +19,9 @@ const Code = styled.span`
         content: '';
         position: absolute;
         inset: -2px;
-        border: solid 1px ${({ theme }) => theme.borderOnElevation1};
-        background: ${({ theme }) => theme.backgroundSurfaceElevation1};
-        border-radius: ${borders.radii.xxs};
+        border: solid 1px ${({ theme }) => theme.borderNeutral};
+        background: ${({ theme }) => theme.surfaceFillRaised};
+        border-radius: 4px;
     }
 `;
 
@@ -51,7 +51,7 @@ export const Markdown = ({ children: childrenMarkdown }: MarkdownProps) => (
                 </Paragraph>
             ),
             ul: ({ children }) => (
-                <List gap={0} bulletComponent={<Icon name="circleFilled" size={8} />}>
+                <List gap={0} bulletComponent={<Icon as={CircleFilledIcon} size={8} />}>
                     {children}
                 </List>
             ),

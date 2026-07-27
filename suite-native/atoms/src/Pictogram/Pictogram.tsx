@@ -1,8 +1,8 @@
 import React from 'react';
 
-import { Icon, IconName } from '@suite-native/icons';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Color } from '@trezor/theme';
+import { Icon, type IconName } from '@suite-native/icons';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
+import { type Color } from '@trezor/theme';
 
 import { Box } from '../Box';
 import { CriticalIconSvg } from './CriticalIconSvg';
@@ -13,7 +13,7 @@ import { SuccessIconSvg } from './SuccessIconSvg';
 import { SuccessShapeSvg } from './SuccessShapeSvg';
 import { WarningIconSvg } from './WarningIconSvg';
 import { WarningShapeSvg } from './WarningShapeSvg';
-import { PictogramIconSvgProps } from './types';
+import { type PictogramIconSvgProps } from './types';
 
 export const PICTOGRAM_VARIANTS = ['success', 'info', 'warning', 'critical'] as const;
 export type PictogramVariant = (typeof PICTOGRAM_VARIANTS)[number];
@@ -35,25 +35,25 @@ const pictogramVariantsMap = {
         ShapeSvg: SuccessShapeSvg,
         IconSvg: SuccessIconSvg,
         iconOffset: 0,
-        iconColor: 'iconPrimaryDefault',
+        iconColor: 'contentBrand',
     },
     info: {
         ShapeSvg: InfoShapeSvg,
         IconSvg: InfoIconSvg,
         iconOffset: 0,
-        iconColor: 'iconAlertBlue',
+        iconColor: 'contentInfo',
     },
     warning: {
         ShapeSvg: WarningShapeSvg,
         IconSvg: WarningIconSvg,
         iconOffset: 20,
-        iconColor: 'iconAlertYellow',
+        iconColor: 'contentWarning',
     },
     critical: {
         ShapeSvg: CriticalShapeSvg,
         IconSvg: CriticalIconSvg,
         iconOffset: 0,
-        iconColor: 'iconAlertRed',
+        iconColor: 'contentCritical',
     },
 } as const satisfies Record<PictogramVariant, PictogramConfig>;
 

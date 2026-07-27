@@ -1,6 +1,6 @@
 import { HStack, Text, VStack } from '@suite-native/atoms';
-import { Icon, IconName } from '@suite-native/icons';
-import { Translation, TxKeyPath } from '@suite-native/intl';
+import { Icon, type IconName } from '@suite-native/icons';
+import { Translation, type TxKeyPath } from '@suite-native/intl';
 
 type CardContentRowProps = {
     labelId: TxKeyPath;
@@ -15,12 +15,12 @@ export const CardContentRow = ({ labelId, descriptionId, iconName }: CardContent
             <Text variant="body-sm-strong">
                 <Translation id={labelId} />
             </Text>
-            <Text variant="body-sm" color="textSubdued">
+            <Text variant="body-sm" color="contentSecondary">
                 <Translation
                     id={descriptionId}
                     values={{
                         bold: chunks => (
-                            <Text color="textSubdued" variant="body-sm-strong">
+                            <Text color="contentSecondary" variant="body-sm-strong">
                                 {chunks}
                             </Text>
                         ),

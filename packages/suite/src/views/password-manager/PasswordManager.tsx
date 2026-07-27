@@ -2,12 +2,12 @@ import React, { useState } from 'react';
 
 import styled from 'styled-components';
 
+import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { EntryForm, PasswordsList, TagsList, getNextId, usePasswords } from '@suite/metadata';
 import { Button, Tooltip } from '@trezor/components';
-
-import { ActionColumn, TextColumn } from 'src/components/suite';
-import { useDevice } from 'src/hooks/suite';
+import { PencilIcon } from '@trezor/icons';
+import { ActionColumn, TextColumn } from '@trezor/product-components';
 
 const PasswordManagerBody = styled.div`
     display: flex;
@@ -113,7 +113,7 @@ export const PasswordManager = () => {
                                     type="button"
                                     intent="neutral"
                                     priority="secondary"
-                                    iconLeft="pencil"
+                                    iconLeft={PencilIcon}
                                 >
                                     Add the first one!
                                 </Button>

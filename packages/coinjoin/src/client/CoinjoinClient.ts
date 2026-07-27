@@ -4,7 +4,7 @@ import { Account } from './Account';
 import { CoinjoinPrison } from './CoinjoinPrison';
 import { CoinjoinRound } from './CoinjoinRound';
 import { Status } from './Status';
-import { AnalyzeTransactionsResult, analyzeTransactions } from './analyzeTransactions';
+import { type AnalyzeTransactionsResult, analyzeTransactions } from './analyzeTransactions';
 import type {
     CoinjoinClientEvents,
     CoinjoinClientSettings,
@@ -278,10 +278,6 @@ export class CoinjoinClient extends TypedEmitter<CoinjoinClientEvents> {
             warn: emit('warn'),
             error: emit('error'),
         };
-    }
-
-    getRounds() {
-        return this.rounds.map(round => round.toSerialized());
     }
 
     getRoundsInCriticalPhase() {

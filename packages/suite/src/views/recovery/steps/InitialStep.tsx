@@ -1,12 +1,11 @@
-import { Translation, TranslationKey } from '@suite/intl';
+import { useDevice } from '@suite/device';
+import { LearnMoreButton } from '@suite/external-links';
+import { Translation, type TranslationKey } from '@suite/intl';
 import { getCheckBackupUrl } from '@suite-common/suite-utils';
-import { BulletList, Card, Paragraph } from '@trezor/components';
+import { Card, Paragraph, StepList } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/device-utils';
-import { spacings } from '@trezor/theme';
 
 import { CheckItem } from 'src/components/suite';
-import { LearnMoreButton } from 'src/components/suite/LearnMoreButton';
-import { useDevice } from 'src/hooks/suite/useDevice';
 
 const enterSeedInstructionsMap: Record<DeviceModelInternal, TranslationKey> = {
     [DeviceModelInternal.T1B1]: 'TR_SEED_WORDS_ENTER_COMPUTER',
@@ -46,8 +45,8 @@ export const InitialStep = ({ isUnderstood, setIsUnderstood }: InitialStepProps)
 
     return (
         <>
-            <BulletList gap={spacings.xl} titleGap={spacings.xxxs} bulletGap={spacings.lg}>
-                <BulletList.Item
+            <StepList gap={24} titleGap={2} bulletGap={20}>
+                <StepList.Item
                     title={
                         <Paragraph typographyStyle="body-sm" textWrap="pretty">
                             <Translation id={checkRecoverySeedMap[deviceModelInternal]} />
@@ -58,7 +57,7 @@ export const InitialStep = ({ isUnderstood, setIsUnderstood }: InitialStepProps)
                         typographyStyle="body-xs"
                         intent="neutral"
                         priority="secondary"
-                        margin={{ top: spacings.xxs }}
+                        margin={{ top: 4 }}
                     >
                         <Translation
                             id={
@@ -68,8 +67,8 @@ export const InitialStep = ({ isUnderstood, setIsUnderstood }: InitialStepProps)
                             }
                         />
                     </Paragraph>
-                </BulletList.Item>
-                <BulletList.Item
+                </StepList.Item>
+                <StepList.Item
                     title={
                         <Paragraph typographyStyle="body-sm" textWrap="pretty">
                             <Translation id={enterSeedInstructionsMap[deviceModelInternal]} />
@@ -80,13 +79,13 @@ export const InitialStep = ({ isUnderstood, setIsUnderstood }: InitialStepProps)
                         typographyStyle="body-xs"
                         intent="neutral"
                         priority="secondary"
-                        margin={{ top: spacings.xxs }}
+                        margin={{ top: 4 }}
                     >
                         <Translation id="TR_ENTER_ALL_WORDS_IN_CORRECT" />
                     </Paragraph>
-                </BulletList.Item>
-            </BulletList>
-            <Card margin={{ top: spacings.xxl }}>
+                </StepList.Item>
+            </StepList>
+            <Card margin={{ top: 32 }}>
                 <CheckItem
                     data-testid="@recovery/user-understands-checkbox"
                     title={<Translation id="TR_DRY_RUN_CHECK_ITEM_TITLE" />}

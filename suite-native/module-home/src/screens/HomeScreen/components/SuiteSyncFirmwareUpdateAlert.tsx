@@ -7,9 +7,9 @@ import { AnimatedFullAlertBox } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
     DeviceSettingsStackRoutes,
-    RootStackParamList,
+    type RootStackParamList,
     RootStackRoutes,
-    StackNavigationProps,
+    type StackNavigationProps,
 } from '@suite-native/navigation';
 
 import { selectShouldDisplaySuiteSyncFirmwareUpdateAlert } from '../homescreenSelectors';
@@ -35,7 +35,7 @@ export const SuiteSyncFirmwareUpdateAlert = () => {
 
     return (
         <AnimatedFullAlertBox
-            variant="info"
+            intent="info"
             title={<Translation id="moduleHome.suiteSyncFirmwareUpdateAlert.title" />}
             description={<Translation id="moduleHome.suiteSyncFirmwareUpdateAlert.description" />}
             primaryButtonLabel={<Translation id="moduleHome.suiteSyncFirmwareUpdateAlert.button" />}

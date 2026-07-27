@@ -1,6 +1,8 @@
 import { useCallback, useEffect } from 'react';
 
+import { useExternalLink } from '@suite/external-links';
 import { Translation } from '@suite/intl';
+import { selectModalRequestId } from '@suite/modal';
 import {
     Banner,
     Button,
@@ -12,10 +14,11 @@ import {
     Paragraph,
 } from '@trezor/components';
 import TrezorConnect, { UI_RESPONSE } from '@trezor/connect';
+import { CaretLeftIcon, DotOutlineFilledIcon, QuestionIcon } from '@trezor/icons';
 import { HELP_CENTER_ADVANCED_RECOVERY_URL } from '@trezor/urls';
 import { resolveAfter } from '@trezor/utils';
 
-import { useExternalLink } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 type WordInputAdvancedProps = {
     count: 6 | 9;
@@ -23,11 +26,15 @@ type WordInputAdvancedProps = {
 
 export const WordInputAdvanced = ({ count }: WordInputAdvancedProps) => {
     const learnMoreUrl = useExternalLink(HELP_CENTER_ADVANCED_RECOVERY_URL);
+    const requestId = useSelector(selectModalRequestId);
 
-    const onSubmit = useCallback(async (value: string) => {
-        await resolveAfter(600);
-        TrezorConnect.uiResponse({ type: UI_RESPONSE.RECEIVE_WORD, payload: value });
-    }, []);
+    const onSubmit = useCallback(
+        async (value: string) => {
+            await resolveAfter(600);
+            TrezorConnect.uiResponse({ type: UI_RESPONSE.RECEIVE_WORD, payload: value, requestId });
+        },
+        [requestId],
+    );
 
     const backspace = useCallback(() => {
         onSubmit(String.fromCharCode(8));
@@ -98,7 +105,7 @@ export const WordInputAdvanced = ({ count }: WordInputAdvancedProps) => {
         <Column gap={16} maxWidth={380}>
             <Banner
                 intent="info"
-                icon="question"
+                icon={QuestionIcon}
                 rightContent={
                     <Banner.Button href={learnMoreUrl} size="small">
                         <Translation id="TR_LEARN_MORE" />
@@ -127,10 +134,11 @@ export const WordInputAdvanced = ({ count }: WordInputAdvancedProps) => {
                                 key={num}
                                 onClick={() => onSubmit(String(num))}
                                 data-testid={`@recovery/word-input-advanced/${num}`}
-                                icon="dotOutlineFilled"
+                                icon={DotOutlineFilledIcon}
                                 intent="neutral"
                                 priority="secondary"
                                 size="large"
+                                tooltip={{ isActive: false }}
                             />
                         ))}
                     </Grid>
@@ -139,7 +147,7 @@ export const WordInputAdvanced = ({ count }: WordInputAdvancedProps) => {
                         priority="secondary"
                         onClick={backspace}
                         size="small"
-                        iconLeft="caretLeft"
+                        iconLeft={CaretLeftIcon}
                     >
                         <Translation id="TR_BACKSPACE" />
                     </Button>

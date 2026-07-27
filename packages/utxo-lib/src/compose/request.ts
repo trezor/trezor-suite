@@ -1,11 +1,12 @@
+import { throwError } from '@trezor/utils';
+
 import { toOutputScript } from '../address';
 import {
     INPUT_SCRIPT_LENGTH,
     OUTPUT_SCRIPT_LENGTH,
-    bignumberOrNaN,
-    getFeePolicy,
     inputWeight,
     outputWeight,
+    parseBigInt,
 } from '../coinselect/coinselectUtils';
 import type { Network } from '../networks';
 import { p2data } from '../payments/embed';
@@ -53,8 +54,8 @@ function transformInput(
         throw new Error('Missing confirmations');
     }
 
-    const value = bignumberOrNaN(utxo.amount);
-    if (!value) {
+    const value = parseBigInt(utxo.amount);
+    if (value === undefined) {
         throw new Error('Invalid amount');
     }
 
@@ -85,7 +86,9 @@ function validateAndParseUtxos(
     const result: CoinSelectInput[] = [];
     for (let i = 0; i < utxos.length; i++) {
         try {
-            const csInput = transformInput(i, utxos[i], txType);
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const utxo: ComposeInput = utxos[i];
+            const csInput = transformInput(i, utxo, txType);
             csInput.weight = inputWeight(csInput);
             result.push(csInput);
         } catch (error) {
@@ -103,26 +106,20 @@ function transformOutput(
 ): CoinSelectOutput {
     const script = { length: OUTPUT_SCRIPT_LENGTH[txType] };
     if (output.type === 'payment') {
-        const value = bignumberOrNaN(output.amount);
-        if (!value) throw new Error('Invalid amount');
-
         return {
-            value,
+            value: parseBigInt(output.amount) ?? throwError('Invalid amount'),
             script: toOutputScript(output.address, network),
         };
     }
     if (output.type === 'payment-noaddress') {
-        const value = bignumberOrNaN(output.amount);
-        if (!value) throw new Error('Invalid amount');
-
         return {
-            value,
+            value: parseBigInt(output.amount) ?? throwError('Invalid amount'),
             script,
         };
     }
     if (output.type === 'opreturn') {
         return {
-            value: bignumberOrNaN('0', true),
+            value: parseBigInt('0', true),
             script: p2data({ data: [Buffer.from(output.dataHex, 'hex')] }).output as Buffer,
         };
     }
@@ -162,7 +159,8 @@ function validateAndParseOutputs(
     let sendMaxOutputIndex = -1;
     const result: CoinSelectOutput[] = [];
     for (let i = 0; i < outputs.length; i++) {
-        const output = outputs[i];
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const output: ComposeOutput = outputs[i];
         if (output.type === 'send-max-noaddress' || output.type === 'send-max') {
             if (sendMaxOutputIndex >= 0) {
                 return incorrectOutputError(i, 'Multiple send-max');
@@ -229,7 +227,7 @@ export function validateAndParseRequest(request: Request): CoinSelectRequest | C
         return changeOutput;
     }
 
-    const feePolicy = getFeePolicy(request.network);
+    const feePolicy = request.feePolicy ?? 'bitcoin';
 
     return {
         txType,
@@ -241,7 +239,6 @@ export function validateAndParseRequest(request: Request): CoinSelectRequest | C
         longTermFeeRate,
         dustThreshold: request.dustThreshold,
         baseFee: request.baseFee,
-        floorBaseFee: request.floorBaseFee,
         sortingStrategy: request.sortingStrategy,
     };
 }

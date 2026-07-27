@@ -1,31 +1,21 @@
-import { PreloadedState, renderWithStoreProviderAsync } from '@suite-native/test-utils';
-import { exchangeQuotes, getInitializedTradingState } from '@suite-native/trading-fixtures';
+import { getTranslation } from '@suite-native/intl';
+import { act } from '@suite-native/test-utils';
+import { mercuryoFixedWorstQuote } from '@suite-native/trading-fixtures';
 
+import { renderWithTradingProvider } from '../../../../../__tests__/tradingTestUtils';
 import { ExchangeApprovalLimitSheet } from '../ExchangeApprovalLimitSheet';
 
 const mockOnDismiss = jest.fn();
 const mockOnApprovalTypeSelect = jest.fn();
 
-const testQuote = exchangeQuotes[0];
+const testQuote = mercuryoFixedWorstQuote;
 
-const getPreloadedState = (): PreloadedState => ({
-    wallet: {
-        trading: {
-            ...getInitializedTradingState('exchange'),
-            exchange: {
-                ...getInitializedTradingState('exchange').exchange,
-                selectedQuote: testQuote,
-            },
-        },
-    },
-});
-
-const renderSheet = (
+const renderSheet = async (
     isVisible = true,
     quote = testQuote,
     selectedApprovalType: 'INFINITE' | 'MINIMAL' = 'INFINITE',
-) =>
-    renderWithStoreProviderAsync(
+) => {
+    const res = renderWithTradingProvider(
         <ExchangeApprovalLimitSheet
             isVisible={isVisible}
             onDismiss={mockOnDismiss}
@@ -33,8 +23,19 @@ const renderSheet = (
             onApprovalTypeSelect={mockOnApprovalTypeSelect}
             selectedApprovalType={selectedApprovalType}
         />,
-        { preloadedState: getPreloadedState() },
+        {
+            tradeType: 'exchange',
+            overrides: {
+                wallet: { trading: { exchange: { selectedQuote: testQuote } } },
+            },
+        },
     );
+    await act(async () => {
+        await act(() => Promise.resolve());
+    });
+
+    return res;
+};
 
 describe('ExchangeApprovalLimitSheet', () => {
     beforeEach(() => {
@@ -44,17 +45,28 @@ describe('ExchangeApprovalLimitSheet', () => {
     it('should render the sheet when visible', async () => {
         const { getByText } = await renderSheet();
 
-        expect(getByText('Unlimited')).toBeTruthy();
+        expect(
+            getByText(getTranslation('moduleTrading.tradingExchangeApprovalScreen.unlimitedLabel')),
+        ).toBeTruthy();
         expect(getByText('100 USDC')).toBeTruthy();
     });
 
     it('should render unlimited approval option with correct details', async () => {
         const { getByText } = await renderSheet();
 
-        expect(getByText('Unlimited')).toBeTruthy();
+        expect(
+            getByText(getTranslation('moduleTrading.tradingExchangeApprovalScreen.unlimitedLabel')),
+        ).toBeTruthy();
         expect(
             getByText(
-                'Approve unlimited USDC to skip future approval requests and reduce fees. Only use this option if you trust Mercuryo, as it will have access to all your USDC.',
+                getTranslation('moduleTrading.exchangeApprovalLimitSheet.unlimitedCard.info'),
+            ),
+        ).toBeTruthy();
+        expect(
+            getByText(
+                getTranslation('moduleTrading.exchangeApprovalLimitSheet.unlimitedCard.alert', {
+                    coinSymbol: 'USDC',
+                }),
             ),
         ).toBeTruthy();
     });
@@ -64,27 +76,15 @@ describe('ExchangeApprovalLimitSheet', () => {
 
         expect(getByText('100 USDC')).toBeTruthy();
         expect(
-            getByText(
-                "Approve only the amount needed for this swap. This helps reduce risk, but you'll need to approve again (and pay a fee) for future swaps.",
-            ),
+            getByText(getTranslation('moduleTrading.exchangeApprovalLimitSheet.limitedCard.info')),
         ).toBeTruthy();
     });
 
     it('should render crypto icons for both cards', async () => {
         const { getAllByLabelText } = await renderSheet();
 
-        const cryptoIcons = getAllByLabelText('eth0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48');
+        const cryptoIcons = getAllByLabelText('eth:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48');
         expect(cryptoIcons).toHaveLength(2);
-    });
-
-    it('should render provider company name in unlimited card description', async () => {
-        const { getByText } = await renderSheet();
-
-        expect(
-            getByText(
-                'Approve unlimited USDC to skip future approval requests and reduce fees. Only use this option if you trust Mercuryo, as it will have access to all your USDC.',
-            ),
-        ).toBeTruthy();
     });
 
     it('should display quote sendStringAmount in limited approval option', async () => {

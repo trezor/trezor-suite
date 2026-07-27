@@ -1,0 +1,613 @@
+import { arrayPartition, createDeferred, getSynchronize, resolveAfter } from '@trezor/utils';
+
+import { AbstractApi, type AbstractApiArgs, type AbstractApiConstructorParams } from './abstract';
+import {
+    CONFIGURATION_ID,
+    DEBUGLINK_ENDPOINT_ID,
+    DEBUGLINK_INTERFACE_ID,
+    DEVICE_TYPE,
+    ENDPOINT_ID,
+    INTERFACE_ID,
+    T1_HID_PRODUCT,
+    T1_HID_VENDOR,
+    TREZOR_USB_DESCRIPTORS,
+    WEBUSB_BOOTLOADER_PRODUCT,
+} from '../constants';
+import * as ERRORS from '../errors';
+import { type DescriptorApiLevel, PathInternal } from '../types';
+import type {
+    UsbDeviceLike,
+    UsbInTransferResultLike,
+    UsbInterfaceApi,
+} from '../types/usbInterface';
+import { getUSBDescriptorModel } from '../utils/descriptor';
+import { error, success } from '../utils/result';
+
+interface ConstructorParams extends Omit<AbstractApiConstructorParams, 'type'> {
+    usbInterface: UsbInterfaceApi;
+    forceReadSerialOnConnect?: boolean;
+    debugLink?: boolean;
+}
+
+interface TransportInterfaceDevice {
+    session?: null | string;
+    path: string;
+    device: UsbDeviceLike;
+}
+
+export class UsbApi extends AbstractApi {
+    chunkSize = 64;
+
+    protected devices: TransportInterfaceDevice[] = [];
+    protected usbInterface: ConstructorParams['usbInterface'];
+    private forceReadSerialOnConnect?: boolean;
+    private abortController = new AbortController();
+    private debugLink?: boolean;
+    private synchronizeCreateDevices = getSynchronize();
+    private synchronizeGetDevices = getSynchronize();
+    /**
+     * calling device.reset over other calls often leads to segfault
+     */
+    private synchronizeResetDevice = getSynchronize();
+    private deviceResetMap: Record<string, boolean> = {};
+    private devicePendingTransferIn = new Map<UsbDeviceLike, Promise<UsbInTransferResultLike>>();
+
+    constructor({ usbInterface, logger, forceReadSerialOnConnect, debugLink }: ConstructorParams) {
+        super({ logger, type: 'usb' });
+
+        this.usbInterface = usbInterface;
+        this.forceReadSerialOnConnect = forceReadSerialOnConnect;
+        this.debugLink = debugLink;
+    }
+
+    public listen() {
+        this.usbInterface.onconnect = async event => {
+            this.logger?.debug(`usb: onconnect: ${this.formatDeviceForLog(event.device)}`);
+
+            // this should fix a bug when device rebooted back to normal mode
+            // during fw update on windows throws LIBUSB_ERROR_IO on every transferOut
+            if (event.device.opened) {
+                this.logger?.debug('usb: onconnect: device already opened, closing');
+                await event.device.close();
+            }
+
+            return this.createDevices([event.device], this.abortController.signal)
+                .then(newDevices => {
+                    this.devices = [...this.devices, ...newDevices];
+                    this.emit('transport-interface-change', this.devicesToDescriptors());
+                })
+                .catch(err => {
+                    // empty
+                    this.logger?.error(`usb: createDevices error: ${err.message}`);
+                });
+        };
+
+        this.usbInterface.ondisconnect = event => {
+            const { device } = event;
+            if (!device.serialNumber) {
+                this.logger?.debug(
+                    `usb: ondisconnect: device without serial number:, ${device.productName}, ${device.manufacturerName}`,
+                );
+
+                // trezor devices have serial number 468E58AE386B5D2EA8C572A2 or 000000000000000000000000 (for bootloader devices)
+                return this.enumerate().then(() => {
+                    this.emit('transport-interface-change', this.devicesToDescriptors());
+                });
+            }
+
+            const index = this.devices.findIndex(d => d.path === device.serialNumber);
+            if (index > -1) {
+                this.devices.splice(index, 1);
+                this.emit('transport-interface-change', this.devicesToDescriptors());
+            } else {
+                this.logger?.error('usb: device that should be removed does not exist in state');
+            }
+        };
+    }
+
+    private formatDeviceForLog(device: UsbDeviceLike) {
+        return JSON.stringify({
+            productName: device.productName,
+            manufacturerName: device.manufacturerName,
+            serialNumber: device.serialNumber,
+            vendorId: device.vendorId,
+            productId: device.productId,
+            deviceVersionMajor: device.deviceVersionMajor,
+            deviceVersionMinor: device.deviceVersionMinor,
+            opened: device.opened,
+        });
+    }
+
+    private matchDeviceType(device: UsbDeviceLike) {
+        const isBootloader = device.productId === WEBUSB_BOOTLOADER_PRODUCT;
+        if (device.deviceVersionMajor === 2) {
+            if (isBootloader) {
+                return DEVICE_TYPE.TypeT2Boot;
+            } else {
+                return DEVICE_TYPE.TypeT2;
+            }
+        } else {
+            if (isBootloader) {
+                return DEVICE_TYPE.TypeT1WebusbBoot;
+            } else if (device.vendorId === T1_HID_VENDOR && device.productId === T1_HID_PRODUCT) {
+                return DEVICE_TYPE.TypeT1Hid;
+            } else {
+                return DEVICE_TYPE.TypeT1Webusb;
+            }
+        }
+    }
+
+    private devicesToDescriptors(): DescriptorApiLevel[] {
+        return this.devices.map(d => ({
+            path: PathInternal(d.path),
+            type: this.matchDeviceType(d.device),
+            product: d.device.productId,
+            vendor: d.device.vendorId,
+            id: d.device.serialNumber,
+            apiType: this.type,
+            model: getUSBDescriptorModel(d.device),
+        }));
+    }
+
+    private abortableMethod<R>(
+        method: () => Promise<R>,
+        { signal, onAbort }: { signal?: AbortSignal; onAbort?: () => Promise<void> | void },
+    ) {
+        if (!signal) {
+            return method();
+        }
+        if (signal.aborted) {
+            return Promise.reject(new Error(ERRORS.ABORTED_BY_SIGNAL));
+        }
+
+        const dfd = createDeferred<R>();
+        const abortListener = async () => {
+            this.logger?.debug('usb: abortableMethod onAbort start');
+            try {
+                await onAbort?.();
+            } catch {
+                /* empty */
+            }
+            this.logger?.debug('usb: abortableMethod onAbort done');
+            dfd.reject(new Error(ERRORS.ABORTED_BY_SIGNAL));
+        };
+        signal?.addEventListener('abort', abortListener);
+
+        const methodPromise = method().catch(error => {
+            // NOTE: race condition
+            // method() rejects error triggered by signal (device.reset) before dfd.promise (before onAbort finish)
+            this.logger?.debug(`usb: abortableMethod method() aborted: ${signal.aborted} ${error}`);
+            if (signal.aborted) {
+                return dfd.promise;
+            }
+            dfd.reject(error);
+            throw error;
+        });
+
+        return Promise.race([methodPromise, dfd.promise])
+            .then(r => {
+                dfd.resolve(r);
+
+                return r;
+            })
+            .finally(() => {
+                signal?.removeEventListener('abort', abortListener);
+            });
+    }
+
+    public async enumerate(signal?: AbortSignal) {
+        try {
+            this.logger?.debug('usb: enumerate');
+            const devices = await this.abortableMethod(
+                () => this.synchronizeGetDevices(() => this.usbInterface.getDevices()),
+                { signal },
+            );
+
+            this.devices = await this.createDevices(devices, signal);
+
+            return success(this.devicesToDescriptors());
+        } catch (err) {
+            // this shouldn't throw
+            return this.unknownError(err);
+        }
+    }
+
+    private getTransferIn(device: UsbDeviceLike) {
+        let pending = this.devicePendingTransferIn.get(device);
+        if (!pending) {
+            pending = device
+                .transferIn(this.debugLink ? DEBUGLINK_ENDPOINT_ID : ENDPOINT_ID, this.chunkSize)
+                .finally(() => this.devicePendingTransferIn.delete(device));
+            this.devicePendingTransferIn.set(device, pending);
+        }
+
+        return pending;
+    }
+
+    public async read(...[path, options]: AbstractApiArgs<'read'>) {
+        const device = this.findDevice(path);
+        if (!device) {
+            return error({ code: ERRORS.DEVICE_NOT_FOUND });
+        }
+
+        try {
+            this.logger?.debug('usb: device.transferIn');
+            const res = await this.abortableMethod(() => this.getTransferIn(device), {
+                signal: options?.signal,
+                onAbort: () => this.resetDevice(path),
+            });
+            this.logger?.debug(
+                `usb: device.transferIn done. status: ${res.status}, byteLength: ${res.data?.byteLength}.`,
+            );
+
+            if (!res.data?.byteLength) {
+                this.logger?.warn(`usb: device.transferIn error: empty data buffer`);
+
+                return success(Buffer.alloc(0));
+            }
+
+            return success(Buffer.from(res.data.buffer));
+        } catch (err) {
+            this.logger?.error(`usb: device.transferIn error ${err}`);
+
+            return this.handleReadWriteError(err);
+        }
+    }
+
+    public async write(...[path, buffer, options]: AbstractApiArgs<'write'>) {
+        const device = this.findDevice(path);
+        if (!device) {
+            return error({ code: ERRORS.DEVICE_NOT_FOUND });
+        }
+
+        let newArray: Uint8Array<ArrayBuffer>;
+        if (this.nativeWriteChunking) {
+            // Pass the full buffer for native chunking
+            newArray = new Uint8Array(buffer);
+        } else {
+            newArray = new Uint8Array(this.chunkSize);
+            newArray.set(new Uint8Array(buffer));
+        }
+
+        const timeout = setTimeout(() => {
+            this.logger?.debug('usb: device.transfer out take suspiciously long. timing out.');
+            this.resetDevice(path).catch(() => {});
+        }, 1000);
+
+        try {
+            // https://wicg.github.io/webusb/#ref-for-dom-usbdevice-transferout
+            this.logger?.debug('usb: device.transferOut');
+
+            const result = await this.abortableMethod(
+                () =>
+                    device.transferOut(
+                        this.debugLink ? DEBUGLINK_ENDPOINT_ID : ENDPOINT_ID,
+                        newArray,
+                    ),
+                { signal: options?.signal, onAbort: () => this.resetDevice(path) },
+            );
+            this.logger?.debug(`usb: device.transferOut done.`);
+            if (result.status !== 'ok') {
+                this.logger?.error(`usb: device.transferOut status not ok: ${result.status}`);
+                throw new Error('transfer out status not ok');
+            }
+
+            return success(undefined);
+        } catch (err) {
+            return this.handleReadWriteError(err);
+        } finally {
+            clearTimeout(timeout);
+        }
+    }
+
+    public async openDevice(...[path, options]: AbstractApiArgs<'openDevice'>) {
+        // note: multiple retries to open device. reason:  when another window acquires device, changed session
+        // is broadcasted to other clients. they are responsible for releasing interface, which takes some time.
+        // if there is only one client working with device, this will succeed using only one attempt.
+
+        // note: why for instead of scheduleAction from @trezor/utils with attempts param. this.openInternal does not throw
+        // I would need to throw artificially which is not nice.
+        for (let i = 0; i < 5; i++) {
+            this.logger?.debug(`usb: openDevice attempt ${i}`);
+            const res = await this.openInternal(path, options);
+            if (res.success || options?.signal?.aborted) {
+                return res;
+            }
+
+            await resolveAfter(100 * i);
+        }
+
+        return this.openInternal(path, options);
+    }
+
+    private async openInternal(...[path, options]: AbstractApiArgs<'openDevice'>) {
+        const { signal, reset } = options || { reset: false };
+        const device = this.findDevice(path);
+        if (!device) {
+            return error({ code: ERRORS.DEVICE_NOT_FOUND });
+        }
+
+        try {
+            this.logger?.debug(`usb: device.open`);
+            await this.abortableMethod(() => device.open(), { signal });
+            this.logger?.debug(`usb: device.open done. device: ${this.formatDeviceForLog(device)}`);
+        } catch (err) {
+            this.logger?.error(`usb: device.open error ${err}`);
+            if (err.message.includes('LIBUSB_ERROR_ACCESS')) {
+                return error({ code: ERRORS.LIBUSB_ERROR_ACCESS });
+            }
+
+            return error({
+                code: ERRORS.INTERFACE_UNABLE_TO_OPEN_DEVICE,
+                message: err.message,
+            });
+        }
+
+        if (device.configuration?.configurationValue !== CONFIGURATION_ID) {
+            try {
+                this.logger?.debug(`usb: device.selectConfiguration ${CONFIGURATION_ID}`);
+                await this.abortableMethod(() => device.selectConfiguration(CONFIGURATION_ID), {
+                    signal,
+                });
+                this.logger?.debug(`usb: device.selectConfiguration done: ${CONFIGURATION_ID}.`);
+            } catch (err) {
+                this.logger?.error(
+                    `usb: device.selectConfiguration error ${err}. device: ${this.formatDeviceForLog(device)}`,
+                );
+            }
+        }
+
+        if (reset) {
+            try {
+                // reset fails on ChromeOS and windows
+                this.logger?.debug('usb: device.reset');
+                await this.resetDevice(path);
+                this.logger?.debug(`usb: device.reset done.`);
+            } catch (err) {
+                this.logger?.error(
+                    `usb: device.reset error ${err}. device: ${this.formatDeviceForLog(device)}`,
+                );
+                // empty
+            }
+        }
+
+        const interfaceId = this.debugLink ? DEBUGLINK_INTERFACE_ID : INTERFACE_ID;
+        if (!this.isInterfaceClaimed(device, interfaceId)) {
+            try {
+                this.logger?.debug(`usb: device.claimInterface: ${interfaceId}`);
+                // claim device for exclusive access by this app
+                await this.abortableMethod(() => device.claimInterface(interfaceId), { signal });
+                this.logger?.debug(`usb: device.claimInterface done: ${interfaceId}.`);
+            } catch (err) {
+                this.logger?.error(`usb: device.claimInterface error ${err}.`);
+
+                return error({
+                    code: ERRORS.INTERFACE_UNABLE_TO_OPEN_DEVICE,
+                    message: err.message,
+                });
+            }
+        }
+
+        return success(undefined);
+    }
+
+    public async closeDevice(...[path]: AbstractApiArgs<'closeDevice'>) {
+        let device = this.findDevice(path);
+        if (!device) {
+            return error({ code: ERRORS.DEVICE_NOT_FOUND });
+        }
+
+        this.logger?.debug(`usb: closeDevice. device.opened: ${device.opened}`);
+
+        if (device.opened) {
+            if (!this.debugLink) {
+                try {
+                    // NOTE: `device.reset()` interrupts transfers for all interfaces (debugLink and normal)
+                    await this.resetDevice(path);
+                } catch (err) {
+                    this.logger?.error(
+                        `usb: device.reset error ${err}. device: ${this.formatDeviceForLog(device)}`,
+                    );
+                }
+            }
+        }
+
+        device = this.findDevice(path);
+        const interfaceId = this.debugLink ? DEBUGLINK_INTERFACE_ID : INTERFACE_ID;
+        if (device?.opened && this.isInterfaceClaimed(device, interfaceId)) {
+            try {
+                this.logger?.debug(`usb: device.releaseInterface: ${interfaceId}`);
+
+                await this.synchronizeResetDevice(() => device?.releaseInterface(interfaceId));
+                this.logger?.debug(`usb: device.releaseInterface done: ${interfaceId}.`);
+            } catch (err) {
+                this.logger?.error(`usb: releaseInterface error ${err}.`);
+                // ignore
+            }
+        }
+        device = this.findDevice(path);
+        if (device?.opened) {
+            try {
+                this.logger?.debug(`usb: device.close`);
+                await this.synchronizeResetDevice(() => device.close());
+                this.logger?.debug(`usb: device.close done.`);
+            } catch (err) {
+                this.logger?.debug(`usb: device.close error ${err}.`);
+
+                return error({
+                    code: ERRORS.INTERFACE_UNABLE_TO_CLOSE_DEVICE,
+                    message: err.message,
+                });
+            }
+        }
+
+        return success(undefined);
+    }
+
+    private findDevice(path: string) {
+        const device = this.devices.find(d => d.path === path);
+        if (!device) {
+            return;
+        }
+
+        return device.device;
+    }
+
+    private createDevices(devices: UsbDeviceLike[], signal?: AbortSignal) {
+        return this.synchronizeCreateDevices(async () => {
+            let bootloaderId = 0;
+
+            const getPathFromUsbDevice = (device: UsbDeviceLike) => {
+                // path is just serial number
+                // more bootloaders => number them, hope for the best
+                const { serialNumber } = device;
+                let path =
+                    serialNumber == null || serialNumber === '' ? 'bootloader' : serialNumber;
+                if (path === 'bootloader') {
+                    this.logger?.debug('usb: device without serial number!');
+                    bootloaderId++;
+                    path += bootloaderId;
+                }
+
+                return path;
+            };
+
+            const [hidDevices, nonHidDevices] = this.filterDevices(devices);
+
+            const loadedDevices = await Promise.all(
+                nonHidDevices.map(async device => {
+                    this.logger?.debug(`usb: creating device ${this.formatDeviceForLog(device)}`);
+
+                    if (
+                        this.forceReadSerialOnConnect &&
+                        // device already has serialNumber or it is open - both cases mean that we already seen it before and don't need to bother
+                        !device.opened &&
+                        !device.serialNumber
+                    ) {
+                        // try to load serialNumber. if this doesn't succeed, we can still continue normally. the only problem is that multiple devices
+                        // connected at the same time will not be properly distinguished.
+                        await this.loadSerialNumber(device, signal);
+                    }
+                    const path = getPathFromUsbDevice(device);
+
+                    return { path, device };
+                }),
+            );
+
+            return [
+                ...loadedDevices,
+                ...hidDevices.map(d => ({
+                    path: getPathFromUsbDevice(d),
+                    device: d,
+                })),
+            ];
+        });
+    }
+
+    /*
+     * depending on OS (and specific usb drivers), it might be required to open device in order to read serial number.
+     * https://github.com/node-usb/node-usb/issues/546
+     */
+    private async loadSerialNumber(device: UsbDeviceLike, signal?: AbortSignal) {
+        try {
+            this.logger?.debug(`usb: loadSerialNumber`);
+
+            await this.abortableMethod(() => device.open(), { signal });
+            // load serial number.
+            await this.abortableMethod(
+                () =>
+                    device
+                        // @ts-expect-error:  this is not part of common types between webusb and usb.
+                        .getStringDescriptor(device.device.deviceDescriptor.iSerialNumber),
+                { signal },
+            );
+            this.logger?.debug(`usb: loadSerialNumber done, serialNumber: ${device.serialNumber}`);
+            await this.abortableMethod(() => device.close(), { signal });
+        } catch (err) {
+            this.logger?.error(`usb: loadSerialNumber error: ${err.message}`);
+            throw err;
+        }
+    }
+
+    private async resetDevice(path: string) {
+        const device = this.findDevice(path);
+
+        if (!device) {
+            this.logger?.debug(`usb: resetDevice: device not found`);
+
+            return;
+        }
+
+        if (this.deviceResetMap[path]) {
+            // if this gets printed, it is an indication of some code smell. there shouldn't be need for calling device reset multiple times
+            this.logger?.debug(`usb: resetDevice: device reset already running`);
+
+            return;
+        }
+
+        this.deviceResetMap[path] = true;
+        try {
+            this.logger?.debug(`usb: resetDevice: device.reset`);
+            await this.synchronizeResetDevice(() => device.reset());
+            this.logger?.debug(`usb: resetDevice: device.reset done`);
+        } catch (err) {
+            this.logger?.error(`usb: resetDevice: device.reset error: ${err.message}`);
+        } finally {
+            delete this.deviceResetMap[path];
+        }
+    }
+
+    private filterDevices(devices: UsbDeviceLike[]): [UsbDeviceLike[], UsbDeviceLike[]] {
+        const trezorDevices = devices.filter(dev =>
+            TREZOR_USB_DESCRIPTORS.some(
+                desc => dev.vendorId === desc.vendorId && dev.productId === desc.productId,
+            ),
+        );
+        const [hidDevices, nonHidDevices] = arrayPartition(
+            trezorDevices,
+            device => device.vendorId === T1_HID_VENDOR,
+        );
+
+        return [hidDevices, nonHidDevices];
+    }
+
+    private isInterfaceClaimed(device: UsbDeviceLike, interfaceId: number) {
+        return device.configuration?.interfaces.find(i => i.interfaceNumber === interfaceId)
+            ?.claimed;
+    }
+    // https://github.com/trezor/trezord-go/blob/db03d99230f5b609a354e3586f1dfc0ad6da16f7/usb/libusb.go#L545
+    private handleReadWriteError(err: Error) {
+        if (
+            [
+                // node usb
+                'LIBUSB_TRANSFER_ERROR',
+                'LIBUSB_ERROR_PIPE',
+                'LIBUSB_ERROR_IO',
+                'LIBUSB_ERROR_NO_DEVICE',
+                'LIBUSB_ERROR_OTHER',
+                // web usb
+                ERRORS.INTERFACE_DATA_TRANSFER,
+                'The device was disconnected.',
+            ].some(disconnectedErr => err.message.includes(disconnectedErr))
+        ) {
+            return error({ code: ERRORS.DEVICE_DISCONNECTED_DURING_ACTION });
+        }
+
+        return this.unknownError(err, [
+            ERRORS.DEVICE_NOT_FOUND,
+            ERRORS.INTERFACE_UNABLE_TO_OPEN_DEVICE,
+            ERRORS.DEVICE_DISCONNECTED_DURING_ACTION,
+            ERRORS.ABORTED_BY_TIMEOUT,
+            ERRORS.ABORTED_BY_SIGNAL,
+            ERRORS.UNEXPECTED_ERROR,
+        ]);
+    }
+
+    public dispose() {
+        if (this.usbInterface) {
+            this.usbInterface.onconnect = null;
+            this.usbInterface.ondisconnect = null;
+        }
+        this.abortController.abort();
+    }
+}

@@ -1,14 +1,14 @@
 import { EventType } from '../constants';
 import type { EventDef } from '../eventDefinition';
 
-type Attributes = {};
+type Attributes = Record<never, never>;
 
 export const settingsDeviceChangeLabelEvent: EventDef<
     Attributes,
     EventType.SettingsDeviceChangeLabel
 > = {
     name: EventType.SettingsDeviceChangeLabel,
-    descriptionTrigger: 'Settings > Device > CUSTOMIZATION > Device name',
+    descriptionTrigger: 'User changes the device name/label in device customization settings',
     changelog: [{ version: '1.0.0', notes: 'added' }],
     attributes: {},
 };

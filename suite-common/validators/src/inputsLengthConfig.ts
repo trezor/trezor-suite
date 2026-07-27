@@ -1,3 +1,5 @@
+import { SOLANA_MEMO_MAX_BYTES } from '@trezor/network-solana/constants';
+
 export const formInputsMaxLength = {
     pin: 50,
     passphrase: 50,
@@ -13,9 +15,12 @@ export const formInputsMaxLength = {
      * - For UTF-16 encoding: 16384 B / 2 = 8192 B
      */
     ethData: 8192,
+    tronNote: 512,
 
     btcLocktime: 10, // max: 4294967294
     xrpDestinationTag: 10, // max: 4294967295
+    ethereumNonce: 20, // max uint64: 18446744073709551615
 
     stellarTextMemo: 28, // https://developers.stellar.org/docs/learn/encyclopedia/transactions-specialized/memos
+    solanaMemo: SOLANA_MEMO_MAX_BYTES,
 } as const;

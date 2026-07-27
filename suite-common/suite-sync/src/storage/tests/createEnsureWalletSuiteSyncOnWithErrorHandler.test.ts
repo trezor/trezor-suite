@@ -1,7 +1,7 @@
-import { Dispatch } from '@reduxjs/toolkit';
+import { type Dispatch } from '@reduxjs/toolkit';
 
 import { createMockDeps, mock } from '@suite-common/dependency-injection';
-import { StaticSessionId } from '@trezor/connect';
+import { type StaticSessionId } from '@trezor/connect';
 import { err, ok } from '@trezor/type-utils';
 
 import type { CreateEnsureWalletSuiteSyncOnWithFwCheckDeps } from '../createEnsureWalletSuiteSyncOnWithErrorHandler';
@@ -16,23 +16,55 @@ describe(createEnsureWalletSuiteSyncOnWithErrorHandler.name, () => {
             innerResult: err({
                 type: 'SuiteSyncFirmwareUpgradeNeededDeviceErrorType' as const,
             }),
-            expectedDispatchedError: {
-                type: 'SuiteSyncFirmwareUpgradeNeededDeviceErrorType',
+            expectedDispatchedAction: {
+                type: 'suiteSync/setSuiteSyncError',
+                payload: {
+                    deviceStaticSessionId: DEVICE_STATIC_SESSION_ID_123,
+                    error: {
+                        type: 'SuiteSyncFirmwareUpgradeNeededDeviceErrorType',
+                    },
+                },
+            },
+        },
+        {
+            description: 'unsupported device error',
+            innerResult: err({
+                type: 'SuiteSyncUnavailableOnDeviceError' as const,
+            }),
+            expectedDispatchedAction: {
+                type: 'suiteSync/setSuiteSyncError',
+                payload: {
+                    deviceStaticSessionId: DEVICE_STATIC_SESSION_ID_123,
+                    error: {
+                        type: 'SuiteSyncUnavailableOnDeviceError',
+                    },
+                },
             },
         },
         {
             description: 'device error',
             innerResult: err({ type: 'DeviceError' as const, message: 'some error' }),
-            expectedDispatchedError: { type: 'DeviceError', message: 'some error' },
+            expectedDispatchedAction: {
+                type: 'suiteSync/setSuiteSyncError',
+                payload: {
+                    deviceStaticSessionId: DEVICE_STATIC_SESSION_ID_123,
+                    error: { type: 'DeviceError', message: 'some error' },
+                },
+            },
         },
         {
             description: 'success',
             innerResult: ok({ data: {} } as any),
-            expectedDispatchedError: null,
+            expectedDispatchedAction: {
+                type: 'suiteSync/resetSuiteSyncError',
+                payload: {
+                    deviceStaticSessionId: DEVICE_STATIC_SESSION_ID_123,
+                },
+            },
         },
     ])(
         'dispatches correct error for $description and passes result through',
-        async ({ innerResult, expectedDispatchedError }) => {
+        async ({ innerResult, expectedDispatchedAction }) => {
             const deps = createMockDeps<CreateEnsureWalletSuiteSyncOnWithFwCheckDeps>({
                 dispatch: mock<Dispatch>(() => {}),
                 ensureWalletSuiteSyncOn: () => Promise.resolve(innerResult),
@@ -45,12 +77,7 @@ describe(createEnsureWalletSuiteSyncOnWithErrorHandler.name, () => {
 
             expect(result).toBe(innerResult);
             expect(deps.dispatch).toHaveBeenCalledWith(
-                expect.objectContaining({
-                    payload: {
-                        deviceStaticSessionId: DEVICE_STATIC_SESSION_ID_123,
-                        error: expectedDispatchedError,
-                    },
-                }),
+                expect.objectContaining(expectedDispatchedAction),
             );
         },
     );

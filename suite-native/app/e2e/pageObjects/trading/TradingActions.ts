@@ -10,10 +10,13 @@ export class TradingActions {
     constructor(
         screenPrefix:
             | 'buy'
+            | 'buy-preview'
             | 'sell'
             | 'exchange'
+            | 'exchange-approval'
             | 'history'
             | 'exchange-preview'
+            | 'exchange-revoke'
             | 'exchange-fees'
             | 'outputs-review'
             | 'sell-preview'
@@ -31,6 +34,7 @@ export class TradingActions {
     }
 
     async closeBottomSheet() {
+        await waitForVisible(by.id('@bottom-sheet/header/close-button'));
         await element(by.id('@bottom-sheet/header/close-button')).tap();
         await this.waitForBottomSheetAnimation();
     }
@@ -47,11 +51,13 @@ export class TradingActions {
         await element(by.id('@screen/mainScrollView')).scrollTo('top');
     }
 
-    async scrollToLearnMoreLink() {
-        // Scroll to bottom of the page.
+    async viewHowTradingWorks() {
+        // Scroll to bottom of the page and view how trading works sheet.
         // `scrollScreenToBottom` is not used because it accidentally clicks on links at the bottom on iOS.
-        const learnMoreLink = element(by.text('Learn more'));
-        await scrollUntilVisible(learnMoreLink);
+        const howTradingWorksButton = element(by.text('How trading works'));
+        await scrollUntilVisible(howTradingWorksButton);
+        await howTradingWorksButton.tap();
+        await this.closeBottomSheet();
     }
 
     async expectBrowserAuthTriggered() {

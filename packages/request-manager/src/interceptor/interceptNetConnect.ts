@@ -1,6 +1,6 @@
 import net from 'net';
 
-import { Interceptor } from './interceptorTypes';
+import { type Interceptor } from './interceptorTypes';
 
 export const interceptNetConnect: Interceptor = ({ context, validateRequest }) => {
     const originalConnect = net.connect;

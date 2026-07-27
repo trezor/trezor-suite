@@ -1,9 +1,9 @@
-import { events } from '@suite/analytics';
+import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
-import { GlobalSendReceiveType } from '@suite-common/wallet-types';
-import { ButtonGroup, ButtonProps } from '@trezor/components';
-
-import { useAnalytics } from 'src/support/useAnalytics';
+import { useServices } from '@suite-common/dependency-injection';
+import { type GlobalSendReceiveType } from '@suite-common/wallet-types';
+import { ButtonGroup, type ButtonProps } from '@trezor/components';
+import { ArrowDownIcon, ArrowUpIcon } from '@trezor/icons';
 
 import { HeaderActionButton } from '../HeaderActionButton';
 
@@ -17,34 +17,40 @@ export const GlobalSendReceiveButtons = ({
     intent,
     priority,
 }: GlobalSendReceiveButtonsProps) => {
-    const analytics = useAnalytics();
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
 
     return (
         <ButtonGroup intent={intent} priority={priority}>
             <HeaderActionButton
-                key="wallet-send"
-                icon="arrowUp"
-                onClick={() => {
-                    setActiveModal('send');
-
-                    analytics.report({ type: events.dashboardSendModalEvent.name });
-                }}
-                data-testid="@wallet/menu/wallet-global-send"
-            >
-                <Translation id="TR_NAV_SEND" />
-            </HeaderActionButton>
-
-            <HeaderActionButton
                 key="wallet-receive"
-                icon="arrowDown"
+                icon={ArrowDownIcon}
                 onClick={() => {
                     setActiveModal('receive');
 
-                    analytics.report({ type: events.dashboardReceiveModalEvent.name });
+                    analytics.report({
+                        type: events.dashboardReceiveModalEvent.name,
+                        payload: { source: 'page-header' },
+                    });
                 }}
                 data-testid="@wallet/menu/wallet-global-receive"
             >
                 <Translation id="TR_NAV_RECEIVE" />
+            </HeaderActionButton>
+
+            <HeaderActionButton
+                key="wallet-send"
+                icon={ArrowUpIcon}
+                onClick={() => {
+                    setActiveModal('send');
+
+                    analytics.report({
+                        type: events.dashboardSendModalEvent.name,
+                        payload: { source: 'page-header' },
+                    });
+                }}
+                data-testid="@wallet/menu/wallet-global-send"
+            >
+                <Translation id="TR_NAV_SEND" />
             </HeaderActionButton>
         </ButtonGroup>
     );

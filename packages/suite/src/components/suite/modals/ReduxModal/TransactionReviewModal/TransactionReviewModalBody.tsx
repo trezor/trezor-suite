@@ -1,30 +1,34 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
-import { events } from '@suite/analytics';
+import { selectAccountIncludingChosenInTrading } from '@suite/account';
+import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { closeModal, preserveModalOnTxTimeout } from '@suite/modal';
+import { selectRouterUrl } from '@suite/router';
+import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
-import { SendState, StakeState } from '@suite-common/wallet-core';
-import { FormState } from '@suite-common/wallet-types';
+import { useYieldVaultName } from '@suite-common/earn-stablecoin/src/allowance';
+import { selectTradingExchangeSelectedQuote } from '@suite-common/trading';
+import { selectStablecoinYieldTxReview } from '@suite-common/wallet-core';
+import { type FormState } from '@suite-common/wallet-types';
 import {
     constructTransactionReviewOutputsOptional,
     getTxValidityTimeoutInMs,
     isRbfBumpFeeTransaction,
 } from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
-import { Deferred } from '@trezor/utils';
+import { type Deferred } from '@trezor/utils';
 
-import { useSelector } from 'src/hooks/suite';
-import { selectRouterUrl } from 'src/reducers/suite/routerReducer';
-import { selectAccountIncludingChosenInTrading } from 'src/reducers/wallet/selectedAccountReducer';
-import { useAnalytics } from 'src/support/useAnalytics';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { redactRouterUrl } from 'src/utils/suite/analytics';
 
 import { TransactionReviewModalBodyInner } from './TransactionReviewModalBodyInner';
-import { isStakeState } from './types';
+import { type TxInfoState, isStakeState } from './utils';
 import { ConfirmActionModal } from '../DeviceContextModal/ConfirmActionModal';
+import { ExpiredTxValidityModal } from '../UserContextModal/TxDetailModal/ExpiredTxValidityModal';
 
 export type TransactionReviewModalBodyProps = {
     decision: Deferred<boolean, string | number | undefined> | undefined;
-    txInfoState: SendState | StakeState;
+    txInfoState: TxInfoState;
     tryAgainSignTx: () => void;
     cancelSignTx: () => void;
     isRbfConfirmedError?: boolean;
@@ -39,14 +43,32 @@ export const TransactionReviewModalBody = ({
     precomposedForm,
     isRbfConfirmedError,
 }: TransactionReviewModalBodyProps) => {
-    const analytics = useAnalytics();
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const dispatch = useDispatch();
     const account = useSelector(selectAccountIncludingChosenInTrading);
     const device = useSelector(selectSelectedDevice);
+    const yieldTxReview = useSelector(selectStablecoinYieldTxReview);
+    const swapSlippage = useSelector(selectTradingExchangeSelectedQuote)?.swapSlippage;
+
+    const isYield = Boolean(yieldTxReview);
+    const vaultName = useYieldVaultName({ enabled: isYield, account, precomposedForm });
+    const availableRewards = isYield ? yieldTxReview.availableRewards : undefined;
     const [isSending, setIsSending] = useState(false);
-    const { precomposedTx } = txInfoState;
-    const [hasTxExpired, setHasTxExpired] = useState(false);
+    const { precomposedTx, serializedTx } = txInfoState;
+    const [hasTxReviewExpired, setHasTxReviewExpired] = useState(false);
+    const prevSerializedTxRef = useRef(serializedTx);
 
     const url = useSelector(selectRouterUrl);
+
+    // If the push fails (e.g. ExpiredTxValidity), clearSignedTransactionData clears serializedTx
+    // while isSending remains true, blocking the expired-state "Try again" button.
+    // Reset isSending so the expired UI can appear.
+    useEffect(() => {
+        if (prevSerializedTxRef.current && !serializedTx && isSending) {
+            setIsSending(false);
+        }
+        prevSerializedTxRef.current = serializedTx;
+    }, [isSending, serializedTx]);
 
     const createdTxTimestamp = txInfoState?.precomposedTx?.createdTimestamp ?? 0;
     const shouldCheckTxTimeValidity = account?.networkType === 'solana' && createdTxTimestamp !== 0;
@@ -64,8 +86,9 @@ export const TransactionReviewModalBody = ({
 
         const timeoutId = setTimeout(() => {
             if (mounted && !isSending) {
-                setHasTxExpired(true);
-                TrezorConnect.cancel('tx-timeout');
+                setHasTxReviewExpired(true);
+                dispatch(preserveModalOnTxTimeout());
+                TrezorConnect.cancel({ reason: 'tx-timeout' });
             }
         }, timeLeft);
 
@@ -73,7 +96,7 @@ export const TransactionReviewModalBody = ({
             mounted = false;
             clearTimeout(timeoutId);
         };
-    }, [deadline, isSending, shouldCheckTxTimeValidity]);
+    }, [deadline, dispatch, isSending, shouldCheckTxTimeValidity]);
 
     const isBumpFeeRbfAction =
         precomposedTx !== undefined && isRbfBumpFeeTransaction(precomposedTx);
@@ -87,16 +110,21 @@ export const TransactionReviewModalBody = ({
         account,
         decreaseOutputId,
         device,
+        availableRewards,
         precomposedForm,
         precomposedTx,
+        vaultName,
+        swapSlippage,
     });
 
     const handleTryAgain = useCallback(
         (cancel: boolean) => {
-            if (cancel) {
-                TrezorConnect.cancel('tx-timeout');
+            if (cancel && !serializedTx && !isSending) {
+                dispatch(preserveModalOnTxTimeout());
+                TrezorConnect.cancel({ reason: 'tx-timeout' });
             }
 
+            setHasTxReviewExpired(false);
             tryAgainSignTx();
 
             analytics.report({
@@ -104,8 +132,15 @@ export const TransactionReviewModalBody = ({
                 payload: { url: redactRouterUrl(url) },
             });
         },
-        [tryAgainSignTx, url, analytics],
+        [dispatch, isSending, serializedTx, tryAgainSignTx, url, analytics],
     );
+
+    const onCancel = () => {
+        dispatch(closeModal());
+
+        cancelSignTx();
+        decision?.resolve(false);
+    };
 
     if (!device) return null;
     if (
@@ -118,6 +153,10 @@ export const TransactionReviewModalBody = ({
         return <ConfirmActionModal device={device} />;
     }
 
+    if (shouldCheckTxTimeValidity && hasTxReviewExpired && !isSending) {
+        return <ExpiredTxValidityModal onTryAgain={handleTryAgain} onCancel={onCancel} />;
+    }
+
     return (
         <TransactionReviewModalBodyInner
             account={account}
@@ -127,11 +166,13 @@ export const TransactionReviewModalBody = ({
             tryAgainSignTx={tryAgainSignTx}
             cancelSignTx={cancelSignTx}
             precomposedForm={precomposedForm}
+            vaultName={vaultName}
+            availableRewards={availableRewards}
             precomposedTx={precomposedTx}
             isSending={isSending}
             setIsSending={setIsSending}
             handleTryAgain={handleTryAgain}
-            hasTxExpired={hasTxExpired}
+            hasTxReviewExpired={hasTxReviewExpired}
             isRbfConfirmedError={isRbfConfirmedError}
         />
     );

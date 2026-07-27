@@ -1,28 +1,28 @@
 import styled from 'styled-components';
 
+import { TrezorLink } from '@suite/external-links';
 import { Translation } from '@suite/intl';
-import { AccountType, Network } from '@suite-common/wallet-config';
-import { ChainedTransactions, createAccountKey } from '@suite-common/wallet-types';
+import { type AccountType, type Network } from '@suite-common/wallet-config';
+import { type ChainedTransactions, createAccountKey } from '@suite-common/wallet-types';
 import { typography } from '@trezor/theme';
 
-import { TrezorLink } from 'src/components/suite/TrezorLink';
 import { TransactionItem } from 'src/components/wallet/TransactionItem/TransactionItem';
 
 import { AffectedTransactionItem } from './AffectedTransactions/AffectedTransactionItem';
 
 const Wrapper = styled.div`
     text-align: left;
-    margin-top: 25px;
+    margin-top: 24px;
 `;
 
 const Header = styled.div`
-    color: ${({ theme }) => theme.textDefault};
+    color: ${({ theme }) => theme.contentPrimary};
     ${typography['body-sm']}
     padding: 0 20px;
 `;
 
 const Label = styled(Header)`
-    color: ${({ theme }) => theme.textSubdued};
+    color: ${({ theme }) => theme.contentSecondary};
     padding: 12px 20px;
 `;
 
@@ -32,7 +32,7 @@ const ChainedTransactionItem = styled(TransactionItem)`
     border-left: 0;
 
     &:hover {
-        background: ${({ theme }) => theme.backgroundNeutralBoldInverted};
+        background: ${({ theme }) => theme.surfaceFillRaised};
     }
 `;
 
@@ -43,7 +43,7 @@ const StyledAffectedTransactionItem = styled(AffectedTransactionItem)`
     border-radius: 12px;
 
     &:hover {
-        background: ${({ theme }) => theme.backgroundNeutralBoldInverted};
+        background: ${({ theme }) => theme.surfaceFillRaised};
     }
 `;
 

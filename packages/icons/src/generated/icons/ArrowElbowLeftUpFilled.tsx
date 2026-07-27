@@ -1,0 +1,10 @@
+import type { SVGProps } from 'react';
+const SvgArrowElbowLeftUpFilled = (props: SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" {...props}>
+        <path
+            fill="currentColor"
+            d="M29 24a1 1 0 0 1-1 1H10a1 1 0 0 1-1-1V13H4a1.001 1.001 0 0 1-.707-1.707l6-6a1 1 0 0 1 1.415 0l6 6A1 1 0 0 1 16 13h-5v10h17a1 1 0 0 1 1 1"
+        />
+    </svg>
+);
+export { SvgArrowElbowLeftUpFilled as ReactComponent };

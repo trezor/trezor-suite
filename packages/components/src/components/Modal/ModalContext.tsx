@@ -1,17 +1,12 @@
 import { createContext, useContext } from 'react';
 
-import { ModalVariant } from './types';
+import { throwError } from '@trezor/utils';
+
+import { type ModalIntent } from './types';
 
 export const ModalContext = createContext<{
-    variant?: ModalVariant;
-}>({ variant: undefined });
+    intent?: ModalIntent;
+}>({ intent: undefined });
 
-export const useModalContext = () => {
-    const context = useContext(ModalContext);
-
-    if (!context) {
-        throw new Error('useModalContext must be used within a ModalContext');
-    }
-
-    return context;
-};
+export const useModalContext = () =>
+    useContext(ModalContext) ?? throwError('useModalContext must be used within a ModalContext');

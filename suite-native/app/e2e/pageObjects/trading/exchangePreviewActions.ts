@@ -1,5 +1,5 @@
 import { TradingActions } from './TradingActions';
-import { waitForVisible } from '../../support/utils';
+import { waitForVisible, waitToHaveRegex } from '../../support/utils';
 
 class ExchangePreviewActions extends TradingActions {
     constructor() {
@@ -15,14 +15,11 @@ class ExchangePreviewActions extends TradingActions {
     }
 
     async waitForFeesToLoad() {
-        await waitForVisible(
-            element(by.text('≈').withAncestor(by.id('@trading/fees/fee-picker'))),
+        await waitToHaveRegex(
+            by.id('@transactionManagement/fee-crypto-amount'),
+            /\d[\d.]*\s[A-Z]{2,6}/,
             { timeout: this.DOUBLE_LONG_TIMEOUT },
         );
-    }
-
-    async goToFees() {
-        await element(by.id('@trading/fees/fee-picker')).tap();
     }
 
     async goToTransactionSigning() {

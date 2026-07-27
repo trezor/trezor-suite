@@ -1,29 +1,30 @@
-import type { SellFiatTrade } from 'invity-api';
+import type { FiatCurrencyCode, SellFiatTrade } from 'invity-api';
 
 import { Text } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
+import { useChangeStringsExtractor } from '@suite-native/trading-quote-utils';
 
 import { TradeFiatSideCard } from '../../general/TradeInfo/TradeFiatSideCard';
 
 export type SellToFiatTradePreviewCardProps = {
     quote?: SellFiatTrade;
-    toStringValue: string | undefined;
 };
 
-export const SellToFiatTradePreviewCard = ({
-    quote,
-    toStringValue,
-}: SellToFiatTradePreviewCardProps) => {
-    if (!quote?.fiatCurrency || !quote.paymentMethod) {
+export const SellToFiatTradePreviewCard = ({ quote }: SellToFiatTradePreviewCardProps) => {
+    const { toStringValue } = useChangeStringsExtractor(quote);
+
+    if (!quote?.paymentMethod || !quote.fiatCurrency || !toStringValue) {
         return null;
     }
 
     return (
         <TradeFiatSideCard
+            fiatCurrency={quote.fiatCurrency as FiatCurrencyCode}
             paymentMethod={quote.paymentMethod}
+            paymentMethodName={quote.paymentMethodName}
             amount={
                 !!toStringValue && (
-                    <Text variant="body-sm" color="textSecondaryHighlight">
+                    <Text variant="body-sm" color="contentBrand">
                         +{toStringValue}
                     </Text>
                 )

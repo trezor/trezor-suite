@@ -1,20 +1,23 @@
-import { BuyTrade, ExchangeTrade, FiatCurrencyCode, SellFiatTrade } from 'invity-api';
-
-import { ExtendedMessageDescriptor } from '@suite/intl';
-import { type TradingType } from '@suite-common/trading';
-import { Network, NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
-import { PrecomposedLevels, PrecomposedLevelsCardano } from '@suite-common/wallet-types';
+import { type ExtendedMessageDescriptor } from '@suite/intl';
+import type { TradingType } from '@suite-common/trading';
+import { type Network, type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
+import {
+    type Output,
+    type PrecomposedLevels,
+    type PrecomposedLevelsCardano,
+    type TokenAddress,
+} from '@suite-common/wallet-types';
 import { asAmountSubunit, substituteBip43Path, subunitsToUnits } from '@suite-common/wallet-utils';
-import TrezorConnect, { FeeLevel, TokenInfo } from '@trezor/connect';
+import TrezorConnect, { type FeeLevel, type TokenInfo } from '@trezor/connect';
+import { exhaustive } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { Route, TrezorDevice } from 'src/types/suite';
+import { type TrezorDevice } from 'src/types/suite';
 import {
-    TradingGetAmountLabelsProps,
-    TradingGetAmountLabelsReturnProps,
-    TradingGetProvidersInfoProps,
+    type TradingGetAmountLabelsProps,
+    type TradingGetAmountLabelsReturnProps,
 } from 'src/types/trading/trading';
-import { Account } from 'src/types/wallet';
+import { type Account } from 'src/types/wallet';
 
 export const translationKeys: Record<
     TradingType,
@@ -23,30 +26,6 @@ export const translationKeys: Record<
     buy: 'TR_BUY',
     sell: 'TR_TRADING_SELL',
     exchange: 'TR_TRADING_SWAP',
-};
-
-export const buildTradingFiatOption = (currency: FiatCurrencyCode) => ({
-    value: currency,
-    label: currency.toUpperCase(),
-});
-
-export const getCountryLabelParts = (label: string) => {
-    try {
-        const parts = label.split(' ');
-        if (parts.length === 1) {
-            return {
-                flag: '',
-                text: label,
-            };
-        }
-        const flag = parts[0];
-        parts.shift();
-        const text = parts.join(' ');
-
-        return { flag, text };
-    } catch {
-        return null;
-    }
 };
 
 export const getComposeAddressPlaceholder = async (
@@ -90,7 +69,11 @@ export const getComposeAddressPlaceholder = async (
             }
 
             // as a fallback, use the change address of current account
-            return account.addresses?.change[0].address;
+            const change = account.addresses?.change;
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const firstChange: NonNullable<typeof change>[number] = change?.[0];
+
+            return firstChange.address;
         }
         case 'ethereum':
             // ethereum address is not used as it breaks calculating fee logic;
@@ -104,7 +87,11 @@ export const getComposeAddressPlaceholder = async (
         case 'ripple':
         case 'stellar':
             return account.descriptor;
-        // no default
+        case 'tron':
+            // keep the form address empty; the fee uses composeContext.feeEstimationRecipient
+            return '';
+        default:
+            return exhaustive(networkType);
     }
 };
 
@@ -201,33 +188,6 @@ export const resolveAddressAndToken = <A extends Pick<Account, 'symbol' | 'descr
     return { address: '', token: tokenContractAddress ?? null };
 };
 
-export const getTradeTypeByRoute = (
-    routeName: Route['name'] | undefined,
-): TradingType | undefined => {
-    if (routeName?.startsWith('wallet-trading-buy')) {
-        return 'buy';
-    }
-
-    if (routeName?.startsWith('wallet-trading-sell')) {
-        return 'sell';
-    }
-
-    if (routeName?.startsWith('wallet-trading-exchange')) {
-        return 'exchange';
-    }
-};
-
-interface GetTradeProviderProps {
-    trade: BuyTrade | ExchangeTrade | SellFiatTrade | undefined;
-    providerInfo: TradingGetProvidersInfoProps;
-}
-
-export const getTradeProvider = ({ trade, providerInfo }: GetTradeProviderProps) => {
-    if (!trade || !trade.exchange) return undefined;
-
-    return providerInfo?.[trade.exchange];
-};
-
 interface GetFeeInUnitsProps {
     symbol: NetworkSymbol;
     composedLevels?: PrecomposedLevels | PrecomposedLevelsCardano;
@@ -254,4 +214,13 @@ export const getFeeInUnits = ({
     }).toString();
 
     return feeInUnits;
+};
+
+export const getTradingFirstOutput = (outputs: Output[] | undefined) => {
+    const firstOutput = outputs?.[0];
+    const amount = firstOutput?.amount ?? '';
+    const token = firstOutput?.token ?? null;
+    const tokenAddress = token as TokenAddress | null;
+
+    return { amount, token, tokenAddress };
 };

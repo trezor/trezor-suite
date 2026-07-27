@@ -2,7 +2,7 @@ import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { UI_REQUEST } from '@trezor/connect';
 
 import {
-    DeviceAuthorizationState,
+    type DeviceAuthorizationState,
     DeviceAuthorizationStep,
     deviceAuthorizationInitialState,
     deviceAuthorizationReducer,
@@ -37,9 +37,9 @@ describe('deviceAuthorizationSlice', () => {
             const state = deviceAuthorizationReducer(undefined, {
                 type: UI_REQUEST.REQUEST_PASSPHRASE,
                 payload: {
-                    // @ts-expect-error This is how connect sends the payload for device state, but then it's stored differently in redux so this util doesn't recognize
-                    // this type of property. For testing purposes however, it's fine.
-                    device: mockSuiteDevice({ state: { staticSessionId: 'test-session-id' } }),
+                    device: mockSuiteDevice({
+                        state: { staticSessionId: 'testWallet@testDevice:0' },
+                    }),
                 },
             });
 
@@ -132,15 +132,18 @@ describe('deviceAuthorizationSlice', () => {
     });
 
     describe('isSuiteSyncButtonRequest matcher', () => {
-        it('should set deviceAuthorizationStep to ContinueOnTrezorRequested for secure_sync button request', () => {
-            const state = deviceAuthorizationReducer(undefined, {
-                type: UI_REQUEST.REQUEST_BUTTON,
-                payload: { name: 'secure_sync' },
-            });
+        it.each(['suite_sync', 'secure_sync'])(
+            'should set deviceAuthorizationStep to ContinueOnTrezorRequested for %s button request',
+            name => {
+                const state = deviceAuthorizationReducer(undefined, {
+                    type: UI_REQUEST.REQUEST_BUTTON,
+                    payload: { name },
+                });
 
-            expect(state).toEqual({
-                deviceAuthorizationStep: DeviceAuthorizationStep.ContinueOnTrezorRequested,
-            });
-        });
+                expect(state).toEqual({
+                    deviceAuthorizationStep: DeviceAuthorizationStep.ContinueOnTrezorRequested,
+                });
+            },
+        );
     });
 });

@@ -1,28 +1,21 @@
-import React from 'react';
 import { useDispatch } from 'react-redux';
 
-import { events } from '@suite/analytics';
+import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
-import { AssetFiatBalance } from '@suite-common/assets';
+import { goto } from '@suite/router';
+import { selectShouldAnimateLoadingSkeleton } from '@suite/ui-animations';
+import { type AssetFiatBalance } from '@suite-common/assets';
+import { useServices } from '@suite-common/dependency-injection';
 import { selectCoinDefinitions } from '@suite-common/token-definitions';
-import { Network, NetworkSymbol } from '@suite-common/wallet-config';
+import { type Network, type NetworkSymbol } from '@suite-common/wallet-config';
 import { selectAnyAccountIsStakingActive, useDisplayBaseCurrency } from '@suite-common/wallet-core';
-import { Account, RatesByKey } from '@suite-common/wallet-types';
-import { AmountUnit } from '@suite-common/wallet-utils';
+import { type Account, type RatesByKey } from '@suite-common/wallet-types';
+import { type AmountUnit } from '@suite-common/wallet-utils';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
-import {
-    Card,
-    Column,
-    Icon,
-    InfoItem,
-    Note,
-    Row,
-    SkeletonRectangle,
-    Text,
-} from '@trezor/components';
-import { TokenInfo } from '@trezor/connect';
+import { Card, Column, Icon, InfoItem, Note, Row, Skeleton, Text } from '@trezor/components';
+import { type TokenInfo } from '@trezor/connect';
+import { ArrowRightIcon, WarningIcon } from '@trezor/icons';
 
-import { goto } from 'src/actions/suite/routerActions';
 import {
     AmountUnitSwitchWrapper,
     CoinBalance,
@@ -30,13 +23,12 @@ import {
     TrendTicker,
 } from 'src/components/suite';
 import { FiatHeader } from 'src/components/wallet/FiatHeader';
-import { useLoadingSkeleton, useSelector } from 'src/hooks/suite';
-import { useAnalytics } from 'src/support/useAnalytics';
+import { useSelector } from 'src/hooks/suite';
 
+import { AssetActionButton } from '../AssetActionButton';
+import { handleTokensAndStakingData } from '../assetsViewUtils';
 import { AssetCardInfo, AssetCardInfoSkeleton } from './AssetCardInfo';
 import { AssetCardTokensAndStakingInfo } from './AssetCardTokensAndStakingInfo';
-import { TradingButton } from '../TradingButton';
-import { handleTokensAndStakingData } from '../assetsViewUtils';
 
 type AmountComponentProps = {
     failed: boolean;
@@ -64,7 +56,7 @@ const AmountComponent = ({ failed, cryptoValue, symbol, localCurrency }: AmountC
             </Text>
         </Column>
     ) : (
-        <Note intent="critical" iconName="warning">
+        <Note intent="critical" icon={WarningIcon}>
             <Translation id="TR_DASHBOARD_ASSET_FAILED" />
         </Note>
     );
@@ -98,12 +90,13 @@ export const AssetCard = ({
 }: AssetCardProps) => {
     const { symbol } = network;
     const dispatch = useDispatch();
-    const analytics = useAnalytics();
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
     const { shallDisplayBaseCurrency } = useDisplayBaseCurrency(symbol);
 
     const handleCardClick = () => {
         dispatch(
-            goto('wallet-index', {
+            goto({
+                routeName: 'wallet-index',
                 params: {
                     symbol,
                     accountIndex: 0,
@@ -156,11 +149,16 @@ export const AssetCard = ({
 
     return (
         <Card
-            paddingType="small"
+            paddingType="none"
             onClick={handleCardClick}
             data-testid={`@dashboard/asset-item/${symbol}`}
         >
-            <Column justifyContent="space-between" height="100%" gap={20} padding={{ top: 8 }}>
+            <Column
+                justifyContent="space-between"
+                height="100%"
+                gap={20}
+                padding={{ bottom: 12, horizontal: 12, top: 20 }}
+            >
                 <Column gap={40} flex="1" margin={{ horizontal: 8 }}>
                     <Row justifyContent="space-between">
                         <AssetCardInfo
@@ -168,7 +166,7 @@ export const AssetCard = ({
                             assetsFiatBalances={assetsFiatBalances}
                             index={index}
                         />
-                        <Icon size={16} name="arrowRight" isDisabled={true} />
+                        <Icon size={16} as={ArrowRightIcon} isDisabled={true} />
                     </Row>
                     <AmountComponent
                         symbol={symbol}
@@ -189,7 +187,7 @@ export const AssetCard = ({
                     />
                 )}
                 {shallDisplayBaseCurrency && (
-                    <Card data-testid="@dashboard/asset/bottom-info">
+                    <Card data-testid="@dashboard/asset/bottom-info" type="contrast">
                         <Row justifyContent="space-between" flexWrap="wrap" gap={16}>
                             <InfoItem
                                 data-testid="@dashboard/asset/exchange-rate"
@@ -208,24 +206,24 @@ export const AssetCard = ({
 
                             <Row gap={8}>
                                 {isStakeNetwork && (
-                                    <TradingButton
+                                    <AssetActionButton
                                         symbol={symbol}
                                         data-testid={`@dashboard/asset/${symbol}/stake-button`}
                                         onClick={onStakeButtonClick}
                                         routeName="wallet-staking"
                                     >
                                         <Translation id="TR_STAKE_STAKE" />
-                                    </TradingButton>
+                                    </AssetActionButton>
                                 )}
 
-                                <TradingButton
+                                <AssetActionButton
                                     symbol={symbol}
                                     routeName="wallet-trading-buy"
                                     data-testid={`@dashboard/asset/${symbol}/buy-button`}
                                     onClick={onBuyButtonClick}
                                 >
                                     <Translation id="TR_BUY_BUY" />
-                                </TradingButton>
+                                </AssetActionButton>
                             </Row>
                         </Row>
                     </Card>
@@ -236,7 +234,7 @@ export const AssetCard = ({
 };
 
 export const AssetCardSkeleton = (props: { animate?: boolean }) => {
-    const { shouldAnimate } = useLoadingSkeleton();
+    const shouldAnimate = useSelector(selectShouldAnimateLoadingSkeleton);
     const animate = props.animate ?? shouldAnimate;
 
     return (
@@ -245,15 +243,13 @@ export const AssetCardSkeleton = (props: { animate?: boolean }) => {
                 <Row justifyContent="space-between">
                     <AssetCardInfoSkeleton animate={animate} />
                 </Row>
-                <Column>
-                    <Row>
-                        <SkeletonRectangle animate={animate} width={95} height={32} />
-                    </Row>
-                    <SkeletonRectangle animate={animate} width={50} height={16} />
+                <Column gap={4}>
+                    <Skeleton animate={animate} width={95} height={32} />
+                    <Skeleton animate={animate} width={50} height={16} />
                 </Column>
             </Column>
-            <Card>
-                <SkeletonRectangle animate={animate} width="100%" height={40} />
+            <Card type="contrast">
+                <Skeleton animate={animate} width="100%" height={40} />
             </Card>
         </Card>
     );

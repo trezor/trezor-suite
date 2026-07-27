@@ -1,5 +1,37 @@
 # Storage changelog
 
+## 26.8.0
+
+- remove inaccurate historic ERC4626 fiat rates from storage
+- rename receive `revealedAddresses` to `touchedAddresses`
+- remove `isVerified` flag from receive address entries
+- remove receive data belonging to devices that are not remembered
+
+## 26.6.0
+
+- purge desktop trading form draft keys (`trading-buy/*`, `trading-sell/`, `trading-exchange/`) from `formDrafts`
+
+## 26.5.0
+
+- reset Ethereum account nonces to `-1` in order to force account refresh for DeFi tokens
+- backfill `manualCheckResult` to all `persistentDeviceData` entries (all previously known devices assumed confirmed)
+
+## 26.4.0.2
+
+- rename `experimentalFeedback` object store to `featureFeedback`
+
+## 26.4.0.1
+
+- ensure `descriptor.apiType` is set to `usb` for remembered devices from old Suite versions
+
+## 26.4.0
+
+- create `phishing` object store for persisting user "marked as not scam" transaction IDs per account
+
+## 26.3.0.1
+
+- create `experimentalFeedback` object store
+
 ## 26.3.0
 
 - create `suiteSyncOwners` object store

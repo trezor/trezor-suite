@@ -1,7 +1,12 @@
-import { Meta, StoryObj } from '@storybook/react';
+import { type Meta, type StoryObj } from '@storybook/react';
 import { useArgs } from 'storybook/preview-api';
 
-import { Option, Select as SelectComponent, SelectProps, allowedSelectFrameProps } from './Select';
+import {
+    type Option,
+    Select as SelectComponent,
+    type SelectProps,
+    allowedSelectFrameProps,
+} from './Select';
 import { getFramePropsStory } from '../../../utils/frameProps';
 import { inputSizes } from '../types';
 

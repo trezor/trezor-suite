@@ -1,11 +1,11 @@
 import {
-    Dispatch,
-    ListenerEffectAPI,
-    UnknownAction,
+    type Dispatch,
+    type ListenerEffectAPI,
+    type UnknownAction,
     createListenerMiddleware,
 } from '@reduxjs/toolkit';
 
-import { deviceActions, selectDevices, selectIsDeviceRemembered } from '@suite-common/device';
+import { deviceActions, selectDevices } from '@suite-common/device';
 import {
     getDeviceInternalModel,
     getIsDeviceDescriptorApiTypeBluetooth,
@@ -18,6 +18,7 @@ import { selectIsFirmwareInstallationRunning } from '@suite-native/firmware';
 import {
     AuthorizeDeviceStackRoutes,
     DeviceOnboardingStackRoutes,
+    DeviceSettingsStackRoutes,
     HomeStackRoutes,
     RootStackRoutes,
     checkIsActiveRouteAnyOf,
@@ -25,17 +26,13 @@ import {
     checkIsHomeStackFocused,
     navigationContainerRef,
 } from '@suite-native/navigation';
-import { DeviceModelInternal, hasBitcoinOnlyFirmware } from '@trezor/device-utils';
+import { type DeviceModelInternal, hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 
 import {
     DEVICE_CONNECTION_BLACKLISTED_ROUTES,
-    buildDisconnectionBlacklist,
+    DEVICE_DISCONNECTION_BLACKLISTED_ROUTES,
 } from '../deviceNavigationConfig';
-import {
-    NativeDeviceRootState,
-    selectIsDeviceCompromised,
-    selectIsEntropyCheckEnabledAndFailed,
-} from '../selectors';
+import { type NativeDeviceRootState, selectCompromisedDeviceFailedCheck } from '../selectors';
 import { getIsDeviceSetupSupported } from '../utils';
 
 export const deviceConnectionMiddleware = createListenerMiddleware<NativeDeviceRootState>();
@@ -112,10 +109,6 @@ const handleDeviceConnectNavigation = ({
         navigationContainerRef.navigate(RootStackRoutes.AuthorizeDeviceStack, {
             screen: AuthorizeDeviceStackRoutes.ConnectingDevice,
         });
-    } else {
-        navigationContainerRef.navigate(RootStackRoutes.AuthorizeDeviceStack, {
-            screen: AuthorizeDeviceStackRoutes.CoinEnablingInit,
-        });
     }
 };
 
@@ -138,17 +131,19 @@ deviceConnectionMiddleware.startListening({
         // Your decision logic should be derived from device passed from TrezorConnect in the action payload (not selectedDevice from the state).
         const { device } = action.payload;
 
-        const shouldNavigateToDeviceCompromisedModal = selectIsDeviceCompromised(getState());
+        const failedCheck = selectCompromisedDeviceFailedCheck(getState(), device);
 
         if (checkIsActiveRouteAnyOf(DEVICE_CONNECTION_BLACKLISTED_ROUTES)) return;
 
         // During firmware installation, device restarts (disconnect + connect) and we want to ignore it.
         if (selectIsFirmwareInstallationRunning(getState())) return;
 
-        if (shouldNavigateToDeviceCompromisedModal) {
+        if (failedCheck) {
             // When the compromised modal is closed on first connection and no coins would be selected, we will need to redirect user
             // to coin enabling so he can continue to the app with running discovery.
-            navigationContainerRef.navigate(RootStackRoutes.DeviceCompromisedModal);
+            navigationContainerRef.navigate(RootStackRoutes.DeviceCompromisedModal, {
+                failedCheck,
+            });
 
             return;
         }
@@ -188,17 +183,13 @@ deviceConnectionMiddleware.startListening({
             throw new Error('This listener only handles deviceDisconnect action');
         }
 
-        const isDeviceRemembered = selectIsDeviceRemembered(getState());
-        const isEntropyCheckEnabledAndFailed = selectIsEntropyCheckEnabledAndFailed(getState());
         const isFirmwareInstallationRunning = selectIsFirmwareInstallationRunning(getState());
         const wasDeviceConnectedViaBluetooth = getIsDeviceDescriptorApiTypeBluetooth(
             action.payload,
         );
 
         if (
-            checkIsActiveRouteAnyOf(
-                buildDisconnectionBlacklist(isEntropyCheckEnabledAndFailed, isDeviceRemembered),
-            ) ||
+            checkIsActiveRouteAnyOf(DEVICE_DISCONNECTION_BLACKLISTED_ROUTES) ||
             isFirmwareInstallationRunning
         )
             return;
@@ -231,7 +222,21 @@ deviceConnectionMiddleware.startListening({
     effect: (_, { getState }) => {
         if (!navigationContainerRef.isReady()) return;
 
-        if (selectIsFirmwareInstallationRunning(getState())) return;
+        if (
+            selectIsFirmwareInstallationRunning(getState()) ||
+            checkIsActiveRouteAnyOf([
+                DeviceSettingsStackRoutes.DeviceNameStack,
+                DeviceSettingsStackRoutes.FirmwareUpdateStack,
+                DeviceSettingsStackRoutes.FirmwareLanguageStack,
+                DeviceSettingsStackRoutes.DevicePinProtectionStack,
+                DeviceSettingsStackRoutes.DeviceCheckBackupStack,
+                DeviceSettingsStackRoutes.DevicePassphraseStack,
+                DeviceSettingsStackRoutes.DeviceAuthenticityStack,
+                DeviceSettingsStackRoutes.WipeDeviceStack,
+            ])
+        ) {
+            return;
+        }
 
         // Nothing can be accomplished before a THP connection is established.
         navigationContainerRef.navigate(RootStackRoutes.AuthorizeDeviceStack, {

@@ -1,17 +1,11 @@
-import { ReactNode, forwardRef } from 'react';
+import { type ReactNode, forwardRef } from 'react';
 
 import styled, { css } from 'styled-components';
 
 import { Translation } from '@suite/intl';
-import { BackupType } from '@suite-common/suite-types';
-import { Icon, Radio, Row, Text, Tooltip, useElevation, variables } from '@trezor/components';
-import {
-    Elevation,
-    borders,
-    mapElevationToBackground,
-    mapElevationToBorder,
-    spacingsPx,
-} from '@trezor/theme';
+import { type BackupType } from '@suite-common/suite-types';
+import { Icon, Radio, Row, Text, Tooltip, variables } from '@trezor/components';
+import { CaretDownIcon, RecoverySeedIcon } from '@trezor/icons';
 
 import { useLayoutSize } from 'src/hooks/suite';
 
@@ -28,26 +22,26 @@ export const OptionStyled = styled.div<{ $hasHoverInteraction?: boolean; $disabl
     display: flex;
     flex-direction: row;
 
-    gap: ${spacingsPx.md};
+    gap: 16px;
 
-    padding-top: ${spacingsPx.sm};
-    padding-bottom: ${spacingsPx.sm};
+    padding-top: 12px;
+    padding-bottom: 12px;
 
     ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
-        padding-top: ${spacingsPx.xs};
-        padding-bottom: ${spacingsPx.xs};
+        padding-top: 8px;
+        padding-bottom: 8px;
     }
 
     align-items: center;
     cursor: pointer;
 
-    color: ${({ $disabled, theme }) => ($disabled ? theme.textSubdued : undefined)};
+    color: ${({ $disabled, theme }) => ($disabled ? theme.contentSecondary : undefined)};
 
     ${({ $hasHoverInteraction }) =>
-        $hasHoverInteraction === true
+        $hasHoverInteraction
             ? css`
                   &:hover {
-                      background-color: ${({ theme }) => theme.backgroundSurfaceElevation2};
+                      background-color: ${({ theme }) => theme.elementFillElevatedHovered};
                       transition: background 0.2s ease;
 
                       margin-left: -10px;
@@ -62,16 +56,16 @@ export const OptionStyled = styled.div<{ $hasHoverInteraction?: boolean; $disabl
                           padding-right: 6px;
                       }
 
-                      border-radius: ${borders.radii.xs};
+                      border-radius: 4px;
                   }
               `
             : ''};
 `;
 
-const DownIconCircle = styled.div<{ $elevation: Elevation }>`
-    border-radius: ${borders.radii.full};
-    border: 1px solid ${mapElevationToBorder};
-    background: ${mapElevationToBackground};
+const DownIconCircle = styled.div`
+    border-radius: calc(infinity * 1px);
+    border: 1px solid ${({ theme }) => theme.elementBorderNeutralSofter};
+    background: ${({ theme }) => theme.elementFillElevated};
     height: 36px;
     width: 36px;
     display: flex;
@@ -80,15 +74,11 @@ const DownIconCircle = styled.div<{ $elevation: Elevation }>`
     overflow: hidden;
 `;
 
-const ArrowDown = () => {
-    const { elevation } = useElevation();
-
-    return (
-        <DownIconCircle $elevation={elevation}>
-            <Icon name="caretDown" size={16} />
-        </DownIconCircle>
-    );
-};
+const ArrowDown = () => (
+    <DownIconCircle>
+        <Icon as={CaretDownIcon} size={16} />
+    </DownIconCircle>
+);
 
 type OptionProps = {
     children: ReactNode;
@@ -112,7 +102,7 @@ const Option = ({
     >
         <Radio
             isChecked={isChecked}
-            onClick={onSelect}
+            onChange={onSelect}
             data-testid={dataTest}
             isDisabled={disabled}
         />
@@ -125,10 +115,10 @@ type SelectedOptionProps = { children: ReactNode; onClick: () => void; isDisable
 const SelectedOptionStyled = styled.div<{ $isDisabled: boolean }>`
     cursor: ${({ $isDisabled }) => ($isDisabled ? undefined : 'pointer')};
 
-    padding: ${spacingsPx.xxs} ${spacingsPx.xl};
+    padding: 4px 24px;
 
     ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
-        padding: 0 ${spacingsPx.sm};
+        padding: 0 12px;
     }
 `;
 
@@ -137,7 +127,7 @@ export const SelectedOption = forwardRef<HTMLDivElement, SelectedOptionProps>(
         <SelectedOptionStyled $isDisabled={isDisabled}>
             <OptionStyled ref={ref} onClick={isDisabled ? undefined : onClick}>
                 <div>
-                    <Icon name="recoverySeed" size={24} />
+                    <Icon as={RecoverySeedIcon} size={24} />
                 </div>
                 {children}
                 <ArrowDown />

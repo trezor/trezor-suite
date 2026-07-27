@@ -8,16 +8,17 @@ import { selectSendFormReviewLastButtonCode } from '@suite-common/wallet-core';
 import type {
     FormState,
     GeneralPrecomposedTransactionFinal,
+    ReviewOutput,
     StakeFormState,
+    StakeType,
 } from '@suite-common/wallet-types';
-import { ReviewOutput, StakeType } from '@suite-common/wallet-types';
 import {
     findAccountsByAddress,
     getEvmTransactionTextSignature,
     isEvmApprovalTx,
+    isEvmYieldTxByTextSignature,
 } from '@suite-common/wallet-utils';
 import { Column, H4 } from '@trezor/components';
-import { spacings, spacingsPx } from '@trezor/theme';
 
 import { useSelector } from 'src/hooks/suite';
 import type { Account } from 'src/types/wallet';
@@ -43,11 +44,11 @@ export type TransactionReviewOutputListProps = {
 };
 
 const Wrapper = styled.div`
-    scroll-margin-top: ${spacingsPx.xxxxl};
+    scroll-margin-top: 48px;
 `;
 
 const SectionHeading = ({ output, index }: { output: ReviewOutput; index: number }) => (
-    <H4 margin={{ top: index === 0 ? spacings.zero : spacings.xs }}>
+    <H4 margin={{ top: index === 0 ? 0 : 8 }}>
         {output.type === 'address' ? (
             <Translation
                 id="TR_SEND_RECIPIENT_ADDRESS"
@@ -101,6 +102,10 @@ export const TransactionReviewOutputList = ({
 
     const isApprovalTx = isEvmApprovalTx(precomposedForm.transactionData);
 
+    const evmTxType = getEvmTransactionTextSignature(precomposedForm.transactionData);
+
+    const isYieldOperation = isEvmYieldTxByTextSignature(evmTxType) || evmTxType === 'claim';
+
     const isInternalTransfer =
         isFirstOutputAddress &&
         typeof outputs[0]?.value === 'string' &&
@@ -109,6 +114,11 @@ export const TransactionReviewOutputList = ({
     const summaryIndex = outputs.findIndex(
         ({ type }) => !['address', 'amount', 'opreturn'].includes(type),
     );
+
+    const isTronStakeFreeze =
+        networkType === 'tron' &&
+        (precomposedForm.tronStaking?.kind === 'freeze' ||
+            precomposedForm.tronStaking?.kind === 'unstake');
 
     const nativeToken =
         account.accountType === 'placeholder' && 'nativeToken' in precomposedTx
@@ -131,6 +141,7 @@ export const TransactionReviewOutputList = ({
         !isApprovalTx &&
         !isTrading &&
         !isInternalTransfer &&
+        !isYieldOperation &&
         !signedTx
     ) {
         return (
@@ -144,7 +155,7 @@ export const TransactionReviewOutputList = ({
     }
 
     return (
-        <Column gap={spacings.md}>
+        <Column gap={16}>
             {outputs.map((output, index) => {
                 const isHeadingShown =
                     isMultirecipient && (output.type === 'address' || index === summaryIndex);
@@ -159,7 +170,7 @@ export const TransactionReviewOutputList = ({
                             outputRefs.current[index] = ref;
                         }}
                     >
-                        <Column gap={spacings.sm}>
+                        <Column gap={12}>
                             {isHeadingShown && (
                                 <SectionHeading output={output} index={recipientIndex} />
                             )}
@@ -175,35 +186,35 @@ export const TransactionReviewOutputList = ({
                                 isRbf={isRbfAction}
                                 isTrading={!!isTrading}
                                 stakeType={stakeType}
-                                evmTxType={getEvmTransactionTextSignature(
-                                    precomposedForm.transactionData,
-                                )}
+                                evmTxType={evmTxType}
                                 nativeToken={nativeToken}
+                                isTronStakeFreeze={isTronStakeFreeze}
                             />
                         </Column>
                     </Wrapper>
                 );
             })}
 
-            {!(isRbfAction && networkType === 'bitcoin') && (
-                <Wrapper ref={totalOutputRef}>
-                    <Column gap={spacings.sm}>
-                        {isMultirecipient && summaryIndex === -1 && (
-                            <H4 margin={{ top: spacings.xs }}>
-                                <Translation id="TR_SUMMARY" />
-                            </H4>
-                        )}
-                        <TransactionReviewTotalOutput
-                            account={account}
-                            state={reviewState}
-                            precomposedTx={precomposedTx}
-                            precomposedForm={precomposedForm}
-                            stakeType={stakeType}
-                            isRbf={isRbfAction}
-                        />
-                    </Column>
-                </Wrapper>
-            )}
+            {!(isRbfAction && networkType === 'bitcoin') &&
+                (networkType !== 'tron' || isTronStakeFreeze) && (
+                    <Wrapper ref={totalOutputRef}>
+                        <Column gap={12}>
+                            {isMultirecipient && summaryIndex === -1 && (
+                                <H4 margin={{ top: 8 }}>
+                                    <Translation id="TR_SUMMARY" />
+                                </H4>
+                            )}
+                            <TransactionReviewTotalOutput
+                                account={account}
+                                state={reviewState}
+                                precomposedTx={precomposedTx}
+                                precomposedForm={precomposedForm}
+                                stakeType={stakeType}
+                                isRbf={isRbfAction}
+                            />
+                        </Column>
+                    </Wrapper>
+                )}
         </Column>
     );
 };

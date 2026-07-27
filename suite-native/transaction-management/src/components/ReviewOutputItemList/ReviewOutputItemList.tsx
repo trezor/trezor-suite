@@ -1,15 +1,20 @@
 import { useSelector } from 'react-redux';
 
-import { AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
-import { AccountKey, FormDraftWithSendKeyPrefix, TokenAddress } from '@suite-common/wallet-types';
+import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
+import {
+    type AccountKey,
+    type FormDraftWithSendKeyPrefix,
+    type TokenAddress,
+} from '@suite-common/wallet-types';
 import { ErrorMessage, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
+import type { ExchangeFlowType } from '@suite-native/navigation';
 
-import { ReviewOutputItem } from './ReviewOutputItem';
+import { ReviewOutputItem, type ReviewOutputItemProps } from './ReviewOutputItem';
 import { ReviewOutputSummaryItem } from './ReviewOutputSummaryItem';
 import { LIST_VERTICAL_SPACING, useActiveStepOffset } from '../../hooks';
 import {
-    TransactionReviewOutputsState,
+    type TransactionReviewOutputsState,
     selectIsTransactionAlreadySigned,
     selectReviewSummaryOutput,
     selectTransactionReviewActiveStepIndex,
@@ -21,12 +26,16 @@ export type ReviewOutputItemListProps = {
     prefix: FormDraftWithSendKeyPrefix;
     accountKey: AccountKey;
     tokenContract?: TokenAddress;
+    flowType?: ExchangeFlowType;
+    contentBuilder?: ReviewOutputItemProps['contentBuilder'];
 };
 
 export const ReviewOutputItemList = ({
     prefix,
     accountKey,
     tokenContract,
+    flowType,
+    contentBuilder,
 }: ReviewOutputItemListProps) => {
     const isTransactionAlreadySigned = useSelector(selectIsTransactionAlreadySigned);
     const activeStep = useSelector((state: TransactionReviewOutputsState) =>
@@ -40,19 +49,23 @@ export const ReviewOutputItemList = ({
         useSelector((state: TransactionReviewOutputsState) =>
             selectReviewSummaryOutput(state, prefix, accountKey, tokenContract),
         ) || undefined;
-    const accountSymbol = useSelector((state: AccountsRootState) =>
-        selectAccountNetworkSymbol(state, accountKey),
+    const account = useSelector((state: AccountsRootState) =>
+        selectAccountByKey(state, accountKey),
     );
 
     const { activeStepBottomOffset, handleReadListItemHeight } = useActiveStepOffset(activeStep);
 
-    if (!accountSymbol) {
+    if (!account) {
         return (
             <ErrorMessage
                 errorMessage={<Translation id="transactionManagement.review.outputs.noAccount" />}
             />
         );
     }
+
+    const { symbol: accountSymbol, networkType } = account;
+    const isTron = networkType === 'tron';
+    const isSolana = networkType === 'solana';
 
     return (
         <>
@@ -65,18 +78,26 @@ export const ReviewOutputItemList = ({
                             reviewOutput={output}
                             onLayout={event => handleReadListItemHeight(event, index)}
                             tokenContract={tokenContract}
+                            flowType={flowType}
+                            contentBuilder={contentBuilder}
                         />
                     ))}
-                    <ReviewOutputSummaryItem
-                        accountKey={accountKey}
-                        summaryOutput={summaryOutput}
-                        symbol={accountSymbol}
-                        tokenContract={tokenContract}
-                        onLayout={event => handleReadListItemHeight(event, reviewOutputs.length)}
-                    />
+                    {!isTron && (
+                        <ReviewOutputSummaryItem
+                            accountKey={accountKey}
+                            prefix={prefix}
+                            summaryOutput={summaryOutput}
+                            symbol={accountSymbol}
+                            tokenContract={tokenContract}
+                            onLayout={event =>
+                                handleReadListItemHeight(event, reviewOutputs.length)
+                            }
+                            flowType={flowType}
+                        />
+                    )}
                 </VStack>
             )}
-            {!isTransactionAlreadySigned && (
+            {!isTransactionAlreadySigned && !isSolana && (
                 <SlidingFooterOverlay activeStepOffset={activeStepBottomOffset} />
             )}
         </>

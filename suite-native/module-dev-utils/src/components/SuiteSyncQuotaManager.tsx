@@ -1,14 +1,16 @@
 import { useDispatch, useSelector } from 'react-redux';
 
 import {
-    eraseFetchedDataDebug,
+    enforceQuotaManagerUpdated,
+    eraseFetchedData,
+    selectEnforceQuotaManager,
     selectOwnersAllowance,
-    selectQuotaManagerBaseUrl,
+    selectQuotaManagerCustomUrl,
     selectRegisteredDevices,
     updateQuotaManagerBaseUrl,
 } from '@suite-common/suite-sync-quota-manager';
 import { yup } from '@suite-common/validators';
-import { Button, Card, Text, VStack } from '@suite-native/atoms';
+import { Box, Button, Card, HStack, Switch, Text, VStack } from '@suite-native/atoms';
 import { Form, TextInputField, useForm } from '@suite-native/forms';
 import { useToast } from '@suite-native/toasts';
 
@@ -16,15 +18,23 @@ export const SuiteSyncQuotaManager = () => {
     const dispatch = useDispatch();
     const { showToast } = useToast();
 
-    const quotaManagerBaseUrl = useSelector(selectQuotaManagerBaseUrl);
+    const quotaManagerCustomUrl = useSelector(selectQuotaManagerCustomUrl);
     const registeredDevices = useSelector(selectRegisteredDevices);
     const ownersAllowance = useSelector(selectOwnersAllowance);
+    const enforceQuotaManager = useSelector(selectEnforceQuotaManager);
 
-    const onEraseFetchedData = () => dispatch(eraseFetchedDataDebug());
+    const onEraseFetchedData = () => dispatch(eraseFetchedData());
+
+    const onToggleEnforceQuotaManager = () =>
+        dispatch(
+            enforceQuotaManagerUpdated({
+                enforce: !enforceQuotaManager,
+            }),
+        );
 
     const form = useForm<{ suiteSyncQuotaManagerUrl: string }>({
         defaultValues: {
-            suiteSyncQuotaManagerUrl: quotaManagerBaseUrl ?? '',
+            suiteSyncQuotaManagerUrl: quotaManagerCustomUrl ?? '',
         },
         validation: yup.object({
             suiteSyncQuotaManagerUrl: yup.string().url('Invalid URL format'),
@@ -35,7 +45,7 @@ export const SuiteSyncQuotaManager = () => {
         dispatch(updateQuotaManagerBaseUrl({ baseUrl: values.suiteSyncQuotaManagerUrl }));
         showToast({
             message: 'Quota Manager URL updated',
-            variant: 'success',
+            intent: 'brand',
         });
     });
 
@@ -45,14 +55,24 @@ export const SuiteSyncQuotaManager = () => {
                 <Text variant="headline-sm">Suite Sync Quota Manager</Text>
                 <Form form={form}>
                     <VStack>
-                        <TextInputField label="Quota Manager URL" name="suiteSyncQuotaManagerUrl" />
-                        <Button colorScheme="tertiaryElevation0" size="small" onPress={onSubmit}>
+                        <TextInputField
+                            testID="@suiteSyncQuotaManager/url-input"
+                            label="Quota Manager URL"
+                            name="suiteSyncQuotaManagerUrl"
+                        />
+                        <Button
+                            testID="@suiteSyncQuotaManager/save-button"
+                            intent="neutral"
+                            priority="secondary"
+                            size="medium"
+                            onPress={onSubmit}
+                        >
                             Save
                         </Button>
                     </VStack>
                 </Form>
                 <VStack>
-                    <Text variant="body-sm" color="textSubdued">
+                    <Text variant="body-sm" color="contentSecondary">
                         Registered Devices
                     </Text>
                     {registeredDevices.length === 0 ? (
@@ -71,7 +91,7 @@ export const SuiteSyncQuotaManager = () => {
                     )}
                 </VStack>
                 <VStack>
-                    <Text variant="body-sm" color="textSubdued">
+                    <Text variant="body-sm" color="contentSecondary">
                         Assigned Owner IDs
                     </Text>
                     {ownersAllowance.length === 0 ? (
@@ -87,7 +107,19 @@ export const SuiteSyncQuotaManager = () => {
                         ))
                     )}
                 </VStack>
-                <Button colorScheme="redBold" onPress={onEraseFetchedData}>
+                <HStack justifyContent="space-between">
+                    <Box flexShrink={1}>
+                        <Text variant="body-sm" color="contentSecondary">
+                            Enforce Quota Manager for custom relay
+                        </Text>
+                    </Box>
+                    <Switch
+                        testID="@suiteSyncQuotaManager/enforce-switch"
+                        isChecked={enforceQuotaManager}
+                        onChange={onToggleEnforceQuotaManager}
+                    />
+                </HStack>
+                <Button intent="critical" priority="primary" onPress={onEraseFetchedData}>
                     Erase fetched data
                 </Button>
             </VStack>

@@ -2,20 +2,21 @@ import { isAnyOf } from '@reduxjs/toolkit';
 
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 import {
-    AcquiredDevice,
-    ButtonRequest,
-    PersistentDeviceData,
-    StoredAuthenticateDeviceResult,
-    TrezorDevice,
+    type AcquiredDevice,
+    type ButtonRequest,
+    type PersistentDeviceData,
+    type StoredAuthenticateDeviceResult,
+    type TrezorDevice,
 } from '@suite-common/suite-types';
 import * as deviceUtils from '@suite-common/suite-utils';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
-import { Device, DeviceState, Features, KnownDevice, Unsuccessful } from '@trezor/connect';
+import { type Device, type DeviceState, type Features, type KnownDevice } from '@trezor/connect';
+import { type SerializedError } from '@trezor/connect-common/src/constants/errors';
 import { getFirmwareVersionArray } from '@trezor/device-utils';
+import { type Err } from '@trezor/type-utils';
 
-import { DeviceStateActionPayload, deviceActions } from './deviceActions';
+import { type DeviceStateActionPayload, deviceActions } from './deviceActions';
 import { PORTFOLIO_TRACKER_DEVICE_ID } from './deviceConstants';
-import { shouldDeviceBeRemembered } from './deviceUtils';
 
 export type DeviceReducerState = {
     /**
@@ -29,17 +30,17 @@ export type DeviceReducerState = {
     /**
      * Because we have `devices` as merged DEVICE+WALLET we persist
      * data that are DEVICE only here to separate them.
+     * TODO consider extracting to a subreducer persistentDeviceDataReducer
      */
     persistentDeviceData: PersistentDeviceData[]; // is an array since there is not a single primary id, device can be matched by various criteria
 
     selectedDevice?: TrezorDevice;
-    deviceAuthenticity?: Record<string, StoredAuthenticateDeviceResult>;
     dismissedSecurityChecks?: {
         firmwareAuthenticity?: string[];
     };
     lastConnectedAuthenticityChecks?: KnownDevice['authenticityChecks'];
     // Setting with no UI to toggle it on, used in tests to simulate various outcomes of entropy check failure
-    simulatedEntropyCheckFail?: Unsuccessful;
+    simulatedEntropyCheckFail?: Err<SerializedError>;
 };
 
 export const deviceInitialState: DeviceReducerState = {
@@ -73,14 +74,22 @@ const mergeDeviceState = (
 ): DeviceState | undefined => {
     const currentState = device.state;
 
-    return currentState &&
-        upcoming.state &&
-        currentState.staticSessionId === upcoming.state.staticSessionId &&
-        currentState.sessionId !== upcoming.state.sessionId
-        ? // update sessionId for the same staticSessionId
-          { ...currentState, sessionId: upcoming.state.sessionId }
-        : // ignore device state updates. we set device state explicitly using addAuthorizedDevice or setDeviceState
-          currentState;
+    // Device state is set explicitly via addAuthorizedDevice/setDeviceState. For the same session we only
+    // sync the volatile sessionId and deriveCardano from connect, so the cardano-derived session is not
+    // recreated (re-prompting the passphrase) on every cardano call.
+    if (
+        !currentState ||
+        !upcoming.state ||
+        currentState.staticSessionId !== upcoming.state.staticSessionId
+    ) {
+        return currentState;
+    }
+
+    return {
+        ...currentState,
+        sessionId: upcoming.state.sessionId,
+        deriveCardano: upcoming.state.deriveCardano ?? currentState.deriveCardano,
+    };
 };
 
 /**
@@ -118,11 +127,7 @@ const merge = (
  * @param {Device} device
  * @returns
  */
-const connectDevice = (
-    draft: DeviceReducerState,
-    { state, ...device }: Device,
-    { isAutoEjectEnabled }: { isAutoEjectEnabled: boolean },
-) => {
+const connectDevice = (draft: DeviceReducerState, { state, ...device }: Device) => {
     const currentTime = new Date().getTime();
 
     const deviceCommonFields = {
@@ -183,7 +188,7 @@ const connectDevice = (
     // get not affected devices
     // and exclude unacquired devices with current "device_id" (they will become acquired)
     const otherDevices: TrezorDevice[] = draft.devices.filter(
-        d => affectedDevices.indexOf(d as AcquiredDevice) < 0 && unacquiredDevices.indexOf(d) < 0,
+        d => !affectedDevices.includes(d as AcquiredDevice) && !unacquiredDevices.includes(d),
     );
 
     // clear draft
@@ -200,7 +205,7 @@ const connectDevice = (
         ...deviceCommonFields,
         state,
         useEmptyPassphrase: undefined,
-        remember: shouldDeviceBeRemembered({ isAutoEjectEnabled, device }),
+        remember: false,
         temporaryRemember: false,
         available: true,
         instance: deviceInstance,
@@ -210,7 +215,11 @@ const connectDevice = (
     if (affectedDevices.length > 0) {
         const changedDevices = affectedDevices.map(d => {
             // new connection is over bluetooth, existing one is usb. prioritize usb.
-            if (!d.bluetoothProps && d.connected && device.bluetoothProps) {
+            if (
+                d.descriptor.apiType !== 'bluetooth' &&
+                d.connected &&
+                device.descriptor.apiType === 'bluetooth'
+            ) {
                 return merge(d, { connected: true, available: true });
             }
 
@@ -267,9 +276,7 @@ const changeDevice = (
                 (d.mode === 'bootloader' && d.remember && d.id === device.id)),
     ) as AcquiredDevice[];
 
-    const otherDevices = draft.devices.filter(
-        d => affectedDevices.indexOf(d as AcquiredDevice) === -1,
-    );
+    const otherDevices = draft.devices.filter(d => !affectedDevices.includes(d as AcquiredDevice));
     // clear draft
     draft.devices.splice(0, draft.devices.length);
     // fill draft with not affected devices
@@ -280,7 +287,11 @@ const changeDevice = (
         // merge incoming device with State
         const changedDevices = affectedDevices.map(d => {
             // new connection is over bluetooth, existing one is usb. prioritize usb.
-            if (!d.bluetoothProps && d.connected && device.bluetoothProps) {
+            if (
+                d.descriptor.apiType !== 'bluetooth' &&
+                d.connected &&
+                device.descriptor.apiType === 'bluetooth'
+            ) {
                 return d;
             }
             if (d.state && isDeviceUnlocked) {
@@ -316,7 +327,7 @@ const changeDevice = (
 
 const addAuthorizedDevice = (
     draft: DeviceReducerState,
-    { device, state, useEmptyPassphrase, isAutoEjectEnabled }: DeviceStateActionPayload,
+    { device, state, useEmptyPassphrase }: DeviceStateActionPayload,
 ) => {
     const { discovered, ...oldDevice } = device;
     const newDevice = {
@@ -325,7 +336,6 @@ const addAuthorizedDevice = (
         instance: deviceUtils.getNewInstanceNumber(draft.devices, device),
         walletNumber: deviceUtils.getNewWalletNumber(draft.devices, device),
         useEmptyPassphrase,
-        remember: shouldDeviceBeRemembered({ isAutoEjectEnabled, device }),
         state,
     };
 
@@ -334,7 +344,7 @@ const addAuthorizedDevice = (
 
 const setDeviceState = (
     draft: DeviceReducerState,
-    { device, state, useEmptyPassphrase, isAutoEjectEnabled }: DeviceStateActionPayload,
+    { device, state, useEmptyPassphrase }: DeviceStateActionPayload,
 ) => {
     // change only acquired devices
     if (!device.features) return;
@@ -353,12 +363,13 @@ const setDeviceState = (
         return;
     }
 
-    affectedDevice[0].state = state;
-    affectedDevice[0].useEmptyPassphrase = useEmptyPassphrase;
-    affectedDevice[0].walletNumber = deviceUtils.getNewWalletNumber(draft.devices, device);
-    delete affectedDevice[0].discovered;
+    const targetDevice = affectedDevice[0];
+    if (!targetDevice) return;
 
-    affectedDevice[0].remember = shouldDeviceBeRemembered({ isAutoEjectEnabled, device });
+    targetDevice.state = state;
+    targetDevice.useEmptyPassphrase = useEmptyPassphrase;
+    targetDevice.walletNumber = deviceUtils.getNewWalletNumber(draft.devices, device);
+    delete targetDevice.discovered;
 };
 
 /**
@@ -395,7 +406,7 @@ const disconnectDevice = (draft: DeviceReducerState, device: TrezorDevice) => {
  */
 const updateTimestamp = (draft: DeviceReducerState, device?: TrezorDevice) => {
     // only acquired devices
-    if (!device || !device.features) return;
+    if (!device?.features) return;
     const index = deviceUtils.findInstanceIndex(draft.devices, device);
     if (!draft.devices[index]) return;
     // update timestamp
@@ -414,7 +425,7 @@ const updateTimestamp = (draft: DeviceReducerState, device?: TrezorDevice) => {
 // TODO: this now can only be used for imported device!
 const createInstance = (draft: DeviceReducerState, device: TrezorDevice) => {
     // only acquired devices
-    if (!device || !device.features) return;
+    if (!device?.features) return;
 
     const isPortfolioTrackerDevice = device.id === PORTFOLIO_TRACKER_DEVICE_ID;
 
@@ -444,7 +455,7 @@ const createInstance = (draft: DeviceReducerState, device: TrezorDevice) => {
  */
 const remember = (draft: DeviceReducerState, device: TrezorDevice, shouldRemember: boolean) => {
     // only acquired devices
-    if (!device || !device.features) return;
+    if (!device?.features) return;
     draft.devices.forEach(d => {
         if (deviceUtils.isSelectedInstance(device, d)) {
             d.remember = shouldRemember;
@@ -463,7 +474,7 @@ const setTemporaryRememberedDevice = (
     device: TrezorDevice,
     temporaryRemember: boolean,
 ) => {
-    if (!device || !device.features) return;
+    if (!device?.features) return;
     const index = deviceUtils.findInstanceIndex(draft.devices, device);
     const selectedInstance = draft.devices[index];
     if (!selectedInstance) return;
@@ -486,7 +497,7 @@ const setTemporaryRememberedDevice = (
  */
 const forget = (draft: DeviceReducerState, device: TrezorDevice) => {
     // only acquired devices
-    if (!device || !device.features) return;
+    if (!device?.features) return;
     const index = deviceUtils.findInstanceIndex(draft.devices, device);
     if (!draft.devices[index]) return;
     const others = deviceUtils.getDeviceInstances(device, draft.devices, true);
@@ -513,7 +524,7 @@ const addButtonRequest = (
     buttonRequest: ButtonRequest,
 ) => {
     // only acquired devices
-    if (!device || !device.features) return;
+    if (!device?.features) return;
     const index = deviceUtils.findInstanceIndex(draft.devices, device);
     if (!draft.devices[index]) return;
     // update state
@@ -527,7 +538,7 @@ const removeButtonRequests = (
     buttonRequestCode?: ButtonRequest['code'],
 ) => {
     // only acquired devices
-    if (!device || !device.features) return;
+    if (!device?.features) return;
     const index = deviceUtils.findInstanceIndex(draft.devices, device);
     if (!draft.devices[index]) return;
     // update state
@@ -542,16 +553,29 @@ const removeButtonRequests = (
     );
 };
 
-export const setDeviceAuthenticity = (
+const setDeviceAuthenticity = (
     draft: DeviceReducerState,
-    device: TrezorDevice,
+    deviceId: TrezorDevice['id'],
     result?: StoredAuthenticateDeviceResult,
 ) => {
-    if (!device.id) return;
-    draft.deviceAuthenticity = {
-        ...draft.deviceAuthenticity,
-        [device.id]: result,
-    };
+    const data = draft.persistentDeviceData.find(
+        persistentDeviceData => persistentDeviceData.device_id === deviceId,
+    );
+    // expected to exist; device must have been connected or changed for this action to happen
+    if (data === undefined) return;
+    data.authenticityResult = result;
+};
+
+export const setManualDeviceCheckSuccess = (
+    draft: DeviceReducerState,
+    deviceId: TrezorDevice['id'],
+) => {
+    const data = draft.persistentDeviceData.find(
+        persistentDeviceData => persistentDeviceData.device_id === deviceId,
+    );
+    // expected to exist; device must have been connected or changed for this action to happen
+    if (data === undefined) return;
+    data.manualCheckResult = { success: true };
 };
 
 // called after successful wipeDevice
@@ -577,8 +601,8 @@ const updatePersistentDeviceData = (draft: DeviceReducerState, device: Device | 
         label: device.features.label,
         initialized: device.features.initialized,
         thp: device.thp,
-        bluetoothProps: device.bluetoothProps,
-        lastConnectedVia: device.bluetoothProps ? 'bluetooth' : 'usb',
+        descriptor: device.descriptor.apiType === 'bluetooth' ? device.descriptor : undefined,
+        lastConnectedVia: device.descriptor.apiType === 'bluetooth' ? 'bluetooth' : 'usb',
         firmwareVersion: getFirmwareVersionArray(device),
     } as const;
     const initialPersistentData = {
@@ -593,9 +617,10 @@ const updatePersistentDeviceData = (draft: DeviceReducerState, device: Device | 
     const index = draft.persistentDeviceData.findIndex(
         persistentDeviceData => persistentDeviceData.device_id === device.id,
     );
-    if (index >= 0) {
+    const existingData = index >= 0 ? draft.persistentDeviceData[index] : undefined;
+    if (existingData) {
         draft.persistentDeviceData[index] = {
-            ...draft.persistentDeviceData[index],
+            ...existingData,
             ...updatedPersistentData,
         };
     } else {
@@ -634,6 +659,9 @@ export const prepareDeviceReducer = createReducerWithExtraDeps(
                     d => d.device_id !== payload.deviceId,
                 );
             })
+            .addCase(deviceActions.clearDevicePersistentData, state => {
+                state.persistentDeviceData = [];
+            })
             .addCase(deviceActions.addButtonRequest, (state, { payload }) => {
                 addButtonRequest(state, payload.device, payload.buttonRequest);
             })
@@ -651,7 +679,11 @@ export const prepareDeviceReducer = createReducerWithExtraDeps(
                 state.selectedDevice = payload;
             })
             .addCase(deviceActions.setDeviceAuthenticityResult, (state, { payload }) => {
-                setDeviceAuthenticity(state, payload.device, payload.result);
+                // nullish deviceId is impossible unless meta checks (id) are disabled. If it is nullish, it's no-op.
+                setDeviceAuthenticity(state, payload.deviceId, payload.result);
+            })
+            .addCase(deviceActions.setManualDeviceCheckSuccess, (state, { payload }) => {
+                setManualDeviceCheckSuccess(state, payload.deviceId);
             })
             .addCase(deviceActions.dismissFirmwareAuthenticityCheck, (state, { payload }) => {
                 if (!state.dismissedSecurityChecks) {
@@ -670,14 +702,14 @@ export const prepareDeviceReducer = createReducerWithExtraDeps(
             .addCase(extra.actionTypes.storageLoad, extra.reducers.storageLoadDevices)
             .addCase(
                 deviceActions.setEntropyCheckResult,
-                (state, { payload: { deviceId, success } }) => {
+                (state, { payload: { deviceId, ...entropyCheckResult } }) => {
                     const data = state.persistentDeviceData.find(
                         persistentDeviceData => persistentDeviceData.device_id === deviceId,
                     );
 
                     // expected to exist; device must have been connected or changed for this action to happen
                     if (data === undefined) return;
-                    data.lastEntropyCheckResult = { success };
+                    data.lastEntropyCheckResult = entropyCheckResult;
                 },
             )
             .addCase(deviceActions.createDeviceInstance, (state, { payload }) => {
@@ -706,8 +738,8 @@ export const prepareDeviceReducer = createReducerWithExtraDeps(
             })
             .addMatcher(
                 isAnyOf(deviceActions.connectDevice, deviceActions.connectUnacquiredDevice),
-                (state, { payload: { device, isAutoEjectEnabled } }) => {
-                    connectDevice(state, device, { isAutoEjectEnabled });
+                (state, { payload: { device } }) => {
+                    connectDevice(state, device);
                     updatePersistentDeviceData(state, device);
                 },
             );

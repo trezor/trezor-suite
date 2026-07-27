@@ -1,75 +1,26 @@
-import { ReactNode, useState } from 'react';
+import { useState } from 'react';
 
 import { isFulfilled } from '@reduxjs/toolkit';
 
+import { selectDesktopAnalyticsDep } from '@suite/analytics';
+import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { events } from '@suite-common/analytics';
+import { useServices } from '@suite-common/dependency-injection';
 import { wipeDeviceThunk } from '@suite-common/wallet-core';
-import {
-    Button,
-    Card,
-    Column,
-    Divider,
-    Icon,
-    IconName,
-    Modal,
-    Paragraph,
-    Row,
-    Text,
-} from '@trezor/components';
+import { Button, Column, Modal } from '@trezor/components';
 import { isDeviceInBootloaderMode } from '@trezor/device-utils';
+import { NewspaperIcon, TrashIcon } from '@trezor/icons';
+import { StepCard } from '@trezor/product-components';
 
-import { useDevice, useDispatch } from 'src/hooks/suite';
-import { useAnalytics } from 'src/support/useAnalytics';
+import { useDispatch } from 'src/hooks/suite';
 
 type WipeDeviceModalProps = {
     onCancel: () => void;
 };
 
-type StepCardProps = {
-    heading: ReactNode;
-    description: ReactNode;
-    actions: ReactNode;
-    icon: IconName;
-    state: 'default' | 'confirmed' | 'pending';
-};
-
-const StepCard = ({ heading, description, actions, icon, state }: StepCardProps) => {
-    const iconIntent = state === 'confirmed' ? 'brand' : 'neutral';
-    const iconPriority = state === 'confirmed' ? 'primary' : 'secondary';
-    const textIntent = state === 'confirmed' ? 'brand' : 'neutral';
-    const textPriority = state === 'confirmed' ? 'primary' : 'secondary';
-
-    return (
-        <Card paddingType="none" fillType={state === 'pending' ? 'flat' : 'default'}>
-            <Column>
-                <Row gap={8} padding={{ horizontal: 16, vertical: 12 }}>
-                    <Icon
-                        name={state === 'confirmed' ? 'check' : icon}
-                        intent={iconIntent}
-                        priority={iconPriority}
-                        size={20}
-                    />
-                    <Text typographyStyle="body-sm" intent={textIntent} priority={textPriority}>
-                        {heading}
-                    </Text>
-                </Row>
-                {state === 'default' && (
-                    <>
-                        <Divider margin={0} />
-                        <Column gap={16} padding={{ horizontal: 16, vertical: 12 }}>
-                            <Paragraph typographyStyle="body-md-strong">{description}</Paragraph>
-                            <Row gap={12}>{actions}</Row>
-                        </Column>
-                    </>
-                )}
-            </Column>
-        </Card>
-    );
-};
-
 export const WipeDeviceModal = ({ onCancel }: WipeDeviceModalProps) => {
-    const analytics = useAnalytics();
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
     const [isLoading, setIsLoading] = useState(false);
     const [isConfirmed, setIsConfirmed] = useState(false);
 
@@ -106,7 +57,7 @@ export const WipeDeviceModal = ({ onCancel }: WipeDeviceModalProps) => {
             onCancel={handleCancel}
             heading={<Translation id={headingTranslation} />}
             description={<Translation id="TR_WIPE_DEVICE_MODAL_PROCEED_WITH_CAUTION" />}
-            variant="destructive"
+            intent="critical"
             width={600}
         >
             <Column gap={16}>
@@ -136,7 +87,7 @@ export const WipeDeviceModal = ({ onCancel }: WipeDeviceModalProps) => {
                             </Button>
                         </>
                     }
-                    icon="trash"
+                    icon={TrashIcon}
                     state={isConfirmed ? 'confirmed' : 'default'}
                 />
                 <StepCard
@@ -164,7 +115,7 @@ export const WipeDeviceModal = ({ onCancel }: WipeDeviceModalProps) => {
                             </Button>
                         </>
                     }
-                    icon="newspaper"
+                    icon={NewspaperIcon}
                     state={isConfirmed ? 'default' : 'pending'}
                 />
             </Column>

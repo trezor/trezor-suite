@@ -1,10 +1,10 @@
-import { TrezorDevice } from '@suite-common/suite-types';
+import { type TrezorDevice } from '@suite-common/suite-types';
 import {
     cancelDiscoveryThunk,
-    runDiscoveryThunk,
-    startDiscoveryThunk,
+    runPassphraseWalletAddingDiscoveryThunk,
+    startAddWalletDiscoveryThunk,
 } from '@suite-common/wallet-core';
-import { DiscoveryStatus } from '@suite-common/wallet-types';
+import { type DiscoveryStatus } from '@suite-common/wallet-types';
 
 import { useDispatch } from 'src/hooks/suite';
 
@@ -37,7 +37,7 @@ export const PassphraseWalletIsNotExistFlow = ({
                 device={device}
                 onBack={onBackToInitial}
                 onCancel={onCancel}
-                onNext={() => dispatch(runDiscoveryThunk(device))}
+                onNext={() => dispatch(runPassphraseWalletAddingDiscoveryThunk({ device }))}
             />
         );
     }
@@ -63,7 +63,7 @@ export const PassphraseWalletIsNotExistFlow = ({
                     dispatch(cancelDiscoveryThunk(device));
                     // TODO: best practices flow should not be initiated along with discovery
                     dispatch(
-                        startDiscoveryThunk({
+                        startAddWalletDiscoveryThunk({
                             device,
                             isAddingHiddenWallet: true,
                             isAddingExistingWallet: false,

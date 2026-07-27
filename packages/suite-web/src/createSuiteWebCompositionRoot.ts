@@ -1,13 +1,50 @@
 import { createBrowserHistory } from 'history';
 
+import { createWebauthnPlatformEncryption } from '@suite/platform-encryption-webauthn';
+import type { CreateLogger } from '@trezor/connect-common';
+import { BridgeTransport } from '@trezor/transport-common';
+import { WebUsbTransport } from '@trezor/transport-web';
+
 import { initStore } from 'src/reducers/store';
-import { PreloadStoreAction } from 'src/support/suite/preloadStore';
+import { createConnectLoggerFactory } from 'src/support/createConnectLoggerFactory';
+import { type PreloadStoreAction } from 'src/support/suite/preloadStore';
+
+import { getWebThpHostName } from './support/getWebThpHostName';
 
 export const createSuiteWebCompositionRoot = (preloadStoreAction?: PreloadStoreAction) => {
     const history = createBrowserHistory();
-    const reloadApp = () => {
-        window.location.reload();
+    const platformEncryption = createWebauthnPlatformEncryption();
+    const reloadApp = () => window.location.reload();
+
+    const getTransportsFactories = () => {
+        // Pure DI: connect expects ready-made Transport instances, so the host constructs
+        // them here. `id` becomes the Bridge session owner shown to the user; it mirrors
+        // the web manifest's `appName` (see packages/suite/src/support/extraDependencies.ts).
+        const TRANSPORT_ID = 'Trezor Suite web';
+
+        return {
+            BridgeTransport: (createLogger?: CreateLogger) =>
+                new BridgeTransport({
+                    id: TRANSPORT_ID,
+                    logger: createLogger?.('@trezor/transport'),
+                }),
+            WebUsbTransport: (createLogger?: CreateLogger) =>
+                new WebUsbTransport({
+                    id: TRANSPORT_ID,
+                    logger: createLogger?.('@trezor/transport'),
+                }),
+        };
     };
 
-    return initStore({ history, reloadApp }, preloadStoreAction);
+    return initStore(
+        {
+            history,
+            platformEncryption,
+            createConnectLoggerFactory,
+            reloadApp,
+            thpHostName: getWebThpHostName(),
+            getTransportsFactories,
+        },
+        preloadStoreAction,
+    );
 };

@@ -1,22 +1,22 @@
-import { MutableRefObject, ReactNode } from 'react';
+import { type MutableRefObject, type ReactNode } from 'react';
 
-import { Placement, ShiftOptions } from '@floating-ui/react';
-import styled, { ThemeProvider } from 'styled-components';
+import { type Placement, type ShiftOptions } from '@floating-ui/react';
+import styled, { useTheme } from 'styled-components';
 
-import { ZIndexValues, spacingsPx, zIndices } from '@trezor/theme';
+import { QuestionIcon } from '@trezor/icons';
+import { type ZIndexValues, zIndices } from '@trezor/theme';
 
 import { TooltipArrow } from './TooltipArrow';
-import { TooltipBox, TooltipBoxProps } from './TooltipBox';
-import { TOOLTIP_DELAY_SHORT, TooltipDelay } from './TooltipDelay';
+import { TooltipBox, type TooltipBoxProps } from './TooltipBox';
+import { TOOLTIP_DELAY_SHORT, type TooltipDelay } from './TooltipDelay';
 import { TooltipContent, TooltipFloatingUi, TooltipTrigger } from './TooltipFloatingUi';
-import { intermediaryTheme } from '../../config/colors';
 import {
-    FrameProps,
-    FramePropsKeys,
+    type FrameProps,
+    type FramePropsKeys,
     pickAndPrepareFrameProps,
     withFrameProps,
 } from '../../utils/frameProps';
-import { TransientProps } from '../../utils/transientProps';
+import { type TransientProps } from '../../utils/transientProps';
 import { Icon } from '../Icon/Icon';
 
 export type TooltipInteraction = 'none' | 'hover';
@@ -35,7 +35,7 @@ export type AllowedFrameProps = Pick<FrameProps, (typeof allowedTooltipFrameProp
 const Content = styled.div<TransientProps<AllowedFrameProps>>`
     display: flex;
     align-items: center;
-    gap: ${spacingsPx.xxs};
+    gap: 4px;
     text-decoration: inherit;
 
     ${withFrameProps}
@@ -84,9 +84,8 @@ export const Tooltip = ({
     offset = 12,
     content,
     addon,
-    title,
     isOpen,
-    hasArrow,
+    hasArrow = true,
     hasIcon = false,
     appendTo,
     shift,
@@ -95,6 +94,7 @@ export const Tooltip = ({
     as = 'div',
     ...rest
 }: TooltipProps) => {
+    const theme = useTheme();
     const frameProps = pickAndPrepareFrameProps(
         rest,
         allowedTooltipFrameProps,
@@ -119,24 +119,27 @@ export const Tooltip = ({
             <TooltipTrigger>
                 <Content as={as} {...frameProps}>
                     {children}
-                    {hasIcon && isActive && <Icon name="question" size={16} />}
+                    {hasIcon && isActive && <Icon as={QuestionIcon} size={16} />}
                 </Content>
             </TooltipTrigger>
 
             <TooltipContent
                 data-testid="@tooltip"
                 style={{ zIndex }}
-                arrowRender={hasArrow ? TooltipArrow : undefined}
+                arrowRender={
+                    hasArrow
+                        ? props => (
+                              <TooltipArrow
+                                  {...props}
+                                  fill={theme.surfaceFillModelessNeutralDark}
+                              />
+                          )
+                        : undefined
+                }
                 appendTo={appendTo}
+                onClick={e => e.stopPropagation()}
             >
-                <ThemeProvider theme={{ variant: 'dark', ...intermediaryTheme.dark }}>
-                    <TooltipBox
-                        content={content}
-                        addon={addon}
-                        tooltipMaxWidth={tooltipMaxWidth}
-                        title={title}
-                    />
-                </ThemeProvider>
+                <TooltipBox content={content} addon={addon} tooltipMaxWidth={tooltipMaxWidth} />
             </TooltipContent>
         </TooltipFloatingUi>
     );

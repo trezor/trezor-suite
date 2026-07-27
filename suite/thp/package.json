@@ -1,0 +1,33 @@
+{
+    "name": "@suite/thp",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "sideEffects": false,
+    "main": "src/index",
+    "scripts": {
+        "depcheck": "yarn g:depcheck",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "type-check": "yarn g:tsc --build"
+    },
+    "dependencies": {
+        "@reduxjs/toolkit": "2.12.0",
+        "@suite-common/device": "workspace:*",
+        "@suite-common/redux-utils": "workspace:*",
+        "@suite-common/suite-types": "workspace:*",
+        "@suite-common/thp": "workspace:*",
+        "@suite-common/wallet-core": "workspace:*",
+        "@suite/device": "workspace:*",
+        "@suite/intl": "workspace:*",
+        "@trezor/components": "workspace:*",
+        "@trezor/connect": "workspace:*",
+        "@trezor/theme": "workspace:*",
+        "react": "19.2.3",
+        "react-intl": "^8.1.3",
+        "react-redux": "9.3.0",
+        "redux": "^5.0.1"
+    },
+    "devDependencies": {
+        "@types/react": "19.2.14"
+    }
+}

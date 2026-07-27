@@ -1,11 +1,11 @@
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
-    AccountKey,
-    FeeLevelLabel,
-    FormState,
-    GeneralPrecomposedLevels,
+    type AccountKey,
+    type FeeLevelLabel,
+    type FormState,
+    type GeneralPrecomposedLevels,
 } from '@suite-common/wallet-types';
-import { CustomFeeParams, FeesContent } from '@suite-native/transaction-management';
+import { type CustomFeeParams, FeesContent } from '@suite-native/transaction-management';
 
 type FeeOptionsSectionProps = {
     accountKey: AccountKey;

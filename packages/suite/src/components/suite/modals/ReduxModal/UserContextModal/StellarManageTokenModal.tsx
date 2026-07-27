@@ -1,56 +1,59 @@
 import { useMemo, useState } from 'react';
-import { FormProvider, useForm } from 'react-hook-form';
+import { FormProvider, useForm, useWatch } from 'react-hook-form';
 
-import { events } from '@suite/analytics';
+import { selectSelectedAccount } from '@suite/account';
+import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation, useTranslation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     DefinitionType,
     TokenManagementAction,
     tokenDefinitionsActions,
 } from '@suite-common/token-definitions';
-import { NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import {
     activateStellarTokenThunk,
     deactivateStellarTokenThunk,
     fetchAndUpdateAccountThunk,
     selectRawNetworkFeeInfo,
 } from '@suite-common/wallet-core';
-import { FormState } from '@suite-common/wallet-types';
+import { type Account, type FormState } from '@suite-common/wallet-types';
 import { formatNetworkAmount, getConvertedOrDefaultFeeInfo } from '@suite-common/wallet-utils';
-import { BASE_INFO } from '@trezor/blockchain-link-utils/src/stellar';
 import { Banner, Button, Column, Modal, Row, Text } from '@trezor/components';
-import { spacings } from '@trezor/theme';
+import { SpinnerIcon, WarningIcon } from '@trezor/icons';
+import { STELLAR_BASE_RESERVE } from '@trezor/network-stellar/constants';
 import { BigNumber } from '@trezor/utils';
 
 import { Fees } from 'src/components/wallet/Fees/Fees';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useComposedLevelsPlaceholder } from 'src/hooks/wallet/form/useComposedLevelsPlaceholder';
 import { useFees } from 'src/hooks/wallet/form/useFees';
-import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
-import { useAnalytics } from 'src/support/useAnalytics';
 
 type StellarManageTokenModalProps =
     | {
           mode: 'activate';
           symbol: NetworkSymbol;
           contractAddress: string;
+          account?: Account;
           onCancel: () => void;
       }
     | {
           mode: 'deactivate';
           symbol: NetworkSymbol;
           contractAddress: string;
+          account?: Account;
           tokenBalance: string;
           onCancel: () => void;
       };
 
 export const StellarManageTokenModal = (props: StellarManageTokenModalProps) => {
-    const analytics = useAnalytics();
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
     const { mode, symbol, contractAddress, onCancel } = props;
     const tokenBalance = mode === 'deactivate' ? props.tokenBalance : undefined;
     const dispatch = useDispatch();
-    const account = useSelector(selectSelectedAccount);
+    const selectedAccount = useSelector(selectSelectedAccount);
+    const account = props.account ?? selectedAccount;
     const rawFeeInfo = useSelector(state => selectRawNetworkFeeInfo(state, symbol));
     const { translationString } = useTranslation();
     const [isProcessing, setIsProcessing] = useState(false);
@@ -79,9 +82,8 @@ export const StellarManageTokenModal = (props: StellarManageTokenModalProps) => 
         composeRequest: () => {},
     });
 
-    const { watch, handleSubmit } = methods;
-    const selectedFee = watch('selectedFee');
-    const feePerUnit = watch('feePerUnit');
+    const { control, handleSubmit } = methods;
+    const [selectedFee, feePerUnit] = useWatch({ control, name: ['selectedFee', 'feePerUnit'] });
 
     const composedLevels = useComposedLevelsPlaceholder({
         feeInfo,
@@ -92,13 +94,15 @@ export const StellarManageTokenModal = (props: StellarManageTokenModalProps) => 
     const composedTx = composedLevels[selectedFee || 'normal'];
     const currentFee = composedTx?.type === 'final' ? composedTx.fee : '0';
 
-    // Check if balance is sufficient for activation (need fee + BASE_RESERVE for new trustline)
+    // Check if balance is sufficient for activation (need fee + base reserve for new trustline)
     const insufficientBalanceInfo = useMemo(() => {
-        if (mode !== 'activate' || !account) {
+        if (mode !== 'activate' || account?.networkType !== 'stellar') {
             return null;
         }
         const availableBalance = BigNumber(account.availableBalance);
-        const requiredAmount = BigNumber(currentFee).plus(BASE_INFO.BASE_RESERVE);
+        const requiredAmount = BigNumber(currentFee).plus(
+            account.misc.baseReserve ?? STELLAR_BASE_RESERVE,
+        );
 
         if (availableBalance.lt(requiredAmount)) {
             return {
@@ -110,7 +114,7 @@ export const StellarManageTokenModal = (props: StellarManageTokenModalProps) => 
         return null;
     }, [mode, account, currentFee, symbol]);
 
-    if (!account) {
+    if (account?.networkType !== 'stellar') {
         return null;
     }
 
@@ -136,8 +140,11 @@ export const StellarManageTokenModal = (props: StellarManageTokenModalProps) => 
         );
     }
 
-    const handleSubmitTrustline = async ({ selectedFee, feePerUnit }: FormState) => {
-        const resolvedSelectedFee = selectedFee || 'normal';
+    const handleSubmitTrustline = async ({
+        selectedFee: submittedSelectedFee,
+        feePerUnit: submittedFeePerUnit,
+    }: FormState) => {
+        const resolvedSelectedFee = submittedSelectedFee || 'normal';
         setIsProcessing(true);
 
         try {
@@ -145,7 +152,8 @@ export const StellarManageTokenModal = (props: StellarManageTokenModalProps) => 
                 account,
                 contractAddress,
                 selectedFee: resolvedSelectedFee,
-                customFeePerUnit: resolvedSelectedFee === 'custom' ? feePerUnit : undefined,
+                customFeePerUnit:
+                    resolvedSelectedFee === 'custom' ? submittedFeePerUnit : undefined,
             };
 
             const thunk =
@@ -231,10 +239,11 @@ export const StellarManageTokenModal = (props: StellarManageTokenModalProps) => 
     return (
         <Modal
             width={600}
-            onCancel={onCancel}
+            onCancel={!isProcessing ? onCancel : undefined}
+            isBackdropCancelable={!isProcessing}
             heading={<Translation id={headingId} values={{ token: tokenCode }} />}
             bottomContent={
-                <Row gap={spacings.xs}>
+                <Row gap={8}>
                     <Button
                         onClick={handleSubmit(handleSubmitTrustline)}
                         isDisabled={isProcessing || !!insufficientBalanceInfo}
@@ -255,7 +264,7 @@ export const StellarManageTokenModal = (props: StellarManageTokenModalProps) => 
             }
         >
             <FormProvider {...methods}>
-                <Column gap={spacings.lg}>
+                <Column gap={20}>
                     <Text typographyStyle="body-md" intent="neutral" priority="secondary">
                         {mode === 'activate' ? (
                             <Translation
@@ -264,7 +273,7 @@ export const StellarManageTokenModal = (props: StellarManageTokenModalProps) => 
                                     token: tokenCode,
                                     network: getNetwork(symbol).name,
                                     reserve: formatNetworkAmount(
-                                        BASE_INFO.BASE_RESERVE.toString(),
+                                        account.misc.baseReserve ?? STELLAR_BASE_RESERVE,
                                         symbol,
                                         true,
                                     ),
@@ -285,7 +294,7 @@ export const StellarManageTokenModal = (props: StellarManageTokenModalProps) => 
                     {insufficientBalanceInfo && (
                         <Banner
                             intent="warning"
-                            icon="warning"
+                            icon={WarningIcon}
                             description={
                                 <Translation
                                     id="TR_TOKEN_ACTIVATION_INSUFFICIENT_FUNDS"
@@ -293,6 +302,22 @@ export const StellarManageTokenModal = (props: StellarManageTokenModalProps) => 
                                         required: insufficientBalanceInfo.required,
                                         available: insufficientBalanceInfo.available,
                                     }}
+                                />
+                            }
+                        />
+                    )}
+
+                    {isProcessing && (
+                        <Banner
+                            intent="info"
+                            icon={SpinnerIcon}
+                            description={
+                                <Translation
+                                    id={
+                                        mode === 'activate'
+                                            ? 'TR_ACTIVATION_IN_PROGRESS_BANNER'
+                                            : 'TR_DEACTIVATION_IN_PROGRESS_BANNER'
+                                    }
                                 />
                             }
                         />

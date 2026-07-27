@@ -2,5 +2,8 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "include": ["src"],
-    "references": [{ "path": "../schema-utils" }]
+    "references": [
+        { "path": "../schema-utils" },
+        { "path": "../eslint" }
+    ]
 }

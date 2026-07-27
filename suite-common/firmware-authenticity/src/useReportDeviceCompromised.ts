@@ -8,7 +8,8 @@ import {
     selectPersistentDeviceDataById,
 } from '@suite-common/device';
 import { selectIsProductionFirmwareChannel } from '@suite-common/firmware';
-import { TrezorDevice } from '@suite-common/suite-types';
+import { type SuiteCompatibleSelector } from '@suite-common/redux-utils';
+import { type TrezorDevice } from '@suite-common/suite-types';
 import { isDeviceKnown as getIsDeviceKnown, isDeviceAcquired } from '@suite-common/suite-utils';
 import { FIRMWARE } from '@trezor/connect';
 import { getFirmwareVersion } from '@trezor/device-utils';
@@ -20,7 +21,7 @@ import { hashCheckErrorScenarios, revisionCheckErrorScenarios } from './scenario
 // to avoid unnecessary wallet-core import
 type CommonProps = {
     device: TrezorDevice | undefined;
-    selectAllowPrerelease: (state: any) => boolean;
+    selectAllowPrerelease: SuiteCompatibleSelector<boolean>;
 };
 
 const useCommonData = ({ device }: Pick<CommonProps, 'device'>) => {
@@ -107,7 +108,7 @@ const useReportHashCheck = ({ device, selectAllowPrerelease }: CommonProps) => {
     }, [dispatch, commonData, errorType, errorPayload, attemptCount, shouldReport]);
 
     // success bears warning if it needed retries, so we report the previous error payload, see Device.ts in connect
-    const isHashCheckSuccess = hashCheck && hashCheck.success;
+    const isHashCheckSuccess = hashCheck?.success;
     const warningPayload = isHashCheckSuccess ? hashCheck.warningPayload : null;
     useEffect(() => {
         if (warningPayload) {

@@ -1,18 +1,12 @@
 {
     "extends": "../../tsconfig.lib.json",
-    "compilerOptions": {
-        "outDir": "lib"
-    },
     "include": ["./src"],
+    "compilerOptions": {
+        "outDir": "./lib",
+        "rootDir": "./src"
+    },
     "references": [
-        {
-            "path": "../connect"
-        },
-        {
-            "path": "../connect-common"
-        },
-        {
-            "path": "../utils"
-        }
+        { "path": "../connect-common" },
+        { "path": "../utils" }
     ]
 }

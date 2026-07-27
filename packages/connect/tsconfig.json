@@ -2,21 +2,38 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": {
         "outDir": "libDev",
-        "types": ["jest", "node", "w3c-web-usb"]
+        "types": [
+            "jest",
+            "vitest",
+            "node",
+            "w3c-web-usb"
+        ]
     },
     "references": [
         { "path": "../blockchain-link" },
         { "path": "../blockchain-link-types" },
-        { "path": "../blockchain-link-utils" },
         { "path": "../connect-common" },
         { "path": "../connect-data" },
         { "path": "../crypto-utils" },
         { "path": "../device-authenticity" },
         { "path": "../device-utils" },
+        {
+            "path": "../../networks/cardano/network-cardano"
+        },
+        {
+            "path": "../../networks/solana/network-solana"
+        },
+        {
+            "path": "../../networks/stellar/network-stellar"
+        },
+        {
+            "path": "../../networks/tron/network-tron"
+        },
         { "path": "../protobuf" },
         { "path": "../protocol" },
         { "path": "../schema-utils" },
-        { "path": "../transport" },
+        { "path": "../transport-common" },
+        { "path": "../transport-web" },
         { "path": "../type-utils" },
         { "path": "../utils" },
         { "path": "../utxo-lib" },

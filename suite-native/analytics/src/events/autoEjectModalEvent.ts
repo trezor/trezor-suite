@@ -11,9 +11,13 @@ type Attributes = {
 export const autoEjectModalEvent: EventDef<Attributes, EventType.AutoEjectModal> = {
     name: EventType.AutoEjectModal,
     descriptionTrigger:
-        '1 of 2 options selected in auto eject modal on first device disconnection.',
+        'User selects an option in the auto-eject confirmation modal when a device is first disconnected',
     changelog: [{ version: '25.8.1', notes: 'Added' }],
     attributes: {
-        value: { changelog: [{ version: '25.8.1', notes: 'added' }] },
+        value: {
+            changelog: [{ version: '25.8.1', notes: 'added' }],
+            description:
+                'User choice: `enable` to automatically eject device on disconnect, `skip` to disable auto-eject',
+        },
     },
 };

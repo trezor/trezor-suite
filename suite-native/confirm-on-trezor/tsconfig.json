@@ -8,7 +8,9 @@
         { "path": "../navigation" },
         { "path": "../theme" },
         { "path": "../../packages/env-utils" },
-        { "path": "../../packages/styles" },
+        {
+            "path": "../../packages/styles-native"
+        },
         { "path": "../../packages/theme" }
     ],
     "include": [".", "**/*.json"]

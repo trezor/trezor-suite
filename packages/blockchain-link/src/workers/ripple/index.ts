@@ -1,54 +1,32 @@
-import {
-    Client,
-    ClientOptions,
-    ErrorResponse,
-    LedgerStream,
-    TransactionStream,
-    XrplError,
-    xrpToDrops,
-} from 'xrpl';
-
+import { CustomError, MESSAGES, RESPONSES } from '@trezor/blockchain-link-types';
 import type {
     AccountInfo,
     AccountInfoParams,
+    MessageTypes,
     Response,
     SubscriptionAccountInfo,
 } from '@trezor/blockchain-link-types';
-import { MESSAGES, RESPONSES } from '@trezor/blockchain-link-types/src/constants';
-import { CustomError } from '@trezor/blockchain-link-types/src/constants/errors';
-import type * as MessageTypes from '@trezor/blockchain-link-types/src/messages';
 import * as utils from '@trezor/blockchain-link-utils/src/ripple';
 import { getSuiteVersion } from '@trezor/env-utils';
-import { TimerId } from '@trezor/type-utils';
+import {
+    RIPPLE_BASE_RESERVE_DEFAULT,
+    RIPPLE_OWNER_RESERVE_DEFAULT,
+} from '@trezor/network-ripple/constants';
+import xrpl from '@trezor/network-ripple/runtime';
+import type { LedgerStream, TransactionStream, XrplAPI } from '@trezor/network-ripple/types';
+import { type TimerId } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
-import { BaseWorker, CONTEXT, ContextType } from '../baseWorker';
+import { BaseWorker, CONTEXT, type ContextType } from '../baseWorker';
 
-type Context = ContextType<Client>;
+type Context = ContextType<XrplAPI>;
 type Request<T> = T & Context;
 
 const DEFAULT_TIMEOUT = 20 * 1000;
 const DEFAULT_PING_TIMEOUT = 3 * 60 * 1000;
 const RESERVE = {
-    BASE: '10000000',
-    OWNER: '2000000',
-};
-
-const transformError = (error: unknown) => {
-    if (error instanceof XrplError) {
-        const code =
-            error.name === 'TimeoutError' ? 'websocket_timeout' : 'websocket_error_message';
-        if (error.data) {
-            const errorMessageData = (error.data as { error_message: string }).error_message;
-            const errorMessage = `${error.name} ${errorMessageData}`;
-
-            return new CustomError(code, errorMessage);
-        }
-
-        return new CustomError(code, error.toString());
-    }
-
-    return error;
+    BASE: RIPPLE_BASE_RESERVE_DEFAULT,
+    OWNER: RIPPLE_OWNER_RESERVE_DEFAULT,
 };
 
 const getInfo = async (request: Request<MessageTypes.GetInfo>) => {
@@ -59,6 +37,7 @@ const getInfo = async (request: Request<MessageTypes.GetInfo>) => {
 
     // store current ledger values
     if (response.result.info.validated_ledger != null) {
+        const { xrpToDrops } = await xrpl();
         RESERVE.BASE = xrpToDrops(response.result.info.validated_ledger.reserve_base_xrp);
         RESERVE.OWNER = xrpToDrops(response.result.info.validated_ledger.reserve_inc_xrp);
     }
@@ -73,7 +52,7 @@ const getInfo = async (request: Request<MessageTypes.GetInfo>) => {
 };
 
 // Custom request to get account info from mempool
-const getMempoolAccountInfo = async (client: Client, account: string) => {
+const getMempoolAccountInfo = async (client: XrplAPI, account: string) => {
     const response = await client.request({
         command: 'account_info',
         account,
@@ -134,9 +113,10 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
         account.availableBalance = new BigNumber(account.balance).minus(reserve).toString();
         account.empty = false;
     } catch (error: unknown) {
+        const { asXrplError } = await xrpl();
         // empty account throws error "actNotFound"
         // catch it and respond with empty account
-        if (error instanceof XrplError && (error.data as ErrorResponse)?.error === 'actNotFound') {
+        if (asXrplError(error)?.data?.error === 'actNotFound') {
             return {
                 type: RESPONSES.GET_ACCOUNT_INFO,
                 payload: account,
@@ -199,7 +179,7 @@ const getTransaction = async ({ connect, payload }: Request<MessageTypes.GetTran
     const client = await connect();
     const rawTx = await client.request({
         command: 'tx',
-        transaction: payload,
+        transaction: payload.txid,
         binary: false,
     });
 
@@ -207,6 +187,7 @@ const getTransaction = async ({ connect, payload }: Request<MessageTypes.GetTran
         rawTx.result.hash,
         rawTx.result.tx_json,
         rawTx.result.meta,
+        payload.descriptor,
     );
 
     return {
@@ -302,7 +283,7 @@ const subscribeAccounts = async (ctx: Context, accounts: SubscriptionAccountInfo
     const { state } = ctx;
     const prevAddresses = state.getAddresses();
     state.addAccounts(accounts);
-    const uniqueAddresses = state.getAddresses().filter(a => prevAddresses.indexOf(a) < 0);
+    const uniqueAddresses = state.getAddresses().filter(a => !prevAddresses.includes(a));
     if (uniqueAddresses.length > 0) {
         if (!state.getSubscription('notification')) {
             api.on('transaction', ev => onTransaction(ctx, ev));
@@ -400,7 +381,7 @@ const unsubscribeAccounts = async (ctx: Context, accounts?: SubscriptionAccountI
     const prevAddresses = state.getAddresses();
     state.removeAccounts(accounts || state.getAccounts());
     const addresses = state.getAddresses();
-    const uniqueAddresses = prevAddresses.filter(a => addresses.indexOf(a) < 0);
+    const uniqueAddresses = prevAddresses.filter(a => !addresses.includes(a));
     await unsubscribeAddresses(ctx, uniqueAddresses);
 };
 
@@ -449,7 +430,7 @@ const onRequest = (request: Request<MessageTypes.Message>) => {
     }
 };
 
-class RippleWorker extends BaseWorker<Client> {
+class RippleWorker extends BaseWorker<XrplAPI> {
     pingTimeout?: TimerId;
 
     cleanup() {
@@ -462,21 +443,20 @@ class RippleWorker extends BaseWorker<Client> {
         super.cleanup();
     }
 
-    protected isConnected(client: Client | undefined): client is Client {
+    protected isConnected(client: XrplAPI | undefined): client is XrplAPI {
         return client?.isConnected() ?? false;
     }
 
-    async tryConnect(url: string): Promise<Client> {
-        const options: ClientOptions = {
-            headers: {
-                'User-Agent': `Trezor Suite ${getSuiteVersion()}`,
-            },
+    async tryConnect(url: string): Promise<XrplAPI> {
+        const { getXrplApi } = await xrpl();
+
+        const client = getXrplApi(url, {
+            headers: { 'User-Agent': `Trezor Suite ${getSuiteVersion()}` },
             timeout: this.settings.timeout || DEFAULT_TIMEOUT, // timeout is used for request and heartbeat (ping)
             connectionTimeout: this.settings.timeout || DEFAULT_TIMEOUT, // connectionTimeout is used only for connection
             ...(this.proxyAgent && { agent: this.proxyAgent }),
-        };
+        });
 
-        const client = new Client(url, options);
         await client.connect();
 
         // xrpl API automatically sets a ledger listener
@@ -528,7 +508,20 @@ class RippleWorker extends BaseWorker<Client> {
             const response = await onRequest(request);
             this.post({ id: event.data.id, ...response });
         } catch (error: unknown) {
-            this.errorResponse(event.data.id, transformError(error));
+            const { asXrplError } = await xrpl();
+            const xrplError = asXrplError(error);
+            const err = xrplError
+                ? new CustomError(
+                      xrplError.name === 'TimeoutError'
+                          ? 'websocket_timeout'
+                          : 'websocket_error_message',
+                      xrplError.data
+                          ? `${xrplError.name} ${xrplError.data.error_message}`
+                          : xrplError.toString(),
+                  )
+                : error;
+
+            this.errorResponse(event.data.id, err);
         } finally {
             if (event.data.type !== MESSAGES.DISCONNECT) {
                 // reset timeout
@@ -547,7 +540,7 @@ class RippleWorker extends BaseWorker<Client> {
     }
 
     async onPing() {
-        if (!this.api || !this.api.isConnected()) return;
+        if (!this.api?.isConnected()) return;
 
         if (this.state.hasSubscriptions() || this.settings.keepAlive) {
             try {

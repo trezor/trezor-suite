@@ -1,7 +1,12 @@
 import { useState } from 'react';
 
-import { AnalyticsSharedEvents } from '@suite-common/analytics';
-import { AnalyticsNativeEvents, events } from '@suite-native/analytics';
+import { type AnalyticsSharedEvents } from '@suite-common/analytics';
+import { useServices } from '@suite-common/dependency-injection';
+import {
+    type AnalyticsNativeEvents,
+    events,
+    selectNativeAnalyticsDep,
+} from '@suite-native/analytics';
 import {
     Box,
     Button,
@@ -15,14 +20,13 @@ import {
 import { Translation } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
 import {
-    OnboardingStackParamList,
+    type OnboardingStackParamList,
     OnboardingStackRoutes,
     Screen,
-    StackProps,
+    type StackProps,
 } from '@suite-native/navigation';
-import { useAnalytics } from '@suite-native/services';
-import { Analytics } from '@trezor/analytics-uploader';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { type Analytics } from '@trezor/analytics-uploader';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { DATA_PRIVACY_URL } from '@trezor/urls';
 
 import { AnalyticsInfoRow } from '../components/AnalyticsInfoRow';
@@ -30,7 +34,7 @@ import { AnalyticsInfoRow } from '../components/AnalyticsInfoRow';
 const consentWrapperStyle = prepareNativeStyle(utils => ({
     padding: utils.spacings.sp16,
     borderRadius: utils.borders.radii.r16,
-    backgroundColor: utils.colors.backgroundTertiaryDefaultOnElevation1,
+    backgroundColor: utils.colors.legacyBackgroundTertiaryDefaultOnElevation1,
 }));
 
 const reportAnalyticsOnboardingCompleted = (
@@ -55,7 +59,7 @@ const reportAnalyticsOnboardingCompleted = (
 export const AnalyticsConsentScreen = ({
     navigation,
 }: StackProps<OnboardingStackParamList, OnboardingStackRoutes.AnalyticsConsent>) => {
-    const analytics = useAnalytics();
+    const { analytics } = useServices(selectNativeAnalyticsDep);
     const [isEnabled, setIsEnabled] = useState(true);
 
     const { applyStyle } = useNativeStyles();
@@ -145,7 +149,8 @@ export const AnalyticsConsentScreen = ({
                         <Translation id="generic.buttons.confirm" />
                     </Button>
                     <Button
-                        colorScheme="tertiaryElevation0"
+                        intent="neutral"
+                        priority="secondary"
                         testID="@onboarding/AnalyticsConsent/learMoreBtn"
                         onPress={handleClickOnLearMoreLink}
                     >

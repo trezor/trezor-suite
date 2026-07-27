@@ -1,6 +1,6 @@
 import ElectronStore from 'electron-store';
 
-import { SuiteThemeVariant } from '@trezor/suite-desktop-api';
+import { type SuiteThemeVariant } from '@trezor/suite-desktop-api';
 
 import { getInitialWindowSize } from './screen';
 
@@ -21,8 +21,9 @@ export class Store {
         torSettings: TorSettings;
         bridgeSettings: BridgeSettings;
         traySettings: TraySettings;
-        connectSettings: ConnectSettings;
+        connectSettings: ElectronConnectSettings;
         bioAuthSettings: BioAuthSettings;
+        mcpSettings: McpSettings;
     }>;
 
     private constructor() {
@@ -116,7 +117,7 @@ export class Store {
         });
     }
 
-    public setConnectSettings(connectSettings: Partial<ConnectSettings>) {
+    public setConnectSettings(connectSettings: Partial<ElectronConnectSettings>) {
         this.store.set('connectSettings', {
             ...this.store.get('connectSettings'),
             ...connectSettings,
@@ -138,6 +139,20 @@ export class Store {
 
     public onBioAuthSettingsChange(callback: OnDidChangeCallback<BioAuthSettings>): Unsubscribe {
         return this.store.onDidChange('bioAuthSettings', callback);
+    }
+
+    public getMcpSettings() {
+        return this.store.get('mcpSettings', {
+            enabled: false,
+            port: 21340,
+        });
+    }
+
+    public setMcpSettings(mcpSettings: Partial<McpSettings>) {
+        this.store.set('mcpSettings', {
+            ...this.getMcpSettings(),
+            ...mcpSettings,
+        });
     }
 
     /** Deletes all items from the store. */

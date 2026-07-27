@@ -1,19 +1,19 @@
+import z, { ZodError } from 'zod';
+
 import { desktopApi } from '@trezor/suite-desktop-api';
-import { Deferred, createDeferred } from '@trezor/utils';
+import { type Deferred, createDeferred } from '@trezor/utils';
 
 import * as METADATA_PROVIDER from './metadataProviderConstants';
-import { urlHashParams, urlSearchParams } from './metadataUtils';
 
 // Copy-pasted from packages/suite/src/utils/suite/router.ts to break dependency
 //
 // Prefix a url with ASSET_PREFIX (eg. name of the branch in CI)
 // Useful with next.js Router.push() that accepts `as` prop as second arg
-export const getPrefixedURL = (url: string) => {
+export const getPrefixedURL = (pathname: string) => {
     // do not use object destructuring https://github.com/webpack/webpack/issues/5392
     const prefix = process.env.ASSET_PREFIX;
-    if (prefix && url.indexOf(prefix) !== 0) return prefix + url;
 
-    return url;
+    return prefix && !pathname.startsWith(prefix) ? `${prefix}${pathname}` : pathname;
 };
 
 /**
@@ -21,91 +21,114 @@ export const getPrefixedURL = (url: string) => {
  */
 export const getOauthReceiverUrl = () => {
     if (!desktopApi.available) {
-        return `${window.location.origin}${getPrefixedURL('/static/oauth/oauth_receiver.html')}`;
+        return new URL(
+            getPrefixedURL('/static/oauth/oauth_receiver.html'),
+            window.location.origin,
+        ).toString();
     }
 
     return desktopApi.getHttpReceiverAddress('/oauth');
 };
 
-type Credentials =
-    | { access_token?: undefined; code: string }
-    | { access_token: string; code?: undefined };
+const POPUP_TIMEOUT_MS = 60 * 1000;
+const OAUTH_BROADCAST_CHANNEL_NAME = 'trezor-oauth';
 
-type Message = { [key: string]: string };
+const oauthResponseMessage = z
+    .object({
+        key: z.literal('trezor-oauth'),
+        search: z.string().startsWith('?'),
+    })
+    .or(
+        z.object({
+            key: z.literal('trezor-oauth'),
+            hash: z.string().startsWith('#'),
+        }),
+    );
 
-let interval: number;
+type OAuthResponseMessage = z.infer<typeof oauthResponseMessage>;
 
-/**
- * Use this function to workaround impossibility to detect beforeunload event
- * for windows loaded on another domains
- * @param uri
- * @param name
- * @param options
- * @param closeCallback
- */
-const openWindowOnAnotherDomain = (
-    uri: string,
-    name: string,
-    options: string,
-    closeCallback: () => void,
-) => {
-    const win = window.open(uri, name, options);
-    clearInterval(interval);
-    interval = window.setInterval(() => {
-        // todo: for some reason, when used in electron, win has closed=true right from the start and thus closeCallback
-        // is invoked immediately. temporary workaround is not to use openWindowOnAnotherDomain in electron
-        if (!win || win.closed) {
-            window.clearInterval(interval);
-            closeCallback();
-        }
-    }, 1000);
+const oauthResult = oauthResponseMessage.transform(value => {
+    const searchOrHash = 'search' in value ? value.search : value.hash;
 
-    return win;
-};
+    return Object.fromEntries(new URLSearchParams(searchOrHash.slice(1)).entries());
+});
 
-const handleResponse = (
-    message: Message,
-    originalParams: { [key: string]: string },
-    onSuccess: (result: Credentials) => void,
-    onError: (error: any) => void,
-) => {
-    if (!message.search && !message.hash) return;
-    let parsedMessage;
+const oauthResultParams = z.object({
+    access_token: z.string().optional(),
+    code: z.string().optional(),
+    state: z.string().optional(),
+    error: z.string().optional(),
+    error_description: z.string().optional(),
+});
 
-    if (message.search) {
-        parsedMessage = urlSearchParams(message.search);
-    } else if (message.hash) {
-        parsedMessage = urlHashParams(message.hash);
+type OAuthResultParams = z.infer<typeof oauthResultParams>;
+type OAuthCredentials = Pick<OAuthResultParams, 'code' | 'access_token'>;
+
+const oauthOriginalParams = z.object({
+    state: z.string().nonempty(),
+});
+
+function handleResponseError(error?: string, errorDescription?: string) {
+    if (!error) {
+        return;
     }
 
-    if (!parsedMessage) return;
+    switch (error) {
+        case 'access_denied':
+            // user clicks cancel in popup interface. This is the same as if user closed the window,
+            return new Error('Window closed');
+        default:
+            // otherwise just show error. This should not happen often, most of the errors can be caused by improper
+            // implementation only. Possibly "temporarily_unavailable" or "server_error" may appear
+            // see possible errors in oauth protocol described here https://tools.ietf.org/html/rfc6749#section-4.1.2.1
+            return new Error(`${error}: ${errorDescription?.replace(/\+/g, ' ')}`);
+    }
+}
 
-    const { code, access_token, state, error_description, error } = parsedMessage;
+const handleResponse = (
+    response: OAuthResponseMessage,
+    originalParams: URLSearchParams,
+    onSuccess: (result: OAuthCredentials) => void,
+    onError: (error: Error) => void,
+) => {
+    try {
+        const resultParams = oauthResult.parse(response);
+        const parsedResultParams = oauthResultParams.parse(resultParams);
+        const parsedOriginalParams = oauthOriginalParams.parse({
+            state: originalParams.get('state'),
+        });
 
-    if (error === 'access_denied') {
-        // user clicks cancel in popup interface. This is the same as if user closed the window,
-        onError(new Error('window closed'));
-    } else if (error) {
-        // otherwise just show error. This should not happen often, most of the errors can be caused by improper
-        // implementation only. Possibly "temporarily_unavailable" or "server_error" may appear
-        // see possible errors in oauth protocol described here https://tools.ietf.org/html/rfc6749#section-4.1.2.1
-        onError(new Error(`${error}: ${error_description.replace(/\+/g, ' ')}`));
-    } else if (originalParams.state && state !== originalParams.state) {
-        onError(new Error('state does not match'));
-    } else if (code || access_token) {
-        onSuccess({ code, access_token } as unknown as Credentials);
-    } else {
-        onError(new Error('Unexpected response form data provider'));
+        const { code, access_token, state, error_description, error } = parsedResultParams;
+
+        if (state !== parsedOriginalParams.state) {
+            return onError(new Error('Invalid response from data provider'));
+        }
+
+        const responseError = handleResponseError(error, error_description);
+        if (responseError) {
+            return onError(responseError);
+        }
+
+        onSuccess({ code, access_token });
+    } catch (error) {
+        if (error instanceof ZodError) {
+            console.error(error);
+
+            return onError(new Error('Invalid response from data provider'));
+        }
+
+        onError(
+            error instanceof Error ? error : new Error('Unexpected response form data provider'),
+        );
     }
 };
 
 // keep handler function instance in top level scope
-let desktopHandlerInstance: (message: Message) => void;
-let webHandlerInstance: (e: MessageEvent<Message>) => void;
+let desktopHandlerInstance: (message: OAuthResponseMessage) => void;
 
 const getDesktopHandlerInstance = (
-    dfd: Deferred<Credentials>,
-    originalParams: { [key: string]: string },
+    dfd: Deferred<OAuthCredentials>,
+    originalParams: URLSearchParams,
 ) => {
     desktopHandlerInstance = message => {
         handleResponse(
@@ -125,64 +148,74 @@ const getDesktopHandlerInstance = (
     return desktopHandlerInstance;
 };
 
-const getWebHandlerInstance = (
-    dfd: Deferred<Credentials>,
-    originalParams: { [key: string]: string },
+const createWebBroadcastChannel = (
+    dfd: Deferred<OAuthCredentials>,
+    originalParams: URLSearchParams,
 ) => {
-    if (webHandlerInstance) {
-        window.removeEventListener('message', webHandlerInstance);
-    }
-    webHandlerInstance = (e: MessageEvent<Message>) => {
-        if (window.location.origin !== e.origin) return;
-        if (!e.data.search && !e.data.hash) return;
-        if (e.data.key !== 'trezor-oauth') return;
+    const channel = new BroadcastChannel(OAUTH_BROADCAST_CHANNEL_NAME);
 
-        handleResponse(
-            e.data,
-            originalParams,
-            credentials => {
-                dfd.resolve(credentials);
-            },
-            error => {
-                dfd.reject(error);
-            },
-        );
-    };
+    channel.addEventListener('message', (e: MessageEvent) => {
+        try {
+            const parsedMessage = oauthResponseMessage.parse(e.data);
+            handleResponse(
+                parsedMessage,
+                originalParams,
+                credentials => dfd.resolve(credentials),
+                error => dfd.reject(error),
+            );
+        } catch (error) {
+            console.error(error);
+        }
+    });
 
-    return webHandlerInstance;
+    return channel;
 };
 
 /**
  * Handle extraction of authorization code from Oauth2 protocol
  */
-export const extractCredentialsFromAuthorizationFlow = (url: string) => {
-    const originalParams = urlHashParams(url);
-    const dfd = createDeferred<Credentials>();
+export const extractCredentialsFromAuthorizationFlow = (url: URL) => {
+    const dfd = createDeferred<OAuthCredentials>();
 
     if (desktopApi.available) {
         // to make sure that there is always only one listener registered remove all listeners before creating a new one
         desktopApi.removeAllListeners('oauth/response');
         // this listener may never be called in some cases
-        desktopApi.once('oauth/response', getDesktopHandlerInstance(dfd, originalParams));
+        desktopApi.once('oauth/response', getDesktopHandlerInstance(dfd, url.searchParams));
         window.open(url, METADATA_PROVIDER.AUTH_WINDOW_TITLE, METADATA_PROVIDER.AUTH_WINDOW_PROPS);
     } else {
-        window.addEventListener('message', getWebHandlerInstance(dfd, originalParams));
-        openWindowOnAnotherDomain(
+        const channel = createWebBroadcastChannel(dfd, url.searchParams);
+
+        const popup = window.open(
             url,
             METADATA_PROVIDER.AUTH_WINDOW_TITLE,
             METADATA_PROVIDER.AUTH_WINDOW_PROPS,
-            () => {
-                // note that this rejection happens even on successful authorization.
-                // 'window closed' error message may be used to differentiate between errors
-                setTimeout(() => {
-                    window.removeEventListener(
-                        'message',
-                        getWebHandlerInstance(dfd, originalParams),
-                    );
-                    dfd.reject(new Error('window closed'));
-                }, 5000);
-            },
         );
+
+        if (!popup) {
+            channel.close();
+            dfd.reject(new Error('window closed'));
+
+            return dfd.promise;
+        }
+
+        // Safety timeout — COOP prevents detecting popup closure via popup.closed,
+        // so we rely on BroadcastChannel as the primary signal and timeout as fallback.
+        const timeoutId = window.setTimeout(() => {
+            channel.close();
+            dfd.reject(new Error('window closed'));
+        }, POPUP_TIMEOUT_MS);
+
+        void dfd.promise.finally(() => {
+            window.clearTimeout(timeoutId);
+            channel.close();
+
+            try {
+                popup.close();
+            } catch {
+                // COOP may block access to the popup.
+            }
+        });
     }
 
     return dfd.promise;

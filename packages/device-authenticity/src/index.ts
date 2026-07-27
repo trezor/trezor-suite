@@ -1,6 +1,11 @@
 export { verifyAuthenticityProof, prepareDeviceAuthenticityData } from './verifyAuthenticityProof';
 export { validateCaCertExtensions } from './validateCaCertExtensions';
-export { verifySignatureEd25519, verifySignatureP256 } from './verifySignatures';
+export { validateSerialNumbers } from './validateSerialNumbers';
+export {
+    verifySignatureEd25519,
+    verifySignatureP256,
+    verifySignatureMLDSA44,
+} from './verifySignatures';
 export { type AlgorithmName, parseName, parseCertificate } from './x509certificate';
 export { getRandomChallenge } from './utils';
 export type {
@@ -12,3 +17,4 @@ export { deviceAuthenticityBlacklistConfig } from './config/deviceAuthenticityBl
 export { DeviceAuthenticityBlacklistConfig } from './config/deviceAuthenticityBlacklistConfigTypes';
 export { deviceAuthenticityConfig } from './config/deviceAuthenticityConfig';
 export { DeviceAuthenticityConfig } from './config/deviceAuthenticityConfigTypes';
+export { AuthenticateDeviceParams } from './authenticateDeviceParams';

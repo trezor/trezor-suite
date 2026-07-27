@@ -1,8 +1,8 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
-import { Icon, IconName } from '@suite-native/icons';
-import { NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Color } from '@trezor/theme';
+import { Icon, type IconName } from '@suite-native/icons';
+import { type NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
+import { type Color } from '@trezor/theme';
 
 import { HStack } from './Stack';
 import { Text } from './Text';
@@ -30,15 +30,15 @@ const hintTextStyle = prepareNativeStyle<{ color: Color }>((utils, { color }) =>
 
 const hintVariants: Record<HintVariant, { iconName: IconName; color: Color }> = {
     hint: {
-        color: 'textSubdued',
+        color: 'contentSecondary',
         iconName: 'question',
     },
     error: {
-        color: 'textAlertRed',
+        color: 'contentCritical',
         iconName: 'warningCircle',
     },
     info: {
-        color: 'textAlertBlue',
+        color: 'contentInfo',
         iconName: 'info',
     },
 };

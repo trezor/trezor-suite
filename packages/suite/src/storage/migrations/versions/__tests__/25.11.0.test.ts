@@ -1,7 +1,10 @@
-import '@suite-common/test-utils/src/globalOverrides';
-import { IDBPDatabase, deleteDB, openDB } from 'idb';
+import '@suite-common/test-utils/globalOverrides';
+import { type IDBPDatabase, deleteDB, openDB } from 'idb';
 
-import { SuiteDBSchema } from '../../../definitions';
+import { initialWalletSettingsState } from '@suite-common/wallet-core';
+
+import { type SuiteDBSchema } from 'src/storage/definitions';
+
 import migration from '../25.11.0';
 
 const DB_NAME = 'suite-idb-test-25.11.0';
@@ -73,6 +76,27 @@ describe('migration 25.11.0', () => {
         const wallet = await migratedDb.get('walletSettings', 'wallet');
         expect(wallet).toBeDefined();
         expect(wallet?.isAutoEjectEnabled).toBe(false);
+
+        migratedDb.close();
+    });
+
+    test('creates walletSettings entry if the store is empty', async () => {
+        const db = await openDB(DB_NAME, INITIAL_VERSION, {
+            upgrade(db) {
+                db.createObjectStore('suiteSettings');
+                db.createObjectStore('walletSettings');
+            },
+        });
+        await db.put('suiteSettings', { settings: { autoEject: true } }, 'suite');
+        db.close();
+
+        const migratedDb = await runMigration();
+
+        const wallet = await migratedDb.get('walletSettings', 'wallet');
+        expect(wallet).toEqual({
+            ...initialWalletSettingsState,
+            isAutoEjectEnabled: true,
+        });
 
         migratedDb.close();
     });

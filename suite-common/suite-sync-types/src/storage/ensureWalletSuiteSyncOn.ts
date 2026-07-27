@@ -1,10 +1,17 @@
-import { SuiteSyncStorage } from '@suite-common/suite-sync-storage';
-import { DeviceCancelledErrType, DeviceErrorType } from '@suite-common/suite-types';
-import { StaticSessionId } from '@trezor/connect';
-import { Result } from '@trezor/type-utils';
+import { type SuiteSyncStorage } from '@suite-common/suite-sync-storage';
+import {
+    type DeviceCancelledErrType,
+    type DeviceErrorType,
+    type DeviceNotConnectedErrorType,
+} from '@suite-common/suite-types';
+import { type StaticSessionId } from '@trezor/connect-common';
+import { type Result } from '@trezor/type-utils';
 
-import { WriteModeRequiredForAllocationErrType } from '../quotaManager/quotaManagerTypes';
-import { SuiteSyncUnavailableOnDeviceErrorType } from '../refreshSuiteSyncKeys';
+import { type SuiteSyncUnavailableOnDeviceErrorType } from '../ensureSuiteSyncKeys';
+import {
+    type QuotaManagerCommunicationFailedErrType,
+    type WriteModeRequiredForAllocationErrType,
+} from '../quotaManager/errors';
 
 export type SuiteSyncFirmwareUpgradeNeededDeviceErrorType = {
     type: 'SuiteSyncFirmwareUpgradeNeededDeviceErrorType';
@@ -25,10 +32,46 @@ export type EnsureWalletSuiteSyncOnErrors =
     | SuiteSyncFirmwareUpgradeNeededDeviceErrorType
     | DeviceErrorType
     | DeviceCancelledErrType
-    | WriteModeRequiredForAllocationErrType;
+    | DeviceNotConnectedErrorType
+    | WriteModeRequiredForAllocationErrType
+    | QuotaManagerCommunicationFailedErrType;
 
 export type EnsureWalletSuiteSyncOn = (
     params: EnsureWalletSuiteSyncOnParams,
 ) => Promise<Result<SuiteSyncStorage, EnsureWalletSuiteSyncOnErrors>>;
 
+export type OnStorageEnsuredParams = EnsureWalletSuiteSyncOnParams & {
+    storage: SuiteSyncStorage;
+};
+
+/**
+ * Invoked after Suite Sync storage is ensured for a wallet (e.g. to run the legacy-labels
+ * migration). Defaults to a no-op when a platform does not need it (e.g. native).
+ */
+export type OnStorageEnsured = (params: OnStorageEnsuredParams) => Promise<void> | void;
+
+export type OnStorageEnsuredDep = {
+    onStorageEnsured: OnStorageEnsured;
+};
+
 export type EnsureWalletSuiteSyncOnDep = { ensureWalletSuiteSyncOn: EnsureWalletSuiteSyncOn };
+
+export const selectEnsureWalletSuiteSyncOnDep = (services: any): EnsureWalletSuiteSyncOnDep => ({
+    ensureWalletSuiteSyncOn: services.suiteSync.ensureWalletSuiteSyncOn,
+});
+
+export type EnsureWalletSuiteSyncOnUncontrolled = (
+    params: EnsureWalletSuiteSyncOnParams,
+) => Promise<void>;
+
+export type EnsureWalletSuiteSyncOnUncontrolledDep = {
+    ensureWalletSuiteSyncOnUncontrolled: EnsureWalletSuiteSyncOnUncontrolled;
+};
+
+export type SuiteSyncUserFacingErrorType =
+    | 'SuiteSyncUnavailableOnDeviceError'
+    | 'SuiteSyncFirmwareUpgradeNeededDeviceErrorType'
+    | 'DeviceCancelled'
+    | 'DeviceError'
+    | 'SuiteSyncUpdateError'
+    | 'QuotaManagerCommunicationFailed';

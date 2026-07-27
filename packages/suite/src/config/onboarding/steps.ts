@@ -1,7 +1,7 @@
-import { DeviceModelInternal, FirmwareType } from '@trezor/device-utils';
+import { DeviceModelInternal } from '@trezor/device-utils';
 
 import * as STEP from 'src/constants/onboarding/steps';
-import { Step, StepCategory } from 'src/types/onboarding';
+import { type Step, type StepCategory } from 'src/types/onboarding';
 
 const commonPrerequisites: Step['prerequisites'] = [
     'no-transport',
@@ -71,7 +71,7 @@ export const stepCategories: StepCategory[] = [
                 prerequisites: [...commonPrerequisites, 'device-recovery-mode', 'device-different'],
             },
             {
-                id: STEP.ID_RESET_DEVICE_STEP,
+                id: STEP.ID_BACKUP_TYPE_STEP,
                 path: [STEP.PATH_CREATE],
                 prerequisites: [...commonPrerequisites, 'device-recovery-mode', 'device-different'],
             },
@@ -86,12 +86,7 @@ export const stepCategories: StepCategory[] = [
             {
                 id: STEP.ID_SECURITY_STEP,
                 path: [STEP.PATH_RECOVERY, STEP.PATH_CREATE],
-                prerequisites: [...commonPrerequisites, ...afterInitializePrerequisites],
-            },
-            {
-                id: STEP.ID_BACKUP_STEP,
-                path: [STEP.PATH_CREATE],
-                prerequisites: [...commonPrerequisites, ...afterInitializePrerequisites],
+                prerequisites: [...commonPrerequisites, 'device-recovery-mode', 'device-different'],
             },
         ],
     },
@@ -107,14 +102,21 @@ export const stepCategories: StepCategory[] = [
         ],
     },
     {
-        id: 'coins',
-        labelTranslationId: 'TR_COINS',
+        id: 'final',
         steps: [
             {
-                id: STEP.ID_COINS_STEP,
+                id: STEP.ID_FINAL_STEP,
+                path: [STEP.PATH_RECOVERY, STEP.PATH_CREATE],
                 prerequisites: [...commonPrerequisites, ...afterInitializePrerequisites],
-                supportedFirmwareTypes: [FirmwareType.Universal],
             },
         ],
     },
 ];
+
+// 1-based encounter order on the happy path, derived from stepCategories above.
+// Sent as `stepIndex` in the onboarding/step-viewed analytics event so consumers
+// can sort steps without depending on names.
+const onboardingStepOrder = stepCategories.flatMap(category => category.steps.map(step => step.id));
+
+export const getOnboardingStepIndex = (id: Step['id']): number =>
+    onboardingStepOrder.indexOf(id) + 1;

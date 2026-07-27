@@ -1,7 +1,7 @@
 import { createAction } from '@reduxjs/toolkit';
 
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { PrecomposedTransactionFinal, StakeFormState } from '@suite-common/wallet-types';
+import { type PrecomposedTransactionFinal, type StakeFormState } from '@suite-common/wallet-types';
 
 export const STAKE_MODULE_PREFIX = '@common/wallet-core/stake';
 
@@ -40,11 +40,19 @@ const requestPushTransaction = createAction(
     }),
 );
 
+const setResolvedEthereumNonce = createAction(
+    `${STAKE_MODULE_PREFIX}/setResolvedEthereumNonce`,
+    (payload: string) => ({
+        payload,
+    }),
+);
+
 const dispose = createAction(`${STAKE_MODULE_PREFIX}/dispose`);
 
 export const stakeActions = {
     requestSignTransaction,
     requestPushTransaction,
     setVotingDelegationOption,
+    setResolvedEthereumNonce,
     dispose,
 };

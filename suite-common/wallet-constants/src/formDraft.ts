@@ -4,6 +4,7 @@ export const FormDraftWithSendPrefixKeyValues = [
     'trading-exchange',
     'stake',
     'unstake',
+    'claim',
     'send',
     'stellar-token',
 ] as const;

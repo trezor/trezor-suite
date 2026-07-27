@@ -1,13 +1,13 @@
 import {
     ComprehensivelySanctionedCountryCodes,
-    EEACountryCodeType,
+    type EEACountryCodeType,
     EEACountryCodes,
     OfacSanctionedCountryCodes,
     countries as countriesRecord,
 } from '@suite-common/geolocation';
 import { isArrayMember, typedObjectValues } from '@trezor/utils';
 
-import { TradingCountryCode, TradingCountryOption } from './types';
+import { type TradingCountryCode, type TradingCountryOption } from './types';
 
 type CountryItem = (typeof countriesRecord)[keyof typeof countriesRecord];
 
@@ -53,7 +53,7 @@ class Regional {
     }
 
     isSanctioned(country: string): boolean {
-        return SANCTIONED_COUNTRIES.has(country as TradingCountryCode);
+        return SANCTIONED_COUNTRIES.has(country);
     }
 
     getCountryOptionWithWorldwideFallback(country: string): TradingCountryOption {
@@ -63,6 +63,10 @@ class Regional {
         }
 
         return this.countriesOptionsMap.get(this.UNKNOWN_COUNTRY)!;
+    }
+
+    isWorldwideRegion(country: string): boolean {
+        return [this.UNKNOWN_COUNTRY, 'XX', 'T1'].includes(country);
     }
 }
 

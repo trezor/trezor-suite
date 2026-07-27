@@ -1,18 +1,23 @@
 import { useCallback } from 'react';
-import { FieldPath, UseFormReturn } from 'react-hook-form';
+import { type FieldPath, type UseFormReturn } from 'react-hook-form';
 
 import { selectCurrentFiatRates } from '@suite-common/wallet-core';
-import { FormOptions, FormState, Output, Rate, TokenAddress } from '@suite-common/wallet-types';
+import {
+    type FormOptions,
+    type FormState,
+    type Output,
+    type Rate,
+    type TokenAddress,
+} from '@suite-common/wallet-types';
 import {
     getFiatRateKey,
     parseBaseCurrencyToFormattedCrypto,
     parseCryptoToFormattedBaseCurrency,
 } from '@suite-common/wallet-utils';
-import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
-import { TokenInfo } from '@trezor/blockchain-link-types';
+import type { BaseCurrencyCode, TokenInfo } from '@trezor/blockchain-link-types';
 import { BigNumber } from '@trezor/utils';
 
-import { SendContextValues, UseSendFormState } from 'src/types/wallet/sendForm';
+import { type SendContextValues, type UseSendFormState } from 'src/types/wallet/sendForm';
 
 import { useBitcoinAmountUnit } from './useBitcoinAmountUnit';
 import { useSelector } from '../suite';
@@ -63,7 +68,7 @@ export const useSendFormFields = ({
         }: CalculateFiatFromAmountOrViceVersaParams) => {
             const { outputs } = getValues();
             const output = outputs[outputId];
-            if (output.type !== 'payment') {
+            if (output?.type !== 'payment') {
                 return;
             }
             const targetValue = output[target];
@@ -104,9 +109,9 @@ export const useSendFormFields = ({
             const convert = (amount: string, fiatRate: number) => {
                 const { outputs } = getValues();
                 const output = outputs[outputId];
-                const baseCurrencyCode = output.currency.value;
+                const baseCurrencyCode = output?.currency.value;
 
-                if (baseCurrencyCode === '') {
+                if (!baseCurrencyCode) {
                     return null;
                 }
 
@@ -144,9 +149,9 @@ export const useSendFormFields = ({
                 const { outputs } = getValues();
                 const output = outputs[outputId];
 
-                const baseCurrencyCode = output.currency.value;
+                const baseCurrencyCode = output?.currency.value;
 
-                if (baseCurrencyCode === '') {
+                if (!baseCurrencyCode) {
                     return null;
                 }
 

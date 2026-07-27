@@ -1,9 +1,9 @@
-import { MiddlewareAPI } from 'redux';
+import { type MiddlewareAPI } from 'redux';
 
 import { accountsActions, discoveryActions } from '@suite-common/wallet-core';
 
 import * as graphActions from 'src/actions/wallet/graphActions';
-import { Action, AppState, Dispatch } from 'src/types/suite';
+import { type Action, type AppState, type Dispatch } from 'src/types/suite';
 
 const graphMiddleware =
     (api: MiddlewareAPI<Dispatch, AppState>) =>

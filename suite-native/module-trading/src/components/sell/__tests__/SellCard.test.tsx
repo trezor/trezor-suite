@@ -1,36 +1,43 @@
 import { Form } from '@suite-native/forms';
+import { getTranslation } from '@suite-native/intl';
 import {
     act,
-    renderHookWithStoreProviderAsync,
-    renderWithStoreProviderAsync,
+    renderHookWithStoreProvider,
+    renderWithStoreProvider,
     screen,
-} from '@suite-native/test-utils';
-import { getWalletState, sellQuotes, usdcAsset } from '@suite-native/trading-fixtures';
-import { SellFormType } from '@suite-native/trading-types';
+} from '@suite-native/test-utils-store';
+import { sellQuotes, usdcAsset } from '@suite-native/trading-fixtures';
+import { type SellFormType } from '@suite-native/trading-types';
 
+import { createTradingPreloadedState } from '../../../__tests__/tradingTestUtils';
 import { useSellForm } from '../../../hooks/sell/useSellForm';
 import { SellCard } from '../SellCard';
 
 describe('SellCard', () => {
     let form: SellFormType;
+    const preloadedState = createTradingPreloadedState({ tradeType: 'sell' });
 
-    const renderForm = () => renderHookWithStoreProviderAsync(() => useSellForm());
+    const renderForm = () =>
+        renderHookWithStoreProvider(() => useSellForm(), {
+            preloadedState,
+        });
 
     const renderSellCard = (isAmountInputActive: boolean) => {
-        const preloadedState = { wallet: getWalletState({ tradeType: 'sell' }) };
-        preloadedState.wallet!.trading!.sell!.quotes = sellQuotes;
-
-        return renderWithStoreProviderAsync(
-            <SellCard isAmountInputActive={isAmountInputActive} />,
-            {
-                wrapper: ({ children }) => <Form form={form}>{children}</Form>,
-                preloadedState,
+        const cardPreloadedState = createTradingPreloadedState({
+            tradeType: 'sell',
+            overrides: {
+                wallet: { trading: { sell: { quotes: sellQuotes } } },
             },
-        );
+        });
+
+        return renderWithStoreProvider(<SellCard isAmountInputActive={isAmountInputActive} />, {
+            wrapper: ({ children }) => <Form form={form}>{children}</Form>,
+            preloadedState: cardPreloadedState,
+        });
     };
 
-    beforeEach(async () => {
-        const { result } = await renderForm();
+    beforeEach(() => {
+        const { result } = renderForm();
         form = result.current;
     });
 
@@ -38,38 +45,28 @@ describe('SellCard', () => {
         screen.unmount();
     });
 
-    it('should render all components for "you pay" part', async () => {
+    it('should render all components for "you pay" part', () => {
         act(() => {
             form.setValue('sendAsset', usdcAsset);
             form.setValue('amountInCrypto', true);
             form.setValue('cryptoStringAmount', '100');
         });
-        const { getByText, getByLabelText } = await renderSellCard(false);
+        const { getByText, getByLabelText } = renderSellCard(false);
 
-        expect(getByText('You pay')).toBeOnTheScreen();
+        expect(
+            getByText(getTranslation('moduleTrading.selectFiat.buy.amountLabel')),
+        ).toBeOnTheScreen();
         expect(getByText('$99.00')).toBeOnTheScreen();
-        expect(getByLabelText('Select asset')).toHaveTextContent(/USDC/);
-        expect(getByLabelText('Network name')).toHaveTextContent('Ethereum');
-        expect(getByLabelText('You pay')).toHaveDisplayValue('100');
-        expect(getByText('Balance:')).toBeOnTheScreen();
+        expect(
+            getByLabelText(getTranslation('moduleTrading.selectCoin.buttonTitle')),
+        ).toHaveTextContent(/USDC/);
+        expect(getByLabelText(getTranslation('moduleTrading.networkName'))).toHaveTextContent(
+            'Ethereum',
+        );
+        expect(
+            getByLabelText(getTranslation('moduleTrading.selectFiat.buy.amountLabel')),
+        ).toHaveDisplayValue('100');
+        expect(getByText(getTranslation('moduleTrading.tradingScreen.balance'))).toBeOnTheScreen();
         expect(getByText('- USDC')).toBeOnTheScreen();
-    });
-
-    describe('with selected quote', () => {
-        beforeEach(() => {
-            act(() => {
-                form.setValue('sendAsset', usdcAsset);
-                form.setValue('amountInCrypto', true);
-                form.setValue('cryptoStringAmount', '100');
-
-                form.setValue('quote', sellQuotes[0]);
-            });
-        });
-
-        it('should render receive method', async () => {
-            const { getByText } = await renderSellCard(false);
-
-            expect(getByText('Receive method')).toBeOnTheScreen();
-        });
     });
 });

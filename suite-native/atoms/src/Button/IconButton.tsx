@@ -1,74 +1,74 @@
 import { useState } from 'react';
-import { PressableProps } from 'react-native';
+import { type PressableProps, type ViewStyle } from 'react-native';
+import { type AnimatedStyle } from 'react-native-reanimated';
 
-import { Icon, IconName } from '@suite-native/icons';
+import { Icon, type IconName } from '@suite-native/icons';
 import {
-    NativeStyleObject,
+    type NativeStyleObject,
     mergeNativeStyles,
     prepareNativeStyle,
     useNativeStyles,
-} from '@trezor/styles';
+} from '@trezor/styles-native';
 
-import {
-    ButtonColorScheme,
-    ButtonSize,
-    ButtonStyleProps,
-    buttonSchemeToColorsMap,
-    buttonStyle,
-    buttonToIconSizeMap,
-} from './Button';
-import { useButtonPressAnimatedStyle } from './useButtonPressAnimatedStyle';
 import { Loader } from '../Loader';
 import { AnimatedPressable } from '../Pressable';
+import { type ButtonStyleProps, buttonStyle } from './Button';
+import { type ButtonColorProps, type ButtonSize } from './types';
+import { useButtonPressAnimatedStyle } from './useButtonPressAnimatedStyle';
+import {
+    getButtonColors,
+    iconButtonBorderRadiusMap,
+    iconButtonPaddingMap,
+    iconButtonToIconSizeMap,
+} from './utils';
 
 export type IconButtonProps = Omit<
     PressableProps,
     'style' | 'onPressIn' | 'onPressOut' | 'children'
 > & {
     iconName: IconName;
-    colorScheme?: ButtonColorScheme;
     size?: ButtonSize;
-    style?: NativeStyleObject;
+    style?: NativeStyleObject | AnimatedStyle<ViewStyle>;
     isLoading?: boolean;
     isDisabled?: boolean;
-};
-
-const sizeDimensions = {
-    tiny: 20,
-    extraSmall: 36,
-    small: 40,
-    medium: 48,
-    large: 56,
-} as const satisfies Record<ButtonSize, number>;
+} & ButtonColorProps;
 
 const iconButtonStyle = mergeNativeStyles([
     buttonStyle,
     prepareNativeStyle<ButtonStyleProps>((_, { size }) => ({
-        height: sizeDimensions[size],
-        width: sizeDimensions[size],
-        // padding must be set using paddingVertical and paddingHorizontal otverwise it won't override the default padding
-        paddingVertical: 0,
-        paddingHorizontal: 0,
+        alignSelf: 'center',
+        // Padding must be set explicitly to override the base button size styles.
+        paddingVertical: iconButtonPaddingMap[size],
+        paddingHorizontal: iconButtonPaddingMap[size],
+        borderRadius: iconButtonBorderRadiusMap[size],
     })),
 ]);
 
 export const IconButton = ({
     iconName,
+    testID,
     style,
-    colorScheme = 'primary',
-    size = 'medium',
+    intent = 'brand',
+    priority = 'primary',
+    isInverse = false,
+    size = 'large',
     isLoading = false,
     isDisabled = false,
     ...pressableProps
 }: IconButtonProps) => {
     const [isPressed, setIsPressed] = useState(false);
     const { applyStyle } = useNativeStyles();
-    const { disabledColors, ...baseColors } = buttonSchemeToColorsMap[colorScheme];
-    const { backgroundColor, onPressColor, iconColor } = isDisabled ? disabledColors : baseColors;
+    const hasDisabledState = isDisabled || isLoading;
+    const { backgroundColor, onPressColor, contentColor } = getButtonColors({
+        intent,
+        priority,
+        isInverse,
+        isDisabled: hasDisabledState,
+    });
 
     const animatedPressStyle = useButtonPressAnimatedStyle(
         isPressed,
-        isDisabled,
+        hasDisabledState,
         backgroundColor,
         onPressColor,
     );
@@ -80,23 +80,23 @@ export const IconButton = ({
         <AnimatedPressable
             onPressIn={handlePressIn}
             onPressOut={handlePressOut}
-            disabled={isDisabled || isLoading}
-            {...pressableProps}
+            disabled={hasDisabledState}
             style={[
                 animatedPressStyle,
                 applyStyle(iconButtonStyle, {
                     size,
                     isFullWidth: false,
                     backgroundColor,
-                    isDisabled,
                 }),
                 style,
             ]}
+            testID={testID}
+            {...pressableProps}
         >
             {isLoading ? (
-                <Loader color={iconColor} />
+                <Loader color={contentColor} />
             ) : (
-                <Icon name={iconName} color={iconColor} size={buttonToIconSizeMap[size]} />
+                <Icon name={iconName} color={contentColor} size={iconButtonToIconSizeMap[size]} />
             )}
         </AnimatedPressable>
     );

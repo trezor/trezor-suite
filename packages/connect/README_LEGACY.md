@@ -44,29 +44,20 @@ For more instructions [refer to this document](https://github.com/trezor/trezor-
 
 ### Version 10
 
-Is now in alpha stage.
+Version 10 is the current major version and is currently in alpha. See [README.md](./README.md) for up-to-date documentation.
 
 ### Version 9
 
-Version 9 is still stable but scheduled to be deprecated in Q2 2026.
+Version 9 is legacy and scheduled to be deprecated. It is no longer the actively developed branch.
 
-Since version 9 we are adopting a new versioning strategy. With every release, we are going to update two urls
+Since version 9, a versioned URL strategy was adopted:
 
-- A) The latest release will always be available on https://connect.trezor.io/9/....
-- B) For those who like to have more control over their dependencies, there will be also a new url created in form of https://connect.trezor.io/9.1.1/... Please note that these endpoints will not receive any further updates including security updates.
+- A) The latest release is available on https://connect.trezor.io/9/....
+- B) Pinned releases are available at https://connect.trezor.io/9.1.1/.... Note that these endpoints will not receive any further updates including security updates.
 
 Version 9 is available as `@trezor/connect` and `@trezor/connect-web` npm packages.
 
 New major version is released when there are breaking changes on API level. Previous major version will be maintained for 12 months and after this period it can be taken down without notice.
-
-Current major version 9 is being developed on top of `develop` branch. When there is a new major version a new branch should be created (`v-<major-version>`) and mantained separately.
-
-Minor versions are released when there are:
-
-- considerable additions to API
-- changes in npm package
-
-Everything else that does not fall under major or minor version.
 
 ### Version 8 (legacy)
 

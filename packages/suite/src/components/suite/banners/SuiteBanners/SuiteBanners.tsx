@@ -3,29 +3,27 @@ import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 import {
+    selectFirmwareHashCheckErrorIfEnabled,
+    selectFirmwareRevisionCheckErrorIfEnabled,
+} from '@suite/authenticity-checks';
+import { MessageSystemBanner } from '@suite/message-system';
+import { SuiteSyncBanner, selectIsSuiteSyncBannerVisible } from '@suite/suite-sync';
+import {
     selectDeviceStaticSessionId,
     selectIsDeviceBackupRequired,
     selectIsDeviceBackupUnfinished,
     selectSelectedDevice,
 } from '@suite-common/device';
 import { selectBannerMessage } from '@suite-common/message-system';
-import { selectHasDeviceSuiteSyncError } from '@suite-common/suite-sync';
 import { selectVisibleDeviceAccounts } from '@suite-common/wallet-core';
 import { isCardanoStakedWithFiveBinaries } from '@suite-common/wallet-utils';
 import { isWeb } from '@trezor/env-utils';
-import { spacingsPx } from '@trezor/theme';
 
 import { MAX_CONTENT_WIDTH } from 'src/constants/suite/layout';
 import { useSelector } from 'src/hooks/suite';
 import { useLocalNetworkAccessPermission } from 'src/hooks/suite/useLocalNetworkAccessPermission';
-import {
-    selectFirmwareHashCheckErrorIfEnabled,
-    selectFirmwareRevisionCheckErrorIfEnabled,
-} from 'src/selectors/suite/suiteAuthenticityChecksSelectors';
-import { selectTransportOfType } from 'src/selectors/suite/suiteSelectors';
 
-import { MessageSystemBanner } from '../MessageSystemBanner';
-import { BridgeDeprecated } from './BridgeDeprecatedBanner';
+import { BridgeDeprecated, useLegacyBridgeDetection } from './BridgeDeprecatedBanner';
 import { CardanoOutdatedStakingBanner } from './CardanoOutdatedStakingBanner';
 import { FailedBackup } from './FailedBackupBanner';
 import { FirmwareAuthenticityCheckBanner } from './FirmwareAuthenticityCheckBanner';
@@ -33,15 +31,14 @@ import { LocalNetworkAccessPermission } from './LocalNetworkAccessPermission';
 import { NoBackup } from './NoBackupBanner';
 import { NoConnectionBanner } from './NoConnectionBanner';
 import { SafetyChecksBanner } from './SafetyChecksBanner';
-import { SuiteSyncBanner } from './SuiteSyncBanner';
 
 const Container = styled.div<{ $fill?: boolean }>`
     width: 100%;
     max-width: ${({ $fill }) => ($fill ? 'none' : MAX_CONTENT_WIDTH)};
-    padding: ${spacingsPx.sm} ${spacingsPx.md};
+    padding: 12px 16px;
     display: flex;
     flex-direction: column;
-    gap: ${spacingsPx.xs};
+    gap: 8px;
     position: relative; /* because it must be on the top of the draggable area on Mac */
 `;
 
@@ -51,7 +48,7 @@ type SuiteBannersProps = {
 };
 
 export const SuiteBanners = ({ isOnboarding, fill }: SuiteBannersProps) => {
-    const bridge = useSelector(selectTransportOfType('BridgeTransport'));
+    const legacyBridgeDetected = useLegacyBridgeDetection();
     const device = useSelector(selectSelectedDevice);
     const isOnline = useSelector(state => state.suite.online);
     const bannerMessage = useSelector(selectBannerMessage);
@@ -63,8 +60,8 @@ export const SuiteBanners = ({ isOnboarding, fill }: SuiteBannersProps) => {
     const accounts = useSelector(selectVisibleDeviceAccounts);
     const { localNetworkAccessPermission } = useLocalNetworkAccessPermission();
     const deviceStaticSessionId = useSelector(selectDeviceStaticSessionId);
-    const hasSuiteSyncError = useSelector(state =>
-        selectHasDeviceSuiteSyncError(state, deviceStaticSessionId),
+    const isSuiteSyncBannerVisible = useSelector(state =>
+        selectIsSuiteSyncBannerVisible(state, deviceStaticSessionId),
     );
 
     // The dismissal doesn't need to outlive the session. Use local state.
@@ -116,13 +113,13 @@ export const SuiteBanners = ({ isOnboarding, fill }: SuiteBannersProps) => {
     ) {
         banner = <LocalNetworkAccessPermission />;
         priority = 40;
-    } else if (bridge?.outdated) {
+    } else if (legacyBridgeDetected) {
         banner = <BridgeDeprecated />;
         priority = 30;
     } else if (accounts.some(account => isCardanoStakedWithFiveBinaries(account))) {
         banner = <CardanoOutdatedStakingBanner />;
         priority = 20;
-    } else if (deviceStaticSessionId && hasSuiteSyncError) {
+    } else if (deviceStaticSessionId !== null && isSuiteSyncBannerVisible) {
         banner = <SuiteSyncBanner deviceStaticSessionId={deviceStaticSessionId} />;
         priority = 10;
     }

@@ -1,10 +1,10 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
 import styled from 'styled-components';
 
-import { SpacingValues, spacings } from '@trezor/theme';
+import { type SpacingValue } from '@trezor/theme';
 
-import { InfoItemVerticalAlignment } from './types';
+import { type InfoItemVerticalAlignment } from './types';
 import {
     mapTypographyStyleToIconGap,
     mapTypographyStyleToIconSize,
@@ -12,17 +12,17 @@ import {
     mapVerticalAlignmentToAlignItems,
 } from './utils';
 import {
-    FrameProps,
-    FramePropsKeys,
+    type FrameProps,
+    type FramePropsKeys,
     pickAndPrepareFrameProps,
     withFrameProps,
 } from '../../utils/frameProps';
-import { TransientProps } from '../../utils/transientProps';
+import { type TransientProps } from '../../utils/transientProps';
 import { Flex, Row } from '../Flex/Flex';
-import { FlexDirection } from '../Flex/FlexProp';
-import { Icon, IconName } from '../Icon/Icon';
-import { Text, TextIntent, TextPriority } from '../typography/Text/Text';
-import { TextProps as TextPropsCommon, TextPropsKeys } from '../typography/utils';
+import { type FlexDirection } from '../Flex/FlexProp';
+import { Icon, type IconComponent } from '../Icon/Icon';
+import { Text, type TextIntent, type TextPriority } from '../typography/Text/Text';
+import { type TextProps as TextPropsCommon, type TextPropsKeys } from '../typography/utils';
 
 export const allowedInfoItemTextProps = [
     'typographyStyle',
@@ -50,14 +50,14 @@ export type InfoItemProps = AllowedFrameProps &
     AllowedTextProps & {
         children?: ReactNode;
         direction?: FlexDirection;
-        iconName?: IconName;
+        icon?: IconComponent;
         label: ReactNode;
         intent?: TextIntent;
         priority?: TextPriority;
         isDisabled?: boolean;
         labelWidth?: string | number;
         verticalAlignment?: InfoItemVerticalAlignment;
-        gap?: SpacingValues;
+        gap?: SpacingValue;
         'data-testid'?: string;
     };
 
@@ -66,7 +66,7 @@ export const InfoItem = ({
     children,
     label,
     direction = 'column',
-    iconName,
+    icon,
     typographyStyle = 'body-sm',
     intent = 'neutral',
     priority = 'secondary',
@@ -85,17 +85,16 @@ export const InfoItem = ({
             <Flex
                 direction={direction}
                 alignItems={isRow ? mapVerticalAlignmentToAlignItems(verticalAlignment) : 'normal'}
-                gap={gap ?? (isRow ? spacings.md : mapTypographyStyleToLabelGap(typographyStyle))}
+                gap={gap ?? (isRow ? 16 : mapTypographyStyleToLabelGap(typographyStyle))}
             >
                 <Row
                     gap={mapTypographyStyleToIconGap(typographyStyle)}
                     width={labelWidth}
                     flex={labelWidth ? '0 0 auto' : '1 0 auto'}
-                    height={24}
                 >
-                    {iconName && (
+                    {icon && (
                         <Icon
-                            name={iconName}
+                            as={icon}
                             size={mapTypographyStyleToIconSize(typographyStyle)}
                             intent={intent}
                             priority={priority}

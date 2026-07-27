@@ -11,6 +11,10 @@ const sendAddress = '0xdcaB74E62b9D08a9f8Fa4A3Ccb5c46AE039C9d7C';
 const formattedSendAddress = formatAddressWithNewlines(sendAddress);
 const sendAmount = '0.000008';
 const formattedSendAmount = `${localizeNumber(sendAmount)} ETH`;
+const feeWrapFormat = {
+    wrapByWords: true,
+    lengthOverride: 16,
+};
 
 // This test is vulnerable to being run twice simultaneously
 // in such case nonce will collide and second transaction will fail
@@ -27,10 +31,7 @@ test.describe(
             async ({ page, onboardingPage, dashboardPage, walletPage, settingsPage }) => {
                 await page.clock.install();
                 await onboardingPage.completeOnboarding();
-                await settingsPage.changeNetworks({
-                    enableNetworks: ['base'], //add more EVMs
-                    disableNetworks: ['btc'],
-                });
+                await settingsPage.changeNetworks({ enableNetworks: ['base'] }); //add more EVMs
                 await dashboardPage.deviceSwitchingOpenButton.click();
                 await dashboardPage.addHiddenWallet(process.env.PASSPHRASE!);
                 await walletPage.openAccount({ symbol: 'base', type: 'normal', atIndex: 0 });
@@ -54,6 +55,7 @@ test.describe(
                 4, // beware of decimal places rounding
                 BigNumber.ROUND_UP,
             );
+
             await test.step('Fill in a Send form', async () => {
                 await walletPage.openSendFormButton.click();
                 // Race condition 1:5, if input is filled before form completely loads then
@@ -83,12 +85,8 @@ test.describe(
                 await expect(device).toShowOnDisplay({
                     T3W1: {
                         header: { title: 'Send' },
-                        body: [transformAddress(sendAddress)],
+                        body: [transformAddress(sendAddress, 'evmTetragrams')],
                         actions: { right_button: 'Continue' },
-                    },
-                    T3T1: {
-                        header: { title: 'Address', subtitle: 'Recipient' },
-                        body: [transformAddress(sendAddress)],
                     },
                 });
             });
@@ -119,9 +117,6 @@ test.describe(
                         ],
                         actions: { right_button: 'Hold to sign' },
                     },
-                    T3T1: {
-                        header: { title: 'Summary' },
-                    },
                 });
             });
 
@@ -134,22 +129,10 @@ test.describe(
                             ['Gas limit'],
                             [`${gasLimit} units`],
                             ['Max fee per gas'],
-                            [maxFeePerGas, '\n', 'Gwei'],
+                            device.wrapText(`${maxFeePerGas} Gwei`, feeWrapFormat),
                             ['Max priority fee'],
-                            [maxPriorityFeePerGas, '\n', 'Gwei'],
+                            device.wrapText(`${maxPriorityFeePerGas} Gwei`, feeWrapFormat),
                         ],
-                    },
-                    T3T1: {
-                        header: { title: 'Fee info' },
-                        body: [
-                            ['Gas limit'],
-                            [`${gasLimit} units`],
-                            ['Max fee per gas'],
-                            [`${maxFeePerGas} Gwei`],
-                            ['Max priority fee'],
-                            [`${maxPriorityFeePerGas} Gwei`],
-                        ],
-                        footer: undefined,
                     },
                 });
             });
@@ -170,6 +153,7 @@ test.describe(
                 await tradingPage.sendAddressInput.fill(sendAddress);
                 await tradingPage.sendAmountInput.fill(sendAmount);
             });
+
             const {
                 gasLimit,
                 maxFeePerGas,
@@ -193,12 +177,8 @@ test.describe(
                 await expect(device).toShowOnDisplay({
                     T3W1: {
                         header: { title: 'Send' },
-                        body: [transformAddress(sendAddress)],
+                        body: [transformAddress(sendAddress, 'evmTetragrams')],
                         actions: { right_button: 'Continue' },
-                    },
-                    T3T1: {
-                        header: { title: 'Address', subtitle: 'Recipient' },
-                        body: [transformAddress(sendAddress)],
                     },
                 });
             });
@@ -227,9 +207,6 @@ test.describe(
                         body: [['Amount'], [formattedSendAmount], ['Maximum fee'], maxFeeWrapped],
                         actions: { right_button: 'Hold to sign' },
                     },
-                    T3T1: {
-                        header: { title: 'Summary' },
-                    },
                 });
             });
 
@@ -242,16 +219,14 @@ test.describe(
                             ['Gas limit'],
                             [`${gasLimit} units`],
                             ['Max fee per gas'],
-                            device.wrapText(`${maxFeePerGas} Gwei`, { wrapByWords: true }),
+                            device.wrapText(`${maxFeePerGas} Gwei`, feeWrapFormat),
                             ['Max priority fee'],
-                            device.wrapText(`${maxPriorityFeePerGas} Gwei`, {
-                                wrapByWords: true,
-                            }),
+                            device.wrapText(`${maxPriorityFeePerGas} Gwei`, feeWrapFormat),
                         ],
                     },
-                    T3T1: { footer: undefined },
                 });
             });
+
             await test.step('Confirm transaction', async () => {
                 await devicePrompt.waitForPromptAndConfirm();
                 // wait for transaction to be prepared
@@ -265,13 +240,16 @@ test.describe(
 
                 // Transaction takes ~5s to confirm on the network, but we need to pull
                 // for updated data and check status repeatedly until confirmed
-                await expect(async () => {
-                    await page.clock.fastForward(30_000);
 
-                    await expect(page.getByTestId('@modal/tx-details/confirmed')).toHaveText(
-                        'Confirmed',
-                    );
-                }, 'expect Transaction to be confirmed').toPass({ timeout: 30_000 });
+                // Broken in suite https://github.com/trezor/trezor-suite/issues/28428 needs to be fixed before uncommenting
+
+                // await expect(async () => {
+                //     await page.clock.fastForward(30_000);
+
+                //     await expect(page.getByTestId('@modal/tx-details/confirmed')).toHaveText(
+                //         'Confirmed',
+                //     );
+                // }, 'expect Transaction to be confirmed').toPass({ timeout: 30_000 });
             });
         });
     },

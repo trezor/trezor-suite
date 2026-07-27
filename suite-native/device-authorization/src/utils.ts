@@ -1,6 +1,7 @@
-import { UnknownAction } from '@reduxjs/toolkit';
+import { type UnknownAction } from '@reduxjs/toolkit';
 
-import { UI_REQUEST, UiRequestDeviceAction } from '@trezor/connect';
+import { UI_REQUEST } from '@trezor/connect';
+import type { UiRequestDeviceAction } from '@trezor/connect';
 import { isNotNullOrUndefined } from '@trezor/utils';
 
 export const pinButtonRequestCodes = [
@@ -50,4 +51,8 @@ export const isSuiteSyncButtonRequest = (action: UnknownAction) =>
     typeof action.payload === 'object' &&
     isNotNullOrUndefined(action.payload) &&
     'name' in action.payload &&
-    action.payload.name === 'secure_sync';
+    typeof action.payload.name === 'string' &&
+    [
+        'suite_sync',
+        'secure_sync', // Older firmwares use this name.
+    ].includes(action.payload.name);

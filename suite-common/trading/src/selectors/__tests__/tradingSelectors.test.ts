@@ -1,75 +1,108 @@
 import {
-    BuyTrade,
-    Coins,
-    CryptoId,
-    FiatCurrenciesProps,
-    FiatCurrencyCode,
-    Platforms,
-    SellFiatTrade,
+    type BuyTrade,
+    type Coins,
+    type CryptoId,
+    type ExchangeTrade,
+    type FiatCurrenciesProps,
+    type FiatCurrencyCode,
+    type Platforms,
+    type SellFiatTrade,
 } from 'invity-api';
 
-import { AccountKey } from '@suite-common/wallet-types';
-import { StaticSessionId } from '@trezor/connect';
+import { type AccountKey } from '@suite-common/wallet-types';
+import { mockAccountKey } from '@suite-common/wallet-types/mocks';
+import { type StaticSessionId } from '@trezor/connect';
 
 import coins from '../../__fixtures__/coins.json';
 import { invityAPIFixtures } from '../../__fixtures__/invityAPI';
 import platforms from '../../__fixtures__/platforms.json';
 import { accountBtc, accountEth } from '../../__fixtures__/utils';
+import { TRADING_SLIP24_SUPPORTED_NETWORK_TYPES } from '../../constants';
 import { getProviderMetadataFixture } from '../../reducers/__fixtures__/providerMetadata';
-import { BuyInfo, TradingBuyState } from '../../reducers/buyReducer';
-import { ExchangeInfo, exchangeInitialState } from '../../reducers/exchangeReducer';
-import { SellInfo, sellInitialState } from '../../reducers/sellReducer';
+import { type BuyInfo, type TradingBuyState } from '../../reducers/buyReducer';
+import { type ExchangeInfo, exchangeInitialState } from '../../reducers/exchangeReducer';
+import { type SellInfo, sellInitialState } from '../../reducers/sellReducer';
 import { type TradingRootState, initialState } from '../../reducers/tradingCommonReducer';
-import type { TradingPaymentMethodListProps, TradingType } from '../../types';
+import type { TradingTransactionExchange, TradingTransactionSell, TradingType } from '../../types';
 import {
-    TradingRootStateWithDeviceAndAccounts,
+    type TradingRootStateWithDeviceAndAccounts,
+    bestBuyQuotePerPaymentMethodProjection,
+    bestSellQuotePerPaymentMethodProjection,
     selectDeviceHasTradingTrades,
     selectDeviceTradingTradesOrderedByDate,
+    selectGroupedTradingExchangeQuotes,
+    selectIsTradingNetworkFeeMissing,
+    selectTradedAccountKeys,
     selectTrading,
     selectTradingAccountAccordingActiveSection,
     selectTradingAccountKeyByTradeType,
     selectTradingActiveSection,
     selectTradingBuy,
+    selectTradingBuyAmountLimits,
     selectTradingBuyInfo,
+    selectTradingBuyIsFromRedirect,
     selectTradingBuyIsLoading,
     selectTradingBuyLastErrorMessage,
     selectTradingBuyLoadingTimestampAndStatus,
+    selectTradingBuyPaymentMethods,
     selectTradingBuyProviders,
     selectTradingBuyQuoteByOrderId,
     selectTradingBuyQuotes,
+    selectTradingBuyQuotesByPaymentMethod,
+    selectTradingBuyQuotesPerPaymentMethod,
     selectTradingBuyQuotesRequest,
     selectTradingBuySelectedQuote,
     selectTradingBuySupportedCryptoIds,
     selectTradingCoinInfoByCryptoId,
     selectTradingCoinSymbolByCryptoId,
     selectTradingComposedTransactionInfo,
+    selectTradingDisplayComposedFee,
     selectTradingExchange,
-    selectTradingExchangeActiveQuote,
+    selectTradingExchangeActiveTrade,
+    selectTradingExchangeAmountLimits,
     selectTradingExchangeBuyCryptoIds,
+    selectTradingExchangeCexQuotes,
+    selectTradingExchangeDexQuoteApprovalPrefetchLoading,
+    selectTradingExchangeDexQuoteApprovalPrefetchLoadingByQuoteId,
+    selectTradingExchangeDexQuotes,
     selectTradingExchangeFormStep,
     selectTradingExchangeInfo,
+    selectTradingExchangeIsFromRedirect,
     selectTradingExchangeIsLoading,
     selectTradingExchangeLastErrorMessage,
     selectTradingExchangeLoadingTimestampAndStatus,
     selectTradingExchangeProviders,
+    selectTradingExchangeQuotes,
     selectTradingExchangeQuotesRequest,
     selectTradingExchangeSelectedQuote,
+    selectTradingExchangeSelectedQuoteIsDex,
+    selectTradingExchangeSelectedQuoteSwapSlippage,
     selectTradingExchangeSellCryptoIds,
+    selectTradingIsSlip24Allowed,
     selectTradingLastErrorMessageByTradeType,
     selectTradingModalAccountKey,
     selectTradingNativeCoinSymbolByCryptoId,
-    selectTradingPaymentMethods,
+    selectTradingPaymentMethodsByType,
     selectTradingPlatformByCryptoId,
     selectTradingPrefilledFromAccount,
     selectTradingProviderByNameAndTradeType,
     selectTradingProviderMetadata,
+    selectTradingQuotesByType,
+    selectTradingQuotesPerPaymentMethodByType,
+    selectTradingSelectedPaymentMethodByType,
     selectTradingSellAccountKey,
+    selectTradingSellActiveTrade,
+    selectTradingSellAmountLimits,
     selectTradingSellFormStep,
     selectTradingSellInfo,
+    selectTradingSellIsFromRedirect,
     selectTradingSellLastErrorMessage,
     selectTradingSellLoadingTimestampAndStatus,
+    selectTradingSellPaymentMethods,
     selectTradingSellProviders,
     selectTradingSellQuotes,
+    selectTradingSellQuotesByPaymentMethod,
+    selectTradingSellQuotesPerPaymentMethod,
     selectTradingSellQuotesRequest,
     selectTradingSellSelectedQuote,
     selectTradingSellSellCryptoIds,
@@ -238,12 +271,6 @@ describe('tradingSelectors', () => {
                     ...initialState,
                     buy: getBuyState(),
                     info: {
-                        paymentMethods: [
-                            {
-                                value: 'creditCard',
-                                label: 'Credit Card label',
-                            },
-                        ] as TradingPaymentMethodListProps[],
                         coins: coins as Coins,
                         platforms: platforms as Platforms,
                     },
@@ -321,7 +348,13 @@ describe('tradingSelectors', () => {
             device: {
                 selectedDevice: {
                     state: {
-                        staticSessionId: 'staticSessionId' as StaticSessionId,
+                        staticSessionId:
+                            'mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q@448CCE89D32A733A1632F345:0' as StaticSessionId,
+                    },
+                    features: {
+                        major_version: 2,
+                        minor_version: 12,
+                        patch_version: 1,
                     },
                 },
             },
@@ -368,7 +401,7 @@ describe('tradingSelectors', () => {
                 'base--0x0000000000000000000000000000000000000000',
                 'ethereum--0xWithoutObjectInCoinsInfo',
             ]);
-            expectedState.tradingAccountKey = 'eth-descriptor-eth';
+            expectedState.tradingAccountKey = accountEth.key;
 
             expect(selectTradingExchange(state)).toEqual(expectedState);
         });
@@ -527,7 +560,7 @@ describe('tradingSelectors', () => {
                 'base--0x0000000000000000000000000000000000000000',
                 'ethereum--0xWithoutObjectInCoinsInfo',
             ]);
-            trading.exchange.tradingAccountKey = 'eth-descriptor-eth';
+            trading.exchange.tradingAccountKey = accountEth.key;
 
             expect(selectTrading(state)).toEqual(trading);
         });
@@ -579,14 +612,56 @@ describe('tradingSelectors', () => {
         expect(selectTradingBuyQuotesRequest(state)).toBe(state.wallet.trading.buy.quotesRequest);
     });
 
+    it('selectTradingBuyIsFromRedirect should return correct data', () => {
+        state.wallet.trading.buy.isFromRedirect = true;
+
+        expect(selectTradingBuyIsFromRedirect(state)).toBe(true);
+    });
+
     it('selectTradingExchangeQuotesRequest should return correct data', () => {
         expect(selectTradingExchangeQuotesRequest(state)).toBe(
             state.wallet.trading.exchange.quotesRequest,
         );
     });
 
+    it('selectTradingExchangeIsFromRedirect should return correct data', () => {
+        state.wallet.trading.exchange.isFromRedirect = true;
+
+        expect(selectTradingExchangeIsFromRedirect(state)).toBe(true);
+    });
+
+    it('selectTradingExchangeQuotes should return correct data', () => {
+        expect(selectTradingExchangeQuotes(state)).toBe(state.wallet.trading.exchange.quotes);
+    });
+
+    it('selectTradingExchangeDexQuoteApprovalPrefetchLoading should return correct data', () => {
+        expect(selectTradingExchangeDexQuoteApprovalPrefetchLoading(state)).toBe(
+            !!state.wallet.trading.exchange.dexQuoteApprovalPrefetchLoadingQuoteId,
+        );
+    });
+
+    it('selectTradingExchangeDexQuoteApprovalPrefetchLoadingByQuoteId should return correct data', () => {
+        state.wallet.trading.exchange.dexQuoteApprovalPrefetchLoadingQuoteId = 'quoteId1';
+
+        expect(
+            selectTradingExchangeDexQuoteApprovalPrefetchLoadingByQuoteId(state, 'quoteId1'),
+        ).toBe(true);
+        expect(
+            selectTradingExchangeDexQuoteApprovalPrefetchLoadingByQuoteId(state, 'quoteId2'),
+        ).toBe(false);
+        expect(
+            selectTradingExchangeDexQuoteApprovalPrefetchLoadingByQuoteId(state, undefined),
+        ).toBe(false);
+    });
+
     it('selectTradingSellQuotesRequest should return correct data', () => {
         expect(selectTradingSellQuotesRequest(state)).toBe(state.wallet.trading.sell.quotesRequest);
+    });
+
+    it('selectTradingSellIsFromRedirect should return correct data', () => {
+        state.wallet.trading.sell.isFromRedirect = true;
+
+        expect(selectTradingSellIsFromRedirect(state)).toBe(true);
     });
 
     it('selectTradingBuySelectedQuote should return correct data', () => {
@@ -599,43 +674,36 @@ describe('tradingSelectors', () => {
         );
     });
 
-    describe('selectTradingExchangeActiveQuote', () => {
-        it('should return selectedQuote when it is defined', () => {
-            state.wallet.trading.exchange.selectedQuote = invityAPIFixtures.exchangeTrade;
-            state.wallet.trading.exchange.preselectedQuote = {
-                ...invityAPIFixtures.exchangeTrade,
-                exchange: 'preselected-exchange',
-            };
+    it('selectTradingExchangeSelectedQuoteSwapSlippage should return correct data', () => {
+        expect(selectTradingExchangeSelectedQuoteSwapSlippage(state)).toBe(
+            state.wallet.trading.exchange.selectedQuote?.swapSlippage,
+        );
+    });
 
-            expect(selectTradingExchangeActiveQuote(state)).toBe(
-                state.wallet.trading.exchange.selectedQuote,
-            );
-        });
-
-        it('should fall back to preselectedQuote when selectedQuote is undefined', () => {
-            state.wallet.trading.exchange.selectedQuote = undefined;
-            state.wallet.trading.exchange.preselectedQuote = invityAPIFixtures.exchangeTrade;
-
-            expect(selectTradingExchangeActiveQuote(state)).toBe(
-                state.wallet.trading.exchange.preselectedQuote,
-            );
-        });
-
-        it('should return undefined when both quotes are undefined', () => {
-            expect(selectTradingExchangeActiveQuote(state)).toBeUndefined();
-        });
+    it('selectTradingExchangeSelectedQuoteIsDex should return correct data', () => {
+        expect(selectTradingExchangeSelectedQuoteIsDex(state)).toBe(
+            state.wallet.trading.exchange.selectedQuote?.isDex,
+        );
     });
 
     it('selectTradingSellSelectedQuote should return correct data', () => {
         expect(selectTradingSellSelectedQuote(state)).toBe(state.wallet.trading.sell.selectedQuote);
     });
 
-    it('selectTradingPaymentMethods should return correct data', () => {
-        expect(selectTradingPaymentMethods(state)).toBe(state.wallet.trading.info.paymentMethods);
-    });
-
     it('selectTradingTrades should return correct data', () => {
         expect(selectTradingTrades(state)).toBe(state.wallet.trading.trades);
+    });
+
+    describe(selectTradedAccountKeys.name, () => {
+        it('should return unique account keys across all trades (send, receive, selected)', () => {
+            expect(selectTradedAccountKeys(state)).toEqual([accountEth.key, accountBtc.key]);
+        });
+
+        it('should be empty when there are no trades', () => {
+            state.wallet.trading.trades = [];
+
+            expect(selectTradedAccountKeys(state)).toEqual([]);
+        });
     });
 
     describe(selectDeviceTradingTradesOrderedByDate.name, () => {
@@ -643,11 +711,21 @@ describe('tradingSelectors', () => {
             const result = selectDeviceTradingTradesOrderedByDate(state);
 
             expect(result).toHaveLength(5);
-            expect(result[0].data.orderId).toBe('orderId4');
-            expect(result[1].data.orderId).toBe('orderId3');
-            expect(result[2].data.orderId).toBe('orderId2');
-            expect(result[3].data.orderId).toBe('orderId1');
-            expect(result[4].data.orderId).toBe('orderId5');
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const item0: (typeof result)[number] = result[0];
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const item1: (typeof result)[number] = result[1];
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const item2: (typeof result)[number] = result[2];
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const item3: (typeof result)[number] = result[3];
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const item4: (typeof result)[number] = result[4];
+            expect(item0.data.orderId).toBe('orderId4');
+            expect(item1.data.orderId).toBe('orderId3');
+            expect(item2.data.orderId).toBe('orderId2');
+            expect(item3.data.orderId).toBe('orderId1');
+            expect(item4.data.orderId).toBe('orderId5');
         });
 
         it('should be stable', () => {
@@ -668,6 +746,81 @@ describe('tradingSelectors', () => {
 
     it('selectTradingTradeByOrderId should return undefined when orderId is not found', () => {
         expect(selectTradingTradeByOrderId(state, 'unknown_order')).toBeUndefined();
+    });
+
+    describe(selectTradingSellActiveTrade.name, () => {
+        const sellTrade: TradingTransactionSell = {
+            tradeType: 'sell',
+            key: 'sell1',
+            date: '2024-01-01T00:00:00.000Z',
+            data: { orderId: 'orderId1' },
+            sendAccountKey: undefined,
+        };
+        const exchangeTrade: TradingTransactionExchange = {
+            tradeType: 'exchange',
+            key: 'exchange1',
+            date: '2024-01-01T00:00:00.000Z',
+            data: { orderId: 'orderId2' },
+            sendAccountKey: undefined,
+        };
+        const buildState = (transactionId: string | undefined): TradingRootState => ({
+            wallet: {
+                trading: {
+                    ...initialState,
+                    sell: { ...initialState.sell, transactionId },
+                    trades: [sellTrade, exchangeTrade],
+                },
+            },
+        });
+
+        it('should return the sell trade matching the sell transactionId', () => {
+            expect(selectTradingSellActiveTrade(buildState('sell1'))).toEqual(sellTrade);
+        });
+
+        it.each([
+            ['a non-sell trade sharing the same key', 'exchange1'],
+            ['no active sell transactionId', undefined],
+            ['a transactionId matching no trade', 'unknown'],
+        ])('should return undefined for %s', (_, transactionId) => {
+            expect(selectTradingSellActiveTrade(buildState(transactionId))).toBeUndefined();
+        });
+    });
+
+    describe(selectTradingExchangeActiveTrade.name, () => {
+        const sellTrade: TradingTransactionSell = {
+            tradeType: 'sell',
+            key: 'sell1',
+            date: '2024-01-01T00:00:00.000Z',
+            data: { orderId: 'orderId1' },
+            sendAccountKey: undefined,
+        };
+        const exchangeTrade: TradingTransactionExchange = {
+            tradeType: 'exchange',
+            key: 'exchange1',
+            date: '2024-01-01T00:00:00.000Z',
+            data: { orderId: 'orderId2' },
+            sendAccountKey: undefined,
+        };
+        const buildState = (transactionId: string | undefined): TradingRootState => ({
+            wallet: {
+                trading: {
+                    ...initialState,
+                    exchange: { ...initialState.exchange, transactionId },
+                    trades: [sellTrade, exchangeTrade],
+                },
+            },
+        });
+
+        it('should return the exchange trade matching the exchange transactionId', () => {
+            expect(selectTradingExchangeActiveTrade(buildState('orderId2'))).toEqual(exchangeTrade);
+        });
+
+        it.each([
+            ['no active exchange transactionId', undefined],
+            ['a transactionId matching no trade', 'unknown'],
+        ])('should return undefined for %s', (_, transactionId) => {
+            expect(selectTradingExchangeActiveTrade(buildState(transactionId))).toBeUndefined();
+        });
     });
 
     describe(selectTradingCoinInfoByCryptoId.name, () => {
@@ -931,9 +1084,66 @@ describe('tradingSelectors', () => {
         });
     });
 
+    it('selectTradingBuyAmountLimits should return correct data', () => {
+        state.wallet.trading.buy.amountLimits = {
+            currency: 'BTC',
+            minFiat: '20',
+            maxFiat: '2000',
+        };
+
+        expect(selectTradingBuyAmountLimits(state)).toEqual(state.wallet.trading.buy.amountLimits);
+    });
+
     describe(selectTradingBuyQuotes.name, () => {
         it('should return quotes', () => {
             expect(selectTradingBuyQuotes(state)).toBe(state.wallet.trading.buy.quotes);
+        });
+    });
+
+    describe(selectTradingBuyQuotesByPaymentMethod.name, () => {
+        it('should filter quotes by payment method and ignore quote errors', () => {
+            state.wallet.trading.buy.quotes = [
+                {
+                    ...state.wallet.trading.buy.quotes[0],
+                    orderId: 'orderId-buy-fixed-1',
+                    paymentMethod: 'eps',
+                },
+                {
+                    ...state.wallet.trading.buy.quotes[1],
+                    orderId: 'orderId-buy-fixed-2',
+                    paymentMethod: 'eps',
+                    error: 'Quote unavailable',
+                },
+                {
+                    ...state.wallet.trading.buy.quotes[2],
+                    orderId: 'orderId-buy-fixed-3',
+                    paymentMethod: 'creditCard',
+                },
+            ];
+
+            expect(selectTradingBuyQuotesByPaymentMethod(state, 'eps')).toEqual([
+                state.wallet.trading.buy.quotes[0],
+            ]);
+        });
+
+        it('should be stable', () => {
+            expect(selectTradingBuyQuotesByPaymentMethod(state, 'eps')).toBe(
+                selectTradingBuyQuotesByPaymentMethod(state, 'eps'),
+            );
+        });
+    });
+
+    describe('bestBuyQuotePerPaymentMethodProjection', () => {
+        it('should return the first valid quote for each payment method sorted by rate', () => {
+            const quotes = state.wallet.trading.buy.quotes.map(quote => ({
+                ...quote,
+                paymentMethodName: quote.paymentMethod,
+            }));
+
+            expect(bestBuyQuotePerPaymentMethodProjection(quotes)).toEqual([
+                expect.objectContaining({ orderId: 'orderId3' }),
+                expect.objectContaining({ orderId: 'orderId1' }),
+            ]);
         });
     });
 
@@ -966,6 +1176,128 @@ describe('tradingSelectors', () => {
         });
     });
 
+    it('selectTradingExchangeAmountLimits should return correct data', () => {
+        state.wallet.trading.exchange.amountLimits = {
+            currency: 'BTC',
+            minCrypto: '0.001',
+            maxCrypto: '10',
+        };
+
+        expect(selectTradingExchangeAmountLimits(state)).toEqual(
+            state.wallet.trading.exchange.amountLimits,
+        );
+    });
+
+    describe(selectGroupedTradingExchangeQuotes.name, () => {
+        beforeEach(() => {
+            state.wallet.trading.exchange.exchangeInfo = {
+                providerInfos: {
+                    'fixed-provider': { isFixedRate: true },
+                    'float-provider': { isFixedRate: false },
+                },
+                buyCryptoIds: ['bitcoin'] as CryptoId[],
+                sellCryptoIds: ['ethereum'] as CryptoId[],
+            } as unknown as ExchangeInfo;
+            state.wallet.trading.exchange.quotes = [
+                {
+                    ...invityAPIFixtures.exchangeTrade,
+                    quoteId: 'fixed-quote',
+                    exchange: 'fixed-provider',
+                    isDex: false,
+                },
+                {
+                    ...invityAPIFixtures.exchangeTrade,
+                    quoteId: 'float-quote',
+                    exchange: 'float-provider',
+                    isDex: false,
+                },
+                {
+                    ...invityAPIFixtures.exchangeTrade,
+                    quoteId: 'dex-quote',
+                    exchange: 'dex-provider',
+                    isDex: true,
+                },
+            ];
+        });
+
+        it('should group exchange quotes into fixed, float, and dex buckets', () => {
+            expect(selectGroupedTradingExchangeQuotes(state)).toEqual({
+                fixed: [expect.objectContaining({ quoteId: 'fixed-quote' })],
+                float: [expect.objectContaining({ quoteId: 'float-quote' })],
+                dex: [expect.objectContaining({ quoteId: 'dex-quote' })],
+            });
+        });
+
+        it('should be stable', () => {
+            expect(selectGroupedTradingExchangeQuotes(state)).toBe(
+                selectGroupedTradingExchangeQuotes(state),
+            );
+        });
+    });
+
+    describe(selectTradingExchangeDexQuotes.name, () => {
+        it('should return dex exchange quotes only', () => {
+            state.wallet.trading.exchange.exchangeInfo = {
+                providerInfos: {},
+                buyCryptoIds: ['bitcoin'] as CryptoId[],
+                sellCryptoIds: ['ethereum'] as CryptoId[],
+            } as unknown as ExchangeInfo;
+            state.wallet.trading.exchange.quotes = [
+                {
+                    ...invityAPIFixtures.exchangeTrade,
+                    quoteId: 'cex-quote',
+                    isDex: false,
+                },
+                {
+                    ...invityAPIFixtures.exchangeTrade,
+                    quoteId: 'dex-quote',
+                    isDex: true,
+                },
+            ];
+
+            expect(selectTradingExchangeDexQuotes(state)).toEqual([
+                expect.objectContaining({ quoteId: 'dex-quote' }),
+            ]);
+        });
+    });
+
+    describe(selectTradingExchangeCexQuotes.name, () => {
+        it('should return non-dex exchange quotes only', () => {
+            state.wallet.trading.exchange.exchangeInfo = {
+                providerInfos: {
+                    'fixed-provider': { isFixedRate: true },
+                    'float-provider': { isFixedRate: false },
+                },
+                buyCryptoIds: ['bitcoin'] as CryptoId[],
+                sellCryptoIds: ['ethereum'] as CryptoId[],
+            } as unknown as ExchangeInfo;
+            state.wallet.trading.exchange.quotes = [
+                {
+                    ...invityAPIFixtures.exchangeTrade,
+                    quoteId: 'fixed-quote',
+                    exchange: 'fixed-provider',
+                    isDex: false,
+                },
+                {
+                    ...invityAPIFixtures.exchangeTrade,
+                    quoteId: 'float-quote',
+                    exchange: 'float-provider',
+                    isDex: false,
+                },
+                {
+                    ...invityAPIFixtures.exchangeTrade,
+                    quoteId: 'dex-quote',
+                    isDex: true,
+                },
+            ];
+
+            expect(selectTradingExchangeCexQuotes(state)).toEqual([
+                expect.objectContaining({ quoteId: 'fixed-quote' }),
+                expect.objectContaining({ quoteId: 'float-quote' }),
+            ]);
+        });
+    });
+
     it('selectTradingExchangeFormStep should return formStep', () => {
         expect(selectTradingExchangeFormStep(state)).toBe('RECEIVING_ADDRESS');
     });
@@ -984,7 +1316,7 @@ describe('tradingSelectors', () => {
     });
 
     it('selectTradingSellAccountKey should return the correct account key when set', () => {
-        const testAccountKey: AccountKey = 'test-account-key-123' as AccountKey; // Todo: create properly via `createAccountKey()`
+        const testAccountKey: AccountKey = mockAccountKey({ descriptor: 'testAccountKey123' });
 
         (state as TradingRootState).wallet.trading.sell.tradingAccountKey = testAccountKey;
 
@@ -1015,6 +1347,54 @@ describe('tradingSelectors', () => {
             },
             selectedFee: 'normal',
         });
+    });
+
+    const gaslessQuote = {
+        orderId: 'test-order',
+        exchange: '1inchfusion',
+        isDex: true,
+        signData: {
+            type: 'eip712-typed-data' as const,
+            data: { primaryType: 'Order' },
+        },
+    } as unknown as ExchangeTrade;
+
+    describe(selectTradingDisplayComposedFee.name, () => {
+        it.each([
+            ['return the composed fee for a regular quote', { fee: '12345' }, undefined, '12345'],
+            ['return undefined when there is no composed fee', undefined, undefined, undefined],
+            ['return "0" for an EIP-712-signed (gasless) quote', undefined, gaslessQuote, '0'],
+        ] as [
+            string,
+            { fee: string } | undefined,
+            ExchangeTrade | undefined,
+            string | undefined,
+        ][])('should %s', (_title, composed, quote, expected) => {
+            state.wallet.trading.composedTransactionInfo.composed = composed as any;
+
+            expect(selectTradingDisplayComposedFee(state, quote)).toBe(expected);
+        });
+    });
+
+    describe(selectIsTradingNetworkFeeMissing.name, () => {
+        it.each([
+            ['false when the composed fee is present', { fee: '12345' }, undefined, false],
+            ['true when the composed fee is undefined', undefined, undefined, true],
+            ['true when the composed fee is an empty string', { fee: '' }, undefined, true],
+            [
+                'false for an EIP-712-signed (gasless) quote even without a composed fee',
+                undefined,
+                gaslessQuote,
+                false,
+            ],
+        ] as [string, { fee: string } | undefined, ExchangeTrade | undefined, boolean][])(
+            'should be %s',
+            (_title, composed, quote, expected) => {
+                state.wallet.trading.composedTransactionInfo.composed = composed as any;
+
+                expect(selectIsTradingNetworkFeeMissing(state, quote)).toBe(expected);
+            },
+        );
     });
 
     describe(selectTradingAccountAccordingActiveSection.name, () => {
@@ -1138,6 +1518,214 @@ describe('tradingSelectors', () => {
         });
     });
 
+    describe(selectTradingBuyPaymentMethods.name, () => {
+        it('should map each quote to a payment method option', () => {
+            state.wallet.trading.buy.quotes = [
+                {
+                    fiatStringAmount: '10',
+                    fiatCurrency: 'EUR',
+                    receiveCurrency: 'bitcoin' as CryptoId,
+                    receiveStringAmount: '5',
+                    rate: 2,
+                    paymentMethod: 'creditCard',
+                    paymentMethodName: 'Credit Card',
+                    quoteId: 'quoteId1',
+                },
+            ];
+
+            expect(selectTradingBuyPaymentMethods(state)).toEqual([
+                { value: 'creditCard', label: 'Credit Card' },
+            ]);
+        });
+    });
+
+    describe(selectTradingBuyQuotesPerPaymentMethod.name, () => {
+        const buildBuyQuote = (overrides: Partial<BuyTrade>): BuyTrade => ({
+            fiatStringAmount: '10',
+            fiatCurrency: 'EUR',
+            receiveCurrency: 'bitcoin' as CryptoId,
+            receiveStringAmount: '5',
+            rate: 2,
+            paymentMethod: 'creditCard',
+            paymentMethodName: 'Credit Card',
+            quoteId: 'quoteId1',
+            ...overrides,
+        });
+
+        it('should keep the best quote per payment method', () => {
+            state.wallet.trading.buy.quotes = [
+                buildBuyQuote({ quoteId: 'card-best' }),
+                buildBuyQuote({ quoteId: 'card-worse' }),
+                buildBuyQuote({
+                    quoteId: 'bank',
+                    paymentMethod: 'bankTransfer',
+                    paymentMethodName: 'Bank Transfer',
+                }),
+            ];
+
+            expect(
+                selectTradingBuyQuotesPerPaymentMethod(state).map(quote => quote.quoteId),
+            ).toEqual(['card-best', 'bank']);
+        });
+
+        it('should ignore quotes with an invalid rate', () => {
+            state.wallet.trading.buy.quotes = [
+                buildBuyQuote({ paymentMethod: 'creditCard', rate: 0 }),
+                buildBuyQuote({
+                    paymentMethod: 'bankTransfer',
+                    paymentMethodName: 'Bank Transfer',
+                    rate: 1,
+                }),
+            ];
+
+            expect(
+                selectTradingBuyQuotesPerPaymentMethod(state).map(quote => quote.paymentMethod),
+            ).toEqual(['bankTransfer']);
+        });
+
+        it('should return an empty array when no quote is valid', () => {
+            state.wallet.trading.buy.quotes = [buildBuyQuote({ rate: 0 })];
+
+            expect(selectTradingBuyQuotesPerPaymentMethod(state)).toEqual([]);
+        });
+
+        it('should be stable', () => {
+            state.wallet.trading.buy.quotes = [buildBuyQuote({})];
+
+            expect(selectTradingBuyQuotesPerPaymentMethod(state)).toBe(
+                selectTradingBuyQuotesPerPaymentMethod(state),
+            );
+        });
+    });
+
+    describe(selectTradingSellPaymentMethods.name, () => {
+        it('should map each quote to a payment method option', () => {
+            const quoteDraft = state.wallet.trading.sell.quotes[0];
+            state.wallet.trading.sell.quotes = [
+                {
+                    ...quoteDraft,
+                    rate: 20000,
+                    orderId: 'orderId1',
+                    fiatCurrency: 'EUR',
+                    paymentMethod: 'creditCard',
+                    paymentMethodName: 'Credit Card',
+                    fiatStringAmount: '100',
+                },
+            ];
+
+            expect(selectTradingSellPaymentMethods(state)).toEqual([
+                { value: 'creditCard', label: 'Credit Card' },
+            ]);
+        });
+    });
+
+    describe(selectTradingSellQuotesPerPaymentMethod.name, () => {
+        it('should keep the best quote per payment method', () => {
+            const quoteDraft = {
+                ...state.wallet.trading.sell.quotes[0],
+                paymentMethodName: 'Credit Card',
+            };
+            state.wallet.trading.sell.quotes = [
+                { ...quoteDraft, orderId: 'card-best', paymentMethod: 'creditCard', rate: 2 },
+                { ...quoteDraft, orderId: 'card-worse', paymentMethod: 'creditCard', rate: 1 },
+                {
+                    ...quoteDraft,
+                    orderId: 'bank',
+                    paymentMethod: 'bankTransfer',
+                    paymentMethodName: 'Bank Transfer',
+                    rate: 3,
+                },
+            ];
+
+            expect(
+                selectTradingSellQuotesPerPaymentMethod(state).map(quote => quote.orderId),
+            ).toEqual(['bank', 'card-best']);
+        });
+
+        it('should ignore quotes with an invalid rate', () => {
+            const quoteDraft = {
+                ...state.wallet.trading.sell.quotes[0],
+                paymentMethodName: 'Credit Card',
+            };
+            state.wallet.trading.sell.quotes = [
+                { ...quoteDraft, orderId: 'card', paymentMethod: 'creditCard', rate: 0 },
+                {
+                    ...quoteDraft,
+                    orderId: 'bank',
+                    paymentMethod: 'bankTransfer',
+                    paymentMethodName: 'Bank Transfer',
+                    rate: 1,
+                },
+            ];
+
+            expect(
+                selectTradingSellQuotesPerPaymentMethod(state).map(quote => quote.paymentMethod),
+            ).toEqual(['bankTransfer']);
+        });
+
+        it('should be stable', () => {
+            expect(selectTradingSellQuotesPerPaymentMethod(state)).toBe(
+                selectTradingSellQuotesPerPaymentMethod(state),
+            );
+        });
+    });
+
+    it('selectTradingSellAmountLimits should return correct data', () => {
+        state.wallet.trading.sell.amountLimits = {
+            currency: 'ETH',
+            minFiat: '20',
+            maxFiat: '2000',
+        };
+
+        expect(selectTradingSellAmountLimits(state)).toEqual(
+            state.wallet.trading.sell.amountLimits,
+        );
+    });
+
+    describe(selectTradingSellQuotesByPaymentMethod.name, () => {
+        it('should filter quotes by payment method and ignore quote errors', () => {
+            state.wallet.trading.sell.quotes = [
+                {
+                    ...state.wallet.trading.sell.quotes[0],
+                    orderId: 'orderId-sell-fixed-1',
+                    paymentMethod: 'creditCard',
+                },
+                {
+                    ...state.wallet.trading.sell.quotes[1],
+                    orderId: 'orderId-sell-fixed-2',
+                    paymentMethod: 'creditCard',
+                    error: 'Quote unavailable',
+                },
+                {
+                    ...state.wallet.trading.sell.quotes[0],
+                    orderId: 'orderId-sell-fixed-3',
+                    paymentMethod: 'bankTransfer',
+                },
+            ];
+
+            expect(selectTradingSellQuotesByPaymentMethod(state, 'creditCard')).toEqual([
+                state.wallet.trading.sell.quotes[0],
+            ]);
+        });
+
+        it('should be stable', () => {
+            expect(selectTradingSellQuotesByPaymentMethod(state, 'creditCard')).toBe(
+                selectTradingSellQuotesByPaymentMethod(state, 'creditCard'),
+            );
+        });
+    });
+
+    describe('bestSellQuotePerPaymentMethodProjection', () => {
+        it('should return the first valid quote for each payment method sorted by rate', () => {
+            expect(
+                bestSellQuotePerPaymentMethodProjection(state.wallet.trading.sell.quotes),
+            ).toEqual([
+                expect.objectContaining({ paymentMethod: 'bankTransfer' }),
+                expect.objectContaining({ paymentMethod: 'creditCard' }),
+            ]);
+        });
+    });
+
     describe(selectTradingBuyLoadingTimestampAndStatus.name, () => {
         it.each<[boolean, number]>([
             [true, 0],
@@ -1156,9 +1744,7 @@ describe('tradingSelectors', () => {
 
         describe('isFullyLoaded', () => {
             it('should be false when trading info is empty', () => {
-                state.wallet.trading.info = {
-                    paymentMethods: [],
-                };
+                state.wallet.trading.info = {};
 
                 expect(selectTradingBuyLoadingTimestampAndStatus(state).isFullyLoaded).toBe(false);
             });
@@ -1256,9 +1842,7 @@ describe('tradingSelectors', () => {
 
         describe('isFullyLoaded', () => {
             it('should be false when trading info is empty', () => {
-                state.wallet.trading.info = {
-                    paymentMethods: [],
-                };
+                state.wallet.trading.info = {};
 
                 expect(selectTradingSellLoadingTimestampAndStatus(state).isFullyLoaded).toBe(false);
             });
@@ -1284,6 +1868,125 @@ describe('tradingSelectors', () => {
     describe(selectTradingSellQuotes.name, () => {
         it('should return quotes from trading sell state', () => {
             expect(selectTradingSellQuotes(state)).toBe(state.wallet.trading.sell.quotes);
+        });
+    });
+
+    describe(selectTradingQuotesByType.name, () => {
+        it('should return buy quotes for buy type', () => {
+            expect(selectTradingQuotesByType(state, 'buy')).toBe(state.wallet.trading.buy.quotes);
+        });
+
+        it('should return sell quotes for sell type', () => {
+            expect(selectTradingQuotesByType(state, 'sell')).toBe(state.wallet.trading.sell.quotes);
+        });
+
+        it('should return exchange quotes for exchange type', () => {
+            expect(selectTradingQuotesByType(state, 'exchange')).toBe(
+                state.wallet.trading.exchange.quotes,
+            );
+        });
+    });
+
+    describe(selectTradingPaymentMethodsByType.name, () => {
+        it('should return buy payment methods for buy type', () => {
+            state.wallet.trading.buy.quotes = [
+                {
+                    fiatStringAmount: '10',
+                    fiatCurrency: 'EUR',
+                    receiveCurrency: 'bitcoin' as CryptoId,
+                    receiveStringAmount: '5',
+                    rate: 2,
+                    paymentMethod: 'creditCard',
+                    paymentMethodName: 'Credit Card',
+                    quoteId: 'quoteId1',
+                },
+            ];
+
+            expect(selectTradingPaymentMethodsByType(state, 'buy')).toEqual([
+                { value: 'creditCard', label: 'Credit Card' },
+            ]);
+        });
+
+        it('should return sell payment methods for sell type', () => {
+            expect(selectTradingPaymentMethodsByType(state, 'sell')).toEqual(
+                selectTradingSellPaymentMethods(state),
+            );
+        });
+
+        it('should return an empty array for exchange type', () => {
+            expect(selectTradingPaymentMethodsByType(state, 'exchange')).toEqual([]);
+        });
+    });
+
+    describe(selectTradingSelectedPaymentMethodByType.name, () => {
+        beforeEach(() => {
+            state.wallet.trading.buy.quotes = [
+                {
+                    fiatStringAmount: '10',
+                    fiatCurrency: 'EUR',
+                    receiveCurrency: 'bitcoin' as CryptoId,
+                    receiveStringAmount: '5',
+                    rate: 2,
+                    paymentMethod: 'creditCard',
+                    paymentMethodName: 'Credit Card',
+                    quoteId: 'quoteId1',
+                },
+                {
+                    fiatStringAmount: '10',
+                    fiatCurrency: 'EUR',
+                    receiveCurrency: 'bitcoin' as CryptoId,
+                    receiveStringAmount: '5',
+                    rate: 2,
+                    paymentMethod: 'bankTransfer',
+                    paymentMethodName: 'Bank Transfer',
+                    quoteId: 'quoteId2',
+                },
+            ];
+        });
+
+        it('should return the option matching the selected payment method', () => {
+            expect(selectTradingSelectedPaymentMethodByType(state, 'buy', 'bankTransfer')).toEqual({
+                value: 'bankTransfer',
+                label: 'Bank Transfer',
+            });
+        });
+
+        it('should fall back to the first option when the selected method is not available', () => {
+            expect(selectTradingSelectedPaymentMethodByType(state, 'buy', 'applePay')).toEqual({
+                value: 'creditCard',
+                label: 'Credit Card',
+            });
+        });
+
+        it('should fall back to the first option when no method is selected', () => {
+            expect(selectTradingSelectedPaymentMethodByType(state, 'buy', undefined)).toEqual({
+                value: 'creditCard',
+                label: 'Credit Card',
+            });
+        });
+
+        it('should return undefined when there are no payment methods', () => {
+            expect(
+                selectTradingSelectedPaymentMethodByType(state, 'exchange', 'creditCard'),
+            ).toBeUndefined();
+        });
+    });
+
+    describe(selectTradingQuotesPerPaymentMethodByType.name, () => {
+        it('should return buy quotes per payment method for buy type', () => {
+            expect(selectTradingQuotesPerPaymentMethodByType(state, 'buy')).toEqual(
+                selectTradingBuyQuotesPerPaymentMethod(state),
+            );
+        });
+
+        it('should return sell quotes per payment method for sell type', () => {
+            expect(selectTradingQuotesPerPaymentMethodByType(state, 'sell')).toEqual(
+                selectTradingSellQuotesPerPaymentMethod(state),
+            );
+        });
+
+        it('should return an empty array for exchange type', () => {
+            expect(selectTradingQuotesPerPaymentMethodByType(state, 'exchange')).toEqual([]);
         });
     });
 
@@ -1436,17 +2139,17 @@ describe('tradingSelectors', () => {
     describe(selectTradingAccountKeyByTradeType.name, () => {
         it('should return exchange account key for exchange trade type', () => {
             const result = selectTradingAccountKeyByTradeType(state, 'exchange');
-            expect(result).toBe('eth-descriptor-eth');
+            expect(result).toBe(accountEth.key);
         });
 
         it('should return sell account key for sell trade type', () => {
             const result = selectTradingAccountKeyByTradeType(state, 'sell');
-            expect(result).toBe('btc-descriptor-btc');
+            expect(result).toBe(accountBtc.key);
         });
 
         it('should return buy account key for buy trade type', () => {
             const result = selectTradingAccountKeyByTradeType(state, 'buy');
-            expect(result).toBe('btc-descriptor-btc');
+            expect(result).toBe(accountBtc.key);
         });
 
         it('should return undefined when exchange account key is not set', () => {
@@ -1533,6 +2236,66 @@ describe('tradingSelectors', () => {
             const result = selectTradingProviderMetadata(state);
 
             expect(result).toBeUndefined();
+        });
+    });
+
+    describe(selectTradingIsSlip24Allowed.name, () => {
+        beforeEach(() => {
+            if (state.device.selectedDevice) {
+                state.device.selectedDevice.unavailableCapabilities = undefined;
+            }
+        });
+
+        it('should return false when account is undefined', () => {
+            expect(selectTradingIsSlip24Allowed(state, undefined, true)).toBe(false);
+        });
+
+        it('should return false when isSlip24Active is false', () => {
+            expect(selectTradingIsSlip24Allowed(state, accountBtc as any, false)).toBe(false);
+        });
+
+        it('should return false when firmware has slip24 in unavailableCapabilities', () => {
+            if (state.device.selectedDevice) {
+                state.device.selectedDevice.unavailableCapabilities = { slip24: 'no-support' };
+            }
+            expect(selectTradingIsSlip24Allowed(state, accountBtc as any, true)).toBe(false);
+        });
+
+        it('should return false when firmware version is older than the minimum', () => {
+            if (state.device.selectedDevice?.features) {
+                state.device.selectedDevice.features.minor_version = 12;
+                state.device.selectedDevice.features.patch_version = 0;
+            }
+            expect(selectTradingIsSlip24Allowed(state, accountBtc as any, true)).toBe(false);
+        });
+
+        it('should return false when firmware version is unknown', () => {
+            if (state.device.selectedDevice) {
+                state.device.selectedDevice.features = undefined;
+            }
+            expect(selectTradingIsSlip24Allowed(state, accountBtc as any, true)).toBe(false);
+        });
+
+        it.each(TRADING_SLIP24_SUPPORTED_NETWORK_TYPES)(
+            'should return true for %s network when firmware supports slip24',
+            networkType => {
+                const account = {
+                    ...accountBtc,
+                    networkType,
+                };
+
+                expect(selectTradingIsSlip24Allowed(state, account as any, true)).toBe(true);
+            },
+        );
+
+        it('should return false for unsupported network even when firmware supports slip24', () => {
+            const unsupportedNetworkAccount = {
+                ...accountBtc,
+                networkType: 'cardano',
+            };
+            expect(
+                selectTradingIsSlip24Allowed(state, unsupportedNetworkAccount as any, true),
+            ).toBe(false);
         });
     });
 });

@@ -1,6 +1,8 @@
+import type { CoinInfo, Proxy } from '@trezor/connect-common';
+import { ERRORS } from '@trezor/connect-common/src/constants';
+
 import { BackendManager } from './BackendManager';
 import type { BlockchainOptions as Options } from './Blockchain';
-import type { CoinInfo } from '../types';
 
 export { Blockchain } from './Blockchain';
 
@@ -14,7 +16,11 @@ export const setCustomBackend = (coinInfo: CoinInfo, blockchainLink: CoinInfo['b
         blockchainLink?.url.length ? blockchainLink : coinInfo.blockchainLink,
     );
 
-export const isBackendSupported = (coinInfo: CoinInfo) => backends.isSupported(coinInfo);
+export const assertBackendSupported = (coinInfo: CoinInfo) => {
+    if (!backends.isSupported(coinInfo)) {
+        throw ERRORS.TypedError('Backend_NotSupported');
+    }
+};
 
 export const initBlockchain = (
     coinInfo: CoinInfo,
@@ -23,5 +29,7 @@ export const initBlockchain = (
 ) => backends.getOrConnect({ coinInfo, identity, postMessage });
 
 export const reconnectAllBackends = (coinInfo?: CoinInfo) => backends.reconnectAll(coinInfo);
+
+export const updateProxy = (proxy?: Proxy) => backends.updateProxy(proxy);
 
 export const dispose = () => backends.dispose();

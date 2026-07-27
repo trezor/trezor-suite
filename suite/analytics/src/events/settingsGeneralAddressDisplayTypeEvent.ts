@@ -14,11 +14,13 @@ export const settingsGeneralAddressDisplayTypeEvent: EventDef<
 > = {
     name: EventType.SettingsGeneralAddressDisplayType,
     descriptionTrigger: 'User changes address display type in settings.',
-    changelog: [{ version: '?', notes: 'added' }],
+    changelog: [{ version: '25.10.0', notes: 'added' }],
 
     attributes: {
         addressDisplayType: {
-            changelog: [{ version: '?', notes: 'added' }],
+            changelog: [{ version: '25.10.0', notes: 'added' }],
+            description:
+                'The selected address display format: `original` for full address display, `chunked` for space-separated address segments for easier reading',
         },
     },
 };

@@ -1,15 +1,15 @@
 import { EventEmitter } from 'events';
 import path from 'path';
 
-import { ScheduleActionParams, ScheduledAction, scheduleAction } from '@trezor/utils';
+import { type ScheduleActionParams, type ScheduledAction, scheduleAction } from '@trezor/utils';
 
 import { BOOTSTRAP_EVENT_PROGRESS, bootstrapParser } from './events/bootstrap';
 import { TorControlPort } from './torControlPort';
 import {
-    BootstrapEvent,
+    type BootstrapEvent,
     TOR_CONTROLLER_STATUS,
-    TorConnectionOptions,
-    TorControllerStatus,
+    type TorConnectionOptions,
+    type TorControllerStatus,
 } from './types';
 
 const WAITING_TIME = 1000;

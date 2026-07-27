@@ -1,9 +1,23 @@
 // original file https://github.com/trezor/connect/blob/develop/src/js/device/DeviceList.js
 
+import { DEVICE, asDeviceUniquePath } from '@trezor/connect-common';
+import type {
+    ConnectSettings,
+    DecodedTrezorPushNotification,
+    DeviceUniquePath,
+    StaticSessionId,
+    TransportError,
+    TransportInfo,
+} from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
-import { TRANSPORT, Transport } from '@trezor/transport';
-import type { ApiType as TransportApiType } from '@trezor/transport/src/types';
-import { Descriptor } from '@trezor/transport/src/types';
+import type { CreateLogger } from '@trezor/connect-common/src/types/settings';
+import { parseStaticSessionId } from '@trezor/device-utils';
+import {
+    type Descriptor,
+    TRANSPORT,
+    type Transport,
+    type ApiType as TransportApiType,
+} from '@trezor/transport-common';
 import {
     TypedEmitter,
     arrayDistinct,
@@ -14,28 +28,30 @@ import {
     typedObjectKeys,
 } from '@trezor/utils';
 
-import { DEVICE, DecodedTrezorPushNotification, TransportError, TransportInfo } from '../events';
 import { Device } from './Device';
-import { ConnectSettings, DeviceUniquePath, StaticSessionId, asDeviceUniquePath } from '../types';
 import { createTransportList } from './TransportList';
 import { TransportManager } from './TransportManager';
-import { initLog } from '../utils/debug';
 import { trezorPushNotificationHandler } from './workflow/trezorPushNotification';
 
-const createAuthPenaltyManager = (priority: number) => {
+// TODO probably scheduled for deletion, given that priority is now always 2
+const createAuthPenaltyManager = (priority = 2) => {
     const penalizedDevices: { [deviceID: string]: number } = {};
 
     const get = () =>
         100 * priority +
-        Object.keys(penalizedDevices).reduce(
-            (penalty, key) => Math.max(penalty, penalizedDevices[key]),
-            0,
-        );
+        Object.keys(penalizedDevices).reduce((penalty, key) => {
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const devicePenalty: number = penalizedDevices[key];
+
+            return Math.max(penalty, devicePenalty);
+        }, 0);
 
     const add = (device: Device) => {
         if (!device.isInitialized() || device.isBootloader() || !device.features.device_id) return;
         const deviceID = device.features.device_id;
-        const penalty = penalizedDevices[deviceID] ? penalizedDevices[deviceID] + 500 : 2000;
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const currentPenalty: number = penalizedDevices[deviceID];
+        const penalty = currentPenalty ? currentPenalty + 500 : 2000;
         penalizedDevices[deviceID] = Math.min(penalty, 5000);
     };
 
@@ -45,16 +61,13 @@ const createAuthPenaltyManager = (priority: number) => {
         delete penalizedDevices[deviceID];
     };
 
-    const clear = () => Object.keys(penalizedDevices).forEach(key => delete penalizedDevices[key]);
-
-    return { get, add, remove, clear };
+    return { get, add, remove };
 };
 
 const getTransportInfo = (transport: Transport) => ({
     apiType: transport.apiType,
     type: transport.name,
     version: transport.version,
-    outdated: transport.isOutdated,
 });
 
 interface DeviceListEvents {
@@ -86,8 +99,8 @@ export const assertDeviceListConnected: (
     }
 };
 
-type ConstructorParams = Pick<ConnectSettings, 'priority' | 'debug' | 'manifest'> & {
-    messages: Record<string, any>;
+type ConstructorParams = {
+    createLogger: CreateLogger;
 };
 type InitParams = Pick<
     ConnectSettings,
@@ -104,8 +117,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
 
     private readonly handshakeLock;
     private readonly authPenaltyManager;
-
-    private updateTransports;
+    private readonly createLogger: CreateLogger;
 
     private getConnectedTransports() {
         return Object.values(this.transportManagers)
@@ -129,18 +141,12 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
         return this.getConnectedTransports().map(getTransportInfo);
     }
 
-    constructor({ messages, priority, debug, manifest }: ConstructorParams) {
+    constructor({ createLogger }: ConstructorParams) {
         super();
 
-        const transportLogger = initLog('@trezor/transport', debug);
-
+        this.createLogger = createLogger;
         this.handshakeLock = getSynchronize();
-        this.authPenaltyManager = createAuthPenaltyManager(priority);
-        this.updateTransports = createTransportList({
-            messages,
-            logger: transportLogger,
-            id: manifest?.appName || manifest?.appUrl || 'unknown app',
-        });
+        this.authPenaltyManager = createAuthPenaltyManager();
     }
 
     private getSimilarDevices(device: Device) {
@@ -164,7 +170,12 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
 
     private async onDeviceConnected(descriptor: Descriptor, transport: Transport) {
         const id = (this.deviceCounter++).toString(16).slice(-8);
-        const device = new Device({ id: asDeviceUniquePath(id), transport, descriptor });
+        const device = new Device({
+            id: asDeviceUniquePath(id),
+            transport,
+            descriptor,
+            createLogger: this.createLogger,
+        });
 
         const similarUsedDevices = this.getSimilarDevices(device).some(
             d => d.isUsed() || d.getBusy() === 'rebooting',
@@ -238,7 +249,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
 
     async init({ transports, transportReconnect, pendingTransportEvent }: InitParams = {}) {
         // throws when unknown transport is requested, in that case nothing is changed
-        this.transports = this.updateTransports(this.transports, transports);
+        this.transports = createTransportList(this.transports, transports);
 
         const promises = this.transports
             .map(t => t.apiType)
@@ -277,7 +288,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
         const enumerateResult = await transport.enumerate({ signal });
 
         if (!enumerateResult.success) {
-            throw new Error(enumerateResult.message || enumerateResult.error);
+            throw new Error(enumerateResult.error.message || enumerateResult.error.code);
         }
 
         const descriptors = enumerateResult.payload;
@@ -356,7 +367,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
     }
 
     getDeviceByStaticState(state: StaticSessionId): Device | undefined {
-        const deviceId = state.split('@')[1].split(':')[0];
+        const { deviceId } = parseStaticSessionId(state);
 
         return this.getPrioritizedDevices().find(d => d.features?.device_id === deviceId);
     }

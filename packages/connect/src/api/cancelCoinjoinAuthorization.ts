@@ -1,29 +1,25 @@
-import { MessagesSchema as PROTO } from '@trezor/protobuf';
+import {
+    CancelCoinjoinAuthorization as CancelCoinjoinAuthorizationSchema,
+    type PermissionRequest,
+} from '@trezor/connect-common';
 import { Assert } from '@trezor/schema-utils';
 
-import { AbstractMethod, MethodPermission, Payload } from '../core/AbstractMethod';
-import { getFirmwareRange } from './common/paramsValidator';
-import { CancelCoinjoinAuthorization as CancelCoinjoinAuthorizationSchema } from '../types/api/cancelCoinjoinAuthorization';
+import type { MethodMessage } from '../core/AbstractMethod';
+import { AbstractMethod } from '../core/AbstractMethod';
 
-export default class CancelCoinjoinAuthorization extends AbstractMethod<
-    'cancelCoinjoinAuthorization',
-    PROTO.CancelAuthorization
-> {
-    constructor(message: { id?: number; payload: Payload<'cancelCoinjoinAuthorization'> }) {
-        super(message);
-        this.firmwareRange = getFirmwareRange(this.name, null, this.firmwareRange);
-    }
-
-    get requiredPermissions(): MethodPermission[] {
-        return ['management'];
-    }
-
-    init() {
-        const { payload } = this;
+export default class CancelCoinjoinAuthorization extends AbstractMethod<'cancelCoinjoinAuthorization'> {
+    constructor(message: MethodMessage<'cancelCoinjoinAuthorization'>) {
+        const { payload } = message;
 
         Assert(CancelCoinjoinAuthorizationSchema, payload);
+
+        super(message, undefined);
         this.preauthorized =
             typeof payload.preauthorized === 'boolean' ? payload.preauthorized : true;
+    }
+
+    get requiredPermissions(): PermissionRequest[] {
+        return [{ permission: 'internal' }];
     }
 
     get info() {
@@ -31,7 +27,7 @@ export default class CancelCoinjoinAuthorization extends AbstractMethod<
     }
 
     async run() {
-        const cmd = this.device.getCommands();
+        const cmd = this.getDevice().getCommands();
 
         if (!this.preauthorized) {
             if (!(await cmd.preauthorize(false))) {

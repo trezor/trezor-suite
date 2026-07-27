@@ -1,6 +1,4 @@
-import { GET_ACCOUNT_INFO, HANDSHAKE } from '@trezor/blockchain-link-types/src/constants/messages';
-import type { Message } from '@trezor/blockchain-link-types/src/messages';
-import type { Response } from '@trezor/blockchain-link-types/src/responses';
+import { MESSAGES, type Message, type Response } from '@trezor/blockchain-link-types';
 
 import ElectrumWorker from '../../src/workers/electrum';
 
@@ -19,13 +17,14 @@ describe('Electrum', () => {
         });
 
     worker.onmessage = ({ data }: { data: Response }) => {
-        if (resolvers[data.id]) {
-            resolvers[data.id](data);
+        const resolver = resolvers[data.id];
+        if (resolver) {
+            resolver(data);
         }
     };
 
     worker.postMessage({
-        type: HANDSHAKE,
+        type: MESSAGES.HANDSHAKE,
         id,
         settings: {
             name: NETWORK,
@@ -50,7 +49,7 @@ describe('Electrum', () => {
         const testId = ++id;
         const waited = await sendAndWait({
             id: testId,
-            type: GET_ACCOUNT_INFO,
+            type: MESSAGES.GET_ACCOUNT_INFO,
             payload: { descriptor: address, details: 'txs' },
         });
         expect(waited).toEqual({

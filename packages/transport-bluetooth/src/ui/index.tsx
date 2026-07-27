@@ -6,7 +6,7 @@ import { App } from './app';
 const mountId = 'trezor-bluetooth-app-root';
 
 function mountApp() {
-    let mountNode = document.getElementById(mountId) as HTMLElement | null;
+    let mountNode = document.getElementById(mountId);
     if (!mountNode) {
         mountNode = document.createElement('div');
         mountNode.id = mountId;

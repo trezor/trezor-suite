@@ -1,9 +1,9 @@
-import { Fragment, ReactNode } from 'react';
+import { Fragment, type ReactNode } from 'react';
 
 import { A, G } from '@mobily/ts-belt';
 
 import { type NetworkSymbol, isNetworkSymbol } from '@suite-common/wallet-config';
-import { TokenSymbol } from '@suite-common/wallet-types';
+import { type TokenSymbol } from '@suite-common/wallet-types';
 import { Box, Card, Text } from '@suite-native/atoms';
 import {
     AddressFormatter,
@@ -11,8 +11,8 @@ import {
     TokenAmountFormatter,
 } from '@suite-native/formatters';
 import { Icon } from '@suite-native/icons';
-import { TransactionTranfer } from '@suite-native/transactions';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { type TransactionTranfer } from '@suite-native/transactions';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 type TransactionAddressAmountProps = {
     address: string;
@@ -32,7 +32,7 @@ const TransactionAddressAmount = ({
     decimals,
 }: TransactionAddressAmountProps) => (
     <Box>
-        <AddressFormatter value={address} variant="body-sm" />
+        <AddressFormatter value={address} variant="body-sm" format="short" />
         {amount &&
             (isNetworkSymbol(symbol) ? (
                 <CryptoAmountFormatter
@@ -73,7 +73,7 @@ export const TransactionDetailInputsSheetSection = ({
         <Box>
             {G.isString(header) ? (
                 <Box paddingLeft="sp8" marginVertical="sp8">
-                    <Text color="textSubdued" variant="body-sm">
+                    <Text color="contentSecondary" variant="body-sm">
                         {header}
                     </Text>
                 </Box>
@@ -95,7 +95,7 @@ export const TransactionDetailInputsSheetSection = ({
                                     />
                                 ))}
                             </Box>
-                            <Icon name="caretCircleRight" color="iconDisabled" size="medium" />
+                            <Icon name="caretCircleRight" color="contentDisabled" size="medium" />
                             <Box style={applyStyle(addressAmountColumnStyle)}>
                                 {outputs.map(({ address, amount }, index) => (
                                     <TransactionAddressAmount

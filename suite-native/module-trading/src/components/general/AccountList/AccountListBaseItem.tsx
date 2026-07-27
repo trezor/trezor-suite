@@ -1,16 +1,17 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 import { Pressable } from 'react-native';
 import { useSelector } from 'react-redux';
 
 import { BASE_CRYPTO_MAX_DISPLAYED_DECIMALS } from '@suite-common/formatters';
+import { selectAccountLabel } from '@suite-native/accounts';
 import { Box, HStack, Text, VStack } from '@suite-native/atoms';
 import { useCoinLabel } from '@suite-native/device';
 import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
-import { CryptoIcon, Icon } from '@suite-native/icons';
+import { Icon, TokenIcon } from '@suite-native/icons';
 import { useTranslate } from '@suite-native/intl';
-import { CombinedLabelingState, selectAccountLabel } from '@suite-native/labeling';
-import { ReceiveAccount } from '@suite-native/trading-types';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { type CombinedLabelingState } from '@suite-native/labeling';
+import { type ReceiveAccount } from '@suite-native/trading-types';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 export type AccountListBaseItemProps = {
     receiveAccount: ReceiveAccount;
@@ -20,9 +21,7 @@ export type AccountListBaseItemProps = {
     onPress: () => void;
 };
 
-type TextColor = 'textDefault' | 'textSubdued';
-
-export const ACCOUNT_LIST_ITEM_HEIGHT = 68 as const;
+type TextColor = 'contentPrimary' | 'contentSecondary';
 
 const labelTextStyle = prepareNativeStyle<{ textColor: TextColor; flex: number }>(
     ({ colors }, { textColor, flex }) => ({
@@ -56,7 +55,7 @@ const AccountListLabel = ({ label, flex }: { label: ReactNode; flex: number }) =
     return (
         <Text
             variant="body-md"
-            style={applyStyle(labelTextStyle, { textColor: 'textDefault', flex })}
+            style={applyStyle(labelTextStyle, { textColor: 'contentPrimary', flex })}
         >
             {label}
         </Text>
@@ -93,7 +92,7 @@ export const AccountListBaseItem = ({
                 justifyContent="center"
             >
                 <Box justifyContent="center">
-                    <CryptoIcon symbol={account.symbol} size="extraSmall" />
+                    <TokenIcon symbol={account.symbol} size="extraSmall" />
                 </Box>
                 {!info && (
                     <Box flex={1}>
@@ -110,7 +109,7 @@ export const AccountListBaseItem = ({
                                 symbol={account.symbol}
                                 variant="body-md"
                                 style={applyStyle(amountTextStyle, {
-                                    textColor: 'textDefault',
+                                    textColor: 'contentPrimary',
                                 })}
                                 accessibilityLabel={translate(
                                     'moduleTrading.accountScreen.balanceCrypto',
@@ -129,7 +128,7 @@ export const AccountListBaseItem = ({
                                 symbol={account.symbol}
                                 variant="body-sm"
                                 style={applyStyle(labelTextStyle, {
-                                    textColor: 'textDefault',
+                                    textColor: 'contentPrimary',
                                     flex: 1,
                                 })}
                                 accessibilityLabel={translate(
@@ -143,7 +142,7 @@ export const AccountListBaseItem = ({
                     <Box justifyContent="center">
                         <Icon
                             name="caretRight"
-                            color="iconDefault"
+                            color="contentPrimary"
                             accessibilityHint={translate('moduleTrading.accountScreen.step2Hint')}
                         />
                     </Box>

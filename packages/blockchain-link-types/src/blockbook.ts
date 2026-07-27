@@ -4,21 +4,24 @@ import type {
     AvailableVsCurrencies,
     Address as BlockbookAddress,
     Block as BlockbookBlock,
+    ContractInfoProtocol as BlockbookContractInfoProtocol,
     Token as BlockbookToken,
     TokenTransfer as BlockbookTokenTransfer,
     Tx as BlockbookTx,
     Utxo as BlockbookUtxo,
+    ContractInfoResult,
+    EthereumGasData,
     FiatTicker,
     MempoolTxidFilterEntries,
-    Vin,
-    Vout,
     WsAccountUtxoReq,
     WsBlockFilterReq,
     WsBlockFiltersBatchReq,
     WsBlockHashRes,
+    WsContractInfoReq,
     WsEstimateFeeRes,
     WsInfoRes,
     WsMempoolFiltersReq,
+    WsNewBlock,
 } from './blockbook-api';
 import type { AccountBalanceHistory, FiatRatesBySymbol, TokenStandard } from './common';
 import type {
@@ -128,8 +131,6 @@ export type AccountInfo = Omit<
 
 export type AccountUtxoParams = WsAccountUtxoReq;
 
-export type VinVout = OptionalKey<Vin & Vout, 'addresses'>;
-
 export type Transaction = Omit<RequiredKey<BlockbookTx, 'fees'>, 'tokenTransfers'> & {
     tokenTransfers?: (BlockbookTokenTransfer & {
         type: TokenStandard; // string in Tx, seems to always be ERC20 | ERC721 | ERC1155
@@ -143,7 +144,8 @@ export interface Push {
 
 export type Fee = Omit<RequiredKey<WsEstimateFeeRes, 'feePerUnit'>, 'eip1559'>[];
 
-export type BlockNotification = Pick<BlockbookBlock, 'hash' | 'height'>;
+export type BlockNotification = WsNewBlock;
+export type { EthereumGasData };
 
 export type MempoolTransactionNotification = RequiredKey<
     Transaction,
@@ -169,10 +171,18 @@ export interface FiatRatesForTimestamp {
 
 export type AvailableCurrencies = Omit<RequiredKey<AvailableVsCurrencies, 'ts'>, 'error'>;
 
+export type ContractInfoProtocol = BlockbookContractInfoProtocol;
+
+export type ContractInfoParams = WsContractInfoReq;
+export type ContractInfoResponse = ContractInfoResult;
+
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 declare function FSend(method: 'getInfo'): Promise<ServerInfo>;
 declare function FSend(method: 'getBlockHash', params: { height: number }): Promise<BlockHash>;
-declare function FSend(method: 'getBlock', params: { id: string }): Promise<Block>;
+declare function FSend(
+    method: 'getBlock',
+    params: { id: string; page?: number; pageSize?: number },
+): Promise<Block>;
 declare function FSend(
     method: 'getBlockFilter',
     params: WsBlockFilterReq & FilterRequestParams,
@@ -210,6 +220,10 @@ declare function FSend(
 ): Promise<FiatRatesForTimestamp>;
 declare function FSend(method: 'estimateFee', params: EstimateFeeParams): Promise<Fee>;
 declare function FSend(method: 'rpcCall', params: RpcCallParams): Promise<{ data: string }>;
+declare function FSend(
+    method: 'getContractInfo',
+    params: ContractInfoParams,
+): Promise<ContractInfoResponse>;
 declare function FSend(
     method: 'subscribeAddresses',
     params: { addresses: string[] },

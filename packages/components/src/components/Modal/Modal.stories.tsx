@@ -1,15 +1,12 @@
-import { JSX } from 'react';
+import { type JSX } from 'react';
 
-import { Meta, StoryObj } from '@storybook/react';
+import { type Meta, type StoryObj } from '@storybook/react';
 import { action } from 'storybook/actions';
 
-import { modalVariants, modalWidths } from './types';
-import {
-    Modal as ModalComponent,
-    ModalProps,
-    allowedModalFrameProps,
-    variables,
-} from '../../index';
+import * as generatedIcons from '@trezor/icons';
+
+import { modalIntents, modalWidths } from './types';
+import { Modal as ModalComponent, type ModalProps, allowedModalFrameProps } from '../../index';
 import { getFramePropsStory } from '../../utils/frameProps';
 
 const Buttons = () => (
@@ -47,8 +44,8 @@ export default meta;
 
 export const Modal: StoryObj<ModalProps> = {
     args: {
-        variant: 'primary',
-        iconName: undefined,
+        intent: 'brand',
+        icon: undefined,
         heading: 'Modal heading',
         description: 'Modal description',
         children:
@@ -61,11 +58,11 @@ export const Modal: StoryObj<ModalProps> = {
         ...getFramePropsStory(allowedModalFrameProps).args,
     },
     argTypes: {
-        variant: {
+        intent: {
             control: {
                 type: 'select',
             },
-            options: [...modalVariants, undefined],
+            options: [...modalIntents, undefined],
         },
         width: {
             control: {
@@ -115,12 +112,9 @@ export const Modal: StoryObj<ModalProps> = {
                 },
             },
         },
-        iconName: {
-            options: ['none', ...variables.ICONS],
-            mapping: {
-                ...variables.ICONS,
-                none: undefined,
-            },
+        icon: {
+            options: ['none', ...Object.keys(generatedIcons)],
+            mapping: { none: undefined, ...generatedIcons },
             control: {
                 type: 'select',
             },

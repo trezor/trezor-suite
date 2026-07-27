@@ -1,9 +1,5 @@
-import coinsJSON from '@trezor/connect-data/files/coins.json';
-
-import { getBitcoinNetwork, parseCoinsJson } from '../../data/coinInfo';
-import { formatAmount } from '../formatUtils';
-
-parseCoinsJson(coinsJSON);
+import { getBitcoinNetwork } from '../../data/coinInfo';
+import type { formatAmount } from '../formatUtils';
 
 export const formatAmountFixtures: TestFixtures<typeof formatAmount> = [
     {

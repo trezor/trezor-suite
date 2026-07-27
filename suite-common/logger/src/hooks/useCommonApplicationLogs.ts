@@ -2,16 +2,16 @@ import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { useQuery } from '@suite-common/react-query';
-import TrezorConnect, { PROTO } from '@trezor/connect';
+import TrezorConnect, { type PROTO } from '@trezor/connect';
 
 import {
-    LogsApplicationInfoRootState,
-    RedactedDevice,
+    type LogsApplicationInfoRootState,
+    type RedactedDevice,
     selectRedactedActionsLog,
     selectRedactedApplicationInfo,
 } from '../logsSelectors';
-import { LogsSliceRootState } from '../logsSlice';
-import { LogsEnvironmentInfo, getEnvironmentInfo, startTime } from '../utils';
+import { type LogsSliceRootState } from '../logsSlice';
+import { type LogsEnvironmentInfo, getEnvironmentInfo, startTime } from '../utils';
 
 export const useCommonApplicationLogs = (hideSensitiveInfo: boolean) => {
     const redactedActionsLog = useSelector((state: LogsSliceRootState) =>
@@ -28,6 +28,7 @@ export const useCommonApplicationLogs = (hideSensitiveInfo: boolean) => {
 
     // Enhance devices info with telemetry data (battery temp, etc.)
     const devicePaths = new Set(redactedApplicationInfo.devices.map(d => d.path));
+    // eslint-disable-next-line @tanstack/query/exhaustive-deps -- cache identity is the set of device paths (already spread into the key); the queryFn reads the full device objects only to enrich them with telemetry
     const { data: devicesWithTelemetry, isLoading } = useQuery({
         queryKey: ['device-telemetry', ...devicePaths],
         queryFn: async ({ signal }) => {

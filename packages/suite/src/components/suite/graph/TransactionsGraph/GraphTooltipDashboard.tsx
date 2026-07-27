@@ -1,12 +1,12 @@
-import { TooltipProps } from 'recharts';
+import { type TooltipProps } from 'recharts';
 
 import { useFormatters } from '@suite-common/formatters';
 import { BASE_CURRENCY_ZERO } from '@suite-common/wallet-utils';
 
-import { CommonAggregatedHistory, GraphRange } from 'src/types/wallet/graph';
+import type { FiatGraphProps } from 'src/components/suite/graph/types';
+import { type CommonAggregatedHistory, type GraphRange } from 'src/types/wallet/graph';
 
 import { GraphTooltipBase } from './GraphTooltipBase';
-import type { FiatGraphProps } from './TransactionsGraph';
 
 interface GraphTooltipDashboardProps extends TooltipProps<number, any> {
     selectedRange: GraphRange;
@@ -33,8 +33,14 @@ export const GraphTooltipDashboard = ({
         return null;
     }
 
-    const receivedAmountString = receivedValueFn(payload[0].payload);
-    const sentAmountString = sentValueFn(payload[0].payload);
+    const firstPayload = payload[0]?.payload;
+
+    if (!firstPayload) {
+        return null;
+    }
+
+    const receivedAmountString = receivedValueFn(firstPayload);
+    const sentAmountString = sentValueFn(firstPayload);
 
     const receivedAmount = (
         <BaseCurrencyAmountFormatter

@@ -1,16 +1,16 @@
 import { useEffect, useRef, useState } from 'react';
 
-import { fromWei } from 'web3-utils';
-
+import { selectSelectedAccount } from '@suite/account';
 import { Translation } from '@suite/intl';
 import { getChangedInternalTx, getInstantStakeType } from '@suite-common/staking';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
-import { StakeType, WalletAccountTransaction } from '@suite-common/wallet-types';
+import { type StakeType, type WalletAccountTransaction } from '@suite-common/wallet-types';
+import { fromWei } from '@suite-common/wallet-utils';
 import { Banner } from '@trezor/components';
-import { InternalTransfer } from '@trezor/connect';
+import { type InternalTransfer } from '@trezor/connect';
+import { LightningIcon } from '@trezor/icons';
 
 import { useSelector } from 'src/hooks/suite';
-import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 
 const getSubheadingTranslationId = (stakeType: StakeType) => {
     if (stakeType === 'stake') return 'TR_EARN_INSTANTLY_STAKED';
@@ -60,7 +60,7 @@ export const InstantStakeBanner = ({
         setIsBannerShown(false);
     };
 
-    const amount = fromWei(instantStakeTransfer?.amount ?? '0', 'ether');
+    const amount = fromWei(instantStakeTransfer?.amount ?? '0').toEther();
     const stakeType = getInstantStakeType(instantStakeTransfer, address, symbol);
 
     if (!stakeType || stakeType === 'claim') return null; // claim is not supported
@@ -71,7 +71,7 @@ export const InstantStakeBanner = ({
     return (
         <Banner
             data-testid="@staking/instant-stake-banner"
-            icon="lightning"
+            icon={LightningIcon}
             intent="neutral"
             rightContent={
                 <Banner.Button

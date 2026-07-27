@@ -2,6 +2,9 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
+        {
+            "path": "../../suite-common/dependency-injection"
+        },
         { "path": "../../suite-common/device" },
         {
             "path": "../../suite-common/redux-utils"
@@ -15,14 +18,16 @@
         { "path": "../intl" },
         { "path": "../link" },
         { "path": "../navigation" },
-        { "path": "../services" },
         { "path": "../swipeable-walkthrough" },
         { "path": "../../packages/connect" },
         {
             "path": "../../packages/connect-common"
         },
         { "path": "../../packages/device-utils" },
-        { "path": "../../packages/styles" },
-        { "path": "../../packages/urls" }
+        {
+            "path": "../../packages/styles-native"
+        },
+        { "path": "../../packages/urls" },
+        { "path": "../../packages/requirements" }
     ]
 }

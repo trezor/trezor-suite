@@ -1,21 +1,22 @@
 import { useMemo } from 'react';
 
 import { Translation } from '@suite/intl';
-import { NetworkType } from '@suite-common/wallet-config';
+import { type NetworkType } from '@suite-common/wallet-config';
+import { CARDANO_ACTIVATION_PERIOD_DAYS, CARDANO_EPOCH_DAYS } from '@suite-common/wallet-constants';
 import {
-    CARDANO_ACTIVATION_PERIOD_DAYS,
-    CARDANO_EPOCH_DAYS,
-    SOLANA_EPOCH_DAYS,
-} from '@suite-common/wallet-constants';
-import { Account, StakeType, WalletAccountTransaction } from '@suite-common/wallet-types';
+    type Account,
+    type StakeType,
+    type WalletAccountTransaction,
+} from '@suite-common/wallet-types';
 import {
     getStakingAccountCurrentStatus,
     getTxStakeType,
     isPending,
 } from '@suite-common/wallet-utils';
 import { Column, Paragraph } from '@trezor/components';
+import { SOLANA_EPOCH_DAYS } from '@trezor/network-solana/constants';
 
-import { ProgressLabelData } from '../components/ProgressLabels/types';
+import { type ProgressLabelData } from '../components/ProgressLabels/types';
 
 const buildEthereumLabels = ({
     isStakeConfirming,
@@ -242,9 +243,7 @@ const shouldHideProgressBar = ({
 
             // Hide progress not staking with us,
             // but show it when pending tx as it can be update provider
-            if (!isStakedWithEverstake && hasNoPendingTx) return true;
-
-            return false;
+            return !isStakedWithEverstake && hasNoPendingTx;
         }
 
         case 'ethereum': {

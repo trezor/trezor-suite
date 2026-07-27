@@ -6,11 +6,12 @@ import {
 } from '@suite-common/device';
 import { Feature, selectIsFeatureEnabled } from '@suite-common/message-system';
 import { createThunk } from '@suite-common/redux-utils';
-import { BackupType } from '@suite-common/suite-types';
+import { type BackupType } from '@suite-common/suite-types';
 import { processEntropyCheckResultThunk } from '@suite-common/wallet-core';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
-import TrezorConnect, { PROTO, SuccessWithDevice, Unsuccessful } from '@trezor/connect';
-import { exhaustive } from '@trezor/type-utils';
+import TrezorConnect, { type OkWithDevice, PROTO } from '@trezor/connect';
+import { type SerializedError } from '@trezor/connect-common/src/constants/errors';
+import { type Err, exhaustive } from '@trezor/type-utils';
 
 const NATIVE_DEVICE_MODULE_PREFIX = 'nativeDevice';
 
@@ -18,25 +19,25 @@ const getResetDeviceConfig = (walletBackupType: BackupType): PROTO.ResetDevice =
     switch (walletBackupType) {
         case 'shamir-single':
             return {
-                backup_type: 3,
+                backup_type: PROTO.Enum_BackupType.Slip39_Single_Extendable,
                 strength: 128,
             };
         case 'shamir-advanced':
             return {
-                backup_type: 4,
+                backup_type: PROTO.Enum_BackupType.Slip39_Basic_Extendable,
                 strength: 128,
             };
         case '12-words':
-            return { backup_type: PROTO.BackupType.Bip39, strength: 128 };
+            return { backup_type: PROTO.Enum_BackupType.Bip39, strength: 128 };
         case '24-words':
-            return { backup_type: PROTO.BackupType.Bip39, strength: 256 };
+            return { backup_type: PROTO.Enum_BackupType.Bip39, strength: 256 };
         default:
             return exhaustive(walletBackupType);
     }
 };
 
 export const createAndBackupWalletThunk = createThunk<
-    Unsuccessful | SuccessWithDevice<PROTO.Success>,
+    Err<SerializedError> | OkWithDevice<PROTO.Success>,
     { walletBackupType: BackupType },
     { rejectValue: string }
 >(
@@ -53,7 +54,7 @@ export const createAndBackupWalletThunk = createThunk<
         // Used only in tests! See deviceReducer for the property definition.
         const simulatedFailResult = selectSimulatedEntropyCheckFail(getState());
 
-        if (!device || !device.features || !devicePath) {
+        if (!device?.features || !devicePath) {
             return rejectWithValue('Device not found');
         }
 

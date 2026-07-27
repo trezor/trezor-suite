@@ -2,33 +2,35 @@
 
 // allow for...of statements
 
-import { trezorUtils } from '@fivebinaries/coin-selection';
-
-import { ERRORS } from '@trezor/connect-common/src/constants';
-import { AssertWeak, Type } from '@trezor/schema-utils';
-
-import { PROTO } from '../../../constants';
-import { AbstractMethod, MethodPermission, Payload } from '../../../core/AbstractMethod';
-import { getMiscNetwork } from '../../../data/coinInfo';
 import {
     type CardanoAuxiliaryDataSupplement,
     CardanoSignTransactionExtended,
     CardanoSignTransaction as CardanoSignTransactionSchema,
     type CardanoSignedTxData,
     type CardanoSignedTxWitness,
-} from '../../../types/api/cardano';
+    type PermissionRequest,
+} from '@trezor/connect-common';
+import { ERRORS } from '@trezor/connect-common/src/constants';
+import cardano from '@trezor/network-cardano/runtime';
+import { MessagesSchema as PROTO } from '@trezor/protobuf';
+import { Assert, Type } from '@trezor/schema-utils';
+
+import type { MethodMessage } from '../../../core/AbstractMethod';
+import { AbstractMethod } from '../../../core/AbstractMethod';
+import { getMiscNetwork } from '../../../data/coinInfo';
 import { validatePath } from '../../../utils/pathUtils';
-import { getFirmwareRange } from '../../common/paramsValidator';
+import {
+    PAYMENT_REQUEST_AMOUNT_BYTES,
+    encodePaymentRequestAmount,
+} from '../../../utils/paymentRequest';
 import {
     modifyAuxiliaryDataForBackwardsCompatibility,
     transformAuxiliaryData,
 } from '../cardanoAuxiliaryData';
 import { transformCertificate } from '../cardanoCertificate';
 import type { CertificateWithPoolOwnersAndRelays } from '../cardanoCertificate';
+import type { CollateralInputWithPath, InputWithPath, Path } from '../cardanoInputs';
 import {
-    CollateralInputWithPath,
-    InputWithPath,
-    Path,
     transformCollateralInput,
     transformInput,
     transformReferenceInput,
@@ -71,28 +73,15 @@ export type CardanoSignTransactionParams = {
     unsignedTx?: { body: string; hash: string };
     testnet?: boolean;
     chunkify?: boolean;
+    payment_req?: PROTO.PaymentRequest;
 };
 
 export default class CardanoSignTransaction extends AbstractMethod<
     'cardanoSignTransaction',
     CardanoSignTransactionParams
 > {
-    constructor(message: { id?: number; payload: Payload<'cardanoSignTransaction'> }) {
-        super(message);
-        this.requiredDeviceCapabilities = ['Capability_Cardano'];
-        this.firmwareRange = getFirmwareRange(
-            this.name,
-            getMiscNetwork('Cardano'),
-            this.firmwareRange,
-        );
-    }
-
-    get requiredPermissions(): MethodPermission[] {
-        return ['read', 'write'];
-    }
-
-    init() {
-        const { payload } = this;
+    constructor(message: MethodMessage<'cardanoSignTransaction'>) {
+        const { payload } = message;
 
         // @ts-expect-error payload.metadata is a legacy param
         if (payload.metadata) {
@@ -103,7 +92,7 @@ export default class CardanoSignTransaction extends AbstractMethod<
         }
 
         // @ts-expect-error payload.auxiliaryData.blob is a legacy param
-        if (payload.auxiliaryData && payload.auxiliaryData.blob) {
+        if (payload.auxiliaryData?.blob) {
             throw ERRORS.TypedError(
                 'Method_InvalidParameter',
                 'Auxiliary data can now only be sent as a hash.',
@@ -114,7 +103,7 @@ export default class CardanoSignTransaction extends AbstractMethod<
         // payload.auxiliaryData.governanceRegistrationParameters
         // are legacy params kept for backward compatibility (for now)
         // @ts-expect-error
-        if (payload.auxiliaryData && payload.auxiliaryData.catalystRegistrationParameters) {
+        if (payload.auxiliaryData?.catalystRegistrationParameters) {
             console.warn(
                 'Please use cVoteRegistrationParameters instead of catalystRegistrationParameters.',
             );
@@ -123,7 +112,7 @@ export default class CardanoSignTransaction extends AbstractMethod<
                 payload.auxiliaryData.catalystRegistrationParameters;
         }
         // @ts-expect-error
-        if (payload.auxiliaryData && payload.auxiliaryData.governanceRegistrationParameters) {
+        if (payload.auxiliaryData?.governanceRegistrationParameters) {
             console.warn(
                 'Please use cVoteRegistrationParameters instead of governanceRegistrationParameters.',
             );
@@ -133,11 +122,7 @@ export default class CardanoSignTransaction extends AbstractMethod<
         }
 
         // validate incoming parameters
-        // TODO: weak assert for compatibility purposes (issue #10841)
-        AssertWeak(
-            Type.Union([CardanoSignTransactionSchema, CardanoSignTransactionExtended]),
-            payload,
-        );
+        Assert(Type.Union([CardanoSignTransactionSchema, CardanoSignTransactionExtended]), payload);
 
         const inputsWithPath = payload.inputs.map(transformInput);
 
@@ -199,7 +184,7 @@ export default class CardanoSignTransaction extends AbstractMethod<
             referenceInputs = payload.referenceInputs.map(transformReferenceInput);
         }
 
-        this.params = {
+        const params = {
             signingMode: payload.signingMode,
             inputsWithPath,
             outputsWithData,
@@ -237,7 +222,22 @@ export default class CardanoSignTransaction extends AbstractMethod<
             unsignedTx: 'unsignedTx' in payload ? payload.unsignedTx : undefined,
             testnet: 'testnet' in payload ? payload.testnet : undefined,
             chunkify: typeof payload.chunkify === 'boolean' ? payload.chunkify : false,
+            payment_req: payload.payment_req
+                ? encodePaymentRequestAmount(
+                      payload.payment_req,
+                      PAYMENT_REQUEST_AMOUNT_BYTES.DEFAULT,
+                  )
+                : undefined,
         };
+
+        super(message, params);
+
+        this.requiredDeviceCapabilities = ['Capability_Cardano'];
+        this.requiredFirmwareCoins = [getMiscNetwork('ada')];
+    }
+
+    get requiredPermissions(): PermissionRequest[] {
+        return this.coinPerms('sign', this.requiredFirmwareCoins);
     }
 
     get info() {
@@ -245,7 +245,7 @@ export default class CardanoSignTransaction extends AbstractMethod<
     }
 
     _isFeatureSupported(feature: keyof typeof CardanoSignTransactionFeatures) {
-        return this.device.atLeast(CardanoSignTransactionFeatures[feature]);
+        return this.getDevice().atLeast(CardanoSignTransactionFeatures[feature]);
     }
 
     _ensureFeatureIsSupported(feature: keyof typeof CardanoSignTransactionFeatures) {
@@ -276,7 +276,7 @@ export default class CardanoSignTransaction extends AbstractMethod<
     }
 
     async _sign_tx(): Promise<CardanoSignedTxData> {
-        const { typedCall } = this.device.getCommands();
+        const { typedCall } = this.getDevice().getCommands();
 
         const hasAuxiliaryData = !!this.params.auxiliaryData;
 
@@ -304,6 +304,7 @@ export default class CardanoSignTransaction extends AbstractMethod<
             include_network_id: this.params.includeNetworkId,
             chunkify: this.params.chunkify,
             tag_cbor_sets: this.params.tagCborSets,
+            payment_req: this.params.payment_req,
         };
 
         // init
@@ -439,6 +440,7 @@ export default class CardanoSignTransaction extends AbstractMethod<
             );
         }
 
+        const { trezorUtils } = await cardano();
         const serializedTx = trezorUtils.signTransaction(unsignedTx.body, witnesses, { testnet });
 
         return {

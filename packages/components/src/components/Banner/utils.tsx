@@ -1,15 +1,28 @@
-import { Color } from '@trezor/theme';
+import { InfoIcon, LightbulbIcon, WarningIcon } from '@trezor/icons';
+import { type Color } from '@trezor/theme';
 
-import { BannerIntent } from './types';
-import { IconName } from '../Icon/Icon';
+import { type BannerIntent } from './types';
+import { type IconComponent } from '../Icon/Icon';
 
 export const mapIntentToBackgroundColor = (intent: BannerIntent): Color => {
     const colorMap: Record<BannerIntent, Color> = {
-        brand: 'backgroundPrimarySubtleOnElevation0',
-        info: 'backgroundAlertBlueSubtleOnElevation0',
-        warning: 'backgroundAlertYellowSubtleOnElevation0',
-        critical: 'backgroundAlertRedSubtleOnElevation0',
-        neutral: 'backgroundNeutralSubtleOnElevation0',
+        brand: 'elementFillBrandSoft',
+        info: 'elementFillInfoSoft',
+        warning: 'elementFillWarningSoft',
+        critical: 'elementFillCriticalSoft',
+        neutral: 'elementFillNeutralSoft',
+    };
+
+    return colorMap[intent];
+};
+
+export const mapIntentToBorderColor = (intent: BannerIntent): Color => {
+    const colorMap: Record<BannerIntent, Color> = {
+        brand: 'elementBorderBrandSofter',
+        info: 'elementBorderInfoSofter',
+        warning: 'elementBorderWarningSofter',
+        critical: 'elementBorderCriticalSofter',
+        neutral: 'elementBorderNeutralSofter',
     };
 
     return colorMap[intent];
@@ -17,23 +30,23 @@ export const mapIntentToBackgroundColor = (intent: BannerIntent): Color => {
 
 export const mapIntentToIconColor = (intent: BannerIntent): Color => {
     const colorMap: Record<BannerIntent, Color> = {
-        brand: 'iconPrimaryDefault',
-        info: 'iconAlertBlue',
-        warning: 'iconAlertYellow',
-        critical: 'iconAlertRed',
-        neutral: 'iconSubdued',
+        brand: 'contentBrand',
+        info: 'contentInfo',
+        warning: 'contentWarning',
+        critical: 'contentCritical',
+        neutral: 'contentPrimary',
     };
 
     return colorMap[intent];
 };
 
-export const mapIntentToIcon = (intent: BannerIntent): IconName => {
-    const iconMap: Record<BannerIntent, IconName> = {
-        brand: 'lightbulb',
-        info: 'info',
-        warning: 'warning',
-        critical: 'warning',
-        neutral: 'info',
+export const mapIntentToIcon = (intent: BannerIntent): IconComponent => {
+    const iconMap: Record<BannerIntent, IconComponent> = {
+        brand: LightbulbIcon,
+        info: InfoIcon,
+        warning: WarningIcon,
+        critical: WarningIcon,
+        neutral: InfoIcon,
     };
 
     return iconMap[intent];

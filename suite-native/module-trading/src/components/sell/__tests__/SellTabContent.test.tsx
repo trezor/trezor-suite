@@ -1,11 +1,7 @@
-import {
-    PreloadedState,
-    act,
-    renderWithStoreProviderAsync,
-    screen,
-    userEvent,
-} from '@suite-native/test-utils';
+import { getTranslation } from '@suite-native/intl';
+import { act, screen, userEvent } from '@suite-native/test-utils-store';
 
+import { renderWithTradingProvider } from '../../../__tests__/tradingTestUtils';
 import { SellTabContent } from '../SellTabContent';
 
 let mockUseSellData: jest.Mock;
@@ -18,6 +14,10 @@ jest.mock('@suite-native/trading-state', () => ({
     selectIsTradingSellEnabled: () => true,
 }));
 
+jest.mock('../../concierge/ConciergeAlert', () => ({
+    ConciergeAlert: () => null,
+}));
+
 describe('SellTabContent', () => {
     beforeEach(() => {
         mockUseSellData = jest.fn(() => ({
@@ -27,65 +27,69 @@ describe('SellTabContent', () => {
         }));
     });
 
-    const renderSellTabContent = (preloadedState?: PreloadedState) =>
-        renderWithStoreProviderAsync(<SellTabContent />, { preloadedState });
+    const renderSellTabContent = () =>
+        renderWithTradingProvider(<SellTabContent />, { tradeType: 'sell' });
 
     const expectSkeleton = () => {
         expect(screen.getAllByTestId('BoxSkeleton').length).toBeGreaterThan(0);
     };
 
     const expectSellForm = () => {
-        expect(screen.getByText('You pay')).toBeOnTheScreen();
+        expect(
+            screen.getByText(getTranslation('moduleTrading.selectFiat.sell.title')),
+        ).toBeOnTheScreen();
     };
 
     const expectServerOffline = () => {
-        expect(screen.getByText("It's not you, it's us.")).toBeOnTheScreen();
+        expect(
+            screen.getByText(getTranslation('tradingAtoms.error.serverOfflineTitle')),
+        ).toBeOnTheScreen();
     };
 
-    it('should render Sell skeleton when isLoading is true', async () => {
+    it('should render Sell skeleton when isLoading is true', () => {
         mockUseSellData.mockReturnValue({
             isLoading: true,
             lastLoadedTimestamp: 1,
             isFullyLoaded: false,
         });
 
-        await renderSellTabContent();
+        renderSellTabContent();
 
         expectSkeleton();
     });
 
-    it('should render Sell skeleton when lastLoadedTimestamp is 0', async () => {
+    it('should render Sell skeleton when lastLoadedTimestamp is 0', () => {
         mockUseSellData.mockReturnValue({
             isLoading: false,
             lastLoadedTimestamp: 0,
             isFullyLoaded: false,
         });
 
-        await renderSellTabContent();
+        renderSellTabContent();
 
         expectSkeleton();
     });
 
-    it('should render Sell form when isLoading is false, lastLoadedTimestamp is greater than 0 and isFullyLoaded true', async () => {
+    it('should render Sell form when isLoading is false, lastLoadedTimestamp is greater than 0 and isFullyLoaded true', () => {
         mockUseSellData.mockReturnValue({
             isLoading: false,
             lastLoadedTimestamp: 1,
             isFullyLoaded: true,
         });
 
-        await renderSellTabContent();
+        renderSellTabContent();
 
         expectSellForm();
     });
 
-    it('should render server error info when isLoading is false, lastLoadedTimestamp is greater than 0 and isFullyLoaded false', async () => {
+    it('should render server error info when isLoading is false, lastLoadedTimestamp is greater than 0 and isFullyLoaded false', () => {
         mockUseSellData.mockReturnValue({
             isLoading: false,
             lastLoadedTimestamp: 1,
             isFullyLoaded: false,
         });
 
-        await renderSellTabContent();
+        renderSellTabContent();
 
         expectServerOffline();
     });
@@ -103,9 +107,9 @@ describe('SellTabContent', () => {
                 isFullyLoaded: true,
             });
 
-        const { getByText } = await renderSellTabContent();
+        const { getByText } = renderSellTabContent();
 
-        const reloadButton = getByText('Try again');
+        const reloadButton = getByText(getTranslation('tradingAtoms.error.serverOfflineRetry'));
 
         await act(async () => {
             await userEvent.press(reloadButton);

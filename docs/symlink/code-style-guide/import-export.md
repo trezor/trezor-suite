@@ -1,1 +1,1 @@
-../../../skills/import-export.md
+../../../skills/import-export/SKILL.md

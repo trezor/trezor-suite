@@ -6,13 +6,13 @@ import { Button, Card, Image, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
     AccountsImportStackRoutes,
-    HomeStackParamList,
-    HomeStackRoutes,
-    RootStackParamList,
+    type HomeStackParamList,
+    type HomeStackRoutes,
+    type RootStackParamList,
     RootStackRoutes,
-    StackToTabCompositeNavigationProp,
+    type StackToTabCompositeNavigationProp,
 } from '@suite-native/navigation';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 const SCREEN_HEIGHT = Dimensions.get('screen').height;
 
@@ -53,7 +53,7 @@ export const EmptyPortfolioTrackerState = () => {
             <Card
                 alertProps={{
                     title: <Translation id="moduleHome.emptyState.portfolioTracker.alert" />,
-                    variant: 'info',
+                    intent: 'info',
                 }}
                 style={applyStyle(cardStyle)}
             >
@@ -68,7 +68,7 @@ export const EmptyPortfolioTrackerState = () => {
                         <Text variant="headline-md">
                             <Translation id="moduleHome.emptyState.portfolioTracker.title" />
                         </Text>
-                        <Text color="textSubdued" textAlign="center">
+                        <Text color="contentSecondary" textAlign="center">
                             <Translation id="moduleHome.emptyState.portfolioTracker.subtitle" />
                         </Text>
                     </VStack>

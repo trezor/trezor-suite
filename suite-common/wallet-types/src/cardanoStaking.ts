@@ -1,30 +1,3 @@
-export interface PendingStakeTx {
-    accountKey: string;
-    txid: string;
-    ts: number;
-}
-
-export interface StakePool {
-    hex: string;
-    bech32: string;
-    live_stake: string;
-    saturation: string;
-}
-
-export type PoolsResponse = {
-    next: StakePool;
-    pools: StakePool[];
-};
-
-interface DRep {
-    hex: string;
-    bech32: string;
-}
-
-export interface DRepResponse {
-    [key: string]: DRep;
-}
-
 export type CardanoAction =
     | 'delegate'
     | 'withdrawal'
@@ -52,9 +25,3 @@ export type CardanoStaking = {
 export const supportedCardanoNetworkSymbols = ['ada'] as const;
 
 export type SupportedCardanoNetworkSymbols = (typeof supportedCardanoNetworkSymbols)[number];
-
-export interface CardanoPoolInfo {
-    apy: number;
-    saturation: number; // in percentage
-    id: string;
-}

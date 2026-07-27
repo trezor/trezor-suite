@@ -1,10 +1,10 @@
 import CopyWebpackPlugin from 'copy-webpack-plugin';
-import CssMinimizerPlugin from 'css-minimizer-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import path from 'path';
 import webpack from 'webpack';
 
-import { FLAGS, routes } from '@suite-common/suite-config';
+import { routes } from '@suite/router-config';
+import { FLAGS } from '@suite-common/suite-config';
 
 import { assetPrefix, isDev } from '../utils/env';
 import { getPathForProject } from '../utils/path';
@@ -14,51 +14,70 @@ export const baseDir = getPathForProject('web');
 const config: webpack.Configuration = {
     target: 'browserslist',
     entry: {
-        main: path.join(baseDir, 'src', 'index.ts'),
-        ['sessions-background-sharedworker']: {
-            filename: 'workers/[name].js',
+        main: [path.join(baseDir, 'src', 'index.ts')],
+        'sessions-background-sharedworker': {
+            filename: 'js/workers/[name].js',
             import: path.resolve(
                 __dirname,
-                '../../transport/src/sessions/background-sharedworker.ts',
+                '../../transport-web/src/sessions/background-sharedworker.ts',
             ),
             // Use importScripts-based chunk loading so vendor/runtime chunks load in a worker context
             chunkLoading: 'import-scripts',
+        },
+        'connect-popup-bootstrap': {
+            filename: 'connect-popup/bootstrap.[hash].js',
+            import: path.resolve(__dirname, '../../connect-web/src/bootstrap/index.ts'),
         },
     },
     output: {
         path: path.join(baseDir, 'build'),
     },
-    resolve: {
-        fallback: { vm: require.resolve('vm-browserify') },
-    },
     plugins: [
         new CopyWebpackPlugin({
             patterns: [
-                'browser-detection',
-                'fonts',
-                'images',
-                'oauth',
-                'videos',
-                'guide/assets',
-                'favicon.js',
-            ]
-                .map(dir => ({
+                ...[
+                    'browser-detection',
+                    'fonts',
+                    'images',
+                    'oauth',
+                    'videos',
+                    'guide/assets',
+                    'favicon.js',
+                ].map(dir => ({
                     from: path.join(__dirname, '..', '..', 'suite-data', 'files', dir),
                     to: path.join(baseDir, 'build', 'static', dir),
-                }))
-                .concat([
-                    {
-                        from: path.join(
-                            __dirname,
-                            '../../../',
-                            'suite-common',
-                            'message-system',
-                            'files',
-                            'config.v1.ts',
-                        ),
-                        to: path.join(baseDir, 'build', 'static', 'message-system'),
-                    },
-                ]),
+                })),
+                {
+                    from: path.join(
+                        __dirname,
+                        '../../../',
+                        'suite-common',
+                        'message-system',
+                        'files',
+                        'config.v1.ts',
+                    ),
+                    to: path.join(baseDir, 'build', 'static', 'message-system'),
+                },
+                {
+                    from: path.join(
+                        path.dirname(require.resolve('@suite-common/flags/package.json')),
+                        'assets',
+                        'flags',
+                    ),
+                    to: path.join(baseDir, 'build', 'static', 'flags'),
+                },
+                {
+                    from: path.join(
+                        __dirname,
+                        '..',
+                        '..',
+                        'suite-data',
+                        'files',
+                        'release-notes.md',
+                    ),
+                    to: path.join(baseDir, 'build'),
+                },
+            ],
             options: {
                 concurrency: 100,
             },
@@ -90,7 +109,18 @@ const config: webpack.Configuration = {
                     filename: path.join(baseDir, 'build', route.pattern, 'index.html'),
                 }),
         ),
-        ...(!isDev ? [new CssMinimizerPlugin()] : []),
+        new HtmlWebpackPlugin({
+            chunks: ['connect-popup-bootstrap'],
+            minify: false,
+            templateParameters: {
+                assetPrefix,
+                isOnionLocation: FLAGS.ONION_LOCATION_META,
+            },
+            inject: 'body' as const,
+            scriptLoading: 'blocking' as const,
+            template: path.resolve(__dirname, '../../connect-web/src/bootstrap/bootstrap.html'),
+            filename: path.join(baseDir, 'build/connect-popup/bootstrap.html'),
+        }),
     ],
 };
 

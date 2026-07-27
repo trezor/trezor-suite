@@ -1,7 +1,8 @@
 import { Translation } from '@suite/intl';
 import { Banner } from '@trezor/components';
+import { WarningIcon } from '@trezor/icons';
 
-import { Account } from 'src/types/wallet';
+import { type Account } from 'src/types/wallet';
 
 interface CardanoLegacyBannerProps {
     account?: Account;
@@ -17,7 +18,7 @@ export const CardanoLegacyBanner = ({ account }: CardanoLegacyBannerProps) => {
     return (
         <Banner
             intent="critical"
-            icon="warning"
+            icon={WarningIcon}
             description={<Translation id="TR_ACCOUNT_TYPE_CARDANO_LEGACY_BANNER" />}
         />
     );

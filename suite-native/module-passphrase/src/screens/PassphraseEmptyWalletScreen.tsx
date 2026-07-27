@@ -1,12 +1,13 @@
 import { useDispatch, useSelector } from 'react-redux';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import {
     cancelDiscoveryThunk,
     runDiscoveryThunk,
     startDiscoveryThunk,
 } from '@suite-common/wallet-core';
-import { events } from '@suite-native/analytics';
+import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import {
     Box,
     Button,
@@ -19,11 +20,10 @@ import {
 import { EmptyWalletSvg } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';
 import { EmptyWalletInfoSheet, PassphraseContentScreenWrapper } from '@suite-native/passphrase';
-import { useAnalytics } from '@suite-native/services';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 const cardStyle = prepareNativeStyle(utils => ({
-    borderColor: utils.colors.borderElevation0,
+    borderColor: utils.colors.borderNeutral,
     borderWidth: utils.borders.widths.small,
     gap: utils.spacings.sp16,
 }));
@@ -31,7 +31,7 @@ const cardStyle = prepareNativeStyle(utils => ({
 export const PassphraseEmptyWalletScreen = () => {
     const { applyStyle } = useNativeStyles();
     const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
-    const analytics = useAnalytics();
+    const { analytics } = useServices(selectNativeAnalyticsDep);
     const dispatch = useDispatch();
 
     const device = useSelector(selectSelectedDevice);
@@ -46,7 +46,7 @@ export const PassphraseEmptyWalletScreen = () => {
                     isAddingExistingWallet: false,
                 }),
             );
-            dispatch(runDiscoveryThunk(device));
+            dispatch(runDiscoveryThunk({ device }));
         }
         analytics.report({ type: events.passphraseTryAgainEvent.name });
     };
@@ -71,20 +71,20 @@ export const PassphraseEmptyWalletScreen = () => {
             </Card>
             <TextDivider
                 title="generic.orSeparator"
-                lineColor="borderElevation0"
-                textColor="textSubdued"
+                lineColor="borderNeutral"
+                textColor="contentSecondary"
             />
             <VStack marginHorizontal="sp16" spacing="sp16">
                 <VStack alignItems="center" spacing="sp4">
                     <Text textAlign="center" variant="body-md-strong">
                         <Translation id="modulePassphrase.emptyPassphraseWallet.expectingPassphraseWallet.title" />
                     </Text>
-                    <Text textAlign="center" color="textSubdued">
+                    <Text textAlign="center" color="contentSecondary">
                         <Translation id="modulePassphrase.emptyPassphraseWallet.expectingPassphraseWallet.description" />
                     </Text>
                 </VStack>
                 <Box>
-                    <Button colorScheme="tertiaryElevation0" onPress={handleTryAgain}>
+                    <Button intent="neutral" priority="secondary" onPress={handleTryAgain}>
                         <Translation id="modulePassphrase.emptyPassphraseWallet.expectingPassphraseWallet.button" />
                     </Button>
                 </Box>

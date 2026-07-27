@@ -24,7 +24,7 @@ class DeviceSettingsActions {
     }
 
     async waitForPinProtectionScreen() {
-        await waitForVisible(by.id('@screen/PinProtection'));
+        await waitForVisible(by.id('@screen/DevicePinProtection'));
     }
 
     async waitForWipeDeviceContinueOnTrezor() {
@@ -49,8 +49,7 @@ class DeviceSettingsActions {
     }
 
     async tapEnablePinProtectionButton() {
-        await waitForVisible(by.id('@screen/PinProtection'));
-
+        await this.waitForPinProtectionScreen();
         const enablePinProtectionButton = element(by.id('@device-pin-protection/enable-button'));
         await waitForVisible(enablePinProtectionButton);
 
@@ -146,7 +145,7 @@ class DeviceSettingsActions {
 
     async goToNextDeviceCheckBackupTutorialStep(step: number) {
         const buttonId = `@swipeableWalkthroughStep/checkBackupTutorialStep${step}/nextButton`;
-        await waitForVisible(by.id(buttonId));
+        await waitForVisible(by.id(buttonId), { visibilityThreshold: 55 });
         await element(by.id(buttonId)).tap();
     }
 

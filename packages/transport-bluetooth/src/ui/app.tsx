@@ -1,8 +1,12 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { TrezorBluetooth } from '../client/trezor-bluetooth';
-import { BluetoothDevice, NotificationCharacteristic, NotificationEvent } from '../client/types';
+import {
+    type BluetoothDevice,
+    type NotificationCharacteristic,
+    type NotificationEvent,
+} from '../client/types';
 
 // Inline CSS (simplified, readable)
 const INLINE_CSS = `
@@ -53,7 +57,7 @@ const getPort = () => {
     return 21327;
 };
 
-export const App: React.FC = () => {
+export const App = () => {
     // inject inline styles on mount
     useEffect(() => {
         const style = document.createElement('style');

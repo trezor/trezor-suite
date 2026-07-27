@@ -1,19 +1,18 @@
 import styled from 'styled-components';
 
+import { useExternalLink } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { Box, Button, Column, Image, Paragraph, Text } from '@trezor/components';
-import { spacings } from '@trezor/theme';
 import { DASHBOARD_BANNER_TS7_URL } from '@trezor/urls';
 
-import { AnimatedWrapper, CloseButton } from './CommonPromoBannerComponents';
-import { useExternalLink, useLayoutSize } from '../../../hooks/suite';
-import { ContentFlex, useIsContentBelowBreakpoint } from '../../../support/suite/ContentFlex';
+import { useLayoutSize } from 'src/hooks/suite';
+import { ContentFlex, useIsContentBelowBreakpoint } from 'src/support/suite/ContentFlex';
+
+import { CloseButton } from './CommonPromoBannerComponents';
 
 type TS7BannerProps = {
     onClose: () => void;
     onCTAClick: () => void;
-    isVisible: boolean;
-    ['data-testid']?: string;
 };
 
 export const ImageContainer = styled.div`
@@ -62,41 +61,39 @@ const CTAButton = ({ onClick, isBelowLaptop }: { onClick: () => void; isBelowLap
     );
 };
 
-export const TS7Banner = ({ onClose, onCTAClick, isVisible }: TS7BannerProps) => {
+export const TS7Banner = ({ onClose, onCTAClick }: TS7BannerProps) => {
     const { isBelowLaptop, isBelowDesktop } = useLayoutSize();
     const isVerticalLayout = useIsContentBelowBreakpoint();
 
     return (
-        <AnimatedWrapper isVisible={isVisible} flagToHide="showTS7DashboardPromoBanner">
-            <Box
-                height={isVerticalLayout ? undefined : 213}
-                padding={{ horizontal: 24, top: isVerticalLayout ? 16 : 0 }}
-                backgroundColor="backgroundTertiaryDefaultOnElevation0"
+        <Box
+            height={isVerticalLayout ? undefined : 213}
+            padding={{ horizontal: 24, top: isVerticalLayout ? 16 : 0 }}
+            backgroundColor="elementFillNeutralSofter"
+        >
+            <ContentFlex
+                height="100%"
+                margin={{
+                    right: isBelowDesktop ? undefined : 48,
+                }}
+                justifyContent="space-between"
+                gap={24}
+                alignItems="center"
             >
-                <ContentFlex
-                    height="100%"
-                    margin={{
-                        right: isBelowDesktop ? undefined : spacings.xxxxl,
-                    }}
-                    justifyContent="space-between"
-                    gap={spacings.xl}
-                    alignItems="center"
-                >
-                    <Column gap={isBelowDesktop ? spacings.md : spacings.xl}>
-                        <Column gap={isBelowLaptop ? spacings.xxs : spacings.xs}>
-                            <Title isVerticalLayout={isVerticalLayout} />
-                            <Description />
-                        </Column>
-
-                        <CTAButton onClick={onCTAClick} isBelowLaptop={isBelowLaptop} />
+                <Column gap={isBelowDesktop ? 16 : 24}>
+                    <Column gap={isBelowLaptop ? 4 : 8}>
+                        <Title isVerticalLayout={isVerticalLayout} />
+                        <Description />
                     </Column>
 
-                    <ImageContainer>
-                        <Image image="DASHBOARD_PROMO_BANNER_T3W1" maxHeight="90%" />
-                    </ImageContainer>
-                </ContentFlex>
-                <CloseButton onClose={onClose} />
-            </Box>
-        </AnimatedWrapper>
+                    <CTAButton onClick={onCTAClick} isBelowLaptop={isBelowLaptop} />
+                </Column>
+
+                <ImageContainer>
+                    <Image image="DASHBOARD_PROMO_BANNER_T3W1" maxHeight="90%" />
+                </ImageContainer>
+            </ContentFlex>
+            <CloseButton onClose={onClose} />
+        </Box>
     );
 };

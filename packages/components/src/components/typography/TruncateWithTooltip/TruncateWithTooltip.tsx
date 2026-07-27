@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 
 import { Tooltip, type AllowedFrameProps as TooltipAllowedFrameProps } from '../../Tooltip/Tooltip';
-import { TooltipDelay } from '../../Tooltip/TooltipDelay';
+import { type TooltipDelay } from '../../Tooltip/TooltipDelay';
 
 const EllipsisContainer = styled.div`
     text-overflow: ellipsis;
@@ -26,7 +26,7 @@ export const TruncateWithTooltip = ({ children, delayShow, ...rest }: TruncateWi
         const resizeObserver = new ResizeObserver(entries => {
             const scrollWidth = containerRef.current?.scrollWidth ?? null;
             const scrollHeight = containerRef.current?.scrollHeight ?? null;
-            const borderBoxSize = entries[0].borderBoxSize?.[0];
+            const borderBoxSize = entries[0]?.borderBoxSize?.[0];
             if (!borderBoxSize || !scrollWidth || !scrollHeight) {
                 return;
             }

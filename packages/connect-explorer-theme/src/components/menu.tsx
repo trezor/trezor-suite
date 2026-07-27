@@ -11,8 +11,9 @@ import type { Item, MenuItem, PageItem } from 'nextra/normalize-pages';
 import styled from 'styled-components';
 
 import { Select } from '@trezor/components';
-import { CoinLogo } from '@trezor/product-components';
+import { TokenIcon } from '@trezor/product-components';
 import { typography } from '@trezor/theme';
+import { arrayPartition } from '@trezor/utils';
 
 import { Anchor } from './anchor';
 import { Collapse } from './collapse';
@@ -53,7 +54,7 @@ const MenuCategory = styled.div`
     font-weight: 600;
     text-transform: uppercase;
     ${typography['body-xs']}
-    color: ${({ theme }) => theme.textDefault};
+    color: ${({ theme }) => theme.contentPrimary};
 `;
 
 const SelectWrapper = styled.div`
@@ -80,6 +81,8 @@ interface MenuProps {
 
 function MenuInner({ directories, anchors, className, onlyCurrentDocs }: MenuProps): ReactElement {
     const renderStructure = (item: PageItem | Item) => {
+        if (item.display === 'hidden') return null;
+
         if (!onlyCurrentDocs || item.isUnderCurrentDocsTree) {
             if (
                 item.type === 'menu' ||
@@ -119,9 +122,9 @@ export function Menu({
         tezos: 'xtz',
         tron: 'trx',
     };
-    const defaultActiveCoin = Object.keys(coinSymbols).includes(route.split('/')[2])
-        ? route.split('/')[2]
-        : 'bitcoin';
+    const coinNames = Object.keys(coinSymbols);
+    const routeCoinSegment = route.split('/')[2] ?? '';
+    const defaultActiveCoin = coinNames.includes(routeCoinSegment) ? routeCoinSegment : 'bitcoin';
     const [activeCoin, setActiveCoin] = useState(defaultActiveCoin);
     useEffect(() => {
         // Only on route change
@@ -134,16 +137,20 @@ export function Menu({
     const topLevelItems = directories.filter(item => item.kind !== 'Folder');
     const methodsItems =
         directories.find(item => item.kind === 'Folder' && item.name === 'methods')?.children ?? [];
-    const methodsOptions = methodsItems
-        ?.filter(item => item.kind === 'Folder' && Object.keys(coinSymbols).includes(item.name))
-        .map(item => ({
-            label: item.title,
-            value: item.name,
-        }));
-    const activeCoinItems = methodsItems?.find(item => item.name === activeCoin)?.children;
-    const otherMethods = methodsItems?.filter(
-        item => item.kind !== 'Folder' || !Object.keys(coinSymbols).includes(item.name),
+    const [coinMethods, nonCoinMethods] = arrayPartition(
+        methodsItems,
+        item => item.kind === 'Folder' && coinNames.includes(item.name),
     );
+    const methodsOptions = coinMethods.map(item => ({
+        label: item.title,
+        value: item.name,
+    }));
+    const activeCoinItems = methodsItems.find(item => item.name === activeCoin)?.children;
+    const [commonMethods, otherMethods] = arrayPartition(
+        nonCoinMethods,
+        item => item.kind === 'Folder' && item.name === 'common',
+    );
+    const commonMethodsItems = commonMethods[0]?.children ?? [];
     const otherFolders = directories.filter(
         item => item.kind === 'Folder' && item.name !== 'methods',
     );
@@ -173,7 +180,7 @@ export function Menu({
                     formatOptionLabel={option => (
                         <Option>
                             {coinSymbols[option.value] && (
-                                <CoinLogo size={18} symbol={coinSymbols[option.value]} />
+                                <TokenIcon size={20} symbol={coinSymbols[option.value]} />
                             )}
                             <Label>{option.label}</Label>
                         </Option>
@@ -186,6 +193,12 @@ export function Menu({
             </SelectWrapper>
             <MenuInner
                 directories={activeCoinItems ?? []}
+                anchors={anchors}
+                onlyCurrentDocs={onlyCurrentDocs}
+            />
+            <MenuCategory>Common Methods</MenuCategory>
+            <MenuInner
+                directories={commonMethodsItems}
                 anchors={anchors}
                 onlyCurrentDocs={onlyCurrentDocs}
             />
@@ -216,7 +229,7 @@ export const Folder = memo(function FolderInner(props: FolderProps) {
 
 export function FolderImpl({ item, anchors }: FolderProps): ReactElement {
     const routeOriginal = useFSRoute();
-    const [route] = routeOriginal.split('#');
+    const [route = ''] = routeOriginal.split('#');
     const active = [route, route + '/'].includes(item.route + '/');
     const activeRouteInside = active || route.startsWith(item.route + '/');
 
@@ -264,9 +277,8 @@ export function FolderImpl({ item, anchors }: FolderProps): ReactElement {
                 routeFromChildren,
             ]),
         );
-        // eslint-disable-next-line react-hooks/immutability
-        item.children = Object.entries(menu.items || {}).map(([key, menuItem]) => {
-            const routeMenuItem = routes[key] || {
+        const children = Object.entries(menu.items || {}).map(([key, menuItem]) => {
+            const routeMenuItem = routes[key] ?? {
                 name: key,
                 ...('locale' in menu && { locale: menu.locale }),
                 route: menu.route + '/' + key,
@@ -277,6 +289,9 @@ export function FolderImpl({ item, anchors }: FolderProps): ReactElement {
                 ...menuItem,
             };
         });
+        // @ts-expect-error: fallback routeMenuItem is a partial PageItem (missing kind/type)
+        // eslint-disable-next-line react-hooks/immutability
+        item.children = children;
     }
 
     const isLink = 'withIndexPage' in item && item.withIndexPage;

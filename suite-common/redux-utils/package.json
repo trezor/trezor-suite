@@ -8,11 +8,13 @@
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build",
-        "test:unit": "yarn g:jest -c ../../jest.config.base.js"
+        "test:unit": "yarn g:jest",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
-        "@reduxjs/toolkit": "2.11.2",
+        "@reduxjs/toolkit": "2.12.0",
         "@suite-common/analytics": "workspace:*",
+        "@suite-common/bip329-types": "workspace:*",
         "@suite-common/delegated-identity-key-types": "workspace:*",
         "@suite-common/metadata-types": "workspace:*",
         "@suite-common/platform-encryption": "workspace:*",
@@ -23,11 +25,14 @@
         "@suite-common/wallet-types": "workspace:*",
         "@trezor/analytics-uploader": "workspace:*",
         "@trezor/connect": "workspace:*",
-        "lodash": "^4.17.21",
-        "react": "19.1.0",
-        "react-redux": "9.2.0",
+        "@trezor/connect-common": "workspace:*",
+        "@trezor/transport-common": "workspace:*",
+        "@trezor/utils": "workspace:*",
+        "lodash": "^4.18.1",
+        "react": "19.2.3",
+        "react-redux": "9.3.0",
         "redux": "^5.0.1",
         "redux-thunk": "^3.1.0",
-        "reselect": "5.1.1"
+        "reselect": "5.2.0"
     }
 }

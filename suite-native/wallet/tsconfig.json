@@ -1,0 +1,12 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": { "outDir": "libDev" },
+    "references": [
+        {
+            "path": "../../suite-common/suite-sync"
+        },
+        { "path": "../labeling" },
+        { "path": "../../packages/connect" },
+        { "path": "../../packages/device-utils" }
+    ]
+}

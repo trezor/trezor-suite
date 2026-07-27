@@ -1,0 +1,15 @@
+{
+    "$schema": "../node_modules/nx/schemas/project-schema.json",
+    "name": "@trezor/eslint-local-rules",
+    "projectType": "library",
+    "sourceRoot": "eslint-local-rules",
+    "targets": {
+        "test:unit": {
+            "executor": "nx:run-commands",
+            "options": {
+                "command": "yarn jest --config eslint-local-rules/jest.config.js --runInBand",
+                "cwd": "."
+            }
+        }
+    }
+}

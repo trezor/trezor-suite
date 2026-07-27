@@ -1,4 +1,4 @@
-import { TRANSPORT, Transport } from '@trezor/transport';
+import { TRANSPORT, type Transport } from '@trezor/transport-common';
 import { TypedEmitter, resolveAfter } from '@trezor/utils';
 
 const createOverrideLock = () => {
@@ -99,15 +99,18 @@ export class TransportManager extends TypedEmitter<TransportManagerEvents> {
     }
 
     private async selectTransport(
-        [transport, ...rest]: Transport[],
+        transports: Transport[],
         signal: AbortSignal,
     ): Promise<Transport> {
         if (signal.aborted) throw new Error(signal.reason);
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const transport: Transport = transports[0];
+        const rest = transports.slice(1);
         if (transport === this.activeTransport) return transport;
         const result = await transport.init({ signal });
         if (result.success) return transport;
         else if (rest.length) return this.selectTransport(rest, signal);
-        else throw new Error(result.error);
+        else throw new Error(result.error.code);
     }
 
     private scheduleUpgradeCheck(pendingTransportEvent: boolean) {

@@ -1,4 +1,4 @@
-import { Account, ExcludedUtxos } from '@suite-common/wallet-types';
+import { type Account, type ExcludedUtxos } from '@suite-common/wallet-types';
 import { getUtxoOutpoint } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
@@ -23,7 +23,7 @@ export const getExcludedUtxos = ({
     const excludedUtxos: ExcludedUtxos = {};
     utxos?.forEach(utxo => {
         const outpoint = getUtxoOutpoint(utxo);
-        const anonymity = (anonymitySet && anonymitySet[utxo.address]) || 1;
+        const anonymity = anonymitySet?.[utxo.address] || 1;
         if (new BigNumber(utxo.amount).lt(Number(dustLimit))) {
             // is lower than dust limit
             excludedUtxos[outpoint] = 'dust';

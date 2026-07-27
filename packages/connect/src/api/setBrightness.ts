@@ -1,32 +1,32 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/SetBrightness.js
 
+import { type PermissionRequest } from '@trezor/connect-common';
 import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 
-import { AbstractMethod, MethodPermission, Payload } from '../core/AbstractMethod';
+import type { MethodMessage } from '../core/AbstractMethod';
+import { AbstractMethod } from '../core/AbstractMethod';
 
 export default class SetBrightness extends AbstractMethod<'setBrightness', PROTO.SetBrightness> {
-    constructor(message: { id?: number; payload: Payload<'setBrightness'> }) {
-        super(message);
-        this.skipFinalReload = false;
-        this.useDeviceState = false;
-    }
-    get requiredPermissions(): MethodPermission[] {
-        return ['management'];
-    }
-
-    init() {
-        const { payload } = this;
+    constructor(message: MethodMessage<'setBrightness'>) {
+        const { payload } = message;
 
         Assert(PROTO.SetBrightness, payload);
 
-        this.params = {
-            value: payload.value,
-        };
+        const params = { value: payload.value };
+
+        super(message, params);
+        this.skipFinalReload = false;
+        this.useDeviceState = false;
+    }
+    get requiredPermissions(): PermissionRequest[] {
+        return [{ permission: 'management' }];
     }
 
+    init() {}
+
     async run() {
-        const cmd = this.device.getCommands();
+        const cmd = this.getDevice().getCommands();
         const response = await cmd.typedCall('SetBrightness', 'Success', this.params);
 
         return response.message;

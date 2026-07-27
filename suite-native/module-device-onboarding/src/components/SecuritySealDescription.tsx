@@ -1,7 +1,8 @@
 import { useSelector } from 'react-redux';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { selectDeviceModel } from '@suite-common/device';
-import { events } from '@suite-native/analytics';
+import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import {
     BottomSheetModal,
     Box,
@@ -10,10 +11,8 @@ import {
     VStack,
     useBottomSheetModal,
 } from '@suite-native/atoms';
-import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { Link, useOpenLink } from '@suite-native/link';
-import { useAnalytics } from '@suite-native/services';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { HELP_CENTER_PACKAGING_T3B1_URL, HELP_CENTER_PACKAGING_T3T1_URL } from '@trezor/urls';
 
@@ -21,7 +20,7 @@ import { SecuritySealImages } from './SecuritySealImages';
 
 export const SecuritySealDescription = () => {
     const openLink = useOpenLink();
-    const analytics = useAnalytics();
+    const { analytics } = useServices(selectNativeAnalyticsDep);
     const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
 
     const handleLinkPress = () => {
@@ -57,7 +56,7 @@ export const SecuritySealDescription = () => {
                                 label={linkChunk}
                                 isUnderlined
                                 textVariant="body-md-strong"
-                                textColor="backgroundSecondaryDefault"
+                                textColor="legacyBackgroundSecondaryDefault"
                             />
                         ),
                     }}
@@ -90,8 +89,9 @@ export const SecuritySealDescription = () => {
                                         <Translation id="generic.buttons.gotIt" />
                                     </Button>
                                     <Button
-                                        viewLeft={<Icon name="arrowUpRight" />}
-                                        colorScheme="tertiaryElevation0"
+                                        iconLeft="arrowUpRight"
+                                        intent="neutral"
+                                        priority="secondary"
                                         onPress={handleLearnMoreButtonPress}
                                     >
                                         <Translation id="generic.buttons.learnMore" />

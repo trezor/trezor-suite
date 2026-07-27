@@ -1,13 +1,12 @@
+import { selectIsDebugModeActive } from '@suite/debug';
 import { Translation } from '@suite/intl';
+import { SettingsAnchor, goto } from '@suite/router';
+import { selectIsExperimentalEnabled } from '@suite/settings';
 import { Box, Column, Icon } from '@trezor/components';
+import { AtomIcon, CheckIcon, DotOutlineFilledIcon, StarFourIcon } from '@trezor/icons';
+import { QuickActionButton, TooltipRow } from '@trezor/product-components';
 
-import { goto } from 'src/actions/suite/routerActions';
-import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';
-
-import { QuickActionButton } from './QuickActionButton';
-import { TooltipRow } from './TooltipRow';
 
 type DebugAndExperimentalTooltipProps = {
     isDebugMode: boolean;
@@ -23,30 +22,30 @@ const DebugAndExperimentalTooltip = ({
     <Column gap={16} padding={4} alignItems="start">
         {isExperimental && (
             <TooltipRow
-                iconName="check"
+                icon={CheckIcon}
                 intent="brand"
                 header={<Translation id="TR_EXPERIMENTAL_FEATURES_ALLOW" />}
-                leftItem={<Icon name="atom" intent="warning" size={16} />}
+                leftItem={<Icon as={AtomIcon} intent="warning" isInverse size={16} />}
             >
                 <Translation id="TR_QUICK_ACTION_DEBUG_EAP_EXPERIMENTAL_ENABLED" />
             </TooltipRow>
         )}
         {isEapEnabled && (
             <TooltipRow
-                iconName="check"
+                icon={CheckIcon}
                 intent="brand"
                 header={<Translation id="TR_EARLY_ACCESS" />}
-                leftItem={<Icon name="starFour" intent="info" size={16} />}
+                leftItem={<Icon as={StarFourIcon} intent="info" isInverse size={16} />}
             >
                 <Translation id="TR_QUICK_ACTION_DEBUG_EAP_EXPERIMENTAL_ENABLED" />
             </TooltipRow>
         )}
         {isDebugMode && (
             <TooltipRow
-                iconName="check"
+                icon={CheckIcon}
                 intent="brand"
                 header="Debug Mode"
-                leftItem={<Icon name="dotOutlineFilled" intent="critical" size={16} />}
+                leftItem={<Icon as={DotOutlineFilledIcon} intent="critical" isInverse size={16} />}
             >
                 <Translation id="TR_QUICK_ACTION_DEBUG_EAP_EXPERIMENTAL_ENABLED" />
             </TooltipRow>
@@ -58,12 +57,12 @@ export const DebugAndExperimental = () => {
     const dispatch = useDispatch();
 
     const isEapEnabled = useSelector(state => state.desktopUpdate.allowPrerelease);
-    const isExperimental = useSelector(state => state.suite.settings.experimental !== undefined);
+    const isExperimental = useSelector(selectIsExperimentalEnabled);
     const isDebug = useSelector(selectIsDebugModeActive);
     const position = { type: 'absolute', top: 0, left: 0 } as const;
 
     const handleEapClick = () => {
-        dispatch(goto('settings-index', { anchor: SettingsAnchor.EarlyAccess }));
+        dispatch(goto({ routeName: 'settings-index', anchor: SettingsAnchor.EarlyAccess }));
     };
 
     if (!isEapEnabled && !isExperimental && !isDebug) return null;
@@ -84,17 +83,17 @@ export const DebugAndExperimental = () => {
                 <Box position={{ type: 'relative' }} width={16} height={16}>
                     {isDebug && (
                         <Box position={position}>
-                            <Icon name="dotOutlineFilled" intent="critical" size={16} />
+                            <Icon as={DotOutlineFilledIcon} intent="critical" size={16} />
                         </Box>
                     )}
                     {isExperimental && (
                         <Box position={position}>
-                            <Icon name="atom" intent="warning" size={16} />
+                            <Icon as={AtomIcon} intent="warning" size={16} />
                         </Box>
                     )}
                     {isEapEnabled && (
                         <Box position={position}>
-                            <Icon name="starFour" intent="info" size={16} />
+                            <Icon as={StarFourIcon} intent="info" size={16} />
                         </Box>
                     )}
                 </Box>

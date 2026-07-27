@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 
 import LottieView from 'lottie-react-native';
 
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 const ANIMATION_SPEED = 1.5;
 

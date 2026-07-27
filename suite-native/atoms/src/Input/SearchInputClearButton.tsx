@@ -18,7 +18,7 @@ export const SearchInputClearButton = ({ onPress, isVisible }: SearchInputClearB
     return (
         <AnimatedBox entering={FadeIn} exiting={FadeOut}>
             <PressableOpacity onPress={onPress}>
-                <Icon name="xCircle" size="large" color="iconSubdued" />
+                <Icon name="xCircle" size="large" color="contentSecondary" />
             </PressableOpacity>
         </AnimatedBox>
     );

@@ -1,38 +1,32 @@
-import { MessagesSchema as PROTO } from '@trezor/protobuf';
+import { type PermissionRequest } from '@trezor/connect-common';
+import type { MessagesSchema as PROTO } from '@trezor/protobuf';
 
-import { AbstractMethod, MethodPermission, Payload } from '../core/AbstractMethod';
-import { DEVICE, createDeviceMessage } from '../events';
-import { getFirmwareRange } from './common/paramsValidator';
+import type { MethodMessage } from '../core/AbstractMethod';
+import { AbstractMethod } from '../core/AbstractMethod';
 
 export default class SetBusy extends AbstractMethod<'setBusy', PROTO.SetBusy> {
-    constructor(message: { id?: number; payload: Payload<'setBusy'> }) {
-        super(message);
+    constructor(message: MethodMessage<'setBusy'>) {
+        const { payload } = message;
+
+        const params = { expiry_ms: payload.expiry_ms };
+
+        super(message, params);
         this.useDeviceState = false;
         this.skipFinalReload = false;
         this.overridePreviousCall = true;
-        this.firmwareRange = getFirmwareRange(this.name, undefined, this.firmwareRange);
     }
-    get requiredPermissions(): MethodPermission[] {
-        return ['management'];
-    }
-
-    init() {
-        const { payload } = this;
-
-        this.params = {
-            expiry_ms: payload.expiry_ms,
-        };
+    get requiredPermissions(): PermissionRequest[] {
+        return [{ permission: 'management' }];
     }
 
     async run() {
-        const cmd = this.device.getCommands();
+        const cmd = this.getDevice().getCommands();
         const { message } = await cmd.typedCall('SetBusy', 'Success', this.params);
         if (this.keepSession && !!this.params.expiry_ms) {
-            // NOTE: DEVICE.CHANGED will not be emitted because session is not released
-            // change device features and trigger event manually
-            // followup: https://github.com/trezor/trezor-suite/issues/6446
-            this.device.features.busy = true;
-            this.postMessage(createDeviceMessage(DEVICE.CHANGED, this.device.toMessageObject()));
+            // session is kept, so no session change will emit DEVICE.CHANGED automatically;
+            // change the feature and emit the change ourselves
+            this.getDevice().features.busy = true;
+            this.getDevice().emitDeviceChanged();
         }
 
         return message;

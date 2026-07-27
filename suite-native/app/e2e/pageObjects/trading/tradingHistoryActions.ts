@@ -1,6 +1,7 @@
 import { expect as detoxExpect } from 'detox';
 
 import { TradingActions } from './TradingActions';
+import { scrollUntilVisible } from '../../support/utils';
 
 class TradingHistoryActions extends TradingActions {
     constructor() {
@@ -8,7 +9,9 @@ class TradingHistoryActions extends TradingActions {
     }
 
     async openTradeHistory() {
-        await this.getElementById('button').tap();
+        const historyButton = this.getElementById('button');
+        await scrollUntilVisible(historyButton);
+        await historyButton.tap();
         await detoxExpect(element(by.id('@screen/TradingHistory'))).toBeVisible();
     }
 

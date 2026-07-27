@@ -1,34 +1,32 @@
-import { ElementType } from 'react';
+import { type ReactNode } from 'react';
 
-import { BuyProviderInfo, ExchangeProviderInfo, SellProviderInfo } from 'invity-api';
-
+import type { TradingProviderInfo } from '@suite-common/trading';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { Column } from '@trezor/components';
-import { spacings } from '@trezor/theme';
 
 import { useSelector } from 'src/hooks/suite';
 import { DiscoveryWarning } from 'src/views/wallet/staking/components/StakingDashboard/components/DiscoveryWarning';
 import { TradingFooter } from 'src/views/wallet/trading/common/TradingFooter/TradingFooter';
-import { TradingLayoutHeader } from 'src/views/wallet/trading/common/TradingLayout/TradingLayoutHeader';
+import { useTradingPageHeader } from 'src/views/wallet/trading/common/TradingLayout/useTradingPageHeader';
 
 export interface TradingContainerProps {
-    SectionComponent: ElementType;
-    provider?: BuyProviderInfo | SellProviderInfo | ExchangeProviderInfo;
+    children: ReactNode;
+    provider?: TradingProviderInfo;
 }
 
-export const TradingContainer = ({ SectionComponent, provider }: TradingContainerProps) => {
-    const selectedAccount = useSelector(state => state.wallet.selectedAccount);
+export const TradingContainer = ({ children, provider }: TradingContainerProps) => {
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
+    useTradingPageHeader();
 
     return (
-        <TradingLayoutHeader>
+        <>
             {isDiscoveryRunning && (
-                <Column margin={{ bottom: spacings.md }}>
+                <Column margin={{ bottom: 16 }}>
                     <DiscoveryWarning />
                 </Column>
             )}
-            <SectionComponent selectedAccount={selectedAccount} />
+            {children}
             <TradingFooter provider={provider} />
-        </TradingLayoutHeader>
+        </>
     );
 };

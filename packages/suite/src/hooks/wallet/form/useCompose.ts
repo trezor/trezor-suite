@@ -1,33 +1,31 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { FieldPath, UseFormReturn } from 'react-hook-form';
+import { type FieldPath, type UseFormReturn } from 'react-hook-form';
 
 import { isFulfilled } from '@reduxjs/toolkit';
 
-import { useTranslation } from '@suite/intl';
+import { isTranslationKey, useTranslation } from '@suite/intl';
 import { COMPOSE_ERROR_TYPES } from '@suite-common/wallet-constants';
 import { composeSendFormTransactionFeeLevelsThunk } from '@suite-common/wallet-core';
 import {
-    ComposeActionContext,
-    FormState,
-    PrecomposedLevels,
-    PrecomposedLevelsCardano,
-    PrecomposedTransaction,
-    PrecomposedTransactionCardano,
+    type ComposeActionContext,
+    type FormState,
+    type PrecomposedLevels,
+    type PrecomposedLevelsCardano,
+    type PrecomposedTransaction,
+    type PrecomposedTransactionCardano,
 } from '@suite-common/wallet-types';
 import { findComposeErrors } from '@suite-common/wallet-utils';
-import { FeeLevel } from '@trezor/connect';
+import { type FeeLevel } from '@trezor/connect';
 import { useDebounce } from '@trezor/react-utils';
 
 import { signAndPushSendFormTransactionThunk } from 'src/actions/wallet/send/sendFormThunks';
-import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
-
-import { SendContextValues } from '../../../types/wallet/sendForm';
+import { useDispatch } from 'src/hooks/suite';
+import { type SendContextValues } from 'src/types/wallet/sendForm';
 
 const DEFAULT_FIELD = 'outputs.0.amount';
 
 interface Props<TFieldValues extends FormState> extends UseFormReturn<TFieldValues> {
-    state: ComposeActionContext;
+    state: ComposeActionContext | undefined;
     defaultField?: FieldPath<TFieldValues>;
 }
 
@@ -49,7 +47,6 @@ export const useCompose = <TFieldValues extends FormState>({
         useState<SendContextValues['composedLevels']>(undefined);
     const [composeField, setComposeField] = useState<string | undefined>(undefined);
     const { translationString } = useTranslation();
-    const selectedAccount = useSelector(selectSelectedAccount);
 
     const dispatch = useDispatch();
 
@@ -64,7 +61,9 @@ export const useCompose = <TFieldValues extends FormState>({
     const composeRequest = useCallback(
         async (field = defaultFieldRef.current) => {
             // skip compose for cached older fee (edge case for trading)
-            if (!state || prevFeeInfoRef.current.blockHeight > state.feeInfo.blockHeight) return;
+            if (!state || (prevFeeInfoRef.current?.blockHeight ?? 0) > state.feeInfo.blockHeight) {
+                return;
+            }
 
             // reset precomposed transactions
             setComposedLevels(undefined);
@@ -123,7 +122,7 @@ export const useCompose = <TFieldValues extends FormState>({
             const values = getValues();
             if (composed.type === 'error') {
                 const { error, errorMessage } = composed;
-                if (!errorMessage) {
+                if (!errorMessage || !isTranslationKey(errorMessage.id)) {
                     // composed tx doesn't have an errorMessage (Translation props)
                     // this error is unexpected and should be handled in sendFormActions
                     console.warn('Compose unexpected error', error);
@@ -176,12 +175,18 @@ export const useCompose = <TFieldValues extends FormState>({
                     ...composedLevels,
                     custom: prevLevel,
                 } as
-                    | (PrecomposedLevels & { custom: PrecomposedTransaction })
-                    | (PrecomposedLevelsCardano & { custom: PrecomposedTransactionCardano });
+                    | (PrecomposedLevels & {
+                          custom: PrecomposedTransaction;
+                      })
+                    | (PrecomposedLevelsCardano & {
+                          custom: PrecomposedTransactionCardano;
+                      });
                 setComposedLevels(levels);
             } else {
                 const currentLevel = composedLevels[current || 'normal'];
-                updateComposedValues(currentLevel);
+                if (currentLevel) {
+                    updateComposedValues(currentLevel);
+                }
             }
         },
         [composedLevels, updateComposedValues],
@@ -204,10 +209,11 @@ export const useCompose = <TFieldValues extends FormState>({
                 // find nearest possible tx
                 const nearest = Object.keys(composedLevels)
                     .reverse()
-                    .find((key): key is FeeLevel['label'] => composedLevels[key].type !== 'error');
+                    .find((key): key is FeeLevel['label'] => composedLevels[key]?.type !== 'error');
                 // switch to it
-                if (nearest) {
-                    composed = composedLevels[nearest];
+                const nearestComposed = nearest ? composedLevels[nearest] : undefined;
+                if (nearest && nearestComposed) {
+                    composed = nearestComposed;
                     setValue('selectedFee', nearest);
                     if (nearest === 'custom') {
                         // @ts-expect-error: type = error already filtered above
@@ -222,7 +228,9 @@ export const useCompose = <TFieldValues extends FormState>({
                 // or do nothing, use default composed tx
             }
 
-            updateComposedValues(composed);
+            if (composed) {
+                updateComposedValues(composed);
+            }
         },
         [getValues, setValue, updateComposedValues],
     );
@@ -253,18 +261,20 @@ export const useCompose = <TFieldValues extends FormState>({
 
     // called from the UI, triggers signing process
     const sign = async () => {
+        if (!state) return;
+
         const formState = getValues();
         const precomposedTransaction = composedLevels
             ? composedLevels[formState.selectedFee || 'normal']
             : undefined;
-        if (precomposedTransaction && precomposedTransaction.type === 'final') {
+        if (precomposedTransaction?.type === 'final') {
             // sign workflow in Actions:
             // signSendFormTransactionThunk > sign[COIN]TransactionThunk > sendFormActions.storeSignedTransaction (modal with promise decision)
             const result = await dispatch(
                 signAndPushSendFormTransactionThunk({
                     formState,
                     precomposedTransaction,
-                    selectedAccount,
+                    selectedAccount: state.account,
                 }),
             ).unwrap();
 

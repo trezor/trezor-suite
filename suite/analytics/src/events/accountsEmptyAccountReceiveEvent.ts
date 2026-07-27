@@ -11,12 +11,14 @@ export const accountsEmptyAccountReceiveEvent: EventDef<
     EventType.AccountsEmptyAccountReceive
 > = {
     name: EventType.AccountsEmptyAccountReceive,
-    descriptionTrigger: 'Accounts > Account with empty transaction history > Receive XXX',
+    descriptionTrigger:
+        'User initiates a receive transaction from an account with empty transaction history',
     changelog: [{ version: '1.9.0', notes: 'added' }],
 
     attributes: {
         symbol: {
             changelog: [{ version: '1.9.0', notes: 'added' }],
+            description: 'The cryptocurrency/token symbol of the account (e.g., `btc`, `eth`)',
         },
     },
 };

@@ -1,0 +1,10 @@
+import type { SVGProps } from 'react';
+const SvgAnchorSimple = (props: SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" {...props}>
+        <path
+            fill="currentColor"
+            d="M28 14h-3a1 1 0 0 0 0 2h1.955A11.02 11.02 0 0 1 17 25.954v-14.08a4 4 0 1 0-2 0v14.08A11.02 11.02 0 0 1 5.045 16H7a1 1 0 1 0 0-2H4a1 1 0 0 0-1 1 13 13 0 1 0 26 0 1 1 0 0 0-1-1M14 8a2 2 0 1 1 4 0 2 2 0 0 1-4 0"
+        />
+    </svg>
+);
+export { SvgAnchorSimple as ReactComponent };

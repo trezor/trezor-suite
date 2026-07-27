@@ -1,11 +1,15 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/tx/outputs.js
 
+import type {
+    BitcoinNetworkInfo,
+    ComposeOutput,
+    ComposeResultFinal,
+    PROTO,
+    ProtoWithDerivationPath,
+} from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
-import { ComposeOutput as ComposeOutputBase } from '@trezor/utxo-lib';
+import type { ComposeOutput as ComposeOutputBase } from '@trezor/utxo-lib';
 
-import { PROTO } from '../../constants';
-import type { BitcoinNetworkInfo, ProtoWithDerivationPath } from '../../types';
-import type { ComposeOutput, ComposeResultFinal } from '../../types/api/composeTransaction';
 import { isValidAddress } from '../../utils/addressUtils';
 import { convertMultisigPubKey } from '../../utils/hdnodeUtils';
 import { fixPath, getHDPath, getOutputScriptType } from '../../utils/pathUtils';
@@ -28,6 +32,7 @@ export const validateTrezorOutputs = (
             { name: 'address', type: 'string' },
             { name: 'amount', type: 'uint' },
             { name: 'op_return_data', type: 'string' },
+            { name: 'script_type', type: 'string' },
             { name: 'multisig', type: 'object' },
         ]);
 
@@ -45,16 +50,22 @@ export const validateTrezorOutputs = (
             output.script_type = getOutputScriptType(output.address_n);
         }
 
-        if (
-            'address' in output &&
-            typeof output.address === 'string' &&
-            !isValidAddress(output.address, coinInfo)
-        ) {
-            // validate address with coin info
-            throw ERRORS.TypedError(
-                'Method_InvalidParameter',
-                `Invalid ${coinInfo.label} output address ${output.address}`,
-            );
+        if ('address' in output && typeof output.address === 'string') {
+            const externalOutput = output as { address: string; script_type?: string };
+            if (!externalOutput.script_type) {
+                externalOutput.script_type = 'PAYTOADDRESS';
+            } else if (externalOutput.script_type !== 'PAYTOADDRESS') {
+                throw ERRORS.TypedError(
+                    'Method_InvalidParameter',
+                    `External output (with address) must use script_type PAYTOADDRESS, got ${externalOutput.script_type}`,
+                );
+            }
+            if (!isValidAddress(externalOutput.address, coinInfo)) {
+                throw ERRORS.TypedError(
+                    'Method_InvalidParameter',
+                    `Invalid ${coinInfo.label} output address ${externalOutput.address}`,
+                );
+            }
         }
     });
 

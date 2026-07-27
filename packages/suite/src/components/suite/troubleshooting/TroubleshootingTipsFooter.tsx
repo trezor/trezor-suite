@@ -1,9 +1,7 @@
+import { useExternalLink } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { Button, Flex, Text, useMediaQuery, variables } from '@trezor/components';
-import { spacings } from '@trezor/theme';
 import { TREZOR_SUPPORT_DEVICE_URL } from '@trezor/urls';
-
-import { useExternalLink } from '../../../hooks/suite';
 
 export const TroubleshootingTipsFooter = () => {
     const href = useExternalLink(TREZOR_SUPPORT_DEVICE_URL);
@@ -13,7 +11,7 @@ export const TroubleshootingTipsFooter = () => {
         <Flex
             direction={isMobile ? 'column' : 'row'}
             justifyContent="space-between"
-            gap={spacings.xs}
+            gap={8}
             alignItems="center"
             width="100%"
         >

@@ -1,20 +1,19 @@
-import { fromWei, toWei } from 'web3-utils';
-
-import { PrecomposedTransaction } from '@suite-common/wallet-types';
-import { calculateTotalGasCost } from '@suite-common/wallet-utils';
-import { FeeLevel, TokenInfo } from '@trezor/connect';
+import { type PrecomposedTransaction } from '@suite-common/wallet-types';
+import { calculateTotalGasCost, fromGwei, fromWei } from '@suite-common/wallet-utils';
+import { type FeeLevel, type TokenInfo } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils';
 
 export const buildAllowanceTransaction = (
     balance: string,
     contract: string,
     feeLevel: FeeLevel,
+    networkDisplaySymbol: string,
     token?: TokenInfo,
     estimatedFeeLimit?: string,
 ): PrecomposedTransaction => {
     const gasPrice = feeLevel.maxFeePerGas || feeLevel.feePerUnit;
 
-    const fee = calculateTotalGasCost(toWei(gasPrice, 'gwei'), feeLevel.feeLimit);
+    const fee = calculateTotalGasCost(fromGwei(gasPrice).toWei(), feeLevel.feeLimit);
 
     if (new BigNumber(fee).gt(balance)) {
         return {
@@ -23,7 +22,8 @@ export const buildAllowanceTransaction = (
             errorMessage: {
                 id: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE_WITH_ETH_AMOUNT',
                 values: {
-                    feeAmount: fromWei(fee, 'ether'),
+                    feeAmount: fromWei(fee).toEther(),
+                    networkDisplaySymbol,
                 },
             },
         };

@@ -1,9 +1,8 @@
 import { Translation } from '@suite/intl';
 import { TokenManagementAction, selectCoinDefinitions } from '@suite-common/token-definitions';
-import { SelectedAccountLoaded } from '@suite-common/wallet-types';
-import { isTestnet } from '@suite-common/wallet-utils';
+import { type SelectedAccountLoaded } from '@suite-common/wallet-types';
+import { isTestnet, sortTokensByName } from '@suite-common/wallet-utils';
 import { Banner, Column, H3 } from '@trezor/components';
-import { spacings } from '@trezor/theme';
 
 import { useSelector } from 'src/hooks/suite';
 import { getTokens } from 'src/utils/wallet/tokenUtils';
@@ -21,11 +20,7 @@ export const HiddenTokensTable = ({ selectedAccount, searchQuery }: HiddenTokens
 
     const coinDefinitions = useSelector(state => selectCoinDefinitions(state, account.symbol));
 
-    const sortedTokens = account.tokens
-        ? [...account.tokens].sort(
-              (a, b) => parseInt(b?.balance || '0') - parseInt(a?.balance || '0'),
-          )
-        : [];
+    const sortedTokens = account.tokens?.toSorted(sortTokensByName) ?? [];
 
     const filteredTokens = getTokens({
         tokens: sortedTokens,
@@ -44,7 +39,7 @@ export const HiddenTokensTable = ({ selectedAccount, searchQuery }: HiddenTokens
         tokens.unverifiedWithBalance.length + tokens.unverifiedWithoutBalance.length;
 
     return (
-        <Column gap={spacings.xxl}>
+        <Column gap={32}>
             {hiddenTokensCount === 0 && unverifiedTokensCount === 0 && (
                 <>
                     {searchQuery ? (
@@ -66,7 +61,7 @@ export const HiddenTokensTable = ({ selectedAccount, searchQuery }: HiddenTokens
                 />
             )}
             {unverifiedTokensCount > 0 && (
-                <Column gap={spacings.sm}>
+                <Column gap={12}>
                     <H3>
                         <Translation id="TR_TOKEN_UNRECOGNIZED_BY_TREZOR" />
                     </H3>
@@ -76,6 +71,7 @@ export const HiddenTokensTable = ({ selectedAccount, searchQuery }: HiddenTokens
                         description={<Translation id="TR_TOKEN_UNRECOGNIZED_BY_TREZOR_TOOLTIP" />}
                     />
                     <TokensTable
+                        type="hidden"
                         account={account}
                         hideRates
                         tokenStatusType={TokenManagementAction.SHOW}

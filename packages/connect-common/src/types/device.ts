@@ -1,0 +1,230 @@
+import type { FeaturesNarrowing, FirmwareType, StaticSessionId } from '@trezor/device-utils';
+import type { MessagesSchema as PROTO } from '@trezor/protobuf';
+import type { ThpStateSerialized } from '@trezor/protocol';
+import type { Descriptor } from '@trezor/transport-common';
+import type { Branded } from '@trezor/type-utils';
+
+import type { FirmwareCapability, FirmwareReleaseConfigInfo } from './firmware';
+
+/**
+ * - `busy`               application has an active session but device is currently unresponsive (example: connect to host device screen after RebootToBootloader)
+ * - `bootloader-locked`  from push-notification. device is either restarting or was rebooted to bootloader and waiting for confirmation
+ * - `rebooting`          from push-notification. device is booting to normal mode
+ * - `hard-locked`        from push-notification. device won't accept messages. eg., cancel bootloader mode
+ * - `pin-locked`         device responded with specific THP error
+ * - `thp-locked`         device is waiting for THP pairing
+ */
+export type DeviceBusyStatus =
+    | 'busy'
+    | 'rebooting'
+    | 'bootloader-locked'
+    | 'hard-locked'
+    | 'pin-locked'
+    | 'thp-locked';
+
+/**
+ * - `available`  no other application has an active session
+ * - `occupied`   other application has an active session
+ * - `used`       another has released the device and no other application has an active session
+ */
+export type DeviceStatus = 'available' | 'occupied' | 'used' | DeviceBusyStatus;
+
+export type DeviceMode =
+    | 'normal'
+    | 'bootloader'
+
+    /**
+     * Device has not yet been set up. It has no secret inside.
+     * It must be either recovered from seed or newly generated
+     */
+    | 'initialize'
+
+    /**
+     * Seedless setup for Multi-sig. Not supported by Suite.
+     *
+     * @see: https://trezor.io/guides/backups-recovery/advanced-wallets/seedless-setup
+     */
+    | 'seedless';
+
+export type DeviceFirmwareStatus =
+    | 'valid'
+    | 'outdated'
+    | 'required'
+    | 'unknown'
+    | 'custom'
+    | 'none';
+
+export type UnavailableCapability =
+    | 'no-capability' // flag missing, could mean it's outdated or BTC only
+    | 'no-support' // not supported on this Trezor model at all
+    | 'update-required'
+    | 'trezor-connect-outdated';
+
+export type { StaticSessionId };
+
+export type DeviceState = {
+    sessionId?: string; // dynamic value: Features.session_id
+    staticSessionId?: StaticSessionId;
+    deriveCardano?: boolean;
+};
+
+export type DeviceThpState = {
+    properties?: ThpStateSerialized['properties'];
+    credentials: ThpStateSerialized['credentials'];
+    channel: string;
+};
+
+// NOTE: unavailableCapabilities is an object with information what is NOT supported by this device.
+// in ideal/expected setup this object should be empty but given setup might have exceptions.
+// key = coin shortcut lowercase (ex: btc, eth, xrp) OR capability declared in config.supportedFirmware
+export type UnavailableCapabilities = Partial<
+    Record<FirmwareCapability | (string & {}), UnavailableCapability>
+>;
+
+export type FirmwareRevisionCheckError =
+    | 'revision-mismatch'
+    | 'bootloader-hash-mismatch'
+    | 'firmware-version-unknown'
+    | 'cannot-perform-check-offline' // suite offline & release version not found locally => we cannot check with `data.trezor.io`
+    | 'other-error'; // incorrect URL, cannot parse JSON, etc.
+
+export type FirmwareRevisionCheckResult =
+    | { success: true }
+    | {
+          success: false;
+          error: FirmwareRevisionCheckError;
+          errorPayload?: unknown;
+      };
+
+export type FirmwareHashCheckError =
+    | 'hash-mismatch'
+    | 'check-skipped'
+    | 'check-unsupported'
+    | 'unknown-release'
+    | 'takes-too-long'
+    | 'other-error';
+
+export type FirmwareHashCheckResult =
+    | { success: true; attemptCount?: number; warningPayload?: unknown }
+    | {
+          success: false;
+          error: FirmwareHashCheckError;
+          attemptCount?: number;
+          errorPayload?: unknown;
+      };
+
+export type XPubHashesPerBip43Path = Record<string, string>;
+export type EntropyCheckResult = { success: boolean; xpubHashes?: XPubHashesPerBip43Path };
+
+/**
+ * The Unique Device Identifier per Suite run & Connected Device.
+ * When Suite is restarted or the Device is reconnected this will change.
+ *
+ * The main reason for this identifier is to reference device which is unacquired
+ * and therefore has no `id` yet. Typical use case is THP pairing
+ */
+export type DeviceUniquePath = string & Branded<'DeviceUniquePath'>;
+export const asDeviceUniquePath = (id: string) => id as DeviceUniquePath;
+
+type BaseDevice = {
+    path: DeviceUniquePath;
+    name: string;
+    descriptor: Pick<Descriptor, 'apiType' | 'id'>;
+};
+
+export type BluetoothDeviceId = string & Branded<'BluetoothDeviceId'>;
+export const asBluetoothDeviceId = (id: string) => id as BluetoothDeviceId;
+
+export type KnownDevice = BaseDevice & {
+    type: 'acquired';
+
+    /**
+     * Identifier of the PHYSICAL device. It is part of the device.features
+     * so it is known only fo `AcquiredDevice`. The `id` will change in case of Wipe Device.
+     *
+     * Example: F06CBD5EB27720C19FD01A0D
+     *
+     * Note: despite this is nullable, Acquired device shall always have it.
+     */
+    id: string | null;
+
+    /** @deprecated, use features.label instead */
+    label: string;
+    error?: never;
+    firmware: DeviceFirmwareStatus;
+    firmwareReleaseConfigInfo?: FirmwareReleaseConfigInfo | null;
+    firmwareType?: FirmwareType;
+    color?: string;
+    status: DeviceStatus;
+    mode: DeviceMode;
+    state?: DeviceState;
+    features: PROTO.Features;
+    thp?: DeviceThpState;
+    unavailableCapabilities: UnavailableCapabilities;
+    availableTranslations: Record<string, string>;
+    authenticityChecks: {
+        firmwareRevision: FirmwareRevisionCheckResult | null;
+        firmwareHash: FirmwareHashCheckResult | null;
+        // Maybe add AuthenticityCheck result here?
+    };
+    transportSessionOwner?: undefined;
+    hid?: undefined;
+    usb_connected?: boolean; // true if the device is powered/charged from USB, regardless of transport selection.
+    wireless_connected?: boolean;
+};
+
+export type UnknownDevice = BaseDevice & {
+    type: 'unacquired';
+    /** @deprecated, use features.label instead */
+    label: 'Unacquired device';
+    id?: never;
+    error?: never;
+    features?: never;
+    thp?: DeviceThpState;
+    firmware?: never;
+    firmwareReleaseConfigInfo?: never;
+    firmwareType?: never;
+    color?: never;
+    status?: DeviceStatus;
+    mode?: never;
+    state?: never;
+    unavailableCapabilities?: never;
+    availableTranslations?: never;
+    transportSessionOwner?: string;
+    hid?: undefined;
+};
+
+export type UnreadableDevice = BaseDevice & {
+    type: 'unreadable';
+    /** @deprecated, use features.label instead */
+    label: 'Unreadable device';
+    error: string;
+    id?: never;
+    features?: never;
+    thp?: never;
+    firmware?: never;
+    firmwareReleaseConfigInfo?: never;
+    firmwareType?: never;
+    color?: never;
+    status?: never;
+    mode?: never;
+    state?: never;
+    unavailableCapabilities?: never;
+    availableTranslations?: never;
+    transportSessionOwner?: undefined;
+    hid: boolean;
+};
+
+export type Device = KnownDevice | UnknownDevice | UnreadableDevice;
+
+export type Features = PROTO.Features;
+
+export type DisplayRotation = PROTO.DisplayRotation;
+
+export type StrictFeatures = Features & FeaturesNarrowing;
+
+/** Hex */
+export type ProofOfDelegatedIdentity = string & Branded<'ProofOfDelegatedIdentity'>;
+
+export const asProofOfDelegatedIdentity = (value: string): ProofOfDelegatedIdentity =>
+    value as ProofOfDelegatedIdentity;

@@ -1,33 +1,35 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/GetAccountInfo.js
 
-import { ERRORS } from '@trezor/connect-common/src/constants';
-import { arrayPartition, getSynchronize, versionUtils } from '@trezor/utils';
-
-import { initBlockchain, isBackendSupported } from '../backend/BlockchainLink';
-import {
-    AbstractMethod,
-    DEFAULT_FIRMWARE_RANGE,
-    MethodPermission,
-    Payload,
-} from '../core/AbstractMethod';
-import { getCoinInfo } from '../data/coinInfo';
-import { UI_REQUEST, createUiMessage } from '../events';
-import type { CoinInfo, FirmwareRange } from '../types';
-import { getFirmwareRange, validateParams } from './common/paramsValidator';
-import type { AccountDescriptor } from '../device/DeviceCommands';
 import {
     ACCOUNT_TYPES,
-    AccountTypeItem,
-    AccountTypeKey,
-    AdditionalParams,
+    type AccountTypeItem,
+    type AccountTypeKey,
+    type AdditionalParams,
     CARDANO_DERIVATIONS,
-    DiscoverAccountsProgress,
-} from '../types/api/discoverAccounts';
+    type CoinInfo,
+    type DiscoverAccountsProgress,
+    type EntropyCheckResult,
+    type FirmwareRange,
+    PAGING,
+    type PermissionRequest,
+    UI_REQUEST,
+    createUiMessage,
+} from '@trezor/connect-common';
+import { arrayPartition, getSynchronize, versionUtils } from '@trezor/utils';
+
+import { assertBackendSupported, initBlockchain } from '../backend/BlockchainLink';
+import type { MethodContext, MethodMessage } from '../core/AbstractMethod';
+import { AbstractMethod } from '../core/AbstractMethod';
+import { getCoinInfoOrThrow } from '../data/coinInfo';
+import type { AccountDescriptor } from '../device/DeviceCommands';
 import { isUtxoBased } from '../utils/accountUtils';
 import { validatePath } from '../utils/pathUtils';
+import { getFirmwareRange, validateParams } from './common/paramsValidator';
+import { checkXPubWithHashes } from './firmware/calculateXPubHash';
+
+const { CARDANO_TXS_PER_PAGE, DEFAULT_TXS_PER_PAGE, SOLANA_TXS_PER_PAGE } = PAGING;
 
 const ACCOUNT_LIMIT = 10;
-const TXS_PER_PAGE = 25;
 const DETAILS = 'txs';
 
 type CardanoDerivation = (typeof CARDANO_DERIVATIONS)[keyof typeof CARDANO_DERIVATIONS];
@@ -40,6 +42,8 @@ type Request = AdditionalParams & {
     offset: number;
     skip: number;
 };
+// Internal representation of parameters after transformation, see types/api file for the external type interface.
+type DiscoverAccountsLocalParams = { coins: Request[]; entropyCheckResult?: EntropyCheckResult };
 
 type CardanoTypeItem = Extract<AccountTypeItem, { symbol: 'ada' }>;
 
@@ -51,36 +55,42 @@ const isCardano = (account: AccountTypeItem): account is CardanoTypeItem =>
 const isCardanoRequest = (request: Request): request is CardanoRequest =>
     isCardano(request.account);
 
-const isEvmLedger = (account: AccountTypeItem, coinInfo: CoinInfo) =>
-    coinInfo.type === 'ethereum' && account.type === 'ledger';
+const shouldSkipFirstAccountIndex = (account: AccountTypeItem, coinInfo: CoinInfo) =>
+    (coinInfo.type === 'ethereum' || coinInfo.shortcut === 'TRX') && account.type === 'ledger';
 
 const getAccountTypeKey = ({ symbol, type }: AccountTypeKey) => `${symbol}-${type}` as const;
 
 // TODO use substituteBip43Path from wallet-utils somehow
 const substituteBip43Path = (path: string, index: number) => path.replace('i', String(index));
 
-export default class DiscoverAccounts extends AbstractMethod<'discoverAccounts', Request[]> {
+export const getTxsPerPage = (account: AccountTypeItem) => {
+    switch (account.symbol) {
+        case 'ada':
+            return CARDANO_TXS_PER_PAGE;
+        case 'sol':
+            return SOLANA_TXS_PER_PAGE;
+        default:
+            return DEFAULT_TXS_PER_PAGE;
+    }
+};
+
+export default class DiscoverAccounts extends AbstractMethod<
+    'discoverAccounts',
+    DiscoverAccountsLocalParams
+> {
     disposed = false;
 
-    constructor(message: { id?: number; payload: Payload<'discoverAccounts'> }) {
-        super(message);
-        this.useDevice = true;
-        this.useDeviceState = true;
-        this.useUi = false;
-    }
-    get requiredPermissions(): MethodPermission[] {
-        return ['read'];
-    }
-
-    init() {
-        const { payload } = this;
+    constructor(message: MethodMessage<'discoverAccounts'>) {
+        const { payload } = message;
+        const { entropyCheckResult } = payload;
 
         // validate bundle type
         validateParams(payload, [
             { name: 'coins', type: 'array', required: true, allowEmpty: true },
+            { name: 'entropyCheckResult', type: 'object' },
         ]);
 
-        this.params = payload.coins.flatMap(coin => {
+        const coins: Request[] = payload.coins.flatMap(coin => {
             // validate incoming parameters
             validateParams(coin, [
                 { name: 'symbol', type: 'string', required: true },
@@ -89,20 +99,18 @@ export default class DiscoverAccounts extends AbstractMethod<'discoverAccounts',
                 { name: 'identity', type: 'string' },
                 { name: 'details', type: 'string' },
                 { name: 'pageSize', type: 'number' },
+                { name: 'protocols', type: 'array' },
             ]);
 
             const { symbol, known: knownAccs, knownOnly, ...rest } = coin;
 
             // validate coin info
-            const coinInfo = getCoinInfo(symbol);
-            if (!coinInfo) {
-                throw ERRORS.TypedError('Method_UnknownCoin');
-            }
+            const coinInfo = getCoinInfoOrThrow(symbol);
 
             // validate backend
-            isBackendSupported(coinInfo);
+            assertBackendSupported(coinInfo);
 
-            const firmwareRange = getFirmwareRange(this.name, coinInfo, DEFAULT_FIRMWARE_RANGE);
+            const firmwareRange = getFirmwareRange([payload.method], [coinInfo]);
 
             // Take all the defined account types based on requested coin symbol
             const symbolAccounts = ACCOUNT_TYPES.filter(a => a.symbol === symbol);
@@ -122,17 +130,30 @@ export default class DiscoverAccounts extends AbstractMethod<'discoverAccounts',
                 .map(account => [account, knownAccs?.find(t => t.type === account.type)] as const) // Pair all coin accounts with possibly known account types
                 .filter(([_, known]) => (known ? typeof known.skip === 'number' : !knownOnly)) // Include passed known accounts with skip param (the other ones are known completely) and unpassed accounts if knownOnly wasn't requested
                 .map(([account, known]) => ({
-                    pageSize: isCardano(account) ? 8 : TXS_PER_PAGE,
+                    pageSize: getTxsPerPage(account),
                     details: DETAILS,
                     coinInfo,
                     firmwareRange,
                     skip: known?.skip ?? 0, // Use the possibly passed skip param or fall back to zero
                     account,
                     ...rest,
-                    offset: isEvmLedger(account, coinInfo) ? 1 : 0,
+                    offset: shouldSkipFirstAccountIndex(account, coinInfo) ? 1 : 0,
                     derivation: isCardano(account) ? CARDANO_DERIVATIONS[account.type] : undefined,
                 }));
         });
+
+        const params = { coins, entropyCheckResult };
+
+        super(message, params);
+        this.useDevice = true;
+        this.useDeviceState = true;
+        this.useUi = false;
+    }
+    get requiredPermissions(): PermissionRequest[] {
+        return this.coinPerms(
+            'read_account_info',
+            this.params.coins.map(c => c.coinInfo),
+        );
     }
 
     private progress: Partial<{ [key in ReturnType<typeof getAccountTypeKey>]: number }> = {};
@@ -142,13 +163,16 @@ export default class DiscoverAccounts extends AbstractMethod<'discoverAccounts',
         this.progress[key] = progress;
     }
 
-    private sendProgress(response: DiscoverAccountsProgress) {
+    private sendProgress(
+        response: DiscoverAccountsProgress,
+        sendCoreMessage: MethodContext['sendCoreMessage'],
+    ) {
         const progress =
             Object.values(this.progress).reduce((sum, typeProgress) => sum + typeProgress, 0) /
             // if no items in progress, divide by 1 instead of 0 as the numerator will be 0 anyway
             (Object.keys(this.progress).length || 1);
 
-        this.postMessage(
+        sendCoreMessage(
             createUiMessage(UI_REQUEST.BUNDLE_PROGRESS, {
                 total: 100,
                 progress: 100 * progress,
@@ -157,14 +181,17 @@ export default class DiscoverAccounts extends AbstractMethod<'discoverAccounts',
         );
     }
 
-    async run() {
-        const [unsupported, supported] = this.filterUnsupportedAccounts(this.params);
+    async run({ sendCoreMessage }: MethodContext) {
+        const [unsupported, supported] = this.filterUnsupportedAccounts(this.params.coins);
 
         unsupported.forEach(
             ({ account: { path: bip43, ...rest }, error, coinInfo, skip, offset }) => {
                 const path = substituteBip43Path(bip43, skip + offset);
                 const backendType = coinInfo.blockchainLink?.type;
-                this.sendProgress({ ...rest, index: skip, failed: true, error, path, backendType });
+                this.sendProgress(
+                    { ...rest, index: skip, failed: true, error, path, backendType },
+                    sendCoreMessage,
+                );
             },
         );
 
@@ -174,7 +201,9 @@ export default class DiscoverAccounts extends AbstractMethod<'discoverAccounts',
 
         accounts.forEach(({ account, skip }) => this.updateProgress(account, skip));
 
-        const counts = await Promise.all(accounts.map(account => this.discoverAccount(account)));
+        const counts = await Promise.all(
+            accounts.map(account => this.discoverAccount(account, sendCoreMessage)),
+        );
         const nonempty = counts.reduce((sum, acc) => sum + acc.nonempty, 0);
         const failed = counts.filter(acc => acc.error).length;
         const empty = counts.length - failed;
@@ -183,8 +212,8 @@ export default class DiscoverAccounts extends AbstractMethod<'discoverAccounts',
     }
 
     private filterUnsupportedAccounts(accounts: Request[]) {
-        const version = this.device.getVersion();
-        const model = this.device.features?.internal_model;
+        const version = this.getDevice().getVersion();
+        const model = this.getDevice().features?.internal_model;
 
         if (!version || !model) return [[], accounts] as const;
 
@@ -263,9 +292,25 @@ export default class DiscoverAccounts extends AbstractMethod<'discoverAccounts',
                 // on derivation path (plus type in case of Cardano). When there's a case where
                 // we expect two different descriptors from the same path, this must be reworked.
                 const address_n = validatePath(path, 3);
-                this.descriptorCache[key] = await this.device
+                const descriptor = await this.getDevice()
                     .getCommands()
                     .getAccountDescriptor(coinInfo, address_n, derivationType);
+                this.descriptorCache[key] = descriptor;
+
+                // Perform continuous entropy check for standard wallet, if data are available
+                const knownXPubHashes = this.params.entropyCheckResult?.xpubHashes;
+                const { legacyXpub: xpub } = descriptor; // only Bitcoin-like accounts have it, and only those are checked for now
+                const isPassphraseEnabled = this.getDevice().features?.passphrase_protection;
+                const alwaysPassphrase = this.getDevice().features?.passphrase_always_on_device; // if this feature is on, then useEmptyPassphrase is not reliable
+                const isStandardWallet =
+                    !isPassphraseEnabled || (this.useEmptyPassphrase && !alwaysPassphrase);
+                if (xpub && knownXPubHashes && isStandardWallet) {
+                    const isValid = checkXPubWithHashes({ xpub, path, knownXPubHashes });
+                    if (!isValid) {
+                        // TODO monitor this, and if the check is reliable, throw error to fail the account discovery, have Suite handle it
+                        console.error(`Entropy check failed at getAccountDescriptor on ${path}`);
+                    }
+                }
             }
 
             return this.descriptorCache[key];
@@ -274,21 +319,28 @@ export default class DiscoverAccounts extends AbstractMethod<'discoverAccounts',
         return { path, ...descriptorRest };
     }
 
-    private async discoverAccount(request: Request): Promise<{ nonempty: number; error?: string }> {
-        const { details, identity, pageSize, coinInfo, derivation, offset, skip } = request;
+    private async discoverAccount(
+        request: Request,
+        sendCoreMessage: MethodContext['sendCoreMessage'],
+    ): Promise<{ nonempty: number; error?: string }> {
+        const { details, identity, pageSize, gap, protocols, coinInfo, derivation, offset, skip } =
+            request;
         const { path: bip43, ...accountKey } = request.account;
         const backendType = coinInfo.blockchainLink?.type;
         const utxoRequired = isUtxoBased(coinInfo) && details && details !== 'basic';
         let index = skip;
 
+        const sendProgress = (response: DiscoverAccountsProgress) =>
+            this.sendProgress(response, sendCoreMessage);
+
         let blockchain;
         try {
-            blockchain = await initBlockchain(coinInfo, this.postMessage, identity);
+            blockchain = await initBlockchain(coinInfo, sendCoreMessage, identity);
         } catch (err) {
             const path = substituteBip43Path(bip43, offset + index);
             this.updateProgress(accountKey, index + 1, true);
             const error = err.message;
-            this.sendProgress({ ...accountKey, index, failed: true, error, path, backendType });
+            sendProgress({ ...accountKey, index, failed: true, error, path, backendType });
 
             return { nonempty: 0, error };
         }
@@ -301,7 +353,13 @@ export default class DiscoverAccounts extends AbstractMethod<'discoverAccounts',
                 descPromise = this.getDescriptor(coinInfo, bip43, derivation, offset + index + 1);
                 descPromise.catch(() => {});
 
-                const info = await blockchain.getAccountInfo({ descriptor, details, pageSize });
+                const info = await blockchain.getAccountInfo({
+                    descriptor,
+                    details,
+                    pageSize,
+                    protocols,
+                    gap,
+                });
 
                 // eslint-disable-next-line no-nested-ternary
                 const utxo = !utxoRequired
@@ -311,7 +369,7 @@ export default class DiscoverAccounts extends AbstractMethod<'discoverAccounts',
                       : await blockchain.getAccountUtxo(descriptor);
 
                 this.updateProgress(accountKey, index + 1, info.empty);
-                this.sendProgress({
+                sendProgress({
                     ...info,
                     descriptor,
                     ...descRest,
@@ -332,7 +390,7 @@ export default class DiscoverAccounts extends AbstractMethod<'discoverAccounts',
                 const { message: error, code } = err;
                 const failed = true;
                 this.updateProgress(accountKey, index + 1, true);
-                this.sendProgress({ ...accountKey, index, failed, error, code, path, backendType });
+                sendProgress({ ...accountKey, index, failed, error, code, path, backendType });
 
                 return { nonempty: index - skip, error };
             }

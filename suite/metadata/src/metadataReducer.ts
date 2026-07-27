@@ -1,26 +1,27 @@
 import { produce } from 'immer';
 
+import { type SuiteSettingsRootState } from '@suite/settings';
 import {
-    DeviceReducerState,
-    DeviceRootState,
+    type DeviceReducerState,
+    type DeviceRootState,
     deviceActions,
     selectDeviceByState,
     selectDeviceByStaticSessionId,
     selectSelectedDevice,
 } from '@suite-common/device';
 import {
-    AccountLabels,
-    DataType,
-    MetadataState,
-    OAuthServerEnvironment,
-    PasswordManagerState,
-    WalletLabels,
+    type AccountLabels,
+    type DataType,
+    type MetadataState,
+    type PasswordManagerState,
+    type WalletLabels,
 } from '@suite-common/metadata-types';
-import { AnyAction } from '@suite-common/redux-utils';
-import { TrezorDevice } from '@suite-common/suite-types';
-import { AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
-import { Account, AccountKey } from '@suite-common/wallet-types';
-import { DeviceState, StaticSessionId } from '@trezor/connect';
+import { type AnyAction } from '@suite-common/redux-utils';
+import { type TrezorDevice } from '@suite-common/suite-types';
+import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
+import { type Account, type AccountKey } from '@suite-common/wallet-types';
+import { type DeviceState, type StaticSessionId } from '@trezor/connect';
+import { type WalletDescriptor, parseStaticSessionId } from '@trezor/device-utils';
 
 import * as METADATA from './metadataConstants';
 import { DEFAULT_ACCOUNT_METADATA, DEFAULT_WALLET_METADATA } from './metadataLabelingConstants';
@@ -35,6 +36,7 @@ export const initialMetadataState: MetadataState = {
     enabled: false,
     initiating: false,
     providers: [],
+    hasLegacyLabelsMigrated: {},
     selectedProvider: {
         labels: '',
         passwords: '',
@@ -44,14 +46,14 @@ export const initialMetadataState: MetadataState = {
 
 export type SuiteRootStateSliceForMetadata = {
     online: boolean;
-    settings: { debug: { oauthServerEnvironment?: OAuthServerEnvironment } };
 };
 
 /** @deprecated Legacy labeling */
 export type MetadataRootState = {
     metadata: MetadataState;
 } & AccountsRootState &
-    DeviceRootState & { suite: SuiteRootStateSliceForMetadata };
+    DeviceRootState &
+    SuiteSettingsRootState & { suite: SuiteRootStateSliceForMetadata };
 
 /**
  * @deprecated Legacy Labeling
@@ -124,9 +126,16 @@ export const metadataReducer = (
                     delete draft.error?.[action.payload.deviceState];
                 }
                 break;
+            case METADATA.SET_LEGACY_LABELS_MIGRATION_FOR_WALLET:
+                draft.hasLegacyLabelsMigrated[action.payload.walletDescriptor] = true;
+                break;
             case deviceActions.forgetDevice.type:
                 if (action.payload.device.state?.staticSessionId) {
-                    delete draft.error?.[action.payload.device.state.staticSessionId];
+                    const { staticSessionId } = action.payload.device.state;
+                    const { walletDescriptor } = parseStaticSessionId(staticSessionId);
+
+                    delete draft.error?.[staticSessionId];
+                    delete draft.hasLegacyLabelsMigrated[walletDescriptor];
                 }
 
             // no default
@@ -144,11 +153,20 @@ export const selectMetadata = (state: MetadataRootState) => state.metadata;
 export const selectIsMetadataEnabled = (state: MetadataRootState) =>
     state.metadata.enabled && !state.metadata.initiating;
 
+export const selectIsMetadataProviderConnected = (state: MetadataRootState) =>
+    state.metadata.enabled && !!state.metadata.providers[0];
+
 /**
  * Select currently selected provider for metadata of type 'labels'
+ * @deprecated Legacy Labeling
  */
 export const selectSelectedProviderForLabels = (state: { metadata: MetadataState }) =>
     state.metadata.providers.find(p => p.clientId === state.metadata.selectedProvider.labels);
+
+export const selectHasLegacyLabelsMigrated = (
+    state: { metadata: MetadataState },
+    walletDescriptor: WalletDescriptor,
+) => state.metadata.hasLegacyLabelsMigrated[walletDescriptor] === true;
 
 /**
  * @deprecated Legacy Labeling
@@ -168,7 +186,7 @@ export const selectLabelingDataForSelectedAccount = (state: {
     const { selectedAccount } = state.wallet;
 
     const metadataKeys = selectedAccount?.account?.metadata[METADATA_LABELING.ENCRYPTION_VERSION];
-    if (!metadataKeys || !metadataKeys.fileName || !provider?.data[metadataKeys.fileName]) {
+    if (!metadataKeys?.fileName || !provider?.data[metadataKeys.fileName]) {
         return DEFAULT_ACCOUNT_METADATA;
     }
 
@@ -187,7 +205,7 @@ export const selectLabelingDataForAccount = (
     const account = selectAccountByKey(state, accountKey);
     const metadataKeys = account?.metadata?.[METADATA_LABELING.ENCRYPTION_VERSION];
 
-    if (!metadataKeys || !metadataKeys?.fileName || !provider?.data[metadataKeys.fileName]) {
+    if (!metadataKeys?.fileName || !provider?.data[metadataKeys.fileName]) {
         return DEFAULT_ACCOUNT_METADATA;
     }
 
@@ -207,15 +225,11 @@ export const selectAccountLabelsLegacy = (state: {
     return state.wallet.accounts.reduce(
         (dict, account) => {
             const metadataKeys = account?.metadata?.[METADATA_LABELING.ENCRYPTION_VERSION];
-            if (
-                !metadataKeys ||
-                !metadataKeys?.fileName ||
-                !provider?.data[metadataKeys.fileName]
-            ) {
+            if (!metadataKeys?.fileName || !provider?.data[metadataKeys.fileName]) {
                 return dict;
             }
             const data = provider.data[metadataKeys.fileName];
-            if ('accountLabel' in data) {
+            if (data && 'accountLabel' in data) {
                 dict[account.key] = data.accountLabel;
             }
 
@@ -246,7 +260,7 @@ export const selectLabelingDataForWallet = (
     }
     const metadataKeys = device?.metadata[METADATA_LABELING.ENCRYPTION_VERSION];
 
-    if (metadataKeys && metadataKeys.fileName && provider?.data[metadataKeys.fileName]) {
+    if (metadataKeys?.fileName && provider?.data[metadataKeys.fileName]) {
         return provider.data[metadataKeys.fileName] as WalletLabels;
     }
 
@@ -349,7 +363,6 @@ export const selectIsLabelingAvailableForEntity = (
 
     return Boolean(
         selectIsLabelingAvailable(state) &&
-        entity &&
         entity?.[METADATA_LABELING.ENCRYPTION_VERSION]?.fileName,
     );
 };
@@ -365,7 +378,7 @@ export const selectPasswordManagerState = (
 ) => {
     const provider = selectSelectedProviderForPasswords(state);
 
-    if (!fileName || !provider || !provider?.data?.[fileName]) {
+    if (!fileName || !provider?.data?.[fileName]) {
         return METADATA_PASSWORDS.DEFAULT_PASSWORD_MANAGER_STATE;
     }
 

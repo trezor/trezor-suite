@@ -1,9 +1,9 @@
 {
     "name": "@trezor/transport",
     "version": "10.0.0-alpha.1",
+    "type": "module",
     "description": "Low level library facilitating protocol buffers based communication with Trezor devices",
-    "npmPublishAccess": "public",
-    "license": "SEE LICENSE IN LICENSE.md",
+    "license": "MIT",
     "repository": {
         "type": "git",
         "url": "git://github.com/trezor/trezor-suite.git"
@@ -16,85 +16,41 @@
         "transport"
     ],
     "main": "./src/index.ts",
-    "browser": {
-        "./src/pinger/ping": "./src/pinger/ping.browser.ts",
-        "./src/transports/nodeusb": "./src/transports/nodeusb.browser.ts",
-        "./src/transports/udp": "./src/transports/udp.browser.ts",
-        "./src/transports/webusb": "./src/transports/webusb.browser.ts"
-    },
-    "react-native": {
-        "./src/transports/nodeusb": "./src/transports/nodeusb.browser.ts",
-        "./src/transports/webusb": "./src/transports/webusb.ts"
-    },
+    "sideEffects": false,
     "publishConfig": {
         "main": "./lib/index.js",
         "types": "./lib/index.d.ts",
         "exports": {
             ".": {
-                "import": "./libESM/index.js",
-                "require": "./lib/index.js",
-                "types": "./lib/index.d.ts"
+                "types": "./lib/index.d.ts",
+                "default": "./lib/index.js"
             },
-            "./libESM/constants.js": {
-                "import": "./libESM/constants.js",
-                "require": "./lib/constants.js",
-                "types": "./lib/constants.d.ts"
-            },
-            "./lib/*": "./lib/*.js",
-            "./libESM/*.js": "./libESM/*.js",
-            "./lib/thp": "./lib/thp/index.js",
-            "./lib/types": "./lib/types/index.js",
-            "./libESM/thp": "./libESM/thp/index.js",
-            "./libESM/types": "./libESM/types/index.js",
-            "./lib/thp.js": "./lib/thp/index.js",
-            "./lib/types.js": "./lib/types/index.js",
-            "./libESM/thp.js": "./libESM/thp/index.js",
-            "./libESM/types.js": "./libESM/types/index.js"
-        },
-        "browser": {
-            "./lib/pinger/ping": "./lib/pinger/ping.browser.ts",
-            "./lib/transports/nodeusb": "./lib/transports/nodeusb.browser.ts",
-            "./lib/transports/udp": "./lib/transports/udp.browser.ts",
-            "./lib/transports/webusb": "./lib/transports/webusb.browser.ts"
-        },
-        "react-native": {
-            "./lib/transports/nodeusb": "./lib/transports/nodeusb.browser.js",
-            "./lib/transports/webusb": "./lib/transports/webusb.js"
+            "./lib/*": "./lib/*"
         }
     },
     "files": [
         "lib/",
-        "libESM/",
         "CHANGELOG.md"
     ],
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build tsconfig.json",
-        "build:lib": "yarn build:lib:cjs && yarn build:lib:esm",
-        "build:lib:cjs": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib cjs",
-        "build:lib:esm": "yarn g:rimraf ./libESM && yarn g:tsc --build tsconfig.libESM.json && ../../scripts/publish/replace-imports.sh ./libESM esm",
+        "build:lib": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib",
         "publish:lib": "./scripts/publish-lib.sh",
         "test:unit": "jest",
-        "prepublishOnly": "yarn tsx ../../scripts/publish/prepublishNPM.js"
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "devDependencies": {
-        "@babel/preset-env": "7.28.6",
-        "@babel/preset-typescript": "^7.28.5",
         "@trezor/eslint": "workspace:*",
         "@types/bytebuffer": "^5.0.49",
         "@types/node": "22.13.10",
-        "@types/sharedworker": "^0.0.143",
-        "@types/w3c-web-usb": "^1.0.10",
-        "jest": "29.7.0",
-        "tsx": "^4.21.0"
+        "jest": "29.7.0"
     },
     "dependencies": {
-        "@trezor/protobuf": "workspace:*",
-        "@trezor/protocol": "workspace:*",
+        "@trezor/transport-common": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
-        "cross-fetch": "^4.1.0",
-        "usb": "^2.15.0"
+        "usb": "^2.17.0"
     },
     "peerDependencies": {
         "tslib": "^2.6.2"

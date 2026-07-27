@@ -1,5 +1,4 @@
-import { ReactNode, useMemo, useState } from 'react';
-import { Keyboard } from 'react-native';
+import { type ReactNode, useMemo, useState } from 'react';
 
 import { Translation } from '@suite-native/intl';
 
@@ -9,7 +8,7 @@ import { ScreenFooterGradient } from '../ScreenFooterGradient';
 import { BottomSheetModal } from '../Sheet/BottomSheetModal';
 import { useBottomSheetModal } from '../Sheet/hooks/useBottomSheetModal';
 import { VStack } from '../Stack';
-import { SelectItem, SelectItemValue } from './SelectItem';
+import { SelectItem, type SelectItemValue } from './SelectItem';
 import { SelectTrigger } from './SelectTrigger';
 
 export type SelectItemType<TItemValue extends SelectItemValue> = {
@@ -49,7 +48,6 @@ export const Select = <TItemValue extends SelectItemValue>({
     const [isConfirmButtonVisible, setIsConfirmButtonVisible] = useState(false);
 
     const openBottomSheet = () => {
-        Keyboard.dismiss();
         setSelectedItemValue(value);
         setIsConfirmButtonVisible(false);
         openModal();

@@ -1,7 +1,7 @@
 import { useIsFocused } from '@react-navigation/native';
 
 import {
-    TradingType,
+    type TradingType,
     useProviderMetadataChangeEffect as useCommonProviderMetadataChangeEffect,
 } from '@suite-common/trading';
 

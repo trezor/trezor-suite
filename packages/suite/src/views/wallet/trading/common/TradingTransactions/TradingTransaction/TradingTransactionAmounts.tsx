@@ -1,13 +1,12 @@
-import { TradingTransaction, useTradingUtils } from '@suite-common/trading';
+import { type TradingTransaction, useTradingUtils } from '@suite-common/trading';
 import { Icon, Row } from '@trezor/components';
-import { spacings } from '@trezor/theme';
+import { CaretRightIcon } from '@trezor/icons';
 
 import { FormattedCryptoAmount, HiddenPlaceholder } from 'src/components/suite';
-import { TradingTestWrapper } from 'src/views/wallet/trading';
 
 const Arrow = () => (
-    <Row margin={{ left: spacings.xs, right: spacings.xs }}>
-        <Icon intent="neutral" priority="secondary" size={12} name="caretRight" />
+    <Row margin={{ left: 8, right: 8 }}>
+        <Icon intent="neutral" priority="secondary" size={12} as={CaretRightIcon} />
     </Row>
 );
 
@@ -50,12 +49,14 @@ export const TradingTransactionAmounts = ({ trade }: TradingTransactionAmountsPr
                     value={sendStringAmount}
                     symbol={sendCoinSymbol}
                     contractAddress={sendContractAddress}
+                    data-testid="@trading/transactions/send/amount"
                 />
                 <Arrow />
                 <FormattedCryptoAmount
                     value={receiveStringAmount}
                     symbol={receiveCoinSymbol}
                     contractAddress={receiveContractAddress}
+                    data-testid="@trading/transactions/receive/amount"
                 />
             </Row>
         );
@@ -70,13 +71,12 @@ export const TradingTransactionAmounts = ({ trade }: TradingTransactionAmountsPr
                 {fiatStringAmount} {fiatCurrency}
             </HiddenPlaceholder>
             <Arrow />
-            <TradingTestWrapper data-testid="@trading/transaction/crypto-amount">
-                <FormattedCryptoAmount
-                    value={receiveStringAmount}
-                    symbol={coinSymbol}
-                    contractAddress={contractAddress}
-                />
-            </TradingTestWrapper>
+            <FormattedCryptoAmount
+                value={receiveStringAmount}
+                symbol={coinSymbol}
+                contractAddress={contractAddress}
+                data-testid="@trading/transaction/crypto-amount"
+            />
         </Row>
     );
 };

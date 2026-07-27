@@ -1,10 +1,13 @@
 {
     "extends": "../../tsconfig.base.json",
-    "compilerOptions": {
-        "noImplicitAny": false,
-        "outDir": "libDev"
-    },
+    "compilerOptions": { "outDir": "libDev" },
     "references": [
+        {
+            "path": "../../suite-common/analytics"
+        },
+        {
+            "path": "../../suite-common/dependency-injection"
+        },
         { "path": "../../suite-common/device" },
         {
             "path": "../../suite-common/wallet-config"
@@ -16,16 +19,22 @@
             "path": "../../suite-common/wallet-types"
         },
         { "path": "../accounts" },
-        { "path": "../alerts" },
+        { "path": "../add-coin-account" },
+        { "path": "../analytics" },
         { "path": "../atoms" },
+        { "path": "../coin-enabling" },
         { "path": "../discovery" },
+        { "path": "../icons" },
         { "path": "../intl" },
         { "path": "../link" },
         { "path": "../navigation" },
         { "path": "../passphrase" },
-        { "path": "../../packages/styles" },
-        { "path": "../../packages/type-utils" },
+        { "path": "../search" },
+        {
+            "path": "../../packages/styles-native"
+        },
         { "path": "../../packages/urls" },
-        { "path": "../../packages/utils" }
+        { "path": "../../packages/utils" },
+        { "path": "../../packages/requirements" }
     ]
 }

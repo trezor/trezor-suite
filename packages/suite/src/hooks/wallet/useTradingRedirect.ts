@@ -1,12 +1,13 @@
 import {
-    BuyCryptoPaymentMethod,
-    BuyTradeQuoteRequest,
-    CryptoId,
-    ExchangeTradeQuoteRequest,
-    SellCryptoPaymentMethod,
-    SellFiatTradeQuoteRequest,
+    type BuyCryptoPaymentMethod,
+    type BuyTradeQuoteRequest,
+    type CryptoId,
+    type ExchangeTradeQuoteRequest,
+    type SellCryptoPaymentMethod,
+    type SellFiatTradeQuoteRequest,
 } from 'invity-api';
 
+import { goto } from '@suite/router';
 import {
     parseCryptoId,
     tradingActions,
@@ -14,11 +15,11 @@ import {
     tradingExchangeActions,
     tradingSellActions,
 } from '@suite-common/trading';
-import { FeeLevel, TokenInfo } from '@trezor/connect';
+import { selectAccounts } from '@suite-common/wallet-core';
+import { type FeeLevel, type TokenInfo } from '@trezor/connect';
 
-import { goto } from 'src/actions/suite/routerActions';
-import { useDispatch } from 'src/hooks/suite';
-import { Account } from 'src/types/wallet';
+import { useDispatch, useSelector } from 'src/hooks/suite';
+import { type Account } from 'src/types/wallet';
 
 interface BuyOfferRedirectParams {
     symbol: Account['symbol'];
@@ -77,26 +78,42 @@ const getTokenInfo = (cryptoId: CryptoId): TokenInfo | undefined => {
 
     if (!contractAddress) return;
 
+    // TODO this conversion is not valid, not all required fields are present
     return {
-        contract: contractAddress,
+        // Load-bearing widening: with the branded TokenAddress the outer `as TokenInfo`
+        // conversion is rejected (TS2352); the lint rule mis-reports the assertion as a no-op.
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+        contract: contractAddress as string,
     } as TokenInfo;
 };
 
+const findAccountKey = (
+    accounts: Account[],
+    params: Pick<Account, 'symbol' | 'index' | 'accountType'>,
+) =>
+    accounts.find(
+        a =>
+            a.symbol === params.symbol &&
+            a.index === params.index &&
+            a.accountType === params.accountType,
+    )?.key;
+
 export const useTradingRedirect = () => {
     const dispatch = useDispatch();
+    const accounts = useSelector(selectAccounts);
+
+    const prefilledAccountFromRedirect = (
+        params: Pick<Account, 'symbol' | 'index' | 'accountType'>,
+    ) => {
+        const key = findAccountKey(accounts, params);
+        if (key) {
+            dispatch(tradingActions.setTradingFromPrefilledAccount({ key, cryptoId: undefined }));
+        }
+    };
 
     const redirectToBuyOffers = (params: BuyOfferRedirectParams) => {
-        const {
-            symbol,
-            index,
-            accountType,
-            wantCrypto,
-            fiatCurrency,
-            receiveCurrency,
-            amount,
-            country,
-            paymentMethod,
-        } = params;
+        const { wantCrypto, fiatCurrency, receiveCurrency, amount, country, paymentMethod } =
+            params;
         let request: BuyTradeQuoteRequest;
         const commonParams = { fiatCurrency, receiveCurrency, country, paymentMethod };
 
@@ -113,20 +130,14 @@ export const useTradingRedirect = () => {
                 fiatStringAmount: amount,
             };
         }
+        prefilledAccountFromRedirect(params);
         dispatch(tradingBuyActions.saveQuoteRequest(request));
         dispatch(tradingBuyActions.setIsFromRedirect(true));
-        dispatch(
-            goto('wallet-trading-buy-offers', {
-                params: { symbol, accountIndex: index, accountType },
-            }),
-        );
+        dispatch(goto({ routeName: 'wallet-trading-buy' }));
     };
 
     const redirectToSellOffers = (params: SellOfferRedirectParams) => {
         const {
-            symbol,
-            index,
-            accountType,
             amountInCrypto,
             fiatCurrency,
             cryptoCurrency,
@@ -157,6 +168,7 @@ export const useTradingRedirect = () => {
                 fiatStringAmount: amount,
             };
         }
+        prefilledAccountFromRedirect(params);
         dispatch(tradingSellActions.saveQuoteRequest(request));
         dispatch(tradingSellActions.setIsFromRedirect(true));
         const composed = {
@@ -175,8 +187,8 @@ export const useTradingRedirect = () => {
         );
         dispatch(tradingSellActions.saveTransactionId(orderId));
         dispatch(
-            goto(orderId ? 'wallet-trading-sell-confirm' : 'wallet-trading-sell-offers', {
-                params: { symbol, accountIndex: index, accountType },
+            goto({
+                routeName: orderId ? 'wallet-trading-sell-confirm' : 'wallet-trading-sell',
             }),
         );
     };
@@ -209,6 +221,7 @@ export const useTradingRedirect = () => {
             token,
         };
 
+        prefilledAccountFromRedirect(params);
         dispatch(tradingExchangeActions.saveQuoteRequest(request));
         dispatch(tradingExchangeActions.setIsFromRedirect(true));
         dispatch(
@@ -218,22 +231,15 @@ export const useTradingRedirect = () => {
             }),
         );
         dispatch(tradingExchangeActions.saveTransactionId(orderId));
-        dispatch(goto('wallet-trading-exchange-confirm'));
+        dispatch(goto({ routeName: 'wallet-trading-exchange-confirm' }));
     };
 
     const redirectToBuyDetail = (params: DetailRedirectParams) => {
         const { transactionId } = params;
 
+        prefilledAccountFromRedirect(params);
         dispatch(tradingBuyActions.saveTransactionId(transactionId));
-        dispatch(
-            goto('wallet-trading-buy-detail', {
-                params: {
-                    symbol: params.symbol,
-                    accountIndex: params.index,
-                    accountType: params.accountType,
-                },
-            }),
-        );
+        dispatch(goto({ routeName: 'wallet-trading-buy-detail' }));
     };
 
     return {

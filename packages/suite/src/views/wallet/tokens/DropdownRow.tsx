@@ -1,10 +1,11 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
 import styled from 'styled-components';
 
-import { Translation, TranslationKey } from '@suite/intl';
+import { Translation, type TranslationKey } from '@suite/intl';
 import { Badge, Icon, Row, Text, type TextProps } from '@trezor/components';
-import { TypographyStyle, spacings } from '@trezor/theme';
+import { CaretDownIcon } from '@trezor/icons';
+import { type TypographyStyle } from '@trezor/theme';
 
 import { HiddenPlaceholder } from 'src/components/suite';
 
@@ -41,15 +42,15 @@ export const DropdownRow = ({
     nftItemsCount,
 }: DropdownRowProps) => (
     <DropdownRowToggle>
-        <Row gap={spacings.xs}>
+        <Row gap={8}>
             {shouldDisplayIcon && (
                 <IconWrapper $isActive={isActive}>
-                    <Icon size={18} intent="neutral" priority="secondary" name="caretDown" />
+                    <Icon size={18} intent="neutral" priority="secondary" as={CaretDownIcon} />
                 </IconWrapper>
             )}
             {nftName ? (
                 <HiddenPlaceholder>
-                    <Row gap={spacings.xs}>
+                    <Row gap={8}>
                         <Text textWrap="nowrap">{nftName}</Text>
                         {nftItemsCount && <Badge size="small">{nftItemsCount}</Badge>}
                     </Row>

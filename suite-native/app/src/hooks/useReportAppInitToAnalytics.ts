@@ -2,11 +2,13 @@ import { useEffect, useState } from 'react';
 import { Dimensions, PixelRatio, Platform } from 'react-native';
 import { useSelector } from 'react-redux';
 
+import { useServices } from '@suite-common/dependency-injection';
 import {
     selectDeviceLanguage,
     selectRememberedHiddenWalletsCount,
     selectRememberedStandardWalletsCount,
 } from '@suite-common/device';
+import { useDiscreetMode } from '@suite-common/discreet-mode';
 import { UNIT_ABBREVIATIONS } from '@suite-common/suite-constants';
 import { selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
 import {
@@ -14,11 +16,9 @@ import {
     selectBitcoinAmountUnit,
     selectEnabledNetworks,
 } from '@suite-common/wallet-core';
-import { events } from '@suite-native/analytics';
-import { useDiscreetMode } from '@suite-native/atoms';
-import { useIsBiometricsEnabled } from '@suite-native/biometrics';
+import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { selectIsBiometricsEnabled } from '@suite-native/biometrics';
 import { selectLocale } from '@suite-native/intl';
-import { useAnalytics } from '@suite-native/services';
 import { selectIsOnboardingFinished } from '@suite-native/settings';
 import { selectIsAppReady } from '@suite-native/state';
 import { useUserColorScheme } from '@suite-native/theme';
@@ -26,14 +26,14 @@ import { useUserColorScheme } from '@suite-native/theme';
 export const useReportAppInitToAnalytics = (appLaunchTimestamp: number) => {
     const [loadDuration, setLoadDuration] = useState<number | null>(null);
     const [initWasReported, setInitWasReported] = useState(false);
-    const analytics = useAnalytics();
+    const { analytics } = useServices(selectNativeAnalyticsDep);
     const isAppReady = useSelector(selectIsAppReady);
     const isOnboardingFinished = useSelector(selectIsOnboardingFinished);
     const { userColorScheme } = useUserColorScheme();
     const { isDiscreetMode } = useDiscreetMode();
     const currencyCode = useSelector(selectBaseCurrency);
     const bitcoinUnit = useSelector(selectBitcoinAmountUnit);
-    const { isBiometricsOptionEnabled } = useIsBiometricsEnabled();
+    const isBiometricsOptionEnabled = useSelector(selectIsBiometricsEnabled);
     const rememberedStandardWallets = useSelector(selectRememberedStandardWalletsCount);
     const rememberedHiddenWallets = useSelector(selectRememberedHiddenWalletsCount);
     const enabledNetworks = useSelector(selectEnabledNetworks);

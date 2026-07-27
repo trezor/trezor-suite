@@ -1,6 +1,6 @@
 const { TX_CACHE } = global.TestUtils;
 
-export default {
+const signTransactionBech32: TestCase = {
     method: 'signTransaction',
     setup: {
         mnemonic: 'mnemonic_all',
@@ -9,7 +9,7 @@ export default {
         {
             description: 'Testnet (Bech32/P2WPKH): 1 input, 3 outputs',
             params: {
-                coin: 'Testnet',
+                coin: 'test',
                 inputs: [
                     {
                         address_n: "m/84'/1'/0'/0/0",
@@ -52,7 +52,7 @@ export default {
         {
             description: 'Testnet (Bech32/P2WPKH): 3 inputs, no change',
             params: {
-                coin: 'Testnet',
+                coin: 'test',
                 inputs: [
                     {
                         address_n: "m/84'/1'/0'/0/0",
@@ -105,7 +105,7 @@ export default {
         {
             description: 'Testnet (Bech32/P2WPKH): 1 input, OP_RETURN output + change',
             params: {
-                coin: 'Testnet',
+                coin: 'test',
                 inputs: [
                     {
                         address_n: "m/84'/1'/0'/1/4",
@@ -140,4 +140,6 @@ export default {
             },
         },
     ],
-} satisfies TestCase;
+};
+
+export default signTransactionBech32;

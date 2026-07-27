@@ -1,12 +1,12 @@
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
-    AccountsRootState,
+    type AccountsRootState,
     selectAccountByKey,
     selectCardanoPoolsInfo,
     selectDeviceAccounts,
 } from '@suite-common/wallet-core';
-import { AccountKey } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 import {
     getStakingDataForNetwork,
     isCardanoStakedOutsideEverstake,
@@ -14,9 +14,9 @@ import {
     isCardanoStakingActive,
 } from '@suite-common/wallet-utils';
 
-import { NativeStakingRootState } from './types';
+import { type NativeStakingRootState } from './types';
 
-export const createMemoizedSelector = createWeakMapSelector.withTypes<NativeStakingRootState>();
+const createMemoizedSelector = createWeakMapSelector.withTypes<NativeStakingRootState>();
 
 export const selectVisibleDeviceCardanoAccountsWithStakingByNetworkSymbol = createMemoizedSelector(
     [selectDeviceAccounts, (_state, symbol: NetworkSymbol) => symbol],
@@ -34,7 +34,7 @@ export const selectCardanoStakedBalanceByAccountKey = (
     accountKey: AccountKey,
 ) => {
     const account = selectAccountByKey(state, accountKey);
-    if (!account || account.networkType !== 'cardano') return null;
+    if (account?.networkType !== 'cardano') return null;
 
     const stakingData = getStakingDataForNetwork(account);
 
@@ -46,7 +46,7 @@ export const selectCardanoRewardsBalanceByAccountKey = (
     accountKey: AccountKey,
 ) => {
     const account = selectAccountByKey(state, accountKey);
-    if (!account || account.networkType !== 'cardano') return null;
+    if (account?.networkType !== 'cardano') return null;
 
     const stakingData = getStakingDataForNetwork(account);
 
@@ -58,7 +58,7 @@ export const selectCardanoTotalStakePendingByAccountKey = (
     accountKey: AccountKey,
 ) => {
     const account = selectAccountByKey(state, accountKey);
-    if (!account || account.networkType !== 'cardano') return null;
+    if (account?.networkType !== 'cardano') return null;
 
     const stakingData = getStakingDataForNetwork(account);
 
@@ -70,7 +70,7 @@ export const selectIsCardanoStakedWithFiveBinaries = (
     accountKey: AccountKey,
 ) => {
     const account = selectAccountByKey(state, accountKey);
-    if (!account || account.networkType !== 'cardano') return false;
+    if (account?.networkType !== 'cardano') return false;
 
     return isCardanoStakedWithFiveBinaries(account);
 };
@@ -80,7 +80,7 @@ export const selectIsCardanoStakedOutsideEverstake = (
     accountKey: AccountKey,
 ) => {
     const account = selectAccountByKey(state, accountKey);
-    if (!account || account.networkType !== 'cardano') return false;
+    if (account?.networkType !== 'cardano') return false;
 
     const cardanoStakingPool = selectCardanoPoolsInfo(state);
 

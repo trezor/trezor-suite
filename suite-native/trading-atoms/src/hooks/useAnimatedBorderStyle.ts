@@ -1,11 +1,13 @@
 import {
+    interpolate,
     interpolateColor,
     useAnimatedStyle,
     useDerivedValue,
     withTiming,
 } from 'react-native-reanimated';
 
-import { useNativeStyles } from '@trezor/styles';
+import { useNativeStyles } from '@trezor/styles-native';
+import { type RgbaColor } from '@trezor/utils';
 
 export const useAnimatedBorderStyle = (isAmountInputActive: boolean) => {
     const { utils } = useNativeStyles();
@@ -15,8 +17,9 @@ export const useAnimatedBorderStyle = (isAmountInputActive: boolean) => {
         borderColor: interpolateColor(
             progress.value,
             [0, 1],
-            [utils.colors.backgroundSurfaceElevation1, utils.colors.borderInputDefault],
-        ) as `rgba(${number}, ${number}, ${number}, ${number})`,
-        borderWidth: utils.borders.widths.large,
+            [utils.colors.surfaceFillRaised, utils.colors.elementBorderFieldFocused],
+        ) as RgbaColor,
+        borderWidth: interpolate(progress.value, [0, 1], [0, utils.borders.widths.large]),
+        borderRadius: utils.borders.radii.r16,
     }));
 };

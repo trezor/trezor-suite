@@ -1,14 +1,21 @@
 import { tradingActions } from '@suite-common/trading';
-import { AccountKey } from '@suite-common/wallet-types';
+import { type TokenAddress } from '@suite-common/wallet-types';
+import { mockAccountKey } from '@suite-common/wallet-types/mocks';
+import { getFormDraftKey } from '@suite-common/wallet-utils';
+import { getTranslation } from '@suite-native/intl';
 import {
-    PreloadedState,
-    TestStore,
-    initStore,
-    renderHookWithStoreProviderAsync,
+    type TestStore,
+    renderHookWithStoreProvider,
     waitFor,
-} from '@suite-native/test-utils';
-import { exchangeQuotes, getWalletState } from '@suite-native/trading-fixtures';
+} from '@suite-native/test-utils-store';
+import { invityDexQuote } from '@suite-native/trading-fixtures';
+import { mergeDeepObject } from '@trezor/utils';
 
+import {
+    type PreloadedStatePartial,
+    type TradingTestPreloadedState,
+    createTradingLightStore,
+} from '../../../../__tests__/tradingTestUtils';
 import { useEvmApprovalFees } from '../useEvmApprovalFees';
 
 const mockComposeEvmApprovalFeeLevelsThunk = jest.fn();
@@ -19,11 +26,23 @@ jest.mock('../../../../thunks', () => ({
 }));
 
 describe('useEvmApprovalFees', () => {
-    let store: TestStore;
-    let preloadedState: PreloadedState;
+    const exchangeFormDraftKey = getFormDraftKey('trading-exchange', '');
+
+    const ethFeeInfoPreload = {
+        eth: {
+            status: 'loaded' as const,
+            data: {
+                blockHeight: 1000,
+                blockTime: 15,
+                minFee: 1,
+                maxFee: 100,
+                levels: [{ label: 'normal' as const, feePerUnit: '20', blocks: 1 }],
+            },
+        },
+    };
 
     const dexQuoteWithApprovalData = {
-        ...exchangeQuotes[3],
+        ...invityDexQuote,
         isDex: true,
         sendStringAmount: '100',
         send: 'ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
@@ -34,26 +53,37 @@ describe('useEvmApprovalFees', () => {
         },
     };
 
+    const baseOverrides: PreloadedStatePartial<TradingTestPreloadedState> = {
+        wallet: {
+            trading: {
+                exchange: {
+                    tradingAccountKey: mockAccountKey({ symbol: 'eth', descriptor: 'eth1normal' }),
+                    selectedQuote: dexQuoteWithApprovalData as any,
+                },
+            },
+        },
+    };
+
+    const createStore = (extraOverrides: PreloadedStatePartial<TradingTestPreloadedState> = {}) =>
+        createTradingLightStore({
+            tradeType: 'exchange',
+            overrides: mergeDeepObject(baseOverrides, extraOverrides),
+        });
+
+    const renderUseEvmApprovalFees = (
+        store: TestStore,
+        params?: Parameters<typeof useEvmApprovalFees>[0],
+    ) => renderHookWithStoreProvider(() => useEvmApprovalFees(params), { store });
+
     beforeEach(() => {
         mockComposeEvmApprovalFeeLevelsThunk.mockReset().mockImplementation(() => ({
             type: 'composeEvmApprovalFeeLevelsThunk',
             unwrap: jest.fn().mockResolvedValue({}),
         }));
-
-        preloadedState = {
-            wallet: getWalletState({ tradeType: 'exchange' }),
-        };
-        preloadedState.wallet!.trading!.exchange!.tradingAccountKey = 'eth-account-1' as AccountKey;
-        preloadedState.wallet!.trading!.exchange!.selectedQuote = dexQuoteWithApprovalData;
-
-        store = initStore(preloadedState).store;
     });
 
-    const renderUseEvmApprovalFees = (params?: Parameters<typeof useEvmApprovalFees>[0]) =>
-        renderHookWithStoreProviderAsync(() => useEvmApprovalFees(params), { store });
-
-    it('should return isLoading true when fee is undefined', async () => {
-        const { result } = await renderUseEvmApprovalFees();
+    it('should return isLoading true when fee is undefined', () => {
+        const { result } = renderUseEvmApprovalFees(createStore());
 
         expect(result.current).toEqual(
             expect.objectContaining({
@@ -65,9 +95,10 @@ describe('useEvmApprovalFees', () => {
         );
     });
 
-    it('should return fee and isLoading false when composed transaction info is available', async () => {
-        preloadedState!.wallet!.trading!.exchange!.selectedQuote = undefined;
-        store = initStore(preloadedState).store;
+    it('should return fee and isLoading false when composed transaction info is available', () => {
+        const store = createStore({
+            wallet: { trading: { exchange: { selectedQuote: undefined } } },
+        });
 
         store.dispatch(
             tradingActions.saveComposedTransactionInfo({
@@ -76,7 +107,7 @@ describe('useEvmApprovalFees', () => {
             }),
         );
 
-        const { result } = await renderUseEvmApprovalFees();
+        const { result } = renderUseEvmApprovalFees(store);
 
         expect(result.current.fee).toBe('50000');
         expect(result.current.error).toBeNull();
@@ -89,37 +120,136 @@ describe('useEvmApprovalFees', () => {
             unwrap: jest.fn().mockRejectedValue(new Error('compose failed')),
         }));
 
-        preloadedState!.wallet!.fees = {
-            eth: {
-                status: 'loaded',
-                data: {
-                    blockHeight: 1000,
-                    blockTime: 15,
-                    minFee: 1,
-                    maxFee: 100,
-                    levels: [{ label: 'normal', feePerUnit: '20', blocks: 1 }],
+        const store = createStore({
+            wallet: {
+                fees: {
+                    eth: {
+                        status: 'loaded',
+                        data: {
+                            blockHeight: 1000,
+                            blockTime: 15,
+                            minFee: 1,
+                            maxFee: 100,
+                            levels: [{ label: 'normal', feePerUnit: '20', blocks: 1 }],
+                        },
+                    },
                 },
             },
-        };
-        store = initStore(preloadedState).store;
+        });
 
-        const { result } = await renderUseEvmApprovalFees();
+        const { result } = renderUseEvmApprovalFees(store);
 
         await waitFor(() => {
             expect(result.current.error).toBe(
-                'Failed to estimate approval fees. Please try again.',
+                getTranslation('moduleTrading.composeAllowanceError'),
             );
         });
 
         expect(result.current.isLoading).toBe(false);
     });
 
-    it('should accept approvalTypeOverride parameter', async () => {
-        const { result } = await renderUseEvmApprovalFees({ approvalTypeOverride: 'ZERO' });
+    it('should accept approvalTypeOverride parameter', () => {
+        const { result } = renderUseEvmApprovalFees(createStore(), {
+            approvalTypeOverride: 'ZERO',
+        });
 
         expect(result.current).toEqual(
             expect.objectContaining({
                 composeFees: expect.any(Function),
+            }),
+        );
+    });
+
+    it('should pass selected fee level from exchange form draft to compose thunk', async () => {
+        const store = createStore({
+            wallet: {
+                fees: ethFeeInfoPreload,
+                formDrafts: {
+                    [exchangeFormDraftKey]: { selectedFee: 'high' },
+                },
+            },
+        });
+
+        renderUseEvmApprovalFees(store);
+
+        await waitFor(() => {
+            expect(mockComposeEvmApprovalFeeLevelsThunk).toHaveBeenCalled();
+        });
+
+        expect(mockComposeEvmApprovalFeeLevelsThunk).toHaveBeenCalledWith(
+            expect.objectContaining({
+                selectedFeeLevel: 'high',
+            }),
+        );
+    });
+
+    it('should pass custom fee fields from exchange form draft when fee level is custom', async () => {
+        const store = createStore({
+            wallet: {
+                fees: ethFeeInfoPreload,
+                formDrafts: {
+                    [exchangeFormDraftKey]: {
+                        selectedFee: 'custom',
+                        feeLimit: '21000',
+                        feePerUnit: '25',
+                        maxFeePerGas: '100',
+                        maxPriorityFeePerGas: '2',
+                    },
+                },
+            },
+        });
+
+        renderUseEvmApprovalFees(store);
+
+        await waitFor(() => {
+            expect(mockComposeEvmApprovalFeeLevelsThunk).toHaveBeenCalled();
+        });
+
+        expect(mockComposeEvmApprovalFeeLevelsThunk).toHaveBeenCalledWith(
+            expect.objectContaining({
+                selectedFeeLevel: 'custom',
+                customFee: {
+                    feeLimit: '21000',
+                    feePerUnit: '25',
+                    maxFeePerGas: '100',
+                    maxPriorityFeePerGas: '2',
+                },
+            }),
+        );
+    });
+
+    it('should default to normal fee level when exchange form draft has no selected fee', async () => {
+        const store = createStore({
+            wallet: {
+                fees: ethFeeInfoPreload,
+                formDrafts: {
+                    [exchangeFormDraftKey]: {
+                        outputs: [
+                            {
+                                type: 'payment' as const,
+                                address: '',
+                                amount: '0',
+                                fiat: '',
+                                currency: { label: '', value: '' },
+                                label: '',
+                                token: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as TokenAddress,
+                            },
+                        ],
+                    },
+                },
+            },
+        });
+
+        renderUseEvmApprovalFees(store);
+
+        await waitFor(() => {
+            expect(mockComposeEvmApprovalFeeLevelsThunk).toHaveBeenCalled();
+        });
+
+        expect(mockComposeEvmApprovalFeeLevelsThunk).toHaveBeenCalledWith(
+            expect.objectContaining({
+                selectedFeeLevel: 'normal',
+                customFee: undefined,
             }),
         );
     });

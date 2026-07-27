@@ -1,0 +1,10 @@
+import type { SVGProps } from 'react';
+const SvgLineSegmentFilled = (props: SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" {...props}>
+        <path
+            fill="currentColor"
+            d="M26.83 10.828a4.01 4.01 0 0 1-4.861.617L11.445 21.969a4 4 0 1 1-1.414-1.414l10.524-10.524a4 4 0 1 1 6.275.796z"
+        />
+    </svg>
+);
+export { SvgLineSegmentFilled as ReactComponent };

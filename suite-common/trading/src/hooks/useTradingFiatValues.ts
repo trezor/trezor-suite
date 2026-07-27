@@ -1,24 +1,30 @@
 import { useCallback, useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { CryptoId, FiatCurrencyCode } from 'invity-api';
+import type { CryptoId } from 'invity-api';
 
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
-    FiatRatesRootState,
+    type FiatRatesRootState,
     selectBaseCurrency,
     selectFiatRatesByFiatRateKey,
     updateFiatRatesThunk,
 } from '@suite-common/wallet-core';
-import { FiatRatesResult, Rate, Timestamp, TokenAddress } from '@suite-common/wallet-types';
+import {
+    type FiatRatesResult,
+    type Rate,
+    type Timestamp,
+    type TokenAddress,
+} from '@suite-common/wallet-types';
 import {
     convertAmountUnitsToSubunits,
     getFiatRateKey,
     toFiatCurrency,
 } from '@suite-common/wallet-utils';
+import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 
 import { TRADING_DEFAULT_CRYPTO_CURRENCY } from '../constants';
-import { TradingRootState } from '../reducers/tradingCommonReducer';
+import { type TradingRootState } from '../reducers/tradingCommonReducer';
 import {
     cryptoIdToNetworkAndContractAddress,
     isCryptoIdForNativeToken,
@@ -26,10 +32,11 @@ import {
 } from '../utils';
 
 export interface TradingFiatRatesProps {
-    fiatCurrency?: FiatCurrencyCode;
+    fiatCurrency?: BaseCurrencyCode;
     cryptoId?: CryptoId;
     amount?: string;
     shouldSendInSats?: boolean;
+    isErc4626?: boolean;
 }
 
 export interface TradingFiatRatesReturn {
@@ -41,7 +48,7 @@ export interface TradingFiatRatesReturn {
     networkDecimals: number;
     tokenAddress: TokenAddress | undefined;
     fiatRatesUpdater: (
-        value: FiatCurrencyCode | undefined,
+        value: BaseCurrencyCode | undefined,
         currentTokenAddress?: TokenAddress,
     ) => Promise<FiatRatesResult | null>;
 }
@@ -51,6 +58,7 @@ export const useTradingFiatValues = ({
     fiatCurrency,
     amount,
     shouldSendInSats,
+    isErc4626,
 }: TradingFiatRatesProps): TradingFiatRatesReturn | null => {
     const dispatch = useDispatch();
 
@@ -61,9 +69,7 @@ export const useTradingFiatValues = ({
 
         return {
             network: assetInfo?.network,
-            contractAddress: isNativeToken
-                ? undefined
-                : (assetInfo?.contractAddress as TokenAddress | undefined),
+            contractAddress: isNativeToken ? undefined : assetInfo?.contractAddress,
             symbol: assetInfo?.network?.symbol ?? TRADING_DEFAULT_CRYPTO_CURRENCY,
         };
     }, [cryptoId, isNativeToken]);
@@ -82,7 +88,7 @@ export const useTradingFiatValues = ({
 
     const fiatRatesUpdater = useCallback(
         async (
-            value: FiatCurrencyCode | undefined,
+            value: BaseCurrencyCode | undefined,
             currentTokenAddress?: TokenAddress,
         ): Promise<FiatRatesResult | null> => {
             if (!value) return null;
@@ -94,6 +100,7 @@ export const useTradingFiatValues = ({
                         {
                             symbol,
                             tokenAddress: isNativeToken ? undefined : tokenAddress,
+                            protocols: isErc4626 ? ['erc4626'] : undefined,
                         },
                     ],
                     baseCurrencyCode: value,
@@ -118,7 +125,7 @@ export const useTradingFiatValues = ({
 
             return null;
         },
-        [contractAddress, dispatch, symbol, isNativeToken],
+        [contractAddress, dispatch, symbol, isNativeToken, isErc4626],
     );
 
     useEffect(() => {

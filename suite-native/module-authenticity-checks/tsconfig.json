@@ -15,6 +15,7 @@
         { "path": "../link" },
         { "path": "../navigation" },
         { "path": "../../packages/type-utils" },
-        { "path": "../../packages/urls" }
+        { "path": "../../packages/urls" },
+        { "path": "../../packages/requirements" }
     ]
 }

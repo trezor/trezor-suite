@@ -19,6 +19,7 @@ on:
       - "packages/protocol/**"
       - "packages/trezor-user-env-link/**"
       - "docker/docker-compose.transport-test-ci.yml"
+      - ".github/workflows/test-transport.yml"
   workflow_dispatch:
 
 concurrency:
@@ -31,18 +32,22 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v6
         with:
           submodules: true
 
       - name: Setup node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
         with:
           node-version-file: ".nvmrc"
 
+      - name: Install SafeDep PMG
+        uses: safedep/pmg@26d5c0ad71fd0e5f48c3183c9c74d4b3eb7f57c8 # v0.19.1
+        continue-on-error: true
+        with:
+          version: v0.19.1
       - name: Install dependencies
         run: |
-          echo -e "\nenableScripts: false" >> .yarnrc.yml
           yarn workspaces focus @trezor/transport-test
 
       - name: Setup containers
@@ -50,11 +55,8 @@ jobs:
           docker compose -f ./docker/docker-compose.transport-test-ci.yml pull
           docker compose -f ./docker/docker-compose.transport-test-ci.yml up -d
 
-      - name: Run E2E tests (old-bridge:emu)
-        run: yarn workspace @trezor/transport-test test:e2e:old-bridge:emu
-
-      - name: Run E2E tests (new-bridge:emu)
-        run: yarn workspace @trezor/transport-test test:e2e:new-bridge:emu
+      - name: Run E2E tests (bridge:emu)
+        run: yarn workspace @trezor/transport-test test:e2e:bridge:emu
 
   extract-branch:
     if: github.repository == 'trezor/trezor-suite'
@@ -72,19 +74,23 @@ jobs:
     needs: [extract-branch]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v6
         with:
           ref: ${{ needs.extract-branch.outputs.branch }}
 
       - name: Setup node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
         with:
           node-version-file: ".nvmrc"
 
+      - name: Install SafeDep PMG
+        uses: safedep/pmg@26d5c0ad71fd0e5f48c3183c9c74d4b3eb7f57c8 # v0.19.1
+        continue-on-error: true
+        with:
+          version: v0.19.1
       - name: Install dependencies
         shell: bash
         run: |
-          echo -e "\nenableScripts: false" >> .yarnrc.yml
           yarn workspaces focus @trezor/transport -A
 
       - name: Build transport tester
@@ -92,7 +98,7 @@ jobs:
           yarn workspace @trezor/transport-test build:e2e:api:browser
 
       - name: Configure aws credentials
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@254c19bd240aabef8777f48595e9d2d7b972184b # v6
         with:
           role-to-assume: arn:aws:iam::538326561891:role/gh_actions_trezor_suite_dev_deploy
           aws-region: eu-central-1

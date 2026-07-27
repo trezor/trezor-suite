@@ -1,6 +1,6 @@
-import { CryptoId, SellFiatTrade } from 'invity-api';
+import { type CryptoId, type SellFiatTrade } from 'invity-api';
 
-import { TradingSellInfoSelector } from '../../../selectors/tradingSelectors';
+import { type TradingSellInfoSelector } from '../../../selectors/tradingSelectors';
 import { sellUtilsFixtures } from '../__fixtures__/sellUtils';
 import { sellUtils } from '../sellUtils';
 
@@ -151,12 +151,14 @@ describe('sellUtils', () => {
         });
 
         it('should return false when provider flow is not not BANK_ACCOUNT', () => {
+            const testProvider = sellInfo.providerInfos['test'];
+            if (!testProvider) throw new Error('Missing test fixture');
             expect(
                 sellUtils.needToRegisterOrVerifyBankAccount({
                     sellInfo: {
                         ...sellInfo,
                         providerInfos: {
-                            test: { ...sellInfo.providerInfos.test, flow: 'PAYMENT_GATE' },
+                            test: { ...testProvider, flow: 'PAYMENT_GATE' },
                         },
                     },
                     quote,

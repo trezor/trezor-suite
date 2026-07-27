@@ -4,10 +4,15 @@
     "references": [
         { "path": "../analytics" },
         { "path": "../bluetooth" },
+        { "path": "../calldata" },
         { "path": "../device" },
+        { "path": "../earn-stablecoin-api" },
+        { "path": "../earn-staking-api" },
         { "path": "../fiat-services" },
         { "path": "../firmware" },
+        { "path": "../react-query" },
         { "path": "../redux-utils" },
+        { "path": "../schemas" },
         { "path": "../staking" },
         { "path": "../suite-constants" },
         { "path": "../suite-types" },
@@ -21,6 +26,12 @@
         { "path": "../wallet-types" },
         { "path": "../wallet-utils" },
         {
+            "path": "../../packages/analytics-uploader"
+        },
+        {
+            "path": "../../packages/blockchain-link"
+        },
+        {
             "path": "../../packages/blockchain-link-types"
         },
         {
@@ -32,6 +43,18 @@
         },
         { "path": "../../packages/device-utils" },
         { "path": "../../packages/env-utils" },
+        {
+            "path": "../../networks/ripple/network-ripple"
+        },
+        {
+            "path": "../../networks/solana/network-solana"
+        },
+        {
+            "path": "../../networks/stellar/network-stellar"
+        },
+        {
+            "path": "../../networks/tron/network-tron"
+        },
         { "path": "../../packages/protobuf" },
         { "path": "../../packages/type-utils" },
         { "path": "../../packages/utils" }

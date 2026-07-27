@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 import { H2 } from '@trezor/components';
 
-import { useIsContentBelowBreakpoint } from '../../../../../../support/suite/ContentFlex';
+import { useIsContentBelowBreakpoint } from 'src/support/suite/ContentFlex';
 
 export const NoDragContainer = styled.div`
     -webkit-app-region: no-drag;

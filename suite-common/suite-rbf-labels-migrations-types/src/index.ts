@@ -1,1 +1,1 @@
-export * from './migrateSuiteSyncLabelsForRbfTransaction';
+export type * from './migrateSuiteSyncLabelsForRbfTransaction';

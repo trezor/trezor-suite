@@ -5,9 +5,9 @@ import {
     selectIsSameOrNewDevice,
 } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
-import { TrezorDevice } from '@suite-common/suite-types';
+import { type TrezorDevice } from '@suite-common/suite-types';
 import { getSelectedDevice, sortByTimestamp } from '@suite-common/suite-utils';
-import { Device } from '@trezor/connect';
+import { type Device } from '@trezor/connect';
 import { isNative } from '@trezor/env-utils';
 
 type SelectDeviceThunkParams = {
@@ -26,7 +26,7 @@ export const selectDeviceThunk = createThunk<
 >(
     `${DEVICE_MODULE_PREFIX}/selectDevice`,
     ({ device }, { dispatch, getState, fulfillWithValue }) => {
-        let trezorDevice: TrezorDevice | typeof undefined;
+        let trezorDevice: TrezorDevice | undefined;
         const devices = selectDevices(getState());
         if (device) {
             // "ts" is one of the field which distinguish Device from TrezorDevice

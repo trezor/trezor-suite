@@ -1,6 +1,7 @@
-import { ReactNode, useState } from 'react';
+import { type ReactNode } from 'react';
+import { View } from 'react-native';
 import Animated, {
-    EntryExitAnimationFunction,
+    type EntryExitAnimationFunction,
     FadeOut,
     useSharedValue,
     withDelay,
@@ -8,37 +9,47 @@ import Animated, {
 } from 'react-native-reanimated';
 
 import { Box, HStack, IconButton, Text } from '@suite-native/atoms';
-import { AddCoinFlowType } from '@suite-native/navigation';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { type AddCoinFlowType, type CloseActionType, GoBackIcon } from '@suite-native/navigation';
+import { SEARCH_INPUT_ANIMATION_DURATION, SearchForm } from '@suite-native/search';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
-import { AccountsSearchForm, SEARCH_INPUT_ANIMATION_DURATION } from './AccountsSearchForm';
 import { AddAccountButton } from './AddAccountsButton';
+import { FilterCountBadge } from './FilterCountBadge';
 
 type SearchableAccountsListHeaderProps = {
     title: ReactNode;
     onSearchInputChange: (value: string) => void;
-    flowType: AddCoinFlowType;
+    isSearchActive: boolean;
+    onSearchActiveChange: (value: boolean) => void;
+    flowType?: AddCoinFlowType;
+    closeActionType?: CloseActionType;
+    closeAction?: () => void;
+    onFilterPress?: () => void;
+    activeFilterCount?: number;
 };
 
 const HEADER_ANIMATION_DURATION = 100;
 
 const searchFormContainerStyle = prepareNativeStyle(({ spacings }) => ({
-    height: 48,
     marginBottom: spacings.sp8,
 }));
 
 export const SearchableAccountsListHeader = ({
     title,
     onSearchInputChange,
+    isSearchActive,
+    onSearchActiveChange,
     flowType,
+    closeActionType,
+    closeAction,
+    onFilterPress,
+    activeFilterCount = 0,
 }: SearchableAccountsListHeaderProps) => {
     const isFirstRender = useSharedValue(true);
     const { applyStyle } = useNativeStyles();
 
-    const [isSearchActive, setIsSearchActive] = useState(false);
-
     const handleHideFilter = () => {
-        setIsSearchActive(false);
+        onSearchActiveChange(false);
         onSearchInputChange('');
     };
 
@@ -67,7 +78,8 @@ export const SearchableAccountsListHeader = ({
     return (
         <Box style={applyStyle(searchFormContainerStyle)}>
             {isSearchActive ? (
-                <AccountsSearchForm
+                <SearchForm
+                    placeholder="accounts.searchForm.placeholder"
                     onPressCancel={handleHideFilter}
                     onInputChange={onSearchInputChange}
                 />
@@ -76,17 +88,53 @@ export const SearchableAccountsListHeader = ({
                     entering={enteringFadeInAnimation}
                     exiting={FadeOut.duration(HEADER_ANIMATION_DURATION)}
                 >
-                    <HStack justifyContent="space-between" alignItems="center">
-                        <IconButton
-                            iconName="magnifyingGlass"
-                            onPress={() => setIsSearchActive(true)}
-                            colorScheme="tertiaryElevation1"
-                            size="medium"
-                        />
+                    <HStack alignItems="center">
+                        <HStack flex={1} alignItems="center" spacing="sp8">
+                            {closeActionType && (
+                                <GoBackIcon
+                                    closeActionType={closeActionType}
+                                    closeAction={closeAction}
+                                />
+                            )}
+                            <IconButton
+                                iconName="magnifyingGlass"
+                                onPress={() => onSearchActiveChange(true)}
+                                size="medium"
+                                intent="neutral"
+                                priority="secondary"
+                            />
+                        </HStack>
                         <Text variant="body-md-strong" numberOfLines={1} adjustsFontSizeToFit>
                             {title}
                         </Text>
-                        <AddAccountButton flowType={flowType} testID="@myAssets/addAccountButton" />
+                        <HStack
+                            flex={1}
+                            justifyContent="flex-end"
+                            alignItems="center"
+                            spacing="sp8"
+                        >
+                            {onFilterPress && (
+                                <View>
+                                    <IconButton
+                                        iconName="funnelSimple"
+                                        size="medium"
+                                        onPress={onFilterPress}
+                                        intent="neutral"
+                                        priority="secondary"
+                                        testID="@myAssets/networkFilterButton"
+                                    />
+                                    {activeFilterCount > 0 && (
+                                        <FilterCountBadge count={activeFilterCount} />
+                                    )}
+                                </View>
+                            )}
+                            {flowType && (
+                                <AddAccountButton
+                                    flowType={flowType}
+                                    testID="@myAssets/addAccountButton"
+                                />
+                            )}
+                        </HStack>
                     </HStack>
                 </Animated.View>
             )}

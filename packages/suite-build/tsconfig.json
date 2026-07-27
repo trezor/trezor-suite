@@ -3,11 +3,12 @@
     "compilerOptions": { "outDir": "./libDev" },
     "include": [".", "**/*.json"],
     "references": [
+        { "path": "../../suite-common/flags" },
         {
             "path": "../../suite-common/suite-config"
         },
+        { "path": "../../suite/router-config" },
         { "path": "../bundler-security" },
-        { "path": "../env-utils" },
         { "path": "../eslint" }
     ]
 }

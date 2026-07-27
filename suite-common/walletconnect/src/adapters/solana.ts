@@ -1,22 +1,23 @@
-import { WalletKitTypes } from '@reown/walletkit';
+import { type WalletKitTypes } from '@reown/walletkit';
+import { base58 } from '@scure/base';
 import type { ProposalTypes } from '@walletconnect/types';
-import bs58 from 'bs58';
 
 import * as trezorConnectPopupActions from '@suite-common/connect-popup';
 import { selectSelectedDevice } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
-import { Network, getNetwork, networksCollection } from '@suite-common/wallet-config';
+import { type Network, getNetwork, networksCollection } from '@suite-common/wallet-config';
 import { selectAccounts } from '@suite-common/wallet-core';
-import { Account } from '@suite-common/wallet-types';
-import TrezorConnect, { CallMethodResponse } from '@trezor/connect';
+import { type Account } from '@suite-common/wallet-types';
+import TrezorConnect, { type CallMethodResponse } from '@trezor/connect';
+import { type Result } from '@trezor/type-utils';
 
 import { WALLETCONNECT_MODULE } from '../walletConnectConstants';
 import { selectSessionByTopic } from '../walletConnectReducer';
 import {
-    PendingConnectionProposalNetwork,
-    WalletConnectAdapter,
-    WalletConnectNamespace,
-    WalletConnectSession,
+    type PendingConnectionProposalNetwork,
+    type WalletConnectAdapter,
+    type WalletConnectNamespace,
+    type WalletConnectSession,
 } from '../walletConnectTypes';
 
 const methods = [
@@ -54,10 +55,13 @@ const solanaSignTransaction = createThunk<
             },
         });
         if (!estimatedFee.success) {
-            throw new Error('Failed to estimate fee. ' + estimatedFee.payload.error);
+            throw new Error('Failed to estimate fee. ' + estimatedFee.error.message);
         }
         // Get from argument or use decoded from estimate fee
-        feePayer = feePayer || estimatedFee.payload.levels[0].feePayer;
+        const { levels } = estimatedFee.payload;
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const firstLevel: (typeof levels)[number] = levels[0];
+        feePayer = feePayer || firstLevel.feePayer;
         const account = accounts.find(
             a => a.networkType === 'solana' && a.visible && a.descriptor === feePayer,
         );
@@ -87,16 +91,16 @@ const solanaSignTransaction = createThunk<
                 },
             }),
         );
-        const response = await trezorConnectPopupActions.getPopupCallDeferred(true).promise;
-        const typedPayload = response.payload as CallMethodResponse<'solanaSignTransaction'>;
-        if (!response.success || !typedPayload.serializedTx) {
+        const response = (await trezorConnectPopupActions.getPopupCallDeferred(true)
+            .promise) as Result<CallMethodResponse<'solanaSignTransaction'>>;
+        if (!response.success || !response.payload.serializedTx) {
             console.error('solana_signTransaction error', response);
             throw new Error('Solana signing error');
         }
 
         return {
-            signature: typedPayload.signature,
-            transaction: typedPayload.serializedTx,
+            signature: response.payload.signature,
+            transaction: response.payload.serializedTx,
         };
     },
 );
@@ -130,7 +134,7 @@ const solanaRequestThunk = createThunk<
                 solanaSignTransaction({ session, transaction, feePayer, origin, isDevnet }),
             ).unwrap();
 
-            const signature = bs58.encode(Buffer.from(response.signature, 'hex'));
+            const signature = base58.encode(Buffer.from(response.signature, 'hex'));
 
             return { signature };
         }
@@ -244,6 +248,7 @@ const processNamespaces = (
 export const solanaAdapter = {
     methods,
     networkType: 'solana',
+    namespaceId: 'solana',
     requestThunk: solanaRequestThunk,
     getChainId,
     getNamespace,

@@ -1,15 +1,15 @@
 import { createAction } from '@reduxjs/toolkit';
 
 import {
-    AccountKey,
-    FormState,
-    GeneralPrecomposedTransactionFinal,
-    TokenAddress,
+    type AccountKey,
+    type FormState,
+    type GeneralPrecomposedTransactionFinal,
+    type TokenAddress,
 } from '@suite-common/wallet-types';
-import { BlockbookTransaction } from '@trezor/blockchain-link-types';
+import { type BlockbookTransaction } from '@trezor/blockchain-link-types';
 
 import { SEND_MODULE_PREFIX } from './sendFormConstants';
-import { SerializedTx } from './sendFormTypes';
+import { type SerializedTx } from './sendFormTypes';
 
 const storeDraft = createAction(
     `${SEND_MODULE_PREFIX}/store-draft`,
@@ -43,7 +43,18 @@ const storeSignedTransaction = createAction(
     }),
 );
 
+// The EVM nonce resolved at signing time (backend-checked, next-available). Stored so the
+// transaction review modal can display the exact nonce being signed without resolving it again.
+const storeResolvedEthereumNonce = createAction(
+    `${SEND_MODULE_PREFIX}/store-resolved-ethereum-nonce`,
+    (payload: string) => ({
+        payload,
+    }),
+);
+
 const discardTransaction = createAction(`${SEND_MODULE_PREFIX}/discard-transaction`);
+
+const clearSignedTransactionData = createAction(`${SEND_MODULE_PREFIX}/clear-signed-transaction`);
 
 const sendRaw = createAction(`${SEND_MODULE_PREFIX}/sendRaw`, (payload: boolean) => ({
     payload,
@@ -56,7 +67,9 @@ export const sendFormActions = {
     removeDraft,
     storePrecomposedTransaction,
     storeSignedTransaction,
+    storeResolvedEthereumNonce,
     discardTransaction,
+    clearSignedTransactionData,
     sendRaw,
     dispose,
 };

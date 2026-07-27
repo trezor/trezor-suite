@@ -1,6 +1,17 @@
 import { isAnyOf } from '@reduxjs/toolkit';
 
 import { asTypedDesktopAnalytics, events } from '@suite/analytics';
+import {
+    selectAnonymityGainToReportByAccountKey,
+    selectCoinjoinAccountByKey,
+    updateLastAnonymityReportTimestamp,
+} from '@suite/coinjoin';
+import {
+    anchorChange,
+    routerLocationChange,
+    selectRouteName,
+    selectRouterUrl,
+} from '@suite/router';
 import { deviceActions, selectDevices, selectDevicesCount } from '@suite-common/device';
 import { firmwareUpdate } from '@suite-common/firmware';
 import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
@@ -10,7 +21,7 @@ import {
     getPhysicalDeviceCount,
 } from '@suite-common/suite-utils';
 import { WALLET_SETTINGS, discoveryActions } from '@suite-common/wallet-core';
-import { AccountKey } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 import {
     accumulateAccountCountBySymbolAndType,
     getAccountTotalStakingBalance,
@@ -28,16 +39,9 @@ import {
 } from '@trezor/device-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { ROUTER, SUITE } from 'src/actions/suite/constants';
-import { setFlag } from 'src/actions/suite/suiteActions';
-import { updateLastAnonymityReportTimestamp } from 'src/actions/wallet/coinjoinAccountActions';
+import { SUITE } from 'src/actions/suite/constants';
 import { COINJOIN } from 'src/actions/wallet/constants';
-import { selectRouterUrl } from 'src/reducers/suite/routerReducer';
-import {
-    selectAnonymityGainToReportByAccountKey,
-    selectCoinjoinAccountByKey,
-} from 'src/reducers/wallet/coinjoinReducer';
-import { Action, AppState } from 'src/types/suite';
+import { type Action, type AppState } from 'src/types/suite';
 import {
     getSuiteReadyPayload,
     redactRouterUrl,
@@ -55,7 +59,7 @@ import { hasVisibleTokens } from 'src/utils/wallet/tokenUtils';
 const analyticsMiddleware = createMiddlewareWithExtraDeps(
     (action: Action, { extra, next, dispatch, getState }) => {
         const prevRouterUrl = selectRouterUrl(getState());
-
+        const prevRouteName = selectRouteName(getState());
         // NOTE: pass action on, keep the result
         const result = next(action);
 
@@ -223,7 +227,7 @@ const analyticsMiddleware = createMiddlewareWithExtraDeps(
                 break;
             }
 
-            case ROUTER.LOCATION_CHANGE:
+            case routerLocationChange.type:
                 if (
                     state.suite.lifecycle.status !== 'initial' &&
                     state.suite.lifecycle.status !== 'loading'
@@ -236,10 +240,17 @@ const analyticsMiddleware = createMiddlewareWithExtraDeps(
                             anchor: redactTransactionIdFromAnchor(action.payload.anchor),
                         },
                     });
+
+                    if (selectRouteName(state) === 'suite-earn' && prevRouteName !== 'suite-earn') {
+                        asTypedDesktopAnalytics(analytics).report({
+                            type: events.yieldEarnEntryEvent.name,
+                            payload: { from: prevRouteName ?? 'unknown' },
+                        });
+                    }
                 }
                 break;
 
-            case ROUTER.ANCHOR_CHANGE:
+            case anchorChange.type:
                 if (action.payload) {
                     asTypedDesktopAnalytics(analytics).report({
                         type: events.routerLocationChangeEvent.name,
@@ -285,16 +296,6 @@ const analyticsMiddleware = createMiddlewareWithExtraDeps(
                     type: action.payload.remember
                         ? events.switchDeviceRememberEvent.name
                         : events.switchDeviceForgetEvent.name,
-                });
-                break;
-
-            case WALLET_SETTINGS.SET_HIDE_BALANCE:
-                if (!state.suite.flags.discreetModeCompleted) {
-                    dispatch(setFlag('discreetModeCompleted', true));
-                }
-                asTypedDesktopAnalytics(analytics).report({
-                    type: events.menuToggleDiscreetEvent.name,
-                    payload: { value: action.toggled },
                 });
                 break;
 

@@ -3,18 +3,24 @@ import type { AttributeDef, EventDef } from '@suite-common/analytics';
 import { EventType } from '../constants';
 
 type Attributes = {
-    action: AttributeDef<'stake' | 'unstake' | 'claim' | 'change-delegate'>;
+    action: AttributeDef<'stake' | 'unstake' | 'claim' | 'change-delegate' | 'withdraw'>;
     networkSymbol?: AttributeDef<string>;
 };
 
 export const stakingConfirmEvent: EventDef<Attributes, EventType.StakingConfirm> = {
     name: EventType.StakingConfirm,
-    descriptionTrigger: 'fired when a stake/unstake/claim transaction has been created and sent',
+    descriptionTrigger: 'A stake/unstake/claim transaction is created and sent to the blockchain',
     changelog: [{ version: '25.4.0', notes: 'added' }],
 
     attributes: {
         action: {
-            changelog: [{ version: '25.4.0', notes: 'added' }],
+            changelog: [
+                { version: '25.4.0', notes: 'added' },
+                {
+                    version: '26.7.0',
+                    notes: 'added `withdraw` value for withdrawing an expired Tron unstake; for Tron, `stake` is the freeze transaction and `change-delegate` the vote transaction',
+                },
+            ],
         },
         networkSymbol: {
             changelog: [{ version: '25.12.0', notes: 'added' }],

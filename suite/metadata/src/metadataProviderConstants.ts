@@ -1,6 +1,6 @@
 export const AUTH_WINDOW_TITLE = 'AuthPopup';
-export const AUTH_WINDOW_WIDTH = 600;
-export const AUTH_WINDOW_HEIGHT = 720;
+const AUTH_WINDOW_WIDTH = 600;
+const AUTH_WINDOW_HEIGHT = 720;
 export const AUTH_WINDOW_PROPS = `width=${AUTH_WINDOW_WIDTH},height=${AUTH_WINDOW_HEIGHT},dialog=yes,dependent=yes,scrollbars=yes,location=yes`;
 
 // used for desktop app when auth-server is running - generate testing credentials for development

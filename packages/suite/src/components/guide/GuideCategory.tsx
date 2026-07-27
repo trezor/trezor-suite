@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
-import { Translation } from '@suite/intl';
-import { typography } from '@trezor/theme';
+import { selectLanguage } from '@suite/settings';
+import { CardList } from '@trezor/components';
 
 import { setView } from 'src/actions/suite/guideActions';
 import {
@@ -12,27 +12,14 @@ import {
     GuideViewWrapper,
 } from 'src/components/guide';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectLanguage } from 'src/selectors/suite/suiteSelectors';
 import { getNodeTitle } from 'src/utils/suite/guide';
 
 const Section = styled.div`
     margin-bottom: 20px;
 
     &:not(:last-of-type) {
-        margin-bottom: 100px;
+        margin-bottom: 96px;
     }
-`;
-
-const SectionHeading = styled.h3`
-    ${typography['body-sm-strong']}
-    color: ${({ theme }) => theme.textSubdued};
-    padding: 8px 0 18px;
-`;
-
-const Nodes = styled.div`
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
 `;
 
 export const GuideCategory = () => {
@@ -60,27 +47,21 @@ export const GuideCategory = () => {
             <GuideContent>
                 {pages.length ? (
                     <Section>
-                        <SectionHeading>
-                            <Translation id="TR_GUIDE_ARTICLES" />
-                        </SectionHeading>
-                        <Nodes data-testid="@guide/nodes">
+                        <CardList data-testid="@guide/nodes">
                             {pages.map(page => (
                                 <GuideNode key={page.id} node={page} />
                             ))}
-                        </Nodes>
+                        </CardList>
                     </Section>
                 ) : null}
-                {subcategories.length
-                    ? subcategories.map(subcategory =>
-                          subcategory.type === 'category' ? (
-                              <GuideCategories
-                                  key={subcategory.id}
-                                  node={subcategory}
-                                  label={getNodeTitle(subcategory, language)}
-                              />
-                          ) : null,
-                      )
-                    : null}
+                {subcategories.map(subcategory => (
+                    <GuideCategories
+                        key={subcategory.id}
+                        node={subcategory}
+                        label={getNodeTitle(subcategory, language)}
+                        variant="cardList"
+                    />
+                ))}
             </GuideContent>
         </GuideViewWrapper>
     );

@@ -1,4 +1,4 @@
-import { PersistedState } from 'redux-persist';
+import { type PersistedState } from 'redux-persist';
 
 import { isPersistedState } from '../../migrationTypes';
 

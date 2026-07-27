@@ -1,20 +1,25 @@
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import {
-    SuiteSyncAccount,
-    SuiteSyncAddress,
-    SuiteSyncOutput,
+    type SuiteSyncAccount,
+    type SuiteSyncAddress,
+    type SuiteSyncOutput,
 } from '@suite-common/suite-sync-storage';
-import { WalletDescriptor } from '@suite-common/wallet-types';
+import { type WalletDescriptor } from '@trezor/device-utils';
 import { typedObjectValues } from '@trezor/utils';
 
-import { type SuiteSyncDataRootState, WalletData } from '../suiteSyncDataReducer';
+import { type SuiteSyncDataRootState, type WalletData } from '../suiteSyncDataReducer';
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<SuiteSyncDataRootState>();
 
-export const selectWalletById = (
-    state: SuiteSyncDataRootState,
-    walletDescriptor: WalletDescriptor,
-): WalletData | null => state.suiteSyncData.wallets[walletDescriptor] ?? null;
+export const selectWalletById = createMemoizedSelector(
+    [
+        (state: SuiteSyncDataRootState) => state.suiteSyncData.wallets,
+        (_state: SuiteSyncDataRootState, walletDescriptor: WalletDescriptor | null) =>
+            walletDescriptor,
+    ],
+    (wallets, walletDescriptor): WalletData | null =>
+        walletDescriptor !== null ? (wallets[walletDescriptor] ?? null) : null,
+);
 
 export const selectAllAccountsForWallet = createMemoizedSelector(
     [(state, walletDescriptor) => selectWalletById(state, walletDescriptor)],
@@ -30,7 +35,7 @@ export const selectAllAccountsForWallet = createMemoizedSelector(
 export const selectAllAddressesForWallet = createMemoizedSelector(
     [(state, walletDescriptor) => selectWalletById(state, walletDescriptor)],
     wallet => {
-        if (!wallet) {
+        if (wallet === null) {
             return returnStableArrayIfEmpty<SuiteSyncAddress>();
         }
 
@@ -41,7 +46,7 @@ export const selectAllAddressesForWallet = createMemoizedSelector(
 export const selectAllOutputsForWallet = createMemoizedSelector(
     [(state, walletDescriptor) => selectWalletById(state, walletDescriptor)],
     wallet => {
-        if (!wallet) {
+        if (wallet === null) {
             return returnStableArrayIfEmpty<SuiteSyncOutput>();
         }
 

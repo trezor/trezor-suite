@@ -1,38 +1,25 @@
 import { memo, useMemo } from 'react';
 import { useFormContext } from 'react-hook-form';
 
-import styled from 'styled-components';
-
-import { Translation, TranslationKey, useTranslation } from '@suite/intl';
+import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
+import { FakeSelect } from '@suite/trading';
 import {
-    TRADING_FORM_CRYPTO_CURRENCY_SELECT,
-    TRADING_FORM_RECEIVE_CRYPTO_CURRENCY_SELECT,
-    TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT,
-    TradingBuyFormProps,
-    TradingExchangeFormProps,
-    TradingSellFormProps,
+    type TRADING_FORM_CRYPTO_CURRENCY_SELECT,
+    type TRADING_FORM_RECEIVE_CRYPTO_CURRENCY_SELECT,
+    type TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT,
+    type TradingBuyFormProps,
+    type TradingExchangeFormProps,
+    type TradingSellFormProps,
     selectTradingLoadingAndTimestamp,
 } from '@suite-common/trading';
-import { Icon, Input, InputProps, Spinner, Text } from '@trezor/components';
+import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
+import { type InputProps, Spinner, Text } from '@trezor/components';
 
 import { useSelector } from 'src/hooks/suite';
 
 import { AssetPickerInputContent } from './AssetPickerInputContent';
 
 type TradingFormValues = TradingExchangeFormProps | TradingBuyFormProps | TradingSellFormProps;
-
-const OpenModalButton = styled.button`
-    border: unset;
-    background: unset;
-    box-shadow: unset;
-    font-size: inherit;
-
-    cursor: pointer;
-
-    & input {
-        cursor: pointer;
-    }
-`;
 
 export interface AssetPickerInputProps {
     name:
@@ -60,7 +47,9 @@ export const AssetPickerInput = memo(function AssetPickerInputInner({
     const value = watch(name);
     const { translationString } = useTranslation();
     const { isLoading } = useSelector(selectTradingLoadingAndTimestamp);
-    const disabled = isDisabled || isLoading;
+    const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
+    const isBusy = isLoading || isDiscoveryRunning;
+    const disabled = isDisabled || isBusy;
 
     const leftContent = useMemo(() => {
         if (value) {
@@ -68,44 +57,31 @@ export const AssetPickerInput = memo(function AssetPickerInputInner({
             return <AssetPickerInputContent name={name} value={value} />;
         }
 
-        if (isLoading) {
+        if (isBusy) {
             return <Spinner size={20} />;
         }
 
         return undefined;
-    }, [value, isLoading, name]);
+    }, [value, isBusy, name]);
 
     return (
-        <OpenModalButton
-            onClick={e => {
-                e.preventDefault();
-                e.stopPropagation();
-
-                if (!disabled) {
-                    onClick();
-                }
-            }}
-        >
-            <Input
-                name={name}
-                placeholder={
-                    !value && !isLoading && placeholder ? translationString(placeholder) : undefined
-                }
-                isDisabled={disabled}
-                data-testid={`${dataTestId ?? '@asset-picker'}/input`}
-                labelLeft={
-                    label && (
-                        <Text typographyStyle="body-md" intent="neutral" priority="secondary">
-                            <Translation id={label} />
-                        </Text>
-                    )
-                }
-                rightContent={<Icon name="caretDown" size={20} />}
-                leftContent={leftContent}
-                bottomText={bottomText}
-                // Disable the blinking cursor when the input is focused
-                readOnly
-            />
-        </OpenModalButton>
+        <FakeSelect
+            name={name}
+            placeholder={
+                !value && !isBusy && placeholder ? translationString(placeholder) : undefined
+            }
+            isDisabled={disabled}
+            onClick={onClick}
+            labelLeft={
+                label && (
+                    <Text typographyStyle="body-md" intent="neutral" priority="secondary">
+                        <Translation id={label} />
+                    </Text>
+                )
+            }
+            leftContent={leftContent}
+            bottomText={bottomText}
+            data-testid={dataTestId}
+        />
     );
 });

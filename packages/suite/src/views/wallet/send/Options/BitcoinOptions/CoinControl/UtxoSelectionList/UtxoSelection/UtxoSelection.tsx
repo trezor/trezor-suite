@@ -1,11 +1,16 @@
-import { MouseEventHandler, ReactNode } from 'react';
+import { type MouseEventHandler, type ReactNode } from 'react';
 
+import { Address, selectAddressLabel } from '@suite/address';
 import { Translation, useTranslation } from '@suite/intl';
-import { selectLabelingDataForSelectedAccount } from '@suite/metadata';
+import { Labeling } from '@suite/labeling';
 import {
-    selectSuiteSyncAddressLabels,
-    selectSuiteSyncOutputLabels,
-} from '@suite-common/suite-sync';
+    selectIsLegacyLabelingVisible,
+    selectLabelingDataForSelectedAccount,
+} from '@suite/metadata';
+import { openModal } from '@suite/modal';
+import { returnStableArrayIfEmpty } from '@suite-common/redux-utils';
+import { selectIsSuiteSyncEnabled, selectSuiteSyncOutputLabels } from '@suite-common/suite-sync';
+import { type SuiteSyncOutput } from '@suite-common/suite-sync-storage';
 import { useDisplayBaseCurrency } from '@suite-common/wallet-core';
 import { formatNetworkAmount, isSameUtxo } from '@suite-common/wallet-utils';
 import {
@@ -20,15 +25,15 @@ import {
     TextButton,
     Tooltip,
 } from '@trezor/components';
-import { AccountUtxo } from '@trezor/connect';
+import { type AccountUtxo } from '@trezor/connect';
+import { ChangeIcon, ClockIcon, TagFilledIcon, TagIcon, XCircleIcon } from '@trezor/icons';
 
-import { openModal } from 'src/actions/suite/modalActions';
-import { Address, BaseCurrencyValue, FormattedCryptoAmount, Labeling } from 'src/components/suite';
+import { BaseCurrencyValue, FormattedCryptoAmount } from 'src/components/suite';
 import { TransactionTimestamp, UtxoAnonymity } from 'src/components/wallet';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { useCoinjoinUnavailableUtxos } from 'src/hooks/wallet/form/useCoinjoinUnavailableUtxos';
-import { WalletAccountTransaction } from 'src/types/wallet';
+import { type WalletAccountTransaction } from 'src/types/wallet';
 
 type ResolveUtxoSpendableProps = {
     utxo: AccountUtxo;
@@ -77,18 +82,27 @@ export const UtxoSelection = ({ transaction, utxo }: UtxoSelectionProps) => {
             isCoinControlEnabled,
         },
     } = useSendFormContext();
+
+    const isSuiteSyncEnabled = useSelector(selectIsSuiteSyncEnabled);
+    const isLegacyLabelingVisible = useSelector(selectIsLegacyLabelingVisible);
+
     // selecting metadata from store rather than send form context which does not update on metadata change
-    const { addressLabels, outputLabels } = useSelector(selectLabelingDataForSelectedAccount);
+    const { outputLabels } = useSelector(selectLabelingDataForSelectedAccount);
     const { shallDisplayBaseCurrency } = useDisplayBaseCurrency(account.symbol);
-    const suiteSyncAddressLabels = useSelector(state =>
-        selectSuiteSyncAddressLabels(state, account.deviceState),
-    );
     const suiteSyncOutputLabels = useSelector(state =>
-        selectSuiteSyncOutputLabels(state, account.deviceState),
+        isSuiteSyncEnabled
+            ? selectSuiteSyncOutputLabels(state, account.deviceState)
+            : returnStableArrayIfEmpty<SuiteSyncOutput>(),
     );
     const { translationString } = useTranslation();
 
     const dispatch = useDispatch();
+    const addressLabel = useSelector(state =>
+        selectAddressLabel(state, {
+            address: utxo.address,
+            deviceStaticId: account.deviceState,
+        }),
+    );
 
     const coinjoinUnavailableMessage = useCoinjoinUnavailableUtxos({ account, utxo });
     const isPendingTransaction = utxo.confirmations === 0;
@@ -120,28 +134,20 @@ export const UtxoSelection = ({ transaction, utxo }: UtxoSelectionProps) => {
         }
     };
 
-    const addressLabel =
-        suiteSyncAddressLabels.find(it => it.address === utxo.address)?.label ??
-        addressLabels[utxo.address];
-
     const outputLabel =
         suiteSyncOutputLabels.find(it => it.txId === utxo.txid && it.txTargetId === `${utxo.vout}`)
-            ?.label ?? outputLabels?.[utxo.txid]?.[utxo.vout];
+            ?.label ??
+        (isLegacyLabelingVisible ? outputLabels?.[utxo.txid]?.[utxo.vout] : undefined);
 
     return (
-        <GhostContainer
-            onClick={handleCheckbox}
-            isActive={isChecked}
-            padding={12}
-            margin={{ horizontal: -12 }}
-            as="div"
-        >
+        <GhostContainer onClick={handleCheckbox} padding={12} margin={{ horizontal: -12 }} as="div">
             <Row gap={24} width="100%">
                 <Tooltip content={unspendableTooltip}>
                     <Checkbox
                         isChecked={isChecked}
                         isDisabled={isDisabled}
-                        onClick={handleCheckbox}
+                        onChange={handleCheckbox}
+                        onClick={e => e.stopPropagation()}
                     />
                 </Tooltip>
                 <Column flex="1" gap={0}>
@@ -155,7 +161,6 @@ export const UtxoSelection = ({ transaction, utxo }: UtxoSelectionProps) => {
                                     defaultValue: utxo.address,
                                     accountDescriptor: account.descriptor,
                                     networkSymbol: account.symbol,
-                                    value: addressLabel,
                                 }}
                                 displayValue={<Address value={utxo.address} isTruncated />}
                                 placeholder={translationString('TR_LABELING_ADDRESS_LABEL')}
@@ -171,7 +176,7 @@ export const UtxoSelection = ({ transaction, utxo }: UtxoSelectionProps) => {
                                                 }
                                             >
                                                 <Icon
-                                                    name="clock"
+                                                    as={ClockIcon}
                                                     intent="neutral"
                                                     priority="secondary"
                                                     size={16}
@@ -181,7 +186,7 @@ export const UtxoSelection = ({ transaction, utxo }: UtxoSelectionProps) => {
                                         {coinjoinUnavailableMessage && (
                                             <Tooltip content={coinjoinUnavailableMessage}>
                                                 <Icon
-                                                    name="xCircle"
+                                                    as={XCircleIcon}
                                                     intent="neutral"
                                                     priority="secondary"
                                                     size={16}
@@ -195,7 +200,7 @@ export const UtxoSelection = ({ transaction, utxo }: UtxoSelectionProps) => {
                                                 }
                                             >
                                                 <Icon
-                                                    name="change"
+                                                    as={ChangeIcon}
                                                     intent="neutral"
                                                     priority="secondary"
                                                     size={16}
@@ -250,14 +255,13 @@ export const UtxoSelection = ({ transaction, utxo }: UtxoSelectionProps) => {
                                     txid: utxo.txid,
                                     outputIndex: `${utxo.vout}`,
                                     defaultValue: `${utxo.txid}-${utxo.vout}`,
-                                    value: outputLabel,
                                     networkSymbol: account.symbol,
                                     accountDescriptor: account.descriptor,
                                 }}
                                 gap={6}
                                 leftAddon={
                                     <Icon
-                                        name={outputLabel ? 'tagFilled' : 'tag'}
+                                        as={outputLabel ? TagFilledIcon : TagIcon}
                                         intent="neutral"
                                         priority="secondary"
                                         size={12}

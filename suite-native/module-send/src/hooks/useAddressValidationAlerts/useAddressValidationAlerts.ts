@@ -1,14 +1,13 @@
 import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
-import { RouteProp, useRoute } from '@react-navigation/native';
-import { checkAddressCheckSum } from 'web3-utils';
+import { type RouteProp, useRoute } from '@react-navigation/native';
 
+import { checkAddressChecksum, isAddressValid } from '@suite-common/address';
 import { getNetworkType } from '@suite-common/wallet-config';
-import { AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
-import { isAddressValid } from '@suite-common/wallet-utils';
+import { type AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
 import { useFormContext } from '@suite-native/forms';
-import { SendStackParamList, SendStackRoutes } from '@suite-native/navigation';
+import { type SendStackParamList, type SendStackRoutes } from '@suite-native/navigation';
 
 import { useAddressChecksum } from './useAddressChecksum';
 import { useContractAddressCheck } from './useContractAddressCheck';
@@ -56,12 +55,13 @@ export const useAddressValidationAlerts = ({ inputIndex }: UseAddressValidationA
 
         const shouldChecksumAddress =
             networkType === 'ethereum' &&
-            !checkAddressCheckSum(addressValue || '') &&
+            !checkAddressChecksum(addressValue ?? '') &&
             !wasAddressChecksummed;
 
         const shouldCheckContractAddress =
             (wasTokenAlertDisplayed || !shouldShowTokenAlert) &&
-            ['eth', 'tsep', 'thod'].includes(symbol) &&
+            // Solana uses different address validation logic than Ethereum and Tron
+            (networkType === 'ethereum' || networkType === 'tron') &&
             !wasContractAlertDisplayed;
 
         if (shouldShowTokenAlert) {

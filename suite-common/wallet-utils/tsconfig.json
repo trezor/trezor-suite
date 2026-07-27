@@ -3,6 +3,9 @@
     "compilerOptions": { "outDir": "libDev" },
     "include": [".", "**/*.json"],
     "references": [
+        { "path": "../address" },
+        { "path": "../calldata" },
+        { "path": "../earn-staking-api" },
         { "path": "../fiat-services" },
         { "path": "../suite-constants" },
         { "path": "../suite-types" },
@@ -12,9 +15,6 @@
         { "path": "../wallet-constants" },
         { "path": "../wallet-types" },
         {
-            "path": "../../packages/address-validator"
-        },
-        {
             "path": "../../packages/blockchain-link-types"
         },
         {
@@ -22,6 +22,15 @@
         },
         { "path": "../../packages/connect" },
         { "path": "../../packages/device-utils" },
+        {
+            "path": "../../networks/solana/network-solana"
+        },
+        {
+            "path": "../../networks/stellar/network-stellar"
+        },
+        {
+            "path": "../../networks/tron/network-tron"
+        },
         { "path": "../../packages/type-utils" },
         { "path": "../../packages/urls" },
         { "path": "../../packages/utils" }

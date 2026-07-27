@@ -1,11 +1,18 @@
 /* WARNING! This file should be imported ONLY in tests! */
 
+import type { Features } from '@trezor/connect-common';
+import { parseConnectSettings } from '@trezor/connect-common/src/data/connectSettings';
 import { firmwareAssets } from '@trezor/connect-data';
-import { DeviceModelInternal, FirmwareRelease } from '@trezor/device-utils';
-import { AbstractApiTransport, UsbApi } from '@trezor/transport';
+import { DeviceModelInternal } from '@trezor/device-utils';
+import type { FirmwareRelease } from '@trezor/device-utils';
+import { AbstractApiTransport, type UsbApi } from '@trezor/transport-common';
 import { versionUtils } from '@trezor/utils';
 
-import { type Features } from './src/types';
+import * as settingsStore from './src/data/settingsStore';
+
+// Initialize settings store so tests reaching settingsStore.get() (via
+// BackendManager, firmwareInfo, etc.) don't trip the pre-set() throw.
+settingsStore.set(parseConnectSettings({}));
 
 // mock of navigator.usb
 const createTransportApi = (override = {}) =>
@@ -30,7 +37,9 @@ const createTransportApi = (override = {}) =>
         ...override,
     }) as unknown as UsbApi;
 
-export const createTestTransportClass = (apiMethods = {}): any =>
+// Internal helper: pure DI means connect only ever receives Transport instances,
+// so the class form is no longer part of the public test surface — it stays here
+const createTestTransportClass = (apiMethods = {}): any =>
     class TestTransport extends AbstractApiTransport {
         name = 'TestTransport' as any;
 
@@ -88,7 +97,6 @@ declare global {
     var JestMocks: {
         getDeviceFeatures: typeof getDeviceFeatures;
         createTestTransport: typeof createTestTransport;
-        createTestTransportClass: typeof createTestTransportClass;
         releasesT1B1: FirmwareRelease[];
         releasesT2T1: FirmwareRelease[];
     };
@@ -101,19 +109,22 @@ declare global {
 }
 
 // T1B1
-const releasesT1B1 = Object.values(firmwareAssets.t1b1.universal).sort((a, b) =>
+// @ts-expect-error: indexing with noUncheckedIndexedAccess
+const t1b1Assets: { [file: string]: FirmwareRelease } = firmwareAssets.t1b1.universal;
+const releasesT1B1 = Object.values(t1b1Assets).sort((a, b) =>
     versionUtils.isNewer(b.version, a.version) ? 1 : -1,
 );
 
 // T2T1
-const releasesT2T1 = Object.values(firmwareAssets.t2t1.universal).sort((a, b) =>
+// @ts-expect-error: indexing with noUncheckedIndexedAccess
+const t2t1Assets: { [file: string]: FirmwareRelease } = firmwareAssets.t2t1.universal;
+const releasesT2T1 = Object.values(t2t1Assets).sort((a, b) =>
     versionUtils.isNewer(b.version, a.version) ? 1 : -1,
 );
 
 global.JestMocks = {
     getDeviceFeatures,
     createTestTransport,
-    createTestTransportClass,
     releasesT1B1,
     releasesT2T1,
 };

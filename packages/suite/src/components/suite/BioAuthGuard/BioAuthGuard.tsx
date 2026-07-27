@@ -3,15 +3,9 @@ import { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
-import { Button, Icon, Paragraph, Row, useElevation } from '@trezor/components';
+import { Button, Icon, Paragraph, Row, Tooltip } from '@trezor/components';
 import { isMacOs } from '@trezor/env-utils';
-import {
-    Elevation,
-    borders,
-    mapElevationToBackground,
-    mapElevationToBorder,
-    spacingsPx,
-} from '@trezor/theme';
+import { LockFilledIcon } from '@trezor/icons';
 
 import {
     Body,
@@ -23,24 +17,29 @@ import {
 import { useDispatch } from 'src/hooks/suite';
 import { useBioAuthDesktopApi } from 'src/hooks/suite/useBioAuthDesktopApi';
 
-const Container = styled.div<{ $elevation: Elevation }>`
+const Container = styled.div`
     display: flex;
-    border: 1px solid ${mapElevationToBorder};
-    gap: ${spacingsPx.xxs};
+    border: 1px solid ${({ theme }) => theme.surfaceBorderRaised};
+    gap: 4px;
     align-items: center;
     width: 334px;
     height: 212px;
-    background: ${mapElevationToBackground};
-    border-radius: ${borders.radii.lg};
+    background: ${({ theme }) => theme.surfaceFillRaised};
+    border-radius: 20px;
     flex-direction: column;
     justify-content: space-between;
     user-select: none;
-    padding: ${spacingsPx.sm} ${spacingsPx.xxs};
+    padding: 12px 4px;
 `;
 
-const BioAuthOverlay = ({ onPrimaryButtonClick }: { onPrimaryButtonClick: () => void }) => {
+const BioAuthOverlay = ({
+    isBioAuthAvailable,
+    onPrimaryButtonClick,
+}: {
+    isBioAuthAvailable: boolean;
+    onPrimaryButtonClick: () => void;
+}) => {
     const wrapperRef = useRef<HTMLDivElement>(null);
-    const { elevation } = useElevation();
 
     return (
         <Wrapper ref={wrapperRef} data-testid="@suite-layout">
@@ -54,8 +53,8 @@ const BioAuthOverlay = ({ onPrimaryButtonClick }: { onPrimaryButtonClick: () => 
                                 alignItems="center"
                                 justifyContent="center"
                             >
-                                <Container $elevation={elevation}>
-                                    <Icon name="lockFilled" />
+                                <Container>
+                                    <Icon as={LockFilledIcon} />
                                     <Paragraph align="center" typographyStyle="headline-sm">
                                         <Translation id="TR_BIO_AUTH_LOCKED_HEADING" />
                                     </Paragraph>
@@ -66,13 +65,22 @@ const BioAuthOverlay = ({ onPrimaryButtonClick }: { onPrimaryButtonClick: () => 
                                             <Translation id="TR_BIO_AUTH_LOCKED_TEXT_WIN" />
                                         )}
                                     </Paragraph>
-                                    <Button
+                                    <Tooltip
                                         width="100%"
-                                        intent="brand"
-                                        onClick={() => onPrimaryButtonClick()}
+                                        isActive={!isBioAuthAvailable}
+                                        content={
+                                            <Translation id="TR_BIO_AUTH_NOT_AVAILABLE_TOOLTIP_CONTENT" />
+                                        }
                                     >
-                                        <Translation id="TR_BIO_AUTH_UNLOCK" />
-                                    </Button>
+                                        <Button
+                                            isDisabled={!isBioAuthAvailable}
+                                            width="100%"
+                                            intent="brand"
+                                            onClick={() => onPrimaryButtonClick()}
+                                        >
+                                            <Translation id="TR_BIO_AUTH_UNLOCK" />
+                                        </Button>
+                                    </Tooltip>
                                 </Container>
                             </Row>
                         </MainContent>
@@ -99,7 +107,6 @@ export const BioAuthGuard = ({ children }: { children: React.ReactNode }) => {
 
     useEffect(() => {
         if (!isBioAuthEnabled) return;
-        if (!isBioAuthAvailable) return;
 
         const handleBlur = () => {
             setIsWindowFocused(false);
@@ -116,7 +123,7 @@ export const BioAuthGuard = ({ children }: { children: React.ReactNode }) => {
             window.removeEventListener('blur', handleBlur);
             window.removeEventListener('focus', handleFocus);
         };
-    }, [dispatch, isBioAuthAvailable, isBioAuthEnabled]);
+    }, [dispatch, isBioAuthEnabled]);
 
     useEffect(() => {
         if (!isBioAuthEnabled) return;
@@ -137,8 +144,11 @@ export const BioAuthGuard = ({ children }: { children: React.ReactNode }) => {
         requestBioAuthValidation,
     ]);
 
-    return isBioAuthEnabled && isBioAuthAvailable && isBioAuthValidationRequired ? (
-        <BioAuthOverlay onPrimaryButtonClick={requestBioAuthValidation} />
+    return isBioAuthEnabled && isBioAuthValidationRequired ? (
+        <BioAuthOverlay
+            isBioAuthAvailable={isBioAuthAvailable}
+            onPrimaryButtonClick={requestBioAuthValidation}
+        />
     ) : (
         children
     );

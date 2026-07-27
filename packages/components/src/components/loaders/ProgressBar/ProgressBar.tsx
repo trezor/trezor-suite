@@ -1,6 +1,6 @@
 import styled, { useTheme } from 'styled-components';
 
-import { CSSColor } from '@trezor/theme';
+import { type CSSColor } from '@trezor/theme';
 
 const Wrapper = styled.div<{ $color: CSSColor }>`
     background: ${({ $color }) => $color};
@@ -28,10 +28,6 @@ export type ProgressBarProps = {
     backgroundColor?: CSSColor;
     foregroundColor?: CSSColor;
     'data-testid'?: string;
-    /**
-     *  @deprecated Legacy prop - do not add non-standard properties
-     */
-    className?: string;
 };
 
 export const ProgressBar = ({
@@ -39,18 +35,13 @@ export const ProgressBar = ({
     value,
     backgroundColor,
     foregroundColor,
-    className,
     'data-testid': dataTestId,
 }: ProgressBarProps) => {
     const theme = useTheme();
 
     return (
-        <Wrapper
-            $color={backgroundColor || theme.backgroundNeutralSubdued}
-            data-testid={dataTestId}
-            className={className}
-        >
-            <Value $max={max} $value={value} $color={foregroundColor || theme.iconPrimaryDefault} />
+        <Wrapper $color={backgroundColor || theme.elementFillNeutralBold} data-testid={dataTestId}>
+            <Value $max={max} $value={value} $color={foregroundColor || theme.contentBrand} />
         </Wrapper>
     );
 };

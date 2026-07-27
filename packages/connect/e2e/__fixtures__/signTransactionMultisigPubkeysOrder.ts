@@ -1,4 +1,4 @@
-import { MultisigPubkeysOrder } from '@trezor/protobuf/src/messages';
+import { MultisigPubkeysOrder } from '@trezor/protobuf/src/definitions';
 
 const { TX_CACHE } = global.TestUtils;
 
@@ -21,7 +21,7 @@ const PUBKEYS_2_OF_3 = [
     },
 ];
 
-export default {
+const signTransactionMultisigPubkeysOrder: TestCase = {
     method: 'signTransaction',
     setup: {
         mnemonic: 'mnemonic_all',
@@ -30,7 +30,7 @@ export default {
         {
             description: 'Testnet (multisig): 2 of 3 (unorderd)',
             params: {
-                coin: 'testnet',
+                coin: 'test',
                 inputs: [
                     {
                         address_n: "m/48'/1'/1'/0'/0/0",
@@ -65,7 +65,7 @@ export default {
         {
             description: 'Testnet (multisig): 2 of 3 (errors when ordered gives wrong key))',
             params: {
-                coin: 'testnet',
+                coin: 'test',
                 inputs: [
                     {
                         address_n: "m/48'/1'/1'/0'/0/0",
@@ -105,4 +105,6 @@ export default {
             ],
         },
     ],
-} satisfies TestCase;
+};
+
+export default signTransactionMultisigPubkeysOrder;

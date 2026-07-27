@@ -1,11 +1,8 @@
-import { RouterState } from 'src/reducers/suite/routerReducer';
+import { isAdditionalShamirBackupInProgress, isRecoveryInProgress } from '@suite/recovery';
+import { type RouterState } from '@suite/router';
+
 import type { TransportState } from 'src/reducers/suite/suiteReducer';
 import type { AppState, TrezorDevice } from 'src/types/suite';
-
-import {
-    isAdditionalShamirBackupInProgress,
-    isRecoveryInProgress,
-} from '../device/isRecoveryInProgress';
 
 type GetPrerequisiteNameParams = {
     router: AppState['router'];
@@ -128,6 +125,15 @@ export const isPrerequisiteGloballyExcluded = ({
     prerequisite,
 }: IsPrerequisiteExcluded): boolean => {
     if (prerequisite === null) return true;
+
+    if (router.app === 'earn' || router.app === 'earn-yield' || router.app === 'earn-staking') {
+        return true;
+    }
+
+    if (router.route?.name.startsWith('wallet-trading')) {
+        return true;
+    }
+
     if (router.app === 'settings') {
         return !settingsAppActivePrerequisites.includes(prerequisite);
     }

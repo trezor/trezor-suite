@@ -2,6 +2,10 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
+        { "path": "../../suite-common/address" },
+        {
+            "path": "../../suite-common/dependency-injection"
+        },
         { "path": "../../suite-common/device" },
         {
             "path": "../../suite-common/redux-utils"
@@ -36,7 +40,6 @@
         { "path": "../intl" },
         { "path": "../navigation" },
         { "path": "../qr-code" },
-        { "path": "../services" },
         { "path": "../settings" },
         { "path": "../tokens" },
         { "path": "../video-assets" },
@@ -44,11 +47,13 @@
             "path": "../../packages/blockchain-link-types"
         },
         { "path": "../../packages/connect" },
-        { "path": "../../packages/styles" },
+        {
+            "path": "../../packages/styles-native"
+        },
         { "path": "../../packages/utils" },
         { "path": "../../packages/utxo-lib" },
-        { "path": "../state" },
-        { "path": "../test-utils" }
+        { "path": "../test-utils-store" },
+        { "path": "../../packages/requirements" }
     ],
     "include": [".", "**/*.json"]
 }

@@ -6,25 +6,27 @@ import { useNavigation } from '@react-navigation/native';
 import type { DeviceRootState } from '@suite-common/device';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
-    AccountsRootState,
+    type AccountsRootState,
     changeCoinVisibility,
     selectDeviceAccountsByNetworkSymbol,
     selectDiscoveryForSelectedDevice,
     selectHasRunningDiscovery,
 } from '@suite-common/wallet-core';
-import { Account } from '@suite-common/wallet-types';
-import { Spinner, SpinnerLoadingState, Text, VStack } from '@suite-native/atoms';
+import { type Account } from '@suite-common/wallet-types';
+import {
+    type AddCoinAccountNavigationProps,
+    useAddCoinAccount,
+} from '@suite-native/add-coin-account';
+import { Spinner, type SpinnerLoadingState, Text, VStack } from '@suite-native/atoms';
 import { selectDeviceEnabledDiscoveryNetworkSymbols } from '@suite-native/discovery';
 import { Translation } from '@suite-native/intl';
 import {
-    AddCoinAccountStackParamList,
+    type AddCoinAccountStackParamList,
     AddCoinAccountStackRoutes,
     Screen,
-    StackProps,
+    type StackProps,
 } from '@suite-native/navigation';
-import { selectHasPassphraseIncorrectError } from '@suite-native/passphrase';
-
-import { AddCoinAccountNavigationProps, useAddCoinAccount } from '../hooks/useAddCoinAccount';
+import { isPassphraseDiscoveryFailure } from '@suite-native/passphrase';
 
 export const AddCoinDiscoveryRunningScreen = ({
     route,
@@ -36,9 +38,7 @@ export const AddCoinDiscoveryRunningScreen = ({
         selectDeviceAccountsByNetworkSymbol(state, networkSymbol),
     );
     const discoveryInfo = useSelector(selectDiscoveryForSelectedDevice);
-    const passphraseModalCancelled =
-        discoveryInfo?.status === 'failed' && discoveryInfo?.errorCode === 'Method_Interrupted';
-    const hasPassphraseIncorrectError = useSelector(selectHasPassphraseIncorrectError);
+    const hasPassphraseFailure = isPassphraseDiscoveryFailure(discoveryInfo);
     const hasDiscovery = useSelector(selectHasRunningDiscovery);
     const enabledNetworkSymbols = useSelector(selectDeviceEnabledDiscoveryNetworkSymbols);
     const { navigateToSuccessorScreen, clearNetworkWithTypeToBeAdded } = useAddCoinAccount();
@@ -85,15 +85,19 @@ export const AddCoinDiscoveryRunningScreen = ({
             return;
         }
 
-        goToAccountDetail({ account: normalAccounts[0] });
+        const firstAccount = normalAccounts[0];
+        if (!firstAccount) return;
+        goToAccountDetail({ account: firstAccount });
     };
 
     useEffect(() => {
+        const isBlockedByPassphraseError = hasPassphraseFailure && loadingResult === 'error';
         if (
             networkSymbol &&
             !enabledNetworkSymbols.includes(networkSymbol) &&
             accounts.length === 0 &&
-            !hasDiscovery
+            !hasDiscovery &&
+            !isBlockedByPassphraseError
         ) {
             dispatch(
                 changeCoinVisibility({
@@ -105,7 +109,7 @@ export const AddCoinDiscoveryRunningScreen = ({
             return;
         }
 
-        if (!hasDiscovery && (hasPassphraseIncorrectError || passphraseModalCancelled)) {
+        if (!hasDiscovery && hasPassphraseFailure) {
             setLoadingResult('error');
         }
 
@@ -119,8 +123,7 @@ export const AddCoinDiscoveryRunningScreen = ({
         enabledNetworkSymbols,
         loadingResult,
         networkSymbol,
-        hasPassphraseIncorrectError,
-        passphraseModalCancelled,
+        hasPassphraseFailure,
     ]);
 
     return (
@@ -134,7 +137,7 @@ export const AddCoinDiscoveryRunningScreen = ({
                             values={{ coin: getNetwork(networkSymbol).name }}
                         />
                     </Text>
-                    <Text variant="body-md" textAlign="center" color="textSubdued">
+                    <Text variant="body-md" textAlign="center" color="contentSecondary">
                         <Translation id="moduleAddAccounts.coinDiscoveryRunningScreen.subtitle" />
                     </Text>
                 </VStack>

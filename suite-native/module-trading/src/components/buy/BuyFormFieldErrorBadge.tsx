@@ -1,3 +1,4 @@
+import type { PropsWithChildren } from 'react';
 import { useSelector } from 'react-redux';
 
 import { useFormatters } from '@suite-common/formatters';
@@ -5,19 +6,19 @@ import { selectTradingBuyIsLoading } from '@suite-common/trading';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { Badge } from '@suite-native/atoms';
 import { useField } from '@suite-native/forms';
+import { truncateDecimals } from '@suite-native/helpers';
 import { useTranslate } from '@suite-native/intl';
 import { getSymbolFromTradeableAsset } from '@suite-native/trading-atoms';
 import { MAX_CRYPTO_DECIMALS, MAX_FIAT_DECIMALS } from '@suite-native/trading-consts';
-import { BuyFormValues } from '@suite-native/trading-types';
+import { type BuyFormValues } from '@suite-native/trading-types';
 import { BigNumber } from '@trezor/utils';
 
 import { useBuyFormContext } from '../../hooks/buy/useBuyFormContext';
 import { useConvertFormValueToBaseUnit } from '../../hooks/general/useConvertFormValueToBaseUnit';
-import { truncateDecimals } from '../../utils/general/amountUtils';
 
-export type BuyFormFieldErrorBadgeProps = {
+export type BuyFormFieldErrorBadgeProps = PropsWithChildren<{
     fieldName: keyof BuyFormValues;
-};
+}>;
 
 const asNonEmptyStringValue = (value: unknown): string => (value as string) ?? '0';
 
@@ -78,23 +79,21 @@ const useMismatchedAmountMessage = (fieldName: keyof BuyFormValues) => {
     return undefined;
 };
 
-export const BuyFormFieldErrorBadge = ({ fieldName }: BuyFormFieldErrorBadgeProps) => {
+export const BuyFormFieldErrorBadge = ({ fieldName, children }: BuyFormFieldErrorBadgeProps) => {
     const isLoading = useSelector(selectTradingBuyIsLoading);
 
     const { errorMessage, hasError } = useField({ name: fieldName });
     const mismatchedAmountMessage = useMismatchedAmountMessage(fieldName);
 
-    if (isLoading) {
-        return null;
+    if (!isLoading) {
+        if (hasError) {
+            return <Badge label={errorMessage} intent="critical" size="small" />;
+        }
+
+        if (mismatchedAmountMessage) {
+            return <Badge label={mismatchedAmountMessage} intent="neutral" size="small" />;
+        }
     }
 
-    if (hasError) {
-        return <Badge label={errorMessage} variant="red" size="small" />;
-    }
-
-    if (mismatchedAmountMessage) {
-        return <Badge label={mismatchedAmountMessage} variant="neutral" size="small" />;
-    }
-
-    return null;
+    return children;
 };

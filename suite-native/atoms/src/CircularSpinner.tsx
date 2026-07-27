@@ -10,8 +10,8 @@ import Animated, {
 
 import { Canvas, Circle, SweepGradient, vec } from '@shopify/react-native-skia';
 
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Color } from '@trezor/theme';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
+import { type Color } from '@trezor/theme';
 
 import { ENDLESS_ANIMATION_VALUE } from './constants';
 
@@ -73,7 +73,7 @@ export const CircularSpinner = ({ size, color, width }: CircularSpinnerProps) =>
                 >
                     <SweepGradient
                         c={vec(radius, radius)}
-                        colors={[utils.colors.backgroundSurfaceElevation1, utils.colors[color]]}
+                        colors={[utils.colors.surfaceFillRaised, utils.colors[color]]}
                         origin={{ x: radius, y: radius }}
                     />
                 </Circle>

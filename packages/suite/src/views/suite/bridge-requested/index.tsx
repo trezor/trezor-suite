@@ -1,13 +1,13 @@
 import { useCallback, useEffect, useState } from 'react';
 
 import { Translation } from '@suite/intl';
+import { goto } from '@suite/router';
 import { selectConnectPopupCall } from '@suite-common/connect-popup';
-import { Card, Column, H3, Modal, Paragraph, Text } from '@trezor/components';
+import { Card, Column, H3, H4, Modal, Paragraph } from '@trezor/components';
 import { isDesktop } from '@trezor/env-utils';
+import { AppWindowIcon, CaretLeftIcon } from '@trezor/icons';
 import { desktopApi } from '@trezor/suite-desktop-api';
-import { spacings } from '@trezor/theme';
 
-import { goto } from 'src/actions/suite/routerActions';
 import { Metadata } from 'src/components/suite';
 import { useDispatch, useLayout, useSelector } from 'src/hooks/suite';
 import { AutoStart } from 'src/views/settings/SettingsGeneral/AutoStart';
@@ -23,7 +23,7 @@ export const BridgeRequested = () => {
 
     const dispatch = useDispatch();
 
-    const goToWallet = useCallback(() => dispatch(goto('wallet-index')), [dispatch]);
+    const goToWallet = useCallback(() => dispatch(goto({ routeName: 'wallet-index' })), [dispatch]);
 
     useEffect(() => {
         // Popup flow started, exit the bridge requested foreground app
@@ -52,7 +52,7 @@ export const BridgeRequested = () => {
     if (confirmGoToWallet) {
         return (
             <Modal
-                variant="warning"
+                intent="warning"
                 width={600}
                 heading={<Translation id="TR_TREZOR_CONNECT" />}
                 onBackClick={() => setConfirmGoToWallet(false)}
@@ -81,13 +81,13 @@ export const BridgeRequested = () => {
 
     return (
         <Modal
-            iconName="appWindow"
-            variant="info"
+            icon={AppWindowIcon}
+            intent="info"
             width={600}
             bottomContent={
                 <>
                     <Modal.Button
-                        iconLeft="caretLeft"
+                        iconLeft={CaretLeftIcon}
                         intent="neutral"
                         priority="secondary"
                         onClick={() => setConfirmGoToWallet(true)}
@@ -105,7 +105,7 @@ export const BridgeRequested = () => {
             }
         >
             <Metadata title="Bridge | Trezor Suite" />
-            <Column gap={spacings.xxs}>
+            <Column gap={4}>
                 <H3>
                     <Translation id="TR_TREZOR_CONNECT" />
                 </H3>
@@ -114,12 +114,12 @@ export const BridgeRequested = () => {
                 </Paragraph>
             </Column>
             <Card
-                label={
-                    <Text typographyStyle="body-xs">
+                header={
+                    <H4>
                         <Translation id="TR_BRIDGE_TIP_AUTOSTART" />
-                    </Text>
+                    </H4>
                 }
-                margin={{ top: spacings.xxl }}
+                margin={{ top: 32 }}
             >
                 <AutoStart />
             </Card>

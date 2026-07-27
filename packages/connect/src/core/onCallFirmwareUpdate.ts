@@ -1,6 +1,16 @@
+import type {
+    BinaryInfo,
+    CommonParams,
+    CoreEventMessage,
+    DeviceUniquePath,
+    FirmwareUpdateFlowType,
+    FirmwareUpdateResponse,
+} from '@trezor/connect-common';
+import { FirmwareType, UI_REQUEST, UI_RESPONSE, createUiMessage } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { getFirmwareOrBootloaderVersionArray } from '@trezor/device-utils';
-import { resolveAfter } from '@trezor/utils';
+import { MessagesSchema as PROTO } from '@trezor/protobuf';
+import { type Logger, resolveAfter } from '@trezor/utils';
 import { isEqual, isNewer } from '@trezor/utils/src/versionUtils';
 
 import {
@@ -10,26 +20,11 @@ import {
     stripFwHeaders,
     uploadFirmware,
 } from '../api/firmware';
-import { PROTO } from '../constants';
 import { getFirmwareLocation, getReleaseByVersion } from '../data/firmwareInfo';
+import * as settingsStore from '../data/settingsStore';
 import type { Device } from '../device/Device';
-import { DeviceList } from '../device/DeviceList';
-import {
-    CoreEventMessage,
-    UI_REQUEST,
-    UI_RESPONSE,
-    UiPromiseCreator,
-    createUiMessage,
-} from '../events';
-import {
-    BinaryInfo,
-    CommonParams,
-    DeviceUniquePath,
-    FirmwareType,
-    FirmwareUpdateFlowType,
-} from '../types';
-import { FirmwareUpdateResponse } from '../types/api/firmwareUpdate';
-import type { Log } from '../utils/debug';
+import type { DeviceList } from '../device/DeviceList';
+import type { UiPromiseCreator } from '../events/ui-promise';
 import { isFirmwareCacheUsedForSelectedSource } from '../utils/firmwareUtils';
 
 type PostMessage = (message: CoreEventMessage) => void;
@@ -45,7 +40,7 @@ type ReconnectContext = {
     device: Device;
     registerEvents: (device: Device) => void;
     postMessage: PostMessage;
-    log: Log;
+    log: Logger;
     abortSignal: AbortSignal;
     uiPromises: { create: UiPromiseCreator; rejectAll: (e: Error) => void };
 };
@@ -69,9 +64,13 @@ const waitForThpPairingConfirmation = async ({
 }) => {
     const uiPromise = uiPromises.create(UI_RESPONSE.RECEIVE_CONFIRMATION, device);
     postMessage(
-        createUiMessage(UI_REQUEST.REQUEST_CONFIRMATION, {
-            view: thpPairingError ? 'thp-pairing-failed' : 'thp-pairing-start',
-        }),
+        createUiMessage(
+            UI_REQUEST.REQUEST_CONFIRMATION,
+            {
+                view: thpPairingError ? 'thp-pairing-failed' : 'thp-pairing-start',
+            },
+            { requestId: uiPromise.requestId },
+        ),
     );
 
     const devicePath = device.getUniquePath();
@@ -324,7 +323,7 @@ type BinaryHelperParams = {
     params: Params;
     firmwareType: FirmwareType;
     isIntermediary: boolean;
-    log: Log;
+    log: Logger;
 };
 
 const getBinaryHelper = async ({
@@ -393,7 +392,7 @@ type Context = {
     registerEvents: (device: Device) => void;
     postMessage: PostMessage;
     selectDevice: (path?: DeviceUniquePath) => Device;
-    log: Log;
+    log: Logger;
     abortSignal: AbortSignal;
     uiPromises: ReconnectContext['uiPromises'];
 };
@@ -494,7 +493,10 @@ export const onCallFirmwareUpdate = async ({
     // We have completed binary download, and we should notify sending an event,
     // if desktop wants to store it. We only do this for final FW, not intermediaries.
     // We also check if `BinaryInfo.release` is present, otherwise it is custom FW, not to store.
-    if (isFirmwareCacheUsedForSelectedSource() && finalBinaryInfo.release) {
+    if (
+        isFirmwareCacheUsedForSelectedSource(settingsStore.get('firmwareChannel')) &&
+        finalBinaryInfo.release
+    ) {
         const message = createUiMessage(UI_REQUEST.FIRMWARE_DOWNLOADED, {
             binary: finalBinaryInfo.binary,
             binaryVersion: finalBinaryInfo.binaryVersion,

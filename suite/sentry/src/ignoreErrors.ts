@@ -17,5 +17,7 @@ export const ignoreErrors = [
 
     // nodeJS deprecation errors
     /.*DEP0040.*punycode.*/, // used deep within tech stack, not much we can do about it atm
-    /.*DEP0169.*url\.parse\(\).*/, // TODO https://github.com/trezor/trezor-suite/issues/25255
+
+    // browser-only Sentry global handler sends duplicated errors (in event.extra it wraps an error message that is also sent as a separate error event)
+    /.*unhandledrejection*object Object.*/,
 ] satisfies Options['ignoreErrors'];

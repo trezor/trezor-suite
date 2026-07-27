@@ -11,12 +11,13 @@ export const settingsGeneralAutoEjectEvent: EventDef<
     EventType.SettingsGeneralAutoEject
 > = {
     name: EventType.SettingsGeneralAutoEject,
-    descriptionTrigger: '?',
-    changelog: [{ version: '?', notes: 'added' }],
+    descriptionTrigger: 'User toggles automatic device ejection setting in general preferences',
+    changelog: [{ version: '25.7.1', notes: 'added' }],
 
     attributes: {
         value: {
-            changelog: [{ version: '?', notes: 'added' }],
+            description: 'Whether auto-eject is enabled (`true`) or disabled (`false`)',
+            changelog: [{ version: '25.7.1', notes: 'added' }],
         },
     },
 };

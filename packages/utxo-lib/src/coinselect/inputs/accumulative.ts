@@ -1,13 +1,11 @@
-import BN from 'bn.js';
-
-import { CoinSelectAlgorithm, CoinSelectInput, CoinSelectResult } from '../../types';
+import { type CoinSelectAlgorithm, type CoinSelectInput, type CoinSelectResult } from '../../types';
 import {
     ZERO,
-    bignumberOrNaN,
     finalize,
     getFee,
     getFeeForBytes,
     inputBytes,
+    parseBigInt,
     sumOrNaN,
 } from '../coinselectUtils';
 
@@ -29,8 +27,8 @@ export const accumulative: CoinSelectAlgorithm = (
     utxos0.forEach(u => {
         if (u.required) {
             requiredUtxos.push(u);
-            const utxoValue = bignumberOrNaN(u.value, true); // use forgiving (0)
-            inAccum = inAccum.add(utxoValue);
+            const utxoValue = parseBigInt(u.value, true); // use forgiving (0)
+            inAccum = inAccum + utxoValue;
             inputs.push(u);
         } else {
             utxos.push(u);
@@ -47,27 +45,28 @@ export const accumulative: CoinSelectAlgorithm = (
 
     // continue with the rest
     for (let i = 0; i < utxos.length; ++i) {
-        const utxo = utxos[i];
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const utxo: CoinSelectInput = utxos[i];
         const utxoBytes = inputBytes(utxo);
         const utxoFee = getFeeForBytes(feeRate, utxoBytes);
-        const utxoValue = bignumberOrNaN(utxo.value);
+        const utxoValue = parseBigInt(utxo.value);
 
         // skip detrimental input
-        if (!utxoValue || utxoValue.lt(new BN(utxoFee))) {
+        if (utxoValue === undefined || utxoValue < BigInt(utxoFee)) {
             if (i === utxos.length - 1) {
                 const fee = getFee([...inputs, utxo], outputs, feeRate, options);
 
                 return { fee };
             }
         } else {
-            inAccum = inAccum.add(utxoValue);
+            inAccum = inAccum + utxoValue;
             inputs.push(utxo);
 
             const fee = getFee(inputs, outputs, feeRate, options);
-            const outAccumWithFee = outAccum ? outAccum.add(new BN(fee)) : ZERO;
+            const outAccumWithFee = outAccum !== undefined ? outAccum + BigInt(fee) : ZERO;
 
             // go again?
-            if (inAccum.gte(outAccumWithFee)) {
+            if (inAccum >= outAccumWithFee) {
                 return finalize(inputs, outputs, feeRate, options);
             }
         }

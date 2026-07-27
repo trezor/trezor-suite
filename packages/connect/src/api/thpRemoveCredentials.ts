@@ -1,24 +1,29 @@
-import { AbstractMethod, MethodPermission, Payload } from '../core/AbstractMethod';
-import { DataManager } from '../data/DataManager';
-import { UI_REQUEST } from '../events';
+import { type PermissionRequest, UI_REQUEST } from '@trezor/connect-common';
+import type { ThpCredentials } from '@trezor/protocol';
 
-export default class ThpRemoveCredentials extends AbstractMethod<'thpRemoveCredentials'> {
-    constructor(message: { id?: number; payload: Payload<'thpRemoveCredentials'> }) {
-        super(message);
-        this.useDevice = this.payload.device !== undefined;
+import type { MethodMessage } from '../core/AbstractMethod';
+import { AbstractMethod } from '../core/AbstractMethod';
+import * as settingsStore from '../data/settingsStore';
+
+type Params = { credentials: ThpCredentials[] };
+
+export default class ThpRemoveCredentials extends AbstractMethod<'thpRemoveCredentials', Params> {
+    constructor(message: MethodMessage<'thpRemoveCredentials'>) {
+        const params = { credentials: message.payload.credentials || [] };
+
+        super(message, params);
+        this.useDevice = message.payload.device !== undefined;
         this.allowDeviceMode = [UI_REQUEST.INITIALIZE, UI_REQUEST.SEEDLESS];
         this.useDeviceState = false;
     }
-    get requiredPermissions(): MethodPermission[] {
-        return ['management'];
+    get requiredPermissions(): PermissionRequest[] {
+        return [{ permission: 'management' }];
     }
 
-    init() {}
-
     run() {
-        const requestedCredentials = this.payload.credentials || [];
-        if (this.device) {
-            const thpState = this.device.getThpState();
+        const requestedCredentials = this.params.credentials;
+        if (this.useDevice) {
+            const thpState = this.getDevice().getThpState();
             if (thpState) {
                 requestedCredentials.push(...thpState.pairingCredentials);
 
@@ -33,7 +38,7 @@ export default class ThpRemoveCredentials extends AbstractMethod<'thpRemoveCrede
         }
 
         const credentialsMap = new Map(requestedCredentials.map(c => [c.credential, c]));
-        const knownCredentials = DataManager.getSettings('thp')?.knownCredentials;
+        const knownCredentials = settingsStore.get('thp')?.knownCredentials;
         if (knownCredentials && knownCredentials.length > 0) {
             credentialsMap.forEach(c => {
                 let index;

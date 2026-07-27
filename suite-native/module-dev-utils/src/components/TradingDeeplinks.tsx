@@ -2,17 +2,17 @@ import { useNavigation } from '@react-navigation/native';
 
 import { Button, HStack, Text, VStack } from '@suite-native/atoms';
 import {
-    AppTabsParamList,
+    type AppTabsParamList,
     AppTabsRoutes,
-    DevUtilsStackParamList,
-    DevUtilsStackRoutes,
-    StackToTabCompositeProps,
+    type RootStackParamList,
+    type RootStackRoutes,
+    type StackToTabCompositeNavigationProp,
     TradingStackRoutes,
 } from '@suite-native/navigation';
 
-type NavigationProp = StackToTabCompositeProps<
-    DevUtilsStackParamList,
-    DevUtilsStackRoutes.DevUtils,
+type NavigationProp = StackToTabCompositeNavigationProp<
+    RootStackParamList,
+    RootStackRoutes.DevUtils,
     AppTabsParamList
 >;
 
@@ -21,13 +21,14 @@ export const TradingDeeplinks = () => {
 
     return (
         <VStack>
-            <Text variant="body-md" color="textDefault">
+            <Text variant="body-md" color="contentPrimary">
                 Deeplinks
             </Text>
             <HStack>
                 <Button
-                    colorScheme="tertiaryElevation0"
-                    size="small"
+                    intent="neutral"
+                    priority="secondary"
+                    size="medium"
                     onPress={() => {
                         navigate(AppTabsRoutes.TradeStack, {
                             screen: TradingStackRoutes.Trading,
@@ -38,8 +39,9 @@ export const TradingDeeplinks = () => {
                     Go to Buy
                 </Button>
                 <Button
-                    colorScheme="tertiaryElevation0"
-                    size="small"
+                    intent="neutral"
+                    priority="secondary"
+                    size="medium"
                     onPress={() => {
                         navigate(AppTabsRoutes.TradeStack, {
                             screen: TradingStackRoutes.Trading,

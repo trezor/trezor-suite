@@ -1,23 +1,23 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { isFulfilled } from '@reduxjs/toolkit';
 
-import { AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
-import { TokenAddress } from '@suite-common/wallet-types';
+import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
+import { type TokenAddress } from '@suite-common/wallet-types';
 import { useAlert } from '@suite-native/alerts';
 import { Box, Button, Card, Input, Text, VStack } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
 import {
     Screen,
     ScreenHeader,
-    StackNavigationProps,
-    StackProps,
-    StellarManageTokenStackParamList,
+    type StackNavigationProps,
+    type StackProps,
+    type StellarManageTokenStackParamList,
     StellarManageTokenStackRoutes,
 } from '@suite-native/navigation';
-import { isValidAddress, isValidAssetCode } from '@trezor/blockchain-link-utils/src/stellar';
+import stellar from '@trezor/network-stellar/runtime';
 
 import { composeStellarTrustlineFeesThunk } from '../thunks';
 
@@ -50,8 +50,20 @@ export const ManualTokenInputScreen = () => {
     const [isComposingFees, setIsComposingFees] = useState(false);
 
     // Validation
-    const isAssetCodeValid = isValidAssetCode(assetCode);
-    const isIssuerAddressValid = isValidAddress(issuerAddress);
+    const [isAssetCodeValid, setIsAssetCodeValid] = useState(false);
+    const [isIssuerAddressValid, setIsIssuerAddressValid] = useState(false);
+
+    useEffect(() => {
+        stellar()
+            .then(({ isValidAssetCode }) => isValidAssetCode(assetCode))
+            .then(setIsAssetCodeValid);
+    }, [assetCode]);
+
+    useEffect(() => {
+        stellar()
+            .then(({ isValidAddress }) => isValidAddress(issuerAddress))
+            .then(setIsIssuerAddressValid);
+    }, [issuerAddress]);
 
     const hasAssetCodeError = assetCodeTouched && !!assetCode && !isAssetCodeValid;
     const hasIssuerAddressError = issuerAddressTouched && !!issuerAddress && !isIssuerAddressValid;
@@ -135,7 +147,7 @@ export const ManualTokenInputScreen = () => {
                     <Text variant="headline-md">
                         <Translation id="moduleStellarToken.manualInput.title" />
                     </Text>
-                    <Text variant="body-md" color="textSubdued">
+                    <Text variant="body-md" color="contentSecondary">
                         <Translation id="moduleStellarToken.manualInput.subtitle" />
                     </Text>
                 </VStack>
@@ -147,6 +159,7 @@ export const ManualTokenInputScreen = () => {
                                 <Translation id="moduleStellarToken.manualInput.assetCode" />
                             </Text>
                             <Input
+                                labelType="noLabel"
                                 value={assetCode}
                                 onChangeText={handleAssetCodeChange}
                                 onBlur={() => setAssetCodeTouched(true)}
@@ -159,7 +172,7 @@ export const ManualTokenInputScreen = () => {
                                 testID="@stellar-token/asset-code-input"
                             />
                             {hasAssetCodeError && (
-                                <Text variant="body-sm" color="textAlertRed">
+                                <Text variant="body-sm" color="contentCritical">
                                     <Translation id="moduleStellarToken.manualInput.assetCodeError" />
                                 </Text>
                             )}
@@ -170,6 +183,7 @@ export const ManualTokenInputScreen = () => {
                                 <Translation id="moduleStellarToken.tokenDetail.issuerAddress" />
                             </Text>
                             <Input
+                                labelType="noLabel"
                                 value={issuerAddress}
                                 onChangeText={handleIssuerAddressChange}
                                 onBlur={() => setIssuerAddressTouched(true)}
@@ -182,7 +196,7 @@ export const ManualTokenInputScreen = () => {
                                 testID="@stellar-token/issuer-address-input"
                             />
                             {hasIssuerAddressError && (
-                                <Text variant="body-sm" color="textAlertRed">
+                                <Text variant="body-sm" color="contentCritical">
                                     <Translation id="moduleStellarToken.manualInput.issuerAddressError" />
                                 </Text>
                             )}

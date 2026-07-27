@@ -39,10 +39,26 @@ cd ..
 
 cd "$SCRIPTS_PATH"
 
-yarn tsx ./protobuf-definitions.ts "$REPO_PATH/common/protob" --skip=webauthn,thp,benchmark,nostr,nem
-yarn tsx ./protobuf-types.ts
+# copy proto files to monorepo context
+rm -rf ./build
+mkdir -p ./build
+cp  "$REPO_PATH"/common/protob/*.proto ./build
 
-yarn workspace @trezor/protobuf g:prettier --write {messages.json,src/messages.ts} 
-yarn workspace @trezor/protobuf g:eslint --fix ./src/messages.ts
+# remove unused files
+rm -f ./build/messages-{webauthn,benchmark,nem}.proto
 
-yarn tsx ./protobuf-thp-definitions.ts "$REPO_PATH/common/protob"
+# build `@bufbuild`` definitions
+buf generate
+cd ..
+
+# clear all generated comments and empty lines
+perl -0777 -pi -e 's{/\*.*?\*/}{}gs; s/^\s*\n//mg' src/definitions/*.js
+
+# generated source JS is inside a package with "type": "module", so relative JS imports
+# need explicit extensions for strict ESM resolution in bundlers
+perl -pi -e 's{from (["'"'"'])(\.\/[^"'"'"']+)\1;}{from $1$2.js$1;}g' src/definitions/*.js
+
+yarn workspace @trezor/protobuf g:eslint --fix src/definitions/*
+yarn workspace @trezor/protobuf g:prettier --write src/definitions/*
+
+mv src/definitions/messages-thp_types.ts ../protocol/src/protocol-thp/messages/protobufTypes.ts

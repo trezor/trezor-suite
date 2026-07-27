@@ -1,14 +1,16 @@
-import { fireEvent, renderWithStoreProviderAsync, screen } from '@suite-native/test-utils';
+import { getTranslation } from '@suite-native/intl';
+import { fireEvent, screen } from '@suite-native/test-utils-store';
 import { adaAsset, btcAsset, usdcAsset } from '@suite-native/trading-fixtures';
-import { TradeableAsset } from '@suite-native/trading-types';
+import { type TradeableAsset } from '@suite-native/trading-types';
 
-import { TradeableAssetSheet, TradeableAssetsSheetProps } from '../TradeableAssetSheet';
+import { renderWithTradingProvider } from '../../../../__tests__/tradingTestUtils';
+import { TradeableAssetSheet, type TradeableAssetsSheetProps } from '../TradeableAssetSheet';
 
 describe('TradeableAssetSheet', () => {
     const defaultAssets: TradeableAsset[] = [btcAsset, usdcAsset, adaAsset];
 
     const renderTradeableAssetsSheet = (props: Partial<TradeableAssetsSheetProps>) =>
-        renderWithStoreProviderAsync(
+        renderWithTradingProvider(
             <TradeableAssetSheet
                 assets={defaultAssets}
                 onAssetSelect={jest.fn}
@@ -16,7 +18,7 @@ describe('TradeableAssetSheet', () => {
                 isVisible={true}
                 onFilterChange={jest.fn}
                 onSelectedNetworkFilter={jest.fn}
-                flashListKey="test-key"
+                scrollResetKey="test-key"
                 {...props}
             />,
         );
@@ -25,11 +27,11 @@ describe('TradeableAssetSheet', () => {
         screen.unmount();
     });
 
-    it('should call onAssetSelect and onClose when an item is pressed', async () => {
+    it('should call onAssetSelect and onClose when an item is pressed', () => {
         const closeMock = jest.fn();
         const selectMock = jest.fn();
 
-        const { getByText } = await renderTradeableAssetsSheet({
+        const { getByText } = renderTradeableAssetsSheet({
             onClose: closeMock,
             onAssetSelect: selectMock,
         });
@@ -41,11 +43,11 @@ describe('TradeableAssetSheet', () => {
         expect(closeMock).toHaveBeenCalledWith(undefined);
     });
 
-    it('should call onAssetSelect with hideKeyboardOnAssetSelect=true when an item is pressed', async () => {
+    it('should call onAssetSelect with hideKeyboardOnAssetSelect=true when an item is pressed', () => {
         const closeMock = jest.fn();
         const selectMock = jest.fn();
 
-        const { getByText } = await renderTradeableAssetsSheet({
+        const { getByText } = renderTradeableAssetsSheet({
             onClose: closeMock,
             onAssetSelect: selectMock,
             hideKeyboardOnAssetSelect: true,
@@ -58,14 +60,16 @@ describe('TradeableAssetSheet', () => {
         expect(closeMock).toHaveBeenCalledWith(true);
     });
 
-    it('should render correct empty component', async () => {
-        const { getByText } = await renderTradeableAssetsSheet({
+    it('should render correct empty component', () => {
+        const { getByText } = renderTradeableAssetsSheet({
             assets: [],
         });
 
-        expect(getByText('Coin not found')).toBeTruthy();
         expect(
-            getByText('Check the spelling or browse the list to select an option.'),
+            getByText(getTranslation('moduleTrading.tradeableAssetsSheet.emptyTitle')),
+        ).toBeTruthy();
+        expect(
+            getByText(getTranslation('moduleTrading.fiatCurrencySheet.emptyDescription')),
         ).toBeTruthy();
     });
 });

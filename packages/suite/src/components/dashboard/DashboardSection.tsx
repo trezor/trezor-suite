@@ -1,6 +1,15 @@
-import { HTMLAttributes, ReactElement, Ref, forwardRef, useEffect, useState } from 'react';
+import {
+    type HTMLAttributes,
+    type ReactElement,
+    type Ref,
+    forwardRef,
+    useEffect,
+    useState,
+} from 'react';
 
+import { Translation } from '@suite/intl';
 import { Collapsible, Column, H3, IconButton, Row, Text } from '@trezor/components';
+import { CaretDownIcon, CaretUpIcon } from '@trezor/icons';
 import { useCurrentRef } from '@trezor/react-utils';
 
 type DashboardSectionProps = HTMLAttributes<HTMLDivElement> & {
@@ -43,10 +52,20 @@ export const DashboardSection = forwardRef(
                     <Column data-testid={dataTestId} gap={16}>
                         {renderHeader && (
                             <Column width="100%" gap={2}>
-                                <Row as="header" justifyContent="space-between">
+                                <Row
+                                    as="header"
+                                    justifyContent="space-between"
+                                    flexWrap="wrap"
+                                    gap={8}
+                                >
                                     {heading && (
                                         <H3>
-                                            <Row as="span">{heading}</Row>
+                                            <Row
+                                                data-testid="@dashboard/dashboard-section/heading"
+                                                as="span"
+                                            >
+                                                {heading}
+                                            </Row>
                                         </H3>
                                     )}
 
@@ -57,9 +76,20 @@ export const DashboardSection = forwardRef(
                                                 onClick={() => setCollapsed(prev => !prev)}
                                             >
                                                 <IconButton
-                                                    icon={collapsed ? 'caretDown' : 'caretUp'}
+                                                    icon={collapsed ? CaretDownIcon : CaretUpIcon}
                                                     intent="neutral"
                                                     priority="secondary"
+                                                    tooltip={{
+                                                        content: (
+                                                            <Translation
+                                                                id={
+                                                                    collapsed
+                                                                        ? 'TR_EXPAND'
+                                                                        : 'TR_COLLAPSE'
+                                                                }
+                                                            />
+                                                        ),
+                                                    }}
                                                 />
                                             </Collapsible.Toggle>
                                         )}

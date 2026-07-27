@@ -4,15 +4,15 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import { convertCryptoToFiatAmount, useFormatters } from '@suite-common/formatters';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
-    FiatRatesRootState,
-    TransactionsRootState,
+    type FiatRatesRootState,
+    type TransactionsRootState,
     selectBaseCurrency,
     selectFiatRatesByFiatRateKey,
     selectTransactionBlockTimeById,
 } from '@suite-common/wallet-core';
-import { AccountKey } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { getFiatRateKey } from '@suite-common/wallet-utils';
 import {
     Card,
@@ -27,15 +27,15 @@ import {
 import { BaseCurrencyAmountFormatter, CryptoAmountFormatter } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
 import {
-    RootStackParamList,
+    type RootStackParamList,
     RootStackRoutes,
-    StackToStackCompositeNavigationProps,
-    TransactionDetailStackParamList,
+    type StackToStackCompositeNavigationProps,
+    type TransactionDetailStackParamList,
     TransactionDetailStackRoutes,
 } from '@suite-native/navigation';
-import { Utxo } from '@trezor/blockchain-link-types';
+import { type Utxo } from '@trezor/blockchain-link-types';
 import type { StaticSessionId } from '@trezor/connect';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { UtxoCoinControlLabel } from './UtxoCoinControlLabel';
 
@@ -104,7 +104,7 @@ export const UtxoCard = ({
     return (
         <Card
             noPadding
-            borderColor={isSelected ? 'backgroundSecondaryDefault' : 'transparent'}
+            borderColor={isSelected ? 'legacyBackgroundSecondaryDefault' : 'transparent'}
             style={applyStyle(cardStyle)}
         >
             <VStack spacing="sp12">
@@ -118,19 +118,21 @@ export const UtxoCard = ({
                         <VStack flex={1}>
                             <HStack alignItems="center">
                                 <CryptoAmountFormatter
-                                    color="textDefault"
+                                    color="contentPrimary"
                                     variant="body-md-strong"
                                     value={utxo.amount}
                                     isBalance={false}
                                     symbol={symbol}
+                                    isDiscreetText={false}
                                 />
                                 {fiatAmount && (
                                     <>
-                                        <Text color="textSubdued">≈</Text>
+                                        <Text color="contentSecondary">≈</Text>
                                         <BaseCurrencyAmountFormatter
-                                            color="textSubdued"
+                                            color="contentSecondary"
                                             symbol={symbol}
                                             value={fiatAmount}
+                                            isDiscreetText={false}
                                         />
                                     </>
                                 )}
@@ -153,11 +155,16 @@ export const UtxoCard = ({
                     paddingHorizontal="sp12"
                 >
                     {transactionBlockTime && (
-                        <Text color="textSubdued" variant="body-sm">
+                        <Text color="contentSecondary" variant="body-sm">
                             <DateFormatter value={transactionBlockTime} />
                         </Text>
                     )}
-                    <TextButton variant="primary" onPress={handleShowDetails} isBold size="small">
+                    <TextButton
+                        intent="neutral"
+                        priority="primary"
+                        onPress={handleShowDetails}
+                        size="small"
+                    >
                         <Translation id="moduleSend.coinControl.utxos.showDetails" />
                     </TextButton>
                 </HStack>

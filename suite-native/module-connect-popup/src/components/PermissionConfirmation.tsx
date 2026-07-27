@@ -16,18 +16,10 @@ import {
     TitleHeader,
     VStack,
 } from '@suite-native/atoms';
-import { Icon } from '@suite-native/icons';
-import { Translation, TxKeyPath } from '@suite-native/intl';
-import { MethodPermission } from '@trezor/connect/src/core/AbstractMethod';
+import { Translation } from '@suite-native/intl';
 
+import { GroupedPermissionsList } from './GroupedPermissionsList';
 import { ConnectAppIcon } from '../components/ConnectAppIcon';
-
-const permissionTranslationKeysMap = {
-    read: 'moduleConnectPopup.permissions.read',
-    write: 'moduleConnectPopup.permissions.write',
-    management: 'moduleConnectPopup.permissions.management',
-    push_tx: 'moduleConnectPopup.permissions.push_tx',
-} as const satisfies Record<MethodPermission, TxKeyPath>;
 
 export const PermissionConfirmation = () => {
     const dispatch = useDispatch();
@@ -50,7 +42,7 @@ export const PermissionConfirmation = () => {
         if (isRemembered) {
             dispatch(
                 connectPopupActions.rememberAppPermissions({
-                    types: popupCall.methodInfo.permissionTypes,
+                    allowedPermissions: popupCall.methodInfo.permissionTypes,
                     ...popupCall.source,
                 }),
             );
@@ -80,23 +72,14 @@ export const PermissionConfirmation = () => {
                     <VStack flex={1} spacing="sp4">
                         <Text>{popupCall.source.manifest?.appName ?? popupCall.source.origin}</Text>
                         {popupCall.source.manifest?.appName && (
-                            <Text color="textSubdued">{popupCall.source.origin}</Text>
+                            <Text color="contentSecondary">{popupCall.source.origin}</Text>
                         )}
                     </VStack>
                 </HStack>
 
                 <TextDivider title="moduleConnectPopup.permissions.title" />
 
-                <VStack spacing="sp8" padding="sp8">
-                    {popupCall.methodInfo.permissionTypes.map(permission => (
-                        <HStack key={permission} alignItems="center" spacing="sp8">
-                            <Icon name="checkCircle" color="iconPrimaryDefault" />
-                            <Text color="textSubdued" variant="body-sm" style={{ flex: 1 }}>
-                                <Translation id={permissionTranslationKeysMap[permission]} />
-                            </Text>
-                        </HStack>
-                    ))}
-                </VStack>
+                <GroupedPermissionsList permissions={popupCall.methodInfo.permissionTypes} />
 
                 <TextDivider title="moduleConnectPopup.optional" />
 
@@ -106,7 +89,7 @@ export const PermissionConfirmation = () => {
                             isChecked={isRemembered}
                             onChange={() => setIsRemembered(!isRemembered)}
                         />
-                        <Text color="textSubdued" variant="body-sm">
+                        <Text color="contentSecondary" variant="body-sm">
                             <Translation id="moduleConnectPopup.alwaysAllow" />
                         </Text>
                     </HStack>
@@ -119,7 +102,7 @@ export const PermissionConfirmation = () => {
                         <Translation id="moduleConnectPopup.confirm" />
                     )}
                 </Button>
-                <Button colorScheme="tertiaryElevation0" onPress={onClose}>
+                <Button intent="neutral" priority="secondary" onPress={onClose}>
                     <Translation id="generic.buttons.close" />
                 </Button>
             </VStack>

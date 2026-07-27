@@ -1,20 +1,20 @@
 import { useEffect, useMemo } from 'react';
-import { UseFormReturn } from 'react-hook-form';
+import { type UseFormReturn } from 'react-hook-form';
 
 import { selectAccountTransactionsWithNulls } from '@suite-common/wallet-core';
-import { ExcludedUtxos, FormState, UtxoSorting } from '@suite-common/wallet-types';
+import { type ExcludedUtxos, type FormState, type UtxoSorting } from '@suite-common/wallet-types';
 import { getUtxoOutpoint, isSameUtxo } from '@suite-common/wallet-utils';
 import type { AccountUtxo, PROTO } from '@trezor/connect';
 
 import { useSelector } from 'src/hooks/suite';
+import {
+    type SendContextValues,
+    type UseSendFormState,
+    type UtxoSelectionContext,
+} from 'src/types/wallet/sendForm';
 import { sortUtxos } from 'src/utils/wallet/utxoSortingUtils';
 
 import { useCoinjoinRegisteredUtxos } from './useCoinjoinRegisteredUtxos';
-import {
-    SendContextValues,
-    UseSendFormState,
-    UtxoSelectionContext,
-} from '../../../types/wallet/sendForm';
 
 interface UtxoSelectionContextProps
     extends UseFormReturn<FormState>, Pick<UseSendFormState, 'account' | 'composedLevels'> {

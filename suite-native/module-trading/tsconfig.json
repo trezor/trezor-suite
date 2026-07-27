@@ -2,7 +2,12 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
+        { "path": "../../suite-common/calldata" },
+        {
+            "path": "../../suite-common/dependency-injection"
+        },
         { "path": "../../suite-common/device" },
+        { "path": "../../suite-common/flags" },
         {
             "path": "../../suite-common/formatters"
         },
@@ -42,10 +47,11 @@
             "path": "../../suite-common/wallet-utils"
         },
         { "path": "../accounts" },
+        { "path": "../add-coin-account" },
+        { "path": "../address" },
         { "path": "../alerts" },
         { "path": "../analytics" },
         { "path": "../atoms" },
-        { "path": "../clipboard" },
         { "path": "../confirm-on-trezor" },
         { "path": "../device" },
         { "path": "../device-authorization" },
@@ -61,9 +67,10 @@
         { "path": "../labeling" },
         { "path": "../link" },
         { "path": "../message-system" },
-        { "path": "../module-add-accounts" },
+        {
+            "path": "../module-stellar-token-management"
+        },
         { "path": "../navigation" },
-        { "path": "../services" },
         { "path": "../toasts" },
         { "path": "../tokens" },
         { "path": "../trading-analytics" },
@@ -71,7 +78,11 @@
         { "path": "../trading-browser-auth" },
         { "path": "../trading-consts" },
         { "path": "../trading-debug" },
+        { "path": "../trading-history" },
+        { "path": "../trading-provider-utils" },
+        { "path": "../trading-quote-utils" },
         { "path": "../trading-residence" },
+        { "path": "../trading-slippage" },
         { "path": "../trading-state" },
         { "path": "../transaction-management" },
         {
@@ -82,13 +93,25 @@
         },
         { "path": "../../packages/connect" },
         { "path": "../../packages/react-utils" },
-        { "path": "../../packages/styles" },
+        {
+            "path": "../../packages/styles-native"
+        },
         { "path": "../../packages/theme" },
         { "path": "../../packages/type-utils" },
         { "path": "../../packages/urls" },
         { "path": "../../packages/utils" },
+        {
+            "path": "../../suite-common/suite-constants"
+        },
+        {
+            "path": "../../suite-common/test-utils"
+        },
+        { "path": "../bluetooth" },
+        { "path": "../settings" },
         { "path": "../test-utils" },
+        { "path": "../test-utils-store" },
         { "path": "../trading-fixtures" },
-        { "path": "../trading-types" }
+        { "path": "../trading-types" },
+        { "path": "../../packages/requirements" }
     ]
 }

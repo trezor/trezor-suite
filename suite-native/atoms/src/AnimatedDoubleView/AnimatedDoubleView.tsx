@@ -1,12 +1,13 @@
 import { useCallback, useState } from 'react';
 import Animated, { LinearTransition } from 'react-native-reanimated';
 
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
+import { noop } from '@trezor/utils';
 
 import {
     ANIMATION_DURATION,
     AnimatedViewWrapper,
-    AnimatedViewWrapperProps,
+    type AnimatedViewWrapperProps,
 } from './AnimatedViewWrapper';
 import { SwitchViewsButton } from './SwitchViewsButton';
 
@@ -19,6 +20,7 @@ export type AnimatedDoubleViewProps = {
     renderSecondary: AnimatedViewWrapperProps['renderView'];
     onViewSwitch?: (activeView: ActiveView) => void;
     switchLabel?: string;
+    activeView?: ActiveView;
 };
 
 export const ANIMATED_DOUBLE_VIEW_SWITCH_ANIMATION_DURATION = ANIMATION_DURATION;
@@ -29,24 +31,27 @@ const viewsWrapperStyle = prepareNativeStyle(() => ({
     justifyContent: 'space-between',
 }));
 
-const noop = () => {};
-
 export const AnimatedDoubleView = ({
     renderPrimary,
     renderSecondary,
     onViewSwitch = noop,
     switchLabel,
+    activeView: controlledActiveView,
 }: AnimatedDoubleViewProps) => {
     const { applyStyle } = useNativeStyles();
 
-    const [activeView, setActiveView] = useState<ActiveView>('primary');
+    const [internalActiveView, setInternalActiveView] = useState<ActiveView>('primary');
+    const activeView = controlledActiveView ?? internalActiveView;
 
     const handleViewSwitch = useCallback(() => {
         const nextActiveView = activeView === 'primary' ? 'secondary' : 'primary';
 
-        setActiveView(nextActiveView);
+        if (controlledActiveView === undefined) {
+            setInternalActiveView(nextActiveView);
+        }
+
         onViewSwitch(nextActiveView);
-    }, [onViewSwitch, activeView]);
+    }, [activeView, controlledActiveView, onViewSwitch]);
 
     return (
         <Animated.View layout={LinearTransition} style={applyStyle(viewsWrapperStyle)}>

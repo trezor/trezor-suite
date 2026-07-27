@@ -1,26 +1,21 @@
 import { deviceActions } from '@suite-common/device';
 import { messageSystemInitialState } from '@suite-common/message-system';
-import { StoredAuthenticateDeviceResult, TrezorDevice } from '@suite-common/suite-types';
+import type { StoredAuthenticateDeviceResult, TrezorDevice } from '@suite-common/suite-types';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { configureMockStore, testMocks } from '@suite-common/test-utils';
-import { ToastPayload, notificationsActions } from '@suite-common/toast-notifications';
-import type {
-    AuthenticateDeviceResult,
-    Response,
-    SuccessWithDevice,
-    Unsuccessful,
-} from '@trezor/connect';
+import { type ToastPayload, notificationsActions } from '@suite-common/toast-notifications';
+import type { AuthenticateDeviceResult, Response } from '@trezor/connect';
+import { Err, Ok } from '@trezor/type-utils';
 
 import { checkDeviceAuthenticityThunk } from '../src/checkDeviceAuthenticityThunk';
 
 const initStore = (device?: TrezorDevice) =>
     configureMockStore({
-        extra: {
-            selectors: {
-                selectDevice: () => device,
-            },
-        },
         preloadedState: {
+            device: {
+                selectedDevice: device,
+                devices: device ? [device] : [],
+            },
             messageSystem: messageSystemInitialState,
         },
     });
@@ -29,12 +24,12 @@ const getDevice = (isLocked: boolean) => ({
     ...mockSuiteDevice(undefined, { bootloader_locked: isLocked }),
 });
 
-const connectCallFailResponse: Unsuccessful = {
+const connectCallFailResponse: Err<any> = {
     success: false,
-    payload: { error: 'error' },
+    error: { message: 'error' },
 };
 
-const verificationSuccessResponse: SuccessWithDevice<AuthenticateDeviceResult> = {
+const verificationSuccessResponse: Ok<AuthenticateDeviceResult> = {
     success: true,
     payload: {
         optigaResult: {
@@ -43,10 +38,11 @@ const verificationSuccessResponse: SuccessWithDevice<AuthenticateDeviceResult> =
             rootPubKey: 'recognized-root-pub-key',
         },
         tropicResult: null,
+        mcuResult: null,
     },
 };
 
-const verifyFailureResponseNotFound: SuccessWithDevice<AuthenticateDeviceResult> = {
+const verifyFailureResponseNotFound: Ok<AuthenticateDeviceResult> = {
     success: true,
     payload: {
         optigaResult: {
@@ -55,10 +51,11 @@ const verifyFailureResponseNotFound: SuccessWithDevice<AuthenticateDeviceResult>
             caPubKey: 'bad-ca-pub-key',
         },
         tropicResult: null,
+        mcuResult: null,
     },
 };
 
-const verifyFailureResponseBlacklisted: SuccessWithDevice<AuthenticateDeviceResult> = {
+const verifyFailureResponseBlacklisted: Ok<AuthenticateDeviceResult> = {
     success: true,
     payload: {
         optigaResult: {
@@ -67,6 +64,7 @@ const verifyFailureResponseBlacklisted: SuccessWithDevice<AuthenticateDeviceResu
             caPubKey: 'blacklisted-root-pub-key',
         },
         tropicResult: null,
+        mcuResult: null,
     },
 };
 
@@ -154,7 +152,8 @@ describe('Check device authenticity', () => {
             // expected to have emitted toast
             if (f.expectedToastType) {
                 expectedActions.splice(1, 0, notificationsActions.addToast.type);
-                expect(actions[actions.length - 3].payload.type).toBe(f.expectedToastType);
+                const toastAction = actions[actions.length - 3];
+                expect(toastAction?.payload.type).toBe(f.expectedToastType);
             }
             // thunk is expected to fail fast if there is no device, and not emit a result, which is always bound to device
             if (f.device) {
@@ -162,7 +161,8 @@ describe('Check device authenticity', () => {
             }
             if (f.expectedFulfilled) {
                 expectedActions.push(checkDeviceAuthenticityThunk.fulfilled.type);
-                expect(actions[actions.length - 2].payload.result).toEqual(f.expectedResult);
+                const fulfilledAction = actions[actions.length - 2];
+                expect(fulfilledAction?.payload.result).toEqual(f.expectedResult);
             } else {
                 expectedActions.push(checkDeviceAuthenticityThunk.rejected.type);
             }

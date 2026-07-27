@@ -2,11 +2,10 @@ import { selectDevices } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
-    NetworkSymbol,
-    externalBackendTypeNetworks,
+    type NetworkSymbol,
     getNetworkOptional,
     isNetworkSymbol,
-    isTrezorInfraBasedNetwork,
+    isNetworkUsingExternalBackend,
 } from '@suite-common/wallet-config';
 import type { Account, CustomBackend } from '@suite-common/wallet-types';
 import {
@@ -24,17 +23,21 @@ import {
     shouldUseIdentities,
 } from '@suite-common/wallet-utils';
 import TrezorConnect, {
-    BlockchainBlock,
-    BlockchainError,
-    BlockchainNotification,
+    type BlockchainBlock,
+    type BlockchainError,
+    type BlockchainNotification,
 } from '@trezor/connect';
 import type { TimerId } from '@trezor/type-utils';
 import { arrayDistinct, arrayToDictionary } from '@trezor/utils';
 
 import { BLOCKCHAIN_MODULE_PREFIX, blockchainActions } from './blockchainActions';
-import { selectBlockchainState, selectNetworkBlockchainInfo } from './blockchainReducer';
+import {
+    selectBlockchainState,
+    selectIsCustomBackendConfigured,
+    selectNetworkBlockchainInfo,
+} from './blockchainReducer';
 import { selectAccounts } from '../accounts/accountsSelectors';
-import { fetchAndUpdateAccountThunk } from '../accounts/accountsThunks';
+import { fetchAndUpdateAccountThunk, reportWalletBalanceThunk } from '../accounts/accountsThunks';
 import { preloadFeeInfoThunk } from '../fees/feesThunks';
 import { selectBitcoinAmountUnit } from '../settings/walletSettingsReducer';
 
@@ -114,6 +117,8 @@ export const initBlockchainThunk = createThunk(
 
         const promises = symbols.map(symbol => dispatch(reconnectBlockchainThunk({ symbol })));
         await Promise.all(promises);
+
+        dispatch(reportWalletBalanceThunk());
 
         // continue suite initialization
     },
@@ -237,13 +242,12 @@ export const syncAccountsWithBlockchainThunk = createThunk(
         // First clear, to cancel last planned sync
         tryClearTimeout(blockchain[symbol].syncTimeout);
 
-        // Only Trezor infra networks sync, and only when app window is active
+        // Sync only when the app window is active
         const shouldSync = isWindowVisible;
 
         if (shouldSync) {
-            // non-blockbook + networks using external nodes will not update periodically if not visible in UI (sidebar)
             const visibleAccounts = findAccountsByNetwork(symbol, accounts).filter(
-                account => isTrezorInfraBasedNetwork(symbol) || account.visible,
+                account => account.visible,
             );
 
             await Promise.all(
@@ -283,18 +287,21 @@ export const onBlockchainConnectThunk = createThunk(
 
 export const onBlockMinedThunk = createThunk(
     `${BLOCKCHAIN_MODULE_PREFIX}/onBlockMinedThunk`,
-    (block: BlockchainBlock, { dispatch }) => {
+    (block: BlockchainBlock, { dispatch, getState }) => {
         const symbol = block.coin.shortcut.toLowerCase();
-        const network = getNetworkOptional(symbol);
 
         if (!isNetworkSymbol(symbol)) {
             return;
         }
 
-        // Don't sync fast networks because a new block is emitted every few seconds.
-        // Accounts are updated via account subscription or also by the timer in syncAccountsWithBlockchainThunk.
-        // Solana - new block every ~333ms, EVMs 0.3s-3s
-        if (network?.networkType === 'solana' || externalBackendTypeNetworks.includes(symbol)) {
+        // Don't sync fast networks running on our metered external backend because a new block is
+        // emitted every few seconds (Solana ~333ms, EVMs 0.3s-3s); the periodic timer in
+        // syncAccountsWithBlockchainThunk and account subscriptions keep them updated instead.
+        // A custom backend is the user's own infrastructure, so the metered concern no longer applies.
+        if (
+            isNetworkUsingExternalBackend(symbol) &&
+            !selectIsCustomBackendConfigured(getState(), symbol)
+        ) {
             return;
         }
 
@@ -304,7 +311,7 @@ export const onBlockMinedThunk = createThunk(
 
 export const onBlockchainNotificationThunk = createThunk(
     `${BLOCKCHAIN_MODULE_PREFIX}/onNotificationThunk`,
-    (payload: BlockchainNotification, { dispatch, getState }) => {
+    (payload: BlockchainNotification, { dispatch, getState, extra }) => {
         const { descriptor, tx } = payload.notification;
         const symbol = payload.coin.shortcut.toLowerCase();
         if (!isNetworkSymbol(symbol)) {
@@ -317,14 +324,15 @@ export const onBlockchainNotificationThunk = createThunk(
             return;
         }
 
-        const account = accounts[0];
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const account: (typeof accounts)[number] = accounts[0];
 
         // ripple worker sends two notifications for the same tx (pending + confirmed/rejected)
         // dispatch only recv notifications
         if (tx.type === 'recv' && !tx.blockHeight) {
             const accountDevice = findAccountDevice(account, selectDevices(getState()));
 
-            const token = tx.tokens && tx.tokens.length ? tx.tokens[0] : undefined;
+            const token = tx.tokens?.[0];
             const areSatoshisUsed = getAreSatoshisUsed(
                 selectBitcoinAmountUnit(getState()),
                 account,
@@ -351,9 +359,19 @@ export const onBlockchainNotificationThunk = createThunk(
         // it's pointless to fetch ripple accounts
         // TODO: investigate more how to keep ripple pending tx until they are confirmed/rejected
         // xrpl.js doesn't send "pending" txs in history
-        if (account.networkType !== 'ripple') {
-            dispatch(syncAccountsWithBlockchainThunk(symbol));
-        }
+        if (account.networkType === 'ripple') return;
+
+        // Refetch only descriptor-matched accounts instead of every account on this symbol.
+        // The previous symbol-wide sync caused N getAccountInfo calls per notification for users
+        // with N accounts on the same network, hammering blockbook at ~10k connections.
+        // Periodic background sync still runs on its own timer chain (seeded by
+        // onBlockchainConnectThunk), so unrelated accounts stay up to date.
+        const { selectIsWindowVisible } = extra.selectors;
+        if (!selectIsWindowVisible(getState())) return;
+
+        accounts.forEach(matchedAccount =>
+            dispatch(fetchAndUpdateAccountThunk({ accountKey: matchedAccount.key })),
+        );
     },
 );
 

@@ -2,24 +2,28 @@ import { useEffect, useMemo, useState } from 'react';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { selectDiscoverySupportedNetworks } from '@suite-native/discovery';
-import { FilterItem, FilterTabs } from '@suite-native/trading-atoms';
+import { useTranslate } from '@suite-native/intl';
+import { type FilterItem, FilterTabs } from '@suite-native/trading-atoms';
 
 type TradeableAssetsFilterTabsProps = {
-    visible: boolean;
+    isVisible: boolean;
     animationDuration: number;
     onSelectedNetworkFilter: (symbol: NetworkSymbol | undefined) => void;
 };
 
-export const TradeableAssetFilterTabs = ({
-    visible,
+const keyExtractor = (item: FilterItem<NetworkSymbol | undefined>) => item.value ?? 'undefined';
+
+const TradeableAssetFilterTabsContent = ({
     animationDuration,
     onSelectedNetworkFilter,
-}: TradeableAssetsFilterTabsProps) => {
+}: Omit<TradeableAssetsFilterTabsProps, 'isVisible'>) => {
     const networks = useSelector(selectDiscoverySupportedNetworks);
 
     const [selectedValue, setSelectedValue] = useState<NetworkSymbol | undefined>(undefined);
+
+    const { translate } = useTranslate();
 
     const onFilterChange = (value: NetworkSymbol | undefined) => {
         setSelectedValue(value);
@@ -31,17 +35,14 @@ export const TradeableAssetFilterTabs = ({
 
     const filterItems: FilterItem<NetworkSymbol | undefined>[] = useMemo(
         () => [
-            { label: 'All', value: undefined },
+            {
+                label: translate('moduleTrading.tradeableAssetsSheet.allFilterTabTitle'),
+                value: undefined,
+            },
             ...networks.map(n => ({ label: n.name, value: n.symbol })),
         ],
-        [networks],
+        [networks, translate],
     );
-
-    const keyExtractor = (item: FilterItem<NetworkSymbol | undefined>) => item.value ?? 'undefined';
-
-    if (!visible) {
-        return null;
-    }
 
     return (
         <Animated.View
@@ -56,4 +57,15 @@ export const TradeableAssetFilterTabs = ({
             />
         </Animated.View>
     );
+};
+
+export const TradeableAssetFilterTabs = ({
+    isVisible,
+    ...rest
+}: TradeableAssetsFilterTabsProps) => {
+    if (!isVisible) {
+        return null;
+    }
+
+    return <TradeableAssetFilterTabsContent {...rest} />;
 };

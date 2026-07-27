@@ -1,6 +1,9 @@
-import { CryptoId, ExchangeProviderInfo, SellProviderInfo } from 'invity-api';
+import { type CryptoId, type ExchangeProviderInfo, type SellProviderInfo } from 'invity-api';
+
+import { type Network } from '@suite-common/wallet-config';
 
 import {
+    formatSlip24AddressByNetwork,
     tradingExchangeCreatePaymentRequest,
     tradingSellCreatePaymentRequest,
 } from '../signatureUtils';
@@ -25,6 +28,61 @@ jest.mock('../../../utils', () => ({
 }));
 
 describe('signatureUtils', () => {
+    describe('formatSlip24AddressByNetwork', () => {
+        const createNetwork = (networkType: Network['networkType']) =>
+            ({
+                networkType,
+            }) as Network;
+
+        it('checksums ethereum addresses', () => {
+            expect(
+                formatSlip24AddressByNetwork({
+                    address: '0x52908400098527886e0f7030069857d2e4169ee7',
+                    network: createNetwork('ethereum'),
+                }),
+            ).toBe('0x52908400098527886E0F7030069857D2E4169EE7');
+        });
+
+        it('appends canonical ripple destination tags', () => {
+            expect(
+                formatSlip24AddressByNetwork({
+                    address: 'rHb9CJAWyB4rj91VRWn96DkukG4bwdtyTh',
+                    network: createNetwork('ripple'),
+                    destinationTag: '0007',
+                }),
+            ).toBe('rHb9CJAWyB4rj91VRWn96DkukG4bwdtyTh?dt=7');
+        });
+
+        it('treats ripple destination tag zero as absent', () => {
+            expect(
+                formatSlip24AddressByNetwork({
+                    address: 'rHb9CJAWyB4rj91VRWn96DkukG4bwdtyTh',
+                    network: createNetwork('ripple'),
+                    destinationTag: '0',
+                }),
+            ).toBe('rHb9CJAWyB4rj91VRWn96DkukG4bwdtyTh');
+        });
+
+        it('rejects invalid ripple destination tags', () => {
+            expect(() =>
+                formatSlip24AddressByNetwork({
+                    address: 'rHb9CJAWyB4rj91VRWn96DkukG4bwdtyTh',
+                    network: createNetwork('ripple'),
+                    destinationTag: '1e3',
+                }),
+            ).toThrow('Invalid Ripple destination tag: 1e3');
+        });
+
+        it('returns other network addresses unchanged', () => {
+            expect(
+                formatSlip24AddressByNetwork({
+                    address: 'bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh',
+                    network: createNetwork('bitcoin'),
+                }),
+            ).toBe('bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh');
+        });
+    });
+
     describe('tradingExchangeCreatePaymentRequest', () => {
         const mockTrade = {
             send: 'bitcoin' as CryptoId,
@@ -72,7 +130,7 @@ describe('signatureUtils', () => {
             expect(result).toEqual({
                 recipient_name: 'TestExchange',
                 nonce: 'nonce789',
-                amount: '8096980000000000', // 8 bytes little-endian for 0.1 BTC
+                amount: '10000000', // subunits (satoshis) for 0.1 BTC
                 memos: [
                     {
                         coin_purchase_memo: {
@@ -109,7 +167,7 @@ describe('signatureUtils', () => {
         it('should return undefined when trade send is missing', () => {
             const propsWithoutSend = {
                 ...defaultProps,
-                trade: { ...mockTrade, send: undefined as any },
+                trade: { ...mockTrade, send: undefined },
             };
 
             const result = tradingExchangeCreatePaymentRequest(propsWithoutSend);
@@ -132,7 +190,7 @@ describe('signatureUtils', () => {
         it('should return undefined when trade receive is missing', () => {
             const propsWithoutReceive = {
                 ...defaultProps,
-                trade: { ...mockTrade, receive: undefined as any },
+                trade: { ...mockTrade, receive: undefined },
             };
 
             const result = tradingExchangeCreatePaymentRequest(propsWithoutReceive);
@@ -143,7 +201,7 @@ describe('signatureUtils', () => {
         it('should return undefined when trade receiveStringAmount is missing', () => {
             const propsWithoutReceiveAmount = {
                 ...defaultProps,
-                trade: { ...mockTrade, receiveStringAmount: undefined as any },
+                trade: { ...mockTrade, receiveStringAmount: undefined },
             };
 
             const result = tradingExchangeCreatePaymentRequest(propsWithoutReceiveAmount);
@@ -154,7 +212,7 @@ describe('signatureUtils', () => {
         it('should return undefined when trade receiveAddress is missing', () => {
             const propsWithoutReceiveAddress = {
                 ...defaultProps,
-                trade: { ...mockTrade, receiveAddress: undefined as any },
+                trade: { ...mockTrade, receiveAddress: undefined },
             };
 
             const result = tradingExchangeCreatePaymentRequest(propsWithoutReceiveAddress);
@@ -165,7 +223,7 @@ describe('signatureUtils', () => {
         it('should return undefined when trade refundAddress is missing', () => {
             const propsWithoutRefundAddress = {
                 ...defaultProps,
-                trade: { ...mockTrade, refundAddress: undefined as any },
+                trade: { ...mockTrade, refundAddress: undefined },
             };
 
             const result = tradingExchangeCreatePaymentRequest(propsWithoutRefundAddress);
@@ -188,7 +246,7 @@ describe('signatureUtils', () => {
             const result = tradingExchangeCreatePaymentRequest(propsWithTestnet);
 
             expect(result).toBeDefined();
-            if (result && result.memos && result.memos[0]) {
+            if (result?.memos?.[0]) {
                 expect(result.memos[0].coin_purchase_memo?.coin_type).toBe(1); // ALL_TESTNETS - HARDENED_OFFSET
             }
         });
@@ -208,7 +266,7 @@ describe('signatureUtils', () => {
             const result = tradingExchangeCreatePaymentRequest(propsWithBch);
 
             expect(result).toBeDefined();
-            if (result && result.memos && result.memos[0]) {
+            if (result?.memos?.[0]) {
                 expect(result.memos[0].coin_purchase_memo?.coin_type).toBe(145); // BCH coin type
             }
         });
@@ -228,7 +286,7 @@ describe('signatureUtils', () => {
             const result = tradingExchangeCreatePaymentRequest(propsWithLtc);
 
             expect(result).toBeDefined();
-            if (result && result.memos && result.memos[0]) {
+            if (result?.memos?.[0]) {
                 expect(result.memos[0].coin_purchase_memo?.coin_type).toBe(2); // LTC coin type
             }
         });
@@ -273,7 +331,7 @@ describe('signatureUtils', () => {
             expect(result).toEqual({
                 recipient_name: 'TestSeller',
                 nonce: 'sellNonce123',
-                amount: '80f0fa0200000000', // 8 bytes little-endian for 0.5 BTC
+                amount: '50000000', // subunits (satoshis) for 0.5 BTC
                 memos: [
                     {
                         text_memo: {
@@ -306,7 +364,7 @@ describe('signatureUtils', () => {
         it('should return undefined when trade refundAddress is missing', () => {
             const propsWithoutRefundAddress = {
                 ...defaultSellProps,
-                trade: { ...mockSellTrade, refundAddress: undefined as any },
+                trade: { ...mockSellTrade, refundAddress: undefined },
             };
 
             const result = tradingSellCreatePaymentRequest(propsWithoutRefundAddress);
@@ -328,7 +386,7 @@ describe('signatureUtils', () => {
         it('should return undefined when trade cryptoStringAmount is missing', () => {
             const propsWithoutAmount = {
                 ...defaultSellProps,
-                trade: { ...mockSellTrade, cryptoStringAmount: undefined as any },
+                trade: { ...mockSellTrade, cryptoStringAmount: undefined },
             };
 
             const result = tradingSellCreatePaymentRequest(propsWithoutAmount);
@@ -339,7 +397,7 @@ describe('signatureUtils', () => {
         it('should return undefined when trade cryptoCurrency is missing', () => {
             const propsWithoutCurrency = {
                 ...defaultSellProps,
-                trade: { ...mockSellTrade, cryptoCurrency: undefined as any },
+                trade: { ...mockSellTrade, cryptoCurrency: undefined },
             };
 
             const result = tradingSellCreatePaymentRequest(propsWithoutCurrency);
@@ -357,14 +415,13 @@ describe('signatureUtils', () => {
             const propsWithEth = {
                 ...defaultSellProps,
                 trade: ethTrade,
+                sendStringAmount: ethTrade.cryptoStringAmount,
             };
 
             const result = tradingSellCreatePaymentRequest(propsWithEth);
 
             expect(result).toBeDefined();
-            expect(result?.amount).toBe(
-                '0000b2d3595bf006000000000000000000000000000000000000000000000000', // 32 bytes little-endian for 10.5 ETH
-            );
+            expect(result?.amount).toBe('10500000000000000000'); // subunits (wei) for 10.5 ETH
         });
 
         it('should handle empty memo text', () => {
@@ -376,7 +433,7 @@ describe('signatureUtils', () => {
             const result = tradingSellCreatePaymentRequest(propsWithEmptyMemo);
 
             expect(result).toBeDefined();
-            if (result && result.memos && result.memos[0]) {
+            if (result?.memos?.[0]) {
                 expect(result.memos[0].text_memo?.text).toBe('');
             }
         });
@@ -390,7 +447,7 @@ describe('signatureUtils', () => {
             const result = tradingSellCreatePaymentRequest(propsWithSpecialMemo);
 
             expect(result).toBeDefined();
-            if (result && result.memos && result.memos[0]) {
+            if (result?.memos?.[0]) {
                 expect(result.memos[0].text_memo?.text).toBe('Special chars: àáâãäåæçèéêë');
             }
         });
@@ -439,8 +496,8 @@ describe('signatureUtils', () => {
             });
 
             expect(result).toBeDefined();
-            if (result && result.memos && result.memos[0]) {
-                expect(result.amount).toBe('ff3f7a10f35a0000'); // 8 bytes little-endian for 99999999999999 sats
+            if (result?.memos?.[0]) {
+                expect(result.amount).toBe('99999999999999'); // subunits (satoshis)
                 expect(result.memos[0].coin_purchase_memo?.amount).toBe('1000000.12345678 ETH');
             }
         });
@@ -487,8 +544,8 @@ describe('signatureUtils', () => {
             });
 
             expect(result).toBeDefined();
-            if (result && result.memos && result.memos[0]) {
-                expect(result.amount).toBe('0100000000000000'); // 8 bytes little-endian for 1 satoshi
+            if (result?.memos?.[0]) {
+                expect(result.amount).toBe('1'); // subunits (satoshis)
                 expect(result.memos[0].coin_purchase_memo?.amount).toBe('0.00000001 ETH');
             }
         });

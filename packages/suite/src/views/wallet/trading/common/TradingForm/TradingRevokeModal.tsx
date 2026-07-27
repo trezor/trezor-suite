@@ -1,15 +1,18 @@
 import { useCallback, useMemo } from 'react';
 
-import { CryptoId } from 'invity-api';
+import { type CryptoId } from 'invity-api';
 
-import { events } from '@suite/analytics';
-import { getEvmApprovalTxData } from '@suite-common/wallet-utils';
+import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { Calldata } from '@suite-common/calldata';
+import { useServices } from '@suite-common/dependency-injection';
+import { invityAPI, selectTradingSendAccount } from '@suite-common/trading';
 
 import { RevokeModal } from 'src/components/suite/modals/ReduxModal/UserContextModal/AllowanceModals/RevokeModal';
+import { useSelector } from 'src/hooks/suite';
 import { useAllowanceContext } from 'src/hooks/wallet/allowance';
+import { useModalLastValidParams } from 'src/hooks/wallet/trading/form/useModalLastValidParams';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { useTradingExchangeCryptoAndProviderInfo } from 'src/hooks/wallet/trading/form/useTradingExchangeCryptoAndProviderInfo';
-import { useAnalytics } from 'src/support/useAnalytics';
 import {
     getProvidersInfoProps,
     isTradingExchangeContext,
@@ -22,7 +25,8 @@ interface TradingRevokeModalProps {
 export const TradingRevokeModal = ({ cryptoId }: TradingRevokeModalProps) => {
     const { state } = useAllowanceContext();
     const context = useTradingFormContext();
-    const analytics = useAnalytics();
+    const account = useSelector(reduxState => selectTradingSendAccount(reduxState, context.type));
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
     const getCryptoInfo = useTradingExchangeCryptoAndProviderInfo();
 
     const handleCancel = useCallback(async () => {
@@ -59,36 +63,48 @@ export const TradingRevokeModal = ({ cryptoId }: TradingRevokeModalProps) => {
     }, [analytics, getCryptoInfo]);
 
     const revokeParams = useMemo(() => {
-        if (!isTradingExchangeContext(context)) return null;
+        if (!isTradingExchangeContext(context)) {
+            return null;
+        }
 
         const providersInfo = getProvidersInfoProps(context);
         const exchange = context.selectedQuote?.exchange;
         const provider = exchange ? providersInfo?.[exchange] : null;
 
         const dexTxData = context.selectedQuote?.dexTx?.data;
-        const approvalData = getEvmApprovalTxData(dexTxData);
+        const approvalData = Calldata.evm.erc20.approve.decode(dexTxData);
         const spender = approvalData?.spender ?? null;
 
         const preapprovedAmount = context.selectedQuote?.preapprovedStringAmount;
+        const approveAmount = context.selectedQuote?.sendStringAmount;
 
-        return {
-            provider,
-            spender,
-            preapprovedAmount,
-        };
+        return provider && spender ? { provider, spender, preapprovedAmount, approveAmount } : null;
     }, [context]);
 
-    const { provider, spender, preapprovedAmount } = revokeParams || {};
+    const { provider, spender, preapprovedAmount, approveAmount } =
+        useModalLastValidParams(revokeParams, state.isRevokeModalOpen) ?? {};
 
-    if (!state.isRevokeModalOpen || !provider || !spender) return null;
+    if (!state.isRevokeModalOpen || !provider || !spender || !account) {
+        return null;
+    }
+
+    const providerLogo = provider.logo ? invityAPI.getProviderLogoUrl(provider.logo) : undefined;
 
     return (
         <RevokeModal
             cryptoId={cryptoId}
-            account={context.account}
-            provider={provider}
+            account={account}
+            provider={{
+                ...provider,
+                logo: providerLogo,
+                label: 'TR_TRADING_PROVIDER',
+            }}
             spender={spender}
             preapprovedAmount={preapprovedAmount}
+            approveAmount={approveAmount}
+            followedByApproval
+            heading="TR_APPROVAL_REVOKE_TOKEN_SPENDING"
+            description="TR_EXCHANGE_APPROVAL_REVOKE_TOKEN_SPENDING_DESCRIPTION"
             onConfirm={onConfirm}
             onCancel={handleCancel}
         />

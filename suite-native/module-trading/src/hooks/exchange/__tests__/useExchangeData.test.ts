@@ -1,56 +1,61 @@
 import { tradingExchangeActions, tradingThunks } from '@suite-common/trading';
-import { AccountKey } from '@suite-common/wallet-types';
-import {
-    PreloadedState,
-    TestStore,
-    act,
-    initStore,
-    renderHookWithStoreProviderAsync,
-} from '@suite-native/test-utils';
+import { asAccountDescriptor } from '@suite-common/wallet-types';
+import { type TestStore, act, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 import { getBtcAccount, getInitializedTradingState } from '@suite-native/trading-fixtures';
 
+import { createTradingLightStore } from '../../../__tests__/tradingTestUtils';
 import { useExchangeData } from '../useExchangeData';
 
-jest.mock('../../../utils/general/utils', () => ({
-    ...jest.requireActual('../../../utils/general/utils'),
+jest.mock('@suite-common/trading', () => ({
+    ...jest.requireActual('@suite-common/trading'),
     getRandomAccountDescriptor: () => 'random_string',
 }));
 
-const btc1AccountKey = 'btc-account-1' as AccountKey; // Todo: create properly via `createAccountKey()`
-const btc2AccountKey = 'btc-account-2' as AccountKey; // Todo: create properly via `createAccountKey()`
-const btc3AccountKey = 'btc-account-3' as AccountKey; // Todo: create properly via `createAccountKey()`
+const btc1Account = getBtcAccount({ descriptor: asAccountDescriptor('btc1normal') });
+const btc2Account = getBtcAccount({ descriptor: asAccountDescriptor('btcAccount2') });
+const btc3Account = getBtcAccount({ descriptor: asAccountDescriptor('btcAccount3') });
 
 describe('useExchangeData', () => {
     const getInitializedStore = (tradingAccountKey: string | undefined) => {
-        const preloadedState: PreloadedState = {
-            wallet: {
-                trading: getInitializedTradingState('exchange'),
-                accounts: [
-                    getBtcAccount(btc1AccountKey),
-                    getBtcAccount(btc2AccountKey),
-                    { ...getBtcAccount(btc3AccountKey), descriptor: '' },
-                ],
-            },
-        };
-        preloadedState.wallet!.trading!.exchange!.tradingAccountKey = tradingAccountKey;
+        const tradingState = getInitializedTradingState('exchange');
+        tradingState.exchange.tradingAccountKey = tradingAccountKey as any;
 
-        return initStore(preloadedState).store;
+        return createTradingLightStore({
+            tradeType: 'exchange',
+            overrides: {
+                wallet: {
+                    trading: tradingState,
+                    accounts: [
+                        btc1Account,
+                        btc2Account,
+                        { ...btc3Account, descriptor: asAccountDescriptor('') },
+                    ],
+                },
+            },
+        });
     };
 
-    const renderUseExchangeData = (
+    const renderUseExchangeData = async (
         reloadRequestOrdinalInitialValue: number = 0,
         store?: TestStore,
-    ) =>
-        renderHookWithStoreProviderAsync(
+    ) => {
+        const effectiveStore = store ?? createTradingLightStore({ tradeType: 'exchange' });
+
+        const ret = renderHookWithStoreProvider(
             ({ reloadRequestOrdinal }) => useExchangeData(reloadRequestOrdinal),
             {
                 initialProps: { reloadRequestOrdinal: reloadRequestOrdinalInitialValue },
-                store,
+                store: effectiveStore,
             },
         );
 
+        await act(() => Promise.resolve()); // Wait for all effects to run
+
+        return ret;
+    };
+
     beforeEach(() => {
-        jest.resetAllMocks();
+        jest.clearAllMocks();
         global.fetch = jest.fn().mockImplementation(() =>
             Promise.resolve({
                 json: () => Promise.resolve({}),
@@ -116,14 +121,14 @@ describe('useExchangeData', () => {
         });
 
         it('should dispatch loadInitialDataThunk when account is changed with descriptor', async () => {
-            const store = await getInitializedStore(undefined);
+            const store = getInitializedStore(undefined);
             await renderUseExchangeData(0, store);
 
             // Clear the initial call
             initialThunkLoadActionSpy.mockClear();
 
             act(() => {
-                store.dispatch(tradingExchangeActions.setTradingAccountKey(btc2AccountKey));
+                store.dispatch(tradingExchangeActions.setTradingAccountKey(btc2Account.key));
             });
 
             // Wait for the effect to run
@@ -138,14 +143,14 @@ describe('useExchangeData', () => {
         });
 
         it('should not dispatch loadInitialDataThunk when descriptor is not changed', async () => {
-            const store = await getInitializedStore(btc2AccountKey);
+            const store = getInitializedStore(btc2Account.key);
             await renderUseExchangeData(0, store);
 
             // Clear the initial call
             initialThunkLoadActionSpy.mockClear();
 
             act(() => {
-                store.dispatch(tradingExchangeActions.setTradingAccountKey(btc2AccountKey));
+                store.dispatch(tradingExchangeActions.setTradingAccountKey(btc2Account.key));
             });
 
             // Wait for effects to run
@@ -157,14 +162,14 @@ describe('useExchangeData', () => {
         });
 
         it('should dispatch loadInitialDataThunk with random string when descriptor is empty string', async () => {
-            const store = await getInitializedStore('btc-account-1');
+            const store = getInitializedStore(btc1Account.key);
             await renderUseExchangeData(0, store);
 
             // Clear the initial call
             initialThunkLoadActionSpy.mockClear();
 
             act(() => {
-                store.dispatch(tradingExchangeActions.setTradingAccountKey(btc3AccountKey));
+                store.dispatch(tradingExchangeActions.setTradingAccountKey(btc3Account.key));
             });
 
             // Wait for the effect to run
@@ -180,7 +185,7 @@ describe('useExchangeData', () => {
         });
 
         it('should dispatch loadInitialDataThunk with random string when descriptor is undefined', async () => {
-            const store = await getInitializedStore('btc-account-1');
+            const store = getInitializedStore(btc1Account.key);
             await renderUseExchangeData(0, store);
 
             // Clear the initial call

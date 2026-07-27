@@ -1,9 +1,9 @@
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
-import { Timestamp } from '@suite-common/wallet-types';
+import { type Timestamp } from '@suite-common/wallet-types';
 import { getFiatRateKeyFromTicker, isTestnet } from '@suite-common/wallet-utils';
 
 import { updateFiatRatesThunk, updateTxsFiatRatesThunk } from './fiatRatesThunks';
-import { FiatRatesState } from './fiatRatesTypes';
+import { type FiatRatesState } from './fiatRatesTypes';
 
 export const fiatRatesInitialState: FiatRatesState = {
     current: {},
@@ -54,7 +54,8 @@ export const prepareFiatRatesReducer = createReducerWithExtraDeps(
                 for (const result of action.payload) {
                     index++;
 
-                    const ticker = tickers[index];
+                    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+                    const ticker: (typeof tickers)[number] = tickers[index];
 
                     if (isTestnet(ticker.symbol)) {
                         continue;
@@ -85,18 +86,17 @@ export const prepareFiatRatesReducer = createReducerWithExtraDeps(
 
                     const currentRate = state[rateType]?.[fiatRateKey];
 
-                    // To prevent race condition someone will remove rate from state while fetching for example (during currency change etc.)
-                    if (!currentRate) {
-                        continue;
-                    }
-                    state[rateType][fiatRateKey] = {
+                    const updatedRate = {
                         ...currentRate,
+                        ...rate,
                         rate: rate.rate,
                         lastTickerTimestamp: (rate.lastTickerTimestamp * 1000) as Timestamp,
                         lastSuccessfulFetchTimestamp: fetchAttemptTimestamp,
                         isLoading: false,
                         error: null,
                     };
+                    // @ts-expect-error: rate.rate / rate.ticker widened via noUncheckedIndexedAccess
+                    state[rateType][fiatRateKey] = updatedRate;
                 }
             })
             .addCase(updateFiatRatesThunk.rejected, (state, action) => {
@@ -108,8 +108,11 @@ export const prepareFiatRatesReducer = createReducerWithExtraDeps(
 
                 tickers.forEach(ticker => {
                     const fiatRateKey = getFiatRateKeyFromTicker(ticker, baseCurrencyCode);
-                    state[rateType][fiatRateKey].error = errorMessage;
-                    state[rateType][fiatRateKey].isLoading = false;
+                    const rates = state[rateType];
+                    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+                    const rateEntry: (typeof rates)[string] = rates[fiatRateKey];
+                    rateEntry.error = errorMessage;
+                    rateEntry.isLoading = false;
                 });
             })
             .addCase(updateTxsFiatRatesThunk.fulfilled, (state, action) => {

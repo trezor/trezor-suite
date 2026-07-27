@@ -1,31 +1,37 @@
 import { WebUSB, usb } from 'usb';
 
 import {
-    TransportProtocol,
+    type TransportProtocol,
     bridge as protocolBridge,
     thp as protocolThp,
     v1 as protocolV1,
     v2 as protocolV2,
 } from '@trezor/protocol';
-import { AbstractApi } from '@trezor/transport/src/api/abstract';
 import { UdpApi } from '@trezor/transport/src/api/udp';
-import { UsbApi } from '@trezor/transport/src/api/usb';
-import { THP_STATE_ERROR } from '@trezor/transport/src/errors';
-import { SessionsBackground } from '@trezor/transport/src/sessions/background';
-import { SessionsClient } from '@trezor/transport/src/sessions/client';
-import { callThpMessage, receiveThpMessage, sendThpMessage } from '@trezor/transport/src/thp';
-import { AcquireInput, ReleaseInput } from '@trezor/transport/src/transports/abstract';
 import {
-    BridgeProtocolMessage,
-    DescriptorApiLevel,
-    PathInternal,
-    Session,
-} from '@trezor/transport/src/types';
-import { createProtocolMessage } from '@trezor/transport/src/utils/bridgeProtocolMessage';
-import { receive as receiveUtil } from '@trezor/transport/src/utils/receive';
-import { error, success, unknownError } from '@trezor/transport/src/utils/result';
-import { createChunks, sendChunks } from '@trezor/transport/src/utils/send';
-import { Log } from '@trezor/utils';
+    type AbstractApi,
+    type AcquireInput,
+    type BridgeProtocolMessage,
+    type DescriptorApiLevel,
+    TRANSPORT_ERROR as ERRORS,
+    type PathInternal,
+    type ReleaseInput,
+    type Session,
+    SessionsBackground,
+    SessionsClient,
+    UsbApi,
+    callThpMessage,
+    createChunks,
+    createProtocolMessage,
+    error,
+    receiveThpMessage,
+    receive as receiveUtil,
+    sendChunks,
+    sendThpMessage,
+    success,
+    unknownError,
+} from '@trezor/transport-common';
+import { type Log } from '@trezor/utils';
 
 export const createCore = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) => {
     let api: AbstractApi;
@@ -93,7 +99,7 @@ export const createCore = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) =>
         }
 
         const chunks = createChunks(encodedMessage, chunkHeader, api.chunkSize);
-        const apiWrite = (chunk: Buffer) => api.write(path, chunk, signal);
+        const apiWrite = (chunk: Buffer) => api.write(path, chunk, { signal });
         const sendResult = await sendChunks(chunks, apiWrite);
 
         return sendResult;
@@ -111,7 +117,7 @@ export const createCore = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) =>
         logger?.debug(`core: readUtil protocol ${protocol.name}`);
         try {
             const receiveProtocol = protocol.name === 'bridge' ? protocolV1 : protocol;
-            const res = await receiveUtil(() => api.read(path, signal), receiveProtocol);
+            const res = await receiveUtil(() => api.read(path, { signal }), receiveProtocol);
             if (!res.success) return res;
             const { messageType, payload } = res.payload;
             logger?.debug(
@@ -161,6 +167,10 @@ export const createCore = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) =>
         logger?.debug(`core: openDevice: result: ${JSON.stringify(openDeviceResult)}`);
 
         if (!openDeviceResult.success) {
+            // release the lock taken by acquireIntent without committing a session,
+            // otherwise the device is locked forever and every later acquire deadlocks
+            await sessionsClient.acquireDone({ path: acquireInput.path, abort: true });
+
             return openDeviceResult;
         }
         await sessionsClient.acquireDone({
@@ -172,23 +182,25 @@ export const createCore = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) =>
     };
 
     const release = async ({ session }: Omit<ReleaseInput, 'path'>) => {
-        await sessionsClient.releaseIntent({ session });
+        const releaseIntentResult = await sessionsClient.releaseIntent({ session });
 
-        const sessionsResult = await sessionsClient.getPathBySession({
-            session,
-        });
-
-        if (!sessionsResult.success) {
-            return sessionsResult;
+        // on failure releaseIntent already freed the lock (or never took it); use
+        // the path it returned instead of a second getPathBySession lookup, which
+        // could race and leak the held lock when it fails.
+        if (!releaseIntentResult.success) {
+            return releaseIntentResult;
         }
 
-        const closeRes = await api.closeDevice(sessionsResult.payload.path);
+        const { path } = releaseIntentResult.payload;
+
+        const closeRes = await api.closeDevice(path);
 
         if (!closeRes.success) {
             logger?.error(`core: release: api.closeDevice error: ${closeRes.error}`);
         }
 
-        return sessionsClient.releaseDone({ path: sessionsResult.payload.path });
+        // always reached, even when closeDevice failed, so the lock is freed
+        return sessionsClient.releaseDone({ path });
     };
 
     const getProtocol = (protocolName: BridgeProtocolMessage['protocol']) => {
@@ -248,7 +260,7 @@ export const createCore = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) =>
 
             if (protocol.name === 'v2') {
                 if (!thpState) {
-                    return error({ error: THP_STATE_ERROR, message: 'ThpStateMissing' });
+                    return error({ code: ERRORS.THP_STATE_ERROR, message: 'ThpStateMissing' });
                 }
 
                 const state = new protocolThp.ThpState();
@@ -258,14 +270,16 @@ export const createCore = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) =>
                 const [, chunkHeader] = protocol.getHeaders(bytes);
                 const chunks = createChunks(bytes, chunkHeader, api.chunkSize);
 
-                const apiWrite = (chunk: Buffer, attemptSignal?: AbortSignal) =>
-                    api.write(path, chunk, attemptSignal || signal);
-
                 const message = await callThpMessage({
                     thpState: state,
                     chunks,
-                    apiWrite,
-                    apiRead: attemptSignal => api.read(path, attemptSignal || signal),
+                    apiWrite: (chunk, options) =>
+                        api.write(path, chunk, {
+                            ...options,
+                            signal: options?.signal || signal,
+                        }),
+                    apiRead: options =>
+                        api.read(path, { ...options, signal: options?.signal || signal }),
                     signal,
                     logger,
                 });
@@ -319,7 +333,7 @@ export const createCore = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) =>
         const { path } = sessionsResult.payload;
         if (protocol.name === 'v2') {
             if (!thpState) {
-                return error({ error: THP_STATE_ERROR, message: 'ThpStateMissing' });
+                return error({ code: ERRORS.THP_STATE_ERROR, message: 'ThpStateMissing' });
             }
 
             const state = new protocolThp.ThpState();
@@ -332,8 +346,10 @@ export const createCore = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) =>
             const writeResult = await sendThpMessage({
                 thpState: state,
                 chunks,
-                apiWrite: (chunk, attemptSignal) => api.write(path, chunk, attemptSignal || signal),
-                apiRead: attemptSignal => api.read(path, attemptSignal || signal),
+                apiWrite: (chunk, options) =>
+                    api.write(path, chunk, { ...options, signal: options?.signal || signal }),
+                apiRead: options =>
+                    api.read(path, { ...options, signal: options?.signal || signal }),
                 signal,
                 logger,
                 skipAck: true,
@@ -373,7 +389,7 @@ export const createCore = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) =>
         return api.runInIsolation({ lock: { read: true, write: false }, path }, async () => {
             if (protocol.name === 'v2') {
                 if (!thpState) {
-                    return error({ error: THP_STATE_ERROR, message: 'ThpStateMissing' });
+                    return error({ code: ERRORS.THP_STATE_ERROR, message: 'ThpStateMissing' });
                 }
 
                 const state = new protocolThp.ThpState();
@@ -381,9 +397,13 @@ export const createCore = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) =>
 
                 const message = await receiveThpMessage({
                     thpState: state,
-                    apiWrite: (chunk, attemptSignal) =>
-                        api.write(path, chunk, attemptSignal || signal),
-                    apiRead: attemptSignal => api.read(path, attemptSignal || signal),
+                    apiWrite: (chunk, options) =>
+                        api.write(path, chunk, {
+                            ...options,
+                            signal: options?.signal || signal,
+                        }),
+                    apiRead: options =>
+                        api.read(path, { ...options, signal: options?.signal || signal }),
                     signal,
                     logger,
                     skipAck: true,

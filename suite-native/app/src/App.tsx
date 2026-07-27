@@ -10,16 +10,22 @@ import * as Sentry from '@sentry/react-native';
 import * as SplashScreen from 'expo-splash-screen';
 
 import { FormatterProvider } from '@suite-common/formatters';
-import { ReactNativeQueryProvider } from '@suite-common/react-query';
+import { ReactNativeQueryProvider } from '@suite-common/react-query/src/components/ReactNativeQueryProvider';
 import { applicationInit } from '@suite-native/app-init';
-import { useIsBiometricsOverlayVisible } from '@suite-native/biometrics';
+import { selectShouldUserBeAuthenticated } from '@suite-native/biometrics';
+import { launchArguments } from '@suite-native/config';
 import { configureNetInfo } from '@suite-native/connection-status';
 import { useFormattersConfig } from '@suite-native/formatters-config';
 import { IntlProvider } from '@suite-native/intl';
 import { KillswitchMessageScreen } from '@suite-native/message-system';
 import { NavigationContainerWithAnalytics } from '@suite-native/navigation';
 import { initSentry } from '@suite-native/sentry';
-import { StoreProvider, selectIsAppReady } from '@suite-native/state';
+import {
+    type PreloadedState,
+    StoreProvider,
+    initStore,
+    selectIsAppReady,
+} from '@suite-native/state';
 
 import { BannersRenderer } from './BannersRenderer';
 import { ModalsRenderer } from './ModalsRenderer';
@@ -51,12 +57,16 @@ SplashScreen.preventAutoHideAsync();
 // https://github.com/react-native-netinfo/react-native-netinfo?tab=readme-ov-file#configure
 configureNetInfo();
 
+// preloadedState has to be cast to PreloadedState type because it is passed from Detox as `string` (serialized object)
+// but the `react-native-launch-arguments` library does converts it to JavaScript object in the background.
+const store = initStore(launchArguments.preloadedState as PreloadedState);
+
 const AppComponent = () => {
     const dispatch = useDispatch();
     const formattersConfig = useFormattersConfig();
     const isApplicationInitDispatchedRef = useRef(false);
     const isAppReady = useSelector(selectIsAppReady);
-    const { isBiometricsOverlayVisible } = useIsBiometricsOverlayVisible();
+    const shouldUserBeAuthenticated = useSelector(selectShouldUserBeAuthenticated);
 
     useReportAppInitToAnalytics(APP_STARTED_TIMESTAMP);
 
@@ -80,7 +90,7 @@ const AppComponent = () => {
             {__DEV__ && <InitRosenitePlugin />}
             <BannersRenderer />
             <BottomSheetModalProvider>
-                <Freeze freeze={isBiometricsOverlayVisible}>
+                <Freeze freeze={shouldUserBeAuthenticated}>
                     <RootStackNavigator />
                 </Freeze>
             </BottomSheetModalProvider>
@@ -93,7 +103,7 @@ const AppComponent = () => {
 
 const PureApp = () => (
     <GestureHandlerRootView style={{ flex: 1 }}>
-        <StoreProvider>
+        <StoreProvider store={store}>
             <ReactNativeQueryProvider>
                 <IntlProvider>
                     <KeyboardProvider>

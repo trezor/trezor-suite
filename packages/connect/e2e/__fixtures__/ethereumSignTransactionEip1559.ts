@@ -20,7 +20,7 @@ const legacyResultsCommon = [
     },
 ];
 
-export default {
+const ethereumSignTransactionEip1559: TestCase = {
     method: 'ethereumSignTransaction',
     setup: {
         mnemonic: commonFixtures.setup.mnemonic,
@@ -58,4 +58,6 @@ export default {
 
         return fixture;
     }),
-} satisfies TestCase;
+};
+
+export default ethereumSignTransactionEip1559;

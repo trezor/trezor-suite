@@ -1,23 +1,25 @@
 import { useDispatch, useSelector } from 'react-redux';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { selectDeviceInternalModel, selectSelectedDevice } from '@suite-common/device';
 import { submitPassphrase } from '@suite-common/wallet-core';
-import { events } from '@suite-native/analytics';
+import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { Button } from '@suite-native/atoms';
-import { DeviceModelIcon } from '@suite-native/icons';
+import { selectPassphraseRequestId } from '@suite-native/device-authorization';
+import { deviceModelToIconName } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
-import { useAnalytics } from '@suite-native/services';
 
 export const EnterPassphraseOnTrezorButton = () => {
     const dispatch = useDispatch();
     const device = useSelector(selectSelectedDevice);
-    const analytics = useAnalytics();
+    const { analytics } = useServices(selectNativeAnalyticsDep);
     const deviceModel = useSelector(selectDeviceInternalModel);
+    const requestId = useSelector(selectPassphraseRequestId);
 
     const handleSubmitOnDevice = () => {
         analytics.report({ type: events.passphraseEnterOnTrezorEvent.name });
         if (!device) return;
-        dispatch(submitPassphrase({ device, passphrase: '', passphraseOnDevice: true }));
+        dispatch(submitPassphrase({ device, passphrase: '', passphraseOnDevice: true, requestId }));
     };
 
     if (!deviceModel || !device) return null;
@@ -25,8 +27,9 @@ export const EnterPassphraseOnTrezorButton = () => {
     return (
         <Button
             onPress={handleSubmitOnDevice}
-            colorScheme="tertiaryElevation0"
-            viewLeft={<DeviceModelIcon deviceModel={deviceModel} />}
+            intent="neutral"
+            priority="secondary"
+            iconLeft={deviceModelToIconName(deviceModel)}
         >
             <Translation id="modulePassphrase.enterPassphraseOnTrezor.button" />
         </Button>

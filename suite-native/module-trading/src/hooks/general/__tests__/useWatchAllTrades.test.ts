@@ -1,20 +1,18 @@
-import {
-    PreloadedState,
-    TestStore,
-    initStore,
-    renderHookWithStoreProviderAsync,
-} from '@suite-native/test-utils';
+import { type TestStore } from '@suite-native/test-utils-store';
 import {
     MOCK_ACCOUNT_DEVICE_SESSION_ID,
     btc1NormalAccount,
     eth1NormalAccount,
     getBuyTrade,
     getExchangeTrade,
-    getInitializedTradingState,
     getSellTrade,
     sol1normalAccount,
 } from '@suite-native/trading-fixtures';
 
+import {
+    createTradingLightStore,
+    renderHookWithTradingProvider,
+} from '../../../__tests__/tradingTestUtils';
 import { useWatchAllTrades } from '../useWatchAllTrades';
 
 // Mock the useAllTradesReloadTimer hook
@@ -51,56 +49,27 @@ describe('useWatchAllTrades', () => {
         });
     });
 
-    const getInitializedStore = ({ trades = [] }: { trades?: any[] } = {}) => {
-        const preloadedState: PreloadedState = {
-            wallet: {
-                trading: {
-                    ...getInitializedTradingState(),
-                    trades,
+    const getInitializedStore = ({ trades = [] }: { trades?: any[] } = {}) =>
+        createTradingLightStore({
+            overrides: {
+                wallet: {
+                    trading: { trades },
+                    accounts: [btc1NormalAccount, eth1NormalAccount, sol1normalAccount],
                 },
-                accounts: [
-                    {
-                        key: btc1NormalAccount.key,
-                        symbol: 'btc',
-                        deviceState: MOCK_ACCOUNT_DEVICE_SESSION_ID,
-                        descriptor: 'btc-descriptor',
-                        addresses: { unused: [{ address: 'btc-address' }] },
-                        visible: true,
+                device: {
+                    selectedDevice: {
+                        state: { staticSessionId: MOCK_ACCOUNT_DEVICE_SESSION_ID },
                     },
-                    {
-                        key: eth1NormalAccount.key,
-                        symbol: 'eth',
-                        deviceState: MOCK_ACCOUNT_DEVICE_SESSION_ID,
-                        descriptor: 'eth-descriptor',
-                        addresses: { unused: [{ address: 'eth-address' }] },
-                        visible: true,
-                    },
-                    {
-                        key: sol1normalAccount.key,
-                        symbol: 'sol',
-                        deviceState: MOCK_ACCOUNT_DEVICE_SESSION_ID,
-                        descriptor: 'sol-descriptor',
-                        addresses: { unused: [{ address: 'sol-address' }] },
-                        visible: true,
-                    },
-                ],
-            },
-            device: {
-                selectedDevice: {
-                    state: { staticSessionId: MOCK_ACCOUNT_DEVICE_SESSION_ID },
                 },
             },
-        };
-
-        return initStore(preloadedState).store;
-    };
+        });
 
     const renderUseWatchAllTrades = (store: TestStore) =>
-        renderHookWithStoreProviderAsync(() => useWatchAllTrades(), { store });
+        renderHookWithTradingProvider(() => useWatchAllTrades(), { store });
 
-    it('should return empty arrays when no trades', async () => {
-        const store = await getInitializedStore();
-        const { result } = await renderUseWatchAllTrades(store);
+    it('should return empty arrays when no trades', () => {
+        const store = getInitializedStore();
+        const { result } = renderUseWatchAllTrades(store);
 
         expect(result.current.allTrades).toEqual([]);
         expect(result.current.tradesToWatch).toEqual([]);
@@ -108,21 +77,21 @@ describe('useWatchAllTrades', () => {
         expect(result.current.tradesWatching).toBe(0);
     });
 
-    it('should return trades for the current device', async () => {
+    it('should return trades for the current device', () => {
         const buyTrade = getBuyTrade({ status: 'SUBMITTED' });
         const exchangeTrade = getExchangeTrade({ status: 'CONVERTING' });
         const sellTrade = getSellTrade({ status: 'SEND_CRYPTO' });
 
-        const store = await getInitializedStore({
+        const store = getInitializedStore({
             trades: [buyTrade, exchangeTrade, sellTrade],
         });
-        const { result } = await renderUseWatchAllTrades(store);
+        const { result } = renderUseWatchAllTrades(store);
 
         expect(result.current.allTrades).toHaveLength(3);
         expect(result.current.totalTrades).toBe(3);
     });
 
-    it('should return trades to watch from useAllTradesReloadTimer', async () => {
+    it('should return trades to watch from useAllTradesReloadTimer', () => {
         const mockTradesToWatch = [
             getBuyTrade({ status: 'SUBMITTED' }),
             getExchangeTrade({ status: 'CONVERTING' }),
@@ -137,8 +106,8 @@ describe('useWatchAllTrades', () => {
             tradesToWatch: mockTradesToWatch,
         });
 
-        const store = await getInitializedStore();
-        const { result } = await renderUseWatchAllTrades(store);
+        const store = getInitializedStore();
+        const { result } = renderUseWatchAllTrades(store);
 
         expect(result.current.tradesToWatch).toEqual(mockTradesToWatch);
         expect(result.current.tradesWatching).toBe(2);
@@ -157,8 +126,8 @@ describe('useWatchAllTrades', () => {
             tradesToWatch: [],
         });
 
-        const store = await getInitializedStore();
-        await renderUseWatchAllTrades(store);
+        const store = getInitializedStore();
+        renderUseWatchAllTrades(store);
 
         // Wait for the effect to run
         await new Promise(resolve => setTimeout(resolve, 0));
@@ -180,8 +149,8 @@ describe('useWatchAllTrades', () => {
             tradesToWatch: [],
         });
 
-        const store = await getInitializedStore();
-        await renderUseWatchAllTrades(store);
+        const store = getInitializedStore();
+        renderUseWatchAllTrades(store);
 
         // Wait for the effect to run
         await new Promise(resolve => setTimeout(resolve, 0));
@@ -202,8 +171,8 @@ describe('useWatchAllTrades', () => {
             tradesToWatch: [],
         });
 
-        const store = await getInitializedStore();
-        await renderUseWatchAllTrades(store);
+        const store = getInitializedStore();
+        renderUseWatchAllTrades(store);
 
         // Wait for the effect to run
         await new Promise(resolve => setTimeout(resolve, 0));

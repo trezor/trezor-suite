@@ -2,9 +2,9 @@ import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
 import { selectFirmwareChangelog } from '@suite-common/device';
-import { BottomSheetModal, BottomSheetModalRef, Button, Text } from '@suite-native/atoms';
+import { BottomSheetModal, type BottomSheetModalRef, Button, Text } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 type FirmwareChangelogProps = {
     onClose: () => void;
@@ -70,14 +70,15 @@ export const FirmwareChangelog = ({ ref, onClose }: FirmwareChangelogProps) => {
 
     return (
         <BottomSheetModal ref={ref}>
-            <Text variant="headline-sm" color="textDefault">
+            <Text variant="headline-sm" color="contentPrimary">
                 <Translation id="firmware.changelog.title" />
             </Text>
             {formattedChangelog}
             <Button
                 onPress={onClose}
                 style={applyStyle(buttonContainerStyle)}
-                colorScheme="tertiaryElevation0"
+                intent="neutral"
+                priority="secondary"
             >
                 <Translation id="generic.buttons.close" />
             </Button>

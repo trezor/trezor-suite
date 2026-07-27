@@ -10,7 +10,6 @@ import { onTabBar } from '../pageObjects/tabBarActions';
 import { exchangePreviewActions } from '../pageObjects/trading/exchangePreviewActions';
 import { exchangeOutputsReviewActions } from '../pageObjects/trading/outputsReviewActions';
 import { tradingExchangeActions } from '../pageObjects/trading/tradingExchangeActions';
-import { tradingFeeActions } from '../pageObjects/trading/tradingFeeActions';
 import { openApp, preparePreloadedReduxState, prepareTrezorEmulator } from '../support/setup';
 import { waitForVisible } from '../support/utils';
 
@@ -31,7 +30,6 @@ describe('Trade Exchange [@androidOnly]', () => {
         beforeEach(async () => {
             await openApp({ args: { preloadedState: preloadedStateWithoutTrezor } });
             await onTabBar.navigateToTrade();
-            await tradingExchangeActions.tapTradingSectionHeaderTab();
         });
 
         it('should display info card', async () => {
@@ -39,6 +37,7 @@ describe('Trade Exchange [@androidOnly]', () => {
         });
     });
 
+    // Skipping due to emulator crash
     describe('with device disconnected [@T3T1]', () => {
         beforeAll(() => {
             if (!passphrase) {
@@ -49,11 +48,11 @@ describe('Trade Exchange [@androidOnly]', () => {
         });
 
         beforeEach(async () => {
-            await openApp({ args: { preloadedState: preloadedStateWithTrezor } });
             await prepareTrezorEmulator({
                 seed: MNEMONICS.mnemonic_academic,
                 passphrase_protection: true,
             });
+            await openApp({ args: { preloadedState: preloadedStateWithTrezor } });
             await waitForVisible(by.text('Connected'));
             await onPassphrase.openPassphraseWallet(passphrase);
             await onHome.waitForScreen();
@@ -63,11 +62,11 @@ describe('Trade Exchange [@androidOnly]', () => {
 
         it('should request trezor connect before preview', async () => {
             await tradingExchangeActions.selectSendAsset('USDC');
-            await tradingExchangeActions.selectReceiveAsset('USDT', 'Ethereum');
+            await tradingExchangeActions.selectReceiveAsset('USDT', 'Ethereum', 'Tether');
             await tradingExchangeActions.selectReceiveAccount('Ethereum #1');
             await tradingExchangeActions.setSendCryptoAmount('10');
 
-            await tradingExchangeActions.scrollToLearnMoreLink();
+            await tradingExchangeActions.viewHowTradingWorks();
             await tradingExchangeActions.expectValidExchangeForm();
 
             await tradingExchangeActions.confirmTradingForm();
@@ -79,6 +78,7 @@ describe('Trade Exchange [@androidOnly]', () => {
         });
     });
 
+    // Skipping due to emulator crash
     describe('with device connected [@T3T1]', () => {
         beforeAll(() => {
             if (!passphrase) {
@@ -89,11 +89,11 @@ describe('Trade Exchange [@androidOnly]', () => {
         });
 
         beforeEach(async () => {
-            await openApp({ args: { preloadedState: preloadedStateWithTrezor } });
             await prepareTrezorEmulator({
                 seed: MNEMONICS.mnemonic_academic,
                 passphrase_protection: true,
             });
+            await openApp({ args: { preloadedState: preloadedStateWithTrezor } });
             await waitForVisible(by.text('Connected'));
             await onPassphrase.openPassphraseWallet(passphrase);
             await tradingExchangeActions.openForm();
@@ -101,11 +101,11 @@ describe('Trade Exchange [@androidOnly]', () => {
 
         it('Basic exchange USDC to USDT', async () => {
             await tradingExchangeActions.selectSendAsset('USDC');
-            await tradingExchangeActions.selectReceiveAsset('USDT', 'Ethereum');
+            await tradingExchangeActions.selectReceiveAsset('USDT', 'Ethereum', 'Tether');
             await tradingExchangeActions.selectReceiveAccount('Ethereum #1');
             await tradingExchangeActions.setSendCryptoAmount('10');
 
-            await tradingExchangeActions.scrollToLearnMoreLink();
+            await tradingExchangeActions.viewHowTradingWorks();
             await tradingExchangeActions.viewProviders();
             await tradingExchangeActions.expectValidExchangeForm();
 
@@ -115,11 +115,6 @@ describe('Trade Exchange [@androidOnly]', () => {
 
             await exchangePreviewActions.waitForFeesToLoad();
             await exchangePreviewActions.scrollScreenToBottom();
-            await exchangePreviewActions.goToFees();
-
-            await tradingFeeActions.expectFeesScreenToBeVisible();
-            await tradingFeeActions.goBack();
-
             await exchangePreviewActions.goToTransactionSigning();
 
             await exchangeOutputsReviewActions.expectOutputsReviewScreenToBeVisible();

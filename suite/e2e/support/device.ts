@@ -1,8 +1,9 @@
 import { expect } from '@playwright/test';
 
-import { ApplySettings } from '@trezor/protobuf/src/messages-schema';
+import type { ApplySettings } from '@trezor/protobuf/src/definitions';
 import {
     Model,
+    ReadAndConfirmAtomicShamirMnemonicEmu,
     ReadAndConfirmShamirMnemonicEmu,
     SetupEmu,
     TrezorUserEnvLink,
@@ -81,6 +82,11 @@ export class DeviceFixture {
     }
 
     @step()
+    async inputPin(pin: string) {
+        await TrezorUserEnvLink.inputPin(pin);
+    }
+
+    @step()
     async tapCenter() {
         await TrezorUserEnvLink.clickEmu(EMULATOR_CENTER_COORDINATES[this.model]);
     }
@@ -97,6 +103,16 @@ export class DeviceFixture {
     @step()
     async readAndConfirmShamirMnemonic(options: ReadAndConfirmShamirMnemonicEmu) {
         await TrezorUserEnvLink.readAndConfirmShamirMnemonicEmu(options);
+    }
+
+    @step()
+    async readAndConfirmAtomicShamirMnemonic(options: ReadAndConfirmAtomicShamirMnemonicEmu) {
+        await TrezorUserEnvLink.readAndConfirmAtomicShamirMnemonicEmu(options);
+    }
+
+    @step()
+    async readAndConfirmSingleShamirMnemonic() {
+        await TrezorUserEnvLink.readAndConfirmSingleShamirMnemonicEmu();
     }
 
     @step()
@@ -172,60 +188,58 @@ export class DeviceFixture {
         );
     };
 
-    private wrapTextByWords = (text: string, lineCharLimit: number) => {
-        const words = text.split(' ');
+    private wrapTextByWords = (
+        text: string,
+        lineCharLimit: number,
+        options?: { hyphenate?: boolean },
+    ) => {
         const lines: string[] = [];
-        let currentLine = '';
+        let rest = text;
 
-        const wouldExceedLimit = (line: string, word: string): boolean => {
-            const combinedLength = line ? line.length + 1 + word.length : word.length;
+        // Greedily fill each line. Break at the last space that fits; when no
+        // space fits, either hyphenate the word (the dash takes one slot) or,
+        // if hyphenation is off, overflow up to the next space.
+        while (rest.length > lineCharLimit) {
+            const lastWhitespaceIndex = rest.lastIndexOf(' ', lineCharLimit);
+            const hasFittingWhitespace = lastWhitespaceIndex > 0;
 
-            return combinedLength > lineCharLimit;
-        };
-
-        for (const word of words) {
-            if (!currentLine) {
-                // First word on the line
-                currentLine = word;
-            } else if (wouldExceedLimit(currentLine, word)) {
-                // Word doesn't fit, wrap to new line
-                lines.push(currentLine);
-                lines.push('\n');
-                currentLine = word;
+            if (hasFittingWhitespace) {
+                lines.push(rest.slice(0, lastWhitespaceIndex), '\n');
+                rest = rest.slice(lastWhitespaceIndex + 1);
+            } else if (options?.hyphenate) {
+                lines.push(rest.slice(0, lineCharLimit - 1), '-', '\n');
+                rest = rest.slice(lineCharLimit - 1);
             } else {
-                // Word fits, add it with a space
-                currentLine += ' ' + word;
+                const nextSpace = rest.indexOf(' ');
+                if (nextSpace === -1) break;
+                lines.push(rest.slice(0, nextSpace), '\n');
+                rest = rest.slice(nextSpace + 1);
             }
         }
 
-        // Add the final line without trailing newline
-        if (currentLine) {
-            lines.push(currentLine);
-        }
+        lines.push(rest);
 
         return lines;
     };
 
-    wrapText = (text: string, options?: { isAmount?: boolean; wrapByWords?: boolean }) => {
-        const T3W1_EXACT_LINE_LENGTH = 14;
-        const T3T1_EXACT_LINE_LENGTH = 18;
-        const T3W1_LINE_LENGTH_MINUS_DASH = 13;
+    wrapText = (
+        text: string,
+        options?: { isAmount?: boolean; wrapByWords?: boolean; lengthOverride?: number },
+    ) => {
+        const T3W1_EXACT_LINE_LENGTH = options?.lengthOverride ?? 14;
+        const T3T1_EXACT_LINE_LENGTH = options?.lengthOverride ?? 18;
 
         if (this.model === Model.T3W1) {
-            if (text.length === T3W1_EXACT_LINE_LENGTH) {
-                return [text];
+            // Wrap by words with conditional hyphenation for amounts
+            // Amounts have potentially long decimal parts -> hyphenation
+            if (options?.isAmount || options?.wrapByWords) {
+                return this.wrapTextByWords(text, T3W1_EXACT_LINE_LENGTH, {
+                    hyphenate: options?.isAmount,
+                });
             }
 
-            if (options?.wrapByWords) {
-                return this.wrapTextByWords(text, T3W1_EXACT_LINE_LENGTH);
-            }
-
-            const lineCharLimit = options?.isAmount
-                ? T3W1_LINE_LENGTH_MINUS_DASH
-                : T3W1_EXACT_LINE_LENGTH;
-            const newline = options?.isAmount ? ['-', '\n'] : ['\n'];
-
-            return this.wrapTextByLineLimit(text, lineCharLimit, newline);
+            // Otherwise wrap by chars at the size limit
+            return this.wrapTextByLineLimit(text, T3W1_EXACT_LINE_LENGTH, ['\n']);
         }
 
         if (options?.wrapByWords) {

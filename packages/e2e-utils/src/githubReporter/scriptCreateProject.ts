@@ -4,7 +4,7 @@ import path from 'path';
 
 import { GitHubProject } from './gitHubProject';
 
-dotenv.config({ path: path.resolve(__dirname, '../../../.env') });
+dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 
 class ScriptLogger {
     log(...args: any[]): void {

@@ -1,21 +1,14 @@
 import { useSelector } from 'react-redux';
 
 import type { NetworkSymbol } from '@suite-common/wallet-config';
-import { AccountDescriptor, TxTargetId } from '@suite-common/wallet-types';
+import { type AccountDescriptor, type TxTargetId } from '@suite-common/wallet-types';
+import { AddressLabel } from '@suite-native/address';
 import { HStack, Text, VStack } from '@suite-native/atoms';
 import { isDebugEnv } from '@suite-native/config';
 import { AddressFormatter } from '@suite-native/formatters';
-import {
-    AddressLabel,
-    TransactionOutputLabelEditable,
-    selectIsLabellingAllowed,
-} from '@suite-native/labeling';
+import { selectIsLabellingAllowed } from '@suite-native/labeling';
+import { TransactionOutputLabelEditable } from '@suite-native/transactions';
 import type { StaticSessionId } from '@trezor/connect';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-
-const addressTextStyle = prepareNativeStyle(_ => ({
-    maxWidth: '80%',
-}));
 
 type TransactionUtxoAddressProps = {
     address: string;
@@ -36,22 +29,15 @@ export const TransactionUtxoAddress = ({
     networkSymbol,
     showLabels,
 }: TransactionUtxoAddressProps) => {
-    const { applyStyle } = useNativeStyles();
     const isLabellingAllowed = useSelector(selectIsLabellingAllowed);
 
     return (
         <VStack alignItems="flex-start">
-            <HStack spacing={2}>
+            <HStack spacing={4}>
                 <AddressLabel
                     address={address}
                     deviceStaticSessionId={deviceStaticSessionId}
-                    fallback={
-                        <AddressFormatter
-                            key={address}
-                            value={address}
-                            style={applyStyle(addressTextStyle)}
-                        />
-                    }
+                    fallback={<AddressFormatter key={address} value={address} format="long" />}
                 />
 
                 {isLabellingAllowed && isDebugEnv() && <Text>[{`${txTargetId}`}]</Text>}

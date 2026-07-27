@@ -14,9 +14,9 @@ import {
     useAlertAnimation,
 } from '@suite-native/atoms';
 import { getScreenHeight, getScreenWidth } from '@trezor/env-utils';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
-import { Alert } from '../alertsAtoms';
+import { type Alert } from '../alertsAtoms';
 import { useAlert } from '../useAlert';
 import { useShakeAnimation } from '../useShakeAnimation';
 
@@ -53,7 +53,7 @@ const shakeTriggerStyle = prepareNativeStyle(_ => ({
 const sheetOverlayStyle = prepareNativeStyle(_ => ({
     width: SCREEN_WIDTH,
     height: SCREEN_HEIGHT,
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFill,
 }));
 
 export const AlertSheet = ({ alert }: AlertSheetProps) => {
@@ -82,12 +82,18 @@ export const AlertSheet = ({ alert }: AlertSheetProps) => {
         pictogramVariant,
         onPressPrimaryButton,
         primaryButtonTitle,
-        primaryButtonViewLeft,
-        primaryButtonViewRight,
+        primaryButtonIconLeft,
+        primaryButtonIconRight,
         onPressSecondaryButton,
         secondaryButtonTitle,
-        primaryButtonVariant = 'primary',
-        secondaryButtonVariant = 'tertiaryElevation1',
+        primaryButtonColorProps = {
+            intent: 'brand',
+            priority: 'primary',
+        },
+        secondaryButtonColorProps = {
+            intent: 'neutral',
+            priority: 'secondary',
+        },
         appendix,
         testID,
     } = alert;
@@ -132,21 +138,18 @@ export const AlertSheet = ({ alert }: AlertSheetProps) => {
                                 {appendix}
                             </VStack>
                             <VStack spacing="sp12">
-                                {/* @ts-expect-error: MergeExclusive disallows both viewLeft and viewRight, but only one is defined at runtime */}
                                 <Button
-                                    size="medium"
-                                    colorScheme={primaryButtonVariant}
+                                    {...primaryButtonColorProps}
                                     onPress={handlePressPrimaryButton}
-                                    viewLeft={primaryButtonViewLeft}
-                                    viewRight={primaryButtonViewRight}
+                                    iconLeft={primaryButtonIconLeft}
+                                    iconRight={primaryButtonIconRight}
                                     testID="@alert-sheet/primary-button"
                                 >
                                     {primaryButtonTitle}
                                 </Button>
                                 {secondaryButtonTitle && (
                                     <Button
-                                        size="medium"
-                                        colorScheme={secondaryButtonVariant}
+                                        {...secondaryButtonColorProps}
                                         onPress={handlePressSecondaryButton}
                                         testID="@alert-sheet/secondary-button"
                                     >

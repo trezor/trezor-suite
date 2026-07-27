@@ -1,8 +1,7 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/utils/addressUtils.js
 
+import type { BitcoinNetworkInfo } from '@trezor/connect-common';
 import { address as BitcoinJSAddress } from '@trezor/utxo-lib';
-
-import type { BitcoinNetworkInfo } from '../types';
 
 // Base58
 const isValidBase58Address = (address: string, network: BitcoinNetworkInfo['network']) => {

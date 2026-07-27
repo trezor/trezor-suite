@@ -1,10 +1,10 @@
 import styled from 'styled-components';
 
-import { SpacingValues } from '@trezor/theme';
+import { type SpacingValue } from '@trezor/theme';
 
 import { useList } from './ListContext';
-import { BulletVerticalAlignment } from './types';
-import { FlexAlignItems } from '../Flex/FlexProp';
+import { type BulletVerticalAlignment } from './types';
+import { type FlexAlignItems } from '../Flex/FlexProp';
 
 type MapArgs = {
     $bulletAlignment: BulletVerticalAlignment;
@@ -21,7 +21,7 @@ const mapAlignmentToAlignItems = ({ $bulletAlignment }: MapArgs): FlexAlignItems
 };
 
 type ItemProps = {
-    $gap: SpacingValues;
+    $gap: SpacingValue;
     $bulletAlignment: BulletVerticalAlignment;
     $hasListStyleType: boolean;
     $hasBulletComponent: boolean;

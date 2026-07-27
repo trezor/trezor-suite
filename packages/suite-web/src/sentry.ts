@@ -1,12 +1,13 @@
-import { BrowserOptions, captureConsoleIntegration, init } from '@sentry/browser';
+import { type BrowserOptions, init } from '@sentry/browser';
 
-import { SENTRY_CONFIG } from '@suite/sentry';
+import { SENTRY_BROWSER_CONFIG, getCommonBrowserIntegrations } from '@suite/sentry';
 
 const BROWSER_SENTRY_CONFIG: BrowserOptions = {
-    ...SENTRY_CONFIG,
+    ...SENTRY_BROWSER_CONFIG,
+    // Important: must be a function to keep default Sentry integrations; an array would mean ONLY those specific integrations.
     integrations: defaults => [
         ...defaults.filter(i => i.name !== 'BrowserSession'),
-        captureConsoleIntegration({ levels: ['error'] }),
+        ...getCommonBrowserIntegrations(),
     ],
 };
 

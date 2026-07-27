@@ -4,9 +4,9 @@ import { deviceActions, selectSelectedDevice } from '@suite-common/device';
 import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
 import { createThunk } from '@suite-common/redux-utils';
 import {
-    PushTransactionError,
-    SignTransactionError,
-    SignTransactionTimeoutError,
+    type PushTransactionError,
+    type SignTransactionError,
+    type SignTransactionTimeoutError,
     enhancePrecomposedTransactionThunk,
     pushSendFormTransactionThunk,
     selectAccountByKey,
@@ -17,22 +17,22 @@ import {
     signTransactionThunk,
 } from '@suite-common/wallet-core';
 import {
-    Account,
-    AccountKey,
-    GeneralPrecomposedTransactionFinal,
-    TokenAddress,
+    type Account,
+    type AccountKey,
+    type GeneralPrecomposedTransactionFinal,
+    type TokenAddress,
 } from '@suite-common/wallet-types';
 import { hasNetworkFeatures } from '@suite-common/wallet-utils';
 import { asTypedNativeAnalytics, events } from '@suite-native/analytics';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import { selectAccountTokenSymbol } from '@suite-native/tokens';
 import {
-    UpdateSelectedFeeLevelThunkParams,
+    type UpdateSelectedFeeLevelThunkParams,
     addTransactionLabelingThunk,
 } from '@suite-native/transaction-management';
-import { BlockbookTransaction } from '@trezor/blockchain-link-types';
-import { Success } from '@trezor/connect';
-import { isNotNullOrUndefined, typedObjectKeys } from '@trezor/utils';
+import { type BlockbookTransaction } from '@trezor/blockchain-link-types';
+import { type Ok } from '@trezor/type-utils';
+import { isNotNull, isNotNullOrUndefined, typedObjectKeys } from '@trezor/utils';
 
 import { SEND_MODULE_PREFIX } from './constants';
 
@@ -173,7 +173,7 @@ type SendTransactionThunkParams = {
 };
 
 export const sendTransactionThunk = createThunk<
-    Success<{ txid: string }>,
+    Ok<{ txid: string }>,
     SendTransactionThunkParams,
     { rejectValue: PushTransactionError }
 >(
@@ -192,7 +192,10 @@ export const sendTransactionThunk = createThunk<
         if (sendResponse.payload === undefined) {
             return rejectWithValue({
                 error: 'push-transaction-failed',
-                metadata: { success: false, payload: { error: 'Payload is undefined.' } },
+                metadata: {
+                    success: false,
+                    error: { message: 'Payload is undefined.', code: 'Failure_UnknownCode' },
+                },
             });
         }
 
@@ -202,7 +205,7 @@ export const sendTransactionThunk = createThunk<
 
         const formValues = selectSendFormDraftByKey(getState(), selectedAccount.key, tokenContract);
 
-        if (formValues !== null) {
+        if (isNotNull(formValues)) {
             await dispatch(
                 addTransactionLabelingThunk({
                     txId: sendResponse.payload.payload.txid,

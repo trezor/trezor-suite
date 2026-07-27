@@ -1,15 +1,15 @@
-import { Dispatch } from '@reduxjs/toolkit/react';
+import { type Dispatch } from '@reduxjs/toolkit/react';
 
-import { PrecomposedTransactionFinal } from '@suite-common/wallet-types';
+import { type PrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import {
-    CallMethodKeys,
-    CallMethodParams,
-    CallMethodResponse,
-    Success,
-    Unsuccessful,
+    type CallMethodKeys,
+    type CallMethodParams,
+    type CallMethodResponse,
 } from '@trezor/connect';
+import { type SerializedError } from '@trezor/connect-common/src/constants/errors';
+import { type Err, type Ok } from '@trezor/type-utils';
 
-import { ConnectCallSource } from '../connectPopupTypes';
+import { type ConnectCallSource } from '../connectPopupTypes';
 
 export type PreCallHookParams<M extends CallMethodKeys> = {
     method: M;
@@ -21,5 +21,5 @@ export type PreCallHookParams<M extends CallMethodKeys> = {
 };
 export type PostCallHookParams<M extends CallMethodKeys> = PreCallHookParams<M> & {
     originalPayload: Omit<CallMethodParams<M>, 'method'>;
-    response: Success<CallMethodResponse<M>> | Unsuccessful;
+    response: Ok<CallMethodResponse<M>> | Err<SerializedError>;
 };

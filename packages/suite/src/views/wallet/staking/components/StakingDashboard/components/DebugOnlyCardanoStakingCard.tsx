@@ -1,17 +1,16 @@
 import styled from 'styled-components';
 
+import { DebugOnlyBadge, selectIsDebugModeActive } from '@suite/debug';
 import { selectCardanoPoolsInfo } from '@suite-common/wallet-core';
-import { Account } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 import {
     isCardanoStakedWithEverstake,
     isCardanoStakedWithFiveBinaries,
 } from '@suite-common/wallet-utils';
 import { Card, Column, Icon, InfoItem, Paragraph, Row } from '@trezor/components';
-import { spacings } from '@trezor/theme';
+import { InfoIcon } from '@trezor/icons';
 
-import { DebugOnlyBadge } from 'src/components/suite/DebugOnlyBadge';
 import { useSelector } from 'src/hooks/suite';
-import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';
 
 const ParagraphWrapper = styled.div`
     white-space: pre-wrap;
@@ -32,14 +31,14 @@ export const DebugOnlyCardanoStakingCard = ({ account }: DebugOnlyCardanoStaking
 
     return (
         <Card paddingType="small" flex="1">
-            <Column alignItems="flex-start" flex="1" gap={spacings.lg}>
-                <Row columnGap={spacings.xxs}>
-                    <Icon name="info" intent="neutral" priority="secondary" />
+            <Column alignItems="flex-start" flex="1" gap={20}>
+                <Row columnGap={4}>
+                    <Icon as={InfoIcon} intent="neutral" priority="secondary" />
 
                     <DebugOnlyBadge />
                 </Row>
 
-                <Column rowGap={spacings.xs}>
+                <Column rowGap={8}>
                     <InfoItem
                         label="Provider"
                         direction="row"

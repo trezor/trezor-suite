@@ -1,18 +1,17 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
 import { Translation } from '@suite/intl';
+import { goto } from '@suite/router';
 import {
     selectIsDeviceBackedUp,
     selectSelectedDevice,
     selectSelectedDeviceLabelOrName,
 } from '@suite-common/device';
 import { Banner, Card, Checkbox, Column, H4, Modal, Paragraph } from '@trezor/components';
-import { spacings } from '@trezor/theme';
+import { WarningIcon } from '@trezor/icons';
 
 import { PrerequisitesGuide } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-
-import { goto } from '../../../actions/suite/routerActions';
 
 type StepCheckSeedProps = {
     deviceWillBeWiped: boolean;
@@ -124,7 +123,11 @@ export const StepCheckSeed = ({
                         priority="secondary"
                         onClick={() => {
                             resetReducer();
-                            dispatch(goto(isDeviceBackedUp ? 'recovery-index' : 'backup-index'));
+                            dispatch(
+                                goto({
+                                    routeName: isDeviceBackedUp ? 'recovery-index' : 'backup-index',
+                                }),
+                            );
                         }}
                     >
                         <Translation id={isDeviceBackedUp ? 'TR_CHECK_SEED' : 'TR_CREATE_BACKUP'} />
@@ -132,22 +135,22 @@ export const StepCheckSeed = ({
                 </>
             }
         >
-            <Column gap={spacings.md}>
-                <Column gap={spacings.xs} margin={{ bottom: spacings.xs }}>
+            <Column gap={16}>
+                <Column gap={8} margin={{ bottom: 8 }}>
                     <H4>{heading}</H4>
                     {description}
                 </Column>
                 {deviceWillBeWiped && (
                     <Banner
                         intent="critical"
-                        icon="warning"
+                        icon={WarningIcon}
                         description={<Translation id="TR_FIRMWARE_SWITCH_WARNING_3" />}
                     />
                 )}
                 <Card>
                     <Checkbox
                         isChecked={isChecked}
-                        onClick={() => setIsChecked(!isChecked)}
+                        onChange={() => setIsChecked(!isChecked)}
                         data-testid="@firmware/confirm-seed-checkbox"
                     >
                         {checkbox}

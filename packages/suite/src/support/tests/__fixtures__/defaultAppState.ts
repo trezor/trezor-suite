@@ -1,24 +1,41 @@
-import { FirmwareUpdateState } from '@suite-common/firmware';
+import type { BackupState } from '@suite/backup';
+import { debugInitialState } from '@suite/debug';
+import { desktopUpdateInitialState } from '@suite/desktop-update';
+import { initialState as featureFeedbackInitialState } from '@suite/feature-feedback';
+import { flagsInitialState } from '@suite/flags';
+import { locksInitialState } from '@suite/locks';
+import { type RouterState } from '@suite/router';
+import { suiteSettingsInitialState } from '@suite/settings';
+import { initialSuiteSyncDesktopState } from '@suite/suite-sync';
+import { TorStatus } from '@suite/tor';
+import { type FirmwareUpdateState } from '@suite-common/firmware';
 import { messageSystemInitialState } from '@suite-common/message-system';
-import { MetadataState } from '@suite-common/metadata-types';
+import { type MetadataState } from '@suite-common/metadata-types';
+import { receiveInitialState } from '@suite-common/receive';
 import { quotaManagerInitialState } from '@suite-common/suite-sync-quota-manager/src/quotaManagerReducer';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 
+import { initialDesktopBluetoothState } from 'src/actions/bluetooth/desktopBluetoothReducer';
 import { initialState } from 'src/actions/device/deviceSlice';
-import { initialSuiteSyncDesktopState } from 'src/actions/suiteSync/suiteSyncSlice';
-import { BackupState } from 'src/reducers/backup/backupReducer';
-import { OnboardingState } from 'src/reducers/onboarding/onboardingReducer';
-import { AppState } from 'src/reducers/store';
-import { desktopUpdateInitialState } from 'src/reducers/suite/desktopUpdateReducer';
-import { ProtocolState } from 'src/reducers/suite/protocolReducer';
-import { RouterState } from 'src/reducers/suite/routerReducer';
+import { type OnboardingState } from 'src/reducers/onboarding/onboardingReducer';
+import { type AppState } from 'src/reducers/store';
+import { type ProtocolState } from 'src/reducers/suite/protocolReducer';
 import { suiteInitialState } from 'src/reducers/suite/suiteReducer';
-import WalletReducers from 'src/reducers/wallet';
-
-import { initialDesktopBluetoothState } from '../../../actions/bluetooth/desktopBluetoothReducer';
+import { type WalletState } from 'src/reducers/wallet';
 
 export const initialAppState: AppState = {
     suite: suiteInitialState,
+    discreetMode: {
+        isActive: false,
+    },
+    tor: {
+        torStatus: TorStatus.Disabled,
+        torBootstrap: null,
+    },
+    suiteSettings: suiteSettingsInitialState,
+    debug: debugInitialState,
+    flags: flagsInitialState,
+    locks: locksInitialState,
     device: initialState,
     bluetooth: initialDesktopBluetoothState,
     thp: {
@@ -48,12 +65,14 @@ export const initialAppState: AppState = {
         view: 'GUIDE_DEFAULT',
         indexNode: null,
         currentNode: null,
+        width: 350,
     },
     messageSystem: messageSystemInitialState,
     modal: {
         context: '@modal/context-none',
     },
     notifications: [],
+    receive: receiveInitialState,
     wallet: {
         discovery: {},
         accountSearch: {},
@@ -61,7 +80,7 @@ export const initialAppState: AppState = {
             enabledNetworks: [] as NetworkSymbol[],
         },
         blockchain: {},
-    } as ReturnType<typeof WalletReducers>, // Todo: maybe one day, fix types
+    } as WalletState, // Todo: maybe one day, fix types
     desktopUpdate: desktopUpdateInitialState,
     router: {
         loaded: true,
@@ -115,4 +134,5 @@ export const initialAppState: AppState = {
         search: '',
         networkSymbol: undefined,
     },
+    featureFeedback: featureFeedbackInitialState,
 };

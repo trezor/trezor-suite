@@ -320,7 +320,7 @@ export const validateMessageForm = (parsed: unknown) =>
         strict: true,
     });
 
-export const experimentGroupSchema = yup.object({
+const experimentGroupSchema = yup.object({
     variant: yup.string().required(),
     percentage: yup
         .number()

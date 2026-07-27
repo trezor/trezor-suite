@@ -1,6 +1,4 @@
-import BN from 'bn.js';
-
-import { TransactionInputOutputSortingStrategy } from './compose';
+import type { ComposeFeePolicy, TransactionInputOutputSortingStrategy } from './compose';
 
 export type CoinSelectPaymentType = 'p2pkh' | 'p2sh' | 'p2tr' | 'p2wpkh' | 'p2wsh';
 
@@ -20,20 +18,15 @@ export interface CoinSelectOptions {
      * for the chained transaction, as well as for its own bandwidth (see BIP-125 rules).
      */
     baseFee?: number;
-
-    /**
-     * Only for DOGE
-     */
-    floorBaseFee?: boolean;
     sortingStrategy: TransactionInputOutputSortingStrategy;
-    feePolicy?: 'bitcoin' | 'doge' | 'zcash';
+    feePolicy?: ComposeFeePolicy;
 }
 
 export interface CoinSelectInput {
     type: CoinSelectPaymentType;
     i: number;
     script: { length: number };
-    value: BN;
+    value: bigint;
     confirmations: number;
     coinbase?: boolean;
     required?: boolean;
@@ -43,13 +36,13 @@ export interface CoinSelectInput {
 
 export interface CoinSelectOutput {
     script: { length: number };
-    value?: BN;
+    value?: bigint;
     weight?: number;
 }
 
 export interface CoinSelectOutputFinal {
     script: { length: number };
-    value: BN;
+    value: bigint;
 }
 
 export interface CoinSelectRequest extends CoinSelectOptions {
@@ -74,8 +67,8 @@ export interface CoinSelectSuccess {
 
 export interface CoinSelectFailure {
     fee: number;
-    inputs?: typeof undefined;
-    outputs?: typeof undefined;
+    inputs?: never;
+    outputs?: never;
 }
 
 export type CoinSelectResult = CoinSelectSuccess | CoinSelectFailure;

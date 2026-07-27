@@ -12,8 +12,9 @@ import {
     isSellFiatTrade,
 } from '@suite-common/trading';
 import { ETHEREUM_ADJUST_GAS_LIMIT } from '@suite-common/wallet-core';
-import { AccountKey, FormState, FormStateTrading } from '@suite-common/wallet-types';
-import { FeeLevel } from '@trezor/connect';
+import { type AccountKey, type FormState, type FormStateTrading } from '@suite-common/wallet-types';
+import { QuoteError } from '@suite-native/trading-quote-utils';
+import { type FeeLevel } from '@trezor/connect';
 
 interface CreateFormStateForSendFormParams {
     quote: ExchangeTrade | SellFiatTrade;
@@ -41,7 +42,7 @@ export const createFormStateForSendForm = ({
     receiveAccountKey,
 }: CreateFormStateForSendFormParams): FormState => {
     if (!isExchangeTrade(quote) && !isSellFiatTrade(quote)) {
-        throw new Error('Invalid quote type: must be ExchangeTrade or SellFiatTrade');
+        throw new QuoteError('Invalid quote type: must be ExchangeTrade or SellFiatTrade', quote);
     }
 
     let outputAddress: string;
@@ -60,7 +61,7 @@ export const createFormStateForSendForm = ({
 
     if (isExchangeTrade(quote)) {
         // Exchange quote (swap)
-        const exchangeQuote = quote as ExchangeTrade;
+        const exchangeQuote = quote;
         const exchangeProviders = providers as Record<string, ExchangeProviderInfo>;
         outputAddress = exchangeQuote.sendAddress || '';
         outputAmount = exchangeQuote.sendStringAmount || '';
@@ -69,10 +70,7 @@ export const createFormStateForSendForm = ({
         if (exchangeQuote.isDex && exchangeQuote.dexTx) {
             outputAddress = exchangeQuote.dexTx.to;
             transactionData = exchangeQuote.dexTx.data;
-            // Gas limit adjustment only for the swap itself, not for approval transactions
-            if (exchangeQuote.status === 'CONFIRM') {
-                ethereumAdjustGasLimit = ETHEREUM_ADJUST_GAS_LIMIT;
-            }
+            ethereumAdjustGasLimit = ETHEREUM_ADJUST_GAS_LIMIT;
         }
 
         if (exchangeQuote.send) {
@@ -92,7 +90,7 @@ export const createFormStateForSendForm = ({
         });
     } else {
         // Sell quote (crypto to fiat)
-        const sellQuote = quote as SellFiatTrade;
+        const sellQuote = quote;
         const sellProviders = providers as Record<string, SellProviderInfo>;
         outputAddress = sellQuote.destinationAddress || '';
         outputAmount = sellQuote.cryptoStringAmount || '';
@@ -140,7 +138,6 @@ export const createFormStateForSendForm = ({
         bitcoinLocktimeBlockHeight: '',
         bitcoinLocktimeDatetime: '',
         ethereumNonce: '',
-        ethereumDataAscii: '',
         ethereumAdjustGasLimit,
         transactionData,
         destinationTag,

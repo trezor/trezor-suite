@@ -1,9 +1,9 @@
+import { selectSelectedAccount } from '@suite/account';
 import { Translation } from '@suite/intl';
 import { Banner, Column, H4 } from '@trezor/components';
 
 import { hideCoinjoinReceiveWarning } from 'src/actions/suite/suiteActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 
 export const CoinjoinReceiveWarning = () => {
     const account = useSelector(selectSelectedAccount);

@@ -1,12 +1,13 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/blockchain/BlockchainDisconnect.js
 
-import { ERRORS } from '@trezor/connect-common/src/constants';
+import type { CoinInfo, PermissionRequest } from '@trezor/connect-common';
+import { CoinObj } from '@trezor/connect-common';
 import { Assert } from '@trezor/schema-utils';
 
-import { findBackend, isBackendSupported } from '../backend/BlockchainLink';
-import { AbstractMethod, MethodPermission, Payload } from '../core/AbstractMethod';
-import { getCoinInfo } from '../data/coinInfo';
-import { CoinInfo, CoinObj } from '../types';
+import { assertBackendSupported, findBackend } from '../backend/BlockchainLink';
+import type { MethodMessage } from '../core/AbstractMethod';
+import { AbstractMethod } from '../core/AbstractMethod';
+import { getCoinInfoOrThrow } from '../data/coinInfo';
 
 type Params = {
     coinInfo: CoinInfo;
@@ -14,34 +15,29 @@ type Params = {
 };
 
 export default class BlockchainDisconnect extends AbstractMethod<'blockchainDisconnect', Params> {
-    constructor(message: { id?: number; payload: Payload<'blockchainDisconnect'> }) {
-        super(message);
+    constructor(message: MethodMessage<'blockchainDisconnect'>) {
+        const { payload } = message;
+
+        // validate incoming parameters
+        Assert(CoinObj, payload);
+
+        const coinInfo = getCoinInfoOrThrow(payload.coin);
+        // validate backend
+        assertBackendSupported(coinInfo);
+
+        const params = {
+            coinInfo,
+            identity: payload.identity,
+        };
+
+        super(message, params);
 
         this.useDevice = false;
         this.useUi = false;
     }
 
-    get requiredPermissions(): MethodPermission[] {
-        return [];
-    }
-
-    init() {
-        const { payload } = this;
-
-        // validate incoming parameters
-        Assert(CoinObj, payload);
-
-        const coinInfo = getCoinInfo(payload.coin);
-        if (!coinInfo) {
-            throw ERRORS.TypedError('Method_UnknownCoin');
-        }
-        // validate backend
-        isBackendSupported(coinInfo);
-
-        this.params = {
-            coinInfo,
-            identity: payload.identity,
-        };
+    get requiredPermissions(): PermissionRequest[] {
+        return [{ permission: 'internal' }];
     }
 
     get info() {

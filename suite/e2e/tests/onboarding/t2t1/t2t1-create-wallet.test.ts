@@ -15,28 +15,35 @@ test.describe('Onboarding - create wallet', { tag: ['@T2T1'] }, () => {
         onboardingPage,
         devicePrompt,
     }) => {
-        await analyticsSection.passThroughAnalytics();
-        await onboardingPage.firmware.continueThroughFirmware();
+        await test.step('Device onboarding steps', async () => {
+            await analyticsSection.passThroughAnalytics();
+            await onboardingPage.firmware.continueThroughFirmware();
+        });
 
-        // Will be clicking on Shamir backup button
-        await onboardingPage.createWalletButton.click();
-        await onboardingPage.selectSeedType('shamir-advanced');
-        await devicePrompt.confirmOnDevicePromptIsShown();
-        await device.pressYes();
+        await test.step('Select backup type and create wallet with backup', async () => {
+            await onboardingPage.createWalletButton.click();
+            await onboardingPage.selectSeedType('shamir-advanced');
 
-        await onboardingPage.createBackupButton.click();
+            await onboardingPage.backup.passThroughShamirBackup({
+                shares: 3,
+                threshold: 2,
+                deviceConfirmations: 4,
+            });
+        });
 
-        const shares = 3;
-        const threshold = 2;
-        await onboardingPage.backup.passThroughShamirBackup(shares, threshold);
-        await onboardingPage.pin.setPinButton.click();
-        await devicePrompt.confirmOnDevicePromptIsShown();
+        await test.step('Set PIN', async () => {
+            await onboardingPage.pin.setPinButton.click();
+            await devicePrompt.confirmOnDevicePromptIsShown();
+            await device.pressYes();
+            await device.inputPin('12');
+            await device.inputPin('12');
+            await devicePrompt.confirmOnDevicePromptIsShown();
+            await device.pressYes();
+        });
 
-        await device.pressYes();
-        await device.type('12');
-        await device.type('12');
-        await devicePrompt.confirmOnDevicePromptIsShown();
-        await device.pressYes();
-        await expect(onboardingPage.completeOnboardingButton).toBeVisible();
+        await test.step('Finish wallet creation', async () => {
+            await onboardingPage.finalButton.click();
+            await expect(onboardingPage.suiteLoadedIndicator).toBeVisible({ timeout: 30_000 });
+        });
     });
 });

@@ -1,19 +1,19 @@
 import { memo } from 'react';
 
-import { events } from '@suite/analytics';
+import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
-import { AssetFiatBalance } from '@suite-common/assets';
+import { goto } from '@suite/router';
+import { type AssetFiatBalance } from '@suite-common/assets';
+import { useServices } from '@suite-common/dependency-injection';
 import { selectCoinDefinitions } from '@suite-common/token-definitions';
-import { Network } from '@suite-common/wallet-config';
+import { type Network } from '@suite-common/wallet-config';
 import { selectAnyAccountIsStakingActive, useDisplayBaseCurrency } from '@suite-common/wallet-core';
-import { Account, RatesByKey } from '@suite-common/wallet-types';
-import { AmountUnit, isTestnet } from '@suite-common/wallet-utils';
-import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
-import { TokenInfo } from '@trezor/blockchain-link-types';
+import { type Account, type RatesByKey } from '@suite-common/wallet-types';
+import { type AmountUnit, isTestnet } from '@suite-common/wallet-utils';
+import type { BaseCurrencyCode, TokenInfo } from '@trezor/blockchain-link-types';
 import { Column, Icon, IconButton, Row, Table, Text } from '@trezor/components';
-import { spacings } from '@trezor/theme';
+import { ArrowRightIcon, WarningIcon } from '@trezor/icons';
 
-import { goto } from 'src/actions/suite/routerActions';
 import {
     AmountUnitSwitchWrapper,
     BaseCurrencyValue,
@@ -23,15 +23,14 @@ import {
 } from 'src/components/suite';
 import { TokenIconSetWrapper } from 'src/components/wallet/TokenIconSetWrapper';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { useAnalytics } from 'src/support/useAnalytics';
 
+import { AssetActionButton } from '../AssetActionButton';
 import { AssetCoinLogo } from '../AssetCoinLogo';
 import { AssetCoinName } from '../AssetCoinName';
+import { handleTokensAndStakingData } from '../assetsViewUtils';
 import { AssetStakingRow } from './AssetStakingRow';
 import { AssetTableExtraRowsSection as Section } from './AssetTableExtraRowsSection';
 import { AssetTokenRow } from './AssetTokenRow';
-import { TradingButton } from '../TradingButton';
-import { handleTokensAndStakingData } from '../assetsViewUtils';
 
 export interface AssetTableRowProps {
     network: Network;
@@ -61,12 +60,13 @@ export const AssetRow = memo(
     }: AssetTableRowProps) => {
         const { symbol } = network;
         const dispatch = useDispatch();
-        const analytics = useAnalytics();
+        const { analytics } = useServices(selectDesktopAnalyticsDep);
         const { shallDisplayBaseCurrency } = useDisplayBaseCurrency(symbol);
 
         const handleRowClick = () => {
             dispatch(
-                goto('wallet-index', {
+                goto({
+                    routeName: 'wallet-index',
                     params: {
                         symbol,
                         accountIndex: 0,
@@ -139,7 +139,7 @@ export const AssetRow = memo(
                             />
                         </Section>
                     </Table.Cell>
-                    <Table.Cell padding={{ left: spacings.zero }}>
+                    <Table.Cell padding={{ left: 0 }}>
                         <AssetCoinName network={network} />
                     </Table.Cell>
                     <Table.Cell>
@@ -147,7 +147,7 @@ export const AssetRow = memo(
                             <Column
                                 alignItems="flex-start"
                                 justifyContent="center"
-                                gap={spacings.xxxs}
+                                gap={2}
                                 data-testid={`@dashboard/asset/${symbol}/fiat-amount`}
                             >
                                 <BaseCurrencyValue
@@ -172,8 +172,8 @@ export const AssetRow = memo(
                             </Column>
                         ) : (
                             <Text intent="critical" typographyStyle="body-sm" textWrap="nowrap">
-                                <Row gap={spacings.xxs}>
-                                    <Icon name="warning" intent="critical" size={14} />
+                                <Row gap={4}>
+                                    <Icon as={WarningIcon} intent="critical" size={14} />
                                     <Translation id="TR_DASHBOARD_ASSET_FAILED" />
                                 </Row>
                             </Text>
@@ -187,28 +187,33 @@ export const AssetRow = memo(
                         {shallDisplayBaseCurrency && <TrendTicker symbol={symbol} />}
                     </Table.Cell>
                     <Table.Cell align="end" colSpan={2}>
-                        <Row gap={spacings.md}>
+                        <Row gap={16}>
                             {isStakeNetwork && (
-                                <TradingButton
+                                <AssetActionButton
                                     symbol={symbol}
                                     onClick={onStakeButtonClick}
                                     routeName="wallet-staking"
                                 >
                                     <Translation id="TR_STAKE_STAKE" />
-                                </TradingButton>
+                                </AssetActionButton>
                             )}
 
                             {!isTestnet(symbol) && (
-                                <TradingButton
+                                <AssetActionButton
                                     symbol={symbol}
                                     routeName="wallet-trading-buy"
                                     data-testid={`@dashboard/asset/${symbol}/buy-button`}
                                     onClick={onBuyButtonClick}
                                 >
                                     <Translation id="TR_BUY_BUY" />
-                                </TradingButton>
+                                </AssetActionButton>
                             )}
-                            <IconButton icon="arrowRight" intent="neutral" priority="secondary" />
+                            <IconButton
+                                icon={ArrowRightIcon}
+                                intent="neutral"
+                                priority="secondary"
+                                tooltip={{ content: <Translation id="TR_SHOW_MORE" /> }}
+                            />
                         </Row>
                     </Table.Cell>
                 </Table.Row>

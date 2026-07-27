@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
 import { ThemeProvider as SCThemeProvider } from 'styled-components';
 
@@ -9,7 +9,7 @@ import GlobalStyle from './styles/GlobalStyle';
 
 type ThemeProviderProps = {
     children: ReactNode;
-    themeVariant?: 'light' | 'dark' | 'debug';
+    themeVariant?: 'light' | 'dark';
 };
 
 export const ThemeProvider = ({ children, themeVariant }: ThemeProviderProps) => {

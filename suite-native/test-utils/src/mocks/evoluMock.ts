@@ -22,6 +22,17 @@ export const id = jest.fn((name: string) => ({
     name,
 }));
 
+export const object = jest.fn((_props: any) => ({
+    from: jest.fn((value: any) => ({ ok: true, value })),
+}));
+export const createQueryBuilder = jest.fn(() => jest.fn(() => ({})));
+export const createIdFromString = jest.fn((str: string) => str);
+export const createConsoleFormatter = jest.fn(() => jest.fn(() => ({})));
+export const createConsole = jest.fn(() => ({}));
+export const createEvoluDeps = jest.fn(() => ({
+    evoluError: { subscribe: jest.fn() },
+}));
+export const createRun = jest.fn(() => jest.fn());
 export const table = jest.fn(() => ({}));
 export const database = jest.fn(() => ({}));
 export const column = jest.fn(() => ({}));

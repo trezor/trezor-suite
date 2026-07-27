@@ -1,5 +1,5 @@
 import { selectSelectedDevice } from '@suite-common/device';
-import { Box, Column, Grid, Image } from '@trezor/components';
+import { Box, Column, Image } from '@trezor/components';
 import { DeviceModelInternal, getDeviceColorVariant } from '@trezor/device-utils';
 import type { ModelFor } from '@trezor/product-components';
 import {
@@ -7,11 +7,10 @@ import {
     DeviceWithScene,
     getLargeModelImagePath,
 } from '@trezor/product-components';
-import { borders, breakpoints, spacings } from '@trezor/theme';
+import { breakpoints } from '@trezor/theme';
 
 import { useSelector } from 'src/hooks/suite';
-
-import { useResponsiveContext } from '../../../support/suite/ResponsiveContext';
+import { ContentFlex } from 'src/support/suite/ContentFlex';
 
 type SecurityCheckLayoutProps = {
     isFailed?: boolean;
@@ -25,9 +24,7 @@ const isModelWithRotate = (model: DeviceModelInternal | undefined): model is Rot
     !!model && model !== DeviceModelInternal.UNKNOWN;
 
 const getDeviceModel = (deviceModelInternal: DeviceModelInternal | undefined): RotateModel =>
-    isModelWithRotate(deviceModelInternal)
-        ? deviceModelInternal
-        : (DeviceModelInternal.T3W1 as RotateModel);
+    isModelWithRotate(deviceModelInternal) ? deviceModelInternal : DeviceModelInternal.T3W1;
 
 export const SecurityCheckLayout = ({
     isFailed,
@@ -35,7 +32,6 @@ export const SecurityCheckLayout = ({
     imageMode,
 }: SecurityCheckLayoutProps) => {
     const device = useSelector(selectSelectedDevice);
-    const { contentWidth } = useResponsiveContext();
     const model = getDeviceModel(device?.features?.internal_model);
     const isDeviceImageRotating = imageMode === 'ROTATE';
     const deviceUnitColor = getDeviceColorVariant(device);
@@ -56,15 +52,15 @@ export const SecurityCheckLayout = ({
         return <Image maxHeight={300} image={image} />;
     };
 
-    const isContentBelowTablet = !!(contentWidth && contentWidth < breakpoints.tablet);
-
     return (
-        <Grid columns={isContentBelowTablet ? '1fr' : '260px 1fr'} gap={spacings.xl} width="100%">
+        <ContentFlex breakpoint={breakpoints.tablet} gap={24} alignItems="center" width="100%">
             {model && (
                 <Box
-                    backgroundColor="backgroundSurfaceElevation1"
-                    borderRadius={borders.radii.sm}
-                    padding={spacings.xxl}
+                    backgroundColor="surfaceFillRaised"
+                    borderRadius={12}
+                    padding={32}
+                    width="100%"
+                    maxWidth={260}
                 >
                     <Column height="100%" justifyContent="center" alignItems="center">
                         {isDeviceImageRotating ? (
@@ -81,7 +77,9 @@ export const SecurityCheckLayout = ({
                     </Column>
                 </Box>
             )}
-            <Column justifyContent="space-between">{children}</Column>
-        </Grid>
+            <Column justifyContent="space-between" flex="1" width="100%" overflow="hidden">
+                {children}
+            </Column>
+        </ContentFlex>
     );
 };

@@ -1,98 +1,55 @@
+import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
-import type { ExchangeProviderInfo } from 'invity-api';
+import type { DexApprovalType } from 'invity-api';
 
-import {
-    type TradingRootState,
-    cryptoIdToNetworkAndContractAddress,
-    selectTradingCoinSymbolByCryptoId,
-    selectTradingExchangeActiveQuote,
-    selectTradingProviderByNameAndTradeType,
-} from '@suite-common/trading';
-import { HStack, Text, VStack } from '@suite-native/atoms';
-import { CryptoIcon, Icon } from '@suite-native/icons';
+import { selectTradingExchangeSelectedQuote } from '@suite-common/trading';
+import { Text } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import { TradeInfoRow } from '@suite-native/trading-atoms';
+import { useBottomSheetControls } from '@suite-native/trading-atoms';
 
 import { ExchangeApprovalLimitSheet } from './ExchangeApprovalLimitSheet/ExchangeApprovalLimitSheet';
-import { useApprovalTypeControls } from '../../../hooks/exchange/Approval/useApprovalTypeControls';
-import { TradingCoinAmountFormatter } from '../../general/TradingCoinAmountFormatter';
+import { LimitInfoRow } from './LimitInfoRow';
+import { LimitPickerUnlimitedAlert } from './LimitPickerUnlimitedAlert';
 
-export const LimitPicker = () => {
-    const quote = useSelector(selectTradingExchangeActiveQuote);
+type LimitPickerProps = {
+    onApprovalTypeChange: (approvalType: DexApprovalType) => void;
+};
 
-    const { approvalType, isSheetVisible, showSheet, hideSheet, handleApprovalTypeChange } =
-        useApprovalTypeControls(quote);
+export const LimitPicker = ({ onApprovalTypeChange }: LimitPickerProps) => {
+    const quote = useSelector(selectTradingExchangeSelectedQuote);
+    const { isSheetVisible, showSheet, hideSheet } = useBottomSheetControls();
 
-    const providerInfo = useSelector((state: TradingRootState) =>
-        selectTradingProviderByNameAndTradeType(state, quote?.exchange, 'exchange'),
-    ) as ExchangeProviderInfo | undefined;
-
-    const coinSymbol = useSelector((state: TradingRootState) =>
-        selectTradingCoinSymbolByCryptoId(state, quote?.send),
+    const handleApprovalTypeChange = useCallback(
+        (newApprovalType: DexApprovalType) => {
+            if (quote) {
+                onApprovalTypeChange(newApprovalType);
+            }
+            hideSheet();
+        },
+        [hideSheet, onApprovalTypeChange, quote],
     );
+
+    const approvalType = quote?.approvalType ?? 'MINIMAL';
 
     if (!quote?.send) {
         return null;
     }
 
-    const { send, sendStringAmount } = quote;
-    const { network, contractAddress } = cryptoIdToNetworkAndContractAddress(send);
-
-    // TODO 22293 those strings need update according to latest design
-    const limitDescription =
-        approvalType === 'INFINITE' ? (
-            <Translation
-                id="moduleTrading.exchangeApprovalLimitSheet.unlimitedCard.description"
-                values={{
-                    companyName: providerInfo?.companyName,
-                    symbol: coinSymbol,
-                }}
-            />
-        ) : (
-            <Translation
-                id="moduleTrading.exchangeApprovalLimitSheet.limitedCard.description"
-                values={{ symbol: coinSymbol }}
-            />
-        );
+    const isInfinite = approvalType === 'INFINITE';
 
     return (
         <>
-            <TradeInfoRow onPress={showSheet} testID="ExchangeApproval/LimitPicker">
-                <VStack>
-                    <HStack justifyContent="space-between" alignItems="center">
-                        <Text variant="body-sm">
-                            <Translation id="moduleTrading.tradingExchangeApprovalScreen.limitLabel" />
-                        </Text>
-                        <HStack alignItems="center">
-                            {!!network?.symbol && (
-                                <CryptoIcon
-                                    symbol={network.symbol}
-                                    contractAddress={contractAddress}
-                                    size="extraSmall"
-                                />
-                            )}
-                            {approvalType === 'INFINITE' ? (
-                                <Text variant="body-sm" color="textSubdued">
-                                    <Translation id="moduleTrading.tradingExchangeApprovalScreen.unlimitedLabel" />
-                                </Text>
-                            ) : (
-                                <TradingCoinAmountFormatter
-                                    amount={sendStringAmount}
-                                    cryptoId={send}
-                                    variant="body-sm"
-                                    color="textSubdued"
-                                />
-                            )}
-
-                            <Icon name="caretDown" size="medium" />
-                        </HStack>
-                    </HStack>
-                    <Text variant="body-sm" color="textSubdued">
-                        {limitDescription}
-                    </Text>
-                </VStack>
-            </TradeInfoRow>
+            <LimitInfoRow onPress={showSheet} testID="ExchangeApproval/LimitPicker" withCaret>
+                <Text variant="body-sm" color="contentSecondary">
+                    {isInfinite ? (
+                        <Translation id="moduleTrading.exchangeApprovalLimitSheet.unlimitedCard.info" />
+                    ) : (
+                        <Translation id="moduleTrading.exchangeApprovalLimitSheet.limitedCard.info" />
+                    )}
+                </Text>
+                {isInfinite && <LimitPickerUnlimitedAlert cryptoId={quote.send} />}
+            </LimitInfoRow>
             <ExchangeApprovalLimitSheet
                 isVisible={isSheetVisible}
                 onDismiss={hideSheet}

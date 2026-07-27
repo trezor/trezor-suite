@@ -6,13 +6,13 @@ import { Box, Button, Text, VStack } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import {
-    OnboardingStackParamList,
+    type OnboardingStackParamList,
     OnboardingStackRoutes,
     Screen,
-    StackProps,
+    type StackProps,
 } from '@suite-native/navigation';
 import { getWindowHeight } from '@trezor/env-utils';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { colorVariants } from '@trezor/theme';
 import { hexToRgba } from '@trezor/utils';
 
@@ -30,7 +30,7 @@ const buttonWrapperStyle = prepareNativeStyle(_ => ({
 
 const textColorStyle = prepareNativeStyle(() => ({
     // the text needs to be white to be visible on image background, ignoring the theme
-    color: colorVariants.dark.textDefault,
+    color: colorVariants.dark.contentPrimary,
 }));
 
 const screenContainerStyle = prepareNativeStyle(() => ({
@@ -52,7 +52,7 @@ export const WelcomeScreen = ({
         <Box flex={1} style={applyStyle(screenContainerStyle)}>
             <ImageBackground
                 source={require('../assets/welcomeScreenBackground.jpeg')}
-                style={StyleSheet.absoluteFillObject}
+                style={StyleSheet.absoluteFill}
                 resizeMode="cover"
                 fadeDuration={0}
             >
@@ -70,7 +70,11 @@ export const WelcomeScreen = ({
             <Screen isScrollable={false} backgroundColor="transparent">
                 <VStack flex={1} justifyContent="flex-end" alignItems="center" spacing={48}>
                     <VStack alignItems="center" spacing="sp16">
-                        <Icon name="trezorLogo" color={colorVariants.dark.textDefault} size={50} />
+                        <Icon
+                            name="trezorLogo"
+                            color={colorVariants.dark.contentPrimary}
+                            size={50}
+                        />
                         <Box alignItems="center">
                             <Text variant="headline-lg" style={applyStyle(textColorStyle)}>
                                 <Translation id="generic.trezorSuite" />

@@ -24,13 +24,10 @@ export const ErrorMessage = styled(ConfirmationMessage)`
 `;
 
 export const Settings = () => {
-    const connectOptions = useSelector(state => ({
-        coreMode: state?.connect?.options?.coreMode,
-    }));
+    const coreMode = useSelector(state => state?.connect?.options?.coreMode);
 
     const initError = useSelector(state => state.connect?.initError);
     const isInitSuccess = useSelector(state => state.connect?.isInitSuccess || false);
-    const isHandshakeConfirmed = useSelector(state => state.connect?.isHandshakeConfirmed || false);
     const actions = useActions({
         onSubmitInit: trezorConnectActions.onSubmitInit,
         onFieldChange: trezorConnectActions.onConnectOptionChange,
@@ -41,8 +38,7 @@ export const Settings = () => {
         {
             name: 'coreMode',
             type: 'select' as const,
-            key: 'coreMode',
-            value: connectOptions?.coreMode || 'auto',
+            value: coreMode || 'auto',
             data: [
                 { value: 'auto', label: 'Auto' },
                 { value: 'deeplink', label: 'Deeplink (mobile)' },
@@ -67,11 +63,6 @@ export const Settings = () => {
             {isInitSuccess && (
                 <ConfirmationMessage data-testid="@settings/init-success">
                     Init success!
-                </ConfirmationMessage>
-            )}
-            {isHandshakeConfirmed && (
-                <ConfirmationMessage data-testid="@settings/handshake-confirmed">
-                    Handshake confirmed!
                 </ConfirmationMessage>
             )}
         </SettingsContent>

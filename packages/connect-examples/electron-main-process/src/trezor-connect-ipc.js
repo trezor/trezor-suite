@@ -1,17 +1,16 @@
-const TrezorConnect = require('@trezor/connect').default;
-const {
-    TRANSPORT_EVENT,
-    UI_REQUEST,
-    UI_RESPONSE,
-    UI_EVENT,
+import TrezorConnect, {
+    DEVICE,
     DEVICE_EVENT,
     TRANSPORT,
-    DEVICE,
-} = require('@trezor/connect');
+    TRANSPORT_EVENT,
+    UI_EVENT,
+    UI_REQUEST,
+    UI_RESPONSE,
+} from '@trezor/connect';
 
 let inited = false;
 // SETUP trezor-connect
-exports.initTrezorConnect = sender => {
+export const initTrezorConnect = sender => {
     if (inited) return; // prevent multiple initialization
     inited = true;
 
@@ -80,15 +79,13 @@ exports.initTrezorConnect = sender => {
 
     TrezorConnect.init({
         debug: false, // see what's going on inside connect
-        // lazyLoad: true, // set to "false" (default) if you want to start communication with bridge on application start (and detect connected device right away)
-        // set it to "true", then trezor-connect will not be initialized until you call some TrezorConnect.method()
-        // this is useful when you don't know if you are dealing with Trezor user
         manifest: {
             email: 'email@developer.com',
             appName: 'Trezor Connect Example',
             appUrl: 'electron-app-boilerplate',
         },
-        transports: ['BridgeTransport'],
+        // transports omitted on purpose — @trezor/connect Node entry provides
+        // the BridgeTransport default automatically.
     })
         .then(() => {
             sender.send('trezor-connect', 'TrezorConnect is ready!');
@@ -98,7 +95,7 @@ exports.initTrezorConnect = sender => {
         });
 };
 
-exports.callTrezorConnect = (sender, message) => {
+export const callTrezorConnect = (sender, message) => {
     const { method, params } = message;
     TrezorConnect[method](params).then(response => {
         sender.send('trezor-connect', response);

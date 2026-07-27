@@ -1,14 +1,15 @@
-import { ReactNode, useCallback, useEffect } from 'react';
+import { type ReactNode, useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { isFulfilled, isRejected } from '@reduxjs/toolkit';
+import { isFulfilled } from '@reduxjs/toolkit';
 import type { ExchangeTrade, SellFiatTrade } from 'invity-api';
 
+import { type MessageSystemRootState } from '@suite-common/message-system';
 import {
-    TradingFulfillValue,
-    TradingSellFormProps,
-    TradingSendRejectedProps,
-    TradingSignAndPushSendFormTransactionProps,
+    type TradingFulfillValue,
+    type TradingRootStateWithDeviceAndAccounts,
+    type TradingSendRejectedProps,
+    type TradingSignAndPushSendFormTransactionProps,
     cryptoIdToNetworkAndContractAddress,
     exchangeThunks,
     selectTradingAccountKeyByTradeType,
@@ -18,42 +19,38 @@ import {
 } from '@suite-common/trading';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
-    AccountsRootState,
-    FeesRootState,
-    FormDraftRootState,
-    SerializedTx,
-    WalletSettingsRootState,
+    type AccountsRootState,
+    type FormDraftRootState,
+    type SerializedTx,
+    type WalletSettingsRootState,
     selectAccountByKey,
-    selectConvertedNetworkFeeInfo,
     selectDeepCopyOfFormDraft,
     selectIsAmountInSats,
     selectSendSerializedTx,
-    updateFeeInfoThunk,
 } from '@suite-common/wallet-core';
-import { FeeLevelLabel, TokenAddress } from '@suite-common/wallet-types';
-import { TokensRootState, selectAccountTokenDecimals } from '@suite-native/tokens';
-import { TradingRootState, getFormDraftKeyByTradeType } from '@suite-native/trading-state';
+import { type FeeLevelLabel, type TokenAddress } from '@suite-common/wallet-types';
+import { type FeatureFlagsRootState } from '@suite-native/feature-flags';
+import { type TxKeyPath } from '@suite-native/intl';
+import { type TokensRootState, selectAccountTokenDecimals } from '@suite-native/tokens';
+import {
+    type TradingRootState,
+    getFormDraftKeyByTradeType,
+    selectIsTradingSlip24Enabled,
+} from '@suite-native/trading-state';
 import {
     selectFeeLevels,
-    useFeesFetching,
     usePrecomposedTransactionError,
 } from '@suite-native/transaction-management';
 import TrezorConnect from '@trezor/connect';
+import { noop } from '@trezor/utils';
 
+import { useComposeTradingTransaction } from './useComposeTradingTransaction';
 import { useConsent } from './useConsent';
-import { composeTradingTransactionThunk, signAndPushSendFormTransactionThunk } from '../../thunks';
+import { signAndPushSendFormTransactionThunk } from '../../thunks';
 
 export type TradingTransactionSignAndSendProps = {
     nextStep: () => void;
-    onError: (error: TradingSendRejectedProps) => void;
-};
-
-export type TradingTransactionComposeProps = {
-    selectedFeeLevel?: FeeLevelLabel;
-    feePerUnit?: string;
-    feeLimit?: string;
-    maxFeePerGas?: string;
-    maxPriorityFeePerGas?: string;
+    onError: (error: TradingSendRejectedProps<TxKeyPath>) => void;
 };
 
 export type UseTradingTransactionProps = {
@@ -65,8 +62,7 @@ export type UseTradingTransactionProps = {
 
 export type UseTradingTransactionReturnProps = {
     txnErrorString: ReactNode;
-    composeRequest: (props: TradingTransactionComposeProps) => Promise<unknown>;
-    fetchFeesAndCompose: () => Promise<void>;
+    composeTradingTransaction: () => Promise<unknown>;
     signAndSendTransaction: (props: TradingTransactionSignAndSendProps) => Promise<boolean>;
     signAndPushSendFormTransaction: (
         props: TradingSignAndPushSendFormTransactionProps,
@@ -106,13 +102,7 @@ export const useTradingTransaction = ({
         selectDeepCopyOfFormDraft(state, getFormDraftKeyByTradeType(tradeType)),
     );
 
-    const {
-        selectedFee,
-        feePerUnit: feePerUnitDraft,
-        feeLimit: feeLimitDraft,
-        maxFeePerGas: maxFeePerGasDraft,
-        maxPriorityFeePerGas: maxPriorityFeePerGasDraft,
-    } = draft ?? {};
+    const { selectedFee } = draft ?? {};
 
     const { contractAddress } = cryptoIdToNetworkAndContractAddress(
         tradeType === 'exchange'
@@ -126,10 +116,6 @@ export const useTradingTransaction = ({
 
     const shouldSendInSats = useSelector((state: WalletSettingsRootState) =>
         selectIsAmountInSats(state, sendAccount?.symbol),
-    );
-
-    const networkFeeInfo = useSelector((state: FeesRootState) =>
-        selectConvertedNetworkFeeInfo(state, sendAccount?.symbol),
     );
 
     const serializedTx = useSelector(selectSendSerializedTx);
@@ -150,89 +136,18 @@ export const useTradingTransaction = ({
         resolveConsent: resolveTransactionSendConsent,
     } = useConsent();
 
-    useFeesFetching({
-        networkSymbol: sendAccount?.symbol,
-        isRefetchDisabled: selectedFee === 'custom',
-    });
+    const isSlip24Active = useSelector(
+        (
+            state: MessageSystemRootState &
+                FeatureFlagsRootState &
+                TradingRootStateWithDeviceAndAccounts,
+        ) => selectIsTradingSlip24Enabled(state, sendAccount ?? undefined),
+    );
 
-    // TODO: slip24 - not implemented in mobile
-    const isSlip24Active = false;
+    const { composeTradingTransaction } = useComposeTradingTransaction({ tradeType });
 
     // cancel txn signing on unmount
     useEffect(() => () => TrezorConnect.cancel(), []);
-
-    // this is called when we want to compose a transaction
-    const composeRequest = useCallback(
-        async ({
-            selectedFeeLevel,
-            feePerUnit,
-            feeLimit,
-            maxPriorityFeePerGas,
-            maxFeePerGas,
-        }: TradingTransactionComposeProps) => {
-            if (!sendAccount || !networkFeeInfo) {
-                console.error(
-                    'Send account and networkFeeInfo are required for composing transaction',
-                );
-
-                return;
-            }
-
-            try {
-                const levels = await dispatch(
-                    composeTradingTransactionThunk({
-                        tradeType,
-                        account: sendAccount,
-                        network: getNetwork(sendAccount.symbol),
-                        feeInfo: networkFeeInfo,
-                        selectedFeeLevel,
-                        feePerUnit,
-                        feeLimit,
-                        maxPriorityFeePerGas,
-                        maxFeePerGas,
-                    }),
-                ).unwrap();
-
-                return levels;
-            } catch (error) {
-                console.error('Failed to compose trading transaction:', error);
-            }
-        },
-        [dispatch, networkFeeInfo, sendAccount, tradeType],
-    );
-
-    // this is called when we want to fetch fees and compose a transaction
-    const fetchFeesAndCompose = useCallback(async () => {
-        if (!sendAccount) {
-            console.error('Send account is required to fetch fees and compose transaction');
-
-            return;
-        }
-
-        const feesResult = await dispatch(
-            updateFeeInfoThunk({ networkSymbol: sendAccount.symbol }),
-        );
-        if (isRejected(feesResult)) {
-            console.error('Failed to fetch fees for trading transaction');
-        }
-
-        await composeRequest({
-            selectedFeeLevel: selectedFee as FeeLevelLabel,
-            feePerUnit: feePerUnitDraft,
-            feeLimit: feeLimitDraft,
-            maxFeePerGas: maxFeePerGasDraft,
-            maxPriorityFeePerGas: maxPriorityFeePerGasDraft,
-        });
-    }, [
-        sendAccount,
-        dispatch,
-        composeRequest,
-        selectedFee,
-        feePerUnitDraft,
-        feeLimitDraft,
-        maxFeePerGasDraft,
-        maxPriorityFeePerGasDraft,
-    ]);
 
     // this is the reusable signAndPushSendFormTransaction function
     // waitForPushApproval is used so that we can wait for the user to approve the transaction before sending it
@@ -288,9 +203,9 @@ export const useTradingTransaction = ({
                             shouldSendInSats,
                             isSlip24Active,
                             nextStep,
-                            processResponseData: processResponseData || (() => {}),
+                            processResponseData: processResponseData || noop,
                             triggerAnalyticsTradeConfirmation:
-                                triggerAnalyticsTradeConfirmation || (() => {}),
+                                triggerAnalyticsTradeConfirmation || noop,
                             signAndPushSendFormTransaction,
                         }),
                     ).unwrap();
@@ -302,7 +217,6 @@ export const useTradingTransaction = ({
                     sellThunks.sendTransactionThunk({
                         account: sendAccount,
                         trade: selectedQuote as SellFiatTrade,
-                        formValues: draft as TradingSellFormProps,
                         decimals,
                         shouldSendInSats,
                         isSlip24Active,
@@ -313,7 +227,7 @@ export const useTradingTransaction = ({
 
                 return true;
             } catch (e) {
-                onError(e as TradingSendRejectedProps);
+                onError(e as TradingSendRejectedProps<TxKeyPath>);
 
                 return false;
             }
@@ -334,31 +248,9 @@ export const useTradingTransaction = ({
         ],
     );
 
-    useEffect(() => {
-        if (selectedFee && networkFeeInfo) {
-            composeRequest({
-                selectedFeeLevel: selectedFee as FeeLevelLabel,
-                feePerUnit: feePerUnitDraft,
-                feeLimit: feeLimitDraft,
-                maxFeePerGas: maxFeePerGasDraft,
-                maxPriorityFeePerGas: maxPriorityFeePerGasDraft,
-            });
-        }
-    }, [
-        selectedFee,
-        composeRequest,
-        feePerUnitDraft,
-        feeLimitDraft,
-        networkFeeInfo,
-        selectedQuote,
-        maxFeePerGasDraft,
-        maxPriorityFeePerGasDraft,
-    ]);
-
     return {
         txnErrorString,
-        composeRequest,
-        fetchFeesAndCompose,
+        composeTradingTransaction,
         signAndSendTransaction,
         signAndPushSendFormTransaction,
         serializedTx,

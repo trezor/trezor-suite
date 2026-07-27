@@ -1,8 +1,8 @@
-import { Horizon } from '@stellar/stellar-sdk';
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports
+import { identifyTransaction } from '@trezor/network-stellar';
+import type { RawStellarTransaction } from '@trezor/network-stellar/types';
 
-import { BigNumber } from '@trezor/utils';
-
-import { StellarAsset, buildSendTransaction, toStroops, transformTransaction } from '../stellar';
+import { transformTransaction } from '../stellar';
 import { fixtures } from './fixtures/stellar';
 
 describe('stellar/utils', () => {
@@ -11,38 +11,10 @@ describe('stellar/utils', () => {
             it(description, () => {
                 const result = transformTransaction(
                     // @ts-expect-error Fixtures don't fully implement this interface.
-                    input.tx as Horizon.ServerApi.TransactionRecord,
+                    identifyTransaction(input.tx as RawStellarTransaction),
                     input.descriptor,
                     {},
                 );
-                expect(result).toEqual(expectedOutput);
-            });
-        });
-    });
-
-    describe('toStroops', () => {
-        fixtures.toStroops.forEach(({ description, input, expectedOutput }) => {
-            it(description, () => {
-                const result = toStroops(input);
-                expect(result).toEqual(new BigNumber(expectedOutput));
-            });
-        });
-    });
-
-    describe('buildSendTransactoin', () => {
-        fixtures.buildSendTransactoin.forEach(({ description, input, expectedOutput }) => {
-            it(description, () => {
-                const result = buildSendTransaction({
-                    descriptor: input.descriptor,
-                    sequence: input.sequence,
-                    fee: input.fee,
-                    destinationActivated: input.destinationActivated,
-                    destination: input.destination,
-                    amount: input.amount,
-                    asset: input.asset as StellarAsset,
-                    destinationTag: input.destinationTag,
-                    isTestnet: input.isTestnet,
-                });
                 expect(result).toEqual(expectedOutput);
             });
         });

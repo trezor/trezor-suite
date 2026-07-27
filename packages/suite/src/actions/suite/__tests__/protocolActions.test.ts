@@ -1,6 +1,6 @@
 import { NETWORK_TO_PROTOCOLS } from '@suite-common/suite-constants';
 
-import protocolReducer, { ProtocolState } from 'src/reducers/suite/protocolReducer';
+import protocolReducer, { type ProtocolState } from 'src/reducers/suite/protocolReducer';
 import { configureStore } from 'src/support/tests/configureStore';
 
 import * as protocolConstants from '../constants/protocolConstants';
@@ -39,7 +39,7 @@ describe('Protocol actions', () => {
                 sendForm: {
                     scheme: NETWORK_TO_PROTOCOLS.btc[0],
                     address: '12345abcde',
-                    amount: 1.02,
+                    amount: '1.02',
                     shouldFill: false,
                 },
             }),
@@ -88,7 +88,7 @@ describe('Protocol actions', () => {
         expect(store.getActions()[0].type).toBe(protocolConstants.SAVE_COIN_PROTOCOL);
         expect(store.getActions()[0].payload.scheme).toBe(NETWORK_TO_PROTOCOLS.btc[0]);
         expect(store.getActions()[0].payload.address).toBe('12345abcde');
-        expect(store.getActions()[0].payload.amount).toBe(1.02);
+        expect(store.getActions()[0].payload.amount).toBe('1.02');
     });
 
     it('saves address from Bitcoin URI protocol', async () => {

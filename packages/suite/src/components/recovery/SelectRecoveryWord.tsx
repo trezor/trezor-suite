@@ -1,14 +1,16 @@
+import { selectRecoveryWordRequestInputType } from '@suite/modal';
+
 import { WordInput, WordInputAdvanced } from 'src/components/suite';
-import { useRecovery } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 export const SelectRecoveryWord = () => {
-    const { wordRequestInputType } = useRecovery();
+    const recoveryWordRequestInputType = useSelector(selectRecoveryWordRequestInputType);
 
-    if (wordRequestInputType === 6 || wordRequestInputType === 9) {
-        return <WordInputAdvanced count={wordRequestInputType} />;
+    if (recoveryWordRequestInputType === 6 || recoveryWordRequestInputType === 9) {
+        return <WordInputAdvanced count={recoveryWordRequestInputType} />;
     }
 
-    if (wordRequestInputType === 'plain') {
+    if (recoveryWordRequestInputType === 'plain') {
         return <WordInput />;
     }
 

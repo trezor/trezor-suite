@@ -19,16 +19,21 @@ jobs:
     name: Setup and Cache Dependencies
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v6
       - name: Install node and yarn
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
         with:
           node-version-file: ".nvmrc"
+      - name: Install SafeDep PMG
+        uses: safedep/pmg@26d5c0ad71fd0e5f48c3183c9c74d4b3eb7f57c8 # v0.19.1
+        continue-on-error: true
+        with:
+          version: v0.19.1
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
         run: echo "dir=$(yarn config get cacheFolder)" >> $GITHUB_OUTPUT
       - name: Yarn Cache
-        uses: actions/cache@v4
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v5
         with:
           path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
           key: yarn-cache-folder-${{ hashFiles('**/yarn.lock', '.yarnrc.yml') }}
@@ -47,7 +52,7 @@ jobs:
       NODE_OPTIONS: --max-old-space-size=6144
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v6
         with:
           submodules: true
       - name: "Checkout branches for Nx"
@@ -55,8 +60,9 @@ jobs:
       - name: "Minimal yarn install"
         uses: ./.github/actions/minimal-yarn-install
       - name: Type Check
-        # Temporarily disabling the cache (false positives because of cache mismatch after NX update)
-        run: yarn nx:type-check --output-style=stream --skip-nx-cache
+        run: yarn type-check --output-style=stream
+      - name: Check Type Declaration Sizes
+        run: yarn requirements:verify --only=type-declaration-size
 
   lint:
     name: Linting and formatting
@@ -64,25 +70,27 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v6
       - name: "Checkout branches for Nx"
         uses: ./.github/actions/nx-checkout
       - name: "Minimal yarn install"
         uses: ./.github/actions/minimal-yarn-install
-
       - name: ESlint Cache
-        uses: actions/cache@v4
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v5
         with:
+          # Most of the ESLint cache is handled by Nx. However, it can't handle the root cache.
+          # That's why we include only the root .eslintcache (and only root eslint config hash as cache key)
+          # (context: https://github.com/trezor/trezor-suite/pull/26006#discussion_r2949341349)
           path: |
-            **/.eslintcache
-            !**/node_modules
-          key: ${{ runner.os }}-node-${{ hashFiles('**/.eslintrc.js') }}
+            './.eslintcache'
+            '!**/node_modules'
+          key: ${{ runner.os }}-node-${{ hashFiles('./eslint.config.mjs') }} }}
       - name: Lint JS
-        run: yarn lint:js --cache-strategy content
+        run: yarn lint:js --output-style=stream
       - name: Lint Styles
-        run: yarn nx:lint:styles --output-style=stream
+        run: yarn lint:styles --output-style=stream
       - name: Check rust files changes
-        uses: dorny/paths-filter@v3
+        uses: dorny/paths-filter@fbd0ab8f3e69293af611ebaee6363fc25e6d187d # v4
         id: changes
         with:
           filters: |
@@ -98,7 +106,7 @@ jobs:
     timeout-minutes: 30
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v6
         with:
           submodules: true
       - name: "Checkout branches for Nx"
@@ -106,20 +114,21 @@ jobs:
       - name: "Minimal yarn install"
         uses: ./.github/actions/minimal-yarn-install
       - name: Check for new Circular Imports
+        # safedep/pmg covers also the `npx` running inside the shell script
         run: ./scripts/circular-dependencies/check-circular-dependencies.sh
 
   unit-tests-suite:
-    name: Unit Tests
+    name: Unit Tests (${{ matrix.test-task }})
     needs: setup-and-cache
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    continue-on-error: true
     strategy:
+      fail-fast: false
       matrix:
-        test-task: [suite, native]
+        test-task: [suite, native, "native:trading"]
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v6
         with:
           submodules: true
       - name: "Checkout branches for Nx"
@@ -127,7 +136,7 @@ jobs:
       - name: "Minimal yarn install"
         uses: ./.github/actions/minimal-yarn-install
       - name: Unit Tests
-        run: yarn nx:test-unit:${{ matrix.test-task }} --output-style=stream
+        run: yarn test:unit:${{ matrix.test-task }} --output-style=stream -- --silent
 
   build-libs-for-publishing:
     name: "Build libs for publishing"
@@ -135,7 +144,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v6
         with:
           submodules: true
       - name: "Checkout branches for Nx"
@@ -143,7 +152,7 @@ jobs:
       - name: "Minimal yarn install"
         uses: ./.github/actions/minimal-yarn-install
       - name: Build Libs
-        run: yarn nx:build:libs --output-style=stream
+        run: yarn build:libs:verify --output-style=stream
 
   other-checks:
     name: Other Checks
@@ -151,7 +160,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v6
       - name: "Checkout branches for Nx"
         uses: ./.github/actions/nx-checkout
       - name: "Minimal yarn install"
@@ -159,11 +168,16 @@ jobs:
       - name: Verify Requirements
         run: yarn requirements:verify
       - name: Check Files for Correct Formatting
-        run: yarn nx format:check
+        run: yarn format:verify
       - name: Verify TS Project References
         run: yarn verify-project-references
       - name: Detect unused dependencies
         run: yarn depcheck
+      - name: Install SafeDep PMG
+        uses: safedep/pmg@26d5c0ad71fd0e5f48c3183c9c74d4b3eb7f57c8 # v0.19.1
+        continue-on-error: true
+        with:
+          version: v0.19.1
       - name: Yarn Dedupe check
         run: yarn dedupe --check
       - name: Check dependency domain lists
@@ -174,7 +188,18 @@ jobs:
         run: yarn workspace @suite-common/message-system validate-config
       - name: Translation Duplicates
         run: yarn workspace @suite/intl translations:list-duplicates
-
+      - name: Translation Unused
+        run: yarn workspace @suite/intl translations:list-unused
+      - name: Check mobile translation source changes
+        uses: dorny/paths-filter@fbd0ab8f3e69293af611ebaee6363fc25e6d187d # v4
+        id: native-intl-changes
+        with:
+          filters: |
+            native-intl:
+              - 'suite-native/intl/src/messages.ts'
+      - name: Translation Structure (mobile)
+        if: steps.native-intl-changes.outputs.native-intl == 'true'
+        run: yarn workspace @suite-native/intl translations:verify-structure
 
   releases-revision-checks:
     name: Releases revision Checks
@@ -182,9 +207,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v6
       - name: Check releases.json files changes
-        uses: dorny/paths-filter@v3
+        uses: dorny/paths-filter@fbd0ab8f3e69293af611ebaee6363fc25e6d187d # v4
         id: changes
         with:
           filters: |

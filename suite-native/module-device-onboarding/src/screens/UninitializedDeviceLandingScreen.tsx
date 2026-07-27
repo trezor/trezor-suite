@@ -1,24 +1,26 @@
 import { useEffect } from 'react';
 import { Platform } from 'react-native';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { useSetAtom } from 'jotai';
 
+import { useServices } from '@suite-common/dependency-injection';
 import {
+    deviceActions,
     selectHasDeviceFirmwareInstalled,
+    selectSelectedDevice,
     selectShouldOfferUpdateFirmware,
 } from '@suite-common/device';
-import { events } from '@suite-native/analytics';
+import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { Box, Button, Text, TextButton, VStack } from '@suite-native/atoms';
-import { SetupSupportingDeviceModel, useCoinLabel } from '@suite-native/device';
+import { type SetupSupportingDeviceModel, useCoinLabel } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';
 import {
-    DeviceOnboardingStackParamList,
+    type DeviceOnboardingStackParamList,
     DeviceOnboardingStackRoutes,
-    RootStackParamList,
-    StackToStackCompositeScreenProps,
+    type RootStackParamList,
+    type StackToStackCompositeScreenProps,
 } from '@suite-native/navigation';
-import { useAnalytics } from '@suite-native/services';
 
 import { resetOnboardingAnalyticsAtom, updateOnboardingAnalyticsAtom } from '../../atoms';
 import { DeviceModelImage } from '../components/DeviceModelImage';
@@ -65,10 +67,13 @@ export const UninitializedDeviceLandingScreen = ({
     DeviceOnboardingStackRoutes.UninitializedDeviceLanding,
     RootStackParamList
 >) => {
-    const analytics = useAnalytics();
+    const dispatch = useDispatch();
+    const { analytics } = useServices(selectNativeAnalyticsDep);
     const deviceModel = params.deviceModel as SetupSupportingDeviceModel;
     const hasDeviceFirmwareInstalled = useSelector(selectHasDeviceFirmwareInstalled);
     const shouldOfferUpdateFirmware = useSelector(selectShouldOfferUpdateFirmware);
+    const device = useSelector(selectSelectedDevice);
+    const deviceId = device?.id;
 
     const resetOnboardingAnalytics = useSetAtom(resetOnboardingAnalyticsAtom);
     const updateOnboardingAnalytics = useSetAtom(updateOnboardingAnalyticsAtom);
@@ -77,6 +82,7 @@ export const UninitializedDeviceLandingScreen = ({
         useNavigateToNextScreenAfterFirmwareInstallation();
 
     const handleConfirmButtonPress = () => {
+        dispatch(deviceActions.setManualDeviceCheckSuccess({ deviceId }));
         if (hasDeviceFirmwareInstalled) {
             if (shouldOfferUpdateFirmware) {
                 navigation.replace(DeviceOnboardingStackRoutes.ConfirmFirmwareUpdate);
@@ -172,7 +178,8 @@ export const UninitializedDeviceLandingScreen = ({
                     </Button>
                     {hasDeviceFirmwareInstalled && (
                         <Button
-                            colorScheme="tertiaryElevation0"
+                            intent="neutral"
+                            priority="secondary"
                             onPress={handleNeverUsedThisDeviceButtonPress}
                             testID="@deviceOnboarding/UninitializedDeviceLandingScreen/declineBtn"
                         >

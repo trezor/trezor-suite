@@ -1,0 +1,14 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": { "outDir": "libDev" },
+    "references": [
+        { "path": "../../suite-common/device" },
+        {
+            "path": "../../suite-common/firmware-authenticity"
+        },
+        {
+            "path": "../../suite-common/message-system"
+        },
+        { "path": "../settings" }
+    ]
+}

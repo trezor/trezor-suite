@@ -3,6 +3,7 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         { "path": "../protobuf" },
+        { "path": "../type-utils" },
         { "path": "../utils" }
     ]
 }

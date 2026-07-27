@@ -1,17 +1,16 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
 import styled, { css } from 'styled-components';
 
-import { Color, Elevation, SpacingValues, mapElevationToBorder, spacings } from '@trezor/theme';
+import { type Color, type SpacingValue } from '@trezor/theme';
 
 import {
-    FrameProps,
-    FramePropsKeys,
+    type FrameProps,
+    type FramePropsKeys,
     pickAndPrepareFrameProps,
     withFrameProps,
 } from '../../utils/frameProps';
-import { TransientProps } from '../../utils/transientProps';
-import { useElevation } from '../ElevationContext/ElevationContext';
+import { type TransientProps } from '../../utils/transientProps';
 import { Column, Row } from '../Flex/Flex';
 
 export const allowedDividerFrameProps = [
@@ -29,12 +28,11 @@ export type DividerProps = AllowedFrameProps & {
     color?: Color;
     children?: ReactNode;
     contentPosition?: 'start' | 'center' | 'end'; // TODO: unify with uiAlignments in the future"
-    gap?: SpacingValues;
+    gap?: SpacingValue;
 };
 
 const Line = styled.div<
     {
-        $elevation: Elevation;
         $strokeWidth: DividerProps['strokeWidth'];
         $color: DividerProps['color'];
         $orientation: DividerOrientation;
@@ -53,8 +51,7 @@ const Line = styled.div<
                   min-height: ${$strokeWidth}px;
               `}
 
-    background: ${({ theme, $elevation, $color }) =>
-        $color ? theme[$color] : mapElevationToBorder({ theme, $elevation })};
+    background: ${({ theme, $color }) => theme[$color ?? 'borderNeutral']};
 
     ${withFrameProps}
 `;
@@ -98,21 +95,18 @@ export const Divider = ({
     orientation = 'horizontal',
     children,
     contentPosition = 'center',
-    gap = spacings.xxl,
+    gap = 32,
     ...rest
 }: DividerProps) => {
-    const { elevation } = useElevation();
-
     const frameProps: AllowedFrameProps = {
         ...rest,
-        margin: rest.margin ?? { top: spacings.md, bottom: spacings.md },
+        margin: rest.margin ?? { top: 16, bottom: 16 },
     };
 
     const framePropsTransient = pickAndPrepareFrameProps(frameProps, allowedDividerFrameProps);
 
     const line = (
         <Line
-            $elevation={elevation}
             $color={color}
             $strokeWidth={strokeWidth}
             $orientation={orientation}

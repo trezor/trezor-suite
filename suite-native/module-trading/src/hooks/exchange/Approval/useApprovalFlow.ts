@@ -1,9 +1,13 @@
 import { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import type { ExchangeTrade } from 'invity-api';
+import type { DexApprovalType, ExchangeTrade } from 'invity-api';
 
-import { exchangeThunks, selectTradingExchangeActiveQuote } from '@suite-common/trading';
+import {
+    exchangeThunks,
+    selectTradingExchangeSelectedQuote,
+    tradingExchangeActions,
+} from '@suite-common/trading';
 import { useTranslate } from '@suite-native/intl';
 import {
     selectExchangeSelectedReceiveAccount,
@@ -16,7 +20,7 @@ export const useApprovalFlow = () => {
     const dispatch = useDispatch();
     const { translate } = useTranslate();
 
-    const quote = useSelector(selectTradingExchangeActiveQuote);
+    const quote = useSelector(selectTradingExchangeSelectedQuote);
     const sendAccount = useSelector(selectExchangeSelectedSendAccount);
     const toAccount = useSelector(selectExchangeSelectedReceiveAccount);
     const receiveAddress = getReceiveAccountAddressText(toAccount);
@@ -62,10 +66,31 @@ export const useApprovalFlow = () => {
         [dispatch, receiveAddress, sendAccount, translate],
     );
 
+    const isReady = !!sendAccount && !!receiveAddress;
+
+    const onApprovalTypeChange = useCallback(
+        (approvalType: DexApprovalType) => {
+            if (!quote) {
+                return;
+            }
+
+            if (quote.approvalType === approvalType || isConfirming) {
+                return;
+            }
+
+            const updatedQuote = { ...quote, approvalType };
+            dispatch(tradingExchangeActions.saveSelectedQuote(updatedQuote));
+            confirmApproval(updatedQuote);
+        },
+        [confirmApproval, dispatch, isConfirming, quote],
+    );
+
     return {
         quote,
+        isReady,
         isConfirming,
         error,
         confirmApproval,
+        onApprovalTypeChange,
     };
 };

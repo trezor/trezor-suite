@@ -5,6 +5,7 @@ import { createTestAnnotation } from '../../support/reporters/annotations';
 
 test.describe('Guide without device', { tag: ['@webOnly', '@noDevice'] }, () => {
     test.use({ startEmulator: false });
+
     test(
         'open / close guide',
         {
@@ -32,7 +33,7 @@ test.describe('Guide without device', { tag: ['@webOnly', '@noDevice'] }, () => 
             await guidePanel.supportAndFeedbackButton.click();
             await guidePanel.feedbackFormButton.click();
             await page.getByTestId('@guide/feedback/suggestion/5').click();
-            await guidePanel.bugInputTextField.fill('Hello!');
+            await guidePanel.inputTextField.fill('Hello!');
             await guidePanel.submitButton.click();
             await expect(guidePanel.feedbackSuccessToast).toBeVisible();
 
@@ -69,6 +70,7 @@ test.describe('Guide with device', { tag: ['@T3W1', '@T3T1'] }, () => {
             await onboardingPage.disableNecessaryFirmwareChecks();
             await onboardingPage.optionallyDismissFwHashCheckError();
             await analyticsSection.continueButton.click();
+            await onboardingPage.pairTHP();
 
             await guidePanel.openPanel();
             await expect(page.getByTestId('@guide/panel')).toBeVisible();

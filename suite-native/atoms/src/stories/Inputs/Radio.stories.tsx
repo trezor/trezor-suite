@@ -1,7 +1,7 @@
 import { type Meta, type StoryObj } from '@storybook/react-native';
 import { useArgs } from 'storybook/preview-api';
 
-import { Radio as RadioComponent, RadioProps } from '../../Radio';
+import { Radio as RadioComponent, type RadioProps } from '../../Radio';
 
 type RadioStory = StoryObj<RadioProps<number>>;
 
@@ -29,7 +29,6 @@ export const Radio: RadioStory = {
         value: 1,
         isChecked: true,
         isDisabled: false,
-        activeColor: 'backgroundPrimaryDefault',
     },
     argTypes: {
         value: {
@@ -40,9 +39,6 @@ export const Radio: RadioStory = {
         },
         isDisabled: {
             control: { type: 'boolean' },
-        },
-        activeColor: {
-            control: { type: 'color' },
         },
     },
 };

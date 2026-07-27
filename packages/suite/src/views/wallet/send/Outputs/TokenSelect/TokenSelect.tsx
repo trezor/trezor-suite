@@ -1,36 +1,31 @@
 import { useEffect, useMemo, useState } from 'react';
 
+import { Address, copyAddressToClipboard, showCopyAddressModal } from '@suite/address';
+import { selectIsCopyAddressModalShown } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import { selectIsSpecificCoinDefinitionKnown } from '@suite-common/token-definitions';
 import {
-    Explorer,
-    getCoingeckoId,
+    type Explorer,
     getNetwork,
     getNetworkDisplaySymbolName,
 } from '@suite-common/wallet-config';
 import { selectExplorer } from '@suite-common/wallet-core';
-import { TokenAddress } from '@suite-common/wallet-types';
+import { type TokenAddress } from '@suite-common/wallet-types';
 import {
     getContractAddressForNetworkSymbol,
     getTokenExplorerUrl,
     hasNetworkFeatures,
+    isErc4626,
     isNftToken,
 } from '@suite-common/wallet-utils';
-import { Card, Column, IconButton, Link, Row, Text } from '@trezor/components';
-import { AssetLogo, CoinLogo } from '@trezor/product-components';
-import { spacings } from '@trezor/theme';
+import { Banner, Card, Column, IconButton, Link, Row, Text } from '@trezor/components';
+import { CaretDownIcon } from '@trezor/icons';
+import { TokenIcon } from '@trezor/product-components';
 
-import { copyAddressToClipboard, showCopyAddressModal } from 'src/actions/suite/copyAddressActions';
 import { setSendFormPrefill } from 'src/actions/suite/suiteActions';
-import {
-    Address,
-    BaseCurrencyValue,
-    FormattedCryptoAmount,
-    HiddenPlaceholder,
-} from 'src/components/suite';
+import { BaseCurrencyValue, FormattedCryptoAmount, HiddenPlaceholder } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
-import { selectIsCopyAddressModalShown } from 'src/selectors/suite/suiteSelectors';
 import { getTokenAddressTranslationId } from 'src/utils/wallet/tokenUtils';
 
 import { SelectTokenAssetModal } from './SelectTokenAssetModal/SelectTokenAssetModal';
@@ -45,11 +40,13 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
 
     const dispatch = useDispatch();
 
+    const sendFormPrefill = useSelector(state => state.suite.prefillFields.sendForm);
+
     const [isTokensModalActive, setIsTokensModalActive] = useState(false);
+    const [prefillContractAddress, setPrefillContractAddress] = useState(sendFormPrefill);
 
     const explorer = useSelector(state => selectExplorer(state, account.symbol)) as Explorer;
     const shouldShowCopyAddressModal = useSelector(selectIsCopyAddressModalShown);
-    const sendFormPrefillContractAddress = useSelector(state => state.suite.prefillFields.sendForm);
 
     const tokenInputName = `outputs.${outputId}.token` as const;
     const tokenContractAddress = watch(tokenInputName);
@@ -72,24 +69,22 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
 
     useEffect(() => {
         if (hasNetworkFeatures(account, 'tokens') && !isSetMaxActive) {
-            const amountValue = getValues(`outputs.${outputId}.amount`) as string;
+            const amountValue = getValues(`outputs.${outputId}.amount`);
             if (amountValue) setAmount(outputId, amountValue);
         }
     }, [account, outputId, tokenWatch, setAmount, getValues, isSetMaxActive]);
 
     useEffect(() => {
-        if (sendFormPrefillContractAddress) {
-            setValue(tokenInputName, sendFormPrefillContractAddress, {
+        if (prefillContractAddress) {
+            setValue(tokenInputName, prefillContractAddress, {
                 shouldValidate: true,
                 shouldDirty: true,
             });
             setDraftSaveRequest(true);
-
-            return () => {
-                dispatch(setSendFormPrefill({ contractAddress: undefined }));
-            };
+            setPrefillContractAddress(undefined);
+            dispatch(setSendFormPrefill({ contractAddress: undefined }));
         }
-    }, [sendFormPrefillContractAddress, setValue, tokenInputName, setDraftSaveRequest, dispatch]);
+    }, [prefillContractAddress, setValue, tokenInputName, setDraftSaveRequest, dispatch]);
 
     const selectedToken = useMemo(
         () => account.tokens?.find(token => token.contract === tokenContractAddress),
@@ -97,12 +92,12 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
     );
 
     const hasNoStandardTokens = !account.tokens?.filter(token => !isNftToken(token))?.length;
-    const onOpenSelectAssetModal = !hasNoStandardTokens
-        ? () => setIsTokensModalActive(true)
-        : undefined;
+    const onOpenTokensModal = !hasNoStandardTokens ? () => setIsTokensModalActive(true) : undefined;
 
     const networkTokenContractAddress =
         selectedToken && getContractAddressForNetworkSymbol(account.symbol, selectedToken.contract);
+
+    const isDeFiToken = !!selectedToken && isErc4626(selectedToken);
 
     return (
         <>
@@ -114,12 +109,11 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
                 />
             )}
 
-            <Card fillType="default" paddingType="normal" onClick={onOpenSelectAssetModal}>
+            <Card type="raised" paddingType="normal" onClick={onOpenTokensModal}>
                 <Row justifyContent="space-between" height={64}>
-                    <Row justifyContent="flex-start" gap={spacings.sm}>
+                    <Row justifyContent="flex-start" gap={12}>
                         {selectedToken ? (
-                            <AssetLogo
-                                coingeckoId={getCoingeckoId(account.symbol)!}
+                            <TokenIcon
                                 symbol={account.symbol}
                                 contractAddress={selectedToken?.contract}
                                 size={24}
@@ -128,7 +122,7 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
                                 shouldTryToFetch={isTokenKnown}
                             />
                         ) : (
-                            <CoinLogo symbol={account.symbol} size={36} type="tokenWithNetwork" />
+                            <TokenIcon symbol={account.symbol} size={40} showNetworkIcon />
                         )}
                         <Column alignItems="flex-start">
                             <Row justifyContent="flex-start">
@@ -168,7 +162,7 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
                                         priority="secondary"
                                         typographyStyle="body-sm"
                                     >
-                                        <Row gap={spacings.xxs}>
+                                        <Row gap={4}>
                                             <Translation
                                                 id={getTokenAddressTranslationId(
                                                     account.networkType,
@@ -210,9 +204,31 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
                         </Column>
                     </Row>
                     {!hasNoStandardTokens && (
-                        <IconButton icon="caretDown" intent="neutral" priority="secondary" />
+                        <IconButton
+                            icon={CaretDownIcon}
+                            intent="neutral"
+                            priority="secondary"
+                            tooltip={{ isActive: false }}
+                        />
                     )}
                 </Row>
+
+                {isDeFiToken && (
+                    <Banner
+                        icon
+                        intent="info"
+                        title={
+                            <Translation
+                                id="TR_DEFI_YIELD_TOKEN_BANNER_TITLE"
+                                values={{
+                                    token: selectedToken?.symbol ?? account.symbol,
+                                }}
+                            />
+                        }
+                        description={<Translation id="TR_DEFI_YIELD_TOKEN_BANNER_DESCRIPTION" />}
+                        margin={{ top: 16 }}
+                    />
+                )}
             </Card>
         </>
     );

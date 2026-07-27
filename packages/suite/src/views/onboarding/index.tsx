@@ -1,27 +1,31 @@
 import { useEffect, useMemo } from 'react';
 
+import { selectDesktopAnalyticsDep } from '@suite/analytics';
+import { goto } from '@suite/router';
+import { events } from '@suite-common/analytics';
+import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import { selectThpStep } from '@suite-common/thp';
 import { exhaustive } from '@trezor/type-utils';
 
-import { goto } from 'src/actions/suite/routerActions';
 import { OnboardingLayout } from 'src/components/onboarding/OnboardingLayout';
+import { getOnboardingStepIndex } from 'src/config/onboarding/steps';
 import * as STEP from 'src/constants/onboarding/steps';
 import { useDispatch, useOnboarding, useSelector } from 'src/hooks/suite';
 import { UnexpectedState } from 'src/views/onboarding/UnexpectedState';
-import { BackupStep } from 'src/views/onboarding/steps/BackupStep';
-import { CoinsStep } from 'src/views/onboarding/steps/CoinsStep';
+import { BackupTypeStep } from 'src/views/onboarding/steps/BackupTypeStep';
 import { CreateOrRecoverStep } from 'src/views/onboarding/steps/CreateOrRecoverStep';
 import { DeviceAuthenticityStep } from 'src/views/onboarding/steps/DeviceAuthenticityStep';
 import { DeviceTutorialStep } from 'src/views/onboarding/steps/DeviceTutorialStep';
+import { FinalStep } from 'src/views/onboarding/steps/FinalStep';
 import { FirmwareStep } from 'src/views/onboarding/steps/FirmwareStep';
 import { PinStep } from 'src/views/onboarding/steps/PinStep';
 import { RecoveryStep } from 'src/views/onboarding/steps/RecoveryStep';
-import { ResetDeviceStep } from 'src/views/onboarding/steps/ResetDeviceStep';
 import { SecurityStep } from 'src/views/onboarding/steps/SecurityStep';
 
 export const Onboarding = () => {
     const dispatch = useDispatch();
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
 
     const { activeStepId, goToNextStep } = useOnboarding();
     const device = useSelector(selectSelectedDevice);
@@ -32,9 +36,22 @@ export const Onboarding = () => {
     // we redirect user to the dashboard where onboarding starts over and picks up where it ended.
     useEffect(() => {
         if (activeStepId !== STEP.ID_FIRMWARE_STEP && thpStep === 'ConfirmOnlyConnection') {
-            dispatch(goto('suite-index'));
+            dispatch(goto({ routeName: 'suite-index' }));
         }
     }, [device, thpStep, activeStepId, dispatch]);
+
+    // Fires once per step entry. activeStepId is the dep, so it does not fire on
+    // re-render and re-fires on re-entry (e.g. user navigates back and forward).
+    useEffect(() => {
+        analytics.report({
+            type: events.onboardingStepViewedEvent.name,
+            payload: {
+                stepName: activeStepId,
+                stepIndex: getOnboardingStepIndex(activeStepId),
+                platform: 'desktop',
+            },
+        });
+    }, [activeStepId, analytics]);
 
     const StepComponent = useMemo(() => {
         switch (activeStepId) {
@@ -50,24 +67,21 @@ export const Onboarding = () => {
             case STEP.ID_CREATE_OR_RECOVER:
                 // Selection between a new seed or seed recovery
                 return CreateOrRecoverStep;
-            case STEP.ID_RESET_DEVICE_STEP:
-                // a) Generating a new seed, selection between seed types
-                return ResetDeviceStep;
+            case STEP.ID_BACKUP_TYPE_STEP:
+                // Selecting a backup type
+                return BackupTypeStep;
             case STEP.ID_RECOVERY_STEP:
                 // b) Seed recovery
                 return RecoveryStep;
             case STEP.ID_SECURITY_STEP:
-                // Security intro (BACKUP, PIN), option to skip them
+                // Wallet creation + backup (resetDevice with skip_backup: false)
                 return SecurityStep;
-            case STEP.ID_BACKUP_STEP:
-                // Seed backup
-                return BackupStep;
             case STEP.ID_SET_PIN_STEP:
                 // Pin setup
                 return PinStep;
-            case STEP.ID_COINS_STEP:
-                // Suite settings
-                return CoinsStep;
+            case STEP.ID_FINAL_STEP:
+                // Onboarding success
+                return FinalStep;
             default:
                 return exhaustive(activeStepId);
         }

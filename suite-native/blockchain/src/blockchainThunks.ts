@@ -1,5 +1,9 @@
 import { createThunk } from '@suite-common/redux-utils';
-import { NetworkSymbol, getNetworkOptional, isNetworkSymbol } from '@suite-common/wallet-config';
+import {
+    type NetworkSymbol,
+    getNetworkOptional,
+    isNetworkSymbol,
+} from '@suite-common/wallet-config';
 import {
     blockchainActions,
     fetchAndUpdateAccountThunk,
@@ -8,8 +12,8 @@ import {
     selectDeviceAccountsByNetworkSymbol,
     subscribeBlockchainThunk,
 } from '@suite-common/wallet-core';
-import { AccountKey } from '@suite-common/wallet-types';
-import { BlockchainNotification } from '@trezor/connect';
+import { type AccountKey } from '@suite-common/wallet-types';
+import { type BlockchainNotification } from '@trezor/connect';
 
 const BLOCKCHAIN_MODULE_PREFIX = '@suite-native/blockchain';
 
@@ -82,7 +86,7 @@ export const onBlockchainConnectThunk = createThunk(
 export const onBlockchainNotificationThunk = createThunk(
     `${BLOCKCHAIN_MODULE_PREFIX}/onNotificationThunk`,
     (payload: BlockchainNotification, { dispatch, getState }) => {
-        const { descriptor } = payload.notification;
+        const { descriptor, tx } = payload.notification;
         const symbol = payload.coin.shortcut.toLowerCase();
         if (!isNetworkSymbol(symbol)) {
             return;
@@ -95,7 +99,10 @@ export const onBlockchainNotificationThunk = createThunk(
         );
 
         if (!account) return;
-        if (!shouldRefetchAccount({ accountKey: account.key })) return;
+
+        // Skip throttle for pending txs so broadcast shows immediately. Throttle still applies to confirmed.
+        const isPendingNotification = !tx?.blockHeight;
+        if (!isPendingNotification && !shouldRefetchAccount({ accountKey: account.key })) return;
 
         // Sometimes we randomly get notifications for all transactions in account at once, which would trigger lot of fetches.
         // We are throttling per account, we don't want to fetch account too often to save resources.

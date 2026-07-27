@@ -48,11 +48,11 @@ describe('Trade Sell [@androidOnly]', () => {
         });
 
         beforeEach(async () => {
-            await openApp({ args: { preloadedState: preloadedStateWithTrezor } });
             await prepareTrezorEmulator({
                 seed: MNEMONICS.mnemonic_academic,
                 passphrase_protection: true,
             });
+            await openApp({ args: { preloadedState: preloadedStateWithTrezor } });
             await waitForVisible(by.text('Connected'));
             await onPassphrase.openPassphraseWallet(passphrase);
             await onHome.waitForScreen();
@@ -61,12 +61,11 @@ describe('Trade Sell [@androidOnly]', () => {
         });
 
         it('should request trezor connect before preview', async () => {
-            await tradingSellActions.selectCountry('Czechi', 'Czechia', '🇨🇿 CZE');
+            await tradingSellActions.selectCountry('Czechi', 'Czechia', 'CZE');
             await tradingSellActions.selectFiatCurrency('EUR');
             await tradingSellActions.selectSendAsset('USDC');
             await tradingSellActions.setSendCryptoAmount('55');
 
-            await tradingSellActions.scrollToLearnMoreLink();
             await tradingSellActions.expectValidSellForm();
 
             await tradingSellActions.confirmTradingForm();
@@ -88,23 +87,22 @@ describe('Trade Sell [@androidOnly]', () => {
         });
 
         beforeEach(async () => {
-            await openApp({ args: { preloadedState: preloadedStateWithTrezor } });
             await prepareTrezorEmulator({
                 seed: MNEMONICS.mnemonic_academic,
                 passphrase_protection: true,
             });
+            await openApp({ args: { preloadedState: preloadedStateWithTrezor } });
             await waitForVisible(by.text('Connected'));
             await onPassphrase.openPassphraseWallet(passphrase);
             await tradingSellActions.openForm();
         });
 
         it('Basic sell USDC for EUR', async () => {
-            await tradingSellActions.selectCountry('Czechi', 'Czechia', '🇨🇿 CZE');
+            await tradingSellActions.selectCountry('Czechi', 'Czechia', 'CZE');
             await tradingSellActions.selectFiatCurrency('EUR');
             await tradingSellActions.selectSendAsset('USDC');
             await tradingSellActions.setSendCryptoAmount('55');
 
-            await tradingSellActions.scrollToLearnMoreLink();
             await tradingSellActions.expectValidSellForm();
 
             await tradingSellActions.viewReceiveMethods();

@@ -1,3 +1,2 @@
-export { getProtobufDefinitions } from './protobufDefinitions';
-export * from './messageTypes';
+export type * from './messageTypes';
 export * from './protobufTypes';

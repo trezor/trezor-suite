@@ -1,10 +1,10 @@
-import React, { ReactNode } from 'react';
+import React, { type ReactNode } from 'react';
 
 import { Box } from '@suite-native/atoms';
 import {
     Screen,
     ScreenHeader,
-    ScreenProps,
+    type ScreenProps,
     useInterceptNativeNavigation,
 } from '@suite-native/navigation';
 

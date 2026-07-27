@@ -1,25 +1,22 @@
-import { INVITY_API_RELOAD_QUOTES_AFTER_SECONDS, tradingBuyActions } from '@suite-common/trading';
-import { Account, AccountKey } from '@suite-common/wallet-types';
 import {
-    PreloadedState,
-    TestStore,
-    act,
-    initStore,
-    renderHookWithStoreProvider,
-} from '@suite-native/test-utils';
+    INVITY_API_RELOAD_QUOTES_AFTER_SECONDS,
+    tradingActions,
+    tradingBuyActions,
+} from '@suite-common/trading';
+import { type TestStore, act, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 import {
     bnbAsset,
+    btc1NormalAccount,
     buyQuotes,
-    getBtcAccount,
+    eth1NormalAccount,
     getInitializedTradingState,
     usdcAsset,
 } from '@suite-native/trading-fixtures';
-import { BuyFormValues } from '@suite-native/trading-types';
+import { type BuyFormValues } from '@suite-native/trading-types';
 
+import { createTradingLightStore } from '../../../__tests__/tradingTestUtils';
 import { useBuyForm } from '../useBuyForm';
 import { useBuyQuotes } from '../useBuyQuotes';
-
-let mockTimeSpent: number;
 
 jest.mock('@trezor/react-utils', () => {
     const originalModule = jest.requireActual('@trezor/react-utils');
@@ -27,12 +24,6 @@ jest.mock('@trezor/react-utils', () => {
     return {
         ...originalModule,
         useDebounce: () => (fn: () => unknown) => fn(),
-        useTimer: () => {
-            const timer = originalModule.useNullTimer();
-            timer.timeSpent.seconds = mockTimeSpent;
-
-            return timer;
-        },
     };
 });
 
@@ -48,12 +39,14 @@ jest.mock('@suite-common/trading', () => ({
 
 describe('useBuyQuotes', () => {
     const getInitializedStore = () => {
-        const preloadedState: PreloadedState = {
-            wallet: { trading: getInitializedTradingState(), accounts: [getBtcAccount()] },
-        };
-        preloadedState.wallet!.trading!.buy!.tradingAccountKey = 'btc-account-1' as AccountKey; // Todo: create properly via `createAccountKey()`
+        const tradingState = getInitializedTradingState();
+        tradingState.buy.tradingAccountKey = eth1NormalAccount.key;
 
-        return initStore(preloadedState).store;
+        return createTradingLightStore({
+            overrides: {
+                wallet: { trading: tradingState, accounts: [eth1NormalAccount] },
+            },
+        });
     };
 
     const renderUseBuyQuotes = (store: TestStore) =>
@@ -67,8 +60,8 @@ describe('useBuyQuotes', () => {
             { store },
         );
 
-    beforeEach(() => {
-        mockTimeSpent = 0;
+    afterEach(() => {
+        jest.useRealTimers();
     });
 
     it('should query quotes once all required data is selected', () => {
@@ -172,10 +165,14 @@ describe('useBuyQuotes', () => {
         [
             'receiveAccount',
             {
-                account: {
-                    key: 'btc1' as AccountKey, // Todo: create properly via `createAccountKey()`
-                    descriptor: 'descriptor_btc1',
-                } as Account,
+                account: eth1NormalAccount,
+            },
+        ],
+        [
+            'receiveAccount',
+            {
+                account: btc1NormalAccount,
+                address: btc1NormalAccount.addresses!.unused[0],
             },
         ],
     ] as [keyof BuyFormValues, BuyFormValues[keyof BuyFormValues]][])(
@@ -205,10 +202,37 @@ describe('useBuyQuotes', () => {
         },
     );
 
-    it('should re-fetch quotes when re-fetch time elapsed', () => {
+    it('should not re-fetch quotes when no address is selected on btc account', () => {
         const store = getInitializedStore();
         const dispatchSpy = jest.spyOn(store, 'dispatch');
-        const { result, rerender } = renderUseBuyQuotes(store);
+        const { result } = renderUseBuyQuotes(store);
+        act(() => {
+            result.current.setValue('asset', usdcAsset);
+            result.current.setValue('fiatCurrency', 'usd');
+        });
+        act(() => {
+            result.current.setValue('fiatValue', '100');
+        });
+
+        dispatchSpy.mockClear();
+        act(() => {
+            result.current.setValue('receiveAccount', {
+                account: btc1NormalAccount,
+            });
+        });
+
+        expect(dispatchSpy).not.toHaveBeenLastCalledWith(
+            expect.objectContaining({
+                type: 'handleRequestThunkMock',
+            }),
+        );
+    });
+
+    it('should re-fetch quotes when re-fetch time elapsed', () => {
+        jest.useFakeTimers();
+        const store = getInitializedStore();
+        const dispatchSpy = jest.spyOn(store, 'dispatch');
+        const { result } = renderUseBuyQuotes(store);
         dispatchSpy.mockClear();
 
         act(() => {
@@ -222,9 +246,14 @@ describe('useBuyQuotes', () => {
 
         expect(dispatchSpy).toHaveBeenCalledTimes(3);
 
+        act(() => {
+            store.dispatch(tradingActions.setRefetchQuotesTimestamp(Date.now()));
+        });
         dispatchSpy.mockClear();
-        mockTimeSpent = INVITY_API_RELOAD_QUOTES_AFTER_SECONDS;
-        rerender({});
+
+        act(() => {
+            jest.advanceTimersByTime(INVITY_API_RELOAD_QUOTES_AFTER_SECONDS * 1000);
+        });
 
         expect(dispatchSpy).toHaveBeenCalledTimes(1);
         expect(dispatchSpy).toHaveBeenLastCalledWith(
@@ -235,20 +264,27 @@ describe('useBuyQuotes', () => {
     });
 
     it('should not re-fetch quotes when re-fetch time elapsed but not all required data are available', () => {
+        jest.useFakeTimers();
         const store = getInitializedStore();
         const dispatchSpy = jest.spyOn(store, 'dispatch');
-        const { result, rerender } = renderUseBuyQuotes(store);
+        const { result } = renderUseBuyQuotes(store);
 
-        dispatchSpy.mockClear();
         act(() => {
             result.current.setValue('fiatCurrency', 'usd');
         });
 
-        mockTimeSpent = INVITY_API_RELOAD_QUOTES_AFTER_SECONDS;
-        rerender({});
+        act(() => {
+            store.dispatch(tradingActions.setRefetchQuotesTimestamp(Date.now()));
+        });
+        dispatchSpy.mockClear();
 
-        // 1st call - trading/buyAssetChanged
-        expect(dispatchSpy).toHaveBeenCalledTimes(1);
+        act(() => {
+            jest.advanceTimersByTime(INVITY_API_RELOAD_QUOTES_AFTER_SECONDS * 1000);
+        });
+
+        expect(dispatchSpy).not.toHaveBeenCalledWith(
+            expect.objectContaining({ type: 'handleRequestThunkMock' }),
+        );
     });
 
     it('should clear quotes when data in form becomes invalid', () => {

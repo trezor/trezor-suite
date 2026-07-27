@@ -8,6 +8,16 @@ on:
     branches: [release/connect/**]
   pull_request:
     paths:
+      - "packages/connect-common/**"
+      - "packages/connect-data/**"
+      - "packages/connect-mobile/**"
+      - "packages/connect-web/**"
+      - "packages/connect-webextension/**"
+      - "packages/connect/**"
+      - "scripts/ci/helpers.ts"
+      - "scripts/ci/pack-packages.ts"
+      - "scripts/publish/**"
+      - "packages/connect/e2e/test-connect-local.sh"
       - ".github/workflows/test-connect-misc.yml"
   workflow_dispatch:
 
@@ -22,12 +32,12 @@ jobs:
     timeout-minutes: 60
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v6
         with:
           submodules: true
 
       - name: Setup node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
         with:
           node-version-file: ".nvmrc"
 
@@ -52,37 +62,33 @@ jobs:
     timeout-minutes: 60
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v6
         with:
           submodules: true
 
       - name: Setup node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
         with:
           node-version-file: ".nvmrc"
 
+      - name: Install SafeDep PMG
+        uses: safedep/pmg@26d5c0ad71fd0e5f48c3183c9c74d4b3eb7f57c8 # v0.19.1
+        continue-on-error: true
+        with:
+          version: v0.19.1
       - name: Install dependencies
         run: yarn install
 
       - name: Pack packages
         run: yarn tsx ./scripts/ci/pack-packages.ts
 
+      - name: Check exports
+        # `attw` is the binary for @arethetypeswrong/cli; --profile esm-only
+        # skips node10/node16-cjs resolutions for our ESM-only packages.
+        run: |
+          yarn exec attw --pack ./tmp/packed-packages/trezor-connect-web.tgz --profile esm-only
+          yarn exec attw --pack ./tmp/packed-packages/trezor-connect-mobile.tgz --profile esm-only
+          yarn exec attw --pack ./tmp/packed-packages/trezor-connect-webextension.tgz --profile esm-only
+
       - name: Test local install
         run: ./packages/connect/e2e/test-connect-local.sh
-
-  test-protobuf:
-    runs-on: ubuntu-latest
-    if: github.repository == 'trezor/trezor-suite'
-    timeout-minutes: 60
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup node
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: ".nvmrc"
-
-      - run: yarn install --immutable
-      - run: yarn workspace @trezor/protobuf update:protobuf
-      - run: yarn workspace @trezor/protobuf update:schema

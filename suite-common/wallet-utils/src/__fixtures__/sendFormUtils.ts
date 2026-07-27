@@ -37,7 +37,6 @@ export const prepareEthereumTransaction = [
             nonce: '11',
             gasLimit: '200000',
             gasPrice: '5',
-            data: 'deadbeef-not-used',
         },
         result: {
             to: '0xa74476443119A942dE498590Fe1f2454d7D4aC0d',
@@ -90,7 +89,6 @@ export const prepareEthereumTransaction = [
             nonce: '11',
             gasLimit: '200000',
             gasPrice: '5',
-            data: 'deadbeef-not-used',
             maxFeePerGas: '1',
             maxPriorityFeePerGas: '0.5',
         },
@@ -122,7 +120,6 @@ export const prepareEthereumTransaction = [
             nonce: '11',
             gasLimit: '200000',
             gasPrice: '5',
-            data: 'deadbeef-not-used',
             maxFeePerGas: '1',
             maxPriorityFeePerGas: '0.5',
         },

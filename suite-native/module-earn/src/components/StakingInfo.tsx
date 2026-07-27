@@ -1,8 +1,8 @@
-import { AccountKey } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { Box, PressableOpacity, Text, useBottomSheetModal } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { SUITE_URL } from '@trezor/urls';
 
 import { CardanoStakingInfoBanner } from './CardanoStakingInfoBanner';
@@ -10,6 +10,8 @@ import { StakeClaimableCard } from './StakeClaimableCard';
 import { StakePendingCard } from './StakePendingCard';
 import { StakingBalancesOverviewCard } from './StakingBalancesOverviewCard';
 import { StakingUnavailableBottomSheet } from './StakingUnavailableBottomSheet';
+import { TronStakingUnstakeCard } from './TronStakingUnstakeCard';
+import { TronStakingWithdrawBanner } from './TronStakingWithdrawBanner';
 
 const sectionStyle = prepareNativeStyle(utils => ({
     paddingHorizontal: utils.spacings.sp8,
@@ -39,9 +41,12 @@ export const StakingInfo = ({ accountKey }: StakingInfoProps) => {
         <Box style={applyStyle(sectionStyle)}>
             <StakePendingCard accountKey={accountKey} handleToggleBottomSheet={openModal} />
 
-            <StakeClaimableCard accountKey={accountKey} handleToggleBottomSheet={openModal} />
+            <StakeClaimableCard accountKey={accountKey} />
 
             <CardanoStakingInfoBanner accountKey={accountKey} />
+
+            <TronStakingWithdrawBanner accountKey={accountKey} />
+            <TronStakingUnstakeCard accountKey={accountKey} />
 
             <StakingBalancesOverviewCard
                 accountKey={accountKey}
@@ -50,15 +55,15 @@ export const StakingInfo = ({ accountKey }: StakingInfoProps) => {
 
             <Box marginTop="sp16" alignItems="center">
                 {/* TODO: replace with new icon once we have new package ready */}
-                {/* <Icon name="desktop" color="textSubdued" size="extraLarge" /> */}
+                {/* <Icon name="desktop" color="contentSecondary" size="extraLarge" /> */}
 
                 <Box justifyContent="center" alignItems="center" marginTop="sp8">
-                    <Text color="textSubdued" textAlign="center">
+                    <Text color="contentSecondary" textAlign="center">
                         <Translation id="earn.stakingCanBeManaged" />
                     </Text>
 
                     <PressableOpacity onPress={handleDesktopClick}>
-                        <Text color="textSubdued" style={applyStyle(linkStyle)}>
+                        <Text color="contentSecondary" style={applyStyle(linkStyle)}>
                             <Translation id="earn.trezorDesktop" />
                         </Text>
                     </PressableOpacity>

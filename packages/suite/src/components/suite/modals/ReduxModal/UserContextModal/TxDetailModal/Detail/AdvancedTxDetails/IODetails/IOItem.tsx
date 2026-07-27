@@ -1,18 +1,18 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
-import { NetworkSymbolExtended, isNetworkSymbol } from '@suite-common/wallet-config';
+import { selectFullSelectedAccount } from '@suite/account';
+import { Address } from '@suite/address';
+import { useExternalLink } from '@suite/external-links';
+import { type NetworkSymbolExtended, isNetworkSymbol } from '@suite-common/wallet-config';
 import { getExplorerUrl } from '@suite-common/wallet-config/src/getExplorerUrls';
 import { selectExplorer } from '@suite-common/wallet-core';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
-import { AnonymitySet } from '@trezor/blockchain-link-types';
+import { type AnonymitySet } from '@trezor/blockchain-link-types';
 import { Column, Link, Row, Text } from '@trezor/components';
 
-import { Address } from 'src/components/suite/Address';
 import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
 import { UtxoAnonymity } from 'src/components/wallet';
-import { useExternalLink } from 'src/hooks/suite';
 import { useSelector } from 'src/hooks/suite/useSelector';
-import { selectFullSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 
 const OP_RETURN_REGEX = /^OP_RETURN \(([^)]+)\)/;
 

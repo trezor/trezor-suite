@@ -1,4 +1,4 @@
-import { MessageSystemRootState } from '@suite-common/message-system';
+import { type MessageSystemRootState } from '@suite-common/message-system';
 import { launchArguments } from '@suite-native/config';
 
 import { selectIsFirmwareUpdateFeatureEnabled as selectOriginalIsFirmwareUpdateFeatureEnabled } from './selectIsFirmwareUpdateFeatureEnabled';

@@ -19,24 +19,26 @@ test.describe('Onboarding - recover wallet T2T1', { tag: ['@T2T1'] }, () => {
             }),
         },
         async ({ page, device, onboardingPage, analyticsSection, devicePrompt }) => {
-            await analyticsSection.passThroughAnalytics();
-            await onboardingPage.firmware.continueThroughFirmware();
+            await test.step('Start wallet recovery process and confirm on device', async () => {
+                await analyticsSection.passThroughAnalytics();
+                await onboardingPage.firmware.continueThroughFirmware();
+                await onboardingPage.recoverWalletButton.click();
+                await onboardingPage.startRecoveryButton.click();
+                await devicePrompt.confirmOnDevicePromptIsShown();
+            });
 
-            // Start wallet recovery process and confirm on device
-            await onboardingPage.recoverWalletButton.click();
-            await onboardingPage.startRecoveryButton.click();
-            await devicePrompt.confirmOnDevicePromptIsShown();
+            await test.step('Disconnect device', async () => {
+                await page.waitForTimeout(1000);
+                await device.powerOff();
+                await page.waitForTimeout(500);
+                await devicePrompt.connectDevicePromptIsShown();
+                await device.powerOn();
+            });
 
-            // Disconnect device
-            await page.waitForTimeout(1000);
-            await device.powerOff();
-            await page.waitForTimeout(500);
-            await devicePrompt.connectDevicePromptIsShown();
-            await device.powerOn();
-
-            // Check that you can retry
-            await onboardingPage.retryRecoveryButton.click();
-            await devicePrompt.confirmOnDevicePromptIsShown();
+            await test.step('Check that you can retry', async () => {
+                await onboardingPage.retryRecoveryButton.click();
+                await devicePrompt.confirmOnDevicePromptIsShown();
+            });
         },
     );
 });

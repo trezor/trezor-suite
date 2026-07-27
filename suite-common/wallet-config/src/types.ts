@@ -1,6 +1,5 @@
-import { NetworkDtoId } from '@suite-common/earn-api';
+import { type TokenDtoV2 } from '@suite-common/earn-stablecoin-defs';
 import { type DeviceModelInternal } from '@trezor/device-utils';
-import { RequiredKey } from '@trezor/type-utils';
 
 export type NetworkSymbol =
     | 'btc'
@@ -18,11 +17,13 @@ export type NetworkSymbol =
     | 'arb'
     | 'base'
     | 'op'
+    | 'rhc'
     | 'avax'
     | 'xlm'
     | 'test'
     | 'regtest'
     | 'trx'
+    | 'ttrx'
     | 'tsep'
     | 'thod'
     | 'txrp'
@@ -60,11 +61,16 @@ export const TREZOR_CONNECT_BACKENDS = [
     'evm-rpc',
 ] as const;
 
-export const NON_STANDARD_BACKENDS = ['coinjoin'] as const;
-
 export type TrezorConnectBackendType = (typeof TREZOR_CONNECT_BACKENDS)[number];
-export type NonStandardBackendType = (typeof NON_STANDARD_BACKENDS)[number];
+type NonStandardBackendType = 'coinjoin';
 export type BackendType = TrezorConnectBackendType | NonStandardBackendType;
+export type ServerType = BackendType | 'default';
+
+export type BackendOption = {
+    type: BackendType;
+    // Backend whose nodes run on third-party infrastructure Trezor pays for, not Trezor's own.
+    isExternalBackend?: boolean;
+};
 
 export type NetworkFeature =
     | 'rbf'
@@ -80,7 +86,8 @@ export type NetworkFeature =
     | 'nft-definitions'
     | 'eip1559'
     | 'mev-protection'
-    | 'graph';
+    | 'graph'
+    | 'claim-rewards';
 
 type Level = `/${number}'`;
 type MaybeApostrophe = `'` | '';
@@ -109,13 +116,12 @@ type NetworkAccountWithSpecificKey<TKey extends AccountType> = {
     isDebugOnlyAccountType?: boolean;
 };
 export type NetworkAccount = NetworkAccountWithSpecificKey<AccountType>;
-export type NormalizedNetworkAccount = RequiredKey<NetworkAccount, 'features'>;
 
-export type NetworkAccountTypes = Partial<{
+type NetworkAccountTypes = Partial<{
     [key in AccountType]: NetworkAccountWithSpecificKey<key>;
 }>;
 
-export type NetworkDeviceSupport = Partial<Record<DeviceModelInternal, string>>;
+type NetworkDeviceSupport = Partial<Record<DeviceModelInternal, string>>;
 
 type NetworkWithSpecificKey<TKey extends NetworkSymbol> = {
     symbol: TKey;
@@ -132,7 +138,7 @@ type NetworkWithSpecificKey<TKey extends NetworkSymbol> = {
     isHidden?: boolean; // not used here, but supported elsewhere
     chainId?: number;
     features: NetworkFeature[];
-    backendTypes: BackendType[];
+    backendOptions: BackendOption[];
     support?: NetworkDeviceSupport;
     isDebugOnlyNetwork?: boolean;
     isExperimentalOnlyNetwork?: boolean;
@@ -144,7 +150,7 @@ type NetworkWithSpecificKey<TKey extends NetworkSymbol> = {
      * Network ID used by Yield.xyz
      * @url https://yield.xyz
      */
-    yieldXyzId: NetworkDtoId | null;
+    yieldXyzId: TokenDtoV2['network'] | null;
 };
 export type Network = NetworkWithSpecificKey<NetworkSymbol>;
 

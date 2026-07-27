@@ -2,8 +2,10 @@ import { useState } from 'react';
 
 import styled from 'styled-components';
 
+import { selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { events } from '@suite-common/analytics';
+import { useServices } from '@suite-common/dependency-injection';
 import {
     Card,
     Column,
@@ -16,9 +18,7 @@ import {
     useScrollShadow,
     variables,
 } from '@trezor/components';
-import { spacings, spacingsPx } from '@trezor/theme';
 
-import { useAnalytics } from 'src/support/useAnalytics';
 import { useApplicationLogs } from 'src/utils/suite/logsUtils';
 
 const ScrollContainer = styled.div`
@@ -26,7 +26,7 @@ const ScrollContainer = styled.div`
 `;
 
 const LogWrapper = styled.pre`
-    padding: ${spacingsPx.md};
+    padding: 16px;
     height: 350px;
     width: 100%;
     text-align: left;
@@ -44,7 +44,7 @@ const LogWrapper = styled.pre`
 type ApplicationLogModalProps = { onCancel: () => void };
 
 export const ApplicationLogModal = ({ onCancel }: ApplicationLogModalProps) => {
-    const analytics = useAnalytics();
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
     const [hideSensitiveInfo, setHideSensitiveInfo] = useState(false);
     const applicationLogs = useApplicationLogs({ hideSensitiveInfo });
     const { ShadowTop, ShadowBottom, ShadowContainer, onScroll, scrollElementRef } =
@@ -90,20 +90,20 @@ export const ApplicationLogModal = ({ onCancel }: ApplicationLogModalProps) => {
                 </Modal.Button>
             }
         >
-            <Card paddingType="none" margin={{ top: spacings.sm }} overflow="hidden">
+            <Card paddingType="none" margin={{ top: 12 }} overflow="hidden">
                 <ShadowContainer>
-                    <ShadowTop backgroundColor="backgroundSurfaceElevation1" />
+                    <ShadowTop />
                     <ScrollContainer onScroll={onScroll} ref={scrollElementRef}>
                         <LogWrapper data-testid="@log/content">
                             <Text typographyStyle="body-xs">{applicationLogs}</Text>
                         </LogWrapper>
                     </ScrollContainer>
-                    <ShadowBottom backgroundColor="backgroundSurfaceElevation1" />
+                    <ShadowBottom />
                 </ShadowContainer>
             </Card>
 
-            <Row margin={{ top: spacings.xl }} gap={spacings.xxxxl}>
-                <Column gap={spacings.xxs} alignItems="flex-start">
+            <Row margin={{ top: 24 }} gap={48}>
+                <Column gap={4} alignItems="flex-start">
                     <H4>
                         <Translation id="LOG_INCLUDE_BALANCE_TITLE" />
                     </H4>

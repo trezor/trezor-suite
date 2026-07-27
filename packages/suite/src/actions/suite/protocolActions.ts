@@ -1,7 +1,12 @@
-import { asTypedDesktopAnalytics, events } from '@suite/analytics';
-import { ExtraDependencies } from '@suite-common/redux-utils';
-import { Protocol } from '@suite-common/suite-constants';
-import { getNetworkSymbolForProtocol } from '@suite-common/suite-utils';
+import {
+    type AnchorSettingSection,
+    SettingsAnchor,
+    goto,
+    mapAnchorToRoute,
+    onLocationChange,
+} from '@suite/router';
+import { type CoinProtocol, handleCoinProtocolUri } from '@suite/transfer-uri';
+import { type ExtraDependencies } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import * as walletConnectActions from '@suite-common/walletconnect';
 import {
@@ -10,22 +15,13 @@ import {
     SUITE_TRADING_REDIRECT_DEEPLINKS,
     SUITE_WALLETCONNECT_DEEPLINK,
 } from '@trezor/urls';
-import { isArrayMember } from '@trezor/utils';
+import { isArrayMember, safeParseUrl } from '@trezor/utils';
 
-import * as routerActions from 'src/actions/suite/routerActions';
-import { goto } from 'src/actions/suite/routerActions';
 import type { SendFormState } from 'src/reducers/suite/protocolReducer';
 import { asSuiteServices } from 'src/support/extraDependencies';
-import { Dispatch, GetState } from 'src/types/suite';
-import { parseUri } from 'src/utils/suite/parseUri';
-import { CoinProtocolInfo, getProtocolInfo } from 'src/utils/suite/protocol';
+import { type Dispatch, type GetState } from 'src/types/suite';
 
 import { PROTOCOL } from './constants';
-import {
-    AnchorSettingSection,
-    SettingsAnchor,
-    mapAnchorToRoute,
-} from '../../constants/suite/anchors';
 
 export type ProtocolAction =
     | {
@@ -43,44 +39,19 @@ export const fillSendForm = (shouldFill: boolean): ProtocolAction => ({
     payload: shouldFill,
 });
 
-const saveCoinProtocol = (scheme: Protocol, address: string, amount?: number): ProtocolAction => ({
+const saveCoinProtocol = (coinProtocol: CoinProtocol): ProtocolAction => ({
     type: PROTOCOL.SAVE_COIN_PROTOCOL,
-    payload: { scheme, address, amount },
+    payload: coinProtocol,
 });
 
 export const handleProtocolRequest =
     (uri: string) => (dispatch: Dispatch, _getState: GetState, extra: ExtraDependencies) => {
-        const protocol = getProtocolInfo(uri);
+        dispatch(handleCoinProtocolUri(uri, saveCoinProtocol));
 
-        if (protocol) {
-            asTypedDesktopAnalytics(extra.services.analytics).report({
-                type: events.appUriHandlerEvent.name,
-                payload: {
-                    scheme: protocol.scheme,
-                    isAmountPresent: 'amount' in protocol && protocol.amount !== undefined,
-                },
-            });
-        }
-
-        if (protocol && !('error' in protocol) && getNetworkSymbolForProtocol(protocol.scheme)) {
-            const { scheme, amount, address } = protocol as CoinProtocolInfo;
-
-            dispatch(saveCoinProtocol(scheme, address, amount));
-            dispatch(
-                notificationsActions.addToast({
-                    type: 'coin-scheme-protocol',
-                    address,
-                    scheme,
-                    amount,
-                    autoClose: false,
-                }),
-            );
-        } else if (uri?.startsWith(SUITE_BRIDGE_DEEPLINK)) {
-            dispatch(
-                routerActions.goto('suite-bridge-requested', { params: { cancelable: true } }),
-            );
+        if (uri?.startsWith(SUITE_BRIDGE_DEEPLINK)) {
+            dispatch(goto({ routeName: 'suite-bridge-requested', params: { cancelable: true } }));
         } else if (uri?.startsWith(SUITE_WALLETCONNECT_DEEPLINK)) {
-            const parsedUri = parseUri(uri);
+            const parsedUri = safeParseUrl(uri);
             const wcUri = parsedUri?.searchParams?.get('uri');
             if (wcUri) {
                 dispatch(walletConnectActions.walletConnectPairThunk({ uri: wcUri }))
@@ -101,11 +72,11 @@ export const handleProtocolRequest =
                 const [domain] = anchor.split('/');
 
                 const targetRoute =
-                    mapAnchorToRoute[domain.replace(/^@/, '') as AnchorSettingSection];
-                dispatch(goto(targetRoute, { anchor }));
+                    mapAnchorToRoute[domain?.replace(/^@/, '') as AnchorSettingSection];
+                dispatch(goto({ routeName: targetRoute, anchor }));
             }
         } else if (SUITE_TRADING_REDIRECT_DEEPLINKS.some(deeplink => uri?.startsWith(deeplink))) {
-            const parsedUri = parseUri(decodeURIComponent(uri));
+            const parsedUri = safeParseUrl(decodeURIComponent(uri));
             const redirectPath = parsedUri?.searchParams?.get('p');
 
             if (redirectPath) {
@@ -114,7 +85,7 @@ export const handleProtocolRequest =
                 if (hash) {
                     const path = { pathname: '/coinmarket-redirect', hash: `#${hash}` } as const;
                     asSuiteServices(extra.services).suiteRouterHistory.navigate(path);
-                    dispatch(routerActions.onLocationChange(path));
+                    dispatch(onLocationChange(path));
                 }
             }
         }

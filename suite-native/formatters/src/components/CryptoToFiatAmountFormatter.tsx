@@ -1,8 +1,8 @@
-import { NetworkSymbol } from '@suite-common/wallet-config';
-import { TextProps } from '@suite-native/atoms';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type TextProps } from '@suite-native/atoms';
 
 import { useFiatFromCryptoValue } from '../hooks/useFiatFromCryptoValue';
-import { FormatterProps } from '../types';
+import { type FormatterProps } from '../types';
 import { BaseCurrencyAmountFormatter } from './BaseCurrencyAmountFormatter';
 
 type CryptoToFiatAmountFormatterProps = FormatterProps<string | number | null> &
@@ -11,6 +11,7 @@ type CryptoToFiatAmountFormatterProps = FormatterProps<string | number | null> &
         historicRate?: number;
         useHistoricRate?: boolean;
         isBalance?: boolean;
+        isDiscreetText?: boolean;
         isForcedDiscreetMode?: boolean;
         isLoading?: boolean;
     };

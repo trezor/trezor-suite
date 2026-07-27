@@ -1,4 +1,4 @@
-import { SelectedAccountException } from '@suite-common/wallet-types';
+import { type SelectedAccountException } from '@suite-common/wallet-types';
 import { Column, H2 } from '@trezor/components';
 
 import { AccountNotEnabled } from './AccountNotEnabled';

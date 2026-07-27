@@ -14,7 +14,6 @@ chrome.runtime.onInstalled.addListener((details: chrome.runtime.InstalledDetails
             appName: 'Trezor Connect Example',
             appUrl: 'https://yourAppUrl.com/',
         },
-        transports: ['BridgeTransport', 'WebUsbTransport'], // Transport protocols to be used
     });
 
     // Event listener for messages from other parts of the extension

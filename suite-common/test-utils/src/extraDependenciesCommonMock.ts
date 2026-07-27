@@ -1,11 +1,13 @@
+import type { AnalyticsSharedEvents } from '@suite-common/analytics';
+import { type Bip329 } from '@suite-common/bip329-types';
 import {
-    EncryptableBranded,
-    EncryptedHex,
-    PlatformEncryption,
+    type EncryptableBranded,
+    type EncryptedHex,
+    type PlatformEncryption,
     asEncryptedHex,
 } from '@suite-common/platform-encryption';
 import {
-    ConnectInitSettings,
+    type ConnectInitSettings,
     type ExtraDependencies,
     notImplementedAction,
     notImplementedActionType,
@@ -14,28 +16,24 @@ import {
     notImplementedThunk,
 } from '@suite-common/redux-utils';
 import type { SuiteSync } from '@suite-common/suite-sync-types';
-import {
-    ReportSecurityCheckParams,
-    Route,
-    asDelegatedIdentityKey,
-} from '@suite-common/suite-types';
-import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
-import {
-    AddressDisplayOptions,
-    SelectedAccountLoaded,
-    asAccountDescriptor,
-} from '@suite-common/wallet-types';
+import { type ReportSecurityCheckParams, asDelegatedIdentityKey } from '@suite-common/suite-types';
+import { type SelectedAccountLoaded, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
-import { Analytics } from '@trezor/analytics-uploader';
+import { mockAnalytics } from '@trezor/analytics-uploader/mocks';
 import { err, ok } from '@trezor/type-utils';
+import { createKeyedThrottle } from '@trezor/utils';
 
 const suiteSyncMock: SuiteSync = {
     changeRelayUrl: () => Promise.resolve(),
+    disconnectAllRelays: () => Promise.resolve(),
+    reconnectAllRelays: () => Promise.resolve(),
     ensureWalletSuiteSyncOn: () =>
         Promise.resolve(err({ type: 'SuiteSyncUnavailableOnDeviceError' })),
+    ensureWalletSuiteSyncOnUncontrolled: () => Promise.resolve(),
     turnOffSuiteSyncForWallet: () => Promise.resolve(),
     turnOnSuiteSync: () => Promise.resolve(ok()),
     turnOffSuiteSync: () => Promise.resolve(),
+    dangerouslyWipeAllLabelsFromWallet: () => Promise.resolve(ok()),
     labeling: {
         updateAccountLabel: () => Promise.resolve(ok()),
         updateAddressLabel: () => Promise.resolve(ok()),
@@ -44,23 +42,20 @@ const suiteSyncMock: SuiteSync = {
     },
 };
 
+const bip329Mock: Bip329 = {
+    export: () => ({ accountLabel: null, labelsToExport: [] }),
+    import: () => Promise.resolve(ok()),
+};
+
 const platformEncryptionMock: PlatformEncryption = {
     encrypt: <T extends EncryptableBranded>({ value }: { value: T }) =>
-        Promise.resolve(ok(asEncryptedHex(value as T))),
+        Promise.resolve(ok(asEncryptedHex(value))),
 
     decrypt: <T extends EncryptableBranded>({ value }: { value: EncryptedHex<T> }) =>
         Promise.resolve(ok(value as unknown as T)),
 };
 
-export const analyticsMock: Analytics<any> = {
-    report: () => {},
-    isEnabled: () => true,
-    disable: () => {},
-    enable: () => {},
-    setUrl: () => {},
-    setLoggerEnabled: () => {},
-    init: () => {},
-};
+const analyticsMock = mockAnalytics<AnalyticsSharedEvents>();
 
 const connectInitSettings: ConnectInitSettings = {
     debug: false,
@@ -73,7 +68,6 @@ const connectInitSettings: ConnectInitSettings = {
 
 export const extraDependenciesCommonMock: ExtraDependencies = {
     thunks: {
-        cardanoValidatePendingTxOnBlock: notImplementedThunk('validatePendingTxOnBlock'),
         fetchAndSaveMetadata: notImplementedThunk('fetchAndSaveMetadata'),
         initMetadata: notImplementedThunk('initMetadata'),
         addAccountMetadata: notImplementedThunk('addAccountMetadata'),
@@ -81,18 +75,23 @@ export const extraDependenciesCommonMock: ExtraDependencies = {
     },
     services: {
         suiteSync: suiteSyncMock,
+        bip329: bip329Mock,
         ensureDelegatedIdentityKey: () =>
             Promise.resolve(ok(asDelegatedIdentityKey('mockDelegatedIdentityKey'))),
         platformEncryption: platformEncryptionMock,
         analytics: analyticsMock,
         reportSecurityCheck: ({ level, checkType }: ReportSecurityCheckParams) =>
             console.warn(`Mock reporting ${checkType} check ${level} to Sentry.`),
+        reloadApp: () => {},
         saveAs: (data, fileName) =>
             console.warn(
                 `Save data: ${data} into file: ${fileName}. Implementation on phone not ready.`,
             ),
         connectInitSettings,
-        migrateSuiteSyncLabelsForRbfTransaction: (_: any) => Promise.resolve([[], []]),
+        connectInitHooks: { deviceEvent: {}, uiEvent: {} },
+        createTransports: () => [],
+        accountRefreshThrottle: createKeyedThrottle(10_000, () => undefined),
+        migrateSuiteSyncLabelsForRbfTransaction: () => Promise.resolve([[], []]),
     },
     selectors: {
         selectTokenDefinitionsEnabledNetworks: notImplementedSelector(
@@ -105,17 +104,8 @@ export const extraDependenciesCommonMock: ExtraDependencies = {
             transports: [],
         }),
         selectDesktopBinDir: notImplementedSelector('selectDesktopBinDir', '/bin'),
-        selectRouterApp: notImplementedSelector('selectRouterApp', ''),
-        selectRoute: notImplementedSelector('selectRoute', {} as Route),
-        selectMetadata: notImplementedSelector('selectMetadata', {}),
-        selectDevice: notImplementedSelector('selectDevice', {
-            ...mockSuiteDevice(),
-        }),
         selectLanguage: notImplementedSelector('selectLanguage', 'en'),
-        selectAddressDisplayType: notImplementedSelector(
-            'selectAddressDisplayType',
-            AddressDisplayOptions.CHUNKED,
-        ),
+
         selectSelectedAccount: notImplementedSelector('selectSelectedAccount', {
             status: 'loaded',
             account: mockWalletAccount({
@@ -128,9 +118,9 @@ export const extraDependenciesCommonMock: ExtraDependencies = {
             'selectSelectedAccountStatus',
             'loaded',
         ),
-        selectIsSuiteSyncEnabled: notImplementedSelector('selectIsLocalFirstStorageEnabled', false),
         selectIsWindowVisible: notImplementedSelector('selectIsWindowVisible', true),
         selectTradingEnvironment: notImplementedSelector('selectTradingEnvironment', 'localhost'),
+        selectTradedAccountKeys: notImplementedSelector('selectTradedAccountKeys', []),
         selectIsViewOnlyByDefaultEnabled: notImplementedSelector(
             'selectIsViewOnlyByDefaultEnabled',
             true,
@@ -156,6 +146,7 @@ export const extraDependenciesCommonMock: ExtraDependencies = {
         storageLoadExplorer: notImplementedReducer('storageLoadExplorer'),
         storageLoadAccounts: notImplementedReducer('storageLoadAccounts'),
         storageLoadTransactions: notImplementedReducer('storageLoadTransactions'),
+        storageLoadPhishingMetadata: notImplementedReducer('storageLoadPhishingMetadata'),
         storageLoadHistoricRates: notImplementedReducer('storageLoadHistoricRates'),
         setDeviceMetadataReducer: notImplementedReducer('setDeviceMetadataReducer'),
         setDeviceMetadataPasswordsReducer: notImplementedReducer(
@@ -166,5 +157,8 @@ export const extraDependenciesCommonMock: ExtraDependencies = {
         storageLoadTokenManagement: notImplementedReducer('storageLoadTokenManagement'),
         storageLoadWalletSettings: notImplementedReducer('storageLoadWalletSettings'),
         storageLoadBioAuth: notImplementedReducer('storageLoadBioAuth'),
+        storageLoadFlags: notImplementedReducer('storageLoadFlags'),
+        storageLoadSuiteSettings: notImplementedReducer('storageLoadSuiteSettings'),
+        storageLoadReceiveAccounts: notImplementedReducer('storageLoadReceiveAccounts'),
     },
 };

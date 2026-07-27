@@ -1,6 +1,6 @@
 import {
-    FormDraftPrefixKeyValues,
-    FormDraftWithSendPrefixKeyValues,
+    type FormDraftPrefixKeyValues,
+    type FormDraftWithSendPrefixKeyValues,
 } from '@suite-common/wallet-constants';
 
 export type FormDraftKeyPrefix = (typeof FormDraftPrefixKeyValues)[number];

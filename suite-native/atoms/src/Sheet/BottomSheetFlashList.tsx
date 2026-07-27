@@ -1,31 +1,44 @@
-import { ReactNode, useCallback, useEffect, useMemo, useRef } from 'react';
+import { type ReactNode, useCallback, useEffect, useMemo, useRef } from 'react';
 import { Dimensions, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import {
     BottomSheetBackdrop,
+    type BottomSheetHandleProps,
     BottomSheetModal,
-    BottomSheetProps,
     useBottomSheetScrollableCreator,
 } from '@gorhom/bottom-sheet';
-import { FlashList, FlashListProps } from '@shopify/flash-list';
+import { FlashList, type FlashListProps, type FlashListRef } from '@shopify/flash-list';
 
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
+
+type FlashListRenderItem<TItem> = NonNullable<FlashListProps<TItem>['renderItem']>;
+type FlashListRenderItemInfo<TItem> = Parameters<FlashListRenderItem<TItem>>[0];
+
+export type BottomSheetFlashListControls = {
+    closeSheet: () => void;
+};
+
+export type BottomSheetFlashListHandleProps = BottomSheetHandleProps & {
+    closeSheet: BottomSheetFlashListControls['closeSheet'];
+};
 
 export type BottomSheetFlashListProps<TItem> = {
     isVisible: boolean;
-    onClose: (isVisible: boolean) => void;
+    onClose: (shouldHideKeyboard?: boolean) => void;
     title?: ReactNode;
     subtitle?: ReactNode;
     estimatedListHeight?: number;
-    handleComponent?: BottomSheetProps['handleComponent'];
-    flashListKey?: string;
-} & FlashListProps<TItem>;
-
-const DEFAULT_INSET_BOTTOM = 25;
+    handleComponent?: ((props: BottomSheetFlashListHandleProps) => ReactNode) | null;
+    scrollResetKey?: string;
+    renderItem: (
+        info: FlashListRenderItemInfo<TItem>,
+        sheetControls: BottomSheetFlashListControls,
+    ) => ReturnType<FlashListRenderItem<TItem>>;
+} & Omit<FlashListProps<TItem>, 'renderItem'>;
 
 const bottomSheetStyle = prepareNativeStyle(utils => ({
-    backgroundColor: utils.colors.backgroundSurfaceElevation0,
+    backgroundColor: utils.colors.surfaceFillPage,
 
     borderTopLeftRadius: utils.borders.radii.r20,
     borderTopRightRadius: utils.borders.radii.r20,
@@ -34,12 +47,12 @@ const bottomSheetStyle = prepareNativeStyle(utils => ({
 const sheetContentContainerStyle = prepareNativeStyle<{
     insetBottom: number;
 }>((utils, { insetBottom }) => ({
-    paddingBottom: Math.max(insetBottom, utils.spacings.sp16),
+    paddingBottom: insetBottom + utils.spacings.sp16,
     paddingHorizontal: utils.spacings.sp16,
 }));
 
 const handleStyle = prepareNativeStyle(utils => ({
-    backgroundColor: utils.colors.borderDashed,
+    backgroundColor: utils.colors.borderNeutral,
 }));
 
 const WindowOverlay = ({ children }: { children: ReactNode }) => (
@@ -53,42 +66,57 @@ export const BottomSheetFlashList = <TItem,>({
     subtitle,
     estimatedListHeight = 0,
     handleComponent,
-    flashListKey,
+    scrollResetKey,
+    renderItem,
     ...flashListProps
 }: BottomSheetFlashListProps<TItem>) => {
     const { applyStyle } = useNativeStyles();
-    const insets = useSafeAreaInsets();
+    const { bottom: insetBottom } = useSafeAreaInsets();
 
     const bottomSheetModalRef = useRef<BottomSheetModal>(null);
+    const flashListRef = useRef<FlashListRef<TItem>>(null);
 
-    const handleClose = useCallback(() => {
+    // Imperative scroll reset.
+    useEffect(() => {
+        if (isVisible) {
+            flashListRef.current?.scrollToOffset({ offset: 0, animated: false });
+        }
+    }, [scrollResetKey, isVisible]);
+
+    const dismissSheet = useCallback(() => {
         bottomSheetModalRef.current?.dismiss();
+    }, []);
+
+    const handleDismiss = useCallback(() => {
         onClose(false);
     }, [onClose]);
 
-    const insetBottom = Math.max(insets.bottom, DEFAULT_INSET_BOTTOM);
+    const renderHandleComponent = useCallback(
+        (props: BottomSheetHandleProps) =>
+            handleComponent?.({
+                ...props,
+                closeSheet: dismissSheet,
+            }) ?? undefined,
+        [dismissSheet, handleComponent],
+    );
+
+    const renderFlashListItem = useCallback(
+        (info: FlashListRenderItemInfo<TItem>) => renderItem(info, { closeSheet: dismissSheet }),
+        [renderItem, dismissSheet],
+    );
 
     const maxHeight = Dimensions.get('window').height * 0.9;
     const minHeight = Math.max(Dimensions.get('window').height * 0.4, estimatedListHeight);
     // minHeight can be higher than maxHeight because of estimatedListHeight, but it must be capped by maxHeight
     const snapPoints = useMemo(() => [Math.min(minHeight, maxHeight)], [minHeight, maxHeight]);
 
-    const handleSheetChanges = useCallback(
-        (index: number) => {
-            if (index === -1) {
-                handleClose();
-            }
-        },
-        [handleClose],
-    );
-
     useEffect(() => {
         if (isVisible) {
             bottomSheetModalRef.current?.present();
         } else {
-            bottomSheetModalRef.current?.dismiss();
+            dismissSheet();
         }
-    }, [isVisible]);
+    }, [dismissSheet, isVisible]);
 
     const BottomSheetListScrollComponent = useBottomSheetScrollableCreator();
 
@@ -98,11 +126,11 @@ export const BottomSheetFlashList = <TItem,>({
             snapPoints={snapPoints}
             maxDynamicContentSize={maxHeight}
             enableDynamicSizing={false}
-            onChange={handleSheetChanges}
+            onDismiss={handleDismiss}
             backdropComponent={props => (
                 <BottomSheetBackdrop
                     {...props}
-                    onPress={handleClose}
+                    onPress={dismissSheet}
                     appearsOnIndex={0}
                     disappearsOnIndex={-1}
                 />
@@ -111,17 +139,19 @@ export const BottomSheetFlashList = <TItem,>({
             handleIndicatorStyle={applyStyle(handleStyle)}
             // @ts-expect-error wrong type, doesn't expect children
             containerComponent={WindowOverlay}
-            handleComponent={handleComponent}
+            handleComponent={renderHandleComponent}
             keyboardBlurBehavior="restore"
             keyboardBehavior="fillParent"
         >
             <FlashList
+                ref={flashListRef}
+                maintainVisibleContentPosition={{ disabled: true }}
                 renderScrollComponent={BottomSheetListScrollComponent}
-                key={flashListKey}
-                {...flashListProps}
+                renderItem={renderFlashListItem}
                 contentContainerStyle={applyStyle(sheetContentContainerStyle, {
                     insetBottom,
                 })}
+                {...flashListProps}
             />
         </BottomSheetModal>
     );

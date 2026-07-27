@@ -1,7 +1,6 @@
 import { Translation } from '@suite/intl';
-import { ChainedTransactions } from '@suite-common/wallet-types';
+import { type ChainedTransactions } from '@suite-common/wallet-types';
 import { Banner, Card, Column, Row, Table, Text, TextButton } from '@trezor/components';
-import { spacings } from '@trezor/theme';
 
 import { AffectedTransactionItem } from './AffectedTransactionItem';
 
@@ -17,7 +16,7 @@ export const AffectedTransactions = ({ chainedTxs, showChained }: AffectedTransa
 
     return (
         <Card
-            fillType="flat"
+            type="contrast"
             paddingType="small"
             header={
                 <Row justifyContent="space-between" alignItems="center">
@@ -30,7 +29,7 @@ export const AffectedTransactions = ({ chainedTxs, showChained }: AffectedTransa
                 </Row>
             }
         >
-            <Column gap={spacings.md}>
+            <Column gap={16}>
                 <Banner intent="warning" description={<Translation id="TR_AFFECTED_TXS" />} />
                 <Table>
                     <Table.Body>

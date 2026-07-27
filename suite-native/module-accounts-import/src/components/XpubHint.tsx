@@ -1,8 +1,8 @@
-import { NetworkType } from '@suite-common/wallet-config';
+import { type NetworkType } from '@suite-common/wallet-config';
 import { isAddressBasedNetwork } from '@suite-common/wallet-utils';
 import { Box, TextButton } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 type XpubScanHintSheet = {
     networkType: NetworkType;
@@ -14,9 +14,9 @@ const sheetTriggerStyle = prepareNativeStyle(utils => ({
     justifyContent: 'center',
     alignItems: 'center',
     paddingVertical: utils.spacings.sp24,
-    backgroundColor: utils.colors.backgroundSurfaceElevation0,
+    backgroundColor: utils.colors.surfaceFillPage,
     borderTopWidth: utils.borders.widths.small,
-    borderTopColor: utils.colors.borderElevation1,
+    borderTopColor: utils.colors.borderNeutral,
 }));
 
 export const XpubHint = ({ networkType, handleOpen }: XpubScanHintSheet) => {
@@ -36,7 +36,7 @@ export const XpubHint = ({ networkType, handleOpen }: XpubScanHintSheet) => {
     return (
         <Box style={applyStyle(sheetTriggerStyle)}>
             <TextButton
-                viewLeft="question"
+                iconLeft="question"
                 onPress={handleOpen}
                 testID="@accounts-import/sync-coins/xpub-help-link"
             >

@@ -1,11 +1,15 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
+import { prepareDebugReducer } from '@suite/debug';
 import { metadataReducer, selectLabelingDataForAccount } from '@suite/metadata';
+import { prepareSuiteSettingsReducer } from '@suite/settings';
 import { suiteSyncReducer } from '@suite-common/suite-sync';
 import { configureMockStore, initPreloadedState } from '@suite-common/test-utils';
 
-import suiteReducer from '../../../reducers/suite/suiteReducer';
-import { accountsReducer, transactionsReducer } from '../../../reducers/wallet';
+import suiteReducer from 'src/reducers/suite/suiteReducer';
+import { accountsReducer, transactionsReducer } from 'src/reducers/wallet';
+import { extraDependencies } from 'src/support/extraDependencies';
+
 import {
     accountReceivingCoins,
     accountSpendingCoins,
@@ -26,6 +30,8 @@ const rootReducer = combineReducers({
     }),
     metadata: metadataReducer,
     suite: suiteReducer,
+    suiteSettings: prepareSuiteSettingsReducer(extraDependencies),
+    debug: prepareDebugReducer(extraDependencies),
     suiteSync: suiteSyncReducer,
 });
 
@@ -61,6 +67,7 @@ describe(moveLabelsForRbfThunk.name, () => {
                 transactions: {
                     fetchStatusDetail: {},
                     transactions: moveLabelsForRbfTransactionsFixture,
+                    phishing: {},
                 },
             },
             metadata: moveLabelsForRbfMetadataStateFixture,

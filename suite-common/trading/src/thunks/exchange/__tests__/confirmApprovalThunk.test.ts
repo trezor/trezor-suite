@@ -1,14 +1,14 @@
 import { combineReducers } from '@reduxjs/toolkit';
-import { CryptoId, ExchangeTrade } from 'invity-api';
+import { type CryptoId, type ExchangeTrade } from 'invity-api';
 
 import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
-import { Account } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 
 import { exchangeThunks } from '../';
 import { MIN_MAX_QUOTES_OK } from '../../../__fixtures__/exchangeUtils';
 import { accountBtc } from '../../../__fixtures__/utils';
 import { invityAPI } from '../../../invityAPI';
-import { TradingExchangeState } from '../../../reducers/exchangeReducer';
+import { type TradingExchangeState } from '../../../reducers/exchangeReducer';
 import { initialState } from '../../../reducers/tradingCommonReducer';
 import { prepareTradingReducer } from '../../../reducers/tradingReducer';
 import { getUnusedAddressFromAccount } from '../../../utils';
@@ -35,6 +35,7 @@ describe('confirmApprovalThunk', () => {
 
     const getMocks = (initialExchangeState?: Partial<TradingExchangeState>) => {
         const quoteNotTyped = MIN_MAX_QUOTES_OK[0];
+        if (!quoteNotTyped) throw new Error('Missing test fixture');
         const quote = {
             ...quoteNotTyped,
             send: quoteNotTyped.send as CryptoId,
@@ -219,38 +220,51 @@ describe('confirmApprovalThunk', () => {
 
     describe('when API returns error response', () => {
         it.each([
-            ['response.error is defined', { error: 'Server error' }, 'Server error'],
             [
-                'response.status is undefined',
-                { status: undefined },
-                'Error response from the server',
+                'response.error is defined',
+                { error: 'Server error' },
+                { code: 'unknown', message: 'Server error' },
             ],
+            ['response.status is undefined', { status: undefined }, { code: 'unknown' }],
+            ['response.orderId is undefined', { orderId: undefined }, { code: 'unknown' }],
+            ['response.status is ERROR', { status: 'ERROR' }, { code: 'unknown' }],
             [
-                'response.orderId is undefined',
-                { orderId: undefined },
-                'Error response from the server',
+                'response has errorDetails but no error string',
+                {
+                    status: 'ERROR',
+                    errorDetails: {
+                        origin: 'partner',
+                        externalCode: '-100',
+                        code: 'invalid_amount',
+                        amount: { key: 'BTC', value: '0.00001', min: '0.001', max: '5' },
+                    },
+                },
+                { code: 'invalid_amount', message: '-100', values: { min: '0.001', max: '5' } },
             ],
-            ['response.status is ERROR', { status: 'ERROR' }, 'Error response from the server'],
-        ])('should log error and save quote when %s', async (_, mockResponse, expectedMessage) => {
-            const { store, receiveAddress, account, trade, mockProcessResponseData } = getMocks();
-            const tradeResponse = { ...trade, ...mockResponse } as ExchangeTrade;
+        ])(
+            'should log error and save quote when %s',
+            async (_, mockResponse, expectedErrorMessage) => {
+                const { store, receiveAddress, account, trade, mockProcessResponseData } =
+                    getMocks();
+                const tradeResponse = { ...trade, ...mockResponse } as ExchangeTrade;
 
-            invityAPI.doExchangeTrade = () => Promise.resolve(tradeResponse);
+                invityAPI.doExchangeTrade = () => Promise.resolve(tradeResponse);
 
-            const response = await dispatchThunk(store, {
-                receiveAddress,
-                account,
-                trade,
-                processResponseData: mockProcessResponseData,
-            });
+                const response = await dispatchThunk(store, {
+                    receiveAddress,
+                    account,
+                    trade,
+                    processResponseData: mockProcessResponseData,
+                });
 
-            expect(findLogErrorAction(store)?.payload).toEqual({
-                tradingType: 'exchange',
-                errorMessage: expectedMessage,
-            });
-            expect(getExchangeState(store).selectedQuote).toEqual(tradeResponse);
-            expect(response).toEqual(tradeResponse);
-        });
+                expect(findLogErrorAction(store)?.payload).toEqual({
+                    tradingType: 'exchange',
+                    errorMessage: expectedErrorMessage,
+                });
+                expect(getExchangeState(store).selectedQuote).toEqual(tradeResponse);
+                expect(response).toEqual(tradeResponse);
+            },
+        );
     });
 
     describe('when API returns approval status', () => {

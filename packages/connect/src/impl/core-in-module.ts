@@ -1,104 +1,79 @@
-import EventEmitter from 'events';
-
-import { ERRORS } from '@trezor/connect-common/src/constants';
-import { DeferredManager, cloneObject, createDeferredManager } from '@trezor/utils';
-
-import { parseConnectSettings } from '../data/connectSettings';
 import {
     BLOCKCHAIN_EVENT,
     CORE_CALL,
-    CallMethodPayload,
-    CoreEventMessage,
-    CoreRequestMessage,
     DEVICE_EVENT,
-    POPUP,
     RESPONSE_EVENT,
-    TRANSPORT,
+    SET_ENABLED_NETWORKS,
     TRANSPORT_EVENT,
     UI_EVENT,
-    UiResponseEvent,
     createErrorMessage,
-} from '../events';
-import { ConnectFactoryDependencies } from '../factory';
-import type { ConnectSettings, ConnectSettingsPublic, DeviceIdentity, Manifest } from '../types';
-import type { UpdateConnectSettings } from '../types/api/updateConnectSettings';
-import { Log, initLog } from '../utils/debug';
+} from '@trezor/connect-common';
+import type {
+    CallMethodPayload,
+    ConnectSettings,
+    CoreEventMessage,
+    CoreRequestMessage,
+    MethodResponseMessage,
+    TrezorConnectCore,
+    UiResponseEvent,
+    UpdateConnectSettings,
+} from '@trezor/connect-common';
+import { ERRORS } from '@trezor/connect-common/src/constants';
+import { parseConnectSettings } from '@trezor/connect-common/src/data/connectSettings';
+import { ConnectEmitter } from '@trezor/connect-common/src/types/emitter';
+import {
+    type CancelParams,
+    createCoreCallCancelMessage,
+} from '@trezor/connect-common/src/utils/cancelParams';
+import { noopLogger } from '@trezor/connect-common/src/utils/debug';
+import { createUUIDDeferredManager } from '@trezor/connect-common/src/utils/deferred';
+import { type AbstractTransportParams, TRANSPORT, type Transport } from '@trezor/transport-common';
+import { type Logger, cloneObject } from '@trezor/utils';
 
-export class CoreInModule implements ConnectFactoryDependencies<ConnectSettingsPublic> {
-    public eventEmitter = new EventEmitter();
-    public _settings: ConnectSettings;
+import { initCoreState } from '../core';
 
-    private _coreManager?: any;
-    private _log: Log;
-    private _messagePromises: DeferredManager<{
-        id: number;
-        success: boolean;
-        payload: any;
-        device?: DeviceIdentity;
-    }>;
+export abstract class CoreInModule implements TrezorConnectCore<ConnectSettings> {
+    private readonly eventEmitter = new ConnectEmitter();
+
+    public on: ConnectEmitter['on'] = this.eventEmitter.on.bind(this.eventEmitter);
+    public off: ConnectEmitter['removeListener'] = this.eventEmitter.removeListener.bind(
+        this.eventEmitter,
+    );
+    public removeAllListeners: ConnectEmitter['removeAllListeners'] =
+        this.eventEmitter.removeAllListeners.bind(this.eventEmitter);
+
+    protected settings;
+    private coreManager;
+    private log: Logger;
+    private messagePromises;
 
     private readonly boundOnCoreEvent = this.onCoreEvent.bind(this);
 
+    // Connect's per-environment fallback when the host passes no transports.
+    // Built here (not at module load) so the connect-supplied logger and a
+    // manifest-derived id can be injected into the instances — the one place
+    // where connect still constructs transports, and only its own defaults.
+    protected abstract defaultTransports(params: AbstractTransportParams): Transport[];
+
+    private buildDefaultTransports(): Transport[] {
+        return this.defaultTransports({
+            logger: this.settings.createLogger?.('@trezor/transport'),
+            id: this.settings.manifest?.appName || this.settings.manifest?.appUrl || 'unknown app',
+        });
+    }
+
     public constructor() {
-        this._settings = parseConnectSettings();
-        this._log = initLog('@trezor/connect-web');
-        this._messagePromises = createDeferredManager({ initialId: 1 });
-    }
-
-    private async initCoreManager() {
-        const importResult = await import('@trezor/connect/src/core/index').catch(_err => {
-            this._log.error(`_err: Cannot load connect core`, _err);
-        });
-
-        if (!importResult) {
-            this._log.error(`importResult is empty! Cannot load connect core`);
-            throw new Error(`importResult is empty! Cannot load connect core`);
-        }
-
-        const { initCoreState } = importResult;
-
-        if (!initCoreState) return;
-
-        this._coreManager = initCoreState();
-
-        return this._coreManager;
-    }
-
-    public manifest(data: Manifest) {
-        this._settings = parseConnectSettings({
-            ...this._settings,
-            manifest: data,
-        });
-    }
-
-    public dispose() {
-        this.eventEmitter.removeAllListeners();
-        this._settings = parseConnectSettings();
-        if (this._coreManager) {
-            this._coreManager.dispose();
-        }
-        this._coreManager = undefined;
-
-        return Promise.resolve(undefined);
-    }
-
-    public cancel(error?: string) {
-        if (this._coreManager) {
-            const core = this._coreManager.get();
-            if (!core) {
-                throw ERRORS.TypedError('Runtime', 'postMessage: _core not found');
-            }
-
-            this.handleCoreMessage({
-                type: POPUP.CLOSED,
-                payload: error ? { error } : null,
-            });
-        }
+        this.settings = parseConnectSettings();
+        // No-op until init() resolves the host logger settings.
+        this.log = noopLogger;
+        this.coreManager = initCoreState();
+        this.messagePromises =
+            createUUIDDeferredManager<Omit<MethodResponseMessage, 'event' | 'type'>>();
     }
 
     // handle messages to core
-    public handleCoreMessage(message: CoreRequestMessage) {
-        const core = this._coreManager.get();
+    protected handleCoreMessage(message: CoreRequestMessage) {
+        const core = this.coreManager.get();
         if (!core) {
             throw ERRORS.TypedError('Runtime', 'postMessage: _core not found');
         }
@@ -113,14 +88,14 @@ export class CoreInModule implements ConnectFactoryDependencies<ConnectSettingsP
 
         switch (event) {
             case RESPONSE_EVENT: {
-                const { id = 0, success, device } = message;
-                const resolved = this._messagePromises.resolve(id, {
+                const { id = '', success, device } = message;
+                const resolved = this.messagePromises.resolve(
                     id,
-                    success,
-                    payload,
-                    device,
-                });
-                if (!resolved) this._log.warn(`Unknown message id ${id}`);
+                    success
+                        ? { id, success, payload: message.payload, device }
+                        : { id, success, error: message.error, device },
+                );
+                if (!resolved) this.log.warn(`Unknown message id ${id}`);
                 break;
             }
             case DEVICE_EVENT:
@@ -146,98 +121,117 @@ export class CoreInModule implements ConnectFactoryDependencies<ConnectSettingsP
                 break;
 
             default:
-                this._log.warn('Undefined message', event, message);
+                this.log.warn('Undefined message', event, message);
         }
     }
 
-    public async init(settings: Partial<ConnectSettings> = {}) {
-        if (this._coreManager && (this._coreManager.get() || this._coreManager.getPending())) {
+    public async init(settings: Partial<ConnectSettings>) {
+        if (this.coreManager.get() || this.coreManager.getPending()) {
             throw ERRORS.TypedError('Init_AlreadyInitialized');
         }
 
-        this._settings = parseConnectSettings({ ...this._settings, ...settings });
+        this.settings = parseConnectSettings({ ...this.settings, ...settings });
 
-        if (!this._settings.manifest) {
+        if (!this.settings.manifest) {
             throw ERRORS.TypedError('Init_ManifestMissing');
         }
-        this._settings.lazyLoad = true;
 
-        // defaults for connect-web
-        if (!this._settings.transports?.length) {
-            this._settings.transports = ['BridgeTransport', 'WebUsbTransport'];
+        // `createLogger` is optional. Without it, connect stays silent.
+        this.log = this.settings.createLogger?.('@trezor/connect') ?? noopLogger;
+
+        if (!this.settings.transports?.length) {
+            this.settings.transports = this.buildDefaultTransports();
         }
 
-        if (!this._coreManager) {
-            this._coreManager = await this.initCoreManager();
-            await this._coreManager.getOrInit(this._settings, this.boundOnCoreEvent);
-        }
-
-        this._log.enabled = !!this._settings.debug;
+        await this.coreManager.getOrInit(this.settings, this.boundOnCoreEvent);
     }
 
-    public updateConnectSettings(params: UpdateConnectSettings) {
-        const { proxy, transports } = params;
+    protected abstract updateProxy(proxy: UpdateConnectSettings['proxy']): Promise<void>;
 
-        if (proxy !== undefined) {
-            return Promise.resolve(
-                createErrorMessage(
-                    ERRORS.TypedError(
-                        'Method_InvalidPackage',
-                        'proxy setting is not supported in web environment',
-                    ),
-                ),
-            );
+    public async updateConnectSettings(params: UpdateConnectSettings) {
+        const { proxy, transports: newTransports, enabledNetworks } = params;
+
+        try {
+            await this.updateProxy(proxy);
+        } catch (err) {
+            return Promise.resolve(createErrorMessage(err));
         }
 
-        if (transports !== undefined) {
-            let newTransports = transports;
-            if (!transports?.length) {
-                newTransports = ['BridgeTransport', 'WebUsbTransport'];
+        // Mirror `call`: if init() is in progress but not yet complete, wait for it. Otherwise a
+        // settings update issued during the init window hits the empty-Core window and
+        // `handleCoreMessage` throws before the message is applied (and callers such as
+        // changeCoinVisibility silently swallow the returned error).
+        if (!this.coreManager.get()) {
+            const pending = this.coreManager.getPending();
+            if (pending) {
+                await pending;
             }
-            this._settings = parseConnectSettings({ ...this._settings, transports: newTransports });
-            this.handleCoreMessage({
-                type: TRANSPORT.SET_TRANSPORTS,
-                payload: { transports: newTransports },
-            });
         }
 
-        return Promise.resolve({
-            success: true as const,
-            payload: { message: 'success' },
-        } as const);
+        try {
+            if (newTransports !== undefined) {
+                const transports = newTransports?.length
+                    ? newTransports
+                    : this.buildDefaultTransports();
+
+                this.settings = parseConnectSettings({ ...this.settings, transports });
+                this.handleCoreMessage({ type: TRANSPORT.SET_TRANSPORTS, payload: { transports } });
+            }
+
+            if (enabledNetworks !== undefined) {
+                this.handleCoreMessage({ type: SET_ENABLED_NETWORKS, payload: enabledNetworks });
+            }
+        } catch (err) {
+            return Promise.resolve(createErrorMessage(err));
+        }
+
+        return { success: true as const, payload: { message: 'success' } } as const;
     }
 
     public async call(params: CallMethodPayload) {
-        if (!this._coreManager) {
-            try {
-                await this.init();
-            } catch (err) {
-                return createErrorMessage(err);
-            }
-        }
         try {
-            const { promiseId, promise } = this._messagePromises.create();
+            if (!this.settings.manifest) {
+                throw ERRORS.TypedError('Init_ManifestMissing');
+            }
+
+            // If init() is in progress but hasn't completed yet, wait for it.
+            if (!this.coreManager.get()) {
+                const pending = this.coreManager.getPending();
+                if (pending) {
+                    await pending;
+                }
+            }
+
+            const { promiseId, promise } = this.messagePromises.create();
             const payload = cloneObject<any>(params);
-            this.handleCoreMessage({
-                type: CORE_CALL,
-                id: promiseId,
-                payload,
-            });
+            this.handleCoreMessage({ type: CORE_CALL, id: promiseId, payload });
             const response = cloneObject(await promise);
 
             return response ?? createErrorMessage(ERRORS.TypedError('Method_NoResponse'));
         } catch (error) {
-            this._log.error('call', error);
+            this.log.error('call', error);
 
             return createErrorMessage(error);
         }
     }
 
     public uiResponse(response: UiResponseEvent) {
-        const core = this._coreManager.get();
-        if (!core) {
-            throw ERRORS.TypedError('Runtime', 'postMessage: _core not found');
-        }
         this.handleCoreMessage(response);
+    }
+
+    public cancel(params?: CancelParams) {
+        this.handleCoreMessage(createCoreCallCancelMessage(params));
+    }
+
+    public dispose() {
+        this.eventEmitter.removeAllListeners();
+        this.settings = parseConnectSettings();
+
+        // Only dispose coreManager if initialization has completed.
+        // If init is still pending (getPending() is truthy), disposing would reject
+        // the pending promise and cause an unhandled rejection in the init() caller.
+        if (this.coreManager.get()) {
+            this.coreManager.dispose();
+        }
     }
 }

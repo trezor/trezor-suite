@@ -4,12 +4,13 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { events } from '@suite-common/analytics';
 import { bluetoothActions, parseManufacturerData } from '@suite-common/bluetooth';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { useTranslate } from '@suite-native/intl';
-import { useAnalytics } from '@suite-native/services';
 import { useToast } from '@suite-native/toasts';
 import { asBluetoothDeviceId } from '@trezor/connect';
 import {
-    BluetoothDevice as TransportBluetoothDevice,
+    type BluetoothDevice as TransportBluetoothDevice,
     bluetoothManager,
 } from '@trezor/transport-native-bluetooth';
 
@@ -31,7 +32,7 @@ const toBluetoothDevice = (device: TransportBluetoothDevice) => ({
 });
 
 export const useBluetoothAdapter = () => {
-    const analytics = useAnalytics();
+    const { analytics } = useServices(selectNativeAnalyticsDep);
     const dispatch = useDispatch();
     const { showToast } = useToast();
     const { translate } = useTranslate();
@@ -91,7 +92,7 @@ export const useBluetoothAdapter = () => {
                     } else if (event.connectionStatus.type === 'pairing-canceled') {
                         showToast({
                             message: translate('bluetooth.toasts.pairingCanceled'),
-                            variant: 'default',
+                            intent: 'neutral',
                         });
                     } else if (event.connectionStatus.type === 'pairing-error') {
                         showPairingFailedAlert();

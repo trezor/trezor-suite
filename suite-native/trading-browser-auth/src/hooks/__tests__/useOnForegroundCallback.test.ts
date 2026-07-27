@@ -10,6 +10,17 @@ jest.mock('@suite-native/sentry', () => ({
     captureSentryException: (...args: unknown[]) => mockCaptureSentryException(...args),
 }));
 
+const getChangeHandler = (spy: jest.SpyInstance) => {
+    const firstCall = spy.mock.calls[0];
+    const handler = firstCall?.[1];
+
+    if (!handler) {
+        throw new Error('Expected addEventListener to have been called with a change handler');
+    }
+
+    return handler;
+};
+
 describe('useOnForegroundCallback', () => {
     const mockCallback = jest.fn();
     const appStateSpy = jest.spyOn(AppState, 'addEventListener');
@@ -35,7 +46,7 @@ describe('useOnForegroundCallback', () => {
 
     it('should call callback once when app state is active and shouldWatchForForeground is set to true', () => {
         const { result } = renderUseOnFocusCallback();
-        const changeHandler = appStateSpy.mock.calls[0][1];
+        const changeHandler = getChangeHandler(appStateSpy);
 
         act(() => {
             // simulate app being in foreground
@@ -49,7 +60,7 @@ describe('useOnForegroundCallback', () => {
 
     it('should not call callback when app is on background and shouldWatchForForeground is set to true ', () => {
         const { result } = renderUseOnFocusCallback();
-        const changeHandler = appStateSpy.mock.calls[0][1];
+        const changeHandler = getChangeHandler(appStateSpy);
 
         act(() => {
             // simulate app going to background
@@ -65,7 +76,7 @@ describe('useOnForegroundCallback', () => {
 
     it('should react to app state changes', () => {
         const { result } = renderUseOnFocusCallback();
-        const changeHandler = appStateSpy.mock.calls[0][1];
+        const changeHandler = getChangeHandler(appStateSpy);
 
         act(() => {
             // simulate app going to background
@@ -84,7 +95,7 @@ describe('useOnForegroundCallback', () => {
     it('should catch errors in callback', async () => {
         const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
         const { result } = renderUseOnFocusCallback();
-        const changeHandler = appStateSpy.mock.calls[0][1];
+        const changeHandler = getChangeHandler(appStateSpy);
         const error = new Error('Test error');
 
         mockCallback.mockRejectedValueOnce(error);

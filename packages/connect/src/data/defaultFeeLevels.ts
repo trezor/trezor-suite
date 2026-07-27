@@ -1,6 +1,5 @@
+import type { FeeInfo, FeeLevel } from '@trezor/connect-common/src/types/fees';
 import { BigNumber, typedObjectKeys } from '@trezor/utils';
-
-import type { FeeInfo, FeeLevel } from '../types/fees';
 
 // this is workaround for the lack of information from 'trezor-common'
 // we need to declare what does "high/normal/low" mean in block time (eg: normal BTC = 6 blocks = ~1 hour)
@@ -19,7 +18,7 @@ const BLOCKS_FOR_FEE_LEVEL: Record<string, Record<string, number>> = {
 const DEFAULT_BLOCK_FOR_FEE_LEVEL = 1;
 
 const getDefaultBlocksForFeeLevel = (shortcut: string, label: string) =>
-    BLOCKS_FOR_FEE_LEVEL[shortcut] && BLOCKS_FOR_FEE_LEVEL[shortcut][label]
+    BLOCKS_FOR_FEE_LEVEL[shortcut]?.[label]
         ? BLOCKS_FOR_FEE_LEVEL[shortcut][label]
         : DEFAULT_BLOCK_FOR_FEE_LEVEL;
 
@@ -29,12 +28,20 @@ const EVM_GAS_PRICE_PER_CHAIN_IN_GWEI: Record<
     string,
     { min: number; max: number; defaultGas: number; minPriorityFee: number }
 > = {
-    eth: { min: 0.1, max: 10000, defaultGas: 10, minPriorityFee: 0 },
+    // eth defaultGas lowered 10 -> 3 (2026-06-15): post-Fusaka mainnet base fee is
+    // typically ~0.1-0.5 Gwei with a ~0.01-0.1 Gwei tip, so 3 Gwei is a safe fallback
+    // with headroom for spikes (10 Gwei was ~20x typical conditions).
+    eth: { min: 0.001, max: 10000, defaultGas: 3, minPriorityFee: 0 },
+    // pol min kept at 0.1 (NOT lowered to 0.001): Polygon enforces a high priority-fee
+    // floor, so a sub-Gwei total-fee floor is unreachable noise. Per the Polygon gas
+    // station on 2026-06-15, base fee was ~250 Gwei and the safeLow tip ~44 Gwei, so
+    // minPriorityFee: 30 is still valid (conservative) and must not be lowered.
     pol: { min: 0.1, max: 10000000, defaultGas: 200, minPriorityFee: 30 },
-    bsc: { min: 0.1, max: 100000, defaultGas: 1, minPriorityFee: 0 },
+    bsc: { min: 0.001, max: 100000, defaultGas: 1, minPriorityFee: 0 },
     base: { min: 0.0000001, max: 1000, defaultGas: 0.01, minPriorityFee: 0 },
     arb: { min: 0.001, max: 1000, defaultGas: 0.01, minPriorityFee: 0 },
     op: { min: 0.000000001, max: 1000, defaultGas: 0.01, minPriorityFee: 0 },
+    rhc: { min: 0.001, max: 1000, defaultGas: 0.1, minPriorityFee: 0 },
 };
 
 const getEvmChainGweiGasPrice = (chain: string) =>
@@ -158,6 +165,15 @@ const STELLAR_FEE_INFO: FeeInfoWithLevels = {
     dustLimit: -1, // unknown/unused
 };
 
+const TRON_FEE_INFO: FeeInfoWithLevels = {
+    blockTime: 3,
+    defaultFees: [{ label: 'normal', feePerUnit: '-1', blocks: -1 }],
+    minFee: -1,
+    maxFee: -1,
+    minPriorityFee: -1,
+    dustLimit: -1,
+};
+
 const MISC_FEE_LEVELS: Record<string, FeeInfoWithLevels> = {
     xrp: RIPPLE_FEE_INFO,
     txrp: RIPPLE_FEE_INFO,
@@ -167,6 +183,8 @@ const MISC_FEE_LEVELS: Record<string, FeeInfoWithLevels> = {
     dsol: SOLANA_FEE_INFO,
     xlm: STELLAR_FEE_INFO,
     txlm: STELLAR_FEE_INFO,
+    trx: TRON_FEE_INFO,
+    ttrx: TRON_FEE_INFO,
 };
 
 export const getMiscFeeLevels = (data: CoinsJsonData): FeeInfoWithLevels => {

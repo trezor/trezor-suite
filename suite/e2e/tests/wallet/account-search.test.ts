@@ -9,9 +9,10 @@ test.describe('Look up a BTC account', { tag: ['@T3W1', '@T3T1'] }, () => {
             mnemonic: 'cancel solid bulb sample fury scrap whale ranch raven razor sight skin',
         },
     });
+
     test.beforeEach(async ({ onboardingPage, settingsPage }) => {
         await onboardingPage.completeOnboarding();
-        await settingsPage.changeNetworks({ enableNetworks: ['ltc'] });
+        await settingsPage.changeNetworks({ enableNetworks: ['btc', 'ltc'] });
     });
 
     test(

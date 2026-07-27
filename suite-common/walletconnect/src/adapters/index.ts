@@ -1,21 +1,30 @@
 import type { ProposalTypes } from '@walletconnect/types';
 
-import { Account } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 
 import { bitcoinAdapter } from './bitcoin';
 import { ethereumAdapter } from './ethereum';
 import { solanaAdapter } from './solana';
-import { PendingConnectionProposalNetwork, WalletConnectAdapter } from '../walletConnectTypes';
+import { stellarAdapter } from './stellar';
+import { tronAdapter } from './tron';
+import {
+    type PendingConnectionProposalNetwork,
+    type WalletConnectAdapter,
+} from '../walletConnectTypes';
 
-export const adapters: WalletConnectAdapter[] = [ethereumAdapter, solanaAdapter, bitcoinAdapter];
+export const adapters: WalletConnectAdapter[] = [
+    ethereumAdapter,
+    solanaAdapter,
+    bitcoinAdapter,
+    stellarAdapter,
+    tronAdapter,
+];
 
 export const getAdapterByMethod = (method: string) =>
     adapters.find(adapter => adapter.methods.includes(method));
 
 export const getAdapterByNetwork = (networkType: string) =>
     adapters.find(adapter => adapter.networkType === networkType);
-
-export const getAllMethods = () => adapters.flatMap(adapter => adapter.methods);
 
 export const getNamespaces = (accounts: Account[]) => {
     const accountsDeduped: Account[] = [];

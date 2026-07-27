@@ -1,13 +1,5 @@
-import coinsJSONEth from '@trezor/connect-data/files/coins-eth.json';
-import coinsJSON from '@trezor/connect-data/files/coins.json';
-
-import { getEthereumNetwork, parseCoinsJson } from '../../data/coinInfo';
-import { getNetworkLabel } from '../ethereumUtils';
-
-parseCoinsJson({
-    ...coinsJSON,
-    ...coinsJSONEth,
-});
+import { getEthereumNetwork } from '../../data/coinInfo';
+import type { getNetworkLabel } from '../ethereumUtils';
 
 export const getNetworkLabelFixtures: TestFixtures<typeof getNetworkLabel> = [
     {

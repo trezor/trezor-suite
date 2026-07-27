@@ -1,5 +1,7 @@
 import UDP from 'dgram';
 
+import { PathInternal } from '@trezor/transport-common';
+
 import { UdpApi } from '../src/api/udp';
 
 // mock dgram api
@@ -26,6 +28,8 @@ describe('api/udp', () => {
         jest.clearAllMocks();
     });
 
+    const devicePath = PathInternal('1');
+
     it('read aborted', async () => {
         jest.spyOn(UDP, 'createSocket').mockImplementation(() => createUdpSocketMock());
 
@@ -33,11 +37,11 @@ describe('api/udp', () => {
 
         const abortController = new AbortController();
         await api.enumerate(abortController.signal);
-        const promise = api.read('1', abortController.signal);
+        const promise = api.read(devicePath, { signal: abortController.signal });
         abortController.abort();
         const result = await promise;
         if (result.success) throw new Error('Unexpected success');
-        expect(result.error).toContain('Aborted by signal');
+        expect(result.error.code).toContain('Aborted by signal');
     });
 
     it('write aborted', async () => {
@@ -60,12 +64,14 @@ describe('api/udp', () => {
 
         const abortController = new AbortController();
         await api.enumerate(abortController.signal);
-        const promise = api.write('1', Buffer.alloc(api.chunkSize), abortController.signal);
+        const promise = api.write(devicePath, Buffer.alloc(api.chunkSize), {
+            signal: abortController.signal,
+        });
         abortController.abort();
 
         const result = await promise;
         if (result.success) throw new Error('Unexpected success');
-        expect(result.error).toContain('Aborted by signal');
+        expect(result.error.code).toContain('Aborted by signal');
         expect(listeners).toBe(1); // only the global listener is present
     });
 
@@ -86,6 +92,6 @@ describe('api/udp', () => {
 
         const result = await promise;
         if (result.success) throw new Error('Unexpected success');
-        expect(result.error).toContain('Aborted by signal');
+        expect(result.error.code).toContain('Aborted by signal');
     });
 });

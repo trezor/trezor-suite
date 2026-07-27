@@ -1,18 +1,13 @@
 {
     "extends": "../../tsconfig.lib.json",
-    "compilerOptions": {
-        "outDir": "lib"
-    },
     "include": ["./src"],
+    "compilerOptions": {
+        "outDir": "./lib",
+        "rootDir": "./src"
+    },
     "references": [
-        {
-            "path": "../utils"
-        },
-        {
-            "path": "../utxo-lib"
-        },
-        {
-            "path": "../type-utils"
-        }
+        { "path": "../utils" },
+        { "path": "../utxo-lib" },
+        { "path": "../type-utils" }
     ]
 }

@@ -1,14 +1,16 @@
 import { useEffect } from 'react';
 
-import { Translation, TranslationKey } from '@suite/intl';
+import { useDevice } from '@suite/device';
+import { Translation, type TranslationKey } from '@suite/intl';
+import { closeModal } from '@suite/modal';
 import { selectSelectedDeviceLabelOrName } from '@suite-common/device';
-import { ExtraDependencies } from '@suite-common/redux-utils';
+import { type ExtraDependencies } from '@suite-common/redux-utils';
 import { H3, Modal, Paragraph, Tooltip } from '@trezor/components';
+import { ShieldWarningIcon } from '@trezor/icons';
 
 import { applySettings } from 'src/actions/settings/deviceSettingsActions';
-import { onCancel } from 'src/actions/suite/modalActions';
-import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
-import { Dispatch, GetState } from 'src/types/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
+import { type Dispatch, type GetState } from 'src/types/suite';
 
 interface ConfirmUnverifiedModalProps {
     action: {
@@ -43,7 +45,7 @@ export const ConfirmUnverifiedModal = ({
         ? 'TR_PLEASE_ENABLE_PASSPHRASE'
         : 'TR_PLEASE_CONNECT_YOUR_DEVICE';
 
-    const handleClose = () => dispatch(onCancel());
+    const handleClose = () => dispatch(closeModal());
     const handleEvent = () => {
         dispatch(action.event());
 
@@ -54,8 +56,7 @@ export const ConfirmUnverifiedModal = ({
 
     const enablePassphraseAndContinue = async () => {
         if (!device?.available) {
-            const result = await dispatch(applySettings({ use_passphrase: true }));
-            if (!result || !result.success) return;
+            await dispatch(applySettings({ use_passphrase: true }));
         }
     };
 
@@ -68,9 +69,9 @@ export const ConfirmUnverifiedModal = ({
 
     return (
         <Modal
-            variant="warning"
+            intent="warning"
             width={600}
-            iconName="shieldWarning"
+            icon={ShieldWarningIcon}
             onCancel={handleClose}
             bottomContent={
                 <>

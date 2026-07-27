@@ -1,5 +1,6 @@
 import type { MiddlewareAPI } from 'redux';
 
+import { coinjoinMiddleware } from '@suite/coinjoin';
 import { prepareConnectPopupMiddleware } from '@suite-common/connect-popup';
 import type { ExtraDependencies } from '@suite-common/redux-utils';
 import { prepareSuiteSyncMiddleware } from '@suite-common/suite-sync';
@@ -12,7 +13,6 @@ import {
 } from '@suite-common/wallet-core';
 import { prepareWalletConnectMiddleware } from '@suite-common/walletconnect';
 
-import { coinjoinMiddleware } from './coinjoinMiddleware';
 import { prepareDiscoveryMiddleware } from './discoveryMiddleware';
 import graphMiddleware from './graphMiddleware';
 import { replaceByFeeErrorMiddleware } from './replaceByFeeErrorMiddleware';

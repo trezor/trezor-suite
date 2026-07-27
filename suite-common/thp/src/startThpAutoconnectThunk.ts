@@ -1,5 +1,5 @@
 import { createThunk } from '@suite-common/redux-utils';
-import { TrezorDevice } from '@suite-common/suite-types';
+import { type TrezorDevice } from '@suite-common/suite-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import TrezorConnect from '@trezor/connect';
 
@@ -21,11 +21,11 @@ export const startThpAutoconnectThunk = createThunk<void, StartThpAutoconnectThu
             return;
         } else {
             dispatch(
-                notificationsActions.addToast({ type: 'error', error: response.payload.error }),
+                notificationsActions.addToast({ type: 'error', error: response.error.message }),
             );
             dispatch(thpActions.finishAutoconnectFlow());
 
-            return rejectWithValue(response.payload.error);
+            return rejectWithValue(response.error.message);
         }
     },
 );

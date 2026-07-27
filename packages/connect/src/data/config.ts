@@ -1,16 +1,9 @@
-import { DeviceModelInternal } from '@trezor/device-utils';
-import { TREZOR_USB_DESCRIPTORS } from '@trezor/transport/src/constants';
+import type { FirmwareRule } from '@trezor/connect-common';
+import { TREZOR_USB_DESCRIPTORS } from '@trezor/transport-common';
 
 type Config = {
     webusb: typeof TREZOR_USB_DESCRIPTORS;
-    supportedFirmware: Array<{
-        coin?: string[];
-        capabilities?: string[];
-        methods?: string[];
-        min: Partial<Record<DeviceModelInternal, string>>;
-        max?: undefined; // NOTE: max field is not used anywhere at the moment, it is here for type compatibility
-        comment?: string[];
-    }>;
+    supportedFirmware: Array<FirmwareRule>;
 };
 
 export const config: Config = {
@@ -157,6 +150,16 @@ export const config: Config = {
             },
         },
         {
+            capabilities: ['mcuDeviceAuthentication', 'authenticityProofChunk'],
+            min: {
+                // devices that don't support 'authenticateDevice' don't have to be listed here
+                T2B1: '0',
+                T3B1: '0',
+                T3T1: '0',
+                T3W1: '2.12.1',
+            },
+        },
+        {
             capabilities: ['getFirmwareHash'],
             methods: ['getFirmwareHash'],
             min: { T1B1: '1.11.1', T2T1: '2.5.1' },
@@ -209,6 +212,15 @@ export const config: Config = {
             comment: ['Cardano SignMessage call added in 2.9.1'],
         },
         {
+            methods: ['nostrGetPublicKey', 'nostrSignEvent'],
+            firmwareType: 'production',
+            min: { T1B1: '0', T2T1: '0', T2B1: '0', T3B1: '0', T3T1: '0', T3W1: '0' },
+            comment: [
+                'Nostr is only available on debug / unsigned firmware builds.',
+                'On production firmware the method is rejected as FIRMWARE_NOT_SUPPORTED.',
+            ],
+        },
+        {
             capabilities: ['evolu'],
             methods: [
                 'evoluGetNode',
@@ -218,10 +230,10 @@ export const config: Config = {
             min: {
                 T1B1: '0',
                 T2T1: '0',
-                T2B1: '2.10.0',
-                T3B1: '2.10.0',
-                T3T1: '2.10.0',
-                T3W1: '2.10.0',
+                T2B1: '2.11.0',
+                T3B1: '2.11.0',
+                T3T1: '2.11.0',
+                T3W1: '2.11.0',
             },
         },
         {
@@ -241,8 +253,20 @@ export const config: Config = {
         {
             capabilities: ['telemetry'],
             methods: ['telemetryGet'],
-            min: { T1B1: '0', T2T1: '2.10.1', T2B1: '2.10.1', T3B1: '2.10.1', T3T1: '2.10.1' },
-            comment: ['Supported since 2.10.1'],
+            min: { T1B1: '0', T2T1: '0', T2B1: '0', T3B1: '0', T3T1: '0', T3W1: '2.11.0' },
+            comment: ['Supported since 2.11.0, only on T3W1'],
+        },
+        {
+            capabilities: ['evmClearSigning'],
+            min: {
+                T1B1: '0',
+                T2T1: '2.12.1',
+                T2B1: '2.12.1',
+                T3B1: '2.12.1',
+                T3T1: '2.12.1',
+                T3W1: '2.12.1',
+            },
+            comment: ['Ethereum clear signing for known contracts/function selectors since 2.12.1'],
         },
     ],
 };

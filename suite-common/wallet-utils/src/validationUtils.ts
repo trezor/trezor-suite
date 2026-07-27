@@ -1,77 +1,15 @@
-import { UseFormSetValue } from 'react-hook-form';
+import { toChecksumAddress } from '@suite-common/address';
+import { type AccountInfo } from '@trezor/blockchain-link-types';
 
-import { toChecksumAddress } from 'web3-utils';
-
-import { getTestnetSymbols } from '@suite-common/wallet-config';
-import { Account } from '@suite-common/wallet-types';
-import addressValidator from '@trezor/address-validator';
-import { AccountInfo } from '@trezor/blockchain-link-types';
-
-const getNetworkType = (symbol: Account['symbol'], address: string) => {
-    if (symbol === 'regtest') return symbol;
-    const testnets = getTestnetSymbols();
-
-    if (symbol === 'ada' && address.startsWith('stake')) return 'stake';
-
-    return testnets.includes(symbol) ? 'testnet' : 'prod';
-};
-
-const getCoinFromTestnet = (symbol: Account['symbol']) => {
-    switch (symbol) {
-        case 'test':
-        case 'regtest':
-            return 'btc';
-        case 'txrp':
-            return 'xrp';
-        case 'txlm':
-            return 'xlm';
-        case 'dsol':
-            return 'sol';
-        case 'tsep':
-        case 'thod':
-            return 'eth';
-        default:
-            return symbol;
-    }
-};
-
-export const isAddressValid = (address: string, symbol: Account['symbol']) => {
-    const networkType = getNetworkType(symbol, address);
-    const updatedSymbol = getCoinFromTestnet(symbol);
-
-    return addressValidator.validate(address, updatedSymbol.toUpperCase(), networkType);
-};
-
-export const isAddressDeprecated = (address: string, symbol: Account['symbol']) => {
-    // catch deprecated address formats
-    // LTC starting with "3" and valid with a BTC format
-    if (symbol === 'ltc' && address.startsWith('3') && isAddressValid(address, 'btc')) {
-        return 'LTC_ADDRESS_INFO_URL';
-    }
-    // BCH starting with "1" and valid with a BTC format
-    if (symbol === 'bch' && address.startsWith('1') && isAddressValid(address, 'btc')) {
-        return 'HELP_CENTER_CASHADDR_URL';
-    }
-};
-
-export const isTaprootAddress = (address: string, symbol: Account['symbol']) => {
-    const networkType = getNetworkType(symbol, address);
-    const updatedSymbol = getCoinFromTestnet(symbol);
-
-    return (
-        addressValidator.getAddressType(address, updatedSymbol.toUpperCase(), networkType) ===
-        'p2tr'
-    );
-};
-
-export const hasBitcoinCashAddressPrefix = (address: string) =>
-    /^bitcoincash:/.test(address.toLowerCase());
-
-export const isBitcoinCashAddressUppercase = (address: string) =>
-    hasBitcoinCashAddressPrefix(address) && /[A-Z]/.test(address);
-
-export const isBech32AddressUppercase = (address: string) =>
-    /^(bc1|tb1|ltc1|vtc1)/.test(address.toLowerCase()) && /[A-Z]/.test(address);
+// Re-export address functions from their new home for backwards compatibility.
+export {
+    isAddressValid,
+    isAddressDeprecated,
+    isTaprootAddress,
+    hasBitcoinCashAddressPrefix,
+    isBitcoinCashAddressUppercase,
+    isBech32AddressUppercase,
+} from '@suite-common/address';
 
 export const isDecimalsValid = (value: string, decimals: number) => {
     const DECIMALS_RE = new RegExp(
@@ -104,14 +42,13 @@ export const isHexValid = (value: string, prefix?: string) => {
 export const checkIsAddressNotUsedNotChecksummed = (
     address: string,
     history: AccountInfo['history'],
-    inputName: string,
-    setValue: UseFormSetValue<any>,
+    setChecksummedAddress: (value: string) => void,
     setHasAddressChecksummed: (value: boolean) => void,
 ) => {
     const hasHistory = history.total !== 0;
 
     if (hasHistory) {
-        setValue(inputName, toChecksumAddress(address), { shouldValidate: true });
+        setChecksummedAddress(toChecksumAddress(address));
         setHasAddressChecksummed(true);
 
         return false;

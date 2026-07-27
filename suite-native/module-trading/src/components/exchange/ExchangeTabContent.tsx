@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 
 import { ServerOffline } from '@suite-native/trading-atoms';
 
@@ -11,7 +11,6 @@ export const ExchangeTabContent = () => {
     const [reloadOrdinal, setReloadOrdinal] = useState(0);
     const { isLoading, lastLoadedTimestamp, isFullyLoaded } = useExchangeData(reloadOrdinal);
     const isLoadingFinished = !isLoading && lastLoadedTimestamp > 0;
-    const wasSkeletonDisplayed = useRef(!isLoadingFinished);
 
     if (isLoadingFinished && !isFullyLoaded) {
         return <ServerOffline onRetryPress={() => setReloadOrdinal(n => n + 1)} />;
@@ -23,7 +22,7 @@ export const ExchangeTabContent = () => {
 
     return (
         <ExchangeFormContextProvider>
-            <ExchangeForm shouldAnimateEntering={wasSkeletonDisplayed.current} />
+            <ExchangeForm />
         </ExchangeFormContextProvider>
     );
 };

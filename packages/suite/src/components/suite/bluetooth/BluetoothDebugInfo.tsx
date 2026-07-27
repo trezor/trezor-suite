@@ -2,9 +2,10 @@ import { useEffect, useState } from 'react';
 
 import { selectKnownDevices, selectNearbyDevices } from '@suite-common/bluetooth';
 import { Code, Icon, InfoSegments, Text } from '@trezor/components';
+import { CellSignalFullIcon, FloppyDiskBackFilledIcon } from '@trezor/icons';
 
-import { DesktopBluetoothDevice } from '../../../actions/bluetooth/DesktopBluetoothDevice';
-import { useSelector } from '../../../hooks/suite';
+import { type DesktopBluetoothDevice } from 'src/actions/bluetooth/DesktopBluetoothDevice';
+import { useSelector } from 'src/hooks/suite';
 
 const TimeAgo = ({ timestamp }: { timestamp: number }) => {
     const [secAgo, setSecAgo] = useState(0);
@@ -39,10 +40,12 @@ export const BluetoothDebugInfo = ({ device }: BluetoothDeviceProps) => {
     return (
         <>
             <InfoSegments>
-                {isKnownDevice && <Icon name="floppyDiskBackFilled" size={16} intent="critical" />}
+                {isKnownDevice && (
+                    <Icon as={FloppyDiskBackFilledIcon} size={16} intent="critical" />
+                )}
                 {isNearbyDevice && (
                     <>
-                        <Icon name="cellSignalFull" size={16} intent="brand" />
+                        <Icon as={CellSignalFullIcon} size={16} intent="brand" />
                         {isNearbyDevice.rssi} dBm
                     </>
                 )}

@@ -1,35 +1,42 @@
 import { useState } from 'react';
 
+import { selectIsTorEnabled } from '@suite/tor';
 import {
-    eraseFetchedDataDebug,
+    enforceQuotaManagerUpdated,
+    eraseFetchedData,
+    getQuotaManagerDefaultUrl,
+    getQuotaManagerUrl,
+    selectEnforceQuotaManager,
     selectOwnersAllowance,
-    selectQuotaManagerBaseUrl,
+    selectQuotaManagerCustomUrl,
     selectRegisteredDevices,
     updateQuotaManagerBaseUrl,
 } from '@suite-common/suite-sync-quota-manager';
-import { Button, Column, Input } from '@trezor/components';
-import { spacings } from '@trezor/theme';
+import { Button, ButtonGroup, Checkbox, Code, Column, Input, Text } from '@trezor/components';
+import { ActionColumn, SectionItem, SettingsSection, TextColumn } from '@trezor/product-components';
+import { breakpoints } from '@trezor/theme';
 
-import { SettingsSection } from 'src/components/settings/SettingsSection';
-import { ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useIsContentBelowBreakpoint } from 'src/support/suite/ContentFlex';
 
 export const QuotaManagerSettings = () => {
     const dispatch = useDispatch();
-    const quotaManagerBaseUrl = useSelector(selectQuotaManagerBaseUrl);
+    const hasContentBelowTabletWidth = useIsContentBelowBreakpoint(breakpoints.laptop);
+    const isTorEnabled = useSelector(selectIsTorEnabled);
+    const quotaManagerCustomUrl = useSelector(selectQuotaManagerCustomUrl);
     const registeredDevices = useSelector(selectRegisteredDevices);
     const ownersAllowance = useSelector(selectOwnersAllowance);
-    const [quotaManagerUrl, setQuotaManagerUrl] = useState(quotaManagerBaseUrl ?? '');
+    const enforceQuotaManager = useSelector(selectEnforceQuotaManager);
+    const defaultQuotaManagerUrl = getQuotaManagerDefaultUrl({ isTorEnabled });
+    const [quotaManagerUrl, setQuotaManagerUrl] = useState(quotaManagerCustomUrl ?? '');
 
     const [isUpdateUrlLoading, setIsUpdateUrlLoading] = useState(false);
 
-    const onQuotaManagerBaseUrlSave = () => {
+    const onQuotaManagerBaseUrlSave = (baseUrl = quotaManagerUrl) => {
         setIsUpdateUrlLoading(true);
-        dispatch(
-            updateQuotaManagerBaseUrl({
-                baseUrl: quotaManagerUrl,
-            }),
-        );
+
+        setQuotaManagerUrl(baseUrl);
+        dispatch(updateQuotaManagerBaseUrl({ baseUrl }));
 
         // fake ui loading delay
         setTimeout(() => {
@@ -37,14 +44,26 @@ export const QuotaManagerSettings = () => {
         }, 300);
     };
 
-    const onEraseFetchedData = () => dispatch(eraseFetchedDataDebug());
+    const onEraseFetchedData = () => dispatch(eraseFetchedData());
+
+    const onQuotaManagerUrlPresetClick = (baseUrl: string) => {
+        setQuotaManagerUrl(baseUrl);
+        onQuotaManagerBaseUrlSave(baseUrl);
+    };
+
+    const onToggleEnforceQuotaManager = () =>
+        dispatch(
+            enforceQuotaManagerUpdated({
+                enforce: !enforceQuotaManager,
+            }),
+        );
 
     return (
-        <SettingsSection title="Quota Manager">
+        <SettingsSection hasVerticalLayout={hasContentBelowTabletWidth} title="Quota Manager">
             <SectionItem>
                 <TextColumn title="Quota Manager URL" />
                 <ActionColumn>
-                    <Column gap={spacings.xxs}>
+                    <Column gap={4}>
                         <Input
                             data-testid="@settings/debug/quota-manager-url-input"
                             disabled={isUpdateUrlLoading}
@@ -53,7 +72,7 @@ export const QuotaManagerSettings = () => {
                             rightContent={
                                 <Button
                                     data-testid="@settings/debug/quota-manager-url-save-button"
-                                    onClick={onQuotaManagerBaseUrlSave}
+                                    onClick={() => onQuotaManagerBaseUrlSave()}
                                     size="small"
                                     isLoading={isUpdateUrlLoading}
                                 >
@@ -61,13 +80,58 @@ export const QuotaManagerSettings = () => {
                                 </Button>
                             }
                         />
+                        <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
+                            Default is: <Code>{defaultQuotaManagerUrl}</Code>
+                        </Text>
+                        <ButtonGroup size="small" priority="secondary">
+                            <Button
+                                intent="critical"
+                                isDisabled={isUpdateUrlLoading}
+                                onClick={() =>
+                                    onQuotaManagerUrlPresetClick(
+                                        getQuotaManagerUrl({ env: 'prod', isTorEnabled }),
+                                    )
+                                }
+                            >
+                                Production
+                            </Button>
+                            <Button
+                                intent="brand"
+                                isDisabled={isUpdateUrlLoading}
+                                onClick={() =>
+                                    onQuotaManagerUrlPresetClick(
+                                        getQuotaManagerUrl({ env: 'dev', isTorEnabled }),
+                                    )
+                                }
+                            >
+                                Dev
+                            </Button>
+                            <Button
+                                intent="info"
+                                isDisabled={isUpdateUrlLoading}
+                                onClick={() =>
+                                    onQuotaManagerUrlPresetClick(
+                                        getQuotaManagerUrl({ env: 'local', isTorEnabled }),
+                                    )
+                                }
+                            >
+                                Local
+                            </Button>
+                            <Button
+                                intent="neutral"
+                                isDisabled={isUpdateUrlLoading}
+                                onClick={() => onQuotaManagerUrlPresetClick('')}
+                            >
+                                Reset
+                            </Button>
+                        </ButtonGroup>
                     </Column>
                 </ActionColumn>
             </SectionItem>
             <SectionItem>
                 <TextColumn title="Registered Devices" />
                 <ActionColumn>
-                    <Column gap={spacings.xxs}>
+                    <Column gap={4}>
                         {registeredDevices.length === 0 ? (
                             <div>No devices registered.</div>
                         ) : (
@@ -75,10 +139,15 @@ export const QuotaManagerSettings = () => {
                                 <div key={device.deviceId} style={{ marginBottom: 8 }}>
                                     <strong>Device ID:</strong> {device.deviceId}
                                     <br />
-                                    <strong>Total Storage Size:</strong> {device.totalStorageSize}
+                                    <strong>Total Storage Size:</strong>{' '}
+                                    <>
+                                        <Code>{device.totalStorageSize}</Code>&nbsp;B
+                                    </>
                                     <br />
                                     <strong>Unspent Storage Size:</strong>{' '}
-                                    {device.unspentStorageSize}
+                                    <>
+                                        <Code>{device.unspentStorageSize}</Code>&nbsp;B
+                                    </>
                                 </div>
                             ))
                         )}
@@ -88,7 +157,7 @@ export const QuotaManagerSettings = () => {
             <SectionItem>
                 <TextColumn title="Assigned Owner IDs" />
                 <ActionColumn>
-                    <Column gap={spacings.xxs}>
+                    <Column gap={4}>
                         {ownersAllowance.length === 0 ? (
                             <div>No owner IDs assigned.</div>
                         ) : (
@@ -96,11 +165,24 @@ export const QuotaManagerSettings = () => {
                                 <div key={owner.walletDescriptor} style={{ marginBottom: 8 }}>
                                     <strong>walletDescriptor:</strong> {owner.walletDescriptor}
                                     <br />
-                                    <strong>Total Space:</strong> {owner.totalSpace}
+                                    <strong>Total Space:</strong>{' '}
+                                    <>
+                                        <Code>{owner.totalSpace}</Code>&nbsp;B
+                                    </>
                                 </div>
                             ))
                         )}
                     </Column>
+                </ActionColumn>
+            </SectionItem>
+            <SectionItem>
+                <TextColumn title="Enforce Quota Manager for custom relay" />
+                <ActionColumn>
+                    <Checkbox
+                        data-testid="@settings/debug/quota-manager-enforce-for-custom-relay-checkbox"
+                        isChecked={enforceQuotaManager}
+                        onChange={onToggleEnforceQuotaManager}
+                    />
                 </ActionColumn>
             </SectionItem>
             <SectionItem>

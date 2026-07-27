@@ -1,25 +1,34 @@
-import { useMemo } from 'react';
-import { useSelector } from 'react-redux';
+import { useCallback, useEffect, useMemo } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
-import { FiatGraphPointWithCryptoBalance } from '@suite-common/graph';
-import { AccountsRootState, selectBaseCurrency } from '@suite-common/wallet-core';
-import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
+import { useAtomValue, useSetAtom } from 'jotai';
+
+import { type FiatGraphPointWithCryptoBalance } from '@suite-common/graph';
+import { type AccountsRootState } from '@suite-common/wallet-core';
+import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import {
-    NativeAccountsRootState,
+    type NativeAccountsRootState,
     selectAccountFiatBalance,
     selectAccountTokenFiatBalance,
 } from '@suite-native/accounts';
 import { VStack } from '@suite-native/atoms';
 import {
     Graph,
-    TimeSwitch,
+    type GraphSliceRootState,
+    accountDetailGraphAtoms,
+    getAccountGraphInstanceId,
+    resetGraphRuntimeState,
+    selectAccountGraphError,
+    selectAccountGraphIsLoading,
+    selectAccountGraphTimeframe,
     selectIsHistoryEnabledAccountByAccountKey,
-    useGraphAtoms,
-    useGraphForSingleAccount,
+    useGraphData,
+    useGraphGestureHandlers,
 } from '@suite-native/graph';
 
+import { AccountDetailGraphTimeSwitch } from './AccountDetailGraphTimeSwitch';
 import { AccountDetailHeader } from './AccountDetailHeader';
-import { referencePointAtom, selectedPointAtom } from '../accountDetailGraphAtoms';
+import { selectAccountItemForGraph } from '../selectors';
 
 type AccountDetailGraphProps = {
     accountKey: AccountKey;
@@ -27,31 +36,61 @@ type AccountDetailGraphProps = {
 };
 
 export const AccountDetailGraph = ({ accountKey, tokenContract }: AccountDetailGraphProps) => {
-    const baseCurrencyCode = useSelector(selectBaseCurrency);
+    const dispatch = useDispatch();
+    const resetGraph = useSetAtom(accountDetailGraphAtoms.resetGraphAtom);
+    const graphInstanceId = getAccountGraphInstanceId({ accountKey, tokenContract });
+
     const isHistoryEnabledAccount = useSelector((state: AccountsRootState) =>
         selectIsHistoryEnabledAccountByAccountKey(state, accountKey),
     );
-    const tokensFilter = useMemo(() => (tokenContract ? [tokenContract] : []), [tokenContract]);
-    const { graphPoints, graphEvents, error, isLoading, refetch, onSelectTimeFrame, timeframe } =
-        useGraphForSingleAccount({
-            accountKey,
-            baseCurrencyCode,
-            tokensFilter,
-            hideMainAccount: !!tokenContract,
-        });
+    const accountGraphTimeframe = useSelector((state: GraphSliceRootState) =>
+        selectAccountGraphTimeframe(state, accountKey, tokenContract),
+    );
     const totalFiatBalance = useSelector((state: NativeAccountsRootState) =>
         tokenContract
             ? selectAccountTokenFiatBalance(state, accountKey, tokenContract)
             : selectAccountFiatBalance(state, accountKey, false, false),
     );
+    const accountItem = useSelector((state: AccountsRootState) =>
+        selectAccountItemForGraph(state, accountKey, tokenContract),
+    );
+    const accounts = useMemo(() => (accountItem ? [accountItem] : undefined), [accountItem]);
 
-    const { handleGestureStart, setInitialSelectedPoints, setSelectedPoint } =
-        useGraphAtoms<FiatGraphPointWithCryptoBalance>({
-            referencePointAtom,
-            selectedPointAtom,
-            graphPoints,
-            totalFiatBalance,
-        });
+    const { refetchGraph: refetchAccountGraph } = useGraphData({
+        instanceId: graphInstanceId,
+        accounts,
+        eventsAccount: accountItem,
+        timeframeHours: accountGraphTimeframe,
+        backendSymbol: accountItem?.symbol ?? 'btc',
+    });
+
+    const graphPoints = useAtomValue(accountDetailGraphAtoms.graphPointsAtom);
+    const isLoading = useSelector((state: GraphSliceRootState) =>
+        selectAccountGraphIsLoading(state, accountKey, tokenContract),
+    );
+    const error = useSelector((state: GraphSliceRootState) =>
+        selectAccountGraphError(state, accountKey, tokenContract),
+    );
+    const graphEvents = useAtomValue(accountDetailGraphAtoms.graphEventsAtom);
+
+    const { setSelectedPoint, handleGestureEnd } = useGraphGestureHandlers(
+        accountDetailGraphAtoms.selectedPointAtom,
+    );
+
+    useEffect(
+        () => () => {
+            dispatch(resetGraphRuntimeState({ instanceId: graphInstanceId }));
+            resetGraph();
+        },
+        [dispatch, graphInstanceId, resetGraph],
+    );
+
+    const isTokenPriceUnavailable = !isLoading && (!!error || graphPoints.length <= 1);
+    const isGraphHidden = !!tokenContract && isTokenPriceUnavailable;
+
+    const handleTryAgain = useCallback(() => {
+        refetchAccountGraph({ forceRefetch: true });
+    }, [refetchAccountGraph]);
 
     return (
         <VStack spacing="sp24">
@@ -61,21 +100,20 @@ export const AccountDetailGraph = ({ accountKey, tokenContract }: AccountDetailG
                 totalFiatBalance={totalFiatBalance}
             />
 
-            {isHistoryEnabledAccount && (
+            {isHistoryEnabledAccount && !isGraphHidden && (
                 <>
                     <Graph<FiatGraphPointWithCryptoBalance>
                         onPointSelected={setSelectedPoint}
-                        onGestureEnd={setInitialSelectedPoints}
-                        onGestureStart={handleGestureStart}
+                        onGestureEnd={handleGestureEnd}
                         points={graphPoints}
                         loading={isLoading}
-                        error={error?.message}
-                        onTryAgain={refetch}
+                        error={error}
+                        onTryAgain={handleTryAgain}
                         events={graphEvents}
                     />
-                    <TimeSwitch
-                        selectedTimeFrame={timeframe}
-                        onSelectTimeFrame={onSelectTimeFrame}
+                    <AccountDetailGraphTimeSwitch
+                        accountKey={accountKey}
+                        tokenContract={tokenContract}
                     />
                 </>
             )}

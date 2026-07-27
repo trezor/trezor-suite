@@ -2,21 +2,21 @@ import { useCallback } from 'react';
 
 import { useNavigation, useRoute } from '@react-navigation/native';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { useAlert } from '@suite-native/alerts';
-import { events } from '@suite-native/analytics';
+import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { useTranslate } from '@suite-native/intl';
 import {
-    DeviceCheckBackupStackParamList,
-    DeviceCheckBackupStackRoutes,
-    DeviceSettingsStackParamList,
+    type DeviceCheckBackupStackParamList,
+    type DeviceCheckBackupStackRoutes,
+    type DeviceSettingsStackParamList,
     DeviceSettingsStackRoutes,
     Screen,
     ScreenHeader,
-    ScreenProps,
-    StackToStackCompositeNavigationProps,
+    type ScreenProps,
+    type StackToStackCompositeNavigationProps,
     useOverrideBackNavigation,
 } from '@suite-native/navigation';
-import { useAnalytics } from '@suite-native/services';
 import TrezorConnect from '@trezor/connect';
 
 type DeviceOnboardingExitButtonScreenHeaderProps = {
@@ -32,7 +32,7 @@ type NavigationProps = StackToStackCompositeNavigationProps<
 export const useHandleCheckBackupExitButtonPress = () => {
     const { showAlert } = useAlert();
     const { translate } = useTranslate();
-    const analytics = useAnalytics();
+    const { analytics } = useServices(selectNativeAnalyticsDep);
     const navigation = useNavigation<NavigationProps>();
     const route = useRoute();
 
@@ -41,9 +41,9 @@ export const useHandleCheckBackupExitButtonPress = () => {
             title: translate('moduleCheckBackup.cancelAlert.title'),
             description: translate('moduleCheckBackup.cancelAlert.description'),
             primaryButtonTitle: translate('moduleCheckBackup.cancelAlert.primaryButton'),
-            primaryButtonVariant: 'redBold',
+            primaryButtonColorProps: { intent: 'critical', priority: 'primary' },
             secondaryButtonTitle: translate('moduleCheckBackup.cancelAlert.secondaryButton'),
-            secondaryButtonVariant: 'redElevation0',
+            secondaryButtonColorProps: { intent: 'critical', priority: 'secondary' },
             onPressPrimaryButton: () => {
                 analytics.report({
                     type: events.deviceSettingsCheckBackupExitedEvent.name,

@@ -1,8 +1,8 @@
-import { Meta, StoryObj } from '@storybook/react';
+import { type Meta, type StoryObj } from '@storybook/react';
 
 import {
     Text as TextComponent,
-    TextProps,
+    type TextProps,
     allowedTextFrameProps,
     allowedTextTextProps,
 } from './Text';
@@ -20,12 +20,18 @@ export const Text: StoryObj<TextProps> = {
         children: 'Quos delectus veritatis est doloribus dolor.',
         isHighlighted: false,
         isMonospaced: false,
+        isDisabled: false,
+        isInverse: false,
+        isTabular: false,
         ...getTextPropsStory(allowedTextTextProps).args,
         ...getFramePropsStory(allowedTextFrameProps).args,
     },
     argTypes: {
         isHighlighted: { control: 'boolean' },
         isMonospaced: { control: 'boolean' },
+        isDisabled: { control: 'boolean' },
+        isInverse: { control: 'boolean' },
+        isTabular: { control: 'boolean' },
         ...getTextPropsStory(allowedTextTextProps).argTypes,
         ...getFramePropsStory(allowedTextFrameProps).argTypes,
     },

@@ -1,5 +1,3 @@
-import BN from 'bn.js';
-
 import { INPUT_SCRIPT_LENGTH, OUTPUT_SCRIPT_LENGTH } from '../../src/coinselect/coinselectUtils';
 
 function addScriptLength(values: any[], scriptLength: number) {
@@ -13,10 +11,10 @@ function addScriptLength(values: any[], scriptLength: number) {
     });
 }
 
-function valueToBN(vinVout: VinVoutFixture) {
-    if (typeof vinVout === 'string') return { value: new BN(vinVout) };
+function valueToBigInt(vinVout: VinVoutFixture) {
+    if (typeof vinVout === 'string') return { value: BigInt(vinVout) };
     if (vinVout.value) {
-        return { ...vinVout, value: new BN(vinVout.value) };
+        return { ...vinVout, value: BigInt(vinVout.value) };
     }
 
     return vinVout;
@@ -66,16 +64,16 @@ export function expand(values: VinVoutFixture[], indices: boolean) {
             values.map((x, i) => ({
                 i,
                 type: 'p2pkh',
-                ...valueToBN(x),
+                ...valueToBigInt(x),
             })),
             INPUT_SCRIPT_LENGTH.p2pkh,
         );
     }
 
-    return addScriptLength(values.map(valueToBN), OUTPUT_SCRIPT_LENGTH.p2pkh);
+    return addScriptLength(values.map(valueToBigInt), OUTPUT_SCRIPT_LENGTH.p2pkh);
 }
 
-type VinVoutResult = { value: BN };
+type VinVoutResult = { value: bigint };
 
 export function serialize(result: { inputs?: VinVoutResult[]; outputs?: VinVoutResult[] }) {
     return {

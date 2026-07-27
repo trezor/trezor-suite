@@ -1,9 +1,9 @@
-import { PayloadAction } from '@reduxjs/toolkit';
+import { type PayloadAction } from '@reduxjs/toolkit';
 
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 
 import { walletConnectActions } from './walletConnectActions';
-import { PendingConnectionProposal, WalletConnectSession } from './walletConnectTypes';
+import { type PendingConnectionProposal, type WalletConnectSession } from './walletConnectTypes';
 
 export type WalletConnectState = {
     sessions: WalletConnectSession[];

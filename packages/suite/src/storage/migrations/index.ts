@@ -1,5 +1,3 @@
-import { toWei } from 'web3-utils';
-
 import {
     type NetworkSymbol,
     getNetwork,
@@ -7,22 +5,23 @@ import {
     networkSymbolCollection,
 } from '@suite-common/wallet-config';
 import {
-    AccountKey,
-    BackendSettings,
-    WalletSettings,
+    type AccountKey,
+    type BackendSettings,
+    type WalletSettings,
     createAccountKey,
 } from '@suite-common/wallet-types';
 import {
     convertAmountUnitsToSubunits,
     formatNetworkAmount,
+    fromGwei,
     networkAmountToSmallestUnit,
 } from '@suite-common/wallet-utils';
 import { parseAsset } from '@trezor/blockchain-link-utils/src/blockfrost';
-import { FirmwareType } from '@trezor/connect';
+import { type DeviceState, FirmwareType } from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { isDesktop } from '@trezor/env-utils';
 import type { OnUpgradeFunc } from '@trezor/suite-storage';
-import { PartialRecord } from '@trezor/type-utils';
+import { type PartialRecord } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { migrateToV56 } from 'src/storage/migrations/legacyVersions/migrateToV56';
@@ -99,7 +98,7 @@ export const runLegacyMigrations: OnUpgradeFunc<SuiteDBSchema> = async (
 
         await updateAll(transaction, 'accounts', account => {
             account.metadata = {
-                key: '' as AccountKey,
+                key: '',
                 // @ts-expect-error
                 fileName: '',
                 aesKey: '',
@@ -429,7 +428,7 @@ export const runLegacyMigrations: OnUpgradeFunc<SuiteDBSchema> = async (
                     ethereumSpecific: origTx.ethereumSpecific
                         ? {
                               ...origTx.ethereumSpecific,
-                              gasPrice: toWei(origTx.ethereumSpecific?.gasPrice ?? '0', 'gwei'),
+                              gasPrice: fromGwei(origTx.ethereumSpecific?.gasPrice ?? '0').toWei(),
                           }
                         : undefined,
                     cardanoSpecific: origTx.cardanoSpecific
@@ -462,9 +461,7 @@ export const runLegacyMigrations: OnUpgradeFunc<SuiteDBSchema> = async (
             const { features } = device;
 
             device.firmwareType =
-                features &&
-                features.capabilities &&
-                !features.capabilities.includes('Capability_Bitcoin_like')
+                features?.capabilities && !features.capabilities.includes('Capability_Bitcoin_like')
                     ? FirmwareType.BitcoinOnly
                     : FirmwareType.Universal;
 
@@ -1060,9 +1057,10 @@ export const runLegacyMigrations: OnUpgradeFunc<SuiteDBSchema> = async (
         // Migrate device state to new object format
         await updateAll(transaction, 'devices', device => {
             if (typeof device.state === 'string') {
-                if (typeof (device as any)?._state?.staticSessionId === 'string') {
+                const legacyDevice = device as typeof device & { _state?: DeviceState };
+                if (typeof legacyDevice?._state?.staticSessionId === 'string') {
                     // Has _state property, migrate to that
-                    device.state = (device as any)._state;
+                    device.state = legacyDevice._state;
                 } else {
                     // No _state property, create new object
                     device.state = {

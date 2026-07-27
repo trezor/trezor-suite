@@ -1,3 +1,4 @@
+import { areEvmAddressesEqual } from '@suite-common/address';
 import {
     type Explorer,
     type NetworkSymbol,
@@ -5,9 +6,16 @@ import {
     type NetworkType,
     getExplorerUrl,
     getNetworkType,
+    getWrappedNativeAddress,
 } from '@suite-common/wallet-config';
-import { TokenInfo, TokenStandard, TokenTransfer } from '@trezor/blockchain-link-types';
+import {
+    type EthereumSpecific,
+    type TokenInfo,
+    type TokenStandard,
+    type TokenTransfer,
+} from '@trezor/blockchain-link-types';
 import { parseAsset } from '@trezor/blockchain-link-utils/src/blockfrost';
+import stellar from '@trezor/network-stellar/runtime';
 
 export const getContractAddressForNetworkSymbol = (
     symbol: NetworkSymbolExtended,
@@ -28,7 +36,12 @@ export const getContractAddressForNetworkSymbol = (
     }
 };
 
-export const getAssetLogoContractAddresses = (
+export const isWrappedNativeToken = (
+    networkSymbol: NetworkSymbol,
+    contractAddress?: string | null,
+): boolean => areEvmAddressesEqual(getWrappedNativeAddress(networkSymbol), contractAddress);
+
+export const getAssetLogoContractAddresses = async (
     symbol: NetworkSymbolExtended | undefined,
     contract: string | null | undefined,
 ) => {
@@ -38,6 +51,21 @@ export const getAssetLogoContractAddresses = (
         const policyId = getContractAddressForNetworkSymbol(symbol, contract);
 
         return [policyId, contract];
+    }
+
+    // CoinGecko is gradually migrating Stellar token ids from the classic
+    // `CODE-ISSUER` form used at runtime to Soroban contract addresses. Once a
+    // token is migrated, its icon on the CDN is stored under the Soroban
+    // filename. Fall back to the locally-derived Soroban asset contract id so
+    // the icon is still reachable.
+    if (symbol === 'xlm') {
+        const { computeSorobanAssetContractId } = await stellar();
+        const { sorobanAssetContractId } = computeSorobanAssetContractId(contract);
+
+        // Keep the classic contract first until CoinGecko finishes the Stellar
+        // migration. Once Soroban ids become the primary CDN key, flip the
+        // order to reduce retries.
+        return [contract, sorobanAssetContractId];
     }
 
     return [getContractAddressForNetworkSymbol(symbol, contract)];
@@ -94,6 +122,12 @@ export const isNftMatchesSearch = (token: TokenInfo, search: string) =>
     token.name?.toLowerCase().includes(search) ||
     token.contract?.toLowerCase().includes(search);
 
+export const isFunctionSelectorMatchesSearch = (evmSpecific: EthereumSpecific, search: string) => {
+    if (evmSpecific?.parsedData?.name.toLowerCase().includes(search.toLowerCase())) return true;
+
+    return false;
+};
+
 const PRESERVE_TOKEN_SYMBOL_CASE_STANDARDS: ReadonlySet<TokenStandard> = new Set([
     'ERC20',
     'ERC721',
@@ -107,3 +141,11 @@ const PRESERVE_TOKEN_SYMBOL_CASE_STANDARDS: ReadonlySet<TokenStandard> = new Set
 
 export const shouldUppercaseTokenSymbol = (token: TokenInfo) =>
     token.standard ? !PRESERVE_TOKEN_SYMBOL_CASE_STANDARDS.has(token.standard) : true;
+
+export const isErc4626 = (token: TokenInfo) => !!token.protocols?.includes('erc4626');
+
+export const getErc4626Contracts = (tokens: TokenInfo[] | undefined) =>
+    new Set(tokens?.filter(isErc4626).map(token => token.contract.toLowerCase()));
+
+export const sortTokensByName = (a: Pick<TokenInfo, 'name'>, b: Pick<TokenInfo, 'name'>) =>
+    (a.name ?? '').localeCompare(b.name ?? '');

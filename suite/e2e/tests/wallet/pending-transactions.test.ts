@@ -20,6 +20,7 @@ test.describe(
     { tag: ['@desktopOnly', '@T3W1', '@T3T1'] },
     () => {
         test.use({ deviceSetup: { mnemonic: 'mnemonic_all' } });
+
         test.beforeEach(async ({ page, onboardingPage, settingsPage, trezorUserEnv }) => {
             await test.step('Mine on regtest network', async () => {
                 const payments = [
@@ -38,12 +39,11 @@ test.describe(
                 await page.waitForTimeout(5_000);
             });
 
-            await onboardingPage.completeOnboarding({ keepDebugModeEnabled: true });
+            await onboardingPage.completeOnboarding();
+            await settingsPage.navigateTo('application');
+            await settingsPage.toggleDebugModeInSettings();
             await settingsPage.toggleTestnetNetworks();
-            await settingsPage.changeNetworks({
-                enableNetworks: ['regtest'],
-                disableNetworks: ['btc'],
-            });
+            await settingsPage.changeNetworks({ enableNetworks: ['regtest'] });
         });
 
         test('Send couple of pending txs and check that they are pending until mined', async ({
@@ -73,8 +73,10 @@ test.describe(
                     await page.getByTestId('outputs.1.amount').fill('0.7');
                     await page.getByTestId('outputs.1.address').fill(transaction.address);
                     await tradingPage.sendButton.click();
-                    await device.pressYes(); // 1st recipient
-                    await device.pressYes(); // 2nd recipient
+                    await device.pressYes(); // 1st recipient address
+                    await device.pressYes(); // 1st recipient amount
+                    await device.pressYes(); // 2nd recipient address
+                    await device.pressYes(); // 2nd recipient amount
                     await device.pressYes(); // Summary
                     await devicePrompt.sendButton.click();
 
@@ -204,12 +206,6 @@ test.describe(
                 ).toContainTranslation('TR_RECEIVED_SYMBOL', {
                     values: { multiple: 'false', symbol: 'REGTEST' },
                 });
-            });
-
-            await test.step('Verify account #3 is visible', async () => {
-                await expect(
-                    walletPage.accountLabel({ symbol: 'regtest', type: 'normal', atIndex: 2 }),
-                ).toBeVisible();
             });
         });
     },

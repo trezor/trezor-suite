@@ -19,6 +19,7 @@
         "expo-linear-gradient",
         "expo-linking",
         "expo-localization",
+        "expo-mcp",
         "expo-secure-store",
         "expo-status-bar",
         "expo-system-ui",
@@ -34,7 +35,6 @@
         "react-native-launch-arguments",
         "react-native-nitro-modules",
         "react-native-permissions",
-        "react-native-restart",
         "react-native-screens",
         "react-native-svg",
         "redux-persist",
@@ -42,6 +42,7 @@
         "@currents/cmd",
         "expo-atlas",
         "jest-junit",
-        "ts-jest"
+        "ts-jest",
+        "uri-scheme"
     ]
 }

@@ -2,21 +2,19 @@
 // and stdout out those to be used by GitHub workflow.
 
 import fs from 'node:fs';
-import util from 'node:util';
 import path from 'node:path';
+import util from 'node:util';
 import semver from 'semver';
 
-import { getNpmRemoteGreatestVersion } from './helpers';
+import { getNpmRemoteGreatestVersion, getTrezorPackageDir } from './helpers';
 
 const readFile = util.promisify(fs.readFile);
-
-const ROOT = path.join(import.meta.dirname, '..', '..');
 
 const nonReleaseDependencies: string[] = [];
 
 const checkNonReleasedDependencies = async (packageName: string) => {
     const rawPackageJSON = await readFile(
-        path.join(ROOT, 'packages', packageName, 'package.json'),
+        path.join(getTrezorPackageDir(packageName), 'package.json'),
         'utf-8',
     );
 
@@ -30,7 +28,7 @@ const checkNonReleasedDependencies = async (packageName: string) => {
     const remoteGreatestVersion = await getNpmRemoteGreatestVersion(`@trezor/${packageName}`);
 
     // If local version is greatest than the greatest one in NPM we add it to the release.
-    if (semver.gt(localVersion, remoteGreatestVersion as string)) {
+    if (!remoteGreatestVersion || semver.gt(localVersion, remoteGreatestVersion as string)) {
         const index = nonReleaseDependencies.indexOf(packageName);
         if (index > -1) {
             nonReleaseDependencies.splice(index, 1);
@@ -42,14 +40,15 @@ const checkNonReleasedDependencies = async (packageName: string) => {
         return;
     }
 
-    // eslint-disable-next-line no-restricted-syntax
     for await (const [dependency] of Object.entries(dependencies)) {
         // is not a dependency released from monorepo. we don't care
         if (!dependency.startsWith('@trezor')) {
-            // eslint-disable-next-line no-continue
             continue;
         }
-        const [_prefix, name] = dependency.split('/');
+        const name = dependency.split('/')[1];
+        if (!name) {
+            continue;
+        }
 
         await checkNonReleasedDependencies(name);
     }
@@ -67,9 +66,10 @@ const getConnectDependenciesToRelease = async () => {
 
     // We do not want to include `connect`, `connect-web` and `connect-webextension` since we want
     // to release those separately and we always want to release them.
-    const onlyDependenciesToRelease = nonReleaseDependencies.filter(item => {
-        return !['connect', 'connect-web', 'connect-webextension', 'connect-mobile'].includes(item);
-    });
+    const onlyDependenciesToRelease = nonReleaseDependencies.filter(
+        item =>
+            !['connect', 'connect-web', 'connect-webextension', 'connect-mobile'].includes(item),
+    );
 
     // We use `onlyDependenciesToRelease` to trigger NPM releases
     const dependenciesToRelease = JSON.stringify(onlyDependenciesToRelease);

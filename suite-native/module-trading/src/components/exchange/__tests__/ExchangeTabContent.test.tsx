@@ -1,11 +1,7 @@
-import {
-    PreloadedState,
-    act,
-    renderWithStoreProviderAsync,
-    screen,
-    userEvent,
-} from '@suite-native/test-utils';
+import { getTranslation } from '@suite-native/intl';
+import { act, screen, userEvent } from '@suite-native/test-utils-store';
 
+import { renderWithTradingProvider } from '../../../__tests__/tradingTestUtils';
 import { ExchangeTabContent } from '../ExchangeTabContent';
 
 let mockUseTradingExchangeData: jest.Mock;
@@ -28,66 +24,70 @@ describe('ExchangeTab', () => {
         }));
     });
 
-    const renderExchangeTab = (preloadedState?: PreloadedState) =>
-        renderWithStoreProviderAsync(<ExchangeTabContent />, { preloadedState });
+    const renderExchangeTab = () =>
+        renderWithTradingProvider(<ExchangeTabContent />, { tradeType: 'exchange' });
 
     const expectSkeleton = () => {
         expect(screen.getAllByTestId('BoxSkeleton').length).toBeGreaterThan(0);
     };
 
     const expectExchangeForm = () => {
-        expect(screen.getByText('You pay')).toBeOnTheScreen();
-        expect(screen.getByText('You get')).toBeOnTheScreen();
+        expect(
+            screen.getByText(getTranslation('moduleTrading.selectFiat.buy.amountLabel')),
+        ).toBeOnTheScreen();
+        expect(
+            screen.getByText(getTranslation('moduleTrading.selectFiat.sell.amountLabel')),
+        ).toBeOnTheScreen();
     };
 
     const expectServerOffline = () => {
         expect(screen.getByText("It's not you, it's us.")).toBeOnTheScreen();
     };
 
-    it('should render Exchange skeleton when isLoading is true', async () => {
+    it('should render Exchange skeleton when isLoading is true', () => {
         mockUseTradingExchangeData.mockReturnValue({
             isLoading: true,
             lastLoadedTimestamp: 1,
             isFullyLoaded: false,
         });
 
-        await renderExchangeTab();
+        renderExchangeTab();
 
         expectSkeleton();
     });
 
-    it('should render Exchange skeleton when lastLoadedTimestamp is 0', async () => {
+    it('should render Exchange skeleton when lastLoadedTimestamp is 0', () => {
         mockUseTradingExchangeData.mockReturnValue({
             isLoading: false,
             lastLoadedTimestamp: 0,
             isFullyLoaded: false,
         });
 
-        await renderExchangeTab();
+        renderExchangeTab();
 
         expectSkeleton();
     });
 
-    it('should render Exchange form when isLoading is false, lastLoadedTimestamp is greater than 0 and isFullyLoaded true', async () => {
+    it('should render Exchange form when isLoading is false, lastLoadedTimestamp is greater than 0 and isFullyLoaded true', () => {
         mockUseTradingExchangeData.mockReturnValue({
             isLoading: false,
             lastLoadedTimestamp: 1,
             isFullyLoaded: true,
         });
 
-        await renderExchangeTab();
+        renderExchangeTab();
 
         expectExchangeForm();
     });
 
-    it('should render server error info when isLoading is false, lastLoadedTimestamp is greater than 0 and isFullyLoaded false', async () => {
+    it('should render server error info when isLoading is false, lastLoadedTimestamp is greater than 0 and isFullyLoaded false', () => {
         mockUseTradingExchangeData.mockReturnValue({
             isLoading: false,
             lastLoadedTimestamp: 1,
             isFullyLoaded: false,
         });
 
-        await renderExchangeTab();
+        renderExchangeTab();
 
         expectServerOffline();
     });
@@ -105,9 +105,9 @@ describe('ExchangeTab', () => {
                 isFullyLoaded: true,
             });
 
-        const { getByText } = await renderExchangeTab();
+        const { getByText } = renderExchangeTab();
 
-        const reloadButton = getByText('Try again');
+        const reloadButton = getByText(getTranslation('tradingAtoms.error.serverOfflineRetry'));
 
         await act(async () => {
             await userEvent.press(reloadButton);

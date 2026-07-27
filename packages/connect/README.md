@@ -40,9 +40,7 @@ For more instructions [refer to this document](https://github.com/trezor/trezor-
 
 ## Versioning
 
-### Version 10
-
-Is now in alpha stage. Information about legacy versions can be found in [README_LEGACY.md](./README_LEGACY.md)
+Version 10 is the current major version and is currently in alpha. New major versions are released when there are breaking API changes. Information about legacy versions can be found in [README_LEGACY.md](./README_LEGACY.md).
 
 ## Docs
 

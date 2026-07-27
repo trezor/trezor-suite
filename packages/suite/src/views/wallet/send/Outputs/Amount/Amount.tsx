@@ -1,11 +1,13 @@
 import { useEffect } from 'react';
 
-import { events } from '@suite/analytics';
+import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation, useTranslation } from '@suite/intl';
+import { selectLanguage } from '@suite/settings';
+import { useServices } from '@suite-common/dependency-injection';
 import { formInputsMaxLength } from '@suite-common/validators';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { selectIsNetworkReserveEnabled } from '@suite-common/wallet-core';
-import { Output, TokenAddress } from '@suite-common/wallet-types';
+import { type Output, type TokenAddress } from '@suite-common/wallet-types';
 import {
     convertAmountUnitsToSubunits,
     findToken,
@@ -16,16 +18,14 @@ import {
 } from '@suite-common/wallet-utils';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { Banner, Flex, Icon, Row, Text } from '@trezor/components';
+import { ArrowsDownUpIcon, ArrowsLeftRightIcon } from '@trezor/icons';
 import { NumberInput } from '@trezor/product-components';
-import { spacings } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils';
 
 import { BaseCurrencyValue } from 'src/components/suite';
 import { useLayoutSize, useSelector } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
-import { selectLanguage } from 'src/selectors/suite/suiteSelectors';
-import { useAnalytics } from 'src/support/useAnalytics';
 import {
     validateDecimals,
     validateInteger,
@@ -46,7 +46,7 @@ interface AmountProps {
 
 export const Amount = ({ output, outputId }: AmountProps) => {
     const { translationString } = useTranslation();
-    const analytics = useAnalytics();
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
     const {
         account,
         network,
@@ -182,6 +182,10 @@ export const Amount = ({ output, outputId }: AmountProps) => {
 
         setMax(outputId, isSendMaxActive, clearInput);
         composeTransaction(amountName);
+
+        if (isSendMaxActive) {
+            setShowReserveBanner(false);
+        }
     };
 
     const sendMaxSwitch = (
@@ -197,7 +201,7 @@ export const Amount = ({ output, outputId }: AmountProps) => {
             <Flex
                 direction={isBelowLaptop ? 'column' : 'row'}
                 alignItems={isBelowLaptop ? 'center' : 'normal'}
-                gap={spacings.sm}
+                gap={12}
             >
                 {showTokenCurrency && (
                     <NumberInput
@@ -241,13 +245,15 @@ export const Amount = ({ output, outputId }: AmountProps) => {
                                 <>
                                     {showTokenCurrency && (
                                         <Icon
-                                            name={
-                                                isBelowLaptop ? 'arrowsDownUp' : 'arrowsLeftRight'
+                                            as={
+                                                isBelowLaptop
+                                                    ? ArrowsDownUpIcon
+                                                    : ArrowsLeftRightIcon
                                             }
                                             size={20}
                                             intent="neutral"
                                             priority="secondary"
-                                            margin={{ top: isBelowLaptop ? 0 : spacings.xxxxl }}
+                                            margin={{ top: isBelowLaptop ? 0 : 48 }}
                                         />
                                     )}
                                     <BaseCurrencyInput
@@ -275,7 +281,7 @@ export const Amount = ({ output, outputId }: AmountProps) => {
             {isLowAnonymity && (
                 <Banner
                     icon
-                    margin={{ top: spacings.sm }}
+                    margin={{ top: 12 }}
                     description={<Translation id="TR_NOT_ENOUGH_ANONYMIZED_FUNDS_WARNING" />}
                 />
             )}

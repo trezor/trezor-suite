@@ -1,15 +1,27 @@
-import type { Address, Transaction } from '@trezor/blockchain-link-types';
-import type { VinVout } from '@trezor/blockchain-link-types/src/blockbook';
-import type { ElectrumAPI } from '@trezor/blockchain-link-types/src/electrum';
-import type { GetAccountInfo as Req } from '@trezor/blockchain-link-types/src/messages';
-import type { GetAccountInfo as Res } from '@trezor/blockchain-link-types/src/responses';
+import type {
+    Address,
+    ElectrumAPI,
+    MessageTypes,
+    ResponseTypes,
+    Transaction,
+    VinVout,
+} from '@trezor/blockchain-link-types';
 import { sortTxsFromLatest } from '@trezor/blockchain-link-utils';
 import { transformTransaction } from '@trezor/blockchain-link-utils/src/blockbook';
 import { discovery } from '@trezor/utxo-lib';
 
-import { AddressHistory, Api, discoverAddress, getTransactions, tryGetScripthash } from '../utils';
+import {
+    type AddressHistory,
+    type Api,
+    discoverAddress,
+    getTransactions,
+    tryGetScripthash,
+} from '../utils';
 
 const PAGE_SIZE_DEFAULT = 25;
+
+type Req = MessageTypes.GetAccountInfo;
+type Res = ResponseTypes.GetAccountInfo;
 
 type AddressInfo = Omit<AddressHistory, 'scripthash'> & {
     confirmed: number;
@@ -60,7 +72,7 @@ export const sumAddressValues = <T>(
         .reduce((a, b) => a + b, 0);
 
 const getAccountInfo: Api<Req, Res> = async ({ client, addressCache }, payload) => {
-    const { descriptor, details = 'basic', pageSize = PAGE_SIZE_DEFAULT } = payload;
+    const { descriptor, details = 'basic', pageSize = PAGE_SIZE_DEFAULT, gap } = payload;
     const network = client.getInfo()?.network;
 
     const parsed = tryGetScripthash(descriptor, network);
@@ -96,10 +108,10 @@ const getAccountInfo: Api<Req, Res> = async ({ client, addressCache }, payload) 
         };
     }
     const discover = discoverAddress(client);
-    const receive = await discovery(discover, addressCache(descriptor, 'receive')).then(
+    const receive = await discovery(discover, addressCache(descriptor, 'receive'), gap).then(
         getBalances(client),
     );
-    const change = await discovery(discover, addressCache(descriptor, 'change')).then(
+    const change = await discovery(discover, addressCache(descriptor, 'change'), gap).then(
         getBalances(client),
     );
     const batch = receive.concat(change);

@@ -1,6 +1,9 @@
-import type { TokenInfo } from '@trezor/blockchain-link-types';
-import type * as MessageTypes from '@trezor/blockchain-link-types/src/messages';
-import type * as Responses from '@trezor/blockchain-link-types/src/responses';
+import type {
+    MessageTypes,
+    ResponseTypes as Responses,
+    TokenInfo,
+} from '@trezor/blockchain-link-types';
+import { isNotNull } from '@trezor/utils';
 
 import { mapGetAccountInfoResponse } from '../mappers/accountInfo';
 import { getStakingPoolData } from '../staking/poolData';
@@ -27,7 +30,7 @@ export const getAccountInfo = async (
     if (payload.details === 'tokenBalances' && payload.contractFilter) {
         const contractAddress = toHex(payload.contractFilter);
         const tokenInfo = await getTokenInfo(client, address, contractAddress, true);
-        tokens = [tokenInfo].filter((token): token is TokenInfo => token !== null);
+        tokens = [tokenInfo].filter(isNotNull);
     }
 
     return mapGetAccountInfoResponse({

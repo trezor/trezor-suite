@@ -1,12 +1,16 @@
-import { RouteProp, useRoute } from '@react-navigation/native';
+import { type RouteProp, useRoute } from '@react-navigation/native';
 
 import { parseAccountKey } from '@suite-common/wallet-utils';
+import { AccountLabel } from '@suite-native/accounts';
 import { HStack, Text } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
-import { AccountLabel } from '@suite-native/labeling';
-import { RootStackParamList, RootStackRoutes, ScreenHeader } from '@suite-native/navigation';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import {
+    type RootStackParamList,
+    type RootStackRoutes,
+    ScreenHeader,
+} from '@suite-native/navigation';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 const headerStyle = prepareNativeStyle(utils => ({
     flexShrink: 1,
@@ -31,7 +35,7 @@ export const StakingDetailScreenHeader = () => {
             customContent={
                 <>
                     <HStack style={applyStyle(headerStyle)}>
-                        <Icon name="piggyBankFilled" color="iconSubdued" />
+                        <Icon name="piggyBankFilled" color="contentSecondary" />
                         <Text
                             variant="body-md-strong"
                             ellipsizeMode="tail"
@@ -41,13 +45,14 @@ export const StakingDetailScreenHeader = () => {
                             <Translation id="earn.stakingDetailScreen.title" />
                         </Text>
                     </HStack>
-                    <Text variant="body-sm" color="textSubdued">
-                        <AccountLabel
-                            accountDescriptor={accountDescriptor}
-                            networkSymbol={networkSymbol}
-                            deviceStaticSessionId={deviceStaticSessionId}
-                        />
-                    </Text>
+                    <AccountLabel
+                        accountDescriptor={accountDescriptor}
+                        networkSymbol={networkSymbol}
+                        deviceStaticSessionId={deviceStaticSessionId}
+                        variant="body-sm"
+                        color="contentSecondary"
+                        showAccountTypeBadge
+                    />
                 </>
             }
             closeActionType="back"

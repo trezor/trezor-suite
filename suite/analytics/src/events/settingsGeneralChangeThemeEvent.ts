@@ -9,7 +9,7 @@ type Attributes = {
     previousAutodetectTheme: AttributeDef<boolean>;
     theme: AttributeDef<ThemeValue>;
     autodetectTheme: AttributeDef<boolean>;
-    platformTheme: AttributeDef<ThemeValue>;
+    platformTheme: AttributeDef<'light' | 'dark'>;
 };
 
 export const settingsGeneralChangeThemeEvent: EventDef<
@@ -17,26 +17,32 @@ export const settingsGeneralChangeThemeEvent: EventDef<
     EventType.SettingsGeneralChangeTheme
 > = {
     name: EventType.SettingsGeneralChangeTheme,
-    descriptionTrigger: 'Settings > Application > APPLICATION > Color scheme',
+    descriptionTrigger:
+        'User changes the application color scheme theme in Settings > Application > Color scheme',
     changelog: [{ version: '1.17.0', notes: 'added' }],
 
     attributes: {
         theme: {
+            description:
+                'The selected theme: `light` for light mode, `dark` for dark mode, `debug` for debug theme',
             changelog: [{ version: '1.17.0', notes: 'added' }],
-            description: '"dark" or "light"',
         },
         platformTheme: {
+            description:
+                'The operating system theme: `light` for light mode or `dark` for dark mode',
             changelog: [{ version: '1.17.0', notes: 'added' }],
-            description: '"dark" or "light"',
         },
         previousTheme: {
+            description: 'The previously selected theme before this change',
             changelog: [{ version: '1.17.0', notes: 'added' }],
-            description: '"dark" or "light"',
         },
         autodetectTheme: {
+            description:
+                'Whether auto-detection of system theme is enabled (`true`) or manual theme selection is used (`false`)',
             changelog: [{ version: '1.17.0', notes: 'added' }],
         },
         previousAutodetectTheme: {
+            description: 'Whether auto-detection was previously enabled before this change',
             changelog: [{ version: '1.17.0', notes: 'added' }],
         },
     },

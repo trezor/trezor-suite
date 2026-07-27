@@ -1,16 +1,18 @@
 import { forwardRef, useCallback } from 'react';
+import { useSelector } from 'react-redux';
 
-import { BottomSheetModalMethods } from '@gorhom/bottom-sheet/lib/typescript/types';
+import { type BottomSheetModalMethods } from '@gorhom/bottom-sheet/lib/typescript/types';
 import { useNavigation } from '@react-navigation/native';
 
+import { selectThpConfirmationRequestId } from '@suite-common/thp';
 import { BottomSheetModal, Button, Text, TitleHeader, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
-    DeviceOnboardingStackParamList,
+    type DeviceOnboardingStackParamList,
     DeviceOnboardingStackRoutes,
-    RootStackParamList,
+    type RootStackParamList,
     RootStackRoutes,
-    StackToStackCompositeNavigationProps,
+    type StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 import TrezorConnect, { UI_RESPONSE } from '@trezor/connect';
 
@@ -30,15 +32,17 @@ export const WalletBackupNotSetWarningBottomSheet = forwardRef<
     WalletBackupNotSetWarningBottomSheetProps
 >(({ onConfirm, onClose }, ref) => {
     const navigation = useNavigation<NavigationProps>();
+    const requestId = useSelector(selectThpConfirmationRequestId);
 
     const handleContinueAnyway = useCallback(() => {
         // When Trezor has no backup, it awaits confirmation to continue.
         TrezorConnect.uiResponse({
             type: UI_RESPONSE.RECEIVE_CONFIRMATION,
             payload: true,
+            requestId,
         });
         onConfirm?.();
-    }, [onConfirm]);
+    }, [onConfirm, requestId]);
 
     const handleCreateBackup = useCallback(() => {
         navigation.navigate(RootStackRoutes.DeviceOnboardingStack, {
@@ -60,10 +64,10 @@ export const WalletBackupNotSetWarningBottomSheet = forwardRef<
                 </Text>
 
                 <VStack spacing="sp12">
-                    <Button colorScheme="yellowElevation0" onPress={handleContinueAnyway}>
+                    <Button intent="warning" priority="secondary" onPress={handleContinueAnyway}>
                         <Translation id="moduleDevice.noBackupModal.continue" />
                     </Button>
-                    <Button colorScheme="yellowBold" onPress={handleCreateBackup}>
+                    <Button intent="warning" priority="primary" onPress={handleCreateBackup}>
                         <Translation id="moduleDevice.noBackupModal.cta" />
                     </Button>
                 </VStack>

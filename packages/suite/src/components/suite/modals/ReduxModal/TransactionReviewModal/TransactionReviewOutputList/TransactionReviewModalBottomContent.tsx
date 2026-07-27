@@ -1,24 +1,47 @@
 import { useDispatch, useSelector } from 'react-redux';
 
-import { type TransactionCreatedEventAction, events } from '@suite/analytics';
-import { ExtendedMessageDescriptor, Translation } from '@suite/intl';
+import {
+    type TransactionCreatedEventAction,
+    events,
+    selectDesktopAnalyticsDep,
+} from '@suite/analytics';
+import { type ExtendedMessageDescriptor, Translation } from '@suite/intl';
 import { selectConnectPopupCall } from '@suite-common/connect-popup';
+import { useServices } from '@suite-common/dependency-injection';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { SendState, StakeState } from '@suite-common/wallet-core';
-import { Account, FormState, RbfTransactionType, ReviewOutput } from '@suite-common/wallet-types';
-import { isRbfCancelTransaction, isRbfTransaction } from '@suite-common/wallet-utils';
-import { StakeType } from '@trezor/blockchain-link-types';
+import {
+    type Account,
+    type FormState,
+    type RbfTransactionType,
+    type ReviewOutput,
+    type TronStakingFormState,
+} from '@suite-common/wallet-types';
+import {
+    getTxValidityTimeoutInMs,
+    isRbfCancelTransaction,
+    isRbfTransaction,
+} from '@suite-common/wallet-utils';
+import { type StakeType } from '@trezor/blockchain-link-types';
 import { Modal } from '@trezor/components';
 import { copyToClipboard, download } from '@trezor/dom-utils';
-import { Deferred } from '@trezor/utils';
+import { type Deferred } from '@trezor/utils';
 
-import { useAnalytics } from 'src/support/useAnalytics';
-
-import { getTxType } from '../utils';
+import { type TxInfoState, getTxType, hasTxValidityExpired } from '../utils';
 
 const mapRbfTypeToReporting: Record<RbfTransactionType, TransactionCreatedEventAction> = {
     'bump-fee': 'replaced',
     cancel: 'canceled',
+};
+
+const mapTronStakingKindToConfirmAction: Record<
+    TronStakingFormState['kind'],
+    'stake' | 'unstake' | 'claim' | 'change-delegate' | 'withdraw'
+> = {
+    freeze: 'stake',
+    vote: 'change-delegate',
+    unstake: 'unstake',
+    withdraw: 'withdraw',
+    claim: 'claim',
 };
 
 type TransactionReviewModalBottomContentProps = {
@@ -27,10 +50,9 @@ type TransactionReviewModalBottomContentProps = {
     onSend: (send: boolean) => void;
     onCancel: () => void;
     handleTryAgain: (close: boolean) => void;
-    txInfoState: SendState | StakeState;
+    txInfoState: TxInfoState;
     actionTranslation: ExtendedMessageDescriptor;
-    isTxExpired: boolean;
-    hasTxExpired: boolean;
+    hasTxReviewExpired: boolean;
     stakeType?: StakeType;
     isRbfConfirmedError?: boolean;
     account: Account;
@@ -47,14 +69,13 @@ export const TransactionReviewModalBottomContent = ({
     handleTryAgain,
     txInfoState,
     actionTranslation,
-    isTxExpired,
-    hasTxExpired,
+    hasTxReviewExpired,
     stakeType,
     account,
     precomposedForm,
     outputs,
 }: TransactionReviewModalBottomContentProps) => {
-    const analytics = useAnalytics();
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
     const dispatch = useDispatch();
     const connectPopupCall = useSelector(selectConnectPopupCall);
     const { precomposedTx, serializedTx } = txInfoState;
@@ -69,6 +90,8 @@ export const TransactionReviewModalBottomContent = ({
 
     const createdTxTimestamp = txInfoState?.precomposedTx?.createdTimestamp ?? 0;
     const shouldCheckTxTimeValidity = account?.networkType === 'solana' && createdTxTimestamp !== 0;
+    const deadline = createdTxTimestamp + getTxValidityTimeoutInMs(account.networkType);
+    const hasTxDeadlineExpired = shouldCheckTxTimeValidity && hasTxValidityExpired(deadline);
 
     const reportTransactionCreatedEvent = (action: TransactionCreatedEventAction) =>
         analytics.report({
@@ -89,12 +112,12 @@ export const TransactionReviewModalBottomContent = ({
                 selectedFee: selectedFee || 'normal',
                 isCoinControlEnabled: precomposedForm.isCoinControlEnabled,
                 hasCoinControlBeenOpened: precomposedForm.hasCoinControlBeenOpened,
-                txType: txType as 'stake' | 'trade' | undefined,
+                txType,
             },
         });
 
     const handleSend = () => {
-        if (networkType === 'solana' || networkType === 'stellar') {
+        if (networkType === 'solana' || networkType === 'stellar' || networkType === 'tron') {
             onSend(true);
         }
 
@@ -102,14 +125,19 @@ export const TransactionReviewModalBottomContent = ({
             decision.resolve(true);
             reportTransactionCreatedEvent(
                 isRbfTransaction(precomposedTx!)
-                    ? mapRbfTypeToReporting[precomposedTx!.rbfType]
+                    ? mapRbfTypeToReporting[precomposedTx.rbfType]
                     : 'sent',
             );
 
-            if (stakeType) {
+            const stakingConfirmAction =
+                stakeType ??
+                (precomposedForm.tronStaking &&
+                    mapTronStakingKindToConfirmAction[precomposedForm.tronStaking.kind]);
+
+            if (stakingConfirmAction) {
                 return analytics.report({
                     type: events.stakingConfirmEvent.name,
-                    payload: { action: stakeType, networkSymbol: symbol },
+                    payload: { action: stakingConfirmAction, networkSymbol: symbol },
                 });
             }
         }
@@ -138,7 +166,7 @@ export const TransactionReviewModalBottomContent = ({
         );
     }
 
-    if (shouldCheckTxTimeValidity && isTxExpired && !isSending) {
+    if (shouldCheckTxTimeValidity && hasTxReviewExpired && !isSending) {
         return (
             <>
                 <Modal.Button onClick={() => handleTryAgain(false)}>
@@ -159,7 +187,7 @@ export const TransactionReviewModalBottomContent = ({
         return (
             <Modal.Button
                 data-testid="@modal/send"
-                isDisabled={!serializedTx || hasTxExpired}
+                isDisabled={!serializedTx || hasTxDeadlineExpired}
                 isLoading={isSending}
                 intent={isCancelRbfAction ? 'critical' : 'brand'}
                 onClick={handleSend}

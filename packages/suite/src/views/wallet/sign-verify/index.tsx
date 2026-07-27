@@ -1,8 +1,12 @@
 import { useEffect, useState } from 'react';
-import { FieldError } from 'react-hook-form';
+import { type FieldError } from 'react-hook-form';
 
-import { Translation, TranslationKey, useTranslation } from '@suite/intl';
+import { selectFullSelectedAccount, selectSelectedAccountKey } from '@suite/account';
+import { useDevice } from '@suite/device';
+import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
+import { type ReceiveRootState, selectTouchedAddresses } from '@suite-common/receive';
 import {
+    Box,
     Button,
     Card,
     Column,
@@ -16,16 +20,16 @@ import {
     Tooltip,
 } from '@trezor/components';
 import { copyToClipboard } from '@trezor/dom-utils';
-import { spacings } from '@trezor/theme';
+import { CheckIcon, CopyIcon } from '@trezor/icons';
 
 import { isVerifySupported, sign, verify } from 'src/actions/wallet/signVerifyActions';
 import { WalletLayout, WalletSubpageHeading } from 'src/components/wallet';
-import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useCopySignedMessage } from 'src/hooks/wallet/sign-verify/useCopySignedMessage';
 import {
     MAX_LENGTH_MESSAGE,
     MAX_LENGTH_SIGNATURE,
-    SignVerifyFields,
+    type SignVerifyFields,
     useSignVerifyForm,
 } from 'src/hooks/wallet/sign-verify/useSignVerifyForm';
 import { ConnectDeviceGenericPromo } from 'src/views/wallet/receive/components/ConnectDevicePromo';
@@ -36,8 +40,11 @@ const SignVerify = () => {
     const [page, setPage] = useState<'sign' | 'verify'>('sign');
     const [isCompleted, setIsCompleted] = useState(false);
 
-    const selectedAccount = useSelector(state => state.wallet.selectedAccount);
-    const revealedAddresses = useSelector(state => state.wallet.receive);
+    const selectedAccount = useSelector(selectFullSelectedAccount);
+    const selectedAccountKey = useSelector(selectSelectedAccountKey);
+    const touchedAddresses = useSelector((state: ReceiveRootState) =>
+        selectTouchedAddresses(state, selectedAccountKey),
+    );
     const dispatch = useDispatch();
 
     const isSignPage = page === 'sign';
@@ -148,7 +155,7 @@ const SignVerify = () => {
             {!isDeviceConnected && <ConnectDeviceGenericPromo />}
 
             <Card>
-                <Tabs activeItemId={page} size="large" margin={{ bottom: spacings.lg }}>
+                <Tabs activeItemId={page} size="large" margin={{ bottom: 20 }}>
                     <Tabs.Item
                         id="sign"
                         onClick={() => setPage('sign')}
@@ -167,7 +174,7 @@ const SignVerify = () => {
                     )}
                 </Tabs>
                 <form onSubmit={formSubmit(onSubmit)}>
-                    <Column gap={spacings.md} margin={{ bottom: spacings.xxl }}>
+                    <Column gap={16} margin={{ bottom: 32 }}>
                         <Textarea
                             labelLeft={<Translation id="TR_MESSAGE" />}
                             labelRight={
@@ -191,17 +198,19 @@ const SignVerify = () => {
                         />
                         {isSignPage ? (
                             <>
-                                <Row gap={spacings.xxxl}>
-                                    <SignAddressInput
-                                        name="path"
-                                        label={<Translation id="TR_ADDRESS" />}
-                                        account={selectedAccount.account}
-                                        revealedAddresses={revealedAddresses}
-                                        hasError={!!formErrors.path}
-                                        bottomText={pathError || null}
-                                        data-testid="@sign-verify/sign-address"
-                                        {...pathField}
-                                    />
+                                <Row gap={40} alignItems="flex-start">
+                                    <Box flex="1" minWidth={0}>
+                                        <SignAddressInput
+                                            name="path"
+                                            label={<Translation id="TR_ADDRESS" />}
+                                            account={selectedAccount.account}
+                                            touchedAddresses={touchedAddresses}
+                                            hasError={!!formErrors.path}
+                                            bottomText={pathError || null}
+                                            data-testid="@sign-verify/sign-address"
+                                            {...pathField}
+                                        />
+                                    </Box>
                                     {signFormatsDiffer && (
                                         <SelectBar
                                             label={
@@ -275,7 +284,7 @@ const SignVerify = () => {
                                                 intent="neutral"
                                                 priority="secondary"
                                                 onClick={copy}
-                                                iconLeft="copy"
+                                                iconLeft={CopyIcon}
                                                 size="small"
                                             >
                                                 <Translation
@@ -307,7 +316,7 @@ const SignVerify = () => {
                                                     onClick={() =>
                                                         copyToClipboard(formValues.pubKey || '')
                                                     }
-                                                    iconLeft="copy"
+                                                    iconLeft={CopyIcon}
                                                     size="small"
                                                 >
                                                     <Translation id="TR_COPY_TO_CLIPBOARD" />
@@ -344,7 +353,7 @@ const SignVerify = () => {
                     <Button
                         type="submit"
                         intent="brand"
-                        iconLeft={isCompleted ? 'check' : undefined}
+                        iconLeft={isCompleted ? CheckIcon : undefined}
                         priority={isCompleted ? 'secondary' : 'primary'}
                         isDisabled={isLocked()}
                         isLoading={isSubmitting}

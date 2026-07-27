@@ -1,6 +1,6 @@
 import * as crypto from 'crypto';
 
-import { MessagesSchema as PROTO } from '@trezor/protobuf';
+import { type MessagesSchema as PROTO } from '@trezor/protobuf';
 
 import type { DeviceAuthenticityBlacklistConfig } from './config/deviceAuthenticityBlacklistConfigTypes';
 import type { DeviceAuthenticityConfig } from './config/deviceAuthenticityConfigTypes';
@@ -41,12 +41,24 @@ export const getRootPubKeys = ({
         throw new Error(`Pubkeys for ${deviceModel} not found in config`);
     }
 
-    const rootPubKeysNormalOptiga = modelConfig.rootPubKeysOptiga ?? [];
-    const rootPubKeysNormalTropic = modelConfig.rootPubKeysTropic ?? [];
+    const rootPubKeysProdOptiga = modelConfig.rootPubKeysOptiga ?? [];
+    const rootPubKeysProdTropic = modelConfig.rootPubKeysTropic ?? [];
+    const rootPubKeysProdMLDSA = modelConfig.rootPubKeysMLDSA ?? [];
+
     const rootPubKeysDebugOptiga = modelConfig.debug?.rootPubKeysOptiga ?? [];
     const rootPubKeysDebugTropic = modelConfig.debug?.rootPubKeysTropic ?? [];
-    const rootPubKeysNormal = [...rootPubKeysNormalOptiga, ...rootPubKeysNormalTropic];
-    if (!allowDebugKeys) return rootPubKeysNormal;
+    const rootPubKeysDebugMLDSA = modelConfig.debug?.rootPubKeysMLDSA ?? [];
 
-    return [...rootPubKeysNormal, ...rootPubKeysDebugOptiga, ...rootPubKeysDebugTropic];
+    const allRootPubKeysProd = [
+        ...rootPubKeysProdOptiga,
+        ...rootPubKeysProdTropic,
+        ...rootPubKeysProdMLDSA,
+    ];
+    const allRootPubKeysDebug = [
+        ...rootPubKeysDebugOptiga,
+        ...rootPubKeysDebugTropic,
+        ...rootPubKeysDebugMLDSA,
+    ];
+
+    return allowDebugKeys ? [...allRootPubKeysProd, ...allRootPubKeysDebug] : allRootPubKeysProd;
 };

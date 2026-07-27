@@ -1,18 +1,21 @@
+import { debugInitialState } from '@suite/debug';
+import { lockDevice } from '@suite/locks';
+import { routerReducer } from '@suite/router';
+import { suiteSettingsInitialState } from '@suite/settings';
 import { connectInitThunk } from '@suite-common/connect-init';
 import { deviceActions } from '@suite-common/device';
 import { messageSystemInitialState } from '@suite-common/message-system';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { extraDependenciesCommonMock, testMocks } from '@suite-common/test-utils';
+import { defaultTrezorUIEventHandlerThunk } from '@suite-common/wallet-core';
 import { UI_EVENT, UI_REQUEST } from '@trezor/connect';
 
 import * as deviceSettingsActions from 'src/actions/settings/deviceSettingsActions';
-import { SUITE } from 'src/actions/suite/constants';
 import buttonRequestMiddleware from 'src/middlewares/suite/buttonRequestMiddleware';
 import { prepareSuiteMiddleware } from 'src/middlewares/suite/suiteMiddleware';
-import routerReducer from 'src/reducers/suite/routerReducer';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
 import { configureStore } from 'src/support/tests/configureStore';
-import { Action, Dispatch } from 'src/types/suite';
+import { type Action, type Dispatch } from 'src/types/suite';
 
 const device = mockSuiteDevice();
 
@@ -21,6 +24,8 @@ const getInitialState = () => ({
     suite: {
         ...suiteReducer(undefined, { type: 'foo' } as any),
     },
+    suiteSettings: suiteSettingsInitialState,
+    debug: debugInitialState,
     wallet: {
         settings: {
             enabledNetworks: [],
@@ -70,12 +75,14 @@ describe('buttonRequest middleware', () => {
         expect(store.getActions()).toMatchObject([
             { type: connectInitThunk.pending.type, payload: undefined },
             { type: connectInitThunk.fulfilled.type, payload: undefined },
-            { type: SUITE.LOCK_DEVICE, payload: true },
+            { type: lockDevice.type, payload: true },
+            { type: defaultTrezorUIEventHandlerThunk.pending.type },
             { type: UI_REQUEST.REQUEST_BUTTON, payload: { code: 'ButtonRequest_ProtectCall' } },
             {
                 type: deviceActions.addButtonRequest.type,
                 payload: { buttonRequest: { code: 'ButtonRequest_ProtectCall' }, device },
             },
+            { type: defaultTrezorUIEventHandlerThunk.pending.type },
             {
                 type: UI_REQUEST.REQUEST_PIN,
                 payload: { type: 'PinMatrixRequestType_NewFirst', device },
@@ -84,7 +91,9 @@ describe('buttonRequest middleware', () => {
                 type: deviceActions.addButtonRequest.type,
                 payload: { buttonRequest: { code: 'PinMatrixRequestType_NewFirst' }, device },
             },
-            { type: SUITE.LOCK_DEVICE, payload: false },
+            { type: defaultTrezorUIEventHandlerThunk.fulfilled.type },
+            { type: defaultTrezorUIEventHandlerThunk.fulfilled.type },
+            { type: lockDevice.type, payload: false },
             { type: deviceActions.removeButtonRequests.type, payload: { device } },
         ]);
     });

@@ -1,67 +1,48 @@
-import { events } from '@suite/analytics';
+import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
-import { selectSelectedDevice } from '@suite-common/device';
+import { goto, selectIsAccountTabPage, selectRouteName } from '@suite/router';
+import { useServices } from '@suite-common/dependency-injection';
 import { getTradingPrefilledFromAccountData, tradingActions } from '@suite-common/trading';
-import { SelectedAccountStatus } from '@suite-common/wallet-types';
-import { Row } from '@trezor/components';
-import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
-import { breakpoints } from '@trezor/theme';
+import { type SelectedAccountStatus } from '@suite-common/wallet-types';
+import { ButtonGroup, Row } from '@trezor/components';
+import { MinusIcon, PlusIcon } from '@trezor/icons';
 
-import { goto } from 'src/actions/suite/routerActions';
 import { AppNavigationTooltip } from 'src/components/suite/AppNavigation/AppNavigationTooltip';
 import { HeaderActionButton } from 'src/components/suite/layouts/SuiteLayout/PageHeader/HeaderActionButton';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectIsAccountTabPage, selectRouteName } from 'src/reducers/suite/routerReducer';
-import { ConditionalRender } from 'src/support/suite/ConditionalRender';
-import { useAnalytics } from 'src/support/useAnalytics';
 
 interface TradeActionsProps {
     selectedAccount?: SelectedAccountStatus;
 }
 
 export const TradeActions = ({ selectedAccount }: TradeActionsProps) => {
-    const analytics = useAnalytics();
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
     const dispatch = useDispatch();
     const account = selectedAccount?.account;
-    const device = useSelector(selectSelectedDevice);
     const isAccountTabPage = useSelector(selectIsAccountTabPage);
     const currentRouteName = useSelector(selectRouteName);
 
-    const goToWithAnalytics = (...[routeName, options]: Parameters<typeof goto>) => {
+    const goToWithAnalytics = (...[payload]: Parameters<typeof goto>) => {
         if (currentRouteName === 'suite-index') {
             analytics.report({
                 type: events.dashboardActionsEvent.name,
-                payload: { type: routeName },
+                payload: { type: payload.routeName },
             });
         }
 
         if (isAccountTabPage && account?.symbol) {
             analytics.report({
                 type: events.accountsActionsEvent.name,
-                payload: { symbol: account?.symbol, action: routeName },
+                payload: { symbol: account?.symbol, action: payload.routeName },
             });
         }
 
-        dispatch(goto(routeName, options));
+        dispatch(goto(payload));
     };
 
-    const onBuyAndSellClick = () => {
-        goToWithAnalytics('wallet-trading-buy', {
-            preserveParams: true,
-        });
+    const navigateToTrading = (type: 'buy' | 'sell') => {
+        const routeName = `wallet-trading-${type}` as const;
 
-        analytics.report({
-            type: events.tradeNavigateEvent.name,
-            payload: {
-                action: 'navigate',
-                type: 'buy/sell',
-                from: account ? 'account/header' : 'dashboard/header',
-                networkSymbol: account?.symbol,
-            },
-        });
-    };
-
-    const onSwapClick = () => {
         if (account) {
             dispatch(
                 tradingActions.setTradingFromPrefilledAccount(
@@ -70,15 +51,13 @@ export const TradeActions = ({ selectedAccount }: TradeActionsProps) => {
             );
         }
 
-        goToWithAnalytics('wallet-trading-exchange', {
-            preserveParams: false,
-        });
+        goToWithAnalytics({ routeName, preserveParams: false });
 
         analytics.report({
             type: events.tradeNavigateEvent.name,
             payload: {
                 action: 'navigate',
-                type: 'exchange',
+                type,
                 from: account ? 'account/header' : 'dashboard/header',
                 networkSymbol: account?.symbol,
             },
@@ -90,32 +69,22 @@ export const TradeActions = ({ selectedAccount }: TradeActionsProps) => {
     return (
         <Row gap={12}>
             <AppNavigationTooltip>
-                <ConditionalRender container="content" minWidth={breakpoints.laptop}>
+                <ButtonGroup intent="neutral" priority="secondary" isDisabled={isAccountLoading}>
                     <HeaderActionButton
-                        icon="currencyCircleDollar"
-                        onClick={onBuyAndSellClick}
+                        icon={PlusIcon}
+                        onClick={() => navigateToTrading('buy')}
                         data-testid="@wallet/menu/wallet-trading-buy"
-                        intent="neutral"
-                        priority="secondary"
-                        isDisabled={isAccountLoading}
                     >
-                        <Translation id="TR_TRADING_BUY_AND_SELL" />
+                        <Translation id="TR_NAV_BUY" />
                     </HeaderActionButton>
-                </ConditionalRender>
-                {!hasBitcoinOnlyFirmware(device) && (
-                    <ConditionalRender container="content" minWidth={breakpoints.tablet}>
-                        <HeaderActionButton
-                            icon="arrowsLeftRight"
-                            onClick={onSwapClick}
-                            data-testid="@wallet/menu/wallet-trading-exchange"
-                            intent="neutral"
-                            priority="secondary"
-                            isDisabled={isAccountLoading}
-                        >
-                            <Translation id="TR_TRADING_SWAP" />
-                        </HeaderActionButton>
-                    </ConditionalRender>
-                )}
+                    <HeaderActionButton
+                        icon={MinusIcon}
+                        onClick={() => navigateToTrading('sell')}
+                        data-testid="@wallet/menu/wallet-trading-sell"
+                    >
+                        <Translation id="TR_NAV_SELL" />
+                    </HeaderActionButton>
+                </ButtonGroup>
             </AppNavigationTooltip>
         </Row>
     );

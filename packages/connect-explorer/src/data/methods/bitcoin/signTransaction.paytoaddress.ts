@@ -1,7 +1,8 @@
+import type { CoinSymbol } from '@trezor/connect-common';
+
 import { select } from './common';
 
 const name = 'signTransaction';
-const docs = 'methods/signTransaction.md';
 
 const btc = {
     inputs: [
@@ -15,6 +16,7 @@ const btc = {
             ],
             prev_hash: '50f6f1209ca92d7359564be803cb2c932cde7d370f7cee50fd1fad6790f6206d',
             prev_index: 1,
+            amount: '50000',
         },
     ],
     outputs: [
@@ -122,7 +124,7 @@ const dash = {
 };
 
 // version 3
-const zcash = {
+const zec = {
     inputs: [
         {
             address_n: [2147483692, 2147483781, 2147483648, 0, 2],
@@ -152,6 +154,7 @@ const doge = {
             ],
             prev_index: 12,
             prev_hash: '0a4cb7d5c27455333701f0e53812e4be56a0272ad7f168279acfed7b065ee118',
+            amount: '622200000000',
         },
     ],
     outputs: [
@@ -174,20 +177,18 @@ const doge = {
     ],
 };
 
-const examples = {
+const examples: Partial<Record<CoinSymbol, { inputs: unknown[]; outputs: unknown[] }>> = {
     btc,
     bch,
     test,
     dash,
-    zcash,
+    zec,
     doge,
 };
 
 export default [
     {
-        url: '/method/signTransaction-paytoaddress',
         name,
-        docs,
         submitButton: 'Sign transaction',
         fields: [
             {
@@ -196,7 +197,7 @@ export default [
                 value: 'btc',
                 affect: ['inputs', 'outputs'],
                 data: select.map(v => {
-                    const example = examples[v.value as keyof typeof examples];
+                    const example = examples[v.value];
 
                     return {
                         ...v,
@@ -216,14 +217,12 @@ export default [
             },
             {
                 name: 'push',
-                label: 'Push transaction',
                 type: 'checkbox',
                 defaultValue: false,
                 value: false,
             },
             {
                 name: 'chunkify',
-                label: 'Display recipient address in chunks of 4 characters',
                 type: 'checkbox',
                 value: false,
             },

@@ -1,5 +1,57 @@
 import tseslint from 'typescript-eslint';
 
+// Deny importing from build artifact directories — consumers should resolve
+// through the package root, not from `lib/` or `libDev/`.
+const buildArtifactPatterns = {
+    group: ['@trezor/*/lib', '@trezor/*/lib/**', '@trezor/*/libDev', '@trezor/*/libDev/**'],
+    message:
+        'Import from the package root instead. Deep paths into "lib/" or "libDev/" target build artifacts that may not exist or may diverge from the workspace source.',
+};
+
+const networksPackagePattern = {
+    regex: '^@trezor/network-[a-z]+$',
+    message: 'Import from /constants, /runtime or /types subpath.',
+};
+
+// Deep-path imports that bypass the public barrels of the connect-tier packages.
+// Tracked in https://github.com/trezor/trezor-suite/issues/27376.
+// External consumers must import from the package root (e.g. `@trezor/connect`).
+// A handful of legitimate cross-package wiring imports inside the connect-tier
+// (e.g. connect-webextension re-using connect-web impls) and a few deferred
+// refactors carry an inline `// eslint-disable-next-line` exception with a
+// pointer back to this issue.
+const connectDeepImportPatterns = [
+    {
+        group: ['@trezor/connect/src/**'],
+        message:
+            'Import from "@trezor/connect" instead. Deep paths into "@trezor/connect/src/**" bypass the public barrel.',
+    },
+    {
+        group: ['@trezor/connect-web/src/**'],
+        message:
+            'Import from "@trezor/connect-web" instead. Deep paths into "@trezor/connect-web/src/**" bypass the public barrel.',
+    },
+    {
+        group: ['@trezor/connect-webextension/src/**'],
+        message:
+            'Import from "@trezor/connect-webextension" instead. Deep paths into "@trezor/connect-webextension/src/**" bypass the public barrel.',
+    },
+];
+
+// Deny importing internal suite packages from outside the suite app itself.
+const suiteInternalPatterns = {
+    group: ['@suite-common/**', '@suite-native/**'],
+    message:
+        '@suite-common/* and @suite-native/* packages are private to the suite apps and must not be imported by other workspace packages.',
+};
+
+export const restrictedImportsPatterns = [
+    buildArtifactPatterns,
+    suiteInternalPatterns,
+    networksPackagePattern,
+    ...connectDeepImportPatterns,
+];
+
 /** @type {import('typescript-eslint').ConfigArray} */
 export const typescriptConfig = [
     ...tseslint.configs.recommended,
@@ -19,12 +71,9 @@ export const typescriptConfig = [
                 {
                     paths: [{ name: '.' }, { name: '..' }, { name: '../..' }],
                     patterns: [
-                        '@trezor/*/lib',
-                        '@trezor/*/lib/**',
-                        '@trezor/*/libDev',
-                        '@trezor/*/libDev/**',
-                        '@trezor/*/libESM',
-                        '@trezor/*/libESM/**',
+                        buildArtifactPatterns,
+                        networksPackagePattern,
+                        ...connectDeepImportPatterns,
                     ],
                 },
             ],
@@ -50,7 +99,6 @@ export const typescriptConfig = [
                     minimumDescriptionLength: 0, // Todo: reconsider
                 },
             ],
-            '@typescript-eslint/no-empty-object-type': 'off', // Todo: we shall solve this, this is bad practice
         },
     },
     {
@@ -62,16 +110,44 @@ export const typescriptConfig = [
                 'error',
                 {
                     paths: [{ name: '.' }, { name: '..' }, { name: '../..' }],
-                    patterns: [
-                        '@trezor/*/lib',
-                        '@trezor/*/lib/**',
-                        '@trezor/*/libDev',
-                        '@trezor/*/libDev/**',
-                        '@suite-common/**',
-                        '@suite-native/**',
-                    ],
+                    patterns: restrictedImportsPatterns,
                 },
             ],
+        },
+    },
+    {
+        files: ['**/src/**/*.{ts,tsx}'],
+        languageOptions: {
+            parserOptions: {
+                projectService: true,
+            },
+        },
+        rules: {
+            '@typescript-eslint/consistent-type-imports': [
+                'error',
+                {
+                    fixStyle: 'inline-type-imports',
+                    prefer: 'type-imports',
+                },
+            ],
+            '@typescript-eslint/consistent-type-exports': [
+                'error',
+                {
+                    fixMixedExportsWithInlineTypeSpecifier: true,
+                },
+            ],
+            '@typescript-eslint/prefer-optional-chain': ['error'],
+            // Known limitation: the rule mis-reports some load-bearing widening assertions
+            // (removing them breaks tsc); such spots carry a scoped disable with a justification.
+            '@typescript-eslint/no-unnecessary-type-assertion': ['error'],
+        },
+    },
+    {
+        // Type assertions on partial mocks and fixtures are idiomatic in tests,
+        // so scope the rule out of test and fixture files.
+        files: ['**/__tests__/**', '**/__fixtures__/**', '**/tests/**', '**/*.test.{ts,tsx}'],
+        rules: {
+            '@typescript-eslint/no-unnecessary-type-assertion': 'off',
         },
     },
 ];

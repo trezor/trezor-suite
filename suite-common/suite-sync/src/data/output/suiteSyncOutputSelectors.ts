@@ -1,9 +1,10 @@
 import { createWeakMapSelector } from '@suite-common/redux-utils';
 import { createSuiteSyncOutputId } from '@suite-common/suite-sync-storage';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
-import type { AccountDescriptor, TxTargetId, WalletDescriptor } from '@suite-common/wallet-types';
-import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
-import { StaticSessionId } from '@trezor/connect';
+import type { AccountDescriptor, TxTargetId } from '@suite-common/wallet-types';
+import { type StaticSessionId } from '@trezor/connect';
+import type { WalletDescriptor } from '@trezor/device-utils';
+import { parseStaticSessionId } from '@trezor/device-utils';
 
 import { type SuiteSyncDataRootState } from '../suiteSyncDataReducer';
 import { selectAllOutputsForWallet } from '../wallet/suiteSyncWalletSelectors';
@@ -42,7 +43,7 @@ export const selectSuiteSyncOutputLabel = createMemoizedSelector(
             _txOutputId: TxTargetId,
             deviceStaticSessionId: StaticSessionId,
         ) => {
-            const { walletDescriptor } = parseDeviceStaticSessionId(deviceStaticSessionId);
+            const { walletDescriptor } = parseStaticSessionId(deviceStaticSessionId);
 
             return selectAllOutputsForWallet(state, walletDescriptor);
         },
@@ -60,7 +61,7 @@ export const selectSuiteSyncOutputLabels = (
     state: SuiteSyncDataRootState,
     deviceStaticId: StaticSessionId,
 ) => {
-    const { walletDescriptor } = parseDeviceStaticSessionId(deviceStaticId);
+    const { walletDescriptor } = parseStaticSessionId(deviceStaticId);
 
     return selectAllOutputsForWallet(state, walletDescriptor);
 };

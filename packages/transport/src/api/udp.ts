@@ -1,12 +1,19 @@
 import UDP from 'dgram';
 
+import {
+    AbstractApi,
+    type AbstractApiArgs,
+    type AbstractApiAwaitedResult,
+    type AbstractApiConstructorParams,
+    DEVICE_TYPE,
+    type DescriptorApiLevel,
+    TRANSPORT_ERROR as ERRORS,
+    PathInternal,
+    error,
+    readMessageBuffer,
+    success,
+} from '@trezor/transport-common';
 import { arrayPartition, isNotUndefined, resolveAfter } from '@trezor/utils';
-
-import { AbstractApi, AbstractApiAwaitedResult, AbstractApiConstructorParams } from './abstract';
-import { DEVICE_TYPE } from '../constants';
-import * as ERRORS from '../errors';
-import { DescriptorApiLevel, PathInternal } from '../types';
-import { readMessageBuffer } from '../utils/readMessageBuffer';
 
 const PING = Buffer.from('PINGPING');
 const PONG = Buffer.from('PONGPONG');
@@ -57,14 +64,19 @@ export class UdpApi extends AbstractApi {
         }
     }
 
-    public write(path: string, buffer: Buffer, signal?: AbortSignal) {
-        const [hostname, port] = path.split(':');
+    public write(...[path, buffer, options]: AbstractApiArgs<'write'>) {
+        const parts = path.split(':');
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const hostname: string = parts[0];
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const port: string = parts[1];
+        const signal = options?.signal;
 
         return new Promise<AbstractApiAwaitedResult<'write'>>(resolve => {
             const listener = () => {
                 resolve(
-                    this.error({
-                        error: ERRORS.ABORTED_BY_SIGNAL,
+                    error({
+                        code: ERRORS.ABORTED_BY_SIGNAL,
                     }),
                 );
             };
@@ -91,24 +103,24 @@ export class UdpApi extends AbstractApi {
                     this.logger?.error(err.message);
 
                     resolve(
-                        this.error({
-                            error: ERRORS.INTERFACE_DATA_TRANSFER,
+                        error({
+                            code: ERRORS.INTERFACE_DATA_TRANSFER,
                             message: err.message,
                         }),
                     );
                 }
 
-                resolve(this.success(undefined));
+                resolve(success(undefined));
             });
         });
     }
 
-    public read(path: string, signal?: AbortSignal) {
-        return this.readBuffer.read(path, signal);
+    public read(...[path, options]: AbstractApiArgs<'read'>) {
+        return this.readBuffer.read(path, options?.signal);
     }
 
-    private async ping(path: string, signal?: AbortSignal) {
-        await this.write(path, PING, signal);
+    private async ping(path: PathInternal, signal?: AbortSignal) {
+        await this.write(path, PING, { signal });
         if (signal?.aborted) {
             throw new Error(ERRORS.ABORTED_BY_SIGNAL);
         }
@@ -169,11 +181,11 @@ export class UdpApi extends AbstractApi {
             ).then(res => res.filter(isNotUndefined));
             this.handleDevicesChange(enumerateResult);
 
-            return this.success(enumerateResult);
+            return success(enumerateResult);
         } catch {
             this.handleDevicesChange([]);
 
-            return this.error({ error: ERRORS.ABORTED_BY_SIGNAL });
+            return error({ code: ERRORS.ABORTED_BY_SIGNAL });
         }
     }
 
@@ -186,7 +198,7 @@ export class UdpApi extends AbstractApi {
         // find all disconnected devices and cancel reading (if any)
         const [disconnected] = arrayPartition(
             this.devices,
-            device => !devices.find(d => d.path === device.path),
+            device => !devices.some(d => d.path === device.path),
         );
         disconnected.forEach(d => this.readBuffer.cancelRead(d.path));
 
@@ -198,15 +210,15 @@ export class UdpApi extends AbstractApi {
         }
     }
 
-    public openDevice(_path: string) {
+    public openDevice(...[_path]: AbstractApiArgs<'openDevice'>) {
         // todo: maybe ping?
-        return Promise.resolve(this.success(undefined));
+        return Promise.resolve(success(undefined));
     }
 
-    public closeDevice(path: string) {
+    public closeDevice(...[path]: AbstractApiArgs<'closeDevice'>) {
         this.readBuffer.cancelRead(path);
 
-        return Promise.resolve(this.success(undefined));
+        return Promise.resolve(success(undefined));
     }
 
     public dispose() {

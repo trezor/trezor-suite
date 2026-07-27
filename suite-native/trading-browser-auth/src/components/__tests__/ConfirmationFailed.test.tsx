@@ -1,3 +1,4 @@
+import { getTranslation } from '@suite-native/intl';
 import { fireEvent, renderWithBasicProvider } from '@suite-native/test-utils';
 
 import { ConfirmationFailed } from '../ConfirmationFailed';
@@ -17,7 +18,13 @@ describe('ConfirmationFailed', () => {
     it('should navigate back on button press', () => {
         const { getByText } = renderConfirmationFailed();
 
-        fireEvent.press(getByText('Start a new sell'));
+        fireEvent.press(
+            getByText(
+                getTranslation(
+                    'moduleTrading.tradingSellPreviewScreen.providerStatus.cannotBeCompletedAlert.button',
+                ),
+            ),
+        );
 
         expect(mockNavigateBack).toHaveBeenCalledTimes(1);
     });

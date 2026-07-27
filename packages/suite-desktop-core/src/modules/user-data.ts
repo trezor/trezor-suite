@@ -14,7 +14,7 @@ export const init: ModuleInit = () => {
 
         logger.info(SERVICE_NAME, `Clearing user-data.`);
 
-        return userData.clear();
+        return userData.clearAppData();
     });
 
     ipcMain.handle('user-data/open', (ipcEvent, directory = '') => {

@@ -1,23 +1,14 @@
-import { KeyboardEvent, ReactNode, useCallback, useEffect, useState } from 'react';
+import { type KeyboardEvent, type ReactNode, useCallback, useEffect, useState } from 'react';
 
 import styled, { css } from 'styled-components';
 
-import {
-    Elevation,
-    borders,
-    mapElevationToBackground,
-    nextElevation,
-    spacings,
-} from '@trezor/theme';
-
-import { SelectBarOrientation, SelectBarSize } from './types';
+import { type SelectBarOrientation, type SelectBarSize } from './types';
 import { mapSizeToPadding, mapSizeToTypographyStyle, mapStateToTextIntent } from './utils';
 import { variables } from '../../../config';
-import { FrameProps, FramePropsKeys } from '../../../utils/frameProps';
+import { type FrameProps, type FramePropsKeys } from '../../../utils/frameProps';
 import { useMediaQuery } from '../../../utils/useMediaQuery';
-import { focusStyleTransition, getFocusShadowStyle } from '../../../utils/utils';
+import { commonFocusStyles, focusStyleTransition } from '../../../utils/utils';
 import { Box } from '../../Box/Box';
-import { useElevation } from '../../ElevationContext/ElevationContext';
 import { Column, Flex } from '../../Flex/Flex';
 import { Grid } from '../../Grid/Grid';
 import { Text } from '../../typography/Text/Text';
@@ -25,23 +16,24 @@ import { Text } from '../../typography/Text/Text';
 export const allowedSelectBarFrameProps = ['margin'] as const satisfies FramePropsKeys[];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedSelectBarFrameProps)[number]>;
 
-const GAP = spacings.xxs;
+const GAP = 4;
 
 const getTranslateValue = (index: number = 0) => `calc(${index * 100}% + ${index * GAP}px)`;
 
 const getPuckDimension = (optionsCount: number) =>
     `calc((100% - ${(optionsCount - 1) * GAP}px) / ${optionsCount})`;
 
-const Options = styled.div<{ $elevation: Elevation }>`
-    background: ${mapElevationToBackground};
-    border-radius: ${borders.radii.lg};
+const Options = styled.div`
+    background: ${({ theme }) => theme.elementFillNeutralSofter};
+    border: 1px solid ${({ theme }) => theme.elementBorderNeutralSofterAlt};
+    border-radius: 20px;
     flex: 1;
+    min-width: 0;
 `;
 
 const Puck = styled.div<{
     $optionsCount: number;
     $selectedIndex: number;
-    $elevation: Elevation;
     $orientation: SelectBarOrientation;
 }>`
     position: absolute;
@@ -49,15 +41,17 @@ const Puck = styled.div<{
     top: 0;
     bottom: 0;
     width: ${({ $optionsCount }) => getPuckDimension($optionsCount)};
-    background: ${mapElevationToBackground};
-    border-radius: ${borders.radii.full};
-    box-shadow: ${({ theme, $elevation }) => $elevation === 1 && theme.boxShadowBase};
+    background: ${({ theme }) => theme.elementFillElevated};
+    border-radius: calc(infinity * 1px);
+    box-shadow: ${({ theme }) => theme.elementShadowElevated};
     transform: ${({ $selectedIndex }) => `translateX(${getTranslateValue($selectedIndex)})`};
     transition:
         transform 0.175s cubic-bezier(1, 0.02, 0.38, 0.74),
         ${focusStyleTransition};
 
-    ${getFocusShadowStyle()}
+    &:focus-visible {
+        ${commonFocusStyles}
+    }
 
     ${({ $orientation, $selectedIndex, $optionsCount }) =>
         $orientation === 'vertical' &&
@@ -72,11 +66,14 @@ const Puck = styled.div<{
 
 const Option = styled.div<{ $isSelected: boolean; $isDisabled: boolean }>`
     position: relative;
+    width: 100%;
+    min-width: 0;
+    overflow: hidden;
     transition: color 0.175s;
 
     &:hover {
         color: ${({ theme, $isSelected, $isDisabled }) =>
-            !$isSelected && !$isDisabled && theme.textDefault};
+            !$isSelected && !$isDisabled && theme.contentPrimary};
     }
 `;
 
@@ -92,6 +89,7 @@ export type SelectBarProps<V extends ValueTypes> = {
     options: Option<V>[];
     selectedOption?: V;
     onChange?: (value: V) => void;
+    onOptionClick?: (value: V) => void;
     isDisabled?: boolean;
     isFullWidth?: boolean;
     orientation?: SelectBarOrientation;
@@ -105,6 +103,7 @@ export const SelectBar = <V extends ValueTypes>({
     options,
     selectedOption,
     onChange,
+    onOptionClick,
     isDisabled = false,
     isFullWidth,
     orientation = 'auto',
@@ -113,7 +112,6 @@ export const SelectBar = <V extends ValueTypes>({
     margin,
 }: SelectBarProps<V>) => {
     const [selectedOptionIn, setSelected] = useState<ValueTypes | undefined>(selectedOption);
-    const { elevation } = useElevation();
     const isBelowMobile = useMediaQuery(`(max-width: ${variables.SCREEN_SIZE.SM})`);
 
     useEffect(() => {
@@ -124,7 +122,13 @@ export const SelectBar = <V extends ValueTypes>({
 
     const handleOptionClick = useCallback(
         (option: Option<V>) => () => {
-            if (isDisabled || option.value === selectedOptionIn) {
+            if (isDisabled) {
+                return;
+            }
+
+            onOptionClick?.(option.value);
+
+            if (option.value === selectedOptionIn) {
                 return;
             }
 
@@ -132,7 +136,7 @@ export const SelectBar = <V extends ValueTypes>({
 
             onChange?.(option?.value);
         },
-        [isDisabled, selectedOptionIn, onChange],
+        [isDisabled, onOptionClick, selectedOptionIn, onChange],
     );
 
     const handleKeyboardNav = (e: KeyboardEvent) => {
@@ -173,7 +177,7 @@ export const SelectBar = <V extends ValueTypes>({
             margin={margin}
             width={isFullWidth || isVertical ? '100%' : 'auto'}
             alignItems={isVertical ? 'stretch' : 'center'}
-            gap={spacings.sm}
+            gap={12}
         >
             {label && (
                 <Text
@@ -186,17 +190,16 @@ export const SelectBar = <V extends ValueTypes>({
                 </Text>
             )}
 
-            <Options $elevation={elevation}>
-                <Box margin={spacings.xxs} position={{ type: 'relative' }}>
+            <Options>
+                <Box margin={4} position={{ type: 'relative' }}>
                     <Puck
                         $optionsCount={options.length}
                         $selectedIndex={selectedIndex}
-                        $elevation={nextElevation[elevation]}
                         $orientation={isVertical ? 'vertical' : orientation}
                         tabIndex={0}
                         onKeyDown={handleKeyboardNav}
                     />
-                    <Grid columns={isVertical ? 1 : options.length} gap={GAP}>
+                    <Grid columns={isVertical ? 1 : options.length} gap={GAP} forceEqualColumns>
                         {options.map(option => {
                             const isSelected =
                                 selectedOptionIn !== undefined
@@ -214,19 +217,32 @@ export const SelectBar = <V extends ValueTypes>({
                                     textWrap="nowrap"
                                     as="div"
                                     cursor={isDisabled ? 'not-allowed' : 'pointer'}
+                                    minWidth={0}
+                                    overflow="hidden"
                                 >
                                     <Option
                                         onClick={handleOptionClick(option)}
                                         $isDisabled={!!isDisabled}
                                         $isSelected={isSelected}
                                         data-isdisabled={!!isDisabled}
-                                        data-testid={`select-bar/${String(option.value)}`}
+                                        data-testid={`${dataTest ?? 'select-bar'}/${String(option.value)}`}
                                     >
                                         <Column
                                             padding={mapSizeToPadding(size)}
-                                            alignItems="center"
+                                            alignItems="stretch"
+                                            width="100%"
+                                            minWidth={0}
                                         >
-                                            {option.label}
+                                            <Text
+                                                as="div"
+                                                align="center"
+                                                width="100%"
+                                                maxWidth="100%"
+                                                minWidth={0}
+                                                ellipsisLineCount={1}
+                                            >
+                                                {option.label}
+                                            </Text>
                                             <Box height={0} overflow="hidden" aria-hidden>
                                                 <Text typographyStyle="body-md-strong">
                                                     {option.label}

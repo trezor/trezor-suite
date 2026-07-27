@@ -3,18 +3,21 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import type { CryptoId, ExchangeTrade } from 'invity-api';
 
+import { useServices } from '@suite-common/dependency-injection';
 import {
-    TradingExchangeAmountLimitProps,
+    type TradingExchangeAmountLimitProps,
+    cryptoIdToSymbol,
+    exchangeThunks,
+    requiresTokenApproval,
     selectTradingExchangeProviders,
     selectTradingExchangeQuotesRequest,
 } from '@suite-common/trading';
 import { getNetwork } from '@suite-common/wallet-config';
-import { WalletSettingsRootState, selectIsAmountInSats } from '@suite-common/wallet-core';
+import { type WalletSettingsRootState, selectIsAmountInSats } from '@suite-common/wallet-core';
 import { convertAmountUnitsToSubunits } from '@suite-common/wallet-utils';
-import { events } from '@suite-native/analytics';
-import { useForm } from '@suite-native/forms';
+import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { useForm, useWatch } from '@suite-native/forms';
 import { useTranslate } from '@suite-native/intl';
-import { useAnalytics } from '@suite-native/services';
 import { getSymbolFromTradeableAsset } from '@suite-native/trading-atoms';
 import {
     exchangeActions,
@@ -24,12 +27,13 @@ import {
     selectExchangeSelectedSendAccount,
     selectGroupedExchangeQuotes,
 } from '@suite-native/trading-state';
-import { ExchangeFormType, ExchangeFormValues } from '@suite-native/trading-types';
+import type { ExchangeFormType, ExchangeFormValues } from '@suite-native/trading-types';
 
 import { exchangeFormValidationSchema } from '../../utils/exchange/exchangeFormValidationSchema';
 import { useContextForTradingForm } from '../general/form/useContextForTradingForm';
 import { useProviderMetadataChangeEffect } from '../general/form/useProviderMetadataChangeEffect';
 import { useReceiveAccountChangeEffect } from '../general/form/useReceiveAccountChangeEffect';
+import { useReceiveAccountPreselectionEffect } from '../general/form/useReceiveAccountPreselectionEffect';
 import { useSendAccountAssetBalance } from '../general/form/useSendAccountAssetBalance';
 import { useSendAccountChangeEffect } from '../general/form/useSendAccountChangeEffect';
 
@@ -113,7 +117,7 @@ const useAmountAndCurrencyFieldsChangeEffect = ({ setValue, watch }: ExchangeFor
     const dispatch = useDispatch();
     const prevSendCryptoId = useRef<CryptoId | undefined>(undefined);
     const prevReceiveCryptoId = useRef<CryptoId | undefined>(undefined);
-    const analytics = useAnalytics();
+    const { analytics } = useServices(selectNativeAnalyticsDep);
 
     useEffect(() => {
         const { unsubscribe } = watch(({ sendAsset, receiveAsset }, { name }) => {
@@ -128,7 +132,7 @@ const useAmountAndCurrencyFieldsChangeEffect = ({ setValue, watch }: ExchangeFor
                             },
                         });
 
-                        prevSendCryptoId.current = sendAsset?.cryptoId as CryptoId | undefined;
+                        prevSendCryptoId.current = sendAsset?.cryptoId;
                         setValue('sendCryptoAmount', undefined, { shouldValidate: true });
                         if (sendAsset?.cryptoId === receiveAsset?.cryptoId) {
                             setValue('receiveAsset', undefined);
@@ -139,6 +143,9 @@ const useAmountAndCurrencyFieldsChangeEffect = ({ setValue, watch }: ExchangeFor
 
                 case 'receiveAsset':
                     if (receiveAsset?.cryptoId !== prevReceiveCryptoId.current) {
+                        const prevReceiveSymbol = cryptoIdToSymbol(prevReceiveCryptoId.current);
+                        const receiveSymbol = cryptoIdToSymbol(receiveAsset?.cryptoId);
+
                         analytics.report({
                             type: events.tradingParameterChangedEvent.name,
                             payload: {
@@ -147,10 +154,12 @@ const useAmountAndCurrencyFieldsChangeEffect = ({ setValue, watch }: ExchangeFor
                             },
                         });
 
-                        prevReceiveCryptoId.current = receiveAsset?.cryptoId as
-                            | CryptoId
-                            | undefined;
-                        dispatch(exchangeActions.receiveAssetChanged());
+                        prevReceiveCryptoId.current = receiveAsset?.cryptoId;
+                        dispatch(
+                            prevReceiveSymbol === receiveSymbol
+                                ? exchangeActions.receiveTokenChanged()
+                                : exchangeActions.receiveAssetChanged(),
+                        );
                     }
                     break;
 
@@ -161,6 +170,66 @@ const useAmountAndCurrencyFieldsChangeEffect = ({ setValue, watch }: ExchangeFor
 
         return unsubscribe;
     }, [setValue, watch, dispatch, analytics]);
+};
+
+const useDexQuoteApprovalInfoChangeEffect = ({ getValues, setValue, watch }: ExchangeFormType) => {
+    const dispatch = useDispatch();
+    const sendAccount = useSelector(selectExchangeSelectedSendAccount);
+    const [quote] = watch(['quote']);
+
+    const lastProcessedQuoteId = useRef<string | undefined>(undefined);
+    const pendingPrefetchQuoteIds = useRef(new Set<string>());
+
+    // This effect is used to prefetch the approval info for the DEX quote
+    // Then we can show the approval button shortly after the user selects the quote
+    useEffect(() => {
+        let isMounted = true;
+        const { quoteId, isDex } = quote ?? {};
+
+        if (!isDex) {
+            lastProcessedQuoteId.current = undefined;
+
+            return;
+        }
+
+        if (!quote || !quoteId || !sendAccount || !requiresTokenApproval(quote)) {
+            return;
+        }
+
+        if (
+            pendingPrefetchQuoteIds.current.has(quoteId) ||
+            lastProcessedQuoteId.current === quoteId
+        ) {
+            return;
+        }
+
+        pendingPrefetchQuoteIds.current.add(quoteId);
+
+        void dispatch(
+            exchangeThunks.prefetchDexQuoteApprovalThunk({
+                account: sendAccount,
+                trade: quote,
+            }),
+        )
+            .unwrap()
+            .then(response => {
+                if (isMounted && response && getValues('quote')?.quoteId === quoteId) {
+                    setValue('quote', response);
+                }
+
+                lastProcessedQuoteId.current = quoteId;
+            })
+            .catch(() => {
+                lastProcessedQuoteId.current = undefined;
+            })
+            .finally(() => {
+                pendingPrefetchQuoteIds.current.delete(quoteId);
+            });
+
+        return () => {
+            isMounted = false;
+        };
+    }, [dispatch, getValues, quote, sendAccount, setValue]);
 };
 
 const useValidations = (
@@ -187,20 +256,29 @@ const useValidations = (
 
 export const useExchangeForm = () => {
     const limits = useSelector(selectExchangeAmountLimits);
-    const { context, setBalance, setSendSymbol } = useContextForTradingForm(limits);
+    const { context, setBalance, setSendSymbol, setContractAddress, setAccountKey } =
+        useContextForTradingForm(limits);
 
     const form = useForm<ExchangeFormValues>({
         validation: exchangeFormValidationSchema,
         context,
     });
-    const { setValue, watch } = form;
+    const { control, setValue, watch } = form;
+    const receiveAsset = useWatch({ control, name: 'receiveAsset' });
 
     useExchangeQuotesChangeEffect(form);
     useExchangeQuoteChangeEffect(form);
     useSendAccountChangeEffect(setValue, selectExchangeSelectedSendAccount);
     useReceiveAccountChangeEffect(setValue, selectExchangeSelectedReceiveAccount);
+    useReceiveAccountPreselectionEffect({
+        receiveAsset,
+        selectSendAccount: selectExchangeSelectedSendAccount,
+        selectReceiveAccount: selectExchangeSelectedReceiveAccount,
+        tradingType: 'exchange',
+    });
     useAmountAndCurrencyFieldsChangeEffect(form);
-    useSendAccountAssetBalance(form, setBalance, setSendSymbol);
+    useDexQuoteApprovalInfoChangeEffect(form);
+    useSendAccountAssetBalance(form, setBalance, setSendSymbol, setContractAddress, setAccountKey);
     useValidations(form, limits);
     useProviderMetadataChangeEffect(watch, 'exchange');
 

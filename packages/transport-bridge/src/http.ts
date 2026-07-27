@@ -4,19 +4,23 @@ import { URL } from 'url';
 
 import {
     HttpServer,
-    ParamsValidatorHandler,
-    RequestHandler,
-    RequestWithParams,
-    Response,
+    type ParamsValidatorHandler,
+    type RequestHandler,
+    type RequestWithParams,
+    type Response,
     parseBodyJSON,
     parseBodyText,
 } from '@trezor/node-utils';
 import { checkOrigin } from '@trezor/node-utils/src/http';
-import { AbstractApi } from '@trezor/transport/src/api/abstract';
-import { UNEXPECTED_ERROR } from '@trezor/transport/src/errors';
-import { Descriptor, PathPublic, Session } from '@trezor/transport/src/types';
-import { validateProtocolMessage } from '@trezor/transport/src/utils/bridgeProtocolMessage';
-import { Log, Throttler, arrayPartition } from '@trezor/utils';
+import {
+    type AbstractApi,
+    type Descriptor,
+    TRANSPORT_ERROR as ERRORS,
+    type PathPublic,
+    type Session,
+    validateProtocolMessage,
+} from '@trezor/transport-common';
+import { type Log, Throttler, arrayPartition } from '@trezor/utils';
 
 import { createCore } from './core';
 
@@ -61,29 +65,22 @@ const validateSessionParams: ParamsValidatorHandler<{
 };
 
 const validateProtocolMessageBody =
-    (
-        withData: boolean,
-        protocolMessages: boolean,
-    ): RequestHandler<string, ReturnType<typeof validateProtocolMessage>> =>
+    (withData: boolean): RequestHandler<string, ReturnType<typeof validateProtocolMessage>> =>
     (request, response, next) => {
         try {
             const body = validateProtocolMessage(request.body, withData);
-            if (!protocolMessages && body.protocol) {
-                throw new Error('BridgeProtocolMessage support is disabled');
-            }
 
             return next({ ...request, body }, response);
         } catch (error) {
             response.statusCode = 400;
-            response.end(str({ error: UNEXPECTED_ERROR, message: error.message }));
+            response.end(str({ error: ERRORS.UNEXPECTED_ERROR, message: error.message }));
         }
     };
 
-const COMPATIBILITY_PORT = 21325;
 const ADDRESS = new URL('http://127.0.0.1');
 
 export class TrezordNode {
-    version = '3.2.0';
+    version = '3.2.1';
     bundledVersion?: string;
     serviceName = 'trezord-node';
     /** last known descriptors state */
@@ -94,27 +91,26 @@ export class TrezordNode {
         req: Parameters<RequestHandler<unknown, unknown>>[0];
         res: Response;
     }[];
+    /** pending /call /read and /post sessions. can be aborted via /abort endpoint */
+    private abortableSignals: { session: string; abort: () => void }[] = [];
     private readonly requestedPort: number;
     private port?: number;
     server: HttpServer<never>[] = [];
     core: ReturnType<typeof createCore>;
     logger: Log;
     assetPrefix: string;
-    protocolMessages: boolean;
     throttler = new Throttler(500);
 
     constructor({
         api,
         assetPrefix = '',
         logger,
-        protocolMessages,
         bundledVersion,
         port = 21328,
     }: {
         api: 'usb' | 'udp' | AbstractApi;
         assetPrefix?: string;
         logger: Log;
-        protocolMessages?: boolean;
         bundledVersion?: string;
         port?: number;
     }) {
@@ -127,7 +123,6 @@ export class TrezordNode {
         this.core = createCore(api, this.logger);
 
         this.assetPrefix = assetPrefix;
-        this.protocolMessages = protocolMessages ?? true;
         this.requestedPort = port;
     }
 
@@ -185,7 +180,7 @@ export class TrezordNode {
         this.checkAffectedSubscriptions();
     }
 
-    private createAbortSignal(res: Response) {
+    private createAbortSignal(res: Response, session?: string) {
         const abortController = new AbortController();
         const listener = () => {
             abortController.abort();
@@ -193,7 +188,18 @@ export class TrezordNode {
         };
         res.addListener('close', listener);
 
+        if (session) {
+            this.abortableSignals.push({
+                session,
+                abort: () => abortController.abort(),
+            });
+        }
+
         return abortController.signal;
+    }
+
+    private removeAbortableSignal(session: string) {
+        this.abortableSignals = this.abortableSignals.filter(s => s.session !== session);
     }
 
     private handleResponse(res: Response, data: string) {
@@ -209,7 +215,12 @@ export class TrezordNode {
             res,
             str({
                 version: this.version,
-                protocolMessages: this.protocolMessages,
+                // Kept for compatibility with released Suite versions whose BridgeTransport
+                // toggles wire format based on this flag. Missing / falsy makes those clients
+                // fall back to the legacy raw-hex bridge mode, which our /call /post /read
+                // handlers still accept but which we are working to retire — see #23794.
+                // Always true: this server always understands the v1 / v2 envelope.
+                protocolMessages: true,
                 githash: 'not provided',
             }),
         );
@@ -227,351 +238,362 @@ export class TrezordNode {
         });
 
         this.logger.info('Starting Trezor Bridge HTTP server');
-        // for compatibility reasons, we start two servers sharing the same request handlers and state.
-        // compatibility case 1:
-        //   user still has the old bridge client (targeting port 21325), but he already runs the latest suite-desktop version. We need to make sure that bridge is still available on port 21325 -> we need 2 servers
-        // compatibility case 2:
-        //   user has the latest bridge client (checking all the possible ports), but he runs the old suite-desktop version. This is easy and does not require us to start 2 servers, bridge client will fallback to the old port.
 
-        const primaryApp = new HttpServer({
+        const app = new HttpServer({
             ports: [this.requestedPort],
             logger: this.logger,
             address: ADDRESS.hostname,
         });
 
-        const compatibilityApp = new HttpServer({
-            ports: [COMPATIBILITY_PORT],
-            logger: this.logger,
-            address: ADDRESS.hostname,
-        });
+        const appRes = await app.start();
 
-        const bindHandlers = (app: HttpServer<any>) => {
-            app.use([
-                (req, res, next, context) => {
-                    // directly navigating to status page of bridge in browser. when request is not issued by js, there is no origin header
-                    if (
-                        !req.headers.origin &&
-                        req.headers.host &&
-                        [
-                            `${ADDRESS.hostname}:${app.getServerAddress().port}`,
-                            `localhost:${app.getServerAddress().port}`,
-                        ].includes(req.headers.host)
-                    ) {
+        if (!appRes.success) {
+            throw new Error(appRes.error);
+        }
+
+        app.use([
+            (req, res, next, context) => {
+                // directly navigating to status page of bridge in browser. when request is not issued by js, there is no origin header
+                if (
+                    !req.headers.origin &&
+                    req.headers.host &&
+                    [
+                        `${ADDRESS.hostname}:${app.getServerAddress().port}`,
+                        `localhost:${app.getServerAddress().port}`,
+                    ].includes(req.headers.host)
+                ) {
+                    next(req, res);
+                } else {
+                    const isOriginAllowed = checkOrigin({
+                        request: req,
+                        allowedOrigin: [
+                            'sldev.cz',
+                            'trezor.io',
+                            'localhost',
+                            // When using Tor it will send string "null" as default, and it will not allow calling to localhost.
+                            // To allow it to be sent, you can go to about:config and set the attributes below:
+                            // "network.http.referer.hideOnionSource - false"
+                            // "network.proxy.allow_hijacking_localhost - false"
+                            'trezoriovpjcahpzkrewelclulmszwbqpzmzgub37gbcjlvluxtruqad.onion',
+                        ],
+                        pathname: req.url,
+                        logger: context.logger,
+                    });
+
+                    if (isOriginAllowed) {
                         next(req, res);
                     } else {
-                        const isOriginAllowed = checkOrigin({
-                            request: req,
-                            allowedOrigin: [
-                                'sldev.cz',
-                                'trezor.io',
-                                'localhost',
-                                // When using Tor it will send string "null" as default, and it will not allow calling to localhost.
-                                // To allow it to be sent, you can go to about:config and set the attributes below:
-                                // "network.http.referer.hideOnionSource - false"
-                                // "network.proxy.allow_hijacking_localhost - false"
-                                'trezoriovpjcahpzkrewelclulmszwbqpzmzgub37gbcjlvluxtruqad.onion',
-                            ],
-                            pathname: req.url,
-                            logger: context.logger,
-                        });
-
-                        if (isOriginAllowed) {
-                            next(req, res);
-                        } else {
-                            // error handling identic to legacy trezord-go
-                            switch (req.url) {
-                                case '/enumerate':
-                                case '/listen':
-                                    res.statusCode = 403;
-                                    break;
-                                default:
-                                    res.statusCode = 404;
-                            }
-                            res.end();
+                        // error handling identic to legacy trezord-go
+                        switch (req.url) {
+                            case '/enumerate':
+                            case '/listen':
+                                res.statusCode = 403;
+                                break;
+                            default:
+                                res.statusCode = 404;
                         }
+                        res.end();
                     }
-                },
-            ]);
+                }
+            },
+        ]);
 
-            // origin was checked in previous app.use. if it didn't not satisfy the check, it did not move on to this handler
-            app.use([
-                (req, res, next) => {
-                    if (req.headers.origin) {
-                        res.setHeader('Access-Control-Allow-Origin', req.headers.origin);
+        // origin was checked in previous app.use. if it didn't not satisfy the check, it did not move on to this handler
+        app.use([
+            (req, res, next) => {
+                if (req.headers.origin) {
+                    res.setHeader('Access-Control-Allow-Origin', req.headers.origin);
+                }
+
+                next(req, res);
+            },
+        ]);
+
+        app.post('/enumerate', [
+            (_req, res) => {
+                res.setHeader('Content-Type', 'text/plain');
+                const signal = this.createAbortSignal(res);
+                this.core.enumerate({ signal }).then(result => {
+                    if (!result.success) {
+                        res.statusCode = 400;
+
+                        return this.handleResponse(
+                            res,
+                            str({ error: result.error.code, message: result.error.message }),
+                        );
                     }
+                    res.statusCode = 200;
+                    this.handleResponse(res, str(result.payload.descriptors));
+                });
+            },
+        ]);
 
-                    next(req, res);
-                },
-            ]);
+        app.post('/listen', [
+            parseBodyJSON,
+            validateDescriptorsJSON,
+            (req, res) => {
+                res.setHeader('Content-Type', 'text/plain');
+                this.listenSubscriptions.push({
+                    descriptors: req.body,
+                    req,
+                    res,
+                });
+                this.checkAffectedSubscriptions();
+            },
+        ]);
 
-            app.post('/enumerate', [
-                (_req, res) => {
-                    res.setHeader('Content-Type', 'text/plain');
-                    const signal = this.createAbortSignal(res);
-                    this.core.enumerate({ signal }).then(result => {
+        app.post('/acquire/:path/:previous', [
+            parseBodyJSON,
+            validateAcquireParams,
+            (req, res) => {
+                res.setHeader('Content-Type', 'text/plain');
+                const signal = this.createAbortSignal(res);
+                this.core
+                    .acquire({
+                        path: req.params.path,
+                        previous: req.params.previous,
+                        // @ts-expect-error
+                        sessionOwner: req?.body?.sessionOwner,
+                        signal,
+                    })
+                    .then(result => {
                         if (!result.success) {
                             res.statusCode = 400;
 
                             return this.handleResponse(
                                 res,
-                                str({ error: result.error, message: result.message }),
+                                str({
+                                    error: result.error.code,
+                                    message: result.error.message,
+                                }),
                             );
                         }
                         res.statusCode = 200;
-                        this.handleResponse(res, str(result.payload.descriptors));
+                        this.handleResponse(res, str({ session: result.payload.session }));
                     });
-                },
-            ]);
+            },
+        ]);
 
-            app.post('/listen', [
-                parseBodyJSON,
-                validateDescriptorsJSON,
-                (req, res) => {
-                    res.setHeader('Content-Type', 'text/plain');
-                    this.listenSubscriptions.push({
-                        descriptors: req.body,
-                        req,
-                        res,
+        app.post('/release/:session', [
+            validateSessionParams,
+            parseBodyText,
+            (req, res) => {
+                this.core
+                    .release({
+                        session: req.params.session,
+                    })
+                    .then(result => {
+                        if (!result.success) {
+                            res.statusCode = 400;
+
+                            return this.handleResponse(
+                                res,
+                                str({
+                                    error: result.error.code,
+                                    message: result.error.message,
+                                }),
+                            );
+                        }
+                        res.statusCode = 200;
+
+                        this.handleResponse(res, str({ session: req.params.session }));
                     });
-                    this.checkAffectedSubscriptions();
-                },
-            ]);
+            },
+        ]);
 
-            app.post('/acquire/:path/:previous', [
-                parseBodyJSON,
-                validateAcquireParams,
-                (req, res) => {
-                    res.setHeader('Content-Type', 'text/plain');
-                    const signal = this.createAbortSignal(res);
-                    this.core
-                        .acquire({
-                            path: req.params.path,
-                            previous: req.params.previous,
-                            // @ts-expect-error
-                            sessionOwner: req?.body?.sessionOwner,
-                            signal,
-                        })
-                        .then(result => {
-                            if (!result.success) {
-                                res.statusCode = 400;
-
-                                return this.handleResponse(
-                                    res,
-                                    str({ error: result.error, message: result.message }),
-                                );
-                            }
-                            res.statusCode = 200;
-                            this.handleResponse(res, str({ session: result.payload.session }));
-                        });
-                },
-            ]);
-
-            app.post('/release/:session', [
-                validateSessionParams,
-                parseBodyText,
-                (req, res) => {
-                    this.core
-                        .release({
-                            session: req.params.session,
-                        })
-                        .then(result => {
-                            if (!result.success) {
-                                res.statusCode = 400;
-
-                                return this.handleResponse(
-                                    res,
-                                    str({ error: result.error, message: result.message }),
-                                );
-                            }
-                            res.statusCode = 200;
-
-                            this.handleResponse(res, str({ session: req.params.session }));
-                        });
-                },
-            ]);
-
-            app.post('/call/:session', [
-                validateSessionParams,
-                parseBodyText,
-                validateProtocolMessageBody(true, this.protocolMessages),
-                (req, res) => {
-                    const signal = this.createAbortSignal(res);
-                    this.core
-                        .call({
-                            ...req.body,
-                            session: req.params.session,
-                            signal,
-                        })
-                        .then(result => {
-                            if (!result.success) {
-                                res.statusCode = 400;
-
-                                return this.handleResponse(
-                                    res,
-                                    str({ error: result.error, message: result.message }),
-                                );
-                            }
-                            res.statusCode = 200;
-
-                            this.handleResponse(res, str(result.payload));
-                        });
-                },
-            ]);
-
-            app.post('/read/:session', [
-                validateSessionParams,
-                parseBodyText,
-                validateProtocolMessageBody(false, this.protocolMessages),
-                (req, res) => {
-                    const signal = this.createAbortSignal(res);
-                    this.core
-                        .receive({
-                            ...req.body,
-                            session: req.params.session,
-                            signal,
-                        })
-                        .then(result => {
-                            if (!result.success) {
-                                res.statusCode = 400;
-
-                                return this.handleResponse(
-                                    res,
-                                    str({ error: result.error, message: result.message }),
-                                );
-                            }
-                            res.statusCode = 200;
-
-                            this.handleResponse(res, str(result.payload));
-                        });
-                },
-            ]);
-
-            app.post('/post/:session', [
-                validateSessionParams,
-                parseBodyText,
-                validateProtocolMessageBody(true, this.protocolMessages),
-                (req, res) => {
-                    const signal = this.createAbortSignal(res);
-                    this.core
-                        .send({
-                            ...req.body,
-                            session: req.params.session,
-                            signal,
-                        })
-                        .then(result => {
-                            if (!result.success) {
-                                res.statusCode = 400;
-
-                                return this.handleResponse(
-                                    res,
-                                    str({ error: result.error, message: result.message }),
-                                );
-                            }
-                            res.statusCode = 200;
-
-                            this.handleResponse(res, str(result.payload));
-                        });
-                },
-            ]);
-
-            app.get('/', [
-                (_req, res) => {
-                    res.writeHead(301, {
-                        Location: `${ADDRESS.origin}:${app.getServerAddress().port}/status`,
-                    });
-                    res.end();
-                },
-            ]);
-
-            app.get('/status', [
-                async (_req, res) => {
-                    res.statusCode = 200;
-                    res.appendHeader('Content-Type', 'text/html');
-
-                    try {
-                        const ui = await fs.readFile(
-                            // todo: using npx tsx ./packages/transport-bridge/src/bin.ts
-                            // will serve only the unbuilt template from src/ui folder instead from dist/ui folder
-                            path.join(__dirname, this.assetPrefix, 'ui/index.html'),
-                            'utf-8',
-                        );
-
-                        this.handleResponse(res, ui);
-                    } catch (error) {
-                        this.logger.error('Failed to fetch status page', error);
-                        // you need to run yarn workspace @trezor/transport-bridge build:ui to make it available (or build:lib will do)
-                        this.handleResponse(res, 'Failed to fetch status page');
+        app.post('/abort/:session', [
+            validateSessionParams,
+            parseBodyText,
+            (req, res) => {
+                let statusCode = 400;
+                this.abortableSignals.forEach(s => {
+                    if (s.session === req.params.session) {
+                        statusCode = 200;
+                        s.abort();
                     }
-                },
-            ]);
+                });
+                this.removeAbortableSignal(req.params.session);
 
-            app.get('/status-data', [
-                async (_req, res) => {
-                    const signal = this.createAbortSignal(res);
-                    await this.core.enumerate({ signal });
-                    const props = {
-                        intro: `To download full logs go to ${ADDRESS.origin}:${app.getServerAddress().port}/logs`,
-                        version: this.version,
-                        bundledVersion: this.bundledVersion,
-                        devices: this.descriptors,
-                        logs: this.logger.getLog(),
-                    };
-                    res.appendHeader('Content-Type', 'application/json');
-                    this.handleResponse(res, str(props));
-                },
-            ]);
+                res.statusCode = statusCode;
 
-            app.get('/logs', [
-                (_req, res) => {
-                    res.appendHeader('Content-Type', 'text/plain');
-                    res.appendHeader(
-                        'Content-Disposition',
-                        'attachment; filename=trezor-bridge.txt',
+                return this.handleResponse(
+                    res,
+                    str(
+                        statusCode === 200
+                            ? { success: true }
+                            : { error: ERRORS.SESSION_NOT_FOUND },
+                    ),
+                );
+            },
+        ]);
+
+        app.post('/call/:session', [
+            validateSessionParams,
+            parseBodyText,
+            validateProtocolMessageBody(true),
+            (req, res) => {
+                const { session } = req.params;
+                const signal = this.createAbortSignal(res, session);
+                this.core
+                    .call({
+                        ...req.body,
+                        session,
+                        signal,
+                    })
+                    .then(result => {
+                        this.removeAbortableSignal(session);
+                        if (!result.success) {
+                            res.statusCode = 400;
+
+                            return this.handleResponse(
+                                res,
+                                str({
+                                    error: result.error.code,
+                                    message: result.error.message,
+                                }),
+                            );
+                        }
+                        res.statusCode = 200;
+
+                        this.handleResponse(res, str(result.payload));
+                    });
+            },
+        ]);
+
+        app.post('/read/:session', [
+            validateSessionParams,
+            parseBodyText,
+            validateProtocolMessageBody(false),
+            (req, res) => {
+                const { session } = req.params;
+                const signal = this.createAbortSignal(res, session);
+                this.core
+                    .receive({
+                        ...req.body,
+                        session,
+                        signal,
+                    })
+                    .then(result => {
+                        this.removeAbortableSignal(session);
+                        if (!result.success) {
+                            res.statusCode = 400;
+
+                            return this.handleResponse(
+                                res,
+                                str({
+                                    error: result.error.code,
+                                    message: result.error.message,
+                                }),
+                            );
+                        }
+                        res.statusCode = 200;
+
+                        this.handleResponse(res, str(result.payload));
+                    });
+            },
+        ]);
+
+        app.post('/post/:session', [
+            validateSessionParams,
+            parseBodyText,
+            validateProtocolMessageBody(true),
+            (req, res) => {
+                const { session } = req.params;
+                const signal = this.createAbortSignal(res, session);
+                this.core
+                    .send({
+                        ...req.body,
+                        session,
+                        signal,
+                    })
+                    .then(result => {
+                        this.removeAbortableSignal(session);
+                        if (!result.success) {
+                            res.statusCode = 400;
+
+                            return this.handleResponse(
+                                res,
+                                str({
+                                    error: result.error.code,
+                                    message: result.error.message,
+                                }),
+                            );
+                        }
+                        res.statusCode = 200;
+
+                        this.handleResponse(res, str(result.payload));
+                    });
+            },
+        ]);
+
+        app.get('/', [
+            (_req, res) => {
+                res.writeHead(301, {
+                    Location: `${ADDRESS.origin}:${app.getServerAddress().port}/status`,
+                });
+                res.end();
+            },
+        ]);
+
+        app.get('/status', [
+            async (_req, res) => {
+                res.statusCode = 200;
+                res.appendHeader('Content-Type', 'text/html');
+
+                try {
+                    const ui = await fs.readFile(
+                        // todo: using npx tsx ./packages/transport-bridge/src/bin.ts
+                        // will serve only the unbuilt template from src/ui folder instead from dist/ui folder
+                        path.join(__dirname, this.assetPrefix, 'ui/index.html'),
+                        'utf-8',
                     );
-                    res.statusCode = 200;
 
-                    this.handleResponse(
-                        res,
-                        app.logger
-                            .getLog()
-                            .map(l => l.message.join('. '))
-                            .join('.\n'),
-                    );
-                },
-            ]);
-
-            app.post('/', [this.handleInfo.bind(this)]);
-
-            app.post('/configure', [this.handleInfo.bind(this)]);
-        };
-
-        // start both at once
-        const compatibilityAppRes =
-            this.requestedPort === COMPATIBILITY_PORT // Don't even try to start compatibilityApp when the primaryApp requests the same port
-                ? Promise.resolve({ success: false } as const)
-                : compatibilityApp.start();
-
-        const primaryAppRes = await primaryApp.start();
-
-        // if primary succeeds -> resolve
-        if (primaryAppRes.success) {
-            bindHandlers(primaryApp);
-            this.server.push(primaryApp);
-            this.port = primaryAppRes.payload.port;
-        }
-
-        return compatibilityAppRes.then(res => {
-            if (res.success) {
-                bindHandlers(compatibilityApp);
-                this.server.push(compatibilityApp);
-
-                if (!this.port) {
-                    this.port = res.payload.port;
+                    this.handleResponse(res, ui);
+                } catch (error) {
+                    this.logger.error('Failed to fetch status page', error);
+                    // you need to run yarn workspace @trezor/transport-bridge build:ui to make it available (or build:lib will do)
+                    this.handleResponse(res, 'Failed to fetch status page');
                 }
-            } else if (!primaryAppRes.success) {
-                throw new Error(primaryAppRes.error); // -> neither compatibility, nor primary app started -> only this case means reject
-            }
-        });
+            },
+        ]);
+
+        app.get('/status-data', [
+            async (_req, res) => {
+                const signal = this.createAbortSignal(res);
+                await this.core.enumerate({ signal });
+                const props = {
+                    intro: `To download full logs go to ${ADDRESS.origin}:${app.getServerAddress().port}/logs`,
+                    version: this.version,
+                    bundledVersion: this.bundledVersion,
+                    devices: this.descriptors,
+                    logs: this.logger.getLog(),
+                };
+                res.appendHeader('Content-Type', 'application/json');
+                this.handleResponse(res, str(props));
+            },
+        ]);
+
+        app.get('/logs', [
+            (_req, res) => {
+                res.appendHeader('Content-Type', 'text/plain');
+                res.appendHeader('Content-Disposition', 'attachment; filename=trezor-bridge.txt');
+                res.statusCode = 200;
+
+                this.handleResponse(
+                    res,
+                    app.logger
+                        .getLog()
+                        .map(l => l.message.join('. '))
+                        .join('.\n'),
+                );
+            },
+        ]);
+
+        app.post('/', [this.handleInfo.bind(this)]);
+
+        app.post('/configure', [this.handleInfo.bind(this)]);
+        this.server.push(app);
+        this.port = appRes.payload.port;
     }
 
     public stop() {

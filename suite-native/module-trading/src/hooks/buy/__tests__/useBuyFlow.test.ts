@@ -1,31 +1,26 @@
+import { type TestStore, act, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 import {
-    PreloadedState,
-    TestStore,
-    act,
-    initStore,
-    renderHookWithStoreProviderAsync,
-} from '@suite-native/test-utils';
-import {
-    buyQuotes,
     getBtcAccount,
     getInitializedTradingStateWithQuotes,
+    invityErrorBuyQuote,
 } from '@suite-native/trading-fixtures';
-import { BuyFormType } from '@suite-native/trading-types';
+import { type BuyFormType } from '@suite-native/trading-types';
 
+import { createTradingLightStore } from '../../../__tests__/tradingTestUtils';
 import { useBuyFlow } from '../useBuyFlow';
 import { useBuyForm } from '../useBuyForm';
+
+const mockSelectQuoteThunk = jest.fn();
 
 jest.mock('@suite-common/trading', () => ({
     ...jest.requireActual('@suite-common/trading'),
     buyThunks: {
-        selectQuoteThunk: (payload: unknown) => ({
-            type: 'selectQuoteThunkMock',
-            payload,
-        }),
-        confirmTradeThunk: (payload: unknown) => ({
-            type: 'confirmTradeThunkMock',
-            payload,
-        }),
+        selectQuoteThunk: (payload: unknown) => {
+            mockSelectQuoteThunk(payload);
+
+            // Return a thunk so redux-thunk intercepts it before the serializable check middleware
+            return () => Promise.resolve();
+        },
     },
 }));
 
@@ -33,50 +28,56 @@ describe('useBuyFlow', () => {
     let buyForm: BuyFormType;
     let store: TestStore;
 
-    const getInitializedStore = ({ isLoading }: { isLoading?: boolean }) => {
-        const preloadedState: PreloadedState = {
-            wallet: { trading: getInitializedTradingStateWithQuotes() },
-        };
-        if (isLoading !== undefined) {
-            preloadedState.wallet!.trading!.buy!.isLoading = isLoading;
-        }
+    beforeEach(() => {
+        jest.clearAllMocks();
+    });
 
-        return initStore(preloadedState).store;
-    };
+    const getInitializedStore = ({ isLoading }: { isLoading?: boolean }) =>
+        createTradingLightStore({
+            tradeType: 'buy',
+            overrides: {
+                wallet: {
+                    trading: {
+                        ...getInitializedTradingStateWithQuotes(),
+                        ...(isLoading !== undefined && { buy: { isLoading } }),
+                    },
+                },
+            },
+        });
 
-    const renderBuyForm = () => renderHookWithStoreProviderAsync(() => useBuyForm(), { store });
+    const renderBuyForm = () => renderHookWithStoreProvider(() => useBuyForm(), { store });
 
     const renderUseTradingBuyFlow = () =>
-        renderHookWithStoreProviderAsync(() => useBuyFlow(buyForm), { store });
+        renderHookWithStoreProvider(() => useBuyFlow(buyForm), { store });
 
     describe('while loading quotes', () => {
-        beforeEach(async () => {
-            store = await getInitializedStore({ isLoading: true });
+        beforeEach(() => {
+            store = getInitializedStore({ isLoading: true });
 
-            const { result } = await renderBuyForm();
+            const { result } = renderBuyForm();
             buyForm = result.current;
         });
 
-        it('should canProceed be false when loading', async () => {
-            const { result } = await renderUseTradingBuyFlow();
+        it('should canProceed be false when loading', () => {
+            const { result } = renderUseTradingBuyFlow();
             expect(result.current.canProceed).toBe(false);
         });
     });
 
     describe('with quote loaded and selected', () => {
-        beforeEach(async () => {
-            store = await getInitializedStore({ isLoading: false });
+        beforeEach(() => {
+            store = getInitializedStore({ isLoading: false });
 
-            const { result } = await renderBuyForm();
+            const { result } = renderBuyForm();
             buyForm = result.current;
 
             act(() => {
-                buyForm.setValue('quote', buyQuotes[2]);
+                buyForm.setValue('quote', invityErrorBuyQuote);
             });
         });
 
-        it('should canProceed be true when not loading and orderId filters one in quotes', async () => {
-            const { result } = await renderUseTradingBuyFlow();
+        it('should canProceed be true when not loading and orderId filters one in quotes', () => {
+            const { result } = renderUseTradingBuyFlow();
 
             expect(result.current.canProceed).toBe(true);
         });
@@ -92,34 +93,37 @@ describe('useBuyFlow', () => {
                 });
             });
 
-            it('should call nextStep callback with correct address', async () => {
+            it('should store receive address and account key in Redux before navigating to preview', () => {
                 const btcAccount = getBtcAccount();
-                const dispatchSpy = jest.spyOn(store, 'dispatch');
                 const expectedAddress =
                     btcAccount.addresses?.used?.[0]?.address ?? btcAccount.descriptor;
 
-                const { result } = await renderUseTradingBuyFlow();
-                dispatchSpy.mockClear();
+                const { result } = renderUseTradingBuyFlow();
 
                 act(() => {
                     result.current.selectQuote();
                 });
 
-                const dispatchCall = dispatchSpy.mock.calls[0][0] as any;
-                const { nextStep } = dispatchCall.payload;
+                const state = store.getState();
+                expect(state.wallet.trading.buy.receiveAddress).toBe(expectedAddress);
+                expect(state.wallet.trading.buy.receiveAccountKey).toBe(btcAccount.key);
+            });
+
+            it('should reset form when navigating to preview', () => {
+                const { result } = renderUseTradingBuyFlow();
+                const resetSpy = jest.spyOn(buyForm, 'reset');
 
                 act(() => {
-                    nextStep();
+                    result.current.selectQuote();
                 });
 
-                expect(dispatchSpy).toHaveBeenCalledWith(
-                    expect.objectContaining({
-                        type: 'confirmTradeThunkMock',
-                        payload: expect.objectContaining({
-                            address: expectedAddress,
-                        }),
-                    }),
-                );
+                const [payload] = mockSelectQuoteThunk.mock.calls[0] as [any];
+
+                act(() => {
+                    payload.nextStep();
+                });
+
+                expect(resetSpy).toHaveBeenCalledTimes(1);
             });
         });
     });

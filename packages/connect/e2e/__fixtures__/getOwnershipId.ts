@@ -2,13 +2,15 @@
 
 const legacyResults = [
     {
-        // getOwnershipId not supported on T1B1 and T2T1 below 2.5.3
-        rules: ['1', '<2.5.3'],
+        // getOwnershipId not supported on T2T1 below 2.5.3.
+        // Current T1B1 firmware (1-latest in nightly) supports it,
+        // so the model rule is intentionally not included here.
+        rules: ['<2.5.3'],
         success: false,
     },
 ];
 
-export default {
+const getOwnershipId: TestCase = {
     method: 'getOwnershipId',
     setup: {
         mnemonic: 'mnemonic_all',
@@ -42,8 +44,8 @@ export default {
                 bundle: [
                     { path: "m/84'/0'/0'/1/0", coin: 'btc' },
                     { path: "m/86'/0'/0'/1/0", coin: 'btc' },
-                    { path: "m/49'/1'/0'/1/0", coin: 'testnet' },
-                    { path: "m/44'/1'/0'/1/0", coin: 'testnet' },
+                    { path: "m/49'/1'/0'/1/0", coin: 'test' },
+                    { path: "m/44'/1'/0'/1/0", coin: 'test' },
                 ],
             },
             result: [
@@ -67,4 +69,6 @@ export default {
             legacyResults,
         },
     ],
-} satisfies TestCase;
+};
+
+export default getOwnershipId;

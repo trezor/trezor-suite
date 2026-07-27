@@ -2,22 +2,32 @@ import { useContext } from 'react';
 import { useSelector } from 'react-redux';
 
 import { events } from '@suite-common/analytics';
+import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import { selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
+import {
+    selectTurnOffSuiteSyncDep,
+    selectTurnOnSuiteSyncDep,
+} from '@suite-common/suite-sync-types';
 import { useAlert } from '@suite-native/alerts';
+import { events as nativeEvents, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { TouchableSwitchRow } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import { useAnalytics, useNativeServices } from '@suite-native/services';
 import { StorageContext } from '@suite-native/storage';
-import { useToast } from '@suite-native/toasts';
-import { exhaustive } from '@trezor/type-utils';
+import { useShowSuiteSyncEnabledToast, useSuiteSyncErrorHandler } from '@suite-native/suite-sync';
 
 export const ToggleSuiteSyncCard = () => {
-    const analytics = useAnalytics();
-    const persistor = useContext(StorageContext);
+    const { analytics } = useServices(selectNativeAnalyticsDep);
+    const storageContext = useContext(StorageContext);
     const { showAlert } = useAlert();
-    const { showToast } = useToast();
-    const { suiteSync } = useNativeServices();
+    const { showSuiteSyncEnabledToast } = useShowSuiteSyncEnabledToast();
+
+    const { turnOffSuiteSync, turnOnSuiteSync } = useServices(
+        selectTurnOffSuiteSyncDep,
+        selectTurnOnSuiteSyncDep,
+    );
+
+    const { handleSuiteSyncError } = useSuiteSyncErrorHandler();
     const isSuiteSyncEnabled = useSelector(selectIsSuiteSyncEnabled);
     const selectedDevice = useSelector(selectSelectedDevice);
 
@@ -27,9 +37,10 @@ export const ToggleSuiteSyncCard = () => {
             description: <Translation id="suiteSync.disableAlert.description" />,
             primaryButtonTitle: <Translation id="suiteSync.disableAlert.cta" />,
             onPressPrimaryButton: () => {
-                suiteSync.turnOffSuiteSync({
-                    ensureSettingsPersisted: () => persistor?.flush(),
+                turnOffSuiteSync({
+                    ensureSettingsPersisted: () => storageContext?.flush(),
                 });
+
                 analytics.report({
                     type: events.settingsGeneralLabelingEvent.name,
                     payload: {
@@ -41,11 +52,11 @@ export const ToggleSuiteSyncCard = () => {
         });
     };
 
-    const toggleSuiteSync = async () => {
+    const toggleSuiteSync = async (value: boolean) => {
         if (isSuiteSyncEnabled) {
             showSuiteSyncDisableConfirmationAlert();
         } else {
-            const result = await suiteSync.turnOnSuiteSync({
+            const result = await turnOnSuiteSync({
                 deviceStaticSessionId: selectedDevice?.state?.staticSessionId,
             });
 
@@ -56,25 +67,17 @@ export const ToggleSuiteSyncCard = () => {
                 },
             });
 
-            if (!result.success) {
-                const { type } = result.error;
-                switch (type) {
-                    case 'SuiteSyncUnavailableOnDeviceError':
-                    case 'SuiteSyncFirmwareUpgradeNeededDeviceErrorType':
-                    case 'DeviceCancelled':
-                    case 'DeviceError':
-                        showToast({ variant: 'error', icon: 'warning', message: type });
-
-                        return;
-
-                    case 'WriteModeRequiredForAllocation':
-                        // Do nothing, this is expected control flow error when we want allocate on-demand.
-                        return;
-                    default:
-                        return exhaustive(type);
-                }
+            if (result.success) {
+                showSuiteSyncEnabledToast();
+            } else {
+                handleSuiteSyncError(result.error);
             }
         }
+
+        analytics.report({
+            type: nativeEvents.settingsToggleExperimentalFeatureEvent.name,
+            payload: { feature: 'suite-sync', value },
+        });
     };
 
     return (

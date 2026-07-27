@@ -1,6 +1,7 @@
 import { Column, IconCircle, List, Paragraph } from '@trezor/components';
+import { DotOutlineFilledIcon } from '@trezor/icons';
 
-import { TroubleshootingTipsItem } from './TroubleshootingTips';
+import { type TroubleshootingTipsItem } from './TroubleshootingTipsItem';
 
 type TroubleshootingTipsItemProps = {
     item: TroubleshootingTipsItem;
@@ -9,13 +10,7 @@ type TroubleshootingTipsItemProps = {
 export const TroubleshootingTipsItemComponent = ({ item }: TroubleshootingTipsItemProps) => (
     <List.Item
         bulletComponent={
-            <IconCircle
-                variant="info"
-                hasBorder={false}
-                paddingType="medium"
-                name={item.icon ?? 'dotOutlineFilled'}
-                size={40}
-            />
+            <IconCircle intent="info" icon={item.icon ?? DotOutlineFilledIcon} size={40} />
         }
     >
         <Column>

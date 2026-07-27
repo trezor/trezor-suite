@@ -1,37 +1,29 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/RequestLogin.js
 
-import { MessagesSchema as PROTO } from '@trezor/protobuf';
+import type { PermissionRequest } from '@trezor/connect-common';
+import { RequestLoginSchema } from '@trezor/connect-common';
+import type { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 
-import { AbstractMethod, MethodPermission, Payload } from '../core/AbstractMethod';
-import { getFirmwareRange } from './common/paramsValidator';
-import { DataManager } from '../data/DataManager';
-import type { ConnectSettings } from '../types';
-import { RequestLoginSchema } from '../types/api/requestLogin';
+import type { MethodMessage } from '../core/AbstractMethod';
+import { AbstractMethod } from '../core/AbstractMethod';
 
 export default class RequestLogin extends AbstractMethod<'requestLogin', PROTO.SignIdentity> {
-    constructor(message: { id?: number; payload: Payload<'requestLogin'> }) {
-        super(message);
-        this.firmwareRange = getFirmwareRange(this.name, null, this.firmwareRange);
-        this.useEmptyPassphrase = true;
-    }
-    get requiredPermissions(): MethodPermission[] {
-        return ['read', 'write'];
-    }
-
-    init() {
-        const { payload } = this;
+    constructor(message: MethodMessage<'requestLogin'>) {
+        const { payload } = message;
 
         // validate incoming parameters
         Assert(RequestLoginSchema, payload);
 
         const identity: PROTO.IdentityType = {};
-        const settings: ConnectSettings = DataManager.getSettings();
 
-        const origin = payload.origin || settings.origin;
+        const { origin } = payload;
 
         if (origin) {
-            const [proto, host, port] = origin.split(':');
+            const originParts = origin.split(':');
+            const proto = originParts[0] ?? '';
+            const host = originParts[1] ?? '';
+            const port = originParts[2];
             identity.proto = proto;
             identity.host = host.substring(2);
             if (port) {
@@ -40,11 +32,17 @@ export default class RequestLogin extends AbstractMethod<'requestLogin', PROTO.S
             identity.index = 0;
         }
 
-        this.params = {
+        const params = {
             identity,
             challenge_hidden: payload.challengeHidden || '',
             challenge_visual: payload.challengeVisual || '',
         };
+
+        super(message, params);
+        this.useEmptyPassphrase = true;
+    }
+    get requiredPermissions(): PermissionRequest[] {
+        return [{ permission: 'sign' }];
     }
 
     get info() {
@@ -52,7 +50,7 @@ export default class RequestLogin extends AbstractMethod<'requestLogin', PROTO.S
     }
 
     async run() {
-        const cmd = this.device.getCommands();
+        const cmd = this.getDevice().getCommands();
         const { message } = await cmd.typedCall('SignIdentity', 'SignedIdentity', this.params);
 
         return {

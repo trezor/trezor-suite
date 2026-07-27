@@ -1,4 +1,4 @@
-import { GestureResponderEvent, type TextProps } from 'react-native';
+import { type GestureResponderEvent, type TextProps } from 'react-native';
 import Animated, {
     interpolateColor,
     useAnimatedStyle,
@@ -8,7 +8,7 @@ import Animated, {
 
 import type { RequireAtLeastOne } from 'type-fest';
 
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import type { Color, TypographyStyle } from '@trezor/theme';
 
 import { useOpenLink } from '../useOpenLink';
@@ -22,6 +22,7 @@ type LinkProps = RequireAtLeastOne<
         textColor?: Color;
         textPressedColor?: Color;
         textVariant?: TypographyStyle;
+        style?: TextProps['style'];
     },
     'href' | 'onPress'
 > &
@@ -52,10 +53,11 @@ export const Link = ({
     href,
     label,
     isUnderlined = false,
-    textColor = 'textPrimaryDefault',
-    textPressedColor = 'textPrimaryPressed',
+    textColor = 'contentBrand',
+    textPressedColor = 'contentBrandPressed',
     textVariant = 'body-md',
     onPress,
+    style,
     ...textProps
 }: LinkProps) => {
     const { utils, applyStyle } = useNativeStyles();
@@ -91,7 +93,11 @@ export const Link = ({
             onPressIn={handlePressIn}
             onPress={noop} // If the handling is defined in onPress, the very short taps are sometimes ignored
             onPressOut={handlePressOut}
-            style={[applyStyle(textStyle, { isUnderlined, textVariant }), animatedTextColorStyle]}
+            style={[
+                applyStyle(textStyle, { isUnderlined, textVariant }),
+                animatedTextColorStyle,
+                style,
+            ]}
             suppressHighlighting
         >
             {label}

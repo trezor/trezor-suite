@@ -1,9 +1,12 @@
 import { useState } from 'react';
 
-import { events } from '@suite/analytics';
+import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { LearnMoreButton } from '@suite/external-links';
 import { Translation } from '@suite/intl';
+import { isAdditionalShamirBackupInProgress } from '@suite/recovery';
+import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
-import { Modal, ModalProps } from '@trezor/components';
+import { Modal, type ModalProps } from '@trezor/components';
 import TrezorConnect, { PROTO } from '@trezor/connect';
 import { ConfirmOnDevicePill } from '@trezor/product-components';
 import {
@@ -12,17 +15,12 @@ import {
     TREZOR_SUPPORT_RECOVERY_ISSUES_URL,
 } from '@trezor/urls';
 
-import { LearnMoreButton } from 'src/components/suite/LearnMoreButton';
 import { useSelector } from 'src/hooks/suite';
-import { useAnalytics } from 'src/support/useAnalytics';
 
 import { MultiShareBackupStep1 } from './MultiShareBackupStep1';
 import { MultiShareBackupStep2to4 } from './MultiShareBackupStep2to4';
 import { MultiShareBackupStep5 } from './MultiShareBackupStep5';
-import { isAdditionalShamirBackupInProgress } from '../../../../../../utils/device/isRecoveryInProgress';
-
-const steps = ['first-info', 'second-info', 'verify-ownership', 'backup-seed', 'done'] as const;
-export type Steps = (typeof steps)[number];
+import { type Steps, steps } from './steps';
 
 type MultiShareBackupModalProps = {
     onCancel: () => void;
@@ -31,7 +29,7 @@ type MultiShareBackupModalProps = {
 type StepConfig = Partial<ModalProps>;
 
 export const MultiShareBackupModal = ({ onCancel }: MultiShareBackupModalProps) => {
-    const analytics = useAnalytics();
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
     const device = useSelector(selectSelectedDevice);
 
     const isInBackupMode =
@@ -41,7 +39,6 @@ export const MultiShareBackupModal = ({ onCancel }: MultiShareBackupModalProps) 
 
     const [isChecked1, setIsChecked1] = useState(false);
     const [isChecked2, setIsChecked2] = useState(false);
-    const [isSubmitted, setIsSubmitted] = useState(false);
 
     const learnMoreClicked = () => {
         analytics.report({
@@ -62,7 +59,7 @@ export const MultiShareBackupModal = ({ onCancel }: MultiShareBackupModalProps) 
     };
 
     const closeWithCancelOnDevice = () => {
-        TrezorConnect.cancel('cancel');
+        TrezorConnect.cancel({ reason: 'cancel' });
         handleCancel();
     };
 
@@ -73,12 +70,7 @@ export const MultiShareBackupModal = ({ onCancel }: MultiShareBackupModalProps) 
     const getStepConfig = (): StepConfig => {
         switch (step) {
             case 'first-info': {
-                const goToStepNextStep = () => {
-                    setIsSubmitted(true);
-                    if (isChecked1 && isChecked2) {
-                        setStep('second-info');
-                    }
-                };
+                const goToStepNextStep = () => setStep('second-info');
 
                 return {
                     width: 600,
@@ -86,7 +78,6 @@ export const MultiShareBackupModal = ({ onCancel }: MultiShareBackupModalProps) 
                         <MultiShareBackupStep1
                             isChecked1={isChecked1}
                             isChecked2={isChecked2}
-                            isSubmitted={isSubmitted}
                             setIsChecked1={setIsChecked1}
                             setIsChecked2={setIsChecked2}
                         />
@@ -125,7 +116,11 @@ export const MultiShareBackupModal = ({ onCancel }: MultiShareBackupModalProps) 
 
                     if (response.success) {
                         setStep('backup-seed');
-                        TrezorConnect.backupDevice().then(response => {
+                        TrezorConnect.backupDevice({
+                            device: {
+                                path: device.path,
+                            },
+                        }).then(response => {
                             if (response.success) {
                                 analytics.report({
                                     type: events.settingsDeviceMultiShareBackupEvent.name,

@@ -1,0 +1,10 @@
+import type { SVGProps } from 'react';
+const SvgChalkboardSimpleFilled = (props: SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" {...props}>
+        <path
+            fill="currentColor"
+            d="M30 24h-1V7a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v17H2a1 1 0 0 0 0 2h28a1 1 0 0 0 0-2m-5 0h-9v-2a1 1 0 0 1 1-1h7a1 1 0 0 1 1 1z"
+        />
+    </svg>
+);
+export { SvgChalkboardSimpleFilled as ReactComponent };

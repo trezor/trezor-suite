@@ -2,32 +2,43 @@ import { A, pipe } from '@mobily/ts-belt';
 
 import type { DeviceRootState } from '@suite-common/device';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
-import { TrezorDevice } from '@suite-common/suite-types';
+import { type TrezorDevice } from '@suite-common/suite-types';
 import {
     type Network,
     type NetworkSymbol,
+    filterNetworksByName,
+    getMainnets,
     getNetwork,
+    getTestnets,
     networksCollection,
 } from '@suite-common/wallet-config';
 import {
-    AccountsRootState,
-    WalletSettingsRootState,
+    type AccountsRootState,
+    type WalletSettingsRootState,
     selectDeviceSupportedNetworks,
     selectEnabledNetworks,
 } from '@suite-common/wallet-core';
 import { filterTestnetNetworks, sortNetworks } from '@suite-native/config';
 import {
     FeatureFlag,
-    FeatureFlagsRootState,
+    type FeatureFlagsRootState,
     selectIsFeatureFlagEnabled,
 } from '@suite-native/feature-flags';
-import { SettingsSliceRootState, selectAreTestnetsEnabled } from '@suite-native/settings';
+import { type SettingsSliceRootState, selectAreTestnetsEnabled } from '@suite-native/settings';
 import {
     isNetworkWithTokens,
     selectNetworkSymbolsOfAccountsWithTokensAllowed,
 } from '@suite-native/tokens';
 import { getFirmwareVersion } from '@trezor/device-utils';
-import { versionUtils } from '@trezor/utils';
+import { arrayPartition, versionUtils } from '@trezor/utils';
+
+export type DiscoveryRootState = DeviceRootState &
+    SettingsSliceRootState &
+    AccountsRootState &
+    WalletSettingsRootState &
+    FeatureFlagsRootState;
+
+const createMemoizedSelector = createWeakMapSelector.withTypes<DiscoveryRootState>();
 
 /**
  * Filter collection of activated networks to only include those supported by device & suite
@@ -44,7 +55,7 @@ const filterUnavailableNetworks = (
             !n.support || // support is not defined => is supported
             !internalModel || // typescript. device undefined. => supported
             (n.support[internalModel] && // support is defined for current device
-                versionUtils.isNewerOrEqual(firmwareVersion, n.support[internalModel] as string)); // device version is newer or equal to support field in networks => supported
+                versionUtils.isNewerOrEqual(firmwareVersion, n.support[internalModel])); // device version is newer or equal to support field in networks => supported
 
         return (
             enabledNetworks.includes(n.symbol) &&
@@ -54,32 +65,20 @@ const filterUnavailableNetworks = (
         );
     });
 
-const createMemoizedSelector = createWeakMapSelector.withTypes<
-    DeviceRootState &
-        SettingsSliceRootState &
-        AccountsRootState &
-        WalletSettingsRootState &
-        FeatureFlagsRootState
->();
-
 export const selectDiscoverySupportedNetworks = createMemoizedSelector(
     [
         selectDeviceSupportedNetworks,
         selectAreTestnetsEnabled,
-        (_state, forcedAreTestnetsEnabled?: boolean) => forcedAreTestnetsEnabled,
         state => selectIsFeatureFlagEnabled(state, FeatureFlag.AreDebugOnlyNetworksEnabled),
         state => selectIsFeatureFlagEnabled(state, FeatureFlag.AreExperimentalOnlyNetworksEnabled),
     ],
     (
         deviceNetworks,
-        defaultAreTestnetsEnabled,
-        forcedAreTestnetsEnabled,
+        areTestnetsEnabled,
         areDebugOnlyNetworksEnabled,
         areExperimentalOnlyNetworksEnabled,
-    ) => {
-        const areTestnetsEnabled = forcedAreTestnetsEnabled ?? defaultAreTestnetsEnabled;
-
-        return pipe(
+    ) =>
+        pipe(
             deviceNetworks,
             networkSymbols => filterTestnetNetworks(networkSymbols, areTestnetsEnabled),
             networkSymbols =>
@@ -99,13 +98,15 @@ export const selectDiscoverySupportedNetworks = createMemoizedSelector(
             filterUnavailableNetworks,
             sortNetworks,
             returnStableArrayIfEmpty,
-        );
-    },
+        ),
 );
 
 export const selectDiscoveryNetworkSymbols = createMemoizedSelector(
-    [selectDiscoverySupportedNetworks],
-    supportedNetworks => returnStableArrayIfEmpty(supportedNetworks.map(n => n.symbol)),
+    [selectDiscoverySupportedNetworks, (_state, searchQuery: string = '') => searchQuery],
+    (supportedNetworks, searchQuery) =>
+        returnStableArrayIfEmpty(
+            filterNetworksByName(supportedNetworks, searchQuery).map(n => n.symbol),
+        ),
 );
 
 // this includes only networks supported by current device
@@ -125,4 +126,49 @@ export const selectTokenDefinitionsEnabledNetworks = createMemoizedSelector(
                 A.uniq,
             ),
         ),
+);
+
+export const selectDiscoveryNetworkGroups = createMemoizedSelector(
+    [
+        selectDeviceSupportedNetworks,
+        state => selectIsFeatureFlagEnabled(state, FeatureFlag.AreDebugOnlyNetworksEnabled),
+        state => selectIsFeatureFlagEnabled(state, FeatureFlag.AreExperimentalOnlyNetworksEnabled),
+        selectAreTestnetsEnabled,
+        (_state, searchQuery: string = '') => searchQuery,
+    ],
+    (
+        deviceSupportedNetworks,
+        areDebugOnlyNetworksEnabled,
+        areExperimentalOnlyNetworksEnabled,
+        areTestnetsEnabled,
+        searchQuery,
+    ) => {
+        const mainnets = getMainnets({
+            debug: areDebugOnlyNetworksEnabled,
+            useExperimentalNetworks: areExperimentalOnlyNetworksEnabled,
+        });
+        const testnets = getTestnets({
+            debug: areDebugOnlyNetworksEnabled,
+            useExperimentalNetworks: areExperimentalOnlyNetworksEnabled,
+            useTestnetNetworks: areTestnetsEnabled,
+        });
+
+        const isNetworkSupported = (network: Network) =>
+            deviceSupportedNetworks.includes(network.symbol);
+        const [supportedMainnets, unsupportedMainnets] = arrayPartition(
+            filterNetworksByName(mainnets, searchQuery),
+            isNetworkSupported,
+        );
+        const [supportedTestnets, unsupportedTestnets] = arrayPartition(
+            filterNetworksByName(testnets, searchQuery),
+            isNetworkSupported,
+        );
+
+        return {
+            supportedMainnets,
+            supportedTestnets,
+            unsupportedMainnets,
+            unsupportedTestnets,
+        };
+    },
 );

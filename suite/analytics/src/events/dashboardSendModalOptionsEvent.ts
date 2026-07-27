@@ -21,9 +21,13 @@ export const dashboardSendModalOptionsEvent: EventDef<
     attributes: {
         option: {
             changelog: [{ version: '25.10.0', notes: 'added' }],
+            description:
+                'User selection: `account` when selecting a specific account to send from, `close` when closing the modal',
         },
         filledSearch: {
             changelog: [{ version: '25.10.0', notes: 'added' }],
+            description:
+                'Whether the user typed in the account search field (`true`) or not (`false`)',
         },
     },
 };

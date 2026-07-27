@@ -1,29 +1,13 @@
-import { CSSProperties, forwardRef, useRef } from 'react';
+import { type CSSProperties, forwardRef, useRef } from 'react';
 
 import styled from 'styled-components';
 
+import { TrezorLink } from '@suite/external-links';
 import { Translation } from '@suite/intl';
-import { BackupType } from '@suite-common/suite-types';
-import {
-    Banner,
-    CollapsibleBox,
-    Column,
-    Divider,
-    Text,
-    useElevation,
-    variables,
-} from '@trezor/components';
-import {
-    Elevation,
-    borders,
-    mapElevationToBackground,
-    spacings,
-    spacingsPx,
-    zIndices,
-} from '@trezor/theme';
+import { type BackupType } from '@suite-common/suite-types';
+import { Banner, CollapsibleBox, Column, Divider, Text, variables } from '@trezor/components';
+import { zIndices } from '@trezor/theme';
 import { HELP_CENTER_MULTI_SHARE_BACKUP_URL } from '@trezor/urls';
-
-import { TrezorLink } from 'src/components/suite/TrezorLink';
 
 import { LegacyOptions } from './LegacyOptions';
 import { ShamirOptions } from './ShamirOptions';
@@ -33,23 +17,23 @@ const OptionGroupHeading = styled.div`
     display: flex;
     flex-direction: row;
 
-    gap: ${spacingsPx.md};
+    gap: 16px;
     align-items: center;
 
-    padding: ${spacingsPx.xs} 0;
+    padding: 8px 0;
 `;
 
-const FloatingSelectionsWrapper = styled.div<{ $elevation: Elevation }>`
+const FloatingSelectionsWrapper = styled.div`
     z-index: ${zIndices.modal};
-    border-radius: ${borders.radii.sm};
-    box-shadow: ${({ theme }) => theme.boxShadowElevated};
-    background: ${mapElevationToBackground};
+    border-radius: 12px;
+    box-shadow: ${({ theme }) => theme.surfaceShadowModeless};
+    background: ${({ theme }) => theme.surfaceFillModeless};
     overflow-y: auto;
-    padding: 0 ${spacingsPx.xxs};
+    padding: 0 4px;
 `;
 
 const LegacyOptionsMargin = styled.div`
-    margin: 0 ${spacingsPx.sm} ${spacingsPx.md};
+    margin: 0 12px 16px;
 `;
 
 const InnerScrollableWrapper = styled.div`
@@ -57,10 +41,10 @@ const InnerScrollableWrapper = styled.div`
     overflow: auto;
     display: flex;
     flex-direction: column;
-    padding: ${spacingsPx.sm} ${spacingsPx.md} 0;
+    padding: 12px 16px 0;
 
     ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
-        padding: ${spacingsPx.xs} ${spacingsPx.sm};
+        padding: 8px 12px;
     }
 `;
 
@@ -72,12 +56,12 @@ type FloatingSelectionsProps = {
 };
 
 const DividerWrapper = styled.div`
-    margin-top: ${spacingsPx.xs};
-    margin-bottom: ${spacingsPx.xs};
+    margin-top: 8px;
+    margin-bottom: 8px;
 
     ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
-        margin-top: ${spacingsPx.xxs};
-        margin-bottom: ${spacingsPx.xxs};
+        margin-top: 4px;
+        margin-bottom: 4px;
     }
 `;
 
@@ -110,13 +94,11 @@ const LegacyWarning = () => (
 
 export const FloatingSelections = forwardRef<HTMLDivElement, FloatingSelectionsProps>(
     ({ selected, onSelect, style, defaultType }, ref) => {
-        const { elevation } = useElevation();
-
         const isShamirBackupDefault = isShamirBackupType(defaultType);
         const legacyOptionsRef = useRef<HTMLDivElement>(null);
 
         return (
-            <FloatingSelectionsWrapper $elevation={elevation} ref={ref} style={style}>
+            <FloatingSelectionsWrapper ref={ref} style={style}>
                 <InnerScrollableWrapper>
                     <OptionGroupHeading>
                         <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
@@ -129,13 +111,13 @@ export const FloatingSelections = forwardRef<HTMLDivElement, FloatingSelectionsP
                         selected={selected}
                     />
                     <DividerWrapper>
-                        <Divider margin={{ top: spacings.zero, bottom: spacings.zero }} />
+                        <Divider margin={{ top: 0, bottom: 0 }} />
                     </DividerWrapper>
                 </InnerScrollableWrapper>
                 {isShamirBackupDefault ? (
                     <div ref={legacyOptionsRef}>
                         <CollapsibleBox
-                            margin={{ bottom: spacings.xs }}
+                            margin={{ bottom: 8 }}
                             fillType="none"
                             heading={
                                 <Text
@@ -155,7 +137,7 @@ export const FloatingSelections = forwardRef<HTMLDivElement, FloatingSelectionsP
                                 });
                             }}
                         >
-                            <Column gap={spacings.md} flex="1">
+                            <Column gap={16} flex="1">
                                 <LegacyWarning />
                                 <div>
                                     <LegacyOptions

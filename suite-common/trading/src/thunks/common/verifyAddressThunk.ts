@@ -1,7 +1,7 @@
 import { selectSelectedDevice } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
-import { confirmAddressOnDeviceThunk } from '@suite-common/wallet-core';
-import { Account, AddressDisplayOptions } from '@suite-common/wallet-types';
+import { confirmAddressOnDeviceThunk, selectAddressDisplayType } from '@suite-common/wallet-core';
+import { type Account, AddressDisplayOptions } from '@suite-common/wallet-types';
 
 import { logErrorThunk } from './logErrorThunk';
 import { TRADING_THUNK_PREFIX } from '../../constants';
@@ -39,7 +39,7 @@ export const verifyAddressThunk = createThunk(
             dispatch(tradingExchangeActions.setReceiveAccountKey(account.key));
         }
 
-        const addressDisplayType = extra.selectors.selectAddressDisplayType(getState());
+        const addressDisplayType = selectAddressDisplayType(getState());
         const { connected, available } = device;
 
         // Show warning when device is not connected
@@ -72,11 +72,11 @@ export const verifyAddressThunk = createThunk(
             );
         } else {
             // special case: device no-backup permissions not granted
-            if (response.payload.code === 'Method_PermissionsNotGranted') return;
+            if (response.error.code === 'Method_PermissionsNotGranted') return;
 
             dispatch(
                 logErrorThunk({
-                    errorMessage: response.payload.error,
+                    errorMessage: response.error.message,
                     tradingType: activeSection,
                     toastType: 'verify-address-error',
                 }),

@@ -1,9 +1,9 @@
 import { useSelector } from 'react-redux';
 
-import { Account, TokenInfoBranded } from '@suite-common/wallet-types';
+import { type Account, type TokenInfoBranded } from '@suite-common/wallet-types';
 import { TokenAmountFormatter, TokenToFiatAmountFormatter } from '@suite-native/formatters';
-import { CryptoIconWithNetwork } from '@suite-native/icons';
-import { TokensRootState, getTokenName, selectAccountTokenSymbol } from '@suite-native/tokens';
+import { TokenIcon } from '@suite-native/icons';
+import { type TokensRootState, getTokenName, selectAccountTokenSymbol } from '@suite-native/tokens';
 
 import { AccountsListItemBase } from './AccountsListItemBase';
 
@@ -15,6 +15,7 @@ type AccountListTokenItemProps = {
     hasBackground?: boolean;
     isFirst?: boolean;
     isLast?: boolean;
+    showFiatValue?: boolean;
 };
 
 export const AccountsListTokenItem = ({
@@ -24,6 +25,7 @@ export const AccountsListTokenItem = ({
     hasBackground,
     isFirst,
     isLast,
+    showFiatValue = true,
 }: AccountListTokenItemProps) => {
     const tokenSymbol = useSelector((state: TokensRootState) =>
         selectAccountTokenSymbol(state, account.key, token.contract),
@@ -37,15 +39,21 @@ export const AccountsListTokenItem = ({
             isLast={isLast}
             onPress={onSelectAccount}
             icon={
-                <CryptoIconWithNetwork symbol={account.symbol} contractAddress={token.contract} />
+                <TokenIcon
+                    symbol={account.symbol}
+                    contractAddress={token.contract}
+                    showNetworkIcon
+                />
             }
             title={getTokenName(token.name)}
             mainValue={
-                <TokenToFiatAmountFormatter
-                    symbol={account.symbol}
-                    value={balance}
-                    contract={token.contract}
-                />
+                showFiatValue && (
+                    <TokenToFiatAmountFormatter
+                        symbol={account.symbol}
+                        value={balance}
+                        contract={token.contract}
+                    />
+                )
             }
             secondaryValue={
                 <TokenAmountFormatter

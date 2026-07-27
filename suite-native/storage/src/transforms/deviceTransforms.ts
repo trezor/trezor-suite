@@ -2,7 +2,7 @@ import { A, pipe } from '@mobily/ts-belt';
 import { createTransform } from 'redux-persist';
 
 import { filterInconclusiveAuthenticityChecks } from '@suite-common/firmware-authenticity';
-import { AcquiredDevice, TrezorDevice } from '@suite-common/suite-types';
+import { type AcquiredDevice, type TrezorDevice } from '@suite-common/suite-types';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
 
 const serializeDevice = (device: AcquiredDevice): Omit<AcquiredDevice, 'path'> & { path: '' } => ({

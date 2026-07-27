@@ -1,0 +1,10 @@
+import type { SVGProps } from 'react';
+const SvgArrowFatLinesDown = (props: SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" {...props}>
+        <path
+            fill="currentColor"
+            d="M28.924 16.617A1 1 0 0 0 28 16h-5v-3a1 1 0 0 0-1-1H10a1 1 0 0 0-1 1v3H4a1 1 0 0 0-.707 1.707l12 12a1 1 0 0 0 1.415 0l12-12a1 1 0 0 0 .216-1.09M16 27.587 6.414 18H10a1 1 0 0 0 1-1v-3h10v3a1 1 0 0 0 1 1h3.586L16 27.586zM9 5a1 1 0 0 1 1-1h12a1 1 0 0 1 0 2H10a1 1 0 0 1-1-1m0 4a1 1 0 0 1 1-1h12a1 1 0 0 1 0 2H10a1 1 0 0 1-1-1"
+        />
+    </svg>
+);
+export { SvgArrowFatLinesDown as ReactComponent };

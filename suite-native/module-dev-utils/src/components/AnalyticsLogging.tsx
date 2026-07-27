@@ -15,7 +15,9 @@ import { useToast } from '@suite-native/toasts';
 const DEFAULT_CUSTOM_URL = '';
 
 const urlSchema = yup.object({
-    analyticsUrl: yup.string().url('Please enter a valid URL'),
+    analyticsUrl: yup
+        .string()
+        .test('url', 'Please enter a valid URL', value => !value || URL.canParse(value)),
 });
 
 type FormValues = yup.InferType<typeof urlSchema>;
@@ -48,7 +50,7 @@ export const AnalyticsLogging = () => {
         reset({ analyticsUrl: trimmedUrl });
         showToast({
             message: url ? 'Analytics URL updated' : 'Analytics URL reset to default',
-            variant: 'success',
+            intent: 'brand',
         });
     });
 
@@ -58,14 +60,14 @@ export const AnalyticsLogging = () => {
         analytics.setUrl(undefined);
         showToast({
             message: 'Analytics URL reset to default',
-            variant: 'success',
+            intent: 'brand',
         });
     };
 
     const renderAnalyticsDisabledBadge = () => (
         <Badge
             label="Enable analytics to see the events."
-            variant="yellow"
+            intent="warning"
             icon="info"
             size="small"
         />
@@ -75,7 +77,7 @@ export const AnalyticsLogging = () => {
         <Card>
             <VStack spacing="sp12">
                 <Text variant="headline-sm">Analytics URL</Text>
-                <Text variant="body-xs" color="textSubdued">
+                <Text variant="body-xs" color="contentSecondary">
                     Point to your own analytics server for testing.
                 </Text>
                 {customUrl && !isAnalyticsEnabled && renderAnalyticsDisabledBadge()}
@@ -89,7 +91,7 @@ export const AnalyticsLogging = () => {
                         {isDirty && (
                             <Button
                                 testID="@analytics-url-control/save-button"
-                                size="small"
+                                size="medium"
                                 onPress={onSubmit}
                             >
                                 Save
@@ -97,8 +99,9 @@ export const AnalyticsLogging = () => {
                         )}
                         {customUrl && (
                             <Button
-                                colorScheme="tertiaryElevation0"
-                                size="small"
+                                intent="neutral"
+                                priority="secondary"
+                                size="medium"
                                 onPress={handleResetToDefault}
                             >
                                 Reset to default

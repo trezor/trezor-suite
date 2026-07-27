@@ -1,6 +1,7 @@
 import { Translation } from '@suite/intl';
-import { Button, Modal } from '@trezor/components';
+import { Modal } from '@trezor/components';
 
+import { SecurityCheckButton } from 'src/components/suite/SecurityCheck/SecurityCheckButton';
 import { SecurityCheckFail } from 'src/components/suite/SecurityCheck/SecurityCheckFail';
 import { AuthenticateDeviceSupportButton } from 'src/components/suite/SecurityCheck/deviceCompromisedCtas';
 
@@ -13,9 +14,13 @@ export const AuthenticateDeviceFailStep = ({ handleClose }: AuthenticateDeviceFa
             ctaSection={
                 <>
                     <AuthenticateDeviceSupportButton />
-                    <Button intent="neutral" priority="secondary" onClick={handleClose}>
+                    <SecurityCheckButton
+                        intent="neutral"
+                        priority="secondary"
+                        onClick={handleClose}
+                    >
                         <Translation id="TR_DISMISS" />
-                    </Button>
+                    </SecurityCheckButton>
                 </>
             }
             text="TR_DEVICE_COMPROMISED_DEVICE_AUTHENTICITY_TEXT"

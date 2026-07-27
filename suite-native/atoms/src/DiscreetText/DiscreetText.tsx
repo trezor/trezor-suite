@@ -1,13 +1,17 @@
 import { useState } from 'react';
-import { LayoutChangeEvent } from 'react-native';
+import { type LayoutChangeEvent } from 'react-native';
 
-import { mergeNativeStyleObjects, prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { useDiscreetMode } from '@suite-common/discreet-mode';
+import {
+    mergeNativeStyleObjects,
+    prepareNativeStyle,
+    useNativeStyles,
+} from '@trezor/styles-native';
 import { nativeTypography } from '@trezor/theme';
 
 import { Box } from '../Box';
-import { Text, TextProps } from '../Text';
+import { Text, type TextProps } from '../Text';
 import { DiscreetCanvas } from './DiscreetCanvas';
-import { useDiscreetMode } from './useDiscreetMode';
 
 export type DiscreetTextProps = TextProps & {
     children?: string | null;
@@ -20,7 +24,7 @@ const textStyle = prepareNativeStyle((_, { isDiscreetMode }) => ({
 
 export const DiscreetText = ({
     children = '',
-    color = 'textDefault',
+    color = 'contentPrimary',
     variant = 'body-md',
     ellipsizeMode,
     adjustsFontSizeToFit,

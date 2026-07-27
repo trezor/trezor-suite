@@ -1,0 +1,10 @@
+import type { SVGProps } from 'react';
+const SvgCallBell = (props: SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" {...props}>
+        <path
+            fill="currentColor"
+            d="M3 23h26a1 1 0 0 0 0-2h-1v-2A12.015 12.015 0 0 0 17 7.043V5h2a1 1 0 1 0 0-2h-6a1 1 0 1 0 0 2h2v2.043A12.015 12.015 0 0 0 4 19v2H3a1 1 0 0 0 0 2m3-4a10 10 0 0 1 20 0v2H6zm24 7a1 1 0 0 1-1 1H3a1 1 0 0 1 0-2h26a1 1 0 0 1 1 1"
+        />
+    </svg>
+);
+export { SvgCallBell as ReactComponent };

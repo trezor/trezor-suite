@@ -1,4 +1,5 @@
-import { PreloadedState, renderWithStoreProviderAsync } from '@suite-native/test-utils';
+import { getTranslation } from '@suite-native/intl';
+import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 
 import { FaqCard } from '../FaqCard';
 
@@ -15,9 +16,15 @@ jest.mock('@suite-native/trading-state', () => ({
     selectIsTradingEnabled: () => mockIsTradingEnabled,
 }));
 
+const defaultPreloadedState = {
+    device: { selectedDevice: undefined, devices: [] },
+};
+
 describe('FaqCard', () => {
-    const renderFaqCard = (preloadedState: PreloadedState = {}) =>
-        renderWithStoreProviderAsync(<FaqCard />, { preloadedState });
+    const renderFaqCard = (preloadedState = {}) =>
+        renderWithStoreProvider(<FaqCard />, {
+            preloadedState: { ...defaultPreloadedState, ...preloadedState },
+        });
 
     beforeEach(() => {
         mockIsTradingEnabled = true;
@@ -28,22 +35,30 @@ describe('FaqCard', () => {
             mockIsAndroid = true;
         });
 
-        it('should render appropriate sections when BT is enabled', async () => {
-            const { getByText } = await renderFaqCard();
+        it('should render appropriate sections when BT is enabled', () => {
+            const { getByText } = renderFaqCard();
 
             // Android BT-specific info
-            expect(getByText('For wireless connections:')).toBeOnTheScreen();
+            expect(
+                getByText(
+                    getTranslation(
+                        'moduleSettings.faq.bluetoothEnabled.android.3.answer.wireless.title',
+                    ),
+                ),
+            ).toBeOnTheScreen();
 
             // Trading info
-            expect(getByText('What trading features are available?')).toBeOnTheScreen();
+            expect(
+                getByText(getTranslation('moduleSettings.faq.trading.question')),
+            ).toBeOnTheScreen();
         });
 
-        it('should not render trading section when trading is disabled', async () => {
+        it('should not render trading section when trading is disabled', () => {
             mockIsTradingEnabled = false;
 
-            const { queryByText } = await renderFaqCard();
+            const { queryByText } = renderFaqCard();
 
-            expect(queryByText('What trading features are available?')).toBeNull();
+            expect(queryByText(getTranslation('moduleSettings.faq.trading.question'))).toBeNull();
         });
     });
 
@@ -52,24 +67,26 @@ describe('FaqCard', () => {
             mockIsAndroid = false;
         });
 
-        it('should render appropriate sections when BT is enabled', async () => {
-            const { getByText } = await renderFaqCard();
+        it('should render appropriate sections when BT is enabled', () => {
+            const { getByText } = renderFaqCard();
 
             // iOS BT-specific info
             expect(
-                getByText('Can I connect my Trezor to Trezor Suite on Mobile?'),
+                getByText(getTranslation('moduleSettings.faq.bluetoothEnabled.ios.0.question')),
             ).toBeOnTheScreen();
 
             // Trading info
-            expect(getByText('What trading features are available?')).toBeOnTheScreen();
+            expect(
+                getByText(getTranslation('moduleSettings.faq.trading.question')),
+            ).toBeOnTheScreen();
         });
 
-        it('should not render trading section when trading is disabled', async () => {
+        it('should not render trading section when trading is disabled', () => {
             mockIsTradingEnabled = false;
 
-            const { queryByText } = await renderFaqCard();
+            const { queryByText } = renderFaqCard();
 
-            expect(queryByText('What trading features are available?')).toBeNull();
+            expect(queryByText(getTranslation('moduleSettings.faq.trading.question'))).toBeNull();
         });
     });
 });

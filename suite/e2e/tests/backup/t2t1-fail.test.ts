@@ -1,5 +1,6 @@
 import { escapeRegExp } from 'lodash';
 
+import { messages } from '@suite/intl';
 import { HELP_CENTER_RECOVERY_ISSUES_URL } from '@trezor/urls';
 
 import { expect, test } from '../../support/fixtures';
@@ -7,6 +8,7 @@ import { expect, test } from '../../support/fixtures';
 test.describe('Backup errors', { tag: ['@T2T1'] }, () => {
     test.use({
         deviceSetup: { needs_backup: true },
+        ignoreToastErrors: [messages.TOAST_BACKUP_FAILED.defaultMessage],
     });
 
     test.beforeEach(async ({ onboardingPage }) => {

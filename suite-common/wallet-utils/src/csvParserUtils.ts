@@ -6,7 +6,7 @@ type Result = { [key: string]: string };
 const occurrences = (text: string, delimiter: string) => {
     // special chars needs to be escaped in RegExp
     const specialChars = '!@#$^&%*()+=-[]/{}|:<>?,.';
-    const escaped = specialChars.indexOf(delimiter) >= 0 ? '\\' : '';
+    const escaped = specialChars.includes(delimiter) ? '\\' : '';
     const regExp = new RegExp(escaped + delimiter, 'g');
 
     return (text.match(regExp) || []).length;
@@ -25,7 +25,10 @@ const detectDelimiter = (text: string, delimiters: string[]) => {
             }
         });
 
-    return delimiters[index];
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const result: string = delimiters[index];
+
+    return result;
 };
 
 const parseLine = (line: string, delimiter: string, columns: string[]) => {

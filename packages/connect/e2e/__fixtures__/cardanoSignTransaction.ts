@@ -1,6 +1,5 @@
+import { NETWORK_IDS, PROTOCOL_MAGICS } from '@trezor/connect-common/src/constants/cardano';
 import { MessagesSchema } from '@trezor/protobuf';
-
-import { NETWORK_IDS, PROTOCOL_MAGICS } from '../../src/constants/cardano';
 
 const {
     CardanoAddressType,
@@ -450,8 +449,9 @@ const legacyResults = {
     },
 };
 
-export default {
+const cardanoSignTransaction: TestCase = {
     method: 'cardanoSignTransaction',
+    enabledCoins: ['ada'] as const,
     setup: {
         mnemonic: 'mnemonic_all',
     },
@@ -2909,4 +2909,6 @@ export default {
 
         return { ...test, legacyResults: [legacyResults.minConnectVersion] };
     }),
-} satisfies TestCase;
+};
+
+export default cardanoSignTransaction;

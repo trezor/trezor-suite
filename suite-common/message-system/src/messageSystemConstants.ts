@@ -1,16 +1,16 @@
 import {
-    CTAAction,
-    Category,
-    Condition,
-    CountryCode,
-    FirmwareVariant,
-    Model,
-    PairingMethod,
-    Variant,
-    Vendor,
+    type CTAAction,
+    type Category,
+    type Condition,
+    type CountryCode,
+    type FirmwareVariant,
+    type Model,
+    type PairingMethod,
+    type Variant,
+    type Vendor,
 } from '@suite-common/suite-types';
 
-import { Context, ExperimentId, Feature } from './messageSystemTypes';
+import { type Context, ExperimentId, Feature } from './messageSystemTypes';
 import { collectStringsDeep, toMessageSystemOptions } from './messageSystemUtils';
 import schema from '../schema/config.schema.v1.json';
 
@@ -38,7 +38,7 @@ export const FETCH_CHECK_INTERVAL_IN_MS_MOBILE = 180_000; // 3 min
 // timeout for fetching remote config
 export const FETCH_TIMEOUT_IN_MS = 30_000; // 30 sec
 
-export const CONFIG_URL_REMOTE_BASE = 'https://data.trezor.io/config';
+const CONFIG_URL_REMOTE_BASE = 'https://data.trezor.io/config';
 export const CONFIG_URL_REMOTE = {
     stable: `${CONFIG_URL_REMOTE_BASE}/stable/${JWS_CONFIG_FILENAME_REMOTE}`,
     develop: `${CONFIG_URL_REMOTE_BASE}/develop/${JWS_CONFIG_FILENAME_REMOTE}`,
@@ -61,7 +61,15 @@ export const CONTEXT_PATTERNS = {
     },
     getTrading: {
         pattern: 'trading.{type}',
-        regex: /^trading\.(buy|sell|exchange)$/,
+        regex: /^trading\.(buy|sell|exchange|concierge)$/,
+    },
+    getEarnDashboard: {
+        pattern: 'earn.dashboard.{type}',
+        regex: /^earn\.dashboard\.(staking|yield)$/,
+    },
+    getEarnYield: {
+        pattern: 'earn.yield.{type}',
+        regex: /^earn\.yield\.(deposit|withdraw|redeem|claim)$/,
     },
     getSettings: {
         pattern: 'settings.{category}',

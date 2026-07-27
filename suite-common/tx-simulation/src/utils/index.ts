@@ -1,5 +1,7 @@
-import { Network, getNetworkByEvmChainId, networks } from '@suite-common/wallet-config';
-import { TxSimulationAction, TxSimulationMethod } from '@suite-common/wallet-types';
+import { type Network, getNetworkByEvmChainId, networks } from '@suite-common/wallet-config';
+import { type TxSimulationAction, type TxSimulationMethod } from '@suite-common/wallet-types';
+
+export * from './getTxSimulationParams';
 
 export function getTargetContractFromTxSimulationAction({
     method,
@@ -30,12 +32,20 @@ function resolveChainIdOfEvmNetwork({
 }
 
 /**
- * Get network based on the chainId from the payload, default to Ethereum mainnet
+ * Get network based on the tx simulation action, default to Ethereum mainnet.
  */
-export function getNetworkFromTxSimulationAction(action: TxSimulationAction): Network {
-    const chainId = resolveChainIdOfEvmNetwork(action);
+export function getNetworkFromTxSimulationAction(action: TxSimulationAction): Network | null {
+    switch (action.method) {
+        case 'ethereumSignTransaction':
+        case 'ethereumSignTypedData': {
+            const chainId = resolveChainIdOfEvmNetwork(action);
 
-    return getNetworkByEvmChainId(chainId) ?? networks.eth;
+            return getNetworkByEvmChainId(chainId) ?? null;
+        }
+
+        default:
+            return null;
+    }
 }
 
 export const getSimulationErrorRiskLevel = (message: string) => {
@@ -45,3 +55,12 @@ export const getSimulationErrorRiskLevel = (message: string) => {
 
     return 'error';
 };
+
+export function areTxSimulationMethods<
+    const Methods extends ReadonlyArray<TxSimulationAction['method']>,
+>(
+    supportedMethods: Methods,
+    action?: TxSimulationAction,
+): action is Methods[number] & TxSimulationMethod<Methods[number]> {
+    return action ? supportedMethods.includes(action.method) : false;
+}

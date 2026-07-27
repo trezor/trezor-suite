@@ -1,7 +1,7 @@
 import { Translation } from '@suite/intl';
 import { getNetworkDecimalsWithFallback } from '@suite-common/trading';
-import { NetworkSymbol } from '@suite-common/wallet-config';
-import { TokenAddress } from '@suite-common/wallet-types';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type TokenAddress } from '@suite-common/wallet-types';
 import { convertAmountUnitsToSubunits } from '@suite-common/wallet-utils';
 import { Text } from '@trezor/components';
 
@@ -29,7 +29,7 @@ export const TradingBalance = ({
     amountInCrypto,
     decimals: networkDecimals = getNetworkDecimalsWithFallback(symbol),
 }: TradingBalanceProps) => {
-    const { shouldSendInSats } = useBitcoinAmountUnit(symbol);
+    const { isBtcSatsAmountUnit: shouldSendInSats } = useBitcoinAmountUnit(symbol);
     const balanceCurrency = tradingGetAccountLabel(displaySymbol ?? '', shouldSendInSats);
     const stringBalance = !isNaN(Number(balance)) ? balance : '0';
     const formattedBalance =
@@ -48,7 +48,12 @@ export const TradingBalance = ({
         if (Number(balance) === 0 || isNaN(Number(balance))) return null;
 
         return (
-            <Text intent="neutral" priority="secondary" typographyStyle="body-xs">
+            <Text
+                intent="neutral"
+                priority="secondary"
+                typographyStyle="body-xs"
+                overflowWrap="anywhere"
+            >
                 {!amountInCrypto ? (
                     <HiddenPlaceholder>
                         &asymp; {formattedBalance} {balanceCurrency}

@@ -2,10 +2,10 @@
 // differences:
 // - `fromBase58Check` method is using additional "network" param and bs58check.decodeAddress instead of bs58check.decode. checking multibyte version (Zcash and Decred support).
 
-import { bech32, bech32m } from 'bech32';
+import { bech32, bech32m } from '@scure/base';
 
 import * as bs58check from './bs58check';
-import { bitcoin as BITCOIN_NETWORK, Network } from './networks';
+import { bitcoin as BITCOIN_NETWORK, type Network } from './networks';
 import * as payments from './payments';
 import * as bscript from './script';
 
@@ -28,17 +28,23 @@ export function fromBech32(address: string): Bech32Result {
     let result: ReturnType<typeof bech32.decode> | undefined;
     let version: number;
     try {
-        result = bech32.decode(address);
+        result = bech32.decode(address as `${string}1${string}`);
     } catch {
         // silent
     }
 
     if (result) {
-        [version] = result.words;
+        const { words } = result;
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const v: number = words[0];
+        version = v;
         if (version !== 0) throw new TypeError(`${address} uses wrong encoding`);
     } else {
-        result = bech32m.decode(address);
-        [version] = result.words;
+        result = bech32m.decode(address as `${string}1${string}`);
+        const { words } = result;
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const v: number = words[0];
+        version = v;
         if (version === 0) throw new TypeError(`${address} uses wrong encoding`);
     }
 
@@ -70,7 +76,9 @@ function toFutureSegwitAddress(output: Buffer, network = BITCOIN_NETWORK) {
     if (data.length < FUTURE_SEGWIT_MIN_SIZE || data.length > FUTURE_SEGWIT_MAX_SIZE)
         throw new TypeError('Invalid program length for segwit address');
 
-    const version = output[0] - FUTURE_SEGWIT_VERSION_DIFF;
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const outputByte0: number = output[0];
+    const version = outputByte0 - FUTURE_SEGWIT_VERSION_DIFF;
 
     if (version < FUTURE_SEGWIT_MIN_VERSION || version > FUTURE_SEGWIT_MAX_VERSION)
         throw new TypeError('Invalid version for segwit address');

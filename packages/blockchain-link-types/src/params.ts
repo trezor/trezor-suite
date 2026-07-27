@@ -51,11 +51,13 @@ export interface AccountInfoParams {
     from?: number; // from block
     to?: number; // to block
     contractFilter?: string; // blockbook only, ethereum token filter
-    gap?: number; // blockbook only, derived addresses gap
+    gap?: number; // derived addresses gap
     // since xrpl.js cannot use pages "marker" is used as first unknown point in history (block and sequence of transaction)
     marker?: {
         ledger: number;
         seq: number;
     };
     tokenAccountsPubKeys?: string[]; // solana only, token accounts to fetch txids for
+    protocols?: 'erc4626'[]; // protocols to include in the response (e.g. 'erc4626')
+    confirmedNonce?: boolean; // blockbook only (EVM), additionally fetch the confirmed (mined-only) nonce
 }

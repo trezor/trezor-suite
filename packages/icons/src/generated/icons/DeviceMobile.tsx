@@ -1,0 +1,10 @@
+import type { SVGProps } from 'react';
+const SvgDeviceMobile = (props: SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" {...props}>
+        <path
+            fill="currentColor"
+            d="M22 2H10a3 3 0 0 0-3 3v22a3 3 0 0 0 3 3h12a3 3 0 0 0 3-3V5a3 3 0 0 0-3-3M9 8h14v16H9zm1-4h12a1 1 0 0 1 1 1v1H9V5a1 1 0 0 1 1-1m12 24H10a1 1 0 0 1-1-1v-1h14v1a1 1 0 0 1-1 1"
+        />
+    </svg>
+);
+export { SvgDeviceMobile as ReactComponent };

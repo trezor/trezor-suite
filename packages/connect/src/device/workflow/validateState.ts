@@ -1,22 +1,26 @@
+import { UI_REQUEST, createUiMessage } from '@trezor/connect-common';
+import type { StaticSessionId } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
+import { toHardenedPathPart } from '@trezor/crypto-utils';
+import { createStaticSessionId, parseStaticSessionId } from '@trezor/device-utils';
 
-import { DEVICE, UI_REQUEST, createDeviceMessage, createUiMessage } from '../../events';
-import { StaticSessionId } from '../../types';
-import { WorkflowContext } from '../../types/workflow';
-import { toHardened } from '../../utils/pathUtils';
+import type { WorkflowContext } from '../../types/workflow';
 import { createThpSession } from '../thp';
 
 const getStaticSessionId = (device: WorkflowContext['device']) =>
     device
         .getCurrentSession()
         .typedCall('GetAddress', 'Address', {
-            address_n: [toHardened(44), toHardened(1), toHardened(0), 0, 0],
+            address_n: [toHardenedPathPart(44), toHardenedPathPart(1), toHardenedPathPart(0), 0, 0],
             coin_name: 'Testnet',
             script_type: 'SPENDADDRESS',
         })
-        .then(
-            ({ message }) =>
-                `${message.address}@${device.features.device_id}:${device.getInstance()}` as StaticSessionId,
+        .then(({ message }) =>
+            createStaticSessionId({
+                walletDescriptor: message.address,
+                deviceId: device.features.device_id!,
+                instance: device.getInstance(),
+            }),
         );
 
 const preauthorizeState = ({ device, method }: WorkflowContext) => {
@@ -29,9 +33,19 @@ const preauthorizeState = ({ device, method }: WorkflowContext) => {
     }
 };
 
-const isUnexpectedState = (expected?: StaticSessionId, current?: StaticSessionId) =>
-    // Ignore instance ID, it doesn't necessarily need to match the current instance
-    expected && current && expected.split(':')[0] !== current.split(':')[0];
+// Treat two states as "unexpected" if they describe different (walletDescriptor, deviceId)
+// pairs. Instance is intentionally ignored — the same wallet can be referenced through
+// different host-side instance numbers across reconnects.
+const isUnexpectedState = (expected?: StaticSessionId, current?: StaticSessionId) => {
+    if (!expected || !current) return false;
+    const parsedExpected = parseStaticSessionId(expected);
+    const parsedCurrent = parseStaticSessionId(current);
+
+    return (
+        parsedExpected.walletDescriptor !== parsedCurrent.walletDescriptor ||
+        parsedExpected.deviceId !== parsedCurrent.deviceId
+    );
+};
 
 const validate = async (context: WorkflowContext) => {
     const { device } = context;
@@ -67,7 +81,7 @@ const validateDeviceState = async (context: WorkflowContext) => {
             return await validate(context);
         } catch (error) {
             if (error.message.includes('PIN invalid')) {
-                context.method.postMessage(
+                context.sendCoreMessage(
                     createUiMessage(UI_REQUEST.INVALID_PIN, {
                         device: context.device.toMessageObject(),
                     }),
@@ -80,7 +94,7 @@ const validateDeviceState = async (context: WorkflowContext) => {
 
     return validate(context).catch(error => {
         if (error.message.includes('PIN invalid')) {
-            context.method.postMessage(
+            context.sendCoreMessage(
                 createUiMessage(UI_REQUEST.INVALID_PIN_ATTEMPTS_DEPLETED, {
                     device: context.device.toMessageObject(),
                 }),
@@ -152,7 +166,7 @@ const validateThpDeviceState = async (context: WorkflowContext) => {
 };
 
 export const validateState = async (context: WorkflowContext) => {
-    const { device, method } = context;
+    const { device } = context;
 
     // Make sure that device will display pin/passphrase
     const isDeviceUnlocked = device.features.unlocked;
@@ -177,6 +191,6 @@ export const validateState = async (context: WorkflowContext) => {
     // emit additional CHANGE event if device becomes unlocked after authorization
     // features were automatically updated after PinMatrixAck in DeviceCommands
     if (!isDeviceUnlocked && device.features.unlocked) {
-        method.postMessage(createDeviceMessage(DEVICE.CHANGED, device.toMessageObject()));
+        device.emitDeviceChanged();
     }
 };

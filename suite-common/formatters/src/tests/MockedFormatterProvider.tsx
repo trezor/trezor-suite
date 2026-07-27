@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 import { useIntl } from 'react-intl';
 
 import { PROTO } from '@trezor/connect';

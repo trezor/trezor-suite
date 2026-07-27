@@ -1,4 +1,4 @@
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 
 export type Protocol =
     | 'bitcoin'
@@ -38,6 +38,9 @@ export type Protocol =
     | 'arbitrum-ethereum'
     | 'base'
     | 'op'
+    | 'robinhood'
+    | 'robinhood-chain'
+    | 'rhc'
     | 'avax'
     | 'avalanche'
     | 'xlm'
@@ -49,7 +52,8 @@ export type Protocol =
     | 'txlm'
     | 'dsol'
     | 'tron'
-    | 'trx';
+    | 'trx'
+    | 'ttrx';
 
 export const NETWORK_TO_PROTOCOLS: Record<NetworkSymbol, Protocol[]> = {
     btc: ['bitcoin', 'btc'],
@@ -63,11 +67,13 @@ export const NETWORK_TO_PROTOCOLS: Record<NetworkSymbol, Protocol[]> = {
     ada: ['cardano', 'ada'],
     sol: ['solana', 'sol'],
     trx: ['tron', 'trx'],
+    ttrx: ['ttrx'],
     pol: ['polygon', 'matic', 'pol'],
     bsc: ['binance', 'bnb', 'bsc'],
     arb: ['arbitrum', 'arbitrum-one', 'arb', 'arbitrum-ethereum'],
     base: ['base'],
     op: ['optimism', 'op'],
+    rhc: ['robinhood', 'robinhood-chain', 'rhc'],
     avax: ['avalanche', 'avax'],
     test: ['test'],
     regtest: ['regtest'],

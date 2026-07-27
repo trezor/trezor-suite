@@ -1,16 +1,25 @@
-import { DeviceCancelledErr, DeviceError, isCanceledErrorMessage } from '@suite-common/device';
 import {
-    DelegatedIdentityKey,
-    DeviceCancelledErrType,
-    DeviceErrorType,
-    TrezorDeviceWithState,
+    DeviceCancelledErr,
+    DeviceError,
+    DeviceNotConnectedError,
+    isCanceledErrorMessage,
+} from '@suite-common/device';
+import {
+    type DelegatedIdentityKey,
+    type DeviceCancelledErrType,
+    type DeviceErrorType,
+    type DeviceNotConnectedErrorType,
+    type TrezorDeviceWithState,
     asDelegatedIdentityKey,
 } from '@suite-common/suite-types';
-import TrezorConnect from '@trezor/connect';
-import { Result, err, ok } from '@trezor/type-utils';
+import type TrezorConnect from '@trezor/connect';
+import { type Result, err, ok } from '@trezor/type-utils';
 
 export type RetrieveDelegatedIdentityKeyParams = {
-    device: Pick<TrezorDeviceWithState, 'path' | 'state' | 'instance' | 'useEmptyPassphrase'>;
+    device: Pick<
+        TrezorDeviceWithState,
+        'path' | 'state' | 'instance' | 'useEmptyPassphrase' | 'connected'
+    >;
 };
 
 export type RetrieveDelegatedIdentityKeyFromDeviceDeps = {
@@ -19,7 +28,12 @@ export type RetrieveDelegatedIdentityKeyFromDeviceDeps = {
 
 type RetrieveDelegatedIdentityKeyFromDevice = (
     params: RetrieveDelegatedIdentityKeyParams,
-) => Promise<Result<DelegatedIdentityKey, DeviceCancelledErrType | DeviceErrorType>>;
+) => Promise<
+    Result<
+        DelegatedIdentityKey,
+        DeviceCancelledErrType | DeviceErrorType | DeviceNotConnectedErrorType
+    >
+>;
 
 export type RetrieveDelegatedIdentityKeyFromDeviceDep = {
     retrieveDelegatedIdentityKeyFromDevice: RetrieveDelegatedIdentityKeyFromDevice;
@@ -28,6 +42,14 @@ export type RetrieveDelegatedIdentityKeyFromDeviceDep = {
 export const createRetrieveDelegatedIdentityKeyFromDevice =
     (deps: RetrieveDelegatedIdentityKeyFromDeviceDeps): RetrieveDelegatedIdentityKeyFromDevice =>
     async ({ device }) => {
+        if (!device.connected) {
+            return err(
+                DeviceNotConnectedError(
+                    'Device not connected: createRetrieveDelegatedIdentityKeyFromDevice',
+                ),
+            );
+        }
+
         const result = await deps.trezorConnect.evoluGetDelegatedIdentityKey({
             device: {
                 path: device.path,
@@ -41,9 +63,9 @@ export const createRetrieveDelegatedIdentityKeyFromDevice =
             return ok(asDelegatedIdentityKey(result.payload.private_key));
         }
 
-        if (isCanceledErrorMessage(result.payload.error)) {
+        if (isCanceledErrorMessage(result.error.message)) {
             return err(DeviceCancelledErr());
         }
 
-        return err(DeviceError(result.payload.error));
+        return err(DeviceError(result.error.message));
     };

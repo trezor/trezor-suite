@@ -2,20 +2,20 @@ import { Platform } from 'react-native';
 import { useSelector } from 'react-redux';
 
 import { selectIsAnalyticsEnabled } from '@suite-common/analytics-redux';
-import { events } from '@suite-native/analytics';
+import { useServices } from '@suite-common/dependency-injection';
+import { useDiscreetMode } from '@suite-common/discreet-mode';
+import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import {
     Box,
     DiscreetCanvas,
     TouchableSwitchRow,
     TouchableSwitchRowDescription,
     VStack,
-    useDiscreetMode,
 } from '@suite-native/atoms';
-import { useBiometricsSettings, useIsBiometricsEnabled } from '@suite-native/biometrics';
+import { selectIsBiometricsEnabled, useBiometricsSettings } from '@suite-native/biometrics';
 import { Translation } from '@suite-native/intl';
 import { DynamicScreenHeader, Screen } from '@suite-native/navigation';
-import { useAnalytics } from '@suite-native/services';
-import { useNativeStyles } from '@trezor/styles';
+import { useNativeStyles } from '@trezor/styles-native';
 
 const DiscreetTextExample = () => {
     const { utils } = useNativeStyles();
@@ -24,7 +24,7 @@ const DiscreetTextExample = () => {
         <Box style={{ height: utils.typography['body-sm'].lineHeight }}>
             <DiscreetCanvas
                 text="$100"
-                color="textSubdued"
+                color="contentSecondary"
                 width={30}
                 fontSize={utils.typography['body-sm'].fontSize}
                 height={utils.typography['body-sm'].lineHeight}
@@ -35,7 +35,7 @@ const DiscreetTextExample = () => {
 
 const DiscreetModeSwitchRow = () => {
     const { isDiscreetMode, setIsDiscreetMode } = useDiscreetMode();
-    const analytics = useAnalytics();
+    const { analytics } = useServices(selectNativeAnalyticsDep);
     const handleSetDiscreetMode = (value: boolean) => {
         setIsDiscreetMode(value);
         analytics.report({
@@ -63,7 +63,7 @@ const DiscreetModeSwitchRow = () => {
 };
 
 const AnalyticsSwitchRow = () => {
-    const analytics = useAnalytics();
+    const { analytics } = useServices(selectNativeAnalyticsDep);
     const isAnalyticsEnabled = useSelector(selectIsAnalyticsEnabled);
 
     const handleAnalyticsChange = (isEnabled: boolean) => {
@@ -90,12 +90,12 @@ const AnalyticsSwitchRow = () => {
 };
 
 const BiometricsSwitchRow = () => {
-    const { isBiometricsOptionEnabled } = useIsBiometricsEnabled();
+    const isBiometricsEnabled = useSelector(selectIsBiometricsEnabled);
     const { toggleBiometricsOption } = useBiometricsSettings();
 
     return (
         <TouchableSwitchRow
-            isChecked={isBiometricsOptionEnabled}
+            isChecked={isBiometricsEnabled}
             onChange={toggleBiometricsOption}
             accessibilityLabel="biometrics"
             text={<Translation id="moduleSettings.privacyAndSecurity.biometrics.title" />}

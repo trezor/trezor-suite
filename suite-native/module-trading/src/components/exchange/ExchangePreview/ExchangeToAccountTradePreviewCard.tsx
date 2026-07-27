@@ -2,39 +2,35 @@ import { useSelector } from 'react-redux';
 
 import type { ExchangeTrade } from 'invity-api';
 
-import { Text } from '@suite-native/atoms';
+import { getSimulatedReceiveAmount } from '@suite-common/trading';
 import { Translation } from '@suite-native/intl';
-import { AccountLabel } from '@suite-native/labeling';
-import { TradeSideCard } from '@suite-native/trading-atoms';
+import { useChangeStringsExtractor } from '@suite-native/trading-quote-utils';
 import { selectExchangeSelectedReceiveAccount } from '@suite-native/trading-state';
+
+import { useDexExchangeTxSimulation } from '../../../hooks/exchange/useDexExchangeTxSimulation';
+import { TradingAccountCard } from '../../general/TradingAccountCard';
 
 export type ExchangeToAccountTradePreviewCardProps = {
     quote?: ExchangeTrade;
-    toStringValue: string | undefined;
 };
 
 export const ExchangeToAccountTradePreviewCard = ({
     quote,
-    toStringValue,
 }: ExchangeToAccountTradePreviewCardProps) => {
     const toAccount = useSelector(selectExchangeSelectedReceiveAccount);
+    const { toValue } = useChangeStringsExtractor(quote);
+    const { isLoading: isSimulationLoading, data: simulationResult } = useDexExchangeTxSimulation();
 
-    if (!quote?.receive || !toAccount?.account) {
-        return null;
-    }
+    const simulatedReceiveAmount = getSimulatedReceiveAmount(simulationResult, quote?.receive);
 
     return (
-        <TradeSideCard
-            accountLabel={<AccountLabel account={toAccount.account} />}
-            cryptoId={quote.receive}
-            amount={
-                !!toStringValue && (
-                    <Text variant="body-sm" color="textSecondaryHighlight">
-                        +{toStringValue}
-                    </Text>
-                )
-            }
+        <TradingAccountCard
             title={<Translation id="moduleTrading.tradingExchangePreviewScreen.toAccount" />}
+            account={toAccount?.account}
+            amount={simulatedReceiveAmount ?? toValue}
+            isAmountLoading={isSimulationLoading}
+            direction="to"
+            cryptoId={quote?.receive}
         />
     );
 };

@@ -1,11 +1,11 @@
 {
     "name": "@trezor/websocket-client",
     "version": "10.0.0-alpha.1",
+    "type": "module",
     "author": "Trezor <info@trezor.io>",
     "homepage": "https://github.com/trezor/trezor-suite/tree/develop/packages/websocket",
     "description": "Shared websocket client implementation",
-    "npmPublishAccess": "public",
-    "license": "SEE LICENSE IN LICENSE.md",
+    "license": "MIT",
     "repository": {
         "type": "git",
         "url": "git://github.com/trezor/trezor-suite.git"
@@ -16,22 +16,27 @@
     "sideEffects": false,
     "main": "src/index",
     "browser": {
-        "ws": "./src/ws-browser"
+        "ws": "./src/ws.browser"
     },
     "react-native": {
         "__comment__": "Hotfix for issue where RN metro bundler resolve relatives paths wrong",
-        "ws": "@trezor/websocket-client/src/ws-native.ts"
+        "ws": "@trezor/websocket-client/src/ws.native.ts"
     },
     "publishConfig": {
         "main": "./lib/index.js",
-        "types": "lib/index.d.ts",
-        "typings": "lib/index.d.ts",
+        "types": "./lib/index.d.ts",
+        "exports": {
+            ".": {
+                "types": "./lib/index.d.ts",
+                "default": "./lib/index.js"
+            }
+        },
         "browser": {
-            "ws": "./lib/ws-browser.js"
+            "ws": "./lib/ws.browser.js"
         },
         "react-native": {
             "__comment__": "Hotfix for issue where RN metro bundler resolve relatives paths wrong",
-            "ws": "@trezor/websocket-client/lib/ws-native.js"
+            "ws": "@trezor/websocket-client/lib/ws.native.js"
         }
     },
     "files": [
@@ -40,23 +45,22 @@
     ],
     "scripts": {
         "depcheck": "yarn g:depcheck",
-        "test:unit": "yarn g:jest -c ../../jest.config.base.js",
+        "test:unit": "yarn g:jest",
         "type-check": "yarn g:tsc --build",
-        "build:lib": "yarn g:rimraf lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib cjs",
-        "prepublishOnly": "yarn tsx ../../scripts/publish/prepublishNPM.js"
+        "build:lib": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
         "@trezor/utils": "workspace:*",
-        "ws": "^8.18.0"
+        "ws": "^8.20.0"
     },
     "peerDependencies": {
         "tslib": "^2.6.2"
     },
     "devDependencies": {
-        "@types/jest": "29.5.12",
+        "@types/jest": "30.0.0",
         "@types/node": "22.13.10",
-        "@types/web": "^0.0.197",
-        "@types/ws": "^8.5.13",
-        "tsx": "^4.21.0"
+        "@types/web": "^0.0.345",
+        "@types/ws": "^8.5.13"
     }
 }

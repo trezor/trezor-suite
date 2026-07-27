@@ -1,14 +1,13 @@
-import type { Messages } from '@trezor/protobuf';
+import type { FailureType } from '@trezor/protobuf';
 import type { thp } from '@trezor/protocol';
 
 export const ERROR_CODES = {
     Init_NotInitialized: 'TrezorConnect not initialized', // race condition: call on not initialized Core (usually hot-reloading)
     Init_AlreadyInitialized: 'TrezorConnect has been already initialized', // thrown by .init called multiple times
-    Init_IframeBlocked: 'Iframe blocked', // iframe injection blocked (ad-blocker)
-    Init_IframeTimeout: 'Iframe timeout', // iframe didn't load in specified time
     Init_ManifestMissing:
         'Manifest not set. Read more at https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/index.md', // manifest is not set
 
+    Handshake_Error: '', // one of: 'iframe-blocked', 'iframe-timeout', 'popup-blocked', 'handshake-timeout', 'channel-id-missing', 'origin-missing', 'env-not-supported', 'unknown' (see BootstrapError)
     Popup_ConnectionMissing: 'Unable to establish connection with iframe', // thrown by popup
     Desktop_ConnectionMissing: 'Unable to establish connection with Suite', // thrown by suite-desktop
 
@@ -23,7 +22,6 @@ export const ERROR_CODES = {
     Method_Interrupted: 'Popup closed', // interruption: popup closed
     Method_UnknownCoin: 'Coin not found', // coin definition not found
     Method_AddressNotMatch: 'Addresses do not match', // thrown by all getAddress methods with custom UI validation
-    Method_Discovery_BundleException: '', // thrown by getAccountInfo method
     Method_Override: 'override', // inner "error", it's more like a interruption
     Method_NoResponse: 'Call resolved without response', // thrown by npm index(es), call to Core resolved without response, should not happen
     Method_Unsupported: 'Unsupported method', // 3rd party called a method unknown by current version
@@ -63,7 +61,7 @@ export const ERROR_CODES = {
 
 type TypedErrorCode = keyof typeof ERROR_CODES;
 
-export type ErrorCode = TypedErrorCode | Messages.FailureType | thp.ThpError['code'];
+export type ErrorCode = TypedErrorCode | FailureType | thp.ThpError['code'];
 
 export class TrezorError extends Error {
     code: ErrorCode;
@@ -93,12 +91,20 @@ export const TypedError = (id: ErrorCode, message?: string) =>
     new TrezorError(id, message || ERROR_CODES[id as TypedErrorCode] || id);
 
 // serialize Error/TypeError object into payload error type (Error object/class is converted to string while sent via postMessage)
-export const serializeError = (payload: any) => {
+export const serializeError = (payload: any): SerializedError => {
     const error = payload?.error instanceof Error ? payload.error : payload;
 
     return error instanceof Error
-        ? { error: error.message, code: 'code' in error ? error.code : 'Failure_UnknownCode' }
+        ? {
+              message: error.message,
+              code: 'code' in error ? (error.code as ErrorCode) : 'Failure_UnknownCode',
+          }
         : { ...payload };
+};
+
+export type SerializedError = {
+    message: string;
+    code: ErrorCode;
 };
 
 // trezord error prefix.

@@ -2,13 +2,13 @@ import * as crypto from 'crypto';
 
 import {
     DecryptionFailed,
-    EncryptableBranded,
-    EncryptedHex,
+    type EncryptableBranded,
+    type EncryptedHex,
     EncryptionUnavailable,
-    PlatformEncryption,
+    type PlatformEncryption,
     asEncryptedHex,
 } from '@suite-common/platform-encryption';
-import { EnsureEncryptionKeyDep } from '@suite-native/storage';
+import { type EnsureEncryptionKeyDep } from '@suite-native/storage';
 import { err, ok } from '@trezor/type-utils';
 
 const CIPHER_TYPE = 'aes-256-gcm';

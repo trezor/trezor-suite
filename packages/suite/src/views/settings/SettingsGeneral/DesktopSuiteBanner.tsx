@@ -3,26 +3,26 @@ import { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import styled from 'styled-components';
 
-import { events } from '@suite/analytics';
+import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { useExternalLink } from '@suite/external-links';
+import { setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
 import { Box, Button, H2, Icon, IconButton, Image, Paragraph, Row } from '@trezor/components';
 import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
-import { spacings, spacingsPx } from '@trezor/theme';
+import { AppleLogoIcon, LinuxLogoIcon, WindowsLogoIcon, XIcon } from '@trezor/icons';
 import { SUITE_URL } from '@trezor/urls';
 
-import { setFlag } from 'src/actions/suite/suiteActions';
 import { useDispatch } from 'src/hooks/suite/useDispatch';
-import { useAnalytics } from 'src/support/useAnalytics';
 
-import { useExternalLink } from '../../../hooks/suite';
 import { bannerAnimationConfig } from '../../dashboard/banner-animations';
 
 const Container = styled(motion.div)`
     position: relative;
     border-radius: 12px;
-    background: ${({ theme }) => theme.baseFillSurfaceBrandDark};
+    background: ${({ theme }) => theme.surfaceFillBrandDark};
     overflow: hidden;
-    margin-bottom: ${spacingsPx.xxxxl};
+    margin-bottom: 48px;
 `;
 
 const ImageContainer = styled.div`
@@ -43,7 +43,7 @@ const TextContainer = styled.div`
     grid-column: 1/3;
 
     * {
-        color: ${({ theme }) => theme.baseContentPrimaryInverse};
+        color: ${({ theme }) => theme.contentOnDarkPrimary};
     }
 `;
 
@@ -55,7 +55,7 @@ const OSIcons = styled.div`
 `;
 
 export const DesktopSuiteBanner = () => {
-    const analytics = useAnalytics();
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
     const [isVisible, setIsVisible] = useState(true);
 
     const dispatch = useDispatch();
@@ -70,23 +70,24 @@ export const DesktopSuiteBanner = () => {
                 <Container
                     key="container"
                     onAnimationComplete={() =>
-                        dispatch(dispatch(setFlag('showSettingsDesktopAppPromoBanner', false)))
+                        dispatch(
+                            dispatch(
+                                setFlag({ key: 'showSettingsDesktopAppPromoBanner', value: false }),
+                            ),
+                        )
                     }
                     {...bannerAnimationConfig}
                 >
-                    <Row
-                        alignItems="center"
-                        width="100%"
-                        margin={{ vertical: spacings.sm, horizontal: spacings.lg }}
-                    >
+                    <Row alignItems="center" width="100%" margin={{ vertical: 12, horizontal: 20 }}>
                         <Box position={{ type: 'absolute', top: 16, right: 16 }} cursor="pointer">
                             <IconButton
-                                icon="x"
+                                icon={XIcon}
                                 onClick={handleClose}
                                 data-testid="@banner/install-desktop-suite/close-button"
                                 intent="neutral"
                                 priority="secondary"
                                 isInverse
+                                tooltip={{ content: <Translation id="TR_CLOSE" /> }}
                             />
                         </Box>
 
@@ -110,6 +111,7 @@ export const DesktopSuiteBanner = () => {
                                 onClick={() =>
                                     analytics.report({
                                         type: events.promoDesktopEvent.name,
+                                        payload: { placement: 'settings' },
                                     })
                                 }
                             >
@@ -117,9 +119,9 @@ export const DesktopSuiteBanner = () => {
                             </Button>
 
                             <OSIcons>
-                                <Icon name="appleLogo" intent="brand" />
-                                <Icon name="linuxLogo" intent="brand" />
-                                <Icon name="windowsLogo" intent="brand" size={20} />
+                                <Icon as={AppleLogoIcon} intent="brand" />
+                                <Icon as={LinuxLogoIcon} intent="brand" />
+                                <Icon as={WindowsLogoIcon} intent="brand" size={20} />
                             </OSIcons>
                         </Content>
                     </Row>

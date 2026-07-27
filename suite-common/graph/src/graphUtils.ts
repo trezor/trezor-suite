@@ -1,5 +1,12 @@
 import { A, D, pipe } from '@mobily/ts-belt';
-import { differenceInMinutes, eachMinuteOfInterval, fromUnixTime, getUnixTime } from 'date-fns';
+import {
+    differenceInMinutes,
+    eachMinuteOfInterval,
+    fromUnixTime,
+    getUnixTime,
+    roundToNearestMinutes,
+    subHours,
+} from 'date-fns';
 
 import {
     AMOUNT_UNIT_ZERO,
@@ -10,12 +17,12 @@ import {
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { BigNumber } from '@trezor/utils';
 
-import { FiatRatesItem } from './graphDataFetching';
-import {
+import type {
     AccountHistoryBalancePoint,
     AccountWithBalanceHistory,
     FiatGraphPoint,
     FiatGraphPointWithCryptoBalance,
+    FiatRatesItem,
 } from './types';
 
 type GetDataStepInMinutesParams = {
@@ -156,4 +163,19 @@ export const findOldestBalanceMovementTimestamp = (
     });
 
     return Math.min(...allOldestTimestamps);
+};
+
+// The end of the timeframe is rounded to keep it referentially stable between refetches
+// and to hit the balance history cache, which is keyed by the timeframe dates.
+export const getTimeFrameForHistoryHours = (timeframeHours: number | null) => {
+    const endOfTimeFrameDate = roundToNearestMinutes(new Date(), {
+        nearestTo: 10,
+        roundingMethod: 'floor',
+    });
+    // If the start date is null, we are fetching all data till the first account movement.
+    const startOfTimeFrameDate = timeframeHours
+        ? subHours(endOfTimeFrameDate, timeframeHours)
+        : null;
+
+    return { endOfTimeFrameDate, startOfTimeFrameDate };
 };

@@ -1,0 +1,10 @@
+import type { SVGProps } from 'react';
+const SvgListMagnifyingGlassFilled = (props: SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" {...props}>
+        <path
+            fill="currentColor"
+            d="M4 8a1 1 0 0 1 1-1h22a1 1 0 1 1 0 2H5a1 1 0 0 1-1-1m1 9h9a1 1 0 0 0 0-2H5a1 1 0 0 0 0 2m11 6H5a1 1 0 0 0 0 2h11a1 1 0 0 0 0-2m13.707.293L27.17 20.75a5 5 0 1 0-1.42 1.42l2.538 2.537a1 1 0 1 0 1.415-1.415z"
+        />
+    </svg>
+);
+export { SvgListMagnifyingGlassFilled as ReactComponent };

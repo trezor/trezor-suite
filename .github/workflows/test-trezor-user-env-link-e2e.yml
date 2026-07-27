@@ -10,6 +10,7 @@ on:
     paths:
       - ".github/workflows/test-trezor-user-env-link-e2e.yml"
       - "packages/trezor-user-env/**"
+      - "packages/trezor-user-env-link/**"
   workflow_dispatch:
 
 concurrency:
@@ -22,22 +23,26 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v6
         with:
           ref: ${{github.event.after}}
           fetch-depth: 2
       - name: Setup node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
         with:
           node-version-file: ".nvmrc"
           cache: yarn
+      - name: Install SafeDep PMG
+        uses: safedep/pmg@26d5c0ad71fd0e5f48c3183c9c74d4b3eb7f57c8 # v0.19.1
+        continue-on-error: true
+        with:
+          version: v0.19.1
       - name: Install dependencies
         run: |
-          echo -e "\nenableScripts: false" >> .yarnrc.yml
           echo -e "\nenableHardenedMode: false" >> .yarnrc.yml
           yarn workspaces focus @trezor/trezor-user-env-link
 
       - name: Run e2e tests
         run: |
-          docker run -d --network=host ghcr.io/trezor/trezor-user-env:e9411ccc936756438d4c60a1ab4d035a4648e6a2
+          docker run -d --network=host ghcr.io/trezor/trezor-user-env:97b797fb349737b93a1d2dbe6bda6673dcc9cafb
           yarn workspace @trezor/trezor-user-env-link test:e2e

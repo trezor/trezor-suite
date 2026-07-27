@@ -1,0 +1,133 @@
+import { useDispatch, useSelector } from 'react-redux';
+
+import { Translation, useTranslation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
+import { type DeviceRootState, selectDeviceByStaticSessionId } from '@suite-common/device';
+import { selectTurnOnSuiteSyncDep } from '@suite-common/suite-sync-types';
+import { notificationsActions } from '@suite-common/toast-notifications';
+import { Card, Column, Icon, List, Modal, Paragraph } from '@trezor/components';
+import { type StaticSessionId } from '@trezor/connect';
+import { ArrowsCounterClockwiseIcon, ShieldCheckIcon, TagIcon, ThumbsUpIcon } from '@trezor/icons';
+import { exhaustive } from '@trezor/type-utils';
+
+import { suiteSyncErrorTranslationKeyMap } from './suiteSyncErrorTranslationKeyMap';
+
+type SuiteSyncTurnOnModalProps = {
+    deviceStaticSessionId: StaticSessionId;
+    onClose: () => void;
+    onSuccess?: () => void;
+};
+
+export const SuiteSyncTurnOnModal = ({
+    deviceStaticSessionId,
+    onClose,
+    onSuccess,
+}: SuiteSyncTurnOnModalProps) => {
+    const dispatch = useDispatch();
+    const { translationString } = useTranslation();
+
+    const { turnOnSuiteSync } = useServices(selectTurnOnSuiteSyncDep);
+
+    const device = useSelector((state: DeviceRootState) =>
+        selectDeviceByStaticSessionId(state, deviceStaticSessionId),
+    );
+
+    if (device === undefined) {
+        return null;
+    }
+
+    const onSwitch = async () => {
+        const result = await turnOnSuiteSync({
+            deviceStaticSessionId: deviceStaticSessionId ?? undefined,
+        });
+
+        if (!result.success) {
+            const { type } = result.error;
+
+            switch (type) {
+                case 'SuiteSyncFirmwareUpgradeNeededDeviceErrorType':
+                    // Do nothing, Firmware Upgrade Modal will be shown declaratively
+                    // because `selectIsTurnOnSuiteSyncInteractionNeeded` will return it.
+                    return;
+
+                case 'WriteModeRequiredForAllocation':
+                    // Do nothing, this is expected control flow error when we want allocate on-demand.
+                    onSuccess?.();
+
+                    return;
+
+                case 'DeviceNotConnectedError':
+                    // A disconnected device is an expected condition - Suite Sync stays
+                    // enabled and will retry once the device reconnects, so we stay silent.
+                    return;
+
+                case 'DeviceCancelled':
+                case 'DeviceError':
+                case 'SuiteSyncUnavailableOnDeviceError':
+                case 'QuotaManagerCommunicationFailed':
+                    dispatch(
+                        notificationsActions.addToast({
+                            type: 'error',
+                            error: translationString(suiteSyncErrorTranslationKeyMap[type]),
+                        }),
+                    );
+
+                    return;
+
+                default:
+                    return exhaustive(type);
+            }
+        }
+
+        dispatch(notificationsActions.addToast({ type: 'suite-sync-enabled' }));
+
+        onSuccess?.();
+    };
+
+    return (
+        <Modal
+            heading={<Translation id="TR_TURN_ON_SECURE_SYNC_LABELS_MODAL_HEADING" />}
+            onCancel={onClose}
+            width={600}
+            bottomContent={
+                <>
+                    <Modal.Button onClick={onSwitch}>
+                        <Translation id="TR_TURN_ON_SECURE_SYNC" />
+                    </Modal.Button>
+                    <Modal.Button onClick={onClose} intent="neutral" priority="secondary">
+                        <Translation id="TR_CANCEL" />
+                    </Modal.Button>
+                </>
+            }
+        >
+            <Column gap={16}>
+                <Card paddingType="large">
+                    <List gap={16} intent="neutral" priority="secondary">
+                        <List.Item bulletComponent={<Icon as={TagIcon} size={20} />}>
+                            <Paragraph>
+                                <Translation id="TR_TURN_ON_SECURE_SYNC_DATA_LABELS" />
+                            </Paragraph>
+                        </List.Item>
+                        <List.Item
+                            bulletComponent={<Icon as={ArrowsCounterClockwiseIcon} size={20} />}
+                        >
+                            <Paragraph>
+                                <Translation id="TR_TURN_ON_SECURE_SYNC_DATA_STORED_LOCALLY" />
+                            </Paragraph>
+                        </List.Item>
+                        <List.Item bulletComponent={<Icon as={ShieldCheckIcon} size={20} />}>
+                            <Paragraph>
+                                <Translation id="TR_TURN_ON_SECURE_SYNC_ONLY_AUTHORIZED_DEVICES" />
+                            </Paragraph>
+                        </List.Item>
+                        <List.Item bulletComponent={<Icon as={ThumbsUpIcon} size={20} />}>
+                            <Paragraph>
+                                <Translation id="TR_TURN_ON_SECURE_SYNC_MIGRATION" />
+                            </Paragraph>
+                        </List.Item>
+                    </List>
+                </Card>
+            </Column>
+        </Modal>
+    );
+};

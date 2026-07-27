@@ -1,17 +1,17 @@
-import { PayloadAction, createSlice } from '@reduxjs/toolkit';
-import { FiatCurrencyCode } from 'invity-api';
-import type {
-    BuyListResponse,
-    BuyProviderInfo,
-    BuyTrade,
-    BuyTradeQuoteRequest,
-    CryptoId,
+import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
+import {
+    type BuyListResponse,
+    type BuyProviderInfo,
+    type BuyTrade,
+    type BuyTradeQuoteRequest,
+    type CryptoId,
+    type FiatCurrencyCode,
 } from 'invity-api';
 
-import { AccountKey } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 
 import { TRADING_BUY_PREFIX } from '../constants';
-import { TradingAmountLimitProps } from '../types';
+import { type TradingAmountLimitProps } from '../types';
 
 export interface BuyInfo {
     buyInfo: BuyListResponse;
@@ -26,8 +26,8 @@ export interface TradingBuyState {
     quotesRequest?: BuyTradeQuoteRequest;
     quotes: BuyTrade[];
     selectedQuote: BuyTrade | undefined;
-    preselectedQuote: BuyTrade | undefined;
     tradingAccountKey?: AccountKey;
+    receiveAccountKey?: AccountKey;
     receiveAddress?: string;
     isLoading: boolean;
     amountLimits: TradingAmountLimitProps | undefined;
@@ -41,9 +41,9 @@ export const buyInitialState: TradingBuyState = {
     buyInfo: undefined,
     quotesRequest: undefined,
     selectedQuote: undefined,
-    preselectedQuote: undefined,
     quotes: [],
     tradingAccountKey: undefined,
+    receiveAccountKey: undefined,
     receiveAddress: undefined,
     isLoading: false,
     amountLimits: undefined,
@@ -53,44 +53,60 @@ const tradingBuySlice = createSlice({
     name: TRADING_BUY_PREFIX,
     initialState: buyInitialState,
     reducers: {
-        saveBuyInfo(state, action: PayloadAction<BuyInfo>) {
+        saveBuyInfo(state: TradingBuyState, action: PayloadAction<BuyInfo>) {
             state.buyInfo = action.payload;
         },
-        setIsFromRedirect(state, action: PayloadAction<boolean>) {
+        setIsFromRedirect(state: TradingBuyState, action: PayloadAction<boolean>) {
             state.isFromRedirect = action.payload;
         },
-        saveQuoteRequest(state, action: PayloadAction<BuyTradeQuoteRequest>) {
+        saveQuoteRequest(state: TradingBuyState, action: PayloadAction<BuyTradeQuoteRequest>) {
             state.quotesRequest = action.payload;
         },
-        saveTransactionId(state, action: PayloadAction<string | undefined>) {
+        saveTransactionId(state: TradingBuyState, action: PayloadAction<string | undefined>) {
             state.transactionId = action.payload;
         },
-        saveQuotes(state, action: PayloadAction<BuyTrade[]>) {
+        saveQuotes(state: TradingBuyState, action: PayloadAction<BuyTrade[]>) {
             state.quotes = action.payload;
         },
-        savePreselectedQuote(state, action: PayloadAction<BuyTrade | undefined>) {
-            state.preselectedQuote = action.payload;
-        },
-        saveSelectedQuote(state, action: PayloadAction<BuyTrade | undefined>) {
+        saveSelectedQuote(state: TradingBuyState, action: PayloadAction<BuyTrade | undefined>) {
             state.selectedQuote = action.payload;
         },
-        clearQuotes(state) {
+        clearQuotes(state: TradingBuyState) {
             state.quotes = [];
+            state.selectedQuote = undefined;
         },
-        setIsLoading(state, action: PayloadAction<boolean>) {
+        setIsLoading(state: TradingBuyState, action: PayloadAction<boolean>) {
             state.isLoading = action.payload;
         },
-        setAmountLimits(state, action: PayloadAction<TradingAmountLimitProps | undefined>) {
+        setAmountLimits(
+            state: TradingBuyState,
+            action: PayloadAction<TradingAmountLimitProps | undefined>,
+        ) {
             state.amountLimits = action.payload;
         },
-        setTradingAccountKey(state, action: PayloadAction<AccountKey | undefined>) {
+        setTradingAccountKey(
+            state: TradingBuyState,
+            action: PayloadAction<AccountKey | undefined>,
+        ) {
             state.tradingAccountKey = action.payload;
         },
-        setReceiveAddress(state, action: PayloadAction<string | undefined>) {
+        setReceiveAccountKey(
+            state: TradingBuyState,
+            action: PayloadAction<AccountKey | undefined>,
+        ) {
+            state.receiveAccountKey = action.payload;
+        },
+        setReceiveAddress(state: TradingBuyState, action: PayloadAction<string | undefined>) {
             state.receiveAddress = action.payload;
         },
-        setLastErrorMessage(state, action: PayloadAction<string | undefined>) {
+        setLastErrorMessage(state: TradingBuyState, action: PayloadAction<string | undefined>) {
             state.lastErrorMessage = action.payload;
+        },
+        clearQuotesAndParams(state: TradingBuyState) {
+            state.quotes = [];
+            state.quotesRequest = undefined;
+            state.selectedQuote = undefined;
+            state.amountLimits = undefined;
         },
     },
 });

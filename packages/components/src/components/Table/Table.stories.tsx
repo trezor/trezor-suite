@@ -1,4 +1,4 @@
-import { Meta, StoryObj } from '@storybook/react';
+import { type Meta, type StoryObj } from '@storybook/react';
 
 import { Table as TableComponent, allowedTableFrameProps, allowedTableTextProps } from './Table';
 import { getFramePropsStory } from '../../utils/frameProps';
@@ -22,7 +22,7 @@ interface TableProps {
 
 export const Table: StoryObj = {
     render: (props: TableProps) => (
-        <TableComponent {...props}>
+        <TableComponent {...props} backgroundColor="surfaceFillPage">
             <TableComponent.Header>
                 <TableComponent.Row>
                     <TableComponent.Cell>Token</TableComponent.Cell>

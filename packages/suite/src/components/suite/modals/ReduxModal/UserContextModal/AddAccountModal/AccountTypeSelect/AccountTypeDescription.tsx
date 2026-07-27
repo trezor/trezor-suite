@@ -1,16 +1,14 @@
+import { LearnMoreButton } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import {
-    AccountType,
-    Bip43PathTemplate,
-    NetworkSymbol,
-    NetworkType,
+    type AccountType,
+    type Bip43PathTemplate,
+    type NetworkSymbol,
+    type NetworkType,
     getNetwork,
 } from '@suite-common/wallet-config';
 import { getAccountTypeDesc, getAccountTypeUrl } from '@suite-common/wallet-utils';
 import { Column, Paragraph } from '@trezor/components';
-import { spacings } from '@trezor/theme';
-
-import { LearnMoreButton } from 'src/components/suite/LearnMoreButton';
 
 interface AccountTypeDescriptionProps {
     bip43Path: Bip43PathTemplate;
@@ -29,7 +27,7 @@ export const AccountTypeDescription = ({
     const accountTypeDescId = getAccountTypeDesc({ path: bip43Path, accountType, networkType });
 
     return (
-        <Column alignItems="flex-start" gap={spacings.sm}>
+        <Column alignItems="flex-start" gap={12}>
             <Paragraph>
                 <Translation id={accountTypeDescId} values={{ value: getNetwork(symbol).name }} />
             </Paragraph>

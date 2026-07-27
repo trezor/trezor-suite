@@ -1,9 +1,10 @@
 {
     "name": "@trezor/connect-plugin-stellar",
     "version": "10.0.0-alpha.1",
+    "type": "module",
     "author": "Trezor <info@trezor.io>",
     "homepage": "https://github.com/trezor/trezor-suite/tree/develop/packages/connect-plugin-stellar",
-    "description": "@trezor/connect plugin for Stellar",
+    "description": "DEPRECATED — See README for migration.",
     "license": "SEE LICENSE IN LICENSE.md",
     "repository": {
         "type": "git",
@@ -24,35 +25,22 @@
         "types": "./lib/index.d.ts",
         "exports": {
             ".": {
-                "import": "./libESM/index.js",
-                "require": "./lib/index.js",
-                "types": "./lib/index.d.ts"
+                "types": "./lib/index.d.ts",
+                "default": "./lib/index.js"
             }
         }
     },
     "files": [
         "lib/",
-        "libESM/",
         "CHANGELOG.md"
     ],
     "peerDependencies": {
-        "@stellar/stellar-sdk": "^13.3.0",
-        "@trezor/connect": "9.x.x",
         "tslib": "^2.6.2"
     },
-    "devDependencies": {
-        "@stellar/stellar-sdk": "14.5.0",
-        "@trezor/eslint": "workspace:*"
-    },
-    "dependencies": {
-        "@trezor/utils": "workspace:*"
-    },
     "scripts": {
-        "test:unit": "jest -c ../../jest.config.base.js",
         "type-check": "yarn g:tsc --build tsconfig.json",
-        "build:lib": "yarn build:lib:cjs && yarn build:lib:esm",
-        "build:lib:cjs": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib cjs",
-        "build:lib:esm": "yarn g:rimraf ./libESM && yarn g:tsc --build tsconfig.libESM.json && ../../scripts/publish/replace-imports.sh ./libESM esm",
-        "depcheck": "yarn g:depcheck"
+        "build:lib": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib",
+        "depcheck": "yarn g:depcheck",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     }
 }

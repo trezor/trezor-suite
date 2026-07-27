@@ -1,0 +1,9 @@
+{
+    "presets": [],
+    "plugins": ["./babel-plugin-add-js-extension.js"],
+    "parserOpts": {
+        "plugins": [["typescript", { "dts": true }]]
+    },
+    "comments": true,
+    "sourceMaps": false
+}

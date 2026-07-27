@@ -1,10 +1,16 @@
 import { yup } from '@suite-common/validators';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Form, useForm } from '@suite-native/forms';
-import { TestStore, initStore, renderWithStoreProvider, userEvent } from '@suite-native/test-utils';
+import {
+    type TestStore,
+    createStoreFromPreloadedState,
+    renderWithStoreProvider,
+    userEvent,
+} from '@suite-native/test-utils-store';
 
+import { createFeeLevel } from '../../../../__fixtures__/feeLevels';
 import { getWalletState } from '../../../../__fixtures__/walletState';
-import { NativeSupportedPredefinedFeeLevel } from '../../../../types';
+import { type NativeSupportedPredefinedFeeLevel } from '../../../../types';
 import { FeeOption } from '../FeeOption';
 
 // Create a simple validation schema for testing
@@ -46,36 +52,14 @@ describe('FeeOption', () => {
     let store: TestStore;
     let mockOnSelectedFeeLevel: jest.Mock;
 
-    const createMockFeeLevel = () =>
-        ({
-            type: 'final',
+    const defaultProps = {
+        feeKey: 'normal' as NativeSupportedPredefinedFeeLevel,
+        feeLevel: createFeeLevel({
             totalSpent: '100000',
             fee: '1000',
             feePerByte: '10',
-            bytes: 250,
             feeLimit: '21000',
-            outputs: [
-                {
-                    address: '1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa',
-                    amount: '50000',
-                    script_type: 'PAYTOADDRESS',
-                },
-            ],
-            inputs: [
-                {
-                    script_type: 'SPENDWITNESS',
-                    sequence: 0xffffffff,
-                    prev_hash: '0000000000000000000000000000000000000000000000000000000000000000',
-                    prev_index: 0,
-                    amount: '100000',
-                    address_n: [44, 0, 0, 0, 0],
-                },
-            ],
-        }) as any;
-
-    const defaultProps = {
-        feeKey: 'normal' as NativeSupportedPredefinedFeeLevel,
-        feeLevel: createMockFeeLevel(),
+        }),
         symbol: 'btc' as NetworkSymbol,
         transactionBytes: 250,
         isInteractive: true,
@@ -103,7 +87,7 @@ describe('FeeOption', () => {
     };
 
     beforeEach(() => {
-        store = initStore(getPreloadedState()).store;
+        store = createStoreFromPreloadedState(getPreloadedState());
 
         // Default mock implementations
         mockSelectConvertedNetworkFeeLevelTimeEstimate.mockReturnValue('~10 minutes');
@@ -157,11 +141,13 @@ describe('FeeOption', () => {
 
     describe('Interaction', () => {
         it('should call onSelectedFeeLevel when pressed', async () => {
-            const { getByTestId } = renderFeeOption();
+            const { getByTestId } = renderFeeOption({
+                feeKey: 'high',
+            });
 
-            await userEvent.press(getByTestId('@transactionManagement/fees-level-radio-normal'));
+            await userEvent.press(getByTestId('@transactionManagement/fees-level-radio-high'));
 
-            expect(mockOnSelectedFeeLevel).toHaveBeenCalledWith('normal');
+            expect(mockOnSelectedFeeLevel).toHaveBeenCalledWith('high');
         });
 
         it('should not call onSelectedFeeLevel when not interactive', async () => {
@@ -191,7 +177,7 @@ describe('FeeOption', () => {
         it('should calculate fee per unit correctly for bitcoin', () => {
             const { getByText } = renderFeeOption({
                 symbol: 'btc',
-                feeLevel: createMockFeeLevel(),
+                feeLevel: defaultProps.feeLevel,
                 transactionBytes: 250,
             });
 
@@ -202,7 +188,7 @@ describe('FeeOption', () => {
         it('should use feePerByte for non-bitcoin networks', () => {
             const { getByText } = renderFeeOption({
                 symbol: 'eth',
-                feeLevel: createMockFeeLevel(),
+                feeLevel: defaultProps.feeLevel,
                 transactionBytes: 250,
             });
 

@@ -1,21 +1,31 @@
-import { RouteProp } from '@react-navigation/native';
+import { type RouteProp } from '@react-navigation/native';
+import { combineReducers } from '@reduxjs/toolkit';
 
-import { events } from '@suite-native/analytics';
+import { messageSystemInitialState } from '@suite-common/message-system';
+import { initialWalletSettingsState } from '@suite-common/wallet-core';
+import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
+import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
+import { getTranslation, localeReducer } from '@suite-native/intl';
+import { type RootStackParamList, RootStackRoutes } from '@suite-native/navigation';
 import {
-    RootStackRoutes,
-    TradingStackParamList,
-    TradingStackRoutes,
-} from '@suite-native/navigation';
-import { useAnalytics } from '@suite-native/services';
-import { renderWithStoreProvider, screen, userEvent } from '@suite-native/test-utils';
+    createLightStore,
+    createStaticReducer,
+    renderWithStoreProvider,
+    screen,
+    userEvent,
+} from '@suite-native/test-utils-store';
+import { residenceReducer } from '@suite-native/trading-state';
 
 import {
     TradingLocationModalScreen,
-    TradingLocationModalScreenProps,
+    type TradingLocationModalScreenProps,
 } from '../TradingLocationModalScreen';
 
 const mockNavigationDispatch = jest.fn();
 const reportMock = jest.fn();
+const services: NativeAnalyticsDep = {
+    analytics: mockNativeAnalytics(reportMock),
+};
 
 const mockRoute: TradingLocationModalScreenProps['route'] = {
     name: RootStackRoutes.TradingLocationModal,
@@ -23,21 +33,12 @@ const mockRoute: TradingLocationModalScreenProps['route'] = {
     params: undefined,
 };
 
-jest.mock('@suite-native/services', () => {
-    const original = jest.requireActual('@suite-native/services');
-
-    return {
-        ...original,
-        useAnalytics: jest.fn(),
-    };
-});
-
 jest.mock('@react-navigation/native', () => ({
     ...jest.requireActual('@react-navigation/native'),
     useRoute: () =>
         ({
             params: undefined,
-        }) as RouteProp<TradingStackParamList, TradingStackRoutes.TradingHistory>,
+        }) as RouteProp<RootStackParamList, RootStackRoutes.TradingHistory>,
     useNavigation: () => ({
         dispatch: mockNavigationDispatch,
     }),
@@ -54,14 +55,25 @@ describe('TradingLocationModalScreen', () => {
                 }
                 route={mockRoute}
             />,
+            {
+                store: createLightStore({
+                    reducer: {
+                        locale: localeReducer,
+                        messageSystem: createStaticReducer(messageSystemInitialState),
+                        wallet: combineReducers({
+                            settings: createStaticReducer(initialWalletSettingsState),
+                            trading: combineReducers({
+                                residence: residenceReducer,
+                            }),
+                        }),
+                    },
+                }),
+                services,
+            },
         );
 
     beforeEach(() => {
         jest.clearAllMocks();
-
-        (useAnalytics as jest.Mock).mockReturnValue({
-            report: reportMock,
-        });
     });
 
     afterEach(() => {
@@ -71,17 +83,25 @@ describe('TradingLocationModalScreen', () => {
     it('should render all components', () => {
         const { getByText, queryByLabelText } = renderTradingLocationModalScreen();
 
-        expect(getByText('Trading is now available')).toBeOnTheScreen();
-        expect(getByText('Confirm location')).toBeOnTheScreen();
-        expect(getByText('Not now')).toBeOnTheScreen();
+        expect(
+            getByText(getTranslation('tradingResidence.locationSettings.title')),
+        ).toBeOnTheScreen();
+        expect(
+            getByText(getTranslation('tradingResidence.locationSettings.confirmButton')),
+        ).toBeOnTheScreen();
+        expect(
+            getByText(getTranslation('tradingResidence.locationSettings.skipButton')),
+        ).toBeOnTheScreen();
 
-        expect(queryByLabelText('Go back')).toBeNull();
+        expect(queryByLabelText(getTranslation('generic.buttons.goBack'))).toBeNull();
     });
 
     it('should log analytics event on country change', async () => {
         const { getByText } = renderTradingLocationModalScreen();
 
-        await userEvent.press(getByText('Country of residence'));
+        await userEvent.press(
+            getByText(getTranslation('tradingResidence.locationSettings.countryOfResidence')),
+        );
         await userEvent.press(getByText('Argentina'));
 
         expect(reportMock).toHaveBeenCalledTimes(1);
@@ -97,7 +117,9 @@ describe('TradingLocationModalScreen', () => {
     it('should reset navigation on button press', async () => {
         const { getByText } = renderTradingLocationModalScreen();
 
-        await userEvent.press(getByText('Not now'));
+        await userEvent.press(
+            getByText(getTranslation('tradingResidence.locationSettings.skipButton')),
+        );
 
         expect(mockNavigationDispatch).toHaveBeenCalledTimes(1);
         expect(mockNavigationDispatch).toHaveBeenCalledWith({

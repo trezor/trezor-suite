@@ -1,5 +1,5 @@
-import { IssueWithSeverity, PolicyConfig, PolicyResult } from '../types/policy';
-import { Issue } from '../types/validation';
+import { type IssueWithSeverity, type PolicyConfig, type PolicyResult } from '../types/policy';
+import { type Issue } from '../types/validation';
 
 const DEFAULT_POLICY: PolicyConfig = {
     // Address
@@ -12,9 +12,17 @@ const DEFAULT_POLICY: PolicyConfig = {
     // Amount
     NEGATIVE_AMOUNT: 'error',
     NOT_INTEGER: 'error',
+    EXCEEDS_UINT16: 'error',
+    EXCEEDS_UINT64: 'error',
     EXCEEDS_UINT256: 'error',
     ZERO_AMOUNT: 'warning',
     INSUFFICIENT_BALANCE: 'warning',
+
+    // Bytes
+    INVALID_BYTES32: 'error',
+
+    // Cross-param
+    ARRAYS_LENGTH_MISMATCH: 'error',
 
     // Encoding
     ENCODING_FAILED: 'error',

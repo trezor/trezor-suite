@@ -1,14 +1,18 @@
 /**
  * Local web server for handling requests to app
  */
+import { captureMessage } from '@sentry/electron/main';
+
 import { isMacOs, isWindows } from '@trezor/env-utils';
 import { validateIpcMessage } from '@trezor/ipc-proxy';
+import { isArrayMember } from '@trezor/utils';
 
 import { restartApp } from '../libs/app-utils';
+import { initConnectPopupResponseHandler } from '../libs/connect-popup-messages';
 import { exposeConnectWs } from '../libs/connect-ws';
 import { createHttpReceiver } from '../libs/http-receiver';
 import { app, ipcMain } from '../typed-electron';
-import { ModuleInitBackground } from './module';
+import { type ModuleInitBackground } from './module';
 
 export const SERVICE_NAME = 'http-receiver';
 
@@ -30,8 +34,16 @@ export const initBackground: ModuleInitBackground = ({
         if (httpReceiver) {
             return httpReceiver.getInfo();
         }
-        // External request handler
-        const receiver = createHttpReceiver();
+        const connectPopupEnabled = () => !store.getConnectSettings().disableWs;
+
+        // External request handler.
+        // Note that if we override the `port` to something else than 21335, it might break google oauth
+        const receiver = createHttpReceiver({
+            getStatus: () => ({
+                appVersion: app.getVersion(),
+                connectPopupWsEnabled: connectPopupEnabled(),
+            }),
+        });
         httpReceiver = receiver;
 
         // wait for httpReceiver to start accepting connections then register event handlers
@@ -69,10 +81,7 @@ export const initBackground: ModuleInitBackground = ({
             validateIpcMessage({ ipcEvent });
             try {
                 // Use deeplink URLs for trading redirects on macOS/Windows only
-                if (
-                    TRADING_REDIRECT_PATHS.some(path => path === pathname) &&
-                    (isMacOs() || isWindows())
-                ) {
+                if (isArrayMember(pathname, TRADING_REDIRECT_PATHS) && (isMacOs() || isWindows())) {
                     receiver.activateRoute(pathname);
 
                     return `trezorsuite:/${pathname}`;
@@ -89,7 +98,6 @@ export const initBackground: ModuleInitBackground = ({
             }
         });
 
-        const connectPopupEnabled = () => !store.getConnectSettings().disableWs;
         ipcMain.handle('connect-popup/enabled', ipcEvent => {
             validateIpcMessage({ ipcEvent });
 
@@ -101,6 +109,11 @@ export const initBackground: ModuleInitBackground = ({
             store.setConnectSettings({ disableWs: !enabled });
             restartApp();
         });
+        // Initialize the shared connect-popup response handler. This must be called
+        // before any connect-popup calls are made, regardless of whether WS is enabled,
+        // so that MCP and other transports can also use the connect-popup flow.
+        initConnectPopupResponseHandler();
+
         if (connectPopupEnabled()) {
             exposeConnectWs({ mainThreadEmitter, httpReceiver: receiver, mainWindowProxy, store });
         }
@@ -113,6 +126,10 @@ export const initBackground: ModuleInitBackground = ({
             logger.error(
                 SERVICE_NAME,
                 `Failed to start server:  ${startResult.error}, error details: ${startResult.message}`,
+            );
+            captureMessage(
+                `http-receiver failed to start: ${startResult.error} (${startResult.message})`,
+                'warning',
             );
 
             return { url: null };

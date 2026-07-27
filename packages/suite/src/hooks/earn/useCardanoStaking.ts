@@ -1,7 +1,11 @@
 import { useCallback, useState } from 'react';
 
-import { selectCardanoPoolsInfo } from '@suite-common/wallet-core';
-import { CardanoAction } from '@suite-common/wallet-types';
+import { hasPendingStakeTypeTransaction, selectCardanoPoolsInfo } from '@suite-common/wallet-core';
+import {
+    type ActionAvailability,
+    type CardanoAction,
+    type CardanoStaking,
+} from '@suite-common/wallet-types';
 import {
     getAddressParameters,
     getDelegationCertificates,
@@ -10,18 +14,19 @@ import {
     isTestnet,
     selectBestCardanoPool,
 } from '@suite-common/wallet-utils';
-import trezorConnect, { CardanoCertificate } from '@trezor/connect';
+import trezorConnect, { type CardanoCertificate } from '@trezor/connect';
 
 import { useSelector } from 'src/hooks/suite';
-import { ActionAvailability, CardanoStaking } from 'src/types/wallet/cardanoStaking';
 
 export const useCardanoStaking = (): CardanoStaking => {
     const account = useSelector(state => state.wallet.selectedAccount.account);
 
     const isCardano = account?.networkType === 'cardano';
 
-    const cardanoStaking = useSelector(state => state.wallet.cardanoStaking);
     const cardanoPools = useSelector(selectCardanoPoolsInfo);
+    const hasPendingTx = useSelector(state =>
+        account ? hasPendingStakeTypeTransaction(state, account.key) : false,
+    );
 
     const [deposit, setDeposit] = useState<undefined | string>(undefined);
     const [fee, setFee] = useState<undefined | string>(undefined);
@@ -37,8 +42,6 @@ export const useCardanoStaking = (): CardanoStaking => {
         status: false,
     });
 
-    const pendingStakeTx = cardanoStaking.pendingTx.find(tx => tx.accountKey === account?.key);
-
     const {
         rewards: rewardsAmount,
         address: stakeAddress,
@@ -46,7 +49,7 @@ export const useCardanoStaking = (): CardanoStaking => {
     } = isCardano ? account.misc.staking : {};
 
     const isStakingDisabled =
-        (account?.availableBalance === '0' || !delegatingAvailable.status || !!pendingStakeTx) &&
+        (account?.availableBalance === '0' || !delegatingAvailable.status || hasPendingTx) &&
         !loading;
 
     const prepareTxPlan = useCallback(
@@ -106,7 +109,7 @@ export const useCardanoStaking = (): CardanoStaking => {
                 testnet: isTestnet(account.symbol),
             });
 
-            if (!response.success) throw new Error(response.payload.error);
+            if (!response.success) throw new Error(response.error.message);
 
             return { txPlan: response.payload[0], certificates, withdrawals };
         },
@@ -118,7 +121,7 @@ export const useCardanoStaking = (): CardanoStaking => {
             setLoading(true);
             try {
                 const composeRes = await prepareTxPlan(action);
-                if (composeRes) {
+                if (composeRes?.txPlan) {
                     if (composeRes.txPlan.type === 'error') {
                         throw new Error(composeRes.txPlan.error);
                     }
@@ -154,7 +157,7 @@ export const useCardanoStaking = (): CardanoStaking => {
     );
 
     // TODO: improve this hook for non-cardano accounts
-    if (!account || account.networkType !== 'cardano') {
+    if (account?.networkType !== 'cardano') {
         return {
             isStakingDisabled: true,
             deposit: undefined,

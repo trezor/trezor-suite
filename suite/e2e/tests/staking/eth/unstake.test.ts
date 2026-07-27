@@ -13,23 +13,20 @@ test.describe('ETH unstaking and claim', { tag: ['@T3W1', '@T3T1'] }, () => {
             mnemonic: 'access juice claim special truth ugly swarm rabbit hair man error bar',
         },
         //TODO: Mock is not handling request for instant unstake information. Fix me
-        exceptionLogger: skipFixture,
+        jsExceptionWatcher: skipFixture,
     });
-    test.beforeEach(
-        async ({ page, dashboardPage, onboardingPage, settingsPage, blockbookMock }) => {
-            await onboardingPage.completeOnboarding();
-            await settingsPage.navigateTo('coins');
-            await blockbookMock.start('eth');
 
-            await settingsPage.coinsTab.disableNetwork('btc');
-            await settingsPage.coinsTab.enableNetwork('eth');
-            await settingsPage.coinsTab.openNetworkAdvanceSettings('eth');
-            await settingsPage.coinsTab.changeBackend('blockbook', blockbookMock.url);
+    test.beforeEach(async ({ onboardingPage, settingsPage, blockbookMock }) => {
+        await onboardingPage.completeOnboarding();
+        await settingsPage.navigateTo('coins');
+        await blockbookMock.start('eth');
 
-            await dashboardPage.dashboardMenuButton.click();
-            await page.discoveryShouldFinish();
-        },
-    );
+        await settingsPage.changeNetworks({
+            enableNetworks: [
+                { symbol: 'eth', backend: { type: 'blockbook', url: blockbookMock.url } },
+            ],
+        });
+    });
 
     test(
         'unstake and claim on ETH account',
@@ -47,10 +44,12 @@ test.describe('ETH unstaking and claim', { tag: ['@T3W1', '@T3T1'] }, () => {
                 await walletPage.openAccount({ symbol: 'eth', type: 'normal', atIndex: 0 });
                 await stakingSection.stakingTabButton.click();
                 await stakingSection.expectStakingAmounts({
-                    pending: '300',
-                    staked: '3,000',
-                    rewards: '234',
-                    unstaking: 'hidden',
+                    expected: {
+                        pending: '300',
+                        staked: '3,000',
+                        rewards: '234',
+                        unstaking: 'hidden',
+                    },
                 });
             });
 
@@ -69,8 +68,11 @@ test.describe('ETH unstaking and claim', { tag: ['@T3W1', '@T3T1'] }, () => {
                 await expect(device).toShowOnDisplay({
                     T3W1: {
                         header: { title: 'Unstake' },
+                        body: [['Unstake ETH', '\n', 'from', '\n', 'Everstake?']],
+                        actions: { right_button: 'Confirm' },
+                    },
+                    T3T1: {
                         body: [['Unstake ETH from', '\n', 'Everstake?']],
-                        actions: { right_button: 'Continue' },
                     },
                 });
                 await devicePrompt.waitForPromptAndClick();
@@ -102,18 +104,23 @@ test.describe('ETH unstaking and claim', { tag: ['@T3W1', '@T3T1'] }, () => {
                     nonce: '2',
                 });
                 await devicePrompt.sendButton.click();
-                await expect(stakingSection.unstakedToastAccount).toContainText('Ethereum #1');
-                await expect(stakingSection.unstakedToastAmount).toContainText('3234 ETH');
+                await stakingSection.verifyStakingToast({
+                    type: 'unstaked',
+                    account: 'Ethereum #1',
+                    amount: '3234 ETH',
+                });
             });
 
             await test.step('Verify pending transaction', async () => {
                 await expect(stakingSection.pendingTransactionText).toBeVisible();
                 await expect(stakingSection.speedUpButton).toBeEnabled();
                 await stakingSection.expectStakingAmounts({
-                    pending: '300',
-                    staked: '3,000',
-                    rewards: '234',
-                    unstaking: 'hidden',
+                    expected: {
+                        pending: '300',
+                        staked: '3,000',
+                        rewards: '234',
+                        unstaking: 'hidden',
+                    },
                 });
             });
 
@@ -137,10 +144,12 @@ test.describe('ETH unstaking and claim', { tag: ['@T3W1', '@T3T1'] }, () => {
                 });
                 await page.clock.fastForward(stakingSection.watchPeriod);
                 await stakingSection.expectStakingAmounts({
-                    pending: '300',
-                    staked: '0',
-                    rewards: '0',
-                    unstaking: '3,234',
+                    expected: {
+                        pending: '300',
+                        staked: '0',
+                        rewards: '0',
+                        unstaking: '3,234',
+                    },
                 });
                 await expect(stakingSection.unstakeToClaimButton).toBeDisabled();
                 await expect(stakingSection.pendingTransactionText).toBeHidden();
@@ -167,10 +176,12 @@ test.describe('ETH unstaking and claim', { tag: ['@T3W1', '@T3T1'] }, () => {
                 });
                 await page.clock.fastForward(stakingSection.watchPeriod);
                 await stakingSection.expectStakingAmounts({
-                    pending: '300',
-                    staked: '0',
-                    rewards: '0',
-                    unstaking: 'hidden',
+                    expected: {
+                        pending: '300',
+                        staked: '0',
+                        rewards: '0',
+                        unstaking: 'hidden',
+                    },
                 });
                 await expect(stakingSection.claimBalanceWithSymbol).toHaveText('3,234 ETH');
                 await stakingSection.claimButton.click();
@@ -187,7 +198,7 @@ test.describe('ETH unstaking and claim', { tag: ['@T3W1', '@T3T1'] }, () => {
                     T3W1: {
                         header: { title: 'Claim' },
                         body: [['Claim ETH from', '\n', 'Everstake?']],
-                        actions: { right_button: 'Continue' },
+                        actions: { right_button: 'Confirm' },
                     },
                 });
                 await devicePrompt.waitForPromptAndClick();
@@ -227,8 +238,11 @@ test.describe('ETH unstaking and claim', { tag: ['@T3W1', '@T3T1'] }, () => {
                     ],
                 });
                 await devicePrompt.sendButton.click();
-                await expect(stakingSection.claimedToastAccount).toContainText('Ethereum #1');
-                await expect(stakingSection.claimedToastAmount).toContainText('3234 ETH');
+                await stakingSection.verifyStakingToast({
+                    type: 'claimed',
+                    account: 'Ethereum #1',
+                    amount: '3234 ETH',
+                });
                 await expect(stakingSection.claimCard).toBeHidden();
                 await expect(walletPage.balanceOfAccount({ symbol: 'eth', atIndex: 0 })).toHaveText(
                     '4,468',

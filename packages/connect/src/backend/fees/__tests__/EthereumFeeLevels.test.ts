@@ -1,14 +1,10 @@
-import BlockchainLink from '@trezor/blockchain-link';
-import coinsJSONEth from '@trezor/connect-data/files/coins-eth.json';
-import coinsJSON from '@trezor/connect-data/files/coins.json';
+import { BlockchainLink } from '@trezor/blockchain-link';
 
-import { getEthereumNetwork, parseCoinsJson } from '../../../data/coinInfo';
+import { getEthereumNetwork } from '../../../data/coinInfo';
 import { initBlockchain } from '../../BlockchainLink';
 import { EthereumFeeLevels } from '../EthereumFeeLevels';
 
 describe('api/ethereum/Fees', () => {
-    parseCoinsJson({ ...coinsJSON, ...coinsJSONEth });
-
     const ETH_REQUEST = { blocks: [1] };
 
     const ETH_EIP1559_RESPONSE = [
@@ -82,10 +78,63 @@ describe('api/ethereum/Fees', () => {
             const backend = await initBlockchain(coinInfo, () => {});
             const feeLevels = new EthereumFeeLevels(coinInfo);
 
-            const [level] = await feeLevels.load(backend, ETH_REQUEST);
+            const levels = await feeLevels.load(backend, ETH_REQUEST);
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const [level]: [FeeLevel] = levels;
 
-            // 0.1 Gwei → 0.1 × 1e9 = 100 000 000 wei
-            expect(level.feePerUnit).toBe('100000000');
+            // 0.001 Gwei → 0.001 × 1e9 = 1 000 000 wei
+            expect(level.feePerUnit).toBe('1000000');
+
+            backend.disconnect();
+            spy.mockRestore();
+        });
+
+        it('rounds feePerUnit to integer when backend returns decimal wei value', async () => {
+            const coinInfo = getEthereumNetwork('eth')!;
+            const spy = jest
+                .spyOn(BlockchainLink.prototype, 'estimateFee')
+                .mockResolvedValue([{ feePerUnit: '1500000000.7' }]); // fractional wei
+
+            const backend = await initBlockchain(coinInfo, () => {});
+            const feeLevels = new EthereumFeeLevels(coinInfo);
+
+            const levels = await feeLevels.load(backend, ETH_REQUEST);
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const [level]: [FeeLevel] = levels;
+
+            // must be an integer wei string — fromWei("1500000000.7", 'gwei') would crash
+            expect(level.feePerUnit).toMatch(/^\d+$/);
+
+            backend.disconnect();
+            spy.mockRestore();
+        });
+
+        it('EIP-1559: clamps maxFeePerGas to minFee (in wei) when backend returns zero', async () => {
+            const coinInfo = getEthereumNetwork('eth')!;
+            const spy = jest.spyOn(BlockchainLink.prototype, 'estimateFee').mockResolvedValue([
+                {
+                    feePerUnit: '2000000000',
+                    feeLimit: '21000',
+                    eip1559: {
+                        baseFeePerGas: '1000000000',
+                        low: { maxFeePerGas: '0', maxPriorityFeePerGas: '0' },
+                        medium: { maxFeePerGas: '0', maxPriorityFeePerGas: '0' },
+                        high: { maxFeePerGas: '0', maxPriorityFeePerGas: '0' },
+                    },
+                },
+            ]);
+
+            const backend = await initBlockchain(coinInfo, () => {});
+            const feeLevels = new EthereumFeeLevels(coinInfo);
+
+            const levels = await feeLevels.load(backend, ETH_REQUEST);
+
+            // minFee for eth = 0.001 Gwei → 0.001 × 1e9 = 1 000 000 wei
+            // maxFeePerGas must be an integer wei string, never a decimal gwei string like "0.001"
+            levels.forEach(level => {
+                expect(Number(level.maxFeePerGas)).toBeGreaterThanOrEqual(1000000);
+                expect(level.maxFeePerGas).toMatch(/^\d+$/);
+            });
 
             backend.disconnect();
             spy.mockRestore();
@@ -101,7 +150,9 @@ describe('api/ethereum/Fees', () => {
             const backend = await initBlockchain(coinInfo, () => {});
             const feeLevels = new EthereumFeeLevels(coinInfo);
 
-            const [level] = await feeLevels.load(backend, ETH_REQUEST);
+            const levels = await feeLevels.load(backend, ETH_REQUEST);
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const [level]: [FeeLevel] = levels;
 
             // maxFee = 10 000 Gwei → 10 000 × 1e9 = 10 000 000 000 000 wei
             expect(level.feePerUnit).toBe('10000000000000');
@@ -127,9 +178,11 @@ describe('api/ethereum/Fees', () => {
         const smartLevels = await feeLevels.load(backend, ETH_REQUEST);
 
         expect(smartLevels).toHaveLength(1);
-        expect(smartLevels?.[0].label).toBe('normal');
-        expect(smartLevels?.[0].feePerUnit).toBe('5000000000');
-        expect(smartLevels?.[0].feeLimit).toBe('21000');
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const bscLevel: FeeLevel = smartLevels?.[0];
+        expect(bscLevel.label).toBe('normal');
+        expect(bscLevel.feePerUnit).toBe('5000000000');
+        expect(bscLevel.feeLimit).toBe('21000');
 
         backend.disconnect();
         spy.mockRestore();

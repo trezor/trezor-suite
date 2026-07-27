@@ -1,7 +1,7 @@
 {
     "__reason_for_this_file__": "pkg packs all the 'dependencies' but we wan't only some of them to be packed.",
     "name": "@trezor/transport-bridge",
-    "version": "3.2.0",
+    "version": "3.2.1",
     "license": "See LICENSE.md in repo root",
     "dependencies": {
         "@trezor/transport": "workspace:*",

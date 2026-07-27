@@ -1,8 +1,8 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 import { View } from 'react-native';
 
 import { useTranslate } from '@suite-native/intl';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { IconButton } from '../Button/IconButton';
 import { Text } from '../Text';
@@ -22,7 +22,7 @@ const sheetHeaderStyle = prepareNativeStyle<{ isCloseDisplayed: boolean }>(
         flexDirection: isCloseDisplayed ? 'row' : 'column',
         justifyContent: 'space-between',
         alignItems: isCloseDisplayed ? 'center' : 'flex-start',
-        paddingHorizontal: utils.spacings.sp24,
+        paddingHorizontal: utils.spacings.sp16,
         paddingBottom: utils.spacings.sp16,
     }),
 );
@@ -55,7 +55,7 @@ export const BottomSheetHeader = ({
                     <View style={applyStyle(titlesContainer, { isCloseDisplayed })}>
                         {title && <Text variant="headline-sm">{title}</Text>}
                         {subtitle && (
-                            <Text variant="body-xs" color="textSubdued">
+                            <Text variant="body-sm" color="contentSecondary">
                                 {subtitle}
                             </Text>
                         )}
@@ -64,7 +64,8 @@ export const BottomSheetHeader = ({
                         <IconButton
                             iconName="x"
                             onPress={onCloseSheet}
-                            colorScheme="tertiaryElevation0"
+                            intent="neutral"
+                            priority="secondary"
                             size="medium"
                             accessibilityRole="button"
                             accessibilityLabel={translate('generic.buttons.close')}

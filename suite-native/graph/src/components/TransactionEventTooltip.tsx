@@ -4,23 +4,22 @@ import { useSelector } from 'react-redux';
 
 import { N } from '@mobily/ts-belt';
 
-import { GroupedBalanceMovementEventPayload } from '@suite-common/graph';
-import { SignValue } from '@suite-common/suite-types';
+import { type GroupedBalanceMovementEventPayload } from '@suite-common/graph';
+import { type SignValue } from '@suite-common/suite-types';
 import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
-import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
+import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import { Box, Card, Text } from '@suite-native/atoms';
 import {
     CryptoAmountFormatter,
     SignValueFormatter,
     TokenAmountFormatter,
 } from '@suite-native/formatters';
-import { EventTooltipComponentProps } from '@suite-native/react-native-graph';
-import { TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { type EventTooltipComponentProps } from '@suite-native/react-native-graph';
+import { type TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { isNotNullOrUndefined } from '@trezor/utils';
 
-export type TransactionEventTooltipProps =
-    EventTooltipComponentProps<GroupedBalanceMovementEventPayload>;
+type TransactionEventTooltipProps = EventTooltipComponentProps<GroupedBalanceMovementEventPayload>;
 
 type EventTooltipRowProps = {
     title: string;
@@ -80,7 +79,7 @@ const TokenAmountTooltipFormatter = ({
     if (getNetworkType(symbol) === 'ethereum') {
         return (
             <TokenAmountFormatter
-                color="textDefault"
+                color="contentPrimary"
                 variant="body-xs"
                 value={value}
                 tokenSymbol={token.symbol}
@@ -102,14 +101,14 @@ const EventTooltipRow = ({
     accountKey,
 }: EventTooltipRowProps) => (
     <>
-        <Text variant="body-xs" color="textSubdued">
+        <Text variant="body-xs" color="contentSecondary">
             {title}
         </Text>
         <Box flexDirection="row">
             <SignValueFormatter value={signValue} variant="body-xs" />
             {!tokenAddress ? (
                 <CryptoAmountFormatter
-                    color="textDefault"
+                    color="contentPrimary"
                     variant="body-xs"
                     value={value}
                     symbol={symbol}

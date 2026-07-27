@@ -1,20 +1,20 @@
-import { PayloadAction, createSlice } from '@reduxjs/toolkit';
-import { Coins, CryptoId, InfoResponse, Platforms, type ProviderMetadata } from 'invity-api';
-
-import { AccountKey, PrecomposedTransactionFinal } from '@suite-common/wallet-types';
-import { CardanoOutput, FeeLevel, PROTO } from '@trezor/connect';
-
+import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
 import {
-    TradingPaymentMethodListProps,
-    TradingTransaction,
-    TradingType,
-    TradingVerifiedAddress,
-} from '../types';
-import { TradingBuyState, buyInitialState } from './buyReducer';
+    type Coins,
+    type CryptoId,
+    type InfoResponse,
+    type Platforms,
+    type ProviderMetadata,
+} from 'invity-api';
+
+import { type AccountKey, type PrecomposedTransactionFinal } from '@suite-common/wallet-types';
+import { type CardanoOutput, type FeeLevel, type PROTO } from '@trezor/connect';
+
+import { type TradingTransaction, type TradingType, type TradingVerifiedAddress } from '../types';
+import { type TradingBuyState, buyInitialState } from './buyReducer';
 import { TRADING_PREFIX } from '../constants';
-import { TradingExchangeState, exchangeInitialState } from './exchangeReducer';
-import { TradingSellState, sellInitialState } from './sellReducer';
-import { TradingSettingsState, settingsInitialState } from './settingsReducer';
+import { type TradingExchangeState, exchangeInitialState } from './exchangeReducer';
+import { type TradingSellState, sellInitialState } from './sellReducer';
 
 type TradingComposedTransactionInfoOutputs = {
     outputs?: PROTO.TxOutputType[] | CardanoOutput[];
@@ -38,12 +38,20 @@ export interface TradingComposedTransactionInfo {
 export interface TradingInfo {
     platforms?: Platforms;
     coins?: Coins;
-    paymentMethods: TradingPaymentMethodListProps[];
 }
 
 export interface TradingPrefilledFromAccount {
     cryptoId: CryptoId | undefined;
     key: AccountKey | undefined;
+}
+
+// Maximum number of refetch attempts before the interval automatically stops
+export const REFETCH_QUOTES_MAX_COUNT = 40;
+
+export interface QuoteRefetchingState {
+    remainingRefetches: number;
+    lastFetchTimestamp: number | undefined;
+    status: 'running' | 'stopped';
 }
 
 export interface TradingState {
@@ -60,9 +68,9 @@ export interface TradingState {
     activeSection: TradingType;
     prefilledFromAccount: TradingPrefilledFromAccount;
     verifiedAddress: TradingVerifiedAddress;
-    settings: TradingSettingsState;
     currentProviderMetadata?: ProviderMetadata;
-    favouriteAssets: Record<CryptoId, true>;
+    favouriteAssets: Partial<Record<string, true>>;
+    quoteRefetchingState: QuoteRefetchingState;
 }
 
 export type TradingRootState = {
@@ -75,7 +83,6 @@ export const initialState: TradingState = {
     info: {
         platforms: undefined,
         coins: undefined,
-        paymentMethods: [],
     },
     buy: buyInitialState,
     exchange: exchangeInitialState,
@@ -92,36 +99,47 @@ export const initialState: TradingState = {
         key: undefined,
     },
     verifiedAddress: undefined,
-    settings: settingsInitialState,
     favouriteAssets: {},
+    quoteRefetchingState: {
+        remainingRefetches: REFETCH_QUOTES_MAX_COUNT,
+        lastFetchTimestamp: undefined,
+        status: 'stopped',
+    },
 };
 
 const tradingCommonSlice = createSlice({
     name: TRADING_PREFIX,
     initialState,
     reducers: {
-        addTradeableAssetToFavourites: (state, { payload }: PayloadAction<CryptoId>) => {
+        addTradeableAssetToFavourites: (
+            state: TradingState,
+            { payload }: PayloadAction<CryptoId>,
+        ) => {
             if (!state.favouriteAssets) {
                 state.favouriteAssets = {};
             }
             state.favouriteAssets[payload] = true;
         },
-        removeTradeableAssetFromFavourites: (state, { payload }: PayloadAction<CryptoId>) => {
+        removeTradeableAssetFromFavourites: (
+            state: TradingState,
+            { payload }: PayloadAction<CryptoId>,
+        ) => {
             if (state.favouriteAssets) {
                 delete state.favouriteAssets[payload];
             }
         },
-        saveInfo(state, action: PayloadAction<InfoResponse>) {
+        saveInfo(state: TradingState, action: PayloadAction<InfoResponse>) {
             state.info.coins = action.payload.coins;
             state.info.platforms = action.payload.platforms;
         },
-        savePaymentMethods(state, action: PayloadAction<TradingPaymentMethodListProps[]>) {
-            state.info.paymentMethods = action.payload;
-        },
-        saveComposedTransactionInfo(state, action: PayloadAction<TradingComposedTransactionInfo>) {
+        saveComposedTransactionInfo(
+            state: TradingState,
+            action: PayloadAction<TradingComposedTransactionInfo>,
+        ) {
             state.composedTransactionInfo = action.payload;
         },
-        saveTrade(state, action: PayloadAction<TradingTransaction>) {
+
+        saveTrade(state: TradingState, action: PayloadAction<TradingTransaction>) {
             if (action.payload.key) {
                 const trades = state.trades.filter(t => t.key !== action.payload.key);
                 trades.push(action.payload);
@@ -129,24 +147,24 @@ const tradingCommonSlice = createSlice({
                 state.trades = trades;
             }
         },
-        setModalCryptoCurrency(state, action: PayloadAction<CryptoId | undefined>) {
+        setModalCryptoCurrency(state: TradingState, action: PayloadAction<CryptoId | undefined>) {
             state.modalCryptoId = action.payload;
         },
-        setModalAccountKey(state, action: PayloadAction<AccountKey | undefined>) {
+        setModalAccountKey(state: TradingState, action: PayloadAction<AccountKey | undefined>) {
             state.modalAccountKey = action.payload;
         },
         setLoading(
-            state,
+            state: TradingState,
             action: PayloadAction<{ isLoading: boolean; lastLoadedTimestamp?: number }>,
         ) {
             state.isLoading = action.payload.isLoading;
             state.lastLoadedTimestamp = action.payload.lastLoadedTimestamp ?? 0;
         },
-        setTradingActiveSection(state, action: PayloadAction<TradingType>) {
+        setTradingActiveSection(state: TradingState, action: PayloadAction<TradingType>) {
             state.activeSection = action.payload;
         },
         setTradingFromPrefilledAccount(
-            state,
+            state: TradingState,
             action: PayloadAction<{
                 cryptoId: CryptoId | undefined;
                 key: AccountKey | undefined;
@@ -155,14 +173,28 @@ const tradingCommonSlice = createSlice({
             state.prefilledFromAccount.cryptoId = action.payload.cryptoId;
             state.prefilledFromAccount.key = action.payload.key;
         },
-        setVerifiedAddress(state, action: PayloadAction<TradingVerifiedAddress>) {
+        setVerifiedAddress(state: TradingState, action: PayloadAction<TradingVerifiedAddress>) {
             state.verifiedAddress = action.payload;
         },
         setCurrentProviderMetadata: (
-            state,
+            state: TradingState,
             { payload }: PayloadAction<ProviderMetadata | undefined>,
         ) => {
             state.currentProviderMetadata = payload;
+        },
+        stopRefetchQuotes: (state: TradingState) => {
+            state.quoteRefetchingState.status = 'stopped';
+            state.quoteRefetchingState.remainingRefetches = REFETCH_QUOTES_MAX_COUNT;
+            state.quoteRefetchingState.lastFetchTimestamp = undefined;
+        },
+        setRefetchQuotesTimestamp: (
+            state: TradingState,
+            { payload }: PayloadAction<QuoteRefetchingState['lastFetchTimestamp']>,
+        ) => {
+            state.quoteRefetchingState.remainingRefetches -= 1;
+            state.quoteRefetchingState.status =
+                state.quoteRefetchingState.remainingRefetches <= 0 ? 'stopped' : 'running';
+            state.quoteRefetchingState.lastFetchTimestamp = payload;
         },
     },
 });

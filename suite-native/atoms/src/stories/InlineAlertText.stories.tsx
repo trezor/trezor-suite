@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from '@storybook/react-native';
 import {
     INLINE_ALERT_TEXT_VARIANTS,
     InlineAlertText as InlineAlertTextComponent,
-    InlineAlertTextProps,
+    type InlineAlertTextProps,
 } from '../InlineAlertText';
 
 type InlineAlertTextStory = StoryObj<InlineAlertTextProps>;

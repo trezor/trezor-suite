@@ -1,15 +1,21 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/SignTransaction.js
 
+import type {
+    AccountAddresses,
+    BitcoinNetworkInfo,
+    PROTO,
+    PermissionRequest,
+    RefTransaction,
+    TransactionOptions,
+} from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { promiseAllSequence } from '@trezor/utils/src/promiseAllSequence';
 
-import { PROTO } from '../constants';
 import {
     createPendingTransaction,
     deriveOutputScript,
     enhanceSignTx,
-    enhanceTrezorInputs,
     getOrigTransactions,
     getReferencedTransactions,
     parseTransactionHexes,
@@ -23,14 +29,15 @@ import {
     validateTrezorOutputs,
     verifyTx,
 } from './bitcoin';
-import { Blockchain, initBlockchain, isBackendSupported } from '../backend/BlockchainLink';
-import { AbstractMethod, MethodPermission } from '../core/AbstractMethod';
-import type { AccountAddresses, BitcoinNetworkInfo } from '../types';
-import { getFirmwareRange, validateParams } from './common/paramsValidator';
+import type { Blockchain } from '../backend/BlockchainLink';
+import { assertBackendSupported, initBlockchain } from '../backend/BlockchainLink';
+import type { MethodContext, MethodMessage } from '../core/AbstractMethod';
+import { AbstractMethod } from '../core/AbstractMethod';
 import { getBitcoinNetwork } from '../data/coinInfo';
-import type { RefTransaction, TransactionOptions } from '../types/api/bitcoin';
 import { getLabel } from '../utils/pathUtils';
+import { PAYMENT_REQUEST_AMOUNT_BYTES, encodePaymentRequestAmount } from '../utils/paymentRequest';
 import { getTransactionVbytes } from './bitcoin/transactionBytes';
+import { validateParams } from './common/paramsValidator';
 
 type Params = {
     inputs: PROTO.TxInputType[];
@@ -47,17 +54,8 @@ type Params = {
 };
 
 export default class SignTransaction extends AbstractMethod<'signTransaction', Params> {
-    get requiredPermissions(): MethodPermission[] {
-        const permissions: MethodPermission[] = ['read', 'write'];
-        if (this.params.push) {
-            permissions.push('push_tx');
-        }
-
-        return permissions;
-    }
-
-    init() {
-        const { payload } = this;
+    constructor(message: MethodMessage<'signTransaction'>) {
+        const { payload } = message;
 
         // validate incoming parameters
         validateParams(payload, [
@@ -95,9 +93,6 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
         if (!coinInfo) {
             throw ERRORS.TypedError('Method_UnknownCoin');
         }
-        // set required firmware from coinInfo support
-        this.firmwareRange = getFirmwareRange(this.name, coinInfo, this.firmwareRange);
-        this.preauthorized = payload.preauthorized;
 
         const inputs = validateTrezorInputs(payload.inputs, coinInfo);
         const outputs = validateTrezorOutputs(payload.outputs, coinInfo);
@@ -144,63 +139,71 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
             }
         }
         const paymentRequests =
-            payload.paymentRequests?.map(p => {
-                if (typeof p.amount === 'number') {
-                    // convert to 64bit little-endian
-                    const buffer = Buffer.allocUnsafe(8);
-                    buffer.writeBigInt64LE(BigInt(p.amount), 0);
+            payload.paymentRequests?.map(p =>
+                encodePaymentRequestAmount(p, PAYMENT_REQUEST_AMOUNT_BYTES.DEFAULT),
+            ) ?? [];
 
-                    return {
-                        ...p,
-                        amount: buffer.toString('hex'),
-                    };
-                }
-
-                return { ...p, amount: p.amount };
-            }) ?? [];
-
-        this.params = {
+        const params = {
             inputs,
             outputs,
             paymentRequests,
             refTxs,
             addresses: payload.account ? payload.account.addresses : undefined,
-            options: {
-                lock_time: payload.locktime,
-                timestamp: payload.timestamp,
-                version: payload.version,
-                expiry: payload.expiry,
-                overwintered: payload.overwintered,
-                version_group_id: payload.versionGroupId,
-                branch_id: payload.branchId,
-                amount_unit: payload.amountUnit,
-                serialize: payload.serialize,
-                coinjoin_request: payload.coinjoinRequest,
-                chunkify: typeof payload.chunkify === 'boolean' ? payload.chunkify : false,
-            },
+            options: enhanceSignTx(
+                {
+                    lock_time: payload.locktime,
+                    timestamp: payload.timestamp,
+                    version: payload.version,
+                    expiry: payload.expiry,
+                    overwintered: payload.overwintered,
+                    version_group_id: payload.versionGroupId,
+                    branch_id: payload.branchId,
+                    amount_unit: payload.amountUnit,
+                    serialize: payload.serialize,
+                    coinjoin_request: payload.coinjoinRequest,
+                    chunkify: typeof payload.chunkify === 'boolean' ? payload.chunkify : false,
+                },
+                coinInfo,
+            ),
             coinInfo,
             identity: payload.identity,
             push: typeof payload.push === 'boolean' ? payload.push : false,
             unlockPath: payload.unlockPath,
         };
 
-        this.params.options = enhanceSignTx(this.params.options, coinInfo);
+        super(message, params);
+
+        this.requiredFirmwareCoins = [coinInfo];
+        this.preauthorized = payload.preauthorized;
+    }
+
+    get requiredPermissions(): PermissionRequest[] {
+        const permissions: PermissionRequest[] = [this.coinPerm('sign', this.params.coinInfo)];
+        if (this.params.push) {
+            permissions.push(this.coinPerm('push_tx', this.params.coinInfo));
+        }
+
+        return permissions;
     }
 
     get info() {
-        const coinInfo = getBitcoinNetwork(this.payload.coin);
-
-        return getLabel('Sign #NETWORK transaction', coinInfo);
+        return getLabel('Sign #NETWORK transaction', this.params.coinInfo);
     }
 
-    async payloadToPrecomposed() {
+    payloadToPrecomposed() {
         try {
             const { inputs, outputs, coinInfo } = this.params;
-            const refTxs = this.params.refTxs ?? (await this.fetchRefTxs(false));
+            const { refTxs } = this.params;
             const inputsTotal: BigNumber = inputs.reduce((bn, input) => {
                 if (typeof input.amount === 'string') {
                     return bn.plus(input.amount);
                 } else {
+                    if (!refTxs) {
+                        throw ERRORS.TypedError(
+                            'Runtime',
+                            'refTxs are required for precomposed transaction info when input amount is not provided',
+                        );
+                    }
                     const refTx = refTxs.find(tx => tx.hash === input.prev_hash);
                     const refOutput =
                         refTx?.outputs?.[input.prev_index] ??
@@ -222,7 +225,7 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
             }
             const feePerByte = fee.dividedBy(bytes);
 
-            return {
+            const result = {
                 type: 'final' as const,
                 inputs,
                 outputs,
@@ -232,23 +235,25 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
                 feePerByte: feePerByte.toString(),
                 bytes,
             };
+
+            return Promise.resolve(result);
         } catch (e) {
             // Don't throw errors from this method
             console.error('Error in payloadToPrecomposed', e);
 
-            return undefined;
+            return Promise.resolve(undefined);
         }
     }
 
     private async fetchAddresses(blockchain: Blockchain) {
+        const device = this.getDevice();
         const {
-            device,
             params: { inputs, coinInfo },
         } = this;
 
         // TODO: validate inputs address_n's === same account
         const accountPath = inputs.find(i => i.address_n);
-        if (!accountPath || !accountPath.address_n) {
+        if (!accountPath?.address_n) {
             throw ERRORS.TypedError('Runtime', 'Account not found');
         }
         const address_n = accountPath.address_n.slice(0, 3);
@@ -261,7 +266,10 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
         return account.addresses;
     }
 
-    private async fetchRefTxs(useLegacySignProcess: boolean) {
+    private async fetchRefTxs(
+        sendCoreMessage: MethodContext['sendCoreMessage'],
+        useLegacySignProcess: boolean,
+    ) {
         const {
             params: { inputs, outputs, options, coinInfo, identity, addresses },
         } = this;
@@ -275,19 +283,15 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
         }
 
         // validate and initialize backend
-        isBackendSupported(coinInfo);
-        const blockchain = await initBlockchain(coinInfo, this.postMessage, identity);
+        assertBackendSupported(coinInfo);
+        const blockchain = await initBlockchain(coinInfo, sendCoreMessage, identity);
 
         const refTxs = !refTxsIds.length
             ? []
             : await blockchain
                   .getTransactionHexes(refTxsIds)
                   .then(parseTransactionHexes(coinInfo.network))
-                  .then(rawTxs => {
-                      enhanceTrezorInputs(this.params.inputs, rawTxs);
-
-                      return transformReferencedTransactions(rawTxs);
-                  });
+                  .then(rawTxs => transformReferencedTransactions(rawTxs));
 
         const origTxs = !origTxsIds.length
             ? []
@@ -310,11 +314,13 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
         return refTxs.concat(origTxs);
     }
 
-    async run() {
-        const { device, params } = this;
+    async run({ sendCoreMessage }: MethodContext) {
+        const device = this.getDevice();
+        const { params } = this;
         const { inputs, outputs, coinInfo } = params;
         const useLegacySignProcess = !!device.unavailableCapabilities.replaceTransaction;
-        const refTxs = params.refTxs ?? (await this.fetchRefTxs(useLegacySignProcess));
+        const refTxs =
+            params.refTxs ?? (await this.fetchRefTxs(sendCoreMessage, useLegacySignProcess));
 
         let outputScripts: Awaited<ReturnType<typeof deriveOutputScript>>[] = [];
         if (params.options.serialize !== false) {
@@ -337,11 +343,14 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
         }
 
         const signTxMethod = !useLegacySignProcess ? signTx : signTxLegacy;
+
+        device.startPiggybackAck();
         const response = await signTxMethod({
             ...params,
             refTxs,
             typedCall: device.getCommands().typedCall,
         });
+        await device.stopPiggybackAck();
 
         // return only signatures, using option `serialize: false`
         if (!response.serializedTx) {
@@ -370,8 +379,8 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
 
         if (params.push) {
             // validate backend
-            isBackendSupported(coinInfo);
-            const blockchain = await initBlockchain(coinInfo, this.postMessage, params.identity);
+            assertBackendSupported(coinInfo);
+            const blockchain = await initBlockchain(coinInfo, sendCoreMessage, params.identity);
             const txid = await blockchain.pushTransaction(response.serializedTx);
 
             return {

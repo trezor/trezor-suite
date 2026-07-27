@@ -6,6 +6,9 @@ import {
     getAmountLimitContext,
 } from '../general/validationSchemes';
 
+export const CRYPTO_MAX_FORM_TYPE = 'crypto-max';
+export const CRYPTO_MIN_FORM_TYPE = 'crypto-min';
+
 export const buyFormValidationSchema = yup.object({
     cryptoValue: yup
         .number()
@@ -13,7 +16,7 @@ export const buyFormValidationSchema = yup.object({
         // but let's keep it here just to be safe
         .typeError('Invalid number')
         .min(0, 'Invalid value')
-        .test('crypto-min', (value, testContext) => {
+        .test(CRYPTO_MIN_FORM_TYPE, (value, testContext) => {
             const {
                 currency,
                 minCrypto,
@@ -37,7 +40,7 @@ export const buyFormValidationSchema = yup.object({
                 }),
             });
         })
-        .test('crypto-max', (value, testContext) => {
+        .test(CRYPTO_MAX_FORM_TYPE, (value, testContext) => {
             const {
                 currency,
                 maxCrypto,

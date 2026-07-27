@@ -1,6 +1,6 @@
 const { TX_CACHE } = global.TestUtils;
 
-export default {
+const signTransactionReplace: TestCase = {
     method: 'signTransaction',
     setup: {
         mnemonic: 'mnemonic_all',
@@ -9,7 +9,7 @@ export default {
         {
             description: 'Bitcoin (RBF): P2PKH bump fee',
             params: {
-                coin: 'Bitcoin',
+                coin: 'btc',
                 inputs: [
                     {
                         address_n: "m/44'/0'/0'/0/4",
@@ -50,7 +50,7 @@ export default {
         {
             description: 'Testnet (RBF): P2PKH in P2SH, remove change',
             params: {
-                coin: 'Testnet',
+                coin: 'test',
                 inputs: [
                     {
                         address_n: "m/49'/1'/0'/0/4",
@@ -95,7 +95,7 @@ export default {
         {
             description: 'Testnet (RBF): Bech32/P2WPKH finalize',
             params: {
-                coin: 'Testnet',
+                coin: 'test',
                 inputs: [
                     {
                         address_n: "m/84'/1'/0'/0/2",
@@ -112,10 +112,9 @@ export default {
                 ],
                 outputs: [
                     {
-                        // NOTE: address_n should be correctly used instead of address (issue #10474)
                         address: 'tb1qkvwu9g3k2pdxewfqr7syz89r3gj557l3uuf9r9',
                         amount: '100000',
-                        script_type: 'PAYTOWITNESS',
+                        script_type: 'PAYTOADDRESS',
                         orig_hash:
                             '70f9871eb03a38405cfd7a01e0e1448678132d815e2c9f552ad83ae23969509e',
                         orig_index: 0,
@@ -141,7 +140,7 @@ export default {
             skip: ['1'], // disable this for T1B1. Failure_DataError: messages.c:224:missing required field
             description: 'Testnet (RBF): Meld transactions',
             params: {
-                coin: 'Testnet',
+                coin: 'test',
                 inputs: [
                     {
                         address_n: "m/49'/1'/0'/0/4",
@@ -189,10 +188,10 @@ export default {
                     },
                 ],
                 outputs: [
-                    // NOTE: script_type should not be undefined (issue #10474)
                     {
                         address: 'moE1dVYvebvtaMuNdXQKvu4UxUftLmS1Gt',
                         amount: '100000000',
+                        script_type: 'PAYTOADDRESS',
                         orig_hash:
                             'ed89acb52cfa438e3653007478e7c7feae89fdde12867943eec91293139730d1',
                         orig_index: 1,
@@ -200,6 +199,7 @@ export default {
                     {
                         address: '2MvUUSiQZDSqyeSdofKX9KrSCio1nANPDTe',
                         amount: '1000000',
+                        script_type: 'PAYTOADDRESS',
                         orig_hash:
                             '334cd7ad982b3b15d07dd1c84e939e95efb0803071648048a7f289492e7b4c8a',
                         orig_index: 0,
@@ -221,7 +221,7 @@ export default {
         {
             description: 'Testnet (RBF): with OP_RETURN output',
             params: {
-                coin: 'Testnet',
+                coin: 'test',
                 inputs: [
                     {
                         address_n: "m/84'/1'/1'/0/14",
@@ -265,7 +265,7 @@ export default {
         {
             description: 'Testnet (RBF): add new utxo and change output',
             params: {
-                coin: 'Testnet',
+                coin: 'test',
                 inputs: [
                     {
                         address_n: "m/84'/1'/0'/0/65",
@@ -316,7 +316,7 @@ export default {
         {
             description: 'Testnet (RBF): decrease output',
             params: {
-                coin: 'Testnet',
+                coin: 'test',
                 inputs: [
                     {
                         address_n: "m/49'/1'/0'/0/4",
@@ -362,7 +362,7 @@ export default {
             description: 'Testnet (RBF): Taproot',
             skip: ['<1.10.4', '<2.4.3'],
             params: {
-                coin: 'Testnet',
+                coin: 'test',
                 inputs: [
                     {
                         address_n: "m/86'/1'/0'/1/0",
@@ -394,4 +394,6 @@ export default {
             },
         },
     ],
-} satisfies TestCase;
+};
+
+export default signTransactionReplace;

@@ -1,13 +1,12 @@
-import { useState } from 'react';
+import { type ReactNode, useState } from 'react';
 
-import { ExtendedMessageDescriptor, Translation } from '@suite/intl';
-import { UserContextPayload } from '@suite-common/suite-types';
+import { Translation } from '@suite/intl';
+import { type UserContextPayload } from '@suite-common/suite-types';
 import { networksCollection } from '@suite-common/wallet-config';
 import { parseCSV } from '@suite-common/wallet-utils';
 import { Card, CollapsibleBox, Column, Modal, Tabs, Text, Textarea } from '@trezor/components';
-import { spacings } from '@trezor/theme';
-
-import { DropZone } from 'src/components/suite/DropZone';
+import { FileCsvIcon } from '@trezor/icons';
+import { DropZone } from '@trezor/product-components';
 
 import { DelimiterForm } from './DelimiterForm';
 import { useExampleCSV } from './useExampleCSV';
@@ -40,18 +39,20 @@ export const ImportTransactionModal = ({ onCancel, decision }: ImportTransaction
         onCancel();
     };
 
-    const onCsvSelect = (file: File, setError: (msg: ExtendedMessageDescriptor) => void) => {
+    const onCsvSelect = (file: File, setError: (msg: ReactNode) => void) => {
         const reader = new FileReader();
 
         reader.onload = () => {
             if (typeof reader.result !== 'string' || !reader.result.length) {
-                setError({ id: 'TR_DROPZONE_ERROR_EMPTY' });
+                setError(<Translation id="TR_DROPZONE_ERROR_EMPTY" />);
             } else {
                 setContent(reader.result);
             }
         };
         reader.onerror = () => {
-            setError({ id: 'TR_DROPZONE_ERROR', values: { error: reader.error!.message } });
+            setError(
+                <Translation id="TR_DROPZONE_ERROR" values={{ error: reader.error!.message }} />,
+            );
             reader.abort();
         };
         reader.readAsText(file);
@@ -72,7 +73,7 @@ export const ImportTransactionModal = ({ onCancel, decision }: ImportTransaction
             }
             width={600}
         >
-            <Column gap={spacings.md}>
+            <Column gap={16}>
                 <CollapsibleBox
                     heading={<Translation id="TR_IMPORT_CSV_MODAL_SHOW_EXAMPLE" />}
                     hasDivider={false}
@@ -84,7 +85,7 @@ export const ImportTransactionModal = ({ onCancel, decision }: ImportTransaction
                     </Card>
                 </CollapsibleBox>
                 <Card>
-                    <Column gap={spacings.lg}>
+                    <Column gap={20}>
                         <Tabs activeItemId={mode}>
                             <Tabs.Item id="upload" onClick={() => setMode('upload')}>
                                 <Translation id="TR_IMPORT_CSV_FROM_FILE" />
@@ -96,7 +97,10 @@ export const ImportTransactionModal = ({ onCancel, decision }: ImportTransaction
                         {mode === 'upload' ? (
                             <DropZone
                                 accept=".csv,.txt,text/csv"
-                                iconName="fileCsv"
+                                icon={FileCsvIcon}
+                                emptyLabel={<Translation id="TR_DROPZONE" />}
+                                emptyError={<Translation id="TR_DROPZONE_ERROR_EMPTY" />}
+                                fileTypeError={<Translation id="TR_DROPZONE_ERROR_FILETYPE" />}
                                 onSelect={onCsvSelect}
                             />
                         ) : (

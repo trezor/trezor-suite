@@ -1,20 +1,20 @@
 import { useState } from 'react';
 
-import { Translation, TranslationKey } from '@suite/intl';
+import { LearnMoreButton } from '@suite/external-links';
+import { Translation, type TranslationKey } from '@suite/intl';
 import { selectDeviceModel } from '@suite-common/device';
-import { TrezorDevice } from '@suite-common/suite-types';
+import { type TrezorDevice } from '@suite-common/suite-types';
+import { selectDiscoveryByDevicePath } from '@suite-common/wallet-core';
 import { Card, Collapsible, Column, H3, H4, Icon, Paragraph, Row, Text } from '@trezor/components';
-import { spacings } from '@trezor/theme';
+import { HashIcon, LightbulbIcon, PasswordIcon, WarningIcon } from '@trezor/icons';
 import { HELP_CENTER_PASSPHRASE_URL } from '@trezor/urls';
 import { getNonAsciiChars } from '@trezor/utils';
 
-import { LearnMoreButton } from 'src/components/suite/LearnMoreButton';
-import { TrezorLink } from 'src/components/suite/TrezorLink';
+import { useSelector } from 'src/hooks/suite';
+import { CardWithDevice } from 'src/views/suite/SwitchDevice/CardWithDevice';
+import { SwitchDeviceModal } from 'src/views/suite/SwitchDevice/SwitchDeviceModal';
 
 import { PassphraseInputCard } from './PassphraseInputCard';
-import { useSelector } from '../../../../../hooks/suite';
-import { CardWithDevice } from '../../../../../views/suite/SwitchDevice/CardWithDevice';
-import { SwitchDeviceModal } from '../../../../../views/suite/SwitchDevice/SwitchDeviceModal';
 
 type EnterPassphraseProps = {
     offerPassphraseOnDevice: boolean;
@@ -37,13 +37,20 @@ export const EnterPassphrase = ({
 }: EnterPassphraseProps) => {
     const [value, setValue] = useState('');
     const deviceModel = useSelector(selectDeviceModel);
+    const discovery = useSelector(state => selectDiscoveryByDevicePath(state, device.path));
     const isUsingNonAsciiCharacters = getNonAsciiChars(value) !== null;
+
+    // Scoped add-wallet flow: REQUEST_PASSPHRASE is kept out of the global modal, so the device's
+    // readiness for the passphrase comes from discovery.status.
+    const isDeviceLoading = !(
+        discovery?.status === 'enter-passphrase' || discovery?.status === 'confirm-empty-passphrase'
+    );
 
     return (
         <SwitchDeviceModal onCancel={onCancel}>
             <CardWithDevice onCancel={onCancel} device={device} onBackButtonClick={onBack}>
-                <Column gap={spacings.xl}>
-                    <Column gap={spacings.md} padding={{ horizontal: spacings.xs }}>
+                <Column gap={24}>
+                    <Column gap={16} padding={{ horizontal: 8 }}>
                         <H3>
                             {isExistingWallet ? (
                                 <Translation id="TR_PASSPHRASE_OPEN_USED_HEADING" />
@@ -51,40 +58,21 @@ export const EnterPassphrase = ({
                                 <Translation id="TR_PASSPHRASE_CREATE_NEW_HEADING" />
                             )}
                         </H3>
-                        <Column gap={spacings.sm}>
+                        <Column gap={12}>
                             {isExistingWallet ? (
-                                <>
-                                    <Row gap={spacings.sm}>
-                                        <Icon intent="info" name="warningCircle" size={16} />
-                                        <Paragraph intent="info" typographyStyle="body-sm-strong">
-                                            <Translation
-                                                id="TR_PASSPHRASE_DESCRIPTION_ITEM1"
-                                                values={{
-                                                    a: text => (
-                                                        <TrezorLink
-                                                            href={HELP_CENTER_PASSPHRASE_URL}
-                                                        >
-                                                            {text}
-                                                        </TrezorLink>
-                                                    ),
-                                                }}
-                                            />
-                                        </Paragraph>
-                                    </Row>
-                                    <Row gap={spacings.sm}>
-                                        <Icon name="warning" size={16} />
-                                        <Paragraph
-                                            intent="neutral"
-                                            priority="secondary"
-                                            typographyStyle="body-sm"
-                                        >
-                                            <Translation id="TR_PASSPHRASE_DESCRIPTION_ITEM3" />
-                                        </Paragraph>
-                                    </Row>
-                                </>
+                                <Row gap={12}>
+                                    <Icon as={WarningIcon} size={16} />
+                                    <Paragraph
+                                        intent="neutral"
+                                        priority="secondary"
+                                        typographyStyle="body-sm"
+                                    >
+                                        <Translation id="TR_PASSPHRASE_DESCRIPTION_ITEM3" />
+                                    </Paragraph>
+                                </Row>
                             ) : (
-                                <Row gap={spacings.sm}>
-                                    <Icon name="password" size={16} />
+                                <Row gap={12}>
+                                    <Icon as={PasswordIcon} size={16} />
                                     <Paragraph
                                         intent="neutral"
                                         priority="secondary"
@@ -95,12 +83,12 @@ export const EnterPassphrase = ({
                                 </Row>
                             )}
                             <Collapsible
-                                gap={spacings.sm}
+                                gap={12}
                                 isOpen={isUsingNonAsciiCharacters ? true : undefined}
                             >
                                 <Collapsible.Toggle>
-                                    <Row gap={spacings.sm}>
-                                        <Icon name="hash" size={16} />
+                                    <Row gap={12}>
+                                        <Icon as={HashIcon} size={16} />
                                         <Paragraph
                                             intent="neutral"
                                             priority="secondary"
@@ -123,10 +111,10 @@ export const EnterPassphrase = ({
                                 </Collapsible.Toggle>
                                 <Collapsible.Content>
                                     <Card
-                                        fillType="flat"
+                                        type="contrast"
                                         paddingType="tiny"
                                         footer={
-                                            <Row gap={spacings.sm} justifyContent="space-between">
+                                            <Row gap={12} justifyContent="space-between">
                                                 <Paragraph
                                                     typographyStyle="body-xs"
                                                     intent="neutral"
@@ -152,10 +140,10 @@ export const EnterPassphrase = ({
                                 </Collapsible.Content>
                             </Collapsible>
                             {!isExistingWallet && (
-                                <Collapsible gap={spacings.sm}>
+                                <Collapsible gap={12}>
                                     <Collapsible.Toggle>
-                                        <Row gap={spacings.sm}>
-                                            <Icon name="lightbulb" size={16} />
+                                        <Row gap={12}>
+                                            <Icon as={LightbulbIcon} size={16} />
                                             <Paragraph
                                                 intent="neutral"
                                                 priority="secondary"
@@ -168,9 +156,9 @@ export const EnterPassphrase = ({
                                         </Row>
                                     </Collapsible.Toggle>
                                     <Collapsible.Content>
-                                        <Column gap={spacings.sm}>
+                                        <Column gap={12}>
                                             {[1, 2, 3].map(item => (
-                                                <Card fillType="flat" paddingType="tiny" key={item}>
+                                                <Card type="contrast" paddingType="tiny" key={item}>
                                                     <H4
                                                         typographyStyle="body-sm-strong"
                                                         intent="brand"
@@ -197,6 +185,7 @@ export const EnterPassphrase = ({
                         </Column>
                     </Column>
                     <PassphraseInputCard
+                        isDeviceLoading={isDeviceLoading}
                         deviceModel={deviceModel ?? undefined}
                         isLoading={submitting}
                         onSubmit={onSubmit}

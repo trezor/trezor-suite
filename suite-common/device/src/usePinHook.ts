@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { ButtonRequest } from '@suite-common/suite-types';
+import { type ButtonRequest } from '@suite-common/suite-types';
 import TrezorConnect, { UI_REQUEST, UI_RESPONSE } from '@trezor/connect';
 
 const NEW_PIN_REQUEST_TYPES = ['PinMatrixRequestType_NewFirst', 'PinMatrixRequestType_NewSecond'];
@@ -9,7 +9,7 @@ const NEW_WIPE_CODE_REQUEST_TYPES = [
     'PinMatrixRequestType_WipeCodeSecond',
 ];
 
-export const usePin = (buttonRequests: ButtonRequest[]) => {
+export const usePin = (buttonRequests: ButtonRequest[], requestId?: string) => {
     const [pin, setPin] = useState('');
     const [submitted, setSubmitted] = useState(false);
 
@@ -21,12 +21,12 @@ export const usePin = (buttonRequests: ButtonRequest[]) => {
 
     const cancel = () =>
         isSettingNewWipeCode
-            ? TrezorConnect.cancel('wipe-cancelled')
-            : TrezorConnect.cancel('pin-cancelled');
+            ? TrezorConnect.cancel({ reason: 'wipe-cancelled' })
+            : TrezorConnect.cancel({ reason: 'pin-cancelled' });
 
     const handlePinSubmit = () => {
         setSubmitted(true);
-        TrezorConnect.uiResponse({ type: UI_RESPONSE.RECEIVE_PIN, payload: pin });
+        TrezorConnect.uiResponse({ type: UI_RESPONSE.RECEIVE_PIN, payload: pin, requestId });
         setPin('');
     };
 

@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
+import { TrafficLightOffset } from '@suite/macos';
 import {
     CALL_SOURCE_WALLETCONNECT,
     connectPopupActions,
@@ -8,12 +9,11 @@ import {
 } from '@suite-common/connect-popup';
 import { selectSelectedDevice } from '@suite-common/device';
 import { Box, Icon, Row, Text } from '@trezor/components';
-import { borders, spacings } from '@trezor/theme';
+import { CaretCircleDownIcon, PlugsIcon, WalletConnectIcon } from '@trezor/icons';
 
 import { DeviceStatus } from 'src/components/suite/layouts/SuiteLayout/DeviceSelector/DeviceStatus';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
-import { TrafficLightOffset } from './TrafficLightOffset';
 import { SuiteBanners } from './banners';
 
 export const ConnectBarWrapper = styled.div`
@@ -46,18 +46,19 @@ export const ConnectAppBar = ({ canSwitchDevice }: ConnectAppBarProps) => {
     return (
         <ConnectBarWrapper>
             <Box
-                backgroundColor="backgroundSurfaceElevation0"
+                backgroundColor="surfaceFillPage"
                 padding={{
-                    horizontal: spacings.xl,
-                    vertical: spacings.md,
+                    horizontal: 24,
+                    vertical: 16,
                 }}
-                borderWidth={{ bottom: borders.widths.large }}
+                borderWidth={{ bottom: 2 }}
+                borderColor="elementBorderNeutralSofter"
             >
                 <TrafficLightOffset>
-                    <Row gap={spacings.sm} alignItems="center" justifyContent="space-between">
+                    <Row gap={12} alignItems="center" justifyContent="space-between">
                         {device?.features?.internal_model && (
                             <Row
-                                gap={spacings.lg}
+                                gap={20}
                                 alignItems="center"
                                 onClick={onSelectDevice}
                                 cursor={canSwitchDevice && !isWalletConnect ? 'pointer' : 'default'}
@@ -67,14 +68,14 @@ export const ConnectAppBar = ({ canSwitchDevice }: ConnectAppBarProps) => {
                                     device={device}
                                 />
                                 {canSwitchDevice && !isWalletConnect && (
-                                    <Icon size={20} name="caretCircleDown" />
+                                    <Icon size={20} as={CaretCircleDownIcon} />
                                 )}
                             </Row>
                         )}
                         {connectPopupCall.state !== 'error' && (
-                            <Row gap={spacings.xs} alignItems="center">
+                            <Row gap={8} alignItems="center">
                                 <Icon
-                                    name={isWalletConnect ? 'walletConnect' : 'plugs'}
+                                    as={isWalletConnect ? WalletConnectIcon : PlugsIcon}
                                     intent="neutral"
                                     priority="secondary"
                                 />

@@ -5,8 +5,10 @@ const abcAddr = 'bc1qpyfvfvm52zx7gek86ajj5pkkne3h385ada8r2y';
 
 test.describe('Passphrase reconnection', { tag: ['@T3W1', '@T3T1'] }, () => {
     test.use({ deviceSetup: { mnemonic: 'mnemonic_all', passphrase_protection: true } });
-    test.beforeEach(async ({ onboardingPage }) => {
+
+    test.beforeEach(async ({ onboardingPage, settingsPage }) => {
         await onboardingPage.completeOnboarding();
+        await settingsPage.changeNetworks({ enableNetworks: ['btc'] });
     });
 
     test('after device is reconnected passphrase needs to be confirmed', async ({
@@ -51,9 +53,7 @@ test.describe('Passphrase reconnection', { tag: ['@T3W1', '@T3T1'] }, () => {
             await dashboardPage.deviceSwitchingOpenButton.click();
             // Clicking on the device switcher button should either open the modal or show the "Unavailable while loading" message
             await Promise.race([
-                // eslint-disable-next-line playwright/missing-playwright-await
                 expect(dashboardPage.deviceSwitcherModal).toBeVisible(),
-                // eslint-disable-next-line playwright/missing-playwright-await
                 expect(page.getByText('Unavailable while loading')).toBeVisible(),
             ]);
             const deviceSwitchUnavailable = page.getByText('Unavailable while loading').isVisible();
@@ -74,8 +74,8 @@ test.describe('Passphrase reconnection', { tag: ['@T3W1', '@T3T1'] }, () => {
         await test.step('Displaying receive address should prompt for passphrase', async () => {
             await dashboardPage.walletAtIndex(1).click();
             await walletPage.receiveButton.click();
-            await expect(walletPage.usedAddress(0)).toBeHidden();
-            await walletPage.revealAddressButton.click();
+            await expect(walletPage.usedAddress(0)).toBeVisible();
+            await walletPage.usedAddressRevealButton(0).click();
             await expect(page.getByText('Confirm passphrase')).toBeVisible();
             await dashboardPage.passphraseInput.fill('abc');
             await dashboardPage.passphraseSubmitButton.click();
@@ -96,7 +96,7 @@ test.describe('Passphrase reconnection', { tag: ['@T3W1', '@T3T1'] }, () => {
         });
 
         await test.step('Second displaying receive address after reconnect should NOT prompt for passphrase', async () => {
-            await walletPage.revealAddressButton.click();
+            await walletPage.usedAddressRevealButton(0).click();
             await expect(devicePrompt.outputValue).toBeVisible();
 
             await device.pressYes(); // confirm address

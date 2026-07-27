@@ -1,0 +1,125 @@
+import { type TradingTransactionStatus } from '@suite-common/trading';
+import { Badge, type BadgeIntent } from '@suite-native/atoms';
+import { useCoinLabel } from '@suite-native/device';
+import { type IconName } from '@suite-native/icons';
+import { Translation, useTranslate } from '@suite-native/intl';
+import { exhaustive } from '@trezor/type-utils';
+
+export type TransactionStatusProps = {
+    status: TradingTransactionStatus;
+};
+
+export const getBadgeVariant = (status: TradingTransactionStatus): BadgeIntent => {
+    switch (status) {
+        case undefined:
+            return 'neutral';
+
+        case 'SUCCESS':
+            return 'brand';
+
+        case 'BLOCKED':
+        case 'ERROR':
+        case 'REFUNDED':
+            return 'critical';
+
+        default:
+            return 'warning';
+    }
+};
+
+export const getBadgeIconName = (status: TradingTransactionStatus): IconName | undefined => {
+    switch (status) {
+        case 'ERROR':
+        case 'BLOCKED':
+        case 'REFUNDED':
+            return 'warningCircle';
+
+        case 'SUCCESS':
+            return 'check';
+
+        case 'KYC':
+        case 'CANCELLED':
+            return 'warning';
+
+        default:
+            return undefined;
+    }
+};
+
+const getLabel = (status: TradingTransactionStatus, coinLabel: string) => {
+    switch (status) {
+        case 'LOGIN_REQUEST':
+            return <Translation id="moduleTrading.tradeHistory.status.loginRequest" />;
+        case 'REQUESTING':
+            return <Translation id="moduleTrading.tradeHistory.status.requesting" />;
+        case 'SUBMITTED':
+            return <Translation id="moduleTrading.tradeHistory.status.submitted" />;
+        case 'APPROVAL_PENDING':
+            return <Translation id="moduleTrading.tradeHistory.status.approvalPending" />;
+        case 'WAITING_FOR_USER':
+            return <Translation id="moduleTrading.tradeHistory.status.waitingForUser" />;
+        case 'SUCCESS':
+            return <Translation id="moduleTrading.tradeHistory.status.success" />;
+        case 'ERROR':
+            return <Translation id="moduleTrading.tradeHistory.status.error" />;
+        case 'BLOCKED':
+            return <Translation id="moduleTrading.tradeHistory.status.blocked" />;
+        case 'SITE_ACTION_REQUEST':
+            return <Translation id="moduleTrading.tradeHistory.status.siteActionRequest" />;
+        case 'SEND_CRYPTO':
+            return (
+                <Translation
+                    id="moduleTrading.tradeHistory.status.sendCrypto"
+                    values={{
+                        coinLabel,
+                    }}
+                />
+            );
+        case 'PENDING':
+            return <Translation id="moduleTrading.tradeHistory.status.pending" />;
+        case 'CANCELLED':
+            return <Translation id="moduleTrading.tradeHistory.status.cancelled" />;
+        case 'REFUNDED':
+            return <Translation id="moduleTrading.tradeHistory.status.refunded" />;
+        case 'LOADING':
+            return <Translation id="moduleTrading.tradeHistory.status.loading" />;
+        case 'CONFIRM':
+            return <Translation id="moduleTrading.tradeHistory.status.confirm" />;
+        case 'SENDING':
+            return <Translation id="moduleTrading.tradeHistory.status.sending" />;
+        case 'CONFIRMING':
+            return <Translation id="moduleTrading.tradeHistory.status.confirming" />;
+        case 'CONVERTING':
+            return <Translation id="moduleTrading.tradeHistory.status.converting" />;
+        case 'APPROVAL_REQ':
+            return <Translation id="moduleTrading.tradeHistory.status.ApprovalRequired" />;
+        case 'SIGN_DATA':
+            return <Translation id="moduleTrading.tradeHistory.status.signData" />;
+        case 'KYC':
+            return <Translation id="moduleTrading.tradeHistory.status.kyc" />;
+        case undefined:
+            return null;
+
+        default:
+            return exhaustive(status);
+    }
+};
+
+export const TradeStatusBadge = ({ status }: TransactionStatusProps) => {
+    const { translate } = useTranslate();
+    const coinLabel = useCoinLabel();
+
+    if (!status) {
+        return null;
+    }
+
+    return (
+        <Badge
+            label={getLabel(status, coinLabel)}
+            size="small"
+            intent={getBadgeVariant(status)}
+            icon={getBadgeIconName(status)}
+            accessibilityHint={translate('moduleTrading.tradeHistory.status.badge')}
+        />
+    );
+};

@@ -1,25 +1,24 @@
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
+import { goto, selectRouteName } from '@suite/router';
+import { isBech32AddressUppercase } from '@suite-common/address';
 import { getNetworkSymbolForProtocol } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
-    NetworkSymbol,
+    type NetworkSymbol,
     getNetworkDisplaySymbol,
     getNetworkDisplaySymbolName,
 } from '@suite-common/wallet-config';
 import { selectDeviceAccountsByNetworkSymbol } from '@suite-common/wallet-core';
-import { isBech32AddressUppercase } from '@suite-common/wallet-utils';
 import { Text } from '@trezor/components';
-import { CoinLogo } from '@trezor/product-components';
+import { TokenIcon } from '@trezor/product-components';
 import { BigNumber } from '@trezor/utils';
 
 import { fillSendForm, resetProtocol } from 'src/actions/suite/protocolActions';
-import { goto } from 'src/actions/suite/routerActions';
 import type { NotificationRendererProps } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectRouteName } from 'src/reducers/suite/routerReducer';
-import { globalSendReceiveFilters } from 'src/slices/wallet/globalSendReceiveFilters';
+import { globalSendReceiveFiltersActions } from 'src/slices/wallet/globalSendReceiveFilters';
 
 import { ConditionalActionRenderer } from './ConditionalActionRenderer';
 
@@ -27,7 +26,7 @@ const Row = styled.span`
     display: flex;
 `;
 
-const getIcon = (symbol?: NetworkSymbol) => symbol && <CoinLogo symbol={symbol} size={24} />;
+const getIcon = (symbol?: NetworkSymbol) => symbol && <TokenIcon symbol={symbol} size={24} />;
 
 export const CoinProtocolRenderer = ({
     render,
@@ -60,21 +59,23 @@ export const CoinProtocolRenderer = ({
             if (networkSymbol) {
                 dispatch(fillSendForm(true));
 
-                if (networkAccounts.length === 1) {
-                    const account = networkAccounts[0];
+                const firstAccount = networkAccounts[0];
+                if (networkAccounts.length === 1 && firstAccount) {
                     dispatch(
-                        goto('wallet-send', {
+                        goto({
+                            routeName: 'wallet-send',
                             params: {
-                                symbol: account.symbol,
-                                accountIndex: account.index,
-                                accountType: account.accountType,
+                                symbol: firstAccount.symbol,
+                                accountIndex: firstAccount.index,
+                                accountType: firstAccount.accountType,
                             },
                         }),
                     );
                 } else {
-                    dispatch(globalSendReceiveFilters.actions.setNetworkSymbol(networkSymbol));
+                    dispatch(globalSendReceiveFiltersActions.setNetworkSymbol(networkSymbol));
                     dispatch(
-                        goto('suite-index', {
+                        goto({
+                            routeName: 'suite-index',
                             params: {
                                 modal: 'send',
                                 networkSymbol,

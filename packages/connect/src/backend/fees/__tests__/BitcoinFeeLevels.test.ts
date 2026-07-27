@@ -1,9 +1,7 @@
-import BlockchainLink from '@trezor/blockchain-link';
-import coinsJSONEth from '@trezor/connect-data/files/coins-eth.json';
-import coinsJSON from '@trezor/connect-data/files/coins.json';
+import { BlockchainLink } from '@trezor/blockchain-link';
+import type { FeeLevel } from '@trezor/connect-common';
 
-import { getBitcoinNetwork, parseCoinsJson } from '../../../data/coinInfo';
-import { FeeLevel } from '../../../types';
+import { getBitcoinNetwork } from '../../../data/coinInfo';
 import { dispose, initBlockchain } from '../../BlockchainLink';
 import { BitcoinFeeLevels } from '../BitcoinFeeLevels';
 
@@ -35,16 +33,13 @@ const estimateFeeMockIncomplete: typeof BlockchainLink.prototype.estimateFee = p
     );
 
 describe('BitcoinFeeLevels', () => {
-    // load coin definitions
-    parseCoinsJson({ ...coinsJSON, ...coinsJSONEth });
-
     afterAll(() => {
         dispose();
-        jest.resetAllMocks();
+        jest.clearAllMocks();
     });
 
     it('fetches Bitcoin smart FeeLevels with exact match', async () => {
-        const coinInfo = getBitcoinNetwork('Bitcoin');
+        const coinInfo = getBitcoinNetwork('btc');
         if (!coinInfo) throw new Error('coinInfo is missing');
         const coinInfoMock = { ...coinInfo, defaultFees: defaultFeesMock };
 
@@ -63,7 +58,7 @@ describe('BitcoinFeeLevels', () => {
     });
 
     it('fetches Bitcoin smart FeeLevels with some unknown results in response', async () => {
-        const coinInfo = getBitcoinNetwork('Bitcoin');
+        const coinInfo = getBitcoinNetwork('btc');
         if (!coinInfo) throw new Error('coinInfo is missing');
         const coinInfoMock = { ...coinInfo, defaultFees: defaultFeesMock };
 
@@ -80,7 +75,7 @@ describe('BitcoinFeeLevels', () => {
     });
 
     it('fetches Bitcoin smart FeeLevels with custom fee level', async () => {
-        const coinInfo = getBitcoinNetwork('Bitcoin');
+        const coinInfo = getBitcoinNetwork('btc');
         if (!coinInfo) throw new Error('coinInfo is missing');
         const coinInfoMock = { ...coinInfo, defaultFees: defaultFeesMock };
 
@@ -107,10 +102,12 @@ describe('BitcoinFeeLevels', () => {
     });
 
     it('fetches Testnet smart FeeLevels with some unknown results in response', async () => {
-        const coinInfo = getBitcoinNetwork('Testnet');
+        const coinInfo = getBitcoinNetwork('test');
         if (!coinInfo) throw new Error('coinInfo is missing');
         // testnet has only one fee level 'normal'
-        const coinInfoMock = { ...coinInfo, defaultFees: [defaultFeesMock[1]] };
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const normalFee: FeeLevel = defaultFeesMock[1];
+        const coinInfoMock = { ...coinInfo, defaultFees: [normalFee] };
 
         jest.spyOn(BlockchainLink.prototype, 'estimateFee').mockImplementation(
             estimateFeeMockIncomplete,

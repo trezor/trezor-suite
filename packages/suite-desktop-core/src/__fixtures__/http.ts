@@ -1,10 +1,27 @@
 export const fixtures = [
     {
         method: 'GET',
+        path: '/status',
+        search: '',
+        result: {
+            response: {
+                status: 200,
+            },
+        },
+    },
+    {
+        method: 'GET',
         path: '/oauth',
         search: '?code=meow',
         result: {
-            emit: ['oauth/response', { search: '?code=meow' }],
+            emit: [
+                'oauth/response',
+                {
+                    key: 'trezor-oauth',
+                    hash: null,
+                    search: '?code=meow',
+                },
+            ],
             response: {
                 status: 200,
             },

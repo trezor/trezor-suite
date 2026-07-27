@@ -1,5 +1,5 @@
 import { HttpRequestError, tryLocalAssetRequire } from './assetUtils';
-import { HttpRequestOptions, HttpRequestReturnType, HttpRequestType } from './assetsTypes';
+import type { HttpRequestOptions, HttpRequestReturnType, HttpRequestType } from './assetsTypes';
 
 /**
  * Http requesst wrapper for suite-native, that first tries to read files locally (unless forced to skip),
@@ -21,13 +21,13 @@ export function httpRequest<T extends HttpRequestType>(
                     throw new HttpRequestError(response);
                 }
                 if (type === 'binary') {
-                    return response.arrayBuffer() as unknown as HttpRequestReturnType<T>;
+                    return response.arrayBuffer();
                 }
                 if (type === 'json') {
-                    return response.json() as unknown as HttpRequestReturnType<T>;
+                    return response.json();
                 }
 
-                return response.text() as unknown as HttpRequestReturnType<T>;
+                return response.text();
             })
             .catch(error => {
                 throw error;

@@ -6,14 +6,14 @@
     "sideEffects": false,
     "main": "src/index",
     "scripts": {
-        "test:unit": "yarn g:jest -c ../../jest.config.base.js",
+        "test:unit": "yarn g:jest",
         "depcheck": "yarn g:depcheck",
-        "type-check": "yarn g:tsc --build"
+        "type-check": "yarn g:tsc --build",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
         "@mobily/ts-belt": "^3.13.1",
-        "@reduxjs/toolkit": "2.11.2",
-        "@suite-common/device": "workspace:*",
+        "@reduxjs/toolkit": "2.12.0",
         "@suite-common/fiat-services": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
@@ -24,7 +24,7 @@
         "@trezor/connect": "workspace:*",
         "@trezor/utils": "workspace:*",
         "date-fns": "^4.1.0",
-        "react": "19.1.0",
-        "react-redux": "9.2.0"
+        "react": "19.2.3",
+        "react-redux": "9.3.0"
     }
 }

@@ -1,16 +1,16 @@
-import { ReactNode } from 'react';
-import { LayoutChangeEvent, View } from 'react-native';
+import { type ReactNode } from 'react';
+import { type LayoutChangeEvent, View } from 'react-native';
 
 import {
     Box,
     Card,
     HStack,
     OrderedListIcon,
-    OrderedListIconProps,
+    type OrderedListIconProps,
     Text,
 } from '@suite-native/atoms';
-import { Translation, TxKeyPath } from '@suite-native/intl';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { Translation, type TxKeyPath } from '@suite-native/intl';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 type AddressReviewStepProps = {
     translationId: TxKeyPath;
@@ -23,25 +23,25 @@ const getIconProps = (stepNumber: AddressReviewStepProps['stepNumber']): Ordered
     stepNumber
         ? {
               iconNumber: stepNumber,
-              iconBackgroundColor: 'backgroundTertiaryDefaultOnElevation1',
-              iconBorderColor: 'borderElevation0',
+              iconBackgroundColor: 'legacyBackgroundTertiaryDefaultOnElevation1',
+              iconBorderColor: 'borderNeutral',
           }
         : {
               iconName: 'flagCheckered',
-              iconBackgroundColor: 'backgroundPrimaryDefault',
-              iconColor: 'iconDefaultInverted',
+              iconBackgroundColor: 'legacyBackgroundPrimaryDefault',
+              iconColor: 'contentPrimaryInverse',
           };
 
 const cardStyle = prepareNativeStyle<{ isFinalStep: boolean }>((utils, { isFinalStep }) => ({
     borderWidth: utils.borders.widths.small,
-    borderColor: utils.colors.borderElevation1,
+    borderColor: utils.colors.borderNeutral,
     maxWidth: '100%',
 
     extend: {
         condition: isFinalStep,
         style: {
-            backgroundColor: utils.colors.backgroundPrimarySubtleOnElevation1,
-            borderColor: utils.colors.backgroundPrimarySubtleOnElevation0,
+            backgroundColor: utils.colors.legacyBackgroundPrimarySubtleOnElevation1,
+            borderColor: utils.colors.legacyBackgroundPrimarySubtleOnElevation0,
             ...utils.boxShadows.none,
         },
     },

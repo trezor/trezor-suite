@@ -1,16 +1,16 @@
 import {
-    CoinSelectSuccess,
-    ComposeChangeAddress,
-    ComposeFinalOutput,
-    ComposeInput,
-    ComposeRequest,
-    ComposedTransaction,
-    TransactionInputOutputSortingStrategy,
+    type CoinSelectSuccess,
+    type ComposeChangeAddress,
+    type ComposeFinalOutput,
+    type ComposeInput,
+    type ComposeRequest,
+    type ComposedTransaction,
+    type TransactionInputOutputSortingStrategy,
 } from '../types';
 import { bip69SortingStrategy } from './sorting/bip69SortingStrategy';
 import { noneSortingStrategy } from './sorting/noneSortingStrategy';
 import { randomSortingStrategy } from './sorting/randomSortingStrategy';
-import { SortingStrategy } from './sorting/sortingStrategy';
+import { type SortingStrategy } from './sorting/sortingStrategy';
 
 const strategyMap: Record<TransactionInputOutputSortingStrategy, SortingStrategy> = {
     bip69: bip69SortingStrategy,
@@ -22,7 +22,15 @@ export function createTransaction<Input extends ComposeInput, Change extends Com
     request: ComposeRequest<Input, ComposeFinalOutput, Change>,
     result: CoinSelectSuccess,
 ): ComposedTransaction<Input, ComposeFinalOutput, Change> {
-    const convertedInputs = result.inputs.map(input => request.utxos[input.i]);
+    const convertedInputs = result.inputs.map(input => {
+        const { utxos } = request;
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const utxo: Input = utxos[input.i];
 
-    return strategyMap[request.sortingStrategy]({ result, request, convertedInputs });
+        return utxo;
+    });
+
+    const strategy = strategyMap[request.sortingStrategy];
+
+    return strategy({ result, request, convertedInputs });
 }

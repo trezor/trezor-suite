@@ -1,96 +1,58 @@
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 
-import { IconCirclePaddingType, IconCircleVariant } from './types';
+import { type IconCircleIntent, type IconCircleSize } from './types';
 import {
-    mapPaddingTypeToDimensions,
-    mapVariantToIconBackground,
-    mapVariantToIconBorderColor,
+    mapIntentToBackgroundColor,
+    mapIntentToBorderColor,
+    mapSizeToBorderWidth,
+    mapSizeToIconSize,
 } from './utils';
 import {
-    FrameProps,
-    FramePropsKeys,
+    type FrameProps,
+    type FramePropsKeys,
     pickAndPrepareFrameProps,
     withFrameProps,
 } from '../../utils/frameProps';
-import { TransientProps } from '../../utils/transientProps';
-import { Icon, IconName, IconProps, IconSize } from '../Icon/Icon';
+import { type TransientProps } from '../../utils/transientProps';
+import { Icon, type IconComponent } from '../Icon/Icon';
 
 export const allowedIconCircleFrameProps = ['margin'] as const satisfies FramePropsKeys[];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedIconCircleFrameProps)[number]>;
 
-type IconCircleWrapperProps = TransientProps<AllowedFrameProps> & {
-    $size: number;
-    $hasBorder: boolean;
-    $paddingType: IconCirclePaddingType;
-    $variant: IconCircleVariant;
+type CircleProps = TransientProps<AllowedFrameProps> & {
+    $size: IconCircleSize;
+    $intent: IconCircleIntent;
 };
 
-const IconCircleWrapper = styled.div<IconCircleWrapperProps>`
+const Circle = styled.div<CircleProps>`
     display: flex;
-    flex-shrink: 0;
     align-items: center;
     justify-content: center;
-    background: ${mapVariantToIconBackground};
+    flex: none;
+    width: ${({ $size }) => $size}px;
+    height: ${({ $size }) => $size}px;
+    border: ${({ $size, $intent, theme }) =>
+        `${mapSizeToBorderWidth($size)}px solid ${theme[mapIntentToBorderColor($intent)]}`};
     border-radius: 50%;
-    box-shadow: inset 0 0 0 ${({ $size }) => $size * 0.1}px ${mapVariantToIconBorderColor};
-
-    ${({ $hasBorder }) => !$hasBorder && 'box-shadow: none;'}
-    ${({ $size }) => css`
-        width: ${$size}px;
-        height: ${$size}px;
-    `}
+    background: ${({ $intent, $size, theme }) => theme[mapIntentToBackgroundColor($intent, $size)]};
 
     ${withFrameProps}
-
-    > * {
-        width: ${mapPaddingTypeToDimensions};
-        height: ${mapPaddingTypeToDimensions};
-    }
 `;
 
 export type IconCircleProps = {
-    name: IconName;
-    size?: IconSize | number;
-    paddingType?: IconCirclePaddingType;
-    hasBorder?: boolean;
-    variant?: IconCircleVariant;
+    icon: IconComponent;
+    size?: IconCircleSize;
+    intent?: IconCircleIntent;
 } & AllowedFrameProps;
 
-export const IconCircle = ({
-    name,
-    size = 60,
-    hasBorder = true,
-    paddingType = 'large',
-    variant = 'primary',
-    ...rest
-}: IconCircleProps) => {
+export const IconCircle = ({ icon, size = 40, intent = 'brand', ...rest }: IconCircleProps) => {
     const frameProps = pickAndPrepareFrameProps(rest, allowedIconCircleFrameProps);
-    let iconProps: Pick<IconProps, 'intent' | 'priority' | 'isDisabled'>;
-    if (variant === 'primary') {
-        iconProps = { intent: 'brand' };
-    } else if (variant === 'info') {
-        iconProps = { intent: 'info' };
-    } else if (variant === 'tertiary') {
-        iconProps = { intent: 'neutral', priority: 'secondary' };
-    } else if (variant === 'warning') {
-        iconProps = { intent: 'warning' };
-    } else if (variant === 'destructive') {
-        iconProps = { intent: 'critical' };
-    } else {
-        iconProps = { intent: 'neutral' };
-    }
 
     return (
-        <IconCircleWrapper
-            $size={size}
-            $paddingType={paddingType}
-            $hasBorder={hasBorder}
-            $variant={variant}
-            {...frameProps}
-        >
-            <Icon name={name} {...iconProps} />
-        </IconCircleWrapper>
+        <Circle $size={size} $intent={intent} {...frameProps}>
+            <Icon as={icon} size={mapSizeToIconSize(size)} intent={intent} priority="secondary" />
+        </Circle>
     );
 };
 
-export type { IconCircleVariant };
+export type { IconCircleIntent, IconCircleSize };

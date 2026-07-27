@@ -1,8 +1,9 @@
+import { LearnMoreButton } from '@suite/external-links';
 import { Translation, useTranslation } from '@suite/intl';
-import { DeviceModelInternal } from '@trezor/device-utils';
+import { type DeviceModelInternal } from '@trezor/device-utils';
+import { TextColumn } from '@trezor/product-components';
 import { HOMESCREEN_EDITOR_URL } from '@trezor/urls';
 
-import { TextColumn } from 'src/components/suite';
 import { HAS_MONOCHROME_SCREEN } from 'src/constants/suite/device';
 import { deviceModelInformation } from 'src/utils/suite/homescreen';
 
@@ -27,8 +28,11 @@ export const HomescreenSettingsTitle = ({ deviceModelInternal }: HomescreenSetti
                 ' ' +
                 translationString('TR_DEVICE_SETTINGS_HOMESCREEN_IMAGE_SETTINGS_BW')
             }
-            buttonLink={HOMESCREEN_EDITOR_URL}
-            buttonTitle={<Translation id="TR_DEVICE_SETTINGS_HOMESCREEN_EDITOR" />}
+            bottomContent={
+                <LearnMoreButton url={HOMESCREEN_EDITOR_URL}>
+                    <Translation id="TR_DEVICE_SETTINGS_HOMESCREEN_EDITOR" />
+                </LearnMoreButton>
+            }
         />
     ) : (
         <TextColumn

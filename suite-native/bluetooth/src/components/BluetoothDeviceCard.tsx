@@ -2,15 +2,15 @@ import {
     Box,
     Button,
     Card,
-    InlineAlertBoxProps,
+    type InlineAlertBoxProps,
     Text,
     resetLetterSpacingOnAndroidStyle,
 } from '@suite-native/atoms';
-import { Translation, TxKeyPath } from '@suite-native/intl';
+import { Translation, type TxKeyPath } from '@suite-native/intl';
 import { models } from '@trezor/device-utils';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
-import { BluetoothDevice } from '../types';
+import { type BluetoothDevice } from '../types';
 import { DeviceColorImage } from './DeviceColorImage';
 
 type Variant = 'connect' | 'remove';
@@ -50,7 +50,7 @@ export const BluetoothDeviceCard = ({
     const isPairingInProgress = variant === 'connect' && device.connectionStatus.type === 'pairing';
     const pairingHintInlineAlert: InlineAlertBoxProps = {
         title: <Translation id="bluetooth.deviceCard.connect.pairingHint" />,
-        variant: 'info',
+        intent: 'info',
     };
 
     return (
@@ -66,7 +66,7 @@ export const BluetoothDeviceCard = ({
                 <Text variant="headline-sm">{device.name}</Text>
                 <Text
                     variant="body-sm"
-                    color="textSubdued"
+                    color="contentSecondary"
                     style={applyStyle(resetLetterSpacingOnAndroidStyle)}
                 >
                     {modelConfig.name}

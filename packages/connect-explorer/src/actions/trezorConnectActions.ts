@@ -1,23 +1,15 @@
-import { WEBEXTENSION } from '@trezor/connect-common/src/constants/webextension';
 import TrezorConnectMobile from '@trezor/connect-mobile';
-import TrezorConnect, { DEVICE_EVENT } from '@trezor/connect-web';
+import TrezorConnect from '@trezor/connect-web';
 
 import type { Dispatch, Field, GetState } from '../types';
 import {
     type ConnectOptions,
     ON_CHANGE_CONNECT_OPTION,
     ON_CHANGE_CONNECT_OPTIONS,
-    ON_HANDSHAKE_CONFIRMED,
     ON_INIT_ERROR,
-    ON_SELECT_DEVICE,
 } from '../types/actions';
 
-export function onSelectDevice(path: string) {
-    return {
-        type: ON_SELECT_DEVICE,
-        path,
-    };
-}
+let _deeplinkChannel: BroadcastChannel | undefined;
 
 export const onConnectOptionChange = (option: Field<any>, value: any) => ({
     type: ON_CHANGE_CONNECT_OPTION,
@@ -32,23 +24,6 @@ export const init =
     async (dispatch: Dispatch) => {
         window.TrezorConnect = TrezorConnect;
 
-        // The event `WEBEXTENSION.CHANNEL_HANDSHAKE_CONFIRM` is coming from @trezor/connect-webextension/proxy
-        // that is replacing @trezor/connect-web when connect-explorer is run in connect-explorer-webextension
-        // so Typescript cannot recognize it.
-        // @ts-expect-error
-        TrezorConnect.on(WEBEXTENSION.CHANNEL_HANDSHAKE_CONFIRM, event => {
-            if (event.type === WEBEXTENSION.CHANNEL_HANDSHAKE_CONFIRM) {
-                dispatch({ type: ON_HANDSHAKE_CONFIRMED });
-            }
-        });
-
-        TrezorConnect.on(DEVICE_EVENT, event => {
-            dispatch({
-                type: event.type,
-                device: event.payload,
-            });
-        });
-
         // Get default coreMode from URL params (?core-mode=auto)
         const urlParams = new URLSearchParams(window.location.search);
         const coreMode = (urlParams.get('core-mode') as ConnectOptions['coreMode']) || 'auto';
@@ -57,7 +32,6 @@ export const init =
             coreMode,
             transportReconnect: true,
             debug: true,
-            lazyLoad: true,
             manifest: {
                 email: 'info@trezor.io',
                 appUrl: '@trezor/connect-explorer',
@@ -67,11 +41,15 @@ export const init =
             ...options,
         };
 
+        // onSubmitInit re-runs init() on each "Init Connect" click; close the previous
+        // channel so a popup_callback isn't handled once per past init.
+        _deeplinkChannel?.close();
+        _deeplinkChannel = undefined;
+
         try {
             if (connectOptions.coreMode === 'deeplink') {
                 await TrezorConnectMobile.init({
                     ...connectOptions,
-                    coreMode: 'deeplink',
                     deeplinkOpen(url) {
                         window.open(url, '_blank');
                     },
@@ -79,8 +57,8 @@ export const init =
                         (process.env.CONNECT_EXPLORER_FULL_URL || window.location.origin) +
                         '/callback',
                 });
-                const bc = new BroadcastChannel('trezor_connect_callback');
-                bc.onmessage = e => {
+                _deeplinkChannel = new BroadcastChannel('trezor_connect_callback');
+                _deeplinkChannel.onmessage = e => {
                     if (e.data.type === 'popup_callback') {
                         TrezorConnectMobile.handleDeeplink(e.data.url);
                     }

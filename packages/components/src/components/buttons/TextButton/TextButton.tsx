@@ -2,20 +2,22 @@ import React from 'react';
 
 import styled from 'styled-components';
 
+import { ArrowLineUpRightIcon } from '@trezor/icons';
+
 import {
-    FrameProps,
-    FramePropsKeys,
+    type FrameProps,
+    type FramePropsKeys,
     pickAndPrepareFrameProps,
     withFrameProps,
 } from '../../../utils/frameProps';
-import { TransientProps } from '../../../utils/transientProps';
+import { type TransientProps } from '../../../utils/transientProps';
 import { Box } from '../../Box/Box';
 import { Row } from '../../Flex/Flex';
-import { Icon, IconName } from '../../Icon/Icon';
+import { Icon, type IconComponent } from '../../Icon/Icon';
 import { Spinner } from '../../loaders/Spinner/Spinner';
 import { Text } from '../../typography/Text/Text';
-import { ButtonIntent, ButtonPriority, CommonButtonProps } from '../types';
-import { TextButtonSize } from './types';
+import { type ButtonIntent, type ButtonPriority, type CommonButtonProps } from '../types';
+import { type TextButtonSize } from './types';
 import { mapIntentToCSS, mapSizeToGap, mapSizeToIconSize, mapSizeToTypographyStyle } from './utils';
 import { pickButtonProps } from '../utils';
 
@@ -65,8 +67,8 @@ const TextButtonContainer = styled.button<
 
 export type TextButtonProps = CommonButtonProps &
     AllowedTextButtonFrameProps & {
-        iconLeft?: IconName;
-        iconRight?: IconName;
+        iconLeft?: IconComponent;
+        iconRight?: IconComponent;
         size?: TextButtonSize;
         children?: React.ReactNode;
         isUnderlined?: boolean;
@@ -104,7 +106,7 @@ export const TextButton = ({
                         data-testid={`${dataTestId}/spinner`}
                     />
                 )}
-                {iconLeft && !props.isLoading && <Icon name={iconLeft} size={iconSize} />}
+                {iconLeft && !props.isLoading && <Icon as={iconLeft} size={iconSize} />}
                 <Box overflow="hidden">
                     <Text
                         as="div"
@@ -115,7 +117,7 @@ export const TextButton = ({
                     </Text>
                 </Box>
                 {(iconRight || buttonProps.target === '_blank') && (
-                    <Icon name={iconRight ?? 'arrowLineUpRight'} size={iconSize} />
+                    <Icon as={iconRight ?? ArrowLineUpRightIcon} size={iconSize} />
                 )}
             </Row>
         </TextButtonContainer>

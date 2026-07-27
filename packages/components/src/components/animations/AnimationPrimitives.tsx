@@ -1,9 +1,7 @@
 import styled, { css } from 'styled-components';
 
-import { borders } from '@trezor/theme';
-
-import { FrameProps, FramePropsKeys, withFrameProps } from '../../utils/frameProps';
-import { TransientProps } from '../../utils/transientProps';
+import { type FrameProps, type FramePropsKeys, withFrameProps } from '../../utils/frameProps';
+import { type TransientProps } from '../../utils/transientProps';
 
 export const allowedAnimationPrimitivesFrameProps = [
     'margin',
@@ -40,11 +38,11 @@ export const AnimationWrapper = styled.div<
     ${({ shape }) =>
         shape === 'ROUNDED' &&
         css`
-            border-radius: 30px;
+            border-radius: 32px;
         `};
     ${({ shape }) =>
         shape === 'ROUNDED-SMALL' &&
         css`
-            border-radius: ${borders.radii.xs};
+            border-radius: 4px;
         `};
 `;

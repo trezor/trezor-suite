@@ -1,14 +1,19 @@
-import { Translation, TranslationKey } from '@suite/intl';
-import { DeviceStatus as ConnectedDeviceStatus, getStatus } from '@suite-common/suite-utils';
+import { useDevice } from '@suite/device';
+import { Translation, type TranslationKey } from '@suite/intl';
+import { goto } from '@suite/router';
+import {
+    type DeviceStatus as ConnectedDeviceStatus,
+    type getStatus,
+} from '@suite-common/suite-utils';
 import { acquireDevice, selectDeviceThunk } from '@suite-common/wallet-core';
-import { Banner, BannerIntent } from '@trezor/components';
+import { Banner, type BannerIntent } from '@trezor/components';
 import { exhaustive } from '@trezor/type-utils';
 
+import { redirectAfterWalletSelectedThunk } from 'src/actions/wallet/addWalletThunk';
+import { useDispatch } from 'src/hooks/suite';
+import type { ForegroundAppProps, TrezorDevice } from 'src/types/suite';
+
 import { getDeviceResolveStatusCTAMessage } from './getDeviceResolveStatusCTAMessage';
-import { goto } from '../../../actions/suite/routerActions';
-import { redirectAfterWalletSelectedThunk } from '../../../actions/wallet/addWalletThunk';
-import { useDevice, useDispatch } from '../../../hooks/suite';
-import type { ForegroundAppProps, TrezorDevice } from '../../../types/suite';
 
 const getDeviceNeedsAttentionMessage = (
     deviceStatus: ReturnType<typeof getStatus>,
@@ -39,7 +44,6 @@ const getDeviceNeedsAttentionMessage = (
         case 'device-busy':
             return 'TR_NEEDS_ATTENTION_DEVICE_BUSY';
         case 'device-bootloader-locked':
-            return 'TR_NEEDS_ATTENTION_DEVICE_LOCKED';
         case 'device-hard-locked':
             return 'TR_NEEDS_ATTENTION_DEVICE_LOCKED';
         case 'device-pin-locked':
@@ -105,7 +109,7 @@ export const NeedsAttentionBanner = ({
                 return () => {
                     onCancel?.(false);
                     dispatch(selectDeviceThunk({ device }));
-                    dispatch(goto('firmware-index'));
+                    dispatch(goto({ routeName: 'firmware-index' }));
                 };
             // If onboarding is pending, then it should pass through Manual Device Check.
             case 'initialize': // Wiped device with firmware present.
@@ -113,7 +117,7 @@ export const NeedsAttentionBanner = ({
                 // but we cannot tell (device.features.initialized is null)
                 return () => {
                     selectDevice();
-                    dispatch(goto('suite-start'));
+                    dispatch(goto({ routeName: 'suite-start' }));
                 };
 
             case 'seedless':

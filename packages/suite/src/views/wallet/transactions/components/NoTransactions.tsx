@@ -1,14 +1,14 @@
+import { TrezorLink } from '@suite/external-links';
 import { Translation } from '@suite/intl';
-import { Explorer } from '@suite-common/wallet-config';
+import { type Explorer } from '@suite-common/wallet-config';
 import { getExplorerUrl } from '@suite-common/wallet-config/src/getExplorerUrls';
 import { selectExplorer } from '@suite-common/wallet-core';
 import { isUtxoBased } from '@suite-common/wallet-utils';
+import { ArrowUpRightIcon, CloudIcon } from '@trezor/icons';
 
-import { TrezorLink } from 'src/components/suite';
 import { AccountExceptionLayout } from 'src/components/wallet';
 import { useSelector } from 'src/hooks/suite';
-import { Account } from 'src/types/wallet';
-
+import { type Account } from 'src/types/wallet';
 interface NoTransactionsProps {
     account: Account;
 }
@@ -20,14 +20,14 @@ export const NoTransactions = ({ account }: NoTransactionsProps) => {
     return (
         <AccountExceptionLayout
             title={<Translation id="TR_TRANSACTIONS_NOT_AVAILABLE" />}
-            iconName="cloud"
+            icon={CloudIcon}
             iconVariant="info"
             actions={
                 !isUtxoBased(account)
                     ? [
                           {
                               key: '1',
-                              iconLeft: 'arrowUpRight',
+                              iconLeft: ArrowUpRightIcon,
                               children: (
                                   <TrezorLink href={explorerUrl}>
                                       <Translation id="TR_SHOW_DETAILS_IN_BLOCK_EXPLORER" />

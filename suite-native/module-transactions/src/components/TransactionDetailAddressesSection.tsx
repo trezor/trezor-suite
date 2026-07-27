@@ -1,10 +1,10 @@
 import React, { useMemo } from 'react';
 
 import { Box, CardDivider, Text, TextButton, VStack } from '@suite-native/atoms';
-import { Translation, TxKeyPath } from '@suite-native/intl';
-import { WalletAccountTransaction } from '@suite-native/tokens';
-import { VinVoutAddress } from '@suite-native/transactions';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { Translation, type TxKeyPath } from '@suite-native/intl';
+import { type WalletAccountTransaction } from '@suite-native/tokens';
+import { type VinVoutAddress } from '@suite-native/transactions';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { ChangeAddressesHeader } from './ChangeAddressesHeader';
 import { TransactionDetailStepper } from './TransactionDetailStepper';
@@ -63,7 +63,7 @@ export const TransactionDetailAddressesSection = ({
         <VStack>
             <SummaryRow leftComponent={<TransactionDetailStepper />}>
                 <Box>
-                    <Text color="textSubdued" variant="body-sm">
+                    <Text color="contentSecondary" variant="body-sm">
                         <Translation
                             id={titleTxKey}
                             values={{ count: formatAddressesCount(targetAddresses.length) }}

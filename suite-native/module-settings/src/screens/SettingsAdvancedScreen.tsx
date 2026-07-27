@@ -1,20 +1,18 @@
 import { useSelector } from 'react-redux';
 
-import { selectIsMevProtectionSettingsVisible } from '@suite-common/mev';
+import { selectIsNetworkReserveSettingsVisible } from '@suite-common/wallet-core';
 import { VStack } from '@suite-native/atoms';
-import { ExperimentalFeaturesSettingsCard } from '@suite-native/experimental-features';
 import { Translation } from '@suite-native/intl';
 import { DynamicScreenHeader, Screen } from '@suite-native/navigation';
 
-import { BitcoinBackendsCard } from '../components/BitcoinBackendsCard';
-import { TurnOffDeviceAuthenticityCheckCard } from '../components/TurnOffDeviceAuthenticityCheckCard';
-import { TurnOffFirmwareAuthenticityCheckCard } from '../components/TurnOffFirmwareAuthenticityCheckCard';
-import { TurnOffMevProtectionCard } from '../components/TurnOffMevProtectionCard';
-import { selectIsBitcoinBackendsConfigVisible } from '../selectors';
+import { ToggleAddressDisplayCard } from '../components/ToggleAddressDisplayCard';
+import { ToggleDeviceAuthenticityCheckCard } from '../components/ToggleDeviceAuthenticityCheckCard';
+import { ToggleFirmwareAuthenticityCheckCard } from '../components/ToggleFirmwareAuthenticityCheckCard';
+import { ToggleNetworkReserveCheckCard } from '../components/ToggleNetworkReserveCheckCard';
+import { ToggleTestnetsCard } from '../components/ToggleTestnetsCard';
 
 export const SettingsAdvancedScreen = () => {
-    const isMevProtectionSettingsVisible = useSelector(selectIsMevProtectionSettingsVisible);
-    const isBitcoinBackendsConfigVisible = useSelector(selectIsBitcoinBackendsConfigVisible);
+    const isNetworkReserveSettingsVisible = useSelector(selectIsNetworkReserveSettingsVisible);
 
     return (
         <Screen
@@ -23,11 +21,11 @@ export const SettingsAdvancedScreen = () => {
             }
         >
             <VStack spacing="sp16">
-                {isBitcoinBackendsConfigVisible && <BitcoinBackendsCard />}
-                <ExperimentalFeaturesSettingsCard />
-                {isMevProtectionSettingsVisible && <TurnOffMevProtectionCard />}
-                <TurnOffFirmwareAuthenticityCheckCard />
-                <TurnOffDeviceAuthenticityCheckCard />
+                <ToggleDeviceAuthenticityCheckCard />
+                <ToggleFirmwareAuthenticityCheckCard />
+                <ToggleAddressDisplayCard />
+                <ToggleTestnetsCard />
+                {isNetworkReserveSettingsVisible && <ToggleNetworkReserveCheckCard />}
             </VStack>
         </Screen>
     );

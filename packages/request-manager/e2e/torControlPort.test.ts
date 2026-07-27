@@ -7,7 +7,6 @@ import { TorControlPort, createHmacSignature, getCookieString } from '../src/tor
 import type { TorConnectionOptions } from '../src/types';
 
 const writeFile = util.promisify(fs.writeFile);
-const existsDirectory = util.promisify(fs.exists);
 const mkdir = util.promisify(fs.mkdir);
 const unlinkFile = util.promisify(fs.unlink);
 
@@ -19,10 +18,11 @@ const host = 'localhost';
 const port = 9998;
 const controlPort = 9999;
 
-// TODO: Skipping this for now, since I want to get the most critical tests to run in CI.
-describe.skip('TorControlPort', () => {
+const conditionalTest = process.env.SKIP_FLAKY_TESTS ? describe.skip : describe;
+
+conditionalTest('TorControlPort', () => {
     beforeAll(async () => {
-        if (!(await existsDirectory(torDataDir))) {
+        if (!fs.existsSync(torDataDir)) {
             // Make sure there is `torDataDir` directory.
             mkdir(torDataDir);
         }
@@ -78,12 +78,16 @@ describe.skip('TorControlPort', () => {
                             isProperlyAuthenticated = providedAuthSignature === authSignature;
                             sock.write('250 OK');
                             break;
-                        case !!authchallengeRequest:
-                            clientNonce = authchallengeRequest ? authchallengeRequest[1] : '';
+                        case !!authchallengeRequest: {
+                            const nonce = authchallengeRequest
+                                ? (authchallengeRequest[1] ?? '')
+                                : '';
+                            clientNonce = nonce;
                             sock.write(
                                 `250 AUTHCHALLENGE SERVERHASH=${serverHash} SERVERNONCE=${serverNonce}`,
                             );
                             break;
+                        }
                         default:
                     }
                 });

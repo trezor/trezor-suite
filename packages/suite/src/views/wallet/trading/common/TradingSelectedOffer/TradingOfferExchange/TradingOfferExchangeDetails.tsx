@@ -1,84 +1,75 @@
-import { useState } from 'react';
-import { FormattedList } from 'react-intl';
-
-import { ExchangeTrade } from 'invity-api';
+import { type ExchangeTrade } from 'invity-api';
 
 import { Translation } from '@suite/intl';
+import { ExperimentId, ExperimentWrapper } from '@suite-common/message-system';
 import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
 import {
-    TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT,
-    TradingExchangeType,
     cryptoIdToNetwork,
-    selectTradingComposedTransactionInfo,
+    selectTradingDisplayComposedFee,
     selectTradingExchangeFormStep,
+    selectTradingExchangeInfo,
+    selectTradingExchangeReceiveAccountKey,
     useTradingUtils,
 } from '@suite-common/trading';
 import { networksCollection } from '@suite-common/wallet-config';
 import { selectIsMevProtectionEnabled } from '@suite-common/wallet-core';
-import { formatNetworkAmount } from '@suite-common/wallet-utils';
-import { Card, Column, Icon, InfoItem, Row, Text, Tooltip } from '@trezor/components';
-import { spacings } from '@trezor/theme';
+import { type Account } from '@suite-common/wallet-types';
+import { asAmountSubunit, subunitsToUnits } from '@suite-common/wallet-utils';
+import { Card, Column, InfoItem, Text, Tooltip } from '@trezor/components';
+import { BigNumber } from '@trezor/utils';
 
-import { BaseCurrencyValue, FormattedCryptoAmount } from 'src/components/suite';
 import { BannerPoints } from 'src/components/wallet/WalletLayout/AccountBanners/BannerPoints';
 import { useSelector } from 'src/hooks/suite';
 import { useTradingAssetDecimals } from 'src/hooks/wallet/trading/form/common/useTradingAssetDecimals';
-import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
-import { TradingExchangeProvidersInfoProps } from 'src/types/trading/trading';
+import { type TradingExchangeProvidersInfoProps } from 'src/types/trading/trading';
+import { formatCryptoAmountAsAmount } from 'src/views/wallet/trading/common/formatCryptoAmountAsAmount';
 
-import { TradingOfferExchangeSlippageModal } from './TradingOfferExchangeSlippageModal';
-import { TradingProviderInfo } from '../../TradingProviderInfo';
-import { TradingUtilsKyc } from '../../TradingUtils/TradingUtilsKyc';
+import { TradingUtilsProviderKyc } from '../../TradingUtils/TradingUtilsProviderKyc';
+import { TradingExchangeMevProtectionInfoItem } from '../TradingInfo/TradingExchangeMevProtectionInfoItem';
+import { TradingExchangeMinimumReceivedInfoItem } from '../TradingInfo/TradingExchangeMinimumReceivedInfoItem';
+import { TradingExchangeRateInfoItem } from '../TradingInfo/TradingExchangeRateInfoItem';
+import { TradingExchangeSlippageInfoItem } from '../TradingInfo/TradingExchangeSlippageInfoItem';
+import { TradingNetworkFeeInfoItem } from '../TradingInfo/TradingNetworkFeeInfoItem';
+import { TradingProviderInfoItem } from '../TradingInfo/TradingProviderInfoItem';
+import { TradingTrezorFeeInfoItem } from '../TradingInfo/TradingTrezorFeeInfoItem';
 
-const formatCryptoAmountAsAmount = (amount: number, baseAmount: number, decimals = 8): string => {
-    let digits = 4;
-    if (baseAmount < 1) {
-        digits = 6;
-    }
-    if (baseAmount < 0.01) {
-        digits = decimals;
-    }
-
-    return amount.toFixed(digits);
-};
-
-interface TradingOfferExchangeDetailsProps {
+type TradingOfferExchangeDetailsProps = {
+    account: Account;
     exchangeQuote: ExchangeTrade;
     exchange: string | undefined;
     providers: TradingExchangeProvidersInfoProps;
-}
+};
 
 export const TradingOfferExchangeDetails = ({
+    account,
     exchangeQuote,
     exchange,
     providers,
 }: TradingOfferExchangeDetailsProps) => {
     const formStep = useSelector(selectTradingExchangeFormStep);
+    const exchangeInfo = useSelector(selectTradingExchangeInfo);
     const isMevProtectionEnabled = useSelector(selectIsMevProtectionEnabled);
     const isMevProtectionFeatureEnabled = useSelector(selectIsMevProtectionFeatureEnabled);
-    const composedTransactionInfo = useSelector(selectTradingComposedTransactionInfo);
+    const networkFee = useSelector(state => selectTradingDisplayComposedFee(state, exchangeQuote));
     const { cryptoIdToSymbolAndContractAddress } = useTradingUtils();
 
-    const [isSlippageModalOpen, setIsSlippageModalOpen] = useState(false);
-
-    const context = useTradingFormContext<TradingExchangeType>();
-    const { account, exchangeInfo, getValues } = context;
     const { symbol } = account;
+    const formattedNetworkFee = subunitsToUnits({
+        value: asAmountSubunit(new BigNumber(networkFee || '0')),
+        symbol,
+    }).toString();
 
-    const networkFee = composedTransactionInfo?.composed?.fee;
-    const formattedNetworkFee = formatNetworkAmount(networkFee || '0', symbol);
-
-    const sendCryptoSelect = getValues(TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT);
+    const receiveAccountKey = useSelector(selectTradingExchangeReceiveAccountKey);
     const { getAssetDecimals } = useTradingAssetDecimals();
     const decimals = getAssetDecimals({
-        accountKey: sendCryptoSelect?.accountKey,
-        cryptoId: sendCryptoSelect?.id,
+        accountKey: receiveAccountKey,
+        cryptoId: exchangeQuote.receive,
     });
 
     const supportedMevProtectionNetworks = networksCollection
         .filter(network => network.features.includes('mev-protection'))
         .map(network => network.name);
-    const sendNetwork = sendCryptoSelect?.id ? cryptoIdToNetwork(sendCryptoSelect.id) : undefined;
+    const sendNetwork = exchangeQuote.send ? cryptoIdToNetwork(exchangeQuote.send) : undefined;
     const isMevProtectionSupported = sendNetwork?.features.includes('mev-protection') ?? false;
 
     const { coinSymbol: receiveCoinSymbol, contractAddress: receiveContractAddress } =
@@ -90,6 +81,7 @@ export const TradingOfferExchangeDetails = ({
         ? exchangeInfo?.providerInfos[exchange]?.companyName || exchangeQuote.exchange
         : undefined;
     const rateType = provider?.isFixedRate ? 'fixed' : 'floating';
+    const dexSlippage = exchangeQuote.isDex ? exchangeQuote.swapSlippage : undefined;
 
     const minimumYouGetAmount = formatCryptoAmountAsAmount(
         ((100 - Number(exchangeQuote.swapSlippage)) / 100) *
@@ -100,158 +92,75 @@ export const TradingOfferExchangeDetails = ({
 
     return (
         <>
-            <Column gap={spacings.xs}>
-                {exchangeQuote.isDex && exchangeQuote.swapSlippage && (
-                    <InfoItem
-                        label={
-                            <Tooltip
-                                content={<Translation id="TR_EXCHANGE_SWAP_SLIPPAGE_INFO" />}
-                                hasIcon
-                            >
-                                <Translation id="TR_EXCHANGE_SWAP_SLIPPAGE_AMOUNT" />
-                            </Tooltip>
-                        }
-                        direction="row"
-                    >
-                        <Row
-                            gap={spacings.xxs}
-                            alignItems="center"
-                            cursor="pointer"
-                            onClick={() => setIsSlippageModalOpen(true)}
-                        >
-                            <Text intent="brand" typographyStyle="body-sm">
-                                {exchangeQuote.swapSlippage}%
-                            </Text>
+            <Column gap={8}>
+                <ExperimentWrapper
+                    id={ExperimentId.tradingShowTradeFee}
+                    components={[
+                        { variant: 'control', element: <></> },
+                        { variant: 'treatment', element: <TradingTrezorFeeInfoItem /> },
+                    ]}
+                />
 
-                            <Icon name="pencilSimple" size={16} intent="brand" />
-                        </Row>
-                    </InfoItem>
-                )}
-
-                {exchangeQuote.isDex && exchangeQuote.swapSlippage && (
-                    <InfoItem
-                        label={<Translation id="TR_EXCHANGE_SWAP_SLIPPAGE_MINIMUM" />}
-                        direction="row"
-                    >
-                        <Text typographyStyle="body-sm">
-                            <FormattedCryptoAmount
-                                value={minimumYouGetAmount}
-                                symbol={receiveCoinSymbol}
-                                contractAddress={receiveContractAddress}
-                            />
-                        </Text>
-                    </InfoItem>
-                )}
-
-                {!exchangeQuote.isDex && (
-                    <InfoItem label={<Translation id="TR_TRADING_RATE" />} direction="row">
-                        {rateType === 'fixed' && (
-                            <Tooltip
-                                content={<Translation id="TR_EXCHANGE_FIXED_OFFERS_INFO" />}
-                                hasIcon
-                            >
-                                <Translation id="TR_EXCHANGE_FIXED" />
-                            </Tooltip>
-                        )}
-                        {rateType === 'floating' && (
-                            <Tooltip
-                                content={<Translation id="TR_EXCHANGE_FLOAT_OFFERS_INFO" />}
-                                hasIcon
-                            >
-                                <Translation id="TR_EXCHANGE_FLOAT" />
-                            </Tooltip>
-                        )}
-                    </InfoItem>
-                )}
-
-                <InfoItem label={<Translation id="TR_TRADING_NETWORK_FEE" />} direction="row">
-                    <Text typographyStyle="body-sm">
-                        <BaseCurrencyValue
-                            disableHiddenPlaceholder
-                            amount={formattedNetworkFee}
-                            symbol={symbol}
-                            rateType="current"
-                            showApproximationIndicator
+                {dexSlippage !== undefined && (
+                    <>
+                        <TradingExchangeSlippageInfoItem
+                            isEditable
+                            slippage={dexSlippage}
+                            selectedQuote={exchangeQuote}
                         />
-                    </Text>
-                </InfoItem>
+                        <TradingExchangeMinimumReceivedInfoItem
+                            minimumYouGetAmount={minimumYouGetAmount}
+                            symbol={receiveCoinSymbol}
+                            contractAddress={receiveContractAddress}
+                        />
+                    </>
+                )}
+
+                {!exchangeQuote.isDex && <TradingExchangeRateInfoItem rateType={rateType} />}
+
+                <TradingNetworkFeeInfoItem amount={formattedNetworkFee} symbol={symbol} />
 
                 {isMevProtectionFeatureEnabled &&
                     exchangeQuote.isDex &&
                     isMevProtectionSupported &&
                     formStep !== 'SIGN_DATA' && (
-                        <InfoItem
-                            label={
-                                <Tooltip
-                                    content={
-                                        <>
-                                            <Translation id="TR_MEV_DESCRIPTION" />{' '}
-                                            <Translation
-                                                id="TR_MEV_AVAILABLE_ON"
-                                                values={{
-                                                    supportedNetworks: (
-                                                        <FormattedList
-                                                            type="conjunction"
-                                                            value={supportedMevProtectionNetworks}
-                                                        />
-                                                    ),
-                                                }}
-                                            />
-                                        </>
-                                    }
-                                    hasIcon
-                                >
-                                    <Translation id="TR_MEV" />
-                                </Tooltip>
-                            }
-                            direction="row"
-                        >
-                            <Icon
-                                name={isMevProtectionEnabled ? 'check' : 'x'}
-                                size={16}
-                                intent={isMevProtectionEnabled ? 'brand' : 'neutral'}
-                                priority={isMevProtectionEnabled ? 'primary' : 'secondary'}
-                            />
-                        </InfoItem>
+                        <TradingExchangeMevProtectionInfoItem
+                            isMevProtectionEnabled={isMevProtectionEnabled}
+                            supportedNetworks={supportedMevProtectionNetworks}
+                        />
                     )}
 
-                <InfoItem label={<Translation id="TR_BUY_PROVIDER" />} direction="row">
-                    <TradingProviderInfo exchange={exchange} providers={providers} />
-                </InfoItem>
+                <TradingProviderInfoItem exchange={exchange} providers={providers} />
 
                 <InfoItem label={<Translation id="TR_TRADING_EXCHANGE_TYPE" />} direction="row">
-                    <Text typographyStyle="body-sm">
-                        {exchangeQuote.isDex ? (
-                            <Tooltip
-                                content={<Translation id="TR_EXCHANGE_DECENTRALIZED_EXCHANGE" />}
-                                hasIcon
-                            >
-                                <Translation id="TR_EXCHANGE_DEX" />
-                            </Tooltip>
-                        ) : (
-                            <Tooltip
-                                content={<Translation id="TR_EXCHANGE_CENTRALIZED_EXCHANGE" />}
-                                hasIcon
-                            >
-                                <Translation id="TR_EXCHANGE_CEX" />
-                            </Tooltip>
-                        )}
+                    <Text
+                        typographyStyle="body-sm"
+                        data-testid="@trading/offer/info/exchange-dex-type"
+                    >
+                        <Tooltip
+                            content={
+                                <Translation
+                                    id={
+                                        exchangeQuote.isDex
+                                            ? 'TR_EXCHANGE_DECENTRALIZED_EXCHANGE'
+                                            : 'TR_EXCHANGE_CENTRALIZED_EXCHANGE'
+                                    }
+                                />
+                            }
+                            hasIcon
+                        >
+                            <Translation
+                                id={exchangeQuote.isDex ? 'TR_EXCHANGE_DEX' : 'TR_EXCHANGE_CEX'}
+                            />
+                        </Tooltip>
                     </Text>
                 </InfoItem>
+                <TradingUtilsProviderKyc exchange={exchange} providers={providers} />
             </Column>
-
-            <TradingUtilsKyc
-                exchange={exchange}
-                providers={providers as TradingExchangeProvidersInfoProps}
-            />
 
             {formStep === 'SIGN_DATA' && (
                 <Card>
-                    <Text
-                        typographyStyle="body-md-strong"
-                        as="div"
-                        margin={{ bottom: spacings.xs }}
-                    >
+                    <Text typographyStyle="body-md-strong" as="div" margin={{ bottom: 8 }}>
                         <Translation
                             id="TR_TRADING_EXCHANGE_SIGN_BANNER_TITLE"
                             values={{ provider: providerName }}
@@ -274,10 +183,6 @@ export const TradingOfferExchangeDetails = ({
                         ]}
                     />
                 </Card>
-            )}
-
-            {isSlippageModalOpen && (
-                <TradingOfferExchangeSlippageModal onClose={() => setIsSlippageModalOpen(false)} />
             )}
         </>
     );

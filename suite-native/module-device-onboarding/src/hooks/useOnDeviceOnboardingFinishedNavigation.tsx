@@ -1,47 +1,28 @@
 import { useCallback } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { selectHasBitcoinOnlyFirmware } from '@suite-common/device';
-import { selectIsAnyNetworkEnabled } from '@suite-common/wallet-core';
+import { setIsOnboardingFeedbackBannerEnabled } from '@suite-native/banner-flags';
 import {
-    AppTabsRoutes,
-    AuthorizeDeviceStackRoutes,
-    DeviceOnboardingStackParamList,
+    type DeviceOnboardingStackParamList,
     DeviceOnboardingStackRoutes,
-    HomeStackRoutes,
-    RootStackParamList,
-    RootStackRoutes,
-    StackToStackCompositeNavigationProps,
+    type StackNavigationProps,
 } from '@suite-native/navigation';
 
-type NavigationProps = StackToStackCompositeNavigationProps<
+type NavigationProps = StackNavigationProps<
     DeviceOnboardingStackParamList,
-    DeviceOnboardingStackRoutes,
-    RootStackParamList
+    DeviceOnboardingStackRoutes
 >;
 
 export const useOnDeviceOnboardingFinishedNavigation = () => {
+    const dispatch = useDispatch();
     const navigation = useNavigation<NavigationProps>();
 
-    const hasBitcoinOnlyFirmware = useSelector(selectHasBitcoinOnlyFirmware);
-    const isAnyNetworkEnabled = useSelector(selectIsAnyNetworkEnabled);
-
     const onDeviceOnboardingFinishedNavigation = useCallback(() => {
-        if (hasBitcoinOnlyFirmware || isAnyNetworkEnabled) {
-            navigation.popTo(RootStackRoutes.AppTabs, {
-                screen: AppTabsRoutes.HomeStack,
-                params: {
-                    screen: HomeStackRoutes.Home,
-                },
-            });
-        } else {
-            navigation.popTo(RootStackRoutes.AuthorizeDeviceStack, {
-                screen: AuthorizeDeviceStackRoutes.CoinEnablingInit,
-            });
-        }
-    }, [hasBitcoinOnlyFirmware, isAnyNetworkEnabled, navigation]);
+        dispatch(setIsOnboardingFeedbackBannerEnabled(true));
+        navigation.navigate(DeviceOnboardingStackRoutes.Congratulations);
+    }, [dispatch, navigation]);
 
     return { onDeviceOnboardingFinishedNavigation };
 };

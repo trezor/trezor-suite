@@ -8,14 +8,20 @@ import * as bcrypto from '../crypto';
 import { bitcoin as BITCOIN_NETWORK } from '../networks';
 import * as bscript from '../script';
 import * as lazy from './lazy';
-import { Payment, PaymentFunction, PaymentOpts, Stack, StackFunction, typeforce } from '../types';
+import { type Payment, type PaymentOpts, type Stack } from '../types';
+import { BufferNSchema, BufferSchema, Type, assertType } from '../types/validation';
 
 const { OPS } = bscript;
 
 function stacksEqual(a: Buffer[], b: Buffer[]): boolean {
     if (a.length !== b.length) return false;
 
-    return a.every((x, i) => x.equals(b[i]));
+    return a.every((x, i) => {
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const bItem: Buffer = b[i];
+
+        return x.equals(bItem);
+    });
 }
 
 // input: [redeemScriptSig ...] {redeemScript}
@@ -27,36 +33,42 @@ export function p2sh(a: Payment, opts?: PaymentOpts): Payment {
 
     opts = Object.assign({ validate: true }, opts || {});
 
-    typeforce(
-        {
-            network: typeforce.maybe(typeforce.Object),
-
-            address: typeforce.maybe(typeforce.String),
-            hash: typeforce.maybe(typeforce.BufferN(20)),
-            output: typeforce.maybe(typeforce.BufferN(23)),
-
-            redeem: typeforce.maybe({
-                network: typeforce.maybe(typeforce.Object),
-                output: typeforce.maybe(typeforce.Buffer),
-                input: typeforce.maybe(typeforce.Buffer),
-                witness: typeforce.maybe(typeforce.arrayOf(typeforce.Buffer)),
-            }),
-            input: typeforce.maybe(typeforce.Buffer),
-            witness: typeforce.maybe(typeforce.arrayOf(typeforce.Buffer)),
-        },
+    assertType(
+        Type.Object(
+            {
+                network: Type.Optional(Type.Object({}, { additionalProperties: true })),
+                address: Type.Optional(Type.String()),
+                hash: Type.Optional(BufferNSchema(20)),
+                output: Type.Optional(BufferNSchema(23)),
+                redeem: Type.Optional(
+                    Type.Object(
+                        {
+                            network: Type.Optional(Type.Object({}, { additionalProperties: true })),
+                            output: Type.Optional(BufferSchema),
+                            input: Type.Optional(BufferSchema),
+                            witness: Type.Optional(Type.Array(BufferSchema)),
+                        },
+                        { additionalProperties: true },
+                    ),
+                ),
+                input: Type.Optional(BufferSchema),
+                witness: Type.Optional(Type.Array(BufferSchema)),
+            },
+            { additionalProperties: true },
+        ),
         a,
     );
 
     let { network } = a;
     if (!network) {
-        network = (a.redeem && a.redeem.network) || BITCOIN_NETWORK;
+        network = a.redeem?.network || BITCOIN_NETWORK;
     }
 
     const o: Payment = { name: 'p2sh', network };
 
     const _address = lazy.value(() => bs58check.decodeAddress(a.address!, a.network));
 
-    const _chunks = lazy.value(() => bscript.decompile(a.input!)) as StackFunction;
+    const _chunks = lazy.value(() => bscript.decompile(a.input!));
 
     const _redeem = lazy.value((): Payment => {
         const chunks = _chunks();
@@ -67,19 +79,19 @@ export function p2sh(a: Payment, opts?: PaymentOpts): Payment {
             input: bscript.compile(chunks.slice(0, -1)),
             witness: a.witness || [],
         };
-    }) as PaymentFunction;
+    });
 
     // output dependents
     lazy.prop(o, 'address', () => {
         if (!o.hash) return;
 
-        return bs58check.encodeAddress(o.hash, network!.scriptHash, network);
+        return bs58check.encodeAddress(o.hash, network.scriptHash, network);
     });
     lazy.prop(o, 'hash', () => {
         // in order of least effort
         if (a.output) return a.output.subarray(2, 22);
         if (a.address) return _address().hash;
-        if (o.redeem && o.redeem.output) return bcrypto.hash160(o.redeem.output);
+        if (o.redeem?.output) return bcrypto.hash160(o.redeem.output);
     });
     lazy.prop(o, 'output', () => {
         if (!o.hash) return;
@@ -94,25 +106,25 @@ export function p2sh(a: Payment, opts?: PaymentOpts): Payment {
         return _redeem();
     });
     lazy.prop(o, 'input', () => {
-        if (!a.redeem || !a.redeem.input || !a.redeem.output) return;
+        if (!a.redeem?.input || !a.redeem.output) return;
 
         return bscript.compile(
-            ([] as Stack).concat(bscript.decompile(a.redeem.input) as Stack, a.redeem.output),
+            ([] as Stack).concat(bscript.decompile(a.redeem.input), a.redeem.output),
         );
     });
     lazy.prop(o, 'witness', () => {
-        if (o.redeem && o.redeem.witness) return o.redeem.witness;
+        if (o.redeem?.witness) return o.redeem.witness;
         if (o.input) return [];
     });
     lazy.prop(o, 'name', () => {
         const nameParts = ['p2sh'];
-        if (o.redeem !== undefined && o.redeem.name !== undefined) nameParts.push(o.redeem.name!);
+        if (o.redeem?.name !== undefined) nameParts.push(o.redeem.name);
 
         return nameParts.join('-');
     });
 
     if (opts.validate) {
-        let hash = Buffer.from([]);
+        let hash: Buffer = Buffer.from([]);
         if (a.address) {
             const { version, hash: aHash } = _address();
             if (version !== network.scriptHash)
@@ -160,7 +172,7 @@ export function p2sh(a: Payment, opts?: PaymentOpts): Payment {
                 if (!hasInput && !hasWitness) throw new TypeError('Empty input');
                 if (hasInput && hasWitness) throw new TypeError('Input and witness provided');
                 if (hasInput) {
-                    const richunks = bscript.decompile(redeem.input) as Stack;
+                    const richunks = bscript.decompile(redeem.input);
                     if (!bscript.isPushOnly(richunks))
                         throw new TypeError('Non push-only scriptSig');
                 }
@@ -190,7 +202,7 @@ export function p2sh(a: Payment, opts?: PaymentOpts): Payment {
         }
 
         if (a.witness) {
-            if (a.redeem && a.redeem.witness && !stacksEqual(a.redeem.witness, a.witness))
+            if (a.redeem?.witness && !stacksEqual(a.redeem.witness, a.witness))
                 throw new TypeError('Witness and redeem.witness mismatch');
         }
     }

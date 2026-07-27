@@ -1,14 +1,14 @@
 import { selectSelectedDevice } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
-import { BITCOIN_ONLY_SYMBOLS, BitcoinOnlySymbolsItemType } from '@suite-common/suite-constants';
+import { BITCOIN_ONLY_SYMBOLS } from '@suite-common/suite-constants';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { BTC_LOCKTIME_SEQUENCE, BTC_RBF_SEQUENCE } from '@suite-common/wallet-constants';
 import {
-    Account,
+    type Account,
     AddressDisplayOptions,
-    FormState,
-    PrecomposedLevels,
-    PrecomposedTransaction,
+    type FormState,
+    type PrecomposedLevels,
+    type PrecomposedTransaction,
 } from '@suite-common/wallet-types';
 import {
     datetimeToLocktime,
@@ -20,22 +20,26 @@ import {
     restoreOrigOutputsOrder,
 } from '@suite-common/wallet-utils';
 import TrezorConnect, {
+    type ComposeUtxo,
     DEFAULT_SORTING_STRATEGY,
-    FeeLevel,
-    Params,
-    SignTransaction,
-    SignedTransaction,
+    type FeeLevel,
+    type Params,
+    type SignTransaction,
+    type SignedTransaction,
 } from '@trezor/connect';
-import { BigNumber } from '@trezor/utils';
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports -- temporary diagnostic
+import { __btcUnknownTxDebug__ } from '@trezor/connect/src/utils/pathUtils';
+import { BigNumber, isArrayMember } from '@trezor/utils';
 
 import { SEND_MODULE_PREFIX } from './sendFormConstants';
 import {
-    ComposeFeeLevelsError,
-    ComposeTransactionThunkArguments,
-    SignTransactionError,
-    SignTransactionThunkArguments,
+    type ComposeFeeLevelsError,
+    type ComposeTransactionThunkArguments,
+    type SignTransactionError,
+    type SignTransactionThunkArguments,
 } from './sendFormTypes';
 import {
+    selectAddressDisplayType,
     selectAreSatsAmountUnit,
     selectBitcoinAmountUnit,
 } from '../settings/walletSettingsReducer';
@@ -101,10 +105,10 @@ export const composeBitcoinTransactionFeeLevelsThunk = createThunk<
         // unspendable utxos are defined in `useSendForm` hook
         const utxo = formState.isCoinControlEnabled
             ? formState.selectedUtxos?.map(u => ({ ...u, required: true }))
-            : account.utxo.filter(u => {
+            : account.utxo.filter((u: ComposeUtxo) => {
                   const outpoint = getUtxoOutpoint(u);
 
-                  return (u as any).required || (!excludedUtxos?.[outpoint] && !prison?.[outpoint]);
+                  return u.required || (!excludedUtxos?.[outpoint] && !prison?.[outpoint]);
               });
 
         // certain change addresses might be temporary blocked by coinjoin process
@@ -134,23 +138,27 @@ export const composeBitcoinTransactionFeeLevelsThunk = createThunk<
         const response = await TrezorConnect.composeTransaction(params);
 
         if (!response.success) {
-            dispatch(
-                notificationsActions.addToast({
-                    type: 'sign-tx-error',
-                    error: response.payload.error,
-                }),
-            );
+            if (response.error.code !== 'Method_InvalidParameter') {
+                dispatch(
+                    notificationsActions.addToast({
+                        type: 'sign-tx-error',
+                        error: response.error.message,
+                    }),
+                );
+            }
 
             return rejectWithValue({
                 error: 'fee-levels-compose-failed',
-                message: response.payload.error,
+                message: response.error.message,
             });
         }
 
         // wrap response into PrecomposedLevels object where key is a FeeLevel label
         const resultLevels: PrecomposedLevels = {};
         response.payload.forEach((tx, index) => {
-            const feeLabel = predefinedLevels[index].label as FeeLevel['label'];
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const predefinedLevel: (typeof predefinedLevels)[number] = predefinedLevels[index];
+            const feeLabel = predefinedLevel.label;
             resultLevels[feeLabel] = tx as PrecomposedTransaction;
         });
 
@@ -158,7 +166,10 @@ export const composeBitcoinTransactionFeeLevelsThunk = createThunk<
         // there is no valid tx in predefinedLevels and there is no custom level
         if (!hasAtLeastOneValid && !resultLevels.custom) {
             const { minFee } = feeInfo;
-            const lastKnownFee = predefinedLevels[predefinedLevels.length - 1].feePerUnit;
+            const lastIndex = predefinedLevels.length - 1;
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const lastLevel: (typeof predefinedLevels)[number] = predefinedLevels[lastIndex];
+            const lastKnownFee = lastLevel.feePerUnit;
             // define coefficient for maxFee
             // NOTE: DOGE has very large values of FeeLevels, up to several thousands sat/B, rangeGap should be greater in this case otherwise calculation takes too long
             // TODO: calculate rangeGap more precisely (percentage of range?)
@@ -199,7 +210,8 @@ export const composeBitcoinTransactionFeeLevelsThunk = createThunk<
         // format max (@trezor/connect sends it as satoshi)
         // format errorMessage and catch unexpected error (other than AMOUNT_IS_NOT_ENOUGH)
         Object.keys(resultLevels).forEach(key => {
-            const tx = resultLevels[key];
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const tx: (typeof resultLevels)[string] = resultLevels[key];
 
             if (tx.type !== 'error') {
                 // round to
@@ -248,12 +260,8 @@ export const signBitcoinSendFormTransactionThunk = createThunk<
     `${SEND_MODULE_PREFIX}/signBitcoinSendFormTransactionThunk`,
     async (
         { formState, precomposedTransaction, selectedAccount, device, paymentRequests },
-        { getState, extra, rejectWithValue },
+        { getState, rejectWithValue },
     ) => {
-        const {
-            selectors: { selectAddressDisplayType },
-        } = extra;
-
         const bitcoinAmountUnit = selectBitcoinAmountUnit(getState());
         const transactions = selectTransactions(getState());
         const addressDisplayType = selectAddressDisplayType(getState());
@@ -325,10 +333,16 @@ export const signBitcoinSendFormTransactionThunk = createThunk<
             signEnhancement.unlockPath = selectedAccount.unlockPath;
         }
 
-        if (BITCOIN_ONLY_SYMBOLS.includes(selectedAccount.symbol as BitcoinOnlySymbolsItemType)) {
+        if (isArrayMember(selectedAccount.symbol, BITCOIN_ONLY_SYMBOLS)) {
             // nVersion, use 2 as it enables BIP68 + seems to be the most commonly used (= harder to fingerprint the Trezor)
             signEnhancement.version = 2;
         }
+
+        __btcUnknownTxDebug__(
+            'signBitcoin',
+            (signEnhancement.inputs as { address_n?: number[] }[]) ?? precomposedTransaction.inputs,
+            selectedAccount.addresses,
+        );
 
         const signPayload: Params<SignTransaction> = {
             device: {
@@ -353,8 +367,8 @@ export const signBitcoinSendFormTransactionThunk = createThunk<
         if (!response.success) {
             return rejectWithValue({
                 error: 'sign-transaction-failed',
-                errorCode: response.payload.code,
-                message: response.payload.error,
+                errorCode: response.error.code,
+                message: response.error.message,
             });
         }
 

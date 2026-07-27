@@ -2,7 +2,7 @@
 
 const { TX_CACHE } = global.TestUtils;
 
-export default {
+const signTransactionPaymentRequest: TestCase = {
     method: 'signTransaction',
     setup: {
         mnemonic: 'mnemonic_all',
@@ -15,7 +15,7 @@ export default {
             description: 'Testnet (Bech32/P2WPKH): Payment request success',
             skip: ['1', '<2.9.4'], // payment requests are not implemented in T1B1 and proto was changed in 2.9.4
             params: {
-                coin: 'Testnet',
+                coin: 'test',
                 inputs: [
                     {
                         address_n: "m/84'/1'/0'/0/0",
@@ -50,7 +50,7 @@ export default {
                 paymentRequests: [
                     {
                         recipient_name: 'trezor.io',
-                        amount: 7000000,
+                        amount: '7000000',
                         signature:
                             '6cc47e87150a0f3d4889b97ef45f9adfbdc2d8aa30b5dca07f964296059db2d4e1baf107a09b6bb45b0655edf729fd7e29f2f807a50da8919dc6a0376b2ce66e',
                     },
@@ -63,4 +63,6 @@ export default {
             },
         },
     ],
-} satisfies TestCase;
+};
+
+export default signTransactionPaymentRequest;

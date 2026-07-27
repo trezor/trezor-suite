@@ -4,13 +4,14 @@ export {
     HttpServer,
     allowReferers,
     parseBodyJSON,
+    parseBodyJSONWithLimit,
     parseBodyText,
     type RequestHandler,
     type ParamsValidatorHandler,
     type RequestWithParams,
     type Response,
 } from './http';
-export { checkFileExists } from './checkFileExists';
 export { checkSocks5Proxy } from './checkSocks5Proxy';
 export { validateJsonSchema } from './validateJsonSchema';
 export { findProcessFromIncomingPort, type ProcessInfo } from './findProcessFromIncomingPort';
+export { parseRequestUrl, formatRequestUrl, type ParsedRequestUrl } from './parseRequestUrl';

@@ -8,6 +8,7 @@
         { "path": "../suite-types" },
         { "path": "../test-utils" },
         { "path": "../toast-notifications" },
-        { "path": "../../packages/connect" }
+        { "path": "../../packages/connect" },
+        { "path": "../../packages/type-utils" }
     ]
 }

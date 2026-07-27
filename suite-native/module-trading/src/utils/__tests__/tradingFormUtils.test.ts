@@ -1,13 +1,13 @@
 import type { ExchangeTrade, SellFiatTrade } from 'invity-api';
 
-import { AccountKey } from '@suite-common/wallet-types';
+import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { exchangeInvity, sellInvity } from '@suite-native/trading-fixtures';
 
 import { createFormStateForSendForm } from '../tradingFormUtils';
 
 describe('createFormStateForSendForm', () => {
     describe('createTradingFormState', () => {
-        const sendAccountKey = 'send-account-key' as AccountKey;
+        const sendAccountKey = mockAccountKey({ descriptor: 'sendAccountKey' });
         it('should create FormState for exchange quote (swap)', () => {
             const exchangeQuote: ExchangeTrade = {
                 exchange: 'sideshiftfr',
@@ -112,9 +112,11 @@ describe('createFormStateForSendForm', () => {
                 sendAccountKey,
             });
 
-            expect(formState.outputs[0].token).toBe('0x0987654321123456789012345678901234567890');
-            expect(formState.outputs[0].address).toBe('0x1234567890123456789012345678901234567890');
-            expect(formState.outputs[0].amount).toBe('100.0');
+            expect(formState.outputs[0]?.token).toBe('0x0987654321123456789012345678901234567890');
+            expect(formState.outputs[0]?.address).toBe(
+                '0x1234567890123456789012345678901234567890',
+            );
+            expect(formState.outputs[0]?.amount).toBe('100.0');
         });
 
         it('should handle extra fields (destinationTag)', () => {
@@ -222,12 +224,12 @@ describe('createFormStateForSendForm', () => {
             });
 
             // DEX output address should come from dexTx.to, not sendAddress
-            expect(formState.outputs[0].address).toBe('0xDexRouterAddress');
+            expect(formState.outputs[0]?.address).toBe('0xDexRouterAddress');
             expect(formState.transactionData).toBe('0xabcdef1234567890');
             expect(formState.ethereumAdjustGasLimit).toBe('1.25');
         });
 
-        it('should not apply gas limit adjustment for DEX approval transactions', () => {
+        it('should apply gas limit adjustment for DEX approval transactions', () => {
             const dexApprovalQuote: ExchangeTrade = {
                 exchange: '1inch',
                 send: 'ethereum--0xTokenAddress' as any,
@@ -254,10 +256,10 @@ describe('createFormStateForSendForm', () => {
                 sendAccountKey,
             });
 
-            expect(formState.outputs[0].address).toBe('0xDexRouterAddress');
+            expect(formState.outputs[0]?.address).toBe('0xDexRouterAddress');
             expect(formState.transactionData).toBe('0xapprovaldata');
             // No gas adjustment for approval transactions
-            expect(formState.ethereumAdjustGasLimit).toBe('');
+            expect(formState.ethereumAdjustGasLimit).toBe('1.25');
         });
 
         it('should not set DEX fields for CEX exchange quotes', () => {
@@ -281,7 +283,7 @@ describe('createFormStateForSendForm', () => {
                 sendAccountKey,
             });
 
-            expect(formState.outputs[0].address).toBe('0xChangellyDepositAddress');
+            expect(formState.outputs[0]?.address).toBe('0xChangellyDepositAddress');
             expect(formState.transactionData).toBe('');
             expect(formState.ethereumAdjustGasLimit).toBe('');
         });

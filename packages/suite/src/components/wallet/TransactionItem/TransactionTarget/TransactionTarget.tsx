@@ -1,15 +1,22 @@
 import { useMemo } from 'react';
 
 import { useTranslation } from '@suite/intl';
-import { selectLabelingDataForAccount, selectLabelingValueBeingEdited } from '@suite/metadata';
-import { selectSuiteSyncOutputLabels } from '@suite-common/suite-sync';
+import { Labeling } from '@suite/labeling';
 import {
-    Target,
+    selectIsLegacyLabelingVisible,
+    selectLabelingDataForAccount,
+    selectLabelingValueBeingEdited,
+} from '@suite/metadata';
+import { returnStableArrayIfEmpty } from '@suite-common/redux-utils';
+import { selectIsSuiteSyncEnabled, selectSuiteSyncOutputLabels } from '@suite-common/suite-sync';
+import { type SuiteSyncOutput } from '@suite-common/suite-sync-storage';
+import {
+    type Target,
     selectBaseCurrency,
     selectHistoricFiatRatesByTimestamp,
     useDisplayBaseCurrency,
 } from '@suite-common/wallet-core';
-import { AccountKey, Timestamp, TokenAddress } from '@suite-common/wallet-types';
+import { type AccountKey, type Timestamp, type TokenAddress } from '@suite-common/wallet-types';
 import {
     convertAmountSubunitsToUnits,
     formatNetworkAmount,
@@ -19,17 +26,13 @@ import {
     isNftTokenTransfer,
 } from '@suite-common/wallet-utils';
 import { Icon } from '@trezor/components';
+import { TagFilledIcon } from '@trezor/icons';
 import { exhaustive } from '@trezor/type-utils';
 
-import {
-    AddressLabeling,
-    BaseCurrencyValue,
-    FormattedCryptoAmount,
-    Labeling,
-    Sign,
-} from 'src/components/suite';
+import { BaseCurrencyValue, FormattedCryptoAmount, Sign } from 'src/components/suite';
+import { AccountLabelForOwnAddress } from 'src/components/suite/labeling/AccountLabelForOwnAddress';
 import { useSelector } from 'src/hooks/suite';
-import { WalletAccountTransaction } from 'src/types/wallet';
+import { type WalletAccountTransaction } from 'src/types/wallet';
 
 import { TargetAddressLabel } from './TargetAddressLabel';
 import { TokenTransferAddressLabel } from './TokenTransferAddressLabel';
@@ -56,6 +59,8 @@ export const TransactionTarget = ({
     const { translationString } = useTranslation();
 
     const accountMetadata = useSelector(state => selectLabelingDataForAccount(state, accountKey));
+    const isSuiteSyncEnabled = useSelector(selectIsSuiteSyncEnabled);
+    const isLegacyLabelingVisible = useSelector(selectIsLegacyLabelingVisible);
 
     const baseCurrencyCode = useSelector(selectBaseCurrency);
     const fiatRateKey = getFiatRateKey(
@@ -72,7 +77,9 @@ export const TransactionTarget = ({
     const labelingValueBeingEdited = useSelector(selectLabelingValueBeingEdited);
 
     const suiteSyncOutputLabels = useSelector(state =>
-        selectSuiteSyncOutputLabels(state, transaction.deviceState),
+        isSuiteSyncEnabled
+            ? selectSuiteSyncOutputLabels(state, transaction.deviceState)
+            : returnStableArrayIfEmpty<SuiteSyncOutput>(),
     );
 
     const isSolanaUnstakeTx = transaction?.solanaSpecific?.stakeOperation?.type === 'unstake';
@@ -104,7 +111,6 @@ export const TransactionTarget = ({
                         value={amount}
                         symbol={transaction.symbol}
                         signValue={operation}
-                        signGrayscale
                     />
                 ) : undefined;
             case 'token':
@@ -113,7 +119,6 @@ export const TransactionTarget = ({
                         transfer={payload}
                         withLink={false}
                         withSign
-                        signGrayscale
                         alignMultitoken="flex-end"
                     />
                 );
@@ -165,7 +170,7 @@ export const TransactionTarget = ({
                 return (
                     <TargetAddressLabel
                         symbol={transaction.symbol}
-                        accountMetadata={accountMetadata}
+                        accountKey={accountKey}
                         target={payload}
                         type={transaction.type}
                         deviceStaticSessionId={transaction.deviceState}
@@ -180,15 +185,17 @@ export const TransactionTarget = ({
                     />
                 );
             case 'internal':
-                return <AddressLabeling address={payload.to} symbol={transaction.symbol} />;
+                return (
+                    <AccountLabelForOwnAddress address={payload.to} symbol={transaction.symbol} />
+                );
             default:
                 return exhaustive(type);
         }
-    }, [type, transaction, payload, accountMetadata]);
+    }, [accountKey, type, transaction, payload]);
 
     const outputLabel =
         suiteSyncOutputLabels.find(it => it.txId === transaction.txid && it.txTargetId === targetId)
-            ?.label ?? targetMetadata;
+            ?.label ?? (isLegacyLabelingVisible ? targetMetadata : undefined);
 
     return (
         <TransactionTargetLayout
@@ -198,7 +205,7 @@ export const TransactionTarget = ({
             addressLabel={
                 <Labeling
                     deviceStaticSessionId={transaction.deviceState}
-                    isDisabled={isActionDisabled}
+                    isDisabled={isActionDisabled || isPhishingTransaction}
                     displayValue={label}
                     placeholder={translationString('TR_LABELING_OUTPUT_LABEL')}
                     payload={{
@@ -207,14 +214,13 @@ export const TransactionTarget = ({
                         txid: transaction.txid,
                         outputIndex: `${targetId}`,
                         defaultValue: defaultMetadataValue,
-                        value: outputLabel,
                         networkSymbol: transaction.symbol,
                         accountDescriptor: transaction.descriptor,
                     }}
                     leftAddon={
                         outputLabel ? (
                             <Icon
-                                name="tagFilled"
+                                as={TagFilledIcon}
                                 size={14}
                                 intent="neutral"
                                 priority="secondary"

@@ -1,18 +1,19 @@
-import { BuyProviderInfo, CryptoId, FiatCurrencyCode } from 'invity-api';
+import { type BuyProviderInfo, type CryptoId, type FiatCurrencyCode } from 'invity-api';
 
 import { createThunk } from '@suite-common/redux-utils';
 
 import { TRADING_BUY_THUNK_PREFIX } from '../../constants';
 import { invityAPI } from '../../invityAPI';
-import { BuyInfo } from '../../reducers/buyReducer';
+import { type BuyInfo } from '../../reducers/buyReducer';
 import { regional } from '../../regional';
+import { toTradingCountryCode } from '../../utils/countryUtils';
 
 export const loadBuyInfoThunk = createThunk<BuyInfo>(
     `${TRADING_BUY_THUNK_PREFIX}/loadInfo`,
     async (_, { fulfillWithValue }) => {
         const buyInfo = await invityAPI.getBuyList();
 
-        if (!buyInfo || !buyInfo.providers) {
+        if (!buyInfo?.providers) {
             return fulfillWithValue({
                 buyInfo: {
                     country: regional.UNKNOWN_COUNTRY,
@@ -41,7 +42,10 @@ export const loadBuyInfoThunk = createThunk<BuyInfo>(
         });
 
         return fulfillWithValue({
-            buyInfo,
+            buyInfo: {
+                ...buyInfo,
+                country: toTradingCountryCode(buyInfo.country),
+            },
             providerInfos,
             supportedFiatCurrencies,
             supportedCryptoCurrencies,

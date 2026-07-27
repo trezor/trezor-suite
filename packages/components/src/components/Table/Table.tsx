@@ -1,19 +1,18 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
 import styled from 'styled-components';
 
-import { mapElevationToBackgroundToken } from '@trezor/theme';
+import { type Color } from '@trezor/theme';
 
 import { TableBody } from './TableBody';
 import { TableCell } from './TableCell';
 import { TableContext } from './TableContext';
 import { TableHeader } from './TableHeader';
 import { TableRow } from './TableRow';
-import { FrameProps, FramePropsKeys, withFrameProps } from '../../utils/frameProps';
-import { TransientProps, makePropsTransient } from '../../utils/transientProps';
+import { type FrameProps, type FramePropsKeys, withFrameProps } from '../../utils/frameProps';
+import { type TransientProps, makePropsTransient } from '../../utils/transientProps';
 import { useScrollShadow } from '../../utils/useScrollShadow';
-import { useElevation } from '../ElevationContext/ElevationContext';
-import { TextProps, TextPropsKeys } from '../typography/utils';
+import { type TextProps, type TextPropsKeys } from '../typography/utils';
 
 export const allowedTableFrameProps = [
     'margin',
@@ -48,6 +47,7 @@ export type TableProps = AllowedFrameProps &
         }[];
         hasBorders?: boolean;
         isRowHighlightedOnHover?: boolean;
+        backgroundColor?: Color;
     };
 
 export const Table = ({
@@ -57,13 +57,17 @@ export const Table = ({
     isRowHighlightedOnHover = false,
     hasBorders = true,
     typographyStyle = 'body-md',
+    backgroundColor = 'surfaceFillRaised',
 }: TableProps) => {
-    const { scrollElementRef, onScroll, ShadowContainer, ShadowRight } = useScrollShadow();
-    const { parentElevation } = useElevation();
+    const { scrollElementRef, onScroll, ShadowContainer, ShadowRight, ShadowLeft } =
+        useScrollShadow({
+            backgroundColor,
+        });
 
     return (
         <TableContext.Provider value={{ isRowHighlightedOnHover, hasBorders, typographyStyle }}>
             <ShadowContainer>
+                <ShadowLeft />
                 <ScrollContainer onScroll={onScroll} ref={scrollElementRef}>
                     <Container {...makePropsTransient({ margin })}>
                         {colWidths && (
@@ -76,14 +80,7 @@ export const Table = ({
                         {children}
                     </Container>
                 </ScrollContainer>
-                <ShadowRight
-                    backgroundColor={mapElevationToBackgroundToken({
-                        $elevation: parentElevation,
-                    })}
-                    style={{
-                        borderRadius: '16px',
-                    }}
-                />
+                <ShadowRight />
             </ShadowContainer>
         </TableContext.Provider>
     );

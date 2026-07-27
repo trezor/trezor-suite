@@ -1,17 +1,23 @@
-import { DeviceRootState, selectSelectedDevice } from '@suite-common/device';
-import { DiscoveryStatus } from '@suite-common/wallet-types';
-import { DeviceUniquePath } from '@trezor/connect';
+import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
+import { type DiscoveryStatus } from '@suite-common/wallet-types';
+import { type DeviceUniquePath } from '@trezor/connect';
 
-import { DiscoveryRootState } from './discoveryReducer';
+import { type DiscoveryRootState } from './discoveryReducer';
 
 export const selectDiscoveryByDevicePath = (state: DiscoveryRootState, path?: DeviceUniquePath) =>
     path !== undefined ? state.wallet.discovery[path] : undefined;
 
-export const selectDiscoveryForSelectedDevice = (state: DiscoveryRootState & DeviceRootState) => {
+export const selectDiscoveryForSelectedDevice = (
+    state: DiscoveryRootState & DeviceRootState,
+): DiscoveryStatus | undefined => {
     const selectedDevice = selectSelectedDevice(state);
 
     return selectDiscoveryByDevicePath(state, selectedDevice?.path);
 };
+
+export const selectDiscoveryStartTimestampForSelectedDevice = (
+    state: DiscoveryRootState & DeviceRootState,
+) => selectDiscoveryForSelectedDevice(state)?.startTimestamp;
 
 export function isDiscoveryInProgress(
     discovery?: DiscoveryStatus,
@@ -30,7 +36,7 @@ export function isDiscoveryInProgress(
     );
 }
 
-export const selectHasRunningDiscovery = (state: DiscoveryRootState & DeviceRootState) => {
+export const selectHasRunningDiscovery = (state: DiscoveryRootState & DeviceRootState): boolean => {
     const discovery = selectDiscoveryForSelectedDevice(state);
 
     return isDiscoveryInProgress(discovery);
@@ -42,4 +48,12 @@ export const selectHasRunningDiscovery = (state: DiscoveryRootState & DeviceRoot
 export const selectIsDiscoveryStatusConfirmEmptyPassphrase = (
     state: DiscoveryRootState & DeviceRootState,
     path?: DeviceUniquePath,
-) => selectDiscoveryByDevicePath(state, path)?.status === 'confirm-empty-passphrase';
+): boolean => selectDiscoveryByDevicePath(state, path)?.status === 'confirm-empty-passphrase';
+
+export const selectIsCreatingNewPassphraseWallet = (
+    state: DiscoveryRootState & DeviceRootState,
+): boolean => {
+    const discovery = selectDiscoveryForSelectedDevice(state);
+
+    return discovery?.isAddingHiddenWallet === true;
+};

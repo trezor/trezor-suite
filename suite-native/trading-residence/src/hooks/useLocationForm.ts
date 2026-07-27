@@ -1,16 +1,20 @@
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
-import { nonSanctionedRegional } from '@suite-common/trading';
+import { getDefaultCountrySubdivision, nonSanctionedRegional } from '@suite-common/trading';
 import { useForm } from '@suite-native/forms';
-import { selectTradingResidenceCountry } from '@suite-native/trading-state';
+import {
+    selectTradingResidenceCountry,
+    selectTradingResidenceCountrySubdivision,
+} from '@suite-native/trading-state';
 
-import { TradingLocationFormValues } from '../types/tradingLocationForm';
+import { type TradingLocationFormValues } from '../types/tradingLocationForm';
 import { getPreferredCountryOption } from '../utils/getPreferredCountryOption';
 import { locationFormValidationSchema } from '../utils/locationFormValidationSchema';
 
 export const useLocationForm = () => {
     const countryCode = useSelector(selectTradingResidenceCountry);
+    const countrySubdivisionCode = useSelector(selectTradingResidenceCountrySubdivision);
 
     const defaultCountry = useMemo(() => {
         if (countryCode) {
@@ -23,9 +27,15 @@ export const useLocationForm = () => {
         return getPreferredCountryOption();
     }, [countryCode]);
 
+    const defaultCountrySubdivision = useMemo(
+        () => getDefaultCountrySubdivision(countrySubdivisionCode, defaultCountry.value),
+        [countrySubdivisionCode, defaultCountry.value],
+    );
+
     return useForm<TradingLocationFormValues>({
         defaultValues: {
             country: defaultCountry,
+            countrySubdivision: defaultCountrySubdivision,
         },
         validation: locationFormValidationSchema,
     });

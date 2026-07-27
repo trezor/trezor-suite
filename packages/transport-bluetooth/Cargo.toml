@@ -10,8 +10,6 @@ codegen-units = 1     # better optimization, smaller binary
 strip = "symbols"     # built-in strip
 
 [dependencies]
-napi = { version = "3", features = ["async"], optional = true }
-napi-derive = { version = "3", optional = true }
 futures = "^0.3.31"
 hyper = {version="^1.6.0",features = ["server", "http1"]}
 hyper-tungstenite = "^0.17.0"
@@ -37,13 +35,3 @@ bluez-async = "0.8.0"
 
 [target.'cfg(target_os = "windows")'.dependencies]
 windows = { version = "0.61", features = ["Devices_Bluetooth", "Devices_Enumeration"] }
-
-[features]
-default = []
-napi = ["dep:napi", "dep:napi-derive", "dep:napi-build"]
-
-[lib]
-crate-type = ["cdylib"]
-
-[build-dependencies]
-napi-build = { version = "2", optional = true }

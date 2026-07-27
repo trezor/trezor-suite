@@ -1,61 +1,47 @@
-import { IconName } from '@suite-native/icons';
-import { Color } from '@trezor/theme';
+import { type IconName } from '@suite-native/icons';
+import { type Color } from '@trezor/theme';
 
-import { ButtonColorScheme } from '../Button/Button';
+import { type AlertBoxIntent } from './types';
 
-export const FULL_ALERT_BOX_VARIANTS = [
-    'info',
-    'critical',
-    'neutral',
-    'success',
-    'warning',
-] as const;
-export type AlertVariant = (typeof FULL_ALERT_BOX_VARIANTS)[number];
-
-export type FullAlertStyles = {
+export type AlertBoxStyles = {
     backgroundColor: Color;
     borderColor: Color;
-    primaryButtonColorScheme: ButtonColorScheme;
-    secondaryButtonColorScheme: ButtonColorScheme;
+    textColor: Color;
 };
 
-export const variantToColorMap = {
-    info: {
-        backgroundColor: 'backgroundAlertBlueSubtleOnElevation1',
-        borderColor: 'backgroundAlertBlueSubtleOnElevationNegative',
-        primaryButtonColorScheme: 'blueBold',
-        secondaryButtonColorScheme: 'blueElevation0',
-    },
-    success: {
-        backgroundColor: 'backgroundPrimarySubtleOnElevation1',
-        borderColor: 'backgroundPrimarySubtleOnElevationNegative',
-        primaryButtonColorScheme: 'primary',
-        secondaryButtonColorScheme: 'primaryElevation0',
-    },
-    warning: {
-        backgroundColor: 'backgroundAlertYellowSubtleOnElevation1',
-        borderColor: 'backgroundAlertYellowSubtleOnElevationNegative',
-        primaryButtonColorScheme: 'yellowBold',
-        secondaryButtonColorScheme: 'yellowElevation0',
+export const intentToColorMap = {
+    brand: {
+        backgroundColor: 'elementFillBrandSofter',
+        borderColor: 'elementBorderBrandSofter',
+        textColor: 'contentBrand',
     },
     neutral: {
-        backgroundColor: 'backgroundTertiaryDefaultOnElevation1',
-        borderColor: 'backgroundTertiaryDefaultOnElevation0',
-        primaryButtonColorScheme: 'primary',
-        secondaryButtonColorScheme: 'tertiaryElevation0',
+        backgroundColor: 'elementFillNeutralSofter',
+        borderColor: 'elementBorderNeutralSofter',
+        textColor: 'contentPrimary',
     },
     critical: {
-        backgroundColor: 'backgroundAlertRedSubtleOnElevation1',
-        borderColor: 'backgroundAlertRedSubtleOnElevationNegative',
-        primaryButtonColorScheme: 'redBold',
-        secondaryButtonColorScheme: 'redElevation0',
+        backgroundColor: 'elementFillCriticalSofter',
+        borderColor: 'elementBorderCriticalSofter',
+        textColor: 'contentCritical',
     },
-} as const satisfies Record<AlertVariant, FullAlertStyles>;
 
-export const variantToIconName = {
+    warning: {
+        backgroundColor: 'elementFillWarningSofter',
+        borderColor: 'elementBorderWarningSofter',
+        textColor: 'contentWarning',
+    },
+    info: {
+        backgroundColor: 'elementFillInfoSofter',
+        borderColor: 'elementBorderInfoSofter',
+        textColor: 'contentInfo',
+    },
+} as const satisfies Record<AlertBoxIntent, AlertBoxStyles>;
+
+export const intentToIconName = {
     info: 'info',
-    success: 'checkCircle',
+    brand: 'checkCircle',
     warning: 'warning',
-    critical: 'warning',
+    critical: 'warningCircle',
     neutral: 'info',
-} as const satisfies Record<AlertVariant, IconName>;
+} as const satisfies Record<AlertBoxIntent, IconName>;

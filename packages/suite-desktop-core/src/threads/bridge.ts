@@ -4,7 +4,7 @@ import { Logger } from '../libs/logger';
 import { createThread } from '../libs/thread';
 import { convertILoggerToLog } from '../utils/IloggerToLog';
 
-export interface TrezordNodeSettings {
+interface TrezordNodeSettings {
     port: number;
     api: 'usb' | 'udp';
 }

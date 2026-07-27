@@ -1,23 +1,20 @@
 import type { ExchangeTrade } from 'invity-api';
 
+import { EMPTY_GROUPED_TRADING_EXCHANGE_QUOTES } from '@suite-common/trading';
 import { act, renderHookWithBasicProvider } from '@suite-native/test-utils';
-import { QuotesByCategories } from '@suite-native/trading-types';
+import { type QuotesByCategories } from '@suite-native/trading-types';
 
 import { useProviderFilters } from '../useProviderFilters';
 
 type UseProviderFilterProps = {
     quotes?: QuotesByCategories<ExchangeTrade>;
     shouldShowFilters?: boolean;
-    areTradingExchangeDexesEnabled?: boolean;
 };
 describe('useProviderFilters', () => {
     const renderUseProviderFilters = (initialProps: UseProviderFilterProps) =>
         renderHookWithBasicProvider(
-            ({
-                quotes = { fixed: [], float: [], dex: [] },
-                shouldShowFilters = true,
-                areTradingExchangeDexesEnabled = true,
-            }) => useProviderFilters(quotes, shouldShowFilters, areTradingExchangeDexesEnabled),
+            ({ quotes = EMPTY_GROUPED_TRADING_EXCHANGE_QUOTES, shouldShowFilters = true }) =>
+                useProviderFilters(quotes, shouldShowFilters),
             {
                 initialProps,
             },
@@ -107,18 +104,6 @@ describe('useProviderFilters', () => {
             { key: 'fixed', data: [], label: '', sectionData: 'fixed' },
             { key: 'float', data: [], label: '', sectionData: 'float' },
             { key: 'dex', data: [], label: '', sectionData: 'dex' },
-        ]);
-    });
-
-    it('should return only CEX sections when DEX is disabled', () => {
-        const { result } = renderUseProviderFilters({
-            shouldShowFilters: false,
-            areTradingExchangeDexesEnabled: false,
-        });
-
-        expect(result.current.filteredSections).toEqual([
-            { key: 'fixed', data: [], label: '', sectionData: 'fixed' },
-            { key: 'float', data: [], label: '', sectionData: 'float' },
         ]);
     });
 });

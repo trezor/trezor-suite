@@ -8,15 +8,14 @@ import { ConfirmOnTrezorAnimation } from '@suite-native/confirm-on-trezor';
 import { Translation } from '@suite-native/intl';
 import {
     DeviceOnboardingStackRoutes,
-    RootStackParamList,
+    type RootStackParamList,
     RootStackRoutes,
-    StackNavigationProps,
+    type StackNavigationProps,
 } from '@suite-native/navigation';
 import { DeviceModelInternal } from '@trezor/device-utils';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 const cardStyle = prepareNativeStyle(utils => ({
-    flex: 1,
     justifyContent: 'center',
     paddingTop: utils.spacings.sp32,
     paddingBottom: utils.spacings.sp16,
@@ -38,7 +37,7 @@ export const UninitializedConnectedDeviceState = () => {
 
     const deviceModel = useSelector(selectDeviceModel);
 
-    const handleAddAccount = () => {
+    const navigateToDeviceOnboarding = () => {
         navigation.navigate(RootStackRoutes.DeviceOnboardingStack, {
             screen: DeviceOnboardingStackRoutes.UninitializedDeviceLanding,
             params: {
@@ -62,7 +61,7 @@ export const UninitializedConnectedDeviceState = () => {
                     testID="@homescreen/uninitializedConnectedDeviceText"
                     alignSelf="stretch"
                 />
-                <Button size="large" onPress={handleAddAccount} style={applyStyle(buttonStyle)}>
+                <Button onPress={navigateToDeviceOnboarding} style={applyStyle(buttonStyle)}>
                     <Translation id="moduleHome.emptyState.uninitializedDevice.button" />
                 </Button>
             </VStack>

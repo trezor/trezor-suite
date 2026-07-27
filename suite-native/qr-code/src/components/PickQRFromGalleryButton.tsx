@@ -18,17 +18,24 @@ export const PickQRFromGalleryButton = ({
 
     const handlePickImage = async () => {
         const pickedImage = await ImagePicker.launchImageLibraryAsync({});
-        const imageUri = pickedImage?.assets?.[0].uri;
+        const imageUri = pickedImage?.assets?.[0]?.uri;
 
         try {
-            const scannedResults = await scanFromURLAsync(imageUri!, ['qr']);
-            const { data } = scannedResults[0];
+            if (!imageUri) {
+                throw new Error('No image selected');
+            }
+            const scannedResults = await scanFromURLAsync(imageUri, ['qr']);
+            const firstResult = scannedResults[0];
+            if (!firstResult) {
+                throw new Error('No QR code found');
+            }
+            const { data } = firstResult;
 
             onImagePicked(data);
         } catch {
             onError();
             showToast({
-                variant: 'error',
+                intent: 'critical',
                 icon: 'warning',
                 message: <Translation id="qrCode.pickImageError" />,
             });
@@ -36,7 +43,7 @@ export const PickQRFromGalleryButton = ({
     };
 
     return (
-        <Button onPress={handlePickImage} viewLeft="image" colorScheme="tertiaryElevation0">
+        <Button onPress={handlePickImage} iconLeft="image" intent="neutral" priority="secondary">
             <Translation id="qrCode.pickImageButton" />
         </Button>
     );

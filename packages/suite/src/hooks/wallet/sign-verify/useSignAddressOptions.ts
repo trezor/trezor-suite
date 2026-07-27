@@ -1,9 +1,9 @@
 import { useMemo } from 'react';
 
-import { ExtendedMessageDescriptor, useTranslation } from '@suite/intl';
+import { type ExtendedMessageDescriptor, useTranslation } from '@suite/intl';
+import { type ReceiveInfo } from '@suite-common/wallet-types';
 import { getStakingPath } from '@suite-common/wallet-utils';
 
-import type { State as RevealedAddresses } from 'src/reducers/wallet/receiveReducer';
 import type { Account } from 'src/types/wallet';
 
 export type AddressItem = {
@@ -13,7 +13,7 @@ export type AddressItem = {
 
 export const useSignAddressOptions = (
     account: Account | undefined,
-    revealedAddresses: RevealedAddresses,
+    touchedAddresses: ReceiveInfo[],
 ) => {
     const reduceAddresses = (
         addresses: { address: string; path: string }[],
@@ -36,8 +36,8 @@ export const useSignAddressOptions = (
             case 'bitcoin':
                 return {
                     ...reduceAddresses(
-                        revealedAddresses.length
-                            ? revealedAddresses
+                        touchedAddresses.length
+                            ? touchedAddresses
                             : (account.addresses?.unused || []).slice(0, 1),
                         'TR_ADDRESSES_FRESH',
                     ),
@@ -64,8 +64,8 @@ export const useSignAddressOptions = (
                         'TR_STAKING_STAKE_ADDRESS',
                     ),
                     ...reduceAddresses(
-                        revealedAddresses.length
-                            ? revealedAddresses
+                        touchedAddresses.length
+                            ? touchedAddresses
                             : (account.addresses?.unused || []).slice(0, 1),
                         'TR_ADDRESSES_FRESH',
                     ),
@@ -90,7 +90,7 @@ export const useSignAddressOptions = (
             default:
                 return {};
         }
-    }, [account, revealedAddresses]);
+    }, [account, touchedAddresses]);
 
     const { translationString } = useTranslation();
 
@@ -117,8 +117,13 @@ export const useSignAddressOptions = (
                 ? translationString(label as ExtendedMessageDescriptor['id'])
                 : label;
 
-            const pathParts = options[0].value.split('/');
-            const pathLabel = `m/${pathParts[pathParts.length - 2]}/i`;
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const firstOption: (typeof options)[number] = options[0];
+            const pathParts = firstOption.value.split('/');
+            const lastSegmentIndex = pathParts.length - 2;
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const pathSegment: string = pathParts[lastSegmentIndex];
+            const pathLabel = `m/${pathSegment}/i`;
 
             return {
                 label: `${translatedLabel} ${pathLabel}`,

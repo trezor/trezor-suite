@@ -1,13 +1,14 @@
 // upstream: https://github.com/bitcoinjs/bitcoinjs-lib/blob/master/ts_src/payments/p2wpkh.ts
 
-import { bech32 } from 'bech32';
-import ecc from 'tiny-secp256k1';
+import { bech32 } from '@scure/base';
 
 import * as bcrypto from '../crypto';
 import { bitcoin as BITCOIN_NETWORK } from '../networks';
+import * as ecc from '../noble-compatibility';
 import * as bscript from '../script';
-import { Payment, PaymentOpts, typeforce } from '../types';
+import { type Payment, type PaymentOpts } from '../types';
 import * as lazy from './lazy';
+import { BufferNSchema, BufferSchema, Point, Type, assertType } from '../types/validation';
 
 const { OPS } = bscript;
 
@@ -22,22 +23,28 @@ export function p2wpkh(a: Payment, opts?: PaymentOpts): Payment {
 
     opts = Object.assign({ validate: true }, opts || {});
 
-    typeforce(
-        {
-            address: typeforce.maybe(typeforce.String),
-            hash: typeforce.maybe(typeforce.BufferN(20)),
-            input: typeforce.maybe(typeforce.BufferN(0)),
-            network: typeforce.maybe(typeforce.Object),
-            output: typeforce.maybe(typeforce.BufferN(22)),
-            pubkey: typeforce.maybe(ecc.isPoint),
-            signature: typeforce.maybe(bscript.isCanonicalScriptSignature),
-            witness: typeforce.maybe(typeforce.arrayOf(typeforce.Buffer)),
-        },
+    assertType(
+        Type.Object(
+            {
+                address: Type.Optional(Type.String()),
+                hash: Type.Optional(BufferNSchema(20)),
+                input: Type.Optional(BufferNSchema(0)),
+                network: Type.Optional(Type.Object({}, { additionalProperties: true })),
+                output: Type.Optional(BufferNSchema(22)),
+                pubkey: Type.Optional(Point),
+                signature: Type.Optional(BufferSchema),
+                witness: Type.Optional(Type.Array(BufferSchema)),
+            },
+            { additionalProperties: true },
+        ),
         a,
     );
 
+    if (a.signature && !bscript.isCanonicalScriptSignature(a.signature))
+        throw new TypeError('Expected canonical script signature');
+
     const _address = lazy.value(() => {
-        const result = bech32.decode(a.address!);
+        const result = bech32.decode(a.address! as `${string}1${string}`);
         const version = result.words.shift();
         const data = bech32.fromWords(result.words);
 
@@ -94,7 +101,7 @@ export function p2wpkh(a: Payment, opts?: PaymentOpts): Payment {
 
     // extended validation
     if (opts.validate) {
-        let hash = Buffer.from([]);
+        let hash: Buffer = Buffer.from([]);
         if (a.address) {
             const { prefix, version, data } = _address();
             if (network && network.bech32 !== prefix)
@@ -127,16 +134,21 @@ export function p2wpkh(a: Payment, opts?: PaymentOpts): Payment {
 
         if (a.witness) {
             if (a.witness.length !== 2) throw new TypeError('Witness is invalid');
-            if (!bscript.isCanonicalScriptSignature(a.witness[0]))
+            const { witness } = a;
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const witnessSig: Buffer = witness[0];
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const witnessPubkey: Buffer = witness[1];
+            if (!bscript.isCanonicalScriptSignature(witnessSig))
                 throw new TypeError('Witness has invalid signature');
-            if (!ecc.isPoint(a.witness[1]) || a.witness[1].length !== 33)
+            if (!ecc.isPoint(witnessPubkey) || witnessPubkey.length !== 33)
                 throw new TypeError('Witness has invalid pubkey');
 
-            if (a.signature && !a.signature.equals(a.witness[0]))
+            if (a.signature && !a.signature.equals(witnessSig))
                 throw new TypeError('Signature mismatch');
-            if (a.pubkey && !a.pubkey.equals(a.witness[1])) throw new TypeError('Pubkey mismatch');
+            if (a.pubkey && !a.pubkey.equals(witnessPubkey)) throw new TypeError('Pubkey mismatch');
 
-            const pkh = bcrypto.hash160(a.witness[1]);
+            const pkh = bcrypto.hash160(witnessPubkey);
             if (hash.length > 0 && !hash.equals(pkh)) throw new TypeError('Hash mismatch');
         }
     }

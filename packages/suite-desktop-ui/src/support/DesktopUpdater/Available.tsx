@@ -1,13 +1,11 @@
+import { downloadThunk } from '@suite/desktop-update';
+import { selectFlags, setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import { Card, Checkbox, Column, H4, Modal, Paragraph } from '@trezor/components';
-import { UpdateInfo, desktopApi } from '@trezor/suite-desktop-api';
-import { spacings } from '@trezor/theme';
+import { type UpdateInfo, desktopApi } from '@trezor/suite-desktop-api';
 
-import { download } from 'src/actions/suite/desktopUpdateActions';
-import { setFlag } from 'src/actions/suite/suiteActions';
 import { MarkdownWithComponents } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectSuiteFlags } from 'src/selectors/suite/suiteSelectors';
 
 import { getVersionName } from './getVersionName';
 
@@ -18,10 +16,10 @@ interface AvailableProps {
 
 export const Available = ({ onCancel, latest }: AvailableProps) => {
     const dispatch = useDispatch();
-    const { enableAutoupdateOnNextRun } = useSelector(selectSuiteFlags);
+    const { enableAutoupdateOnNextRun } = useSelector(selectFlags);
 
     const downloadUpdate = () => {
-        dispatch(download());
+        dispatch(downloadThunk());
         desktopApi.downloadUpdate();
     };
 
@@ -32,7 +30,7 @@ export const Available = ({ onCancel, latest }: AvailableProps) => {
     });
 
     const handleToggleAutoUpdateClick = () =>
-        dispatch(setFlag('enableAutoupdateOnNextRun', !enableAutoupdateOnNextRun));
+        dispatch(setFlag({ key: 'enableAutoupdateOnNextRun', value: !enableAutoupdateOnNextRun }));
 
     return (
         <Modal
@@ -65,7 +63,7 @@ export const Available = ({ onCancel, latest }: AvailableProps) => {
                 <Paragraph typographyStyle="body-sm" intent="neutral" priority="secondary">
                     <Translation id="TR_WERE_CONSTANTLY_WORKING_TO_IMPROVE" />
                 </Paragraph>
-                <Card maxHeight={400} overflow="auto" margin={{ top: spacings.sm }}>
+                <Card maxHeight={400} overflow="auto" margin={{ top: 12 }}>
                     {latest?.changelog ? (
                         <MarkdownWithComponents>{latest?.changelog}</MarkdownWithComponents>
                     ) : (
@@ -74,10 +72,10 @@ export const Available = ({ onCancel, latest }: AvailableProps) => {
                 </Card>
             </Column>
 
-            <Card margin={{ top: spacings.xxl }}>
+            <Card margin={{ top: 32 }}>
                 <Checkbox
                     isChecked={enableAutoupdateOnNextRun}
-                    onClick={handleToggleAutoUpdateClick}
+                    onChange={handleToggleAutoUpdateClick}
                 >
                     <Translation id="TR_UPDATE_MODAL_ENABLE_AUTO_UPDATES" />
                 </Checkbox>

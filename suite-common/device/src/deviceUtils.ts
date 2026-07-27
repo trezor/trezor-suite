@@ -1,10 +1,11 @@
 import type {
     DeviceCancelledErrType,
     DeviceErrorType,
+    DeviceNotConnectedErrorType,
     TrezorDevice,
     TrezorDeviceWithState,
 } from '@suite-common/suite-types';
-import { Device } from '@trezor/connect';
+import { type Device } from '@trezor/connect';
 
 export const DeviceCancelledErr = (): DeviceCancelledErrType => ({
     type: 'DeviceCancelled' as const,
@@ -16,6 +17,13 @@ export const isCanceledErrorMessage = (errorMessage: string | null | undefined) 
 export const DeviceError = (message: string): DeviceErrorType => ({
     type: 'DeviceError' as const,
     message,
+});
+
+export const DeviceNotConnectedError = (
+    message: string | null = null,
+): DeviceNotConnectedErrorType => ({
+    type: 'DeviceNotConnectedError' as const,
+    message: message ?? 'Device is not connected',
 });
 
 export const shouldDeviceBeRemembered = ({
@@ -35,11 +43,10 @@ export const shouldDeviceBeRemembered = ({
 export const isApprovalFlowSupported = (device: TrezorDevice | undefined) =>
     !device?.unavailableCapabilities?.['evmApproval'];
 
+export const isEvmClearSigningSupported = (device: TrezorDevice | undefined) =>
+    !device?.unavailableCapabilities?.['evmClearSigning'];
+
 export const isTrezorDeviceWithState = (
     device: TrezorDevice | undefined,
 ): device is TrezorDeviceWithState =>
-    device !== undefined &&
-    device.id !== null &&
-    device.state !== undefined &&
-    device.state !== null &&
-    device.state.staticSessionId !== undefined;
+    device !== undefined && device.id !== null && device.state?.staticSessionId !== undefined;

@@ -6,6 +6,8 @@ import { step } from '../../common';
 export class AccountMetadata extends MetadataBase {
     readonly editLabelButton = (accountId: string) =>
         this.accountLabel(accountId).getByTestId(this.editButtonId);
+    readonly deleteLabelButton = (accountId: string) =>
+        this.accountLabel(accountId).getByTestId(this.deleteButtonId);
     readonly successLabel = (accountId: string) =>
         this.accountLabel(accountId).getByTestId(this.successId);
     readonly accountLabel = (accountId: string) =>
@@ -16,9 +18,30 @@ export class AccountMetadata extends MetadataBase {
     }
 
     @step()
-    async changeLabel({ accountId, label }: { accountId: string; label: string }) {
+    async changeLabel({
+        accountId,
+        label,
+        confirmSuiteSync,
+    }: {
+        accountId: string;
+        label: string;
+        confirmSuiteSync?: boolean;
+    }) {
         await this.clickEditLabelButton(accountId);
         await this.fillLabelInput(label, { useButton: true });
+        if (confirmSuiteSync) {
+            await this.devicePrompt.confirmSuiteSyncSetup();
+        }
+        await this.successIconIsVisible(accountId);
+    }
+
+    @step()
+    async removeLabel({ accountId }: { accountId: string }) {
+        await this.page.resetMousePosition();
+        await expect(this.accountLabel(accountId)).toHaveText(/[A-Za-z]+/);
+        await this.accountLabel(accountId).hover();
+        await this.deleteLabelButton(accountId).click();
+        await this.accountLabel(accountId).hover();
         await this.successIconIsVisible(accountId);
     }
 

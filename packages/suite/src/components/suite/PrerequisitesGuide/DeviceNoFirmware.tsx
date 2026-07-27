@@ -1,18 +1,37 @@
-import { MouseEventHandler } from 'react';
+import { type MouseEventHandler } from 'react';
 
+import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
+import { goto } from '@suite/router';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectSelectedDevice } from '@suite-common/device';
 import { Banner } from '@trezor/components';
+import { DeviceModelInternal } from '@trezor/device-utils';
+import { CpuIcon } from '@trezor/icons';
 
-import { goto } from 'src/actions/suite/routerActions';
 import { TroubleshootingTips } from 'src/components/suite/troubleshooting/TroubleshootingTips';
 import { useDispatch } from 'src/hooks/suite';
+import { useStore } from 'src/hooks/suite/useStore';
 
 export const DeviceNoFirmware = () => {
     const dispatch = useDispatch();
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { getState } = useStore();
 
     const handleClick: MouseEventHandler = e => {
         e.stopPropagation();
-        dispatch(goto('onboarding-index'));
+        const device = selectSelectedDevice(getState());
+
+        analytics.report(
+            {
+                type: events.deviceSetupStartedEvent.name,
+                payload: {
+                    deviceModel: device?.features?.internal_model || DeviceModelInternal.UNKNOWN,
+                },
+            },
+            { force: true },
+        );
+        dispatch(goto({ routeName: 'onboarding-index' }));
     };
 
     return (
@@ -29,7 +48,7 @@ export const DeviceNoFirmware = () => {
                     key: 'device-firmware-missing',
                     heading: <Translation id="TR_NO_FIRMWARE" />,
                     description: <Translation id="TR_NO_FIRMWARE_EXPLAINED" />,
-                    icon: 'cpu',
+                    icon: CpuIcon,
                 },
             ]}
         />

@@ -1,9 +1,10 @@
 /* eslint-disable no-console */
 
-import { TypedEmitter } from '@trezor/utils';
+import { TypedEmitter, resolveAfter } from '@trezor/utils';
 
-import { Firmwares, Model } from './types';
-import { WebsocketClient, WebsocketClientEvents } from './websocket-client';
+import { type Firmwares, Model } from './types';
+import { WebsocketClient, type WebsocketClientEvents } from './websocket-client';
+
 export interface SetupEmu {
     mnemonic?: string;
     pin?: string;
@@ -77,7 +78,12 @@ export interface ReadAndConfirmShamirMnemonicEmu {
     threshold: number;
 }
 
-type StartBridgeVersion = '2.0.33' | 'node-bridge';
+export interface ReadAndConfirmAtomicShamirMnemonicEmu {
+    shares: number;
+    threshold: number;
+}
+
+type StartBridgeVersion = 'node-bridge' | 'local-suite-node-bridge' | '2.0.33' | '2.0.32';
 
 export const MNEMONICS = {
     mnemonic_all: 'all all all all all all all all all all all all',
@@ -120,7 +126,6 @@ export class TrezorUserEnvLinkClass extends TypedEmitter<WebsocketClientEvents> 
         // todo: legacy api, should be removed
         this.send = this.client.send.bind(this.client);
     }
-
     public async setupEmu(options?: SetupEmu) {
         const defaults = {
             pin: '',
@@ -238,7 +243,6 @@ export class TrezorUserEnvLinkClass extends TypedEmitter<WebsocketClientEvents> 
 
         return null;
     }
-
     async stopEmu() {
         await this.client.send({ type: 'emulator-stop' });
 
@@ -252,53 +256,68 @@ export class TrezorUserEnvLinkClass extends TypedEmitter<WebsocketClientEvents> 
         return null;
     }
     async pressYes() {
-        await new Promise(resolve => setTimeout(resolve, EMU_RACE_CONDITION_WORKAROUND_DELAY));
+        await resolveAfter(EMU_RACE_CONDITION_WORKAROUND_DELAY);
         await this.client.send({ type: 'emulator-press-yes' });
 
         return null;
     }
     async pressNo() {
-        await new Promise(resolve => setTimeout(resolve, EMU_RACE_CONDITION_WORKAROUND_DELAY));
+        await resolveAfter(EMU_RACE_CONDITION_WORKAROUND_DELAY);
         await this.client.send({ type: 'emulator-press-no' });
 
         return null;
     }
     async swipeEmu(direction: 'up' | 'down' | 'left' | 'right') {
-        await new Promise(resolve => setTimeout(resolve, EMU_RACE_CONDITION_WORKAROUND_DELAY));
+        await resolveAfter(EMU_RACE_CONDITION_WORKAROUND_DELAY);
         await this.client.send({ type: 'emulator-swipe', direction });
 
         return null;
     }
     async inputEmu(value: string) {
-        await new Promise(resolve => setTimeout(resolve, EMU_RACE_CONDITION_WORKAROUND_DELAY));
+        await resolveAfter(EMU_RACE_CONDITION_WORKAROUND_DELAY);
         await this.client.send({ type: 'emulator-input', value });
 
         return null;
     }
     async clickEmu(options: ClickEmu) {
-        await new Promise(resolve => setTimeout(resolve, EMU_RACE_CONDITION_WORKAROUND_DELAY));
+        await resolveAfter(EMU_RACE_CONDITION_WORKAROUND_DELAY);
         await this.client.send({ type: 'emulator-click', ...options });
 
         return null;
     }
     async resetDevice(options: any) {
-        await new Promise(resolve => setTimeout(resolve, EMU_RACE_CONDITION_WORKAROUND_DELAY));
+        await resolveAfter(EMU_RACE_CONDITION_WORKAROUND_DELAY);
         await this.client.send({ type: 'emulator-reset-device', ...options });
 
         return null;
     }
     async readAndConfirmMnemonicEmu() {
-        await new Promise(resolve => setTimeout(resolve, EMU_RACE_CONDITION_WORKAROUND_DELAY));
+        await resolveAfter(EMU_RACE_CONDITION_WORKAROUND_DELAY);
         await this.client.send({ type: 'emulator-read-and-confirm-mnemonic' });
 
         return null;
     }
     async readAndConfirmShamirMnemonicEmu(options: ReadAndConfirmShamirMnemonicEmu) {
-        await new Promise(resolve => setTimeout(resolve, EMU_RACE_CONDITION_WORKAROUND_DELAY));
+        await resolveAfter(EMU_RACE_CONDITION_WORKAROUND_DELAY);
         await this.client.send({
             type: 'emulator-read-and-confirm-shamir-mnemonic',
             ...options,
         });
+
+        return null;
+    }
+    async readAndConfirmAtomicShamirMnemonicEmu(options: ReadAndConfirmAtomicShamirMnemonicEmu) {
+        await resolveAfter(EMU_RACE_CONDITION_WORKAROUND_DELAY);
+        await this.client.send({
+            type: 'emulator-read-and-confirm-atomic-shamir-mnemonic',
+            ...options,
+        });
+
+        return null;
+    }
+    async readAndConfirmSingleShamirMnemonicEmu() {
+        await resolveAfter(EMU_RACE_CONDITION_WORKAROUND_DELAY);
+        await this.client.send({ type: 'emulator-read-and-confirm-single-shamir-mnemonic' });
 
         return null;
     }
@@ -321,26 +340,29 @@ export class TrezorUserEnvLinkClass extends TypedEmitter<WebsocketClientEvents> 
 
         return null;
     }
+    async inputPin(pin: string) {
+        await resolveAfter(EMU_RACE_CONDITION_WORKAROUND_DELAY);
+        await this.client.send({ type: 'emulator-input-pin', pin });
+
+        return null;
+    }
     async selectNumOfWordsEmu(num: number) {
-        await new Promise(resolve => setTimeout(resolve, EMU_RACE_CONDITION_WORKAROUND_DELAY * 2));
+        await resolveAfter(EMU_RACE_CONDITION_WORKAROUND_DELAY * 2);
         await this.client.send({ type: 'emulator-select-num-of-words', num });
 
         return null;
     }
-
     async getScreenContent() {
         const { response } = await this.client.send({ type: 'emulator-get-screen-content' });
 
         return response;
     }
-
     async getDebugState() {
-        await new Promise(resolve => setTimeout(resolve, EMU_RACE_CONDITION_WORKAROUND_DELAY));
+        await resolveAfter(EMU_RACE_CONDITION_WORKAROUND_DELAY);
         const { response } = await this.client.send({ type: 'emulator-get-debug-state' });
 
         return response;
     }
-
     async getPairingInfo(thp_channel_id: string, nfcData?: string) {
         // user-env expects something, cannot be undefined
         const d = nfcData ? Buffer.from(nfcData, 'hex') : undefined;
@@ -360,7 +382,6 @@ export class TrezorUserEnvLinkClass extends TypedEmitter<WebsocketClientEvents> 
             code_entry_code: Number(response.code_entry_code).toString().padStart(6, '0'),
         };
     }
-
     async logTestDetails(text: string) {
         await this.client.send({ type: 'log', text });
 

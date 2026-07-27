@@ -1,12 +1,8 @@
-import { selectConnectPopupCall } from '@suite-common/connect-popup';
-import { Route } from '@suite-common/suite-types';
-import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
-import { UI_REQUEST } from '@trezor/connect';
+import { MODAL_CONTEXT_NONE } from '@suite/modal';
+import { type ModalAppParams, type Route, selectRoute, selectRouterParams } from '@suite/router';
 
-import { MODAL } from 'src/actions/suite/constants';
-import { useDiscovery, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import type { ForegroundAppRoute } from 'src/types/suite';
-import { ModalAppParams } from 'src/utils/suite/router';
 
 const isForegroundApp = (route: Route): route is ForegroundAppRoute =>
     !route.isFullscreenApp && !!route.isForegroundApp;
@@ -23,6 +19,7 @@ const hasPriority = (route: ForegroundAppRoute) => {
         udev: true,
         version: true,
         'create-multi-share-backup': true,
+        'create-wallet-backup': true,
 
         // Recovery - beats redux modals with some exceptions (raw-rendered)
         recovery: true,
@@ -47,59 +44,18 @@ const getForegroundAppAction = (route: ForegroundAppRoute, params: Partial<Modal
     }) as const;
 
 export const usePreferredModal = () => {
-    const { discovery: discoveryForSelectedDevice } = useDiscovery();
-    const route = useSelector(state => state.router.route);
-    const params = useSelector(state => state.router.params as Partial<ModalAppParams>);
+    const route = useSelector(selectRoute);
+    const params = useSelector(selectRouterParams) as Partial<ModalAppParams>;
     const modal = useSelector(state => state.modal);
-    const discoveryInProgress = useSelector(selectHasRunningDiscovery);
-    const isPassphraseFlow =
-        Boolean(discoveryForSelectedDevice?.isAddingHiddenWallet) &&
-        discoveryInProgress &&
-        !(
-            discoveryForSelectedDevice?.status === 'progress' &&
-            discoveryForSelectedDevice.hasLoadedAnyNonEmptyAccount
-        );
-    const isConnectPopupFlow = useSelector(
-        state => selectConnectPopupCall(state)?.state === 'call-error',
-    );
 
     if (route && isForegroundApp(route) && hasPriority(route)) {
         return getForegroundAppAction(route, params);
     }
 
-    if (modal.context !== MODAL.CONTEXT_NONE) {
-        // NOTE: in case when passphrase flow is active, we handle the device passphrase request
-        // within the passphrase flow
-        const windowType = 'windowType' in modal ? modal.windowType : undefined;
-        if (windowType === UI_REQUEST.REQUEST_PASSPHRASE) {
-            if (isPassphraseFlow && discoveryForSelectedDevice) {
-                return {
-                    type: 'passphrase-flow',
-                } as const;
-            }
-
-            return {
-                type: 'device-request-passphrase',
-                payload: modal,
-            } as const;
-        }
-
-        // edge case for connect popup, since it itself is a modal, but we can enter passphrase flow from there
-        if (isPassphraseFlow && discoveryForSelectedDevice && isConnectPopupFlow) {
-            return {
-                type: 'passphrase-flow',
-            } as const;
-        }
-
+    if (modal.context !== MODAL_CONTEXT_NONE) {
         return {
             type: 'redux-modal',
             payload: modal,
-        } as const;
-    }
-
-    if (isPassphraseFlow && discoveryForSelectedDevice) {
-        return {
-            type: 'passphrase-flow',
         } as const;
     }
 

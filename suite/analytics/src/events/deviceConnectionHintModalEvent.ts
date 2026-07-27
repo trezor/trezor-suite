@@ -11,12 +11,14 @@ export const deviceConnectionHintModalEvent: EventDef<
     EventType.DeviceConnectionHintModal
 > = {
     name: EventType.DeviceConnectionHintModal,
-    descriptionTrigger: '?',
-    changelog: [{ version: '?', notes: 'added' }],
+    descriptionTrigger: 'User interacts with the device connection hint modal dialog',
+    changelog: [{ version: '25.12.1', notes: 'added' }],
 
     attributes: {
         option: {
-            changelog: [{ version: '?', notes: 'added' }],
+            description:
+                'The user action taken in the modal: `notWorking` when clicking help link, `close` when dismissing the modal',
+            changelog: [{ version: '25.12.1', notes: 'added' }],
         },
     },
 };

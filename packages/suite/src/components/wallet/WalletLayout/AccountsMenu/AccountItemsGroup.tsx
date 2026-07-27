@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 
+import { selectRouteName } from '@suite/router';
 import { selectBaseCurrency, selectCurrentFiatRates } from '@suite-common/wallet-core';
 import {
     BASE_CURRENCY_ZERO,
@@ -8,25 +9,24 @@ import {
     getAccountTotalStakingBalance,
 } from '@suite-common/wallet-utils';
 import { Column } from '@trezor/components';
-import { borders, spacings, spacingsPx } from '@trezor/theme';
 
 import { useSelector } from 'src/hooks/suite';
-import { selectRouteName } from 'src/reducers/suite/routerReducer';
-import { Account } from 'src/types/wallet';
+import { useResponsiveContext } from 'src/support/suite/ResponsiveContext';
+import { type Account } from 'src/types/wallet';
 
 import { AccountItem, type AccountItemProps } from './AccountItem/AccountItem';
-import { useResponsiveContext } from '../../../../support/suite/ResponsiveContext';
 
 const Section = styled.div<{ $selected?: boolean; $isSidebarCollapsed?: boolean }>`
     display: flex;
     flex-direction: column;
     position: relative;
-    border-radius: ${borders.radii.sm};
+    border-radius: 12px;
 
     outline: 1px solid
-        ${({ theme, $selected }) => ($selected ? theme.borderElevation0 : 'transparent')};
-    padding: ${spacingsPx.xxs};
-    margin: 0 -${spacingsPx.xxs};
+        ${({ theme, $selected }) => ($selected ? theme.elementBorderNeutralSofter : 'transparent')};
+    outline-offset: -1px;
+    padding: 4px;
+    margin: 0 -4px;
 
     &::before {
         content: '';
@@ -34,7 +34,8 @@ const Section = styled.div<{ $selected?: boolean; $isSidebarCollapsed?: boolean 
         top: 24px;
         bottom: 28px;
         left: ${({ $isSidebarCollapsed }) => ($isSidebarCollapsed ? '50%' : '24px')};
-        border-left: 2px dotted ${({ theme }) => theme.borderDashed};
+        border-left: 2px dotted ${({ theme }) => theme.elementBorderNeutralSofter};
+        transform: translateX(-50%);
     }
 `;
 
@@ -69,11 +70,16 @@ export const AccountItemsGroup = ({
         ? BASE_CURRENCY_ZERO
         : getAccountTokensFiatBalance(account, baseCurrencyCode, rates, tokens);
 
-    const tokensRoutes = ['wallet-tokens', 'wallet-tokens-hidden', 'wallet-tokens-inactive'];
+    const tokensRoutes = [
+        'wallet-tokens',
+        'wallet-tokens-hidden',
+        'wallet-tokens-inactive',
+        'wallet-tokens-defi',
+    ];
 
     return (
         <Section $selected={selected} $isSidebarCollapsed={isSidebarCollapsed}>
-            <Column gap={spacings.xxs}>
+            <Column gap={4}>
                 <AccountItem
                     type="coin"
                     account={account}

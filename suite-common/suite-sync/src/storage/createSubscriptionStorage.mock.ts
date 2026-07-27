@@ -1,4 +1,4 @@
-import { SubscriptionStorage } from '@suite-common/suite-sync-types';
+import { type SubscriptionStorage } from '@suite-common/suite-sync-types';
 
 type SubscriptionStorageMock = jest.Mocked<SubscriptionStorage>;
 

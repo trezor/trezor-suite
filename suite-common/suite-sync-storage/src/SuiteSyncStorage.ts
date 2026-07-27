@@ -1,6 +1,6 @@
-import { SuiteSyncTable } from './SuiteSyncTable';
-import { SuiteSyncSchema } from './data/SuiteSyncSchema';
-import { SuiteSyncOwner } from './owner/suiteSyncOwner';
+import { type SuiteSyncTable } from './SuiteSyncTable';
+import { type SuiteSyncSchema } from './data/SuiteSyncSchema';
+import { type SuiteSyncOwner } from './owner/suiteSyncOwner';
 
 type SuiteSyncStorageData = {
     [K in keyof SuiteSyncSchema]: SuiteSyncTable<SuiteSyncSchema[K]>;
@@ -15,6 +15,7 @@ export type SuiteSyncStorage = {
     data: SuiteSyncStorageData;
 
     updateRelayUrl(url: string): Promise<void>;
+    disconnectRelay(): Promise<void>;
     dispose(): Promise<void>;
 };
 
@@ -27,7 +28,7 @@ type SuiteStorageCreatorParams = {
  * has its own Storage. Currently only Evolu storage is implemented, but in theory,
  * you can have different one as well.
  */
-export type CreateSuiteStorage = (params: SuiteStorageCreatorParams) => SuiteSyncStorage;
+export type CreateSuiteStorage = (params: SuiteStorageCreatorParams) => Promise<SuiteSyncStorage>;
 
 export type CreateSuiteStorageDep = {
     createSuiteStorage: CreateSuiteStorage;

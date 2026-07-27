@@ -8,13 +8,14 @@ import {
     getStakingContractAddress,
     simulateUnstake,
 } from '@suite-common/staking';
+import { getNetwork } from '@suite-common/wallet-config';
 import {
     selectBaseCurrency,
     selectFiatRatesByFiatRateKey,
     selectRawNetworkFeeInfo,
     useFormDraft,
 } from '@suite-common/wallet-core';
-import { PrecomposedTransactionFinal, SelectedAccountLoaded } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 import {
     fromBaseCurrencyToCryptoUnit,
     getConvertedOrDefaultFeeInfo,
@@ -22,7 +23,7 @@ import {
     getStakingDataForNetwork,
     toFiatCurrency,
 } from '@suite-common/wallet-utils';
-import { BigNumber, isChanged } from '@trezor/utils';
+import { BigNumber, isChanged, throwError } from '@trezor/utils';
 
 import { signTransaction } from 'src/actions/wallet/stakeActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -30,9 +31,9 @@ import { CRYPTO_INPUT, FIAT_INPUT, OUTPUT_AMOUNT } from 'src/types/earn/earnForm
 import type { AmountLimitProps } from 'src/utils/suite/validation';
 
 import {
-    WithdrawalContextValues as WithdrawalContextValuesBase,
-    WithdrawalFormState,
-} from '../../components/earn/forms/SupplyFormContext';
+    type WithdrawalContextValues as WithdrawalContextValuesBase,
+    type WithdrawalFormState,
+} from '../../components/earn/forms/StakeFormContext';
 import { useFees } from '../wallet/form/useFees';
 import { useStakeCompose } from '../wallet/form/useStakeCompose';
 
@@ -48,18 +49,16 @@ export const WithdrawalFormContext = createContext<WithdrawalContextValues | nul
 WithdrawalFormContext.displayName = 'WithdrawalFormContext';
 
 type UseWithdrawalFormProps = {
-    selectedAccount: SelectedAccountLoaded;
+    account: Account;
 };
 
-export const useWithdrawalForm = ({
-    selectedAccount,
-}: UseWithdrawalFormProps): WithdrawalContextValues => {
+export const useWithdrawalForm = ({ account }: UseWithdrawalFormProps): WithdrawalContextValues => {
     const dispatch = useDispatch();
     const [approximatedInstantEthAmount, setApproximatedInstantEthAmount] = useState<string | null>(
         null,
     );
 
-    const { account, network } = selectedAccount;
+    const network = getNetwork(account.symbol);
     const { symbol } = account;
 
     const baseCurrencyCode = useSelector(selectBaseCurrency);
@@ -207,6 +206,12 @@ export const useWithdrawalForm = ({
 
     const onCryptoAmountChange = useCallback(
         async (amount: string) => {
+            setValue(CRYPTO_INPUT, amount, {
+                shouldDirty: true,
+                shouldValidate: true,
+            });
+            setValue(OUTPUT_AMOUNT, amount || '', { shouldDirty: true, shouldValidate: true });
+
             if (currentRate) {
                 const fiatValue = toFiatCurrency({ amount, rate: currentRate?.rate })?.toFixed(
                     2,
@@ -218,11 +223,6 @@ export const useWithdrawalForm = ({
                 });
             }
 
-            setValue(CRYPTO_INPUT, amount, {
-                shouldDirty: true,
-                shouldValidate: true,
-            });
-            setValue(OUTPUT_AMOUNT, amount || '', { shouldDirty: true, shouldValidate: true });
             await composeRequest(CRYPTO_INPUT);
         },
         [composeRequest, currentRate, setValue],
@@ -273,10 +273,8 @@ export const useWithdrawalForm = ({
     const signTx = useCallback(async () => {
         const values = getValues();
         const composedTx = composedLevels ? composedLevels[selectedFee] : undefined;
-        if (composedTx && composedTx.type === 'final') {
-            const result = await dispatch(
-                signTransaction(values, composedTx as PrecomposedTransactionFinal),
-            );
+        if (composedTx?.type === 'final') {
+            const result = await dispatch(signTransaction(values, composedTx));
 
             if (result?.success) {
                 clearForm();
@@ -311,9 +309,6 @@ export const useWithdrawalForm = ({
     };
 };
 
-export const useWithdrawalFormContext = () => {
-    const ctx = useContext(WithdrawalFormContext);
-    if (ctx === null) throw Error('useWithdrawalFormContext used without Context');
-
-    return ctx;
-};
+export const useWithdrawalFormContext = () =>
+    useContext(WithdrawalFormContext) ??
+    throwError('useWithdrawalFormContext used without Context');

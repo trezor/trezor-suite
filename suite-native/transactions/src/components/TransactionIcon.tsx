@@ -1,22 +1,31 @@
 import {
-    NetworkDisplaySymbol,
-    NetworkSymbol,
+    type NetworkDisplaySymbol,
+    type NetworkSymbol,
     getNetworkDisplaySymbol,
 } from '@suite-common/wallet-config';
-import { TokenAddress, TransactionType } from '@suite-common/wallet-types';
-import { Box, CircularSpinner, RoundedIcon } from '@suite-native/atoms';
-import { CryptoIcon, IconName, IconSize } from '@suite-native/icons';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Color } from '@trezor/theme';
+import {
+    type StakeType,
+    type TokenAddress,
+    type TransactionType,
+} from '@suite-common/wallet-types';
+import {
+    Box,
+    CircularSpinner,
+    RoundedIcon,
+    type RoundedIconIntent,
+    type RoundedIconSize,
+} from '@suite-native/atoms';
+import { type IconName, TokenIcon } from '@suite-native/icons';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 type TransactionIconProps = {
     transactionType: TransactionType;
+    stakeOperationType?: StakeType;
     symbol?: NetworkSymbol;
     contractAddress?: TokenAddress;
     isAnimated?: boolean;
-    backgroundColor?: Color;
-    containerSize?: number;
-    iconSize?: IconSize;
+    intent?: RoundedIconIntent;
+    size?: RoundedIconSize;
 };
 
 const transactionIconMap: Record<TransactionType, IconName> = {
@@ -29,12 +38,19 @@ const transactionIconMap: Record<TransactionType, IconName> = {
     unknown: 'circleDashed',
 };
 
+const stakeOperationIconMap: Record<StakeType, IconName> = {
+    stake: 'arrowUp',
+    unstake: 'arrowDown',
+    claim: 'arrowDown',
+    'change-delegate': 'arrowURightDown',
+};
+
 const cryptoIconStyle = prepareNativeStyle(utils => ({
     position: 'absolute',
     right: -utils.spacings.sp2,
     bottom: -utils.spacings.sp2,
     padding: utils.spacings.sp2,
-    backgroundColor: utils.colors.backgroundSurfaceElevation1,
+    backgroundColor: utils.colors.surfaceFillRaised,
     borderRadius: utils.borders.radii.round,
 }));
 
@@ -42,9 +58,9 @@ export const TransactionIcon = ({
     symbol,
     contractAddress,
     transactionType,
-    backgroundColor,
-    containerSize = 48,
-    iconSize = 'mediumLarge',
+    stakeOperationType,
+    intent,
+    size = 48,
     isAnimated = false,
 }: TransactionIconProps) => {
     const { applyStyle } = useNativeStyles();
@@ -57,20 +73,19 @@ export const TransactionIcon = ({
         iconSymbol = getNetworkDisplaySymbol(symbol) as NetworkDisplaySymbol;
     }
 
+    const iconName = stakeOperationType
+        ? stakeOperationIconMap[stakeOperationType]
+        : transactionIconMap[transactionType];
+
     return (
         <Box>
-            <RoundedIcon
-                name={transactionIconMap[transactionType]}
-                iconSize={iconSize}
-                backgroundColor={backgroundColor}
-                containerSize={containerSize}
-            />
+            <RoundedIcon name={iconName} intent={intent} size={size} />
             {isAnimated && (
-                <CircularSpinner size={containerSize} color="backgroundAlertYellowBold" width={3} />
+                <CircularSpinner size={size} color="legacyBackgroundAlertYellowBold" width={3} />
             )}
             {iconSymbol && (
                 <Box style={applyStyle(cryptoIconStyle)}>
-                    <CryptoIcon symbol={iconSymbol} contractAddress={contractAddress} size="tiny" />
+                    <TokenIcon symbol={iconSymbol} contractAddress={contractAddress} size="tiny" />
                 </Box>
             )}
         </Box>

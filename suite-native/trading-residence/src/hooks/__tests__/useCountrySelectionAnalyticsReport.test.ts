@@ -1,30 +1,20 @@
-import { events } from '@suite-native/analytics';
-import { useAnalytics } from '@suite-native/services';
+import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
+import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { act, renderHookWithBasicProvider } from '@suite-native/test-utils';
 
 import { useCountrySelectionAnalyticsReport } from '../useCountrySelectionAnalyticsReport';
 
-jest.mock('@suite-native/services', () => {
-    const original = jest.requireActual('@suite-native/services');
-
-    return {
-        ...original,
-        useAnalytics: jest.fn(),
-    };
-});
-
 describe('useCountrySelectionAnalyticsReport', () => {
     const reportMock = jest.fn();
+    const services: NativeAnalyticsDep = {
+        analytics: mockNativeAnalytics(reportMock),
+    };
 
     const renderUseCountrySelectionAnalyticsReport = () =>
-        renderHookWithBasicProvider(() => useCountrySelectionAnalyticsReport());
+        renderHookWithBasicProvider(() => useCountrySelectionAnalyticsReport(), { services });
 
     beforeEach(() => {
         jest.clearAllMocks();
-
-        (useAnalytics as jest.Mock).mockReturnValue({
-            report: reportMock,
-        });
     });
 
     it('should report event to analytics', () => {

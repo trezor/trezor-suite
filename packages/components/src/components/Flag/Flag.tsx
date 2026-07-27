@@ -1,10 +1,14 @@
 import styled, { css } from 'styled-components';
 
-import { resolveStaticPath } from '@trezor/env-utils';
-
-import { FlagSize, FlagType } from './types';
-import { mapSizeToBorderRadius, mapSizeToOutlineWidth } from './utils';
-import { IMAGES_PATH } from '../Image/Image';
+// TODO: suite-common imports in non-suite packages should not be allowed
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports
+import {
+    type FlagSize,
+    type FlagType,
+    getFlagSource,
+    mapSizeToBorderRadius,
+    mapSizeToOutlineWidth,
+} from '@suite-common/flags';
 
 export type FlagProps = {
     country: FlagType;
@@ -22,22 +26,18 @@ const Wrapper = styled.div<{ $size: FlagSize }>`
 const FlagImage = styled.img<{ $size: FlagSize }>`
     width: 100%;
     display: block;
-    background: ${({ theme }) => theme.baseFillElementNeutralLight};
+    background: ${({ theme }) => theme.elementFillOnDarkContrast};
 
     ${({ $size, theme }) => css`
-        outline: ${mapSizeToOutlineWidth($size)}px solid ${theme.baseBorderElementNeutralSofter};
+        outline: ${mapSizeToOutlineWidth($size)}px solid ${theme.elementBorderNeutralSofter};
         outline-offset: -${mapSizeToOutlineWidth($size)}px;
         border-radius: ${mapSizeToBorderRadius($size)}px;
-        background: ${theme.baseFillElementNeutralLight};
+        background: ${theme.elementFillOnDarkContrast};
     `}
 `;
 
 export const Flag = ({ size = 24, country }: FlagProps) => (
     <Wrapper $size={size}>
-        <FlagImage
-            $size={size}
-            src={resolveStaticPath(`${IMAGES_PATH}/flags/${country.toLowerCase()}.svg`)}
-            alt={`flag-${country}`}
-        />
+        <FlagImage $size={size} src={getFlagSource(country)} alt={`flag-${country}`} />
     </Wrapper>
 );

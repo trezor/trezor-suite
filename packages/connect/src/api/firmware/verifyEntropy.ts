@@ -3,10 +3,9 @@ import { sha256 } from '@noble/hashes/sha2.js';
 import { randomBytes } from '@noble/hashes/utils.js';
 import { entropyToMnemonic, mnemonicToSeed } from '@scure/bip39';
 
-import { bip39 } from '@trezor/crypto-utils';
+import { bip39EnglishWordlist } from '@trezor/crypto-utils';
+import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { bip32 } from '@trezor/utxo-lib';
-
-import { PROTO } from '../../constants';
 
 export const generateEntropy = (len: number) => {
     try {
@@ -35,7 +34,7 @@ const roundFunction = async (i: number, passphrase: Buffer, e: number, salt: Buf
     // return crypto.pbkdf2Sync(data, Buffer.concat([salt, r]), iterations, r.length, 'sha256');
 
     // Nodejs + WebCrypto equivalent
-    const { subtle } = crypto as Crypto;
+    const { subtle } = crypto;
     const key = await subtle.importKey('raw', data, 'PBKDF2', false, ['deriveBits']);
     const bits = await subtle.deriveBits(
         {
@@ -58,7 +57,11 @@ const xor = (a: Buffer, b: Buffer) => {
     }
     const result = Buffer.alloc(a.length);
     for (let i = 0; i < a.length; i++) {
-        result[i] = a[i] ^ b[i];
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const ai: number = a[i];
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const bi: number = b[i];
+        result[i] = ai ^ bi;
     }
 
     return result;
@@ -113,7 +116,9 @@ const computeSeed = (type: VerifyEntropyOptions['type'], secret: Buffer) => {
     }
 
     // use bip39
-    return mnemonicToSeed(entropyToMnemonic(secret, [...bip39])).then(seed => Buffer.from(seed));
+    return mnemonicToSeed(entropyToMnemonic(secret, [...bip39EnglishWordlist])).then(seed =>
+        Buffer.from(seed),
+    );
 };
 
 const verifyCommitment = (entropy: string, commitment: string) => {
@@ -129,7 +134,7 @@ type VerifyEntropyOptions = {
     commitment?: string; // entropy_commitment received from previous EntropyRequest
     hostEntropy: string; // host_entropy used in previous EntropyAck
     trezorEntropy?: string; // prev_entropy received from current EntropyRequest, after ResetDeviceContinue
-    xpubs: Record<string, string>; // <address_n, xpub>
+    xpubs: Record<string, string>; // <Bip43 path, xpub>
 };
 
 export const verifyEntropy = async ({
@@ -155,7 +160,9 @@ export const verifyEntropy = async ({
         Object.keys(xpubs).forEach(path => {
             const pubKey = node.derivePath(path);
             const xpub = pubKey.neutered().toBase58();
-            if (xpub !== xpubs[path]) {
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const expectedXpub: string = xpubs[path];
+            if (xpub !== expectedXpub) {
                 throw new Error('verifyEntropy xpub mismatch');
             }
         });

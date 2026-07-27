@@ -1,5 +1,11 @@
-import { InvokeChannels, MainChannels, RendererChannels } from './api';
-import { HandleMethod, InvokeMethod, ListenerMethod, SendMethod, StrictChannel } from './methods';
+import { type InvokeChannels, type MainChannels, type RendererChannels } from './api';
+import {
+    type HandleMethod,
+    type InvokeMethod,
+    type ListenerMethod,
+    type SendMethod,
+    type StrictChannel,
+} from './methods';
 
 // Using Evt to avoid global Event
 

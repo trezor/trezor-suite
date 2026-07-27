@@ -1,6 +1,6 @@
-export * from './navigators';
+export type * from './navigators';
 export * from './routes';
-export * from './types';
+export type * from './types';
 export * from './config';
 export * from './hooks/useInterceptNativeNavigation';
 export * from './hooks/useNavigateToInitialScreen';
@@ -17,3 +17,4 @@ export * from './components/NavigationContainerWithAnalytics';
 export * from './components/GoBackIcon';
 export * from './hooks/useNavigationRouteMatch';
 export * from './hooks/useDisableIOSGesture';
+export * from './hooks/useNavigationRemoveActionInterceptor';

@@ -3,6 +3,7 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         { "path": "../analytics" },
+        { "path": "../bip329-types" },
         {
             "path": "../delegated-identity-key-types"
         },
@@ -18,6 +19,13 @@
         {
             "path": "../../packages/analytics-uploader"
         },
-        { "path": "../../packages/connect" }
+        { "path": "../../packages/connect" },
+        {
+            "path": "../../packages/connect-common"
+        },
+        {
+            "path": "../../packages/transport-common"
+        },
+        { "path": "../../packages/utils" }
     ]
 }

@@ -7,10 +7,8 @@
 
 import { SocksProxyAgent } from 'socks-proxy-agent';
 
-import type { BlockchainSettings, Response } from '@trezor/blockchain-link-types';
-import { MESSAGES, RESPONSES } from '@trezor/blockchain-link-types/src/constants';
-import { CustomError } from '@trezor/blockchain-link-types/src/constants/errors';
-import type { Message } from '@trezor/blockchain-link-types/src/messages';
+import { CustomError, MESSAGES, RESPONSES } from '@trezor/blockchain-link-types';
+import type { BlockchainSettings, Message, Response } from '@trezor/blockchain-link-types';
 
 import { WorkerState } from './state';
 import { prioritizeEndpoints } from './utils';
@@ -148,11 +146,7 @@ export abstract class BaseWorker<API> {
             this.settings = data.settings;
             const { proxy } = data.settings;
             if (proxy) {
-                const agentUri =
-                    typeof proxy === 'string' ? proxy : `socks://${proxy.host}:${proxy.port}`;
-                const socketOptions =
-                    typeof proxy === 'object' ? { timeout: proxy?.timeout } : undefined;
-                this.proxyAgent = new SocksProxyAgent(agentUri, socketOptions);
+                this.proxyAgent = new SocksProxyAgent(proxy.uri, proxy.opts);
             } else {
                 this.proxyAgent = undefined;
             }

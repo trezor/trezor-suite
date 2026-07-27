@@ -9,11 +9,11 @@ import {
 
 import { Circle, Group } from '@shopify/react-native-skia';
 
-import { GroupedBalanceMovementEventPayload } from '@suite-common/graph';
-import { EventComponentProps } from '@suite-native/react-native-graph';
+import { type GroupedBalanceMovementEventPayload } from '@suite-common/graph';
+import { type EventComponentProps } from '@suite-native/react-native-graph';
 import { useActiveColorScheme } from '@suite-native/theme';
-import { useNativeStyles } from '@trezor/styles';
-import { Color, ThemeColorVariant } from '@trezor/theme';
+import { useNativeStyles } from '@trezor/styles-native';
+import { type Color, type ThemeColorVariant } from '@trezor/theme';
 
 import { GraphContextProvider } from './GraphContextProvider';
 
@@ -32,12 +32,12 @@ const ENTERING_ANIMATION_DURATION = 750;
 
 const standard = {
     positive: {
-        innerColor: 'backgroundPrimaryDefault',
-        outerColor: 'backgroundPrimarySubtleOnElevation0',
+        innerColor: 'legacyBackgroundPrimaryDefault',
+        outerColor: 'legacyBackgroundPrimarySubtleOnElevation0',
     },
     negative: {
-        innerColor: 'backgroundAlertRedBold',
-        outerColor: 'backgroundAlertRedSubtleOnElevation0',
+        innerColor: 'legacyBackgroundAlertRedBold',
+        outerColor: 'legacyBackgroundAlertRedSubtleOnElevation0',
     },
 } as const;
 
@@ -45,15 +45,14 @@ const variantToStylesMaps = {
     standard,
     dark: {
         positive: {
-            innerColor: 'backgroundPrimaryDefault',
-            outerColor: 'backgroundPrimarySubtleOnElevation1',
+            innerColor: 'legacyBackgroundPrimaryDefault',
+            outerColor: 'legacyBackgroundPrimarySubtleOnElevation1',
         },
         negative: {
-            innerColor: 'backgroundAlertRedBold',
-            outerColor: 'backgroundAlertRedSubtleOnElevation1',
+            innerColor: 'legacyBackgroundAlertRedBold',
+            outerColor: 'legacyBackgroundAlertRedSubtleOnElevation1',
         },
     },
-    debug: standard,
 } as const satisfies Record<
     ThemeColorVariant,
     Record<EventVariant, { innerColor: Color; outerColor: Color }>
@@ -112,7 +111,7 @@ const TransactionEventContent = ({
                 cx={eventX}
                 cy={eventY}
                 r={ACTIVE_OUTER_DOT_WIDTH}
-                color={colors.backgroundSurfaceElevation1}
+                color={colors.surfaceFillRaised}
             />
             <Circle cx={eventX} cy={eventY} r={outerDotRadius} color={colors[outerColor]} />
             <Circle cx={eventX} cy={eventY} r={innerDotRadius} color={colors[innerColor]} />

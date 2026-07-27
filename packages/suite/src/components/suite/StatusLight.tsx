@@ -1,7 +1,7 @@
-import styled, { DefaultTheme } from 'styled-components';
+import styled, { type DefaultTheme } from 'styled-components';
 
-import { UIVariant } from '@trezor/components/src/config/types';
-import { CSSColor, Color } from '@trezor/theme';
+import { type UIVariant } from '@trezor/components/src/config/types';
+import { type CSSColor, type Color } from '@trezor/theme';
 
 type StatusLightVariant = Extract<UIVariant, 'primary' | 'warning' | 'destructive' | 'info'>;
 
@@ -12,10 +12,10 @@ type MapArgs = {
 
 const mapVariantToBackgroundColor = ({ $variant, theme }: MapArgs): CSSColor => {
     const colorMap: Record<StatusLightVariant, Color> = {
-        primary: 'backgroundPrimarySubtleOnElevation0',
-        warning: 'backgroundAlertRedSubtleOnElevation0',
-        destructive: 'backgroundAlertRedSubtleOnElevation0',
-        info: 'backgroundAlertBlueSubtleOnElevation0',
+        primary: 'elementFillBrandSofter',
+        warning: 'elementFillWarningSofter',
+        destructive: 'elementFillCriticalSofter',
+        info: 'elementFillInfoSofter',
     };
 
     return theme[colorMap[$variant]];
@@ -23,10 +23,10 @@ const mapVariantToBackgroundColor = ({ $variant, theme }: MapArgs): CSSColor => 
 
 const getInnerBackgroundColor = ({ $variant, theme }: MapArgs): CSSColor => {
     const colorMap: Record<StatusLightVariant, Color> = {
-        primary: 'backgroundPrimaryDefault',
-        warning: 'backgroundAlertYellowBold',
-        destructive: 'backgroundAlertRedBold',
-        info: 'textAlertBlue',
+        primary: 'elementFillBrandBold',
+        warning: 'elementFillWarningBold',
+        destructive: 'elementFillCriticalBold',
+        info: 'contentInfo',
     };
 
     return theme[colorMap[$variant]];

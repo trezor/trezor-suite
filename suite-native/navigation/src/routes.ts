@@ -4,9 +4,20 @@ export enum RootStackRoutes {
     DeviceOnboardingStack = 'DeviceOnboardingStack',
     AccountsImport = 'AccountsImport',
     AuthorizeDeviceStack = 'AuthorizeDeviceStack',
+    AccountAssets = 'AccountAssets',
     AccountDetail = 'AccountDetail',
     StakingDetail = 'StakingDetail',
-    DevUtilsStack = 'DevUtilsStack',
+    StakingManagement = 'StakingManagement',
+    HowStakeWorksScreen = 'HowStakeWorksScreen',
+    YieldNavigator = 'YieldNavigator',
+    YieldInsufficientBalance = 'YieldInsufficientBalance',
+    EarnForm = 'EarnForm',
+    EarnConsents = 'EarnConsents',
+    EarnTransactionDataReview = 'EarnTransactionDataReview',
+    ClaimReview = 'ClaimReview',
+    ClaimTransactionDataReview = 'ClaimTransactionDataReview',
+    DevUtils = 'DevUtils',
+    MessageSystemManager = 'MessageSystemManager',
     AccountSettings = 'AccountSettings',
     TransactionDetailStack = 'TransactionDetailStack',
     ReceiveStack = 'ReceiveStack',
@@ -27,6 +38,19 @@ export enum RootStackRoutes {
     Storybook = 'Storybook',
     PassphraseStack = 'PassphraseStack',
     StellarManageTokenStack = 'StellarManageTokenStack',
+    FeatureFeedbackModal = 'FeatureFeedbackModal',
+    UnstakeFlow = 'UnstakeFlow',
+    UnstakeTransactionDataReview = 'UnstakeTransactionDataReview',
+    TradingExchangePreview = 'TradingExchangePreview',
+    TradingExchangeApproval = 'TradingExchangeApproval',
+    TradingExchangeRevoke = 'TradingExchangeRevoke',
+    TradingSellPreview = 'TradingSellPreview',
+    TradingConfirming = 'TradingConfirming',
+    TradingSellOutputsReview = 'TradingSellOutputsReview',
+    TradingExchangeOutputsReview = 'TradingExchangeOutputsReview',
+    ReceiveAccounts = 'ReceiveAccounts',
+    TradingHistory = 'TradingHistory',
+    TradingBuyPreview = 'TradingBuyPreview',
 }
 
 export enum AppTabsRoutes {
@@ -69,6 +93,7 @@ export enum DeviceOnboardingStackRoutes {
     WalletRecovery = 'WalletRecovery',
     WalletRecoveryRecap = 'WalletRecoveryRecap',
     CreatePin = 'CreatePin',
+    Congratulations = 'Congratulations',
 }
 
 export enum AccountsImportStackRoutes {
@@ -84,11 +109,10 @@ export enum DeviceSettingsStackRoutes {
     DeviceFirmware = 'DeviceFirmware',
     FirmwareUpdateStack = 'FirmwareUpdateStack',
     FirmwareLanguageStack = 'FirmwareLanguageStack',
-    ContinueOnTrezor = 'ContinueOnTrezor',
-    DeviceAutoConnect = 'DeviceAutoConnect',
+    DeviceConnection = 'DeviceConnection',
     DeviceAutoConnectStack = 'DeviceAutoConnectStack',
-    DeviceAutoConnectGuard = 'DeviceAutoConnectGuard',
-    UnpairBluetoothDevice = 'UnpairBluetoothDevice',
+    ForgetDevice = 'ForgetDevice',
+    ForgetDeviceStack = 'ForgetDeviceStack',
     DevicePinProtection = 'DevicePinProtection',
     DevicePinProtectionStack = 'DevicePinProtectionStack',
     DeviceBackupAndPassphrase = 'DeviceBackupAndPassphrase',
@@ -122,6 +146,12 @@ export enum FirmwareLanguageStackRoutes {
 export enum DeviceAutoConnectStackRoutes {
     DeviceConnectionGuard = 'DeviceConnectionGuard',
     ConfirmAutoConnect = 'ConfirmAutoConnect',
+}
+
+export enum ForgetDeviceStackRoutes {
+    ForgetDeviceConfirmation = 'ForgetDeviceConfirmation',
+    ForgetDeviceGuide = 'ForgetDeviceGuide',
+    ForgetDeviceFinish = 'ForgetDeviceFinish',
 }
 
 export enum DevicePinProtectionStackRoutes {
@@ -191,11 +221,6 @@ export enum PassphraseStackRoutes {
     PassphraseVerifyEmptyWallet = 'PassphraseVerifyEmptyWallet',
 }
 
-export enum DevUtilsStackRoutes {
-    DevUtils = 'DevUtils',
-    Demo = 'Demo',
-}
-
 export enum HomeStackRoutes {
     Home = 'Home',
 }
@@ -215,15 +240,38 @@ export enum EarnStackRoutes {
     Earn = 'Earn',
 }
 
+export enum YieldStackRoutes {
+    HowYieldWorks = 'HowYieldWorks',
+    YieldConsents = 'YieldConsents',
+    YieldClaim = 'YieldClaim',
+    YieldClaimReview = 'YieldClaimReview',
+    YieldClaimComplete = 'YieldClaimComplete',
+    YieldDepositApproval = 'YieldDepositApproval',
+    YieldDeposit = 'YieldDeposit',
+    YieldDepositRevoke = 'YieldDepositRevoke',
+    YieldWithdraw = 'YieldWithdraw',
+    YieldDepositApprovalReview = 'YieldDepositApprovalReview',
+    YieldDepositRevokeReview = 'YieldDepositRevokeReview',
+    YieldDepositReview = 'YieldDepositReview',
+    YieldWithdrawReview = 'YieldWithdrawReview',
+    YieldDepositComplete = 'YieldDepositComplete',
+    YieldWithdrawComplete = 'YieldWithdrawComplete',
+}
+
 export enum ReceiveStackRoutes {
     ReceiveAccounts = 'ReceiveAccounts',
-    ReceiveAccount = 'ReceiveAccount',
+    ReceiveAddress = 'ReceiveAddress',
+    ReceiveAddressVerification = 'ReceiveAddressVerification',
+}
+
+export enum ReceiveAddressVerificationSource {
+    Pasted = 'pasted',
+    Shared = 'shared',
 }
 
 export enum SendStackRoutes {
     SendAccounts = 'SendAccounts',
     SendOutputs = 'SendOutputs',
-    SendFees = 'SendFees',
     SendUtxo = 'SendUtxo',
     SendDestinationTagReview = 'SendDestinationTagReview',
     SendAddressReview = 'SendAddressReview',
@@ -243,26 +291,20 @@ export enum SettingsStackRoutes {
     SettingsViewOnly = 'SettingsViewOnly',
     SettingsSupport = 'SettingsSupport',
     SettingsAppLog = 'SettingsAppLog',
-    SettingsCoinEnabling = 'SettingsCoinEnabling',
+    SettingsNetworks = 'SettingsNetworks',
+    SettingsNetworkBackends = 'SettingsNetworkBackends',
     SettingsSuiteSync = 'SettingsSuiteSync',
+    SettingsSecurity = 'SettingsSecurity',
     SettingsAdvanced = 'SettingsAdvanced',
+    SettingsDustPhishing = 'SettingsDustPhishing',
+    SettingsExperimental = 'SettingsExperimental',
     TurnOffDeviceAuthenticityCheck = 'TurnOffDeviceAuthenticityCheck',
     TurnOffFirmwareAuthenticityCheck = 'TurnOffFirmwareAuthenticityCheck',
-    BitcoinBackends = 'BitcoinBackends',
     SettingsTradingLocation = 'SettingsTradingLocation',
 }
 
 export enum TradingStackRoutes {
     Trading = 'Trading',
-    ReceiveAccounts = 'ReceiveAccounts',
-    TradingHistory = 'TradingHistory',
-    TradingExchangePreview = 'TradingExchangePreview',
-    TradingExchangeApproval = 'TradingExchangeApproval',
-    TradingExchangeRevoke = 'TradingExchangeRevoke',
-    TradingSellPreview = 'TradingSellPreview',
-    TradingFees = 'TradingFees',
-    TradingSellOutputsReview = 'TradingSellOutputsReview',
-    TradingExchangeOutputsReview = 'TradingExchangeOutputsReview',
 }
 
 export enum TransactionDetailStackRoutes {
@@ -271,7 +313,6 @@ export enum TransactionDetailStackRoutes {
 }
 
 export enum StellarManageTokenStackRoutes {
-    TokenSelection = 'TokenSelection',
     ManualTokenInput = 'ManualTokenInput',
     ActivationFee = 'ActivationFee',
     DeactivationFee = 'DeactivationFee',

@@ -1,44 +1,76 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
 import EventEmitter from 'events';
 
-import { ERRORS } from '@trezor/connect-common/src/constants';
-import { TRANSPORT, TRANSPORT_ERROR } from '@trezor/transport';
-import { createDeferred, createLazy, getSynchronize, throwError } from '@trezor/utils';
-
-import { AbstractMethod } from './AbstractMethod';
-import { getMethod } from './method';
-import { onCallFirmwareUpdate } from './onCallFirmwareUpdate';
-import { dispose as disposeBackend } from '../backend/BlockchainLink';
-import { DataManager } from '../data/DataManager';
-import { parseLocalFirmwares } from '../data/connectSettings';
-import type { Device, DeviceEvents } from '../device/Device';
-import { DeviceList, IDeviceList, assertDeviceListConnected } from '../device/DeviceList';
-import * as workflows from '../device/workflow';
 import {
     CORE_CALL,
+    CORE_CALL_CANCEL,
     CORE_EVENT,
-    CoreCallMessage,
-    CoreEventMessage,
-    CoreRequestMessage,
     DEVICE,
     POPUP,
     RESPONSE_EVENT,
-    TransportInfo,
+    SET_ENABLED_NETWORKS,
+    UI_EVENT,
     UI_REQUEST,
     UI_RESPONSE,
     createDeviceMessage,
     createResponseMessage,
     createTransportMessage,
     createUiMessage,
-} from '../events';
-import type { ConnectSettings, DeviceIdentity } from '../types';
-import { LogWriter, enableLog, initLog, setLogWriter } from '../utils/debug';
+} from '@trezor/connect-common';
+import type {
+    ConnectSettings,
+    CoreCallMessage,
+    CoreEventMessage,
+    CoreRequestMessage,
+    DeviceIdentity,
+    MethodInfo,
+    TransportInfo,
+} from '@trezor/connect-common';
+import { ERRORS } from '@trezor/connect-common/src/constants';
+import type { TrezorError } from '@trezor/connect-common/src/constants/errors';
+import { parseLocalFirmwares } from '@trezor/connect-common/src/data/connectSettings';
+import type { CreateLogger } from '@trezor/connect-common/src/types/settings';
+import {
+    type LogWriter,
+    noopCreateLogger,
+    noopLogger,
+    setLogWriter,
+} from '@trezor/connect-common/src/utils/debug';
+import { TRANSPORT, TRANSPORT_ERROR } from '@trezor/transport-common';
+import { type Logger, createDeferred, createLazy, getSynchronize, throwError } from '@trezor/utils';
+
+import type { AbstractMethod } from './AbstractMethod';
+import { getMethod } from './method';
+import { onCallFirmwareUpdate } from './onCallFirmwareUpdate';
+import { dispose as disposeBackend } from '../backend/BlockchainLink';
+import * as enabledNetworksStore from '../data/enabledNetworksStore';
+import { initializeFirmwareConfig } from '../data/firmwareInfo';
+import * as firmwareReleaseStore from '../data/firmwareReleaseStore';
+import * as localFirmwareStore from '../data/localFirmwareStore';
+import { loadProtobufModules } from '../data/protobufLoader';
+import * as settingsStore from '../data/settingsStore';
+import type { Device, DeviceEvents } from '../device/Device';
+import type { IDeviceList } from '../device/DeviceList';
+import { DeviceList, assertDeviceListConnected } from '../device/DeviceList';
+import { validateState } from '../device/workflow/validateState';
 import { createUiPromiseManager } from '../utils/uiPromiseManager';
 
-// custom log
-const _log = initLog('Core');
-
 type CoreContext = ReturnType<Core['getCoreContext']>;
+
+const createSendCoreMessageWithCallId =
+    (sendCoreMessage: CoreContext['sendCoreMessage'], callId?: string) =>
+    (message: CoreEventMessage) => {
+        const isUiRequestMessage = message.event === UI_EVENT && message.type.startsWith('ui-');
+        const hasCallId = 'callId' in message && Boolean(message.callId);
+
+        if (callId && isUiRequestMessage && !hasCallId) {
+            sendCoreMessage({ ...message, callId } as CoreEventMessage);
+
+            return;
+        }
+
+        sendCoreMessage(message);
+    };
 
 /**
  * Find device by device path. Returned device may be unacquired.
@@ -49,7 +81,7 @@ type CoreContext = ReturnType<Core['getCoreContext']>;
 const selectDevice = ({ deviceList }: CoreContext, methodCallDevice?: DeviceIdentity) => {
     assertDeviceListConnected(deviceList);
 
-    let device: Device | typeof undefined;
+    let device: Device | undefined;
 
     if (methodCallDevice?.state?.staticSessionId) {
         device = deviceList.getDeviceByStaticState(methodCallDevice.state.staticSessionId);
@@ -96,9 +128,13 @@ const inner = async (context: CoreContext, method: AbstractMethod<any>, device: 
 
             // request confirmation view
             sendCoreMessage(
-                createUiMessage(UI_REQUEST.REQUEST_CONFIRMATION, {
-                    view: 'no-backup',
-                }),
+                createUiMessage(
+                    UI_REQUEST.REQUEST_CONFIRMATION,
+                    {
+                        view: 'no-backup',
+                    },
+                    { requestId: uiPromise.requestId },
+                ),
             );
 
             // wait for user action
@@ -119,22 +155,25 @@ const inner = async (context: CoreContext, method: AbstractMethod<any>, device: 
         sendCoreMessage(createUiMessage(UI_REQUEST.FIRMWARE_OUTDATED, device.toMessageObject()));
     }
 
-    const workflowCtx = {
-        device,
-        method,
-        signal: context.signal,
-    };
-
     // Make sure that device will display pin/passphrase
     if (method.useDeviceState) {
-        await workflows.validateState(workflowCtx);
+        await validateState({
+            device,
+            method,
+            signal: context.signal,
+            sendCoreMessage,
+        });
     }
 
     // run method
     try {
-        const response = await method.run();
+        const response = await method.run({ sendCoreMessage, createUiPromise: uiPromises.create });
 
-        return createResponseMessage(method.responseID, true, response, device);
+        return createResponseMessage(method.responseID, true, response, {
+            path: device.getUniquePath(),
+            state: device.getState(),
+            instance: device.getInstance(),
+        });
     } catch (error) {
         return Promise.reject(error);
     }
@@ -161,6 +200,7 @@ const onCall = async (context: CoreContext, message: CoreCallMessage) => {
         methodSynchronize,
         resolveWaitForFirstMethod,
         sendCoreMessage,
+        logger,
     } = context;
     const responseID = message.id;
 
@@ -168,14 +208,10 @@ const onCall = async (context: CoreContext, message: CoreCallMessage) => {
     let method: AbstractMethod<any>;
     try {
         method = await methodSynchronize(async () => {
-            _log.debug('loading method...');
+            logger.debug('loading method...');
             const method2 = await getMethod(message);
-            _log.debug('method selected', method2.name);
-            // bind callbacks
-            method2.postMessage = sendCoreMessage;
-            method2.createUiPromise = uiPromises.create;
-            // start validation process
-            method2.init();
+            logger.debug('method selected', method2.name);
+
             await method2.initAsync?.();
 
             return method2;
@@ -188,10 +224,10 @@ const onCall = async (context: CoreContext, message: CoreCallMessage) => {
         return Promise.resolve();
     }
 
-    if (method.payload.__info) {
+    if (message.payload.__info) {
         const response = method.getMethodInfo();
 
-        if (method.payload.__precomposed) {
+        if (message.payload.__precomposed) {
             response.precomposed = await method.payloadToPrecomposed();
         }
         sendCoreMessage(createResponseMessage(method.responseID, true, response));
@@ -199,19 +235,31 @@ const onCall = async (context: CoreContext, message: CoreCallMessage) => {
         return Promise.resolve();
     }
 
+    const sendCoreMessageWithCallId = createSendCoreMessageWithCallId(
+        sendCoreMessage,
+        method.callId,
+    );
+    const methodContext: CoreContext = {
+        ...context,
+        sendCoreMessage: sendCoreMessageWithCallId,
+    };
+
     // this method is not using the device, there is no need to acquire
     if (!method.useDevice) {
         try {
-            const response = await method.run();
-            sendCoreMessage(createResponseMessage(method.responseID, true, response));
+            const response = await method.run({
+                sendCoreMessage: sendCoreMessageWithCallId,
+                createUiPromise: uiPromises.create,
+            });
+            sendCoreMessageWithCallId(createResponseMessage(method.responseID, true, response));
         } catch (error) {
-            sendCoreMessage(createResponseMessage(method.responseID, false, { error }));
+            sendCoreMessageWithCallId(createResponseMessage(method.responseID, false, { error }));
         }
 
         return Promise.resolve();
     }
 
-    return await onCallDevice(context, message, method);
+    return await onCallDevice(methodContext, message, method);
 };
 
 const onCallDevice = async (
@@ -219,9 +267,9 @@ const onCallDevice = async (
     message: CoreCallMessage,
     method: AbstractMethod<any>,
 ): Promise<void> => {
-    const { deviceList, callMethods, sendCoreMessage } = context;
+    const { deviceList, callMethods, sendCoreMessage, logger } = context;
     const responseID = message.id;
-    const { env, transports, pendingTransportEvent } = DataManager.getSettings();
+    const { transports, pendingTransportEvent } = settingsStore.get();
 
     if (!deviceList.isConnected() && !deviceList.pendingConnection()) {
         // transport is missing try to initialize it once again
@@ -229,31 +277,20 @@ const onCallDevice = async (
     }
     await deviceList.pendingConnection();
 
-    const shouldRetry = ['web', 'webextension'].includes(env);
     // find device
     let tempDevice: Device | undefined;
-    while (!tempDevice) {
-        try {
-            tempDevice = selectDevice(context, message.payload.device);
-        } catch (error) {
-            if (error.code === 'Transport_Missing') {
-                // show message about transport
-                sendCoreMessage(createUiMessage(UI_REQUEST.TRANSPORT));
-
-                // Retry selectDevice again
-                // NOTE: this should change after multi-transports refactor, where transport will be always alive
-                if (deviceList.pendingConnection() && shouldRetry) {
-                    while (deviceList.pendingConnection()) {
-                        await deviceList.pendingConnection();
-                    }
-                    continue;
-                }
-            }
-            // TODO: this should not be returned here before user agrees on "read" perms...
-            sendCoreMessage(createResponseMessage(responseID, false, { error }));
-            throw error;
+    try {
+        tempDevice = selectDevice(context, message.payload.device);
+    } catch (error) {
+        if (error.code === 'Transport_Missing') {
+            // show message about transport
+            sendCoreMessage(createUiMessage(UI_REQUEST.TRANSPORT));
         }
+        // TODO: this should not be returned here before user agrees on "read" perms...
+        sendCoreMessage(createResponseMessage(responseID, false, { error }));
+        throw error;
     }
+
     const device = tempDevice;
 
     method.setDevice(device);
@@ -263,7 +300,7 @@ const onCallDevice = async (
         call =>
             call &&
             call !== method &&
-            call.device?.getUniquePath() === method.device.getUniquePath(),
+            call.device?.getUniquePath() === method.device?.getUniquePath(),
     );
     if (previousCall.length > 0 && method.overridePreviousCall) {
         // set flag for each pending method
@@ -307,6 +344,10 @@ const onCallDevice = async (
     // set public variables, listeners and run method
     registerDeviceEvents(context, method)(device);
 
+    // Must run here: after the `__info` early-return above, before `device.run` reads
+    // `useCardanoDerivation` below.
+    method.resolveCardanoCapability();
+
     let messageResponse: CoreEventMessage;
 
     try {
@@ -323,7 +364,7 @@ const onCallDevice = async (
     } catch (error) {
         // just a log proving that cause propagates all the way up
         if (error.cause) {
-            _log.debug('device.run error caught, caused by:', error.cause);
+            logger.debug('device.run error caught, caused by:', error.cause);
         }
         // corner case: Device was disconnected during authorization
         // this device_id needs to be stored and penalized with delay on future connection
@@ -354,7 +395,7 @@ const onCallDevice = async (
             method.deviceState.sessionId !== device.getState()?.sessionId
         ) {
             // if session was changed from the one that was sent, send a device changed event
-            sendCoreMessage(createDeviceMessage(DEVICE.CHANGED, device.toMessageObject()));
+            device.emitDeviceChanged();
         }
 
         // TODO: This requires a massive refactoring https://github.com/trezor/trezor-suite/issues/5323
@@ -386,9 +427,9 @@ const onCallDevice = async (
  * @returns {void}
  * @memberof Core
  */
-const cleanup = ({ uiPromises }: CoreContext) => {
+const cleanup = ({ uiPromises, logger }: CoreContext) => {
     uiPromises.clear();
-    _log.debug('Cleanup...');
+    logger.debug('Cleanup...');
 };
 
 /**
@@ -411,7 +452,6 @@ const onDeviceButtonHandler =
     (device: Device, context: CoreContext, method?: AbstractMethod<any>) =>
     ({ payload: request }: DeviceEvents['button']) => {
         const { sendCoreMessage } = context;
-        const addressRequest = request.code === 'ButtonRequest_Address';
         const data =
             typeof method?.getButtonRequestData === 'function' && request.code
                 ? method?.getButtonRequestData(request.code, request.name)
@@ -427,9 +467,6 @@ const onDeviceButtonHandler =
                 data,
             }),
         );
-        if (addressRequest && !method?.useUi) {
-            sendCoreMessage(createUiMessage(UI_REQUEST.ADDRESS_VALIDATION, data));
-        }
     };
 
 const onDevicePinHandler =
@@ -440,7 +477,11 @@ const onDevicePinHandler =
         const uiPromise = uiPromises.create(UI_RESPONSE.RECEIVE_PIN, device);
         // request pin view
         sendCoreMessage(
-            createUiMessage(UI_REQUEST.REQUEST_PIN, { device: device.toMessageObject(), type }),
+            createUiMessage(
+                UI_REQUEST.REQUEST_PIN,
+                { device: device.toMessageObject(), type },
+                { requestId: uiPromise.requestId },
+            ),
         );
         // wait for pin
         try {
@@ -465,7 +506,11 @@ const onDeviceWordHandler =
         // create ui promise
         const uiPromise = uiPromises.create(UI_RESPONSE.RECEIVE_WORD, device);
         sendCoreMessage(
-            createUiMessage(UI_REQUEST.REQUEST_WORD, { device: device.toMessageObject(), type }),
+            createUiMessage(
+                UI_REQUEST.REQUEST_WORD,
+                { device: device.toMessageObject(), type },
+                { requestId: uiPromise.requestId },
+            ),
         );
         // wait for word
         try {
@@ -491,7 +536,11 @@ const onDevicePassphraseHandler =
         const uiPromise = uiPromises.create(UI_RESPONSE.RECEIVE_PASSPHRASE, device);
         // request passphrase view
         sendCoreMessage(
-            createUiMessage(UI_REQUEST.REQUEST_PASSPHRASE, { device: device.toMessageObject() }),
+            createUiMessage(
+                UI_REQUEST.REQUEST_PASSPHRASE,
+                { device: device.toMessageObject() },
+                { requestId: uiPromise.requestId },
+            ),
         );
         // wait for passphrase
         try {
@@ -530,10 +579,14 @@ const onThpPairingHandler =
         const uiPromise = uiPromises.create(UI_RESPONSE.RECEIVE_THP_PAIRING_TAG, device);
 
         sendCoreMessage(
-            createUiMessage(UI_REQUEST.REQUEST_THP_PAIRING, {
-                device: device.toMessageObject(),
-                ...payload,
-            }),
+            createUiMessage(
+                UI_REQUEST.REQUEST_THP_PAIRING,
+                {
+                    device: device.toMessageObject(),
+                    ...payload,
+                },
+                { requestId: uiPromise.requestId },
+            ),
         );
         // wait for response
         try {
@@ -605,17 +658,34 @@ const registerDeviceEvents =
         device.on(DEVICE.THP_PAIRING_STATUS_CHANGED, onThpPhaseChangedHandler(device, context));
     };
 
-/**
- * Handle popup closed by user.
- * @returns {void}
- * @memberof Core
- */
-const onPopupClosed = (context: CoreContext, customErrorMessage?: string) => {
+// When `callId` is provided, the abort is scoped to the single method whose
+// AbstractMethod.callId matches. Other in-flight methods, devices and UI
+// promises remain untouched. When `callId` is undefined, all in-flight work
+// is aborted (legacy behavior).
+const abortRunningCall = (context: CoreContext, error: TrezorError, callId?: string) => {
     const { uiPromises, deviceList, callMethods, resetWaitForFirstMethod, sendCoreMessage } =
         context;
-    const error = customErrorMessage
-        ? ERRORS.TypedError('Method_Cancel', customErrorMessage)
-        : ERRORS.TypedError('Method_Interrupted');
+
+    if (callId) {
+        const method = callMethods.find(m => m.callId === callId);
+        if (!method) {
+            return;
+        }
+
+        if (method.device?.isUsedHere()) {
+            // Aborting the device session causes device.run to reject which
+            // propagates through the onCallDevice try/catch block and emits
+            // the response for this method only.
+            method.device.interrupt(error);
+        } else {
+            // Method has not acquired a device yet. Respond directly and
+            // let sendCoreMessage's RESPONSE_EVENT handler prune callMethods.
+            sendCoreMessage(createResponseMessage(method.responseID, false, { error }));
+        }
+
+        return;
+    }
+
     // Device was already acquired. Try to interrupt running action which will throw error from onCall try/catch block
     if (deviceList.isConnected() && deviceList.getDeviceCount() > 0) {
         deviceList.getAllDevices().forEach(d => {
@@ -639,8 +709,18 @@ const onPopupClosed = (context: CoreContext, customErrorMessage?: string) => {
     cleanup(context);
 };
 
+// Handle genuine popup window close (always produces Method_Interrupted)
+const onPopupClosed = (context: CoreContext) => {
+    abortRunningCall(context, ERRORS.TypedError('Method_Interrupted'));
+};
+
+// Handle an explicit cancel() call (always produces Method_Cancel)
+const onCallCancel = (context: CoreContext, reason?: string, callId?: string) => {
+    abortRunningCall(context, ERRORS.TypedError('Method_Cancel', reason), callId);
+};
+
 const initDeviceList = (context: CoreContext) => {
-    const { deviceList, sendCoreMessage } = context;
+    const { deviceList, sendCoreMessage, logger } = context;
 
     deviceList.on(DEVICE.CONNECT, device => {
         sendCoreMessage(createDeviceMessage(DEVICE.CONNECT, device.toMessageObject()));
@@ -673,7 +753,7 @@ const initDeviceList = (context: CoreContext) => {
     );
 
     deviceList.on(TRANSPORT.ERROR, error => {
-        _log.warn('TRANSPORT.ERROR', error.error);
+        logger.warn('TRANSPORT.ERROR', error.error);
         sendCoreMessage(createTransportMessage(TRANSPORT.ERROR, error));
     });
 };
@@ -689,6 +769,9 @@ export class Core extends EventEmitter {
     private methodSynchronize = getSynchronize();
     private uiPromises = createUiPromiseManager();
 
+    private createLogger: CreateLogger = noopCreateLogger;
+    private coreLogger: Logger = noopLogger;
+
     private waitForFirstMethod = createDeferred();
 
     private _deviceList?: IDeviceList;
@@ -698,9 +781,7 @@ export class Core extends EventEmitter {
 
     private sendCoreMessage(message: CoreEventMessage) {
         if (message.event === RESPONSE_EVENT) {
-            const index = this.callMethods.findIndex(
-                call => call && call.responseID === message.id,
-            );
+            const index = this.callMethods.findIndex(call => call?.responseID === message.id);
             if (index >= 0) {
                 this.callMethods.splice(index, 1);
                 if (this.callMethods.length === 0) {
@@ -716,6 +797,7 @@ export class Core extends EventEmitter {
             signal: this.abortController.signal,
             uiPromises: this.uiPromises,
             deviceList: this.deviceList,
+            logger: this.coreLogger,
             callMethods: this.callMethods,
             methodSynchronize: this.methodSynchronize,
             sendCoreMessage: this.sendCoreMessage.bind(this),
@@ -729,30 +811,28 @@ export class Core extends EventEmitter {
     }
 
     handleMessage(message: CoreRequestMessage) {
-        _log.debug('handleMessage', message.type);
+        this.coreLogger.debug('handleMessage', message.type);
 
         switch (message.type) {
             case POPUP.CLOSED:
-                onPopupClosed(
+                onPopupClosed(this.getCoreContext());
+                break;
+
+            case CORE_CALL_CANCEL:
+                onCallCancel(
                     this.getCoreContext(),
-                    message.payload ? message.payload.error : null,
+                    message.payload?.reason,
+                    message.payload?.callId,
                 );
                 break;
 
-            case TRANSPORT.DISABLE_WEBUSB: {
-                const settings = DataManager.getSettings();
-                const transports = settings.transports?.filter(t => t !== 'WebUsbTransport');
-                if (transports && !transports.includes('BridgeTransport')) {
-                    transports.unshift('BridgeTransport');
-                }
-                settings.transports = transports;
-
+            case TRANSPORT.SET_TRANSPORTS:
+                settingsStore.update({ transports: message.payload.transports });
                 resetTransports(this.getCoreContext());
                 break;
-            }
-            case TRANSPORT.SET_TRANSPORTS:
-                DataManager.updateSettings({ transports: message.payload.transports });
-                resetTransports(this.getCoreContext());
+
+            case SET_ENABLED_NETWORKS:
+                enabledNetworksStore.add(message.payload);
                 break;
 
             case TRANSPORT.REQUEST_DEVICE:
@@ -780,12 +860,13 @@ export class Core extends EventEmitter {
             case UI_RESPONSE.RECEIVE_ACCOUNT:
             case UI_RESPONSE.RECEIVE_FEE:
             case UI_RESPONSE.RECEIVE_WORD:
+            case UI_RESPONSE.RECEIVE_DISCOVERY_ACCOUNTS:
                 this.uiPromises.resolve(message);
                 break;
             case UI_RESPONSE.RECEIVE_FIRMWARE: {
                 const localFirmwares = message.payload && parseLocalFirmwares(message.payload);
                 if (localFirmwares) {
-                    DataManager.setLocalFirmwares(localFirmwares);
+                    localFirmwareStore.set(localFirmwares);
                 }
                 break;
             }
@@ -797,16 +878,34 @@ export class Core extends EventEmitter {
                 // like regular methods using onCall function. In onCall, disconnecting device
                 // means that call immediately returns error.
                 if (message.payload.method === 'firmwareUpdate') {
+                    if (message.payload.__info) {
+                        this.sendCoreMessage(
+                            createResponseMessage(message.id, true, {
+                                name: 'firmwareUpdate',
+                                info: 'Update firmware',
+                                requiredPermissions: [{ permission: 'internal' }],
+                                useUi: true,
+                                useDevice: true,
+                                useDeviceState: false,
+                            } satisfies MethodInfo),
+                        );
+                        break;
+                    }
+
                     assertDeviceListConnected(this.deviceList);
 
                     const coreContext = this.getCoreContext();
+                    const sendCoreMessageWithCallId = createSendCoreMessageWithCallId(
+                        this.sendCoreMessage.bind(this),
+                        message.payload.callId,
+                    );
                     onCallFirmwareUpdate({
                         params: message.payload,
                         context: {
                             deviceList: this.deviceList,
-                            postMessage: this.sendCoreMessage.bind(this),
+                            postMessage: sendCoreMessageWithCallId,
                             selectDevice: path => selectDevice(coreContext, { path }),
-                            log: _log,
+                            log: this.coreLogger,
                             abortSignal: this.abortController.signal,
                             registerEvents: registerDeviceEvents(coreContext),
                             uiPromises: coreContext.uiPromises,
@@ -819,11 +918,11 @@ export class Core extends EventEmitter {
                             this.sendCoreMessage(
                                 createResponseMessage(message.id, false, { error }),
                             );
-                            _log.error('onCallFirmwareUpdate', error);
+                            this.coreLogger.error('onCallFirmwareUpdate', error);
                         });
                 } else {
                     onCall(this.getCoreContext(), message).catch(error => {
-                        _log.error('onCall', error);
+                        this.coreLogger.error('onCall', error);
                     });
                 }
         }
@@ -863,6 +962,11 @@ export class Core extends EventEmitter {
             setLogWriter(logWriterFactory);
         }
 
+        // Logger factory comes from the host composition root and must be ready before DeviceList
+        // is created because device discovery/handshake can log during init.
+        this.createLogger = settings.createLogger ?? noopCreateLogger;
+        this.coreLogger = this.createLogger('Core');
+
         // do not send any event until Core is fully loaded
         // DeviceList emits TRANSPORT and DEVICE events if pendingTransportEvent is set
         const throttlePromise = createDeferred();
@@ -871,35 +975,36 @@ export class Core extends EventEmitter {
             throttlePromise.promise.then(() => onCoreEvent(message));
 
         try {
-            await DataManager.load(settings);
+            // enabledNetworks has its own store (the single source of truth); keep it out of
+            // settingsStore so no reader picks up a stale, unsanitized snapshot.
+            settingsStore.set({ ...settings, enabledNetworks: undefined });
+            enabledNetworksStore.set(settings.enabledNetworks ?? []);
+            await firmwareReleaseStore.init(
+                settings.firmwareChannel,
+                false,
+                initializeFirmwareConfig,
+            );
             const localFirmwares =
                 settings.localFirmwares && parseLocalFirmwares(settings.localFirmwares);
             if (localFirmwares) {
-                DataManager.setLocalFirmwares(localFirmwares);
+                localFirmwareStore.set(localFirmwares);
             }
-            const { debug, priority, manifest } = DataManager.getSettings();
-            const messages = DataManager.getProtobufMessages();
-
-            enableLog(debug);
+            await loadProtobufModules();
 
             this._deviceList = new DeviceList({
-                debug,
-                messages,
-                priority,
-                manifest,
+                createLogger: this.createLogger,
             });
             initDeviceList(this.getCoreContext());
 
             this.on(CORE_EVENT, onCoreEventThrottled);
         } catch (error) {
             // TODO: kill app
-            _log.error('init', error);
+            this.coreLogger.error('init', error);
             throttlePromise.reject(error);
             throw error;
         }
 
-        const { transports, pendingTransportEvent, transportReconnect, coreMode } =
-            DataManager.getSettings();
+        const { transports, pendingTransportEvent, transportReconnect } = settingsStore.get();
 
         try {
             this.deviceList.init({ transports, pendingTransportEvent, transportReconnect });
@@ -909,8 +1014,7 @@ export class Core extends EventEmitter {
             throw error;
         }
 
-        // in auto core mode, we have to wait to check if transport is available
-        if (!transportReconnect || coreMode === 'auto') {
+        if (!transportReconnect) {
             await this.deviceList.pendingConnection();
         }
 
@@ -922,7 +1026,7 @@ export class Core extends EventEmitter {
 }
 
 const resetTransports = async ({ deviceList, sendCoreMessage }: CoreContext) => {
-    const { transports, pendingTransportEvent, transportReconnect } = DataManager.getSettings();
+    const { transports, pendingTransportEvent, transportReconnect } = settingsStore.get();
 
     try {
         await deviceList.init({ transports, pendingTransportEvent, transportReconnect });

@@ -1,4 +1,4 @@
-import { TrezorDevice } from '@suite-common/suite-types';
+import { type TrezorDevice } from '@suite-common/suite-types';
 import { sortByTimestamp } from '@suite-common/suite-utils';
 
 import { PORTFOLIO_TRACKER_DEVICE_ID } from './deviceConstants';

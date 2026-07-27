@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 // @ts-ignore
-import * as Messages from '@trezor/protobuf/src/messages';
+import * as Messages from '@trezor/protobuf/src/definitions';
 
 import commonFixtures from '../../../../submodules/trezor-common/tests/fixtures/stellar/sign_tx.json';
 
@@ -44,7 +44,7 @@ const transformOperation = (op: any) => {
                 trustor: op.trusted_account,
                 assetType: transformAsset({ type: op.asset_type }).type,
                 assetCode: op.asset_code,
-                authorize: op.is_authorized,
+                authorize: op.is_authorized ? 1 : 0,
             };
         case 'StellarChangeTrustOp':
             return {
@@ -168,6 +168,8 @@ const legacyResultsMap: Record<string, LegacyResult[]> = {
     ],
     // newly added message in 2.6.5
     StellarClaimClaimableBalanceOp: [{ rules: ['<2.6.5'], payload: false }],
+    // contains StellarPathPaymentStrictSendOp, newly added in 2.4.3
+    all_sending_like_operations: legacyResults,
     op_source_account_not_equal_signing_key: [
         {
             rules: ['2.3.0'],
@@ -181,49 +183,74 @@ const legacyResultsMap: Record<string, LegacyResult[]> = {
     ],
 };
 
-export default {
+const stellarSignTransaction: TestCase = {
     method: 'stellarSignTransaction',
     setup: {
         mnemonic: commonFixtures.setup.mnemonic,
     },
     tests: [
-        ...commonFixtures.tests.map(({ name, parameters, result }) => ({
-            description: name,
-            params: {
-                path: parameters.address_n,
-                networkPassphrase: parameters.network_passphrase,
-                transaction: {
-                    source: parameters.tx.source_account,
-                    fee: parameters.tx.fee,
-                    sequence: parameters.tx.sequence_number,
-                    timebounds: {
-                        minTime: parameters.tx.timebounds_start,
-                        maxTime: parameters.tx.timebounds_end,
+        ...commonFixtures.tests
+            .filter((test: any) => !test.experimental)
+            .flatMap(({ name, result, parameters, skip_models }: any) => [
+                {
+                    name,
+                    description: name,
+                    skip_models,
+                    result,
+                    params: {
+                        path: parameters.address_n,
+                        networkPassphrase: parameters.network_passphrase,
+                        transaction: {
+                            source: parameters.tx.source_account,
+                            fee: parameters.tx.fee,
+                            sequence: parameters.tx.sequence_number,
+                            timebounds: {
+                                minTime: parameters.tx.timebounds_start,
+                                maxTime: parameters.tx.timebounds_end,
+                            },
+                            memo: {
+                                type: Messages.StellarMemoType[
+                                    parameters.tx.memo_type as keyof typeof Messages.StellarMemoType
+                                ],
+                                text: parameters.tx.memo_text,
+                                id: parameters.tx.memo_id,
+                                hash: parameters.tx.memo_hash,
+                            },
+                            operations: parameters.operations.flatMap(transformOperation),
+                        },
                     },
-                    memo: {
-                        // @ts-expect-error
-                        type: Messages.StellarMemoType[parameters.tx.memo_type],
-                        text: parameters.tx.memo_text,
-                        id: parameters.tx.memo_id,
-                        hash: parameters.tx.memo_hash,
-                    },
-                    operations: parameters.operations.flatMap(transformOperation),
                 },
-            },
-            result: {
-                publicKey: result.public_key,
-                signature: Buffer.from(result.signature, 'base64').toString('hex'),
-            },
-            legacyResults: legacyResultsMap[name]
-                ? legacyResultsMap[name]
-                : [
-                      {
-                          // stellar has required update
-                          rules: ['<2.3.0'],
-                          payload: false,
-                      },
-                  ],
-        })),
+                {
+                    name,
+                    description: `${name} (XDR)`,
+                    skip_models,
+                    result,
+                    params: {
+                        path: parameters.address_n,
+                        xdrBase64: parameters.xdr,
+                        testnet:
+                            parameters.network_passphrase === 'Test SDF Network ; September 2015',
+                    },
+                },
+            ])
+            .map(({ name, description, params, result, skip_models }: any) => ({
+                skip: skip_models?.flatMap((model: string) => (model === 't1' ? '1' : [])),
+                description,
+                params,
+                result: {
+                    publicKey: result.public_key,
+                    signature: Buffer.from(result.signature, 'base64').toString('hex'),
+                },
+                legacyResults: legacyResultsMap[name]
+                    ? legacyResultsMap[name]
+                    : [
+                          {
+                              // stellar has required update
+                              rules: ['<2.3.0'],
+                              payload: false,
+                          },
+                      ],
+            })),
         {
             description: 'Sequence is over Number.MAX_SAFE_INTEGER and is sent as string',
             setup: {
@@ -267,4 +294,6 @@ export default {
             ],
         },
     ],
-} satisfies TestCase;
+};
+
+export default stellarSignTransaction;

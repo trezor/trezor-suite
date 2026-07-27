@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
+import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import { isProgramDerivedAccount } from '@suite-common/wallet-utils';
 import { useFormContext } from '@suite-native/forms';
 import { useTranslate } from '@suite-native/intl';
@@ -22,13 +22,13 @@ export const useSolAssociatedTokenAddress = () => {
     }) => {
         const networkType = getNetworkType(symbol);
         if (networkType !== 'solana') return;
-        const { payload, success } = await TrezorConnect.getAccountInfo({
+        const response = await TrezorConnect.getAccountInfo({
             descriptor: value,
             coin: symbol,
             details: 'basic',
         });
 
-        if (!success) {
+        if (!response.success) {
             setError(fieldName, {
                 message: translate(
                     'moduleSend.outputs.recipients.solAssociatedAccountAddress.alert.title',
@@ -40,7 +40,7 @@ export const useSolAssociatedTokenAddress = () => {
             return;
         }
 
-        setIsSolATA(isProgramDerivedAccount(payload));
+        setIsSolATA(isProgramDerivedAccount(response.payload));
     };
 
     return { isSolATA, checkSolAssociatedTokenAddress };

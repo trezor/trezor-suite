@@ -3,7 +3,6 @@
     "compilerOptions": { "outDir": "libDev" },
     "include": [".", "**/*.json"],
     "references": [
-        { "path": "../metadata-types" },
         { "path": "../test-utils" },
         { "path": "../wallet-types" },
         { "path": "../wallet-utils" },

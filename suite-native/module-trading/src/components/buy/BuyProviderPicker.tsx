@@ -1,22 +1,22 @@
+import { StretchInY, StretchOutY } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 
 import type { BuyTrade } from 'invity-api';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { invariant } from '@suite-common/suite-utils';
 import {
-    TradingRootState as TradingRootStateCommon,
+    type TradingRootState as TradingRootStateCommon,
     selectTradingBuyIsLoading,
     selectTradingBuyProviders,
     selectTradingProviderByNameAndTradeType,
 } from '@suite-common/trading';
-import { events } from '@suite-native/analytics';
-import { HStack, Text } from '@suite-native/atoms';
+import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { AnimatedBox, HStack, Text } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
-import { useAnalytics } from '@suite-native/services';
 import { OverviewRow, OverviewValueSkeleton, ProviderLogo } from '@suite-native/trading-atoms';
-import { ResidenceCheckAwareAnimatedBox } from '@suite-native/trading-residence';
 import {
-    TradingRootState,
+    type TradingRootState,
     selectBuyQuotesByPaymentMethodNative,
 } from '@suite-native/trading-state';
 
@@ -50,7 +50,7 @@ const BuyProviderPickerRight = ({ isLoading, selectedValue }: BuyProviderPickerR
         <HStack>
             <ProviderLogo logo={logo} />
             <Text
-                color="textSubdued"
+                color="contentPrimary"
                 variant="body-sm"
                 accessibilityLabel={translate('moduleTrading.tradingScreen.selectedProvider')}
                 testID={PROVIDER_PICKER_TEST_ID + '/value'}
@@ -66,7 +66,7 @@ export const BuyProviderPicker = () => {
     const form = useBuyFormContext();
     const providers = useSelector(selectTradingBuyProviders);
     const isLoading = useSelector(selectTradingBuyIsLoading);
-    const analytics = useAnalytics();
+    const { analytics } = useServices(selectNativeAnalyticsDep);
     const { isSheetVisible, hideSheet, showSheet, setSelectedValue, selectedValue } =
         useSheetControls(form, 'quote');
     const { paymentMethod } = selectedValue ?? {};
@@ -108,20 +108,17 @@ export const BuyProviderPicker = () => {
 
     return (
         <>
-            <ResidenceCheckAwareAnimatedBox>
+            <AnimatedBox entering={StretchInY} exiting={StretchOutY}>
                 <OverviewRow
                     title={translate('moduleTrading.tradingScreen.provider')}
                     noBottomBorder
                     onPress={handleProviderPress}
                     testID={PROVIDER_PICKER_TEST_ID}
                     noCaret={isLoading}
-                    warning={
-                        isLoading ? undefined : translate('moduleTrading.tradingScreen.kycWarning')
-                    }
                 >
                     <BuyProviderPickerRight isLoading={isLoading} selectedValue={selectedValue} />
                 </OverviewRow>
-            </ResidenceCheckAwareAnimatedBox>
+            </AnimatedBox>
             <ProviderSheet
                 quotes={quotes}
                 isVisible={isSheetVisible}

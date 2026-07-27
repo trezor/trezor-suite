@@ -1,12 +1,11 @@
+import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
-import { LANGUAGES, Locale } from '@suite-common/suite-types';
+import { Anchor, SettingsAnchor } from '@suite/router';
+import { LANGUAGES, type Locale } from '@suite-common/suite-types';
+import { ActionColumn, ActionSelect, SectionItem, TextColumn } from '@trezor/product-components';
 
-import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
-import { ActionColumn, ActionSelect, TextColumn } from 'src/components/suite';
-
-import { changeLanguage } from '../../../actions/settings/deviceSettingsActions';
-import { SettingsAnchor } from '../../../constants/suite/anchors';
-import { useDevice, useDispatch } from '../../../hooks/suite';
+import { changeLanguage } from 'src/actions/settings/deviceSettingsActions';
+import { useDispatch } from 'src/hooks/suite';
 
 const BASE_TRANSLATIONS = [{ value: 'en-US', label: LANGUAGES['en-US'].name as string }];
 
@@ -50,19 +49,29 @@ export const ChangeLanguage = ({ isDeviceLocked }: ChangeLanguageProps) => {
     );
 
     return (
-        <SettingsSectionItem anchorId={SettingsAnchor.FirmwareLanguage}>
-            <TextColumn title={<Translation id="TR_LANGUAGE" />} />
-            <ActionColumn>
-                <ActionSelect
-                    value={selectedValue}
-                    options={languageOptions}
-                    onChange={onChange}
-                    isDisabled={isDeviceLocked}
-                    isTooltipActive={isDeviceLocked}
-                    tooltipContent={<Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED" />}
-                    data-testid="@settings/device/firmware-language-select"
-                />
-            </ActionColumn>
-        </SettingsSectionItem>
+        <Anchor anchorId={SettingsAnchor.FirmwareLanguage}>
+            {({ anchorId, anchorRef, shouldHighlight }) => (
+                <SectionItem
+                    data-testid={anchorId}
+                    ref={anchorRef}
+                    shouldHighlight={shouldHighlight}
+                >
+                    <TextColumn title={<Translation id="TR_LANGUAGE" />} />
+                    <ActionColumn>
+                        <ActionSelect
+                            value={selectedValue}
+                            options={languageOptions}
+                            onChange={onChange}
+                            isDisabled={isDeviceLocked}
+                            isTooltipActive={isDeviceLocked}
+                            tooltipContent={
+                                <Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED" />
+                            }
+                            data-testid="@settings/device/firmware-language-select"
+                        />
+                    </ActionColumn>
+                </SectionItem>
+            )}
+        </Anchor>
     );
 };

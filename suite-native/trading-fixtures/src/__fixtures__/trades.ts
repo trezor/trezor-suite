@@ -7,9 +7,9 @@ import type {
 } from 'invity-api';
 
 import {
-    TradingTransactionBuy,
-    TradingTransactionExchange,
-    TradingTransactionSell,
+    type TradingTransactionBuy,
+    type TradingTransactionExchange,
+    type TradingTransactionSell,
 } from '@suite-common/trading';
 
 import { btc1NormalAccount, eth1NormalAccount, sol1normalAccount } from './accounts';

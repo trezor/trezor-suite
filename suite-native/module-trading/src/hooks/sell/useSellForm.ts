@@ -3,18 +3,19 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import type { CryptoId, FiatCurrencyCode, SellFiatTrade } from 'invity-api';
 
+import { useServices } from '@suite-common/dependency-injection';
 import {
-    TradingAmountLimitProps,
+    type TradingAmountLimitProps,
     selectTradingSellQuotesRequest,
     selectValidTradingSellQuotes,
 } from '@suite-common/trading';
 import { getNetwork } from '@suite-common/wallet-config';
-import { WalletSettingsRootState, selectIsAmountInSats } from '@suite-common/wallet-core';
+import { type WalletSettingsRootState, selectIsAmountInSats } from '@suite-common/wallet-core';
 import { convertAmountUnitsToSubunits } from '@suite-common/wallet-utils';
-import { events } from '@suite-native/analytics';
+import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { useForm } from '@suite-native/forms';
+import { truncateDecimals } from '@suite-native/helpers';
 import { useTranslate } from '@suite-native/intl';
-import { useAnalytics } from '@suite-native/services';
 import { getSymbolFromTradeableAsset } from '@suite-native/trading-atoms';
 import { MAX_CRYPTO_DECIMALS, MAX_FIAT_DECIMALS } from '@suite-native/trading-consts';
 import {
@@ -23,9 +24,8 @@ import {
     selectSellSelectedSendAccount,
     sellActions,
 } from '@suite-native/trading-state';
-import { SellFormType, SellFormValues } from '@suite-native/trading-types';
+import { type SellFormType, type SellFormValues } from '@suite-native/trading-types';
 
-import { truncateDecimals } from '../../utils/general/amountUtils';
 import { sellFormValidationSchema } from '../../utils/sell/sellFormValidationSchema';
 import { useContextForTradingForm } from '../general/form/useContextForTradingForm';
 import { useCountryChangeEffect } from '../general/form/useCountryChangeEffect';
@@ -37,7 +37,7 @@ const useAmountAndCurrencyFieldsChangeEffect = ({ setValue, getValues, watch }: 
     const dispatch = useDispatch();
     const prevCryptoId = useRef<CryptoId | undefined>(undefined);
     const prevFiatCurrency = useRef<FiatCurrencyCode | undefined>(getValues('fiatCurrency'));
-    const analytics = useAnalytics();
+    const { analytics } = useServices(selectNativeAnalyticsDep);
 
     useEffect(() => {
         const { unsubscribe } = watch(
@@ -70,7 +70,7 @@ const useAmountAndCurrencyFieldsChangeEffect = ({ setValue, getValues, watch }: 
                                     parameter: 'cryptoFrom',
                                 },
                             });
-                            prevCryptoId.current = sendAsset?.cryptoId as CryptoId | undefined;
+                            prevCryptoId.current = sendAsset?.cryptoId;
                             setValue('cryptoStringAmount', undefined, { shouldValidate: true });
                             dispatch(sellActions.sendAssetChanged());
                         }
@@ -206,7 +206,8 @@ const useValidations = (
 export const useSellForm = (): SellFormType => {
     const defaultValues = useSelector(selectSellFormDefaultValues);
     const limits = useSelector(selectSellAmountLimits);
-    const { context, setBalance, setSendSymbol } = useContextForTradingForm(limits);
+    const { context, setBalance, setSendSymbol, setContractAddress, setAccountKey } =
+        useContextForTradingForm(limits);
 
     const form = useForm<SellFormValues>({
         defaultValues,
@@ -218,7 +219,7 @@ export const useSellForm = (): SellFormType => {
 
     useSendAccountChangeEffect(form.setValue, selectSellSelectedSendAccount);
     useAmountAndCurrencyFieldsChangeEffect(form);
-    useSendAccountAssetBalance(form, setBalance, setSendSymbol);
+    useSendAccountAssetBalance(form, setBalance, setSendSymbol, setContractAddress, setAccountKey);
     useSellQuotesChangeEffect(form);
     useSellQuoteChangeEffect(form);
     useValidations(form, limits);

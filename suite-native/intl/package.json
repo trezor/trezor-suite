@@ -10,26 +10,31 @@
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build",
-        "test:unit": "yarn g:jest",
+        "test:unit": "yarn g:jest:native",
         "translations:format": "yarn g:prettier --write \"translations/*\"",
         "translations:extract": "yarn g:tsx ./scripts/extractTranslations.ts",
+        "translations:verify-structure": "yarn g:tsx ./scripts/verifyTranslationStructure.ts",
         "translations:backport-en": "yarn g:tsx ./scripts/backportEnglish.ts && yarn g:prettier --write src/messages.ts",
         "translations:list-unused": "yarn g:tsx ./scripts/listUnused.ts",
         "translations:remove-unused": "yarn g:tsx ./scripts/listUnused.ts --cleanup",
         "translations:upload": "crowdin upload",
-        "translations:download": "crowdin download --all -l en -l cs -l de -l pt-BR -l ja"
+        "translations:download": "crowdin download --all -l en -l cs -l de -l es-ES -l fr -l pt-BR -l ja -l zh-CN",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
-        "@reduxjs/toolkit": "2.11.2",
+        "@formatjs/intl-getcanonicallocales": "^3.2.1",
+        "@formatjs/intl-listformat": "^8.2.1",
+        "@formatjs/intl-locale": "^5.2.1",
+        "@reduxjs/toolkit": "2.12.0",
         "@suite-common/suite-types": "workspace:*",
         "@suite-common/suite-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
-        "expo-localization": "~17.0.8",
+        "expo-localization": "~56.0.6",
         "intl-pluralrules": "^2.0.1",
-        "react": "19.1.0",
+        "react": "19.2.3",
         "react-intl": "^8.1.3",
-        "react-native": "0.81.5",
-        "react-redux": "9.2.0"
+        "react-native": "0.85.3",
+        "react-redux": "9.3.0"
     },
     "devDependencies": {
         "@crowdin/cli": "4.13.0"

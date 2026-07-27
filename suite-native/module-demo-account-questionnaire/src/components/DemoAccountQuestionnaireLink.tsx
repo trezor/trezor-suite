@@ -1,9 +1,9 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 import { Pressable } from 'react-native';
 
 import { Card, HStack, OrderedListIcon, Text } from '@suite-native/atoms';
-import { Icon, IconName } from '@suite-native/icons';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { Icon, type IconName } from '@suite-native/icons';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 const labelStyle = prepareNativeStyle(() => ({
     flex: 1,
@@ -33,11 +33,15 @@ export const DemoAccountQuestionnaireLink = ({
                 >
                     <HStack spacing="sp12" alignItems="center" flex={1}>
                         {!!iconName && <OrderedListIcon iconName={iconName} iconSize="large" />}
-                        <Text variant="body-md" color="textDefault" style={applyStyle(labelStyle)}>
+                        <Text
+                            variant="body-md"
+                            color="contentPrimary"
+                            style={applyStyle(labelStyle)}
+                        >
                             {label}
                         </Text>
                     </HStack>
-                    <Icon name="arrowSquareOut" color="textSecondaryHighlight" />
+                    <Icon name="arrowSquareOut" color="contentBrand" />
                 </HStack>
             </Card>
         </Pressable>

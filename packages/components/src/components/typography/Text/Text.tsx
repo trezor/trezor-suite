@@ -1,21 +1,21 @@
-import { HTMLProps, ReactNode } from 'react';
+import { type HTMLProps, type ReactNode } from 'react';
 
-import styled, { DefaultTheme, RuleSet, css } from 'styled-components';
+import styled, { type DefaultTheme, type RuleSet, css } from 'styled-components';
 
-import { Color, borders, spacingsPx } from '@trezor/theme';
+import { type Color } from '@trezor/theme';
 
-import { TextIntent, TextPriority, textIntents, textPriorities } from './types';
+import { type TextIntent, type TextPriority, textIntents, textPriorities } from './types';
 import { mapIntentToCSS } from './utils';
 import {
-    FrameProps,
-    FramePropsKeys,
+    type FrameProps,
+    type FramePropsKeys,
     pickAndPrepareFrameProps,
     withFrameProps,
 } from '../../../utils/frameProps';
-import { TransientProps } from '../../../utils/transientProps';
+import { type TransientProps } from '../../../utils/transientProps';
 import {
-    TextProps as TextPropsCommon,
-    TextPropsKeys,
+    type TextProps as TextPropsCommon,
+    type TextPropsKeys,
     pickAndPrepareTextProps,
     withTextProps,
 } from '../utils';
@@ -69,6 +69,7 @@ type ColorProps = {
 } & {
     $intent?: TextIntent;
     $priority?: TextPriority;
+    $isInverse?: boolean;
     $isDisabled?: boolean;
     $color?: Color;
 };
@@ -76,6 +77,7 @@ type ColorProps = {
 const getColorForText = ({
     $intent,
     $priority = 'primary',
+    $isInverse,
     $isDisabled,
     theme,
     $color,
@@ -86,6 +88,12 @@ const getColorForText = ({
         `;
     }
 
+    if ($isDisabled) {
+        return css`
+            color: ${theme.contentDisabled};
+        `;
+    }
+
     if ($intent === undefined) {
         return css`
             color: inherit;
@@ -93,13 +101,14 @@ const getColorForText = ({
     }
 
     return css`
-        color: ${mapIntentToCSS($intent, $priority, Boolean($isDisabled), theme)};
+        color: ${mapIntentToCSS($intent, $priority, $isInverse ?? false, theme)};
     `;
 };
 
 type StyledTextProps = {
     $intent?: TextIntent;
     $priority?: TextPriority;
+    $isInverse?: boolean;
     $isDisabled?: boolean;
     $color?: Color;
     $isMonospaced?: boolean;
@@ -125,9 +134,9 @@ const StyledText = styled.span<StyledTextProps>`
         $isHighlighted &&
         css`
             display: inline;
-            padding: 0 ${spacingsPx.xxs};
-            border-radius: ${borders.radii.xxs};
-            background-color: ${({ theme }) => theme.backgroundNeutralSubtleOnElevation0};
+            padding: 0 4px;
+            border-radius: 4px;
+            background-color: ${({ theme }) => theme.elementFillNeutralSoft};
             box-decoration-break: clone;
         `}
         ${withTextProps} ${withFrameProps};
@@ -135,7 +144,7 @@ const StyledText = styled.span<StyledTextProps>`
 
 export type TextProps = Pick<HTMLProps<HTMLElement>, 'onCopy' | 'onClick'> & {
     children: ReactNode;
-    className?: string;
+    isInverse?: boolean;
     isMonospaced?: boolean;
     isHighlighted?: boolean;
     isTabular?: boolean;
@@ -149,10 +158,10 @@ export type TextProps = Pick<HTMLProps<HTMLElement>, 'onCopy' | 'onClick'> & {
 export const Text = ({
     intent,
     priority = 'primary',
+    isInverse = false,
     isDisabled = false,
     color,
     children,
-    className,
     as = 'span',
     'data-testid': dataTest,
     onClick,
@@ -170,9 +179,9 @@ export const Text = ({
         <StyledText
             $intent={intent}
             $priority={priority}
+            $isInverse={isInverse}
             $isDisabled={isDisabled}
             $color={color}
-            className={className}
             as={as}
             onClick={onClick}
             onCopy={onCopy}

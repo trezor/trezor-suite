@@ -1,20 +1,29 @@
 import React from 'react';
-import { PixelRatio, Text as RNText, TextProps as RNTextProps, TextStyle } from 'react-native';
+import {
+    PixelRatio,
+    Text as RNText,
+    type TextProps as RNTextProps,
+    type TextStyle,
+} from 'react-native';
 import Animated from 'react-native-reanimated';
 
 import {
-    NativeStyleObject,
+    type NativeStyleObject,
     mergeNativeStyleObjects,
     prepareNativeStyle,
     useNativeStyles,
-} from '@trezor/styles';
-import { Color, NativeTypographyStyle } from '@trezor/theme';
+} from '@trezor/styles-native';
+import { type Color, type NativeTypographyStyle } from '@trezor/theme';
 
-import { TestProps } from './types';
+import { type TestProps } from './types';
+
+export const textPriorities = ['primary', 'secondary'] as const;
+export type TextPriority = (typeof textPriorities)[number];
 
 export interface PressableTextProps extends Omit<RNTextProps, 'style'>, TestProps {
     variant?: NativeTypographyStyle;
     color?: Color;
+    priority?: TextPriority;
     textAlign?: TextStyle['textAlign'];
     alignSelf?: TextStyle['alignSelf'];
     style?: NativeStyleObject;
@@ -25,6 +34,7 @@ export type TextProps = PressableTextProps;
 type TextStyleProps = {
     variant: NativeTypographyStyle;
     color: Color;
+    priority: TextPriority;
     textAlign: TextStyle['textAlign'];
 };
 
@@ -61,17 +71,27 @@ const getAccessibilityFontScale = (variant?: NativeTypographyStyle) => {
  */
 export const ACCESSIBILITY_FONTSIZE_MULTIPLIER = getAccessibilityFontScale();
 
-const textStyle = prepareNativeStyle<TextStyleProps>((utils, { variant, color, textAlign }) => ({
-    ...utils.typography[variant],
-    color: utils.colors[color],
-    textAlign,
-}));
+const textStyle = prepareNativeStyle<TextStyleProps>(
+    (utils, { variant, color, priority, textAlign }) => ({
+        ...utils.typography[variant],
+        color: utils.colors[color],
+        textAlign,
+
+        extend: {
+            condition: priority === 'secondary',
+            style: {
+                color: utils.transparentize(0.26, utils.colors[color]),
+            },
+        },
+    }),
+);
 
 export const Text = React.forwardRef<RNText, TextProps>(
     (
         {
             variant = 'body-md',
-            color = 'textDefault',
+            color = 'contentPrimary',
+            priority = 'primary',
             textAlign = 'left',
             style = {},
             children,
@@ -85,7 +105,7 @@ export const Text = React.forwardRef<RNText, TextProps>(
         return (
             <RNText
                 style={mergeNativeStyleObjects([
-                    applyStyle(textStyle, { variant, color, textAlign }),
+                    applyStyle(textStyle, { variant, color, priority, textAlign }),
                     style,
                 ])}
                 maxFontSizeMultiplier={maxFontSizeMultiplier}
@@ -101,4 +121,3 @@ export const Text = React.forwardRef<RNText, TextProps>(
 Text.displayName = 'Text';
 
 export const AnimatedText = Animated.createAnimatedComponent(Text);
-AnimatedText.displayName = 'AnimatedText';

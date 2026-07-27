@@ -1,4 +1,4 @@
-import { UIIntent, UIPriority } from '../../../config/types';
+import { type UIIntent, type UIPriority } from '../../../config/types';
 
 export const textIntents = [
     'neutral',
@@ -7,7 +7,6 @@ export const textIntents = [
     'warning',
     'critical',
     'accentViolet',
-    'accentOrange',
 ] as const satisfies UIIntent[];
 export type TextIntent = Extract<UIIntent, (typeof textIntents)[number]>;
 

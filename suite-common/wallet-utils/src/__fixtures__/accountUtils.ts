@@ -1,54 +1,5 @@
 import type { Bip43Path, Bip43PathTemplate } from '@suite-common/wallet-config';
 
-import { ACCOUNTS } from './accounts';
-
-export const parseBIP44Path = [
-    {
-        path: `m/84'/0'/0'/1/0`,
-        result: {
-            purpose: "84'",
-            coinType: "0'",
-            account: "0'",
-            change: '1',
-            addrIndex: '0',
-        },
-    },
-    {
-        path: `m/44'/0'/0'/0/2`,
-        result: {
-            purpose: "44'",
-            coinType: "0'",
-            account: "0'",
-            change: '0',
-            addrIndex: '2',
-        },
-    },
-    {
-        path: `m/44'/0'/0'/0/48`,
-        result: {
-            purpose: "44'",
-            coinType: "0'",
-            account: "0'",
-            change: '0',
-            addrIndex: '48',
-        },
-    },
-    {
-        path: `m/44'/133'/0'/0/0`,
-        result: {
-            purpose: "44'",
-            coinType: "133'",
-            account: "0'",
-            change: '0',
-            addrIndex: '0',
-        },
-    },
-    {
-        path: `m/84'/0'/0'/1/`,
-        result: null,
-    },
-];
-
 export const sortByCoin = [
     {
         accounts: [
@@ -381,56 +332,5 @@ export const getUtxoFromSignedTransaction = [
         description: 'tx not final',
         params: { account: {}, tx: { type: 'nonfinal' }, txid: 'ABCD' },
         result: [],
-    },
-];
-
-export const getFirstFreshAddress = [
-    {
-        description: 'Account without verification',
-        params: {
-            account: ACCOUNTS.test,
-            receive: [],
-            pendingAddresses: [],
-            utxoBasedAccount: true,
-        },
-        result: {
-            address: 'tb1qk0qgmxtaw3kc9366eccjjgklef0g8lxv3l8nvk',
-            path: "m/84'/1'/0'/0/1",
-            transfers: 0,
-        },
-    },
-    {
-        description: 'Account with verification and receive requested',
-        params: {
-            account: ACCOUNTS.test,
-            receive: [
-                {
-                    path: "m/84'/1'/0'/0/1",
-                    address: 'tb1qk0qgmxtaw3kc9366eccjjgklef0g8lxv3l8nvk',
-                    isVerified: true,
-                },
-            ],
-            pendingAddresses: ['tb1qk0qgmxtaw3kc9366eccjjgklef0g8lxv3l8nvk'],
-            utxoBasedAccount: true,
-        },
-        result: {
-            address: 'tb1q99ml7urce6m77c2hmxeppm3ylvx7lqk6avhgh7',
-            path: "m/84'/1'/0'/0/2",
-            transfers: 0,
-        },
-    },
-    {
-        description: 'Account not utxo based - xrp',
-        params: {
-            account: ACCOUNTS.txrp,
-            receive: [],
-            pendingAddresses: [],
-            utxoBasedAccount: false,
-        },
-        result: {
-            path: ACCOUNTS.txrp.path,
-            address: ACCOUNTS.txrp.descriptor,
-            transfers: ACCOUNTS.txrp.history.total,
-        },
     },
 ];

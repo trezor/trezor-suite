@@ -1,13 +1,14 @@
-import { ReactNode, useState } from 'react';
+import { type ReactNode, useState } from 'react';
 import { DateRange } from 'react-date-range';
 
 import type { Locale } from 'date-fns';
 import styled, { css } from 'styled-components';
 
-import { borders, spacingsPx, zIndices } from '@trezor/theme';
+import { zIndices } from '@trezor/theme';
 
+import { commonFocusStyles } from '../../utils/utils';
 import { Row } from '../Flex/Flex';
-import { DROPDOWN_MENU } from '../Menu/menuStyle';
+import { DROPDOWN_MENU } from '../Menu/Menu';
 import { Button } from '../buttons/Button/Button';
 
 type Selection = {
@@ -420,34 +421,34 @@ const StyledTimerange = styled.div`
     width: 345px;
     display: flex;
     flex-direction: column;
-    border-radius: ${borders.radii.md};
-    background: ${({ theme }) => theme.backgroundSurfaceElevation1};
-    box-shadow: ${({ theme }) => theme.boxShadowElevated};
-    outline: 1px solid ${({ theme }) => theme.baseBorderSurfaceAction};
+    border-radius: 16px;
+    background: ${({ theme }) => theme.surfaceFillRaised};
+    box-shadow: ${({ theme }) => theme.surfaceShadowModeless};
+    outline: 1px solid ${({ theme }) => theme.surfaceBorderAction};
     z-index: ${zIndices.modal};
     animation: ${DROPDOWN_MENU} 0.15s ease-in-out;
 `;
 
 const Calendar = styled.div`
     width: 345px;
-    padding: ${spacingsPx.sm} ${spacingsPx.sm} 0;
-    border-bottom: 1px solid ${({ theme }) => theme.borderElevation2};
+    padding: 12px 12px 0;
+    border-bottom: 1px solid ${({ theme }) => theme.surfaceBorderRaised};
 
     ${datepickerStyle}
 
     .rdrDayNumber span {
-        color: ${({ theme }) => theme.textSubdued};
+        color: ${({ theme }) => theme.contentSecondary};
     }
 
     .rdrDayDisabled .rdrDayNumber span,
     .rdrDayPassive .rdrDayNumber span {
         opacity: 0.5;
-        color: ${({ theme }) => theme.textDisabled};
+        color: ${({ theme }) => theme.contentDisabled};
     }
 
     .rdrCalendarWrapper {
-        background: ${({ theme }) => theme.backgroundSurfaceElevation1};
-        color: ${({ theme }) => theme.textSubdued};
+        background: ${({ theme }) => theme.surfaceFillRaised};
+        color: ${({ theme }) => theme.contentSecondary};
     }
 
     .rdrDateDisplay {
@@ -455,114 +456,114 @@ const Calendar = styled.div`
     }
 
     .rdrDateDisplayItem {
-        border-radius: ${borders.radii.xxs};
+        border-radius: 4px;
         background-color: transparent;
     }
 
     .rdrDateDisplayItem input {
-        color: ${({ theme }) => theme.textSubdued};
+        color: ${({ theme }) => theme.contentSecondary};
     }
 
     .rdrDateDisplayItem + .rdrDateDisplayItem {
         &:after {
-            color: ${({ theme }) => theme.textSubdued};
+            color: ${({ theme }) => theme.contentSecondary};
         }
     }
 
     .rdrDateInput .rdrWarning {
-        color: ${({ theme }) => theme.textAlertYellow};
+        color: ${({ theme }) => theme.contentWarning};
     }
 
     .rdrMonthAndYearPickers select {
-        color: ${({ theme }) => theme.textSubdued};
+        color: ${({ theme }) => theme.contentSecondary};
     }
 
     .rdrMonthAndYearPickers select:hover {
-        background-color: ${({ theme }) => theme.backgroundSurfaceElevation2};
+        background-color: ${({ theme }) => theme.surfaceFillSunken};
     }
 
     .rdrNextPrevButton {
         width: 26px;
         height: 26px;
-        background: ${({ theme }) => theme.backgroundPrimarySubtleOnElevation1};
+        background: ${({ theme }) => theme.elementFillBrandSoft};
         border-radius: 50%;
     }
 
     .rdrNextPrevButton:hover {
-        background: ${({ theme }) => theme.backgroundSecondaryDefault};
+        background: ${({ theme }) => theme.elementFillBrandBold};
         &.rdrPprevButton i {
-            border-color: transparent ${({ theme }) => theme.textOnSecondary} transparent
+            border-color: transparent ${({ theme }) => theme.contentPrimaryInverse} transparent
                 transparent;
         }
         &.rdrNextButton i {
             border-color: transparent transparent transparent
-                ${({ theme }) => theme.textOnSecondary};
+                ${({ theme }) => theme.contentPrimaryInverse};
         }
     }
 
     .rdrPprevButton i {
-        margin: 0 0 0 ${spacingsPx.xs};
-        border-color: transparent ${({ theme }) => theme.backgroundSecondaryDefault} transparent
+        margin: 0 0 0 8px;
+        border-color: transparent ${({ theme }) => theme.elementFillBrandBold} transparent
             transparent;
     }
 
     .rdrNextButton i {
         margin: auto;
         border-color: transparent transparent transparent
-            ${({ theme }) => theme.backgroundSecondaryDefault};
+            ${({ theme }) => theme.elementFillBrandBold};
     }
 
     .rdrWeekDay {
-        color: ${({ theme }) => theme.textSubdued};
+        color: ${({ theme }) => theme.contentSecondary};
         opacity: 0.7;
     }
 
     .rdrDay {
-        color: ${({ theme }) => theme.textSubdued};
+        color: ${({ theme }) => theme.contentSecondary};
     }
 
     .rdrDayToday .rdrDayNumber span:after {
-        background: ${({ theme }) => theme.textDefault};
+        background: ${({ theme }) => theme.contentPrimary};
     }
 
     .rdrDayToday .rdrStartEdge .rdrDayNumber span:after,
     .rdrDayToday .rdrEndEdge .rdrDayNumber span:after {
-        background: ${({ theme }) => theme.backgroundSurfaceElevation3};
+        background: ${({ theme }) => theme.surfaceFillRaised};
     }
 
     .rdrDayToday:not(.rdrDayPassive) .rdrInRange ~ .rdrDayNumber span:after,
     .rdrDayToday:not(.rdrDayPassive) .rdrStartEdge ~ .rdrDayNumber span:after,
     .rdrDayToday:not(.rdrDayPassive) .rdrEndEdge ~ .rdrDayNumber span:after,
     .rdrDayToday:not(.rdrDayPassive) .rdrSelected ~ .rdrDayNumber span:after {
-        background: ${({ theme }) => theme.textOnPrimary};
+        background: ${({ theme }) => theme.contentButtonBrandPrimary};
     }
 
     .rdrDay:not(.rdrDayPassive) .rdrInRange ~ .rdrDayNumber span,
     .rdrDay:not(.rdrDayPassive) .rdrSelected ~ .rdrDayNumber span {
-        color: ${({ theme }) => theme.textPrimaryDefault};
+        color: ${({ theme }) => theme.contentBrand};
     }
 
     .rdrDay:not(.rdrDayPassive) .rdrStartEdge ~ .rdrDayNumber span,
     .rdrDay:not(.rdrDayPassive) .rdrEndEdge ~ .rdrDayNumber span {
-        color: ${({ theme }) => theme.textOnPrimary};
+        color: ${({ theme }) => theme.contentButtonBrandPrimary};
     }
 
     .rdrSelected,
     .rdrInRange,
     .rdrStartEdge,
     .rdrEndEdge {
-        background: ${({ theme }) => theme.backgroundPrimarySubtleOnElevation1};
+        background: ${({ theme }) => theme.elementFillBrandSoft};
     }
 
     .rdrMonthName {
-        color: ${({ theme }) => theme.textSubdued};
+        color: ${({ theme }) => theme.contentSecondary};
     }
 
     .rdrDateDisplayWrapper {
-        padding-bottom: ${spacingsPx.sm};
-        background: ${({ theme }) => theme.backgroundSurfaceElevation3};
-        border-bottom: 1px solid ${({ theme }) => theme.borderElevation2};
-        border-radius: ${borders.radii.xs};
+        padding-bottom: 12px;
+        background: ${({ theme }) => theme.surfaceFillRaised};
+        border-bottom: 1px solid ${({ theme }) => theme.surfaceBorderRaised};
+        border-radius: 4px;
     }
 
     .rdrMonthAndYearWrapper {
@@ -572,16 +573,16 @@ const Calendar = styled.div`
 
     .rdrStartEdge,
     .rdrEndEdge {
-        background: ${({ theme }) => theme.backgroundPrimaryDefault};
-        color: ${({ theme }) => theme.textOnPrimary};
-        box-shadow: ${({ theme }) => theme.boxShadowFocused};
-        border-radius: ${borders.radii.xxs};
+        background: ${({ theme }) => theme.elementFillBrandBold};
+        color: ${({ theme }) => theme.contentButtonBrandPrimary};
+        ${commonFocusStyles}
+        border-radius: 4px;
         z-index: ${zIndices.base};
     }
 
     .rdrDayDisabled {
         opacity: 0.5;
-        color: ${({ theme }) => theme.textSubdued};
+        color: ${({ theme }) => theme.contentSecondary};
         background: transparent;
     }
 
@@ -589,7 +590,7 @@ const Calendar = styled.div`
     .rdrDayInPreview,
     .rdrDayEndPreview {
         border: none;
-        background: ${({ theme }) => theme.backgroundPrimarySubtleOnElevation1};
+        background: ${({ theme }) => theme.elementFillBrandSoft};
     }
 `;
 /* stylelint-enable */

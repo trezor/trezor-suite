@@ -1,4 +1,4 @@
-import { OnConnectEvent } from './ReactNativeUsb.types';
+import { type OnConnectEvent } from './ReactNativeUsb.types';
 
 // We don't support USB on iOS :(
 export class WebUSB {

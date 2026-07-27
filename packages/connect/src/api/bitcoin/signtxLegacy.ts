@@ -1,18 +1,17 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/helpers/signtx-legacy.js
+import type { PROTO, SignedTransaction } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 
 import type { SignTxHelperParams, SignTxHelperProps } from './signtx';
-import { PROTO } from '../../constants';
-import type { SignedTransaction } from '../../types/api/bitcoin';
 
 const requestPrevTxInfo = ({
     txRequest: { request_type, details },
     refTxs,
 }: SignTxHelperProps): PROTO.TxAckResponse => {
-    const { tx_hash } = details;
-    if (!tx_hash) {
+    if (!details?.tx_hash) {
         throw ERRORS.TypedError('Runtime', 'requestPrevTxInfo: unknown details.tx_hash');
     }
+    const { tx_hash } = details;
     const tx = refTxs[tx_hash.toLowerCase()];
     if (!tx) {
         throw ERRORS.TypedError('Runtime', `requestPrevTxInfo: Requested unknown tx: ${tx_hash}`);
@@ -21,10 +20,18 @@ const requestPrevTxInfo = ({
         throw ERRORS.TypedError('Runtime', `requestPrevTxInfo: bin_outputs not set tx: ${tx_hash}`);
     }
     if (request_type === 'TXINPUT') {
-        return { inputs: [tx.inputs[details.request_index]] };
+        const { inputs } = tx;
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const input: (typeof inputs)[number] = inputs[details.request_index];
+
+        return { inputs: [input] };
     }
     if (request_type === 'TXOUTPUT') {
-        return { bin_outputs: [tx.bin_outputs[details.request_index]] };
+        const { bin_outputs } = tx;
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const binOutput: (typeof bin_outputs)[number] = bin_outputs[details.request_index];
+
+        return { bin_outputs: [binOutput] };
     }
     if (request_type === 'TXEXTRADATA') {
         if (typeof details.extra_data_len !== 'number') {
@@ -77,10 +84,16 @@ const requestSignedTxInfo = ({
     outputs,
 }: SignTxHelperProps): PROTO.TxAckResponse => {
     if (request_type === 'TXINPUT') {
-        return { inputs: [inputs[details.request_index]] };
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const input: (typeof inputs)[number] = inputs[details.request_index];
+
+        return { inputs: [input] };
     }
     if (request_type === 'TXOUTPUT') {
-        return { outputs: [outputs[details.request_index]] };
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const output: (typeof outputs)[number] = outputs[details.request_index];
+
+        return { outputs: [output] };
     }
     if (request_type === 'TXMETA') {
         throw ERRORS.TypedError(
@@ -103,8 +116,7 @@ const requestSignedTxInfo = ({
 // requests information about a transaction
 // can be either signed transaction itself of prev transaction
 const requestTxAck = (props: SignTxHelperProps) => {
-    const { tx_hash } = props.txRequest.details;
-    if (tx_hash) {
+    if (props.txRequest.details?.tx_hash) {
         return requestPrevTxInfo(props);
     }
 

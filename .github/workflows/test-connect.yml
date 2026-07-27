@@ -42,9 +42,10 @@ jobs:
       allFwsMatrix: ${{ steps.set-matrix-all-firmwares.outputs.matrix }}
       allTransportsMatrix: ${{ steps.set-matrix-all-transports.outputs.matrix }}
       modelOneMatrix: ${{ steps.set-matrix-model-one.outputs.matrix }}
+      experimentalMethodsMatrix: ${{ steps.set-matrix-experimental-methods.outputs.matrix }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v6
 
       - name: Set daily matrix
         id: set-matrix-daily
@@ -52,7 +53,7 @@ jobs:
 
       - name: Set daily web matrix
         id: set-matrix-daily-web
-        run: echo "matrix=$(node ./scripts/ci/connect-test-matrix-generator.js --model=T3W1 --firmware=2-latest --env=web --groups=api,init --disable_cache_tx=true --transport=node-bridge)" >> $GITHUB_OUTPUT
+        run: echo "matrix=$(node ./scripts/ci/connect-test-matrix-generator.js --model=T3W1 --firmware=2-latest --env=web --groups=api,init,thp --disable_cache_tx=true --transport=node-bridge)" >> $GITHUB_OUTPUT
 
       - name: Set nightly T3W1 matrix
         id: set-matrix-nightly-t3w1
@@ -72,7 +73,20 @@ jobs:
 
       - name: Set trezor model one matrix
         id: set-matrix-model-one
-        run: echo "matrix=$(node ./scripts/ci/connect-test-matrix-generator.js --model=T1B1 --firmware=1-latest --env=node --groups=api --disable_cache_tx=true --transport=node-bridge)" >> $GITHUB_OUTPUT
+        # T1B1 nightly covers the most-used Trezor methods on legacy firmware.
+        # `ethereum` validates EIP-712 signing (T1B1 needs host-side hashing);
+        # `btc-sign` and `btc-others` cover the bulk of real-world usage. Other
+        # coins (cardano, solana, monero, …) are intentionally omitted —
+        # historically untested on T1B1 in CI; expanding cautiously.
+        # `disable_cache_tx=false` matches the daily/nightly matrices for
+        # T2T1+T3W1: btc-sign/btc-others fixtures reference Testnet 3 prev_hashes
+        # that the public Testnet 4 backend cannot serve, so the local TX cache
+        # is required.
+        run: echo "matrix=$(node ./scripts/ci/connect-test-matrix-generator.js --model=T1B1 --firmware=1-latest --env=node --groups=api,ethereum,btc-sign,btc-others --disable_cache_tx=false --transport=node-bridge)" >> $GITHUB_OUTPUT
+
+      - name: Set experimental methods matrix
+        id: set-matrix-experimental-methods
+        run: echo "matrix=$(node ./scripts/ci/connect-test-matrix-generator.js --model=T2T1 --firmware=2-latest --env=node --groups=experimental --disable_cache_tx=true --transport=node-bridge)" >> $GITHUB_OUTPUT
 
   PR-check:
     needs: [set-matrix]
@@ -88,6 +102,7 @@ jobs:
       transport: ${{ matrix.transport }}
       testEnv: ${{ matrix.env }}
       testFirmwareModel: ${{ matrix.model }}
+      testGroup: PR-check
     strategy:
       fail-fast: false
       matrix: ${{ fromJson(needs.set-matrix.outputs.dailyMatrix) }}
@@ -106,6 +121,7 @@ jobs:
       transport: ${{ matrix.transport }}
       testEnv: ${{ matrix.env }}
       testFirmwareModel: ${{ matrix.model }}
+      testGroup: PR-check-web
     strategy:
       fail-fast: false
       matrix: ${{ fromJson(needs.set-matrix.outputs.dailyWebMatrix) }}
@@ -124,6 +140,7 @@ jobs:
       transport: ${{ matrix.transport }}
       testEnv: ${{ matrix.env }}
       testFirmwareModel: ${{ matrix.model }}
+      testGroup: PR-nightly-t3w1
     strategy:
       fail-fast: false
       matrix: ${{ fromJson(needs.set-matrix.outputs.nightlyT3W1Matrix) }}
@@ -143,6 +160,7 @@ jobs:
       testEnv: ${{ matrix.env }}
       testFirmwareModel: ${{ matrix.model }}
       testRandomizedOrder: true
+      testGroup: randomized-order
     strategy:
       fail-fast: false
       matrix: ${{ fromJson(needs.set-matrix.outputs.dailyMatrix) }}
@@ -161,6 +179,7 @@ jobs:
       transport: ${{ matrix.transport }}
       testEnv: ${{ matrix.env }}
       testFirmwareModel: ${{ matrix.model }}
+      testGroup: all-fws
     strategy:
       fail-fast: false
       matrix: ${{ fromJson(needs.set-matrix.outputs.allFwsMatrix) }}
@@ -179,6 +198,7 @@ jobs:
       transport: ${{ matrix.transport }}
       testEnv: ${{ matrix.env }}
       testFirmwareModel: ${{ matrix.model }}
+      testGroup: all-models-api
     strategy:
       fail-fast: false
       matrix: ${{ fromJson(needs.set-matrix.outputs.otherDevicesMatrix) }}
@@ -197,24 +217,48 @@ jobs:
       transport: ${{ matrix.transport }}
       testEnv: ${{ matrix.env }}
       testFirmwareModel: ${{ matrix.model }}
+      testGroup: all-transports
     strategy:
       fail-fast: false
       matrix: ${{ fromJson(needs.set-matrix.outputs.allTransportsMatrix) }}
 
   model-one-api:
     needs: [set-matrix]
-    name: model-one-api ${{ matrix.key }}
+    # Display name includes `groups.name` so multi-group matrices render as
+    # distinct rows in the GitHub Actions UI (e.g. `model-one api`,
+    # `model-one ethereum`, `model-one btc-sign`, `model-one btc-others`).
+    name: model-one ${{ matrix.groups.name }} ${{ matrix.key }}
     if: (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') && github.repository == 'trezor/trezor-suite'
     uses: ./.github/workflows/template-connect-test-params.yml
     with:
       testPattern: ${{ matrix.groups.pattern }}
       includeFilter: ${{ matrix.groups.includeFilter }}
       testsFirmware: ${{ matrix.firmware }}
-      testDescription: ${{ matrix.model }}-${{ matrix.firmware }}
+      testDescription: ${{ matrix.model }}-${{ matrix.firmware }}-${{ matrix.groups.name }}
       disable_cache_tx: ${{ matrix.disable_cache_tx }}
       transport: ${{ matrix.transport }}
       testEnv: ${{ matrix.env }}
       testFirmwareModel: ${{ matrix.model }}
+      testGroup: model-one-api
     strategy:
       fail-fast: false
       matrix: ${{ fromJson(needs.set-matrix.outputs.modelOneMatrix) }}
+
+  experimental-methods:
+    needs: [set-matrix]
+    name: experimental-methods ${{ matrix.key }}
+    if: (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') && github.repository == 'trezor/trezor-suite'
+    uses: ./.github/workflows/template-connect-test-params.yml
+    with:
+      testPattern: ${{ matrix.groups.pattern }}
+      includeFilter: ${{ matrix.groups.includeFilter }}
+      testsFirmware: ${{ matrix.firmware }}
+      testDescription: ${{ matrix.env }}-${{ matrix.groups.pattern }}-${{ matrix.groups.name }}
+      disable_cache_tx: ${{ matrix.disable_cache_tx }}
+      transport: ${{ matrix.transport }}
+      testEnv: ${{ matrix.env }}
+      testFirmwareModel: ${{ matrix.model }}
+      testGroup: experimental-methods
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(needs.set-matrix.outputs.experimentalMethodsMatrix) }}

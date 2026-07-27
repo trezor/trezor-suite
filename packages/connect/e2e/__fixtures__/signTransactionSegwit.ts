@@ -1,6 +1,6 @@
 const { TX_CACHE } = global.TestUtils;
 
-export default {
+const signTransactionSegwit: TestCase = {
     method: 'signTransaction',
     setup: {
         mnemonic: 'mnemonic_all',
@@ -9,7 +9,7 @@ export default {
         {
             description: 'Testnet (P2SH): 1 input, 2 outputs, no change',
             params: {
-                coin: 'Testnet',
+                coin: 'test',
                 inputs: [
                     {
                         address_n: "m/49'/1'/0'/1/0",
@@ -42,7 +42,7 @@ export default {
         {
             description: 'Testnet (P2SH): 1 input, 2 outputs, 1 change',
             params: {
-                coin: 'Testnet',
+                coin: 'test',
                 inputs: [
                     {
                         address_n: "m/49'/1'/0'/1/0",
@@ -75,7 +75,7 @@ export default {
         {
             description: 'Testnet (P2SH): send multisig',
             params: {
-                coin: 'Testnet',
+                coin: 'test',
                 inputs: [
                     {
                         address_n: "m/49'/1'/1'/1/0",
@@ -119,4 +119,6 @@ export default {
             },
         },
     ],
-} satisfies TestCase;
+};
+
+export default signTransactionSegwit;

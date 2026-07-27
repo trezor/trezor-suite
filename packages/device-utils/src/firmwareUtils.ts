@@ -2,7 +2,12 @@ import type { MessagesSchema as PROTO } from '@trezor/protobuf';
 import type { VersionArray } from '@trezor/utils/src/versionUtils';
 
 import { isDeviceInBootloaderMode } from './modeUtils';
-import { FirmwareSource, FirmwareType, FirmwareVersionString, PartialDevice } from './types';
+import {
+    type FirmwareSource,
+    FirmwareType,
+    type FirmwareVersionString,
+    type PartialDevice,
+} from './types';
 
 export const getFirmwareSource = (device?: PartialDevice): FirmwareSource => {
     if (device?.mode === 'bootloader') {

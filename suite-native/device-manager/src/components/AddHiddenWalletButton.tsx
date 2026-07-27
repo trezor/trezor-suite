@@ -2,28 +2,21 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import { runDiscoveryThunk, startDiscoveryThunk } from '@suite-common/wallet-core';
-import { events } from '@suite-native/analytics';
-import { HStack, Text } from '@suite-native/atoms';
-import { Icon } from '@suite-native/icons';
+import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { Button } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
-    PassphraseStackParamList,
+    type PassphraseStackParamList,
     PassphraseStackRoutes,
-    RootStackParamList,
+    type RootStackParamList,
     RootStackRoutes,
-    StackToStackCompositeNavigationProps,
+    type StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
-import { useAnalytics } from '@suite-native/services';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-import { DeviceAction } from './DeviceAction';
 import { useDeviceManager } from '../hooks/useDeviceManager';
-
-const textStyle = prepareNativeStyle(_ => ({
-    flex: 1,
-}));
 
 type NavigationProp = StackToStackCompositeNavigationProps<
     PassphraseStackParamList,
@@ -31,13 +24,15 @@ type NavigationProp = StackToStackCompositeNavigationProps<
     RootStackParamList
 >;
 
-export const AddHiddenWalletButton = () => {
-    const analytics = useAnalytics();
+type AddHiddenWalletButtonProps = {
+    isDisabled?: boolean;
+};
+
+export const AddHiddenWalletButton = ({ isDisabled }: AddHiddenWalletButtonProps) => {
+    const { analytics } = useServices(selectNativeAnalyticsDep);
     const dispatch = useDispatch();
 
     const navigation = useNavigation<NavigationProp>();
-
-    const { applyStyle } = useNativeStyles();
 
     const device = useSelector(selectSelectedDevice);
 
@@ -55,7 +50,7 @@ export const AddHiddenWalletButton = () => {
                 isAddingExistingWallet: false,
             }),
         );
-        dispatch(runDiscoveryThunk(device));
+        dispatch(runDiscoveryThunk({ device }));
 
         navigation.navigate(RootStackRoutes.PassphraseStack, {
             screen: PassphraseStackRoutes.PassphraseForm,
@@ -63,17 +58,15 @@ export const AddHiddenWalletButton = () => {
     };
 
     return (
-        <DeviceAction
-            testID="@device-manager/passphrase/add"
+        <Button
+            intent="neutral"
+            priority="secondary"
+            iconLeft="password"
+            isDisabled={isDisabled}
             onPress={handleAddHiddenWallet}
-            flex={1}
+            testID="@device-manager/passphrase/add"
         >
-            <HStack marginLeft="sp4">
-                <Text variant="body-sm" style={applyStyle(textStyle)}>
-                    <Translation id="deviceManager.deviceButtons.addHiddenWallet" />
-                </Text>
-                <Icon name="caretRight" size="mediumLarge" />
-            </HStack>
-        </DeviceAction>
+            <Translation id="deviceManager.deviceButtons.addHiddenWallet" />
+        </Button>
     );
 };

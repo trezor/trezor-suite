@@ -1,22 +1,29 @@
 const version = require('./package.json').suiteVersion;
-const baseConfig = require('../../jest.config.base');
+const baseConfig = require('../../jest.config.base.swc');
 
 // all tests have same UTC timezone
 process.env.TZ = 'UTC';
 process.env.LANG = 'en-US';
 process.env.VERSION = version;
 
-const babelConfig = {
-    presets: [
-        ['@babel/preset-env', { targets: { node: 'current' }, modules: 'commonjs' }],
-        '@babel/preset-typescript',
-        [
-            '@babel/preset-react',
-            {
+const swcConfig = {
+    jsc: {
+        parser: {
+            syntax: 'typescript',
+            tsx: true,
+            decorators: true,
+        },
+        transform: {
+            react: {
                 runtime: 'automatic',
             },
-        ],
-    ],
+            decoratorVersion: '2022-03',
+        },
+        target: 'esnext',
+    },
+    module: {
+        type: 'commonjs',
+    },
 };
 
 /**
@@ -30,14 +37,15 @@ module.exports = {
     ],
     setupFiles: [
         'jest-canvas-mock', // for lottie-react
+        require('path').resolve(__dirname, '../../suite-common/tx-simulation/src/jestSetup.ts'),
     ],
     setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
     moduleNameMapper: {
         '^@suite-common/(.+)': '<rootDir>/../../suite-common/$1',
-        '^@trezor/(.+)': '<rootDir>/../$1',
+        '^@trezor/(?!network-)(.+)': '<rootDir>/../$1',
         '^src/(.+)': '<rootDir>/src/$1',
         '\\.(mp4)$': '<rootDir>/__mocks__/import-mp4.js',
-        '\\.(svg)$': '<rootDir>/__mocks__/import-svg.js',
+        '\\.(svg|webp)$': '<rootDir>/__mocks__/import-svg.js',
         ...baseConfig.moduleNameMapper,
     },
     moduleFileExtensions: ['js', 'ts', 'tsx'],
@@ -73,8 +81,7 @@ module.exports = {
     ],
     testMatch: ['**/*.test.(ts|tsx|js)'],
     transform: {
-        '(d3-|internmap|esm).*\\.js$': ['babel-jest', babelConfig],
-        '\\.(js|jsx|ts|tsx)$': ['babel-jest', babelConfig],
+        '\\.(js|jsx|ts|tsx)$': ['@swc/jest', swcConfig],
     },
     verbose: false,
     watchPlugins: ['jest-watch-typeahead/filename', 'jest-watch-typeahead/testname'],

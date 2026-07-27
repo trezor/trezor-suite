@@ -1,15 +1,14 @@
 import { FormProvider } from 'react-hook-form';
 
+import { selectIsDeviceCompromised } from '@suite/authenticity-checks';
+import { ContextMessage } from '@suite/message-system';
 import { Context } from '@suite-common/message-system';
-import { TradingType } from '@suite-common/trading';
+import { type TradingType } from '@suite-common/trading';
 
-import { ContextMessage } from 'src/components/wallet/WalletLayout/AccountBanners/ContextMessage';
 import { useSelector } from 'src/hooks/suite';
 import { useMessageSystemTrading } from 'src/hooks/suite/useMessageSystemTrading';
-import { useTradingBuyForm } from 'src/hooks/wallet/trading/form/useTradingBuyForm';
+import { useTradingBuyForm } from 'src/hooks/wallet/trading/form/buy/useTradingBuyForm';
 import { TradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
-import { selectIsDeviceCompromised } from 'src/selectors/suite/suiteAuthenticityChecksSelectors';
-import { UseTradingProps } from 'src/types/trading/trading';
 import { TradingContainer } from 'src/views/wallet/trading/common/TradingContainer';
 import { TradingFormLayout } from 'src/views/wallet/trading/common/TradingForm/TradingFormLayout';
 import { TradingLayout } from 'src/views/wallet/trading/common/TradingLayout/TradingLayout';
@@ -17,25 +16,23 @@ import { TradingLayout } from 'src/views/wallet/trading/common/TradingLayout/Tra
 import { TradingDisabled } from '../common/TradingDisabled';
 import { TradingBuyFormInputs } from '../common/TradingForm/TradingBuyFormInputs';
 
-export const TradingBuyFormContent = () => (
-    <TradingFormLayout>
-        <TradingBuyFormInputs />
-    </TradingFormLayout>
-);
-
-export const TradingBuyFormWrapper = ({ selectedAccount }: UseTradingProps) => {
-    const tradingBuyContextValues = useTradingBuyForm({ selectedAccount });
+const TradingBuyFormWrapper = () => {
+    const tradingBuyContextValues = useTradingBuyForm();
 
     return (
         <TradingFormContext.Provider value={tradingBuyContextValues}>
             <FormProvider {...tradingBuyContextValues.methods}>
-                <TradingContainer SectionComponent={TradingBuyFormContent} />
+                <TradingContainer>
+                    <TradingFormLayout>
+                        <TradingBuyFormInputs />
+                    </TradingFormLayout>
+                </TradingContainer>
             </FormProvider>
         </TradingFormContext.Provider>
     );
 };
 
-export const TradingBuyFormLoaded = ({ selectedAccount }: UseTradingProps) => {
+export const TradingBuyForm = () => {
     const type: TradingType = 'buy';
     const { isDisabled, content } = useMessageSystemTrading(type);
     const isDeviceCompromised = useSelector(selectIsDeviceCompromised);
@@ -46,18 +43,8 @@ export const TradingBuyFormLoaded = ({ selectedAccount }: UseTradingProps) => {
             {isDisabled || isDeviceCompromised ? (
                 <TradingDisabled type={type} content={content} />
             ) : (
-                <TradingBuyFormWrapper selectedAccount={selectedAccount} />
+                <TradingBuyFormWrapper />
             )}
         </TradingLayout>
     );
-};
-
-export const TradingBuyForm = () => {
-    const selectedAccount = useSelector(state => state.wallet.selectedAccount);
-
-    if (selectedAccount.status !== 'loaded') {
-        return null;
-    }
-
-    return <TradingBuyFormLoaded selectedAccount={selectedAccount} />;
 };

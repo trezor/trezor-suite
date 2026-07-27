@@ -1,16 +1,17 @@
-// NOTE: @trezor/connect part is intentionally not imported from the index so we do include the whole library.
-
+import * as ERRORS from '@trezor/connect-common/src/constants/errors';
 import {
     CORE_CALL,
-    CallMethodAnyResponse,
-    CallMethodPayload,
+    type CallMethodAnyResponse,
+    type CallMethodPayload,
     POPUP,
-} from '@trezor/connect/src/events';
-import type { ConnectImpl, ConnectImplSettings } from '@trezor/connect/src/impl/dynamic';
-import type { Manifest } from '@trezor/connect/src/types/settings';
-import * as ERRORS from '@trezor/connect-common/src/constants/errors';
-import { WebsocketClient } from '@trezor/websocket-client';
-import { WebsocketError } from '@trezor/websocket-client/src/client';
+} from '@trezor/connect-common/src/events';
+import type { ConnectImpl } from '@trezor/connect-common/src/impl/dynamic';
+import type { ConnectImplSettings, Manifest } from '@trezor/connect-common/src/types/settings';
+import {
+    type CancelParams,
+    createCoreCallCancelMessage,
+} from '@trezor/connect-common/src/utils/cancelParams';
+import { WebsocketClient, WebsocketError } from '@trezor/websocket-client';
 
 /**
  * CoreInSuiteDesktop implementation for TrezorConnect factory.
@@ -18,7 +19,7 @@ import { WebsocketError } from '@trezor/websocket-client/src/client';
 export class CoreInSuiteDesktop implements ConnectImpl {
     private manifest?: Manifest;
     private version?: string;
-    private ws: WebsocketClient<{}>;
+    private ws: WebsocketClient<Record<never, never>>;
     private localNetworkPermissionState: PermissionState | 'unknown' = 'unknown';
 
     public constructor() {
@@ -33,11 +34,8 @@ export class CoreInSuiteDesktop implements ConnectImpl {
         return Promise.resolve(undefined);
     }
 
-    public cancel(_error?: string) {
-        this.ws.sendMessage({
-            type: POPUP.CLOSED,
-            payload: { error: _error },
-        });
+    public cancel(params?: CancelParams) {
+        this.ws.sendMessage(createCoreCallCancelMessage(params));
     }
 
     private async handshake() {
@@ -141,11 +139,22 @@ export class CoreInSuiteDesktop implements ConnectImpl {
                 throw ERRORS.TypedError('Desktop_ConnectionMissing', 'No response');
             }
 
-            return response;
+            if (response.success === false) {
+                return {
+                    success: false,
+                    error: response.error,
+                };
+            }
+
+            return {
+                success: true,
+                payload: response.payload,
+                device: response.device,
+            };
         } catch (err) {
             return {
                 success: false,
-                payload: ERRORS.serializeError(this.error(err)),
+                error: ERRORS.serializeError(this.error(err)),
             };
         }
     }

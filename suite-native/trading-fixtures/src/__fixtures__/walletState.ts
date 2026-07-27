@@ -1,15 +1,17 @@
-import { TradingType } from '@suite-common/trading';
-import { FiatRatesState, SendState } from '@suite-common/wallet-core';
+import { type TradingType } from '@suite-common/trading';
+import { type FiatRatesState, type SendState } from '@suite-common/wallet-core';
 import {
-    Account,
-    AccountKey,
-    GeneralPrecomposedLevels,
-    RatesByKey,
+    type Account,
+    type RatesByKey,
     type WalletSettings,
+    asAccountDescriptor,
 } from '@suite-common/wallet-types';
-import { PROTO, StaticSessionId } from '@trezor/connect';
+import { PROTO } from '@trezor/connect';
+import { type StaticSessionId } from '@trezor/device-utils';
 
 import { getBaseAccount, getBtcAccount, getEthAccount, getSolAccount } from './account';
+import { btc1NormalAccount, eth1NormalAccount, eth2legacyAccount } from './accounts';
+import { createPrecomposedLevels } from './precomposedTransaction';
 import { getInitializedTradingState } from './tradingState';
 
 type GetWalletStateParams = {
@@ -56,49 +58,41 @@ export const getWalletState = ({
             lastWeek: {},
         } as FiatRatesState,
         accounts: [
-            getBtcAccount('btc-account-1' as AccountKey, accountOverrides),
-            getBtcAccount('btc-account-2' as AccountKey, accountOverrides),
-            getEthAccount(undefined, accountOverrides),
-            getBaseAccount(undefined, accountOverrides),
-            getSolAccount(undefined, accountOverrides),
+            getBtcAccount({ ...accountOverrides, descriptor: asAccountDescriptor('btc1normal') }),
+            getBtcAccount({ ...accountOverrides, descriptor: asAccountDescriptor('btc2legacy') }),
+            getEthAccount(accountOverrides),
+            getBaseAccount(accountOverrides),
+            getSolAccount(accountOverrides),
+            btc1NormalAccount,
+            eth1NormalAccount,
+            eth2legacyAccount,
         ] as Account[],
         send: {
             drafts: {},
             precomposedTx: undefined,
             serializedTx: undefined,
             signedTx: undefined,
-            feeLevels: {
+            feeLevels: createPrecomposedLevels({
                 normal: {
-                    type: 'final',
-                    totalSpent: '1000433210428000',
                     fee: '433210428000',
                     feePerByte: '1',
                     feeLimit: '11000',
-                    bytes: 250,
-                    inputs: [],
                     estimatedFeeLimit: '11000',
-                } as unknown as GeneralPrecomposedLevels,
+                },
                 high: {
-                    type: 'final',
-                    totalSpent: '1000433210428000',
                     fee: '733210428000',
                     feePerByte: '4',
                     feeLimit: '21000',
-                    bytes: 250,
-                    inputs: [],
                     estimatedFeeLimit: '21000',
-                } as unknown as GeneralPrecomposedLevels,
+                },
                 custom: {
-                    type: 'final',
                     totalSpent: '1000426691398000',
                     fee: '426691398000',
                     feePerByte: '2',
                     feeLimit: '31000',
-                    bytes: 250,
-                    inputs: [],
                     estimatedFeeLimit: '31000',
-                } as unknown as GeneralPrecomposedLevels,
-            },
+                },
+            }),
         } as SendState,
     };
 };

@@ -1,6 +1,7 @@
 {
     "name": "@trezor/blockchain-link-utils",
     "version": "10.0.0-alpha.1",
+    "type": "module",
     "license": "See LICENSE.md in repo root",
     "sideEffects": false,
     "main": "src/index.ts",
@@ -9,44 +10,34 @@
         "types": "./lib/index.d.ts",
         "exports": {
             ".": {
-                "import": "./libESM/index.js",
-                "require": "./lib/index.js",
-                "types": "./lib/index.d.ts"
+                "types": "./lib/index.d.ts",
+                "default": "./lib/index.js"
             },
-            "./lib/*": "./lib/*.js",
-            "./libESM/*.js": "./libESM/*.js"
+            "./lib/*": "./lib/*"
         }
     },
     "files": [
         "lib/",
-        "libESM/",
         "CHANGELOG.md"
     ],
     "scripts": {
-        "test:unit": "yarn g:jest -c ../../jest.config.base.js",
+        "test:unit": "yarn g:jest",
         "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build",
-        "build:lib": "yarn build:lib:cjs && yarn build:lib:esm",
-        "build:lib:cjs": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib cjs",
-        "build:lib:esm": "yarn g:rimraf ./libESM && yarn g:tsc --build tsconfig.libESM.json && ../../scripts/publish/replace-imports.sh ./libESM esm",
-        "prepublishOnly": "yarn tsx ../../scripts/publish/prepublishNPM.js"
+        "build:lib": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
-        "@mobily/ts-belt": "^3.13.1",
-        "@stellar/stellar-sdk": "14.5.0",
         "@trezor/env-utils": "workspace:*",
-        "@trezor/utils": "workspace:*",
-        "xrpl": "4.5.0"
+        "@trezor/network-ripple": "workspace:*",
+        "@trezor/network-solana": "workspace:*",
+        "@trezor/network-stellar": "workspace:*",
+        "@trezor/utils": "workspace:*"
     },
     "devDependencies": {
-        "@solana/addresses": "^2.3.0",
-        "@solana/keys": "^2.3.0",
-        "@solana/rpc-api": "^2.3.0",
-        "@solana/rpc-types": "^2.3.0",
         "@trezor/blockchain-link-types": "workspace:*",
         "@trezor/eslint": "workspace:*",
-        "@trezor/type-utils": "workspace:*",
-        "tsx": "^4.21.0"
+        "@trezor/type-utils": "workspace:*"
     },
     "peerDependencies": {
         "tslib": "^2.6.2"

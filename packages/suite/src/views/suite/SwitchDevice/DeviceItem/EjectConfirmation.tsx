@@ -1,14 +1,14 @@
-import { MouseEventHandler } from 'react';
+import { type MouseEventHandler } from 'react';
 
-import { events } from '@suite/analytics';
+import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
 import { deviceActions } from '@suite-common/device';
-import { AcquiredDevice } from '@suite-common/suite-types';
+import { type AcquiredDevice } from '@suite-common/suite-types';
 import { Box, Button, H4, Paragraph, Row } from '@trezor/components';
-import { spacings } from '@trezor/theme';
+import { EjectIcon } from '@trezor/icons';
 
 import { useDispatch } from 'src/hooks/suite';
-import { useAnalytics } from 'src/support/useAnalytics';
 
 type EjectConfirmationProps = {
     onCancel: MouseEventHandler<HTMLButtonElement> | undefined;
@@ -17,7 +17,7 @@ type EjectConfirmationProps = {
 };
 
 export const EjectConfirmation = ({ onClick, onCancel, instance }: EjectConfirmationProps) => {
-    const analytics = useAnalytics();
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
     const dispatch = useDispatch();
 
     const handleEject = () => {
@@ -37,14 +37,14 @@ export const EjectConfirmation = ({ onClick, onCancel, instance }: EjectConfirma
                 intent="neutral"
                 priority="secondary"
                 typographyStyle="body-sm"
-                margin={{ top: spacings.xxs }}
+                margin={{ top: 4 }}
             >
                 <Translation id="TR_SWITCH_DEVICE_EJECT_CONFIRMATION_DESCRIPTION" />
             </Paragraph>
-            <Row gap={spacings.xs} margin={{ top: spacings.md }}>
+            <Row gap={8} margin={{ top: 16 }}>
                 <Button
                     size="small"
-                    iconLeft="eject"
+                    iconLeft={EjectIcon}
                     onClick={handleEject}
                     intent="brand"
                     data-testid="@switch-device/eject"

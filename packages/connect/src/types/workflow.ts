@@ -1,13 +1,25 @@
-import type { AbstractMethod } from '../core/AbstractMethod';
-import type { Device } from '../device/Device';
+import type { CoreEventMessage } from '@trezor/connect-common';
+
+import type { IDevice } from './idevice';
+
+/**
+ * Minimal method interface for device workflows.
+ * Avoids importing AbstractMethod (which would create a circular dependency
+ * through AbstractMethod → Device → handshake → types/workflow).
+ */
+export interface WorkflowMethod {
+    preauthorized?: boolean;
+    useCardanoDerivation: boolean;
+}
 
 export type WorkflowContext = {
-    device: Device;
-    method: AbstractMethod<any>;
+    device: IDevice;
+    method: WorkflowMethod;
     signal: AbortSignal;
+    sendCoreMessage: (message: CoreEventMessage) => void;
 };
 
 export type TpnWorkflowContext = {
-    device: Device;
+    device: IDevice;
     message: number[];
 };

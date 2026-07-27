@@ -1,7 +1,8 @@
+import { type TranslationKey } from '@suite/intl';
 import {
-    NotificationEntry,
+    type NotificationEntry,
+    createNotificationsReducer,
     notificationsActions,
-    notificationsReducer,
 } from '@suite-common/toast-notifications';
 
 import { PROTOCOL } from 'src/actions/suite/constants';
@@ -12,6 +13,7 @@ import protocolMiddleware from '../protocolMiddleware';
 
 const middlewares = [protocolMiddleware];
 
+const { reducer: notificationsReducer } = createNotificationsReducer<TranslationKey>();
 type ProtocolState = ReturnType<typeof protocolReducer>;
 type NotificationsState = ReturnType<typeof notificationsReducer>;
 
@@ -38,7 +40,7 @@ const initStore = (state: State) => {
 
         store.getState().protocol = protocolReducer(protocol, action);
         store.getState().notifications = notificationsReducer(
-            notifications as NotificationEntry[],
+            notifications as NotificationEntry<TranslationKey>[],
             action,
         );
 
@@ -65,7 +67,7 @@ describe('Protocol middleware', () => {
                 seen: true,
                 type: 'coin-scheme-protocol',
                 address: 'bc1q00h58c5vzcyqavwpjvw8tl8r53t9d57e6smwqe',
-                amount: 0.001,
+                amount: '0.001',
                 scheme: 'bitcoin',
                 autoClose: false,
             },
@@ -77,7 +79,7 @@ describe('Protocol middleware', () => {
             type: PROTOCOL.SAVE_COIN_PROTOCOL,
             payload: {
                 address: 'bc1q00h58c5vzcyqavwpjvw8tl8r53t9d57e6smwqe',
-                amount: 0.001,
+                amount: '0.001',
                 scheme: 'bitcoin',
                 shouldFill: false,
             },
@@ -88,7 +90,7 @@ describe('Protocol middleware', () => {
             {
                 payload: {
                     address: 'bc1q00h58c5vzcyqavwpjvw8tl8r53t9d57e6smwqe',
-                    amount: 0.001,
+                    amount: '0.001',
                     scheme: 'bitcoin',
                     shouldFill: false,
                 },

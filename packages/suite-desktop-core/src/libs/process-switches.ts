@@ -5,7 +5,6 @@ export type SuiteSwitch =
     | 'enable-updater'
     | 'disable-updater'
     | 'updater-url'
-    | 'bridge-legacy'
     | 'bridge-test'
     | 'bridge-daemon'
     | 'bridge-daemon-show-ui'
@@ -39,5 +38,5 @@ export const getSwitchValue = (switchName: SuiteSwitch): string => {
     const valueMatch = process.argv.map(arg => arg.match(switchValueMatch)).find(Boolean);
     if (!valueMatch) return '';
 
-    return valueMatch[1];
+    return valueMatch[1] ?? '';
 };

@@ -1,26 +1,20 @@
 import { memo } from 'react';
 import { LinearTransition } from 'react-native-reanimated';
 
-import { AnimatedBox, Card, VStack } from '@suite-native/atoms';
+import { AnimatedBox, VStack } from '@suite-native/atoms';
 import { AmountEditingDoneButton } from '@suite-native/trading-atoms';
 
 import { ExchangeAlert } from './ExchangeAlert';
+import { ExchangeCard } from './ExchangeCard';
 import { ExchangeConfirmation } from './ExchangeConfirmation';
-import { ExchangeRateAndProviderPicker } from './ExchangeRateAndProviderPicker';
-import { ExchangeReceiveAccountPicker } from './receive/ExchangeReceiveAccountPicker';
-import { ExchangeReceiveCard } from './receive/ExchangeReceiveCard';
-import { ExchangeSendCard } from './send/ExchangeSendCard';
+import { ExchangeFormQuoteDebugView } from './ExchangeFormQuoteDebugView';
+import { ExchangePickersCard } from './ExchangePickersCard';
 import { useExchangeFormContext } from '../../hooks/exchange/useExchangeFormContext';
 import { useExchangeQuotes } from '../../hooks/exchange/useExchangeQuotes';
 import { useFocusedValueWatch } from '../../hooks/general/useFocusedValueWatch';
 
-type ExchangeFormProps = {
-    shouldAnimateEntering?: boolean;
-};
-
 type ExchangeFormMemoizedProps = {
     isAmountInputActive: boolean;
-    shouldAnimateEntering?: boolean;
 };
 
 const EXCHANGE_FORM_TEST_ID = '@trading/exchange/form';
@@ -29,33 +23,25 @@ const AMOUNT_EDITING_DONE_BUTTON_TEST_ID = '@trading/exchange/amount-editing-don
 const ExchangeFormMemoized = memo(({ isAmountInputActive }: ExchangeFormMemoizedProps) => (
     <AnimatedBox layout={LinearTransition}>
         <VStack spacing="sp16" testID={EXCHANGE_FORM_TEST_ID}>
+            <ExchangeFormQuoteDebugView />
             <ExchangeAlert />
-            <ExchangeSendCard isAmountInputActive={isAmountInputActive} />
-            <ExchangeReceiveCard />
+            <ExchangeCard isAmountInputActive={isAmountInputActive} />
             {isAmountInputActive ? (
                 <AmountEditingDoneButton testID={AMOUNT_EDITING_DONE_BUTTON_TEST_ID} />
             ) : (
                 <>
-                    <Card noPadding>
-                        <ExchangeReceiveAccountPicker />
-                        <ExchangeRateAndProviderPicker />
-                    </Card>
-                    <ExchangeConfirmation enteringAnimation={LinearTransition} />
+                    <ExchangePickersCard />
+                    <ExchangeConfirmation />
                 </>
             )}
         </VStack>
     </AnimatedBox>
 ));
 
-export const ExchangeForm = ({ shouldAnimateEntering }: ExchangeFormProps) => {
+export const ExchangeForm = () => {
     const exchangeForm = useExchangeFormContext();
     const isAmountInputActiveDebounced = useFocusedValueWatch(exchangeForm.watch);
     useExchangeQuotes(exchangeForm);
 
-    return (
-        <ExchangeFormMemoized
-            isAmountInputActive={isAmountInputActiveDebounced}
-            shouldAnimateEntering={shouldAnimateEntering}
-        />
-    );
+    return <ExchangeFormMemoized isAmountInputActive={isAmountInputActiveDebounced} />;
 };

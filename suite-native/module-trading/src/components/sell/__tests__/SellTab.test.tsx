@@ -1,6 +1,8 @@
-import { FeatureFlag } from '@suite-native/feature-flags';
-import { PreloadedState, act, renderWithStoreProviderAsync } from '@suite-native/test-utils';
+import { mockMessageSystemStateWithFeatureFlags } from '@suite-common/message-system/mocks';
+import { getTranslation } from '@suite-native/intl';
+import { act } from '@suite-native/test-utils-store';
 
+import { renderWithTradingProvider } from '../../../__tests__/tradingTestUtils';
 import { SellTab } from '../SellTab';
 
 let mockIsDeviceInViewOnlyMode = false;
@@ -20,9 +22,16 @@ jest.mock('../../../hooks/sell/useSellData', () => ({
     }),
 }));
 
+jest.mock('../../concierge/ConciergeAlert', () => ({
+    ConciergeAlert: () => null,
+}));
+
 describe('SellTab', () => {
-    const renderSellTab = async (preloadedState: PreloadedState = {}) => {
-        const result = await renderWithStoreProviderAsync(<SellTab />, { preloadedState });
+    const renderSellTab = async (overrides: Record<string, unknown> = {}) => {
+        const result = renderWithTradingProvider(<SellTab />, {
+            tradeType: 'sell',
+            overrides,
+        });
 
         // wait for form reactions to run
         await act(() => Promise.resolve());
@@ -37,71 +46,40 @@ describe('SellTab', () => {
 
     it('should render disabled info when sell FF is not enabled', async () => {
         const { getByText } = await renderSellTab({
-            featureFlags: {
-                [FeatureFlag.IsTradingSellEnabled]: false,
-            },
-            messageSystem: {
-                validMessages: {
-                    feature: ['actionId'],
-                    banner: [],
-                    context: [],
-                    modal: [],
-                },
-                dismissedMessages: [],
-                config: {
-                    actions: [
-                        {
-                            message: {
-                                id: 'actionId',
-                                category: ['feature'],
-                                feature: [
-                                    {
-                                        domain: 'trading.sell',
-                                        flag: false,
-                                    },
-                                ],
-                            },
-                        },
-                    ],
-                },
-            },
-        } as unknown as PreloadedState);
+            messageSystem: mockMessageSystemStateWithFeatureFlags({ 'trading.sell': false }),
+        });
 
-        expect(getByText('Sell disabled')).toBeOnTheScreen();
+        expect(
+            getByText(
+                getTranslation('tradingAtoms.error.tradingTypeDisabledTitle', {
+                    tradingType: 'Sell',
+                }),
+            ),
+        ).toBeOnTheScreen();
     });
 
     it('should display Portfolio Tracker info with Portfolio Tracker "wallet" selected', async () => {
         // Portfolio Tracker sets both selectors to true
         mockIsPortfolioTrackerDevice = true;
         mockIsDeviceInViewOnlyMode = true;
-        const { getByText, queryByText } = await renderSellTab({
-            featureFlags: {
-                [FeatureFlag.IsTradingSellEnabled]: true,
-            },
-        });
+        const { getByText, queryByText } = await renderSellTab({});
 
-        expect(getByText('Portfolio Tracker')).toBeOnTheScreen();
+        expect(
+            getByText(getTranslation('tradingAtoms.error.portfolioTrackerTitle')),
+        ).toBeOnTheScreen();
         expect(queryByText('View-only wallet')).toBeNull();
     });
 
     it('should display form even with view-only wallet', async () => {
         mockIsDeviceInViewOnlyMode = true;
-        const { getByText } = await renderSellTab({
-            featureFlags: {
-                [FeatureFlag.IsTradingSellEnabled]: true,
-            },
-        });
+        const { getByText } = await renderSellTab({});
 
-        expect(getByText('Select asset')).toBeOnTheScreen();
+        expect(getByText(getTranslation('moduleTrading.selectCoin.buttonTitle'))).toBeOnTheScreen();
     });
 
     it('should display form otherwise', async () => {
-        const { getByText } = await renderSellTab({
-            featureFlags: {
-                [FeatureFlag.IsTradingSellEnabled]: true,
-            },
-        });
+        const { getByText } = await renderSellTab({});
 
-        expect(getByText('Select asset')).toBeOnTheScreen();
+        expect(getByText(getTranslation('moduleTrading.selectCoin.buttonTitle'))).toBeOnTheScreen();
     });
 });

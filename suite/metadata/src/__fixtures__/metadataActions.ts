@@ -2,12 +2,12 @@ import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
-import * as metadataActions from '../metadataActions';
+import type * as metadataActions from '../metadataActions';
 import * as METADATA from '../metadataConstants';
-import * as metadataLabelingActions from '../metadataLabelingActions';
+import type * as metadataLabelingActions from '../metadataLabelingActions';
 import * as METADATA_LABELING from '../metadataLabelingConstants';
-import * as metadataProviderActions from '../metadataProviderThunks';
-import * as metadataThunks from '../metadataThunks';
+import type * as metadataProviderActions from '../metadataProviderThunks';
+import type * as metadataThunks from '../metadataThunks';
 
 type Fixture<T extends (...a: any) => any> = {
     description: string;

@@ -1,12 +1,8 @@
-import { useCallback } from 'react';
-
 import styled from 'styled-components';
 
-import { useTranslation } from '@suite/intl';
-import { selectLabelingDataForWallet } from '@suite/metadata';
+import { useWalletLabel } from '@suite/wallet';
 
-import { useSelector } from 'src/hooks/suite/useSelector';
-import { TrezorDevice } from 'src/types/suite';
+import { type TrezorDevice } from 'src/types/suite';
 
 interface WalletLabellingProps {
     device: TrezorDevice;
@@ -17,49 +13,8 @@ const Container = styled.span`
     white-space: nowrap;
 `;
 
-export const useWalletLabeling = () => {
-    const { translationString } = useTranslation();
-
-    const defaultAccountLabelString = useCallback(
-        ({ device }: { device: TrezorDevice }) => {
-            if (!device.state?.staticSessionId) return undefined; // wallet not authorized yet
-            if (device.useEmptyPassphrase) return translationString('TR_NO_PASSPHRASE_WALLET');
-            if (!device.walletNumber) return undefined;
-
-            return translationString('TR_PASSPHRASE_WALLET', { id: device.walletNumber });
-        },
-        [translationString],
-    );
-
-    return {
-        defaultAccountLabelString,
-    };
-};
-
-export const useGetWalletLabel = ({ device, shouldUseDeviceLabel }: WalletLabellingProps) => {
-    const { defaultAccountLabelString } = useWalletLabeling();
-    const { walletLabel } = useSelector(state => selectLabelingDataForWallet(state, device.state));
-
-    let label: string | undefined;
-    if (walletLabel) {
-        label = walletLabel;
-    } else if (device.state) {
-        label = defaultAccountLabelString({ device });
-    }
-
-    if (shouldUseDeviceLabel) {
-        const deviceLabel = device?.features?.label || device?.name || '';
-
-        return <>{`${deviceLabel} ${label}`}</>;
-    }
-
-    if (!label) return null;
-
-    return label;
-};
-
 export const WalletLabeling = ({ device, shouldUseDeviceLabel }: WalletLabellingProps) => {
-    const label = useGetWalletLabel({ device, shouldUseDeviceLabel });
+    const { label } = useWalletLabel({ device, shouldUseDeviceLabel });
 
     return <Container>{label}</Container>;
 };

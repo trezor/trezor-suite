@@ -1,11 +1,11 @@
+import { selectSelectedAccount } from '@suite/account';
+import { stopCoinjoinSession } from '@suite/coinjoin';
 import { Translation } from '@suite/intl';
 import { Column, H3, Modal, Paragraph } from '@trezor/components';
-import { spacings } from '@trezor/theme';
+import { ArrowsInIcon } from '@trezor/icons';
 
-import { stopCoinjoinSession } from 'src/actions/wallet/coinjoinClientActions';
 import { useDispatch } from 'src/hooks/suite';
 import { useSelector } from 'src/hooks/suite/useSelector';
-import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 
 type CancelCoinjoinModalProps = {
     onClose: () => void;
@@ -23,8 +23,8 @@ export const CancelCoinjoinModal = ({ onClose }: CancelCoinjoinModalProps) => {
     return (
         <Modal
             onCancel={onClose}
-            variant="warning"
-            iconName="arrowsIn"
+            intent="warning"
+            icon={ArrowsInIcon}
             width={600}
             bottomContent={
                 <>
@@ -42,7 +42,7 @@ export const CancelCoinjoinModal = ({ onClose }: CancelCoinjoinModalProps) => {
                 </>
             }
         >
-            <Column gap={spacings.xxs}>
+            <Column gap={4}>
                 <H3>
                     <Translation id="TR_CANCEL_COINJOIN" />
                 </H3>

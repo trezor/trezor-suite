@@ -1,12 +1,12 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 import { FadeInUp, FadeOutDown, LinearTransition } from 'react-native-reanimated';
 
-import { Icon, IconName } from '@suite-native/icons';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Color } from '@trezor/theme';
+import { Icon, type IconName } from '@suite-native/icons';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
+import { type Color } from '@trezor/theme';
 
-import { Button, ButtonColorScheme } from '../Button/Button';
-import { AnimatedCard } from '../Card/Card';
+import { Button, type ButtonColorProps } from '../Button/Button';
+import { AnimatedContainerCard } from '../Card/Card';
 import { Divider } from '../Divider';
 import { AnimatedVStack, HStack, VStack } from '../Stack';
 import { Text } from '../Text';
@@ -20,7 +20,7 @@ type CardStepperItemProps = {
     isOpened: boolean;
     icon: IconName;
     primaryButtonText: ReactNode;
-    secondaryButtonText: ReactNode;
+    secondaryButtonText?: ReactNode;
     onPressConfirmButton: () => void;
     onPressSecondaryButton: () => void;
     buttonsActionType?: CardStepperButtonsActionType;
@@ -28,18 +28,18 @@ type CardStepperItemProps = {
 
 const buttonsColorSchemeMap = {
     primary: {
-        primary: 'primary',
-        secondary: 'tertiaryElevation0',
+        primary: { intent: 'brand', priority: 'primary' },
+        secondary: { intent: 'neutral', priority: 'secondary' },
     },
     destructive: {
-        primary: 'redBold',
-        secondary: 'redElevation0',
+        primary: { intent: 'critical', priority: 'primary' },
+        secondary: { intent: 'critical', priority: 'secondary' },
     },
-} as const satisfies Record<CardStepperButtonsActionType, Record<string, ButtonColorScheme>>;
+} as const satisfies Record<CardStepperButtonsActionType, Record<string, ButtonColorProps>>;
 
 const cardStyle = prepareNativeStyle<{ isDisabled: boolean }>((utils, { isDisabled }) => ({
-    backgroundColor: utils.colors.backgroundSurfaceElevation1,
-    borderColor: utils.colors.borderOnElevation1,
+    backgroundColor: utils.colors.surfaceFillRaised,
+    borderColor: utils.colors.borderNeutral,
     borderWidth: 1,
     paddingVertical: utils.spacings.sp12,
     overflow: 'hidden',
@@ -47,8 +47,8 @@ const cardStyle = prepareNativeStyle<{ isDisabled: boolean }>((utils, { isDisabl
     extend: {
         condition: isDisabled,
         style: {
-            backgroundColor: utils.colors.backgroundSurfaceElevationNegative,
-            borderColor: utils.colors.borderOnElevation0,
+            backgroundColor: utils.colors.surfaceFillSunken,
+            borderColor: utils.colors.borderNeutral,
             ...utils.boxShadows.none,
         },
     },
@@ -83,12 +83,12 @@ export const CardStepperItem = ({
 }: CardStepperItemProps) => {
     const { applyStyle } = useNativeStyles();
     const iconName = isChecked ? 'check' : icon;
-    const headerColor: Color = isChecked ? 'textPrimaryDefault' : 'textSubdued';
+    const headerColor: Color = isChecked ? 'contentBrand' : 'contentSecondary';
 
     return (
-        <AnimatedCard
+        <AnimatedContainerCard
             layout={LAYOUT_ANIMATION}
-            style={[applyStyle(cardStyle, { isDisabled: !isOpened && !isChecked })]}
+            style={applyStyle(cardStyle, { isDisabled: !isOpened && !isChecked })}
         >
             <VStack spacing="sp16">
                 <VStack spacing="sp12">
@@ -108,24 +108,21 @@ export const CardStepperItem = ({
                         exiting={EXITING_ANIMATION}
                     >
                         <Text variant="body-md-strong">{description}</Text>
-                        <HStack
-                            flex={1}
-                            spacing="sp12"
-                            justifyContent="space-between"
-                            paddingBottom="sp4"
-                        >
+                        <HStack flex={1} spacing="sp12" paddingBottom="sp4">
+                            {secondaryButtonText && (
+                                <Button
+                                    size="medium"
+                                    style={applyStyle(buttonStyle)}
+                                    {...buttonsColorSchemeMap[buttonsActionType].secondary}
+                                    onPress={onPressSecondaryButton}
+                                >
+                                    {secondaryButtonText}
+                                </Button>
+                            )}
                             <Button
-                                size="small"
+                                size="medium"
                                 style={applyStyle(buttonStyle)}
-                                colorScheme={buttonsColorSchemeMap[buttonsActionType].secondary}
-                                onPress={onPressSecondaryButton}
-                            >
-                                {secondaryButtonText}
-                            </Button>
-                            <Button
-                                size="small"
-                                style={applyStyle(buttonStyle)}
-                                colorScheme={buttonsColorSchemeMap[buttonsActionType].primary}
+                                {...buttonsColorSchemeMap[buttonsActionType].primary}
                                 onPress={onPressConfirmButton}
                                 testID="@cardStepper/confirm-button"
                             >
@@ -135,6 +132,6 @@ export const CardStepperItem = ({
                     </AnimatedVStack>
                 )}
             </VStack>
-        </AnimatedCard>
+        </AnimatedContainerCard>
     );
 };

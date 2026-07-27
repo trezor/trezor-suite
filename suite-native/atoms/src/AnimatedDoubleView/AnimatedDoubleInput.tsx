@@ -1,14 +1,15 @@
-import { ReactNode, RefObject, useCallback, useRef, useState } from 'react';
+import { type ReactNode, type RefObject, useCallback, useRef, useState } from 'react';
 
 import { useUpdateEffect } from '@suite-native/helpers';
+import { noop } from '@trezor/utils';
 
 import {
     ANIMATED_DOUBLE_VIEW_SWITCH_ANIMATION_DURATION,
-    ActiveView,
+    type ActiveView,
     AnimatedDoubleView,
-    RenderViewProps,
+    type RenderViewProps,
 } from './AnimatedDoubleView';
-import { InputType } from '../Input/Input';
+import { type InputType } from '../Input/Input';
 
 export type RenderInputProps = RenderViewProps & {
     inputRef: RefObject<InputType | null>;
@@ -19,15 +20,15 @@ export type AnimatedDoubleInputProps = {
     renderSecondary: (props: RenderInputProps) => ReactNode;
     onInputSwitch?: (activeView: ActiveView) => void;
     switchLabel?: string;
+    activeView?: ActiveView;
 };
-
-const noop = () => {};
 
 export const AnimatedDoubleInput = ({
     renderPrimary,
     renderSecondary,
     onInputSwitch = noop,
     switchLabel,
+    activeView,
 }: AnimatedDoubleInputProps) => {
     const primaryInputRef = useRef<InputType | null>(null);
     const secondaryInputRef = useRef<InputType | null>(null);
@@ -51,9 +52,9 @@ export const AnimatedDoubleInput = ({
     );
 
     const focusInput = useCallback(
-        (activeView: ActiveView) => {
-            setActiveInputRef(activeView === 'primary' ? primaryInputRef : secondaryInputRef);
-            onInputSwitch(activeView);
+        (nextActiveView: ActiveView) => {
+            setActiveInputRef(nextActiveView === 'primary' ? primaryInputRef : secondaryInputRef);
+            onInputSwitch(nextActiveView);
         },
         [onInputSwitch],
     );
@@ -74,6 +75,7 @@ export const AnimatedDoubleInput = ({
             }
             onViewSwitch={focusInput}
             switchLabel={switchLabel}
+            activeView={activeView}
         />
     );
 };

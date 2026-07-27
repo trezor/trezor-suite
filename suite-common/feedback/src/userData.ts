@@ -1,7 +1,7 @@
-import { TrezorDevice } from '@suite-common/suite-types';
-import { DeviceModelInternal, getFirmwareVersion } from '@trezor/device-utils';
+import { type TrezorDevice } from '@suite-common/suite-types';
+import { type DeviceModelInternal, getFirmwareVersion } from '@trezor/device-utils';
 import {
-    Environment,
+    type Environment,
     getCommitHash,
     getEnvironment,
     getOsName,
@@ -31,7 +31,9 @@ export const buildUserFeedbackData = (device?: TrezorDevice): UserData => ({
     suite_version: getSuiteVersion(),
     suite_revision: getCommitHash(),
     window_dimensions: `${getWindowWidth()}x${getWindowHeight()}`,
-    device_model: device?.features?.internal_model,
+    ...(device?.features?.internal_model && {
+        device_model: device.features.internal_model,
+    }),
     firmware_version: device?.features ? getFirmwareVersion(device) : '',
     firmware_revision: device?.features?.revision || '',
     firmware_type: device?.firmwareType || '',

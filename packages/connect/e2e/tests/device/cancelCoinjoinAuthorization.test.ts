@@ -1,5 +1,5 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
-import TrezorConnect, { PROTO, Success, Unsuccessful } from '@trezor/connect';
+import TrezorConnect from '@trezor/connect';
 
 import { conditionalTest, getController, initTrezorConnect, setup } from '../../common.setup';
 
@@ -30,18 +30,18 @@ describe('TrezorConnect.cancelCoinjoinAuthorization', () => {
             maxCoordinatorFeeRate: 500000, // 5% => 0.005 * 10**8;
             maxFeePerKvbyte: 3500,
             path: "m/10025'/1'/0'/1'",
-            coin: 'Testnet',
+            coin: 'test',
             scriptType: 'SPENDTAPROOT',
         });
 
-        expect(auth.success).toBe(true);
+        if (!auth.success) throw new Error(auth.error.message);
         expect(auth.payload).toEqual({ message: 'Coinjoin authorized' });
 
         const commitmentData =
             '0f7777772e6578616d706c652e636f6d0000000000000000000000000000000000000000000000000000000000000001';
 
         const proof = await TrezorConnect.getOwnershipProof({
-            coin: 'Testnet',
+            coin: 'test',
             path: "m/10025'/1'/0'/1'/1/0",
             scriptType: 'SPENDTAPROOT',
             userConfirmation: true,
@@ -52,13 +52,11 @@ describe('TrezorConnect.cancelCoinjoinAuthorization', () => {
         expect(proof.success).toBe(true);
 
         const cancelAuthResult = await TrezorConnect.cancelCoinjoinAuthorization({});
-        expect(cancelAuthResult.success).toBe(true);
-        expect((cancelAuthResult as Success<PROTO.Success>).payload.message).toBe(
-            'Authorization cancelled',
-        );
+        if (!cancelAuthResult.success) throw new Error(cancelAuthResult.error.message);
+        expect(cancelAuthResult.payload.message).toBe('Authorization cancelled');
 
         const proof2 = await TrezorConnect.getOwnershipProof({
-            coin: 'Testnet',
+            coin: 'test',
             path: "m/10025'/1'/0'/1'/1/0",
             scriptType: 'SPENDTAPROOT',
             userConfirmation: true,
@@ -66,7 +64,7 @@ describe('TrezorConnect.cancelCoinjoinAuthorization', () => {
             preauthorized: true,
         });
 
-        expect(proof2.success).toBe(false);
-        expect((proof2 as Unsuccessful).payload.error).toBe('No preauthorized operation');
+        if (proof2.success) throw new Error('Expected failure but got success');
+        expect(proof2.error.message).toBe('No preauthorized operation');
     });
 });

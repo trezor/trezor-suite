@@ -1,11 +1,11 @@
-import { DEFAULT_LOCALE, LocaleCode } from '../languages';
+import { DEFAULT_LOCALE, type LocaleCode } from '../languages';
 import {
-    LocaleSliceRootState,
-    LocaleState,
+    type LocaleSliceRootState,
+    type LocaleState,
     selectLocale,
     selectSupportedLanguageLocale,
 } from '../localeSlice';
-import { SupportedLocaleCode } from '../types';
+import { type SupportedLocaleCode } from '../types';
 
 describe('selectSupportedLanguageLocale', () => {
     const testCases = [
@@ -14,6 +14,7 @@ describe('selectSupportedLanguageLocale', () => {
             localeState: {
                 appLocaleCode: 'system',
                 systemLocaleCode: 'cs-CZ',
+                areDebugTranslationKeysDisplayed: false,
             },
             expectedResultLocale: 'cs-CZ',
         },
@@ -22,7 +23,8 @@ describe('selectSupportedLanguageLocale', () => {
                 'should return default locale when app locale is "system" and system locale is not supported',
             localeState: {
                 appLocaleCode: 'system',
-                systemLocaleCode: 'fr-FR',
+                systemLocaleCode: 'it-IT',
+                areDebugTranslationKeysDisplayed: false,
             },
             expectedResultLocale: DEFAULT_LOCALE,
         },
@@ -31,6 +33,7 @@ describe('selectSupportedLanguageLocale', () => {
             localeState: {
                 appLocaleCode: 'cs-CZ',
                 systemLocaleCode: 'en-US',
+                areDebugTranslationKeysDisplayed: false,
             },
             expectedResultLocale: 'cs-CZ',
         },
@@ -40,6 +43,7 @@ describe('selectSupportedLanguageLocale', () => {
             localeState: {
                 appLocaleCode: 'system',
                 systemLocaleCode: 'de-AT',
+                areDebugTranslationKeysDisplayed: false,
             },
             expectedResultLocale: 'de-DE',
         },
@@ -65,6 +69,7 @@ describe('selectLocale', () => {
             localeState: {
                 appLocaleCode: 'system',
                 systemLocaleCode: 'cs-CZ',
+                areDebugTranslationKeysDisplayed: false,
             },
             expectedResultLocale: 'cs-CZ',
         },
@@ -73,6 +78,7 @@ describe('selectLocale', () => {
             localeState: {
                 appLocaleCode: 'ja-JP',
                 systemLocaleCode: 'cs-CZ',
+                areDebugTranslationKeysDisplayed: false,
             },
             expectedResultLocale: 'ja-JP',
         },

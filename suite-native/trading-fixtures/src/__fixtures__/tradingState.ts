@@ -1,25 +1,30 @@
 import type { Coins, CryptoId, FiatCurrenciesProps, FiatCurrencyCode, Platforms } from 'invity-api';
 
 import {
-    TradingBuyState,
-    TradingExchangeState,
-    TradingPaymentMethodListProps,
-    TradingSellState,
-    TradingType,
+    type TradingBuyState,
+    type TradingExchangeState,
+    type TradingSellState,
+    type TradingType,
 } from '@suite-common/trading';
 import { tradingInitialState } from '@suite-native/trading-consts';
-import { TradingState } from '@suite-native/trading-types';
+import { type TradingState } from '@suite-native/trading-types';
 
 import { buyCexdirect, buyInvity, buyMercuryo } from './buyProviders';
 import { buyQuotes } from './buyQuotes';
 import { coins } from './coins';
-import { exchangeCexdirect, exchangeInvity, exchangeMercuryo } from './exchangeProviders';
+import {
+    exchangeCexdirect,
+    exchangeInvity,
+    exchangeMercuryo,
+    exchangeOneInchFusion,
+    exchangeOneInchFusionPlus,
+} from './exchangeProviders';
 import { exchangeQuotes } from './exchangeQuotes';
 import { platforms } from './platforms';
 import { sellBanxa, sellCexdirect, sellInvity, sellMercuryo, sellMoonpay } from './sellProviders';
 import { sellQuotes } from './sellQuotes';
 
-export const getInitializedBuyState = () =>
+const getInitializedBuyState = () =>
     ({
         ...tradingInitialState.buy,
         quotesRequest: undefined,
@@ -59,7 +64,7 @@ export const getInitializedBuyState = () =>
         },
     }) as TradingBuyState;
 
-export const getInitializedExchangeState = () =>
+const getInitializedExchangeState = () =>
     ({
         ...tradingInitialState.exchange,
         exchangeInfo: {
@@ -67,6 +72,8 @@ export const getInitializedExchangeState = () =>
                 ['invity']: exchangeInvity,
                 ['mercuryo']: exchangeMercuryo,
                 ['cexdirect']: exchangeCexdirect,
+                ['1inchfusion']: exchangeOneInchFusion,
+                ['1inchfusionplus']: exchangeOneInchFusionPlus,
             },
             buyCryptoIds: [
                 'ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
@@ -88,7 +95,7 @@ export const getInitializedExchangeState = () =>
         },
     }) as TradingExchangeState;
 
-export const getInitializedSellState = () =>
+const getInitializedSellState = () =>
     ({
         ...tradingInitialState.sell,
         sellInfo: {
@@ -121,12 +128,6 @@ export const getInitializedTradingState = (tradeType: TradingType = 'buy') =>
         exchange: getInitializedExchangeState(),
         sell: getInitializedSellState(),
         info: {
-            paymentMethods: [
-                {
-                    value: 'creditCard',
-                    label: 'Credit Card label',
-                },
-            ] as TradingPaymentMethodListProps[],
             coins: coins as Coins,
             platforms: platforms as Platforms,
         },
@@ -144,17 +145,6 @@ export const getInitializedTradingStateWithQuotes = () => {
     state.buy.quotes = buyQuotes as TradingBuyState['quotes'];
     state.exchange.quotes = exchangeQuotes;
     state.sell.quotes = sellQuotes;
-
-    state.info.paymentMethods = [
-        {
-            value: 'creditCard',
-            label: 'Credit Card',
-        },
-        {
-            value: 'applePay',
-            label: 'Apple Pay',
-        },
-    ];
 
     return state;
 };

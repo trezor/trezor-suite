@@ -1,15 +1,17 @@
-import type { Transaction as BlockbookTransaction } from '@trezor/blockchain-link-types/src/blockbook';
 import type {
+    BlockbookTransaction,
     ElectrumAPI,
-    HistoryTx,
-    TransactionVerbose,
-    TxCoinbase,
-    TxIn,
-    TxOut,
-} from '@trezor/blockchain-link-types/src/electrum';
+    ElectrumTypes,
+    ElectrumHistoryTx as HistoryTx,
+} from '@trezor/blockchain-link-types';
 import { arrayDistinct, arrayToDictionary } from '@trezor/utils';
 
 import { btcToSat } from './transform';
+
+type TransactionVerbose = ElectrumTypes.TransactionVerbose;
+type TxCoinbase = ElectrumTypes.TxCoinbase;
+type TxIn = ElectrumTypes.TxIn;
+type TxOut = ElectrumTypes.TxOut;
 
 const transformOpReturn = (hex: string) => {
     const [, _len, data] = hex.match(/^6a(?:4c)?([0-9a-f]{2})([0-9a-f]*)$/i) ?? [];
@@ -37,7 +39,8 @@ const parseAddresses = ({ address, addresses, type, hex }: TxOut['scriptPubKey']
 type GetVout = (txid: string, vout: number) => TransactionVerbose['vout'][number];
 type GetSpent = (txid: string, n: number) => boolean;
 
-const isNotCoinbase = (item: TxIn | TxCoinbase): item is TxIn => (item as any).txid !== undefined;
+const isNotCoinbase = (item: TxIn | TxCoinbase): item is TxIn =>
+    'txid' in item && item.txid !== undefined;
 
 const formatTransaction =
     (getVout: GetVout, getSpent: GetSpent, currentHeight: number) =>
@@ -140,8 +143,22 @@ export const getTransactions = async (
     const getSpent = (txid: string, n: number) => !unspentOutputs[txid]?.includes(n);
     */
     const getSpent = () => false;
-    const getTx = (txid: string) => origTxs[txid] || prevTxs[txid];
-    const getVout = (txid: string, vout: number) => getTx(txid).vout[vout];
+    const getTx = (txid: string) => {
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const origTx: (typeof origTxs)[string] = origTxs[txid];
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const prevTx: (typeof prevTxs)[string] = prevTxs[txid];
+
+        return origTx || prevTx;
+    };
+    const getVout = (txid: string, vout: number) => {
+        const tx = getTx(txid);
+        const txVouts = tx.vout;
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const v: (typeof txVouts)[number] = txVouts[vout];
+
+        return v;
+    };
 
     const currentHeight = client.getInfo()?.block?.height || 0;
 

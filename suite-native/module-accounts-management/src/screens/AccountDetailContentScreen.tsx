@@ -1,11 +1,11 @@
 import { useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
-import { Account, TokenAddress } from '@suite-common/wallet-types';
-import { events } from '@suite-native/analytics';
+import { useServices } from '@suite-common/dependency-injection';
+import { type Account, type TokenAddress } from '@suite-common/wallet-types';
+import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { Screen } from '@suite-native/navigation';
-import { useAnalytics } from '@suite-native/services';
-import { TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
+import { type TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
 import { TransactionList } from '@suite-native/transactions';
 
 import { AccountDetailScreenHeader } from '../components/AccountDetailScreenHeader';
@@ -21,7 +21,7 @@ export const AccountDetailContentScreen = ({
     account,
     tokenContract,
 }: AccountDetailContentScreenProps) => {
-    const analytics = useAnalytics();
+    const { analytics } = useServices(selectNativeAnalyticsDep);
     const token = useSelector((state: TokensRootState) =>
         selectAccountTokenInfo(state, account.key, tokenContract),
     );
@@ -46,6 +46,8 @@ export const AccountDetailContentScreen = ({
 
     return (
         <Screen
+            /** Adding scrollable wraps content in ScrollView which is unwanted for this screen because list component already adds the scrollview **/
+            isScrollable={false}
             header={
                 tokenContract ? (
                     <TokenAccountDetailScreenHeader
@@ -57,9 +59,11 @@ export const AccountDetailContentScreen = ({
                 )
             }
             noHorizontalPadding
+            noBottomPadding
+            hasBottomInset={false}
         >
             <TransactionList
-                accountKey={account.key}
+                account={account}
                 tokenContract={tokenContract}
                 listHeaderComponent={listHeaderComponent}
             />

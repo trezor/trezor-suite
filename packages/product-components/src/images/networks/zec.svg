@@ -1,4 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32">
-  <path fill="#1f1f1f" d="M0 8a8 8 0 0 1 8-8h16a8 8 0 0 1 8 8v16a8 8 0 0 1-8 8H8a8 8 0 0 1-8-8z" class="zec_svg__bg"/>
-  <path fill="#fff" d="M21.163 11.373V9.134H17.15V6.667h-2.47v2.467h-4.014v2.97h6.22l-6.22 8.447v2.24h4.014v2.46h2.468v-2.46h4.014v-2.97h-6.227z" class="zec_svg__fg"/>
-</svg>

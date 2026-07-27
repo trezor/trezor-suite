@@ -1,22 +1,21 @@
 import styled from 'styled-components';
 
+import { isCoinjoinSupportedSymbol, setDebugSettings } from '@suite/coinjoin';
+import {
+    COINJOIN_NETWORKS,
+    type CoinjoinClientInstance,
+    type CoinjoinServerEnvironment,
+    type CoinjoinSymbol,
+} from '@suite/coinjoin';
+import { useServices } from '@suite-common/dependency-injection';
 import { BITCOIN_ONLY_SYMBOLS } from '@suite-common/suite-constants';
-import { NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import { selectReloadAppDep } from '@suite-common/suite-types';
+import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { Button } from '@trezor/components';
-import { spacings } from '@trezor/theme';
+import { ActionColumn, ActionSelect, SectionItem, TextColumn } from '@trezor/product-components';
 import { typedObjectKeys } from '@trezor/utils';
 
-import { setDebugSettings } from 'src/actions/wallet/coinjoinClientActions';
-import { ActionColumn, ActionSelect, SectionItem, TextColumn } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { COINJOIN_NETWORKS, CoinjoinSymbol } from 'src/services/coinjoin';
-import { CoinjoinClientInstance, CoinjoinServerEnvironment } from 'src/types/wallet/coinjoin';
-import { reloadApp } from 'src/utils/suite/reload';
-import { isCoinjoinSupportedSymbol } from 'src/utils/wallet/coinjoinUtils';
-
-const StyledActionSelect = styled(ActionSelect)`
-    min-width: 256px;
-`;
 
 const CoordinatorVersionContainer = styled.div`
     display: flex;
@@ -44,7 +43,7 @@ const CoordinatorVersion = ({ version }: CoordinatorVersionProps) => {
                 intent="neutral"
                 priority="secondary"
                 href={`https://github.com/zkSNACKs/WalletWasabi/commit/${version.commitHash}`}
-                margin={{ left: spacings.xxs }}
+                margin={{ left: 4 }}
             >
                 {version.commitHash}
             </Button>
@@ -81,7 +80,7 @@ const CoordinatorServer = ({
                 }
             />
             <ActionColumn>
-                <StyledActionSelect
+                <ActionSelect
                     isDisabled={options.length < 2}
                     onChange={({ value }) => onChange(symbol, value)}
                     value={selectedOption}
@@ -97,6 +96,7 @@ export const CoinjoinApi = () => {
     const debug = useSelector(state => state.wallet.coinjoin.debug);
     const clients = useSelector(state => state.wallet.coinjoin.clients);
     const dispatch = useDispatch();
+    const { reloadApp } = useServices(selectReloadAppDep);
 
     const coinjoinSymbols = BITCOIN_ONLY_SYMBOLS.filter(symbol =>
         isCoinjoinSupportedSymbol(symbol),
@@ -111,7 +111,9 @@ export const CoinjoinApi = () => {
             }),
         );
         // reload the Suite to reinitialize everything, with a slight delay to let the browser save the settings
-        reloadApp(100);
+        setTimeout(() => {
+            reloadApp();
+        }, 100);
     };
 
     return (
@@ -125,10 +127,7 @@ export const CoinjoinApi = () => {
                         symbol={symbol}
                         version={clients[symbol]?.version}
                         environments={environments}
-                        value={
-                            debug?.coinjoinServerEnvironment &&
-                            debug?.coinjoinServerEnvironment[symbol]
-                        }
+                        value={debug?.coinjoinServerEnvironment?.[symbol]}
                         onChange={handleServerChange}
                     />
                 );

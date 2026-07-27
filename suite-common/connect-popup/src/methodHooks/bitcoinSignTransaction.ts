@@ -1,15 +1,15 @@
-import { Bip43Path, NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import { type Bip43Path, type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import {
     accountsActions,
     selectAccountForNetworkSymbolAndPath,
     sendFormActions,
 } from '@suite-common/wallet-core';
-import { Account, FormOptions } from '@suite-common/wallet-types';
+import { type Account, type FormOptions } from '@suite-common/wallet-types';
 import type { CallMethodKeys, SignTransaction } from '@trezor/connect';
-import { getSerializedPath } from '@trezor/connect/src/utils/pathUtils';
+import { getSerializedPath } from '@trezor/connect-common';
 
 import { connectPopupActions } from '../connectPopupActions';
-import { PostCallHookParams, PreCallHookParams } from './types';
+import { type PostCallHookParams, type PreCallHookParams } from './types';
 import { createPlaceholderAccount } from './utils';
 
 const temporaryAccounts: Account[] = [];
@@ -29,7 +29,7 @@ const preCallHook = async <M extends CallMethodKeys>({
                 throw new Error(`Network not supported`);
             }
             const accountPath = txSigningPrecomposed.inputs.find(i => i.address_n);
-            if (!accountPath || !accountPath.address_n) {
+            if (!accountPath?.address_n) {
                 throw new Error('Account not found in inputs');
             }
             const path = getSerializedPath(accountPath.address_n.slice(0, 3)) as Bip43Path;

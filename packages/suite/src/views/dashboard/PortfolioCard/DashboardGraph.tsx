@@ -9,16 +9,15 @@ import { calcTicks, calcTicksFromData } from '@suite-common/suite-utils';
 import { selectBaseCurrency } from '@suite-common/wallet-core';
 import { BASE_CURRENCY_ZERO } from '@suite-common/wallet-utils';
 import { Box, Button } from '@trezor/components';
+import { RepeatIcon } from '@trezor/icons';
 import { typography } from '@trezor/theme';
 
 import { updateGraphData } from 'src/actions/wallet/graphActions';
 import { HiddenPlaceholder, TransactionsGraph } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { Account } from 'src/types/wallet';
-import { AggregatedDashboardHistory } from 'src/types/wallet/graph';
+import { type Account } from 'src/types/wallet';
+import { type AggregatedDashboardHistory } from 'src/types/wallet/graph';
 import { getMinMaxValueFromData, prepareGraphDataAsync } from 'src/utils/wallet/graph';
-
-import { useIsContentBelowBreakpoint } from '../../../support/suite/ContentFlex';
 
 const Wrapper = styled.div`
     display: flex;
@@ -29,7 +28,6 @@ const Wrapper = styled.div`
 const GraphWrapper = styled(HiddenPlaceholder)`
     display: flex;
     flex: 1 1 auto;
-    padding: 16px 0;
     height: 320px;
 `;
 
@@ -40,7 +38,7 @@ const ErrorMessage = styled.div`
     padding: 20px;
     align-items: center;
     justify-content: center;
-    color: ${({ theme }) => theme.textSubdued};
+    color: ${({ theme }) => theme.contentSecondary};
     ${typography['body-sm']}
     text-align: center;
 `;
@@ -54,7 +52,6 @@ export const DashboardGraph = memo(({ accounts }: DashboardGraphProps) => {
     const selectedDevice = useSelector(selectSelectedDevice);
     const baseCurrencyCode = useSelector(selectBaseCurrency);
     const dispatch = useDispatch();
-    const isContentBelowBreakpoint = useIsContentBelowBreakpoint();
 
     const [data, setData] = useState<AggregatedDashboardHistory[]>([]);
     const [isProcessing, setIsProcessing] = useState(false);
@@ -124,7 +121,7 @@ export const DashboardGraph = memo(({ accounts }: DashboardGraphProps) => {
                         <Translation id="TR_COULD_NOT_RETRIEVE_DATA" />
                         <Button
                             onClick={onRefresh}
-                            iconLeft="repeat"
+                            iconLeft={RepeatIcon}
                             intent="neutral"
                             priority="secondary"
                         >
@@ -132,15 +129,8 @@ export const DashboardGraph = memo(({ accounts }: DashboardGraphProps) => {
                         </Button>
                     </ErrorMessage>
                 ) : (
-                    <Box
-                        margin={
-                            isContentBelowBreakpoint ? undefined : { vertical: 12, horizontal: 20 }
-                        }
-                        width="100%"
-                        height="100%"
-                    >
+                    <Box width="100%" height="100%">
                         <TransactionsGraph
-                            hideToolbar
                             variant="all-assets"
                             onRefresh={onRefresh}
                             isLoading={graph.isLoading || isProcessing}

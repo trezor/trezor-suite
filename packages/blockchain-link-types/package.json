@@ -1,6 +1,7 @@
 {
     "name": "@trezor/blockchain-link-types",
     "version": "10.0.0-alpha.1",
+    "type": "module",
     "license": "See LICENSE.md in repo root",
     "sideEffects": false,
     "main": "src/index.ts",
@@ -9,36 +10,34 @@
         "types": "./lib/index.d.ts",
         "exports": {
             ".": {
-                "import": "./libESM/index.js",
-                "require": "./lib/index.js",
-                "types": "./lib/index.d.ts"
+                "types": "./lib/index.d.ts",
+                "default": "./lib/index.js"
             },
-            "./lib/*": "./lib/*.js",
-            "./libESM/*.js": "./libESM/*.js",
-            "./lib/constants": "./lib/constants/index.js",
-            "./libESM/constants/index.js": "./libESM/constants/index.js"
+            "./lib/*": "./lib/*",
+            "./lib/constants": {
+                "types": "./lib/constants/index.d.ts",
+                "default": "./lib/constants/index.js"
+            }
         }
     },
     "files": [
         "lib/",
-        "libESM/",
         "CHANGELOG.md"
     ],
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build",
-        "build:lib": "yarn build:lib:cjs && yarn build:lib:esm",
-        "build:lib:cjs": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib cjs",
-        "build:lib:esm": "yarn g:rimraf ./libESM && yarn g:tsc --build tsconfig.libESM.json && ../../scripts/publish/replace-imports.sh ./libESM esm",
-        "prepublishOnly": "yarn tsx ../../scripts/publish/prepublishNPM.js"
+        "build:lib": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib",
+        "test:unit": "yarn g:jest --coverage -c jest.config.cjs",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
         "@trezor/utils": "workspace:*",
-        "@trezor/utxo-lib": "workspace:*"
+        "@trezor/utxo-lib": "workspace:*",
+        "socks-proxy-agent": "8.0.5"
     },
     "devDependencies": {
-        "@trezor/type-utils": "workspace:*",
-        "tsx": "^4.21.0"
+        "@trezor/type-utils": "workspace:*"
     },
     "peerDependencies": {
         "tslib": "^2.6.2"

@@ -3,32 +3,28 @@ import React from 'react';
 import { Translation } from '@suite/intl';
 import { EarnFlow } from '@suite-common/suite-types/src/staking';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
-import { SOLANA_EPOCH_DAYS } from '@suite-common/wallet-constants';
-import { selectValidatorsQueue } from '@suite-common/wallet-core';
+import { selectEthValidatorsQueue } from '@suite-common/wallet-core';
+import { type Account } from '@suite-common/wallet-types';
 import { getUnstakingPeriodInDays } from '@suite-common/wallet-utils';
-import { BulletList } from '@trezor/components';
+import { StepList } from '@trezor/components';
+import { SOLANA_EPOCH_DAYS } from '@trezor/network-solana/constants';
 
 import { useSelector } from 'src/hooks/suite';
-import { CoinjoinRootState } from 'src/reducers/wallet/coinjoinReducer';
 
 import { EarnInfoRow } from './EarnInfoRow';
 
 interface EarnWithdrawingInfoProps {
-    isExpanded?: boolean;
+    account: Account;
     flow: EarnFlow;
 }
 
 interface EarnWithdrawingRowsProps {
     flow: EarnFlow;
     displaySymbol: string;
-    isExpanded?: boolean;
     daysToUnstake?: number;
 }
 
-const WithdrawingSignRow = ({
-    flow,
-    isExpanded,
-}: Pick<EarnWithdrawingRowsProps, 'flow' | 'isExpanded'>) => (
+const WithdrawingSignRow = ({ flow }: Pick<EarnWithdrawingRowsProps, 'flow'>) => (
     <EarnInfoRow
         heading={
             <Translation
@@ -40,18 +36,16 @@ const WithdrawingSignRow = ({
             />
         }
         content={{ text: <Translation id="TR_TRADING_NETWORK_FEE" />, isBadge: true }}
-        isExpanded={isExpanded}
     />
 );
 
 const EthereumWithdrawingRows = ({
     flow,
     displaySymbol,
-    isExpanded,
     daysToUnstake,
 }: EarnWithdrawingRowsProps) => (
     <>
-        <WithdrawingSignRow flow={flow} isExpanded={isExpanded} />
+        <WithdrawingSignRow flow={flow} />
         <EarnInfoRow
             heading={<Translation id="TR_EARN_LEAVE_STAKING_POOL" />}
             subheading={
@@ -65,7 +59,6 @@ const EthereumWithdrawingRows = ({
                     <Translation id="TR_EARN_APPROXIMATE_DAYS" values={{ count: daysToUnstake }} />
                 ),
             }}
-            isExpanded={isExpanded}
         />
         <EarnInfoRow
             heading={
@@ -81,7 +74,6 @@ const EthereumWithdrawingRows = ({
                 />
             }
             content={{ text: <Translation id="TR_TRADING_NETWORK_FEE" />, isBadge: true }}
-            isExpanded={isExpanded}
         />
         <EarnInfoRow
             heading={
@@ -90,14 +82,13 @@ const EthereumWithdrawingRows = ({
                     values={{ networkDisplaySymbol: displaySymbol }}
                 />
             }
-            isExpanded={isExpanded}
         />
     </>
 );
 
-const SolanaWithdrawingRows = ({ flow, displaySymbol, isExpanded }: EarnWithdrawingRowsProps) => (
+const SolanaWithdrawingRows = ({ flow, displaySymbol }: EarnWithdrawingRowsProps) => (
     <>
-        <WithdrawingSignRow flow={flow} isExpanded={isExpanded} />
+        <WithdrawingSignRow flow={flow} />
         <EarnInfoRow
             heading={<Translation id="TR_EARN_COOL_DOWN_PERIOD" />}
             subheading={
@@ -109,7 +100,6 @@ const SolanaWithdrawingRows = ({ flow, displaySymbol, isExpanded }: EarnWithdraw
             content={{
                 text: <Translation id="TR_UP_TO_DAYS" values={{ count: SOLANA_EPOCH_DAYS }} />,
             }}
-            isExpanded={isExpanded}
         />
         <EarnInfoRow
             heading={
@@ -125,7 +115,6 @@ const SolanaWithdrawingRows = ({ flow, displaySymbol, isExpanded }: EarnWithdraw
                 />
             }
             content={{ text: <Translation id="TR_TRADING_NETWORK_FEE" />, isBadge: true }}
-            isExpanded={isExpanded}
         />
         <EarnInfoRow
             heading={
@@ -134,14 +123,13 @@ const SolanaWithdrawingRows = ({ flow, displaySymbol, isExpanded }: EarnWithdraw
                     values={{ networkDisplaySymbol: displaySymbol }}
                 />
             }
-            isExpanded={isExpanded}
         />
     </>
 );
 
-const CardanoWithdrawingRows = ({ flow, displaySymbol, isExpanded }: EarnWithdrawingRowsProps) => (
+const CardanoWithdrawingRows = ({ flow, displaySymbol }: EarnWithdrawingRowsProps) => (
     <>
-        <WithdrawingSignRow flow={flow} isExpanded={isExpanded} />
+        <WithdrawingSignRow flow={flow} />
         <EarnInfoRow
             heading={<Translation id="TR_EARN_RECEIVE_DEPOSIT_IN_ACCOUNT" />}
             subheading={
@@ -151,23 +139,13 @@ const CardanoWithdrawingRows = ({ flow, displaySymbol, isExpanded }: EarnWithdra
                 />
             }
             content={{ text: <Translation id="TR_EARN_INSTANTLY" /> }}
-            isExpanded={isExpanded}
         />
     </>
 );
 
-export const EarnWithdrawingInfo = ({ isExpanded, flow }: EarnWithdrawingInfoProps) => {
-    const { account } = useSelector((state: CoinjoinRootState) => state.wallet.selectedAccount);
-
-    const { data } = useSelector(state => selectValidatorsQueue(state, account?.symbol)) || {};
-
-    if (!account) return null;
-
-    const daysToUnstake = getUnstakingPeriodInDays({
-        networkType: account.networkType,
-        validatorWithdrawTime: data?.validatorWithdrawTime,
-        validatorExitTime: data?.validatorExitTime,
-    });
+export const EarnWithdrawingInfo = ({ account, flow }: EarnWithdrawingInfoProps) => {
+    const validatorsQueue = useSelector(selectEthValidatorsQueue);
+    const daysToUnstake = getUnstakingPeriodInDays(account.networkType, validatorsQueue);
 
     const displaySymbol = getNetworkDisplaySymbol(account.symbol);
 
@@ -178,26 +156,13 @@ export const EarnWithdrawingInfo = ({ isExpanded, flow }: EarnWithdrawingInfoPro
                     <EthereumWithdrawingRows
                         flow={flow}
                         displaySymbol={displaySymbol}
-                        isExpanded={isExpanded}
                         daysToUnstake={daysToUnstake}
                     />
                 );
             case 'solana':
-                return (
-                    <SolanaWithdrawingRows
-                        flow={flow}
-                        displaySymbol={displaySymbol}
-                        isExpanded={isExpanded}
-                    />
-                );
+                return <SolanaWithdrawingRows flow={flow} displaySymbol={displaySymbol} />;
             case 'cardano':
-                return (
-                    <CardanoWithdrawingRows
-                        flow={flow}
-                        displaySymbol={displaySymbol}
-                        isExpanded={isExpanded}
-                    />
-                );
+                return <CardanoWithdrawingRows flow={flow} displaySymbol={displaySymbol} />;
             default:
                 return null;
         }
@@ -206,8 +171,8 @@ export const EarnWithdrawingInfo = ({ isExpanded, flow }: EarnWithdrawingInfoPro
     if (!content) return null;
 
     return (
-        <BulletList bulletGap={12} gap={16} bulletSize="small" titleGap={4}>
+        <StepList bulletGap={12} gap={16} bulletSize="small" titleGap={4}>
             {content}
-        </BulletList>
+        </StepList>
     );
 };

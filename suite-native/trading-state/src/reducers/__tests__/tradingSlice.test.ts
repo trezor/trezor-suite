@@ -7,10 +7,16 @@ import {
     tradingExchangeActions,
     tradingSellActions,
 } from '@suite-common/trading';
-import { AccountKey } from '@suite-common/wallet-types';
+import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { tradingInitialState } from '@suite-native/trading-consts';
-import { buyQuotes, exchangeQuotes, sellQuotes } from '@suite-native/trading-fixtures';
-import { ProviderConfirmationStatus, TradingState } from '@suite-native/trading-types';
+import {
+    banxaCreditCardSellQuote,
+    buyQuotes,
+    exchangeQuotes,
+    mercuryoApplePayBuyQuote,
+    sellQuotes,
+} from '@suite-native/trading-fixtures';
+import { type ProviderConfirmationStatus, type TradingState } from '@suite-native/trading-types';
 
 import { buyActions } from '../buySlice';
 import { exchangeActions } from '../exchangeSlice';
@@ -26,7 +32,7 @@ describe('tradingSlice', () => {
     });
 
     afterEach(() => {
-        jest.resetAllMocks();
+        jest.clearAllMocks();
     });
 
     describe('initial state', () => {
@@ -70,7 +76,7 @@ describe('tradingSlice', () => {
                 ...tradingInitialState,
                 buy: {
                     ...tradingInitialState.buy,
-                    tradingAccountKey: 'account-key' as AccountKey, // Todo: create properly via `createAccountKey()`
+                    tradingAccountKey: mockAccountKey({ descriptor: 'accountKey' }),
                     receiveAddress: 'bc1qxyz',
                     quotesRequest: {
                         wantCrypto: true,
@@ -79,7 +85,7 @@ describe('tradingSlice', () => {
                         country: 'CZ',
                     },
                     quotes: buyQuotes,
-                    selectedQuote: buyQuotes[0],
+                    selectedQuote: mercuryoApplePayBuyQuote,
                     amountLimits: {
                         currency: 'CZK',
                         minFiat: '100',
@@ -102,7 +108,7 @@ describe('tradingSlice', () => {
                 sell: {
                     ...tradingInitialState.sell,
                     quotes: sellQuotes,
-                    tradingAccountKey: 'account-key' as AccountKey, // Todo: create properly via `createAccountKey()`
+                    tradingAccountKey: mockAccountKey({ descriptor: 'accountKey' }),
                     quotesRequest: {
                         amountInCrypto: true,
                         cryptoCurrency: 'bitcoin' as CryptoId,
@@ -113,7 +119,7 @@ describe('tradingSlice', () => {
                         currency: 'CZK',
                         minFiat: '100',
                     },
-                    selectedQuote: sellQuotes[0],
+                    selectedQuote: banxaCreditCardSellQuote,
                 },
             };
 
@@ -289,25 +295,29 @@ describe('tradingSlice', () => {
             expect(state.exchange.receiveAddress).toBeUndefined();
         });
 
-        it('should clear buy.tradingAccountKey', () => {
+        it('should clear buy.tradingAccountKey and buy.receiveAccountKey', () => {
             const actions = [
                 tradingBuyActions.setTradingAccountKey(
-                    'account-key' as AccountKey, // Todo: create properly via `createAccountKey()`
+                    mockAccountKey({ descriptor: 'accountKey' }),
+                ),
+                tradingBuyActions.setReceiveAccountKey(
+                    mockAccountKey({ descriptor: 'accountKey' }),
                 ),
                 tradingActions.clearSelectedAccounts(),
             ];
 
             const state = actions.reduce(tradingReducer, undefined) as TradingState;
             expect(state.buy.tradingAccountKey).toBeUndefined();
+            expect(state.buy.receiveAccountKey).toBeUndefined();
         });
 
         it('should clear exchange.receiveAccountKey and exchange.tradingAccountKey', () => {
             const actions = [
                 tradingExchangeActions.setReceiveAccountKey(
-                    'account-key' as AccountKey, // Todo: create properly via `createAccountKey()`
+                    mockAccountKey({ descriptor: 'accountKey' }),
                 ),
                 tradingExchangeActions.setTradingAccountKey(
-                    'account-key' as AccountKey, // Todo: create properly via `createAccountKey()`
+                    mockAccountKey({ descriptor: 'accountKey' }),
                 ),
                 tradingActions.clearSelectedAccounts(),
             ];
@@ -320,7 +330,7 @@ describe('tradingSlice', () => {
         it('should clear sell.tradingAccountKey', () => {
             const actions = [
                 tradingSellActions.setTradingAccountKey(
-                    'account-key' as AccountKey, // Todo: create properly via `createAccountKey()`
+                    mockAccountKey({ descriptor: 'accountKey' }),
                 ),
                 tradingActions.clearSelectedAccounts(),
             ];
@@ -367,7 +377,10 @@ describe('tradingSlice', () => {
     describe('residence slice', () => {
         it('should handle residence actions', () => {
             const actions = [
-                residenceActions.setResidenceCountry('PL'),
+                residenceActions.setResidenceCountry({
+                    country: 'US',
+                    countrySubdivision: 'CA',
+                }),
                 residenceActions.setOnboardingVisited(),
             ];
 
@@ -376,7 +389,8 @@ describe('tradingSlice', () => {
             expect(state).toEqual(
                 expect.objectContaining({
                     residence: {
-                        country: 'PL',
+                        country: 'US',
+                        countrySubdivision: 'CA',
                         wasOnboardingVisited: true,
                     },
                 }),

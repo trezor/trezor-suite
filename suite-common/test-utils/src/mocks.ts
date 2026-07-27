@@ -1,21 +1,15 @@
 /* WARNING! This file should be imported ONLY in tests! */
 
-import {
-    Action,
-    GuideArticle,
-    GuideCategory,
-    GuideNode,
-    MessageSystem,
-} from '@suite-common/suite-types';
+import { type Action, type GuideNode, type MessageSystem } from '@suite-common/suite-types';
 import { networksCollection } from '@suite-common/wallet-config';
 import {
-    BlockchainNetworks,
-    FeeInfo,
-    WalletAccountTransaction,
+    type BlockchainNetworks,
+    type FeeInfo,
+    type WalletAccountTransaction,
     asAccountDescriptor,
 } from '@suite-common/wallet-types';
-import { AccountUtxo, Device, Features, FirmwareType, TrezorConnect } from '@trezor/connect';
-import { DeviceModelInternal } from '@trezor/device-utils';
+import type { AccountUtxo, Device, Features, TrezorConnectPrivilegedAPI } from '@trezor/connect';
+import { DeviceModelInternal, FirmwareType } from '@trezor/device-utils';
 
 /**
  * device.firmwareReleaseConfigInfo property
@@ -166,19 +160,6 @@ const getWalletTransaction = (t?: Partial<WalletAccountTransaction>): WalletAcco
     },
     ...t,
 });
-
-// Mocked @suite-common/analytics-redux package used in various tests
-const getAnalytics = () => {
-    const originalModule = jest.requireActual('@suite-common/analytics-redux');
-
-    return {
-        __esModule: true, // this property makes it work
-        ...originalModule,
-        analytics: {
-            report: jest.fn(),
-        },
-    };
-};
 
 const getMessageSystemConfig = (
     root?: Partial<MessageSystem>,
@@ -393,7 +374,7 @@ const getGuideNode = (type: string, id?: string): GuideNode => {
             title: {
                 'en-us': 'Locktime',
             },
-        } as GuideArticle;
+        };
     } else if (type === 'page' && id !== '/') {
         result = {
             type: 'page',
@@ -402,7 +383,7 @@ const getGuideNode = (type: string, id?: string): GuideNode => {
             title: {
                 'en-us': 'Locktime',
             },
-        } as GuideArticle;
+        };
     } else {
         result = {
             type: 'category',
@@ -451,7 +432,7 @@ const getGuideNode = (type: string, id?: string): GuideNode => {
                     ],
                 },
             ],
-        } as GuideCategory;
+        };
     }
 
     return result;
@@ -502,7 +483,7 @@ const mockedBlockchainNetworks = networksCollection.reduce((result, network) => 
 }, {} as BlockchainNetworks);
 
 // use mock from @suite-common/test-utils/__mocks__
-type MockTrezorConnect = jest.Mocked<TrezorConnect> & {
+type MockTrezorConnect = jest.Mocked<TrezorConnectPrivilegedAPI> & {
     setTestFixtures: (...args: any[]) => void;
     emitTestEvent: (event: string, data: any) => void;
 };
@@ -525,7 +506,6 @@ export const testMocks = {
     getFirmwareReleaseConfigInfo,
     getDeviceFeatures,
     getWalletTransaction,
-    getAnalytics,
     getMessageSystemConfig,
     getGuideNode,
     getUtxo,

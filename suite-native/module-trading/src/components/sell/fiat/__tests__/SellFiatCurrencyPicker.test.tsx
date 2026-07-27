@@ -1,12 +1,13 @@
-import { useListDataFilter } from '@suite-common/trading';
+import { type useListDataFilter } from '@suite-common/trading';
 import { Form } from '@suite-native/forms';
+import { getTranslation } from '@suite-native/intl';
 import {
     act,
     fireEvent,
-    renderHookWithStoreProviderAsync,
-    renderWithStoreProviderAsync,
+    renderHookWithStoreProvider,
+    renderWithStoreProvider,
     screen,
-} from '@suite-native/test-utils';
+} from '@suite-native/test-utils-store';
 import { getWalletState } from '@suite-native/trading-fixtures';
 
 import { useSellForm } from '../../../../hooks/sell/useSellForm';
@@ -29,13 +30,13 @@ describe('SellFiatCurrencyPicker', () => {
         screen.unmount();
     });
 
-    const renderFiatCurrencyPicker = async () => {
+    const renderFiatCurrencyPicker = () => {
         const preloadedState = { wallet: getWalletState({ tradeType: 'sell' }) };
-        const { result } = await renderHookWithStoreProviderAsync(() => useSellForm(), {
+        const { result } = renderHookWithStoreProvider(() => useSellForm(), {
             preloadedState,
         });
 
-        return renderWithStoreProviderAsync(
+        return renderWithStoreProvider(
             <Form form={result.current}>
                 <SellFiatCurrencyPicker />
             </Form>,
@@ -45,36 +46,42 @@ describe('SellFiatCurrencyPicker', () => {
         );
     };
 
-    it('should display selected currency', async () => {
-        const { getByLabelText } = await renderFiatCurrencyPicker();
+    it('should display selected currency', () => {
+        const { getByLabelText } = renderFiatCurrencyPicker();
 
-        expect(getByLabelText('Select fiat currency')).toHaveTextContent(/USD/);
+        expect(
+            getByLabelText(getTranslation('moduleTrading.selectFiat.buttonTitle')),
+        ).toHaveTextContent(/USD/);
     });
 
     it('should allow to select currency', async () => {
-        const { getByText, getByLabelText } = await renderFiatCurrencyPicker();
+        const { getByText, getByLabelText } = renderFiatCurrencyPicker();
 
-        fireEvent.press(getByLabelText('Select fiat currency'));
+        fireEvent.press(getByLabelText(getTranslation('moduleTrading.selectFiat.buttonTitle')));
         fireEvent.press(getByText('PLN'));
 
         // wait for validators to run
         await act(() => Promise.resolve());
 
-        expect(getByLabelText('Select fiat currency')).toHaveTextContent(/PLN/);
+        expect(
+            getByLabelText(getTranslation('moduleTrading.selectFiat.buttonTitle')),
+        ).toHaveTextContent(/PLN/);
     });
 
-    it('should display empty component when filtered data is empty', async () => {
+    it('should display empty component when filtered data is empty', () => {
         mockUseListDataFilter = () => ({
             filteredData: [],
             setFilterValue: jest.fn(),
             filterValue: 'test-key',
         });
 
-        const { getByText } = await renderFiatCurrencyPicker();
+        const { getByText } = renderFiatCurrencyPicker();
 
-        expect(getByText('Currency not found')).toBeTruthy();
         expect(
-            getByText('Check the spelling or browse the list to select an option.'),
+            getByText(getTranslation('moduleTrading.fiatCurrencySheet.emptyTitle')),
+        ).toBeTruthy();
+        expect(
+            getByText(getTranslation('moduleTrading.fiatCurrencySheet.emptyDescription')),
         ).toBeTruthy();
     });
 });

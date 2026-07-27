@@ -5,23 +5,21 @@ import { Translation } from '@suite/intl';
 import { calcTicks, calcTicksFromData } from '@suite-common/suite-utils';
 import { selectBaseCurrency } from '@suite-common/wallet-core';
 import { Button, Card, Column, Row } from '@trezor/components';
+import { RepeatIcon } from '@trezor/icons';
 import { typography } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils';
 
 import { updateGraphData } from 'src/actions/wallet/graphActions';
 import { GraphRangeSelector, HiddenPlaceholder, TransactionsGraph } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { Account } from 'src/types/wallet';
+import { type Account } from 'src/types/wallet';
 import {
     aggregateBalanceHistory,
     getGraphDataForInterval,
     getMinMaxValueFromData,
-    isNetworkWithGraphFeature,
 } from 'src/utils/wallet/graph';
 
 import { SummaryCards } from './SummaryCards';
-import { TransactionSummaryDropdown } from './TransactionSummaryDropdown';
-import { useIsContentBelowBreakpoint } from '../../../../support/suite/ContentFlex';
 
 const ErrorMessage = styled.div`
     display: flex;
@@ -31,7 +29,7 @@ const ErrorMessage = styled.div`
     padding: 20px;
     align-items: center;
     justify-content: center;
-    color: ${({ theme }) => theme.textSubdued};
+    color: ${({ theme }) => theme.contentSecondary};
     ${typography['body-sm']}
     text-align: center;
 `;
@@ -48,6 +46,7 @@ export const TransactionSummary = ({ account }: TransactionSummaryProps) => {
     const dispatch = useDispatch();
 
     const intervalGraphData = getGraphDataForInterval({ account, graph });
+    const isGraphDataLoaded = intervalGraphData.length > 0;
     const data = intervalGraphData[0]?.data
         ? aggregateBalanceHistory(intervalGraphData, selectedRange.groupBy, 'account')
         : [];
@@ -75,8 +74,9 @@ export const TransactionSummary = ({ account }: TransactionSummaryProps) => {
     const dataInterval: [number, number] =
         selectedRange.label === 'all'
             ? [
-                  intervalGraphData[0]?.data[0]?.time,
-                  intervalGraphData[0]?.data[intervalGraphData[0].data.length - 1]?.time,
+                  intervalGraphData[0]?.data[0]?.time ?? 0,
+                  intervalGraphData[0]?.data[(intervalGraphData[0]?.data.length ?? 1) - 1]?.time ??
+                      0,
               ]
             : [getUnixTime(selectedRange.startDate), getUnixTime(selectedRange.endDate)];
 
@@ -94,69 +94,60 @@ export const TransactionSummary = ({ account }: TransactionSummaryProps) => {
             }),
         );
 
-    const isGraphSupported = isNetworkWithGraphFeature(account.symbol, account.backendType);
-    const isContentBelowBreakpoint = useIsContentBelowBreakpoint();
-
     return (
         <Column alignItems="stretch" gap={20}>
-            {isGraphSupported && (
-                <>
-                    <Row justifyContent="space-between" alignItems="center">
+            {error ? (
+                <Card paddingType="none">
+                    <Column alignItems="stretch" padding={24} gap={16}>
+                        <Row height={320} overflow="visible" alignItems="stretch">
+                            <ErrorMessage>
+                                <Translation id="TR_COULD_NOT_RETRIEVE_DATA" />
+                                <Button
+                                    onClick={() => onRefresh()}
+                                    iconLeft={RepeatIcon}
+                                    intent="neutral"
+                                    priority="secondary"
+                                >
+                                    <Translation id="TR_RETRY" />
+                                </Button>
+                            </ErrorMessage>
+                        </Row>
                         <GraphRangeSelector
                             onSelectedRange={onSelectedRange}
-                            placement={{ position: 'bottom', alignment: 'end' }}
+                            isLoading={isLoading}
                         />
-                        <TransactionSummaryDropdown />
-                    </Row>
-
-                    <Column alignItems="stretch">
-                        {error ? (
-                            <Card>
-                                <Row height={320} overflow="visible" alignItems="stretch">
-                                    <ErrorMessage>
-                                        <Translation id="TR_COULD_NOT_RETRIEVE_DATA" />
-                                        <Button
-                                            onClick={() => onRefresh()}
-                                            iconLeft="repeat"
-                                            intent="neutral"
-                                            priority="secondary"
-                                        >
-                                            <Translation id="TR_RETRY" />
-                                        </Button>
-                                    </ErrorMessage>
-                                </Row>
-                            </Card>
-                        ) : (
-                            <HiddenPlaceholder enforceIntensity={8}>
-                                <Card
-                                    overflow="visible"
-                                    paddingType={isContentBelowBreakpoint ? 'none' : 'normal'}
-                                >
-                                    <Row height={320} overflow="visible" alignItems="stretch">
-                                        <TransactionsGraph
-                                            hideToolbar
-                                            variant="one-asset"
-                                            xTicks={xTicks}
-                                            account={account}
-                                            isLoading={isLoading}
-                                            data={data}
-                                            minMaxValues={[
-                                                minMaxValues[0].toNumber(),
-                                                minMaxValues[1].toNumber(),
-                                            ]}
-                                            localCurrency={baseCurrencyCode}
-                                            onRefresh={onRefresh}
-                                            selectedRange={selectedRange}
-                                            receivedValueFn={data => data.received}
-                                            sentValueFn={data => data.sent}
-                                            balanceValueFn={data => data.balance}
-                                        />
-                                    </Row>
-                                </Card>
-                            </HiddenPlaceholder>
-                        )}
                     </Column>
-                </>
+                </Card>
+            ) : (
+                <HiddenPlaceholder enforceIntensity={8}>
+                    <Card overflow="visible" paddingType="none">
+                        <Column alignItems="stretch" padding={24} gap={16}>
+                            <Row height={320} overflow="visible" alignItems="stretch">
+                                <TransactionsGraph
+                                    variant="one-asset"
+                                    xTicks={xTicks}
+                                    account={account}
+                                    isLoading={isLoading}
+                                    data={data}
+                                    minMaxValues={[
+                                        minMaxValues[0].toNumber(),
+                                        minMaxValues[1].toNumber(),
+                                    ]}
+                                    localCurrency={baseCurrencyCode}
+                                    onRefresh={onRefresh}
+                                    selectedRange={selectedRange}
+                                    receivedValueFn={entry => entry.received}
+                                    sentValueFn={entry => entry.sent}
+                                    balanceValueFn={entry => entry.balance}
+                                />
+                            </Row>
+                            <GraphRangeSelector
+                                onSelectedRange={onSelectedRange}
+                                isLoading={isLoading}
+                            />
+                        </Column>
+                    </Card>
+                </HiddenPlaceholder>
             )}
             <SummaryCards
                 selectedRange={selectedRange}
@@ -164,8 +155,8 @@ export const TransactionSummary = ({ account }: TransactionSummaryProps) => {
                 data={data}
                 localCurrency={baseCurrencyCode}
                 account={account}
-                isGraphSupported={isGraphSupported}
                 isLoading={isLoading}
+                isGraphDataLoaded={isGraphDataLoaded}
             />
         </Column>
     );

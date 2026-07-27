@@ -1,6 +1,6 @@
-import { Meta, StoryObj } from '@storybook/react';
+import { type Meta, type StoryObj } from '@storybook/react';
 
-import { ShortcutBadge as ShortcutBadgeComponent, ShortcutBadgeProps } from './ShortcutBadge';
+import { ShortcutBadge as ShortcutBadgeComponent, type ShortcutBadgeProps } from './ShortcutBadge';
 
 const meta: Meta<typeof ShortcutBadgeComponent> = {
     title: 'ShortcutBadge',
@@ -11,5 +11,12 @@ export default meta;
 export const ShortcutBadge: StoryObj<ShortcutBadgeProps> = {
     args: {
         shortcut: ['CTRL', 'KEY_P'],
+    },
+};
+
+export const Inverse: StoryObj<ShortcutBadgeProps> = {
+    args: {
+        shortcut: ['CTRL', 'KEY_P'],
+        isInverse: true,
     },
 };

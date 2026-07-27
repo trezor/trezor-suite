@@ -1,12 +1,12 @@
 import { combineReducers } from '@reduxjs/toolkit';
-import { BuyTradeResponse } from 'invity-api';
+import { type BuyTradeResponse } from 'invity-api';
 
 import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
-import { Account, AccountKey } from '@suite-common/wallet-types';
+import { type Account, type AccountKey } from '@suite-common/wallet-types';
 
 import { MIN_MAX_QUOTES_OK } from '../../../__fixtures__/buyUtils';
 import { invityAPI } from '../../../invityAPI';
-import { TradingBuyState } from '../../../reducers/buyReducer';
+import { type TradingBuyState } from '../../../reducers/buyReducer';
 import { initialState } from '../../../reducers/tradingCommonReducer';
 import { prepareTradingReducer } from '../../../reducers/tradingReducer';
 import type { LogErrorThunkProps } from '../../common/logErrorThunk';
@@ -283,11 +283,14 @@ describe('confirmBuyTradeThunk', () => {
         expect(mocktriggerAnalyticsTradeConfirmation).toHaveBeenCalledTimes(1);
         expect(mockProcessResponseData).toHaveBeenCalledTimes(1);
         expect(trades.length).toEqual(1);
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const minMaxQuote: (typeof MIN_MAX_QUOTES_OK)[number] = MIN_MAX_QUOTES_OK[1];
         expect(trades[0]).toEqual({
             tradeType: 'buy',
             date: dateString,
-            data: MIN_MAX_QUOTES_OK[1],
-            key: MIN_MAX_QUOTES_OK[1].paymentId,
+            data: minMaxQuote,
+            key: minMaxQuote.paymentId,
+            receiveAccountKey: 'xxx',
             selectedAccountKey: 'yyy',
         });
         expect(store.getState().wallet.trading.buy.isLoading).toBeFalsy();

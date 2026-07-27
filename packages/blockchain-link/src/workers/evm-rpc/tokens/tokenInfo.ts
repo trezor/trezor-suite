@@ -1,4 +1,4 @@
-import { PublicClient, erc20Abi } from 'viem';
+import { type PublicClient, erc20Abi } from 'viem';
 
 import type { TokenInfo, TokenStandard } from '@trezor/blockchain-link-types';
 

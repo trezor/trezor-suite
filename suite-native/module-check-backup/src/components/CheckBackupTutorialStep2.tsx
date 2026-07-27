@@ -1,15 +1,15 @@
-import { SharedValue } from 'react-native-reanimated';
+import { type SharedValue } from 'react-native-reanimated';
 
 import { useNavigation } from '@react-navigation/native';
 
 import { Button, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
-    DeviceCheckBackupStackParamList,
+    type DeviceCheckBackupStackParamList,
     DeviceCheckBackupStackRoutes,
-    StackNavigationProps,
+    type StackNavigationProps,
 } from '@suite-native/navigation';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { CheckBackupTutorialStep } from './CheckBackupTutorialStep';
 
@@ -53,17 +53,12 @@ export const CheckBackupTutorialStep2 = ({
             continueButton={
                 <VStack spacing="sp12" style={applyStyle(continueButtonContainerStyle)}>
                     <Button
-                        size="medium"
                         onPress={navigateToCheckBackup}
                         testID="@device-check-backup/continue-button"
                     >
                         <Translation id="moduleCheckBackup.checkBackupTutorialScreen.step2.checkButton" />
                     </Button>
-                    <Button
-                        size="medium"
-                        colorScheme="tertiaryElevation0"
-                        onPress={navigateToSupportScreen}
-                    >
+                    <Button intent="neutral" priority="secondary" onPress={navigateToSupportScreen}>
                         <Translation id="moduleCheckBackup.checkBackupTutorialScreen.step2.noBackupButton" />
                     </Button>
                 </VStack>

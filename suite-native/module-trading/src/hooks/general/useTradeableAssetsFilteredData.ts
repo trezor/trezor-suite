@@ -1,35 +1,93 @@
 import { useMemo, useState } from 'react';
 
-import { cryptoIdToSymbol, useListDataFilter } from '@suite-common/trading';
-import { NetworkSymbol, getNetworkByCoingeckoId } from '@suite-common/wallet-config';
-import { TradeableAsset } from '@suite-native/trading-types';
+import { type CryptoId } from 'invity-api';
 
-const doesContractAddressIncludeValue = (asset: TradeableAsset, value: string) =>
-    asset.contractAddress?.toLowerCase().includes(value.toLowerCase()) ?? false;
+import { normalizeForSearch } from '@suite-common/suite-utils';
+import { cryptoIdToSymbol } from '@suite-common/trading';
+import { type NetworkSymbol, getNetworkByCoingeckoId } from '@suite-common/wallet-config';
+import { type TradeableAsset } from '@suite-native/trading-types';
 
-const doesSymbolIncludeValue = (asset: TradeableAsset, value: string) =>
-    asset.symbol.toLowerCase().includes(value.toLowerCase());
+type AssetSearchFields = {
+    name: string;
+    symbol: string;
+    networkName: string;
+    networkSymbol: string;
+    contractAddress: string;
+};
 
-const doesNameIncludeValue = (asset: TradeableAsset, value: string) =>
-    asset.name.toLowerCase().includes(value.toLowerCase());
+const getAssetSearchFields = (asset: TradeableAsset): AssetSearchFields => {
+    const network = getNetworkByCoingeckoId(asset.networkId);
 
-const doesNetworkNameIncludeValue = (asset: TradeableAsset, value: string) =>
-    getNetworkByCoingeckoId(asset.networkId)?.name.toLowerCase().includes(value.toLowerCase()) ??
-    false;
+    return {
+        name: normalizeForSearch(asset.name),
+        symbol: normalizeForSearch(asset.symbol),
+        networkName: network ? normalizeForSearch(network.name) : '',
+        networkSymbol: network ? normalizeForSearch(network.symbol) : '',
+        contractAddress: asset.contractAddress ? normalizeForSearch(asset.contractAddress) : '',
+    };
+};
 
-const doesNetworkSymbolIncludeValue = (asset: TradeableAsset, value: string) =>
-    getNetworkByCoingeckoId(asset.networkId)?.symbol.toLowerCase().includes(value.toLowerCase()) ??
-    false;
+const doesAssetMatchQuery = (searchFields: AssetSearchFields, query: string): boolean =>
+    searchFields.name.includes(query) ||
+    searchFields.symbol.includes(query) ||
+    searchFields.networkName.includes(query) ||
+    searchFields.networkSymbol.includes(query) ||
+    searchFields.contractAddress.includes(query);
 
-const filterCallback = (asset: TradeableAsset, filterValue: string): boolean =>
-    doesNameIncludeValue(asset, filterValue) ||
-    doesSymbolIncludeValue(asset, filterValue) ||
-    doesNetworkNameIncludeValue(asset, filterValue) ||
-    doesNetworkSymbolIncludeValue(asset, filterValue) ||
-    doesContractAddressIncludeValue(asset, filterValue);
+const getAssetWeight = (searchFields: AssetSearchFields, query: string): number => {
+    const { name, symbol, networkName, networkSymbol, contractAddress } = searchFields;
+
+    if (name === query) {
+        return 0;
+    }
+    if (symbol === query) {
+        return 1;
+    }
+    if (name.startsWith(query)) {
+        return 2;
+    }
+    if (symbol.startsWith(query)) {
+        return 3;
+    }
+    if (name.includes(query)) {
+        return 4;
+    }
+    if (symbol.includes(query)) {
+        return 5;
+    }
+    if (networkName === query) {
+        return 6;
+    }
+    if (networkSymbol === query) {
+        return 7;
+    }
+    if (networkName.startsWith(query)) {
+        return 8;
+    }
+    if (networkSymbol.startsWith(query)) {
+        return 9;
+    }
+    if (networkName.includes(query)) {
+        return 10;
+    }
+    if (networkSymbol.includes(query)) {
+        return 11;
+    }
+    if (contractAddress.startsWith(query)) {
+        return 12;
+    }
+
+    return 13;
+};
 
 export const useTradeableAssetsFilteredData = ({ assets }: { assets: TradeableAsset[] }) => {
     const [filterSymbol, setFilterSymbol] = useState<NetworkSymbol | undefined>(undefined);
+    const [filterValue, setFilterValue] = useState('');
+
+    const searchFieldsByAsset = useMemo(
+        () => new Map(assets.map(asset => [asset, getAssetSearchFields(asset)])),
+        [assets],
+    );
 
     const assetsFilteredByNetwork = useMemo(() => {
         if (!filterSymbol) {
@@ -39,10 +97,33 @@ export const useTradeableAssetsFilteredData = ({ assets }: { assets: TradeableAs
         return assets.filter(a => filterSymbol === cryptoIdToSymbol(a.cryptoId));
     }, [assets, filterSymbol]);
 
-    const { setFilterValue, filteredData, filterValue } = useListDataFilter(
-        assetsFilteredByNetwork,
-        filterCallback,
-    );
+    const filteredData = useMemo(() => {
+        const query = normalizeForSearch(filterValue);
+        if (!query) {
+            return assetsFilteredByNetwork;
+        }
+
+        const matchingAssets: TradeableAsset[] = [];
+        const weightByAsset = new Map<CryptoId, number>();
+
+        assetsFilteredByNetwork.forEach(asset => {
+            const searchFields = searchFieldsByAsset.get(asset);
+            if (searchFields && doesAssetMatchQuery(searchFields, query)) {
+                matchingAssets.push(asset);
+                weightByAsset.set(asset.cryptoId, getAssetWeight(searchFields, query));
+            }
+        });
+
+        return matchingAssets.sort((a, b) => {
+            const weightA = weightByAsset.get(a.cryptoId) ?? 0;
+            const weightB = weightByAsset.get(b.cryptoId) ?? 0;
+            if (weightA !== weightB) {
+                return weightA - weightB;
+            }
+
+            return a.name.localeCompare(b.name);
+        });
+    }, [assetsFilteredByNetwork, searchFieldsByAsset, filterValue]);
 
     const filterValueWithNetwork = `Network:${filterSymbol ? filterSymbol : 'all'};Search:${filterValue}`;
 

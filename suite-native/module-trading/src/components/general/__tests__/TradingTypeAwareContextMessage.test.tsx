@@ -1,6 +1,10 @@
-import { TradingType } from '@suite-common/trading';
-import { PreloadedState, renderWithStoreProviderAsync } from '@suite-native/test-utils';
+import { type TradingType } from '@suite-common/trading';
 
+import {
+    type PreloadedStatePartial,
+    type TradingTestPreloadedState,
+    renderWithTradingProvider,
+} from '../../../__tests__/tradingTestUtils';
 import { TradingTypeAwareContextMessage } from '../TradingTypeAwareContextMessage';
 
 jest.mock('@suite-common/message-system', () => {
@@ -23,7 +27,9 @@ jest.mock('@suite-common/message-system', () => {
 });
 
 describe('TradingTypeAwareContextMessage', () => {
-    const getPreloadedState = (activeTradingType: TradingType | undefined): PreloadedState => ({
+    const overridesForTradingType = (
+        activeTradingType: TradingType | undefined,
+    ): PreloadedStatePartial<TradingTestPreloadedState> => ({
         wallet: {
             trading: {
                 activeTradingType,
@@ -31,8 +37,9 @@ describe('TradingTypeAwareContextMessage', () => {
         },
     });
 
-    const renderTradingTypeAwareContextMessage = (preloadedState: PreloadedState) =>
-        renderWithStoreProviderAsync(<TradingTypeAwareContextMessage />, { preloadedState });
+    const renderTradingTypeAwareContextMessage = (
+        overrides: PreloadedStatePartial<TradingTestPreloadedState>,
+    ) => renderWithTradingProvider(<TradingTypeAwareContextMessage />, { overrides });
 
     it.each<[TradingType, string]>([
         ['buy', 'Trading buy message'],
@@ -40,17 +47,17 @@ describe('TradingTypeAwareContextMessage', () => {
         ['sell', 'Trading sell message'],
     ])(
         'should render correct context message for trading type %s',
-        async (tradingType, expectedMessage) => {
-            const { getByText } = await renderTradingTypeAwareContextMessage(
-                getPreloadedState(tradingType),
+        (tradingType, expectedMessage) => {
+            const { getByText } = renderTradingTypeAwareContextMessage(
+                overridesForTradingType(tradingType),
             );
 
             expect(getByText(expectedMessage)).toBeOnTheScreen();
         },
     );
 
-    it('should render nothing when trading type is not specified', async () => {
-        const { toJSON } = await renderTradingTypeAwareContextMessage(getPreloadedState(undefined));
+    it('should render nothing when trading type is not specified', () => {
+        const { toJSON } = renderTradingTypeAwareContextMessage(overridesForTradingType(undefined));
 
         expect(toJSON()).toBeNull();
     });

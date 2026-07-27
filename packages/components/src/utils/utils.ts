@@ -1,19 +1,18 @@
 import { css } from 'styled-components';
 
-import { CSSColor } from '@trezor/theme';
+import { type CSSColor } from '@trezor/theme';
+import { clamp } from '@trezor/utils';
 
-export const focusStyleTransition = 'box-shadow 0.1s ease-out, border-color 0.1s ease-out';
+export const focusStyleTransition = 'outline 0.1s ease-out';
 
-export const getFocusShadowStyle = (selector = '&:focus-visible') => css`
-    ${selector} {
-        border-color: ${({ theme }) => theme.backgroundAlertBlueBold};
-        box-shadow: ${({ theme }) => theme.boxShadowFocused};
-    }
+export const commonFocusStyles = css`
+    outline: 4px solid ${({ theme }) => theme.elementBorderFocusRing};
+    outline-offset: 2px;
 `;
 
 export const addAlphaToHex = (hex: CSSColor, percent: number): CSSColor => {
     const cleanHex = hex.replace(/^#/, '');
-    const clampedPercent = Math.min(1, Math.max(0, percent));
+    const clampedPercent = clamp(percent, 0, 1);
 
     const normalizedHex =
         cleanHex.length === 3 || cleanHex.length === 4

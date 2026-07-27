@@ -11,12 +11,13 @@ export const settingsDeviceChangeHapticFeedbackEvent: EventDef<
     EventType.SettingsDeviceChangeHapticFeedback
 > = {
     name: EventType.SettingsDeviceChangeHapticFeedback,
-    descriptionTrigger: '?',
-    changelog: [{ version: '?', notes: 'added' }],
+    descriptionTrigger: 'User toggles haptic feedback on or off in device settings',
+    changelog: [{ version: '24.6.1', notes: 'added' }],
 
     attributes: {
         value: {
-            changelog: [{ version: '?', notes: 'added' }],
+            description: 'Whether haptic feedback is enabled (`true`) or disabled (`false`)',
+            changelog: [{ version: '24.6.1', notes: 'added' }],
         },
     },
 };

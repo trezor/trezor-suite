@@ -1,5 +1,5 @@
-import { Status } from '@trezor/blockchain-link-types/src/electrum';
-import { IntervalId } from '@trezor/type-utils';
+import { type ElectrumStatus as Status } from '@trezor/blockchain-link-types';
+import { type IntervalId } from '@trezor/type-utils';
 
 import { ElectrumClient } from './electrum';
 

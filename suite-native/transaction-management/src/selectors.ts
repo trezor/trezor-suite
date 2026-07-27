@@ -1,10 +1,10 @@
 import { A, pipe } from '@mobily/ts-belt';
 
-import { DeviceRootState, selectSelectedDevice } from '@suite-common/device';
+import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
 import { createWeakMapSelector } from '@suite-common/redux-utils';
 import {
-    AccountsRootState,
-    FormDraftRootState,
+    type AccountsRootState,
+    type FormDraftRootState,
     selectAccountByKey,
     selectFormDraft,
     selectSendFormDraftByKey,
@@ -13,26 +13,30 @@ import {
     selectSendSerializedTx,
 } from '@suite-common/wallet-core';
 import {
-    AccountKey,
-    FeeLevelLabel,
-    FormDraftWithSendKeyPrefix,
-    FormState,
-    GeneralPrecomposedTransaction,
-    ReviewOutputState,
-    TokenAddress,
+    type AccountKey,
+    type FeeLevelLabel,
+    type FormDraftWithSendKeyPrefix,
+    type FormState,
+    type GeneralPrecomposedTransaction,
+    type ReviewOutputState,
+    type TokenAddress,
 } from '@suite-common/wallet-types';
 import {
     constructTransactionReviewOutputs,
     getFormDraftKey,
     getIsUpdatedSendFlow,
     getTransactionReviewOutputState,
-    isFormDraftKeyPrefix,
+    isClearSignedEvmTradingSwapTransaction,
     isRbfBumpFeeTransaction,
 } from '@suite-common/wallet-utils';
 import { BigNumber, isNotNullOrUndefined } from '@trezor/utils';
 
-import { NativeSendRootState } from './sendFormSlice';
-import { StatefulReviewOutput } from './types';
+import { type NativeSendRootState } from './sendFormSlice';
+
+const isStakingPrefix = (
+    prefix: FormDraftWithSendKeyPrefix,
+): prefix is 'stake' | 'unstake' | 'claim' =>
+    prefix === 'stake' || prefix === 'unstake' || prefix === 'claim';
 
 export type TransactionReviewOutputsState = NativeSendRootState &
     AccountsRootState &
@@ -117,17 +121,28 @@ export const selectTransactionReviewOutputs = createSendMemoizedSelector(
             ? outputs
             : outputs?.filter(output => output.type !== 'fee'); // The `fee` output is already included in the final transaction summary output.
 
-        return newFlowOutputs.map(
-            (output, outputIndex) =>
-                ({
-                    ...output,
-                    state: isTransactionAlreadySigned
-                        ? 'success'
-                        : getTransactionReviewOutputState(outputIndex, sendReviewButtonRequests),
-                }) as StatefulReviewOutput,
-        );
+        return newFlowOutputs.map((output, outputIndex) => {
+            const outputState: ReviewOutputState = isTransactionAlreadySigned
+                ? 'success'
+                : getTransactionReviewOutputState(outputIndex, sendReviewButtonRequests);
+
+            return { ...output, state: outputState };
+        });
     },
 );
+
+export const selectFormDraftByPrefix = (
+    state: TransactionReviewOutputsState,
+    prefix: FormDraftWithSendKeyPrefix,
+    accountKey: AccountKey,
+    tokenContract?: TokenAddress,
+) =>
+    prefix === 'send'
+        ? selectSendFormDraftByKey(state, accountKey, tokenContract)
+        : selectFormDraft<FormState>(
+              state,
+              getFormDraftKey(prefix, isStakingPrefix(prefix) ? accountKey : ''),
+          );
 
 export const selectTransactionReviewOutputsFromDraft = (
     state: TransactionReviewOutputsState,
@@ -135,11 +150,7 @@ export const selectTransactionReviewOutputsFromDraft = (
     accountKey: AccountKey,
     tokenContract?: TokenAddress,
 ) => {
-    const formDraft = isFormDraftKeyPrefix(prefix)
-        ? // TODO: right now we do not use account key in trading-exchange for drafts
-          // and this piece of code is not used anywhere else
-          selectFormDraft<FormState>(state, getFormDraftKey(prefix, ''))
-        : selectSendFormDraftByKey(state, accountKey, tokenContract);
+    const formDraft = selectFormDraftByPrefix(state, prefix, accountKey, tokenContract);
 
     return selectTransactionReviewOutputs(state, accountKey, tokenContract, formDraft);
 };
@@ -216,7 +227,7 @@ export const selectReviewSummaryOutputState = (
     prefix: FormDraftWithSendKeyPrefix,
     accountKey: AccountKey,
     tokenContract?: TokenAddress,
-) => {
+): ReviewOutputState => {
     const isTransactionAlreadySigned = selectIsTransactionAlreadySigned(state);
 
     if (isTransactionAlreadySigned) {
@@ -245,7 +256,7 @@ export const selectReviewSummaryOutput = createSendMemoizedSelector(
         }
 
         return {
-            state: outputState as ReviewOutputState,
+            state: outputState,
             totalSpent: precomposedTx.totalSpent,
             fee: precomposedTx.fee,
         };
@@ -273,3 +284,29 @@ export const selectTransactionReviewActiveStepIndex = (
 
     return activeIndex === -1 ? reviewOutputs.length : activeIndex;
 };
+
+export const selectIsClearSignedTradingSwap = createSendMemoizedSelector(
+    [
+        selectAccountByKey,
+        selectSelectedDevice,
+        (
+            state: TransactionReviewOutputsState,
+            accountKey: AccountKey,
+            prefix: FormDraftWithSendKeyPrefix,
+        ) => selectFormDraftByPrefix(state, prefix, accountKey),
+        selectSendPrecomposedTx,
+    ],
+    (account, device, formDraft, precomposedTx) => {
+        if (account && device && formDraft && precomposedTx) {
+            return isClearSignedEvmTradingSwapTransaction({
+                account,
+                device,
+                precomposedTx,
+                transactionData: formDraft.transactionData,
+                trading: formDraft.trading,
+            });
+        }
+
+        return false;
+    },
+);

@@ -18,6 +18,11 @@ on:
         required: false
         default: ""
         type: string
+      runner_config:
+        description: "Path to the Detox runner config file"
+        required: false
+        default: e2e/trezorDetoxRunner/config/runner-android-release.config.js
+        type: string
     secrets:
       TREZOR_BOT_APP_ID:
         required: true
@@ -25,7 +30,7 @@ on:
         required: true
       CURRENTS_RECORD_KEY:
         required: true
-      SLACK_MOBILE_E2E_WEBHOOK:
+      CURRENTS_API_KEY:
         required: true
       E2E_TEST_PASSPHRASE:
         required: true
@@ -36,16 +41,16 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        TEST_GROUP: [0, 1, 2, 3]
+        TEST_GROUP: [0, 1, 2, 3, 4]
 
     steps:
       - name: Checkout project
-        uses: actions/checkout@v4
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v6
         with:
           submodules: "true"
 
       - name: Free Disk Space
-        uses: jlumbroso/free-disk-space@main
+        uses: jlumbroso/free-disk-space@54081f138730dfa15788a46383842cd2f914a1be # main
         with:
           dotnet: true
           haskell: true
@@ -55,23 +60,31 @@ jobs:
           large-packages: false
 
       - name: Install node and yarn
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
         with:
           node-version-file: ".nvmrc"
           cache: yarn
 
       - name: Load node modules cache
-        uses: actions/cache/restore@v4
+        id: node-modules-cache
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v5
         with:
-          path: node_modules
-          key: node_modules-${{ hashFiles('yarn.lock') }}
-          restore-keys: node_modules-
+          path: |
+            node_modules
+            suite-native/app/node_modules
+          key: node_modules-native-full-${{ hashFiles('yarn.lock') }}
+
+      - name: Install SafeDep PMG
+        uses: safedep/pmg@26d5c0ad71fd0e5f48c3183c9c74d4b3eb7f57c8 # v0.19.1
+        continue-on-error: true
+        with:
+          version: v0.19.1
+      - name: Disable Yarn hardened mode
+        run: |
+          echo -e "\nenableHardenedMode: false" >> .yarnrc.yml
 
       - name: Install Yarn dependencies
-        run: |
-          echo -e "\nenableScripts: false" >> .yarnrc.yml
-          echo -e "\nenableHardenedMode: false" >> .yarnrc.yml
-          yarn install
+        run: yarn install --immutable
 
       # Detox runtime may indirectly import the built config, and that would crash if message-system is not built
       - name: Sign message system config
@@ -80,9 +93,9 @@ jobs:
 
       - name: Generate GitHub App token
         id: trezor-bot-token
-        uses: actions/create-github-app-token@v1
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3
         with:
-          app-id: ${{ secrets.TREZOR_BOT_APP_ID }}
+          client-id: ${{ secrets.TREZOR_BOT_APP_ID }}
           private-key: ${{ secrets.TREZOR_BOT_PRIVATE_KEY }}
 
       - name: Extract Release Build
@@ -99,11 +112,11 @@ jobs:
         env:
           COMPOSE_FILE: ./docker/docker-compose.suite-native-ci.yml
         run: |
-          docker compose pull trezor-user-env-unix trezor-user-env-regtest
-          docker compose up --detach trezor-user-env-unix trezor-user-env-regtest
+          docker compose pull trezor-user-env-unix trezor-user-env-regtest quota-db suite-sync
+          docker compose up --detach trezor-user-env-unix trezor-user-env-regtest quota-db suite-sync
 
       - name: Download Android build artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
         with:
           name: android-test-build-${{ github.run_id }}
           path: suite-native/app/android/app/build/
@@ -115,7 +128,7 @@ jobs:
           sudo udevadm trigger --name-match=kvm
 
       - name: Run Detox E2E Android tests
-        uses: reactivecircus/android-emulator-runner@v2
+        uses: reactivecircus/android-emulator-runner@e89f39f1abbbd05b1113a29cf4db69e7540cae5a # v2
         env:
           RUNNER_TEMP: /tmp
           GITHUB_TOKEN: ${{ steps.trezor-bot-token.outputs.token }}
@@ -125,20 +138,24 @@ jobs:
           GITHUB_ACTION: true
           CURRENTS_PROJECT_ID: iUe1Y4
           CURRENTS_RECORD_KEY: ${{ secrets.CURRENTS_RECORD_KEY }}
+          CURRENTS_API_KEY: ${{ secrets.CURRENTS_API_KEY }}
           CURRENTS_CI_BUILD_ID: ${{ inputs.currents_ci_build_id }}
           CURRENTS_TAG: ${{ inputs.currents_tags }}
           COMMIT_INFO_BRANCH: ${{ github.head_ref }}
         with:
-          api-level: 31
-          profile: pixel_3a
+          api-level: 34
+          profile: pixel_6
           arch: x86_64
           working-directory: suite-native/app
           ram-size: 4096M
           force-avd-creation: true
           avd-name: ${{ steps.device.outputs.AVD_NAME }}
-          emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim -grpc 8554
+          emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot-load -no-snapshot-save -noaudio -no-boot-anim -grpc 8554 -memory 4096
+          disable-animations: true
+          cores: 4
+          heap-size: 512M
           script: |
-            yarn test:e2e --config=e2e/trezorDetoxRunner/config/runner-android-release.config.js --shard=${{ matrix.TEST_GROUP }} --totalShards=4 --headless
+            yarn test:e2e --config=${{ inputs.runner_config }} --shard=${{ matrix.TEST_GROUP }} --totalShards=5 --headless --quarantine
 
       - name: Post Currents link
         if: ${{ !cancelled() && github.event_name == 'pull_request' }}
@@ -156,22 +173,27 @@ jobs:
           LOG_DIR="suite-native/app/artifacts"
           docker cp trezor-user-env.unix:/trezor-user-env/logs/debugging.log "$LOG_DIR/trezor-user-env-debugging.log" || true
           docker cp trezor-user-env.unix:/trezor-user-env/logs/emulator_bridge.log "$LOG_DIR/tenv-emulator-bridge-debugging.log" || true
+          docker cp trezor-user-env.unix:/trezor-user-env/logs/tropic_model.log "$LOG_DIR/trezor-user-env-tropic_model.log" || true
           docker cp trezor-user-env.unix:/trezor-user-env/docker/version.txt "$LOG_DIR/trezor-user-env-version.txt" || true
           docker logs trezor-user-env-regtest > "$LOG_DIR/electrum-regtest.txt" || true
+          # Emulator crash DB written by QEMU to the host filesystem on abnormal termination
+          find /tmp "$HOME/.android/avd" -name "emu-crash*.db" -print0 2>/dev/null \
+            | while IFS= read -r -d '' db; do
+              cp "$db" "$LOG_DIR/$(basename "$db")" || true
+              sqlite3 "$db" "SELECT * FROM Crash;" > "$LOG_DIR/$(basename "$db" .db)-report.txt" 2>&1 || true
+            done || true
+          # Android tombstones (only available if the emulator is still reachable via ADB)
+          mkdir -p "$LOG_DIR/tombstones"
+          adb shell ls /data/tombstones/ 2>/dev/null \
+            && adb pull /data/tombstones/. "$LOG_DIR/tombstones" \
+            || true
+          docker logs docker-quota-db-1 > quota-db.log 2>&1 || true
+          docker logs docker-suite-sync-1 > suite-sync.log 2>&1 || true
 
       - name: "Store test artifacts"
         if: ${{ !cancelled() }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
           name: android-tests-${{ matrix.TEST_GROUP }}
           path: suite-native/app/artifacts
           retention-days: 14
-
-  notify_scheduled_failure_to_slack:
-    runs-on: ubuntu-latest
-    if: ${{ failure() && github.event_name == 'schedule' }}
-    needs: run_android_e2e_tests
-    steps:
-      - name: Notify scheduled job failure to Slack
-        run: |
-          curl -X POST -H 'Content-type: application/json' --data '{"text":"Nightly Android E2E tests failed :pepe_flame: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} "}' "${{ secrets.SLACK_MOBILE_E2E_WEBHOOK }}"

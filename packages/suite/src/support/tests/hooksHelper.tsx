@@ -1,9 +1,10 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 import { IntlProvider } from 'react-intl';
 import { Provider } from 'react-redux';
 
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import {
-    RenderResult,
+    type RenderResult,
     act,
     render,
     screen,
@@ -11,13 +12,17 @@ import {
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
+import { ServicesProvider } from '@suite-common/dependency-injection';
 import { MockedFormatterProvider } from '@suite-common/formatters';
 
 import { ConnectedThemeProvider } from 'src/support/suite/ConnectedThemeProvider';
 
-import { SuiteServicesProvider } from '../SuiteServicesProvider';
-import { SuiteServices } from '../extraDependencies';
+import { type SuiteServices } from '../extraDependencies';
 import { ResponsiveContextProvider } from '../suite/ResponsiveContext';
+
+const testQueryClient = new QueryClient({
+    defaultOptions: { queries: { retry: false } },
+});
 
 // used in hooks tests
 export const renderWithProviders = (
@@ -26,17 +31,19 @@ export const renderWithProviders = (
     children: ReactNode,
 ): RenderResult =>
     render(
-        <Provider store={store}>
-            <SuiteServicesProvider services={services}>
-                <ConnectedThemeProvider>
-                    <ResponsiveContextProvider>
-                        <IntlProvider locale="en">
-                            <MockedFormatterProvider>{children}</MockedFormatterProvider>
-                        </IntlProvider>
-                    </ResponsiveContextProvider>
-                </ConnectedThemeProvider>
-            </SuiteServicesProvider>
-        </Provider>,
+        <QueryClientProvider client={testQueryClient}>
+            <Provider store={store}>
+                <ServicesProvider services={services}>
+                    <ConnectedThemeProvider>
+                        <ResponsiveContextProvider>
+                            <IntlProvider locale="en">
+                                <MockedFormatterProvider>{children}</MockedFormatterProvider>
+                            </IntlProvider>
+                        </ResponsiveContextProvider>
+                    </ConnectedThemeProvider>
+                </ServicesProvider>
+            </Provider>
+        </QueryClientProvider>,
     );
 
 export const waitForLoader = (text = /Loading/i) => {
@@ -122,6 +129,6 @@ export const actionSequence = async <A extends UserAction[]>(
         }
 
         // action complete. run test
-        if (callback) callback(action);
+        callback?.(action);
     }
 };

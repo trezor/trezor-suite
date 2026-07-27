@@ -1,13 +1,14 @@
 import { useEffect, useMemo } from 'react';
 
-import { events } from '@suite/analytics';
+import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
 import { Column, H3, Modal, Paragraph } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { DeviceAnimation } from '@trezor/product-components';
 import { TREZOR_SUPPORT_DEVICE_URL } from '@trezor/urls';
 
-import { TroubleshootingTipsItem } from 'src/components/suite/troubleshooting/TroubleshootingTips';
+import { type TroubleshootingTipsItem } from 'src/components/suite/troubleshooting/TroubleshootingTipsItem';
 import { TroubleshootingTipsList } from 'src/components/suite/troubleshooting/TroubleshootingTipsList';
 import {
     TROUBLESHOOTING_TIP_CABLE,
@@ -18,7 +19,6 @@ import {
 } from 'src/components/suite/troubleshooting/tips';
 import { useSelector } from 'src/hooks/suite';
 import { selectHasTransportOfType } from 'src/selectors/suite/suiteSelectors';
-import { useAnalytics } from 'src/support/useAnalytics';
 
 import { AnimationCard } from './AnimationCard';
 import { useConnectionGlobalModalContext } from './context/ConnectionGlobalModalContext';
@@ -34,7 +34,7 @@ const commonCableTips = [
 ];
 
 export const CantSeeTrezorModal = ({ onClose }: DontSeeYourTrezorModalProps) => {
-    const analytics = useAnalytics();
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
     const {
         isBluetoothMode,
         toggleShouldPairAgain,
@@ -46,8 +46,8 @@ export const CantSeeTrezorModal = ({ onClose }: DontSeeYourTrezorModalProps) => 
 
     // when this modal is displayed, scanning should start again in case it stopped due to timeout, so that user can act on the additional instructions
     useEffect(() => {
-        onReScanClick();
-    }, [onReScanClick]);
+        if (isBluetoothMode) onReScanClick();
+    }, [isBluetoothMode, onReScanClick]);
 
     const isWebUsbTransport = useSelector(selectHasTransportOfType('WebUsbTransport'));
 
@@ -142,7 +142,7 @@ export const CantSeeTrezorModal = ({ onClose }: DontSeeYourTrezorModalProps) => 
             }
             heading={<Translation id="TR_STILL_DONT_SEE_YOUR_TREZOR" />}
             onCancel={toggleShowHints}
-            variant="info"
+            intent="info"
         >
             <TroubleshootingTipsList items={cableItem} />
         </Modal>

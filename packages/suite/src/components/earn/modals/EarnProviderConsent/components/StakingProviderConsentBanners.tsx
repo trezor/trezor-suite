@@ -1,7 +1,8 @@
 import { Translation } from '@suite/intl';
-import { NetworkType } from '@suite-common/wallet-config';
+import { type NetworkType } from '@suite-common/wallet-config';
 import { isStakingNetworkType } from '@suite-common/wallet-utils';
 import { Banner } from '@trezor/components';
+import { FileFilledIcon, ShieldWarningFilledIcon } from '@trezor/icons';
 import { exhaustive } from '@trezor/type-utils';
 
 interface StakingProviderConsentBannersProps {
@@ -20,7 +21,7 @@ export const StakingProviderConsentBanners = ({
             return (
                 <>
                     <Banner
-                        icon="fileFilled"
+                        icon={FileFilledIcon}
                         intent="info"
                         description={
                             <Translation
@@ -33,7 +34,7 @@ export const StakingProviderConsentBanners = ({
                         }
                     />
                     <Banner
-                        icon="shieldWarningFilled"
+                        icon={ShieldWarningFilledIcon}
                         intent="info"
                         description={<Translation id="TR_EARN_STAKE_TREZOR_NO_LIABILITY" />}
                     />
@@ -44,7 +45,7 @@ export const StakingProviderConsentBanners = ({
             return (
                 <>
                     <Banner
-                        icon="fileFilled"
+                        icon={FileFilledIcon}
                         intent="info"
                         description={
                             <Translation
@@ -57,7 +58,7 @@ export const StakingProviderConsentBanners = ({
                         }
                     />
                     <Banner
-                        icon="shieldWarningFilled"
+                        icon={ShieldWarningFilledIcon}
                         intent="info"
                         description={
                             <Translation
@@ -68,6 +69,8 @@ export const StakingProviderConsentBanners = ({
                     />
                 </>
             );
+        case 'tron':
+            return null;
         default:
             return exhaustive(networkType);
     }

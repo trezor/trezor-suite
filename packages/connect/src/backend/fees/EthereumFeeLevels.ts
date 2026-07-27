@@ -1,7 +1,8 @@
+import type { EthereumNetworkInfo, FeeLevel } from '@trezor/connect-common';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
+import { clamp } from '@trezor/utils/src/number';
 
-import type { EthereumNetworkInfo, FeeLevel } from '../../types';
-import { Blockchain } from '../Blockchain';
+import type { Blockchain } from '../Blockchain';
 import { MiscFeeLevels } from './MiscFeeLevels';
 
 export class EthereumFeeLevels extends MiscFeeLevels {
@@ -15,22 +16,28 @@ export class EthereumFeeLevels extends MiscFeeLevels {
 
     async load(blockchain: Blockchain, request: Parameters<typeof blockchain.estimateFee>[0]) {
         try {
-            const [response] = await blockchain.estimateFee(request);
-
-            const { eip1559 } = response;
+            const estimateResult = await blockchain.estimateFee(request);
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const response: (typeof estimateResult)[number] = estimateResult[0];
 
             // gas price in wei
             const maxFeeInWei = new BigNumber(this.coinInfo.maxFee).multipliedBy('1e+9').toNumber();
             const minFeeInWei = new BigNumber(this.coinInfo.minFee).multipliedBy('1e+9').toNumber();
             const feeInWei = new BigNumber(response.feePerUnit).toNumber();
 
-            // validate gas price from backend
-            const feePerUnit = Math.min(maxFeeInWei, Math.max(minFeeInWei, feeInWei)).toString();
+            // validate gas price from backend; clamp and round to integer wei (backend may return decimal)
+            const feePerUnit = new BigNumber(clamp(feeInWei, minFeeInWei, maxFeeInWei)).toFixed(0);
+
+            const { eip1559 } = response;
 
             if (eip1559?.baseFeePerGas) {
                 const minMaxPriorityFeePerGas = new BigNumber(this.coinInfo.minPriorityFee)
                     .multipliedBy('1e+9')
                     .toNumber();
+
+                // Fallback block estimates used when the provider (e.g. 1inch) doesn't supply
+                // per-tier wait times. Values match typical EIP-1559 confirmation expectations.
+                const defaultBlocks = { low: 4, medium: 2, high: 1 } as const;
 
                 const levels = (['low', 'medium', 'high'] as const).map(levelKey => {
                     const level = eip1559[levelKey];
@@ -42,26 +49,25 @@ export class EthereumFeeLevels extends MiscFeeLevels {
                     }
 
                     const maxFeePerGas = BigNumber.max(
-                        this.coinInfo.minFee,
+                        minFeeInWei,
                         level.maxFeePerGas,
                         minMaxPriorityFeePerGas,
-                    ).toString();
+                    ).toFixed(0);
 
                     const maxPriorityFeePerGas = BigNumber.max(
                         minMaxPriorityFeePerGas,
                         BigNumber.min(maxFeePerGas, level.maxPriorityFeePerGas),
-                    ).toString();
+                    ).toFixed(0);
+
+                    const blocksFromWaitTime = level.maxWaitTimeEstimate
+                        ? Math.ceil(level.maxWaitTimeEstimate / 1000 / this.coinInfo.blockTime)
+                        : 0;
 
                     return {
                         label,
                         feePerUnit,
                         feeLimit: response.feeLimit,
-                        blocks: Math.ceil(
-                            Math.max(
-                                1,
-                                (level?.maxWaitTimeEstimate || 0) / 1000 / this.coinInfo.blockTime,
-                            ),
-                        ),
+                        blocks: blocksFromWaitTime || defaultBlocks[levelKey],
                         baseFeePerGas: eip1559.baseFeePerGas,
                         maxFeePerGas,
                         maxPriorityFeePerGas,
@@ -70,8 +76,11 @@ export class EthereumFeeLevels extends MiscFeeLevels {
 
                 this.levels = levels.filter(level => level) as FeeLevel[];
             } else {
+                const { levels } = this;
+                // @ts-expect-error: indexing with noUncheckedIndexedAccess
+                const currentLevel: (typeof levels)[number] = levels[0];
                 this.levels[0] = {
-                    ...this.levels[0],
+                    ...currentLevel,
                     ...response,
                     feePerUnit,
                 };

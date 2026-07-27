@@ -1,5 +1,5 @@
-import { AFFILIATION_ID } from '../constants';
-import { EndRoundState, RoundPhase } from '../enums';
+import { type AFFILIATION_ID } from '../constants';
+import { type EndRoundState, type RoundPhase } from '../enums';
 
 export type AffiliationId = keyof typeof AFFILIATION_ID;
 

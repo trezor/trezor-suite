@@ -3,22 +3,22 @@ import { useFormContext, useFormState } from 'react-hook-form';
 import { useSelector } from 'react-redux';
 
 import { Translation } from '@suite/intl';
-import { FormState } from '@suite-common/wallet-types';
+import { selectLanguage } from '@suite/settings';
+import { type FormState } from '@suite-common/wallet-types';
 import { isEip1559 } from '@suite-common/wallet-utils';
 import { Text } from '@trezor/components';
 import { NumberInput } from '@trezor/product-components';
 import { BigNumber } from '@trezor/utils';
 
 import { InputError } from 'src/components/wallet';
-import { selectLanguage } from 'src/selectors/suite/suiteSelectors';
 import { validateDecimals } from 'src/utils/suite/validation';
 
-import { CustomFeeBasicProps } from './CustomFee';
+import { type CustomFeeBasicProps } from './CustomFeeBasicProps';
 import { FEE_LIMIT, FEE_PER_UNIT } from './constants';
 import { useFeesContext } from '../../context/FeesContext';
 
-const MAX_FEE_PER_GAS = 'maxFeePerGas';
-const MAX_PRIORITY_FEE_PER_GAS = 'maxPriorityFeePerGas';
+const MAX_FEE_PER_GAS = 'maxFeePerGas' satisfies keyof FormState;
+const MAX_PRIORITY_FEE_PER_GAS = 'maxPriorityFeePerGas' satisfies keyof FormState;
 
 export const CustomFeeEthereum = ({
     translationString,
@@ -28,34 +28,27 @@ export const CustomFeeEthereum = ({
     const { feeInfo, networkType } = useFeesContext();
     const locale = useSelector(selectLanguage);
 
-    const { control, getValues, setValue, trigger } = useFormContext<FormState>();
+    const { control, getValues, setValue, trigger, watch } = useFormContext<FormState>();
+
     const { errors } = useFormState<FormState>();
 
     const { maxFee, minFee, levels, minPriorityFee } = feeInfo;
 
-    const estimatedFeeLimit = getValues('estimatedFeeLimit');
-    const customMaxFeePerGas = getValues('maxFeePerGas');
-    const customMaxPriorityFeePerGas = getValues('maxPriorityFeePerGas');
+    // Use `watch` (not `getValues`) so the cross-field `trigger` effects re-run and validate closures see fresh values.
+    const customMaxFeePerGas = watch(MAX_FEE_PER_GAS);
+    const customMaxPriorityFeePerGas = watch(MAX_PRIORITY_FEE_PER_GAS);
 
     useEffect(() => {
-        if (trigger) {
-            trigger(MAX_PRIORITY_FEE_PER_GAS);
-        }
-    }, [customMaxFeePerGas, trigger]);
-
-    useEffect(() => {
-        if (trigger) {
-            trigger(MAX_FEE_PER_GAS);
-        }
-    }, [customMaxPriorityFeePerGas, trigger]);
-
-    const recommendedMaxFeePerGas = levels.find(level => level.label === 'normal')?.maxFeePerGas;
+        trigger(MAX_FEE_PER_GAS);
+        trigger(MAX_PRIORITY_FEE_PER_GAS);
+    }, [customMaxPriorityFeePerGas, customMaxFeePerGas, trigger]);
 
     const gasLimitRules = {
         required: translationString('GAS_LIMIT_IS_NOT_SET'),
         validate: {
             ...sharedRules.validate,
             feeLimit: (value: string) => {
+                const estimatedFeeLimit = getValues('estimatedFeeLimit');
                 const feeBig = new BigNumber(value);
                 if (estimatedFeeLimit && feeBig.lt(estimatedFeeLimit)) {
                     return translationString('CUSTOM_FEE_LIMIT_BELOW_RECOMMENDED');
@@ -65,11 +58,13 @@ export const CustomFeeEthereum = ({
     };
 
     const gasLimitValidationProps = {
-        onClick: () =>
-            estimatedFeeLimit &&
-            setValue(FEE_LIMIT, estimatedFeeLimit, {
-                shouldValidate: true,
-            }),
+        onClick: () => {
+            const estimatedFeeLimit = getValues('estimatedFeeLimit');
+
+            if (!estimatedFeeLimit) return;
+
+            setValue(FEE_LIMIT, estimatedFeeLimit, { shouldValidate: true });
+        },
         text: translationString('CUSTOM_FEE_USE_RECOMMENDED'),
     };
 
@@ -128,12 +123,13 @@ export const CustomFeeEthereum = ({
         },
     };
 
+    const recommendedMaxFeePerGas = levels.find(level => level.label === 'normal')?.maxFeePerGas;
     const maxFeePerGasValidationProps = {
-        onClick: () =>
-            recommendedMaxFeePerGas &&
-            setValue(MAX_FEE_PER_GAS, recommendedMaxFeePerGas, {
-                shouldValidate: true,
-            }),
+        onClick: () => {
+            if (!recommendedMaxFeePerGas) return;
+
+            setValue(MAX_FEE_PER_GAS, recommendedMaxFeePerGas, { shouldValidate: true });
+        },
         text: translationString('CUSTOM_FEE_USE_RECOMMENDED'),
     };
 

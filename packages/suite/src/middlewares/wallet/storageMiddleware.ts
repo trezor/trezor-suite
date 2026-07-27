@@ -1,7 +1,13 @@
 import { isAnyOf } from '@reduxjs/toolkit';
-import { MiddlewareAPI } from 'redux';
+import { type MiddlewareAPI } from 'redux';
 
+import { COINJOIN } from '@suite/coinjoin';
+import { debugActions } from '@suite/debug';
+import { featureUsed, feedbackDismissed, feedbackRequested } from '@suite/feature-feedback';
+import { setFlag } from '@suite/flags';
 import { METADATA, metadataActions } from '@suite/metadata';
+import { suiteSettingsActions } from '@suite/settings';
+import { dismissUnsupportedDeviceBanner } from '@suite/suite-sync';
 import { analyticsActions } from '@suite-common/analytics-redux';
 import { bluetoothActions } from '@suite-common/bluetooth';
 import { connectPopupActions } from '@suite-common/connect-popup';
@@ -12,8 +18,11 @@ import {
     selectDevices,
     selectSelectedDevice,
 } from '@suite-common/device';
+import { discreetModeActions } from '@suite-common/discreet-mode';
 import { firmwareActions } from '@suite-common/firmware';
 import { messageSystemActions } from '@suite-common/message-system';
+import { receiveActions } from '@suite-common/receive';
+import { type ActionFromMatcher, createLegacyActionTypeMatcher } from '@suite-common/redux-utils';
 import {
     setSuiteSyncOwner,
     setSuiteSyncRelayUrl,
@@ -21,7 +30,8 @@ import {
     updateSuiteSyncEnabled,
 } from '@suite-common/suite-sync';
 import { suiteSyncQuotaManagerActions } from '@suite-common/suite-sync-quota-manager';
-import { isDeviceRemembered } from '@suite-common/suite-utils';
+import { type TrezorDevice } from '@suite-common/suite-types';
+import { getIsDeviceRemembered } from '@suite-common/suite-utils';
 import { thpActions } from '@suite-common/thp';
 import { TokenManagementAction } from '@suite-common/token-definitions';
 import { tokenDefinitionsActions } from '@suite-common/token-definitions/src/tokenDefinitionsActions';
@@ -32,6 +42,7 @@ import {
     blockchainActions,
     changeNetworks,
     explorerActions,
+    phishingActions,
     selectAccountByKey,
     selectAccountsByDeviceState,
     selectHistoricFiatRates,
@@ -40,17 +51,240 @@ import {
     transactionsActions,
     updateTxsFiatRatesThunk,
 } from '@suite-common/wallet-core';
-import { AccountKey } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { findAccountDevice, isAccountSuccessful } from '@suite-common/wallet-utils';
 import { walletConnectActions } from '@suite-common/walletconnect';
 
 import { STORAGE, SUITE } from 'src/actions/suite/constants';
 import * as storageActions from 'src/actions/suite/storageActions';
 import { GRAPH } from 'src/actions/wallet/constants';
-import * as COINJOIN from 'src/actions/wallet/constants/coinjoinConstants';
 import { db } from 'src/storage';
-import type { AppState, Dispatch, Action as SuiteAction } from 'src/types/suite';
+import type { AppState, Dispatch, GetState, Action as SuiteAction } from 'src/types/suite';
 import type { WalletAction } from 'src/types/wallet';
+
+type StorageAction = SuiteAction | WalletAction;
+
+const matchLegacyActionType = createLegacyActionTypeMatcher<StorageAction>();
+
+const getDeviceByAccountKey = (accountKey: AccountKey, state: AppState) => {
+    const account = selectAccountByKey(state, accountKey);
+
+    return account ? findAccountDevice(account, selectDevices(state)) : undefined;
+};
+
+type RememberedDeviceSaveParams<TAction> = {
+    action: TAction;
+    device: TrezorDevice;
+};
+
+type RememberedDeviceSaveDeps = {
+    dispatch: Dispatch;
+    getState: GetState;
+};
+
+type RememberedDeviceHandler = {
+    match: ReadonlyArray<(action: StorageAction) => boolean>;
+    getDevice: (action: any, state: AppState) => TrezorDevice | undefined;
+    save: (params: RememberedDeviceSaveParams<any>, deps: RememberedDeviceSaveDeps) => void;
+};
+
+const defineRememberedDeviceHandler = <
+    Matchers extends ReadonlyArray<(action: StorageAction) => boolean>,
+>(handler: {
+    match: readonly [...Matchers];
+    getDevice: (
+        action: ActionFromMatcher<Matchers[number]>,
+        state: AppState,
+    ) => TrezorDevice | undefined;
+    save: (
+        params: RememberedDeviceSaveParams<ActionFromMatcher<Matchers[number]>>,
+        deps: RememberedDeviceSaveDeps,
+    ) => void;
+}): RememberedDeviceHandler => handler;
+
+// Device-scoped data must be persisted only for remembered devices. Do not check
+// getIsDeviceRemembered by hand — register a handler here and the loop in the middleware below
+// applies the check based on the declared getDevice.
+const rememberedDeviceHandlers: RememberedDeviceHandler[] = [
+    defineRememberedDeviceHandler({
+        match: [
+            accountsActions.createAccount.match,
+            accountsActions.changeAccountVisibility.match,
+            accountsActions.updateAccount.match,
+        ],
+        getDevice: (action, state) => findAccountDevice(action.payload, selectDevices(state)),
+        save: ({ action }, { dispatch }) => {
+            const account = action.payload;
+
+            if (!isAccountSuccessful(account)) {
+                return;
+            }
+
+            storageActions.saveAccounts([account]);
+            dispatch(storageActions.saveCoinjoinAccount(account.key));
+        },
+    }),
+    defineRememberedDeviceHandler({
+        // When setDeviceState/addAuthorizedDevice is dispatched for passphrase wallet, it means
+        // that its device was just created, but already discovered accounts may have not been
+        // persisted, so try to do it now.
+        match: [deviceActions.setDeviceState.match, deviceActions.addAuthorizedDevice.match],
+        getDevice: (action, state) => selectDeviceByState(state, action.payload.state),
+        save: ({ action, device }, { getState }) => {
+            if (device.useEmptyPassphrase) {
+                return;
+            }
+
+            const accounts = selectAccountsByDeviceState(getState(), action.payload.state).filter(
+                isAccountSuccessful,
+            );
+
+            storageActions.saveAccounts(accounts);
+        },
+    }),
+    defineRememberedDeviceHandler({
+        // If there is a change in account.metadata (metadataActions.setAccountLoaded), update database.
+        match: [metadataActions.setAccountAdd.match],
+        getDevice: (action, state) => findAccountDevice(action.payload, selectDevices(state)),
+        save: ({ action }) => {
+            if (!isAccountSuccessful(action.payload)) {
+                return;
+            }
+
+            storageActions.saveAccounts([action.payload]);
+        },
+    }),
+    defineRememberedDeviceHandler({
+        match: [receiveActions.showAddress.match, receiveActions.setCurrentFreshAddress.match],
+        getDevice: (action, state) => getDeviceByAccountKey(action.payload.accountKey, state),
+        save: ({ action }, { dispatch }) => {
+            dispatch(storageActions.saveAccountReceive(action.payload.accountKey));
+        },
+    }),
+    defineRememberedDeviceHandler({
+        match: [
+            transactionsActions.addTransaction.match,
+            transactionsActions.removeTransaction.match,
+        ],
+        getDevice: (action, state) =>
+            findAccountDevice(action.payload.account, selectDevices(state)),
+        save: ({ action }, { dispatch }) => {
+            const { account } = action.payload;
+
+            storageActions.removeAccountTransactions(account);
+            dispatch(storageActions.saveAccountTransactions(account));
+        },
+    }),
+    defineRememberedDeviceHandler({
+        match: [transactionsActions.markTransactionAsNotScam.match],
+        getDevice: (action, state) => getDeviceByAccountKey(action.payload.key, state),
+        save: ({ action }, { dispatch, getState }) => {
+            const account = selectAccountByKey(getState(), action.payload.key);
+
+            if (account) {
+                dispatch(storageActions.saveAccountTransactions(account));
+            }
+        },
+    }),
+    defineRememberedDeviceHandler({
+        match: [
+            transactionsActions.removeTransaction.match,
+            updateTxsFiatRatesThunk.fulfilled.match,
+        ],
+        getDevice: (action, state) => {
+            const { account } = action.payload;
+
+            return account ? getDeviceByAccountKey(account.key, state) : undefined;
+        },
+        save: ({ action }, { dispatch, getState }) => {
+            const { account } = action.payload;
+
+            if (!account) {
+                return;
+            }
+
+            storageActions.removeAccountHistoricRates(account.key);
+
+            const historicRates = selectHistoricFiatRates(getState());
+            if (historicRates) {
+                dispatch(storageActions.saveAccountHistoricRates(account.key, historicRates));
+            }
+        },
+    }),
+    defineRememberedDeviceHandler({
+        match: [deviceActions.updateSelectedDevice.match],
+        getDevice: action => action.payload,
+        save: ({ device }, { getState }) => {
+            const isAutoEjectEnabled = selectIsDeviceAutoEjectEnabled(getState());
+
+            if (device.mode !== 'normal' || isAutoEjectEnabled) {
+                return;
+            }
+
+            (storageActions.saveAccounts([]) ?? Promise.resolve())
+                // This is a bit strange workaround to ensure that device data will be stored after all account-related db transactions are settled,
+                // in order not to persist successful discovery before persisting all its accounts
+                .then(() => storageActions.saveDevice(device));
+        },
+    }),
+    defineRememberedDeviceHandler({
+        match: [suiteSettingsActions.setCoinjoinReceiveWarningHidden.match],
+        getDevice: (_action, state) => selectSelectedDevice(state),
+        save: (_params, { dispatch }) => {
+            dispatch(storageActions.saveSuiteSettings());
+        },
+    }),
+    defineRememberedDeviceHandler({
+        match: [matchLegacyActionType(GRAPH.ACCOUNT_GRAPH_SUCCESS, GRAPH.ACCOUNT_GRAPH_FAIL)],
+        getDevice: (action, state) =>
+            selectDevices(state).find(
+                device => device.state?.staticSessionId === action.payload.account.deviceState,
+            ),
+        save: ({ action }) => {
+            storageActions.saveGraph([action.payload]);
+        },
+    }),
+    defineRememberedDeviceHandler({
+        match: [matchLegacyActionType(METADATA.SET_ERROR_FOR_DEVICE)],
+        getDevice: (action, state) =>
+            selectDeviceByStaticSessionId(state, action.payload.deviceState),
+        save: ({ device }, { dispatch }) => {
+            dispatch(storageActions.saveDeviceMetadataError(device));
+        },
+    }),
+    defineRememberedDeviceHandler({
+        // Au, this hurts, I need to call saveDevice manually. Saved device should be updated
+        // automatically anytime any of its properties change.
+        match: [matchLegacyActionType(METADATA.SET_DEVICE_METADATA)],
+        getDevice: (action, state) =>
+            selectDeviceByStaticSessionId(state, action.payload.deviceState),
+        save: ({ action, device }) => {
+            storageActions.saveDevice({
+                ...device,
+                metadata: action.payload.metadata,
+            });
+        },
+    }),
+    defineRememberedDeviceHandler({
+        match: [
+            matchLegacyActionType(
+                COINJOIN.ACCOUNT_DISCOVERY_RESET,
+                COINJOIN.ACCOUNT_DISCOVERY_PROGRESS,
+                COINJOIN.ACCOUNT_AUTHORIZE_SUCCESS,
+                COINJOIN.ACCOUNT_UNREGISTER,
+                COINJOIN.ACCOUNT_UPDATE_SETUP_OPTION,
+                COINJOIN.ACCOUNT_UPDATE_TARGET_ANONYMITY,
+                COINJOIN.ACCOUNT_UPDATE_MAX_MING_FEE,
+                COINJOIN.ACCOUNT_TOGGLE_SKIP_ROUNDS,
+            ),
+        ],
+        getDevice: (action, state) =>
+            getDeviceByAccountKey(action.payload.accountKey as AccountKey, state),
+        save: ({ action }, { dispatch }) => {
+            dispatch(storageActions.saveCoinjoinAccount(action.payload.accountKey as AccountKey));
+        },
+    }),
+];
 
 const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
     db.onBlocking = () => api.dispatch({ type: STORAGE.ERROR, payload: 'blocking' });
@@ -61,50 +295,22 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
             // pass action
             next(action);
 
-            if (
-                isAnyOf(
-                    accountsActions.createAccount,
-                    accountsActions.changeAccountVisibility,
-                    accountsActions.updateAccount,
-                )(action)
-            ) {
-                const newAccount = action.payload;
-                const state = api.getState();
-                const device = findAccountDevice(newAccount, selectDevices(state));
-
-                // update only transactions for remembered device
-                if (isDeviceRemembered(device) && isAccountSuccessful(newAccount)) {
-                    storageActions.saveAccounts([newAccount]);
-                    api.dispatch(storageActions.saveCoinjoinAccount(newAccount.key));
+            // IMPORTANT: The single place enforcing that device-scoped data is persisted only for
+            //            remembered devices (see rememberedDeviceHandlers above).
+            rememberedDeviceHandlers.forEach(({ match, getDevice, save }) => {
+                if (!match.some(matcher => matcher(action))) {
+                    return;
                 }
-            }
 
-            if (isAnyOf(deviceActions.setDeviceState, deviceActions.addAuthorizedDevice)(action)) {
-                const device = selectDeviceByState(api.getState(), action.payload.state);
+                const device = getDevice(action, api.getState());
 
-                // When setDeviceState/addAuthorizedDevice is dispatched for passphrase wallet,
-                // it means that its device was just created, but already discovered accounts
-                // may have not been persisted, so try to do it now
-                if (device && !device.useEmptyPassphrase && isDeviceRemembered(device)) {
-                    const accounts = selectAccountsByDeviceState(
-                        api.getState(),
-                        action.payload.state,
-                    ).filter(isAccountSuccessful);
-
-                    storageActions.saveAccounts(accounts);
+                if (device && getIsDeviceRemembered(device)) {
+                    save({ action, device }, { dispatch: api.dispatch, getState: api.getState });
                 }
-            }
+            });
 
             if (accountsActions.removeAccount.match(action)) {
                 action.payload.forEach(storageActions.removeAccountWithDependencies(api.getState));
-            }
-
-            if (isAnyOf(metadataActions.setAccountAdd)(action)) {
-                const device = findAccountDevice(action.payload, selectDevices(api.getState()));
-                // if device is remembered, and there is a change in account.metadata (metadataActions.setAccountLoaded), update database
-                if (isDeviceRemembered(device) && isAccountSuccessful(action.payload)) {
-                    storageActions.saveAccounts([action.payload]);
-                }
             }
 
             if (changeNetworks.match(action)) {
@@ -116,47 +322,22 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
 
                 storageActions.removeAccountTransactions(account);
                 storageActions.removeAccountHistoricRates(account.key);
+                storageActions.removeAccountPhishing(account.key);
             }
 
-            if (
-                isAnyOf(
-                    transactionsActions.addTransaction,
-                    transactionsActions.removeTransaction,
-                )(action)
-            ) {
-                const { account } = action.payload;
-                const device = findAccountDevice(account, selectDevices(api.getState()));
-                // update only transactions for remembered device
-                if (isDeviceRemembered(device)) {
-                    storageActions.removeAccountTransactions(account);
-                    api.dispatch(storageActions.saveAccountTransactions(account));
-                }
-            }
-
-            if (
-                isAnyOf(
-                    transactionsActions.removeTransaction,
-                    updateTxsFiatRatesThunk.fulfilled,
-                )(action)
-            ) {
-                const { account } = action.payload;
-                // TS doesn't know return type of updateTxsFiatRatesThunk.fulfilled, investigate why
-                if (account) {
-                    const device = findAccountDevice(account, selectDevices(api.getState()));
-                    const historicRates = selectHistoricFiatRates(api.getState());
-                    // update only historic rates for remembered device
-                    if (isDeviceRemembered(device)) {
-                        storageActions.removeAccountHistoricRates(account.key);
-                        if (historicRates) {
-                            api.dispatch(
-                                storageActions.saveAccountHistoricRates(account.key, historicRates),
-                            );
-                        }
-                    }
-                }
+            if (phishingActions.setDustPhishing.match(action)) {
+                api.dispatch(
+                    storageActions.savePhishingMetadata({
+                        dustPhishing: action.payload,
+                    }),
+                );
             }
 
             if (blockchainActions.setBackend.match(action)) {
+                api.dispatch(storageActions.saveBackend(action.payload.symbol));
+            }
+
+            if (blockchainActions.setBackendGapLimit.match(action)) {
                 api.dispatch(storageActions.saveBackend(action.payload.symbol));
             }
 
@@ -190,6 +371,7 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                 isAnyOf(
                     updateSuiteSyncDebugEnabled,
                     updateSuiteSyncEnabled,
+                    dismissUnsupportedDeviceBanner,
                     setSuiteSyncRelayUrl,
                 )(action)
             ) {
@@ -204,7 +386,9 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                 isAnyOf(
                     suiteSyncQuotaManagerActions.quotaManagerDeviceFetched,
                     suiteSyncQuotaManagerActions.updateQuotaManagerBaseUrl,
-                )
+                    suiteSyncQuotaManagerActions.enforceQuotaManagerUpdated,
+                    suiteSyncQuotaManagerActions.eraseFetchedData,
+                )(action)
             ) {
                 api.dispatch(storageActions.saveSuiteSyncQuotaManager());
             }
@@ -240,21 +424,6 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                 );
             }
 
-            if (deviceActions.updateSelectedDevice.match(action)) {
-                const isAutoEjectEnabled = selectIsDeviceAutoEjectEnabled(api.getState());
-
-                if (
-                    isDeviceRemembered(action.payload) &&
-                    action.payload?.mode === 'normal' &&
-                    !isAutoEjectEnabled
-                ) {
-                    (storageActions.saveAccounts([]) ?? Promise.resolve())
-                        // This is a bit strange workaround to ensure that device data will be stored after all account-related db transactions are settled,
-                        // in order not to persist successful discovery before persisting all its accounts
-                        .then(() => storageActions.saveDevice(action.payload));
-                }
-            }
-
             if (
                 isAnyOf(
                     deviceActions.connectDevice, // Known device is stored
@@ -271,6 +440,8 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                 isAnyOf(
                     connectPopupActions.rememberAppPermissions,
                     connectPopupActions.forgetAppPermissions,
+                    connectPopupActions.forgetAppPermission,
+                    connectPopupActions.setAppSilentMode,
                     walletConnectActions.saveSession,
                     walletConnectActions.removeSession,
                 )(action)
@@ -282,8 +453,11 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                 api.dispatch(storageActions.saveFirmwareSettings());
             }
 
+            if (isAnyOf(featureUsed, feedbackRequested, feedbackDismissed)(action)) {
+                api.dispatch(storageActions.saveFeatureFeedback());
+            }
+
             if (
-                deviceActions.setThpCredentials.match(action) ||
                 thpActions.removeCredentials.match(action) ||
                 action.type === 'device-thp_credentials_changed' ||
                 (action.type === 'device-thp_pairing_status_changed' &&
@@ -297,61 +471,49 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                     deviceActions.connectDevice,
                     deviceActions.deviceChanged,
                     deviceActions.setEntropyCheckResult,
+                    deviceActions.setDeviceAuthenticityResult,
+                    deviceActions.setManualDeviceCheckSuccess,
+                    deviceActions.clearDevicePersistentData,
+                    deviceActions.forgetDevicePersistentData,
                 )(action)
             ) {
                 api.dispatch(storageActions.savePersistentDeviceData());
             }
 
+            if (discreetModeActions.setDiscreetMode.match(action)) {
+                api.dispatch(storageActions.saveDiscreetMode());
+            }
+
             switch (action.type) {
-                case WALLET_SETTINGS.SET_HIDE_BALANCE:
                 case setBaseCurrency.type:
                 case WALLET_SETTINGS.SET_BITCOIN_AMOUNT_UNITS:
                 case WALLET_SETTINGS.SET_MEV_PROTECTION:
                 case WALLET_SETTINGS.SET_NETWORK_RESERVE:
                 case WALLET_SETTINGS.SET_AUTO_EJECT:
+                case WALLET_SETTINGS.SET_ADDRESS_DISPLAY_TYPE:
                     api.dispatch(storageActions.saveWalletSettings());
 
                     break;
-                case SUITE.SET_LANGUAGE:
-                case SUITE.SET_FLAG:
-                case SUITE.SET_DEBUG_MODE:
-                case SUITE.SET_EXPERIMENTAL_FEATURES:
-                case SUITE.ONION_LINKS:
-                case SUITE.SET_THEME:
-                case SUITE.SET_ADDRESS_DISPLAY_TYPE:
-                case SUITE.SET_AUTODETECT:
-                case SUITE.SET_SIDEBAR_WIDTH:
-                case SUITE.TOGGLE_DEVICE_AUTHENTICITY_CHECK:
-                case SUITE.TOGGLE_FIRMWARE_REVISION_CHECK:
-                case SUITE.TOGGLE_FIRMWARE_HASH_CHECK:
+                case suiteSettingsActions.setLanguage.type:
+                case setFlag.type:
+                case suiteSettingsActions.setDebugMode.type:
+                case suiteSettingsActions.setExperimentalFeatures.type:
+                case suiteSettingsActions.setOnionLinks.type:
+                case suiteSettingsActions.setTheme.type:
+                case suiteSettingsActions.setAutodetect.type:
+                case suiteSettingsActions.setSidebarWidth.type:
+                case suiteSettingsActions.toggleDeviceAuthenticityCheck.type:
+                case suiteSettingsActions.toggleFirmwareRevisionCheck.type:
+                case suiteSettingsActions.toggleFirmwareHashCheck.type:
+                case suiteSettingsActions.toggleDeviceMetaChecks.type:
                 case SUITE.EVM_CONFIRM_EXPLANATION_MODAL:
                 case SUITE.EVM_CLOSE_EXPLANATION_BANNER:
-                case SUITE.SET_IS_COINS_FILTER_VISIBLE:
+                case suiteSettingsActions.setIsCoinsFilterVisible.type:
                     api.dispatch(storageActions.saveSuiteSettings());
                     break;
-                case SUITE.COINJOIN_RECEIVE_WARNING: {
-                    const device = selectSelectedDevice(api.getState());
-                    const isWalletRemembered = device?.remember;
-
-                    if (!isWalletRemembered) {
-                        break;
-                    }
-
-                    api.dispatch(storageActions.saveSuiteSettings());
+                case debugActions.setShowDebugMenu.type:
+                    api.dispatch(storageActions.saveDebugSettings());
                     break;
-                }
-
-                case GRAPH.ACCOUNT_GRAPH_SUCCESS:
-                case GRAPH.ACCOUNT_GRAPH_FAIL: {
-                    const devices = selectDevices(api.getState());
-                    const device = devices.find(
-                        d => d.state?.staticSessionId === action.payload.account.deviceState,
-                    );
-                    if (isDeviceRemembered(device)) {
-                        storageActions.saveGraph([action.payload]);
-                    }
-                    break;
-                }
                 case tradingActions.saveTrade.type: {
                     const { type, ...trade } = action;
                     storageActions.saveTradingTrade(trade.payload);
@@ -363,63 +525,19 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                 case METADATA.REMOVE_PROVIDER:
                     api.dispatch(storageActions.saveMetadataSettings());
                     break;
-                case METADATA.SET_ERROR_FOR_DEVICE: {
-                    const device = selectDeviceByStaticSessionId(
-                        api.getState(),
-                        action.payload.deviceState,
-                    );
-                    if (isDeviceRemembered(device) && device) {
-                        api.dispatch(storageActions.saveDeviceMetadataError(device));
-                    }
+                case COINJOIN.SET_DEBUG_SETTINGS:
+                    api.dispatch(storageActions.saveCoinjoinDebugSettings());
                     break;
-                }
-                // au, this hurts, I need to call saveDevice manually. saved device should be updated automatically
-                // anytime any of its properties change
-                case METADATA.SET_DEVICE_METADATA: {
-                    const device = selectDeviceByStaticSessionId(
-                        api.getState(),
-                        action.payload.deviceState,
-                    );
-                    if (isDeviceRemembered(device) && device) {
-                        storageActions.saveDevice({
-                            ...device,
-                            metadata: action.payload.metadata,
-                        });
-                    }
-                    break;
-                }
 
-                case COINJOIN.ACCOUNT_DISCOVERY_RESET:
-                case COINJOIN.ACCOUNT_DISCOVERY_PROGRESS:
-                case COINJOIN.ACCOUNT_AUTHORIZE_SUCCESS:
-                case COINJOIN.ACCOUNT_UNREGISTER:
-                case COINJOIN.ACCOUNT_UPDATE_SETUP_OPTION:
-                case COINJOIN.ACCOUNT_UPDATE_TARGET_ANONYMITY:
-                case COINJOIN.ACCOUNT_UPDATE_MAX_MING_FEE:
-                case COINJOIN.ACCOUNT_TOGGLE_SKIP_ROUNDS: {
-                    const account = selectAccountByKey(
-                        api.getState(),
-                        action.payload.accountKey as AccountKey,
-                    );
-                    const device =
-                        account && findAccountDevice(account, selectDevices(api.getState()));
-                    if (device && isDeviceRemembered(device)) {
-                        api.dispatch(
-                            storageActions.saveCoinjoinAccount(
-                                action.payload.accountKey as AccountKey,
-                            ),
-                        );
-                    }
-                    break;
-                }
+                // Not a rememberedDeviceHandlers entry: unlike those handlers (one action ->
+                // one device), this one action affects multiple accounts on potentially
+                // different devices, so the remembered-device check must be applied per account.
                 case COINJOIN.CLIENT_PRISON_EVENT: {
                     const affectedAccounts = action.payload.map(inmate => inmate.accountKey);
                     const state = api.getState();
-                    const devices = selectDevices(state);
                     affectedAccounts.forEach(key => {
-                        const account = selectAccountByKey(state, key as AccountKey);
-                        const device = account && findAccountDevice(account, devices);
-                        if (device && isDeviceRemembered(device)) {
+                        const device = getDeviceByAccountKey(key as AccountKey, state);
+                        if (device && getIsDeviceRemembered(device)) {
                             api.dispatch(storageActions.saveCoinjoinAccount(key as AccountKey));
                         }
                     });

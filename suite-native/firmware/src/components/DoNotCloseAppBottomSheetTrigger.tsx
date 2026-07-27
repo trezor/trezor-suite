@@ -10,7 +10,7 @@ import {
     useBottomSheetModal,
 } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 type DoNotCloseAppBottomSheetTriggerProps = {
     isTriggerDisplayed: boolean;
@@ -40,7 +40,7 @@ export const DoNotCloseAppBottomSheetTrigger = ({
                     style={applyStyle(triggerStyle)}
                 >
                     <InlineAlertBox
-                        variant="info"
+                        intent="info"
                         title={
                             <Translation id="firmware.firmwareUpdateProgress.doNotCloseApp.alertBox.title" />
                         }
@@ -57,7 +57,7 @@ export const DoNotCloseAppBottomSheetTrigger = ({
                         <Translation id="firmware.firmwareUpdateProgress.doNotCloseApp.alert.title" />
                     </Text>
 
-                    <Button onPress={closeModal} colorScheme="blueBold">
+                    <Button onPress={closeModal} intent="info" priority="primary">
                         <Translation id="firmware.firmwareUpdateProgress.doNotCloseApp.alert.button" />
                     </Button>
                 </VStack>

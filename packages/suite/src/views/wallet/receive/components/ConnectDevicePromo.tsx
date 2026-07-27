@@ -1,4 +1,4 @@
-import { JSX } from 'react';
+import { type JSX } from 'react';
 
 import { Translation } from '@suite/intl';
 import { selectSelectedDevice } from '@suite-common/device';
@@ -6,7 +6,7 @@ import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
 import { Banner } from '@trezor/components';
 import { mapTrezorModelToIcon } from '@trezor/product-components';
 
-import { useSelector } from '../../../../hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 type ConnectDevicePromoProps = {
     title: JSX.Element | string;

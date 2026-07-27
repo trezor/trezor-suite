@@ -1,9 +1,11 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
-import { CryptoId, DexApprovalType } from 'invity-api';
+import { type CryptoId, type DexApprovalType } from 'invity-api';
 
+import { type TranslationKey, isTranslationKey } from '@suite/intl';
 import { parseCryptoId } from '@suite-common/trading';
-import { Account, AllowanceType } from '@suite-common/wallet-types';
+import { REVOKE_ALLOWANCE_AMOUNT } from '@suite-common/wallet-core';
+import { type Account, type AllowanceType } from '@suite-common/wallet-types';
 import { asAmountSubunit, findToken, getAllowanceAmount } from '@suite-common/wallet-utils';
 import { useCurrentRef } from '@trezor/react-utils';
 import { BigNumber } from '@trezor/utils';
@@ -19,7 +21,7 @@ interface UseAllowanceModalProps {
     account: Account;
     spender: string;
     onSelectApprovalType?: (type: DexApprovalType) => void;
-    onConfirm?: () => void;
+    onConfirm?: (approvalType: DexApprovalType) => void;
     onCancel?: () => void;
 }
 
@@ -34,7 +36,8 @@ export const useAllowanceModal = ({
     onCancel,
 }: UseAllowanceModalProps) => {
     const { state, tx } = useAllowanceContext();
-    const closeModal = type === 'REVOKE' ? state.closeRevokeModal : state.closeApproveModal;
+    const closeModal = type === 'APPROVE' ? state.closeApproveModal : state.closeRevokeModal;
+    const openModal = type === 'APPROVE' ? state.openApproveModal : state.openRevokeModal;
     const [approvalType, setApprovalType] = useState<DexApprovalType>(
         type === 'REVOKE' ? 'ZERO' : 'MINIMAL',
     );
@@ -42,9 +45,10 @@ export const useAllowanceModal = ({
     const { contractAddress: contract = '' } = parseCryptoId(cryptoId);
     const token = findToken(account.tokens, contract);
 
-    const { inputAmount = asAmountSubunit(new BigNumber(0)), allowanceAmount = '0' } = token
-        ? getAllowanceAmount({ rawAmount, approvalType, token })
-        : {};
+    const {
+        inputAmount = asAmountSubunit(new BigNumber(0)),
+        allowanceAmount = REVOKE_ALLOWANCE_AMOUNT,
+    } = token ? getAllowanceAmount({ rawAmount, approvalType, token }) : {};
 
     const {
         data,
@@ -68,6 +72,24 @@ export const useAllowanceModal = ({
         account,
         methods,
     });
+    const selectedComposedLevel = composedLevels?.[selectedFee];
+    const composedLevelsError = useMemo(() => {
+        if (selectedComposedLevel?.type !== 'error') {
+            return undefined;
+        }
+
+        const { errorMessage } = selectedComposedLevel;
+
+        if (!errorMessage || !isTranslationKey(errorMessage.id)) {
+            return undefined;
+        }
+
+        return {
+            id: errorMessage.id satisfies TranslationKey,
+            values: errorMessage.values,
+        };
+    }, [selectedComposedLevel]);
+    const canSubmit = !isComposing && !!composedTransaction && !composedLevelsError;
 
     const composeRequestRef = useCurrentRef(composeRequest);
     const onSelectApprovalTypeRef = useCurrentRef(onSelectApprovalType);
@@ -89,20 +111,29 @@ export const useAllowanceModal = ({
     const confirmAndSend = useCallback(async () => {
         if (!composedTransaction) return;
 
-        onConfirmRef.current?.();
+        onConfirmRef.current?.(approvalType);
         closeModal();
         state.setIsWaitingForDevice(true);
+
+        let txid: string | null = null;
 
         try {
             const result = await send({ composedTransaction });
 
             if (result?.txid) {
+                txid = result.txid;
                 tx.setApprovalTxid(result.txid);
             }
+        } catch {
+            // Device flow failed or was rejected — re-open the modal so user can retry or cancel
         } finally {
             state.setIsWaitingForDevice(false);
+
+            if (!txid) {
+                openModal();
+            }
         }
-    }, [composedTransaction, send, state, tx, closeModal, onConfirmRef]);
+    }, [composedTransaction, send, state, tx, closeModal, openModal, onConfirmRef, approvalType]);
 
     const handleClose = useCallback(() => {
         closeModal();
@@ -118,6 +149,8 @@ export const useAllowanceModal = ({
         feeInfo,
         composedLevels,
         composedTransaction,
+        composedLevelsError,
+        canSubmit,
         selectedFee,
         data,
         methods,

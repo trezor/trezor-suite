@@ -1,6 +1,7 @@
+import { getTranslation } from '@suite-native/intl';
 import { act, fireEvent, renderWithBasicProvider } from '@suite-native/test-utils';
 
-import { ServerOffline, ServerOfflineProps } from '../ServerOffline';
+import { ServerOffline, type ServerOfflineProps } from '../ServerOffline';
 
 describe('ServerOffline', () => {
     const renderServerOffline = (props: Partial<ServerOfflineProps>) =>
@@ -10,7 +11,7 @@ describe('ServerOffline', () => {
         const retryPressMock = jest.fn();
         const { getByText } = renderServerOffline({ onRetryPress: retryPressMock });
 
-        const retryButton = getByText('Try again');
+        const retryButton = getByText(getTranslation('tradingAtoms.error.serverOfflineRetry'));
 
         act(() => {
             fireEvent.press(retryButton);

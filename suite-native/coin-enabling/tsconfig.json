@@ -2,6 +2,12 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
+        {
+            "path": "../../suite-common/analytics"
+        },
+        {
+            "path": "../../suite-common/dependency-injection"
+        },
         { "path": "../../suite-common/device" },
         {
             "path": "../../suite-common/validators"
@@ -20,9 +26,8 @@
         { "path": "../icons" },
         { "path": "../intl" },
         { "path": "../navigation" },
-        { "path": "../services" },
+        { "path": "../search" },
         { "path": "../toasts" },
-        { "path": "../tokens" },
-        { "path": "../../packages/styles" }
+        { "path": "../../packages/styles-native" }
     ]
 }

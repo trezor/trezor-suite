@@ -2,18 +2,20 @@ import type { CryptoId } from 'invity-api';
 
 import { selectFormattedAccountType } from '@suite-common/wallet-core';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
-import { fireEvent, renderWithStoreProviderAsync, screen } from '@suite-native/test-utils';
+import { getTranslation } from '@suite-native/intl';
+import { fireEvent, screen } from '@suite-native/test-utils-store';
 import {
     btc1NormalAccount,
     eth1NormalAccount,
     getInitializedTradingState,
 } from '@suite-native/trading-fixtures';
 import { selectAccountsWithTokensToSellSectionCondensedListByTradingType } from '@suite-native/trading-state';
-import { MyAssetTradeable } from '@suite-native/trading-types';
+import { type MyAssetTradeable } from '@suite-native/trading-types';
 import { BigNumber } from '@trezor/utils';
 
+import { renderWithTradingProvider } from '../../../../__tests__/tradingTestUtils';
 import { TEST_ID_ACCOUNT_TYPE_BADGE } from '../MyAssetListSectionHeader';
-import { MyAssetSheet, MyAssetSheetProps } from '../MyAssetSheet';
+import { MyAssetSheet, type MyAssetSheetProps } from '../MyAssetSheet';
 
 jest.mock('@suite-native/trading-state', () => ({
     ...jest.requireActual('@suite-native/trading-state'),
@@ -58,7 +60,7 @@ describe('MyAssetSheet', () => {
         },
     ];
 
-    const getPreloadedState = () => ({
+    const getOverrides = () => ({
         wallet: {
             trading: getInitializedTradingState(),
             accounts: [btcAccount, ethAccount],
@@ -66,7 +68,7 @@ describe('MyAssetSheet', () => {
     });
 
     const renderMyAssetsSheet = (props?: Partial<MyAssetSheetProps>) =>
-        renderWithStoreProviderAsync(
+        renderWithTradingProvider(
             <MyAssetSheet
                 onAssetSelect={jest.fn}
                 onClose={jest.fn}
@@ -74,7 +76,7 @@ describe('MyAssetSheet', () => {
                 tradingType="exchange"
                 {...props}
             />,
-            { preloadedState: getPreloadedState() },
+            { overrides: getOverrides() },
         );
 
     beforeEach(() => {
@@ -87,33 +89,35 @@ describe('MyAssetSheet', () => {
         screen.unmount();
     });
 
-    it('should render account information correctly', async () => {
+    it('should render account information correctly', () => {
         mockedSelectAccountsWithTokensToSellSectionListByTradingType.mockReturnValue(
             defaultAccounts,
         );
 
-        const { getByText } = await renderMyAssetsSheet();
+        const { getByText } = renderMyAssetsSheet();
 
         expect(getByText('BTC Account #1')).toBeTruthy();
         expect(getByText('ETH Account #1')).toBeTruthy();
     });
 
-    it('should render correct empty component', async () => {
+    it('should render correct empty component', () => {
         mockedSelectAccountsWithTokensToSellSectionListByTradingType.mockReturnValue([]);
-        const { getByText } = await renderMyAssetsSheet();
+        const { getByText } = renderMyAssetsSheet();
 
-        expect(getByText('No assets found')).toBeTruthy();
-        expect(getByText('You do not have any assets available for this operation.')).toBeTruthy();
+        expect(getByText(getTranslation('moduleTrading.myAssetSheet.emptyTitle'))).toBeTruthy();
+        expect(
+            getByText(getTranslation('moduleTrading.myAssetSheet.emptyDescription')),
+        ).toBeTruthy();
     });
 
-    it('should select asset and close on asset item press', async () => {
+    it('should select asset and close on asset item press', () => {
         mockedSelectAccountsWithTokensToSellSectionListByTradingType.mockReturnValue(
             defaultAccounts,
         );
         const onAssetSelect = jest.fn();
         const onClose = jest.fn();
 
-        const { getByText } = await renderMyAssetsSheet({ onAssetSelect, onClose });
+        const { getByText } = renderMyAssetsSheet({ onAssetSelect, onClose });
 
         fireEvent.press(getByText('BTC'));
 
@@ -127,7 +131,7 @@ describe('MyAssetSheet', () => {
         expect(onClose).toHaveBeenCalledWith(false);
     });
 
-    it('should render formatted account type badge when defined', async () => {
+    it('should render formatted account type badge when defined', () => {
         mockedSelectAccountsWithTokensToSellSectionListByTradingType.mockReturnValue(
             defaultAccounts,
         );
@@ -137,12 +141,12 @@ describe('MyAssetSheet', () => {
             accountKey === btcAccount.key ? 'SegWit' : null,
         );
 
-        const { getByText } = await renderMyAssetsSheet();
+        const { getByText } = renderMyAssetsSheet();
 
         expect(getByText('SegWit')).toBeTruthy();
     });
 
-    it('should not render badge when formatted account type is null', async () => {
+    it('should not render badge when formatted account type is null', () => {
         mockedSelectAccountsWithTokensToSellSectionListByTradingType.mockReturnValue(
             defaultAccounts,
         );
@@ -150,7 +154,7 @@ describe('MyAssetSheet', () => {
         // Mock the selector to return null for all accounts
         mockedSelectFormattedAccountType.mockReturnValue(null);
 
-        const { queryByTestId } = await renderMyAssetsSheet();
+        const { queryByTestId } = renderMyAssetsSheet();
 
         expect(queryByTestId(TEST_ID_ACCOUNT_TYPE_BADGE)).toBeNull();
     });

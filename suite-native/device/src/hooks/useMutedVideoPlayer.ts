@@ -1,4 +1,4 @@
-import { VideoPlayer, VideoSource, useVideoPlayer } from 'expo-video';
+import { type VideoPlayer, type VideoSource, useVideoPlayer } from 'expo-video';
 
 export function useMutedVideoPlayer(
     source: VideoSource,

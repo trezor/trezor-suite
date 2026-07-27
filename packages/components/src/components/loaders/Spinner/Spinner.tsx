@@ -10,12 +10,12 @@ import animationStart from './animationData/refresh-spinner-start.json';
 import type { SpinnerSize, SpinnerVariant } from './types';
 import { getSpinnerColorsReplace } from './utils';
 import {
-    FrameProps,
-    FramePropsKeys,
+    type FrameProps,
+    type FramePropsKeys,
     pickAndPrepareFrameProps,
     withFrameProps,
 } from '../../../utils/frameProps';
-import { TransientProps } from '../../../utils/transientProps';
+import { type TransientProps } from '../../../utils/transientProps';
 import { recolorLottieAnimation } from '../../animations/recolorLottieAnimation';
 
 export const allowedSpinnerFrameProps = ['margin', 'opacity'] as const satisfies FramePropsKeys[];
@@ -24,12 +24,10 @@ type AllowedFrameProps = Pick<FrameProps, (typeof allowedSpinnerFrameProps)[numb
 const StyledLottie = styled(Lottie)<
     {
         size: SpinnerProps['size'];
-        $isDisabled: SpinnerProps['isDisabled'];
     } & TransientProps<AllowedFrameProps>
 >`
     width: ${({ size }) => `${size}px`};
     height: ${({ size }) => `${size}px`};
-    filter: ${({ $isDisabled }) => ($isDisabled ? 'grayscale(1) opacity(0.6)' : 'none')};
     display: flex;
 
     ${withFrameProps}
@@ -40,7 +38,6 @@ export type SpinnerProps = AllowedFrameProps & {
     isDisabled?: boolean;
     variant?: SpinnerVariant;
     hasStartAnimation?: boolean;
-    className?: string;
     'data-testid'?: string;
 };
 
@@ -56,9 +53,10 @@ export const Spinner = ({
     ...rest
 }: SpinnerProps) => {
     const theme = useTheme();
-    const defaultBodyColor = theme.baseContentBrand;
-    const defaultWarningColor = theme.baseContentWarning;
-    const defaultWarningForegroundColor = theme.baseContentReversePrimary;
+    const defaultBodyColor = isDisabled ? theme.contentDisabled : theme.contentBrand;
+    const defaultWarningColor = isDisabled ? theme.contentDisabled : theme.contentWarning;
+    const defaultWarningForegroundColor = theme.contentPrimaryInverse;
+    const animationKey = `${theme.variant}-${variant}-${isDisabled ? 'disabled' : 'enabled'}`;
 
     const frameProps = pickAndPrepareFrameProps(rest, allowedSpinnerFrameProps);
 
@@ -120,8 +118,8 @@ export const Spinner = ({
 
     return (
         <StyledLottie
+            key={animationKey}
             size={size}
-            $isDisabled={isDisabled}
             data-testid={dataTest ?? '@spinner'}
             {...lottieProps}
             {...frameProps}

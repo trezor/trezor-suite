@@ -1,7 +1,9 @@
 import { initialSuiteSyncDataState, initialSuiteSyncState } from '@suite-common/suite-sync';
-import { TrezorDevice } from '@suite-common/suite-types';
-import { StakeState, stakeInitialState } from '@suite-common/wallet-core';
-import { Account, AccountKey, Timestamp } from '@suite-common/wallet-types';
+import { type TrezorDevice } from '@suite-common/suite-types';
+import { type StakeState, stakeInitialState } from '@suite-common/wallet-core';
+import { type Account, type Timestamp } from '@suite-common/wallet-types';
+import { mockAccountKey } from '@suite-common/wallet-types/mocks';
+import { type StaticSessionId } from '@trezor/device-utils';
 
 import {
     selectExpectedRewardsForEpoch,
@@ -14,18 +16,25 @@ import {
     selectSolanaTotalStakePendingByAccountKey,
     selectVisibleDeviceSolanaAccountsWithStakingByNetworkSymbol,
 } from '../solanaStakingSelectors';
-import { NativeStakingRootState } from '../types';
+import { type NativeStakingRootState } from '../types';
 
-type SolStakeData = NonNullable<StakeState['data']['sol']>;
+const staticStateString: StaticSessionId = 'device@state:1';
 
-const staticStateString = 'device@state:1';
+const sol1Key = mockAccountKey({ symbol: 'sol', descriptor: 'sol1' });
+const sol2Key = mockAccountKey({ symbol: 'sol', descriptor: 'sol2' });
+const sol3Key = mockAccountKey({ symbol: 'sol', descriptor: 'sol3' });
+const sol4Key = mockAccountKey({ symbol: 'sol', descriptor: 'sol4' });
+const sol5Key = mockAccountKey({ symbol: 'sol', descriptor: 'sol5' });
+const etc1Key = mockAccountKey({ descriptor: 'etc1' });
+const nonExistentKey = mockAccountKey({ descriptor: 'nonExistentKey' });
+const nonExistentKey2 = mockAccountKey({ descriptor: 'nonExistent' });
 
 const solAccountWithStaking: Account = {
     symbol: 'sol',
     accountLabel: 'SOL Account #1',
     deviceState: staticStateString,
     addresses: undefined,
-    key: 'sol1',
+    key: sol1Key,
     visible: true,
     networkType: 'solana',
     misc: {
@@ -45,7 +54,7 @@ const solAccountNoStaking: Account = {
     accountLabel: 'SOL Account #2',
     deviceState: staticStateString,
     addresses: undefined,
-    key: 'sol2',
+    key: sol2Key,
     visible: true,
     networkType: 'solana',
     misc: undefined,
@@ -56,7 +65,7 @@ const solAccountWithActivatingStaking: Account = {
     accountLabel: 'SOL Account #3',
     deviceState: staticStateString,
     addresses: undefined,
-    key: 'sol3',
+    key: sol3Key,
     visible: true,
     networkType: 'solana',
     misc: {
@@ -71,12 +80,37 @@ const solAccountWithActivatingStaking: Account = {
     },
 } as unknown as Account;
 
+const solAccountWithActiveAndDeactivatingStaking: Account = {
+    symbol: 'sol',
+    accountLabel: 'SOL Account #5',
+    deviceState: staticStateString,
+    addresses: undefined,
+    key: sol5Key,
+    visible: true,
+    networkType: 'solana',
+    misc: {
+        solStakingAccounts: [
+            {
+                status: 'active',
+                stake: BigInt('1000000000'),
+                rentExemptReserve: BigInt('10'),
+            },
+            {
+                status: 'deactivating',
+                stake: BigInt('2000000000'),
+                rentExemptReserve: BigInt('20'),
+            },
+        ],
+        solEpoch: 5,
+    },
+} as unknown as Account;
+
 const solAccountWithDeactivatedStaking: Account = {
     symbol: 'sol',
     accountLabel: 'SOL Account #4',
     deviceState: staticStateString,
     addresses: undefined,
-    key: 'sol4',
+    key: sol4Key,
     visible: true,
     networkType: 'solana',
     misc: {
@@ -96,20 +130,41 @@ const etcAccount: Account = {
     accountLabel: 'ETC Account #1',
     deviceState: staticStateString,
     addresses: undefined,
-    key: 'etc1',
+    key: etc1Key,
     visible: true,
     networkType: 'ethereum',
 } as unknown as Account;
 
-const solStakeData: SolStakeData = {
-    stakingInfo: {
-        error: false,
-        isLoading: true,
-        lastSuccessfulFetchTimestamp: 0 as Timestamp,
-        data: {
-            apy: 6.21,
+const solStakeData: StakeState['data'] = {
+    error: null,
+    isLoading: true,
+    lastSuccessAt: 0 as Timestamp,
+    data: {
+        sol: {
+            stats: {
+                apy: 6.21,
+            },
         },
+        eth: undefined,
+        ada: undefined,
     },
+};
+
+const messageSystemState = {
+    config: null,
+    currentSequence: 0,
+    timestamp: 0,
+    validMessages: {
+        banner: [],
+        context: [],
+        modal: [],
+        feature: [],
+    },
+    dismissedMessages: {},
+    validExperiments: [],
+    configSource: 'remote' as const,
+    manuallyAddedMessageIds: {},
+    manuallyAddedExperimentIds: {},
 };
 
 const getTestState = ({
@@ -121,11 +176,26 @@ const getTestState = ({
 }): NativeStakingRootState => ({
     wallet: {
         accounts,
-        stake: { ...stakeInitialState, data: { sol: withSolStakeData ? solStakeData : {} } },
-        transactions: { transactions: {}, fetchStatusDetail: {} },
+        stake: {
+            ...stakeInitialState,
+            data: withSolStakeData
+                ? solStakeData
+                : {
+                      error: null,
+                      isLoading: false,
+                      lastSuccessAt: null,
+                      data: {
+                          sol: undefined,
+                          eth: undefined,
+                          ada: undefined,
+                      },
+                  },
+        },
+        transactions: { transactions: {}, phishing: {}, fetchStatusDetail: {} },
     },
     suiteSync: initialSuiteSyncState,
     suiteSyncData: initialSuiteSyncDataState,
+    messageSystem: messageSystemState,
     device: {
         devices: [
             {
@@ -148,6 +218,7 @@ const getTestState = ({
         isDeviceAuthenticityCheckEnabled: false,
         isFirmwareRevisionCheckEnabled: false,
         isFirmwareHashCheckEnabled: false,
+        areDeviceMetaChecksEnabled: false,
         areTestnetsEnabled: false,
         shouldShowAutoEjectAlert: false,
         hasAutoEjectAlertBeenDisplayed: false,
@@ -185,6 +256,41 @@ describe('selectors', () => {
                 ),
             ).toEqual([solAccountWithStaking]);
         });
+
+        it('should return the same stable empty-array reference when no sol account has staking', () => {
+            const testState = getTestState({
+                accounts: [solAccountNoStaking, etcAccount],
+            });
+
+            const first = selectVisibleDeviceSolanaAccountsWithStakingByNetworkSymbol(
+                testState,
+                'sol',
+            );
+            const second = selectVisibleDeviceSolanaAccountsWithStakingByNetworkSymbol(
+                testState,
+                'sol',
+            );
+
+            expect(first).toEqual([]);
+            expect(first).toBe(second);
+        });
+
+        it('should return the same array reference across calls when underlying state is unchanged', () => {
+            const testState = getTestState({
+                accounts: [solAccountWithStaking, solAccountNoStaking, etcAccount],
+            });
+
+            const first = selectVisibleDeviceSolanaAccountsWithStakingByNetworkSymbol(
+                testState,
+                'sol',
+            );
+            const second = selectVisibleDeviceSolanaAccountsWithStakingByNetworkSymbol(
+                testState,
+                'sol',
+            );
+
+            expect(first).toBe(second);
+        });
     });
 
     describe('selectSolStakingAccountsInfoByAccountKey', () => {
@@ -198,7 +304,7 @@ describe('selectors', () => {
                     {
                         ...testState,
                     },
-                    'sol1' as AccountKey, // Todo: create properly via `createAccountKey()`,
+                    sol1Key,
                 )?.solStakedBalance,
             ).toEqual('1');
         });
@@ -213,7 +319,7 @@ describe('selectors', () => {
                     {
                         ...testState,
                     },
-                    'sol1' as AccountKey, // Todo: create properly via `createAccountKey()`F
+                    sol1Key,
                 ),
             ).toBeNull();
         });
@@ -228,7 +334,7 @@ describe('selectors', () => {
                     {
                         ...testState,
                     },
-                    'sol3' as AccountKey, // Todo: create properly via `createAccountKey()`
+                    sol3Key,
                 )?.solPendingStakeBalance,
             ).toEqual('2');
         });
@@ -245,7 +351,7 @@ describe('selectors', () => {
                     {
                         ...testState,
                     },
-                    'sol3' as AccountKey, // Todo: create properly via `createAccountKey()`
+                    sol3Key,
                 ),
             ).toEqual(true);
         });
@@ -260,7 +366,7 @@ describe('selectors', () => {
                     {
                         ...testState,
                     },
-                    'sol3' as AccountKey, // Todo: create properly via `createAccountKey()`
+                    sol3Key,
                 ),
             ).toEqual(false);
         });
@@ -278,7 +384,7 @@ describe('selectors', () => {
                     {
                         ...testState,
                     },
-                    'sol3' as AccountKey, // Todo: create properly via `createAccountKey()`
+                    sol3Key,
                 ),
             ).toEqual(6.21);
         });
@@ -293,7 +399,7 @@ describe('selectors', () => {
                     {
                         ...testState,
                     },
-                    'sol3' as AccountKey, // Todo: create properly via `createAccountKey()`
+                    sol3Key,
                 ),
             ).toEqual(0);
         });
@@ -310,7 +416,7 @@ describe('selectors', () => {
                     {
                         ...testState,
                     },
-                    'sol1' as AccountKey, // Todo: create properly via `createAccountKey()`
+                    sol1Key,
                 ),
             ).toEqual('1');
         });
@@ -325,9 +431,24 @@ describe('selectors', () => {
                     {
                         ...testState,
                     },
-                    'non-existent-key' as AccountKey, // Todo: create properly via `createAccountKey()`
+                    nonExistentKey,
                 ),
             ).toEqual('0');
+        });
+
+        it('should exclude deactivating stake from the staked balance', () => {
+            const testState = getTestState({
+                accounts: [solAccountWithActiveAndDeactivatingStaking],
+            });
+
+            expect(
+                selectSolanaStakedBalanceByAccountKey(
+                    {
+                        ...testState,
+                    },
+                    sol5Key,
+                ),
+            ).toEqual('1');
         });
     });
 
@@ -343,7 +464,7 @@ describe('selectors', () => {
                     {
                         ...testState,
                     },
-                    'sol1' as AccountKey, // Todo: create properly via `createAccountKey()`
+                    sol1Key,
                 ),
             ).toEqual('0.000340274');
         });
@@ -359,7 +480,7 @@ describe('selectors', () => {
                     {
                         ...testState,
                     },
-                    'sol3' as AccountKey, // Todo: create properly via `createAccountKey()`
+                    sol3Key,
                 ),
             ).toEqual('0.000000000');
         });
@@ -374,7 +495,7 @@ describe('selectors', () => {
                     {
                         ...testState,
                     },
-                    'non-existent-key' as AccountKey, // Todo: create properly via `createAccountKey()`
+                    nonExistentKey,
                 ),
             ).toEqual('0');
         });
@@ -391,7 +512,7 @@ describe('selectors', () => {
                     {
                         ...testState,
                     },
-                    'sol3' as AccountKey, // Todo: create properly via `createAccountKey()`
+                    sol3Key,
                 ),
             ).toEqual('2');
         });
@@ -406,7 +527,7 @@ describe('selectors', () => {
                     {
                         ...testState,
                     },
-                    'non-existent-key' as AccountKey, // Todo: create properly via `createAccountKey()`
+                    nonExistentKey,
                 ),
             ).toEqual('0');
         });
@@ -421,7 +542,7 @@ describe('selectors', () => {
                     {
                         ...testState,
                     },
-                    'sol1' as AccountKey, // Todo: create properly via `createAccountKey()`
+                    sol1Key,
                 ),
             ).toEqual('0');
         });
@@ -433,10 +554,7 @@ describe('selectors', () => {
                 accounts: [solAccountWithStaking],
             });
 
-            const result = selectSolanaClaimableAmountByAccountKey(
-                testState as any,
-                'sol1' as AccountKey, // Todo: create properly via `createAccountKey()`
-            );
+            const result = selectSolanaClaimableAmountByAccountKey(testState, sol1Key);
 
             expect(result).toBe('0');
         });
@@ -446,10 +564,7 @@ describe('selectors', () => {
                 accounts: [solAccountWithDeactivatedStaking],
             });
 
-            const result = selectSolanaClaimableAmountByAccountKey(
-                testState as any,
-                'sol4' as AccountKey, // Todo: create properly via `createAccountKey()`
-            );
+            const result = selectSolanaClaimableAmountByAccountKey(testState, sol4Key);
 
             expect(result).toBe('3');
         });
@@ -459,10 +574,7 @@ describe('selectors', () => {
                 accounts: [solAccountNoStaking],
             });
 
-            const result = selectSolanaClaimableAmountByAccountKey(
-                testState as any,
-                'sol2' as AccountKey, // Todo: create properly via `createAccountKey()`
-            );
+            const result = selectSolanaClaimableAmountByAccountKey(testState, sol2Key);
 
             expect(result).toBe('0');
         });
@@ -472,10 +584,7 @@ describe('selectors', () => {
                 accounts: [solAccountWithStaking],
             });
 
-            const result = selectSolanaClaimableAmountByAccountKey(
-                testState,
-                'non-existent' as AccountKey, // Todo: create properly via `createAccountKey()`
-            );
+            const result = selectSolanaClaimableAmountByAccountKey(testState, nonExistentKey2);
 
             expect(result).toBe('0');
         });
@@ -487,10 +596,7 @@ describe('selectors', () => {
                 accounts: [solAccountWithStaking],
             });
 
-            const result = selectSolanaCanClaimByAccountKey(
-                testState as any,
-                'sol1' as AccountKey, // Todo: create properly via `createAccountKey()`
-            );
+            const result = selectSolanaCanClaimByAccountKey(testState, sol1Key);
 
             expect(result).toBe(false);
         });
@@ -500,10 +606,7 @@ describe('selectors', () => {
                 accounts: [solAccountWithDeactivatedStaking],
             });
 
-            const result = selectSolanaCanClaimByAccountKey(
-                testState as any,
-                'sol4' as AccountKey, // Todo: create properly via `createAccountKey()`
-            );
+            const result = selectSolanaCanClaimByAccountKey(testState, sol4Key);
 
             expect(result).toBe(true);
         });
@@ -513,10 +616,7 @@ describe('selectors', () => {
                 accounts: [solAccountNoStaking],
             });
 
-            const result = selectSolanaCanClaimByAccountKey(
-                testState as any,
-                'sol2' as AccountKey, // Todo: create properly via `createAccountKey()`
-            );
+            const result = selectSolanaCanClaimByAccountKey(testState, sol2Key);
 
             expect(result).toBe(false);
         });
@@ -526,10 +626,7 @@ describe('selectors', () => {
                 accounts: [solAccountWithStaking],
             });
 
-            const result = selectSolanaCanClaimByAccountKey(
-                testState as any,
-                'non-existent' as AccountKey, // Todo: create properly via `createAccountKey()`
-            );
+            const result = selectSolanaCanClaimByAccountKey(testState, nonExistentKey2);
 
             expect(result).toBe(false);
         });

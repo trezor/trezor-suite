@@ -1,17 +1,8 @@
-import { nonSanctionedRegional } from '../regional';
-import { TradingCountryOption } from '../types';
-import { useListDataFilter } from './useListDataFilter';
+import { normalizeForSearch } from '@suite-common/suite-utils';
 
-/**
- * Normalizes a string for search by removing diacritics, converting to lowercase, and trimming whitespace.
- * Countries are currently without diacritics, but this is to future-proof the function.
- */
-const normalizeForSearch = (str: string) =>
-    str
-        .normalize('NFD')
-        .replace(/[\u0300-\u036f]/g, '')
-        .toLowerCase()
-        .trim();
+import { nonSanctionedRegional } from '../regional';
+import { type TradingCountryOption } from '../types';
+import { useListDataFilter } from './useListDataFilter';
 
 const filterCallback = (
     { label, value, codeAlpha3 }: TradingCountryOption,

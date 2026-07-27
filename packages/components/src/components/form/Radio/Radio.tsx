@@ -1,166 +1,116 @@
-import { EventHandler, KeyboardEvent, ReactNode, SyntheticEvent } from 'react';
-
-import styled from 'styled-components';
-
-import { Color, borders } from '@trezor/theme';
-
-import { UIVariant } from '../../../config/types';
-import { KEYBOARD_CODE } from '../../../constants/keyboardEvents';
-import { pickAndPrepareFrameProps } from '../../../utils/frameProps';
-import { getFocusShadowStyle } from '../../../utils/utils';
 import {
-    AllowedCheckboxFrameProps,
-    CheckContainer,
-    Container,
-    HiddenInput,
-    Label,
-    LabelAlignment,
-    VerticalAlignment,
-    allowedCheckboxFrameProps,
-    variantStyles,
-} from '../Checkbox/Checkbox';
+    type EventHandler,
+    type MouseEventHandler,
+    type ReactNode,
+    type SyntheticEvent,
+} from 'react';
 
-interface VariantStyles {
-    borderChecked: Color;
-    dotDisabledChecked: Color;
-    borderDisabledChecked: Color;
-}
+import styled, { css } from 'styled-components';
 
-export const radioVariants = ['primary', 'destructive', 'warning'] as const;
-export type RadioVariant = Extract<UIVariant, (typeof radioVariants)[number]>;
+import { pickAndPrepareFrameProps } from '../../../utils/frameProps';
+import { Row } from '../../Flex/Flex';
+import { Text } from '../../typography/Text/Text';
+import { type AllowedCheckboxFrameProps, allowedCheckboxFrameProps } from '../Checkbox/Checkbox';
+import { type LabelAlignment, type VerticalAlignment } from '../Checkbox/types';
+import { commonCheckInputStyles } from '../utils';
 
-const radioVariantStyles: Record<RadioVariant, VariantStyles> = {
-    primary: {
-        borderChecked: 'backgroundSecondaryDefault',
-        dotDisabledChecked: 'backgroundPrimarySubtleOnElevation0',
-        borderDisabledChecked: 'backgroundPrimarySubtleOnElevation1',
-    },
-    destructive: {
-        borderChecked: 'backgroundAlertRedSubtleOnElevation0',
-        dotDisabledChecked: 'backgroundAlertRedSubtleOnElevation0',
-        borderDisabledChecked: 'backgroundAlertRedSubtleOnElevation1',
-    },
-    warning: {
-        borderChecked: 'backgroundAlertYellowSubtleOnElevation0',
-        dotDisabledChecked: 'backgroundAlertYellowSubtleOnElevation0',
-        borderDisabledChecked: 'backgroundAlertYellowSubtleOnElevation1',
-    },
-};
+const HiddenInput = styled.input`
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+`;
 
-const RadioIcon = styled(CheckContainer)`
-    position: relative;
-    border-radius: ${borders.radii.full};
+const FakeInput = styled.div`
+    ${commonCheckInputStyles}
+
+    border-radius: calc(infinity * 1px);
 
     &::after {
         content: '';
-        position: absolute;
-        top: 3px;
-        left: 3px;
-        width: 14px;
-        height: 14px;
+        width: 12px;
+        height: 12px;
         border-radius: 50%;
-        background: ${({ theme, $variant }) => theme[variantStyles[$variant].background]};
-        transition: background 0.1s;
+        opacity: 0;
+        transition: 0.2s ease-in-out;
+        transform: scale(0);
     }
 
-    input:checked + & {
-        background: ${({ theme }) => theme.backgroundSurfaceElevation0};
-        border-color: ${({ theme, $variant }) => theme[radioVariantStyles[$variant].borderChecked]};
+    ${({ theme }) => css`
+        input:checked + & {
+            border-color: transparent;
 
-        &::after {
-            background: ${({ theme, $variant }) =>
-                theme[variantStyles[$variant].backgroundChecked]};
+            &::after {
+                opacity: 1;
+                transform: scale(1);
+            }
         }
-    }
 
-    input:disabled + & {
-        cursor: not-allowed;
-    }
-
-    input:disabled:not(:checked) + & {
-        background: ${({ theme }) => theme.backgroundSurfaceElevation0};
-        border-color: ${({ theme, $variant }) => theme[variantStyles[$variant].borderDisabled]};
-
-        &::after {
-            background: transparent;
+        input:checked:not(:disabled) + &::after {
+            background-color: ${theme.contentPrimaryInverse};
         }
-    }
 
-    input:disabled:checked + & {
-        background: transparent;
-        border-color: ${({ theme, $variant }) =>
-            theme[radioVariantStyles[$variant].borderDisabledChecked]};
+        input:checked:disabled + & {
+            background-color: ${theme.elementFillBoldDisabled};
 
-        &::after {
-            background: ${({ theme, $variant }) =>
-                theme[radioVariantStyles[$variant].dotDisabledChecked]};
+            &::after {
+                background-color: ${theme.contentDisabled};
+            }
         }
-    }
-
-    ${/* sc-selector */ Container}:hover input:not(:disabled):not(:checked) + & {
-        &::after {
-            background: ${({ theme, $variant }) => theme[variantStyles[$variant].backgroundHover]};
-        }
-    }
-
-    ${getFocusShadowStyle()}
+    `}
 `;
 
 export type RadioProps = AllowedCheckboxFrameProps & {
-    variant?: RadioVariant;
     isChecked?: boolean;
     isDisabled?: boolean;
     labelAlignment?: LabelAlignment;
     verticalAlignment?: VerticalAlignment;
-    onClick: EventHandler<SyntheticEvent>;
+    onChange: EventHandler<SyntheticEvent>;
+    onClick?: MouseEventHandler<HTMLLabelElement>;
     'data-testid'?: string;
     children?: ReactNode;
 };
 
 export const Radio = ({
-    variant = 'primary',
     isChecked,
     labelAlignment = 'end',
     verticalAlignment = 'start',
     isDisabled = false,
+    onChange,
     onClick,
     'data-testid': dataTest,
     children,
     ...rest
 }: RadioProps) => {
-    const handleKeyUp = (event: KeyboardEvent<HTMLElement>) => {
-        if (
-            !isDisabled &&
-            (event.code === KEYBOARD_CODE.SPACE || event.code === KEYBOARD_CODE.ENTER)
-        ) {
-            onClick(event);
-        }
-    };
-
-    const frameProps = pickAndPrepareFrameProps(rest, allowedCheckboxFrameProps);
+    const frameProps = pickAndPrepareFrameProps(rest, allowedCheckboxFrameProps, false);
 
     return (
-        <Container
-            onClick={isDisabled ? undefined : onClick}
-            onKeyUp={handleKeyUp}
-            $isDisabled={isDisabled}
-            $labelAlignment={labelAlignment}
-            $verticalAlignment={verticalAlignment}
-            data-checked={isChecked}
+        <Row
+            gap={12}
+            alignItems={verticalAlignment === 'start' ? 'flex-start' : 'center'}
             data-testid={dataTest}
+            data-checked={isChecked}
+            isReversed={labelAlignment === 'start'}
+            cursor={isDisabled ? 'not-allowed' : 'pointer'}
+            as="label"
+            onClick={onClick}
             {...frameProps}
         >
             <HiddenInput
-                type="radio"
                 checked={isChecked}
                 disabled={isDisabled}
-                readOnly
-                tabIndex={-1}
+                onChange={onChange}
+                type="radio"
+                tabIndex={0}
             />
 
-            <RadioIcon $variant={variant} tabIndex={0} />
+            <FakeInput />
 
-            {children && <Label $isRed={variant === 'destructive'}>{children}</Label>}
-        </Container>
+            {children && (
+                <Text typographyStyle="body-md" flex="1" isDisabled={isDisabled} as="div">
+                    {children}
+                </Text>
+            )}
+        </Row>
     );
 };

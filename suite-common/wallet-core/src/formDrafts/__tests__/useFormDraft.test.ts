@@ -1,4 +1,4 @@
-import { FormDraftRootState } from '../formDraftSlice';
+import { type FormDraftRootState } from '../formDraftSlice';
 import { useFormDraft } from '../useFormDraft';
 
 const mockDispatch = jest.fn();
@@ -76,5 +76,11 @@ describe('useFormDraft', () => {
             type: '@formDraft/removeDraft',
             payload: { key: 'stake/' },
         });
+    });
+
+    it('should return formDraftKey', () => {
+        const { formDraftKey } = useFormDraft('stake', 'eth');
+
+        expect(formDraftKey).toBe('stake/eth');
     });
 });

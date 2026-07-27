@@ -1,13 +1,18 @@
 // https://github.com/bitcoinjs/bitcoinjs-lib/blob/master/ts_src/payments/p2pk.ts
 
-import ecc from 'tiny-secp256k1';
-
 import { bitcoin as BITCOIN_NETWORK } from '../networks';
+import * as ecc from '../noble-compatibility';
 import * as bscript from '../script';
 import * as lazy from './lazy';
-import { Payment, PaymentOpts, StackFunction, typeforce } from '../types';
+import { type Payment, type PaymentOpts } from '../types';
+import { BufferSchema, Point, PredicateSchema, Type, assertType } from '../types/validation';
 
 const { OPS } = bscript;
+
+const CanonicalScriptSignature = PredicateSchema(
+    '?isCanonicalScriptSignature',
+    v => Buffer.isBuffer(v) && bscript.isCanonicalScriptSignature(v),
+);
 
 // input: {signature}
 // output: {pubKey} OP_CHECKSIG
@@ -17,19 +22,21 @@ export function p2pk(a: Payment, opts?: PaymentOpts): Payment {
 
     opts = Object.assign({ validate: true }, opts || {});
 
-    typeforce(
-        {
-            network: typeforce.maybe(typeforce.Object),
-            output: typeforce.maybe(typeforce.Buffer),
-            pubkey: typeforce.maybe(ecc.isPoint),
-
-            signature: typeforce.maybe(bscript.isCanonicalScriptSignature),
-            input: typeforce.maybe(typeforce.Buffer),
-        },
+    assertType(
+        Type.Object(
+            {
+                network: Type.Optional(Type.Object({}, { additionalProperties: true })),
+                output: Type.Optional(BufferSchema),
+                pubkey: Type.Optional(Point),
+                signature: Type.Optional(CanonicalScriptSignature),
+                input: Type.Optional(BufferSchema),
+            },
+            { additionalProperties: true },
+        ),
         a,
     );
 
-    const _chunks = lazy.value(() => bscript.decompile(a.input!)) as StackFunction;
+    const _chunks = lazy.value(() => bscript.decompile(a.input!));
 
     const network = a.network || BITCOIN_NETWORK;
     const o: Payment = { name: 'p2pk', network };
@@ -65,8 +72,9 @@ export function p2pk(a: Payment, opts?: PaymentOpts): Payment {
         if (a.output) {
             if (a.output[a.output.length - 1] !== OPS.OP_CHECKSIG)
                 throw new TypeError('Output is invalid');
-            if (!ecc.isPoint(o.pubkey)) throw new TypeError('Output pubkey is invalid');
-            if (a.pubkey && !a.pubkey.equals(o.pubkey!)) throw new TypeError('Pubkey mismatch');
+            if (!o.pubkey || !ecc.isPoint(o.pubkey))
+                throw new TypeError('Output pubkey is invalid');
+            if (a.pubkey && !a.pubkey.equals(o.pubkey)) throw new TypeError('Pubkey mismatch');
         }
 
         if (a.signature) {

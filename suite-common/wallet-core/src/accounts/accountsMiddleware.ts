@@ -3,12 +3,10 @@ import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
 import { accountsActions } from './accountsActions';
 import { fetchAndUpdateAccountThunk } from './accountsThunks';
 
-const UPDATE_SELECTED_ACCOUNT_INTERVAL = 10_000;
-
 export const prepareAccountsMiddleware = createMiddlewareWithExtraDeps(
-    (action, { dispatch, next }) => {
-        // propagate action to reducers
-
+    (action, { dispatch, next, extra }) => {
+        // propagate action to reducers (the accountsRefreshTime slice records the refresh timestamp
+        // off the account entity, reacting to createAccount/updateAccount/removeAccount)
         next(action);
 
         if (
@@ -16,11 +14,11 @@ export const prepareAccountsMiddleware = createMiddlewareWithExtraDeps(
             action.payload.status === 'loaded'
         ) {
             const accountKey = action.payload.account.key;
-            const updatedAt = action.payload.account.ts || 0; // safety, old versions of Suite does not have this attribute
 
-            const shouldUpdateAccount = Date.now() - updatedAt >= UPDATE_SELECTED_ACCOUNT_INTERVAL; // update account on enter
-
-            if (shouldUpdateAccount) {
+            // Refresh the selected account on enter, throttled to once per interval per account.
+            // canRun reads the timestamp from the store, so this no longer mutates (and re-renders)
+            // the account every time.
+            if (extra.services.accountRefreshThrottle.canRun(accountKey)) {
                 dispatch(fetchAndUpdateAccountThunk({ accountKey }));
             }
         }

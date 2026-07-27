@@ -1,32 +1,32 @@
-import { WalletKitTypes } from '@reown/walletkit';
+import { type WalletKitTypes } from '@reown/walletkit';
 import type { ProposalTypes } from '@walletconnect/types';
 
 import * as trezorConnectPopupActions from '@suite-common/connect-popup';
 import { selectSelectedDevice } from '@suite-common/device';
 import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
 import { createThunk } from '@suite-common/redux-utils';
-import { Network, getNetwork, networksCollection } from '@suite-common/wallet-config';
+import { type Network, getNetwork, networksCollection } from '@suite-common/wallet-config';
 import { ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT } from '@suite-common/wallet-constants';
 import {
     ethereumGetCurrentNonceThunk,
     selectAccounts,
     selectIsMevProtectionEnabled,
 } from '@suite-common/wallet-core';
-import { Account } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 import { getAccountIdentity, getMevProtectedTxData, sanitizeHex } from '@suite-common/wallet-utils';
 import TrezorConnect, {
-    CallMethodResponse,
-    EthereumSignTypedData,
-    EthereumSignTypedHash,
+    type CallMethodResponse,
+    type EthereumSignTypedData,
+    type EthereumSignTypedDataTypes,
 } from '@trezor/connect';
-import { isAscii, isHex } from '@trezor/utils';
+import { isAscii, isHex, throwError } from '@trezor/utils';
 
 import { WALLETCONNECT_MODULE } from '../walletConnectConstants';
 import { selectSessionByTopic } from '../walletConnectReducer';
 import {
-    PendingConnectionProposalNetwork,
-    WalletConnectAdapter,
-    WalletConnectNamespace,
+    type PendingConnectionProposalNetwork,
+    type WalletConnectAdapter,
+    type WalletConnectNamespace,
 } from '../walletConnectTypes';
 
 const methods = [
@@ -46,19 +46,14 @@ const ethereumRequestThunk = createThunk<
     const isMevProtectionEnabled = selectIsMevProtectionEnabled(getState());
     const isMevProtectionFeatureEnabled = selectIsMevProtectionFeatureEnabled(getState());
 
-    const getAccount = (address: string, chainId?: number) => {
-        const account = selectAccounts(getState()).find(
+    const getAccount = (address: string, chainId?: number) =>
+        selectAccounts(getState()).find(
             a =>
                 a.descriptor.toLowerCase() === address.toLowerCase() &&
                 a.networkType === 'ethereum' &&
                 (!chainId || getNetwork(a.symbol).chainId === chainId),
-        );
-        if (!account) {
-            throw new Error('Account not found');
-        }
+        ) || throwError('Account not found');
 
-        return account;
-    };
     const session = selectSessionByTopic(getState(), event.topic);
     if (!session) {
         throw new Error('WalletConnect Session not found');
@@ -81,7 +76,7 @@ const ethereumRequestThunk = createThunk<
             const messageDecoded = message.startsWith('0x')
                 ? Buffer.from(message.slice(2), 'hex').toString('utf8')
                 : message;
-            const messageHex = isHex(message)
+            const messageHex = isHex(message, { prefix: 'optional', allowEmpty: false })
                 ? sanitizeHex(message)
                 : Buffer.from(message, 'utf8').toString('hex');
             const isReadable = isAscii(messageDecoded);
@@ -110,26 +105,13 @@ const ethereumRequestThunk = createThunk<
             const account = getAccount(address);
             const parsedData = JSON.parse(data);
 
-            // For Trezor One (T1B1), we need to pre-compute the hashes
-            // as the device cannot process the full EIP-712 JSON structure
-            let payload: EthereumSignTypedData<any> | EthereumSignTypedHash<any> = {
+            // EIP-712 hashes for T1B1 are computed by @trezor/connect internally
+            // since Connect 10 — pass `data` directly for all device models.
+            const payload: EthereumSignTypedData<EthereumSignTypedDataTypes> = {
                 path: account.path,
                 data: parsedData,
                 metamask_v4_compat: true,
             };
-
-            if (device?.features?.internal_model === 'T1B1') {
-                // Import the hash computation function
-                const { transformTypedData } = await import('@trezor/connect-plugin-ethereum');
-                const transformed = transformTypedData(parsedData, true);
-
-                // Add the pre-computed hashes for Trezor One
-                payload = {
-                    ...payload,
-                    domain_separator_hash: transformed.domain_separator_hash,
-                    message_hash: transformed.message_hash || undefined,
-                };
-            }
 
             dispatch(
                 trezorConnectPopupActions.connectPopupCallThunk({
@@ -189,7 +171,10 @@ const ethereumRequestThunk = createThunk<
                 transaction.value = '0x0';
             }
             const { nonce } = await dispatch(
-                ethereumGetCurrentNonceThunk({ selectedAccount: account }),
+                ethereumGetCurrentNonceThunk({
+                    selectedAccount: account,
+                    fetchConfirmedNonce: true,
+                }),
             ).unwrap();
             const nonceHex = sanitizeHex(parseInt(nonce).toString(16));
             const payload = {
@@ -319,6 +304,7 @@ const processNamespaces = (
 export const ethereumAdapter = {
     methods,
     networkType: 'ethereum',
+    namespaceId: 'eip155',
     requestThunk: ethereumRequestThunk,
     getNamespace,
     getChainId,

@@ -4,15 +4,15 @@ import { PixelRatio } from 'react-native';
 import * as Haptics from 'expo-haptics';
 
 import {
-    FiatGraphPoint,
-    GroupedBalanceMovementEvent,
-    GroupedBalanceMovementEventPayload,
+    type FiatGraphPoint,
+    type GroupedBalanceMovementEvent,
+    type GroupedBalanceMovementEventPayload,
 } from '@suite-common/graph';
 import { Box, Loader } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import { GraphPoint, LineGraph } from '@suite-native/react-native-graph';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { TimerId } from '@trezor/type-utils';
+import { type GraphPoint, LineGraph } from '@suite-native/react-native-graph';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
+import { type TimerId } from '@trezor/type-utils';
 
 import { getExtremaFromGraphPoints } from '../utils';
 import { AxisLabel } from './AxisLabel';
@@ -137,7 +137,7 @@ export const Graph = <TGraphPoint extends FiatGraphPoint>({
             <LineGraph<GroupedBalanceMovementEventPayload>
                 style={applyStyle(graphStyle, { loading, error })}
                 points={points}
-                color={colors.borderSecondary}
+                color={colors.borderBrand}
                 animated={animated}
                 verticalPadding={20}
                 enablePanGesture
@@ -154,7 +154,7 @@ export const Graph = <TGraphPoint extends FiatGraphPoint>({
                 onEventHover={triggerHaptics}
                 lineThickness={getAccessibilityLineThickness()}
                 loading={delayedLoading}
-                loadingLineColor={colors.borderDashed}
+                loadingLineColor={colors.borderNeutral}
                 blurOverlay={showBlurredGraph}
                 showPlaceholder={arePointsEmpty}
             />

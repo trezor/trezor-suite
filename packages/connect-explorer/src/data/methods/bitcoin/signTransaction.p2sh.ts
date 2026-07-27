@@ -1,7 +1,8 @@
+import type { CoinSymbol } from '@trezor/connect-common';
+
 import { select } from './common';
 
 const name = 'signTransaction';
-const docs = 'methods/signTransaction.md';
 
 const test = {
     inputs: [
@@ -38,15 +39,13 @@ const test = {
     ],
 };
 
-const examples = {
+const examples: Partial<Record<CoinSymbol, { inputs: unknown[]; outputs: unknown[] }>> = {
     test,
 };
 
 export default [
     {
-        url: '/method/signTransaction-p2sh',
         name,
-        docs,
         submitButton: 'Sign transaction',
         fields: [
             {
@@ -55,9 +54,9 @@ export default [
                 value: 'test',
                 affect: ['inputs', 'outputs'],
                 data: select
-                    .filter(c => c.affectedValue.indexOf('m/49') >= 0)
+                    .filter(c => c.affectedValue.includes('m/49'))
                     .map(v => {
-                        const example = examples[v.value as keyof typeof examples];
+                        const example = examples[v.value];
 
                         return {
                             ...v,
@@ -77,14 +76,12 @@ export default [
             },
             {
                 name: 'push',
-                label: 'Push transaction',
                 type: 'checkbox',
                 defaultValue: false,
                 value: false,
             },
             {
                 name: 'chunkify',
-                label: 'Display recipient address in chunks of 4 characters',
                 type: 'checkbox',
                 value: false,
             },

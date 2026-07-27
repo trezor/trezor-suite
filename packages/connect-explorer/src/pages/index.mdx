@@ -3,83 +3,28 @@ auto_sections: false
 icon: lightning
 ---
 
-import Link from 'next/link';
 import { Card, Cards, Steps, Tabs } from 'nextra/components';
-import styled from 'styled-components';
 
-import { Button, CollapsibleBox, Card as TrezorCard, variables } from '@trezor/components';
-import { spacings, spacingsPx } from '@trezor/theme';
+import { Button, CollapsibleBox } from '@trezor/components';
 
 import { BetaOnly } from '../components/BetaOnly';
+import {
+    ExampleHeading,
+    ExamplesAside,
+    HiddenNextraHeading,
+    SdkContainer,
+    SdkDescription,
+    SdkHeading,
+    SdkName,
+    SdkTag,
+    SectionCard,
+} from '../components/IndexPageComponents';
+import { LinkButton } from '../components/LinkButton';
 import ZoomableIllustration from '../components/ZoomableIllustration';
 import IconExtension from '../components/icons/IconExtension';
 import IconMobile from '../components/icons/IconMobile';
 import IconNode from '../components/icons/IconNode';
 import IconWeb from '../components/icons/IconWeb';
-
-export const SectionCard = ({ children }) => (
-    <TrezorCard margin={{ bottom: spacings.xl }}>{children}</TrezorCard>
-);
-
-export const SdkHeading = styled.h2`
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: ${spacingsPx.sm};
-    font-size: 1.5rem;
-    font-weight: 600;
-    margin-bottom: ${spacingsPx.sm};
-`;
-
-export const HiddenNextraHeading = styled.div`
-    /* hidden heading for Nextra sidebar */
-    visibility: hidden;
-    height: 1px;
-`;
-
-export const SdkName = styled.div``;
-
-export const SdkTag = styled.div`
-    opacity: 0.5;
-
-    @media (min-width: ${variables.SCREEN_SIZE.LG}) {
-        flex: 1;
-    }
-
-`;
-
-export const SdkContainer = styled.div`
-    display: grid;
-    grid-template-columns: 1fr;
-    margin-top: ${spacingsPx.xxl};
-    gap: ${spacingsPx.xxl};
-
-    @media (min-width: ${variables.SCREEN_SIZE.LG}) {
-        grid-template-columns: 2fr 1fr;
-    }
-
-`;
-
-export const SdkDescription = styled.div``;
-
-export const ExamplesAside = styled.div`
-    p {
-        margin-top: ${spacingsPx.xs};
-    }
-    ul {
-        list-style-type: none;
-        padding: 0;
-        margin: 0;
-    }
-`;
-
-export const ExampleHeading = styled.h3`
-    font-size: 1rem;
-    text-transform: uppercase;
-    font-weight: 600;
-    margin-bottom: 0;
-`;
 
 # Integrate Trezor devices with your project
 
@@ -111,7 +56,7 @@ export const ExampleHeading = styled.h3`
         </BetaOnly>
     </Cards>
 
-    <CollapsibleBox heading="Still unsure?" margin={{ top: spacings.md }}>
+    <CollapsibleBox heading="Still unsure?" margin={{ top: 16 }}>
         |Environment|Package|
         |---|-------|
         |node|@trezor/connect|
@@ -134,17 +79,14 @@ export const ExampleHeading = styled.h3`
         <IconNode />
         <SdkName>Node.js</SdkName>
         <SdkTag></SdkTag>
-        <Link href="/readme/connect" passHref legacyBehavior>
-            <Button
-                intent="neutral"
-                priority="secondary"
-                size="small"
-                iconLeft="bookOpenText"
-                target="_self"
-                href="#">
-                README
-            </Button>
-        </Link>
+        <LinkButton
+            intent="neutral"
+            priority="secondary"
+            size="small"
+            iconLeft="bookOpenText"
+            href="/readme/connect">
+            README
+        </LinkButton>
         <Button
             intent="neutral"
             priority="secondary"
@@ -172,7 +114,7 @@ export const ExampleHeading = styled.h3`
         </ExamplesAside>
     </SdkContainer>
 
-    <CollapsibleBox heading="Quick start manual" margin={{ top: spacings.md }}>
+    <CollapsibleBox heading="Quick start manual" margin={{ top: 16 }}>
         <Steps>
             {<h3>Installation of the package</h3>}
 
@@ -192,8 +134,6 @@ export const ExampleHeading = styled.h3`
 
             ```javascript
                 TrezorConnect.init({
-                    lazyLoad: true, // this param prevents iframe injection until
-                    // TrezorConnect.method is called
                     manifest: {
                         email: 'developer@xyz.com',
                         appName: 'Your Application',
@@ -235,17 +175,14 @@ export const ExampleHeading = styled.h3`
         <IconWeb />
         <SdkName>Web</SdkName>
         <SdkTag>DOM required</SdkTag>
-        <Link href="/readme/connect-web" passHref legacyBehavior>
-            <Button
-                intent="neutral"
-                priority="secondary"
-                size="small"
-                iconLeft="bookOpenText"
-                target="_self"
-                href="#">
-                README
-            </Button>
-        </Link>
+        <LinkButton
+            intent="neutral"
+            priority="secondary"
+            size="small"
+            iconLeft="bookOpenText"
+            href="/readme/connect-web">
+            README
+        </LinkButton>
         <Button
             intent="neutral"
             priority="secondary"
@@ -257,19 +194,19 @@ export const ExampleHeading = styled.h3`
         </Button>
     </SdkHeading>
 
-    <Tabs items={['Core in iframe', 'Core in popup', 'Auto mode selection']}>
+    <Tabs items={['Suite desktop popup', 'Suite Web popup']}>
+        <Tabs.Tab>
+            <ZoomableIllustration
+                src="/images/schema-connect-desktop.svg"
+                $darkMode
+                alt="connect schema when used with Suite Desktop popup"
+            />
+        </Tabs.Tab>
         <Tabs.Tab>
             <ZoomableIllustration
                 src="/images/schema-connect-web.svg"
                 $darkMode
                 alt="connect schema when used on web"
-            />
-        </Tabs.Tab>
-        <Tabs.Tab>
-            <ZoomableIllustration
-                src="/images/schema-connect-web-core-auto.svg"
-                $darkMode
-                alt="connect auto flowchart"
             />
         </Tabs.Tab>
     </Tabs>
@@ -278,19 +215,16 @@ export const ExampleHeading = styled.h3`
         <SdkDescription>
             #### About
 
-            `@trezor/connect-web` imports only a thin layer with API description into your 3rd party application.
-            It has two modes of operation: core SDK logic can be either injected into **iframe** or opened in **popup** (more info in [init method documentation](./methods/other/init)).
-            User input, such as passphrase or PIN, is handled by the popup page opened on trezor.io, isolated from your application.
-            When using iframe persistent connection between your app and core SDK is kept so device events or blockchain subscriptions are available.
-            However iframe doesn't allow WebUSB communication, so popup is automatically preferred if [Trezor Bridge](https://trezor.io/guides/trezor-suite/trezor-suite-desktop/deprecation-and-removal-of-standalone-trezor-bridge) is not running.
+            `@trezor/connect-web` ships a thin API layer that routes requests to one of two runtime modes:
+            **Suite Desktop WebSocket** (preferred when Suite Desktop is running) or **Suite Web popup** hosted on connect.trezor.io.
+            User input (PIN, passphrase, confirmations) is handled inside Suite Desktop or the popup, isolated from your application.
         </SdkDescription>
         <ExamplesAside>
             <ExampleHeading>Examples:</ExampleHeading>
-            -   [web app](https://github.com/trezor/trezor-suite/tree/develop/packages/connect-examples/browser-inline-script)
             -   [web extension mv3 (foreground)](https://github.com/trezor/trezor-suite/tree/develop/packages/connect-examples/webextension-mv3)
         </ExamplesAside>
     </SdkContainer>
-    <CollapsibleBox heading="Quick start manual" margin={{ top: spacings.md }}>
+    <CollapsibleBox heading="Quick start manual" margin={{ top: 16 }}>
             <Steps>
                 {<h3>Installation of the package</h3>}
 
@@ -310,8 +244,6 @@ export const ExampleHeading = styled.h3`
 
                 ```javascript
                 TrezorConnect.init({
-                    lazyLoad: true, // this param prevents iframe injection until
-                    // TrezorConnect.method is called
                     manifest: {
                         email: 'developer@xyz.com',
                         appName: 'Your Application',
@@ -350,17 +282,14 @@ export const ExampleHeading = styled.h3`
         <IconExtension />
         <SdkName>Web extension</SdkName>
         <SdkTag>Using service worker</SdkTag>
-        <Link href="/readme/connect-webextension" passHref legacyBehavior>
-            <Button
-                intent="neutral"
-                priority="secondary"
-                size="small"
-                iconLeft="bookOpenText"
-                target="_self"
-                href="#">
-                README
-            </Button>
-        </Link>
+        <LinkButton
+            intent="neutral"
+            priority="secondary"
+            size="small"
+            iconLeft="bookOpenText"
+            href="/readme/connect-webextension">
+            README
+        </LinkButton>
         <Button
             intent="neutral"
             priority="secondary"
@@ -386,28 +315,23 @@ export const ExampleHeading = styled.h3`
             allowing secure connection to Trezor hardware wallets.
             By the end, you'll have a fully functional web extension.
 
-            <Link href="/guides/webextension-implementation-tutorial" passHref legacyBehavior>
-                <Button
-                    intent="neutral"
-                    priority="secondary"
-                    className="nx-mt-4 nx-mb-8"
-                    size="small"
-                    iconLeft="bookOpenText"
-                    target="_self"
-                    href="#">
-                    Open Tutorial  →
-                </Button>
-            </Link>
+            <LinkButton
+                intent="neutral"
+                priority="secondary"
+                className="nx-mt-4 nx-mb-8"
+                size="small"
+                iconLeft="bookOpenText"
+                href="/guides/webextension-implementation-tutorial">
+                Open Tutorial  →
+            </LinkButton>
         </SdkDescription>
         <ExamplesAside>
             <ExampleHeading>Examples:</ExampleHeading>
-            - [Simple example](https://github.com/trezor/trezor-suite/tree/develop/packages/connect-examples/webextension-mv3-sw)
-            - [Example with Webpack, TS](https://github.com/trezor/trezor-suite/tree/develop/packages/connect-examples/webextension-mv3-sw-ts)
-            - [Connect Explorer example](https://github.com/trezor/trezor-suite/tree/develop/packages/connect-explorer/src-webextension)
+            - [Simple example](https://github.com/trezor/trezor-suite/tree/develop/packages/connect-examples/webextension)
         </ExamplesAside>
     </SdkContainer>
 
-        <CollapsibleBox heading="Quick start manual" margin={{ top: spacings.md }}>
+        <CollapsibleBox heading="Quick start manual" margin={{ top: 16 }}>
             <Steps>
                 {<h3>Installation of the package</h3>}
 
@@ -419,17 +343,17 @@ export const ExampleHeading = styled.h3`
 
                 We support two methods for integrating the library into your extension - automatic content script injection and manual content script injection.
 
-                For automatic content script injection, modify your extension's `manifest.json` to include scripting permissions, specify `host_permissions`, and define your service worker script as shown below:
+                The popup flow no longer uses `connect-script` or inline iframe injection. Instead, the service worker opens
+                the Suite Web popup and the popup communicates back using the `externally_connectable` API. Make sure your
+                extension allows the Suite Web origin you use to send messages back:
 
                 ```json
-                    "permissions": ["scripting"],
-                    "host_permissions": ["*://connect.trezor.io/9/*"]
-                    "background": {
-                        "service_worker": "serviceWorker.js"
-                    }
+                "externally_connectable": {
+                    "matches": [
+                        "https://suite.trezor.io/*"
+                    ]
+                }
                 ```
-
-                For manual content script injection, you can [find more information in the README](/readme/connect-webextension).
 
                 {<h3>Import in the service worker</h3>}
 
@@ -444,8 +368,6 @@ export const ExampleHeading = styled.h3`
 
                 ```javascript
                 TrezorConnect.init({
-                    lazyLoad: true, // this param prevents iframe injection until
-                    // TrezorConnect.method is called
                     manifest: {
                         email: 'developer@xyz.com',
                         appName: 'Your Application',
@@ -487,17 +409,14 @@ export const ExampleHeading = styled.h3`
         <IconMobile />
         <SdkName>Mobile</SdkName>
         <SdkTag>Using deep linking</SdkTag>
-        <Link href="/readme/connect-mobile" passHref legacyBehavior>
-            <Button
-                intent="neutral"
-                priority="secondary"
-                size="small"
-                iconLeft="bookOpenText"
-                target="_self"
-                href="#">
-                README
-            </Button>
-        </Link>
+        <LinkButton
+            intent="neutral"
+            priority="secondary"
+            size="small"
+            iconLeft="bookOpenText"
+            href="/readme/connect-mobile">
+            README
+        </LinkButton>
         <Button
             intent="neutral"
             priority="secondary"
@@ -524,18 +443,15 @@ export const ExampleHeading = styled.h3`
 
             This can be done by implementing the following specification.
 
-            <Link href="/details/deeplinking" passHref legacyBehavior>
-                <Button
-                    intent="neutral"
-                    priority="secondary"
-                    className="nx-mt-4 nx-mb-8"
-                    size="small"
-                    iconRight="arrowRight"
-                    target="_self"
-                    href="#">
-                    Deep linking specification
-                </Button>
-            </Link>
+            <LinkButton
+                intent="neutral"
+                priority="secondary"
+                className="nx-mt-4 nx-mb-8"
+                size="small"
+                iconRight="arrowRight"
+                href="/details/deeplinking">
+                Deep linking specification
+            </LinkButton>
 
         </SdkDescription>
         <ExamplesAside>
@@ -544,7 +460,7 @@ export const ExampleHeading = styled.h3`
         </ExamplesAside>
     </SdkContainer>
 
-        <CollapsibleBox heading="Quick start manual" margin={{ top: spacings.md }}>
+        <CollapsibleBox heading="Quick start manual" margin={{ top: 16 }}>
             <Steps>
                 {<h3>Installation of the package</h3>}
 

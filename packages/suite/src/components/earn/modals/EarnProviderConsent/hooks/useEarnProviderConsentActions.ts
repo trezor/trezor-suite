@@ -1,45 +1,55 @@
-import { EarnAccountRef, EarnFlow } from '@suite-common/suite-types/src/staking';
+import { selectDesktopAnalyticsDep } from '@suite/analytics';
+import { openModal } from '@suite/modal';
+import { goto } from '@suite/router';
+import { useServices } from '@suite-common/dependency-injection';
+import {
+    EarnFlow,
+    type EarnModalAction,
+    type EarnYieldContext,
+} from '@suite-common/suite-types/src/staking';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     DEFAULT_VOTING_OPTION,
     selectVotingDelegationOption,
     stakeActions,
 } from '@suite-common/wallet-core';
+import { type Account } from '@suite-common/wallet-types';
+import { exhaustive } from '@trezor/type-utils';
 
-import { openModal } from 'src/actions/suite/modalActions';
+import { getEarnRouteParams } from 'src/components/earn/utils/getEarnRouteParams';
 import { earnFlowToEventTypeMap } from 'src/constants/suite/staking';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
-import { useAnalytics } from 'src/support/useAnalytics';
 
 interface UseEarnProviderConsentActionsProps {
     flow: EarnFlow;
     onCancel: () => void;
     includeVotingDelegation?: boolean;
-    accountRef?: EarnAccountRef;
-    yieldId?: string;
-    tokenContractAddress?: string;
+    account: Account;
+    networkSymbol?: NetworkSymbol;
+    yieldContext?: EarnYieldContext;
 }
 
 export const useEarnProviderConsentActions = ({
     flow,
     onCancel,
     includeVotingDelegation = false,
-    accountRef,
-    yieldId,
-    tokenContractAddress,
+    account,
+    networkSymbol,
+    yieldContext,
 }: UseEarnProviderConsentActionsProps) => {
     const dispatch = useDispatch();
-    const analytics = useAnalytics();
-    const selectedAccount = useSelector(selectSelectedAccount);
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
     const selectedVotingDelegation = useSelector(selectVotingDelegationOption);
 
-    const report = (action: 'continue' | 'cancel') => {
+    const report = (action: EarnModalAction) => {
+        if (flow === EarnFlow.Yield) return;
+
         analytics.report({
             type: earnFlowToEventTypeMap[flow],
             payload: {
                 action,
                 step: 'funds-maintained-modal',
-                networkSymbol: selectedAccount?.symbol,
+                networkSymbol,
                 ...(includeVotingDelegation
                     ? { votingDelegation: selectedVotingDelegation.type }
                     : {}),
@@ -47,17 +57,38 @@ export const useEarnProviderConsentActions = ({
         });
     };
 
-    const proceedToSupply = () => {
+    const proceedToEarnFlow = () => {
         onCancel();
-        dispatch(
-            openModal({
-                type: 'supply',
-                flow,
-                account: accountRef,
-                yieldId,
-                tokenContractAddress,
-            }),
-        );
+
+        switch (flow) {
+            case EarnFlow.Yield:
+                if (yieldContext) {
+                    dispatch(
+                        goto({
+                            routeName: 'earn-yield-deposit',
+                            params: getEarnRouteParams({
+                                account,
+                                yieldId: yieldContext.id,
+                                contractAddress: yieldContext.tokenContractAddress,
+                            }),
+                        }),
+                    );
+                }
+                break;
+            case EarnFlow.Stake:
+            case EarnFlow.UpdateProvider:
+                dispatch(
+                    openModal({
+                        type: 'stake',
+                        flow,
+                        account,
+                    }),
+                );
+                break;
+            default:
+                exhaustive(flow);
+        }
+
         report('continue');
     };
 
@@ -69,7 +100,7 @@ export const useEarnProviderConsentActions = ({
     };
 
     return {
-        proceedToSupply,
+        proceedToEarnFlow,
         onCancelClick,
     };
 };

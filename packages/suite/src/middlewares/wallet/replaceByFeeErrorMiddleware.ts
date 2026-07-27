@@ -1,9 +1,9 @@
-import { MiddlewareAPI } from 'redux';
+import { type MiddlewareAPI } from 'redux';
 
 import { transactionsActions } from '@suite-common/wallet-core/';
 import { isRbfTransaction } from '@suite-common/wallet-utils';
 
-import { Action, AppState, Dispatch } from 'src/types/suite';
+import { type Action, type AppState, type Dispatch } from 'src/types/suite';
 
 import { replaceByFeeErrorThunk } from '../../actions/wallet/send/replaceByFeeErrorThunk';
 
@@ -30,7 +30,7 @@ export const replaceByFeeErrorMiddleware =
 
         const addedTransaction = transactions.find(tx => tx.txid === precomposedTx.prevTxid);
 
-        if (addedTransaction !== undefined && addedTransaction.blockHeight !== undefined) {
+        if (addedTransaction?.blockHeight !== undefined) {
             api.dispatch(replaceByFeeErrorThunk());
         }
 

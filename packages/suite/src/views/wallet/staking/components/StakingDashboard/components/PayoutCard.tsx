@@ -1,7 +1,7 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
 import { Card, Column, Icon } from '@trezor/components';
-import { spacings } from '@trezor/theme';
+import { CalendarIcon } from '@trezor/icons';
 
 interface PayoutCardProps {
     children: ReactNode;
@@ -9,8 +9,8 @@ interface PayoutCardProps {
 
 export const PayoutCard = ({ children }: PayoutCardProps) => (
     <Card paddingType="small" flex="1">
-        <Column alignItems="flex-start" flex="1" gap={spacings.lg}>
-            <Icon name="calendar" intent="neutral" priority="secondary" />
+        <Column alignItems="flex-start" flex="1" gap={20}>
+            <Icon as={CalendarIcon} intent="neutral" priority="secondary" />
             <Column margin={{ top: 'auto' }}>{children}</Column>
         </Column>
     </Card>

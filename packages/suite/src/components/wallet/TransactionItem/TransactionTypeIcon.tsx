@@ -1,7 +1,7 @@
-import { getTxIcon } from '@suite-common/wallet-utils';
 import { IconCircle } from '@trezor/components';
 
-import { WalletAccountTransaction } from 'src/types/wallet';
+import { type WalletAccountTransaction } from 'src/types/wallet';
+import { getTransactionIcon } from 'src/utils/wallet/transactionIconUtils';
 
 type TransactionTypeIconProps = {
     transaction: WalletAccountTransaction;
@@ -9,7 +9,7 @@ type TransactionTypeIconProps = {
     isPhishingTransaction: boolean;
 };
 
-const getIconVariant = (
+const getIconIntent = (
     type: WalletAccountTransaction['type'],
     isPending: boolean,
     isPhishingTransaction: boolean,
@@ -17,9 +17,9 @@ const getIconVariant = (
     if (isPending) {
         return 'warning';
     } else if (isPhishingTransaction || type === 'failed') {
-        return 'destructive';
+        return 'critical';
     } else {
-        return 'tertiary';
+        return 'neutral';
     }
 };
 
@@ -29,9 +29,8 @@ export const TransactionTypeIcon = ({
     isPhishingTransaction,
 }: TransactionTypeIconProps) => (
     <IconCircle
-        name={getTxIcon(transaction, isPhishingTransaction)}
-        variant={getIconVariant(transaction.type, isPending, isPhishingTransaction)}
-        size={48}
-        hasBorder={false}
+        icon={getTransactionIcon(transaction, isPhishingTransaction)}
+        intent={getIconIntent(transaction.type, isPending, isPhishingTransaction)}
+        size={40}
     />
 );

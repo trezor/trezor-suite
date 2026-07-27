@@ -1,6 +1,6 @@
 import { tradingActions } from '@suite-common/trading';
 
-import { Dispatch } from 'src/types/suite';
+import { type Dispatch } from 'src/types/suite';
 
 import { ConfirmUnverifiedModal } from './ConfirmUnverifiedModal';
 

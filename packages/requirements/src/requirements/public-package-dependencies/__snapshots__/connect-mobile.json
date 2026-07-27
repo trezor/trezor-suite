@@ -1,0 +1,18 @@
+{
+    "prod": [
+        "@bufbuild/protobuf",
+        "@sinclair/typebox",
+        "@trezor/connect-common",
+        "@trezor/connect-mobile",
+        "@trezor/crypto-utils",
+        "@trezor/device-utils",
+        "@trezor/protobuf",
+        "@trezor/protocol",
+        "@trezor/schema-utils",
+        "@trezor/type-utils",
+        "@trezor/utils",
+        "bignumber.js",
+        "ts-mixer",
+        "tslib"
+    ]
+}

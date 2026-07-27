@@ -17,6 +17,7 @@ const {
     SENTRY_AUTH_TOKEN,
     TEST_BUILD,
     TANSTACK_REACT_QUERY_DEV_TOOLS,
+    TRANSPORT_BROWSER_PING,
 } = process.env;
 
 const project = PROJECT as Project;
@@ -28,6 +29,7 @@ const assetPrefix = ASSET_PREFIX || '';
 const sentryAuthToken = SENTRY_AUTH_TOKEN;
 const isTestBuild = TEST_BUILD === 'true';
 const isTanstackReactQueryDevTools = TANSTACK_REACT_QUERY_DEV_TOOLS === 'true';
+const transportBrowserPing = TRANSPORT_BROWSER_PING !== 'false';
 
 export {
     isAnalyzing,
@@ -39,4 +41,5 @@ export {
     sentryAuthToken,
     isTestBuild,
     isTanstackReactQueryDevTools,
+    transportBrowserPing,
 };

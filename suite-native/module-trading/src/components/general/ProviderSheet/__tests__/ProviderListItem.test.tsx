@@ -1,96 +1,117 @@
-import { TradingTradeType } from '@suite-common/trading';
-import { PreloadedState, renderWithStoreProviderAsync } from '@suite-native/test-utils';
-import { getInitializedTradingStateWithQuotes } from '@suite-native/trading-fixtures';
+import type { TradingTradeType } from '@suite-common/trading';
+import { getTranslation } from '@suite-native/intl';
+import {
+    banxaCreditCardSellQuote,
+    cexdirectFloatingQuote,
+    getInitializedTradingStateWithQuotes,
+    invityDexQuote,
+    mercuryoApplePayBuyQuote,
+    mockWalletFiatRatesAndSettings,
+} from '@suite-native/trading-fixtures';
 
-import { ProviderListItem, ProviderListItemProps } from '../ProviderListItem';
+import {
+    type PreloadedStatePartial,
+    type TradingTestPreloadedState,
+    renderWithTradingProvider,
+} from '../../../../__tests__/tradingTestUtils';
+import { ProviderListItem, type ProviderListItemProps } from '../ProviderListItem';
+
+const baseOverrides: PreloadedStatePartial<TradingTestPreloadedState> = {
+    wallet: {
+        ...mockWalletFiatRatesAndSettings(),
+        trading: getInitializedTradingStateWithQuotes(),
+    },
+};
 
 describe('ProviderListItem', () => {
     const renderProviderListItem = (
         quote: TradingTradeType,
-        preloadedState: PreloadedState = {},
         props?: Partial<ProviderListItemProps<TradingTradeType>>,
     ) =>
-        renderWithStoreProviderAsync(
+        renderWithTradingProvider(
             <ProviderListItem
                 isSelected={false}
                 onPress={jest.fn()}
                 quote={quote}
+                shouldShowExchangeType={false}
                 tradingType="buy"
                 {...props}
             />,
-            { preloadedState },
+            { overrides: baseOverrides },
         );
 
-    it('should render provider information correctly', async () => {
-        const preloadedState = { wallet: { trading: getInitializedTradingStateWithQuotes() } };
-        const quote = preloadedState.wallet.trading.buy.quotes[0];
+    it('should render provider information correctly', () => {
+        const { getByText } = renderProviderListItem(mercuryoApplePayBuyQuote);
 
-        const { queryByText } = await renderProviderListItem(quote, preloadedState, {});
-
-        expect(queryByText('Mercuryo')).toBeTruthy();
+        expect(getByText('Mercuryo')).toBeOnTheScreen();
     });
 
-    it('should render trading information with formatted strings', async () => {
-        const preloadedState = { wallet: { trading: getInitializedTradingStateWithQuotes() } };
-        const quote = preloadedState.wallet.trading.buy.quotes[0];
+    it('should render trading information with formatted strings', () => {
+        const { getByText, queryByText } = renderProviderListItem(mercuryoApplePayBuyQuote);
 
-        const { queryByText } = await renderProviderListItem(quote, preloadedState, {});
-
-        expect(queryByText('Rate')).toBeTruthy();
-        expect(queryByText('You get')).toBeTruthy();
+        expect(
+            queryByText(getTranslation('moduleTrading.providerListItem.centralizedExchange')),
+        ).toBeNull();
+        expect(getByText('€9,998.32 / 1 BTC')).toBeOnTheScreen();
     });
 
-    it('should render KYC information when provider has KYC policy', async () => {
-        const preloadedState = { wallet: { trading: getInitializedTradingStateWithQuotes() } };
-        const quote = preloadedState.wallet.trading.exchange.quotes[2];
-
-        const { queryByText } = await renderProviderListItem(quote, preloadedState, {
+    it('should render centralized exchange information for CEX providers when enabled', () => {
+        const { getByText } = renderProviderListItem(cexdirectFloatingQuote, {
+            shouldShowExchangeType: true,
             tradingType: 'exchange',
         });
 
-        expect(queryByText('This provider requires to verify identity.')).toBeTruthy();
+        expect(
+            getByText(getTranslation('moduleTrading.providerListItem.centralizedExchange')),
+        ).toBeOnTheScreen();
     });
 
-    it('should render anonymous information for DEX providers', async () => {
-        const preloadedState = { wallet: { trading: getInitializedTradingStateWithQuotes() } };
-        const quote = preloadedState.wallet.trading.exchange.quotes[3];
-
-        const { queryByText } = await renderProviderListItem(quote, preloadedState, {
+    it('should render KYC information when provider has KYC policy', () => {
+        const { getByText } = renderProviderListItem(cexdirectFloatingQuote, {
             tradingType: 'exchange',
         });
 
-        expect(queryByText('Anonymous')).toBeTruthy();
-        expect(queryByText('Decentralized exchange')).toBeTruthy();
+        expect(getByText(getTranslation('moduleTrading.kyc.kycRequired'))).toBeOnTheScreen();
     });
 
-    it('should not render when quote has no orderId', async () => {
-        const preloadedState = { wallet: { trading: getInitializedTradingStateWithQuotes() } };
-        const baseQuote = preloadedState.wallet.trading.buy.quotes[0];
-        const { orderId, ...quoteWithoutOrderId } = baseQuote;
+    it('should render anonymous information for DEX providers', () => {
+        const { getByText } = renderProviderListItem(invityDexQuote, {
+            shouldShowExchangeType: true,
+            tradingType: 'exchange',
+        });
+
+        expect(
+            getByText(getTranslation('moduleTrading.providerListItem.anonymous')),
+        ).toBeOnTheScreen();
+        expect(
+            getByText(getTranslation('moduleTrading.providerListItem.decentralizedExchange')),
+        ).toBeOnTheScreen();
+    });
+
+    it('should not render when quote has no orderId', () => {
+        const { orderId, ...quoteWithoutOrderId } = mercuryoApplePayBuyQuote;
         const quote = quoteWithoutOrderId as TradingTradeType;
 
-        const { queryByText } = await renderProviderListItem(quote, preloadedState, {});
+        const { queryByText } = renderProviderListItem(quote);
 
         expect(queryByText('TestProvider')).toBeNull();
     });
 
-    it('should render KYC warning for buy quote', async () => {
-        const preloadedState = { wallet: { trading: getInitializedTradingStateWithQuotes() } };
-        const quote = preloadedState.wallet.trading.buy.quotes[0];
+    it('should render KYC warning for buy quote', () => {
+        const { getByText } = renderProviderListItem(mercuryoApplePayBuyQuote);
 
-        const { queryByText } = await renderProviderListItem(quote, preloadedState, {});
-
-        expect(queryByText('This provider requires to verify identity.')).toBeTruthy();
+        expect(
+            getByText(getTranslation('moduleTrading.providerListItem.kycRequired')),
+        ).toBeOnTheScreen();
     });
 
-    it('should render KYC warning for sell quote', async () => {
-        const preloadedState = { wallet: { trading: getInitializedTradingStateWithQuotes() } };
-        const quote = preloadedState.wallet.trading.sell.quotes[0];
-
-        const { queryByText } = await renderProviderListItem(quote, preloadedState, {
+    it('should render KYC warning for sell quote', () => {
+        const { getByText } = renderProviderListItem(banxaCreditCardSellQuote, {
             tradingType: 'sell',
         });
 
-        expect(queryByText('This provider requires to verify identity.')).toBeTruthy();
+        expect(
+            getByText(getTranslation('moduleTrading.providerListItem.kycRequired')),
+        ).toBeOnTheScreen();
     });
 });

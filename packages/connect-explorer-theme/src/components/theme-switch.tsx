@@ -4,12 +4,12 @@ import cn from 'clsx';
 import { useTheme } from 'next-themes';
 import { useMounted } from 'nextra/hooks';
 import { MoonIcon, SunIcon } from 'nextra/icons';
-import { z } from 'zod';
+import { type z } from 'zod';
 
 import { Select } from '@trezor/components';
 
 import { useConfig } from '../contexts/useConfig';
-import { themeOptionsSchema } from '../schema';
+import { type themeOptionsSchema } from '../schema';
 
 type ThemeSwitchProps = {
     lite?: boolean;

@@ -1,29 +1,40 @@
-import { AccountOutputLabels } from '@suite-common/metadata-types';
-import { Utxo } from '@trezor/blockchain-link';
+import { type Utxo } from '@trezor/blockchain-link';
 
-export type OutputLabels = { [txid: string]: AccountOutputLabels };
+import { type SearchOutputLabels } from './searchLabels';
 
-type FilterAndCategorizeUtxosParams = {
+export type FilterAndCategorizeUtxosParams = {
     searchQuery: string;
     utxos: Utxo[];
     spendableUtxos: Utxo[];
     lowAnonymityUtxos: Utxo[];
     dustUtxos: Utxo[];
-    outputLabels: OutputLabels;
+    outputLabels: SearchOutputLabels;
+};
+
+export type FilterAndCategorizeUtxosResult = {
+    filteredUtxos: Utxo[];
+    filteredSpendableUtxos: Utxo[];
+    filteredLowAnonymityUtxos: Utxo[];
+    filteredDustUtxos: Utxo[];
 };
 
 export const filterUtxos = (
     utxo: Utxo,
     searchQuery: string,
-    outputLabels?: OutputLabels,
+    outputLabels?: SearchOutputLabels,
 ): boolean => {
     const lowerCaseSearchQuery = searchQuery.toLowerCase();
+    const accountOutputLabels = outputLabels?.get(utxo.txid);
+
+    // Todo: This `utxo.vout` is bad nad will not work for SuiteSync & Tokens
+    //       The `TxTargetId` type shall be constructed and used instead of `vout` number
+    const outputLabel = accountOutputLabels?.get(String(utxo.vout));
 
     return (
         utxo.address.toLowerCase().includes(lowerCaseSearchQuery) ||
         utxo.txid.toLowerCase().includes(lowerCaseSearchQuery) ||
-        (typeof outputLabels?.[utxo.txid]?.[utxo.vout] === 'string'
-            ? outputLabels[utxo.txid][utxo.vout].toLowerCase().includes(lowerCaseSearchQuery)
+        (typeof outputLabel === 'string'
+            ? outputLabel.toLowerCase().includes(lowerCaseSearchQuery)
             : false)
     );
 };
@@ -38,7 +49,7 @@ export const filterAndCategorizeUtxos = ({
     lowAnonymityUtxos,
     dustUtxos,
     outputLabels,
-}: FilterAndCategorizeUtxosParams) => {
+}: FilterAndCategorizeUtxosParams): FilterAndCategorizeUtxosResult => {
     const lowerCaseSearchQuery = searchQuery.toLowerCase();
 
     return {

@@ -1,0 +1,10 @@
+import type { SVGProps } from 'react';
+const SvgCurrencyKztFilled = (props: SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" {...props}>
+        <path
+            fill="currentColor"
+            d="M16 3a13 13 0 1 0 13 13A13.013 13.013 0 0 0 16 3m6 12h-5v9a1 1 0 0 1-2 0v-9h-5a1 1 0 0 1 0-2h12a1 1 0 0 1 0 2m0-4H10a1 1 0 0 1 0-2h12a1 1 0 1 1 0 2"
+        />
+    </svg>
+);
+export { SvgCurrencyKztFilled as ReactComponent };

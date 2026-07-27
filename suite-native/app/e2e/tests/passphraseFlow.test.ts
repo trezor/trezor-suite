@@ -3,8 +3,6 @@ import { expect as detoxExpect } from 'detox';
 
 import { Model, TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
-import { deviceChecksDisabledState } from '../fixtures/deviceChecksDisabledState';
-import { deviceChecksEnabledState } from '../fixtures/deviceChecksEnabledState';
 import { onboardingCompletedState } from '../fixtures/onboardingCompletedState';
 import { regtestDiscoveryFinishedStateT3T1 } from '../fixtures/regtestDiscoveryFinishedStateT3T1';
 import { regtestDiscoveryFinishedStateT3W1 } from '../fixtures/regtestDiscoveryFinishedStateT3W1';
@@ -55,10 +53,9 @@ const preloadedState = preparePreloadedReduxState(
     getModelFromEnv() === Model.T3T1
         ? regtestDiscoveryFinishedStateT3T1
         : regtestDiscoveryFinishedStateT3W1,
-    getModelFromEnv() === Model.T3W1 ? deviceChecksDisabledState : deviceChecksEnabledState, // skip device checks on T3W1 because we are using 2-main FW
 );
 
-describe('passphrase flow [@androidOnly @T3T1]', () => {
+describe('passphrase flow [@androidOnly @T3T1 @T3W1]', () => {
     beforeAll(async () => {
         // wallet without passphrase
         await TrezorUserEnvLink.sendToAddressAndMineBlock({
@@ -73,11 +70,10 @@ describe('passphrase flow [@androidOnly @T3T1]', () => {
         });
     });
 
-    // TODO #16495 - currently not working
-    describe.skip('with passphrase not allowed on Trezor', () => {
+    describe('with passphrase not allowed on Trezor', () => {
         beforeEach(async () => {
-            await openApp({ args: { preloadedState } });
             await prepareTrezorEmulator({ passphrase_protection: true });
+            await openApp({ args: { preloadedState } });
             await onDeviceManager.assertDeviceSwitcherState({ title: 'Connected' });
         });
 
@@ -106,8 +102,9 @@ describe('passphrase flow [@androidOnly @T3T1]', () => {
 
     describe('with passphrase already allowed on Trezor', () => {
         beforeEach(async () => {
-            await openApp({ args: { preloadedState } });
             await prepareTrezorEmulator({ passphrase_protection: true });
+            await openApp({ args: { preloadedState } });
+            await onDeviceManager.assertDeviceSwitcherState({ title: 'Connected' });
         });
 
         it('Open empty passphrase wallet', async () => {

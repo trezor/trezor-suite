@@ -14,7 +14,7 @@ type Attributes = {
 
 export const connectPopupErrorEvent: EventDef<Attributes, EventType.ConnectPopupError> = {
     name: EventType.ConnectPopupError,
-    descriptionTrigger: 'Connect Popup call error',
+    descriptionTrigger: 'An error occurs during a Connect Popup call from an external application',
     changelog: [{ version: '25.5.0', notes: 'added' }],
     attributes: {
         origin: {
@@ -47,7 +47,8 @@ export const connectPopupErrorEvent: EventDef<Attributes, EventType.ConnectPopup
         },
         connectionType: {
             changelog: [{ version: '26.2.0', notes: 'added' }],
-            description: 'Connection type (WebSocket, WalletConnect, web popup, deeplink)',
+            description:
+                'Source of the call: `desktop-ws`, `mcp`, `walletconnect`, `web`, or `deeplink`',
         },
     },
 };

@@ -1,13 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { Translation } from '@suite/intl';
+import { selectIsDeviceOrUiLocked } from '@suite/locks';
 import { selectKnownDeviceByDeviceId } from '@suite-common/bluetooth/src/bluetoothSelectors';
 import { selectDevices } from '@suite-common/device';
-import { TrezorDevice } from '@suite-common/suite-types';
+import { type TrezorDevice } from '@suite-common/suite-types';
+import { CheckIcon } from '@trezor/icons';
 
 import { selectConnectingDevices } from 'src/actions/bluetooth/desktopBluetoothSelectors';
 import { useSelector } from 'src/hooks/suite';
-import { selectIsDeviceOrUiLocked } from 'src/selectors/suite/suiteSelectors';
 
 import { DeviceConnectionText } from './DeviceConnectionText';
 import { DeviceStatusTextVisible } from './DeviceStatusTextVisible';
@@ -35,7 +36,8 @@ export const DeviceStatusTextThp = ({ device, forceConnectionInfo }: DeviceStatu
         isDeviceOrUiLocked &&
         allDevices.some(
             dev =>
-                dev.bluetoothProps?.id === bluetoothDevice?.id &&
+                dev.descriptor.apiType === 'bluetooth' &&
+                dev.descriptor.id === bluetoothDevice?.id &&
                 dev.type === 'unacquired' &&
                 dev.thp?.properties !== undefined,
         );
@@ -65,7 +67,7 @@ export const DeviceStatusTextThp = ({ device, forceConnectionInfo }: DeviceStatu
             <DeviceConnectionText
                 intent={connected ? 'brand' : 'neutral'}
                 priority={connected ? 'primary' : 'secondary'}
-                icon="check"
+                icon={CheckIcon}
                 isLoading={isLoading}
                 data-testid="@deviceStatus-connecting"
                 data-testid-alt="@deviceStatus"

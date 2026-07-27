@@ -1,43 +1,31 @@
-import { useCallback, useMemo } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { FlatList } from 'react-native-gesture-handler';
-import { useDispatch, useSelector } from 'react-redux';
 
-import { TradingType } from '@suite-common/trading';
-import { events } from '@suite-native/analytics';
-import { HStack, IconButton, useBottomSheetModal } from '@suite-native/atoms';
-import { FeatureFlag, selectIsFeatureFlagEnabled } from '@suite-native/feature-flags';
-import { IconName } from '@suite-native/icons';
+import { LinearGradient } from 'expo-linear-gradient';
+
+import { useServices } from '@suite-common/dependency-injection';
+import { type TradingTypeWithConcierge } from '@suite-common/trading';
+import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { HStack } from '@suite-native/atoms';
+import { type IconName } from '@suite-native/icons';
 import { useTranslate } from '@suite-native/intl';
-import { useAnalytics } from '@suite-native/services';
-import {
-    TradingWithFeatureFlagsRootState,
-    selectActiveTradingType,
-    tradingActions,
-} from '@suite-native/trading-state';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
+import { hexToRgba } from '@trezor/utils';
 
 import { HeaderTab } from './HeaderTab';
-import { AdvancedSettingsSheet } from '../../settings/AdvancedSettingsSheet';
-
-const useSelectedTab = () => {
-    const dispatch = useDispatch();
-    const activeTab = useSelector(selectActiveTradingType);
-
-    const setActiveTab = useCallback(
-        (tab: TradingType) => {
-            dispatch(tradingActions.setActiveTradingType(tab));
-        },
-        [dispatch],
-    );
-
-    return { activeTab, setActiveTab };
-};
+import { useTradingTabs } from '../../../hooks/general/useTradingTabs';
 
 const useTabsData = () => {
     const { translate } = useTranslate();
 
     return useMemo(() => {
         const tabs = [
+            {
+                key: 'exchange',
+                label: translate('moduleTrading.tradingScreen.tabs.exchange'),
+                icon: 'repeat',
+                testID: '@trading/exchange/header-tab',
+            },
             {
                 key: 'buy',
                 label: translate('moduleTrading.tradingScreen.tabs.buy'),
@@ -51,12 +39,12 @@ const useTabsData = () => {
                 testID: '@trading/sell/header-tab',
             },
             {
-                key: 'exchange',
-                label: translate('moduleTrading.tradingScreen.tabs.exchange'),
-                icon: 'arrowsLeftRight',
-                testID: '@trading/exchange/header-tab',
+                key: 'concierge',
+                label: translate('moduleTrading.tradingScreen.tabs.concierge'),
+                icon: 'handshake',
+                testID: '@trading/concierge/header-tab',
             },
-        ] as { key: TradingType; label: string; icon: IconName; testID: string }[];
+        ] as { key: TradingTypeWithConcierge; label: string; icon: IconName; testID: string }[];
 
         return tabs.filter(Boolean);
     }, [translate]);
@@ -64,19 +52,69 @@ const useTabsData = () => {
 
 const tabsStyle = prepareNativeStyle(({ spacings }) => ({
     gap: spacings.sp12,
+    paddingHorizontal: spacings.sp16,
 }));
 
+const tabsEdgeGradientStyle = prepareNativeStyle<{ position: 'left' | 'right' }>(
+    ({ spacings }, { position }) => ({
+        position: 'absolute',
+        top: 0,
+        bottom: 0,
+        width: spacings.sp20,
+        pointerEvents: 'none',
+        extend: [
+            {
+                condition: position === 'left',
+                style: {
+                    left: 0,
+                },
+            },
+            {
+                condition: position === 'right',
+                style: {
+                    right: 0,
+                },
+            },
+        ],
+    }),
+);
+
 export const HeaderTabs = () => {
-    const { applyStyle } = useNativeStyles();
-    const { activeTab, setActiveTab } = useSelectedTab();
+    const listRef = useRef<FlatList>(null);
+    const { applyStyle, utils } = useNativeStyles();
+    const { activeTab, setActiveTab } = useTradingTabs();
     const data = useTabsData();
-    const { translate } = useTranslate();
-    const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
-    const areTradingExchangeDexesEnabled = useSelector((state: TradingWithFeatureFlagsRootState) =>
-        selectIsFeatureFlagEnabled(state, FeatureFlag.AreTradingExchangeDexesEnabled),
+    const { analytics } = useServices(selectNativeAnalyticsDep);
+
+    const tabsEdgeGradientColors = useMemo<[string, string, string, string]>(() => {
+        const backgroundColor = utils.colors.surfaceFillPage;
+
+        return [
+            hexToRgba(backgroundColor, 0.01),
+            hexToRgba(backgroundColor, 0.45),
+            hexToRgba(backgroundColor, 0.85),
+            backgroundColor,
+        ];
+    }, [utils.colors.surfaceFillPage]);
+
+    const activeTabIndex = useMemo(
+        () => data.findIndex(tab => tab.key === activeTab),
+        [data, activeTab],
     );
-    const analytics = useAnalytics();
-    const onTabPress = (tab: TradingType) => {
+
+    useEffect(() => {
+        if (activeTabIndex < 0) {
+            return;
+        }
+
+        listRef.current?.scrollToIndex({
+            index: activeTabIndex,
+            animated: true,
+            viewPosition: 0.5,
+        });
+    }, [activeTabIndex]);
+
+    const onTabPress = (tab: TradingTypeWithConcierge) => {
         if (tab === activeTab) {
             return;
         }
@@ -94,8 +132,9 @@ export const HeaderTabs = () => {
 
     return (
         <>
-            <HStack justifyContent="space-between">
+            <HStack spacing={0}>
                 <FlatList
+                    ref={listRef}
                     horizontal
                     showsHorizontalScrollIndicator={false}
                     accessible={true}
@@ -112,18 +151,27 @@ export const HeaderTabs = () => {
                     )}
                     data={data}
                     extraData={activeTab}
+                    onScrollToIndexFailed={({ index, averageItemLength }) => {
+                        listRef.current?.scrollToOffset({
+                            offset: averageItemLength * index,
+                        });
+                    }}
                 />
-                {areTradingExchangeDexesEnabled && (
-                    <IconButton
-                        iconName="gear"
-                        size="small"
-                        colorScheme="tertiaryElevation0"
-                        accessibilityLabel={translate('moduleTrading.tradingScreen.tabs.settings')}
-                        onPress={openModal}
-                    />
-                )}
+                <LinearGradient
+                    start={{ x: 1, y: 0.5 }}
+                    end={{ x: 0, y: 0.5 }}
+                    colors={tabsEdgeGradientColors}
+                    locations={[0, 0.45, 0.8, 1]}
+                    style={applyStyle(tabsEdgeGradientStyle, { position: 'left' })}
+                />
+                <LinearGradient
+                    start={{ x: 0, y: 0.5 }}
+                    end={{ x: 1, y: 0.5 }}
+                    colors={tabsEdgeGradientColors}
+                    locations={[0, 0.45, 0.8, 1]}
+                    style={applyStyle(tabsEdgeGradientStyle, { position: 'right' })}
+                />
             </HStack>
-            <AdvancedSettingsSheet ref={bottomSheetRef} closeModal={closeModal} />
         </>
     );
 };

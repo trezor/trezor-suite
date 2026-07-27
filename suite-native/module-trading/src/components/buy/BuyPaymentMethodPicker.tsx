@@ -2,16 +2,17 @@ import { useSelector } from 'react-redux';
 
 import type { BuyTrade } from 'invity-api';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { selectTradingBuyIsLoading } from '@suite-common/trading';
-import { events } from '@suite-native/analytics';
+import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { Text } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
-import { useAnalytics } from '@suite-native/services';
 import { OverviewRow, OverviewValueSkeleton } from '@suite-native/trading-atoms';
 import { selectBuyBestQuotesForAvailablePaymentMethods } from '@suite-native/trading-state';
 
 import { useBuyFormContext } from '../../hooks/buy/useBuyFormContext';
 import { useSheetControls } from '../../hooks/general/useSheetControls';
+import { PaymentMethodPickerValue } from '../general/PaymentMethodPickerValue';
 import { PaymentMethodSheet } from '../general/PaymentMethodSheet/PaymentMethodSheet';
 
 const PAYMENT_METHOD_PICKER_TEST_ID = '@trading/buy/payment-method-picker';
@@ -33,20 +34,18 @@ const BuyPaymentMethodPickerRight = ({
 
     if (selectedValue) {
         return (
-            <Text
-                color="textSubdued"
-                variant="body-sm"
+            <PaymentMethodPickerValue
+                paymentMethod={selectedValue.paymentMethod}
+                paymentMethodName={selectedValue.paymentMethodName}
                 accessibilityLabel={translate('moduleTrading.tradingScreen.selectedPaymentMethod')}
                 testID={PAYMENT_METHOD_PICKER_TEST_ID + '/value'}
-            >
-                {selectedValue.paymentMethodName}
-            </Text>
+            />
         );
     }
 
     return (
         <Text
-            color="textDisabled"
+            color="contentDisabled"
             variant="body-sm"
             accessibilityLabel={translate('moduleTrading.tradingScreen.noPaymentMethod')}
         >
@@ -57,7 +56,7 @@ const BuyPaymentMethodPickerRight = ({
 
 export const BuyPaymentMethodPicker = () => {
     const { translate } = useTranslate();
-    const analytics = useAnalytics();
+    const { analytics } = useServices(selectNativeAnalyticsDep);
     const form = useBuyFormContext();
     const quotes = useSelector(selectBuyBestQuotesForAvailablePaymentMethods);
     const isLoading = useSelector(selectTradingBuyIsLoading);

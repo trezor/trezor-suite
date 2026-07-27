@@ -1,6 +1,6 @@
 import { networks } from '@trezor/utxo-lib';
 
-import { getAddressScript, getFilter, getMultiFilter } from '../../src/backend/filters';
+import { getAddressScript, getMultiFilter } from '../../src/backend/filters';
 
 // from blockbook repo
 const FIXTURES = [
@@ -63,21 +63,6 @@ const ADDRS_MISS = [
 describe('Golomb filtering', () => {
     const missScripts = ADDRS_MISS.map(miss => getAddressScript(miss, networks.bitcoin));
 
-    describe('match', () => {
-        FIXTURES.forEach(([desc, key, filterHex, hits]) => {
-            it(desc, () => {
-                const filter = getFilter(filterHex, { key });
-                hits.forEach(hit => {
-                    const script = getAddressScript(hit, networks.bitcoin);
-                    expect(filter(script)).toBe(true);
-                });
-                missScripts.forEach(script => {
-                    expect(filter(script)).toBe(false);
-                });
-            });
-        });
-    });
-
     describe('matchAny', () => {
         FIXTURES.forEach(([desc, key, filterHex, hits]) => {
             it(desc, () => {
@@ -88,7 +73,9 @@ describe('Golomb filtering', () => {
                 expect(filter(missScripts)).toBe(false);
                 if (hitScripts.length) {
                     expect(filter(hitScripts)).toBe(true);
-                    expect(filter([...missScripts, hitScripts[0]])).toBe(true);
+                    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+                    const firstHitScript: (typeof hitScripts)[number] = hitScripts[0];
+                    expect(filter([...missScripts, firstHitScript])).toBe(true);
                     expect(filter([...hitScripts, ...missScripts])).toBe(true);
                 }
             });

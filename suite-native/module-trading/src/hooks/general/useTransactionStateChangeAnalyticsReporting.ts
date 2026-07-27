@@ -1,17 +1,16 @@
 import { useEffect, useRef } from 'react';
 
-import { TradingTransaction } from '@suite-common/trading';
-import { events } from '@suite-native/analytics';
-import { useAnalytics } from '@suite-native/services';
-
-import { getTradeStatusStep } from '../../utils/general/utils';
+import { useServices } from '@suite-common/dependency-injection';
+import { type TradingTransaction } from '@suite-common/trading';
+import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { getTradeStatusStep } from '@suite-native/trading-quote-utils';
 
 export const useTransactionStateChangeAnalyticsReporting = (deviceTrades: TradingTransaction[]) => {
     // Track previous status for each trade to report analytics on status changes
     const previousStatuses = useRef<Map<string, ReturnType<typeof getTradeStatusStep> | undefined>>(
         new Map(),
     );
-    const analytics = useAnalytics();
+    const { analytics } = useServices(selectNativeAnalyticsDep);
     // Report analytics for status changes
     useEffect(() => {
         deviceTrades.forEach(trade => {

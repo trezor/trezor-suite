@@ -1,26 +1,18 @@
-import { Middleware, applyMiddleware, compose, createStore } from 'redux';
+import { type Middleware, applyMiddleware, compose, createStore } from 'redux';
 import { createLogger } from 'redux-logger';
 import { thunk } from 'redux-thunk';
 
 import { trezorConnectMiddleware } from '../middlewares/trezorConnectMiddleware';
 import { reducers } from '../reducers';
-import { AppState, Dispatch } from '../types';
+import { type AppState, type Dispatch } from '../types';
 
 const enhancers: any[] = [];
 const middleware = [thunk, trezorConnectMiddleware] as Middleware<Dispatch, AppState>[];
 
 let composedEnhancers: any;
 if (process.env.NODE_ENV === 'development') {
-    const excludeLogger = (_getState: any, action: any): boolean => {
-        const excluded: Array<string> = ['LOG_TO_EXCLUDE', 'log__add'];
-        const pass: Array<string> = excluded.filter(act => action.type === act);
-
-        return pass.length === 0;
-    };
-
     const logger = createLogger({
         level: 'info',
-        predicate: excludeLogger,
         collapsed: true,
     });
 

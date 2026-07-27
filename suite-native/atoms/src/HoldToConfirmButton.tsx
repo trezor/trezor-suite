@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { Platform, Vibration } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import {
-    SharedValue,
+    type SharedValue,
     runOnJS,
     useAnimatedReaction,
     useAnimatedStyle,
@@ -14,8 +14,8 @@ import {
 
 import { Canvas, Circle, Path, Skia } from '@shopify/react-native-skia';
 
-import { Translation, TxKeyPath } from '@suite-native/intl';
-import { useNativeStyles } from '@trezor/styles';
+import { Translation, type TxKeyPath } from '@suite-native/intl';
+import { useNativeStyles } from '@trezor/styles-native';
 
 import { AnimatedVStack } from './Stack';
 import { Text } from './Text';
@@ -144,23 +144,23 @@ export const HoldToConfirmButton = ({
                         cx={CIRCLE_CENTER}
                         cy={CIRCLE_CENTER}
                         r={CANVAS_SIZE / 2}
-                        color={utils.colors.borderOnElevation0}
+                        color={utils.colors.borderNeutral}
                     />
                     <Circle
                         cx={CIRCLE_CENTER}
                         cy={CIRCLE_CENTER}
                         r={CANVAS_SIZE / 2 - BORDER_WIDTH}
-                        color={utils.colors.backgroundSurfaceElevationNegative}
+                        color={utils.colors.surfaceFillSunken}
                     />
                     <Circle
                         cx={CIRCLE_CENTER}
                         cy={CIRCLE_CENTER}
                         r={animatedButtonRadius}
-                        color={utils.colors.backgroundPrimaryDefault}
+                        color={utils.colors.legacyBackgroundPrimaryDefault}
                     />
                     <Path
                         path={leftLoaderArcPath}
-                        color={utils.colors.backgroundPrimaryDefault}
+                        color={utils.colors.legacyBackgroundPrimaryDefault}
                         start={0}
                         end={animationProgress}
                         strokeCap="round"
@@ -170,7 +170,7 @@ export const HoldToConfirmButton = ({
                     />
                     <Path
                         path={rightLoaderArcPath}
-                        color={utils.colors.backgroundPrimaryDefault}
+                        color={utils.colors.legacyBackgroundPrimaryDefault}
                         start={0}
                         end={animationProgress}
                         strokeCap="round"

@@ -50,6 +50,19 @@ describe(deviceInvariabilityCheck.name, () => {
         });
     });
 
+    it('returns success when device model differs only by null vs undefined', () => {
+        const result = deviceInvariabilityCheck({
+            isDeviceKnown: true,
+            isBootloaderMode: false,
+            hasPreviousRecord: true,
+            currentModel: undefined,
+            // @ts-expect-error real occurrences in Sentry
+            previousModel: null,
+        });
+
+        expect(result).toEqual({ success: true, payload: undefined });
+    });
+
     it('returns error when device changes its color', () => {
         const device = mockConnectDevice({ id: deviceId }, { ...defaultFeatures, unit_color: 2 });
         const previousData = {
@@ -66,6 +79,19 @@ describe(deviceInvariabilityCheck.name, () => {
                 currentColor: 2,
             },
         });
+    });
+
+    it('returns success when device color differs only by null vs undefined', () => {
+        const result = deviceInvariabilityCheck({
+            isDeviceKnown: true,
+            isBootloaderMode: false,
+            hasPreviousRecord: true,
+            currentColor: undefined,
+            // @ts-expect-error real occurrences in Sentry
+            previousColor: null,
+        });
+
+        expect(result).toEqual({ success: true, payload: undefined });
     });
 
     it('returns error when device changes both its model and color', () => {

@@ -6,7 +6,6 @@ import styled from 'styled-components';
 import { getNetworkFeatures } from '@suite-common/wallet-config';
 import { Card, Column, motionEasing } from '@trezor/components';
 import { motionEasingStrings } from '@trezor/components/src/config/motion';
-import { spacings } from '@trezor/theme';
 
 import { useSendFormContext } from 'src/hooks/wallet';
 
@@ -15,6 +14,7 @@ import { Amount } from './Amount/Amount';
 import { CardanoMinAmountInfo } from './CardanoMinAmountInfo';
 import { OpReturn } from './OpReturn';
 import { TokenSelect } from './TokenSelect/TokenSelect';
+import { TronNewAccountInfo } from './TronNewAccountInfo';
 import { DestinationTag } from '../Options/MiscNetworkOptions/DestinationTag';
 
 const Container = styled.div<{ $height: number }>`
@@ -68,7 +68,7 @@ export const Outputs = ({ disableAnim }: OutputsProps) => {
     return (
         <Container $height={height || 0}>
             <div ref={ref}>
-                <Column gap={spacings.md}>
+                <Column gap={16}>
                     {outputs.map((output, index) => (
                         <motion.div
                             key={output.id}
@@ -83,33 +83,37 @@ export const Outputs = ({ disableAnim }: OutputsProps) => {
                                 ease: motionEasing.transition,
                             }}
                         >
-                            <Column gap={spacings.sm}>
+                            <Column gap={12}>
                                 {areTokensSupported && <TokenSelect outputId={index} />}
                                 <Card>
                                     {output.type === 'opreturn' ? (
                                         <OpReturn outputId={index} />
                                     ) : (
-                                        <Column gap={spacings.md}>
+                                        <Column gap={16}>
                                             <Address
-                                                output={outputs[index]}
+                                                output={output}
                                                 outputId={index}
                                                 outputsCount={outputs.length}
                                             />
-                                            <Amount output={outputs[index]} outputId={index} />
+                                            <Amount output={output} outputId={index} />
                                             {outputs.length === 1 && isSendingTokens && (
                                                 <CardanoMinAmountInfo />
                                             )}
-                                            <DestinationTag networkSymbol={symbol} />
+                                            <TronNewAccountInfo />
                                         </Column>
                                     )}
                                 </Card>
+
+                                {output.type !== 'opreturn' && (
+                                    <DestinationTag networkSymbol={symbol} />
+                                )}
                             </Column>
                         </motion.div>
                     ))}
                 </Column>
                 {outputs.length > 1 && isSendingTokens && (
-                    <Card margin={{ vertical: spacings.md }}>
-                        <Column gap={spacings.md}>
+                    <Card margin={{ vertical: 16 }}>
+                        <Column gap={16}>
                             <CardanoMinAmountInfo />
                         </Column>
                     </Card>

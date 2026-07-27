@@ -1,7 +1,7 @@
 import { Translation } from '@suite/intl';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Column, Icon, Table, Text } from '@trezor/components';
-import { spacings } from '@trezor/theme';
+import { PiggyBankFilledIcon } from '@trezor/icons';
 
 import { BaseCurrencyValue, CoinBalance, HiddenPlaceholder } from 'src/components/suite';
 
@@ -24,15 +24,15 @@ export const AssetStakingRow = ({
         <Table.Row hasBorderTop={false}>
             <Table.Cell align="center">
                 <Section $dashedLinePosition={shouldRenderTokenRow ? 'topToBottom' : 'topToMiddle'}>
-                    <Icon name="piggyBankFilled" intent="neutral" priority="secondary" />
+                    <Icon as={PiggyBankFilledIcon} intent="neutral" priority="secondary" />
                 </Section>
             </Table.Cell>
-            <Table.Cell padding={{ left: spacings.zero }}>
+            <Table.Cell padding={{ left: 0 }}>
                 <Translation id="TR_NAV_STAKING" />
             </Table.Cell>
             <Table.Cell colSpan={4}>
                 {stakingTotalBalance && (
-                    <Column alignItems="flex-start" justifyContent="center" gap={spacings.xxxs}>
+                    <Column alignItems="flex-start" justifyContent="center" gap={2}>
                         <HiddenPlaceholder>
                             <BaseCurrencyValue amount={stakingTotalBalance} symbol={symbol} />
                         </HiddenPlaceholder>

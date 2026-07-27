@@ -2,21 +2,18 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
-import { events } from '@suite-native/analytics';
-import { HStack, Text } from '@suite-native/atoms';
-import { Icon } from '@suite-native/icons';
+import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { Button } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
     DeviceSettingsStackRoutes,
-    RootStackParamList,
+    type RootStackParamList,
     RootStackRoutes,
-    StackToStackCompositeNavigationProps,
+    type StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
-import { useAnalytics } from '@suite-native/services';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-import { DeviceAction } from './DeviceAction';
 import { useDeviceManager } from '../hooks/useDeviceManager';
 
 type NavigationProp = StackToStackCompositeNavigationProps<
@@ -25,26 +22,8 @@ type NavigationProp = StackToStackCompositeNavigationProps<
     RootStackParamList
 >;
 
-type DeviceInfoButtonProps = {
-    showAsFullWidth: boolean;
-};
-
-const contentStyle = prepareNativeStyle<{ showAsFullWidth: boolean }>(
-    (utils, { showAsFullWidth }) => ({
-        marginRight: utils.spacings.sp4,
-        extend: {
-            condition: showAsFullWidth,
-            style: {
-                flex: 1,
-                justifyContent: 'center',
-            },
-        },
-    }),
-);
-
-export const DeviceSettingsButton = ({ showAsFullWidth }: DeviceInfoButtonProps) => {
-    const analytics = useAnalytics();
-    const { applyStyle } = useNativeStyles();
+export const DeviceSettingsButton = () => {
+    const { analytics } = useServices(selectNativeAnalyticsDep);
     const navigation = useNavigation<NavigationProp>();
     const { setIsDeviceManagerVisible } = useDeviceManager();
     const selectedDevice = useSelector(selectSelectedDevice);
@@ -63,17 +42,14 @@ export const DeviceSettingsButton = ({ showAsFullWidth }: DeviceInfoButtonProps)
     if (!selectedDevice) return null;
 
     return (
-        <DeviceAction
-            testID="@device-manager/device-settings-button"
+        <Button
+            intent="neutral"
+            priority="secondary"
+            iconLeft="gear"
             onPress={handleDeviceRedirect}
-            showAsFullWidth={showAsFullWidth}
+            testID="@device-manager/device-settings-button"
         >
-            <HStack spacing="sp8" style={applyStyle(contentStyle, { showAsFullWidth })}>
-                <Icon name="gear" size="mediumLarge" />
-                <Text variant="body-sm">
-                    <Translation id="deviceManager.deviceButtons.deviceSettings" />
-                </Text>
-            </HStack>
-        </DeviceAction>
+            <Translation id="deviceManager.deviceButtons.deviceSettings" />
+        </Button>
     );
 };

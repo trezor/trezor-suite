@@ -3,17 +3,19 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { selectDeviceStaticSessionId, selectIsDeviceConnected } from '@suite-common/device';
+import { selectEnsureWalletSuiteSyncOnDep } from '@suite-common/suite-sync-types';
 import { AnimatedFullAlertBox } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
-    AuthorizeDeviceStackParamList,
+    type AuthorizeDeviceStackParamList,
     AuthorizeDeviceStackRoutes,
-    RootStackParamList,
+    type RootStackParamList,
     RootStackRoutes,
-    StackToStackCompositeNavigationProps,
+    type StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
-import { useNativeServices } from '@suite-native/services';
+import { useSuiteSyncErrorHandler } from '@suite-native/suite-sync';
 
 import { selectShouldDisplaySuiteSyncAlert } from '../homescreenSelectors';
 
@@ -24,11 +26,12 @@ type NavigationProp = StackToStackCompositeNavigationProps<
 >;
 
 export const SuiteSyncKeysAlert = () => {
-    const { suiteSync } = useNativeServices();
+    const { ensureWalletSuiteSyncOn } = useServices(selectEnsureWalletSuiteSyncOnDep);
 
     const isDeviceConnected = useSelector(selectIsDeviceConnected);
     const shouldDisplaySuiteSyncAlert = useSelector(selectShouldDisplaySuiteSyncAlert);
     const deviceStaticSessionId = useSelector(selectDeviceStaticSessionId);
+    const { handleSuiteSyncError } = useSuiteSyncErrorHandler();
 
     const navigation = useNavigation<NavigationProp>();
 
@@ -40,21 +43,47 @@ export const SuiteSyncKeysAlert = () => {
                 screen: AuthorizeDeviceStackRoutes.DeviceConnectionGuard,
             });
         } else {
-            await suiteSync.ensureWalletSuiteSyncOn({
+            const result = await ensureWalletSuiteSyncOn({
                 deviceStaticSessionId,
                 isWriteMode: false,
             });
+
+            if (!result.success) {
+                handleSuiteSyncError(result.error);
+            }
         }
-    }, [deviceStaticSessionId, isDeviceConnected, navigation, suiteSync]);
+    }, [
+        deviceStaticSessionId,
+        ensureWalletSuiteSyncOn,
+        handleSuiteSyncError,
+        isDeviceConnected,
+        navigation,
+    ]);
 
     if (!shouldDisplaySuiteSyncAlert) return null;
 
     return (
         <AnimatedFullAlertBox
-            variant="info"
+            intent="info"
             title={<Translation id="moduleHome.suiteSyncAlert.title" />}
-            description={<Translation id="moduleHome.suiteSyncAlert.description" />}
-            primaryButtonLabel={<Translation id="moduleHome.suiteSyncAlert.button" />}
+            description={
+                <Translation
+                    id={
+                        isDeviceConnected
+                            ? 'moduleHome.suiteSyncAlert.description'
+                            : 'moduleHome.suiteSyncAlert.connectDescription'
+                    }
+                />
+            }
+            primaryButtonLabel={
+                <Translation
+                    id={
+                        isDeviceConnected
+                            ? 'moduleHome.suiteSyncAlert.button'
+                            : 'moduleHome.suiteSyncAlert.connectButton'
+                    }
+                />
+            }
             onPressPrimaryButton={allowSuiteSyncForWallet}
             marginHorizontal="sp16"
         />

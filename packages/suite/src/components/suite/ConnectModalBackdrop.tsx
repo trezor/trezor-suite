@@ -3,9 +3,8 @@ import { useSelector } from 'react-redux';
 import { selectConnectPopupCall } from '@suite-common/connect-popup';
 import {
     ModalBackdrop,
-    ModalBackdropProps,
+    type ModalBackdropProps,
 } from '@trezor/components/src/components/Modal/ModalBackdrop';
-import { spacings } from '@trezor/theme';
 
 import { ConnectAppBar } from './ConnectAppBar';
 
@@ -30,7 +29,7 @@ export const ConnectModalBackdrop = ({
             {...rest}
             onClick={() => {}}
             opaque
-            padding={{ top: spacings.xxxxxl, bottom: spacings.xs, horizontal: spacings.xs }}
+            padding={{ top: 64, bottom: 8, horizontal: 8 }}
         >
             <ConnectAppBar canSwitchDevice={canSwitchDevice} />
             {children}

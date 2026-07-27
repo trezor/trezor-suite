@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
+import { useServices } from '@suite-common/dependency-injection';
 import {
     deviceActions,
     selectHasDeviceFirmwareInstalled,
@@ -16,21 +17,20 @@ import {
 } from '@suite-common/device';
 import { acquireDevice } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
-import { events } from '@suite-native/analytics';
+import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { selectIsFirmwareInstallationRunning } from '@suite-native/firmware';
 import { Translation } from '@suite-native/intl';
 import { SUITE_MOBILE_SUPPORT_URL, useOpenLink } from '@suite-native/link';
 import {
     AuthorizeDeviceStackRoutes,
-    HomeStackParamList,
-    HomeStackRoutes,
-    RootStackParamList,
+    type HomeStackParamList,
+    type HomeStackRoutes,
+    type RootStackParamList,
     RootStackRoutes,
-    StackToStackCompositeNavigationProps,
+    type StackToStackCompositeNavigationProps,
     navigationContainerRef,
 } from '@suite-native/navigation';
 import { captureSentryException } from '@suite-native/sentry';
-import { useAnalytics } from '@suite-native/services';
 import { selectIsOnboardingFinished, selectShouldShowAutoEjectAlert } from '@suite-native/settings';
 import { SUITE_WEB_URL } from '@trezor/urls';
 
@@ -52,7 +52,7 @@ type NavigationProps = StackToStackCompositeNavigationProps<
 
 export const useDetectDeviceError = () => {
     const [wasDeviceEjectedByUser, setWasDeviceEjectedByUser] = useState(false);
-    const analytics = useAnalytics();
+    const { analytics } = useServices(selectNativeAnalyticsDep);
     const dispatch = useDispatch();
     const { hideAlert, showAlert } = useAlert();
     const openLink = useOpenLink();
@@ -144,7 +144,7 @@ export const useDetectDeviceError = () => {
                 type: 'deviceError',
                 pictogramVariant: 'critical',
                 primaryButtonTitle: <Translation id="generic.buttons.eject" />,
-                primaryButtonVariant: 'tertiaryElevation1',
+                primaryButtonColorProps: { intent: 'neutral', priority: 'secondary' },
                 appendix: <IncompatibleFirmwareModalAppendix />,
                 onPressPrimaryButton: () => {
                     handleDisconnect();
@@ -188,7 +188,7 @@ export const useDetectDeviceError = () => {
                     primaryButtonTitle: (
                         <Translation id="moduleDevice.noSeedWithFWModal.primaryButton" />
                     ),
-                    primaryButtonViewLeft: 'arrowLineUpRight',
+                    primaryButtonIconLeft: 'arrowLineUpRight',
                     onPressPrimaryButton: () => {
                         openLink(SUITE_WEB_URL);
 
@@ -206,7 +206,7 @@ export const useDetectDeviceError = () => {
                     textAlign: 'left',
                     description: <Translation id="moduleDevice.noSeedModal.description" />,
                     primaryButtonTitle: <Translation id="moduleDevice.noSeedModal.primaryButton" />,
-                    primaryButtonViewLeft: 'arrowLineUpRight',
+                    primaryButtonIconLeft: 'arrowLineUpRight',
                     appendix: <UninitializedDeviceModalAppendix />,
                     onPressPrimaryButton: () => {
                         openLink(SUITE_WEB_URL);
@@ -268,7 +268,7 @@ export const useDetectDeviceError = () => {
                 description: <Translation id="moduleDevice.genericErrorModal.description" />,
                 type: 'deviceError',
                 pictogramVariant: 'critical',
-                primaryButtonVariant: 'redBold',
+                primaryButtonColorProps: { intent: 'critical', priority: 'primary' },
                 primaryButtonTitle: (
                     <Translation id="moduleDevice.genericErrorModal.buttons.reconnect" />
                 ),
@@ -281,7 +281,7 @@ export const useDetectDeviceError = () => {
                 secondaryButtonTitle: (
                     <Translation id="moduleDevice.genericErrorModal.buttons.help" />
                 ),
-                secondaryButtonVariant: 'redElevation0',
+                secondaryButtonColorProps: { intent: 'critical', priority: 'secondary' },
                 onPressSecondaryButton: () => openLink(SUITE_MOBILE_SUPPORT_URL),
                 testID: '@device/errors/alert/error',
             });

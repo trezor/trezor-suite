@@ -16,6 +16,8 @@ export const coinjoinAnonymityGainEvent: EventDef<Attributes, EventType.Coinjoin
     attributes: {
         networkSymbol: {
             changelog: [{ version: '23.4.1', notes: 'added' }],
+            description:
+                'The blockchain network symbol where coinjoin occurred (typically `btc` for Bitcoin)',
         },
         value: {
             changelog: [{ version: '23.4.1', notes: 'added' }],

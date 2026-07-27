@@ -1,10 +1,14 @@
 import { useMemo } from 'react';
 
-import { Translation, TranslationKey } from '@suite/intl';
-import { BulletList, BulletListItemState, Text } from '@trezor/components';
+import { useDevice } from '@suite/device';
+import { Translation, type TranslationKey } from '@suite/intl';
+import {
+    selectIsDeviceAuthenticityCheckEnabled,
+    selectIsUnlockedBootloaderAllowed,
+} from '@suite/settings';
+import { StepList, type StepListItemState, Text } from '@trezor/components';
 
-import { useDevice, useOnboarding, useSelector } from 'src/hooks/suite';
-import { selectIsDeviceAuthenticityCheckEnabled } from 'src/selectors/suite/suiteSelectors';
+import { useOnboarding, useSelector } from 'src/hooks/suite';
 
 import { stepCategories } from '../../config/onboarding/steps';
 import { isStepCategoryUsed } from '../../utils/onboarding/steps';
@@ -17,25 +21,27 @@ const useOnboardingStepCategoriesInPath = () => {
     const { device } = useDevice();
     const { path: onboardingPath } = useOnboarding();
     const isDeviceAuthenticityCheckEnabled = useSelector(selectIsDeviceAuthenticityCheckEnabled);
-    const isUnlockedBootloaderAllowed = useSelector(
-        state => state.suite.settings.debug.isUnlockedBootloaderAllowed,
-    );
+    const isUnlockedBootloaderAllowed = useSelector(selectIsUnlockedBootloaderAllowed);
 
     return useMemo(
         () =>
-            stepCategories.filter(stepCategory =>
-                isStepCategoryUsed(stepCategory, {
-                    device,
-                    onboardingPath,
-                    isDeviceAuthenticityCheckEnabled,
-                    isUnlockedBootloaderAllowed,
-                }),
+            stepCategories.filter(
+                stepCategory =>
+                    stepCategory.labelTranslationId &&
+                    isStepCategoryUsed(stepCategory, {
+                        device,
+                        onboardingPath,
+                        isDeviceAuthenticityCheckEnabled,
+                        isUnlockedBootloaderAllowed,
+                    }),
             ),
         [device, onboardingPath, isDeviceAuthenticityCheckEnabled, isUnlockedBootloaderAllowed],
     );
 };
 
-const getState = (index: number, indexOfActiveStep: number): BulletListItemState => {
+const getState = (index: number, indexOfActiveStep: number): StepListItemState => {
+    // When active category is not in the visible list (e.g. final step), all visible steps are done.
+    if (indexOfActiveStep === -1) return 'done';
     if (index < indexOfActiveStep) return 'done';
     if (index === indexOfActiveStep) return 'default';
 
@@ -50,7 +56,7 @@ export const OnboardingProgressBar = () => {
     );
 
     return (
-        <BulletList
+        <StepList
             direction="horizontal"
             isOrdered
             bulletGap={16}
@@ -58,7 +64,7 @@ export const OnboardingProgressBar = () => {
             lineWidth={1}
         >
             {stepCategoriesInPath.map(({ id, labelTranslationId }, index) => (
-                <BulletList.Item
+                <StepList.Item
                     key={id}
                     title={
                         <Text typographyStyle="body-xs">
@@ -68,6 +74,6 @@ export const OnboardingProgressBar = () => {
                     state={getState(index, indexOfActiveStep)}
                 />
             ))}
-        </BulletList>
+        </StepList>
     );
 };

@@ -30,13 +30,13 @@ import type {
 import { getOsName, getSuiteVersion, isDesktop, isNative } from '@trezor/env-utils';
 
 import {
-    InvityServerEnvironment,
-    InvityServers,
-    TradingOTC,
-    TradingPaymentMethodType,
-    TradingTradeType,
-    TradingType,
-    TradingWatchTradeResponsePropsMap,
+    type InvityServerEnvironment,
+    type InvityServers,
+    type TradingOTC,
+    type TradingPaymentMethodType,
+    type TradingTradeType,
+    type TradingType,
+    type TradingWatchTradeResponsePropsMap,
 } from './types';
 
 type BodyType =
@@ -90,8 +90,8 @@ class InvityAPI {
     // otc service
     private readonly OTC_INFO = '/api/v2/otc';
 
-    private static accountDescriptor: string;
-    private static apiKey: string;
+    private static accountDescriptor: string | undefined;
+    private static apiKey: string | undefined;
 
     private getInvityAPIKey() {
         if (!InvityAPI.apiKey) {
@@ -122,8 +122,16 @@ class InvityAPI {
         }
     }
 
+    resetCurrentAccount() {
+        InvityAPI.accountDescriptor = undefined;
+    }
+
     setInvityServersEnvironment(serverEnvironment: InvityServerEnvironment) {
         this.serverEnvironment = serverEnvironment;
+    }
+
+    private getSuiteTraceHeader() {
+        return createHash('sha256').update(this.getInvityAPIKey()).digest('hex');
     }
 
     private getOptionAPIHeader() {
@@ -138,7 +146,7 @@ class InvityAPI {
         method = 'POST',
         apiHeaderValue?: string,
         signal?: SignalType,
-    ): any {
+    ): RequestInit {
         const apiHeader = this.getOptionAPIHeader();
 
         return {
@@ -146,6 +154,7 @@ class InvityAPI {
             mode: 'cors',
             headers: {
                 [apiHeader]: apiHeaderValue || this.getInvityAPIKey(),
+                'X-Trace-Id': this.getSuiteTraceHeader(),
                 'X-Suite-Version': getSuiteVersion(),
                 'X-Suite-Platform': getOsName(),
                 ...(method === 'POST' && {
@@ -204,7 +213,7 @@ class InvityAPI {
             console.error('[getInfo]', error);
         }
 
-        return { platforms: {}, coins: {} };
+        return { platforms: {}, coins: {}, config: {} };
     };
 
     getExchangeList = async (): Promise<ExchangeListResponse> => {
@@ -242,12 +251,17 @@ class InvityAPI {
         }
     };
 
-    doExchangeTrade = async (tradeRequest: ConfirmExchangeTradeRequest): Promise<ExchangeTrade> => {
+    doExchangeTrade = async (
+        tradeRequest: ConfirmExchangeTradeRequest,
+        signal?: SignalType,
+    ): Promise<ExchangeTrade> => {
         try {
             const response: ExchangeTrade = await this.request(
                 this.EXCHANGE_DO_TRADE,
                 tradeRequest,
                 'POST',
+                undefined,
+                signal,
             );
 
             return response;

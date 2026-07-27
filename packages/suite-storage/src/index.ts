@@ -1,11 +1,11 @@
 import {
-    IDBPDatabase,
-    IDBPTransaction,
-    IndexKey,
-    IndexNames,
-    StoreKey,
-    StoreNames,
-    StoreValue,
+    type IDBPDatabase,
+    type IDBPTransaction,
+    type IndexKey,
+    type IndexNames,
+    type StoreKey,
+    type StoreNames,
+    type StoreValue,
     deleteDB,
     openDB,
 } from 'idb';
@@ -182,45 +182,6 @@ class CommonDB<TDBStructure> {
         return item;
     };
 
-    getItemByIndex = async <
-        TStoreName extends StoreNames<TDBStructure>,
-        TIndexName extends IndexNames<TDBStructure, TStoreName>,
-        TKey extends IndexKey<TDBStructure, TStoreName, TIndexName>,
-    >(
-        store: TStoreName,
-        indexName: TIndexName,
-        key: TKey,
-    ) => {
-        // returns the tx with txID
-        const db = await this.getDB();
-        const tx = db.transaction(store);
-        const index = tx.store.index(indexName);
-        const item = await index.get(IDBKeyRange.only(key));
-
-        return item;
-    };
-
-    updateItemByIndex = async <
-        TStoreName extends StoreNames<TDBStructure>,
-        TIndexName extends IndexNames<TDBStructure, TStoreName>,
-        TKey extends IndexKey<TDBStructure, TStoreName, TIndexName>,
-    >(
-        store: TStoreName,
-        indexName: TIndexName,
-        key: TKey,
-        updateObject: { [key: string]: any },
-    ) => {
-        const db = await this.getDB();
-        const tx = db.transaction(store, 'readwrite');
-        const index = tx.store.index(indexName);
-        const result = await index.get(key);
-        if (result) {
-            Object.assign(result, updateObject);
-
-            return tx.store.put(result);
-        }
-    };
-
     removeItemByPK = async <
         TStoreName extends StoreNames<TDBStructure>,
         TKey extends StoreKey<TDBStructure, TStoreName>,
@@ -282,7 +243,7 @@ class CommonDB<TDBStructure> {
         const tx = db.transaction(store);
         if (indexName) {
             const index = tx.store.index(indexName);
-            if (filters && filters.key !== undefined) {
+            if (filters?.key !== undefined) {
                 if (filters.offset !== undefined || filters.count !== undefined) {
                     // cursor with keyrange for given accountId (covers all timestamps)
                     let cursor = await index.openCursor(
@@ -312,7 +273,7 @@ class CommonDB<TDBStructure> {
                 return index.getAll(keyRange);
             }
 
-            if (filters && filters.reverse) {
+            if (filters?.reverse) {
                 // get items in reverse order
                 let cursor = await index.openCursor(undefined, 'prev');
                 const items = [];
@@ -346,35 +307,6 @@ class CommonDB<TDBStructure> {
         }
 
         return resp;
-    };
-
-    clearStores = async <TStoreName extends StoreNames<TDBStructure>>(
-        storeNames?: TStoreName[],
-    ) => {
-        const db = await this.getDB();
-
-        const extractStoreNames = () => {
-            const names: StoreNames<TDBStructure>[] = [];
-            const list = db.objectStoreNames;
-            const { length } = list;
-            for (let i = 0; i < length; i++) {
-                const storeName = list.item(i);
-                if (storeName) {
-                    names.push(storeName);
-                }
-            }
-
-            return names;
-        };
-
-        const list = storeNames ?? extractStoreNames();
-        const promises = list.map(storeName => {
-            const transaction = db.transaction(storeName, 'readwrite');
-            const objectStore = transaction.objectStore(storeName);
-
-            return objectStore.clear();
-        });
-        await Promise.all(promises);
     };
 
     removeDatabase = () => {

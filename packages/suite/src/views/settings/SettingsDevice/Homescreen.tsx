@@ -2,14 +2,14 @@ import { useRef, useState } from 'react';
 
 import styled from 'styled-components';
 
+import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
+import { Anchor, SettingsAnchor } from '@suite/router';
 import { Paragraph, Tooltip } from '@trezor/components';
+import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
 import { applySettings } from 'src/actions/settings/deviceSettingsActions';
-import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
-import { ActionButton, ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
-import { SettingsAnchor } from 'src/constants/suite/anchors';
-import { useDevice, useDispatch } from 'src/hooks/suite';
+import { useDispatch } from 'src/hooks/suite';
 import {
     ImageValidationError,
     convertImage,
@@ -61,20 +61,21 @@ export const Homescreen = ({ isDeviceLocked }: HomescreenProps) => {
     };
 
     const onUploadHomescreen = async (files: FileList | null) => {
-        if (!files || !files.length) return;
-        let file = files[0];
-
-        let validationResult = await validateImage({ file, deviceModelInternal });
+        if (!files?.length) return;
+        // @ts-expect-error: indexing noUncheckedIndexedAccess
+        let currentFile: File = files[0];
+        let validationResult = await validateImage({ file: currentFile, deviceModelInternal });
 
         // Do NOT touch the image if it's already valid
         if (validationResult) {
-            file = (await convertImage({ file, deviceModelInternal })) ?? file;
-            validationResult = await validateImage({ file, deviceModelInternal });
+            currentFile =
+                (await convertImage({ file: currentFile, deviceModelInternal })) ?? currentFile;
+            validationResult = await validateImage({ file: currentFile, deviceModelInternal });
         }
 
         setValidationError(validationResult);
 
-        const dataUrl = await fileToDataUrl(file);
+        const dataUrl = await fileToDataUrl(currentFile);
         setCustomHomescreen(dataUrl);
     };
 
@@ -102,35 +103,43 @@ export const Homescreen = ({ isDeviceLocked }: HomescreenProps) => {
 
     return (
         <>
-            <SettingsSectionItem anchorId={SettingsAnchor.Homescreen}>
-                <HomescreenSettingsTitle deviceModelInternal={deviceModelInternal} />
-
-                <ActionColumn>
-                    <HiddenInput
-                        ref={fileInputElement}
-                        type="file"
-                        accept={['png', 'jpeg', 'gif', 'webp', 'svg+xml']
-                            .map(format => `image/${format}`)
-                            .join(', ')}
-                        onChange={e => onUploadHomescreen(e.target.files)}
-                    />
-                    <Tooltip
-                        maxWidth={285}
-                        content={
-                            !isSupportedHomescreen && (
-                                <Translation id="TR_UPDATE_FIRMWARE_HOMESCREEN_TOOLTIP" />
-                            )
-                        }
+            <Anchor anchorId={SettingsAnchor.Homescreen}>
+                {({ anchorId, anchorRef, shouldHighlight }) => (
+                    <SectionItem
+                        data-testid={anchorId}
+                        ref={anchorRef}
+                        shouldHighlight={shouldHighlight}
                     >
-                        <ChangeHomescreenButtons
-                            deviceModelInternal={deviceModelInternal}
-                            isDeviceLocked={isDeviceLocked}
-                            isSupportedHomescreen={isSupportedHomescreen}
-                            onImageUploadClick={() => fileInputElement?.current?.click()}
-                        />
-                    </Tooltip>
-                </ActionColumn>
-            </SettingsSectionItem>
+                        <HomescreenSettingsTitle deviceModelInternal={deviceModelInternal} />
+
+                        <ActionColumn>
+                            <HiddenInput
+                                ref={fileInputElement}
+                                type="file"
+                                accept={['png', 'jpeg', 'gif', 'webp', 'svg+xml']
+                                    .map(format => `image/${format}`)
+                                    .join(', ')}
+                                onChange={e => onUploadHomescreen(e.target.files)}
+                            />
+                            <Tooltip
+                                maxWidth={285}
+                                content={
+                                    !isSupportedHomescreen && (
+                                        <Translation id="TR_UPDATE_FIRMWARE_HOMESCREEN_TOOLTIP" />
+                                    )
+                                }
+                            >
+                                <ChangeHomescreenButtons
+                                    deviceModelInternal={deviceModelInternal}
+                                    isDeviceLocked={isDeviceLocked}
+                                    isSupportedHomescreen={isSupportedHomescreen}
+                                    onImageUploadClick={() => fileInputElement?.current?.click()}
+                                />
+                            </Tooltip>
+                        </ActionColumn>
+                    </SectionItem>
+                )}
+            </Anchor>
             {customHomescreen && !validationError && (
                 <SectionItem>
                     <Col>

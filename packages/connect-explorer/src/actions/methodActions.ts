@@ -9,7 +9,6 @@ import type { Dispatch, Field, GetState } from '../types';
 import {
     ADD_BATCH,
     FIELD_CHANGE,
-    FIELD_DATA_CHANGE,
     REMOVE_BATCH,
     RESPONSE,
     SET_MANUAL_MODE,
@@ -34,12 +33,6 @@ export const onFieldChange = (field: Field<any>, value: any) => ({
     type: FIELD_CHANGE,
     field,
     value,
-});
-
-export const onFieldDataChange = (field: Field<any>, data: any) => ({
-    type: FIELD_DATA_CHANGE,
-    field,
-    data,
 });
 
 export const onBatchAdd = (field: Field<any>, item: any) => ({
@@ -80,7 +73,7 @@ export const onSubmit = () => async (dispatch: Dispatch, getState: GetState) => 
     if (typeof connectMethod !== 'function') {
         dispatch(
             onResponse({
-                error: `Method "${connectMethod}" not found in TrezorConnect`,
+                error: `Method "${method.name}" not found in TrezorConnect`,
             }),
         );
 
@@ -95,32 +88,6 @@ export const onSubmit = () => async (dispatch: Dispatch, getState: GetState) => 
     dispatch(onResponse(response));
 };
 
-export const onVerify = () => (dispatch: Dispatch, getState: GetState) => {
-    const { method } = getState();
-    if (!method) throw new Error('method not specified');
-
-    const verifyMethodValues = {
-        address: method.response.payload.address,
-        signature: method.response.payload.signature,
-        coin: method.params.coin,
-        message: method.params.message,
-        hex: undefined,
-        publicKey: undefined,
-    } as any;
-
-    // ethereum extra field
-    if ('hex' in method.params) {
-        verifyMethodValues.hex = method.params.hex;
-    }
-
-    const verifyMethod = getState().method;
-    verifyMethod?.fields.forEach((f: any) => {
-        if (verifyMethodValues[f.name]) {
-            dispatch(onFieldChange(f, verifyMethodValues[f.name]));
-        }
-    });
-};
-
 export const onCodeChange = (value: string) => (dispatch: Dispatch, getState: GetState) => {
     try {
         const { fields } = getState().method;
@@ -133,7 +100,10 @@ export const onCodeChange = (value: string) => (dispatch: Dispatch, getState: Ge
                 // ensure the array has the correct number of items
                 if (value) {
                     for (let i = field.items.length; i < value.length; i++) {
-                        dispatch(onBatchAdd(field, field.batch[0].fields));
+                        const { batch } = field;
+                        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+                        const firstBatch: (typeof batch)[number] = batch[0];
+                        dispatch(onBatchAdd(field, firstBatch.fields));
                     }
                     for (let i = field.items.length; i > value.length; i--) {
                         dispatch(onBatchRemove(field, field.items[i - 1]));

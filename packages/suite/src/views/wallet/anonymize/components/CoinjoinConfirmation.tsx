@@ -2,38 +2,38 @@ import { useState } from 'react';
 
 import styled from 'styled-components';
 
-import { Translation } from '@suite/intl';
-import { Account } from '@suite-common/wallet-types';
-import { Button, Card, H3, Note, Paragraph, Tooltip, variables } from '@trezor/components';
-import { spacings, spacingsPx } from '@trezor/theme';
-
-import { startCoinjoinSession } from 'src/actions/wallet/coinjoinAccountActions';
-import { Error } from 'src/components/suite/Error';
-import { useCoinjoinSessionBlockers } from 'src/hooks/coinjoin/useCoinjoinSessionBlockers';
-import { useDispatch, useSelector } from 'src/hooks/suite';
 import {
     selectCoinjoinClient,
     selectStartCoinjoinSessionArguments,
-} from 'src/reducers/wallet/coinjoinReducer';
+    startCoinjoinSession,
+} from '@suite/coinjoin';
+import { Translation } from '@suite/intl';
+import { type Account } from '@suite-common/wallet-types';
+import { Button, Card, H3, Note, Paragraph, Tooltip, variables } from '@trezor/components';
+import { CircuitryIcon, ClockIcon, LockKeyIcon } from '@trezor/icons';
 
-import { Tile, TileProps } from './Tile';
+import { Error } from 'src/components/suite/Error';
+import { useCoinjoinSessionBlockers } from 'src/hooks/coinjoin/useCoinjoinSessionBlockers';
+import { useDispatch, useSelector } from 'src/hooks/suite';
+
+import { Tile, type TileProps } from './Tile';
 
 const TopFeeRow = styled.div`
     display: flex;
     justify-content: space-between;
-    margin-bottom: ${spacingsPx.xs};
+    margin-bottom: 8px;
 `;
 
 const FeeWrapper = styled.div`
-    border-bottom: 1px solid ${({ theme }) => theme.borderElevation1};
-    border-top: 1px solid ${({ theme }) => theme.borderElevation1};
-    margin: ${spacingsPx.xl} 0;
-    padding: ${spacingsPx.md} 0;
+    border-bottom: 1px solid ${({ theme }) => theme.borderNeutral};
+    border-top: 1px solid ${({ theme }) => theme.borderNeutral};
+    margin: 24px 0;
+    padding: 16px 0;
 `;
 
 const Tiles = styled.div`
     display: grid;
-    gap: ${spacingsPx.md};
+    gap: 16px;
     grid-template-columns: repeat(3, 1fr);
 
     ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
@@ -49,21 +49,24 @@ const Tiles = styled.div`
     }
 `;
 
-const tiles: TileProps[] = [
+const tiles: Array<TileProps & { id: string }> = [
     {
+        id: 'clock',
         title: <Translation id="TR_COINJOIN_TILE_1_TITLE" />,
         description: <Translation id="TR_COINJOIN_TILE_1_DESCRIPTION" />,
-        iconName: 'clock',
+        iconName: ClockIcon,
     },
     {
+        id: 'circuitry',
         title: <Translation id="TR_COINJOIN_TILE_2_TITLE" />,
         description: <Translation id="TR_COINJOIN_TILE_2_DESCRIPTION" />,
-        iconName: 'circuitry',
+        iconName: CircuitryIcon,
     },
     {
+        id: 'lock',
         title: <Translation id="TR_COINJOIN_TILE_3_TITLE" />,
         description: <Translation id="TR_COINJOIN_TILE_3_DESCRIPTION" />,
-        iconName: 'lockKey',
+        iconName: LockKeyIcon,
     },
 ];
 
@@ -116,8 +119,8 @@ export const CoinjoinConfirmation = ({ account }: CoinjoinConfirmationProps) => 
                     <Translation id="TR_COINJOIN_SETUP" />
                 </H3>
                 <Tiles>
-                    {tiles.map(tile => (
-                        <Tile key={tile.iconName} {...tile} />
+                    {tiles.map(({ id, ...tile }) => (
+                        <Tile key={id} {...tile} />
                     ))}
                 </Tiles>
                 <FeeWrapper>
@@ -144,7 +147,7 @@ export const CoinjoinConfirmation = ({ account }: CoinjoinConfirmationProps) => 
                     onClick={anonymize}
                     isDisabled={isDisabled}
                     isLoading={isLoading}
-                    margin={{ top: spacings.xl }}
+                    margin={{ top: 24 }}
                 >
                     <Translation id="TR_START_COINJOIN" />
                 </Button>

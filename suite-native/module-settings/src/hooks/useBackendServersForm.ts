@@ -4,63 +4,72 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { useFocusEffect } from '@react-navigation/native';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { yup } from '@suite-common/validators';
-import { BackendType } from '@suite-common/wallet-config';
 import {
-    BlockchainRootState,
+    type BackendType,
+    type Network,
+    type ServerType,
+    getServerAddressExample,
+    validateServerAddress,
+} from '@suite-common/wallet-config';
+import {
+    type BlockchainRootState,
     blockchainActions,
     reconnectBlockchainThunk,
     selectNetworkBlockchainInfo,
 } from '@suite-common/wallet-core';
-import { events } from '@suite-native/analytics';
-import { SelectItemType } from '@suite-native/atoms';
+import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { type SelectItemType } from '@suite-native/atoms';
 import { useForm } from '@suite-native/forms';
 import { useTranslate } from '@suite-native/intl';
-import { useAnalytics } from '@suite-native/services';
-import TrezorConnect, { BLOCKCHAIN, BlockchainError } from '@trezor/connect';
-import { parseElectrumUrl } from '@trezor/utils';
-
-const symbol = 'btc';
-
-export type ServerType = BackendType | 'default';
+import TrezorConnect, { BLOCKCHAIN, type BlockchainError } from '@trezor/connect';
 
 type FormValues = {
     serverType: ServerType;
     serverAddress: string;
 };
 
-export const useBackendServersForm = () => {
+export const useBackendServersForm = ({ symbol, backendOptions }: Network) => {
     const dispatch = useDispatch();
     const { translate } = useTranslate();
-    const analytics = useAnalytics();
+    const { analytics } = useServices(selectNativeAnalyticsDep);
 
     const {
         connected,
         backends: { selected, urls },
     } = useSelector((state: BlockchainRootState) => selectNetworkBlockchainInfo(state, symbol));
 
-    const serverTypes = useMemo<SelectItemType<ServerType>[]>(
-        () => [
-            {
-                value: 'default',
-                label: translate(
-                    'moduleSettings.advanced.bitcoinBackends.servers.serverTypeDefault',
-                ),
-            },
+    const serverTypes = useMemo(() => {
+        const defaultItem: SelectItemType<ServerType> = {
+            value: 'default',
+            label: translate('moduleSettings.networkBackends.servers.serverType.defaultLabel'),
+        };
+        const supportedItems: SelectItemType<BackendType>[] = [
+            { value: 'blockbook', label: 'Blockbook' },
             { value: 'electrum', label: 'Electrum' },
-        ],
-        [translate],
-    );
+            { value: 'ripple', label: 'Ripple' },
+            { value: 'blockfrost', label: 'Blockfrost' },
+            { value: 'solana', label: 'Solana' },
+            { value: 'stellar', label: 'Stellar' },
+            { value: 'evm-rpc', label: 'RPC' },
+        ];
+        const availableItems = supportedItems.filter(({ value }) =>
+            backendOptions.some(({ type }) => type === value),
+        );
+
+        return symbol !== 'regtest' ? [defaultItem, ...availableItems] : availableItems;
+    }, [translate, symbol, backendOptions]);
 
     const defaultValues = useMemo<FormValues>(
         () => ({
             serverType: selected ?? 'default',
-            serverAddress: urls?.electrum?.[0] ?? '',
+            serverAddress: (selected && urls?.[selected]?.[0]) ?? '',
         }),
         [selected, urls],
     );
 
-    const form = useForm({
+    const form = useForm<FormValues>({
         validation: yup.object({
             serverType: yup
                 .string<ServerType>()
@@ -70,19 +79,31 @@ export const useBackendServersForm = () => {
                 .string()
                 .test(
                     'format',
-                    translate('moduleSettings.advanced.bitcoinBackends.servers.invalidFormat'),
-                    value => !!value && !!parseElectrumUrl(value),
-                )
-                .test(
-                    'tor',
-                    translate('moduleSettings.advanced.bitcoinBackends.servers.torNotSupported'),
-                    value => !!value && !value.includes('.onion:'),
+                    translate('moduleSettings.networkBackends.servers.invalidFormat'),
+                    (value, context) => {
+                        const serverType = context.resolve(yup.ref<ServerType>('serverType'));
+                        if (serverType === 'default') {
+                            return true;
+                        }
+
+                        return !!value && validateServerAddress(serverType, value);
+                    },
                 ),
         }),
         defaultValues,
         mode: 'onSubmit',
     });
 
+    const setServerType = (value: ServerType) => {
+        form.clearErrors();
+        form.setValue('serverType', value, { shouldDirty: true });
+        if (value !== 'default') {
+            form.setValue('serverAddress', urls?.[value]?.[0] ?? '', { shouldDirty: true });
+        }
+    };
+
+    const selectedServerType = form.watch('serverType');
+    const isOnionAddress = form.watch('serverAddress').includes('.onion:');
     const [isConnecting, setIsConnecting] = useState(false);
 
     const setBackend = ({ serverType, serverAddress }: FormValues) => {
@@ -90,7 +111,7 @@ export const useBackendServersForm = () => {
             blockchainActions.setBackend({
                 symbol,
                 type: serverType,
-                urls: serverType === 'electrum' ? [serverAddress] : [],
+                urls: serverType !== 'default' ? [serverAddress] : [],
             }),
         );
         dispatch(reconnectBlockchainThunk({ symbol }));
@@ -120,30 +141,37 @@ export const useBackendServersForm = () => {
             if (e.code === 'Backend_Error') {
                 form.setError('serverAddress', {
                     message: translate(
-                        'moduleSettings.advanced.bitcoinBackends.servers.unableToConnect',
+                        isOnionAddress
+                            ? 'moduleSettings.networkBackends.servers.unableToConnect.tor'
+                            : 'moduleSettings.networkBackends.servers.unableToConnect.clearnet',
                     ),
                 });
                 setIsConnecting(false);
             }
         },
-        [form, translate],
+        [form, isOnionAddress, translate],
     );
 
     useFocusEffect(
         useCallback(() => {
-            TrezorConnect.on(BLOCKCHAIN.CONNECT, onConnectionSuccess);
-            TrezorConnect.on(BLOCKCHAIN.ERROR, onConnectionError);
+            if (isConnecting) {
+                TrezorConnect.on(BLOCKCHAIN.CONNECT, onConnectionSuccess);
+                TrezorConnect.on(BLOCKCHAIN.ERROR, onConnectionError);
 
-            return () => {
-                TrezorConnect.off(BLOCKCHAIN.CONNECT, onConnectionSuccess);
-                TrezorConnect.off(BLOCKCHAIN.ERROR, onConnectionError);
-            };
-        }, [onConnectionSuccess, onConnectionError]),
+                return () => {
+                    TrezorConnect.off(BLOCKCHAIN.CONNECT, onConnectionSuccess);
+                    TrezorConnect.off(BLOCKCHAIN.ERROR, onConnectionError);
+                };
+            }
+        }, [isConnecting, onConnectionSuccess, onConnectionError]),
     );
 
     return {
         form,
         serverTypes,
+        selectedServerType,
+        setServerType,
+        serverAddressExample: getServerAddressExample(symbol, selectedServerType),
         isConnected: connected,
         isConnecting,
         submit,

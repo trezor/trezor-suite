@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react';
 
 import styled from 'styled-components';
 
+import { selectCurrentTargetAnonymity } from '@suite/coinjoin';
 import { Translation } from '@suite/intl';
-import { selectLabelingDataForSelectedAccount } from '@suite/metadata';
 import { getTxsPerPage } from '@suite-common/suite-utils';
 import { filterAndCategorizeUtxos } from '@suite-common/transaction-search';
 import { COMPOSE_ERROR_TYPES } from '@suite-common/wallet-constants';
@@ -21,23 +21,23 @@ import {
     Switch,
     Text,
 } from '@trezor/components';
-import { spacings, spacingsPx } from '@trezor/theme';
+import { CaretUpIcon, InfoIcon, ShieldCheckIcon, ShieldWarningIcon } from '@trezor/icons';
 
 import { FormattedCryptoAmount } from 'src/components/suite';
 import { Pagination } from 'src/components/wallet';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
-import { selectCurrentTargetAnonymity } from 'src/reducers/wallet/coinjoinReducer';
+import { selectAccountLabelsForSearch } from 'src/selectors/suite/selectAccountLabelsForSearch';
 
 import { UtxoSearch } from './UtxoSearch';
 import { UtxoSelectionList } from './UtxoSelectionList/UtxoSelectionList';
 import { UtxoSortingSelect } from './UtxoSortingSelect';
 
 const Empty = styled.div`
-    border-bottom: 1px solid ${({ theme }) => theme.borderElevation1};
-    margin-bottom: ${spacingsPx.sm};
-    padding: ${spacingsPx.sm} 0;
+    border-bottom: 1px solid ${({ theme }) => theme.borderNeutral};
+    margin-bottom: 12px;
+    padding: 12px 0;
 `;
 
 type CoinControlProps = {
@@ -47,10 +47,6 @@ type CoinControlProps = {
 export const CoinControl = ({ close }: CoinControlProps) => {
     const [currentPage, setSelectedPage] = useState(1);
     const [searchQuery, setSearchQuery] = useState('');
-    const { outputLabels } = useSelector(selectLabelingDataForSelectedAccount);
-    const targetAnonymity = useSelector(selectCurrentTargetAnonymity);
-    const dispatch = useDispatch();
-
     const {
         account,
         formState: { errors },
@@ -70,6 +66,9 @@ export const CoinControl = ({ close }: CoinControlProps) => {
             toggleCoinControl,
         },
     } = useSendFormContext();
+    const { outputLabels } = useSelector(state => selectAccountLabelsForSearch(state, account));
+    const targetAnonymity = useSelector(selectCurrentTargetAnonymity);
+    const dispatch = useDispatch();
 
     const { shouldSendInSats } = useBitcoinAmountUnit(account.symbol);
 
@@ -122,7 +121,7 @@ export const CoinControl = ({ close }: CoinControlProps) => {
 
     // UTXOs and categories displayed on page
     let previousItemsLength = 0;
-    const [spendableUtxosOnPage, lowAnonymityUtxosOnPage, dustUtxosOnPage] = [
+    const paginatedCategories = [
         filteredSpendableUtxos,
         filteredLowAnonymityUtxos,
         filteredDustUtxos,
@@ -136,6 +135,9 @@ export const CoinControl = ({ close }: CoinControlProps) => {
             Math.max(0, lastIndexOnPage),
         );
     });
+    const spendableUtxosOnPage = paginatedCategories[0] ?? [];
+    const lowAnonymityUtxosOnPage = paginatedCategories[1] ?? [];
+    const dustUtxosOnPage = paginatedCategories[2] ?? [];
     const isCoinjoinAccount = account.accountType === 'coinjoin';
     const hasEligibleUtxos = spendableUtxos.length + lowAnonymityUtxos.length > 0;
 
@@ -167,9 +169,9 @@ export const CoinControl = ({ close }: CoinControlProps) => {
             <Column gap={16}>
                 <Row justifyContent="space-between">
                     <Translation id="TR_COIN_CONTROL" />
-                    <Row gap={spacings.md}>
+                    <Row gap={16}>
                         <Switch isChecked={!!isCoinControlEnabled} onChange={toggleCoinControl} />
-                        <Icon size={24} name="caretUp" onClick={close} />
+                        <Icon size={24} as={CaretUpIcon} onClick={close} />
                     </Row>
                 </Row>
 
@@ -177,7 +179,7 @@ export const CoinControl = ({ close }: CoinControlProps) => {
                     <Checkbox
                         isChecked={allUtxosSelected}
                         isDisabled={!hasEligibleUtxos}
-                        onClick={handleAllUtxosSelected}
+                        onChange={handleAllUtxosSelected}
                     >
                         <Text intent="neutral" priority="secondary">
                             <Translation id="TR_SELECTED" values={{ amount: inputs.length }} />
@@ -219,8 +221,8 @@ export const CoinControl = ({ close }: CoinControlProps) => {
                         description={
                             <Translation id="TR_PRIVATE_DESCRIPTION" values={{ targetAnonymity }} />
                         }
-                        icon="shieldCheck"
-                        iconColor="iconPrimaryDefault"
+                        icon={ShieldCheckIcon}
+                        iconIntent="brand"
                         utxos={spendableUtxosOnPage}
                     />
                 )}
@@ -234,8 +236,8 @@ export const CoinControl = ({ close }: CoinControlProps) => {
                                 values={{ targetAnonymity }}
                             />
                         }
-                        icon="shieldWarning"
-                        iconColor="iconAlertYellow"
+                        icon={ShieldWarningIcon}
+                        iconIntent="warning"
                         utxos={lowAnonymityUtxosOnPage}
                     />
                 )}
@@ -249,8 +251,8 @@ export const CoinControl = ({ close }: CoinControlProps) => {
                         withHeader
                         heading={<Translation id="TR_DUST" />}
                         description={<Translation id="TR_DUST_DESCRIPTION" />}
-                        icon="info"
-                        iconColor="iconSubdued"
+                        icon={InfoIcon}
+                        iconIntent="neutral"
                         utxos={dustUtxosOnPage}
                     />
                 )}

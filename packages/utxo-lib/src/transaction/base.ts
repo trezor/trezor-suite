@@ -2,9 +2,9 @@ import * as varuint from 'varuint-bitcoin';
 
 import { getChunkSize, reverseBuffer } from '../bufferutils';
 import * as bcrypto from '../crypto';
-import { bitcoin as BITCOIN_NETWORK, Network, isNetworkType } from '../networks';
+import { bitcoin as BITCOIN_NETWORK, type Network, isNetworkType } from '../networks';
 import * as bscript from '../script';
-import * as types from '../types';
+import { Hash256bit, assertType } from '../types/validation';
 
 export function varSliceSize(someScript: Buffer) {
     const { length } = someScript;
@@ -20,7 +20,7 @@ export function vectorSize(someVector: Buffer[]) {
 }
 
 export function isCoinbaseHash(buffer: Buffer): boolean {
-    types.typeforce(types.Hash256bit, buffer);
+    assertType(Hash256bit, buffer);
     for (let i = 0; i < 32; ++i) {
         if (buffer[i] !== 0) return false;
     }
@@ -65,7 +65,7 @@ export class TransactionBase<S = undefined> {
 
     network: Network;
     type: number | undefined; // Dash, Decred, Zcash
-    timestamp: number | undefined; // Peercoin
+    timestamp: number | undefined; // Verge
     expiry: number | undefined; // Decred, Zcash. Block height after which this transactions will expire, or 0 to disable expiry
 
     constructor(options: TransactionOptions & { txSpecific?: S }) {
@@ -74,7 +74,11 @@ export class TransactionBase<S = undefined> {
     }
 
     isCoinbase(): boolean {
-        return this.ins.length === 1 && isCoinbaseHash(this.ins[0].hash);
+        const { ins } = this;
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const firstIn: (typeof ins)[number] = ins[0];
+
+        return this.ins.length === 1 && isCoinbaseHash(firstIn.hash);
     }
 
     hasWitnesses(): boolean {

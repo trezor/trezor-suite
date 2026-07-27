@@ -1,16 +1,16 @@
-import url from 'url';
-
-import { Log } from '@trezor/utils';
+import { type Log } from '@trezor/utils';
 
 import { getFreePort } from '../getFreePort';
 import {
     HttpServer,
-    ParamsValidatorHandler,
-    RequestHandler,
+    type ParamsValidatorHandler,
+    type RequestHandler,
     allowReferers,
     parseBodyJSON,
+    parseBodyJSONWithLimit,
     parseBodyText,
 } from '../http';
+import { parseRequestUrl } from '../parseRequestUrl';
 
 type Events = {
     foo: (arg: string) => void;
@@ -360,7 +360,7 @@ describe('HttpServer', () => {
 
     test('query string as array', async () => {
         const handler = jest.fn((request, response) => {
-            const { search } = url.parse(request.url, true);
+            const { search } = parseRequestUrl(request.url);
             response.end(search);
         });
         server.post('/foo', [parseBodyText, handler]);
@@ -377,7 +377,7 @@ describe('HttpServer', () => {
 
     test('should get query string as url when using encoded parameters', async () => {
         const handler = jest.fn((request, response) => {
-            const { search } = url.parse(request.url, true);
+            const { search } = parseRequestUrl(request.url);
             response.end(search);
         });
         server.post('/foo', [parseBodyText, handler]);
@@ -397,7 +397,7 @@ describe('HttpServer', () => {
 
     test('should not get query string as url when using invalid encoded parameters', async () => {
         const handler = jest.fn((request, response) => {
-            const { search } = url.parse(request.url, true);
+            const { search } = parseRequestUrl(request.url);
             response.end(search);
         });
         server.post('/foo', [parseBodyText, handler]);
@@ -414,7 +414,7 @@ describe('HttpServer', () => {
 
     test('query string sanitization', async () => {
         const handler = jest.fn((request, response) => {
-            const { search } = url.parse(request.url, true);
+            const { search } = parseRequestUrl(request.url);
             response.end(search);
         });
         server.post('/foo', [parseBodyText, handler]);
@@ -471,7 +471,9 @@ describe('HttpServer', () => {
     });
 
     test('port negotiation, first available port is occupied, second is free', async () => {
-        const [freePort1, freePort2] = await getFreePort(2);
+        const freePorts = await getFreePort(2);
+        const freePort1 = freePorts[0] ?? 0;
+        const freePort2 = freePorts[1] ?? 0;
         // start server using 'ports' array. first port is empty and will be used
         server = new HttpServer<Events>({ logger: muteLogger, port: freePort1 });
         await server.start();
@@ -493,7 +495,8 @@ describe('HttpServer', () => {
     });
 
     test('port negotiation - it is possible to start and stop server multiple times', async () => {
-        const [freePort1] = await getFreePort(1);
+        const freePorts2 = await getFreePort(1);
+        const freePort1 = freePorts2[0] ?? 0;
 
         server = new HttpServer<Events>({ logger: muteLogger, ports: [freePort1] });
         await server.start();
@@ -508,6 +511,61 @@ describe('HttpServer', () => {
         });
 
         await server.stop();
+    });
+
+    // Previously this test pinned the leak (see #27981): `HttpServer.stop()` did not
+    // remove the 'connection'/'error' listeners that `start()` attached to the underlying
+    // `http.Server`, only the TypedEmitter wrapper ones. The fix removes them surgically
+    // (`server.off(event, handler)`) so Node's built-in `connectionListener` — attached
+    // once by `http.createServer` and responsible for HTTP parsing — is preserved across
+    // start/stop cycles. Two cycles cover both halves: cleanup after stop() and
+    // non-accumulation across the next start().
+    test('repeated start()/stop() does not leak connection/error listeners on the underlying http.Server', async () => {
+        const underlyingServer = server.server;
+        const connectionBaseline = underlyingServer.listenerCount('connection');
+
+        await server.start();
+        expect(underlyingServer.listenerCount('connection')).toBe(connectionBaseline + 1);
+        expect(underlyingServer.listenerCount('error')).toBe(1);
+
+        await server.stop();
+        expect(underlyingServer.listenerCount('connection')).toBe(connectionBaseline);
+        expect(underlyingServer.listenerCount('error')).toBe(0);
+
+        await server.start();
+        expect(underlyingServer.listenerCount('connection')).toBe(connectionBaseline + 1);
+        expect(underlyingServer.listenerCount('error')).toBe(1);
+
+        await server.stop();
+        expect(underlyingServer.listenerCount('connection')).toBe(connectionBaseline);
+        expect(underlyingServer.listenerCount('error')).toBe(0);
+    });
+
+    // Regression for an earlier iteration of the fix that called
+    // `this.server.removeAllListeners('connection')` in stop(). That wiped out Node's
+    // built-in `connectionListener` (the one `http.createServer` attaches), so the next
+    // start() accepted TCP connections without ever parsing them as HTTP and clients
+    // got `socket hang up`. The surgical `.off(event, storedHandler)` cleanup leaves
+    // Node's parser listener intact across cycles.
+    test('HTTP requests still work after a stop()/start() cycle', async () => {
+        server.get('/ping', [
+            (_request, response) => {
+                response.end('pong');
+            },
+        ]);
+
+        await server.start();
+        const firstAddr = server.getServerAddress();
+        const firstRes = await fetch(`http://${firstAddr.address}:${firstAddr.port}/ping`);
+        expect(firstRes.status).toBe(200);
+        expect(await firstRes.text()).toBe('pong');
+
+        await server.stop();
+        await server.start();
+        const secondAddr = server.getServerAddress();
+        const secondRes = await fetch(`http://${secondAddr.address}:${secondAddr.port}/ping`);
+        expect(secondRes.status).toBe(200);
+        expect(await secondRes.text()).toBe('pong');
     });
 
     test('port negotiation - even when started using random port, the resulting port is stored for future use', async () => {
@@ -802,6 +860,122 @@ describe('HttpServer', () => {
             expect(res3.status).toEqual(200);
             await expect(res3.text()).resolves.toEqual('root');
             expect(rootHandler).toHaveBeenCalled();
+        });
+    });
+
+    describe('DELETE route', () => {
+        test('DELETE route matches DELETE requests', async () => {
+            const handler = jest.fn((_request, response) => {
+                response.end('deleted');
+            });
+
+            server.delete('/resource', [handler]);
+            await server.start();
+            const { address, port } = server.getServerAddress();
+
+            const res = await fetch(`http://${address}:${port}/resource`, {
+                method: 'DELETE',
+            });
+
+            expect(res.status).toEqual(200);
+            await expect(res.text()).resolves.toEqual('deleted');
+            expect(handler).toHaveBeenCalled();
+        });
+
+        test('DELETE route does not match GET, POST, or PUT', async () => {
+            const handler = jest.fn((_request, response) => {
+                response.end('deleted');
+            });
+
+            server.delete('/resource', [handler]);
+            await server.start();
+            const { address, port } = server.getServerAddress();
+
+            for (const method of ['GET', 'POST', 'PUT']) {
+                const res = await fetch(`http://${address}:${port}/resource`, { method });
+                expect(res.status).toEqual(404);
+            }
+            expect(handler).not.toHaveBeenCalled();
+        });
+    });
+
+    describe('parseBodyJSONWithLimit', () => {
+        test('rejects body larger than limit with 413', async () => {
+            const handler = jest.fn((_request, response) => {
+                response.end('ok');
+            });
+
+            server.post('/upload', [parseBodyJSONWithLimit(100), handler]);
+            await server.start();
+            const { address, port } = server.getServerAddress();
+
+            const res = await fetch(`http://${address}:${port}/upload`, {
+                method: 'POST',
+                body: JSON.stringify({ data: 'x'.repeat(200) }),
+                headers: { 'Content-Type': 'application/json' },
+            });
+
+            expect(res.status).toEqual(413);
+            const body = await res.json();
+            expect(body.error).toContain('Payload too large');
+            expect(handler).not.toHaveBeenCalled();
+        });
+
+        test('rejects invalid JSON with 400', async () => {
+            const handler = jest.fn((_request, response) => {
+                response.end('ok');
+            });
+
+            server.post('/upload', [parseBodyJSONWithLimit(1024), handler]);
+            await server.start();
+            const { address, port } = server.getServerAddress();
+
+            const res = await fetch(`http://${address}:${port}/upload`, {
+                method: 'POST',
+                body: '{invalid json!!!',
+                headers: { 'Content-Type': 'application/json' },
+            });
+
+            expect(res.status).toEqual(400);
+            const body = await res.json();
+            expect(body.error).toContain('Invalid json body');
+            expect(handler).not.toHaveBeenCalled();
+        });
+
+        test('parses valid JSON within limit', async () => {
+            const handler = jest.fn((request, response) => {
+                response.end(JSON.stringify(request.body));
+            });
+
+            server.post('/upload', [parseBodyJSONWithLimit(1024), handler]);
+            await server.start();
+            const { address, port } = server.getServerAddress();
+
+            const res = await fetch(`http://${address}:${port}/upload`, {
+                method: 'POST',
+                body: JSON.stringify({ foo: 'bar' }),
+                headers: { 'Content-Type': 'application/json' },
+            });
+
+            expect(res.status).toEqual(200);
+            expect(await res.json()).toEqual({ foo: 'bar' });
+        });
+
+        test('treats empty body as empty object', async () => {
+            const handler = jest.fn((request, response) => {
+                response.end(JSON.stringify(request.body));
+            });
+
+            server.post('/upload', [parseBodyJSONWithLimit(1024), handler]);
+            await server.start();
+            const { address, port } = server.getServerAddress();
+
+            const res = await fetch(`http://${address}:${port}/upload`, {
+                method: 'POST',
+            });
+
+            expect(res.status).toEqual(200);
+            expect(await res.json()).toEqual({});
         });
     });
 });

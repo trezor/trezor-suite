@@ -2,13 +2,13 @@ import { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { selectSelectedDevice } from '@suite-common/device';
-import { PasswordEntry } from '@suite-common/metadata-types';
+import { type PasswordEntry } from '@suite-common/metadata-types';
 import { typedObjectEntries } from '@trezor/utils';
 
 import * as metadataPasswordsActions from '../metadataPasswordsActions';
 import * as metadataProviderActions from '../metadataProviderThunks';
 import {
-    MetadataRootState,
+    type MetadataRootState,
     selectPasswordManagerState,
     selectSelectedProviderForPasswords,
 } from '../metadataReducer';

@@ -1,8 +1,8 @@
-import { ComponentProps, ReactElement, ReactNode } from 'react';
+import { type ComponentProps, type ReactElement, type ReactNode } from 'react';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
 import { Box, Text } from '@suite-native/atoms';
-import { Translation } from '@suite-native/intl';
+import { type Translation } from '@suite-native/intl';
 
 export type ScreenHeaderContentProps = {
     title?: ReactElement<ComponentProps<typeof Translation>> | string;
@@ -11,7 +11,11 @@ export type ScreenHeaderContentProps = {
 
 export const ScreenHeaderContent = ({ title, customContent }: ScreenHeaderContentProps) => {
     if (customContent) {
-        return <Box alignItems="center">{customContent}</Box>;
+        return (
+            <Box alignItems="center" flexShrink={1}>
+                {customContent}
+            </Box>
+        );
     }
 
     if (title) {

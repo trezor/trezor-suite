@@ -1,17 +1,30 @@
+import { parseConnectSettings } from '@trezor/connect-common/src/data/connectSettings';
+import { noopCreateLogger } from '@trezor/connect-common/src/utils/debug';
 import { DeviceModelInternal, FirmwareType } from '@trezor/device-utils';
-import { parseConfigure } from '@trezor/protobuf';
 import { v1 as protocolV1 } from '@trezor/protocol';
-import { buildMessage } from '@trezor/transport/src/utils/send';
-import { Log } from '@trezor/utils';
+import { buildMessage } from '@trezor/transport-common';
+import { Log, bufferUtils } from '@trezor/utils';
 
-import * as mockFwHash from '../../api/firmware/calculateFirmwareHash';
-import { DataManager } from '../../data/DataManager';
-import { parseConnectSettings } from '../../data/connectSettings';
-import { getBundledRelease } from '../../data/firmwareInfo';
+import { calculateFirmwareHash } from '../../api/firmware/calculateFirmwareHash';
+import { getBundledRelease, initializeFirmwareConfig } from '../../data/firmwareInfo';
+import * as firmwareReleaseStore from '../../data/firmwareReleaseStore';
+import { loadProtobufModules } from '../../data/protobufLoader';
+import * as settingsStore from '../../data/settingsStore';
 import { DeviceList } from '../../device/DeviceList';
-// mocks
-import * as mockAssets from '../../utils/assets';
+import { httpRequest } from '../../utils/assets';
 import { onCallFirmwareUpdate } from '../onCallFirmwareUpdate';
+
+jest.mock('../../utils/assets', () => ({
+    ...jest.requireActual('../../utils/assets'),
+    httpRequest: jest.fn(jest.requireActual('../../utils/assets').httpRequest),
+}));
+
+jest.mock('../../api/firmware/calculateFirmwareHash', () => ({
+    ...jest.requireActual('../../api/firmware/calculateFirmwareHash'),
+    calculateFirmwareHash: jest.fn(
+        jest.requireActual('../../api/firmware/calculateFirmwareHash').calculateFirmwareHash,
+    ),
+}));
 
 // NOTE:
 // to disable asset mock and work with the real binaries (tests takes longer):
@@ -72,7 +85,9 @@ const transportApiMock = (fixtures: ResponseFixture[]) => {
         read: () => {
             const index = fixtures.findIndex(f => f.id === request);
             if (index >= 0) {
-                const { data } = fixtures[index];
+                // @ts-expect-error: indexing with noUncheckedIndexedAccess
+                const fixture: ResponseFixture = fixtures[index];
+                const { data } = fixture;
                 fixtures.splice(index, 1);
 
                 return response(data);
@@ -97,7 +112,7 @@ const transportApiMock = (fixtures: ResponseFixture[]) => {
 
 // build protobuf message.
 // default: recent release Features
-const buildProtobufMessage = (messages: any, override: any = {}) => {
+const buildProtobufMessage = (override: any = {}) => {
     const major_version = override.data?.major_version || 2;
     const model = major_version === 1 ? 1 : 2;
     const internal_model = major_version === 1 ? 'T1B1' : 'T2T1';
@@ -120,7 +135,6 @@ const buildProtobufMessage = (messages: any, override: any = {}) => {
     }
 
     return buildMessage({
-        messages,
         name: override.name || 'Features',
         data: override.name
             ? override.data
@@ -160,6 +174,9 @@ const httpRequestMock = (version?: number[]) => {
     return Promise.resolve(binary);
 };
 
+const getFirmwareBinaryBytes = async (version?: number[]): Promise<ArrayBuffer> =>
+    bufferUtils.bufferToBytes(await httpRequestMock(version));
+
 const calculateFirmwareHashMock = (hash?: string) => ({
     hash:
         hash ||
@@ -170,11 +187,9 @@ const calculateFirmwareHashMock = (hash?: string) => ({
 
 // common setup for all tests
 const setupTest = () => {
-    const messages = parseConfigure(DataManager.getProtobufMessages());
     const deviceList = new DeviceList({
-        ...DataManager.getSettings(),
-        messages,
-        // debug: true,
+        ...settingsStore.get(),
+        createLogger: noopCreateLogger,
     });
 
     const fixtures: ResponseFixture[] = [];
@@ -209,13 +224,19 @@ const setupTest = () => {
 
     const buildFixture = (id: string, data: any = {}, name?: string) => ({
         id,
-        data: buildProtobufMessage(messages, { data, name }),
+        data: buildProtobufMessage({ data, name }),
     });
 
     const context = {
         deviceList,
         postMessage,
-        selectDevice: () => deviceList.getAllDevices()[0],
+        selectDevice: () => {
+            const devices = deviceList.getAllDevices();
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const device: (typeof devices)[number] = devices[0];
+
+            return device;
+        },
         registerEvents: () => {},
         log: new Log('Test', false),
         abortSignal: new AbortController().signal,
@@ -232,11 +253,14 @@ const setupTest = () => {
 
 describe('onCallFirmwareUpdate', () => {
     beforeAll(async () => {
-        await DataManager.load(parseConnectSettings({}), true, true);
+        await loadProtobufModules();
+        const settings = parseConnectSettings({});
+        settingsStore.set(settings);
+        await firmwareReleaseStore.init(settings.firmwareChannel, true, initializeFirmwareConfig);
     });
     beforeEach(() => {
         if (!ASSETS_BASE_URL) {
-            jest.spyOn(mockAssets, 'httpRequest').mockImplementation((url, type) => {
+            (httpRequest as jest.Mock).mockImplementation((url, type) => {
                 if (type === 'json') {
                     return Promise.reject(new Error('Offline'));
                 }
@@ -256,16 +280,16 @@ describe('onCallFirmwareUpdate', () => {
                     // }
                 }
 
-                const version = /.*-(.*)?.bin$/
-                    .exec(url)?.[1]
-                    .split('.')
-                    .map(i => Number(i));
+                const match = /.*-(.*)?.bin$/.exec(url);
+                // @ts-expect-error: indexing with noUncheckedIndexedAccess
+                const versionStr: string = match?.[1];
+                const version = versionStr.split('.').map(i => Number(i));
 
                 return httpRequestMock(version);
             });
         }
 
-        jest.spyOn(mockFwHash, 'calculateFirmwareHash').mockImplementation((..._args) =>
+        (calculateFirmwareHash as jest.Mock).mockImplementation((..._args) =>
             calculateFirmwareHashMock(),
         );
     });
@@ -304,7 +328,7 @@ describe('onCallFirmwareUpdate', () => {
             buildFixture('0037', {}),
         ]);
 
-        const binary = await httpRequestMock([2, 8, 3]);
+        const binary = await getFirmwareBinaryBytes([2, 8, 3]);
         const result = await runFirmwareUpdate({
             params: { binary },
             context,
@@ -426,7 +450,7 @@ describe('onCallFirmwareUpdate', () => {
             buildFixture('0037', {}),
         ]);
 
-        const binary = await httpRequestMock();
+        const binary = await getFirmwareBinaryBytes();
         const result = await runFirmwareUpdate({
             params: { binary },
             context,
@@ -451,7 +475,7 @@ describe('onCallFirmwareUpdate', () => {
             buildFixture('0037', {}),
         ]);
 
-        const binary = await httpRequestMock();
+        const binary = await getFirmwareBinaryBytes();
         const result = await runFirmwareUpdate({
             params: { binary },
             context,

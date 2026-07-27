@@ -1,28 +1,16 @@
 {
     "extends": "../../tsconfig.lib.json",
+    "include": ["./src"],
     "compilerOptions": {
-        "outDir": "lib",
+        "outDir": "./lib",
+        "rootDir": "./src",
         "types": ["chrome", "w3c-web-usb"]
     },
-    "include": ["./src"],
     "references": [
-        {
-            "path": "../connect"
-        },
-        {
-            "path": "../connect-common"
-        },
-        {
-            "path": "../utils"
-        },
-        {
-            "path": "../websocket-client"
-        },
-        {
-            "path": "../eslint"
-        },
-        {
-            "path": "../type-utils"
-        }
+        { "path": "../connect-common" },
+        { "path": "../utils" },
+        { "path": "../websocket-client" },
+        { "path": "../eslint" },
+        { "path": "../type-utils" }
     ]
 }

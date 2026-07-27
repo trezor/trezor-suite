@@ -1,9 +1,10 @@
 import { deflateRaw } from 'pako';
 
 import { DeviceModelInternal } from '@trezor/device-utils';
+import { splitStringEveryNCharacters } from '@trezor/utils';
 
 import { HAS_MONOCHROME_SCREEN } from 'src/constants/suite/device';
-import { TrezorDevice } from 'src/types/suite/index';
+import { type TrezorDevice } from 'src/types/suite/index';
 
 // TODO: this is already part of features (since certain version) so I suggest forbidding screen changes
 // prior to that version and removing this definition from here
@@ -159,14 +160,6 @@ const evenPad = (val: string) => {
     return `0${val}`;
 };
 
-const chunkString = (size: number, str: string) => {
-    const re = new RegExp(`.{1,${size}}`, 'g');
-    const result = str.match(re);
-    if (!result) return [];
-
-    return result;
-};
-
 // Convert RGB to grayscale using the formula grayscale = 0.299 * R + 0.587 * G + 0.114 * B
 const toGrayscale = (red: number, green: number, blue: number): number =>
     Math.round(0.299 * red + 0.587 * green + 0.114 * blue);
@@ -183,7 +176,7 @@ const toig = (imageData: ImageData, deviceModelInternal: DeviceModelInternal) =>
                 const g = imageData.data[4 * i + 1];
                 const b = imageData.data[4 * i + 2];
 
-                return toGrayscale(r, g, b);
+                return toGrayscale(r ?? 0, g ?? 0, b ?? 0);
             }),
         )
         .flat();
@@ -195,7 +188,7 @@ const toig = (imageData: ImageData, deviceModelInternal: DeviceModelInternal) =>
         const odd = pixels[i + 1];
 
         // Use the even pixel for the higher 4 bits and odd pixel for the lower 4 bits.
-        const packedByte = ((even & 0xf0) >> 4) | (odd & 0xf0);
+        const packedByte = (((even ?? 0) & 0xf0) >> 4) | ((odd ?? 0) & 0xf0);
         bytes.push(packedByte);
     }
 
@@ -212,7 +205,7 @@ const toig = (imageData: ImageData, deviceModelInternal: DeviceModelInternal) =>
     if (length.length % 2 > 0) {
         length = evenPad(length);
     }
-    length = chunkString(2, length).reverse().join('');
+    length = splitStringEveryNCharacters(length, 2).reverse().join('');
     header += rightPad(8, length);
 
     return header + byteArrayToHexString(packed);
@@ -325,7 +318,7 @@ const exportCanvas = (
     try {
         const mimeType = `image/${filetype}`;
         const outDataUrl = canvas.toDataURL(mimeType, quality);
-        const bin = atob(outDataUrl.split(',')[1]);
+        const bin = atob(outDataUrl.split(',')[1] ?? '');
         const arr = new Uint8Array(bin.length);
         for (let i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
 
@@ -454,6 +447,7 @@ export const isHomescreenSupportedOnDevice = (device: TrezorDevice): boolean => 
     return (
         deviceModelInternal !== DeviceModelInternal.T2T1 ||
         (deviceModelInternal === DeviceModelInternal.T2T1 &&
-            device.features?.homescreen_format !== undefined)
+            device.features?.homescreen_format !== undefined &&
+            device.features?.homescreen_format !== null)
     );
 };

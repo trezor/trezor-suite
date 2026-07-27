@@ -50,7 +50,9 @@ export enum EventType {
     // eslint-disable-next-line local-rules/analytics-event-name
     EarnNavigate = 'earn/navigate',
     // eslint-disable-next-line local-rules/analytics-event-name
-    EarnStakeTilePressed = 'earn/stake_tile_pressed',
+    EarnStakeTilePressed = 'earn/stake-tile-pressed',
+    // eslint-disable-next-line local-rules/analytics-event-name
+    EarnStablecoinYieldTilePressed = 'earn/stablecoin-yield-tile-pressed',
     // eslint-disable-next-line local-rules/analytics-event-name
     EjectDeviceClick = 'eject_device/click',
     // eslint-disable-next-line local-rules/analytics-event-name
@@ -104,6 +106,7 @@ export enum EventType {
     SettingsAutoEjectToggle = 'settings/auto_eject_toggle',
     // eslint-disable-next-line local-rules/analytics-event-name
     SettingsChangeBtcUnit = 'settings/change_btc_unit',
+    SettingsNetworkReserveToggle = 'settings/network-reserve-toggle',
     // eslint-disable-next-line local-rules/analytics-event-name
     SettingsChangeCoinBackend = 'settings/change_coin_backend',
     // eslint-disable-next-line local-rules/analytics-event-name
@@ -114,8 +117,15 @@ export enum EventType {
     SettingsChangeTheme = 'settings/change_theme',
     // eslint-disable-next-line local-rules/analytics-event-name
     SettingsDataPermission = 'settings/data_permission',
+
+    SettingsToggleExperimentalFeature = 'settings/experimental-feature',
     // eslint-disable-next-line local-rules/analytics-event-name
     SettingsDiscreetToggle = 'settings/discreet_toggle',
+    StakingClaim = 'staking/claim',
+    StakingConfirm = 'staking/confirm',
+    StakingNavigate = 'staking/navigate',
+    StakingStake = 'staking/stake',
+    StakingUnstake = 'staking/unstake',
     // eslint-disable-next-line local-rules/analytics-event-name
     Switcher = 'switcher',
     TradingBuy = 'trading/buy',

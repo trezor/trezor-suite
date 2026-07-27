@@ -1,17 +1,17 @@
 import { useSelector } from 'react-redux';
 
 import {
-    ContextDomain,
-    MessageSystemRootState,
+    type ContextDomain,
+    type MessageSystemRootState,
     selectContextMessageContent,
 } from '@suite-common/message-system';
-import { InlineAlertBox, InlineAlertBoxProps, Text } from '@suite-native/atoms';
+import { InlineAlertBox, type InlineAlertBoxProps, Text } from '@suite-native/atoms';
 import { selectLocale } from '@suite-native/intl';
 import { Link } from '@suite-native/link';
 
 export type ContextMessageProps = Omit<
     InlineAlertBoxProps,
-    'variant' | 'title' | 'buttonLabel' | 'onButtonPress'
+    'intent' | 'title' | 'buttonLabel' | 'onButtonPress' | 'isCloseButtonDisplayed'
 > & {
     context: ContextDomain;
 };
@@ -26,13 +26,13 @@ export const ContextMessage = ({ context, ...rest }: ContextMessageProps) => {
         return null;
     }
 
-    const { content, variant, cta } = message;
+    const { content, cta, variant: intent } = message;
     const { label, link } = cta ?? {};
     const shouldDisplayLink = !!(link && label);
 
     return (
         <InlineAlertBox
-            variant={variant}
+            intent={intent}
             title={
                 <Text variant="body-xs">
                     {content}
@@ -43,8 +43,8 @@ export const ContextMessage = ({ context, ...rest }: ContextMessageProps) => {
                             textVariant="body-xs"
                             href={link}
                             isUnderlined
-                            textColor="textDefault"
-                            textPressedColor="textSubdued"
+                            textColor="contentPrimary"
+                            textPressedColor="contentSecondary"
                         />
                     )}
                 </Text>

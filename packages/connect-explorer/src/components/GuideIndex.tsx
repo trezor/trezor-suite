@@ -1,14 +1,13 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
 import Link from 'next/link';
 import { getPagesUnderRoute } from 'nextra/context';
 import styled from 'styled-components';
 
 import { Button, Card, H3, Paragraph } from '@trezor/components';
-import { spacingsPx } from '@trezor/theme';
-
+import { ArrowLineUpRightIcon } from '@trezor/icons';
 const BottomRow = styled.div`
-    margin-top: ${spacingsPx.sm};
+    margin-top: 12px;
 `;
 
 interface Page {
@@ -41,7 +40,7 @@ export default function GuideIndex(): ReactNode {
                         intent="neutral"
                         priority="secondary"
                         size="small"
-                        iconRight="arrowLineUpRight"
+                        iconRight={ArrowLineUpRightIcon}
                     >
                         Read more
                     </Button>

@@ -7,8 +7,7 @@ import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
 
 let ethereumStakingBalance: string | null;
-const MOCKED_FEE_AMOUNT = 0.000290278609719;
-const WITHDRAWAL_BUFFER = 0.03;
+const WITHDRAWAL_BUFFER = 0.005;
 
 test.describe('ETH staking form', { tag: ['@T3W1', '@T3T1'] }, () => {
     test.use({
@@ -16,21 +15,19 @@ test.describe('ETH staking form', { tag: ['@T3W1', '@T3T1'] }, () => {
             mnemonic: 'access juice claim special truth ugly swarm rabbit hair man error bar',
         },
     });
-    test.beforeEach(
-        async ({ page, dashboardPage, onboardingPage, settingsPage, blockbookMock }) => {
-            await onboardingPage.completeOnboarding();
-            await settingsPage.navigateTo('coins');
-            await blockbookMock.start('eth');
 
-            await settingsPage.coinsTab.disableNetwork('btc');
-            await settingsPage.coinsTab.enableNetwork('eth');
-            await settingsPage.coinsTab.openNetworkAdvanceSettings('eth');
-            await settingsPage.coinsTab.changeBackend('blockbook', blockbookMock.url);
+    test.beforeEach(async ({ onboardingPage, settingsPage, blockbookMock }) => {
+        await onboardingPage.completeOnboarding();
+        await settingsPage.navigateTo('coins');
+        await blockbookMock.start('eth');
+        blockbookMock.updateCurrentFiatRate(0.5);
 
-            await dashboardPage.dashboardMenuButton.click();
-            await page.discoveryShouldFinish();
-        },
-    );
+        await settingsPage.changeNetworks({
+            enableNetworks: [
+                { symbol: 'eth', backend: { type: 'blockbook', url: blockbookMock.url } },
+            ],
+        });
+    });
 
     test(
         'Staking form % inputs and limits',
@@ -61,7 +58,7 @@ test.describe('ETH staking form', { tag: ['@T3W1', '@T3T1'] }, () => {
                     await expect
                         .soft(stakingSection.cryptoInputBottomText)
                         .toHaveTranslation('TR_BUY_VALIDATION_ERROR_MINIMUM_CRYPTO', {
-                            values: { minimum: '0.1 ETH' },
+                            values: { minimum: '0.01 ETH' },
                             timeout: 15_000,
                         });
                 });
@@ -122,14 +119,12 @@ test.describe('ETH staking form', { tag: ['@T3W1', '@T3T1'] }, () => {
                     await expect
                         .soft(stakingSection.withdrawalWarning)
                         .toHaveTranslation('TR_STAKE_LEFT_AMOUNT_FOR_WITHDRAWAL', {
-                            values: { amount: '0.03', networkDisplaySymbol: 'ETH' },
+                            values: { amount: '0.005', networkDisplaySymbol: 'ETH' },
                         });
-                    const expectedMax = new BigNumber(ethereumStakingBalance!)
-                        .minus(WITHDRAWAL_BUFFER)
-                        .minus(MOCKED_FEE_AMOUNT);
-                    const formattedExpectedMax = localizeNumber(
-                        expectedMax.decimalPlaces(2, BigNumber.ROUND_UP),
+                    const expectedMax = new BigNumber(ethereumStakingBalance!).minus(
+                        WITHDRAWAL_BUFFER,
                     );
+                    const formattedExpectedMax = localizeNumber(expectedMax);
                     await expect.soft(stakingSection.cryptoInput).toHaveValue(formattedExpectedMax);
                 });
             });

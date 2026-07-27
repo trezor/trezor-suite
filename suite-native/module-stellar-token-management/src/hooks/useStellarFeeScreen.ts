@@ -5,23 +5,21 @@ import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { isFulfilled } from '@reduxjs/toolkit';
 
 import {
-    DeviceRootState,
+    type DeviceRootState,
     selectDeviceButtonRequestsCodes,
     selectIsDeviceConnectedAndAuthorized,
 } from '@suite-common/device';
 import {
-    AccountsRootState,
-    FormDraftRootState,
+    type AccountsRootState,
+    type FormDraftRootState,
     fetchAndUpdateAccountThunk,
     selectAccountByKey,
     selectDeepCopyOfFormDraft,
 } from '@suite-common/wallet-core';
 import {
-    AccountKey,
-    FeeLevelLabel,
-    FormState,
-    PrecomposedTransactionFinal,
-    TokenAddress,
+    type AccountKey,
+    type FormState,
+    type TokenAddress,
     isFinalPrecomposedTransaction,
 } from '@suite-common/wallet-types';
 import { useAlert } from '@suite-native/alerts';
@@ -30,18 +28,18 @@ import { useConfirmOnTrezorController } from '@suite-native/confirm-on-trezor';
 import { useTranslate } from '@suite-native/intl';
 import {
     AuthorizeDeviceStackRoutes,
-    RootStackParamList,
+    type RootStackParamList,
     RootStackRoutes,
-    StackToStackCompositeNavigationProps,
-    StellarManageTokenStackParamList,
+    type StackToStackCompositeNavigationProps,
+    type StellarManageTokenStackParamList,
     StellarManageTokenStackRoutes,
 } from '@suite-native/navigation';
 import {
-    NativeSendRootState,
+    type NativeSendRootState,
     selectFeeLevels,
     useFeesManagement,
 } from '@suite-native/transaction-management';
-import { BASE_INFO } from '@trezor/blockchain-link-utils/src/stellar';
+import { STELLAR_BASE_RESERVE } from '@trezor/network-stellar/constants';
 import { BigNumber } from '@trezor/utils';
 
 import { getStellarTokenFormDraftKey, updateStellarTokenSelectedFeeLevelThunk } from '../thunks';
@@ -122,7 +120,7 @@ export const useStellarFeeScreen = ({
         selectFeeLevels(state),
     );
     const normalFeePerUnit = isFinalPrecomposedTransaction(precomposedFeeLevels.normal)
-        ? (precomposedFeeLevels.normal as PrecomposedTransactionFinal).feePerByte
+        ? precomposedFeeLevels.normal.feePerByte
         : undefined;
 
     const {
@@ -136,7 +134,7 @@ export const useStellarFeeScreen = ({
         handleCustomFeeSet,
     } = useFeesManagement({
         accountKey,
-        selectedFee: (formDraft?.selectedFee as FeeLevelLabel) ?? 'normal',
+        selectedFee: formDraft?.selectedFee ?? 'normal',
         selectedFeePerUnit: formDraft?.feePerUnit ?? normalFeePerUnit,
         updateThunk: updateStellarTokenSelectedFeeLevelThunk,
         formDraftKey,
@@ -148,13 +146,15 @@ export const useStellarFeeScreen = ({
     // Track if we're waiting for device confirmation
     const [isWaitingForDevice, setIsWaitingForDevice] = useState(false);
 
-    // Check if balance is sufficient for activation (need fee + BASE_RESERVE for new trustline)
+    // Check if balance is sufficient for activation (need fee + base reserve for new trustline)
     const insufficientBalanceInfo = (() => {
-        if (mode !== 'activation' || !account || !fee) {
+        if (mode !== 'activation' || account?.networkType !== 'stellar' || !fee) {
             return null;
         }
         const availableBalance = BigNumber(account.availableBalance);
-        const requiredAmount = BigNumber(fee).plus(BASE_INFO.BASE_RESERVE);
+        const requiredAmount = BigNumber(fee).plus(
+            account.misc.baseReserve ?? STELLAR_BASE_RESERVE,
+        );
 
         if (availableBalance.lt(requiredAmount)) {
             return {
@@ -230,7 +230,7 @@ export const useStellarFeeScreen = ({
 
             if (isFulfilled(result)) {
                 // Refresh account data
-                dispatch(fetchAndUpdateAccountThunk({ accountKey }));
+                await dispatch(fetchAndUpdateAccountThunk({ accountKey }));
 
                 // Execute success callback
                 onSuccess();

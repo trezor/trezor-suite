@@ -1,7 +1,6 @@
-import { MessagesSchema as Messages } from '@trezor/protobuf';
-import { convertTaprootXpub } from '@trezor/utils';
-
-import { HDNodeResponse } from '../types/api/getPublicKey';
+import type { HDNodeResponse } from '@trezor/connect-common/src/types/api/account/getPublicKey';
+import type { MessagesSchema as Messages } from '@trezor/protobuf';
+import { convertTaprootXpub, isNotNull, isNotNullOrUndefined } from '@trezor/utils';
 
 interface ResolveDescriptorForTaprootParams {
     response: HDNodeResponse;
@@ -12,14 +11,18 @@ export const resolveDescriptorForTaproot = ({
     response,
     publicKey,
 }: ResolveDescriptorForTaprootParams) => {
-    if (publicKey.descriptor !== null && publicKey.descriptor !== undefined) {
-        const [xpub, checksum] = publicKey.descriptor.split('#');
+    if (isNotNullOrUndefined(publicKey.descriptor)) {
+        const splittedDescriptor = publicKey.descriptor.split('#');
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const xpub: string = splittedDescriptor[0];
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const checksum: string = splittedDescriptor[1];
 
         // This is here to keep backwards compatibility, suite and block-books
         // are still using `'` over `h`.
         const correctedXpub = convertTaprootXpub({ xpub, direction: 'h-to-apostrophe' });
 
-        if (correctedXpub !== null) {
+        if (isNotNull(correctedXpub)) {
             return { xpub: correctedXpub, checksum };
         }
     }

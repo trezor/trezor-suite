@@ -1,10 +1,12 @@
-import { AllPlatform, Sort, allPlatforms, sorts } from '../types';
+import { type AllPlatform, type Sort, allPlatforms, sorts } from '../types';
 
 export type UrlParams = {
     query: string;
     platform: AllPlatform;
     sort: Sort;
+    version: string;
     sidebarOpen: boolean;
+    liveLogOpen: boolean;
 };
 
 export const getParamsFromUrl = (): UrlParams => {
@@ -13,12 +15,15 @@ export const getParamsFromUrl = (): UrlParams => {
     const platformParam = params.get('platform') as AllPlatform;
     const sortParam = params.get('sort') as Sort;
     const sidebarParam = params.get('sidebar');
+    const liveLogParam = params.get('liveLog');
 
     return {
         query: params.get('q') ?? '',
         platform: allPlatforms.includes(platformParam) ? platformParam : 'all',
         sort: sorts.includes(sortParam) ? sortParam : 'az',
+        version: params.get('version') ?? 'all',
         sidebarOpen: sidebarParam === 'true',
+        liveLogOpen: liveLogParam === 'true',
     };
 };
 
@@ -26,7 +31,9 @@ export const updateUrl = (
     query: string,
     platform: string,
     sort: string,
+    version: string,
     sidebarOpen?: boolean,
+    liveLogOpen?: boolean,
 ): void => {
     if (typeof window === 'undefined') return;
 
@@ -34,7 +41,9 @@ export const updateUrl = (
     if (query) params.set('q', query);
     if (platform !== 'all') params.set('platform', platform);
     if (sort !== 'az') params.set('sort', sort);
-    if (sidebarOpen === true) params.set('sidebar', 'true');
+    if (version !== 'all') params.set('version', version);
+    if (sidebarOpen) params.set('sidebar', 'true');
+    if (liveLogOpen) params.set('liveLog', 'true');
     const search = params.toString();
     const url = search ? `${window.location.pathname}?${search}` : window.location.pathname;
 

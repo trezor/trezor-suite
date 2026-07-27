@@ -1,7 +1,11 @@
 import { useCallback } from 'react';
-import { UseFormReturn } from 'react-hook-form';
+import { type UseFormReturn } from 'react-hook-form';
 
-import { Account, FormState, PrecomposedTransactionFinal } from '@suite-common/wallet-types';
+import {
+    type Account,
+    type FormState,
+    type PrecomposedTransactionFinal,
+} from '@suite-common/wallet-types';
 import { useCurrentRef } from '@trezor/react-utils';
 
 import { signAndPushSendFormTransactionThunk } from 'src/actions/wallet/send/sendFormThunks';

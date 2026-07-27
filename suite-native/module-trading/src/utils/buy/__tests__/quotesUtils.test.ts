@@ -1,14 +1,16 @@
 import type { BuyTrade, CryptoId } from 'invity-api';
 
-import { TradingAssetOption } from '@suite-common/trading';
-import { act, renderHookWithStoreProviderAsync } from '@suite-native/test-utils';
+import { deviceInitialState } from '@suite-common/device';
+import { type TradingAssetOption } from '@suite-common/trading';
+import { act, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 import {
+    btc1NormalAccount,
     btcAsset,
-    buyQuotes,
     coins,
     getInitializedTradingState,
+    mercuryoApplePayBuyQuote,
 } from '@suite-native/trading-fixtures';
-import { BuyFormType } from '@suite-native/trading-types';
+import { type BuyFormType } from '@suite-native/trading-types';
 
 import { useBuyForm } from '../../../hooks/buy/useBuyForm';
 import { getPaymentMethodFromBuyForm, tradingBuyFormToTradingBuyFormProps } from '../quotesUtils';
@@ -17,12 +19,15 @@ describe('quotesUtils', () => {
     let form: BuyFormType;
 
     const renderUseTradingBuyForm = () =>
-        renderHookWithStoreProviderAsync(() => useBuyForm(), {
-            preloadedState: { wallet: { trading: getInitializedTradingState() } },
+        renderHookWithStoreProvider(() => useBuyForm(), {
+            preloadedState: {
+                device: deviceInitialState,
+                wallet: { trading: getInitializedTradingState() },
+            },
         });
 
-    beforeEach(async () => {
-        const { result } = await renderUseTradingBuyForm();
+    beforeEach(() => {
+        const { result } = renderUseTradingBuyForm();
         form = result.current;
     });
 
@@ -33,7 +38,7 @@ describe('quotesUtils', () => {
 
         it('should return TradingPaymentMethodListProps object when quote is set', () => {
             act(() => {
-                form.setValue('quote', buyQuotes[0]);
+                form.setValue('quote', mercuryoApplePayBuyQuote);
             });
 
             expect(getPaymentMethodFromBuyForm(form)).toEqual({
@@ -63,7 +68,12 @@ describe('quotesUtils', () => {
                         label: '🇺🇸 United States',
                         shortLabel: '🇺🇸 USA',
                     });
-                    form.setValue('quote', buyQuotes[0]);
+                    form.setValue('countrySubdivision', {
+                        label: 'California',
+                        value: 'CA',
+                        name: 'California',
+                    });
+                    form.setValue('quote', mercuryoApplePayBuyQuote);
                 });
             });
 
@@ -85,6 +95,7 @@ describe('quotesUtils', () => {
                     cryptoSelect: {
                         id: 'bitcoin' as CryptoId,
                         isNativeToken: true,
+                        displaySymbolName: 'Bitcoin',
                         coingeckoId: 'bitcoin',
                         contractAddress: null,
                         name: 'Bitcoin',
@@ -101,18 +112,41 @@ describe('quotesUtils', () => {
                         shortLabel: '🇺🇸 USA',
                         value: 'US',
                     },
+                    countrySubdivisionSelect: {
+                        label: 'California',
+                        value: 'CA',
+                        name: 'California',
+                    },
                     paymentMethod: {
                         value: 'applePay',
                         label: 'Apple Pay',
                     },
                     amountInCrypto: false,
+                    receiveAddress: undefined,
                 });
+            });
+
+            it('should set receiveAddress from address', () => {
+                act(() => {
+                    form.setValue('receiveAccount', {
+                        account: btc1NormalAccount,
+                        address: btc1NormalAccount.addresses!.unused[0],
+                    });
+                });
+
+                const props = tradingBuyFormToTradingBuyFormProps(form, coins.bitcoin, undefined);
+
+                expect(props).toEqual(
+                    expect.objectContaining({
+                        receiveAddress: 'UNUSED1',
+                    }),
+                );
             });
 
             it('should set paymentMethod to undefined when provided quote is not complete', () => {
                 act(() => {
                     form.setValue('quote', {
-                        ...buyQuotes[0],
+                        ...mercuryoApplePayBuyQuote,
                         paymentMethodName: undefined,
                     } as unknown as BuyTrade);
                 });

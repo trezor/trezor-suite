@@ -1,22 +1,19 @@
 import { fromUnixTime, getUnixTime, startOfMonth } from 'date-fns';
 
-import { BaseCurrencyAmount } from '@suite-common/wallet-types';
 import { BASE_CURRENCY_ZERO, toFiatCurrency } from '@suite-common/wallet-utils';
-import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import type { FiatRatesBySymbol, StaticSessionId } from '@trezor/connect';
 import { BigNumber, typedObjectFromEntries, typedObjectKeys } from '@trezor/utils';
 
+import type { GraphState } from 'src/reducers/wallet/graphReducer';
 import {
-    AggregatedAccountHistory,
-    AggregatedDashboardHistory,
-    GraphData,
+    type AggregatedAccountHistory,
+    type AggregatedDashboardHistory,
+    type GraphData,
 } from 'src/types/wallet/graph';
 
+import { type FiatValueMap, type GraphDataPoint, type TypeName } from './types';
 import { getGraphDataForInterval } from './utils';
-import { ObjectType, TypeName, sumFiatValueMapInPlace } from './utilsShared';
-import type { State as GraphState } from '../../../reducers/wallet/graphReducer';
-
-export type FiatValueMap = { [K in BaseCurrencyCode]?: BaseCurrencyAmount | undefined };
+import { sumFiatValueMapInPlace } from './utilsShared';
 
 const calcFiatValueMap = (amount: string, rates: FiatRatesBySymbol): FiatValueMap =>
     typedObjectFromEntries(
@@ -36,12 +33,12 @@ export const aggregateBalanceHistory = <TType extends TypeName>(
     graphData: GraphData[],
     groupBy: 'day' | 'month',
     type: TType,
-): ObjectType<TType>[] => {
-    const groupedByTimestamp: { [key: string]: ObjectType<TType> } = {};
+): GraphDataPoint<TType>[] => {
+    const groupedByTimestamp: { [key: string]: GraphDataPoint<TType> } = {};
 
     for (let i = 0; i < graphData.length; i++) {
         // graph data for one account
-        const accountHistory = graphData[i].data;
+        const accountHistory = graphData[i]?.data;
 
         if (accountHistory && accountHistory.length > 0) {
             accountHistory.forEach(h => {
@@ -88,7 +85,7 @@ export const aggregateBalanceHistory = <TType extends TypeName>(
 
                     groupedByTimestamp[key] = (
                         type === 'account' ? accountProps : baseProps
-                    ) as ObjectType<TType>;
+                    ) as GraphDataPoint<TType>;
                 } else {
                     // add to existing bin
                     bin.txs += dataPoint.txs;
@@ -119,7 +116,11 @@ export const aggregateBalanceHistory = <TType extends TypeName>(
 
     // convert bins from an object indexed by timestamp to an array of bins
     const aggregatedData = Object.keys(groupedByTimestamp)
-        .map(timestamp => groupedByTimestamp[timestamp])
+        .flatMap(timestamp => {
+            const point = groupedByTimestamp[timestamp];
+
+            return point ? [point] : [];
+        })
         .sort((a, b) => Number(a.time) - Number(b.time)); // sort from older to newer;;
 
     return aggregatedData;
@@ -137,7 +138,7 @@ type PrepareGraphDataAsyncProps = {
 export const prepareGraphDataAsync = ({
     graph,
     deviceState,
-}: PrepareGraphDataAsyncProps): Promise<ObjectType<'dashboard'>[]> =>
+}: PrepareGraphDataAsyncProps): Promise<GraphDataPoint<'dashboard'>[]> =>
     new Promise(resolve => {
         window.setTimeout(() => {
             const history = getGraphDataForInterval({ deviceState, graph });

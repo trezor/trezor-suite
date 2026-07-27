@@ -7,29 +7,32 @@
     "main": "src/index",
     "scripts": {
         "depcheck": "yarn g:depcheck",
-        "type-check": "yarn g:tsc --build"
+        "test:unit": "yarn g:jest",
+        "type-check": "yarn g:tsc --build",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
-        "@react-navigation/native": "7.1.26",
-        "@reduxjs/toolkit": "2.11.2",
+        "@react-navigation/native": "7.1.28",
+        "@reduxjs/toolkit": "2.12.0",
         "@suite-common/analytics": "workspace:*",
         "@suite-common/bluetooth": "workspace:*",
+        "@suite-common/dependency-injection": "workspace:*",
         "@suite-common/device": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
         "@suite-native/alerts": "workspace:*",
+        "@suite-native/analytics": "workspace:*",
         "@suite-native/atoms": "workspace:*",
         "@suite-native/device-mutex": "workspace:*",
         "@suite-native/intl": "workspace:*",
-        "@suite-native/services": "workspace:*",
         "@suite-native/toasts": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/device-utils": "workspace:*",
-        "@trezor/styles": "workspace:*",
+        "@trezor/styles-native": "workspace:*",
         "@trezor/transport-native-bluetooth": "workspace:*",
-        "expo-constants": "18.0.12",
-        "react": "19.1.0",
-        "react-native": "0.81.5",
-        "react-native-permissions": "5.4.2",
-        "react-redux": "9.2.0"
+        "expo-constants": "~56.0.16",
+        "react": "19.2.3",
+        "react-native": "0.85.3",
+        "react-native-permissions": "5.4.4",
+        "react-redux": "9.3.0"
     }
 }

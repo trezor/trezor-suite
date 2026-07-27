@@ -1,10 +1,10 @@
 {
     "name": "@trezor/device-authenticity",
     "version": "10.0.0-alpha.1",
+    "type": "module",
     "author": "Trezor <info@trezor.io>",
     "homepage": "https://github.com/trezor/trezor-suite/tree/develop/packages/device-authenticity",
     "description": "Utils for authenticity verification of trezor device secure element response.",
-    "npmPublishAccess": "public",
     "license": "See LICENSE.md in repo root",
     "repository": {
         "type": "git",
@@ -19,36 +19,28 @@
         "types": "./lib/index.d.ts",
         "exports": {
             ".": {
-                "import": "./libESM/index.js",
-                "require": "./lib/index.js",
-                "types": "./lib/index.d.ts"
+                "types": "./lib/index.d.ts",
+                "default": "./lib/index.js"
             }
         }
     },
     "main": "src/index",
     "files": [
         "lib/",
-        "libESM/",
         "CHANGELOG.md"
     ],
     "scripts": {
-        "build:lib": "yarn build:lib:cjs && yarn build:lib:esm",
-        "build:lib:cjs": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib cjs",
-        "build:lib:esm": "yarn g:rimraf ./libESM && yarn g:tsc --build tsconfig.libESM.json && ../../scripts/publish/replace-imports.sh ./libESM esm",
+        "build:lib": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib",
         "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build",
         "test:unit": "yarn g:jest",
-        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
-        "prepublishOnly": "yarn tsx ../../scripts/publish/prepublishNPM.js"
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
         "@noble/curves": "^2.0.1",
-        "@trezor/crypto-utils": "workspace:*",
+        "@noble/post-quantum": "^0.6.1",
         "@trezor/protobuf": "workspace:*",
         "@trezor/schema-utils": "workspace:*",
         "@trezor/utils": "workspace:*"
-    },
-    "devDependencies": {
-        "tsx": "^4.21.0"
     }
 }

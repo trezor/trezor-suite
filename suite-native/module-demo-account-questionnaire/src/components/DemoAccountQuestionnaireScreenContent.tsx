@@ -3,22 +3,23 @@ import Animated, { FadeInDown } from 'react-native-reanimated';
 
 import { useNavigation } from '@react-navigation/native';
 
+import { useServices } from '@suite-common/dependency-injection';
 import {
-    DemoAccountQuestionnaireQuestion,
-    DemoAccountQuestionnaireQuestionOption,
+    type DemoAccountQuestionnaireQuestion,
+    type DemoAccountQuestionnaireQuestionOption,
     events,
+    selectNativeAnalyticsDep,
 } from '@suite-native/analytics';
 import { Button, HStack, ScreenFooterGradient, Text, VStack } from '@suite-native/atoms';
-import { IconName } from '@suite-native/icons';
-import { Translation, TxKeyPath } from '@suite-native/intl';
+import { type IconName } from '@suite-native/icons';
+import { Translation, type TxKeyPath } from '@suite-native/intl';
 import {
-    DemoAccountQuestionnaireStackParamList,
-    DemoAccountQuestionnaireStackRoutes,
+    type DemoAccountQuestionnaireStackParamList,
+    type DemoAccountQuestionnaireStackRoutes,
     Screen,
     ScreenHeader,
-    StackNavigationProps,
+    type StackNavigationProps,
 } from '@suite-native/navigation';
-import { useAnalytics } from '@suite-native/services';
 
 import { DemoAccountQuestionnaireAnswer } from './DemoAccountQuestionnaireAnswer';
 
@@ -41,7 +42,7 @@ export const DemoAccountQuestionnaireScreenContent = ({
     answerOptions,
     nextRoute,
 }: DemoAccountQuestionnaireScreenContentProps) => {
-    const analytics = useAnalytics();
+    const { analytics } = useServices(selectNativeAnalyticsDep);
     const navigation =
         useNavigation<
             StackNavigationProps<
@@ -114,8 +115,9 @@ export const DemoAccountQuestionnaireScreenContent = ({
                     ))}
                     <HStack justifyContent="center">
                         <Button
-                            colorScheme="tertiaryElevation0"
-                            size="small"
+                            intent="neutral"
+                            priority="secondary"
+                            size="medium"
                             onPress={() => submitOption('none')}
                         >
                             <Translation id="moduleDemoAccountQuestionnaire.noneOption" />

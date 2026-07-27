@@ -1,22 +1,24 @@
 import { createAction } from '@reduxjs/toolkit';
 
+import { type PermissionRequest } from '@trezor/connect';
+
 import {
-    AppRememberedPermission,
-    ConnectPopupCall,
-    ConnectPopupCallWithState,
-    ConnectSerializedError,
+    type AppRememberedPermission,
+    type ConnectPopupCall,
+    type ConnectPopupCallWithState,
+    type ConnectSerializedError,
 } from './connectPopupTypes';
 
-export const ACTION_PREFIX = '@suite-common/connect-popup';
+const ACTION_PREFIX = '@suite-common/connect-popup';
+
+type InitiateCallPayload = Pick<
+    ConnectPopupCall & { state: 'ongoing' },
+    'method' | 'methodInfo' | 'source' | 'payload'
+>;
 
 const initiateCall = createAction(
     `${ACTION_PREFIX}/initiateCall`,
-    (
-        payload: Pick<
-            ConnectPopupCall & { state: 'ongoing' },
-            'method' | 'methodInfo' | 'source' | 'payload'
-        >,
-    ) => ({
+    (payload: InitiateCallPayload) => ({
         payload,
     }),
 );
@@ -31,28 +33,72 @@ const rejectPermissions = createAction(`${ACTION_PREFIX}/rejectPermissions`, (pa
 
 const finishCall = createAction(`${ACTION_PREFIX}/finishCall`);
 
+const clearCall = createAction(`${ACTION_PREFIX}/clearCall`);
+
+type ConfirmAddressesPayload = Pick<
+    ConnectPopupCall & { state: 'address-confirmation' },
+    'addresses' | 'exported'
+>;
+
 const confirmAddresses = createAction(
     `${ACTION_PREFIX}/confirmAddresses`,
-    (
-        payload: Pick<
-            ConnectPopupCall & { state: 'address-confirmation' },
-            'addresses' | 'exported'
-        >,
-    ) => ({
+    (payload: ConfirmAddressesPayload) => ({
         payload,
     }),
 );
+
+type SelectAccountPayload = Pick<
+    ConnectPopupCallWithState<'select-account'>,
+    'options' | 'selectedAccountTypeKey' | 'candidates' | 'page' | 'exported' | 'manualPhase'
+>;
+
+const selectAccount = createAction(
+    `${ACTION_PREFIX}/selectAccount`,
+    (payload: SelectAccountPayload) => ({
+        payload,
+    }),
+);
+
+type UpdateSelectAccountPayload = Partial<
+    Pick<
+        ConnectPopupCallWithState<'select-account'>,
+        | 'selectedAccountTypeKey'
+        | 'candidates'
+        | 'page'
+        | 'exported'
+        | 'totalCandidates'
+        | 'manualPhase'
+        | 'manualAccountIndex'
+    >
+>;
+
+const updateSelectAccount = createAction(
+    `${ACTION_PREFIX}/updateSelectAccount`,
+    (payload: UpdateSelectAccountPayload) => ({
+        payload,
+    }),
+);
+
+type SetSelectedAccountKeyPayload = Pick<
+    ConnectPopupCall & { state: 'ongoing' },
+    'selectedAccountKey'
+>;
 
 const setSelectedAccountKey = createAction(
     `${ACTION_PREFIX}/setSelectedAccountKey`,
-    (payload: Pick<ConnectPopupCall & { state: 'ongoing' }, 'selectedAccountKey'>) => ({
+    (payload: SetSelectedAccountKeyPayload) => ({
         payload,
     }),
 );
 
+type DeeplinkCallbackPayload = Pick<
+    ConnectPopupCall & { state: 'deeplink-callback' },
+    'callbackUrl'
+>;
+
 const deeplinkCallback = createAction(
     `${ACTION_PREFIX}/deeplinkCallback`,
-    (payload: Pick<ConnectPopupCall & { state: 'deeplink-callback' }, 'callbackUrl'>) => ({
+    (payload: DeeplinkCallbackPayload) => ({
         payload,
     }),
 );
@@ -75,16 +121,37 @@ const forgetAppPermissions = createAction(
     }),
 );
 
-const txSimulation = createAction(
-    `${ACTION_PREFIX}/txSimulation`,
-    (payload: Pick<ConnectPopupCallWithState<'tx-simulation'>, 'fromAddress'>) => ({
+const forgetAppPermission = createAction(
+    `${ACTION_PREFIX}/forgetAppPermission`,
+    (payload: { origin: string; permission: PermissionRequest }) => ({
         payload,
     }),
 );
 
+const setAppSilentMode = createAction(
+    `${ACTION_PREFIX}/setAppSilentMode`,
+    (payload: { origin: string; silentMode: boolean }) => ({
+        payload,
+    }),
+);
+
+type TxSimulationPayload = Pick<ConnectPopupCallWithState<'tx-simulation'>, 'fromAddress'>;
+
+const txSimulation = createAction(
+    `${ACTION_PREFIX}/txSimulation`,
+    (payload: TxSimulationPayload) => ({
+        payload,
+    }),
+);
+
+type SetSelectedFeePayload = Pick<
+    ConnectPopupCallWithState<'tx-simulation' | 'ongoing'>,
+    'selectedFee'
+>;
+
 const setSelectedFee = createAction(
     `${ACTION_PREFIX}/txSimulationSetFee`,
-    (payload: Pick<ConnectPopupCallWithState<'tx-simulation' | 'ongoing'>, 'selectedFee'>) => ({
+    (payload: SetSelectedFeePayload) => ({
         payload,
     }),
 );
@@ -98,12 +165,17 @@ export const connectPopupActions = {
     rejectPermissions,
     finishCall,
     confirmAddresses,
+    selectAccount,
+    updateSelectAccount,
     setSelectedAccountKey,
     deeplinkCallback,
     setError,
     rememberAppPermissions,
     forgetAppPermissions,
+    forgetAppPermission,
+    setAppSilentMode,
     txSimulation,
     setSelectedFee,
     switchDevice,
+    clearCall,
 } as const;

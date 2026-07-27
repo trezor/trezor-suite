@@ -12,42 +12,39 @@ test.describe('ETH staking', { tag: ['@T3W1', '@T3T1'] }, () => {
             mnemonic: 'access juice claim special truth ugly swarm rabbit hair man error bar',
         },
     });
-    test.beforeEach(
-        async ({ page, dashboardPage, onboardingPage, settingsPage, blockbookMock }) => {
-            await onboardingPage.completeOnboarding();
-            await settingsPage.navigateTo('coins');
-            await blockbookMock.start('eth');
-            // Set initial empty state for ETH account
-            blockbookMock.updateAccountState({
-                txs: 0,
-                nonTokenTxs: 0,
-                internalTxs: 0,
-                transactions: [],
-                nonce: '0',
-                stakingPools: [
-                    {
-                        contract: '0x624087DD1904ab122A32878Ce9e933C7071F53B9',
-                        name: 'Everstake',
-                        pendingBalance: '0',
-                        pendingDepositedBalance: '0',
-                        depositedBalance: '0',
-                        withdrawTotalAmount: '0',
-                        claimableAmount: '0',
-                        restakedReward: '0',
-                        autocompoundBalance: '0',
-                    },
-                ],
-            });
 
-            await settingsPage.coinsTab.disableNetwork('btc');
-            await settingsPage.coinsTab.enableNetwork('eth');
-            await settingsPage.coinsTab.openNetworkAdvanceSettings('eth');
-            await settingsPage.coinsTab.changeBackend('blockbook', blockbookMock.url);
+    test.beforeEach(async ({ onboardingPage, settingsPage, blockbookMock }) => {
+        await onboardingPage.completeOnboarding();
+        await settingsPage.navigateTo('coins');
+        await blockbookMock.start('eth');
+        // Set initial empty state for ETH account
+        blockbookMock.updateAccountState({
+            txs: 0,
+            nonTokenTxs: 0,
+            internalTxs: 0,
+            transactions: [],
+            nonce: '0',
+            stakingPools: [
+                {
+                    contract: '0x624087DD1904ab122A32878Ce9e933C7071F53B9',
+                    name: 'Everstake',
+                    pendingBalance: '0',
+                    pendingDepositedBalance: '0',
+                    depositedBalance: '0',
+                    withdrawTotalAmount: '0',
+                    claimableAmount: '0',
+                    restakedReward: '0',
+                    autocompoundBalance: '0',
+                },
+            ],
+        });
 
-            await dashboardPage.dashboardMenuButton.click();
-            await page.discoveryShouldFinish();
-        },
-    );
+        await settingsPage.changeNetworks({
+            enableNetworks: [
+                { symbol: 'eth', backend: { type: 'blockbook', url: blockbookMock.url } },
+            ],
+        });
+    });
 
     test(
         'first stake on ETH account',
@@ -95,7 +92,7 @@ test.describe('ETH staking', { tag: ['@T3W1', '@T3T1'] }, () => {
                     T3W1: {
                         header: { title: 'Stake' },
                         body: [['Stake ETH on', '\n', 'Everstake?']],
-                        actions: { right_button: 'Continue' },
+                        actions: { right_button: 'Confirm' },
                     },
                 });
                 await devicePrompt.waitForPromptAndClick();
@@ -145,10 +142,11 @@ test.describe('ETH staking', { tag: ['@T3W1', '@T3T1'] }, () => {
                     nonce: '2',
                 });
                 await devicePrompt.sendButton.click();
-                await expect(stakingSection.stakedToastAccount).toContainText('Ethereum #1');
-                await expect(stakingSection.stakedToastAmount).toContainText(
-                    '0.100204158497493752 ETH',
-                );
+                await stakingSection.verifyStakingToast({
+                    type: 'staked',
+                    account: 'Ethereum #1',
+                    amount: '0.100204158497493752 ETH',
+                });
             });
 
             await test.step('Verify pending transaction', async () => {
@@ -159,10 +157,12 @@ test.describe('ETH staking', { tag: ['@T3W1', '@T3T1'] }, () => {
                 await stakingSection.expectProgressIndicatorsToMatchPhase('pendingTransaction');
                 await expect(stakingSection.speedUpButton).toBeEnabled();
                 await stakingSection.expectStakingAmounts({
-                    pending: '0.100204158497493752',
-                    staked: '0',
-                    rewards: '0',
-                    unstaking: 'hidden',
+                    expected: {
+                        pending: '0.100204158497493752',
+                        staked: '0',
+                        rewards: '0',
+                        unstaking: 'hidden',
+                    },
                 });
             });
 
@@ -188,10 +188,12 @@ test.describe('ETH staking', { tag: ['@T3W1', '@T3T1'] }, () => {
                 await expect(stakingSection.transactionStatus).toHaveTranslation('TR_TX_CONFIRMED');
                 await stakingSection.expectProgressIndicatorsToMatchPhase('addingToPool');
                 await stakingSection.expectStakingAmounts({
-                    pending: '0.100204158497493752',
-                    staked: '0',
-                    rewards: '0',
-                    unstaking: 'hidden',
+                    expected: {
+                        pending: '0.100204158497493752',
+                        staked: '0',
+                        rewards: '0',
+                        unstaking: 'hidden',
+                    },
                 });
                 await expect(stakingSection.pendingTransactionText).toBeHidden();
                 await expect(stakingSection.speedUpButton).toBeHidden();
@@ -215,10 +217,12 @@ test.describe('ETH staking', { tag: ['@T3W1', '@T3T1'] }, () => {
                 });
                 await page.clock.fastForward(stakingSection.watchPeriod);
                 await stakingSection.expectStakingAmounts({
-                    pending: 'hidden',
-                    staked: '0.100204158497493752',
-                    rewards: '0',
-                    unstaking: 'hidden',
+                    expected: {
+                        pending: 'hidden',
+                        staked: '0.100204158497493752',
+                        rewards: '0',
+                        unstaking: 'hidden',
+                    },
                 });
                 await stakingSection.expectProgressIndicatorsToMatchPhase('receivingRewards');
                 await expect(stakingSection.stakeMoreButton).toBeEnabled();

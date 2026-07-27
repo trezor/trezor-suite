@@ -1,35 +1,36 @@
+import { type DebugRootState, selectIsDebugModeActive } from '@suite/debug';
 import {
-    MetadataRootState,
+    type DesktopUpdateRootState,
+    selectDesktopUpdateAllowPrerelease,
+} from '@suite/desktop-update';
+import {
+    type MetadataRootState,
     selectLabelingDataForWallet,
     selectSelectedLabelsProviderType,
 } from '@suite/metadata';
 import {
-    LogsApplicationInfoRootState,
+    selectAutodetectLanguage,
+    selectAutodetectTheme,
+    selectLanguage,
+    selectTheme,
+    selectTorOnionLinks,
+} from '@suite/settings';
+import { type TorRootState, selectTorState } from '@suite/tor';
+import {
+    type LogsApplicationInfoRootState,
     REDACTED_REPLACEMENT,
     selectRedactedApplicationInfo,
 } from '@suite-common/logger';
-import { DeviceState } from '@trezor/connect';
+import { type DeviceState } from '@trezor/connect';
 
-import {
-    selectAutodetectLanguage,
-    selectAutodetectTheme,
-    selectIsDebugModeActive,
-    selectIsSuiteOnline,
-    selectLanguage,
-    selectSuiteTransports,
-    selectTheme,
-    selectTorOnionLinks,
-    selectTorState,
-} from './suiteSelectors';
-import {
-    DesktopUpdateRootState,
-    selectDesktopUpdateAllowPrerelease,
-} from '../../reducers/suite/desktopUpdateReducer';
-import { SuiteRootState } from '../../reducers/suite/suiteReducer';
+import { selectIsSuiteOnline, selectSuiteTransports } from './suiteSelectors';
+import { type SuiteRootState } from '../../reducers/suite/suiteReducer';
 
 export type SuiteLogsApplicationInfoRootState = SuiteRootState &
+    TorRootState &
     MetadataRootState &
     DesktopUpdateRootState &
+    DebugRootState &
     LogsApplicationInfoRootState;
 
 const selectRedactedWallets = (

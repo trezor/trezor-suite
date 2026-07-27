@@ -1,13 +1,13 @@
 import { useCallback } from 'react';
 
 import {
-    TradingAssetSellOption,
+    type TradingAssetSellOption,
     createAssetNativeTokenOption,
-    createAssetTokenOption,
+    useTradingAssets,
 } from '@suite-common/trading';
-import { NetworkConfigWithoutTestnets } from '@suite-common/wallet-config';
+import { type NetworkConfigWithoutTestnets } from '@suite-common/wallet-config';
 
-import { AssetPickerListItem } from 'src/components/suite/asset-picker/hooks';
+import { type AssetPickerListItem } from 'src/components/suite/asset-picker/hooks';
 
 export interface UseUpdateFormInputProps {
     closeModal: () => void;
@@ -15,6 +15,8 @@ export interface UseUpdateFormInputProps {
 }
 
 export function useUpdateFormInput({ closeModal, onAssetSelect }: UseUpdateFormInputProps) {
+    const { resolveAssetTokenOption } = useTradingAssets();
+
     const handleAssetClick = useCallback(
         (asset: AssetPickerListItem) => {
             switch (asset.type) {
@@ -30,7 +32,7 @@ export function useUpdateFormInput({ closeModal, onAssetSelect }: UseUpdateFormI
 
                 case 'token': {
                     onAssetSelect({
-                        ...createAssetTokenOption(asset.account.symbol, asset.token),
+                        ...resolveAssetTokenOption(asset.account.symbol, asset.token),
                         accountKey: asset.account.key,
                     });
                     break;
@@ -39,7 +41,7 @@ export function useUpdateFormInput({ closeModal, onAssetSelect }: UseUpdateFormI
 
             closeModal();
         },
-        [closeModal, onAssetSelect],
+        [closeModal, onAssetSelect, resolveAssetTokenOption],
     );
 
     return handleAssetClick;

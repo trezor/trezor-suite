@@ -1,16 +1,24 @@
-import { ReactNode, memo } from 'react';
-import Animated from 'react-native-reanimated';
+import { type ReactNode, memo } from 'react';
+import Animated, { FadeIn, FadeOut, LinearTransition } from 'react-native-reanimated';
+import { useSelector } from 'react-redux';
 
 import type { ExchangeTrade } from 'invity-api';
 
-import { InlineAlertBox, VStack } from '@suite-native/atoms';
-import { Translation } from '@suite-native/intl';
+import {
+    type TradingRootState,
+    hasEip712SignData,
+    selectTradingProviderKycPolicy,
+} from '@suite-common/trading';
+import { AnimatedVStack, InlineAlertBox, VStack } from '@suite-native/atoms';
+import { Translation, useTranslate } from '@suite-native/intl';
+import { KycPolicyWarning, hasKycPolicyWarning } from '@suite-native/trading-provider-utils';
+import { SlippagePicker } from '@suite-native/trading-slippage';
 
-import { ExchangeFeePickerCard } from './ExchangeFeePickerCard';
+import { ExchangeEIP712Info } from './ExchangeEIP712Info';
+import { ExchangeFiatDeviationWarning } from './ExchangeFiatDeviationWarning';
 import { ExchangeFromAccountTradePreviewCard } from './ExchangeFromAccountTradePreviewCard';
-import { ExchangeFusionPlusInfo } from './ExchangeFusionPlusInfo';
+import { ExchangeInfo } from './ExchangeInfo';
 import { ExchangeToAccountTradePreviewCard } from './ExchangeToAccountTradePreviewCard';
-import { useChangeStringsExtractor } from '../../../hooks/history/useChangeStringsExtractor';
 import { LastErrorMessage } from '../../general/Error/LastErrorMessage';
 
 export type ExchangePreviewViewProps = {
@@ -21,33 +29,52 @@ export type ExchangePreviewViewProps = {
 
 export const ExchangePreviewView = memo(
     ({ quote, txnErrorString, isApproved }: ExchangePreviewViewProps) => {
-        const { fromStringValue, toStringValue } = useChangeStringsExtractor(quote);
+        const { translate } = useTranslate();
+
+        const kycPolicy = useSelector((state: TradingRootState) =>
+            selectTradingProviderKycPolicy(state, quote?.exchange, 'exchange'),
+        );
+
         const isTxnError = !!txnErrorString;
-        const isFusionPlus = quote?.exchange === '1inchfusionplus';
+        const hasEIP712SignData = hasEip712SignData(quote);
 
         return (
-            <VStack spacing="sp20" paddingVertical="sp20">
+            <VStack spacing="sp16">
                 <LastErrorMessage tradingType="exchange" />
                 {!!isApproved && (
                     <InlineAlertBox
-                        variant="success"
+                        intent="brand"
                         title={
                             <Translation id="moduleTrading.tradingExchangePreviewScreen.approvalSuccessAlert" />
                         }
                     />
                 )}
                 {isTxnError && (
-                    <Animated.View>
-                        <InlineAlertBox variant="critical" title={txnErrorString} />
+                    <Animated.View layout={LinearTransition} entering={FadeIn} exiting={FadeOut}>
+                        <InlineAlertBox intent="critical" title={txnErrorString} />
                     </Animated.View>
                 )}
-                <ExchangeFromAccountTradePreviewCard
-                    quote={quote}
-                    fromStringValue={fromStringValue}
-                />
-                <ExchangeToAccountTradePreviewCard quote={quote} toStringValue={toStringValue} />
-                <ExchangeFeePickerCard quote={quote} isTxnError={isTxnError} />
-                {isFusionPlus && <ExchangeFusionPlusInfo />}
+                <AnimatedVStack layout={LinearTransition} spacing="sp16">
+                    <ExchangeFromAccountTradePreviewCard quote={quote} />
+                    <ExchangeToAccountTradePreviewCard quote={quote} />
+                    <ExchangeFiatDeviationWarning quote={quote} />
+                    {hasEIP712SignData ? (
+                        <ExchangeEIP712Info exchange={quote?.exchange}>
+                            <SlippagePicker />
+                        </ExchangeEIP712Info>
+                    ) : (
+                        <ExchangeInfo quote={quote} isTxnError={isTxnError}>
+                            <SlippagePicker />
+                        </ExchangeInfo>
+                    )}
+                    {hasKycPolicyWarning(kycPolicy) && (
+                        <InlineAlertBox
+                            iconName="identificationCard"
+                            title={<KycPolicyWarning kycPolicyType={kycPolicy} />}
+                            accessibilityHint={translate('generic.warning')}
+                        />
+                    )}
+                </AnimatedVStack>
             </VStack>
         );
     },

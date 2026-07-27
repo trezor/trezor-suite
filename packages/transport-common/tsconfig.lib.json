@@ -1,0 +1,17 @@
+{
+    "extends": "../../tsconfig.lib.json",
+    "include": ["./src"],
+    "compilerOptions": {
+        "lib": ["ES2023"],
+        "outDir": "./lib",
+        "rootDir": "./src",
+        "types": ["node"]
+    },
+    "references": [
+        { "path": "../protobuf" },
+        { "path": "../protocol" },
+        { "path": "../type-utils" },
+        { "path": "../utils" },
+        { "path": "../eslint" }
+    ]
+}

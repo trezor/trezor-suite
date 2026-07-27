@@ -1,10 +1,10 @@
 import { useState } from 'react';
 
-import { Translation, TranslationKey } from '@suite/intl';
+import { Translation, type TranslationKey } from '@suite/intl';
 import {
     Icon,
     IconCircle,
-    IconName,
+    type IconComponent,
     Link,
     List,
     Modal,
@@ -12,37 +12,45 @@ import {
     Text,
     TextButton,
 } from '@trezor/components';
+import {
+    ArrowSquareOutIcon,
+    IdentificationCardIcon,
+    MapPinIcon,
+    PercentIcon,
+    PiggyBankIcon,
+    ScrollIcon,
+} from '@trezor/icons';
 import { TREZOR_SUITE_TOS_URL, TREZOR_SUPPORT_UNDERSTANDING_FEES } from '@trezor/urls';
 
 type ModalItem = {
     textId: TranslationKey;
     subTextId?: TranslationKey;
-    icon: IconName;
+    icon: IconComponent;
     url?: string;
 };
 
 const MODAL_ITEMS: ModalItem[] = [
     {
         textId: 'TR_HOW_TRADING_COMPARES_PROVIDERS',
-        icon: 'piggyBank',
+        icon: PiggyBankIcon,
     },
     {
         textId: 'TR_HOW_TRADING_LOCATION_OFFERS',
-        icon: 'mapPin',
+        icon: MapPinIcon,
     },
     {
         textId: 'TR_HOW_TRADING_PRIVACY_KYC',
         subTextId: 'TR_HOW_TRADING_PRIVACY_KYC_SUBTEXT',
-        icon: 'identificationCard',
+        icon: IdentificationCardIcon,
     },
     {
         textId: 'TR_TRADING_FEES_CALCULATION_DISCLAIMER',
-        icon: 'percent',
+        icon: PercentIcon,
         url: TREZOR_SUPPORT_UNDERSTANDING_FEES,
     },
     {
         textId: 'TR_HOW_TRADING_TERMS_OF_USE',
-        icon: 'scroll',
+        icon: ScrollIcon,
         url: TREZOR_SUITE_TOS_URL,
     },
 ];
@@ -76,16 +84,16 @@ export const TradingFormFeesDisclaimer = () => {
                             <List.Item
                                 key={item.textId}
                                 bulletComponent={
-                                    <IconCircle name={item.icon} size={40} variant="primary" />
+                                    <IconCircle icon={item.icon} size={40} intent="brand" />
                                 }
                             >
-                                <Text typographyStyle="body-md-strong" color="textDefault">
+                                <Text typographyStyle="body-md-strong" color="contentPrimary">
                                     {item.url ? (
                                         <Row gap={8}>
                                             <Link href={item.url} target="_blank">
                                                 <Translation id={item.textId} />
                                             </Link>
-                                            <Icon name="arrowSquareOut" size={16} />
+                                            <Icon as={ArrowSquareOutIcon} size={16} />
                                         </Row>
                                     ) : (
                                         <Translation id={item.textId} />
@@ -93,7 +101,7 @@ export const TradingFormFeesDisclaimer = () => {
                                 </Text>
 
                                 {item.subTextId && (
-                                    <Text typographyStyle="body-sm" color="textSubdued" as="p">
+                                    <Text typographyStyle="body-sm" color="contentSecondary" as="p">
                                         <Translation id={item.subTextId} />
                                     </Text>
                                 )}

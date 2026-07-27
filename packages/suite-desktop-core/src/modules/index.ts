@@ -1,6 +1,5 @@
 import path from 'path';
 
-import { isDevEnv } from '@suite-common/suite-utils';
 import type { HandshakeClient } from '@trezor/suite-desktop-api';
 import { isNotUndefined } from '@trezor/utils';
 
@@ -10,23 +9,30 @@ import * as bluetooth from './bluetooth';
 import * as bridge from './bridge';
 import * as coinjoin from './coinjoin';
 import * as crashRecover from './crash-recover';
-import * as csp from './csp';
 import * as customProtocols from './custom-protocols';
 import * as devTools from './dev-tools';
 import * as eventLogging from './event-logging';
-import { MainWindowProxy } from '../libs/main-window-proxy';
+import { type MainWindowProxy } from '../libs/main-window-proxy';
 import * as eventLoggingApp from './event-logging/app';
 import * as eventLoggingContents from './event-logging/contents';
 import * as eventLoggingProcess from './event-logging/process';
 import * as externalLinks from './external-links';
 import * as firmware from './firmware';
 import * as httpReceiverModule from './http-receiver';
+import * as mcpServer from './mcp-server';
 import * as menu from './menu';
 import * as metadata from './metadata';
-import { Dependencies, ModuleInit, ModuleInitBackground, ModuleLoad, ModuleQuit } from './module';
+import type {
+    Dependencies,
+    ModuleInit,
+    ModuleInitBackground,
+    ModuleLoad,
+    ModuleQuit,
+} from './module';
 import * as powerMonitor from './power-monitor';
 import * as requestFilter from './request-filter';
 import * as requestInterceptor from './request-interceptor';
+import * as responseHeaders from './response-headers';
 import * as safeStorage from './safeStorage';
 import * as shortcuts from './shortcuts';
 import * as store from './store';
@@ -71,8 +77,8 @@ const MODULES: Module[] = [
     bluetooth,
     firmware,
     powerMonitor,
-    // Modules used only in dev/prod mode
-    ...(isDevEnv ? [] : [csp]),
+    mcpServer,
+    responseHeaders,
 ];
 
 const MODULES_BACKGROUND: ModuleBackground[] = [bridge, trezorConnect, httpReceiverModule, tray];

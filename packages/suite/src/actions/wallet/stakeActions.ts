@@ -1,3 +1,4 @@
+import { closeModal, openDeferredModal, openModal, preserveModal } from '@suite/modal';
 import { selectSelectedDevice } from '@suite-common/device';
 import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
 import { EarnFlow } from '@suite-common/suite-types/src/staking';
@@ -10,11 +11,12 @@ import {
     syncAccountsWithBlockchainThunk,
 } from '@suite-common/wallet-core';
 import {
-    ComposeActionContext,
-    PrecomposedTransactionFinal,
-    StakeFormState,
-    StakeType,
-    WalletAccountTransaction,
+    type Account,
+    type ComposeActionContext,
+    type PrecomposedTransactionFinal,
+    type StakeFormState,
+    type StakeType,
+    type WalletAccountTransaction,
 } from '@suite-common/wallet-types';
 import {
     formatNetworkAmount,
@@ -25,14 +27,13 @@ import {
     isSupportedSolStakingNetworkSymbol,
     tryGetAccountIdentity,
 } from '@suite-common/wallet-utils';
-import TrezorConnect, { Unsuccessful } from '@trezor/connect';
+import TrezorConnect from '@trezor/connect';
+import { type SerializedError } from '@trezor/connect-common/src/constants/errors';
+import { type Err } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { Dispatch, GetState } from 'src/types/suite';
+import { type Dispatch, type GetState } from 'src/types/suite';
 
-import { setPendingStakeTx } from './cardanoStakingActions';
-import * as modalActions from '../suite/modalActions';
-import { openModal } from '../suite/modalActions';
 import * as stakeFormCardanoActions from './stake/stakeFormCardanoActions';
 import * as stakeFormEthereumActions from './stake/stakeFormEthereumActions';
 import * as stakeFormSolanaActions from './stake/stakeFormSolanaActions';
@@ -57,31 +58,32 @@ export const composeTransaction =
     };
 
 // this could be called at any time during signTransaction or pushTransaction process (from TransactionReviewModal)
-export const cancelSignTx = (isSuccessTx?: boolean) => (dispatch: Dispatch, getState: GetState) => {
-    const { serializedTx, precomposedForm } = getState().wallet.stake;
-    dispatch(stakeActions.requestSignTransaction());
-    dispatch(stakeActions.requestPushTransaction());
-    // if transaction is not signed yet interrupt signing in TrezorConnect
-    if (!serializedTx) {
-        TrezorConnect.cancel('tx-cancelled');
+export const cancelSignTx =
+    (isSuccessTx?: boolean, account?: Account) => (dispatch: Dispatch, getState: GetState) => {
+        const { serializedTx, precomposedForm } = getState().wallet.stake;
+        dispatch(stakeActions.requestSignTransaction());
+        dispatch(stakeActions.requestPushTransaction());
+        // if transaction is not signed yet interrupt signing in TrezorConnect
+        if (!serializedTx) {
+            TrezorConnect.cancel({ reason: 'tx-cancelled' });
 
-        return;
-    }
-    // otherwise just close modal and open stake modal
-    dispatch(modalActions.onCancel());
-
-    const { stakeType } = precomposedForm ?? {};
-    if (stakeType && !isSuccessTx) {
-        switch (stakeType) {
-            case 'stake':
-                dispatch(openModal({ type: stakeType, flow: EarnFlow.Stake }));
-                break;
-
-            default:
-                dispatch(openModal({ type: stakeType }));
+            return;
         }
-    }
-};
+        // otherwise just close modal and open stake modal
+        dispatch(closeModal());
+
+        const { stakeType } = precomposedForm ?? {};
+        if (account && stakeType && !isSuccessTx) {
+            switch (stakeType) {
+                case 'stake':
+                    dispatch(openModal({ type: stakeType, flow: EarnFlow.Stake, account }));
+                    break;
+
+                default:
+                    dispatch(openModal({ type: stakeType, account }));
+            }
+        }
+    };
 
 // private, called from signTransaction only
 const pushTransaction =
@@ -107,7 +109,7 @@ const pushTransaction =
         });
 
         // close modal regardless result
-        dispatch(modalActions.onCancel());
+        dispatch(closeModal());
 
         const spentWithoutFee = new BigNumber(precomposedTx.totalSpent)
             .minus(precomposedTx.fee)
@@ -190,7 +192,6 @@ const pushTransaction =
                         cardanoSpecific,
                     }),
                 );
-                dispatch(setPendingStakeTx(account, txid));
             }
 
             // notification from the backend may be delayed.
@@ -204,12 +205,12 @@ const pushTransaction =
             dispatch(
                 notificationsActions.addToast({
                     type: 'sign-tx-error',
-                    error: sentTx.payload.error,
+                    error: sentTx.error.message,
                 }),
             );
         }
 
-        dispatch(cancelSignTx(sentTx.success));
+        dispatch(cancelSignTx(sentTx.success, account));
 
         // resolve sign process
         return sentTx;
@@ -237,11 +238,11 @@ export const signTransaction =
 
         // TransactionReviewModal has 2 steps: signing and pushing
         // TrezorConnect emits UI.CLOSE_UI.WINDOW after the signing process
-        // this action is blocked by modalActions.preserve()
-        dispatch(modalActions.preserve());
+        // this action is blocked by preserveModal()
+        dispatch(preserveModal());
 
         // signTransaction by Trezor
-        let serializedTx: undefined | string | Unsuccessful;
+        let serializedTx: undefined | string | Err<SerializedError>;
         if (isSupportedEthStakingNetworkSymbol(account.symbol)) {
             serializedTx = await dispatch(
                 stakeFormEthereumActions.signTransaction(formValues, enhancedTxInfo),
@@ -261,21 +262,21 @@ export const signTransaction =
         }
 
         if (typeof serializedTx !== 'string') {
-            if (serializedTx?.payload?.error === 'tx-timeout') {
+            if (serializedTx?.error?.message === 'tx-timeout') {
                 return;
             }
             // close modal manually since UI.CLOSE_UI.WINDOW was blocked
-            dispatch(modalActions.onCancel());
+            dispatch(closeModal());
 
             const { stakeType } = formValues;
             if (stakeType) {
                 switch (stakeType) {
                     case 'stake':
-                        dispatch(openModal({ type: stakeType, flow: EarnFlow.Stake }));
+                        dispatch(openModal({ type: stakeType, flow: EarnFlow.Stake, account }));
                         break;
 
                     default:
-                        dispatch(openModal({ type: stakeType }));
+                        dispatch(openModal({ type: stakeType, account }));
                 }
             }
 
@@ -295,9 +296,7 @@ export const signTransaction =
         }
 
         // Open a deferred modal and get the decision
-        const decision = await dispatch(
-            modalActions.openDeferredModal({ type: 'review-transaction' }),
-        );
+        const decision = await dispatch(openDeferredModal({ type: 'review-transaction' }));
         if (decision) {
             // push tx to the network
             return dispatch(pushTransaction(formValues.stakeType));

@@ -14,17 +14,10 @@ import {
 } from '@floating-ui/react';
 import styled from 'styled-components';
 
-import { Translation, TranslationKey } from '@suite/intl';
+import { Translation, type TranslationKey } from '@suite/intl';
 import { selectDeviceDefaultBackupType } from '@suite-common/device';
-import { BackupType } from '@suite-common/suite-types';
-import { Banner, ElevationUp, Text, useElevation } from '@trezor/components';
-import {
-    Elevation,
-    borders,
-    mapElevationToBackground,
-    mapElevationToBorder,
-    spacingsPx,
-} from '@trezor/theme';
+import { type BackupType } from '@suite-common/suite-types';
+import { Banner, Text } from '@trezor/components';
 
 import { useLayoutSize, useSelector } from 'src/hooks/suite';
 
@@ -39,15 +32,16 @@ const SELECT_ELEMENT_HEIGHT_MOBILE = 62;
 const Wrapper = styled.div`
     width: 100%;
     display: flex;
+    align-items: center;
     flex-direction: column;
-    gap: ${spacingsPx.xl};
+    gap: 24px;
 `;
 
-const SelectWrapper = styled.div<{ $elevation: Elevation }>`
-    width: 100%;
-    border-radius: ${borders.radii.sm};
-    border: 1px solid ${mapElevationToBorder};
-    background: ${mapElevationToBackground};
+const SelectWrapper = styled.div`
+    width: 700px;
+    border-radius: 12px;
+    border: 1px solid ${({ theme }) => theme.elementBorderNeutralSofterAlt};
+    background: ${({ theme }) => theme.elementFillNeutralSofter};
     position: relative;
 `;
 
@@ -76,7 +70,6 @@ export const SelectBackupType = ({
     'data-testid': dataTest,
     onOpen,
 }: SelectBackupTypeProps) => {
-    const { elevation } = useElevation();
     const [isOpen, setIsOpen] = useState(false);
     const deviceDefaultBackupType = useSelector(selectDeviceDefaultBackupType);
     const { isBelowTablet } = useLayoutSize();
@@ -110,44 +103,40 @@ export const SelectBackupType = ({
 
     return (
         <Wrapper>
-            <SelectWrapper $elevation={elevation} ref={refs.setReference} {...getReferenceProps()}>
-                <ElevationUp>
-                    <SelectedOption
-                        isDisabled={isDisabled}
-                        onClick={() => {
-                            setIsOpen(true);
-                            onOpen();
-                        }}
-                    >
-                        <OptionText data-testid={dataTest}>
-                            <Text intent="neutral" priority="secondary" typographyStyle="body-sm">
-                                <Translation id="TR_ONBOARDING_BACKUP_TYPE" />
-                            </Text>
-                            <Text
-                                typographyStyle={isBelowTablet ? 'body-md-strong' : 'headline-sm'}
-                            >
-                                <Translation id={typesToLabelMap[selected]} />
-                            </Text>
-                        </OptionText>
-                    </SelectedOption>
-                    {isOpen && (
-                        <FloatingPortal>
-                            <FloatingFocusManager context={context} modal={false}>
-                                <FloatingSelections
-                                    defaultType={deviceDefaultBackupType}
-                                    ref={refs.setFloating}
-                                    style={floatingStyles}
-                                    {...getFloatingProps()}
-                                    selected={selected}
-                                    onSelect={value => {
-                                        setIsOpen(false);
-                                        onSelect(value);
-                                    }}
-                                />
-                            </FloatingFocusManager>
-                        </FloatingPortal>
-                    )}
-                </ElevationUp>
+            <SelectWrapper ref={refs.setReference} {...getReferenceProps()}>
+                <SelectedOption
+                    isDisabled={isDisabled}
+                    onClick={() => {
+                        setIsOpen(true);
+                        onOpen();
+                    }}
+                >
+                    <OptionText data-testid={dataTest}>
+                        <Text intent="neutral" priority="secondary" typographyStyle="body-sm">
+                            <Translation id="TR_ONBOARDING_BACKUP_TYPE" />
+                        </Text>
+                        <Text typographyStyle={isBelowTablet ? 'body-md-strong' : 'headline-sm'}>
+                            <Translation id={typesToLabelMap[selected]} />
+                        </Text>
+                    </OptionText>
+                </SelectedOption>
+                {isOpen && (
+                    <FloatingPortal>
+                        <FloatingFocusManager context={context} modal={false}>
+                            <FloatingSelections
+                                defaultType={deviceDefaultBackupType}
+                                ref={refs.setFloating}
+                                style={floatingStyles}
+                                {...getFloatingProps()}
+                                selected={selected}
+                                onSelect={value => {
+                                    setIsOpen(false);
+                                    onSelect(value);
+                                }}
+                            />
+                        </FloatingFocusManager>
+                    </FloatingPortal>
+                )}
             </SelectWrapper>
             {!isShamirSelected && isShamirDefault && (
                 <BackupWarning id="TR_ONBOARDING_BACKUP_LEGACY_WARNING" />

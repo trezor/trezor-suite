@@ -1,12 +1,17 @@
-import { ReactNode, useEffect } from 'react';
+import { type ReactNode, useEffect } from 'react';
 import { Pressable } from 'react-native';
-import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
+import Animated, {
+    cancelAnimation,
+    useAnimatedStyle,
+    useSharedValue,
+    withTiming,
+} from 'react-native-reanimated';
 
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 export type RenderViewProps = {
-    isDisabled: boolean;
-    onPress: (() => void) | undefined;
+    isDisabled?: boolean;
+    onPress?: () => void;
 };
 
 export type AnimatedViewWrapperProps = {
@@ -47,6 +52,11 @@ export const AnimatedViewWrapper = ({
     useEffect(() => {
         scale.value = withPredefinedTiming(getScale(focused));
         translateY.value = withPredefinedTiming(getTranslateY(focused));
+
+        return () => {
+            cancelAnimation(scale);
+            cancelAnimation(translateY);
+        };
     }, [focused, scale, translateY]);
 
     const animatedStyle = useAnimatedStyle(

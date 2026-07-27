@@ -1,14 +1,19 @@
 import { useMemo } from 'react';
 
+import {
+    type DebugModeOptions,
+    selectDebugTransports,
+    suiteSettingsActions,
+} from '@suite/settings';
+import { useServices } from '@suite-common/dependency-injection';
+import { type TransportsDep } from '@suite-common/redux-utils';
 import { Checkbox } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
 import { isDesktop } from '@trezor/env-utils';
-import { ArrayElement } from '@trezor/type-utils';
+import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
+import { type ArrayElement } from '@trezor/type-utils';
 
-import { setDebugMode } from 'src/actions/suite/suiteActions';
-import { ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { DebugModeOptions } from 'src/reducers/suite/suiteReducer';
 import { selectActiveTransports } from 'src/selectors/suite/suiteSelectors';
 
 type Transport = ArrayElement<NonNullable<DebugModeOptions['transports']>>;
@@ -24,7 +29,7 @@ const TRANSPORTS_WEB = ['BridgeTransport', 'WebUsbTransport'] as const;
 const TRANSPORTS_DESKTOP = ['BridgeTransport', 'NodeUsbTransport', 'UdpTransport'] as const;
 const TRANSPORT_DESCRIPTIONS: Record<Transport, string> = {
     BridgeTransport:
-        'Client for bridge http interface regardless node-bridge or trezord-go implementation. It expects bridge to run on http://127.0.0.1:21328/ or http://127.0.0.1:21325/.\
+        'Client for bridge http interface. It expects bridge to run on http://127.0.0.1:21328/.\
         This is the most general transport that may be used for both desktop and web version of Trezor Suite.',
     WebUsbTransport: 'Similar to NodeUsbTransport but using WebUSB API. Supported only in Chrome.',
     NodeUsbTransport: 'Direct access to usb using node.js implementation.',
@@ -33,7 +38,7 @@ const TRANSPORT_DESCRIPTIONS: Record<Transport, string> = {
 
 const useTransportItems = (transports: readonly Transport[]): TransportMenuItem[] => {
     const activeTransports = useSelector(selectActiveTransports);
-    const debugTransports = useSelector(state => state.suite.settings.debug.transports);
+    const debugTransports = useSelector(selectDebugTransports);
 
     return useMemo(
         () =>
@@ -51,6 +56,9 @@ export const Transport = () => {
     const dispatch = useDispatch();
     const transports = isDesktop() ? TRANSPORTS_DESKTOP : TRANSPORTS_WEB;
     const items = useTransportItems(transports);
+    const { createTransports } = useServices(
+        (services): TransportsDep => ({ createTransports: services.createTransports }),
+    );
 
     return (
         <>
@@ -73,12 +81,18 @@ export const Transport = () => {
                     <ActionColumn>
                         <Checkbox
                             isChecked={transport.checked}
-                            onClick={() => {
+                            onChange={() => {
                                 const nextTransports = items
                                     .filter(t => (t.name === transport.name) !== t.checked)
                                     .map(t => t.name);
-                                dispatch(setDebugMode({ transports: nextTransports }));
-                                TrezorConnect.updateConnectSettings({ transports: nextTransports });
+                                dispatch(
+                                    suiteSettingsActions.setDebugMode({
+                                        transports: nextTransports,
+                                    }),
+                                );
+                                TrezorConnect.updateConnectSettings({
+                                    transports: createTransports(nextTransports),
+                                });
                             }}
                         />
                     </ActionColumn>

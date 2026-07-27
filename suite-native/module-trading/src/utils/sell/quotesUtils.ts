@@ -1,29 +1,44 @@
 import { invariant } from '@suite-common/suite-utils';
-import { MinimalSellFormProps } from '@suite-common/trading';
-import { SellFormType } from '@suite-native/trading-types';
+import { type MinimalSellFormProps } from '@suite-common/trading';
+import { type SellFormType } from '@suite-native/trading-types';
+import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
+import { isBaseCurrencyCode } from '@trezor/blockchain-link-types';
 
 export const tradingSellFormToTradingSellFormProps = (
     getValues: SellFormType['getValues'],
 ): MinimalSellFormProps => {
-    const [amountInCrypto, fiatStringAmount, cryptoStringAmount, fiatCurrency, sendAsset, country] =
-        getValues([
-            'amountInCrypto',
-            'fiatStringAmount',
-            'cryptoStringAmount',
-            'fiatCurrency',
-            'sendAsset',
-            'country',
-        ]);
+    const [
+        amountInCrypto,
+        fiatStringAmount,
+        cryptoStringAmount,
+        fiatCurrency,
+        sendAsset,
+        country,
+        countrySubdivision,
+    ] = getValues([
+        'amountInCrypto',
+        'fiatStringAmount',
+        'cryptoStringAmount',
+        'fiatCurrency',
+        'sendAsset',
+        'country',
+        'countrySubdivision',
+    ]);
 
     invariant(sendAsset, 'sendAsset is required');
     invariant(!amountInCrypto || cryptoStringAmount, 'cryptoStringAmount is required');
     invariant(amountInCrypto || fiatStringAmount, 'fiatStringAmount is required');
 
+    const fiatCurrencyCode = typeof fiatCurrency === 'string' ? fiatCurrency : '';
+    const baseCurrencyCode: BaseCurrencyCode = isBaseCurrencyCode(fiatCurrencyCode)
+        ? fiatCurrencyCode
+        : 'usd';
+
     const outputs = [
         {
             amount: amountInCrypto ? cryptoStringAmount : undefined,
             fiat: amountInCrypto ? undefined : fiatStringAmount,
-            currency: { value: fiatCurrency },
+            currency: { value: baseCurrencyCode },
         },
     ];
 
@@ -31,6 +46,7 @@ export const tradingSellFormToTradingSellFormProps = (
         outputs,
         amountInCrypto,
         countrySelect: country,
+        countrySubdivisionSelect: countrySubdivision,
         sendCryptoSelect: { id: sendAsset.cryptoId },
     };
 };

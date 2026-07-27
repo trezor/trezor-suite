@@ -1,12 +1,12 @@
 import { combineReducers } from '@reduxjs/toolkit';
-import { CryptoId, SellFiatTrade, SellFiatTradeResponse } from 'invity-api';
+import { type CryptoId, type SellFiatTrade, type SellFiatTradeResponse } from 'invity-api';
 
 import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
-import { Account } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 
 import { accountBtc } from '../../../__fixtures__/utils';
 import { invityAPI } from '../../../invityAPI';
-import { TradingSellState } from '../../../reducers/sellReducer';
+import { type TradingSellState } from '../../../reducers/sellReducer';
 import { initialState } from '../../../reducers/tradingCommonReducer';
 import { prepareTradingReducer } from '../../../reducers/tradingReducer';
 import type { LogErrorThunkProps } from '../../common/logErrorThunk';
@@ -266,7 +266,7 @@ describe('handleSellTradeThunk', () => {
                 data: mockResponse.trade,
                 key: mockResponse.trade.orderId,
                 date: dateISO,
-                sendAccountKey: 'btc-descriptor-btc',
+                sendAccountKey: accountBtc.key,
             },
         ]);
         expect(mockProcessResponseData).not.toHaveBeenCalled();
@@ -314,7 +314,7 @@ describe('handleSellTradeThunk', () => {
                 data: mockResponse.trade,
                 key: mockResponse.trade.orderId,
                 date: dateISO,
-                sendAccountKey: 'btc-descriptor-btc',
+                sendAccountKey: accountBtc.key,
             },
         ]);
         expect(mockProcessResponseData).toHaveBeenCalledTimes(1);

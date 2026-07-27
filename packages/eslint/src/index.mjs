@@ -2,19 +2,23 @@ import jsxA11y from 'eslint-plugin-jsx-a11y';
 import playwright from 'eslint-plugin-playwright';
 import globals from 'globals';
 
-import { chaiFriendlyConfig } from './chaiFriendlyConfig.mjs';
 import { globalNoExtraneousDependenciesDevDependencies, importConfig } from './importConfig.mjs';
-import { javascriptConfig } from './javascriptConfig.mjs';
+import { javascriptConfig, noCastedObjectHelpersSyntax } from './javascriptConfig.mjs';
 import { javascriptNodejsConfig } from './javascriptNodejsConfig.mjs';
 import { jestConfig } from './jestConfig.mjs';
 import { localRulesConfig } from './localRulesConfig.mjs';
 import { reactConfig } from './reactConfig.mjs';
-import { typescriptConfig } from './typescriptConfig.mjs';
+import { reactQueryConfig } from './reactQueryConfig.mjs';
+import { restrictedImportsPatterns, typescriptConfig } from './typescriptConfig.mjs';
 /**
  * @typedef {import('eslint').Linter.Config} Config
  */
 
-export { globalNoExtraneousDependenciesDevDependencies };
+export {
+    globalNoExtraneousDependenciesDevDependencies,
+    noCastedObjectHelpersSyntax,
+    restrictedImportsPatterns,
+};
 
 /** @type {Config[]} */
 export const eslint = [
@@ -23,7 +27,6 @@ export const eslint = [
             '**/.nx/*',
             '**/lib/*',
             '**/libDev/*',
-            '**/libESM/*',
             '**/dist/*',
             '**/coverage/*',
             '**/build/*',
@@ -31,9 +34,7 @@ export const eslint = [
             '**/build-webextension/*',
             '**/node_modules/*',
             '**/public/*',
-            '**/ci/',
             '**/.expo/*',
-            'eslint-local-rules/*',
             '**/.cache/*',
             '**/playwright-report/*',
             '**/suite-data/files/favicon.js',
@@ -51,13 +52,13 @@ export const eslint = [
     },
 
     ...reactConfig,
+    ...reactQueryConfig,
     ...javascriptConfig,
     ...javascriptNodejsConfig,
     ...typescriptConfig,
     ...importConfig,
     ...jestConfig,
     ...localRulesConfig,
-    ...chaiFriendlyConfig,
 
     jsxA11y.flatConfigs.recommended,
 
@@ -80,7 +81,6 @@ export const eslint = [
 
 const playwrightEslintRules = {
     ...playwright.configs['flat/recommended'].rules,
-    'playwright/no-skipped-test': 'off',
     'playwright/no-nested-step': 'off',
     'playwright/expect-expect': 'off',
     'playwright/no-wait-for-timeout': 'off',

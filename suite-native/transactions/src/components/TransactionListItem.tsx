@@ -1,29 +1,25 @@
+import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
-import { TokenDefinitionsRootState } from '@suite-common/token-definitions';
+import { type TokenDefinitionsRootState } from '@suite-common/token-definitions';
 import {
-    AccountsRootState,
-    FiatRatesRootState,
-    TransactionsRootState,
-    WalletSettingsRootState,
+    type AccountsRootState,
+    type FiatRatesRootState,
+    type PhishingRootState,
+    type TransactionsRootState,
+    createTargets,
+    selectAccountByKey,
     selectIsPhishingTransaction,
-    selectIsTestnetAccount,
 } from '@suite-common/wallet-core';
-import { AccountKey } from '@suite-common/wallet-types';
-import { Box } from '@suite-native/atoms';
-import {
-    CryptoAmountFormatter,
-    CryptoToFiatAmountFormatter,
-    EmptyAmountText,
-    SignValueFormatter,
-} from '@suite-native/formatters';
-import { WalletAccountTransaction } from '@suite-native/tokens';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { type AccountKey } from '@suite-common/wallet-types';
+import { getTxStakeType } from '@suite-common/wallet-utils';
+import { EmptyAmountText } from '@suite-native/formatters';
+import { type WalletAccountTransaction } from '@suite-native/tokens';
 
-import { selectTransactionFiatRate } from '../selectors';
-import { getTransactionValueSign } from '../utils';
+import { groupTargetOutputs } from '../utils';
 import { TokenTransferListItem } from './TokenTransferListItem';
 import { TransactionListItemContainer } from './TransactionListItemContainer';
+import { TransactionTarget } from './TransactionTarget';
 
 type TransactionListItemProps = {
     transaction: WalletAccountTransaction;
@@ -32,89 +28,60 @@ type TransactionListItemProps = {
     isLast?: boolean;
 };
 
-const failedTxStyle = prepareNativeStyle<{ isFailedTx: boolean }>((_, { isFailedTx }) => ({
-    extend: {
-        condition: isFailedTx,
-        style: {
-            textDecorationLine: 'line-through',
-        },
-    },
-}));
-
-export const TransactionListItemValues = ({
-    accountKey,
-    transaction,
-}: {
-    accountKey: AccountKey;
-    transaction: WalletAccountTransaction;
-}) => {
-    const isTestnetAccount = useSelector((state: AccountsRootState) =>
-        selectIsTestnetAccount(state, accountKey),
-    );
-
-    const isPhishingTransaction = useSelector(
-        (state: TokenDefinitionsRootState & TransactionsRootState) =>
-            selectIsPhishingTransaction(state, transaction.txid, accountKey),
-    );
-
-    const { applyStyle } = useNativeStyles();
-
-    const historicRate = useSelector((state: WalletSettingsRootState & FiatRatesRootState) =>
-        selectTransactionFiatRate(state, transaction),
-    );
-    const isFailedTx = transaction.type === 'failed';
-
-    return (
-        <>
-            {isTestnetAccount ? (
-                <EmptyAmountText />
-            ) : (
-                <Box flexDirection="row">
-                    {!isFailedTx && (
-                        <SignValueFormatter value={getTransactionValueSign(transaction.type)} />
-                    )}
-                    <CryptoToFiatAmountFormatter
-                        value={transaction.amount}
-                        symbol={transaction.symbol}
-                        historicRate={historicRate}
-                        useHistoricRate
-                        isForcedDiscreetMode={isPhishingTransaction}
-                        style={applyStyle(failedTxStyle, { isFailedTx })}
-                    />
-                </Box>
-            )}
-
-            <CryptoAmountFormatter
-                value={transaction.amount}
-                symbol={transaction.symbol}
-                isBalance={false}
-                numberOfLines={1}
-                adjustsFontSizeToFit
-                isForcedDiscreetMode={isPhishingTransaction}
-                variant="body-sm"
-                color="textSubdued"
-            />
-        </>
-    );
-};
-
 export const TransactionListItem = ({
     transaction,
     accountKey,
     isFirst = false,
     isLast = false,
 }: TransactionListItemProps) => {
+    const account = useSelector((state: AccountsRootState) =>
+        selectAccountByKey(state, accountKey),
+    );
+    const { isPhishing: isPhishingTransaction } = useSelector(
+        (
+            state: TokenDefinitionsRootState &
+                TransactionsRootState &
+                FiatRatesRootState &
+                PhishingRootState,
+        ) => selectIsPhishingTransaction(state, transaction.txid, accountKey),
+    );
+
     const includedCoinsCount = transaction.tokens.length;
 
-    const isTokenOnlyTransaction = transaction.amount === '0' && transaction.tokens.length !== 0;
+    const firstToken = transaction.tokens[0];
 
-    if (isTokenOnlyTransaction)
+    const allOutputs = useMemo(
+        () => (account !== null ? groupTargetOutputs(createTargets({ transaction, account })) : []),
+        [transaction, account],
+    );
+
+    const stakeOperationType = getTxStakeType(transaction);
+
+    // Self transactions don't change the account balance (only a network fee is paid), so we show
+    // an empty amount instead of the redundant/dust output. Staking self-transactions keep theirs.
+    if (transaction.type === 'self' && !stakeOperationType)
+        return (
+            <TransactionListItemContainer
+                transaction={transaction}
+                transactionType={transaction.type}
+                accountKey={accountKey}
+                includedCoinsCount={includedCoinsCount}
+                isFirst={isFirst}
+                isLast={isLast}
+            >
+                <EmptyAmountText />
+            </TransactionListItemContainer>
+        );
+
+    // Any non-self transaction carrying a token transfer is summarized by its token (e.g. an ERC20
+    // transfer, or a swap that also moves native coin). The native amount — rent on Solana, swap
+    // value on EVM — is dropped here; the detail screen still shows the full breakdown.
+    if (firstToken !== undefined)
         return (
             <TokenTransferListItem
                 transaction={transaction}
                 accountKey={accountKey}
-                txid={transaction.txid}
-                tokenTransfer={transaction.tokens[0]}
+                tokenTransfer={firstToken}
                 includedCoinsCount={transaction.tokens.length - 1}
                 isFirst={isFirst}
                 isLast={isLast}
@@ -123,15 +90,23 @@ export const TransactionListItem = ({
 
     return (
         <TransactionListItemContainer
-            symbol={transaction.symbol}
-            txid={transaction.txid}
+            transaction={transaction}
             transactionType={transaction.type}
+            stakeOperationType={stakeOperationType}
             accountKey={accountKey}
             includedCoinsCount={includedCoinsCount}
             isFirst={isFirst}
             isLast={isLast}
         >
-            <TransactionListItemValues accountKey={accountKey} transaction={transaction} />
+            {allOutputs.map((target, i) => (
+                <TransactionTarget
+                    key={i}
+                    accountKey={accountKey}
+                    isPhishingTransaction={isPhishingTransaction}
+                    transaction={transaction}
+                    {...target}
+                />
+            ))}
         </TransactionListItemContainer>
     );
 };

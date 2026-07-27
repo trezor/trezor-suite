@@ -1,5 +1,5 @@
 import { makeFormatter } from '../makeFormatter';
-import { FormatterConfig } from '../types';
+import { type FormatterConfig } from '../types';
 
 export const dateFormatterOptions: Intl.DateTimeFormatOptions = {
     year: 'numeric',

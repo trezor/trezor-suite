@@ -1,11 +1,11 @@
 import { combineReducers } from '@reduxjs/toolkit';
-import { CryptoId, ExchangeTradeSigned } from 'invity-api';
+import { type CryptoId, type ExchangeTradeSigned } from 'invity-api';
 
 import { createThunk } from '@suite-common/redux-utils';
 import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
-import { Account, GeneralPrecomposedTransaction } from '@suite-common/wallet-types';
-import TrezorConnect, { Address, PROTO } from '@trezor/connect';
-import { validatePath } from '@trezor/connect/src/utils/pathUtils';
+import { type Account, type GeneralPrecomposedTransaction } from '@suite-common/wallet-types';
+import TrezorConnect, { type Address, type PROTO } from '@trezor/connect';
+import { validatePath } from '@trezor/connect-common';
 
 import { invityAPI } from '../../../invityAPI';
 import { initialState } from '../../../reducers/tradingCommonReducer';
@@ -254,7 +254,7 @@ describe('createPaymentRequestsThunk', () => {
 
         const mockPaymentRequest: PROTO.PaymentRequest = {
             recipient_name: 'Changelly',
-            amount: 'a086010000000000', // 8 bytes little-endian for 100000 satoshis
+            amount: '100000', // decimal subunits (satoshis), encoded to LE bytes by @trezor/connect
             nonce: mockNonce,
             signature: 'signature123',
             memos: [
@@ -421,7 +421,7 @@ describe('createPaymentRequestsThunk', () => {
     describe('sell flow', () => {
         const mockSellPaymentRequest: PROTO.PaymentRequest = {
             recipient_name: 'Coinbase',
-            amount: 'a086010000000000', // 8 bytes little-endian for 100000 satoshis
+            amount: '100000', // decimal subunits (satoshis), encoded to LE bytes by @trezor/connect
             nonce: mockNonce,
             signature: 'sell-signature123',
             memos: [

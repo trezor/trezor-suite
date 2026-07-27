@@ -1,78 +1,154 @@
+import { memo, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
 import { selectIsDeviceConnected } from '@suite-common/device';
-import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import { type Network, type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { Text, VStack } from '@suite-native/atoms';
+import { type DiscoveryRootState, selectDiscoveryNetworkGroups } from '@suite-native/discovery';
 import { useFormContext } from '@suite-native/forms';
-import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
+import { SearchNoResults } from '@suite-native/search';
 import { useToast } from '@suite-native/toasts';
 
-import { NetworkSymbolSwitchItem } from './NetworkSymbolSwitchItem';
+import {
+    type CoinEnablingFormValues,
+    getEnabledCoinFieldName,
+    getNetworkSymbolsFromEnabledCoins,
+} from '../coinEnablingFormUtils';
+import { NetworkListItem } from './NetworkListItem';
+import { NetworkSymbolSwitch } from './NetworkSymbolSwitch';
+
+type NetworkGroupProps = {
+    networks: Network[];
+    handleToggle: (symbol: NetworkSymbol, isEnabled?: boolean) => void;
+    showTestnetsLabel?: boolean;
+};
 
 type DiscoveryCoinsFilterProps = {
-    networkSymbols: NetworkSymbol[];
+    searchQuery: string;
     onDisablingLastCoin?: () => void;
 };
 
+const NetworkGroup = ({ networks, handleToggle, showTestnetsLabel }: NetworkGroupProps) => (
+    <VStack spacing="sp12">
+        {showTestnetsLabel && (
+            <Text variant="body-sm">
+                <Translation id="moduleSettings.coinEnabling.labels.testnets" />
+            </Text>
+        )}
+        {networks.map(({ symbol }) => (
+            <NetworkListItem
+                key={symbol}
+                symbol={symbol}
+                accessory={<NetworkSymbolSwitch symbol={symbol} onToggle={handleToggle} />}
+                onPress={() => handleToggle(symbol)}
+                accessibilityRole="togglebutton"
+                testID={`@coin-enabling/toggle-${symbol}`}
+            />
+        ))}
+    </VStack>
+);
+
+const MemoizedNetworkGroup = memo(NetworkGroup);
+
 export const DiscoveryCoinsFilter = ({
-    networkSymbols,
+    searchQuery,
     onDisablingLastCoin,
 }: DiscoveryCoinsFilterProps) => {
+    const { supportedMainnets, supportedTestnets, unsupportedMainnets, unsupportedTestnets } =
+        useSelector((state: DiscoveryRootState) =>
+            selectDiscoveryNetworkGroups(state, searchQuery),
+        );
+    const isAnyNetworkVisible =
+        supportedMainnets.length > 0 ||
+        supportedTestnets.length > 0 ||
+        unsupportedMainnets.length > 0 ||
+        unsupportedTestnets.length > 0;
+
     const isDeviceConnected = useSelector(selectIsDeviceConnected);
     const { showToast } = useToast();
 
-    const { setValue, watch } = useFormContext();
-    const enabledSymbols: NetworkSymbol[] = watch('enabledCoins');
+    const { getValues, setValue } = useFormContext<CoinEnablingFormValues>();
 
-    const handleToggle = (symbol: NetworkSymbol, isEnabled: boolean) => {
-        if (
-            !isEnabled &&
-            onDisablingLastCoin &&
-            enabledSymbols.length === 1 &&
-            enabledSymbols.includes(symbol)
-        ) {
-            onDisablingLastCoin();
+    const handleToggle = useCallback(
+        (symbol: NetworkSymbol, isEnabled?: boolean) => {
+            const enabledCoins = getValues('enabledCoins') ?? {};
+            const isSymbolEnabled = !!enabledCoins[symbol];
+            // Row press does not subscribe to form state, so it toggles from current form value.
+            // Switch press already knows the next value and passes it directly.
+            const nextIsEnabled = isEnabled ?? !isSymbolEnabled;
 
-            return;
-        }
+            if (nextIsEnabled === isSymbolEnabled) {
+                return;
+            }
 
-        if (!isDeviceConnected && isEnabled) {
-            const { name } = getNetwork(symbol);
-            showToast({
-                variant: 'default',
-                message: (
-                    <Translation
-                        id="moduleSettings.coinEnabling.toasts.coinEnabled"
-                        values={{ coin: name }}
-                    />
-                ),
-            });
-        }
+            const enabledSymbols = getNetworkSymbolsFromEnabledCoins(enabledCoins);
 
-        const newEnabledSymbols = isEnabled
-            ? [...enabledSymbols, symbol]
-            : enabledSymbols.filter(s => s !== symbol);
+            if (
+                !nextIsEnabled &&
+                onDisablingLastCoin &&
+                enabledSymbols.length === 1 &&
+                isSymbolEnabled
+            ) {
+                onDisablingLastCoin();
 
-        setValue('enabledCoins', newEnabledSymbols, { shouldDirty: true, shouldValidate: true });
-    };
+                return;
+            }
+
+            if (!isDeviceConnected && nextIsEnabled) {
+                const { name } = getNetwork(symbol);
+                showToast({
+                    intent: 'neutral',
+                    message: (
+                        <Translation
+                            id="moduleSettings.coinEnabling.toasts.coinEnabled"
+                            values={{ coin: name }}
+                        />
+                    ),
+                });
+            }
+
+            setValue(getEnabledCoinFieldName(symbol), nextIsEnabled);
+        },
+        [getValues, isDeviceConnected, onDisablingLastCoin, setValue, showToast],
+    );
+
+    if (!isAnyNetworkVisible) {
+        return <SearchNoResults />;
+    }
 
     return (
-        <VStack spacing="sp12">
-            {networkSymbols.map(symbol => (
-                <NetworkSymbolSwitchItem
-                    key={symbol}
-                    symbol={symbol}
-                    isEnabled={enabledSymbols?.includes(symbol)}
-                    onToggle={isEnabled => handleToggle(symbol, isEnabled)}
-                />
-            ))}
-            <VStack paddingVertical="sp8" alignItems="center">
-                <Icon name="question" color="textSubdued" size="large" />
-                <Text color="textSubdued" textAlign="center">
-                    <Translation id="moduleSettings.coinEnabling.bottomNote" />
-                </Text>
+        <VStack spacing="sp32">
+            <VStack spacing="sp24">
+                <MemoizedNetworkGroup networks={supportedMainnets} handleToggle={handleToggle} />
+                {supportedTestnets.length > 0 && (
+                    <MemoizedNetworkGroup
+                        networks={supportedTestnets}
+                        handleToggle={handleToggle}
+                        showTestnetsLabel
+                    />
+                )}
             </VStack>
+            {unsupportedMainnets.length > 0 && (
+                <VStack spacing="sp16">
+                    <Text variant="headline-sm">
+                        <Translation id="moduleSettings.coinEnabling.unsupportedSubtitle" />
+                    </Text>
+                    <VStack spacing="sp24">
+                        <MemoizedNetworkGroup
+                            networks={unsupportedMainnets}
+                            handleToggle={handleToggle}
+                        />
+                        {unsupportedTestnets.length > 0 && (
+                            <MemoizedNetworkGroup
+                                networks={unsupportedTestnets}
+                                handleToggle={handleToggle}
+                                showTestnetsLabel
+                            />
+                        )}
+                    </VStack>
+                </VStack>
+            )}
         </VStack>
     );
 };

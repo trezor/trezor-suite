@@ -14,12 +14,17 @@ type Attributes = {
 
 export const unsupportedDeviceEvent: EventDef<Attributes, EventType.UnsupportedDevice> = {
     name: EventType.UnsupportedDevice,
-    descriptionTrigger: 'When user tries to connect device that is not supported.',
-    description: 'This is so far reported only if user click on the Eject button!',
+    descriptionTrigger:
+        'User presses the primary CTA button in an unsupported-device error modal: "Eject" for incompatible firmware, or "Open Suite Web" for devices with no seed',
     changelog: [{ version: '23.11.1', notes: 'Added' }],
     attributes: {
         deviceState: {
             changelog: [{ version: '23.11.1', notes: 'added' }],
+            description: `The state of the unsupported device:
+- \`unsupportedFirmware\`: incompatible firmware
+- \`noSeed\`: device has no recovery seed
+- \`bootloaderMode\`: device is in firmware update mode
+- \`noSeedWithFirmware\`: device has firmware but no seed`,
         },
     },
 };

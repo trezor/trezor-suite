@@ -1,4 +1,4 @@
-import { UtxoSorting, WalletAccountTransaction } from '@suite-common/wallet-types';
+import { type UtxoSorting, type WalletAccountTransaction } from '@suite-common/wallet-types';
 import type { AccountUtxo } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils';
 

@@ -1,0 +1,10 @@
+import type { SVGProps } from 'react';
+const SvgStop = (props: SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" {...props}>
+        <path
+            fill="currentColor"
+            d="M25.091 5H6.91A1.91 1.91 0 0 0 5 6.909V25.09A1.91 1.91 0 0 0 6.909 27H25.09A1.91 1.91 0 0 0 27 25.091V6.91A1.91 1.91 0 0 0 25.091 5M25 25H7V7h18z"
+        />
+    </svg>
+);
+export { SvgStop as ReactComponent };

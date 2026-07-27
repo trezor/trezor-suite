@@ -1,13 +1,14 @@
 import styled from 'styled-components';
 
+import { useExternalLink } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { Box, Button, Column, IMAGES, IMAGES_PATH, Row, Text } from '@trezor/components';
 import { resolveStaticPath } from '@trezor/env-utils';
-import { borders, colorVariants, spacings, spacingsPx } from '@trezor/theme';
 import { DASHBOARD_BANNER_TEX_URL } from '@trezor/urls';
 
-import { AnimatedWrapper, CloseButton } from './CommonPromoBannerComponents';
-import { useExternalLink, useLayoutSize } from '../../../hooks/suite';
+import { useLayoutSize } from 'src/hooks/suite';
+
+import { CloseButton } from './CommonPromoBannerComponents';
 
 const underlineImage = resolveStaticPath(
     `${IMAGES_PATH}/${IMAGES.DASHBOARD_PROMO_BANNER_UNDERLINE}`,
@@ -17,25 +18,21 @@ const mainImage = resolveStaticPath(`${IMAGES_PATH}/${IMAGES.DASHBOARD_PROMO_BAN
 const StyledImage = styled.img`
     flex: 1;
     height: 100%;
-    padding-top: ${spacingsPx.xs};
-    padding-bottom: ${spacingsPx.sm};
+    padding-top: 8px;
+    padding-bottom: 12px;
     object-fit: cover;
-    border-radius: ${borders.radii.md};
+    border-radius: 16px;
     max-width: 40%;
 `;
 
-const NextGenerationTextBlock = styled.span`
-    color: ${colorVariants.standard.textOnPrimary};
-`;
-
-const UnderlinedBlock = styled(NextGenerationTextBlock)`
+const UnderlinedBlock = styled.span`
     white-space: nowrap;
     background-image: url(${underlineImage});
     display: inline-block;
     background-position: 0 100%;
     background-repeat: no-repeat;
     background-size: 100%;
-    padding-bottom: ${spacingsPx.xs};
+    padding-bottom: 8px;
 `;
 
 const Title = () => {
@@ -44,7 +41,7 @@ const Title = () => {
     return (
         <Text
             typographyStyle={isBelowLaptop ? 'headline-sm' : 'headline-md'}
-            color="baseContentPrimaryInverse"
+            color="contentOnDarkPrimary"
             flex="1"
         >
             <Translation
@@ -64,7 +61,7 @@ const Description = () => {
     return (
         <Text
             typographyStyle={isBelowDesktop ? 'body-sm-strong' : 'headline-sm'}
-            color="baseContentBrandInverse"
+            color="contentOnDarkBrand"
         >
             <Translation id="TR_PROMO_BANNER_DASHBOARD_TEX_DESCRIPTION" />
         </Text>
@@ -89,42 +86,38 @@ const CTAButton = ({ onClick }: { onClick: () => void }) => {
 type TrezorExpertBannerProps = {
     onClose: () => void;
     onCTAClick: () => void;
-    isVisible: boolean;
-    ['data-testid']?: string;
 };
 
-export const TrezorExpertBanner = ({ onClose, onCTAClick, isVisible }: TrezorExpertBannerProps) => {
+export const TrezorExpertBanner = ({ onClose, onCTAClick }: TrezorExpertBannerProps) => {
     const { isBelowLaptop, isBelowDesktop } = useLayoutSize();
 
     return (
-        <AnimatedWrapper isVisible={isVisible} flagToHide="showTEXDashboardPromoBanner">
-            <Box
-                height={213}
-                padding={{ horizontal: 24 }}
-                backgroundColor="baseFillSurfaceBrandDark"
-                data-testid="@dashboard/promo-banner/trezor-expert"
+        <Box
+            height={213}
+            padding={{ horizontal: 24 }}
+            backgroundColor="surfaceFillBrandDark"
+            data-testid="@dashboard/promo-banner/trezor-expert"
+        >
+            <Row
+                height="100%"
+                margin={{ right: isBelowDesktop ? undefined : 48 }}
+                justifyContent="space-between"
+                gap={24}
+                alignItems="center"
             >
-                <Row
-                    height="100%"
-                    margin={{ right: isBelowDesktop ? undefined : spacings.xxxxl }}
-                    justifyContent="space-between"
-                    gap={spacings.xl}
-                    alignItems="center"
-                >
-                    <Column gap={isBelowDesktop ? spacings.md : spacings.xl}>
-                        <Column gap={isBelowLaptop ? spacings.xxs : spacings.xs}>
-                            <Title />
-                            <Description />
-                        </Column>
-
-                        <CTAButton onClick={onCTAClick} />
+                <Column gap={isBelowDesktop ? 16 : 24}>
+                    <Column gap={isBelowLaptop ? 4 : 8}>
+                        <Title />
+                        <Description />
                     </Column>
 
-                    <StyledImage src={mainImage} alt="Trezor Expert" />
-                </Row>
+                    <CTAButton onClick={onCTAClick} />
+                </Column>
 
-                <CloseButton onClose={onClose} isInverse />
-            </Box>
-        </AnimatedWrapper>
+                <StyledImage src={mainImage} alt="Trezor Expert" />
+            </Row>
+
+            <CloseButton onClose={onClose} isInverse />
+        </Box>
     );
 };

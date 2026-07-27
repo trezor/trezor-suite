@@ -8,8 +8,8 @@ import Animated, {
 import { useSelector } from 'react-redux';
 
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { FeesRootState, selectAreFeesLoading } from '@suite-common/wallet-core';
-import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
+import { type FeesRootState, selectAreFeesLoading } from '@suite-common/wallet-core';
+import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import { Button, Card, HStack, Text, VStack } from '@suite-native/atoms';
 import {
     CryptoAmountFormatter,
@@ -19,11 +19,11 @@ import {
 import { FormContext } from '@suite-native/forms';
 import { Translation, useTranslate } from '@suite-native/intl';
 import {
-    TokensRootState,
+    type TokensRootState,
     selectAccountTokenDecimals,
     selectAccountTokenSymbol,
 } from '@suite-native/tokens';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 type BaseProps = {
     accountKey: AccountKey;
@@ -43,8 +43,8 @@ const CARD_BOTTOM_PADDING = 40;
 const cardStyle = prepareNativeStyle(utils => ({
     width: '100%',
     paddingHorizontal: utils.spacings.sp8,
-    backgroundColor: utils.colors.backgroundSurfaceElevationNegative,
-    borderColor: utils.colors.borderElevation0,
+    backgroundColor: utils.colors.surfaceFillSunken,
+    borderColor: utils.colors.borderNeutral,
     borderWidth: utils.borders.widths.small,
     ...utils.boxShadows.none,
 }));
@@ -69,18 +69,20 @@ const MainnetSummary = ({ amount, symbol, isLoading }: MainnetSummaryProps) => (
         <VStack spacing="sp4" alignItems="flex-end">
             <CryptoToFiatAmountFormatter
                 variant="body-sm-strong"
-                color="textDefault"
+                color="contentPrimary"
                 value={amount}
                 symbol={symbol}
                 isLoading={isLoading}
+                isDiscreetText={false}
             />
             <CryptoAmountFormatter
                 variant="body-sm"
-                color="textSubdued"
+                color="contentSecondary"
                 value={amount}
                 symbol={symbol}
                 isBalance={false}
                 isLoading={isLoading}
+                isDiscreetText={false}
             />
         </VStack>
     </HStack>
@@ -115,25 +117,27 @@ const TokenSummary = ({
                 <Text variant="body-sm-strong">
                     <Translation id="transactionManagement.fees.amount" />
                 </Text>
-                <Text variant="body-sm" color="textSubdued">
+                <Text variant="body-sm" color="contentSecondary">
                     <Translation id="transactions.detail.feeLabel" />
                 </Text>
             </VStack>
             <VStack spacing="sp4" alignItems="flex-end">
                 <TokenAmountFormatter
                     variant="body-sm-strong"
-                    color="textDefault"
+                    color="contentPrimary"
                     decimals={tokenDecimals ?? undefined}
                     value={tokenAmount}
                     tokenSymbol={tokenSymbol}
+                    isDiscreetText={false}
                 />
                 <CryptoAmountFormatter
                     variant="body-sm"
-                    color="textSubdued"
+                    color="contentSecondary"
                     value={mainnetFee}
                     symbol={symbol}
                     isBalance={false}
                     isLoading={isLoading}
+                    isDiscreetText={false}
                 />
             </VStack>
         </HStack>

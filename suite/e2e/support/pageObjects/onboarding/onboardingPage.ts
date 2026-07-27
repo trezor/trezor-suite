@@ -1,8 +1,11 @@
 import { Locator, Page, expect } from '@playwright/test';
 
-import { BackupType } from '@suite-common/suite-types';
-import { SUITE as SuiteActions } from '@trezor/suite/src/actions/suite/constants';
+import { debugActions } from '@suite/debug/src/debugSlice';
+import { setFlag } from '@suite/flags';
+import { suiteSettingsActions } from '@suite/settings';
+import type { BackupType } from '@suite-common/suite-types';
 import { Model } from '@trezor/trezor-user-env-link';
+import { getIndexOrThrow } from '@trezor/utils';
 
 import { step } from '../../common';
 import { AnalyticsSection } from '../analyticsSection';
@@ -36,10 +39,15 @@ export class OnboardingPage {
         this.page.getByTestId(`@onboarding/select-seed-type-${backupType}`);
     readonly selectSeedTypeOpenButton: Locator;
     readonly selectSeedConfirmButton: Locator;
+    readonly finalButton: Locator;
     readonly continueAtYourOwnRiskButton: Locator;
     readonly deviceCompromisedModal: Locator;
+    readonly thpPairingModal: Locator;
     readonly pairingInputAtIndex = (index: number) =>
-        this.page.getByTestId('@modal/thp-paring').locator('input').nth(index);
+        this.thpPairingModal.locator('input').nth(index);
+    readonly walletBackupTypeCard: Locator;
+    readonly onboardingFeedbackBanner: Locator;
+    readonly onboardingFeedbackBannerCTAButton: Locator;
 
     constructor(
         public page: Page,
@@ -75,8 +83,17 @@ export class OnboardingPage {
         this.selectSeedConfirmButton = this.page.getByTestId(
             '@onboarding/select-seed-type-confirm',
         );
+        this.finalButton = this.page.getByTestId('@onboarding/final-button');
         this.continueAtYourOwnRiskButton = this.page.getByTestId('@continue-to-suite');
         this.deviceCompromisedModal = this.page.getByTestId('@device-compromised');
+        this.onboardingFeedbackBanner = this.page.getByTestId(
+            '@dashboard/onboarding-feedback-banner',
+        );
+        this.onboardingFeedbackBannerCTAButton = this.page.getByTestId(
+            '@dashboard/onboarding-feedback-banner/button',
+        );
+        this.walletBackupTypeCard = this.page.getByTestId('@onboarding/wallet-backup-type');
+        this.thpPairingModal = this.page.getByTestId('@modal/thp-paring');
     }
 
     @step()
@@ -101,32 +118,39 @@ export class OnboardingPage {
         const code = await this.device.getTHPPairingCode();
 
         for (let i = 0; i < code.length; i++) {
-            await this.pairingInputAtIndex(i).fill(code[i]);
+            // index is provably valid by loop bound
+            await this.pairingInputAtIndex(i).fill(getIndexOrThrow(code, i));
         }
+
+        await expect(
+            this.thpPairingModal,
+            'expected THP pairing modal to be hidden after entering the pairing code',
+        ).toBeHidden();
+        await expect(
+            this.devicePrompt.acquireDeviceButton,
+            'expected device prompt acquire button to be hidden',
+        ).toBeHidden();
     }
 
     @step()
-    async completeOnboarding(options?: { keepDebugModeEnabled?: boolean }) {
-        await this.disableNecessaryFirmwareChecks();
-        await this.disableDisconnectPrompt();
-        await this.optionallyDismissFwHashCheckError();
-        await this.analyticsSection.continueButton.click();
-
+    async pairTHP() {
         if (this.device.hasTHP) {
             await this.devicePrompt.allowConnectToTrezor();
             await this.enterTHPPairingCode();
             await this.enableAutoconnect();
         }
+    }
+
+    @step()
+    async completeOnboarding() {
+        await this.disableNecessaryFirmwareChecks();
+        await this.disableDisconnectPrompt();
+        await this.optionallyDismissFwHashCheckError();
+        await this.analyticsSection.continueButton.click();
+
+        await this.pairTHP();
 
         await this.completeOnboardingButton.click();
-        if (this.device.hasSecureElement && this.device.model !== Model.T3W1) {
-            await this.passThroughAuthenticityCheck();
-        }
-        // Enabled debug mode is needed for passing firmware checks but it also enables several hidden features
-        // that differs from production version, so we disable it again after onboarding is done
-        if (!options?.keepDebugModeEnabled) {
-            await this.disableDebugMode();
-        }
         await this.page.discoveryShouldFinish();
     }
 
@@ -170,12 +194,8 @@ export class OnboardingPage {
             actions => actions.forEach(window.store.dispatch),
             [
                 {
-                    type: SuiteActions.TOGGLE_FIRMWARE_HASH_CHECK,
+                    type: suiteSettingsActions.toggleFirmwareHashCheck.type,
                     payload: false,
-                },
-                {
-                    type: SuiteActions.SET_DEBUG_MODE,
-                    payload: { showDebugMenu: true },
                 },
             ],
         );
@@ -185,8 +205,17 @@ export class OnboardingPage {
     async disableDebugMode() {
         await this.page.ensureStoreOnDesktop();
         await this.page.evaluate(action => window.store.dispatch(action), {
-            type: SuiteActions.SET_DEBUG_MODE,
-            payload: { showDebugMenu: false },
+            type: debugActions.setShowDebugMenu.type,
+            payload: false,
+        });
+    }
+
+    @step()
+    async enableDebugMode() {
+        await this.page.ensureStoreOnDesktop();
+        await this.page.evaluate(action => window.store.dispatch(action), {
+            type: debugActions.setShowDebugMenu.type,
+            payload: true,
         });
     }
 
@@ -194,7 +223,7 @@ export class OnboardingPage {
     async disableFirmwareRevisionCheck() {
         await this.page.ensureStoreOnDesktop();
         await this.page.evaluate(action => window.store.dispatch(action), {
-            type: SuiteActions.TOGGLE_FIRMWARE_REVISION_CHECK,
+            type: suiteSettingsActions.toggleFirmwareRevisionCheck.type,
             payload: false,
         });
     }
@@ -203,7 +232,7 @@ export class OnboardingPage {
     async disableAuthenticityCheck() {
         await this.page.ensureStoreOnDesktop();
         await this.page.evaluate(action => window.store.dispatch(action), {
-            type: SuiteActions.TOGGLE_DEVICE_AUTHENTICITY_CHECK,
+            type: suiteSettingsActions.toggleDeviceAuthenticityCheck.type,
             payload: false,
         });
     }
@@ -211,21 +240,23 @@ export class OnboardingPage {
     @step()
     async disableDisconnectPrompt() {
         await this.page.ensureStoreOnDesktop();
-        await this.page.evaluate(action => window.store.dispatch(action), {
-            type: SuiteActions.SET_FLAG,
-            key: 'hasSeenDisconnectTooltip',
-            value: true,
-        });
+        await this.page.evaluate(
+            action => window.store.dispatch(action),
+            setFlag({ key: 'hasSeenDisconnectTooltip', value: true }),
+        );
     }
 
     @step()
     async disableNecessaryFirmwareChecks(options?: { skipSuiteLoadedCheck?: boolean }) {
         await this.disableFirmwareHashCheck(options);
-        if (this.device.hasCanaryFirmware) {
+
+        // Canary firmware is not officialy released, so it cannot possibly pass FW revision check (unrecognized revision).
+        // Tenv T1B1 has correct FW revisions, but mismatched bootloader revisions, so it does not pass FW revision check.
+        if (this.device.hasCanaryFirmware || this.device.model === Model.T1B1) {
             await this.disableFirmwareRevisionCheck();
         }
 
-        if (this.device.model === Model.T3W1) {
+        if (this.device.hasSecureElement) {
             await this.disableAuthenticityCheck();
         }
     }

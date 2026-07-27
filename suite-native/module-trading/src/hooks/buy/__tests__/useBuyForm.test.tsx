@@ -1,31 +1,37 @@
 import { Platform } from 'react-native';
 
-import { EnhancedStore } from '@reduxjs/toolkit';
+import { type EnhancedStore } from '@reduxjs/toolkit';
 import type { BuyTrade, CryptoId } from 'invity-api';
 
 import { selectTradingProviderMetadata, tradingBuyActions } from '@suite-common/trading';
-import { AccountKey } from '@suite-common/wallet-types';
 import { Form, useField } from '@suite-native/forms';
 import {
-    PreloadedState,
-    TestStore,
+    type TestStore,
     act,
-    initStore,
     renderHook,
     renderHookWithStoreProvider,
-} from '@suite-native/test-utils';
+    waitFor,
+} from '@suite-native/test-utils-store';
 import {
+    btc1NormalAccount,
+    btc2legacyAccount,
     btcAsset,
     buyMercuryo,
     buyQuotes,
-    getBtcAccount,
+    cexdirectCreditCardBuyQuote,
+    eth1NormalAccount,
+    eth2legacyAccount,
     getInitializedTradingState,
+    mercuryoApplePayBuyQuote,
+    mercuryoCreditCardBuyQuote,
     usdcAsset,
+    usdtAsset,
 } from '@suite-native/trading-fixtures';
 import { buyActions, selectTradingResidenceCountry } from '@suite-native/trading-state';
-import { BuyFormType, TradeableAsset } from '@suite-native/trading-types';
+import { type BuyFormType, type TradeableAsset } from '@suite-native/trading-types';
 import { PROTO } from '@trezor/connect';
 
+import { createTradingLightStore } from '../../../__tests__/tradingTestUtils';
 import { clearBuyFormQuoteData, useBuyForm } from '../useBuyForm';
 
 jest.mock('@trezor/react-utils', () => {
@@ -37,33 +43,45 @@ jest.mock('@trezor/react-utils', () => {
     };
 });
 
-const btc1AccountKey = 'btc-account-1' as AccountKey; // Todo: create properly via `createAccountKey()`
-const btc2AccountKey = 'btc-account-2' as AccountKey; // Todo: create properly via `createAccountKey()`
-const btc3AccountKey = 'btc-account-3' as AccountKey; // Todo: create properly via `createAccountKey()`
+const btc1AccountKey = btc1NormalAccount.key;
+const btc2AccountKey = btc2legacyAccount.key;
+const eth1AccountKey = eth1NormalAccount.key;
+const eth2AccountKey = eth2legacyAccount.key;
+const accountDeviceState = btc1NormalAccount.deviceState;
 
 describe('useBuyForm', () => {
     const renderUseTradingBuyForm = (store: TestStore) =>
         renderHookWithStoreProvider(() => useBuyForm(), { store });
 
     const getInitializedStore = (amountInSats = false) => {
-        const preloadedState: PreloadedState = {
-            wallet: {
-                trading: getInitializedTradingState(),
-                settings: {
-                    bitcoinAmountUnit: amountInSats
-                        ? PROTO.AmountUnit.SATOSHI
-                        : PROTO.AmountUnit.BITCOIN,
-                },
-                accounts: [
-                    getBtcAccount(btc1AccountKey),
-                    getBtcAccount(btc2AccountKey),
-                    { ...getBtcAccount(btc3AccountKey), descriptor: '' },
-                ],
-            },
-        };
-        preloadedState.wallet!.trading!.buy!.tradingAccountKey = btc1AccountKey;
+        const tradingState = getInitializedTradingState();
+        tradingState.buy.tradingAccountKey = btc1AccountKey;
 
-        return initStore(preloadedState).store;
+        return createTradingLightStore({
+            overrides: {
+                device: {
+                    selectedDevice: {
+                        state: {
+                            staticSessionId: accountDeviceState,
+                        },
+                    },
+                },
+                wallet: {
+                    trading: tradingState,
+                    settings: {
+                        bitcoinAmountUnit: amountInSats
+                            ? PROTO.AmountUnit.SATOSHI
+                            : PROTO.AmountUnit.BITCOIN,
+                    },
+                    accounts: [
+                        btc1NormalAccount,
+                        btc2legacyAccount,
+                        eth1NormalAccount,
+                        eth2legacyAccount,
+                    ],
+                },
+            },
+        });
     };
 
     const initFormAndQuotes = (form: BuyFormType, store: EnhancedStore) => {
@@ -78,7 +96,7 @@ describe('useBuyForm', () => {
     };
 
     beforeEach(() => {
-        jest.resetAllMocks();
+        jest.clearAllMocks();
         global.fetch = jest.fn().mockImplementation(() =>
             Promise.resolve({
                 json: () => Promise.resolve({}),
@@ -100,6 +118,23 @@ describe('useBuyForm', () => {
         });
     });
 
+    it('should preselect receiveAccount when asset is selected', async () => {
+        const store = getInitializedStore();
+        const { result } = renderUseTradingBuyForm(store);
+
+        act(() => {
+            result.current.setValue('asset', btcAsset);
+        });
+
+        await waitFor(() => {
+            expect(result.current.getValues('receiveAccount')).toEqual(
+                expect.objectContaining({
+                    account: expect.objectContaining({ key: btc1AccountKey }),
+                }),
+            );
+        });
+    });
+
     it('should dispatch tradingBuy/assetChanged on asset change', () => {
         const store = getInitializedStore();
         const dispatchSpy = jest.spyOn(store, 'dispatch');
@@ -109,8 +144,62 @@ describe('useBuyForm', () => {
         act(() => {
             result.current.setValue('asset', usdcAsset);
         });
-        expect(dispatchSpy).toHaveBeenCalledTimes(1);
         expect(dispatchSpy).toHaveBeenCalledWith(buyActions.assetChanged());
+    });
+
+    it('should dispatch tradingBuy/assetTokenChanged when asset changes within the same network', () => {
+        const store = getInitializedStore();
+        const dispatchSpy = jest.spyOn(store, 'dispatch');
+        const { result } = renderUseTradingBuyForm(store);
+
+        act(() => {
+            result.current.setValue('asset', usdcAsset);
+        });
+
+        dispatchSpy.mockClear();
+
+        act(() => {
+            result.current.setValue('asset', usdtAsset);
+        });
+
+        expect(dispatchSpy).toHaveBeenCalledWith(buyActions.assetTokenChanged());
+        expect(dispatchSpy).not.toHaveBeenCalledWith(buyActions.assetChanged());
+    });
+
+    it('should keep selected receiveAccount when asset changes within the same network', async () => {
+        const store = getInitializedStore();
+        const { result } = renderUseTradingBuyForm(store);
+
+        act(() => {
+            result.current.setValue('asset', usdcAsset);
+        });
+
+        await waitFor(() => {
+            expect(result.current.getValues('receiveAccount')).toEqual({
+                account: expect.objectContaining({ key: eth1AccountKey }),
+            });
+        });
+
+        act(() => {
+            store.dispatch(tradingBuyActions.setTradingAccountKey(eth2AccountKey));
+            store.dispatch(tradingBuyActions.setReceiveAccountKey(eth2AccountKey));
+        });
+
+        await waitFor(() => {
+            expect(result.current.getValues('receiveAccount')).toEqual({
+                account: expect.objectContaining({ key: eth2AccountKey }),
+            });
+        });
+
+        act(() => {
+            result.current.setValue('asset', usdtAsset);
+        });
+
+        await waitFor(() => {
+            expect(result.current.getValues('receiveAccount')).toEqual({
+                account: expect.objectContaining({ key: eth2AccountKey }),
+            });
+        });
     });
 
     it('should not clear selected account when asset is set to undefined', () => {
@@ -303,7 +392,7 @@ describe('useBuyForm', () => {
                 result.current.setValue('fiatValue', '10');
                 result.current.setValue('asset', btcAsset);
                 // Only provide credit card quote
-                store.dispatch(tradingBuyActions.saveQuotes([buyQuotes[0]]));
+                store.dispatch(tradingBuyActions.saveQuotes([mercuryoApplePayBuyQuote]));
             });
 
             expect(result.current.getValues('quote')).toEqual(
@@ -371,7 +460,7 @@ describe('useBuyForm', () => {
             initFormAndQuotes(result.current, store);
 
             act(() => {
-                result.current.setValue('quote', buyQuotes[0]);
+                result.current.setValue('quote', mercuryoApplePayBuyQuote);
             });
 
             expect(result.current.getValues('cryptoValue')).toEqual('0.001000168');
@@ -390,7 +479,10 @@ describe('useBuyForm', () => {
             });
 
             act(() => {
-                const newQuote = { ...buyQuotes[0], fiatStringAmount: '10.123456789' } as BuyTrade;
+                const newQuote = {
+                    ...mercuryoApplePayBuyQuote,
+                    fiatStringAmount: '10.123456789',
+                } as BuyTrade;
                 result.current.setValue('quote', newQuote);
             });
 
@@ -405,10 +497,10 @@ describe('useBuyForm', () => {
             initFormAndQuotes(result.current, store);
 
             act(() => {
-                result.current.setValue('quote', buyQuotes[0]);
+                result.current.setValue('quote', mercuryoApplePayBuyQuote);
             });
 
-            expect(selectTradingProviderMetadata(store.getState())).toBe(buyMercuryo);
+            expect(selectTradingProviderMetadata(store.getState())).toEqual(buyMercuryo);
         });
 
         describe('when quote is selected and new quotes are fetched', () => {
@@ -429,20 +521,23 @@ describe('useBuyForm', () => {
 
             it('should select quote with same payment method and provider', () => {
                 act(() => {
-                    form.setValue('quote', { ...buyQuotes[3], orderId: 'test1' } as BuyTrade);
+                    form.setValue('quote', {
+                        ...mercuryoCreditCardBuyQuote,
+                        orderId: 'test1',
+                    } as BuyTrade);
                 });
 
                 act(() => {
                     store.dispatch(tradingBuyActions.saveQuotes(buyQuotes));
                 });
 
-                expect(form.getValues('quote')).toEqual(buyQuotes[3]);
+                expect(form.getValues('quote')).toEqual(mercuryoCreditCardBuyQuote);
             });
 
             it('should select 1st quote with same payment method if same provider is not available', () => {
                 act(() => {
                     form.setValue('quote', {
-                        ...buyQuotes[3],
+                        ...mercuryoCreditCardBuyQuote,
                         orderId: 'test1',
                         exchange: 'unavailable',
                     } as BuyTrade);
@@ -452,7 +547,7 @@ describe('useBuyForm', () => {
                     store.dispatch(tradingBuyActions.saveQuotes(buyQuotes));
                 });
 
-                expect(form.getValues('quote')).toEqual(buyQuotes[1]);
+                expect(form.getValues('quote')).toEqual(cexdirectCreditCardBuyQuote);
             });
 
             it('should select 1st quote on new quotes when payment method is not available even with different provider', () => {
@@ -461,7 +556,7 @@ describe('useBuyForm', () => {
                 });
 
                 act(() => {
-                    store.dispatch(tradingBuyActions.saveQuotes([buyQuotes[0]]));
+                    store.dispatch(tradingBuyActions.saveQuotes([mercuryoApplePayBuyQuote]));
                 });
 
                 expect(form.getValues('quote')).toEqual(
@@ -635,7 +730,7 @@ describe('useBuyForm', () => {
                 });
 
                 expect(result.current.getValues('generalAlert')).toEqual(
-                    'No offers available for your request. Change amount or currency.',
+                    'No offers found. Adjust the currency, assets, or amounts.',
                 );
             });
 
@@ -738,7 +833,7 @@ describe('useBuyForm', () => {
             act(() => {
                 result.current.setValue('fiatValue', '10');
                 result.current.setValue('cryptoValue', '10');
-                result.current.setValue('quote', buyQuotes[0]);
+                result.current.setValue('quote', mercuryoApplePayBuyQuote);
             });
 
             act(() => {

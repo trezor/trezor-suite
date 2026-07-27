@@ -1,12 +1,11 @@
-import { ReactNode, useEffect, useRef, useState } from 'react';
+import { type ReactNode, useEffect, useRef, useState } from 'react';
 
-import styled, { DefaultTheme } from 'styled-components';
+import styled, { type DefaultTheme } from 'styled-components';
 
 import { IconCircle, Row, Text } from '@trezor/components';
-import { IconCirclePaddingType } from '@trezor/components/src/components/IconCircle/types';
-import { borders, spacings, spacingsPx } from '@trezor/theme';
+import { CheckIcon, DotOutlineFilledIcon, SpinnerIcon } from '@trezor/icons';
 
-import { ProgressLabelState } from './types';
+import { type ProgressLabelState } from './types';
 
 const DEFAULT_LABEL_HEIGHT = 48;
 
@@ -19,28 +18,26 @@ const mapProgressStateToBackground = ({
 }) => {
     switch ($progressState) {
         case 'active':
-            return theme.backgroundAlertYellowSubtleOnElevation2;
+            return theme.elementFillWarningSoft;
         case 'done':
-            return theme.backgroundPrimarySubtleOnElevation1;
+            return theme.elementFillBrandSoft;
         default:
-            return theme.backgroundSurfaceElevation2;
+            return theme.surfaceFillSunken;
     }
 };
 
 const getProgressStateIcon = (progressState: ProgressLabelState) => {
     const props = {
-        paddingType: 'small' as IconCirclePaddingType,
-        size: 28,
-        hasBorder: false,
-    };
+        size: 32,
+    } as const;
 
     switch (progressState) {
         case 'active':
-            return <IconCircle {...props} name="spinner" variant="warning" />;
+            return <IconCircle {...props} icon={SpinnerIcon} intent="warning" />;
         case 'done':
-            return <IconCircle {...props} name="check" variant="primary" />;
+            return <IconCircle {...props} icon={CheckIcon} intent="brand" />;
         default:
-            return <IconCircle {...props} name="dotOutlineFilled" variant="tertiary" />;
+            return <IconCircle {...props} icon={DotOutlineFilledIcon} intent="neutral" />;
     }
 };
 
@@ -61,13 +58,13 @@ const ProgressLabelItem = styled.div<{
 }>`
     background: ${mapProgressStateToBackground};
     flex: 1 0 220px;
-    padding: ${spacingsPx.xs} ${spacingsPx.sm};
-    border-radius: ${borders.radii.full};
+    padding: 8px 12px;
+    border-radius: calc(infinity * 1px);
     min-height: ${DEFAULT_LABEL_HEIGHT}px;
 
     &:not(:last-of-type) {
         position: relative;
-        margin-right: ${spacingsPx.xs};
+        margin-right: 8px;
         border-top-right-radius: 0;
         border-bottom-right-radius: 0;
 
@@ -78,6 +75,7 @@ const ProgressLabelItem = styled.div<{
             top: 0;
             right: -12px;
             z-index: 2;
+            /* stylelint-disable-next-line trezor/dimension-token-values -- This border constructs the label arrow. */
             border-left: 12px solid ${mapProgressStateToBackground};
             border-top: ${({ $currentHeight = DEFAULT_LABEL_HEIGHT }) => $currentHeight / 2}px solid
                 transparent;
@@ -98,7 +96,8 @@ const ProgressLabelItem = styled.div<{
             position: absolute;
             top: 0;
             left: 0;
-            border-left: 12px solid ${({ theme }) => theme.backgroundSurfaceElevation1};
+            /* stylelint-disable-next-line trezor/dimension-token-values -- This border constructs the label arrow. */
+            border-left: 12px solid ${({ theme }) => theme.surfaceFillRaised};
             border-top: ${({ $currentHeight = DEFAULT_LABEL_HEIGHT }) => $currentHeight / 2}px solid
                 transparent;
             border-bottom: ${({ $currentHeight = DEFAULT_LABEL_HEIGHT }) => $currentHeight / 2}px
@@ -147,7 +146,7 @@ export const ProgressLabel = ({
             $progressState={progressState}
             $currentHeight={currentHeight}
         >
-            <Row data-testid={dataTestId} gap={spacings.sm} height="100%">
+            <Row data-testid={dataTestId} gap={12} height="100%">
                 {getProgressStateIcon(progressState)}
                 <Text
                     as="div"

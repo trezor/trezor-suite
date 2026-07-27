@@ -1,5 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 
+import { type TradingSellState } from '@suite-common/trading';
 import { tradingInitialState } from '@suite-native/trading-consts';
 
 export const TRADING_SELL = 'tradingSell';
@@ -8,7 +9,7 @@ const sellSlice = createSlice({
     name: TRADING_SELL,
     initialState: tradingInitialState.sell,
     reducers: {
-        clearState: state => {
+        clearState: (state: TradingSellState) => {
             state.tradingAccountKey = undefined;
             state.quotesRequest = undefined;
             state.quotes = [];
@@ -16,15 +17,15 @@ const sellSlice = createSlice({
             state.amountLimits = undefined;
             state.lastErrorMessage = undefined;
         },
-        clearQuotesAndQuotesRequest: state => {
+        clearQuotesAndQuotesRequest: (state: TradingSellState) => {
             state.quotesRequest = undefined;
             state.quotes = [];
         },
-        sendAssetChanged: state => {
+        sendAssetChanged: (state: TradingSellState) => {
             state.amountLimits = undefined;
             state.quotesRequest = undefined;
         },
-        fiatCurrencyChanged: state => {
+        fiatCurrencyChanged: (state: TradingSellState) => {
             state.amountLimits = undefined;
             state.quotesRequest = undefined;
         },

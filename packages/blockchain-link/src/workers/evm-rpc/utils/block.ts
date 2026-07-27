@@ -1,4 +1,6 @@
-import { PublicClient } from 'viem';
+import { type PublicClient } from 'viem';
+
+import { isNotNullOrUndefined } from '@trezor/utils';
 
 export const calculateBlockTime = async (client: PublicClient): Promise<number | null> => {
     try {
@@ -26,7 +28,7 @@ export const averageRewards = (rewards: bigint[][], percentileIndex: number): bi
 
     for (const blockRewards of rewards) {
         const reward = blockRewards[percentileIndex];
-        if (reward !== null && reward !== undefined) {
+        if (isNotNullOrUndefined(reward)) {
             sum += reward;
             count++;
         }

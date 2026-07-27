@@ -222,6 +222,28 @@ export default [
     },
     {
         blockchain: {
+            name: 'Robinhood Chain',
+            worker: 'js/blockbook-worker.js',
+            server: ['https://rhc.trezor.io'],
+            debug: true,
+        },
+        data: {
+            address: '',
+            accountInfoOptions: {
+                page: 1,
+                pageSize: 25,
+                contractFilter: undefined,
+            },
+            estimateFeeOptions: {
+                blocks: [1, 2, 10],
+            },
+            txid: '',
+            tx: '',
+            subscribe: '',
+        },
+    },
+    {
+        blockchain: {
             name: 'Base',
             worker: 'js/blockbook-worker.js',
             server: ['https://base.trezor.io'],
@@ -646,12 +668,7 @@ export default [
             name: 'Solana Mainnet',
             // we do not use path to worker build here because its not used, we use it just to match this config to actual implementation of the worker
             worker: 'solana',
-            server: [
-                'https://sol1.trezor.io',
-                'https://sol2.trezor.io',
-                'https://sol3.trezor.io',
-                'https://sol4.trezor.io',
-            ],
+            server: ['https://sol.trezor.io'],
             debug: true,
         },
         data: {

@@ -11,12 +11,15 @@ export const deviceConnectionConnectButtonEvent: EventDef<
     EventType.DeviceConnectionConnectButton
 > = {
     name: EventType.DeviceConnectionConnectButton,
-    descriptionTrigger: '?',
-    changelog: [{ version: '?', notes: 'added' }],
+    descriptionTrigger:
+        'User clicks the connect device button from the dashboard or a dropdown menu',
+    changelog: [{ version: '25.12.1', notes: 'added' }],
 
     attributes: {
         option: {
-            changelog: [{ version: '?', notes: 'added' }],
+            description:
+                'The location from where the connect button was clicked: `dashboard` for main dashboard, `dropdown` for dropdown menu',
+            changelog: [{ version: '25.12.1', notes: 'added' }],
         },
     },
 };

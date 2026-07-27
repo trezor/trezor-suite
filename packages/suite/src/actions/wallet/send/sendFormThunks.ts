@@ -1,10 +1,13 @@
 import { G } from '@mobily/ts-belt';
 import { isRejected } from '@reduxjs/toolkit';
 
+import { selectIsSelectedAccountLoaded, selectSelectedAccountKey } from '@suite/account';
 import { asTypedDesktopAnalytics, events } from '@suite/analytics';
+import { processLegacyMetadataIntoSuiteSyncThunk } from '@suite/labeling';
 import { metadataLabelingActions, selectMetadata } from '@suite/metadata';
+import { closeModal, openDeferredModal, preserveModal } from '@suite/modal';
 import { selectSelectedDevice } from '@suite-common/device';
-import { MetadataAddPayload } from '@suite-common/metadata-types';
+import { type MetadataAddPayload } from '@suite-common/metadata-types';
 import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
 import { createThunk } from '@suite-common/redux-utils';
 import { selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
@@ -20,29 +23,22 @@ import {
     signTransactionThunk,
 } from '@suite-common/wallet-core';
 import {
-    Account,
-    FormState,
-    GeneralPrecomposedTransactionFinal,
-    PrecomposedTransactionFinalBumpFeeRbf,
+    type Account,
+    type FormState,
+    type GeneralPrecomposedTransactionFinal,
+    type PrecomposedTransactionFinalBumpFeeRbf,
 } from '@suite-common/wallet-types';
 import { isCardanoTx, isRbfBumpFeeTransaction } from '@suite-common/wallet-utils';
-import { PROTO, StaticSessionId, Unsuccessful } from '@trezor/connect';
+import { type PROTO, type StaticSessionId } from '@trezor/connect';
 import { getSynchronize } from '@trezor/utils';
-
-import * as modalActions from 'src/actions/suite/modalActions';
-import {
-    selectIsSelectedAccountLoaded,
-    selectSelectedAccountKey,
-} from 'src/reducers/wallet/selectedAccountReducer';
 
 import { RBF_ERROR_ALREADY_MINED } from './replaceByFeeErrorThunk';
 import { MODULE_PREFIX } from './sendThunksConsts';
 import {
-    StateBeforePush,
+    type StateBeforePush,
     asStateBeforePush,
     moveLabelsForRbfThunk,
 } from '../../labels/moveLabelsForRbfThunk';
-import { processLegacyMetadataIntoSuiteSyncThunk } from '../processLegacyMetadataIntoSuiteSyncThunk';
 
 export const saveSendFormDraftThunk = createThunk(
     `${MODULE_PREFIX}/saveSendFormDraftThunk`,
@@ -227,8 +223,8 @@ export const signAndPushSendFormTransactionThunk = createThunk(
 
         // TransactionReviewModal has 2 steps: signing and pushing
         // TrezorConnect emits UI.CLOSE_UI.WINDOW after the signing process
-        // this action is blocked by modalActions.preserve()
-        dispatch(modalActions.preserve());
+        // this action is blocked by preserveModal()
+        dispatch(preserveModal());
 
         asTypedDesktopAnalytics(extra.services.analytics).report({
             type: events.sendInitialisedEvent.name,
@@ -261,20 +257,19 @@ export const signAndPushSendFormTransactionThunk = createThunk(
 
             // Do not close the modal if the transaction signing timed out
             if (signResponse.payload?.error === 'sign-transaction-timeout') {
-                return { type: signResponse.payload.error } as unknown as Unsuccessful;
+                // TODO: this is some kinda bizarre hack
+                return { type: signResponse.error.message } as any;
             }
 
             // Close the modal manually since UI.CLOSE_UI.WINDOW was
-            // blocked by `modalActions.preserve` above.
-            dispatch(modalActions.onCancel());
+            // blocked by preserveModal() above.
+            dispatch(closeModal());
 
             return;
         }
 
         // Open a deferred modal and get the decision
-        const isPushConfirmed = await dispatch(
-            modalActions.openDeferredModal({ type: 'review-transaction' }),
-        );
+        const isPushConfirmed = await dispatch(openDeferredModal({ type: 'review-transaction' }));
 
         if (!isPushConfirmed) {
             return;
@@ -295,6 +290,8 @@ export const signAndPushSendFormTransactionThunk = createThunk(
         );
 
         if (isRejected(pushResponse)) {
+            dispatch(sendFormActions.clearSignedTransactionData());
+
             return pushResponse.payload?.metadata;
         }
 

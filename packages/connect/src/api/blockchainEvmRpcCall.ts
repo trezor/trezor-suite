@@ -1,10 +1,10 @@
-import { ERRORS } from '@trezor/connect-common/src/constants';
+import type { CoinInfo, PermissionRequest } from '@trezor/connect-common';
 
-import { initBlockchain, isBackendSupported } from '../backend/BlockchainLink';
-import { AbstractMethod, MethodPermission, Payload } from '../core/AbstractMethod';
-import { CoinInfo } from '../types';
+import { assertBackendSupported, initBlockchain } from '../backend/BlockchainLink';
+import type { MethodContext, MethodMessage, Payload } from '../core/AbstractMethod';
+import { AbstractMethod } from '../core/AbstractMethod';
 import { validateParams } from './common/paramsValidator';
-import { getCoinInfo } from '../data/coinInfo';
+import { getCoinInfoOrThrow } from '../data/coinInfo';
 
 type Params = {
     coinInfo: CoinInfo;
@@ -13,18 +13,8 @@ type Params = {
 };
 
 export default class BlockchainEvmRpcCall extends AbstractMethod<'blockchainEvmRpcCall', Params> {
-    constructor(message: { id?: number; payload: Payload<'blockchainEvmRpcCall'> }) {
-        super(message);
-        this.useDevice = false;
-        this.useUi = false;
-    }
-
-    get requiredPermissions(): MethodPermission[] {
-        return [];
-    }
-
-    init() {
-        const { payload } = this;
+    constructor(message: MethodMessage<'blockchainEvmRpcCall'>) {
+        const { payload } = message;
 
         // validate incoming parameters
         validateParams(payload, [
@@ -35,15 +25,11 @@ export default class BlockchainEvmRpcCall extends AbstractMethod<'blockchainEvmR
             { name: 'data', type: 'string', required: true },
         ]);
 
-        const coinInfo = getCoinInfo(payload.coin);
-
-        if (!coinInfo) {
-            throw ERRORS.TypedError('Method_UnknownCoin');
-        }
+        const coinInfo = getCoinInfoOrThrow(payload.coin);
         // validate backend
-        isBackendSupported(coinInfo);
+        assertBackendSupported(coinInfo);
 
-        this.params = {
+        const params = {
             coinInfo,
             identity: payload.identity,
             request: {
@@ -52,16 +38,24 @@ export default class BlockchainEvmRpcCall extends AbstractMethod<'blockchainEvmR
                 data: payload.data,
             },
         };
+
+        super(message, params);
+        this.useDevice = false;
+        this.useUi = false;
+    }
+
+    get requiredPermissions(): PermissionRequest[] {
+        return [];
     }
 
     get info() {
         return 'Blockchain Evm Rpc Call';
     }
 
-    async run() {
+    async run({ sendCoreMessage }: MethodContext) {
         const backend = await initBlockchain(
             this.params.coinInfo,
-            this.postMessage,
+            sendCoreMessage,
             this.params.identity,
         );
         const response = await backend.rpcCall(this.params.request);

@@ -1,34 +1,38 @@
 import { css } from 'styled-components';
 
-import { BorderRadii, SpacingValues, SpacingValuesNew, borders } from '@trezor/theme';
+import {
+    type BorderRadius,
+    type SignedSpacingValue,
+    type SpacingValue,
+    borderRadiusValues,
+    getBorderRadiusCssValue,
+} from '@trezor/theme';
 
-import { TransientProps, makePropsTransient } from './transientProps';
+import { type TransientProps, makePropsTransient } from './transientProps';
 import type { FlexType } from '../components/Flex/FlexProp';
 
 export type Margin =
     | {
-          top?: SpacingValues | SpacingValuesNew | 'auto';
-          bottom?: SpacingValues | SpacingValuesNew | 'auto';
-          left?: SpacingValues | SpacingValuesNew | 'auto';
-          right?: SpacingValues | SpacingValuesNew | 'auto';
-          horizontal?: SpacingValues | SpacingValuesNew | 'auto';
-          vertical?: SpacingValues | SpacingValuesNew | 'auto';
+          top?: SignedSpacingValue | 'auto';
+          bottom?: SignedSpacingValue | 'auto';
+          left?: SignedSpacingValue | 'auto';
+          right?: SignedSpacingValue | 'auto';
+          horizontal?: SignedSpacingValue | 'auto';
+          vertical?: SignedSpacingValue | 'auto';
       }
-    | SpacingValues
-    | SpacingValuesNew
+    | SignedSpacingValue
     | 'auto';
 
 export type Padding =
     | {
-          top?: SpacingValues | SpacingValuesNew;
-          bottom?: SpacingValues | SpacingValuesNew;
-          left?: SpacingValues | SpacingValuesNew;
-          right?: SpacingValues | SpacingValuesNew;
-          horizontal?: SpacingValues | SpacingValuesNew;
-          vertical?: SpacingValues | SpacingValuesNew;
+          top?: SpacingValue;
+          bottom?: SpacingValue;
+          left?: SpacingValue;
+          right?: SpacingValue;
+          horizontal?: SpacingValue;
+          vertical?: SpacingValue;
       }
-    | SpacingValues
-    | SpacingValuesNew;
+    | SpacingValue;
 
 const overflows = [
     'auto',
@@ -60,7 +64,7 @@ type Position = {
     inset?: string | number;
 };
 
-const cursors = ['pointer', 'help', 'default', 'not-allowed', 'inherit', 'text'] as const;
+const cursors = ['pointer', 'help', 'default', 'not-allowed', 'inherit', 'text', 'auto'] as const;
 type Cursor = (typeof cursors)[number];
 
 const userSelects = ['none', 'text', 'all', 'auto', 'inherit'] as const;
@@ -68,6 +72,9 @@ type UserSelect = (typeof userSelects)[number];
 
 const objectFits = ['none', 'fill', 'contain', 'cover', 'scale-down'] as const;
 export type ObjectFit = (typeof objectFits)[number];
+
+const objectPositions = ['left', 'center', 'right', 'top', 'bottom'] as const;
+export type ObjectPosition = (typeof objectPositions)[number];
 
 const displays = ['block', 'inline', 'inline-block', 'flex', 'inline-flex'] as const;
 export type Display = (typeof displays)[number];
@@ -82,7 +89,7 @@ export type FrameProps = {
     minHeight?: string | number;
     maxHeight?: string | number;
     overflow?: Overflow;
-    borderRadius?: BorderRadii;
+    borderRadius?: BorderRadius;
     pointerEvents?: PointerEvent;
     flex?: FlexType;
     position?: Position;
@@ -92,6 +99,7 @@ export type FrameProps = {
     aspectRatio?: `${number}` | `${number} / ${number}`;
     userSelect?: UserSelect;
     objectFit?: ObjectFit;
+    objectPosition?: ObjectPosition;
     display?: Display;
 };
 export type FramePropsKeys = keyof FrameProps;
@@ -139,6 +147,7 @@ export const withFrameProps = ({
     $opacity,
     $userSelect,
     $objectFit,
+    $objectPosition,
     $display,
 }: TransientFrameProps) => css`
     ${$margin &&
@@ -191,9 +200,9 @@ export const withFrameProps = ({
     css`
         overflow: ${$overflow};
     `};
-    ${$borderRadius &&
+    ${typeof $borderRadius !== 'undefined' &&
     css`
-        border-radius: ${getValueWithUnit($borderRadius)};
+        border-radius: ${getBorderRadiusCssValue($borderRadius)};
     `};
     ${$pointerEvents &&
     css`
@@ -237,6 +246,10 @@ export const withFrameProps = ({
     css`
         object-fit: ${$objectFit};
     `};
+    ${$objectPosition &&
+    css`
+        object-position: ${$objectPosition};
+    `};
     ${$display &&
     css`
         display: ${$display};
@@ -273,7 +286,7 @@ const getStorybookType = (key: FramePropsKeys) => {
             };
         case 'borderRadius':
             return {
-                options: borders.radii,
+                options: borderRadiusValues,
                 control: {
                     type: 'select',
                 },
@@ -309,6 +322,13 @@ const getStorybookType = (key: FramePropsKeys) => {
         case 'objectFit':
             return {
                 options: objectFits,
+                control: {
+                    type: 'select',
+                },
+            };
+        case 'objectPosition':
+            return {
+                options: objectPositions,
                 control: {
                     type: 'select',
                 },
@@ -395,6 +415,7 @@ export const getFramePropsStory = (allowedFrameProps: Array<FramePropsKeys>) => 
             ...(allowedFrameProps.includes('aspectRatio') ? { aspectRatio: undefined } : {}),
             ...(allowedFrameProps.includes('userSelect') ? { userSelect: undefined } : {}),
             ...(allowedFrameProps.includes('objectFit') ? { objectFit: undefined } : {}),
+            ...(allowedFrameProps.includes('objectPosition') ? { objectPosition: undefined } : {}),
             ...(allowedFrameProps.includes('display') ? { display: undefined } : {}),
         },
         argTypes,

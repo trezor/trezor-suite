@@ -1,6 +1,6 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Column, Row, Text } from '@trezor/components';
 
 import { TransactionAmount } from './TransactionAmount';
@@ -12,16 +12,16 @@ import {
 
 export type TransactionNotificationProps = {
     message: ReactNode;
-    amount: ReactNode;
+    amount?: ReactNode;
     notificationType: TransactionNotificationType;
     symbol: NetworkSymbol;
-    accountSymbol: NetworkSymbol;
     token?: TransactionNotificationToken;
     icon?: ReactNode;
     tokenSymbol?: string;
     isInfiniteApproval?: boolean;
     unlimitedApprovalLabel?: ReactNode;
     renderAmount?: (amount: ReactNode) => ReactNode;
+    'data-testid'?: string;
 };
 
 export const TransactionNotification = ({
@@ -29,34 +29,37 @@ export const TransactionNotification = ({
     amount,
     notificationType,
     symbol,
-    accountSymbol,
     token,
     icon,
     tokenSymbol,
     isInfiniteApproval,
     unlimitedApprovalLabel,
     renderAmount,
+    'data-testid': dataTestId,
 }: TransactionNotificationProps) => (
     <Column gap={4}>
-        <Text typographyStyle="body-md-strong">{message}</Text>
-        <Row gap={8} alignItems="center">
-            <TransactionIcon
-                icon={icon}
-                notificationType={notificationType}
-                symbol={symbol}
-                accountSymbol={accountSymbol}
-                token={token}
-            />
-            <TransactionAmount
-                amount={amount}
-                notificationType={notificationType}
-                symbol={symbol}
-                token={token}
-                tokenSymbol={tokenSymbol}
-                isInfiniteApproval={isInfiniteApproval}
-                unlimitedApprovalLabel={unlimitedApprovalLabel}
-                renderAmount={renderAmount}
-            />
-        </Row>
+        <Text typographyStyle="body-md-strong" data-testid={dataTestId && `${dataTestId}/message`}>
+            {message}
+        </Text>
+        {amount && (
+            <Row gap={8} alignItems="center">
+                <TransactionIcon
+                    icon={icon}
+                    notificationType={notificationType}
+                    symbol={symbol}
+                    token={token}
+                />
+                <TransactionAmount
+                    amount={amount}
+                    notificationType={notificationType}
+                    symbol={symbol}
+                    token={token}
+                    tokenSymbol={tokenSymbol}
+                    isInfiniteApproval={isInfiniteApproval}
+                    unlimitedApprovalLabel={unlimitedApprovalLabel}
+                    renderAmount={renderAmount}
+                />
+            </Row>
+        )}
     </Column>
 );

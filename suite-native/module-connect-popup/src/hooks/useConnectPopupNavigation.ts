@@ -8,9 +8,9 @@ import { connectPopupDeeplinkThunk, selectConnectPopupCall } from '@suite-common
 import { selectPendingProposal, walletConnectPairThunk } from '@suite-common/walletconnect';
 import { isDevelopOrDebugEnv } from '@suite-native/config';
 import {
-    RootStackParamList,
+    type RootStackParamList,
     RootStackRoutes,
-    StackToStackCompositeNavigationProps,
+    type StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 
 type NavigationProp = StackToStackCompositeNavigationProps<
@@ -25,14 +25,14 @@ const isConnectPopupUrl = (url: string): boolean => {
         if (/^https:\/\/dev\.suite\.sldev\.cz\/connect\/(.*)\/deeplink(.*)$/g.test(url))
             return true;
     }
-    if (/^https:\/\/connect\.trezor\.io\/9\/deeplink(.*)$/g.test(url)) return true;
+    if (/^https:\/\/connect\.trezor\.io\/\d+\/deeplink(.*)$/.test(url)) return true;
 
     return false;
 };
 
 const isWalletConnectUrl = (url: string): boolean =>
     url.startsWith('trezorsuite://walletconnect') ||
-    url.startsWith('https://connect.trezor.io/9/deeplink/wc');
+    /^https:\/\/connect\.trezor\.io\/\d+\/deeplink\/wc/.test(url);
 
 // TODO: will be necessary to handle if device is not connected/unlocked so we probably want to wait until user unlock device
 // we already have some modals like biometrics or coin enabled which are waiting for device to be connected
@@ -64,7 +64,12 @@ export const useConnectPopupNavigation = () => {
         if (connectPopupCall?.state === 'deeplink-callback') {
             // Note: we intentionally don't use canOpenURL here.
             // It would require us to add all possible schemes of 3rd party apps to the Info.plist
-            Linking.openURL(connectPopupCall.callbackUrl);
+            Linking.openURL(connectPopupCall.callbackUrl).catch(error => {
+                // Sanitize error message to prevent sensitive URL query parameters from being sent to Sentry.
+                throw error instanceof Error
+                    ? new Error(error.message.replace(/response=[^&:' ]*/, 'response=[redacted]'))
+                    : error;
+            });
         } else if (connectPopupCall) {
             navigation.navigate(RootStackRoutes.ConnectPopup);
         }

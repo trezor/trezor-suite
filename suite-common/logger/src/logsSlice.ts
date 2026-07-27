@@ -1,8 +1,8 @@
-import { AnyAction, createSlice } from '@reduxjs/toolkit';
+import { type AnyAction, createSlice } from '@reduxjs/toolkit';
 
-import { LogEntry } from './types';
+import { type LogEntry } from './types';
 
-type LogsSliceState = {
+export type LogsSliceState = {
     logEntries: LogEntry[];
 };
 

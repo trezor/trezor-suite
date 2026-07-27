@@ -1,10 +1,13 @@
-import { AccountLabels } from '@suite-common/metadata-types';
-import { WalletAccountTransaction } from '@suite-common/wallet-types';
-import { isTokenTransferMatchesSearch } from '@suite-common/wallet-utils';
-import { BigNumber, typedObjectKeys } from '@trezor/utils';
+import { type WalletAccountTransaction } from '@suite-common/wallet-types';
+import {
+    isFunctionSelectorMatchesSearch,
+    isTokenTransferMatchesSearch,
+} from '@suite-common/wallet-utils';
+import { BigNumber, typedObjectKeys, unique } from '@trezor/utils';
 
 import { getTargetAmounts } from './getTargetAmounts';
 import { numberSearchFilter } from './numberSearchFilter';
+import { type SearchAccountLabels } from './searchLabels';
 import { searchOperators } from './searchOperations';
 
 const searchDateRegex = new RegExp(/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/);
@@ -21,7 +24,7 @@ const groupTransactionIdsByAddress = (transactions: WalletAccountTransaction[]) 
                 addresses[address] = [];
             }
 
-            if (addresses[address].indexOf(txid) === -1) {
+            if (!addresses[address].includes(txid)) {
                 addresses[address].push(txid);
             }
         });
@@ -39,12 +42,12 @@ const groupTransactionIdsByAddress = (transactions: WalletAccountTransaction[]) 
     return addresses;
 };
 
-const groupTransactionsByLabel = (accountMetadata: AccountLabels) => {
+const groupTransactionsByLabel = (accountLabels: SearchAccountLabels) => {
     const labels: Record<string, string[]> = {};
-    const { outputLabels } = accountMetadata;
+    const { outputLabels } = accountLabels;
 
-    typedObjectKeys(outputLabels).forEach(txid => {
-        Object.values(outputLabels[txid]).forEach(label => {
+    outputLabels.forEach((accountOutputLabels, txid) => {
+        accountOutputLabels.forEach(label => {
             if (!labels[label]) {
                 labels[label] = [];
             }
@@ -56,13 +59,11 @@ const groupTransactionsByLabel = (accountMetadata: AccountLabels) => {
     return labels;
 };
 
-const groupAddressesByLabel = (accountMetadata: AccountLabels) => {
+const groupAddressesByLabel = (accountLabels: SearchAccountLabels) => {
     const labels: Record<string, string[]> = {};
-    const { addressLabels } = accountMetadata;
+    const { addressLabels } = accountLabels;
 
-    typedObjectKeys(addressLabels).forEach(address => {
-        const label = addressLabels[address];
-
+    addressLabels.forEach((label, address) => {
         if (!labels[label]) {
             labels[label] = [];
         }
@@ -75,7 +76,7 @@ const groupAddressesByLabel = (accountMetadata: AccountLabels) => {
 
 export const simpleSearchTransactions = (
     transactions: WalletAccountTransaction[],
-    accountMetadata: AccountLabels, // Todo: this is wrong, this shall reflect SuiteSync labels. See https://github.com/trezor/trezor-suite/issues/24803
+    accountLabels: SearchAccountLabels,
     search: string,
 ) => {
     // Trim
@@ -151,10 +152,10 @@ export const simpleSearchTransactions = (
     }
 
     // Find by output label
-    const txsForOutputLabels = groupTransactionsByLabel(accountMetadata);
+    const txsForOutputLabels = groupTransactionsByLabel(accountLabels);
     const foundTxsForOutputLabel = typedObjectKeys(txsForOutputLabels).flatMap(label => {
         if (label.toLowerCase().includes(search.toLowerCase())) {
-            return txsForOutputLabels[label];
+            return txsForOutputLabels[label] ?? [];
         }
 
         return [];
@@ -162,7 +163,7 @@ export const simpleSearchTransactions = (
     txsToSearch.push(...foundTxsForOutputLabel);
 
     // Find by address label
-    const addressesForLabel = groupAddressesByLabel(accountMetadata);
+    const addressesForLabel = groupAddressesByLabel(accountLabels);
     const foundAddressesForLabel = typedObjectKeys(addressesForLabel).flatMap(label => {
         if (label.toLowerCase().includes(search.toLowerCase())) {
             return addressesForLabel[label];
@@ -178,7 +179,7 @@ export const simpleSearchTransactions = (
             address.toLowerCase().includes(search.toLowerCase()) ||
             foundAddressesForLabel.includes(address)
         ) {
-            return txsForAddresses[address];
+            return txsForAddresses[address] ?? [];
         }
 
         return [];
@@ -202,8 +203,22 @@ export const simpleSearchTransactions = (
     });
     txsToSearch.push(...foundTxsForToken);
 
+    // Find by evm parsed function selector
+    const foundTxsForFunctionSelector = transactions.flatMap(transaction => {
+        const hasMatchingFunctionSelector =
+            transaction.ethereumSpecific &&
+            isFunctionSelectorMatchesSearch(transaction.ethereumSpecific, search.toLowerCase());
+
+        if (hasMatchingFunctionSelector) {
+            return transaction.txid;
+        }
+
+        return [];
+    });
+    txsToSearch.push(...foundTxsForFunctionSelector);
+
     // Remove duplicate txIDs
     return transactions.filter(
-        t => [...new Set(txsToSearch)].includes(t.txid) || t.txid.includes(search),
+        t => unique(txsToSearch).includes(t.txid) || t.txid.includes(search),
     );
 };

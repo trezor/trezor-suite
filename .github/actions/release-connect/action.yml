@@ -33,12 +33,16 @@ inputs:
     description: "Full URL to connect popup (for webextension examples)"
     type: string
     required: false
+  suiteWebUrl:
+    description: "Full URL where Suite will be deployed (for webextension examples)"
+    type: string
+    required: false
 
 runs:
   using: "composite"
   steps:
     - name: Checkout
-      uses: actions/checkout@v4
+      uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
       with:
         submodules: true
 
@@ -48,22 +52,27 @@ runs:
       run: git lfs pull --include "packages/connect-data/files/**/*"
 
     - name: Configure aws credentials
-      uses: aws-actions/configure-aws-credentials@v4
+      uses: aws-actions/configure-aws-credentials@8df5847569e6427dd6c4fb1cf565c83acfa8afa7 # v6
       with:
         role-to-assume: ${{ inputs.awsRoleToAssume }}
         aws-region: ${{ inputs.awsRegion }}
 
     - name: Setup node
-      uses: actions/setup-node@v4
+      uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6
       with:
         node-version-file: ".nvmrc"
         cache: yarn
 
+    - name: Install SafeDep PMG
+      uses: safedep/pmg@26d5c0ad71fd0e5f48c3183c9c74d4b3eb7f57c8 # v0.19.1
+      continue-on-error: true
+      with:
+        version: v0.19.1
+
     - name: Install dependencies
       shell: bash
       run: |
-        echo -e "\nenableScripts: false" >> .yarnrc.yml
-        yarn install --immutable # focus install is not used here to make sure that all global patches are applied for the release.
+        yarn workspaces focus @trezor/connect-explorer @trezor/webextension-mv3-sw-ts
 
     - name: Build connect-explorer-theme
       shell: bash
@@ -97,7 +106,7 @@ runs:
       env:
         FULL_URL: ${{ inputs.connectPopupUrl || format('https://{0}/{1}', inputs.serverHostname, inputs.serverPath) }}
       run: |
-        yarn workspace @trezor/webextension-mv3-sw-ts build
+        NODE_ENV=production yarn workspace @trezor/webextension-mv3-sw-ts build
         echo "FULL_URL is set to ${FULL_URL}"
         node ./packages/connect-examples/update-webextensions-sw.js --trezor-connect-src "${FULL_URL}"
         ./packages/connect-examples/webextension/scripts/check-webextension-bundle-size.sh
@@ -107,12 +116,13 @@ runs:
       shell: bash
       env:
         NODE_ENV: "production"
+        __SUITE_WEB_URL__: ${{ inputs.suiteWebUrl }}
       run: |
         yarn workspace @trezor/connect-explorer build:webextension
 
     - name: Upload connect-example webextension artifacts
       if: inputs.uploadArtifacts == 'true'
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7
       with:
         name: connect-example-webextension-${{ inputs.serverHostname }}
         path: |
@@ -120,7 +130,7 @@ runs:
 
     - name: Upload connect-explorer webextension artifacts
       if: inputs.uploadArtifacts == 'true'
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7
       with:
         name: connect-explorer-webextension-${{ inputs.serverHostname }}
         path: |

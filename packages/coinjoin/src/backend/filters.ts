@@ -7,7 +7,7 @@
 import Golomb from 'golomb';
 import { U64 } from 'n64';
 
-import { Network, address as addressBjs } from '@trezor/utxo-lib';
+import { type Network, address as addressBjs } from '@trezor/utxo-lib';
 
 const P_DEFAULT = 20;
 const M_DEFAULT = 1 << 20;
@@ -30,14 +30,6 @@ const createFilter = (data: Buffer, { P = P_DEFAULT, M = M_DEFAULT }) => {
 
 export const getAddressScript = (address: string, network: Network) =>
     addressBjs.toOutputScript(address, network);
-
-export const getFilter = (filterHex: string, { P, M, key }: FilterParams = {}) => {
-    if (!filterHex) return () => false;
-    const filter = createFilter(Buffer.from(filterHex, 'hex'), { P, M });
-    const keyBuffer = key ? Buffer.from(key, 'hex').subarray(0, KEY_SIZE) : ZERO_KEY;
-
-    return (script: Buffer) => filter.match(keyBuffer, script);
-};
 
 export const getMultiFilter = (filterHex: string, { P, M, key }: FilterParams = {}) => {
     if (!filterHex) return () => false;

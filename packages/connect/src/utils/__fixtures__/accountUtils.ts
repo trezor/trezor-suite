@@ -1,18 +1,5 @@
-import coinsJSONEth from '@trezor/connect-data/files/coins-eth.json';
-import coinsJSON from '@trezor/connect-data/files/coins.json';
-
-import {
-    getBitcoinNetwork,
-    getEthereumNetwork,
-    getMiscNetwork,
-    parseCoinsJson,
-} from '../../data/coinInfo';
-import { getAccountLabel, isUtxoBased } from '../accountUtils';
-
-parseCoinsJson({
-    ...coinsJSON,
-    ...coinsJSONEth,
-});
+import { getBitcoinNetwork, getEthereumNetwork, getMiscNetwork } from '../../data/coinInfo';
+import type { getAccountLabel, isUtxoBased } from '../accountUtils';
 
 export const getAccountLabelFixtures: TestFixtures<typeof getAccountLabel> = [
     {

@@ -12,12 +12,14 @@ export const settingsGeneralChangeBitcoinUnitEvent: EventDef<
 > = {
     name: EventType.SettingsGeneralChangeBitcoinUnit,
     descriptionTrigger:
-        'Change of bitcoin units in application settings, bitcoin settings in crypto section or by click on bitcoin amount in the account or on the dashboard',
+        'User changes the Bitcoin unit display format via settings, wallet settings, or by clicking the amount display on dashboard/account screens',
     changelog: [{ version: '1.21.0', notes: 'added' }],
 
     attributes: {
         unit: {
             changelog: [{ version: '1.21.0', notes: 'added' }],
+            description:
+                'The selected Bitcoin unit abbreviation (e.g., `BTC`, `mBTC`, `μBTC`, `sat`)',
         },
     },
 };

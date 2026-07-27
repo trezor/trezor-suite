@@ -1,14 +1,15 @@
-import { events } from '@suite/analytics';
+import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { useDevice } from '@suite/device';
+import { LearnMoreButton } from '@suite/external-links';
 import { Translation } from '@suite/intl';
+import { Anchor, SettingsAnchor } from '@suite/router';
+import { useServices } from '@suite-common/dependency-injection';
 import { Switch, Tooltip } from '@trezor/components';
+import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 import { HELP_CENTER_PASSPHRASE_URL } from '@trezor/urls';
 
 import { applySettings } from 'src/actions/settings/deviceSettingsActions';
-import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
-import { ActionColumn, TextColumn } from 'src/components/suite';
-import { SettingsAnchor } from 'src/constants/suite/anchors';
-import { useDevice, useDispatch } from 'src/hooks/suite';
-import { useAnalytics } from 'src/support/useAnalytics';
+import { useDispatch } from 'src/hooks/suite';
 
 interface PassphraseProps {
     isDeviceLocked: boolean;
@@ -17,7 +18,7 @@ interface PassphraseProps {
 export const Passphrase = ({ isDeviceLocked }: PassphraseProps) => {
     const dispatch = useDispatch();
     const { device } = useDevice();
-    const analytics = useAnalytics();
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
     const passphraseProtection = !!device?.features?.passphrase_protection;
 
     const handleChange = () => {
@@ -31,25 +32,35 @@ export const Passphrase = ({ isDeviceLocked }: PassphraseProps) => {
     };
 
     return (
-        <SettingsSectionItem anchorId={SettingsAnchor.Passphrase}>
-            <TextColumn
-                title={<Translation id="TR_DEVICE_SETTINGS_PASSPHRASE_TITLE" />}
-                description={<Translation id="TR_DEVICE_SETTINGS_PASSPHRASE_DESC" />}
-                buttonLink={HELP_CENTER_PASSPHRASE_URL}
-            />
-            <ActionColumn>
-                <Tooltip
-                    isActive={isDeviceLocked}
-                    content={<Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED" />}
+        <Anchor anchorId={SettingsAnchor.Passphrase}>
+            {({ anchorId, anchorRef, shouldHighlight }) => (
+                <SectionItem
+                    data-testid={anchorId}
+                    ref={anchorRef}
+                    shouldHighlight={shouldHighlight}
                 >
-                    <Switch
-                        isChecked={passphraseProtection}
-                        onChange={handleChange}
-                        data-testid="@settings/device/passphrase-switch"
-                        isDisabled={isDeviceLocked}
+                    <TextColumn
+                        title={<Translation id="TR_DEVICE_SETTINGS_PASSPHRASE_TITLE" />}
+                        description={<Translation id="TR_DEVICE_SETTINGS_PASSPHRASE_DESC" />}
+                        bottomContent={<LearnMoreButton url={HELP_CENTER_PASSPHRASE_URL} />}
                     />
-                </Tooltip>
-            </ActionColumn>
-        </SettingsSectionItem>
+                    <ActionColumn>
+                        <Tooltip
+                            isActive={isDeviceLocked}
+                            content={
+                                <Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED" />
+                            }
+                        >
+                            <Switch
+                                isChecked={passphraseProtection}
+                                onChange={handleChange}
+                                data-testid="@settings/device/passphrase-switch"
+                                isDisabled={isDeviceLocked}
+                            />
+                        </Tooltip>
+                    </ActionColumn>
+                </SectionItem>
+            )}
+        </Anchor>
     );
 };

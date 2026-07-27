@@ -1,11 +1,18 @@
-import { MouseEventHandler, ReactNode } from 'react';
+import { type MouseEventHandler, type ReactNode } from 'react';
 
 import styled, { css } from 'styled-components';
 
-import { Icon, IconName, IconProps, Row, Spinner, Text, TextProps } from '@trezor/components';
-import { spacings } from '@trezor/theme';
-
+import {
+    Icon,
+    type IconComponent,
+    type IconProps,
+    Row,
+    Spinner,
+    Text,
+    type TextProps,
+} from '@trezor/components';
 const Container = styled.span<{ $isAction?: boolean }>`
+    width: stretch;
     ${({ $isAction }) =>
         $isAction &&
         css`
@@ -22,7 +29,7 @@ type DeviceConnectionTextProps = {
     isDisabled?: IconProps['isDisabled'];
     'data-testid'?: string;
     'data-testid-alt'?: string;
-    icon: IconName;
+    icon: IconComponent;
     children: ReactNode;
     isAction?: boolean;
     isLoading?: boolean;
@@ -53,13 +60,13 @@ export const DeviceConnectionText = ({
             data-testid={dataTest}
             data-testid-alt={dataTestAlt}
         >
-            <Row gap={spacings.xxs}>
+            <Row gap={4}>
                 {isLoading ? (
                     <Spinner size={16} isDisabled={true} />
                 ) : (
-                    <Icon name={icon} size={12} {...colorProps} />
+                    <Icon as={icon} size={12} {...colorProps} />
                 )}
-                <Text typographyStyle="body-xs" {...colorProps}>
+                <Text ellipsisLineCount={1} typographyStyle="body-xs" {...colorProps}>
                     {children}
                 </Text>
             </Row>

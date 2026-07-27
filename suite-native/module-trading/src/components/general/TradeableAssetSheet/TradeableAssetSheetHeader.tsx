@@ -1,14 +1,14 @@
 import { useState } from 'react';
 import Animated, { LinearTransition } from 'react-native-reanimated';
 
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Translation, useTranslate } from '@suite-native/intl';
 import {
     FOCUS_ANIMATION_DURATION,
     SEARCHABLE_SHEET_HEADER_DEFAULT_HEIGHT,
     SearchableSheetHeader,
 } from '@suite-native/trading-atoms';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { TradeableAssetFilterTabs } from './TradeableAssetFilterTabs';
 
@@ -47,13 +47,14 @@ export const TradeableAssetSheetHeader = ({
             searchInputPlaceholder={translate(
                 'moduleTrading.tradeableAssetsSheet.searchInputPlaceholder',
             )}
+            autoCorrect={false}
         >
             <Animated.View
                 layout={LinearTransition.duration(FOCUS_ANIMATION_DURATION)}
                 testID={testID}
             >
                 <TradeableAssetFilterTabs
-                    visible={isFilterActive}
+                    isVisible={isFilterActive}
                     animationDuration={FOCUS_ANIMATION_DURATION}
                     onSelectedNetworkFilter={onSelectedNetworkFilter}
                 />

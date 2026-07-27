@@ -5,8 +5,16 @@ import { Inspector } from 'react-inspector';
 import { CopyToClipboard } from 'nextra/components';
 import styled, { useTheme } from 'styled-components';
 
-import { Button, ButtonProps, Card, IconButton, Row, Text, variables } from '@trezor/components';
-import { spacingsPx } from '@trezor/theme';
+import {
+    Button,
+    type ButtonProps,
+    Card,
+    IconButton,
+    Row,
+    Text,
+    variables,
+} from '@trezor/components';
+import { XIcon } from '@trezor/icons';
 
 import * as methodActions from '../actions/methodActions';
 import { useActions, useSelector } from '../hooks';
@@ -26,11 +34,9 @@ import {
 interface Props {
     actions: {
         onSubmit: typeof methodActions.onSubmit;
-        onVerify: typeof methodActions.onVerify;
         onBatchAdd: typeof methodActions.onBatchAdd;
         onBatchRemove: typeof methodActions.onBatchRemove;
         onFieldChange: typeof methodActions.onFieldChange;
-        onFieldDataChange: typeof methodActions.onFieldDataChange;
         onSetUnion: typeof methodActions.onSetUnion;
     };
 }
@@ -54,7 +60,12 @@ const getArray = (field: FieldWithBundle<any>, props: Props) => (
     <ArrayWrapper
         key={field.name}
         field={field}
-        onAdd={() => props.actions.onBatchAdd(field, field.batch[0].fields)}
+        onAdd={() => {
+            const { batch } = field;
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const firstBatch: (typeof batch)[number] = batch[0];
+            props.actions.onBatchAdd(field, firstBatch.fields);
+        }}
     >
         {field.items?.map((batch, index) => {
             const key = `${field.name}-${index}`;
@@ -94,9 +105,6 @@ export const getField = (field: Field<any> | FieldWithBundle<any>, props: Props)
                     onChange={props.actions.onFieldChange}
                 />
             );
-        case 'address':
-            return <Input key={field.name} field={field} onChange={props.actions.onFieldChange} />;
-
         case 'checkbox':
             return (
                 <Checkbox
@@ -111,7 +119,7 @@ export const getField = (field: Field<any> | FieldWithBundle<any>, props: Props)
                 <Card
                     key={field.name}
                     paddingType="small"
-                    label={field.name}
+                    header={field.name}
                     margin={{ bottom: 8 }}
                 >
                     <CodeEditor
@@ -159,11 +167,11 @@ export const MethodContent = styled.div<{ $manualMode?: boolean }>(
 
 const Container = styled.div`
     position: relative;
-    background: ${({ theme }) => theme.backgroundSurfaceElevation2};
+    background: ${({ theme }) => theme.elementFillField};
     border-radius: 12px;
     width: 100%;
     overflow-x: auto;
-    padding: ${spacingsPx.sm} ${spacingsPx.md};
+    padding: 12px 16px;
     overflow-wrap: break-word;
     word-break: break-all;
     min-height: 150px;
@@ -206,24 +214,6 @@ const Sticky = styled.div`
     width: 100%;
 `;
 
-interface VerifyButtonProps {
-    onClick: (url: string) => void;
-    name: string;
-}
-
-export const VerifyButton = ({ name, onClick }: VerifyButtonProps) => {
-    const signMethods = ['signMessage', 'ethereumSignMessage'];
-    const verifyUrls = ['/method/verifyMessage', '/method/ethereumVerifyMessage'];
-    const index = signMethods.indexOf(name);
-    if (index < 0) return null;
-
-    return (
-        <Button margin={{ top: 12 }} onClick={() => onClick(verifyUrls[index])}>
-            Verify response
-        </Button>
-    );
-};
-
 type SubmitButtonProps = {
     onClick: ButtonProps['onClick'];
     isLoading: boolean;
@@ -238,17 +228,13 @@ const SubmitButton = ({ onClick, text, isLoading }: SubmitButtonProps) => (
 
 export const Method = () => {
     const theme = useTheme();
-    const { method } = useSelector(state => ({
-        method: state.method,
-    }));
+    const method = useSelector(state => state.method);
     const actions = useActions({
         onSubmit: methodActions.onSubmit,
         onCancelCall: methodActions.onCancelCall,
-        onVerify: methodActions.onVerify,
         onBatchAdd: methodActions.onBatchAdd,
         onBatchRemove: methodActions.onBatchRemove,
         onFieldChange: methodActions.onFieldChange,
-        onFieldDataChange: methodActions.onFieldDataChange,
         onSetUnion: methodActions.onSetUnion,
         onCodeChange: methodActions.onCodeChange,
     });
@@ -309,10 +295,11 @@ export const Method = () => {
                             <SubmitButton {...buttonProps} />
                             {buttonProps.isLoading && (
                                 <IconButton
-                                    icon="x"
+                                    icon={XIcon}
                                     intent="neutral"
                                     priority="secondary"
                                     onClick={() => actions.onCancelCall()}
+                                    tooltip={{ isActive: false }}
                                 />
                             )}
                         </Row>
@@ -334,10 +321,12 @@ export const Method = () => {
                                 <SubmitButton {...buttonProps} />
                                 {buttonProps.isLoading && (
                                     <IconButton
-                                        icon="x"
+                                        icon={XIcon}
                                         intent="neutral"
                                         priority="secondary"
+                                        data-testid="@cancel-button"
                                         onClick={() => actions.onCancelCall()}
+                                        tooltip={{ isActive: false }}
                                     />
                                 )}
                             </Row>
@@ -349,9 +338,6 @@ export const Method = () => {
                             <CopyToClipboard getValue={() => JSON.stringify(response, null, 2)} />
                         </CopyWrapper>
                         {json}
-                        {/*response && response.success && (
-                            <VerifyButton name={name} onClick={onVerify} />
-                        )*/}
                     </Container>
                 </Sticky>
             </div>

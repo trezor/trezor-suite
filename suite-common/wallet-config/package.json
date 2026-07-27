@@ -7,12 +7,22 @@
     "main": "src/index",
     "scripts": {
         "depcheck": "yarn g:depcheck",
-        "test:unit": "yarn g:jest -c=../../jest.config.base.js",
-        "type-check": "yarn g:tsc --build"
+        "test:unit": "yarn g:jest",
+        "type-check": "yarn g:tsc --build",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
+    },
+    "devDependencies": {
+        "viem": "^2.54.1"
     },
     "dependencies": {
-        "@suite-common/earn-api": "workspace:*",
+        "@suite-common/earn-stablecoin-defs": "workspace:*",
+        "@suite-common/wallet-constants": "workspace:*",
         "@trezor/device-utils": "workspace:*",
+        "@trezor/network-cardano": "workspace:*",
+        "@trezor/network-ripple": "workspace:*",
+        "@trezor/network-solana": "workspace:*",
+        "@trezor/network-stellar": "workspace:*",
+        "@trezor/network-tron": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*"
     }

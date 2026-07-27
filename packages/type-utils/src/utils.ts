@@ -7,6 +7,20 @@
  *  type U = UnionSubset<T, 'a' | 'c'>; // 'a' | 'c'
  *  ```
  */
+/**
+ * Convert a union type to an intersection type.
+ *
+ * Example:
+ *  ```
+ *  type T = UnionToIntersection<A | B>; // A & B
+ *  ```
+ */
+export type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (
+    k: infer I,
+) => void
+    ? I
+    : never;
+
 export type UnionSubset<T, U extends T> = U;
 
 /**
@@ -41,17 +55,6 @@ export type OptionalKey<M, K extends keyof M> = Omit<M, K> & Partial<Pick<M, K>>
  *  ```
  */
 export type ObjectValues<T extends { [key: string]: any }> = T[keyof T];
-
-/**
- * All keys of types in a union.
- *
- * Example:
- *  ```
- *  type T = { a: number; b: string };
- *  type K: Keys<T>; // 'a' | 'b'
- *  ```
- */
-export type Keys<T> = T extends any ? keyof T : never;
 
 /**
  * Distributes the Omit across a union. using distributive conditional types to achieve this:
@@ -117,7 +120,7 @@ export type PrimitiveType = string | number | boolean | Date | null | undefined;
  *  const p: PartialRecord<'a' | 'b' | 'c', string>; = { b: 'value' };
  *  ```
  */
-export type PartialRecord<K extends keyof any, T> = { [P in K]?: T };
+export type PartialRecord<K extends PropertyKey, T> = { [P in K]?: T };
 
 /**
  * This infers the union literal type from ReturnType but exclude undefined

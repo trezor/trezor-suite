@@ -1,8 +1,8 @@
+import { installUpdateThunk } from '@suite/desktop-update';
 import { Translation } from '@suite/intl';
 import { Column, H3, Modal, Paragraph } from '@trezor/components';
-import { spacings } from '@trezor/theme';
+import { DownloadIcon } from '@trezor/icons';
 
-import { installUpdate } from 'src/actions/suite/desktopUpdateActions';
 import { useDispatch } from 'src/hooks/suite';
 
 interface ReadyProps {
@@ -12,16 +12,16 @@ interface ReadyProps {
 export const Ready = ({ hideWindow }: ReadyProps) => {
     const dispatch = useDispatch();
 
-    const install = () => dispatch(installUpdate({ installNow: true }));
+    const install = () => dispatch(installUpdateThunk({ installNow: true }));
     const installOnQuit = () => {
-        dispatch(installUpdate({ installNow: false }));
+        dispatch(installUpdateThunk({ installNow: false }));
         hideWindow();
     };
 
     return (
         <Modal
             onCancel={installOnQuit}
-            iconName="download"
+            icon={DownloadIcon}
             bottomContent={
                 <>
                     <Modal.Button onClick={install}>
@@ -33,7 +33,7 @@ export const Ready = ({ hideWindow }: ReadyProps) => {
                 </>
             }
         >
-            <Column gap={spacings.xxs}>
+            <Column gap={4}>
                 <H3>
                     <Translation id="TR_UPDATE_MODAL_UPDATE_DOWNLOADED" />
                 </H3>

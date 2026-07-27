@@ -1,6 +1,13 @@
 const sanitizeInternalImports = (src, moduleType) => {
     const searchValue = new RegExp('@trezor/([^/]+)/src', 'g');
-    const replaceValue = `@trezor/$1/${moduleType === 'esm' ? 'libESM' : 'lib'}`;
+
+    if (moduleType === 'cjs' && searchValue.test(src)) {
+        throw new Error(
+            `Cannot sanitize internal require, Connect does not support CJS anymore, got: ${src}`,
+        );
+    }
+
+    const replaceValue = `@trezor/$1/lib`;
 
     return src.replace(searchValue, replaceValue);
 };
@@ -9,7 +16,7 @@ const sanitizeDynamicImport = src =>
     // Manually replace .ts extensions with .js (for dynamic imports)
     src.replace(/\.ts(['"`]|$)/g, '.js$1');
 /**
- * Babel plugin to sanitize non-index internal imports, from src to the built lib or libESM folder.
+ * Babel plugin to sanitize non-index internal imports, from src to the built lib folder.
  * e.g. @trezor/utils/src/bufferUtils → @trezor/utils/lib/bufferUtils
  */
 const sanitizeInternalImportsPlugin = ({ types }) => {
@@ -59,7 +66,7 @@ const sanitizeInternalImportsPlugin = ({ types }) => {
                     modifyCJSRequireArg(path);
                 } else if (types.isImport(callee)) {
                     // Handle dynamic import() with string literal.
-                    // e.g. import("@trezor/blockchain-link/src/workers/solana") → import("@trezor/blockchain-link/libESM/workers/solana")
+                    // e.g. import("@trezor/blockchain-link/src/workers/solana") → import("@trezor/blockchain-link/lib/workers/solana")
                     const args = path.node.arguments;
                     if (args?.length > 0 && types.isStringLiteral(args[0])) {
                         args[0].value = sanitizeInternalImports(args[0].value, 'esm');

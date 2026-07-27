@@ -3,16 +3,15 @@ import { useWatch } from 'react-hook-form';
 import { useSelector } from 'react-redux';
 
 import {
-    AccountsRootState,
-    FeesRootState,
+    type AccountsRootState,
+    type FeesRootState,
     selectAccountByKey,
     selectConvertedNetworkFeeLevelFeePerUnit,
 } from '@suite-common/wallet-core';
 import {
-    AccountKey,
-    FeeLevelLabel,
-    GeneralPrecomposedTransactionFinal,
-    PrecomposedTransactionFinal,
+    type AccountKey,
+    type FeeLevelLabel,
+    type GeneralPrecomposedTransactionFinal,
     isFinalPrecomposedTransaction,
 } from '@suite-common/wallet-types';
 import { BigNumber } from '@trezor/utils';
@@ -40,9 +39,7 @@ export const useFeeCalculation = ({
     const feeLevels = useSelector(selectFeeLevels);
     const { symbol } = account ?? {};
 
-    const normalFee = isFinalPrecomposedTransaction(feeLevels.normal)
-        ? (feeLevels.normal as PrecomposedTransactionFinal)
-        : null;
+    const normalFee = isFinalPrecomposedTransaction(feeLevels.normal) ? feeLevels.normal : null;
 
     const form = useFeesForm({
         accountKey,

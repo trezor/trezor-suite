@@ -1,11 +1,10 @@
-import { Translation, TranslationKey } from '@suite/intl';
-import { Icon, IconName, List, Modal, Paragraph } from '@trezor/components';
-import { spacings } from '@trezor/theme';
-
-const items: Array<{ icon: IconName; text: TranslationKey }> = [
-    { icon: 'shieldCheck', text: 'TR_DEVICE_AUTHENTICITY_ITEM_1' },
-    { icon: 'cpu', text: 'TR_DEVICE_AUTHENTICITY_ITEM_2' },
-    { icon: 'listChecks', text: 'TR_DEVICE_AUTHENTICITY_ITEM_3' },
+import { Translation, type TranslationKey } from '@suite/intl';
+import { Icon, type IconComponent, List, Modal, Paragraph } from '@trezor/components';
+import { CpuIcon, ListChecksIcon, ShieldCheckIcon } from '@trezor/icons';
+const items: Array<{ id: string; icon: IconComponent; text: TranslationKey }> = [
+    { id: 'security', icon: ShieldCheckIcon, text: 'TR_DEVICE_AUTHENTICITY_ITEM_1' },
+    { id: 'chip', icon: CpuIcon, text: 'TR_DEVICE_AUTHENTICITY_ITEM_2' },
+    { id: 'checks', icon: ListChecksIcon, text: 'TR_DEVICE_AUTHENTICITY_ITEM_3' },
 ];
 
 type AuthenticateDeviceInititalStepProps = {
@@ -32,16 +31,9 @@ export const AuthenticateDeviceInititalStep = ({
             </>
         }
     >
-        <List
-            gap={spacings.xl}
-            bulletGap={spacings.xl}
-            margin={{ top: spacings.xs, bottom: spacings.sm }}
-        >
-            {items.map(({ icon, text }) => (
-                <List.Item
-                    key={icon}
-                    bulletComponent={<Icon name={icon} size={32} intent="brand" />}
-                >
+        <List gap={24} bulletGap={24} margin={{ top: 8, bottom: 12 }}>
+            {items.map(({ id, icon, text }) => (
+                <List.Item key={id} bulletComponent={<Icon as={icon} size={32} intent="brand" />}>
                     <Paragraph intent="neutral" priority="secondary">
                         <Translation id={text} />
                     </Paragraph>

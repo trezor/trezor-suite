@@ -1,16 +1,16 @@
-import { PayloadAction, isAnyOf } from '@reduxjs/toolkit';
+import { type PayloadAction, isAnyOf } from '@reduxjs/toolkit';
 
 import { createSliceWithExtraDeps } from '@suite-common/redux-utils';
 import {
-    SendState as CommonSendState,
-    SendFormError,
+    type SendState as CommonSendState,
+    type SendFormError,
     initialState as commonInitialState,
     composeSendFormTransactionFeeLevelsThunk,
     prepareSendFormReducer as prepareCommonSendFormReducer,
     pushSendFormTransactionThunk,
     signTransactionThunk,
 } from '@suite-common/wallet-core';
-import { GeneralPrecomposedLevels } from '@suite-common/wallet-types';
+import { type GeneralPrecomposedLevels } from '@suite-common/wallet-types';
 
 type NativeSendState = CommonSendState & {
     error: null | SendFormError;
@@ -29,15 +29,15 @@ export const sendFormInitialState: NativeSendState = {
     feeLevels: {},
 };
 
-export const sendFormSlice = createSliceWithExtraDeps({
+const sendFormSlice = createSliceWithExtraDeps({
     name: 'send',
     initialState: sendFormInitialState,
     reducers: {
-        clearFeeLevels: state => {
+        clearFeeLevels: (state: NativeSendState) => {
             state.feeLevels = {};
         },
         storeFeeLevels: (
-            state,
+            state: NativeSendState,
             { payload }: PayloadAction<{ feeLevels: GeneralPrecomposedLevels }>,
         ) => {
             state.feeLevels = payload.feeLevels;
@@ -74,3 +74,4 @@ export const sendFormSlice = createSliceWithExtraDeps({
 });
 
 export const transactionManagementActions = sendFormSlice.actions;
+export const prepareSendFormReducer = sendFormSlice.prepareReducer;

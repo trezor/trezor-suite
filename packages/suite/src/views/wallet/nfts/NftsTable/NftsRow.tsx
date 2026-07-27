@@ -1,15 +1,19 @@
 import { useState } from 'react';
 
+import { Address, copyAddressToClipboard, showCopyAddressModal } from '@suite/address';
+import { RedactNumericalValue } from '@suite/discreet-mode';
+import { selectIsCopyAddressModalShown } from '@suite/flags';
 import { Translation } from '@suite/intl';
+import { goto } from '@suite/router';
 import {
     DefinitionType,
-    EnhancedTokenInfo,
+    type EnhancedTokenInfo,
     TokenManagementAction,
     tokenDefinitionsActions,
 } from '@suite-common/token-definitions';
-import { Explorer, Network } from '@suite-common/wallet-config';
+import { type Explorer, type Network } from '@suite-common/wallet-config';
 import { selectExplorer } from '@suite-common/wallet-core';
-import { SelectedAccountStatus } from '@suite-common/wallet-types';
+import { type SelectedAccountStatus } from '@suite-common/wallet-types';
 import {
     NFT_MULTITOKEN_STANDARDS,
     NFT_SINGLETOKEN_STANDARDS,
@@ -29,14 +33,17 @@ import {
     Table,
     Text,
 } from '@trezor/components';
+import {
+    ArrowUpRightIcon,
+    EyeIcon,
+    EyeSlashIcon,
+    NewspaperIcon,
+    PictureFrameIcon,
+} from '@trezor/icons';
 
 import { SUITE } from 'src/actions/suite/constants';
-import { copyAddressToClipboard, showCopyAddressModal } from 'src/actions/suite/copyAddressActions';
-import { goto } from 'src/actions/suite/routerActions';
-import { Address, HiddenPlaceholder } from 'src/components/suite';
-import { RedactNumericalValue } from 'src/components/suite/RedactNumericalValue';
+import { HiddenPlaceholder } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectIsCopyAddressModalShown } from 'src/selectors/suite/suiteSelectors';
 import { getTokenAddressTranslationId } from 'src/utils/wallet/tokenUtils';
 
 import { DropdownRow } from '../../tokens/DropdownRow';
@@ -91,6 +98,10 @@ const NftsRow = ({
                     <Row gap={8}>
                         <Dropdown
                             placement={{ position: 'bottom', alignment: 'start' }}
+                            tooltip={{
+                                content: <Translation id="TR_SHOW_MORE" />,
+                                placement: 'left',
+                            }}
                             content={
                                 <Card paddingType="small">
                                     <Column gap={16}>
@@ -132,7 +143,7 @@ const NftsRow = ({
                             items={[
                                 {
                                     label: <Translation id="TR_HIDE_COLLECTION" />,
-                                    icon: 'eyeSlash',
+                                    icon: EyeSlashIcon,
                                     onClick: () =>
                                         dispatch(
                                             tokenDefinitionsActions.setTokenStatus({
@@ -146,7 +157,7 @@ const NftsRow = ({
                                 },
                                 {
                                     label: <Translation id="TR_VIEW_ALL_TRANSACTION" />,
-                                    icon: 'newspaper',
+                                    icon: NewspaperIcon,
                                     onClick: () => {
                                         dispatch({
                                             type: SUITE.SET_TRANSACTION_HISTORY_PREFILL,
@@ -154,7 +165,8 @@ const NftsRow = ({
                                         });
                                         if (account) {
                                             dispatch(
-                                                goto('wallet-index', {
+                                                goto({
+                                                    routeName: 'wallet-index',
                                                     params: {
                                                         symbol: account.symbol,
                                                         accountIndex: account.index,
@@ -167,7 +179,7 @@ const NftsRow = ({
                                 },
                                 {
                                     label: <Translation id="TR_VIEW_IN_EXPLORER" />,
-                                    icon: 'arrowUpRight',
+                                    icon: ArrowUpRightIcon,
                                     onClick: () => {
                                         window.open(
                                             getNftContractExplorerUrl(explorer, nft),
@@ -179,7 +191,7 @@ const NftsRow = ({
                         />
                         {!isShown && (
                             <Button
-                                iconLeft="eye"
+                                iconLeft={EyeIcon}
                                 onClick={() => {
                                     dispatch(
                                         tokenDefinitionsActions.setTokenStatus({
@@ -211,10 +223,9 @@ const NftsRow = ({
                                 <HiddenPlaceholder>
                                     <Row gap={8}>
                                         <IconCircle
-                                            name="pictureFrame"
-                                            paddingType="large"
-                                            size={28}
-                                            variant="tertiary"
+                                            icon={PictureFrameIcon}
+                                            size={32}
+                                            intent="neutral"
                                         />
                                         <Link href={getNftExplorerUrl(explorer, nft, id)}>
                                             <Text textWrap="nowrap">{NftName}</Text>
@@ -243,10 +254,9 @@ const NftsRow = ({
                                 <HiddenPlaceholder>
                                     <Row gap={8}>
                                         <IconCircle
-                                            name="pictureFrame"
-                                            paddingType="large"
-                                            size={28}
-                                            variant="tertiary"
+                                            icon={PictureFrameIcon}
+                                            size={32}
+                                            intent="neutral"
                                         />
                                         <Link
                                             href={getNftExplorerUrl(explorer, nft, value?.id || '')}

@@ -1,5 +1,5 @@
-import { BackendType, NetworkSymbol } from '@suite-common/wallet-config';
-import { TimerId } from '@trezor/type-utils';
+import { type BackendType, type NetworkSymbol } from '@suite-common/wallet-config';
+import { type TimerId } from '@trezor/type-utils';
 
 /**
  * @deprecated
@@ -21,6 +21,7 @@ export type BackendSettings = Partial<{
     urls: Partial<{
         [type in BackendType]: string[];
     }>;
+    gapLimit: number;
 }>;
 
 export interface ConnectionStatus {

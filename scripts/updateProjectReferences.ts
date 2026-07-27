@@ -56,11 +56,9 @@ import { getWorkspacesList } from './utils/getWorkspacesList';
     const workspaces = getWorkspacesList();
 
     // NOTE: Workspace keys must be sorted due to file systems being a part of the equation...
-    Object.keys(workspaces)
-        .sort()
-        .forEach(async workspaceName => {
-            const workspace = workspaces[workspaceName];
-
+    Object.entries(workspaces)
+        .sort(([a], [b]) => a.localeCompare(b))
+        .forEach(async ([_workspaceName, workspace]) => {
             if (workspace.location === '.') {
                 // Skip root workspace
                 return;
@@ -73,7 +71,6 @@ import { getWorkspacesList } from './utils/getWorkspacesList';
             const workspacePath = path.resolve(process.cwd(), workspace.location);
             const workspaceConfigPath = path.resolve(workspacePath, 'tsconfig.json');
             const workspaceLibConfigPath = path.resolve(workspacePath, 'tsconfig.lib.json');
-            const workspaceLibESMConfigPath = path.resolve(workspacePath, 'tsconfig.libESM.json');
 
             const defaultWorkspaceConfig = {
                 extends: path.relative(workspacePath, path.resolve(process.cwd(), 'tsconfig.json')),
@@ -87,9 +84,6 @@ import { getWorkspacesList } from './utils/getWorkspacesList';
 
             // parse tsconfig.lib.json, which may not exist, and shall not be created
             const workspaceLibConfig = parseTSConfigFile(workspaceLibConfigPath);
-
-            // parse tsconfig.libESM.json, which may not exist, and shall not be created
-            const workspaceLibESMConfig = parseTSConfigFile(workspaceLibESMConfigPath);
 
             // actual references of the workspace from parsed package.json (assigned later)
             const nextWorkspaceReferences: Array<{ path: string }> = [];
@@ -126,11 +120,7 @@ import { getWorkspacesList } from './utils/getWorkspacesList';
                     workspaceLibConfig !== null &&
                     (await isDiffInConfig(workspaceLibConfig.references, expectedLibReferences));
 
-                const isConfigLibESMDiff =
-                    workspaceLibESMConfig !== null &&
-                    (await isDiffInConfig(workspaceLibESMConfig.references, expectedLibReferences));
-
-                if (isConfigDiff || isConfigLibDiff || isConfigLibESMDiff) {
+                if (isConfigDiff || isConfigLibDiff) {
                     console.error(
                         chalk.red(
                             `TypeScript project references in ${workspace.location} are inconsistent with package.json#dependencies.`,
@@ -150,18 +140,7 @@ import { getWorkspacesList } from './utils/getWorkspacesList';
 
             if (workspaceLibConfig !== null) {
                 workspaceLibConfig.references = expectedLibReferences;
-                fs.writeFileSync(
-                    workspaceLibConfigPath,
-                    await serializeConfig(workspaceLibConfig, 2),
-                );
-            }
-
-            if (workspaceLibESMConfig !== null) {
-                workspaceLibESMConfig.references = expectedLibReferences;
-                fs.writeFileSync(
-                    workspaceLibESMConfigPath,
-                    await serializeConfig(workspaceLibESMConfig, 2),
-                );
+                fs.writeFileSync(workspaceLibConfigPath, await serializeConfig(workspaceLibConfig));
             }
         });
 })();

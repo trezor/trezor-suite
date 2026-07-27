@@ -1,7 +1,7 @@
 import { A } from '@mobily/ts-belt';
 import { createTransform } from 'redux-persist';
 
-import { AccountsState, TransactionsState } from '@suite-common/wallet-core';
+import { type AccountsState, type TransactionsState } from '@suite-common/wallet-core';
 
 import { filterKeysByPartialMatch, selectDeviceStatesNotRemembered } from './utils';
 
@@ -40,6 +40,11 @@ export const walletPersistTransform = createTransform<InboundState, OutboundStat
             devicesStatesNotRemembered,
         );
 
+        const phishing = filterKeysByPartialMatch(
+            inboundState.transactions.phishing ?? {},
+            devicesStatesNotRemembered,
+        );
+
         const transactionFetchStatusDetail = filterKeysByPartialMatch(
             inboundState.transactions.fetchStatusDetail ?? {},
             devicesStatesNotRemembered,
@@ -49,6 +54,7 @@ export const walletPersistTransform = createTransform<InboundState, OutboundStat
             accounts,
             transactions: {
                 transactions,
+                phishing,
                 fetchStatusDetail: transactionFetchStatusDetail,
             },
         };

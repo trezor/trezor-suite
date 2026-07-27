@@ -1,16 +1,17 @@
 import fs from 'fs';
 import path from 'path';
 
-import { prepareDeviceReducer } from '@suite-common/device';
+import { deviceActions, prepareDeviceReducer } from '@suite-common/device';
 import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
 import { initialWalletSettingsState, prepareAccountsReducer } from '@suite-common/wallet-core';
 import TrezorConnect from '@trezor/connect';
+import { asWalletDescriptor } from '@trezor/device-utils';
 
 import * as fixtures from '../__fixtures__/metadataActions';
 import * as metadataActions from '../metadataActions';
 import * as metadataLabelingActions from '../metadataLabelingActions';
 import * as metadataProviderActions from '../metadataProviderThunks';
-import { SuiteRootStateSliceForMetadata, metadataReducer } from '../metadataReducer';
+import { type SuiteRootStateSliceForMetadata, metadataReducer } from '../metadataReducer';
 import * as metadataThunks from '../metadataThunks';
 import { DropboxProvider } from '../providers/DropboxProvider';
 
@@ -45,11 +46,17 @@ interface InitialState {
     device: any;
     accounts: any[];
     suite: Partial<SuiteRootStateSliceForMetadata>;
+    suiteSettings?: {
+        debug?: {
+            oauthServerEnvironment?: string;
+        };
+    };
 }
 
 const getInitialState = (state?: InitialState) => {
     const metadata = state ? state.metadata : undefined;
     const suite = state ? state.suite : {};
+    const suiteSettings = state?.suiteSettings ?? {};
 
     const device = state
         ? state.device
@@ -59,8 +66,7 @@ const getInitialState = (state?: InitialState) => {
               metadata: { status: 'disabled' },
           };
     const accounts = state ? state.accounts || [] : [];
-    const settings = suite?.settings || { debug: {} };
-    const debug = settings?.debug || {};
+    const debug = suiteSettings.debug ?? {};
     const initAction: any = { type: '@storage/load', payload: { metadata } };
 
     return {
@@ -73,10 +79,10 @@ const getInitialState = (state?: InitialState) => {
         },
         suite: {
             ...suite,
-            settings: {
-                ...settings,
-                debug, // debug settings are needed for OAuth API
-            },
+        },
+        suiteSettings: {
+            ...suiteSettings,
+            debug, // debug settings are needed for OAuth API
         },
         wallet: {
             accounts,
@@ -94,10 +100,12 @@ const getInitialState = (state?: InitialState) => {
 type State = ReturnType<typeof getInitialState>;
 const initStore = (state: State) => {
     const store = configureMockStore<State, any>({
-        reducer: (s = state, action: any) => ({
-            ...s,
-            metadata: metadataReducer(s.metadata, action),
-        }),
+        reducer: (s = state, action: any): State => {
+            // the reducer may also receive the empty PreloadedState ({}), fall back to the initial state
+            const current = { ...state, ...s };
+
+            return { ...current, metadata: metadataReducer(current.metadata, action) };
+        },
         preloadedState: state,
         serializableCheck: {
             ignoredActions: ['@modal/open-user-context'],
@@ -106,6 +114,7 @@ const initStore = (state: State) => {
     store.subscribe(async () => {
         const actions = store.getActions();
         const action = actions[actions.length - 1];
+        if (!action) return;
 
         // hack: to prevent dependency
         if (action.type === '@modal/open-user-context') {
@@ -300,6 +309,35 @@ describe('Metadata Actions', () => {
             if (f.result) {
                 expect(store.getState()).toMatchObject(f.result);
             }
+        });
+    });
+
+    it('marks wallet as migrated after legacy labeling migration succeeds', () => {
+        const walletDescriptor = asWalletDescriptor('wallet-descriptor');
+        const store = initStore(getInitialState());
+
+        store.dispatch(metadataActions.setLegacyLabelsMigrationForWallet(walletDescriptor));
+
+        expect(store.getState().metadata.hasLegacyLabelsMigrated).toEqual({
+            [walletDescriptor]: true,
+        });
+    });
+
+    it('removes wallet migration flag after wallet is forgotten', () => {
+        const forgottenWalletDescriptor = asWalletDescriptor('1stTestnetAddress');
+        const otherWalletDescriptor = asWalletDescriptor('other-wallet');
+        const store = initStore(getInitialState());
+
+        store.dispatch(
+            metadataActions.setLegacyLabelsMigrationForWallet(forgottenWalletDescriptor),
+        );
+        store.dispatch(metadataActions.setLegacyLabelsMigrationForWallet(otherWalletDescriptor));
+        store.dispatch(
+            deviceActions.forgetDevice({ device: store.getState().device.selectedDevice }),
+        );
+
+        expect(store.getState().metadata.hasLegacyLabelsMigrated).toEqual({
+            [otherWalletDescriptor]: true,
         });
     });
 });

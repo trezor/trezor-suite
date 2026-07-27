@@ -1,9 +1,16 @@
-import { DataManager } from '../../data/DataManager';
-import { parseConnectSettings } from '../../data/connectSettings';
+import { parseConnectSettings } from '@trezor/connect-common/src/data/connectSettings';
+import { noopCreateLogger } from '@trezor/connect-common/src/utils/debug';
+
+import { initializeFirmwareConfig } from '../../data/firmwareInfo';
+import * as firmwareReleaseStore from '../../data/firmwareReleaseStore';
+import { loadProtobufModules } from '../../data/protobufLoader';
+import * as settingsStore from '../../data/settingsStore';
 import { Device } from '../Device';
 import { handshakeCancel } from '../workflow/handshake';
 
 const { createTestTransport } = global.JestMocks;
+
+type ReadWriteOptions = { signal?: AbortSignal };
 
 const getAcquiredDevice = async (apiMethods: any = {}) => {
     let emitTransportEvent: (d: any[]) => void = () => {};
@@ -21,7 +28,6 @@ const getAcquiredDevice = async (apiMethods: any = {}) => {
         },
         ...apiMethods,
     });
-    transport.updateMessages(DataManager.getProtobufMessages());
 
     await transport.init();
     await transport.enumerate();
@@ -31,6 +37,7 @@ const getAcquiredDevice = async (apiMethods: any = {}) => {
         id: 'ABCD' as any, // any = DeviceUniquePath
         transport,
         descriptor: { path: '1' as any, type: 1, session: null, apiType: 'usb' }, // any = PathPublic
+        createLogger: noopCreateLogger,
     });
     await device.acquire();
 
@@ -44,13 +51,10 @@ const fastForward = (time: number) => jest.advanceTimersByTimeAsync(time);
 describe('workflow/handshake', () => {
     beforeAll(async () => {
         // todo: I don't get it. If we pass empty messages: {} (see getDeviceListParams), tests behave differently.
-        await DataManager.load(
-            {
-                ...parseConnectSettings({}),
-            },
-            true,
-            true,
-        );
+        const settings = { ...parseConnectSettings({}) };
+        settingsStore.set(settings);
+        await firmwareReleaseStore.init(settings.firmwareChannel, true, initializeFirmwareConfig);
+        await loadProtobufModules();
     });
 
     afterEach(() => {
@@ -89,13 +93,13 @@ describe('workflow/handshake', () => {
         let readAttempt = 0;
         const abortSpy = jest.fn();
         const readMock = jest.fn(
-            (_, signal) =>
+            (_, { signal }: ReadWriteOptions) =>
                 new Promise(resolve => {
                     const timeout = setTimeout(
                         () => resolve({ success: true, payload: Buffer.alloc(readAttempt) }),
                         500 * readAttempt, // increase respond time on each attempt, should timeout on 3rd
                     );
-                    signal.addEventListener('abort', () => {
+                    signal?.addEventListener('abort', () => {
                         abortSpy();
                         clearTimeout(timeout);
                         resolve({ success: false });
@@ -119,10 +123,10 @@ describe('workflow/handshake', () => {
 
         const abortSpy = jest.fn();
         const readMock = jest.fn(
-            (_, signal) =>
+            (_, { signal }: ReadWriteOptions) =>
                 new Promise(resolve => {
                     const timeout = setTimeout(() => resolve({ success: false }), 2000);
-                    signal.addEventListener('abort', () => {
+                    signal?.addEventListener('abort', () => {
                         abortSpy();
                         clearTimeout(timeout);
                         resolve({ success: false });
@@ -175,10 +179,10 @@ describe('workflow/handshake', () => {
 
         const abortSpy = jest.fn();
         const writeMock = jest.fn(
-            (_a, _b, signal) =>
+            (_a, _b, { signal }: ReadWriteOptions) =>
                 new Promise(resolve => {
                     const timeout = setTimeout(() => resolve({ success: false }), 2000);
-                    signal.addEventListener('abort', () => {
+                    signal?.addEventListener('abort', () => {
                         abortSpy();
                         clearTimeout(timeout);
                         resolve({ success: false });
@@ -206,10 +210,10 @@ describe('workflow/handshake', () => {
 
         const abortSpy = jest.fn();
         const writeMock = jest.fn(
-            (_a, _b, signal) =>
+            (_a, _b, { signal }: ReadWriteOptions) =>
                 new Promise(resolve => {
                     const timeout = setTimeout(() => resolve({ success: false }), 2000);
-                    signal.addEventListener('abort', () => {
+                    signal?.addEventListener('abort', () => {
                         abortSpy();
                         clearTimeout(timeout);
                         resolve({ success: false });

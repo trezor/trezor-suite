@@ -6,17 +6,19 @@ import { buyQuotesEthereum, buyTradeEthereum, invityEndpoint } from '../../fixtu
 import { expect, test } from '../../support/fixtures';
 
 // Expected values based on our mocked responses
-const fiatAmount = buyQuotesEthereum[3].fiatStringAmount;
-const provider = capitalizeFirstLetter(buyQuotesEthereum[3].exchange);
-const formattedCryptoAmount = `${localizeNumber(buyQuotesEthereum[3].receiveStringAmount)} ETH`;
+const fiatAmount = buyQuotesEthereum[3]?.fiatStringAmount ?? '';
+const provider = capitalizeFirstLetter(buyQuotesEthereum[3]?.exchange ?? '');
+const formattedCryptoAmount = `${localizeNumber(buyQuotesEthereum[3]?.receiveStringAmount ?? '')} ETH`;
 const formattedFiatAmount = `CZK ${localizeNumber(fiatAmount, 'en-US', 2)}`;
 
 test.describe('Trading - Buy Ethereum', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
-    test.beforeEach(async ({ page, onboardingPage }) => {
+    test.beforeEach(async ({ page, onboardingPage, settingsPage, dashboardPage }) => {
         await page.route(invityEndpoint.buyQuotes, async route => {
             await route.fulfill({ json: buyQuotesEthereum });
         });
         await onboardingPage.completeOnboarding();
+        await settingsPage.changeNetworks({ enableNetworks: ['btc'] });
+        await dashboardPage.navigateTo();
     });
 
     test('Enable Ethereum on account by buying it', async ({
@@ -35,16 +37,22 @@ test.describe('Trading - Buy Ethereum', { tag: ['@webOnly', '@T3W1', '@T3T1'] },
             await tradingPage.fillBuyForm({
                 amount: fiatAmount,
                 selectReceiveAddress: async () => {
-                    await tradingPage.receiveAccount.selectAddSuiteReceiveAccount(0);
+                    await tradingPage.receiveAccount.selectAddSuiteReceiveAccount(0, 'eth');
                 },
             });
             await expect(tradingPage.quotes.bestOfferAmount).toContainText('0.018615 ETH');
         });
 
-        await test.step('Confirm Trade', async () => {
+        await test.step('Continue to preview and confirm the trade', async () => {
             await tradingMock.routeTrade(invityEndpoint.buyTrade, buyTradeEthereum);
 
             await tradingPage.buyBestOfferButton.click();
+
+            await expect(tradingPage.confirmation.fiatAmount).toHaveText(formattedFiatAmount);
+            await expect(tradingPage.confirmation.cryptoAmount).toHaveText(formattedCryptoAmount);
+            await expect(tradingPage.confirmation.provider).toHaveText(provider);
+
+            await tradingPage.confirmation.buyButton.click();
         });
 
         await tradingPage.waitForRedirectCompletion();
@@ -60,8 +68,7 @@ test.describe('Trading - Buy Ethereum', { tag: ['@webOnly', '@T3W1', '@T3T1'] },
 
         await test.step('Return to account buy form', async () => {
             await tradingPage.backToAccountButton('Buy').click();
-            // The flow started on BTC so it returns to the BTC account, even tho the trade was for ETH
-            await expect(page).toHaveURL(/\/accounts\/coinmarket\/buy#\/btc\/0\/normal$/);
+            await expect(page).toHaveURL(/\/accounts\/coinmarket\/buy$/);
         });
     });
 });

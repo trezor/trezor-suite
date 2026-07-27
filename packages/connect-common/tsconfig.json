@@ -6,8 +6,20 @@
     },
     "include": ["."],
     "references": [
-        { "path": "../utils" },
+        { "path": "../crypto-utils" },
+        { "path": "../device-utils" },
         { "path": "../protobuf" },
-        { "path": "../protocol" }
+        { "path": "../protocol" },
+        { "path": "../schema-utils" },
+        { "path": "../type-utils" },
+        { "path": "../utils" },
+        { "path": "../blockchain-link" },
+        { "path": "../blockchain-link-types" },
+        { "path": "../device-authenticity" },
+        {
+            "path": "../../networks/cardano/network-cardano"
+        },
+        { "path": "../transport-common" },
+        { "path": "../utxo-lib" }
     ]
 }

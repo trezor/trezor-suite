@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 
 import { Translation } from '@suite/intl';
 import { H3, Modal } from '@trezor/components';
+import { DatabaseIcon } from '@trezor/icons';
 
 import { resetSuiteAppThunk } from 'src/actions/suite/suiteThunks';
 import { useDispatch } from 'src/hooks/suite';
@@ -17,8 +18,8 @@ export const DatabaseCorruptedModal = () => {
 
     return (
         <Modal
-            iconName="database"
-            variant="destructive"
+            icon={DatabaseIcon}
+            intent="critical"
             bottomContent={
                 <Modal.Button onClick={handleClick} isLoading={isLoading} intent="brand">
                     <Translation id="TR_CLEAR_STORAGE" />

@@ -1,20 +1,38 @@
 import { D } from '@mobily/ts-belt';
 import {
-    Middleware as RTKMiddleware,
-    Reducer,
-    ReducersMapObject,
+    type Middleware as RTKMiddleware,
+    type Reducer,
+    type ReducersMapObject,
     configureStore,
+    isFulfilled,
+    isPending,
 } from '@reduxjs/toolkit';
-import { ThunkDispatch } from 'redux-thunk';
+import { type ThunkDispatch } from 'redux-thunk';
 
-import { AnyAction, ExtraDependenciesPartial, createMiddleware } from '@suite-common/redux-utils';
+import {
+    type AnyAction,
+    type ExtraDependenciesPartial,
+    createMiddleware,
+} from '@suite-common/redux-utils';
 import { mergeDeepObject } from '@trezor/utils';
 
 import { extraDependenciesCommonMock } from './extraDependenciesCommonMock';
 
-export type MockStoreConfig<S = any, A extends AnyAction = AnyAction> = {
+/*
+ * This function is useful, because a lot of test fixtures doesn't count with added thunk pending/fulfilled action that are now
+ * dispatched everytime. This will filter out these action so we don't need to fix fixtures everywhere.
+ * It should be used only in /packages/suite everything migrated to suite-common/ should be adjusted to work with new thunk API!!!
+ */
+export const filterThunkActionTypes = (actions: AnyAction[]) =>
+    actions.filter(action => !isPending(action) && !isFulfilled(action));
+
+type MockStoreConfig<S = any, A extends AnyAction = AnyAction> = {
     middleware?: any[];
     extra?: ExtraDependenciesPartial;
+    // The third generic (PreloadedState) sits in a contravariant position in redux's Reducer
+    // signature, so neither `unknown` nor `Record<string, never>` work as drop-in replacements
+    // for `{}` here — both reject test fixtures that pass a Partial<S> as preloaded state.
+    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
     reducer?: Reducer<S, A, {}> | ReducersMapObject<S, A, {}>;
     preloadedState?: any;
     serializableCheck?: { ignoredActions?: string[] };
@@ -26,7 +44,12 @@ export const initPreloadedState = ({
 }: {
     rootReducer: Reducer<any, any, any>;
     partialState: any;
-}) => mergeDeepObject(partialState, rootReducer(undefined, { type: 'test-init' }));
+}) =>
+    mergeDeepObject.withOptions(
+        { mergeArrays: false },
+        rootReducer(undefined, { type: 'test-init' }),
+        partialState,
+    );
 
 /**
  * A mock store for testing Redux async action creators and middleware.

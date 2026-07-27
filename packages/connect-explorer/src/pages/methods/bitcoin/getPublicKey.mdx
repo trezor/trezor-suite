@@ -1,5 +1,5 @@
-import { Bundle } from '@trezor/connect/src/types';
-import { GetPublicKey } from '@trezor/connect/src/types/api/getPublicKey';
+import { Bundle } from '@trezor/connect-common/src/types';
+import { GetPublicKey } from '@trezor/connect-common/src/types/api/account/getPublicKey';
 
 import { ApiPlayground } from '../../../components/ApiPlayground';
 import { CommonParamsLink } from '../../../components/CommonParamsLink';
@@ -18,7 +18,7 @@ import getPublicKey from '../../../data/methods/bitcoin/getPublicKey.ts';
 
 export const paramDescriptions = {
     path: 'minimum length is `1`. [read more](/details/path)',
-    coin: 'determines network definition specified in [coins.json](https://github.com/trezor/trezor-suite/blob/develop/packages/connect-data/files/coins.json) file. Coin `shortcut`, `name` or `label` can be used. If `coin` is not set API will try to get network definition from `path`.',
+    coin: 'determines network definition specified in [coins.json](https://github.com/trezor/trezor-suite/blob/develop/packages/connect-data/files/coins.json) file. Coin `shortcut` (a `CoinSymbol`, e.g. `btc`) is used. If `coin` is not set API will try to get network definition from `path`.',
     scriptType: 'used to distinguish between various address formats (non-segwit, segwit, etc.).',
     ignoreXpubMagic: 'ignore SLIP-0132 XPUB magic, use xpub/tpub prefix for all account types.',
     ecdsaCurveName: 'ECDSA curve name to use',
@@ -75,7 +75,7 @@ TrezorConnect.getPublicKey({
 
 ### Result
 
-[HDNodeResponse type](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/getPublicKey.ts)
+[HDNodeResponse type](https://github.com/trezor/trezor-suite/blob/develop/packages/connect-common/src/types/api/account/getPublicKey.ts)
 
 Result with only one public key
 
@@ -83,19 +83,29 @@ Result with only one public key
 {
     success: true,
     payload: {
-        path: Array<number>, // hardended path
-        serializedPath: string, // serialized path
-        xpub: string,        // xpub in legacy format
-        xpubSegwit?: string, // optional for segwit accounts: xpub in segwit format
-        chainCode: string,   // BIP-32 serialization format
-        childNum: number,    // BIP-32 serialization format
-        publicKey: string,   // BIP-32 serialization format
-        fingerprint: number, // BIP-32 serialization format
-        depth: number,       // BIP-32 serialization format
-        descriptor?: string, // BIP-380 descriptor. Not available for model One
+        path: Array<number>,          // hardended path
+        serializedPath: string,       // serialized path
+        xpub: string,                 // xpub in legacy format
+        xpubSegwit?: string,          // optional for segwit accounts: xpub in segwit format (SLIP-132)
+        chainCode: string,            // BIP-32 serialization format
+        childNum: number,             // BIP-32 serialization format
+        publicKey: string,            // BIP-32 serialization format
+        fingerprint: number,          // BIP-32 serialization format
+        depth: number,                // BIP-32 serialization format
+        descriptor?: string,          // BIP-380 descriptor. Not available for model One
+        displayablePublicKey: string, // canonical user-facing form: xpubSegwit ?? xpub (SLIP-132 form matching the requested scriptType — e.g. ypub/zpub for SegWit, tr(...) descriptor for Taproot)
     }
 }
 ```
+
+> **`displayablePublicKey` vs. firmware display.** For legacy and SegWit
+> accounts the field is byte-identical to what the device shows when
+> `showOnTrezor: true`. For Taproot the device renders the bare account-level
+> descriptor with `h`-notation (e.g. `tr([fp/86h/0h/0h]xpub…)`), whereas
+> `displayablePublicKey` is the BIP-389 multipath descriptor with
+> `'`-notation and trailing `/<0;1>/*` (e.g. `tr([fp/86'/0'/0']xpub…/<0;1>/*)`).
+> Both describe the same key; the multipath form is what host-side wallets need
+> to derive both external and change addresses.
 
 [Read more about BIP32 serialization format](https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki#Serialization_format)
 
@@ -105,9 +115,9 @@ Result with bundle of public keys
 {
     success: true,
     payload: [
-        { path, serializedPath, xpub, xpubSegwit?, chainCode, childNum, publicKey, fingerprint, depth, descriptor }, // account 1
-        { path, serializedPath, xpub, xpubSegwit?, chainCode, childNum, publicKey, fingerprint, depth, descriptor }, // account 2
-        { path, serializedPath, xpub, xpubSegwit?, chainCode, childNum, publicKey, fingerprint, depth, descriptor }  // account 3
+        { path, serializedPath, xpub, xpubSegwit?, chainCode, childNum, publicKey, fingerprint, depth, descriptor, displayablePublicKey }, // account 1
+        { path, serializedPath, xpub, xpubSegwit?, chainCode, childNum, publicKey, fingerprint, depth, descriptor, displayablePublicKey }, // account 2
+        { path, serializedPath, xpub, xpubSegwit?, chainCode, childNum, publicKey, fingerprint, depth, descriptor, displayablePublicKey }  // account 3
     ]
 }
 ```
@@ -117,8 +127,8 @@ Error
 ```javascript
 {
     success: false,
-    payload: {
-        error: string // error message
+    error: {
+        message: string // error message
     }
 }
 ```

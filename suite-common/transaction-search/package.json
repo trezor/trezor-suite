@@ -12,13 +12,12 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
-        "@suite-common/metadata-types": "workspace:*",
         "@suite-common/test-utils": "workspace:*",
         "@suite-common/wallet-types": "workspace:*",
         "@suite-common/wallet-utils": "workspace:*",
         "@trezor/blockchain-link": "workspace:*",
         "@trezor/blockchain-link-types": "workspace:*",
         "@trezor/utils": "workspace:*",
-        "react": "19.1.0"
+        "react": "19.2.3"
     }
 }

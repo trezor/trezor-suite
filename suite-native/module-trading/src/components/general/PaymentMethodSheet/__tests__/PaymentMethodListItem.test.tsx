@@ -1,35 +1,65 @@
-import { act, fireEvent, renderWithBasicProvider } from '@suite-native/test-utils';
+import { getTranslation } from '@suite-native/intl';
+import { act, renderWithStoreProvider, userEvent } from '@suite-native/test-utils-store';
+import {
+    cexdirectCreditCardBuyQuote,
+    getInitializedTradingState,
+    mercuryoApplePayBuyQuote,
+} from '@suite-native/trading-fixtures';
 
-import { PaymentMethodListItem, PaymentMethodListItemProps } from '../PaymentMethodListItem';
+import { PaymentMethodListItem, type PaymentMethodListItemProps } from '../PaymentMethodListItem';
 
 describe('PaymentMethodListItem', () => {
-    const renderPaymentMethodListItem = (props: Partial<PaymentMethodListItemProps>) =>
-        renderWithBasicProvider(
+    const getPreloadedState = () => ({ wallet: { trading: getInitializedTradingState() } });
+
+    const renderPaymentMethodListItem = (props: Partial<PaymentMethodListItemProps<any>>) =>
+        renderWithStoreProvider(
             <PaymentMethodListItem
-                paymentMethodName="Credit card"
-                orderId="orderId"
-                isSelected={false}
+                quote={mercuryoApplePayBuyQuote}
                 onPress={jest.fn()}
                 {...props}
             />,
+            { preloadedState: getPreloadedState() },
         );
 
-    it('should render given name', () => {
-        const { getByText } = renderPaymentMethodListItem({
-            paymentMethodName: 'Debit card',
-        });
+    it('should render given name and rate', () => {
+        const { getByText } = renderPaymentMethodListItem({});
 
-        expect(getByText('Debit card')).toBeTruthy();
+        expect(getByText('Apple Pay')).toBeOnTheScreen();
+        expect(getByText('€9,998.32 / 1 BTC')).toBeOnTheScreen();
+        expect(getByText(getTranslation('moduleTrading.providerListItem.rate'))).toBeOnTheScreen();
     });
 
-    it('should call onPress callback on item press', () => {
+    it('should render payment method logo for branded payment methods', () => {
+        const { getByTestId } = renderPaymentMethodListItem({});
+
+        expect(getByTestId('@icons/payment-method-logo/applePay')).toBeOnTheScreen();
+    });
+
+    it('should render fallback icon for non-branded payment methods', () => {
+        const { getByTestId } = renderPaymentMethodListItem({
+            quote: cexdirectCreditCardBuyQuote,
+        });
+
+        expect(getByTestId('@icons/payment-method-icon/creditCard')).toBeOnTheScreen();
+    });
+
+    it('should call onPress callback on item press', async () => {
         const onPress = jest.fn();
         const { getByText } = renderPaymentMethodListItem({ onPress });
 
-        act(() => {
-            fireEvent.press(getByText('Credit card'));
+        await act(async () => {
+            await userEvent.press(getByText('Apple Pay'));
         });
 
         expect(onPress).toHaveBeenCalledTimes(1);
+    });
+
+    it('should not render rate row when rate is unknown', () => {
+        const { getByText, queryByText } = renderPaymentMethodListItem({
+            quote: { ...mercuryoApplePayBuyQuote, rate: undefined, receiveStringAmount: undefined },
+        });
+
+        expect(getByText('Apple Pay')).toBeOnTheScreen();
+        expect(queryByText('€9,998.32 / 1 BTC')).toBeNull();
     });
 });

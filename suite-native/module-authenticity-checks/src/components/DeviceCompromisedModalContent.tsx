@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
 import { Button, IconListTextItem, TitleHeader, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
@@ -50,7 +50,7 @@ export const DeviceCompromisedModalContent = ({
                 <InformativeList />
             </VStack>
             <VStack spacing="sp12">
-                <Button colorScheme="redBold" onPress={handleContactSupportClick}>
+                <Button intent="critical" priority="primary" onPress={handleContactSupportClick}>
                     <Translation id="moduleAuthenticityChecks.deviceCompromised.buttonContactSupport" />
                 </Button>
                 {closeButtonContent}

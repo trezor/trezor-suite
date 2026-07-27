@@ -3,21 +3,18 @@ import { useThrottle } from 'react-use';
 
 import { selectAccountsWithSuiteSyncLabel } from '@suite-common/suite-sync';
 import { selectTokenDefinitions } from '@suite-common/token-definitions';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     selectBaseCurrency,
     selectCurrentFiatRates,
     selectVisibleDeviceAccounts,
 } from '@suite-common/wallet-core';
-import { AccountKey } from '@suite-common/wallet-types';
-import {
-    accountsFiatBalanceInDescOrderComparator,
-    filterAccountsByNetworkSymbol,
-} from '@suite-common/wallet-utils';
-import { StaticSessionId } from '@trezor/connect';
+import { type AccountKey } from '@suite-common/wallet-types';
+import { filterAccountsByNetworkSymbol } from '@suite-common/wallet-utils';
+import { type StaticSessionId } from '@trezor/connect';
 import { useCurrentRef } from '@trezor/react-utils';
 
-import { AccountWithTokensOption } from 'src/components/suite/asset-picker/types';
+import { type AccountWithTokensOption } from 'src/components/suite/asset-picker/types';
 import {
     createAccountOption,
     createHiddenTokensOption,
@@ -59,7 +56,7 @@ export function useAccountWithTokensOptions({
     const throttledAccounts = useThrottle(accounts, 1000);
     const fiatRatesRef = useCurrentRef(fiatRates);
 
-    const accountsAndTokensSortedByFiatBalance = useMemo(() => {
+    const accountsAndTokensSortedByCoin = useMemo(() => {
         const fiatRates = fiatRatesRef.current;
 
         if (!fiatRates) {
@@ -71,48 +68,39 @@ export function useAccountWithTokensOptions({
             networkSymbolFilter,
         );
 
-        return networkAccounts
-            .toSorted(function sortByFiatBalanceInDescOrder(accountA, accountB) {
-                return accountsFiatBalanceInDescOrderComparator({
-                    accountA,
-                    accountB,
-                    baseCurrencyCode,
-                    fiatRates,
-                });
-            })
-            .map(account => {
-                const { shownWithBalance, hiddenWithBalance } = getTokens({
-                    tokens: account.tokens ?? [],
-                    symbol: account.symbol,
-                    tokenDefinitions: tokenDefinitions?.[account.symbol]?.coin,
-                });
-
-                const sortedTokensByFiatBalance = enhanceTokensWithRates(
-                    shownWithBalance,
-                    baseCurrencyCode,
-                    account.symbol,
-                    fiatRates,
-                ).sort(sortTokensWithRates);
-
-                const sortedHiddenTokensByFiatBalance = enhanceTokensWithRates(
-                    hiddenWithBalance,
-                    baseCurrencyCode,
-                    account.symbol,
-                    fiatRates,
-                ).sort(sortTokensWithRates);
-
-                return {
-                    account,
-                    tokens: sortedTokensByFiatBalance,
-                    hiddenTokens: sortedHiddenTokensByFiatBalance,
-                };
+        return networkAccounts.map(account => {
+            const { shownWithBalance, hiddenWithBalance } = getTokens({
+                tokens: account.tokens ?? [],
+                symbol: account.symbol,
+                tokenDefinitions: tokenDefinitions?.[account.symbol]?.coin,
             });
+
+            const sortedTokensByFiatBalance = enhanceTokensWithRates(
+                shownWithBalance,
+                baseCurrencyCode,
+                account.symbol,
+                fiatRates,
+            ).sort(sortTokensWithRates);
+
+            const sortedHiddenTokensByFiatBalance = enhanceTokensWithRates(
+                hiddenWithBalance,
+                baseCurrencyCode,
+                account.symbol,
+                fiatRates,
+            ).sort(sortTokensWithRates);
+
+            return {
+                account,
+                tokens: sortedTokensByFiatBalance,
+                hiddenTokens: sortedHiddenTokensByFiatBalance,
+            };
+        });
     }, [fiatRatesRef, throttledAccounts, networkSymbolFilter, baseCurrencyCode, tokenDefinitions]);
 
     return useMemo(() => {
         const accountsWithTokens: AccountWithTokensOption[] = [];
 
-        for (const { account, tokens, hiddenTokens } of accountsAndTokensSortedByFiatBalance) {
+        for (const { account, tokens, hiddenTokens } of accountsAndTokensSortedByCoin) {
             accountsWithTokens.push(createAccountOption(account));
 
             tokens.forEach(token => {
@@ -127,5 +115,5 @@ export function useAccountWithTokensOptions({
         }
 
         return accountsWithTokens;
-    }, [accountsAndTokensSortedByFiatBalance, expandedHiddenTokensGroups]);
+    }, [accountsAndTokensSortedByCoin, expandedHiddenTokensGroups]);
 }

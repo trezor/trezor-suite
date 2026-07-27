@@ -1,22 +1,23 @@
-import { events } from '@suite/analytics';
+import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
-import { Route } from '@suite-common/suite-types';
+import { type Route, goto } from '@suite/router';
+import { useServices } from '@suite-common/dependency-injection';
 import { getTradingPrefilledFromAccountData, tradingActions } from '@suite-common/trading';
 import { getNetworkDisplaySymbol, getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
 import { useDisplayBaseCurrency } from '@suite-common/wallet-core';
 import { hasNetworkFeatures } from '@suite-common/wallet-utils';
 import { Button, Card, Flex, InfoItem, Row, Text } from '@trezor/components';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
-import { CoinLogo } from '@trezor/product-components';
-import { spacings } from '@trezor/theme';
+import { TokenIcon } from '@trezor/product-components';
 import { exhaustive } from '@trezor/type-utils';
 
-import { goto } from 'src/actions/suite/routerActions';
 import { DashboardSection } from 'src/components/dashboard';
 import { PriceTicker, TrendTicker } from 'src/components/suite';
-import { useDevice, useDispatch, useLayoutSize } from 'src/hooks/suite';
-import { useAnalytics } from 'src/support/useAnalytics';
-import { Account } from 'src/types/wallet';
+import { useDispatch, useLayoutSize } from 'src/hooks/suite';
+import { type Account } from 'src/types/wallet';
+
+import { WrapNativeTokenButton } from './WrapNativeTokenButton';
 
 type TradeBoxProps = {
     account: Account;
@@ -28,7 +29,7 @@ export const TradeBox = ({ account }: TradeBoxProps) => {
     const { isBelowTablet, isBelowMobile } = useLayoutSize();
     const dispatch = useDispatch();
     const { device } = useDevice();
-    const analytics = useAnalytics();
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
     const { shallDisplayBaseCurrency } = useDisplayBaseCurrency(account.symbol);
 
     const isStakeNetwork = hasNetworkFeatures(account, 'staking');
@@ -44,6 +45,18 @@ export const TradeBox = ({ account }: TradeBoxProps) => {
     }) => {
         const gotoRouteName: Route['name'] =
             type === 'stake' ? 'wallet-staking' : `wallet-trading-${type}`;
+        const gotoProps =
+            type === 'stake'
+                ? {
+                      routeName: gotoRouteName,
+                      preserveParams: true,
+                      params: {
+                          symbol: account.symbol,
+                          accountIndex: account.index,
+                          accountType: account.accountType,
+                      },
+                  }
+                : { routeName: gotoRouteName };
         const dataTestId = type === 'stake' ? undefined : `@trading/menu/wallet-trading-${type}`;
 
         const handleOnClick = () => {
@@ -53,7 +66,7 @@ export const TradeBox = ({ account }: TradeBoxProps) => {
                 ),
             );
 
-            dispatch(goto(gotoRouteName, { preserveParams: type !== 'exchange' }));
+            dispatch(goto(gotoProps));
 
             switch (type) {
                 case 'buy':
@@ -103,20 +116,20 @@ export const TradeBox = ({ account }: TradeBoxProps) => {
     };
 
     return (
-        <DashboardSection heading={<Translation id="TR_NAV_TRADE" />}>
+        <DashboardSection>
             <Card>
                 <Flex
                     direction={isBelowTablet ? 'column' : 'row'}
                     flexWrap="wrap"
                     justifyContent={isBelowTablet ? 'flex-start' : 'space-between'}
-                    gap={spacings.lg}
+                    gap={20}
                 >
                     <Flex
                         direction={isBelowMobile ? 'column' : 'row'}
-                        gap={isBelowMobile ? spacings.md : spacings.xxxl}
+                        gap={isBelowMobile ? 16 : 40}
                     >
-                        <Row gap={spacings.sm}>
-                            <CoinLogo size={36} symbol={account.symbol} type="tokenWithNetwork" />
+                        <Row gap={12}>
+                            <TokenIcon size={40} symbol={account.symbol} showNetworkIcon />
                             <InfoItem
                                 label={getNetworkDisplaySymbolName(account.symbol)}
                                 typographyStyle="body-md-strong"
@@ -157,7 +170,7 @@ export const TradeBox = ({ account }: TradeBoxProps) => {
                             </>
                         ) : null}
                     </Flex>
-                    <Row gap={spacings.sm}>
+                    <Row gap={12}>
                         {isStakeNetwork && (
                             <ActionButton type="stake">
                                 <Translation id="TR_STAKE_STAKE" />
@@ -174,6 +187,7 @@ export const TradeBox = ({ account }: TradeBoxProps) => {
                                 <Translation id="TR_TRADING_SWAP" />
                             </ActionButton>
                         )}
+                        <WrapNativeTokenButton account={account} />
                     </Row>
                 </Flex>
             </Card>

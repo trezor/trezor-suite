@@ -16,7 +16,7 @@ node_modules
 *.sublime-workspace
 .vscode/**/*
 !.vscode/*.code-snippets
-tags*
+/tags*
 
 # Logs
 logs
@@ -46,17 +46,19 @@ __pycache__/
 screenshots
 test-results
 playwright-report
+packages/e2e-utils/src/fixBot/reports/
 suite-native/app/.metadata/
 suite-native/app/artifacts/
 
 # build outputs
 lib
 libDev
-libESM
 dist
 public
+!packages/analytics-docs/public/
 coverage
 tmp
+*.tgz
 
 
 ## React Native section ##
@@ -151,3 +153,15 @@ packages/suite-data/files/translations/master.json
 
 # local config for Claude
 .claude/
+.mcp.json
+
+# playwright trace CLI extraction dir
+.playwright-cli/
+
+# AI agent plans
+/plans
+
+# coverage map and test analysis files
+coverage-map/
+
+suite-common/icons/files/cryptoicons

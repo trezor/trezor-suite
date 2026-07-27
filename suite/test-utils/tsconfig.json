@@ -3,12 +3,20 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         {
+            "path": "../../suite-common/dependency-injection"
+        },
+        {
             "path": "../../suite-common/formatters"
+        },
+        {
+            "path": "../../suite-common/platform-encryption"
         },
         {
             "path": "../../suite-common/test-utils"
         },
         { "path": "../intl" },
-        { "path": "../../packages/suite" }
+        { "path": "../router" },
+        { "path": "../../packages/suite" },
+        { "path": "../../packages/type-utils" }
     ]
 }

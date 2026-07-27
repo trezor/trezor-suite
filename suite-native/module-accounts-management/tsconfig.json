@@ -2,13 +2,26 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
+        {
+            "path": "../../suite-common/analytics"
+        },
+        { "path": "../../suite-common/bip329" },
+        {
+            "path": "../../suite-common/dependency-injection"
+        },
         { "path": "../../suite-common/device" },
         {
             "path": "../../suite-common/fiat-services"
         },
         { "path": "../../suite-common/graph" },
         {
+            "path": "../../suite-common/redux-utils"
+        },
+        {
             "path": "../../suite-common/suite-sync"
+        },
+        {
+            "path": "../../suite-common/suite-sync-types"
         },
         {
             "path": "../../suite-common/token-definitions"
@@ -30,9 +43,11 @@
         { "path": "../analytics" },
         { "path": "../atoms" },
         { "path": "../banner-flags" },
+        { "path": "../bip329" },
         { "path": "../device" },
         { "path": "../device-manager" },
         { "path": "../discovery" },
+        { "path": "../feature-feedback" },
         { "path": "../feature-flags" },
         { "path": "../formatters" },
         { "path": "../forms" },
@@ -48,12 +63,16 @@
         },
         { "path": "../navigation" },
         { "path": "../qr-code" },
-        { "path": "../services" },
-        { "path": "../toasts" },
+        { "path": "../suite-sync" },
         { "path": "../tokens" },
         { "path": "../transactions" },
-        { "path": "../../packages/styles" },
+        { "path": "../../packages/device-utils" },
+        {
+            "path": "../../packages/styles-native"
+        },
         { "path": "../../packages/type-utils" },
-        { "path": "../../packages/utils" }
+        { "path": "../../packages/utils" },
+        { "path": "../test-utils-store" },
+        { "path": "../../packages/requirements" }
     ]
 }

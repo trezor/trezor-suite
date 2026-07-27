@@ -3,8 +3,8 @@ import { ReactSVG } from 'react-svg';
 import styled, { useTheme } from 'styled-components';
 
 import {
-    FrameProps,
-    FramePropsKeys,
+    type FrameProps,
+    type FramePropsKeys,
     type TransientProps,
     pickAndPrepareFrameProps,
     withFrameProps,
@@ -48,7 +48,7 @@ export const TrezorLogo = ({ type, width = 'auto', height = 'auto', ...rest }: T
                     if (typeof height === 'number') {
                         svg.setAttribute('height', `${height}px`);
                     }
-                    svg.setAttribute('fill', theme.iconDefault);
+                    svg.setAttribute('fill', theme.contentPrimary);
                 }}
                 loading={Loading}
             />

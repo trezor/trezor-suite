@@ -1,19 +1,19 @@
 import { A, F, G, pipe } from '@mobily/ts-belt';
 
-import { DeviceRootState, selectSelectedDevice } from '@suite-common/device';
+import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import {
     type AccountType,
     type Bip43Path,
-    Network,
+    type Network,
     type NetworkSymbol,
 } from '@suite-common/wallet-config';
-import { Account, AccountKey } from '@suite-common/wallet-types';
+import { type Account, type AccountKey } from '@suite-common/wallet-types';
 import { isCardanoStakingActive, isTestnet, isUtxoBased } from '@suite-common/wallet-utils';
-import { DeviceState, StaticSessionId } from '@trezor/connect';
+import { type DeviceState, type StaticSessionId } from '@trezor/connect';
 
-import { formattedAccountTypeMap } from './accountsConstants';
-import { AccountsRootState } from './accountsReducer';
+import { formattedAccountTypeMap, formattedAccountTypeWithDefaultMap } from './accountsConstants';
+import { type AccountsRootState } from './accountsReducer';
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<
     AccountsRootState & DeviceRootState
@@ -105,7 +105,7 @@ export const selectDeviceAccountForNetworkSymbolAndAccountTypeWithIndex = create
     (accounts, accountIndex) => {
         if (accountIndex === undefined || accountIndex < 0) return undefined;
 
-        return accounts[accountIndex];
+        return accounts.find(account => account.index === accountIndex);
     },
 );
 
@@ -219,6 +219,16 @@ export const selectAccountNetworkSymbol = createMemoizedSelector(
     account => account?.symbol ?? null,
 );
 
+export const selectAccountDescriptor = createMemoizedSelector(
+    [selectAccountByKey],
+    account => account?.descriptor ?? null,
+);
+
+export const selectAccountDeviceState = createMemoizedSelector(
+    [selectAccountByKey],
+    account => account?.deviceState ?? null,
+);
+
 export const selectAccountNetworkType = createMemoizedSelector(
     [selectAccountByKey],
     account => account?.networkType ?? null,
@@ -236,6 +246,17 @@ export const selectFormattedAccountType = createMemoizedSelector([selectAccountB
 
     return formattedType ?? null;
 });
+
+export const selectFormattedAccountTypeWithDefault = createMemoizedSelector(
+    [selectAccountByKey],
+    account => {
+        if (!account) return null;
+        const { networkType, accountType } = account;
+        const formattedType = formattedAccountTypeWithDefaultMap[networkType]?.[accountType];
+
+        return formattedType ?? null;
+    },
+);
 
 export const selectIsAccountUtxoBased = createMemoizedSelector([selectAccountByKey], account =>
     account ? isUtxoBased(account) : false,
@@ -291,6 +312,38 @@ export const selectSolAccountHasStaked = createMemoizedSelector([selectAccountBy
 
     return !!account.misc.solStakingAccounts?.length;
 });
+
+export const selectSolExternalStakingAccounts = createMemoizedSelector(
+    [selectAccountByKey],
+    account => {
+        if (!account?.misc || account.networkType !== 'solana') return [];
+
+        return account.misc.solExternalStakingAccounts ?? [];
+    },
+);
+
+export const selectHasSolExternalStakingAccounts = createMemoizedSelector(
+    [selectAccountByKey],
+    account => {
+        if (!account?.misc || account.networkType !== 'solana') return false;
+
+        return (account.misc.solExternalStakingAccounts?.length ?? 0) > 0;
+    },
+);
+
+export const selectSolExternalStakingAccountsTotalStaked = createMemoizedSelector(
+    [selectAccountByKey],
+    account => {
+        if (!account?.misc || account.networkType !== 'solana') return '0';
+
+        const totalLamports = (account.misc.solExternalStakingAccounts ?? []).reduce(
+            (sum, { stake }) => sum + BigInt(stake ?? '0'),
+            0n,
+        );
+
+        return totalLamports.toString();
+    },
+);
 
 export const selectAdaAccountHasStaked = createMemoizedSelector([selectAccountByKey], account =>
     isCardanoStakingActive(account),

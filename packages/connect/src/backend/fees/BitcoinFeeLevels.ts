@@ -1,9 +1,10 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/tx/Fees.js
 
+import type { BitcoinNetworkInfo } from '@trezor/connect-common';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
+import { clamp } from '@trezor/utils/src/number';
 
-import type { BitcoinNetworkInfo } from '../../types';
-import { Blockchain } from '../Blockchain';
+import type { Blockchain } from '../Blockchain';
 import { MiscFeeLevels } from './MiscFeeLevels';
 import { DEFAULT_BITCOIN_LONGTERM_FEE_RATE } from '../../data/defaultFeeLevels';
 
@@ -33,8 +34,10 @@ export class BitcoinFeeLevels extends MiscFeeLevels {
                 // in case of invalid blockbook response, keep the previous or default data
                 if (isNaN(feePerB) || feePerB < 0) return;
 
-                const trimmedFeePerUnit = Math.min(maxFee, Math.max(minFee, feePerB));
-                this.levels[index].feePerUnit = trimmedFeePerUnit.toString();
+                const trimmedFeePerUnit = clamp(feePerB, minFee, maxFee);
+                // @ts-expect-error: indexing with noUncheckedIndexedAccess
+                const level: (typeof this.levels)[number] = this.levels[index];
+                level.feePerUnit = trimmedFeePerUnit.toString();
             });
             this.wasFetchedSuccessfully = true;
         } catch {

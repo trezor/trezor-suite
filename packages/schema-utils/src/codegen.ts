@@ -1,19 +1,18 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import * as Codegen from '@sinclair/typebox-codegen/typescript';
 import fs from 'fs';
+import { pathToFileURL } from 'url';
 
-export function generate(code: string) {
+const preprocessCode = (code: string) => {
     // Make some replacements to make the code processable by the generator
     // Since there are some issues with typeof
     code = code.replace(/typeof undefined/g, 'undefined');
     code = code.replace(/keyof typeof/g, 'keyof');
-    let helpers = '';
-    // Duplicate types added at end of message.ts, as these are too complex for the generator
-    const helpersIndex = code.indexOf('// @COPY');
-    if (helpersIndex >= 0) {
-        helpers = code.substring(helpersIndex);
-        code = code.substring(0, helpersIndex);
-    }
+
+    return { code };
+};
+
+const runTypeBoxCodegen = (code: string) => {
     // Make generator aware of custom types
     const customTypesMapping = {
         ArrayBuffer: 'Type.ArrayBuffer()',
@@ -36,6 +35,11 @@ export function generate(code: string) {
     Object.entries(customTypesMapping).forEach(([key, value]) => {
         output = output.replace(new RegExp(`\\b${key}\\b`, 'g'), value);
     });
+
+    return output;
+};
+
+const normalizeEnums = (output: string) => {
     // Find enum occurences
     const enums = [...output.matchAll(/enum Enum(\w+) {/g)].map(m => m[1]);
     // Replace possible keyof for each enum
@@ -56,16 +60,27 @@ export function generate(code: string) {
             `Type.KeyOfEnum(${e}$1)`,
         );
     });
-    // Add import of lib
-    output = `import { Type, Static, CloneType } from '@trezor/schema-utils';\n\n${output}`;
-    // Add eslint ignore for camelcase, since some type names use underscores
-    output = `/* eslint-disable camelcase */\n${output}`;
-    // Add types for message schema
-    if (output.indexOf('export type MessageType =') > -1) {
-        output = `${output}\n\n${helpers}`;
-    }
 
     return output;
+};
+
+export function generateTypeBox(rawCode: string) {
+    const { code } = preprocessCode(rawCode);
+    let output = runTypeBoxCodegen(code);
+    output = normalizeEnums(output);
+
+    // Add import of lib
+    const schemaUtilsImports = ['Type', 'Static'];
+    if (/\bCloneType\b/.test(output)) {
+        schemaUtilsImports.push('CloneType');
+    }
+    output = `import { ${schemaUtilsImports.join(', ')} } from '@trezor/schema-utils';\n\n${output}`;
+
+    return output;
+}
+
+export function generate(code: string) {
+    return generateTypeBox(code);
 }
 
 export function generateForFile(fileName: string) {
@@ -74,9 +89,10 @@ export function generateForFile(fileName: string) {
     return generate(code);
 }
 
-// If ran directly, output code for file passed as argument
+// ESM equivalent of CommonJS `require.main === module`: only run when this file
+// is executed directly from the CLI, not when it is imported as a module.
 /* istanbul ignore next */
-if (require.main === module) {
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
     const fileName = process.argv[2];
     if (!fileName || !fs.existsSync(fileName)) {
         throw new Error('File not found');

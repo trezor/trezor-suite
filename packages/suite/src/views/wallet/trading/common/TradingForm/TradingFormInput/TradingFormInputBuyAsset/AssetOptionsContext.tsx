@@ -1,14 +1,17 @@
-import { ReactNode, createContext, useContext, useMemo } from 'react';
+import { type ReactNode, createContext, useContext, useMemo } from 'react';
 
-import { CryptoId } from 'invity-api';
+import { type CryptoId } from 'invity-api';
 
-import { TradingAssetOption, useTradingAssets } from '@suite-common/trading';
+import { type TradingAssetOption, useTradingAssets } from '@suite-common/trading';
+import { throwError } from '@trezor/utils';
 
 const AssetOptionsContext = createContext<{
     assets: TradingAssetOption[];
+    includedCryptoIds: Set<CryptoId>;
     excludedCryptoIds: Set<CryptoId>;
 }>({
     assets: [],
+    includedCryptoIds: new Set(),
     excludedCryptoIds: new Set(),
 });
 
@@ -27,7 +30,7 @@ export function AssetOptionsProvider({
     const contextValue = useMemo(() => {
         const { assets } = buildAssetOptions({ includedCryptoIds });
 
-        return { assets, excludedCryptoIds };
+        return { assets, includedCryptoIds, excludedCryptoIds };
     }, [buildAssetOptions, excludedCryptoIds, includedCryptoIds]);
 
     return (
@@ -35,12 +38,6 @@ export function AssetOptionsProvider({
     );
 }
 
-export function useAssetsContext() {
-    const context = useContext(AssetOptionsContext);
-
-    if (context === null) {
-        throw Error(`Can't use useAssetsContext outside of AssetOptionsProvider`);
-    }
-
-    return context;
-}
+export const useAssetsContext = () =>
+    useContext(AssetOptionsContext) ??
+    throwError(`Can't use useAssetsContext outside of AssetOptionsProvider`);

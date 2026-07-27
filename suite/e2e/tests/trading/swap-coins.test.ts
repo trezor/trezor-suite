@@ -30,9 +30,9 @@ const transactionStates = [
 ];
 
 // Expected values based on our mocked responses
-const sendAmount = swapQuotesSolanaBTC[0].sendStringAmount;
-const receiveAmount = localizeNumber(swapQuotesSolanaBTC[0].receiveStringAmount);
-const provider = getCompanyNameFromList(swapQuotesSolanaBTC[0].exchange, 'swapList');
+const sendAmount = swapQuotesSolanaBTC[0]?.sendStringAmount ?? '';
+const receiveAmount = localizeNumber(swapQuotesSolanaBTC[0]?.receiveStringAmount ?? '');
+const provider = getCompanyNameFromList(swapQuotesSolanaBTC[0]?.exchange ?? '', 'swapList');
 const formattedSendAmount = `${localizeNumber(sendAmount)} SOL`;
 const formattedReceiveAmount = `${receiveAmount} BTC`;
 const { sendAddress } = swapTradeSolanaBTC;
@@ -40,6 +40,7 @@ const formattedSendAddress = formatAddressWithNewlines(sendAddress);
 
 test.describe('Trading - Swap coins', { tag: ['@webOnly', '@T3T1', '@T3W1'] }, () => {
     test.use({ deviceSetup: { mnemonic: 'mnemonic_academic', passphrase_protection: true } });
+
     test.beforeEach(
         async ({ page, onboardingPage, dashboardPage, tradingMock, walletPage, settingsPage }) => {
             await test.step('Mocking responses', async () => {
@@ -53,8 +54,10 @@ test.describe('Trading - Swap coins', { tag: ['@webOnly', '@T3T1', '@T3W1'] }, (
                     await route.fulfill({ json: { status: 'SENDING', sendAddress } });
                 });
             });
+
             await onboardingPage.completeOnboarding();
-            await settingsPage.changeNetworks({ enableNetworks: ['sol'] });
+            await settingsPage.changeNetworks({ enableNetworks: ['sol', 'btc'] });
+            await dashboardPage.navigateTo();
             await dashboardPage.deviceSwitchingOpenButton.click();
             await dashboardPage.addHiddenWallet(process.env.PASSPHRASE!);
             await walletPage.openSwapTrading({ symbol: 'sol' });
@@ -130,7 +133,7 @@ test.describe('Trading - Swap coins', { tag: ['@webOnly', '@T3T1', '@T3W1'] }, (
                     body: [
                         ['Amount:'],
                         [formattedSendAmount],
-                        ['Transaction fee:'],
+                        ['Transaction fee'],
                         device.wrapText(`${solanaFee} SOL`, { wrapByWords: true }),
                     ],
                     actions: { right_button: 'Hold to sign' },
@@ -142,22 +145,17 @@ test.describe('Trading - Swap coins', { tag: ['@webOnly', '@T3T1', '@T3W1'] }, (
 
             await devicePrompt.waitForFinalPromptAndConfirm();
         });
+
         // Thanks to our mocked responses, the crypto is actually not send.
         await test.step('Send crypto to provider', async () => {
             await page.clock.install();
             await devicePrompt.sendButton.click();
-            await expect(page.getByTestId('@toast/tx-exchange/send-account')).toContainText(
-                'Solana #1',
-            );
-            await expect(page.getByTestId('@toast/tx-exchange/receive-account')).toContainText(
-                'Bitcoin #1',
-            );
-            await expect(page.getByTestId('@toast/tx-exchange/send-amount')).toContainText(
+            await tradingPage.verifySwapToast({
+                sendAccount: 'Solana #1',
+                receiveAccount: 'Bitcoin #1',
                 sendAmount,
-            );
-            await expect(page.getByTestId('@toast/tx-exchange/receive-amount')).toContainText(
                 receiveAmount,
-            );
+            });
         });
 
         for (const { transactionStatus, displayedText, translationValues } of transactionStates) {

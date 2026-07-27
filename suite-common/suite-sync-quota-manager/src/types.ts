@@ -1,4 +1,4 @@
-import { WalletDescriptor } from '@suite-common/wallet-types';
+import { type WalletDescriptor } from '@trezor/device-utils';
 
 export type RegisteredDevice = {
     deviceId: string;

@@ -1,6 +1,8 @@
-import { Translation, TranslationKey } from '@suite/intl';
-import { NetworkSymbol } from '@suite-common/wallet-config';
-import { Account, FormState } from '@suite-common/wallet-types';
+import { Address } from '@suite/address';
+import { HiddenPlaceholder } from '@suite/discreet-mode';
+import { Translation, type TranslationKey } from '@suite/intl';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type Account, type FormState } from '@suite-common/wallet-types';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import {
     Banner,
@@ -13,13 +15,11 @@ import {
     Text,
     TextButton,
 } from '@trezor/components';
-import { spacings } from '@trezor/theme';
+import { ArrowRightIcon, WarningIcon } from '@trezor/icons';
 import { HELP_CENTER_REPLACE_BY_FEE_BITCOIN } from '@trezor/urls';
 
-import { Address } from 'src/components/suite/Address';
 import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
-import { HiddenPlaceholder } from 'src/components/suite/HiddenPlaceholder';
-import { RbfContextValues, useRbfContext } from 'src/hooks/wallet/useRbfForm';
+import { type RbfContextValues, useRbfContext } from 'src/hooks/wallet/useRbfForm';
 
 type AmountRowProps = {
     labelTranslationKey: TranslationKey;
@@ -61,10 +61,10 @@ const ReducedAmount = ({ composedLevels, setMaxOutputId, account, selectedFee }:
 
     return (
         <>
-            <Icon name="arrowRight" />
+            <Icon as={ArrowRightIcon} />
             <AmountItem
                 labelTranslationKey="TR_RBF_NEW_AMOUNT"
-                amount={precomposedTx.outputs[setMaxOutputId].amount.toString()}
+                amount={precomposedTx.outputs[setMaxOutputId]?.amount.toString() ?? '0'}
                 symbol={account.symbol}
                 shouldSendInSats={true} // precomposedTx.outputs is always in Sats
             />
@@ -105,8 +105,8 @@ export const DecreasedOutputs = () => {
     };
 
     return (
-        <Card fillType="flat" paddingType="none">
-            <Row justifyContent="space-between" alignItems="center" padding={spacings.md}>
+        <Card type="contrast" paddingType="none">
+            <Row justifyContent="space-between" alignItems="center" padding={16}>
                 <Text typographyStyle="body-md">
                     <Translation id="TR_AMOUNT_REDUCED_TXS" />
                 </Text>
@@ -115,12 +115,12 @@ export const DecreasedOutputs = () => {
                 </TextButton>
             </Row>
 
-            <Divider margin={spacings.zero} />
-            <Column margin={spacings.md} gap={spacings.md}>
+            <Divider margin={0} />
+            <Column margin={16} gap={16}>
                 <Banner
                     intent="warning"
                     data-testid="@send/decreased-outputs"
-                    icon="warning"
+                    icon={WarningIcon}
                     description={<Translation id={getDecreaseWarring()} />}
                 />
                 {useRadio && (
@@ -128,7 +128,7 @@ export const DecreasedOutputs = () => {
                         <Translation id="TR_DECREASED_AMOUNT_SELECTION_EXPLANATION" />
                     </Text>
                 )}
-                <Column gap={spacings.md} alignItems="center">
+                <Column gap={16} alignItems="center">
                     {formValues.outputs.flatMap((output, i) => {
                         if (typeof output.address !== 'string') return null;
                         const isChecked = setMaxOutputId === i;
@@ -145,9 +145,9 @@ export const DecreasedOutputs = () => {
                                           }
                                         : undefined
                                 }
-                                isActive={useRadio && isChecked}
+                                isSelected={useRadio && isChecked}
                             >
-                                <Row gap={spacings.sm}>
+                                <Row gap={12}>
                                     <AmountItem
                                         labelTranslationKey="TR_RBF_ORIGINAL_AMOUNT"
                                         amount={output.amount}

@@ -1,0 +1,10 @@
+import type { SVGProps } from 'react';
+const SvgSlideshow = (props: SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" {...props}>
+        <path
+            fill="currentColor"
+            d="M24 6H8a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2m0 18H8V8h16zm6-17v18a1 1 0 0 1-2 0V7a1 1 0 0 1 2 0M4 7v18a1 1 0 1 1-2 0V7a1 1 0 0 1 2 0"
+        />
+    </svg>
+);
+export { SvgSlideshow as ReactComponent };

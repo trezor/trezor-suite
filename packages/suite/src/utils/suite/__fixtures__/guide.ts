@@ -1,4 +1,4 @@
-import { GuideArticle, GuideCategory } from '@suite-common/suite-types';
+import { type GuideArticle, type GuideCategory } from '@suite-common/suite-types';
 import { testMocks } from '@suite-common/test-utils';
 
 const { getGuideNode } = testMocks;

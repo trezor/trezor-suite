@@ -1,14 +1,14 @@
-import { PayloadAction } from '@reduxjs/toolkit';
+import { type PayloadAction } from '@reduxjs/toolkit';
 
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 
 import { connectPopupActions } from './connectPopupActions';
 import { getPermissionDeferred } from './connectPopupPromiseManager';
 import {
-    AppRememberedPermission,
+    type AppRememberedPermission,
     CALL_SOURCE_WALLETCONNECT,
-    ConnectPopupCall,
-    ConnectPopupCallWithState,
+    type ConnectPopupCall,
+    type ConnectPopupCallWithState,
 } from './connectPopupTypes';
 
 export type ConnectPopupState = {
@@ -21,8 +21,8 @@ export type ConnectPopupStateRootState = {
 };
 
 type StorageActionPayload = {
-    connect: {
-        permissions: AppRememberedPermission[];
+    connect?: {
+        permissions?: AppRememberedPermission[] | null;
     };
 };
 
@@ -38,7 +38,24 @@ export const prepareConnectPopupReducer = createReducerWithExtraDeps(
             .addCase(
                 extra.actionTypes.storageLoad,
                 (state, { payload }: PayloadAction<StorageActionPayload>) => {
-                    if (payload.connect) state.permissions = payload.connect.permissions;
+                    if (payload.connect) {
+                        const permissions = Array.isArray(payload.connect.permissions)
+                            ? payload.connect.permissions
+                            : [];
+
+                        state.permissions = permissions.filter(
+                            (permission): permission is AppRememberedPermission =>
+                                permission !== null &&
+                                typeof permission === 'object' &&
+                                'allowedPermissions' in permission &&
+                                Array.isArray(permission.allowedPermissions) &&
+                                // Drop entries that do not have the expected format.
+                                permission.allowedPermissions.every(
+                                    (t: unknown) =>
+                                        t !== null && typeof t === 'object' && 'permission' in t,
+                                ),
+                        );
+                    }
                 },
             )
             .addCase(connectPopupActions.initiateCall, (state, { payload }) => {
@@ -92,6 +109,26 @@ export const prepareConnectPopupReducer = createReducerWithExtraDeps(
                     };
                 }
             })
+            .addCase(connectPopupActions.selectAccount, (state, { payload }) => {
+                if (
+                    state.activeCall?.state === 'ongoing' ||
+                    state.activeCall?.state === 'select-account'
+                ) {
+                    state.activeCall = {
+                        ...state.activeCall,
+                        state: 'select-account',
+                        ...payload,
+                    };
+                }
+            })
+            .addCase(connectPopupActions.updateSelectAccount, (state, { payload }) => {
+                if (state.activeCall?.state === 'select-account') {
+                    state.activeCall = {
+                        ...state.activeCall,
+                        ...payload,
+                    };
+                }
+            })
             .addCase(connectPopupActions.setSelectedAccountKey, (state, { payload }) => {
                 if (state.activeCall?.state === 'ongoing') {
                     state.activeCall = {
@@ -102,6 +139,15 @@ export const prepareConnectPopupReducer = createReducerWithExtraDeps(
             })
             .addCase(connectPopupActions.finishCall, state => {
                 if (state.activeCall) state.activeCall.state = 'finished';
+            })
+            .addCase(connectPopupActions.clearCall, state => {
+                if (
+                    state.activeCall?.state === 'finished' ||
+                    state.activeCall?.state === 'call-error' ||
+                    state.activeCall?.state === 'error'
+                ) {
+                    state.activeCall = undefined;
+                }
             })
             .addCase(connectPopupActions.deeplinkCallback, (state, { payload }) => {
                 if (
@@ -129,11 +175,49 @@ export const prepareConnectPopupReducer = createReducerWithExtraDeps(
                 }
             })
             .addCase(connectPopupActions.rememberAppPermissions, (state, { payload }) => {
-                state.permissions = state.permissions.filter(p => p.origin !== payload.origin);
-                state.permissions.push(payload);
+                const existing = state.permissions.find(p => p.origin === payload.origin);
+                if (!existing) {
+                    state.permissions.push(payload);
+
+                    return;
+                }
+
+                const newPermissions = payload.allowedPermissions.filter(
+                    next =>
+                        !existing.allowedPermissions.some(
+                            prev => prev.permission === next.permission && prev.coin === next.coin,
+                        ),
+                );
+                existing.allowedPermissions.push(...newPermissions);
+                existing.silentMode = payload.silentMode;
             })
             .addCase(connectPopupActions.forgetAppPermissions, (state, { payload }) => {
                 state.permissions = state.permissions.filter(p => p.origin !== payload.origin);
+            })
+            .addCase(connectPopupActions.forgetAppPermission, (state, { payload }) => {
+                const app = state.permissions.find(p => p.origin === payload.origin);
+                if (!app) {
+                    return;
+                }
+
+                app.allowedPermissions = app.allowedPermissions.filter(
+                    granted =>
+                        !(
+                            granted.permission === payload.permission.permission &&
+                            granted.coin === payload.permission.coin
+                        ),
+                );
+
+                // Drop the whole app entry once its last permission is removed.
+                if (app.allowedPermissions.length === 0) {
+                    state.permissions = state.permissions.filter(p => p.origin !== payload.origin);
+                }
+            })
+            .addCase(connectPopupActions.setAppSilentMode, (state, { payload }) => {
+                const permission = state.permissions.find(p => p.origin === payload.origin);
+                if (permission) {
+                    permission.silentMode = payload.silentMode;
+                }
             })
             .addCase(connectPopupActions.txSimulation, (state, { payload }) => {
                 if (state.activeCall?.state === 'ongoing') {
@@ -184,5 +268,9 @@ export const selectConnectPopupCallWithState = <CallState extends ConnectPopupCa
 export const selectConnectAppPermissions = (state: ConnectPopupStateRootState) =>
     state.connectPopup.permissions.filter(p => p.type !== CALL_SOURCE_WALLETCONNECT);
 
-export const selectWalletConnectAppPermissions = (state: ConnectPopupStateRootState) =>
-    state.connectPopup.permissions.filter(p => p.type === CALL_SOURCE_WALLETCONNECT);
+export const selectIsConnectAppSilentModeByOrigin = (
+    state: ConnectPopupStateRootState,
+    origin: string | undefined,
+) =>
+    !!origin &&
+    state.connectPopup.permissions.some(p => p.origin === origin && p.silentMode === true);

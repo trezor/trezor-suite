@@ -1,13 +1,13 @@
 import { useState } from 'react';
 
+import { setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { AddressType } from '@suite-common/wallet-types';
+import { type AddressType } from '@suite-common/wallet-types';
 import { Card, Checkbox, H2, Modal, Paragraph } from '@trezor/components';
 import { copyToClipboard } from '@trezor/dom-utils';
-import { spacings } from '@trezor/theme';
+import { WarningIcon } from '@trezor/icons';
 
-import { setFlag } from 'src/actions/suite/suiteActions';
 import { useDispatch } from 'src/hooks/suite/useDispatch';
 
 const getAddressTypeText = (addressType: AddressType) => {
@@ -34,7 +34,7 @@ export const CopyAddressModal = ({ address, onCancel, addressType }: CopyAddress
 
     const onCopyAddress = () => {
         if (checked) {
-            dispatch(setFlag('showCopyAddressModal', false));
+            dispatch(setFlag({ key: 'showCopyAddressModal', value: false }));
         }
 
         const result = copyToClipboard(address);
@@ -47,8 +47,8 @@ export const CopyAddressModal = ({ address, onCancel, addressType }: CopyAddress
     return (
         <Modal
             onCancel={onCancel}
-            iconName="warning"
-            variant="warning"
+            icon={WarningIcon}
+            intent="warning"
             bottomContent={
                 <>
                     <Modal.Button onClick={onCopyAddress}>
@@ -63,11 +63,11 @@ export const CopyAddressModal = ({ address, onCancel, addressType }: CopyAddress
             <H2>
                 <Translation id="TR_NOT_YOUR_RECEIVE_ADDRRESS" />
             </H2>
-            <Paragraph intent="neutral" priority="secondary" margin={{ top: spacings.xs }}>
+            <Paragraph intent="neutral" priority="secondary" margin={{ top: 8 }}>
                 <Translation id={getAddressTypeText(addressType)} />
             </Paragraph>
-            <Card margin={{ top: spacings.xl }}>
-                <Checkbox isChecked={checked} onClick={() => setChecked(!checked)}>
+            <Card margin={{ top: 24 }}>
+                <Checkbox isChecked={checked} onChange={() => setChecked(!checked)}>
                     <Translation id="TR_DO_NOT_SHOW_AGAIN" />
                 </Checkbox>
             </Card>

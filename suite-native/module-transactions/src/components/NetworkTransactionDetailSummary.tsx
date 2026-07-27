@@ -2,13 +2,13 @@ import { useSelector } from 'react-redux';
 
 import { A } from '@mobily/ts-belt';
 
-import { TokenDefinitionsRootState } from '@suite-common/token-definitions';
-import { TransactionsRootState } from '@suite-common/wallet-core';
-import { AccountKey } from '@suite-common/wallet-types';
+import { type TokenDefinitionsRootState } from '@suite-common/token-definitions';
+import { type TransactionsRootState } from '@suite-common/wallet-core';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { Box, VStack } from '@suite-native/atoms';
-import { WalletAccountTransaction } from '@suite-native/tokens';
+import { type WalletAccountTransaction } from '@suite-native/tokens';
 import { selectTransactionAddresses } from '@suite-native/transactions';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { TransactionDetailAddressesSection } from './TransactionDetailAddressesSection';
 
@@ -26,7 +26,7 @@ const separatorStyle = prepareNativeStyle<VerticalSeparatorProps>((utils, { inpu
     top: SEPARATOR_TOP_OFFSET,
     width: utils.borders.widths.small,
     height: SINGLE_INPUT_SEPARATOR_HEIGHT,
-    backgroundColor: utils.colors.backgroundNeutralSubdued,
+    backgroundColor: utils.colors.elementFillNeutralBold,
 
     extend: [
         {

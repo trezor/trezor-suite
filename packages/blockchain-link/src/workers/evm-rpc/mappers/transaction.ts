@@ -1,12 +1,12 @@
 import type { Block, Transaction, TransactionReceipt } from 'viem';
 
+import { RESPONSES } from '@trezor/blockchain-link-types';
 import type {
     EnhancedVinVout,
     InternalTransfer,
+    ResponseTypes as Responses,
     TokenTransfer,
 } from '@trezor/blockchain-link-types';
-import { RESPONSES } from '@trezor/blockchain-link-types/src/constants';
-import type * as Responses from '@trezor/blockchain-link-types/src/responses';
 
 import { getTransactionType } from '../utils/transactionType';
 

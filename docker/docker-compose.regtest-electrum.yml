@@ -1,7 +1,0 @@
-services:
-  electrum-regtest:
-    image: ghcr.io/trezor/electrs:latest
-    ports:
-      - "50001:50001"
-    volumes:
-      - ../:/trezor-suite

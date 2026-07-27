@@ -27,6 +27,10 @@ export default withNextra({
     compiler: {
         styledComponents: true,
     },
+    // Disable dev indicators to prevent HMR errors with Nextra 2 pages router.
+    // Next.js 15's handleStaticIndicator accesses window.next.router.components
+    // before the router is initialized, causing "Cannot read properties of undefined" errors.
+    devIndicators: false,
     webpack: (config, { webpack }) => {
         // Image loader
         config.module.rules.push({
@@ -47,18 +51,11 @@ export default withNextra({
                 ),
             }),
         );
-
         if (process.env.BUILD_TARGET === 'webextension') {
             config.plugins.push(
                 new webpack.NormalModuleReplacementPlugin(
                     /@trezor\/connect-web$/,
                     '@trezor/connect-webextension/src/proxy',
-                ),
-                // Replace the full icons bundle with a minimal version containing only used icons
-                // This prevents bundling 2,677 unused SVG files (11MB) into build
-                new webpack.NormalModuleReplacementPlugin(
-                    /@suite-common\/icons\/src\/icons$/,
-                    path.resolve('./src/icons/minimalIcons.ts'),
                 ),
             );
         }

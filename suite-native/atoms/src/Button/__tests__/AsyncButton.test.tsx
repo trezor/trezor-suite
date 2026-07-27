@@ -2,7 +2,7 @@ import { Text } from 'react-native';
 
 import { act, fireEvent, renderWithBasicProvider } from '@suite-native/test-utils';
 
-import { AsyncButton, AsyncButtonProps } from '../AsyncButton';
+import { AsyncButton, type AsyncButtonProps } from '../AsyncButton';
 
 describe('AsyncButton', () => {
     const renderAsyncButton = (props: Partial<AsyncButtonProps>) =>

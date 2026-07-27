@@ -5,10 +5,10 @@
 The script at `docker/docker-connect-test.sh` (repo root) spins up `trezor-user-env` via Docker and runs the integration tests. The first argument is required and selects the test environment:
 
 ```sh
-# Node.js (jest)
+# Node.js (vitest)
 ./docker/docker-connect-test.sh node
 
-# Browser (karma)
+# Browser (vitest + playwright)
 ./docker/docker-connect-test.sh web
 ```
 
@@ -40,14 +40,14 @@ Examples:
 ./docker/docker-connect-test.sh web -d
 ```
 
-## karma test (browser, without Docker)
+## Browser test (without Docker)
 
-Browser console is not visible in the terminal. Use `KARMA_SINGLE_RUN=false` and open http://localhost:8099/debug.html to inspect.
+Testing `@trezor/connect` in a browser environment using Vitest with Playwright.
 
 For local changes to take effect, rebuild `connect-web` before restarting.
 
 ```sh
-TESTS_PATTERN="init" KARMA_SINGLE_RUN=false yarn workspace @trezor/connect test:e2e:web
+TESTS_PATTERN="init" yarn workspace @trezor/connect test:e2e:web
 ```
 
 ## Transactions cache
@@ -75,6 +75,4 @@ Similar to transaction cache. If `process.env.TESTS_USE_WS_CACHE` is set to `tru
 
 [Server](./__wscache__/server.js)
 
-[WebSocketServer in Karma plugin](./karma.plugin.js)
-
-[WsCacheServer in jest.setup](./jest.setup.js)
+[WsCacheServer in vitest.globalSetup](./vitest.globalSetup.ts)

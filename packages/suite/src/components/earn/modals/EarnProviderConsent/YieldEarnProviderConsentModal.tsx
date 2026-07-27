@@ -1,96 +1,131 @@
+import { selectDesktopAnalyticsDep } from '@suite/analytics';
+import { TrezorLink } from '@suite/external-links';
 import { Translation } from '@suite/intl';
-import { EarnAccountRef, EarnFlow, EarnProvider } from '@suite-common/suite-types/src/staking';
+import { events } from '@suite-common/analytics';
+import { useServices } from '@suite-common/dependency-injection';
+import {
+    EarnFlow,
+    type EarnProvider,
+    type EarnYieldContext,
+} from '@suite-common/suite-types/src/staking';
 import { selectTradingCoinSymbolByCryptoId, toTokenCryptoId } from '@suite-common/trading';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { type Account } from '@suite-common/wallet-types';
 import { getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
+import { MORPHO_DISCLAIMER_URL, TREZOR_SUITE_TOS_URL } from '@trezor/urls';
 
 import { useSelector } from 'src/hooks/suite';
-import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 
 import { EarnProviderConsentModalLayout } from './components/EarnProviderConsentModalLayout';
 import { YieldProviderConsentBanners } from './components/YieldProviderConsentBanners';
 import { useEarnProviderConsentActions } from './hooks/useEarnProviderConsentActions';
-import { getEarnProviderName } from './utils/earnProviderConsentUtils';
-import { VotingDelegations } from '../../VotingDelegations/VotingDelegations';
+import { getEarnProviderName } from '../../utils/getEarnProviderName';
+import { VotingDelegations } from '../shared/VotingDelegations/VotingDelegations';
 
 interface YieldEarnProviderConsentModalProps {
+    account: Account;
     onCancel: () => void;
     provider: EarnProvider;
-    accountRef?: EarnAccountRef;
-    yieldId?: string;
-    tokenContractAddress?: string;
+    yieldContext?: EarnYieldContext;
 }
 
 export const YieldEarnProviderConsentModal = ({
+    account,
     onCancel,
     provider,
-    accountRef,
-    yieldId,
-    tokenContractAddress,
+    yieldContext,
 }: YieldEarnProviderConsentModalProps) => {
-    const selectedAccount = useSelector(selectSelectedAccount);
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
 
-    const normalizedTokenContractAddress =
-        selectedAccount && tokenContractAddress
-            ? getContractAddressForNetworkSymbol(selectedAccount.symbol, tokenContractAddress)
-            : undefined;
+    const tokenContractAddress = yieldContext?.tokenContractAddress;
+    const normalizedTokenContractAddress = tokenContractAddress
+        ? getContractAddressForNetworkSymbol(account.symbol, tokenContractAddress)
+        : undefined;
 
-    const tokenSymbolFromAccount = selectedAccount?.tokens?.find(
+    const tokenSymbolFromAccount = account.tokens?.find(
         token =>
             normalizedTokenContractAddress !== undefined &&
             token.contract !== undefined &&
-            getContractAddressForNetworkSymbol(selectedAccount.symbol, token.contract) ===
+            getContractAddressForNetworkSymbol(account.symbol, token.contract) ===
                 normalizedTokenContractAddress,
     )?.symbol;
 
-    const tokenCryptoId =
-        selectedAccount && normalizedTokenContractAddress
-            ? toTokenCryptoId(selectedAccount.symbol, normalizedTokenContractAddress)
-            : undefined;
+    const tokenCryptoId = normalizedTokenContractAddress
+        ? toTokenCryptoId(account.symbol, normalizedTokenContractAddress)
+        : undefined;
 
     const tokenSymbolFromTrading = useSelector(state =>
         selectTradingCoinSymbolByCryptoId(state, tokenCryptoId),
     );
-    const { proceedToSupply, onCancelClick } = useEarnProviderConsentActions({
+    const { proceedToEarnFlow, onCancelClick } = useEarnProviderConsentActions({
         flow: EarnFlow.Yield,
         onCancel,
-        accountRef,
-        yieldId,
-        tokenContractAddress,
+        account,
+        networkSymbol: account.symbol,
+        yieldContext,
     });
-
-    if (!selectedAccount) return null;
-
-    const displaySymbol = getNetworkDisplaySymbol(selectedAccount.symbol);
-    const supplySymbol = tokenSymbolFromAccount ?? tokenSymbolFromTrading ?? displaySymbol;
+    const displaySymbol = getNetworkDisplaySymbol(account.symbol);
+    const depositSymbol = tokenSymbolFromAccount ?? tokenSymbolFromTrading ?? displaySymbol;
     const providerName = getEarnProviderName(provider);
+
+    const handleOnConfirm = () => {
+        analytics.report({
+            type: events.yieldNavigateEvent.name,
+            payload: {
+                action: 'continue',
+                from: 'deposit-legal-modal',
+                to: 'deposit-form',
+                networkSymbol: account.symbol,
+                vaultId: yieldContext?.id,
+            },
+        });
+
+        proceedToEarnFlow();
+    };
+
+    const handleOnCancel = () => {
+        analytics.report({
+            type: events.yieldNavigateEvent.name,
+            payload: {
+                action: 'cancel',
+                from: 'deposit-legal-modal',
+                to: 'deposit-legal-modal',
+                networkSymbol: account.symbol,
+                vaultId: yieldContext?.id,
+            },
+        });
+
+        onCancelClick();
+    };
 
     return (
         <EarnProviderConsentModalLayout
-            heading={<Translation id="TR_EARN_SUPPLY_TOKEN" values={{ symbol: supplySymbol }} />}
-            description={
-                <Translation
-                    id="TR_EARN_YOUR_SUPPLIED_FUNDS_MAINTAINED"
-                    values={{ providerName }}
-                />
-            }
+            heading={<Translation id="TR_EARN_DEPOSIT_TOKEN" values={{ symbol: depositSymbol }} />}
             banners={
                 <YieldProviderConsentBanners
-                    networkType={selectedAccount.networkType}
-                    displaySymbol={displaySymbol}
+                    networkType={account.networkType}
                     providerName={providerName}
                 />
             }
             consentText={
                 <Translation
-                    id="TR_EARN_CONSENT_TO_SUPPLY_WITH_PROVIDER"
-                    values={{ providerName }}
+                    id="TR_EARN_CONSENT_PROTOCOL_TERMS_AND_DISCLAIMER"
+                    values={{
+                        providerName,
+                        tos: chunks => (
+                            <TrezorLink href={TREZOR_SUITE_TOS_URL}>{chunks}</TrezorLink>
+                        ),
+                        disclaimer: chunks => (
+                            <TrezorLink href={MORPHO_DISCLAIMER_URL}>{chunks}</TrezorLink>
+                        ),
+                    }}
                 />
             }
-            onConfirm={proceedToSupply}
-            onCancel={onCancelClick}
+            onConfirm={handleOnConfirm}
+            onCancel={handleOnCancel}
+            networkType={account.networkType}
         >
-            <VotingDelegations />
+            <VotingDelegations account={account} />
         </EarnProviderConsentModalLayout>
     );
 };

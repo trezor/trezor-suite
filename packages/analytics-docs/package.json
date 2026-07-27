@@ -4,28 +4,34 @@
     "type": "module",
     "scripts": {
         "build-data": "tsx ./scripts/buildData.ts",
+        "test:unit": "yarn g:jest -c ./jest.config.cjs",
         "dev": "[ -f public/analytics.json ] || yarn build-data; vite",
         "build": "yarn build-data && vite build",
         "preview": "vite preview",
         "type-check": "yarn g:tsc --build tsconfig.json",
-        "depcheck": "yarn g:depcheck"
+        "depcheck": "yarn g:depcheck",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
         "@suite-common/analytics": "workspace:*",
         "@trezor/components": "workspace:*",
         "@trezor/eslint": "workspace:*",
+        "@trezor/icons": "workspace:*",
         "@trezor/react-utils": "workspace:*",
         "@trezor/theme": "workspace:*",
         "@trezor/utils": "workspace:*",
-        "@vitejs/plugin-react": "^4.7.0",
-        "react": "19.1.0",
-        "react-dom": "19.1.0",
+        "@vitejs/plugin-react": "^6.0.1",
+        "date-fns": "^4.1.0",
+        "react": "19.2.3",
+        "react-dom": "19.2.3",
         "styled-components": "^6.3.9",
         "ts-morph": "^27.0.2",
-        "vite": "^7.3.1",
-        "vite-plugin-node-polyfills": "^0.25.0"
+        "vite": "^8.0.7",
+        "vite-plugin-node-polyfills": "^0.26.0"
     },
     "devDependencies": {
-        "tsx": "^4.20.3"
+        "@types/jest": "30.0.0",
+        "@types/react-dom": "19.2.3",
+        "tsx": "^4.21.0"
     }
 }

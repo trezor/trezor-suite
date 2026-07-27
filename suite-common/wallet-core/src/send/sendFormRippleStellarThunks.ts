@@ -1,11 +1,10 @@
 import { createThunk } from '@suite-common/redux-utils';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
-import { XRP_FLAG } from '@suite-common/wallet-constants';
 import {
     AddressDisplayOptions,
-    ExternalOutput,
-    PrecomposedLevels,
-    PrecomposedTransaction,
+    type ExternalOutput,
+    type PrecomposedLevels,
+    type PrecomposedTransaction,
 } from '@suite-common/wallet-types';
 import {
     asAmountUnit,
@@ -17,23 +16,20 @@ import {
     networkAmountToSmallestUnit,
     unitsToSubunits,
 } from '@suite-common/wallet-utils';
-import { buildSendTransaction, toStroops } from '@trezor/blockchain-link-utils/src/stellar';
-import TrezorConnect, {
-    FeeLevel,
-    RipplePayment,
-    StellarOperation,
-    TokenInfo,
-} from '@trezor/connect';
-import { StellarAssetType } from '@trezor/protobuf/src/messages';
+import TrezorConnect, { type FeeLevel, type RipplePayment, type TokenInfo } from '@trezor/connect';
+import { XRP_FLAG } from '@trezor/network-ripple/constants';
+import stellar from '@trezor/network-stellar/runtime';
+import { StellarAssetType } from '@trezor/protobuf/src/definitions';
 import { BigNumber } from '@trezor/utils';
 
 import { SEND_MODULE_PREFIX } from './sendFormConstants';
 import {
-    ComposeFeeLevelsError,
-    ComposeTransactionThunkArguments,
-    SignTransactionError,
-    SignTransactionThunkArguments,
+    type ComposeFeeLevelsError,
+    type ComposeTransactionThunkArguments,
+    type SignTransactionError,
+    type SignTransactionThunkArguments,
 } from './sendFormTypes';
+import { selectAddressDisplayType } from '../settings/walletSettingsReducer';
 
 const calculate = (
     availableBalance: string,
@@ -73,7 +69,7 @@ const calculate = (
         } as const;
     }
 
-    if (requiredAmount && requiredAmount.gt(amount)) {
+    if (requiredAmount?.gt(amount)) {
         return {
             type: 'error',
             error: 'AMOUNT_IS_LESS_THAN_RESERVE',
@@ -129,7 +125,10 @@ export const composeRippleStellarTransactionFeeLevelsThunk = createThunk<
 
         const { output, tokenInfo } = composeOutputs;
         const { availableBalance } = account;
-        const { address } = formState.outputs[0];
+        const { outputs: composeOutputsList } = formState;
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const firstOutput: (typeof composeOutputsList)[number] = composeOutputsList[0];
+        const { address } = firstOutput;
 
         const predefinedLevels = feeInfo.levels.filter(l => l.label !== 'custom');
         // in case when selectedFee is set to 'custom' construct this FeeLevel from values
@@ -162,7 +161,9 @@ export const composeRippleStellarTransactionFeeLevelsThunk = createThunk<
             calculate(availableBalance, output, level, requiredAmount, tokenInfo),
         );
         response.forEach((tx, index) => {
-            const feeLabel = predefinedLevels[index].label as FeeLevel['label'];
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const predefinedLevel: (typeof predefinedLevels)[number] = predefinedLevels[index];
+            const feeLabel = predefinedLevel.label;
             resultLevels[feeLabel] = tx;
         });
 
@@ -170,7 +171,10 @@ export const composeRippleStellarTransactionFeeLevelsThunk = createThunk<
         // there is no valid tx in predefinedLevels and there is no custom level
         if (!hasAtLeastOneValid && !resultLevels.custom) {
             const { minFee } = feeInfo;
-            const lastKnownFee = predefinedLevels[predefinedLevels.length - 1].feePerUnit;
+            const lastIndex = predefinedLevels.length - 1;
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const lastLevel: (typeof predefinedLevels)[number] = predefinedLevels[lastIndex];
+            const lastKnownFee = lastLevel.feePerUnit;
             let maxFee = new BigNumber(lastKnownFee).minus(1);
             // generate custom levels in range from lastKnownFee -1 to feeInfo.minFee (coinInfo in @trezor/connect)
             const customLevels: FeeLevel[] = [];
@@ -185,14 +189,18 @@ export const composeRippleStellarTransactionFeeLevelsThunk = createThunk<
 
             const customValid = customLevelsResponse.findIndex(r => r.type !== 'error');
             if (customValid >= 0) {
-                resultLevels.custom = customLevelsResponse[customValid];
+                // @ts-expect-error: indexing with noUncheckedIndexedAccess
+                const customResult: (typeof customLevelsResponse)[number] =
+                    customLevelsResponse[customValid];
+                resultLevels.custom = customResult;
             }
         }
 
         // format max (calculate sends it as satoshi)
         // update errorMessage values (reserve)
         Object.keys(resultLevels).forEach(key => {
-            const tx = resultLevels[key];
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const tx: (typeof resultLevels)[string] = resultLevels[key];
             if (tx.type !== 'error' && tx.max) {
                 tx.max = formatNetworkAmount(tx.max, account.symbol);
             }
@@ -230,24 +238,21 @@ export const signRippleStellarSendFormTransactionThunk = createThunk<
 >(
     `${SEND_MODULE_PREFIX}/signRippleStellarSendFormTransactionThunk`,
     async (
-        { formState, precomposedTransaction, selectedAccount, device },
-        { getState, extra, rejectWithValue },
+        { formState, precomposedTransaction, selectedAccount, device, paymentRequests },
+        { getState, rejectWithValue },
     ) => {
-        const {
-            selectors: { selectAddressDisplayType },
-        } = extra;
-
         const addressDisplayType = selectAddressDisplayType(getState());
 
         let response;
 
+        const { outputs: signOutputs } = formState;
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const firstSignOutput: (typeof signOutputs)[number] = signOutputs[0];
+
         if (selectedAccount.networkType === 'ripple') {
             const payment: RipplePayment = {
-                destination: formState.outputs[0].address,
-                amount: networkAmountToSmallestUnit(
-                    formState.outputs[0].amount,
-                    selectedAccount.symbol,
-                ),
+                destination: firstSignOutput.address,
+                amount: networkAmountToSmallestUnit(firstSignOutput.amount, selectedAccount.symbol),
             };
 
             if (formState.destinationTag) {
@@ -268,6 +273,7 @@ export const signRippleStellarSendFormTransactionThunk = createThunk<
                     sequence: selectedAccount.misc.sequence,
                     payment,
                 },
+                payment_req: paymentRequests?.[0],
                 chunkify: addressDisplayType === AddressDisplayOptions.CHUNKED,
             });
             if (response.success) {
@@ -275,7 +281,7 @@ export const signRippleStellarSendFormTransactionThunk = createThunk<
             }
         } else if (selectedAccount.networkType === 'stellar') {
             const destinationAccount = await TrezorConnect.getAccountInfo({
-                descriptor: formState.outputs[0].address,
+                descriptor: firstSignOutput.address,
                 coin: selectedAccount.symbol,
                 suppressBackupWarning: true,
             });
@@ -284,72 +290,52 @@ export const signRippleStellarSendFormTransactionThunk = createThunk<
                 destinationAccount.success && !destinationAccount.payload.empty;
 
             const { token } = precomposedTransaction;
-            const asset = token
-                ? (([code, issuer]) => ({
-                      type:
-                          code.length <= 4
-                              ? StellarAssetType.ALPHANUM4
-                              : StellarAssetType.ALPHANUM12,
-                      code,
-                      issuer,
-                  }))(token.contract.split('-'))
-                : { type: StellarAssetType.NATIVE };
-
-            let operation: StellarOperation;
-            if (destinationActivated) {
-                operation = {
-                    type: 'payment',
-                    asset,
-                    amount: toStroops(formState.outputs[0].amount).toString(),
-                    destination: formState.outputs[0].address,
+            let asset: { type: StellarAssetType; code?: string; issuer?: string };
+            if (token) {
+                const tokenContractParts = token.contract.split('-');
+                // @ts-expect-error: indexing with noUncheckedIndexedAccess
+                const code: string = tokenContractParts[0];
+                // @ts-expect-error: indexing with noUncheckedIndexedAccess
+                const issuer: string = tokenContractParts[1];
+                asset = {
+                    type:
+                        code.length <= 4 ? StellarAssetType.ALPHANUM4 : StellarAssetType.ALPHANUM12,
+                    code,
+                    issuer,
                 };
             } else {
-                operation = {
-                    type: 'createAccount',
-                    startingBalance: toStroops(formState.outputs[0].amount).toString(),
-                    destination: formState.outputs[0].address,
-                };
+                asset = { type: StellarAssetType.NATIVE };
             }
 
+            const { buildSendTransaction } = await stellar();
+
+            const testnet = isTestnet(selectedAccount.symbol);
             const transaction = buildSendTransaction({
                 descriptor: selectedAccount.descriptor,
                 sequence: selectedAccount.misc.stellarSequence,
                 fee: precomposedTransaction.feePerByte,
                 destinationActivated,
-                destination: formState.outputs[0].address,
-                amount: formState.outputs[0].amount,
+                destination: firstSignOutput.address,
+                amount: firstSignOutput.amount,
                 asset,
                 destinationTag: formState.destinationTag,
-                isTestnet: isTestnet(selectedAccount.symbol),
+                isTestnet: testnet,
             });
 
-            // It would be better if we could use `@trezor/connect-plugin-stellar`.
-            // const transformedTransaction = transformTransaction(selectedAccount.path, transaction);
-            const transformedTransaction = {
+            const xdrBase64 = transaction.toXDR();
+
+            response = await TrezorConnect.stellarSignTransaction({
                 device: {
                     path: device.path,
                     instance: device.instance,
                     state: device.state,
                     useEmptyPassphrase: device.useEmptyPassphrase,
                 },
+                payment_req: paymentRequests?.[0],
                 path: selectedAccount.path,
-                networkPassphrase: transaction.networkPassphrase,
-                transaction: {
-                    source: transaction.source,
-                    fee: Number.parseInt(transaction.fee, 10),
-                    sequence: transaction.sequence,
-                    memo: formState.destinationTag
-                        ? { type: 1, text: formState.destinationTag }
-                        : { type: 0 },
-                    timebounds: {
-                        minTime: 0,
-                        maxTime: 0,
-                    },
-                    operations: [operation],
-                },
-                chunkify: addressDisplayType === AddressDisplayOptions.CHUNKED,
-            };
-            response = await TrezorConnect.stellarSignTransaction(transformedTransaction);
+                xdrBase64,
+                testnet,
+            });
 
             if (response.success) {
                 const signature = Buffer.from(response.payload.signature, 'hex').toString('base64');
@@ -367,8 +353,8 @@ export const signRippleStellarSendFormTransactionThunk = createThunk<
         // catch manual error from TransactionReviewModal
         return rejectWithValue({
             error: 'sign-transaction-failed',
-            errorCode: response.payload.code,
-            message: response.payload.error,
+            errorCode: response.error.code,
+            message: response.error.message,
         });
     },
 );

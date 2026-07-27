@@ -1,6 +1,7 @@
-import { Row, SkeletonRectangle, Table } from '@trezor/components';
+import { selectShouldAnimateLoadingSkeleton } from '@suite/ui-animations';
+import { Row, Skeleton, Table } from '@trezor/components';
 
-import { useLoadingSkeleton } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 import { AssetCoinLogoSkeleton } from '../AssetCoinLogo';
 
@@ -9,7 +10,7 @@ type AssetRowSkeletonProps = {
 };
 
 export const AssetRowSkeleton = ({ isAnimating }: AssetRowSkeletonProps) => {
-    const { shouldAnimate } = useLoadingSkeleton();
+    const shouldAnimate = useSelector(selectShouldAnimateLoadingSkeleton);
 
     const animate = isAnimating ?? shouldAnimate;
 
@@ -18,22 +19,22 @@ export const AssetRowSkeleton = ({ isAnimating }: AssetRowSkeletonProps) => {
             <Table.Cell colSpan={3}>
                 <Row>
                     <AssetCoinLogoSkeleton animate={animate} />
-                    <SkeletonRectangle animate={animate} width={100} />
+                    <Skeleton animate={animate} width={100} />
                 </Row>
             </Table.Cell>
             <Table.Cell>
-                <SkeletonRectangle animate={animate} width={100} />
+                <Skeleton animate={animate} width={100} />
             </Table.Cell>
             <Table.Cell>
-                <SkeletonRectangle animate={animate} />
+                <Skeleton animate={animate} />
             </Table.Cell>
             <Table.Cell>
-                <SkeletonRectangle animate={animate} width={50} />
+                <Skeleton animate={animate} width={50} />
             </Table.Cell>
             <Table.Cell colSpan={2}>
                 <Row gap={16}>
-                    <SkeletonRectangle animate={animate} width={58} height={38} borderRadius={19} />
-                    <SkeletonRectangle animate={animate} width={38} height={38} borderRadius={25} />
+                    <Skeleton animate={animate} width={58} height={38} borderRadius={20} />
+                    <Skeleton animate={animate} width={38} height={38} borderRadius={24} />
                 </Row>
             </Table.Cell>
         </Table.Row>

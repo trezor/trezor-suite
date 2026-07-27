@@ -1,13 +1,14 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/PushTransaction.js
 
+import type { CoinInfo, PermissionRequest } from '@trezor/connect-common';
+import { PushTransaction as PushTransactionSchema } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { Assert } from '@trezor/schema-utils';
 
-import { initBlockchain, isBackendSupported } from '../backend/BlockchainLink';
-import { AbstractMethod, MethodPermission, Payload } from '../core/AbstractMethod';
-import { getCoinInfo } from '../data/coinInfo';
-import type { CoinInfo } from '../types';
-import { PushTransaction as PushTransactionSchema } from '../types/api/pushTransaction';
+import { assertBackendSupported, initBlockchain } from '../backend/BlockchainLink';
+import type { MethodContext, MethodMessage } from '../core/AbstractMethod';
+import { AbstractMethod } from '../core/AbstractMethod';
+import { getCoinInfoOrThrow } from '../data/coinInfo';
 
 type Params = {
     tx: PushTransactionSchema['tx'];
@@ -16,27 +17,15 @@ type Params = {
 };
 
 export default class PushTransaction extends AbstractMethod<'pushTransaction', Params> {
-    constructor(message: { id?: number; payload: Payload<'pushTransaction'> }) {
-        super(message);
-        this.useUi = false;
-        this.useDevice = false;
-    }
-    get requiredPermissions(): MethodPermission[] {
-        return ['push_tx'];
-    }
-
-    init() {
-        const { payload } = this;
+    constructor(message: MethodMessage<'pushTransaction'>) {
+        const { payload } = message;
 
         // validate incoming parameters
         Assert(PushTransactionSchema, payload);
 
-        const coinInfo = getCoinInfo(payload.coin);
-        if (!coinInfo) {
-            throw ERRORS.TypedError('Method_UnknownCoin');
-        }
+        const coinInfo = getCoinInfoOrThrow(payload.coin);
         // validate backend
-        isBackendSupported(coinInfo);
+        assertBackendSupported(coinInfo);
 
         if (
             coinInfo.type === 'bitcoin' &&
@@ -45,17 +34,24 @@ export default class PushTransaction extends AbstractMethod<'pushTransaction', P
             throw ERRORS.TypedError('Method_InvalidParameter', 'Transaction must be hexadecimal');
         }
 
-        this.params = {
+        const params = {
             tx: payload.tx,
             coinInfo,
             identity: payload.identity,
         };
+
+        super(message, params);
+        this.useUi = false;
+        this.useDevice = false;
+    }
+    get requiredPermissions(): PermissionRequest[] {
+        return [this.coinPerm('push_tx', this.params.coinInfo)];
     }
 
-    async run() {
+    async run({ sendCoreMessage }: MethodContext) {
         const backend = await initBlockchain(
             this.params.coinInfo,
-            this.postMessage,
+            sendCoreMessage,
             this.params.identity,
         );
         const txid = await backend.pushTransaction(this.params.tx);

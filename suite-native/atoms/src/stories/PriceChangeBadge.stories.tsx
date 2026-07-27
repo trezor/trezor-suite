@@ -4,7 +4,7 @@ import type { Meta, StoryObj } from '@storybook/react-native';
 
 import {
     PriceChangeBadge as PriceChangeBadgeComponent,
-    PriceChangeBadgeProps,
+    type PriceChangeBadgeProps,
 } from '../PriceChangeBadge';
 
 type PriceChangeBadgeStory = StoryObj<PriceChangeBadgeProps>;

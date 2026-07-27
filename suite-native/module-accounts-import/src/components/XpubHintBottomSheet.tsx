@@ -1,15 +1,15 @@
-import { NetworkType } from '@suite-common/wallet-config';
+import { type NetworkType } from '@suite-common/wallet-config';
 import { isAddressBasedNetwork } from '@suite-common/wallet-utils';
 import {
     BottomSheetModal,
-    BottomSheetModalRef,
+    type BottomSheetModalRef,
     Box,
     Button,
     Text,
     VStack,
 } from '@suite-native/atoms';
-import { Translation, TxKeyPath } from '@suite-native/intl';
-import { Video, VideoName } from '@suite-native/video-assets';
+import { Translation, type TxKeyPath } from '@suite-native/intl';
+import { Video, type VideoName } from '@suite-native/video-assets';
 
 type XpubHintBottomSheetProps = {
     networkType: NetworkType;
@@ -43,12 +43,12 @@ export const XpubHintBottomSheet = ({
             <Box paddingTop="sp8" justifyContent="space-between">
                 <Video name={video} aspectRatio={1} />
                 <VStack spacing="sp24" paddingTop="sp24">
-                    <Text color="textSubdued" textAlign="center" variant="body-sm">
+                    <Text color="contentSecondary" textAlign="center" variant="body-sm">
                         <Translation
                             id={textTranslationTag}
                             values={{
                                 emphasized: chunks => (
-                                    <Text color="textDefault" variant="body-sm">
+                                    <Text color="contentPrimary" variant="body-sm">
                                         {chunks}
                                     </Text>
                                 ),

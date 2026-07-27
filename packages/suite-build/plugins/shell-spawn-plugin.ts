@@ -1,8 +1,6 @@
 import { spawn, spawnSync } from 'child_process';
 import webpack from 'webpack';
 
-import { isWindows } from '@trezor/env-utils';
-
 interface Command {
     command: string;
     args: string[];
@@ -17,6 +15,10 @@ interface Options {
 const defaultOptions: Options = {
     runAfterBuild: [],
 };
+
+// Keep this local because suite-build webpack configs can be loaded through a CommonJS fallback.
+// Importing the ESM-only @trezor/env-utils package there fails before webpack starts.
+const isWindows = () => process.platform === 'win32';
 
 class ShellSpawnPlugin {
     initialRun = false;

@@ -2,18 +2,18 @@ import { useAtomValue } from 'jotai';
 
 import { Box, HStack, Text, VStack } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
-import { Translation, TxKeyPath } from '@suite-native/intl';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { Translation, type TxKeyPath } from '@suite-native/intl';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { DeviceDangerBannerExtension, bannerContentPresets } from './DeviceDangerBannerExtension';
-import { DeviceDangerBannerVariant, deviceDangerBannerAtom } from '../deviceAtoms';
+import { type DeviceDangerBannerVariant, deviceDangerBannerAtom } from '../deviceAtoms';
 
 const containerStyle = prepareNativeStyle<{ bannerVariant: DeviceDangerBannerVariant }>(
     (utils, { bannerVariant }) => ({
         backgroundColor:
             bannerVariant === 'other-error'
-                ? utils.colors.backgroundAlertYellowBold
-                : utils.colors.backgroundAlertRedSubtleOnElevation0,
+                ? utils.colors.legacyBackgroundAlertYellowBold
+                : utils.colors.legacyBackgroundAlertRedSubtleOnElevation0,
         // MessageSystemBanner critical variant has the same bgColor, so the margin serves to separate them visually
         marginBottom: utils.spacings.sp1,
     }),

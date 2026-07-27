@@ -1,8 +1,9 @@
 import React, { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
-import { AccountsRootState, selectFormattedAccountType } from '@suite-common/wallet-core';
-import { Account, AccountKey } from '@suite-common/wallet-types';
+import { type AccountsRootState, selectFormattedAccountType } from '@suite-common/wallet-core';
+import { type Account, type AccountKey } from '@suite-common/wallet-types';
+import { isAccountFailed } from '@suite-common/wallet-utils';
 import { Badge } from '@suite-native/atoms';
 import {
     BaseCurrencyAmountFormatter,
@@ -10,23 +11,22 @@ import {
     CryptoToFiatAmountFormatter,
     NetworkDisplaySymbolNameFormatter,
 } from '@suite-native/formatters';
-import { CryptoIcon, CryptoIconWithNetwork } from '@suite-native/icons';
+import { Icon, TokenIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
-import { AccountLabel } from '@suite-native/labeling';
-import { NativeStakingRootState, selectAccountHasStaking } from '@suite-native/staking';
-import {
-    TokensRootState,
-    isNetworkWithTokens,
-    selectAccountHasAnyKnownToken,
-    selectNumberOfAccountKnownTokensWithBalance,
-} from '@suite-native/tokens';
+import { type NativeStakingRootState, selectAccountHasStaking } from '@suite-native/staking';
+import { isNetworkWithTokens } from '@suite-native/tokens';
 
+import {
+    type NativeAccountsRootState,
+    selectAccountFiatBalance,
+    selectActiveAndDefiTokensCount,
+} from '../../selectors';
+import { type OnSelectAccount } from '../../types';
+import { AccountLabel } from '../AccountLabel';
 import { AccountsListItemBase } from './AccountsListItemBase';
 import { StakingBadge } from './StakingBadge';
-import { NativeAccountsRootState, selectAccountFiatBalance } from '../../selectors';
-import { OnSelectAccount } from '../../types';
 
-export type AccountListItemProps = {
+type AccountListItemProps = {
     account: Account;
     isNativeCoinOnly?: boolean;
     onPress?: OnSelectAccount;
@@ -35,23 +35,24 @@ export type AccountListItemProps = {
     isFirst?: boolean;
     isLast?: boolean;
     showDivider?: boolean;
+    titleLabel?: React.ReactNode;
+    cryptoAmount?: string;
 };
 
 const TokenBadge = React.memo(({ accountKey }: { accountKey: AccountKey }) => {
-    const numberOfTokens = useSelector((state: TokensRootState) =>
-        selectNumberOfAccountKnownTokensWithBalance(state, accountKey),
+    const numberOfTokens = useSelector((state: NativeAccountsRootState) =>
+        selectActiveAndDefiTokensCount(state, accountKey),
     );
 
     return (
         <Badge
-            elevation="1"
             size="small"
             label={<Translation id="accountList.numberOfTokens" values={{ numberOfTokens }} />}
         />
     );
 });
 
-export const AccountsListItem = ({
+const AccountsListItemComponent = ({
     account,
     onPress,
     disabled,
@@ -60,12 +61,14 @@ export const AccountsListItem = ({
     isFirst = false,
     isLast = false,
     showDivider = false,
+    titleLabel,
+    cryptoAmount,
 }: AccountListItemProps) => {
     const formattedAccountType = useSelector((state: AccountsRootState) =>
         selectFormattedAccountType(state, account.key),
     );
-    const accountHasAnyTokens = useSelector((state: TokensRootState) =>
-        selectAccountHasAnyKnownToken(state, account.key),
+    const accountHasKnownTokensWithBalance = useSelector(
+        (state: NativeAccountsRootState) => selectActiveAndDefiTokensCount(state, account.key) > 0,
     );
 
     const accountHasStaking = useSelector((state: NativeStakingRootState) =>
@@ -79,25 +82,58 @@ export const AccountsListItem = ({
     const handleOnPress = useCallback(() => {
         onPress?.({
             account,
-            hasAnyKnownTokens: accountHasAnyTokens,
-            hasStaking: accountHasStaking,
+            hasAnyKnownTokens: accountHasKnownTokensWithBalance,
         });
-    }, [account, accountHasAnyTokens, accountHasStaking, onPress]);
+    }, [account, accountHasKnownTokensWithBalance, onPress]);
 
     const icon = useMemo(
-        () =>
-            isNativeCoinOnly ? (
-                <CryptoIconWithNetwork symbol={account.symbol} />
-            ) : (
-                <CryptoIcon symbol={account.symbol} />
-            ),
+        () => <TokenIcon symbol={account.symbol} showNetworkIcon={isNativeCoinOnly} />,
         [account.symbol, isNativeCoinOnly],
     );
 
     const isNetworkSupportingTokens = isNetworkWithTokens(account.symbol);
     const shouldShowAccountLabel = !isNetworkSupportingTokens || !isNativeCoinOnly;
-    const shouldShowTokenBadge = accountHasAnyTokens && !isNativeCoinOnly;
+    const shouldShowTokenBadge = accountHasKnownTokensWithBalance && !isNativeCoinOnly;
     const shouldShowStakingBadge = accountHasStaking && !isNativeCoinOnly;
+    const balanceValue = cryptoAmount ?? account.formattedBalance;
+    const fiatBalanceValue =
+        shouldShowTokenBadge && fiatBalance !== undefined ? (
+            <BaseCurrencyAmountFormatter
+                numberOfLines={1}
+                adjustsFontSizeToFit
+                value={fiatBalance}
+            />
+        ) : (
+            <CryptoToFiatAmountFormatter
+                value={balanceValue}
+                isBalance={true}
+                symbol={account.symbol}
+            />
+        );
+    const cryptoBalanceValue = (
+        <CryptoAmountFormatter
+            value={balanceValue}
+            symbol={account.symbol}
+            numberOfLines={1}
+            adjustsFontSizeToFit
+        />
+    );
+
+    const isFailed = isAccountFailed(account);
+
+    const getTitle = () => {
+        if (titleLabel) {
+            return titleLabel;
+        }
+
+        if (shouldShowAccountLabel) {
+            return <AccountLabel account={account} />;
+        }
+
+        return <NetworkDisplaySymbolNameFormatter value={account.symbol} />;
+    };
+
+    const title = getTitle();
 
     return (
         <AccountsListItemBase
@@ -108,18 +144,14 @@ export const AccountsListItem = ({
             onPress={handleOnPress}
             disabled={disabled}
             icon={icon}
-            title={
-                shouldShowAccountLabel ? (
-                    <AccountLabel account={account} />
-                ) : (
-                    <NetworkDisplaySymbolNameFormatter value={account.symbol} />
-                )
+            title={title}
+            titleBadge={
+                !isNativeCoinOnly && formattedAccountType ? (
+                    <Badge label={formattedAccountType} size="small" />
+                ) : undefined
             }
             badges={
                 <>
-                    {formattedAccountType && (
-                        <Badge label={formattedAccountType} size="small" elevation="1" />
-                    )}
                     {shouldShowStakingBadge && (
                         <StakingBadge networkSymbol={account.symbol} account={account} />
                     )}
@@ -127,28 +159,17 @@ export const AccountsListItem = ({
                 </>
             }
             mainValue={
-                shouldShowTokenBadge && fiatBalance !== undefined ? (
-                    <BaseCurrencyAmountFormatter
-                        numberOfLines={1}
-                        adjustsFontSizeToFit
-                        value={fiatBalance}
-                    />
+                isFailed ? (
+                    <Icon name="warning" color="contentWarning" size="medium" />
                 ) : (
-                    <CryptoToFiatAmountFormatter
-                        value={account.formattedBalance}
-                        isBalance={true}
-                        symbol={account.symbol}
-                    />
+                    fiatBalanceValue
                 )
             }
-            secondaryValue={
-                <CryptoAmountFormatter
-                    value={account.formattedBalance}
-                    symbol={account.symbol}
-                    numberOfLines={1}
-                    adjustsFontSizeToFit
-                />
-            }
+            secondaryValue={isFailed ? undefined : cryptoBalanceValue}
         />
     );
 };
+
+export const AccountsListItem = React.memo(AccountsListItemComponent);
+
+AccountsListItem.displayName = 'AccountsListItem';

@@ -1,10 +1,10 @@
-import { ReactNode } from 'react';
-import { UseFormReturn } from 'react-hook-form';
+import { type ReactNode } from 'react';
+import { type UseFormReturn } from 'react-hook-form';
 
-import { CryptoId } from 'invity-api';
+import { type CryptoId } from 'invity-api';
 
-import { ExtendedMessageDescriptor } from '@suite/intl';
-import { AccountAddress } from '@trezor/connect';
+import { type ExtendedMessageDescriptor } from '@suite/intl';
+import { type AccountAddress } from '@trezor/connect';
 
 import type { Account } from 'src/types/wallet';
 

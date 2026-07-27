@@ -1,5 +1,6 @@
-import { PreloadedState, renderWithStoreProviderAsync } from '@suite-native/test-utils';
+import { getTranslation } from '@suite-native/intl';
 
+import { renderWithTradingProvider } from '../../../__tests__/tradingTestUtils';
 import { ExchangeTab } from '../ExchangeTab';
 
 let mockIsDeviceInViewOnlyMode = false;
@@ -28,8 +29,8 @@ jest.mock('@suite-native/trading-state', () => ({
 }));
 
 describe('ExchangeTab', () => {
-    const renderExchangeTab = (preloadedState: PreloadedState = {}) =>
-        renderWithStoreProviderAsync(<ExchangeTab />, { preloadedState });
+    const renderExchangeTab = () =>
+        renderWithTradingProvider(<ExchangeTab />, { tradeType: 'exchange' });
 
     beforeEach(() => {
         mockIsDeviceInViewOnlyMode = false;
@@ -38,42 +39,58 @@ describe('ExchangeTab', () => {
         mockIsTradingExchangeEnabled = true;
     });
 
-    it('should render exchange form', async () => {
-        const { getByText } = await renderExchangeTab();
+    it('should render exchange form', () => {
+        const { getByText } = renderExchangeTab();
 
-        expect(getByText('You pay')).toBeOnTheScreen();
-        expect(getByText('You get')).toBeOnTheScreen();
+        expect(
+            getByText(getTranslation('moduleTrading.selectFiat.buy.amountLabel')),
+        ).toBeOnTheScreen();
+        expect(
+            getByText(getTranslation('moduleTrading.selectFiat.sell.amountLabel')),
+        ).toBeOnTheScreen();
     });
 
-    it('should render disabled info when exchange FF is not enabled', async () => {
+    it('should render disabled info when exchange FF is not enabled', () => {
         mockIsTradingExchangeEnabled = false;
-        const { getByText, queryByText } = await renderExchangeTab();
+        const { getByText, queryByText } = renderExchangeTab();
 
-        expect(getByText('Swap disabled')).toBeOnTheScreen();
-        expect(queryByText('You pay')).toBeNull();
+        expect(
+            getByText(
+                getTranslation('tradingAtoms.error.tradingTypeDisabledTitle', {
+                    tradingType: 'Swap',
+                }),
+            ),
+        ).toBeOnTheScreen();
+        expect(queryByText(getTranslation('moduleTrading.selectFiat.buy.amountLabel'))).toBeNull();
     });
 
-    it('should display BTC only firmware info with BTC only wallet connected', async () => {
+    it('should display BTC only firmware info with BTC only wallet connected', () => {
         mockHasBitcoinOnlyFirmware = true;
-        const { getByText } = await renderExchangeTab();
+        const { getByText } = renderExchangeTab();
 
-        expect(getByText('Bitcoin-only firmware')).toBeOnTheScreen();
+        expect(
+            getByText(getTranslation('tradingAtoms.error.btcOnlyFirmwareTitle')),
+        ).toBeOnTheScreen();
     });
 
-    it('should display Portfolio Tracker info with Portfolio Tracker "wallet" selected', async () => {
+    it('should display Portfolio Tracker info with Portfolio Tracker "wallet" selected', () => {
         // Portfolio Tracker sets both selectors to true
         mockIsPortfolioTrackerDevice = true;
         mockIsDeviceInViewOnlyMode = true;
-        const { getByText, queryByText } = await renderExchangeTab();
+        const { getByText, queryByText } = renderExchangeTab();
 
-        expect(getByText('Portfolio Tracker')).toBeOnTheScreen();
+        expect(
+            getByText(getTranslation('tradingAtoms.error.portfolioTrackerTitle')),
+        ).toBeOnTheScreen();
         expect(queryByText('View-only wallet')).toBeNull();
     });
 
-    it('should display exchange form for view-only wallet', async () => {
+    it('should display exchange form for view-only wallet', () => {
         mockIsDeviceInViewOnlyMode = true;
-        const { getByText } = await renderExchangeTab();
+        const { getByText } = renderExchangeTab();
 
-        expect(getByText('You pay')).toBeOnTheScreen();
+        expect(
+            getByText(getTranslation('moduleTrading.selectFiat.buy.amountLabel')),
+        ).toBeOnTheScreen();
     });
 });

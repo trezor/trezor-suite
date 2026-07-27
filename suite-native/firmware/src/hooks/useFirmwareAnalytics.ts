@@ -1,11 +1,16 @@
 import { useCallback, useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { selectDeviceUpdateFirmwareVersion } from '@suite-common/device';
-import { TrezorDevice } from '@suite-common/suite-types';
-import { FirmwareUpdatePayload, FirmwareUpdateStartType, events } from '@suite-native/analytics';
-import { useAnalytics } from '@suite-native/services';
-import { FirmwareType } from '@trezor/connect';
+import { type TrezorDevice } from '@suite-common/suite-types';
+import {
+    type FirmwareUpdatePayload,
+    type FirmwareUpdateStartType,
+    events,
+    selectNativeAnalyticsDep,
+} from '@suite-native/analytics';
+import { type FirmwareType } from '@trezor/connect';
 import {
     DeviceModelInternal,
     getBootloaderVersion,
@@ -22,14 +27,14 @@ export const useFirmwareAnalytics = ({
     navigationLocation?: 'settings' | 'onboarding';
 }) => {
     const toFwVersion = useSelector(selectDeviceUpdateFirmwareVersion);
-    const analytics = useAnalytics();
+    const { analytics } = useServices(selectNativeAnalyticsDep);
     const prepareAnalyticsPayload = useCallback(
-        () => ({
+        (): FirmwareUpdatePayload => ({
             model: device?.features?.internal_model ?? DeviceModelInternal.UNKNOWN,
             fromBootloaderVersion: getBootloaderVersion(device),
             fromFwVersion: device?.firmware === 'none' ? 'none' : getFirmwareVersion(device),
             toFwVersion: toFwVersion ?? '?.?.?',
-            fromFwType: (device?.firmwareType || 'none') as FirmwareType | 'none',
+            fromFwType: device?.firmwareType || 'none',
             toFwType: targetFirmwareType,
             location: navigationLocation ?? null,
         }),

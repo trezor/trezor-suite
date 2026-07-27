@@ -1,24 +1,17 @@
-import { ReactNode, useState } from 'react';
+import { type ReactNode, useState } from 'react';
 
 import { Translation } from '@suite/intl';
-import { Banner, BannerIntent, Box, Button, Column, IconName, Modal } from '@trezor/components';
+import { Banner, type BannerIntent, Box, Button, Column, Modal } from '@trezor/components';
+import { QuestionIcon } from '@trezor/icons';
 
 import { TroubleshootingTipsFooter } from './TroubleshootingTipsFooter';
+import { type TroubleshootingTipsItem } from './TroubleshootingTipsItem';
 import { TroubleshootingTipsList } from './TroubleshootingTipsList';
-
-export type TroubleshootingTipsItem = {
-    key: string;
-    heading?: ReactNode;
-    description?: ReactNode;
-    hide?: boolean;
-    icon?: IconName;
-};
 
 type TroubleshootingTipsBaseProps = {
     label?: ReactNode;
     ctaLabel?: ReactNode;
     cta?: ReactNode;
-    initiallyIsOpen?: boolean;
     'data-testid'?: string;
     toggleText?: ReactNode;
     intent?: BannerIntent;
@@ -30,13 +23,14 @@ export const TroubleshootingTips = ({
     items,
     cta,
     ctaLabel,
-    initiallyIsOpen,
     toggleText,
     intent = 'warning',
     'data-testid': dataTest,
 }: TroubleshootingTipsBaseProps) => {
     // todo: this filter is duplicated with TroubleshootingTipsList
     const visibleTips = items.filter(item => !item.hide);
+
+    const hasOtherCta = Boolean(cta);
 
     const TroubleshootingButton = () => {
         const [isTroubleshootingModalVisible, setIsTroubleshootingModalVisible] = useState(false);
@@ -55,9 +49,9 @@ export const TroubleshootingTips = ({
                 <Button
                     onClick={onOpen}
                     intent="neutral"
-                    size="small"
-                    priority={!initiallyIsOpen ? 'secondary' : 'primary'}
-                    iconLeft="question"
+                    size={hasOtherCta ? 'small' : 'large'}
+                    priority={hasOtherCta ? 'secondary' : undefined}
+                    iconLeft={QuestionIcon}
                     data-testid="@onboarding/troubleshooting-tips/button"
                 >
                     {toggleText ?? <Translation id="TR_TROUBLE_SHOOTING_TIPS" />}
@@ -67,7 +61,7 @@ export const TroubleshootingTips = ({
                     <Modal
                         heading={toggleText ?? <Translation id="TR_TROUBLE_SHOOTING_TIPS" />}
                         onCancel={onCancel}
-                        variant="info"
+                        intent="info"
                         bottomContent={<TroubleshootingTipsFooter />}
                         data-testid="@onboarding/troubleshooting-tips/modal"
                     >

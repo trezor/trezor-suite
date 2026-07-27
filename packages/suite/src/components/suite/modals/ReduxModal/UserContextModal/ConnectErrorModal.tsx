@@ -7,7 +7,7 @@ import {
 import { selectDevices, selectSelectedDevice } from '@suite-common/device';
 import { Card, Column, H3, Icon, Modal, Paragraph, Row } from '@trezor/components';
 import { UI_REQUEST } from '@trezor/connect';
-import { spacings } from '@trezor/theme';
+import { WarningIcon } from '@trezor/icons';
 
 import { ConnectCallSource } from 'src/components/suite/ConnectCallSource';
 import { ConnectModalBackdrop } from 'src/components/suite/ConnectModalBackdrop';
@@ -46,7 +46,7 @@ export const ConnectSelectDeviceModal = () => {
     return (
         <ConnectModalBackdrop>
             <Modal.ModalBase
-                variant="primary"
+                intent="brand"
                 width={400}
                 onCancel={onCancel}
                 heading={
@@ -66,7 +66,7 @@ export const ConnectSelectDeviceModal = () => {
                     )
                 }
             >
-                <Column gap={spacings.xs}>
+                <Column gap={8}>
                     <ConnectCallSource />
                     <SwitchDeviceContent cancelable={false} onCancel={() => {}} />
                 </Column>
@@ -122,21 +122,39 @@ export const ConnectErrorModal = () => {
         if (isCancelled) return <Translation id="TR_CONNECT_ERROR_CANCELED" />;
         if (isNoTransportError) return <Translation id="TR_BRIDGE_NEEDED_DESCRIPTION" />;
 
-        if (popupCall.error?.error === UI_REQUEST.BOOTLOADER)
+        if (popupCall.error?.code === 'Handshake_Error') {
+            if (popupCall.error.message === 'popup-blocked')
+                return <Translation id="TR_CONNECT_ERROR_POPUP_BLOCKED" />;
+            if (
+                popupCall.error.message === 'handshake-timeout' ||
+                popupCall.error.message === 'iframe-timeout'
+            )
+                return <Translation id="TR_CONNECT_ERROR_HANDSHAKE_TIMEOUT" />;
+            if (popupCall.error.message === 'iframe-blocked')
+                return <Translation id="TR_CONNECT_ERROR_IFRAME_BLOCKED" />;
+            if (popupCall.error.message === 'env-not-supported')
+                return <Translation id="TR_CONNECT_ERROR_ENV_NOT_SUPPORTED" />;
+            if (popupCall.error.message === 'storage-access-denied')
+                return <Translation id="TR_CONNECT_ERROR_STORAGE_ACCESS_DENIED" />;
+
+            return <Translation id="TR_CONNECT_ERROR_GENERIC_DESCRIPTION" />;
+        }
+
+        if (popupCall.error?.message === UI_REQUEST.BOOTLOADER)
             return <Translation id="TR_DEVICE_IN_BOOTLOADER" />;
-        if (popupCall.error?.error === UI_REQUEST.NOT_IN_BOOTLOADER)
+        if (popupCall.error?.message === UI_REQUEST.NOT_IN_BOOTLOADER)
             return <Translation id="TR_RECONNECT_IN_BOOTLOADER" />;
-        if (popupCall.error?.error === UI_REQUEST.SEEDLESS)
+        if (popupCall.error?.message === UI_REQUEST.SEEDLESS)
             return <Translation id="TR_YOUR_DEVICE_IS_SEEDLESS" />;
-        if (popupCall.error?.error === UI_REQUEST.INITIALIZE)
+        if (popupCall.error?.message === UI_REQUEST.INITIALIZE)
             return <Translation id="TR_DEVICE_NOT_INITIALIZED" />;
-        if (popupCall.error?.error === UI_REQUEST.FIRMWARE_NOT_INSTALLED)
+        if (popupCall.error?.message === UI_REQUEST.FIRMWARE_NOT_INSTALLED)
             return <Translation id="TR_NO_FIRMWARE" />;
-        if (popupCall.error?.error === UI_REQUEST.FIRMWARE_NOT_SUPPORTED)
+        if (popupCall.error?.message === UI_REQUEST.FIRMWARE_NOT_SUPPORTED)
             return <Translation id="TR_UNSUPPORTED_COINS_DESCRIPTION" />;
-        if (popupCall.error?.error === UI_REQUEST.FIRMWARE_OLD)
+        if (popupCall.error?.message === UI_REQUEST.FIRMWARE_OLD)
             return <Translation id="TR_FIRMWARE_UPDATE_REQUIRED_EXPLAINED" />;
-        if (popupCall.error?.error) return popupCall.error.error;
+        if (popupCall.error?.message) return popupCall.error.message;
 
         return <Translation id="TR_UNKNOWN_ERROR_SEE_CONSOLE" />;
     };
@@ -144,7 +162,7 @@ export const ConnectErrorModal = () => {
     return (
         <ConnectModalBackdrop>
             <Modal.ModalBase
-                variant="primary"
+                intent="brand"
                 bottomContent={
                     <>
                         {isNoTransportError && (
@@ -163,15 +181,15 @@ export const ConnectErrorModal = () => {
                     </>
                 }
             >
-                <Column gap={spacings.xs}>
-                    <Row alignItems="center" gap={spacings.sm}>
-                        <Icon name="warning" size={32} intent={getIconIntent()} />
+                <Column gap={8}>
+                    <Row alignItems="center" gap={12}>
+                        <Icon as={WarningIcon} size={32} intent={getIconIntent()} />
                         <H3 intent={isCancelled ? 'warning' : 'critical'}>{getTitle()}</H3>
                     </Row>
                     <ConnectCallSource />
                     <Paragraph>{getSubtitle()}</Paragraph>
 
-                    <Card margin={{ top: spacings.md }} data-testid="@connect-popup-error/message">
+                    <Card margin={{ top: 16 }} data-testid="@connect-popup-error/message">
                         {getErrorText()}
                     </Card>
                 </Column>

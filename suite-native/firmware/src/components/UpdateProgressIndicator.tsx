@@ -1,7 +1,6 @@
-/* eslint-disable no-self-assign */
 import { useEffect } from 'react';
 import {
-    SharedValue,
+    type SharedValue,
     useDerivedValue,
     useSharedValue,
     withDelay,
@@ -16,14 +15,14 @@ import {
     ColorMatrix,
     Group,
     ImageSVG,
-    MatrixColorFilterProps,
+    type MatrixColorFilterProps,
     Paint,
     Path,
     Skia,
     useSVG,
 } from '@shopify/react-native-skia';
 
-import { useNativeStyles } from '@trezor/styles';
+import { useNativeStyles } from '@trezor/styles-native';
 
 const CIRCLE_DIAMETER = 144;
 // 1.25 is used to make sure that the circle is not cut off when animating using withSpring
@@ -109,9 +108,9 @@ export const UpdateProgressIndicator = ({
     const { utils } = useNativeStyles();
     const progressEnd = useSharedValue(progress / 100);
     const animatedBackgroundRadius = useSharedValue(0);
-    const backgroundColorFinished = useSharedValue(utils.colors.textPrimaryDefault);
-    const crossSvg = useSVG(require('@suite-common/icons/assets/x.svg'));
-    const trezorLogoSvg = useSVG(require('@suite-common/icons/assets/trezorLogo.svg'));
+    const backgroundColorFinished = useSharedValue(utils.colors.contentBrand);
+    const crossSvg = useSVG(require('@trezor/icons/assets/x.svg'));
+    const trezorLogoSvg = useSVG(require('@trezor/icons/assets/trezorLogo.svg'));
     const trezorLogoOpacity = useSharedValue(1);
     const errorSvgOpacity = useSharedValue(0);
     const paragraphOpacity = useSharedValue(0);
@@ -124,7 +123,6 @@ export const UpdateProgressIndicator = ({
     useEffect(() => {
         if (isStarting) {
             animatedBackgroundRadius.value = withTiming(0, { duration: 600 });
-            backgroundColorFinished.value = backgroundColorFinished.value;
 
             checkmarkAnimationProgress.value = 0;
             progressEnd.value = withSpring(0);
@@ -135,7 +133,6 @@ export const UpdateProgressIndicator = ({
         }
         if (isInProgress) {
             animatedBackgroundRadius.value = withTiming(0, { duration: 600 });
-            backgroundColorFinished.value = backgroundColorFinished.value;
 
             checkmarkAnimationProgress.value = 0;
             progressEnd.value = withSpring(progress / 100);
@@ -146,7 +143,7 @@ export const UpdateProgressIndicator = ({
         }
         if (isSuccess) {
             animatedBackgroundRadius.value = withSpring(CIRCLE_DIAMETER / 2);
-            backgroundColorFinished.value = utils.colors.textPrimaryDefault;
+            backgroundColorFinished.value = utils.colors.borderBrand;
 
             checkmarkAnimationProgress.value = withDelay(300, withSpring(1));
             progressEnd.value = 0;
@@ -157,7 +154,7 @@ export const UpdateProgressIndicator = ({
         }
         if (isError) {
             animatedBackgroundRadius.value = withSpring(CIRCLE_DIAMETER / 2);
-            backgroundColorFinished.value = utils.colors.backgroundAlertRedBold;
+            backgroundColorFinished.value = utils.colors.borderCritical;
 
             checkmarkAnimationProgress.value = 0;
             progressEnd.value = 0;
@@ -175,23 +172,20 @@ export const UpdateProgressIndicator = ({
         isError,
         isStarting,
         backgroundColorFinished,
-        utils.colors.backgroundAlertRedBold,
-        utils.colors.textPrimaryDefault,
+        utils.colors.borderBrand,
+        utils.colors.borderCritical,
         isInProgress,
         trezorLogoOpacity,
         errorSvgOpacity,
         paragraphOpacity,
     ]);
 
-    const paint = Skia.Paint();
-    paint.setColor(Skia.Color('#00FF00')); // green
-
     return (
         <Canvas style={{ width: CANVAS_SIZE, height: CANVAS_SIZE }}>
             <Group>
                 <Path
                     path={progressCirclePath}
-                    color={utils.colors.backgroundTertiaryDefaultOnElevationNegative}
+                    color={utils.colors.legacyBackgroundTertiaryDefaultOnElevationNegative}
                     strokeCap="round"
                     strokeJoin="round"
                     strokeWidth={PROGRESS_STROKE_WIDTH}
@@ -201,7 +195,7 @@ export const UpdateProgressIndicator = ({
                     path={progressCirclePath}
                     start={0}
                     end={progressEnd}
-                    color={utils.colors.textPrimaryDefault}
+                    color={utils.colors.borderBrand}
                     strokeCap="round"
                     strokeJoin="round"
                     strokeWidth={PROGRESS_STROKE_WIDTH}
@@ -218,7 +212,7 @@ export const UpdateProgressIndicator = ({
                 <Group
                     layer={
                         <Paint>
-                            <BlendColor color={utils.colors.iconDefault} mode="srcIn" />
+                            <BlendColor color={utils.colors.contentPrimary} mode="srcIn" />
                         </Paint>
                     }
                 >
@@ -234,7 +228,7 @@ export const UpdateProgressIndicator = ({
             {isSuccess && (
                 <Path
                     path={checkmarkPath}
-                    color={utils.colors.backgroundSurfaceElevation1}
+                    color={utils.colors.surfaceFillRaised}
                     start={0}
                     end={checkmarkAnimationProgress}
                     strokeCap="round"
@@ -249,7 +243,6 @@ export const UpdateProgressIndicator = ({
                         svg={crossSvg}
                         x={CIRCLE_CENTER - CIRCLE_DIAMETER / 4}
                         y={CIRCLE_CENTER - CIRCLE_DIAMETER / 4}
-                        color={utils.colors.backgroundAlertRedBold}
                         width={CIRCLE_DIAMETER / 2}
                         height={CIRCLE_DIAMETER / 2}
                     />

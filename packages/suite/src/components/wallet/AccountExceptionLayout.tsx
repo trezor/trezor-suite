@@ -1,55 +1,58 @@
-import React, { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
 import {
     Button,
-    ButtonProps,
+    type ButtonProps,
     Card,
     Column,
-    Divider,
     H2,
     IconCircle,
-    IconCircleVariant,
-    IconName,
+    type IconCircleIntent,
+    type IconComponent,
     Paragraph,
     Row,
 } from '@trezor/components';
-import { spacings } from '@trezor/theme';
 
 interface AccountExceptionLayoutProps {
     title: ReactNode;
     description?: ReactNode;
-    iconName?: IconName;
-    iconVariant?: IconCircleVariant;
+    icon?: IconComponent;
+    iconVariant?: IconCircleIntent;
     actions?: ({ key: string } & ButtonProps)[];
     'data-testid'?: string;
 }
 
 export const AccountExceptionLayout = (props: AccountExceptionLayoutProps) => (
     <Card data-testid={props['data-testid']}>
-        <Column alignItems="center" margin={{ bottom: 24 }}>
-            {props.iconName && props.iconVariant && (
+        <Column gap={4} alignItems="center" margin={{ bottom: 24 }}>
+            {props.icon && props.iconVariant && (
                 <IconCircle
-                    name={props.iconName}
-                    variant={props.iconVariant}
-                    size={90}
-                    margin={{ top: spacings.xxl, bottom: spacings.xl }}
+                    icon={props.icon}
+                    intent={props.iconVariant}
+                    size={96}
+                    margin={{ top: 32, bottom: 24 }}
                 />
             )}
-            <H2>{props.title}</H2>
+            <H2 align="center">{props.title}</H2>
             <Paragraph
                 intent="neutral"
                 priority="secondary"
-                typographyStyle="body-sm"
-                margin={{ top: spacings.xs }}
+                typographyStyle="body-md"
+                margin={{ top: 8 }}
+                align="center"
             >
                 {props.description}
             </Paragraph>
             {props.actions && (
                 <>
-                    <Divider margin={{ top: spacings.xxl, bottom: spacings.xxl }} />
-                    <Row justifyContent="center" gap={spacings.md} margin={{ bottom: spacings.md }}>
+                    <Row justifyContent="center" gap={16} margin={{ top: 16 }}>
                         {props.actions?.map(action => (
-                            <Button size="large" minWidth={160} {...action} key={action.key} />
+                            <Button
+                                size="large"
+                                {...action}
+                                key={action.key}
+                                data-testid={action['data-testid']}
+                            />
                         ))}
                     </Row>
                 </>

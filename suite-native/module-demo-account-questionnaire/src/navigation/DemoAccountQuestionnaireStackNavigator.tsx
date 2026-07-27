@@ -1,7 +1,7 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import {
-    DemoAccountQuestionnaireStackParamList,
+    type DemoAccountQuestionnaireStackParamList,
     DemoAccountQuestionnaireStackRoutes,
     stackNavigationOptionsConfig,
 } from '@suite-native/navigation';

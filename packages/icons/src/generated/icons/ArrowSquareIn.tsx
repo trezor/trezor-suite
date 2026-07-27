@@ -1,0 +1,10 @@
+import type { SVGProps } from 'react';
+const SvgArrowSquareIn = (props: SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" {...props}>
+        <path
+            fill="currentColor"
+            d="M16 17v8a1 1 0 0 1-2 0v-5.585l-8.292 8.293a1.001 1.001 0 0 1-1.415-1.415L12.585 18H7a1 1 0 0 1 0-2h8a1 1 0 0 1 1 1M26 4H10a2 2 0 0 0-2 2v6a1 1 0 1 0 2 0V6h16v16h-6a1 1 0 0 0 0 2h6a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2"
+        />
+    </svg>
+);
+export { SvgArrowSquareIn as ReactComponent };

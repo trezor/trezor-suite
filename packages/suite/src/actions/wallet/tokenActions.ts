@@ -1,10 +1,10 @@
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { accountsActions } from '@suite-common/wallet-core';
 import * as accountUtils from '@suite-common/wallet-utils';
-import { TokenInfo } from '@trezor/connect';
+import { type TokenInfo } from '@trezor/connect';
 
-import { Dispatch } from 'src/types/suite';
-import { Account } from 'src/types/wallet';
+import { type Dispatch } from 'src/types/suite';
+import { type Account } from 'src/types/wallet';
 
 export const addToken = (account: Account, tokenInfo: TokenInfo[]) => (dispatch: Dispatch) => {
     dispatch(

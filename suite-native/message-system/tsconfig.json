@@ -2,6 +2,9 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
+        {
+            "path": "../../suite-common/dependency-injection"
+        },
         { "path": "../../suite-common/device" },
         {
             "path": "../../suite-common/geolocation"
@@ -23,8 +26,11 @@
         { "path": "../icons" },
         { "path": "../intl" },
         { "path": "../link" },
-        { "path": "../../packages/styles" },
+        { "path": "../../packages/connect" },
+        {
+            "path": "../../packages/styles-native"
+        },
         { "path": "../../packages/theme" },
-        { "path": "../test-utils" }
+        { "path": "../test-utils-store" }
     ]
 }

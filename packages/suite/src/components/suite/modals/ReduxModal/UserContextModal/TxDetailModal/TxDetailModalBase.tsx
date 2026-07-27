@@ -1,24 +1,45 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
+import { TrezorLink } from '@suite/external-links';
 import { Translation } from '@suite/intl';
-import { Explorer, getNetwork } from '@suite-common/wallet-config';
+import { selectIsDeviceRemembered } from '@suite-common/device';
+import { type PhishingDetectorId } from '@suite-common/token-definitions';
+import { type Explorer, getNetwork } from '@suite-common/wallet-config';
 import { getExplorerUrl } from '@suite-common/wallet-config/src/getExplorerUrls';
 import {
     selectAccountByKey,
     selectExplorer,
     selectIsPhishingTransaction,
     selectTransactionConfirmations,
+    selectTransactionIsMarkedAsNotScam,
+    transactionsActions,
 } from '@suite-common/wallet-core';
 import { createAccountKey } from '@suite-common/wallet-types';
-import { Banner, Column, Modal } from '@trezor/components';
-import { spacings } from '@trezor/theme';
+import { type PendingEvmNonceStatus } from '@suite-common/wallet-utils';
+import { Banner, Button, Column, Modal, Tooltip } from '@trezor/components';
 import { HELP_CENTER_ZERO_VALUE_ATTACKS } from '@trezor/urls';
 
-import { TrezorLink } from 'src/components/suite/TrezorLink';
-import { useSelector } from 'src/hooks/suite';
-import { Account, WalletAccountTransaction } from 'src/types/wallet';
+import { useDispatch, useSelector } from 'src/hooks/suite';
+import { type Account, type WalletAccountTransaction } from 'src/types/wallet';
 
 import { BasicTxDetails } from './BasicTxDetails';
+
+const getPhishingBannerTranslationId = (detectorId?: PhishingDetectorId) => {
+    switch (detectorId) {
+        case 'FAKE_TOKEN':
+            return 'TR_PHISHING_BANNER_FAKE_TOKEN';
+        case 'UNKNOWN_TX':
+            return 'TR_PHISHING_BANNER_UNKNOWN_TX';
+        case 'DUST_AMOUNT':
+            return 'TR_PHISHING_BANNER_DUST_AMOUNT';
+        case 'ZERO_AMOUNT':
+            return 'TR_PHISHING_BANNER_ZERO_AMOUNT';
+        case 'TRC10_TRANSFER':
+            return 'TR_PHISHING_BANNER_TRC10_TRANSFER';
+        default:
+            return 'TR_ZERO_PHISHING_BANNER';
+    }
+};
 
 type TxDetailModalProps = {
     tx: WalletAccountTransaction;
@@ -27,6 +48,11 @@ type TxDetailModalProps = {
     heading: ReactNode;
     bottomContent: ReactNode | undefined;
     children: ReactNode;
+    // Computed once by TxDetailModal (the router) and threaded down through whichever of
+    // DetailModal/BumpFeeModal/CancelTransactionModal is rendered, instead of this shared base
+    // independently re-fetching/recomputing the same thing.
+    nonceStatus?: PendingEvmNonceStatus;
+    nextNonce?: number;
 };
 
 export const TxDetailModalBase = ({
@@ -36,6 +62,8 @@ export const TxDetailModalBase = ({
     heading,
     bottomContent,
     children,
+    nonceStatus,
+    nextNonce,
 }: TxDetailModalProps) => {
     const accountKey = createAccountKey({
         accountDescriptor: tx.descriptor,
@@ -48,10 +76,36 @@ export const TxDetailModalBase = ({
     const account = useSelector(state => selectAccountByKey(state, accountKey)) as Account;
     const network = getNetwork(account.symbol);
     const explorer = useSelector(state => selectExplorer(state, account.symbol)) as Explorer;
+    const isDeviceRemembered = useSelector(selectIsDeviceRemembered);
 
-    const isPhishingTransaction = useSelector(state =>
-        selectIsPhishingTransaction(state, tx.txid, accountKey),
+    const { isPhishing: isPhishingTransaction, detectorId: phishingDetectorId } = useSelector(
+        state => selectIsPhishingTransaction(state, tx.txid, accountKey),
     );
+    const isTxMarkedAsNotScam = useSelector(state =>
+        selectTransactionIsMarkedAsNotScam(state, tx.txid, accountKey),
+    );
+
+    const dispatch = useDispatch();
+
+    const onMarkTxAsNotScamClick = () => {
+        dispatch(
+            transactionsActions.markTransactionAsNotScam({
+                key: accountKey,
+                txid: tx.txid,
+                isMarkedAsNotScam: true,
+            }),
+        );
+    };
+
+    const onUnmarkTxAsNotScamClick = () => {
+        dispatch(
+            transactionsActions.markTransactionAsNotScam({
+                key: accountKey,
+                txid: tx.txid,
+                isMarkedAsNotScam: false,
+            }),
+        );
+    };
 
     return (
         <Modal
@@ -63,21 +117,24 @@ export const TxDetailModalBase = ({
             // Disable shadow bottom to make `Fees` component fully visible
             shadowBottom={false}
         >
-            <Column gap={spacings.md}>
+            <Column gap={16}>
                 <BasicTxDetails
                     explorerUrl={getExplorerUrl(explorer, 'tx')!}
                     explorerUrlQueryString={explorer.queryString}
                     tx={tx}
                     network={network}
                     confirmations={confirmations}
+                    nonceStatus={nonceStatus}
+                    nextNonce={nextNonce}
                 />
 
                 {isPhishingTransaction && (
                     <Banner
                         icon
+                        intent="warning"
                         description={
                             <Translation
-                                id="TR_ZERO_PHISHING_BANNER"
+                                id={getPhishingBannerTranslationId(phishingDetectorId)}
                                 values={{
                                     a: chunks => (
                                         <TrezorLink href={HELP_CENTER_ZERO_VALUE_ATTACKS}>
@@ -86,6 +143,46 @@ export const TxDetailModalBase = ({
                                     ),
                                 }}
                             />
+                        }
+                        rightContent={
+                            <Tooltip
+                                content={<Translation id="TR_UNHIDE_TRANSACTION_TOOLTIP" />}
+                                isActive={!isDeviceRemembered}
+                            >
+                                <Button
+                                    intent="warning"
+                                    priority="primary"
+                                    size="small"
+                                    onClick={onMarkTxAsNotScamClick}
+                                    isDisabled={!isDeviceRemembered}
+                                >
+                                    <Translation id="TR_UNHIDE_TRANSACTION" />
+                                </Button>
+                            </Tooltip>
+                        }
+                    />
+                )}
+
+                {!isPhishingTransaction && isTxMarkedAsNotScam && (
+                    <Banner
+                        icon
+                        intent="info"
+                        description={<Translation id="TR_MARKED_AS_RECOGNIZED_BANNER" />}
+                        rightContent={
+                            <Tooltip
+                                content={<Translation id="TR_HIDE_TRANSACTION_TOOLTIP" />}
+                                isActive={!isDeviceRemembered}
+                            >
+                                <Button
+                                    intent="info"
+                                    priority="primary"
+                                    size="small"
+                                    onClick={onUnmarkTxAsNotScamClick}
+                                    isDisabled={!isDeviceRemembered}
+                                >
+                                    <Translation id="TR_HIDE_TRANSACTION" />
+                                </Button>
+                            </Tooltip>
                         }
                     />
                 )}

@@ -1,7 +1,6 @@
-import { coinSelection, types } from '@fivebinaries/coin-selection';
-
-import { PROTO } from '../../constants';
-import { AccountUtxo, CardanoCertificate } from '../../types';
+import type { AccountUtxo, CardanoCertificate } from '@trezor/connect-common';
+import type { types } from '@trezor/network-cardano/types';
+import { MessagesSchema as PROTO } from '@trezor/protobuf';
 
 const CARDANO_DEFAULT_TTL_OFFSET = 7200;
 
@@ -56,14 +55,14 @@ export const prepareCertificates = (certs: CardanoCertificate[]) => {
                     convertedCerts.push({
                         type: cert.type,
                         dRep: {
-                            type: cert.dRep!.type,
+                            type: cert.dRep.type,
                         },
                     });
                 } else if (cert.dRep?.type === PROTO.CardanoDRepType.KEY_HASH) {
                     convertedCerts.push({
                         type: cert.type,
                         dRep: {
-                            type: cert.dRep!.type,
+                            type: cert.dRep.type,
                             keyHash: cert.dRep.keyHash!,
                         },
                     });
@@ -71,8 +70,8 @@ export const prepareCertificates = (certs: CardanoCertificate[]) => {
                     convertedCerts.push({
                         type: cert.type,
                         dRep: {
-                            type: cert.dRep!.type,
-                            scriptHash: cert.dRep!.scriptHash!,
+                            type: cert.dRep.type,
+                            scriptHash: cert.dRep.scriptHash!,
                         },
                     });
                 }
@@ -99,7 +98,7 @@ export const getTtl = (testnet: boolean) => {
     return currentSlot + CARDANO_DEFAULT_TTL_OFFSET;
 };
 
-export const composeTxPlan = (
+export const getCoinSelectionParams = (
     descriptor: string,
     utxo: AccountUtxo[],
     outputs: types.UserOutput[],
@@ -107,29 +106,24 @@ export const composeTxPlan = (
     withdrawals: types.Withdrawal[],
     changeAddress: string,
     isTestnet: boolean,
-    options?: types.Options,
-) =>
-    coinSelection(
-        {
-            utxos: transformUtxos(utxo),
-            outputs,
-            changeAddress,
-            certificates: prepareCertificates(certificates),
-            withdrawals,
-            accountPubKey: descriptor,
-            ttl: getTtl(isTestnet),
-        },
-        options,
-    );
+) => ({
+    utxos: transformUtxos(utxo),
+    outputs,
+    changeAddress,
+    certificates: prepareCertificates(certificates),
+    withdrawals,
+    accountPubKey: descriptor,
+    ttl: getTtl(isTestnet),
+});
 
 export const hexStringByteLength = (s: string) => s.length / 2;
 
 export const sendChunkedHexString = async (
-    typedCall: any,
+    typedCall: PROTO.TypedCall,
     data: string,
     chunkSize: number,
-    messageType: string,
-    responseType = 'CardanoTxItemAck',
+    messageType: PROTO.WireInMessage,
+    responseType: PROTO.WireOutMessage = 'CardanoTxItemAck',
 ) => {
     let processedSize = 0;
     while (processedSize < data.length) {

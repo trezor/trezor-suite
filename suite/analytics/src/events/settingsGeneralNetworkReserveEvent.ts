@@ -11,11 +11,12 @@ export const settingsGeneralNetworkReserveEvent: EventDef<
     EventType.SettingsGeneralNetworkReserve
 > = {
     name: EventType.SettingsGeneralNetworkReserve,
-    descriptionTrigger: '?',
+    descriptionTrigger: 'User toggles network reserve fee setting in general preferences',
     changelog: [{ version: '1.0.0', notes: 'added' }],
 
     attributes: {
         value: {
+            description: 'Whether network reserve is enabled (`true`) or disabled (`false`)',
             changelog: [{ version: '1.0.0', notes: 'added' }],
         },
     },

@@ -1,20 +1,24 @@
 import { useEffect, useState } from 'react';
 
 import { Translation } from '@suite/intl';
-import { EnhancedTokenInfo, TokenManagementAction } from '@suite-common/token-definitions';
+import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
+import {
+    type EnhancedTokenInfo,
+    type TokenManagementAction,
+} from '@suite-common/token-definitions';
 import { tradingThunks } from '@suite-common/trading';
-import { Network } from '@suite-common/wallet-config';
-import { Account } from '@suite-common/wallet-types';
+import { type Network } from '@suite-common/wallet-config';
+import { type Account } from '@suite-common/wallet-types';
 import { Card, Paragraph, Table } from '@trezor/components';
-import { spacings } from '@trezor/theme';
 
 import { useDispatch } from 'src/hooks/suite';
 
 import { TokenRow } from './TokenRow';
+import type { TokensTableType } from './types';
 import { DropdownRow } from '../../DropdownRow';
 
 const NoSearchResults = () => (
-    <Paragraph margin={{ top: spacings.xxl, bottom: spacings.xxl }} align="center">
+    <Paragraph margin={{ top: 32, bottom: 32 }} align="center">
         <Translation id="TR_NO_SEARCH_RESULTS" />
     </Paragraph>
 );
@@ -26,6 +30,7 @@ export const NoSearchResultsWrapped = () => (
 );
 
 interface TokensTableProps {
+    type?: TokensTableType;
     account: Account;
     tokensWithBalance: EnhancedTokenInfo[];
     tokensWithoutBalance: EnhancedTokenInfo[];
@@ -34,9 +39,11 @@ interface TokensTableProps {
     hideRates?: boolean;
     searchQuery?: string;
     isUnverifiedTable?: boolean;
+    yieldOpportunities?: YieldDtoV2[];
 }
 
 export const TokensTable = ({
+    type = 'default',
     account,
     tokensWithBalance,
     tokensWithoutBalance,
@@ -45,6 +52,7 @@ export const TokensTable = ({
     hideRates,
     searchQuery,
     isUnverifiedTable,
+    yieldOpportunities,
 }: TokensTableProps) => {
     const dispatch = useDispatch();
     const [isZeroBalanceOpen, setIsZeroBalanceOpen] = useState(false);
@@ -59,7 +67,7 @@ export const TokensTable = ({
                 <NoSearchResults />
             ) : (
                 <Table
-                    margin={{ top: spacings.xs }}
+                    margin={{ top: 8 }}
                     colWidths={[
                         { minWidth: '200px', maxWidth: '250px' },
                         { minWidth: '140px', maxWidth: '250px' }, // due to HiddenPlaceholder - it changes content width when hovered
@@ -79,9 +87,11 @@ export const TokensTable = ({
                                     <Table.Cell align="end">
                                         <Translation id="TR_EXCHANGE_RATE" />
                                     </Table.Cell>
-                                    <Table.Cell colSpan={2}>
-                                        <Translation id="TR_7D_CHANGE" />
-                                    </Table.Cell>
+                                    {type !== 'defi' && (
+                                        <Table.Cell colSpan={2}>
+                                            <Translation id="TR_7D_CHANGE" />
+                                        </Table.Cell>
+                                    )}
                                 </>
                             )}
                         </Table.Row>
@@ -89,6 +99,7 @@ export const TokensTable = ({
                     <Table.Body>
                         {tokensWithBalance.map(token => (
                             <TokenRow
+                                type={type}
                                 key={token.contract}
                                 token={token}
                                 account={account}
@@ -96,6 +107,7 @@ export const TokensTable = ({
                                 tokenStatusType={tokenStatusType}
                                 isUnverifiedTable={isUnverifiedTable}
                                 hideRates={hideRates}
+                                yieldOpportunities={yieldOpportunities}
                             />
                         ))}
                         {tokensWithoutBalance.length !== 0 && (
@@ -114,6 +126,7 @@ export const TokensTable = ({
                                 </Table.Row>
                                 {tokensWithoutBalance.map(token => (
                                     <TokenRow
+                                        type={type}
                                         key={token.contract}
                                         token={token}
                                         account={account}
@@ -122,6 +135,7 @@ export const TokensTable = ({
                                         isUnverifiedTable={isUnverifiedTable}
                                         hideRates={hideRates}
                                         isCollapsed={!isZeroBalanceOpen}
+                                        yieldOpportunities={yieldOpportunities}
                                     />
                                 ))}
                             </>

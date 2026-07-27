@@ -2,6 +2,7 @@
     "name": "connect-example-electron-main",
     "version": "1.0.0",
     "description": "Example of electron app with @trezor/connect",
+    "type": "module",
     "main": "src/electron.js",
     "author": "Satoshilabs s.r.o <info@satoshilabs.com>",
     "license": "MIT",
@@ -9,7 +10,8 @@
         "dev": "electron .",
         "build:mac": "electron-builder --mac",
         "build:linux": "electron-builder --linux",
-        "build:win": "electron-builder --win"
+        "build:win": "electron-builder --win",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "build": {
         "appId": "${name}",
@@ -21,6 +23,7 @@
         },
         "files": [
             "src/*.js",
+            "src/*.cjs",
             "src/index.html",
             "package.json"
         ],
@@ -56,7 +59,7 @@
     },
     "devDependencies": {
         "@trezor/eslint": "workspace:*",
-        "electron": "40.1.0",
-        "electron-builder": "26.6.0"
+        "electron": "42.5.0",
+        "electron-builder": "26.15.3"
     }
 }

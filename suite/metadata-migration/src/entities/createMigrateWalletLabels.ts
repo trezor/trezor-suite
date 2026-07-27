@@ -1,0 +1,67 @@
+import { type SuiteSyncStorage } from '@suite-common/suite-sync-storage';
+import { type WriteWalletLabelDep } from '@suite-common/suite-sync-types';
+import { type StaticSessionId } from '@trezor/connect';
+import type { WalletDescriptor } from '@trezor/device-utils';
+import { err, ok } from '@trezor/type-utils';
+import type { Result } from '@trezor/type-utils';
+
+import type {
+    GetCurrentWalletLabel,
+    GetLegacyWalletLabels,
+    MigrationCounts,
+    MigrationError,
+} from '../legacyLabelsMigration';
+import { normalizeLabel } from '../migrationUtils';
+
+export type MigrateWalletLabelsDeps = {
+    getLegacyWalletLabels: GetLegacyWalletLabels;
+    getCurrentWalletLabel: GetCurrentWalletLabel;
+} & WriteWalletLabelDep;
+
+export type MigrateWalletLabelsParams = {
+    deviceStaticSessionId: StaticSessionId;
+    walletDescriptor: WalletDescriptor;
+    storage: SuiteSyncStorage;
+};
+
+export type MigrateWalletLabels = (
+    params: MigrateWalletLabelsParams,
+) => Promise<Result<MigrationCounts, MigrationError>>;
+
+export type MigrateWalletLabelsDep = {
+    migrateWalletLabels: MigrateWalletLabels;
+};
+
+export const createMigrateWalletLabels =
+    (deps: MigrateWalletLabelsDeps): MigrateWalletLabels =>
+    async ({ deviceStaticSessionId, walletDescriptor, storage }) => {
+        const legacyWalletLabel = normalizeLabel(
+            deps.getLegacyWalletLabels(deviceStaticSessionId).walletLabel,
+        );
+
+        if (legacyWalletLabel === null) {
+            return ok({ changed: 0, skipped: 0 });
+        }
+
+        const currentWalletLabel = deps.getCurrentWalletLabel(walletDescriptor);
+
+        if (currentWalletLabel !== null) {
+            return ok({ changed: 0, skipped: 1 });
+        }
+
+        const updateWalletLabelResult = await deps.writeWalletLabel({
+            storage,
+            data: { deviceStaticSessionId, label: legacyWalletLabel },
+        });
+
+        if (!updateWalletLabelResult.success) {
+            return err({
+                type: 'update-failed' as const,
+                entity: 'wallet' as const,
+                deviceStaticSessionId,
+                cause: updateWalletLabelResult.error,
+            });
+        }
+
+        return ok({ changed: 1, skipped: 0 });
+    };

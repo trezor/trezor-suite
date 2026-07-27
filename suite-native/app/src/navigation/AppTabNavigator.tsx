@@ -1,24 +1,28 @@
 import { useSelector } from 'react-redux';
 
-import { BottomTabBarProps, createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { type BottomTabBarProps, createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
-import { events } from '@suite-native/analytics';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectHasBitcoinOnlyFirmware } from '@suite-common/device';
+import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { AccountsStackNavigator } from '@suite-native/module-accounts-management';
 import { EarnStackNavigator } from '@suite-native/module-earn';
 import { HomeStackNavigator } from '@suite-native/module-home';
 import { SettingsScreen } from '@suite-native/module-settings';
 import { TradingStackNavigator } from '@suite-native/module-trading';
-import { AppTabsParamList, AppTabsRoutes, TabBar } from '@suite-native/navigation';
-import { useAnalytics } from '@suite-native/services';
+import { type AppTabsParamList, AppTabsRoutes, TabBar } from '@suite-native/navigation';
 import { selectIsTradingEnabled } from '@suite-native/trading-state';
 
-import { rootTabsOptions } from './routes';
+import { rootTabsOptions, rootTabsOptionsWithoutEarn } from './routes';
 
 const Tab = createBottomTabNavigator<AppTabsParamList>();
 
 export const AppTabNavigator = () => {
-    const analytics = useAnalytics();
+    const { analytics } = useServices(selectNativeAnalyticsDep);
     const isTradingEnabled = useSelector(selectIsTradingEnabled);
+    const isBitcoinOnlyFirmware = useSelector(selectHasBitcoinOnlyFirmware);
+
+    const tabItemOptions = isBitcoinOnlyFirmware ? rootTabsOptionsWithoutEarn : rootTabsOptions;
 
     const handleTradeTabPress = () => {
         // Buy is the default tab when navigating to the Trading stack
@@ -40,7 +44,7 @@ export const AppTabNavigator = () => {
                 popToTopOnBlur: true,
             }}
             tabBar={(props: BottomTabBarProps) => (
-                <TabBar tabItemOptions={rootTabsOptions} {...props} />
+                <TabBar tabItemOptions={tabItemOptions} {...props} />
             )}
         >
             <Tab.Screen name={AppTabsRoutes.HomeStack} component={HomeStackNavigator} />

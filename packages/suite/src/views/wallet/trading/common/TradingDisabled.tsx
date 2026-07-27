@@ -1,17 +1,19 @@
 import React from 'react';
 
-import { ExtendedMessageDescriptor, Translation, useTranslation } from '@suite/intl';
-import { TradingType } from '@suite-common/trading';
+import { type ExtendedMessageDescriptor, Translation, useTranslation } from '@suite/intl';
+import { type TradingTypeWithConcierge } from '@suite-common/trading';
 import { Banner } from '@trezor/components';
+import { WarningIcon } from '@trezor/icons';
 
 const typeLabels: Record<TradingDisabledProps['type'], ExtendedMessageDescriptor['id']> = {
     buy: 'TR_BUY',
     sell: 'TR_TRADING_SELL',
     exchange: 'TR_TRADING_SWAP',
+    concierge: 'TR_NAV_CONCIERGE',
 };
 
 type TradingDisabledProps = {
-    type: TradingType;
+    type: TradingTypeWithConcierge;
     content?: string;
 };
 
@@ -20,7 +22,7 @@ export const TradingDisabled = ({ type, content }: TradingDisabledProps) => {
 
     return (
         <Banner
-            icon="warning"
+            icon={WarningIcon}
             intent="warning"
             description={
                 content ?? (

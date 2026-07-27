@@ -1,6 +1,6 @@
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
-import { NetworkSymbol } from '@suite-common/wallet-config';
-import { Account } from '@suite-common/wallet-types';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type Account } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
 import { filterReceiveAccounts, isDebugOnlyAccountType } from '../filterReceiveAccounts';
@@ -25,6 +25,8 @@ const accountsList: Account[] = [
         empty: true,
         visible: false,
     }),
+    mockWalletAccount({ symbol: 'tsep', accountType: 'normal' }),
+    mockWalletAccount({ symbol: 'tsep', accountType: 'legacy' }),
 ];
 
 type RunFilterReceiveAccountsTestParams = {
@@ -64,7 +66,10 @@ describe('filter receive accounts', () => {
         expect(isDebugOnlyAccountType('ledger', 'btc')).toBe(false);
         expect(isDebugOnlyAccountType('legacy', 'eth')).toBe(true);
         expect(isDebugOnlyAccountType('ledger', 'eth')).toBe(true);
+        expect(isDebugOnlyAccountType('ledger', 'trx')).toBe(true);
         expect(isDebugOnlyAccountType('normal', 'regtest')).toBe(false);
+        expect(isDebugOnlyAccountType('legacy', 'tsep')).toBe(true);
+        expect(isDebugOnlyAccountType('legacy', 'thod')).toBe(true);
     });
 
     it('returns no results when given an empty accounts array', () => {
@@ -123,5 +128,25 @@ describe('filter receive accounts', () => {
         ];
 
         expect(runFilterReceiveAccouns({ symbol: 'sol' })).toEqual(filteredAccounts);
+    });
+
+    it('returns both normal and legacy for sepolia', () => {
+        const filteredAccounts = [
+            mockWalletAccount({ symbol: 'tsep', accountType: 'normal' }),
+            mockWalletAccount({ symbol: 'tsep', accountType: 'legacy' }),
+        ];
+
+        expect(runFilterReceiveAccouns({ symbol: 'tsep' })).toEqual(filteredAccounts);
+    });
+
+    it('returns non-debug + excludes testnet accounts when debug mode is off', () => {
+        const filteredAccounts = [
+            mockWalletAccount({ symbol: 'tsep', accountType: 'normal' }),
+            mockWalletAccount({ symbol: 'tsep', accountType: 'legacy' }),
+        ];
+
+        expect(runFilterReceiveAccouns({ isDebug: false })).toEqual(
+            expect.not.arrayContaining(filteredAccounts),
+        );
     });
 });

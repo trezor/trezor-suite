@@ -1,17 +1,18 @@
-import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
+import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
+import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import {
     AuthorizeDeviceStackRoutes,
     RootStackRoutes,
     StellarManageTokenStackRoutes,
 } from '@suite-native/navigation';
 import {
-    TestStore,
+    type TestStore,
     act,
-    initStore,
+    createStoreFromPreloadedState,
     renderHookWithStoreProvider,
     waitFor,
-} from '@suite-native/test-utils';
-import { BASE_INFO } from '@trezor/blockchain-link-utils/src/stellar';
+} from '@suite-native/test-utils-store';
+import { STELLAR_BASE_RESERVE } from '@trezor/network-stellar/constants';
 import { BigNumber } from '@trezor/utils';
 
 import { useStellarFeeScreen } from '../useStellarFeeScreen';
@@ -32,7 +33,7 @@ const triggerFocusEffect = () => {
     focusEffectCallback?.();
 };
 
-const accountKey = 'stellar-1' as AccountKey;
+const accountKey = mockAccountKey({ symbol: 'xlm', descriptor: 'stellar1' });
 
 const mockAccount = {
     key: accountKey,
@@ -42,6 +43,7 @@ const mockAccount = {
     balance: '10000000000',
     availableBalance: '10000000000',
     formattedBalance: '1000',
+    misc: {},
 };
 
 jest.mock('@suite-native/alerts', () => ({
@@ -204,7 +206,7 @@ describe('useStellarFeeScreen', () => {
     beforeEach(() => {
         jest.clearAllMocks();
         focusEffectCallback = undefined;
-        ({ store } = initStore());
+        store = createStoreFromPreloadedState();
 
         mockSelectAccountByKey.mockReturnValue(mockAccount);
         mockSelectDeviceButtonRequestsCodes.mockReturnValue([]);
@@ -255,7 +257,7 @@ describe('useStellarFeeScreen', () => {
 
         const { result } = renderUseStellarFeeScreen();
 
-        const requiredAmount = BigNumber('100').plus(BASE_INFO.BASE_RESERVE).toString();
+        const requiredAmount = BigNumber('100').plus(STELLAR_BASE_RESERVE).toString();
 
         expect(result.current.insufficientBalanceInfo).toEqual({
             required: requiredAmount,

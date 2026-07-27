@@ -1,5 +1,13 @@
 import { connectInitThunk } from '@suite-common/connect-init';
-import { initMessageSystemThunk, prepareCachedEnvData } from '@suite-common/message-system';
+import {
+    defaultEarnYieldWorkerBaseUrl,
+    earnYieldWorkerBaseUrl,
+} from '@suite-common/earn-stablecoin-api';
+import {
+    initMessageSystemThunk,
+    prepareCachedEnvData,
+    selectActiveKillswitchMessage,
+} from '@suite-common/message-system';
 import { createThunk } from '@suite-common/redux-utils';
 import { periodicCheckTokenDefinitionsThunk } from '@suite-common/token-definitions';
 import {
@@ -12,7 +20,7 @@ import {
 } from '@suite-common/wallet-core';
 import { walletConnectInitThunk } from '@suite-common/walletconnect';
 import { initAnalyticsThunk } from '@suite-native/analytics-redux';
-import { selectIsOnboardingFinished } from '@suite-native/settings';
+import { selectEarnYieldWorkerBaseUrl, selectIsOnboardingFinished } from '@suite-native/settings';
 import { setIsAppReady } from '@suite-native/state';
 
 const ACTION_PREFIX = '@suite-native/app';
@@ -20,6 +28,10 @@ const ACTION_PREFIX = '@suite-native/app';
 export const postOnboardingInit = createThunk(
     `${ACTION_PREFIX}/postOnboardingInit`,
     async (_, { dispatch, getState }) => {
+        // Do not initialize Connect or anything else related to it, if there is an app-wide killswitch via message-system.
+        const activeKillswitchMessage = selectActiveKillswitchMessage(getState());
+        if (activeKillswitchMessage) return;
+
         try {
             await dispatch(connectInitThunk()).unwrap();
         } catch (error) {
@@ -54,6 +66,12 @@ export const applicationInit = createThunk(
     `${ACTION_PREFIX}/applicationInit`,
     async (_, { dispatch, getState }) => {
         await prepareCachedEnvData();
+
+        // apply the earn yield worker base url from debug settings (or the default for this build)
+        earnYieldWorkerBaseUrl.set(
+            selectEarnYieldWorkerBaseUrl(getState()) ?? defaultEarnYieldWorkerBaseUrl,
+        );
+
         dispatch(initAnalyticsThunk());
         dispatch(initMessageSystemThunk());
 

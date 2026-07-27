@@ -1,6 +1,6 @@
 import * as utils from './test.utils';
 import { branchAndBound } from '../../src/coinselect/inputs/branchAndBound';
-import { CoinSelectOptions } from '../../src/types';
+import type { CoinSelectOptions } from '../../src/types';
 import fixtures from '../__fixtures__/coinselect/bnb';
 
 describe('coinselect: branchAndBound (bnb)', () => {
@@ -22,5 +22,28 @@ describe('coinselect: branchAndBound (bnb)', () => {
                 expect(utils.serialize(feedback)).toEqual(expected);
             }
         });
+    });
+
+    it('with options.baseFee set returns { fee: 0 } (bnb disabled for DOGE)', () => {
+        const inputs = utils.expand(['102001'], true);
+        const outputs = utils.expand(['100000'], false);
+        const options = {
+            txType: 'p2pkh',
+            dustThreshold: 546,
+            baseFee: 100,
+        } as CoinSelectOptions;
+
+        expect(branchAndBound(inputs, outputs, 10, options)).toEqual({ fee: 0 });
+    });
+
+    it('with an unparseable utxo value treats it as ZERO effective value (filtered out)', () => {
+        const inputs = utils.expand([{}], true);
+        const outputs = utils.expand(['100000'], false);
+        const options = {
+            txType: 'p2pkh',
+            dustThreshold: 546,
+        } as CoinSelectOptions;
+
+        expect(branchAndBound(inputs, outputs, 10, options)).toEqual({ fee: 0 });
     });
 });
