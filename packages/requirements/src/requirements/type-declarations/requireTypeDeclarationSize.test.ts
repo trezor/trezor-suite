@@ -2,16 +2,16 @@ import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
-import { listAllWorkspaces } from '../../../workspaces';
-import type { RepoContext } from '../../Requirement';
+import { listAllWorkspaces } from '../../workspaces';
+import type { RepoContext } from '../Requirement';
 import {
     MAX_DECLARATION_SIZE_BYTES,
     MAX_DECLARATION_SOURCE_RATIO,
     MIN_DECLARATION_RATIO_SIZE_BYTES,
     requireTypeDeclarationSize,
-} from '../requireTypeDeclarationSize';
+} from './requireTypeDeclarationSize';
 
-jest.mock('../../../workspaces');
+jest.mock('../../workspaces');
 
 const mockListAllWorkspaces = jest.mocked(listAllWorkspaces);
 

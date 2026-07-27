@@ -5,8 +5,8 @@ import { join } from 'node:path';
 
 jest.mock('node:child_process');
 
-import type { RepoContext } from '../../Requirement';
-import { requireConnectPublicDependencies } from '../requireConnectPublicDependencies';
+import type { RepoContext } from '../Requirement';
+import { requireConnectPublicDependencies } from './requireConnectPublicDependencies';
 
 const createTempRepo = () => mkdtempSync(join(tmpdir(), 'connect-public-deps-'));
 

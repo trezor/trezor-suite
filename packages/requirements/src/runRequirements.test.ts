@@ -1,5 +1,5 @@
-import type { Requirement } from '../requirements/Requirement';
-import { runRequirements } from '../runRequirements';
+import type { Requirement } from './requirements/Requirement';
+import { runRequirements } from './runRequirements';
 
 const createRepoRequirement = (
     overrides: Partial<Requirement<'repo'>> & { name: string },
