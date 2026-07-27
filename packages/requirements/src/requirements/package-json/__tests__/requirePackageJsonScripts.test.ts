@@ -58,6 +58,26 @@ describe(requirePackageJsonScripts.name, () => {
         expect(errors).toEqual([]);
     });
 
+    it('does not require the type-check script for the webextension example', async () => {
+        context = {
+            ...context,
+            workspaceName: '@trezor/webextension-mv3-sw-ts',
+        };
+
+        writeFileSync(
+            join(workspaceDir, 'package.json'),
+            JSON.stringify({
+                scripts: {
+                    'lint:js': validScripts['lint:js'],
+                },
+            }),
+        );
+
+        const errors = await requirePackageJsonScripts.verify(context);
+
+        expect(errors).toEqual([]);
+    });
+
     it('reports missing depcheck script', async () => {
         writeFileSync(
             join(workspaceDir, 'package.json'),
