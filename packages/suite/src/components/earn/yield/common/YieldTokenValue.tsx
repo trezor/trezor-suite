@@ -16,7 +16,11 @@ type YieldTokenValueProps = {
     'data-testid'?: string;
 };
 
-export const YieldTokenValue = ({ token, amount }: YieldTokenValueProps) => (
+export const YieldTokenValue = ({
+    token,
+    amount,
+    'data-testid': dataTestId,
+}: YieldTokenValueProps) => (
     <Row alignItems="center" gap={8}>
         <TokenIcon
             size={24}
@@ -34,7 +38,12 @@ export const YieldTokenValue = ({ token, amount }: YieldTokenValueProps) => (
                 showing the meaningful digits of small stablecoin/WETH amounts — a fixed decimal
                 cap instead rounded those down to zeroes.
             */}
-            <FormattedCryptoAmount value={amount} symbol={token.symbol} isBalance />
+            <FormattedCryptoAmount
+                value={amount}
+                symbol={token.symbol}
+                isBalance
+                data-testid={dataTestId}
+            />
         </Text>
     </Row>
 );
