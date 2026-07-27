@@ -158,7 +158,6 @@ const getTestState = (accounts: Account[]) =>
             selectedDevice: {
                 state: 'device@state:1',
             } as unknown as TrezorDevice,
-            persistentDeviceData: [],
         },
     }) satisfies StakeRootState;
 
@@ -377,7 +376,7 @@ describe('selectVotingDelegationOption', () => {
     };
 
     const createState = (votingDelegation?: AccountVotingDelegation): StakeRootState => ({
-        device: { devices: [], persistentDeviceData: [] },
+        device: { devices: [] },
         wallet: {
             stake: { ...stakeInitialState, votingDelegation },
             accounts: [],
@@ -415,7 +414,7 @@ describe('selectStakeVotingDelegation', () => {
             option: { type: 'current' },
         };
         const state: StakeRootState = {
-            device: { devices: [], persistentDeviceData: [] },
+            device: { devices: [] },
             wallet: {
                 stake: { ...stakeInitialState, votingDelegation },
                 accounts: [],
@@ -428,7 +427,7 @@ describe('selectStakeVotingDelegation', () => {
 
     it('returns undefined when nothing was confirmed', () => {
         const state: StakeRootState = {
-            device: { devices: [], persistentDeviceData: [] },
+            device: { devices: [] },
             wallet: {
                 stake: stakeInitialState,
                 accounts: [],

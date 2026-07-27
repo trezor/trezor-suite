@@ -5,6 +5,7 @@ import {
 } from '@suite-common/bluetooth';
 import { createBluetoothDeviceCommon } from '@suite-common/bluetooth/mocks';
 import { type DeviceReducerState, deviceInitialState } from '@suite-common/device';
+import { type PersistentDeviceDataRootState } from '@suite-common/persistent-device-data';
 import { defaultDevicePersistentData, mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { type ThpState, initialThpState } from '@suite-common/thp';
 import { createCredential, createDeviceThp } from '@suite-common/thp/mocks';
@@ -14,7 +15,7 @@ type ForgetPersistentDataPreloadedState = {
     device: DeviceReducerState;
     bluetooth: BluetoothState<BluetoothDeviceCommon>;
     thp: ThpState;
-};
+} & PersistentDeviceDataRootState;
 
 const credential1A = createCredential({ credential: '1A' });
 const credential1B = createCredential({ credential: '1B' });
@@ -45,6 +46,9 @@ export const forgetPersistentDataPreloadedStateFixture: ForgetPersistentDataPrel
     device: {
         ...deviceInitialState,
         devices: [DEV1, DEV2, DEV3],
+    },
+
+    wallet: {
         persistentDeviceData: [
             {
                 ...defaultDevicePersistentData,
@@ -64,7 +68,6 @@ export const forgetPersistentDataPreloadedStateFixture: ForgetPersistentDataPrel
             },
         ],
     },
-
     bluetooth: {
         ...prepareInitialState<BluetoothDeviceCommon>(),
         knownDevices: [

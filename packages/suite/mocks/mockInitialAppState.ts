@@ -12,6 +12,7 @@ import { TorStatus } from '@suite/tor';
 import { type FirmwareUpdateState } from '@suite-common/firmware';
 import { messageSystemInitialState } from '@suite-common/message-system';
 import { type MetadataState } from '@suite-common/metadata-types';
+import { persistentDeviceDataInitialState } from '@suite-common/persistent-device-data';
 import { receiveInitialState } from '@suite-common/receive';
 import { quotaManagerInitialState } from '@suite-common/suite-sync-quota-manager';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
@@ -81,6 +82,7 @@ export const mockInitialAppState: AppState = {
             enabledNetworks: [] as NetworkSymbol[],
         },
         blockchain: {},
+        persistentDeviceData: persistentDeviceDataInitialState,
     } as WalletState, // Todo: maybe one day, fix types
     desktopUpdate: desktopUpdateInitialState,
     router: {

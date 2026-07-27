@@ -27,7 +27,6 @@ const selectedDevice = mockSuiteDevice(
 const defaultState: BackupDeviceThunkState = {
     device: {
         devices: [],
-        persistentDeviceData: [],
         selectedDevice,
     },
 };

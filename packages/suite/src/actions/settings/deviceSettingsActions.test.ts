@@ -31,11 +31,11 @@ const getInitialState = (state: Partial<DeviceSettingsFixtureState> = {}) => ({
     device: {
         devices: state.device?.devices ?? [DEVICE],
         selectedDevice: state.device?.selectedDevice ?? DEVICE,
-        persistentDeviceData: [],
         isConnectionModalOpen: false,
     },
     wallet: {
         settings: initialWalletSettingsState,
+        persistentDeviceData: [],
     },
     router: {},
     messageSystem: { validMessages: { feature: [] } },

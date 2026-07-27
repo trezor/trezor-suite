@@ -2,6 +2,7 @@ import { createRouterStateMock } from '@suite/router/mocks';
 import { suiteSettingsInitialState } from '@suite/settings';
 import { deviceInitialState } from '@suite-common/device';
 import { messageSystemInitialState } from '@suite-common/message-system';
+import { persistentDeviceDataInitialState } from '@suite-common/persistent-device-data';
 import { type AcquiredDevice } from '@suite-common/suite-types';
 import { defaultDevicePersistentData, mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import * as deviceUtils from '@suite-common/suite-utils';
@@ -34,6 +35,7 @@ const initialState: AuthenticityChecksRootState = {
     messageSystem: messageSystemInitialState,
     router: createRouterStateMock(),
     suiteSettings: suiteSettingsInitialState,
+    wallet: { persistentDeviceData: persistentDeviceDataInitialState },
 };
 
 const matchingDevicePersistentData = {
@@ -117,16 +119,18 @@ const fixtures: Fixture[] = [
             ...initialState,
             device: {
                 ...initialState.device,
+                selectedDevice: {
+                    ...defaultDevice,
+                    authenticityChecks: authenticityChecksSuccess,
+                },
+            },
+            wallet: {
                 persistentDeviceData: [
                     {
                         ...matchingDevicePersistentData,
                         lastEntropyCheckResult: { success: false },
                     },
                 ],
-                selectedDevice: {
-                    ...defaultDevice,
-                    authenticityChecks: authenticityChecksSuccess,
-                },
             },
         },
         result: true,
@@ -137,16 +141,18 @@ const fixtures: Fixture[] = [
             ...initialState,
             device: {
                 ...initialState.device,
+                selectedDevice: {
+                    ...defaultDevice,
+                    authenticityChecks: authenticityChecksSuccess,
+                },
+            },
+            wallet: {
                 persistentDeviceData: [
                     {
                         ...matchingDevicePersistentData,
                         lastEntropyCheckResult: { success: false },
                     },
                 ],
-                selectedDevice: {
-                    ...defaultDevice,
-                    authenticityChecks: authenticityChecksSuccess,
-                },
             },
             suiteSettings: {
                 ...initialState.suiteSettings,
@@ -175,7 +181,6 @@ const fixtures: Fixture[] = [
             ...initialState,
             device: {
                 ...initialState.device,
-                persistentDeviceData: [matchingDevicePersistentData],
                 selectedDevice: {
                     ...defaultDevice,
                     features: {
@@ -185,6 +190,7 @@ const fixtures: Fixture[] = [
                     },
                 },
             },
+            wallet: { persistentDeviceData: [matchingDevicePersistentData] },
         },
         result: true,
     },

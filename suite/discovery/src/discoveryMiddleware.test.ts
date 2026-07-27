@@ -25,6 +25,7 @@ import {
     messageSystemInitialState,
     prepareMessageSystemReducer,
 } from '@suite-common/message-system';
+import { preparePersistentDeviceDataReducer } from '@suite-common/persistent-device-data';
 import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { type AcquiredDevice } from '@suite-common/suite-types';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
@@ -72,6 +73,10 @@ const suiteSettingsReducer = prepareSuiteSettingsReducer({
 const thpReducer = prepareThpReducer({
     actionTypes: { storageLoad: mockActionType('storageLoad') },
 });
+const persistentDeviceDataReducer = preparePersistentDeviceDataReducer({
+    actionTypes: { storageLoad: mockActionType('storageLoad') },
+    reducers: { storageLoadPersistentDeviceData: mockReducer() },
+});
 
 type State = {
     device: DeviceReducerState;
@@ -80,7 +85,10 @@ type State = {
     router: RouterState;
     suiteSettings: SuiteSettingsState;
     thp: ThpState;
-    wallet: { discovery: Discovery };
+    wallet: {
+        discovery: Discovery;
+        persistentDeviceData: ReturnType<typeof persistentDeviceDataReducer>;
+    };
 };
 
 type FixtureState = {
@@ -323,7 +331,10 @@ const getInitialState = (state: FixtureState = {}): State => ({
         ...initialThpState,
         ...state.thp,
     },
-    wallet: { discovery: { ...discoveryInitialState, ...state.discovery } },
+    wallet: {
+        discovery: { ...discoveryInitialState, ...state.discovery },
+        persistentDeviceData: persistentDeviceDataReducer(undefined, { type: 'foo' }),
+    },
 });
 
 const initStore = (state?: FixtureState) =>
@@ -337,7 +348,10 @@ const initStore = (state?: FixtureState) =>
             router: routerReducer,
             suiteSettings: suiteSettingsReducer,
             thp: thpReducer,
-            wallet: combineReducers({ discovery: discoveryReducer }),
+            wallet: combineReducers({
+                discovery: discoveryReducer,
+                persistentDeviceData: persistentDeviceDataReducer,
+            }),
         },
         preloadedState: getInitialState(state),
     });

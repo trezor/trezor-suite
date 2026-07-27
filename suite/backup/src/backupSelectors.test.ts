@@ -33,7 +33,6 @@ describe('selectBackupStatus', () => {
         backup: { ...baseBackup, ...backup },
         device: {
             devices: [],
-            persistentDeviceData: [],
             selectedDevice: mockSuiteDevice({}, { backup_availability }),
         },
     });

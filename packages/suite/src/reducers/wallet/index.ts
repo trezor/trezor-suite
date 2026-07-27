@@ -2,6 +2,10 @@ import { type Reducer, type UnknownAction, combineReducers } from 'redux';
 
 import { selectedAccountReducer } from '@suite/account';
 import { type CoinjoinState, coinjoinReducer } from '@suite/coinjoin';
+import {
+    type PersistentDeviceDataState,
+    preparePersistentDeviceDataReducer,
+} from '@suite-common/persistent-device-data';
 import { type TradingState, prepareTradingReducer } from '@suite-common/trading';
 import {
     type AccountsRefreshTimeState,
@@ -58,6 +62,7 @@ export const stakeReducer = prepareStakeReducer(extraDependencies);
 export const sendFormReducer = prepareSendFormReducer(extraDependencies);
 export const tradingReducer = prepareTradingReducer(extraDependencies);
 export const walletSettingsReducer = prepareWalletSettingsReducer(extraDependencies);
+export const persistentDeviceDataReducer = preparePersistentDeviceDataReducer(extraDependencies);
 
 export type WalletState = {
     fiat: FiatRatesState;
@@ -81,6 +86,7 @@ export type WalletState = {
     stablecoinYield: YieldState;
     tronStake: TronStakeReducerState;
     earnOnboarding: EarnOnboardingState;
+    persistentDeviceData: PersistentDeviceDataState;
 };
 
 export const walletReducers: Reducer<
@@ -109,4 +115,5 @@ export const walletReducers: Reducer<
     stablecoinYield: yieldReducer,
     tronStake: tronStakeReducer,
     earnOnboarding: earnOnboardingReducer,
+    persistentDeviceData: persistentDeviceDataReducer,
 });

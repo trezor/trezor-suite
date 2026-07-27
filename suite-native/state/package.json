@@ -26,6 +26,7 @@
         "@suite-common/logger": "workspace:*",
         "@suite-common/message-system": "workspace:*",
         "@suite-common/networks": "workspace:*",
+        "@suite-common/persistent-device-data": "workspace:*",
         "@suite-common/platform-encryption-native": "workspace:*",
         "@suite-common/receive": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",

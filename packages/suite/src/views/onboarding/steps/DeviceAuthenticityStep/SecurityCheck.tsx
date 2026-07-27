@@ -12,6 +12,7 @@ import {
 } from '@suite/settings';
 import { useServices } from '@suite-common/dependency-injection';
 import { deviceActions, selectDevices, selectSelectedDevice } from '@suite-common/device';
+import { persistentDeviceDataActions } from '@suite-common/persistent-device-data';
 import { selectDispatch } from '@suite-common/redux-utils';
 import { SUPPORTS_DEVICE_AUTHENTICITY_CHECK } from '@suite-common/suite-constants';
 import { type AcquiredDevice } from '@suite-common/suite-types';
@@ -150,7 +151,7 @@ const SecurityCheckContent = ({
 
     const toggleIsDeviceRejected = () => setIsFailed(current => !current);
     const handleContinueButtonClick = () => {
-        dispatch(deviceActions.setManualDeviceCheckSuccess({ deviceId }));
+        dispatch(persistentDeviceDataActions.setManualDeviceCheckSuccess({ deviceId }));
         if (shouldAuthenticateSelectedDevice) {
             goToDeviceAuthentication();
         } else {
@@ -159,7 +160,7 @@ const SecurityCheckContent = ({
     };
 
     const handleSetupButtonClick = () => {
-        dispatch(deviceActions.setManualDeviceCheckSuccess({ deviceId }));
+        dispatch(persistentDeviceDataActions.setManualDeviceCheckSuccess({ deviceId }));
         analytics.report(
             {
                 type: events.deviceSetupStartedEvent.name,

@@ -127,7 +127,6 @@ const mockState: AccountsRootState & DeviceRootState = {
     },
     device: {
         devices: [BTC_DEVICE, ETH_DEVICE],
-        persistentDeviceData: [],
     },
 };
 
@@ -254,7 +253,7 @@ describe('accountsSelectors', () => {
             getStateWithSelectedDevice(
                 {
                     wallet: { accounts },
-                    device: { devices: [BTC_DEVICE], persistentDeviceData: [] },
+                    device: { devices: [BTC_DEVICE] },
                 },
                 BTC_DEVICE,
             );

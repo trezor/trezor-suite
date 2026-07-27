@@ -60,6 +60,7 @@ const getState = ({
     networks: mockNetworksState([solSymbol]),
     wallet: {
         accounts,
+        persistentDeviceData: [],
         settings: { ...initialWalletSettingsState, enabledNetworks },
         blockchain: blockchainInitialState,
         discovery: discovery ? { [device.path]: discovery } : {},
@@ -67,7 +68,6 @@ const getState = ({
     device: {
         devices: [device],
         selectedDevice: device,
-        persistentDeviceData: [],
     },
 });
 

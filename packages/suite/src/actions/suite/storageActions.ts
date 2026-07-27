@@ -19,17 +19,16 @@ import {
     type ConnectPopupStateRootState,
     selectConnectAppPermissions,
 } from '@suite-common/connect-popup';
-import {
-    type DeviceRootState,
-    deviceActions,
-    selectDevices,
-    selectPersistentDeviceData,
-} from '@suite-common/device';
+import { type DeviceRootState, deviceActions, selectDevices } from '@suite-common/device';
 import { type DiscreetModeRootState, selectDiscreetMode } from '@suite-common/discreet-mode';
 import { type FeatureFeedbackRootState, selectFeatureFeedback } from '@suite-common/feedback';
 import { type FirmwareRootState, selectFirmwareChannel } from '@suite-common/firmware';
 import { type MessageSystemRootState, selectMessageSystem } from '@suite-common/message-system';
 import { type MetadataState } from '@suite-common/metadata-types';
+import {
+    type PersistentDeviceDataRootState,
+    selectPersistentDeviceData,
+} from '@suite-common/persistent-device-data';
 import { type EncryptedHex } from '@suite-common/platform-encryption';
 import { type ReceiveRootState, selectReceiveAccountState } from '@suite-common/receive';
 import { createThunk } from '@suite-common/redux-utils/';
@@ -845,7 +844,7 @@ export const saveMessageSystemThunk =
         );
     };
 
-type SavePersistentDeviceDataThunkState = DeviceRootState;
+type SavePersistentDeviceDataThunkState = PersistentDeviceDataRootState;
 
 export const savePersistentDeviceDataThunk =
     () =>

@@ -1,5 +1,5 @@
 import { useServices } from '@suite-common/dependency-injection';
-import { deviceActions } from '@suite-common/device';
+import { persistentDeviceDataActions } from '@suite-common/persistent-device-data';
 import { selectDispatch } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
@@ -8,7 +8,7 @@ export const ClearDevicePersistentData = () => {
     const { dispatch } = useServices(selectDispatch);
 
     const handleClick = () => {
-        dispatch(deviceActions.clearDevicePersistentData());
+        dispatch(persistentDeviceDataActions.clearDevicePersistentData());
         // technically just part of the storage was cleared, but it's just dev util, so close enough to let you know it is finished
         dispatch(notificationsActions.addToast({ type: 'clear-storage' }));
     };

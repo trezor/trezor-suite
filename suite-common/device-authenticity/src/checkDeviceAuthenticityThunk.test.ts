@@ -1,5 +1,5 @@
-import { deviceActions } from '@suite-common/device';
 import { messageSystemInitialState } from '@suite-common/message-system';
+import { persistentDeviceDataActions } from '@suite-common/persistent-device-data';
 import type { StoredAuthenticateDeviceResult, TrezorDevice } from '@suite-common/suite-types';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { createTestStore, testMocks } from '@suite-common/test-utils';
@@ -161,13 +161,15 @@ describe('Check device authenticity', () => {
             }
             // thunk is expected to fail fast if there is no device, and not emit a result, which is always bound to device
             if (f.device) {
-                expectedActions.push(deviceActions.setDeviceAuthenticityResult.type);
+                expectedActions.push(persistentDeviceDataActions.setDeviceAuthenticityResult.type);
             }
             if (f.expectedFulfilled) {
                 expectedActions.push(checkDeviceAuthenticityThunk.fulfilled.type);
                 const resultAction = actions[actions.length - 2];
-                expect(deviceActions.setDeviceAuthenticityResult.match(resultAction)).toBe(true);
-                if (deviceActions.setDeviceAuthenticityResult.match(resultAction)) {
+                expect(
+                    persistentDeviceDataActions.setDeviceAuthenticityResult.match(resultAction),
+                ).toBe(true);
+                if (persistentDeviceDataActions.setDeviceAuthenticityResult.match(resultAction)) {
                     expect(resultAction.payload.result).toEqual(f.expectedResult);
                 }
             } else {

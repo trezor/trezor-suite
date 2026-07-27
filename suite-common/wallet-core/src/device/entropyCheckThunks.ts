@@ -1,8 +1,5 @@
-import {
-    DEVICE_MODULE_PREFIX,
-    deviceActions,
-    getIsIgnoredEntropyCheckError,
-} from '@suite-common/device';
+import { DEVICE_MODULE_PREFIX, getIsIgnoredEntropyCheckError } from '@suite-common/device';
+import { persistentDeviceDataActions } from '@suite-common/persistent-device-data';
 import { type WithServices, createThunk } from '@suite-common/redux-utils';
 import { type AcquiredDevice, type ReportSecurityCheckDep } from '@suite-common/suite-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -36,7 +33,12 @@ const failEntropyCheckThunk = createThunk<
     });
 
     if (!getIsIgnoredEntropyCheckError(error.message)) {
-        dispatch(deviceActions.setEntropyCheckResult({ deviceId: device.id, success: false }));
+        dispatch(
+            persistentDeviceDataActions.setEntropyCheckResult({
+                deviceId: device.id,
+                success: false,
+            }),
+        );
     }
 });
 
@@ -56,7 +58,7 @@ export const processEntropyCheckResultThunk = createThunk<
     ({ device, result }: ProcessEntropyCheckResultThunkParams, { dispatch }) => {
         if (result.success) {
             dispatch(
-                deviceActions.setEntropyCheckResult({
+                persistentDeviceDataActions.setEntropyCheckResult({
                     deviceId: device.id,
                     success: true,
                     xpubHashes: result.payload.xpubHashes,

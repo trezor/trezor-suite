@@ -8,6 +8,7 @@ import { closeModal, openModal } from '@suite/modal';
 import { type SuiteSettingsState } from '@suite/settings';
 import { type DeviceReducerState } from '@suite-common/device';
 import { type ExtraDependenciesStatic } from '@suite-common/extra-dependencies';
+import { type PersistentDeviceDataState } from '@suite-common/persistent-device-data';
 import { type ReceiveState } from '@suite-common/receive';
 import { type WithServices } from '@suite-common/redux-utils';
 import {
@@ -179,9 +180,11 @@ export const extraDependencies: ExtraDependenciesStatic & TokenDefinitionsMiddle
                     return device;
                 }
             });
-
-            state.persistentDeviceData = payload.persistentDeviceData ?? [];
         },
+        storageLoadPersistentDeviceData: (
+            _state: PersistentDeviceDataState,
+            { payload }: StorageLoadAction,
+        ) => payload.persistentDeviceData ?? [],
         storageLoadEarnOnboarding: (_: EarnOnboardingState, { payload }: StorageLoadAction) =>
             Object.fromEntries(payload.earnOnboarding.map(({ key, value }) => [key, value])),
         storageLoadFormDrafts: (state: SendState, { payload }: StorageLoadAction) => {
