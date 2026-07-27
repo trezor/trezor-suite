@@ -29,6 +29,8 @@ export type FeedbackCardProps = {
     successDescription: ReactNode;
     onSubmit: (rating: Rating, description: string) => void;
     defaultView?: FeedbackCardView;
+    asBottomSheetInput?: boolean;
+    onRatingChange?: () => void;
 };
 
 const descriptionInputStyle = prepareNativeStyle(() => ({
@@ -43,6 +45,7 @@ export const FeedbackCard = ({
     successDescription,
     onSubmit,
     defaultView = 'form',
+    asBottomSheetInput = false,
 }: FeedbackCardProps) => {
     const { applyStyle, utils } = useNativeStyles();
     const [rating, setRating] = useState<Rating | undefined>();
@@ -65,8 +68,6 @@ export const FeedbackCard = ({
 
     return (
         <Card>
-            {/* Animate the card's height linearly whenever its content changes
-                (rating rows appearing, or the switch to the success view). */}
             <AnimatedBox layout={LinearTransition}>
                 {view === 'success' ? (
                     <HStack spacing="sp20" alignItems="center">
@@ -108,6 +109,7 @@ export const FeedbackCard = ({
                                         <Input
                                             style={applyStyle(descriptionInputStyle)}
                                             placeholderTextColor={utils.colors.contentSecondary}
+                                            asBottomSheetInput={asBottomSheetInput}
                                             multiline
                                             numberOfLines={3}
                                             value={feedbackText}

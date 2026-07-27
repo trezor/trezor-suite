@@ -112,10 +112,6 @@ export const messages = {
             quotaManagerCommunicationFailed: 'Quota Manager communication failed.',
         },
     },
-    feedbackForm: {
-        title: 'How was your experience?',
-        description: 'Your feedback helps us improve-tell us what you think.',
-    },
     moduleHome: {
         graphIgnoredNetworks:
             "{networksString} and all related tokens are included in your portfolio balance, but aren't currently supported in the graph.",
@@ -3906,6 +3902,13 @@ export const messages = {
                 inputLabel: 'Slippage',
             },
         },
+    },
+    feedbackForm: {
+        title: 'How was your trading experience?',
+        description: 'Your feedback helps us improve – tell us what you think.',
+        submitButton: 'Send feedback',
+        successTitle: 'Thanks!',
+        successDescription: 'We value your feedback.',
     },
     firmware: {
         title: 'Firmware',

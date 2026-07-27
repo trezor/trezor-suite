@@ -1,0 +1,76 @@
+import { useDispatch, useSelector } from 'react-redux';
+
+import { selectSelectedDevice } from '@suite-common/device';
+import { type Rating, buildUserFeedbackData, sendFeedbackAction } from '@suite-common/feedback';
+import { selectCountryCode } from '@suite-common/geolocation';
+import {
+    formatExperimentVariantsForAnalytics,
+    selectActiveExperimentsWithVariants,
+} from '@suite-common/message-system';
+import { type TradingType } from '@suite-common/trading';
+import { FeedbackCard } from '@suite-native/feedback-form';
+import { Translation } from '@suite-native/intl';
+
+type TradingDetailFeedbackProps = {
+    type: TradingType;
+    status?: string;
+    provider?: string;
+    id?: string;
+    sendCurrency?: string;
+    receiveCurrency?: string;
+    country?: string;
+};
+
+export const TradingDetailFeedback = ({
+    type,
+    status,
+    provider,
+    id,
+    sendCurrency,
+    receiveCurrency,
+    country,
+}: TradingDetailFeedbackProps) => {
+    const dispatch = useDispatch();
+    const device = useSelector(selectSelectedDevice);
+    const geolocation = useSelector(selectCountryCode);
+    const activeExperimentsWithVariants = useSelector(selectActiveExperimentsWithVariants);
+
+    const handleSubmit = (rating: Rating, description: string) => {
+        const userData = buildUserFeedbackData(device);
+
+        dispatch(
+            sendFeedbackAction({
+                type: 'SUGGESTION',
+                payload: {
+                    category: 'trade',
+                    description,
+                    rating,
+                    status,
+                    provider,
+                    id,
+                    type,
+                    sendCurrency,
+                    receiveCurrency,
+                    geolocation: geolocation || undefined,
+                    countryOfResidence: country || undefined,
+                    activeExperimentsWithVariants: formatExperimentVariantsForAnalytics(
+                        activeExperimentsWithVariants,
+                    ),
+                    ...userData,
+                },
+            }),
+        );
+    };
+
+    return (
+        <FeedbackCard
+            heading={<Translation id="feedbackForm.title" />}
+            description={<Translation id="feedbackForm.description" />}
+            submitLabel={<Translation id="feedbackForm.submitButton" />}
+            successHeading={<Translation id="feedbackForm.successTitle" />}
+            successDescription={<Translation id="feedbackForm.successDescription" />}
+            onSubmit={handleSubmit}
+            asBottomSheetInput
+        />
+    );
+};

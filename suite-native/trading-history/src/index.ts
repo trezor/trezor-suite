@@ -7,3 +7,4 @@ export {
     type TradeDetailTransactionInfoProps,
 } from './components/TradeDetailSheet/TradeDetailTransactionInfo';
 export { TradeHistoryListItem } from './components/TradeHistoryListItem/TradeHistoryListItem';
+export { TradingDetailFeedback } from './components/TradeHistoryListItem/TradingDetailFeedback';
