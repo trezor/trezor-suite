@@ -1,12 +1,10 @@
-import { type Control, type FieldValues, type Path } from 'react-hook-form';
-
 import { useIsFocused } from '@react-navigation/native';
 
 import {
     type TradingType,
     useProviderMetadataChangeEffect as useCommonProviderMetadataChangeEffect,
 } from '@suite-common/trading';
-import { useWatch } from '@suite-native/forms';
+import { type Control, type FieldValues, type Path, useWatch } from '@suite-native/forms';
 
 export const useProviderMetadataChangeEffect = <TFieldValues extends FieldValues>(
     control: Control<TFieldValues>,

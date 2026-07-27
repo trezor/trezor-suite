@@ -1,10 +1,16 @@
+import { tradingBuyActions } from '@suite-common/trading';
 import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { Form } from '@suite-native/forms';
 import { getTranslation } from '@suite-native/intl';
 import { act } from '@suite-native/test-utils';
-import { type TestStore, fireEvent, screen } from '@suite-native/test-utils-store';
-import { ethAsset } from '@suite-native/trading-fixtures';
+import { type TestStore, fireEvent, screen, waitFor } from '@suite-native/test-utils-store';
+import {
+    MOCK_ACCOUNT_DEVICE_SESSION_ID,
+    eth1NormalAccount,
+    eth2legacyAccount,
+    ethAsset,
+} from '@suite-native/trading-fixtures';
 import { buyActions } from '@suite-native/trading-state';
 import { type BuyFormType } from '@suite-native/trading-types';
 import { FirmwareType } from '@trezor/connect';
@@ -22,6 +28,9 @@ const services: NativeAnalyticsDep = {
     analytics: mockNativeAnalytics(reportMock),
 };
 
+const eth1AccountKey = eth1NormalAccount.key;
+const eth2AccountKey = eth2legacyAccount.key;
+
 describe('BuyTradeableAssetPicker', () => {
     let store: TestStore;
     let form: BuyFormType;
@@ -31,6 +40,21 @@ describe('BuyTradeableAssetPicker', () => {
             tradeType: 'buy',
             overrides: {
                 device: { selectedDevice: { firmwareType } },
+            },
+        });
+
+    // Account preselection needs a device session that the mock accounts belong to,
+    // otherwise they are not treated as visible device accounts.
+    const initPreloadedStoreWithAccounts = () =>
+        createTradingLightStore({
+            tradeType: 'buy',
+            overrides: {
+                device: {
+                    selectedDevice: {
+                        firmwareType: FirmwareType.Universal,
+                        state: { staticSessionId: MOCK_ACCOUNT_DEVICE_SESSION_ID },
+                    },
+                },
             },
         });
 
@@ -108,7 +132,6 @@ describe('BuyTradeableAssetPicker', () => {
             form.setValue('cryptoValue', '0.1');
             const dispatchSpy = jest.spyOn(store, 'dispatch');
             const { getByLabelText } = await renderTradeableAssetPicker();
-
             fireEvent.press(getByLabelText('USDC'));
 
             expect(form.getValues('cryptoValue')).toBeUndefined();
@@ -120,6 +143,44 @@ describe('BuyTradeableAssetPicker', () => {
                     type: 'buy',
                     parameter: 'cryptoTo',
                 },
+            });
+        });
+    });
+
+    describe('receiveAccount preselection', () => {
+        beforeEach(() => {
+            reportMock.mockClear();
+            store = initPreloadedStoreWithAccounts();
+            form = renderFormHook();
+        });
+
+        it('should keep the selected receiveAccount when switching to another asset on the same network', async () => {
+            form.setValue('asset', ethAsset);
+            const { getByLabelText } = await renderTradeableAssetPicker();
+
+            await waitFor(() => {
+                expect(form.getValues('receiveAccount')).toEqual({
+                    account: expect.objectContaining({ key: eth1AccountKey }),
+                });
+            });
+
+            act(() => {
+                store.dispatch(tradingBuyActions.setTradingAccountKey(eth2AccountKey));
+                store.dispatch(tradingBuyActions.setReceiveAccountKey(eth2AccountKey));
+            });
+
+            await waitFor(() => {
+                expect(form.getValues('receiveAccount')).toEqual({
+                    account: expect.objectContaining({ key: eth2AccountKey }),
+                });
+            });
+
+            fireEvent.press(getByLabelText('USDC'));
+
+            await waitFor(() => {
+                expect(form.getValues('receiveAccount')).toEqual({
+                    account: expect.objectContaining({ key: eth2AccountKey }),
+                });
             });
         });
     });
