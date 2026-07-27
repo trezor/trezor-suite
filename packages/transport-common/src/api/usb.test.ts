@@ -1,13 +1,13 @@
 import { createDeferred } from '@trezor/utils';
 
-import { UsbApi } from '../src/api/usb';
-import { PathInternal } from '../src/types';
+import { PathInternal } from '../types';
+import { UsbApi } from './usb';
 import type {
     UsbDeviceLike,
     UsbInTransferResultLike,
     UsbInterfaceApi,
     UsbOutTransferResultLike,
-} from '../src/types/usbInterface';
+} from '../types/usbInterface';
 
 const createTransferInResult = (size = 64) =>
     ({

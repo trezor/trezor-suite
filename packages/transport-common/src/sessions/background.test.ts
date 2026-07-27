@@ -1,7 +1,7 @@
-import { SessionsBackground } from '../src/sessions/background';
-import { SessionsClient } from '../src/sessions/client';
-import { type SessionsBackgroundInterface } from '../src/sessions/types';
-import { PathInternal, PathPublic, Session } from '../src/types';
+import { PathInternal, PathPublic, Session } from '../types';
+import { SessionsBackground } from './background';
+import { SessionsClient } from './client';
+import { type SessionsBackgroundInterface } from './types';
 
 describe('sessions', () => {
     let background: SessionsBackground;

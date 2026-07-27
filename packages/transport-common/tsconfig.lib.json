@@ -1,6 +1,7 @@
 {
     "extends": "../../tsconfig.lib.json",
     "include": ["./src"],
+    "exclude": ["./src/**/*.test.ts"],
     "compilerOptions": {
         "lib": ["ES2023"],
         "outDir": "./lib",

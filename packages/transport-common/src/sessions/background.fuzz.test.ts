@@ -1,8 +1,8 @@
 import fc from 'fast-check';
 
-import { SessionsBackground } from '../src/sessions/background';
-import { SessionsClient } from '../src/sessions/client';
-import { Descriptor, PathInternal, PathPublic, Session } from '../src/types';
+import { type Descriptor, PathInternal, PathPublic, Session } from '../types';
+import { SessionsBackground } from './background';
+import { SessionsClient } from './client';
 
 /**
  * Concurrency fuzz harness for the sessions lock / stealing protocol.

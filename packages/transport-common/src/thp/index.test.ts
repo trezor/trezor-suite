@@ -2,12 +2,9 @@ import { protobufManager } from '@trezor/protobuf';
 import * as thpProto from '@trezor/protobuf/src/definitions/messages-thp_pb';
 import { thp as protocolThp, v2 } from '@trezor/protocol';
 
-import { parseThpMessage, receiveThpMessage, sendThpMessage } from '../src/thp';
-import {
-    ATTEMPTS_LIMIT,
-    THP_ACK_DEADLINE,
-    THP_ACK_TIMEOUT,
-} from '../src/thp/receiveExpectedMessage';
+import { ATTEMPTS_LIMIT, THP_ACK_DEADLINE, THP_ACK_TIMEOUT } from './receiveExpectedMessage';
+
+import { parseThpMessage, receiveThpMessage, sendThpMessage } from './index';
 
 protobufManager.load([thpProto]);
 

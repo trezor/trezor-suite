@@ -3,8 +3,8 @@ import * as stellarProto from '@trezor/protobuf/src/definitions/messages-stellar
 import * as messagesProto from '@trezor/protobuf/src/definitions/messages_pb';
 import { bridge as bridgeProtocol, v1 as protocolV1, v2 as protocolV2 } from '@trezor/protocol';
 
-import { receive, receiveAndParse } from '../src/utils/receive';
-import { buildMessage, createChunks } from '../src/utils/send';
+import { receive, receiveAndParse } from './receive';
+import { buildMessage, createChunks } from './send';
 
 protobufManager.load([messagesProto, stellarProto]);
 
