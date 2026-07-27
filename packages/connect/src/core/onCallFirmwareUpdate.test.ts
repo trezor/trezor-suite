@@ -5,24 +5,24 @@ import { v1 as protocolV1 } from '@trezor/protocol';
 import { buildMessage } from '@trezor/transport-common';
 import { Log, bufferUtils } from '@trezor/utils';
 
-import { calculateFirmwareHash } from '../../api/firmware/calculateFirmwareHash';
-import { getBundledRelease, initializeFirmwareConfig } from '../../data/firmwareInfo';
-import * as firmwareReleaseStore from '../../data/firmwareReleaseStore';
-import { loadProtobufModules } from '../../data/protobufLoader';
-import * as settingsStore from '../../data/settingsStore';
-import { DeviceList } from '../../device/DeviceList';
-import { httpRequest } from '../../utils/assets';
-import { onCallFirmwareUpdate } from '../onCallFirmwareUpdate';
+import { onCallFirmwareUpdate } from './onCallFirmwareUpdate';
+import { calculateFirmwareHash } from '../api/firmware/calculateFirmwareHash';
+import { getBundledRelease, initializeFirmwareConfig } from '../data/firmwareInfo';
+import * as firmwareReleaseStore from '../data/firmwareReleaseStore';
+import { loadProtobufModules } from '../data/protobufLoader';
+import * as settingsStore from '../data/settingsStore';
+import { DeviceList } from '../device/DeviceList';
+import { httpRequest } from '../utils/assets';
 
-jest.mock('../../utils/assets', () => ({
-    ...jest.requireActual('../../utils/assets'),
-    httpRequest: jest.fn(jest.requireActual('../../utils/assets').httpRequest),
+jest.mock('../utils/assets', () => ({
+    ...jest.requireActual('../utils/assets'),
+    httpRequest: jest.fn(jest.requireActual('../utils/assets').httpRequest),
 }));
 
-jest.mock('../../api/firmware/calculateFirmwareHash', () => ({
-    ...jest.requireActual('../../api/firmware/calculateFirmwareHash'),
+jest.mock('../api/firmware/calculateFirmwareHash', () => ({
+    ...jest.requireActual('../api/firmware/calculateFirmwareHash'),
     calculateFirmwareHash: jest.fn(
-        jest.requireActual('../../api/firmware/calculateFirmwareHash').calculateFirmwareHash,
+        jest.requireActual('../api/firmware/calculateFirmwareHash').calculateFirmwareHash,
     ),
 }));
 
@@ -31,7 +31,7 @@ jest.mock('../../api/firmware/calculateFirmwareHash', () => ({
 // - comment one of ASSETS_BASE_URL's (local or online file)
 // - comment jest.setTimeout(30000);
 const ASSETS_BASE_URL = '';
-// const ASSETS_BASE_URL = require('path').resolve(__dirname, '../../../../', 'connect-data/files');
+// const ASSETS_BASE_URL = require('path').resolve(__dirname, '../../../', 'connect-data/files');
 // const ASSETS_BASE_URL = 'https://suite.trezor.io/web/static/connect/data';
 // jest.setTimeout(30000);
 

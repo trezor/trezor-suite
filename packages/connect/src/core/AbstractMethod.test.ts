@@ -1,5 +1,5 @@
-import * as enabledNetworksStore from '../../data/enabledNetworksStore';
-import { AbstractMethod, type MethodContext, type MethodReturnType } from '../AbstractMethod';
+import { AbstractMethod, type MethodContext, type MethodReturnType } from './AbstractMethod';
+import * as enabledNetworksStore from '../data/enabledNetworksStore';
 
 // Minimal concrete subclass used to exercise resolveCardanoCapability()'s derivation behavior.
 class TestMethod extends AbstractMethod<any> {

@@ -1,7 +1,7 @@
 import { BlockchainLink } from '@trezor/blockchain-link';
 import type { CoinInfo, CoreEventMessage } from '@trezor/connect-common';
 
-import { BackendManager } from '../BackendManager';
+import { BackendManager } from './BackendManager';
 
 const coinInfo = {
     shortcut: 'BTC',
