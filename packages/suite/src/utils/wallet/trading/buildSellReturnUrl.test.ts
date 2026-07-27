@@ -4,7 +4,7 @@ import { type TradingSellInfoSelector } from '@suite-common/trading';
 import { type Account, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
-import { buildSellReturnUrl } from '../buildSellReturnUrl';
+import { buildSellReturnUrl } from './buildSellReturnUrl';
 
 const mockCreateQuoteLink = jest.fn((..._args: unknown[]) => Promise.resolve('https://return.url'));
 jest.mock('src/utils/wallet/trading/sellUtils', () => ({

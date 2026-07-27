@@ -1,4 +1,4 @@
-import { sanitizeCsvValue } from '../exportTransactionsUtils';
+import { sanitizeCsvValue } from './exportTransactionsUtils';
 
 describe(sanitizeCsvValue.name, () => {
     test.each([

@@ -1,6 +1,6 @@
 import { testMocks } from '@suite-common/test-utils';
 
-import { sortUtxos } from '../utxoSortingUtils';
+import { sortUtxos } from './utxoSortingUtils';
 
 const UTXOS = [
     testMocks.getUtxo({ amount: '1', blockHeight: undefined, txid: 'txid1', vout: 0 }),

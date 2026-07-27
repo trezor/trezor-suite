@@ -1,7 +1,7 @@
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
-import * as accountUtils from '../accountUtils';
+import * as accountUtils from './accountUtils';
 
 describe('account utils', () => {
     it('getSelectedAccount null', () => {
