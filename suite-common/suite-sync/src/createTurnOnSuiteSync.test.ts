@@ -5,11 +5,11 @@ import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import type { StaticSessionId } from '@trezor/connect';
 import { err, ok } from '@trezor/type-utils';
 
-import { createSuiteSyncStorageMock } from '../../tests/createSuiteSyncStorageMock.mock';
-import { SuiteSyncUnavailableOnDeviceError } from '../createEnsureSuiteSyncKeys';
-import { type CreateTurnOnSuiteSyncDeps, createTurnOnSuiteSync } from '../createTurnOnSuiteSync';
-import type { GetDeviceForStaticSessionIdDep } from '../getDeviceForStaticSessionId';
-import { setSuiteSyncError, updateSuiteSyncEnabled } from '../suiteSyncSlice';
+import { SuiteSyncUnavailableOnDeviceError } from './createEnsureSuiteSyncKeys';
+import { type CreateTurnOnSuiteSyncDeps, createTurnOnSuiteSync } from './createTurnOnSuiteSync';
+import type { GetDeviceForStaticSessionIdDep } from './getDeviceForStaticSessionId';
+import { setSuiteSyncError, updateSuiteSyncEnabled } from './suiteSyncSlice';
+import { createSuiteSyncStorageMock } from '../tests/createSuiteSyncStorageMock.mock';
 
 const deviceStaticSessionId: StaticSessionId = '1@2:3';
 

@@ -1,11 +1,11 @@
 import { portfolioTrackerDevice } from '@suite-common/device';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 
-import { type SuiteSyncInteraction } from '../suiteSyncTypes';
+import { type SuiteSyncInteraction } from './suiteSyncTypes';
 import {
     getIsSuiteSyncLabelingActionEnabled,
     isSuiteSyncSupportedByDevice,
-} from '../suiteSyncUtils';
+} from './suiteSyncUtils';
 
 describe(isSuiteSyncSupportedByDevice.name, () => {
     it.each([

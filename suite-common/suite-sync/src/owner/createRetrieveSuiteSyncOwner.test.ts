@@ -12,7 +12,7 @@ import {
     type RetrieveSuiteSyncOwnerDeps,
     type RetrieveSuiteSyncOwnerParams,
     createRetrieveSuiteSyncOwner,
-} from '../createRetrieveSuiteSyncOwner';
+} from './createRetrieveSuiteSyncOwner';
 
 const device: RetrieveSuiteSyncOwnerParams['device'] = {
     instance: 0,

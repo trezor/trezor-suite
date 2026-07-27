@@ -8,9 +8,9 @@ import type { SuiteSyncOwnerSerialized } from '@suite-common/suite-sync-storage'
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import type { StaticSessionId, UnavailableCapabilities } from '@trezor/connect';
 
-import { selectIsSuiteSyncInitPossible, selectSuiteSyncInteraction } from '../suiteSyncSelectors';
-import type { WithSuiteSyncAndDeviceState } from '../suiteSyncSelectors';
-import { type SuiteSyncState, initialSuiteSyncState } from '../suiteSyncSlice';
+import { selectIsSuiteSyncInitPossible, selectSuiteSyncInteraction } from './suiteSyncSelectors';
+import type { WithSuiteSyncAndDeviceState } from './suiteSyncSelectors';
+import { type SuiteSyncState, initialSuiteSyncState } from './suiteSyncSlice';
 
 const DEVICE_STATIC_SESSION_ID_123: StaticSessionId = '1@2:3';
 

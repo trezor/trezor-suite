@@ -10,7 +10,7 @@ import {
     removeSuiteSyncRelayConnection,
     setSuiteSyncRelayConnection,
     suiteSyncReducer,
-} from '../suiteSyncSlice';
+} from './suiteSyncSlice';
 
 const DEVICE_STATIC_SESSION_ID_123: StaticSessionId = '1@2:3';
 

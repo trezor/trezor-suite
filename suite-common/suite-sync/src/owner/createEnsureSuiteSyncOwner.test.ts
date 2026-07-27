@@ -6,8 +6,8 @@ import { err, ok } from '@trezor/type-utils';
 import {
     type CreateEnsureSuiteSyncOwnerDeps,
     createEnsureSuiteSyncOwner,
-} from '../createEnsureSuiteSyncOwner';
-import { type RetrieveSuiteSyncOwnerParams } from '../createRetrieveSuiteSyncOwner';
+} from './createEnsureSuiteSyncOwner';
+import { type RetrieveSuiteSyncOwnerParams } from './createRetrieveSuiteSyncOwner';
 
 const device: RetrieveSuiteSyncOwnerParams['device'] = {
     instance: 0,
