@@ -1,4 +1,4 @@
-import { withOpenChat } from '../src/chat';
+import { withOpenChat } from './chat';
 
 describe(withOpenChat.name, () => {
     test('appends #open-chat to URL without query params', () => {
