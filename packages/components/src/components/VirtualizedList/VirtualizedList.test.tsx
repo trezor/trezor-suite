@@ -2,7 +2,7 @@ import React from 'react';
 
 import { render, screen } from '@testing-library/react';
 
-import { VirtualizedList } from '../VirtualizedList';
+import { VirtualizedList } from './VirtualizedList';
 
 describe('VirtualizedList', () => {
     describe('type tests', () => {
