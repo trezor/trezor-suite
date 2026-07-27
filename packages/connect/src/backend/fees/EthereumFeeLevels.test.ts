@@ -1,8 +1,8 @@
 import { BlockchainLink } from '@trezor/blockchain-link';
 
-import { getEthereumNetwork } from '../../../data/coinInfo';
-import { initBlockchain } from '../../BlockchainLink';
-import { EthereumFeeLevels } from '../EthereumFeeLevels';
+import { EthereumFeeLevels } from './EthereumFeeLevels';
+import { getEthereumNetwork } from '../../data/coinInfo';
+import { initBlockchain } from '../BlockchainLink';
 
 describe('api/ethereum/Fees', () => {
     const ETH_REQUEST = { blocks: [1] };

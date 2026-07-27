@@ -1,9 +1,9 @@
 import { BlockchainLink } from '@trezor/blockchain-link';
 import type { FeeLevel } from '@trezor/connect-common';
 
-import { getBitcoinNetwork } from '../../../data/coinInfo';
-import { dispose, initBlockchain } from '../../BlockchainLink';
-import { BitcoinFeeLevels } from '../BitcoinFeeLevels';
+import { BitcoinFeeLevels } from './BitcoinFeeLevels';
+import { getBitcoinNetwork } from '../../data/coinInfo';
+import { dispose, initBlockchain } from '../BlockchainLink';
 
 // simple linear mock for decreasing fees per requested block number
 const mockFeeValuePerBlock = (block: number) => 10_000 - block * 100;

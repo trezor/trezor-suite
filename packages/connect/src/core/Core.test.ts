@@ -1,17 +1,16 @@
 import { parseConnectSettings } from '@trezor/connect-common/src/data/connectSettings';
 import type { ConnectSettings } from '@trezor/connect-common/src/types/settings';
 
-import * as firmwareReleaseStore from '../../data/firmwareReleaseStore';
-import { initCoreState } from '../index';
+import * as firmwareReleaseStore from '../data/firmwareReleaseStore';
+
+import { initCoreState } from './index';
 
 // `import * as` against a CJS-transpiled module gives non-configurable property
 // bindings, so jest.spyOn cannot replace `init` directly. Wrap it in a jest.fn
 // at the module level; the default delegates to the real implementation, and
 // individual tests can `mockImplementationOnce` to override behavior for one call.
-jest.mock('../../data/firmwareReleaseStore', () => {
-    const actual: typeof firmwareReleaseStore = jest.requireActual(
-        '../../data/firmwareReleaseStore',
-    );
+jest.mock('../data/firmwareReleaseStore', () => {
+    const actual: typeof firmwareReleaseStore = jest.requireActual('../data/firmwareReleaseStore');
 
     return {
         __esModule: true,
@@ -20,7 +19,7 @@ jest.mock('../../data/firmwareReleaseStore', () => {
     };
 });
 
-// import { createTestTransport } from '../../device/__tests__/DeviceList.test';
+// import { createTestTransport } from '../device/__tests__/DeviceList.test';
 const { createTestTransport } = global.JestMocks;
 
 const getSettings = (partial: Partial<ConnectSettings> = {}) =>
