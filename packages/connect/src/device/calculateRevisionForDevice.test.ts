@@ -1,4 +1,4 @@
-import { calculateRevisionForDevice } from '../calculateRevisionForDevice';
+import { calculateRevisionForDevice } from './calculateRevisionForDevice';
 
 describe(calculateRevisionForDevice.name, () => {
     it('does not shorten hash for `version > 2.4.0`', () => {

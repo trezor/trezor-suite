@@ -3,14 +3,12 @@ import type { Descriptor } from '@trezor/transport-common';
 import { Log } from '@trezor/utils';
 
 import { Device } from '../Device';
-import { checkFirmwareHash } from '../workflow/checkFirmwareHash';
-import { checkFirmwareHashWithRetries } from '../workflow/checkFirmwareHashWithRetries';
+import { checkFirmwareHash } from './checkFirmwareHash';
+import { checkFirmwareHashWithRetries } from './checkFirmwareHashWithRetries';
 
-jest.mock('../workflow/checkFirmwareHash', () => ({
-    ...jest.requireActual('../workflow/checkFirmwareHash'),
-    checkFirmwareHash: jest.fn(
-        jest.requireActual('../workflow/checkFirmwareHash').checkFirmwareHash,
-    ),
+jest.mock('./checkFirmwareHash', () => ({
+    ...jest.requireActual('./checkFirmwareHash'),
+    checkFirmwareHash: jest.fn(jest.requireActual('./checkFirmwareHash').checkFirmwareHash),
 }));
 
 const { createTestTransport } = global.JestMocks;
