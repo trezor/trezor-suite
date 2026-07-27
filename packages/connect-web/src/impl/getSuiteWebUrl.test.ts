@@ -1,4 +1,4 @@
-import { extractBranch, getSuiteWebUrl } from '../getSuiteWebUrl';
+import { extractBranch, getSuiteWebUrl } from './getSuiteWebUrl';
 
 const DEV_ORIGIN = 'https://dev.suite.sldev.cz';
 

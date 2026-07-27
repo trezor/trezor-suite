@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import { BootstrapError } from '../bootstrap-errors';
+import { BootstrapError } from './bootstrap-errors';
 
 class MockBroadcastChannel {
     static instances: MockBroadcastChannel[] = [];
@@ -76,7 +76,7 @@ describe('bootstrap (popup mode)', () => {
         setLocation(`${POPUP_URL}?connect-popup-req=abc123`);
 
         jest.isolateModules(() => {
-            ({ bootstrap } = require('../bootstrap'));
+            ({ bootstrap } = require('./bootstrap'));
         });
     });
 
@@ -147,7 +147,7 @@ describe('bootstrap (popup mode)', () => {
         const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
 
         jest.isolateModules(() => {
-            ({ bootstrap } = require('../bootstrap'));
+            ({ bootstrap } = require('./bootstrap'));
         });
 
         await bootstrap();
@@ -190,7 +190,7 @@ describe('bootstrap (iframe mode)', () => {
         );
 
         jest.isolateModules(() => {
-            ({ bootstrap } = require('../bootstrap'));
+            ({ bootstrap } = require('./bootstrap'));
         });
     });
 
@@ -298,7 +298,7 @@ describe('bootstrap (getParams failures)', () => {
         delete (global as any).URLSearchParams;
 
         jest.isolateModules(() => {
-            ({ bootstrap } = require('../bootstrap'));
+            ({ bootstrap } = require('./bootstrap'));
         });
 
         bootstrap();
@@ -317,7 +317,7 @@ describe('bootstrap (getParams failures)', () => {
         setLocation(POPUP_URL);
 
         jest.isolateModules(() => {
-            ({ bootstrap } = require('../bootstrap'));
+            ({ bootstrap } = require('./bootstrap'));
         });
 
         bootstrap();
