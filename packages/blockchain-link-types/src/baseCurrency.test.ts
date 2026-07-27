@@ -2,7 +2,7 @@ import {
     isBaseCurrencyCode,
     isFiatBaseCurrencyCode,
     isValuablesBaseCurrencyCode,
-} from '../baseCurrency';
+} from './baseCurrency';
 
 describe('baseCurrency', () => {
     describe('isBaseCurrencyCode', () => {
