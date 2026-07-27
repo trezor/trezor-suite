@@ -1,4 +1,4 @@
-import { NullablePropsRecursive, type OptionalKey } from '../src';
+import type { NullablePropsRecursive, OptionalKey } from './index';
 
 type X = {
     a: 'A';
