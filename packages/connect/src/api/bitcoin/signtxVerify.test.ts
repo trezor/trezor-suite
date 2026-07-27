@@ -1,8 +1,8 @@
 import { promiseAllSequence } from '@trezor/utils';
 import { networks } from '@trezor/utxo-lib';
 
-import fixtures from '../__fixtures__/signtxVerify';
-import { deriveOutputScript, verifyTx } from '../signtxVerify';
+import fixtures from './__fixtures__/signtxVerify';
+import { deriveOutputScript, verifyTx } from './signtxVerify';
 
 describe('helpers/signtxVerify', () => {
     fixtures.forEach(({ description, network, inputs, outputs, tx, error, getHDNode }) => {

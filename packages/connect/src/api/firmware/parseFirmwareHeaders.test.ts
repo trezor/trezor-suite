@@ -1,4 +1,4 @@
-import { parseFirmwareHeaders } from '../parseFirmwareHeaders';
+import { parseFirmwareHeaders } from './parseFirmwareHeaders';
 
 describe('parseFirmwareHeaders', () => {
     test('2.6.3', () => {

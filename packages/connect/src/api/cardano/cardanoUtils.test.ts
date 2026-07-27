@@ -1,5 +1,5 @@
-import * as fixtures from '../__fixtures__/cardanoUtils';
-import { getTtl, prepareCertificates, transformUtxos } from '../cardanoUtils';
+import * as fixtures from './__fixtures__/cardanoUtils';
+import { getTtl, prepareCertificates, transformUtxos } from './cardanoUtils';
 
 describe('cardano utils', () => {
     let dateSpy: any;

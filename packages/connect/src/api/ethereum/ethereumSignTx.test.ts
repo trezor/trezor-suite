@@ -1,7 +1,7 @@
 import { keccak256, recoverTransactionAddress } from 'viem';
 
-import * as fixtures from '../__fixtures__/ethereumSignTx';
-import { serializeEthereumTx } from '../ethereumSignTx';
+import * as fixtures from './__fixtures__/ethereumSignTx';
+import { serializeEthereumTx } from './ethereumSignTx';
 
 describe('helpers/ethereumSignTx', () => {
     describe('serializeEthereumTx', () => {

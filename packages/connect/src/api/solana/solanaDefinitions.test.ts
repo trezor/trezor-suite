@@ -1,7 +1,7 @@
 import fetch from 'cross-fetch';
 
-import { loadProtobufModules } from '../../../data/protobufLoader';
-import { decodeSolanaTokenDefinition, getSolanaTokenDefinition } from '../solanaDefinitions';
+import { decodeSolanaTokenDefinition, getSolanaTokenDefinition } from './solanaDefinitions';
+import { loadProtobufModules } from '../../data/protobufLoader';
 
 jest.mock('cross-fetch');
 

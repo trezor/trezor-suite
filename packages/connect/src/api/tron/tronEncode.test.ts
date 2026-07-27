@@ -2,9 +2,9 @@ import { bytesToHex } from '@noble/hashes/utils.js';
 
 import type { TronContracts } from '@trezor/connect-common';
 
-import { loadProtobufModules } from '../../../data/protobufLoader';
-import { encodeTronContractRawData } from '../tronEncode';
-import { decodeBroadcastTransaction, encodeBroadcastTransaction } from '../tronProtobuf';
+import { encodeTronContractRawData } from './tronEncode';
+import { decodeBroadcastTransaction, encodeBroadcastTransaction } from './tronProtobuf';
+import { loadProtobufModules } from '../../data/protobufLoader';
 
 const OWNER_ADDRESS = '41f2cd810c48c401d392ead3c6e1e1cb9f57750a58';
 const TO_ADDRESS = '4141f82674a30ae1328745d08afe2d1a0a24195283';

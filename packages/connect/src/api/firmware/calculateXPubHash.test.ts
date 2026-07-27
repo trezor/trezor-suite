@@ -1,4 +1,4 @@
-import { calculateXPubHash, calculateXPubHashes, checkXPubWithHashes } from '../calculateXPubHash';
+import { calculateXPubHash, calculateXPubHashes, checkXPubWithHashes } from './calculateXPubHash';
 
 // all seed standard wallet
 const xpubs = {
