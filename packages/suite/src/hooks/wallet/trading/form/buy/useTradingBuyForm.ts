@@ -1,7 +1,5 @@
-import { useCallback, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
-
-import type { BuyTrade } from 'invity-api';
 
 import {
     TRADING_DEFAULT_CRYPTO_CURRENCY,
@@ -10,7 +8,6 @@ import {
     TRADING_FORM_FIAT_CURRENCY_SELECT,
     TRADING_FORM_FIAT_INPUT,
     TRADING_FORM_PAYMENT_METHOD_SELECT,
-    TRADING_FORM_PROVIDER_SELECT,
     type TradingAmountLimitProps,
     type TradingBuyFormProps,
     mapFiatCurrencyCodeToBaseCurrencyCode,
@@ -141,27 +138,6 @@ export const useTradingBuyForm = (): TradingBuyFormContextProps => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [receiveAddress]);
 
-    const onQuoteSelected = useCallback(
-        (quote: BuyTrade) => {
-            const quoteProvider = quote.exchange;
-            const quotePaymentMethod = quote.paymentMethod;
-            const provider = getValues(TRADING_FORM_PROVIDER_SELECT);
-            const paymentMethod = getValues(TRADING_FORM_PAYMENT_METHOD_SELECT);
-
-            if (quoteProvider && quoteProvider !== provider) {
-                setValue(TRADING_FORM_PROVIDER_SELECT, quoteProvider);
-            }
-
-            if (quotePaymentMethod && paymentMethod?.value !== quotePaymentMethod) {
-                setValue(TRADING_FORM_PAYMENT_METHOD_SELECT, {
-                    value: quotePaymentMethod,
-                    label: quote.paymentMethodName ?? quotePaymentMethod,
-                });
-            }
-        },
-        [getValues, setValue],
-    );
-
     useBuyFlow({ isFromRedirect, quotesRequest, isAmountEmpty });
 
     useTradingFormReset({
@@ -190,7 +166,6 @@ export const useTradingBuyForm = (): TradingBuyFormContextProps => {
         quotes,
         tradingReceiveAddress,
         isAmountEmpty,
-        onQuoteSelected,
         setAmountLimits: (limits: TradingAmountLimitProps | undefined) => {
             dispatch(tradingBuyActions.setAmountLimits(limits));
         },

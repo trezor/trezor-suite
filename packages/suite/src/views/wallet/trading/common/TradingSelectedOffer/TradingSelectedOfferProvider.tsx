@@ -1,7 +1,7 @@
-import { type ReactNode, useCallback, useState } from 'react';
+import { type ComponentType, type ReactNode, useCallback, useState } from 'react';
 
 import { Translation } from '@suite/intl';
-import { type TradingTradeType, useProviderMetadataChangeEffect } from '@suite-common/trading';
+import { type TradingType, useProviderMetadataChangeEffect } from '@suite-common/trading';
 import { Column, GhostContainer, Icon, Row, Skeleton, Text } from '@trezor/components';
 import { CaretRightIcon } from '@trezor/icons';
 
@@ -13,7 +13,9 @@ import {
     isTradingExchangeContext,
 } from 'src/utils/wallet/trading/tradingTypingUtils';
 
-import { TradingOffersModal } from '../TradingOffers/TradingOffersModal';
+import { TradingOffersModalBuy } from '../TradingOffers/TradingOffersModalBuy';
+import { TradingOffersModalExchange } from '../TradingOffers/TradingOffersModalExchange';
+import { TradingOffersModalSell } from '../TradingOffers/TradingOffersModalSell';
 import { TradingUtilsProvider } from '../TradingUtils/TradingUtilsProvider';
 
 interface TradingReceiveAddressEmptyProps {
@@ -30,6 +32,12 @@ export const TradingReceiveAddressEmpty = ({ title, text }: TradingReceiveAddres
     </Column>
 );
 
+const offersModalComponents: Record<TradingType, ComponentType<{ onClose: () => void }>> = {
+    buy: TradingOffersModalBuy,
+    sell: TradingOffersModalSell,
+    exchange: TradingOffersModalExchange,
+};
+
 export const TradingSelectedOfferProvider = () => {
     const context = useTradingFormContext();
     const { isAmountEmpty, form, type } = context;
@@ -38,11 +46,7 @@ export const TradingSelectedOfferProvider = () => {
     const providers = getProvidersInfoProps(context);
     const quote = getSelectedQuote(context);
 
-    const onQuoteSelected = context.onQuoteSelected as (selected: TradingTradeType) => void;
-    const onQuoteSelect = useCallback(
-        (selected: TradingTradeType) => onQuoteSelected(selected),
-        [onQuoteSelected],
-    );
+    const OffersModal = offersModalComponents[type];
 
     const handleModalClose = useCallback(() => setIsModalOpen(false), []);
 
@@ -99,9 +103,7 @@ export const TradingSelectedOfferProvider = () => {
                     </Row>
                 </Row>
             </GhostContainer>
-            {isModalOpen && (
-                <TradingOffersModal onClose={handleModalClose} onSelect={onQuoteSelect} />
-            )}
+            {isModalOpen && <OffersModal onClose={handleModalClose} />}
         </>
     );
 };

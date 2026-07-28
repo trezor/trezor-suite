@@ -281,6 +281,12 @@ export const getTradingQuotesByPaymentMethod = <T extends TradingTradeBuySellTyp
         quote => quote.paymentMethod === currentPaymentMethod && quote.error === undefined,
     );
 
+// Invity API can return multiple quotes per provider (`quote.exchange`) for the same payment
+// method, so deduplication by provider is safe — each provider only offers one rate at a time.
+export const getTradingQuotesDedupedByProvider = <T extends TradingTradeType>(quotes: T[]): T[] => [
+    ...new Map(quotes.map(quote => [quote.exchange, quote])).values(),
+];
+
 export const getTradingFormState = ({
     activeSection,
     trade,

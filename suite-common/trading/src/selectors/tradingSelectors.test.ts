@@ -34,6 +34,7 @@ import {
     selectTradingBuyIsLoading,
     selectTradingBuyLastErrorMessage,
     selectTradingBuyLoadingTimestampAndStatus,
+    selectTradingBuyOfferQuotes,
     selectTradingBuyPaymentMethods,
     selectTradingBuyProviders,
     selectTradingBuyQuoteByOrderId,
@@ -88,6 +89,7 @@ import {
     selectTradingSellIsFromRedirect,
     selectTradingSellLastErrorMessage,
     selectTradingSellLoadingTimestampAndStatus,
+    selectTradingSellOfferQuotes,
     selectTradingSellPaymentMethods,
     selectTradingSellProviders,
     selectTradingSellQuotes,
@@ -1136,6 +1138,42 @@ describe('tradingSelectors', () => {
         });
     });
 
+    describe(selectTradingBuyOfferQuotes.name, () => {
+        it('should deduplicate quotes of the selected payment method by provider', () => {
+            state.wallet.trading.buy.quotes = [
+                {
+                    ...state.wallet.trading.buy.quotes[0],
+                    orderId: 'orderId-buy-offer-1',
+                    paymentMethod: 'eps',
+                    exchange: 'topper',
+                },
+                {
+                    ...state.wallet.trading.buy.quotes[1],
+                    orderId: 'orderId-buy-offer-2',
+                    paymentMethod: 'eps',
+                    exchange: 'topper',
+                },
+                {
+                    ...state.wallet.trading.buy.quotes[2],
+                    orderId: 'orderId-buy-offer-3',
+                    paymentMethod: 'eps',
+                    exchange: 'banxa',
+                },
+            ];
+
+            expect(selectTradingBuyOfferQuotes(state, 'eps')).toEqual([
+                state.wallet.trading.buy.quotes[1],
+                state.wallet.trading.buy.quotes[2],
+            ]);
+        });
+
+        it('should be stable', () => {
+            expect(selectTradingBuyOfferQuotes(state, 'eps')).toBe(
+                selectTradingBuyOfferQuotes(state, 'eps'),
+            );
+        });
+    });
+
     describe('bestBuyQuotePerPaymentMethodProjection', () => {
         it('should return the first valid quote for each payment method sorted by rate', () => {
             const quotes = state.wallet.trading.buy.quotes.map(quote => ({
@@ -1714,6 +1752,42 @@ describe('tradingSelectors', () => {
         it('should be stable', () => {
             expect(selectTradingSellQuotesByPaymentMethod(state, 'creditCard')).toBe(
                 selectTradingSellQuotesByPaymentMethod(state, 'creditCard'),
+            );
+        });
+    });
+
+    describe(selectTradingSellOfferQuotes.name, () => {
+        it('should deduplicate quotes of the selected payment method by provider', () => {
+            state.wallet.trading.sell.quotes = [
+                {
+                    ...state.wallet.trading.sell.quotes[0],
+                    orderId: 'orderId-sell-offer-1',
+                    paymentMethod: 'creditCard',
+                    exchange: 'banxa-sell',
+                },
+                {
+                    ...state.wallet.trading.sell.quotes[0],
+                    orderId: 'orderId-sell-offer-2',
+                    paymentMethod: 'creditCard',
+                    exchange: 'banxa-sell',
+                },
+                {
+                    ...state.wallet.trading.sell.quotes[0],
+                    orderId: 'orderId-sell-offer-3',
+                    paymentMethod: 'creditCard',
+                    exchange: 'moonpay-sell',
+                },
+            ];
+
+            expect(selectTradingSellOfferQuotes(state, 'creditCard')).toEqual([
+                state.wallet.trading.sell.quotes[1],
+                state.wallet.trading.sell.quotes[2],
+            ]);
+        });
+
+        it('should be stable', () => {
+            expect(selectTradingSellOfferQuotes(state, 'creditCard')).toBe(
+                selectTradingSellOfferQuotes(state, 'creditCard'),
             );
         });
     });
