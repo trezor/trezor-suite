@@ -14,7 +14,7 @@ import {
     UI_REQUEST,
 } from '@trezor/connect';
 
-import { connectInitThunk } from '../connectInitThunks';
+import { connectInitThunk } from './connectInitThunks';
 
 describe('TrezorConnect Actions', () => {
     let store = configureMockStore();
