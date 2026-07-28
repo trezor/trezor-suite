@@ -29,7 +29,7 @@ import {
     isTronClaimSupported,
     isTronRewardClaimOnCooldown,
     isTronStakingActive,
-} from '../tronStakingUtils';
+} from './tronStakingUtils';
 
 const TRX = 1_000_000;
 const NOW_SECONDS = 1_700_000_000;

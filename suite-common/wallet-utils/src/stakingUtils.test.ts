@@ -1,5 +1,5 @@
-import { getUnstakingPeriodInDaysFixture } from '../__fixtures__/stakingUtils';
-import { getUnstakingPeriodInDays } from '../stakingUtils';
+import { getUnstakingPeriodInDaysFixture } from './__fixtures__/stakingUtils';
+import { getUnstakingPeriodInDays } from './stakingUtils';
 
 describe('getUnstakingPeriodInDays', () => {
     getUnstakingPeriodInDaysFixture.forEach(test => {

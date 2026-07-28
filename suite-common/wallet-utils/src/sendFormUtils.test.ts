@@ -7,7 +7,7 @@ import {
 import { type FeeLevel } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils';
 
-import * as fixtures from '../__fixtures__/sendFormUtils';
+import * as fixtures from './__fixtures__/sendFormUtils';
 import {
     calculateMax,
     calculateTotal,
@@ -22,7 +22,7 @@ import {
     isAmountWithinNetworkReserve,
     prepareEthereumTransaction,
     restoreOrigOutputsOrder,
-} from '../sendFormUtils';
+} from './sendFormUtils';
 
 describe('sendForm utils', () => {
     fixtures.prepareEthereumTransaction.forEach(f => {

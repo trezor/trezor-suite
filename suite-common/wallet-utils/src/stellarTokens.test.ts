@@ -1,7 +1,7 @@
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { getTokenMetadata } from '@trezor/blockchain-link-utils/src/stellar';
 
-import { getStellarInactiveTokens } from '../stellarTokens';
+import { getStellarInactiveTokens } from './stellarTokens';
 
 jest.mock('@trezor/blockchain-link-utils/src/stellar', () => ({
     STELLAR_DECIMALS: 7,

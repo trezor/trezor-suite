@@ -1,13 +1,13 @@
 import type { TokenInfo } from '@trezor/blockchain-link-types';
 
-import { getContractAddressForNetworkSymbolFixtures } from '../__fixtures__/tokenUtils';
+import { getContractAddressForNetworkSymbolFixtures } from './__fixtures__/tokenUtils';
 import {
     getAssetLogoContractAddresses,
     getContractAddressForNetworkSymbol,
     getErc4626Contracts,
     isWrappedNativeToken,
     sortTokensByName,
-} from '../tokenUtils';
+} from './tokenUtils';
 
 describe('getContractAddressForNetworkSymbol', () => {
     getContractAddressForNetworkSymbolFixtures.forEach(
