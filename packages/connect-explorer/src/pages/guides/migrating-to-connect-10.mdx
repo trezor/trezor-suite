@@ -81,6 +81,8 @@ Skip any item whose API you do not use.
     - Path-taking methods (`getAddress`, `getPublicKey`, …) fall back to deriving the network from `path`.
     - These throw `Method_UnknownCoin` with no fallback: `getAccountInfo`, `selectAccount`, `verifyMessage`, `composeTransaction`, `signTransaction`, `signMessage`, `getOwnershipId`, `getOwnershipProof`, and the `blockchain*` family.
 
+- [ ] **Check that the coins you use are still supported.** Coins that no current device supports have been dropped from Connect's coin definitions, so naming one behaves exactly like naming an unknown coin. [Supported coins](/details/coins) is the current list.
+
 - [ ] **`getPublicKey` no longer falls back to Bitcoin for other networks.** In v9, `getPublicKey({ coin: 'eth', … })` silently returned a Bitcoin xpub. Now the network must resolve to a bitcoin-like coin — from `coin`, or failing that from the derivation `path` — otherwise the call throws `Method_UnknownCoin`. Use the per-coin methods (`ethereumGetPublicKey`, `cardanoGetPublicKey`, …) for non-bitcoin networks.
 
 - [ ] **`getAccountDescriptor` is removed.** Call the per-coin `*GetPublicKey` instead.
