@@ -3,12 +3,12 @@ import { getTranslation } from '@suite-native/intl';
 import { fireEvent } from '@suite-native/test-utils-store';
 import { getBuyTrade } from '@suite-native/trading-fixtures';
 
+import { HistoryButton } from './HistoryButton';
 import {
     type PreloadedStatePartial,
     type TradingTestPreloadedState,
     renderWithTradingProvider,
-} from '../../../__tests__/tradingTestUtils';
-import { HistoryButton } from '../HistoryButton';
+} from '../../__tests__/tradingTestUtils';
 
 let mockSelectDeviceTradingTrades: TradingTransaction[];
 let mockNavigate: jest.Mock;

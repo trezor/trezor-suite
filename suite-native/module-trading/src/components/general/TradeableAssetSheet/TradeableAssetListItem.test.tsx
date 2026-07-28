@@ -12,11 +12,8 @@ import { btcAsset, getWalletState, usdcAsset } from '@suite-native/trading-fixtu
 import { tradingSlice } from '@suite-native/trading-state';
 import { typedObjectTransformValues } from '@trezor/utils';
 
-import { createTradingPreloadedState } from '../../../../__tests__/tradingTestUtils';
-import {
-    TradeableAssetListItem,
-    type TradeableAssetListItemProps,
-} from '../TradeableAssetListItem';
+import { TradeableAssetListItem, type TradeableAssetListItemProps } from './TradeableAssetListItem';
+import { createTradingPreloadedState } from '../../../__tests__/tradingTestUtils';
 
 const reducer = {
     ...typedObjectTransformValues(createTradingPreloadedState(), createStaticReducer),

@@ -2,7 +2,7 @@ import { type Network } from '@suite-common/wallet-config';
 import { getTranslation } from '@suite-native/intl';
 import { fireEvent, renderWithStoreProvider } from '@suite-native/test-utils-store';
 
-import { TradeableAssetFilterTabs } from '../TradeableAssetFilterTabs';
+import { TradeableAssetFilterTabs } from './TradeableAssetFilterTabs';
 
 jest.mock('@suite-native/discovery', () => {
     const networks: Network[] = [

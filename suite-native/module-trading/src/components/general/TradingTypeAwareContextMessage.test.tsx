@@ -1,11 +1,11 @@
 import { type TradingType } from '@suite-common/trading';
 
+import { TradingTypeAwareContextMessage } from './TradingTypeAwareContextMessage';
 import {
     type PreloadedStatePartial,
     type TradingTestPreloadedState,
     renderWithTradingProvider,
-} from '../../../__tests__/tradingTestUtils';
-import { TradingTypeAwareContextMessage } from '../TradingTypeAwareContextMessage';
+} from '../../__tests__/tradingTestUtils';
 
 jest.mock('@suite-common/message-system', () => {
     const messages: Record<string, unknown> = {

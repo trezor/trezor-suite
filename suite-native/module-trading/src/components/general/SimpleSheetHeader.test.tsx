@@ -1,7 +1,7 @@
 import { getTranslation } from '@suite-native/intl';
 import { fireEvent, renderWithBasicProvider } from '@suite-native/test-utils';
 
-import { SimpleSheetHeader, type SimpleSheetHeaderProps } from '../SimpleSheetHeader';
+import { SimpleSheetHeader, type SimpleSheetHeaderProps } from './SimpleSheetHeader';
 
 describe('SimpleSheetHeader', () => {
     const renderSimpleSheetHeader = (props: SimpleSheetHeaderProps) =>

@@ -1,11 +1,11 @@
 import { type TradingTypeWithConcierge } from '@suite-common/trading';
 
+import { ActiveTab } from './ActiveTab';
 import {
     type PreloadedStatePartial,
     type TradingTestPreloadedState,
     renderWithTradingProvider,
-} from '../../../__tests__/tradingTestUtils';
-import { ActiveTab } from '../ActiveTab';
+} from '../../__tests__/tradingTestUtils';
 
 // for the sake of easier testing, we mock the flags to return false
 jest.mock('@suite-native/trading-state', () => ({

@@ -5,7 +5,7 @@ import { btcAsset, ethOnBaseAsset, usdcAsset } from '@suite-native/trading-fixtu
 import {
     TradeableAssetNetworkInfo,
     type TradeableAssetNetworkInfoProps,
-} from '../TradeableAssetNetworkInfo';
+} from './TradeableAssetNetworkInfo';
 
 describe('TradeableAssetNetworkInfo', () => {
     const renderTradeableAssetNetworkInfo = (asset: TradeableAssetNetworkInfoProps['asset']) =>
