@@ -1,7 +1,7 @@
 import { type Account } from '@suite-common/wallet-types';
 
-import { accountEth } from '../../../__fixtures__/utils';
-import { formatMessageValue, getSignerAddress, simplifyJSON } from '../signDataUtils';
+import { formatMessageValue, getSignerAddress, simplifyJSON } from './signDataUtils';
+import { accountEth } from '../../__fixtures__/utils';
 
 describe('simplifyJSON', () => {
     it('returns empty string for nullish input', () => {

@@ -1,6 +1,6 @@
 import { BigNumber } from '@trezor/utils';
 
-import { formatExchangeRate } from '../numberUtils';
+import { formatExchangeRate } from './numberUtils';
 
 describe('formatExchangeRate', () => {
     it('rate >= 1 uses 3 decimal places', () => {

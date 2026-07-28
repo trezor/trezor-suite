@@ -1,4 +1,4 @@
-import { isSendRejectedError } from '../typeGuards';
+import { isSendRejectedError } from './typeGuards';
 
 describe('typeGuards', () => {
     describe('isSendRejectedError', () => {

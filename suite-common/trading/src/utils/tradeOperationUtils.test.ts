@@ -8,7 +8,7 @@ import type {
     SellTradeStatus,
 } from 'invity-api';
 
-import { getTradeOperationData } from '../tradeOperationUtils';
+import { getTradeOperationData } from './tradeOperationUtils';
 
 const buildBuyTrade = (status: BuyTradeStatus | undefined): BuyTrade =>
     ({

@@ -6,10 +6,10 @@ import {
     formatSlip24AddressByNetwork,
     tradingExchangeCreatePaymentRequest,
     tradingSellCreatePaymentRequest,
-} from '../signatureUtils';
+} from './signatureUtils';
 
 // Mock external dependencies
-jest.mock('../../../utils', () => ({
+jest.mock('../../utils', () => ({
     cryptoIdToNetworkAndContractAddress: jest
         .fn()
         .mockImplementation((cryptoId: CryptoId | undefined) => {

@@ -1,5 +1,5 @@
-import * as fixtures from '../__fixtures__/buyUtils';
-import { buyUtils } from '../buyUtils';
+import * as fixtures from './__fixtures__/buyUtils';
+import { buyUtils } from './buyUtils';
 
 describe('getAmountLimits', () => {
     const currency = 'bitcoin';

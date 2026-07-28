@@ -1,4 +1,4 @@
-import { getRandomAccountDescriptor } from '../apiKeyUtils';
+import { getRandomAccountDescriptor } from './apiKeyUtils';
 
 describe('getRandomAccountDescriptor', () => {
     it('should return 20 characters', () => {

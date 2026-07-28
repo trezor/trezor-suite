@@ -4,7 +4,7 @@ import {
     getTradingErrorDisplay,
     isResolvedTradeError,
     resolveExchangeTradeError,
-} from '../resolveExchangeTradeError';
+} from './resolveExchangeTradeError';
 
 const coinSymbols: Record<string, string> = {
     bitcoin: 'BTC',
