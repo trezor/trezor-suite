@@ -1,4 +1,4 @@
-import { fetchUrl, requestInit } from '../src/fetch.native';
+import { fetchUrl, requestInit } from './fetch.native';
 
 // Mock fetch globally
 const mockFetch = jest.fn();
