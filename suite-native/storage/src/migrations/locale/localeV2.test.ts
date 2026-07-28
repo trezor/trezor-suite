@@ -1,4 +1,4 @@
-import { migrateLocaleTagToAppLocaleCode } from '../../migrations/locale/v2';
+import { migrateLocaleTagToAppLocaleCode } from './v2';
 
 describe('migrateLocaleTagToAppLocaleCode', () => {
     it('Should return state as-is when oldState is undefined.', () => {

@@ -1,6 +1,6 @@
 import { type ThunkAction, type UnknownAction } from '@reduxjs/toolkit';
 
-import { type FullPersistedAppState, type Store, type StoreWithExtra } from '../store';
+import { type FullPersistedAppState, type Store, type StoreWithExtra } from './store';
 
 const verifyStoreType = (store: Store) => {
     const state: FullPersistedAppState = store.getState();

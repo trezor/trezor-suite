@@ -1,6 +1,6 @@
 import { type getStoredState } from 'redux-persist';
 
-import { migrateAutoEjectToWalletSettings } from '../../migrations/walletSettings/v2';
+import { migrateAutoEjectToWalletSettings } from './v2';
 import { createMMKVStorageMock } from '../../mmkvStorage.mock';
 
 describe(migrateAutoEjectToWalletSettings.name, () => {

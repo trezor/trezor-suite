@@ -1,4 +1,4 @@
-import { migrateAccountLabel } from '../../migrations/account/v2';
+import { migrateAccountLabel } from './v2';
 
 describe('migrateAccountLabel', () => {
     it('should migrate old accounts without accountLabel to new format', () => {

@@ -1,4 +1,4 @@
-import { createAsyncMigrate } from '../createAsyncMigrate';
+import { createAsyncMigrate } from './createAsyncMigrate';
 
 describe('createAsyncMigrate', () => {
     beforeEach(() => {

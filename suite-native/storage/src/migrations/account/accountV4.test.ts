@@ -1,4 +1,4 @@
-import { sortAccountsByCoin } from '../../migrations/account/v4';
+import { sortAccountsByCoin } from './v4';
 
 describe('sortAccountsByCoin', () => {
     it('sorts persisted accounts by network, account type and index', () => {
