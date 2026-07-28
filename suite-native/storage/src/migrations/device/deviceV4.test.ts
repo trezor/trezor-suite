@@ -1,7 +1,7 @@
 import { PORTFOLIO_TRACKER_DEVICE_ID } from '@suite-common/device';
 import { type TrezorDevice } from '@suite-common/suite-types';
 
-import { backfillPortfolioTrackerUnavailableCapabilities } from '../../migrations/device/v4';
+import { backfillPortfolioTrackerUnavailableCapabilities } from './v4';
 
 describe('backfillPortfolioTrackerUnavailableCapabilities', () => {
     it('should add unavailableCapabilities to portfolio tracker device without existing capabilities', () => {

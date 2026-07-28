@@ -1,5 +1,5 @@
+import { migrateBiometricsAtomToRedux } from './v1';
 import { unecryptedJotaiStorage } from '../../atomWithUnecryptedStorage';
-import { migrateBiometricsAtomToRedux } from '../../migrations/biometrics/v1';
 
 const LEGACY_BIOMETRICS_ATOM_STORAGE_KEY = 'isBiometricsOptionEnabled';
 

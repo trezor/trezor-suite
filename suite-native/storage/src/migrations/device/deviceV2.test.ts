@@ -1,4 +1,4 @@
-import { migrateDeviceState } from '../../migrations/device/v2';
+import { migrateDeviceState } from './v2';
 
 describe('migrateDeviceState', () => {
     it('should migrate old devices without state to new format', () => {

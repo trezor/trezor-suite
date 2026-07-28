@@ -3,7 +3,7 @@ import { type getStoredState } from 'redux-persist';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { PROTO } from '@trezor/connect';
 
-import { initialMigrateAppSettingsAndDiscoveryConfig } from '../../migrations/walletSettings/v1';
+import { initialMigrateAppSettingsAndDiscoveryConfig } from './v1';
 import { createMMKVStorageMock } from '../../mmkvStorage.mock';
 
 describe(initialMigrateAppSettingsAndDiscoveryConfig.name, () => {

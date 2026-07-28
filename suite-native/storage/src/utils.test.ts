@@ -1,4 +1,4 @@
-import { filterKeysByPartialMatch } from '../transforms/utils';
+import { filterKeysByPartialMatch } from './transforms/utils';
 
 describe('filterObjectKeys', () => {
     it('should filter out keys that are specified in the filterKeys array', () => {
