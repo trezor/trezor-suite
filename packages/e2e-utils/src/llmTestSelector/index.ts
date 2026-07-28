@@ -1,4 +1,3 @@
-import Anthropic from '@anthropic-ai/sdk';
 import { spawn, spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import * as fs from 'node:fs';
@@ -30,7 +29,7 @@ interface SelectionResult {
 }
 
 interface PromptParts {
-    /** Large semi-stable blob — the filtered LLM analysis. Cached in API mode. */
+    /** Large semi-stable blob — the filtered LLM analysis. */
     analysisPart: string;
     /** Small dynamic blob — changed files, coverage mapping, instructions. */
     taskPart: string;
@@ -45,6 +44,11 @@ const LLM_ANALYSIS_URL = 'https://dev.suite.sldev.cz/coverage/e2e/llm-analysis.j
 const DEFAULT_COVERAGE_MAP_DIR = 'coverage-map';
 const DEFAULT_INDEX_FILE = `${DEFAULT_COVERAGE_MAP_DIR}/index.json`;
 const DEFAULT_LLM_ANALYSIS_FILE = `${DEFAULT_COVERAGE_MAP_DIR}/llm-analysis.json`;
+
+const OPENROUTER_URL = 'https://openrouter.ai/api/v1/chat/completions';
+const OPENROUTER_MODEL = 'moonshotai/kimi-k2.7-code';
+// Pinned to the cheaper (int4) tag of the model author's own endpoint — the only provider this account's OpenRouter privacy settings currently allow for this model.
+const OPENROUTER_PROVIDER_ORDER = ['moonshotai/int4'];
 
 const ALLOWED_EXTENSIONS = new Set(['.ts', '.tsx', '.js', '.jsx', '.css', '.json']);
 
@@ -452,126 +456,163 @@ const selectTestsViaCli = ({
     });
 
 // ---------------------------------------------------------------------------
-// Claude invocation — API
+// LLM invocation — OpenRouter API (Kimi K2.7 Code)
 // ---------------------------------------------------------------------------
+
+// Forced tool_choice errors on this model ("incompatible with thinking enabled") — auto + this instruction is the reliable alternative.
+const MUST_CALL_TOOL_INSTRUCTION =
+    '\n\nYou MUST call the `recommend_tests` function with your recommendation. Do not respond with plain text.';
+
+const RECOMMEND_TESTS_TOOL = {
+    type: 'function' as const,
+    function: {
+        name: 'recommend_tests',
+        description:
+            'Produce a structured recommendation of which E2E tests to run given a set of changed source files.',
+        parameters: {
+            type: 'object' as const,
+            properties: {
+                recommendations: {
+                    type: 'array',
+                    description: 'Ordered list of test recommendations (high → medium → low)',
+                    items: {
+                        type: 'object',
+                        properties: {
+                            test: {
+                                type: 'string',
+                                description: 'Relative path to the test file',
+                            },
+                            priority: {
+                                type: 'string',
+                                enum: ['high', 'medium', 'low'],
+                                description: 'How critical this test is to run',
+                            },
+                            reasoning: {
+                                type: 'string',
+                                description:
+                                    'Why this test matters given the specific changes (1–3 sentences)',
+                            },
+                            related_changes: {
+                                type: 'array',
+                                items: { type: 'string' },
+                                description: 'Subset of changed files most relevant to this test',
+                            },
+                        },
+                        required: ['test', 'priority', 'reasoning', 'related_changes'],
+                    },
+                },
+                summary: {
+                    type: 'string',
+                    description:
+                        'Overall risk assessment and recommended testing strategy (2–4 sentences)',
+                },
+                uncovered_changes: {
+                    type: 'array',
+                    items: { type: 'string' },
+                    description: 'Changed files that have no known test coverage',
+                },
+            },
+            required: ['recommendations', 'summary', 'uncovered_changes'],
+        },
+    },
+};
+
+class OpenRouterHttpError extends Error {
+    constructor(
+        public readonly status: number,
+        message: string,
+    ) {
+        super(message);
+    }
+}
 
 const selectTestsViaApi = async (
     { analysisPart, taskPart }: PromptParts,
     apiKey: string,
 ): Promise<Omit<SelectionResult, 'changed_files'>> => {
-    const client = new Anthropic({ apiKey });
+    const maxTokens = 32768;
 
-    const maxTokens = 16384;
-
-    const response = await client.messages.create({
-        model: 'claude-sonnet-5',
-        max_tokens: maxTokens,
-        tools: [
-            {
-                name: 'recommend_tests',
-                description:
-                    'Produce a structured recommendation of which E2E tests to run given a set of changed source files.',
-                input_schema: {
-                    type: 'object' as const,
-                    properties: {
-                        recommendations: {
-                            type: 'array',
-                            description:
-                                'Ordered list of test recommendations (high → medium → low)',
-                            items: {
-                                type: 'object',
-                                properties: {
-                                    test: {
-                                        type: 'string',
-                                        description: 'Relative path to the test file',
-                                    },
-                                    priority: {
-                                        type: 'string',
-                                        enum: ['high', 'medium', 'low'],
-                                        description: 'How critical this test is to run',
-                                    },
-                                    reasoning: {
-                                        type: 'string',
-                                        description:
-                                            'Why this test matters given the specific changes (1–3 sentences)',
-                                    },
-                                    related_changes: {
-                                        type: 'array',
-                                        items: { type: 'string' },
-                                        description:
-                                            'Subset of changed files most relevant to this test',
-                                    },
-                                },
-                                required: ['test', 'priority', 'reasoning', 'related_changes'],
-                            },
-                        },
-                        summary: {
-                            type: 'string',
-                            description:
-                                'Overall risk assessment and recommended testing strategy (2–4 sentences)',
-                        },
-                        uncovered_changes: {
-                            type: 'array',
-                            items: { type: 'string' },
-                            description: 'Changed files that have no known test coverage',
-                        },
-                    },
-                    required: ['recommendations', 'summary', 'uncovered_changes'],
+    const response = await fetch(OPENROUTER_URL, {
+        method: 'POST',
+        headers: {
+            Authorization: `Bearer ${apiKey}`,
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            model: OPENROUTER_MODEL,
+            max_tokens: maxTokens,
+            provider: { order: OPENROUTER_PROVIDER_ORDER, allow_fallbacks: false },
+            tools: [RECOMMEND_TESTS_TOOL],
+            tool_choice: 'auto',
+            messages: [
+                {
+                    role: 'user',
+                    content: `${analysisPart}\n\n${taskPart}${MUST_CALL_TOOL_INSTRUCTION}`,
                 },
-            },
-        ],
-        tool_choice: { type: 'tool', name: 'recommend_tests' },
-        messages: [
-            {
-                role: 'user',
-                content: [
-                    {
-                        type: 'text' as const,
-                        text: analysisPart,
-                        cache_control: { type: 'ephemeral' as const },
-                    },
-                    {
-                        type: 'text' as const,
-                        text: taskPart,
-                    },
-                ],
-            },
-        ],
+            ],
+        }),
     });
 
-    if (response.stop_reason === 'max_tokens') {
-        throw new Error(
-            `Anthropic response was truncated at max_tokens (${maxTokens}) — the recommendation set was too large to fit. Increase maxTokens or narrow the candidate tests.`,
+    if (!response.ok) {
+        const errorText = await response.text();
+        throw new OpenRouterHttpError(
+            response.status,
+            `OpenRouter API returned ${response.status}:\n${errorText}`,
         );
     }
 
-    type ContentBlock = { type: string; input?: unknown };
-    const toolUse = (response.content as ContentBlock[]).find(b => b.type === 'tool_use');
-    if (!toolUse) {
-        throw new Error('Anthropic API did not return a tool_use block.');
+    type ToolCall = { function?: { name?: string; arguments?: string } };
+    type Choice = {
+        finish_reason?: string;
+        message?: { tool_calls?: ToolCall[] };
+    };
+    const data = (await response.json()) as { choices?: Choice[] };
+    const choice = data.choices?.[0];
+
+    if (choice?.finish_reason === 'length') {
+        throw new Error(
+            `OpenRouter response was truncated at max_tokens (${maxTokens}) — the recommendation set was too large to fit. Increase maxTokens or narrow the candidate tests.`,
+        );
     }
 
-    const { input } = toolUse;
+    const toolCall = choice?.message?.tool_calls?.find(
+        tc => tc.function?.name === 'recommend_tests',
+    );
+    if (!toolCall?.function?.arguments) {
+        throw new Error(
+            `OpenRouter did not return a recommend_tests tool call:\n${JSON.stringify(choice, null, 2)}`,
+        );
+    }
+
+    let parsed: unknown;
+    try {
+        parsed = JSON.parse(toolCall.function.arguments);
+    } catch {
+        throw new Error(
+            `OpenRouter tool call arguments were not valid JSON:\n${toolCall.function.arguments}`,
+        );
+    }
+
     if (
-        typeof input !== 'object' ||
-        input === null ||
-        !Array.isArray((input as Record<string, unknown>).recommendations) ||
-        typeof (input as Record<string, unknown>).summary !== 'string'
+        typeof parsed !== 'object' ||
+        parsed === null ||
+        !Array.isArray((parsed as Record<string, unknown>).recommendations) ||
+        typeof (parsed as Record<string, unknown>).summary !== 'string'
     ) {
         throw new Error(
-            `Anthropic API returned malformed tool input:\n${JSON.stringify(input, null, 2)}`,
+            `OpenRouter returned malformed tool arguments:\n${JSON.stringify(parsed, null, 2)}`,
         );
     }
 
-    return input as Omit<SelectionResult, 'changed_files'>;
+    return parsed as Omit<SelectionResult, 'changed_files'>;
 };
 
 // ---------------------------------------------------------------------------
 // Error classification
 // ---------------------------------------------------------------------------
 
-const isCreditBalanceError = (err: unknown): boolean =>
-    /credit balance is too low/i.test(err instanceof Error ? err.message : String(err));
+const isInsufficientCreditsError = (err: unknown): boolean =>
+    err instanceof OpenRouterHttpError && err.status === 402;
 
 // ---------------------------------------------------------------------------
 // Main
@@ -603,8 +644,8 @@ const main = async () => {
     }
 
     // Fall back to env variable
-    if (!apiKey && process.env.CLAUDE_API_KEY) {
-        apiKey = process.env.CLAUDE_API_KEY;
+    if (!apiKey && process.env.OPENROUTER_API_KEY) {
+        apiKey = process.env.OPENROUTER_API_KEY;
     }
 
     if (args.includes('--help') || args.includes('-h')) {
@@ -614,12 +655,12 @@ const main = async () => {
                 '',
                 'Uses git diff origin/develop...HEAD to find changed files, maps them to E2E',
                 'tests via the coverage index, downloads the LLM test analysis, then asks',
-                'Claude to recommend which tests to run and at what priority.',
+                'an LLM to recommend which tests to run and at what priority.',
                 '',
                 'Options:',
-                '  --api-key, -k <key>        Anthropic API key. Overrides the CLAUDE_API_KEY env',
-                '                             variable. When provided, uses the Anthropic API',
-                '                             instead of the local Claude Code CLI.',
+                '  --api-key, -k <key>        OpenRouter API key. Overrides the OPENROUTER_API_KEY',
+                '                             env variable. When provided, uses OpenRouter (Kimi',
+                '                             K2.7 Code) instead of the local Claude Code CLI.',
                 `  --coverage-map <file>      Path to the coverage index JSON. Default: ${DEFAULT_INDEX_FILE}`,
                 `  --llm-analysis <file>      Path to the LLM analysis JSON. Default: ${DEFAULT_LLM_ANALYSIS_FILE}`,
                 '  --head-ref <ref>           Git ref for the PR head. Default: HEAD. Use pr-head',
@@ -637,14 +678,14 @@ const main = async () => {
                 '  claude CLI must be installed and authenticated (run `claude` to verify).',
                 '',
                 'Prerequisites (API mode):',
-                '  Set CLAUDE_API_KEY env variable or pass --api-key <key>.',
+                '  Set OPENROUTER_API_KEY env variable or pass --api-key <key>.',
                 '',
                 'Examples:',
                 '  # Default (uses local Claude Code CLI):',
                 '  yarn workspace @trezor/e2e-utils select-tests-llm',
                 '',
-                '  # Using the Anthropic API:',
-                '  CLAUDE_API_KEY=sk-ant-... yarn workspace @trezor/e2e-utils select-tests-llm',
+                '  # Using the OpenRouter API:',
+                '  OPENROUTER_API_KEY=sk-or-... yarn workspace @trezor/e2e-utils select-tests-llm',
                 '',
                 '  # Pre-downloaded files:',
                 '  yarn workspace @trezor/e2e-utils select-tests-llm \\',
@@ -737,19 +778,19 @@ const main = async () => {
         filteredAnalysis,
     );
 
-    log(apiKey ? 'Calling Anthropic API...' : 'Calling local Claude Code CLI...');
+    log(apiKey ? 'Calling OpenRouter (Kimi K2.7 Code)...' : 'Calling local Claude Code CLI...');
 
-    let claudeResult: Omit<SelectionResult, 'changed_files'>;
+    let llmResult: Omit<SelectionResult, 'changed_files'>;
     try {
-        claudeResult = apiKey
+        llmResult = apiKey
             ? await selectTestsViaApi(promptParts, apiKey)
             : await selectTestsViaCli(promptParts);
     } catch (err) {
         // A depleted budget must not fail CI: emit an empty spec list so the workflow runs the full suite.
-        if (isCreditBalanceError(err)) {
+        if (isInsufficientCreditsError(err)) {
             const message = err instanceof Error ? err.message : String(err);
             warn(
-                `Anthropic credit balance exhausted; skipping LLM test selection and running all e2e tests.\n${message}`,
+                `OpenRouter credit balance exhausted; skipping LLM test selection and running all e2e tests.\n${message}`,
             );
             output(
                 JSON.stringify(
@@ -757,7 +798,7 @@ const main = async () => {
                         changed_files: changedFiles,
                         recommendations: [],
                         summary:
-                            'LLM test selector skipped: Anthropic credit balance exhausted. Falling back to the full e2e suite.',
+                            'LLM test selector skipped: OpenRouter credit balance exhausted. Falling back to the full e2e suite.',
                         uncovered_changes: [],
                     } satisfies SelectionResult,
                     null,
@@ -766,14 +807,14 @@ const main = async () => {
             );
             process.exit(0);
         }
-        error(`Claude invocation failed: ${err instanceof Error ? err.message : err}`);
+        error(`LLM invocation failed: ${err instanceof Error ? err.message : err}`);
         process.exit(1);
     }
 
     // 6. Emit result
     const result: SelectionResult = {
         changed_files: changedFiles,
-        ...claudeResult,
+        ...llmResult,
     };
 
     output(JSON.stringify(result, null, 2));
