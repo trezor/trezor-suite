@@ -15,7 +15,7 @@ import {
 import { getBtcAccount, getWalletState } from '@suite-native/trading-fixtures';
 import { selectExchangeSelectedReceiveAccount, tradingSlice } from '@suite-native/trading-state';
 
-import { useReceiveAccountChangeEffect } from '../useReceiveAccountChangeEffect';
+import { useReceiveAccountChangeEffect } from './useReceiveAccountChangeEffect';
 
 describe('useReceiveAccountChangeEffect', () => {
     let store: TestStore;

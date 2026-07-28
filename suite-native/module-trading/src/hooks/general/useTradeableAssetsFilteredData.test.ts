@@ -15,7 +15,7 @@ import {
 } from '@suite-native/trading-fixtures';
 import { type TradeableAsset } from '@suite-native/trading-types';
 
-import { useTradeableAssetsFilteredData } from '../useTradeableAssetsFilteredData';
+import { useTradeableAssetsFilteredData } from './useTradeableAssetsFilteredData';
 
 const mockAssets: TradeableAsset[] = [
     btcAsset,

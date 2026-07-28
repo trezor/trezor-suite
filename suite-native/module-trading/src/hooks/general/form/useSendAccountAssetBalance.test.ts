@@ -5,7 +5,7 @@ import { renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 import { btcAsset, getBtcAccount, getWalletState } from '@suite-native/trading-fixtures';
 import { type SellFormValues, type TradeableAsset } from '@suite-native/trading-types';
 
-import { useSendAccountAssetBalance } from '../useSendAccountAssetBalance';
+import { useSendAccountAssetBalance } from './useSendAccountAssetBalance';
 
 type HookProps = {
     sendAccount: Account | undefined;

@@ -6,7 +6,7 @@ import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { renderHook, renderHookWithBasicProvider } from '@suite-native/test-utils';
 import { getBuyTrade, getExchangeTrade } from '@suite-native/trading-fixtures';
 
-import { useTransactionStateChangeAnalyticsReporting } from '../useTransactionStateChangeAnalyticsReporting';
+import { useTransactionStateChangeAnalyticsReporting } from './useTransactionStateChangeAnalyticsReporting';
 
 type Props = { trades: TradingTransaction[] };
 type ReportSpy = jest.SpyInstance;

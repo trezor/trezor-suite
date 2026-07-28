@@ -17,7 +17,7 @@ import {
     type PreloadedStatePartial,
     type TradingTestPreloadedState,
     renderHookWithTradingProvider,
-} from '../../../__tests__/tradingTestUtils';
+} from '../../__tests__/tradingTestUtils';
 
 jest.mock('@suite-common/fiat-services', () => ({
     ...jest.requireActual('@suite-common/fiat-services'),
