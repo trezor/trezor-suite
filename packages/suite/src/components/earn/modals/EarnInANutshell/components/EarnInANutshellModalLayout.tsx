@@ -9,6 +9,7 @@ type EarnInANutshellModalLayoutProps = {
     onCancel: () => void;
     actionType?: EarnModalAction;
     onAction: () => void;
+    hasCancelButton?: boolean;
     children: ReactNode;
 };
 
@@ -17,6 +18,7 @@ export const EarnInANutshellModalLayout = ({
     onCancel,
     actionType = 'continue',
     onAction,
+    hasCancelButton = false,
     children,
 }: EarnInANutshellModalLayoutProps) => (
     <Modal
@@ -25,9 +27,21 @@ export const EarnInANutshellModalLayout = ({
         width={400}
         onCancel={onCancel}
         bottomContent={
-            <Modal.Button onClick={onAction} data-testid="@modal/staking/continue-button">
-                <Translation id={actionType === 'close' ? 'TR_GOT_IT' : 'TR_CONTINUE'} />
-            </Modal.Button>
+            <>
+                <Modal.Button onClick={onAction} data-testid="@modal/staking/continue-button">
+                    <Translation id={actionType === 'close' ? 'TR_GOT_IT' : 'TR_CONTINUE'} />
+                </Modal.Button>
+                {hasCancelButton && (
+                    <Modal.Button
+                        intent="neutral"
+                        priority="secondary"
+                        onClick={onCancel}
+                        data-testid="@modal/staking/cancel-button"
+                    >
+                        <Translation id="TR_CANCEL" />
+                    </Modal.Button>
+                )}
+            </>
         }
     >
         {children}

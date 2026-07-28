@@ -11101,6 +11101,11 @@ export const messages = defineMessages({
         defaultMessage:
             "You'll earn {rewardsSymbol} as rewards. They may only be offered for a limited time, but once earned, you can claim them in the Earn tab.",
     },
+    TR_EARN_WETH_NUTSHELL_WRAP: {
+        id: 'TR_EARN_WETH_NUTSHELL_WRAP',
+        defaultMessage:
+            'This vault accepts {nativeSymbol} as a wrapped token called {wrappedSymbol}. You can wrap your {nativeSymbol} during the deposit.',
+    },
     TR_EARN_YIELD_APPROVE_SPENDING_TRANSACTION: {
         id: 'TR_EARN_YIELD_APPROVE_SPENDING_TRANSACTION',
         defaultMessage: 'Approve spending transaction',

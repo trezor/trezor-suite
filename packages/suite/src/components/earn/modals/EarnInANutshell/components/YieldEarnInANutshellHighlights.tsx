@@ -1,7 +1,13 @@
 import { FormattedList } from 'react-intl';
 
 import { Translation } from '@suite/intl';
-import { CoinsIcon, HandCoinsIcon, LockSimpleIcon, PlusCircleIcon } from '@trezor/icons';
+import {
+    CoinVerticalIcon,
+    CoinsIcon,
+    HandCoinsIcon,
+    LockSimpleIcon,
+    PlusCircleIcon,
+} from '@trezor/icons';
 
 import {
     type EarnInANutshellHighlight,
@@ -12,20 +18,41 @@ interface YieldEarnInANutshellHighlightsProps {
     depositSymbol: string;
     vaultSymbol?: string;
     rewardsSymbols?: string[];
+    isWrappedNativeVault?: boolean;
+    nativeSymbol?: string;
 }
 
 export const YieldEarnInANutshellHighlights = ({
     depositSymbol,
     vaultSymbol,
     rewardsSymbols,
+    isWrappedNativeVault = false,
+    nativeSymbol,
 }: YieldEarnInANutshellHighlightsProps) => {
+    // For a wrapped-native vault the user perceives their asset as the native coin (e.g. ETH),
+    // while `depositSymbol` is the wrapped token the vault holds (e.g. WETH).
+    const supplySymbol = isWrappedNativeVault && nativeSymbol ? nativeSymbol : depositSymbol;
+
     const highlights: EarnInANutshellHighlight[] = [
+        ...(isWrappedNativeVault && nativeSymbol
+            ? [
+                  {
+                      icon: CoinVerticalIcon,
+                      content: (
+                          <Translation
+                              id="TR_EARN_WETH_NUTSHELL_WRAP"
+                              values={{ nativeSymbol, wrappedSymbol: depositSymbol }}
+                          />
+                      ),
+                  },
+              ]
+            : []),
         {
             icon: LockSimpleIcon,
             content: (
                 <Translation
                     id="TR_EARN_YIELD_NUTSHELL_DEPOSITED_AMOUNT"
-                    values={{ supplySymbol: depositSymbol }}
+                    values={{ supplySymbol }}
                 />
             ),
         },
@@ -34,7 +61,7 @@ export const YieldEarnInANutshellHighlights = ({
             content: (
                 <Translation
                     id="TR_EARN_YIELD_NUTSHELL_COMPOUND_INTEREST"
-                    values={{ supplySymbol: depositSymbol }}
+                    values={{ supplySymbol }}
                 />
             ),
         },
@@ -45,7 +72,7 @@ export const YieldEarnInANutshellHighlights = ({
                       content: (
                           <Translation
                               id="TR_EARN_YIELD_NUTSHELL_VAULT_TOKENS"
-                              values={{ supplySymbol: depositSymbol, vaultSymbol }}
+                              values={{ supplySymbol, vaultSymbol }}
                           />
                       ),
                   },
