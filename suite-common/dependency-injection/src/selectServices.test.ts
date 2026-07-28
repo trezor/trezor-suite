@@ -1,4 +1,4 @@
-import { selectServices } from '../useServices';
+import { selectServices } from './useServices';
 
 const services = {
     a: jest.fn(),
