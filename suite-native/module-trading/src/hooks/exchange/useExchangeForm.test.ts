@@ -27,8 +27,8 @@ import {
 import { type ExchangeFormType } from '@suite-native/trading-types';
 import { PROTO } from '@trezor/connect';
 
-import { createTradingLightStore } from '../../../__tests__/tradingTestUtils';
-import { clearExchangeFormQuoteData, useExchangeForm } from '../useExchangeForm';
+import { clearExchangeFormQuoteData, useExchangeForm } from './useExchangeForm';
+import { createTradingLightStore } from '../../__tests__/tradingTestUtils';
 
 type PrefetchDexQuoteApprovalThunk = typeof exchangeThunks.prefetchDexQuoteApprovalThunk;
 

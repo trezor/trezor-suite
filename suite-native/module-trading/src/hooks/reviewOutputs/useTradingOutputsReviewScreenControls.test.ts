@@ -18,8 +18,8 @@ import {
     transactionManagementActions,
 } from '@suite-native/transaction-management';
 
-import { type TradingExchangeSignAndSendTransactionProps } from '../../exchange/useExchangeFlow';
-import { useTradingOutputsReviewScreenControls } from '../useTradingOutputsReviewScreenControls';
+import { useTradingOutputsReviewScreenControls } from './useTradingOutputsReviewScreenControls';
+import { type TradingExchangeSignAndSendTransactionProps } from '../exchange/useExchangeFlow';
 
 const mockReportToAnalytics = jest.fn();
 

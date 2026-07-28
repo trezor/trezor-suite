@@ -6,9 +6,9 @@ import {
 } from '@suite-native/trading-fixtures';
 import { type BuyFormType } from '@suite-native/trading-types';
 
-import { createTradingLightStore } from '../../../__tests__/tradingTestUtils';
-import { useBuyFlow } from '../useBuyFlow';
-import { useBuyForm } from '../useBuyForm';
+import { useBuyFlow } from './useBuyFlow';
+import { useBuyForm } from './useBuyForm';
+import { createTradingLightStore } from '../../__tests__/tradingTestUtils';
 
 const mockSelectQuoteThunk = jest.fn();
 

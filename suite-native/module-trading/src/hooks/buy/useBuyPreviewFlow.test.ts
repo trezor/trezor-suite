@@ -7,8 +7,8 @@ import {
     mercuryoApplePayBuyQuote,
 } from '@suite-native/trading-fixtures';
 
-import { createTradingLightStore } from '../../../__tests__/tradingTestUtils';
-import { useBuyPreviewFlow } from '../useBuyPreviewFlow';
+import { useBuyPreviewFlow } from './useBuyPreviewFlow';
+import { createTradingLightStore } from '../../__tests__/tradingTestUtils';
 
 const mockPopToTop = jest.fn();
 

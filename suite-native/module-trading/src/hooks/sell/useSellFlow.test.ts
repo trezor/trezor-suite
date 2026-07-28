@@ -10,8 +10,8 @@ import {
     verifiedBankAccount,
 } from '@suite-native/trading-fixtures';
 
-import { createTradingLightStore } from '../../../__tests__/tradingTestUtils';
-import { useSellFlow } from '../useSellFlow';
+import { useSellFlow } from './useSellFlow';
+import { createTradingLightStore } from '../../__tests__/tradingTestUtils';
 
 // Store captured arguments for testing side effects (processResponseData callback)
 let capturedHandleTradeArgs: Parameters<typeof sellThunks.handleTradeThunk>[0] | null = null;
@@ -52,7 +52,7 @@ jest.mock('expo-web-browser', () => {
     };
 });
 
-jest.mock('../../general/useTradingTransaction', () => ({
+jest.mock('../general/useTradingTransaction', () => ({
     useTradingTransaction: () => ({
         txnErrorString: null,
         composeTradingTransaction: jest.fn(),

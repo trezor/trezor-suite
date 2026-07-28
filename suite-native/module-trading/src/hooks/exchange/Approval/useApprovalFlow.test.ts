@@ -2,8 +2,8 @@ import { exchangeThunks, selectTradingExchangeSelectedQuote } from '@suite-commo
 import { act, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 import { invityDexQuote } from '@suite-native/trading-fixtures';
 
-import { createTradingLightStore } from '../../../../__tests__/tradingTestUtils';
-import { useApprovalFlow } from '../useApprovalFlow';
+import { useApprovalFlow } from './useApprovalFlow';
+import { createTradingLightStore } from '../../../__tests__/tradingTestUtils';
 
 const mockConfirmApprovalThunk: any = () => () => ({
     unwrap: () => Promise.resolve({}),

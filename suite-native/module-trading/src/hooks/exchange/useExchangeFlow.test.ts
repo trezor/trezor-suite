@@ -9,8 +9,8 @@ import {
     getInitializedTradingStateWithQuotes,
 } from '@suite-native/trading-fixtures';
 
-import { createTradingTestStore } from '../../../__tests__/tradingTestUtils';
-import { type UseExchangeFlowProps, useExchangeFlow } from '../useExchangeFlow';
+import { type UseExchangeFlowProps, useExchangeFlow } from './useExchangeFlow';
+import { createTradingTestStore } from '../../__tests__/tradingTestUtils';
 
 const mockNavigate = jest.fn();
 let mockConfirmTradeThunk: jest.Mock;

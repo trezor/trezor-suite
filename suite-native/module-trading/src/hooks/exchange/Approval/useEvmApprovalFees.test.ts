@@ -11,16 +11,16 @@ import {
 import { invityDexQuote } from '@suite-native/trading-fixtures';
 import { mergeDeepObject } from '@trezor/utils';
 
+import { useEvmApprovalFees } from './useEvmApprovalFees';
 import {
     type PreloadedStatePartial,
     type TradingTestPreloadedState,
     createTradingLightStore,
-} from '../../../../__tests__/tradingTestUtils';
-import { useEvmApprovalFees } from '../useEvmApprovalFees';
+} from '../../../__tests__/tradingTestUtils';
 
 const mockComposeEvmApprovalFeeLevelsThunk = jest.fn();
 
-jest.mock('../../../../thunks', () => ({
+jest.mock('../../../thunks', () => ({
     composeEvmApprovalFeeLevelsThunk: (...args: any[]) =>
         mockComposeEvmApprovalFeeLevelsThunk(...args),
 }));

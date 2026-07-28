@@ -4,9 +4,9 @@ import { type TestStore, act, renderHookWithStoreProvider } from '@suite-native/
 import { banxaCreditCardSellQuote } from '@suite-native/trading-fixtures';
 import { type SellFormType } from '@suite-native/trading-types';
 
-import { createTradingLightStore } from '../../../__tests__/tradingTestUtils';
-import { useSellForm } from '../useSellForm';
-import { useSellSelectQuote } from '../useSellSelectQuote';
+import { useSellForm } from './useSellForm';
+import { useSellSelectQuote } from './useSellSelectQuote';
+import { createTradingLightStore } from '../../__tests__/tradingTestUtils';
 
 jest.mock('@suite-common/trading', () => ({
     ...jest.requireActual('@suite-common/trading'),
