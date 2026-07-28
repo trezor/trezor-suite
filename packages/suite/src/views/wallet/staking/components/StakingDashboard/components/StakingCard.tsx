@@ -110,8 +110,10 @@ export const StakingCard = ({
     const {
         isStakingDisabled,
         isUnstakingDisabled,
+        isClaimingDisabled,
         stakingMessageContent,
         unstakingMessageContent,
+        claimingMessageContent,
     } = useMessageSystemStaking(account.symbol);
 
     const {
@@ -185,7 +187,7 @@ export const StakingCard = ({
     };
 
     const openClaimModal = () => {
-        if (canClaimRewards) {
+        if (canClaimRewards && !isClaimingDisabled) {
             dispatch(openModal({ type: 'claim', account }));
 
             analytics.report({
@@ -392,14 +394,17 @@ export const StakingCard = ({
                             </Button>
                         </Tooltip>
                     ) : (
-                        <Button
-                            onClick={openClaimModal}
-                            isDisabled={!canClaimRewards}
-                            intent="brand"
-                            data-testid="@account/staking/claim-rewards-button"
-                        >
-                            <Translation id="TR_EARN_CLAIM_REWARDS" />
-                        </Button>
+                        <Tooltip content={claimingMessageContent}>
+                            <Button
+                                onClick={openClaimModal}
+                                isDisabled={!canClaimRewards || isClaimingDisabled}
+                                iconLeft={isClaimingDisabled ? InfoIcon : undefined}
+                                intent="brand"
+                                data-testid="@account/staking/claim-rewards-button"
+                            >
+                                <Translation id="TR_EARN_CLAIM_REWARDS" />
+                            </Button>
+                        </Tooltip>
                     )}
                     <Tooltip content={unstakingMessageContent}>
                         <Button
