@@ -12,7 +12,7 @@ import InteractiveChecklist from '../../components/InteractiveChecklist';
 
 Connect 10 moves the Connect core out of the self-hosted iframe + popup and into **Trezor Suite**. Your app stays a thin client and keeps calling the same `TrezorConnect` methods — but a handful of parameters, return shapes and packaging details change, and a few methods move out of the public API.
 
-This guide is the single source of truth for the upgrade. It is edited as the alphas land. For the architecture behind the change, see [New Connect flow in Trezor Suite](/guides/new-connect-flow-in-trezor-suite). For the release-by-release list, see the [changelog](/changelog).
+This guide is the single source of truth for the upgrade. It is edited as the betas land. For the architecture behind the change, see [New Connect flow in Trezor Suite](/guides/new-connect-flow-in-trezor-suite). For the release-by-release list, see the [changelog](/changelog).
 
 <Callout type="info">
     **v9 keeps working.** Connect 10 is in beta: we would like third parties to test their
@@ -26,15 +26,15 @@ This guide is the single source of truth for the upgrade. It is edited as the al
 - **Step 3 is optional** — improvements worth adopting, but nothing breaks if you do not.
 - **Step 4 is a verification pass** once you are done.
 
-## Installing the alpha
+## Installing the beta
 
 ```bash
-npm install @trezor/connect-web@10.0.0-alpha.1
+npm install @trezor/connect-web@10.0.0-beta.1
 ```
 
 The Suite-hosted flow needs **Trezor Suite 26.7.2 or newer** to host the Connect core. Older Suite versions do not expose the local Connect server, so requests will not be handled.
 
-Found a bug, or have feedback on the alpha? Open an issue at [github.com/trezor/trezor-suite](https://github.com/trezor/trezor-suite/issues/new/choose).
+Found a bug, or have feedback on the beta? Open an issue at [github.com/trezor/trezor-suite](https://github.com/trezor/trezor-suite/issues/new/choose).
 
 ## API changes at a glance
 

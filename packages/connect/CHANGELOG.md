@@ -3,20 +3,20 @@
 > - [Migration guide: Connect 9 → 10](https://connect.trezor.io/10/guides/migrating-to-connect-10) — what you need to change in your code, as a checklist.
 > - [New Connect flow in Trezor Suite](https://connect.trezor.io/10/guides/new-connect-flow-in-trezor-suite) — how the Suite-hosted flow works and why.
 
-|             Package              | Stable |     Canary     |
-| :------------------------------: | :----: | :------------: |
-|       npm @trezor/connect        |   -    | 10.0.0-alpha.1 |
-|     npm @trezor/connect-web      |   -    | 10.0.0-alpha.1 |
-| npm @trezor/connect-webextension |   -    | 10.0.0-alpha.1 |
-|    npm @trezor/connect-mobile    |   -    | 10.0.0-alpha.1 |
+|             Package              | Stable |    Canary     |
+| :------------------------------: | :----: | :-----------: |
+|       npm @trezor/connect        |   -    | 10.0.0-beta.1 |
+|     npm @trezor/connect-web      |   -    | 10.0.0-beta.1 |
+| npm @trezor/connect-webextension |   -    | 10.0.0-beta.1 |
+|    npm @trezor/connect-mobile    |   -    | 10.0.0-beta.1 |
 
-|     Deployment     | Stable |     Canary     |
-| :----------------: | :----: | :------------: |
-| connect.trezor.io/ |   -    | 10.0.0-alpha.1 |
+|     Deployment     | Stable |    Canary     |
+| :----------------: | :----: | :-----------: |
+| connect.trezor.io/ |   -    | 10.0.0-beta.1 |
 
 Use the persistent link [connect.trezor.io/10](https://connect.trezor.io/10/) to access the latest stable version of Connect Explorer.
 
-# 10.0.0-alpha.1
+# 10.0.0-beta.1
 
 Connect 10 moves the Connect core out of the self-hosted iframe + popup and into **Trezor Suite**, which now hosts the core and renders every approval, PIN, passphrase and confirmation screen. Your app stays a thin client calling the same `TrezorConnect` methods — nothing to install, and it works whether or not Suite desktop is running. Alongside the move, the SDK gains a privacy-friendly account picker (`selectAccount`), granular per-coin permissions, and much smaller ESM-only client packages.
 
