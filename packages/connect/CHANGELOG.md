@@ -1,11 +1,7 @@
-<!-- PINNED: remove once v10 is stable -->
-
 > **Upgrading from Connect 9?**
 >
 > - [Migration guide: Connect 9 → 10](https://connect.trezor.io/10/guides/migrating-to-connect-10) — what you need to change in your code, as a checklist.
 > - [New Connect flow in Trezor Suite](https://connect.trezor.io/10/guides/new-connect-flow-in-trezor-suite) — how the Suite-hosted flow works and why.
-
-<!-- /PINNED -->
 
 |             Package              | Stable |     Canary     |
 | :------------------------------: | :----: | :------------: |
