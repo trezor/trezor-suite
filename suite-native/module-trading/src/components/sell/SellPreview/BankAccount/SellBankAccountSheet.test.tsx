@@ -3,7 +3,7 @@ import React from 'react';
 import { renderWithBasicProvider, userEvent } from '@suite-native/test-utils';
 import { bankAccounts, verifiedBankAccount } from '@suite-native/trading-fixtures';
 
-import { SellBankAccountSheet } from '../SellBankAccountSheet';
+import { SellBankAccountSheet } from './SellBankAccountSheet';
 
 describe('SellBankAccountSheet', () => {
     const mockOnBankAccountSelect = jest.fn();

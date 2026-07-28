@@ -9,7 +9,7 @@ import {
 import {
     SellToFiatTradePreviewCard,
     type SellToFiatTradePreviewCardProps,
-} from '../SellToFiatTradePreviewCard';
+} from './SellToFiatTradePreviewCard';
 
 describe('SellToFiatTradePreviewCard', () => {
     const renderSellToFiatTradePreviewCard = (

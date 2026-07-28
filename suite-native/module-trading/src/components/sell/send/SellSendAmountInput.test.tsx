@@ -7,20 +7,20 @@ import { btcAsset, usdcAsset } from '@suite-native/trading-fixtures';
 import { type SellFormType } from '@suite-native/trading-types';
 import { PROTO } from '@trezor/connect';
 
+import { SellSendAmountInput, type SellSendAmountInputProps } from './SellSendAmountInput';
 import {
     type PreloadedStatePartial,
     type TradingTestPreloadedState,
     renderHookWithTradingProvider,
     renderWithTradingProvider,
-} from '../../../../__tests__/tradingTestUtils';
-import { useSellForm } from '../../../../hooks/sell/useSellForm';
-import { SellSendAmountInput, type SellSendAmountInputProps } from '../SellSendAmountInput';
+} from '../../../__tests__/tradingTestUtils';
+import { useSellForm } from '../../../hooks/sell/useSellForm';
 
 const mockUseAmountInputDecimals = jest.fn(
     (_account?: Account, _contractAddress?: TokenAddress) => 8,
 );
 
-jest.mock('../../../../hooks/general/useAmountInputDecimals', () => ({
+jest.mock('../../../hooks/general/useAmountInputDecimals', () => ({
     useAmountInputDecimals: jest.fn((account?: Account, contractAddress?: TokenAddress) =>
         mockUseAmountInputDecimals(account, contractAddress),
     ),

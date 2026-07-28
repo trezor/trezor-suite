@@ -5,14 +5,14 @@ import { banxaCreditCardSellQuote, createPrecomposedTxFinal } from '@suite-nativ
 import { mergeDeepObject } from '@trezor/utils';
 
 import {
+    SellPreviewContinueButton,
+    type SellPreviewContinueButtonProps,
+} from './SellPreviewContinueButton';
+import {
     type PreloadedStatePartial,
     type TradingTestPreloadedState,
     renderWithTradingProvider,
-} from '../../../../__tests__/tradingTestUtils';
-import {
-    SellPreviewContinueButton,
-    type SellPreviewContinueButtonProps,
-} from '../SellPreviewContinueButton';
+} from '../../../__tests__/tradingTestUtils';
 
 const mockNavigate = jest.fn();
 

@@ -13,13 +13,13 @@ import { banxaCreditCardSellQuote, sellQuotes } from '@suite-native/trading-fixt
 import { type SellFormType } from '@suite-native/trading-types';
 import { getIndexOrThrow } from '@trezor/utils';
 
+import { SellProviderPicker } from './SellProviderPicker';
 import {
     type PreloadedStatePartial,
     type TradingTestPreloadedState,
     createTradingPreloadedState,
-} from '../../../../__tests__/tradingTestUtils';
-import { useSellForm } from '../../../../hooks/sell/useSellForm';
-import { SellProviderPicker } from '../SellProviderPicker';
+} from '../../../__tests__/tradingTestUtils';
+import { useSellForm } from '../../../hooks/sell/useSellForm';
 
 const reportMock = jest.fn();
 const services: NativeAnalyticsDep = {

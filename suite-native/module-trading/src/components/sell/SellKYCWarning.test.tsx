@@ -2,12 +2,12 @@ import { getTranslation } from '@suite-native/intl';
 import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 import { sellQuotes } from '@suite-native/trading-fixtures';
 
+import { SellKYCWarning } from './SellKYCWarning';
 import {
     type PreloadedStatePartial,
     type TradingTestPreloadedState,
     createTradingPreloadedState,
-} from '../../../__tests__/tradingTestUtils';
-import { SellKYCWarning } from '../SellKYCWarning';
+} from '../../__tests__/tradingTestUtils';
 
 describe('SellKYCWarning', () => {
     const KYC_REQUIRED_TEXT = getTranslation('moduleTrading.tradingScreen.kycRequired');

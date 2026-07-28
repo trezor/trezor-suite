@@ -6,16 +6,16 @@ import { type SellFormType } from '@suite-native/trading-types';
 import { PROTO } from '@trezor/connect';
 
 import {
+    SellFormFieldErrorBadge,
+    type SellFormFieldErrorBadgeProps,
+} from './SellFormFieldErrorBadge';
+import {
     type PreloadedStatePartial,
     type TradingTestPreloadedState,
     renderHookWithTradingProvider,
     renderWithTradingProvider,
-} from '../../../__tests__/tradingTestUtils';
-import { useSellForm } from '../../../hooks/sell/useSellForm';
-import {
-    SellFormFieldErrorBadge,
-    type SellFormFieldErrorBadgeProps,
-} from '../SellFormFieldErrorBadge';
+} from '../../__tests__/tradingTestUtils';
+import { useSellForm } from '../../hooks/sell/useSellForm';
 
 describe('SellFormFieldErrorBadge', () => {
     let tradingForm: SellFormType;

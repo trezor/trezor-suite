@@ -2,14 +2,14 @@ import { getTranslation } from '@suite-native/intl';
 import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 import { getInitializedTradingStateWithQuotes } from '@suite-native/trading-fixtures';
 
-import { SellConfirmation } from '../SellConfirmation';
+import { SellConfirmation } from './SellConfirmation';
 
 const EXCHANGE_NAME = 'test-provider';
 const CTA_TEXT = getTranslation('moduleTrading.tradingScreen.buttons.sellVia', {
     providerName: EXCHANGE_NAME,
 });
 
-jest.mock('../../../hooks/sell/useSellSelectQuote', () => ({
+jest.mock('../../hooks/sell/useSellSelectQuote', () => ({
     useSellSelectQuote: jest.fn(),
 }));
 
@@ -18,7 +18,7 @@ jest.mock('@suite-native/forms', () => ({
     useWatch: () => ({ exchange: 'test-provider' }),
 }));
 
-jest.mock('../../../hooks/sell/useSellFormContext', () => ({
+jest.mock('../../hooks/sell/useSellFormContext', () => ({
     useSellFormContext: () => ({
         control: undefined,
     }),
@@ -26,7 +26,7 @@ jest.mock('../../../hooks/sell/useSellFormContext', () => ({
 
 describe('SellConfirmation', () => {
     const mockUseSellSelectQuote =
-        require('../../../hooks/sell/useSellSelectQuote').useSellSelectQuote;
+        require('../../hooks/sell/useSellSelectQuote').useSellSelectQuote;
 
     const renderConfirmation = () =>
         renderWithStoreProvider(<SellConfirmation />, {

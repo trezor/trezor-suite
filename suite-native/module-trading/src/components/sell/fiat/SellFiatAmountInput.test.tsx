@@ -3,12 +3,12 @@ import { getTranslation } from '@suite-native/intl';
 import { userEvent } from '@suite-native/test-utils-store';
 import { type SellFormType } from '@suite-native/trading-types';
 
+import { SellFiatAmountInput } from './SellFiatAmountInput';
 import {
     renderHookWithTradingProvider,
     renderWithTradingProvider,
-} from '../../../../__tests__/tradingTestUtils';
-import { useSellForm } from '../../../../hooks/sell/useSellForm';
-import { SellFiatAmountInput } from '../SellFiatAmountInput';
+} from '../../../__tests__/tradingTestUtils';
+import { useSellForm } from '../../../hooks/sell/useSellForm';
 
 describe('SellFiatAmountInput', () => {
     const renderFiatAmountInput = (form: SellFormType) =>

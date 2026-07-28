@@ -1,7 +1,7 @@
 import { getTranslation } from '@suite-native/intl';
 import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 
-import { SellPreviewScreenHeader } from '../SellPreviewScreenHeader';
+import { SellPreviewScreenHeader } from './SellPreviewScreenHeader';
 
 describe('SellPreviewScreenHeader', () => {
     const renderSellPreviewScreenHeader = () =>

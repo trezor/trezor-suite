@@ -7,13 +7,13 @@ import {
     getSellTrade,
 } from '@suite-native/trading-fixtures';
 
+import { BANK_ACCOUNT_ITEM_TEST_ID } from './BankAccount/SellBankAccountItem';
+import { SellPreviewView, type SellPreviewViewProps } from './SellPreviewView';
 import {
     type PreloadedStatePartial,
     type TradingTestPreloadedState,
     renderWithTradingProvider,
-} from '../../../../__tests__/tradingTestUtils';
-import { BANK_ACCOUNT_ITEM_TEST_ID } from '../BankAccount/SellBankAccountItem';
-import { SellPreviewView, type SellPreviewViewProps } from '../SellPreviewView';
+} from '../../../__tests__/tradingTestUtils';
 
 describe('SellPreviewView', () => {
     const getSellTradeWithBankAccounts = () => ({

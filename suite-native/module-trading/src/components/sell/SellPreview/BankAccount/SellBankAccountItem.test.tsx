@@ -4,7 +4,7 @@ import { getTranslation } from '@suite-native/intl';
 import { renderWithBasicProvider, userEvent } from '@suite-native/test-utils';
 import { unverifiedBankAccount, verifiedBankAccount } from '@suite-native/trading-fixtures';
 
-import { BANK_ACCOUNT_ITEM_TEST_ID, SellBankAccountItem } from '../SellBankAccountItem';
+import { BANK_ACCOUNT_ITEM_TEST_ID, SellBankAccountItem } from './SellBankAccountItem';
 
 describe('SellBankAccountItem', () => {
     const renderSellBankAccountItem = (props = {}) =>
