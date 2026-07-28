@@ -5,9 +5,8 @@ import type { FiatCurrencyCode } from 'invity-api';
 import { Text, buttonSizeToDimensionsMap } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { useTranslate } from '@suite-native/intl';
+import { FiatCurrencyIcon } from '@suite-native/trading-atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
-
-import { FiatCurrencyIcon } from './FiatCurrencyIcon';
 
 export type FiatCurrencyButtonProps = {
     currency?: FiatCurrencyCode;
