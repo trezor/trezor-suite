@@ -152,21 +152,12 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
         return initBlockchain(this.params.coinInfo, sendCoreMessage, this.params.identity);
     }
 
-    private async precompose(
+    private precompose(
         account: PrecomposeParams['account'],
         feeLevels: PrecomposeParams['feeLevels'],
-        sendCoreMessage: MethodContext['sendCoreMessage'],
     ): Promise<PrecomposedResult[]> {
         const { coinInfo, outputs, baseFee, sortingStrategy } = this.params;
         const address_n = pathUtils.validatePath(account.path);
-
-        // This is mandatory, @trezor/utxo-lib/compose expects current block height
-        // TODO: make it possible without it (offline composing)
-        const blockchain = await this.getBlockchain(sendCoreMessage);
-        const bitcoinFeeLevels = getOrInitFeeLevels(coinInfo);
-        if (!bitcoinFeeLevels.wasFetchedSuccessfully) {
-            await bitcoinFeeLevels.load(blockchain);
-        }
 
         const composer = new TransactionComposer({
             account: {
@@ -180,11 +171,11 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
             coinInfo,
             outputs,
             baseFee,
-            feeLevels: bitcoinFeeLevels.levels,
+            feeLevels: [], // Not needed for composeCustomFee
             sortingStrategy: sortingStrategy ?? DEFAULT_SORTING_STRATEGY,
         });
 
-        return feeLevels.map(level => {
+        const levels = feeLevels.map(level => {
             composer.composeCustomFee(level.feePerUnit);
             const { composed } = composer;
             // @ts-expect-error: noUncheckedIndexedAccess
@@ -206,15 +197,13 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
 
             return tx;
         });
+
+        return Promise.resolve(levels);
     }
 
     async run(context: MethodContext): Promise<SignedTransaction | PrecomposedResult[]> {
         if (this.params.account && this.params.feeLevels) {
-            return this.precompose(
-                this.params.account,
-                this.params.feeLevels,
-                context.sendCoreMessage,
-            );
+            return this.precompose(this.params.account, this.params.feeLevels);
         }
 
         // discover accounts and wait for user action
