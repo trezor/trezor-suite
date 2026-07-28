@@ -1,4 +1,4 @@
-import { composeStablecoinYieldTxSimulationAction } from '../txSimulationAction';
+import { composeStablecoinYieldTxSimulationAction } from './txSimulationAction';
 
 const sourceOrigin = 'trezor-suite-native://stablecoin-yield';
 const account = {

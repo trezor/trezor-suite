@@ -2,8 +2,8 @@ import {
     buildClaimCalldata,
     buildClaimTransactionReview,
     buildUnsignedClaimTransaction,
-} from '../claimSigningUtils';
-import type { ClaimReward } from '../claimSigningUtils';
+} from './claimSigningUtils';
+import type { ClaimReward } from './claimSigningUtils';
 
 const SENDER = '0x9eA3721B5Bf3b64b4418c38B603154d2D597FAE3';
 const CLAIM_CONTRACT = '0x3Ef3D8bA38EBe18DB133cEc108f4D14CE00Dd9Ae';
