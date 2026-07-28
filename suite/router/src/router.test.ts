@@ -1,12 +1,12 @@
-import { type Route } from '../route';
+import { type Route } from './route';
 import {
     getAppWithParams,
     getPrefixedURL,
     getRoute,
     getRouteHash,
     stripPrefixedURL,
-} from '../router';
-import type { RouteParams } from '../routes';
+} from './router';
+import type { RouteParams } from './routes';
 
 const OLD_ENV = { ...process.env };
 

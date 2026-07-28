@@ -15,8 +15,8 @@ import { createDeferred } from '@trezor/utils';
 import {
     type CreateMigrateLabelsIfAvailableDeps,
     createMigrateLabelsIfAvailable,
-} from '../createMigrateLabelsIfAvailable';
-import { type MigrationCounts, type MigrationError } from '../legacyLabelsMigration';
+} from './createMigrateLabelsIfAvailable';
+import { type MigrationCounts, type MigrationError } from './legacyLabelsMigration';
 
 const DEVICE_STATIC_SESSION_ID: StaticSessionId = 'device@wallet:1';
 const WALLET_DESCRIPTOR = asWalletDescriptor('device');
