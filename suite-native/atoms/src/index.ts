@@ -39,6 +39,7 @@ export * from './Spinner/Spinner';
 export * from './Stack';
 export * from './Badge';
 export * from './Divider';
+export * from './EdgeFades';
 export * from './TextDivider';
 export * from './TitledSection';
 export * from './Card/Card';
