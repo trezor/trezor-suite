@@ -390,9 +390,8 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
         // get backend instance (it should be initialized before)
         const blockchain = await this.getBlockchain(context.sendCoreMessage);
         const feeLevels = getOrInitFeeLevels(coinInfo);
-        if (!feeLevels.wasFetchedSuccessfully) {
-            await feeLevels.load(blockchain);
-        }
+        await feeLevels.load(blockchain);
+
         const composer = new TransactionComposer({
             account,
             utxos,

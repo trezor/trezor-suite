@@ -35,7 +35,6 @@ export class BitcoinFeeLevels extends MiscFeeLevels {
                 const level: (typeof this.levels)[number] = this.levels[index];
                 level.feePerUnit = trimmedFeePerUnit.toString();
             });
-            this.wasFetchedSuccessfully = true;
         } catch {
             // do not throw, just keep current fee levels
         }

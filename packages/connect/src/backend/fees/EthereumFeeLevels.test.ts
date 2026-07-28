@@ -247,12 +247,9 @@ describe('api/ethereum/Fees', () => {
         const backend = await initBlockchain(coinInfo, () => {});
         const feeLevels = new EthereumFeeLevels(coinInfo);
 
-        expect(feeLevels.wasFetchedSuccessfully).toBeFalsy();
-
         const levelsAfterError = await feeLevels.load(backend, ETH_REQUEST);
 
         expect(levelsAfterError).toEqual(feeLevels.levels);
-        expect(feeLevels.wasFetchedSuccessfully).toBeFalsy();
 
         backend.disconnect();
         spy.mockRestore();

@@ -85,7 +85,6 @@ export class EthereumFeeLevels extends MiscFeeLevels {
                     feePerUnit,
                 };
             }
-            this.wasFetchedSuccessfully = true;
         } catch {
             // silent
         }
