@@ -4,11 +4,11 @@ import {
     createSellInfoState,
     createTradingTestState,
     renderHookWithTradingStore,
-} from '../../__tests__/testUtils';
-import { getProviderMetadataFixture } from '../../reducers/__fixtures__/providerMetadata';
-import { initialState } from '../../reducers/tradingCommonReducer';
-import { type TradingType } from '../../types';
-import { useProviderMetadataChangeEffect } from '../useProviderMetadataChangeEffect';
+} from '../__tests__/testUtils';
+import { getProviderMetadataFixture } from '../reducers/__fixtures__/providerMetadata';
+import { initialState } from '../reducers/tradingCommonReducer';
+import { type TradingType } from '../types';
+import { useProviderMetadataChangeEffect } from './useProviderMetadataChangeEffect';
 
 const mockProviderMetadataChangeNow = getProviderMetadataFixture();
 const mockProviderMetadataSideShift = getProviderMetadataFixture('sideshift');

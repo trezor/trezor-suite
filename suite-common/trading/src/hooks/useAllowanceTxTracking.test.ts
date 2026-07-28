@@ -9,7 +9,7 @@ import {
 import type { WalletAccountTransaction } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 
-import { useAllowanceTxTracking } from '../useAllowanceTxTracking';
+import { useAllowanceTxTracking } from './useAllowanceTxTracking';
 
 const ACCOUNT_KEY = mockAccountKey({ descriptor: 'testAccountKey' });
 const TXID = 'test-txid-abc123';

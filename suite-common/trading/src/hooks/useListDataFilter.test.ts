@@ -1,6 +1,6 @@
 import { act, renderHook } from '@testing-library/react';
 
-import { useListDataFilter } from '../useListDataFilter';
+import { useListDataFilter } from './useListDataFilter';
 
 type ItemShape = {
     id: string;

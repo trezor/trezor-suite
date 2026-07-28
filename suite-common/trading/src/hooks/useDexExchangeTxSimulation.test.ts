@@ -5,16 +5,16 @@ import { getNetwork } from '@suite-common/wallet-config';
 import { type TxSimulationAction } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
-import { createTradingTestState, renderHookWithTradingStore } from '../../__tests__/testUtils';
-import { initialState } from '../../reducers/tradingCommonReducer';
-import { composeDexTxSimulationAction } from '../../utils/exchange/composeDexTxSimulationAction';
-import { useDexExchangeTxSimulation } from '../useDexExchangeTxSimulation';
+import { useDexExchangeTxSimulation } from './useDexExchangeTxSimulation';
+import { createTradingTestState, renderHookWithTradingStore } from '../__tests__/testUtils';
+import { initialState } from '../reducers/tradingCommonReducer';
+import { composeDexTxSimulationAction } from '../utils/exchange/composeDexTxSimulationAction';
 
 jest.mock('@suite-common/tx-simulation', () => ({
     useTxSimulation: jest.fn(),
 }));
 
-jest.mock('../../utils/exchange/composeDexTxSimulationAction', () => ({
+jest.mock('../utils/exchange/composeDexTxSimulationAction', () => ({
     composeDexTxSimulationAction: jest.fn(),
 }));
 

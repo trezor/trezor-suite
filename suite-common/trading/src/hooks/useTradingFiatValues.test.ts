@@ -6,15 +6,15 @@ import { type Rate, type Timestamp } from '@suite-common/wallet-types';
 import { getFiatRateKey } from '@suite-common/wallet-utils';
 
 import {
-    type TradingTestStateWithWalletSettings,
-    createTestStateWithWalletSettings,
-    renderHookWithTradingStore,
-} from '../../__tests__/testUtils';
-import {
     type TradingFiatRatesProps,
     type TradingFiatRatesReturn,
     useTradingFiatValues,
-} from '../useTradingFiatValues';
+} from './useTradingFiatValues';
+import {
+    type TradingTestStateWithWalletSettings,
+    createTestStateWithWalletSettings,
+    renderHookWithTradingStore,
+} from '../__tests__/testUtils';
 
 // Mock crypto IDs for testing
 const BITCOIN_CRYPTO_ID = 'bitcoin' as CryptoId;
