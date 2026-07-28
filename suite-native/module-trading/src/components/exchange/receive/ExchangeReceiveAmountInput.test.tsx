@@ -6,16 +6,16 @@ import { mercuryoFixedWorstQuote, usdcAsset } from '@suite-native/trading-fixtur
 import { type ExchangeFormType } from '@suite-native/trading-types';
 
 import {
+    ExchangeReceiveAmountInput,
+    type ExchangeReceiveAmountInputProps,
+} from './ExchangeReceiveAmountInput';
+import {
     type PreloadedStatePartial,
     type TradingTestPreloadedState,
     renderHookWithTradingProvider,
     renderWithTradingProvider,
-} from '../../../../__tests__/tradingTestUtils';
-import { useExchangeForm } from '../../../../hooks/exchange/useExchangeForm';
-import {
-    ExchangeReceiveAmountInput,
-    type ExchangeReceiveAmountInputProps,
-} from '../ExchangeReceiveAmountInput';
+} from '../../../__tests__/tradingTestUtils';
+import { useExchangeForm } from '../../../hooks/exchange/useExchangeForm';
 
 describe('ExchangeReceiveAmountInput', () => {
     let form: ExchangeFormType;

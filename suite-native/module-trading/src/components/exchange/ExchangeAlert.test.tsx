@@ -6,8 +6,8 @@ import { act, renderHookWithStoreProvider } from '@suite-native/test-utils-store
 import { getWalletState } from '@suite-native/trading-fixtures';
 import { type ExchangeFormType } from '@suite-native/trading-types';
 
-import { useExchangeForm } from '../../../hooks/exchange/useExchangeForm';
-import { ExchangeAlert } from '../ExchangeAlert';
+import { ExchangeAlert } from './ExchangeAlert';
+import { useExchangeForm } from '../../hooks/exchange/useExchangeForm';
 
 describe('ExchangeAlert', () => {
     let form: ExchangeFormType;

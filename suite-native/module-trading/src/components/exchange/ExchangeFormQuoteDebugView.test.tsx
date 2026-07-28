@@ -5,7 +5,7 @@ import type { CryptoId, ExchangeTrade } from 'invity-api';
 import { UINT256_MAX } from '@suite-common/suite-constants';
 import { renderWithBasicProvider, screen } from '@suite-native/test-utils';
 
-import { ExchangeFormQuoteDebugView } from '../ExchangeFormQuoteDebugView';
+import { ExchangeFormQuoteDebugView } from './ExchangeFormQuoteDebugView';
 
 const USDC_CONTRACT_ADDRESS = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
 const USDC_CRYPTO_ID = `ethereum--${USDC_CONTRACT_ADDRESS}` as CryptoId;
@@ -26,7 +26,7 @@ jest.mock('@suite-native/forms', () => ({
     useWatch: () => [mockQuote, mockSendAccount],
 }));
 
-jest.mock('../../../hooks/exchange/useExchangeFormContext', () => ({
+jest.mock('../../hooks/exchange/useExchangeFormContext', () => ({
     useExchangeFormContext: () => ({
         control: undefined,
     }),
@@ -42,7 +42,7 @@ jest.mock('@suite-native/trading-debug', () => {
     };
 });
 
-jest.mock('../ExchangeUsdcPresetButton', () => ({
+jest.mock('./ExchangeUsdcPresetButton', () => ({
     ExchangeUsdcPresetButton: () => <Text>PRESET BUTTON MOCK</Text>,
 }));
 

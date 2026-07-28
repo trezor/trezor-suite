@@ -5,14 +5,14 @@ import { btcAsset } from '@suite-native/trading-fixtures';
 import { type ExchangeFormType } from '@suite-native/trading-types';
 import { PROTO } from '@trezor/connect';
 
+import { ExchangeSendAmountBadge } from './ExchangeSendAmountBadge';
 import {
     type PreloadedStatePartial,
     type TradingTestPreloadedState,
     renderHookWithTradingProvider,
     renderWithTradingProvider,
-} from '../../../../__tests__/tradingTestUtils';
-import { useExchangeForm } from '../../../../hooks/exchange/useExchangeForm';
-import { ExchangeSendAmountBadge } from '../ExchangeSendAmountBadge';
+} from '../../../__tests__/tradingTestUtils';
+import { useExchangeForm } from '../../../hooks/exchange/useExchangeForm';
 
 describe('ExchangeSendAmountBadge', () => {
     let form: ExchangeFormType;

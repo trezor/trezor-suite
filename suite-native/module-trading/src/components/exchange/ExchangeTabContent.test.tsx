@@ -1,12 +1,12 @@
 import { getTranslation } from '@suite-native/intl';
 import { act, screen, userEvent } from '@suite-native/test-utils-store';
 
-import { renderWithTradingProvider } from '../../../__tests__/tradingTestUtils';
-import { ExchangeTabContent } from '../ExchangeTabContent';
+import { ExchangeTabContent } from './ExchangeTabContent';
+import { renderWithTradingProvider } from '../../__tests__/tradingTestUtils';
 
 let mockUseTradingExchangeData: jest.Mock;
 
-jest.mock('../../../hooks/exchange/useExchangeData', () => ({
+jest.mock('../../hooks/exchange/useExchangeData', () => ({
     useExchangeData: (...params: unknown[]) => mockUseTradingExchangeData(...params),
 }));
 

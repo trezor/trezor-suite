@@ -2,17 +2,17 @@ import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { type TestStore, fireEvent, screen } from '@suite-native/test-utils-store';
 
+import { ExchangeUsdcPresetButton } from './ExchangeUsdcPresetButton';
 import {
     createTradingLightStore,
     createTradingPreloadedState,
     renderWithTradingProvider,
-} from '../../../__tests__/tradingTestUtils';
-import { ExchangeUsdcPresetButton } from '../ExchangeUsdcPresetButton';
+} from '../../__tests__/tradingTestUtils';
 
 const mockSetValue = jest.fn();
 const mockGetValues = jest.fn();
 
-jest.mock('../../../hooks/exchange/useExchangeFormContext', () => ({
+jest.mock('../../hooks/exchange/useExchangeFormContext', () => ({
     useExchangeFormContext: () => ({ getValues: mockGetValues, setValue: mockSetValue }),
 }));
 

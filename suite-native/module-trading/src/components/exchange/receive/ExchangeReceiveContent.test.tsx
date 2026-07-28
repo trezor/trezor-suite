@@ -8,12 +8,12 @@ import {
 import { mercuryoFixedWorstQuote, usdcAsset } from '@suite-native/trading-fixtures';
 import { type ExchangeFormType } from '@suite-native/trading-types';
 
+import { ExchangeReceiveContent } from './ExchangeReceiveContent';
 import {
     createTradingFeatureFlags,
     createTradingPreloadedState,
-} from '../../../../__tests__/tradingTestUtils';
-import { useExchangeForm } from '../../../../hooks/exchange/useExchangeForm';
-import { ExchangeReceiveContent } from '../ExchangeReceiveContent';
+} from '../../../__tests__/tradingTestUtils';
+import { useExchangeForm } from '../../../hooks/exchange/useExchangeForm';
 
 describe('ExchangeReceiveContent', () => {
     let form: ExchangeFormType;

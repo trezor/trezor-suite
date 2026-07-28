@@ -8,14 +8,14 @@ import { exchangeQuotes, mercuryoFixedWorstQuote } from '@suite-native/trading-f
 import { type ExchangeFormType } from '@suite-native/trading-types';
 import { getIndexOrThrow } from '@trezor/utils';
 
+import { ExchangeRateAndProviderPicker } from './ExchangeRateAndProviderPicker';
 import {
     type PreloadedStatePartial,
     type TradingTestPreloadedState,
     renderHookWithTradingProvider,
     renderWithTradingProvider,
-} from '../../../__tests__/tradingTestUtils';
-import { useExchangeForm } from '../../../hooks/exchange/useExchangeForm';
-import { ExchangeRateAndProviderPicker } from '../ExchangeRateAndProviderPicker';
+} from '../../__tests__/tradingTestUtils';
+import { useExchangeForm } from '../../hooks/exchange/useExchangeForm';
 
 const reportMock = jest.fn();
 const services: NativeAnalyticsDep = {

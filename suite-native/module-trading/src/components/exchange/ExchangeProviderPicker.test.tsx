@@ -3,11 +3,8 @@ import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 import { type PreloadedStatePartial } from '@suite-native/test-utils-store';
 import { getWalletState, mercuryoFixedWorstQuote } from '@suite-native/trading-fixtures';
 
-import { type TradingTestPreloadedState } from '../../../__tests__/tradingTestUtils';
-import {
-    ExchangeProviderPicker,
-    type ExchangeProviderPickerProps,
-} from '../ExchangeProviderPicker';
+import { ExchangeProviderPicker, type ExchangeProviderPickerProps } from './ExchangeProviderPicker';
+import { type TradingTestPreloadedState } from '../../__tests__/tradingTestUtils';
 
 describe('ExchangeProviderPicker', () => {
     let preloadedState: PreloadedStatePartial<TradingTestPreloadedState>;

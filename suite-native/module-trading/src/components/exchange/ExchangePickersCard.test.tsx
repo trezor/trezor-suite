@@ -4,15 +4,15 @@ import { act } from '@suite-native/test-utils-store';
 import { btcAsset, mercuryoFixedWorstQuote } from '@suite-native/trading-fixtures';
 import { type ExchangeFormType } from '@suite-native/trading-types';
 
+import { ExchangePickersCard } from './ExchangePickersCard';
 import {
     type PreloadedStatePartial,
     type TradingTestPreloadedState,
     createTradingFeatureFlags,
     renderHookWithTradingProvider,
     renderWithTradingProvider,
-} from '../../../__tests__/tradingTestUtils';
-import { useExchangeForm } from '../../../hooks/exchange/useExchangeForm';
-import { ExchangePickersCard } from '../ExchangePickersCard';
+} from '../../__tests__/tradingTestUtils';
+import { useExchangeForm } from '../../hooks/exchange/useExchangeForm';
 
 const reportMock = jest.fn();
 const mockNavigate = jest.fn();
