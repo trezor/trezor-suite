@@ -1,6 +1,6 @@
 import { type Action } from 'redux';
 
-import { type ActionFromMatcher, createLegacyActionTypeMatcher } from '../matchLegacyActionType';
+import { type ActionFromMatcher, createLegacyActionTypeMatcher } from './matchLegacyActionType';
 
 type FirstAction = {
     type: 'first';
