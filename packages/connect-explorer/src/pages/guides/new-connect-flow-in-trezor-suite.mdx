@@ -1,63 +1,75 @@
 ---
-description: We are introducing a new integration of Trezor Connect in Trezor Suite, replacing the Connect Popup.
+description: How Connect 10 routes every request through Trezor Suite instead of the self-hosted popup, and why.
 ---
+
+import { Callout } from 'nextra/components';
 
 import ZoomableIllustration from '../../components/ZoomableIllustration';
 
 # New Connect flow in Trezor Suite
 
-Starting with Connect version 9.6.0, we are introducing a new integration with Trezor Suite. The new flow is designed to provide a more seamless and user-friendly experience for users interacting with Trezor devices.
+With Connect 10, the self-hosted iframe + popup that Connect served from `connect.trezor.io` is gone. Every request is now handled by **Trezor Suite**, which hosts the Connect core and renders all approval, PIN, passphrase and confirmation UI. Your app stays a thin client that routes each call to Suite.
 
-This means that if you are using Trezor Suite, you will no longer see the Connect Popup when making requests to Trezor devices. Instead, all requests will be handled directly within the Trezor Suite application.
+<Callout type="info">
+    Upgrading an existing v9 integration? Start with the [migration
+    guide](/guides/migrating-to-connect-10). This page explains the architecture; the migration
+    guide is the checklist.
+</Callout>
 
 ## How does it work?
 
-Connect automatically detects if Trezor Suite is running and available to handle requests.
-Under the hood, Trezor Suite exposes a WebSocket server on localhost, allowing apps to communicate with it using the Connect protocol.
+Connect detects how to reach Suite and routes each call to it. Suite owns the core and the entire user-facing experience. This works with or without a local install:
 
-The first step of the flow is a permission approval, which looks like this:
+- **Desktop** — when Trezor Suite (desktop) is running, Connect talks to it automatically over a local (loopback) WebSocket connection — no popup window, no iframe. Suite identifies the calling application (name, origin, icon) in a single permission-approval prompt, then handles the request against the currently active, already-unlocked device.
+- **Web** — when Suite desktop is not running, Connect opens Suite Web as the approval surface (production: `https://suite.trezor.io/web/connect-popup`), giving the same flow with nothing to install. This is a first-class path, not a degraded mode.
+- **Mobile** — `@trezor/connect-mobile` routes calls to the Trezor Suite mobile app via a deep link.
+
+The permission prompt displays the application's name, origin URL, and icon, along with the process that initiated the request. In this example the request was initiated by Arc Browser, so the browser's name and icon are shown. This prevents a malicious process from impersonating the application.
 
 <ZoomableIllustration
     src="/images/connect-suite-permissions-grant.webp"
     alt="permission prompt for approving the connection to Trezor Suite"
 />
 
-The permission prompt displays the application's name, origin URL, and icon, along with the process that initiated the request.
-In this example, the request was initiated by Arc Browser, so the name and icon of the browser are displayed.
-This is a security feature to prevent malicious processes from impersonating the application.
-
-Unlike the Connect Popup, there is no need to select the device or the passphrase. This is based on the active device in Trezor Suite, which should already be selected and unlocked.
-
-Once the request is approved and processed, the application receives a response with the result of the request.
-Trezor Suite may display additional context based on the request type, such as transaction details or address information.
-This example shows a `getAddress` call, which also prompts the user to confirm the address on the device.
+Once the request is approved and processed, the application receives a response with the result. Suite may display additional context based on the request type, such as transaction details or address information. This example shows a `getAddress` call, which also prompts the user to confirm the address on the device.
 
 <ZoomableIllustration
     src="/images/connect-get-address.webp"
     alt="address confirmation prompt in Trezor Suite"
 />
 
-## Changes for developers
+## `coreMode`: choosing the surface
 
-From version 9.6.0 onwards, this mode is active by default when Trezor Suite is detected.
+We strongly recommend keeping the default **`coreMode: 'auto'`**. Users who have Trezor Suite desktop installed get the fastest, most convenient experience — a direct local connection — while everyone else falls back to Suite Web seamlessly. In `'auto'` mode Connect prefers desktop and switches back to it automatically as soon as it becomes available.
 
-We added a new `appName` field to the `manifest` object when initializing the Trezor Connect SDK, which is required.
-You can also optionally provide an `appIcon` field with a URL for an icon that will appear in Trezor Suite’s permission prompt
-It should fit in a circle with a 64px diameter.
+You can pin `coreMode` to `'suite-desktop'` or `'suite-web'` if you have a specific reason to, but most integrations should not.
+
+## No more per-request device and passphrase selection
+
+Because the active device is chosen and unlocked **in Suite**, users no longer pick a device or re-enter a passphrase per request as they did in the old popup. Passphrase handling is centralized in Suite's device management (see the [passphrases & hidden wallets guide](https://trezor.io/guides/backups-recovery/advanced-wallets/passphrases-and-hidden-wallets)).
+
+## Required headers for the web flow
+
+The web flow relies on a bootstrap iframe + popup to exchange messages with Suite Web, so integrator pages must ship the right headers for that channel to work:
+
+- A **Content-Security-Policy** that permits embedding the Suite Web origin: `frame-src` (or `child-src`) for `https://suite.trezor.io`.
+- A **`Cross-Origin-Opener-Policy`** that does not sever the popup's `window.opener`. Avoid `same-origin` on the hosting page — use `same-origin-allow-popups` or `unsafe-none`.
+
+<Callout type="warning">
+    Missing or over-strict headers surface as a handshake timeout when the popup opens.
+</Callout>
+
+## Manifest
+
+`manifest.appName` is now **required**, and an optional `manifest.appIcon` (URL, sized for a 64px circle) is shown in Suite's permission prompt.
 
 ```javascript
 TrezorConnect.init({
     manifest: {
         email: 'developer@xyz.com',
         appName: 'Your Application',
-        appUrl: 'http://your.application.com',
-        appIcon: 'http://your.application.com/icon-64.png',
+        appUrl: 'https://your.application.com',
+        appIcon: 'https://your.application.com/icon-64.png',
     },
 });
 ```
-
-## Availability
-
-In Trezor Suite version 25.5 the feature is not enabled by default, but is available under the `Settings > Experimental features` toggle.
-
-From Trezor Suite version 25.6 onwards, we plan to enable the feature by default.
