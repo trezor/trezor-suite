@@ -1,7 +1,7 @@
 import { useNavigationRemoveActionInterceptor } from '@suite-native/navigation';
 import { renderHookWithBasicProvider } from '@suite-native/test-utils';
 
-import { useNavigationRemoveInterceptorAlert } from '../useNavigationRemoveInterceptorAlert';
+import { useNavigationRemoveInterceptorAlert } from './useNavigationRemoveInterceptorAlert';
 
 const mockShowStayOnScreenAlert = jest.fn();
 const mockHideStayOnScreenAlert = jest.fn();
@@ -11,7 +11,7 @@ jest.mock('@suite-native/navigation', () => ({
     useNavigationRemoveActionInterceptor: jest.fn(),
 }));
 
-jest.mock('../useShowStayOnScreenAlert', () => ({
+jest.mock('./useShowStayOnScreenAlert', () => ({
     useShowStayOnScreenAlert: () => ({
         showStayOnScreenAlert: mockShowStayOnScreenAlert,
         hideStayOnScreenAlert: mockHideStayOnScreenAlert,

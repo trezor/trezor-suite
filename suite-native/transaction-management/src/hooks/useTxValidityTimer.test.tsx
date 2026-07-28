@@ -3,7 +3,7 @@ import { getTxValidityTimeoutInMs } from '@suite-common/wallet-utils';
 import { act, renderHook } from '@suite-native/test-utils';
 import TrezorConnect from '@trezor/connect';
 
-import { useTxValidityTimer } from '../useTxValidityTimer';
+import { useTxValidityTimer } from './useTxValidityTimer';
 
 type Params = Parameters<typeof useTxValidityTimer>[0];
 

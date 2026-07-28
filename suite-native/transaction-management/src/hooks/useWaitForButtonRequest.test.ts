@@ -1,6 +1,6 @@
 import { act, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 
-import { useWaitForButtonRequest } from '../useWaitForButtonRequest';
+import { useWaitForButtonRequest } from './useWaitForButtonRequest';
 
 const mockSelectDeviceButtonRequestsCodes = jest.fn().mockReturnValue([]);
 

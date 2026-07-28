@@ -2,7 +2,7 @@ import { type Account } from '@suite-common/wallet-types';
 import { renderHook } from '@suite-native/test-utils';
 import TrezorConnect from '@trezor/connect';
 
-import { useSubscribeForSolanaBlockUpdates } from '../useSubscribeForSolanaBlockUpdates';
+import { useSubscribeForSolanaBlockUpdates } from './useSubscribeForSolanaBlockUpdates';
 
 // Mock TrezorConnect
 jest.mock('@trezor/connect', () => ({

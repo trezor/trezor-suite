@@ -2,8 +2,8 @@ import { type Account } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 
-import { ETH_ACCOUNT_KEY, getWalletState } from '../../../__fixtures__/walletState';
-import { useTronFeeBreakdown } from '../useTronFeeBreakdown';
+import { useTronFeeBreakdown } from './useTronFeeBreakdown';
+import { ETH_ACCOUNT_KEY, getWalletState } from '../../__fixtures__/walletState';
 
 const TRON_ACCOUNT_DESCRIPTOR = 'TRX1234567890abcdefghijklmnopqrstuvwxyz';
 const TRON_ACCOUNT_KEY = mockAccountKey({

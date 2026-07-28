@@ -2,7 +2,7 @@ import { type LayoutChangeEvent } from 'react-native';
 
 import { act, renderHookWithBasicProvider } from '@suite-native/test-utils';
 
-import { useActiveStepOffset } from '../useActiveStepOffset';
+import { useActiveStepOffset } from './useActiveStepOffset';
 
 describe('useActiveStepOffset', () => {
     const getLayoutEvent = (height: number) =>
