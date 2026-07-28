@@ -1,7 +1,7 @@
 import { type Account } from '@suite-common/wallet-types';
 import { mockWalletAccount, networkSpecificDefaultCardano } from '@suite-common/wallet-types/mocks';
 
-import { getUsedAddressesList } from '../getUsedAddressesList';
+import { getUsedAddressesList } from './getUsedAddressesList';
 
 type AccountAddress = NonNullable<Account['addresses']>['used'][number];
 

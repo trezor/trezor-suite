@@ -1,4 +1,4 @@
-import { areEvmAddressesEqual, checkAddressChecksum, toChecksumAddress } from '../evmChecksumUtils';
+import { areEvmAddressesEqual, checkAddressChecksum, toChecksumAddress } from './evmChecksumUtils';
 
 // Test cases from https://eips.ethereum.org/EIPS/eip-55
 // [checksummed, lowercase, uppercase]

@@ -3,8 +3,8 @@ import {
     createNetworksCompositionRoot,
 } from '@suite-common/networks';
 
-import { createAddressValidator } from '../AddressValidator';
-import { isAddressDeprecated } from '../isAddressDeprecated';
+import { createAddressValidator } from './AddressValidator';
+import { isAddressDeprecated } from './isAddressDeprecated';
 
 // https://litecoin-project.github.io/p2sh-convert/
 // https://cashaddr.bitcoincash.org/

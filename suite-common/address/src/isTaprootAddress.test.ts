@@ -3,8 +3,8 @@ import {
     createNetworksCompositionRoot,
 } from '@suite-common/networks';
 
-import { createAddressValidator } from '../AddressValidator';
-import { isTaprootAddress } from '../isTaprootAddress';
+import { createAddressValidator } from './AddressValidator';
+import { isTaprootAddress } from './isTaprootAddress';
 
 describe('isTaprootAddress', () => {
     const networkModules = createNetworksCompositionRoot();
