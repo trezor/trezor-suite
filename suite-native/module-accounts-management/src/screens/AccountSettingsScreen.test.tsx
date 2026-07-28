@@ -7,7 +7,7 @@ import {
 } from '@suite-native/navigation';
 import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 
-import { AccountSettingsScreen } from '../AccountSettingsScreen';
+import { AccountSettingsScreen } from './AccountSettingsScreen';
 
 jest.mock('@react-navigation/native', () => ({
     ...jest.requireActual('@react-navigation/native'),

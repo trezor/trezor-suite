@@ -2,7 +2,7 @@ import { type EffectCallback } from 'react';
 
 import { renderHookWithBasicProvider } from '@suite-native/test-utils';
 
-import { useUpdateEffect } from '../useUpdateEffect';
+import { useUpdateEffect } from './useUpdateEffect';
 
 describe('useUpdateEffect', () => {
     const renderUseUpdateEffect = (initialEffect: EffectCallback) =>

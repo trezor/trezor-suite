@@ -3,7 +3,7 @@ import {
     findTranslationStructureCollisions,
     flatten,
     unflatten,
-} from '../utils';
+} from './utils';
 
 describe('flatten', () => {
     it('should flatten nested translation object to dot notation', () => {
