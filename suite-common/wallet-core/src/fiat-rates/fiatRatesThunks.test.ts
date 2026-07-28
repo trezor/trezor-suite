@@ -9,8 +9,8 @@ import {
 } from '@suite-common/wallet-types';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 
-import { blockchainInitialState } from '../../blockchain/blockchainReducer';
-import { updateTxsFiatRatesThunk } from '../fiatRatesThunks';
+import { updateTxsFiatRatesThunk } from './fiatRatesThunks';
+import { blockchainInitialState } from '../blockchain/blockchainReducer';
 
 jest.mock('@suite-common/fiat-services', () => ({
     getFiatRatesForTimestamps: jest.fn(),

@@ -8,8 +8,8 @@ import { prepareDeviceReducer } from '@suite-common/device';
 import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
 import { prepareThpReducer } from '@suite-common/thp';
 
-import { forgetPersistentDataPreloadedStateFixture } from '../__fixtures__/forgetPersistentDataPreloadedState';
-import { forgetDevicePersistentDataThunk } from '../deviceThunks';
+import { forgetPersistentDataPreloadedStateFixture } from './__fixtures__/forgetPersistentDataPreloadedState';
+import { forgetDevicePersistentDataThunk } from './deviceThunks';
 
 const deviceReducer = prepareDeviceReducer(extraDependenciesCommonMock);
 const bluetoothReducer = prepareBluetoothReducerCreator<BluetoothDeviceCommon>()(

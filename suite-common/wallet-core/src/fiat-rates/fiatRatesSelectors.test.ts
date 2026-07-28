@@ -9,12 +9,9 @@ import {
     type TokenAddress,
 } from '@suite-common/wallet-types';
 
-import { type AccountsRootState } from '../../accounts/accountsReducer';
-import {
-    selectHistoricFiatRatesByTimestamp,
-    selectTickerFromAccounts,
-} from '../fiatRatesSelectors';
-import { type FiatRatesRootState } from '../fiatRatesTypes';
+import { selectHistoricFiatRatesByTimestamp, selectTickerFromAccounts } from './fiatRatesSelectors';
+import { type FiatRatesRootState } from './fiatRatesTypes';
+import { type AccountsRootState } from '../accounts/accountsReducer';
 
 const STANDARD_WALLET_SSID = 'standardWallet@device_id:0' as const;
 const STANDARD_WALLET = mockSuiteDevice({ state: { staticSessionId: STANDARD_WALLET_SSID } });

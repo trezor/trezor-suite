@@ -5,12 +5,12 @@ import { networks } from '@suite-common/wallet-config';
 import { type Account, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 
-import { type AccountsRootState } from '../accountsReducer';
+import { type AccountsRootState } from './accountsReducer';
 import {
     selectAddressByNetworkAndPath,
     selectDeviceAccountKeyForNetworkSymbolAndAccountTypeWithIndex,
     selectVisibleDeviceAccountsMap,
-} from '../accountsSelectors';
+} from './accountsSelectors';
 
 const BTC_DEVICE_SSID: `${string}@${string}:${number}` =
     'mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q@AC94BB9C1B08FE73BE1E3322:0';
