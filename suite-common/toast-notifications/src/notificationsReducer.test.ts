@@ -1,10 +1,10 @@
 import { configureMockStore } from '@suite-common/test-utils';
 
-import { notificationsActions } from '../notificationsActions';
-import { createNotificationsReducer } from '../notificationsReducer';
-import { selectNotifications } from '../notificationsSelectors';
-import { removeAccountEventsThunk } from '../notificationsThunks';
-import { type NotificationsRootState, type NotificationsState } from '../types';
+import { notificationsActions } from './notificationsActions';
+import { createNotificationsReducer } from './notificationsReducer';
+import { selectNotifications } from './notificationsSelectors';
+import { removeAccountEventsThunk } from './notificationsThunks';
+import { type NotificationsRootState, type NotificationsState } from './types';
 
 const { reducer: notificationsReducer } = createNotificationsReducer();
 
