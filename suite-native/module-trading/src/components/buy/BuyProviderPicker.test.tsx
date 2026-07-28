@@ -13,14 +13,14 @@ import {
 import { type BuyFormType } from '@suite-native/trading-types';
 import { getIndexOrThrow, mergeDeepObject } from '@trezor/utils';
 
+import { BuyProviderPicker } from './BuyProviderPicker';
 import {
     type PreloadedStatePartial,
     type TradingTestPreloadedState,
     renderHookWithTradingProvider,
     renderWithTradingProvider,
-} from '../../../__tests__/tradingTestUtils';
-import { useBuyForm } from '../../../hooks/buy/useBuyForm';
-import { BuyProviderPicker } from '../BuyProviderPicker';
+} from '../../__tests__/tradingTestUtils';
+import { useBuyForm } from '../../hooks/buy/useBuyForm';
 
 const reportMock = jest.fn();
 const services: NativeAnalyticsDep = {

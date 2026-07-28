@@ -29,8 +29,8 @@ import { tradingSlice } from '@suite-native/trading-state';
 import { type BuyFormType } from '@suite-native/trading-types';
 import { mergeDeepObject } from '@trezor/utils';
 
-import { useBuyForm } from '../../../hooks/buy/useBuyForm';
-import { BuyPaymentMethodPicker } from '../BuyPaymentMethodPicker';
+import { BuyPaymentMethodPicker } from './BuyPaymentMethodPicker';
+import { useBuyForm } from '../../hooks/buy/useBuyForm';
 
 const reportMock = jest.fn();
 const creditCardPaymentMethodTranslation = getTranslation(

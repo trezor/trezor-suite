@@ -1,7 +1,7 @@
 import { renderWithStoreProvider, screen } from '@suite-native/test-utils-store';
 import { getWalletState } from '@suite-native/trading-fixtures';
 
-import { BuyFiatCurrencySheet } from '../BuyFiatCurrencySheet';
+import { BuyFiatCurrencySheet } from './BuyFiatCurrencySheet';
 
 describe('BuyFiatCurrencySheet', () => {
     const renderBuyFiatCurrencySheet = () =>

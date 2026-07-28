@@ -2,8 +2,8 @@ import { getTranslation } from '@suite-native/intl';
 import { act } from '@suite-native/test-utils-store';
 import { btc1NormalAccount, mercuryoApplePayBuyQuote } from '@suite-native/trading-fixtures';
 
-import { renderWithTradingProvider } from '../../../../__tests__/tradingTestUtils';
-import { BuyPreviewReceiveCard } from '../BuyPreviewReceiveCard';
+import { BuyPreviewReceiveCard } from './BuyPreviewReceiveCard';
+import { renderWithTradingProvider } from '../../../__tests__/tradingTestUtils';
 
 describe('BuyPreviewReceiveCard', () => {
     const withReceiveAccount = {

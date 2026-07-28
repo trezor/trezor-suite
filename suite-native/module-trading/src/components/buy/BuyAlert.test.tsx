@@ -5,8 +5,8 @@ import { act, renderHookWithStoreProvider } from '@suite-native/test-utils-store
 import { getWalletState } from '@suite-native/trading-fixtures';
 import { type BuyFormType } from '@suite-native/trading-types';
 
-import { useBuyForm } from '../../../hooks/buy/useBuyForm';
-import { BuyAlert } from '../BuyAlert';
+import { BuyAlert } from './BuyAlert';
+import { useBuyForm } from '../../hooks/buy/useBuyForm';
 
 describe('BuyAlert', () => {
     let form: BuyFormType;

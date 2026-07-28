@@ -3,13 +3,13 @@ import { getTranslation } from '@suite-native/intl';
 import { getInitializedTradingState } from '@suite-native/trading-fixtures';
 import { type BuyFormType } from '@suite-native/trading-types';
 
+import { BuyCard } from './BuyCard';
 import {
     createTradingFeatureFlags,
     renderHookWithTradingProvider,
     renderWithTradingProvider,
-} from '../../../__tests__/tradingTestUtils';
-import { useBuyForm } from '../../../hooks/buy/useBuyForm';
-import { BuyCard } from '../BuyCard';
+} from '../../__tests__/tradingTestUtils';
+import { useBuyForm } from '../../hooks/buy/useBuyForm';
 
 describe('BuyCard', () => {
     let form: BuyFormType;

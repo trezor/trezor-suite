@@ -5,14 +5,14 @@ import { btcAsset } from '@suite-native/trading-fixtures';
 import { type BuyFormType } from '@suite-native/trading-types';
 import { PROTO } from '@trezor/connect';
 
+import { BuyCryptoAmountInput, type CryptoAmountInputProps } from './BuyCryptoAmountInput';
 import {
     type PreloadedStatePartial,
     type TradingTestPreloadedState,
     renderHookWithTradingProvider,
     renderWithTradingProvider,
-} from '../../../__tests__/tradingTestUtils';
-import { useBuyForm } from '../../../hooks/buy/useBuyForm';
-import { BuyCryptoAmountInput, type CryptoAmountInputProps } from '../BuyCryptoAmountInput';
+} from '../../__tests__/tradingTestUtils';
+import { useBuyForm } from '../../hooks/buy/useBuyForm';
 
 describe('BuyCryptoAmountInput', () => {
     const renderCryptoAmountInput = (

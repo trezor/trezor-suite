@@ -4,21 +4,21 @@ import { act, screen } from '@suite-native/test-utils-store';
 import { getInitializedTradingState } from '@suite-native/trading-fixtures';
 import { type BuyFormType } from '@suite-native/trading-types';
 
+import { BuyForm } from './BuyForm';
 import {
     type PreloadedStatePartial,
     type TradingTestPreloadedState,
     createTradingFeatureFlags,
     renderHookWithTradingProvider,
     renderWithTradingProvider,
-} from '../../../__tests__/tradingTestUtils';
-import { useBuyForm } from '../../../hooks/buy/useBuyForm';
-import { BuyForm } from '../BuyForm';
+} from '../../__tests__/tradingTestUtils';
+import { useBuyForm } from '../../hooks/buy/useBuyForm';
 
-jest.mock('../../../hooks/general/useFocusedValueWatch', () =>
-    jest.requireActual('../../../hooks/general/useFocusedValueWatch'),
+jest.mock('../../hooks/general/useFocusedValueWatch', () =>
+    jest.requireActual('../../hooks/general/useFocusedValueWatch'),
 );
 
-jest.mock('../../concierge/ConciergeAlert', () => ({
+jest.mock('../concierge/ConciergeAlert', () => ({
     ConciergeAlert: () => null,
 }));
 
