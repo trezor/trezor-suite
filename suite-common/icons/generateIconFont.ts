@@ -37,6 +37,7 @@ const usedIcons = [
     'bluetoothConnected',
     'bluetoothSlash',
     'bookmarkSimple',
+    'browser',
     'browsers',
     'bugBeetle',
     'cableUsbC',

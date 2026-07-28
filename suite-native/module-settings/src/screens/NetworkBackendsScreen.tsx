@@ -2,6 +2,7 @@ import { useNavigation } from '@react-navigation/native';
 
 import { getNetwork } from '@suite-common/wallet-config';
 import { useAlert } from '@suite-native/alerts';
+import { VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
     DynamicScreenHeader,
@@ -13,7 +14,9 @@ import {
 
 import { ConnectionInfoButton } from '../components/ConnectionInfoButton';
 import { NetworkBackendCard } from '../components/NetworkBackendCard';
+import { NetworkExplorerCard } from '../components/NetworkExplorerCard';
 import { useNetworkBackendForm } from '../hooks/useNetworkBackendForm';
+import { useNetworkExplorerForm } from '../hooks/useNetworkExplorerForm';
 
 export const NetworkBackendsScreen = ({
     route,
@@ -23,6 +26,7 @@ export const NetworkBackendsScreen = ({
 
     const network = getNetwork(route.params.networkSymbol);
     const networkBackendForm = useNetworkBackendForm(network);
+    const networkExplorerForm = useNetworkExplorerForm(network);
 
     const discardChanges = () => {
         networkBackendForm.discard();
@@ -30,7 +34,7 @@ export const NetworkBackendsScreen = ({
     };
 
     const closeAction = () => {
-        if (networkBackendForm.isDirty) {
+        if (networkBackendForm.isDirty || networkExplorerForm.isDirty) {
             showAlert({
                 title: <Translation id="moduleSettings.networkBackends.closeAction.title" />,
                 description: (
@@ -66,8 +70,12 @@ export const NetworkBackendsScreen = ({
                     closeAction={closeAction}
                 />
             }
+            focusedInputBottomOffset={123} // ensures the input below the focused one is also visible
         >
-            <NetworkBackendCard form={networkBackendForm} />
+            <VStack spacing="sp16">
+                <NetworkBackendCard form={networkBackendForm} />
+                <NetworkExplorerCard form={networkExplorerForm} />
+            </VStack>
         </Screen>
     );
 };
