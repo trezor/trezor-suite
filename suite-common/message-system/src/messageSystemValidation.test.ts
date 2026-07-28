@@ -1,5 +1,5 @@
-import * as fixtures from '../__fixtures__/messageSystemValidation';
-import * as messageSystem from '../messageSystemValidation';
+import * as fixtures from './__fixtures__/messageSystemValidation';
+import * as messageSystem from './messageSystemValidation';
 
 describe('Message system validation', () => {
     describe('stripFieldFromMessage', () => {

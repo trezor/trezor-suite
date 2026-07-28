@@ -6,9 +6,9 @@ import {
     renderHookWithStoreProvider,
 } from '@suite-common/test-utils';
 
-import { messageSystemInitialState, prepareMessageSystemReducer } from '../messageSystemReducer';
-import { type MessageSystemState } from '../messageSystemTypes';
-import { useMessageSystemEarnDashboard } from '../useMessageSystemEarnDashboard';
+import { messageSystemInitialState, prepareMessageSystemReducer } from './messageSystemReducer';
+import { type MessageSystemState } from './messageSystemTypes';
+import { useMessageSystemEarnDashboard } from './useMessageSystemEarnDashboard';
 
 const messageSystemReducer = prepareMessageSystemReducer(extraDependenciesCommonMock);
 

@@ -1,8 +1,8 @@
 import { getEnvironment, getOsName } from '@trezor/env-utils';
 
-import * as fixtures from '../__fixtures__/messageSystemUtils';
-import { getCachedOsVersion } from '../cachedEnvData';
-import * as messageSystem from '../messageSystemUtils';
+import * as fixtures from './__fixtures__/messageSystemUtils';
+import { getCachedOsVersion } from './cachedEnvData';
+import * as messageSystem from './messageSystemUtils';
 
 jest.mock('@trezor/env-utils', () => ({
     ...jest.requireActual('@trezor/env-utils'),
@@ -10,8 +10,8 @@ jest.mock('@trezor/env-utils', () => ({
     getOsName: jest.fn(),
 }));
 
-jest.mock('../cachedEnvData', () => ({
-    ...jest.requireActual('../cachedEnvData'),
+jest.mock('./cachedEnvData', () => ({
+    ...jest.requireActual('./cachedEnvData'),
     getCachedOsVersion: jest.fn(),
 }));
 

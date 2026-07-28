@@ -2,13 +2,14 @@ import { combineReducers } from '@reduxjs/toolkit';
 
 import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
 
-import * as fixtures from '../__fixtures__/messageSystemActions';
+import * as fixtures from './__fixtures__/messageSystemActions';
+
 import {
     type MessageSystemState,
     initMessageSystemThunk,
     messageSystemActions,
     prepareMessageSystemReducer,
-} from '../index';
+} from './index';
 
 const messageSystemReducer = prepareMessageSystemReducer(extraDependenciesCommonMock);
 
@@ -30,8 +31,8 @@ const initStore = (preloadedState: State) => {
     return store;
 };
 
-jest.mock('../../files/config.v1.ts', () => {
-    const { validJwsWithSequence10 } = require('../__fixtures__/messageSystemActions');
+jest.mock('../files/config.v1.ts', () => {
+    const { validJwsWithSequence10 } = require('./__fixtures__/messageSystemActions');
 
     return {
         __esModule: true,
