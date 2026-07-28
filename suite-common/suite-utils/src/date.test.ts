@@ -1,4 +1,4 @@
-import { formatDurationStrict, parseUTCdatetime } from '../date';
+import { formatDurationStrict, parseUTCdatetime } from './date';
 
 describe('Date utils', () => {
     test('format duration strict', () => {

@@ -4,7 +4,7 @@ import {
     type ParseFirmwareChangelogParams,
     type ParseFirmwareChangelogResult,
     parseFirmwareChangelog,
-} from '../parseFirmwareChangelog';
+} from './parseFirmwareChangelog';
 
 const CHANGELOG_STRING =
     '* Replacement transaction signing for replace-by-fee.\n* Support for Output Descriptors export.\n* Show Ypub/Zpub correctly for multisig GetAddress.\n* Show amounts in mBTC, uBTC and sat denominations.';

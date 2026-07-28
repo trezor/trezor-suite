@@ -2,7 +2,7 @@ import { type AcquiredDevice } from '@suite-common/suite-types';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
-import fixtures from '../__fixtures__/device';
+import fixtures from './__fixtures__/device';
 import {
     findInstanceIndex,
     getChangelogUrl,
@@ -26,7 +26,7 @@ import {
     isSelectedDevice,
     isSelectedInstance,
     sortByTimestamp,
-} from '../device';
+} from './device';
 
 describe(getStatus.name, () => {
     fixtures.getStatus.forEach(f => {

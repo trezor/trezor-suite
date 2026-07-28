@@ -1,4 +1,4 @@
-import * as features from '../features';
+import * as features from './features';
 
 const MOCK_FLAGS = {
     FLAG: false,
