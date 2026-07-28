@@ -1,4 +1,4 @@
-import { validateAddressTestCases } from './__fixtures__/mockValidateAddress';
+import { validateAddressTestCases } from './__fixtures__/validateAddress.fixture';
 import { validateAddress } from './address';
 
 describe('validateAddress', () => {

@@ -4,7 +4,7 @@ import {
     findNonIntegerIssueTestCases,
     findUint256OverflowIssueTestCases,
     findZeroAmountIssueTestCases,
-} from './__fixtures__/mockUint256';
+} from './__fixtures__/uint256.fixture';
 import {
     findInsufficientBalanceIssue,
     findNegativeAmountIssue,

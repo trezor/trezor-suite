@@ -1,7 +1,7 @@
 import {
     findSelfAddressIssueTestCases,
     findTronAddressIssueTestCases,
-} from './__fixtures__/mockAddress';
+} from './__fixtures__/address.fixture';
 import { findSelfAddressIssue, findTronAddressIssue } from './address';
 
 describe('findTronAddressIssue', () => {

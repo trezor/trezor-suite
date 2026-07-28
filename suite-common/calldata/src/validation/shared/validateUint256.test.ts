@@ -1,4 +1,4 @@
-import { validateUint256TestCases } from './__fixtures__/mockValidateUint256';
+import { validateUint256TestCases } from './__fixtures__/validateUint256.fixture';
 import { validateUint256 } from './uint256';
 
 describe('validateUint256', () => {
