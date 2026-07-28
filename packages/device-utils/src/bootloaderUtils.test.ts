@@ -1,11 +1,11 @@
-import { getBootloaderVersion, getBootloaderVersionArray } from './bootloaderUtils';
-import { type PartialDevice } from './types';
 import {
     T1B1Features,
     T1B1FeaturesBL,
     T2T1Features,
     T2T1FeaturesBL,
-} from '../mocks/mockDeviceFeatures';
+} from './__fixtures__/deviceFeatures';
+import { getBootloaderVersion, getBootloaderVersionArray } from './bootloaderUtils';
+import { type PartialDevice } from './types';
 
 describe('bootloaderUtils', () => {
     describe(getBootloaderVersionArray.name, () => {
