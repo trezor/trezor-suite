@@ -1,7 +1,7 @@
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { err, ok } from '@trezor/type-utils';
 
-import { createBip329ToSuiteSync } from '../suiteSync/createBip329ToSuiteSync';
+import { createBip329ToSuiteSync } from './createBip329ToSuiteSync';
 
 const account = mockWalletAccount({
     symbol: 'btc',

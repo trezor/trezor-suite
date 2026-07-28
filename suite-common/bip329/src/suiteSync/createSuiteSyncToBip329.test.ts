@@ -5,7 +5,7 @@ import {
 import { asTxTargetId } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
-import { createSuiteSyncToBip329 } from '../suiteSync/createSuiteSyncToBip329';
+import { createSuiteSyncToBip329 } from './createSuiteSyncToBip329';
 
 const account = mockWalletAccount({
     symbol: 'btc',

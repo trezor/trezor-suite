@@ -6,7 +6,7 @@ import {
 } from '@suite-common/suite-sync-storage';
 import { asAccountDescriptor, asTxTargetId } from '@suite-common/wallet-types';
 
-import { suiteSyncToBip329 } from '../suiteSync/suiteSyncToBip329';
+import { suiteSyncToBip329 } from './suiteSyncToBip329';
 
 describe(suiteSyncToBip329.name, () => {
     it('transforms suite sync labels to bip329 labels', () => {
