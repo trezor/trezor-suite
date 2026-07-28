@@ -7,7 +7,7 @@ import { useDevice } from '@suite/device';
 import { LearnMoreButton } from '@suite/external-links';
 import { Translation, type TranslationKey } from '@suite/intl';
 import { useReceiveDisabled } from '@suite/receive';
-import { getAccountTypeTech } from '@suite-common/wallet-utils';
+import { getAccountTypeTech, isAccountWatchOnly } from '@suite-common/wallet-utils';
 import { Button, Card, Column, InfoItem, Paragraph } from '@trezor/components';
 import { typography } from '@trezor/theme';
 import { HELP_CENTER_BIP32_URL, HELP_CENTER_XPUB_URL, type Url } from '@trezor/urls';
@@ -88,12 +88,49 @@ const Details = () => {
     const accountTypeTech = getAccountTypeTech(account.path);
 
     const isCoinjoinAccount = account.backendType === 'coinjoin';
+    const isWatchOnlyAccount = isAccountWatchOnly(account);
 
     // xPub is required by networks using UTXO model. Bitcoin, Bitcoin Cash, Litecoin, Dogecoin, Cardano etc.
     const shouldDisplayXpubSection =
         account.networkType === 'bitcoin' || account.networkType === 'cardano';
 
     const handleXpubClick = () => dispatch(showXpub());
+
+    let accountIdentifierSection: ReactNode;
+    if (isWatchOnlyAccount) {
+        accountIdentifierSection = (
+            <DetailsRow
+                title={shouldDisplayXpubSection ? 'TR_ACCOUNT_DETAILS_XPUB_HEADER' : 'TR_ADDRESS'}
+                description={<Translation id="TR_ACCOUNT_DETAILS_WATCH_ONLY_IDENTIFIER_DESC" />}
+            >
+                <Paragraph typographyStyle="body-sm">{account.descriptor}</Paragraph>
+            </DetailsRow>
+        );
+    } else if (isCoinjoinAccount) {
+        accountIdentifierSection = <RescanAccount account={account} />;
+    } else if (shouldDisplayXpubSection) {
+        accountIdentifierSection = (
+            <DetailsRow
+                title="TR_ACCOUNT_DETAILS_XPUB_HEADER"
+                description={<Translation id="TR_ACCOUNT_DETAILS_XPUB" />}
+                learnMoreUrl={HELP_CENTER_XPUB_URL}
+            >
+                <ReceiveDisabledWrapper>
+                    <Button
+                        intent="neutral"
+                        priority="secondary"
+                        data-testid="@wallets/details/show-xpub-button"
+                        onClick={handleXpubClick}
+                        isDisabled={disabled}
+                        isLoading={locked}
+                        minWidth={140}
+                    >
+                        <Translation id="TR_ACCOUNT_DETAILS_XPUB_BUTTON" />
+                    </Button>
+                </ReceiveDisabledWrapper>
+            </DetailsRow>
+        );
+    }
 
     return (
         <WalletLayout title="TR_ACCOUNT_DETAILS_HEADER" account={selectedAccount}>
@@ -111,12 +148,16 @@ const Details = () => {
                     <DetailsRow
                         title="TR_ACCOUNT_DETAILS_TYPE_HEADER"
                         description={
-                            <AccountTypeDescription
-                                bip43Path={account.path}
-                                accountType={account.accountType}
-                                symbol={account.symbol}
-                                networkType={account.networkType}
-                            />
+                            isWatchOnlyAccount ? (
+                                <Translation id="TR_ACCOUNT_WATCH_ONLY_ANNOUNCEMENT" />
+                            ) : (
+                                <AccountTypeDescription
+                                    bip43Path={account.path}
+                                    accountType={account.accountType}
+                                    symbol={account.symbol}
+                                    networkType={account.networkType}
+                                />
+                            )
                         }
                     >
                         <AccountTypeBadge
@@ -124,43 +165,24 @@ const Details = () => {
                             shouldDisplayNormalType
                             path={account.path}
                             networkType={account.networkType}
+                            isWatchOnly={isWatchOnlyAccount}
                         />
-                        <Paragraph typographyStyle="body-xs" textWrap="nowrap">
-                            (<Translation id={accountTypeTech} />)
-                        </Paragraph>
+                        {!isWatchOnlyAccount && (
+                            <Paragraph typographyStyle="body-xs" textWrap="nowrap">
+                                (<Translation id={accountTypeTech} />)
+                            </Paragraph>
+                        )}
                     </DetailsRow>
-                    <DetailsRow
-                        title="TR_ACCOUNT_DETAILS_PATH_HEADER"
-                        description={<Translation id="TR_ACCOUNT_DETAILS_PATH_DESC" />}
-                        learnMoreUrl={HELP_CENTER_BIP32_URL}
-                    >
-                        <Paragraph typographyStyle="body-sm">{account.path}</Paragraph>
-                    </DetailsRow>
-                    {!isCoinjoinAccount ? (
-                        shouldDisplayXpubSection && (
-                            <DetailsRow
-                                title="TR_ACCOUNT_DETAILS_XPUB_HEADER"
-                                description={<Translation id="TR_ACCOUNT_DETAILS_XPUB" />}
-                                learnMoreUrl={HELP_CENTER_XPUB_URL}
-                            >
-                                <ReceiveDisabledWrapper>
-                                    <Button
-                                        intent="neutral"
-                                        priority="secondary"
-                                        data-testid="@wallets/details/show-xpub-button"
-                                        onClick={handleXpubClick}
-                                        isDisabled={disabled}
-                                        isLoading={locked}
-                                        minWidth={140}
-                                    >
-                                        <Translation id="TR_ACCOUNT_DETAILS_XPUB_BUTTON" />
-                                    </Button>
-                                </ReceiveDisabledWrapper>
-                            </DetailsRow>
-                        )
-                    ) : (
-                        <RescanAccount account={account} />
+                    {!isWatchOnlyAccount && (
+                        <DetailsRow
+                            title="TR_ACCOUNT_DETAILS_PATH_HEADER"
+                            description={<Translation id="TR_ACCOUNT_DETAILS_PATH_DESC" />}
+                            learnMoreUrl={HELP_CENTER_BIP32_URL}
+                        >
+                            <Paragraph typographyStyle="body-sm">{account.path}</Paragraph>
+                        </DetailsRow>
                     )}
+                    {accountIdentifierSection}
                     {account.networkType === 'ethereum' && (
                         <DetailsRow
                             title="TR_ACCOUNT_DETAILS_NONCE_HEADER"

@@ -42,6 +42,7 @@ type RedactedAccount = Omit<
     | 'metadata'
     | 'key'
     | 'misc'
+    | 'accountLabel'
 > & {
     descriptor: string;
     deviceState: string;
@@ -55,6 +56,7 @@ type RedactedAccount = Omit<
     metadata: string;
     key: string;
     misc: object | undefined;
+    accountLabel: string | undefined;
 };
 
 export const redactAccount = (
@@ -78,6 +80,7 @@ export const redactAccount = (
         utxo: REDACTED_REPLACEMENT,
         metadata: REDACTED_REPLACEMENT,
         key: REDACTED_REPLACEMENT,
+        accountLabel: account.accountLabel ? REDACTED_REPLACEMENT : undefined,
         misc: account.misc
             ? {
                   ...account.misc,

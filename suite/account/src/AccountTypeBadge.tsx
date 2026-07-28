@@ -9,6 +9,7 @@ type AccountTypeBadgeProps = {
     networkType?: NetworkType;
     size?: BadgeSize;
     shouldDisplayNormalType?: boolean;
+    isWatchOnly?: boolean;
 };
 
 export const AccountTypeBadge = ({
@@ -17,6 +18,7 @@ export const AccountTypeBadge = ({
     networkType,
     size = 'medium',
     shouldDisplayNormalType = false,
+    isWatchOnly = false,
 }: AccountTypeBadgeProps) => {
     if (!accountType || !networkType) {
         return null;
@@ -26,7 +28,9 @@ export const AccountTypeBadge = ({
         return null;
     }
 
-    const accountTypeName = getAccountTypeName({ path, accountType, networkType });
+    const accountTypeName = isWatchOnly
+        ? 'TR_ACCOUNT_TYPE_WATCH_ONLY'
+        : getAccountTypeName({ path, accountType, networkType });
 
     return (
         <Badge size={size}>{accountTypeName ? <Translation id={accountTypeName} /> : null}</Badge>

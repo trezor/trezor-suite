@@ -20,7 +20,9 @@ import {
     type PrecomposedTransactionFinalCardano,
 } from '@suite-common/wallet-types';
 import {
+    ACCOUNT_AUTHORIZATION_UNAVAILABLE_MESSAGE,
     asAmountSubunit,
+    canAccountAuthorize,
     convertAmountSubunitsToUnits,
     convertAmountUnitsToSubunits,
     formatNetworkAmount,
@@ -584,6 +586,13 @@ export const signTransactionThunk = createThunk<
         { formState, precomposedTransaction, selectedAccount, paymentRequests },
         { dispatch, rejectWithValue, getState },
     ) => {
+        if (!canAccountAuthorize(selectedAccount)) {
+            return rejectWithValue({
+                error: 'sign-transaction-failed',
+                message: ACCOUNT_AUTHORIZATION_UNAVAILABLE_MESSAGE,
+            });
+        }
+
         const device = selectSelectedDevice(getState());
 
         if (!device || precomposedTransaction?.type !== 'final')

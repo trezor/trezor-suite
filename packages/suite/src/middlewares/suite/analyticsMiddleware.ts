@@ -26,6 +26,7 @@ import {
     accumulateAccountCountBySymbolAndType,
     getAccountTotalStakingBalance,
     getAccountsWithSomeTransactionHistory,
+    isAccountWatchOnly,
 } from '@suite-common/wallet-utils';
 import { DEVICE, TRANSPORT } from '@trezor/connect';
 import {
@@ -168,7 +169,10 @@ const analyticsMiddleware = createMiddlewareWithExtraDeps(
             case discoveryActions.updateDiscovery.type: {
                 if (action.payload.status.status !== 'complete') return result;
 
-                const accountsWithNonZeroBalance = state.wallet.accounts
+                const accountsForAnalytics = state.wallet.accounts.filter(
+                    account => !isAccountWatchOnly(account),
+                );
+                const accountsWithNonZeroBalance = accountsForAnalytics
                     .filter(
                         account =>
                             new BigNumber(account.balance).gt(0) ||
@@ -181,7 +185,7 @@ const analyticsMiddleware = createMiddlewareWithExtraDeps(
                     )
                     .reduce(accumulateAccountCountBySymbolAndType, {});
 
-                const accountsWithTokens = state.wallet.accounts
+                const accountsWithTokens = accountsForAnalytics
                     .filter(account => new BigNumber(account.tokens?.length || 0).gt(0))
                     .reduce<Record<string, number>>((acc, { symbol, tokens }) => {
                         if (
@@ -195,7 +199,7 @@ const analyticsMiddleware = createMiddlewareWithExtraDeps(
                         return acc;
                     }, {});
 
-                const accountsWithStaking = state.wallet.accounts
+                const accountsWithStaking = accountsForAnalytics
                     .filter(account =>
                         new BigNumber(getAccountTotalStakingBalance(account) || 0).gt(0),
                     )
@@ -203,7 +207,7 @@ const analyticsMiddleware = createMiddlewareWithExtraDeps(
 
                 asTypedDesktopAnalytics(analytics).report({
                     type: events.accountsStatusEvent.name,
-                    payload: getAccountsWithSomeTransactionHistory(state.wallet.accounts).reduce(
+                    payload: getAccountsWithSomeTransactionHistory(accountsForAnalytics).reduce(
                         accumulateAccountCountBySymbolAndType,
                         {},
                     ),

@@ -3,6 +3,8 @@ import { notificationsActions } from '@suite-common/toast-notifications';
 import { selectAddressDisplayType } from '@suite-common/wallet-core';
 import { AddressDisplayOptions } from '@suite-common/wallet-types';
 import {
+    ACCOUNT_AUTHORIZATION_UNAVAILABLE_MESSAGE,
+    canAccountAuthorize,
     getAddressParameters,
     getDerivationType,
     getNetworkId,
@@ -78,6 +80,10 @@ const signByNetwork =
         isCose: boolean,
     ) =>
     ({ account, device, coin }: StateParams) => {
+        if (!canAccountAuthorize(account)) {
+            return Promise.reject(new Error(ACCOUNT_AUTHORIZATION_UNAVAILABLE_MESSAGE));
+        }
+
         const params = { device, path, coin, message, hex, no_script_type: isElectrum };
 
         switch (account.networkType) {

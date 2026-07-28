@@ -22,6 +22,7 @@ import {
 import * as selectedAccountActions from 'src/actions/wallet/selectedAccountActions';
 import * as tradingCommonActions from 'src/actions/wallet/trading/tradingCommonActions';
 import type { Action, AppState, Dispatch } from 'src/types/suite';
+import { removeWatchOnlyAccountImportInstructionsBySymbol } from 'src/utils/wallet/watchOnlyAccountStorage';
 
 const walletMiddleware =
     (api: MiddlewareAPI<Dispatch, AppState>) =>
@@ -59,6 +60,13 @@ const walletMiddleware =
 
         if (accountsActions.removeAccount.match(action)) {
             api.dispatch(unsubscribeBlockchainThunk(action.payload));
+        }
+
+        if (
+            action.type === WALLET_SETTINGS.CHANGE_COIN_VISIBILITY &&
+            !action.payload.shouldBeVisible
+        ) {
+            removeWatchOnlyAccountImportInstructionsBySymbol(action.payload.symbol);
         }
 
         // Update custom backends

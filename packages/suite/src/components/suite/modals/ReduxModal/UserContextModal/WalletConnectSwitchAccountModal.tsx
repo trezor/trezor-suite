@@ -4,7 +4,6 @@ import { useDispatch } from 'react-redux';
 import { AccountLabel, AccountTypeBadge } from '@suite/account';
 import { Translation } from '@suite/intl';
 import { closeModal } from '@suite/modal';
-import { selectAllAccountsToList } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { sortByCoin } from '@suite-common/wallet-utils';
 import {
@@ -17,6 +16,7 @@ import { Column, Modal, type Option, Row, Select } from '@trezor/components';
 import { TokenIcon } from '@trezor/product-components';
 
 import { useSelector } from 'src/hooks/suite';
+import { selectAllOwnedAccountsToList } from 'src/selectors/suite/watchOnlyAccountSelectors';
 
 interface WalletConnectSwitchAccountModalProps {
     sessionTopic: string;
@@ -28,7 +28,7 @@ export const WalletConnectSwitchAccountModal = ({
     const dispatch = useDispatch();
     const sessions = useSelector(selectSessions);
     const session = sessions.find(s => s.topic === sessionTopic);
-    const accounts = useSelector(selectAllAccountsToList);
+    const accounts = useSelector(selectAllOwnedAccountsToList);
 
     const selectableAccounts = useMemo<Account[]>(
         () =>

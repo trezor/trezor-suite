@@ -6,6 +6,7 @@ import { mockAccountToken, mockWalletAccount } from '@suite-common/wallet-types/
 import * as fixtures from '../__fixtures__/accountUtils';
 import {
     accountSearchFn,
+    canAccountAuthorize,
     enhanceAddresses,
     findAccountDevice,
     getAccountIdentifier,
@@ -14,6 +15,8 @@ import {
     getUtxoFromSignedTransaction,
     getUtxoOutpoint,
     hasNetworkFeatures,
+    isAccountDiscoverable,
+    isAccountWatchOnly,
     isTestnet,
     sortByBIP44AddressIndex,
     sortByCoin,
@@ -27,6 +30,34 @@ import {
 } from '../amountUtils';
 
 describe('account utils', () => {
+    describe('account authorization contract', () => {
+        it.each([
+            [{ isWatchOnly: true }, true, false],
+            [{ isWatchOnly: false }, false, true],
+            [{ isWatchOnly: undefined }, false, true],
+        ])(
+            'derives watch-only and authorization capabilities',
+            (account, expectedWatchOnly, expectedCanAuthorize) => {
+                expect(isAccountWatchOnly(account)).toBe(expectedWatchOnly);
+                expect(canAccountAuthorize(account)).toBe(expectedCanAuthorize);
+            },
+        );
+    });
+
+    describe(isAccountDiscoverable.name, () => {
+        it('excludes imported accounts', () => {
+            expect(
+                isAccountDiscoverable(
+                    mockWalletAccount({
+                        accountType: 'imported',
+                        imported: true,
+                        symbol: 'btc',
+                    }),
+                ),
+            ).toBe(false);
+        });
+    });
+
     fixtures.getUtxoFromSignedTransaction.forEach(f => {
         it(`getUtxoFromSignedTransaction: ${f.description}`, () => {
             // @ts-expect-error params are partial

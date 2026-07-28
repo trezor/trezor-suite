@@ -23,6 +23,7 @@ import {
 } from 'src/components/suite';
 import { TokenIconSetWrapper } from 'src/components/wallet/TokenIconSetWrapper';
 import { useDispatch, useSelector } from 'src/hooks/suite';
+import { getAssetAccountRouteParams } from 'src/utils/wallet/accountUtils';
 
 import { AssetActionButton } from '../AssetActionButton';
 import { AssetCoinLogo } from '../AssetCoinLogo';
@@ -67,11 +68,7 @@ export const AssetRow = memo(
             dispatch(
                 goto({
                     routeName: 'wallet-index',
-                    params: {
-                        symbol,
-                        accountIndex: 0,
-                        accountType: 'normal',
-                    },
+                    params: getAssetAccountRouteParams(accounts, symbol),
                 }),
             );
         };

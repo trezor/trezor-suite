@@ -2,14 +2,15 @@ import debounce from 'lodash/debounce';
 
 import { type AnalyticsSharedEvents, events } from '@suite-common/analytics';
 import { type Account } from '@suite-common/wallet-types';
+import { isAccountWatchOnly } from '@suite-common/wallet-utils';
 import { type Analytics } from '@trezor/analytics-uploader';
 
 import { selectAccounts } from './accountsSelectors';
 
 const DEBOUNCE_MS = 5 * 60 * 1000; // 5 minutes
 
-const countNonZeroBalanceAccounts = (accounts: Account[]) =>
-    accounts.filter(a => Number(a.balance) > 0).length;
+export const countNonZeroBalanceAccounts = (accounts: Account[]) =>
+    accounts.filter(account => !isAccountWatchOnly(account) && Number(account.balance) > 0).length;
 
 type ReportParams = {
     getState: () => { wallet: { accounts: Account[] } };

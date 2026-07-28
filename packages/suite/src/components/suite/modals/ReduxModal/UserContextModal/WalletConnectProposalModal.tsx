@@ -8,7 +8,6 @@ import { closeModal } from '@suite/modal';
 import { goto } from '@suite/router';
 import { TxSimulationBanner } from '@suite/tx-simulation/src/common';
 import { useDappScan } from '@suite-common/tx-simulation';
-import { selectAllAccountsToList } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { sortByCoin } from '@suite-common/wallet-utils';
 import {
@@ -34,6 +33,7 @@ import { NetworkIcon, TokenIcon } from '@trezor/product-components';
 
 import { ConnectAppIcon } from 'src/components/suite/ConnectAppIcon';
 import { useDispatch, useSelector } from 'src/hooks/suite';
+import { selectAllOwnedAccountsToList } from 'src/selectors/suite/watchOnlyAccountSelectors';
 
 const NetworkItemWrapper = styled.div<{ $isDisabled: boolean }>`
     display: flex;
@@ -50,7 +50,7 @@ interface WalletConnectProposalModalProps {
 export const WalletConnectProposalModal = ({ eventId }: WalletConnectProposalModalProps) => {
     const dispatch = useDispatch();
     const pendingProposal = useSelector(selectPendingProposal);
-    const accounts = useSelector(selectAllAccountsToList);
+    const accounts = useSelector(selectAllOwnedAccountsToList);
     const selectableAccounts = useMemo<Account[]>(
         () =>
             sortByCoin(
