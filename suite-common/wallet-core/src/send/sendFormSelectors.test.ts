@@ -2,12 +2,12 @@ import { type DeviceRootState } from '@suite-common/device';
 import { type ButtonRequest } from '@suite-common/suite-types';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 
-import { PAYMENT_REQUEST_BUTTON_NAMES } from '../sendFormConstants';
+import { PAYMENT_REQUEST_BUTTON_NAMES } from './sendFormConstants';
 import {
     selectSendFormButtonRequestCodes,
     selectSendFormReviewButtonRequestsCount,
     selectSendFormReviewLastButtonCode,
-} from '../sendFormSelectors';
+} from './sendFormSelectors';
 
 const stateWith = (buttonRequests: ButtonRequest[]): DeviceRootState =>
     ({

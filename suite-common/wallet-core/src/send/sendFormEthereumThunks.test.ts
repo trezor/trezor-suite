@@ -1,5 +1,5 @@
-import * as fixtures from './sendFormEthereumThunks.fixtures';
-import { calculate } from '../../src/send/sendFormEthereumThunks';
+import * as fixtures from './__fixtures__/sendFormEthereumThunks.fixtures';
+import { calculate } from './sendFormEthereumThunks';
 
 describe(calculate.name, () => {
     fixtures.calculate.forEach(f => {

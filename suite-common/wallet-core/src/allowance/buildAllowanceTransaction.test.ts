@@ -1,5 +1,5 @@
-import * as fixtures from './buildAllowanceTransaction.fixtures';
-import { buildAllowanceTransaction } from '../../src/allowance/buildAllowanceTransaction';
+import * as fixtures from './__fixtures__/buildAllowanceTransaction.fixtures';
+import { buildAllowanceTransaction } from './buildAllowanceTransaction';
 
 describe(buildAllowanceTransaction.name, () => {
     fixtures.buildAllowanceTransaction.forEach(f => {

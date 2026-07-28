@@ -2,8 +2,8 @@ import { configureMockStore } from '@suite-common/test-utils';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import TrezorConnect from '@trezor/connect';
 
-import { synchronizeSentTransactionThunk } from '../../src/send/sendFormThunks';
-import { transactionsActions } from '../../src/transactions/transactionsActions';
+import { synchronizeSentTransactionThunk } from './sendFormThunks';
+import { transactionsActions } from '../transactions/transactionsActions';
 
 const ethAccount = mockWalletAccount({ symbol: 'eth' });
 

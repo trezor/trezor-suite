@@ -6,8 +6,8 @@ import {
 } from '@suite-common/wallet-types';
 import TrezorConnect from '@trezor/connect';
 
-import { confirmedNonces, ethAccount, evmTx } from './evmFixtures';
-import { signEthereumSendFormTransactionThunk } from '../../src/send/sendFormEthereumThunks';
+import { confirmedNonces, ethAccount, evmTx } from './__fixtures__/evmFixtures';
+import { signEthereumSendFormTransactionThunk } from './sendFormEthereumThunks';
 
 const precomposedTransaction = {
     type: 'final',

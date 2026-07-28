@@ -1,8 +1,8 @@
 import { configureMockStore } from '@suite-common/test-utils';
 import TrezorConnect from '@trezor/connect';
 
-import { type EthAccount, ethAccount, evmTx } from './evmFixtures';
-import { ethereumGetCurrentNonceThunk } from '../../src/send/sendFormEthereumThunks';
+import { type EthAccount, ethAccount, evmTx } from './__fixtures__/evmFixtures';
+import { ethereumGetCurrentNonceThunk } from './sendFormEthereumThunks';
 
 const accountWithNonce = (nonce: number): EthAccount =>
     ({ ...ethAccount, misc: { nonce: nonce.toString() } }) as EthAccount;

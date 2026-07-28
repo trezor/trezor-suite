@@ -6,10 +6,10 @@ import {
 } from '@suite-common/wallet-types';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 
-import { type AccountsRootState } from '../../accounts/accountsReducer';
-import { type FiatRatesRootState } from '../../fiat-rates/fiatRatesTypes';
-import { type TransactionsRootState } from '../transactionsReducerTypes';
-import { selectTransactionsWithMissingRates } from '../transactionsSelectors';
+import { type TransactionsRootState } from './transactionsReducerTypes';
+import { selectTransactionsWithMissingRates } from './transactionsSelectors';
+import { type AccountsRootState } from '../accounts/accountsReducer';
+import { type FiatRatesRootState } from '../fiat-rates/fiatRatesTypes';
 
 const ACCOUNT_KEY = 'descriptor-eth-device' as AccountKey;
 const LOCAL_CURRENCY = 'usd' as BaseCurrencyCode;

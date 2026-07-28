@@ -2,11 +2,11 @@ import { configureMockStore } from '@suite-common/test-utils';
 import type { WalletAccountTransaction } from '@suite-common/wallet-types';
 import TrezorConnect, { type PrecomposeResultFinal } from '@trezor/connect';
 
-import { chainedTxsFixture } from './chainedTransactions.fixture';
+import { chainedTxsFixture } from './__fixtures__/chainedTransactions.fixture';
 import {
-    ComposeCancelTransactionThunkParams,
+    type ComposeCancelTransactionThunkParams,
     composeCancelTransactionThunk,
-} from '../../../src/send/composeCancelTransaction/composeCancelTransactionThunk';
+} from './composeCancelTransactionThunk';
 
 const initStore = () => configureMockStore({});
 

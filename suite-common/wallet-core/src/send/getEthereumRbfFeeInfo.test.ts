@@ -1,7 +1,7 @@
 import { type FeeInfo } from '@suite-common/wallet-types';
 
-import { feeInfoEip1559, feeInfoLegacy } from './evmFixtures';
-import { getEthereumRbfFeeInfo } from '../../src/send/sendFormEthereumThunks';
+import { feeInfoEip1559, feeInfoLegacy } from './__fixtures__/evmFixtures';
+import { getEthereumRbfFeeInfo } from './sendFormEthereumThunks';
 
 const buildFeeInfo = (levels: FeeInfo['levels']): FeeInfo => ({
     blockHeight: 0,
