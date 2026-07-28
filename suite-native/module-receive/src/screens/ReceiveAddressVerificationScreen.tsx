@@ -1,3 +1,5 @@
+import { useCallback } from 'react';
+
 import { type RouteProp, useRoute } from '@react-navigation/native';
 
 import {
@@ -17,7 +19,11 @@ export const ReceiveAddressVerificationScreen = () => {
         params: { source },
     } = useRoute<RouteProp<ReceiveStackParamList, ReceiveStackRoutes.ReceiveAddressVerification>>();
 
-    useInterceptNativeNavigation({ onPress: TrezorConnect.cancel });
+    const handleCancel = useCallback(() => {
+        TrezorConnect.cancel();
+    }, []);
+
+    useInterceptNativeNavigation({ onPress: handleCancel });
 
     const titleTxKey =
         source === ReceiveAddressVerificationSource.Shared
