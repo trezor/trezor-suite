@@ -16256,6 +16256,7 @@ __metadata:
     "@trezor/schema-utils": "workspace:^"
     "@trezor/theme": "workspace:^"
     "@trezor/urls": "workspace:^"
+    "@trezor/utils": "workspace:^"
     "@types/chrome": "npm:^0.1.40"
     "@types/node": "npm:22.13.10"
     "@types/redux-logger": "npm:^3.0.13"

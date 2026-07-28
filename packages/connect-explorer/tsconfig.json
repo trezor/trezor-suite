@@ -32,6 +32,7 @@
         { "path": "../schema-utils" },
         { "path": "../theme" },
         { "path": "../urls" },
+        { "path": "../utils" },
         { "path": "../eslint" }
     ]
 }
