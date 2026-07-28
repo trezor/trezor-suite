@@ -21,8 +21,8 @@ import {
     tradingSlice,
 } from '@suite-native/trading-state';
 
-import { TRADING_URL_DEFAULT_BACK } from '../../consts';
-import { useBrowserAuth } from '../useBrowserAuth';
+import { TRADING_URL_DEFAULT_BACK } from '../consts';
+import { useBrowserAuth } from './useBrowserAuth';
 
 const mockOpenBrowserAsync = jest.fn();
 const mockDismissBrowser = jest.fn();
@@ -51,7 +51,7 @@ jest.mock('@suite-native/sentry', () => ({
 
 const mockSetShouldWatchForForeground = jest.fn();
 
-jest.mock('../useOnForegroundCallback', () => ({
+jest.mock('./useOnForegroundCallback', () => ({
     useOnForegroundCallback: (_: () => void) => ({
         setShouldWatchForForeground: mockSetShouldWatchForForeground,
     }),

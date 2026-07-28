@@ -13,7 +13,7 @@ import {
 } from '@suite-native/test-utils-store';
 import { selectTradingProviderConfirmationStatus, tradingSlice } from '@suite-native/trading-state';
 
-import { ProviderStatusDevButtons } from '../ProviderStatusDevButtons';
+import { ProviderStatusDevButtons } from './ProviderStatusDevButtons';
 
 describe('ProviderStatusDevButtons', () => {
     let store: TestStore;

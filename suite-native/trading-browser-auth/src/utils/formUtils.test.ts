@@ -5,7 +5,7 @@ import {
     buildTradingUrl,
     getRequestFormSource,
     getSourceForForm,
-} from '../formUtils';
+} from './formUtils';
 
 describe('formUtils', () => {
     describe('applyHtmlTemplate', () => {

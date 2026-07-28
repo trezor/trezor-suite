@@ -17,7 +17,7 @@ import {
 } from '@suite-native/trading-state';
 import { prepareSendFormReducer } from '@suite-native/transaction-management';
 
-import { useProviderConfirmationStatus } from '../useProviderConfirmationStatus';
+import { useProviderConfirmationStatus } from './useProviderConfirmationStatus';
 
 describe('useProviderConfirmationStatus', () => {
     let store: TestStore;

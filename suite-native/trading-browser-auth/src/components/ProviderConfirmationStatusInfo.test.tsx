@@ -2,11 +2,11 @@ import { getTranslation } from '@suite-native/intl';
 import { renderWithBasicProvider } from '@suite-native/test-utils';
 import { type ProviderConfirmationStatus } from '@suite-native/trading-types';
 
-import { ProviderConfirmationStatusInfo } from '../ProviderConfirmationStatusInfo';
+import { ProviderConfirmationStatusInfo } from './ProviderConfirmationStatusInfo';
 
 let mockUseProviderConfirmationStatus: ProviderConfirmationStatus;
 
-jest.mock('../../hooks/useProviderConfirmationStatus', () => ({
+jest.mock('../hooks/useProviderConfirmationStatus', () => ({
     useProviderConfirmationStatus: () => mockUseProviderConfirmationStatus,
 }));
 

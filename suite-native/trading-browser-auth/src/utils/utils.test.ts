@@ -1,5 +1,5 @@
-import { TRADING_URL_DEFAULT_BACK } from '../../consts';
-import { doesUrlContainCloseCallbackUrl } from '../utils';
+import { TRADING_URL_DEFAULT_BACK } from '../consts';
+import { doesUrlContainCloseCallbackUrl } from './utils';
 
 describe('utils', () => {
     describe('doesUrlContainCloseCallbackUrl', () => {

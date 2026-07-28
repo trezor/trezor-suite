@@ -2,7 +2,7 @@ import { AppState } from 'react-native';
 
 import { act, renderHookWithBasicProvider, screen } from '@suite-native/test-utils';
 
-import { useOnForegroundCallback } from '../useOnForegroundCallback';
+import { useOnForegroundCallback } from './useOnForegroundCallback';
 
 const mockCaptureSentryException = jest.fn();
 
