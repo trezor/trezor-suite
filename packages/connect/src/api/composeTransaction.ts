@@ -1,7 +1,6 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/ComposeTransaction.js
 
 import {
-    type AccountUtxo,
     type BitcoinNetworkInfo,
     type ComposeResult,
     DEFAULT_SORTING_STRATEGY,
@@ -211,21 +210,95 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
 
     private async interactiveFlow(context: MethodContext): Promise<SignedTransaction> {
         // discover accounts and wait for user action
-        const { account, utxo } = await this.selectAccount(context);
+        const { account, utxo: utxos } = await this.selectAccount(context);
 
-        // wait for fee selection
-        const response = await this.selectFee(account, utxo, context);
-        // check for interruption
-        if (this.disposed) {
-            throw ERRORS.TypedError(
-                'Runtime',
-                'ComposeTransaction: selectFee response received after dispose',
-            );
+        const { coinInfo, outputs, sortingStrategy, push } = this.params;
+
+        // get backend instance (it should be initialized before)
+        const blockchain = await this.getBlockchain(context.sendCoreMessage);
+        const feeLevels = getOrInitFeeLevels(coinInfo);
+        await feeLevels.load(blockchain);
+
+        const composer = new TransactionComposer({
+            account,
+            utxos,
+            coinInfo,
+            outputs,
+            feeLevels: feeLevels.levels,
+            sortingStrategy: sortingStrategy ?? DEFAULT_SORTING_STRATEGY,
+        });
+
+        // try to compose multiple transactions with different fee levels
+        // check if any of composed transactions is valid
+        const hasFunds = composer.composeAllFeeLevels();
+        if (!hasFunds) {
+            // show error view
+            context.sendCoreMessage(createUiMessage(UI_REQUEST.INSUFFICIENT_FUNDS));
+            // wait few seconds...
+            await resolveAfter(2000);
+
+            // and go back to discovery
+            return this.interactiveFlow(context);
         }
 
-        if (typeof response === 'string') {
+        // set select account view
+        // this view will be updated from discovery events
+        context.sendCoreMessage(
+            createUiMessage(UI_REQUEST.SELECT_FEE, {
+                feeLevels: composer.getFeeLevelList(),
+                coinInfo: this.params.coinInfo,
+            }),
+        );
+
+        // wait for fee selection
+        let resp = await context.createUiPromise(UI_RESPONSE.RECEIVE_FEE, this.getDevice()).promise;
+
+        while (resp.payload.type === 'compose-custom') {
+            // recompose custom fee level with requested value
+            composer.composeCustomFee(resp.payload.value);
+            context.sendCoreMessage(
+                createUiMessage(
+                    UI_REQUEST.UPDATE_CUSTOM_FEE,
+                    {
+                        feeLevels: composer.getFeeLevelList(),
+                        coinInfo: this.params.coinInfo,
+                    },
+                    { requestId: resp.requestId },
+                ),
+            );
+
+            // wait for user action
+            resp = await context.createUiPromise(UI_RESPONSE.RECEIVE_FEE, this.getDevice()).promise;
+        }
+
+        if (resp.payload.type === 'change-account') {
+            // check for interruption
+            if (this.disposed) {
+                throw ERRORS.TypedError(
+                    'Runtime',
+                    'ComposeTransaction: selectFee response received after dispose',
+                );
+            }
+
             // back to account selection
             return this.interactiveFlow(context);
+        }
+
+        const { composed } = composer;
+        const composedKey = resp.payload.value;
+        // @ts-expect-error: noUncheckedIndexedAccess
+        const tx: ComposeResult = composed[composedKey];
+
+        const response = await this._sign(tx, context.sendCoreMessage);
+
+        if (push) {
+            const blockchain2 = await this.getBlockchain(context.sendCoreMessage);
+            const txid = await blockchain2.pushTransaction(response.serializedTx);
+
+            return {
+                ...response,
+                txid,
+            };
         }
 
         return response;
@@ -384,91 +457,6 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
         return { account, utxo };
     }
 
-    private async selectFee(
-        account: DiscoveryAccount,
-        utxos: AccountUtxo[],
-        context: MethodContext,
-    ) {
-        const { coinInfo, outputs, sortingStrategy } = this.params;
-
-        // get backend instance (it should be initialized before)
-        const blockchain = await this.getBlockchain(context.sendCoreMessage);
-        const feeLevels = getOrInitFeeLevels(coinInfo);
-        await feeLevels.load(blockchain);
-
-        const composer = new TransactionComposer({
-            account,
-            utxos,
-            coinInfo,
-            outputs,
-            feeLevels: feeLevels.levels,
-            sortingStrategy: sortingStrategy ?? DEFAULT_SORTING_STRATEGY,
-        });
-
-        // try to compose multiple transactions with different fee levels
-        // check if any of composed transactions is valid
-        const hasFunds = composer.composeAllFeeLevels();
-        if (!hasFunds) {
-            // show error view
-            context.sendCoreMessage(createUiMessage(UI_REQUEST.INSUFFICIENT_FUNDS));
-            // wait few seconds...
-            await resolveAfter(2000);
-
-            // and go back to discovery
-            return 'change-account';
-        }
-
-        // set select account view
-        // this view will be updated from discovery events
-        context.sendCoreMessage(
-            createUiMessage(UI_REQUEST.SELECT_FEE, {
-                feeLevels: composer.getFeeLevelList(),
-                coinInfo: this.params.coinInfo,
-            }),
-        );
-
-        // wait for user action
-        return this._selectFeeUiResponse(composer, context);
-    }
-
-    private async _selectFeeUiResponse(
-        composer: TransactionComposer,
-        context: MethodContext,
-    ): Promise<SignedTransaction | 'change-account'> {
-        const resp = await context.createUiPromise(UI_RESPONSE.RECEIVE_FEE, this.getDevice())
-            .promise;
-        switch (resp.payload.type) {
-            case 'compose-custom':
-                // recompose custom fee level with requested value
-                composer.composeCustomFee(resp.payload.value);
-                context.sendCoreMessage(
-                    createUiMessage(
-                        UI_REQUEST.UPDATE_CUSTOM_FEE,
-                        {
-                            feeLevels: composer.getFeeLevelList(),
-                            coinInfo: this.params.coinInfo,
-                        },
-                        { requestId: resp.requestId },
-                    ),
-                );
-
-                // wait for user action
-                return this._selectFeeUiResponse(composer, context);
-
-            case 'send': {
-                const { composed } = composer;
-                const composedKey = resp.payload.value;
-                // @ts-expect-error: noUncheckedIndexedAccess
-                const tx: ComposeResult = composed[composedKey];
-
-                return this._sign(tx, context.sendCoreMessage);
-            }
-
-            default:
-                return 'change-account';
-        }
-    }
-
     private async _sign(tx: ComposeResult, sendCoreMessage: MethodContext['sendCoreMessage']) {
         const device = this.getDevice();
         const { params } = this;
@@ -519,16 +507,6 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
             outputScripts,
             network: coinInfo.network,
         });
-
-        if (params.push) {
-            const blockchain = await this.getBlockchain(sendCoreMessage);
-            const txid = await blockchain.pushTransaction(response.serializedTx);
-
-            return {
-                ...response,
-                txid,
-            };
-        }
 
         return response;
     }
