@@ -6,7 +6,7 @@ import { useRoute } from '@react-navigation/native';
 import { ReceiveAddressVerificationSource } from '@suite-native/navigation';
 import { renderWithBasicProvider } from '@suite-native/test-utils';
 
-import { ReceiveAddressVerificationScreen } from '../ReceiveAddressVerificationScreen';
+import { ReceiveAddressVerificationScreen } from './ReceiveAddressVerificationScreen';
 
 jest.mock('@react-navigation/native', () => ({
     ...jest.requireActual('@react-navigation/native'),

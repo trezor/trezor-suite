@@ -1,6 +1,6 @@
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 
-import { AddressVerificationResultType, verifyReceiveAddress } from '../addressVerification';
+import { AddressVerificationResultType, verifyReceiveAddress } from './addressVerification';
 
 jest.mock('@suite-native/device-mutex', () => ({
     requestPrioritizedDeviceAccess: jest.fn(),

@@ -1,9 +1,9 @@
 import { getTranslation } from '@suite-native/intl';
 import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 
-import { SendUtxoScreenFooter } from '../SendUtxoScreenFooter';
+import { SendUtxoScreenFooter } from './SendUtxoScreenFooter';
 
-jest.mock('../../../hooks/useUtxoSelection', () => ({
+jest.mock('../../hooks/useUtxoSelection', () => ({
     useUtxoSelection: jest.fn(),
 }));
 
