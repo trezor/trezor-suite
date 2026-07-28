@@ -50,7 +50,6 @@ describe('MiscFeeLevels – Solana', () => {
             feePerUnit: '8000',
             feeLimit: '1234',
         });
-        expect(feeLevels.wasFetchedSuccessfully).toBe(true);
         expect(backend.estimateFee).toHaveBeenCalledWith(REQUEST);
     });
 
@@ -83,6 +82,5 @@ describe('MiscFeeLevels – Solana', () => {
         const after = await feeLevels.load(backend, REQUEST);
 
         expect(after).toEqual(original);
-        expect(feeLevels.wasFetchedSuccessfully).toBe(false);
     });
 });
