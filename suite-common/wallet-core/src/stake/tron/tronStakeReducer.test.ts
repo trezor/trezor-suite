@@ -1,6 +1,6 @@
 import { type AccountKey, type PrecomposedTransactionFinal } from '@suite-common/wallet-types';
 
-import { initialTronStakeTxReview, tronStakeActions, tronStakeReducer } from '../tronStakeReducer';
+import { initialTronStakeTxReview, tronStakeActions, tronStakeReducer } from './tronStakeReducer';
 
 const KEY = 'account-1' as AccountKey;
 const FLOW = 'stake' as const;

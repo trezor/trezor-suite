@@ -6,10 +6,10 @@ import {
 import { configureMockStore } from '@suite-common/test-utils';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 
-import { stakeDataActions, stakeDataInitialState } from '../stakeDataSlice';
-import { stakeInitialState } from '../stakeReducer';
-import type { StakeState } from '../stakeReducerTypes';
-import { initStakeDataThunk } from '../stakeThunks';
+import { stakeDataActions, stakeDataInitialState } from './stakeDataSlice';
+import { stakeInitialState } from './stakeReducer';
+import type { StakeState } from './stakeReducerTypes';
+import { initStakeDataThunk } from './stakeThunks';
 
 jest.mock('@suite-common/earn-staking-api', () => ({
     getStakingBatch: jest.fn(),

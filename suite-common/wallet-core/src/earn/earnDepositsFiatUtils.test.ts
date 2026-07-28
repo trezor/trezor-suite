@@ -5,7 +5,7 @@ import {
     type EarnStablecoinYieldDepositFiatInput,
     calculateEarnDepositsFiatData,
     getEarnDepositsFiatStatus,
-} from '../earnDepositsFiatUtils';
+} from './earnDepositsFiatUtils';
 
 const USDC_CONTRACT_CHECKSUMMED = toTokenAddress('0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48');
 const USDC_CONTRACT_LOWERCASE = toTokenAddress('0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48');

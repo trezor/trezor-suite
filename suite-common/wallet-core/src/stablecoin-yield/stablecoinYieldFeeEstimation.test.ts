@@ -1,6 +1,6 @@
 import TrezorConnect from '@trezor/connect';
 
-import { estimateYieldFeeLevel } from '../stablecoinYieldFeeEstimation';
+import { estimateYieldFeeLevel } from './stablecoinYieldFeeEstimation';
 
 jest.mock('@trezor/connect', () => ({
     __esModule: true,

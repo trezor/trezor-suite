@@ -1,6 +1,6 @@
 import { Calldata, asEvmAddress } from '@suite-common/calldata';
 
-import type { YieldPendingTransactionState } from '../stablecoinYieldTypes';
+import type { YieldPendingTransactionState } from './stablecoinYieldTypes';
 import {
     buildEvmSelectedFee,
     buildYieldDepositCalldata,
@@ -14,7 +14,7 @@ import {
     getYieldFlowStepSequence,
     getYieldWrapAmount,
     splitYieldPendingTransaction,
-} from '../stablecoinYieldUtils';
+} from './stablecoinYieldUtils';
 
 const ACCOUNT_DESCRIPTOR = asEvmAddress('0x9ea3721b5bf3b64b4418c38b603154d2d597fae3');
 const VAULT_ADDRESS = '0x58d97b57bb95320f9a05dc918aef65434969c2b2';
