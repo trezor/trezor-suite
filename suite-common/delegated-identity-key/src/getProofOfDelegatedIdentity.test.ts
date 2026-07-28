@@ -1,6 +1,6 @@
 import { DELEGATED_IDENTITY_KEY } from '@suite-common/delegated-identity-key-types/mocks';
 
-import { getProofOfDelegatedIdentity } from '../getProofOfDelegatedIdentity';
+import { getProofOfDelegatedIdentity } from './getProofOfDelegatedIdentity';
 
 describe(getProofOfDelegatedIdentity.name, () => {
     it('calculates the proof', () => {

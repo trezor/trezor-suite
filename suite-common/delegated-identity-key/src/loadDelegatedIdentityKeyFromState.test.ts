@@ -7,7 +7,7 @@ import {
 } from '@suite-common/platform-encryption';
 import { err, ok } from '@trezor/type-utils';
 
-import { createLoadDelegatedIdentityKeyFromState } from '../loadDelegatedIdentityKeyFromState';
+import { createLoadDelegatedIdentityKeyFromState } from './loadDelegatedIdentityKeyFromState';
 
 describe(createLoadDelegatedIdentityKeyFromState.name, () => {
     it('gets the encrypted key', async () => {
