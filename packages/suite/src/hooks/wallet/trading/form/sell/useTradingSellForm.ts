@@ -4,7 +4,6 @@ import { useForm, useWatch } from 'react-hook-form';
 import {
     TRADING_FORM_OUTPUT_AMOUNT,
     TRADING_FORM_OUTPUT_FIAT,
-    TRADING_FORM_PAYMENT_METHOD_SELECT,
     type TradingAmountLimitProps,
     type TradingSellFormProps,
     selectTradingComposedTransactionInfo,
@@ -13,7 +12,6 @@ import {
     selectTradingSellInfo,
     selectTradingSellIsFromRedirect,
     selectTradingSellIsLoading,
-    selectTradingSellQuotesByPaymentMethod,
     selectTradingSellQuotesRequest,
     selectTradingSellSelectedQuote,
     selectTradingSellTransactionId,
@@ -76,9 +74,9 @@ export const useTradingSellForm = (): TradingSellFormContextProps => {
     });
     const { register, reset, control, formState } = methods;
     // Watch only those values that are relevant in the render function
-    const [outputAmount, paymentMethod] = useWatch({
+    const [outputAmount] = useWatch({
         control,
-        name: [TRADING_FORM_OUTPUT_AMOUNT, TRADING_FORM_PAYMENT_METHOD_SELECT],
+        name: [TRADING_FORM_OUTPUT_AMOUNT],
     });
 
     const formIsValid = Object.keys(formState.errors).length === 0;
@@ -86,10 +84,6 @@ export const useTradingSellForm = (): TradingSellFormContextProps => {
     const isAmountEmpty = outputAmount === '';
     const noProviders = Object.keys(sellInfo?.providerInfos ?? {}).length === 0;
     const isInitialDataLoading = !sellInfo?.providerInfos;
-
-    const quotesByPaymentMethod = useSelector(state =>
-        selectTradingSellQuotesByPaymentMethod(state, paymentMethod?.value),
-    );
 
     const setAmountLimits = (limits: TradingAmountLimitProps | undefined) => {
         dispatch(tradingSellActions.setAmountLimits(limits));
@@ -184,7 +178,6 @@ export const useTradingSellForm = (): TradingSellFormContextProps => {
         methods,
         sellInfo,
         quotesRequest,
-        quotes: quotesByPaymentMethod,
         composedLevels,
         composedTransactionInfo,
         feeInfo,

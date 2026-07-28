@@ -109,7 +109,6 @@ export interface TradingBuyFormContextProps
     type: TradingBuyType;
     buyInfo?: TradingBuyInfoSelector;
     quotesRequest: BuyTradeQuoteRequest | undefined;
-    quotes: BuyTrade[];
     trade?: TradingTransactionBuy;
     // form - additional helpers for form
     form: {
@@ -135,7 +134,6 @@ export interface TradingSellFormContextProps
     composedTransactionInfo: TradingComposedTransactionInfo;
     quotesRequest: SellFiatTradeQuoteRequest | undefined;
     feeInfo: FeeInfo;
-    quotes: SellFiatTrade[];
     selectedQuote?: SellFiatTrade;
     trade?: TradingTransactionSell;
     suiteReceiveAccounts?: AppState['wallet']['accounts'];
@@ -182,9 +180,6 @@ export interface TradingExchangeFormContextProps
     isComposing: boolean;
     composedLevels?: PrecomposedLevels | PrecomposedLevelsCardano;
     composedTransactionInfo: TradingComposedTransactionInfo;
-    quotes: ExchangeTrade[];
-    cexQuotes: ExchangeTrade[];
-    dexQuotes: ExchangeTrade[];
     quotesRequest: ExchangeTradeQuoteRequest | undefined;
     receiveAccount?: Account;
     verifiedAddress: TradingVerifiedAddress;
