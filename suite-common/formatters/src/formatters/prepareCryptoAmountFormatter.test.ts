@@ -2,7 +2,7 @@ import { createIntl } from 'react-intl';
 
 import { PROTO } from '@trezor/connect';
 
-import { prepareCryptoAmountFormatter } from '../prepareCryptoAmountFormatter';
+import { prepareCryptoAmountFormatter } from './prepareCryptoAmountFormatter';
 
 const intl = createIntl({ locale: 'en-US' });
 

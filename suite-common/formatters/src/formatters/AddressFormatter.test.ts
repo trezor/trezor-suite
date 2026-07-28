@@ -1,4 +1,4 @@
-import { AddressFormatter } from '../AddressFormatter';
+import { AddressFormatter } from './AddressFormatter';
 
 const EVM_ADDRESS = '0xde0B295669a9FD93d5F28D9Ec85E40f4cb697BAe';
 const BTC_ADDRESS = 'bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq';

@@ -1,6 +1,6 @@
 import { BigNumber } from '@trezor/utils';
 
-import { convertCryptoToFiatAmount } from '../convert';
+import { convertCryptoToFiatAmount } from './convert';
 
 describe('convertCryptoToFiatAmount', () => {
     test.each([
