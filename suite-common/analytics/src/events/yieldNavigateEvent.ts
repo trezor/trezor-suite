@@ -7,6 +7,7 @@ type Attributes = {
     action: AttributeDef<EarnModalAction>;
     from: AttributeDef<
         | 'earn-dashboard'
+        | 'account-banner'
         | 'account-defi-tokens'
         | 'deposit-in-a-nutshell-modal'
         | 'deposit-legal-modal'
@@ -50,13 +51,14 @@ export const yieldNavigateEvent: EventDef<Attributes, EventType.YieldNavigate> =
         },
         from: {
             description:
-                'Origin of the navigation. On mobile, `deposit-in-a-nutshell-modal` = How yield works screen and `deposit-legal-modal` = consents screen (named after their desktop counterparts); `choose-account-sheet`, `account-detail` and `insufficient-balance-screen` are mobile-only, `account-defi-tokens` and `claim-select-account-modal` are desktop-only',
+                'Origin of the navigation. On mobile, `deposit-in-a-nutshell-modal` = How yield works screen and `deposit-legal-modal` = consents screen (named after their desktop counterparts); `choose-account-sheet`, `account-detail` and `insufficient-balance-screen` are mobile-only, `account-defi-tokens` and `claim-select-account-modal` are desktop-only; `account-banner` = in-account earn promo banner',
             changelog: [
                 { version: '26.5.0', notes: 'added' },
                 {
                     version: '26.7.1',
                     notes: 'added `choose-account-sheet`, `account-detail`, `insufficient-balance-screen` values (mobile)',
                 },
+                { version: '26.8.0', notes: 'added `account-banner` value' },
             ],
         },
         to: {

@@ -10490,6 +10490,23 @@ export const messages = defineMessages({
         id: 'TR_STAKING_BANNER_DETAIL_EXPLORE_STAKING',
         defaultMessage: 'Explore staking',
     },
+    TR_STAKING_BANNER_ETH_EARN_TITLE: {
+        id: 'TR_STAKING_BANNER_ETH_EARN_TITLE',
+        defaultMessage: 'Earn up to {apy}% on your {displaySymbol}',
+    },
+    TR_STAKING_BANNER_ETH_EARN_TITLE_NO_RATE: {
+        id: 'TR_STAKING_BANNER_ETH_EARN_TITLE_NO_RATE',
+        defaultMessage: 'Earn on your {displaySymbol}: stake it or earn yield',
+    },
+    TR_STAKING_BANNER_ETH_EARN_TEXT: {
+        id: 'TR_STAKING_BANNER_ETH_EARN_TEXT',
+        defaultMessage:
+            'Stake {displaySymbol} for network rewards, or deposit it in a yield vault.',
+    },
+    TR_STAKING_BANNER_ETH_EARN_BUTTON: {
+        id: 'TR_STAKING_BANNER_ETH_EARN_BUTTON',
+        defaultMessage: 'Explore',
+    },
     TR_STAKING_CARD_TITLE: {
         id: 'TR_STAKING_CARD_TITLE',
         defaultMessage: 'Earn ~{apy}% APY by staking your {displaySymbol}',
