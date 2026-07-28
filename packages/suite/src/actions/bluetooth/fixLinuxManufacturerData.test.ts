@@ -3,7 +3,7 @@ import { asBluetoothDeviceId } from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
 import { fixLinuxManufacturerData } from './fixLinuxManufacturerData';
-import { createMockedBluetoothDevice } from '../../../mocks/mockBluetoothDevice';
+import { mockDesktopBluetoothDevice } from '../../../mocks/mockDesktopBluetoothDevice';
 
 const mockedFilterPolicy: BluetoothFilterPolicy = {
     pairing: true,
@@ -19,12 +19,12 @@ const mockedManufacturerData: BluetoothManufacturerData = {
 };
 
 describe('fixLinuxManufacturerData', () => {
-    const mockKnownDevice = createMockedBluetoothDevice({
+    const mockKnownDevice = mockDesktopBluetoothDevice({
         id: asBluetoothDeviceId('1'),
         manufacturerData: mockedManufacturerData,
     });
     it('should preserve known device manufacturer data when device model is UNKNOWN', () => {
-        const deviceWithUnknownModel = createMockedBluetoothDevice({
+        const deviceWithUnknownModel = mockDesktopBluetoothDevice({
             ...mockKnownDevice,
             manufacturerData: {
                 deviceModel: DeviceModelInternal.UNKNOWN,
@@ -39,7 +39,7 @@ describe('fixLinuxManufacturerData', () => {
     });
 
     it('should return device unchanged when model is not UNKNOWN', () => {
-        const deviceWithValidModel = createMockedBluetoothDevice({
+        const deviceWithValidModel = mockDesktopBluetoothDevice({
             ...mockKnownDevice,
             manufacturerData: {
                 deviceModel: DeviceModelInternal.T2T1,
