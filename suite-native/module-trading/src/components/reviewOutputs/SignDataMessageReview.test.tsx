@@ -6,12 +6,12 @@ import {
     oneInchFusionPlusWithoutEip712SignDataQuote,
 } from '@suite-native/trading-fixtures';
 
+import { SignDataMessageReview } from './SignDataMessageReview';
 import {
     type PreloadedStatePartial,
     type TradingTestPreloadedState,
     renderWithTradingProvider,
-} from '../../../__tests__/tradingTestUtils';
-import { SignDataMessageReview } from '../SignDataMessageReview';
+} from '../../__tests__/tradingTestUtils';
 
 const ethAccount = getEthAccount();
 

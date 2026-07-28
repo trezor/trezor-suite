@@ -1,6 +1,6 @@
 import { act, renderHook, waitFor } from '@suite-native/test-utils';
 
-import { useConsent } from '../useConsent';
+import { useConsent } from './useConsent';
 
 describe('useConsent', () => {
     const renderUseConsent = () => renderHook(() => useConsent());

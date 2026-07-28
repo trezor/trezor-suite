@@ -8,8 +8,8 @@ import {
 } from '@suite-native/trading-fixtures';
 import { getFormDraftKeyByTradeType } from '@suite-native/trading-state';
 
-import { createTradingLightStore } from '../../../__tests__/tradingTestUtils';
-import { useComposeTradingTransaction } from '../useComposeTradingTransaction';
+import { useComposeTradingTransaction } from './useComposeTradingTransaction';
+import { createTradingLightStore } from '../../__tests__/tradingTestUtils';
 
 const mockComposeTradingTransactionThunk = jest.fn(
     (payload: unknown) => () =>
@@ -18,7 +18,7 @@ const mockComposeTradingTransactionThunk = jest.fn(
         }),
 );
 
-jest.mock('../../../thunks', () => ({
+jest.mock('../../thunks', () => ({
     composeTradingTransactionThunk: (payload: unknown) =>
         mockComposeTradingTransactionThunk(payload),
 }));

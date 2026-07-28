@@ -15,10 +15,10 @@ import { getWalletState } from '@suite-native/trading-fixtures';
 import { selectIsAmountInputActive, tradingSlice } from '@suite-native/trading-state';
 import { type BuyFormType } from '@suite-native/trading-types';
 
-import { useBuyForm } from '../../buy/useBuyForm';
-import { useFocusedValueWatch } from '../useFocusedValueWatch';
+import { useFocusedValueWatch } from './useFocusedValueWatch';
+import { useBuyForm } from '../buy/useBuyForm';
 
-jest.mock('../useFocusedValueWatch', () => jest.requireActual('../useFocusedValueWatch'));
+jest.mock('./useFocusedValueWatch', () => jest.requireActual('./useFocusedValueWatch'));
 
 describe('useFocusedValueWatch', () => {
     let form: BuyFormType;

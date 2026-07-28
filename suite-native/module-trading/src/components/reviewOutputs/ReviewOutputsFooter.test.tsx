@@ -1,12 +1,12 @@
 import { getTranslation } from '@suite-native/intl';
 import { userEvent } from '@suite-native/test-utils-store';
 
+import { ReviewOutputsFooter, type ReviewOutputsFooterProps } from './ReviewOutputsFooter';
 import {
     type PreloadedStatePartial,
     type TradingTestPreloadedState,
     renderWithTradingProvider,
-} from '../../../__tests__/tradingTestUtils';
-import { ReviewOutputsFooter, type ReviewOutputsFooterProps } from '../ReviewOutputsFooter';
+} from '../../__tests__/tradingTestUtils';
 
 describe('ReviewOutputsFooter', () => {
     const renderReviewOutputsFooter = (

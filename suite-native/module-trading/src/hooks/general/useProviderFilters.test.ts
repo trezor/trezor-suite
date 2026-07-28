@@ -4,7 +4,7 @@ import { EMPTY_GROUPED_TRADING_EXCHANGE_QUOTES } from '@suite-common/trading';
 import { act, renderHookWithBasicProvider } from '@suite-native/test-utils';
 import { type QuotesByCategories } from '@suite-native/trading-types';
 
-import { useProviderFilters } from '../useProviderFilters';
+import { useProviderFilters } from './useProviderFilters';
 
 type UseProviderFilterProps = {
     quotes?: QuotesByCategories<ExchangeTrade>;

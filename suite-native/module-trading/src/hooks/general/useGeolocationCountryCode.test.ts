@@ -14,7 +14,7 @@ import {
     renderHookWithStoreProvider,
 } from '@suite-native/test-utils-store';
 
-import { useGeolocationCountryCode } from '../useGeolocationCountryCode';
+import { useGeolocationCountryCode } from './useGeolocationCountryCode';
 
 jest.mock('@suite-common/geolocation', () => {
     const actual = jest.requireActual('@suite-common/geolocation');

@@ -1,8 +1,8 @@
 import { type TokenAddress } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 
-import { renderWithTradingProvider } from '../../../__tests__/tradingTestUtils';
-import { ReviewOutputsContent, type ReviewOutputsContentProps } from '../ReviewOutputsContent';
+import { ReviewOutputsContent, type ReviewOutputsContentProps } from './ReviewOutputsContent';
+import { renderWithTradingProvider } from '../../__tests__/tradingTestUtils';
 
 jest.mock('@suite-native/confirm-on-trezor', () => ({
     ...jest.requireActual('@suite-native/confirm-on-trezor'),
@@ -15,16 +15,16 @@ jest.mock('@suite-native/confirm-on-trezor', () => ({
 
 const mockUseTradingOutputsReviewScreenControls = jest.fn();
 
-jest.mock('../../../hooks/reviewOutputs/useTradingOutputsReviewScreenControls', () => ({
+jest.mock('../../hooks/reviewOutputs/useTradingOutputsReviewScreenControls', () => ({
     useTradingOutputsReviewScreenControls: (args: any) =>
         mockUseTradingOutputsReviewScreenControls(args),
 }));
 
-jest.mock('../../../hooks/reviewOutputs/useDelayedReviewOutputListDisplayFlag', () => ({
+jest.mock('../../hooks/reviewOutputs/useDelayedReviewOutputListDisplayFlag', () => ({
     useDelayedReviewOutputListDisplayFlag: () => true,
 }));
 
-jest.mock('../ReviewOutputsBody', () => ({
+jest.mock('./ReviewOutputsBody', () => ({
     ReviewOutputsBody: () => null,
 }));
 

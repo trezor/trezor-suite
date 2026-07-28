@@ -3,14 +3,14 @@ import { useOpenLink } from '@suite-native/link';
 import { fireEvent, renderWithBasicProvider } from '@suite-native/test-utils';
 import { TREZOR_URL } from '@trezor/urls';
 
-import { useConciergeProviders } from '../../../hooks/concierge/useConciergeProviders';
-import { ConciergeConfirmation } from '../ConciergeConfirmation';
+import { ConciergeConfirmation } from './ConciergeConfirmation';
+import { useConciergeProviders } from '../../hooks/concierge/useConciergeProviders';
 
 jest.mock('@suite-native/link', () => ({
     useOpenLink: jest.fn(),
 }));
 
-jest.mock('../../../hooks/concierge/useConciergeProviders', () => ({
+jest.mock('../../hooks/concierge/useConciergeProviders', () => ({
     useConciergeProviders: jest.fn(),
 }));
 

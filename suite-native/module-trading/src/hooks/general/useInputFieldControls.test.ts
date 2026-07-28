@@ -1,6 +1,6 @@
 import { renderHook } from '@suite-native/test-utils';
 
-import { useInputFieldControls } from '../useInputFieldControls';
+import { useInputFieldControls } from './useInputFieldControls';
 
 let mockUseField: jest.Mock;
 

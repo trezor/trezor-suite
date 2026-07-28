@@ -12,7 +12,7 @@ import {
 } from '@suite-native/trading-types';
 import { BigNumber } from '@trezor/utils';
 
-import { useMyAssetsFilteredData } from '../useMyAssetsFilteredData';
+import { useMyAssetsFilteredData } from './useMyAssetsFilteredData';
 
 const btcAsset: MyAssetTradeable = {
     name: 'Bitcoin',
