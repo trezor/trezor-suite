@@ -2,7 +2,7 @@ import { type Account } from '@suite-common/wallet-types';
 
 import { createQuoteLink, createTxLink, getStatusMessage } from 'src/utils/wallet/trading/buyUtils';
 
-import { buyUtilsFixtures } from '../../../../mocks/mockBuyUtils';
+import { buyUtilsFixtures } from './__fixtures__/buyUtils';
 
 describe('buyUtils', () => {
     const accountMock = {

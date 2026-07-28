@@ -1,5 +1,5 @@
+import { getTokensFixtures, hasVisibleTokensFixtures } from './__fixtures__/tokenUtils';
 import { getTokens, hasVisibleTokens } from './tokenUtils';
-import { getTokensFixtures, hasVisibleTokensFixtures } from '../../../mocks/mockTokenUtils';
 
 describe('getTokens', () => {
     getTokensFixtures.forEach(

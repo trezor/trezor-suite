@@ -1,5 +1,5 @@
+import * as fixtures from './__fixtures__/guide';
 import * as guideUtils from './guide';
-import * as fixtures from '../../../mocks/mockGuide';
 
 describe('getNodeTitle', () => {
     fixtures.getNodeTitle.forEach(f => {
