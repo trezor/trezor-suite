@@ -1,5 +1,5 @@
-import { selectHasUserAllowedTracking, selectIsAnalyticsEnabled } from '../analyticsReducer';
-import type { AnalyticsState } from '../analyticsReducer';
+import { selectHasUserAllowedTracking, selectIsAnalyticsEnabled } from './analyticsReducer';
+import type { AnalyticsState } from './analyticsReducer';
 
 type RootState = {
     analytics: AnalyticsState;
