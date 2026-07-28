@@ -6,7 +6,7 @@ import { messageSystemInitialState } from '@suite-common/message-system';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { configureMockStore, testMocks } from '@suite-common/test-utils';
 
-import fixtures from '../../../mocks/mockPublicKeyActions';
+import fixtures from './__fixtures__/publicKeyActions';
 
 const device = mockSuiteDevice({
     state: { staticSessionId: '1stTestnetAddress@device_id:0' },

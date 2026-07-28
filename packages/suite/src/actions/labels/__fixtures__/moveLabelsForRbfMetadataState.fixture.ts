@@ -3,7 +3,7 @@ import { type MetadataState } from '@suite-common/metadata-types';
 import {
     chainSpendingReceivedCoins,
     originalTransactionSpendAccount,
-} from './mockMoveLabelsForRbfTransactions';
+} from './moveLabelsForRbfTransactions.fixture';
 
 export const moveLabelsForRbfMetadataStateFixture: MetadataState = {
     enabled: true,

@@ -29,7 +29,7 @@ import {
 } from 'src/reducers/wallet';
 import { configureStore } from 'src/support/tests/configureStore';
 
-import * as fixtures from '../../../mocks/mockBlockchainActions';
+import * as fixtures from './__fixtures__/blockchainActions';
 
 const TrezorConnect = testMocks.getTrezorConnectMock();
 

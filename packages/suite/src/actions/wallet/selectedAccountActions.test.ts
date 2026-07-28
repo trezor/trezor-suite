@@ -2,8 +2,8 @@ import { selectedAccountReducer } from '@suite/account';
 
 import { configureStore } from 'src/support/tests/configureStore';
 
+import fixtures from './__fixtures__/selectedAccountActions';
 import { syncSelectedAccount } from './selectedAccountActions';
-import fixtures from '../../../mocks/mockSelectedAccountActions';
 
 const getInitialState = (initialState: any = {}) => ({
     suite: {},
