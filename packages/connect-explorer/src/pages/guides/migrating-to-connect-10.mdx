@@ -12,7 +12,7 @@ import InteractiveChecklist from '../../components/InteractiveChecklist';
 
 Connect 10 moves the Connect core out of the self-hosted iframe + popup and into **Trezor Suite**. Your app stays a thin client and keeps calling the same `TrezorConnect` methods — but a handful of parameters, return shapes and packaging details change, and a few methods move out of the public API.
 
-Work through the breaking sections that apply to you, adopt the recommended changes if you want them, then verify. For the architecture behind the change, see [New Connect flow in Trezor Suite](/guides/new-connect-flow-in-trezor-suite); for the release-by-release list, see the [changelog](/changelog).
+The guide follows the order of an actual upgrade: install the beta, fix your `init()` call, fix your method calls, then verify. The first three are required; [`selectAccount`](#the-new-way-to-ask-for-an-account-selectaccount) and the [other improvements](#other-improvements-worth-adopting) are optional but recommended. For the architecture behind the change, see [New Connect flow in Trezor Suite](/guides/new-connect-flow-in-trezor-suite); for the release-by-release list, see the [changelog](/changelog).
 
 <Callout type="info">
     **v9 keeps working.** Connect 10 is in beta: we would like third parties to test their
@@ -30,22 +30,7 @@ The Suite-hosted flow needs **Trezor Suite 26.7.2 or newer** to host the Connect
 
 Found a bug, or have feedback on the beta? Open an issue at [github.com/trezor/trezor-suite](https://github.com/trezor/trezor-suite/issues/new/choose).
 
-## API changes at a glance
-
-Most integrations only touch a few of these. Find your call site or your error in the table, then jump to the section that explains it.
-
-| v9 API                            | v10                              | What to do                                                                                                                  |
-| --------------------------------- | -------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
-| `getAccountDescriptor`            | Removed                          | Call the per-coin `*GetPublicKey`, read `displayablePublicKey` ([these APIs](#breaking-changes-only-if-you-use-these-apis)) |
-| `getAccountInfo()` with no path   | Throws `Method_InvalidParameter` | Pass `path` or `descriptor`, or use `selectAccount` ([these APIs](#breaking-changes-only-if-you-use-these-apis))            |
-| `coin: 'Bitcoin'` (name/label)    | Rejected                         | Use the shortcut: `coin: 'btc'` ([these APIs](#breaking-changes-only-if-you-use-these-apis))                                |
-| `useCardanoDerivation`            | Removed                          | Declare `enabledNetworks` at init ([Cardano](#cardano))                                                                     |
-| `on` / `off` / `uiResponse`       | Throws `TypeError`               | Remove — no replacement in the public tier ([these APIs](#breaking-changes-only-if-you-use-these-apis))                     |
-| device-management methods         | Not in public API                | Suite's responsibility now — no replacement ([these APIs](#breaking-changes-only-if-you-use-these-apis))                    |
-| `@trezor/connect-plugin-ethereum` | Stub that throws                 | Drop it, remove `transformTypedData` ([these APIs](#breaking-changes-only-if-you-use-these-apis))                           |
-| `disableWebUSB()`                 | Removed                          | `updateConnectSettings({ transports })` ([Core hosts](#breaking-changes-only-if-you-host-connect-core-trezorconnect))       |
-
-## Breaking changes: every integration
+## Update your setup
 
 - [ ] Add `manifest.appName` to your `init()` call. It is now **required**.
 
@@ -86,18 +71,20 @@ TrezorConnect.init({
 
 - [ ] Stop relying on `Object.keys(TrezorConnect)` enumeration or on monkeypatching methods. Public `TrezorConnect` objects are now class instances.
 
-## Breaking changes: only if you use these APIs
+## Update your method calls
+
+Skip any item whose API you do not use.
+
+- [ ] **`coin` accepts the coin shortcut only.** Replace names and labels: `'Bitcoin'` → `'btc'`, `'Bitcoin Cash'` → `'bch'`, `'cardano'` → `'ada'`. Pass lowercase so TypeScript type-checks, even though runtime matching is case-insensitive.
+    - Path-taking methods (`getAddress`, `getPublicKey`, …) fall back to deriving the network from `path`.
+    - These throw `Method_UnknownCoin` with no fallback: `getAccountInfo`, `selectAccount`, `verifyMessage`, `composeTransaction`, `signTransaction`, `signMessage`, `getOwnershipId`, `getOwnershipProof`, and the `blockchain*` family.
 
 - [ ] **`getAccountDescriptor` is removed.** Call the per-coin `*GetPublicKey` instead.
     - `payload.descriptor` → Bitcoin: `result.descriptor`. Non-Bitcoin coins: `result.displayablePublicKey`.
     - `payload.path` → `result.serializedPath` on every `*GetPublicKey`.
     - Coin-agnostic consumers: read `result.displayablePublicKey`.
 
-- [ ] **`getAccountInfo` called without `path` or `descriptor` now throws** `Method_InvalidParameter`. Pass `path` (derive on device, then query backend) or `descriptor` (backend only). For the old discovery behaviour use `discoverAccounts`, or `selectAccount` for user-facing selection.
-
-- [ ] **`coin` accepts the coin shortcut only.** Replace names and labels: `'Bitcoin'` → `'btc'`, `'Bitcoin Cash'` → `'bch'`, `'cardano'` → `'ada'`. Pass lowercase so TypeScript type-checks, even though runtime matching is case-insensitive.
-    - Path-taking methods (`getAddress`, `getPublicKey`, …) fall back to deriving the network from `path`.
-    - These throw `Method_UnknownCoin` with no fallback: `getAccountInfo`, `selectAccount`, `verifyMessage`, `composeTransaction`, `signTransaction`, `signMessage`, `getOwnershipId`, `getOwnershipProof`, and the `blockchain*` family.
+- [ ] **`getAccountInfo` called without `path` or `descriptor` now throws** `Method_InvalidParameter`. Pass `path` (derive on device, then query backend) or `descriptor` (backend only). For the old discovery behaviour use `discoverAccounts`, or [`selectAccount`](#the-new-way-to-ask-for-an-account-selectaccount) for user-facing selection.
 
 - [ ] **`on`, `off`, `removeAllListeners`, `uiResponse` and `updateConnectSettings` are gone from the public tier** and now throw `TypeError`. Remove the calls. They were already non-functional in v10 thin packages.
 
@@ -117,42 +104,49 @@ TrezorConnect.init({
 
 - [ ] Remove the per-call `useCardanoDerivation` parameter. Declare `TrezorConnect.init({ enabledNetworks: [{ coin: 'ada' }] })` instead. Note: on thin packages, `enabledNetworks` is not honored — Cardano availability follows the host Suite wallet's enabled coins.
 
-## Breaking changes: only if you host Connect Core (`@trezor/connect`)
+## The new way to ask for an account: `selectAccount`
 
-Skip this section if you install `@trezor/connect-web`, `@trezor/connect-webextension` or `@trezor/connect-mobile` — those are thin clients and Suite hosts the core for them.
+In v9, the common way to let a user pick an account was calling `getAccountInfo` with no path, which triggered on-device discovery. That pattern is gone. Its replacement, `selectAccount`, opens Suite's own account picker: derivation, selection UI and on-device verification all happen inside Suite, and your app receives only the result.
 
-- [ ] Pass `transports` as fully constructed `Transport` instances. String identifiers (`'BridgeTransport'`, …) and classes are no longer accepted:
+```javascript
+const response = await TrezorConnect.selectAccount({
+    coin: 'btc',
+    // Export a single fresh address instead of the whole account.
+    addressSelection: 'firstFresh',
+});
 
-    ```javascript
-    import { BridgeTransport } from '@trezor/transport-common';
+if (response.success) {
+    const [{ symbol, path, address, mac }] = response.payload;
+}
+```
 
-    init({ transports: [new BridgeTransport({ id: 'my-app' })] });
-    ```
+The response is **always an array** of `{ symbol, path, address? | xpub?, accountType?, mac? }`, even for a single selection. `address` and `xpub` are mutually exclusive — which one you get depends on the sharing flow you request.
 
-- [ ] For WebUSB, import from `@trezor/transport-web`. Do not import the Node-only `@trezor/transport` barrel in web or React Native bundles.
+### Share only what you need
 
-- [ ] Replace `disableWebUSB()` with `updateConnectSettings({ transports })` and a filtered list.
+For UTXO coins (Bitcoin & co.), `addressSelection` decides how much the user shares:
 
-- [ ] Remove any use of `TransportInfo.outdated`. Legacy `trezord-go` Bridge on port `21325` is no longer supported, and detecting an outdated Bridge is now your app's job.
+- **`'firstFresh'`** — auto-selects the next unused receive address. Exports that single address only, never the xpub, and needs only the narrow `read_address` permission. The optional `mac` in the result (SLIP-0019) lets you later re-prove the address belongs to the device.
+- **`'manual'`** — same as `'firstFresh'`, but the user picks the address, including used ones.
+- **`'fullAccount'`** (default) — shares the whole account as an xpub, like a watch-only import. Needs the broader `read_xpub` permission.
 
-## Recommended, not required
+Account-based networks (EVM, Solana, …) ignore `addressSelection` and always return an individual address.
 
-Nothing here breaks your integration, but these are the improvements Connect 10 was built for.
+If a single address is enough for your use case — deposits, withdrawals, ownership checks — prefer `'firstFresh'` or `'manual'`: the user shares less, and your app asks for a smaller permission.
 
-- [ ] Replace the "call `getAccountInfo` with no path to trigger on-device discovery" pattern with `selectAccount`.
+### Shape the picker
 
-- [ ] Choose the narrowest `addressSelection` you can:
-    - `'firstFresh'` or `'manual'` export a single address, never reveal the xpub, and need only `read_address`. Request an optional SLIP-0019 `mac` if you need to re-prove device ownership later.
-    - `'fullAccount'` (default) shares the xpub and needs `read_xpub`.
-    - Account-based networks (EVM, Solana, …) always return an individual address.
+- **`selectionType`** — `'single'` (default), `'multi'`, or bounded multi-select via `{ minCount, maxCount }`.
+- **`accountType`** — restricts which derivation types the picker offers, each as its own tab: the built-in types (`'normal'`, `'taproot'`, `'segwit'`, `'legacy'`, `'ledger'`), or a custom derivation path as `{ bip43Path: "m/44'/60'/i'/0/0", label: 'My accounts' }` (with `i` as the account-index placeholder). If omitted, all of the network's types are offered.
+- **`requireOnDeviceVerification`** — whether the selected address must be confirmed on the device. Defaults to `true`.
 
-- [ ] Handle `selectAccount` returning an array of `{ symbol, path, address? | xpub?, accountType?, mac? }`, even for a single selection.
+## Other improvements worth adopting
 
-- [ ] Configure `selectionType` (`'single'`, `'multi'`, or `{ minCount, maxCount }`), `accountType` filtering, and `requireOnDeviceVerification` (default `true`) to match your flow.
-
-- [ ] Review the per-coin scopes your methods request (`read_address`, `read_xpub`, `sign`, `sign_message`). Scopes are non-overlapping, so `read_address` does not grant `read_xpub`.
+Nothing here breaks your integration, but each one either simplifies your code or was not possible in v9.
 
 - [ ] Remove per-coin branching where you render public keys. Every `*GetPublicKey` now returns `displayablePublicKey`.
+
+- [ ] Review the per-coin scopes your methods request (`read_address`, `read_xpub`, `sign`, `sign_message`). Scopes are non-overlapping, so `read_address` does not grant `read_xpub`.
 
 - [ ] Ethereum: pass only `data` to `ethereumSignTypedData`. Hashes are computed internally for T1B1. Caller-provided hashes still take precedence.
 
