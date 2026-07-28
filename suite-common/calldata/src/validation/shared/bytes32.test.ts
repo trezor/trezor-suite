@@ -1,4 +1,4 @@
-import { findBytes32IssueTestCases } from './__fixtures__/mockBytes32';
+import { findBytes32IssueTestCases } from './__fixtures__/bytes32.fixture';
 import { findBytes32Issue } from './bytes32';
 
 describe('findBytes32Issue', () => {

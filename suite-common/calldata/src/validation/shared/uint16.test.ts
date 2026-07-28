@@ -1,4 +1,4 @@
-import { findUint16OverflowIssueTestCases } from './__fixtures__/mockUint16';
+import { findUint16OverflowIssueTestCases } from './__fixtures__/uint16.fixture';
 import { findUint16OverflowIssue } from './uint16';
 
 describe('findUint16OverflowIssue', () => {

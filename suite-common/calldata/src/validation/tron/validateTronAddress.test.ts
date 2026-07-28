@@ -1,4 +1,4 @@
-import { validateTronAddressTestCases } from './__fixtures__/mockValidateTronAddress';
+import { validateTronAddressTestCases } from './__fixtures__/validateTronAddress.fixture';
 import { validateTronAddress } from './address';
 
 describe('validateTronAddress', () => {

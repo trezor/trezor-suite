@@ -1,4 +1,4 @@
-import { validateBytes32TestCases } from './__fixtures__/mockValidateBytes32';
+import { validateBytes32TestCases } from './__fixtures__/validateBytes32.fixture';
 import { validateBytes32 } from './bytes32';
 
 describe('validateBytes32', () => {

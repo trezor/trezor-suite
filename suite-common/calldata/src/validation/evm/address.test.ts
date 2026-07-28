@@ -4,7 +4,7 @@ import {
     findSenderMismatchIssueTestCases,
     findWhitelistIssueTestCases,
     findZeroAddressIssueTestCases,
-} from './__fixtures__/mockAddress';
+} from './__fixtures__/address.fixture';
 import {
     findAddressIssue,
     findSelfAddressIssue,
