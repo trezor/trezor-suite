@@ -1,4 +1,4 @@
-import { RateLimiter } from '../src/limiter';
+import { RateLimiter } from './limiter';
 
 describe('RateLimiter', () => {
     test('delay is honoured', async () => {

@@ -1,4 +1,4 @@
-import { findClosestTimestampValue } from '../src/coingecko';
+import { findClosestTimestampValue } from './coingecko';
 
 describe('findClosestTimestampValue', () => {
     test('returns the first fiat rate when timestamp is before all values', () => {
