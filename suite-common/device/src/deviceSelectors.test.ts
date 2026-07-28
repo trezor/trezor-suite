@@ -1,9 +1,9 @@
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
-import { portfolioTrackerDevice } from '../src/deviceConstants';
-import { deviceReducerInitialState } from '../src/deviceReducer';
-import { selectIsDeviceAuthenticityCheckSupported } from '../src/deviceSelectors';
+import { portfolioTrackerDevice } from './deviceConstants';
+import { deviceReducerInitialState } from './deviceReducer';
+import { selectIsDeviceAuthenticityCheckSupported } from './deviceSelectors';
 
 describe(selectIsDeviceAuthenticityCheckSupported.name, () => {
     it('returns true for supported Trezor Safe devices', () => {
