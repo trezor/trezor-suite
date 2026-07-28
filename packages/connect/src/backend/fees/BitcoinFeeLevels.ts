@@ -6,18 +6,14 @@ import { clamp } from '@trezor/utils/src/number';
 
 import type { Blockchain } from '../Blockchain';
 import { MiscFeeLevels } from './MiscFeeLevels';
-import { DEFAULT_BITCOIN_LONGTERM_FEE_RATE } from '../../data/defaultFeeLevels';
 
 export class BitcoinFeeLevels extends MiscFeeLevels {
     coinInfo: BitcoinNetworkInfo;
-    longTermFeeRate: string; // long term fee rate is used by @trezor/utxo-lib composeTx module
 
     // override only to narrow down the coinInfo type
     constructor(coinInfo: BitcoinNetworkInfo) {
         super(coinInfo);
         this.coinInfo = coinInfo;
-        // TODO https://github.com/trezor/trezor-suite/issues/18483 rewrite with response from a new planned blockbook API
-        this.longTermFeeRate = DEFAULT_BITCOIN_LONGTERM_FEE_RATE;
     }
 
     async load(blockchain: Blockchain) {
