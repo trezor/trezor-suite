@@ -35,8 +35,6 @@ jobs:
           fetch-depth: 0
           # `ref` makes sure that we checkout the branch we are running workflow on.
           ref: ${{ github.head_ref }}
-          # `submodules` are required to run `yarn build:libs`.
-          submodules: true
 
       - name: Setup node
         uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
