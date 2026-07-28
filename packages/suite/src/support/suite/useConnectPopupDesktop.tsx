@@ -18,6 +18,7 @@ import { selectSelectedDevice } from '@suite-common/device';
 import TrezorConnect, {
     type CallMethodKeys,
     type CallMethodPayload,
+    type PermissionRequest,
     UI_REQUEST,
 } from '@trezor/connect';
 import { isMacOs } from '@trezor/env-utils';
@@ -116,6 +117,10 @@ export const useConnectPopupDesktop = () => {
                                   },
                                   origin: params.origin,
                                   manifest: params.manifest,
+                                  // Cast across the IPC boundary, same as `params.method` above.
+                                  requestedPermissions: params.requestedPermissions as
+                                      | PermissionRequest[]
+                                      | undefined,
                               },
                     }),
                 );
