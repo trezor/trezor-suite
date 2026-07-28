@@ -1,6 +1,6 @@
+import { fixtures } from './__fixtures__/http';
 import { createHttpReceiver } from './http-receiver';
 import { Logger } from './logger';
-import { fixtures } from '../../mocks/mockHttp';
 
 global.logger = new Logger('mute');
 
