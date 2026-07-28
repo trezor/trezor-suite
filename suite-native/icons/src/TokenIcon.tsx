@@ -11,7 +11,7 @@ import {
     getNetworkDisplaySymbol,
     isNetworkSymbol,
 } from '@suite-common/wallet-config';
-import { getAssetLogoContractAddresses } from '@suite-common/wallet-utils';
+import { getAssetLogoContractAddresses, isWrappedNativeToken } from '@suite-common/wallet-utils';
 import { useTranslate } from '@suite-native/intl';
 import { getAssetLogoUrl } from '@trezor/asset-utils';
 import { useAsyncMemo } from '@trezor/react-utils';
@@ -97,6 +97,10 @@ interface TokenIconProps {
     contractAddress?: string;
     showNetworkIcon?: boolean;
     size?: TokenIconSize | number;
+    /**
+     * If the token is a wrapped native token (e.g. WETH), this prop determines whether to show the icon of the token itself or its network icon.
+     */
+    wrappedTokenIcon?: 'token' | 'network';
 }
 
 const TokenIconComponent = ({ symbol, contractAddress, size = 'small' }: TokenIconProps) => {
@@ -194,8 +198,17 @@ export const TokenIcon = ({
     contractAddress,
     showNetworkIcon = false,
     size = 'small',
+    wrappedTokenIcon = 'token',
 }: TokenIconProps) => {
     const { applyStyle } = useNativeStyles();
+
+    if (
+        wrappedTokenIcon === 'network' &&
+        isNetworkSymbol(symbol) &&
+        isWrappedNativeToken(symbol, contractAddress)
+    ) {
+        contractAddress = undefined;
+    }
 
     if (!showNetworkIcon || !isNetworkSymbol(symbol)) {
         return <TokenIconComponent symbol={symbol} contractAddress={contractAddress} size={size} />;
@@ -203,7 +216,8 @@ export const TokenIcon = ({
 
     const displaySymbol = getNetworkDisplaySymbol(symbol) as NetworkDisplaySymbol;
     const showForNativeToken = displaySymbol === 'ETH' && symbol !== 'eth';
-    const shouldShowNetwork = showForNativeToken || contractAddress;
+    const shouldShowNetwork =
+        showForNativeToken || contractAddress || wrappedTokenIcon === 'network';
 
     const iconSymbol = contractAddress ? symbol : displaySymbol;
     const iconSize = typeof size === 'number' ? size : tokenIconSizes[size];
