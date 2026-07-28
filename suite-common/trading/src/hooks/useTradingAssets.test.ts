@@ -1,8 +1,8 @@
 import { type CryptoId } from 'invity-api';
 
-import coins from '../../__fixtures__/coins.json';
-import platforms from '../../__fixtures__/platforms.json';
-import { createAssetOption } from '../useTradingAssets';
+import { createAssetOption } from './useTradingAssets';
+import coins from '../__fixtures__/coins.json';
+import platforms from '../__fixtures__/platforms.json';
 
 describe('createAssetOption', () => {
     it('should return correct data for Bitcoin', () => {

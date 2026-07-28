@@ -3,10 +3,10 @@ import { type CryptoId } from 'invity-api';
 
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 
-import { useExchangeFiatDeviation } from '../useExchangeFiatDeviation';
-import { type TradingFiatRatesReturn, useTradingFiatValues } from '../useTradingFiatValues';
+import { useExchangeFiatDeviation } from './useExchangeFiatDeviation';
+import { type TradingFiatRatesReturn, useTradingFiatValues } from './useTradingFiatValues';
 
-jest.mock('../useTradingFiatValues', () => ({
+jest.mock('./useTradingFiatValues', () => ({
     useTradingFiatValues: jest.fn(),
 }));
 

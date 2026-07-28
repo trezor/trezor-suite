@@ -1,6 +1,6 @@
 import { act, renderHook } from '@testing-library/react';
 
-import { useCountryFilteredData } from '../useCountryFilteredData';
+import { useCountryFilteredData } from './useCountryFilteredData';
 
 describe('useCountryFilteredData', () => {
     const renderUseCountryFilteredData = () => renderHook(() => useCountryFilteredData());

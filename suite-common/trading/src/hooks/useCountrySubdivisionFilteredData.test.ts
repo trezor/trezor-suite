@@ -1,6 +1,6 @@
 import { act, renderHook } from '@testing-library/react';
 
-import { useCountrySubdivisionFilteredData } from '../useCountrySubdivisionFilteredData';
+import { useCountrySubdivisionFilteredData } from './useCountrySubdivisionFilteredData';
 
 describe('useCountrySubdivisionFilteredData', () => {
     it('should return empty data when countryCode is undefined', () => {
