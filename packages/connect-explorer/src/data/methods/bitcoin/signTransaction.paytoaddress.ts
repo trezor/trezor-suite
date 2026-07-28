@@ -99,30 +99,6 @@ const test = {
     ],
 };
 
-const dash = {
-    inputs: [
-        {
-            address_n: [
-                (44 | 0x80000000) >>> 0,
-                (5 | 0x80000000) >>> 0,
-                (0 | 0x80000000) >>> 0,
-                1,
-                0,
-            ],
-            amount: '167280961',
-            prev_index: 0,
-            prev_hash: 'adb43bcd8fc99d6ed353c30ca8e5bd5996cd7bcf719bd4253f103dfb7227f6ed',
-        },
-    ],
-    outputs: [
-        {
-            address: 'XkNPrBSJtrHZUvUqb3JF4g5rMB3uzaJfEL',
-            amount: '167000000',
-            script_type: 'PAYTOADDRESS',
-        },
-    ],
-};
-
 // version 3
 const zec = {
     inputs: [
@@ -181,7 +157,6 @@ const examples: Partial<Record<CoinSymbol, { inputs: unknown[]; outputs: unknown
     btc,
     bch,
     test,
-    dash,
     zec,
     doge,
 };
