@@ -2,12 +2,12 @@ import { checksumAddress, isAddress } from 'viem';
 
 import { typedObjectKeys } from '@trezor/utils';
 
-import { getNetworkType } from '../utils';
+import { getNetworkType } from './utils';
 import {
     WRAPPED_NATIVE,
     getWrappedNativeAddress,
     getWrappedNativeSymbol,
-} from '../wrappedNativeToken';
+} from './wrappedNativeToken';
 
 describe(getWrappedNativeAddress.name, () => {
     it('returns the wrapped native address for a supported network', () => {

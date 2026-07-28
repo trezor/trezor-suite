@@ -1,5 +1,5 @@
-import { networks } from '../networksConfig';
-import { type NetworkSymbol } from '../types';
+import { networks } from './networksConfig';
+import { type NetworkSymbol } from './types';
 import {
     filterNetworksByName,
     getMainnets,
@@ -9,7 +9,7 @@ import {
     isAccountBasedNetwork,
     isAccountOfNetwork,
     isNetworkUsingExternalBackend,
-} from '../utils';
+} from './utils';
 
 const { btc: bitcoin, eth: ethereum, test: testnet, regtest } = networks;
 
