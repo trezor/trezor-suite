@@ -12,7 +12,11 @@ import {
 } from '@trezor/transport-common';
 
 import { TrezorBluetooth } from './trezor-bluetooth';
-import { type BluetoothDevice, type TrezorBluetoothSettings } from './types';
+import {
+    type BluetoothAdapterState,
+    type BluetoothDevice,
+    type TrezorBluetoothSettings,
+} from './types';
 
 // implementation of @trezor/transport/src/api/abstract
 
@@ -22,6 +26,7 @@ export class BluetoothApi extends AbstractApi {
     chunkSize = 244;
     api: TrezorBluetooth;
 
+    private adapterState?: BluetoothAdapterState;
     private readBuffer = readMessageBuffer();
     private readSubscription: Record<string, boolean> = {}; // [device.id]: true
 
@@ -85,9 +90,11 @@ export class BluetoothApi extends AbstractApi {
             }
         });
         api.on('adapter_state_changed', ({ state }) => {
+            if (this.adapterState === state) return;
             if (state !== 'enabled') {
                 transportApiEvent({ devices: [] });
             }
+            this.adapterState = state;
         });
         api.on('disconnected', () => {
             this.emit('transport-interface-error', { error: ERRORS.API_DISCONNECTED });
