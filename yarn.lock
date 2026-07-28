@@ -16170,7 +16170,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/connect-data@workspace:*, @trezor/connect-data@workspace:packages/connect-data":
+"@trezor/connect-data@workspace:*, @trezor/connect-data@workspace:^, @trezor/connect-data@workspace:packages/connect-data":
   version: 0.0.0-use.local
   resolution: "@trezor/connect-data@workspace:packages/connect-data"
   dependencies:
@@ -16245,6 +16245,7 @@ __metadata:
     "@sinclair/typebox": "npm:^0.34.49"
     "@trezor/components": "workspace:^"
     "@trezor/connect-common": "workspace:^"
+    "@trezor/connect-data": "workspace:^"
     "@trezor/connect-explorer-theme": "workspace:^"
     "@trezor/connect-mobile": "workspace:^"
     "@trezor/connect-web": "workspace:^"

@@ -17,6 +17,7 @@
         "@sinclair/typebox": "^0.34.49",
         "@trezor/components": "workspace:^",
         "@trezor/connect-common": "workspace:^",
+        "@trezor/connect-data": "workspace:^",
         "@trezor/connect-explorer-theme": "workspace:^",
         "@trezor/connect-mobile": "workspace:^",
         "@trezor/connect-web": "workspace:^",

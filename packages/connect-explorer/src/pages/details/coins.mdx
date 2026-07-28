@@ -1,0 +1,42 @@
+---
+description: Every value the coin parameter accepts, and the network each one selects.
+---
+
+import { Callout } from 'nextra/components';
+
+import { CoinsTable } from '../../components/CoinsTable';
+
+# Supported coins
+
+Methods that work across networks take a `coin` parameter. It accepts a **coin shortcut** in lowercase — `'btc'`, `'bch'`, `'ada'` — one of the values listed below.
+
+The tables are generated from the coin definitions bundled with Connect, so they list exactly what this version accepts, testnets included. [`getCoinInfo`](/methods/common/getCoinInfo) returns the full definition of a single coin at runtime, including the minimum firmware version per device model.
+
+A `coin` that resolves to no definition is handled per method. Methods that also take a `path` ([`getAddress`](/methods/bitcoin/getAddress), [`getPublicKey`](/methods/bitcoin/getPublicKey), …) derive the network from the path instead; [`getAccountInfo`](/methods/common/getAccountInfo), [`selectAccount`](/methods/common/selectAccount), [`verifyMessage`](/methods/bitcoin/verifyMessage), [`composeTransaction`](/methods/bitcoin/composeTransaction), [`signTransaction`](/methods/bitcoin/signTransaction), [`signMessage`](/methods/bitcoin/signMessage), [`getOwnershipId`](/methods/other/getOwnershipId), [`getOwnershipProof`](/methods/other/getOwnershipProof) and the `blockchain*` family throw `Method_UnknownCoin`.
+
+**Backend support** lists the domains of the default blockchain backend Connect talks to for a network — `trezor.io` for the servers we run, anything else for a third-party service your users' requests would reach instead. A `—` means Connect bundles no backend for the network: signing still works, but anything that queries the chain ([`getAccountInfo`](/methods/common/getAccountInfo), [`pushTransaction`](/methods/common/pushTransaction), the `blockchain*` family) throws `Backend_NotSupported` until you supply a server with `blockchainSetCustomBackend`, which also overrides the defaults below.
+
+## Bitcoin and other UTXO networks
+
+Handled by the Bitcoin method family: [`getAddress`](/methods/bitcoin/getAddress), [`getPublicKey`](/methods/bitcoin/getPublicKey), [`signTransaction`](/methods/bitcoin/signTransaction) and friends.
+
+<CoinsTable category="bitcoin" />
+
+## EVM networks
+
+The `ethereum*` methods ([`ethereumGetAddress`](/methods/ethereum/ethereumGetAddress), [`ethereumSignTransaction`](/methods/ethereum/ethereumSignTransaction), …) identify the network by derivation path and `chainId`, not by `coin`. **Any EVM chain works there, whether or not it appears below** — pass its `chainId` in the transaction and Connect fetches the matching network and token definitions for the device at call time.
+
+The list below is therefore not the set of chains you can sign for. It is the set of EVM networks Connect ships a blockchain backend for, so these are the shortcuts the network-agnostic methods accept — [`getAccountInfo`](/methods/common/getAccountInfo), [`selectAccount`](/methods/common/selectAccount), [`pushTransaction`](/methods/common/pushTransaction) and the `blockchain*` family. A chain that is not listed has no `coin` shortcut, so those methods cannot address it at all.
+
+<CoinsTable category="eth" />
+
+## Other networks
+
+Each of these networks has its own method family, named in the **Methods** column.
+
+<CoinsTable category="misc" />
+
+<Callout type="warning">
+    Cardano (`'ada'`, `'tada'`) needs the Cardano derivation enabled for the device session on top
+    of the `coin` value — see [`enabledNetworks`](/details/commonParams#application-level-setup).
+</Callout>
