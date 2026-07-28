@@ -42,18 +42,4 @@ export class BitcoinFeeLevels extends MiscFeeLevels {
 
         return this.levels;
     }
-
-    updateBitcoinCustomFee(feePerUnit: string) {
-        this.levels = this.levels.filter(l => l.label !== 'custom');
-        this.levels.push({
-            label: 'custom',
-            feePerUnit,
-            /*
-             We do not estimate confirmation time for custom fees. It could be interpolated if we had
-             an array of historical fee rates, but not with the mempool.space API that blockbook provides.
-             That data, although great for estimating low/normal/high fees, means something completely different.
-            */
-            blocks: -1,
-        });
-    }
 }

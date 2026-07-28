@@ -45,7 +45,17 @@ export class TransactionComposer {
 
     feeLevels: BitcoinFeeLevels;
 
+    customFee: string | undefined;
+
     composed: { [key: string]: ComposeResult } = {};
+
+    private get levels() {
+        return this.customFee
+            ? this.feeLevels.levels.concat([
+                  { label: 'custom' as const, feePerUnit: this.customFee, blocks: -1 },
+              ])
+            : this.feeLevels.levels;
+    }
 
     constructor(options: Options) {
         this.account = options.account;
@@ -83,7 +93,7 @@ export class TransactionComposer {
 
     // Composing fee levels for SelectFee view in popup
     composeAllFeeLevels() {
-        const { levels } = this.feeLevels;
+        const { levels } = this;
         if (this.utxos.length < 1) return false;
 
         this.composed = {};
@@ -107,7 +117,7 @@ export class TransactionComposer {
 
                 const tx = this.compose(lastFee.toString());
                 if (tx.type === 'final') {
-                    this.feeLevels.updateBitcoinCustomFee(lastFee.toString());
+                    this.customFee = lastFee.toString();
                     this.composed.custom = tx;
 
                     return true;
@@ -123,17 +133,12 @@ export class TransactionComposer {
     composeCustomFee(fee: string) {
         const tx = this.compose(fee);
         this.composed.custom = tx;
-        if (tx.type === 'final') {
-            this.feeLevels.updateBitcoinCustomFee(tx.feePerByte);
-        } else {
-            this.feeLevels.updateBitcoinCustomFee(fee);
-        }
+        this.customFee = tx.type === 'final' ? tx.feePerByte : fee;
     }
 
     getFeeLevelList() {
         const list: SelectFeeLevel[] = [];
-        const { levels } = this.feeLevels;
-        levels.forEach(level => {
+        this.levels.forEach(level => {
             const tx = this.composed[level.label];
             if (tx?.type === 'final') {
                 list.push({
