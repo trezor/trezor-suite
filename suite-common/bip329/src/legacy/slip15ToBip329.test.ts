@@ -1,6 +1,6 @@
 import { type AccountLabels } from '@suite-common/metadata-types';
 
-import { slip15ToBip329 } from '../legacy/slip15ToBip329';
+import { slip15ToBip329 } from './slip15ToBip329';
 
 describe(slip15ToBip329.name, () => {
     it('transforms legacy labels to bip329 labels', () => {
