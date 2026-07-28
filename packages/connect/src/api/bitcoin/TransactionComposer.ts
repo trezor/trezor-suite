@@ -19,6 +19,7 @@ import { composeTx, networks } from '@trezor/utxo-lib';
 import type { Blockchain } from '../../backend/BlockchainLink';
 import { getOrInitBitcoinFeeLevels } from '../../backend/fees';
 import type { BitcoinFeeLevels } from '../../backend/fees/BitcoinFeeLevels';
+import { DEFAULT_BITCOIN_LONGTERM_FEE_RATE } from '../../data/defaultFeeLevels';
 
 type Options = {
     account: DiscoveryAccount;
@@ -178,7 +179,8 @@ export class TransactionComposer {
             utxos: this.utxos,
             outputs: this.outputs,
             feeRate,
-            longTermFeeRate: this.feeLevels.longTermFeeRate,
+            // TODO https://github.com/trezor/trezor-suite/issues/18483 rewrite with response from a new planned blockbook API
+            longTermFeeRate: DEFAULT_BITCOIN_LONGTERM_FEE_RATE,
             sortingStrategy: this.sortingStrategy,
             network: coinInfo.network,
             changeAddress,
