@@ -71,6 +71,7 @@ import {
     cryptoIdToNetwork,
     cryptoIdToNetworkSymbolAndContractAddress,
     getTradingQuotesByPaymentMethod,
+    getTradingQuotesDedupedByProvider,
     isBuyTrade,
     isExchangeProvider,
     testnetToProdCryptoId,
@@ -626,6 +627,11 @@ export const selectTradingBuyQuotesByPaymentMethod = createMemoizedSelector(
         ),
 );
 
+export const selectTradingBuyOfferQuotes = createMemoizedSelector(
+    [selectTradingBuyQuotesByPaymentMethod],
+    quotes => returnStableArrayIfEmpty(getTradingQuotesDedupedByProvider(quotes)),
+);
+
 export const selectTradingBuyQuoteByOrderId = (
     state: TradingRootState,
     orderId: string | undefined,
@@ -699,6 +705,11 @@ export const selectTradingSellQuotesByPaymentMethod = createMemoizedSelector(
         returnStableArrayIfEmpty(
             paymentMethod ? getTradingQuotesByPaymentMethod<'sell'>(quotes, paymentMethod) : [],
         ),
+);
+
+export const selectTradingSellOfferQuotes = createMemoizedSelector(
+    [selectTradingSellQuotesByPaymentMethod],
+    quotes => returnStableArrayIfEmpty(getTradingQuotesDedupedByProvider(quotes)),
 );
 
 export const selectTradingExchangeFormStep = (state: TradingRootState) =>

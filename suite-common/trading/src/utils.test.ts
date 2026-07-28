@@ -1,4 +1,5 @@
 import {
+    type BuyTrade,
     type CryptoId,
     type ExchangeProviderInfo,
     type ExchangeTrade,
@@ -24,6 +25,7 @@ import {
     getDefaultCountrySubdivision,
     getTradingFormState,
     getTradingQuotesByPaymentMethod,
+    getTradingQuotesDedupedByProvider,
     getUnusedAddressFromAccount,
     isCryptoIdForNativeToken,
     isFinalStatus,
@@ -150,6 +152,26 @@ describe('getTradingQuotesByPaymentMethod', () => {
         const allQuotesApplePay = quotes?.find(quote => quote.paymentMethod === 'applePay');
 
         expect(allQuotesApplePay).toBeDefined();
+    });
+});
+
+describe('getTradingQuotesDedupedByProvider', () => {
+    const topperEps: BuyTrade = { exchange: 'topper', paymentMethod: 'eps' };
+    const topperCreditCard: BuyTrade = { exchange: 'topper', paymentMethod: 'creditCard' };
+    const banxaEps: BuyTrade = { exchange: 'banxa', paymentMethod: 'eps' };
+
+    it('should keep the last quote of each provider in first-occurrence order', () => {
+        expect(getTradingQuotesDedupedByProvider([topperEps, banxaEps, topperCreditCard])).toEqual([
+            topperCreditCard,
+            banxaEps,
+        ]);
+    });
+
+    it('should keep quotes of distinct providers untouched', () => {
+        expect(getTradingQuotesDedupedByProvider([topperEps, banxaEps])).toEqual([
+            topperEps,
+            banxaEps,
+        ]);
     });
 });
 
