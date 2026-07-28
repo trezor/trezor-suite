@@ -1,4 +1,4 @@
-import { type IssueCode } from '../../../src/types/validation';
+import { type IssueCode } from '../../../types/validation';
 
 type TestCase = {
     description: string;

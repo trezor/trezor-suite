@@ -1,7 +1,7 @@
 import { BigNumber } from '@trezor/utils';
 
-import { type IssueCode } from '../../../src/types/validation';
-import { UINT256_MAX } from '../../../src/validation/shared/uint256';
+import { type IssueCode } from '../../../types/validation';
+import { UINT256_MAX } from '../uint256';
 
 type ValidateFnTestCase = {
     description: string;

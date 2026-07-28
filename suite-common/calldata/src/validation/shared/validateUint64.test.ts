@@ -1,5 +1,5 @@
+import { validateUint64TestCases } from './__fixtures__/mockValidateUint64';
 import { validateUint64 } from './uint64';
-import { validateUint64TestCases } from '../../../mocks/validation/shared/mockValidateUint64';
 
 describe('validateUint64', () => {
     it.each(validateUint64TestCases)('$description', ({ input, expected }) => {

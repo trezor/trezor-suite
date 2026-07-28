@@ -1,8 +1,8 @@
-import { findSelfAddressIssue, findTronAddressIssue } from './address';
 import {
     findSelfAddressIssueTestCases,
     findTronAddressIssueTestCases,
-} from '../../../mocks/validation/tron/mockAddress';
+} from './__fixtures__/mockAddress';
+import { findSelfAddressIssue, findTronAddressIssue } from './address';
 
 describe('findTronAddressIssue', () => {
     it.each(findTronAddressIssueTestCases)('$description', ({ input, expected }) => {

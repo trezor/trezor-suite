@@ -1,5 +1,5 @@
-import { type EvmAddress, asEvmAddress } from '../../../src/types/evm';
-import { type ValidationResult } from '../../../src/types/validation';
+import { type EvmAddress, asEvmAddress } from '../../../types/evm';
+import { type ValidationResult } from '../../../types/validation';
 
 interface ValidateAddressTestCase {
     description: string;

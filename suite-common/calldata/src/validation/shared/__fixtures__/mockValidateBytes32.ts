@@ -1,4 +1,4 @@
-import { type ValidationResult } from '../../../src/types/validation';
+import { type ValidationResult } from '../../../types/validation';
 
 interface ValidateBytes32TestCase {
     description: string;

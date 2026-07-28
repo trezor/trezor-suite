@@ -1,17 +1,17 @@
 import {
+    findAddressIssueTestCases,
+    findSelfAddressIssueTestCases,
+    findSenderMismatchIssueTestCases,
+    findWhitelistIssueTestCases,
+    findZeroAddressIssueTestCases,
+} from './__fixtures__/mockAddress';
+import {
     findAddressIssue,
     findSelfAddressIssue,
     findSenderMismatchIssue,
     findWhitelistIssue,
     findZeroAddressIssue,
 } from './address';
-import {
-    findAddressIssueTestCases,
-    findSelfAddressIssueTestCases,
-    findSenderMismatchIssueTestCases,
-    findWhitelistIssueTestCases,
-    findZeroAddressIssueTestCases,
-} from '../../../mocks/validation/evm/mockAddress';
 
 describe('findAddressIssue', () => {
     it.each(findAddressIssueTestCases)('$description', ({ input, expected }) => {
