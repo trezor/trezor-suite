@@ -4,8 +4,8 @@ import { getTranslation } from '@suite-native/intl';
 import { banxaCreditCardSellQuote, eth1NormalAccount } from '@suite-native/trading-fixtures';
 import type { ProviderConfirmationStatus } from '@suite-native/trading-types';
 
-import { renderWithTradingProvider } from '../../../../__tests__/tradingTestUtils';
-import { SellInfo, type SellInfoProps } from '../SellInfo';
+import { SellInfo, type SellInfoProps } from './SellInfo';
+import { renderWithTradingProvider } from '../../../__tests__/tradingTestUtils';
 
 // Mock FeeSelector to avoid deep dependency chain
 jest.mock('@suite-native/transaction-management', () => ({

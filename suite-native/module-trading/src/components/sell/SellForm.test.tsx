@@ -12,20 +12,20 @@ import {
 } from '@suite-native/trading-fixtures';
 import { type SellFormType } from '@suite-native/trading-types';
 
+import { SellForm } from './SellForm';
 import {
     type PreloadedStatePartial,
     type TradingTestPreloadedState,
     renderHookWithTradingProvider,
     renderWithTradingProvider,
-} from '../../../__tests__/tradingTestUtils';
-import { useSellForm } from '../../../hooks/sell/useSellForm';
-import { SellForm } from '../SellForm';
+} from '../../__tests__/tradingTestUtils';
+import { useSellForm } from '../../hooks/sell/useSellForm';
 
-jest.mock('../../../hooks/general/useFocusedValueWatch', () =>
-    jest.requireActual('../../../hooks/general/useFocusedValueWatch'),
+jest.mock('../../hooks/general/useFocusedValueWatch', () =>
+    jest.requireActual('../../hooks/general/useFocusedValueWatch'),
 );
 
-jest.mock('../../concierge/ConciergeAlert', () => ({
+jest.mock('../concierge/ConciergeAlert', () => ({
     ConciergeAlert: () => null,
 }));
 

@@ -4,14 +4,14 @@ import { btcAsset, getBtcAccount } from '@suite-native/trading-fixtures';
 import { type SellFormType } from '@suite-native/trading-types';
 
 import {
-    renderHookWithTradingProvider,
-    renderWithTradingProvider,
-} from '../../../../__tests__/tradingTestUtils';
-import { useSellForm } from '../../../../hooks/sell/useSellForm';
-import {
     SEND_ACCOUNT_BALANCE_TEST_ID,
     SellSendAccountCryptoBalance,
-} from '../SellSendAccountCryptoBalance';
+} from './SellSendAccountCryptoBalance';
+import {
+    renderHookWithTradingProvider,
+    renderWithTradingProvider,
+} from '../../../__tests__/tradingTestUtils';
+import { useSellForm } from '../../../hooks/sell/useSellForm';
 
 describe('SellSendAccountCryptoBalance', () => {
     let sellForm: SellFormType;

@@ -4,8 +4,8 @@ import { act, renderHookWithStoreProvider } from '@suite-native/test-utils-store
 import { getWalletState } from '@suite-native/trading-fixtures';
 import { type SellFormType } from '@suite-native/trading-types';
 
-import { useSellForm } from '../../../hooks/sell/useSellForm';
-import { SellAlert } from '../SellAlert';
+import { SellAlert } from './SellAlert';
+import { useSellForm } from '../../hooks/sell/useSellForm';
 
 describe('SellAlert', () => {
     let form: SellFormType;

@@ -2,11 +2,11 @@ import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { getTranslation } from '@suite-native/intl';
 import { banxaCreditCardSellQuote, eth1NormalAccount } from '@suite-native/trading-fixtures';
 
-import { renderWithTradingProvider } from '../../../../__tests__/tradingTestUtils';
 import {
     SellFromAccountTradePreviewCard,
     type SellFromAccountTradePreviewCardProps,
-} from '../SellFromAccountTradePreviewCard';
+} from './SellFromAccountTradePreviewCard';
+import { renderWithTradingProvider } from '../../../__tests__/tradingTestUtils';
 
 describe('SellFromAccountTradePreviewCard', () => {
     const renderSellFromAccountTradePreviewCard = (

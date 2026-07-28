@@ -22,9 +22,9 @@ import {
 import { type MyAssetTradeable, type SellFormType } from '@suite-native/trading-types';
 import { BigNumber } from '@trezor/utils';
 
-import { createTradingLightStore } from '../../../../__tests__/tradingTestUtils';
-import { useSellForm } from '../../../../hooks/sell/useSellForm';
-import { SellSendAssetPicker } from '../SellSendAssetPicker';
+import { SellSendAssetPicker } from './SellSendAssetPicker';
+import { createTradingLightStore } from '../../../__tests__/tradingTestUtils';
+import { useSellForm } from '../../../hooks/sell/useSellForm';
 
 jest.mock('@suite-native/trading-state', () => ({
     ...jest.requireActual('@suite-native/trading-state'),

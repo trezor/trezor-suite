@@ -7,15 +7,15 @@ import {
     verifiedBankAccount,
 } from '@suite-native/trading-fixtures';
 
+import { SellBankAccountPicker } from './SellBankAccountPicker';
 import {
     type PreloadedStatePartial,
     type TradingTestPreloadedState,
     renderWithTradingProvider,
-} from '../../../../../__tests__/tradingTestUtils';
-import { SellBankAccountPicker } from '../SellBankAccountPicker';
+} from '../../../../__tests__/tradingTestUtils';
 
 // Mock the SellBankAccountSheet component to isolate the picker component
-jest.mock('../SellBankAccountSheet', () => ({
+jest.mock('./SellBankAccountSheet', () => ({
     SellBankAccountSheet: jest.fn().mockImplementation(() => <div>Bank Account Sheet</div>),
 }));
 

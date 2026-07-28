@@ -2,8 +2,8 @@ import { mockMessageSystemStateWithFeatureFlags } from '@suite-common/message-sy
 import { getTranslation } from '@suite-native/intl';
 import { act } from '@suite-native/test-utils-store';
 
-import { renderWithTradingProvider } from '../../../__tests__/tradingTestUtils';
-import { SellTab } from '../SellTab';
+import { SellTab } from './SellTab';
+import { renderWithTradingProvider } from '../../__tests__/tradingTestUtils';
 
 let mockIsDeviceInViewOnlyMode = false;
 let mockIsPortfolioTrackerDevice = false;
@@ -14,7 +14,7 @@ jest.mock('@suite-common/device', () => ({
     selectIsPortfolioTrackerDevice: () => mockIsPortfolioTrackerDevice,
 }));
 
-jest.mock('../../../hooks/sell/useSellData', () => ({
+jest.mock('../../hooks/sell/useSellData', () => ({
     useSellData: () => ({
         isLoading: false,
         lastLoadedTimestamp: 1,
@@ -22,7 +22,7 @@ jest.mock('../../../hooks/sell/useSellData', () => ({
     }),
 }));
 
-jest.mock('../../concierge/ConciergeAlert', () => ({
+jest.mock('../concierge/ConciergeAlert', () => ({
     ConciergeAlert: () => null,
 }));
 
