@@ -1,7 +1,7 @@
 import { type FeeLevelLabel, type GeneralPrecomposedLevels } from '@suite-common/wallet-types';
 import { isClearSignedEvmTradingSwapTransaction } from '@suite-common/wallet-utils';
 
-import { ETH_ACCOUNT_KEY, getEthAccount, getWalletState } from '../__fixtures__/walletState';
+import { ETH_ACCOUNT_KEY, getEthAccount, getWalletState } from './__fixtures__/walletState';
 import {
     type TransactionReviewOutputsState,
     selectCustomFeeLevel,
@@ -10,8 +10,8 @@ import {
     selectFormDraftByPrefix,
     selectIsClearSignedTradingSwap,
     selectIsTransactionAlreadySigned,
-} from '../selectors';
-import { type NativeSendRootState } from '../sendFormSlice';
+} from './selectors';
+import { type NativeSendRootState } from './sendFormSlice';
 
 jest.mock('@suite-common/wallet-utils', () => ({
     ...jest.requireActual('@suite-common/wallet-utils'),

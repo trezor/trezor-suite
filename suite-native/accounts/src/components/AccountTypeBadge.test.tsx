@@ -3,7 +3,7 @@ import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 import type { StaticSessionId } from '@trezor/connect';
 
-import { AccountTypeBadge } from '../AccountTypeBadge';
+import { AccountTypeBadge } from './AccountTypeBadge';
 
 const MOCK_ACCOUNT_DEVICE_SESSION_ID: StaticSessionId = '1@2:3';
 

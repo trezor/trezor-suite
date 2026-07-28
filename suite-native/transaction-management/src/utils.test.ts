@@ -1,6 +1,6 @@
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 
-import { getFeeDecimals, getFeeValue } from '../utils';
+import { getFeeDecimals, getFeeValue } from './utils';
 
 describe('utils', () => {
     describe('getFeeDecimals', () => {

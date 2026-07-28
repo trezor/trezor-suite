@@ -12,7 +12,7 @@ import {
     selectFilteredDeviceAccountsByNetworkSymbolAndAccountType,
     selectFilteredDeviceNetworkSymbols,
     selectNetworkFilterOptions,
-} from '../selectors';
+} from './selectors';
 
 const SELECTED_WALLET_DESCRIPTOR = asWalletDescriptor('selectedWallet');
 const SELECTED_DEVICE_STATIC_SESSION_ID: StaticSessionId = 'selectedWallet@deviceId:0';

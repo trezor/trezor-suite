@@ -15,7 +15,7 @@ import {
 } from '@suite-native/test-utils-store';
 import type { StaticSessionId } from '@trezor/connect';
 
-import { AccountLabel, type AccountLabelPropsWithAccount } from '../AccountLabel';
+import { AccountLabel, type AccountLabelPropsWithAccount } from './AccountLabel';
 
 const MOCK_ACCOUNT_DEVICE_SESSION_ID: StaticSessionId = '1@2:3';
 

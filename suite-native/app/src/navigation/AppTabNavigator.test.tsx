@@ -9,7 +9,7 @@ import {
     renderWithStoreProvider,
 } from '@suite-native/test-utils-store';
 
-import { AppTabNavigator } from '../AppTabNavigator';
+import { AppTabNavigator } from './AppTabNavigator';
 
 jest.mock('@suite-native/module-home', () => ({ HomeStackNavigator: () => null }));
 jest.mock('@suite-native/module-accounts-management', () => ({
