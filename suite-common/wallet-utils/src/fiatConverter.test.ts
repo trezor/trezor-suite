@@ -1,4 +1,4 @@
-import { fromBaseCurrencyToCryptoUnit, toFiatCurrency } from '../fiatConverterUtils';
+import { fromBaseCurrencyToCryptoUnit, toFiatCurrency } from './fiatConverterUtils';
 
 const rate = 3007.1079886708517;
 const rateString = '3007.1079886708517';

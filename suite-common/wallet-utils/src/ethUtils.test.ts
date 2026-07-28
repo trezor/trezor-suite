@@ -15,7 +15,7 @@ import {
     padLeftEven,
     sanitizeHex,
     strip,
-} from '../ethUtils';
+} from './ethUtils';
 
 const VALID_CLAIM_ADDRESS = asEvmAddress('0x1111111111111111111111111111111111111111');
 

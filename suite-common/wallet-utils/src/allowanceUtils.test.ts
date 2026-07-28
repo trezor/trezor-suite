@@ -2,7 +2,7 @@ import {
     isAllowanceUnlimited,
     shouldShowRevokeAllowanceBanner,
     tokenSupportsIncreasingAllowance,
-} from '../allowanceUtils';
+} from './allowanceUtils';
 
 // USDT requires resetting the allowance to zero before it can be changed.
 const USDT = '0xdAC17F958D2ee523a2206206994597C13D831ec7';

@@ -3,7 +3,7 @@ import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
-import { filterReceiveAccounts, isDebugOnlyAccountType } from '../filterReceiveAccounts';
+import { filterReceiveAccounts, isDebugOnlyAccountType } from './filterReceiveAccounts';
 
 const accountsList: Account[] = [
     mockWalletAccount({ symbol: 'eth', accountType: 'legacy' }),

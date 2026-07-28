@@ -1,6 +1,6 @@
 import { BigNumber } from '@trezor/utils';
 
-import { roundToNonZeroFractionDigits } from '../bigNumberUtils';
+import { roundToNonZeroFractionDigits } from './bigNumberUtils';
 
 describe('BigNumber utils', () => {
     it('roundToNonZeroFractionDigits', () => {

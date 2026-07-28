@@ -1,4 +1,4 @@
-import { datetimeToLocktime } from '../bitcoinUtils';
+import { datetimeToLocktime } from './bitcoinUtils';
 
 describe(datetimeToLocktime.name, () => {
     it('valid timestamp', () => {

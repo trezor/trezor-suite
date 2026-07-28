@@ -1,6 +1,6 @@
 import { CARDANO, PROTO } from '@trezor/connect';
 
-import * as fixtures from '../__fixtures__/cardanoUtils';
+import * as fixtures from './__fixtures__/cardanoUtils';
 import {
     formatMaxOutputAmount,
     getAddressParameters,
@@ -15,7 +15,7 @@ import {
     getVotingCertificates,
     isCardanoTx,
     transformUserOutputs,
-} from '../cardanoUtils';
+} from './cardanoUtils';
 
 describe('cardano utils', () => {
     let dateSpy: any;

@@ -1,4 +1,4 @@
-import { getApyPercent } from '../apyUtils';
+import { getApyPercent } from './apyUtils';
 
 describe(getApyPercent.name, () => {
     it('converts APY rate to percent with two decimal places', () => {

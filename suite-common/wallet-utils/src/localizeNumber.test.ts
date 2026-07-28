@@ -1,6 +1,6 @@
 import { BigNumber } from '@trezor/utils';
 
-import { localizeNumber } from '../localizeNumberUtils';
+import { localizeNumber } from './localizeNumberUtils';
 
 describe('localizeNumber', () => {
     it('formats with default locale', () => {

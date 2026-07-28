@@ -10,11 +10,11 @@ import {
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import type { TokenInfo } from '@trezor/connect';
 
-import { buildApprovalTransactionData } from '../ethUtils';
+import { buildApprovalTransactionData } from './ethUtils';
 import {
     constructTransactionReviewOutputs,
     isClearSignedEvmTradingSwapTransaction,
-} from '../reviewTransactionUtils';
+} from './reviewTransactionUtils';
 
 const buildPrecomposedTx = (to: string | undefined): GeneralPrecomposedTransactionFinal =>
     ({

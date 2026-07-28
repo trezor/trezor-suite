@@ -4,7 +4,7 @@ import {
     getFiatRateKey,
     getFiatRateKeyFromTicker,
     roundTimestampToNearestPastHour,
-} from '../fiatRatesUtils';
+} from './fiatRatesUtils';
 
 describe('fiat rates utils', () => {
     it('formats fiat rate key', () => {

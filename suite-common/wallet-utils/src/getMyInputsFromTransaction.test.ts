@@ -1,7 +1,7 @@
 import {
     type GetMyInputsFromTransactionParams,
     getMyInputsFromTransaction,
-} from '../getMyInputsFromTransaction';
+} from './getMyInputsFromTransaction';
 
 describe(getMyInputsFromTransaction.name, () => {
     it("filters out utxo that doesn't belong to the account", () => {
