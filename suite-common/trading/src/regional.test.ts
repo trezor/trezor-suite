@@ -1,4 +1,4 @@
-import { nonSanctionedRegional, regional } from '../regional';
+import { nonSanctionedRegional, regional } from './regional';
 
 describe('Regional', () => {
     describe('isInEEA', () => {

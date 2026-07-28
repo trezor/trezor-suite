@@ -9,11 +9,11 @@ import { type NetworkSymbol } from '@suite-common/wallet-config';
 import type { Account } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 
-import * as BUY_FIXTURE from '../__fixtures__/buyUtils';
-import * as EXCHANGE_FIXTURE from '../__fixtures__/exchangeUtils';
-import * as SELL_FIXTURE from '../__fixtures__/sellUtils';
-import { accountBtc, accountEth } from '../__fixtures__/utils';
-import type { TradingExchangeType, TradingSellType } from '../types';
+import * as BUY_FIXTURE from './__fixtures__/buyUtils';
+import * as EXCHANGE_FIXTURE from './__fixtures__/exchangeUtils';
+import * as SELL_FIXTURE from './__fixtures__/sellUtils';
+import { accountBtc, accountEth } from './__fixtures__/utils';
+import type { TradingExchangeType, TradingSellType } from './types';
 import {
     addIdsToQuotes,
     cryptoIdToNetwork,
@@ -30,7 +30,7 @@ import {
     mapTestnetSymbol,
     testnetToProdCryptoId,
     toTokenCryptoId,
-} from '../utils';
+} from './utils';
 
 const sendAccountKey = mockAccountKey({ descriptor: 'sendAccountKey' });
 const receiveAccountKey = mockAccountKey({ descriptor: 'receiveAccountKey' });

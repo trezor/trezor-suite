@@ -1,5 +1,5 @@
-import { type TradingOTC } from '../../types';
-import { getOtcProvidersByCountry } from '../useFetchOtc';
+import { getOtcProvidersByCountry } from './useFetchOtc';
+import { type TradingOTC } from '../types';
 
 describe('getOtcProvidersByCountry', () => {
     const otcData: TradingOTC = {

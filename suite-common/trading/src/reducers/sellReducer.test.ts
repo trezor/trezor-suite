@@ -2,8 +2,8 @@ import { combineReducers } from '@reduxjs/toolkit';
 
 import { configureMockStore } from '@suite-common/test-utils';
 
-import { sellTradingFixtures } from '../__fixtures__/sellTradingReducer';
-import { tradingSellActions, tradingSellReducer } from '../sellReducer';
+import { sellTradingFixtures } from './__fixtures__/sellTradingReducer';
+import { tradingSellActions, tradingSellReducer } from './sellReducer';
 
 describe('tradingSellReducer', () => {
     sellTradingFixtures.forEach(fixture => {

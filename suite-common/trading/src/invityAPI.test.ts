@@ -1,10 +1,10 @@
 import { createHash } from 'crypto';
 import { type InfoResponse } from 'invity-api';
 
-import coins from '../__fixtures__/coins.json';
-import { invityAPIFixtures } from '../__fixtures__/invityAPI';
-import platforms from '../__fixtures__/platforms.json';
-import { invityAPI } from '../invityAPI';
+import coins from './__fixtures__/coins.json';
+import { invityAPIFixtures } from './__fixtures__/invityAPI';
+import platforms from './__fixtures__/platforms.json';
+import { invityAPI } from './invityAPI';
 
 describe('InvityAPI', () => {
     const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});

@@ -1,4 +1,4 @@
-import { bestQuotePerPaymentMethodProjection } from '../quotePerPaymentMethodProjection';
+import { bestQuotePerPaymentMethodProjection } from './quotePerPaymentMethodProjection';
 
 type PaymentMethod = 'bankTransfer' | 'creditCard' | 'applePay';
 

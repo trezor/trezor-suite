@@ -2,14 +2,14 @@ import type { CryptoId } from 'invity-api';
 
 import { extraDependenciesCommonMock } from '@suite-common/test-utils';
 
-import type { TradingState } from '../../reducers/tradingCommonReducer';
-import { tradingActions } from '../../reducers/tradingCommonReducer';
-import { prepareTradingReducer } from '../../reducers/tradingReducer';
 import {
     selectIsTradingFavouriteAssetByCryptoId,
     selectTradingFavouriteAssets,
     selectTradingFavouriteAssetsArray,
-} from '../favouritesSelectors';
+} from './favouritesSelectors';
+import type { TradingState } from '../reducers/tradingCommonReducer';
+import { tradingActions } from '../reducers/tradingCommonReducer';
+import { prepareTradingReducer } from '../reducers/tradingReducer';
 
 const tradingReducer = prepareTradingReducer(extraDependenciesCommonMock);
 

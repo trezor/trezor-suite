@@ -4,16 +4,16 @@ import type { CryptoId } from 'invity-api';
 import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
 import { type AccountKey } from '@suite-common/wallet-types';
 
-import { buyThunks } from '../../thunks/buy';
-import { exchangeThunks } from '../../thunks/exchange';
-import { sellThunks } from '../../thunks/sell';
-import { getProviderMetadataFixture } from '../__fixtures__/providerMetadata';
-import { tradingFixtures } from '../__fixtures__/tradingReducer';
-import { buyInitialState, tradingBuyActions } from '../buyReducer';
-import { exchangeInitialState, tradingExchangeActions } from '../exchangeReducer';
-import { sellInitialState, tradingSellActions } from '../sellReducer';
-import { initialState, tradingActions } from '../tradingCommonReducer';
-import { prepareTradingReducer } from '../tradingReducer';
+import { getProviderMetadataFixture } from './__fixtures__/providerMetadata';
+import { tradingFixtures } from './__fixtures__/tradingReducer';
+import { buyInitialState, tradingBuyActions } from './buyReducer';
+import { exchangeInitialState, tradingExchangeActions } from './exchangeReducer';
+import { sellInitialState, tradingSellActions } from './sellReducer';
+import { initialState, tradingActions } from './tradingCommonReducer';
+import { prepareTradingReducer } from './tradingReducer';
+import { buyThunks } from '../thunks/buy';
+import { exchangeThunks } from '../thunks/exchange';
+import { sellThunks } from '../thunks/sell';
 
 const tradingReducer = prepareTradingReducer(extraDependenciesCommonMock);
 
