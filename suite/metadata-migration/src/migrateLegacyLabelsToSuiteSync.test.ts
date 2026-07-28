@@ -22,27 +22,24 @@ import { err, ok } from '@trezor/type-utils';
 import {
     type MigrateAccountLabelsDeps,
     createMigrateAccountLabels,
-} from '../entities/createMigrateAccountLabels';
+} from './entities/createMigrateAccountLabels';
 import {
     type MigrateAddressLabelsDeps,
     createMigrateAddressLabels,
-} from '../entities/createMigrateAddressLabels';
+} from './entities/createMigrateAddressLabels';
 import {
     type MigrateOutputLabelsDeps,
     createMigrateOutputLabels,
-} from '../entities/createMigrateOutputLabels';
+} from './entities/createMigrateOutputLabels';
 import {
     type MigrateWalletLabelsDeps,
     createMigrateWalletLabels,
-} from '../entities/createMigrateWalletLabels';
-import {
-    type GetCurrentAccountLabels,
-    type GetLegacyAccountLabels,
-} from '../legacyLabelsMigration';
+} from './entities/createMigrateWalletLabels';
+import { type GetCurrentAccountLabels, type GetLegacyAccountLabels } from './legacyLabelsMigration';
 import {
     type MigrateLegacyLabelsToSuiteSyncDeps,
     createMigrateLegacyLabelsToSuiteSync,
-} from '../migrateLegacyLabelsToSuiteSync';
+} from './migrateLegacyLabelsToSuiteSync';
 
 const createDevice = (staticSessionId: StaticSessionId): TrezorDeviceWithState => {
     const device = mockSuiteDevice({

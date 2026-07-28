@@ -1,8 +1,8 @@
 import { configureMockStore } from '@suite-common/test-utils';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
-import { recoveryReducer } from '../src/recoveryReducer';
-import { checkSeedThunk, recoverDeviceThunk } from '../src/recoveryThunks';
+import { recoveryReducer } from './recoveryReducer';
+import { checkSeedThunk, recoverDeviceThunk } from './recoveryThunks';
 
 const getInitialState = (custom?: any): any => ({
     suite: {

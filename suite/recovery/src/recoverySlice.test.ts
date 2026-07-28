@@ -1,6 +1,6 @@
 import { configureMockStore } from '@suite-common/test-utils';
 
-import { recoveryActions, recoveryReducer } from '../src';
+import { recoveryActions, recoveryReducer } from './index';
 
 const initStore = () =>
     configureMockStore({

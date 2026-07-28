@@ -2,12 +2,12 @@ import { configureStore } from '@reduxjs/toolkit';
 
 import { extraDependenciesCommonMock } from '@suite-common/test-utils';
 
-import { selectAutodetectLanguage, selectLanguage, selectTheme } from '../settingsSelectors';
+import { selectAutodetectLanguage, selectLanguage, selectTheme } from './settingsSelectors';
 import {
     prepareSuiteSettingsReducer,
     suiteSettingsActions,
     suiteSettingsInitialState,
-} from '../settingsSlice';
+} from './settingsSlice';
 
 const suiteSettingsReducer = prepareSuiteSettingsReducer(extraDependenciesCommonMock);
 

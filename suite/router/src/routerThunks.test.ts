@@ -4,16 +4,16 @@ import { locksInitialState, locksReducer } from '@suite/locks';
 import { modalReducer } from '@suite/modal';
 import { configureMockStore } from '@suite-common/test-utils';
 
-import * as fixtures from '../__fixtures__/routerThunks';
-import { createSuiteRouterHistory } from '../createSuiteRouterHistory';
-import { routerReducer } from '../routerReducer';
+import * as fixtures from './__fixtures__/routerThunks';
+import { createSuiteRouterHistory } from './createSuiteRouterHistory';
+import { routerReducer } from './routerReducer';
 import {
     closeModalApp,
     goto,
     initialRedirection,
     onLocationChange,
     routerInit,
-} from '../routerThunks';
+} from './routerThunks';
 
 const EMPTY_ACTION = { type: 'foo' };
 

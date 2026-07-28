@@ -1,6 +1,6 @@
 import { TOR_URLS } from '@trezor/urls';
 
-import { getIsTorDomain, isOnionUrl } from '../torUtils';
+import { getIsTorDomain, isOnionUrl } from './torUtils';
 
 describe('torUtils', () => {
     describe(getIsTorDomain.name, () => {
