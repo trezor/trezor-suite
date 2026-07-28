@@ -14,7 +14,7 @@ import {
     mercuryoApplePayBuyQuote,
 } from '@suite-native/trading-fixtures';
 
-import { type TradingRootState } from '../../reducers';
+import { type TradingRootState } from '../reducers';
 import {
     selectBuyAmountLimits,
     selectBuyBestQuotesForAvailablePaymentMethods,
@@ -26,7 +26,7 @@ import {
     selectBuyTradeableAssets,
     selectTradingBuy,
     selectValidTradingBuyQuotesNative,
-} from '../buySelectors';
+} from './buySelectors';
 
 const supportedCoins: readonly NetworkSymbol[] = ['btc', 'eth', 'base'];
 

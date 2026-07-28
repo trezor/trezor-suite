@@ -11,7 +11,7 @@ import {
 } from '@suite-native/feature-flags';
 import { exchangeQuotes, getBtcAccount, getWalletState } from '@suite-native/trading-fixtures';
 
-import { type TradingRootState } from '../../reducers';
+import { type TradingRootState } from '../reducers';
 import {
     selectExchangeAmountLimits,
     selectExchangeBuyTradeableAssets,
@@ -20,7 +20,7 @@ import {
     selectExchangeSelectedSendAccount,
     selectGroupedExchangeQuotes,
     selectTradingExchange,
-} from '../exchangeSelectors';
+} from './exchangeSelectors';
 
 const supportedCoins: readonly NetworkSymbol[] = ['btc', 'eth', 'base'];
 

@@ -18,7 +18,7 @@ import {
     selectTradingResidenceCountry,
     selectTradingResidenceCountrySubdivision,
     selectWasTradingResidenceOnboardingVisited,
-} from '../residenceSelectors';
+} from './residenceSelectors';
 
 describe('residenceSelectors', () => {
     const visitedState: TradingResidenceState = {

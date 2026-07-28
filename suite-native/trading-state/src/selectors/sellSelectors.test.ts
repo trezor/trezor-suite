@@ -10,7 +10,7 @@ import {
     sellQuotes,
 } from '@suite-native/trading-fixtures';
 
-import { type TradingRootState } from '../../reducers';
+import { type TradingRootState } from '../reducers';
 import {
     selectSellAmountLimits,
     selectSellBestQuotesForAvailablePaymentMethods,
@@ -20,7 +20,7 @@ import {
     selectSellSupportedFiatCurrencies,
     selectSellSupportedFiatCurrenciesList,
     selectTradingSell,
-} from '../sellSelectors';
+} from './sellSelectors';
 
 describe('sellSelectors', () => {
     let state: TradingRootState & AccountsRootState;

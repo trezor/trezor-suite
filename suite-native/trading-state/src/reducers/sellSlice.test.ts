@@ -5,7 +5,7 @@ import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { tradingInitialState } from '@suite-native/trading-consts';
 import { banxaCreditCardSellQuote, sellQuotes } from '@suite-native/trading-fixtures';
 
-import { sellActions, sellReducer } from '../sellSlice';
+import { sellActions, sellReducer } from './sellSlice';
 
 describe('sellSlice', () => {
     describe('clearState', () => {

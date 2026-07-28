@@ -1,6 +1,6 @@
 import { type TradingCountryCode } from '@suite-common/trading';
 
-import { residenceActions, residenceReducer } from '../residenceSlice';
+import { residenceActions, residenceReducer } from './residenceSlice';
 
 describe('residenceSlice', () => {
     it('should return the initial state', () => {

@@ -34,7 +34,7 @@ import { type TradeableAsset } from '@suite-native/trading-types';
 import { type StaticSessionId } from '@trezor/device-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { type TradingRootState, tradingInitialState } from '../../reducers';
+import { type TradingRootState, tradingInitialState } from '../reducers';
 import {
     selectAccountLabelWithNetworkFallback,
     selectAccountsWithTokensToSellSectionCondensedListByTradingType,
@@ -55,7 +55,7 @@ import {
     selectTradingEnvironment,
     selectTradingProviderConfirmationStatus,
     selectVisibleDeviceAccountsByNetworkSymbolSorted,
-} from '../commonSelectors';
+} from './commonSelectors';
 
 const supportedCoins: readonly NetworkSymbol[] = ['btc', 'eth', 'base'];
 

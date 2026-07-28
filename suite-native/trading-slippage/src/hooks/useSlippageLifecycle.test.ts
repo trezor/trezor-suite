@@ -6,11 +6,11 @@ import {
 import { act } from '@suite-native/test-utils-store';
 import { mercuryoDexQuote } from '@suite-native/trading-fixtures';
 
+import { useSlippageLifecycle } from './useSlippageLifecycle';
 import {
     createSlippageTestStore,
     renderHookWithSlippageTestProvider,
-} from '../../__tests__/testUtils';
-import { useSlippageLifecycle } from '../useSlippageLifecycle';
+} from '../__tests__/testUtils';
 
 const renderUseSlippageLifecycle = ({
     onSlippageChanged,
