@@ -5,14 +5,14 @@ import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/t
 import { DEVICE, createDeviceMessage } from '@trezor/connect';
 
 import { createCredential, createDeviceThp } from '../mocks';
-import { thpActions } from '../src/thpActions';
-import { type ThpState, prepareThpReducer } from '../src/thpReducer';
+import { thpActions } from './thpActions';
+import { type ThpState, prepareThpReducer } from './thpReducer';
 import {
     selectThpAutoconnectStep,
     selectThpCredentials,
     selectThpLastCode,
     selectThpStep,
-} from '../src/thpSelectors';
+} from './thpSelectors';
 
 const thpReduce = prepareThpReducer(extraDependenciesCommonMock);
 
