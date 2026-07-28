@@ -1,7 +1,7 @@
 import { FormDraftPrefixKeyValues } from '@suite-common/wallet-constants';
 import { type FormDraftWithSendKeyPrefix } from '@suite-common/wallet-types';
 
-import { getFormDraftKey, isFormDraftKeyPrefix } from '../formDraftUtils';
+import { getFormDraftKey, isFormDraftKeyPrefix } from './formDraftUtils';
 
 describe('form draft utils', () => {
     it('getFormDraftKey', () => {

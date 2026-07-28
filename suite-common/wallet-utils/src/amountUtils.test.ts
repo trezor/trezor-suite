@@ -1,7 +1,7 @@
 import { BigNumber } from '@trezor/utils';
 
-import { asAmountSubunit, asAmountUnit } from '../AmountTypes';
-import { subunitsToUnits, unitsToSubunits } from '../amountUtils';
+import { asAmountSubunit, asAmountUnit } from './AmountTypes';
+import { subunitsToUnits, unitsToSubunits } from './amountUtils';
 
 describe(subunitsToUnits.name, () => {
     it('converts Sats->BTC', () => {

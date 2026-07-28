@@ -1,4 +1,4 @@
-import { formatCoinBalance } from '../balanceUtils';
+import { formatCoinBalance } from './balanceUtils';
 
 test('formatBalanceUtils', () => {
     // @ts-expect-error

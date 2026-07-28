@@ -1,4 +1,4 @@
-import { parseCSV } from '../csvParserUtils';
+import { parseCSV } from './csvParserUtils';
 
 const FIXTURES = [
     {

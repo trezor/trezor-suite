@@ -6,7 +6,7 @@ import {
     compareEarnByApyDesc,
     compareEarnByNetwork,
     compareEarnByNetworkTokenOrder,
-} from '../earnSortUtils';
+} from './earnSortUtils';
 
 type Row = {
     id: string;

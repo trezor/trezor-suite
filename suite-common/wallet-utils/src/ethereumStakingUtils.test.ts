@@ -5,13 +5,13 @@ import {
     getAccountEverstakeStakingPoolFixtures,
     getEthAccountTotalStakingBalanceFixtures,
     getUnstakeAmountByEthereumDataHexFixtures,
-} from '../__fixtures__/ethereumStakingUtils';
+} from './__fixtures__/ethereumStakingUtils';
 import {
     getAccountAutocompoundBalance,
     getAccountEverstakeStakingPool,
     getEthAccountTotalStakingBalance,
     getUnstakeAmountByEthereumDataHex,
-} from '../ethereumStakingUtils';
+} from './ethereumStakingUtils';
 
 describe('getAccountEverstakeStakingPool', () => {
     getAccountEverstakeStakingPoolFixtures.forEach(({ description, account, expected }) => {

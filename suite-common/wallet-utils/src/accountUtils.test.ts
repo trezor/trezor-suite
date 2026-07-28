@@ -3,7 +3,7 @@ import { type NetworkFeature } from '@suite-common/wallet-config';
 import { type Account, asAccountDescriptor, createAccountKey } from '@suite-common/wallet-types';
 import { mockAccountToken, mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
-import * as fixtures from '../__fixtures__/accountUtils';
+import * as fixtures from './__fixtures__/accountUtils';
 import {
     accountSearchFn,
     enhanceAddresses,
@@ -18,13 +18,13 @@ import {
     sortByBIP44AddressIndex,
     sortByCoin,
     substituteBip43Path,
-} from '../accountUtils';
+} from './accountUtils';
 import {
     convertAmountSubunitsToUnits,
     convertAmountUnitsToSubunits,
     formatNetworkAmount,
     networkAmountToSmallestUnit,
-} from '../amountUtils';
+} from './amountUtils';
 
 describe('account utils', () => {
     fixtures.getUtxoFromSignedTransaction.forEach(f => {

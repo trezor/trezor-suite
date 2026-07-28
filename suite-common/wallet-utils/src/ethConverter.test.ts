@@ -7,7 +7,7 @@ import {
     fromHex,
     fromIntegerString,
     fromWei,
-} from '../ethConverter';
+} from './ethConverter';
 
 // [wei, gwei, ether, hex]
 const rows = [
