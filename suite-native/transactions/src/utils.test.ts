@@ -1,16 +1,16 @@
 import { type Target } from '@suite-common/wallet-core';
 import { asTxTargetId } from '@suite-common/wallet-types';
 
-import { type VinVoutAddress } from '../types';
-import {
-    groupTargetOutputs,
-    mapTransactionInputsOutputsToAddresses,
-    sortTargetAddressesToBeginning,
-} from '../utils';
 import {
     transactionWithChangeAddress,
     transactionWithTargetInOutputs,
 } from './fixtures/transactions';
+import { type VinVoutAddress } from './types';
+import {
+    groupTargetOutputs,
+    mapTransactionInputsOutputsToAddresses,
+    sortTargetAddressesToBeginning,
+} from './utils';
 
 describe(mapTransactionInputsOutputsToAddresses.name, () => {
     test('should return an empty array when input is empty', () => {

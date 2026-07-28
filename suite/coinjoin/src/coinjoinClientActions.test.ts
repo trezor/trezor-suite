@@ -18,7 +18,7 @@ import { mockAccountKey, mockWalletAccount } from '@suite-common/wallet-types/mo
 import { type StaticSessionId } from '@trezor/device-utils';
 import { promiseAllSequence } from '@trezor/utils';
 
-import * as fixtures from '../__fixtures__/coinjoinClientActions';
+import * as fixtures from './__fixtures__/coinjoinClientActions';
 import {
     clientEmitException,
     initCoinjoinService,
@@ -27,14 +27,14 @@ import {
     pauseCoinjoinSession,
     setDebugSettings,
     stopCoinjoinSession,
-} from '../coinjoinClientActions';
-import { coinjoinMiddleware } from '../coinjoinMiddleware';
-import { coinjoinReducer } from '../coinjoinReducer';
-import { CoinjoinService } from '../coinjoinService';
+} from './coinjoinClientActions';
+import { coinjoinMiddleware } from './coinjoinMiddleware';
+import { coinjoinReducer } from './coinjoinReducer';
+import { CoinjoinService } from './coinjoinService';
 
 const TrezorConnect = testMocks.getTrezorConnectMock();
-jest.mock('../coinjoinService', () => {
-    const mock = jest.requireActual('../__fixtures__/mockCoinjoinService');
+jest.mock('./coinjoinService', () => {
+    const mock = jest.requireActual('./__fixtures__/mockCoinjoinService');
 
     return mock.mockCoinjoinService();
 });
