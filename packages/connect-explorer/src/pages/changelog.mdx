@@ -12,42 +12,8 @@ import useSWR from 'swr';
 
 import { CollapsibleBox } from '@trezor/components';
 import { useMDXComponents } from '@trezor/connect-explorer-theme';
-import { isNewer } from '@trezor/utils/src/versionUtils';
 
-export const loadNPMVersions = tag =>
-    fetch(`https://registry.npmjs.org/@trezor/connect/${tag}`)
-        .then(res => res.json())
-        .then(data => data.version);
-
-export const loadChangelog = branch => fetch(
-        `https://raw.githubusercontent.com/trezor/trezor-suite/${branch}/packages/connect/CHANGELOG.md`,
-    )
-        .then(res => res.text())
-        .then(content => {
-            // Reduce headings by one level
-            content = content.replace(/^(#+)/gm, '$1#');
-            // Add links to commit hashes
-            content = content.replace(
-                /([a-f0-9]{7,10})([),])/g,
-                `[$1](https://github.com/trezor/trezor-suite/commit/$1)$2`,
-            );
-            const versionOverview =  `## Version overview\n\n` + content.substring(0, content.indexOf('##'));
-            const changelog = content.substring(content.indexOf('##'));
-
-            return { versionOverview, changelog };
-        });
-
-export const loadData = async () => {
-    const [latest, beta] = await Promise.all([
-        loadNPMVersions('latest'),
-        loadNPMVersions('beta'),
-    ]);
-    const isBetaNewer = isNewer(beta.split('-')[0], latest);
-    const newestVersion = isBetaNewer ? beta : latest;
-
-    return loadChangelog(`release/connect/${newestVersion}`);
-
-};
+import { loadData } from '../utils/changelog';
 
 export const MarkdownCustom = ({ children }) => {
     const components = useMDXComponents();
@@ -72,10 +38,16 @@ export const Changelog = () => {
         <MarkdownCustom>An error occurred while loading the changelog. Please [view it on GitHub](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/CHANGELOG.md).</MarkdownCustom>
     </Callout>;
 
-    const { changelog, versionOverview } = data;
+    const { changelog, versionOverview, upgradeBanner } = data;
 
     return (
         <>
+            {upgradeBanner && (
+                <Callout type="info">
+                    <MarkdownCustom>{upgradeBanner}</MarkdownCustom>
+                </Callout>
+            )}
+
             <MarkdownCustom>{versionOverview}</MarkdownCustom>
 
             <CollapsibleBox heading="What is a Canary Release?" margin={{ top: 16 }}>
