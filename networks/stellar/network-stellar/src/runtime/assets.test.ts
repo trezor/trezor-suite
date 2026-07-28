@@ -1,4 +1,4 @@
-import { computeSorobanAssetContractId } from '../src/runtime/assets';
+import { computeSorobanAssetContractId } from './assets';
 
 describe('assets', () => {
     describe('computeSorobanAssetContractId', () => {

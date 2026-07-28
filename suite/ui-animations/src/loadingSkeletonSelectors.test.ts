@@ -1,7 +1,7 @@
 import { MODAL_CONTEXT_NONE, MODAL_CONTEXT_USER, type ModalRootState } from '@suite/modal';
 import { type DeviceRootState } from '@suite-common/device';
 
-import { selectShouldAnimateLoadingSkeleton } from '../loadingSkeletonSelectors';
+import { selectShouldAnimateLoadingSkeleton } from './loadingSkeletonSelectors';
 
 type LoadingSkeletonRootState = DeviceRootState & ModalRootState;
 

@@ -1,4 +1,4 @@
-import { fixtures } from './connect.fixture';
+import { fixtures } from './__fixtures__/connect.fixture';
 import {
     buildCreateAssociatedTokenAccountInstruction,
     buildTokenTransferInstruction,
@@ -6,7 +6,7 @@ import {
     buildTransferTransaction,
     getLamportsFromSol,
     getMinimumRequiredTokenAccountsForTransfer,
-} from '../src/runtime/connect';
+} from './connect';
 
 describe('solana utils', () => {
     describe('getMinimumRequiredTokenAccountsForTransfer', () => {

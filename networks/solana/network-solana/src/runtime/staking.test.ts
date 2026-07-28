@@ -1,5 +1,5 @@
-import { getSolanaValidatorFixtures } from './staking.fixture';
-import { selectSolanaValidator } from '../src/runtime/staking';
+import { getSolanaValidatorFixtures } from './__fixtures__/staking.fixture';
+import { selectSolanaValidator } from './staking';
 
 describe('selectSolanaValidator', () => {
     getSolanaValidatorFixtures.forEach(fixture => {

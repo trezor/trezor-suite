@@ -1,4 +1,4 @@
-import { tronAddressToBytes, tronAddressToHex, tronTxIdFromRawData } from '../src/utils';
+import { tronAddressToBytes, tronAddressToHex, tronTxIdFromRawData } from './index';
 
 describe('tron/tronAddressToBytes', () => {
     it('decodes a valid mainnet address', () => {

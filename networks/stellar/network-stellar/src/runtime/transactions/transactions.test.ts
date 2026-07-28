@@ -1,8 +1,9 @@
 import { BigNumber } from '@trezor/utils';
 
-import * as fixtures from './transactions.fixture';
-import { toStroops } from '../src/constants';
-import { buildSendTransaction, transformTransaction } from '../src/runtime/transactions';
+import { toStroops } from '../../constants';
+import * as fixtures from './__fixtures__/transactions.fixture';
+
+import { buildSendTransaction, transformTransaction } from './index';
 
 describe('transactions', () => {
     describe('toStroops', () => {

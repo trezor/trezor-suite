@@ -1,4 +1,4 @@
-import { shouldFetchCountryCode } from '../geolocation';
+import { shouldFetchCountryCode } from './geolocation';
 
 describe('shouldFetchCountryCode', () => {
     it('returns false if routeName is undefined', () => {
