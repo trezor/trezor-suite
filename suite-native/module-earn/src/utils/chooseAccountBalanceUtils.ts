@@ -1,7 +1,11 @@
 import { type Account, toTokenAddress } from '@suite-common/wallet-types';
+import { isWrappedNativeToken } from '@suite-common/wallet-utils';
 
 import { type ChooseAccountTokenBalance } from '../types';
-import { getAccountTokenByContract } from './contractTokenBalanceUtils';
+import {
+    getAccountTokenByContract,
+    getYieldVaultDepositableBalance,
+} from './contractTokenBalanceUtils';
 
 export type ChooseAccountBalanceData =
     | {
@@ -23,6 +27,16 @@ export const getChooseAccountBalanceData = (
         return {
             type: 'account',
             value: account.formattedBalance,
+        };
+    }
+
+    // A wrapped-native (WETH) vault can also spend the wrappable native balance (minus the fee
+    // reserve), so the depositable amount is denominated as the native asset — which also makes
+    // the fiat conversion use the native rate.
+    if (isWrappedNativeToken(account.symbol, tokenBalance.tokenContractAddress)) {
+        return {
+            type: 'account',
+            value: getYieldVaultDepositableBalance(account, tokenBalance.tokenContractAddress),
         };
     }
 
