@@ -1,4 +1,5 @@
 import { debugInitialState } from '@suite/debug';
+import { prepareDesktopDeviceReducer } from '@suite/device';
 import { lockDevice } from '@suite/locks';
 import { suiteSettingsInitialState } from '@suite/settings';
 import { connectInitThunk } from '@suite-common/connect-init';
@@ -7,7 +8,6 @@ import { messageSystemInitialState } from '@suite-common/message-system';
 import { testMocks } from '@suite-common/test-utils';
 import { BLOCKCHAIN_EVENT, DEVICE_EVENT, TRANSPORT_EVENT, UI_EVENT } from '@trezor/connect';
 
-import { prepareDesktopDeviceReducer } from 'src/actions/device/deviceSlice';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
 import { extraDependencies } from 'src/support/extraDependencies';
 import { configureStore } from 'src/support/tests/configureStore';

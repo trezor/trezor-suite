@@ -1,11 +1,7 @@
+import { selectDeviceDefaultConnectionMode, selectIsConnectionModalOpen } from '@suite/device';
 import { BLUETOOTH_PREFIX, bluetoothActions } from '@suite-common/bluetooth';
 import { createThunk } from '@suite-common/redux-utils';
 import { bluetoothIpc } from '@trezor/transport-bluetooth';
-
-import {
-    selectDeviceDefaultConnectionMode,
-    selectIsConnectionModalOpen,
-} from '../device/deviceSelectors';
 
 export const bluetoothStopScanningThunk = createThunk<void, void, void>(
     `${BLUETOOTH_PREFIX}/bluetoothStopScanningThunk`,

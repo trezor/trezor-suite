@@ -1,5 +1,5 @@
 import { selectDesktopAnalyticsDep } from '@suite/analytics';
-import { useDevice } from '@suite/device';
+import { setConnectionModal, setConnectionMode, useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
 import { type StakeModalFlow } from '@suite-common/suite-types/src/staking';
@@ -7,7 +7,6 @@ import { selectAreFeesLoading, selectHasRunningDiscovery } from '@suite-common/w
 import { Modal, Tooltip } from '@trezor/components';
 import { InfoIcon } from '@trezor/icons';
 
-import { setConnectionModal, setConnectionMode } from 'src/actions/device/deviceSlice';
 import { earnFlowToEventTypeMap } from 'src/constants/suite/staking';
 import { useStakeFormContext } from 'src/hooks/earn/useStakeForm';
 import { useDispatch, useSelector } from 'src/hooks/suite';

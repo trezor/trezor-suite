@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { FormProvider } from 'react-hook-form';
 
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
-import { useDevice } from '@suite/device';
+import { setConnectionModal, setConnectionMode, useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
@@ -13,7 +13,6 @@ import { Banner, Card, Column, InfoItem, Modal, Paragraph, Row, Tooltip } from '
 import { InfoIcon, WarningIcon } from '@trezor/icons';
 import { BigNumber } from '@trezor/utils';
 
-import { setConnectionModal, setConnectionMode } from 'src/actions/device/deviceSlice';
 import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
 import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
 import { SolanaStakingLimitBanner } from 'src/components/suite/modals/ReduxModal/UserContextModal/SolanaStakingLimitBanner';

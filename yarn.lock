@@ -14730,6 +14730,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite/device@workspace:suite/device"
   dependencies:
+    "@reduxjs/toolkit": "npm:2.12.0"
     "@suite-common/device": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/suite-types": "workspace:*"

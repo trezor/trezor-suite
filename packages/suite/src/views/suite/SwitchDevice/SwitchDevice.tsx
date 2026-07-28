@@ -1,4 +1,5 @@
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { setConnectionMode, toggleConnectionModal } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { bluetoothActions, selectAdapterStatus } from '@suite-common/bluetooth';
 import { useServices } from '@suite-common/dependency-injection';
@@ -7,7 +8,6 @@ import * as deviceUtils from '@suite-common/suite-utils';
 import { Button, Column } from '@trezor/components';
 import { TrezorDevicesIcon } from '@trezor/icons';
 
-import { setConnectionMode, toggleConnectionModal } from 'src/actions/device/deviceSlice';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { type ForegroundAppProps } from 'src/types/suite';
 

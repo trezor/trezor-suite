@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 
+import { selectIsConnectionModalOpen } from '@suite/device';
 import {
     MODAL_CONTEXT_DEVICE,
     MODAL_CONTEXT_DEVICE_CONFIRMATION,
@@ -20,7 +21,6 @@ import {
 import { isDiscoveryInProgress, selectDiscoveryForSelectedDevice } from '@suite-common/wallet-core';
 import TrezorConnect from '@trezor/connect';
 
-import { selectIsConnectionModalOpen } from 'src/actions/device/deviceSelectors';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
 export const useConnectPopupModals = () => {
