@@ -3,7 +3,7 @@ import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { getAccountTotalStakingBalance } from '@suite-common/wallet-utils';
 import { RootStackRoutes } from '@suite-native/navigation';
 
-import { navigateByAccountState } from '../navigateByAccountState';
+import { navigateByAccountState } from './navigateByAccountState';
 
 jest.mock('@suite-common/wallet-utils', () => ({
     ...jest.requireActual('@suite-common/wallet-utils'),

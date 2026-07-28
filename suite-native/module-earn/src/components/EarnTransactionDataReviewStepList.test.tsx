@@ -3,7 +3,7 @@ import { getTranslation } from '@suite-native/intl';
 import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 import { type ReviewSummaryOutput } from '@suite-native/transaction-management';
 
-import { EarnTransactionDataReviewStepList } from '../EarnTransactionDataReviewStepList';
+import { EarnTransactionDataReviewStepList } from './EarnTransactionDataReviewStepList';
 
 const mockEarnStakeOutputItem = jest.fn();
 const mockEarnSummaryOutputItem = jest.fn();
@@ -17,7 +17,7 @@ jest.mock('@suite-native/transaction-management', () => ({
     selectReviewSummaryOutput: () => mockSummaryOutput,
 }));
 
-jest.mock('../EarnStakeOutputItem', () => ({
+jest.mock('./EarnStakeOutputItem', () => ({
     EarnStakeOutputItem: (props: { outputState?: string }) => {
         mockEarnStakeOutputItem(props);
 
@@ -25,7 +25,7 @@ jest.mock('../EarnStakeOutputItem', () => ({
     },
 }));
 
-jest.mock('../EarnSummaryOutputItem', () => ({
+jest.mock('./EarnSummaryOutputItem', () => ({
     EarnSummaryOutputItem: (props: { outputState?: string; fee?: string }) => {
         mockEarnSummaryOutputItem(props);
 
@@ -33,7 +33,7 @@ jest.mock('../EarnSummaryOutputItem', () => ({
     },
 }));
 
-jest.mock('../../hooks/useEarnSelectedPrecomposedTransaction', () => ({
+jest.mock('../hooks/useEarnSelectedPrecomposedTransaction', () => ({
     useEarnSelectedPrecomposedTransaction: () => ({ fee: '21000' }),
 }));
 

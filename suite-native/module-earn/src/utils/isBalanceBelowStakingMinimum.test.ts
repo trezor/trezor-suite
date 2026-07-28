@@ -1,6 +1,6 @@
 import { type Account } from '@suite-common/wallet-types';
 
-import { isBalanceBelowStakingMinimum } from '../isBalanceBelowStakingMinimum';
+import { isBalanceBelowStakingMinimum } from './isBalanceBelowStakingMinimum';
 
 const createMockAccount = (symbol: Account['symbol'], availableBalance: string): Account =>
     ({ symbol, availableBalance }) as Account;

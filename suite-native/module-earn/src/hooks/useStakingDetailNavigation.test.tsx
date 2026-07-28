@@ -2,7 +2,7 @@ import { type AccountKey } from '@suite-common/wallet-types';
 import { RootStackRoutes } from '@suite-native/navigation';
 import { renderHook } from '@suite-native/test-utils';
 
-import { useStakingDetailNavigation } from '../useStakingDetailNavigation';
+import { useStakingDetailNavigation } from './useStakingDetailNavigation';
 
 const mockNavigate = jest.fn();
 

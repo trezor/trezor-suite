@@ -8,9 +8,9 @@ import {
 import { type SolanaStakingAccount } from '@trezor/blockchain-link-types';
 import { StakeState } from '@trezor/network-solana/constants';
 
-import { type EarnFormValues } from '../../earnFormSchema';
-import { type UnstakeFormContext, unstakeFormValidationSchema } from '../../unstakeFormSchema';
-import { SolanaUnstakeAmountBoundsAlert } from '../SolanaUnstakeAmountBoundsAlert';
+import { type EarnFormValues } from '../earnFormSchema';
+import { type UnstakeFormContext, unstakeFormValidationSchema } from '../unstakeFormSchema';
+import { SolanaUnstakeAmountBoundsAlert } from './SolanaUnstakeAmountBoundsAlert';
 
 const SOL = 1_000_000_000;
 

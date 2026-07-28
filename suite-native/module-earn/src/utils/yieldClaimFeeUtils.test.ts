@@ -1,6 +1,6 @@
 import { type FeeInfo, isFinalPrecomposedTransaction } from '@suite-common/wallet-types';
 
-import { buildYieldClaimFeeLevels, getYieldClaimFee } from '../yieldClaimFeeUtils';
+import { buildYieldClaimFeeLevels, getYieldClaimFee } from './yieldClaimFeeUtils';
 
 const feeInfo = {
     blockHeight: 1,

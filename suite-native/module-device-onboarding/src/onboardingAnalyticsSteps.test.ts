@@ -3,7 +3,7 @@ import { DeviceOnboardingStackRoutes } from '@suite-native/navigation';
 import {
     getDeviceOnboardingAnalyticsStepIndex,
     screenToAnalyticsStepMap,
-} from '../onboardingAnalyticsSteps';
+} from './onboardingAnalyticsSteps';
 
 describe('onboardingAnalyticsSteps', () => {
     it('maps every device-onboarding route (exhaustiveness guard)', () => {

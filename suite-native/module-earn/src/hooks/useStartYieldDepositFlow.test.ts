@@ -21,7 +21,7 @@ import {
 } from '@suite-native/test-utils-store';
 import { BigNumber } from '@trezor/utils';
 
-import { useStartYieldDepositFlow } from '../useStartYieldDepositFlow';
+import { useStartYieldDepositFlow } from './useStartYieldDepositFlow';
 
 const mockNavigate = jest.fn();
 

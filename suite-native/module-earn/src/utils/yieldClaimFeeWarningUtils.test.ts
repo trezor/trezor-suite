@@ -1,7 +1,7 @@
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { BigNumber } from '@trezor/utils';
 
-import { getClaimFeeWarning } from '../yieldClaimFeeWarningUtils';
+import { getClaimFeeWarning } from './yieldClaimFeeWarningUtils';
 
 const fiatAmount = (amount: string) => asBaseCurrencyAmount(new BigNumber(amount));
 

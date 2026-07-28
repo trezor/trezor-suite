@@ -1,6 +1,6 @@
 import { renderHook, waitFor } from '@suite-native/test-utils';
 
-import { useEarnReviewAutoStart } from '../useEarnReviewAutoStart';
+import { useEarnReviewAutoStart } from './useEarnReviewAutoStart';
 
 const mockWaitForDeviceReview = jest.fn();
 
