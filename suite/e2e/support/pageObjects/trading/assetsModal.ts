@@ -85,7 +85,7 @@ export class TradingAssetPicker {
             await this.searchAsset(searchFilter);
         }
 
-        await this.sellOption(networkSymbol, tokenSymbol).click();
+        await this.sellOption(networkSymbol, tokenSymbol).first().click();
     }
 
     @step()
