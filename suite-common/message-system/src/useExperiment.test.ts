@@ -14,10 +14,10 @@ jest.mock('@trezor/utils', () => ({
     ),
 }));
 
-import { createMessageSystemState } from '../__fixtures__/createMessageSystemState';
-import { messageSystemInitialState, prepareMessageSystemReducer } from '../messageSystemReducer';
-import { ExperimentId, type MessageSystemState } from '../messageSystemTypes';
-import { useExperiment } from '../useExperiment';
+import { createMessageSystemState } from './__fixtures__/createMessageSystemState';
+import { messageSystemInitialState, prepareMessageSystemReducer } from './messageSystemReducer';
+import { ExperimentId, type MessageSystemState } from './messageSystemTypes';
+import { useExperiment } from './useExperiment';
 
 const messageSystemReducer = prepareMessageSystemReducer(extraDependenciesCommonMock);
 

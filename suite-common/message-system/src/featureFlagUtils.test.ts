@@ -3,8 +3,8 @@ import { type Feature } from '@suite-common/suite-types';
 import {
     isYieldFeatureApplicableForVault,
     parseTimeoutThresholdsPerModel,
-} from '../featureFlagUtils';
-import { Feature as FeatureDefinitions } from '../messageSystemTypes';
+} from './featureFlagUtils';
+import { Feature as FeatureDefinitions } from './messageSystemTypes';
 
 describe(parseTimeoutThresholdsPerModel.name, () => {
     it('returns empty object if feature is undefined', () => {

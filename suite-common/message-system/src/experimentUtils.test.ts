@@ -1,13 +1,13 @@
 import { getWeakRandomId } from '@trezor/utils';
 
-import { experimentTest, getArrayOfInstanceIds } from '../__fixtures__/experimentUtils';
+import { experimentTest, getArrayOfInstanceIds } from './__fixtures__/experimentUtils';
 import {
     buildExperimentGroupRanges,
     getActiveExperimentGroup,
     getExperimentGroupByInclusion,
     getInclusionFromInstanceId,
-} from '../experimentUtils';
-import { type ExperimentId } from '../messageSystemTypes';
+} from './experimentUtils';
+import { type ExperimentId } from './messageSystemTypes';
 
 jest.mock('@trezor/utils', () => ({
     ...jest.requireActual('@trezor/utils'),

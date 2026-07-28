@@ -9,10 +9,10 @@ import {
     screen,
 } from '@suite-common/test-utils';
 
-import { ExperimentWrapper } from '../ExperimentWrapper';
-import { createMessageSystemState } from '../__fixtures__/createMessageSystemState';
-import { messageSystemInitialState, prepareMessageSystemReducer } from '../messageSystemReducer';
-import { ExperimentId, type MessageSystemState } from '../messageSystemTypes';
+import { ExperimentWrapper } from './ExperimentWrapper';
+import { createMessageSystemState } from './__fixtures__/createMessageSystemState';
+import { messageSystemInitialState, prepareMessageSystemReducer } from './messageSystemReducer';
+import { ExperimentId, type MessageSystemState } from './messageSystemTypes';
 
 const messageSystemReducer = prepareMessageSystemReducer(extraDependenciesCommonMock);
 

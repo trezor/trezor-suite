@@ -5,7 +5,7 @@ import {
     type StakingNetworkSymbol,
 } from '@suite-common/wallet-config';
 
-import { Context, type GeneralContextKey, type SettingsCategory } from '../messageSystemTypes';
+import { Context, type GeneralContextKey, type SettingsCategory } from './messageSystemTypes';
 
 describe('Message system types', () => {
     describe('Context', () => {

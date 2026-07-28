@@ -8,10 +8,10 @@ import {
     renderHookWithStoreProvider,
 } from '@suite-common/test-utils';
 
-import { messageSystemInitialState, prepareMessageSystemReducer } from '../messageSystemReducer';
-import { type MessageSystemState } from '../messageSystemTypes';
-import { getDefaultActionByCategory } from '../messageSystemUtils';
-import { useMessageSystemMessageForm } from '../useMessageSystemMessageForm';
+import { messageSystemInitialState, prepareMessageSystemReducer } from './messageSystemReducer';
+import { type MessageSystemState } from './messageSystemTypes';
+import { getDefaultActionByCategory } from './messageSystemUtils';
+import { useMessageSystemMessageForm } from './useMessageSystemMessageForm';
 
 // jsdom 20 lacks crypto.randomUUID, which getDefaultActionByCategory relies on
 if (typeof globalThis.crypto.randomUUID !== 'function') {
