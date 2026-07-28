@@ -23,7 +23,7 @@ import {
     tradingSlice,
 } from '@suite-native/trading-state';
 
-import { useCountryChangeEffect } from '../useCountryChangeEffect';
+import { useCountryChangeEffect } from './useCountryChangeEffect';
 
 type CountryFormValues = {
     country: TradingCountryOption | undefined;

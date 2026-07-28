@@ -13,8 +13,8 @@ import {
 } from '@suite-native/trading-state';
 import { type TradeableAsset } from '@suite-native/trading-types';
 
-import { createTradingLightStore } from '../../../../__tests__/tradingTestUtils';
-import { useReceiveAccountPreselectionEffect } from '../useReceiveAccountPreselectionEffect';
+import { useReceiveAccountPreselectionEffect } from './useReceiveAccountPreselectionEffect';
+import { createTradingLightStore } from '../../../__tests__/tradingTestUtils';
 
 const btc1AccountKey = btc1NormalAccount.key;
 

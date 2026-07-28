@@ -15,7 +15,7 @@ import {
 import { getBtcAccount, getWalletState } from '@suite-native/trading-fixtures';
 import { selectExchangeSelectedSendAccount, tradingSlice } from '@suite-native/trading-state';
 
-import { useSendAccountChangeEffect } from '../useSendAccountChangeEffect';
+import { useSendAccountChangeEffect } from './useSendAccountChangeEffect';
 
 const btc1Account = getBtcAccount({ descriptor: asAccountDescriptor('btc1normal') });
 const btc2Account = getBtcAccount({ descriptor: asAccountDescriptor('btc2legacy') });

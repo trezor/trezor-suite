@@ -4,11 +4,11 @@ import { useForm } from '@suite-native/forms';
 import { type TestStore } from '@suite-native/test-utils-store';
 import { buyMercuryo } from '@suite-native/trading-fixtures';
 
+import { useProviderMetadataChangeEffect } from './useProviderMetadataChangeEffect';
 import {
     createTradingLightStore,
     renderHookWithTradingProvider,
-} from '../../../../__tests__/tradingTestUtils';
-import { useProviderMetadataChangeEffect } from '../useProviderMetadataChangeEffect';
+} from '../../../__tests__/tradingTestUtils';
 
 type ProviderFormValues = {
     quote: {

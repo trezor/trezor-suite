@@ -7,13 +7,13 @@ import { selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { type TestStore } from '@suite-native/test-utils-store';
 import { getBuyTrade } from '@suite-native/trading-fixtures';
 
+import { useWatchTrade } from './useWatchTrade';
 import {
     createTradingLightStore,
     renderHookWithTradingProvider,
-} from '../../../__tests__/tradingTestUtils';
-import { useWatchTrade } from '../useWatchTrade';
+} from '../../__tests__/tradingTestUtils';
 
-jest.mock('../useReloadTimer', () => ({
+jest.mock('./useReloadTimer', () => ({
     useReloadTimer: jest.fn(),
 }));
 
@@ -26,7 +26,7 @@ jest.mock('@suite-common/trading', () => ({
 
 const mockWatchTradeThunk = require('@suite-common/trading').tradingThunks.watchTradeThunk;
 
-const mockUseReloadTimer = require('../useReloadTimer').useReloadTimer;
+const mockUseReloadTimer = require('./useReloadTimer').useReloadTimer;
 
 type ReportSpy = jest.SpyInstance;
 

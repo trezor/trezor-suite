@@ -6,8 +6,8 @@ import { type TestStore, renderHookWithStoreProvider } from '@suite-native/test-
 import { btcAsset, ethAsset, getBtcAccount, usdcAsset } from '@suite-native/trading-fixtures';
 import { buyActions, exchangeActions } from '@suite-native/trading-state';
 
-import { createTradingLightStore } from '../../../../__tests__/tradingTestUtils';
-import { useTradeableAssetChange } from '../useTradeableAssetChange';
+import { useTradeableAssetChange } from './useTradeableAssetChange';
+import { createTradingLightStore } from '../../../__tests__/tradingTestUtils';
 
 const reportMock = jest.fn();
 const services: NativeAnalyticsDep = {

@@ -2,7 +2,7 @@ import type { BuyTrade, CryptoId, ExchangeTrade } from 'invity-api';
 
 import { act, renderHook, waitFor } from '@suite-native/test-utils';
 
-import { useTradingStellarActivateToken } from '../useTradingStellarActivateToken';
+import { useTradingStellarActivateToken } from './useTradingStellarActivateToken';
 
 const mockDispatch = jest.fn();
 const mockUseSelector = jest.fn();

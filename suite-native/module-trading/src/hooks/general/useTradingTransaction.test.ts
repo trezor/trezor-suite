@@ -6,11 +6,11 @@ import {
     getInitializedTradingStateWithQuotes,
 } from '@suite-native/trading-fixtures';
 
+import { useTradingTransaction } from './useTradingTransaction';
 import {
     createTradingLightStore,
     renderHookWithTradingProvider,
-} from '../../../__tests__/tradingTestUtils';
-import { useTradingTransaction } from '../useTradingTransaction';
+} from '../../__tests__/tradingTestUtils';
 
 const mockComposeTradingTransaction = jest.fn();
 
@@ -40,7 +40,7 @@ jest.mock('@suite-common/trading', () => ({
 }));
 
 // Mock the thunks
-jest.mock('../../../thunks', () => ({
+jest.mock('../../thunks', () => ({
     signAndPushSendFormTransactionThunk: (payload: unknown) => ({
         type: 'signAndPushSendFormTransactionThunkMock',
         payload,
@@ -48,7 +48,7 @@ jest.mock('../../../thunks', () => ({
     }),
 }));
 
-jest.mock('../useComposeTradingTransaction', () => ({
+jest.mock('./useComposeTradingTransaction', () => ({
     useComposeTradingTransaction: () => ({
         composeTradingTransaction: mockComposeTradingTransaction,
     }),
