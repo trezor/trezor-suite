@@ -7,7 +7,7 @@ import {
 
 import { extraDependencies } from 'src/support/extraDependencies';
 
-import { accounts, transactions } from '../../../../mocks/mockTransactionConstants';
+import { accounts, transactions } from '../__fixtures__/transactionConstants';
 
 const reducer = prepareTransactionsReducer(extraDependencies);
 
