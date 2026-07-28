@@ -66,7 +66,7 @@ Each item links to the step in the [migration guide](https://connect.trezor.io/1
 
 ### Removed
 
-- `[all]` Removed coin support: EOS, NEM. → [Removed coins](https://connect.trezor.io/10/guides/migrating-to-connect-10#removed-coins)
+- `[all]` Removed coin support: EOS, NEM.
 - `[all]` `@trezor/connect-plugin-ethereum` deprecated; its logic is inlined into `@trezor/connect`. Drop the dependency and remove `transformTypedData` calls — the 10.x plugin is a stub that throws. → [Step 2](https://connect.trezor.io/10/guides/migrating-to-connect-10#step-2-only-if-you-use-these-apis)
 
 ---

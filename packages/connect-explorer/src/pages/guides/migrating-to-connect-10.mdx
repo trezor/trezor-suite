@@ -43,7 +43,6 @@ Most integrations only touch a few of these. Find your call site or your error i
 | device-management methods         | Not in public API                | Suite's responsibility now — no replacement ([Step 2](#step-2-only-if-you-use-these-apis))                    |
 | `@trezor/connect-plugin-ethereum` | Stub that throws                 | Drop it, remove `transformTypedData` ([Step 2](#step-2-only-if-you-use-these-apis))                           |
 | `disableWebUSB()`                 | Removed                          | `updateConnectSettings({ transports })` ([Step 5](#step-5-only-if-you-host-connect-core-trezorconnect))       |
-| EOS, NEM                          | Removed                          | Remove that support ([Removed coins](#removed-coins))                                                         |
 
 ## Step 1: Required for every integration
 
@@ -100,11 +99,6 @@ TrezorConnect.init({
 
 - [ ] `cardanoGetPublicKey`: `publicKey` is now the raw 32-byte key in hex. Read the new `xpub` field, or `displayablePublicKey`, for the extended key.
 - [ ] Remove the per-call `useCardanoDerivation` parameter. Declare `TrezorConnect.init({ enabledNetworks: [{ coin: 'ada' }] })` instead. Note: on thin packages, `enabledNetworks` is not honored — Cardano availability follows the host Suite wallet's enabled coins.
-
-### Removed coins
-
-- [ ] Remove all EOS support from your integration.
-- [ ] Remove all NEM support from your integration.
 
 ## Step 3: Recommended, not required
 
