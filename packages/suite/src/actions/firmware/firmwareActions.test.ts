@@ -8,7 +8,7 @@ import suiteReducer from 'src/reducers/suite/suiteReducer';
 import { extraDependencies } from 'src/support/extraDependencies';
 import { configureStore } from 'src/support/tests/configureStore';
 
-import { actions, reducerActions } from '../../../mocks/mockFirmwareActions';
+import { actions, reducerActions } from './__fixtures__/firmwareActions';
 
 const firmwareReducer = prepareFirmwareReducer(extraDependencies);
 

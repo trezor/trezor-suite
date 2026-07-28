@@ -12,7 +12,7 @@ import { configureStore } from 'src/support/tests/configureStore';
 import fixtures, {
     type DeviceSettingsFixtureState,
     deviceReducer,
-} from '../../../mocks/mockDeviceSettingsActions';
+} from './__fixtures__/deviceSettingsActions';
 
 const DEVICE = mockSuiteDevice({ path: '1', connected: true });
 const suiteSettingsReducer = prepareSuiteSettingsReducer(extraDependencies);

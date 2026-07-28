@@ -10,18 +10,18 @@ import suiteReducer from 'src/reducers/suite/suiteReducer';
 import { accountsReducer, transactionsReducer } from 'src/reducers/wallet';
 import { extraDependencies } from 'src/support/extraDependencies';
 
-import { moveLabelsForRbfThunk } from './moveLabelsForRbfThunk';
 import {
     accountReceivingCoins,
     accountSpendingCoins,
     moveLabelsForRbfAccountsFixture,
-} from '../../../mocks/mockMoveLabelsForRbfAccounts';
-import { moveLabelsForRbfMetadataStateFixture } from '../../../mocks/mockMoveLabelsForRbfMetadataState';
+} from './__fixtures__/moveLabelsForRbfAccounts.fixture';
+import { moveLabelsForRbfMetadataStateFixture } from './__fixtures__/moveLabelsForRbfMetadataState.fixture';
 import {
     moveLabelsForRbfTransactionsFixture,
     originalTransactionSpendAccount,
     transactionSendingCoinsReplacement,
-} from '../../../mocks/mockMoveLabelsForRbfTransactions';
+} from './__fixtures__/moveLabelsForRbfTransactions.fixture';
+import { moveLabelsForRbfThunk } from './moveLabelsForRbfThunk';
 
 const rootReducer = combineReducers({
     wallet: combineReducers({

@@ -7,7 +7,7 @@ import { DEVICE, type Device, TRANSPORT } from '@trezor/connect';
 import { SUITE } from 'src/actions/suite/constants';
 import { type AppState } from 'src/types/suite';
 
-import * as suiteActions from '../src/actions/suite/suiteActions';
+import * as suiteActions from '../suiteActions';
 
 const SUITE_DEVICE = mockSuiteDevice({ path: '1' });
 const SUITE_DEVICE_UNACQUIRED = mockSuiteDevice({

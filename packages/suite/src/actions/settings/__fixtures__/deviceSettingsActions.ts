@@ -11,7 +11,7 @@ import { type Response } from '@trezor/connect';
 import type suiteReducer from 'src/reducers/suite/suiteReducer';
 import { extraDependencies } from 'src/support/extraDependencies';
 
-import * as deviceSettingsActions from '../src/actions/settings/deviceSettingsActions';
+import * as deviceSettingsActions from '../deviceSettingsActions';
 
 export const deviceReducer = prepareDeviceReducer(extraDependencies);
 

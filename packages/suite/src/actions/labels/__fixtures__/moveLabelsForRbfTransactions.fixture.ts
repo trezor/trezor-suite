@@ -1,7 +1,7 @@
 import { type TransactionsRootState } from '@suite-common/wallet-core';
 import { type WalletAccountTransaction } from '@suite-common/wallet-types';
 
-import { accountReceivingCoins, accountSpendingCoins } from './mockMoveLabelsForRbfAccounts';
+import { accountReceivingCoins, accountSpendingCoins } from './moveLabelsForRbfAccounts.fixture';
 
 export const originalTransactionSpendAccount: WalletAccountTransaction = {
     descriptor: accountSpendingCoins.descriptor,

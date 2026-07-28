@@ -25,8 +25,8 @@ import { extraDependencies } from 'src/support/extraDependencies';
 import { configureStore } from 'src/support/tests/configureStore';
 import { discardMockedConnectInitActions } from 'src/utils/suite/storage';
 
+import fixtures from './__fixtures__/suiteActions';
 import { SUITE } from './constants';
-import fixtures from '../../../mocks/mockSuiteActions';
 
 const firmwareReducer = prepareFirmwareReducer(extraDependencies);
 const deviceReducer = prepareDeviceReducer(extraDependencies);
