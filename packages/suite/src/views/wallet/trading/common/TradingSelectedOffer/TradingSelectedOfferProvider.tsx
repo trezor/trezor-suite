@@ -8,7 +8,6 @@ import { CaretRightIcon } from '@trezor/icons';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import {
     getProvidersInfoProps,
-    getSelectedQuote,
     isTradingBuyContext,
     isTradingExchangeContext,
 } from 'src/utils/wallet/trading/tradingTypingUtils';
@@ -17,6 +16,7 @@ import { TradingOffersModalBuy } from '../TradingOffers/TradingOffersModalBuy';
 import { TradingOffersModalExchange } from '../TradingOffers/TradingOffersModalExchange';
 import { TradingOffersModalSell } from '../TradingOffers/TradingOffersModalSell';
 import { TradingUtilsProvider } from '../TradingUtils/TradingUtilsProvider';
+import { useTradingSelectedQuote } from '../hooks/useTradingSelectedQuote';
 
 interface TradingReceiveAddressEmptyProps {
     title: ReactNode;
@@ -44,7 +44,7 @@ export const TradingSelectedOfferProvider = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const providers = getProvidersInfoProps(context);
-    const quote = getSelectedQuote(context);
+    const quote = useTradingSelectedQuote(type);
 
     const OffersModal = offersModalComponents[type];
 

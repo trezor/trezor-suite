@@ -81,6 +81,7 @@ import {
     selectTradingQuotesByType,
     selectTradingQuotesPerPaymentMethodByType,
     selectTradingSelectedPaymentMethodByType,
+    selectTradingSelectedQuoteByFormValues,
     selectTradingSellAccountKey,
     selectTradingSellActiveTrade,
     selectTradingSellAmountLimits,
@@ -1336,6 +1337,152 @@ describe('tradingSelectors', () => {
                 expect.objectContaining({ quoteId: 'fixed-quote' }),
                 expect.objectContaining({ quoteId: 'float-quote' }),
             ]);
+        });
+    });
+
+    describe(selectTradingSelectedQuoteByFormValues.name, () => {
+        describe('buy', () => {
+            beforeEach(() => {
+                state.wallet.trading.buy.quotes = [
+                    {
+                        ...state.wallet.trading.buy.quotes[0],
+                        orderId: 'orderId-selected-quote-1',
+                        paymentMethod: 'eps',
+                        exchange: 'topper',
+                    },
+                    {
+                        ...state.wallet.trading.buy.quotes[1],
+                        orderId: 'orderId-selected-quote-2',
+                        paymentMethod: 'eps',
+                        exchange: 'banxa',
+                    },
+                    {
+                        ...state.wallet.trading.buy.quotes[2],
+                        orderId: 'orderId-selected-quote-3',
+                        paymentMethod: 'creditCard',
+                        exchange: 'topper',
+                    },
+                ];
+            });
+
+            it('should return the first quote of the payment method when no provider is selected', () => {
+                expect(
+                    selectTradingSelectedQuoteByFormValues(state, 'buy', {
+                        paymentMethod: 'eps',
+                    }),
+                ).toBe(state.wallet.trading.buy.quotes[0]);
+            });
+
+            it('should return the quote of the selected provider and payment method', () => {
+                expect(
+                    selectTradingSelectedQuoteByFormValues(state, 'buy', {
+                        provider: 'banxa',
+                        paymentMethod: 'eps',
+                    }),
+                ).toBe(state.wallet.trading.buy.quotes[1]);
+            });
+
+            it('should return undefined when the provider has no quote of the payment method', () => {
+                expect(
+                    selectTradingSelectedQuoteByFormValues(state, 'buy', {
+                        provider: 'banxa',
+                        paymentMethod: 'creditCard',
+                    }),
+                ).toBeUndefined();
+            });
+
+            it('should return undefined when no payment method is selected', () => {
+                expect(selectTradingSelectedQuoteByFormValues(state, 'buy', {})).toBeUndefined();
+            });
+        });
+
+        describe('sell', () => {
+            beforeEach(() => {
+                const quoteDraft = state.wallet.trading.sell.quotes[0];
+
+                state.wallet.trading.sell.quotes = [
+                    {
+                        ...quoteDraft,
+                        orderId: 'orderId-selected-quote-1',
+                        paymentMethod: 'creditCard',
+                        exchange: 'btcdirect',
+                    },
+                    {
+                        ...quoteDraft,
+                        orderId: 'orderId-selected-quote-2',
+                        paymentMethod: 'creditCard',
+                        exchange: 'moonpay',
+                    },
+                ];
+            });
+
+            it('should return the quote of the selected provider and payment method', () => {
+                expect(
+                    selectTradingSelectedQuoteByFormValues(state, 'sell', {
+                        provider: 'moonpay',
+                        paymentMethod: 'creditCard',
+                    }),
+                ).toBe(state.wallet.trading.sell.quotes[1]);
+            });
+        });
+
+        describe('exchange', () => {
+            beforeEach(() => {
+                state.wallet.trading.exchange.exchangeInfo = {
+                    providerInfos: {
+                        'fixed-provider': { isFixedRate: true },
+                        'float-provider': { isFixedRate: false },
+                    },
+                    buyCryptoIds: ['bitcoin'] as CryptoId[],
+                    sellCryptoIds: ['ethereum'] as CryptoId[],
+                } as unknown as ExchangeInfo;
+                state.wallet.trading.exchange.quotes = [
+                    {
+                        ...invityAPIFixtures.exchangeTrade,
+                        quoteId: 'fixed-quote',
+                        exchange: 'fixed-provider',
+                        isDex: false,
+                    },
+                    {
+                        ...invityAPIFixtures.exchangeTrade,
+                        quoteId: 'float-quote',
+                        exchange: 'float-provider',
+                        isDex: false,
+                    },
+                    {
+                        ...invityAPIFixtures.exchangeTrade,
+                        quoteId: 'dex-quote',
+                        exchange: 'dex-provider',
+                        isDex: true,
+                    },
+                ];
+            });
+
+            it('should return the cex quote of the selected provider', () => {
+                expect(
+                    selectTradingSelectedQuoteByFormValues(state, 'exchange', {
+                        provider: 'float-provider',
+                        exchangeType: 'CEX',
+                    }),
+                ).toBe(state.wallet.trading.exchange.quotes[1]);
+            });
+
+            it('should fall back to the first cex quote when the provider has no quote', () => {
+                expect(
+                    selectTradingSelectedQuoteByFormValues(state, 'exchange', {
+                        provider: 'unknown-provider',
+                        exchangeType: 'CEX',
+                    }),
+                ).toBe(state.wallet.trading.exchange.quotes[0]);
+            });
+
+            it('should return the dex quote when the dex exchange type is selected', () => {
+                expect(
+                    selectTradingSelectedQuoteByFormValues(state, 'exchange', {
+                        exchangeType: 'DEX',
+                    }),
+                ).toBe(state.wallet.trading.exchange.quotes[2]);
+            });
         });
     });
 
