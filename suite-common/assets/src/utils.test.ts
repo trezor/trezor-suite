@@ -1,5 +1,5 @@
-import { calculateAssetsPercentage } from '../utils';
-import * as fixtures from './fixtures/assets';
+import * as fixtures from './__fixtures__/assets';
+import { calculateAssetsPercentage } from './utils';
 
 describe('calculateAssetsPercentage', () => {
     it('calculateAssetsPercentage - zero balance', () => {
