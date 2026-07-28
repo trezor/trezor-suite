@@ -1,7 +1,7 @@
 import { type WalletAccountTransaction, asAccountDescriptor } from '@suite-common/wallet-types';
 import { BigNumber } from '@trezor/utils';
 
-import { type AccountHistoryMovementItem } from '../../types';
+import { type AccountHistoryMovementItem } from '../types';
 
 export const xrpAccountTransactions: WalletAccountTransaction[] = [
     {
