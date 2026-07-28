@@ -192,7 +192,9 @@ describe('Blockchain Actions', () => {
                 expect(filterThunkActionTypes(store.getActions()).length).toEqual(0);
             } else {
                 const actions = filterThunkActionTypes(store.getActions()).filter(
-                    a => a.type !== notificationsActions.addEvent.type,
+                    a =>
+                        a.type !== notificationsActions.addEvent.type &&
+                        a.type !== notificationsActions.addToast.type,
                 );
                 expect(actions.length).toEqual(result.length);
                 actions.forEach((action, index) => {

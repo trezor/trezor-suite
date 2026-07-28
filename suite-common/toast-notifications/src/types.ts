@@ -7,6 +7,8 @@ import { type FormStateTradingExchange } from '@suite-common/wallet-types';
 import { type DEVICE, type TokenInfo } from '@trezor/connect';
 import type { Protocol } from '@trezor/network-module-suite-common-types';
 
+import { type TransactionBroadcastNotificationType } from './constants';
+
 export type UnknownTranslationKey = string;
 
 export type NotificationId = number;
@@ -24,6 +26,7 @@ type TransactionNotificationPayload = {
     descriptor: string;
     symbol: NetworkSymbol;
     txid: string;
+    isFeeBump?: boolean;
 };
 
 type BaseTransactionNotificationPayload = Omit<TransactionNotificationPayload, 'formattedAmount'>;
@@ -84,7 +87,13 @@ type UnwrapTransactionNotification = {
     TransactionNotificationPayload;
 
 type ReceivedTransactionNotification = {
-    type: 'tx-received' | 'tx-confirmed';
+    type: 'tx-received';
+    token?: Pick<TokenInfo, 'contract' | 'name' | 'symbol'>;
+} & TransactionNotificationPayload;
+
+type ConfirmedTransactionNotification = {
+    type: 'tx-confirmed';
+    sourceType?: TransactionBroadcastNotificationType;
     token?: Pick<TokenInfo, 'contract' | 'name' | 'symbol'>;
 } & TransactionNotificationPayload;
 
@@ -180,6 +189,7 @@ export type ToastPayload<TranslationKey extends UnknownTranslationKey = UnknownT
           skipped: number;
       }
     | SentTransactionNotification
+    | ConfirmedTransactionNotification
     | ApproveTransactionNotification
     | RevokeTransactionNotification
     | ExchangeTransactionNotification
@@ -256,6 +266,7 @@ export type NotificationEventPayload = (
           type: typeof AUTH_DEVICE;
       }
     | ReceivedTransactionNotification
+    | ConfirmedTransactionNotification
     | {
           type: typeof DEVICE.CONNECT | typeof DEVICE.CONNECT_UNACQUIRED;
           device: TrezorDevice;

@@ -65,7 +65,22 @@ const installToastObserver = () => {
 const isExceptionIgnored = (message: string, ignoreJSExceptions: string[]): boolean =>
     ignoreJSExceptions.some(pattern => message.toLowerCase().includes(pattern.toLowerCase()));
 
+const expectedWarningToastTestIds = new Set([
+    '@toast/raw-tx-sent',
+    '@toast/tx-approved',
+    '@toast/tx-claimed',
+    '@toast/tx-exchange',
+    '@toast/tx-revoked',
+    '@toast/tx-sent',
+    '@toast/tx-staked',
+    '@toast/tx-unstaked',
+    '@toast/tx-yield-claim',
+    '@toast/tx-yield-deposit',
+    '@toast/tx-yield-withdraw',
+]);
+
 const isToastIgnored = (toast: CapturedToast, ignoreToastErrors: string[]): boolean =>
+    expectedWarningToastTestIds.has(toast.testId) ||
     ignoreToastErrors.some(pattern => toast.text.toLowerCase().includes(pattern.toLowerCase()));
 
 export const jsExceptionWatcher = async (
