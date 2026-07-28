@@ -1,5 +1,5 @@
-import { getBitcoinNetwork } from '../src/data/coinInfo';
-import type { formatAmount } from '../src/utils/formatUtils';
+import { getBitcoinNetwork } from '../../data/coinInfo';
+import type { formatAmount } from '../formatUtils';
 
 export const formatAmountFixtures: TestFixtures<typeof formatAmount> = [
     {

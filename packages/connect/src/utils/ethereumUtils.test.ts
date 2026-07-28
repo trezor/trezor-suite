@@ -1,5 +1,5 @@
+import * as fixtures from './__fixtures__/ethereumUtils';
 import { getNetworkLabel } from './ethereumUtils';
-import * as fixtures from '../../mocks/mockEthereumUtils';
 
 describe('utils/ethereumUtils', () => {
     describe('getNetworkLabel', () => {
