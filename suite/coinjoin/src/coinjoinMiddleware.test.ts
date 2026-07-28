@@ -13,13 +13,13 @@ import {
 import { prepareAccountsReducer } from '@suite-common/wallet-core';
 import '@suite-common/test-utils/globalOverrides';
 
-import { fixtures } from '../__fixtures__/coinjoinMiddleware';
-import { coinjoinMiddleware } from '../coinjoinMiddleware';
-import { coinjoinReducer } from '../coinjoinReducer';
-import { CoinjoinService } from '../coinjoinService';
+import { fixtures } from './__fixtures__/coinjoinMiddleware';
+import { coinjoinMiddleware } from './coinjoinMiddleware';
+import { coinjoinReducer } from './coinjoinReducer';
+import { CoinjoinService } from './coinjoinService';
 
-jest.mock('../coinjoinService', () => {
-    const mock = jest.requireActual('../__fixtures__/mockCoinjoinService');
+jest.mock('./coinjoinService', () => {
+    const mock = jest.requireActual('./__fixtures__/mockCoinjoinService');
 
     return mock.mockCoinjoinService();
 });

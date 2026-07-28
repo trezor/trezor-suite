@@ -12,14 +12,14 @@ import {
 } from '@suite-common/test-utils';
 import { prepareAccountsReducer } from '@suite-common/wallet-core';
 
-import * as fixtures from '../__fixtures__/coinjoinAccountActions';
-import * as coinjoinAccountActions from '../coinjoinAccountActions';
-import * as coinjoinClientActions from '../coinjoinClientActions';
-import { coinjoinReducer } from '../coinjoinReducer';
-import { CoinjoinService } from '../coinjoinService';
+import * as fixtures from './__fixtures__/coinjoinAccountActions';
+import * as coinjoinAccountActions from './coinjoinAccountActions';
+import * as coinjoinClientActions from './coinjoinClientActions';
+import { coinjoinReducer } from './coinjoinReducer';
+import { CoinjoinService } from './coinjoinService';
 
-jest.mock('../coinjoinService', () => {
-    const mock = jest.requireActual('../__fixtures__/mockCoinjoinService');
+jest.mock('./coinjoinService', () => {
+    const mock = jest.requireActual('./__fixtures__/mockCoinjoinService');
 
     return mock.mockCoinjoinService();
 });

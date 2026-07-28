@@ -2,8 +2,8 @@ import type { DeviceRootState } from '@suite-common/device';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import type { BackupAvailability } from '@trezor/protobuf/src/definitions';
 
-import { type BackupState } from '../backupReducer';
-import { type BackupRootState, selectBackupStatus } from '../backupSelectors';
+import { type BackupState } from './backupReducer';
+import { type BackupRootState, selectBackupStatus } from './backupSelectors';
 
 type TestState = BackupRootState & DeviceRootState;
 

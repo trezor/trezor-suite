@@ -7,8 +7,8 @@ import type { ExtraDependencies } from '@suite-common/redux-utils';
 import { extraDependenciesCommonMock, filterThunkActionTypes } from '@suite-common/test-utils';
 import { DEVICE } from '@trezor/connect';
 
-import disconnectDeviceThunkFixture from '../__fixtures__/deviceThunks';
-import { disconnectDeviceThunk } from '../deviceThunks';
+import disconnectDeviceThunkFixture from './__fixtures__/deviceThunks';
+import { disconnectDeviceThunk } from './deviceThunks';
 
 const EMPTY_ACTION = { type: 'foo' };
 const deviceReducer = prepareDeviceReducer(extraDependenciesCommonMock);

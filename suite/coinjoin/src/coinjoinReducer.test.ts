@@ -1,7 +1,7 @@
-import { actionFixtures, selectorFixtures } from '../__fixtures__/coinjoinReducer';
-import { type CoinjoinAction, coinjoinReducer } from '../coinjoinReducer';
-import { type CoinjoinRootState, selectRegisteredUtxosByAccountKey } from '../coinjoinSelectors';
-import { type CoinjoinState } from '../coinjoinTypes';
+import { actionFixtures, selectorFixtures } from './__fixtures__/coinjoinReducer';
+import { type CoinjoinAction, coinjoinReducer } from './coinjoinReducer';
+import { type CoinjoinRootState, selectRegisteredUtxosByAccountKey } from './coinjoinSelectors';
+import { type CoinjoinState } from './coinjoinTypes';
 
 describe('Coinjoin reducer actions', () => {
     actionFixtures.forEach(f => {
