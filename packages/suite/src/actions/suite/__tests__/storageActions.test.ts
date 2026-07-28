@@ -1,6 +1,7 @@
 import '@suite-common/test-utils/globalOverrides';
 
 import { coinjoinReducer } from '@suite/coinjoin';
+import { prepareDesktopDeviceReducer } from '@suite/device';
 import { initialRunCompleted, prepareFlagsReducer } from '@suite/flags';
 import { initialMetadataState, metadataReducer } from '@suite/metadata';
 import { suiteSettingsInitialState } from '@suite/settings';
@@ -24,7 +25,6 @@ import { mockAccountKey, mockWalletAccount } from '@suite-common/wallet-types/mo
 import { getAccountIdentifier, getAccountTransactions } from '@suite-common/wallet-utils';
 import { type StaticSessionId, asWalletDescriptor } from '@trezor/device-utils';
 
-import { prepareDesktopDeviceReducer } from 'src/actions/device/deviceSlice';
 import { suiteSyncQuotaManagerSlice } from 'src/actions/suiteSyncQuotaManager/suiteSyncQuotaManagerSlice';
 import { SETTINGS } from 'src/config/suite';
 import storageMiddleware from 'src/middlewares/wallet/storageMiddleware';

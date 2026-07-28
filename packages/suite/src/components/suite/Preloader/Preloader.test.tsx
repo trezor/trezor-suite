@@ -2,6 +2,7 @@ import '@suite-common/test-utils/globalOverrides';
 
 import { fireEvent } from '@testing-library/react';
 
+import { type DesktopDeviceState } from '@suite/device';
 import { type RouterState } from '@suite/router';
 import { type AnalyticsState } from '@suite-common/analytics-redux';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
@@ -9,7 +10,6 @@ import { type TransportInfo } from '@trezor/connect';
 import { isLinux } from '@trezor/env-utils';
 import { type DeepPartial } from '@trezor/type-utils';
 
-import { type DesktopDeviceState } from 'src/actions/device/deviceSlice';
 import { type AppState } from 'src/reducers/store';
 import { type SuiteState } from 'src/reducers/suite/suiteReducer';
 import { initialAppState } from 'src/support/tests/__fixtures__/defaultAppState';

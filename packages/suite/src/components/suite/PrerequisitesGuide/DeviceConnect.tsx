@@ -1,9 +1,9 @@
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { toggleConnectionModal } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
 import { Button, Column } from '@trezor/components';
 
-import { toggleConnectionModal } from 'src/actions/device/deviceSlice';
 import { useDispatch } from 'src/hooks/suite';
 
 export const DeviceConnect = () => {

@@ -4,7 +4,7 @@ import {
     CreateWalletBackup,
     MultiShareBackup,
 } from '@suite/backup';
-import { useDevice } from '@suite/device';
+import { setConnectionModal, useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { ContextMessage } from '@suite/message-system';
 import { isRecoveryInProgress } from '@suite/recovery';
@@ -27,7 +27,6 @@ import {
 import { SettingsSection } from '@trezor/product-components';
 import { breakpoints } from '@trezor/theme';
 
-import { setConnectionModal } from 'src/actions/device/deviceSlice';
 import { DeviceBanner } from 'src/components/settings/DeviceBanner';
 import { SettingsLayout } from 'src/components/settings/SettingsLayout';
 import { useDispatch, useSelector } from 'src/hooks/suite';

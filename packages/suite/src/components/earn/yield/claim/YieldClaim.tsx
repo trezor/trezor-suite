@@ -1,7 +1,7 @@
 import { useCallback, useEffect } from 'react';
 
 import { selectDesktopAnalyticsDep } from '@suite/analytics';
-import { useDevice } from '@suite/device';
+import { setConnectionModal, setConnectionMode, useDevice } from '@suite/device';
 import { FirmwareUpgradeNeededModal } from '@suite/firmware-upgrade';
 import { Translation, useTranslation } from '@suite/intl';
 import { ContextMessage } from '@suite/message-system';
@@ -21,7 +21,6 @@ import { type Account } from '@suite-common/wallet-types';
 import { Banner, Button, Card, Column, Text } from '@trezor/components';
 import { WarningIcon } from '@trezor/icons';
 
-import { setConnectionModal, setConnectionMode } from 'src/actions/device/deviceSlice';
 import { claimMerklRewardsThunk } from 'src/actions/wallet/stablecoin-yield';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useFirmwareUpgradeModal } from 'src/hooks/suite/useFirmwareUpgradeModal';

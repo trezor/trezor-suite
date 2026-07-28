@@ -1,7 +1,6 @@
+import { selectIsConnectionModalOpen, setConnectionModal } from '@suite/device';
 import { selectThpStep } from '@suite-common/thp';
 
-import { selectIsConnectionModalOpen } from 'src/actions/device/deviceSelectors';
-import { setConnectionModal } from 'src/actions/device/deviceSlice';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
 import { ConnectDeviceGlobalModal } from './ConnectDeviceGlobalModal';

@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect } from 'react';
 
-import { useDevice } from '@suite/device';
+import { setConnectionModal, useDevice } from '@suite/device';
 import {
     type TradingType,
     type TradingUseDetailOutputProps,
@@ -9,7 +9,6 @@ import {
 } from '@suite-common/trading';
 import { throwError } from '@trezor/utils';
 
-import { setConnectionModal } from 'src/actions/device/deviceSlice';
 import { useDispatch } from 'src/hooks/suite';
 import { useServerEnvironment } from 'src/hooks/wallet/trading/useServerEnviroment';
 import { useTradingWatchTrade } from 'src/hooks/wallet/trading/useTradingWatchTrade';

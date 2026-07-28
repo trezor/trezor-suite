@@ -1,10 +1,9 @@
 import { useCallback } from 'react';
 
-import { useDevice } from '@suite/device';
+import { setConnectionModal, useDevice } from '@suite/device';
 import { openModal } from '@suite/modal';
 import { selectIsAnyNetworkEnabled } from '@suite-common/wallet-core';
 
-import { setConnectionModal } from 'src/actions/device/deviceSlice';
 import { useModal } from 'src/components/suite/asset-picker/hooks';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 

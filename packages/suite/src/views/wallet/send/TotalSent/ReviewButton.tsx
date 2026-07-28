@@ -2,14 +2,13 @@ import { useWatch } from 'react-hook-form';
 
 import styled from 'styled-components';
 
-import { useDevice } from '@suite/device';
+import { setConnectionModal, setConnectionMode, useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { selectAreFeesLoading } from '@suite-common/wallet-core';
 import { isLowAnonymityWarning } from '@suite-common/wallet-utils';
 import { Banner, Button, Checkbox, Column, Paragraph, Tooltip } from '@trezor/components';
 import { paletteV2 } from '@trezor/theme';
 
-import { setConnectionModal, setConnectionMode } from 'src/actions/device/deviceSlice';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 

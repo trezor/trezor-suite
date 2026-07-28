@@ -6,7 +6,7 @@ import {
     deviceActions,
     prepareDeviceReducer as prepareCommonDeviceReducer,
 } from '@suite-common/device';
-import { type AnyAction, createSliceWithExtraDeps } from '@suite-common/redux-utils';
+import { createSliceWithExtraDeps } from '@suite-common/redux-utils';
 
 type ConnectionMode = 'cable' | 'bluetooth';
 
@@ -54,7 +54,7 @@ const deviceSlice = createSliceWithExtraDeps({
                 },
             )
             .addDefaultCase((state, action) => {
-                commonReducer(state, action as AnyAction);
+                commonReducer(state, action);
             });
     },
 });

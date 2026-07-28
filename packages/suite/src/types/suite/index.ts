@@ -4,6 +4,7 @@ import type { ThunkAction as TAction, ThunkDispatch } from 'redux-thunk';
 import type { backupActions } from '@suite/backup';
 import { type debugActions } from '@suite/debug';
 import type { desktopUpdateActions } from '@suite/desktop-update';
+import { type desktopDeviceActions } from '@suite/device';
 import { type featureFeedbackActions } from '@suite/feature-feedback';
 import type { flagsActions } from '@suite/flags';
 import type { LockAction } from '@suite/locks';
@@ -41,7 +42,6 @@ import {
 } from '@trezor/connect';
 import { type FilterOutFromUnionByTypeProperty } from '@trezor/type-utils';
 
-import { type desktopDeviceActions } from 'src/actions/device/deviceSlice';
 import type { OnboardingAction } from 'src/actions/onboarding/onboardingActions';
 import type { BioAuthAction } from 'src/actions/suite/bioAuthActions';
 import type { GuideAction } from 'src/actions/suite/guideActions';

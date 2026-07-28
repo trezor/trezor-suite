@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { type UseFormReturn, useForm, useWatch } from 'react-hook-form';
 
 import { selectDesktopAnalyticsDep } from '@suite/analytics';
-import { useDevice } from '@suite/device';
+import { setConnectionModal, setConnectionMode, useDevice } from '@suite/device';
 import { type TranslationKey } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { type EarnParams } from '@suite/router';
@@ -31,7 +31,6 @@ import { type Account } from '@suite-common/wallet-types';
 import { isWrappedNativeToken } from '@suite-common/wallet-utils';
 import { useCurrentRef } from '@trezor/react-utils';
 
-import { setConnectionModal, setConnectionMode } from 'src/actions/device/deviceSlice';
 import {
     submitYieldDepositThunk,
     submitYieldWithdrawThunk,
