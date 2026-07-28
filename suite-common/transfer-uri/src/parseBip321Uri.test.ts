@@ -1,6 +1,6 @@
 import { type Result, err, ok } from '@trezor/type-utils';
 
-import { parseBip321Uri } from '../parseBip321Uri';
+import { parseBip321Uri } from './parseBip321Uri';
 
 const cases: { description: string; uri: string; expected: Result<unknown, unknown> }[] = [
     {

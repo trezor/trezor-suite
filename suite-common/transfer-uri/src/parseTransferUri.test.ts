@@ -1,6 +1,6 @@
 import { err, ok } from '@trezor/type-utils';
 
-import { parseTransferUri } from '../parseTransferUri';
+import { parseTransferUri } from './parseTransferUri';
 
 describe(parseTransferUri.name, () => {
     // --- ERC-681 dispatch ---
