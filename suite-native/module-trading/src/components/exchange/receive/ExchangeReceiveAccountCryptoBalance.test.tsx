@@ -9,11 +9,11 @@ import {
 import { btcAsset, getBtcAccount, getWalletState } from '@suite-native/trading-fixtures';
 import { type ExchangeFormType } from '@suite-native/trading-types';
 
-import { useExchangeForm } from '../../../../hooks/exchange/useExchangeForm';
 import {
     ExchangeReceiveAccountCryptoBalance,
     RECEIVE_ACCOUNT_BALANCE_TEST_ID,
-} from '../ExchangeReceiveAccountCryptoBalance';
+} from './ExchangeReceiveAccountCryptoBalance';
+import { useExchangeForm } from '../../../hooks/exchange/useExchangeForm';
 
 describe('ExchangeReceiveAccountCryptoBalance', () => {
     let exchangeForm: ExchangeFormType;

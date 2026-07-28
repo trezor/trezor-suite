@@ -10,22 +10,22 @@ import { PROTO } from '@trezor/connect';
 import { mergeDeepObject } from '@trezor/utils';
 
 import {
+    ExchangeSendAmountInput,
+    type ExchangeSendAmountInputProps,
+} from './ExchangeSendAmountInput';
+import {
     type PreloadedStatePartial,
     type TradingTestPreloadedState,
     renderHookWithTradingProvider,
     renderWithTradingProvider,
-} from '../../../../__tests__/tradingTestUtils';
-import { useExchangeForm } from '../../../../hooks/exchange/useExchangeForm';
-import {
-    ExchangeSendAmountInput,
-    type ExchangeSendAmountInputProps,
-} from '../ExchangeSendAmountInput';
+} from '../../../__tests__/tradingTestUtils';
+import { useExchangeForm } from '../../../hooks/exchange/useExchangeForm';
 
 const mockUseAmountInputDecimals = jest.fn(
     (_account?: Account, _contractAddress?: TokenAddress) => 8,
 );
 
-jest.mock('../../../../hooks/general/useAmountInputDecimals', () => ({
+jest.mock('../../../hooks/general/useAmountInputDecimals', () => ({
     useAmountInputDecimals: jest.fn((account?: Account, contractAddress?: TokenAddress) =>
         mockUseAmountInputDecimals(account, contractAddress),
     ),

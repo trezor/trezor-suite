@@ -1,7 +1,7 @@
 import { getTranslation } from '@suite-native/intl';
 
-import { renderWithTradingProvider } from '../../../__tests__/tradingTestUtils';
-import { ExchangeTab } from '../ExchangeTab';
+import { ExchangeTab } from './ExchangeTab';
+import { renderWithTradingProvider } from '../../__tests__/tradingTestUtils';
 
 let mockIsDeviceInViewOnlyMode = false;
 let mockIsPortfolioTrackerDevice = false;
@@ -15,7 +15,7 @@ jest.mock('@suite-common/device', () => ({
     selectHasBitcoinOnlyFirmware: () => mockHasBitcoinOnlyFirmware,
 }));
 
-jest.mock('../../../hooks/exchange/useExchangeData', () => ({
+jest.mock('../../hooks/exchange/useExchangeData', () => ({
     useExchangeData: () => ({
         isLoading: false,
         lastLoadedTimestamp: 1,

@@ -6,21 +6,21 @@ import { getTranslation } from '@suite-native/intl';
 import { act, screen } from '@suite-native/test-utils-store';
 import { type ExchangeFormType } from '@suite-native/trading-types';
 
+import { CONFIRMATION_TEST_ID, ExchangeConfirmation } from './ExchangeConfirmation';
 import {
     type PreloadedStatePartial,
     type TradingTestPreloadedState,
     createTradingFeatureFlags,
     renderHookWithTradingProvider,
     renderWithTradingProvider,
-} from '../../../__tests__/tradingTestUtils';
-import { useExchangeForm } from '../../../hooks/exchange/useExchangeForm';
-import { CONFIRMATION_TEST_ID, ExchangeConfirmation } from '../ExchangeConfirmation';
+} from '../../__tests__/tradingTestUtils';
+import { useExchangeForm } from '../../hooks/exchange/useExchangeForm';
 
-jest.mock('../../../hooks/exchange/useExchangeSelectQuote', () => ({
+jest.mock('../../hooks/exchange/useExchangeSelectQuote', () => ({
     useExchangeSelectQuote: jest.fn(),
 }));
 
-jest.mock('../../../hooks/general/useTradingStellarActivateToken', () => ({
+jest.mock('../../hooks/general/useTradingStellarActivateToken', () => ({
     useTradingStellarActivateToken: jest.fn(),
 }));
 
@@ -28,9 +28,9 @@ describe('ExchangeConfirmation', () => {
     let exchangeForm: ExchangeFormType;
 
     const mockUseExchangeSelectQuote =
-        require('../../../hooks/exchange/useExchangeSelectQuote').useExchangeSelectQuote;
+        require('../../hooks/exchange/useExchangeSelectQuote').useExchangeSelectQuote;
     const mockUseTradingStellarActivateToken =
-        require('../../../hooks/general/useTradingStellarActivateToken').useTradingStellarActivateToken;
+        require('../../hooks/general/useTradingStellarActivateToken').useTradingStellarActivateToken;
 
     const baseOverrides: PreloadedStatePartial<TradingTestPreloadedState> = {
         featureFlags: createTradingFeatureFlags(),

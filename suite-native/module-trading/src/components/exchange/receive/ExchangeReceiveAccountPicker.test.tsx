@@ -9,15 +9,15 @@ import {
 } from '@suite-native/trading-types';
 import { mergeDeepObject } from '@trezor/utils';
 
+import { ExchangeReceiveAccountPicker } from './ExchangeReceiveAccountPicker';
 import {
     type PreloadedStatePartial,
     type TradingTestPreloadedState,
     createTradingFeatureFlags,
     renderHookWithTradingProvider,
     renderWithTradingProvider,
-} from '../../../../__tests__/tradingTestUtils';
-import { useExchangeForm } from '../../../../hooks/exchange/useExchangeForm';
-import { ExchangeReceiveAccountPicker } from '../ExchangeReceiveAccountPicker';
+} from '../../../__tests__/tradingTestUtils';
+import { useExchangeForm } from '../../../hooks/exchange/useExchangeForm';
 
 const mockNavigate = jest.fn();
 const btcAccountName1 = 'BTC Account #1';

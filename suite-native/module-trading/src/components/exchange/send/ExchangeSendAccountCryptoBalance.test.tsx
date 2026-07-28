@@ -4,14 +4,14 @@ import { btcAsset, getBtcAccount } from '@suite-native/trading-fixtures';
 import { type ExchangeFormType } from '@suite-native/trading-types';
 
 import {
-    renderHookWithTradingProvider,
-    renderWithTradingProvider,
-} from '../../../../__tests__/tradingTestUtils';
-import { useExchangeForm } from '../../../../hooks/exchange/useExchangeForm';
-import {
     ExchangeSendAccountCryptoBalance,
     SEND_ACCOUNT_BALANCE_TEST_ID,
-} from '../ExchangeSendAccountCryptoBalance';
+} from './ExchangeSendAccountCryptoBalance';
+import {
+    renderHookWithTradingProvider,
+    renderWithTradingProvider,
+} from '../../../__tests__/tradingTestUtils';
+import { useExchangeForm } from '../../../hooks/exchange/useExchangeForm';
 
 describe('ExchangeSendAccountCryptoBalance', () => {
     let exchangeForm: ExchangeFormType;

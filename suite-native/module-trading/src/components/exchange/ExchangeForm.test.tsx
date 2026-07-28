@@ -13,15 +13,15 @@ import {
 } from '@suite-native/trading-fixtures';
 import { type ExchangeFormType } from '@suite-native/trading-types';
 
+import { ExchangeForm } from './ExchangeForm';
 import {
     createTradingFeatureFlags,
     createTradingPreloadedState,
-} from '../../../__tests__/tradingTestUtils';
-import { useExchangeForm } from '../../../hooks/exchange/useExchangeForm';
-import { ExchangeForm } from '../ExchangeForm';
+} from '../../__tests__/tradingTestUtils';
+import { useExchangeForm } from '../../hooks/exchange/useExchangeForm';
 
-jest.mock('../../../hooks/general/useFocusedValueWatch', () =>
-    jest.requireActual('../../../hooks/general/useFocusedValueWatch'),
+jest.mock('../../hooks/general/useFocusedValueWatch', () =>
+    jest.requireActual('../../hooks/general/useFocusedValueWatch'),
 );
 
 describe('ExchangeForm', () => {

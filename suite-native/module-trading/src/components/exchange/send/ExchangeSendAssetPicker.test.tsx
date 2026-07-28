@@ -35,8 +35,8 @@ import {
 import { type ExchangeFormType, type MyAssetTradeable } from '@suite-native/trading-types';
 import { BigNumber } from '@trezor/utils';
 
-import { useExchangeForm } from '../../../../hooks/exchange/useExchangeForm';
-import { ExchangeSendAssetPicker } from '../ExchangeSendAssetPicker';
+import { ExchangeSendAssetPicker } from './ExchangeSendAssetPicker';
+import { useExchangeForm } from '../../../hooks/exchange/useExchangeForm';
 
 jest.mock('@suite-native/trading-state', () => ({
     ...jest.requireActual('@suite-native/trading-state'),

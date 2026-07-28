@@ -17,13 +17,13 @@ import { exchangeActions } from '@suite-native/trading-state';
 import { type ExchangeFormType } from '@suite-native/trading-types';
 import { FirmwareType } from '@trezor/connect';
 
+import { ExchangeTradeableAssetPicker } from './ExchangeTradeableAssetPicker';
 import {
     createTradingLightStore,
     renderHookWithTradingProvider,
     renderWithTradingProvider,
-} from '../../../../__tests__/tradingTestUtils';
-import { useExchangeForm } from '../../../../hooks/exchange/useExchangeForm';
-import { ExchangeTradeableAssetPicker } from '../ExchangeTradeableAssetPicker';
+} from '../../../__tests__/tradingTestUtils';
+import { useExchangeForm } from '../../../hooks/exchange/useExchangeForm';
 
 const reportMock = jest.fn();
 const services: NativeAnalyticsDep = {
