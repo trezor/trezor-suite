@@ -1,7 +1,7 @@
 import type { CryptoId } from 'invity-api';
 
-import { renderWithTradingProvider } from '../../../__tests__/tradingTestUtils';
-import { CryptoAmountRow, type CryptoAmountRowProps } from '../CryptoAmountRow';
+import { CryptoAmountRow, type CryptoAmountRowProps } from './CryptoAmountRow';
+import { renderWithTradingProvider } from '../../__tests__/tradingTestUtils';
 
 describe('CryptoAmountRow', () => {
     const renderCryptoAmountRow = (overriders: Partial<CryptoAmountRowProps>) =>

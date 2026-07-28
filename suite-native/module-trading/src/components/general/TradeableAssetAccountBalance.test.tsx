@@ -13,7 +13,7 @@ import {
 import {
     TradeableAssetAccountBalance,
     type TradeableAssetAccountBalanceProps,
-} from '../TradeableAssetAccountBalance';
+} from './TradeableAssetAccountBalance';
 
 describe('TradeableAssetAccountBalance', () => {
     const renderTradeableAssetAccountBalance = (

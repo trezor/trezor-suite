@@ -5,7 +5,7 @@ import { adaAsset } from '@suite-native/trading-fixtures';
 import {
     SelectTradeableAssetButton,
     type SelectTradeableAssetButtonProps,
-} from '../SelectTradeableAssetButton';
+} from './SelectTradeableAssetButton';
 
 describe('SelectTradeableAssetButton', () => {
     const renderButton = async (initialProps: Partial<SelectTradeableAssetButtonProps>) => {

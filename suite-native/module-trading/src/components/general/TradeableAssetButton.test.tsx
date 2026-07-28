@@ -1,7 +1,7 @@
 import { act, fireEvent, renderWithBasicProvider } from '@suite-native/test-utils';
 import { btcAsset, ethOnBaseAsset, usdcAsset } from '@suite-native/trading-fixtures';
 
-import { TradeableAssetButton, type TradeableAssetButtonProps } from '../TradeableAssetButton';
+import { TradeableAssetButton, type TradeableAssetButtonProps } from './TradeableAssetButton';
 
 describe('TradeableAssetButton', () => {
     const renderButton = async (initialProps: Partial<TradeableAssetButtonProps>) => {

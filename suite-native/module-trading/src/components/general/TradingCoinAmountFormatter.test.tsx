@@ -6,7 +6,7 @@ import { btcAsset, getWalletState, usdcAsset } from '@suite-native/trading-fixtu
 import {
     TradingCoinAmountFormatter,
     type TradingCoinAmountFormatterProps,
-} from '../TradingCoinAmountFormatter';
+} from './TradingCoinAmountFormatter';
 
 describe('TradingCoinAmountFormatter', () => {
     const renderTradingCoinAmountFormatter = (

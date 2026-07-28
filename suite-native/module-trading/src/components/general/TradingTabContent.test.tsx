@@ -3,8 +3,8 @@ import { getTranslation } from '@suite-native/intl';
 import { screen } from '@suite-native/test-utils-store';
 import { tradingInitialState } from '@suite-native/trading-state';
 
-import { renderWithTradingProvider } from '../../../__tests__/tradingTestUtils';
-import { TradingTabContent } from '../TradingTabContent';
+import { TradingTabContent } from './TradingTabContent';
+import { renderWithTradingProvider } from '../../__tests__/tradingTestUtils';
 
 let mockIsInternetReachable: boolean | null = true;
 
@@ -14,7 +14,7 @@ jest.mock('@react-native-community/netinfo', () => ({
     }),
 }));
 
-jest.mock('../../../hooks/buy/useBuyData', () => ({
+jest.mock('../../hooks/buy/useBuyData', () => ({
     useBuyData: () => ({
         isLoading: false,
         lastLoadedTimestamp: 1,
@@ -22,7 +22,7 @@ jest.mock('../../../hooks/buy/useBuyData', () => ({
     }),
 }));
 
-jest.mock('../../concierge/ConciergeAlert', () => ({
+jest.mock('../concierge/ConciergeAlert', () => ({
     ConciergeAlert: () => null,
 }));
 

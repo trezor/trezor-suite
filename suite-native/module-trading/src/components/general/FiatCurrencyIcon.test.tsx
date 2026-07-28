@@ -1,6 +1,6 @@
 import { renderWithBasicProvider } from '@suite-native/test-utils';
 
-import { FiatCurrencyIcon } from '../FiatCurrencyIcon';
+import { FiatCurrencyIcon } from './FiatCurrencyIcon';
 
 describe('FiatCurrencyIcon', () => {
     it('should render a mapped fiat currency flag', () => {

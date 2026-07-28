@@ -1,7 +1,7 @@
 import { getTranslation } from '@suite-native/intl';
 import { fireEvent, renderWithBasicProvider } from '@suite-native/test-utils';
 
-import { FavouriteIcon } from '../FavouriteIcon';
+import { FavouriteIcon } from './FavouriteIcon';
 
 describe('FavouriteIcon', () => {
     it('should have correct hint when marked as favourite', () => {

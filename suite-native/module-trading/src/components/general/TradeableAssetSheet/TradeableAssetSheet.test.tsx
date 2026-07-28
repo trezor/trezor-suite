@@ -3,8 +3,8 @@ import { fireEvent, screen } from '@suite-native/test-utils-store';
 import { adaAsset, btcAsset, usdcAsset } from '@suite-native/trading-fixtures';
 import { type TradeableAsset } from '@suite-native/trading-types';
 
-import { renderWithTradingProvider } from '../../../../__tests__/tradingTestUtils';
-import { TradeableAssetSheet, type TradeableAssetsSheetProps } from '../TradeableAssetSheet';
+import { TradeableAssetSheet, type TradeableAssetsSheetProps } from './TradeableAssetSheet';
+import { renderWithTradingProvider } from '../../../__tests__/tradingTestUtils';
 
 describe('TradeableAssetSheet', () => {
     const defaultAssets: TradeableAsset[] = [btcAsset, usdcAsset, adaAsset];

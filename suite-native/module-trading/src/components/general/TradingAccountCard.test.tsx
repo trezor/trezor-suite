@@ -4,8 +4,8 @@ import {
     mercuryoFixedWorstQuote,
 } from '@suite-native/trading-fixtures';
 
-import { renderWithTradingProvider } from '../../../__tests__/tradingTestUtils';
-import { TradingAccountCard } from '../TradingAccountCard';
+import { TradingAccountCard } from './TradingAccountCard';
+import { renderWithTradingProvider } from '../../__tests__/tradingTestUtils';
 
 describe('TradingAccountCard', () => {
     const renderCard = (overrides: Partial<React.ComponentProps<typeof TradingAccountCard>> = {}) =>
