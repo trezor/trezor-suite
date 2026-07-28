@@ -246,7 +246,7 @@ export const rewards: {
     url: string;
     response: { rewards: SolanaReward[]; totalCount: number };
 } = {
-    url: '**/sol/rewards/8NapsSamBA2jd8VR8SZw4aXSvSAHiskUZXaiYW1HxTGe**',
+    url: '**/sol/rewards/8NapsSamBA2jd8VR8SZw4aXSvSAHiskUZXaiYW1HxTGe?**',
     response: {
         rewards: [
             {
