@@ -12,7 +12,7 @@ test.describe.skip('Account receive', { tag: ['@group=manual'] }, () => {
                     'Verifies that a user can generate and confirm a receive address on the device.',
                 prerequisites: ['Seeded Trezor device with transactions', 'Connected Trezor Suite'],
                 steps: [
-                    'Navigate to an account and open the "Receive" tab',
+                    'Navigate to an account (ETH, XRP, ADA and SOL) and open the "Receive" tab',
                     'Confirm the fresh address and previously used addresses are listed',
                     'Click "Show full address"',
                     'Confirm the full address and QR code are displayed in Suite',

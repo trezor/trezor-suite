@@ -18,6 +18,7 @@ test.describe.skip('Connected apps - WalletConnect', { tag: ['@group=manual'] },
                 ],
                 steps: [
                     'Navigate to "Settings" > "Connected apps"',
+                    'Confirm "Connected apps" / WalletConnect is also reachable from the "..." (more) menu on an account',
                     'On the dApp side, choose WalletConnect connection and copy the pairing URI',
                     'Paste the URI into the WalletConnect connect field in Suite',
                     'Confirm the connection prompt (accounts and chains) in Suite',

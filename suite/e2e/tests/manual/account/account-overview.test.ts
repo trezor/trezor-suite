@@ -18,6 +18,8 @@ test.describe.skip('Account overview', { tag: ['@group=manual'] }, () => {
                     'Navigate to an account with transaction history',
                     'Confirm the account graph is rendered with data',
                     'Hover over the graph and confirm a tooltip with date and value is shown',
+                    'Confirm the graph values never go below zero',
+                    'Confirm the graph dates are correct',
                     'Switch the graph time range and confirm it re-renders for every range',
                     'Confirm the "All", "Incoming" and "Outgoing" tiles display values',
                     'Switch between the tiles and confirm the graph/summary updates accordingly',

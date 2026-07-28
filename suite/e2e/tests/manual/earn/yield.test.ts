@@ -23,6 +23,7 @@ test.describe.skip('Yield', { tag: ['@group=manual'] }, () => {
                     'Confirm the approval step is required and start it',
                     'Confirm the approval transaction on the device',
                     'Confirm the deposit step follows and approve the deposit transaction on the device',
+                    'Confirm the confirmation page shows the "from" and "to" values correctly',
                     'Confirm all transactions appear in history and the deposited position is displayed in the yield overview',
                 ],
                 category: TestCategory.ETH,

@@ -9,7 +9,7 @@ test.describe.skip('Account send', { tag: ['@group=manual'] }, () => {
         {
             annotation: createTestAnnotation({
                 testCase:
-                    'Verifies the core send flow: token picker, crypto/fiat amounts, send max, fee selection and transaction simulation.',
+                    'Verifies the core send flow: token picker, crypto/fiat amounts, send max, and fee selection.',
                 prerequisites: [
                     'Seeded Trezor device',
                     'Connected Trezor Suite',
@@ -24,7 +24,7 @@ test.describe.skip('Account send', { tag: ['@group=manual'] }, () => {
                     'Edit the fiat amount and confirm the crypto value is recalculated (Crypto ↔ Fiat both ways)',
                     'Click "Send max" and confirm the amount is set to the maximum minus fee',
                     'Switch the fee between Normal, Low, High and Custom; confirm Custom fee can be edited and validated',
-                    'Confirm the transaction simulation shows expected balance changes before signing',
+                    'Confirm the device prompt modal shows expected balance changes before signing',
                     'Sign the transaction and confirm the data on the Trezor device matches the form',
                     'Confirm the sent transaction appears as pending in the history',
                 ],
@@ -138,6 +138,7 @@ test.describe.skip('Account send', { tag: ['@group=manual'] }, () => {
                     'Set a locktime (blockheight or timestamp) and confirm it is shown in the review and on the device',
                     'Add an OP_RETURN output with custom data and confirm it on the device and in the transaction detail',
                     'On the ETH Send form, add hex data to the transaction and confirm the data is shown in the review and on the device',
+                    'On the ETH Send form, set a custom nonce and confirm the chosen nonce is used in the review and on the device',
                 ],
                 category: TestCategory.Accounts,
                 priority: TestPriority.Low,

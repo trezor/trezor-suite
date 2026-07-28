@@ -25,6 +25,8 @@ test.describe.skip('Earn page', { tag: ['@group=manual'] }, () => {
                     'Open the APY detail/breakdown (hover or click the APY value)',
                     'Confirm the breakdown explains how the APY is composed (rewards, fees)',
                     'Confirm APY values are plausible (non-zero, within expected range for each asset)',
+                    'Confirm the terms APY, APR and Rates are used correctly',
+                    'If a bonus rewards promo is available, click "Claim bonus rewards" and check the list of rewards',
                 ],
                 category: TestCategory.Staking,
                 priority: TestPriority.High,
