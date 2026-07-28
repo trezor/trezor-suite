@@ -3,7 +3,7 @@ import { type TradingComposedTransactionInfo } from '@suite-common/trading';
 import { type Account } from 'src/types/wallet';
 import { createQuoteLink } from 'src/utils/wallet/trading/sellUtils';
 
-import * as fixtures from '../../../../mocks/mockSellUtils';
+import * as fixtures from './__fixtures__/sellUtils';
 
 const { QUOTE_REQUEST_FIAT, QUOTE_REQUEST_CRYPTO } = fixtures;
 

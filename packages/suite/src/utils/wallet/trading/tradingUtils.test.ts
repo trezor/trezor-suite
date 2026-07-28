@@ -11,7 +11,7 @@ import {
     tradingGetRoundedFiatAmount,
 } from 'src/utils/wallet/trading/tradingUtils';
 
-import { FIXTURE_ACCOUNT_OPTIONS } from '../../../../mocks/mockTradingUtils';
+import { FIXTURE_ACCOUNT_OPTIONS } from './__fixtures__/tradingUtils';
 
 describe('trading utils', () => {
     it('tradingGetAmountLabels', () => {

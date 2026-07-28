@@ -12,7 +12,7 @@ import {
     isValidImageWidth,
 } from 'src/utils/suite/homescreen';
 
-import * as fixtures from '../../../mocks/mockHomescreen';
+import * as fixtures from './__fixtures__/homescreen';
 
 describe('homescreen', () => {
     describe(fileToDataUrl.name, () => {
