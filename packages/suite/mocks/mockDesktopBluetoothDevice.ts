@@ -2,7 +2,7 @@ import { createBluetoothDeviceCommon } from '@suite-common/bluetooth/mocks';
 
 import { type DesktopBluetoothDevice } from '../src/actions/bluetooth/DesktopBluetoothDevice';
 
-export const createMockedBluetoothDevice = (
+export const mockDesktopBluetoothDevice = (
     partialDevice: Partial<DesktopBluetoothDevice>,
 ): DesktopBluetoothDevice => {
     const bluetoothDeviceCommon = createBluetoothDeviceCommon(partialDevice);
