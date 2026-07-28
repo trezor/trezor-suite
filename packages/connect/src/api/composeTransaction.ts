@@ -44,7 +44,7 @@ import { signTxLegacy } from './bitcoin/signtxLegacy';
 import { deriveOutputScript, verifyTx } from './bitcoin/signtxVerify';
 import { Discovery } from './common/Discovery';
 import { validateParams } from './common/paramsValidator';
-import { getOrInitBitcoinFeeLevels } from '../backend/fees';
+import { getOrInitFeeLevels } from '../backend/fees';
 
 type Params = {
     outputs: ComposeOutput[];
@@ -163,7 +163,7 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
         // This is mandatory, @trezor/utxo-lib/compose expects current block height
         // TODO: make it possible without it (offline composing)
         const blockchain = await this.getBlockchain(sendCoreMessage);
-        const bitcoinFeeLevels = getOrInitBitcoinFeeLevels(coinInfo);
+        const bitcoinFeeLevels = getOrInitFeeLevels(coinInfo);
         if (!bitcoinFeeLevels.wasFetchedSuccessfully) {
             await bitcoinFeeLevels.load(blockchain);
         }
@@ -400,7 +400,7 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
 
         // get backend instance (it should be initialized before)
         const blockchain = await this.getBlockchain(context.sendCoreMessage);
-        const feeLevels = getOrInitBitcoinFeeLevels(coinInfo);
+        const feeLevels = getOrInitFeeLevels(coinInfo);
         if (!feeLevels.wasFetchedSuccessfully) {
             await feeLevels.load(blockchain);
         }
