@@ -2,8 +2,10 @@ import { parseCustomFeedURL } from './parseCustomFeedURL';
 
 const defaultFeedURL = 'https://data.trezor.io/suite/releases/desktop/latest';
 
+type Fixture = { it: string; customFeedURL: string; result: string; shouldWarn?: boolean };
+
 describe(parseCustomFeedURL.name, () => {
-    const fixtures = [
+    const fixtures: Fixture[] = [
         {
             it: 'falls back to the default URL when the switch is empty',
             customFeedURL: '',
@@ -13,16 +15,19 @@ describe(parseCustomFeedURL.name, () => {
             it: 'falls back to the default URL when the switch is not a valid URL',
             customFeedURL: 'not-a-url',
             result: defaultFeedURL,
+            shouldWarn: true,
         },
         {
             it: 'falls back to the default URL when the hostname is not allowed',
             customFeedURL: 'https://example.com/update',
             result: defaultFeedURL,
+            shouldWarn: true,
         },
         {
             it: 'falls back to the default URL when the hostname is only a partial match',
             customFeedURL: 'https://not-really-trezor.io/update',
             result: defaultFeedURL,
+            shouldWarn: true,
         },
         {
             it: 'allows an exact match from the update domain allowlist',
@@ -41,9 +46,17 @@ describe(parseCustomFeedURL.name, () => {
         },
     ];
 
-    fixtures.forEach(({ it: testName, result, customFeedURL }) => {
-        it(testName, () =>
-            expect(parseCustomFeedURL({ customFeedURL, defaultFeedURL })).toBe(result),
-        );
+    fixtures.forEach(({ it: testName, result, customFeedURL, shouldWarn }) => {
+        it(testName, () => {
+            const warn = jest.fn();
+
+            expect(parseCustomFeedURL({ customFeedURL, defaultFeedURL, warn })).toBe(result);
+
+            if (shouldWarn) {
+                expect(warn).toHaveBeenCalledWith(expect.any(String));
+            } else {
+                expect(warn).not.toHaveBeenCalled();
+            }
+        });
     });
 });

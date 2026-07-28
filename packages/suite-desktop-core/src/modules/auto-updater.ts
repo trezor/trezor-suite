@@ -20,6 +20,8 @@ import { getSignatureFile, verifySignature } from '../libs/update-checker';
 import { b2t } from '../libs/utils';
 import { app, ipcMain } from '../typed-electron';
 
+export const SERVICE_NAME = 'auto-updater';
+
 const defaultFeedURLs = {
     // This should correspond with the publish.url value in electron-builder-config.js file.
     latest: 'https://data.trezor.io/suite/releases/desktop/latest',
@@ -34,11 +36,10 @@ const customFeedURL = getSwitchValue('updater-url');
 
 const getFeedURL = ({ allowPrerelease = false }) => {
     const defaultFeedURL = defaultFeedURLs[allowPrerelease ? 'preRelease' : 'latest'];
+    const warn = (message: string) => global.logger.warn(SERVICE_NAME, message);
 
-    return parseCustomFeedURL({ customFeedURL, defaultFeedURL });
+    return parseCustomFeedURL({ customFeedURL, defaultFeedURL, warn });
 };
-
-export const SERVICE_NAME = 'auto-updater';
 
 export const init: ModuleInit = ({ mainWindowProxy, store }) => {
     const { logger } = global;
