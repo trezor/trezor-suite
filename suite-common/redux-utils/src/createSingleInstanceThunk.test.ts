@@ -1,6 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
 
-import { createSingleInstanceThunk } from '../createSingleInstanceThunk';
+import { createSingleInstanceThunk } from './createSingleInstanceThunk';
 
 describe('createSingleInstanceThunk', () => {
     // Test thunk for asynchronous action
