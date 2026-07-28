@@ -14,7 +14,7 @@ import TrezorConnect from '@trezor/connect';
 import {
     composeSolanaStakingTransactionFeeLevelsNativeThunk,
     signSolanaStakingTransactionNativeThunk,
-} from '../stakeFormSolanaNativeThunks';
+} from './stakeFormSolanaNativeThunks';
 
 jest.mock('@trezor/connect', () => ({
     __esModule: true,

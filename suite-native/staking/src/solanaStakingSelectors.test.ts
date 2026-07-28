@@ -15,8 +15,8 @@ import {
     selectSolanaStakedBalanceByAccountKey,
     selectSolanaTotalStakePendingByAccountKey,
     selectVisibleDeviceSolanaAccountsWithStakingByNetworkSymbol,
-} from '../solanaStakingSelectors';
-import { type NativeStakingRootState } from '../types';
+} from './solanaStakingSelectors';
+import { type NativeStakingRootState } from './types';
 
 const staticStateString: StaticSessionId = 'device@state:1';
 

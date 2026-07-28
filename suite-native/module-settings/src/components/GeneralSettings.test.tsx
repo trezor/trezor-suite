@@ -1,6 +1,6 @@
 import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 
-import { GeneralSettings } from '../GeneralSettings';
+import { GeneralSettings } from './GeneralSettings';
 
 jest.mock('@suite-native/trading-state', () => ({
     ...jest.requireActual('@suite-native/trading-state'),

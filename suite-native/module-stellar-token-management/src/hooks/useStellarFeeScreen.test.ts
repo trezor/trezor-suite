@@ -15,7 +15,7 @@ import {
 import { STELLAR_BASE_RESERVE } from '@trezor/network-stellar/constants';
 import { BigNumber } from '@trezor/utils';
 
-import { useStellarFeeScreen } from '../useStellarFeeScreen';
+import { useStellarFeeScreen } from './useStellarFeeScreen';
 
 type UseStellarFeeScreenParams = Parameters<typeof useStellarFeeScreen>[0];
 
@@ -107,7 +107,7 @@ jest.mock('@suite-native/transaction-management', () => ({
     useFeesManagement: jest.fn(),
 }));
 
-jest.mock('../useStellarTokenInfo', () => ({
+jest.mock('./useStellarTokenInfo', () => ({
     useStellarTokenInfo: (tokenContract: string) => {
         if (tokenContract === 'USDC-GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN') {
             return {
@@ -133,7 +133,7 @@ jest.mock('../useStellarTokenInfo', () => ({
     },
 }));
 
-jest.mock('../../thunks', () => ({
+jest.mock('../thunks', () => ({
     getStellarTokenFormDraftKey: (accountKeyParam: AccountKey, tokenContract: string) =>
         `stellar-token/${accountKeyParam}/${tokenContract}`,
     updateStellarTokenSelectedFeeLevelThunk: jest.fn(),

@@ -1,8 +1,8 @@
-import { navigationContainerRef } from '../components/NavigationContainerWithAnalytics';
-import { checkIsActiveRouteAnyOf, checkIsHomeStackFocused } from '../routeUtils';
-import { DeviceOnboardingStackRoutes, HomeStackRoutes, RootStackRoutes } from '../routes';
+import { navigationContainerRef } from './components/NavigationContainerWithAnalytics';
+import { checkIsActiveRouteAnyOf, checkIsHomeStackFocused } from './routeUtils';
+import { DeviceOnboardingStackRoutes, HomeStackRoutes, RootStackRoutes } from './routes';
 
-jest.mock('../components/NavigationContainerWithAnalytics', () => ({
+jest.mock('./components/NavigationContainerWithAnalytics', () => ({
     navigationContainerRef: {
         getState: jest.fn(),
         isReady: jest.fn().mockReturnValue(true),

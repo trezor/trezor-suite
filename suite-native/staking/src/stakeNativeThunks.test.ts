@@ -19,7 +19,7 @@ import { type StaticSessionId } from '@trezor/device-utils';
 import {
     pushStakeTransactionNativeThunk,
     signStakeTransactionNativeThunk,
-} from '../stakeNativeThunks';
+} from './stakeNativeThunks';
 
 jest.mock('@trezor/connect', () => ({
     __esModule: true,

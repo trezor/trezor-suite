@@ -1,7 +1,7 @@
 import { getTranslation } from '@suite-native/intl';
 import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 
-import { TradingSettingsCard, type TradingSettingsCardProps } from '../TradingSettingsCard';
+import { TradingSettingsCard, type TradingSettingsCardProps } from './TradingSettingsCard';
 
 let mockIsTradingCountrySet: boolean;
 let mockIsTradingResidenceCheckEnabled: boolean;
