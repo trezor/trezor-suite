@@ -155,6 +155,9 @@ export type ConnectPopupCall = {
         email: string;
         npmVersion?: string;
     };
+    // Mirrors connect's `PermissionRequest`, inlined to keep this package free of a
+    // `@trezor/connect` dependency — same as `manifest` above.
+    requestedPermissions?: { permission: string; coin?: string }[];
 };
 
 export type ConnectPopupCancel = {
