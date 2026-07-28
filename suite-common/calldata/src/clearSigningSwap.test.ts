@@ -1,7 +1,7 @@
 import { encodeFunctionData, parseAbi } from 'viem';
 
+import { ONEINCH_FIXTURES as FIXTURES } from './__fixtures__/oneInchClearSigning';
 import { NATIVE_CURRENCY, decodeClearSignedSwap } from './clearSigningSwap';
-import { ONEINCH_FIXTURES as FIXTURES } from '../mocks/mockOneInchClearSigning';
 
 // Real mainnet calldata from trezor-firmware/common/tests/fixtures/ethereum/sign_tx_clear_signing.json
 
