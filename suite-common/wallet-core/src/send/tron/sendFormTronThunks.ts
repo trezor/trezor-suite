@@ -139,7 +139,9 @@ export const composeTronTransactionFeeLevelsThunk = createThunk<
         }
 
         const isNewAccount =
-            calldata.data === null && (await isNewTronAccount(firstComposeOutput.address, account));
+            calldata.data === null &&
+            to !== account.descriptor &&
+            (await isNewTronAccount(to, account));
 
         const feeLevel =
             calldata.data !== null
