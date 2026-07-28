@@ -3,7 +3,7 @@ import { messageSystemInitialState } from '@suite-common/message-system';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { FirmwareType } from '@trezor/device-utils';
 
-import { selectIsMevProtectionSettingsVisible } from '../mevProtectionSettings';
+import { selectIsMevProtectionSettingsVisible } from './mevProtectionSettings';
 
 describe('selectIsMevProtectionSettingsVisible', () => {
     const getState = (firmwareType: FirmwareType) => ({
