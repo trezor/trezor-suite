@@ -1,20 +1,20 @@
 import { BigNumber } from '@trezor/utils';
 
-import { type ValidationResult } from '../../../src/types/validation';
-import { UINT16_MAX } from '../../../src/validation/shared/uint16';
+import { type ValidationResult } from '../../../types/validation';
+import { UINT64_MAX } from '../uint64';
 
-interface ValidateUint16TestCase {
+interface ValidateUint64TestCase {
     description: string;
     input: BigNumber;
     expected: ValidationResult<bigint>;
 }
 
-export const validateUint16TestCases: ValidateUint16TestCase[] = [
+export const validateUint64TestCases: ValidateUint64TestCase[] = [
     {
         description: 'valid amount returns normalized bigint with no issues',
-        input: new BigNumber('5'),
+        input: new BigNumber('1'),
         expected: {
-            value: 5n,
+            value: 1n,
             issues: [],
         },
     },
@@ -31,7 +31,7 @@ export const validateUint16TestCases: ValidateUint16TestCase[] = [
         input: new BigNumber('-1'),
         expected: {
             value: null,
-            issues: [{ code: 'NEGATIVE_AMOUNT', path: 'allowedInterchangeNum' }],
+            issues: [{ code: 'NEGATIVE_AMOUNT', path: 'source' }],
         },
     },
     {
@@ -39,23 +39,23 @@ export const validateUint16TestCases: ValidateUint16TestCase[] = [
         input: new BigNumber('1.5'),
         expected: {
             value: null,
-            issues: [{ code: 'NOT_INTEGER', path: 'allowedInterchangeNum' }],
+            issues: [{ code: 'NOT_INTEGER', path: 'source' }],
         },
     },
     {
-        description: 'exact UINT16_MAX is valid',
-        input: UINT16_MAX,
+        description: 'exact UINT64_MAX is valid',
+        input: UINT64_MAX,
         expected: {
-            value: BigInt('0xffff'),
+            value: BigInt('0xffffffffffffffff'),
             issues: [],
         },
     },
     {
-        description: 'amount exceeding uint16 returns EXCEEDS_UINT16 issue',
-        input: UINT16_MAX.plus(1),
+        description: 'amount exceeding uint64 returns EXCEEDS_UINT64 issue',
+        input: UINT64_MAX.plus(1),
         expected: {
             value: null,
-            issues: [{ code: 'EXCEEDS_UINT16', path: 'allowedInterchangeNum' }],
+            issues: [{ code: 'EXCEEDS_UINT64', path: 'source' }],
         },
     },
 ];

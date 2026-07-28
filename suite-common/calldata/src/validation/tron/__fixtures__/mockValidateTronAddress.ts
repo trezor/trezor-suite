@@ -1,5 +1,5 @@
-import { type TronAddress, asTronAddress } from '../../../src/types/tron';
-import { type ValidationResult } from '../../../src/types/validation';
+import { type TronAddress, asTronAddress } from '../../../types/tron';
+import { type ValidationResult } from '../../../types/validation';
 
 interface ValidateTronAddressTestCase {
     description: string;

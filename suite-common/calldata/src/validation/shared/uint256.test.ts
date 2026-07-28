@@ -1,17 +1,17 @@
 import {
+    findInsufficientBalanceIssueTestCases,
+    findNegativeAmountIssueTestCases,
+    findNonIntegerIssueTestCases,
+    findUint256OverflowIssueTestCases,
+    findZeroAmountIssueTestCases,
+} from './__fixtures__/mockUint256';
+import {
     findInsufficientBalanceIssue,
     findNegativeAmountIssue,
     findNonIntegerIssue,
     findUint256OverflowIssue,
     findZeroAmountIssue,
 } from './uint256';
-import {
-    findInsufficientBalanceIssueTestCases,
-    findNegativeAmountIssueTestCases,
-    findNonIntegerIssueTestCases,
-    findUint256OverflowIssueTestCases,
-    findZeroAmountIssueTestCases,
-} from '../../../mocks/validation/shared/mockUint256';
 
 describe('findNegativeAmountIssue', () => {
     it.each(findNegativeAmountIssueTestCases)('$description', ({ input, expected }) => {
