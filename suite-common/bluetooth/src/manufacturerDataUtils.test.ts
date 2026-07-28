@@ -1,6 +1,6 @@
 import { DeviceModelInternal } from '@trezor/device-utils';
 
-import { parseManufacturerData, serializeManufacturerData } from '../src';
+import { parseManufacturerData, serializeManufacturerData } from './manufacturerDataUtils';
 
 const filterPolicy = {
     pairing: false,
