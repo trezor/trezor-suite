@@ -4,9 +4,12 @@
 // the firmware ground-truth fixtures in trezor-common.
 
 import { transformTypedData } from './ethereumSignTypedData';
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-import commonFixtures from '../../../../../submodules/trezor-common/tests/fixtures/ethereum/sign_typed_data.json';
+import {
+    commonFixturesAvailable,
+    loadCommonFixture,
+} from '../../../e2e/__fixtures__/commonFixtures';
+
+const commonFixtures = loadCommonFixture('ethereum/sign_typed_data.json');
 
 // fixtures sometimes start with 0x, sometimes not — normalize for comparison
 function messageToHex(string: string) {
@@ -18,6 +21,13 @@ function messageToHex(string: string) {
 const SKIP_FIXTURES = new Set(['array_of_structs', 'injective_testcase']);
 
 describe('transformTypedData (firmware-fixture parity)', () => {
+    if (!commonFixturesAvailable()) {
+        // trezor-common submodule is not checked out; nothing to verify against.
+        it.skip('skipped: trezor-common submodule not checked out', () => {});
+
+        return;
+    }
+
     commonFixtures.tests
         .filter((test: any) => test.parameters.metamask_v4_compat && !SKIP_FIXTURES.has(test.name))
         .forEach((test: any) => {

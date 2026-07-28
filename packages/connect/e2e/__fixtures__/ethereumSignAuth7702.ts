@@ -1,8 +1,7 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-// @ts-ignore
-import commonFixtures from '../../../../submodules/trezor-common/tests/fixtures/ethereum/sign_auth_eip7702.json';
-// @ts-ignore
-import errorFixtures from '../../../../submodules/trezor-common/tests/fixtures/ethereum/sign_auth_eip7702_errors.json';
+import { loadCommonFixture } from './commonFixtures';
+
+const commonFixtures = loadCommonFixture('ethereum/sign_auth_eip7702.json');
+const errorFixtures = loadCommonFixture('ethereum/sign_auth_eip7702_errors.json');
 
 // EIP-7702 is an experimental message not implemented on T1B1 and added to firmware in 2.12.4,
 // so it is skipped on T1B1 and on older firmware.
