@@ -11,7 +11,7 @@ import {
     hasEip712SignDataType,
     requiresTokenApproval,
     tokenSupportsIncreasingAllowance,
-} from '../exchangeUtils';
+} from './exchangeUtils';
 
 const USDT_CRYPTO_ID = 'ethereum--0xdac17f958d2ee523a2206206994597c13d831ec7' as CryptoId;
 const DAI_CRYPTO_ID = 'ethereum--0x6b175474e89094c44da98b954eedeac495271d0f' as CryptoId;

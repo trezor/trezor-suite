@@ -2,7 +2,7 @@ import { type CryptoId } from 'invity-api';
 
 import { type AddressValidator } from '@suite-common/address';
 
-import { isReceiveAddressCoherent, isReceiveAddressValid } from '../receiveAddressCoherence';
+import { isReceiveAddressCoherent, isReceiveAddressValid } from './receiveAddressCoherence';
 
 // Vitalik's address, all lowercase so no EIP-55 checksum is required.
 const VALID_ETH_ADDRESS = '0xab5801a7d398351b8be11c439e05c5b3259aec9b';

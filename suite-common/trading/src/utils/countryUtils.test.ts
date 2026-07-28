@@ -8,7 +8,7 @@ import {
     isCountrySubdivisionEmpty,
     isCountrySubdivisionRequired,
     toTradingCountryCode,
-} from '../countryUtils';
+} from './countryUtils';
 
 describe('countryUtils', () => {
     describe('isCountryCode', () => {

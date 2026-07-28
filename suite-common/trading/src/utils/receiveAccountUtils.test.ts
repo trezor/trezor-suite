@@ -1,7 +1,7 @@
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
-import { getReceiveAccountPreselection } from '../receiveAccountUtils';
+import { getReceiveAccountPreselection } from './receiveAccountUtils';
 
 const btcUnusedAddress = 'bc1qfcjv620stvtzjeelg26ncgww8ks49zy8lracjz';
 

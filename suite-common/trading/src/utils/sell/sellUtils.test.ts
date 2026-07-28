@@ -1,8 +1,8 @@
 import { type CryptoId, type SellFiatTrade } from 'invity-api';
 
-import { type TradingSellInfoSelector } from '../../../selectors/tradingSelectors';
-import { sellUtilsFixtures } from '../__fixtures__/sellUtils';
-import { sellUtils } from '../sellUtils';
+import { sellUtilsFixtures } from './__fixtures__/sellUtils';
+import { sellUtils } from './sellUtils';
+import { type TradingSellInfoSelector } from '../../selectors/tradingSelectors';
 
 describe('sellUtils', () => {
     describe('getAmountLimits', () => {

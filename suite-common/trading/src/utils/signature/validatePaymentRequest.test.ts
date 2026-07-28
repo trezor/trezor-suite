@@ -6,7 +6,7 @@ import {
     type Slip24Output,
     computePaymentRequestPayload,
     validatePaymentRequestSignature,
-} from '../validatePaymentRequest';
+} from './validatePaymentRequest';
 
 // Fixture taken from trezor-trade-api PaymentRequestSigner tests: the signature was
 // produced by the API implementation with the debug key (m/0h of "all all ... all" seed),
@@ -177,7 +177,7 @@ describe(validatePaymentRequestSignature.name, () => {
                 const { validatePaymentRequestSignature: validateInProduction } =
                     jest.requireActual<{
                         validatePaymentRequestSignature: typeof validatePaymentRequestSignature;
-                    }>('../validatePaymentRequest');
+                    }>('./validatePaymentRequest');
 
                 const isValid = validateInProduction({
                     paymentRequest: createFixturePaymentRequest(),

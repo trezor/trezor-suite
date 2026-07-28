@@ -1,14 +1,14 @@
 import { type CryptoId } from 'invity-api';
 
-import coins from '../../__fixtures__/coins.json';
-import platforms from '../../__fixtures__/platforms.json';
 import {
     getTradingCoinInfoByCryptoId,
     getTradingCoinSymbolByCryptoId,
     getTradingNativeCoinSymbolByCryptoId,
     getTradingPlatformsInfoByCryptoId,
     getTradingSymbolAndContractAddressByCryptoId,
-} from '../infoUtils';
+} from './infoUtils';
+import coins from '../__fixtures__/coins.json';
+import platforms from '../__fixtures__/platforms.json';
 
 describe('infoUtils', () => {
     it('getTradingCoinInfoByCryptoId should select coin', () => {

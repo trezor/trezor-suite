@@ -4,7 +4,7 @@ import {
     getCurrencyLabel,
     getSupportedFiatCurrencyWithFallback,
     mapFiatCurrencyCodeToBaseCurrencyCode,
-} from '../currencyUtils';
+} from './currencyUtils';
 
 describe('currencyUtils', () => {
     describe('buildTradingFiatOption', () => {

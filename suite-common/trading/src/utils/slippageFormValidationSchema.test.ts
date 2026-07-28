@@ -1,6 +1,6 @@
 import { yup } from '@suite-common/validators';
 
-import { getSlippageFormValidationSchema } from '../slippageFormValidationSchema';
+import { getSlippageFormValidationSchema } from './slippageFormValidationSchema';
 
 const messages = {
     required: 'REQUIRED',

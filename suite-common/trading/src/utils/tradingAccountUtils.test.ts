@@ -2,7 +2,7 @@ import { type CryptoId } from 'invity-api';
 
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
-import { isAccountEligibleForTrade } from '../tradingAccountUtils';
+import { isAccountEligibleForTrade } from './tradingAccountUtils';
 
 const TOKEN_CRYPTO_ID = 'ethereum--0xTokenContract' as CryptoId;
 
