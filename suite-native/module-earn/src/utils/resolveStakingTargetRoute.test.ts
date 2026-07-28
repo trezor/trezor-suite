@@ -1,6 +1,6 @@
 import { RootStackRoutes } from '@suite-native/navigation';
 
-import { resolveStakingTargetRoute } from '../resolveStakingTargetRoute';
+import { resolveStakingTargetRoute } from './resolveStakingTargetRoute';
 
 describe('resolveStakingTargetRoute', () => {
     it('routes Ethereum accounts to StakingManagement', () => {

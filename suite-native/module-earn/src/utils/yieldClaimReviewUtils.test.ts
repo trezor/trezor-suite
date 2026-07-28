@@ -1,6 +1,6 @@
 import { type StablecoinYieldActionReviewState } from '@suite-common/wallet-core';
 
-import { buildYieldClaimRewards } from '../yieldClaimReviewUtils';
+import { buildYieldClaimRewards } from './yieldClaimReviewUtils';
 
 type YieldClaimReview = Extract<StablecoinYieldActionReviewState, { type: 'claim' }>;
 

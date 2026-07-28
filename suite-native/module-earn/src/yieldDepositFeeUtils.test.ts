@@ -7,7 +7,7 @@ import {
     buildYieldDepositFeeLevels,
     buildYieldDepositFeePreview,
     buildYieldDepositSelectedFeeUnsignedTransaction,
-} from '../yieldDepositFeeUtils';
+} from './yieldDepositFeeUtils';
 
 const baseUnsignedTransaction = {
     from: '0x9eA3721B5Bf3b64b4418c38B603154d2D597FAE3',

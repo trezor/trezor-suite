@@ -1,10 +1,10 @@
 import { act, renderHookWithBasicProvider } from '@suite-native/test-utils';
 
-import { useShowYieldAlert } from '../useShowYieldAlert';
-import { type PreparedYieldDepositAction } from '../useYieldDepositFees';
-import { useYieldDepositSubmit } from '../useYieldDepositSubmit';
+import { useShowYieldAlert } from './useShowYieldAlert';
+import { type PreparedYieldDepositAction } from './useYieldDepositFees';
+import { useYieldDepositSubmit } from './useYieldDepositSubmit';
 
-jest.mock('../useShowYieldAlert');
+jest.mock('./useShowYieldAlert');
 
 const mockUseShowYieldAlert = jest.mocked(useShowYieldAlert);
 

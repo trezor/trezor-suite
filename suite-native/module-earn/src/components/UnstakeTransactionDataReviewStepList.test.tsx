@@ -3,20 +3,21 @@ import { getTranslation } from '@suite-native/intl';
 import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 import { type ReviewSummaryOutput } from '@suite-native/transaction-management';
 
-import { ClaimTransactionDataReviewStepList } from '../ClaimTransactionDataReviewStepList';
+import { UnstakeTransactionDataReviewStepList } from './UnstakeTransactionDataReviewStepList';
 
-const mockClaimOutputItem = jest.fn();
+const mockUnstakeOutputItem = jest.fn();
 const mockEarnSummaryOutputItem = jest.fn();
 
 let mockIsTransactionAlreadySigned: boolean;
 let mockSummaryOutput: ReviewSummaryOutput | null;
 let mockAccountNetworkSymbol: string | null;
+let mockPrecomposed: { fee: string; solanaTxMeta?: { deviceAmountLamports: string } };
 
 const accountKey = mockAccountKey({ symbol: 'eth', descriptor: 'ethAccount' });
 
 jest.mock('@react-navigation/native', () => ({
     ...jest.requireActual('@react-navigation/native'),
-    useRoute: () => ({ params: { accountKey } }),
+    useRoute: () => ({ params: { accountKey, amount: '1' } }),
 }));
 
 jest.mock('@suite-native/transaction-management', () => ({
@@ -30,20 +31,15 @@ jest.mock('@suite-common/wallet-core', () => ({
     selectAccountNetworkSymbol: () => mockAccountNetworkSymbol,
 }));
 
-jest.mock('@suite-native/staking', () => ({
-    ...jest.requireActual('@suite-native/staking'),
-    selectClaimableAmountByAccountKey: () => '5',
-}));
-
-jest.mock('../ClaimOutputItem', () => ({
-    ClaimOutputItem: (props: { outputState?: string }) => {
-        mockClaimOutputItem(props);
+jest.mock('./UnstakeOutputItem', () => ({
+    UnstakeOutputItem: (props: { outputState?: string }) => {
+        mockUnstakeOutputItem(props);
 
         return null;
     },
 }));
 
-jest.mock('../EarnSummaryOutputItem', () => ({
+jest.mock('./EarnSummaryOutputItem', () => ({
     EarnSummaryOutputItem: (props: { outputState?: string; fee?: string }) => {
         mockEarnSummaryOutputItem(props);
 
@@ -51,35 +47,45 @@ jest.mock('../EarnSummaryOutputItem', () => ({
     },
 }));
 
-jest.mock('../../hooks/useEarnSelectedPrecomposedTransaction', () => ({
-    useEarnSelectedPrecomposedTransaction: () => ({ fee: '21000', totalSpent: '5' }),
+jest.mock('../hooks/useEarnSelectedPrecomposedTransaction', () => ({
+    useEarnSelectedPrecomposedTransaction: () => mockPrecomposed,
 }));
 
-const renderStepList = () => renderWithStoreProvider(<ClaimTransactionDataReviewStepList />);
+const renderStepList = () => renderWithStoreProvider(<UnstakeTransactionDataReviewStepList />);
 
-describe('ClaimTransactionDataReviewStepList', () => {
+describe('UnstakeTransactionDataReviewStepList', () => {
     beforeEach(() => {
         jest.clearAllMocks();
         mockIsTransactionAlreadySigned = false;
         mockSummaryOutput = null;
         mockAccountNetworkSymbol = 'eth';
+        mockPrecomposed = { fee: '21000' };
     });
 
-    it('renders the claim and summary cards without a Next button', () => {
+    it('renders nothing until the account network symbol is known', () => {
+        mockAccountNetworkSymbol = null;
+
+        renderStepList();
+
+        expect(mockUnstakeOutputItem).not.toHaveBeenCalled();
+        expect(mockEarnSummaryOutputItem).not.toHaveBeenCalled();
+    });
+
+    it('renders the unstake and summary cards without a Next button', () => {
         const { queryByText, queryByTestId } = renderStepList();
 
-        expect(mockClaimOutputItem).toHaveBeenCalledTimes(1);
+        expect(mockUnstakeOutputItem).toHaveBeenCalledTimes(1);
         expect(mockEarnSummaryOutputItem).toHaveBeenCalledTimes(1);
         expect(queryByText(getTranslation('generic.buttons.next'))).toBeNull();
-        expect(queryByTestId('@earn/claim-review-continue')).toBeNull();
+        expect(queryByTestId('@earn/unstake-review-continue')).toBeNull();
     });
 
-    it('keeps the claim step active and the summary hidden until the device confirms the outputs', () => {
+    it('keeps the unstake step active and the summary hidden until the device confirms the outputs', () => {
         mockSummaryOutput = null;
 
         renderStepList();
 
-        expect(mockClaimOutputItem).toHaveBeenCalledWith(
+        expect(mockUnstakeOutputItem).toHaveBeenCalledWith(
             expect.objectContaining({ outputState: 'active' }),
         );
         expect(mockEarnSummaryOutputItem).toHaveBeenCalledWith(
@@ -87,12 +93,12 @@ describe('ClaimTransactionDataReviewStepList', () => {
         );
     });
 
-    it('marks the claim step done and activates the summary once all device outputs are confirmed', () => {
-        mockSummaryOutput = { state: 'active', totalSpent: '5', fee: '21000' };
+    it('marks the unstake step done and activates the summary once all device outputs are confirmed', () => {
+        mockSummaryOutput = { state: 'active', totalSpent: '1', fee: '21000' };
 
         renderStepList();
 
-        expect(mockClaimOutputItem).toHaveBeenCalledWith(
+        expect(mockUnstakeOutputItem).toHaveBeenCalledWith(
             expect.objectContaining({ outputState: 'success' }),
         );
         expect(mockEarnSummaryOutputItem).toHaveBeenCalledWith(
@@ -102,11 +108,11 @@ describe('ClaimTransactionDataReviewStepList', () => {
 
     it('marks both steps done and hides the sliding footer once the transaction is signed', () => {
         mockIsTransactionAlreadySigned = true;
-        mockSummaryOutput = { state: 'success', totalSpent: '5', fee: '21000' };
+        mockSummaryOutput = { state: 'success', totalSpent: '1', fee: '21000' };
 
         const { queryByTestId } = renderStepList();
 
-        expect(mockClaimOutputItem).toHaveBeenCalledWith(
+        expect(mockUnstakeOutputItem).toHaveBeenCalledWith(
             expect.objectContaining({ outputState: 'success' }),
         );
         expect(mockEarnSummaryOutputItem).toHaveBeenCalledWith(
@@ -119,5 +125,14 @@ describe('ClaimTransactionDataReviewStepList', () => {
         const { getByTestId } = renderStepList();
 
         expect(getByTestId('sliding-footer-overlay')).toBeOnTheScreen();
+    });
+
+    it('passes the amount in base units and the unstake stake type to the summary', () => {
+        renderStepList();
+
+        // Route amount '1' ETH -> 1e18 wei. The summary decides itself whether to show it.
+        expect(mockEarnSummaryOutputItem).toHaveBeenCalledWith(
+            expect.objectContaining({ amount: '1000000000000000000', stakeType: 'unstake' }),
+        );
     });
 });

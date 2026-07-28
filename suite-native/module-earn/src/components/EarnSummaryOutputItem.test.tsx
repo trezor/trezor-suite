@@ -1,8 +1,8 @@
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 
-import { type EarnFormDraftPrefix } from '../../types';
-import { EarnSummaryOutputItem } from '../EarnSummaryOutputItem';
+import { type EarnFormDraftPrefix } from '../types';
+import { EarnSummaryOutputItem } from './EarnSummaryOutputItem';
 
 const mockReviewOutputItemValues = jest.fn();
 

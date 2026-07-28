@@ -13,7 +13,7 @@ import {
     getStablecoinYieldAccountRewards,
     getStablecoinYieldClaimRewardsSnapshot,
     getTotalFiatClaimableAmount,
-} from '../stablecoinYieldClaimSummaryUtils';
+} from './stablecoinYieldClaimSummaryUtils';
 
 const receiptTokenContract = toTokenAddress('0x0000000000000000000000000000000000000002');
 

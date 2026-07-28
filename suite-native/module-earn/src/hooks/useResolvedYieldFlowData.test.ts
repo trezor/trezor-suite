@@ -2,7 +2,7 @@ import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
 import { type Account, type AccountKey } from '@suite-common/wallet-types';
 import { type TokenInfo } from '@trezor/connect';
 
-import { resolveYieldFlowData } from '../useResolvedYieldFlowData';
+import { resolveYieldFlowData } from './useResolvedYieldFlowData';
 
 const accountKey = 'eth-account-key' as AccountKey;
 const underlyingTokenAddress = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';

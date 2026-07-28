@@ -4,8 +4,8 @@ import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { getFiatRateKey } from '@suite-common/wallet-utils';
 import { renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 
-import { type StablecoinYieldEarnItem, type StakingEarnItem } from '../../types';
-import { useEarnDepositsCardData } from '../useEarnDepositsCardData';
+import { type StablecoinYieldEarnItem, type StakingEarnItem } from '../types';
+import { useEarnDepositsCardData } from './useEarnDepositsCardData';
 
 jest.mock('@suite-common/wallet-core', () => ({
     ...jest.requireActual('@suite-common/wallet-core'),

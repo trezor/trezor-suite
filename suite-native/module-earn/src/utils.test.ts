@@ -1,4 +1,4 @@
-import { handleEarnReviewError } from '../utils';
+import { handleEarnReviewError } from './utils';
 
 const buildHandlers = () => ({
     navigation: { pop: jest.fn() },

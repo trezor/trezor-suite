@@ -4,7 +4,7 @@ import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { DeviceOnboardingStackRoutes } from '@suite-native/navigation';
 import { act, renderHook } from '@suite-native/test-utils-store';
 
-import { useReportOnboardingStepViewedAnalytics } from '../useReportOnboardingStepViewedAnalytics';
+import { useReportOnboardingStepViewedAnalytics } from './useReportOnboardingStepViewedAnalytics';
 
 const renderUseReportStepViewed = () => {
     const services: NativeAnalyticsDep = {

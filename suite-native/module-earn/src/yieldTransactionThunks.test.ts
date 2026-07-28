@@ -20,7 +20,7 @@ import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import TrezorConnect from '@trezor/connect';
 import { type StaticSessionId } from '@trezor/device-utils';
 
-import { pushYieldActionReviewThunk } from '../yieldTransactionThunks';
+import { pushYieldActionReviewThunk } from './yieldTransactionThunks';
 
 jest.mock('@trezor/connect', () => ({
     __esModule: true,
