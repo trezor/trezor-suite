@@ -8,12 +8,10 @@ import path from 'node:path';
 import { validJws } from '@suite-common/message-system/src/__fixtures__/messageSystemActions';
 import { type TradingCountryCode, regional } from '@suite-common/trading';
 import { getAccountDecimals, localizeNumber } from '@suite-common/wallet-utils';
-import { Model } from '@trezor/trezor-user-env-link';
 import { BigNumber, splitStringEveryNCharacters } from '@trezor/utils';
 
 import { PlaywrightTarget } from './testExtends/suiteTestOptions';
 import { PercentageOfBalanceParams } from './types';
-import releases from '../../../submodules/trezor-common/releases.json';
 
 export const isDesktopProject = (target: PlaywrightTarget) => target === PlaywrightTarget.Desktop;
 
@@ -103,23 +101,6 @@ export const getVideoPath = (videoFolder: string): string | false => {
     }
 
     return path.join(videoFolder, videoFilenames[0] ?? '');
-};
-
-export const findLatestVersionForModel = (model: Model): string => {
-    const firmwareVersions = releases.firmware;
-    const versions = Object.keys(firmwareVersions);
-
-    // Sort versions in descending order
-    versions.sort((a, b) => (a > b ? -1 : 1));
-
-    // Find the latest version supporting our model
-    for (const version of versions) {
-        if (firmwareVersions[version as keyof typeof firmwareVersions].includes(model)) {
-            return version;
-        }
-    }
-
-    throw new Error(`No firmware version found for model ${model}`);
 };
 
 export const getCountryLabel = (country: TradingCountryCode) => {

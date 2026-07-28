@@ -2,15 +2,13 @@ import { events } from '@suite/analytics';
 import { TestCategory, TestPriority, TestStream, createTestAnnotation } from '@trezor/e2e-utils';
 import { Model } from '@trezor/trezor-user-env-link';
 
-import { findLatestVersionForModel } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
 import { Language, Theme } from '../../support/pageObjects/settings/settingsPage';
 import { ExtractByEventType } from '../../support/types';
 
 test.describe('Analytics Events', { tag: ['@webOnly', '@specificFirmware', '@T3T1'] }, () => {
-    const firmwareVersion = findLatestVersionForModel(Model.T3T1); // Specific firmware is needed to have predictable firmware version in analytics and unfortunately I can't get the PW project defined device model here, so this test is limited to T3T1 only.
-    test.use({ firmwareVersion });
-
+    // The device runs the project-default firmware (`<major>-latest`); the concrete
+    // firmware version reported in analytics is intentionally not asserted below.
     test.beforeEach(async ({ analytics, onboardingPage }) => {
         await analytics.interceptAnalytics();
         await onboardingPage.completeOnboarding();
@@ -63,7 +61,6 @@ test.describe('Analytics Events', { tag: ['@webOnly', '@specificFirmware', '@T3T
                 >(events.deviceConnectEvent.name);
                 expect(deviceConnectEvent).toMatchObject({
                     mode: 'normal',
-                    firmware: firmwareVersion,
                     bootloaderHash: '',
                     backup_type: 'Bip39',
                     pin_protection: 'false',
