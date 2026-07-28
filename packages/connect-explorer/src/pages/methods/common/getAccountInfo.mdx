@@ -32,7 +32,7 @@ export const UsingPathSchema = Type.Object({
     }),
     coin: Type.String({
         description:
-            'determines network definition specified in [coins.json](https://github.com/trezor/trezor-suite/blob/develop/packages/connect-data/files/coins.json) file. Coin `shortcut` (a `CoinSymbol`, e.g. `btc`) is used.',
+            'determines the network definition. Coin `shortcut` (a `CoinSymbol`, e.g. `btc`) is used — see [supported coins](/details/coins) for every accepted value.',
     }),
 });
 
@@ -42,7 +42,7 @@ export const UsingPubkeySchema = Type.Object({
     }),
     coin: Type.String({
         description:
-            'determines network definition specified in [coins.json](https://github.com/trezor/trezor-suite/blob/develop/packages/connect-data/files/coins.json) file. Coin `shortcut` (a `CoinSymbol`, e.g. `btc`) is used.',
+            'determines the network definition. Coin `shortcut` (a `CoinSymbol`, e.g. `btc`) is used — see [supported coins](/details/coins) for every accepted value.',
     }),
 });
 
@@ -94,7 +94,7 @@ export const GetAccountInfoSchema = Type.Intersect([
 
 export const paramDescriptions = {
     path: 'minimum length is `3`. [read more](/details/path)',
-    coin: 'determines network definition specified in [coins.json](https://github.com/trezor/trezor-suite/blob/develop/packages/connect-data/files/coins.json) file. Coin `shortcut` (a `CoinSymbol`, e.g. `btc`) is used.',
+    coin: 'determines the network definition. Coin `shortcut` (a `CoinSymbol`, e.g. `btc`) is used — see [supported coins](/details/coins) for every accepted value.',
     descriptor: 'public key or address of account',
     page: 'transaction history page index, subject of `details: txs`',
     pageSize: 'transaction history page size, subject of `details: txs`',

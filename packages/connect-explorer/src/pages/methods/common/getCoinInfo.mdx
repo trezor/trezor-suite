@@ -14,7 +14,7 @@ export const GetCoinInfoSchema = Type.Object({
 
 ## Get Coin Info
 
-Returns information about a specified coin from the [coins.json](https://github.com/trezor/trezor-suite/blob/develop/packages/connect-data/files/coins.json) file.
+Returns information about a specified coin from the [coins.json](https://github.com/trezor/trezor-suite/blob/develop/packages/connect-data/files/coins.json) file. See [supported coins](/details/coins) for every accepted `coin` value.
 
 ```javascript
 const result = await TrezorConnect.getCoinInfo(params);

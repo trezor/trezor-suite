@@ -32,7 +32,7 @@ export const PrecomposeSchema = Type.Object({
 
 export const paramDescriptions = {
     outputs: 'Array of output objects described [below](#accepted-output-objects)',
-    coin: 'determines network definition specified in [coins.json](https://github.com/trezor/trezor-suite/blob/develop/packages/connect-data/files/coins.json) file. Coin `shortcut` (a `CoinSymbol`, e.g. `btc`) is used.',
+    coin: 'determines the network definition. Coin `shortcut` (a `CoinSymbol`, e.g. `btc`) is used — see [supported coins](/details/coins) for every accepted value.',
     push: 'determines if composed transaction will be broadcasted into blockchain network. Default is set to false.',
     sequence: 'transaction input field used in RBF or locktime transactions',
     account:
