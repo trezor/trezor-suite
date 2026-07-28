@@ -8,12 +8,12 @@ import {
     moonpayCreditCardSellQuote,
 } from '@suite-native/trading-fixtures';
 
+import { TradingSellPreviewScreen } from './TradingSellPreviewScreen';
 import {
     type PreloadedStatePartial,
     type TradingTestPreloadedState,
     renderWithTradingProvider,
-} from '../../__tests__/tradingTestUtils';
-import { TradingSellPreviewScreen } from '../TradingSellPreviewScreen';
+} from '../__tests__/tradingTestUtils';
 
 jest.mock('@react-navigation/native', () => ({
     ...jest.requireActual('@react-navigation/native'),
@@ -28,7 +28,7 @@ const mockComposeTradingTransaction = jest.fn();
 const mockTxnErrorString = null;
 const mockRetryDoSellTrade = jest.fn();
 
-jest.mock('../../hooks/sell/useSellFlow', () => ({
+jest.mock('../hooks/sell/useSellFlow', () => ({
     useSellFlow: () => ({
         txnErrorString: mockTxnErrorString,
         doBankAccountVerificationCheck: mockDoBankAccountVerificationCheck,
@@ -46,7 +46,7 @@ jest.mock('@suite-common/trading', () => ({
     useTradingDetailData: () => mockUseTradingDetailData,
 }));
 
-jest.mock('../../hooks/general/useWatchTrade', () => ({
+jest.mock('../hooks/general/useWatchTrade', () => ({
     useWatchTrade: jest.fn(),
 }));
 

@@ -7,19 +7,15 @@ import {
     RootStackRoutes,
     useNavigationRemoveActionInterceptor,
 } from '@suite-native/navigation';
-import { type TestStore, fireEvent } from '@suite-native/test-utils-store';
+import { type TestStore } from '@suite-native/test-utils-store';
 import { eth1NormalAccount, mercuryoFixedWorstQuote } from '@suite-native/trading-fixtures';
 
-import {
-    createTradingLightStore,
-    renderWithTradingProvider,
-} from '../../__tests__/tradingTestUtils';
-import { TradingExchangeApprovalScreen } from '../TradingExchangeApprovalScreen';
+import { TradingExchangeRevokeScreen } from './TradingExchangeRevokeScreen';
+import { createTradingLightStore, renderWithTradingProvider } from '../__tests__/tradingTestUtils';
 
 const mockShowSheet = jest.fn();
 const mockHideSheet = jest.fn();
 const mockConfirmApproval = jest.fn().mockResolvedValue({});
-const mockOnApprovalTypeChange = jest.fn();
 const mockNavigationDispatch = jest.fn();
 
 jest.mock('@suite-native/navigation', () => ({
@@ -37,18 +33,17 @@ const triggerPreventNavigationRemove = (action: NavigationAction = { type: 'GO_B
     params?.onInterceptedAction?.(action);
 };
 
-jest.mock('../../hooks/exchange/Approval/useApprovalFlow', () => ({
+jest.mock('../hooks/exchange/Approval/useApprovalFlow', () => ({
     useApprovalFlow: () => ({
         quote: undefined,
         isReady: true,
         isConfirming: false,
         error: null,
         confirmApproval: mockConfirmApproval,
-        onApprovalTypeChange: mockOnApprovalTypeChange,
     }),
 }));
 
-jest.mock('../../hooks/exchange/Approval/useEvmApprovalFees', () => ({
+jest.mock('../hooks/exchange/Approval/useEvmApprovalFees', () => ({
     useEvmApprovalFees: () => ({
         fee: '100000',
         isLoading: false,
@@ -61,22 +56,13 @@ jest.mock('@react-navigation/native', () => ({
     ...jest.requireActual('@react-navigation/native'),
     useRoute: () =>
         ({
-            key: RootStackRoutes.TradingExchangeApproval,
-            name: RootStackRoutes.TradingExchangeApproval,
+            key: RootStackRoutes.TradingExchangeRevoke,
+            name: RootStackRoutes.TradingExchangeRevoke,
             params: {},
-        }) as RouteProp<RootStackParamList, RootStackRoutes.TradingExchangeApproval>,
+        }) as RouteProp<RootStackParamList, RootStackRoutes.TradingExchangeRevoke>,
     useNavigation: () => ({
         setOptions: jest.fn(),
     }),
-}));
-
-const mockAnalyticsReport = jest.fn();
-jest.mock('@suite-native/trading-analytics', () => ({
-    ...jest.requireActual('@suite-native/trading-analytics'),
-    useExchangeAnalyticsStepReport:
-        (action: unknown) =>
-        (...args: unknown[]) =>
-            mockAnalyticsReport(action, ...args),
 }));
 
 jest.mock('@suite-native/trading-atoms', () => ({
@@ -94,9 +80,18 @@ jest.mock('@suite-common/device', () => ({
     selectIsDeviceConnected: () => mockIsDeviceConnected,
 }));
 
+const mockAnalyticsReport = jest.fn();
+jest.mock('@suite-native/trading-analytics', () => ({
+    ...jest.requireActual('@suite-native/trading-analytics'),
+    useExchangeAnalyticsStepReport:
+        (action: unknown) =>
+        (...args: unknown[]) =>
+            mockAnalyticsReport(action, ...args),
+}));
+
 const testQuote = mercuryoFixedWorstQuote;
 
-describe('TradingExchangeApprovalScreen', () => {
+describe('TradingExchangeRevokeScreen', () => {
     let store: TestStore;
     let unmount: (() => void) | undefined;
 
@@ -104,7 +99,7 @@ describe('TradingExchangeApprovalScreen', () => {
 
     const renderScreen = (params: Record<string, unknown> = {}) => {
         const result = renderWithTradingProvider(
-            <TradingExchangeApprovalScreen
+            <TradingExchangeRevokeScreen
                 route={{ params } as any}
                 navigation={{ dispatch: mockNavigationDispatch } as any}
             />,
@@ -133,16 +128,16 @@ describe('TradingExchangeApprovalScreen', () => {
         }
     });
 
-    it('should confirm approval on mount', () => {
+    it('should confirm revoke with ZERO approval type', () => {
         renderScreen();
 
         expect(mockConfirmApproval).toHaveBeenCalledTimes(1);
         expect(mockConfirmApproval).toHaveBeenCalledWith(
-            expect.objectContaining({ approvalType: 'MINIMAL' }),
+            expect.objectContaining({ approvalType: 'ZERO' }),
         );
     });
 
-    it('should render the approval screen with quote details', () => {
+    it('should render the revoke screen with quote details', () => {
         const { getByText } = renderScreen();
 
         expect(getByText('ETH Account #1')).toBeOnTheScreen();
@@ -154,17 +149,6 @@ describe('TradingExchangeApprovalScreen', () => {
         const { getByText } = renderScreen();
 
         expect(getByText('Mercuryo')).toBeOnTheScreen();
-    });
-
-    it('should open bottom sheet when limit row is pressed', async () => {
-        const { findByText } = renderScreen();
-
-        const pressableElement = await findByText(
-            getTranslation('moduleTrading.tradingExchangeApprovalScreen.limitLabel'),
-        );
-
-        fireEvent.press(pressableElement);
-        expect(mockShowSheet).toHaveBeenCalledTimes(1);
     });
 
     it('should render continue button', () => {
@@ -179,13 +163,11 @@ describe('TradingExchangeApprovalScreen', () => {
         const { getByText, queryByText } = renderScreen();
 
         expect(
-            getByText(
-                getTranslation('moduleTrading.tradingExchangeApprovalScreen.approveErrorAlert'),
-            ),
+            getByText(getTranslation('moduleTrading.tradingExchangeRevokeScreen.revokeErrorAlert')),
         ).toBeOnTheScreen();
         expect(queryByText(getTranslation('generic.buttons.continue'))).toBeNull();
         expect(errorSpy).toHaveBeenCalledTimes(1);
-        expect(errorSpy).toHaveBeenCalledWith('No quote to confirm approval');
+        expect(errorSpy).toHaveBeenCalledWith('No quote to revoke approval');
     });
 
     it('should clear selected quote on back navigation', () => {
@@ -201,12 +183,12 @@ describe('TradingExchangeApprovalScreen', () => {
         expect(mockNavigationDispatch).toHaveBeenCalledWith(backAction);
     });
 
-    it('should render revoke success alert when isRevoked is true', () => {
-        const { getByText } = renderScreen({ isRevoked: true });
+    it('should render low limit info alert when shouldIncreaseLimit is true', () => {
+        const { getByText } = renderScreen({ shouldIncreaseLimit: true });
 
         expect(
             getByText(
-                getTranslation('moduleTrading.tradingExchangeApprovalScreen.revokeSuccessAlert'),
+                getTranslation('moduleTrading.tradingExchangeRevokeScreen.lowLimitInfoAlert'),
             ),
         ).toBeOnTheScreen();
     });
@@ -222,20 +204,20 @@ describe('TradingExchangeApprovalScreen', () => {
     });
 
     describe('analytics', () => {
-        it('should report approval-preview visit ', () => {
+        it('should report revoke-preview visit ', () => {
             renderScreen();
 
-            expect(mockAnalyticsReport).toHaveBeenCalledWith('approval-preview', 'visit');
+            expect(mockAnalyticsReport).toHaveBeenCalledWith('revoke-preview', 'visit');
             expect(mockAnalyticsReport).toHaveBeenCalledTimes(1);
         });
 
-        it('should report approval-preview cancel on back navigation', () => {
+        it('should report revoke-preview cancel on back navigation', () => {
             store.dispatch(tradingExchangeActions.saveSelectedQuote(testQuote));
             renderScreen();
 
             triggerPreventNavigationRemove({ type: 'GO_BACK' });
 
-            expect(mockAnalyticsReport).toHaveBeenCalledWith('approval-preview', 'cancel');
+            expect(mockAnalyticsReport).toHaveBeenCalledWith('revoke-preview', 'cancel');
         });
     });
 });

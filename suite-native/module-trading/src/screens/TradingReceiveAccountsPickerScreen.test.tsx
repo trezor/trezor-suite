@@ -6,12 +6,12 @@ import { getTranslation } from '@suite-native/intl';
 import { type RootStackParamList, type RootStackRoutes } from '@suite-native/navigation';
 import { accounts } from '@suite-native/trading-fixtures';
 
+import { TradingReceiveAccountsPickerScreen } from './TradingReceiveAccountsPickerScreen';
 import {
     type PreloadedStatePartial,
     type TradingTestPreloadedState,
     renderWithTradingProvider,
-} from '../../__tests__/tradingTestUtils';
-import { TradingReceiveAccountsPickerScreen } from '../TradingReceiveAccountsPickerScreen';
+} from '../__tests__/tradingTestUtils';
 
 let mockRouteParams: {
     symbol: NetworkSymbol;

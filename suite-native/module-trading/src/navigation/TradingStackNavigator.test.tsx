@@ -1,12 +1,12 @@
 import { mockMessageSystemStateWithFeatureFlags } from '@suite-common/message-system/mocks';
 
+import { TradingStackNavigator } from './TradingStackNavigator';
 import {
     createTradingFeatureFlags,
     renderWithTradingProvider,
-} from '../../__tests__/tradingTestUtils';
-import { TradingStackNavigator } from '../TradingStackNavigator';
+} from '../__tests__/tradingTestUtils';
 
-jest.mock('../../hooks/buy/useBuyData', () => ({
+jest.mock('../hooks/buy/useBuyData', () => ({
     useBuyData: () => ({
         isLoading: true,
         lastLoadedTimestamp: 0,

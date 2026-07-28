@@ -1,10 +1,7 @@
 import { btc1NormalAccount, eth1NormalAccount } from '@suite-native/trading-fixtures';
 import type { Address } from '@trezor/blockchain-link-types';
 
-import {
-    getReceiveAccountAddressText,
-    isFullySelectedReceiveAccount,
-} from '../receiveAccountUtils';
+import { getReceiveAccountAddressText, isFullySelectedReceiveAccount } from './receiveAccountUtils';
 
 describe('receiveAccountUtils', () => {
     describe('isFullySelectedReceiveAccount', () => {

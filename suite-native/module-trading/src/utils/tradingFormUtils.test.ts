@@ -3,7 +3,7 @@ import type { ExchangeTrade, SellFiatTrade } from 'invity-api';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { exchangeInvity, sellInvity } from '@suite-native/trading-fixtures';
 
-import { createFormStateForSendForm } from '../tradingFormUtils';
+import { createFormStateForSendForm } from './tradingFormUtils';
 
 describe('createFormStateForSendForm', () => {
     describe('createTradingFormState', () => {

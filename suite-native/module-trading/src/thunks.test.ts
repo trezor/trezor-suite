@@ -11,7 +11,7 @@ import { type TestStore } from '@suite-native/test-utils-store';
 import { selectAccountTokenInfo } from '@suite-native/tokens';
 import { eth1NormalAccount, invityDexQuote } from '@suite-native/trading-fixtures';
 
-import { clearTradingStateThunk, composeEvmApprovalFeeLevelsThunk } from '../thunks';
+import { clearTradingStateThunk, composeEvmApprovalFeeLevelsThunk } from './thunks';
 import { createTradingLightStore } from './tradingTestUtils';
 
 jest.mock('@trezor/connect', () => ({

@@ -7,8 +7,8 @@ import {
     mercuryoApplePayBuyQuote,
 } from '@suite-native/trading-fixtures';
 
-import { renderWithTradingProvider } from '../../__tests__/tradingTestUtils';
-import { TradingBuyPreviewScreen } from '../TradingBuyPreviewScreen';
+import { TradingBuyPreviewScreen } from './TradingBuyPreviewScreen';
+import { renderWithTradingProvider } from '../__tests__/tradingTestUtils';
 
 jest.mock('@react-navigation/native', () => ({
     ...jest.requireActual('@react-navigation/native'),

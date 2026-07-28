@@ -1,13 +1,13 @@
 import { mockMessageSystemStateWithFeatureFlags } from '@suite-common/message-system/mocks';
 import { getTranslation } from '@suite-native/intl';
 
+import { TradingScreen } from './TradingScreen';
 import {
     type PreloadedStatePartial,
     type TradingTestPreloadedState,
     createTradingFeatureFlags,
     renderWithTradingProvider,
-} from '../../__tests__/tradingTestUtils';
-import { TradingScreen } from '../TradingScreen';
+} from '../__tests__/tradingTestUtils';
 
 jest.mock('@trezor/react-utils', () => ({
     ...jest.requireActual('@trezor/react-utils'),
@@ -29,7 +29,7 @@ jest.mock('@react-navigation/native', () => ({
     useRoute: () => ({ name: 'TradingScreen' }),
 }));
 
-jest.mock('../../hooks/buy/useBuyData', () => ({
+jest.mock('../hooks/buy/useBuyData', () => ({
     useBuyData: () => ({
         isLoading: false,
         lastLoadedTimestamp: 1,
@@ -37,7 +37,7 @@ jest.mock('../../hooks/buy/useBuyData', () => ({
     }),
 }));
 
-jest.mock('../../hooks/exchange/useExchangeData', () => ({
+jest.mock('../hooks/exchange/useExchangeData', () => ({
     useExchangeData: () => ({
         isLoading: false,
         lastLoadedTimestamp: 1,
@@ -45,7 +45,7 @@ jest.mock('../../hooks/exchange/useExchangeData', () => ({
     }),
 }));
 
-jest.mock('../../components/concierge/ConciergeAlert', () => ({
+jest.mock('../components/concierge/ConciergeAlert', () => ({
     ConciergeAlert: () => null,
 }));
 

@@ -12,8 +12,8 @@ import {
 } from '@suite-native/trading-fixtures';
 import { type BuyFormType } from '@suite-native/trading-types';
 
-import { useBuyForm } from '../../../hooks/buy/useBuyForm';
-import { getPaymentMethodFromBuyForm, tradingBuyFormToTradingBuyFormProps } from '../quotesUtils';
+import { getPaymentMethodFromBuyForm, tradingBuyFormToTradingBuyFormProps } from './quotesUtils';
+import { useBuyForm } from '../../hooks/buy/useBuyForm';
 
 describe('quotesUtils', () => {
     let form: BuyFormType;
