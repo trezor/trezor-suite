@@ -1,8 +1,8 @@
 import {
     baseUtxo,
     filterAndCategorizeUtxosFixtures,
-} from '../__fixtures__/filterAndCategorizeUtxosFixtures';
-import { filterAndCategorizeUtxos } from '../filterAndCategorizeUtxos';
+} from './__fixtures__/filterAndCategorizeUtxosFixtures';
+import { filterAndCategorizeUtxos } from './filterAndCategorizeUtxos';
 
 describe(filterAndCategorizeUtxos.name, () => {
     it('filters and categorizes correctly while searching by address', () => {

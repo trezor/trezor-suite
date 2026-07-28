@@ -1,7 +1,7 @@
 import { testMocks } from '@suite-common/test-utils';
 import { type WalletAccountTransaction } from '@suite-common/wallet-types';
 
-import { getTargetAmounts } from '../getTargetAmounts';
+import { getTargetAmounts } from './getTargetAmounts';
 
 const { getWalletTransaction } = testMocks;
 

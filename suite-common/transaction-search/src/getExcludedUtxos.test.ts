@@ -1,7 +1,7 @@
 import { testMocks } from '@suite-common/test-utils';
 import { getUtxoOutpoint } from '@suite-common/wallet-utils';
 
-import { getExcludedUtxos } from '../getExcludedUtxos';
+import { getExcludedUtxos } from './getExcludedUtxos';
 const { getUtxo } = testMocks;
 
 describe(getExcludedUtxos.name, () => {
