@@ -3,7 +3,7 @@ import { type DiscoveryStatus, asAccountDescriptor } from '@suite-common/wallet-
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { type StaticSessionId } from '@trezor/connect';
 
-import { REDACTED_REPLACEMENT, redactAccount, redactDevice, redactDiscovery } from '../utils';
+import { REDACTED_REPLACEMENT, redactAccount, redactDevice, redactDiscovery } from './utils';
 
 describe('logsUtils', () => {
     const account = mockWalletAccount({
