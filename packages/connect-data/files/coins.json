@@ -1473,22 +1473,6 @@
             }
         },
         {
-            "blockchain_link": null,
-            "curve": "secp256k1",
-            "decimals": 8,
-            "name": "Binance Chain",
-            "shortcut": "BNB",
-            "slip44": 714,
-            "support": {
-                "T1B1": false,
-                "T2B1": "2.6.1",
-                "T2T1": "2.1.5",
-                "T3B1": "2.8.1",
-                "T3T1": "2.6.1",
-                "T3W1": "2.6.1"
-            }
-        },
-        {
             "blockchain_link": { "type": "solana", "url": ["https://dsol1.trezor.io"] },
             "curve": "ed25519",
             "decimals": 9,
@@ -1502,38 +1486,6 @@
                 "T3B1": "2.8.1",
                 "T3T1": "2.6.4",
                 "T3W1": "2.6.4"
-            }
-        },
-        {
-            "blockchain_link": null,
-            "curve": "secp256k1",
-            "decimals": 8,
-            "name": "MaidSafeCoin",
-            "shortcut": "MAID",
-            "slip44": 0,
-            "support": {
-                "T1B1": "1.7.2",
-                "T2B1": "2.6.1",
-                "T2T1": "2.0.10",
-                "T3B1": "2.8.1",
-                "T3T1": "2.6.1",
-                "T3W1": "2.6.1"
-            }
-        },
-        {
-            "blockchain_link": null,
-            "curve": "secp256k1",
-            "decimals": 2,
-            "name": "Omni",
-            "shortcut": "OMNI",
-            "slip44": 0,
-            "support": {
-                "T1B1": "1.7.2",
-                "T2B1": "2.6.1",
-                "T2T1": "2.0.10",
-                "T3B1": "2.8.1",
-                "T3T1": "2.6.1",
-                "T3W1": "2.6.1"
             }
         },
         {
@@ -1582,22 +1534,6 @@
                 "T1B1": false,
                 "T2B1": "2.6.1",
                 "T2T1": "2.0.8",
-                "T3B1": "2.8.1",
-                "T3T1": "2.6.1",
-                "T3W1": "2.6.1"
-            }
-        },
-        {
-            "blockchain_link": null,
-            "curve": "secp256k1",
-            "decimals": 2,
-            "name": "Tether",
-            "shortcut": "USDT",
-            "slip44": 0,
-            "support": {
-                "T1B1": "1.7.2",
-                "T2B1": "2.6.1",
-                "T2T1": "2.0.10",
                 "T3B1": "2.8.1",
                 "T3T1": "2.6.1",
                 "T3W1": "2.6.1"
