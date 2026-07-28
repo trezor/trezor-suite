@@ -4,7 +4,11 @@ description: What you need to change in your integration to move from Trezor Con
 
 import { Callout } from 'nextra/components';
 
+import InteractiveChecklist from '../../components/InteractiveChecklist';
+
 # Migrating from Connect 9 to Connect 10
+
+<InteractiveChecklist />
 
 Connect 10 moves the Connect core out of the self-hosted iframe + popup and into **Trezor Suite**. Your app stays a thin client and keeps calling the same `TrezorConnect` methods — but a handful of parameters, return shapes and packaging details change, and a few methods move out of the public API.
 
@@ -40,13 +44,6 @@ Most integrations only touch a few of these. Find your call site or your error i
 | `@trezor/connect-plugin-ethereum` | Stub that throws                 | Drop it, remove `transformTypedData` ([Step 2](#step-2-only-if-you-use-these-apis))                           |
 | `disableWebUSB()`                 | Removed                          | `updateConnectSettings({ transports })` ([Step 5](#step-5-only-if-you-host-connect-core-trezorconnect))       |
 | EOS, NEM                          | Removed                          | Remove that support ([Removed coins](#removed-coins))                                                         |
-
-## Step 0: Identify your integration
-
-Which package do you install?
-
-- **`@trezor/connect-web`, `@trezor/connect-webextension`, or `@trezor/connect-mobile`** → you are a thin client. Skip Step 5 entirely.
-- **`@trezor/connect` directly** (you host Connect Core) → do every step, including Step 5.
 
 ## Step 1: Required for every integration
 
