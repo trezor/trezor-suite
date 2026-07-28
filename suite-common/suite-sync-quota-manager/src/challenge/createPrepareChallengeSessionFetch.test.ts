@@ -1,7 +1,7 @@
 import { ok } from '@trezor/type-utils';
 
-import { createPrepareChallengeSessionFetch } from '../createPrepareChallengeSessionFetch';
-import { createPrepareChallengeSessionDepsMock } from '../mocks/createPrepareChallengeSessionDepsMock';
+import { createPrepareChallengeSessionFetch } from './createPrepareChallengeSessionFetch';
+import { createPrepareChallengeSessionDepsMock } from './mocks/createPrepareChallengeSessionDepsMock';
 
 describe(createPrepareChallengeSessionFetch.name, () => {
     it('should prepare challenge unique for each session', async () => {

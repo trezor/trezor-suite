@@ -9,10 +9,10 @@ import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { type StaticSessionId } from '@trezor/connect';
 import { err, ok } from '@trezor/type-utils';
 
-import { type EnsureQuotaDeps, createEnsureQuota } from '../createEnsureQuota';
-import { createEnsureDeviceHasQuotaMock } from '../device/mocks/createEnsureDeviceHasQuotaMock';
-import { QuotaManagerCommunicationFailed } from '../errors';
-import { createEnsureOwnerHasAllocatedQuotaMock } from '../owner/mocks/createEnsureOwnerHasAllocatedQuotaMock';
+import { type EnsureQuotaDeps, createEnsureQuota } from './createEnsureQuota';
+import { createEnsureDeviceHasQuotaMock } from './device/mocks/createEnsureDeviceHasQuotaMock';
+import { QuotaManagerCommunicationFailed } from './errors';
+import { createEnsureOwnerHasAllocatedQuotaMock } from './owner/mocks/createEnsureOwnerHasAllocatedQuotaMock';
 
 const OWNER_ABCD: SuiteSyncOwner = {
     ownerId: asSuiteSyncOwnerId('owner-id-abcd'),

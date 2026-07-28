@@ -1,8 +1,8 @@
 import {
     DEFAULT_ACCOUNT_INCREMENT_SIZE_QUOTA,
     DEFAULT_DEVICE_SIZE_QUOTA,
-} from '../../quotaManagerQuotaSize';
-import { getAccountIncrementSizeQuota } from '../getAccountIncrementSizeQuota';
+} from '../quotaManagerQuotaSize';
+import { getAccountIncrementSizeQuota } from './getAccountIncrementSizeQuota';
 
 describe(getAccountIncrementSizeQuota.name, () => {
     it('return default account size quota if unspent storage is bigger than default', () => {

@@ -1,4 +1,4 @@
-import { createQuotaManagerFetch } from '../quotaManagerFetch';
+import { createQuotaManagerFetch } from './quotaManagerFetch';
 
 jest.mock('@trezor/env-utils', () => {
     const actual = jest.requireActual('@trezor/env-utils');

@@ -1,12 +1,12 @@
 import { isCodesignBuild } from '@trezor/env-utils';
 
-import { type WithSuiteSyncQuotaManagerState } from '../quotaManagerSelectors';
+import { type WithSuiteSyncQuotaManagerState } from './quotaManagerSelectors';
 import {
     getQuotaManagerDefaultUrl,
     getQuotaManagerUrl,
     selectQuotaManagerCustomUrl,
     selectQuotaManagerUrl,
-} from '../quotaManagerUrl';
+} from './quotaManagerUrl';
 
 jest.mock('@trezor/env-utils', () => ({
     ...jest.requireActual('@trezor/env-utils'),

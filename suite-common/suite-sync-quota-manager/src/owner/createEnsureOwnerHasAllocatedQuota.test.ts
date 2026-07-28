@@ -7,8 +7,8 @@ import { err, ok } from '@trezor/type-utils';
 
 import { createEnsureOwnerHasAllocatedQuotaDepsMock } from '../device/mocks/createEnsureOwnerHasAllocatedQuotaDepsMock';
 import { QuotaManagerCommunicationFailed } from '../errors';
-import { type AllocateOwnerQuota } from '../owner/createAllocateOwnerQuota';
-import { createEnsureOwnerHasAllocatedQuota } from '../owner/createEnsureOwnerHasAllocatedQuota';
+import { type AllocateOwnerQuota } from './createAllocateOwnerQuota';
+import { createEnsureOwnerHasAllocatedQuota } from './createEnsureOwnerHasAllocatedQuota';
 
 const ownerId = asSuiteSyncOwnerId('owner-id');
 const walletDescriptor: WalletDescriptor = asWalletDescriptor('descriptor');
