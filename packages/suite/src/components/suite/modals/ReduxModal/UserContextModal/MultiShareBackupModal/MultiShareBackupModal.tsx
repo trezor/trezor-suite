@@ -3,7 +3,6 @@ import { useState } from 'react';
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { LearnMoreButton } from '@suite/external-links';
 import { Translation } from '@suite/intl';
-import { isAdditionalShamirBackupInProgress } from '@suite/recovery';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import { Modal, type ModalProps } from '@trezor/components';
@@ -32,11 +31,7 @@ export const MultiShareBackupModal = ({ onCancel }: MultiShareBackupModalProps) 
     const { analytics } = useServices(selectDesktopAnalyticsDep);
     const device = useSelector(selectSelectedDevice);
 
-    const isInBackupMode =
-        device?.features !== undefined && isAdditionalShamirBackupInProgress(device.features);
-
-    const [step, setStep] = useState<Steps>(isInBackupMode ? 'backup-seed' : 'first-info');
-
+    const [step, setStep] = useState<Steps>('first-info');
     const [isChecked1, setIsChecked1] = useState(false);
     const [isChecked2, setIsChecked2] = useState(false);
 
