@@ -76,8 +76,7 @@ export const useTradingComposeTransaction = <T extends TradingSellExchangeFormPr
     );
 
     useEffect(() => {
-        const currentDevice = deviceRef.current;
-        if (networkType !== 'tron' || !currentDevice || !account || !network) {
+        if (networkType !== 'tron' || !account || !network) {
             setFeeEstimationRecipient(undefined);
 
             return;
@@ -87,8 +86,7 @@ export const useTradingComposeTransaction = <T extends TradingSellExchangeFormPr
             account,
             network,
             accounts: accountsRef.current,
-            device: currentDevice,
-            chunkify,
+            device: deviceRef.current,
         }).then(recipient => {
             if (isMounted) setFeeEstimationRecipient(recipient);
         });
@@ -104,7 +102,6 @@ export const useTradingComposeTransaction = <T extends TradingSellExchangeFormPr
         networkType,
         device?.state,
         network,
-        chunkify,
     ]);
 
     const composeContext = useMemo(() => {
