@@ -4,7 +4,7 @@ import { type EncryptableBranded, asEncryptedHex } from '@suite-common/platform-
 import { asDelegatedIdentityKey } from '@suite-common/suite-types';
 import { ok } from '@trezor/type-utils';
 
-import { createSaveDelegatedIdentityKey } from '../saveDelegatedIdentityKey';
+import { createSaveDelegatedIdentityKey } from './saveDelegatedIdentityKey';
 
 describe(createSaveDelegatedIdentityKey.name, () => {
     it('saves the encrypted value to the store', async () => {

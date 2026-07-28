@@ -6,7 +6,7 @@ import { ok } from '@trezor/type-utils';
 import {
     type EnsureDelegatedIdentityKeyDeps,
     createEnsureDelegatedIdentityKey,
-} from '../ensureDelegatedIdentityKey';
+} from './ensureDelegatedIdentityKey';
 
 const deps: EnsureDelegatedIdentityKeyDeps = {
     loadDelegatedIdentityKeyFromState: () =>

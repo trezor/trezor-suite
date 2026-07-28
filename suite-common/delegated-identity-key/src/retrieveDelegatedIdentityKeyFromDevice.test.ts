@@ -4,7 +4,7 @@ import {
     type RetrieveDelegatedIdentityKeyFromDeviceDeps,
     type RetrieveDelegatedIdentityKeyParams,
     createRetrieveDelegatedIdentityKeyFromDevice,
-} from '../retrieveDelegatedIdentityKeyFromDevice';
+} from './retrieveDelegatedIdentityKeyFromDevice';
 
 const device123: RetrieveDelegatedIdentityKeyParams['device'] = {
     path: asDeviceUniquePath('1/2/3'),
