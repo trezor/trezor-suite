@@ -14,9 +14,9 @@ import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { asWalletDescriptor } from '@trezor/device-utils';
 import { createDeferred } from '@trezor/utils';
 
+import { createEvoluInstanceFactory } from './createEvoluInstance';
+import { createEvoluStorageFactory } from './evoluStorage';
 import { testCreateRunWithEvoluDeps } from '../mocks/testCreateRunWithEvoluDeps';
-import { createEvoluInstanceFactory } from '../src/createEvoluInstance';
-import { createEvoluStorageFactory } from '../src/evoluStorage';
 
 const suiteSyncOwner: SuiteSyncOwner = {
     ownerId: asSuiteSyncOwnerId('yg0UgROParTpm60ltI3hDw'),
