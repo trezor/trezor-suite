@@ -1,6 +1,6 @@
 import { renderHook } from '@suite-native/test-utils';
 
-import { useConsentDenier } from '../useConsentDenier';
+import { useConsentDenier } from './useConsentDenier';
 
 describe('useConsentDenier', () => {
     const renderConsentDenierHook = <T>(

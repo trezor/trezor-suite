@@ -1,7 +1,7 @@
 import { act, renderHookWithBasicProvider } from '@suite-native/test-utils';
 import { type FiatCurrencyItem } from '@suite-native/trading-types';
 
-import { useFiatCurrencyFilteredData } from '../useFiatCurrencyFilteredData';
+import { useFiatCurrencyFilteredData } from './useFiatCurrencyFilteredData';
 
 const supportedFiatCurrencies: FiatCurrencyItem[] = [
     {

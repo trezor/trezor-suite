@@ -10,14 +10,14 @@ import {
 } from '@suite-native/trading-fixtures';
 
 import {
+    type ReceiveAccountsListMode,
+    useReceiveAccountsListData,
+} from './useReceiveAccountsListData';
+import {
     type PreloadedStatePartial,
     type TradingTestPreloadedState,
     renderHookWithTradingProvider,
-} from '../../../__tests__/tradingTestUtils';
-import {
-    type ReceiveAccountsListMode,
-    useReceiveAccountsListData,
-} from '../useReceiveAccountsListData';
+} from '../../__tests__/tradingTestUtils';
 
 const ADDRESS_COMMON = { received: '0', sent: '0', transfers: 0 };
 

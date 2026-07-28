@@ -1,15 +1,15 @@
 import { getTranslation } from '@suite-native/intl';
 import { selectIsTradingConciergeEnabled } from '@suite-native/trading-state';
 
-import { renderWithTradingProvider } from '../../../__tests__/tradingTestUtils';
-import { ConciergeTab } from '../ConciergeTab';
+import { ConciergeTab } from './ConciergeTab';
+import { renderWithTradingProvider } from '../../__tests__/tradingTestUtils';
 
 jest.mock('@suite-native/trading-state', () => ({
     ...jest.requireActual('@suite-native/trading-state'),
     selectIsTradingConciergeEnabled: jest.fn(),
 }));
 
-jest.mock('../ConciergeTabContent', () => ({
+jest.mock('./ConciergeTabContent', () => ({
     ConciergeTabContent: () => null,
 }));
 

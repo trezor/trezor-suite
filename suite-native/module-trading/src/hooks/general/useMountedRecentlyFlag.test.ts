@@ -1,8 +1,8 @@
 import { act, renderHookWithBasicProvider } from '@suite-native/test-utils';
 
-import { RECENT_DURATION, useMountedRecentlyFlag } from '../useMountedRecentlyFlag';
+import { RECENT_DURATION, useMountedRecentlyFlag } from './useMountedRecentlyFlag';
 
-jest.mock('../useMountedRecentlyFlag', () => jest.requireActual('../useMountedRecentlyFlag'));
+jest.mock('./useMountedRecentlyFlag', () => jest.requireActual('./useMountedRecentlyFlag'));
 
 describe('useMountedRecentlyFlag', () => {
     const renderUseMountedRecentlyFlag = () =>

@@ -10,7 +10,7 @@ import { getTranslation } from '@suite-native/intl';
 import { fireEvent, renderWithBasicProvider } from '@suite-native/test-utils';
 import { type ConciergeFormValues } from '@suite-native/trading-types';
 
-import { ConciergeProviderPicker } from '../ConciergeProviderPicker';
+import { ConciergeProviderPicker } from './ConciergeProviderPicker';
 
 const mockUseFetchOtc = jest.fn();
 jest.mock('@suite-common/trading', () => {

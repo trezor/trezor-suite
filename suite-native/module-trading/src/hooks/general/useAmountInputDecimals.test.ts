@@ -3,7 +3,7 @@ import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 import { type TokensRootState } from '@suite-native/tokens';
 
-import { useAmountInputDecimals } from '../useAmountInputDecimals';
+import { useAmountInputDecimals } from './useAmountInputDecimals';
 
 const mockSelectAccountTokenDecimals = jest.fn(
     (

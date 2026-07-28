@@ -2,8 +2,8 @@ import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import { getTranslation } from '@suite-native/intl';
 import { oneInchFusionPlusWithEip712SignDataQuote } from '@suite-native/trading-fixtures';
 
-import { renderWithTradingProvider } from '../../../__tests__/tradingTestUtils';
-import { ReviewOutputsBody, type ReviewOutputsBodyProps } from '../ReviewOutputsBody';
+import { ReviewOutputsBody, type ReviewOutputsBodyProps } from './ReviewOutputsBody';
+import { renderWithTradingProvider } from '../../__tests__/tradingTestUtils';
 
 const defaultProps: ReviewOutputsBodyProps = {
     tradingType: 'exchange',

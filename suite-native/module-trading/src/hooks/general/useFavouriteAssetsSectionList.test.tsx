@@ -9,8 +9,8 @@ import {
 import { adaAsset, btcAsset, usdcAsset } from '@suite-native/trading-fixtures';
 import { type TradeableAsset } from '@suite-native/trading-types';
 
-import { type TradingTestPreloadedState } from '../../../__tests__/tradingTestUtils';
-import { useFavouriteAssetsSectionList } from '../useFavouriteAssetsSectionList';
+import { useFavouriteAssetsSectionList } from './useFavouriteAssetsSectionList';
+import { type TradingTestPreloadedState } from '../../__tests__/tradingTestUtils';
 
 describe('useFavouriteAssetsSectionList', () => {
     const defaultFavouriteAssets = {

@@ -2,12 +2,12 @@ import { type TradingOTC, nonSanctionedRegional, type useFetchOtc } from '@suite
 import { type useFormContext } from '@suite-native/forms';
 import { getTranslation } from '@suite-native/intl';
 
-import { renderWithTradingProvider } from '../../../__tests__/tradingTestUtils';
+import { ConciergeAlert, type ConciergeAlertFormValues } from './ConciergeAlert';
+import { renderWithTradingProvider } from '../../__tests__/tradingTestUtils';
 import {
     CRYPTO_MAX_FORM_TYPE,
     CRYPTO_MIN_FORM_TYPE,
-} from '../../../utils/buy/buyFormValidationSchema';
-import { ConciergeAlert, type ConciergeAlertFormValues } from '../ConciergeAlert';
+} from '../../utils/buy/buyFormValidationSchema';
 
 type FormErrors = {
     cryptoValue?: {

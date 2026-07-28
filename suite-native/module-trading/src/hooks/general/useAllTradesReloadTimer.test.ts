@@ -9,18 +9,18 @@ import {
     sol1normalAccount,
 } from '@suite-native/trading-fixtures';
 
+import { useAllTradesReloadTimer } from './useAllTradesReloadTimer';
 import {
     createTradingLightStore,
     renderHookWithTradingProvider,
-} from '../../../__tests__/tradingTestUtils';
-import { useAllTradesReloadTimer } from '../useAllTradesReloadTimer';
+} from '../../__tests__/tradingTestUtils';
 
 // Mock the useReloadTimer hook
-jest.mock('../useReloadTimer', () => ({
+jest.mock('./useReloadTimer', () => ({
     useReloadTimer: jest.fn(),
 }));
 
-const mockUseReloadTimer = require('../useReloadTimer').useReloadTimer;
+const mockUseReloadTimer = require('./useReloadTimer').useReloadTimer;
 
 describe('useAllTradesReloadTimer', () => {
     beforeEach(() => {

@@ -16,7 +16,7 @@ import {
     tradingSlice,
 } from '@suite-native/trading-state';
 
-import { useActiveTradingTypeReaction } from '../useActiveTradingTypeReaction';
+import { useActiveTradingTypeReaction } from './useActiveTradingTypeReaction';
 
 let mockUseRouteParams: {
     tradingType?: TradingType;
