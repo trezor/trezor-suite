@@ -6,9 +6,9 @@ import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/t
 import { type Device, asBluetoothDeviceId } from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
-import { bluetoothActions } from '../src/bluetoothActions';
-import { prepareBluetoothReducerCreator, prepareInitialState } from '../src/bluetoothReducer';
-import type { BluetoothDeviceCommon, BluetoothManufacturerData } from '../src/types';
+import { bluetoothActions } from './bluetoothActions';
+import { prepareBluetoothReducerCreator, prepareInitialState } from './bluetoothReducer';
+import type { BluetoothDeviceCommon, BluetoothManufacturerData } from './types';
 
 const manufacturerData: BluetoothManufacturerData = {
     deviceModel: DeviceModelInternal.T3W1,
