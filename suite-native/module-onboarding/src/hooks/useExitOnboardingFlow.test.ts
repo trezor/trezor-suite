@@ -8,7 +8,7 @@ import {
     renderHookWithStoreProvider,
 } from '@suite-native/test-utils-store';
 
-import { useExitOnboardingFlow } from '../useExitOnboardingFlow';
+import { useExitOnboardingFlow } from './useExitOnboardingFlow';
 
 const mockNavigationDispatch = jest.fn();
 

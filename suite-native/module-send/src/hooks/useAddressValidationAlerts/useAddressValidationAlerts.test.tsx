@@ -5,7 +5,7 @@ import { Form, useWatch } from '@suite-native/forms';
 import { act, renderHookWithStoreProvider, waitFor } from '@suite-native/test-utils-store';
 import TrezorConnect from '@trezor/connect';
 
-import { useAddressValidationAlerts } from '../useAddressValidationAlerts';
+import { useAddressValidationAlerts } from './useAddressValidationAlerts';
 
 const mockAccountInfoResponses = {
     unusedAddress: {

@@ -3,8 +3,8 @@ import { useAtom } from 'jotai';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { renderHook } from '@suite-native/test-utils';
 
-import { type SelectedUtxos } from '../../types';
-import { useUtxoSelection } from '../useUtxoSelection';
+import { type SelectedUtxos } from '../types';
+import { useUtxoSelection } from './useUtxoSelection';
 
 const accountKey = mockAccountKey({ descriptor: 'testAccKey' });
 

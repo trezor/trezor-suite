@@ -2,7 +2,7 @@ import { type TokenAddress } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { act, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 
-import { useRequestDelayedNavigationToOutputsReview } from '../useRequestDelayedNavigationToOutputsReview';
+import { useRequestDelayedNavigationToOutputsReview } from './useRequestDelayedNavigationToOutputsReview';
 
 const mockSelectDeviceButtonRequestsCodes = jest.fn().mockReturnValue([]);
 const mockNavigate = jest.fn();

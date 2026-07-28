@@ -2,7 +2,7 @@ import { PORTFOLIO_TRACKER_DEVICE_ID, PORTFOLIO_TRACKER_DEVICE_STATE } from '@su
 import { createStoreFromPreloadedState } from '@suite-native/test-utils-store';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
-import { selectHomeScreenState } from '../homescreenSelectors';
+import { selectHomeScreenState } from './homescreenSelectors';
 
 const TEST_SESSION_ID = 'address@hash:0' as const;
 

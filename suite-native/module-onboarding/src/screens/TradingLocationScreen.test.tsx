@@ -6,7 +6,7 @@ import { getTranslation } from '@suite-native/intl';
 import { type RootStackParamList, type RootStackRoutes } from '@suite-native/navigation';
 import { renderWithStoreProvider, screen, userEvent } from '@suite-native/test-utils-store';
 
-import { TradingLocationScreen } from '../TradingLocationScreen';
+import { TradingLocationScreen } from './TradingLocationScreen';
 
 const mockExitOnboardingFlow = jest.fn();
 const reportMock = jest.fn();
@@ -23,7 +23,7 @@ jest.mock('@react-navigation/native', () => ({
         }) as RouteProp<RootStackParamList, RootStackRoutes.TradingHistory>,
 }));
 
-jest.mock('../../hooks/useExitOnboardingFlow', () => ({
+jest.mock('../hooks/useExitOnboardingFlow', () => ({
     useExitOnboardingFlow: () => mockExitOnboardingFlow,
 }));
 

@@ -2,7 +2,7 @@ import { type FormState, type TokenAddress } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { type NativeSendRootState } from '@suite-native/transaction-management';
 
-import { selectDestinationTagFromDraft } from '../selectors';
+import { selectDestinationTagFromDraft } from './selectors';
 
 const createMockState = (
     overrides: Partial<NativeSendRootState['wallet']['send']> = {},

@@ -10,7 +10,7 @@ import {
     userEvent,
 } from '@suite-native/test-utils-store';
 
-import { BiometricsScreen, type BiometricsScreenProps } from '../BiometricsScreen';
+import { BiometricsScreen, type BiometricsScreenProps } from './BiometricsScreen';
 
 const mockNavigate = jest.fn();
 const mockNavigationDispatch = jest.fn();

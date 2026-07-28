@@ -6,7 +6,7 @@ import { getTranslation } from '@suite-native/intl';
 import { ReceiveAddressVerificationSource, ReceiveStackRoutes } from '@suite-native/navigation';
 import { renderWithBasicProvider, userEvent, waitFor } from '@suite-native/test-utils';
 
-import { ReceiveAddressActions } from '../ReceiveAddressActions';
+import { ReceiveAddressActions } from './ReceiveAddressActions';
 
 const mockCopyToClipboard = jest.fn();
 const mockOpenCopiedAddressBottomSheet = jest.fn();

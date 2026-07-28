@@ -2,7 +2,7 @@ import { getTranslation } from '@suite-native/intl';
 import { ReceiveAddressVerificationSource } from '@suite-native/navigation';
 import { renderWithBasicProvider, userEvent } from '@suite-native/test-utils';
 
-import { ReceiveAddressVerificationBottomSheet } from '../ReceiveAddressVerificationBottomSheet';
+import { ReceiveAddressVerificationBottomSheet } from './ReceiveAddressVerificationBottomSheet';
 
 describe('ReceiveAddressVerificationBottomSheet', () => {
     const onVerifyAddress = jest.fn();

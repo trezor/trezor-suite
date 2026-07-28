@@ -1,12 +1,12 @@
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { renderWithBasicProvider } from '@suite-native/test-utils';
 
-import { useUtxoSelection } from '../../../hooks/useUtxoSelection';
-import { SendUtxoScreenHeader } from '../SendUtxoScreenHeader';
+import { SendUtxoScreenHeader } from './SendUtxoScreenHeader';
+import { useUtxoSelection } from '../../hooks/useUtxoSelection';
 
 const accountKey = mockAccountKey({ descriptor: 'testAccKey' });
 
-jest.mock('../../../hooks/useUtxoSelection', () => ({
+jest.mock('../../hooks/useUtxoSelection', () => ({
     useUtxoSelection: jest.fn(),
 }));
 
