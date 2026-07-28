@@ -14,16 +14,20 @@ export type AuthDbVerifyAddressSchema = Static<typeof AuthDbVerifyAddressSchema>
 export const AuthDbVerifyAddressSchema = Type.Object({
     address: Type.String(),
     networkSymbol: Type.String(),
-    /** Identifies which wallet's root checkpoint to verify against. */
-    walletId: Type.String(),
+    /**
+     * WM-facing wardId (SLIP21-derived) identifying which wallet's root checkpoint
+     * to verify against; obtained from authDbInit. The device echoes its own
+     * ward_id and it must match (defense in depth).
+     */
+    wardId: Type.String(),
 });
 
 export interface AuthDbVerifyAddressResult {
     isMember: boolean;
     valid: boolean;
     counter: number;
-    /** wallet_id echoed by the device (online path only). */
-    walletId?: string;
+    /** ward_id echoed by the device (online path only). */
+    wardId?: string;
 }
 
 export declare function authDbVerifyAddress(

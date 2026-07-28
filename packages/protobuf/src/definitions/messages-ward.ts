@@ -92,6 +92,7 @@ export const WARDListPendingEditsAck = Type.Object(
         addresses: Type.Array(Type.String()),
         wallet_id: Type.Optional(Type.String()),
         pending_ids: Type.Array(Type.Number()),
+        ward_id: Type.Optional(Type.String()),
     },
     { $id: 'WARDListPendingEditsAck' },
 );
@@ -117,6 +118,7 @@ export const WARDLookupAck = Type.Object(
         counter: Type.Number(),
         membership: Type.Optional(Type.Boolean()),
         wallet_id: Type.Optional(Type.String()),
+        ward_id: Type.Optional(Type.String()),
     },
     { $id: 'WARDLookupAck' },
 );

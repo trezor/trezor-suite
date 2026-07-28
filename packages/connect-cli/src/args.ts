@@ -50,7 +50,7 @@ export const HELP = `@trezor/connect CLI arguments:
 
   Database options
     --db-path=<path>                          Path to the SQLite DB file (default: ~/.trezor/auth_database_<identifier>.db)
-    --wallet-id=<id>                          Wallet whose root checkpoint to read/write in tree_state (default: "default")
+    --ward-id=<id>                            Ward (SLIP21 WM anchor) whose root checkpoint to read/write in tree_state (default: resolved from device)
                                                 Lets one shared DB track a separate checkpoint per wallet.
     --db-params=<json>                        Params for database commands (JSON object)
                                                 --db-params='{"qmCounter":<n>,"qmSignature":"<hex>"}' (dbinit)

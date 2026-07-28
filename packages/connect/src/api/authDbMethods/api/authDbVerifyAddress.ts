@@ -30,7 +30,7 @@ export default class AuthDbVerifyAddress extends AbstractMethod<
         const params = {
             address: payload.address,
             networkSymbol: payload.networkSymbol,
-            walletId: payload.walletId,
+            wardId: payload.wardId,
         };
 
         super(message, params);
@@ -67,19 +67,19 @@ export default class AuthDbVerifyAddress extends AbstractMethod<
             );
         }
 
-        const { address, networkSymbol, walletId } = this.params;
+        const { address, networkSymbol, wardId } = this.params;
         // Verbose diagnostics — prefixed so they're greppable in connect-cli output.
         const vlog = (...m: unknown[]) => console.log('[authDbVerifyAddress]', ...m);
 
         const [rows, entry] = await Promise.all([
-            provider.getAllEntries(walletId),
-            provider.lookup(walletId, address, networkSymbol),
+            provider.getAllEntries(wardId),
+            provider.lookup(wardId, address, networkSymbol),
         ]);
 
         const isMember = entry !== null;
 
         vlog('ENTER', {
-            walletId,
+            wardId,
             address,
             networkSymbol,
             mode: this.useDevice ? 'device' : 'offline',
@@ -90,14 +90,14 @@ export default class AuthDbVerifyAddress extends AbstractMethod<
 
         // Current locally-stored root before this operation (mirrors the device's own
         // stored_root log), so host and device roots can be compared side by side.
-        const currentTreeState = await provider.getTreeState(walletId);
+        const currentTreeState = await provider.getTreeState(wardId);
         vlog('current local root (before op)', {
             root: currentTreeState?.root ?? '(none — empty tree)',
             counter: currentTreeState?.counter ?? 0,
         });
 
         if (!this.useDevice) {
-            const treeState = await provider.getTreeState(walletId);
+            const treeState = await provider.getTreeState(wardId);
             const localRoot = treeState?.root ?? computeMerkleRoot(rows);
             const computedRoot = isMember
                 ? evaluateProof(
@@ -165,14 +165,14 @@ export default class AuthDbVerifyAddress extends AbstractMethod<
             wallet_id: response.message.wallet_id,
         });
 
-        if (response.message.wallet_id !== undefined && response.message.wallet_id !== walletId) {
-            vlog('REJECT wallet_id mismatch', {
-                deviceWalletId: response.message.wallet_id,
-                requestedWalletId: walletId,
+        if (response.message.ward_id !== undefined && response.message.ward_id !== wardId) {
+            vlog('REJECT ward_id mismatch', {
+                deviceWardId: response.message.ward_id,
+                requestedWardId: wardId,
             });
             throw ERRORS.TypedError(
                 'Runtime',
-                `authDbVerifyAddress: device wallet_id (${response.message.wallet_id}) does not match requested walletId (${walletId})`,
+                `authDbVerifyAddress: device ward_id (${response.message.ward_id}) does not match requested wardId (${wardId})`,
             );
         }
 
@@ -180,7 +180,7 @@ export default class AuthDbVerifyAddress extends AbstractMethod<
             isMember,
             valid: response.message.valid,
             counter: response.message.counter,
-            walletId: response.message.wallet_id,
+            wardId: response.message.ward_id,
         };
     }
 }

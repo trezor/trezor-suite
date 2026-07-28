@@ -122,12 +122,13 @@ const runDbMethods = async (device?: Device): Promise<boolean> => {
         }
     }
     const needsDevice = dbMethods.some(m => DB_METHODS_NEEDING_DEVICE.has(m));
-    // The high-level AuthDb methods require walletId to equal the device's own
-    // SLIP-21-derived wallet_id (they reject a mismatch AFTER the device commits, which
-    // also strands the local cache). It can't be derived host-side, so unless the caller
-    // pins it with --wallet-id we fetch it from the device below, once the provider is set.
-    const walletIdExplicit = typeof args['wallet-id'] === 'string';
-    let walletId = walletIdExplicit ? (args['wallet-id'] as string) : 'default';
+    // The high-level AuthDb methods key everything by the device's SLIP21-derived
+    // wardId (the WM-facing anchor). It scopes the local provider AND the device
+    // echoes its own ward_id, which the methods reject on mismatch. It can't be
+    // derived host-side, so unless the caller pins it with --ward-id we fetch it
+    // from the device below, once the provider is set.
+    const wardIdExplicit = typeof args['ward-id'] === 'string';
+    let wardId = wardIdExplicit ? (args['ward-id'] as string) : 'default';
 
     let identifierHex: string;
     let db: AuthLabelDb;
@@ -167,30 +168,31 @@ const runDbMethods = async (device?: Device): Promise<boolean> => {
         await TrezorConnect.updateConnectSettings({ wardDataProvider: db });
     }
 
-    // Resolve walletId to the device's real wallet_id (RIPEMD160(SHA256(master pubkey))).
-    // WARDListPendingEdits is input-free and always echoes wallet_id regardless of tree
-    // state, so it's a safe throwaway probe. (WARDLookup can't be used for this: once the
-    // tree is non-empty it rejects a proofless query before echoing wallet_id.) Without
-    // this, every high-level method rejects the device's echoed wallet_id as a mismatch.
-    // Skipped when the caller pinned --wallet-id, or when there's no device.
-    if (!walletIdExplicit && device) {
+    // Resolve wardId to the device's real SLIP21 ward_id. WARDListPendingEdits is
+    // input-free and always echoes ward_id regardless of tree state, so it's a safe
+    // throwaway probe. (WARDLookup can't be used for this: once the tree is non-empty
+    // it rejects a proofless query before echoing anything.) Without this, every
+    // high-level method rejects the device's echoed ward_id as a mismatch and the
+    // provider is keyed under the wrong id. Skipped when the caller pinned --ward-id,
+    // or when there's no device.
+    if (!wardIdExplicit && device) {
         try {
             const probe = await TrezorConnect.authDbListPending({ device });
-            console.log('[walletId] authDbListPending probe raw result:', JSON.stringify(probe));
-            if (probe.success && probe.payload.wallet_id) {
-                walletId = probe.payload.wallet_id;
-                console.log('Using device wallet_id:', walletId);
+            console.log('[wardId] authDbListPending probe raw result:', JSON.stringify(probe));
+            if (probe.success && probe.payload.ward_id) {
+                wardId = probe.payload.ward_id;
+                console.log('Using device ward_id:', wardId);
             } else {
-                // Loud, not silent: if we can't resolve the device's real wallet_id here, the
-                // high-level methods will reject every call ('default' != device wallet_id).
+                // Loud, not silent: if we can't resolve the device's real ward_id here, the
+                // high-level methods will reject every call ('default' != device ward_id).
                 console.warn(
-                    '[walletId] could NOT resolve device wallet_id; falling back to',
-                    JSON.stringify(walletId),
+                    '[wardId] could NOT resolve device ward_id; falling back to',
+                    JSON.stringify(wardId),
                 );
             }
         } catch (err) {
             console.warn(
-                '[walletId] authDbListPending probe THREW:',
+                '[wardId] authDbListPending probe THREW:',
                 err instanceof Error ? `${err.name}: ${err.message}` : String(err),
             );
         }
@@ -208,11 +210,11 @@ const runDbMethods = async (device?: Device): Promise<boolean> => {
                     console.error('dbinit requires a connected device');
                     process.exit(1);
                 }
-                const treeState = db.getTreeState(walletId);
+                const treeState = db.getTreeState(wardId);
                 const initParams: Parameters<typeof TrezorConnect.authDbInit>[0] = {
                     device,
                     counter: treeState?.counter ?? 0,
-                    walletId,
+                    wardId,
                     ...(treeState?.root && { root: treeState.root }),
                     ...(treeState?.mac && { mac: treeState.mac }),
                 };
@@ -237,7 +239,7 @@ const runDbMethods = async (device?: Device): Promise<boolean> => {
                     device: device!,
                     address,
                     networkSymbol,
-                    walletId,
+                    wardId,
                 });
                 if (!result.success) {
                     console.error('authDbVerifyAddress failed:', result);
@@ -277,7 +279,7 @@ const runDbMethods = async (device?: Device): Promise<boolean> => {
                     address,
                     networkSymbol,
                     metadata,
-                    walletId,
+                    wardId,
                 });
                 if (!result.success) {
                     console.error('authDbUpdateAddress failed:', result);
@@ -306,7 +308,7 @@ const runDbMethods = async (device?: Device): Promise<boolean> => {
                     console.error('dbsetroot requires a connected device');
                     process.exit(1);
                 }
-                const treeState = db.getTreeState(walletId);
+                const treeState = db.getTreeState(wardId);
                 if (!treeState?.root) {
                     console.error(
                         'dbsetroot: no root stored in local database — run dbchange first',
@@ -341,7 +343,7 @@ const runDbMethods = async (device?: Device): Promise<boolean> => {
             }
 
             if (method === 'dblistroots') {
-                const treeState = db.getTreeState(walletId);
+                const treeState = db.getTreeState(wardId);
                 if (!treeState?.root) {
                     console.log(
                         JSON.stringify({ method: 'dblistroots', treeState: null }, null, 2),

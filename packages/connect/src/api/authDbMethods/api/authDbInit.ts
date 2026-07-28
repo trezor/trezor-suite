@@ -17,7 +17,7 @@ export default class AuthDbInit extends AbstractMethod<'authDbInit', AuthDbInitS
             counter: payload.counter,
             mac: payload.mac,
             root: payload.root,
-            walletId: payload.walletId,
+            wardId: payload.wardId,
         };
 
         super(message, params);
@@ -41,7 +41,7 @@ export default class AuthDbInit extends AbstractMethod<'authDbInit', AuthDbInitS
     }
 
     async run() {
-        const { counter, mac, root, walletId } = this.params;
+        const { counter, mac, root, wardId } = this.params;
         const vlog = (...m: unknown[]) => console.log('[authDbInit]', ...m);
         const wardManager = getWardManagerService();
 
@@ -60,22 +60,18 @@ export default class AuthDbInit extends AbstractMethod<'authDbInit', AuthDbInitS
             ward_id: deviceWardId,
         });
 
-        if (deviceWalletId === undefined) {
-            throw ERRORS.TypedError(
-                'Runtime',
-                'authDbInit: device did not return a wallet_id for the sync round',
-            );
-        }
-        if (walletId !== undefined && deviceWalletId !== walletId) {
-            throw ERRORS.TypedError(
-                'Runtime',
-                `authDbInit: device wallet_id (${deviceWalletId}) does not match requested walletId (${walletId})`,
-            );
-        }
         if (deviceWardId === undefined) {
             throw ERRORS.TypedError(
                 'Runtime',
                 'authDbInit: device did not return a ward_id for the sync round',
+            );
+        }
+        // Defense in depth: if the caller pinned a wardId, the device's own
+        // SLIP21-derived ward_id must match it (proves which seed+passphrase unlocked).
+        if (wardId !== undefined && deviceWardId !== wardId) {
+            throw ERRORS.TypedError(
+                'Runtime',
+                `authDbInit: device ward_id (${deviceWardId}) does not match requested wardId (${wardId})`,
             );
         }
 
@@ -119,7 +115,9 @@ export default class AuthDbInit extends AbstractMethod<'authDbInit', AuthDbInitS
         return {
             counter: merge.message.counter,
             root: merge.message.new_root ?? '',
-            ...(merge.message.wallet_id !== undefined && { walletId: merge.message.wallet_id }),
+            // Return the device-derived ward_id (from WARDSyncAck) so the caller can
+            // cache it and pass it as `wardId` to later update/verify calls.
+            wardId: deviceWardId,
             ...(merge.message.root_mac !== undefined && { rootMac: merge.message.root_mac }),
         };
     }

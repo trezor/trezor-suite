@@ -22,8 +22,12 @@ export const AuthDbUpdateAddressSchema = Type.Object({
     address: Type.String(),
     networkSymbol: Type.String(),
     metadata: AuthDbAuthLabelMetadataSchema,
-    /** Identifies which wallet's root checkpoint this update belongs to. */
-    walletId: Type.String(),
+    /**
+     * WM-facing wardId (SLIP21-derived) identifying which wallet's root checkpoint
+     * this update belongs to; obtained from authDbInit. The device echoes its own
+     * ward_id and it must match (defense in depth).
+     */
+    wardId: Type.String(),
 });
 
 export interface AuthDbUpdateAddressResult {

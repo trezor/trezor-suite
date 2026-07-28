@@ -27,7 +27,7 @@ export default class AuthDbUpdateAddress extends AbstractMethod<
 > {
     private async bootstrapWardMvpOnly(
         cmd: ReturnType<ReturnType<typeof this.getDevice>['getCommands']>,
-        walletId: string,
+        wardId: string,
         treeState: TreeState | null,
         vlog: (...m: unknown[]) => void,
     ) {
@@ -55,22 +55,19 @@ export default class AuthDbUpdateAddress extends AbstractMethod<
             ward_id: deviceWardId,
         });
 
-        if (deviceWalletId === undefined) {
-            throw ERRORS.TypedError(
-                'Runtime',
-                'authDbUpdateAddress: device did not return a wallet_id for the sync round',
-            );
-        }
-        if (deviceWalletId !== walletId) {
-            throw ERRORS.TypedError(
-                'Runtime',
-                `authDbUpdateAddress: device wallet_id (${deviceWalletId}) does not match requested walletId (${walletId})`,
-            );
-        }
         if (deviceWardId === undefined) {
             throw ERRORS.TypedError(
                 'Runtime',
                 'authDbUpdateAddress: device did not return a ward_id for the sync round',
+            );
+        }
+        // Defense in depth: the device's own SLIP21-derived ward_id proves which
+        // seed+passphrase was actually unlocked. It must match the requested wardId
+        // (the key the provider is scoped by, and what the WM signature binds to).
+        if (deviceWardId !== wardId) {
+            throw ERRORS.TypedError(
+                'Runtime',
+                `authDbUpdateAddress: device ward_id (${deviceWardId}) does not match requested wardId (${wardId})`,
             );
         }
 
@@ -120,7 +117,7 @@ export default class AuthDbUpdateAddress extends AbstractMethod<
             address: payload.address,
             networkSymbol: payload.networkSymbol,
             metadata: payload.metadata,
-            walletId: payload.walletId,
+            wardId: payload.wardId,
         };
 
         super(message, params);
@@ -157,14 +154,14 @@ export default class AuthDbUpdateAddress extends AbstractMethod<
         }
         const wardManager = getWardManagerService();
 
-        const { address, networkSymbol, metadata, walletId } = this.params;
+        const { address, networkSymbol, metadata, wardId } = this.params;
         // Verbose diagnostics — prefixed so they're greppable in connect-cli output.
         const vlog = (...m: unknown[]) => console.log('[authDbUpdateAddress]', ...m);
 
         const [rows, oldEntry, currentTreeState] = await Promise.all([
-            provider.getAllEntries(walletId),
-            provider.lookup(walletId, address, networkSymbol),
-            provider.getTreeState(walletId),
+            provider.getAllEntries(wardId),
+            provider.lookup(wardId, address, networkSymbol),
+            provider.getTreeState(wardId),
         ]);
 
         const isInsert = oldEntry === null;
@@ -179,7 +176,7 @@ export default class AuthDbUpdateAddress extends AbstractMethod<
         };
 
         vlog('ENTER', {
-            walletId,
+            wardId,
             address,
             networkSymbol,
             mode: this.useDevice ? 'device' : 'offline',
@@ -196,10 +193,10 @@ export default class AuthDbUpdateAddress extends AbstractMethod<
         });
 
         if (!this.useDevice) {
-            await provider.upsert(walletId, address, networkSymbol, newEntry);
-            const updatedRows = await provider.getAllEntries(walletId);
+            await provider.upsert(wardId, address, networkSymbol, newEntry);
+            const updatedRows = await provider.getAllEntries(wardId);
             const root = computeMerkleRoot(updatedRows);
-            await provider.setTreeState(walletId, { root, counter: newEntry.counter });
+            await provider.setTreeState(wardId, { root, counter: newEntry.counter });
             vlog('OFFLINE done', { counter: newEntry.counter, root });
 
             return { counter: newEntry.counter, root };
@@ -228,7 +225,7 @@ export default class AuthDbUpdateAddress extends AbstractMethod<
         });
 
         const cmd = this.getDevice().getCommands();
-        await this.bootstrapWardMvpOnly(cmd, walletId, currentTreeState, vlog);
+        await this.bootstrapWardMvpOnly(cmd, wardId, currentTreeState, vlog);
 
         // Pull model: the host no longer pushes the proof up-front inside the queue
         // step. Instead it answers a WARDProofRequest the device emits during
@@ -291,32 +288,25 @@ export default class AuthDbUpdateAddress extends AbstractMethod<
 
             const candidateCounter = performed.message.counter;
             const candidateMac = performed.message.mac;
-            const deviceWalletId = performed.message.wallet_id;
             const deviceWardId = performed.message.ward_id;
 
-            // Defense in depth: the caller-supplied walletId scopes local storage, but only
-            // the device's own echoed wallet_id proves which seed+passphrase was actually
-            // unlocked. Check it before signing, since the signature binds to this wallet_id.
-            if (deviceWalletId !== undefined && deviceWalletId !== walletId) {
-                vlog('REJECT wallet_id mismatch', {
-                    deviceWalletId,
-                    requestedWalletId: walletId,
-                });
-                throw ERRORS.TypedError(
-                    'Runtime',
-                    `authDbUpdateAddress: device wallet_id (${deviceWalletId}) does not match requested walletId (${walletId})`,
-                );
-            }
-            if (deviceWalletId === undefined) {
-                throw ERRORS.TypedError(
-                    'Runtime',
-                    'authDbUpdateAddress: device did not return a wallet_id for the WARD candidate',
-                );
-            }
+            // Defense in depth: the device's own echoed ward_id proves which
+            // seed+passphrase was actually unlocked. Check it before signing, since
+            // the WM signature binds to this ward_id and the provider is scoped by it.
             if (deviceWardId === undefined) {
                 throw ERRORS.TypedError(
                     'Runtime',
                     'authDbUpdateAddress: device did not return a ward_id for the WARD candidate',
+                );
+            }
+            if (deviceWardId !== wardId) {
+                vlog('REJECT ward_id mismatch', {
+                    deviceWardId,
+                    requestedWardId: wardId,
+                });
+                throw ERRORS.TypedError(
+                    'Runtime',
+                    `authDbUpdateAddress: device ward_id (${deviceWardId}) does not match requested wardId (${wardId})`,
                 );
             }
 
@@ -365,9 +355,9 @@ export default class AuthDbUpdateAddress extends AbstractMethod<
                     metadata,
                     counter: response.message.counter,
                 };
-                await provider.upsert(walletId, address, networkSymbol, confirmedEntry);
+                await provider.upsert(wardId, address, networkSymbol, confirmedEntry);
                 if (response.message.new_root !== undefined) {
-                    await provider.setTreeState(walletId, {
+                    await provider.setTreeState(wardId, {
                         root: response.message.new_root,
                         counter: response.message.counter,
                         mac: response.message.root_mac,

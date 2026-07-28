@@ -22,15 +22,19 @@ export const AuthDbInitSchema = Type.Object({
     mac: Type.Optional(Type.String()),
     /** The current authenticated root to adopt; omit for an empty tree. */
     root: Type.Optional(Type.String()),
-    /** If given, the device's echoed wallet_id must match it (defense in depth). */
-    walletId: Type.Optional(Type.String()),
+    /** If given, the device's echoed ward_id must match it (defense in depth). */
+    wardId: Type.Optional(Type.String()),
 });
 
 export interface AuthDbInitResult {
     counter: number;
     root: string;
-    /** wallet_id echoed by the device. */
-    walletId?: string;
+    /**
+     * SLIP21-derived wardId echoed by the device. Callers should cache this and
+     * pass it as `wardId` to subsequent authDbUpdateAddress / authDbVerifyAddress
+     * calls (it is the key the wardDataProvider is scoped by).
+     */
+    wardId?: string;
     /** HMAC root attestation for the installed (root, counter); absent if empty. */
     rootMac?: string;
 }

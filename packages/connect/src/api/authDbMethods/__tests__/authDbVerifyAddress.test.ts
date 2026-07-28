@@ -22,7 +22,7 @@ const buildMethod = (payload: Record<string, unknown>, deviceInstance?: any) => 
             method: 'authDbVerifyAddress',
             address: 'bc1qaddr',
             networkSymbol: 'btc',
-            walletId: 'wallet1',
+            wardId: 'ward1',
             ...payload,
         } as any,
     });
@@ -49,7 +49,7 @@ describe('authDbVerifyAddress', () => {
         settingsStore.update({ wardDataProvider: provider });
 
         const typedCall = jest.fn().mockResolvedValue({
-            message: { valid: true, counter: 2, membership: true },
+            message: { valid: true, counter: 2, membership: true, ward_id: 'ward1' },
         });
         const method = buildMethod({ device: {} }, buildDevice(typedCall));
 
@@ -60,7 +60,25 @@ describe('authDbVerifyAddress', () => {
             'WARDLookupAck',
             expect.objectContaining({ value: expect.any(String) }),
         );
-        expect(result).toEqual({ isMember: true, valid: true, counter: 2, identifier: undefined });
+        expect(result).toEqual({ isMember: true, valid: true, counter: 2, wardId: 'ward1' });
+    });
+
+    it('rejects when the device ward_id does not match the requested wardId', async () => {
+        const rows: AuthLabelRow[] = [
+            { address: 'bc1qaddr', networkSymbol: 'btc', entry: { metadata: {}, counter: 2 } },
+        ];
+        const provider = buildProvider({
+            lookup: jest.fn().mockResolvedValue({ metadata: {}, counter: 2 }),
+            getAllEntries: jest.fn().mockResolvedValue(rows),
+        });
+        settingsStore.update({ wardDataProvider: provider });
+
+        const typedCall = jest.fn().mockResolvedValue({
+            message: { valid: true, counter: 2, membership: true, ward_id: 'otherWard' },
+        });
+        const method = buildMethod({ device: {} }, buildDevice(typedCall));
+
+        await expect(method.run()).rejects.toThrow(/does not match requested wardId/);
     });
 
     it('verifies non-membership against the device', async () => {

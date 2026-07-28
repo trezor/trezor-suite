@@ -13,7 +13,7 @@ import type { AuthLabelLookupProvider } from '../';
 import type { AuthLabelEntry, AuthLabelMetadata, AuthLabelRow, TreeState } from '../../types';
 
 type SqliteAddressRow = {
-    wallet_id: string;
+    ward_id: string;
     address: string;
     network_symbol: string;
     data: string;
@@ -35,15 +35,15 @@ export class AuthLabelDb implements AuthLabelLookupProvider {
         console.log('[AuthLabelDb] opened SQLite database:', dbPath);
         this.db.exec(`
             CREATE TABLE IF NOT EXISTS addresses (
-                wallet_id      TEXT NOT NULL,
+                ward_id      TEXT NOT NULL,
                 address        TEXT NOT NULL,
                 network_symbol TEXT NOT NULL,
                 counter        INTEGER NOT NULL DEFAULT 0,
                 data           TEXT NOT NULL,
-                PRIMARY KEY (wallet_id, address, network_symbol)
+                PRIMARY KEY (ward_id, address, network_symbol)
             );
             CREATE TABLE IF NOT EXISTS tree_state (
-                wallet_id TEXT PRIMARY KEY,
+                ward_id TEXT PRIMARY KEY,
                 root      TEXT NOT NULL,
                 counter   INTEGER NOT NULL DEFAULT 0,
                 mac       TEXT
@@ -51,40 +51,40 @@ export class AuthLabelDb implements AuthLabelLookupProvider {
         `);
     }
 
-    lookup(walletId: string, address: string, networkSymbol: string): AuthLabelEntry | null {
+    lookup(wardId: string, address: string, networkSymbol: string): AuthLabelEntry | null {
         const row = this.db
             .prepare(
                 `SELECT data, counter FROM addresses
-                 WHERE wallet_id = ? AND address = ? AND network_symbol = ?`,
+                 WHERE ward_id = ? AND address = ? AND network_symbol = ?`,
             )
-            .get(walletId, address, networkSymbol) as
+            .get(wardId, address, networkSymbol) as
             | Pick<SqliteAddressRow, 'data' | 'counter'>
             | undefined;
 
         return row
-            ? parseRow({ wallet_id: walletId, address, network_symbol: networkSymbol, ...row })
+            ? parseRow({ ward_id: wardId, address, network_symbol: networkSymbol, ...row })
             : null;
     }
 
-    upsert(walletId: string, address: string, networkSymbol: string, entry: AuthLabelEntry): void {
+    upsert(wardId: string, address: string, networkSymbol: string, entry: AuthLabelEntry): void {
         this.db
             .prepare(
-                `INSERT INTO addresses (wallet_id, address, network_symbol, counter, data)
+                `INSERT INTO addresses (ward_id, address, network_symbol, counter, data)
                  VALUES (?, ?, ?, ?, ?)
-                 ON CONFLICT(wallet_id, address, network_symbol) DO UPDATE SET
+                 ON CONFLICT(ward_id, address, network_symbol) DO UPDATE SET
                      counter = excluded.counter,
                      data    = excluded.data`,
             )
-            .run(walletId, address, networkSymbol, entry.counter, JSON.stringify(entry.metadata));
+            .run(wardId, address, networkSymbol, entry.counter, JSON.stringify(entry.metadata));
     }
 
-    getAllEntries(walletId: string): AuthLabelRow[] {
+    getAllEntries(wardId: string): AuthLabelRow[] {
         const rows = this.db
             .prepare(
-                `SELECT wallet_id, address, network_symbol, counter, data FROM addresses
-                 WHERE wallet_id = ? ORDER BY rowid`,
+                `SELECT ward_id, address, network_symbol, counter, data FROM addresses
+                 WHERE ward_id = ? ORDER BY rowid`,
             )
-            .all(walletId) as SqliteAddressRow[];
+            .all(wardId) as SqliteAddressRow[];
 
         return rows.map(r => ({
             address: r.address,
@@ -93,24 +93,24 @@ export class AuthLabelDb implements AuthLabelLookupProvider {
         }));
     }
 
-    getTreeState(walletId: string): TreeState | null {
+    getTreeState(wardId: string): TreeState | null {
         const row = this.db
-            .prepare('SELECT root, counter, mac FROM tree_state WHERE wallet_id = ?')
-            .get(walletId) as TreeStateRow | undefined;
+            .prepare('SELECT root, counter, mac FROM tree_state WHERE ward_id = ?')
+            .get(wardId) as TreeStateRow | undefined;
 
         return row ? { root: row.root, counter: row.counter, mac: row.mac ?? undefined } : null;
     }
 
-    setTreeState(walletId: string, state: TreeState): void {
+    setTreeState(wardId: string, state: TreeState): void {
         this.db
             .prepare(
-                `INSERT INTO tree_state (wallet_id, root, counter, mac) VALUES (?, ?, ?, ?)
-                 ON CONFLICT(wallet_id) DO UPDATE SET
+                `INSERT INTO tree_state (ward_id, root, counter, mac) VALUES (?, ?, ?, ?)
+                 ON CONFLICT(ward_id) DO UPDATE SET
                      root    = excluded.root,
                      counter = excluded.counter,
                      mac     = excluded.mac`,
             )
-            .run(walletId, state.root, state.counter, state.mac ?? null);
+            .run(wardId, state.root, state.counter, state.mac ?? null);
     }
 
     clearAll(): void {

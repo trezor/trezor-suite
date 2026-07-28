@@ -40,7 +40,7 @@ const buildMethod = (payload: Record<string, unknown>, deviceInstance?: any) => 
             address: 'bc1qaddr',
             networkSymbol: 'btc',
             metadata: { label: 'x' },
-            walletId: WALLET_ID,
+            wardId: WARD_ID,
             ...payload,
         } as any,
     });
@@ -194,7 +194,7 @@ describe('authDbUpdateAddress', () => {
         // ...and it is cleared afterwards.
         expect(setWardProofCallback).toHaveBeenLastCalledWith(undefined);
 
-        expect(provider.upsert).toHaveBeenCalledWith(WALLET_ID, 'bc1qaddr', 'btc', {
+        expect(provider.upsert).toHaveBeenCalledWith(WARD_ID, 'bc1qaddr', 'btc', {
             metadata: { label: 'x' },
             counter: 1,
         });
@@ -239,7 +239,7 @@ describe('authDbUpdateAddress', () => {
         expect(proofAck.witness_address).toBeUndefined();
         expect(proofAck.counter).toBe(3); // previous global stamp of the leaf
 
-        expect(provider.upsert).toHaveBeenCalledWith(WALLET_ID, 'bc1qaddr', 'btc', {
+        expect(provider.upsert).toHaveBeenCalledWith(WARD_ID, 'bc1qaddr', 'btc', {
             metadata: { label: 'x' },
             counter: 4,
         });
@@ -252,7 +252,7 @@ describe('authDbUpdateAddress', () => {
         const method = buildMethod({});
         const result = await method.run();
 
-        expect(provider.upsert).toHaveBeenCalledWith(WALLET_ID, 'bc1qaddr', 'btc', {
+        expect(provider.upsert).toHaveBeenCalledWith(WARD_ID, 'bc1qaddr', 'btc', {
             metadata: { label: 'x' },
             counter: 1,
         });
@@ -278,18 +278,18 @@ describe('authDbUpdateAddress', () => {
         });
     });
 
-    it('rejects (before Finalize) when the device wallet_id does not match the requested walletId', async () => {
+    it('rejects (before Finalize) when the device ward_id does not match the requested wardId', async () => {
         const provider = buildProvider();
         settingsStore.update({ wardDataProvider: provider });
 
         const typedCall = buildWardTypedCall({
             counter: 1,
             root: 'root1',
-            walletId: 'otherWallet',
+            wardId: 'ee'.repeat(32), // device echoes a different ward_id than requested
         });
         const method = buildMethod({ device: {} }, buildDevice(typedCall));
 
-        await expect(method.run()).rejects.toThrow(/does not match requested walletId/);
+        await expect(method.run()).rejects.toThrow(/does not match requested wardId/);
         // The mismatch is caught during the MVP bootstrap sync, so the WM confirmation
         // must never be sent.
         expect(typedCall).not.toHaveBeenCalledWith(
@@ -314,12 +314,12 @@ describe('authDbUpdateAddress', () => {
 
         const result = await method.run();
 
-        expect(provider.upsert).toHaveBeenCalledWith(WALLET_ID, 'bc1qaddr', 'btc', {
+        expect(provider.upsert).toHaveBeenCalledWith(WARD_ID, 'bc1qaddr', 'btc', {
             metadata: { label: 'x' },
             counter: 9,
         });
         expect(provider.setTreeState).toHaveBeenCalledWith(
-            WALLET_ID,
+            WARD_ID,
             expect.objectContaining({ counter: 9 }),
         );
         expect(result.counter).toBe(9);
