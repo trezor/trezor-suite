@@ -15,6 +15,20 @@ export const earnParams = [
     'contractAddress',
 ] as const;
 
+// Do not export, only for type-checking `routes` itself, instead use the inferred `Route` in @suite/router.
+type RouteDefinition = {
+    name: string;
+    pattern: string;
+    app: string;
+    params?: readonly string[];
+    isFullscreenApp?: boolean;
+    isForegroundApp?: boolean;
+    // When navigating to this URL, should it be cleared of hash and get parameters?
+    clearUrl?: boolean;
+    hasNestedRoutes?: boolean;
+    isNestedRoute?: boolean;
+};
+
 export const routes = [
     {
         name: 'suite-start',
@@ -388,4 +402,4 @@ export const routes = [
         pattern: '/notifications',
         app: 'notifications',
     },
-] as const;
+] as const satisfies RouteDefinition[];
