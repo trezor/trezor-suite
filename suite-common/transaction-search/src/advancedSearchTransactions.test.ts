@@ -1,10 +1,10 @@
 import { type WalletAccountTransaction } from '@suite-common/wallet-types';
 import { typedObjectEntries } from '@trezor/utils';
 
-import { searchTransactionsFixture } from '../__fixtures__/searchTransactions.fixture';
-import stMock from '../__fixtures__/searchTransactions.json';
-import { advancedSearchTransactions } from '../advancedSearchTransactions';
-import { type SearchAccountLabels, type SearchOutputLabels } from '../searchLabels';
+import { searchTransactionsFixture } from './__fixtures__/searchTransactions.fixture';
+import stMock from './__fixtures__/searchTransactions.json';
+import { advancedSearchTransactions } from './advancedSearchTransactions';
+import { type SearchAccountLabels, type SearchOutputLabels } from './searchLabels';
 
 // Original Fixtures were create with legacy metadata structure,
 // so we need to transform them to fit the new SearchAccountLabels structure used in the tests
