@@ -8,14 +8,14 @@ import {
     type TradeableAsset,
 } from '@suite-native/trading-types';
 
+import { BuyReceiveAccountPicker } from './BuyReceiveAccountPicker';
 import {
     type PreloadedStatePartial,
     type TradingTestPreloadedState,
     renderHookWithTradingProvider,
     renderWithTradingProvider,
-} from '../../../__tests__/tradingTestUtils';
-import { useBuyForm } from '../../../hooks/buy/useBuyForm';
-import { BuyReceiveAccountPicker } from '../BuyReceiveAccountPicker';
+} from '../../__tests__/tradingTestUtils';
+import { useBuyForm } from '../../hooks/buy/useBuyForm';
 
 const mockNavigate = jest.fn();
 const btcAccountName1 = 'BTC Account #1';

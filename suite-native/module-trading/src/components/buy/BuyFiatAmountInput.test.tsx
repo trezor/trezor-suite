@@ -3,14 +3,14 @@ import { getTranslation } from '@suite-native/intl';
 import { act, userEvent } from '@suite-native/test-utils-store';
 import { type BuyFormType } from '@suite-native/trading-types';
 
+import { BuyFiatAmountInput } from './BuyFiatAmountInput';
 import {
     type PreloadedStatePartial,
     type TradingTestPreloadedState,
     renderHookWithTradingProvider,
     renderWithTradingProvider,
-} from '../../../__tests__/tradingTestUtils';
-import { useBuyForm } from '../../../hooks/buy/useBuyForm';
-import { BuyFiatAmountInput } from '../BuyFiatAmountInput';
+} from '../../__tests__/tradingTestUtils';
+import { useBuyForm } from '../../hooks/buy/useBuyForm';
 
 describe('BuyFiatAmountInput', () => {
     const renderFiatAmountInput = (

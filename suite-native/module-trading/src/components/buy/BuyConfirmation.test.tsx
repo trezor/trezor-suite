@@ -3,11 +3,11 @@ import { getTranslation } from '@suite-native/intl';
 import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 import { getInitializedTradingStateWithQuotes } from '@suite-native/trading-fixtures';
 
-import { BuyConfirmation } from '../BuyConfirmation';
+import { BuyConfirmation } from './BuyConfirmation';
 
 const CTA_TEXT = getTranslation('moduleTrading.tradingScreen.buttons.continue');
 
-jest.mock('../../../hooks/buy/useBuyFlow', () => ({
+jest.mock('../../hooks/buy/useBuyFlow', () => ({
     useBuyFlow: jest.fn(),
 }));
 
@@ -16,20 +16,20 @@ jest.mock('@suite-native/forms', () => ({
     useWatch: () => [undefined, undefined],
 }));
 
-jest.mock('../../../hooks/buy/useBuyFormContext', () => ({
+jest.mock('../../hooks/buy/useBuyFormContext', () => ({
     useBuyFormContext: () => ({
         control: undefined,
     }),
 }));
 
-jest.mock('../../../hooks/general/useTradingStellarActivateToken', () => ({
+jest.mock('../../hooks/general/useTradingStellarActivateToken', () => ({
     useTradingStellarActivateToken: jest.fn(),
 }));
 
 describe('BuyConfirmation', () => {
-    const mockUseBuyFlow = require('../../../hooks/buy/useBuyFlow').useBuyFlow;
+    const mockUseBuyFlow = require('../../hooks/buy/useBuyFlow').useBuyFlow;
     const mockUseTradingStellarActivateToken =
-        require('../../../hooks/general/useTradingStellarActivateToken').useTradingStellarActivateToken;
+        require('../../hooks/general/useTradingStellarActivateToken').useTradingStellarActivateToken;
 
     const renderConfirmation = () =>
         renderWithStoreProvider(<BuyConfirmation />, {

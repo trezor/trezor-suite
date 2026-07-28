@@ -1,7 +1,7 @@
 import { getTranslation } from '@suite-native/intl';
 
-import { renderWithTradingProvider } from '../../../../__tests__/tradingTestUtils';
-import { BuyGeneralErrorScreen } from '../BuyGeneralErrorScreen';
+import { BuyGeneralErrorScreen } from './BuyGeneralErrorScreen';
+import { renderWithTradingProvider } from '../../../__tests__/tradingTestUtils';
 
 jest.mock('@react-navigation/native', () => ({
     ...jest.requireActual('@react-navigation/native'),

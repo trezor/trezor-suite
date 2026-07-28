@@ -14,9 +14,9 @@ import {
 import { buyActions } from '@suite-native/trading-state';
 import { type BuyFormType } from '@suite-native/trading-types';
 
-import { createTradingLightStore } from '../../../__tests__/tradingTestUtils';
-import { useBuyForm } from '../../../hooks/buy/useBuyForm';
-import { BuyFiatCurrencyPicker } from '../BuyFiatCurrencyPicker';
+import { BuyFiatCurrencyPicker } from './BuyFiatCurrencyPicker';
+import { createTradingLightStore } from '../../__tests__/tradingTestUtils';
+import { useBuyForm } from '../../hooks/buy/useBuyForm';
 
 let mockUseListDataFilter: typeof useListDataFilter;
 const reportMock = jest.fn();

@@ -1,11 +1,11 @@
 import { getTranslation } from '@suite-native/intl';
 import { fireEvent } from '@suite-native/test-utils-store';
 
-import { renderWithTradingProvider } from '../../../../__tests__/tradingTestUtils';
-import { useBuyPreviewFlow } from '../../../../hooks/buy/useBuyPreviewFlow';
-import { BuyPreviewContinueButton } from '../BuyPreviewContinueButton';
+import { BuyPreviewContinueButton } from './BuyPreviewContinueButton';
+import { renderWithTradingProvider } from '../../../__tests__/tradingTestUtils';
+import { useBuyPreviewFlow } from '../../../hooks/buy/useBuyPreviewFlow';
 
-jest.mock('../../../../hooks/buy/useBuyPreviewFlow', () => ({
+jest.mock('../../../hooks/buy/useBuyPreviewFlow', () => ({
     useBuyPreviewFlow: jest.fn(),
 }));
 

@@ -2,16 +2,16 @@ import { getTranslation } from '@suite-native/intl';
 import { act, screen, userEvent } from '@suite-native/test-utils-store';
 import { selectIsTradingBuyEnabled } from '@suite-native/trading-state';
 
+import { BuyTab } from './BuyTab';
 import {
     type PreloadedStatePartial,
     type TradingTestPreloadedState,
     renderWithTradingProvider,
-} from '../../../__tests__/tradingTestUtils';
-import { BuyTab } from '../BuyTab';
+} from '../../__tests__/tradingTestUtils';
 
 let mockUseTradingBuyData: jest.Mock;
 
-jest.mock('../../../hooks/buy/useBuyData', () => ({
+jest.mock('../../hooks/buy/useBuyData', () => ({
     useBuyData: (...params: unknown[]) => mockUseTradingBuyData(...params),
 }));
 
@@ -20,7 +20,7 @@ jest.mock('@suite-native/trading-state', () => ({
     selectIsTradingBuyEnabled: jest.fn(),
 }));
 
-jest.mock('../../concierge/ConciergeAlert', () => ({
+jest.mock('../concierge/ConciergeAlert', () => ({
     ConciergeAlert: () => null,
 }));
 

@@ -8,11 +8,11 @@ import {
 import { btcAsset, getBtcAccount, getWalletState } from '@suite-native/trading-fixtures';
 import { type BuyFormType } from '@suite-native/trading-types';
 
-import { useBuyForm } from '../../../hooks/buy/useBuyForm';
 import {
     BuyReceiveAccountCryptoBalance,
     RECEIVE_ACCOUNT_BALANCE_TEST_ID,
-} from '../BuyReceiveAccountCryptoBalance';
+} from './BuyReceiveAccountCryptoBalance';
+import { useBuyForm } from '../../hooks/buy/useBuyForm';
 
 describe('BuyReceiveAccountCryptoBalance', () => {
     let buyForm: BuyFormType;
