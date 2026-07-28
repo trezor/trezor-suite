@@ -4,7 +4,7 @@ import {
     networkSpecificDefaultEthereum,
 } from '@suite-common/wallet-types/mocks';
 
-import { getMerklRewardsQueryEntriesForAccounts } from '../useGetMerklRewardsQueryEntries';
+import { getMerklRewardsQueryEntriesForAccounts } from './useGetMerklRewardsQueryEntries';
 
 const emptyEthereumAccount = mockWalletAccount(
     {

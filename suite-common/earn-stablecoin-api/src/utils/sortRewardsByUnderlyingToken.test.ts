@@ -1,6 +1,6 @@
 import { type RewardDtoV2, type TokenDtoV2 } from '@suite-common/earn-stablecoin-defs';
 
-import { sortRewardsByUnderlyingToken } from '../../utils/sortRewardsByUnderlyingToken';
+import { sortRewardsByUnderlyingToken } from './sortRewardsByUnderlyingToken';
 
 const USDC: TokenDtoV2 = {
     symbol: 'USDC',
