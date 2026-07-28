@@ -17,6 +17,7 @@ import { arrayPartition, isNotUndefined, resolveAfter } from '@trezor/utils';
 
 const PING = Buffer.from('PINGPING');
 const PONG = Buffer.from('PONGPONG');
+const PING_TIMEOUT = 1000;
 
 export class UdpApi extends AbstractApi {
     chunkSize = 64;
@@ -30,6 +31,7 @@ export class UdpApi extends AbstractApi {
     private debugLink?: boolean;
     private readBuffer: ReturnType<typeof readMessageBuffer>;
     private openedDevices = new Set<string>();
+    private lastPongTimestamp = 0;
 
     constructor({
         logger,
@@ -40,6 +42,8 @@ export class UdpApi extends AbstractApi {
         this.readBuffer = readMessageBuffer();
 
         const onMessage = (message: Buffer, info: UDP.RemoteInfo) => {
+            this.lastPongTimestamp = Date.now();
+
             if (message.compare(PONG) === 0) {
                 return;
             }
@@ -123,6 +127,11 @@ export class UdpApi extends AbstractApi {
     }
 
     private async ping(path: PathInternal, signal?: AbortSignal) {
+        const diff = Date.now() - this.lastPongTimestamp;
+        if (diff < PING_TIMEOUT) {
+            return true;
+        }
+
         await this.write(path, PING, { signal });
         if (signal?.aborted) {
             throw new Error(ERRORS.ABORTED_BY_SIGNAL);
@@ -152,8 +161,7 @@ export class UdpApi extends AbstractApi {
             this.interface.addListener('error', onError);
             this.interface.addListener('message', onMessage);
 
-            // TODO temporarily increased from 1s to 4s until success screen is solved on fw side
-            const timeout = setTimeout(onError, 4000);
+            const timeout = setTimeout(onError, PING_TIMEOUT);
         });
 
         return pinged;
