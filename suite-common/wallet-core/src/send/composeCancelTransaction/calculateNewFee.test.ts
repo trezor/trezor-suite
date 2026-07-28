@@ -1,5 +1,5 @@
-import { chainedTxsFixture } from './chainedTransactions.fixture';
-import { calculateNewFee } from '../../../src/send/composeCancelTransaction/calculateNewFee';
+import { chainedTxsFixture } from './__fixtures__/chainedTransactions.fixture';
+import { calculateNewFee } from './calculateNewFee';
 
 describe(calculateNewFee.name, () => {
     it('accounts default RELAY_FEE for the new transaction size (110B) which is less then original TX (141B) ', () => {

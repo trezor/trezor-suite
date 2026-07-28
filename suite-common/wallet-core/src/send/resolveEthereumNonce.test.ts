@@ -1,8 +1,8 @@
 import { type RbfTransactionParams } from '@suite-common/wallet-types';
 import TrezorConnect from '@trezor/connect';
 
-import { type EthAccount, ethAccount, evmTx } from './evmFixtures';
-import { resolveEthereumNonce } from '../../src/send/sendFormEthereumThunks';
+import { type EthAccount, ethAccount, evmTx } from './__fixtures__/evmFixtures';
+import { resolveEthereumNonce } from './sendFormEthereumThunks';
 
 const rbf = (ethereumNonce: number) =>
     ({ type: 'ethereum', ethereumNonce }) as unknown as RbfTransactionParams;

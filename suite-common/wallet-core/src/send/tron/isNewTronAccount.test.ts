@@ -2,7 +2,7 @@ import { type Account } from '@suite-common/wallet-types';
 import { type TronAccountExtraData } from '@trezor/blockchain-link-types';
 import TrezorConnect, { type AccountInfo } from '@trezor/connect';
 
-import { isNewTronAccount } from '../isNewTronAccount';
+import { isNewTronAccount } from './isNewTronAccount';
 
 jest.mock('@trezor/connect', () => ({
     __esModule: true,

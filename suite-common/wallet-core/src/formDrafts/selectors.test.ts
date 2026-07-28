@@ -1,5 +1,5 @@
-import { type FormDraftRootState } from '../formDraftSlice';
-import { selectDeepCopyOfFormDraft, selectFormDraft } from '../selectors';
+import { type FormDraftRootState } from './formDraftSlice';
+import { selectDeepCopyOfFormDraft, selectFormDraft } from './selectors';
 
 describe('selectors', () => {
     let state: FormDraftRootState;

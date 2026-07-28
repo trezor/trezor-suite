@@ -5,7 +5,7 @@ import {
     type TokenTransfer,
 } from '@trezor/blockchain-link-types';
 
-import { createTargets } from '../createTargets';
+import { createTargets } from './createTargets';
 
 const makeTarget = (overrides: Partial<BlockchainTarget> = {}): BlockchainTarget => ({
     n: 0,

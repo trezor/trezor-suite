@@ -1,4 +1,4 @@
-import { formDraftActions, formDraftReducer } from '../formDraftSlice';
+import { formDraftActions, formDraftReducer } from './formDraftSlice';
 
 describe('formDraftSlice', () => {
     describe('storeDraft', () => {
