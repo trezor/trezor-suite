@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 
 import type { DeviceRootState } from '@suite-common/device';
 import { type TokenDefinitionsRootState } from '@suite-common/token-definitions';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     type TransactionsRootState,
@@ -16,7 +17,8 @@ import { type ExchangeFormValues } from '@suite-native/trading-types';
 type UseSendAccountAssetBalanceParams<TFieldValues extends FieldValues> = {
     control: Control<TFieldValues>;
     setBalance: (balance: string | undefined) => unknown;
-    setSendSymbol: (currency: string | undefined) => unknown;
+    setSendNetworkSymbol: (networkSymbol: NetworkSymbol | undefined) => unknown;
+    setSendAssetSymbol: (symbol: string | undefined) => unknown;
     setContractAddress: (contractAddress: TokenAddress | undefined) => unknown;
     setAccountKey: (accountKey: AccountKey | undefined) => void;
 };
@@ -24,7 +26,8 @@ type UseSendAccountAssetBalanceParams<TFieldValues extends FieldValues> = {
 export const useSendAccountAssetBalance = <TFieldValues extends FieldValues>({
     control,
     setBalance,
-    setSendSymbol,
+    setSendNetworkSymbol,
+    setSendAssetSymbol,
     setContractAddress,
     setAccountKey,
 }: UseSendAccountAssetBalanceParams<TFieldValues>) => {
@@ -58,14 +61,17 @@ export const useSendAccountAssetBalance = <TFieldValues extends FieldValues>({
     }, [setBalance, balance]);
 
     useEffect(() => {
-        setSendSymbol(sendAccount?.symbol);
+        setSendNetworkSymbol(sendAccount?.symbol);
+        setSendAssetSymbol(sendAsset?.symbol);
         setContractAddress(sendAsset?.contractAddress);
         setAccountKey(accountKey);
     }, [
-        setSendSymbol,
+        setSendNetworkSymbol,
+        setSendAssetSymbol,
         setContractAddress,
         setAccountKey,
         sendAsset?.contractAddress,
+        sendAsset?.symbol,
         sendAccount?.symbol,
         accountKey,
     ]);

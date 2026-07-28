@@ -201,8 +201,14 @@ const useValidations = (
 
 export const useExchangeForm = () => {
     const limits = useSelector(selectExchangeAmountLimits);
-    const { context, setBalance, setSendSymbol, setContractAddress, setAccountKey } =
-        useContextForTradingForm(limits);
+    const {
+        context,
+        setBalance,
+        setSendNetworkSymbol,
+        setSendAssetSymbol,
+        setContractAddress,
+        setAccountKey,
+    } = useContextForTradingForm(limits);
 
     const form = useForm<ExchangeFormValues>({
         validation: exchangeFormValidationSchema,
@@ -231,7 +237,8 @@ export const useExchangeForm = () => {
     useSendAccountAssetBalance({
         control,
         setBalance,
-        setSendSymbol,
+        setSendNetworkSymbol,
+        setSendAssetSymbol,
         setContractAddress,
         setAccountKey,
     });

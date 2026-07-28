@@ -23,8 +23,14 @@ export const buyFormValidationSchema = yup.object({
                 translate,
                 CryptoAmountFormatter,
                 convertNumberToBaseUnit,
+                contractAddress,
+                sendNetworkSymbol,
             } = getAmountLimitContext(testContext);
-            const convertedValue = convertNumberToBaseUnit(value, currency.toLowerCase());
+            if (sendNetworkSymbol === undefined) {
+                return true;
+            }
+
+            const convertedValue = convertNumberToBaseUnit(value, sendNetworkSymbol);
 
             if (
                 convertedValue === undefined ||
@@ -36,7 +42,12 @@ export const buyFormValidationSchema = yup.object({
 
             return testContext.createError({
                 message: translate('moduleTrading.validators.min', {
-                    min: formatCryptoAmount(minCrypto, currency, CryptoAmountFormatter),
+                    min: formatCryptoAmount({
+                        amount: minCrypto,
+                        symbol: currency,
+                        contractAddress,
+                        CryptoAmountFormatter,
+                    }),
                 }),
             });
         })
@@ -47,8 +58,14 @@ export const buyFormValidationSchema = yup.object({
                 translate,
                 CryptoAmountFormatter,
                 convertNumberToBaseUnit,
+                contractAddress,
+                sendNetworkSymbol,
             } = getAmountLimitContext(testContext);
-            const convertedValue = convertNumberToBaseUnit(value, currency.toLowerCase());
+            if (sendNetworkSymbol === undefined) {
+                return true;
+            }
+
+            const convertedValue = convertNumberToBaseUnit(value, sendNetworkSymbol);
 
             if (
                 convertedValue === undefined ||
@@ -60,7 +77,12 @@ export const buyFormValidationSchema = yup.object({
 
             return testContext.createError({
                 message: translate('moduleTrading.validators.max', {
-                    max: formatCryptoAmount(maxCrypto, currency, CryptoAmountFormatter),
+                    max: formatCryptoAmount({
+                        amount: maxCrypto,
+                        symbol: currency,
+                        contractAddress,
+                        CryptoAmountFormatter,
+                    }),
                 }),
             });
         }),

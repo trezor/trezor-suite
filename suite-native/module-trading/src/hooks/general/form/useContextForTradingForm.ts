@@ -27,19 +27,22 @@ export const useContextForTradingForm = (limits: TradingAmountLimitProps | undef
     );
 
     const [balance, setBalance] = useState<string | undefined>(undefined);
-    const [sendSymbol, setSendSymbol] = useState<string | undefined>(undefined);
+    const [sendNetworkSymbol, setSendNetworkSymbol] = useState<NetworkSymbol | undefined>(
+        undefined,
+    );
+    const [sendAssetSymbol, setSendAssetSymbol] = useState<string | undefined>(undefined);
     const [contractAddress, setContractAddress] = useState<TokenAddress | undefined>(undefined);
     const [accountKey, setAccountKey] = useState<AccountKey | undefined>(undefined);
 
     const { maxSpendableAmount } = useMaxSpendableAmount({
         accountKey,
         tokenContract: contractAddress,
-        symbol: sendSymbol as NetworkSymbol,
+        symbol: sendNetworkSymbol,
     });
 
-    const networkReserve = sendSymbol
+    const networkReserve = sendNetworkSymbol
         ? getNetworkReserve({
-              symbol: sendSymbol.toLowerCase() as NetworkSymbol,
+              symbol: sendNetworkSymbol,
               contractAddress,
               isEnabled: isNetworkReserveEnabled,
           })
@@ -48,7 +51,9 @@ export const useContextForTradingForm = (limits: TradingAmountLimitProps | undef
     const context = useMemo<TradingFormContext>(
         () => ({
             ...limits,
-            sendSymbol,
+            sendNetworkSymbol,
+            sendAssetSymbol,
+            contractAddress,
             translate,
             balance: balance || undefined,
             FiatAmountFormatter: BaseCurrencyAmountFormatter,
@@ -59,7 +64,9 @@ export const useContextForTradingForm = (limits: TradingAmountLimitProps | undef
         }),
         [
             limits,
-            sendSymbol,
+            sendNetworkSymbol,
+            sendAssetSymbol,
+            contractAddress,
             translate,
             balance,
             BaseCurrencyAmountFormatter,
@@ -73,7 +80,8 @@ export const useContextForTradingForm = (limits: TradingAmountLimitProps | undef
     return {
         context,
         setBalance,
-        setSendSymbol,
+        setSendNetworkSymbol,
+        setSendAssetSymbol,
         setContractAddress,
         setAccountKey,
     };

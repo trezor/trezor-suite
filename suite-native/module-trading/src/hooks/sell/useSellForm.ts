@@ -135,8 +135,14 @@ const useValidations = (
 export const useSellForm = (): SellFormType => {
     const defaultValues = useSelector(selectSellFormDefaultValues);
     const limits = useSelector(selectSellAmountLimits);
-    const { context, setBalance, setSendSymbol, setContractAddress, setAccountKey } =
-        useContextForTradingForm(limits);
+    const {
+        context,
+        setBalance,
+        setSendNetworkSymbol,
+        setSendAssetSymbol,
+        setContractAddress,
+        setAccountKey,
+    } = useContextForTradingForm(limits);
 
     const form = useForm<SellFormValues>({
         defaultValues,
@@ -156,7 +162,8 @@ export const useSellForm = (): SellFormType => {
     useSendAccountAssetBalance({
         control,
         setBalance,
-        setSendSymbol,
+        setSendNetworkSymbol,
+        setSendAssetSymbol,
         setContractAddress,
         setAccountKey,
     });
