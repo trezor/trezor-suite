@@ -5,6 +5,7 @@ import {
     getParsedExplorerUrls,
     networksCollection,
 } from '@suite-common/wallet-config';
+import { typedObjectKeys } from '@trezor/utils';
 
 import { explorerActions } from './explorerActions';
 
@@ -27,17 +28,29 @@ export const explorerInitialState: ExplorerConfig = networksCollection.reduce((s
     return state;
 }, initialStatePredefined as ExplorerConfig);
 
+const normalizeExplorer = (explorer: Explorer) => {
+    typedObjectKeys(explorer).forEach(key => {
+        if (explorer[key]) {
+            explorer[key] = explorer[key].replace(/^\/+|\/+$/g, '').trim();
+        }
+    });
+
+    return explorer;
+};
+
 export const prepareExplorerReducer = createReducerWithExtraDeps(
     explorerInitialState,
     (builder, extra) => {
         builder
             .addCase(explorerActions.setExplorer, (state, action) => {
                 const { symbol, explorer } = action.payload;
+                const defaultExplorer = state[symbol].default;
+                const normalizedExplorer = explorer && normalizeExplorer(explorer);
+                const isDefaultExplorer = typedObjectKeys(defaultExplorer).every(
+                    key => normalizedExplorer?.[key] === defaultExplorer[key],
+                );
 
-                state[symbol] = {
-                    ...state[symbol],
-                    custom: explorer,
-                };
+                state[symbol].custom = !isDefaultExplorer ? normalizedExplorer : undefined;
             })
             .addCase(extra.actionTypes.storageLoad, extra.reducers.storageLoadExplorer);
     },
