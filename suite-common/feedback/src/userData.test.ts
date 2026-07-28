@@ -10,7 +10,7 @@ import {
     getWindowWidth,
 } from '@trezor/env-utils';
 
-import { buildUserFeedbackData } from '../src/userData';
+import { buildUserFeedbackData } from './userData';
 
 jest.mock('@trezor/env-utils', () => ({
     ...jest.requireActual('@trezor/env-utils'),
