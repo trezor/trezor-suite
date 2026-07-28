@@ -1,7 +1,7 @@
 import { type AddressType, addressType } from '@trezor/network-module-suite-types';
 
-import type { TronNetworkSymbol } from '../../supportedNetworks';
-import { tronValidator } from '../tronAddressValidator';
+import type { TronNetworkSymbol } from '../supportedNetworks';
+import { tronValidator } from './tronAddressValidator';
 
 type TronIsAddressValidCase = {
     address: string;

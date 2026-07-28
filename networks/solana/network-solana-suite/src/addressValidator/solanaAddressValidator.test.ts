@@ -1,6 +1,6 @@
 import { type AddressType, addressType } from '@trezor/network-module-suite-types';
 
-import { solanaValidator } from '../solanaAddressValidator';
+import { solanaValidator } from './solanaAddressValidator';
 
 type SolanaIsAddressValidCase = {
     address: string;
