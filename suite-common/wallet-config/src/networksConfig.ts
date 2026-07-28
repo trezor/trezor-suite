@@ -344,7 +344,7 @@ export const networks = {
         bip43Path: "m/44'/60'/0'/0/i",
         decimals: 18,
         testnet: false,
-        explorer: getExplorerUrls('https://snowscan.xyz/', 'ethereum'),
+        explorer: getExplorerUrls('https://snowscan.xyz', 'ethereum'),
         features: [
             'rbf',
             'sign-verify',
@@ -410,7 +410,7 @@ export const networks = {
         decimals: TRON_DECIMALS,
         testnet: false,
         features: ['tokens', 'coin-definitions', 'graph', 'nfts', 'staking'],
-        explorer: getExplorerUrls('https://tronscan.org/#', 'tron'),
+        explorer: getExplorerUrls('https://tronscan.org', 'tron'),
         support: {
             [DeviceModelInternal.T2T1]: '2.11.0',
             [DeviceModelInternal.T2B1]: '2.11.0',
@@ -701,7 +701,7 @@ export const networks = {
         chainId: 560048,
         decimals: 18,
         testnet: true,
-        explorer: getExplorerUrls('https://hoodi.etherscan.io/', 'ethereum'),
+        explorer: getExplorerUrls('https://hoodi.etherscan.io', 'ethereum'),
         features: ['rbf', 'sign-verify', 'tokens', 'staking', 'nfts', 'eip1559', 'graph'],
         backendOptions: [{ type: 'blockbook' }, { type: 'evm-rpc' }],
         accountTypes: {
@@ -781,7 +781,7 @@ export const networks = {
         decimals: TRON_DECIMALS,
         testnet: true,
         features: ['tokens', 'graph', 'nfts'],
-        explorer: getExplorerUrls('https://nile.tronscan.org/#', 'tron'),
+        explorer: getExplorerUrls('https://nile.tronscan.org', 'tron'),
         backendOptions: [{ type: 'blockbook' }],
         accountTypes: {},
         coingeckoId: undefined,
