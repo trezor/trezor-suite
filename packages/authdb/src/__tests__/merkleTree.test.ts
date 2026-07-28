@@ -14,12 +14,13 @@ const rows = [
     { address: 'bc1qaddr3', networkSymbol: 'btc', entry: { metadata: {}, counter: 1 } },
 ];
 
-// Recomputed after the leaf-counter protocol change (leaf hash now commits the counter:
-// sha256d(0x00||address||counter(4B BE)||value)).
-const EXPECTED_ROOT = '5faf6c435e566761b5da47c2a13e7fd649b0ddc6a019251ec0a93f818af5d01e';
+// Recomputed after the strict-counter change: the counter is committed only in the
+// leaf's 4-byte field (sha256(0x00||address||counter(4B BE)||value)); the value bytes
+// are now counter-free (entryToValueBytes = networkSymbol + sorted metadata).
+const EXPECTED_ROOT = '91e5817041b7b5fd37f0abf949c5be4b312ffc8a0d5aa2374c78d71bf5477cd0';
 const EXPECTED_PROOF = [
-    '0551d77cee63c9d41d625b546da1b749b78ab8f3f44c8747187a1e2060dc0a0112',
-    '008766982f6f19d7a2573c2826f1c9450d95c61cc77b5977f77a0160c17b695164',
+    '05c882f2eb5bb8ce704da4bdb0217f2dd8fba6d69193a3cf1ae6dbdd0576c87040',
+    '00cc3a6acd812a2fb093d26d813301e0d3a169695de2a7a7998b221d7424758bd3',
 ];
 
 describe('generateMerkleProof / computeMerkleRoot', () => {

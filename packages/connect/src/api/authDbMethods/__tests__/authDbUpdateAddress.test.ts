@@ -1,7 +1,15 @@
+import { bytesToHex } from '@noble/hashes/utils.js';
+
 import type { AuthLabelLookupProvider, AuthLabelRow } from '@trezor/ward';
+import { entryToValueBytes } from '@trezor/ward';
 
 import * as settingsStore from '../../../data/settingsStore';
 import AuthDbUpdateAddress from '../api/authDbUpdateAddress';
+import {
+    type WardManagerService,
+    getWardManagerService,
+    setWardManagerService,
+} from '../wardManagerService';
 
 type MockProvider = AuthLabelLookupProvider;
 
@@ -9,6 +17,10 @@ type MockProvider = AuthLabelLookupProvider;
 // on the wire; the caller's walletId must equal it (it also scopes local storage) and the
 // WM final signature is computed over its raw bytes, so it has to be valid hex here.
 const WALLET_ID = 'ab'.repeat(20);
+// The device ward_id is the SLIP21-derived WM anchor (32 bytes), sent as hex. The WM
+// signs its ATTEST/FINAL preimages over this value, so the device echoes it on
+// WARDSyncAck / WARDPerformUpdateAck and the host forwards it to the WM.
+const WARD_ID = 'cd'.repeat(32);
 
 const buildProvider = (overrides: Partial<MockProvider> = {}): MockProvider => ({
     lookup: jest.fn().mockResolvedValue(null),
@@ -52,20 +64,27 @@ const buildWardTypedCall = ({
     counter,
     root,
     walletId = WALLET_ID,
+    wardId = WARD_ID,
     mac,
     pendingId = 1,
+    performCounter,
 }: {
     counter: number;
     root?: string;
     walletId?: string;
+    wardId?: string;
     mac?: string;
     pendingId?: number;
+    // The counter the device derives at perform/confirm; defaults to `counter`. Set
+    // it distinct from any host guess to prove the host persists the DEVICE counter.
+    performCounter?: number;
 }) =>
     jest.fn().mockImplementation((requestType: string) => {
+        const devCounter = performCounter ?? counter;
         switch (requestType) {
             case 'WARDSync':
                 return Promise.resolve({
-                    message: { nonce: '01', version: 1, wallet_id: walletId },
+                    message: { nonce: '01', version: 1, wallet_id: walletId, ward_id: wardId },
                 });
             case 'WARDIngestAttestation':
                 return Promise.resolve({ message: { counter, wallet_id: walletId } });
@@ -75,15 +94,26 @@ const buildWardTypedCall = ({
                 });
             case 'WARDQueueUpdate':
                 return Promise.resolve({
-                    message: { counter, pending_id: pendingId, wallet_id: walletId },
+                    message: { pending_id: pendingId, wallet_id: walletId },
                 });
             case 'WARDPerformUpdate':
                 return Promise.resolve({
-                    message: { counter, new_root: root, mac, wallet_id: walletId },
+                    message: {
+                        counter: devCounter,
+                        new_root: root,
+                        mac,
+                        wallet_id: walletId,
+                        ward_id: wardId,
+                    },
                 });
             case 'WARDConfirmedByWM':
                 return Promise.resolve({
-                    message: { counter, new_root: root, wallet_id: walletId, root_mac: mac },
+                    message: {
+                        counter: devCounter,
+                        new_root: root,
+                        wallet_id: walletId,
+                        root_mac: mac,
+                    },
                 });
             default:
                 throw new Error(`unexpected typedCall for ${requestType}`);
@@ -267,5 +297,91 @@ describe('authDbUpdateAddress', () => {
             expect.anything(),
             expect.anything(),
         );
+    });
+
+    // --- strict counter model + spec-strict wardId regressions ---
+
+    it('persists the DEVICE-derived counter, not the host guess', async () => {
+        const provider = buildProvider({
+            // host guess would be currentTreeState.counter + 1 = 4 ...
+            getTreeState: jest.fn().mockResolvedValue({ root: 'r', counter: 3 }),
+        });
+        settingsStore.update({ wardDataProvider: provider });
+
+        // ... but the device derives and confirms counter 9. That is what must persist.
+        const typedCall = buildWardTypedCall({ counter: 3, root: 'root9', performCounter: 9 });
+        const method = buildMethod({ device: {} }, buildDevice(typedCall));
+
+        const result = await method.run();
+
+        expect(provider.upsert).toHaveBeenCalledWith(WALLET_ID, 'bc1qaddr', 'btc', {
+            metadata: { label: 'x' },
+            counter: 9,
+        });
+        expect(provider.setTreeState).toHaveBeenCalledWith(
+            WALLET_ID,
+            expect.objectContaining({ counter: 9 }),
+        );
+        expect(result.counter).toBe(9);
+    });
+
+    it('sends a counter-free new_value on WARDQueueUpdate (host never injects a counter)', async () => {
+        const provider = buildProvider({
+            getTreeState: jest.fn().mockResolvedValue({ root: 'r', counter: 3 }),
+        });
+        settingsStore.update({ wardDataProvider: provider });
+
+        const typedCall = buildWardTypedCall({ counter: 3, root: 'root4', performCounter: 4 });
+        const method = buildMethod({ device: {} }, buildDevice(typedCall));
+        await method.run();
+
+        const [, , params] = typedCall.mock.calls.find(
+            ([reqType]) => reqType === 'WARDQueueUpdate',
+        )!;
+        // The value bytes are independent of the counter: they equal the encoding for
+        // ANY counter, proving the counter is not baked into new_value.
+        const expected = bytesToHex(
+            entryToValueBytes('btc', { metadata: { label: 'x' }, counter: 123456 }),
+        );
+        expect(params.new_value).toBe(expected);
+    });
+
+    it('forwards the device ward_id (not wallet_id) to the WM for attest and commit', async () => {
+        const provider = buildProvider();
+        settingsStore.update({ wardDataProvider: provider });
+
+        const attestArgs: any[] = [];
+        const candidateArgs: any[] = [];
+        const original = getWardManagerService();
+        const spyService: WardManagerService = {
+            signAttestation: c => {
+                attestArgs.push(c);
+
+                return Promise.resolve('deadbeef');
+            },
+            signCandidate: c => {
+                candidateArgs.push(c);
+
+                return Promise.resolve('deadbeef');
+            },
+        };
+        setWardManagerService(spyService);
+        try {
+            const typedCall = buildWardTypedCall({ counter: 1, root: 'root1' });
+            const method = buildMethod({ device: {} }, buildDevice(typedCall));
+            await method.run();
+        } finally {
+            setWardManagerService(original);
+        }
+
+        expect(attestArgs).toHaveLength(1);
+        expect(candidateArgs).toHaveLength(1);
+        expect(attestArgs[0].wardId).toBe(WARD_ID);
+        expect(candidateArgs[0].wardId).toBe(WARD_ID);
+        // The WM identity is the 32-byte ward_id, never the 20-byte wallet_id ...
+        expect(attestArgs[0].wardId).not.toBe(WALLET_ID);
+        // ... and no ownerId leaks into the WM call.
+        expect(attestArgs[0].ownerId).toBeUndefined();
+        expect(candidateArgs[0].ownerId).toBeUndefined();
     });
 });

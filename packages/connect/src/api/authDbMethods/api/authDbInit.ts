@@ -52,8 +52,13 @@ export default class AuthDbInit extends AbstractMethod<'authDbInit', AuthDbInitS
         // Reconcile (device checks the root against the attested mac and installs it).
         vlog('-> WARDSync (device)');
         const init = await cmd.typedCall('WARDSync', 'WARDSyncAck', {});
-        const { nonce, version, wallet_id: deviceWalletId } = init.message;
-        vlog('<- WARDSyncAck', { nonce, version, wallet_id: deviceWalletId });
+        const { nonce, version, wallet_id: deviceWalletId, ward_id: deviceWardId } = init.message;
+        vlog('<- WARDSyncAck', {
+            nonce,
+            version,
+            wallet_id: deviceWalletId,
+            ward_id: deviceWardId,
+        });
 
         if (deviceWalletId === undefined) {
             throw ERRORS.TypedError(
@@ -67,15 +72,22 @@ export default class AuthDbInit extends AbstractMethod<'authDbInit', AuthDbInitS
                 `authDbInit: device wallet_id (${deviceWalletId}) does not match requested walletId (${walletId})`,
             );
         }
+        if (deviceWardId === undefined) {
+            throw ERRORS.TypedError(
+                'Runtime',
+                'authDbInit: device did not return a ward_id for the sync round',
+            );
+        }
 
         vlog('-> WARD Manager service: sign attestation', {
-            wallet_id: deviceWalletId,
+            ward_id: deviceWardId,
             nonce,
             counter,
             mac: mac ?? '(none)',
         });
+        // The WM signs over the device-derived ward_id (not wallet_id).
         const wmSignature = await wardManager.signAttestation({
-            walletId: deviceWalletId,
+            wardId: deviceWardId,
             nonce,
             counter,
             mac,

@@ -1,14 +1,18 @@
 import { ZERO_MAC_HEX, signWardUpdate, signWmAttestation } from '@trezor/ward/src/mocks';
 
+// `wardId` is the SLIP21-derived WM-facing anchor the device emits (WARDSyncAck /
+// WARDPerformUpdateAck). The WM signs its ATTEST/FINAL preimages over this 32-byte
+// value, NOT the 20-byte local wallet_id. The host must forward the device's
+// wardId, never invent or substitute it.
 export type WardCheckpoint = {
-    walletId: string;
+    wardId: string;
     counter: number;
     mac?: string;
     nonce: string;
 };
 
 export type WardCandidate = {
-    walletId: string;
+    wardId: string;
     counter: number;
     mac?: string;
 };
@@ -40,21 +44,22 @@ export class WardCommitConflictError extends Error {
  * tests and offline/dev flows work without a running WM service.
  */
 class MockWardManagerService implements WardManagerService {
-    signAttestation({ walletId, nonce, counter, mac }: WardCheckpoint): Promise<string> {
-        return Promise.resolve(signWmAttestation(walletId, nonce, counter, mac ?? ZERO_MAC_HEX));
+    signAttestation({ wardId, nonce, counter, mac }: WardCheckpoint): Promise<string> {
+        return Promise.resolve(signWmAttestation(wardId, nonce, counter, mac ?? ZERO_MAC_HEX));
     }
 
-    signCandidate({ walletId, counter, mac }: WardCandidate): Promise<string> {
-        return Promise.resolve(signWardUpdate(walletId, counter, mac ?? ZERO_MAC_HEX));
+    signCandidate({ wardId, counter, mac }: WardCandidate): Promise<string> {
+        return Promise.resolve(signWardUpdate(wardId, counter, mac ?? ZERO_MAC_HEX));
     }
 }
 
 /**
  * Real out-of-process WM client. Talks to the WARD Manager service (built on the
- * Quota Manager) over HTTP. The ward is keyed by a static `wardId` (the device
- * wallet_id, stable per seed+passphrase) — NOT the Evolu ownerId, which can rotate.
- * The WM signs the firmware preimages ("WARD ATTEST v1" / "WARD FINAL v1") with its
- * provisioned Ed25519 key and returns the signature hex.
+ * Quota Manager) over HTTP. The ward is keyed by `wardId` — the device's
+ * SLIP21-derived WM anchor (stable per seed+passphrase), distinct from the local
+ * wallet_id and NOT the Evolu ownerId (which can rotate). The WM signs the firmware
+ * preimages ("WARD ATTEST v1" / "WARD FINAL v1") over wardId with its provisioned
+ * Ed25519 key and returns the signature hex.
  *
  * NOTE (MVP): the delegated-key challenge/proof handshake (WP-S4) is not sent yet;
  * add it here (and enforce it server-side) once the delegated identity key is
@@ -69,9 +74,9 @@ export class HttpWardManagerService implements WardManagerService {
         this.baseUrl = baseUrl.replace(/\/$/, '');
     }
 
-    async signAttestation({ walletId, nonce, counter, mac }: WardCheckpoint): Promise<string> {
+    async signAttestation({ wardId, nonce, counter, mac }: WardCheckpoint): Promise<string> {
         const res = await this.post('/ward/attest', {
-            wardId: walletId,
+            wardId,
             nonce,
             counter,
             ...(mac !== undefined && { mac }),
@@ -80,12 +85,12 @@ export class HttpWardManagerService implements WardManagerService {
         return res.signature;
     }
 
-    async signCandidate({ walletId, counter, mac }: WardCandidate): Promise<string> {
+    async signCandidate({ wardId, counter, mac }: WardCandidate): Promise<string> {
         const response = await fetch(`${this.baseUrl}/ward/commit`, {
             method: 'POST',
             headers: { 'content-type': 'application/json' },
             body: JSON.stringify({
-                wardId: walletId,
+                wardId,
                 counter,
                 ...(mac !== undefined && { mac }),
             }),

@@ -9,31 +9,37 @@ import type { AuthLabelEntry, AuthLabelRow, MerkleProof } from '../types';
 
 const utf8 = (s: string) => new TextEncoder().encode(s);
 
-// Deterministic value encoding (networkSymbol + counter + sorted metadata).
+// Deterministic value encoding (networkSymbol + sorted metadata).
+//
+// Strict counter model: the counter is NOT part of the value bytes. It lives only
+// in the 4-byte leaf field (see computeLeafHash), which the device stamps at commit
+// time. Baking it into the value would let the host inject a guessed counter into
+// WARDQueueUpdate.new_value before the device derives the real one.
 export const entryToValueBytes = (networkSymbol: string, entry: AuthLabelEntry): Uint8Array => {
     const metaSorted = Object.fromEntries(
         Object.entries(entry.metadata).sort(([a], [b]) => a.localeCompare(b)),
     );
-    const encoded = `${networkSymbol}:${entry.counter}:${JSON.stringify(metaSorted)}`;
+    const encoded = `${networkSymbol}:${JSON.stringify(metaSorted)}`;
 
     return utf8(encoded);
 };
 
 // Inverse of entryToValueBytes — decodes a hex-encoded value (e.g. an offline-queue
-// entry's new_value) back into its networkSymbol and AuthLabelEntry. Splits on only the
-// first two colons since the trailing JSON metadata may itself contain colons.
+// entry's new_value) back into its networkSymbol and metadata. The counter is NOT
+// carried in the value under the strict model, so it cannot be recovered here; the
+// caller supplies the counter from the tree/device (it is not part of the payload).
+// Splits on only the first colon since the trailing JSON metadata may itself contain
+// colons.
 export const valueHexToEntry = (
     valueHex: string,
-): { networkSymbol: string; entry: AuthLabelEntry } => {
+): { networkSymbol: string; metadata: AuthLabelEntry['metadata'] } => {
     const decoded = new TextDecoder().decode(hexToBytes(valueHex));
     const firstColon = decoded.indexOf(':');
-    const secondColon = decoded.indexOf(':', firstColon + 1);
 
     const networkSymbol = decoded.slice(0, firstColon);
-    const counter = Number(decoded.slice(firstColon + 1, secondColon));
-    const metadata = JSON.parse(decoded.slice(secondColon + 1));
+    const metadata = JSON.parse(decoded.slice(firstColon + 1));
 
-    return { networkSymbol, entry: { metadata, counter } };
+    return { networkSymbol, metadata };
 };
 
 // leaf_hash = SHA-256(b"\x00" + address_bytes + counter(4B BE) + value_bytes)

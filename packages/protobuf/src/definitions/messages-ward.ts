@@ -136,6 +136,7 @@ export const WARDPerformUpdateAck = Type.Object(
         new_root: Type.Optional(Type.String()),
         mac: Type.Optional(Type.String()),
         wallet_id: Type.Optional(Type.String()),
+        ward_id: Type.Optional(Type.String()),
     },
     { $id: 'WARDPerformUpdateAck' },
 );
@@ -174,7 +175,8 @@ export const WARDQueueUpdate = Type.Object(
 export type WARDQueueUpdateAck = Static<typeof WARDQueueUpdateAck>;
 export const WARDQueueUpdateAck = Type.Object(
     {
-        counter: Type.Number(),
+        // No counter (strict model): the candidate counter_T is first derived at
+        // WARDPerformUpdate, not at queue time.
         pending_id: Type.Optional(Type.Number()),
         wallet_id: Type.Optional(Type.String()),
     },
@@ -209,6 +211,7 @@ export const WARDSyncAck = Type.Object(
         nonce: Type.String(),
         version: Type.Number(),
         wallet_id: Type.Optional(Type.String()),
+        ward_id: Type.Optional(Type.String()),
     },
     { $id: 'WARDSyncAck' },
 );

@@ -32,21 +32,22 @@ const counterBE4 = (counter: number): Uint8Array => {
 
 /**
  * Produce the WM final attestation the device verifies in WARDConfirmCommit:
- *     Ed25519-Sign(seed, b"WARD FINAL v1" || wallet_id || counter(4B BE) || mac)
+ *     Ed25519-Sign(seed, b"WARD FINAL v1" || ward_id || counter(4B BE) || mac)
  *
- * All inputs/outputs are hex strings to match connect's on-the-wire encoding.
- * `macHex` must be the committed candidate MAC (ZERO_MAC_HEX when the candidate
- * empties the tree). Defaults to signing with the debug seed.
+ * The WM signs over the device-derived ward_id (SLIP21 anchor, 32B), NOT the local
+ * wallet_id. All inputs/outputs are hex strings to match connect's on-the-wire
+ * encoding. `macHex` must be the committed candidate MAC (ZERO_MAC_HEX when the
+ * candidate empties the tree). Defaults to signing with the debug seed.
  */
 export const signWardUpdate = (
-    walletIdHex: string,
+    wardIdHex: string,
     counter: number,
     macHex: string,
     seed: Uint8Array = DEBUG_QM_SEED,
 ): string => {
     const message = concatBytes(
         WARD_FINAL_DOMAIN,
-        hexToBytes(walletIdHex),
+        hexToBytes(wardIdHex),
         counterBE4(counter),
         hexToBytes(macHex),
     );
@@ -57,14 +58,15 @@ export const signWardUpdate = (
 /**
  * Produce the WM freshness attestation the device verifies in WARDIngestAttestation:
  *     Ed25519-Sign(seed,
- *         b"WARD ATTEST v1" || version(1B) || nonce || wallet_id || counter(4B BE) || mac)
+ *         b"WARD ATTEST v1" || version(1B) || nonce || ward_id || counter(4B BE) || mac)
  *
- * `nonce` is the per-round value the device minted at WARDInitSyncRound. All
- * inputs/outputs are hex; `macHex` is ZERO_MAC_HEX for an empty tree. Defaults to
- * the debug seed.
+ * The WM signs over the device-derived ward_id (SLIP21 anchor, 32B), NOT the local
+ * wallet_id. `nonce` is the per-round value the device minted at WARDInitSyncRound.
+ * All inputs/outputs are hex; `macHex` is ZERO_MAC_HEX for an empty tree. Defaults
+ * to the debug seed.
  */
 export const signWmAttestation = (
-    walletIdHex: string,
+    wardIdHex: string,
     nonceHex: string,
     counter: number,
     macHex: string,
@@ -74,7 +76,7 @@ export const signWmAttestation = (
         WARD_ATTEST_DOMAIN,
         Uint8Array.of(WARD_ATTEST_VERSION),
         hexToBytes(nonceHex),
-        hexToBytes(walletIdHex),
+        hexToBytes(wardIdHex),
         counterBE4(counter),
         hexToBytes(macHex),
     );

@@ -47,8 +47,13 @@ export default class AuthDbUpdateAddress extends AbstractMethod<
 
         vlog('-> WARDSync (device)');
         const sync = await cmd.typedCall('WARDSync', 'WARDSyncAck', {});
-        const { nonce, version, wallet_id: deviceWalletId } = sync.message;
-        vlog('<- WARDSyncAck', { nonce, version, wallet_id: deviceWalletId });
+        const { nonce, version, wallet_id: deviceWalletId, ward_id: deviceWardId } = sync.message;
+        vlog('<- WARDSyncAck', {
+            nonce,
+            version,
+            wallet_id: deviceWalletId,
+            ward_id: deviceWardId,
+        });
 
         if (deviceWalletId === undefined) {
             throw ERRORS.TypedError(
@@ -62,15 +67,22 @@ export default class AuthDbUpdateAddress extends AbstractMethod<
                 `authDbUpdateAddress: device wallet_id (${deviceWalletId}) does not match requested walletId (${walletId})`,
             );
         }
+        if (deviceWardId === undefined) {
+            throw ERRORS.TypedError(
+                'Runtime',
+                'authDbUpdateAddress: device did not return a ward_id for the sync round',
+            );
+        }
 
         vlog('-> WARD Manager service: sign attestation', {
-            wallet_id: deviceWalletId,
+            ward_id: deviceWardId,
             nonce,
             counter,
             mac: mac ?? '(none)',
         });
+        // The WM signs over the device-derived ward_id (not wallet_id).
         const wmSignature = await wardManager.signAttestation({
-            walletId: deviceWalletId,
+            wardId: deviceWardId,
             nonce,
             counter,
             mac,
@@ -156,9 +168,11 @@ export default class AuthDbUpdateAddress extends AbstractMethod<
         ]);
 
         const isInsert = oldEntry === null;
-        // Leaf counter is the GLOBAL counter stamp: the new global counter this change
-        // produces (current global counter + 1) -- not a per-address increment. Matches
-        // the firmware, which requires new_counter == current root counter + 1.
+        // Strict counter model: the counter is NOT a host input for the device flow.
+        // The value bytes are counter-free (see entryToValueBytes), so this local
+        // counter only matters for the OFFLINE branch, where it is an optimistic stamp
+        // reconciled on the next device sync. The device-backed flow persists the
+        // device-confirmed counter from WARDConfirmedByWMAck instead (see below).
         const newEntry: AuthLabelEntry = {
             metadata,
             counter: (currentTreeState?.counter ?? 0) + 1,
@@ -256,7 +270,7 @@ export default class AuthDbUpdateAddress extends AbstractMethod<
             });
             const pendingId = queued.message.pending_id;
             vlog('<- WARDQueueUpdateAck', {
-                counter: queued.message.counter,
+                // No counter here (strict model): counter_T is derived at perform.
                 pending_id: pendingId,
                 wallet_id: queued.message.wallet_id,
             });
@@ -272,11 +286,13 @@ export default class AuthDbUpdateAddress extends AbstractMethod<
                 new_root: performed.message.new_root,
                 mac: performed.message.mac,
                 wallet_id: performed.message.wallet_id,
+                ward_id: performed.message.ward_id,
             });
 
             const candidateCounter = performed.message.counter;
             const candidateMac = performed.message.mac;
             const deviceWalletId = performed.message.wallet_id;
+            const deviceWardId = performed.message.ward_id;
 
             // Defense in depth: the caller-supplied walletId scopes local storage, but only
             // the device's own echoed wallet_id proves which seed+passphrase was actually
@@ -297,19 +313,26 @@ export default class AuthDbUpdateAddress extends AbstractMethod<
                     'authDbUpdateAddress: device did not return a wallet_id for the WARD candidate',
                 );
             }
+            if (deviceWardId === undefined) {
+                throw ERRORS.TypedError(
+                    'Runtime',
+                    'authDbUpdateAddress: device did not return a ward_id for the WARD candidate',
+                );
+            }
 
             // WM final attestation over the exact device-derived candidate. The debug
             // signer stands in for the WARD Manager here; a real provisioned WM key is a
-            // follow-up. A candidate that empties the tree has no root MAC, so the
-            // signature is over the all-zero MAC and no `mac` field is sent.
+            // follow-up. The WM signs over the device-derived ward_id. A candidate that
+            // empties the tree has no root MAC, so the signature is over the all-zero MAC
+            // and no `mac` field is sent.
             vlog('-> WARD Manager service: sign candidate', {
-                wallet_id: deviceWalletId,
+                ward_id: deviceWardId,
                 counter: candidateCounter,
                 mac: candidateMac ?? '(none)',
                 pending_id: pendingId,
             });
             const wmSignature = await wardManager.signCandidate({
-                walletId: deviceWalletId,
+                wardId: deviceWardId,
                 counter: candidateCounter,
                 mac: candidateMac,
             });
@@ -336,7 +359,13 @@ export default class AuthDbUpdateAddress extends AbstractMethod<
             // and can decide how to react (e.g. resync from getAllEntries()).
             let localCacheError: string | undefined;
             try {
-                await provider.upsert(walletId, address, networkSymbol, newEntry);
+                // Persist the DEVICE-confirmed counter, never the host's guess: the
+                // device is the counter authority under the strict model.
+                const confirmedEntry: AuthLabelEntry = {
+                    metadata,
+                    counter: response.message.counter,
+                };
+                await provider.upsert(walletId, address, networkSymbol, confirmedEntry);
                 if (response.message.new_root !== undefined) {
                     await provider.setTreeState(walletId, {
                         root: response.message.new_root,
