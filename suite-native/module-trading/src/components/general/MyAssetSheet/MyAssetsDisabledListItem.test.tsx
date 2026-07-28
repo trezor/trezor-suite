@@ -3,7 +3,7 @@ import { renderWithBasicProvider } from '@suite-native/test-utils';
 import {
     MyAssetsDisabledListItem,
     type MyAssetsDisabledListItemProps,
-} from '../MyAssetsDisabledListItem';
+} from './MyAssetsDisabledListItem';
 
 describe('MyAssetsDisabledListItem', () => {
     const renderMyAssetsDisabledListItem = (props: MyAssetsDisabledListItemProps) =>

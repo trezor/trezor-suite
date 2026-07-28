@@ -2,7 +2,7 @@ import { getTranslation } from '@suite-native/intl';
 import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 import { getWalletState } from '@suite-native/trading-fixtures';
 
-import { ProviderInfoRow, type ProviderInfoRowProps } from '../ProviderInfoRow';
+import { ProviderInfoRow, type ProviderInfoRowProps } from './ProviderInfoRow';
 
 describe('ProviderInfoRow', () => {
     const renderProviderInfoRow = (props: Partial<ProviderInfoRowProps> = {}) => {

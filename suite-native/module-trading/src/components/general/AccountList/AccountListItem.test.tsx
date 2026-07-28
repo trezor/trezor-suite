@@ -5,8 +5,8 @@ import { type TestStore, fireEvent, renderWithStoreProvider } from '@suite-nativ
 import { type ReceiveAccount } from '@suite-native/trading-types';
 import { type StaticSessionId } from '@trezor/connect';
 
-import { createTradingTestStore } from '../../../../__tests__/tradingTestUtils';
-import { AccountListItem } from '../AccountListItem';
+import { AccountListItem } from './AccountListItem';
+import { createTradingTestStore } from '../../../__tests__/tradingTestUtils';
 
 const DEVICE_SESSION_ID: StaticSessionId = '1@2:3';
 

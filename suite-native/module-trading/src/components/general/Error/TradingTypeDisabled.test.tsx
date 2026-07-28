@@ -1,7 +1,7 @@
 import { type TradingType } from '@suite-common/trading';
 import { renderWithBasicProvider } from '@suite-native/test-utils';
 
-import { TradingTypeDisabled, type TradingTypeDisabledProps } from '../TradingTypeDisabled';
+import { TradingTypeDisabled, type TradingTypeDisabledProps } from './TradingTypeDisabled';
 
 describe('TradingTypeDisabled', () => {
     const renderTradingTypeDisabled = (props: TradingTypeDisabledProps) =>

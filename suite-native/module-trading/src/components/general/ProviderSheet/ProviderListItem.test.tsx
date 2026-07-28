@@ -9,12 +9,12 @@ import {
     mockWalletFiatRatesAndSettings,
 } from '@suite-native/trading-fixtures';
 
+import { ProviderListItem, type ProviderListItemProps } from './ProviderListItem';
 import {
     type PreloadedStatePartial,
     type TradingTestPreloadedState,
     renderWithTradingProvider,
-} from '../../../../__tests__/tradingTestUtils';
-import { ProviderListItem, type ProviderListItemProps } from '../ProviderListItem';
+} from '../../../__tests__/tradingTestUtils';
 
 const baseOverrides: PreloadedStatePartial<TradingTestPreloadedState> = {
     wallet: {

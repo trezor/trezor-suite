@@ -2,7 +2,7 @@ import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { getTranslation } from '@suite-native/intl';
 import { fireEvent, renderWithStoreProvider } from '@suite-native/test-utils-store';
 
-import { MyAssetFilterTabs } from '../MyAssetFilterTabs';
+import { MyAssetFilterTabs } from './MyAssetFilterTabs';
 
 const availableNetworks: NetworkSymbol[] = ['btc', 'eth'];
 

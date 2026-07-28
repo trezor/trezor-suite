@@ -12,7 +12,7 @@ import { base1NormalAccount, getBtcAccount, getEthAccount } from '@suite-native/
 import { type MyAsset } from '@suite-native/trading-types';
 import { BigNumber, getIndexOrThrow } from '@trezor/utils';
 
-import { MyAssetListItem, type MyAssetListItemProps } from '../MyAssetListItem';
+import { MyAssetListItem, type MyAssetListItemProps } from './MyAssetListItem';
 
 describe('MyAssetListItem', () => {
     const mockBtcAsset: MyAsset = {

@@ -1,7 +1,7 @@
 import { getTranslation } from '@suite-native/intl';
 import { renderWithBasicProvider } from '@suite-native/test-utils';
 
-import { NoProvidersPlaceholder } from '../NoProvidersPlaceholder';
+import { NoProvidersPlaceholder } from './NoProvidersPlaceholder';
 
 describe('NoProvidersPlaceholder', () => {
     const renderNoProvidersPlaceholder = () => renderWithBasicProvider(<NoProvidersPlaceholder />);

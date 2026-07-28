@@ -5,13 +5,13 @@ import { FeatureFlag, featureFlagsInitialState } from '@suite-native/feature-fla
 import { getTranslation } from '@suite-native/intl';
 import { type TestStore, fireEvent } from '@suite-native/test-utils-store';
 
+import { Header } from './Header';
 import {
     type PreloadedStatePartial,
     type TradingTestPreloadedState,
     createTradingLightStore,
     renderWithTradingProvider,
-} from '../../../../__tests__/tradingTestUtils';
-import { Header } from '../Header';
+} from '../../../__tests__/tradingTestUtils';
 
 describe('Header', () => {
     const getFFOverrides = (): PreloadedStatePartial<TradingTestPreloadedState> => ({

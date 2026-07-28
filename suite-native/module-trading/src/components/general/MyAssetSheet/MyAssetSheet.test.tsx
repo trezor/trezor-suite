@@ -13,9 +13,9 @@ import { selectAccountsWithTokensToSellSectionCondensedListByTradingType } from 
 import { type MyAssetTradeable } from '@suite-native/trading-types';
 import { BigNumber } from '@trezor/utils';
 
-import { renderWithTradingProvider } from '../../../../__tests__/tradingTestUtils';
-import { TEST_ID_ACCOUNT_TYPE_BADGE } from '../MyAssetListSectionHeader';
-import { MyAssetSheet, type MyAssetSheetProps } from '../MyAssetSheet';
+import { TEST_ID_ACCOUNT_TYPE_BADGE } from './MyAssetListSectionHeader';
+import { MyAssetSheet, type MyAssetSheetProps } from './MyAssetSheet';
+import { renderWithTradingProvider } from '../../../__tests__/tradingTestUtils';
 
 jest.mock('@suite-native/trading-state', () => ({
     ...jest.requireActual('@suite-native/trading-state'),
