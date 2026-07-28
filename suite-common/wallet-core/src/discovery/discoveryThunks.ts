@@ -22,7 +22,7 @@ import {
 } from '@suite-common/suite-types';
 import { getNewInstanceNumber } from '@suite-common/suite-utils';
 import { type Bip43Path, type TrezorConnectBackendType } from '@suite-common/wallet-config';
-import { type DiscoveryCallIds, type DiscoveryStatus } from '@suite-common/wallet-types';
+import { type DiscoveryStatus } from '@suite-common/wallet-types';
 import TrezorConnect, {
     type AccountInfo,
     type BundleProgress,
@@ -276,13 +276,13 @@ export const cancelDiscoveryThunk = createThunk(
 
 type RunDiscoveryParams = {
     device: TrezorDevice;
-    callIds?: DiscoveryCallIds;
+    callId?: string;
 };
 
 export const runDiscoveryThunk = createThunk(
     `${DISCOVERY_MODULE_PREFIX}/run`,
     async (
-        { device: passedDevice, callIds }: RunDiscoveryParams,
+        { device: passedDevice, callId }: RunDiscoveryParams,
         { dispatch, getState, extra },
     ): Promise<void> => {
         try {
@@ -330,7 +330,7 @@ export const runDiscoveryThunk = createThunk(
                     state: undefined,
                     useEmptyPassphrase: !isAddingHiddenWallet,
                 },
-                callId: callIds?.initialDeviceState,
+                callId,
             });
 
             if (!isDiscoveryInProgress(selectDiscoveryByDevicePath(getState(), device.path))) {
@@ -379,7 +379,7 @@ export const runDiscoveryThunk = createThunk(
                     // no passphrase duplicity and no standard wallet -> check that this is not in fact empty passphrase
                     const res = await TrezorConnect.getDeviceState({
                         device: { path: passedDevice.path, useEmptyPassphrase: true },
-                        callId: callIds?.emptyPassphraseCheck,
+                        callId,
                     });
 
                     if (res.success && deviceStateEqualTo(deviceState)(res.payload.state)) {
@@ -468,7 +468,7 @@ export const runDiscoveryThunk = createThunk(
                 },
                 coins: accountsParam,
                 entropyCheckResult,
-                callId: callIds?.discoverAccounts,
+                callId,
             });
 
             TrezorConnect.off(UI_REQUEST.BUNDLE_PROGRESS, onBundleProgress);
@@ -533,7 +533,7 @@ export const runDiscoveryThunk = createThunk(
 
             const getDeviceState2Res = await TrezorConnect.getDeviceState({
                 device: { path: device.path, instance, state: undefined },
-                callId: callIds?.confirmDeviceState,
+                callId,
             });
 
             if (!isDiscoveryInProgress(selectDiscoveryByDevicePath(getState(), device.path))) {
