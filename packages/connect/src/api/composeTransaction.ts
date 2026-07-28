@@ -180,7 +180,7 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
             coinInfo,
             outputs,
             baseFee,
-            feeLevels: bitcoinFeeLevels,
+            feeLevels: bitcoinFeeLevels.levels,
             sortingStrategy: sortingStrategy ?? DEFAULT_SORTING_STRATEGY,
         });
 
@@ -409,7 +409,7 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
             utxos,
             coinInfo,
             outputs,
-            feeLevels,
+            feeLevels: feeLevels.levels,
             sortingStrategy: sortingStrategy ?? DEFAULT_SORTING_STRATEGY,
         });
 
