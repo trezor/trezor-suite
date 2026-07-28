@@ -5,9 +5,9 @@ import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { configureMockStore, testMocks } from '@suite-common/test-utils';
 import { type ToastPayload, notificationsActions } from '@suite-common/toast-notifications';
 import type { AuthenticateDeviceResult, Response } from '@trezor/connect';
-import { Err, Ok } from '@trezor/type-utils';
+import type { Err, Ok } from '@trezor/type-utils';
 
-import { checkDeviceAuthenticityThunk } from '../src/checkDeviceAuthenticityThunk';
+import { checkDeviceAuthenticityThunk } from './checkDeviceAuthenticityThunk';
 
 const initStore = (device?: TrezorDevice) =>
     configureMockStore({
