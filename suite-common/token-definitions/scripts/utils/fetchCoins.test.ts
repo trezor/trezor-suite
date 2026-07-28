@@ -1,6 +1,6 @@
 import { blockfrostUtils } from '@trezor/blockchain-link-utils';
 
-import { getContractAddress } from '../fetchCoins';
+import { getContractAddress } from './fetchCoins';
 
 jest.mock('@trezor/blockchain-link-utils', () => ({
     ...jest.requireActual('@trezor/blockchain-link-utils'),
