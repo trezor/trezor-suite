@@ -7,8 +7,8 @@ import {
     initialStablecoinYieldState,
     stablecoinYieldActions,
     stablecoinYieldReducer,
-} from '../stablecoinYieldReducer';
-import type { YieldFlowType, YieldPendingTransactionState } from '../stablecoinYieldTypes';
+} from './stablecoinYieldReducer';
+import type { YieldFlowType, YieldPendingTransactionState } from './stablecoinYieldTypes';
 
 const FLOW_KEY = 'account-key:yield-id:0xtoken';
 

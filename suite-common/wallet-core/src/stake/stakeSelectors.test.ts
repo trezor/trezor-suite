@@ -1,7 +1,7 @@
-import { type StakeDataState, stakeDataInitialState } from '../stakeDataSlice';
-import { stakeInitialState } from '../stakeReducer';
-import type { StakeRootState } from '../stakeReducerTypes';
-import { selectCardanoPoolsInfo, selectEthNextRewardPayout } from '../stakeSelectors';
+import { type StakeDataState, stakeDataInitialState } from './stakeDataSlice';
+import { stakeInitialState } from './stakeReducer';
+import type { StakeRootState } from './stakeReducerTypes';
+import { selectCardanoPoolsInfo, selectEthNextRewardPayout } from './stakeSelectors';
 
 const buildStakeState = (data: Partial<StakeDataState['data']>): StakeRootState => ({
     wallet: {

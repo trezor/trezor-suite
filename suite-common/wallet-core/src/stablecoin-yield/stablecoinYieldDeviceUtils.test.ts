@@ -3,7 +3,7 @@ import { testMocks } from '@suite-common/test-utils';
 import { type Features } from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
-import { isStablecoinYieldSupported } from '../stablecoinYieldDeviceUtils';
+import { isStablecoinYieldSupported } from './stablecoinYieldDeviceUtils';
 
 const createDevice = (features: Partial<Features>): TrezorDevice =>
     ({
