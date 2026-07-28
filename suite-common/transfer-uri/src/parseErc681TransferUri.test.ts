@@ -1,5 +1,5 @@
-import * as fixtures from '../__fixtures__/parseErc681TransferUri';
-import { parseErc681TransferUri } from '../parseErc681TransferUri';
+import * as fixtures from './__fixtures__/parseErc681TransferUri';
+import { parseErc681TransferUri } from './parseErc681TransferUri';
 
 describe(parseErc681TransferUri.name, () => {
     fixtures.parseErc681TransferUri.forEach(f => {
