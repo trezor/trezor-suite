@@ -17,8 +17,8 @@ import {
     waitForLoader,
 } from 'src/support/tests/hooksHelper';
 
+import * as fixtures from './__fixtures__/useRbfForm';
 import { RbfContext, useRbf, useRbfContext } from './useRbfForm';
-import * as fixtures from '../../../mocks/mockUseRbfForm';
 
 global.ResizeObserver = class MockedResizeObserver {
     observe = jest.fn();

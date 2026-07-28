@@ -27,8 +27,8 @@ import {
 import { type SendContextValues } from 'src/types/wallet/sendForm';
 import SendIndex from 'src/views/wallet/send';
 
+import * as fixtures from './__fixtures__/useSendForm';
 import { useSendFormContext } from './useSendForm';
-import * as fixtures from '../../../mocks/mockUseSendForm';
 
 const TEST_TIMEOUT = 35000;
 
