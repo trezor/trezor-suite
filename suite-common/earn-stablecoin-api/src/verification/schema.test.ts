@@ -1,4 +1,4 @@
-import { parseUnsignedEvmTransaction } from '../../verification/schema';
+import { parseUnsignedEvmTransaction } from './schema';
 
 const APPROVAL_UNSIGNED_TX =
     '{"from":"0x9eA3721B5Bf3b64b4418c38B603154d2D597FAE3","gasLimit":"0xe563","to":"0xdac17f958d2ee523a2206206994597c13d831ec7","data":"0x095ea7b3000000000000000000000000beef047a543e45807105e51a8bbefcc5950fcfba00000000000000000000000000000000000000000000000000000000000f4240","nonce":664,"type":2,"maxFeePerGas":"0x0ee6b280","maxPriorityFeePerGas":"0x054e0840","chainId":1}';
