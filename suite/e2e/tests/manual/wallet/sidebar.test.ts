@@ -16,8 +16,10 @@ test.describe.skip('Sidebar', { tag: ['@group=manual'] }, () => {
                 ],
                 steps: [
                     'Check the sidebar accounts panel',
+                    'Confirm the accounts are displayed in the expected order',
                     'Type part of an account name into the search field',
                     'Confirm only matching accounts are displayed',
+                    'Search by token, account label and account type and confirm each matches the expected accounts',
                     'Clear the search and confirm all accounts are displayed again',
                     'Use the network filter and select one network (e.g. ETH)',
                     'Confirm only accounts of the selected network are displayed',

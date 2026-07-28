@@ -17,6 +17,7 @@ test.describe.skip('TRX staking', { tag: ['@group=manual'] }, () => {
                 ],
                 steps: [
                     'Navigate to the funded Tron account and open the "Staking" tab',
+                    'In the network tab, confirm the expected call to the backend "/report" endpoint is made',
                     'Start the "Freeze" flow, fill the amount (check percentage/Max buttons) and continue',
                     'Confirm the freeze transaction on the Trezor device',
                     'Confirm the frozen balance and gained energy/bandwidth are displayed correctly',

@@ -16,6 +16,7 @@ test.describe.skip('SOL staking', { tag: ['@group=manual'] }, () => {
                 ],
                 steps: [
                     'Navigate to the funded Solana account and open the "Staking" tab',
+                    'Confirm stake created outside of Trezor Suite is listed in the staking overview',
                     'Click "Stake" (or "Start staking" for a first-time flow)',
                     'For first-time staking, confirm the "Staking in a nutshell" window, check "I acknowledge…" and continue',
                     'In the "Stake SOL" modal, confirm the "10%", "25%", "50%" and "Max" buttons populate the amount',

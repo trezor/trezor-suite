@@ -17,6 +17,7 @@ test.describe.skip('Top navigation - global Send and Receive', { tag: ['@group=m
                 steps: [
                     'From the Dashboard, click the "Send" button in the top navigation',
                     'Confirm an account/asset picker opens',
+                    'Confirm the accounts/assets are sorted the same way as in the sidebar',
                     'Search for an asset by name and confirm the list is filtered',
                     'Select a funded account',
                     'Confirm the Send form of the selected account opens',
@@ -40,6 +41,7 @@ test.describe.skip('Top navigation - global Send and Receive', { tag: ['@group=m
                 steps: [
                     'From the Dashboard, click the "Receive" button in the top navigation',
                     'Confirm an account/asset picker opens',
+                    'Confirm the accounts/assets are sorted the same way as in the sidebar',
                     'Select an account',
                     'Confirm the Receive view of the selected account opens',
                     'Reveal an address and confirm it on the device',

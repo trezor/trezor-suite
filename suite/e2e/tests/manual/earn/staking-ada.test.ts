@@ -51,6 +51,7 @@ test.describe.skip('ADA staking', { tag: ['@group=manual'] }, () => {
                     'Confirm the delegate change transaction appears in history',
                     'If an "Update provider" / redelegation prompt is displayed (pool change), start it',
                     'Confirm the redelegation on the device and confirm the new pool is displayed after confirmation',
+                    'Confirm the "stake with another provider" promo is displayed',
                 ],
                 category: TestCategory.ADA,
                 priority: TestPriority.Medium,

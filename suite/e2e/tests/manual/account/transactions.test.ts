@@ -9,7 +9,7 @@ test.describe.skip('Account transactions', { tag: ['@group=manual'] }, () => {
         {
             annotation: createTestAnnotation({
                 testCase:
-                    'Verifies that the transaction list renders items correctly, including pending transactions, pagination and search.',
+                    'Verifies that the transaction list renders items correctly, including pending transactions, pagination, search, and dust limit.',
                 prerequisites: [
                     'Seeded Trezor device with a long transaction history (e.g. "all" seed)',
                     'Connected Trezor Suite',
@@ -17,6 +17,7 @@ test.describe.skip('Account transactions', { tag: ['@group=manual'] }, () => {
                 steps: [
                     'Navigate to an account with a long transaction history',
                     'Confirm transaction items display type (sent/received/self), date, address, crypto and fiat amount',
+                    'Confirm specialized transaction types are labeled correctly (e.g. Deposit, Withdraw, Stake, Unstake, Contract, Approve, Swap)',
                     'Navigate to the account with suspected phishing transactions',
                     'Confirm the phishing button/notice explains why the transactions are hidden',
                     'Click the button to reveal the hidden transactions',
@@ -26,6 +27,8 @@ test.describe.skip('Account transactions', { tag: ['@group=manual'] }, () => {
                     'Scroll/paginate through the history and confirm all pages load correctly',
                     'Use the transaction search field to search by address, txid and amount',
                     'Confirm only matching transactions are displayed and clearing the search restores the list',
+                    'Confirm the dust limit (dust phishing protection) is applied and transactions below the dust limit are blurred',
+                    'Set a manual dust limit value and confirm the transaction list updates to respect the new threshold',
                 ],
                 category: TestCategory.Accounts,
                 priority: TestPriority.Critical,

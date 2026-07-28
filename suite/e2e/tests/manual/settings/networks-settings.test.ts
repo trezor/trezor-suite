@@ -3,7 +3,7 @@ import { TestCategory, TestPriority, TestStream } from '@trezor/e2e-utils';
 import { test } from '../../../support/fixtures';
 import { createTestAnnotation } from '../../../support/reporters/annotations';
 
-test.describe.skip('Coins settings', { tag: ['@group=manual'] }, () => {
+test.describe.skip('Networks settings', { tag: ['@group=manual'] }, () => {
     test(
         'Custom backend',
         {
@@ -16,8 +16,8 @@ test.describe.skip('Coins settings', { tag: ['@group=manual'] }, () => {
                     'URL of a working custom backend (e.g. a Blockbook instance)',
                 ],
                 steps: [
-                    'Navigate to "Settings" > "Coins"',
-                    'Click the settings (gear) icon of an enabled coin (e.g. Bitcoin)',
+                    'Navigate to "Settings" > "Networks"',
+                    'Click the settings (gear) icon of an enabled network (e.g. Bitcoin)',
                     'In the coin settings, open the "Backends" section',
                     'Select custom backend type and enter the custom backend URL',
                     'Confirm the change and wait for reconnection',
@@ -42,8 +42,8 @@ test.describe.skip('Coins settings', { tag: ['@group=manual'] }, () => {
                     'Verifies that a user can set a custom block explorer and that transaction/address links use it.',
                 prerequisites: ['Seeded Trezor device with transactions', 'Connected Trezor Suite'],
                 steps: [
-                    'Navigate to "Settings" > "Coins"',
-                    'Click the settings (gear) icon of an enabled coin (e.g. Bitcoin)',
+                    'Navigate to "Settings" > "Networks"',
+                    'Click the settings (gear) icon of an enabled network (e.g. Bitcoin)',
                     'In the coin settings, open the "Block explorer" section and enter a custom explorer URL',
                     'Confirm the change',
                     'Navigate to an account of the coin and open a transaction detail',

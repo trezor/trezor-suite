@@ -26,4 +26,24 @@ test.describe.skip('Account details', { tag: ['@group=manual'] }, () => {
         },
         async () => {},
     );
+
+    test(
+        'EVM account details - nonce',
+        {
+            annotation: createTestAnnotation({
+                testCase: 'Verifies that an EVM account details tab shows the account nonce.',
+                prerequisites: ['Seeded Trezor device', 'Connected Trezor Suite', 'EVM account'],
+                steps: [
+                    'Navigate to an EVM account and open the "Details" tab',
+                    'Confirm no "Show xpub" is displayed for the EVM account',
+                    'Confirm the account nonce is displayed',
+                    'Confirm the nonce matches the on-chain state (cross-check with an explorer)',
+                ],
+                category: TestCategory.Accounts,
+                priority: TestPriority.Medium,
+                stream: TestStream.Wallet,
+            }),
+        },
+        async () => {},
+    );
 });
