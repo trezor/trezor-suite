@@ -1,8 +1,5 @@
-import {
-    getEarnYieldClaimContractAddress,
-    isEarnYieldClaimSupported,
-} from '../earnRewardsProvider';
-import { getNetworkFeatures, networkSymbolCollection } from '../utils';
+import { getEarnYieldClaimContractAddress, isEarnYieldClaimSupported } from './earnRewardsProvider';
+import { getNetworkFeatures, networkSymbolCollection } from './utils';
 
 describe(isEarnYieldClaimSupported.name, () => {
     it('has a claim contract address for every network with the claim-rewards feature', () => {
