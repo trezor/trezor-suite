@@ -6,9 +6,13 @@ import {
     type StackNavigationProps,
     YieldStackRoutes,
 } from '@suite-native/navigation';
+import { BigNumber } from '@trezor/utils';
 
 import { type StablecoinYieldNavigationItem } from '../types';
-import { hasPositiveContractTokenBalance } from './contractTokenBalanceUtils';
+import {
+    getYieldVaultDepositableBalance,
+    hasPositiveContractTokenBalance,
+} from './contractTokenBalanceUtils';
 
 type YieldNavigateFn = StackNavigationProps<
     RootStackParamList,
@@ -40,7 +44,13 @@ export const navigateByYieldAccountState = (
         return 'account-detail';
     }
 
-    if (hasPositiveContractTokenBalance(account, underlyingTokenContract)) {
+    // For a wrapped-native (WETH) vault the wrappable native balance counts in as depositable
+    // too, so an account holding only the native asset still routes into the deposit flow.
+    const hasDepositableBalance = new BigNumber(
+        getYieldVaultDepositableBalance(account, underlyingTokenContract),
+    ).gt(0);
+
+    if (hasDepositableBalance) {
         if (!isFirmwareSupported('deposit')) {
             showFirmwareUpdateAlert();
 
