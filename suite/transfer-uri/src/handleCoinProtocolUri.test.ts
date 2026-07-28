@@ -1,4 +1,4 @@
-import { type CoinProtocol, handleCoinProtocolUri } from '../handleCoinProtocolUri';
+import { type CoinProtocol, handleCoinProtocolUri } from './handleCoinProtocolUri';
 
 const setup = () => {
     const dispatch = jest.fn();

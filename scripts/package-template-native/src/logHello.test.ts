@@ -1,4 +1,4 @@
-import { logHello } from '../logHello';
+import { logHello } from './logHello';
 
 describe('hello logger', () => {
     it('logger returns true', () => {

@@ -4,7 +4,7 @@ import { type BaseCurrencyOption } from '@suite-common/wallet-types';
 import {
     mapCurrenciesToCurrencyPickerOptions,
     mapCurrencyToCurrencyPickerOption,
-} from '../currencyPickerMapper';
+} from './currencyPickerMapper';
 
 describe('currencyPickerMapper', () => {
     describe('mapCurrencyToCurrencyPickerOption', () => {
