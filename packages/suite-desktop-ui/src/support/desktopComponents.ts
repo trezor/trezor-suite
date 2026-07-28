@@ -47,6 +47,15 @@ import { TradingSellForm } from 'src/views/wallet/trading/sell/TradingSellForm';
 import { TradingTransactions } from 'src/views/wallet/trading/transactions/TradingTransactions';
 import { Transactions } from 'src/views/wallet/transactions/Transactions';
 
+/*
+ Note 1: Currently, this list contains the same components as webComponents.ts, but there could be Desktop-specific
+ pages to avoid bundling Desktop code into @trezor/suite, which ends up in Web too.
+
+ Note 2: Unlike Web, we don't use code-splitting with dynamic JS bundle loading – on Desktop it'd be useless.
+ There's an idea that on weak CPU, parsing & interpreting the JS bundle could be a limiting factor (code-splitting could help).
+ But it was tested that this is negligible time. On weak CPU, code execution is the limiting factor (unaffected by code-splitting).
+*/
+
 export const desktopComponents: Record<PageName, ComponentType> = {
     'suite-index': Dashboard,
     'suite-earn': Earn,
