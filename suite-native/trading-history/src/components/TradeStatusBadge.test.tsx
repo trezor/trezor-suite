@@ -3,8 +3,8 @@ import { type BadgeIntent } from '@suite-native/atoms';
 import { getTranslation } from '@suite-native/intl';
 import { getBuyTrade, getExchangeTrade, getSellTrade } from '@suite-native/trading-fixtures';
 
-import { renderWithTradingHistoryProvider } from '../../__tests__/tradingHistoryTestUtils';
-import { TradeStatusBadge, getBadgeIconName, getBadgeVariant } from '../TradeStatusBadge';
+import { TradeStatusBadge, getBadgeIconName, getBadgeVariant } from './TradeStatusBadge';
+import { renderWithTradingHistoryProvider } from '../__tests__/tradingHistoryTestUtils';
 
 describe('TradeStatusBadge', () => {
     it('should render nothing when status is undefined', () => {

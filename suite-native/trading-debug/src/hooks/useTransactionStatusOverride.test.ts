@@ -3,11 +3,11 @@ import { act } from 'react';
 import type { TransactionStatus } from '@suite-common/trading';
 import { renderHook } from '@suite-native/test-utils';
 
-import { useTransactionStatusOverride } from '../useTransactionStatusOverride';
+import { useTransactionStatusOverride } from './useTransactionStatusOverride';
 
 let mockIsDebugMode: boolean;
 
-jest.mock('../useTradingDebugModeFlag', () => ({
+jest.mock('./useTradingDebugModeFlag', () => ({
     useTradingDebugModeFlag: () => mockIsDebugMode,
 }));
 

@@ -9,7 +9,7 @@ import {
     getInitializedTradingState,
 } from '@suite-native/trading-fixtures';
 
-import { TradeDetailProviderCard } from '../TradeDetailProviderCard';
+import { TradeDetailProviderCard } from './TradeDetailProviderCard';
 
 const statusUrl = 'https://checkout.mercuryo.io/trade-history';
 

@@ -1,11 +1,11 @@
 import { Text } from '@suite-native/atoms';
 import { renderWithBasicProvider } from '@suite-native/test-utils';
 
-import { DebugModeView } from '../DebugModeView';
+import { DebugModeView } from './DebugModeView';
 
 let mockDebugMode: boolean;
 
-jest.mock('../../hooks/useTradingDebugModeFlag', () => ({
+jest.mock('../hooks/useTradingDebugModeFlag', () => ({
     useTradingDebugModeFlag: () => mockDebugMode,
 }));
 

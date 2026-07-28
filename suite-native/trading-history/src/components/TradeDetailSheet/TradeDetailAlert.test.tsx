@@ -9,7 +9,7 @@ import {
 } from '@suite-native/trading-fixtures';
 import { type TradeStatusStep } from '@suite-native/trading-quote-utils';
 
-import { TradeDetailAlert } from '../TradeDetailAlert';
+import { TradeDetailAlert } from './TradeDetailAlert';
 
 const mockOpenBrowser = jest.fn();
 

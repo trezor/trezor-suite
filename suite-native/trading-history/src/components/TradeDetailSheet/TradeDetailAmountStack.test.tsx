@@ -1,7 +1,7 @@
 import { renderWithBasicProvider } from '@suite-native/test-utils';
 import { btcAsset } from '@suite-native/trading-fixtures';
 
-import { TradeDetailAmountStack } from '../TradeDetailAmountStack';
+import { TradeDetailAmountStack } from './TradeDetailAmountStack';
 
 describe('TradeDetailAmountStack', () => {
     it('should render fiat amount without crypto icon and fiat badge', () => {

@@ -2,12 +2,12 @@ import { getTranslation } from '@suite-native/intl';
 import { fireEvent } from '@suite-native/test-utils-store';
 import { accounts, getBuyTrade } from '@suite-native/trading-fixtures';
 
+import { TradingHistory } from './TradingHistory';
 import {
     type PreloadedStatePartial,
     type TradingTestPreloadedState,
     renderWithTradingHistoryProvider,
-} from '../../__tests__/tradingHistoryTestUtils';
-import { TradingHistory } from '../TradingHistory';
+} from '../__tests__/tradingHistoryTestUtils';
 
 const mockShowSheet = jest.fn();
 
