@@ -14,7 +14,7 @@
         {
             "path": "../../suite-common/wallet-config"
         },
-        { "path": "../router-config" },
+        { "path": "../router" },
         {
             "path": "../../packages/analytics-uploader"
         },

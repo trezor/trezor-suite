@@ -5,8 +5,10 @@ import {
     type KeysOfUnion,
 } from '@trezor/type-utils';
 
-type RouteKeys = KeysOfUnion<ArrayElement<typeof routes>>;
+export type Routes = typeof routes;
 
-export type Route = ArrayElement<ConstWithOptionalFields<typeof routes, RouteKeys>>;
+type RouteKeys = KeysOfUnion<ArrayElement<Routes>>;
+
+export type Route = ArrayElement<ConstWithOptionalFields<Routes, RouteKeys>>;
 
 export type PageName = Exclude<Route, { isForegroundApp: true } | { isNestedRoute: true }>['name'];

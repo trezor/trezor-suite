@@ -14595,7 +14595,7 @@ __metadata:
     "@suite-common/metadata-types": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
-    "@suite/router-config": "workspace:*"
+    "@suite/router": "workspace:*"
     "@trezor/analytics-uploader": "workspace:*"
     "@trezor/device-utils": "workspace:*"
   languageName: unknown
