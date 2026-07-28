@@ -29,9 +29,13 @@ export type ConnectPopupMessage =
     | {
           type: typeof POPUP.HANDSHAKE;
           id: string;
-          payload: { manifest: ManifestPartial };
-          version: string;
-          requestedPermissions?: PermissionRequest[];
+          // Same shape as the wire message from connect-web's Popup, so both links can
+          // forward it verbatim instead of remapping.
+          payload: {
+              manifest: ManifestPartial;
+              version: string;
+              requestedPermissions?: PermissionRequest[];
+          };
       }
     | { type: typeof CORE_CALL; id: string; payload: { method: string; [key: string]: unknown } }
     | { type: typeof POPUP.CLOSED; payload?: { error?: string; callId?: string } | null }
@@ -92,9 +96,9 @@ export const useConnectPopup = (
             } else if (event.type === POPUP.HANDSHAKE) {
                 manifest.current = {
                     ...event.payload.manifest,
-                    npmVersion: event.version,
+                    npmVersion: event.payload.version,
                 };
-                requestedPermissions.current = event.requestedPermissions;
+                requestedPermissions.current = event.payload.requestedPermissions;
                 setPendingHandshake(event.id);
             } else if (event.type === CORE_CALL) {
                 if (!manifest.current) {

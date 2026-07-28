@@ -137,17 +137,8 @@ export const useConnectPopupWeb = () => {
                 data.type === CORE_CALL_CANCEL ||
                 data.type === CORE_CALL
             ) {
-                const normalized: ConnectPopupMessage =
-                    data.type === POPUP.HANDSHAKE
-                        ? {
-                              type: data.type,
-                              id: data.id,
-                              payload: { manifest: data.payload?.manifest },
-                              version: data.payload?.version,
-                              requestedPermissions: data.payload?.requestedPermissions,
-                          }
-                        : data;
-                setIncomingMessages(prev => [...prev, normalized]);
+                const message: ConnectPopupMessage = data;
+                setIncomingMessages(prev => [...prev, message]);
             }
         };
 
