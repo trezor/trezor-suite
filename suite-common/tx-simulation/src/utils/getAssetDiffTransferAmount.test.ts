@@ -1,4 +1,4 @@
-import { getAssetDiffTransferAmount } from '../getAssetDiffTransferAmount';
+import { getAssetDiffTransferAmount } from './getAssetDiffTransferAmount';
 
 describe('getAssetDiffTransferAmount', () => {
     it('converts a raw subunit value using the asset decimals', () => {
