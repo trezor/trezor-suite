@@ -8,7 +8,7 @@ import {
 } from '@suite-native/test-utils-store';
 import { AmountUnit } from '@trezor/protobuf/src/definitions';
 
-import { useFormattedGraphHeaderValues } from '../useFormattedGraphHeaderValues';
+import { useFormattedGraphHeaderValues } from './useFormattedGraphHeaderValues';
 
 let store: TestStore;
 

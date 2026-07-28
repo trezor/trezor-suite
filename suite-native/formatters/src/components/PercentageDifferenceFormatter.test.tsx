@@ -2,7 +2,7 @@ import { IntlProvider } from 'react-intl';
 
 import { renderWithBasicProvider } from '@suite-native/test-utils';
 
-import { PercentageDifferenceFormatter } from '../PercentageDifferenceFormatter';
+import { PercentageDifferenceFormatter } from './PercentageDifferenceFormatter';
 
 describe('PercentageDifferenceFormatter', () => {
     it('shows a positive sign and percentage when price increases', () => {

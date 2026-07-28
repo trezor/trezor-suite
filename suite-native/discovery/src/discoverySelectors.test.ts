@@ -15,7 +15,7 @@ import {
 import {
     selectDiscoveryNetworkGroups,
     selectDiscoverySupportedNetworks,
-} from '../discoverySelectors';
+} from './discoverySelectors';
 
 // Mock the dependencies
 jest.mock('@suite-native/config', () => ({

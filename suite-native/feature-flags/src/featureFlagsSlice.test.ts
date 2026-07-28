@@ -10,7 +10,7 @@ describe('featureFlagsSlice', () => {
     describe('initial state', () => {
         it('should have correct initial state on iOS', () => {
             Platform.OS = 'ios';
-            const { featureFlagsReducer } = require('../featureFlagsSlice');
+            const { featureFlagsReducer } = require('./featureFlagsSlice');
 
             const initialState = featureFlagsReducer(undefined, { type: 'undefined_action' });
 
@@ -29,7 +29,7 @@ describe('featureFlagsSlice', () => {
 
         it('should have correct initial state on android', () => {
             Platform.OS = 'android';
-            const { featureFlagsReducer } = require('../featureFlagsSlice');
+            const { featureFlagsReducer } = require('./featureFlagsSlice');
 
             const initialState = featureFlagsReducer(undefined, { type: 'undefined_action' });
 
@@ -49,7 +49,7 @@ describe('featureFlagsSlice', () => {
 
     describe('toggleFeatureFlag', () => {
         it('should toggle feature flag', () => {
-            const { featureFlagsReducer, toggleFeatureFlag } = require('../featureFlagsSlice');
+            const { featureFlagsReducer, toggleFeatureFlag } = require('./featureFlagsSlice');
 
             const state = featureFlagsReducer(
                 undefined,
