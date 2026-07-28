@@ -1,11 +1,11 @@
 import { getTranslation } from '@suite-native/intl';
 import { fireEvent, renderWithBasicProvider } from '@suite-native/test-utils';
 
-import { SkipButton, type SkipButtonProps } from '../SkipButton';
+import { SkipButton, type SkipButtonProps } from './SkipButton';
 
 const mockAnalyticsReport = jest.fn();
 
-jest.mock('../../hooks/useCountrySelectionAnalyticsReport', () => ({
+jest.mock('../hooks/useCountrySelectionAnalyticsReport', () => ({
     useCountrySelectionAnalyticsReport: () => mockAnalyticsReport,
 }));
 

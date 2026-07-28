@@ -16,13 +16,13 @@ import {
 } from '@suite-native/test-utils-store';
 import { residenceReducer } from '@suite-native/trading-state';
 
-import { useLocationForm } from '../../../hooks/useLocationForm';
-import { type TradingLocationFormValues } from '../../../types/tradingLocationForm';
-import { locationFormValidationSchema } from '../../../utils/locationFormValidationSchema';
 import {
     CountryOfResidencePicker,
     type CountryOfResidencePickerProps,
-} from '../CountryOfResidencePicker';
+} from './CountryOfResidencePicker';
+import { useLocationForm } from '../../hooks/useLocationForm';
+import { type TradingLocationFormValues } from '../../types/tradingLocationForm';
+import { locationFormValidationSchema } from '../../utils/locationFormValidationSchema';
 
 let mockUseCountryFilteredData: jest.Mock;
 

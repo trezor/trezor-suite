@@ -2,7 +2,7 @@ import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { act, renderHookWithBasicProvider } from '@suite-native/test-utils';
 
-import { useCountrySelectionAnalyticsReport } from '../useCountrySelectionAnalyticsReport';
+import { useCountrySelectionAnalyticsReport } from './useCountrySelectionAnalyticsReport';
 
 describe('useCountrySelectionAnalyticsReport', () => {
     const reportMock = jest.fn();

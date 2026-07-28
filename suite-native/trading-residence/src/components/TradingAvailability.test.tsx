@@ -1,11 +1,11 @@
 import { getTranslation } from '@suite-native/intl';
 import { renderWithBasicProvider } from '@suite-native/test-utils';
 
-import { TradingAvailability } from '../TradingAvailability';
+import { TradingAvailability } from './TradingAvailability';
 
 let mockIsTradingAvailableForForm: boolean;
 
-jest.mock('../../hooks/useIsTradingAvailableForForm', () => ({
+jest.mock('../hooks/useIsTradingAvailableForForm', () => ({
     useIsTradingAvailableForForm: () => mockIsTradingAvailableForForm,
 }));
 

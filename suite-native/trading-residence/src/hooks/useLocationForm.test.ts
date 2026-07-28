@@ -12,7 +12,7 @@ import {
 } from '@suite-native/test-utils-store';
 import { residenceActions, residenceReducer } from '@suite-native/trading-state';
 
-import { useLocationForm } from '../useLocationForm';
+import { useLocationForm } from './useLocationForm';
 
 describe('useLocationForm', () => {
     let store: TestStore;

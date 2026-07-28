@@ -1,8 +1,8 @@
 import { type TradingCountryCode } from '@suite-common/trading';
 import { renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 
-import { LocationForm } from '../../components/LocationForm';
-import { useIsTradingAvailableForForm } from '../useIsTradingAvailableForForm';
+import { useIsTradingAvailableForForm } from './useIsTradingAvailableForForm';
+import { LocationForm } from '../components/LocationForm';
 
 describe('useIsTradingAvailableForForm', () => {
     const renderUseIsTradingAvailableForForm = (preloadedState: Record<string, unknown>) =>

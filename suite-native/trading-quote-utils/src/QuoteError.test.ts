@@ -5,7 +5,7 @@ import {
     mercuryoApplePayBuyQuote,
 } from '@suite-native/trading-fixtures';
 
-import { QuoteError } from '../QuoteError';
+import { QuoteError } from './QuoteError';
 
 describe('QuoteError', () => {
     it('is an instance of Error', () => {

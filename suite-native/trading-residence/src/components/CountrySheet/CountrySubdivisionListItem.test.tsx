@@ -5,7 +5,7 @@ import { userEvent } from '@suite-native/test-utils-store';
 import {
     CountrySubdivisionListItem,
     type CountrySubdivisionListItemProps,
-} from '../CountrySubdivisionListItem';
+} from './CountrySubdivisionListItem';
 
 describe('CountrySubdivisionListItem', () => {
     const subdivisionData = {

@@ -3,7 +3,7 @@ import type { ExchangeKYCType } from 'invity-api';
 import { Text } from '@suite-native/atoms';
 import { renderWithBasicProvider } from '@suite-native/test-utils';
 
-import { KycPolicyWarning, hasKycPolicyWarning } from '../KycPolicyWarning';
+import { KycPolicyWarning, hasKycPolicyWarning } from './KycPolicyWarning';
 
 describe('KycPolicyWarning', () => {
     it.each([

@@ -5,10 +5,10 @@ import { getTranslation } from '@suite-native/intl';
 import { renderHookWithBasicProvider, renderWithBasicProvider } from '@suite-native/test-utils';
 import { screen, userEvent } from '@suite-native/test-utils-store';
 
-import { type TradingLocationFormValues } from '../../../types/tradingLocationForm';
-import { locationFormValidationSchema } from '../../../utils/locationFormValidationSchema';
-import { CountrySubdivisionPicker } from '../CountrySubdivisionPicker';
-import { CountrySubdivisionPickerControlsContext } from '../CountrySubdivisionPickerControlsContext';
+import { CountrySubdivisionPicker } from './CountrySubdivisionPicker';
+import { CountrySubdivisionPickerControlsContext } from './CountrySubdivisionPickerControlsContext';
+import { type TradingLocationFormValues } from '../../types/tradingLocationForm';
+import { locationFormValidationSchema } from '../../utils/locationFormValidationSchema';
 
 const usaCountry = {
     value: 'US',

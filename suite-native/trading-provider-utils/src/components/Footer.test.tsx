@@ -5,7 +5,7 @@ import { renderWithStoreProvider, userEvent } from '@suite-native/test-utils-sto
 import { exchangeCexdirect, getWalletState } from '@suite-native/trading-fixtures';
 import type { TradingState } from '@suite-native/trading-types';
 
-import { Footer } from '../Footer';
+import { Footer } from './Footer';
 
 const mockOpenModal = jest.fn();
 const mockCloseModal = jest.fn();

@@ -15,8 +15,8 @@ import {
     selectWasTradingResidenceOnboardingVisited,
 } from '@suite-native/trading-state';
 
-import { LocationForm } from '../LocationForm';
-import { OnboardingButtons, type OnboardingButtonsProps } from '../OnboardingButtons';
+import { LocationForm } from './LocationForm';
+import { OnboardingButtons, type OnboardingButtonsProps } from './OnboardingButtons';
 
 describe('OnboardingButtons', () => {
     let store: TestStore;

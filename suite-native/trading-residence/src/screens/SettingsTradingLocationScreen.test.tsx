@@ -16,7 +16,7 @@ import {
 } from '@suite-native/test-utils-store';
 import { residenceReducer } from '@suite-native/trading-state';
 
-import { SettingsTradingLocationScreen } from '../SettingsTradingLocationScreen';
+import { SettingsTradingLocationScreen } from './SettingsTradingLocationScreen';
 
 const mockNavigationGoBack = jest.fn();
 const reportMock = jest.fn();

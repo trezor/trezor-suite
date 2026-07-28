@@ -19,7 +19,7 @@ import { residenceReducer } from '@suite-native/trading-state';
 import {
     TradingLocationModalScreen,
     type TradingLocationModalScreenProps,
-} from '../TradingLocationModalScreen';
+} from './TradingLocationModalScreen';
 
 const mockNavigationDispatch = jest.fn();
 const reportMock = jest.fn();

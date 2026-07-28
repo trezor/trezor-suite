@@ -6,7 +6,7 @@ import {
     HEADER_HEIGHT,
     HORIZONTAL_MARGIN,
     useAvailableScreenSquare,
-} from '../useAvailableScreenSquare';
+} from './useAvailableScreenSquare';
 
 // useWindowDimensions returns { width: 750, height: 1334 } by default in jest-expo
 const MOCKED_SCREEN_HEIGHT = 1334;

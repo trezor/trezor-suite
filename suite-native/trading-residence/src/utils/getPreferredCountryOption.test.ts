@@ -1,6 +1,6 @@
 import Localization, { type Locale } from 'expo-localization';
 
-import { getPreferredCountryOption } from '../getPreferredCountryOption';
+import { getPreferredCountryOption } from './getPreferredCountryOption';
 
 describe('getPreferredCountryOption()', () => {
     it('should use value from expo-localization when country is not set in store', () => {

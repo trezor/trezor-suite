@@ -7,7 +7,7 @@ import { getTranslation } from '@suite-native/intl';
 import { renderWithBasicProvider, userEvent } from '@suite-native/test-utils';
 import { TREZOR_SUITE_TOS_URL, TREZOR_SUPPORT_UNDERSTANDING_FEES } from '@trezor/urls';
 
-import { HowTradingWorksSheet } from '../HowTradingWorksSheet';
+import { HowTradingWorksSheet } from './HowTradingWorksSheet';
 
 const mockCloseModal = jest.fn();
 

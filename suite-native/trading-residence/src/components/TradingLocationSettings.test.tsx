@@ -15,7 +15,7 @@ import { residenceReducer } from '@suite-native/trading-state';
 import {
     TradingLocationSettings,
     type TradingLocationSettingsProps,
-} from '../TradingLocationSettings';
+} from './TradingLocationSettings';
 
 describe('TradingLocationSettings', () => {
     let store: TestStore;

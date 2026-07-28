@@ -19,15 +19,15 @@ import {
     selectTradingResidenceCountrySubdivision,
 } from '@suite-native/trading-state';
 
-import { type TradingLocationFormValues } from '../../types/tradingLocationForm';
-import { ConfirmLocationButton, type ConfirmLocationButtonProps } from '../ConfirmLocationButton';
-import { CountrySubdivisionPicker } from '../CountrySheet/CountrySubdivisionPicker';
-import { CountrySubdivisionPickerControlsContext } from '../CountrySheet/CountrySubdivisionPickerControlsContext';
-import { LocationForm } from '../LocationForm';
+import { ConfirmLocationButton, type ConfirmLocationButtonProps } from './ConfirmLocationButton';
+import { type TradingLocationFormValues } from '../types/tradingLocationForm';
+import { CountrySubdivisionPicker } from './CountrySheet/CountrySubdivisionPicker';
+import { CountrySubdivisionPickerControlsContext } from './CountrySheet/CountrySubdivisionPickerControlsContext';
+import { LocationForm } from './LocationForm';
 
 const mockAnalyticsReport = jest.fn();
 
-jest.mock('../../hooks/useCountrySelectionAnalyticsReport', () => ({
+jest.mock('../hooks/useCountrySelectionAnalyticsReport', () => ({
     useCountrySelectionAnalyticsReport: () => mockAnalyticsReport,
 }));
 
