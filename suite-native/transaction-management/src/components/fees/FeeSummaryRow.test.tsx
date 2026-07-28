@@ -1,8 +1,8 @@
 import { getTranslation } from '@suite-native/intl';
 import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 
-import { getWalletState } from '../../../__fixtures__/walletState';
-import { FeeSummaryRow, type FeeSummaryRowProps } from '../FeeSummaryRow';
+import { FeeSummaryRow, type FeeSummaryRowProps } from './FeeSummaryRow';
+import { getWalletState } from '../../__fixtures__/walletState';
 
 const defaultProps: FeeSummaryRowProps = {
     fee: '1000',

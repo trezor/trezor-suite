@@ -2,18 +2,14 @@ import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { getTranslation } from '@suite-native/intl';
 import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 
-import {
-    ETH_ACCOUNT_KEY,
-    SOL_ACCOUNT_KEY,
-    getWalletState,
-} from '../../../__fixtures__/walletState';
-import { type ReviewSummaryOutput, type StatefulReviewOutput } from '../../../types';
-import { ReviewOutputItemList, type ReviewOutputItemListProps } from '../ReviewOutputItemList';
+import { ReviewOutputItemList, type ReviewOutputItemListProps } from './ReviewOutputItemList';
+import { ETH_ACCOUNT_KEY, SOL_ACCOUNT_KEY, getWalletState } from '../../__fixtures__/walletState';
+import { type ReviewSummaryOutput, type StatefulReviewOutput } from '../../types';
 
 let mockSelectTransactionReviewOutputsFromDraftReturnValue: StatefulReviewOutput[] | null;
 let mockSelectIsTransactionAlreadySignedValue: boolean;
 
-jest.mock('../../../selectors', () => {
+jest.mock('../../selectors', () => {
     const selectReviewSummaryOutputReturnValue = {
         state: 'active',
         totalSpent: '1200000000000000000', // 1.2 ETH in wei

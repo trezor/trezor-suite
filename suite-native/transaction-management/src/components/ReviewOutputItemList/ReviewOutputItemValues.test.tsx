@@ -2,11 +2,8 @@ import { type TokenAddress } from '@suite-common/wallet-types';
 import { getTranslation } from '@suite-native/intl';
 import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 
-import { ETH_ACCOUNT_KEY, getWalletState } from '../../../__fixtures__/walletState';
-import {
-    ReviewOutputItemValues,
-    type ReviewOutputItemValuesProps,
-} from '../ReviewOutputItemValues';
+import { ReviewOutputItemValues, type ReviewOutputItemValuesProps } from './ReviewOutputItemValues';
+import { ETH_ACCOUNT_KEY, getWalletState } from '../../__fixtures__/walletState';
 
 const oneUsdc = '1000000'; // 1 USDC in smallest unit
 

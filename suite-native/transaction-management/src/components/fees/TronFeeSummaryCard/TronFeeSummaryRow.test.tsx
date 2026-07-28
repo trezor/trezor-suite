@@ -1,8 +1,8 @@
 import { getTranslation } from '@suite-native/intl';
 import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 
-import { getWalletState } from '../../../../__fixtures__/walletState';
-import { TronFeeSummaryRow, type TronFeeSummaryRowProps } from '../TronFeeSummaryRow';
+import { TronFeeSummaryRow, type TronFeeSummaryRowProps } from './TronFeeSummaryRow';
+import { getWalletState } from '../../../__fixtures__/walletState';
 
 const defaultProps: TronFeeSummaryRowProps = {
     symbol: 'trx',

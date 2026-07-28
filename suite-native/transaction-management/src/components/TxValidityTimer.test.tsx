@@ -1,7 +1,7 @@
 import { getTranslation } from '@suite-native/intl';
 import { fireEvent, renderWithBasicProvider } from '@suite-native/test-utils';
 
-import { TxValidityTimer } from '../TxValidityTimer';
+import { TxValidityTimer } from './TxValidityTimer';
 
 const tryAgainLabel = getTranslation('generic.buttons.tryAgain');
 const confirmingLabel = getTranslation('transactionManagement.txValidityTimer.confirming');

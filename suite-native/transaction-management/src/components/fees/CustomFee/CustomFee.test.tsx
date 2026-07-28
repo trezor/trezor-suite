@@ -9,18 +9,18 @@ import {
     userEvent,
 } from '@suite-native/test-utils-store';
 
+import { CustomFee } from './CustomFee';
 import {
     BTC_ACCOUNT_KEY,
     ETH_ACCOUNT_KEY,
     getWalletState,
-} from '../../../../__fixtures__/walletState';
-import { type FeesFormType } from '../../../../feesFormSchema';
-import { type CustomFeeParams, useFeesForm } from '../../../../hooks';
-import { useCustomFee } from '../../../../hooks/fees/useCustomFee';
-import { CustomFee } from '../CustomFee';
+} from '../../../__fixtures__/walletState';
+import { type FeesFormType } from '../../../feesFormSchema';
+import { type CustomFeeParams, useFeesForm } from '../../../hooks';
+import { useCustomFee } from '../../../hooks/fees/useCustomFee';
 
 // Mock the useCustomFee hook
-jest.mock('../../../../hooks/fees/useCustomFee', () => ({
+jest.mock('../../../hooks/fees/useCustomFee', () => ({
     useCustomFee: jest.fn(),
 }));
 

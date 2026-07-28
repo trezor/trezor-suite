@@ -3,7 +3,7 @@ import { Text } from '@suite-native/atoms';
 import { getTranslation } from '@suite-native/intl';
 import { renderWithBasicProvider } from '@suite-native/test-utils';
 
-import { FeeLabelTranslation } from '../FeeLabelTranslation';
+import { FeeLabelTranslation } from './FeeLabelTranslation';
 
 describe('FeeLabelTranslation', () => {
     const renderFeeLabelTranslation = (networkType: NetworkType) =>

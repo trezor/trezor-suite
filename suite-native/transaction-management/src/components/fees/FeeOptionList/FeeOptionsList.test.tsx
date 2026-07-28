@@ -14,10 +14,10 @@ import {
     userEvent,
 } from '@suite-native/test-utils-store';
 
-import { createFeeLevel, createFeeLevels } from '../../../../__fixtures__/feeLevels';
-import { ETH_ACCOUNT_KEY, getWalletState } from '../../../../__fixtures__/walletState';
-import { useFeesForm } from '../../../../hooks/fees/useFeesForm';
-import { FeeOptionsList, type FeeOptionsListProps } from '../FeeOptionsList';
+import { FeeOptionsList, type FeeOptionsListProps } from './FeeOptionsList';
+import { createFeeLevel, createFeeLevels } from '../../../__fixtures__/feeLevels';
+import { ETH_ACCOUNT_KEY, getWalletState } from '../../../__fixtures__/walletState';
+import { useFeesForm } from '../../../hooks/fees/useFeesForm';
 
 // Mock the fee-related selectors
 jest.mock('@suite-common/wallet-core', () => ({

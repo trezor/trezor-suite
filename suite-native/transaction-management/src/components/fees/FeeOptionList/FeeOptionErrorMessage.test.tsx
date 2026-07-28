@@ -1,7 +1,7 @@
 import { getTranslation } from '@suite-native/intl';
 import { renderWithBasicProvider } from '@suite-native/test-utils';
 
-import { FeeOptionErrorMessage } from '../FeeOptionErrorMessage';
+import { FeeOptionErrorMessage } from './FeeOptionErrorMessage';
 
 describe('FeeOptionErrorMessage', () => {
     const renderFeeOptionErrorMessage = (isVisible: boolean) =>
