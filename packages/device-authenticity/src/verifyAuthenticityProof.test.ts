@@ -18,7 +18,7 @@ import {
 import {
     matchRootPubKeyToCertificateFixtures,
     verifyAuthenticityProofFixtures,
-} from '../mocks/mockVerifyAuthenticityProof';
+} from './__fixtures__/verifyAuthenticityProof';
 
 describe(verifyAuthenticityProof.name, () => {
     verifyAuthenticityProofFixtures.forEach(({ description, params, result }) => {
