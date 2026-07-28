@@ -1,7 +1,7 @@
 import { featureFlagsInitialState } from '@suite-native/feature-flags';
 import { renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 
-import { useTradingDebugModeFlag } from '../useTradingDebugModeFlag';
+import { useTradingDebugModeFlag } from './useTradingDebugModeFlag';
 
 describe('useTradingDebugModeFlag', () => {
     const renderUseDebugModeFlag = (preloadedState = {}) =>

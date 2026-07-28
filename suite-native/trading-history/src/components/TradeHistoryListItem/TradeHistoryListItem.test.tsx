@@ -2,8 +2,8 @@ import { type TradingTransaction } from '@suite-common/trading';
 import { getTranslation } from '@suite-native/intl';
 import { getBuyTrade } from '@suite-native/trading-fixtures';
 
-import { renderWithTradingHistoryProvider } from '../../../__tests__/tradingHistoryTestUtils';
-import { TradeHistoryListItem } from '../TradeHistoryListItem';
+import { TradeHistoryListItem } from './TradeHistoryListItem';
+import { renderWithTradingHistoryProvider } from '../../__tests__/tradingHistoryTestUtils';
 
 describe('TradeHistoryListItem', () => {
     const renderTradeHistoryListItem = (transaction: TradingTransaction) =>

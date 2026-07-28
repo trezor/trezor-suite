@@ -3,7 +3,7 @@ import { getTranslation } from '@suite-native/intl';
 import { fireEvent, renderWithStoreProvider } from '@suite-native/test-utils-store';
 import { getInitializedTradingState, getSellTrade } from '@suite-native/trading-fixtures';
 
-import { TradeDetailFooter } from '../TradeDetailFooter';
+import { TradeDetailFooter } from './TradeDetailFooter';
 
 const mockCopyToClipboard = jest.fn();
 

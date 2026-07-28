@@ -11,7 +11,7 @@ import {
 import { tradingInitialState } from '@suite-native/trading-consts';
 import type { TradingState } from '@suite-native/trading-types';
 
-import { TradingEnvironmentWarning } from '../TradingEnvironmentWarning';
+import { TradingEnvironmentWarning } from './TradingEnvironmentWarning';
 
 describe('TradingEnvironmentWarning', () => {
     const reducer = {

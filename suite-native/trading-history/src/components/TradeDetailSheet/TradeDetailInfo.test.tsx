@@ -7,7 +7,7 @@ import {
     getInitializedTradingState,
 } from '@suite-native/trading-fixtures';
 
-import { TradeDetailInfo } from '../TradeDetailInfo';
+import { TradeDetailInfo } from './TradeDetailInfo';
 
 const getPreloadedState = (trades: TradingTransaction[]) => ({
     wallet: {
