@@ -13,7 +13,7 @@ import {
     selectIsDeviceOrUiLocked,
     selectIsRouterLocked,
     selectIsRouterOrUiLocked,
-} from '../src/locksSlice';
+} from './locksSlice';
 
 const getStore = (overrides: Partial<typeof locksInitialState> = {}) =>
     configureMockStore({

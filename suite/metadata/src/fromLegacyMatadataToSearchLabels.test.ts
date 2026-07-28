@@ -3,7 +3,7 @@ import { type AccountLabels } from '@suite-common/metadata-types';
 import {
     fromLegacyMetadataToSearchAccountLabels,
     fromLegacyMetadataToSearchOutputLabels,
-} from '../fromLegacyMetadataToSearchLabels';
+} from './fromLegacyMetadataToSearchLabels';
 
 describe('fromLegacyMetadataToSearchLabels', () => {
     const accountLabelsFixture: AccountLabels = {

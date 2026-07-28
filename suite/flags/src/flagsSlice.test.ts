@@ -3,7 +3,7 @@ import { configureStore } from '@reduxjs/toolkit';
 import { extraDependenciesCommonMock } from '@suite-common/test-utils';
 import { DEVICE } from '@trezor/connect';
 
-import { flagsInitialState, prepareFlagsReducer, selectFlags, setFlag } from '../flagsSlice';
+import { flagsInitialState, prepareFlagsReducer, selectFlags, setFlag } from './flagsSlice';
 
 const flagsReducer = prepareFlagsReducer(extraDependenciesCommonMock);
 

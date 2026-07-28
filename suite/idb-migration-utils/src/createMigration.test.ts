@@ -1,4 +1,4 @@
-import { createMigration } from '../createMigration';
+import { createMigration } from './createMigration';
 
 describe('createMigration', () => {
     it('returns correct threshold', () => {

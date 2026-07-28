@@ -10,7 +10,7 @@ import {
     deriveFilename,
     deriveMetadataKey,
     encrypt,
-} from '../metadataUtils';
+} from './metadataUtils';
 
 const filename = '828652b66f2e6f919fbb7fe4c9609d4891ed531c6fac4c28441e53ebe577ac85';
 // m/49'/0'/0' first segwit account

@@ -20,7 +20,7 @@ import {
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { type StaticSessionId, type UnavailableCapabilities } from '@trezor/connect';
 
-import { selectIsLabelActionEnabled } from '../selectIsLabelActionEnabled';
+import { selectIsLabelActionEnabled } from './selectIsLabelActionEnabled';
 
 /**
  * It was really hard to mock the state for metadata. So I statically mocked
