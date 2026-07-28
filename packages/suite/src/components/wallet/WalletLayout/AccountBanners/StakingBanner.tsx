@@ -3,7 +3,7 @@ import { useMemo } from 'react';
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { selectFlags, setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
-import { goto } from '@suite/router';
+import { goto, selectRouter } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { useFormatters } from '@suite-common/formatters';
 import { getNetworkAdjustedStakingBalance } from '@suite-common/staking';
@@ -25,6 +25,9 @@ import { formatApyValue } from 'src/components/earn/utils/earnApyUtils';
 import { useStakingRate } from 'src/hooks/earn/useStakingRate';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
+import { EarnEthBanner } from './EarnEthBanner';
+import { useEarnEthBanner } from './hooks/useEarnEthBanner';
+
 type StakingBannerProps = {
     account: Account;
 };
@@ -39,9 +42,10 @@ export const StakingBanner = ({ account }: StakingBannerProps) => {
         stakeCardanoBannerClosed,
         stakeTronBannerClosed,
     } = useSelector(selectFlags);
-    const { route } = useSelector(state => state.router);
+    const { route } = useSelector(selectRouter);
     const { rate } = useStakingRate({ symbol: account.symbol, accountKey: account.key });
     const isStakingActive = useSelector(state => selectAccountIsStakingActive(state, account.key));
+    const earnEthBanner = useEarnEthBanner(account);
 
     const displaySymbol = getDisplaySymbol(account.symbol);
     const stakingData = getStakingDataForNetwork(account);
@@ -135,13 +139,17 @@ export const StakingBanner = ({ account }: StakingBannerProps) => {
 
     const stakingLimits = getStakingLimitsByNetworkSymbol(account.symbol);
 
-    if (
-        route?.name !== 'wallet-index' ||
-        isStakingBannerClosed(account.networkType) ||
-        !account ||
-        isStakingActive ||
-        !stakingLimits
-    ) {
+    if (route?.name !== 'wallet-index' || !account || earnEthBanner.isResolving) {
+        return null;
+    }
+
+    // The earn promo has its own dismissal flag and is shown even to users who
+    // already stake or closed the staking banner before the promo existed.
+    if (earnEthBanner.hasYieldOption) {
+        return <EarnEthBanner networkSymbol={account.symbol} apy={earnEthBanner.apy} />;
+    }
+
+    if (isStakingBannerClosed(account.networkType) || isStakingActive || !stakingLimits) {
         return null;
     }
 
