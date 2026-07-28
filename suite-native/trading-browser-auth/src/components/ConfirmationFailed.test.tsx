@@ -1,7 +1,7 @@
 import { getTranslation } from '@suite-native/intl';
 import { fireEvent, renderWithBasicProvider } from '@suite-native/test-utils';
 
-import { ConfirmationFailed } from '../ConfirmationFailed';
+import { ConfirmationFailed } from './ConfirmationFailed';
 
 const mockNavigateBack = jest.fn();
 

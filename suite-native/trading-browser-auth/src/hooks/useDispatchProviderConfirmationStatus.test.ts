@@ -12,7 +12,7 @@ import {
 } from '@suite-native/test-utils-store';
 import { selectTradingProviderConfirmationStatus, tradingSlice } from '@suite-native/trading-state';
 
-import { useDispatchProviderConfirmationStatus } from '../useDispatchProviderConfirmationStatus';
+import { useDispatchProviderConfirmationStatus } from './useDispatchProviderConfirmationStatus';
 
 describe('useDispatchProviderConfirmationStatus', () => {
     let store: TestStore;

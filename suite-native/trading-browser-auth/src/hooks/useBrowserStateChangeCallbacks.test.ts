@@ -13,7 +13,7 @@ import {
 } from '@suite-native/test-utils-store';
 import { selectTradingProviderConfirmationStatus, tradingSlice } from '@suite-native/trading-state';
 
-import { useBrowserStateChangeCallbacks } from '../useBrowserStateChangeCallbacks';
+import { useBrowserStateChangeCallbacks } from './useBrowserStateChangeCallbacks';
 
 const mockReportToAnalytics = jest.fn();
 
