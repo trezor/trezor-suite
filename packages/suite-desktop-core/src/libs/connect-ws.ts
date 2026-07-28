@@ -7,6 +7,7 @@ import {
     type CoreCallMessage,
     type Manifest,
     POPUP,
+    type PermissionRequest,
     type PopupClosedMessage,
     type PopupHandshake,
 } from '@trezor/connect';
@@ -105,6 +106,7 @@ export const exposeConnectWs = ({
 
         let manifest: Manifest | undefined;
         let version: string | undefined;
+        let requestedPermissions: PermissionRequest[] | undefined;
 
         logger.info(LOG_PREFIX, `origin: ${origin}`);
 
@@ -144,6 +146,7 @@ export const exposeConnectWs = ({
                 });
                 manifest = parseManifest(message.payload.settings.manifest);
                 version = parseVersion(message.payload.settings.version);
+                requestedPermissions = message.payload.settings.requestedPermissions;
                 ws.send(JSON.stringify({ id: message.id, type: POPUP.HANDSHAKE, payload: 'ok' }));
             } else if (message.type === POPUP.CLOSED) {
                 mainWindowProxy.getInstance()?.webContents.send('connect-popup/cancel', {
@@ -242,6 +245,7 @@ export const exposeConnectWs = ({
                             email: manifest.email,
                             npmVersion: version,
                         },
+                        requestedPermissions,
                     });
 
                     // wait for response
