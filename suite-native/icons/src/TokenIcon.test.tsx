@@ -156,4 +156,59 @@ describe('TokenIcon', () => {
             expect(getByHintText(networkIconHint)).toBeTruthy();
         });
     });
+
+    describe('wrappedTokenIcon', () => {
+        const wethContract = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2' as TokenAddress;
+
+        it('renders the native icon with a network badge for a wrapped-native token when set to network', async () => {
+            const { getByHintText, getByLabelText } = renderTokenIcon({
+                symbol: 'eth',
+                contractAddress: wethContract,
+                showNetworkIcon: true,
+                wrappedTokenIcon: 'network',
+            });
+
+            expect(getByHintText(networkIconHint)).toBeTruthy();
+            await waitFor(() => {
+                expect(getByHintText(tokenIconHint)).toBeTruthy();
+                expect(getByLabelText('ETH')).toBeTruthy();
+            });
+        });
+
+        it('keeps the wrapped-native token icon by default', async () => {
+            (getAssetLogoContractAddresses as jest.Mock).mockImplementation(
+                (_symbol: string, contract: string) => Promise.resolve([contract]),
+            );
+
+            const { getByHintText, getByLabelText } = renderTokenIcon({
+                symbol: 'eth',
+                contractAddress: wethContract,
+                showNetworkIcon: true,
+            });
+
+            await waitFor(() => {
+                expect(getByLabelText(`eth:${wethContract}`)).toBeTruthy();
+                expect(JSON.stringify(getByHintText(tokenIconHint).props.source)).toContain(
+                    getTokenIconUrl(wethContract),
+                );
+            });
+        });
+
+        it('keeps the token icon for a non-wrapped token even when set to network', async () => {
+            (getAssetLogoContractAddresses as jest.Mock).mockImplementation(
+                (_symbol: string, contract: string) => Promise.resolve([contract]),
+            );
+
+            const { getByLabelText } = renderTokenIcon({
+                symbol: 'eth',
+                contractAddress: contractA,
+                showNetworkIcon: true,
+                wrappedTokenIcon: 'network',
+            });
+
+            await waitFor(() => {
+                expect(getByLabelText(`eth:${contractA}`)).toBeTruthy();
+            });
+        });
+    });
 });

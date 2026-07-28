@@ -140,6 +140,7 @@ export const EarnAccountCard = ({ item, onPress, onClaimPress }: EarnAccountCard
                         contractAddress={contractAddress}
                         size="extraSmall"
                         showNetworkIcon
+                        wrappedTokenIcon={isStablecoinYieldItem ? 'network' : 'token'}
                     />
                 </Box>
 

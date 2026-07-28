@@ -32,6 +32,7 @@ export const YieldDepositFlowScreenHeader = ({
                         contractAddress={tokenContract}
                         size="small"
                         showNetworkIcon
+                        wrappedTokenIcon="network"
                     />
                     <VStack spacing={0} flexShrink={1}>
                         <Text variant="body-md" numberOfLines={1} ellipsizeMode="tail">
