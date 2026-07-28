@@ -1,5 +1,5 @@
+import * as fixtures from './__fixtures__/utils';
 import { filterShadowedPendingTxsByNonce, filterTargets, sortTxsFromLatest } from './utils';
-import * as fixtures from '../mocks/mockUtils';
 
 describe('blockbook/utils', () => {
     describe('filterTargets', () => {

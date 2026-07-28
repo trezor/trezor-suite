@@ -4,6 +4,7 @@ import type {
     SolanaValidParsedTxWithMeta,
 } from '@trezor/network-solana/types';
 
+import { fixtures } from './__fixtures__/solana';
 import {
     type ApiTokenAccount,
     extractAccountBalanceDiff,
@@ -17,7 +18,6 @@ import {
     transformTokenInfo,
     transformTransaction,
 } from './solana';
-import { fixtures } from '../mocks/mockSolana';
 
 describe('solana/utils', () => {
     // Token Utils

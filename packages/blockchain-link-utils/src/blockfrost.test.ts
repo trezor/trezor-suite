@@ -1,3 +1,4 @@
+import fixtures from './__fixtures__/blockfrost';
 import {
     parseAsset,
     transformAccountInfo,
@@ -6,7 +7,6 @@ import {
     transformTransaction,
     transformUtxos,
 } from './blockfrost';
-import fixtures from '../mocks/mockBlockfrost';
 
 describe('blockfrost/utils', () => {
     describe('transformUtxos', () => {
