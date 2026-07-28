@@ -89,9 +89,36 @@ jobs:
         run: |
           yarn tsx ./scripts/ci/check-packages-same-deployment-type.ts '${{ env.PACKAGES }}' "${{ env.DEPLOYMENT_TYPE }}"
 
+  # CI cannot publish a package name that does not exist on npm yet, because npm requires the package
+  # to exist before a trusted publisher (OIDC) can be configured for it. We check all packages
+  # upfront so that a missing reservation does not leave the release half-published.
+  check-packages-reserved:
+    name: Check npm package names are reserved
+    runs-on: ubuntu-latest
+    needs: [identify-release-packages]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v6
+
+      - name: Setup node
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
+        with:
+          node-version-file: ".nvmrc"
+
+      - name: Check packages exist on the npm registry
+        env:
+          PACKAGES: ${{ needs.identify-release-packages.outputs.packagesNeedRelease }}
+        run: node ./scripts/ci/check-npm-packages-reserved.js "$PACKAGES"
+
   deploy-npm-connect-dependencies:
     name: Deploy NPM ${{ needs.identify-release-packages.outputs.deploymentType }} ${{ matrix.package }}
-    needs: [extract-version, sanity-check-version-match, identify-release-packages]
+    needs:
+      [
+        extract-version,
+        sanity-check-version-match,
+        identify-release-packages,
+        check-packages-reserved,
+      ]
     environment: production-connect
     runs-on: ubuntu-latest
     strategy:

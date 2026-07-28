@@ -76,6 +76,7 @@
         "update-project-references": "yarn tsx ./scripts/updateProjectReferences.ts",
         "generate-icons": "yarn workspace @suite-common/icons generate-icons && yarn workspace @trezor/icons generate-icons",
         "generate-package": "yarn workspace @trezor/scripts generate-package",
+        "reserve-npm-package": "node ./scripts/ci/npm-reserve-package.js",
         "deps": "rimraf **/node_modules && yarn",
         "list-outdated": "./scripts/list-outdated-dependencies/list-outdated-dependencies.sh",
         "message-system-sign-config": "yarn workspace @suite-common/message-system sign-config",

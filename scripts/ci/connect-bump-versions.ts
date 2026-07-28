@@ -10,6 +10,7 @@ import {
     getTrezorPackageDir,
     gettingNpmDistributionTags,
 } from './helpers';
+import { isPackageOnNpmRegistry } from './npm-registry.js';
 
 const readFile = promisify(fs.readFile);
 const writeFile = promisify(fs.writeFile);
@@ -118,6 +119,17 @@ const updateConnectChangelog = async (
     } catch (error) {
         console.error('Error updating CHANGELOG.md:', error);
     }
+};
+
+const getUnreservedNpmPackages = async (packageNames: string[]) => {
+    const packages = await Promise.all(
+        packageNames.map(async packageName => ({
+            packageName,
+            isReserved: await isPackageOnNpmRegistry(`@trezor/${packageName}`),
+        })),
+    );
+
+    return packages.filter(({ isReserved }) => !isReserved).map(({ packageName }) => packageName);
 };
 
 const bumpConnect = async () => {
@@ -274,10 +286,27 @@ const bumpConnect = async () => {
             '',
         );
 
+        // The release workflow publishes over OIDC, which npm cannot set up for a package that does
+        // not exist yet. Warning here gives us time to reserve the names before the release runs.
+        const unreservedPackages = await getUnreservedNpmPackages(allUniquePackagesToUpdate);
+        const unreservedPackagesWarning = unreservedPackages.length
+            ? [
+                  '',
+                  '',
+                  '> [!WARNING]',
+                  '> These packages are not on the npm registry yet, so the release workflow cannot publish them.',
+                  '> Reserve each name locally before releasing (needs npm publish rights):',
+                  '>',
+                  ...unreservedPackages.map(
+                      packageName => `> - [ ] \`yarn reserve-npm-package ${packageName}\``,
+                  ),
+              ].join('\n')
+            : '';
+
         if (depsChecklist) {
             await comment({
                 prNumber,
-                body: depsChecklist,
+                body: `${depsChecklist}${unreservedPackagesWarning}`,
             });
         }
 
