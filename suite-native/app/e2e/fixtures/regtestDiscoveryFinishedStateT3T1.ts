@@ -216,7 +216,6 @@ export const regtestDiscoveryFinishedStateT3T1: PreloadedState = {
                     capabilities: [
                         'Capability_Bitcoin',
                         'Capability_Bitcoin_like',
-                        'Capability_Binance',
                         'Capability_Cardano',
                         'Capability_Crypto',
                         'Capability_Ethereum',
@@ -267,9 +266,6 @@ export const regtestDiscoveryFinishedStateT3T1: PreloadedState = {
                     dgb: 'no-support',
                     nmc: 'no-support',
                     vtc: 'no-support',
-                    maid: 'no-capability',
-                    omni: 'no-capability',
-                    usdt: 'no-capability',
                     slip24: 'update-required',
                     evolu: 'update-required',
                 },
