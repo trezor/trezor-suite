@@ -1,5 +1,5 @@
-import { getEthereumNetwork } from '../src/data/coinInfo';
-import type { getNetworkLabel } from '../src/utils/ethereumUtils';
+import { getEthereumNetwork } from '../../data/coinInfo';
+import type { getNetworkLabel } from '../ethereumUtils';
 
 export const getNetworkLabelFixtures: TestFixtures<typeof getNetworkLabel> = [
     {
