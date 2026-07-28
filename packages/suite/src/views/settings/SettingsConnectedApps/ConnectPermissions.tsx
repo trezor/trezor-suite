@@ -163,6 +163,9 @@ const PermissionPreview = ({ permissions }: { permissions: MethodPermission[] })
     );
 };
 
+// The e2e testID convention allows no underscores; connectPermissionsModal.ts mirrors this.
+const permissionTestId = (permission: MethodPermission) => permission.replace(/_/g, '-');
+
 type PermissionGroupProps = {
     coin?: CoinSymbol;
     permissions: MethodPermission[];
@@ -180,7 +183,7 @@ const PermissionGroup = ({
     const [isOpen, setIsOpen] = useState(defaultIsOpen);
 
     return (
-        <Collapsible isOpen={isOpen}>
+        <Collapsible isOpen={isOpen} data-testid={`@connect-permissions/group/${coin ?? 'device'}`}>
             <Collapsible.Toggle onClick={() => setIsOpen(!isOpen)}>
                 <Row justifyContent="space-between" gap={12} padding={{ vertical: 8 }}>
                     <Row gap={16}>
@@ -198,7 +201,10 @@ const PermissionGroup = ({
             <Collapsible.Content>
                 <Column gap={8} margin={{ top: 4, bottom: 8 }}>
                     {permissions.map(permission => (
-                        <PermissionRow key={permission}>
+                        <PermissionRow
+                            key={permission}
+                            data-testid={`@connect-permissions/permission/${permissionTestId(permission)}`}
+                        >
                             <Row gap={12}>
                                 <PermissionIcon permission={permission} />
                                 <Text typographyStyle="body-sm">
