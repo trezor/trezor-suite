@@ -53,11 +53,6 @@ export const MultiShareBackupModal = ({ onCancel }: MultiShareBackupModalProps) 
         onCancel();
     };
 
-    const closeWithCancelOnDevice = () => {
-        TrezorConnect.cancel({ reason: 'cancel' });
-        handleCancel();
-    };
-
     if (device === undefined) {
         return;
     }
@@ -154,7 +149,7 @@ export const MultiShareBackupModal = ({ onCancel }: MultiShareBackupModalProps) 
             case 'verify-ownership':
                 return {
                     children: <MultiShareBackupStep2to4 step={step} />,
-                    // There is a bug in FW, that prevents cancel during recovery-check
+                    // device prevents cancel during recovery
                     // https://github.com/trezor/trezor-firmware/issues/3503
                     onCancel: undefined,
                 };
@@ -162,7 +157,8 @@ export const MultiShareBackupModal = ({ onCancel }: MultiShareBackupModalProps) 
             case 'backup-seed':
                 return {
                     children: <MultiShareBackupStep2to4 step={step} />,
-                    onCancel: closeWithCancelOnDevice,
+                    // device prevents cancel during backup
+                    onCancel: undefined,
                 };
 
             case 'done':
