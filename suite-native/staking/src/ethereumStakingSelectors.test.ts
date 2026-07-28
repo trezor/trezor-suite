@@ -12,7 +12,7 @@ import {
     selectEthereumStakedBalanceByAccountKey,
     selectEthereumStakingPoolByAccountKey,
     selectEthereumTotalStakePendingByAccountKey,
-} from '../ethereumStakingSelectors';
+} from './ethereumStakingSelectors';
 
 const staticStateString: StaticSessionId = 'device@state:1';
 

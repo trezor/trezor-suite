@@ -2,7 +2,7 @@ import { type NavigationAction, usePreventRemove } from '@react-navigation/nativ
 
 import { renderHookWithBasicProvider } from '@suite-native/test-utils';
 
-import { useNavigationRemoveActionInterceptor } from '../useNavigationRemoveActionInterceptor';
+import { useNavigationRemoveActionInterceptor } from './useNavigationRemoveActionInterceptor';
 
 const mockDispatch = jest.fn();
 

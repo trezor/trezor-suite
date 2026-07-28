@@ -19,8 +19,8 @@ import {
 import { getFormDraftKey } from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
 
-import { signEthereumStakingTransactionNativeThunk } from '../stakeFormEthereumNativeThunks';
-import { type StakeNativeType } from '../stakeNativeTypes';
+import { signEthereumStakingTransactionNativeThunk } from './stakeFormEthereumNativeThunks';
+import { type StakeNativeType } from './stakeNativeTypes';
 
 jest.mock('@trezor/connect', () => ({
     __esModule: true,

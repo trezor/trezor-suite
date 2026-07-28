@@ -1,7 +1,7 @@
 import { getTranslation } from '@suite-native/intl';
 import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 
-import { FaqCard } from '../FaqCard';
+import { FaqCard } from './FaqCard';
 
 let mockIsAndroid: boolean;
 let mockIsTradingEnabled: boolean;

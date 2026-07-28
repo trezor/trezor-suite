@@ -6,7 +6,7 @@ import {
     selectApy,
     selectCanClaimByAccountKey,
     selectClaimableAmountByAccountKey,
-} from '../selectors';
+} from './selectors';
 
 const eth1Key = mockAccountKey({ symbol: 'eth', descriptor: 'eth1' });
 const sol1Key = mockAccountKey({ symbol: 'sol', descriptor: 'sol1' });
