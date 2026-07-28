@@ -135,6 +135,7 @@ const pushTransaction =
                 descriptor: account.descriptor,
                 symbol: account.symbol,
                 txid,
+                ...(isRbfBumpFeeTransaction(precomposedTx) ? { isFeeBump: true } : {}),
             };
 
             if (cardanoPoolDelegation) {

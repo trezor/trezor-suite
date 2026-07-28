@@ -2,7 +2,11 @@ import { type AnalyticsDep, events } from '@suite-common/analytics';
 import { type DeviceRootState, selectDevices } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
 import { getTxsPerPage } from '@suite-common/suite-utils';
-import { notificationsActions } from '@suite-common/toast-notifications';
+import {
+    type NotificationsRootState,
+    notificationsActions,
+    selectTransactionBroadcastNotificationByTxid,
+} from '@suite-common/toast-notifications';
 import {
     type TokenDefinitionsRootState,
     selectCoinDefinitions,
@@ -151,6 +155,7 @@ export type FetchAndUpdateAccountThunkDeps = {
 export type FetchAndUpdateAccountThunkState = AccountsRootState &
     BlockchainRootState &
     DeviceRootState &
+    NotificationsRootState &
     TokenDefinitionsRootState &
     TransactionsRootState &
     WalletSettingsRootState;
@@ -282,15 +287,29 @@ export const fetchAndUpdateAccountThunk = createThunk<
                 const formattedAmount = token
                     ? formatTokenAmount(token)
                     : formatNetworkAmount(tx.amount, account.symbol, true, areSatoshisUsed);
+                const sourceNotification = selectTransactionBroadcastNotificationByTxid(
+                    getState(),
+                    tx.txid,
+                );
+
+                if (
+                    sourceNotification !== undefined &&
+                    sourceNotification.descriptor !== account.descriptor
+                ) {
+                    return;
+                }
 
                 dispatch(
-                    notificationsActions.addEvent({
+                    notificationsActions.addToast({
                         type: 'tx-confirmed',
+                        sourceType: sourceNotification?.type,
                         formattedAmount,
                         device: accountDevice,
+                        token,
                         descriptor: account.descriptor,
                         symbol: account.symbol,
                         txid: tx.txid,
+                        style: { maxWidth: 'auto' },
                     }),
                 );
             });

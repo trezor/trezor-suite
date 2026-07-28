@@ -4208,7 +4208,7 @@ export const messages = defineMessages({
     },
     TOAST_TX_SENT: {
         id: 'TOAST_TX_SENT',
-        defaultMessage: 'Sent from {account}',
+        defaultMessage: 'Transaction from {account} has been broadcast',
     },
     TOAST_TX_EXCHANGE_BROADCASTED: {
         id: 'TOAST_TX_EXCHANGE_BROADCASTED',
@@ -4229,7 +4229,7 @@ export const messages = defineMessages({
     },
     TOAST_TX_CONFIRMED: {
         id: 'TOAST_TX_CONFIRMED',
-        defaultMessage: 'Transaction in {account} confirmed',
+        defaultMessage: 'Transaction in {account} has been successfully confirmed',
     },
     TOAST_TX_BUTTON: {
         id: 'TOAST_TX_BUTTON',
@@ -11744,15 +11744,39 @@ export const messages = defineMessages({
     },
     TOAST_TX_STAKED: {
         id: 'TOAST_TX_STAKED',
-        defaultMessage: 'Staked from {account}',
+        defaultMessage: 'Your staking transaction is pending',
     },
     TOAST_TX_UNSTAKED: {
         id: 'TOAST_TX_UNSTAKED',
-        defaultMessage: 'Unstaked from {account}',
+        defaultMessage: 'Your unstaking transaction is pending',
     },
     TOAST_TX_CLAIMED: {
         id: 'TOAST_TX_CLAIMED',
-        defaultMessage: 'Claimed from {account}',
+        defaultMessage: 'Your claim is pending',
+    },
+    TOAST_TX_STAKE_BUMPED: {
+        id: 'TOAST_TX_STAKE_BUMPED',
+        defaultMessage: 'Your staking transaction has been sped up',
+    },
+    TOAST_TX_UNSTAKE_BUMPED: {
+        id: 'TOAST_TX_UNSTAKE_BUMPED',
+        defaultMessage: 'Your unstaking transaction was sped up',
+    },
+    TOAST_TX_CLAIM_BUMPED: {
+        id: 'TOAST_TX_CLAIM_BUMPED',
+        defaultMessage: 'Your claim has been sped up',
+    },
+    TOAST_TX_STAKE_CONFIRMED: {
+        id: 'TOAST_TX_STAKE_CONFIRMED',
+        defaultMessage: 'Your staking transaction has been processed on the blockchain',
+    },
+    TOAST_TX_UNSTAKE_CONFIRMED: {
+        id: 'TOAST_TX_UNSTAKE_CONFIRMED',
+        defaultMessage: 'Your unstaking transaction has been processed on the blockchain',
+    },
+    TOAST_TX_CLAIM_CONFIRMED: {
+        id: 'TOAST_TX_CLAIM_CONFIRMED',
+        defaultMessage: 'Your claim has been processed on the blockchain',
     },
     TOAST_TX_YIELD_DEPOSIT: {
         id: 'TOAST_TX_YIELD_DEPOSIT',
