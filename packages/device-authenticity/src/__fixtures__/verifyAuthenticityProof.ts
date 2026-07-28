@@ -18,8 +18,8 @@ import {
     defaultMCUProps,
     defaultOptigaProps,
     defaultTropicProps,
-} from './mockDeviceAuthenticityData';
-import type { VerifyAuthenticityProofParams, VerifyAuthenticityProofResult } from '../src/types';
+} from '../../mocks/mockDeviceAuthenticityData';
+import type { VerifyAuthenticityProofParams, VerifyAuthenticityProofResult } from '../types';
 
 export interface Fixture {
     description: string;
