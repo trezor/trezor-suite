@@ -3,6 +3,7 @@ import { isNewer } from '@trezor/utils/src/versionUtils';
 export type ChangelogData = {
     versionOverview: string;
     changelog: string;
+    upgradeBanner?: string;
 };
 
 const loadNPMVersions = (tag: string): Promise<string> =>
@@ -29,11 +30,22 @@ export const loadChangelog = (branch: string): Promise<ChangelogData> =>
                 /([a-f0-9]{7,10})([),])/g,
                 `[$1](https://github.com/trezor/trezor-suite/commit/$1)$2`,
             );
+            // A leading blockquote (the "Upgrading from Connect 9?" banner) is pulled out of the
+            // markdown so the page can render it as a prominent callout at the top, rather than as
+            // a quote buried under the version overview. CHANGELOG.md stays the single source, so
+            // the banner still renders on GitHub and on the npm package page.
+            let upgradeBanner: string | undefined;
+            const bannerMatch = content.match(/^(?:[^\S\n]*>.*\n?)+/);
+            if (bannerMatch) {
+                upgradeBanner = bannerMatch[0].replace(/^[^\S\n]*> ?/gm, '').trim();
+                content = content.slice(bannerMatch[0].length).trimStart();
+            }
+
             const versionOverview =
                 `## Version overview\n\n` + content.substring(0, content.indexOf('##'));
             const changelog = content.substring(content.indexOf('##'));
 
-            return { versionOverview, changelog };
+            return { versionOverview, changelog, upgradeBanner };
         });
 
 // On dev.suite.sldev.cz the explorer is deployed per-branch at /connect/{branch}, with the branch
