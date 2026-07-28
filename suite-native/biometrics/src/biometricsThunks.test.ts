@@ -4,14 +4,14 @@ import * as LocalAuthentication from 'expo-local-authentication';
 import { events } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 
-import { biometricsSlice, biometricsSliceInitialState } from '../biometricsSlice';
+import { biometricsSlice, biometricsSliceInitialState } from './biometricsSlice';
 import {
     BiometricsToggleResult,
     authenticateUserThunk,
     handleBiometricsAppStateChangeThunk,
     toggleBiometricsSettingsThunk,
-} from '../biometricsThunks';
-import { AuthenticateError, type BiometricsSliceState } from '../types';
+} from './biometricsThunks';
+import { AuthenticateError, type BiometricsSliceState } from './types';
 
 jest.mock('expo-local-authentication', () => ({
     SecurityLevel: {

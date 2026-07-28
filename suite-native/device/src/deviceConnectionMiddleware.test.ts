@@ -21,7 +21,7 @@ import {
     thpPairingBlockedFixtures,
     thpPairingNavigationFixtures,
 } from './deviceConnectionFixtures';
-import { deviceConnectionMiddleware } from '../middlewares/deviceConnectionMiddleware';
+import { deviceConnectionMiddleware } from './middlewares/deviceConnectionMiddleware';
 
 jest.mock('@suite-native/navigation', () => {
     const navigation = jest.requireActual('@suite-native/navigation');
