@@ -2,7 +2,7 @@ import { getTranslation } from '@suite-native/intl';
 import { renderWithBasicProvider } from '@suite-native/test-utils';
 import type { ExtendedSellCryptoPaymentMethod } from '@suite-native/trading-types';
 
-import { TradeFiatSideCard, type TradeFiatSideCardProps } from '../TradeFiatSideCard';
+import { TradeFiatSideCard, type TradeFiatSideCardProps } from './TradeFiatSideCard';
 
 describe('TradeFiatSideCard', () => {
     const renderTradeFiatSideCard = (props: TradeFiatSideCardProps) =>

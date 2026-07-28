@@ -12,7 +12,7 @@ import {
 } from '@suite-native/test-utils-store';
 import { tradingSlice } from '@suite-native/trading-state';
 
-import { LastErrorMessage, type LastErrorMessageProps } from '../LastErrorMessage';
+import { LastErrorMessage, type LastErrorMessageProps } from './LastErrorMessage';
 
 describe('LastErrorMessage', () => {
     let store: TestStore;

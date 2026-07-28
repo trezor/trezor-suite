@@ -29,7 +29,7 @@ import {
 import { type ReceiveAccount } from '@suite-native/trading-types';
 import { type Address } from '@trezor/blockchain-link-types';
 
-import { AccountList, type AccountsListProps, keyExtractor } from '../AccountList';
+import { AccountList, type AccountsListProps, keyExtractor } from './AccountList';
 
 const defaultPreloadedState = {
     device: {

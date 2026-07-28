@@ -1,10 +1,10 @@
 import { type QuotesCategory } from '@suite-native/trading-types';
 
-import { renderWithTradingProvider } from '../../../../__tests__/tradingTestUtils';
 import {
     ProviderSheetSectionHeader,
     type ProviderSheetSectionHeaderProps,
-} from '../ProviderSheetSectionHeader';
+} from './ProviderSheetSectionHeader';
+import { renderWithTradingProvider } from '../../../__tests__/tradingTestUtils';
 
 describe('ProviderSheetSectionHeader', () => {
     const renderProviderSheetSectionHeader = (props: ProviderSheetSectionHeaderProps) =>

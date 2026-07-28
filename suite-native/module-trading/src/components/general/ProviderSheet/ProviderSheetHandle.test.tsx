@@ -1,12 +1,12 @@
 import { getTranslation } from '@suite-native/intl';
 import { fireEvent } from '@suite-native/test-utils-store';
 
+import { ProviderSheetHandle, type ProviderSheetHandleProps } from './ProviderSheetHandle';
 import {
     type PreloadedStatePartial,
     type TradingTestPreloadedState,
     renderWithTradingProvider,
-} from '../../../../__tests__/tradingTestUtils';
-import { ProviderSheetHandle, type ProviderSheetHandleProps } from '../ProviderSheetHandle';
+} from '../../../__tests__/tradingTestUtils';
 
 jest.mock('@suite-common/message-system', () => {
     const messages: Record<string, unknown> = {

@@ -2,7 +2,7 @@ import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { getTranslation } from '@suite-native/intl';
 import { fireEvent, renderWithStoreProvider } from '@suite-native/test-utils-store';
 
-import { MyAssetSheetHeader } from '../MyAssetSheetHeader';
+import { MyAssetSheetHeader } from './MyAssetSheetHeader';
 
 jest.mock('@trezor/react-utils', () => ({
     ...jest.requireActual('@trezor/react-utils'),

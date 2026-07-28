@@ -7,12 +7,12 @@ import { getTranslation } from '@suite-native/intl';
 import { screen } from '@suite-native/test-utils-store';
 import { cexdirectFloatingQuote, mercuryoApplePayBuyQuote } from '@suite-native/trading-fixtures';
 
+import { ProviderSheet, type ProviderSheetProps } from './ProviderSheet';
 import {
     type PreloadedStatePartial,
     type TradingTestPreloadedState,
     renderWithTradingProvider,
-} from '../../../../__tests__/tradingTestUtils';
-import { ProviderSheet, type ProviderSheetProps } from '../ProviderSheet';
+} from '../../../__tests__/tradingTestUtils';
 
 describe('ProviderSheet', () => {
     const renderProviderSheet = (

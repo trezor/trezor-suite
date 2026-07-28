@@ -6,7 +6,7 @@ import {
     mercuryoApplePayBuyQuote,
 } from '@suite-native/trading-fixtures';
 
-import { PaymentMethodListItem, type PaymentMethodListItemProps } from '../PaymentMethodListItem';
+import { PaymentMethodListItem, type PaymentMethodListItemProps } from './PaymentMethodListItem';
 
 describe('PaymentMethodListItem', () => {
     const getPreloadedState = () => ({ wallet: { trading: getInitializedTradingState() } });

@@ -1,7 +1,7 @@
 import { getTranslation } from '@suite-native/intl';
 import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 
-import { NoAccountsComponent } from '../NoAccountsComponent';
+import { NoAccountsComponent } from './NoAccountsComponent';
 
 describe('NoAccountsComponent', () => {
     const renderNoAccountsComponent = ({

@@ -6,12 +6,12 @@ import {
     mercuryoApplePayBuyQuote,
 } from '@suite-native/trading-fixtures';
 
+import { ProviderListItemValueRow } from './ProviderListItemValueRow';
 import {
     type PreloadedStatePartial,
     type TradingTestPreloadedState,
     renderWithTradingProvider,
-} from '../../../../__tests__/tradingTestUtils';
-import { ProviderListItemValueRow } from '../ProviderListItemValueRow';
+} from '../../../__tests__/tradingTestUtils';
 
 const overridesWithQuotes: PreloadedStatePartial<TradingTestPreloadedState> = {
     wallet: { trading: getInitializedTradingStateWithQuotes() },
