@@ -10,7 +10,7 @@ import * as crypto from 'crypto';
 import * as http from 'http';
 
 import { CALL_SOURCE_MCP, type ConnectProcessInfo } from '@suite-common/connect-popup';
-import { getNetworkOptional } from '@suite-common/wallet-config';
+import { getMainnets, getNetworkOptional } from '@suite-common/wallet-config';
 import { convertAmountUnitsToSubunits, substituteBip43Path } from '@suite-common/wallet-utils';
 import { validateIpcMessage } from '@trezor/ipc-proxy';
 import { findProcessFromIncomingPort } from '@trezor/node-utils';
@@ -40,6 +40,16 @@ const getNetworkTypeForCoin = (coin: string) => getNetworkOptional(coin.toLowerC
 const isEvmCoin = (coin: string) => getNetworkTypeForCoin(coin) === 'ethereum';
 const isXrpCoin = (coin: string) => getNetworkTypeForCoin(coin) === 'ripple';
 const isUtxoCoin = (coin: string) => getNetworkTypeForCoin(coin) === 'bitcoin';
+
+// Comma-separated EVM mainnet symbols for MCP tool documentation, derived from the
+// network config so new EVM chains appear automatically. `etc` (Ethereum Classic) is
+// excluded from the derived list and appended as a literal so the prose reads
+// "…, avax, etc" (et cetera) instead of rendering the symbol twice.
+const EVM_CHAINS_DOC =
+    getMainnets()
+        .filter(network => network.networkType === 'ethereum' && network.symbol !== 'etc')
+        .map(network => network.symbol)
+        .join(', ') + ', etc';
 
 /**
  * Convert a human-readable coin value to the smallest unit as a string.
@@ -71,8 +81,8 @@ const MCP_TOOLS = [
         description:
             'Get a receive address from the Trezor device for a given cryptocurrency. ' +
             'The address can optionally be displayed on the Trezor screen for verification. ' +
-            'Supports Bitcoin/UTXO coins via getAddress and all EVM chains (eth, pol, bsc, arb, ' +
-            'base, op, avax, rhc, etc) via ethereumGetAddress.',
+            'Supports Bitcoin/UTXO coins via getAddress and all EVM chains ' +
+            `(${EVM_CHAINS_DOC}) via ethereumGetAddress.`,
         inputSchema: {
             type: 'object' as const,
             properties: {
@@ -360,7 +370,7 @@ const MCP_TOOLS = [
             'Just provide "to" address, "value", and "coin" — everything else is automatic. ' +
             'For Bitcoin/UTXO chains (btc, ltc, bch, doge, zec): ' +
             'handled by composeTransaction — account, UTXOs, and fees are resolved by Suite. ' +
-            'For Ethereum/EVM chains (eth, pol, bsc, arb, base, op, avax, rhc, etc): ' +
+            `For Ethereum/EVM chains (${EVM_CHAINS_DOC}): ` +
             'nonce and EIP-1559 gas fees are auto-filled; use "accountIndex" to select account. ' +
             'For ERC-20 token transfers: set "tokenContract" and "tokenDecimals" — the server encodes the transfer calldata automatically. ' +
             'For XRP: sequence and fee are auto-filled. ' +
@@ -372,8 +382,8 @@ const MCP_TOOLS = [
                 coin: {
                     type: 'string',
                     description:
-                        'Coin symbol. Supported: eth, pol, bsc, arb, base, op, avax, rhc, etc, ' +
-                        'tsep, thod (EVM); xrp, txrp (Ripple); btc, ltc, bch, doge, zec (UTXO).',
+                        `Coin symbol. Supported: ${EVM_CHAINS_DOC}, tsep, thod (EVM); ` +
+                        'xrp, txrp (Ripple); btc, ltc, bch, doge, zec (UTXO).',
                 },
                 to: {
                     type: 'string',
