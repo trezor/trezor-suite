@@ -58,13 +58,13 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
-        "@trezor/authdb": "workspace:*",
         "@trezor/device-utils": "workspace:*",
         "@trezor/protobuf": "workspace:*",
         "@trezor/protocol": "workspace:^",
         "@trezor/schema-utils": "workspace:*",
         "@trezor/type-utils": "workspace:*",
-        "@trezor/utils": "workspace:*"
+        "@trezor/utils": "workspace:*",
+        "@trezor/ward": "workspace:*"
     },
     "peerDependencies": {
         "tslib": "^2.6.2"

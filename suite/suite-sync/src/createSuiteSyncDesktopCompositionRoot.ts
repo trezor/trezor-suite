@@ -10,6 +10,7 @@ import {
     createEvoluErrorHandler,
     createEvoluInstanceFactory,
     createEvoluStorageFactory,
+    createEvoluWardDataProvider,
     evoluCreateSuiteSyncOwner,
 } from '@suite-common/suite-sync-evolu';
 import { type FetchDep } from '@suite-common/suite-sync-quota-manager';
@@ -45,13 +46,28 @@ export const createSuiteSyncDesktopCompositionRoot = (
     });
 
     const run = createRun(evoluDeps);
+
+    // Wrap Evolu instance creation so that, per owner (= per wallet), the Evolu-backed
+    // WARD data provider is registered with Connect. createEvoluWardDataProvider returns
+    // the AuthLabelProvider abstraction (no Evolu leak); Connect uses it for the WARD
+    // label flows (authDbInit / authDbUpdateAddress / authDbVerifyAddress).
+    // TODO(D4): clear the provider on storage dispose / owner turn-off
+    // (updateConnectSettings({ wardDataProvider: undefined })).
+    const baseCreateEvoluInstance = createEvoluInstanceFactory({ run });
+    const createEvoluInstance: typeof baseCreateEvoluInstance = async params => {
+        const evolu = await baseCreateEvoluInstance(params);
+        await deps.trezorConnect.updateConnectSettings({
+            wardDataProvider: createEvoluWardDataProvider(evolu),
+        });
+
+        return evolu;
+    };
+
     // This sets up Evolu as a SuiteSync Storage. We provide a factory that
     // accepts `suiteSyncErrorHandler` and creates the evolu instance accordingly.
     const suiteSync = createSuiteSyncCompositionRoot({
         ...deps,
-        createSuiteStorage: createEvoluStorageFactory({
-            createEvoluInstance: createEvoluInstanceFactory({ run }),
-        }),
+        createSuiteStorage: createEvoluStorageFactory({ createEvoluInstance }),
         createSuiteSyncOwner: evoluCreateSuiteSyncOwner,
         analytics: deps.analytics,
         subscribeError: suiteSyncInternalErrorHandler => {

@@ -1,4 +1,4 @@
-import type { AuthLabelLookupProvider, AuthLabelRow } from '@trezor/authdb';
+import type { AuthLabelLookupProvider, AuthLabelRow } from '@trezor/ward';
 
 import * as settingsStore from '../../../data/settingsStore';
 import AuthDbVerifyAddress from '../api/authDbVerifyAddress';
@@ -7,7 +7,6 @@ const buildProvider = (
     overrides: Partial<AuthLabelLookupProvider> = {},
 ): AuthLabelLookupProvider => ({
     lookup: jest.fn().mockResolvedValue(null),
-    lookupOrCreate: jest.fn(),
     upsert: jest.fn().mockResolvedValue(undefined),
     getAllEntries: jest.fn().mockResolvedValue([]),
     getTreeState: jest.fn().mockResolvedValue(null),

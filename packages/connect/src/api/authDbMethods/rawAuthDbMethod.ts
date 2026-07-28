@@ -13,7 +13,7 @@ import { AbstractMethod } from '../../core/AbstractMethod';
  * shells for the AuthDB methods — they stay in @trezor/connect because they depend on
  * connect-internal device/session/UI machinery (AbstractMethod, settingsStore) that isn't
  * part of connect's public export surface. The portable Merkle-tree logic and the
- * WARD data-provider contract lives in the separate @trezor/authdb package, following the
+ * WARD data-provider contract lives in the separate @trezor/ward package, following the
  * same split as authenticateDevice.ts (shell, here) + @trezor/device-authenticity (logic).
  */
 

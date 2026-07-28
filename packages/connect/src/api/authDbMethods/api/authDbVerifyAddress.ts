@@ -1,17 +1,17 @@
 /* eslint-disable no-console -- verbose AuthDB dblookup diagnostics */
 import { bytesToHex } from '@noble/hashes/utils.js';
 
+import type { MethodPermission } from '@trezor/connect-common';
+import { AuthDbVerifyAddressSchema } from '@trezor/connect-common';
+import { ERRORS } from '@trezor/connect-common/src/constants';
+import { Assert } from '@trezor/schema-utils';
 import {
     computeMerkleRoot,
     entryToValueBytes,
     evaluateProof,
     generateMerkleProof,
     generateNonMembershipProof,
-} from '@trezor/authdb';
-import type { MethodPermission } from '@trezor/connect-common';
-import { AuthDbVerifyAddressSchema } from '@trezor/connect-common';
-import { ERRORS } from '@trezor/connect-common/src/constants';
-import { Assert } from '@trezor/schema-utils';
+} from '@trezor/ward';
 
 import type { MethodMessage } from '../../../core/AbstractMethod';
 import { AbstractMethod } from '../../../core/AbstractMethod';

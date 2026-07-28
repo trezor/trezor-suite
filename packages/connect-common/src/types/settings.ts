@@ -1,4 +1,3 @@
-import type { AuthLabelProvider as WardDataProvider } from '@trezor/authdb';
 import type { BlockchainSettings } from '@trezor/blockchain-link';
 import type { DeviceModelInternal } from '@trezor/device-utils';
 import type { ThpCredentials, ThpPairingMethod } from '@trezor/protocol';
@@ -6,6 +5,7 @@ import type { Static } from '@trezor/schema-utils';
 import { Type } from '@trezor/schema-utils';
 import type { Transport } from '@trezor/transport-common';
 import type { PartialRecord } from '@trezor/type-utils';
+import type { AuthLabelProvider as WardDataProvider } from '@trezor/ward';
 
 import type { FirmwareChannel } from './firmware';
 

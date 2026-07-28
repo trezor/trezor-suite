@@ -1,5 +1,5 @@
 /**
- * @trezor/authdb/mocks — DEV/TEST ONLY.
+ * @trezor/ward/mocks — DEV/TEST ONLY.
  *
  * Debug stand-ins for the WARD Manager's Ed25519 attestations. These sign with the
  * well-known DEBUG QM seed (accepted only by debug firmware) so tests and the emulator

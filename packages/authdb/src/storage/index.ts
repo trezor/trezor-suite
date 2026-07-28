@@ -1,5 +1,5 @@
 /**
- * @trezor/authdb/storage — the storage-provider CONTRACT + a pure in-memory reference impl.
+ * @trezor/ward/storage — the storage-provider CONTRACT + a pure in-memory reference impl.
  *
  * Zero native dependencies (the better-sqlite3-backed adapter lives in the separate
  * ./sqlite subpath). The only production implementation today is the sqlite AuthLabelDb;
@@ -18,11 +18,6 @@ export type AuthLabelLookupProvider = {
         address: string,
         networkSymbol: string,
     ): AuthLabelEntry | null | Promise<AuthLabelEntry | null>;
-    lookupOrCreate(
-        walletId: string,
-        address: string,
-        networkSymbol: string,
-    ): AuthLabelEntry | Promise<AuthLabelEntry>;
     upsert(
         walletId: string,
         address: string,
@@ -55,15 +50,6 @@ export class InMemoryAuthLabelDb implements AuthLabelLookupProvider {
 
     lookup(walletId: string, address: string, networkSymbol: string): AuthLabelEntry | null {
         return this.entries.get(key(walletId, address, networkSymbol))?.entry ?? null;
-    }
-
-    lookupOrCreate(walletId: string, address: string, networkSymbol: string): AuthLabelEntry {
-        const existing = this.lookup(walletId, address, networkSymbol);
-        if (existing) return existing;
-        const entry: AuthLabelEntry = { metadata: {}, counter: 0 };
-        this.upsert(walletId, address, networkSymbol, entry);
-
-        return entry;
     }
 
     upsert(walletId: string, address: string, networkSymbol: string, entry: AuthLabelEntry): void {

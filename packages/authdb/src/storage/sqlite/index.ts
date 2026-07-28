@@ -1,6 +1,6 @@
 /* eslint-disable no-console -- verbose AuthDB diagnostics (dev/testing sqlite backend) */
 /**
- * @trezor/authdb/storage/sqlite — better-sqlite3-backed reference implementation of the
+ * @trezor/ward/storage/sqlite — better-sqlite3-backed reference implementation of the
  * AuthLabelLookupProvider contract. Isolated behind its own subpath so the native
  * better-sqlite3 module (an optionalDependency) never reaches barrel/proof consumers.
  * Used by connect-cli for dev/testing; suite-desktop will supply an Evolu-backed impl.
@@ -64,16 +64,6 @@ export class AuthLabelDb implements AuthLabelLookupProvider {
         return row
             ? parseRow({ wallet_id: walletId, address, network_symbol: networkSymbol, ...row })
             : null;
-    }
-
-    lookupOrCreate(walletId: string, address: string, networkSymbol: string): AuthLabelEntry {
-        const existing = this.lookup(walletId, address, networkSymbol);
-        if (existing) return existing;
-
-        const entry: AuthLabelEntry = { metadata: {}, counter: 0 };
-        this.upsert(walletId, address, networkSymbol, entry);
-
-        return entry;
     }
 
     upsert(walletId: string, address: string, networkSymbol: string, entry: AuthLabelEntry): void {

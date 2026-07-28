@@ -18,10 +18,10 @@
     },
     "dependencies": {
         "@noble/hashes": "^2.0.1",
-        "@trezor/authdb": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/transport": "workspace:*",
         "@trezor/transport-bluetooth": "workspace:*",
+        "@trezor/ward": "workspace:*",
         "better-sqlite3": "^12.6.2"
     },
     "devDependencies": {

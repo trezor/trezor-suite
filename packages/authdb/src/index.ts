@@ -1,5 +1,5 @@
 // Backward-compatible barrel. The package is organized into modules — import a specific
-// one (@trezor/authdb/proof, /storage, /storage/sqlite, /types) to keep bundles
+// one (@trezor/ward/proof, /storage, /storage/sqlite, /types) to keep bundles
 // tight, or the barrel for everything except the native sqlite adapter.
 
 // Proof (Merkle / MPT) primitives.
@@ -18,5 +18,5 @@ export type * from './types';
 
 // Storage-provider contracts + the pure in-memory reference implementation.
 // (The better-sqlite3 adapter is intentionally NOT re-exported here — import it from
-// @trezor/authdb/storage/sqlite so the native module never reaches barrel consumers.)
+// @trezor/ward/storage/sqlite so the native module never reaches barrel consumers.)
 export * from './storage';

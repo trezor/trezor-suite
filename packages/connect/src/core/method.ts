@@ -10,7 +10,7 @@ const getMethodModule = (method: CoreCallMessage['payload']['method']) =>
     MODULES.find(module => method.startsWith(module));
 
 // `authDb` methods live under api/authDbMethods/ (not api/authDb/) to avoid clashing
-// with the @trezor/authdb package name; every other module's folder still matches its
+// with the @trezor/ward package name; every other module's folder still matches its
 // MODULES entry, so only this one needs a lookup.
 const MODULE_DIRS: Partial<Record<ModuleName, string>> = { authDb: 'authDbMethods' };
 const getModuleDir = (module: ModuleName) => MODULE_DIRS[module] ?? module;

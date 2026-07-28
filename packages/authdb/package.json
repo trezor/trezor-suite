@@ -1,5 +1,5 @@
 {
-    "name": "@trezor/authdb",
+    "name": "@trezor/ward",
     "version": "1.0.0",
     "type": "module",
     "author": "Trezor <info@trezor.io>",

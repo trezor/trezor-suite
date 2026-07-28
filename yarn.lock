@@ -10825,6 +10825,7 @@ __metadata:
     "@trezor/requirements": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
+    "@trezor/ward": "workspace:*"
   languageName: unknown
   linkType: soft
 
@@ -15496,20 +15497,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/authdb@workspace:*, @trezor/authdb@workspace:packages/authdb":
-  version: 0.0.0-use.local
-  resolution: "@trezor/authdb@workspace:packages/authdb"
-  dependencies:
-    "@noble/curves": "npm:^2.2.0"
-    "@noble/hashes": "npm:^2.0.1"
-    "@types/better-sqlite3": "npm:^7.6.0"
-    better-sqlite3: "npm:^12.6.2"
-  dependenciesMeta:
-    better-sqlite3:
-      optional: true
-  languageName: unknown
-  linkType: soft
-
 "@trezor/blockchain-link-types@workspace:*, @trezor/blockchain-link-types@workspace:^, @trezor/blockchain-link-types@workspace:packages/blockchain-link-types":
   version: 0.0.0-use.local
   resolution: "@trezor/blockchain-link-types@workspace:packages/blockchain-link-types"
@@ -15670,10 +15657,10 @@ __metadata:
   resolution: "@trezor/connect-cli@workspace:packages/connect-cli"
   dependencies:
     "@noble/hashes": "npm:^2.0.1"
-    "@trezor/authdb": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/transport": "workspace:*"
     "@trezor/transport-bluetooth": "workspace:*"
+    "@trezor/ward": "workspace:*"
     "@types/better-sqlite3": "npm:^7.6.0"
     better-sqlite3: "npm:^12.6.2"
     tsx: "npm:^4.21.0"
@@ -15685,7 +15672,6 @@ __metadata:
   resolution: "@trezor/connect-common@workspace:packages/connect-common"
   dependencies:
     "@fivebinaries/coin-selection": "npm:3.0.0"
-    "@trezor/authdb": "workspace:*"
     "@trezor/blockchain-link": "workspace:^"
     "@trezor/blockchain-link-types": "workspace:^"
     "@trezor/device-authenticity": "workspace:^"
@@ -15697,6 +15683,7 @@ __metadata:
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
     "@trezor/utxo-lib": "workspace:*"
+    "@trezor/ward": "workspace:*"
     "@types/chrome": "npm:^0.1.40"
     "@types/jest": "npm:29.5.12"
     "@types/node": "npm:22.13.10"
@@ -15898,7 +15885,6 @@ __metadata:
     "@noble/hashes": "npm:^2.0.1"
     "@scure/base": "npm:^2.0.0"
     "@scure/bip39": "npm:^1.5.1"
-    "@trezor/authdb": "workspace:*"
     "@trezor/blockchain-link": "workspace:*"
     "@trezor/blockchain-link-types": "workspace:*"
     "@trezor/coins-solana": "workspace:*"
@@ -15918,6 +15904,7 @@ __metadata:
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
     "@trezor/utxo-lib": "workspace:*"
+    "@trezor/ward": "workspace:*"
     "@types/jws": "npm:^3.2.11"
     "@types/node": "npm:22.13.10"
     "@types/w3c-web-usb": "npm:^1.0.14"
@@ -16898,6 +16885,20 @@ __metadata:
     wif: "npm:^5.0.0"
   peerDependencies:
     tslib: ^2.6.2
+  languageName: unknown
+  linkType: soft
+
+"@trezor/ward@workspace:*, @trezor/ward@workspace:packages/authdb":
+  version: 0.0.0-use.local
+  resolution: "@trezor/ward@workspace:packages/authdb"
+  dependencies:
+    "@noble/curves": "npm:^2.2.0"
+    "@noble/hashes": "npm:^2.0.1"
+    "@types/better-sqlite3": "npm:^7.6.0"
+    better-sqlite3: "npm:^12.6.2"
+  dependenciesMeta:
+    better-sqlite3:
+      optional: true
   languageName: unknown
   linkType: soft
 

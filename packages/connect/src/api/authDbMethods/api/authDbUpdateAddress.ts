@@ -1,18 +1,18 @@
 /* eslint-disable no-console -- verbose AuthDB dbchange diagnostics */
 import { bytesToHex } from '@noble/hashes/utils.js';
 
-import {
-    computeMerkleRoot,
-    entryToValueBytes,
-    generateMerkleProof,
-    generateNonMembershipProof,
-} from '@trezor/authdb';
-import type { AuthLabelEntry, TreeState } from '@trezor/authdb';
 import type { MethodPermission } from '@trezor/connect-common';
 import { AuthDbUpdateAddressSchema } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import type { MessagesSchema as Messages } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
+import type { AuthLabelEntry, TreeState } from '@trezor/ward';
+import {
+    computeMerkleRoot,
+    entryToValueBytes,
+    generateMerkleProof,
+    generateNonMembershipProof,
+} from '@trezor/ward';
 
 import type { MethodMessage } from '../../../core/AbstractMethod';
 import { AbstractMethod } from '../../../core/AbstractMethod';

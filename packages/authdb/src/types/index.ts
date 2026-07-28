@@ -1,5 +1,5 @@
 /**
- * @trezor/authdb/types — shared AuthDB DTOs.
+ * @trezor/ward/types — shared AuthDB DTOs.
  *
  * Pure data types with zero dependencies. Extracted so the /proof, /storage and /sync
  * modules can each depend only on the types they need, without a package-level cycle

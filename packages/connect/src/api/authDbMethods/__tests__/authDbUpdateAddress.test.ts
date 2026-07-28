@@ -1,4 +1,4 @@
-import type { AuthLabelLookupProvider, AuthLabelRow } from '@trezor/authdb';
+import type { AuthLabelLookupProvider, AuthLabelRow } from '@trezor/ward';
 
 import * as settingsStore from '../../../data/settingsStore';
 import AuthDbUpdateAddress from '../api/authDbUpdateAddress';
@@ -12,7 +12,6 @@ const WALLET_ID = 'ab'.repeat(20);
 
 const buildProvider = (overrides: Partial<MockProvider> = {}): MockProvider => ({
     lookup: jest.fn().mockResolvedValue(null),
-    lookupOrCreate: jest.fn(),
     upsert: jest.fn().mockResolvedValue(undefined),
     getAllEntries: jest.fn().mockResolvedValue([]),
     getTreeState: jest.fn().mockResolvedValue(null),

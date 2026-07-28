@@ -3,13 +3,13 @@ import fs from 'fs';
 import os from 'os';
 import path from 'path';
 
-import { AuthLabelDb } from '@trezor/authdb/src/storage/sqlite';
 import TrezorConnect, {
     type AuthLabelMetadata,
     type Device,
     ThpPairingMethod,
     type UiRequestThpPairing,
 } from '@trezor/connect';
+import { AuthLabelDb } from '@trezor/ward/src/storage/sqlite';
 
 import { HELP, args } from './args';
 import { stdioManager } from './stdio';
