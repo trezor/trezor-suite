@@ -4,7 +4,6 @@
 import http from 'http';
 import https from 'https';
 import net from 'net';
-import fetch from 'node-fetch';
 import { SocksProxyAgent } from 'socks-proxy-agent';
 import WebSocket from 'ws';
 
