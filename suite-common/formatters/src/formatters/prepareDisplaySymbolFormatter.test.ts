@@ -1,7 +1,7 @@
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { PROTO } from '@trezor/connect';
 
-import { prepareDisplaySymbolFormatter } from '../prepareDisplaySymbolFormatter';
+import { prepareDisplaySymbolFormatter } from './prepareDisplaySymbolFormatter';
 
 describe('prepareDisplaySymbolFormatter', () => {
     let displaySymbolFormatter: ReturnType<typeof prepareDisplaySymbolFormatter>;

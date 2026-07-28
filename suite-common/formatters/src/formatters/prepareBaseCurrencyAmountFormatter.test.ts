@@ -4,7 +4,7 @@ import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { PROTO } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils';
 
-import { prepareBaseCurrencyAmountFormatter } from '../prepareBaseCurrencyAmountFormatter';
+import { prepareBaseCurrencyAmountFormatter } from './prepareBaseCurrencyAmountFormatter';
 
 const intl = createIntl({
     locale: 'en',

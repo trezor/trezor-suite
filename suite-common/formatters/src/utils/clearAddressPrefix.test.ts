@@ -1,4 +1,4 @@
-import { clearAddressPrefix } from '../clearAddressPrefix';
+import { clearAddressPrefix } from './clearAddressPrefix';
 
 describe('clearAddressPrefix', () => {
     test.each([

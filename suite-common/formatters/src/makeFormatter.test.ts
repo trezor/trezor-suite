@@ -1,4 +1,4 @@
-import { makeFormatter } from '../makeFormatter';
+import { makeFormatter } from './makeFormatter';
 
 const toUpperCase = (string: string) => string.toUpperCase();
 
