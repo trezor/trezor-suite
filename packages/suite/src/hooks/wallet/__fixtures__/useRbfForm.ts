@@ -10,7 +10,7 @@ import {
 import { type AccountUtxo } from '@trezor/connect';
 import { type DeepPartial } from '@trezor/type-utils';
 
-export { getRootReducer } from './mockUseSendForm';
+export { getRootReducer } from './useSendForm';
 
 const ABCD = 'abcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcd';
 const DCBA = 'dcbadcbadcbadcbadcbadcbadcbadcbadcbadcbadcbadcbadcbadcbadcbadcba';

@@ -6,8 +6,8 @@ import type { State as ModalState } from '@suite/modal';
 
 import { configureStore } from 'src/support/tests/configureStore';
 
+import { filters, fixtures } from './__fixtures__/useFilteredModal';
 import { useFilteredModal } from './useFilteredModal';
-import { filters, fixtures } from '../../../mocks/mockUseFilteredModal';
 
 const mockStore = configureStore<{ modal: ModalState }, any>();
 

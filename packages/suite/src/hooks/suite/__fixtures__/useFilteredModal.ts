@@ -5,7 +5,7 @@ import {
     MODAL_CONTEXT_USER,
 } from '@suite/modal';
 
-import { type useFilteredModal } from '../src/hooks/suite/useFilteredModal';
+import { type useFilteredModal } from '../useFilteredModal';
 
 export const filters: Parameters<typeof useFilteredModal>[] = [
     [[MODAL_CONTEXT_USER]],
