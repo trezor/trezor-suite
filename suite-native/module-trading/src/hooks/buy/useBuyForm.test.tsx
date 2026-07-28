@@ -27,8 +27,8 @@ import { selectTradingResidenceCountry } from '@suite-native/trading-state';
 import { type BuyFormType, type TradeableAsset } from '@suite-native/trading-types';
 import { PROTO } from '@trezor/connect';
 
-import { createTradingLightStore } from '../../../__tests__/tradingTestUtils';
-import { clearBuyFormQuoteData, useBuyForm } from '../useBuyForm';
+import { clearBuyFormQuoteData, useBuyForm } from './useBuyForm';
+import { createTradingLightStore } from '../../__tests__/tradingTestUtils';
 
 jest.mock('@trezor/react-utils', () => {
     const originalModule = jest.requireActual('@trezor/react-utils');

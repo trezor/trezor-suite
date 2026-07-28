@@ -14,9 +14,9 @@ import {
 } from '@suite-native/trading-fixtures';
 import { type BuyFormValues } from '@suite-native/trading-types';
 
-import { createTradingLightStore } from '../../../__tests__/tradingTestUtils';
-import { useBuyForm } from '../useBuyForm';
-import { useBuyQuotes } from '../useBuyQuotes';
+import { useBuyForm } from './useBuyForm';
+import { useBuyQuotes } from './useBuyQuotes';
+import { createTradingLightStore } from '../../__tests__/tradingTestUtils';
 
 jest.mock('@trezor/react-utils', () => {
     const originalModule = jest.requireActual('@trezor/react-utils');

@@ -3,11 +3,11 @@ import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { getTranslation } from '@suite-native/intl';
 import { type TestStore, act } from '@suite-native/test-utils-store';
 
+import { useTradingOutputsReviewErrorAlert } from './useTradingOutputsReviewErrorAlert';
 import {
     createTradingLightStore,
     renderHookWithTradingProvider,
-} from '../../../__tests__/tradingTestUtils';
-import { useTradingOutputsReviewErrorAlert } from '../useTradingOutputsReviewErrorAlert';
+} from '../../__tests__/tradingTestUtils';
 
 const mockShowAlert = jest.fn();
 

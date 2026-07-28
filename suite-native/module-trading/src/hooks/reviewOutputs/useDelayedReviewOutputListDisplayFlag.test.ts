@@ -1,6 +1,6 @@
 import { renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 
-import { useDelayedReviewOutputListDisplayFlag } from '../useDelayedReviewOutputListDisplayFlag';
+import { useDelayedReviewOutputListDisplayFlag } from './useDelayedReviewOutputListDisplayFlag';
 
 const mockSelectDeviceButtonRequestsCodes = jest.fn().mockReturnValue([]);
 

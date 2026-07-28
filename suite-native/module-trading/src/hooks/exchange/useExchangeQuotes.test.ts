@@ -21,9 +21,9 @@ import {
 import { type ExchangeFormValues, type ReceiveAccount } from '@suite-native/trading-types';
 import { PROTO } from '@trezor/connect';
 
-import { createTradingLightStore } from '../../../__tests__/tradingTestUtils';
-import { useExchangeForm } from '../useExchangeForm';
-import { useExchangeQuotes } from '../useExchangeQuotes';
+import { useExchangeForm } from './useExchangeForm';
+import { useExchangeQuotes } from './useExchangeQuotes';
+import { createTradingLightStore } from '../../__tests__/tradingTestUtils';
 
 const mockReport = jest.fn();
 const services: NativeAnalyticsDep = {

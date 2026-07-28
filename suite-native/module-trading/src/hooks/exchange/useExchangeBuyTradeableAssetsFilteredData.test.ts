@@ -1,8 +1,8 @@
 import { act } from '@suite-native/test-utils-store';
 import { btcAsset, ethAsset, usdcAsset } from '@suite-native/trading-fixtures';
 
-import { renderHookWithTradingProvider } from '../../../__tests__/tradingTestUtils';
-import { useExchangeBuyTradeableAssetsFilteredData } from '../useExchangeBuyTradeableAssetsFilteredData';
+import { useExchangeBuyTradeableAssetsFilteredData } from './useExchangeBuyTradeableAssetsFilteredData';
+import { renderHookWithTradingProvider } from '../../__tests__/tradingTestUtils';
 
 const mockUseWatch = jest.fn();
 
@@ -11,8 +11,8 @@ jest.mock('@suite-native/forms', () => ({
     useWatch: (...args: unknown[]) => mockUseWatch(...args),
 }));
 
-jest.mock('../useExchangeFormContext', () => ({
-    ...jest.requireActual('../useExchangeFormContext'),
+jest.mock('./useExchangeFormContext', () => ({
+    ...jest.requireActual('./useExchangeFormContext'),
     useExchangeFormContext: () => ({
         control: undefined,
     }),

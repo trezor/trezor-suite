@@ -9,8 +9,8 @@ import { getTranslation } from '@suite-native/intl';
 import { btc1NormalAccount } from '@suite-native/trading-fixtures';
 import type { ReviewOutputItemContentDataProps } from '@suite-native/transaction-management';
 
-import { renderWithTradingProvider } from '../../../__tests__/tradingTestUtils';
-import { useTradingContentBuilder } from '../useTradingContentBuilder';
+import { useTradingContentBuilder } from './useTradingContentBuilder';
+import { renderWithTradingProvider } from '../../__tests__/tradingTestUtils';
 
 const mockSend: FormStateTradingCryptoCurrency = {
     cryptoId: 'bitcoin' as CryptoId,
