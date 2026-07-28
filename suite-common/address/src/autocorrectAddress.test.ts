@@ -3,8 +3,8 @@ import {
     createNetworksCompositionRoot,
 } from '@suite-common/networks';
 
-import { createAddressValidator } from '../AddressValidator';
-import { autocorrectAddress } from '../autocorrectAddress';
+import { createAddressValidator } from './AddressValidator';
+import { autocorrectAddress } from './autocorrectAddress';
 
 describe('autocorrectAddress', () => {
     const networkModules = createNetworksCompositionRoot();

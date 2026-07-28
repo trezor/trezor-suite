@@ -1,4 +1,4 @@
-import { isBitcoinCashAddressUppercase } from '../isBitcoinCashAddressUppercase';
+import { isBitcoinCashAddressUppercase } from './isBitcoinCashAddressUppercase';
 
 describe('isBitcoinCashAddressUppercase', () => {
     it.each([

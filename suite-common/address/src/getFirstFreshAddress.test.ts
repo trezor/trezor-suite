@@ -1,7 +1,7 @@
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
-import { getFirstFreshAddress, getFreshAddresses } from '../getFirstFreshAddress';
+import { getFirstFreshAddress, getFreshAddresses } from './getFirstFreshAddress';
 
 describe(getFirstFreshAddress.name, () => {
     it('returns all unrevealed unused addresses for utxo-based accounts in order', () => {

@@ -1,4 +1,4 @@
-import { isBech32AddressUppercase } from '../isBech32AddressUppercase';
+import { isBech32AddressUppercase } from './isBech32AddressUppercase';
 
 describe('isBech32AddressUppercase', () => {
     it('returns false for empty string', () => {

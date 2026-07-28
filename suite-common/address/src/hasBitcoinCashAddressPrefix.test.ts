@@ -1,4 +1,4 @@
-import { hasBitcoinCashAddressPrefix } from '../hasBitcoinCashAddressPrefix';
+import { hasBitcoinCashAddressPrefix } from './hasBitcoinCashAddressPrefix';
 
 describe('hasBitcoinCashAddressPrefix', () => {
     it.each([
