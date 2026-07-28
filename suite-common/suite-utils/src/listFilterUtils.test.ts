@@ -1,4 +1,4 @@
-import { normalizeForSearch } from '../listFilterUtils';
+import { normalizeForSearch } from './listFilterUtils';
 
 describe('normalizeForSearch', () => {
     it.each([
