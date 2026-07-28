@@ -12,19 +12,13 @@ import InteractiveChecklist from '../../components/InteractiveChecklist';
 
 Connect 10 moves the Connect core out of the self-hosted iframe + popup and into **Trezor Suite**. Your app stays a thin client and keeps calling the same `TrezorConnect` methods — but a handful of parameters, return shapes and packaging details change, and a few methods move out of the public API.
 
-This guide is the single source of truth for the upgrade. It is edited as the betas land. For the architecture behind the change, see [New Connect flow in Trezor Suite](/guides/new-connect-flow-in-trezor-suite). For the release-by-release list, see the [changelog](/changelog).
+Work through the breaking sections that apply to you, adopt the recommended changes if you want them, then verify. For the architecture behind the change, see [New Connect flow in Trezor Suite](/guides/new-connect-flow-in-trezor-suite); for the release-by-release list, see the [changelog](/changelog).
 
 <Callout type="info">
     **v9 keeps working.** Connect 10 is in beta: we would like third parties to test their
     integrations against it and report what breaks, but you should move your production integration
     to v10 once it reaches stable. v9 stays supported until then.
 </Callout>
-
-## How this guide is organized
-
-- **Steps 1, 2 and 5 are the breaking changes** — your integration will not work correctly until you have done the ones that apply to you. Step 5 applies only if you host Connect Core (`@trezor/connect`) yourself; if you install `@trezor/connect-web`, `-webextension` or `-mobile`, skip it.
-- **Step 3 is optional** — improvements worth adopting, but nothing breaks if you do not.
-- **Step 4 is a verification pass** once you are done.
 
 ## Installing the beta
 
@@ -38,20 +32,20 @@ Found a bug, or have feedback on the beta? Open an issue at [github.com/trezor/t
 
 ## API changes at a glance
 
-Most integrations only touch a few of these. Find your call site or your error in the table, then jump to the step that explains it.
+Most integrations only touch a few of these. Find your call site or your error in the table, then jump to the section that explains it.
 
-| v9 API                            | v10                              | What to do                                                                                                              |
-| --------------------------------- | -------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
-| `getAccountDescriptor`            | Removed                          | Call the per-coin `*GetPublicKey`, read `displayablePublicKey` ([Step 2](#step-2-breaking--only-if-you-use-these-apis)) |
-| `getAccountInfo()` with no path   | Throws `Method_InvalidParameter` | Pass `path` or `descriptor`, or use `selectAccount` ([Step 2](#step-2-breaking--only-if-you-use-these-apis))            |
-| `coin: 'Bitcoin'` (name/label)    | Rejected                         | Use the shortcut: `coin: 'btc'` ([Step 2](#step-2-breaking--only-if-you-use-these-apis))                                |
-| `useCardanoDerivation`            | Removed                          | Declare `enabledNetworks` at init ([Cardano](#cardano))                                                                 |
-| `on` / `off` / `uiResponse`       | Throws `TypeError`               | Remove — no replacement in the public tier ([Step 2](#step-2-breaking--only-if-you-use-these-apis))                     |
-| device-management methods         | Not in public API                | Suite's responsibility now — no replacement ([Step 2](#step-2-breaking--only-if-you-use-these-apis))                    |
-| `@trezor/connect-plugin-ethereum` | Stub that throws                 | Drop it, remove `transformTypedData` ([Step 2](#step-2-breaking--only-if-you-use-these-apis))                           |
-| `disableWebUSB()`                 | Removed                          | `updateConnectSettings({ transports })` ([Step 5](#step-5-breaking--only-if-you-host-connect-core-trezorconnect))       |
+| v9 API                            | v10                              | What to do                                                                                                                  |
+| --------------------------------- | -------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| `getAccountDescriptor`            | Removed                          | Call the per-coin `*GetPublicKey`, read `displayablePublicKey` ([these APIs](#breaking-changes-only-if-you-use-these-apis)) |
+| `getAccountInfo()` with no path   | Throws `Method_InvalidParameter` | Pass `path` or `descriptor`, or use `selectAccount` ([these APIs](#breaking-changes-only-if-you-use-these-apis))            |
+| `coin: 'Bitcoin'` (name/label)    | Rejected                         | Use the shortcut: `coin: 'btc'` ([these APIs](#breaking-changes-only-if-you-use-these-apis))                                |
+| `useCardanoDerivation`            | Removed                          | Declare `enabledNetworks` at init ([Cardano](#cardano))                                                                     |
+| `on` / `off` / `uiResponse`       | Throws `TypeError`               | Remove — no replacement in the public tier ([these APIs](#breaking-changes-only-if-you-use-these-apis))                     |
+| device-management methods         | Not in public API                | Suite's responsibility now — no replacement ([these APIs](#breaking-changes-only-if-you-use-these-apis))                    |
+| `@trezor/connect-plugin-ethereum` | Stub that throws                 | Drop it, remove `transformTypedData` ([these APIs](#breaking-changes-only-if-you-use-these-apis))                           |
+| `disableWebUSB()`                 | Removed                          | `updateConnectSettings({ transports })` ([Core hosts](#breaking-changes-only-if-you-host-connect-core-trezorconnect))       |
 
-## Step 1: Breaking — required for every integration
+## Breaking changes: every integration
 
 - [ ] Add `manifest.appName` to your `init()` call. It is now **required**.
 
@@ -92,7 +86,7 @@ TrezorConnect.init({
 
 - [ ] Stop relying on `Object.keys(TrezorConnect)` enumeration or on monkeypatching methods. Public `TrezorConnect` objects are now class instances.
 
-## Step 2: Breaking — only if you use these APIs
+## Breaking changes: only if you use these APIs
 
 - [ ] **`getAccountDescriptor` is removed.** Call the per-coin `*GetPublicKey` instead.
     - `payload.descriptor` → Bitcoin: `result.descriptor`. Non-Bitcoin coins: `result.displayablePublicKey`.
@@ -123,7 +117,27 @@ TrezorConnect.init({
 
 - [ ] Remove the per-call `useCardanoDerivation` parameter. Declare `TrezorConnect.init({ enabledNetworks: [{ coin: 'ada' }] })` instead. Note: on thin packages, `enabledNetworks` is not honored — Cardano availability follows the host Suite wallet's enabled coins.
 
-## Step 3: Optional — recommended, not required
+## Breaking changes: only if you host Connect Core (`@trezor/connect`)
+
+Skip this section if you install `@trezor/connect-web`, `@trezor/connect-webextension` or `@trezor/connect-mobile` — those are thin clients and Suite hosts the core for them.
+
+- [ ] Pass `transports` as fully constructed `Transport` instances. String identifiers (`'BridgeTransport'`, …) and classes are no longer accepted:
+
+    ```javascript
+    import { BridgeTransport } from '@trezor/transport-common';
+
+    init({ transports: [new BridgeTransport({ id: 'my-app' })] });
+    ```
+
+- [ ] For WebUSB, import from `@trezor/transport-web`. Do not import the Node-only `@trezor/transport` barrel in web or React Native bundles.
+
+- [ ] Replace `disableWebUSB()` with `updateConnectSettings({ transports })` and a filtered list.
+
+- [ ] Remove any use of `TransportInfo.outdated`. Legacy `trezord-go` Bridge on port `21325` is no longer supported, and detecting an outdated Bridge is now your app's job.
+
+## Recommended, not required
+
+Nothing here breaks your integration, but these are the improvements Connect 10 was built for.
 
 - [ ] Replace the "call `getAccountInfo` with no path to trigger on-device discovery" pattern with `selectAccount`.
 
@@ -146,7 +160,7 @@ TrezorConnect.init({
 
 - [ ] Tron: `tronGetAddress` and `tronSignTransaction` are available via `@trezor/network-tron`.
 
-## Step 4: Verify
+## Verify
 
 - [ ] Suite desktop running: Connect connects over the local WebSocket, no popup, no iframe.
 
@@ -159,19 +173,3 @@ TrezorConnect.init({
 - [ ] Suite's permission prompt shows your app name, origin and icon.
 
 - [ ] Permissions are grouped by coin in the prompt and cover only what you use.
-
-## Step 5: Breaking — only if you host Connect Core (`@trezor/connect`)
-
-- [ ] Pass `transports` as fully constructed `Transport` instances. String identifiers (`'BridgeTransport'`, …) and classes are no longer accepted:
-
-    ```javascript
-    import { BridgeTransport } from '@trezor/transport-common';
-
-    init({ transports: [new BridgeTransport({ id: 'my-app' })] });
-    ```
-
-- [ ] For WebUSB, import from `@trezor/transport-web`. Do not import the Node-only `@trezor/transport` barrel in web or React Native bundles.
-
-- [ ] Replace `disableWebUSB()` with `updateConnectSettings({ transports })` and a filtered list.
-
-- [ ] Remove any use of `TransportInfo.outdated`. Legacy `trezord-go` Bridge on port `21325` is no longer supported, and detecting an outdated Bridge is now your app's job.

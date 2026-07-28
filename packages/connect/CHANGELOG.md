@@ -20,8 +20,6 @@ Use the persistent link [connect.trezor.io/10](https://connect.trezor.io/10/) to
 
 Connect 10 moves the Connect core out of the self-hosted iframe + popup and into **Trezor Suite**, which now hosts the core and renders every approval, PIN, passphrase and confirmation screen. Your app stays a thin client calling the same `TrezorConnect` methods — nothing to install, and it works whether or not Suite desktop is running. Alongside the move, the SDK gains a privacy-friendly account picker (`selectAccount`), granular per-coin permissions, and much smaller ESM-only client packages.
 
-**Upgrading from v9?** The [migration guide](https://connect.trezor.io/10/guides/migrating-to-connect-10) is the checklist of what changes in your code. For the architecture behind the move, see [New Connect flow in Trezor Suite](https://connect.trezor.io/10/guides/new-connect-flow-in-trezor-suite).
-
 ## Highlights
 
 ### 1. New Connect flow, powered by Trezor Suite
