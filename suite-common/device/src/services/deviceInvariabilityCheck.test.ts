@@ -4,7 +4,7 @@ import { DeviceModelInternal } from '@trezor/device-utils';
 import {
     deviceInvariabilityCheck,
     rawDataToDeviceInvariabilityCheckDTO,
-} from '../src/services/deviceInvariabilityCheck';
+} from './deviceInvariabilityCheck';
 
 const deviceId = 'asdf1234';
 const defaultFeatures = { internal_model: DeviceModelInternal.T3B1, unit_color: 1 } as const;
