@@ -10,6 +10,8 @@ export const TradingHistoryScreen = () => (
                 closeActionType="back"
             />
         }
+        isScrollable={false}
+        noHorizontalPadding
     >
         <TradingHistory />
     </Screen>

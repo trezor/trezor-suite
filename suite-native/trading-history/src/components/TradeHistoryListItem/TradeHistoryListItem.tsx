@@ -1,21 +1,16 @@
 import { memo } from 'react';
-import { Pressable } from 'react-native';
-import { useSelector } from 'react-redux';
+
+import type { CryptoId, FiatCurrencyCode } from 'invity-api';
 
 import { useFormatters } from '@suite-common/formatters';
-import {
-    type TradingRootState,
-    type TradingTransaction,
-    selectTradingProviderByNameAndTradeType,
-} from '@suite-common/trading';
-import { Card, HStack, Text, VStack } from '@suite-native/atoms';
+import { type TradingTransaction } from '@suite-common/trading';
+import { Card, HStack, PressableOpacity, Text, VStack } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
-import { Translation } from '@suite-native/intl';
-import { ProviderLogo } from '@suite-native/trading-atoms';
+import { FiatCurrencyIcon, IconByCryptoId } from '@suite-native/trading-atoms';
 import { useChangeStringsExtractor } from '@suite-native/trading-quote-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
-import { TradeStatusBadge } from '../TradeStatusBadge';
+import { TradeStatusIcon } from './TradeStatusIcon';
 
 export type TradeHistoryListItemProps = {
     transaction: TradingTransaction;
@@ -23,57 +18,79 @@ export type TradeHistoryListItemProps = {
 };
 
 const pressableStyle = prepareNativeStyle(() => ({
-    paddingBottom: 16,
+    paddingBottom: 12,
 }));
 
-export const TradeHistoryListItem = memo(({ transaction, onPress }: TradeHistoryListItemProps) => {
-    const { DateFormatter, TimeFormatter } = useFormatters();
+const amountTextStyle = prepareNativeStyle(() => ({
+    flexShrink: 1,
+}));
+
+type TradeAmountProps = {
+    formattedValue: string | undefined;
+    currency: CryptoId | string | undefined;
+    isCrypto: boolean | undefined;
+};
+
+const TradeAmount = ({ formattedValue, currency, isCrypto }: TradeAmountProps) => {
     const { applyStyle } = useNativeStyles();
-    const { fromStringValue, toStringValue } = useChangeStringsExtractor(transaction.data);
 
-    const providerInfo = useSelector((state: TradingRootState) =>
-        selectTradingProviderByNameAndTradeType(
-            state,
-            transaction.data.exchange,
-            transaction.tradeType,
-        ),
-    );
-
-    const date = new Date(transaction.date);
+    if (!formattedValue || !currency || isCrypto === undefined) {
+        return null;
+    }
 
     return (
-        <Pressable onPress={onPress} style={applyStyle(pressableStyle)}>
+        <HStack alignItems="center" spacing="sp8" flexShrink={1}>
+            {isCrypto ? (
+                <IconByCryptoId cryptoId={currency as CryptoId} size="small" withNetwork />
+            ) : (
+                <FiatCurrencyIcon size="small" value={currency as FiatCurrencyCode} />
+            )}
+            <Text style={applyStyle(amountTextStyle)}>{formattedValue}</Text>
+        </HStack>
+    );
+};
+
+export const TradeHistoryListItem = memo(({ transaction, onPress }: TradeHistoryListItemProps) => {
+    const { DateTimeFormatter } = useFormatters();
+    const { applyStyle } = useNativeStyles();
+    const { fromStringValue, toStringValue, fromCurrency, toCurrency, isFromCrypto, isToCrypto } =
+        useChangeStringsExtractor(transaction.data);
+
+    const date = new Date(transaction.date);
+    const hasFromAmount = !!fromStringValue && !!fromCurrency;
+    const hasToAmount = !!toStringValue && !!toCurrency;
+
+    return (
+        <PressableOpacity
+            accessibilityRole="button"
+            onPress={onPress}
+            style={applyStyle(pressableStyle)}
+        >
             <Card>
-                <VStack>
-                    <HStack justifyContent="space-between">
-                        <Text color="contentSecondary">
-                            <Translation
-                                id="moduleTrading.tradeHistory.timeAt"
-                                values={{
-                                    date: <DateFormatter value={date} key="date" />,
-                                    time: <TimeFormatter value={date} key="time" />,
-                                }}
-                            />
-                        </Text>
-                        <TradeStatusBadge status={transaction.data.status} />
-                    </HStack>
-                    <HStack>
-                        {providerInfo?.logo && <ProviderLogo logo={providerInfo.logo} />}
-                        <Text>{providerInfo?.companyName}</Text>
-                    </HStack>
-                    <HStack alignItems="center">
-                        <Text>{fromStringValue}</Text>
-                        <Icon name="caretRight" size="medium" />
-                        <Text>{toStringValue}</Text>
-                    </HStack>
-                    <Text variant="body-sm" color="contentSecondary">
-                        <Translation
-                            id="moduleTrading.tradeHistory.transactionId"
-                            values={{ orderId: transaction.data.orderId }}
+                <VStack spacing="sp8">
+                    <HStack alignItems="center" flexWrap="wrap" spacing="sp8">
+                        <TradeAmount
+                            formattedValue={fromStringValue}
+                            currency={fromCurrency}
+                            isCrypto={isFromCrypto}
                         />
-                    </Text>
+                        {hasFromAmount && hasToAmount && (
+                            <Icon name="arrowRight" size="mediumLarge" color="contentSecondary" />
+                        )}
+                        <TradeAmount
+                            formattedValue={toStringValue}
+                            currency={toCurrency}
+                            isCrypto={isToCrypto}
+                        />
+                    </HStack>
+                    <HStack alignItems="center" spacing="sp8">
+                        <Text variant="body-sm" color="contentSecondary">
+                            <DateTimeFormatter value={date} />
+                        </Text>
+                        <TradeStatusIcon status={transaction.data.status} />
+                    </HStack>
                 </VStack>
             </Card>
-        </Pressable>
+        </PressableOpacity>
     );
 });

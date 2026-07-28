@@ -7,7 +7,6 @@
             "path": "../../suite-common/dependency-injection"
         },
         { "path": "../../suite-common/device" },
-        { "path": "../../suite-common/flags" },
         {
             "path": "../../suite-common/formatters"
         },
