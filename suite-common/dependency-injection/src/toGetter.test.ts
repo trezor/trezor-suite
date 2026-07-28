@@ -1,4 +1,4 @@
-import { toGetter } from '../toGetter';
+import { toGetter } from './toGetter';
 
 type TestState = {
     relayUrl: string;

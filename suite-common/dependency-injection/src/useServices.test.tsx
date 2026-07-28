@@ -2,7 +2,7 @@ import React, { type PropsWithChildren } from 'react';
 
 import { renderHook } from '@testing-library/react';
 
-import { ServicesProvider, useServices } from '../useServices';
+import { ServicesProvider, useServices } from './useServices';
 
 type ADep = { a: () => void };
 type BDep = { b: () => void };

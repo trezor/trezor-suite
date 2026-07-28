@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import { useServices } from '../useServices';
+import { useServices } from './useServices';
 
 type ADep = { a: () => void };
 type BDep = { b: () => void };
