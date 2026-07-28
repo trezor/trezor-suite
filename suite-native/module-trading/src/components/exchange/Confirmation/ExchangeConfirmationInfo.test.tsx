@@ -6,11 +6,11 @@ import { type TestStore, renderWithStoreProvider, screen } from '@suite-native/t
 import { mockTransaction } from '@suite-native/tokens';
 import { exchangeQuotes } from '@suite-native/trading-fixtures';
 
-import { createTradingLightStore } from '../../../../__tests__/tradingTestUtils';
 import {
     ExchangeConfirmationInfo,
     type ExchangeConfirmationInfoCardProps,
-} from '../ExchangeConfirmationInfo';
+} from './ExchangeConfirmationInfo';
+import { createTradingLightStore } from '../../../__tests__/tradingTestUtils';
 
 const testQuote = exchangeQuotes[0];
 

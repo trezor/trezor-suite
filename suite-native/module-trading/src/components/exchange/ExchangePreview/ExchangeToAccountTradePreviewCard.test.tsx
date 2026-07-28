@@ -2,11 +2,11 @@ import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { getTranslation } from '@suite-native/intl';
 import { btc1NormalAccount, mercuryoFixedWorstQuote } from '@suite-native/trading-fixtures';
 
-import { renderWithTradingProvider } from '../../../../__tests__/tradingTestUtils';
 import {
     ExchangeToAccountTradePreviewCard,
     type ExchangeToAccountTradePreviewCardProps,
-} from '../ExchangeToAccountTradePreviewCard';
+} from './ExchangeToAccountTradePreviewCard';
+import { renderWithTradingProvider } from '../../../__tests__/tradingTestUtils';
 
 describe('ExchangeToAccountTradePreviewCard', () => {
     const renderExchangeToAccountTradePreviewCard = (

@@ -2,8 +2,8 @@ import { getTranslation } from '@suite-native/intl';
 import { act } from '@suite-native/test-utils';
 import { mercuryoFixedWorstQuote } from '@suite-native/trading-fixtures';
 
-import { renderWithTradingProvider } from '../../../../../__tests__/tradingTestUtils';
-import { ExchangeApprovalLimitSheet } from '../ExchangeApprovalLimitSheet';
+import { ExchangeApprovalLimitSheet } from './ExchangeApprovalLimitSheet';
+import { renderWithTradingProvider } from '../../../../__tests__/tradingTestUtils';
 
 const mockOnDismiss = jest.fn();
 const mockOnApprovalTypeSelect = jest.fn();

@@ -2,12 +2,12 @@ import { UINT256_MAX } from '@suite-common/suite-constants';
 import { eth1NormalAccount, mercuryoFixedWorstQuote } from '@suite-native/trading-fixtures';
 import { BigNumber } from '@trezor/utils';
 
+import { RevokeLimitInfoRow } from './RevokeLimitInfoRow';
 import {
     type PreloadedStatePartial,
     type TradingTestPreloadedState,
     renderWithTradingProvider,
-} from '../../../../__tests__/tradingTestUtils';
-import { RevokeLimitInfoRow } from '../RevokeLimitInfoRow';
+} from '../../../__tests__/tradingTestUtils';
 
 describe('RevokeLimitInfoRow', () => {
     const renderRevokeLimitInfoRow = (

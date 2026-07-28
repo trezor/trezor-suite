@@ -5,14 +5,14 @@ import { createPrecomposedTxFinal, mercuryoFixedWorstQuote } from '@suite-native
 import { mergeDeepObject } from '@trezor/utils';
 
 import {
+    ExchangePreviewContinueButton,
+    type ExchangePreviewContinueButtonProps,
+} from './ExchangePreviewContinueButton';
+import {
     type PreloadedStatePartial,
     type TradingTestPreloadedState,
     renderWithTradingProvider,
-} from '../../../../__tests__/tradingTestUtils';
-import {
-    ExchangePreviewContinueButton,
-    type ExchangePreviewContinueButtonProps,
-} from '../ExchangePreviewContinueButton';
+} from '../../../__tests__/tradingTestUtils';
 
 const mockNavigate = jest.fn();
 
