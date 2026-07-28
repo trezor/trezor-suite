@@ -10,7 +10,7 @@ import { BigNumber } from '@trezor/utils';
 import {
     fiatAmountInputValidationSchema,
     sendCryptoAmountValidationSchema,
-} from '../validationSchemes';
+} from './validationSchemes';
 
 let formatters: ReturnType<typeof useFormatters>;
 

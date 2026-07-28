@@ -14,8 +14,8 @@ import {
     useTransactionDetails,
 } from '@suite-native/transaction-management';
 
-import { createTradingLightStore } from '../../__tests__/tradingTestUtils';
-import { TradingConfirmingScreen } from '../TradingConfirmingScreen';
+import { TradingConfirmingScreen } from './TradingConfirmingScreen';
+import { createTradingLightStore } from '../__tests__/tradingTestUtils';
 
 const mockOpenInBlockchain = jest.fn();
 

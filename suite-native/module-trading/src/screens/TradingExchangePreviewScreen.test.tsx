@@ -22,11 +22,11 @@ import {
     oneInchFusionPlusWithEip712SignDataQuote,
 } from '@suite-native/trading-fixtures';
 
-import { createTradingLightStore } from '../../__tests__/tradingTestUtils';
 import {
     TradingExchangePreviewScreen,
     type TradingExchangePreviewScreenProps,
-} from '../TradingExchangePreviewScreen';
+} from './TradingExchangePreviewScreen';
+import { createTradingLightStore } from '../__tests__/tradingTestUtils';
 
 const btc1Account = getBtcAccount({ descriptor: asAccountDescriptor('btc1normal') });
 const eth1Account = getEthAccount({ descriptor: asAccountDescriptor('eth1normal') });
@@ -63,7 +63,7 @@ const mockResolveConsent = jest.fn();
 const mockAbortConfirmTrade = jest.fn();
 let mockTxnErrorString: string | null = null;
 
-jest.mock('../../hooks/exchange/useExchangeFlow', () => ({
+jest.mock('../hooks/exchange/useExchangeFlow', () => ({
     useExchangeFlow: () => ({
         abortConfirmTrade: mockAbortConfirmTrade,
         confirmTrade: mockConfirmTrade,

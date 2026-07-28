@@ -5,8 +5,8 @@ import { act, renderHookWithStoreProvider } from '@suite-native/test-utils-store
 import { btcAsset, getWalletState } from '@suite-native/trading-fixtures';
 import { type SellFormType } from '@suite-native/trading-types';
 
-import { useSellForm } from '../../../hooks/sell/useSellForm';
-import { tradingSellFormToTradingSellFormProps } from '../quotesUtils';
+import { tradingSellFormToTradingSellFormProps } from './quotesUtils';
+import { useSellForm } from '../../hooks/sell/useSellForm';
 
 describe('quoteUtils', () => {
     let form: SellFormType;

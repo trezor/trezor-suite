@@ -10,13 +10,10 @@ import type {
 import { type TestStore } from '@suite-native/test-utils-store';
 
 import {
-    createTradingLightStore,
-    renderWithTradingProvider,
-} from '../../__tests__/tradingTestUtils';
-import {
     TradingExchangeOutputsReviewScreen,
     TradingSellOutputsReviewScreen,
-} from '../TradingOutputsReviewScreen';
+} from './TradingOutputsReviewScreen';
+import { createTradingLightStore, renderWithTradingProvider } from '../__tests__/tradingTestUtils';
 
 const mockSignAndSendTransaction = jest.fn();
 const mockSignDataAndConfirm = jest.fn();
@@ -68,11 +65,11 @@ jest.mock('@suite-native/confirm-on-trezor', () => ({
 const mockUseExchangeFlowFn = jest.fn(() => mockUseExchangeFlow);
 const mockUseSellFlowFn = jest.fn(() => mockUseSellFlow);
 
-jest.mock('../../hooks/exchange/useExchangeFlow', () => ({
+jest.mock('../hooks/exchange/useExchangeFlow', () => ({
     useExchangeFlow: () => mockUseExchangeFlowFn(),
 }));
 
-jest.mock('../../hooks/sell/useSellFlow', () => ({
+jest.mock('../hooks/sell/useSellFlow', () => ({
     useSellFlow: () => mockUseSellFlowFn(),
 }));
 
@@ -83,12 +80,12 @@ const mockUseTradingOutputsReviewScreenControls = jest.fn((_: any) => ({
     confirmOnTrezorRef: { current: null },
 }));
 
-jest.mock('../../hooks/reviewOutputs/useTradingOutputsReviewScreenControls', () => ({
+jest.mock('../hooks/reviewOutputs/useTradingOutputsReviewScreenControls', () => ({
     useTradingOutputsReviewScreenControls: (args: any) =>
         mockUseTradingOutputsReviewScreenControls(args),
 }));
 
-jest.mock('../../hooks/reviewOutputs/useDelayedReviewOutputListDisplayFlag', () => ({
+jest.mock('../hooks/reviewOutputs/useDelayedReviewOutputListDisplayFlag', () => ({
     useDelayedReviewOutputListDisplayFlag: () => false,
 }));
 
