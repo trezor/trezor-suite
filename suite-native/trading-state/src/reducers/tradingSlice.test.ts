@@ -18,11 +18,11 @@ import {
 } from '@suite-native/trading-fixtures';
 import { type ProviderConfirmationStatus, type TradingState } from '@suite-native/trading-types';
 
-import { buyActions } from '../buySlice';
-import { exchangeActions } from '../exchangeSlice';
-import { residenceActions } from '../residenceSlice';
-import { sellActions } from '../sellSlice';
-import { tradingActions, tradingSlice } from '../tradingSlice';
+import { buyActions } from './buySlice';
+import { exchangeActions } from './exchangeSlice';
+import { residenceActions } from './residenceSlice';
+import { sellActions } from './sellSlice';
+import { tradingActions, tradingSlice } from './tradingSlice';
 
 describe('tradingSlice', () => {
     let tradingReducer: ReturnType<typeof tradingSlice.prepareReducer>;

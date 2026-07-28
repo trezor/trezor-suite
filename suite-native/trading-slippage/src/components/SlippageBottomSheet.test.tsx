@@ -4,8 +4,8 @@ import { useOpenLink } from '@suite-native/link';
 import { type TestStore, act, userEvent } from '@suite-native/test-utils-store';
 import { TREZOR_TRADING_DEX_SLIPPAGE_URL } from '@trezor/urls';
 
-import { createSlippageTestStore, renderWithSlippageTestProvider } from '../../__tests__/testUtils';
-import { SlippageBottomSheet } from '../SlippageBottomSheet';
+import { SlippageBottomSheet } from './SlippageBottomSheet';
+import { createSlippageTestStore, renderWithSlippageTestProvider } from '../__tests__/testUtils';
 
 jest.mock('@suite-native/link', () => ({
     useOpenLink: jest.fn(),

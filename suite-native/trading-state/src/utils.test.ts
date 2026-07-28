@@ -9,7 +9,7 @@ import {
     usdtOnBscAsset,
 } from '@suite-native/trading-fixtures';
 
-import { getAssetByEnabledNetworksFilter, getFormDraftKeyByTradeType } from '../utils';
+import { getAssetByEnabledNetworksFilter, getFormDraftKeyByTradeType } from './utils';
 
 jest.mock('@suite-common/wallet-config', () => {
     const actual = jest.requireActual('@suite-common/wallet-config');

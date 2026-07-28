@@ -5,7 +5,7 @@ import {
     tradingSellActions,
 } from '@suite-common/trading';
 
-import { prepareTradingLastErrorSentryMiddleware } from '../tradingLastErrorSentryMiddleware';
+import { prepareTradingLastErrorSentryMiddleware } from './tradingLastErrorSentryMiddleware';
 
 const mockCaptureSentryException = jest.fn();
 

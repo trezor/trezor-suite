@@ -9,7 +9,7 @@ import {
     mercuryoFixedWorstQuote,
 } from '@suite-native/trading-fixtures';
 
-import { exchangeActions, exchangeReducer } from '../exchangeSlice';
+import { exchangeActions, exchangeReducer } from './exchangeSlice';
 
 describe('exchangeSlice', () => {
     it('should have correct initial state', () => {

@@ -3,9 +3,9 @@ import type { ExtraDependencies } from '@suite-common/redux-utils';
 import type { TrezorDevice } from '@suite-common/suite-types';
 import { formDraftActions } from '@suite-common/wallet-core';
 
-import { buyActions, exchangeActions, sellActions, tradingActions } from '../../reducers';
-import { getFormDraftKeyByTradeType } from '../../utils';
-import { prepareTradingMiddleware } from '../tradingMiddleware';
+import { buyActions, exchangeActions, sellActions, tradingActions } from '../reducers';
+import { getFormDraftKeyByTradeType } from '../utils';
+import { prepareTradingMiddleware } from './tradingMiddleware';
 
 describe('tradingMiddleware', () => {
     const tradingMiddleware = prepareTradingMiddleware(() => ({}) as ExtraDependencies);

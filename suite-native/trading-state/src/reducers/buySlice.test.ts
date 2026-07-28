@@ -10,7 +10,7 @@ import {
     mercuryoApplePayBuyQuote,
 } from '@suite-native/trading-fixtures';
 
-import { buyActions, buyReducer } from '../buySlice';
+import { buyActions, buyReducer } from './buySlice';
 
 describe('buySlice', () => {
     describe('clearState', () => {
