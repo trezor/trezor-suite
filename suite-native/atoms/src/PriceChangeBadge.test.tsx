@@ -5,10 +5,10 @@ import {
 } from '@suite-native/test-utils';
 import { type NativeStyleUtils, useNativeStyles } from '@trezor/styles-native';
 
-import { Box as MockBox } from '../Box';
-import { PriceChangeBadge } from '../PriceChangeBadge';
+import { Box as MockBox } from './Box';
+import { PriceChangeBadge } from './PriceChangeBadge';
 
-jest.mock('../Skeleton/BoxSkeleton', () => ({
+jest.mock('./Skeleton/BoxSkeleton', () => ({
     BoxSkeleton: () => <MockBox testID="skeleton-box" />,
 }));
 

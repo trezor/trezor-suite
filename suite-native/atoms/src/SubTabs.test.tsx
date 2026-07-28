@@ -7,7 +7,7 @@ import {
 } from '@suite-native/test-utils';
 import { type NativeStyleUtils, useNativeStyles } from '@trezor/styles-native';
 
-import { type SubTabItem, SubTabs } from '../SubTabs';
+import { type SubTabItem, SubTabs } from './SubTabs';
 
 const items: SubTabItem<string>[] = [
     {
