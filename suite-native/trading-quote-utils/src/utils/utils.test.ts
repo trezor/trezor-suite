@@ -12,7 +12,7 @@ import {
     getTradeOperationData,
     getTradeStatusStep,
     getTradeTitle,
-} from '../utils';
+} from './utils';
 
 describe('utils', () => {
     describe('getTradeOperationData', () => {

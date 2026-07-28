@@ -13,9 +13,9 @@ import {
 } from '@suite-native/test-utils-store';
 import { residenceReducer } from '@suite-native/trading-state';
 
-import { type TradingLocationFormType } from '../../types/tradingLocationForm';
-import { useFormCountryCode } from '../useFormCountryCode';
-import { useLocationForm } from '../useLocationForm';
+import { useFormCountryCode } from './useFormCountryCode';
+import { useLocationForm } from './useLocationForm';
+import { type TradingLocationFormType } from '../types/tradingLocationForm';
 
 describe('useFormCountryCode', () => {
     const renderLocationForm = () =>

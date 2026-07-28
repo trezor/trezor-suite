@@ -1,7 +1,7 @@
 import { renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 import { getInitializedTradingState, mercuryoDexQuote } from '@suite-native/trading-fixtures';
 
-import { useReceiveAmountMultiplier } from '../useReceiveAmountMultiplier';
+import { useReceiveAmountMultiplier } from './useReceiveAmountMultiplier';
 
 const getPreloadedState = (swapSlippage: string | undefined) => {
     const trading = getInitializedTradingState();

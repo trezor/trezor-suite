@@ -7,7 +7,7 @@ import {
     getSellTrade,
 } from '@suite-native/trading-fixtures';
 
-import { useChangeStringsExtractor } from '../useChangeStringsExtractor';
+import { useChangeStringsExtractor } from './useChangeStringsExtractor';
 
 describe('useChangeStringsExtractor', () => {
     const getPreloadedState = () => ({ wallet: { trading: getInitializedTradingState() } });
