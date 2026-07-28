@@ -6,6 +6,7 @@ import type {
     ComposeUtxo,
     ComposedInputs,
     DiscoveryAccount,
+    FeeLevel,
     SelectFeeLevel,
 } from '@trezor/connect-common';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
@@ -16,7 +17,6 @@ import type {
 } from '@trezor/utxo-lib';
 import { composeTx, networks } from '@trezor/utxo-lib';
 
-import type { BitcoinFeeLevels } from '../../backend/fees/BitcoinFeeLevels';
 import { DEFAULT_BITCOIN_LONGTERM_FEE_RATE } from '../../data/defaultFeeLevels';
 
 type Options = {
@@ -25,7 +25,7 @@ type Options = {
     outputs: ComposeOutput[];
     coinInfo: BitcoinNetworkInfo;
     baseFee?: number;
-    feeLevels: BitcoinFeeLevels;
+    feeLevels: FeeLevel[];
     sortingStrategy: TransactionInputOutputSortingStrategy;
 };
 
@@ -42,7 +42,7 @@ export class TransactionComposer {
 
     sortingStrategy: TransactionInputOutputSortingStrategy;
 
-    feeLevels: BitcoinFeeLevels;
+    feeLevels: FeeLevel[];
 
     customFee: string | undefined;
 
@@ -50,10 +50,10 @@ export class TransactionComposer {
 
     private get levels() {
         return this.customFee
-            ? this.feeLevels.levels.concat([
+            ? this.feeLevels.concat([
                   { label: 'custom' as const, feePerUnit: this.customFee, blocks: -1 },
               ])
-            : this.feeLevels.levels;
+            : this.feeLevels;
     }
 
     constructor(options: Options) {
