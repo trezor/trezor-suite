@@ -42,6 +42,7 @@ import { exhaustive } from '@trezor/type-utils';
 import { unique, versionUtils } from '@trezor/utils';
 
 import {
+    TRADING_EXCHANGE_FORM_DEX,
     TRADING_SLIP24_MIN_FIRMWARE_VERSION,
     TRADING_SLIP24_SUPPORTED_NETWORK_TYPES,
 } from '../constants';
@@ -58,10 +59,12 @@ import type { TradingRootState, TradingState } from '../reducers/tradingCommonRe
 import {
     type SelectedTradingAsset,
     type TradingBuyPaymentMethodProps,
+    type TradingExchangeFormType,
     type TradingFiatCurrenciesProps,
     type TradingPaymentMethodListProps,
     type TradingPaymentMethodProps,
     type TradingSellPaymentMethodProps,
+    type TradingTradeMapProps,
     type TradingTransaction,
     type TradingTransactionExchange,
     type TradingTransactionSell,
@@ -711,6 +714,49 @@ export const selectTradingSellOfferQuotes = createMemoizedSelector(
     [selectTradingSellQuotesByPaymentMethod],
     quotes => returnStableArrayIfEmpty(getTradingQuotesDedupedByProvider(quotes)),
 );
+
+type TradingSelectedQuoteFormValues = {
+    provider?: string;
+    paymentMethod?: TradingPaymentMethodProps;
+    exchangeType?: TradingExchangeFormType;
+};
+
+const selectedQuoteByFormValuesResolvers: {
+    [T in TradingType]: (
+        state: TradingRootState,
+        formValues: TradingSelectedQuoteFormValues,
+    ) => TradingTradeMapProps[T] | undefined;
+} = {
+    buy: (state, { provider, paymentMethod }) => {
+        const quotes = selectTradingBuyQuotesByPaymentMethod(state, paymentMethod);
+
+        return provider === undefined
+            ? quotes[0]
+            : quotes.find(quote => quote.exchange === provider);
+    },
+    sell: (state, { provider, paymentMethod }) => {
+        const quotes = selectTradingSellQuotesByPaymentMethod(state, paymentMethod);
+
+        return provider === undefined
+            ? quotes[0]
+            : quotes.find(quote => quote.exchange === provider);
+    },
+    exchange: (state, { provider, exchangeType }) => {
+        const quotes =
+            exchangeType === TRADING_EXCHANGE_FORM_DEX
+                ? selectTradingExchangeDexQuotes(state)
+                : selectTradingExchangeCexQuotes(state);
+
+        return quotes.find(quote => !provider || quote.exchange === provider) ?? quotes[0];
+    },
+};
+
+export const selectTradingSelectedQuoteByFormValues = <T extends TradingType>(
+    state: TradingRootState,
+    type: T,
+    formValues: TradingSelectedQuoteFormValues,
+): TradingTradeMapProps[T] | undefined =>
+    selectedQuoteByFormValuesResolvers[type](state, formValues);
 
 export const selectTradingExchangeFormStep = (state: TradingRootState) =>
     state.wallet.trading.exchange.formStep;

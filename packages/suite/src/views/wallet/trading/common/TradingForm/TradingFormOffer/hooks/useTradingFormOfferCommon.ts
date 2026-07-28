@@ -1,5 +1,3 @@
-import type { BuyTrade, ExchangeTrade, SellFiatTrade } from 'invity-api';
-
 import { type TranslationKey } from '@suite/intl';
 import { selectTorState } from '@suite/tor';
 import {
@@ -16,19 +14,13 @@ import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingC
 import {
     getCryptoQuoteAmountProps,
     getSelectedCryptoId,
-    getSelectedQuote,
     isTradingExchangeContext,
 } from 'src/utils/wallet/trading/tradingTypingUtils';
 import {
     tradingGetAmountLabels,
     tradingGetSectionActionLabel,
 } from 'src/utils/wallet/trading/tradingUtils';
-
-type TradingQuoteByType = {
-    buy: BuyTrade;
-    sell: SellFiatTrade;
-    exchange: ExchangeTrade;
-};
+import { useTradingSelectedQuote } from 'src/views/wallet/trading/common/hooks/useTradingSelectedQuote';
 
 export const useTradingFormOfferCommon = <T extends TradingType>() => {
     const context = useTradingFormContext();
@@ -48,7 +40,7 @@ export const useTradingFormOfferCommon = <T extends TradingType>() => {
     );
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
 
-    const quote = getSelectedQuote(context) as TradingQuoteByType[T] | undefined;
+    const quote = useTradingSelectedQuote(type as T);
     const quoteAmounts = getCryptoQuoteAmountProps(quote, context);
     const selectedCryptoId = getSelectedCryptoId(context);
 
