@@ -3,7 +3,7 @@ import path from 'node:path';
 
 const codegenScript = path.resolve(__dirname, 'codegen.ts');
 const tsxCli = require.resolve('tsx/cli');
-const fixture = path.resolve(__dirname, '../mocks/mockCodegenCli.ts');
+const fixture = path.resolve(__dirname, '__fixtures__/codegen-cli.fixture.ts');
 
 const runCli = (args: string[]) =>
     execFileSync(process.execPath, [tsxCli, codegenScript, ...args], {
