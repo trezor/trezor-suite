@@ -1,7 +1,7 @@
 import { Text } from '@suite-native/atoms';
 import { renderWithBasicProvider } from '@suite-native/test-utils';
 
-import { SlidingFooterOverlay } from '../SlidingFooterOverlay';
+import { SlidingFooterOverlay } from './SlidingFooterOverlay';
 
 describe('SlidingFooterOverlay', () => {
     it('should render children', () => {

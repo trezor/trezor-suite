@@ -9,10 +9,10 @@ import {
     renderWithStoreProvider,
 } from '@suite-native/test-utils-store';
 
-import { type FeesFormType } from '../../../..';
-import { ETH_ACCOUNT_KEY, getWalletState } from '../../../../__fixtures__/walletState';
-import { useFeesForm } from '../../../../hooks';
-import { CustomFeeInputs, type CustomFeeInputsProps } from '../CustomFeeInputs';
+import { CustomFeeInputs, type CustomFeeInputsProps } from './CustomFeeInputs';
+import { type FeesFormType } from '../../..';
+import { ETH_ACCOUNT_KEY, getWalletState } from '../../../__fixtures__/walletState';
+import { useFeesForm } from '../../../hooks';
 
 // Mock the selectors
 jest.mock('@suite-common/wallet-core', () => ({

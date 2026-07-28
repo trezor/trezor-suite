@@ -5,9 +5,9 @@ import { Form, useForm } from '@suite-native/forms';
 import { getTranslation } from '@suite-native/intl';
 import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 
-import { createFeeLevels } from '../../../__fixtures__/feeLevels';
-import { getWalletState } from '../../../__fixtures__/walletState';
-import { FeesContent, type FeesContentProps } from '../FeesContent';
+import { FeesContent, type FeesContentProps } from './FeesContent';
+import { createFeeLevels } from '../../__fixtures__/feeLevels';
+import { getWalletState } from '../../__fixtures__/walletState';
 
 // Create a simple validation schema for testing
 const testValidationSchema = yup.object({

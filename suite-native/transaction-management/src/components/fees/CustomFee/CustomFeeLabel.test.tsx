@@ -7,10 +7,10 @@ import {
     renderWithStoreProvider,
 } from '@suite-native/test-utils-store';
 
-import { getWalletState } from '../../../../__fixtures__/walletState';
-import { type FeesFormType } from '../../../../feesFormSchema';
-import { useFeesForm } from '../../../../hooks';
-import { CustomFeeLabel } from '../CustomFeeLabel';
+import { CustomFeeLabel } from './CustomFeeLabel';
+import { getWalletState } from '../../../__fixtures__/walletState';
+import { type FeesFormType } from '../../../feesFormSchema';
+import { useFeesForm } from '../../../hooks';
 
 describe('CustomFeeLabel', () => {
     const defaultState = {

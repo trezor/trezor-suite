@@ -8,14 +8,14 @@ import {
     userEvent,
 } from '@suite-native/test-utils-store';
 
+import { CustomFeeCard, type CustomFeeCardProps } from './CustomFeeCard';
 import {
     BTC_ACCOUNT_KEY,
     ETH_ACCOUNT_KEY,
     getWalletState,
-} from '../../../../__fixtures__/walletState';
-import { type FeesFormType } from '../../../../feesFormSchema';
-import { useFeesForm } from '../../../../hooks';
-import { CustomFeeCard, type CustomFeeCardProps } from '../CustomFeeCard';
+} from '../../../__fixtures__/walletState';
+import { type FeesFormType } from '../../../feesFormSchema';
+import { useFeesForm } from '../../../hooks';
 
 describe('CustomFeeCard', () => {
     const defaultProps = {

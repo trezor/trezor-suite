@@ -8,10 +8,10 @@ import {
     userEvent,
 } from '@suite-native/test-utils-store';
 
-import { createFeeLevel } from '../../../../__fixtures__/feeLevels';
-import { getWalletState } from '../../../../__fixtures__/walletState';
-import { type NativeSupportedPredefinedFeeLevel } from '../../../../types';
-import { FeeOption } from '../FeeOption';
+import { FeeOption } from './FeeOption';
+import { createFeeLevel } from '../../../__fixtures__/feeLevels';
+import { getWalletState } from '../../../__fixtures__/walletState';
+import { type NativeSupportedPredefinedFeeLevel } from '../../../types';
 
 // Create a simple validation schema for testing
 const testValidationSchema = yup.object({

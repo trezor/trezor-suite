@@ -2,8 +2,8 @@ import { type FormState } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 
-import { BTC_ACCOUNT_KEY, getWalletState } from '../../../__fixtures__/walletState';
-import { FeeSelectorRow } from '../FeeSelectorRow';
+import { FeeSelectorRow } from './FeeSelectorRow';
+import { BTC_ACCOUNT_KEY, getWalletState } from '../../__fixtures__/walletState';
 
 const noopThunk = jest.fn();
 

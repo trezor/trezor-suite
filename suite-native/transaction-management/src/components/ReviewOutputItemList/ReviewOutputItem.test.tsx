@@ -3,11 +3,11 @@ import { getTranslation } from '@suite-native/intl';
 import { within } from '@suite-native/test-utils';
 import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 
-import { ETH_ACCOUNT_KEY } from '../../../__fixtures__/walletState';
-import { type StatefulReviewOutput } from '../../../types';
-import { ReviewOutputItem, type ReviewOutputItemProps } from '../ReviewOutputItem';
+import { ReviewOutputItem, type ReviewOutputItemProps } from './ReviewOutputItem';
+import { ETH_ACCOUNT_KEY } from '../../__fixtures__/walletState';
+import { type StatefulReviewOutput } from '../../types';
 
-jest.mock('../ReviewOutputItemValues', () => ({
+jest.mock('./ReviewOutputItemValues', () => ({
     ReviewOutputItemValues: ({
         translationKey,
         value,

@@ -3,20 +3,20 @@ import { Text as MockText } from '@suite-native/atoms';
 import { getTranslation } from '@suite-native/intl';
 import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 
-import { ETH_ACCOUNT_KEY } from '../../../__fixtures__/walletState';
 import {
     ReviewOutputSummaryItem,
     type ReviewOutputSummaryItemProps,
-} from '../ReviewOutputSummaryItem';
+} from './ReviewOutputSummaryItem';
+import { ETH_ACCOUNT_KEY } from '../../__fixtures__/walletState';
 
 const mockSelectIsClearSignedTradingSwap = jest.fn();
-jest.mock('../../../selectors', () => ({
-    ...jest.requireActual('../../../selectors'),
+jest.mock('../../selectors', () => ({
+    ...jest.requireActual('../../selectors'),
     selectIsClearSignedTradingSwap: (...args: unknown[]) =>
         mockSelectIsClearSignedTradingSwap(...args),
 }));
 
-jest.mock('../ReviewOutputItemValues', () => ({
+jest.mock('./ReviewOutputItemValues', () => ({
     ReviewOutputItemValues: ({
         translationKey,
         value,

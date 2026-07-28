@@ -11,8 +11,8 @@ import {
     userEvent,
 } from '@suite-native/test-utils-store';
 
-import { getWalletState } from '../../../__fixtures__/walletState';
-import { FeesFooter } from '../FeesFooter';
+import { FeesFooter } from './FeesFooter';
+import { getWalletState } from '../../__fixtures__/walletState';
 
 // Create a simple validation schema for testing
 const testValidationSchema = yup.object({
