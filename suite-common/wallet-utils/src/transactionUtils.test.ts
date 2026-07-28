@@ -1,7 +1,7 @@
 import { testMocks } from '@suite-common/test-utils';
 import { type WalletAccountTransaction } from '@suite-common/wallet-types';
 
-import * as fixtures from '../__fixtures__/transactionUtils';
+import * as fixtures from './__fixtures__/transactionUtils';
 import {
     type MonthKey,
     analyzeTransactions,
@@ -23,7 +23,7 @@ import {
     isTransactionCancellable,
     parseTransactionDateKey,
     parseTransactionMonthKey,
-} from '../transactionUtils';
+} from './transactionUtils';
 
 const { getWalletTransaction } = testMocks;
 

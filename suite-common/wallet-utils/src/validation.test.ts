@@ -1,4 +1,4 @@
-import { isDecimalsValid, isHexValid, isInteger } from '../validationUtils';
+import { isDecimalsValid, isHexValid, isInteger } from './validationUtils';
 
 describe('validation', () => {
     it('isDecimalsValid', () => {

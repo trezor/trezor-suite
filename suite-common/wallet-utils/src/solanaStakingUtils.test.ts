@@ -2,7 +2,7 @@ import { type Account } from '@suite-common/wallet-types';
 import { type SolanaStakingAccount } from '@trezor/blockchain-link-types';
 import { StakeState } from '@trezor/network-solana/constants';
 
-import { getSolanaUnstakeAmountBounds } from '../solanaStakingUtils';
+import { getSolanaUnstakeAmountBounds } from './solanaStakingUtils';
 
 const SOL = 1_000_000_000;
 

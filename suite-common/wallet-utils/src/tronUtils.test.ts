@@ -1,7 +1,7 @@
 import { type GeneralPrecomposedTransaction } from '@suite-common/wallet-types';
 import { type TronAccountExtraData } from '@trezor/blockchain-link-types';
 
-import { calculateTronFeeBreakdown, computeBandwidthFeeLevel } from '../tronUtils';
+import { calculateTronFeeBreakdown, computeBandwidthFeeLevel } from './tronUtils';
 
 const makeTrc20Tx = (overrides: Record<string, unknown> = {}): GeneralPrecomposedTransaction =>
     ({

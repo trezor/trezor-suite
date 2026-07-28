@@ -1,4 +1,4 @@
-import { resolveSolanaStakingLimit } from '../solanaStakingLimitUtils';
+import { resolveSolanaStakingLimit } from './solanaStakingLimitUtils';
 
 describe('resolveSolanaStakingLimit', () => {
     describe('unstake', () => {
