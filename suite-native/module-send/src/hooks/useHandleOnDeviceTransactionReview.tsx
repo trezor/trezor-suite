@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react';
+import { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
@@ -18,6 +18,7 @@ import {
     type SendStackParamList,
     type SendStackRoutes,
     type StackToStackCompositeNavigationProps,
+    useNavigationRemoveActionInterceptor,
 } from '@suite-native/navigation';
 import { signTransactionNativeThunk } from '@suite-native/send';
 import {
@@ -56,22 +57,15 @@ export const useHandleOnDeviceTransactionReview = ({
         selectIsTransactionReviewInProgress(state, 'send', accountKey, tokenContract),
     );
 
-    useEffect(() => {
-        const unsubscribe = navigation.addListener('beforeRemove', e => {
-            // Ask user to confirm if they want to leave the screen and cancel the review.
-            if (e.data.action.type === 'GO_BACK' && isTransactionReviewInProgress) {
-                e.preventDefault();
-                showReviewCancellationAlert();
-
-                return;
-            }
-
-            // Delete canceled transaction review state leftovers.
+    useNavigationRemoveActionInterceptor({
+        actionTypesToIntercept: isTransactionReviewInProgress ? ['GO_BACK', 'POP'] : [],
+        onInterceptedAction: () => {
+            showReviewCancellationAlert();
+        },
+        onPassThroughAction: () => {
             dispatch(sendFormActions.discardTransaction());
-        });
-
-        return unsubscribe;
-    }, [navigation, isTransactionReviewInProgress, showReviewCancellationAlert, dispatch]);
+        },
+    });
 
     const handleOnDeviceTransactionReview = useCallback(async () => {
         if (!transaction) {

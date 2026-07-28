@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
@@ -8,10 +8,10 @@ import {
     handleYieldApproveCancelThunk,
     sendFormActions,
 } from '@suite-common/wallet-core';
-import { useDisableIOSGesture } from '@suite-native/navigation';
+import { useNavigationRemoveActionInterceptor } from '@suite-native/navigation';
 
-import { useShowYieldReviewCancellationAlert } from './useShowYieldReviewCancellationAlert';
 import { type YieldAllowanceFormDraftTransactionType } from '../types';
+import { useShowYieldReviewCancellationAlert } from './useShowYieldReviewCancellationAlert';
 
 type UseYieldApprovalReviewNavigationParams = {
     flowKey: string;
@@ -30,8 +30,6 @@ export const useYieldApprovalReviewNavigation = ({
     const navigation = useNavigation();
     const showReviewCancellationAlert = useShowYieldReviewCancellationAlert();
     const isCleanupHandledRef = useRef(false);
-
-    useDisableIOSGesture();
 
     const cleanupReview = useCallback(() => {
         dispatch(sendFormActions.discardTransaction());
@@ -60,47 +58,31 @@ export const useYieldApprovalReviewNavigation = ({
         navigation.goBack();
     }, [cleanupCanceledReview, navigation, onReviewLeave]);
 
-    useEffect(() => {
-        const unsubscribe = navigation.addListener('beforeRemove', event => {
+    useNavigationRemoveActionInterceptor({
+        actionTypesToIntercept: shouldConfirmCancellation ? ['GO_BACK', 'POP'] : [],
+        onInterceptedAction: action => {
             if (isCleanupHandledRef.current) {
-                return;
-            }
-
-            if (event.data.action.type === 'GO_BACK' && shouldConfirmCancellation) {
-                event.preventDefault();
-                showReviewCancellationAlert().then(({ wasReviewCanceled }) => {
-                    if (wasReviewCanceled) {
-                        onReviewLeave?.();
-                        cleanupCanceledReview();
-                        isCleanupHandledRef.current = true;
-                        unsubscribe();
-                        navigation.dispatch(event.data.action);
-                    }
-                });
+                navigation.dispatch(action);
 
                 return;
             }
 
-            if (event.data.action.type === 'GO_BACK') {
+            showReviewCancellationAlert().then(({ wasReviewCanceled }) => {
+                if (wasReviewCanceled) {
+                    onReviewLeave?.();
+                    cleanupCanceledReview();
+                    isCleanupHandledRef.current = true;
+                    navigation.dispatch(action);
+                }
+            });
+        },
+        onPassThroughAction: () => {
+            if (!isCleanupHandledRef.current) {
                 onReviewLeave?.();
                 cleanupReview();
-
-                return;
             }
-
-            onReviewLeave?.();
-            cleanupReview();
-        });
-
-        return unsubscribe;
-    }, [
-        cleanupCanceledReview,
-        cleanupReview,
-        navigation,
-        onReviewLeave,
-        shouldConfirmCancellation,
-        showReviewCancellationAlert,
-    ]);
+        },
+    });
 
     return {
         leaveReviewFromDeviceCancel,

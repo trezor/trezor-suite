@@ -20,7 +20,7 @@ import {
     type YieldStackParamList,
     YieldStackRoutes,
     useNavigateToInitialScreen,
-    useOverrideBackNavigation,
+    useNavigationRemoveActionInterceptor,
 } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
@@ -77,7 +77,7 @@ export const YieldDepositCompleteScreen = () => {
         navigateToInitialScreen();
     }, [account?.symbol, analytics, dispatch, flowKey, navigateToInitialScreen, vault?.id]);
 
-    useOverrideBackNavigation({ onNavigateBack: handleExit });
+    useNavigationRemoveActionInterceptor({ onInterceptedAction: handleExit });
 
     useEffect(() => {
         if (resolutionStatus !== 'resolved') {

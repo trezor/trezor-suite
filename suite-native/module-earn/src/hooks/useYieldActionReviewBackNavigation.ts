@@ -1,9 +1,10 @@
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
 import { stablecoinYieldActions } from '@suite-common/wallet-core';
+import { useNavigationRemoveActionInterceptor } from '@suite-native/navigation';
 import TrezorConnect from '@trezor/connect';
 
 import { useShowYieldReviewCancellationAlert } from './useShowYieldReviewCancellationAlert';
@@ -46,50 +47,34 @@ export const useYieldActionReviewBackNavigation = ({
         navigation.goBack();
     }, [cleanupCanceledActionReview, navigation, onReviewLeave]);
 
-    useEffect(() => {
-        const shouldConfirmCancellation =
-            reviewStatus === 'signing' || reviewStatus === 'signed' || reviewStatus === 'sending';
+    const shouldConfirmCancellation =
+        reviewStatus === 'signing' || reviewStatus === 'signed' || reviewStatus === 'sending';
 
-        const unsubscribe = navigation.addListener('beforeRemove', event => {
+    useNavigationRemoveActionInterceptor({
+        actionTypesToIntercept: shouldConfirmCancellation ? ['GO_BACK', 'POP'] : [],
+        onInterceptedAction: action => {
             if (isCleanupHandledRef.current) {
-                return;
-            }
-
-            if (event.data.action.type === 'GO_BACK' && shouldConfirmCancellation) {
-                event.preventDefault();
-                showReviewCancellationAlert().then(({ wasReviewCanceled }) => {
-                    if (wasReviewCanceled) {
-                        onReviewLeave?.();
-                        cleanupCanceledActionReview();
-                        isCleanupHandledRef.current = true;
-                        unsubscribe();
-                        navigation.dispatch(event.data.action);
-                    }
-                });
+                navigation.dispatch(action);
 
                 return;
             }
 
-            if (event.data.action.type === 'GO_BACK') {
+            showReviewCancellationAlert().then(({ wasReviewCanceled }) => {
+                if (wasReviewCanceled) {
+                    onReviewLeave?.();
+                    cleanupCanceledActionReview();
+                    isCleanupHandledRef.current = true;
+                    navigation.dispatch(action);
+                }
+            });
+        },
+        onPassThroughAction: () => {
+            if (!isCleanupHandledRef.current) {
                 onReviewLeave?.();
                 discardActionReview();
-
-                return;
             }
-
-            onReviewLeave?.();
-            discardActionReview();
-        });
-
-        return unsubscribe;
-    }, [
-        cleanupCanceledActionReview,
-        discardActionReview,
-        navigation,
-        onReviewLeave,
-        reviewStatus,
-        showReviewCancellationAlert,
-    ]);
+        },
+    });
 
     return {
         leaveReviewFromDeviceCancel,

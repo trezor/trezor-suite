@@ -6,7 +6,6 @@ export * from './hooks/useInterceptNativeNavigation';
 export * from './hooks/useNavigateToInitialScreen';
 export * from './hooks/useLastRouteName';
 export * from './routeUtils';
-export * from './hooks/useOverrideBackNavigation';
 export * from './components/TabBar';
 export * from './components/Screen';
 export * from './components/ScreenHeader';

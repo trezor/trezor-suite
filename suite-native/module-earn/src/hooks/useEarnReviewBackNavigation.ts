@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { CommonActions, StackActions, useNavigation } from '@react-navigation/native';
@@ -9,7 +9,12 @@ import {
     selectAccountByKey,
 } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
-import { AppTabsRoutes, RootStackRoutes, useDisableIOSGesture } from '@suite-native/navigation';
+import {
+    AppTabsRoutes,
+    type NavigationActionType,
+    RootStackRoutes,
+    useNavigationRemoveActionInterceptor,
+} from '@suite-native/navigation';
 import {
     type TransactionReviewOutputsState,
     selectIsTransactionReviewInProgress,
@@ -20,7 +25,11 @@ import { type EarnFormDraftPrefix } from '../types';
 import { resolveStakingHomeRoute } from '../utils/resolveStakingHomeRoute';
 
 const CLOSE_FLOW_ACTION_TYPE = StackActions.popToTop().type;
-const REVIEW_EXIT_ACTION_TYPES = ['GO_BACK', CLOSE_FLOW_ACTION_TYPE];
+const REVIEW_EXIT_ACTION_TYPES = [
+    'GO_BACK',
+    'POP',
+    CLOSE_FLOW_ACTION_TYPE,
+] as NavigationActionType[];
 
 export const useEarnReviewBackNavigation = (
     formType: EarnFormDraftPrefix,
@@ -36,8 +45,6 @@ export const useEarnReviewBackNavigation = (
     const dispatch = useDispatch();
     const navigation = useNavigation();
     const showReviewCancellationAlert = useShowReviewCancellationAlert();
-
-    useDisableIOSGesture();
 
     const isCancellationAlertVisibleRef = useRef(false);
 
@@ -64,29 +71,23 @@ export const useEarnReviewBackNavigation = (
         );
     }, [account, navigation]);
 
-    useEffect(() => {
-        const cleanup = () => {
-            dispatch(cancelSignSendFormTransactionThunk());
-        };
+    const cleanupReview = useCallback(() => {
+        dispatch(cancelSignSendFormTransactionThunk());
+    }, [dispatch]);
 
-        const unsubscribe = navigation.addListener('beforeRemove', e => {
-            const isClosingWholeFlow = e.data.action.type === CLOSE_FLOW_ACTION_TYPE;
-            const isLeavingReview = REVIEW_EXIT_ACTION_TYPES.includes(e.data.action.type);
+    useNavigationRemoveActionInterceptor({
+        actionTypesToIntercept: isTransactionReviewInProgress
+            ? REVIEW_EXIT_ACTION_TYPES
+            : [CLOSE_FLOW_ACTION_TYPE],
+        onInterceptedAction: action => {
+            const isClosingWholeFlow = action.type === CLOSE_FLOW_ACTION_TYPE;
 
-            if (!isLeavingReview || !isTransactionReviewInProgress) {
-                cleanup();
-
-                // Redirect the close button to the staking home; let plain back/swipe proceed.
-                if (isClosingWholeFlow) {
-                    e.preventDefault();
-                    unsubscribe();
-                    navigateToStakingHome();
-                }
+            if (!isTransactionReviewInProgress) {
+                cleanupReview();
+                navigateToStakingHome();
 
                 return;
             }
-
-            e.preventDefault();
 
             if (isCancellationAlertVisibleRef.current) {
                 return;
@@ -97,28 +98,18 @@ export const useEarnReviewBackNavigation = (
                 isCancellationAlertVisibleRef.current = false;
 
                 if (wasReviewCanceled) {
-                    cleanup();
-                    unsubscribe();
+                    cleanupReview();
 
                     if (isClosingWholeFlow) {
                         navigateToStakingHome();
                     } else {
-                        navigation.dispatch(e.data.action);
+                        navigation.dispatch(action);
                     }
                 }
             });
-        });
-
-        return unsubscribe;
-    }, [
-        accountKey,
-        navigation,
-        isTransactionReviewInProgress,
-        showReviewCancellationAlert,
-        dispatch,
-        formType,
-        navigateToStakingHome,
-    ]);
+        },
+        onPassThroughAction: cleanupReview,
+    });
 
     const navigateBack = useCallback(() => {
         navigation.goBack();

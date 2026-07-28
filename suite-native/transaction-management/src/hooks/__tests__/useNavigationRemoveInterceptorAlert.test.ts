@@ -7,7 +7,6 @@ const mockShowStayOnScreenAlert = jest.fn();
 const mockHideStayOnScreenAlert = jest.fn();
 
 jest.mock('@suite-native/navigation', () => ({
-    ...jest.requireActual('@suite-native/navigation'),
     useNavigationRemoveActionInterceptor: jest.fn(),
 }));
 
@@ -75,7 +74,7 @@ describe('useNavigationRemoveInterceptorAlert', () => {
     it('should hide stay on screen alert on allowed remove action', () => {
         renderUseNavigationRemoveInterceptorAlert();
 
-        getPreventNavigationRemoveProps()?.onAllowedAction?.({ type: 'PUSH' });
+        getPreventNavigationRemoveProps()?.onPassThroughAction?.({ type: 'PUSH' });
 
         expect(mockHideStayOnScreenAlert).toHaveBeenCalledTimes(1);
     });
