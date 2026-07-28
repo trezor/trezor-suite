@@ -17,7 +17,7 @@ export class MiscFeeLevels {
         this.levels = cloneObject(coinInfo.defaultFees);
     }
 
-    async load(blockchain: Blockchain, request: Parameters<typeof blockchain.estimateFee>[0]) {
+    async load(blockchain: Blockchain, request: Parameters<typeof blockchain.estimateFee>[0] = {}) {
         try {
             const estimateResult = await blockchain.estimateFee(request);
             // @ts-expect-error: indexing with noUncheckedIndexedAccess
