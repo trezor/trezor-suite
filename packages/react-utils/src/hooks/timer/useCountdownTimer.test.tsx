@@ -1,7 +1,7 @@
 import { act, render } from '@testing-library/react';
 
+import { fixtures } from './__fixtures__/useCountdownTimer';
 import { useCountdownTimer } from './useCountdownTimer';
-import { fixtures } from '../../../mocks/mockUseCountdownTimer';
 
 type Result = ReturnType<typeof useCountdownTimer>;
 
