@@ -2,12 +2,12 @@ import {
     buildTokenDefinitionsFromStorageFixtures,
     getSupportedDefinitionTypesFixtures,
     isTokenDefinitionKnownFixtures,
-} from '../__fixtures__/utils';
+} from './__fixtures__/utils';
 import {
     buildTokenDefinitionsFromStorage,
     getSupportedDefinitionTypes,
     isTokenDefinitionKnown,
-} from '../tokenDefinitionsUtils';
+} from './tokenDefinitionsUtils';
 
 describe('isTokenDefinitionKnown', () => {
     isTokenDefinitionKnownFixtures.forEach(

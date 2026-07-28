@@ -4,10 +4,10 @@ import {
     isPhishingTransactionFixtures,
     isUnknownTxPhishingFixtures,
     isZeroValuePhishingFixtures,
-} from '../__fixtures__/phishing';
-import { isPhishingTransaction } from '../phishing';
-import { DUST_PHISHING_THRESHOLD } from '../phishing/constants';
-import { detectors } from '../phishing/detectors';
+} from './__fixtures__/phishing';
+import { DUST_PHISHING_THRESHOLD } from './constants';
+import { detectors } from './detectors';
+import { isPhishingTransaction } from './phishing';
 
 describe('isDustValuePhishing', () => {
     isDustValuePhishingFixtures.forEach(({ testName, transaction, result }) => {
