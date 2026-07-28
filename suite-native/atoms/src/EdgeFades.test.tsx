@@ -1,6 +1,6 @@
 import { renderWithBasicProvider } from '@suite-native/test-utils';
 
-import { EdgeFades } from '../EdgeFades';
+import { EdgeFades } from './EdgeFades';
 
 describe('EdgeFades', () => {
     it('renders horizontal fades at the left and right edges', () => {

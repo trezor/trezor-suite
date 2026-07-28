@@ -3566,6 +3566,29 @@ export const messages = {
             button: {
                 title: 'Trade history',
             },
+            tabs: {
+                all: 'All trades',
+                exchange: 'Swaps',
+                buy: 'Buys',
+                sell: 'Sells',
+            },
+            filteredEmptyState: {
+                exchange: 'No swaps yet',
+                buy: 'No buys yet',
+                sell: 'No sells yet',
+                showAll: 'Show all trades',
+            },
+            emptyState: {
+                title: 'No trades yet',
+                description: 'Your trades will appear here and you can track their status.',
+                button: 'Back to trade form',
+            },
+            statusIcon: {
+                success: 'Successful trade',
+                error: 'Failed trade',
+                warning: 'Trade requires attention',
+                pending: 'Trade in progress',
+            },
             timeAt: '{date} at {time}',
             status: {
                 badge: 'Trade status badge',
