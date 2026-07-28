@@ -134,8 +134,6 @@ export const YieldPageHeader = ({
                             >
                                 {vaultName}
                             </Text>
-                            {/* The balance aligns with the right edge of the vault name above;
-                                when the name is shorter, the gap keeps it 24px from the label. */}
                             <Row justifyContent="space-between" alignItems="center" gap={24}>
                                 <AccountLabel
                                     account={account}

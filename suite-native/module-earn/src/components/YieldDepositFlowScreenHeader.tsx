@@ -1,7 +1,11 @@
-import { getNetwork } from '@suite-common/wallet-config';
+import { useSelector } from 'react-redux';
+
+import { getNetwork, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { type Account, type TokenAddress } from '@suite-common/wallet-types';
-import { HStack, IconButton, Text, VStack } from '@suite-native/atoms';
+import { formatCoinBalance } from '@suite-common/wallet-utils';
+import { Box, DiscreetText, HStack, IconButton, Text, VStack } from '@suite-native/atoms';
 import { TokenIcon } from '@suite-native/icons';
+import { selectSupportedLanguageLocale } from '@suite-native/intl';
 import { ScreenHeader } from '@suite-native/navigation';
 
 type YieldDepositFlowScreenHeaderProps = {
@@ -19,7 +23,11 @@ export const YieldDepositFlowScreenHeader = ({
     tokenContract,
     vaultName,
 }: YieldDepositFlowScreenHeaderProps) => {
+    const locale = useSelector(selectSupportedLanguageLocale);
     const accountLabel = account.accountLabel ?? getNetwork(account.symbol).name;
+    // Same format as the desktop yield page header: `formatCoinBalance` keeps the leading
+    // significant digits and appends an ellipsis (…) once the fractional part gets too long.
+    const formattedBalance = `${formatCoinBalance(account.formattedBalance, locale)} ${getNetworkDisplaySymbol(account.symbol)}`;
 
     return (
         <ScreenHeader
@@ -38,14 +46,26 @@ export const YieldDepositFlowScreenHeader = ({
                         <Text variant="body-md" numberOfLines={1} ellipsizeMode="tail">
                             {vaultName}
                         </Text>
-                        <Text
-                            variant="body-xs"
-                            color="contentSecondary"
-                            numberOfLines={1}
-                            ellipsizeMode="tail"
-                        >
-                            {accountLabel}
-                        </Text>
+                        <HStack spacing="sp24" justifyContent="space-between" alignItems="center">
+                            <Box flexShrink={1}>
+                                <Text
+                                    variant="body-xs"
+                                    color="contentSecondary"
+                                    numberOfLines={1}
+                                    ellipsizeMode="tail"
+                                >
+                                    {accountLabel}
+                                </Text>
+                            </Box>
+                            <DiscreetText
+                                variant="body-xs"
+                                color="contentSecondary"
+                                numberOfLines={1}
+                                testID="@yield/flow-header/balance"
+                            >
+                                {formattedBalance}
+                            </DiscreetText>
+                        </HStack>
                     </VStack>
                 </HStack>
             }

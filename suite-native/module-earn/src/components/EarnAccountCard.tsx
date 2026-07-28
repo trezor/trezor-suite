@@ -24,10 +24,10 @@ import {
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { CRYPTO_BALANCE_DECIMALS } from '../constants';
-import { useMessageSystemStaking } from '../hooks/useMessageSystemStaking';
-import { type EarnDepositsCardActiveItem } from '../types';
 import { EarnClaimAlert } from './EarnClaimAlert';
 import { EarnTronVotingAlert } from './EarnTronVotingAlert';
+import { useMessageSystemStaking } from '../hooks/useMessageSystemStaking';
+import { type EarnDepositsCardActiveItem } from '../types';
 
 const itemCardStyle = prepareNativeStyle(utils => ({
     marginBottom: utils.spacings.sp16,
@@ -72,7 +72,7 @@ type EarnAccountCardProps = {
 export const EarnAccountCard = ({ item, onPress, onClaimPress }: EarnAccountCardProps) => {
     const { applyStyle } = useNativeStyles();
     const isStakingItem = item.type === 'staking';
-    const isStablecoinYieldItem = item.type === 'stablecoin-yield';
+    const isDefiYieldItem = item.type === 'stablecoin-yield';
     const isSupportedStaking = isStakingItem && isSupportedStakingNetworkSymbol(item.symbol);
     const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
 
@@ -126,8 +126,8 @@ export const EarnAccountCard = ({ item, onPress, onClaimPress }: EarnAccountCard
     const showTronVotingAlert =
         isStakingItem && item.symbol === 'trx' && availableTronVotingPower !== '0';
 
-    const contractAddress = isStablecoinYieldItem ? item.tokenContractAddress : undefined;
-    const secondaryDescription = isStablecoinYieldItem
+    const contractAddress = isDefiYieldItem ? item.tokenContractAddress : undefined;
+    const secondaryDescription = isDefiYieldItem
         ? item.accountLabel || getNetworkDisplaySymbolName(item.networkSymbol)
         : null;
 
@@ -140,7 +140,7 @@ export const EarnAccountCard = ({ item, onPress, onClaimPress }: EarnAccountCard
                         contractAddress={contractAddress}
                         size="extraSmall"
                         showNetworkIcon
-                        wrappedTokenIcon={isStablecoinYieldItem ? 'network' : 'token'}
+                        wrappedTokenIcon={isDefiYieldItem ? 'network' : 'token'}
                     />
                 </Box>
 
