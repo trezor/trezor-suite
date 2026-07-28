@@ -202,14 +202,6 @@ describe('utils/deviceFeaturesUtils', () => {
             const coins2 = getAllNetworks();
 
             expect(getUnavailableCapabilities(featT2B1, coins2)).toEqual({
-                btg: 'no-support',
-                tbtg: 'no-support',
-                dash: 'no-support',
-                tdash: 'no-support',
-                dcr: 'no-support',
-                tdcr: 'no-support',
-                dgb: 'no-support',
-                nmc: 'no-support',
                 nostr: 'no-capability',
                 sol: 'update-required',
                 dsol: 'update-required',
@@ -220,7 +212,6 @@ describe('utils/deviceFeaturesUtils', () => {
                 trx: 'no-capability',
                 ttrx: 'no-capability',
                 tsep: 'update-required',
-                vtc: 'no-support',
                 chunkify: 'update-required',
                 entropyCheck: 'update-required',
                 evmApproval: 'update-required',
