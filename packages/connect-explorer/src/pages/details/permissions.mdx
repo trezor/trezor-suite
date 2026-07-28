@@ -1,3 +1,5 @@
+import ZoomableIllustration from '../../components/ZoomableIllustration';
+
 # Permissions
 
 When a third-party application calls Trezor Connect through Trezor Suite, Suite asks the user to
@@ -66,6 +68,14 @@ TrezorConnect.init({
 });
 ```
 
+Suite presents the declared set as one prompt, grouped by coin. The example above produces the
+following consent:
+
+<ZoomableIllustration
+    src="/images/connect-permissions-consent.webp"
+    alt="Trezor Suite consent prompt listing the requested permissions grouped by Bitcoin, Ethereum and device"
+/>
+
 Declaring permissions is optional and never grants anything on its own — the user still approves (or
 rejects) them. Anything that cannot be granted to a third party (`management`, `internal`, and
 `push_tx` on deeplinks) is ignored if declared, as are entries for unknown coins.
@@ -79,3 +89,8 @@ When the user approves a prompt they may choose to **remember** the application.
 applications and their granted permissions are listed in Trezor Suite under
 _Settings → Connected apps_, where the user can revoke individual permissions or forget the
 application entirely.
+
+<ZoomableIllustration
+    src="/images/connect-permissions-connected-apps.webp"
+    alt="Settings → Connected apps in Trezor Suite showing a remembered app and its granted permissions grouped by coin"
+/>
