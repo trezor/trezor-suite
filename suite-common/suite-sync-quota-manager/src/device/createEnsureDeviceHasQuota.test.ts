@@ -4,8 +4,8 @@ import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { err, ok } from '@trezor/type-utils';
 
-import { createEnsureDeviceHasQuota } from '../createEnsureDeviceHasQuota';
-import { createEnsureDeviceHasQuotaDepsMock } from '../mocks/createEnsureDeviceHasQuotaDepsMock';
+import { createEnsureDeviceHasQuota } from './createEnsureDeviceHasQuota';
+import { createEnsureDeviceHasQuotaDepsMock } from './mocks/createEnsureDeviceHasQuotaDepsMock';
 
 const device = mockSuiteDevice(
     { id: 'device-id' },
