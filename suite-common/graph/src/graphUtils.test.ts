@@ -5,13 +5,13 @@ import {
     getDataStepInMinutes,
     mapCryptoBalanceMovementToFixedTimeFrame,
     mergeMultipleFiatBalanceHistories,
-} from '../graphUtils';
+} from './graphUtils';
 import type {
     AccountHistoryBalancePoint,
     AccountWithBalanceHistory,
     FiatGraphPointWithCryptoBalance,
     FiatRatesItem,
-} from '../types';
+} from './types';
 
 describe(getDataStepInMinutes.name, () => {
     it('gets the 1m step size for 1 hour interval (60 points)', () => {

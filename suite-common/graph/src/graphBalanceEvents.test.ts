@@ -5,8 +5,8 @@ import {
     formatBalanceMovementEventsAmounts,
     groupBalanceMovementEvents,
     mergeGroups,
-} from '../graphBalanceEvents';
-import { type BalanceMovementEvent, type GroupedBalanceMovementEvent } from '../types';
+} from './graphBalanceEvents';
+import { type BalanceMovementEvent, type GroupedBalanceMovementEvent } from './types';
 
 describe('formatBalanceMovementEventsAmounts', () => {
     it('should calculate received and sent values for each balance movement', () => {

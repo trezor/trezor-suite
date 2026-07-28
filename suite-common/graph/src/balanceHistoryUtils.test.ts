@@ -1,6 +1,5 @@
 import { type TokenAddress } from '@suite-common/wallet-types';
 
-import { getAccountHistoryMovementFromTransactions } from '../balanceHistoryUtils';
 import { btcAccountBalanceHistoryResult, btcAccountTransactions } from './__fixtures__/btc';
 import {
     ethAccountBalanceHistoryResult,
@@ -8,6 +7,7 @@ import {
     ethTokenBalanceHistoryResult,
 } from './__fixtures__/eth';
 import { xrpAccountTransactions, xrpBalanceHistoryResult } from './__fixtures__/xrp';
+import { getAccountHistoryMovementFromTransactions } from './balanceHistoryUtils';
 
 describe('Account balance movement history', () => {
     it('should getAccoutBalanceHistory for bitcoin', async () => {
