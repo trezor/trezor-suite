@@ -17,7 +17,6 @@ import {
     selectTradingExchangeInfo,
     selectTradingExchangeIsFromRedirect,
     selectTradingExchangeIsLoading,
-    selectTradingExchangeQuotes,
     selectTradingExchangeQuotesRequest,
     selectTradingExchangeSelectedQuote,
     selectTradingExchangeTransactionId,
@@ -53,7 +52,6 @@ export const useTradingExchangeForm = (): TradingExchangeFormContextProps => {
     const dispatch = useDispatch();
     const quotesRequest = useSelector(selectTradingExchangeQuotesRequest);
     const isFromRedirect = useSelector(selectTradingExchangeIsFromRedirect);
-    const quotes = useSelector(selectTradingExchangeQuotes);
     const transactionId = useSelector(selectTradingExchangeTransactionId);
     const selectedQuote = useSelector(selectTradingExchangeSelectedQuote);
     const amountLimits = useSelector(selectTradingExchangeAmountLimits);
@@ -156,7 +154,7 @@ export const useTradingExchangeForm = (): TradingExchangeFormContextProps => {
         },
     });
 
-    const { cexQuotes, dexQuotes, isScheduledQuotesRefresh, refreshQuotes } = useExchangeQuotes({
+    const { dexQuotes, isScheduledQuotesRefresh, refreshQuotes } = useExchangeQuotes({
         methods,
         network,
         shouldSendInSats,
@@ -247,9 +245,6 @@ export const useTradingExchangeForm = (): TradingExchangeFormContextProps => {
         },
         methods,
         exchangeInfo,
-        quotes,
-        dexQuotes,
-        cexQuotes,
         quotesRequest,
         isComposing,
         composedLevels,
