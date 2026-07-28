@@ -1,4 +1,4 @@
-import { isSupportedFiatCurrency, isTradingFiatCurrencyOption } from '../currency';
+import { isSupportedFiatCurrency, isTradingFiatCurrencyOption } from './currency';
 
 describe('currency', () => {
     describe('isTradingFiatCurrencyOption', () => {

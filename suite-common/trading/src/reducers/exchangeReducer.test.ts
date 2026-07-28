@@ -5,8 +5,8 @@ import { configureMockStore } from '@suite-common/test-utils';
 import {
     changellyExchangeQuote,
     exchangeTradingFixtures,
-} from '../__fixtures__/exchangeTradingReducer';
-import { tradingExchangeActions, tradingExchangeReducer } from '../exchangeReducer';
+} from './__fixtures__/exchangeTradingReducer';
+import { tradingExchangeActions, tradingExchangeReducer } from './exchangeReducer';
 
 describe('tradingExchangeReducer', () => {
     exchangeTradingFixtures.forEach(fixture => {

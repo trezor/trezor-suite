@@ -14,17 +14,6 @@ import { type AccountKey } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { type StaticSessionId } from '@trezor/connect';
 
-import coins from '../../__fixtures__/coins.json';
-import { invityAPIFixtures } from '../../__fixtures__/invityAPI';
-import platforms from '../../__fixtures__/platforms.json';
-import { accountBtc, accountEth } from '../../__fixtures__/utils';
-import { TRADING_SLIP24_SUPPORTED_NETWORK_TYPES } from '../../constants';
-import { getProviderMetadataFixture } from '../../reducers/__fixtures__/providerMetadata';
-import { type BuyInfo, type TradingBuyState } from '../../reducers/buyReducer';
-import { type ExchangeInfo, exchangeInitialState } from '../../reducers/exchangeReducer';
-import { type SellInfo, sellInitialState } from '../../reducers/sellReducer';
-import { type TradingRootState, initialState } from '../../reducers/tradingCommonReducer';
-import type { TradingTransactionExchange, TradingTransactionSell, TradingType } from '../../types';
 import {
     type TradingRootStateWithDeviceAndAccounts,
     bestBuyQuotePerPaymentMethodProjection,
@@ -115,7 +104,18 @@ import {
     selectTradingTradesForSelectedDevice,
     selectValidTradingBuyQuotes,
     selectValidTradingSellQuotes,
-} from '../tradingSelectors';
+} from './tradingSelectors';
+import coins from '../__fixtures__/coins.json';
+import { invityAPIFixtures } from '../__fixtures__/invityAPI';
+import platforms from '../__fixtures__/platforms.json';
+import { accountBtc, accountEth } from '../__fixtures__/utils';
+import { TRADING_SLIP24_SUPPORTED_NETWORK_TYPES } from '../constants';
+import { getProviderMetadataFixture } from '../reducers/__fixtures__/providerMetadata';
+import { type BuyInfo, type TradingBuyState } from '../reducers/buyReducer';
+import { type ExchangeInfo, exchangeInitialState } from '../reducers/exchangeReducer';
+import { type SellInfo, sellInitialState } from '../reducers/sellReducer';
+import { type TradingRootState, initialState } from '../reducers/tradingCommonReducer';
+import type { TradingTransactionExchange, TradingTransactionSell, TradingType } from '../types';
 
 const supportedCoins: readonly NetworkSymbol[] = ['btc', 'eth', 'base'];
 
