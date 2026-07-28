@@ -1,7 +1,7 @@
 import { renderHookWithBasicProvider } from '@suite-native/test-utils';
 import { type DeviceThpPairingStatus } from '@trezor/connect';
 
-import { useOnThpPairingCanceled } from '../useOnThpPairingCanceled';
+import { useOnThpPairingCanceled } from './useOnThpPairingCanceled';
 
 jest.mock('@trezor/connect', () => ({
     ...jest.requireActual('@trezor/connect'),

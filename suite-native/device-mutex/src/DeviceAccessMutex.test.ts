@@ -1,12 +1,12 @@
 import { A } from '@mobily/ts-belt';
 
-import { deviceAccessMutex } from '../DeviceAccessMutex';
-import { DEVICE_ACCESS_ERROR } from '../constants';
+import { deviceAccessMutex } from './DeviceAccessMutex';
+import { DEVICE_ACCESS_ERROR } from './constants';
 import {
     clearAndUnlockDeviceAccessQueue,
     requestDeviceAccess,
     requestPrioritizedDeviceAccess,
-} from '../requestDeviceAccess';
+} from './requestDeviceAccess';
 
 const deviceAccessCallbackMock = () =>
     new Promise(resolve => {

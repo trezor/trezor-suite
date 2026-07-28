@@ -5,7 +5,7 @@ import {
     clearPendingCoinVisibility,
     pendingCoinVisibilitySlice,
     selectPendingCoinVisibilitySymbols,
-} from '../pendingCoinVisibilitySlice';
+} from './pendingCoinVisibilitySlice';
 
 describe('pendingCoinVisibilitySlice', () => {
     const createStore = () =>

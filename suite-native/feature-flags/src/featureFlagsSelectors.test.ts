@@ -1,5 +1,5 @@
-import { selectIsFeatureFlagEnabled } from '../featureFlagsSelectors';
-import { featureFlagsReducer, toggleFeatureFlag } from '../featureFlagsSlice';
+import { selectIsFeatureFlagEnabled } from './featureFlagsSelectors';
+import { featureFlagsReducer, toggleFeatureFlag } from './featureFlagsSlice';
 
 describe('featureFlagsSelectors', () => {
     describe('selectIsFeatureFlagEnabled', () => {

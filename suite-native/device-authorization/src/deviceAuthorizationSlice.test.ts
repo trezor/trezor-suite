@@ -6,8 +6,8 @@ import {
     DeviceAuthorizationStep,
     deviceAuthorizationInitialState,
     deviceAuthorizationReducer,
-} from '../deviceAuthorizationSlice';
-import { flowEndingButtonRequests, pinButtonRequestCodes } from '../utils';
+} from './deviceAuthorizationSlice';
+import { flowEndingButtonRequests, pinButtonRequestCodes } from './utils';
 
 describe('deviceAuthorizationSlice', () => {
     const getDeviceAuthorizationState = (
