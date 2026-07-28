@@ -2,7 +2,9 @@
 // @ts-ignore
 import * as Messages from '@trezor/protobuf/src/definitions';
 
-import commonFixtures from '../../../../submodules/trezor-common/tests/fixtures/stellar/sign_tx.json';
+import { loadCommonFixture } from './commonFixtures';
+
+const commonFixtures = loadCommonFixture('stellar/sign_tx.json');
 
 // operations are in protobuf format (snake_case)
 
