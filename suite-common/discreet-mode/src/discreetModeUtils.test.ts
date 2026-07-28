@@ -1,4 +1,4 @@
-import { DISCREET_PLACEHOLDER, redactNumericalSubstring } from '../discreetModeUtils';
+import { DISCREET_PLACEHOLDER, redactNumericalSubstring } from './discreetModeUtils';
 
 describe('redactNumericalSubstring', () => {
     it('replaces sole number with placeholder', () => {
