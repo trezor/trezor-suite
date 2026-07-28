@@ -12,8 +12,8 @@ import {
     selectFreshAccountAddressValue,
     selectHasDeviceAnyFailedAccountForNetworkSymbol,
     selectIsAccountDiscoveryFailed,
-} from '../selectors';
-import { isFilterValueMatchingAccount, sortAccountsByNetworksAndAccountTypes } from '../utils';
+} from './selectors';
+import { isFilterValueMatchingAccount, sortAccountsByNetworksAndAccountTypes } from './utils';
 
 let mockStakingBalance = '0';
 

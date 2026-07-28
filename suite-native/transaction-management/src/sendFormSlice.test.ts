@@ -2,8 +2,8 @@ import { configureStore } from '@reduxjs/toolkit';
 
 import { extraDependenciesCommonMock } from '@suite-common/test-utils';
 
-import { createFeeLevels } from '../__fixtures__/feeLevels';
-import { prepareSendFormReducer, transactionManagementActions } from '../sendFormSlice';
+import { createFeeLevels } from './__fixtures__/feeLevels';
+import { prepareSendFormReducer, transactionManagementActions } from './sendFormSlice';
 
 describe('sendFormSlice', () => {
     // Create a test store with the prepared reducer
