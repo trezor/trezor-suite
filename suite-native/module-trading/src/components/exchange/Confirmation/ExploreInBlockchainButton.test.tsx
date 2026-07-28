@@ -1,7 +1,7 @@
 import { getTranslation } from '@suite-native/intl';
 import { renderWithBasicProvider, screen, userEvent } from '@suite-native/test-utils';
 
-import { ExploreInBlockchainButton } from '../ExploreInBlockchainButton';
+import { ExploreInBlockchainButton } from './ExploreInBlockchainButton';
 
 describe('ExploreInBlockchainButton', () => {
     const getButtonByText = () =>

@@ -2,12 +2,12 @@ import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { getTranslation } from '@suite-native/intl';
 import { eth1NormalAccount, mercuryoFixedWorstQuote } from '@suite-native/trading-fixtures';
 
+import { ExchangeApprovalDetails } from './ExchangeApprovalDetails';
 import {
     type PreloadedStatePartial,
     type TradingTestPreloadedState,
     renderWithTradingProvider,
-} from '../../../../__tests__/tradingTestUtils';
-import { ExchangeApprovalDetails } from '../ExchangeApprovalDetails';
+} from '../../../__tests__/tradingTestUtils';
 
 // Mock FeeSelector to avoid deep dependency chain (useFeesManagement, etc.)
 jest.mock('@suite-native/transaction-management', () => ({

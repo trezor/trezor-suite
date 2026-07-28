@@ -9,8 +9,8 @@ import {
     oneInchFusionPlusWithoutEip712SignDataQuote,
 } from '@suite-native/trading-fixtures';
 
-import { renderWithTradingProvider } from '../../../../__tests__/tradingTestUtils';
-import { ExchangePreviewView, type ExchangePreviewViewProps } from '../ExchangePreviewView';
+import { ExchangePreviewView, type ExchangePreviewViewProps } from './ExchangePreviewView';
+import { renderWithTradingProvider } from '../../../__tests__/tradingTestUtils';
 
 describe('ExchangePreviewView', () => {
     const renderExchangePreviewView = (props: Partial<ExchangePreviewViewProps> = {}) =>

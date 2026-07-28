@@ -4,7 +4,7 @@ import { renderWithBasicProvider } from '@suite-native/test-utils';
 import {
     ExchangeConfirmationTitle,
     type ExchangeConfirmationTitleProps,
-} from '../ExchangeConfirmationTitle';
+} from './ExchangeConfirmationTitle';
 
 describe('ExchangeConfirmationTitle', () => {
     const renderTitle = (props: ExchangeConfirmationTitleProps) =>

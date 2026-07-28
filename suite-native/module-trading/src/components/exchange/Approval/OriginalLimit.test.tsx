@@ -4,7 +4,7 @@ import { getTranslation } from '@suite-native/intl';
 import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 import { getWalletState } from '@suite-native/trading-fixtures';
 
-import { OriginalLimit } from '../OriginalLimit';
+import { OriginalLimit } from './OriginalLimit';
 
 const mockSelectTradingExchangeSelectedQuote = jest.fn();
 

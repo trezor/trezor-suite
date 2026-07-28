@@ -5,8 +5,8 @@ import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { getTranslation } from '@suite-native/intl';
 import { btc1NormalAccount, mercuryoFixedWorstQuote } from '@suite-native/trading-fixtures';
 
-import { renderWithTradingProvider } from '../../../../__tests__/tradingTestUtils';
-import { ExchangeInfo, type ExchangeInfoProps } from '../ExchangeInfo';
+import { ExchangeInfo, type ExchangeInfoProps } from './ExchangeInfo';
+import { renderWithTradingProvider } from '../../../__tests__/tradingTestUtils';
 
 // Mock FeeSelector to avoid deep dependency chain
 jest.mock('@suite-native/transaction-management', () => ({

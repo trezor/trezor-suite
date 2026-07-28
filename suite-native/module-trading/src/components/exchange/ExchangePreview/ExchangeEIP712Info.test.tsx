@@ -3,8 +3,8 @@ import { Text } from 'react-native';
 import { getTranslation } from '@suite-native/intl';
 import { exchangeOneInchFusion, exchangeOneInchFusionPlus } from '@suite-native/trading-fixtures';
 
-import { renderWithTradingProvider } from '../../../../__tests__/tradingTestUtils';
-import { ExchangeEIP712Info, type ExchangeEIP712InfoProps } from '../ExchangeEIP712Info';
+import { ExchangeEIP712Info, type ExchangeEIP712InfoProps } from './ExchangeEIP712Info';
+import { renderWithTradingProvider } from '../../../__tests__/tradingTestUtils';
 
 describe('ExchangeEIP712Info', () => {
     const renderExchangeEIP712Info = (

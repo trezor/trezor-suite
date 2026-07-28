@@ -2,12 +2,12 @@ import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { getTranslation } from '@suite-native/intl';
 import { eth1NormalAccount, mercuryoFixedWorstQuote } from '@suite-native/trading-fixtures';
 
+import { ExchangeRevokeDetails } from './ExchangeRevokeDetails';
 import {
     type PreloadedStatePartial,
     type TradingTestPreloadedState,
     renderWithTradingProvider,
-} from '../../../../__tests__/tradingTestUtils';
-import { ExchangeRevokeDetails } from '../ExchangeRevokeDetails';
+} from '../../../__tests__/tradingTestUtils';
 
 describe('ExchangeRevokeDetails', () => {
     const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});

@@ -5,11 +5,11 @@ import { getTranslation } from '@suite-native/intl';
 import { type TestStore, renderWithStoreProvider } from '@suite-native/test-utils-store';
 import { exchangeQuotes } from '@suite-native/trading-fixtures';
 
-import { createTradingLightStore } from '../../../../__tests__/tradingTestUtils';
 import {
     ExchangeConfirmationHeader,
     type ExchangeConfirmationHeaderProps,
-} from '../ExchangeConfirmationHeader';
+} from './ExchangeConfirmationHeader';
+import { createTradingLightStore } from '../../../__tests__/tradingTestUtils';
 
 const testQuote = exchangeQuotes[0];
 

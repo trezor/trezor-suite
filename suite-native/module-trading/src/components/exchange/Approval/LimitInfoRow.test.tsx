@@ -5,7 +5,7 @@ import { getTranslation } from '@suite-native/intl';
 import { renderWithStoreProvider, userEvent } from '@suite-native/test-utils-store';
 import { getWalletState, mercuryoFixedBestQuote } from '@suite-native/trading-fixtures';
 
-import { LimitInfoRow } from '../LimitInfoRow';
+import { LimitInfoRow } from './LimitInfoRow';
 
 type LimitInfoRowProps = React.ComponentProps<typeof LimitInfoRow>;
 
