@@ -1,6 +1,6 @@
 import { fireEvent, renderWithStoreProvider } from '@suite-native/test-utils-store';
 
-import { SelectableNetworkList } from '../SelectableNetworkList';
+import { SelectableNetworkList } from './SelectableNetworkList';
 
 const getMockPreloadedState = (areTestnetsEnabled: boolean) => ({
     appSettings: {

@@ -13,7 +13,7 @@ import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import {
     selectDeviceHistoryIgnoredNetworkSymbols,
     selectPortfolioGraphAccountItemsIfDiscoveryIsNotRunning,
-} from '../selectors';
+} from './selectors';
 
 // Mock the dependencies
 jest.mock('@suite-common/wallet-core', () => ({

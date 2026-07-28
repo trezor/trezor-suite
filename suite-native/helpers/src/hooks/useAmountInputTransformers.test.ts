@@ -2,7 +2,7 @@ import { type WalletSettingsRootState } from '@suite-common/wallet-core';
 import { PROTO } from '@trezor/connect';
 import { type DeepPartial } from '@trezor/type-utils';
 
-import { useAmountInputTransformers } from '../useAmountInputTransformers';
+import { useAmountInputTransformers } from './useAmountInputTransformers';
 
 let mockState: DeepPartial<WalletSettingsRootState> | undefined;
 

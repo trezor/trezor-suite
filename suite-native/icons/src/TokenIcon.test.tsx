@@ -7,7 +7,7 @@ import { act, fireEvent, renderWithBasicProvider, waitFor } from '@suite-native/
 import { getAssetLogoUrl } from '@trezor/asset-utils';
 import { createDeferred } from '@trezor/utils';
 
-import { TokenIcon } from '../TokenIcon';
+import { TokenIcon } from './TokenIcon';
 
 jest.mock('@suite-common/wallet-utils', () => ({
     ...jest.requireActual('@suite-common/wallet-utils'),

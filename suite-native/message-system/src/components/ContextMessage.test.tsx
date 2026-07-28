@@ -2,7 +2,7 @@ import { Context, type ContextDomain } from '@suite-common/message-system';
 import { type Action, type Message } from '@suite-common/suite-types';
 import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 
-import { ContextMessage } from '../ContextMessage';
+import { ContextMessage } from './ContextMessage';
 
 const contextActionId = 'ContextActionId_1';
 const contentText = 'Content Text';

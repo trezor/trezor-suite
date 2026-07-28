@@ -1,6 +1,6 @@
 import { type FiatGraphPoint } from '@suite-common/graph';
 
-import { getExtremaFromGraphPoints, omitErrorMessageSensitiveData } from '../utils';
+import { getExtremaFromGraphPoints, omitErrorMessageSensitiveData } from './utils';
 
 describe('Suite native graph utils', () => {
     test('getExtremaFromGraphPoints', () => {
