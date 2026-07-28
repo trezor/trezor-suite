@@ -13,6 +13,11 @@ import {
 import { type Err, type Ok, type Result } from '@trezor/type-utils';
 
 import {
+    type GetStakeFormsDefaultValuesParams,
+    type GetStakeTxGasLimitParams,
+    type StakeTxBaseArgs,
+} from '../types';
+import {
     claimFailedFixture,
     claimFixture,
     getAdjustedGasLimitConsumptionFixture,
@@ -30,12 +35,7 @@ import {
     transformTxFixtures,
     unstakeFailedFixture,
     unstakeFixture,
-} from '../__fixtures__/ethereumStaking';
-import {
-    type GetStakeFormsDefaultValuesParams,
-    type GetStakeTxGasLimitParams,
-    type StakeTxBaseArgs,
-} from '../types';
+} from './__fixtures__/ethereumStaking';
 import {
     claimWithdrawRequest,
     getAdjustedGasLimitConsumption,
@@ -51,7 +51,7 @@ import {
     stake,
     transformTx,
     unstake,
-} from '../utils/ethereumStaking';
+} from './ethereumStaking';
 
 describe('transformTx', () => {
     transformTxFixtures.forEach(test => {
