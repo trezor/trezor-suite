@@ -1298,6 +1298,23 @@ export const messages = {
                     tor: 'Can’t connect to the server. Check the address and make sure Orbot is running.',
                 },
             },
+            explorer: {
+                title: 'Explorer',
+                badge: {
+                    default: 'Default explorer',
+                    custom: 'Custom explorer',
+                },
+                labels: {
+                    base: 'Root URL',
+                    tx: 'Transaction path',
+                    address: 'Address path',
+                    nft: 'NFT path',
+                    token: 'Address path',
+                    queryString: 'Query string',
+                },
+                setToDefaultButton: 'Set to default',
+                invalidValue: 'Invalid value',
+            },
             closeAction: {
                 title: 'Discard changes?',
                 description: 'Any unsaved changes will be lost.',
