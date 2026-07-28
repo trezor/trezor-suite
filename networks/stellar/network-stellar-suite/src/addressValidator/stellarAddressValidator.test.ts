@@ -1,6 +1,6 @@
 import { type AddressType, addressType } from '@trezor/network-module-suite-types';
 
-import { stellarValidator } from '../stellarAddressValidator';
+import { stellarValidator } from './stellarAddressValidator';
 
 type StellarIsAddressValidCase = {
     address: string;

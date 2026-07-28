@@ -1,6 +1,6 @@
 import { type AddressType, addressType } from '@trezor/network-module-suite-types';
 
-import { adaValidator } from '../cardanoAddressValidator';
+import { adaValidator } from './cardanoAddressValidator';
 
 type CardanoIsAddressValidCase = {
     address: string;
