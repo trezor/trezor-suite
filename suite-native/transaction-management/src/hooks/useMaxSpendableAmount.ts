@@ -13,7 +13,7 @@ type UseMaxSpendableAmountProps = {
     tokenContract?: TokenAddress;
     formState?: FormState;
     enabled?: boolean;
-    symbol: NetworkSymbol | null;
+    symbol?: NetworkSymbol | null;
 };
 
 const buildDefaultFormState = ({ tokenContract }: { tokenContract?: TokenAddress }): FormState => ({

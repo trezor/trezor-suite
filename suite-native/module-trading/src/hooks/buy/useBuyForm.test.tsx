@@ -4,6 +4,7 @@ import { type EnhancedStore } from '@reduxjs/toolkit';
 import type { BuyTrade, CryptoId } from 'invity-api';
 
 import { selectTradingProviderMetadata, tradingBuyActions } from '@suite-common/trading';
+import { type TokenAddress } from '@suite-common/wallet-types';
 import {
     type TestStore,
     act,
@@ -459,6 +460,83 @@ describe('useBuyForm', () => {
             const { invalid } = result.current.getFieldState('cryptoValue');
 
             expect(invalid).toBe(false);
+        });
+
+        it('should format a token named BTC as a token', async () => {
+            const store = getInitializedStore(true);
+            const { result } = renderUseTradingBuyForm(store);
+            const btcTokenAsset: TradeableAsset = {
+                ...btcAsset,
+                cryptoId: 'ethereum--0x123' as CryptoId,
+                networkId: 'ethereum',
+                contractAddress: '0x123' as TokenAddress,
+            };
+
+            act(() => {
+                result.current.setValue('amountInCrypto', true);
+                result.current.setValue('asset', btcTokenAsset);
+            });
+            act(() => {
+                store.dispatch(
+                    tradingBuyActions.setAmountLimits({
+                        minCrypto: '0.1',
+                        currency: 'BTC',
+                    }),
+                );
+            });
+            act(() => {
+                result.current.setValue('cryptoValue', '0.01');
+            });
+
+            await act(() => result.current.trigger('cryptoValue'));
+
+            const { error, invalid } = result.current.getFieldState('cryptoValue');
+
+            expect(invalid).toBe(true);
+            expect(error).toEqual(expect.objectContaining({ message: 'Minimum is 0.1 BTC' }));
+        });
+
+        it('should validate a token named BTC in base units when SATS are enabled', async () => {
+            const store = getInitializedStore(true);
+            const { result } = renderUseTradingBuyForm(store);
+            const btcTokenAsset: TradeableAsset = {
+                ...btcAsset,
+                cryptoId: 'ethereum--0x123' as CryptoId,
+                networkId: 'ethereum',
+                contractAddress: '0x123' as TokenAddress,
+            };
+
+            act(() => {
+                result.current.setValue('amountInCrypto', true);
+                result.current.setValue('asset', btcTokenAsset);
+            });
+            act(() => {
+                store.dispatch(
+                    tradingBuyActions.setAmountLimits({
+                        minCrypto: '0.1',
+                        maxCrypto: '2',
+                        currency: 'BTC',
+                    }),
+                );
+            });
+            act(() => {
+                result.current.setValue('cryptoValue', '0.2');
+            });
+
+            await act(() => result.current.trigger('cryptoValue'));
+
+            expect(result.current.getFieldState('cryptoValue').invalid).toBe(false);
+
+            act(() => {
+                result.current.setValue('cryptoValue', '3');
+            });
+
+            await act(() => result.current.trigger('cryptoValue'));
+
+            const { error, invalid } = result.current.getFieldState('cryptoValue');
+
+            expect(invalid).toBe(true);
+            expect(error).toEqual(expect.objectContaining({ message: 'Maximum is 2 BTC' }));
         });
 
         it('should trigger validation once limits are loaded', async () => {

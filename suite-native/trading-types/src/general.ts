@@ -90,7 +90,9 @@ export type TradingFormContext = Partial<TradingAmountLimitProps> & {
     FiatAmountFormatter: Formatters['BaseCurrencyAmountFormatter'];
     CryptoAmountFormatter: Formatters['CryptoAmountFormatter'];
     convertNumberToBaseUnit: ConvertNumberToBaseUnit;
-    sendSymbol: string | undefined;
+    sendNetworkSymbol: NetworkSymbol | undefined;
+    sendAssetSymbol: string | undefined;
+    contractAddress: TokenAddress | undefined;
     balance: string | undefined;
     networkReserve?: string;
     maxSpendableAmount?: string;

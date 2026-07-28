@@ -1,4 +1,5 @@
 import { type TradingAmountLimitProps } from '@suite-common/trading';
+import { type TokenAddress } from '@suite-common/wallet-types';
 import { act } from '@suite-native/test-utils-store';
 
 import { useContextForTradingForm } from './useContextForTradingForm';
@@ -42,18 +43,22 @@ describe('useContextForTradingForm', () => {
         expect(result.current.context).toEqual(expect.objectContaining(limits));
     });
 
-    it('should append balance and sendSymbol when specified', () => {
+    it('should append send asset data and balance when specified', () => {
         const { result } = renderUseContextForTradingForm(undefined);
 
         act(() => {
             result.current.setBalance('0.5');
-            result.current.setSendSymbol('ETH');
+            result.current.setSendNetworkSymbol('eth');
+            result.current.setSendAssetSymbol('USDT');
+            result.current.setContractAddress('0x123' as TokenAddress);
         });
 
         expect(result.current.context).toEqual(
             expect.objectContaining({
                 balance: '0.5',
-                sendSymbol: 'ETH',
+                sendNetworkSymbol: 'eth',
+                sendAssetSymbol: 'USDT',
+                contractAddress: '0x123',
             }),
         );
     });

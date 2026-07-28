@@ -16,6 +16,8 @@ export const ToggleNetworkReserveCheckCard = () => {
     const { analytics } = useServices(selectNativeAnalyticsDep);
     const openLink = useOpenLink();
 
+    const supportedNetworks = getNetworksWithNativeTokenReserve();
+
     const toggleNetworkReserve = (value: boolean) => {
         analytics.report({
             type: events.settingsNetworkReserveToggleEvent.name,
@@ -35,12 +37,16 @@ export const ToggleNetworkReserveCheckCard = () => {
             icon="graph"
             text={<Translation id="moduleSettings.advanced.networkReserve.title" />}
             accessibilityLabel="network reserve"
-            description={<Translation id="moduleSettings.advanced.networkReserve.subtitle" />}
-            additionalInfo={
+            description={
                 <Translation
-                    id="moduleSettings.availableOn"
-                    values={{ supportedNetworks: getNetworksWithNativeTokenReserve() }}
+                    id="moduleSettings.advanced.networkReserve.subtitle"
+                    values={{
+                        supportedNetworks,
+                    }}
                 />
+            }
+            additionalInfo={
+                <Translation id="moduleSettings.availableOn" values={{ supportedNetworks }} />
             }
             onLearnMorePress={handleLearnMorePress}
             isChecked={isNetworkReserveEnabled}

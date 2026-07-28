@@ -11,7 +11,8 @@ type HookProps = {
     sendAccount: Account | undefined;
     sendAsset: TradeableAsset | undefined;
     setBalance: (balance: string | undefined) => unknown;
-    setSendSymbol: (currency: string | undefined) => unknown;
+    setSendNetworkSymbol: (networkSymbol: Account['symbol'] | undefined) => unknown;
+    setSendAssetSymbol: (symbol: string | undefined) => unknown;
     setContractAddress: (contractAddress: TokenAddress | undefined) => unknown;
     setAccountKey: (accountKey: AccountKey | undefined) => void;
 };
@@ -22,7 +23,8 @@ describe('useSendAccountAssetBalance', () => {
                 sendAccount,
                 sendAsset,
                 setBalance,
-                setSendSymbol,
+                setSendNetworkSymbol,
+                setSendAssetSymbol,
                 setContractAddress,
                 setAccountKey,
             }) => {
@@ -33,7 +35,8 @@ describe('useSendAccountAssetBalance', () => {
                 useSendAccountAssetBalance({
                     control: form.control,
                     setBalance,
-                    setSendSymbol,
+                    setSendNetworkSymbol,
+                    setSendAssetSymbol,
                     setContractAddress,
                     setAccountKey,
                 });
@@ -46,25 +49,29 @@ describe('useSendAccountAssetBalance', () => {
 
     it('should watch for balance and asset symbol', () => {
         const setBalance = jest.fn();
-        const setSendSymbol = jest.fn();
+        const setSendNetworkSymbol = jest.fn();
+        const setSendAssetSymbol = jest.fn();
         const setContractAddress = jest.fn();
         const setAccountKey = jest.fn();
         renderUseSendAccountAssetBalance({
             sendAccount: getBtcAccount(),
             sendAsset: btcAsset,
             setBalance,
-            setSendSymbol,
+            setSendNetworkSymbol,
+            setSendAssetSymbol,
             setContractAddress,
             setAccountKey,
         });
 
         expect(setBalance).toHaveBeenCalledWith('0.01');
-        expect(setSendSymbol).toHaveBeenCalledWith('btc');
+        expect(setSendNetworkSymbol).toHaveBeenCalledWith('btc');
+        expect(setSendAssetSymbol).toHaveBeenCalledWith('BTC');
     });
 
     it('should set balance to undefined when account is undefined', () => {
         const setBalance = jest.fn();
-        const setSendSymbol = jest.fn();
+        const setSendNetworkSymbol = jest.fn();
+        const setSendAssetSymbol = jest.fn();
         const setContractAddress = jest.fn();
         const setAccountKey = jest.fn();
 
@@ -72,7 +79,8 @@ describe('useSendAccountAssetBalance', () => {
             sendAccount: undefined,
             sendAsset: btcAsset,
             setBalance,
-            setSendSymbol,
+            setSendNetworkSymbol,
+            setSendAssetSymbol,
             setContractAddress,
             setAccountKey,
         });
@@ -82,7 +90,8 @@ describe('useSendAccountAssetBalance', () => {
 
     it('should set balance to undefined when symbol is undefined', () => {
         const setBalance = jest.fn();
-        const setSendSymbol = jest.fn();
+        const setSendNetworkSymbol = jest.fn();
+        const setSendAssetSymbol = jest.fn();
         const setContractAddress = jest.fn();
         const setAccountKey = jest.fn();
 
@@ -90,7 +99,8 @@ describe('useSendAccountAssetBalance', () => {
             sendAccount: getBtcAccount(),
             sendAsset: undefined,
             setBalance,
-            setSendSymbol,
+            setSendNetworkSymbol,
+            setSendAssetSymbol,
             setContractAddress,
             setAccountKey,
         });
