@@ -1,6 +1,6 @@
 import { createDeferred } from '@trezor/utils';
 
-import { DropboxProvider } from '../DropboxProvider';
+import { DropboxProvider } from './DropboxProvider';
 
 const globalContext = globalThis as typeof globalThis & { window?: typeof globalThis };
 if (!globalContext.window) {

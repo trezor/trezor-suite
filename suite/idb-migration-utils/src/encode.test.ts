@@ -1,4 +1,4 @@
-import { encodeIDBVersion, idbVersionToString } from '../encode';
+import { encodeIDBVersion, idbVersionToString } from './encode';
 
 const VERSIONS = [
     '1.2.3',

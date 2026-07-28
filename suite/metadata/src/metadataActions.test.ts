@@ -7,13 +7,13 @@ import { initialWalletSettingsState, prepareAccountsReducer } from '@suite-commo
 import TrezorConnect from '@trezor/connect';
 import { asWalletDescriptor } from '@trezor/device-utils';
 
-import * as fixtures from '../__fixtures__/metadataActions';
-import * as metadataActions from '../metadataActions';
-import * as metadataLabelingActions from '../metadataLabelingActions';
-import * as metadataProviderActions from '../metadataProviderThunks';
-import { type SuiteRootStateSliceForMetadata, metadataReducer } from '../metadataReducer';
-import * as metadataThunks from '../metadataThunks';
-import { DropboxProvider } from '../providers/DropboxProvider';
+import * as fixtures from './__fixtures__/metadataActions';
+import * as metadataActions from './metadataActions';
+import * as metadataLabelingActions from './metadataLabelingActions';
+import * as metadataProviderActions from './metadataProviderThunks';
+import { type SuiteRootStateSliceForMetadata, metadataReducer } from './metadataReducer';
+import * as metadataThunks from './metadataThunks';
+import { DropboxProvider } from './providers/DropboxProvider';
 
 const deviceReducer = prepareDeviceReducer(extraDependenciesCommonMock);
 const accountsReducer = prepareAccountsReducer(extraDependenciesCommonMock);
@@ -142,7 +142,7 @@ const initStore = (state: State) => {
 
 describe('Metadata Actions', () => {
     beforeAll(() => {
-        jest.mock('../providers/DropboxProvider');
+        jest.mock('./providers/DropboxProvider');
         DropboxProvider.prototype.connect = () =>
             Promise.resolve({ success: true, payload: undefined });
         DropboxProvider.prototype.getProviderDetails = () =>
@@ -165,7 +165,7 @@ describe('Metadata Actions', () => {
                 const file = fs.readFileSync(
                     path.resolve(
                         __dirname,
-                        '../__fixtures__/828652b66f2e6f919fbb7fe4c9609d4891ed531c6fac4c28441e53ebe577ac85.mtdt',
+                        './__fixtures__/828652b66f2e6f919fbb7fe4c9609d4891ed531c6fac4c28441e53ebe577ac85.mtdt',
                     ),
                 );
 

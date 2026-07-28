@@ -1,6 +1,6 @@
 import { TOR_URLS } from '@trezor/urls';
 
-import { getTorUrlIfAvailable } from '../getTorUrlIfAvailable';
+import { getTorUrlIfAvailable } from './getTorUrlIfAvailable';
 
 describe(getTorUrlIfAvailable.name, () => {
     beforeAll(() => {

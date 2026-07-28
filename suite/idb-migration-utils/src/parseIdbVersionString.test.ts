@@ -1,4 +1,4 @@
-import { parseIdbVersion } from '../parseIdbVersion';
+import { parseIdbVersion } from './parseIdbVersion';
 
 describe(parseIdbVersion.name, () => {
     it('parses x.y.z with revision=0', () => {

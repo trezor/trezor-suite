@@ -1,4 +1,4 @@
-import { getCodeChallenge } from '../random';
+import { getCodeChallenge } from './random';
 
 describe('random', () => {
     describe('getCodeChallenge', () => {

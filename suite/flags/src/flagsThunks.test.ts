@@ -1,7 +1,7 @@
 import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
 
-import { type FlagsState, flagsInitialState, prepareFlagsReducer } from '../flagsSlice';
-import { initialRunCompleted } from '../flagsThunks';
+import { type FlagsState, flagsInitialState, prepareFlagsReducer } from './flagsSlice';
+import { initialRunCompleted } from './flagsThunks';
 
 const flagsReducer = prepareFlagsReducer(extraDependenciesCommonMock);
 

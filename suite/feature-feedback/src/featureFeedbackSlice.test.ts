@@ -6,7 +6,7 @@ import {
     feedbackDismissed,
     feedbackRequested,
     initialState,
-} from '../featureFeedbackSlice';
+} from './featureFeedbackSlice';
 
 describe(featureFeedbackReducer.name, () => {
     describe(featureUsed.name, () => {
