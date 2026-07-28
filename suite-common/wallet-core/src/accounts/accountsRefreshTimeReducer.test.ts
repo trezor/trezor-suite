@@ -1,13 +1,13 @@
 import { type Account, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
-import { accountsActions } from '../accountsActions';
+import { accountsActions } from './accountsActions';
 import {
     type AccountsRefreshTimeState,
     accountRefreshed,
     accountsRefreshTimeReducer,
     selectAccountRefreshTime,
-} from '../accountsRefreshTimeReducer';
+} from './accountsRefreshTimeReducer';
 
 const account = mockWalletAccount({
     symbol: 'btc',

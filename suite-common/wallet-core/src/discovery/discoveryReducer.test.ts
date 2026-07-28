@@ -3,8 +3,8 @@ import { combineReducers } from '@reduxjs/toolkit';
 import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
 import { type DeviceUniquePath } from '@trezor/connect';
 
-import { discoveryActions } from '../discoveryActions';
-import { type DiscoveryRootState, prepareDiscoveryReducer } from '../discoveryReducer';
+import { discoveryActions } from './discoveryActions';
+import { type DiscoveryRootState, prepareDiscoveryReducer } from './discoveryReducer';
 
 const discoveryReducer = prepareDiscoveryReducer(extraDependenciesCommonMock);
 

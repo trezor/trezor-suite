@@ -3,13 +3,10 @@ import { combineReducers } from '@reduxjs/toolkit';
 import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
 import { type FeeInfo } from '@suite-common/wallet-types';
 
-import {
-    blockchainInitialState,
-    prepareBlockchainReducer,
-} from '../../blockchain/blockchainReducer';
-import { DEFAULT_FEE_INFO } from '../feesConstants';
-import { feesReducer } from '../feesReducer';
-import { updateFeeInfoThunk } from '../feesThunks';
+import { DEFAULT_FEE_INFO } from './feesConstants';
+import { feesReducer } from './feesReducer';
+import { updateFeeInfoThunk } from './feesThunks';
+import { blockchainInitialState, prepareBlockchainReducer } from '../blockchain/blockchainReducer';
 
 const blockchainReducer = prepareBlockchainReducer(extraDependenciesCommonMock);
 

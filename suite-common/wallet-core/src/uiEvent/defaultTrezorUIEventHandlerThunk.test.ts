@@ -4,7 +4,7 @@ import { UI_REQUEST } from '@trezor/connect';
 import { createUiMessage } from '@trezor/connect-common';
 import { DeviceModelInternal, FirmwareType } from '@trezor/device-utils';
 
-import { defaultTrezorUIEventHandlerThunk } from '../defaultTrezorUIEventHandlerThunk';
+import { defaultTrezorUIEventHandlerThunk } from './defaultTrezorUIEventHandlerThunk';
 
 const device = mockSuiteDevice();
 

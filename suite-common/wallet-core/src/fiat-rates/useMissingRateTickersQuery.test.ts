@@ -3,8 +3,8 @@ import { useDispatch } from 'react-redux';
 import { commonQueryKeys, useQuery } from '@suite-common/react-query';
 import { type TickerId, toTokenAddress } from '@suite-common/wallet-types';
 
-import { updateFiatRatesThunk } from '../fiatRatesThunks';
-import { useMissingRateTickersQuery } from '../useMissingRateTickersQuery';
+import { updateFiatRatesThunk } from './fiatRatesThunks';
+import { useMissingRateTickersQuery } from './useMissingRateTickersQuery';
 
 jest.mock('react-redux', () => ({
     useDispatch: jest.fn(),
@@ -21,7 +21,7 @@ jest.mock('@suite-common/react-query', () => ({
     useQuery: jest.fn(query => query),
 }));
 
-jest.mock('../fiatRatesThunks', () => ({
+jest.mock('./fiatRatesThunks', () => ({
     updateFiatRatesThunk: jest.fn(payload => ({
         type: 'updateFiatRatesThunk',
         payload,

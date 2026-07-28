@@ -1,7 +1,7 @@
 import { type TokenDefinition } from '@suite-common/token-definitions';
 import { mockAccountToken, mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
-import { getAccountAnalyticsTokenSymbols } from '../tokenUtils';
+import { getAccountAnalyticsTokenSymbols } from './tokenUtils';
 
 const legitContract = '0x' + 'a'.repeat(40);
 const spamContract = '0x' + 'b'.repeat(40);
