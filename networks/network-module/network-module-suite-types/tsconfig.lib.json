@@ -2,5 +2,17 @@
     "extends": "../../../tsconfig.lib.json",
     "compilerOptions": { "outDir": "./lib" },
     "include": ["./src"],
-    "references": []
+    "references": [
+        {
+            "path": "../../../suite-common/suite-types"
+        },
+        {
+            "path": "../../../suite-common/wallet-config"
+        },
+        {
+            "path": "../../../suite-common/wallet-types"
+        },
+        { "path": "../../../suite/intl" },
+        { "path": "../../../packages/type-utils" }
+    ]
 }

@@ -2,6 +2,11 @@
     "extends": "../../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
+        { "path": "../../../suite/intl" },
+        {
+            "path": "../../../packages/components"
+        },
+        { "path": "../../../packages/connect" },
         {
             "path": "../../network-module/network-module-suite-types"
         },

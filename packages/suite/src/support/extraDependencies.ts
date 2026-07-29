@@ -14,6 +14,11 @@ import { createMetadataMigrationCompositionRoot } from '@suite/metadata-migratio
 import type { MetadataMigrationDep } from '@suite/metadata-migration';
 import { closeModal, openModal } from '@suite/modal';
 import {
+    type SuiteNetworkModuleRepositoryDep,
+    createSuiteNetworkModuleRepository,
+    createSuiteNetworksCompositionRoot,
+} from '@suite/networks';
+import {
     type HistoryDep,
     type SuiteRouterHistoryDep,
     asSuiteRouterHistoryService,
@@ -25,6 +30,7 @@ import {
     selectInvityServerEnvironment,
     selectLanguage,
 } from '@suite/settings';
+import { formatSignedMessage, getAccountAddressesForSigning } from '@suite/sign-verify';
 import { createSuiteSyncDesktopCompositionRoot } from '@suite/suite-sync';
 import { createAddressValidator } from '@suite-common/address';
 import { createBip329CompositionRoot } from '@suite-common/bip329';
@@ -114,6 +120,7 @@ export type SuiteAppDeps = StoreAPIDep &
 export type SuiteServices = CommonServices &
     DesktopAnalyticsDep &
     MetadataMigrationDep &
+    SuiteNetworkModuleRepositoryDep &
     SuiteRouterHistoryDep &
     TransportsDep;
 
@@ -172,6 +179,16 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
     });
     const networkModules = createNetworksCompositionRoot();
     const networkModuleRepository = createNetworkModuleRepository({ networkModules });
+    const suiteNetworkModules = createSuiteNetworksCompositionRoot({
+        trezorConnect: TrezorConnect,
+        signVerifyHelpers: {
+            formatSignedMessage,
+            getAccountAddressesForSigning,
+        },
+    });
+    const suiteNetworkModuleRepository = createSuiteNetworkModuleRepository({
+        suiteNetworkModules,
+    });
     const addressValidator = createAddressValidator({
         networkModuleRepository,
     });
@@ -191,6 +208,7 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
 
     return {
         networkModuleRepository,
+        suiteNetworkModuleRepository,
         addressValidator,
         suiteSync,
         bip329,

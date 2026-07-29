@@ -1,10 +1,10 @@
-import { createBitcoinNetworkModule } from '@trezor/network-bitcoin-suite';
-import { createCardanoNetworkModule } from '@trezor/network-cardano-suite';
-import { createEthereumNetworkModule } from '@trezor/network-ethereum-suite';
-import { createRippleNetworkModule } from '@trezor/network-ripple-suite';
-import { createSolanaNetworkModule } from '@trezor/network-solana-suite';
-import { createStellarNetworkModule } from '@trezor/network-stellar-suite';
-import { createTronNetworkModule } from '@trezor/network-tron-suite';
+import { createBitcoinSuiteCommonNetworkModule } from '@trezor/network-bitcoin-suite-common';
+import { createCardanoSuiteCommonNetworkModule } from '@trezor/network-cardano-suite-common';
+import { createEthereumSuiteCommonNetworkModule } from '@trezor/network-ethereum-suite-common';
+import { createRippleSuiteCommonNetworkModule } from '@trezor/network-ripple-suite-common';
+import { createSolanaSuiteCommonNetworkModule } from '@trezor/network-solana-suite-common';
+import { createStellarSuiteCommonNetworkModule } from '@trezor/network-stellar-suite-common';
+import { createTronSuiteCommonNetworkModule } from '@trezor/network-tron-suite-common';
 
 import { type NetworkModules } from './NetworkModules';
 
@@ -13,13 +13,13 @@ export const createNetworksCompositionRoot = (): NetworkModules => {
     //    1. register it here to have the runtime object for DI
     //    2. and in the `NetworkModules` to have static typings right
     const networkModules: NetworkModules = {
-        bitcoin: createBitcoinNetworkModule(),
-        ethereum: createEthereumNetworkModule(),
-        ripple: createRippleNetworkModule(),
-        cardano: createCardanoNetworkModule(),
-        solana: createSolanaNetworkModule(),
-        stellar: createStellarNetworkModule(),
-        tron: createTronNetworkModule(),
+        bitcoin: createBitcoinSuiteCommonNetworkModule(),
+        ethereum: createEthereumSuiteCommonNetworkModule(),
+        ripple: createRippleSuiteCommonNetworkModule(),
+        cardano: createCardanoSuiteCommonNetworkModule(),
+        solana: createSolanaSuiteCommonNetworkModule(),
+        stellar: createStellarSuiteCommonNetworkModule(),
+        tron: createTronSuiteCommonNetworkModule(),
     };
 
     return networkModules;

@@ -15,9 +15,9 @@ export const supportedNetworks = [
     'thod',
 ] as const;
 
-export type EthereumNetworkSymbol = (typeof supportedNetworks)[number];
+export type EthereumSuiteNetworkSymbol = (typeof supportedNetworks)[number];
 
-export const getSupportedNetworks = (): readonly EthereumNetworkSymbol[] => supportedNetworks;
+export const getSupportedNetworks = (): readonly EthereumSuiteNetworkSymbol[] => supportedNetworks;
 
-export const isSupportedNetwork = (symbol: string): symbol is EthereumNetworkSymbol =>
+export const isSupportedNetwork = (symbol: string): symbol is EthereumSuiteNetworkSymbol =>
     isArrayMember(symbol, supportedNetworks);

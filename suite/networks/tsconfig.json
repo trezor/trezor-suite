@@ -1,0 +1,22 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": { "outDir": "libDev" },
+    "references": [
+        { "path": "../../packages/connect" },
+        {
+            "path": "../../networks/bitcoin/network-bitcoin-suite"
+        },
+        {
+            "path": "../../networks/cardano/network-cardano-suite"
+        },
+        {
+            "path": "../../networks/ethereum/network-ethereum-suite"
+        },
+        {
+            "path": "../../networks/network-module/network-module-suite-types"
+        },
+        {
+            "path": "../../suite-common/wallet-config"
+        }
+    ]
+}

@@ -2,9 +2,9 @@ import { isArrayMember } from '@trezor/utils';
 
 export const supportedNetworks = ['ada'] as const;
 
-export type CardanoNetworkSymbol = (typeof supportedNetworks)[number];
+export type CardanoSuiteNetworkSymbol = (typeof supportedNetworks)[number];
 
-export const getSupportedNetworks = (): readonly CardanoNetworkSymbol[] => supportedNetworks;
+export const getSupportedNetworks = (): readonly CardanoSuiteNetworkSymbol[] => supportedNetworks;
 
-export const isSupportedNetwork = (symbol: string): symbol is CardanoNetworkSymbol =>
+export const isSupportedNetwork = (symbol: string): symbol is CardanoSuiteNetworkSymbol =>
     isArrayMember(symbol, supportedNetworks);

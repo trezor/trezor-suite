@@ -7,7 +7,7 @@
         { "path": "../wallet-types" },
         { "path": "../../packages/crypto-utils" },
         {
-            "path": "../../networks/network-module/network-module-suite-types"
+            "path": "../../networks/network-module/network-module-suite-common-types"
         }
     ]
 }
