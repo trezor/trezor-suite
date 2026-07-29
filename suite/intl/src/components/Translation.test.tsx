@@ -1,8 +1,14 @@
-import { screen } from '@testing-library/react';
+/** @jest-environment jsdom */
 
-import { Translation } from '@suite/intl';
+import { type ReactElement } from 'react';
 
-import { renderWithIntl } from 'src/support/tests/IntlHelper';
+import { render, screen } from '@testing-library/react';
+
+import { IntlProviderForTests } from '../IntlProviderForTests';
+import { Translation } from './Translation';
+
+const renderWithIntl = (component: ReactElement) =>
+    render(component, { wrapper: IntlProviderForTests });
 
 const messages = {
     TR_HELLO: {
@@ -27,13 +33,13 @@ const messages = {
 describe('Translation component', () => {
     test('renders id with defaultMessage', () => {
         renderWithIntl(<Translation id="TR_CANCEL" defaultMessage="Cancel" />);
-        expect(screen.getByText('Cancel')).toBeInTheDocument();
+        expect(screen.getByText('Cancel')).toBeDefined();
     });
 
     test('renders message with string value', () => {
         // @ts-expect-error: fake id for testing
         renderWithIntl(<Translation {...messages.TR_NAME} values={{ name: 'John' }} />);
-        expect(screen.getByText('Name: John')).toBeInTheDocument();
+        expect(screen.getByText('Name: John')).toBeDefined();
     });
 
     test('renders message with nested messages', () => {
@@ -48,7 +54,7 @@ describe('Translation component', () => {
                 }}
             />,
         );
-        expect(screen.getByText(/Hello/)).toBeInTheDocument();
+        expect(screen.getByText(/Hello/)).toBeDefined();
     });
 
     test('renders message with nested Translation components', () => {
@@ -63,6 +69,6 @@ describe('Translation component', () => {
                 }}
             />,
         );
-        expect(screen.getByText(/Hello/)).toBeInTheDocument();
+        expect(screen.getByText(/Hello/)).toBeDefined();
     });
 });
