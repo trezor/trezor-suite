@@ -6,6 +6,7 @@ import { entryToValueBytes } from '@trezor/ward';
 import * as settingsStore from '../../../data/settingsStore';
 import WardUpdate from '../api/wardUpdate';
 import {
+    WardCommitConflictError,
     type WardManagerService,
     getWardManagerService,
     setWardManagerService,
@@ -113,6 +114,14 @@ const buildWardTypedCall = ({
                         new_root: root,
                         wallet_id: walletId,
                         root_mac: mac,
+                    },
+                });
+            case 'WARDDiscardPending':
+                return Promise.resolve({
+                    message: {
+                        discarded_address: '61',
+                        wallet_id: walletId,
+                        pending_id: pendingId,
                     },
                 });
             default:
@@ -383,5 +392,41 @@ describe('wardUpdate', () => {
         // ... and no ownerId leaks into the WM call.
         expect(attestArgs[0].ownerId).toBeUndefined();
         expect(candidateArgs[0].ownerId).toBeUndefined();
+    });
+
+    it('surfaces a WM commit conflict (409) as { conflict }, discards the stale candidate, and never confirms', async () => {
+        const provider = buildProvider();
+        settingsStore.update({ wardDataProvider: provider });
+
+        const original = getWardManagerService();
+        const conflictService: WardManagerService = {
+            signAttestation: () => Promise.resolve('deadbeef'),
+            // The WM lost the CAS race: it is already at counter 5.
+            signCandidate: () => Promise.reject(new WardCommitConflictError(5, 'aa'.repeat(32))),
+        };
+        setWardManagerService(conflictService);
+        try {
+            const typedCall = buildWardTypedCall({ counter: 1, root: 'root1' });
+            const method = buildMethod({ device: {} }, buildDevice(typedCall));
+
+            const result = await method.run();
+
+            // Structured conflict result (not a throw), carrying the WM's current counter.
+            expect(result).toEqual({ counter: 5, root: '', conflict: true });
+            // The stale candidate was discarded ...
+            expect(typedCall).toHaveBeenCalledWith(
+                'WARDDiscardPending',
+                'WARDDiscardPendingAck',
+                expect.objectContaining({ pending_id: 1 }),
+            );
+            // ... and the WM-signed install was never sent.
+            expect(typedCall).not.toHaveBeenCalledWith(
+                'WARDConfirmedByWM',
+                expect.anything(),
+                expect.anything(),
+            );
+        } finally {
+            setWardManagerService(original);
+        }
     });
 });

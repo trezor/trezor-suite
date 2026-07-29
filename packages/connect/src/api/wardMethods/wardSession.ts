@@ -201,6 +201,14 @@ export class WardSession {
         }
     }
 
+    /** Abandon a queued/committed intent (e.g. a candidate that lost the WM CAS race). */
+    async discardPending(pendingId?: number): Promise<void> {
+        this.vlog('-> WARDDiscardPending');
+        await this.cmd.typedCall('WARDDiscardPending', 'WARDDiscardPendingAck', {
+            ...(pendingId !== undefined && { pending_id: pendingId }),
+        });
+    }
+
     /** Verify a membership / non-membership proof against the device's authenticated root. */
     async lookup(params: Messages.WARDLookup): Promise<Messages.WARDLookupAck> {
         this.vlog('-> WARDLookup');

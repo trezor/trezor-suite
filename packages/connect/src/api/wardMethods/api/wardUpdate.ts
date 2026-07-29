@@ -9,7 +9,7 @@ import type { MethodMessage } from '../../../core/AbstractMethod';
 import { AbstractMethod } from '../../../core/AbstractMethod';
 import * as settingsStore from '../../../data/settingsStore';
 import { toProofAck } from '../proofAck';
-import { getWardManagerService } from '../wardManagerService';
+import { WardCommitConflictError, getWardManagerService } from '../wardManagerService';
 import { WardSession } from '../wardSession';
 
 export default class WardUpdate extends AbstractMethod<'wardUpdate', WardUpdateSchema> {
@@ -114,11 +114,31 @@ export default class WardUpdate extends AbstractMethod<'wardUpdate', WardUpdateS
         const candidate = await session.perform(toProofAck(change.oldProof), pendingId);
         WardSession.assertWardId(candidate.wardId, wardId, 'wardUpdate');
 
-        const finalSig = await wardManager.signCandidate({
-            wardId,
-            counter: candidate.counter,
-            mac: candidate.mac,
-        });
+        let finalSig: string;
+        try {
+            finalSig = await wardManager.signCandidate({
+                wardId,
+                counter: candidate.counter,
+                mac: candidate.mac,
+            });
+        } catch (err) {
+            if (err instanceof WardCommitConflictError) {
+                // Another client advanced the WM head first: our candidate (counter_T) is
+                // stale and can never be confirmed. Discard it so the device queue isn't
+                // left stuck on a dead candidate, and surface a structured conflict so the
+                // caller can re-sync and retry.
+                // TODO(handoff): auto resync + re-perform + retry (flow.md 409->resync path).
+                vlog('WM commit conflict; discarding stale candidate', { wmCounter: err.counter });
+                try {
+                    await session.discardPending(pendingId);
+                } catch (discardErr) {
+                    vlog('discardPending after conflict failed (best-effort)', discardErr);
+                }
+
+                return { counter: err.counter, root: '', conflict: true };
+            }
+            throw err;
+        }
         const installed = await session.confirm({
             counter: candidate.counter,
             mac: candidate.mac,

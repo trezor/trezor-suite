@@ -40,6 +40,13 @@ export interface WardUpdateResult {
      * should react (e.g. resync from getAllEntries()) rather than assume it's up to date.
      */
     localCacheError?: string;
+    /**
+     * Set when the WM rejected the commit with a compare-and-set conflict (another
+     * client advanced the ward head first). The stale device candidate was discarded;
+     * `counter` carries the WM's current authoritative counter. The caller should
+     * re-sync (wardInit) and retry the update.
+     */
+    conflict?: boolean;
 }
 
 export declare function wardUpdate(params: Params<WardUpdateSchema>): Response<WardUpdateResult>;

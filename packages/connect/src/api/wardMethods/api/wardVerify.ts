@@ -18,6 +18,7 @@ import {
 import type { MethodMessage } from '../../../core/AbstractMethod';
 import { AbstractMethod } from '../../../core/AbstractMethod';
 import * as settingsStore from '../../../data/settingsStore';
+import { getWardManagerService } from '../wardManagerService';
 import { WardSession } from '../wardSession';
 
 const utf8Hex = (s: string) => bytesToHex(new TextEncoder().encode(s));
@@ -110,6 +111,25 @@ export default class WardVerify extends AbstractMethod<'wardVerify', WardVerifyS
 
         // --- WARD flow: verify the proof against the device's authenticated root. ---
         const session = new WardSession(this.getDevice().getCommands(), vlog);
+
+        // Bootstrap: install the host's current authenticated root so the device has a
+        // root to verify the lookup proof against — without it, firmware lookup rejects
+        // with "no authenticated root in session" on a fresh session. Same sync round
+        // wardUpdate/wardDisplayAddress use.
+        const sync = await session.sync();
+        WardSession.assertWardId(sync.wardId, wardId, 'wardVerify');
+        // TODO(handoff, gap 2): WM signs the host-supplied (counter, mac) — see gaps.md #2.
+        const attestation = await getWardManagerService().signAttestation({
+            wardId,
+            nonce: sync.nonce,
+            counter: tree?.counter ?? 0,
+            mac: tree?.mac,
+        });
+        await session.adopt(
+            { counter: tree?.counter ?? 0, mac: tree?.mac, wmSignature: attestation },
+            tree?.root,
+        );
+
         const pkg = proofFor(rows, address, networkSymbol, entry);
         const ack = await session.lookup(toLookupParams(address, pkg));
         // Tolerant echo check (matches prior behavior): only reject on an explicit
