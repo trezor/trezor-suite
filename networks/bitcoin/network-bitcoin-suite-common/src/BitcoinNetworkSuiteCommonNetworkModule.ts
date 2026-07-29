@@ -1,4 +1,4 @@
-import type { NetworkModule } from '@trezor/network-module-suite-types';
+import type { SuiteCommonNetworkModule } from '@trezor/network-module-suite-common-types';
 
 import { bitcoinValidator } from './addressValidator/bitcoinAddressValidator';
 import {
@@ -7,7 +7,7 @@ import {
     isSupportedNetwork,
 } from './supportedNetworks';
 
-export type BitcoinNetworkSuiteCommonNetworkModule = NetworkModule<BitcoinNetworkSymbol>;
+export type BitcoinNetworkSuiteCommonNetworkModule = SuiteCommonNetworkModule<BitcoinNetworkSymbol>;
 
 export const createBitcoinSuiteCommonNetworkModule =
     (): BitcoinNetworkSuiteCommonNetworkModule => ({

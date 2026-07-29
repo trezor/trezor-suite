@@ -1,7 +1,7 @@
 import type { BitcoinNetworkSuiteCommonNetworkModule } from '@trezor/network-bitcoin-suite-common';
 import type { CardanoNetworkSuiteCommonNetworkModule } from '@trezor/network-cardano-suite-common';
 import type { EthereumNetworkSuiteCommonNetworkModule } from '@trezor/network-ethereum-suite-common';
-import type { NetworkModule } from '@trezor/network-module-suite-types';
+import type { SuiteCommonNetworkModule } from '@trezor/network-module-suite-common-types';
 import type { RippleNetworkSuiteCommonNetworkModule } from '@trezor/network-ripple-suite-common';
 import type { SolanaNetworkSuiteCommonNetworkModule } from '@trezor/network-solana-suite-common';
 import type { StellarNetworkSuiteCommonNetworkModule } from '@trezor/network-stellar-suite-common';
@@ -31,6 +31,6 @@ export type StaticNetworkModulesDep = {
 // preserving the modular aspect.
 //
 type NetworkModuleSymbol<TNetworkModule> =
-    TNetworkModule extends NetworkModule<infer TSymbol> ? TSymbol : never;
+    TNetworkModule extends SuiteCommonNetworkModule<infer TSymbol> ? TSymbol : never;
 
 export type NetworkSymbol = NetworkModuleSymbol<NetworkModules[keyof NetworkModules]>;

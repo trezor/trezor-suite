@@ -1,4 +1,4 @@
-import { type AddressType, addressType } from '@trezor/network-module-suite-types';
+import { type AddressType, addressType } from '@trezor/network-module-suite-common-types';
 
 import { stellarValidator } from './stellarAddressValidator';
 

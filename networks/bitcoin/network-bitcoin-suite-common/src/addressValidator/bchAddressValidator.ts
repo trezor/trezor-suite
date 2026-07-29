@@ -1,7 +1,7 @@
 // CashAddr address format spec:
 // https://github.com/bitcoincashorg/bitcoincash.org/blob/master/spec/cashaddr.md
 
-import { type AddressValidator, addressType } from '@trezor/network-module-suite-types';
+import { type AddressValidator, addressType } from '@trezor/network-module-suite-common-types';
 
 import type { BitcoinNetworkSymbol } from '../supportedNetworks';
 

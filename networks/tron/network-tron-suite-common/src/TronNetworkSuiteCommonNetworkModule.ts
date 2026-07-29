@@ -1,4 +1,4 @@
-import type { NetworkModule } from '@trezor/network-module-suite-types';
+import type { SuiteCommonNetworkModule } from '@trezor/network-module-suite-common-types';
 
 import { tronValidator } from './addressValidator/tronAddressValidator';
 import {
@@ -7,7 +7,7 @@ import {
     isSupportedNetwork,
 } from './supportedNetworks';
 
-export type TronNetworkSuiteCommonNetworkModule = NetworkModule<TronNetworkSymbol>;
+export type TronNetworkSuiteCommonNetworkModule = SuiteCommonNetworkModule<TronNetworkSymbol>;
 
 export const createTronSuiteCommonNetworkModule = (): TronNetworkSuiteCommonNetworkModule => ({
     addressValidator: tronValidator,

@@ -4,7 +4,7 @@
     "include": ["./src"],
     "references": [
         {
-            "path": "../../network-module/network-module-suite-types"
+            "path": "../../network-module/network-module-suite-common-types"
         },
         { "path": "../../../packages/utils" }
     ]
