@@ -41,7 +41,7 @@ const originalJson = {
 
 describe('metadata', () => {
     it('decrypt real file data from dropbox', async () => {
-        const file = fs.readFileSync(path.resolve(__dirname, `../__fixtures__/${filename}.mtdt`));
+        const file = fs.readFileSync(path.resolve(__dirname, `./__fixtures__/${filename}.mtdt`));
 
         // deriveMetadataKey
         const metadataKey = deriveMetadataKey(
@@ -94,7 +94,7 @@ describe('metadata', () => {
     });
 
     it('read file content (ArrayBuffer)', () => {
-        const file = fs.readFileSync(path.resolve(__dirname, `../__fixtures__/${filename}.mtdt`));
+        const file = fs.readFileSync(path.resolve(__dirname, `./__fixtures__/${filename}.mtdt`));
 
         function toArrayBuffer(buf: Buffer) {
             const ab = new ArrayBuffer(buf.length);
