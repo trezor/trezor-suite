@@ -3,7 +3,13 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { ContextMessage } from '@suite/message-system';
-import { EarnAnchor, goto, useAnchor } from '@suite/router';
+import {
+    EarnAnchor,
+    goto,
+    isEarnYieldRowAnchor,
+    selectRouterAnchor,
+    useAnchor,
+} from '@suite/router';
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import {
@@ -15,7 +21,6 @@ import { Context } from '@suite-common/message-system';
 import { NORMAL_ACCOUNT_TYPE } from '@suite-common/wallet-config';
 import { selectVisibleDeviceAccounts } from '@suite-common/wallet-core';
 import { Button, Card, Column, Table } from '@trezor/components';
-import { OutlineHighlight } from '@trezor/product-components';
 
 import { DashboardSection } from 'src/components/dashboard';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -28,13 +33,13 @@ import { EarnYieldTableBody } from './EarnYieldTableBody';
 import { useYieldAccountsVisibility } from './hooks/useYieldAccountsVisibility';
 import { useYieldTableData } from './hooks/useYieldTableData';
 import { PoweredByBadge } from '../../providers/PoweredByBadge';
+import { getYieldOpportunityAnchor } from '../../utils/getYieldOpportunityAnchor';
 import { useMerklRewards } from '../../yield/claim/hooks';
 import { EarnDashboardTableHeader } from '../common/EarnDashboardTableHeader';
 
 const emptyVaults: YieldDtoV2[] = [];
 
 export const EarnYieldTable = () => {
-    const { anchorRef, shouldHighlight } = useAnchor(EarnAnchor.Yield);
     const { isBelowLaptop } = useLayoutSize();
     const isCardLayout = isBelowLaptop;
     const dispatch = useDispatch();
@@ -76,6 +81,27 @@ export const EarnYieldTable = () => {
         isExpanded,
         toggleIsExpanded,
     } = useYieldAccountsVisibility({ yieldAccountOpportunities });
+
+    // Yield badges anchor at a single row, which scrolls and highlights itself. Take over
+    // the anchor to scroll the whole section when that row is not rendered — it may sit
+    // behind "show more" or belong to another device.
+    const routerAnchor = useSelector(selectRouterAnchor);
+    // The body swaps rows for a loading or error state, so a matching opportunity only
+    // means a mounted row when neither is showing.
+    const hasAnchoredRow =
+        !isYieldOpportunitiesError &&
+        displayedYieldAccountOpportunities.some(
+            opportunity =>
+                getYieldOpportunityAnchor({
+                    account: opportunity.account,
+                    vaultId: opportunity.vault.id,
+                }) === routerAnchor,
+        );
+    const shouldScrollWholeSection =
+        isEarnYieldRowAnchor(routerAnchor) && !isYieldOpportunitiesLoading && !hasAnchoredRow;
+    const { anchorRef } = useAnchor(
+        shouldScrollWholeSection && routerAnchor ? routerAnchor : EarnAnchor.Yield,
+    );
 
     const { merklRewardsQuery, missingRateTickersQuery } = useMerklRewards(yieldAccounts);
     const { accountsRewards } = merklRewardsQuery.data;
@@ -147,40 +173,55 @@ export const EarnYieldTable = () => {
         <Column data-testid="@earn/dashboard" gap={16}>
             <ContextMessage context={Context.getEarnDashboard('yield')} />
 
-            <OutlineHighlight shouldHighlight={shouldHighlight}>
-                <DashboardSection
-                    heading={<Translation id="TR_EARN_DEFI_YIELD_TITLE" />}
-                    subheading={<Translation id="TR_EARN_DEFI_YIELD_DASHBOARD_TEXT" />}
-                    actions={<PoweredByBadge provider="morpho" />}
-                    ref={anchorRef}
-                >
-                    <Column gap={16} alignItems="center">
-                        {(isYieldActive || accountsRewards.length > 0) && (
-                            <>
-                                <EarnYieldClaimRewardsBanner
-                                    value={merklRewardsQuery.data.totalRewardsToClaim.value}
-                                    currency={merklRewardsQuery.data.totalRewardsToClaim.currency}
-                                    isValueLoading={merklRewardsQuery.isLoading}
-                                    isClaimDisabled={isClaimDisabled}
-                                    claimDisabledTooltip={
-                                        claimMessageSystem.isDisabled
-                                            ? claimMessageSystem.content
-                                            : undefined
-                                    }
-                                    onClaim={() => setIsClaimModalOpen(true)}
+            <DashboardSection
+                heading={<Translation id="TR_EARN_DEFI_YIELD_TITLE" />}
+                subheading={<Translation id="TR_EARN_DEFI_YIELD_DASHBOARD_TEXT" />}
+                actions={<PoweredByBadge provider="morpho" />}
+                ref={anchorRef}
+            >
+                <Column gap={16} alignItems="center">
+                    {(isYieldActive || accountsRewards.length > 0) && (
+                        <>
+                            <EarnYieldClaimRewardsBanner
+                                value={merklRewardsQuery.data.totalRewardsToClaim.value}
+                                currency={merklRewardsQuery.data.totalRewardsToClaim.currency}
+                                isValueLoading={merklRewardsQuery.isLoading}
+                                isClaimDisabled={isClaimDisabled}
+                                claimDisabledTooltip={
+                                    claimMessageSystem.isDisabled
+                                        ? claimMessageSystem.content
+                                        : undefined
+                                }
+                                onClaim={() => setIsClaimModalOpen(true)}
+                            />
+                            {isClaimModalOpen && (
+                                <EarnYieldClaimSelectAccountModal
+                                    accountsRewards={accountsRewards}
+                                    onSelect={handleClaimableAccountSelect}
+                                    onClose={() => setIsClaimModalOpen(false)}
                                 />
-                                {isClaimModalOpen && (
-                                    <EarnYieldClaimSelectAccountModal
-                                        accountsRewards={accountsRewards}
-                                        onSelect={handleClaimableAccountSelect}
-                                        onClose={() => setIsClaimModalOpen(false)}
-                                    />
-                                )}
-                            </>
-                        )}
+                            )}
+                        </>
+                    )}
 
-                        {isCardLayout ? (
-                            <Column gap={8} width="100%">
+                    {isCardLayout ? (
+                        <Column gap={8} width="100%">
+                            <EarnYieldTableBody
+                                isYieldOpportunitiesLoading={isYieldOpportunitiesLoading}
+                                isYieldOpportunitiesError={isYieldOpportunitiesError}
+                                onRetry={refetchYieldOpportunities}
+                                yieldAccountOpportunities={displayedYieldAccountOpportunities}
+                                yieldInactiveVaultOpportunities={yieldInactiveVaultOpportunities}
+                                isCardLayout={isCardLayout}
+                            />
+                        </Column>
+                    ) : (
+                        <Card paddingType="none">
+                            <Table isRowHighlightedOnHover margin={{ top: 8 }}>
+                                <EarnDashboardTableHeader
+                                    accountColumnTranslationId="TR_EARN_DASHBOARD_TABLE_ACCOUNT_VAULT"
+                                    showRewardsColumns={hasAnyRewardsData}
+                                />
                                 <EarnYieldTableBody
                                     isYieldOpportunitiesLoading={isYieldOpportunitiesLoading}
                                     isYieldOpportunitiesError={isYieldOpportunitiesError}
@@ -191,42 +232,21 @@ export const EarnYieldTable = () => {
                                     }
                                     isCardLayout={isCardLayout}
                                 />
-                            </Column>
-                        ) : (
-                            <Card paddingType="none">
-                                <Table isRowHighlightedOnHover margin={{ top: 8 }}>
-                                    <EarnDashboardTableHeader
-                                        accountColumnTranslationId="TR_EARN_DASHBOARD_TABLE_ACCOUNT_VAULT"
-                                        showRewardsColumns={hasAnyRewardsData}
-                                    />
-                                    <EarnYieldTableBody
-                                        isYieldOpportunitiesLoading={isYieldOpportunitiesLoading}
-                                        isYieldOpportunitiesError={isYieldOpportunitiesError}
-                                        onRetry={refetchYieldOpportunities}
-                                        yieldAccountOpportunities={
-                                            displayedYieldAccountOpportunities
-                                        }
-                                        yieldInactiveVaultOpportunities={
-                                            yieldInactiveVaultOpportunities
-                                        }
-                                        isCardLayout={isCardLayout}
-                                    />
-                                </Table>
-                            </Card>
-                        )}
+                            </Table>
+                        </Card>
+                    )}
 
-                        {hasHiddenYieldAccountOpportunities && (
-                            <Button
-                                intent="neutral"
-                                priority="secondary"
-                                onClick={handleToggleShowMore}
-                            >
-                                <Translation id={isExpanded ? 'TR_SHOW_LESS' : 'TR_SHOW_MORE'} />
-                            </Button>
-                        )}
-                    </Column>
-                </DashboardSection>
-            </OutlineHighlight>
+                    {hasHiddenYieldAccountOpportunities && (
+                        <Button
+                            intent="neutral"
+                            priority="secondary"
+                            onClick={handleToggleShowMore}
+                        >
+                            <Translation id={isExpanded ? 'TR_SHOW_LESS' : 'TR_SHOW_MORE'} />
+                        </Button>
+                    )}
+                </Column>
+            </DashboardSection>
         </Column>
     );
 };

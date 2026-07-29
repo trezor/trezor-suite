@@ -37,6 +37,7 @@ import { EarnYieldYearlyRewards } from './EarnYieldYearlyRewards';
 import { type YieldAccountOpportunity } from './types';
 import { getEarnRouteParams } from '../../utils/getEarnRouteParams';
 import { EarnAccountCell } from '../common/EarnAccountCell';
+import { useYieldAccountOpportunityAnchor } from './hooks/useYieldAccountOpportunityAnchor';
 
 type EarnYieldAccountOpportunityProps = {
     opportunity: YieldAccountOpportunity;
@@ -56,6 +57,8 @@ export const EarnYieldAccountOpportunity = ({
     const isFirmwareOutdated = !isStablecoinYieldSupported(selectedDevice);
     const { isFirmwareModalOpen, openFirmwareModal, closeFirmwareModal, updateFirmware } =
         useFirmwareUpgradeModal();
+
+    const { setAnchorElement, shouldHighlight } = useYieldAccountOpportunityAnchor(opportunity);
 
     const vaultContractAddress = getYieldVaultContractAddress(opportunity.vault);
     const depositMessageSystem = useMessageSystemYield('deposit', { vaultContractAddress });
@@ -418,7 +421,11 @@ export const EarnYieldAccountOpportunity = ({
     return (
         <>
             {firmwareModal}
-            <Table.Row data-testid={`@earn/dashboard/row/${opportunity.vault.id}`}>
+            <Table.Row
+                ref={setAnchorElement}
+                isHighlighted={shouldHighlight}
+                data-testid={`@earn/dashboard/row/${opportunity.vault.id}`}
+            >
                 <Table.Cell>{accountCell}</Table.Cell>
 
                 <Table.Cell>{apyCell}</Table.Cell>

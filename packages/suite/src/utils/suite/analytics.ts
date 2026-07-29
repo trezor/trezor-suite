@@ -1,6 +1,6 @@
 import type { SuiteReadyPayload } from '@suite/analytics';
 import { selectIsLegacyLabelingVisible } from '@suite/metadata';
-import { AccountTransactionBaseAnchor } from '@suite/router';
+import { AccountTransactionBaseAnchor, EarnAnchor, isEarnYieldRowAnchor } from '@suite/router';
 import {
     selectAutodetectLanguage,
     selectAutodetectTheme,
@@ -51,13 +51,22 @@ const resolveLabelingType = (
     return state.suiteSync.settings.isSuiteSyncEnabled ? 'suite-sync' : 'off';
 };
 
-// redact transaction id from account transaction anchor
-export const redactTransactionIdFromAnchor = (anchor?: string) => {
+// Collapses the per-item part of anchors (transaction id, earn yield row) — anchors reach
+// analytics and logs, so they must never carry account-identifying data.
+export const redactAnchor = (anchor?: string) => {
     if (!anchor) {
         return undefined;
     }
 
-    return anchor.startsWith(AccountTransactionBaseAnchor) ? AccountTransactionBaseAnchor : anchor;
+    if (anchor.startsWith(AccountTransactionBaseAnchor)) {
+        return AccountTransactionBaseAnchor;
+    }
+
+    if (isEarnYieldRowAnchor(anchor)) {
+        return EarnAnchor.Yield;
+    }
+
+    return anchor;
 };
 
 // 1. replace coinjoin by taproot
