@@ -6,7 +6,7 @@ import {
     SYSTEM_PROGRAM_PUBLIC_KEY,
     TOKEN_2022_PROGRAM_PUBLIC_KEY,
     TOKEN_PROGRAM_PUBLIC_KEY,
-} from '../src/constants';
+} from '../../constants';
 
 export const fixtures = {
     getMinimumRequiredTokenAccountsForTransfer: [
