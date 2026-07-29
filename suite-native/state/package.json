@@ -33,6 +33,7 @@
         "@suite-common/thp": "workspace:*",
         "@suite-common/toast-notifications": "workspace:*",
         "@suite-common/token-definitions": "workspace:*",
+        "@suite-common/wallet-config": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
         "@suite-common/walletconnect": "workspace:*",
         "@suite-native/analytics": "workspace:*",
