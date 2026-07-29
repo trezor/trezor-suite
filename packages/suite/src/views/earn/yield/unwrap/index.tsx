@@ -26,6 +26,7 @@ export const EarnUnwrap = () => {
         'Earn',
         <WrappedNativePageHeader
             titleId="TR_UNWRAP_NATIVE_TOKEN"
+            flow="unwrap"
             account={account}
             contractAddress={wrappedNative?.address}
         />,

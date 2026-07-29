@@ -28,6 +28,7 @@ import { YieldDisabledBanner } from '../common/YieldDisabledBanner';
 import { YieldFlowTransferRow } from '../common/YieldFlowTransferRow';
 import { YieldWrapStep } from '../common/YieldWrapStep';
 import { useWrappedNativeDeviceGuard } from '../common/useWrappedNativeDeviceGuard';
+import { useWrappedNativeFlowAnalytics } from '../common/useWrappedNativeFlowAnalytics';
 import { useWrappedNativePendingTx } from '../common/useWrappedNativePendingTx';
 import { useYieldFiatInput } from '../hooks/useYieldFiatInput';
 
@@ -59,6 +60,13 @@ export const WrapNativeToken = ({ account, token }: WrapNativeTokenProps) => {
     });
 
     const pendingTxStatus = useWrappedNativePendingTx(account, broadcast?.txid ?? null, 'wrap');
+
+    const { reportSubmit } = useWrappedNativeFlowAnalytics({
+        flowType: 'wrap',
+        status: pendingTxStatus,
+        txid: broadcast?.txid ?? null,
+        networkSymbol: account.symbol,
+    });
 
     const nativeSymbol = getNetworkDisplaySymbol(account.symbol);
     const nativeToken: YieldFlowDisplayToken = {
@@ -110,6 +118,8 @@ export const WrapNativeToken = ({ account, token }: WrapNativeTokenProps) => {
     });
 
     const handleSubmit = methods.handleSubmit(async ({ amountInput: wrapAmount }) => {
+        reportSubmit();
+
         if (!(await ensureDeviceReady())) {
             return;
         }
@@ -154,6 +164,7 @@ export const WrapNativeToken = ({ account, token }: WrapNativeTokenProps) => {
             return (
                 <WrappedNativeFlowComplete
                     account={account}
+                    flow="wrap"
                     heading={<Translation id="TR_WRAP_COMPLETE_HEADING" />}
                     description={
                         <Translation

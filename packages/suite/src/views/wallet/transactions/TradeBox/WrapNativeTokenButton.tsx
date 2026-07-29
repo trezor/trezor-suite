@@ -1,9 +1,12 @@
 import { type MouseEvent } from 'react';
 
+import { selectDesktopAnalyticsDep } from '@suite/analytics';
 import { selectIsDebugModeActive } from '@suite/debug';
 import { FirmwareUpgradeNeededModal } from '@suite/firmware-upgrade';
 import { Translation, useTranslation } from '@suite/intl';
 import { goto } from '@suite/router';
+import { events } from '@suite-common/analytics';
+import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import {
     getNetworkType,
@@ -30,6 +33,7 @@ type WrapNativeTokenButtonProps = {
 export const WrapNativeTokenButton = ({ account }: WrapNativeTokenButtonProps) => {
     const dispatch = useDispatch();
     const { translationString } = useTranslation();
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
     const isDebugModeActive = useSelector(selectIsDebugModeActive);
     const device = useSelector(selectSelectedDevice);
     const isFirmwareOutdated = !isWrappedNativeFlowSupported(device);
@@ -59,6 +63,16 @@ export const WrapNativeTokenButton = ({ account }: WrapNativeTokenButtonProps) =
 
             return;
         }
+
+        analytics.report({
+            type: events.yieldNavigateEvent.name,
+            payload: {
+                action: 'continue',
+                from: 'account-defi-tokens',
+                to: 'wrap-form',
+                networkSymbol: account.symbol,
+            },
+        });
 
         dispatch(
             goto({

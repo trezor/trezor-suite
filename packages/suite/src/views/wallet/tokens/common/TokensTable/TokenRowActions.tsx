@@ -321,6 +321,16 @@ const TokenRowBasicActions = ({
             return;
         }
 
+        analytics.report({
+            type: sharedEvents.yieldNavigateEvent.name,
+            payload: {
+                action: 'continue',
+                from: 'account-defi-tokens',
+                to: 'unwrap-form',
+                networkSymbol: account.symbol,
+            },
+        });
+
         dispatch(
             goto({
                 routeName: 'earn-yield-unwrap',

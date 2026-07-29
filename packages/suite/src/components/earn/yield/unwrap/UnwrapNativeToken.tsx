@@ -27,6 +27,7 @@ import { YieldDisabledBanner } from '../common/YieldDisabledBanner';
 import { YieldFlowTransferRow } from '../common/YieldFlowTransferRow';
 import { YieldUnwrapStep } from '../common/YieldUnwrapStep';
 import { useWrappedNativeDeviceGuard } from '../common/useWrappedNativeDeviceGuard';
+import { useWrappedNativeFlowAnalytics } from '../common/useWrappedNativeFlowAnalytics';
 import { useWrappedNativePendingTx } from '../common/useWrappedNativePendingTx';
 import { useYieldFiatInput } from '../hooks/useYieldFiatInput';
 
@@ -73,6 +74,13 @@ export const UnwrapNativeToken = ({
     });
 
     const pendingTxStatus = useWrappedNativePendingTx(account, broadcast?.txid ?? null, 'unwrap');
+
+    const { reportSubmit } = useWrappedNativeFlowAnalytics({
+        flowType: 'unwrap',
+        status: pendingTxStatus,
+        txid: broadcast?.txid ?? null,
+        networkSymbol: account.symbol,
+    });
 
     const amountInput = useWatch({ control: methods.control, name: 'amountInput' });
     const amount = new BigNumber(amountInput || '');
@@ -130,6 +138,8 @@ export const UnwrapNativeToken = ({
     });
 
     const handleSubmit = methods.handleSubmit(async ({ amountInput: unwrapAmount }) => {
+        reportSubmit();
+
         if (!(await ensureDeviceReady())) {
             return;
         }
@@ -155,6 +165,7 @@ export const UnwrapNativeToken = ({
             return (
                 <WrappedNativeFlowComplete
                     account={account}
+                    flow="unwrap"
                     heading={<Translation id="TR_UNWRAP_COMPLETE_HEADING" />}
                     description={
                         <Translation

@@ -186,6 +186,7 @@ export const YieldDepositForm = () => {
                 action: 'continue',
                 networkSymbol: token.networkSymbol,
                 vaultId: vault.id,
+                wrappedNative: flow.isWrappedNativeVault,
                 ...(apyBreakdown && { apyBreakdown }),
             },
         });
