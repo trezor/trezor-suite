@@ -1,3 +1,5 @@
+import type { RouterApp } from './routerApps';
+
 // Steps to add route params:
 // 1. add params order here (example: wallet or suite-bridge)
 // 2. add or update param validation in `suite/router/src/router.ts`
@@ -19,7 +21,7 @@ export const earnParams = [
 type RouteDefinition = {
     name: string;
     pattern: string;
-    app: string;
+    app: RouterApp;
     params?: readonly string[];
     isFullscreenApp?: boolean;
     isForegroundApp?: boolean;
