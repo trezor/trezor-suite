@@ -92,7 +92,7 @@ export const GuideButton = memo(function GuideButton() {
                     content={
                         <Row gap={8}>
                             <Translation id="TR_GUIDE_SUPPORT_AND_FEEDBACK" />
-                            <ShortcutBadge shortcut={['F1']} isInverse />
+                            <ShortcutBadge shortcut={['F1']} />
                         </Row>
                     }
                     placement="top"
