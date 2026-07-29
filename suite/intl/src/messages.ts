@@ -10863,6 +10863,16 @@ export const messages = defineMessages({
         id: 'TR_EARN_TRON_WITHDRAW_TITLE',
         defaultMessage: 'Withdraw',
     },
+    TR_EARN_TRON_RESERVE_LEFT_FOR_VOTING: {
+        id: 'TR_EARN_TRON_RESERVE_LEFT_FOR_VOTING',
+        defaultMessage:
+            "We've left {amount} {networkDisplaySymbol} in your account so you can pay for voting fees.",
+    },
+    TR_EARN_TRON_RESERVE_RECOMMENDED_FOR_VOTING: {
+        id: 'TR_EARN_TRON_RESERVE_RECOMMENDED_FOR_VOTING',
+        defaultMessage:
+            "It's recommended to leave {amount} {networkDisplaySymbol} so you can pay for voting fees.",
+    },
     TR_EARN_TRON_CLAIM_ADDRESS: {
         id: 'TR_EARN_TRON_CLAIM_ADDRESS',
         defaultMessage: 'Claim address',

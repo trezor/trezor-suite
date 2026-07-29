@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 
 import {
+    type TronStakeStepId,
     composeTronClaimFeeLevelsThunk,
     composeTronFreezeFeeLevelsThunk,
     composeTronUnstakeFeeLevelsThunk,
@@ -8,24 +9,28 @@ import {
     composeTronWithdrawFeeLevelsThunk,
     selectRawNetworkFeeInfo,
 } from '@suite-common/wallet-core';
-import { type FeeInfo, type PrecomposedLevels } from '@suite-common/wallet-types';
+import { type Account, type FeeInfo, type PrecomposedLevels } from '@suite-common/wallet-types';
 import { getConvertedOrDefaultFeeInfo } from '@suite-common/wallet-utils';
 import { exhaustive } from '@trezor/type-utils';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
-import { useTronStakeContext } from '../TronStakeContext';
 import { resolveVotedRepresentativeAddress } from '../voteUtils';
+import { type useTronStakeForm } from './useTronStakeForm';
 
 interface TronStakeFees {
     feeInfo: FeeInfo;
     composedLevels: PrecomposedLevels | undefined;
 }
 
-export const useTronStakeFees = (): TronStakeFees => {
+interface UseTronStakeFeesProps {
+    account: Account;
+    form: ReturnType<typeof useTronStakeForm>;
+    step: TronStakeStepId;
+}
+
+export const useTronStakeFees = ({ account, form, step }: UseTronStakeFeesProps): TronStakeFees => {
     const dispatch = useDispatch();
-    const { account, form, actions } = useTronStakeContext();
-    const { step } = actions;
 
     const amount = form.methods.watch('amount');
     const resourceType = form.methods.watch('resourceType');

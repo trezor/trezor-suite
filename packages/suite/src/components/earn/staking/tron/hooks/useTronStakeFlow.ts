@@ -9,6 +9,7 @@ import { useDispatch } from 'src/hooks/suite';
 
 import { useTronAmountInput } from './useTronAmountInput';
 import { type TronStakeActions, useTronStakeActions } from './useTronStakeActions';
+import { useTronStakeFees } from './useTronStakeFees';
 import { useTronStakeForm } from './useTronStakeForm';
 import { useTronStakePendingTransactionTracking } from './useTronStakePendingTransactionTracking';
 
@@ -18,6 +19,7 @@ export interface TronStakeContextValues {
     form: ReturnType<typeof useTronStakeForm>;
     actions: TronStakeActions;
     amountInput: ReturnType<typeof useTronAmountInput>;
+    fees: ReturnType<typeof useTronStakeFees>;
 }
 
 interface UseTronStakeFlowProps {
@@ -34,6 +36,7 @@ export const useTronStakeFlow = ({
 
     const form = useTronStakeForm({ account, flow });
     const actions = useTronStakeActions({ account, form, flow });
+    const fees = useTronStakeFees({ account, form, step: actions.step });
 
     const { methods } = form;
 
@@ -56,5 +59,6 @@ export const useTronStakeFlow = ({
         form,
         actions,
         amountInput,
+        fees,
     };
 };
