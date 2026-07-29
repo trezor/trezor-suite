@@ -10593,6 +10593,7 @@ __metadata:
   resolution: "@suite-common/icons@workspace:suite-common/icons"
   dependencies:
     "@suite-common/http-client": "workspace:^"
+    "@suite-common/wallet-config": "workspace:^"
     chalk: "npm:^5.6.2"
     fantasticon: "npm:4.1.0"
     prettier: "npm:^3.8.4"

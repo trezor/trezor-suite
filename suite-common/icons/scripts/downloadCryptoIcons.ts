@@ -16,6 +16,7 @@ import {
     IMAGE_SIZE_SEPARATOR,
     createCoinImageName,
 } from '../src/coinImages';
+import { downloadVaultIcons } from './utils/downloadVaultIcons';
 import {
     fetchCoinList,
     fetchUpdatedIconsList,
@@ -208,6 +209,15 @@ async function ensureDirectoryExists(path: string) {
             // Only fingerprint on success so a failed coin is retried on the next run.
             ...(success ? { imageUrl } : {}),
         };
+    }
+
+    // Vault-position tokens are derived from other icons rather than fetched from CoinGecko —
+    // see downloadVaultIcons. A failure there must not discard the CoinGecko icons already
+    // produced by this run, so it only logs.
+    try {
+        await downloadVaultIcons();
+    } catch (error) {
+        console.error('Vault icons: 🔴 Error:', error);
     }
 
     console.log('All icons processed, writing updated icons list');

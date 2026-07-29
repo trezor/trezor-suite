@@ -50,3 +50,23 @@ export const coinMarketsSchema = z.array(
         image: z.string(),
     }),
 );
+
+// Yield vaults as served by the earn-yield worker, grouped by CoinGecko asset platform id. Keys are
+// kept open so a newly supported platform cannot fail the whole response — a platform this repo does
+// not know is reported and skipped by the consumer instead.
+export const yieldVaultsSchema = z.record(
+    z.string(),
+    z.array(
+        z.object({
+            yieldId: z.string(),
+            // Address of the vault-position token, i.e. the icon file name to write.
+            address: z.string(),
+            // Address and CoinGecko coin id of the token the vault is denominated in, i.e. the icon
+            // to copy. The id is chain-specific (`l2-standard-bridged-weth-base`, not `weth`).
+            underlyingToken: z.string(),
+            coingeckoId: z.string(),
+        }),
+    ),
+);
+export type YieldVaults = z.infer<typeof yieldVaultsSchema>;
+export type YieldVault = YieldVaults[string][number];
