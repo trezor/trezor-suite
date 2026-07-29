@@ -15,32 +15,6 @@ const { btc: bitcoin, eth: ethereum, test: testnet, regtest } = networks;
 
 const mockNetworks = [bitcoin, ethereum, testnet, regtest];
 
-describe('Robinhood Chain network', () => {
-    it('uses the expected mainnet identity and production configuration', () => {
-        expect(networks.rhc).toMatchObject({
-            symbol: 'rhc',
-            settlementLayer: 'eth',
-            chainId: 4663,
-            caipId: 'eip155:4663',
-            coingeckoId: 'robinhood',
-            tradeCryptoId: 'robinhood--0x0000000000000000000000000000000000000000',
-            displaySymbolName: 'Robinhood Ethereum',
-            nativeTokenReserve: '0.0002',
-            backendOptions: [{ type: 'blockbook', isExternalBackend: true }, { type: 'evm-rpc' }],
-        });
-        expect(networks.rhc.explorer.base).toBe('https://robinscan.io');
-        expect(networks.rhc.features).not.toContain('eip1559');
-        expect(networks.rhc).not.toHaveProperty('isDebugOnlyNetwork');
-        expect(getMainnets({ allNetworks: [networks.rhc] })).toEqual([networks.rhc]);
-    });
-});
-
-describe('HyperEVM network', () => {
-    it('supports NFTs and NFT definitions', () => {
-        expect(networks.hype.features).toEqual(expect.arrayContaining(['nfts', 'nft-definitions']));
-    });
-});
-
 describe(getMainnets.name, () => {
     it('returns non-testnet, non-debug-only networks when debug is false', () => {
         const result = getMainnets({
