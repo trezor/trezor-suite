@@ -1,5 +1,6 @@
 import { selectFullSelectedAccount } from '@suite/account';
-import { SignVerify } from '@suite/sign-verify';
+import { selectSuiteNetworkModuleRepositoryDep } from '@suite/networks';
+import { useServices } from '@suite-common/dependency-injection';
 
 import { WalletLayout, WalletSubpageHeading } from 'src/components/wallet';
 import { useSelector } from 'src/hooks/suite';
@@ -7,6 +8,15 @@ import { ConnectDeviceGenericPromo } from 'src/views/wallet/receive/components/C
 
 export const SignVerifyPage = () => {
     const selectedAccount = useSelector(selectFullSelectedAccount);
+    const { suiteNetworkModuleRepository } = useServices(selectSuiteNetworkModuleRepositoryDep);
+    const suiteNetworkModule = suiteNetworkModuleRepository.get(selectedAccount.account!.symbol);
+    const SignVerify = suiteNetworkModule?.signVerify.Component;
+
+    if (!SignVerify) {
+        throw new Error(
+            `Sign & Verify network module for ${selectedAccount.account!.symbol} is not registered.`,
+        );
+    }
 
     return (
         <SignVerify

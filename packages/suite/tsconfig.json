@@ -197,6 +197,7 @@
         },
         { "path": "../../suite/modal" },
         { "path": "../../suite/nfc" },
+        { "path": "../../suite/networks" },
         {
             "path": "../../suite/onboarding-components"
         },

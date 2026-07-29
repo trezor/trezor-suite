@@ -15053,6 +15053,19 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite/networks@workspace:*, @suite/networks@workspace:suite/networks":
+  version: 0.0.0-use.local
+  resolution: "@suite/networks@workspace:suite/networks"
+  dependencies:
+    "@suite-common/networks": "workspace:*"
+    "@suite-common/wallet-config": "workspace:*"
+    "@trezor/connect": "workspace:*"
+    "@trezor/network-bitcoin-suite": "workspace:*"
+    "@trezor/network-cardano-suite": "workspace:*"
+    "@trezor/network-ethereum-suite": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
 "@suite/nfc@workspace:*, @suite/nfc@workspace:suite/nfc":
   version: 0.0.0-use.local
   resolution: "@suite/nfc@workspace:suite/nfc"
@@ -15222,13 +15235,10 @@ __metadata:
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
-    "@suite-common/wallet-utils": "workspace:*"
     "@suite/address": "workspace:*"
     "@suite/device": "workspace:*"
     "@suite/intl": "workspace:*"
     "@trezor/components": "workspace:*"
-    "@trezor/connect": "workspace:*"
-    "@trezor/connect-common": "workspace:*"
     "@trezor/dom-utils": "workspace:*"
     "@trezor/icons": "workspace:*"
     "@trezor/type-utils": "workspace:*"
@@ -16570,6 +16580,21 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@trezor/network-bitcoin-suite@workspace:*, @trezor/network-bitcoin-suite@workspace:networks/bitcoin/network-bitcoin-suite":
+  version: 0.0.0-use.local
+  resolution: "@trezor/network-bitcoin-suite@workspace:networks/bitcoin/network-bitcoin-suite"
+  dependencies:
+    "@suite-common/suite-types": "workspace:*"
+    "@suite-common/wallet-types": "workspace:*"
+    "@suite/intl": "workspace:*"
+    "@suite/sign-verify": "workspace:*"
+    "@trezor/components": "workspace:*"
+    "@trezor/connect": "workspace:*"
+    "@trezor/network-bitcoin-suite-common": "workspace:*"
+    react: "npm:19.2.3"
+  languageName: unknown
+  linkType: soft
+
 "@trezor/network-cardano-suite-common@workspace:*, @trezor/network-cardano-suite-common@workspace:networks/cardano/network-cardano-suite-common":
   version: 0.0.0-use.local
   resolution: "@trezor/network-cardano-suite-common@workspace:networks/cardano/network-cardano-suite-common"
@@ -16579,6 +16604,25 @@ __metadata:
     "@trezor/utils": "workspace:*"
     cbor: "npm:^10.0.12"
     crc: "npm:^4.3.2"
+  languageName: unknown
+  linkType: soft
+
+"@trezor/network-cardano-suite@workspace:*, @trezor/network-cardano-suite@workspace:networks/cardano/network-cardano-suite":
+  version: 0.0.0-use.local
+  resolution: "@trezor/network-cardano-suite@workspace:networks/cardano/network-cardano-suite"
+  dependencies:
+    "@suite-common/suite-types": "workspace:*"
+    "@suite-common/wallet-types": "workspace:*"
+    "@suite-common/wallet-utils": "workspace:*"
+    "@suite/intl": "workspace:*"
+    "@suite/sign-verify": "workspace:*"
+    "@trezor/components": "workspace:*"
+    "@trezor/connect": "workspace:*"
+    "@trezor/connect-common": "workspace:*"
+    "@trezor/dom-utils": "workspace:*"
+    "@trezor/icons": "workspace:*"
+    "@trezor/network-cardano-suite-common": "workspace:*"
+    react: "npm:19.2.3"
   languageName: unknown
   linkType: soft
 
@@ -16598,6 +16642,19 @@ __metadata:
     "@noble/hashes": "npm:^2.0.1"
     "@trezor/network-module-suite-types": "workspace:*"
     "@trezor/utils": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
+"@trezor/network-ethereum-suite@workspace:*, @trezor/network-ethereum-suite@workspace:networks/ethereum/network-ethereum-suite":
+  version: 0.0.0-use.local
+  resolution: "@trezor/network-ethereum-suite@workspace:networks/ethereum/network-ethereum-suite"
+  dependencies:
+    "@suite-common/suite-types": "workspace:*"
+    "@suite-common/wallet-types": "workspace:*"
+    "@suite/sign-verify": "workspace:*"
+    "@trezor/connect": "workspace:*"
+    "@trezor/network-ethereum-suite-common": "workspace:*"
+    react: "npm:19.2.3"
   languageName: unknown
   linkType: soft
 
@@ -17290,6 +17347,7 @@ __metadata:
     "@suite/metadata": "workspace:*"
     "@suite/metadata-migration": "workspace:*"
     "@suite/modal": "workspace:*"
+    "@suite/networks": "workspace:*"
     "@suite/nfc": "workspace:*"
     "@suite/onboarding-components": "workspace:*"
     "@suite/receive": "workspace:*"

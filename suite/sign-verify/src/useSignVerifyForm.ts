@@ -9,6 +9,8 @@ import { yup } from '@suite-common/validators';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 
+import type { SignVerifyNetworkConfig } from './types';
+
 export const MAX_LENGTH_MESSAGE = 1024;
 export const MAX_LENGTH_SIGNATURE = 255;
 
@@ -25,9 +27,7 @@ export type SignVerifyFields = {
     hex: boolean;
     path?: string;
     signature?: string;
-    isElectrum?: boolean;
-    pubKey?: string;
-    cardanoPubKeyCose?: boolean;
+    signOption?: boolean;
 };
 
 const signVerifySchema: yup.ObjectSchema<SignVerifyFields> = yup.object({
@@ -59,23 +59,23 @@ const signVerifySchema: yup.ObjectSchema<SignVerifyFields> = yup.object({
         then: schema => schema.required(),
     }),
     hex: yup.boolean().required(),
-    isElectrum: yup.boolean(),
-    pubKey: yup.string(),
-    cardanoPubKeyCose: yup.boolean(),
+    signOption: yup.boolean(),
 });
 
 const DEFAULT_VALUES: SignVerifyFields = {
     message: '',
     address: '',
-    isElectrum: false,
+    signOption: false,
     path: '',
     signature: '',
     hex: false,
-    pubKey: '',
-    cardanoPubKeyCose: false,
 };
 
-export const useSignVerifyForm = (isSignPage: boolean, account: Account) => {
+export const useSignVerifyForm = (
+    isSignPage: boolean,
+    account: Account,
+    networkConfig: SignVerifyNetworkConfig,
+) => {
     const { addressValidator } = useServices(selectAddressValidatorDep);
     const { register, handleSubmit, formState, reset, setValue, clearErrors, control, trigger } =
         useForm<SignVerifyFields, SignVerifyContext>({
@@ -106,13 +106,9 @@ export const useSignVerifyForm = (isSignPage: boolean, account: Account) => {
         control,
         name: 'hex',
     });
-    const { field: isElectrumField } = useController({
+    const { field: signOptionField } = useController({
         control,
-        name: 'isElectrum',
-    });
-    const { field: cardanoPubKeyCoseField } = useController({
-        control,
-        name: 'cardanoPubKeyCose',
+        name: 'signOption',
     });
 
     useEffect(() => {
@@ -124,31 +120,17 @@ export const useSignVerifyForm = (isSignPage: boolean, account: Account) => {
     useEffect(() => {
         if (isSignPage) {
             setValue('signature', '');
-            setValue('pubKey', '');
         }
-    }, [
-        setValue,
-        isSignPage,
-        formValues.address,
-        formValues.message,
-        formValues.isElectrum,
-        formValues.cardanoPubKeyCose,
-    ]);
+    }, [setValue, isSignPage, formValues.address, formValues.message, formValues.signOption]);
 
     useEffect(() => {
-        const overrideValues =
-            isSignPage && account?.networkType === 'ethereum'
-                ? {
-                      path: account.path,
-                      address: account.descriptor,
-                  }
-                : {};
+        const overrideValues = networkConfig.getInitialValues?.(account, isSignPage) ?? {};
 
         reset({
             ...DEFAULT_VALUES,
             ...overrideValues,
         });
-    }, [reset, account, isSignPage]);
+    }, [reset, account, isSignPage, networkConfig]);
 
     return {
         isFormDirty: isDirty,
@@ -157,9 +139,8 @@ export const useSignVerifyForm = (isSignPage: boolean, account: Account) => {
         formSubmit: handleSubmit,
         formValues,
         formErrors: errors,
-        formSetSignature: ({ signature, pubKey }: { signature: string; pubKey?: string }) => {
+        formSetSignature: ({ signature }: { signature: string }) => {
             setValue('signature', signature);
-            setValue('pubKey', pubKey || '');
         },
         register,
         hexField: {
@@ -179,15 +160,11 @@ export const useSignVerifyForm = (isSignPage: boolean, account: Account) => {
                 pathField.onChange(addr?.path || '');
                 addressField.onChange(addr?.address || '');
             },
-            isDisabled: account?.networkType === 'ethereum',
+            isDisabled: networkConfig.isPathDisabled?.(account) ?? false,
         },
-        isElectrumField: {
-            selectedOption: isElectrumField.value,
-            onChange: isElectrumField.onChange,
-        },
-        cardanoPubKeyCoseField: {
-            selectedOption: cardanoPubKeyCoseField.value,
-            onChange: cardanoPubKeyCoseField.onChange,
+        signOptionField: {
+            selectedOption: signOptionField.value,
+            onChange: signOptionField.onChange,
         },
     };
 };

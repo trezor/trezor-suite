@@ -1,19 +1,32 @@
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
-import { configureMockStore, testMocks } from '@suite-common/test-utils';
+import { configureMockStore } from '@suite-common/test-utils';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
+import { ok } from '@trezor/type-utils';
 
 import { showAddress, sign, verify } from './signVerifyActions';
+import type { SignVerifyNetworkConfig } from './types';
 
 const PATH = 'PATH';
 const ADDRESS = 'ADDRESS';
 const MESSAGE = 'MESSAGE';
 const SIGNATURE = 'SIGNATURE';
 const ACCOUNT = mockWalletAccount({ symbol: 'btc' });
+const showAddressFn = jest.fn(() => Promise.resolve(ok({ address: ADDRESS })));
+const signFn = jest.fn(() => Promise.resolve(ok({ address: ADDRESS, signature: SIGNATURE })));
+const verifyFn = jest.fn(() => Promise.resolve(ok({ message: MESSAGE })));
+const networkConfig: SignVerifyNetworkConfig = {
+    getSignAddresses: () => [],
+    showAddress: showAddressFn,
+    sign: signFn,
+    verify: verifyFn,
+    formatSignedMessage: () => '',
+};
 
-describe('Sign/Verify actions', () => {
+describe('Sign/Verify action orchestration', () => {
     let store: any;
 
     beforeEach(() => {
+        jest.clearAllMocks();
         store = configureMockStore({
             preloadedState: {
                 wallet: {
@@ -25,33 +38,37 @@ describe('Sign/Verify actions', () => {
     });
 
     it('showAddress', async () => {
-        testMocks.setTrezorConnectFixtures({
-            success: true,
-            payload: { address: ADDRESS },
-        });
-        const res = await store.dispatch(showAddress(ACCOUNT, ADDRESS, PATH));
+        const res = await store.dispatch(showAddress(networkConfig, ACCOUNT, ADDRESS, PATH));
+
         expect(res).toStrictEqual({ address: ADDRESS });
+        expect(showAddressFn).toHaveBeenCalledWith(
+            expect.objectContaining({ account: ACCOUNT, address: ADDRESS, path: PATH }),
+        );
     });
 
     it('sign', async () => {
-        testMocks.setTrezorConnectFixtures({
-            success: true,
-            payload: {
-                address: ADDRESS,
-                signature: SIGNATURE,
-            },
-        });
-        const res = await store.dispatch(sign(ACCOUNT, PATH, MESSAGE));
+        const res = await store.dispatch(sign(networkConfig, ACCOUNT, PATH, MESSAGE));
+
         expect(res.address).toStrictEqual(ADDRESS);
         expect(res.signature).toStrictEqual(SIGNATURE);
+        expect(signFn).toHaveBeenCalledWith(
+            expect.objectContaining({ account: ACCOUNT, path: PATH, message: MESSAGE }),
+        );
     });
 
     it('verify', async () => {
-        testMocks.setTrezorConnectFixtures({
-            success: true,
-            payload: { message: MESSAGE },
-        });
-        const res = await store.dispatch(verify(ACCOUNT, ADDRESS, MESSAGE, SIGNATURE));
+        const res = await store.dispatch(
+            verify(networkConfig, ACCOUNT, ADDRESS, MESSAGE, SIGNATURE),
+        );
+
         expect(res).toStrictEqual(true);
+        expect(verifyFn).toHaveBeenCalledWith(
+            expect.objectContaining({
+                account: ACCOUNT,
+                address: ADDRESS,
+                message: MESSAGE,
+                signature: SIGNATURE,
+            }),
+        );
     });
 });

@@ -26,17 +26,10 @@
         {
             "path": "../../suite-common/wallet-types"
         },
-        {
-            "path": "../../suite-common/wallet-utils"
-        },
         { "path": "../address" },
         { "path": "../device" },
         { "path": "../intl" },
         { "path": "../../packages/components" },
-        { "path": "../../packages/connect" },
-        {
-            "path": "../../packages/connect-common"
-        },
         { "path": "../../packages/dom-utils" },
         { "path": "../../packages/icons" },
         { "path": "../../packages/type-utils" },

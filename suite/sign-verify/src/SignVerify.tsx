@@ -1,12 +1,10 @@
-import { type ReactNode, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { type FieldError } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { useDevice } from '@suite/device';
 import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
 import { type ReceiveRootState, selectTouchedAddresses } from '@suite-common/receive';
-import { type Network } from '@suite-common/wallet-config';
-import { type Account } from '@suite-common/wallet-types';
 import {
     Box,
     Button,
@@ -15,17 +13,15 @@ import {
     Divider,
     Input,
     Row,
-    SelectBar,
     Switch,
     Tabs,
     Textarea,
-    Tooltip,
 } from '@trezor/components';
-import { copyToClipboard } from '@trezor/dom-utils';
 import { CheckIcon, CopyIcon } from '@trezor/icons';
 
 import { SignAddressInput } from './SignAddressInput';
-import { isVerifySupported, sign, verify } from './signVerifyActions';
+import { sign, verify } from './signVerifyActions';
+import type { SignVerifyNetworkConfig, SignVerifyProps } from './types';
 import { useCopySignedMessage } from './useCopySignedMessage';
 import {
     MAX_LENGTH_MESSAGE,
@@ -34,22 +30,19 @@ import {
     useSignVerifyForm,
 } from './useSignVerifyForm';
 
-type SignVerifyShellProps = {
-    title: 'TR_NAV_SIGN_VERIFY' | 'TR_SIGN_MESSAGE';
-    isDeviceConnected: boolean | undefined;
-    headingAction: ReactNode;
-    children: ReactNode;
+type SignVerifyComponentProps = SignVerifyProps & {
+    networkConfig: SignVerifyNetworkConfig;
 };
 
-type SignVerifyProps = {
-    account: Account;
-    network?: Network;
-    renderShell: (props: SignVerifyShellProps) => ReactNode;
-};
-
-export const SignVerify = ({ account, network, renderShell }: SignVerifyProps) => {
+export const SignVerify = ({
+    account,
+    network,
+    networkConfig,
+    renderShell,
+}: SignVerifyComponentProps) => {
     const [page, setPage] = useState<'sign' | 'verify'>('sign');
     const [isCompleted, setIsCompleted] = useState(false);
+    const [additionalResult, setAdditionalResult] = useState('');
 
     const touchedAddresses = useSelector((state: ReceiveRootState) =>
         selectTouchedAddresses(state, account.key),
@@ -70,13 +63,16 @@ export const SignVerify = ({ account, network, renderShell }: SignVerifyProps) =
         hexField,
         addressField,
         pathField,
-        isElectrumField,
-        cardanoPubKeyCoseField,
-    } = useSignVerifyForm(isSignPage, account);
+        signOptionField,
+    } = useSignVerifyForm(isSignPage, account, networkConfig);
 
     const { isLocked, device } = useDevice();
     const { translationString } = useTranslation();
-    const { canCopy, copy } = useCopySignedMessage(formValues, network);
+    const { canCopy, copy } = useCopySignedMessage(
+        formValues,
+        networkConfig.formatSignedMessage,
+        network,
+    );
 
     const getErrorMessage = (error?: FieldError) =>
         error ? translationString(error.message as TranslationKey) : undefined;
@@ -85,11 +81,9 @@ export const SignVerify = ({ account, network, renderShell }: SignVerifyProps) =
     const pathError = getErrorMessage(formErrors.path);
     const addressError = getErrorMessage(formErrors.address);
     const signatureError = getErrorMessage(formErrors.signature);
-    const pubKeyError = getErrorMessage(formErrors.pubKey);
 
     const { ref: messageRef, ...messageField } = register('message');
     const { ref: signatureRef, ...signatureField } = register('signature');
-    const { ref: pubKeyRef, ...pubKeyField } = register('pubKey');
 
     const signatureProps = {
         label: translationString('TR_SIGNATURE'),
@@ -99,14 +93,6 @@ export const SignVerify = ({ account, network, renderShell }: SignVerifyProps) =
         innerRef: signatureRef,
         ...signatureField,
     };
-    const pubKeyProps = {
-        label: translationString('TR_PUBLIC_KEY'),
-        hasError: !!formErrors.pubKey,
-        bottomText: pubKeyError,
-        'data-testid': '@sign-verify/pubKey',
-        innerRef: pubKeyRef,
-        ...pubKeyField,
-    };
 
     useEffect(() => {
         if (isSignPage && formValues.signature) return;
@@ -114,34 +100,44 @@ export const SignVerify = ({ account, network, renderShell }: SignVerifyProps) =
         setIsCompleted(false);
     }, [isSignPage, formValues.message, formValues.address, formValues.signature]);
 
+    useEffect(() => {
+        if (isSignPage) {
+            setAdditionalResult('');
+        }
+    }, [account.key, isSignPage, formValues.address, formValues.message, formValues.signOption]);
+
     const onSubmit = async (data: SignVerifyFields) => {
-        const { address, path, message, signature, hex, isElectrum, cardanoPubKeyCose } = data;
+        const { address, path, message, signature, hex, signOption } = data;
 
         if (isSignPage && path !== undefined) {
             const result = await dispatch(
-                sign(account, path, message, hex, isElectrum, cardanoPubKeyCose),
+                sign(networkConfig, account, path, message, hex, signOption),
             );
 
             if (result) {
                 formSetSignature(result);
+                setAdditionalResult(result.additionalResult ?? '');
                 setIsCompleted(true);
             }
         } else if (signature !== undefined) {
-            const result = await dispatch(verify(account, address, message, signature, hex));
+            const result = await dispatch(
+                verify(networkConfig, account, address, message, signature, hex),
+            );
 
             if (result) setIsCompleted(true);
         }
     };
 
-    const isDeviceConnected = device?.connected && device?.available;
+    const reset = () => {
+        resetForm();
+        setAdditionalResult('');
+    };
 
-    // Empty accountTypes means there is only 'normal' accountType and therefore the signatures are same.
-    const signFormatsDiffer =
-        account.networkType === 'bitcoin' &&
-        account.accountType !== 'legacy' &&
-        Object.keys(network?.accountTypes ?? {}).length >= 1;
-    const canVerify = isVerifySupported(account);
-    const isCardano = network?.networkType === 'cardano';
+    const isDeviceConnected = device?.connected && device?.available;
+    const canVerify = networkConfig.verify !== undefined;
+    const { SignAddressOptions } = networkConfig;
+    const { SignOptions } = networkConfig;
+    const { SignAdditionalResult } = networkConfig;
 
     return renderShell({
         title: canVerify ? 'TR_NAV_SIGN_VERIFY' : 'TR_SIGN_MESSAGE',
@@ -152,7 +148,7 @@ export const SignVerify = ({ account, network, renderShell }: SignVerifyProps) =
                 size="small"
                 intent="neutral"
                 priority="secondary"
-                onClick={resetForm}
+                onClick={reset}
             >
                 <Translation id="TR_CLEAR_ALL" />
             </Button>
@@ -209,67 +205,26 @@ export const SignVerify = ({ account, network, renderShell }: SignVerifyProps) =
                                             label={<Translation id="TR_ADDRESS" />}
                                             account={account}
                                             touchedAddresses={touchedAddresses}
+                                            getSignAddresses={networkConfig.getSignAddresses}
                                             hasError={!!formErrors.path}
                                             bottomText={pathError || null}
                                             data-testid="@sign-verify/sign-address"
                                             {...pathField}
                                         />
                                     </Box>
-                                    {signFormatsDiffer && (
-                                        <SelectBar
-                                            label={
-                                                <Tooltip
-                                                    maxWidth={330}
-                                                    content={
-                                                        <Translation
-                                                            id="TR_FORMAT_TOOLTIP"
-                                                            values={{
-                                                                FormatDescription: chunks => (
-                                                                    <p>{chunks}</p>
-                                                                ),
-                                                                span: chunks => (
-                                                                    <strong>{chunks}</strong>
-                                                                ),
-                                                            }}
-                                                        />
-                                                    }
-                                                    hasIcon
-                                                >
-                                                    <Translation id="TR_FORMAT" />
-                                                </Tooltip>
-                                            }
-                                            options={[
-                                                {
-                                                    value: false,
-                                                    label: <Translation id="TR_BIP_SIG_FORMAT" />,
-                                                },
-                                                {
-                                                    value: true,
-                                                    label: (
-                                                        <Translation id="TR_COMPATIBILITY_SIG_FORMAT" />
-                                                    ),
-                                                },
-                                            ]}
-                                            data-testid="@sign-verify/format"
-                                            {...isElectrumField}
+                                    {SignAddressOptions && (
+                                        <SignAddressOptions
+                                            account={account}
+                                            network={network}
+                                            field={signOptionField}
                                         />
                                     )}
                                 </Row>
-                                {isCardano && (
-                                    <SelectBar
-                                        label={<Translation id="TR_PUBLIC_KEY_FORMAT" />}
-                                        options={[
-                                            {
-                                                value: false,
-                                                label: <Translation id="TR_PUBLIC_KEY_RAW" />,
-                                            },
-                                            {
-                                                value: true,
-                                                label: <Translation id="TR_PUBLIC_KEY_COSE" />,
-                                            },
-                                        ]}
-                                        data-testid="@sign-verify/cardano-pubkey-format"
-                                        {...cardanoPubKeyCoseField}
+                                {SignOptions && (
+                                    <SignOptions
+                                        account={account}
+                                        network={network}
+                                        field={signOptionField}
                                     />
                                 )}
                                 <Divider margin={{}} />
@@ -293,9 +248,8 @@ export const SignVerify = ({ account, network, renderShell }: SignVerifyProps) =
                                             >
                                                 <Translation
                                                     id={
-                                                        isCardano
-                                                            ? 'TR_COPY_TO_CLIPBOARD'
-                                                            : 'TR_COPY_SIGNED_MESSAGE'
+                                                        networkConfig.copyButtonTranslationId ??
+                                                        'TR_COPY_SIGNED_MESSAGE'
                                                     }
                                                 />
                                             </Button>
@@ -303,31 +257,10 @@ export const SignVerify = ({ account, network, renderShell }: SignVerifyProps) =
                                     }
                                     {...signatureProps}
                                 />
-                                {isCardano && (
-                                    <Input
-                                        type="text"
-                                        readOnly={isSignPage}
-                                        isDisabled={!formValues.pubKey?.length}
-                                        placeholder={translationString(
-                                            'TR_SIGNATURE_AFTER_SIGNING_PLACEHOLDER',
-                                        )}
-                                        rightContent={
-                                            canCopy ? (
-                                                <Button
-                                                    type="button"
-                                                    intent="neutral"
-                                                    priority="secondary"
-                                                    onClick={() =>
-                                                        copyToClipboard(formValues.pubKey || '')
-                                                    }
-                                                    iconLeft={CopyIcon}
-                                                    size="small"
-                                                >
-                                                    <Translation id="TR_COPY_TO_CLIPBOARD" />
-                                                </Button>
-                                            ) : undefined
-                                        }
-                                        {...pubKeyProps}
+                                {SignAdditionalResult && (
+                                    <SignAdditionalResult
+                                        value={additionalResult}
+                                        canCopy={Boolean(canCopy)}
                                     />
                                 )}
                             </>

@@ -1,23 +1,16 @@
 import { type Dispatch } from 'redux';
 
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
-import { type TrezorDevice } from '@suite-common/suite-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { type WalletSettingsRootState, selectAddressDisplayType } from '@suite-common/wallet-core';
 import { type Account, AddressDisplayOptions } from '@suite-common/wallet-types';
-import {
-    getAddressParameters,
-    getDerivationType,
-    getNetworkId,
-    getProtocolMagic,
-    getStakingPath,
-} from '@suite-common/wallet-utils';
-import TrezorConnect, { PROTO } from '@trezor/connect';
-import { getSerializedPath } from '@trezor/connect-common';
-import { type SerializedError } from '@trezor/connect-common/src/constants/errors';
-import { type Result } from '@trezor/type-utils';
 
 import * as SIGN_VERIFY from './signVerifyConstants';
+import type {
+    SignVerifyNetworkConfig,
+    SignVerifyNetworkOperationParams,
+    SignVerifyOperationResult,
+} from './types';
 
 export type SignVerifyRootState = DeviceRootState & WalletSettingsRootState;
 
@@ -27,19 +20,15 @@ export type SignVerifyAction =
     | { type: typeof SIGN_VERIFY.SIGN_SUCCESS; signSignature: string }
     | { type: typeof SIGN_VERIFY.VERIFY_SUCCESS };
 
-type StateParams = {
-    device: TrezorDevice;
-    account: Account;
-    coin: Account['symbol'];
-    chunkify?: boolean;
-};
-
-const throwWhenFailed = <T>(response: Result<T, SerializedError>) =>
+const throwWhenFailed = <T>(response: SignVerifyOperationResult<T>) =>
     response.success
         ? Promise.resolve(response.payload)
         : Promise.reject(new Error(response.error.message));
 
-const getStateParams = (account: Account, getState: GetState): Promise<StateParams> => {
+const getStateParams = (
+    account: Account,
+    getState: GetState,
+): Promise<SignVerifyNetworkOperationParams> => {
     const device = selectSelectedDevice(getState());
     const addressDisplayType = selectAddressDisplayType(getState());
 
@@ -53,114 +42,20 @@ const getStateParams = (account: Account, getState: GetState): Promise<StatePara
           });
 };
 
-const showAddressByNetwork =
-    (_: Dispatch, address: string, path: string) =>
-    ({ account, device, coin, chunkify }: StateParams) => {
-        const params = { device, address, path, coin, chunkify };
+const onSignSuccess =
+    (dispatch: Dispatch) => (result: { signature: string; additionalResult?: string }) => {
+        dispatch(
+            notificationsActions.addToast({
+                type: 'sign-message-success',
+            }),
+        );
+        dispatch({
+            type: SIGN_VERIFY.SIGN_SUCCESS,
+            signSignature: result.signature,
+        });
 
-        switch (account.networkType) {
-            case 'bitcoin':
-                return TrezorConnect.getAddress(params);
-            case 'ethereum':
-                return TrezorConnect.ethereumGetAddress(params);
-            default:
-                return Promise.reject(new Error('ShowAddress not supported'));
-        }
+        return result;
     };
-
-const signByNetwork =
-    (
-        path: string | number[],
-        message: string,
-        hex: boolean,
-        isElectrum: boolean,
-        isCose: boolean,
-    ) =>
-    ({ account, device, coin }: StateParams) => {
-        const params = { device, path, coin, message, hex, no_script_type: isElectrum };
-
-        switch (account.networkType) {
-            case 'bitcoin':
-                return TrezorConnect.signMessage(params);
-            case 'ethereum':
-                return TrezorConnect.ethereumSignMessage(params);
-            case 'cardano': {
-                const payload = hex ? message : Buffer.from(message, 'utf8').toString('hex');
-                const serializedPath = typeof path === 'string' ? path : getSerializedPath(path);
-                const stakingPath = getStakingPath(account);
-                const addressParameters =
-                    path === stakingPath
-                        ? {
-                              addressType: PROTO.CardanoAddressType.REWARD,
-                              stakingPath,
-                          }
-                        : getAddressParameters(account, serializedPath);
-
-                return TrezorConnect.cardanoSignMessage({
-                    ...params,
-                    payload,
-                    addressParameters,
-                    protocolMagic: getProtocolMagic(account.symbol),
-                    networkId: getNetworkId(),
-                    derivationType: getDerivationType(account.accountType),
-                }).then(response =>
-                    response.success
-                        ? {
-                              ...response,
-                              payload: {
-                                  signature: response.payload.coseSignature,
-                                  pubKey: isCose
-                                      ? response.payload.coseKey
-                                      : response.payload.pubKey,
-                                  address: response.payload.headers.protected.address,
-                              },
-                          }
-                        : response,
-                );
-            }
-            default:
-                return Promise.reject(new Error('Signing not supported'));
-        }
-    };
-
-export const isVerifySupported = (account?: Account) => {
-    switch (account?.networkType) {
-        case 'bitcoin':
-        case 'ethereum':
-            return true;
-        default:
-            return false;
-    }
-};
-
-const verifyByNetwork =
-    (address: string, message: string, signature: string, hex: boolean) =>
-    ({ account, device, coin }: StateParams) => {
-        const params = { device, address, coin, message, signature, hex };
-
-        switch (account.networkType) {
-            case 'bitcoin':
-                return TrezorConnect.verifyMessage(params);
-            case 'ethereum':
-                return TrezorConnect.ethereumVerifyMessage(params);
-            default:
-                return Promise.reject(new Error('Verifying not supported'));
-        }
-    };
-
-const onSignSuccess = (dispatch: Dispatch) => (result: { signature: string; pubKey?: string }) => {
-    dispatch(
-        notificationsActions.addToast({
-            type: 'sign-message-success',
-        }),
-    );
-    dispatch({
-        type: SIGN_VERIFY.SIGN_SUCCESS,
-        signSignature: result.signature,
-    });
-
-    return result;
-};
 
 const onVerifySuccess = (dispatch: Dispatch) => () => {
     dispatch(
@@ -192,33 +87,63 @@ const onError =
     };
 
 export const showAddress =
-    (account: Account, address: string, path: string) => (dispatch: Dispatch, getState: GetState) =>
+    (networkConfig: SignVerifyNetworkConfig, account: Account, address: string, path: string) =>
+    (dispatch: Dispatch, getState: GetState) =>
         getStateParams(account, getState)
-            .then(showAddressByNetwork(dispatch, address, path))
+            .then(params =>
+                networkConfig.showAddress
+                    ? networkConfig.showAddress({ ...params, address, path })
+                    : Promise.reject(new Error('ShowAddress not supported')),
+            )
             .then(throwWhenFailed)
             .catch(onError(dispatch, 'verify-address-error'));
 
 export const sign =
     (
+        networkConfig: SignVerifyNetworkConfig,
         account: Account,
         path: string | number[],
         message: string,
         hex = false,
-        isElectrum = false,
-        isCose = false,
+        signOption = false,
     ) =>
     (dispatch: Dispatch, getState: GetState) =>
         getStateParams(account, getState)
-            .then(signByNetwork(path, message, hex, isElectrum, isCose))
+            .then(params =>
+                networkConfig.sign({
+                    ...params,
+                    path,
+                    message,
+                    hex,
+                    signOption,
+                }),
+            )
             .then(throwWhenFailed)
             .then(onSignSuccess(dispatch))
             .catch(onError(dispatch, 'sign-message-error'));
 
 export const verify =
-    (account: Account, address: string, message: string, signature: string, hex = false) =>
+    (
+        networkConfig: SignVerifyNetworkConfig,
+        account: Account,
+        address: string,
+        message: string,
+        signature: string,
+        hex = false,
+    ) =>
     (dispatch: Dispatch, getState: GetState) =>
         getStateParams(account, getState)
-            .then(verifyByNetwork(address, message, signature, hex))
+            .then(params =>
+                networkConfig.verify
+                    ? networkConfig.verify({
+                          ...params,
+                          address,
+                          message,
+                          signature,
+                          hex,
+                      })
+                    : Promise.reject(new Error('Verifying not supported')),
+            )
             .then(throwWhenFailed)
             .then(onVerifySuccess(dispatch))
             .catch(onError(dispatch, 'verify-message-error'));

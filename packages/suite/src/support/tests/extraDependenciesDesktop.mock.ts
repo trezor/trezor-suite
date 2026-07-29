@@ -1,4 +1,8 @@
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
+import {
+    createSuiteNetworkModuleRepository,
+    createSuiteNetworksCompositionRoot,
+} from '@suite/networks';
 import { createAddressValidator } from '@suite-common/address';
 import {
     createNetworkModuleRepository,
@@ -6,6 +10,7 @@ import {
 } from '@suite-common/networks';
 import { type ExtraDependenciesStatic } from '@suite-common/redux-utils';
 import { extraDependenciesCommonMock } from '@suite-common/test-utils';
+import TrezorConnect from '@trezor/connect';
 import { ok } from '@trezor/type-utils';
 
 import { type SuiteServices } from '../extraDependencies';
@@ -14,6 +19,13 @@ type ExtraDependenciesSuiteMock = ExtraDependenciesStatic & { services: SuiteSer
 
 const networkModules = createNetworksCompositionRoot();
 const networkModuleRepository = createNetworkModuleRepository({ networkModules });
+const suiteNetworkModules = createSuiteNetworksCompositionRoot({
+    suiteCommonNetworkModules: networkModules,
+    trezorConnect: TrezorConnect,
+});
+const suiteNetworkModuleRepository = createSuiteNetworkModuleRepository({
+    suiteNetworkModules,
+});
 const addressValidator = createAddressValidator({ networkModuleRepository });
 
 export const extraDependenciesDesktopMock: ExtraDependenciesSuiteMock = {
@@ -21,6 +33,7 @@ export const extraDependenciesDesktopMock: ExtraDependenciesSuiteMock = {
     services: {
         ...extraDependenciesCommonMock.services,
         networkModuleRepository,
+        suiteNetworkModuleRepository,
         addressValidator,
         analytics: mockDesktopAnalytics(),
         suiteRouterHistory: {
