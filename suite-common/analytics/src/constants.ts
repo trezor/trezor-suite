@@ -41,4 +41,6 @@ export enum EventType {
     YieldDeposit = 'yield/deposit',
     YieldWithdraw = 'yield/withdraw',
     YieldClaim = 'yield/claim',
+    YieldWrap = 'yield/wrap',
+    YieldUnwrap = 'yield/unwrap',
 }
