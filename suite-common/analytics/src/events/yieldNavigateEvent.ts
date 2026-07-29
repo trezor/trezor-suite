@@ -17,6 +17,8 @@ type Attributes = {
         | 'deposit-form'
         | 'withdraw-form'
         | 'claim-form'
+        | 'wrap-form'
+        | 'unwrap-form'
         | 'choose-account-sheet'
         | 'account-detail'
         | 'insufficient-balance-screen'
@@ -26,6 +28,8 @@ type Attributes = {
         | 'deposit-form'
         | 'withdraw-form'
         | 'claim-form'
+        | 'wrap-form'
+        | 'unwrap-form'
         | 'deposit-in-a-nutshell-modal'
         | 'deposit-legal-modal'
         | 'claim-select-account-modal'
@@ -53,7 +57,7 @@ export const yieldNavigateEvent: EventDef<Attributes, EventType.YieldNavigate> =
         },
         from: {
             description:
-                'Origin of the navigation. On mobile, `deposit-in-a-nutshell-modal` = How yield works screen and `deposit-legal-modal` = consents screen (named after their desktop counterparts); `choose-account-sheet`, `account-detail` and `insufficient-balance-screen` are mobile-only, `account-defi-tokens` and `claim-select-account-modal` are desktop-only; `account-tokens` = yield badge on the account Tokens tab, `account-defi-tokens` also covers the yield badge on the DeFi tab, `account-tradebox` = yield badge or Earn button in the account trade box',
+                'Origin of the navigation. On mobile, `deposit-in-a-nutshell-modal` = How yield works screen and `deposit-legal-modal` = consents screen (named after their desktop counterparts); `choose-account-sheet`, `account-detail` and `insufficient-balance-screen` are mobile-only, `account-defi-tokens`, `claim-select-account-modal`, `wrap-form` and `unwrap-form` are desktop-only; `account-tokens` = yield badge on the account Tokens tab, `account-defi-tokens` also covers the yield badge on the DeFi tab, `account-tradebox` = yield badge or Earn button in the account trade box',
             changelog: [
                 { version: '26.5.0', notes: 'added' },
                 {
@@ -62,7 +66,7 @@ export const yieldNavigateEvent: EventDef<Attributes, EventType.YieldNavigate> =
                 },
                 {
                     version: '26.8.0',
-                    notes: 'added `account-tokens`, `account-tradebox` values',
+                    notes: 'added `account-tokens`, `account-tradebox` values, and `wrap-form`, `unwrap-form` values (desktop)',
                 },
             ],
         },
@@ -73,6 +77,10 @@ export const yieldNavigateEvent: EventDef<Attributes, EventType.YieldNavigate> =
                 {
                     version: '26.7.1',
                     notes: 'added `choose-account-sheet`, `account-detail`, `insufficient-balance-screen` values (mobile)',
+                },
+                {
+                    version: '26.8.0',
+                    notes: 'added `wrap-form` and `unwrap-form` values (desktop)',
                 },
             ],
         },
