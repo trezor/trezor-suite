@@ -764,6 +764,12 @@ export interface WsRes {
     /** Payload of the response, structure depends on the request. */
     data: any;
 }
+export interface WsPrivatePending {
+    /** Account nonces of the wallet's in-flight transactions for this address; 0 is valid (not a sentinel). Don't pad the array — each entry raises the reported pending nonce to at least value+1. */
+    nonces?: number[];
+    /** Tx hashes of those in-flight transactions; blockbook fetch-backs each (eth_getTransactionByHash) to cache the body and serve it in history, not just raise the nonce floor. */
+    txids?: string[];
+}
 export interface WsAccountInfoReq {
     /** Address or XPUB descriptor to query. */
     descriptor: string;
@@ -789,6 +795,8 @@ export interface WsAccountInfoReq {
     gap?: number;
     /** If true, additionally fetch and return the confirmed (mined-only) nonce for Ethereum-like addresses (extra backend call). */
     confirmedNonce?: boolean;
+    /** Ethereum-like only: the wallet's in-flight (locally pending) transactions for this address. */
+    privatePending?: WsPrivatePending;
 }
 export interface WsContractInfoReq {
     /** Contract address to query. */
@@ -901,6 +909,7 @@ export interface WsEstimateFeeReq {
         to?: string;
         data?: string;
         value?: string;
+        privatePending?: WsPrivatePending;
     };
 }
 export interface Eip1559Fee {

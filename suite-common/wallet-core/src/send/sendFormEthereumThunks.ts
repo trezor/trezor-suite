@@ -58,7 +58,10 @@ import {
     type SignTransactionThunkArguments,
 } from './sendFormTypes';
 import { selectAddressDisplayType } from '../settings/walletSettingsReducer';
-import { selectAccountTransactions } from '../transactions/transactionsSelectors';
+import {
+    selectAccountTransactions,
+    selectEvmPrivatePendingHint,
+} from '../transactions/transactionsSelectors';
 
 /**
  * Returns fee info with levels bumped above the original transaction's gas price,
@@ -312,6 +315,10 @@ export const composeEthereumTransactionFeeLevelsThunk = createThunk<
                       formState.transactionData,
                   );
 
+        // trezor/blockbook#1639: declare our local pending txs so blockbook estimates gas against
+        // the correct pending state. undefined for non-EVM / nothing pending — the field is omitted.
+        const privatePending = selectEvmPrivatePendingHint(getState(), account.key);
+
         // gasLimit calculation based on address, amount and data size
         // amount in essential for a proper calculation of gasLimit (via blockbook/geth)
         const estimatedFee = await TrezorConnect.blockchainEstimateFee({
@@ -322,6 +329,7 @@ export const composeEthereumTransactionFeeLevelsThunk = createThunk<
                 specific: {
                     from: account.descriptor,
                     ...ethereumEstimateFeeParams,
+                    privatePending,
                 },
             },
         });

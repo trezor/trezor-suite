@@ -12,6 +12,7 @@ import {
     getEvmNonceInfo,
     getEvmNonceInfoFromConfirmedNonce,
     getEvmNonceStatus,
+    getEvmPrivatePendingHint,
     getPendingEvmNonceStatus,
     getRbfParams,
     getTargetAmount,
@@ -533,6 +534,75 @@ describe('transaction utils', () => {
                 nextNonce: 43,
                 pendingNonces: [42],
                 confirmedNonces: [41],
+            });
+        });
+    });
+
+    describe('getEvmPrivatePendingHint', () => {
+        const pendingTx = (
+            nonce: number,
+            {
+                type = 'sent',
+                txid = `0x${nonce}`,
+            }: { type?: WalletAccountTransaction['type']; txid?: string } = {},
+        ) =>
+            getWalletTransaction({
+                txid,
+                blockHeight: -1,
+                type,
+                ethereumSpecific: { nonce } as any,
+            });
+
+        it('returns undefined when there is no pending own-nonce tx', () => {
+            expect(getEvmPrivatePendingHint([])).toBeUndefined();
+            // an incoming pending tx does not consume our nonce and must not be declared
+            expect(getEvmPrivatePendingHint([pendingTx(41, { type: 'recv' })])).toBeUndefined();
+        });
+
+        it('declares a local pending nonce and its txid', () => {
+            expect(getEvmPrivatePendingHint([pendingTx(41)])).toEqual({
+                nonces: [41],
+                txids: ['0x41'],
+            });
+        });
+
+        it('declares all pending sent/self/contract nonces and their txids', () => {
+            const transactions = [
+                pendingTx(43, { type: 'contract' }),
+                pendingTx(41, { type: 'sent' }),
+                pendingTx(42, { type: 'self' }),
+                pendingTx(40, { type: 'recv' }), // ignored — not an own-nonce-consuming tx
+                pendingTx(44, { type: 'sent' }),
+            ];
+            expect(getEvmPrivatePendingHint(transactions)).toEqual({
+                nonces: [41, 42, 43, 44],
+                txids: ['0x41', '0x42', '0x43', '0x44'],
+            });
+        });
+
+        it('excludes the nonce and txid of a tx that is already locally confirmed', () => {
+            const confirmedTx41 = getWalletTransaction({
+                txid: '0x41-confirmed',
+                blockHeight: 100,
+                type: 'sent',
+                ethereumSpecific: { nonce: 41 } as any,
+            });
+            const transactions = [confirmedTx41, pendingTx(41), pendingTx(42)];
+            expect(getEvmPrivatePendingHint(transactions)).toEqual({
+                nonces: [42],
+                txids: ['0x42'],
+            });
+        });
+
+        it('dedupes the shared nonce of an RBF replacement but declares both txids', () => {
+            // speed-up/cancel keeps the same nonce, only the txid changes — one nonce, both hashes
+            const transactions = [
+                pendingTx(41, { txid: '0xnew' }),
+                pendingTx(41, { txid: '0xold' }),
+            ];
+            expect(getEvmPrivatePendingHint(transactions)).toEqual({
+                nonces: [41],
+                txids: ['0xnew', '0xold'],
             });
         });
     });

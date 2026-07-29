@@ -32,7 +32,10 @@ import { selectAccountByKey } from './accountsSelectors';
 import { selectBlockchainHeightBySymbol, selectGapLimit } from '../blockchain/blockchainReducer';
 import { selectBitcoinAmountUnit } from '../settings/walletSettingsReducer';
 import { transactionsActions } from '../transactions/transactionsActions';
-import { selectTransactions } from '../transactions/transactionsSelectors';
+import {
+    selectEvmPrivatePendingHint,
+    selectTransactions,
+} from '../transactions/transactionsSelectors';
 
 const fetchAccountTokens = async (account: Account, payloadTokens: AccountInfo['tokens']) => {
     const tokens: TokenInfo[] = [];
@@ -121,6 +124,12 @@ export const fetchAndUpdateAccountThunk = createThunk(
         if (!account || account.failed || account.accountType === 'placeholder') return;
 
         if (!isTrezorConnectBackendType(account.backendType)) return; // skip unsupported backend type
+
+        // trezor/blockbook#1639: declare our local pending txs so blockbook reports the right
+        // pending nonce and serves them in history. undefined for non-EVM / nothing pending — the
+        // field is then omitted.
+        const privatePending = selectEvmPrivatePendingHint(getState(), account.key);
+
         // first basic check, traffic optimization
         // basic check returns only small amount of data without full transaction history
         const tokenAccountsPubKeys =
@@ -140,6 +149,7 @@ export const fetchAndUpdateAccountThunk = createThunk(
             suppressBackupWarning: true,
             tokenAccountsPubKeys,
             protocols: account.networkType === 'ethereum' ? ['erc4626'] : undefined,
+            privatePending,
             gap,
         });
 
@@ -173,6 +183,7 @@ export const fetchAndUpdateAccountThunk = createThunk(
             pageSize,
             suppressBackupWarning: true,
             protocols: account.networkType === 'ethereum' ? ['erc4626'] : undefined,
+            privatePending,
             gap:
                 account.networkType === 'bitcoin'
                     ? selectGapLimit(getState(), account.symbol)
