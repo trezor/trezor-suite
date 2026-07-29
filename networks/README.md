@@ -1,31 +1,21 @@
 # Networks
 
-Network-specific packages are organized by blockchain network. The goal is to keep all logic related to one coin family in a single
-folder, with packages separated by technical layer. Technical-layer packages have a predefined suffix and public API, so they can be
-imported from the rest of the monorepo. Optional packages may use a custom suffix, but must only be imported from within their network's
-directory.
+Network-specific packages are organized by network "families". The goal is to keep all logic related to one coin family in a single folder, with packages separated by technical layer. Technical-layer packages have a predefined suffix and public API, so they can be imported from the rest of the monorepo. Optional packages may use a custom suffix, but must only be imported from within their network's directory.
 
-Every package name must start with `network-`, followed by the network name (for example, `bitcoin`) and either a predefined
-technical-layer suffix or a custom suffix. Its directory must have the same name and be located directly under the corresponding network
-directory.
+Every package name must start with `network-`, followed by the network name (for example, `bitcoin`) and either a predefined technical-layer suffix or a custom suffix. Its directory must have the same name and be located directly under the corresponding network directory.
 
 ## Technical layers
 
-A network may provide packages for four technical layers. A layer package is only required once that layer contains network-specific
-code.
+| Layer        | Package                                  |
+| ------------ | ---------------------------------------- |
+| Connect      | `@trezor/network-<network>-connect`      |
+| Suite        | `@trezor/network-<network>-suite`        |
+| Suite Common | `@trezor/network-<network>-suite-common` |
+| Suite Native | `@trezor/network-<network>-suite-native` |
 
-| Layer        | Package                                  | Responsibility                                                       |
-| ------------ | ---------------------------------------- | -------------------------------------------------------------------- |
-| Connect      | `@trezor/network-<network>-connect`      | Network logic specific to Trezor Connect.                            |
-| Suite        | `@trezor/network-<network>-suite`        | Desktop and web Suite logic.                                         |
-| Suite Common | `@trezor/network-<network>-suite-common` | Platform-independent Suite logic shared by desktop, web, and native. |
-| Suite Native | `@trezor/network-<network>-suite-native` | React Native-specific Suite logic.                                   |
+Suite and Suite Native packages may depend on Suite Common. Suite Common must remain platform-independent and must not depend on Suite or Suite Native.
 
-Suite and Suite Native packages may depend on Suite Common. Suite Common must remain platform-independent and must not depend on Suite
-or Suite Native.
-
-All the 3rd party dependencies related to a network should be defined inside that network's directory. Moreover, currently they're
-defined only inside general, no-suffix packages, e.g. `network-cardano` (previously coins packages) and dynamically exported.
+All the 3rd party dependencies related to a network should be defined inside that network's directory. Moreover, currently they're defined only inside general, no-suffix packages, e.g. `network-cardano` (previously coins packages) and dynamically exported.
 
 The complete structure for Bitcoin illustrates all four layers alongside optional internal packages:
 
@@ -45,11 +35,6 @@ networks/
     ├── network-<network>-suite-common/
     └── network-<network>-suite-native/
 ```
-
-## Technical-layer package structure
-
-Technical-layer packages must expose their public API through `src/index.ts`. Keep platform-independent services and types in Suite
-Common, and expose platform-specific composition only from Suite or Suite Native.
 
 ## Custom package structure
 
