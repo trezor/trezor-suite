@@ -1,7 +1,11 @@
-import { selectSelectedDevice } from '@suite-common/device';
+import { type Dispatch } from 'redux';
+
+import { type SelectedAccountRootState } from '@suite/account';
+import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
+import { type TrezorDevice } from '@suite-common/suite-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { selectAddressDisplayType } from '@suite-common/wallet-core';
-import { AddressDisplayOptions } from '@suite-common/wallet-types';
+import { type WalletSettingsRootState, selectAddressDisplayType } from '@suite-common/wallet-core';
+import { type Account, AddressDisplayOptions } from '@suite-common/wallet-types';
 import {
     getAddressParameters,
     getDerivationType,
@@ -14,10 +18,16 @@ import { getSerializedPath } from '@trezor/connect-common';
 import { type SerializedError } from '@trezor/connect-common/src/constants/errors';
 import { type Result } from '@trezor/type-utils';
 
-import type { Dispatch, GetState, TrezorDevice } from 'src/types/suite';
-import type { Account } from 'src/types/wallet';
+import * as SIGN_VERIFY from './signVerifyConstants';
 
-import { SIGN_VERIFY } from './constants';
+export type SignVerifyRootState = DeviceRootState &
+    WalletSettingsRootState &
+    SelectedAccountRootState;
+
+type GetState = () => SignVerifyRootState;
+
+const selectSelectedAccount = (state: SelectedAccountRootState) =>
+    state.wallet.selectedAccount.account;
 
 export type SignVerifyAction =
     | { type: typeof SIGN_VERIFY.SIGN_SUCCESS; signSignature: string }
@@ -36,11 +46,7 @@ const throwWhenFailed = <T>(response: Result<T, SerializedError>) =>
         : Promise.reject(new Error(response.error.message));
 
 const getStateParams = (getState: GetState): Promise<StateParams> => {
-    const {
-        wallet: {
-            selectedAccount: { account },
-        },
-    } = getState();
+    const account = selectSelectedAccount(getState());
     const device = selectSelectedDevice(getState());
     const addressDisplayType = selectAddressDisplayType(getState());
 
