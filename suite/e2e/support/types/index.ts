@@ -80,4 +80,5 @@ export type SellAsset = {
     networkFilter?: AssetPickerNetworkFilter;
     networkSymbol: NetworkSymbol;
     tokenSymbol?: string;
+    accountIndex?: number;
 };

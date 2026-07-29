@@ -74,7 +74,13 @@ export class TradingAssetPicker {
     }
 
     @step()
-    async selectSellAsset({ searchFilter, networkFilter, networkSymbol, tokenSymbol }: SellAsset) {
+    async selectSellAsset({
+        searchFilter,
+        networkFilter,
+        networkSymbol,
+        tokenSymbol,
+        accountIndex = 0,
+    }: SellAsset) {
         await this.openSellModal.click();
 
         if (networkFilter) {
@@ -85,7 +91,7 @@ export class TradingAssetPicker {
             await this.searchAsset(searchFilter);
         }
 
-        await this.sellOption(networkSymbol, tokenSymbol).click();
+        await this.sellOption(networkSymbol, tokenSymbol).nth(accountIndex).click();
     }
 
     @step()
