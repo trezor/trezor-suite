@@ -19,6 +19,7 @@ export type EarnYieldContext = {
 export type EarnModalAction = 'continue' | 'cancel' | 'close';
 
 export type EarnAnalyticsStep =
+    | 'change-delegate-form-modal'
     | 'claim-form-modal'
     | 'earn-dashboard'
     | 'entry-period-stake-modal'
