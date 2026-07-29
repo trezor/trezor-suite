@@ -1,12 +1,12 @@
 import CONFIG from './config';
-import { BlockchainLink } from '../index';
+import { BlockchainLink } from '../blockchainLink';
 import { fillValues, getInputValue, onClear } from './utils';
-import BlockbookWorker from '../workers/blockbook/index';
-import BlockfrostWorker from '../workers/blockfrost/index';
-import EvmRpcWorker from '../workers/evm-rpc';
-import RippleWorker from '../workers/ripple/index';
-import SolanaWorker from '../workers/solana';
-import StellarWorker from '../workers/stellar';
+import BlockbookWorker from '../workers/blockbook/blockbookWorker';
+import BlockfrostWorker from '../workers/blockfrost/blockfrostWorker';
+import EvmRpcWorker from '../workers/evm-rpc/evmRpcWorker';
+import RippleWorker from '../workers/ripple/rippleWorker';
+import SolanaWorker from '../workers/solana/solanaWorker';
+import StellarWorker from '../workers/stellar/stellarWorker';
 
 const instances: BlockchainLink[] = [];
 

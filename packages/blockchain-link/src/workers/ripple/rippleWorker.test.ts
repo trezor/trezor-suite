@@ -1,6 +1,6 @@
 import { BackendWebsocketServerMock } from '@trezor/e2e-utils';
 
-import { BlockchainLink } from '../../index';
+import { BlockchainLink } from '../../blockchainLink';
 import {
     // rippleWorkerFactory,
     rippleModuleFactory,

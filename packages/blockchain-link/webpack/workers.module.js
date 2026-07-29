@@ -4,12 +4,12 @@ export default {
     target: 'node',
     mode: 'production',
     entry: {
-        'blockbook-worker': `${SRC}workers/blockbook/index.ts`,
-        'ripple-worker': `${SRC}workers/ripple/index.ts`,
-        'blockfrost-worker': `${SRC}workers/blockfrost/index.ts`,
-        'solana-worker': `${SRC}workers/solana/index.ts`,
-        'stellar-worker': `${SRC}workers/stellar/index.ts`,
-        'evm-rpc-worker': `${SRC}workers/evm-rpc/index.ts`,
+        'blockbook-worker': `${SRC}workers/blockbook/blockbookWorker.ts`,
+        'ripple-worker': `${SRC}workers/ripple/rippleWorker.ts`,
+        'blockfrost-worker': `${SRC}workers/blockfrost/blockfrostWorker.ts`,
+        'solana-worker': `${SRC}workers/solana/solanaWorker.ts`,
+        'stellar-worker': `${SRC}workers/stellar/stellarWorker.ts`,
+        'evm-rpc-worker': `${SRC}workers/evm-rpc/evmRpcWorker.ts`,
     },
     output: {
         filename: '[name].js',

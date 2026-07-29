@@ -1,11 +1,10 @@
 import { BackendWebsocketServerMock } from '@trezor/e2e-utils';
 
 import fixtures from './__fixtures__/getBlockHash';
-import Blockbook from './workers/blockbook';
-import Blockfrost from './workers/blockfrost';
-import Ripple from './workers/ripple';
-
-import { BlockchainLink } from './index';
+import { BlockchainLink } from './blockchainLink';
+import Blockbook from './workers/blockbook/blockbookWorker';
+import Blockfrost from './workers/blockfrost/blockfrostWorker';
+import Ripple from './workers/ripple/rippleWorker';
 
 const workers = [
     { name: 'blockbook', worker: Blockbook },

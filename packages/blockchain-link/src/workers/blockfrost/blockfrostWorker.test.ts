@@ -1,32 +1,32 @@
 import { BackendWebsocketServerMock } from '@trezor/e2e-utils';
 
-import { BlockchainLink } from '../../index';
+import { BlockchainLink } from '../../blockchainLink';
 import {
-    // blockbookWorkerFactory,
-    blockbookModuleFactory,
+    //  blockfrostWorkerFactory,
+    blockfrostModuleFactory,
 } from '../__fixtures__/integrationWorker';
 
 const backends = [
     // TODO: nodejs tests are failing, fix it.
     // {
-    //     name: 'nodejs-build:blockbook',
-    //     type: 'blockbook',
-    //     worker: blockbookWorkerFactory,
+    //     name: 'nodejs-build:blockfrost',
+    //     type: 'blockfrost',
+    //     worker: blockfrostWorkerFactory,
     // },
     {
-        name: 'module-build:blockbook',
-        type: 'blockbook',
-        worker: blockbookModuleFactory,
+        name: 'module-build:blockfrost',
+        type: 'blockfrost',
+        worker: blockfrostModuleFactory,
     },
 ];
 
 backends.forEach(b => {
-    describe(`Blockbook ${b.name}`, () => {
+    describe(`Blockfrost ${b.name}`, () => {
         let server: BackendWebsocketServerMock;
         let blockchain: BlockchainLink;
 
         beforeEach(async () => {
-            server = await BackendWebsocketServerMock.create('blockbook');
+            server = await BackendWebsocketServerMock.create('blockfrost');
             blockchain = new BlockchainLink({
                 name: b.name,
                 worker: b.worker,
@@ -43,12 +43,15 @@ backends.forEach(b => {
         it('Get info', async () => {
             const result = await blockchain.getInfo();
             expect(result).toEqual({
-                name: 'TestMock',
-                shortcut: 'test',
-                network: 'test',
-                decimals: 9,
+                name: 'BlockfrostMock',
+                shortcut: 'ada',
+                network: 'ada',
+                decimals: 6,
                 blockHeight: 1,
+                blockHash: 'test_block_hash-hash',
+                testnet: false,
                 url: expect.any(String),
+                version: '1.4.0',
             });
         });
 

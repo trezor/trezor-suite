@@ -26,7 +26,7 @@ export class MiscFeeLevels {
             // validate `feePerUnit` from the backend
             // should be lower than `coinInfo.maxFee` and higher than `coinInfo.minFee`
             // xrp sends values from 1 to very high number occasionally
-            // see: https://github.com/trezor/trezor-suite/blob/develop/packages/blockchain-link/src/workers/ripple/index.ts#L316
+            // see: https://github.com/trezor/trezor-suite/blob/develop/packages/blockchain-link/src/workers/ripple/rippleWorker.ts#L316
             const fee = new BigNumber(response.feePerUnit).toNumber();
 
             const feePerUnit = Math.min(
