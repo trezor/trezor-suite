@@ -8,12 +8,12 @@ module.exports = {
     ...baseConfig,
     moduleFileExtensions: ['js', 'ts', 'json'],
     testMatch: [
-        '<rootDir>/src/workers/blockbook/blockbookWorker.test.ts',
-        '<rootDir>/src/workers/blockfrost/blockfrostWorker.test.ts',
+        '<rootDir>/src/workers/blockbook/blockbook.test.ts',
+        '<rootDir>/src/workers/blockfrost/blockfrost.test.ts',
         '<rootDir>/src/workers/connection.test.ts',
-        '<rootDir>/src/workers/electrum/electrumWorker.test.ts',
-        '<rootDir>/src/workers/ripple/rippleWorker.test.ts',
-        '<rootDir>/src/workers/solana/solanaWorker.test.ts',
-        '<rootDir>/src/workers/stellar/stellarWorker.test.ts',
+        '<rootDir>/src/workers/electrum/electrum.test.ts',
+        '<rootDir>/src/workers/ripple/ripple.test.ts',
+        '<rootDir>/src/workers/solana/solana.test.ts',
+        '<rootDir>/src/workers/stellar/stellar.test.ts',
     ],
 };

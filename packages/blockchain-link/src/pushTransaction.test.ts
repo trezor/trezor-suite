@@ -2,7 +2,8 @@ import { BackendWebsocketServerMock } from '@trezor/e2e-utils';
 
 import { allTestWorkers } from './__fixtures__/allTestWorkers';
 import fixtures from './__fixtures__/pushTransaction';
-import { BlockchainLink } from './blockchainLink';
+
+import { BlockchainLink } from './index';
 
 allTestWorkers.forEach(instance => {
     describe(`pushTransaction: ${instance.name}`, () => {

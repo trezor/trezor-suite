@@ -7,12 +7,12 @@ const RippleWorkerModule = require('../../../build/module/ripple-worker');
 export const rippleWorkerFactory = () => {
     if (typeof Worker === 'undefined') {
         return new TinyWorker(() => {
-            require('@trezor/blockchain-link/src/workers/ripple/rippleWorker');
+            require('@trezor/blockchain-link/src/workers/ripple');
         });
         // return new TinyWorker('./build/module/blockbook-worker.js');
         // return new TinyWorker(() => {
         //     require('@babel/register')({ cache: true });
-        //     require('../../../src/workers/ripple/rippleWorker.js');
+        //     require('../../../src/workers/ripple/index.js');
         // });
     }
 
@@ -24,12 +24,12 @@ export const rippleModuleFactory = RippleWorkerModule;
 export const blockbookWorkerFactory = () => {
     if (typeof Worker === 'undefined') {
         return new TinyWorker(() => {
-            require('@trezor/blockchain-link/src/workers/blockbook/blockbookWorker');
+            require('@trezor/blockchain-link/src/workers/blockbook');
         });
         // return new TinyWorker('./build/module/blockbook-worker.js');
         // return new TinyWorker(() => {
         //     require('@babel/register')({ cache: true });
-        //     require('../../../src/workers/blockbook/blockbookWorker.js');
+        //     require('../../../src/workers/blockbook/index.js');
         // });
     }
 
@@ -41,7 +41,7 @@ export const blockbookModuleFactory = BlockbookWorkerModule;
 export const blockfrostWorkerFactory = () => {
     if (typeof Worker === 'undefined') {
         return new TinyWorker(() => {
-            require('@trezor/blockchain-link/src/workers/blockfrost/blockfrostWorker');
+            require('@trezor/blockchain-link/src/workers/blockfrost');
         });
         // return new TinyWorker('./build/module/blockfrost-worker.js');
     }
