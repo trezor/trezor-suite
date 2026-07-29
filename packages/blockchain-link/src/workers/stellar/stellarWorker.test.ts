@@ -3,9 +3,8 @@ import * as utils from '@trezor/blockchain-link-utils/src/stellar';
 import { getStellarConnection, identifyTransaction, toStroops } from '@trezor/network-stellar';
 import type { StellarAPI } from '@trezor/network-stellar/types';
 
-import { BlockchainLink } from '../../index';
-
-import StellarWorker from './index';
+import StellarWorker from './stellarWorker';
+import { BlockchainLink } from '../../blockchainLink';
 
 const HORIZON_URL = 'https://horizon.stellar.org';
 
