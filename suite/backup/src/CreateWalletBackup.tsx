@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import { LearnMoreButton } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
-import { selectIsN4w1BackupEnabled } from '@suite/settings';
+import { selectIsNfcBackupEnabled } from '@suite/settings';
 import { hasSlip39Backup, isBackupComplete } from '@suite-common/backup';
 import { selectSelectedDevice } from '@suite-common/device';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
@@ -22,13 +22,13 @@ type CreateWalletBackupProps = {
 export const CreateWalletBackup = ({ isDeviceLocked }: CreateWalletBackupProps) => {
     const device = useSelector(selectSelectedDevice);
     const dispatch = useDispatch();
-    const isN4w1BackupEnabled = useSelector(selectIsN4w1BackupEnabled);
+    const isNfcBackupEnabled = useSelector(selectIsNfcBackupEnabled);
 
     const features = device?.features;
     const isBackupDone = features !== undefined && isBackupComplete(features);
     const canExtendBackup = features !== undefined && hasSlip39Backup(features);
 
-    if (!isN4w1BackupEnabled || !canExtendBackup) {
+    if (!isNfcBackupEnabled || !canExtendBackup) {
         return null;
     }
 

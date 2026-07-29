@@ -6015,6 +6015,14 @@ export const messages = defineMessages({
         id: 'TR_NFC_BACKUP_WORDLIST_CTA',
         defaultMessage: 'Continue',
     },
+    TR_NFC_BACKUP_DEBUG_TITLE: {
+        id: 'TR_NFC_BACKUP_DEBUG_TITLE',
+        defaultMessage: 'NFC Backup',
+    },
+    TR_NFC_BACKUP_DEBUG_DESCRIPTION: {
+        id: 'TR_NFC_BACKUP_DEBUG_DESCRIPTION',
+        defaultMessage: 'Enable Trezor device NFC backup features.',
+    },
     DISCONNECT_DEVICE_DESCRIPTION: {
         id: 'DISCONNECT_DEVICE_DESCRIPTION',
         defaultMessage: 'Your Trezor was wiped and no longer holds any private keys.',

@@ -29,7 +29,7 @@ export interface DebugModeOptions {
     isUnlockedBootloaderAllowed: boolean;
     showConnectLogs: boolean;
     definitionsChannel?: DefinitionsChannel;
-    isN4w1BackupEnabled: boolean;
+    isNfcBackupEnabled: boolean;
     showTranslationKeys: boolean;
 }
 
@@ -89,7 +89,7 @@ export const suiteSettingsInitialState: SuiteSettingsState = {
         transports: [],
         isUnlockedBootloaderAllowed: false,
         showConnectLogs: false,
-        isN4w1BackupEnabled: false,
+        isNfcBackupEnabled: false,
         showTranslationKeys: false,
     },
     autodetect: {

@@ -33,7 +33,7 @@ import { Flags } from './Flags';
 import { ForgetAllDevicesButton } from './ForgetBluetoothDevices';
 import { GithubIssue } from './GithubIssue';
 import { Metadata } from './Metadata';
-import { N4w1Backup } from './N4w1Backup';
+import { NfcBackup } from './NfcBackup';
 import { OAuthApi } from './OAuthApi';
 import { PingDevice } from './PingDevice';
 import { PlatformEncryption } from './PlatformEncryption';
@@ -99,7 +99,7 @@ export const SettingsDebug = () => {
                 <Devkit />
                 <CheckFirmwareAuthenticity />
                 <ClearDevicePersistentData />
-                <N4w1Backup />
+                <NfcBackup />
                 <PingDevice />
             </SettingsSection>
             <SettingsSection hasVerticalLayout={hasContentBelowTabletWidth} title="Testing">
