@@ -5,10 +5,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import { type UnknownAction } from 'redux';
 import { type ThunkDispatch } from 'redux-thunk';
 
-import { selectFullSelectedAccount, selectSelectedAccountKey } from '@suite/account';
 import { useDevice } from '@suite/device';
 import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
 import { type ReceiveRootState, selectTouchedAddresses } from '@suite-common/receive';
+import { type Network } from '@suite-common/wallet-config';
+import { type Account } from '@suite-common/wallet-types';
 import {
     Box,
     Button,
@@ -40,24 +41,23 @@ type SignVerifyDispatch = ThunkDispatch<SignVerifyRootState, unknown, UnknownAct
 
 type SignVerifyShellProps = {
     title: 'TR_NAV_SIGN_VERIFY' | 'TR_SIGN_MESSAGE';
-    selectedAccount: ReturnType<typeof selectFullSelectedAccount>;
     isDeviceConnected: boolean | undefined;
     headingAction: ReactNode;
     children: ReactNode;
 };
 
 type SignVerifyProps = {
+    account: Account;
+    network?: Network;
     renderShell: (props: SignVerifyShellProps) => ReactNode;
 };
 
-export const SignVerify = ({ renderShell }: SignVerifyProps) => {
+export const SignVerify = ({ account, network, renderShell }: SignVerifyProps) => {
     const [page, setPage] = useState<'sign' | 'verify'>('sign');
     const [isCompleted, setIsCompleted] = useState(false);
 
-    const selectedAccount = useSelector(selectFullSelectedAccount);
-    const selectedAccountKey = useSelector(selectSelectedAccountKey);
     const touchedAddresses = useSelector((state: ReceiveRootState) =>
-        selectTouchedAddresses(state, selectedAccountKey),
+        selectTouchedAddresses(state, account.key),
     );
     const dispatch = useDispatch<SignVerifyDispatch>();
 
@@ -77,11 +77,11 @@ export const SignVerify = ({ renderShell }: SignVerifyProps) => {
         pathField,
         isElectrumField,
         cardanoPubKeyCoseField,
-    } = useSignVerifyForm(isSignPage, selectedAccount.account!);
+    } = useSignVerifyForm(isSignPage, account);
 
     const { isLocked, device } = useDevice();
     const { translationString } = useTranslation();
-    const { canCopy, copy } = useCopySignedMessage(formValues, selectedAccount.network);
+    const { canCopy, copy } = useCopySignedMessage(formValues, network);
 
     const getErrorMessage = (error?: FieldError) =>
         error ? translationString(error.message as TranslationKey) : undefined;
@@ -123,14 +123,16 @@ export const SignVerify = ({ renderShell }: SignVerifyProps) => {
         const { address, path, message, signature, hex, isElectrum, cardanoPubKeyCose } = data;
 
         if (isSignPage && path !== undefined) {
-            const result = await dispatch(sign(path, message, hex, isElectrum, cardanoPubKeyCose));
+            const result = await dispatch(
+                sign(account, path, message, hex, isElectrum, cardanoPubKeyCose),
+            );
 
             if (result) {
                 formSetSignature(result);
                 setIsCompleted(true);
             }
         } else if (signature !== undefined) {
-            const result = await dispatch(verify(address, message, signature, hex));
+            const result = await dispatch(verify(account, address, message, signature, hex));
 
             if (result) setIsCompleted(true);
         }
@@ -140,15 +142,14 @@ export const SignVerify = ({ renderShell }: SignVerifyProps) => {
 
     // Empty accountTypes means there is only 'normal' accountType and therefore the signatures are same.
     const signFormatsDiffer =
-        selectedAccount.account?.networkType === 'bitcoin' &&
-        selectedAccount.account?.accountType !== 'legacy' &&
-        Object.keys(selectedAccount.network?.accountTypes ?? {}).length >= 1;
-    const canVerify = isVerifySupported(selectedAccount.account);
-    const isCardano = selectedAccount.network?.networkType === 'cardano';
+        account.networkType === 'bitcoin' &&
+        account.accountType !== 'legacy' &&
+        Object.keys(network?.accountTypes ?? {}).length >= 1;
+    const canVerify = isVerifySupported(account);
+    const isCardano = network?.networkType === 'cardano';
 
     return renderShell({
         title: canVerify ? 'TR_NAV_SIGN_VERIFY' : 'TR_SIGN_MESSAGE',
-        selectedAccount,
         isDeviceConnected,
         headingAction: isFormDirty ? (
             <Button
@@ -211,7 +212,7 @@ export const SignVerify = ({ renderShell }: SignVerifyProps) => {
                                         <SignAddressInput
                                             name="path"
                                             label={<Translation id="TR_ADDRESS" />}
-                                            account={selectedAccount.account}
+                                            account={account}
                                             touchedAddresses={touchedAddresses}
                                             hasError={!!formErrors.path}
                                             bottomText={pathError || null}

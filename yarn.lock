@@ -15222,7 +15222,6 @@ __metadata:
     "@suite-common/wallet-core": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
     "@suite-common/wallet-utils": "workspace:*"
-    "@suite/account": "workspace:*"
     "@suite/address": "workspace:*"
     "@suite/device": "workspace:*"
     "@suite/intl": "workspace:*"

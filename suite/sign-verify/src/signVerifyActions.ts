@@ -1,6 +1,5 @@
 import { type Dispatch } from 'redux';
 
-import { type SelectedAccountRootState } from '@suite/account';
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -20,14 +19,9 @@ import { type Result } from '@trezor/type-utils';
 
 import * as SIGN_VERIFY from './signVerifyConstants';
 
-export type SignVerifyRootState = DeviceRootState &
-    WalletSettingsRootState &
-    SelectedAccountRootState;
+export type SignVerifyRootState = DeviceRootState & WalletSettingsRootState;
 
 type GetState = () => SignVerifyRootState;
-
-const selectSelectedAccount = (state: SelectedAccountRootState) =>
-    state.wallet.selectedAccount.account;
 
 export type SignVerifyAction =
     | { type: typeof SIGN_VERIFY.SIGN_SUCCESS; signSignature: string }
@@ -45,12 +39,11 @@ const throwWhenFailed = <T>(response: Result<T, SerializedError>) =>
         ? Promise.resolve(response.payload)
         : Promise.reject(new Error(response.error.message));
 
-const getStateParams = (getState: GetState): Promise<StateParams> => {
-    const account = selectSelectedAccount(getState());
+const getStateParams = (account: Account, getState: GetState): Promise<StateParams> => {
     const device = selectSelectedDevice(getState());
     const addressDisplayType = selectAddressDisplayType(getState());
 
-    return !device || !device.connected || !device.available || !account
+    return !device || !device.connected || !device.available
         ? Promise.reject(new Error('Device not found'))
         : Promise.resolve({
               device,
@@ -199,25 +192,32 @@ const onError =
     };
 
 export const showAddress =
-    (address: string, path: string) => (dispatch: Dispatch, getState: GetState) =>
-        getStateParams(getState)
+    (account: Account, address: string, path: string) => (dispatch: Dispatch, getState: GetState) =>
+        getStateParams(account, getState)
             .then(showAddressByNetwork(dispatch, address, path))
             .then(throwWhenFailed)
             .catch(onError(dispatch, 'verify-address-error'));
 
 export const sign =
-    (path: string | number[], message: string, hex = false, isElectrum = false, isCose = false) =>
+    (
+        account: Account,
+        path: string | number[],
+        message: string,
+        hex = false,
+        isElectrum = false,
+        isCose = false,
+    ) =>
     (dispatch: Dispatch, getState: GetState) =>
-        getStateParams(getState)
+        getStateParams(account, getState)
             .then(signByNetwork(path, message, hex, isElectrum, isCose))
             .then(throwWhenFailed)
             .then(onSignSuccess(dispatch))
             .catch(onError(dispatch, 'sign-message-error'));
 
 export const verify =
-    (address: string, message: string, signature: string, hex = false) =>
+    (account: Account, address: string, message: string, signature: string, hex = false) =>
     (dispatch: Dispatch, getState: GetState) =>
-        getStateParams(getState)
+        getStateParams(account, getState)
             .then(verifyByNetwork(address, message, signature, hex))
             .then(throwWhenFailed)
             .then(onVerifySuccess(dispatch))

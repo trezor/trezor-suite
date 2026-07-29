@@ -29,7 +29,6 @@
         {
             "path": "../../suite-common/wallet-utils"
         },
-        { "path": "../account" },
         { "path": "../address" },
         { "path": "../device" },
         { "path": "../intl" },
