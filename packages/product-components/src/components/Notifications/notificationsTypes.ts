@@ -28,7 +28,9 @@ export type TransactionNotificationType =
     | 'tx-revoked'
     | 'tx-yield-deposit'
     | 'tx-yield-withdraw'
-    | 'tx-yield-claim';
+    | 'tx-yield-claim'
+    | 'tx-wrap'
+    | 'tx-unwrap';
 
 type TransactionNotificationWithToken = Extract<
     NotificationEntry,

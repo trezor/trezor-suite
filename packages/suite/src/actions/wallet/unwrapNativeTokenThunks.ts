@@ -2,6 +2,7 @@ import { openDeferredModal } from '@suite/modal';
 import { type StablecoinYieldTxSimulationParams } from '@suite-common/earn-stablecoin/src/tx-simulation';
 import { createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
+import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     type YieldFlowDisplayToken,
     type YieldWithdrawFlowType,
@@ -80,7 +81,9 @@ export const submitUnwrapNativeTokenThunk = createThunk(
 
             dispatch(
                 notificationsActions.addToast({
-                    type: 'raw-tx-sent',
+                    type: 'tx-unwrap',
+                    // Amount shown in the destination unit — the native coin (e.g. ETH).
+                    formattedAmount: `${unwrapAmount} ${getNetworkDisplaySymbol(account.symbol)}`,
                     descriptor: account.descriptor,
                     symbol: account.symbol,
                     txid: sendResult.txid,
