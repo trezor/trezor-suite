@@ -1,6 +1,6 @@
 import { renderHookWithBasicProvider, waitFor } from '@suite-native/test-utils';
 
-import { useOutputsReviewBackInterceptor } from '../useOutputsReviewBackInterceptor';
+import { useOutputsReviewBackInterceptor } from './useOutputsReviewBackInterceptor';
 
 const mockShowReviewCancellationAlert = jest.fn();
 
@@ -13,7 +13,7 @@ jest.mock('@suite-native/navigation', () => ({
     }) => onInterceptedAction(),
 }));
 
-jest.mock('../useShowReviewCancellationAlert', () => ({
+jest.mock('./useShowReviewCancellationAlert', () => ({
     useShowReviewCancellationAlert: () => mockShowReviewCancellationAlert,
 }));
 

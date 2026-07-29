@@ -6,8 +6,8 @@ import {
     renderHookWithStoreProvider,
 } from '@suite-native/test-utils-store';
 
-import { getWalletState } from '../../../__fixtures__/walletState';
-import { useFeesFetching } from '../useFeesFetching';
+import { useFeesFetching } from './useFeesFetching';
+import { getWalletState } from '../../__fixtures__/walletState';
 
 // Mock the fee hooks since they have side effects and we want to test the hook's logic
 jest.mock('@suite-common/wallet-core', () => ({

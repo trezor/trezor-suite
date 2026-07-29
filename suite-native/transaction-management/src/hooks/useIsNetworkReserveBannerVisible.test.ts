@@ -9,7 +9,7 @@ import {
     renderHookWithStoreProvider,
 } from '@suite-native/test-utils-store';
 
-import { useIsNetworkReserveBannerVisible } from '../useIsNetworkReserveBannerVisible';
+import { useIsNetworkReserveBannerVisible } from './useIsNetworkReserveBannerVisible';
 
 // SOL nativeTokenReserve: "0.003"; base: "0.0002"
 describe('useIsNetworkReserveBannerVisible', () => {

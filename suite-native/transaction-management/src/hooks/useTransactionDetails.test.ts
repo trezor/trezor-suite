@@ -4,7 +4,7 @@ import { act } from '@suite-native/test-utils';
 import { renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 import { type WalletAccountTransaction, mockTransaction } from '@suite-native/tokens';
 
-import { useTransactionDetails } from '../useTransactionDetails';
+import { useTransactionDetails } from './useTransactionDetails';
 
 const mockOpenLink = jest.fn();
 

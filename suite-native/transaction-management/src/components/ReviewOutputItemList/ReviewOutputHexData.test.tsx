@@ -1,7 +1,7 @@
 import { getTranslation } from '@suite-native/intl';
 import { renderWithBasicProvider, userEvent } from '@suite-native/test-utils';
 
-import { ReviewOutputHexData } from '../ReviewOutputHexData';
+import { ReviewOutputHexData } from './ReviewOutputHexData';
 
 const mockCopyToClipboard = jest.fn();
 

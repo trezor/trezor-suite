@@ -1,13 +1,13 @@
 import { type FormState, type TokenAddress } from '@suite-common/wallet-types';
 import { renderHookWithStoreProvider, waitFor } from '@suite-native/test-utils-store';
 
-import { BTC_ACCOUNT_KEY, ETH_ACCOUNT_KEY, getWalletState } from '../../__fixtures__/walletState';
-import { useMaxSpendableAmount } from '../useMaxSpendableAmount';
+import { useMaxSpendableAmount } from './useMaxSpendableAmount';
+import { BTC_ACCOUNT_KEY, ETH_ACCOUNT_KEY, getWalletState } from '../__fixtures__/walletState';
 
 const mockCalculateFeeLevelsMaxAmountThunk = jest.fn();
 
-jest.mock('../../thunks', () => ({
-    ...jest.requireActual('../../thunks'),
+jest.mock('../thunks', () => ({
+    ...jest.requireActual('../thunks'),
     calculateFeeLevelsMaxAmountThunk: (...args: unknown[]) =>
         mockCalculateFeeLevelsMaxAmountThunk(...args),
 }));

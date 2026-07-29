@@ -7,7 +7,7 @@ import { renderHookWithBasicProvider, renderWithBasicProvider } from '@suite-nat
 import {
     type UsePrecomposedTransactionErrorProps,
     usePrecomposedTransactionError,
-} from '../usePrecomposedTransactionError';
+} from './usePrecomposedTransactionError';
 
 const ErrorText = (props: UsePrecomposedTransactionErrorProps) => {
     const msg = usePrecomposedTransactionError(props);
