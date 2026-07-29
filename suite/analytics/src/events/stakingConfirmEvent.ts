@@ -5,6 +5,7 @@ import { EventType } from '../constants';
 type Attributes = {
     action: AttributeDef<'stake' | 'unstake' | 'claim' | 'change-delegate' | 'withdraw'>;
     networkSymbol?: AttributeDef<string>;
+    success?: AttributeDef<boolean>;
 };
 
 export const stakingConfirmEvent: EventDef<Attributes, EventType.StakingConfirm> = {
@@ -24,6 +25,11 @@ export const stakingConfirmEvent: EventDef<Attributes, EventType.StakingConfirm>
         },
         networkSymbol: {
             changelog: [{ version: '25.12.0', notes: 'added' }],
+        },
+        success: {
+            changelog: [{ version: '26.8.0', notes: 'added' }],
+            description:
+                'Set to `false` when the signed staking transaction fails to broadcast to the blockchain; absent otherwise',
         },
     },
 };
