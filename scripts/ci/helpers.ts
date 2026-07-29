@@ -4,6 +4,10 @@ import fs from 'node:fs';
 import path from 'node:path';
 import semver from 'semver';
 
+import { getTrezorPackageDir } from './trezor-package-path.js';
+
+export { getTrezorPackageDir, getTrezorPackageRelativePath } from './trezor-package-path.js';
+
 const ROOT = path.join(import.meta.dirname, '..', '..');
 
 const updateNeeded: string[] = [];
@@ -33,14 +37,6 @@ export const getNpmRemoteGreatestVersion = async (moduleName: string) => {
         console.error('error:', error);
         throw new Error('Not possible to get remote greatest version');
     }
-};
-
-export const getTrezorPackageDir = (packageName: string) => {
-    const networkMatch = packageName.match(/^network-([^-]+)(-(.+))?$/);
-
-    return networkMatch
-        ? path.join(ROOT, 'networks', networkMatch[1]!, packageName)
-        : path.join(ROOT, 'packages', packageName);
 };
 
 export const getTrezorDependencies = async (packageNameWithoutTrezorPrefix: string) => {

@@ -43,17 +43,6 @@ runs:
     - name: Publish to NPM
       shell: bash
       run: |
-        if [[ "${{ inputs.packageName }}" == network-* ]]; then
-          # e.g. "network-solana-sdk"
-          remainder="${{ inputs.packageName }}"
-          # Strip "network-" prefix -> "solana-sdk"
-          remainder="${remainder#network-}"
-          # Strip from first dash onward -> "solana"
-          network="${remainder%%-*}"
-          # Result: ./networks/solana/network-solana-sdk
-          cd "./networks/${network}/${{ inputs.packageName }}"
-        else
-          cd ./packages/${{ inputs.packageName }}
-        fi
+        cd "$(node ./scripts/ci/trezor-package-path.js "${{ inputs.packageName }}")"
         yarn build:lib
         yarn npm publish --tag ${{ inputs.deploymentType }} --access public --provenance

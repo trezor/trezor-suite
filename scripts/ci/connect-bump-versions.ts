@@ -8,6 +8,7 @@ import {
     exec,
     getPackageDependencies,
     getTrezorPackageDir,
+    getTrezorPackageRelativePath,
     gettingNpmDistributionTags,
 } from './helpers';
 import { isPackageOnNpmRegistry } from './npm-registry.js';
@@ -53,7 +54,7 @@ const getGitCommitByPackageName = (packageName: string, maxCount = 10) =>
         `${maxCount}`,
         '--pretty=tformat:"-   %s (%h)"',
         '--',
-        `./packages/${packageName}`,
+        `./${getTrezorPackageRelativePath(packageName)}`,
     ]);
 
 const splitByNewlines = (input: string) => input.split('\n');
@@ -175,7 +176,11 @@ const bumpConnect = async () => {
             const PACKAGE_JSON_PATH = path.join(PACKAGE_PATH, 'package.json');
 
             // This uses dependency version-bump-prompt.
-            await exec('yarn', ['bump', semver, `./packages/${packageName}/package.json`]);
+            await exec('yarn', [
+                'bump',
+                semver,
+                `./${getTrezorPackageRelativePath(packageName)}/package.json`,
+            ]);
 
             const rawPackageJSON = await readFile(PACKAGE_JSON_PATH, 'utf-8');
             const packageJSON = JSON.parse(rawPackageJSON);
@@ -343,7 +348,10 @@ const bumpConnect = async () => {
             });
         }
     } catch (error) {
-        console.info('error:', error);
+        console.error('error:', error);
+        // Without this the workflow reports success even though the bump stopped half-way
+        // through, leaving some packages bumped and no release PR created.
+        process.exitCode = 1;
     }
 };
 

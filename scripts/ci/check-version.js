@@ -3,6 +3,8 @@ import fs from 'node:fs';
 import path from 'node:path';
 import semver from 'semver';
 
+import { getTrezorPackageDir } from './trezor-package-path.js';
+
 const args = process.argv.slice(2);
 
 if (args.length < 2)
@@ -16,11 +18,7 @@ if (!['latest', 'beta', 'alpha'].includes(distTag)) {
     throw new Error('distTag (3rd parameter) must be "alpha", "beta", or "latest"');
 }
 
-const ROOT = path.join(import.meta.dirname, '..', '..');
-const NETWORK_MATCH = packageName.match(/^network-([^-]+)(-(.+))?$/);
-const PACKAGE_PATH = NETWORK_MATCH
-    ? path.join(ROOT, 'networks', NETWORK_MATCH[1], packageName)
-    : path.join(ROOT, 'packages', packageName);
+const PACKAGE_PATH = getTrezorPackageDir(packageName);
 
 // read package version
 const packageJSONRaw = fs.readFileSync(path.join(PACKAGE_PATH, 'package.json'), {

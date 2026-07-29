@@ -21,6 +21,7 @@ import os from 'node:os';
 import path from 'node:path';
 
 import { isPackageOnNpmRegistry } from './npm-registry.js';
+import { getTrezorPackageDir } from './trezor-package-path.js';
 
 const ROOT = path.join(import.meta.dirname, '..', '..');
 
@@ -35,15 +36,6 @@ const RELEASE_ENVIRONMENT = 'production-connect';
 // `npm trust` was introduced in npm@11.15.0, which may be newer than the npm bundled with .nvmrc Node.
 const MINIMAL_NPM_MAJOR_WITH_TRUST = 11;
 const MINIMAL_NPM_MINOR_WITH_TRUST = 15;
-
-const getPackagePath = packageName => {
-    // Network packages live in ./networks/<network>/network-<network>, everything else in ./packages.
-    const networkMatch = packageName.match(/^network-([^-]+)(-(.+))?$/);
-
-    return networkMatch
-        ? path.join(ROOT, 'networks', networkMatch[1], packageName)
-        : path.join(ROOT, 'packages', packageName);
-};
 
 const run = ({ command, args, cwd = ROOT, isFatal = true }) => {
     console.log(`\n$ ${command} ${args.join(' ')}\n`);
@@ -180,7 +172,7 @@ const reserveNpmPackage = async () => {
     }
 
     const packageDirectoryName = packageNameArgument.replace('@trezor/', '');
-    const packageJSONPath = path.join(getPackagePath(packageDirectoryName), 'package.json');
+    const packageJSONPath = path.join(getTrezorPackageDir(packageDirectoryName), 'package.json');
 
     if (!fs.existsSync(packageJSONPath)) {
         throw new Error(`${packageJSONPath} not found, is "${packageDirectoryName}" correct?`);
