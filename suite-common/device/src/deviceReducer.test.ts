@@ -1,10 +1,9 @@
-import { prepareDeviceReducer } from '@suite-common/device';
+import { extraDependenciesCommonMock } from '@suite-common/test-utils';
 
-import { extraDependencies } from 'src/support/extraDependencies';
+import fixtures from './__fixtures__/deviceReducer';
+import { prepareDeviceReducer } from './deviceReducer';
 
-import fixtures from '../__fixtures__/deviceReducer';
-
-const deviceReducer = prepareDeviceReducer(extraDependencies);
+const deviceReducer = prepareDeviceReducer(extraDependenciesCommonMock);
 
 type State = ReturnType<typeof deviceReducer>;
 
