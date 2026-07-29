@@ -16,6 +16,7 @@ import {
     getYieldVaultForOutputToken,
     getYieldVaultsForInputToken,
     getYieldWrapAmount,
+    hasYieldVaultPosition,
     isYieldVaultOperational,
     splitYieldPendingTransaction,
 } from './stablecoinYieldUtils';
@@ -583,6 +584,102 @@ describe('stablecoinYieldUtils', () => {
                         token: heldUsdc,
                     }),
                 ).toEqual([]);
+            });
+        });
+
+        describe('hasYieldVaultPosition', () => {
+            const vaultWithReceiptToken = createVaultFixture({
+                tokenAddress: USDC_ADDRESS,
+                outputTokenAddress: RECEIPT_ADDRESS,
+            });
+
+            const createHeldReceiptToken = (address: string, balance?: string) => ({
+                contract: address,
+                symbol: 'trUSDC',
+                decimals: 18,
+                balance,
+            });
+
+            it('reports a position when the receipt token is held with a balance', () => {
+                expect(
+                    hasYieldVaultPosition({
+                        networkSymbol: 'eth',
+                        vault: vaultWithReceiptToken,
+                        accountTokens: [createHeldReceiptToken(RECEIPT_ADDRESS, '1.5')],
+                    }),
+                ).toBe(true);
+            });
+
+            it('matches the receipt token regardless of address case', () => {
+                expect(
+                    hasYieldVaultPosition({
+                        networkSymbol: 'eth',
+                        vault: vaultWithReceiptToken,
+                        accountTokens: [
+                            createHeldReceiptToken(
+                                RECEIPT_ADDRESS.toUpperCase().replace('0X', '0x'),
+                                '2',
+                            ),
+                        ],
+                    }),
+                ).toBe(true);
+            });
+
+            it('reports no position when the receipt token balance is zero', () => {
+                expect(
+                    hasYieldVaultPosition({
+                        networkSymbol: 'eth',
+                        vault: vaultWithReceiptToken,
+                        accountTokens: [createHeldReceiptToken(RECEIPT_ADDRESS, '0')],
+                    }),
+                ).toBe(false);
+            });
+
+            it('reports no position when the receipt token has no balance yet', () => {
+                expect(
+                    hasYieldVaultPosition({
+                        networkSymbol: 'eth',
+                        vault: vaultWithReceiptToken,
+                        accountTokens: [createHeldReceiptToken(RECEIPT_ADDRESS, undefined)],
+                    }),
+                ).toBe(false);
+            });
+
+            it('does not treat holding the deposit token as a position', () => {
+                expect(
+                    hasYieldVaultPosition({
+                        networkSymbol: 'eth',
+                        vault: vaultWithReceiptToken,
+                        accountTokens: [
+                            {
+                                contract: USDC_ADDRESS,
+                                symbol: 'USDC',
+                                decimals: 6,
+                                balance: '500',
+                            },
+                        ],
+                    }),
+                ).toBe(false);
+            });
+
+            it('reports no position for a vault without a receipt token', () => {
+                expect(
+                    hasYieldVaultPosition({
+                        networkSymbol: 'eth',
+                        vault: createVaultFixture({ tokenAddress: USDC_ADDRESS }),
+                        accountTokens: [createHeldReceiptToken(RECEIPT_ADDRESS, '1')],
+                    }),
+                ).toBe(false);
+            });
+
+            it('reports no position when the account has no tokens', () => {
+                expect(
+                    hasYieldVaultPosition({
+                        networkSymbol: 'eth',
+                        vault: vaultWithReceiptToken,
+                        accountTokens: undefined,
+                    }),
+                ).toBe(false);
             });
         });
 

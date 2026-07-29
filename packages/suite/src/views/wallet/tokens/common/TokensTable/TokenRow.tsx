@@ -58,6 +58,7 @@ export const TokenRow = ({
     const yieldBadge = useTokenYieldBadge({
         networkSymbol: account.symbol,
         token,
+        accountTokens: account.tokens,
         type,
         yieldOpportunities,
     });
@@ -84,12 +85,12 @@ export const TokenRow = ({
                         {yieldBadge && (
                             <YieldBadge
                                 apy={yieldBadge.apy}
-                                variant={type === 'defi' ? 'active' : 'inactive'}
-                                networkSymbol={account.symbol}
+                                variant={yieldBadge.hasVaultPosition ? 'active' : 'inactive'}
+                                account={account}
+                                vaultId={yieldBadge.vaultId}
                                 analyticsFrom={
                                     type === 'defi' ? 'account-defi-tokens' : 'account-tokens'
                                 }
-                                vaultId={yieldBadge.vaultId}
                             />
                         )}
                     </Row>

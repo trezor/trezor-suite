@@ -23,11 +23,9 @@ export const useNativeYieldVault = (account: Account) => {
     const yieldDepositMessageSystem = useMessageSystemYield('deposit');
     const isYieldOptionRelevant =
         account.networkType === 'ethereum' && !yieldDepositMessageSystem.isDisabled;
-    const {
-        data: availableVaults,
-        isSuccess: hasLoadedVaults,
-        isError: hasVaultsError,
-    } = useAllYieldOpportunities({ enabled: isYieldOptionRelevant });
+    const { data: availableVaults } = useAllYieldOpportunities({
+        enabled: isYieldOptionRelevant,
+    });
 
     const wrappedNativeVaults = useMemo(
         () =>
@@ -47,15 +45,11 @@ export const useNativeYieldVault = (account: Account) => {
         wrappedNativeVaults.some(vault => isYieldVaultDepositEnabled(state, vault)),
     );
     const bestVault = useSelector(state => getBestEnabledYieldVault(state, wrappedNativeVaults));
-
-    // Hold rendering until the vaults query settles so dependent UI does not flash
-    // from a yield-less to a yield-aware variant underneath the user.
-    const isResolving = isYieldOptionRelevant && !hasLoadedVaults && !hasVaultsError;
+    const bestVaultApy = bestVault ? getApyPercent(bestVault.rewardRate.total) : null;
 
     return {
-        isResolving,
         hasYieldOption,
-        bestVaultApy: bestVault ? getApyPercent(bestVault.rewardRate.total) : null,
-        bestVaultId: bestVault?.id ?? null,
+        bestVault:
+            bestVault && bestVaultApy !== null ? { id: bestVault.id, apy: bestVaultApy } : null,
     };
 };

@@ -42,11 +42,7 @@ import { BigNumber } from '@trezor/utils';
 import { SUITE } from 'src/actions/suite/constants';
 import { COINJOIN } from 'src/actions/wallet/constants';
 import { type Action, type AppState } from 'src/types/suite';
-import {
-    getSuiteReadyPayload,
-    redactRouterUrl,
-    redactTransactionIdFromAnchor,
-} from 'src/utils/suite/analytics';
+import { getSuiteReadyPayload, redactAnchor, redactRouterUrl } from 'src/utils/suite/analytics';
 import { hasVisibleTokens } from 'src/utils/wallet/tokenUtils';
 
 /*
@@ -237,7 +233,7 @@ const analyticsMiddleware = createMiddlewareWithExtraDeps(
                         payload: {
                             prevRouterUrl: redactRouterUrl(prevRouterUrl),
                             nextRouterUrl: redactRouterUrl(selectRouterUrl(state)),
-                            anchor: redactTransactionIdFromAnchor(action.payload.anchor),
+                            anchor: redactAnchor(action.payload.anchor),
                         },
                     });
 
@@ -257,7 +253,7 @@ const analyticsMiddleware = createMiddlewareWithExtraDeps(
                         payload: {
                             prevRouterUrl: redactRouterUrl(prevRouterUrl),
                             nextRouterUrl: redactRouterUrl(prevRouterUrl),
-                            anchor: redactTransactionIdFromAnchor(action.payload),
+                            anchor: redactAnchor(action.payload),
                         },
                     });
                 }

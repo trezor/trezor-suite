@@ -12,7 +12,7 @@ import { redactUserPathFromString } from '@trezor/utils';
 
 import { PROTOCOL, SUITE } from 'src/actions/suite/constants';
 import { type Action, type AppState, type Dispatch } from 'src/types/suite';
-import { redactTransactionIdFromAnchor } from 'src/utils/suite/analytics';
+import { redactAnchor } from 'src/utils/suite/analytics';
 
 const log =
     (api: MiddlewareAPI<Dispatch, AppState>) =>
@@ -74,7 +74,7 @@ const log =
                         payload: {
                             pathname: action.payload.pathname,
                             app: action.payload.app,
-                            anchor: redactTransactionIdFromAnchor(action.payload.anchor),
+                            anchor: redactAnchor(action.payload.anchor),
                         },
                     }),
                 );

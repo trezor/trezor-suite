@@ -6,8 +6,10 @@ import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     getYieldVaultForOutputToken,
     getYieldVaultsForInputToken,
+    hasYieldVaultPosition,
 } from '@suite-common/wallet-core';
 import { getApyPercent } from '@suite-common/wallet-utils';
+import { type TokenInfo } from '@trezor/blockchain-link-types';
 import { exhaustive } from '@trezor/type-utils';
 
 import { getBestEnabledYieldVault } from 'src/components/earn/utils/yieldVaultUtils';
@@ -18,6 +20,7 @@ import type { TokensTableType } from '../types';
 type UseTokenYieldBadgeParams = {
     networkSymbol: NetworkSymbol;
     token: EnhancedTokenInfo;
+    accountTokens: TokenInfo[] | undefined;
     type: TokensTableType;
     yieldOpportunities?: YieldDtoV2[];
 };
@@ -25,11 +28,14 @@ type UseTokenYieldBadgeParams = {
 type TokenYieldBadgeData = {
     apy: number;
     vaultId: string;
+    /** The account holds the vault's receipt token, so it already earns this rate. */
+    hasVaultPosition: boolean;
 };
 
 export const useTokenYieldBadge = ({
     networkSymbol,
     token,
+    accountTokens,
     type,
     yieldOpportunities,
 }: UseTokenYieldBadgeParams): TokenYieldBadgeData | null => {
@@ -66,7 +72,22 @@ export const useTokenYieldBadge = ({
         }
     }, [yieldOpportunities, networkSymbol, token.contract, token.symbol, token.decimals, type]);
 
-    const bestEnabledVault = useSelector(state => getBestEnabledYieldVault(state, matchedVaults));
+    const vaultsWithPosition = useMemo(
+        () =>
+            matchedVaults.filter(vault =>
+                hasYieldVaultPosition({ networkSymbol, vault, accountTokens }),
+            ),
+        [matchedVaults, networkSymbol, accountTokens],
+    );
+
+    // A vault the user already deposited into states the rate they actually earn, so it
+    // outranks a higher-paying one they have not touched.
+    const bestEnabledVault = useSelector(state =>
+        getBestEnabledYieldVault(
+            state,
+            vaultsWithPosition.length > 0 ? vaultsWithPosition : matchedVaults,
+        ),
+    );
 
     if (!bestEnabledVault) {
         return null;
@@ -78,5 +99,9 @@ export const useTokenYieldBadge = ({
         return null;
     }
 
-    return { apy, vaultId: bestEnabledVault.id };
+    return {
+        apy,
+        vaultId: bestEnabledVault.id,
+        hasVaultPosition: vaultsWithPosition.includes(bestEnabledVault),
+    };
 };

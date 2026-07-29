@@ -2,7 +2,6 @@ import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { getNetworkDisplaySymbol, getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
 import { useDisplayBaseCurrency } from '@suite-common/wallet-core';
-import { hasNetworkFeatures } from '@suite-common/wallet-utils';
 import { Card, Flex, InfoItem, Row, Text } from '@trezor/components';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 import { TokenIcon } from '@trezor/product-components';
@@ -10,12 +9,12 @@ import { TokenIcon } from '@trezor/product-components';
 import { DashboardSection } from 'src/components/dashboard';
 import { YieldBadge } from 'src/components/earn/YieldBadge/YieldBadge';
 import { PriceTicker, TrendTicker } from 'src/components/suite';
-import { useNativeYieldVault } from 'src/hooks/earn/useNativeYieldVault';
 import { useLayoutSize } from 'src/hooks/suite';
 import { type Account } from 'src/types/wallet';
 
 import { TradeBoxActionButton } from './TradeBoxActionButton';
 import { WrapNativeTokenButton } from './WrapNativeTokenButton';
+import { useTradeBoxEarnOptions } from './hooks/useTradeBoxEarnOptions';
 
 type TradeBoxProps = {
     account: Account;
@@ -25,9 +24,7 @@ export const TradeBox = ({ account }: TradeBoxProps) => {
     const { isBelowTablet, isBelowMobile } = useLayoutSize();
     const { device } = useDevice();
     const { shallDisplayBaseCurrency } = useDisplayBaseCurrency(account.symbol);
-    const { hasYieldOption, bestVaultApy, bestVaultId } = useNativeYieldVault(account);
-
-    const hasEarnOption = hasNetworkFeatures(account, 'staking') || hasYieldOption;
+    const { hasEarnOption, yieldBadge } = useTradeBoxEarnOptions(account);
 
     return (
         <DashboardSection>
@@ -83,14 +80,14 @@ export const TradeBox = ({ account }: TradeBoxProps) => {
                                 </InfoItem>
                             </>
                         ) : null}
-                        {bestVaultApy !== null && (
+                        {yieldBadge && (
                             <Row alignItems="center">
                                 <YieldBadge
-                                    apy={bestVaultApy}
+                                    apy={yieldBadge.apy}
                                     variant="promo"
-                                    networkSymbol={account.symbol}
+                                    account={account}
+                                    vaultId={yieldBadge.vaultId}
                                     analyticsFrom="account-tradebox"
-                                    vaultId={bestVaultId ?? undefined}
                                 />
                             </Row>
                         )}

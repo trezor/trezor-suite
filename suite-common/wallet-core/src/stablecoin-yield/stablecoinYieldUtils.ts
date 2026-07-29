@@ -11,6 +11,7 @@ import {
     isWrappedNativeToken,
     unitsToSubunits,
 } from '@suite-common/wallet-utils';
+import { type TokenInfo } from '@trezor/blockchain-link-types';
 import { BigNumber } from '@trezor/utils';
 
 import { YIELD_FLOW_AVAILABLE_STEPS } from './stablecoinYieldConstants';
@@ -599,6 +600,33 @@ export const getYieldVaultForOutputToken = <TVault extends YieldVaultMatchFields
             isYieldVaultOperational(vault) &&
             isYieldVaultOnNetwork(vault, networkSymbol) &&
             doTokensMatch({ networkSymbol, firstToken: token, secondToken: vault.outputToken }),
+    );
+
+type YieldVaultPositionParams = {
+    networkSymbol: NetworkSymbol;
+    vault: Pick<YieldDtoV2, 'outputToken'>;
+    accountTokens: Pick<TokenInfo, 'contract' | 'symbol' | 'decimals' | 'balance'>[] | undefined;
+};
+
+/** Whether the account already holds the vault's receipt token, i.e. has deposited into it. */
+export const hasYieldVaultPosition = ({
+    networkSymbol,
+    vault,
+    accountTokens,
+}: YieldVaultPositionParams): boolean =>
+    (accountTokens ?? []).some(
+        accountToken =>
+            accountToken.symbol !== undefined &&
+            doTokensMatch({
+                networkSymbol,
+                firstToken: {
+                    address: accountToken.contract,
+                    symbol: accountToken.symbol,
+                    decimals: accountToken.decimals,
+                },
+                secondToken: vault.outputToken,
+            }) &&
+            new BigNumber(accountToken.balance ?? '0').gt(0),
     );
 
 export const getAllowanceSpender = (flowData: YieldFlowResolvedData) =>

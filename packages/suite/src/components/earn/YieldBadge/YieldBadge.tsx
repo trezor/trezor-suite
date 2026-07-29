@@ -5,12 +5,13 @@ import { Translation, type TranslationKey } from '@suite/intl';
 import { EarnAnchor, goto } from '@suite/router';
 import { events as sharedEvents } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
-import { type NetworkSymbol } from '@suite-common/networks';
+import { type Account } from '@suite-common/wallet-types';
 import { Badge, type BadgeProps, commonFocusStyles } from '@trezor/components';
 import { TrendUpIcon } from '@trezor/icons';
 import { getBorderRadiusCssValue } from '@trezor/theme';
 
 import { formatApyValue } from 'src/components/earn/utils/earnApyUtils';
+import { getYieldOpportunityAnchor } from 'src/components/earn/utils/getYieldOpportunityAnchor';
 import { useDispatch } from 'src/hooks/suite';
 
 // The badge itself is not interactive, so a button carries the click and the focus ring.
@@ -31,23 +32,29 @@ type YieldBadgeVariant = 'inactive' | 'active' | 'promo';
 
 type YieldBadgeVariantConfig = {
     translationId: TranslationKey;
-    priority: NonNullable<BadgeProps['priority']>;
+    priority?: BadgeProps['priority'];
     iconLeft?: BadgeProps['iconLeft'];
+    /**
+     * Token badges point at the vault row of their account, the trade box teaser covers
+     * staking too, so it opens the Earn page plain — no anchor, nothing highlighted.
+     */
+    shouldAnchorAtVaultRow: boolean;
 };
 
 const variantConfigMap: Record<YieldBadgeVariant, YieldBadgeVariantConfig> = {
     inactive: {
         translationId: 'TR_EARN_YIELD_BADGE_UP_TO_RATE',
         priority: 'secondary',
+        shouldAnchorAtVaultRow: true,
     },
     active: {
         translationId: 'TR_EARN_YIELD_BADGE_RATE',
-        priority: 'primary',
+        shouldAnchorAtVaultRow: true,
     },
     promo: {
         translationId: 'TR_EARN_YIELD_BADGE_UP_TO_RATE',
-        priority: 'primary',
         iconLeft: TrendUpIcon,
+        shouldAnchorAtVaultRow: false,
     },
 };
 
@@ -55,25 +62,25 @@ type YieldBadgeProps = {
     apy: number;
     /** `inactive` = eligible but not yielding, `active` = already yielding, `promo` = trade box teaser. */
     variant: YieldBadgeVariant;
-    networkSymbol: NetworkSymbol;
+    account: Account;
+    vaultId: string;
     analyticsFrom: 'account-tokens' | 'account-defi-tokens' | 'account-tradebox';
-    vaultId?: string;
 };
 
-export const YieldBadge = ({
-    apy,
-    variant,
-    networkSymbol,
-    analyticsFrom,
-    vaultId,
-}: YieldBadgeProps) => {
+export const YieldBadge = ({ apy, variant, account, vaultId, analyticsFrom }: YieldBadgeProps) => {
     const { analytics } = useServices(selectDesktopAnalyticsDep);
     const dispatch = useDispatch();
 
-    const { translationId, priority, iconLeft } = variantConfigMap[variant];
+    const { translationId, iconLeft, priority, shouldAnchorAtVaultRow } = variantConfigMap[variant];
 
     const goToEarnYield = () => {
-        dispatch(goto({ routeName: 'suite-earn', anchor: EarnAnchor.Yield }));
+        // The row anchor scrolls to and highlights the vault row of this very account; the
+        // Earn page falls back to scrolling the yield section when that row is not rendered.
+        const anchor = shouldAnchorAtVaultRow
+            ? (getYieldOpportunityAnchor({ account, vaultId }) ?? EarnAnchor.Yield)
+            : undefined;
+
+        dispatch(goto({ routeName: 'suite-earn', anchor }));
 
         analytics.report({
             type: sharedEvents.yieldNavigateEvent.name,
@@ -81,7 +88,7 @@ export const YieldBadge = ({
                 action: 'continue',
                 from: analyticsFrom,
                 to: 'earn-dashboard',
-                networkSymbol,
+                networkSymbol: account.symbol,
                 vaultId,
             },
         });
