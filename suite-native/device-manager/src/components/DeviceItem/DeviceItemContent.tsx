@@ -82,8 +82,9 @@ export const DeviceItemContent = React.memo(
         const isPortfolioTrackerDevice = deviceItem?.id === PORTFOLIO_TRACKER_DEVICE_ID;
 
         const deviceHeader =
-            (isPortfolioTrackerDevice ? deviceItem?.name : deviceItem?.label) ??
-            translate('deviceManager.defaultHeader');
+            (isPortfolioTrackerDevice
+                ? translate('deviceManager.portfolioTrackerHeader')
+                : deviceItem?.label) ?? translate('deviceManager.defaultHeader');
 
         // todo: only makes sense device is already authorized (has state)
         const fallbackLabel = deviceItem?.useEmptyPassphrase ? (

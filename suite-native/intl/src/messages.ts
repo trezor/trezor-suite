@@ -2160,6 +2160,7 @@ export const messages = {
             bootloader: 'Bootloader mode',
         },
         defaultHeader: 'Hi there!',
+        portfolioTrackerHeader: 'Portfolio Tracker',
         wallet: {
             standard: 'Standard wallet',
             defaultPassphrase: 'Passphrase wallet #{index}',
