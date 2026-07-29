@@ -111,15 +111,6 @@ export const getAccountCryptoBalanceWithStaking = (account: Account | null) => {
     }
 };
 
-export const selectAccountCryptoBalanceWithStaking = (
-    state: NativeStakingRootState,
-    accountKey: AccountKey,
-) => {
-    const account = selectAccountByKey(state, accountKey);
-
-    return getAccountCryptoBalanceWithStaking(account);
-};
-
 export const selectAccountHasStaking = (state: NativeStakingRootState, accountKey: AccountKey) => {
     const account = selectAccountByKey(state, accountKey);
     const symbol = account?.symbol;
