@@ -1,4 +1,4 @@
-import { type AddressType, addressType } from '@trezor/network-module-suite-types';
+import { type AddressType, addressType } from '@trezor/network-module-suite-common-types';
 
 import { type EthereumNetworkSymbol, getSupportedNetworks } from '../supportedNetworks';
 import { ethereumValidator } from './ethereumAddressValidator';

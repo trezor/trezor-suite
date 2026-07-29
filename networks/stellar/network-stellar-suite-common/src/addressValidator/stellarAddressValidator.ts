@@ -2,7 +2,7 @@ import { bytesToHex } from '@noble/hashes/utils.js';
 import { utils } from '@scure/base';
 import crc16xmodem from 'crc/calculators/crc16xmodem';
 
-import { type AddressValidator, addressType } from '@trezor/network-module-suite-types';
+import { type AddressValidator, addressType } from '@trezor/network-module-suite-common-types';
 
 import type { StellarNetworkSymbol } from '../supportedNetworks';
 

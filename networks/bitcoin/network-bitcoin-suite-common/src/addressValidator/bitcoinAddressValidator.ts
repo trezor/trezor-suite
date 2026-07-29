@@ -5,7 +5,7 @@ import { keccak_256 } from '@noble/hashes/sha3.js';
 import { bytesToHex, hexToBytes } from '@noble/hashes/utils.js';
 import { base58 } from '@scure/base';
 
-import { type AddressValidator, addressType } from '@trezor/network-module-suite-types';
+import { type AddressValidator, addressType } from '@trezor/network-module-suite-common-types';
 import { typedObjectKeys } from '@trezor/utils';
 
 import { bchValidator } from './bchAddressValidator';

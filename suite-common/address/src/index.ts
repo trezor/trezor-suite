@@ -1,4 +1,4 @@
-export type { AddressType } from '@trezor/network-module-suite-types';
+export type { AddressType } from '@trezor/network-module-suite-common-types';
 export {
     createAddressValidator,
     selectAddressValidatorDep,

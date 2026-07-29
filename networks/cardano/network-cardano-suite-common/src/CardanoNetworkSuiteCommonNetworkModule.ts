@@ -1,4 +1,4 @@
-import type { NetworkModule } from '@trezor/network-module-suite-types';
+import type { SuiteCommonNetworkModule } from '@trezor/network-module-suite-common-types';
 
 import { adaValidator } from './addressValidator/cardanoAddressValidator';
 import {
@@ -7,7 +7,7 @@ import {
     isSupportedNetwork,
 } from './supportedNetworks';
 
-export type CardanoNetworkSuiteCommonNetworkModule = NetworkModule<CardanoNetworkSymbol>;
+export type CardanoNetworkSuiteCommonNetworkModule = SuiteCommonNetworkModule<CardanoNetworkSymbol>;
 
 export const createCardanoSuiteCommonNetworkModule =
     (): CardanoNetworkSuiteCommonNetworkModule => ({

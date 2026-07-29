@@ -1,4 +1,4 @@
-import type { NetworkModule } from '@trezor/network-module-suite-types';
+import type { SuiteCommonNetworkModule } from '@trezor/network-module-suite-common-types';
 
 import { stellarValidator } from './addressValidator/stellarAddressValidator';
 import {
@@ -7,7 +7,7 @@ import {
     isSupportedNetwork,
 } from './supportedNetworks';
 
-export type StellarNetworkSuiteCommonNetworkModule = NetworkModule<StellarNetworkSymbol>;
+export type StellarNetworkSuiteCommonNetworkModule = SuiteCommonNetworkModule<StellarNetworkSymbol>;
 
 export const createStellarSuiteCommonNetworkModule =
     (): StellarNetworkSuiteCommonNetworkModule => ({

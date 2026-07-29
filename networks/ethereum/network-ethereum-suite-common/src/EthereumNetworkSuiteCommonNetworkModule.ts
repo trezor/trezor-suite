@@ -1,4 +1,4 @@
-import type { NetworkModule } from '@trezor/network-module-suite-types';
+import type { SuiteCommonNetworkModule } from '@trezor/network-module-suite-common-types';
 
 import { ethereumValidator } from './addressValidator/ethereumAddressValidator';
 import {
@@ -7,7 +7,8 @@ import {
     isSupportedNetwork,
 } from './supportedNetworks';
 
-export type EthereumNetworkSuiteCommonNetworkModule = NetworkModule<EthereumNetworkSymbol>;
+export type EthereumNetworkSuiteCommonNetworkModule =
+    SuiteCommonNetworkModule<EthereumNetworkSymbol>;
 
 export const createEthereumSuiteCommonNetworkModule =
     (): EthereumNetworkSuiteCommonNetworkModule => ({
