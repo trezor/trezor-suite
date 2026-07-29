@@ -1,6 +1,6 @@
 # @trezor/connect
 
-API version 10.0.0-alpha.1
+API version 10.0.0-beta.1
 
 [![NPM](https://img.shields.io/npm/v/@trezor/connect.svg)](https://www.npmjs.org/package/@trezor/connect)
 
@@ -40,7 +40,7 @@ For more instructions [refer to this document](https://github.com/trezor/trezor-
 
 ## Versioning
 
-Version 10 is the current major version and is currently in alpha. New major versions are released when there are breaking API changes. Information about legacy versions can be found in [README_LEGACY.md](./README_LEGACY.md).
+Version 10 is the current major version and is currently in beta. New major versions are released when there are breaking API changes.
 
 ## Docs
 

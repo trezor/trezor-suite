@@ -1,4 +1,4 @@
-# 10.0.0-alpha.1 — DEPRECATED
+# 10.0.0-beta.1 — DEPRECATED
 
 - This package is deprecated. The 10.x release is a stub.
 
