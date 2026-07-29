@@ -58,7 +58,6 @@ export function CollapsibleFeesHeader({
                             intent="neutral"
                             priority="secondary"
                             href={HELP_CENTER_TRANSACTION_FEES_URL}
-                            isInverse
                         >
                             <Translation id="TR_LEARN" />
                         </TextButton>

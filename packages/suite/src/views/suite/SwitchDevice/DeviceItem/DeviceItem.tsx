@@ -37,17 +37,12 @@ type DeviceItemProps = {
 };
 
 const ListItem = ({ children, icon }: { children: ReactNode; icon: IconComponent }) => (
-    <List.Item
-        bulletComponent={
-            <Icon as={icon} intent="neutral" priority="secondary" isInverse size={20} />
-        }
-    >
+    <List.Item bulletComponent={<Icon as={icon} intent="neutral" priority="secondary" size={20} />}>
         <Paragraph
             typographyStyle="body-md"
             intent="neutral"
             priority="secondary"
             textWrap="pretty"
-            isInverse
         >
             {children}
         </Paragraph>
@@ -135,7 +130,6 @@ export const DeviceItem = ({ device, instances, onCancel }: DeviceItemProps) => 
                                                     onTooltipClose();
                                                     onCancel?.();
                                                 }}
-                                                isInverse
                                             >
                                                 <Translation id="TR_DEVICE_DISCONNECTED_TOOLTIP_BUTTON_PRIMARY" />
                                             </Button>
@@ -143,7 +137,6 @@ export const DeviceItem = ({ device, instances, onCancel }: DeviceItemProps) => 
                                                 size="small"
                                                 intent="neutral"
                                                 priority="secondary"
-                                                isInverse
                                                 onClick={() => {
                                                     onTooltipClose();
                                                     dispatch(

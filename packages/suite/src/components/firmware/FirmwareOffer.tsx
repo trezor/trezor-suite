@@ -88,11 +88,7 @@ export const FirmwareOffer = ({ isCustomFirmware, targetFirmwareType }: Firmware
                         <Column padding={4} gap={4}>
                             {parsedChangelog && (
                                 <Row justifyContent="space-between">
-                                    <Text
-                                        typographyStyle="body-sm-strong"
-                                        isInverse
-                                        intent="neutral"
-                                    >
+                                    <Text typographyStyle="body-sm-strong" intent="neutral">
                                         <Translation
                                             id="TR_VERSION"
                                             values={{ version: parsedChangelog.versionString }}
@@ -103,7 +99,6 @@ export const FirmwareOffer = ({ isCustomFirmware, targetFirmwareType }: Firmware
                                         intent="neutral"
                                         priority="secondary"
                                         href={changelogUrl}
-                                        isInverse
                                     >
                                         <Translation id="TR_VIEW_ALL" />
                                     </TextButton>
