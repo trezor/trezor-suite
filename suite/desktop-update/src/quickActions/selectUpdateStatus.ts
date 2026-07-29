@@ -1,4 +1,6 @@
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
+import { createWeakMapSelector } from '@suite-common/redux-utils';
+import type { TrezorDevice } from '@suite-common/suite-types';
 import { getSuiteVersion } from '@trezor/env-utils';
 import { versionUtils } from '@trezor/utils';
 
@@ -74,12 +76,10 @@ const getDeviceStatus = ({
     return 'up-to-date';
 };
 
-export const selectUpdateStatus = (
-    state: DesktopUpdateRootState & DeviceRootState,
+const getUpdateStatus = (
+    device: TrezorDevice | undefined,
+    desktopUpdate: DesktopUpdateState,
 ): UpdateStatusData => {
-    const device = selectSelectedDevice(state);
-    const desktopUpdate = selectDesktopUpdate(state);
-
     const isDeviceDisconnected = device?.connected !== true;
 
     // If firmware is outdated and suite update download/check is in progress,
@@ -136,3 +136,12 @@ export const selectUpdateStatus = (
 
     return { updateStatus: 'up-to-date', ...common };
 };
+
+const createMemoizedSelector = createWeakMapSelector.withTypes<
+    DesktopUpdateRootState & DeviceRootState
+>();
+
+export const selectUpdateStatus = createMemoizedSelector(
+    [selectSelectedDevice, selectDesktopUpdate],
+    getUpdateStatus,
+);
