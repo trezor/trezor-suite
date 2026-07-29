@@ -1,4 +1,4 @@
-import { averageRewards } from '../../src/workers/evm-rpc/utils/block';
+import { averageRewards } from './block';
 
 describe(averageRewards.name, () => {
     it('returns 0n for empty input', () => {

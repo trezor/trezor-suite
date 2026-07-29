@@ -1,11 +1,12 @@
 import { BackendWebsocketServerMock } from '@trezor/e2e-utils';
 
-import workers from './worker';
-import { BlockchainLink } from '../../src';
-import fixtures from './fixtures/estimateFee';
+import fixtures from './__fixtures__/getTransaction';
+import workers from './__fixtures__/worker';
+
+import { BlockchainLink } from './index';
 
 workers.forEach(instance => {
-    describe(`estimateFee: ${instance.name}`, () => {
+    describe(`getTransaction: ${instance.name}`, () => {
         let server: BackendWebsocketServerMock;
         let blockchain: BlockchainLink;
 
@@ -30,8 +31,7 @@ workers.forEach(instance => {
         fixtures[instance.name].forEach(f => {
             it(f.description, async () => {
                 server.setFixtures(f.serverFixtures);
-                // @ts-expect-error
-                const promise = blockchain.estimateFee(f.params);
+                const promise = blockchain.getTransaction(f.params);
                 if (!f.error) {
                     expect(await promise).toEqual(f.response);
                 } else {

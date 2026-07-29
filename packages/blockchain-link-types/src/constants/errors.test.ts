@@ -1,4 +1,4 @@
-import { CustomError } from '@trezor/blockchain-link-types';
+import { CustomError } from './errors';
 
 describe('Custom errors', () => {
     it('Error with predefined code and predefined message', () => {
