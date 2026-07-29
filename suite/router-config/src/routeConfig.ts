@@ -1,11 +1,14 @@
 import type { RouterApp } from './routerApps';
 
-// Steps to add route params:
-// 1. add params order here (example: wallet or suite-bridge)
-// 2. add or update param validation in `suite/router/src/router.ts`
-// 3. add param parsers in `suite/router/src/routerParams.ts` when needed
-// 4. add params types to `suite/router/src/routes.ts`
+/*
+ Steps to add route params:
+ 1. add params order here (example: wallet or suite-bridge)
+ 2. add or update param validation in `suite/router/src/router.ts`
+ 3. add param parsers in `suite/router/src/routerParams.ts` when needed
+ 4. add params types to `suite/router/src/routes.ts`
+*/
 
+// For example #/btc/0/normal
 export const walletParams = ['symbol', 'accountIndex', 'accountType'] as const;
 export const modalAppParams = ['cancelable', 'variant'] as const;
 export const dashboardParams = ['modal', 'networkSymbol'] as const;
@@ -20,10 +23,15 @@ export const earnParams = [
 // Do not export, only for type-checking `routes` itself, instead use the inferred `Route` in @suite/router.
 type RouteDefinition = {
     name: string;
+    // URL path pattern that routes to this page,
     pattern: string;
+    // an `app` groups one or more routes by a shared domain (while `route` itself is only a technical entity)
     app: RouterApp;
+    // Schema to parse URL hash as segments separated by '/', see walletParams for an example. See top of this file how to add/update them.
     params?: readonly string[];
+    // Whether this app has its own layout, and it also effectively makes it a foreground app, see Preloader.tsc
     isFullscreenApp?: boolean;
+    // Whether this app renders with priority over Prerequisites, see Preloader.tsc
     isForegroundApp?: boolean;
     // When navigating to this URL, should it be cleared of hash and get parameters?
     clearUrl?: boolean;
