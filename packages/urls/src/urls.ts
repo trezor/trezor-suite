@@ -28,10 +28,6 @@ export const DATA_TOS_MOBILE_URL: Url = 'https://data.trezor.io/legal/mobile-wal
 
 export const DATA_PRIVACY_URL: Url = 'https://data.trezor.io/legal/privacy-policy.html';
 
-export const DOCS_ANALYTICS_URL: Url = withPlatformUtm(
-    'https://docs.trezor.io/trezor-suite/analytics/',
-);
-
 export const TREZOR_SUITE_TOS_URL: Url = 'https://trezor.io/documents/suite_terms_of_use.pdf';
 export const TREZOR_TRADING_LEARN_MORE_URL: Url = 'https://trezor.io/trade-features';
 export const TREZOR_TRADING_DEX_SLIPPAGE_URL: Url =

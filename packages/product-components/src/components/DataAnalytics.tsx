@@ -36,7 +36,7 @@ export const DataAnalytics = ({
                                 analytics: analyticsLink || (chunks => chunks),
                                 tos: tosLink || (chunks => chunks),
                             }}
-                            defaultMessage="All data is anonymous and is used only for product development purposes. Read more in our <analytics>technical documentation</analytics> and <tos>Terms & Conditions</tos>."
+                            defaultMessage="All data is anonymous and is used only for product development purposes. Read more in <tos>Terms & Conditions</tos>."
                         />
                     </Text>
 

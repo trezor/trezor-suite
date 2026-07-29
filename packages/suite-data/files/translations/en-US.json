@@ -1898,7 +1898,7 @@
   "TR_ONBOARDING_CANNOT_SELECT_SEED_TYPE": "Trezor will create your new wallet.",
   "TR_ONBOARDING_CLICK_TO_CONFIRM": "Click to confirm you've carefully read and fully understood the instructions in each box below.",
   "TR_ONBOARDING_CURRENT_VERSION": "Current version",
-  "TR_ONBOARDING_DATA_COLLECTION_DESCRIPTION": "All data collected is anonymous and is used to improve product performance and development. More in <analytics>technical documentation</analytics> and <tos>Terms & Conditions</tos>.",
+  "TR_ONBOARDING_DATA_COLLECTION_DESCRIPTION": "All data collected is anonymous and is used to improve product performance and development. More in <tos>Terms & Conditions</tos>.",
   "TR_ONBOARDING_DATA_COLLECTION_HEADING": "Anonymous data collection",
   "TR_ONBOARDING_DEVICE_CHECK": "Device security check",
   "TR_ONBOARDING_DEVICE_CHECK_1": "The <strong>hologram</strong> was intact and untampered with.",

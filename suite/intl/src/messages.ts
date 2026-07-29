@@ -2631,7 +2631,7 @@ export const messages = defineMessages({
     TR_ONBOARDING_DATA_COLLECTION_DESCRIPTION: {
         id: 'TR_ONBOARDING_DATA_COLLECTION_DESCRIPTION',
         defaultMessage:
-            'All data collected is anonymous and is used to improve product performance and development. More in <analytics>technical documentation</analytics> and <tos>Terms & Conditions</tos>.',
+            'All data collected is anonymous and is used to improve product performance and development. More in <tos>Terms & Conditions</tos>.',
     },
     TR_HOLOGRAM_STEP_HEADING: {
         defaultMessage: "Verify your Trezor's seal",
