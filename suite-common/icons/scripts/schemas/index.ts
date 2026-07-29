@@ -10,6 +10,12 @@ export const updatedIconsListSchema = z.record(
             // Source image URL (incl. CoinGecko's version query param) of the last successfully
             // written icon. Used to skip coins whose logo has not changed since the previous run.
             imageUrl: z.string().optional(),
+            // Fingerprint of the file set the last successful run wrote for this coin (its platform
+            // contracts and the image sizes). Needed alongside imageUrl because CoinGecko keeps
+            // listing existing coins on new platforms without touching their logo — matching on the
+            // source image alone would skip such a coin forever and its new contract would never
+            // get an icon.
+            outputsHash: z.string().optional(),
         })
         .catch({ updatedAt: 0 }),
 );
