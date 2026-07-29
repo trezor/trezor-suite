@@ -1,7 +1,9 @@
 import { useMemo } from 'react';
 import { FormProvider } from 'react-hook-form';
 
+import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
 import { CARDANO_EVERSTAKE_DREP } from '@suite-common/wallet-constants';
 import {
     DEFAULT_VOTING_OPTION,
@@ -34,6 +36,7 @@ export const StakeChangeDelegateModalLoaded = ({
     selectedAccount,
 }: StakeChangeDelegateModalProps) => {
     const dispatch = useDispatch();
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
     const selectedVotingDelegation = useSelector(selectVotingDelegationOption);
 
     const { account } = selectedAccount;
@@ -63,6 +66,30 @@ export const StakeChangeDelegateModalLoaded = ({
         dispatch(stakeActions.setVotingDelegationOption(DEFAULT_VOTING_OPTION));
 
         onCancel?.();
+
+        analytics.report({
+            type: events.stakingChangeDelegateEvent.name,
+            payload: {
+                action: 'cancel',
+                step: 'change-delegate-form-modal',
+                networkSymbol: account.symbol,
+            },
+        });
+    };
+
+    const handleContinue = () => {
+        handleSubmit(() => {
+            analytics.report({
+                type: events.stakingChangeDelegateEvent.name,
+                payload: {
+                    action: 'continue',
+                    step: 'change-delegate-form-modal',
+                    networkSymbol: account.symbol,
+                },
+            });
+
+            signTx();
+        })();
     };
 
     const { isDisabled: isSelectionInvalid, errorType } = useMemo(() => {
@@ -114,10 +141,7 @@ export const StakeChangeDelegateModalLoaded = ({
                     onCancel={handleCancel}
                     bottomContent={
                         <Tooltip content={tooltipContent}>
-                            <Modal.Button
-                                isDisabled={isDisabled}
-                                onClick={() => handleSubmit(signTx)()}
-                            >
+                            <Modal.Button isDisabled={isDisabled} onClick={handleContinue}>
                                 <Translation id="TR_CONTINUE" />
                             </Modal.Button>
                         </Tooltip>
