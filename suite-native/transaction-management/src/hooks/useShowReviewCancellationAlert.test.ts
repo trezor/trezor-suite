@@ -4,7 +4,7 @@ import {
     renderHookWithStoreProvider,
 } from '@suite-native/test-utils-store';
 
-import { useShowReviewCancellationAlert } from '../useShowReviewCancellationAlert';
+import { useShowReviewCancellationAlert } from './useShowReviewCancellationAlert';
 
 const mockShowAlert = jest.fn();
 

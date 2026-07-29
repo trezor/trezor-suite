@@ -1,7 +1,7 @@
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { act, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 
-import { type UseFeesFormProps, useFeesForm } from '../useFeesForm';
+import { type UseFeesFormProps, useFeesForm } from './useFeesForm';
 
 const ETH_ACCOUNT_KEY = mockAccountKey({ symbol: 'eth', descriptor: 'eth1' });
 
