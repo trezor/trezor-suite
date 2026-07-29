@@ -18,6 +18,7 @@ import type {
 import {
     getConfirmations,
     getErc4626Contracts,
+    getEvmPrivatePendingHint,
     getFiatRateKey,
     isCardanoStakingTx,
     isClaimTx,
@@ -116,6 +117,15 @@ export const selectAllPendingTransactions = createMemoizedSelector(
             {} as typeof transactions,
         ),
 );
+
+/**
+ * Account-scoped `privatePending` hint (trezor/blockbook#1639) — see `getEvmPrivatePendingHint`.
+ * Non-EVM accounts yield `undefined`; callers spread the result so the field is omitted when absent.
+ */
+export const selectEvmPrivatePendingHint = (
+    state: TransactionsRootState & AccountsRootState,
+    accountKey: AccountKey,
+) => getEvmPrivatePendingHint(selectAccountTransactions(state, accountKey));
 
 export const selectTransactionByAccountKeyAndTxid = createMemoizedSelector(
     [selectAccountTransactions, (_state, _accountKey: AccountKey | null, txid: string) => txid],

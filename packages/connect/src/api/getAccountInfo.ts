@@ -55,6 +55,7 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
                 { name: 'marker', type: 'object' },
                 { name: 'protocols', type: 'array' },
                 { name: 'confirmedNonce', type: 'boolean' },
+                { name: 'privatePending', type: 'object' },
                 { name: 'defaultAccountType', type: 'string' },
                 { name: 'derivationType', type: 'number' },
                 { name: 'suppressBackupWarning', type: 'boolean' },
@@ -245,6 +246,7 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
                     tokenAccountsPubKeys: request.tokenAccountsPubKeys,
                     protocols: request.protocols,
                     confirmedNonce: request.confirmedNonce,
+                    privatePending: request.privatePending,
                 });
 
                 if (this.disposed) break;

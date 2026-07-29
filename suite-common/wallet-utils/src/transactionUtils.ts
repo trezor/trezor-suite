@@ -110,7 +110,7 @@ export type EvmNonceInfo = {
     confirmedNonces: number[];
 };
 
-const getOwnEvmNonceSets = (transactions: WalletAccountTransaction[]) => {
+export const getOwnEvmNonceSets = (transactions: WalletAccountTransaction[]) => {
     const ownNonceTxs = transactions.filter(isSentTransaction);
 
     // A nonce that's confirmed locally is ground truth. If a stale "pending" record for the same
@@ -214,6 +214,45 @@ export const getEvmNonceInfoFromConfirmedNonce = (
         nextNonce,
         pendingNonces: [...pendingNonceSet],
         confirmedNonces: [...confirmedNonces],
+    };
+};
+
+/**
+ * Builds the blockbook `privatePending` hint (trezor/blockbook#1639) for an EVM account from the
+ * wallet's own pending sends, which blockbook's public provider may not see (private-relay
+ * broadcast, or lag — trezor/blockbook#1562). The nonces raise its reported pending nonce to max+1;
+ * the txids let it fetch-back each body (eth_getTransactionByHash) so the tx shows up in history.
+ *
+ * Nonces come from `getOwnEvmNonceSets`' `pendingNonceSet` — Suite's own local pending-nonce view,
+ * already excluding locally-confirmed nonces. Returns `undefined` when nothing is pending, so
+ * callers omit the field (blockbook must not receive an empty array).
+ */
+export const getEvmPrivatePendingHint = (
+    transactions: WalletAccountTransaction[],
+): { nonces: number[]; txids?: string[] } | undefined => {
+    const { pendingNonceSet } = getOwnEvmNonceSets(transactions);
+
+    if (pendingNonceSet.size === 0) return undefined;
+
+    // hashes of those same pending sends (confirmed nonces are already out of pendingNonceSet)
+    const txids = [
+        ...new Set(
+            transactions
+                .filter(isPending)
+                .filter(isSentTransaction)
+                .filter(tx => {
+                    const nonce = tx.ethereumSpecific?.nonce;
+
+                    return typeof nonce === 'number' && pendingNonceSet.has(nonce);
+                })
+                .map(tx => tx.txid)
+                .filter(Boolean),
+        ),
+    ].sort();
+
+    return {
+        nonces: [...pendingNonceSet].sort((a, b) => a - b),
+        ...(txids.length > 0 ? { txids } : {}),
     };
 };
 
