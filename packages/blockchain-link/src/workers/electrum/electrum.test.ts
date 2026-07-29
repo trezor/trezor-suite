@@ -1,6 +1,6 @@
 import { MESSAGES, type Message, type Response } from '@trezor/blockchain-link-types';
 
-import ElectrumWorker from '../../src/workers/electrum';
+import ElectrumWorker from './index';
 
 const TCP_CONFIG = '127.0.0.1:50001:t';
 const NETWORK = 'REGTEST';

@@ -1,8 +1,9 @@
 import { BackendWebsocketServerMock } from '@trezor/e2e-utils';
 
-import workers from './worker';
-import { BlockchainLink } from '../../src';
-import fixtures from './fixtures/subscribe';
+import fixtures from './__fixtures__/subscribe';
+import workers from './__fixtures__/worker';
+
+import { BlockchainLink } from './index';
 
 // this test covers application live cycle
 // where "subscribe" and "unsubscribe" is called multiple times on single blockchain-link instance

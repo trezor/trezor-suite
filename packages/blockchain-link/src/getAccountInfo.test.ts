@@ -1,11 +1,12 @@
 import { BackendWebsocketServerMock } from '@trezor/e2e-utils';
 
-import workers from './worker';
-import { BlockchainLink } from '../../src';
-import fixtures from './fixtures/getInfo';
+import fixtures from './__fixtures__/getAccountInfo';
+import workers from './__fixtures__/worker';
+
+import { BlockchainLink } from './index';
 
 workers.forEach(instance => {
-    describe(`getInfo: ${instance.name}`, () => {
+    describe(`getAccountInfo: ${instance.name}`, () => {
         let server: BackendWebsocketServerMock;
         let blockchain: BlockchainLink;
 
@@ -26,15 +27,23 @@ workers.forEach(instance => {
         beforeAll(setup);
         afterAll(teardown);
 
+        // [btc-unknown-tx-debug] getAccountInfo parses tx history through transformTransaction, which
+        // emits a temporary console.error for txs classified as 'unknown' with account context. Silence
+        // the JestCustomEnv console.error trap for these fixtures.
+        beforeEach(() => {
+            jest.spyOn(console, 'error').mockImplementation(() => {});
+        });
+        afterEach(() => {
+            jest.restoreAllMocks();
+        });
+
         fixtures[instance.name].forEach(f => {
             it(f.description, async () => {
                 server.setFixtures(f.serverFixtures);
-                const promise = blockchain.getInfo();
+                // @ts-expect-error incorrect params
+                const promise = blockchain.getAccountInfo(f.params);
                 if (!f.error) {
-                    expect(await promise).toEqual({
-                        ...f.response,
-                        url: `ws://localhost:${server.options.port}`,
-                    });
+                    expect(await promise).toEqual(f.response);
                 } else {
                     await expect(promise).rejects.toThrow(f.error);
                 }

@@ -1,5 +1,5 @@
-import fixtures from './fixtures/state';
-import { WorkerState } from '../../src/workers/state';
+import fixtures from './__fixtures__/state';
+import { WorkerState } from './state';
 
 const state = new WorkerState();
 

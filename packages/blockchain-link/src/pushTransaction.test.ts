@@ -1,11 +1,12 @@
 import { BackendWebsocketServerMock } from '@trezor/e2e-utils';
 
-import workers from './worker';
-import { BlockchainLink } from '../../src';
-import fixtures from './fixtures/getAccountUtxo';
+import fixtures from './__fixtures__/pushTransaction';
+import workers from './__fixtures__/worker';
+
+import { BlockchainLink } from './index';
 
 workers.forEach(instance => {
-    describe(`getAccountUtxo: ${instance.name}`, () => {
+    describe(`pushTransaction: ${instance.name}`, () => {
         let server: BackendWebsocketServerMock;
         let blockchain: BlockchainLink;
 
@@ -23,14 +24,14 @@ workers.forEach(instance => {
             blockchain.dispose();
             await server.close();
         };
+
         beforeAll(setup);
         afterAll(teardown);
 
         fixtures[instance.name].forEach(f => {
             it(f.description, async () => {
                 server.setFixtures(f.serverFixtures);
-                // @ts-expect-error incorrect params
-                const promise = blockchain.getAccountUtxo(f.params);
+                const promise = blockchain.pushTransaction({ hex: f.params });
                 if (!f.error) {
                     expect(await promise).toEqual(f.response);
                 } else {

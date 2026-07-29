@@ -1,4 +1,4 @@
-import { BaseWorker } from '../../src/workers/baseWorker';
+import { BaseWorker } from './baseWorker';
 
 class MockWorker extends BaseWorker<any> {
     protected isConnected(api: any): api is any {
