@@ -1,7 +1,7 @@
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { type Account } from '@suite-common/wallet-types';
 
-import { selectDiscoveryAccountsParam } from '../selectors';
+import { selectDiscoveryAccountsParam } from './selectors';
 
 const STATIC_SESSION_ID: `${string}@${string}:${number}` =
     'mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q@ABC123:1';

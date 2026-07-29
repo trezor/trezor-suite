@@ -1,10 +1,5 @@
-import {
-    type SerializedTx,
-    accountsActions,
-    initialState,
-    prepareSendFormReducer,
-    sendFormActions,
-} from '@suite-common/wallet-core';
+import { type ExtraDependencies } from '@suite-common/redux-utils';
+import { extraDependenciesCommonMock } from '@suite-common/test-utils';
 import {
     type Account,
     type AccountKey,
@@ -12,10 +7,24 @@ import {
     type PrecomposedTransactionFinal,
 } from '@suite-common/wallet-types';
 
-import { STORAGE } from 'src/actions/suite/constants';
-import { extraDependencies } from 'src/support/extraDependencies';
-import { type PreloadStoreAction } from 'src/support/suite/preloadStore';
-import { type Action } from 'src/types/suite';
+import { sendFormActions } from './sendFormActions';
+import { initialState, prepareSendFormReducer } from './sendFormReducer';
+import { type SerializedTx } from './sendFormTypes';
+import { accountsActions } from '../accounts/accountsActions';
+
+const extraDependencies: ExtraDependencies = {
+    ...extraDependenciesCommonMock,
+    reducers: {
+        ...extraDependenciesCommonMock.reducers,
+        storageLoadFormDrafts: (state, { payload }) => {
+            payload.sendFormDrafts.forEach(
+                ({ key, value }: { key: AccountKey; value: FormState }) => {
+                    state.drafts[key] = value;
+                },
+            );
+        },
+    },
+};
 
 // Since these mocked values are only used for assigning them and deleting from the state,
 // their shape is completely irrelevant for these test. So to make this test file
@@ -26,8 +35,8 @@ const formSignedTxMock = 'formSignedTx' as unknown as SerializedTx;
 
 describe('sendFormReducer', () => {
     it('STORAGE.LOAD', () => {
-        const action: Action = {
-            type: STORAGE.LOAD,
+        const action = {
+            type: extraDependencies.actionTypes.storageLoad,
             payload: {
                 sendFormDrafts: [
                     {
@@ -36,7 +45,7 @@ describe('sendFormReducer', () => {
                     },
                 ],
             },
-        } as Extract<PreloadStoreAction, { type: typeof STORAGE.LOAD }>;
+        };
 
         const state = prepareSendFormReducer(extraDependencies)(initialState, action);
         expect(state.drafts).toEqual({
@@ -45,7 +54,7 @@ describe('sendFormReducer', () => {
     });
 
     it('SEND.STORE_DRAFT', () => {
-        const action: Action = sendFormActions.storeDraft({
+        const action = sendFormActions.storeDraft({
             accountKey: 'key1' as AccountKey, // Todo: create properly via `createAccountKey()`
             formState: formStateMock,
         });
@@ -57,7 +66,7 @@ describe('sendFormReducer', () => {
     });
 
     it('SEND.REMOVE_DRAFT', () => {
-        const action: Action = sendFormActions.removeDraft({
+        const action = sendFormActions.removeDraft({
             accountKey: 'key1' as AccountKey, // Todo: create properly via `createAccountKey()`
         });
 
@@ -81,7 +90,7 @@ describe('sendFormReducer', () => {
     });
 
     it('SEND.REQUEST_SIGN_TRANSACTION - save', () => {
-        const action: Action = sendFormActions.storePrecomposedTransaction({
+        const action = sendFormActions.storePrecomposedTransaction({
             formState: formStateMock,
             precomposedTransaction: precomposedTxMock,
         });
@@ -91,7 +100,7 @@ describe('sendFormReducer', () => {
     });
 
     it('SEND.REQUEST_PUSH_TRANSACTION - save', () => {
-        const action: Action = sendFormActions.storeSignedTransaction({
+        const action = sendFormActions.storeSignedTransaction({
             serializedTx: {
                 symbol: 'btc',
                 tx: 'test',
@@ -103,7 +112,7 @@ describe('sendFormReducer', () => {
     });
 
     it('SEND.REQUEST_PUSH_TRANSACTION - delete', () => {
-        const action: Action = sendFormActions.discardTransaction();
+        const action = sendFormActions.discardTransaction();
 
         const state = prepareSendFormReducer(extraDependencies)(
             {
@@ -120,7 +129,7 @@ describe('sendFormReducer', () => {
     });
 
     it('SEND.SEND_RAW', () => {
-        const action: Action = sendFormActions.sendRaw(true);
+        const action = sendFormActions.sendRaw(true);
 
         const state = prepareSendFormReducer(extraDependencies)(
             { ...initialState, sendRaw: false },
@@ -130,7 +139,7 @@ describe('sendFormReducer', () => {
     });
 
     it('SEND.DISPOSE', () => {
-        const action: Action = sendFormActions.dispose();
+        const action = sendFormActions.dispose();
 
         const state = prepareSendFormReducer(extraDependencies)(
             {

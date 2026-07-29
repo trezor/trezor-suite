@@ -1,15 +1,11 @@
-import {
-    fetchTransactionsPageThunk,
-    prepareTransactionsReducer,
-    transactionsActions,
-    transactionsInitialState,
-} from '@suite-common/wallet-core';
+import { extraDependenciesCommonMock } from '@suite-common/test-utils';
 
-import { extraDependencies } from 'src/support/extraDependencies';
+import { accounts, transactions } from './__fixtures__/transactionConstants';
+import { transactionsActions } from './transactionsActions';
+import { prepareTransactionsReducer, transactionsInitialState } from './transactionsReducer';
+import { fetchTransactionsPageThunk } from './transactionsThunks';
 
-import { accounts, transactions } from '../__fixtures__/transactionConstants';
-
-const reducer = prepareTransactionsReducer(extraDependencies);
+const reducer = prepareTransactionsReducer(extraDependenciesCommonMock);
 
 describe('transaction reducer', () => {
     let testAccounts = [...accounts];
