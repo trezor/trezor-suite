@@ -11,9 +11,11 @@
         "generate-icons": "yarn g:tsx generateIcons.mjs && yarn g:tsx generateIconFont.ts",
         "generate-icon-font": "yarn g:tsx generateIconFont.ts",
         "download-crypto-icons": "yarn g:tsx ./scripts/downloadCryptoIcons.ts",
-        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "test:unit": "yarn g:jest"
     },
     "devDependencies": {
+        "@suite-common/wallet-config": "workspace:^",
         "chalk": "^5.6.2",
         "fantasticon": "4.1.0",
         "prettier": "^3.8.4",
