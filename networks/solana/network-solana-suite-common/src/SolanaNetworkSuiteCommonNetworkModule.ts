@@ -1,4 +1,4 @@
-import type { NetworkModule } from '@trezor/network-module-suite-types';
+import type { SuiteCommonNetworkModule } from '@trezor/network-module-suite-common-types';
 
 import { solanaValidator } from './addressValidator/solanaAddressValidator';
 import {
@@ -7,7 +7,7 @@ import {
     isSupportedNetwork,
 } from './supportedNetworks';
 
-export type SolanaNetworkSuiteCommonNetworkModule = NetworkModule<SolanaNetworkSymbol>;
+export type SolanaNetworkSuiteCommonNetworkModule = SuiteCommonNetworkModule<SolanaNetworkSymbol>;
 
 export const createSolanaSuiteCommonNetworkModule = (): SolanaNetworkSuiteCommonNetworkModule => ({
     addressValidator: solanaValidator,

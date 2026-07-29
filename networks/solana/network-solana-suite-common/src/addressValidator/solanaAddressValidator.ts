@@ -1,6 +1,6 @@
 import { base58 } from '@scure/base';
 
-import { type AddressValidator, addressType } from '@trezor/network-module-suite-types';
+import { type AddressValidator, addressType } from '@trezor/network-module-suite-common-types';
 
 import type { SolanaNetworkSymbol } from '../supportedNetworks';
 

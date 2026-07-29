@@ -2,7 +2,7 @@ import { base58, bech32 } from '@scure/base';
 import * as cbor from 'cbor';
 import crc32 from 'crc/calculators/crc32';
 
-import { type AddressValidator, addressType } from '@trezor/network-module-suite-types';
+import { type AddressValidator, addressType } from '@trezor/network-module-suite-common-types';
 
 import type { CardanoNetworkSymbol } from '../supportedNetworks';
 
