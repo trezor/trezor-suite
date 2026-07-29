@@ -4,7 +4,8 @@ import { allTestWorkers } from './__fixtures__/allTestWorkers';
 import fixturesBlockbook from './__fixtures__/notifications-blockbook';
 import fixturesBlockfrost from './__fixtures__/notifications-blockfrost';
 import fixturesRipple from './__fixtures__/notifications-ripple';
-import { BlockchainLink } from './blockchainLink';
+
+import { BlockchainLink } from './index';
 
 const fixtures = {
     blockbook: fixturesBlockbook,

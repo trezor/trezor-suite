@@ -5,7 +5,8 @@ import { BackendWebsocketServerMock } from '@trezor/e2e-utils';
 import { TimeoutError } from '@trezor/network-ripple';
 
 import { allTestWorkers } from './__fixtures__/allTestWorkers';
-import { BlockchainLink } from './blockchainLink';
+
+import { BlockchainLink } from './index';
 
 const getMethod = (instanceName: string) => {
     let method: string;
