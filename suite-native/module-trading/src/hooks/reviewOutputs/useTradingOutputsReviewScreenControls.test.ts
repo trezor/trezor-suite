@@ -13,10 +13,7 @@ import {
 } from '@suite-native/test-utils-store';
 import { getWalletState } from '@suite-native/trading-fixtures';
 import { tradingSlice } from '@suite-native/trading-state';
-import {
-    prepareSendFormReducer,
-    transactionManagementActions,
-} from '@suite-native/transaction-management';
+import { prepareSendFormReducer } from '@suite-native/transaction-management';
 
 import { useTradingOutputsReviewScreenControls } from './useTradingOutputsReviewScreenControls';
 import { type TradingExchangeSignAndSendTransactionProps } from '../exchange/useExchangeFlow';
@@ -200,8 +197,7 @@ describe('useTradingOutputsReviewScreenControls', () => {
             );
         });
 
-        it('should offer pop and popToTop action on thunk error', () => {
-            const dispatchSpy = jest.spyOn(store, 'dispatch');
+        it('should retry signing without leaving the outputs review', () => {
             renderUseTradingOutputsReviewScreenControls();
 
             expect(mockSignAndSendTransaction).toHaveBeenCalledWith(
@@ -229,10 +225,26 @@ describe('useTradingOutputsReviewScreenControls', () => {
                 mockShowAlert.mock.calls[0][0].onPressPrimaryButton();
             });
 
-            expect(mockPop).toHaveBeenCalledTimes(1);
-            expect(dispatchSpy).toHaveBeenCalledWith(sendFormActions.dispose());
-            expect(dispatchSpy).toHaveBeenCalledWith(transactionManagementActions.clearFeeLevels());
+            expect(mockSignAndSendTransaction).toHaveBeenCalledTimes(2);
             expect(mockReportToAnalytics).toHaveBeenCalledWith('sign-and-send', 'retry');
+        });
+
+        it('should leave the flow when error alert is canceled', () => {
+            renderUseTradingOutputsReviewScreenControls();
+
+            act(() => {
+                const { onError } = (
+                    mockSignAndSendTransaction.mock.lastCall as unknown as [
+                        TradingExchangeSignAndSendTransactionProps,
+                    ]
+                )[0];
+                onError({
+                    type: 'sign-tx-error',
+                    error: {
+                        id: 'TR_ERROR',
+                    },
+                });
+            });
 
             act(() => {
                 mockShowAlert.mock.calls[0][0].onPressSecondaryButton();

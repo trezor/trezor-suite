@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { sendFormActions } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { useConfirmOnTrezorController } from '@suite-native/confirm-on-trezor';
 import type {
@@ -14,7 +13,6 @@ import { tradingActions } from '@suite-native/trading-state';
 import { type TradingOutputsReviewScreenNavigationProp } from '@suite-native/trading-types';
 import {
     selectIsTransactionAlreadySigned,
-    transactionManagementActions,
     useOutputsReviewBackInterceptor,
 } from '@suite-native/transaction-management';
 
@@ -68,14 +66,15 @@ export const useTradingOutputsReviewScreenControls = ({
     }, [dispatch, navigation, orderId, reportToAnalytics]);
 
     const onError: TradingExchangeSignAndSendTransactionProps['onError'] = useCallback(
-        _error => {
+        function handleSigningError(_error) {
             if (allowAlertRef.current) {
                 showOutputsReviewErrorAlert(
                     () => {
-                        dispatch(sendFormActions.dispose());
-                        dispatch(transactionManagementActions.clearFeeLevels());
-                        navigation.pop();
                         reportToAnalytics('sign-and-send', 'retry');
+                        signAndSendTransaction({
+                            nextStep,
+                            onError: handleSigningError,
+                        });
                     },
                     () => {
                         navigation.popToTop();
@@ -84,7 +83,13 @@ export const useTradingOutputsReviewScreenControls = ({
                 );
             }
         },
-        [dispatch, navigation, showOutputsReviewErrorAlert, reportToAnalytics],
+        [
+            signAndSendTransaction,
+            nextStep,
+            navigation,
+            reportToAnalytics,
+            showOutputsReviewErrorAlert,
+        ],
     );
 
     useEffect(() => {
