@@ -1,18 +1,10 @@
 import { BackendWebsocketServerMock } from '@trezor/e2e-utils';
 
+import { allTestWorkers } from './__fixtures__/allTestWorkers';
 import fixtures from './__fixtures__/getBlockHash';
 import { BlockchainLink } from './blockchainLink';
-import Blockbook from './workers/blockbook/blockbookWorker';
-import Blockfrost from './workers/blockfrost/blockfrostWorker';
-import Ripple from './workers/ripple/rippleWorker';
 
-const workers = [
-    { name: 'blockbook', worker: Blockbook },
-    { name: 'ripple', worker: Ripple },
-    { name: 'blockfrost', worker: Blockfrost },
-] as const;
-
-workers.forEach(instance => {
+allTestWorkers.forEach(instance => {
     describe(`getBlockHash: ${instance.name}`, () => {
         let server: BackendWebsocketServerMock;
         let blockchain: BlockchainLink;

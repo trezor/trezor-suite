@@ -1,12 +1,10 @@
 import { BackendWebsocketServerMock } from '@trezor/e2e-utils';
 
+import { allTestWorkers } from './__fixtures__/allTestWorkers';
 import fixturesBlockbook from './__fixtures__/notifications-blockbook';
 import fixturesBlockfrost from './__fixtures__/notifications-blockfrost';
 import fixturesRipple from './__fixtures__/notifications-ripple';
 import { BlockchainLink } from './blockchainLink';
-import Blockbook from './workers/blockbook/blockbookWorker';
-import Blockfrost from './workers/blockfrost/blockfrostWorker';
-import Ripple from './workers/ripple/rippleWorker';
 
 const fixtures = {
     blockbook: fixturesBlockbook,
@@ -14,17 +12,11 @@ const fixtures = {
     blockfrost: fixturesBlockfrost,
 } as const;
 
-const workers = [
-    { name: 'blockbook', worker: Blockbook },
-    { name: 'ripple', worker: Ripple },
-    { name: 'blockfrost', worker: Blockfrost },
-] as const;
-
 // this test covers application live cycle
 // where "subscribe" and "unsubscribe" is called multiple times on single blockchain-link instance
 // and subscription id (websocket message id) is incremented
 
-workers.forEach(instance => {
+allTestWorkers.forEach(instance => {
     describe(`Notifications ${instance.name}`, () => {
         let server: BackendWebsocketServerMock;
         let blockchain: BlockchainLink;

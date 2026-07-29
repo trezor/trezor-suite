@@ -4,16 +4,8 @@ import { BackendWebsocketServerMock } from '@trezor/e2e-utils';
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import { TimeoutError } from '@trezor/network-ripple';
 
+import { allTestWorkers } from './__fixtures__/allTestWorkers';
 import { BlockchainLink } from './blockchainLink';
-import Blockbook from './workers/blockbook/blockbookWorker';
-import Blockfrost from './workers/blockfrost/blockfrostWorker';
-import Ripple from './workers/ripple/rippleWorker';
-
-const workers = [
-    { name: 'blockbook', worker: Blockbook },
-    { name: 'ripple', worker: Ripple },
-    { name: 'blockfrost', worker: Blockfrost },
-] as const;
 
 const getMethod = (instanceName: string) => {
     let method: string;
@@ -32,7 +24,7 @@ const getMethod = (instanceName: string) => {
     return method;
 };
 
-workers.forEach(instance => {
+allTestWorkers.forEach(instance => {
     describe(`Connection ${instance.name}`, () => {
         let server: BackendWebsocketServerMock;
         let blockchain: BlockchainLink;
