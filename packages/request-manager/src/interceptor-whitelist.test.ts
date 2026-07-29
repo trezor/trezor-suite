@@ -1,10 +1,10 @@
 import net, { Socket } from 'net';
 import nodeFetch from 'node-fetch';
-import tls, { TLSSocket } from 'tls';
+import tls, { type TLSSocket } from 'tls';
 import WebSocket from 'ws';
 
-import { createInterceptor } from '../src';
-import type { InterceptorOptions } from '../src/types';
+import { createInterceptor } from './interceptor';
+import type { InterceptorOptions } from './types';
 
 const WHITELISTED_DOMAIN = 'url-that-is-valid-and-white-listed-but-does-not-exists.com';
 const NOT_WHITELISTED_DOMAIN = 'not-white-listed-but-does-not-exists.com';

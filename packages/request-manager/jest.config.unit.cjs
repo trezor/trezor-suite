@@ -4,5 +4,5 @@ module.exports = {
     ...baseConfig,
     verbose: true,
     testEnvironment: '../../JestCustomEnv.js',
-    testMatch: ['**/tests/**/*.test.ts'],
+    testMatch: ['**/src/**/*.test.ts'],
 };

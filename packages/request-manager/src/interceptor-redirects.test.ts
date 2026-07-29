@@ -2,7 +2,7 @@ import http from 'http';
 
 import { TorSimulator, captureInterceptedGlobals } from '@trezor/e2e-utils';
 
-import { createInterceptor } from '../src';
+import { createInterceptor } from './interceptor';
 
 // HTTP redirects must be re-intercepted per hop: each hop has to go through the Tor SOCKS
 // proxy again (with the identity from Proxy-Authorization) and be re-validated against the
