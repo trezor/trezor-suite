@@ -10,6 +10,9 @@
             "path": "../../suite-common/redux-utils"
         },
         {
+            "path": "../../suite-common/suite-types"
+        },
+        {
             "path": "../../suite-common/suite-utils"
         },
         { "path": "../../suite-common/thp" },
@@ -17,6 +20,7 @@
             "path": "../../suite-common/wallet-core"
         },
         { "path": "../locks" },
-        { "path": "../router" }
+        { "path": "../router" },
+        { "path": "../router-config" }
     ]
 }

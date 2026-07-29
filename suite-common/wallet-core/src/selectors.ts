@@ -175,6 +175,11 @@ export const selectShowRediscoverButton = (
     return symbols.some(symbol => !discoveredNetworks.has(symbol));
 };
 
+/**
+ * Whether re-discovery is needed (accounts missing or failed).
+ * Warning: this can be slightly expensive computation for large wallets. It isn't viable for memoization, because
+ * it depends on every account (with frequent account updates, it would fire too often to be practical).
+ */
 export const selectShouldRediscover = (
     state: WalletCoreCompoundRootState,
     device: TrezorDevice,

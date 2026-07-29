@@ -14760,11 +14760,13 @@ __metadata:
     "@suite-common/connect-popup": "workspace:*"
     "@suite-common/device": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
+    "@suite-common/suite-types": "workspace:*"
     "@suite-common/suite-utils": "workspace:*"
     "@suite-common/thp": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
     "@suite/locks": "workspace:*"
     "@suite/router": "workspace:*"
+    "@suite/router-config": "workspace:*"
   languageName: unknown
   linkType: soft
 
