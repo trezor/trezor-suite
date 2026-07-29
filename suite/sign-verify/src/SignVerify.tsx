@@ -2,9 +2,6 @@ import { type ReactNode, useEffect, useState } from 'react';
 import { type FieldError } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { type UnknownAction } from 'redux';
-import { type ThunkDispatch } from 'redux-thunk';
-
 import { useDevice } from '@suite/device';
 import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
 import { type ReceiveRootState, selectTouchedAddresses } from '@suite-common/receive';
@@ -28,7 +25,7 @@ import { copyToClipboard } from '@trezor/dom-utils';
 import { CheckIcon, CopyIcon } from '@trezor/icons';
 
 import { SignAddressInput } from './SignAddressInput';
-import { type SignVerifyRootState, isVerifySupported, sign, verify } from './signVerifyActions';
+import { isVerifySupported, sign, verify } from './signVerifyActions';
 import { useCopySignedMessage } from './useCopySignedMessage';
 import {
     MAX_LENGTH_MESSAGE,
@@ -36,8 +33,6 @@ import {
     type SignVerifyFields,
     useSignVerifyForm,
 } from './useSignVerifyForm';
-
-type SignVerifyDispatch = ThunkDispatch<SignVerifyRootState, unknown, UnknownAction>;
 
 type SignVerifyShellProps = {
     title: 'TR_NAV_SIGN_VERIFY' | 'TR_SIGN_MESSAGE';
@@ -59,7 +54,7 @@ export const SignVerify = ({ account, network, renderShell }: SignVerifyProps) =
     const touchedAddresses = useSelector((state: ReceiveRootState) =>
         selectTouchedAddresses(state, account.key),
     );
-    const dispatch = useDispatch<SignVerifyDispatch>();
+    const dispatch = useDispatch();
 
     const isSignPage = page === 'sign';
 
