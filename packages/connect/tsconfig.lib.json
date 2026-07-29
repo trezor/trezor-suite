@@ -7,7 +7,7 @@
         "types": ["w3c-web-usb"]
     },
     "references": [
-        { "path": "../authdb" },
+        { "path": "../ward" },
         { "path": "../blockchain-link" },
         { "path": "../blockchain-link-types" },
         { "path": "../../coins/coins-solana" },

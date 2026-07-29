@@ -2,7 +2,7 @@
  * Update Connect settings such as proxy, transports, and WARD data provider configuration.
  */
 
-import type { AuthLabelProvider as WardDataProvider } from '@trezor/ward';
+import type { WardProvider as WardDataProvider } from '@trezor/ward';
 
 import type { Response } from '../params';
 import type { ConnectSettingsTransport, Proxy } from '../settings';

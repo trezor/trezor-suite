@@ -4,12 +4,12 @@ import os from 'os';
 import path from 'path';
 
 import TrezorConnect, {
-    type AuthLabelMetadata,
     type Device,
     ThpPairingMethod,
     type UiRequestThpPairing,
+    type WardLabel,
 } from '@trezor/connect';
-import { AuthLabelDb } from '@trezor/ward/src/storage/sqlite';
+import { WardDb } from '@trezor/ward/src/storage/sqlite';
 
 import { HELP, args } from './args';
 import { stdioManager } from './stdio';
@@ -62,20 +62,33 @@ const waitForPairingTag = async (uiEvent: UiRequestThpPairing) => {
     }
 };
 
-const DB_METHODS = new Set(['dbinit', 'dblookup', 'dbchange', 'dbsetroot', 'dblistroots']);
-const DB_METHODS_REQUIRING_PARAMS = new Set(['dbinit', 'dblookup', 'dbchange']);
+const DB_METHODS = new Set([
+    'dbinit',
+    'dblookup',
+    'dbdisplay',
+    'dbchange',
+    'dbsetroot',
+    'dblistroots',
+]);
+const DB_METHODS_REQUIRING_PARAMS = new Set(['dbinit', 'dblookup', 'dbdisplay', 'dbchange']);
 // Methods that must send a command to firmware (need a connected device even when --db-path is set)
-const DB_METHODS_NEEDING_DEVICE = new Set(['dbinit', 'dblookup', 'dbchange', 'dbsetroot']);
+const DB_METHODS_NEEDING_DEVICE = new Set([
+    'dbinit',
+    'dblookup',
+    'dbdisplay',
+    'dbchange',
+    'dbsetroot',
+]);
 
 // When --db-path is explicit, the DB path is known upfront (independent of the
 // device), so it can be constructed before TrezorConnect.init() and injected as
 // `wardDataProvider`. When the path must be derived from the device's pubkey
 // (no --db-path), the provider isn't known until after a device round-trip — in that
 // case runDbMethods() injects it post-init via TrezorConnect.updateConnectSettings().
-// Either way, dbchange/dblookup always call the high-level authDbUpdateAddress/
-// authDbVerifyAddress methods, which compute Merkle proofs internally.
+// Either way, dbchange/dblookup always call the high-level wardUpdate/
+// wardVerify methods, which compute Merkle proofs internally.
 const hasExplicitDbPath = typeof args['db-path'] === 'string';
-const explicitDb = hasExplicitDbPath ? new AuthLabelDb(args['db-path'] as string) : null;
+const explicitDb = hasExplicitDbPath ? new WardDb(args['db-path'] as string) : null;
 
 const getDbPath = (identifierHex: string) => {
     if (typeof args['db-path'] === 'string') return args['db-path'];
@@ -122,7 +135,7 @@ const runDbMethods = async (device?: Device): Promise<boolean> => {
         }
     }
     const needsDevice = dbMethods.some(m => DB_METHODS_NEEDING_DEVICE.has(m));
-    // The high-level AuthDb methods key everything by the device's SLIP21-derived
+    // The high-level Ward methods key everything by the device's SLIP21-derived
     // wardId (the WM-facing anchor). It scopes the local provider AND the device
     // echoes its own ward_id, which the methods reject on mismatch. It can't be
     // derived host-side, so unless the caller pins it with --ward-id we fetch it
@@ -131,7 +144,7 @@ const runDbMethods = async (device?: Device): Promise<boolean> => {
     let wardId = wardIdExplicit ? (args['ward-id'] as string) : 'default';
 
     let identifierHex: string;
-    let db: AuthLabelDb;
+    let db: WardDb;
 
     if (explicitDb) {
         if (needsDevice && !device) {
@@ -160,7 +173,7 @@ const runDbMethods = async (device?: Device): Promise<boolean> => {
             .update(Buffer.from(pubKeyResult.payload.publicKey, 'hex'))
             .digest('hex');
         console.log('Using database identifier:', identifierHex);
-        db = new AuthLabelDb(getDbPath(identifierHex));
+        db = new WardDb(getDbPath(identifierHex));
 
         // The provider wasn't known at TrezorConnect.init() time — the path depends on the
         // device's pubkey — so inject it now via updateConnectSettings before dbchange/
@@ -177,8 +190,8 @@ const runDbMethods = async (device?: Device): Promise<boolean> => {
     // or when there's no device.
     if (!wardIdExplicit && device) {
         try {
-            const probe = await TrezorConnect.authDbListPending({ device });
-            console.log('[wardId] authDbListPending probe raw result:', JSON.stringify(probe));
+            const probe = await TrezorConnect.wardListPending({ device });
+            console.log('[wardId] wardListPending probe raw result:', JSON.stringify(probe));
             if (probe.success && probe.payload.ward_id) {
                 wardId = probe.payload.ward_id;
                 console.log('Using device ward_id:', wardId);
@@ -192,7 +205,7 @@ const runDbMethods = async (device?: Device): Promise<boolean> => {
             }
         } catch (err) {
             console.warn(
-                '[wardId] authDbListPending probe THREW:',
+                '[wardId] wardListPending probe THREW:',
                 err instanceof Error ? `${err.name}: ${err.message}` : String(err),
             );
         }
@@ -203,7 +216,7 @@ const runDbMethods = async (device?: Device): Promise<boolean> => {
             if (method === 'dbinit') {
                 // WARD sync round: adopt the WM-attested checkpoint (counter, mac) and the
                 // host-held root. They come from the local tree_state (Evolu's role); an
-                // empty tree_state bootstraps at counter 0 with no root/mac. authDbInit
+                // empty tree_state bootstraps at counter 0 with no root/mac. wardInit
                 // mints the device nonce, produces the WM freshness attestation with the
                 // debug QM key, and drives IngestAttestation -> MergeState.
                 if (!device) {
@@ -211,14 +224,14 @@ const runDbMethods = async (device?: Device): Promise<boolean> => {
                     process.exit(1);
                 }
                 const treeState = db.getTreeState(wardId);
-                const initParams: Parameters<typeof TrezorConnect.authDbInit>[0] = {
+                const initParams: Parameters<typeof TrezorConnect.wardInit>[0] = {
                     device,
                     counter: treeState?.counter ?? 0,
                     wardId,
                     ...(treeState?.root && { root: treeState.root }),
                     ...(treeState?.mac && { mac: treeState.mac }),
                 };
-                const initResult = await TrezorConnect.authDbInit(initParams);
+                const initResult = await TrezorConnect.wardInit(initParams);
                 if (!initResult.success) {
                     console.error('dbinit failed:', initResult);
                     process.exit(1);
@@ -235,14 +248,14 @@ const runDbMethods = async (device?: Device): Promise<boolean> => {
                     process.exit(1);
                 }
 
-                const result = await TrezorConnect.authDbVerifyAddress({
+                const result = await TrezorConnect.wardVerify({
                     device: device!,
                     address,
                     networkSymbol,
                     wardId,
                 });
                 if (!result.success) {
-                    console.error('authDbVerifyAddress failed:', result);
+                    console.error('wardVerify failed:', result);
                     process.exit(1);
                 }
                 console.log(
@@ -261,6 +274,42 @@ const runDbMethods = async (device?: Device): Promise<boolean> => {
                 console.log('Authenticity verified:', result.payload.valid);
             }
 
+            if (method === 'dbdisplay') {
+                const { address, networkSymbol } = params;
+                if (!address || !networkSymbol) {
+                    console.error(
+                        'dbdisplay requires --db-params=\'{"address":"...","networkSymbol":"..."}\' ',
+                    );
+                    process.exit(1);
+                }
+
+                // Unlike dblookup (a screenless verification query), dbdisplay drives the
+                // DisplayAddress flow so the device renders the verified label on-screen.
+                const result = await TrezorConnect.wardDisplayAddress({
+                    device: device!,
+                    address,
+                    networkSymbol,
+                    wardId,
+                });
+                if (!result.success) {
+                    console.error('wardDisplayAddress failed:', result);
+                    process.exit(1);
+                }
+                console.log(
+                    JSON.stringify(
+                        {
+                            method: 'dbdisplay',
+                            address,
+                            networkSymbol,
+                            isMember: result.payload.isMember,
+                            shown: result.payload.shown,
+                        },
+                        null,
+                        2,
+                    ),
+                );
+            }
+
             if (method === 'dbchange') {
                 const { address, networkSymbol, metadata: rawMetadata } = params;
                 if (!address || !networkSymbol || !rawMetadata) {
@@ -269,12 +318,12 @@ const runDbMethods = async (device?: Device): Promise<boolean> => {
                     );
                     process.exit(1);
                 }
-                const metadata: AuthLabelMetadata = {
+                const metadata: WardLabel = {
                     ...(rawMetadata.label !== undefined && { label: String(rawMetadata.label) }),
                     ...(rawMetadata.data !== undefined && { data: rawMetadata.data }),
                 };
 
-                const result = await TrezorConnect.authDbUpdateAddress({
+                const result = await TrezorConnect.wardUpdate({
                     device: device!,
                     address,
                     networkSymbol,
@@ -282,7 +331,7 @@ const runDbMethods = async (device?: Device): Promise<boolean> => {
                     wardId,
                 });
                 if (!result.success) {
-                    console.error('authDbUpdateAddress failed:', result);
+                    console.error('wardUpdate failed:', result);
                     console.log('Authenticity verified: false — database not updated');
                 } else {
                     console.log(
@@ -315,14 +364,14 @@ const runDbMethods = async (device?: Device): Promise<boolean> => {
                     );
                     process.exit(1);
                 }
-                // authDbSetRoot now maps to the DEBUG-ONLY WARDDebugSetRoot (unauthenticated
+                // wardSetRoot now maps to the DEBUG-ONLY WARDDebugSetRoot (unauthenticated
                 // single-call root injection; rejected on production firmware). It takes only
                 // the root — the device stamps a fresh counter/mac itself.
-                const setRootParams: Parameters<typeof TrezorConnect.authDbSetRoot>[0] = {
+                const setRootParams: Parameters<typeof TrezorConnect.wardSetRoot>[0] = {
                     device,
                     root: treeState.root,
                 };
-                const setRootResult = await TrezorConnect.authDbSetRoot(setRootParams);
+                const setRootResult = await TrezorConnect.wardSetRoot(setRootParams);
                 if (!setRootResult.success) {
                     console.error('dbsetroot failed:', setRootResult);
                     process.exit(1);

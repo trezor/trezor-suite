@@ -3,12 +3,6 @@ import { Type } from '@trezor/schema-utils';
 
 import type { applyFlags } from './applyFlags';
 import type { applySettings } from './applySettings';
-import type { authDbInit } from './authDbInit';
-import type { authDbListPending } from './authDbListPending';
-import type { authDbLookup } from './authDbLookup';
-import type { authDbSetRoot } from './authDbSetRoot';
-import type { authDbUpdateAddress } from './authDbUpdateAddress';
-import type { authDbVerifyAddress } from './authDbVerifyAddress';
 import type { authenticateDevice } from './authenticateDevice';
 import type { authorizeCoinjoin } from './authorizeCoinjoin';
 import type { backupDevice } from './backupDevice';
@@ -103,6 +97,13 @@ import type { uiResponse } from './uiResponse';
 import type { unlockPath } from './unlockPath';
 import type { updateConnectSettings } from './updateConnectSettings';
 import type { verifyMessage } from './verifyMessage';
+import type { wardDisplayAddress } from './wardDisplayAddress';
+import type { wardInit } from './wardInit';
+import type { wardListPending } from './wardListPending';
+import type { wardLookup } from './wardLookup';
+import type { wardSetRoot } from './wardSetRoot';
+import type { wardUpdate } from './wardUpdate';
+import type { wardVerify } from './wardVerify';
 import type { wipeDevice } from './wipeDevice';
 
 // Initialization, lifecycle, events, and settings
@@ -213,12 +214,13 @@ export const TrezorConnectDevice = Type.Object({
 
     // https://connect.trezor.io/9/methods/device/pingDevice/
     pingDevice: Type.Unsafe<typeof pingDevice>(),
-    authDbInit: Type.Unsafe<typeof authDbInit>(),
-    authDbListPending: Type.Unsafe<typeof authDbListPending>(),
-    authDbSetRoot: Type.Unsafe<typeof authDbSetRoot>(),
-    authDbLookup: Type.Unsafe<typeof authDbLookup>(),
-    authDbUpdateAddress: Type.Unsafe<typeof authDbUpdateAddress>(),
-    authDbVerifyAddress: Type.Unsafe<typeof authDbVerifyAddress>(),
+    wardInit: Type.Unsafe<typeof wardInit>(),
+    wardListPending: Type.Unsafe<typeof wardListPending>(),
+    wardSetRoot: Type.Unsafe<typeof wardSetRoot>(),
+    wardLookup: Type.Unsafe<typeof wardLookup>(),
+    wardUpdate: Type.Unsafe<typeof wardUpdate>(),
+    wardVerify: Type.Unsafe<typeof wardVerify>(),
+    wardDisplayAddress: Type.Unsafe<typeof wardDisplayAddress>(),
 });
 export type TrezorConnectDevice = Static<typeof TrezorConnectDevice>;
 

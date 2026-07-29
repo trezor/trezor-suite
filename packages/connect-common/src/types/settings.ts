@@ -5,7 +5,7 @@ import type { Static } from '@trezor/schema-utils';
 import { Type } from '@trezor/schema-utils';
 import type { Transport } from '@trezor/transport-common';
 import type { PartialRecord } from '@trezor/type-utils';
-import type { AuthLabelProvider as WardDataProvider } from '@trezor/ward';
+import type { WardProvider as WardDataProvider } from '@trezor/ward';
 
 import type { FirmwareChannel } from './firmware';
 
@@ -54,7 +54,7 @@ export interface ConnectSettingsPublic {
     firmwareHashCheckTimeouts?: FirmwareHashCheckTimeouts;
     thp?: ThpSettings;
     // storage backend for AuthDB auth-label entries, injected by the host application.
-    // when set, high-level AuthDB methods (e.g. authDbUpdateAddress, authDbVerifyAddress)
+    // when set, high-level AuthDB methods (e.g. wardUpdate, wardVerify)
     // compute Merkle proofs internally instead of requiring the caller to supply one.
     wardDataProvider?: WardDataProvider;
 }

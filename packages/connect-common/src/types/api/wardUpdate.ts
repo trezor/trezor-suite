@@ -1,0 +1,45 @@
+/**
+ * High-level AuthDB update. Unlike the low-level WARD round
+ * (wardSetEntry/wardCommit/wardFinalize), no Merkle proof is passed by the caller —
+ * @trezor/connect computes it internally from the injected `wardDataProvider`
+ * (see ConnectSettings.wardDataProvider) and drives the whole WARD write round.
+ */
+
+import type { Static } from '@trezor/schema-utils';
+import { Type } from '@trezor/schema-utils';
+
+import type { Params, Response } from '../params';
+
+export type WardLabelSchema = Static<typeof WardLabelSchema>;
+export const WardLabelSchema = Type.Object({
+    label: Type.Optional(Type.String()),
+    data: Type.Optional(Type.Unknown()),
+    data_mac: Type.Optional(Type.String()),
+});
+
+export type WardUpdateSchema = Static<typeof WardUpdateSchema>;
+export const WardUpdateSchema = Type.Object({
+    address: Type.String(),
+    networkSymbol: Type.String(),
+    metadata: WardLabelSchema,
+    /**
+     * WM-facing wardId (SLIP21-derived) identifying which wallet's root checkpoint
+     * this update belongs to; obtained from wardInit. The device echoes its own
+     * ward_id and it must match (defense in depth).
+     */
+    wardId: Type.String(),
+});
+
+export interface WardUpdateResult {
+    counter: number;
+    root: string;
+    /**
+     * Set when the device committed the update but the local provider write
+     * (upsert/setTreeState) failed afterwards — the device root is authoritative and
+     * already reflects `counter`/`root` above, but the local cache is now stale. Callers
+     * should react (e.g. resync from getAllEntries()) rather than assume it's up to date.
+     */
+    localCacheError?: string;
+}
+
+export declare function wardUpdate(params: Params<WardUpdateSchema>): Response<WardUpdateResult>;

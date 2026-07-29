@@ -2,7 +2,7 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
-        { "path": "../authdb" },
+        { "path": "../ward" },
         { "path": "../connect" },
         { "path": "../transport" },
         { "path": "../transport-bluetooth" }

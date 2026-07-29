@@ -6,7 +6,7 @@ import { MODULES } from '@trezor/connect-common/src/constants/network';
 import * as Methods from '../api';
 
 const moduleMethods = {
-    authDb: require('../api/authDbMethods/api'),
+    ward: require('../api/wardMethods/api'),
     cardano: require('../api/cardano/api'),
     ethereum: require('../api/ethereum/api'),
     monero: require('../api/monero/api'),

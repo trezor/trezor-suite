@@ -1,0 +1,56 @@
+/**
+ * @trezor/ward/types — shared AuthDB DTOs.
+ *
+ * Pure data types with zero dependencies. Extracted so the /proof, /storage and /sync
+ * modules can each depend only on the types they need, without a package-level cycle
+ * (previously /proof imported its types from /storage's provider.ts).
+ */
+
+/**
+ * Arbitrary metadata stored per Bitcoin address (an "auth label").
+ * Serialized as JSON in the database (future: protobuf BLOB).
+ */
+export type WardLabel = {
+    label?: string;
+    data?: unknown; // arbitrary JSON payload — not stored in device offline cache
+    data_mac?: string; // MAC authorizing the data field — stored in device offline cache
+};
+
+/**
+ * Merkle proof path: ordered array of sibling hashes from the leaf to the Merkle root.
+ * Computed on-the-fly from the MPT built over all stored entries — never stored in the DB.
+ */
+export type MerkleProof = string[];
+
+/**
+ * A full auth-label entry as stored in the database.
+ * counter tracks the version of this entry in the Merkle tree — incremented by the device
+ * on each successful dbchange so stale updates can be rejected.
+ * proof is NOT stored; it is generated from the MPT before each device interaction.
+ */
+export type WardEntry = {
+    metadata: WardLabel;
+    counter: number;
+};
+
+/**
+ * Merkle tree state checkpoint stored in the database, scoped per wallet.
+ * root    — current Merkle root hash as maintained by the Trezor device.
+ * counter — monotonically increasing version; incremented by the device on every tree mutation.
+ * mac     — root-attestation token, if the provider has one: HMAC(mac_key, wallet_id||counter||root),
+ *           as returned by WARDConfirmCommitAck.root_mac (formerly WardUpdateLeafResponse.mac).
+ *           Since mac_key is wallet-derived (not device-derived), this token is replayable via
+ *           WardFastForwardRoot on any physical device that has unlocked the same wallet.
+ */
+export type TreeState = {
+    root: string;
+    counter: number;
+    mac?: string;
+};
+
+/** A single row returned for MPT construction, scoped to one wallet. */
+export type WardRow = {
+    address: string;
+    networkSymbol: string;
+    entry: WardEntry;
+};

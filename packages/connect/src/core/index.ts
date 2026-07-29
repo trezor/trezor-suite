@@ -2,7 +2,6 @@
 import EventEmitter from 'events';
 
 import {
-    AUTH_LABEL,
     CORE_CALL,
     CORE_CALL_CANCEL,
     CORE_EVENT,
@@ -12,6 +11,7 @@ import {
     UI_EVENT,
     UI_REQUEST,
     UI_RESPONSE,
+    WARD_LABEL,
     createDeviceMessage,
     createResponseMessage,
     createTransportMessage,
@@ -837,7 +837,7 @@ export class Core extends EventEmitter {
                 resetTransports(this.getCoreContext());
                 break;
 
-            case AUTH_LABEL.SET_PROVIDER: {
+            case WARD_LABEL.SET_PROVIDER: {
                 // Dispose the outgoing provider before swapping it in, so a resource it holds
                 // (e.g. an open database handle) isn't leaked across re-init.
                 const outgoingProvider = settingsStore.isLoaded()

@@ -96,6 +96,7 @@ import {
     DebugLinkSetBatteryState,
     DebugLinkSetLogFilter,
 } from './messages-debug';
+import { DisplayAddress } from './messages-display_address';
 import {
     EosGetPublicKey,
     EosPublicKey,
@@ -341,6 +342,7 @@ export * from './messages-cardano';
 export * from './messages-crypto';
 export * from './messages-management';
 export * from './messages-debug';
+export * from './messages-display_address';
 export * from './messages-definitions';
 export * from './messages-eos';
 export * from './messages-ethereum';
@@ -455,6 +457,7 @@ export const MessageType = Type.Object(
         Entropy,
         GetFirmwareHash,
         FirmwareHash,
+        DisplayAddress,
         AuthenticateDevice,
         AuthenticityProof,
         AuthenticityProofSizes,
@@ -732,6 +735,7 @@ export type WireInMessage =
     | 'Cancel'
     | 'GetEntropy'
     | 'GetFirmwareHash'
+    | 'DisplayAddress'
     | 'AuthenticateDevice'
     | 'GetAuthenticityProofChunk'
     | 'WipeDevice'

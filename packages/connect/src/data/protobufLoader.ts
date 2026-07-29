@@ -8,6 +8,7 @@ import * as commonProto from '@trezor/protobuf/src/definitions/messages-common_p
 import * as cryptoProto from '@trezor/protobuf/src/definitions/messages-crypto_pb';
 import * as debugProto from '@trezor/protobuf/src/definitions/messages-debug_pb';
 import * as definitionsProto from '@trezor/protobuf/src/definitions/messages-definitions_pb';
+import * as displayAddressProto from '@trezor/protobuf/src/definitions/messages-display_address_pb';
 import * as eosProto from '@trezor/protobuf/src/definitions/messages-eos_pb';
 import * as ethereumEip712Proto from '@trezor/protobuf/src/definitions/messages-ethereum-eip712_pb';
 import * as ethereumProto from '@trezor/protobuf/src/definitions/messages-ethereum_pb';
@@ -34,6 +35,7 @@ export const loadProtobufModules = () => {
         commonProto,
         cryptoProto,
         debugProto,
+        displayAddressProto,
         definitionsProto,
         eosProto,
         ethereumEip712Proto,

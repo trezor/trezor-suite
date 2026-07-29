@@ -7,7 +7,7 @@
         "types": ["node", "chrome", "jest"]
     },
     "references": [
-        { "path": "../authdb" },
+        { "path": "../ward" },
         { "path": "../device-utils" },
         { "path": "../protobuf" },
         { "path": "../protocol" },

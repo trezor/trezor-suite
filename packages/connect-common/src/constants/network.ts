@@ -13,7 +13,7 @@ export const TYPES = {
 export type NetworkType = keyof typeof TYPES;
 
 export const MODULES = [
-    'authDb',
+    'ward',
     'cardano',
     'ethereum',
     'monero',

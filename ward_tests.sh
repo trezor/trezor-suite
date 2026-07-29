@@ -27,6 +27,7 @@ yarn workspace @trezor/connect-cli udp --autoconnect
 yarn workspace @trezor/connect-cli udp --autoconnect --method=dblookup --db-params='{"address":"first","networkSymbol":"TEST"}'
 yarn workspace @trezor/connect-cli udp --autoconnect --method=dbchange --db-params='{"address":"second","networkSymbol":"TEST","metadata":{"label":"Adr1_v0"}}'
 yarn workspace @trezor/connect-cli udp --autoconnect --method=dblookup --db-params='{"address":"third","networkSymbol":"TEST"}'
+yarn workspace @trezor/connect-cli udp --autoconnect --method=dbdisplay --db-params='{"address":"second","networkSymbol":"TEST"}'
 pkill -f core/emu.py; sleep 1
 
 
@@ -36,7 +37,7 @@ pkill -f core/emu.py; sleep 1
 # proof) against a non-empty device, or the global counters diverge -- both are rejected.
 # If you cannot reliably erase the emulator, delete its flash/profile before this run.
 
-if true; then
+if false; then
 	for i in `seq 1 1 16`; do
 		for j in `seq 1 1 2`; do
 			echo Stage $i, run $j  
@@ -47,33 +48,42 @@ if true; then
 fi
 
 if true; then
-	yarn workspace @trezor/connect-cli udp --autoconnect --method=dblookup --db-params='{"address":"adr1","networkSymbol":"TEST"}'
+	yarn workspace @trezor/connect-cli udp --autoconnect --method=dbdisplay --db-params='{"address":"adr1","networkSymbol":"TEST"}'
 		# ISSUE: non-membership : not verified
 		# "No Merkle root stored on device"  --> for each element,  Authenticity verified (non-membership): true
 		# we should call reset_root
 
 	yarn workspace @trezor/connect-cli udp --autoconnect --method=dbchange --db-params='{"address":"adr1","networkSymbol":"TEST","metadata":{"label":"Petr_adr1_v0"}}'
+	yarn workspace @trezor/connect-cli udp --autoconnect --method=dbdisplay --db-params='{"address":"adr1","networkSymbol":"TEST"}'
 
-
-	yarn workspace @trezor/connect-cli udp --autoconnect --method=dblookup --db-params='{"address":"deleteMe","networkSymbol":"TEST"}'
+	yarn workspace @trezor/connect-cli udp --autoconnect --method=dbdisplay --db-params='{"address":"deleteMe","networkSymbol":"TEST"}'
 	yarn workspace @trezor/connect-cli udp --autoconnect --method=dbchange --db-params='{"address":"deleteMe","networkSymbol":"TEST","metadata":{"label":"Petr_deleteMeLabel"}}'
 
-	yarn workspace @trezor/connect-cli udp --autoconnect --method=dblookup --db-params='{"address":"deleteMe","networkSymbol":"TEST"}'
+	yarn workspace @trezor/connect-cli udp --autoconnect --method=dbdisplay --db-params='{"address":"deleteMe","networkSymbol":"TEST"}'
 	yarn workspace @trezor/connect-cli udp --autoconnect --method=dblookup --db-params='{"address":"adr1","networkSymbol":"TEST"}'
 	#Authenticity verified: true
 
 	yarn workspace @trezor/connect-cli udp --autoconnect --method=dbchange   --db-params='{"address":"deleteMe","networkSymbol":"TEST","metadata":{}}'
+	#yarn workspace @trezor/connect-cli udp --autoconnect --method=dbdisplay --db-params='{"address":"display","networkSymbol":"TEST"}'
 	#Authenticity verified: true
 
-	yarn workspace @trezor/connect-cli udp --autoconnect --method=dblookup --db-params='{"address":"deleteMe","networkSymbol":"TEST"}'
+	yarn workspace @trezor/connect-cli udp --autoconnect --method=dbdisplay --db-params='{"address":"deleteMe","networkSymbol":"TEST"}'
 	#Authenticity verified: true
-	yarn workspace @trezor/connect-cli udp --autoconnect --method=dblookup --db-params='{"address":"adr1","networkSymbol":"TEST"}'
+	yarn workspace @trezor/connect-cli udp --autoconnect --method=dbdisplay --db-params='{"address":"adr1","networkSymbol":"TEST"}'
+fi
 
+if false; then
 
 	yarn workspace @trezor/connect-cli udp --autoconnect --method=dblookup --db-params='{"address":"adr1","networkSymbol":"TEST"}'
 	yarn workspace @trezor/connect-cli udp --autoconnect --method=dbchange --db-params='{"address":"adr1","networkSymbol":"TEST","metadata":{"label":"Petr_adr1_v1"}}'
 	yarn workspace @trezor/connect-cli udp --autoconnect --method=dblookup --db-params='{"address":"adr1","networkSymbol":"TEST"}'
 	yarn workspace @trezor/connect-cli udp --autoconnect --method=dbchange --db-params='{"address":"adr1","networkSymbol":"TEST","metadata":{"label":"Petr_adr1_v2"}}'
+
+	# dbdisplay drives the DisplayAddress flow so the device SHOWS the verified label
+	# on-screen (membership) -- unlike dblookup, which is a screenless verification query.
+	yarn workspace @trezor/connect-cli udp --autoconnect --method=dbdisplay --db-params='{"address":"adr1","networkSymbol":"TEST"}'
+	# non-membership: the device shows the address with no label
+	yarn workspace @trezor/connect-cli udp --autoconnect --method=dbdisplay --db-params='{"address":"notThere","networkSymbol":"TEST"}'
 
 	yarn workspace @trezor/connect-cli udp --autoconnect --method=dblookup --db-params='{"address":"adr2","networkSymbol":"TEST"}'
 	yarn workspace @trezor/connect-cli udp --autoconnect --method=dbchange --db-params='{"address":"adr2","networkSymbol":"TEST","metadata":{"label":"Petr_adr2_v0"}}'

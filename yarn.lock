@@ -16888,9 +16888,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/ward@workspace:*, @trezor/ward@workspace:packages/authdb":
+"@trezor/ward@workspace:*, @trezor/ward@workspace:packages/ward":
   version: 0.0.0-use.local
-  resolution: "@trezor/ward@workspace:packages/authdb"
+  resolution: "@trezor/ward@workspace:packages/ward"
   dependencies:
     "@noble/curves": "npm:^2.2.0"
     "@noble/hashes": "npm:^2.0.1"

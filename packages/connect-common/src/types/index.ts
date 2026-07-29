@@ -64,9 +64,10 @@ export { GetOwnershipProof } from './api/getOwnershipProof';
 export { PushTransaction } from './api/pushTransaction';
 export { RequestLoginSchema } from './api/requestLogin';
 export { UnlockPathParams } from './api/unlockPath';
-export { AuthDbInitSchema } from './api/authDbInit';
-export { AuthDbUpdateAddressSchema } from './api/authDbUpdateAddress';
-export { AuthDbVerifyAddressSchema } from './api/authDbVerifyAddress';
+export { WardInitSchema } from './api/wardInit';
+export { WardUpdateSchema } from './api/wardUpdate';
+export { WardVerifySchema } from './api/wardVerify';
+export { WardDisplayAddressSchema } from './api/wardDisplayAddress';
 export { FirmwareType } from '@trezor/device-utils';
 
 export type {

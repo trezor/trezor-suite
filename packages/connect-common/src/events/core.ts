@@ -1,6 +1,5 @@
 import type { Err } from '@trezor/type-utils';
 
-import type { AuthLabelSetProvider } from './authLabel';
 import type { BlockchainEventMessage } from './blockchain';
 import type { CoreCallCancelMessage, CoreCallMessage, MethodResponseMessage } from './call';
 import type { DeviceEventMessage } from './device';
@@ -13,6 +12,7 @@ import type {
 } from './transport';
 import type { UiEventMessage } from './ui-request';
 import type { UiResponseEvent } from './ui-response';
+import type { WardSetProvider } from './wardLabel';
 import type { ErrorCode, SerializedError, TrezorError } from '../constants/errors';
 
 export const CORE_EVENT = 'CORE_EVENT';
@@ -23,7 +23,7 @@ export type CoreRequestMessage =
     | TransportSetTransports
     | TransportRequestWebUSBDevice
     | TransportGetInfo
-    | AuthLabelSetProvider
+    | WardSetProvider
     | UiResponseEvent
     | CoreCallMessage;
 

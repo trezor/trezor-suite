@@ -1,5 +1,4 @@
 import {
-    AUTH_LABEL,
     BLOCKCHAIN_EVENT,
     CORE_CALL,
     CORE_CALL_CANCEL,
@@ -7,6 +6,7 @@ import {
     RESPONSE_EVENT,
     TRANSPORT_EVENT,
     UI_EVENT,
+    WARD_LABEL,
     createErrorMessage,
 } from '@trezor/connect-common';
 import type {
@@ -151,7 +151,7 @@ export abstract class CoreInModule implements ConnectFactoryDependencies<Connect
         if (wardDataProvider !== undefined) {
             this.settings = parseConnectSettings({ ...this.settings, wardDataProvider });
             this.handleCoreMessage({
-                type: AUTH_LABEL.SET_PROVIDER,
+                type: WARD_LABEL.SET_PROVIDER,
                 payload: { wardDataProvider },
             });
         }

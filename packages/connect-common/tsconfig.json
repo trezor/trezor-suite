@@ -6,7 +6,7 @@
     },
     "include": ["."],
     "references": [
-        { "path": "../authdb" },
+        { "path": "../ward" },
         { "path": "../device-utils" },
         { "path": "../protobuf" },
         { "path": "../protocol" },
