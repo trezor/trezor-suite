@@ -1663,19 +1663,6 @@ export const messages = defineMessages({
             'Create multiple 20-word shares (wordlists) to recover your wallet. Set a minimum number of shares required to regain access to your wallet.',
         id: 'TR_MULTI_SHARE_BACKUP_DESCRIPTION',
     },
-    TR_MULTI_SHARE_BACKUP_IN_PROGRESS: {
-        defaultMessage: 'Multi-share Backup generation in progress',
-        id: 'TR_MULTI_SHARE_BACKUP_IN_PROGRESS',
-    },
-    TR_MULTI_SHARE_BACKUP_IN_PROGRESS_HEADING: {
-        defaultMessage: "Welcome back! Let's pick up where you left off.",
-        id: 'TR_MULTI_SHARE_BACKUP_IN_PROGRESS_HEADING',
-    },
-    TR_MULTI_SHARE_BACKUP_IN_PROGRESS_DESCRIPTION: {
-        defaultMessage:
-            "It's necessary to finish generating your Multi-share Backup shares before continuing. Follow the instructions on your Trezor's screen.",
-        id: 'TR_MULTI_SHARE_BACKUP_IN_PROGRESS_DESCRIPTION',
-    },
     TR_CREATE_MULTI_SHARE_BACKUP: {
         defaultMessage: 'Create',
         id: 'TR_CREATE_MULTI_SHARE_BACKUP',

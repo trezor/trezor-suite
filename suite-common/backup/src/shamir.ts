@@ -15,8 +15,3 @@ export const hasExtendableShamirBackup = (features: PROTO.Features): boolean =>
 export const doesSupportMultiShare = (features: PROTO.Features): boolean =>
     features.capabilities?.includes('Capability_Shamir') === true &&
     hasExtendableShamirBackup(features);
-
-export const isAdditionalShamirBackupInProgress = (features: PROTO.Features): boolean =>
-    features.recovery_status === 'Backup' &&
-    (features.recovery_type === undefined || features.recovery_type === null) &&
-    features.backup_availability === 'Available';

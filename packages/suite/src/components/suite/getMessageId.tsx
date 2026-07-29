@@ -113,7 +113,6 @@ export const getMessageId = ({
         'device-unreadable': defaultKey,
         'firmware-missing': defaultKey,
         'firmware-required': defaultKey,
-        'multi-share-backup-in-progress': defaultKey,
     };
 
     return map[prerequisite];

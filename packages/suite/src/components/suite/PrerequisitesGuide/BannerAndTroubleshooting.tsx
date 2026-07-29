@@ -16,7 +16,6 @@ import { DeviceUnknown } from './DeviceUnknown';
 import { DeviceUnreadable } from './DeviceUnreadable';
 import { DeviceUpdateRequired } from './DeviceUpdateRequired';
 import { DeviceUsedElsewhere } from './DeviceUsedElsewhere';
-import { MultiShareBackupInProgress } from './MultiShareBackupInProgress';
 import { NoTransport } from './NoTransport';
 
 type BannerAndTroubleshootingProps = {
@@ -55,8 +54,6 @@ const getComponent = (prerequisite: PrerequisiteType | null) => {
             return <DeviceFirmwareCorrupted />;
         case 'firmware-required':
             return <DeviceUpdateRequired />;
-        case 'multi-share-backup-in-progress':
-            return <MultiShareBackupInProgress />;
         default:
             return <></>;
     }

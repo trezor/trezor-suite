@@ -20,7 +20,6 @@
         { "path": "../external-links" },
         { "path": "../intl" },
         { "path": "../nfc" },
-        { "path": "../recovery" },
         { "path": "../router" },
         { "path": "../settings" },
         { "path": "../../packages/components" },

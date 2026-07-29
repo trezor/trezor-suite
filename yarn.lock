@@ -14627,7 +14627,6 @@ __metadata:
     "@suite/external-links": "workspace:*"
     "@suite/intl": "workspace:*"
     "@suite/nfc": "workspace:*"
-    "@suite/recovery": "workspace:*"
     "@suite/router": "workspace:*"
     "@suite/settings": "workspace:*"
     "@trezor/components": "workspace:*"
@@ -15137,7 +15136,6 @@ __metadata:
   resolution: "@suite/recovery@workspace:suite/recovery"
   dependencies:
     "@reduxjs/toolkit": "npm:2.12.0"
-    "@suite-common/backup": "workspace:*"
     "@suite-common/device": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/test-utils": "workspace:*"

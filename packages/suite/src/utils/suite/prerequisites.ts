@@ -1,4 +1,4 @@
-import { isAdditionalShamirBackupInProgress, isRecoveryInProgress } from '@suite/recovery';
+import { isRecoveryInProgress } from '@suite/recovery';
 import { type RouterState } from '@suite/router';
 
 import type { TransportState } from 'src/reducers/suite/suiteReducer';
@@ -21,7 +21,6 @@ export const prerequisiteTypes = [
     'device-unknown',
     'device-seedless',
     'device-recovery-mode',
-    'multi-share-backup-in-progress',
     'device-initialize',
     'device-bootloader',
     'firmware-missing',
@@ -83,10 +82,6 @@ export const getPrerequisiteName = ({
     // todo: this could be added to @trezor/connect to device.mode I think.
     if (isRecoveryInProgress(device.features)) {
         return 'device-recovery-mode';
-    }
-
-    if (isAdditionalShamirBackupInProgress(device.features)) {
-        return 'multi-share-backup-in-progress';
     }
 
     // device is not initialized

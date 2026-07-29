@@ -8,7 +8,6 @@ import {
     AdditionalBackupSteps,
     AdditionalBackupSuccess,
 } from '@suite/nfc';
-import { isAdditionalShamirBackupInProgress } from '@suite/recovery';
 import { selectIsN4w1BackupEnabled } from '@suite/settings';
 import { selectSelectedDevice } from '@suite-common/device';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -31,10 +30,7 @@ export const CreateWalletBackupModal = ({ onCancel }: CreateWalletBackupModalPro
 
     const backupMethod = isN4w1BackupEnabled ? PROTO.BackupMethod.N4W1 : PROTO.BackupMethod.Display;
 
-    const isInBackupMode =
-        device?.features !== undefined && isAdditionalShamirBackupInProgress(device.features);
-
-    const [step, setStep] = useState<Step>(isInBackupMode ? 'backup' : 'disclaimer');
+    const [step, setStep] = useState<Step>('disclaimer');
     const [isChecked, setIsChecked] = useState(false);
 
     if (device === undefined) {
