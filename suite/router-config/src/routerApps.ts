@@ -22,4 +22,6 @@ export type RouterApp =
     | 'create-multi-share-backup'
     | 'create-wallet-backup'
     | 'wallet'
-    | 'notifications';
+    | 'notifications'
+    // A meta route name as a fallback when no route matches the URL path pattern. Not declared in `routes`, but in RouterAppWithParams
+    | 'unknown';

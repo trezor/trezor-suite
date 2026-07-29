@@ -2,7 +2,7 @@ import { selectIsDeviceLocked } from '@suite/locks';
 import { routerAppChanged } from '@suite/router';
 import { connectPopupCallThunkInner } from '@suite-common/connect-popup';
 import { deviceActions, selectSelectedDevice } from '@suite-common/device';
-import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
+import { type AnyAction, createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
 import { selectThpAutoconnectStep, thpActions } from '@suite-common/thp';
 import {
@@ -12,9 +12,14 @@ import {
     startOrRestartDiscoveryThunk,
 } from '@suite-common/wallet-core';
 
-// todo: this is crazy. needs some consideration
+import {
+    isDeviceBecomingAcquired,
+    isDeviceBecomingConnected,
+    selectShouldRouterAppStartDiscovery,
+} from './conditions';
+
 export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
-    async (action, { dispatch, next, getState }) => {
+    async (action, { dispatch, next, getState }): Promise<AnyAction> => {
         // We are only taking a snapshot, but yes, the same rules shall apply: prevState and nextState MUST NOT be used without a selector.
         // eslint-disable-next-line no-restricted-syntax
         const prevState: any = getState();
@@ -26,54 +31,55 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
         // eslint-disable-next-line no-restricted-syntax
         const nextState: any = getState();
 
-        if (
-            nextState.router.app !== 'wallet' &&
-            nextState.router.app !== 'dashboard' &&
-            nextState.router.app !== 'earn'
-        )
-            return action;
-
+        const prevDevice = selectSelectedDevice(prevState);
         const device = selectSelectedDevice(nextState);
         const isDeviceLocked = selectIsDeviceLocked(nextState);
-        // 1. selected device is acquired but doesn't have a state
 
-        // 2. selected device becomes acquired from unacquired or connected from disconnected
-        let becomesAcquired = false;
-        let becomesConnected = false;
-        if (deviceActions.updateSelectedDevice.match(action)) {
-            const prevDevice = prevState.device.selectedDevice;
-            becomesAcquired = !!(prevDevice && !prevDevice.features && device?.features);
-            becomesConnected = !!(prevDevice && !prevDevice.connected && device?.connected);
-        }
+        const wasDeviceUpdated =
+            !!prevDevice && !!device && deviceActions.updateSelectedDevice.match(action);
+        const becomesAcquired =
+            wasDeviceUpdated && isDeviceBecomingAcquired({ prevDevice, device });
+        const becomesConnected =
+            wasDeviceUpdated && isDeviceBecomingConnected({ prevDevice, device });
 
-        // device becomesAcquired (device-change event) and is locked at the same time.
-        // device-change is emitted right before acquireDevice ends (and unlocks)
+        /*
+         The following conditions always block discovery:
+        */
+
+        // 1. Discovery should only start on certain apps
+        if (!selectShouldRouterAppStartDiscovery(nextState)) return action;
+
+        // 2. Device must be unlocked. The only exception is, when it is locked and just has been acquired.
+        //    In that case, device-change is emitted right before acquireDevice ends (and unlocks the device).
         const isDeviceReady =
             device?.connected && isDeviceAcquired(device) && (!isDeviceLocked || becomesAcquired);
+        if (!isDeviceReady) return action;
 
-        // delay discovery if THP Autoconnect modal is open (discovery executed by the modal), as it is the only
-        // THP step that takes place *after* device acquisition, and also needs device interaction to complete.
+        // 3. Discovery must be delayed if THP Autoconnect modal is open, because it is the only THP step that takes place
+        //    *after* device acquisition, and also needs device interaction to complete (would block discovery).
         const isTHPAutoconnectModal = selectThpAutoconnectStep(getState()) === 'AutoconnectInfo';
         const isTHPAutoconnectFinished = thpActions.finishAutoconnectFlow.match(action);
-        const isUIReady = !isTHPAutoconnectModal;
+        if (isTHPAutoconnectModal) return action;
 
+        /*
+         Start discovery only on the following actions:
+        */
         if (
             becomesAcquired ||
             becomesConnected ||
-            isTHPAutoconnectFinished ||
-            action.type === routerAppChanged.type ||
+            isTHPAutoconnectFinished || // now that the THP Autoconnect was finished, resume the delayed discovery
+            routerAppChanged.match(action) || // may no longer be one of the apps where discovery is disabled
             connectPopupCallThunkInner.fulfilled.match(action) ||
             deviceActions.selectDevice.match(action) ||
             changeNetworks.match(action) ||
             accountsActions.updateAccount.match(action) || // empty account can become nonempty
             accountsActions.changeAccountVisibility.match(action)
         ) {
-            if (isDeviceReady && isUIReady) {
-                const shouldRediscover = selectShouldRediscover(getState(), device);
-                if (shouldRediscover) {
-                    dispatch(startOrRestartDiscoveryThunk());
-                }
-            }
+            // 4. Nothing to discover (discovery would be no-op). It's intentionally inside the action matcher condition
+            // so it won't be called on every action, because the selector is expensive and not viable for memoization.
+            const shouldRediscover = selectShouldRediscover(getState(), device);
+            if (!shouldRediscover) return action;
+            dispatch(startOrRestartDiscoveryThunk());
         }
 
         return action;
