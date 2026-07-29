@@ -1,6 +1,6 @@
 {
     "name": "@trezor/schema-utils",
-    "version": "10.0.0-alpha.1",
+    "version": "10.0.0-beta.1",
     "type": "module",
     "license": "MIT",
     "sideEffects": false,

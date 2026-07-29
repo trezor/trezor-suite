@@ -1,4 +1,4 @@
-# 10.0.0-alpha.1 — DEPRECATED
+# 10.0.0-beta.1 — DEPRECATED
 
 This package is deprecated. EIP-712 hash construction has been inlined into `@trezor/connect@10`; callers should pass the `data` object directly to `TrezorConnect.ethereumSignTypedData` and the hashes are computed internally when the device requires them (T1B1 firmware).
 
