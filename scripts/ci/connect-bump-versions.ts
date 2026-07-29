@@ -241,6 +241,9 @@ const bumpConnect = async () => {
             await updateConnectChangelog(CONNECT_CHANGELOG_PATH, version, '-');
         } else {
             const distributionTags = await gettingNpmDistributionTags('@trezor/connect');
+            if (!distributionTags?.latest) {
+                throw new Error('Could not resolve the latest @trezor/connect version from NPM');
+            }
             await updateConnectChangelog(CONNECT_CHANGELOG_PATH, distributionTags.latest, version);
         }
 
