@@ -25,6 +25,7 @@ export const EarnWrap = () => {
         'Earn',
         <WrappedNativePageHeader
             titleId="TR_WRAP_NATIVE_TOKEN"
+            flow="wrap"
             account={account}
             contractAddress={wrappedNative?.address}
         />,

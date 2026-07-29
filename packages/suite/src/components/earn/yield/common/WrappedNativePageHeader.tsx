@@ -1,5 +1,9 @@
 import { AccountLabel } from '@suite/account';
+import { selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation, type TranslationKey } from '@suite/intl';
+import { events } from '@suite-common/analytics';
+import { useServices } from '@suite-common/dependency-injection';
+import { type WrappedNativeFlowType } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { Column, IconButton, Row, Text } from '@trezor/components';
 import { CaretLeftIcon } from '@trezor/icons';
@@ -13,17 +17,33 @@ import { useNavigateToAccountRoute } from './useNavigateToAccountRoute';
 
 type WrappedNativePageHeaderProps = {
     titleId: TranslationKey;
+    flow: WrappedNativeFlowType;
     account?: Account;
     contractAddress?: string;
 };
 
 export const WrappedNativePageHeader = ({
     titleId,
+    flow,
     account,
     contractAddress,
 }: WrappedNativePageHeaderProps) => {
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
     const navigateToTokenOverview = useNavigateToAccountRoute(account, 'wallet-tokens');
     const { isBelowMobile } = useLayoutSize();
+
+    const handleBack = () => {
+        analytics.report({
+            type: events.yieldNavigateEvent.name,
+            payload: {
+                action: 'cancel',
+                from: flow === 'wrap' ? 'wrap-form' : 'unwrap-form',
+                to: 'account-detail',
+                networkSymbol: account?.symbol,
+            },
+        });
+        navigateToTokenOverview();
+    };
 
     return (
         <PageHeader expandable>
@@ -33,7 +53,7 @@ export const WrappedNativePageHeader = ({
                     intent="neutral"
                     priority="secondary"
                     size="large"
-                    onClick={navigateToTokenOverview}
+                    onClick={handleBack}
                     isDisabled={!account}
                     data-testid="@account-subpage/back"
                     tooltip={{ content: <Translation id="TR_BACK" /> }}

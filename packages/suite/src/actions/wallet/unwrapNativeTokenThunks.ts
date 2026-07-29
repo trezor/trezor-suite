@@ -1,4 +1,5 @@
 import { openDeferredModal } from '@suite/modal';
+import { events } from '@suite-common/analytics';
 import { type StablecoinYieldTxSimulationParams } from '@suite-common/earn-stablecoin/src/tx-simulation';
 import { createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -10,7 +11,10 @@ import {
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 
-import { sendYieldTransaction } from './stablecoin-yield/signingHelpers';
+import {
+    getYieldSubmitErrorAnalyticsMessage,
+    sendYieldTransaction,
+} from './stablecoin-yield/signingHelpers';
 
 const UNWRAP_NATIVE_TOKEN_PREFIX = '@wallet/unwrap-native-token';
 
@@ -28,14 +32,31 @@ export const submitUnwrapNativeTokenThunk = createThunk(
     `${UNWRAP_NATIVE_TOKEN_PREFIX}/submit`,
     async (
         { account, token, unwrapAmount, yieldFlow }: UnwrapNativeTokenPayload,
-        { dispatch, getState },
+        { dispatch, getState, extra },
     ) => {
+        // In-flow unwraps are already tracked as yield/withdraw type:'unwrap', so reporting here
+        // too would double-count them.
+        const reportError = (errorMessage: string) => {
+            if (yieldFlow) return;
+
+            extra.services.analytics.report({
+                type: events.yieldUnwrapEvent.name,
+                payload: {
+                    type: 'error',
+                    action: 'continue',
+                    networkSymbol: account.symbol,
+                    errorMessage,
+                },
+            });
+        };
+
         try {
             const result = await dispatch(
                 composeYieldUnwrapTransactionThunk({ account, token, unwrapAmount }),
             ).unwrap();
 
             if (result.type === 'error') {
+                reportError(result.reason);
                 dispatch(
                     notificationsActions.addToast({
                         type: 'sign-tx-error',
@@ -57,6 +78,17 @@ export const submitUnwrapNativeTokenThunk = createThunk(
                 }),
             );
 
+            if (!yieldFlow) {
+                extra.services.analytics.report({
+                    type: events.yieldUnwrapEvent.name,
+                    payload: {
+                        type: 'tx-simulation-modal',
+                        action: userAcceptedTxSimulation?.value === false ? 'cancel' : 'continue',
+                        networkSymbol: account.symbol,
+                    },
+                });
+            }
+
             if (userAcceptedTxSimulation?.value === false) {
                 return undefined;
             }
@@ -76,7 +108,20 @@ export const submitUnwrapNativeTokenThunk = createThunk(
             userAcceptedTxSimulation?.resolve();
 
             if (!sendResult) {
+                reportError('submit-failed');
+
                 return undefined;
+            }
+
+            if (!yieldFlow) {
+                extra.services.analytics.report({
+                    type: events.yieldUnwrapEvent.name,
+                    payload: {
+                        type: 'sent',
+                        action: 'continue',
+                        networkSymbol: account.symbol,
+                    },
+                });
             }
 
             dispatch(
@@ -106,6 +151,7 @@ export const submitUnwrapNativeTokenThunk = createThunk(
             return sendResult;
         } catch (error) {
             console.error(error);
+            reportError(getYieldSubmitErrorAnalyticsMessage(error));
             dispatch(
                 notificationsActions.addToast({
                     type: 'sign-tx-error',

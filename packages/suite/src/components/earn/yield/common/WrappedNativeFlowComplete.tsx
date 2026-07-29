@@ -1,6 +1,10 @@
 import { type ReactNode } from 'react';
 
+import { selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
+import { events } from '@suite-common/analytics';
+import { useServices } from '@suite-common/dependency-injection';
+import { type WrappedNativeFlowType } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { Button, Card, Column, Divider, Icon, IconCircle, Row, Text } from '@trezor/components';
 import { CheckCircleFilledIcon, CheckIcon } from '@trezor/icons';
@@ -11,6 +15,7 @@ import { useNavigateToAccountRoute } from './useNavigateToAccountRoute';
 
 type WrappedNativeFlowCompleteProps = {
     account: Account;
+    flow: WrappedNativeFlowType;
     heading: ReactNode;
     description: ReactNode;
     children?: ReactNode;
@@ -18,12 +23,27 @@ type WrappedNativeFlowCompleteProps = {
 
 export const WrappedNativeFlowComplete = ({
     account,
+    flow,
     heading,
     description,
     children,
 }: WrappedNativeFlowCompleteProps) => {
     const { isBelowMobile } = useLayoutSize();
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
     const navigateToOverview = useNavigateToAccountRoute(account, 'wallet-tokens');
+
+    const handleBackToOverview = () => {
+        analytics.report({
+            type: events.yieldNavigateEvent.name,
+            payload: {
+                action: 'continue',
+                from: flow === 'wrap' ? 'wrap-form' : 'unwrap-form',
+                to: 'account-detail',
+                networkSymbol: account.symbol,
+            },
+        });
+        navigateToOverview();
+    };
 
     return (
         <Column gap={16}>
@@ -64,7 +84,7 @@ export const WrappedNativeFlowComplete = ({
                 </Column>
             </Card>
 
-            <Button intent="neutral" priority="secondary" onClick={navigateToOverview}>
+            <Button intent="neutral" priority="secondary" onClick={handleBackToOverview}>
                 <Translation id="TR_EARN_YIELD_BACK_TO_OVERVIEW" />
             </Button>
         </Column>
