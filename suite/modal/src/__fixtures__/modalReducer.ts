@@ -1,3 +1,6 @@
+import { mockConnectDevice, mockSuiteDevice } from '@suite-common/suite-types/mocks';
+import { DEVICE, UI_REQUEST } from '@trezor/connect';
+
 import {
     MODAL_CLOSE,
     MODAL_CONTEXT_DEVICE,
@@ -5,9 +8,7 @@ import {
     MODAL_CONTEXT_NONE,
     MODAL_CONTEXT_USER,
     MODAL_OPEN_USER_CONTEXT,
-} from '@suite/modal';
-import { mockConnectDevice, mockSuiteDevice } from '@suite-common/suite-types/mocks';
-import { DEVICE, UI_REQUEST } from '@trezor/connect';
+} from '../constants';
 
 // Default devices
 const CONNECT_DEVICE = mockConnectDevice({
