@@ -1,5 +1,3 @@
-import { type MetadataRootState } from '@suite/metadata';
-import { type AccountLabels } from '@suite-common/metadata-types';
 import { type WithServices, createThunk } from '@suite-common/redux-utils';
 import {
     type TokenDefinitionsRootState,
@@ -11,6 +9,7 @@ import {
     TRANSACTIONS_MODULE_PREFIX,
     type TransactionsRootState,
     type WalletSettingsRootState,
+    createSimpleTargetId,
     selectAccountTransactionsMarkedAsNotScam,
     selectBaseCurrency,
     selectHistoricFiatRates,
@@ -27,12 +26,10 @@ import { formatData, getExportedFileName } from 'src/utils/wallet/exportTransact
 
 type ExportTransactionsThunkParams = {
     account: Account;
-    accountName: string;
+    defaultAccountName: string;
     type: ExportFileType;
     searchQuery: string;
 };
-
-const selectMetadataState = (state: MetadataRootState) => state.metadata;
 
 type ExportTransactionsThunkState = FiatRatesRootState &
     SelectAccountLabelsForSearchState &
@@ -50,7 +47,7 @@ export const exportTransactionsThunk = createThunk<
     { state: ExportTransactionsThunkState; extra: ExportTransactionsThunkDeps }
 >(
     `${TRANSACTIONS_MODULE_PREFIX}/exportTransactions`,
-    async ({ account, accountName, type, searchQuery }, { getState, extra }) => {
+    async ({ account, defaultAccountName, type, searchQuery }, { getState, extra }) => {
         const { services } = extra;
         // Get state of transactions
         const allTransactions = selectTransactions(getState());
@@ -62,19 +59,8 @@ export const exportTransactionsThunk = createThunk<
             account.key,
         );
 
-        // TODO: this is not nice (copy-paste)
-        // metadata reducer is still not part of trezor-common and I can not import it
-        // here. so either followup, or maybe when I have a moment I'll refactor it  before merging this
-        const provider = selectMetadataState(getState())?.providers.find(
-            p => p.clientId === selectMetadataState(getState()).selectedProvider.labels,
-        );
-        const metadataKeys = account?.metadata[1];
-        let labels: Partial<AccountLabels> = {};
-        if (!metadataKeys?.fileName || !provider?.data[metadataKeys.fileName]) {
-            labels = { outputLabels: {} };
-        } else {
-            labels = provider.data[metadataKeys.fileName] as AccountLabels;
-        }
+        const accountLabels = selectAccountLabelsForSearch(getState(), account);
+        const accountName = accountLabels.accountLabel || defaultAccountName;
 
         const transactions = getAccountTransactions(account.key, allTransactions)
             .filter(transaction => transaction.blockHeight !== -1)
@@ -82,15 +68,15 @@ export const exportTransactionsThunk = createThunk<
                 ...transaction,
                 targets: transaction.targets.map(target => ({
                     ...target,
-                    metadataLabel: labels.outputLabels?.[transaction.txid]?.[target.n],
+                    metadataLabel: accountLabels.outputLabels
+                        .get(transaction.txid)
+                        ?.get(createSimpleTargetId(target)),
                 })),
             }));
 
-        const searchLabels = selectAccountLabelsForSearch(getState(), account);
-
         const filteredTransaction =
             searchQuery.trim() !== ''
-                ? advancedSearchTransactions(transactions, searchLabels, searchQuery)
+                ? advancedSearchTransactions(transactions, accountLabels, searchQuery)
                 : transactions;
 
         // getAccountTransactions doesn't guarantee transactions will be sorted
