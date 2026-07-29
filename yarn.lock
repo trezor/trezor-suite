@@ -16584,8 +16584,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/network-bitcoin-suite@workspace:networks/bitcoin/network-bitcoin-suite"
   dependencies:
-    "@suite-common/suite-types": "workspace:*"
-    "@suite-common/wallet-types": "workspace:*"
     "@suite/intl": "workspace:*"
     "@suite/sign-verify": "workspace:*"
     "@trezor/components": "workspace:*"
@@ -16611,7 +16609,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/network-cardano-suite@workspace:networks/cardano/network-cardano-suite"
   dependencies:
-    "@suite-common/suite-types": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
     "@suite-common/wallet-utils": "workspace:*"
     "@suite/intl": "workspace:*"
@@ -16649,8 +16646,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/network-ethereum-suite@workspace:networks/ethereum/network-ethereum-suite"
   dependencies:
-    "@suite-common/suite-types": "workspace:*"
-    "@suite-common/wallet-types": "workspace:*"
     "@suite/sign-verify": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/network-ethereum-suite-common": "workspace:*"

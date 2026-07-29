@@ -3,12 +3,6 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         { "path": "../../../suite/sign-verify" },
-        {
-            "path": "../../../suite-common/suite-types"
-        },
-        {
-            "path": "../../../suite-common/wallet-types"
-        },
         { "path": "../../../packages/connect" },
         {
             "path": "../network-ethereum-suite-common"
