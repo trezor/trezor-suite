@@ -1,14 +1,12 @@
-import { A, pipe } from '@mobily/ts-belt';
+import { A } from '@mobily/ts-belt';
 
 import {
     type DeviceRootState,
-    PORTFOLIO_TRACKER_DEVICE_ID,
     getIsDeviceIdValid,
     selectDeviceAuthenticityByDeviceId,
     selectDeviceFirmwareVersionArray,
     selectDeviceInstances,
     selectDeviceModel,
-    selectDevices,
     selectHasDeviceFirmwareInstalled,
     selectIsConnectedDeviceUninitialized,
     selectIsDeviceConnected,
@@ -30,15 +28,13 @@ import {
     type MessageSystemRootState,
     selectIsFeatureEnabled,
 } from '@suite-common/message-system';
-import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
+import { createWeakMapSelector } from '@suite-common/redux-utils';
 import { type ThpRootState, selectThpAutoconnectStep } from '@suite-common/thp';
 import {
     type AccountsRootState,
     type DiscoveryRootState,
     type FiatRatesRootState,
     type WalletSettingsRootState,
-    getAccountsByDeviceState,
-    selectAccounts,
     selectAccountsByDeviceState,
     selectBaseCurrency,
     selectCurrentFiatRates,
@@ -177,25 +173,6 @@ export const selectDeviceTotalFiatBalanceByDeviceState = createMemoizedSelector(
             // when the amount is unchanged so useSelector consumers don't rerender.
             resultEqualityCheck: areBaseCurrencyAmountsEqual,
         },
-    },
-);
-
-// Unique symbols for all accounts that are on view only devices (excluding portfolio tracker)
-// Using WeakMap for complex object comparisons and array results
-export const selectViewOnlyDevicesAccountsNetworkSymbols = createMemoizedSelector(
-    [selectDevices, selectAccounts],
-    (devices, accounts) => {
-        const symbols = pipe(
-            devices,
-            A.filter(d => !!d.remember && d.id !== PORTFOLIO_TRACKER_DEVICE_ID && !!d.state),
-            A.map(d => getAccountsByDeviceState(accounts, d.state!)),
-            A.flat,
-            A.filter(a => a.visible),
-            A.map(a => a.symbol),
-            A.uniq,
-        );
-
-        return returnStableArrayIfEmpty(symbols);
     },
 );
 
