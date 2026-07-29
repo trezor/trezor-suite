@@ -1,26 +1,17 @@
 import { useForm } from 'react-hook-form';
-import { Provider } from 'react-redux';
 
 import { act, render } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { type Store } from 'redux';
+import { ThemeProvider } from 'styled-components';
 
-import { prepareSuiteSettingsReducer, suiteSettingsInitialState } from '@suite/settings';
 import { type Locale } from '@suite-common/suite-types';
-import { configureMockStore } from '@suite-common/test-utils';
-import { NumberInput } from '@trezor/product-components';
+import { intermediaryTheme } from '@trezor/components';
 
-import { extraDependencies } from 'src/support/extraDependencies';
-import { ThemeProvider } from 'src/support/suite/ThemeProvider';
+import { NumberInput } from './NumberInput';
 
 const onChangeMock = jest.fn();
 
-interface InputWithFormProps {
-    store: Store;
-    locale: Locale;
-}
-
-const InputWithForm = ({ store, locale }: InputWithFormProps) => {
+const InputWithForm = ({ locale }: { locale: Locale }) => {
     const { control } = useForm({
         defaultValues: {
             input: '',
@@ -28,30 +19,20 @@ const InputWithForm = ({ store, locale }: InputWithFormProps) => {
     });
 
     return (
-        <Provider store={store}>
-            <ThemeProvider>
-                <NumberInput
-                    control={control}
-                    name="input"
-                    data-testid="number-input"
-                    onChange={onChangeMock}
-                    locale={locale}
-                />
-            </ThemeProvider>
-        </Provider>
+        <ThemeProvider theme={{ ...intermediaryTheme.light, variant: 'light' }}>
+            <NumberInput
+                control={control}
+                name="input"
+                data-testid="number-input"
+                onChange={onChangeMock}
+                locale={locale}
+            />
+        </ThemeProvider>
     );
 };
 
 const renderInput = (language: Locale) => {
-    const suiteSettingsReducer = prepareSuiteSettingsReducer(extraDependencies);
-    const store = configureMockStore({
-        reducer: { suiteSettings: suiteSettingsReducer },
-        preloadedState: {
-            suiteSettings: { ...suiteSettingsInitialState, language },
-        },
-    });
-
-    const { getByTestId } = render(<InputWithForm store={store} locale={language} />);
+    const { getByTestId } = render(<InputWithForm locale={language} />);
     const input = getByTestId('number-input') as HTMLInputElement;
 
     return input;
