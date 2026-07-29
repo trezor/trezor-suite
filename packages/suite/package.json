@@ -100,6 +100,7 @@
         "@suite/debug": "workspace:*",
         "@suite/desktop-update": "workspace:*",
         "@suite/device": "workspace:*",
+        "@suite/discovery": "workspace:*",
         "@suite/discreet-mode": "workspace:*",
         "@suite/experimental": "workspace:*",
         "@suite/external-links": "workspace:*",

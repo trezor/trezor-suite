@@ -172,6 +172,7 @@
         { "path": "../../suite/debug" },
         { "path": "../../suite/desktop-update" },
         { "path": "../../suite/device" },
+        { "path": "../../suite/discovery" },
         { "path": "../../suite/discreet-mode" },
         { "path": "../../suite/experimental" },
         { "path": "../../suite/external-links" },
