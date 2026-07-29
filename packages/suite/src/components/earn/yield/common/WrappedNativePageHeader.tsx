@@ -1,10 +1,13 @@
+import { AccountLabel } from '@suite/account';
 import { Translation, type TranslationKey } from '@suite/intl';
 import { type Account } from '@suite-common/wallet-types';
-import { IconButton, Row, Text } from '@trezor/components';
+import { Column, IconButton, Row, Text } from '@trezor/components';
 import { CaretLeftIcon } from '@trezor/icons';
 import { TokenIcon } from '@trezor/product-components';
 
+import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
 import { PageHeader } from 'src/components/suite/layouts/SuiteLayout';
+import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
 
 import { useNavigateToAccountRoute } from './useNavigateToAccountRoute';
 
@@ -20,6 +23,7 @@ export const WrappedNativePageHeader = ({
     contractAddress,
 }: WrappedNativePageHeaderProps) => {
     const navigateToTokenOverview = useNavigateToAccountRoute(account, 'wallet-tokens');
+    const { isBelowMobile } = useLayoutSize();
 
     return (
         <PageHeader expandable>
@@ -35,7 +39,7 @@ export const WrappedNativePageHeader = ({
                     tooltip={{ content: <Translation id="TR_BACK" /> }}
                 />
 
-                <Row alignItems="center" gap={12}>
+                <Row alignItems="center" gap={12} overflow="hidden">
                     {account && (
                         <TokenIcon
                             symbol={account.symbol}
@@ -43,11 +47,45 @@ export const WrappedNativePageHeader = ({
                             showNetworkIcon
                             size={32}
                             isBordered={false}
+                            wrappedTokenIcon="network"
                         />
                     )}
-                    <Text typographyStyle="body-md-strong">
-                        <Translation id={titleId} />
-                    </Text>
+                    {account ? (
+                        <Column gap={2} overflow="hidden">
+                            <Text
+                                typographyStyle="body-md-strong"
+                                ellipsisLineCount={isBelowMobile ? 0 : 1}
+                            >
+                                <Translation id={titleId} />
+                            </Text>
+                            <Row justifyContent="space-between" alignItems="center" gap={24}>
+                                <AccountLabel
+                                    account={account}
+                                    showAccountTypeBadge
+                                    accountTypeBadgeSize="small"
+                                    intent="neutral"
+                                    priority="secondary"
+                                    typographyStyle="body-sm"
+                                />
+                                <Text
+                                    typographyStyle="body-sm"
+                                    intent="neutral"
+                                    priority="secondary"
+                                >
+                                    <FormattedCryptoAmount
+                                        value={account.formattedBalance}
+                                        symbol={account.symbol}
+                                        isBalance
+                                        data-testid="@yield/page-header/balance"
+                                    />
+                                </Text>
+                            </Row>
+                        </Column>
+                    ) : (
+                        <Text typographyStyle="body-md-strong">
+                            <Translation id={titleId} />
+                        </Text>
+                    )}
                 </Row>
             </Row>
         </PageHeader>
