@@ -2,7 +2,7 @@ import type { FirmwareRelease } from '@trezor/device-utils';
 import { FirmwareType } from '@trezor/device-utils';
 import type { VersionArray } from '@trezor/utils/src/versionUtils';
 
-import { getReleaseInfo } from '../firmwareInfo';
+import { getReleaseInfo } from './firmwareInfo';
 
 const { getDeviceFeatures, releasesT1B1, releasesT2T1 } = global.JestMocks;
 
