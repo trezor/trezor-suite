@@ -105,17 +105,17 @@ export function useAccountWithTokensOptions({
                 return false;
             }
 
-            if (account.tokens?.length === 0) {
-                return new BigNumber(account.balance).gt(0);
+            if (new BigNumber(account.balance).gt(0)) {
+                return true;
             }
 
-            const tokens = getTokens({
+            const { shownWithBalance, hiddenWithBalance } = getTokens({
                 tokens: account.tokens ?? [],
                 symbol: account.symbol,
                 tokenDefinitions: tokenDefinitions?.[account.symbol]?.coin,
             });
 
-            return tokens.shownWithBalance.length > 0;
+            return shownWithBalance.length > 0 || hiddenWithBalance.length > 0;
         });
 
         const networks = new Set(validAccounts.map(account => account.symbol));
@@ -182,7 +182,10 @@ export function useAccountWithTokensOptions({
         const accountsWithTokensOptions: AccountWithTokensOption[] = [];
 
         for (const { account, tokens, nonTradableTokens } of accountsWithTokens) {
-            if (supportedCryptoIds.has(getCryptoId(account.symbol))) {
+            if (
+                supportedCryptoIds.has(getCryptoId(account.symbol)) &&
+                new BigNumber(account.balance).gt(0)
+            ) {
                 accountsWithTokensOptions.push(createAccountOption(account));
             }
 
