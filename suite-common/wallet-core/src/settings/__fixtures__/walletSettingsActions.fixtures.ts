@@ -1,5 +1,5 @@
-import * as walletSettingsActions from '../../src/settings/walletSettingsActions';
-import { changeCoinVisibility } from '../../src/settings/walletSettingsThunks';
+import * as walletSettingsActions from '../walletSettingsActions';
+import { changeCoinVisibility } from '../walletSettingsThunks';
 
 export const walletSettingsFixtures = [
     {

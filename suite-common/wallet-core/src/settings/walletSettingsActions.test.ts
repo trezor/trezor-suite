@@ -6,9 +6,9 @@ import {
     wireEnabledNetworksMock,
 } from '@suite-common/test-utils';
 
-import { walletSettingsFixtures } from './walletSettingsActions.fixtures';
-import { prepareWalletSettingsReducer } from '../../src';
-import { changeCoinVisibility } from '../../src/settings/walletSettingsThunks';
+import { walletSettingsFixtures } from './__fixtures__/walletSettingsActions.fixtures';
+import { prepareWalletSettingsReducer } from './walletSettingsReducer';
+import { changeCoinVisibility } from './walletSettingsThunks';
 
 const settingsReducer = prepareWalletSettingsReducer(extraDependenciesCommonMock);
 

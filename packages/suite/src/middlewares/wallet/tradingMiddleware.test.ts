@@ -26,7 +26,6 @@ import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { ACCOUNT } from 'src/actions/wallet/trading/__fixtures__/tradingCommonActions/store';
 import { tradingMiddleware } from 'src/middlewares/wallet/tradingMiddleware';
 import suiteReducer, { type SuiteState } from 'src/reducers/suite/suiteReducer';
-import { accounts } from 'src/reducers/wallet/__fixtures__/transactionConstants';
 
 import { tradingMiddlewareFixtures } from './__fixtures__/tradingMiddleware';
 
@@ -44,6 +43,7 @@ jest.mock('@suite-common/trading', () => {
 
 const tradingReducer = prepareTradingReducer(extraDependenciesCommonMock);
 const accountsReducer = prepareAccountsReducer(extraDependenciesCommonMock);
+const accounts = [ACCOUNT];
 
 interface Args {
     trading?: TradingState;

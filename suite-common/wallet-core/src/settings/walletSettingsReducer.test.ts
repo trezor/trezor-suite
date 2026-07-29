@@ -3,12 +3,12 @@ import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { extraDependenciesCommonMock } from '@suite-common/test-utils';
 import { FirmwareType } from '@trezor/device-utils';
 
+import * as walletSettingsActions from './walletSettingsActions';
 import {
     initialWalletSettingsState,
     prepareWalletSettingsReducer,
     selectIsNetworkReserveSettingsVisible,
-} from '../../src';
-import * as walletSettingsActions from '../../src/settings/walletSettingsActions';
+} from './walletSettingsReducer';
 
 const initialState = initialWalletSettingsState;
 
