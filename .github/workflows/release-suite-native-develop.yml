@@ -1,13 +1,9 @@
 name: "[Release] suite-native develop"
 
 on:
-  push:
-    branches:
-      - develop
-    paths:
-      - "suite-native/**"
-      - "suite-common/**"
-      - "!**.md"
+  schedule:
+    # Run every hour at 21 minutes past the hour (UTC).
+    - cron: "21 * * * *"
   workflow_dispatch:
 
 concurrency:
@@ -41,7 +37,27 @@ jobs:
       - name: Install libs
         run: |
           yarn workspaces focus @suite-native/app
+      - name: Check existing EAS builds for commit
+        id: check-existing-builds
+        run: |
+          for PLATFORM in android ios; do
+            EXISTING_BUILD=$(eas build:list \
+              --platform "$PLATFORM" \
+              --build-profile develop \
+              --git-commit-hash "${{ github.sha }}" \
+              --limit 1 \
+              --non-interactive \
+              --json)
+
+            if [ "$EXISTING_BUILD" = "[]" ]; then
+              echo "$PLATFORM-build-exists=false" >> "$GITHUB_OUTPUT"
+            else
+              echo "$PLATFORM-build-exists=true" >> "$GITHUB_OUTPUT"
+            fi
+          done
+        working-directory: suite-native/app
       - name: Build on EAS Android
+        if: steps.check-existing-builds.outputs.android-build-exists == 'false'
         run: eas build
           --platform android
           --profile develop
@@ -50,6 +66,7 @@ jobs:
           --message ${{ github.sha }}
         working-directory: suite-native/app
       - name: Build on EAS iOS
+        if: steps.check-existing-builds.outputs.ios-build-exists == 'false'
         run: eas build
           --platform ios
           --profile develop
