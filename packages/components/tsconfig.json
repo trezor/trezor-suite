@@ -7,7 +7,14 @@
             ]
         },
         "plugins": [
-            { "name": "typescript-styled-plugin" }
+            {
+                "name": "@styled/typescript-styled-plugin",
+                "tags": [
+                    "styled",
+                    "css",
+                    "keyframes"
+                ]
+            }
         ],
         "outDir": "./libDev"
     },

@@ -29,6 +29,7 @@
         "styled-components": "^6.3.9"
     },
     "devDependencies": {
+        "@styled/typescript-styled-plugin": "patch:@styled/typescript-styled-plugin@npm%3A1.0.1#~/.yarn/patches/@styled-typescript-styled-plugin-npm-1.0.1-b220b7a7fd.patch",
         "@types/invity-api": "^1.1.19"
     }
 }

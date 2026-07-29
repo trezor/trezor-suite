@@ -3,8 +3,15 @@
     "compilerOptions": {
         "plugins": [
             {
-                "name": "typescript-styled-plugin",
-                "tags": ["styled", "css", "sty"]
+                "name": "@styled/typescript-styled-plugin",
+                "tags": [
+                    "styled",
+                    "css",
+                    "createGlobalStyle",
+                    "keyframes"
+                ],
+                "validate": false,
+                "outlining": false
             }
         ],
         "outDir": "./libDev",

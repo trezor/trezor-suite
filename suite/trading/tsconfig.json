@@ -3,7 +3,10 @@
     "compilerOptions": {
         "outDir": "libDev",
         "plugins": [
-            { "name": "typescript-styled-plugin" }
+            {
+                "name": "@styled/typescript-styled-plugin",
+                "tags": ["styled"]
+            }
         ]
     },
     "include": ["src/**/*", "styled.d.ts"],
