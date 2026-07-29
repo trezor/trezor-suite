@@ -1,0 +1,1 @@
+export { prepareDiscoveryMiddleware } from './discoveryMiddleware';

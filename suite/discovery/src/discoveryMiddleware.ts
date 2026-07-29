@@ -15,13 +15,17 @@ import {
 // todo: this is crazy. needs some consideration
 export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
     async (action, { dispatch, next, getState }) => {
-        const prevState = getState();
+        // We are only taking a snapshot, but yes, the same rules shall apply: prevState and nextState MUST NOT be used without a selector.
+        // eslint-disable-next-line no-restricted-syntax
+        const prevState: any = getState();
 
         // Pass action to next middleware, meaning that the code below runs *only after* the action has been completely processed in Redux.
         // Note: TS says next(action) generally isn't async, but the action may return anything; sometimes it's a Promise → needs to be awaited
         await next(action);
 
-        const nextState = getState();
+        // eslint-disable-next-line no-restricted-syntax
+        const nextState: any = getState();
+
         if (
             nextState.router.app !== 'wallet' &&
             nextState.router.app !== 'dashboard' &&

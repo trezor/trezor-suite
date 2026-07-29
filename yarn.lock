@@ -14753,6 +14753,21 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite/discovery@workspace:*, @suite/discovery@workspace:suite/discovery":
+  version: 0.0.0-use.local
+  resolution: "@suite/discovery@workspace:suite/discovery"
+  dependencies:
+    "@suite-common/connect-popup": "workspace:*"
+    "@suite-common/device": "workspace:*"
+    "@suite-common/redux-utils": "workspace:*"
+    "@suite-common/suite-utils": "workspace:*"
+    "@suite-common/thp": "workspace:*"
+    "@suite-common/wallet-core": "workspace:*"
+    "@suite/locks": "workspace:*"
+    "@suite/router": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
 "@suite/discreet-mode@workspace:*, @suite/discreet-mode@workspace:suite/discreet-mode":
   version: 0.0.0-use.local
   resolution: "@suite/discreet-mode@workspace:suite/discreet-mode"
@@ -17254,6 +17269,7 @@ __metadata:
     "@suite/debug": "workspace:*"
     "@suite/desktop-update": "workspace:*"
     "@suite/device": "workspace:*"
+    "@suite/discovery": "workspace:*"
     "@suite/discreet-mode": "workspace:*"
     "@suite/experimental": "workspace:*"
     "@suite/external-links": "workspace:*"
