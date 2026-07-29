@@ -15,7 +15,7 @@ if (args.length < 2)
 const [packageName, distTag] = args;
 
 if (!['latest', 'beta', 'alpha'].includes(distTag)) {
-    throw new Error('distTag (3rd parameter) must be "alpha", "beta", or "latest"');
+    throw new Error('distTag (2nd parameter) must be "alpha", "beta", or "latest"');
 }
 
 const PACKAGE_PATH = getTrezorPackageDir(packageName);
