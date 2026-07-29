@@ -13,6 +13,7 @@ import { type Account, type TokenAddress } from '@suite-common/wallet-types';
 import { Column, Row, Table, Text } from '@trezor/components';
 import { TokenIcon } from '@trezor/product-components';
 
+import { YieldBadge } from 'src/components/earn/YieldBadge/YieldBadge';
 import {
     BaseCurrencyValue,
     FormattedCryptoAmount,
@@ -24,6 +25,7 @@ import { useSelector } from 'src/hooks/suite';
 
 import { BlurUrls } from '../BlurUrls';
 import { TokenRowActions } from './TokenRowActions';
+import { useTokenYieldBadge } from './hooks/useTokenYieldBadge';
 import type { TokensTableType } from './types';
 
 type TokenRowProps = {
@@ -53,6 +55,12 @@ export const TokenRow = ({
     const isTokenKnown = useSelector(state =>
         selectIsSpecificCoinDefinitionKnown(state, account.symbol, token.contract as TokenAddress),
     );
+    const yieldBadge = useTokenYieldBadge({
+        networkSymbol: account.symbol,
+        token,
+        type,
+        yieldOpportunities,
+    });
 
     const [showDeactivateModal, setShowDeactivateModal] = useState(false);
 
@@ -73,6 +81,17 @@ export const TokenRow = ({
                             shouldTryToFetch={isTokenKnown}
                         />
                         {isTokenKnown ? token.name : <BlurUrls text={token.name} />}
+                        {yieldBadge && (
+                            <YieldBadge
+                                apy={yieldBadge.apy}
+                                variant={type === 'defi' ? 'active' : 'inactive'}
+                                networkSymbol={account.symbol}
+                                analyticsFrom={
+                                    type === 'defi' ? 'account-defi-tokens' : 'account-tokens'
+                                }
+                                vaultId={yieldBadge.vaultId}
+                            />
+                        )}
                     </Row>
                 </Table.Cell>
 

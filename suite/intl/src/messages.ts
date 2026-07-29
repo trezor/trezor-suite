@@ -10153,6 +10153,14 @@ export const messages = defineMessages({
         id: 'TR_EARN_YIELD_DEPOSIT',
         defaultMessage: 'Deposit',
     },
+    TR_EARN_YIELD_BADGE_RATE: {
+        id: 'TR_EARN_YIELD_BADGE_RATE',
+        defaultMessage: '{apy}% Yield',
+    },
+    TR_EARN_YIELD_BADGE_UP_TO_RATE: {
+        id: 'TR_EARN_YIELD_BADGE_UP_TO_RATE',
+        defaultMessage: 'up to {apy}% Yield',
+    },
     TR_EARN_YIELD_APY_SOURCE_LENDING_INTEREST: {
         id: 'TR_EARN_YIELD_APY_SOURCE_LENDING_INTEREST',
         defaultMessage: 'Automatically added and compounded.',

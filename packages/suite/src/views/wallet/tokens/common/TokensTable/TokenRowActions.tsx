@@ -1,4 +1,4 @@
-import { type ReactNode } from 'react';
+import { type ReactNode, useMemo } from 'react';
 
 import { Address, copyAddressToClipboard, showCopyAddressModal } from '@suite/address';
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
@@ -29,7 +29,11 @@ import {
     tradingActions,
 } from '@suite-common/trading';
 import { type Explorer, type Network } from '@suite-common/wallet-config';
-import { selectExplorer, sendFormActions } from '@suite-common/wallet-core';
+import {
+    getYieldVaultForOutputToken,
+    selectExplorer,
+    sendFormActions,
+} from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import {
     getContractAddressForNetworkSymbol,
@@ -120,13 +124,18 @@ const TokenRowBasicActions = ({
     const canSellToken = !!tokenTradingOptions && tokenTradingOptions.sell;
     const canReceiveToken = !isDeviceLocked && !isDeviceCompromised;
 
-    const availableVault = yieldOpportunities?.find(
-        vault =>
-            !vault.metadata.underMaintenance &&
-            !vault.metadata.deprecated &&
-            vault.outputToken?.address !== undefined &&
-            getContractAddressForNetworkSymbol(account.symbol, vault.outputToken.address) ===
-                getContractAddressForNetworkSymbol(account.symbol, token.contract),
+    const availableVault = useMemo(
+        () =>
+            getYieldVaultForOutputToken({
+                vaults: yieldOpportunities,
+                networkSymbol: account.symbol,
+                token: {
+                    address: token.contract,
+                    symbol: token.symbol ?? '',
+                    decimals: token.decimals,
+                },
+            }),
+        [yieldOpportunities, account.symbol, token.contract, token.symbol, token.decimals],
     );
 
     const isDepositButtonDisabled = !availableVault?.status.enter;
