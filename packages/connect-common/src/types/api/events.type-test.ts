@@ -1,6 +1,6 @@
 import { ThpPairingMethod } from '@trezor/protocol';
 
-import type { TrezorConnectPrivilegedAPI as TrezorConnect } from '../../..';
+import type { TrezorConnectPrivilegedAPI as TrezorConnect } from '../../index';
 import {
     BLOCKCHAIN,
     BLOCKCHAIN_EVENT,
@@ -8,7 +8,7 @@ import {
     TRANSPORT_EVENT,
     UI_EVENT,
     UI_REQUEST,
-} from '../../..';
+} from '../../index';
 
 export const events = (api: TrezorConnect) => {
     api.on(DEVICE_EVENT, event => {

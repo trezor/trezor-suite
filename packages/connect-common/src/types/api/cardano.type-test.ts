@@ -1,7 +1,7 @@
 import { MessagesSchema as PROTO } from '@trezor/protobuf';
 
-import type { TrezorConnectPrivilegedAPI as TrezorConnect } from '../../..';
-import { asDeviceUniquePath } from '../../..';
+import type { TrezorConnectPrivilegedAPI as TrezorConnect } from '../../index';
+import { asDeviceUniquePath } from '../../index';
 
 const {
     CardanoAddressType,

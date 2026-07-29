@@ -1,5 +1,5 @@
-import type { PrecomposedResult, TrezorConnectPrivilegedAPI as TrezorConnect } from '../../..';
-import { asDeviceUniquePath } from '../../..';
+import type { PrecomposedResult, TrezorConnectPrivilegedAPI as TrezorConnect } from '../../index';
+import { asDeviceUniquePath } from '../../index';
 
 export const getAddress = async (api: TrezorConnect) => {
     // regular

@@ -3,7 +3,7 @@
 import type {
     TrezorConnectPrivilegedAPI as TrezorConnect,
     // Exported types // TODO: breaking change missing ex: EthereumAddress
-} from '../../..';
+} from '../../index';
 
 export const init = async (api: TrezorConnect) => {
     const settings = await api.getSettings();

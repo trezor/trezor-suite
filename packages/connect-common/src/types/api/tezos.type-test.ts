@@ -1,5 +1,5 @@
-import type { TrezorConnectPrivilegedAPI as TrezorConnect } from '../../..';
-import { asDeviceUniquePath } from '../../..';
+import type { TrezorConnectPrivilegedAPI as TrezorConnect } from '../../index';
+import { asDeviceUniquePath } from '../../index';
 
 export const tezosGetAddress = async (api: TrezorConnect) => {
     // regular
