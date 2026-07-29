@@ -81,6 +81,17 @@ type YieldClaimTransactionNotification = {
     type: 'tx-yield-claim';
 } & BaseTransactionNotificationPayload;
 
+// Wrap/unwrap toasts show the amount in the destination unit: the wrapped-native token (WETH) for
+// a wrap, the native coin (ETH) for an unwrap. That destination unit is baked into `formattedAmount`
+// by the dispatcher.
+type WrapNativeTokenTransactionNotification = {
+    type: 'tx-wrap';
+} & TransactionNotificationPayload;
+
+type UnwrapNativeTokenTransactionNotification = {
+    type: 'tx-unwrap';
+} & TransactionNotificationPayload;
+
 export type ErrorToastPayload = {
     type:
         | 'error'
@@ -207,6 +218,8 @@ export type ToastPayload<TranslationKey extends UnknownTranslationKey = UnknownT
     | YieldDepositTransactionNotification
     | YieldWithdrawTransactionNotification
     | YieldClaimTransactionNotification
+    | WrapNativeTokenTransactionNotification
+    | UnwrapNativeTokenTransactionNotification
     | {
           type: 'cannot-open-bluetooth-settings-error';
       }

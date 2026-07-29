@@ -652,6 +652,34 @@ export const NotificationRenderer = ({
                 />
             );
 
+        case 'tx-wrap':
+            return (
+                <TransactionRenderer
+                    render={render}
+                    notification={notification}
+                    icon={ArrowUpIcon}
+                    variant="success"
+                    message="TOAST_TX_WRAP"
+                    messageValues={{
+                        account: notification.descriptor,
+                    }}
+                />
+            );
+
+        case 'tx-unwrap':
+            return (
+                <TransactionRenderer
+                    render={render}
+                    notification={notification}
+                    icon={ArrowUpIcon}
+                    variant="success"
+                    message="TOAST_TX_UNWRAP"
+                    messageValues={{
+                        account: notification.descriptor,
+                    }}
+                />
+            );
+
         case 'successful-claim':
             return renderNotificationView(render, notification, {
                 variant: 'success',
