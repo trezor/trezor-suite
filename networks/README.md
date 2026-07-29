@@ -6,8 +6,8 @@ with strictly defined API, to be used as a modules in Suite/Connect. These packa
 There may also be optional packages with arbitrary structure, but these should be imported only from inside their network's directory.
 
 Every package must be named with `network-` prefix, followed by given network (e.g. `bitcoin`) and either predefined compulsory suffix
-(e.g. `-connect` or `-suite`) or custom suffix, and must be located directly in the directory with the exact same name, under given network's
-directory.
+(e.g. `-connect` or `-suite-common`) or custom suffix, and must be located directly in the directory with the exact same name, under given
+network's directory.
 
 All the 3rd party dependencies related to a network should be defined inside that network's directory. Moreover, currently they're
 defined only inside general, no-suffix packages, e.g. `network-cardano` (previously coins packages) and dynamically exported.
@@ -20,16 +20,16 @@ networks/
 ├── bitcoin/
 │   ├── network-bitcoin-bip32/      → @trezor/network-bitcoin-bip32     (custom/internal)
 │   ├── network-bitcoin-coinjoin/   → @trezor/network-bitcoin-coinjoin  (custom/internal)
-│   ├── network-bitcoin-suite/      → @trezor/network-bitcoin-suite     (compulsory/public)
-│   └── network-bitcoin-connect/    → @trezor/network-bitcoin-connect   (compulsory/public)
+│   ├── network-bitcoin-suite-common/ → @trezor/network-bitcoin-suite-common (compulsory/public)
+│   └── network-bitcoin-connect/      → @trezor/network-bitcoin-connect      (compulsory/public)
 ├── solana/
 │   ├── network-solana/             → @trezor/network-solana            (custom/internal)
-│   ├── network-solana-suite/       → @trezor/network-solana-suite      (compulsory/public)
-│   └── network-solana-connect/     → @trezor/network-solana-connect    (compulsory/public)
+│   ├── network-solana-suite-common/ → @trezor/network-solana-suite-common (compulsory/public)
+│   └── network-solana-connect/      → @trezor/network-solana-connect      (compulsory/public)
 └── cardano/
     ├── network-cardano/            → @trezor/network-cardano           (custom/internal)
-    ├── network-cardano-suite/      → @trezor/network-cardano-suite     (compulsory/public)
-    └── network-cardano-connect/    → @trezor/network-cardano-connect   (compulsory/public)
+    ├── network-cardano-suite-common/ → @trezor/network-cardano-suite-common (compulsory/public)
+    └── network-cardano-connect/      → @trezor/network-cardano-connect      (compulsory/public)
 ```
 
 ## Compulsory package structure
