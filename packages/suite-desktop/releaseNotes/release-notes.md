@@ -1,5 +1,6 @@
 ### 🚀 New features
 
+- Added support for Robinhood Chain network
 - Tron (TRX) staking is now available directly in Trezor Suite
 - Users can now cancel pending EVM transactions
 - Option added to view and edit nonce in the EVM send form
