@@ -15296,6 +15296,7 @@ __metadata:
   resolution: "@suite/tor@workspace:suite/tor"
   dependencies:
     "@reduxjs/toolkit": "npm:2.12.0"
+    "@suite-common/redux-utils": "workspace:*"
     "@trezor/urls": "workspace:*"
     "@trezor/utils": "workspace:*"
   languageName: unknown
