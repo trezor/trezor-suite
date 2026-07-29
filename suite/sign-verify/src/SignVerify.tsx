@@ -18,10 +18,11 @@ import {
     Textarea,
 } from '@trezor/components';
 import { CheckIcon, CopyIcon } from '@trezor/icons';
+import type { SuiteNetworkModule } from '@trezor/network-module-suite-types';
 
 import { SignAddressInput } from './SignAddressInput';
 import { sign, verify } from './signVerifyActions';
-import type { SignVerifyNetworkConfig, SignVerifyProps } from './types';
+import type { SignVerifyProps } from './types';
 import { useCopySignedMessage } from './useCopySignedMessage';
 import {
     MAX_LENGTH_MESSAGE,
@@ -31,15 +32,16 @@ import {
 } from './useSignVerifyForm';
 
 type SignVerifyComponentProps = SignVerifyProps & {
-    networkConfig: SignVerifyNetworkConfig;
+    networkModule: SuiteNetworkModule;
 };
 
 export const SignVerify = ({
     account,
     network,
-    networkConfig,
+    networkModule,
     renderShell,
 }: SignVerifyComponentProps) => {
+    const networkConfig = networkModule.signVerify;
     const [page, setPage] = useState<'sign' | 'verify'>('sign');
     const [isCompleted, setIsCompleted] = useState(false);
     const [additionalResult, setAdditionalResult] = useState('');

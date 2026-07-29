@@ -1,6 +1,5 @@
 import type { Account, ReceiveInfo } from '@suite-common/wallet-types';
-
-import type { SignAddress } from './types';
+import type { SignAddress } from '@trezor/network-module-suite-types';
 
 const withCategory = (
     addresses: { address: string; path: string }[],

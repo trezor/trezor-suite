@@ -13,7 +13,7 @@ Every package name must start with `network-`, followed by the network name (for
 | Suite Common | `@trezor/network-<network>-suite-common` |
 | Suite Native | `@trezor/network-<network>-suite-native` |
 
-Suite and Suite Native packages may depend on Suite Common. Suite Common must remain platform-independent and must not depend on Suite or Suite Native.
+Network-specific technical-layer packages must remain independent and must not depend on one another. Shared behavior belongs in a lower-level package rather than being inherited or spread from another technical-layer module.
 
 All the 3rd party dependencies related to a network should be defined inside that network's directory. Moreover, currently they're defined only inside general, no-suffix packages, e.g. `network-cardano` (previously coins packages) and dynamically exported.
 

@@ -2,8 +2,7 @@ import { useMemo } from 'react';
 
 import { type ExtendedMessageDescriptor, useTranslation } from '@suite/intl';
 import { type Account, type ReceiveInfo } from '@suite-common/wallet-types';
-
-import type { SignVerifyNetworkConfig } from './types';
+import type { SignVerifyCapability } from '@trezor/network-module-suite-types';
 
 export type AddressItem = {
     label: string;
@@ -13,7 +12,7 @@ export type AddressItem = {
 export const useSignAddressOptions = (
     account: Account,
     touchedAddresses: ReceiveInfo[],
-    getSignAddresses: SignVerifyNetworkConfig['getSignAddresses'],
+    getSignAddresses: SignVerifyCapability['getSignAddresses'],
 ) => {
     const signAddresses = useMemo(
         () =>

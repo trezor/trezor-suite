@@ -1,6 +1,7 @@
 import type { BitcoinNetworkSuiteNetworkModule } from '@trezor/network-bitcoin-suite';
 import type { CardanoNetworkSuiteNetworkModule } from '@trezor/network-cardano-suite';
 import type { EthereumNetworkSuiteNetworkModule } from '@trezor/network-ethereum-suite';
+import type { SuiteNetworkModule } from '@trezor/network-module-suite-types';
 
 export type SuiteNetworkModules = {
     bitcoin: BitcoinNetworkSuiteNetworkModule;
@@ -8,9 +9,12 @@ export type SuiteNetworkModules = {
     cardano: CardanoNetworkSuiteNetworkModule;
 };
 
-export type SuiteNetworkModule = SuiteNetworkModules[keyof SuiteNetworkModules];
+type SuiteNetworkModuleSymbol<TNetworkModule> =
+    TNetworkModule extends SuiteNetworkModule<infer TSymbol> ? TSymbol : never;
 
-export type SuiteNetworkSymbol = ReturnType<SuiteNetworkModule['getSupportedNetworks']>[number];
+export type SuiteNetworkSymbol = SuiteNetworkModuleSymbol<
+    SuiteNetworkModules[keyof SuiteNetworkModules]
+>;
 
 export type StaticSuiteNetworkModulesDep = {
     suiteNetworkModules: SuiteNetworkModules;

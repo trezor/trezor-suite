@@ -2,14 +2,13 @@
     "extends": "../../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
-        { "path": "../../../suite/intl" },
-        { "path": "../../../suite/sign-verify" },
         {
             "path": "../../../suite-common/wallet-types"
         },
         {
             "path": "../../../suite-common/wallet-utils"
         },
+        { "path": "../../../suite/intl" },
         {
             "path": "../../../packages/components"
         },
@@ -20,7 +19,8 @@
         { "path": "../../../packages/dom-utils" },
         { "path": "../../../packages/icons" },
         {
-            "path": "../network-cardano-suite-common"
-        }
+            "path": "../../network-module/network-module-suite-types"
+        },
+        { "path": "../../../packages/utils" }
     ]
 }

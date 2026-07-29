@@ -1,10 +1,10 @@
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { configureMockStore } from '@suite-common/test-utils';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
+import type { SignVerifyCapability } from '@trezor/network-module-suite-types';
 import { ok } from '@trezor/type-utils';
 
 import { showAddress, sign, verify } from './signVerifyActions';
-import type { SignVerifyNetworkConfig } from './types';
 
 const PATH = 'PATH';
 const ADDRESS = 'ADDRESS';
@@ -14,7 +14,7 @@ const ACCOUNT = mockWalletAccount({ symbol: 'btc' });
 const showAddressFn = jest.fn(() => Promise.resolve(ok({ address: ADDRESS })));
 const signFn = jest.fn(() => Promise.resolve(ok({ address: ADDRESS, signature: SIGNATURE })));
 const verifyFn = jest.fn(() => Promise.resolve(ok({ message: MESSAGE })));
-const networkConfig: SignVerifyNetworkConfig = {
+const networkConfig: SignVerifyCapability = {
     getSignAddresses: () => [],
     showAddress: showAddressFn,
     sign: signFn,

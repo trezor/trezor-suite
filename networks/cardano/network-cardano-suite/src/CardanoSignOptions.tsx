@@ -1,6 +1,6 @@
 import { Translation } from '@suite/intl';
-import type { SignOptionComponentProps } from '@suite/sign-verify/network';
 import { SelectBar } from '@trezor/components';
+import type { SignOptionComponentProps } from '@trezor/network-module-suite-types';
 
 export const CardanoSignOptions = ({ field }: SignOptionComponentProps) => (
     <SelectBar

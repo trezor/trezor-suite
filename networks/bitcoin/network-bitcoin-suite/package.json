@@ -12,10 +12,10 @@
     },
     "dependencies": {
         "@suite/intl": "workspace:*",
-        "@suite/sign-verify": "workspace:*",
         "@trezor/components": "workspace:*",
         "@trezor/connect": "workspace:*",
-        "@trezor/network-bitcoin-suite-common": "workspace:*",
+        "@trezor/network-module-suite-types": "workspace:*",
+        "@trezor/utils": "workspace:*",
         "react": "19.2.3"
     }
 }

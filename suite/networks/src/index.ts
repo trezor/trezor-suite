@@ -6,7 +6,6 @@ export {
 } from './SuiteNetworkModuleRepository';
 export {
     type StaticSuiteNetworkModulesDep,
-    type SuiteNetworkModule,
     type SuiteNetworkModules,
     type SuiteNetworkSymbol,
 } from './SuiteNetworkModules';

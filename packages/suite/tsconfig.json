@@ -196,8 +196,8 @@
             "path": "../../suite/metadata-migration"
         },
         { "path": "../../suite/modal" },
-        { "path": "../../suite/nfc" },
         { "path": "../../suite/networks" },
+        { "path": "../../suite/nfc" },
         {
             "path": "../../suite/onboarding-components"
         },

@@ -1,14 +1,18 @@
-import { type SignVerifyNetworkConfig, formatSignedMessage } from '@suite/sign-verify/network';
 import type TrezorConnect from '@trezor/connect';
+import type {
+    SignVerifyCapability,
+    SignVerifyCapabilityHelpers,
+} from '@trezor/network-module-suite-types';
 
 type EthereumSignVerifyConnect = Pick<
     typeof TrezorConnect,
     'ethereumGetAddress' | 'ethereumSignMessage' | 'ethereumVerifyMessage'
 >;
 
-export const createEthereumSignVerifyConfig = (
+export const createEthereumSignVerifyCapability = (
     trezorConnect: EthereumSignVerifyConnect,
-): SignVerifyNetworkConfig => ({
+    { formatSignedMessage }: Pick<SignVerifyCapabilityHelpers, 'formatSignedMessage'>,
+): SignVerifyCapability => ({
     getSignAddresses: account => [
         {
             path: account.path,

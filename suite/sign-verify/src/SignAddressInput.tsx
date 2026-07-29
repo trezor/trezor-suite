@@ -1,8 +1,8 @@
 import { Address } from '@suite/address';
 import { type Account, type ReceiveInfo } from '@suite-common/wallet-types';
 import { Box, Row, Select, type SelectProps, Text } from '@trezor/components';
+import type { SignVerifyCapability } from '@trezor/network-module-suite-types';
 
-import type { SignVerifyNetworkConfig } from './types';
 import { type AddressItem, useSignAddressOptions } from './useSignAddressOptions';
 
 const optionToAddress = (option: AddressItem | null) =>
@@ -20,7 +20,7 @@ const formatOptionLabel = (option: AddressItem) => (
 type SignAddressInputProps = {
     account: Account;
     touchedAddresses: ReceiveInfo[];
-    getSignAddresses: SignVerifyNetworkConfig['getSignAddresses'];
+    getSignAddresses: SignVerifyCapability['getSignAddresses'];
 } & SelectProps;
 
 export const SignAddressInput = ({

@@ -15057,12 +15057,12 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite/networks@workspace:suite/networks"
   dependencies:
-    "@suite-common/networks": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/network-bitcoin-suite": "workspace:*"
     "@trezor/network-cardano-suite": "workspace:*"
     "@trezor/network-ethereum-suite": "workspace:*"
+    "@trezor/network-module-suite-types": "workspace:*"
   languageName: unknown
   linkType: soft
 
@@ -15241,6 +15241,7 @@ __metadata:
     "@trezor/components": "workspace:*"
     "@trezor/dom-utils": "workspace:*"
     "@trezor/icons": "workspace:*"
+    "@trezor/network-module-suite-types": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@types/react": "npm:19.2.14"
     react: "npm:19.2.3"
@@ -16585,10 +16586,10 @@ __metadata:
   resolution: "@trezor/network-bitcoin-suite@workspace:networks/bitcoin/network-bitcoin-suite"
   dependencies:
     "@suite/intl": "workspace:*"
-    "@suite/sign-verify": "workspace:*"
     "@trezor/components": "workspace:*"
     "@trezor/connect": "workspace:*"
-    "@trezor/network-bitcoin-suite-common": "workspace:*"
+    "@trezor/network-module-suite-types": "workspace:*"
+    "@trezor/utils": "workspace:*"
     react: "npm:19.2.3"
   languageName: unknown
   linkType: soft
@@ -16612,13 +16613,13 @@ __metadata:
     "@suite-common/wallet-types": "workspace:*"
     "@suite-common/wallet-utils": "workspace:*"
     "@suite/intl": "workspace:*"
-    "@suite/sign-verify": "workspace:*"
     "@trezor/components": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/connect-common": "workspace:*"
     "@trezor/dom-utils": "workspace:*"
     "@trezor/icons": "workspace:*"
-    "@trezor/network-cardano-suite-common": "workspace:*"
+    "@trezor/network-module-suite-types": "workspace:*"
+    "@trezor/utils": "workspace:*"
     react: "npm:19.2.3"
   languageName: unknown
   linkType: soft
@@ -16646,16 +16647,28 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/network-ethereum-suite@workspace:networks/ethereum/network-ethereum-suite"
   dependencies:
-    "@suite/sign-verify": "workspace:*"
     "@trezor/connect": "workspace:*"
-    "@trezor/network-ethereum-suite-common": "workspace:*"
-    react: "npm:19.2.3"
+    "@trezor/network-module-suite-types": "workspace:*"
+    "@trezor/utils": "workspace:*"
   languageName: unknown
   linkType: soft
 
 "@trezor/network-module-suite-common-types@workspace:*, @trezor/network-module-suite-common-types@workspace:networks/network-module/network-module-suite-common-types":
   version: 0.0.0-use.local
   resolution: "@trezor/network-module-suite-common-types@workspace:networks/network-module/network-module-suite-common-types"
+  languageName: unknown
+  linkType: soft
+
+"@trezor/network-module-suite-types@workspace:*, @trezor/network-module-suite-types@workspace:networks/network-module/network-module-suite-types":
+  version: 0.0.0-use.local
+  resolution: "@trezor/network-module-suite-types@workspace:networks/network-module/network-module-suite-types"
+  dependencies:
+    "@suite-common/suite-types": "workspace:*"
+    "@suite-common/wallet-config": "workspace:*"
+    "@suite-common/wallet-types": "workspace:*"
+    "@suite/intl": "workspace:*"
+    "@trezor/type-utils": "workspace:*"
+    react: "npm:19.2.3"
   languageName: unknown
   linkType: soft
 

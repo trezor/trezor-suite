@@ -1,35 +1,38 @@
-import { SignVerify } from '@suite/sign-verify';
-import type { SignVerifyNetworkCapability } from '@suite/sign-verify/network';
 import type TrezorConnect from '@trezor/connect';
-import type { CardanoNetworkSuiteCommonNetworkModule } from '@trezor/network-cardano-suite-common';
+import type {
+    SignVerifyCapabilityHelpers,
+    SuiteNetworkModule,
+} from '@trezor/network-module-suite-types';
 
 import { CardanoSignAdditionalResult } from './CardanoSignAdditionalResult';
 import { CardanoSignOptions } from './CardanoSignOptions';
-import { createCardanoSignVerifyConfig } from './createCardanoSignVerifyConfig';
+import { createCardanoSignVerifyCapability } from './createCardanoSignVerifyCapability';
+import {
+    type CardanoSuiteNetworkSymbol,
+    getSupportedNetworks,
+    isSupportedNetwork,
+} from './supportedNetworks';
 
-export type CardanoNetworkSuiteNetworkModule = CardanoNetworkSuiteCommonNetworkModule & {
-    signVerify: SignVerifyNetworkCapability;
-};
+export type CardanoNetworkSuiteNetworkModule = SuiteNetworkModule<CardanoSuiteNetworkSymbol>;
 
 export type CardanoNetworkSuiteNetworkModuleDeps = {
-    suiteCommonNetworkModule: CardanoNetworkSuiteCommonNetworkModule;
     trezorConnect: Pick<typeof TrezorConnect, 'cardanoSignMessage'>;
+    signVerifyHelpers: Pick<SignVerifyCapabilityHelpers, 'getAccountAddressesForSigning'>;
 };
 
 export const createCardanoSuiteNetworkModule = ({
-    suiteCommonNetworkModule,
     trezorConnect,
+    signVerifyHelpers,
 }: CardanoNetworkSuiteNetworkModuleDeps): CardanoNetworkSuiteNetworkModule => {
-    const networkConfig = {
-        ...createCardanoSignVerifyConfig(trezorConnect),
+    const signVerify = {
+        ...createCardanoSignVerifyCapability(trezorConnect, signVerifyHelpers),
         SignOptions: CardanoSignOptions,
         SignAdditionalResult: CardanoSignAdditionalResult,
     };
 
     return {
-        ...suiteCommonNetworkModule,
-        signVerify: {
-            Component: props => <SignVerify {...props} networkConfig={networkConfig} />,
-        },
+        getSupportedNetworks,
+        isSupportedNetwork,
+        signVerify,
     };
 };

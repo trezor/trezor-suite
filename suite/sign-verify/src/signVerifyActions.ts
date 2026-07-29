@@ -4,13 +4,13 @@ import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { type WalletSettingsRootState, selectAddressDisplayType } from '@suite-common/wallet-core';
 import { type Account, AddressDisplayOptions } from '@suite-common/wallet-types';
+import type {
+    SignVerifyCapability,
+    SignVerifyOperationParams,
+    SignVerifyOperationResult,
+} from '@trezor/network-module-suite-types';
 
 import * as SIGN_VERIFY from './signVerifyConstants';
-import type {
-    SignVerifyNetworkConfig,
-    SignVerifyNetworkOperationParams,
-    SignVerifyOperationResult,
-} from './types';
 
 export type SignVerifyRootState = DeviceRootState & WalletSettingsRootState;
 
@@ -28,7 +28,7 @@ const throwWhenFailed = <T>(response: SignVerifyOperationResult<T>) =>
 const getStateParams = (
     account: Account,
     getState: GetState,
-): Promise<SignVerifyNetworkOperationParams> => {
+): Promise<SignVerifyOperationParams> => {
     const device = selectSelectedDevice(getState());
     const addressDisplayType = selectAddressDisplayType(getState());
 
@@ -87,7 +87,7 @@ const onError =
     };
 
 export const showAddress =
-    (networkConfig: SignVerifyNetworkConfig, account: Account, address: string, path: string) =>
+    (networkConfig: SignVerifyCapability, account: Account, address: string, path: string) =>
     (dispatch: Dispatch, getState: GetState) =>
         getStateParams(account, getState)
             .then(params =>
@@ -100,7 +100,7 @@ export const showAddress =
 
 export const sign =
     (
-        networkConfig: SignVerifyNetworkConfig,
+        networkConfig: SignVerifyCapability,
         account: Account,
         path: string | number[],
         message: string,
@@ -124,7 +124,7 @@ export const sign =
 
 export const verify =
     (
-        networkConfig: SignVerifyNetworkConfig,
+        networkConfig: SignVerifyCapability,
         account: Account,
         address: string,
         message: string,

@@ -3,12 +3,11 @@ import { useDispatch } from 'react-redux';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { type Network } from '@suite-common/wallet-config';
 import { copyToClipboard } from '@trezor/dom-utils';
-
-import type { SignVerifyNetworkConfig, SignedMessageData } from './types';
+import type { SignVerifyCapability, SignedMessageData } from '@trezor/network-module-suite-types';
 
 export const useCopySignedMessage = <T extends SignedMessageData>(
     { message, address, signature }: T,
-    formatMessage: SignVerifyNetworkConfig['formatSignedMessage'],
+    formatMessage: SignVerifyCapability['formatSignedMessage'],
     network?: Network,
 ) => {
     const dispatch = useDispatch();

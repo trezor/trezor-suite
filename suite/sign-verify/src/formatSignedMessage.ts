@@ -1,4 +1,4 @@
-import type { SignedMessageData } from './types';
+import type { SignedMessageData } from '@trezor/network-module-suite-types';
 
 export const formatSignedMessage = (
     { message, address, signature }: SignedMessageData,

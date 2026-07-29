@@ -30,6 +30,7 @@ import {
     selectInvityServerEnvironment,
     selectLanguage,
 } from '@suite/settings';
+import { formatSignedMessage, getAccountAddressesForSigning } from '@suite/sign-verify';
 import { createSuiteSyncDesktopCompositionRoot } from '@suite/suite-sync';
 import { createAddressValidator } from '@suite-common/address';
 import { createBip329CompositionRoot } from '@suite-common/bip329';
@@ -179,8 +180,11 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
     const networkModules = createNetworksCompositionRoot();
     const networkModuleRepository = createNetworkModuleRepository({ networkModules });
     const suiteNetworkModules = createSuiteNetworksCompositionRoot({
-        suiteCommonNetworkModules: networkModules,
         trezorConnect: TrezorConnect,
+        signVerifyHelpers: {
+            formatSignedMessage,
+            getAccountAddressesForSigning,
+        },
     });
     const suiteNetworkModuleRepository = createSuiteNetworkModuleRepository({
         suiteNetworkModules,

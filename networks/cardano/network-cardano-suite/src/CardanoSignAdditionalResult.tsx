@@ -1,8 +1,8 @@
 import { Translation, useTranslation } from '@suite/intl';
-import type { SignAdditionalResultComponentProps } from '@suite/sign-verify/network';
 import { Button, Input } from '@trezor/components';
 import { copyToClipboard } from '@trezor/dom-utils';
 import { CopyIcon } from '@trezor/icons';
+import type { SignAdditionalResultComponentProps } from '@trezor/network-module-suite-types';
 
 export const CardanoSignAdditionalResult = ({
     value,

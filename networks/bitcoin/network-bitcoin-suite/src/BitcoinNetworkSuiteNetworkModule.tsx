@@ -1,33 +1,36 @@
-import { SignVerify } from '@suite/sign-verify';
-import type { SignVerifyNetworkCapability } from '@suite/sign-verify/network';
 import type TrezorConnect from '@trezor/connect';
-import type { BitcoinNetworkSuiteCommonNetworkModule } from '@trezor/network-bitcoin-suite-common';
+import type {
+    SignVerifyCapabilityHelpers,
+    SuiteNetworkModule,
+} from '@trezor/network-module-suite-types';
 
 import { BitcoinSignAddressOptions } from './BitcoinSignAddressOptions';
-import { createBitcoinSignVerifyConfig } from './createBitcoinSignVerifyConfig';
+import { createBitcoinSignVerifyCapability } from './createBitcoinSignVerifyCapability';
+import {
+    type BitcoinSuiteNetworkSymbol,
+    getSupportedNetworks,
+    isSupportedNetwork,
+} from './supportedNetworks';
 
-export type BitcoinNetworkSuiteNetworkModule = BitcoinNetworkSuiteCommonNetworkModule & {
-    signVerify: SignVerifyNetworkCapability;
-};
+export type BitcoinNetworkSuiteNetworkModule = SuiteNetworkModule<BitcoinSuiteNetworkSymbol>;
 
 export type BitcoinNetworkSuiteNetworkModuleDeps = {
-    suiteCommonNetworkModule: BitcoinNetworkSuiteCommonNetworkModule;
     trezorConnect: Pick<typeof TrezorConnect, 'getAddress' | 'signMessage' | 'verifyMessage'>;
+    signVerifyHelpers: SignVerifyCapabilityHelpers;
 };
 
 export const createBitcoinSuiteNetworkModule = ({
-    suiteCommonNetworkModule,
     trezorConnect,
+    signVerifyHelpers,
 }: BitcoinNetworkSuiteNetworkModuleDeps): BitcoinNetworkSuiteNetworkModule => {
-    const networkConfig = {
-        ...createBitcoinSignVerifyConfig(trezorConnect),
+    const signVerify = {
+        ...createBitcoinSignVerifyCapability(trezorConnect, signVerifyHelpers),
         SignAddressOptions: BitcoinSignAddressOptions,
     };
 
     return {
-        ...suiteCommonNetworkModule,
-        signVerify: {
-            Component: props => <SignVerify {...props} networkConfig={networkConfig} />,
-        },
+        getSupportedNetworks,
+        isSupportedNetwork,
+        signVerify,
     };
 };

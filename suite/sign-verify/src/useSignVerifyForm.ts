@@ -8,8 +8,7 @@ import { useServices } from '@suite-common/dependency-injection';
 import { yup } from '@suite-common/validators';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
-
-import type { SignVerifyNetworkConfig } from './types';
+import type { SignVerifyCapability } from '@trezor/network-module-suite-types';
 
 export const MAX_LENGTH_MESSAGE = 1024;
 export const MAX_LENGTH_SIGNATURE = 255;
@@ -74,7 +73,7 @@ const DEFAULT_VALUES: SignVerifyFields = {
 export const useSignVerifyForm = (
     isSignPage: boolean,
     account: Account,
-    networkConfig: SignVerifyNetworkConfig,
+    networkConfig: SignVerifyCapability,
 ) => {
     const { addressValidator } = useServices(selectAddressValidatorDep);
     const { register, handleSubmit, formState, reset, setValue, clearErrors, control, trigger } =

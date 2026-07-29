@@ -2,10 +2,10 @@
     "extends": "../../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
-        { "path": "../../../suite/sign-verify" },
         { "path": "../../../packages/connect" },
         {
-            "path": "../network-ethereum-suite-common"
-        }
+            "path": "../../network-module/network-module-suite-types"
+        },
+        { "path": "../../../packages/utils" }
     ]
 }

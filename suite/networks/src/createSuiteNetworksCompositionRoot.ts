@@ -1,30 +1,30 @@
-import type { NetworkModules } from '@suite-common/networks';
 import type TrezorConnect from '@trezor/connect';
 import { createBitcoinSuiteNetworkModule } from '@trezor/network-bitcoin-suite';
 import { createCardanoSuiteNetworkModule } from '@trezor/network-cardano-suite';
 import { createEthereumSuiteNetworkModule } from '@trezor/network-ethereum-suite';
+import type { SignVerifyCapabilityHelpers } from '@trezor/network-module-suite-types';
 
 import type { SuiteNetworkModules } from './SuiteNetworkModules';
 
 export type CreateSuiteNetworksCompositionRootDeps = {
-    suiteCommonNetworkModules: NetworkModules;
     trezorConnect: typeof TrezorConnect;
+    signVerifyHelpers: SignVerifyCapabilityHelpers;
 };
 
 export const createSuiteNetworksCompositionRoot = ({
-    suiteCommonNetworkModules,
     trezorConnect,
+    signVerifyHelpers,
 }: CreateSuiteNetworksCompositionRootDeps): SuiteNetworkModules => ({
     bitcoin: createBitcoinSuiteNetworkModule({
-        suiteCommonNetworkModule: suiteCommonNetworkModules.bitcoin,
         trezorConnect,
+        signVerifyHelpers,
     }),
     ethereum: createEthereumSuiteNetworkModule({
-        suiteCommonNetworkModule: suiteCommonNetworkModules.ethereum,
         trezorConnect,
+        signVerifyHelpers,
     }),
     cardano: createCardanoSuiteNetworkModule({
-        suiteCommonNetworkModule: suiteCommonNetworkModules.cardano,
         trezorConnect,
+        signVerifyHelpers,
     }),
 });

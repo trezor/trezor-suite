@@ -1,32 +1,35 @@
-import { SignVerify } from '@suite/sign-verify';
-import type { SignVerifyNetworkCapability } from '@suite/sign-verify/network';
 import type TrezorConnect from '@trezor/connect';
-import type { EthereumNetworkSuiteCommonNetworkModule } from '@trezor/network-ethereum-suite-common';
+import type {
+    SignVerifyCapabilityHelpers,
+    SuiteNetworkModule,
+} from '@trezor/network-module-suite-types';
 
-import { createEthereumSignVerifyConfig } from './createEthereumSignVerifyConfig';
+import { createEthereumSignVerifyCapability } from './createEthereumSignVerifyCapability';
+import {
+    type EthereumSuiteNetworkSymbol,
+    getSupportedNetworks,
+    isSupportedNetwork,
+} from './supportedNetworks';
 
-export type EthereumNetworkSuiteNetworkModule = EthereumNetworkSuiteCommonNetworkModule & {
-    signVerify: SignVerifyNetworkCapability;
-};
+export type EthereumNetworkSuiteNetworkModule = SuiteNetworkModule<EthereumSuiteNetworkSymbol>;
 
 export type EthereumNetworkSuiteNetworkModuleDeps = {
-    suiteCommonNetworkModule: EthereumNetworkSuiteCommonNetworkModule;
     trezorConnect: Pick<
         typeof TrezorConnect,
         'ethereumGetAddress' | 'ethereumSignMessage' | 'ethereumVerifyMessage'
     >;
+    signVerifyHelpers: Pick<SignVerifyCapabilityHelpers, 'formatSignedMessage'>;
 };
 
 export const createEthereumSuiteNetworkModule = ({
-    suiteCommonNetworkModule,
     trezorConnect,
+    signVerifyHelpers,
 }: EthereumNetworkSuiteNetworkModuleDeps): EthereumNetworkSuiteNetworkModule => {
-    const networkConfig = createEthereumSignVerifyConfig(trezorConnect);
+    const signVerify = createEthereumSignVerifyCapability(trezorConnect, signVerifyHelpers);
 
     return {
-        ...suiteCommonNetworkModule,
-        signVerify: {
-            Component: props => <SignVerify {...props} networkConfig={networkConfig} />,
-        },
+        getSupportedNetworks,
+        isSupportedNetwork,
+        signVerify,
     };
 };

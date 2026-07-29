@@ -1,18 +1,18 @@
-import {
-    type SignVerifyNetworkConfig,
-    formatSignedMessage,
-    getAccountAddressesForSigning,
-} from '@suite/sign-verify/network';
 import type TrezorConnect from '@trezor/connect';
+import type {
+    SignVerifyCapability,
+    SignVerifyCapabilityHelpers,
+} from '@trezor/network-module-suite-types';
 
 type BitcoinSignVerifyConnect = Pick<
     typeof TrezorConnect,
     'getAddress' | 'signMessage' | 'verifyMessage'
 >;
 
-export const createBitcoinSignVerifyConfig = (
+export const createBitcoinSignVerifyCapability = (
     trezorConnect: BitcoinSignVerifyConnect,
-): SignVerifyNetworkConfig => ({
+    { formatSignedMessage, getAccountAddressesForSigning }: SignVerifyCapabilityHelpers,
+): SignVerifyCapability => ({
     getSignAddresses: getAccountAddressesForSigning,
     sign: ({ device, path, coin, message, hex, signOption }) =>
         trezorConnect.signMessage({

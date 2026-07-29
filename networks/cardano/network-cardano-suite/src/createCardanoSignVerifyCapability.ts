@@ -1,7 +1,3 @@
-import {
-    type SignVerifyNetworkConfig,
-    getAccountAddressesForSigning,
-} from '@suite/sign-verify/network';
 import type { AccountWithNetworkType } from '@suite-common/wallet-types';
 import {
     getAddressParameters,
@@ -13,12 +9,19 @@ import {
 import type TrezorConnect from '@trezor/connect';
 import { PROTO } from '@trezor/connect';
 import { getSerializedPath } from '@trezor/connect-common';
+import type {
+    SignVerifyCapability,
+    SignVerifyCapabilityHelpers,
+} from '@trezor/network-module-suite-types';
 
 type CardanoSignVerifyConnect = Pick<typeof TrezorConnect, 'cardanoSignMessage'>;
 
-export const createCardanoSignVerifyConfig = (
+export const createCardanoSignVerifyCapability = (
     trezorConnect: CardanoSignVerifyConnect,
-): SignVerifyNetworkConfig => ({
+    {
+        getAccountAddressesForSigning,
+    }: Pick<SignVerifyCapabilityHelpers, 'getAccountAddressesForSigning'>,
+): SignVerifyCapability => ({
     getSignAddresses: (account, touchedAddresses) => {
         const cardanoAccount = account as AccountWithNetworkType<'cardano'>;
 

@@ -1,8 +1,6 @@
-import type {
-    StaticSuiteNetworkModulesDep,
-    SuiteNetworkModule,
-    SuiteNetworkSymbol,
-} from './SuiteNetworkModules';
+import type { SuiteNetworkModule } from '@trezor/network-module-suite-types';
+
+import type { StaticSuiteNetworkModulesDep, SuiteNetworkSymbol } from './SuiteNetworkModules';
 
 export type SuiteNetworkModuleRepository = {
     get: (symbol: string) => SuiteNetworkModule | undefined;

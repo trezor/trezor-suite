@@ -12,11 +12,11 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
-        "@suite-common/networks": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/network-bitcoin-suite": "workspace:*",
         "@trezor/network-cardano-suite": "workspace:*",
-        "@trezor/network-ethereum-suite": "workspace:*"
+        "@trezor/network-ethereum-suite": "workspace:*",
+        "@trezor/network-module-suite-types": "workspace:*"
     },
     "devDependencies": {
         "@suite-common/wallet-config": "workspace:*"

@@ -32,6 +32,9 @@
         { "path": "../../packages/components" },
         { "path": "../../packages/dom-utils" },
         { "path": "../../packages/icons" },
+        {
+            "path": "../../networks/network-module/network-module-suite-types"
+        },
         { "path": "../../packages/type-utils" },
         {
             "path": "../../suite-common/test-utils"

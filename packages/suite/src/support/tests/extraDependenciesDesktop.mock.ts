@@ -3,6 +3,7 @@ import {
     createSuiteNetworkModuleRepository,
     createSuiteNetworksCompositionRoot,
 } from '@suite/networks';
+import { formatSignedMessage, getAccountAddressesForSigning } from '@suite/sign-verify';
 import { createAddressValidator } from '@suite-common/address';
 import {
     createNetworkModuleRepository,
@@ -20,8 +21,11 @@ type ExtraDependenciesSuiteMock = ExtraDependenciesStatic & { services: SuiteSer
 const networkModules = createNetworksCompositionRoot();
 const networkModuleRepository = createNetworkModuleRepository({ networkModules });
 const suiteNetworkModules = createSuiteNetworksCompositionRoot({
-    suiteCommonNetworkModules: networkModules,
     trezorConnect: TrezorConnect,
+    signVerifyHelpers: {
+        formatSignedMessage,
+        getAccountAddressesForSigning,
+    },
 });
 const suiteNetworkModuleRepository = createSuiteNetworkModuleRepository({
     suiteNetworkModules,
