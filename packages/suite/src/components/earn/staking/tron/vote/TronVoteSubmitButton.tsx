@@ -17,11 +17,13 @@ export const TronVoteSubmitButton = () => {
     const { device, isLocked } = useDevice();
     const { analytics } = useServices(selectDesktopAnalyticsDep);
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
-    const { account, form, actions } = useTronStakeContext();
+    const { account, form, actions, fees } = useTronStakeContext();
     const { isSubmitting, pendingTxid, submitAction } = actions;
     const { control } = form.methods;
 
     const { isVotingDisabled, votingMessageContent } = useMessageSystemStaking(account.symbol);
+
+    const hasInsufficientFunds = fees.composedLevels?.normal?.type === 'error';
 
     const representative = useWatch({ control, name: 'representative' });
     const customRepresentativeAddress = useWatch({ control, name: 'customRepresentativeAddress' });
@@ -67,6 +69,7 @@ export const TronVoteSubmitButton = () => {
                     !isRepresentativeSelected ||
                     isSubmitting ||
                     isDeviceLocked ||
+                    hasInsufficientFunds ||
                     !!pendingTxid
                 }
                 isLoading={isSubmitting || isDiscoveryRunning}

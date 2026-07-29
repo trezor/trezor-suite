@@ -3,11 +3,10 @@ import { Card, Column } from '@trezor/components';
 import { Fees } from 'src/components/wallet/Fees/Fees';
 
 import { useTronStakeContext } from './TronStakeContext';
-import { useTronStakeFees } from './hooks/useTronStakeFees';
 
 export const TronStakeFees = () => {
-    const { account } = useTronStakeContext();
-    const { feeInfo, composedLevels } = useTronStakeFees();
+    const { account, fees } = useTronStakeContext();
+    const { feeInfo, composedLevels } = fees;
 
     return (
         <Card paddingType="none">

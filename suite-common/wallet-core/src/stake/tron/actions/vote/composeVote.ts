@@ -6,6 +6,7 @@ import {
 } from '@suite-common/wallet-types';
 import { computeBandwidthFeeLevel } from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
+import { BigNumber } from '@trezor/utils';
 
 import { buildVoteContract } from './voteContract';
 import {
@@ -59,6 +60,10 @@ export const composeTronVoteFeeLevelsThunk = createThunk<
         });
 
         const feeInSun = feeLevel.feePerTx || '0';
+
+        if (new BigNumber(account.availableBalance).lt(feeInSun)) {
+            return { normal: { type: 'error', error: 'AMOUNT_IS_NOT_ENOUGH' } };
+        }
 
         const tx: PrecomposedTransactionFinal = {
             type: 'final',
