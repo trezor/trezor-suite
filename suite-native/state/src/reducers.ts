@@ -17,6 +17,7 @@ import { suiteSyncQuotaManagerReducer } from '@suite-common/suite-sync-quota-man
 import { prepareThpReducer } from '@suite-common/thp';
 import { createNotificationsReducer } from '@suite-common/toast-notifications';
 import { prepareTokenDefinitionsReducer } from '@suite-common/token-definitions';
+import { networkSymbolCollection } from '@suite-common/wallet-config';
 import {
     accountsRefreshTimeReducer,
     feesReducer,
@@ -118,7 +119,7 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
 
     const blockchainPersistedReducer = preparePersistReducer({
         reducer: blockchainReducer,
-        persistedKeys: ['btc'],
+        persistedKeys: networkSymbolCollection,
         key: 'blockchain',
         version: 1,
         transforms: [blockchainPersistTransform],
