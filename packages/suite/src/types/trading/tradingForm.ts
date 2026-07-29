@@ -8,7 +8,6 @@ import type {
     ExchangeTrade,
     ExchangeTradeQuoteRequest,
     FiatCurrencyCode,
-    SellFiatTrade,
     SellFiatTradeQuoteRequest,
 } from 'invity-api';
 
@@ -134,7 +133,6 @@ export interface TradingSellFormContextProps
     composedTransactionInfo: TradingComposedTransactionInfo;
     quotesRequest: SellFiatTradeQuoteRequest | undefined;
     feeInfo: FeeInfo;
-    selectedQuote?: SellFiatTrade;
     trade?: TradingTransactionSell;
     suiteReceiveAccounts?: AppState['wallet']['accounts'];
     // form - additional helpers for form
@@ -170,7 +168,6 @@ export interface TradingExchangeFormContextProps
         helpers: TradingUseFormActionsReturnProps;
     };
 
-    selectedQuote?: ExchangeTrade;
     trade?: TradingTransactionExchange;
     suiteReceiveAccounts?: AccountsState;
     feeInfo: FeeInfo;

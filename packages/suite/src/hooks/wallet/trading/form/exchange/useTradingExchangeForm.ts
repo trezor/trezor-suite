@@ -252,7 +252,6 @@ export const useTradingExchangeForm = (): TradingExchangeFormContextProps => {
         amountLimits,
         network,
         receiveAccount,
-        selectedQuote,
         verifiedAddress,
         shouldSendInSats,
         trade,

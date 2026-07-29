@@ -13,7 +13,6 @@ import {
     selectTradingSellIsFromRedirect,
     selectTradingSellIsLoading,
     selectTradingSellQuotesRequest,
-    selectTradingSellSelectedQuote,
     selectTradingSellTransactionId,
     selectTradingSendAccount,
     tradingSellActions,
@@ -43,7 +42,6 @@ export const useTradingSellForm = (): TradingSellFormContextProps => {
     const quotesRequest = useSelector(selectTradingSellQuotesRequest);
     const isFromRedirect = useSelector(selectTradingSellIsFromRedirect);
     const transactionId = useSelector(selectTradingSellTransactionId);
-    const selectedQuote = useSelector(selectTradingSellSelectedQuote);
     const sellInfo = useSelector(selectTradingSellInfo);
     const amountLimits = useSelector(selectTradingSellAmountLimits);
 
@@ -184,7 +182,6 @@ export const useTradingSellForm = (): TradingSellFormContextProps => {
         isComposing,
         amountLimits,
         network,
-        selectedQuote,
         shouldSendInSats,
         trade,
         isAmountEmpty,
