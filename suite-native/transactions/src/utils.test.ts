@@ -4,7 +4,7 @@ import { asTxTargetId } from '@suite-common/wallet-types';
 import {
     transactionWithChangeAddress,
     transactionWithTargetInOutputs,
-} from './fixtures/transactions';
+} from './__fixtures__/transactions';
 import { type VinVoutAddress } from './types';
 import {
     groupTargetOutputs,
