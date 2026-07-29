@@ -7,7 +7,7 @@ import {
     mergePermissions,
     permissionsAreCovered,
     sanitizeRequestedPermissions,
-} from '../permissions';
+} from './permissions';
 
 describe('sanitizeRequestedPermissions', () => {
     it('returns an empty array for undefined input', () => {
