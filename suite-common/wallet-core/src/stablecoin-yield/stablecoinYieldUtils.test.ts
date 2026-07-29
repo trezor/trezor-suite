@@ -1,4 +1,5 @@
 import { Calldata, asEvmAddress } from '@suite-common/calldata';
+import type { YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
 
 import type { YieldPendingTransactionState } from './stablecoinYieldTypes';
 import {
@@ -12,7 +13,10 @@ import {
     getWrappableNativeBalance,
     getYieldDepositableBalance,
     getYieldFlowStepSequence,
+    getYieldVaultForOutputToken,
+    getYieldVaultsForInputToken,
     getYieldWrapAmount,
+    isYieldVaultOperational,
     splitYieldPendingTransaction,
 } from './stablecoinYieldUtils';
 
@@ -419,6 +423,243 @@ describe('stablecoinYieldUtils', () => {
             expect(getYieldWrapAmount({ totalAmount: '1', matchedWethBalance: undefined })).toBe(
                 '1',
             );
+        });
+    });
+
+    describe('vault token matching', () => {
+        const USDC_ADDRESS = '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48';
+        const USDT_ADDRESS = '0xdAC17F958D2ee523a2206206994597C13D831ec7';
+        const RECEIPT_ADDRESS = '0x58d97b57bb95320f9a05dc918aef65434969c2b2';
+
+        const createVaultFixture = ({
+            network = 'ethereum',
+            tokenAddress,
+            tokenSymbol = 'USDC',
+            tokenDecimals = 6,
+            outputTokenAddress,
+            underMaintenance = false,
+            deprecated = false,
+            enter = true,
+        }: {
+            network?: YieldDtoV2['network'];
+            tokenAddress?: string;
+            tokenSymbol?: string;
+            tokenDecimals?: number;
+            outputTokenAddress?: string;
+            underMaintenance?: boolean;
+            deprecated?: boolean;
+            enter?: boolean;
+        }) =>
+            ({
+                metadata: { name: 'Vault', underMaintenance, deprecated },
+                network,
+                status: { enter, exit: true },
+                token: {
+                    symbol: tokenSymbol,
+                    network,
+                    name: tokenSymbol,
+                    decimals: tokenDecimals,
+                    address: tokenAddress,
+                },
+                outputToken: outputTokenAddress
+                    ? {
+                          symbol: `tr${tokenSymbol}`,
+                          network,
+                          name: `Vault ${tokenSymbol}`,
+                          decimals: 18,
+                          address: outputTokenAddress,
+                      }
+                    : undefined,
+            }) satisfies Pick<
+                YieldDtoV2,
+                'metadata' | 'network' | 'status' | 'token' | 'outputToken'
+            >;
+
+        const heldUsdc = { address: USDC_ADDRESS, symbol: 'USDC', decimals: 6 };
+
+        describe('isYieldVaultOperational', () => {
+            it('accepts a vault that is neither under maintenance nor deprecated', () => {
+                expect(isYieldVaultOperational(createVaultFixture({}))).toBe(true);
+            });
+
+            it('rejects a vault under maintenance', () => {
+                expect(
+                    isYieldVaultOperational(createVaultFixture({ underMaintenance: true })),
+                ).toBe(false);
+            });
+
+            it('rejects a deprecated vault', () => {
+                expect(isYieldVaultOperational(createVaultFixture({ deprecated: true }))).toBe(
+                    false,
+                );
+            });
+        });
+
+        describe('getYieldVaultsForInputToken', () => {
+            it('returns vaults whose input token matches the held token regardless of address case', () => {
+                const usdcVault = createVaultFixture({
+                    tokenAddress: USDC_ADDRESS.toLowerCase(),
+                });
+                const usdtVault = createVaultFixture({
+                    tokenAddress: USDT_ADDRESS,
+                    tokenSymbol: 'USDT',
+                });
+
+                expect(
+                    getYieldVaultsForInputToken({
+                        vaults: [usdcVault, usdtVault],
+                        networkSymbol: 'eth',
+                        token: heldUsdc,
+                    }),
+                ).toEqual([usdcVault]);
+            });
+
+            it('filters out vaults on other networks', () => {
+                const polygonVault = createVaultFixture({
+                    network: 'polygon',
+                    tokenAddress: USDC_ADDRESS,
+                });
+
+                expect(
+                    getYieldVaultsForInputToken({
+                        vaults: [polygonVault],
+                        networkSymbol: 'eth',
+                        token: heldUsdc,
+                    }),
+                ).toEqual([]);
+            });
+
+            it('filters out vaults under maintenance or deprecated', () => {
+                const maintainedVault = createVaultFixture({
+                    tokenAddress: USDC_ADDRESS,
+                    underMaintenance: true,
+                });
+                const deprecatedVault = createVaultFixture({
+                    tokenAddress: USDC_ADDRESS,
+                    deprecated: true,
+                });
+
+                expect(
+                    getYieldVaultsForInputToken({
+                        vaults: [maintainedVault, deprecatedVault],
+                        networkSymbol: 'eth',
+                        token: heldUsdc,
+                    }),
+                ).toEqual([]);
+            });
+
+            it('filters out vaults with deposits closed', () => {
+                const closedVault = createVaultFixture({
+                    tokenAddress: USDC_ADDRESS,
+                    enter: false,
+                });
+
+                expect(
+                    getYieldVaultsForInputToken({
+                        vaults: [closedVault],
+                        networkSymbol: 'eth',
+                        token: heldUsdc,
+                    }),
+                ).toEqual([]);
+            });
+
+            it('matches by symbol and decimals when the vault token has no address', () => {
+                const addresslessVault = createVaultFixture({});
+
+                expect(
+                    getYieldVaultsForInputToken({
+                        vaults: [addresslessVault],
+                        networkSymbol: 'eth',
+                        token: { address: USDC_ADDRESS, symbol: 'usdc', decimals: 6 },
+                    }),
+                ).toEqual([addresslessVault]);
+            });
+
+            it('returns an empty array when vaults are not loaded', () => {
+                expect(
+                    getYieldVaultsForInputToken({
+                        vaults: undefined,
+                        networkSymbol: 'eth',
+                        token: heldUsdc,
+                    }),
+                ).toEqual([]);
+            });
+        });
+
+        describe('getYieldVaultForOutputToken', () => {
+            const heldReceiptToken = { address: RECEIPT_ADDRESS, symbol: 'trUSDC', decimals: 18 };
+
+            it('finds the vault whose receipt token matches the held token', () => {
+                const vault = createVaultFixture({
+                    tokenAddress: USDC_ADDRESS,
+                    outputTokenAddress: RECEIPT_ADDRESS.toUpperCase().replace('0X', '0x'),
+                });
+
+                expect(
+                    getYieldVaultForOutputToken({
+                        vaults: [vault],
+                        networkSymbol: 'eth',
+                        token: heldReceiptToken,
+                    }),
+                ).toBe(vault);
+            });
+
+            it('does not match a vault by its input token', () => {
+                const vault = createVaultFixture({
+                    tokenAddress: USDC_ADDRESS,
+                    outputTokenAddress: RECEIPT_ADDRESS,
+                });
+
+                expect(
+                    getYieldVaultForOutputToken({
+                        vaults: [vault],
+                        networkSymbol: 'eth',
+                        token: heldUsdc,
+                    }),
+                ).toBeUndefined();
+            });
+
+            it('ignores vaults under maintenance', () => {
+                const vault = createVaultFixture({
+                    tokenAddress: USDC_ADDRESS,
+                    outputTokenAddress: RECEIPT_ADDRESS,
+                    underMaintenance: true,
+                });
+
+                expect(
+                    getYieldVaultForOutputToken({
+                        vaults: [vault],
+                        networkSymbol: 'eth',
+                        token: heldReceiptToken,
+                    }),
+                ).toBeUndefined();
+            });
+
+            it('still matches a vault with deposits closed — it describes an existing position', () => {
+                const closedVault = createVaultFixture({
+                    tokenAddress: USDC_ADDRESS,
+                    outputTokenAddress: RECEIPT_ADDRESS,
+                    enter: false,
+                });
+
+                expect(
+                    getYieldVaultForOutputToken({
+                        vaults: [closedVault],
+                        networkSymbol: 'eth',
+                        token: heldReceiptToken,
+                    }),
+                ).toBe(closedVault);
+            });
+
+            it('returns undefined when vaults are not loaded', () => {
+                expect(
+                    getYieldVaultForOutputToken({
+                        vaults: undefined,
+                        networkSymbol: 'eth',
+                        token: heldReceiptToken,
+                    }),
+                ).toBeUndefined();
+            });
         });
     });
 });

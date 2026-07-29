@@ -1,6 +1,6 @@
 import { Calldata, type EvmAddress } from '@suite-common/calldata';
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
-import type { NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol, getNetworkByYieldXyzId } from '@suite-common/wallet-config';
 import { WETH_WRAP_GAS_RESERVE } from '@suite-common/wallet-constants';
 import { type AccountKey, type EvmSelectedFee } from '@suite-common/wallet-types';
 import {
@@ -557,6 +557,49 @@ const getVaultAddressFromYieldId = (yieldId: string) =>
 
 export const getYieldVaultContractAddress = (vault: Pick<YieldDtoV2, 'id' | 'outputToken'>) =>
     vault.outputToken?.address ?? getVaultAddressFromYieldId(vault.id);
+
+export const isYieldVaultOperational = (vault: Pick<YieldDtoV2, 'metadata'>): boolean =>
+    !vault.metadata.underMaintenance && !vault.metadata.deprecated;
+
+type YieldVaultMatchFields = Pick<
+    YieldDtoV2,
+    'metadata' | 'network' | 'status' | 'token' | 'outputToken'
+>;
+
+type GetYieldVaultsForTokenParams<TVault extends YieldVaultMatchFields> = {
+    vaults: TVault[] | undefined;
+    networkSymbol: NetworkSymbol;
+    token: TokenLike;
+};
+
+const isYieldVaultOnNetwork = (vault: YieldVaultMatchFields, networkSymbol: NetworkSymbol) =>
+    getNetworkByYieldXyzId(vault.network)?.symbol === networkSymbol;
+
+// Input-token matching invites a deposit, so it also requires deposits to be open.
+export const getYieldVaultsForInputToken = <TVault extends YieldVaultMatchFields>({
+    vaults,
+    networkSymbol,
+    token,
+}: GetYieldVaultsForTokenParams<TVault>): TVault[] =>
+    (vaults ?? []).filter(
+        vault =>
+            isYieldVaultOperational(vault) &&
+            vault.status.enter &&
+            isYieldVaultOnNetwork(vault, networkSymbol) &&
+            doTokensMatch({ networkSymbol, firstToken: token, secondToken: vault.token }),
+    );
+
+export const getYieldVaultForOutputToken = <TVault extends YieldVaultMatchFields>({
+    vaults,
+    networkSymbol,
+    token,
+}: GetYieldVaultsForTokenParams<TVault>): TVault | undefined =>
+    vaults?.find(
+        vault =>
+            isYieldVaultOperational(vault) &&
+            isYieldVaultOnNetwork(vault, networkSymbol) &&
+            doTokensMatch({ networkSymbol, firstToken: token, secondToken: vault.outputToken }),
+    );
 
 export const getAllowanceSpender = (flowData: YieldFlowResolvedData) =>
     flowData.receiptToken.contractAddress ?? getYieldVaultContractAddress(flowData.vault);
