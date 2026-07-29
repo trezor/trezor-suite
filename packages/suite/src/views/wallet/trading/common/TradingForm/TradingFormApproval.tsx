@@ -8,6 +8,7 @@ import { useServices } from '@suite-common/dependency-injection';
 import {
     type TradingExchangeType,
     requiresTokenApproval,
+    selectTradingExchangeSelectedQuote,
     selectTradingSendAccount,
     tokenSupportsIncreasingAllowance,
     useApprovalStep,
@@ -49,7 +50,6 @@ export const TradingFormApproval = () => {
         revokeApproval,
         refreshQuotes,
         confirmApproval,
-        selectedQuote,
         isScheduledQuotesRefresh,
         isComposing,
         form: {
@@ -57,6 +57,7 @@ export const TradingFormApproval = () => {
             helpers,
         },
     } = context;
+    const selectedQuote = useSelector(selectTradingExchangeSelectedQuote);
     const account = useSelector(reduxState => selectTradingSendAccount(reduxState, 'exchange'));
 
     const { exchangeType, rateType } = watch();
