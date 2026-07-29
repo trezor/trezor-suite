@@ -21,6 +21,7 @@ import {
     type AddCoinAccountStackRoutes,
     type AppTabsRoutes,
     type AuthorizeDeviceStackRoutes,
+    type CreateAdditionalBackupStackRoutes,
     type DemoAccountQuestionnaireStackRoutes,
     type DeviceAuthenticityStackRoutes,
     type DeviceAutoConnectStackRoutes,
@@ -324,6 +325,7 @@ export type DeviceSettingsStackParamList = {
     };
     [DeviceSettingsStackRoutes.DeviceBackupAndPassphrase]: undefined;
     [DeviceSettingsStackRoutes.DeviceCheckBackupStack]: undefined;
+    [DeviceSettingsStackRoutes.DeviceCreateAdditionalBackupStack]: undefined;
     [DeviceSettingsStackRoutes.DevicePassphraseStack]: undefined;
     [DeviceSettingsStackRoutes.DeviceAuthenticity]: undefined;
     [DeviceSettingsStackRoutes.DeviceAuthenticityStack]:
@@ -391,6 +393,16 @@ export type DeviceCheckBackupStackParamList = {
     };
     [DeviceCheckBackupStackRoutes.CheckBackupSupport]: undefined;
     [DeviceCheckBackupStackRoutes.CheckBackupFail]: undefined;
+};
+
+export type CreateAdditionalBackupStackParamList = {
+    [CreateAdditionalBackupStackRoutes.DeviceConnectionGuard]: undefined;
+    [CreateAdditionalBackupStackRoutes.Disclaimer]: undefined;
+    [CreateAdditionalBackupStackRoutes.HowItWorks]: undefined;
+    [CreateAdditionalBackupStackRoutes.FollowInstructions]: undefined;
+    [CreateAdditionalBackupStackRoutes.Success]: undefined;
+    [CreateAdditionalBackupStackRoutes.Recap]: undefined;
+    [CreateAdditionalBackupStackRoutes.Error]: undefined;
 };
 
 export type DevicePassphraseStackParamList = {

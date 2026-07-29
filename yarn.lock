@@ -11796,6 +11796,17 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite-native/backup@workspace:*, @suite-native/backup@workspace:suite-native/backup":
+  version: 0.0.0-use.local
+  resolution: "@suite-native/backup@workspace:suite-native/backup"
+  dependencies:
+    "@suite-common/backup": "workspace:*"
+    "@suite-common/device": "workspace:*"
+    "@suite-common/redux-utils": "workspace:*"
+    "@trezor/device-utils": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
 "@suite-native/banner-flags@workspace:*, @suite-native/banner-flags@workspace:suite-native/banner-flags":
   version: 0.0.0-use.local
   resolution: "@suite-native/banner-flags@workspace:suite-native/banner-flags"
@@ -12950,6 +12961,7 @@ __metadata:
     "@react-navigation/native-stack": "npm:7.12.0"
     "@reduxjs/toolkit": "npm:2.12.0"
     "@suite-common/analytics": "workspace:*"
+    "@suite-common/backup": "workspace:*"
     "@suite-common/dependency-injection": "workspace:*"
     "@suite-common/device": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
@@ -12960,9 +12972,11 @@ __metadata:
     "@suite-native/alerts": "workspace:*"
     "@suite-native/analytics": "workspace:*"
     "@suite-native/atoms": "workspace:*"
+    "@suite-native/backup": "workspace:*"
     "@suite-native/bluetooth": "workspace:*"
     "@suite-native/device": "workspace:*"
     "@suite-native/device-authorization": "workspace:*"
+    "@suite-native/feature-flags": "workspace:*"
     "@suite-native/firmware": "workspace:*"
     "@suite-native/forms": "workspace:*"
     "@suite-native/helpers": "workspace:*"
@@ -12970,6 +12984,7 @@ __metadata:
     "@suite-native/link": "workspace:*"
     "@suite-native/module-check-backup": "workspace:*"
     "@suite-native/navigation": "workspace:*"
+    "@suite-native/nfc": "workspace:*"
     "@suite-native/thp": "workspace:*"
     "@suite-native/toasts": "workspace:*"
     "@trezor/connect": "workspace:*"
@@ -12977,6 +12992,7 @@ __metadata:
     "@trezor/env-utils": "workspace:*"
     "@trezor/requirements": "workspace:*"
     "@trezor/styles-native": "workspace:*"
+    "@trezor/urls": "workspace:*"
     "@trezor/utils": "workspace:*"
     react: "npm:19.2.3"
     react-native-svg: "npm:15.15.5"
@@ -13565,6 +13581,26 @@ __metadata:
     react-native-safe-area-context: "npm:5.6.2"
     react-redux: "npm:9.3.0"
     type-fest: "npm:5.5.0"
+  languageName: unknown
+  linkType: soft
+
+"@suite-native/nfc@workspace:*, @suite-native/nfc@workspace:suite-native/nfc":
+  version: 0.0.0-use.local
+  resolution: "@suite-native/nfc@workspace:suite-native/nfc"
+  dependencies:
+    "@reduxjs/toolkit": "npm:2.12.0"
+    "@suite-common/backup": "workspace:*"
+    "@suite-common/device": "workspace:*"
+    "@suite-common/redux-utils": "workspace:*"
+    "@suite-native/atoms": "workspace:*"
+    "@suite-native/backup": "workspace:*"
+    "@suite-native/device-mutex": "workspace:*"
+    "@suite-native/intl": "workspace:*"
+    "@suite-native/swipeable-walkthrough": "workspace:*"
+    "@trezor/styles-native": "workspace:*"
+    react: "npm:19.2.3"
+    react-native-reanimated: "npm:4.3.1"
+    react-native-svg: "npm:15.15.5"
   languageName: unknown
   linkType: soft
 

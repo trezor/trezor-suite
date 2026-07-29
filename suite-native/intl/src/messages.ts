@@ -517,6 +517,71 @@ export const messages = {
             secondaryButton: 'Continue checking',
         },
     },
+    moduleCreateAdditionalBackup: {
+        disclaimerScreen: {
+            label: 'Create additional backup',
+            title: 'Before you start',
+            howItWorks: {
+                title: 'How does it work?',
+                description:
+                    'Your Trezor creates a new wallet backup in addition to the one you already have.',
+            },
+            currentBackup: {
+                title: 'What about your current backup?',
+                description:
+                    'Your current wallet backup is still valid and can be used to recover your funds. Store it securely, if you want to keep it. Otherwise destroy it.',
+            },
+            checkbox:
+                'I understand that my current wallet backup is still valid and able to recover my wallet.',
+        },
+        howItWorksScreen: {
+            label: 'Create additional backup',
+            title: 'How it works',
+            step1: {
+                title: 'Verify you own this Trezor',
+                description:
+                    'Confirm you own this wallet by entering your current wallet backup on your Trezor.',
+            },
+            step2: {
+                title: 'Create your new backup',
+                description:
+                    'Trezor generates a new wallet backup based on the selected backup type.',
+            },
+            enterBackupButton: 'Enter current backup on Trezor',
+            noBackupLink: "I don't have a wallet backup",
+        },
+        followInstructionsScreen: {
+            title: 'Follow the instructions on your Trezor.',
+        },
+        successScreen: {
+            title: 'Wallet backup created',
+            subtitle: 'Well done!',
+        },
+        recapScreen: {
+            callout: 'Store your wallet backup safely',
+            title: 'Make sure to return your wallet backup to a secure, private place',
+            description: 'No one can recover it if you lose it—not even Trezor Support.',
+            button: 'Continue to home',
+        },
+        errorScreen: {
+            title: 'Backup could not be created',
+            description:
+                "One of your backup tags is damaged. Contact Trezor support, we'll help you figure this out.",
+            supportButton: 'Contact Trezor support',
+            notNowButton: 'Not now',
+        },
+        cancelAlert: {
+            title: 'Cancel backup creation?',
+            description: 'Start again anytime.',
+            primaryButton: 'Yes, cancel',
+            secondaryButton: 'Continue setup',
+        },
+        canceledOnTrezorAlert: {
+            title: 'Backup creation canceled on Trezor',
+            description: 'Start again anytime.',
+            primaryButton: 'Got it',
+        },
+    },
     moduleConnectDevice: {
         crossroads: {
             bluetooth: {
@@ -901,6 +966,11 @@ export const messages = {
         checkBackup: {
             title: 'Check wallet backup',
             subtitle: 'Perform a simulated recovery to verify your wallet backup.',
+        },
+        createAdditionalBackup: {
+            title: 'Create additional backup',
+            subtitle: 'Create an additional wallet backup in addition to the one you already have.',
+            button: 'Create additional backup',
         },
         authenticity: {
             title: 'Device authenticity check',

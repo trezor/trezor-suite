@@ -10,7 +10,7 @@ const BACKUP_TYPE_EXTENDABILITY: Record<PROTO.BackupType, boolean> = {
 };
 
 export const hasExtendableShamirBackup = (features: PROTO.Features): boolean =>
-    features.backup_type != null && BACKUP_TYPE_EXTENDABILITY[features.backup_type];
+    features.backup_type != null && BACKUP_TYPE_EXTENDABILITY[features.backup_type] === true;
 
 export const doesSupportMultiShare = (features: PROTO.Features): boolean =>
     features.capabilities?.includes('Capability_Shamir') === true &&

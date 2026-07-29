@@ -5,6 +5,7 @@
         {
             "path": "../../suite-common/analytics"
         },
+        { "path": "../../suite-common/backup" },
         {
             "path": "../../suite-common/dependency-injection"
         },
@@ -25,9 +26,11 @@
         { "path": "../alerts" },
         { "path": "../analytics" },
         { "path": "../atoms" },
+        { "path": "../backup" },
         { "path": "../bluetooth" },
         { "path": "../device" },
         { "path": "../device-authorization" },
+        { "path": "../feature-flags" },
         { "path": "../firmware" },
         { "path": "../forms" },
         { "path": "../helpers" },
@@ -35,6 +38,7 @@
         { "path": "../link" },
         { "path": "../module-check-backup" },
         { "path": "../navigation" },
+        { "path": "../nfc" },
         { "path": "../thp" },
         { "path": "../toasts" },
         { "path": "../../packages/connect" },
@@ -43,6 +47,7 @@
         {
             "path": "../../packages/styles-native"
         },
+        { "path": "../../packages/urls" },
         { "path": "../../packages/utils" },
         { "path": "../../packages/requirements" }
     ]
