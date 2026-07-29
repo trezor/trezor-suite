@@ -3,7 +3,9 @@ import { BackendWebsocketServerMock } from '@trezor/e2e-utils';
 import fixturesBlockbook from './__fixtures__/notifications-blockbook';
 import fixturesBlockfrost from './__fixtures__/notifications-blockfrost';
 import fixturesRipple from './__fixtures__/notifications-ripple';
-import workers from './__fixtures__/worker';
+import Blockbook from './workers/blockbook';
+import Blockfrost from './workers/blockfrost';
+import Ripple from './workers/ripple';
 
 import { BlockchainLink } from './index';
 
@@ -12,6 +14,12 @@ const fixtures = {
     ripple: fixturesRipple,
     blockfrost: fixturesBlockfrost,
 } as const;
+
+const workers = [
+    { name: 'blockbook', worker: Blockbook },
+    { name: 'ripple', worker: Ripple },
+    { name: 'blockfrost', worker: Blockfrost },
+] as const;
 
 // this test covers application live cycle
 // where "subscribe" and "unsubscribe" is called multiple times on single blockchain-link instance
