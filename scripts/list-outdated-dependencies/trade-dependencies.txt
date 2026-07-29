@@ -16,6 +16,7 @@
 @rozenite/react-navigation-plugin
 @shopify/flash-list
 @shopify/react-native-skia
+@styled/typescript-styled-plugin
 @types/fs-extra
 @types/invity-api
 @types/react
@@ -70,7 +71,6 @@ tslib
 tsx
 type-fest
 typescript
-typescript-styled-plugin
 ua-parser-js
 @react-native/jest-preset
 @svgr/cli

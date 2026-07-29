@@ -6,7 +6,7 @@
         "@babel/preset-react",
         "@babel/preset-typescript",
         "postcss-styled-syntax",
-        "typescript-styled-plugin",
+        "@styled/typescript-styled-plugin",
         "@storybook/react-webpack5",
         "@storybook/addon-links",
         "@storybook/addon-docs"

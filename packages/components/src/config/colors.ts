@@ -8,7 +8,7 @@ import { type BoxShadows, type Colors, colorVariants, mapBoxShadowsToCSS } from 
  *
  * You have to do this in the every package where you are accessing these theme props
  *    1) create `styled.d.ts` file in the root of the project with overwrite of DefaultTheme
- *    2) add `typescript-styled-plugin` into the packages devDependencies
+ *    2) add `@styled/typescript-styled-plugin` into the package devDependencies
  *
  *  See `suite` package for reference.
  */

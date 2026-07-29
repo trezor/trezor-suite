@@ -54,6 +54,7 @@
         "@storybook/addon-links": "^10.3.4",
         "@storybook/react": "^10.3.4",
         "@storybook/react-webpack5": "^10.3.4",
+        "@styled/typescript-styled-plugin": "1.0.1",
         "@trezor/eslint": "workspace:*",
         "@types/react": "19.2.14",
         "@types/zxcvbn": "4.4.5",
@@ -62,7 +63,6 @@
         "storybook": "^10.3.4",
         "stylelint": "^17.1.1",
         "stylelint-config-standard": "^40.0.0",
-        "svgo": "^4.0.1",
-        "typescript-styled-plugin": "^0.18.3"
+        "svgo": "^4.0.1"
     }
 }

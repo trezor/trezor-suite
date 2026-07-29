@@ -52,6 +52,7 @@
         "swr": "^2.4.1"
     },
     "devDependencies": {
+        "@styled/typescript-styled-plugin": "1.0.1",
         "@trezor/eslint": "workspace:*",
         "@types/chrome": "^0.1.40",
         "@types/node": "22.13.10",
@@ -62,7 +63,6 @@
         "eslint-plugin-mdx": "^3.8.1",
         "html-webpack-plugin": "5.6.7",
         "rimraf": "^6.1.2",
-        "typescript-styled-plugin": "^0.18.3",
         "webpack": "5.108.1",
         "webpack-cli": "^7.0.3"
     }

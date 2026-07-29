@@ -5,6 +5,6 @@
         "src",
         "stylelint-config-standard",
         "postcss-styled-syntax",
-        "typescript-styled-plugin"
+        "@styled/typescript-styled-plugin"
     ]
 }
