@@ -21,6 +21,15 @@
         },
         { "path": "../locks" },
         { "path": "../router" },
-        { "path": "../router-config" }
+        { "path": "../router-config" },
+        {
+            "path": "../../suite-common/test-utils"
+        },
+        {
+            "path": "../../suite-common/wallet-types"
+        },
+        {
+            "path": "../../packages/connect-common"
+        }
     ]
 }
