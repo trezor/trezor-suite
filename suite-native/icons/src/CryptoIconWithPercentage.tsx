@@ -16,7 +16,7 @@ import {
 import { type CryptoIconName, cryptoIcons } from '@suite-common/icons';
 import { useActiveColorScheme } from '@suite-native/theme';
 import { useNativeStyles } from '@trezor/styles-native';
-import { type CSSColor, paletteV1 } from '@trezor/theme';
+import { type CSSColor, palette } from '@trezor/theme';
 
 import { PizzaIcon, usePizzaAnimation } from './PizzaIcon';
 
@@ -109,7 +109,7 @@ export const CryptoIconWithPercentage = ({
                                 end={percentageFill}
                                 style="stroke"
                                 strokeWidth={6}
-                                color={paletteV1.lightGray100}
+                                color={palette.globalWhiteAlpha1000}
                                 opacity={0.15}
                             />
                             <Path

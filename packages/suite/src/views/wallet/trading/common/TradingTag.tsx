@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { paletteV2, typography } from '@trezor/theme';
+import { palette, typography } from '@trezor/theme';
 
 const TagRow = styled.div`
     display: flex;
@@ -10,7 +10,7 @@ const Tag = styled.div`
     padding: 2px 8px 0;
     border-radius: 4px;
     background: ${({ theme }) => theme.contentWarning};
-    color: ${paletteV2.globalWhiteAlpha1000};
+    color: ${palette.globalWhiteAlpha1000};
     ${typography['body-xs']}
     text-transform: capitalize;
 `;

@@ -26,7 +26,7 @@ import {
     RocketLaunchFilledIcon,
     ShieldStarFilledIcon,
 } from '@trezor/icons';
-import { breakpoints, paletteV2 } from '@trezor/theme';
+import { breakpoints, palette } from '@trezor/theme';
 import { ESHOP_STORE_URL, withGetTrezorCtaUtm } from '@trezor/urls';
 
 import { ContentFlex, useIsContentBelowBreakpoint } from 'src/support/suite/ContentFlex';
@@ -38,8 +38,8 @@ const HeroContainer = styled.div`
     justify-content: center;
     background: linear-gradient(
         100deg,
-        ${paletteV2.lightGreenAlpha75} 0,
-        ${paletteV2.lightGreen100} 100%
+        ${palette.lightGreenAlpha75} 0,
+        ${palette.lightGreen100} 100%
     );
     min-height: 190px;
     padding: 10px 20px;
