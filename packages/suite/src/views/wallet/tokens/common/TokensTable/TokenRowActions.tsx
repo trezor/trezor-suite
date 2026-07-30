@@ -67,6 +67,7 @@ import { SUITE } from 'src/actions/suite/constants';
 import { setSendFormPrefill } from 'src/actions/suite/suiteActions';
 import { getEarnRouteParams } from 'src/components/earn/utils/getEarnRouteParams';
 import { useDispatch, useLayoutSize, useSelector } from 'src/hooks/suite';
+import { useMessageSystemWrappedNative } from 'src/hooks/suite/useMessageSystemWrappedNative';
 import { getTokenAddressTranslationId } from 'src/utils/wallet/tokenUtils';
 
 import type { TokensTableType } from './types';
@@ -131,6 +132,8 @@ const TokenRowBasicActions = ({
 
     const isDepositButtonDisabled = !availableVault?.status.enter;
     const isWithdrawButtonDisabled = !availableVault?.status.exit;
+
+    const { isUnwrapDisabled } = useMessageSystemWrappedNative();
 
     if (!unusedAddress || !device) return null;
 
@@ -431,7 +434,7 @@ const TokenRowBasicActions = ({
                                     },
                                 }),
                             ),
-                        isDisabled: token.balance === '0',
+                        isDisabled: token.balance === '0' || isUnwrapDisabled,
                         isHidden: !isWrappedNativeToken(account.symbol, token.contract),
                     },
                     {

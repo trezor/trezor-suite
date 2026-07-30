@@ -14,9 +14,11 @@ import { BigNumber } from '@trezor/utils';
 
 import { submitUnwrapNativeTokenThunk } from 'src/actions/wallet/unwrapNativeTokenThunks';
 import { useDispatch } from 'src/hooks/suite';
+import { useMessageSystemWrappedNative } from 'src/hooks/suite/useMessageSystemWrappedNative';
 
 import { WrappedNativeFlowComplete } from '../common/WrappedNativeFlowComplete';
 import { YieldActionStepWarning } from '../common/YieldActionStepWarning';
+import { YieldDisabledBanner } from '../common/YieldDisabledBanner';
 import { YieldFlowTransferRow } from '../common/YieldFlowTransferRow';
 import { YieldUnwrapStep } from '../common/YieldUnwrapStep';
 import { useWrappedNativeDeviceGuard } from '../common/useWrappedNativeDeviceGuard';
@@ -44,6 +46,8 @@ export const UnwrapNativeToken = ({
 }: UnwrapNativeTokenProps) => {
     const dispatch = useDispatch();
     const ensureDeviceReady = useWrappedNativeDeviceGuard();
+    const { isUnwrapDisabled, unwrapMessageContent, unwrapVariant } =
+        useMessageSystemWrappedNative();
     const [broadcast, setBroadcast] = useState<BroadcastUnwrap | null>(null);
     const methods = useForm<YieldFlowFormValues>({
         mode: 'onChange',
@@ -121,6 +125,16 @@ export const UnwrapNativeToken = ({
     };
 
     const renderContent = () => {
+        if (isUnwrapDisabled) {
+            return (
+                <YieldDisabledBanner
+                    type="unwrap"
+                    content={unwrapMessageContent}
+                    variant={unwrapVariant}
+                />
+            );
+        }
+
         if (broadcast && pendingTxStatus === 'confirmed') {
             return (
                 <WrappedNativeFlowComplete

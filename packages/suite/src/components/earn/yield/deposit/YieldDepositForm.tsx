@@ -8,6 +8,7 @@ import { getApyBreakdown } from '@suite-common/wallet-utils';
 import { Banner, Column, Text } from '@trezor/components';
 
 import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
+import { useMessageSystemWrappedNative } from 'src/hooks/suite/useMessageSystemWrappedNative';
 
 import { useYieldDepositContext } from './useYieldDepositContext';
 import { YieldActionStep } from '../common/YieldActionStep';
@@ -15,6 +16,7 @@ import { YieldActionStepWarning } from '../common/YieldActionStepWarning';
 import { YieldApproveModal } from '../common/YieldApproveModal';
 import { YieldApproveStep } from '../common/YieldApproveStep';
 import { YieldApprovedAmountCard } from '../common/YieldApprovedAmountCard';
+import { YieldDisabledBanner } from '../common/YieldDisabledBanner';
 import { YieldFlowCompleteDeposit } from '../common/YieldFlowCompleteDeposit';
 import { YieldFlowStepList } from '../common/YieldFlowStepList';
 import { YieldWrapStep } from '../common/YieldWrapStep';
@@ -59,6 +61,8 @@ export const YieldDepositForm = () => {
         retryInitAllowance,
         flow,
     } = useYieldDepositContext();
+
+    const { isWrapDisabled, wrapMessageContent, wrapVariant } = useMessageSystemWrappedNative();
 
     const { approvalPendingTransaction, actionPendingTransaction: depositPendingTransaction } =
         splitYieldPendingTransaction(pendingTransaction, 'deposit');
@@ -236,30 +240,37 @@ export const YieldDepositForm = () => {
                                     />
                                 ),
                                 onEdit: returnToWrapStep,
-                                content: () => (
-                                    <YieldWrapStep
-                                        token={token}
-                                        nativeSymbol={nativeSymbol}
-                                        availableAmount={maxAmount}
-                                        receivingAmount={liveAmount || '0'}
-                                        isSubmitting={isSubmittingAction}
-                                        isSubmitDisabled={
-                                            isAmountEmpty ||
-                                            isAmountTooHigh ||
-                                            isAmountInvalidDecimals
-                                        }
-                                        warning={
-                                            !isAmountInvalidDecimals && isAmountTooHigh ? (
-                                                <YieldActionStepWarning isInsufficientFunds />
-                                            ) : undefined
-                                        }
-                                        pendingTransaction={wrapPendingTransaction}
-                                        onMaxClick={handleMaxClick}
-                                        onSubmit={handleOnWrap}
-                                        onSkip={handleOnSkipWrap}
-                                        onPendingTxClick={openPendingTransaction}
-                                    />
-                                ),
+                                content: () =>
+                                    isWrapDisabled ? (
+                                        <YieldDisabledBanner
+                                            type="wrap"
+                                            content={wrapMessageContent}
+                                            variant={wrapVariant}
+                                        />
+                                    ) : (
+                                        <YieldWrapStep
+                                            token={token}
+                                            nativeSymbol={nativeSymbol}
+                                            availableAmount={maxAmount}
+                                            receivingAmount={liveAmount || '0'}
+                                            isSubmitting={isSubmittingAction}
+                                            isSubmitDisabled={
+                                                isAmountEmpty ||
+                                                isAmountTooHigh ||
+                                                isAmountInvalidDecimals
+                                            }
+                                            warning={
+                                                !isAmountInvalidDecimals && isAmountTooHigh ? (
+                                                    <YieldActionStepWarning isInsufficientFunds />
+                                                ) : undefined
+                                            }
+                                            pendingTransaction={wrapPendingTransaction}
+                                            onMaxClick={handleMaxClick}
+                                            onSubmit={handleOnWrap}
+                                            onSkip={handleOnSkipWrap}
+                                            onPendingTxClick={openPendingTransaction}
+                                        />
+                                    ),
                             },
                             approve: {
                                 title: <Translation id="TR_EARN_YIELD_SELECT_AMOUNT_AND_APPROVE" />,

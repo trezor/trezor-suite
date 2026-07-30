@@ -10,10 +10,12 @@ import { getApyBreakdown } from '@suite-common/wallet-utils';
 import { Banner, Column, Text } from '@trezor/components';
 
 import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
+import { useMessageSystemWrappedNative } from 'src/hooks/suite/useMessageSystemWrappedNative';
 
 import { useYieldWithdrawContext } from './useYieldWithdrawContext';
 import { YieldActionStep } from '../common/YieldActionStep';
 import { YieldActionStepWarning } from '../common/YieldActionStepWarning';
+import { YieldDisabledBanner } from '../common/YieldDisabledBanner';
 import { YieldFlowCompleteWithdraw } from '../common/YieldFlowCompleteWithdraw';
 import { YieldFlowStepList } from '../common/YieldFlowStepList';
 import { YieldUnwrapStep } from '../common/YieldUnwrapStep';
@@ -49,6 +51,9 @@ export const YieldWithdrawForm = () => {
         openPendingTransaction,
         flow,
     } = useYieldWithdrawContext();
+
+    const { isUnwrapDisabled, unwrapMessageContent, unwrapVariant } =
+        useMessageSystemWrappedNative();
 
     const { actionPendingTransaction: withdrawPendingTransaction } = splitYieldPendingTransaction(
         pendingTransaction,
@@ -259,27 +264,36 @@ export const YieldWithdrawForm = () => {
                                     }}
                                 />
                             ),
-                            content: () => (
-                                <YieldUnwrapStep
-                                    tokenSymbol={token.symbol}
-                                    tokenDecimals={token.decimals}
-                                    tokenBalance={token.balance}
-                                    onMaxClick={() => setAmountInput(token.balance)}
-                                    isSubmitting={isSubmittingAction}
-                                    isSubmitDisabled={
-                                        isAmountEmpty || isAmountTooHigh || isAmountInvalidDecimals
-                                    }
-                                    warning={
-                                        !isAmountInvalidDecimals && isAmountTooHigh ? (
-                                            <YieldActionStepWarning isInsufficientFunds />
-                                        ) : undefined
-                                    }
-                                    pendingTransaction={unwrapPendingTransaction}
-                                    onSubmit={handleOnUnwrap}
-                                    onSkip={handleOnSkipUnwrap}
-                                    onPendingTxClick={openPendingTransaction}
-                                />
-                            ),
+                            content: () =>
+                                isUnwrapDisabled ? (
+                                    <YieldDisabledBanner
+                                        type="unwrap"
+                                        content={unwrapMessageContent}
+                                        variant={unwrapVariant}
+                                    />
+                                ) : (
+                                    <YieldUnwrapStep
+                                        tokenSymbol={token.symbol}
+                                        tokenDecimals={token.decimals}
+                                        tokenBalance={token.balance}
+                                        onMaxClick={() => setAmountInput(token.balance)}
+                                        isSubmitting={isSubmittingAction}
+                                        isSubmitDisabled={
+                                            isAmountEmpty ||
+                                            isAmountTooHigh ||
+                                            isAmountInvalidDecimals
+                                        }
+                                        warning={
+                                            !isAmountInvalidDecimals && isAmountTooHigh ? (
+                                                <YieldActionStepWarning isInsufficientFunds />
+                                            ) : undefined
+                                        }
+                                        pendingTransaction={unwrapPendingTransaction}
+                                        onSubmit={handleOnUnwrap}
+                                        onSkip={handleOnSkipUnwrap}
+                                        onPendingTxClick={openPendingTransaction}
+                                    />
+                                ),
                         },
                         complete: {
                             isListItem: false,

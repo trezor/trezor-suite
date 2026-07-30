@@ -8,9 +8,11 @@ import {
     getWrappedNativeAddress,
     getWrappedNativeSymbol,
 } from '@suite-common/wallet-config';
-import { Button } from '@trezor/components';
+import { Button, Tooltip } from '@trezor/components';
+import { InfoIcon } from '@trezor/icons';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useMessageSystemWrappedNative } from 'src/hooks/suite/useMessageSystemWrappedNative';
 import { type Account } from 'src/types/wallet';
 
 type WrapNativeTokenButtonProps = {
@@ -25,6 +27,7 @@ type WrapNativeTokenButtonProps = {
 export const WrapNativeTokenButton = ({ account }: WrapNativeTokenButtonProps) => {
     const dispatch = useDispatch();
     const isDebugModeActive = useSelector(selectIsDebugModeActive);
+    const { isWrapDisabled, wrapMessageContent } = useMessageSystemWrappedNative();
 
     const { symbol } = account;
     const wrappedAddress = getWrappedNativeAddress(symbol);
@@ -55,13 +58,17 @@ export const WrapNativeTokenButton = ({ account }: WrapNativeTokenButtonProps) =
     };
 
     return (
-        <Button
-            intent="accentViolet"
-            size="small"
-            onClick={onClick}
-            data-testid="@trading/menu/wrap-native-token"
-        >
-            <Translation id="TR_WRAP_NATIVE_TOKEN" />
-        </Button>
+        <Tooltip content={wrapMessageContent}>
+            <Button
+                intent="accentViolet"
+                size="small"
+                onClick={onClick}
+                isDisabled={isWrapDisabled}
+                iconLeft={isWrapDisabled ? InfoIcon : undefined}
+                data-testid="@trading/menu/wrap-native-token"
+            >
+                <Translation id="TR_WRAP_NATIVE_TOKEN" />
+            </Button>
+        </Tooltip>
     );
 };

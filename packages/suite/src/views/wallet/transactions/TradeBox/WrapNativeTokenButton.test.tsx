@@ -25,6 +25,11 @@ jest.mock('@suite/debug', () => ({
     selectIsDebugModeActive: () => mockSelectIsDebugModeActive(),
 }));
 
+const mockUseMessageSystemWrappedNative = jest.fn();
+jest.mock('src/hooks/suite/useMessageSystemWrappedNative', () => ({
+    useMessageSystemWrappedNative: () => mockUseMessageSystemWrappedNative(),
+}));
+
 const mockGetNetworkType = jest.fn();
 const mockGetWrappedNativeAddress = jest.fn();
 const mockGetWrappedNativeSymbol = jest.fn();
@@ -59,6 +64,10 @@ describe('WrapNativeTokenButton', () => {
         mockGetNetworkType.mockReturnValue('ethereum');
         mockGetWrappedNativeAddress.mockReturnValue('0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2');
         mockGetWrappedNativeSymbol.mockReturnValue('WETH');
+        mockUseMessageSystemWrappedNative.mockReturnValue({
+            isWrapDisabled: false,
+            wrapMessageContent: undefined,
+        });
     });
 
     it('renders nothing when debug mode is off', () => {
@@ -93,5 +102,22 @@ describe('WrapNativeTokenButton', () => {
             params: { symbol: 'eth', accountIndex: 0, accountType: 'normal' },
         });
         expect(mockDispatch).toHaveBeenCalledTimes(1);
+    });
+
+    it('disables the button and does not navigate when wrap is gated off by the message system', () => {
+        mockUseMessageSystemWrappedNative.mockReturnValue({
+            isWrapDisabled: true,
+            wrapMessageContent: 'Wrapping is currently disabled.',
+        });
+        renderButton();
+
+        const button = screen.getByTestId(WRAP_BUTTON_TESTID);
+        expect(button).toBeInTheDocument();
+        expect(button).toBeDisabled();
+
+        fireEvent.click(button);
+
+        expect(mockGoto).not.toHaveBeenCalled();
+        expect(mockDispatch).not.toHaveBeenCalled();
     });
 });
