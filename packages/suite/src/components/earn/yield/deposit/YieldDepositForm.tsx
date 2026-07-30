@@ -39,6 +39,7 @@ export const YieldDepositForm = () => {
         allowanceStatus,
         approvalAction,
         canRevokeAllowance,
+        hasWrappedTokenBalance,
         isAmountEmpty,
         isAmountTooHigh,
         isAmountInvalidDecimals,
@@ -256,7 +257,9 @@ export const YieldDepositForm = () => {
                                         pendingTransaction={wrapPendingTransaction}
                                         onMaxClick={handleMaxClick}
                                         onSubmit={handleOnWrap}
-                                        onSkip={handleOnSkipWrap}
+                                        onSkip={
+                                            hasWrappedTokenBalance ? handleOnSkipWrap : undefined
+                                        }
                                         onPendingTxClick={openPendingTransaction}
                                     />
                                 ),
