@@ -178,7 +178,8 @@ const getWalletVirtualInputs = (
         if (!map[inp.address]) {
             map[inp.address] = { address: inp.address, totalAmount: 0, anonSet: Infinity };
         }
-        map[inp.address].totalAmount += inp.value;
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        map[inp.address]!.totalAmount += inp.value;
     }
 
     return Object.values(map).map(v => ({
@@ -195,7 +196,8 @@ const getWalletVirtualOutputs = (internalOutputs: InternalOutput[]): WalletVirtu
     const map: Record<string, WalletVirtualOutput> = {};
     for (const out of internalOutputs) {
         if (!map[out.address]) map[out.address] = { address: out.address, totalAmount: 0 };
-        map[out.address].totalAmount += out.value;
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        map[out.address]!.totalAmount += out.value;
     }
 
     return Object.values(map);
@@ -213,7 +215,8 @@ const getForeignVirtualOutputs = (externalOutputs: ExternalOutput[]): ForeignVir
         if (!map[key]) {
             map[key] = { scriptPubKey: key, totalAmount: 0, scriptType: getScriptType(key) };
         }
-        map[key].totalAmount += out.value;
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        map[key]!.totalAmount += out.value;
     }
 
     return Object.values(map);
@@ -263,6 +266,18 @@ const analyzeTransaction = (tx: Tx, anonsets: Record<string, number>): void => {
         }
 
         return;
+    }
+
+    // Validate that all internal inputs reference previously-known addresses.
+    // If an internal input uses an address that was never an output in any prior transaction,
+    // it indicates a missing transaction in the chain.
+    // Source: BlockchainAnalyzer validation (via TransactionSummary.Validate)
+    for (const inp of tx.internalInputs) {
+        if (!(inp.address in anonsets)) {
+            throw new Error(
+                'There is an internal input that references a non-existing transaction',
+            );
+        }
     }
 
     const walletVirtualInputs = getWalletVirtualInputs(tx.internalInputs, anonsets);
@@ -347,7 +362,8 @@ const analyzeTransaction = (tx: Tx, anonsets: Record<string, number>): void => {
             .map(([a]) => Number(a));
         // Use the first repeated amount (matching C# FirstOrDefault behaviour).
         // Falls back to Infinity (= no upper bound) when none found.
-        maxAmountForWeightedAverage = repeatedAmounts.length > 0 ? repeatedAmounts[0] : Infinity;
+        maxAmountForWeightedAverage =
+            repeatedAmounts.length > 0 ? (repeatedAmounts[0] as number) : Infinity;
     }
 
     // Assign anonsets to wallet outputs.
@@ -460,6 +476,7 @@ export const getAnonymityScores = (request: GetAnonymityScoresRequest): AddressA
 
     return addressOrder.map(addr => ({
         address: addr,
-        anonymitySet: snapshots[addr],
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        anonymitySet: snapshots[addr]!,
     }));
 };

@@ -1,6 +1,7 @@
 import { arrayPartition } from '@trezor/utils';
 import { type Network, address as addressBjs } from '@trezor/utxo-lib';
 
+import { getAnonymityScores as middlewareGetAnonymityScores } from './getAnonymityScores';
 import * as middleware from './middleware';
 import { type EnhancedVinVout, type Transaction } from '../types/backend';
 import { type Logger } from '../types/logger';
@@ -62,7 +63,7 @@ const getRawLiquidityClue = (
  * Get transactions from CoinjoinBackend.getAccountInfo and calculate anonymity in middleware.
  * Returns { key => value } where `key` is an address and `value` is an anonymity level of that address
  */
-export const getAnonymityScores = async (
+export const getAnonymityScores = (
     transactions: Transaction[],
     options: AnalyzeTransactionsOptions,
 ) => {
@@ -86,10 +87,7 @@ export const getAnonymityScores = async (
     });
 
     try {
-        const scores = await middleware.getAnonymityScores(formattedTransactions, {
-            baseUrl: options.middlewareUrl,
-            signal: options.signal,
-        });
+        const scores = middlewareGetAnonymityScores({ transactions: formattedTransactions });
 
         return scores.reduce(
             (dict, { Address, AnonymitySet }) => {
@@ -112,7 +110,7 @@ export const analyzeTransactions = async <T extends keyof AnalyzeTransactionsRes
     ({
         anonymityScores:
             !sections || sections.includes('anonymityScores' as T)
-                ? await getAnonymityScores(transactions, options)
+                ? getAnonymityScores(transactions, options)
                 : undefined,
         rawLiquidityClue:
             !sections || sections.includes('rawLiquidityClue' as T)
