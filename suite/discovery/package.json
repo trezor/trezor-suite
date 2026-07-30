@@ -8,6 +8,7 @@
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "test:unit": "yarn g:jest",
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
@@ -21,5 +22,11 @@
         "@suite/locks": "workspace:*",
         "@suite/router": "workspace:*",
         "@suite/router-config": "workspace:*"
+    },
+    "devDependencies": {
+        "@suite-common/test-utils": "workspace:*",
+        "@suite-common/wallet-types": "workspace:*",
+        "@trezor/connect-common": "workspace:*",
+        "redux": "^5.0.1"
     }
 }
