@@ -30,6 +30,7 @@ export const YieldDepositForm = () => {
         apy,
         completedAmount,
         completedReceiptAmount,
+        wrappedAmount,
         maxAmount,
         liveAmount,
         errorMessage,
@@ -355,7 +356,17 @@ export const YieldDepositForm = () => {
                                         vault={vault}
                                         networkSymbol={account.symbol}
                                         input={{
-                                            token,
+                                            // When the deposit wrapped native → wrapped token, show
+                                            // the original native asset (ETH) the user started with;
+                                            // a deposit of already-held WETH keeps the token symbol.
+                                            token:
+                                                wrappedAmount !== null
+                                                    ? {
+                                                          networkSymbol: account.symbol,
+                                                          symbol: nativeSymbol,
+                                                          decimals: token.decimals,
+                                                      }
+                                                    : token,
                                             amount: completedAmount,
                                         }}
                                         output={{

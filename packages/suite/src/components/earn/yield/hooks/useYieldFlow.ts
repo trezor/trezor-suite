@@ -81,6 +81,7 @@ export type UseYieldFlowResult = {
     completedAmount: string;
     completedReceiptAmount: string;
     unwrappedAmount: string | null;
+    wrappedAmount: string | null;
     errorMessage: TranslationKey | undefined;
     approveModalState: YieldApproveModalState | null;
     pendingTransaction: YieldPendingTransactionState | null;
@@ -795,6 +796,7 @@ export const useYieldFlow = ({
         completedAmount: session.result.completedAmount,
         completedReceiptAmount: session.result.completedReceiptAmount,
         unwrappedAmount: session.result.unwrappedAmount,
+        wrappedAmount: session.result.wrappedAmount,
         errorMessage: session.error ?? undefined,
         approveModalState: session.approval.modalState,
         pendingTransaction: session.action.pendingTransaction,
