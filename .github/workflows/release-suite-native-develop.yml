@@ -58,6 +58,8 @@ jobs:
           yarn workspaces focus @suite-native/app
       - name: Check existing EAS builds for commit
         id: check-existing-builds
+        env:
+          EXPO_PUBLIC_ENVIRONMENT: develop
         run: |
           for PLATFORM in android ios; do
             EXISTING_BUILD=$(eas build:list \
