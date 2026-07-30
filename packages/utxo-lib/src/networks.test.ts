@@ -20,13 +20,6 @@ describe('isNetworkType', () => {
     });
 
     defs.forEach(name => {
-        const isDash = name === 'dash' || name === 'dashTest';
-        it(`${name} ${isDash ? 'is' : 'is not'} dash type`, () => {
-            expect(isNetworkType('dash', networks[name])).toBe(isDash);
-        });
-    });
-
-    defs.forEach(name => {
         const isDecred = name === 'decred' || name === 'decredSim' || name === 'decredTest';
         it(`${name} ${isDecred ? 'is' : 'is not'} decred type`, () => {
             expect(isNetworkType('decred', networks[name])).toBe(isDecred);

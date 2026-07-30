@@ -64,7 +64,7 @@ export class TransactionBase<S = undefined> {
     specific: S | undefined;
 
     network: Network;
-    type: number | undefined; // Dash, Decred, Zcash
+    type: number | undefined; // Decred, Zcash
     timestamp: number | undefined; // Verge
     expiry: number | undefined; // Decred, Zcash. Block height after which this transactions will expire, or 0 to disable expiry
 
