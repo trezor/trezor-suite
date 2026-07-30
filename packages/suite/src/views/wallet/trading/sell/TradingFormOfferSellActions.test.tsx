@@ -8,10 +8,10 @@ import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { type StaticSessionId } from '@trezor/connect';
 
 import { type AppState } from 'src/reducers/store';
-import { extraDependenciesDesktopMock } from 'src/support/tests/extraDependenciesDesktop.mock';
 import { renderWithProviders } from 'src/support/tests/hooksHelper';
 
 import { TradingFormOfferSellActions } from './TradingFormOfferSellActions';
+import { extraDependenciesDesktopMock } from '../../../../../mocks/extraDependenciesDesktopMock';
 import { mockInitialAppState } from '../../../../../mocks/mockInitialAppState';
 
 const mockUseTradingFormContext = jest.fn();

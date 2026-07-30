@@ -13,11 +13,11 @@ import { type DeepPartial } from '@trezor/type-utils';
 import { type AppState } from 'src/reducers/store';
 import { type SuiteState } from 'src/reducers/suite/suiteReducer';
 import { configureStore } from 'src/support/tests/configureStore';
-import { extraDependenciesDesktopMock } from 'src/support/tests/extraDependenciesDesktop.mock';
 import { findByTestId, renderWithProviders } from 'src/support/tests/hooksHelper';
 
 import { Preloader } from './Preloader';
 import { selectShouldDisplayDeviceCompromisedOnRoute } from './selectShouldDisplayDeviceCompromisedOnRoute';
+import { extraDependenciesDesktopMock } from '../../../../mocks/extraDependenciesDesktopMock';
 import { mockInitialAppState } from '../../../../mocks/mockInitialAppState';
 
 jest.mock('@trezor/env-utils', () => ({

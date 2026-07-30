@@ -6,8 +6,8 @@ import { withExtraArgument } from 'redux-thunk';
 import type { ExtraDependencies } from '@suite-common/redux-utils';
 import { mergeDeepObject } from '@trezor/utils';
 
+import { extraDependenciesDesktopMock } from '../../../mocks/extraDependenciesDesktopMock';
 import { type SuiteServices, extraDependencies } from '../extraDependencies';
-import { extraDependenciesDesktopMock } from './extraDependenciesDesktop.mock';
 
 interface MiddlewareAPI<D extends Dispatch = Dispatch<AnyAction>, S = any> {
     dispatch: D;

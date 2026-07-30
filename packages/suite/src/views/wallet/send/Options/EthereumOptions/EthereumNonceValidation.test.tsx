@@ -9,10 +9,10 @@ import { configureMockStore } from '@suite-common/test-utils';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
 import { SendContext } from 'src/hooks/wallet/useSendForm';
-import { extraDependenciesDesktopMock } from 'src/support/tests/extraDependenciesDesktop.mock';
 import { renderWithProviders } from 'src/support/tests/hooksHelper';
 
 import { EthereumNonce } from './EthereumNonce';
+import { extraDependenciesDesktopMock } from '../../../../../../mocks/extraDependenciesDesktopMock';
 import { mockInitialAppState } from '../../../../../../mocks/mockInitialAppState';
 
 const ethAccount = mockWalletAccount({ symbol: 'eth' }) as any;

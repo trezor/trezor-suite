@@ -16,7 +16,6 @@ import {
 import { type FormState } from '@suite-common/wallet-types';
 import { type PROTO } from '@trezor/connect';
 
-import { extraDependenciesDesktopMock } from 'src/support/tests/extraDependenciesDesktop.mock';
 import {
     type UserAction,
     actionSequence,
@@ -29,6 +28,7 @@ import SendIndex from 'src/views/wallet/send';
 
 import * as fixtures from './__fixtures__/useSendForm';
 import { useSendFormContext } from './useSendForm';
+import { extraDependenciesDesktopMock } from '../../../mocks/extraDependenciesDesktopMock';
 
 const TEST_TIMEOUT = 35000;
 

@@ -4,10 +4,10 @@ import { Translation } from '@suite/intl';
 import { configureMockStore, screen } from '@suite-common/test-utils';
 import { type NotificationEntry } from '@suite-common/toast-notifications';
 
-import { extraDependenciesDesktopMock } from 'src/support/tests/extraDependenciesDesktop.mock';
 import { renderWithProviders } from 'src/support/tests/hooksHelper';
 
 import { NotificationRenderer } from './NotificationRenderer';
+import { extraDependenciesDesktopMock } from '../../../../../mocks/extraDependenciesDesktopMock';
 import { mockInitialAppState } from '../../../../../mocks/mockInitialAppState';
 import { type NotificationViewProps } from '../Notifications/NotificationGroup/NotificationList/NotificationView';
 
