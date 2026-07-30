@@ -102,6 +102,7 @@ export type StablecoinYieldSessionState = {
         completedReceiptAmount: string;
         completedRewards: YieldFlowCompleteRewardItem[];
         unwrappedAmount: string | null;
+        wrappedAmount: string | null;
     };
 };
 
@@ -144,6 +145,7 @@ export const initialStablecoinYieldSessionState: StablecoinYieldSessionState = {
         completedReceiptAmount: '0',
         completedRewards: [],
         unwrappedAmount: null,
+        wrappedAmount: null,
     },
 };
 
@@ -458,6 +460,9 @@ const stablecoinYieldSlice = createSlice({
 
                 if (action.payload.step === 'wrap' && action.payload.amount) {
                     session.action.amount = action.payload.amount;
+                    // Record that a wrap happened so the completed deposit can be shown in the
+                    // native asset (the user's original asset), mirroring `unwrappedAmount`.
+                    session.result.wrappedAmount = action.payload.amount;
                 }
                 session.step = getNextYieldFlowStep(
                     action.payload.flowType,
