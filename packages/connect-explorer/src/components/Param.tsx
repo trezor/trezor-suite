@@ -21,7 +21,7 @@ const ParamWrapper = styled.div`
     border-radius: 12px;
     background-image: linear-gradient(
         to bottom,
-        ${({ theme }) => theme.legacyBackgroundSurfaceElevation2},
+        ${({ theme }) => theme.elementFillNeutralSofter},
         transparent
     );
 `;

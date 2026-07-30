@@ -1,6 +1,6 @@
 import { type CSSColor } from './types';
 
-export const paletteV2 = {
+export const palette = {
     globalTransparent: '#FFFFFF00',
     lightNeutralGrey900: '#1F1F1F',
     lightNeutralGrey800: '#2E2E2E',
