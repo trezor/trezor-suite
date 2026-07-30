@@ -248,8 +248,12 @@ const runDbMethods = async (device?: Device): Promise<boolean> => {
                     process.exit(1);
                 }
 
+                // Domain the entry lives in; defaults to the network symbol (each
+                // network its own domain) unless --db-params names an explicit appId.
+                const appId = params.appId ?? networkSymbol;
                 const result = await TrezorConnect.wardVerify({
                     device: device!,
+                    appId,
                     address,
                     networkSymbol,
                     wardId,
@@ -285,8 +289,12 @@ const runDbMethods = async (device?: Device): Promise<boolean> => {
 
                 // Unlike dblookup (a screenless verification query), dbdisplay drives the
                 // DisplayAddress flow so the device renders the verified label on-screen.
+                // Domain defaults to the network symbol (matching dbchange/dblookup) unless
+                // --db-params names an explicit appId.
+                const appId = params.appId ?? networkSymbol;
                 const result = await TrezorConnect.wardDisplayAddress({
                     device: device!,
+                    appId,
                     address,
                     networkSymbol,
                     wardId,
@@ -323,8 +331,12 @@ const runDbMethods = async (device?: Device): Promise<boolean> => {
                     ...(rawMetadata.data !== undefined && { data: rawMetadata.data }),
                 };
 
+                // Domain the entry is written to; defaults to the network symbol
+                // unless --db-params names an explicit appId.
+                const appId = params.appId ?? networkSymbol;
                 const result = await TrezorConnect.wardUpdate({
                     device: device!,
+                    appId,
                     address,
                     networkSymbol,
                     metadata,

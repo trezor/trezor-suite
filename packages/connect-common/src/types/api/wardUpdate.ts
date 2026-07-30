@@ -19,6 +19,13 @@ export const WardLabelSchema = Type.Object({
 
 export type WardUpdateSchema = Static<typeof WardUpdateSchema>;
 export const WardUpdateSchema = Type.Object({
+    /**
+     * The domain (application) that owns this entry. The device forms the trie key
+     * entry_key = sha256(appId || 0x00 || type || 0x00 || address), so a write for
+     * one app can never collide with or overwrite another app's entry, and the domain
+     * is shown on the trusted confirmation screen.
+     */
+    appId: Type.String(),
     address: Type.String(),
     networkSymbol: Type.String(),
     metadata: WardLabelSchema,

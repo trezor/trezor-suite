@@ -14,6 +14,7 @@ import type { TreeState, WardEntry, WardLabel, WardRow } from '../../types';
 
 type SqliteAddressRow = {
     ward_id: string;
+    app_id: string;
     address: string;
     network_symbol: string;
     data: string;
@@ -36,11 +37,12 @@ export class WardDb implements WardProvider {
         this.db.exec(`
             CREATE TABLE IF NOT EXISTS addresses (
                 ward_id      TEXT NOT NULL,
+                app_id         TEXT NOT NULL,
                 address        TEXT NOT NULL,
                 network_symbol TEXT NOT NULL,
                 counter        INTEGER NOT NULL DEFAULT 0,
                 data           TEXT NOT NULL,
-                PRIMARY KEY (ward_id, address, network_symbol)
+                PRIMARY KEY (ward_id, app_id, address, network_symbol)
             );
             CREATE TABLE IF NOT EXISTS tree_state (
                 ward_id TEXT PRIMARY KEY,
@@ -51,42 +53,67 @@ export class WardDb implements WardProvider {
         `);
     }
 
-    lookup(wardId: string, address: string, networkSymbol: string): WardEntry | null {
+    lookup(
+        wardId: string,
+        appId: string,
+        address: string,
+        networkSymbol: string,
+    ): WardEntry | null {
         const row = this.db
             .prepare(
                 `SELECT data, counter FROM addresses
-                 WHERE ward_id = ? AND address = ? AND network_symbol = ?`,
+                 WHERE ward_id = ? AND app_id = ? AND address = ? AND network_symbol = ?`,
             )
-            .get(wardId, address, networkSymbol) as
+            .get(wardId, appId, address, networkSymbol) as
             | Pick<SqliteAddressRow, 'data' | 'counter'>
             | undefined;
 
         return row
-            ? parseRow({ ward_id: wardId, address, network_symbol: networkSymbol, ...row })
+            ? parseRow({
+                  ward_id: wardId,
+                  app_id: appId,
+                  address,
+                  network_symbol: networkSymbol,
+                  ...row,
+              })
             : null;
     }
 
-    upsert(wardId: string, address: string, networkSymbol: string, entry: WardEntry): void {
+    upsert(
+        wardId: string,
+        appId: string,
+        address: string,
+        networkSymbol: string,
+        entry: WardEntry,
+    ): void {
         this.db
             .prepare(
-                `INSERT INTO addresses (ward_id, address, network_symbol, counter, data)
-                 VALUES (?, ?, ?, ?, ?)
-                 ON CONFLICT(ward_id, address, network_symbol) DO UPDATE SET
+                `INSERT INTO addresses (ward_id, app_id, address, network_symbol, counter, data)
+                 VALUES (?, ?, ?, ?, ?, ?)
+                 ON CONFLICT(ward_id, app_id, address, network_symbol) DO UPDATE SET
                      counter = excluded.counter,
                      data    = excluded.data`,
             )
-            .run(wardId, address, networkSymbol, entry.counter, JSON.stringify(entry.metadata));
+            .run(
+                wardId,
+                appId,
+                address,
+                networkSymbol,
+                entry.counter,
+                JSON.stringify(entry.metadata),
+            );
     }
 
     getAllEntries(wardId: string): WardRow[] {
         const rows = this.db
             .prepare(
-                `SELECT ward_id, address, network_symbol, counter, data FROM addresses
+                `SELECT ward_id, app_id, address, network_symbol, counter, data FROM addresses
                  WHERE ward_id = ? ORDER BY rowid`,
             )
             .all(wardId) as SqliteAddressRow[];
 
         return rows.map(r => ({
+            appId: r.app_id,
             address: r.address,
             networkSymbol: r.network_symbol,
             entry: parseRow(r),

@@ -15,9 +15,13 @@ export default createRawWardMethod({
         address: payload.address,
         ...(payload.value !== undefined && { value: payload.value }),
         proof: payload.proof ?? [],
-        ...(payload.witness_address !== undefined && { witness_address: payload.witness_address }),
-        ...(payload.witness_value !== undefined && { witness_value: payload.witness_value }),
+        ...(payload.witness_entry_key !== undefined && {
+            witness_entry_key: payload.witness_entry_key,
+        }),
+        ...(payload.witness_value_hash !== undefined && {
+            witness_value_hash: payload.witness_value_hash,
+        }),
         ...(payload.counter !== undefined && { counter: payload.counter }),
-        ...(payload.witness_counter !== undefined && { witness_counter: payload.witness_counter }),
+        ...(payload.app_id !== undefined && { app_id: payload.app_id }),
     }),
 });

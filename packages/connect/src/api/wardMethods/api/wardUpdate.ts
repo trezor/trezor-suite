@@ -18,6 +18,7 @@ export default class WardUpdate extends AbstractMethod<'wardUpdate', WardUpdateS
         Assert(WardUpdateSchema, payload);
 
         const params = {
+            appId: payload.appId,
             address: payload.address,
             networkSymbol: payload.networkSymbol,
             metadata: payload.metadata,
@@ -57,14 +58,26 @@ export default class WardUpdate extends AbstractMethod<'wardUpdate', WardUpdateS
             );
         }
         const wardManager = getWardManagerService();
-        const { address, networkSymbol, metadata, wardId } = this.params;
+        const { appId, address, networkSymbol, metadata, wardId } = this.params;
         const vlog = (...m: unknown[]) => console.log('[wardUpdate]', ...m);
 
         // --- Application flow: resolve DB state + prepare the requested change. ---
         const { rows, tree } = await loadHead(provider, wardId);
-        const oldEntry = await provider.lookup(wardId, address, networkSymbol);
+        vlog('head', { rows: rows.length, tree: tree?.root ? tree.counter : 'empty' });
+        // Inconsistent host state: a stored root but no rows means every proof we build
+        // will be empty (INSERTs will look like INIT and the device will reject them with
+        // "Tree is not empty"). Surface it loudly rather than failing cryptically device-side.
+        if (tree?.root && rows.length === 0) {
+            console.warn(
+                `[wardUpdate] INCONSISTENT host state for wardId=${wardId}: tree_state root present ` +
+                    `(counter ${tree.counter}) but 0 address rows — proofs will be empty. ` +
+                    'The provider likely failed to persist entries (see localCacheError on prior writes).',
+            );
+        }
+        const oldEntry = await provider.lookup(wardId, appId, address, networkSymbol);
         const change = prepareChange(
             rows,
+            appId,
             oldEntry,
             address,
             networkSymbol,
@@ -73,6 +86,7 @@ export default class WardUpdate extends AbstractMethod<'wardUpdate', WardUpdateS
         );
         vlog('ENTER', {
             wardId,
+            appId,
             address,
             networkSymbol,
             op: change.op,
@@ -80,7 +94,7 @@ export default class WardUpdate extends AbstractMethod<'wardUpdate', WardUpdateS
         });
 
         if (!this.useDevice) {
-            await provider.upsert(wardId, address, networkSymbol, change.newEntry);
+            await provider.upsert(wardId, appId, address, networkSymbol, change.newEntry);
             const root = offlineRoot(await provider.getAllEntries(wardId));
             await provider.setTreeState(wardId, { root, counter: change.newEntry.counter });
 
@@ -110,8 +124,8 @@ export default class WardUpdate extends AbstractMethod<'wardUpdate', WardUpdateS
         );
 
         // Queue → perform → confirm. The device is the counter authority.
-        const { pendingId } = await session.queue(address, change.newValueHex);
-        const candidate = await session.perform(toProofAck(change.oldProof), pendingId);
+        const { pendingId } = await session.queue(appId, address, change.newValueHex);
+        const candidate = await session.perform(toProofAck(change.oldProof, appId), pendingId);
         WardSession.assertWardId(candidate.wardId, wardId, 'wardUpdate');
 
         let finalSig: string;
@@ -151,14 +165,21 @@ export default class WardUpdate extends AbstractMethod<'wardUpdate', WardUpdateS
         // `localCacheError` so callers still get the device-confirmed counter/root.
         let localCacheError: string | undefined;
         try {
-            await commitLocal(provider, wardId, address, networkSymbol, metadata, {
+            await commitLocal(provider, wardId, appId, address, networkSymbol, metadata, {
                 counter: installed.counter,
                 root: installed.root,
                 rootMac: installed.rootMac,
             });
         } catch (err) {
             localCacheError = err instanceof Error ? err.message : String(err);
-            vlog('LOCAL CACHE ERROR (device already committed)', localCacheError);
+            // Loud, not a debug line: a swallowed persist failure here leaves the host DB
+            // missing this entry while its tree_state advances — the next write then builds
+            // an empty/incorrect proof and the device rejects it. Make it impossible to miss.
+            console.error(
+                `[wardUpdate] LOCAL CACHE PERSIST FAILED (device already committed counter ` +
+                    `${installed.counter}) for wardId=${wardId} appId=${appId} address=${address}: ` +
+                    `${localCacheError}. Host DB is now out of sync with the device — resync required.`,
+            );
         }
 
         return {

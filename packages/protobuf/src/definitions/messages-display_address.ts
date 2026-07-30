@@ -11,9 +11,25 @@ export const DisplayAddress = Type.Object(
         subtitle: Type.Optional(Type.String()),
         case_sensitive: Type.Optional(Type.Boolean()),
         chunkify: Type.Optional(Type.Boolean()),
-        ward_value: Type.Optional(Type.String()),
-        ward_proof: Type.Array(Type.String()),
-        ward_counter: Type.Optional(Type.Number()),
+        app_id: Type.Optional(Type.String()),
     },
     { $id: 'DisplayAddress' },
+);
+
+export type DisplayAddressWithProof = Static<typeof DisplayAddressWithProof>;
+export const DisplayAddressWithProof = Type.Object(
+    {
+        address: Type.String(),
+        title: Type.Optional(Type.String()),
+        subtitle: Type.Optional(Type.String()),
+        case_sensitive: Type.Optional(Type.Boolean()),
+        chunkify: Type.Optional(Type.Boolean()),
+        value: Type.Optional(Type.String()),
+        proof: Type.Array(Type.String()),
+        counter: Type.Optional(Type.Number()),
+        witness_entry_key: Type.Optional(Type.String()),
+        witness_value_hash: Type.Optional(Type.String()),
+        app_id: Type.Optional(Type.String()),
+    },
+    { $id: 'DisplayAddressWithProof' },
 );

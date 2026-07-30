@@ -1,36 +1,60 @@
+import { bytesToHex } from '@noble/hashes/utils.js';
+
 import {
     computeMerkleRoot,
+    entryKey,
     entryToValueBytes,
     evaluateProof,
     generateMerkleProof,
     generateNonMembershipProof,
 } from '../proof';
 
-// Golden vectors captured from the pre-port connect-cli implementation
-// (Node's `crypto`/`Buffer`), to prove the @noble/hashes port is byte-identical.
+// Golden vectors verified byte-for-byte against the Python reference tree
+// (trezorlib.authdb_tree) — the load-bearing cross-implementation invariant.
 const rows = [
-    { address: 'bc1qaddr1', networkSymbol: 'btc', entry: { metadata: { label: 'a' }, counter: 1 } },
-    { address: 'bc1qaddr2', networkSymbol: 'btc', entry: { metadata: { label: 'b' }, counter: 2 } },
-    { address: 'bc1qaddr3', networkSymbol: 'btc', entry: { metadata: {}, counter: 1 } },
+    {
+        appId: 'bitcoin',
+        address: 'bc1qaddr1',
+        networkSymbol: 'btc',
+        entry: { metadata: { label: 'a' }, counter: 1 },
+    },
+    {
+        appId: 'bitcoin',
+        address: 'bc1qaddr2',
+        networkSymbol: 'btc',
+        entry: { metadata: { label: 'b' }, counter: 2 },
+    },
+    {
+        appId: 'bitcoin',
+        address: 'bc1qaddr3',
+        networkSymbol: 'btc',
+        entry: { metadata: {}, counter: 1 },
+    },
 ];
 
-// Recomputed after the strict-counter change: the counter is committed only in the
-// leaf's 4-byte field (sha256(0x00||address||counter(4B BE)||value)); the value bytes
-// are now counter-free (entryToValueBytes = networkSymbol + sorted metadata).
-const EXPECTED_ROOT = '91e5817041b7b5fd37f0abf949c5be4b312ffc8a0d5aa2374c78d71bf5477cd0';
+// Domain-separated, two-level leaf model:
+//   entry_key  = sha256(appId || 0x00 || "address" || 0x00 || address)
+//   value_hash = sha256(counter(4B BE) || value)
+//   leaf_hash  = sha256(0x00 || entry_key || value_hash)
+const EXPECTED_ROOT = '9c1d7de22dba0437d7e67dfa85f1379b6f0780e4b3888a9084c54f3f449117ba';
 const EXPECTED_PROOF = [
-    '05c882f2eb5bb8ce704da4bdb0217f2dd8fba6d69193a3cf1ae6dbdd0576c87040',
-    '00cc3a6acd812a2fb093d26d813301e0d3a169695de2a7a7998b221d7424758bd3',
+    '00fe0acadea7a65bc7c61a0d4d339d0fbd9bb932de3cea9698bc35c87f341949a1',
+    '0154cc76b06f5fb19a9616c2ada74d3ec42fe4a74fad7ad6820670df51ae07bacd',
 ];
 
 describe('generateMerkleProof / computeMerkleRoot', () => {
-    it('matches golden vectors from the pre-port implementation', () => {
+    it('matches golden vectors (byte-identical to the Python reference)', () => {
         expect(computeMerkleRoot(rows)).toBe(EXPECTED_ROOT);
-        expect(generateMerkleProof(rows, 'bc1qaddr2', 'btc')).toEqual(EXPECTED_PROOF);
+        expect(generateMerkleProof(rows, 'bitcoin', 'bc1qaddr2', 'btc')).toEqual(EXPECTED_PROOF);
     });
 
     it('returns an empty proof for an unknown address', () => {
-        expect(generateMerkleProof(rows, 'bc1qunknown', 'btc')).toEqual([]);
+        expect(generateMerkleProof(rows, 'bitcoin', 'bc1qunknown', 'btc')).toEqual([]);
+    });
+
+    it('domain-separates: the same address in another app is a different (absent) leaf', () => {
+        // 'bc1qaddr2' exists in the 'bitcoin' domain but not in 'ethereum'.
+        expect(generateMerkleProof(rows, 'ethereum', 'bc1qaddr2', 'btc')).toEqual([]);
     });
 
     it('returns an empty root for an empty tree', () => {
@@ -40,32 +64,46 @@ describe('generateMerkleProof / computeMerkleRoot', () => {
 
 describe('evaluateProof', () => {
     it('reconstructs the root from a membership proof (round-trip)', () => {
-        const proof = generateMerkleProof(rows, 'bc1qaddr2', 'btc');
-        const root = evaluateProof('bc1qaddr2', 'btc', rows[1]!.entry, proof);
+        const proof = generateMerkleProof(rows, 'bitcoin', 'bc1qaddr2', 'btc');
+        const root = evaluateProof('bitcoin', 'bc1qaddr2', 'btc', rows[1]!.entry, proof);
 
         expect(root).toBe(computeMerkleRoot(rows));
     });
 
     it('round-trips for every entry in the tree', () => {
         rows.forEach(row => {
-            const proof = generateMerkleProof(rows, row.address, row.networkSymbol);
+            const proof = generateMerkleProof(rows, row.appId, row.address, row.networkSymbol);
 
-            expect(evaluateProof(row.address, row.networkSymbol, row.entry, proof)).toBe(
+            expect(evaluateProof(row.appId, row.address, row.networkSymbol, row.entry, proof)).toBe(
                 computeMerkleRoot(rows),
             );
         });
     });
+
+    it('a membership proof from one domain does not verify under another', () => {
+        const proof = generateMerkleProof(rows, 'bitcoin', 'bc1qaddr2', 'btc');
+        // Same address+value+proof, wrong domain → different entry_key → wrong root.
+        expect(evaluateProof('ethereum', 'bc1qaddr2', 'btc', rows[1]!.entry, proof)).not.toBe(
+            computeMerkleRoot(rows),
+        );
+    });
 });
 
 describe('generateNonMembershipProof', () => {
-    it('returns a witness leaf and a proof that reconstructs the root', () => {
-        const result = generateNonMembershipProof(rows, 'bc1qmissing', 'btc');
+    it('returns a two-hash witness and a proof that reconstructs the root', () => {
+        const result = generateNonMembershipProof(rows, 'bitcoin', 'bc1qmissing', 'btc');
 
-        expect(result.witnessAddress).not.toBeNull();
+        expect(result.witnessEntryKey).not.toBeNull();
+        expect(result.witnessValueHash).not.toBeNull();
         expect(result.proof.length).toBeGreaterThan(0);
 
-        const witnessRow = rows.find(r => r.address === result.witnessAddress)!;
+        // Locate the witness row by matching its entry_key (the witness may be any
+        // neighbour on the path), then confirm its membership proof reconstructs the root.
+        const witnessRow = rows.find(
+            r => bytesToHex(entryKey(r.appId, r.address)) === result.witnessEntryKey,
+        )!;
         const root = evaluateProof(
+            witnessRow.appId,
             witnessRow.address,
             witnessRow.networkSymbol,
             witnessRow.entry,
@@ -73,19 +111,15 @@ describe('generateNonMembershipProof', () => {
         );
 
         expect(root).toBe(computeMerkleRoot(rows));
-        expect(result.witnessValue).toEqual(
-            entryToValueBytes(witnessRow.networkSymbol, witnessRow.entry),
-        );
     });
 
     it('returns nulls for an empty tree', () => {
-        const result = generateNonMembershipProof([], 'bc1qmissing', 'btc');
+        const result = generateNonMembershipProof([], 'bitcoin', 'bc1qmissing', 'btc');
 
         expect(result).toEqual({
             proof: [],
-            witnessAddress: null,
-            witnessValue: null,
-            witnessCounter: null,
+            witnessEntryKey: null,
+            witnessValueHash: null,
         });
     });
 });

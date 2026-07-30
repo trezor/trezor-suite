@@ -24,11 +24,13 @@ import type { TreeState, WardEntry, WardRow } from '../types';
 export type WardProvider = {
     lookup(
         wardId: string,
+        appId: string,
         address: string,
         networkSymbol: string,
     ): WardEntry | null | Promise<WardEntry | null>;
     upsert(
         wardId: string,
+        appId: string,
         address: string,
         networkSymbol: string,
         entry: WardEntry,
@@ -46,22 +48,33 @@ export type WardProvider = {
 // and for consumers that only need an ephemeral provider. Not used in production.
 // ---------------------------------------------------------------------------
 
-const key = (wardId: string, address: string, networkSymbol: string) =>
-    `${wardId} ${address} ${networkSymbol}`;
+const key = (wardId: string, appId: string, address: string, networkSymbol: string) =>
+    `${wardId} ${appId} ${address} ${networkSymbol}`;
 
 export class InMemoryWardDb implements WardProvider {
     private entries = new Map<string, WardRow>();
     private order: string[] = [];
     private treeState = new Map<string, TreeState>();
 
-    lookup(wardId: string, address: string, networkSymbol: string): WardEntry | null {
-        return this.entries.get(key(wardId, address, networkSymbol))?.entry ?? null;
+    lookup(
+        wardId: string,
+        appId: string,
+        address: string,
+        networkSymbol: string,
+    ): WardEntry | null {
+        return this.entries.get(key(wardId, appId, address, networkSymbol))?.entry ?? null;
     }
 
-    upsert(wardId: string, address: string, networkSymbol: string, entry: WardEntry): void {
-        const k = key(wardId, address, networkSymbol);
+    upsert(
+        wardId: string,
+        appId: string,
+        address: string,
+        networkSymbol: string,
+        entry: WardEntry,
+    ): void {
+        const k = key(wardId, appId, address, networkSymbol);
         if (!this.entries.has(k)) this.order.push(k);
-        this.entries.set(k, { address, networkSymbol, entry });
+        this.entries.set(k, { appId, address, networkSymbol, entry });
     }
 
     getAllEntries(wardId: string): WardRow[] {

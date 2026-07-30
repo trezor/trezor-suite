@@ -103,10 +103,10 @@ export const WARDLookup = Type.Object(
         address: Type.String(),
         value: Type.Optional(Type.String()),
         proof: Type.Array(Type.String()),
-        witness_address: Type.Optional(Type.String()),
-        witness_value: Type.Optional(Type.String()),
+        witness_entry_key: Type.Optional(Type.String()),
+        witness_value_hash: Type.Optional(Type.String()),
         counter: Type.Optional(Type.Number()),
-        witness_counter: Type.Optional(Type.Number()),
+        app_id: Type.Optional(Type.String()),
     },
     { $id: 'WARDLookup' },
 );
@@ -149,9 +149,9 @@ export const WARDProofAck = Type.Object(
         value: Type.Optional(Type.String()),
         proof: Type.Array(Type.String()),
         counter: Type.Optional(Type.Number()),
-        witness_address: Type.Optional(Type.String()),
-        witness_value: Type.Optional(Type.String()),
-        witness_counter: Type.Optional(Type.Number()),
+        witness_entry_key: Type.Optional(Type.String()),
+        witness_value_hash: Type.Optional(Type.String()),
+        app_id: Type.Optional(Type.String()),
     },
     { $id: 'WARDProofAck' },
 );
@@ -161,6 +161,7 @@ export const WARDProofRequest = Type.Object(
     {
         address: Type.String(),
         pending_id: Type.Optional(Type.Number()),
+        app_id: Type.Optional(Type.String()),
     },
     { $id: 'WARDProofRequest' },
 );
@@ -170,6 +171,7 @@ export const WARDQueueUpdate = Type.Object(
     {
         address: Type.String(),
         new_value: Type.String(),
+        app_id: Type.Optional(Type.String()),
     },
     { $id: 'WARDQueueUpdate' },
 );
@@ -177,8 +179,6 @@ export const WARDQueueUpdate = Type.Object(
 export type WARDQueueUpdateAck = Static<typeof WARDQueueUpdateAck>;
 export const WARDQueueUpdateAck = Type.Object(
     {
-        // No counter (strict model): the candidate counter_T is first derived at
-        // WARDPerformUpdate, not at queue time.
         pending_id: Type.Optional(Type.Number()),
         wallet_id: Type.Optional(Type.String()),
     },

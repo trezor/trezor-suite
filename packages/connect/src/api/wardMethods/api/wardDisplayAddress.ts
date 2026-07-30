@@ -21,6 +21,7 @@ export default class WardDisplayAddress extends AbstractMethod<
         Assert(WardDisplayAddressSchema, payload);
 
         const params = {
+            appId: payload.appId,
             address: payload.address,
             networkSymbol: payload.networkSymbol,
             wardId: payload.wardId,
@@ -61,15 +62,29 @@ export default class WardDisplayAddress extends AbstractMethod<
             );
         }
         const wardManager = getWardManagerService();
-        const { address, networkSymbol, wardId } = this.params;
+        const { appId, address, networkSymbol, wardId } = this.params;
         const vlog = (...m: unknown[]) => console.log('[wardDisplayAddress]', ...m);
 
         // Application flow: resolve DB state + build the proof the device will pull.
         const { rows, tree } = await loadHead(provider, wardId);
-        const entry = await provider.lookup(wardId, address, networkSymbol);
+        if (tree?.root && rows.length === 0) {
+            console.warn(
+                `[wardDisplayAddress] INCONSISTENT host state for wardId=${wardId}: tree_state root ` +
+                    `present (counter ${tree.counter}) but 0 address rows — the label proof will be empty. ` +
+                    'The provider likely failed to persist entries.',
+            );
+        }
+        const entry = await provider.lookup(wardId, appId, address, networkSymbol);
         const isMember = entry !== null;
-        const pkg = proofFor(rows, address, networkSymbol, entry);
-        vlog('ENTER', { wardId, address, networkSymbol, isMember });
+        const pkg = proofFor(rows, appId, address, networkSymbol, entry);
+        vlog('ENTER', {
+            wardId,
+            appId,
+            address,
+            networkSymbol,
+            isMember,
+            rows: rows.length,
+        });
 
         const session = new WardSession(this.getDevice().getCommands(), vlog);
 
@@ -93,7 +108,10 @@ export default class WardDisplayAddress extends AbstractMethod<
         // WARD flow: the device pulls the proof (answered from `pkg`), verifies it
         // against the adopted root, and renders the label on the trusted address screen.
         // ward_proof is required on DisplayAddress but unused on the PULL path.
-        await session.displayAddress({ address, ward_proof: [] }, toProofAck(pkg));
+        await session.displayAddress(
+            { address, app_id: appId, ward_proof: [] },
+            toProofAck(pkg, appId),
+        );
 
         return { shown: true, isMember };
     }

@@ -106,8 +106,10 @@ export class WardSession {
         };
     }
 
-    /** Queue an edit INTENT (pull model): no proof, no counter. Returns the pending_id. */
+    /** Queue an edit INTENT (pull model): no proof, no counter. Returns the pending_id.
+     * `appId` names the target domain; the device forms entry_key(appId, address). */
     async queue(
+        appId: string,
         address: string,
         newValueHex: string,
     ): Promise<{ pendingId?: number; walletId?: string }> {
@@ -115,6 +117,7 @@ export class WardSession {
         const { message } = await this.cmd.typedCall('WARDQueueUpdate', 'WARDQueueUpdateAck', {
             address: utf8Hex(address),
             new_value: newValueHex,
+            app_id: appId,
         });
         this.vlog('<- WARDQueueUpdateAck', message);
 

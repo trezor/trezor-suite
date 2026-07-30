@@ -38,6 +38,7 @@ const buildMethod = (payload: Record<string, unknown>, deviceInstance?: any) => 
     const method = new WardUpdate({
         payload: {
             method: 'wardUpdate',
+            appId: 'btc',
             address: 'bc1qaddr',
             networkSymbol: 'btc',
             metadata: { label: 'x' },
@@ -141,7 +142,12 @@ describe('wardUpdate', () => {
 
     it('inserts a new entry with a non-membership proof and no old_value on the queue step', async () => {
         const existingRows: WardRow[] = [
-            { address: 'bc1qother', networkSymbol: 'btc', entry: { metadata: {}, counter: 1 } },
+            {
+                appId: 'btc',
+                address: 'bc1qother',
+                networkSymbol: 'btc',
+                entry: { metadata: {}, counter: 1 },
+            },
         ];
         const provider = buildProvider({
             getAllEntries: jest.fn().mockResolvedValue(existingRows),
@@ -203,7 +209,7 @@ describe('wardUpdate', () => {
         // ...and it is cleared afterwards.
         expect(setWardProofCallback).toHaveBeenLastCalledWith(undefined);
 
-        expect(provider.upsert).toHaveBeenCalledWith(WARD_ID, 'bc1qaddr', 'btc', {
+        expect(provider.upsert).toHaveBeenCalledWith(WARD_ID, 'btc', 'bc1qaddr', 'btc', {
             metadata: { label: 'x' },
             counter: 1,
         });
@@ -213,6 +219,7 @@ describe('wardUpdate', () => {
     it('updates an existing entry, stamping the new leaf with the global counter + 1', async () => {
         const existingRows: WardRow[] = [
             {
+                appId: 'btc',
                 address: 'bc1qaddr',
                 networkSymbol: 'btc',
                 entry: { metadata: { label: 'old' }, counter: 3 },
@@ -245,10 +252,10 @@ describe('wardUpdate', () => {
         const proofCallback = setWardProofCallback.mock.calls[0][0];
         const proofAck = proofCallback({ address: 'aa', pending_id: 1 });
         expect(proofAck.value).toBeDefined();
-        expect(proofAck.witness_address).toBeUndefined();
+        expect(proofAck.witness_entry_key).toBeUndefined();
         expect(proofAck.counter).toBe(3); // previous global stamp of the leaf
 
-        expect(provider.upsert).toHaveBeenCalledWith(WARD_ID, 'bc1qaddr', 'btc', {
+        expect(provider.upsert).toHaveBeenCalledWith(WARD_ID, 'btc', 'bc1qaddr', 'btc', {
             metadata: { label: 'x' },
             counter: 4,
         });
@@ -261,7 +268,7 @@ describe('wardUpdate', () => {
         const method = buildMethod({});
         const result = await method.run();
 
-        expect(provider.upsert).toHaveBeenCalledWith(WARD_ID, 'bc1qaddr', 'btc', {
+        expect(provider.upsert).toHaveBeenCalledWith(WARD_ID, 'btc', 'bc1qaddr', 'btc', {
             metadata: { label: 'x' },
             counter: 1,
         });
@@ -278,7 +285,11 @@ describe('wardUpdate', () => {
         const typedCall = buildWardTypedCall({ counter: 7, root: 'root7' });
         const method = buildMethod({ device: {} }, buildDevice(typedCall));
 
+        // A persist failure is loudly logged (host DB now out of sync); silence + assert it.
+        const errSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
         const result = await method.run();
+        expect(errSpy).toHaveBeenCalledWith(expect.stringContaining('LOCAL CACHE PERSIST FAILED'));
+        errSpy.mockRestore();
 
         expect(result).toEqual({
             counter: 7,
@@ -323,7 +334,7 @@ describe('wardUpdate', () => {
 
         const result = await method.run();
 
-        expect(provider.upsert).toHaveBeenCalledWith(WARD_ID, 'bc1qaddr', 'btc', {
+        expect(provider.upsert).toHaveBeenCalledWith(WARD_ID, 'btc', 'bc1qaddr', 'btc', {
             metadata: { label: 'x' },
             counter: 9,
         });

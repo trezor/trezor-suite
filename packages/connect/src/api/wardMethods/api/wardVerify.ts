@@ -23,19 +23,39 @@ import { WardSession } from '../wardSession';
 
 const utf8Hex = (s: string) => bytesToHex(new TextEncoder().encode(s));
 
-// Map a normalized app-layer ProofPackage onto WARDLookup wire params.
-const toLookupParams = (address: string, pkg: ProofPackage): Messages.WARDLookup =>
-    pkg.kind === 'membership'
-        ? { address: utf8Hex(address), value: pkg.valueHex, proof: pkg.proof, counter: pkg.counter }
-        : {
-              address: utf8Hex(address),
-              proof: pkg.proof,
-              ...(pkg.witnessAddressHex !== undefined && {
-                  witness_address: pkg.witnessAddressHex,
-                  witness_value: pkg.witnessValueHex!,
-                  witness_counter: pkg.witnessCounter!,
-              }),
-          };
+// Map a normalized app-layer ProofPackage onto WARDLookup wire params. `appId` names
+// the domain; the device forms entry_key(appId, address). A non-membership witness
+// travels as two hashes (no plaintext leak across apps).
+const toLookupParams = (appId: string, address: string, pkg: ProofPackage): Messages.WARDLookup => {
+    if (pkg.kind === 'membership') {
+        return {
+            address: utf8Hex(address),
+            value: pkg.valueHex,
+            proof: pkg.proof,
+            counter: pkg.counter,
+            app_id: appId,
+        };
+    }
+    const params: Messages.WARDLookup = {
+        address: utf8Hex(address),
+        proof: pkg.proof,
+        app_id: appId,
+        ...(pkg.witnessEntryKeyHex !== undefined && {
+            witness_entry_key: pkg.witnessEntryKeyHex,
+            witness_value_hash: pkg.witnessValueHashHex!,
+        }),
+    };
+    // Drift guard (see proofAck.ts): a witness we meant to send must survive into the
+    // wire message, or the device rejects the non-membership proof with a cryptic error.
+    if (pkg.witnessEntryKeyHex !== undefined && params.witness_entry_key === undefined) {
+        throw new Error(
+            'toLookupParams: witness present in ProofPackage but dropped from WARDLookup — ' +
+                'protobuf binding out of sync with witness_entry_key/witness_value_hash',
+        );
+    }
+
+    return params;
+};
 
 export default class WardVerify extends AbstractMethod<'wardVerify', WardVerifySchema> {
     constructor(message: MethodMessage<'wardVerify'>) {
@@ -43,6 +63,7 @@ export default class WardVerify extends AbstractMethod<'wardVerify', WardVerifyS
         Assert(WardVerifySchema, payload);
 
         const params = {
+            appId: payload.appId,
             address: payload.address,
             networkSymbol: payload.networkSymbol,
             wardId: payload.wardId,
@@ -79,17 +100,26 @@ export default class WardVerify extends AbstractMethod<'wardVerify', WardVerifyS
                 'wardVerify requires wardDataProvider to be set via TrezorConnect.init()',
             );
         }
-        const { address, networkSymbol, wardId } = this.params;
+        const { appId, address, networkSymbol, wardId } = this.params;
         const vlog = (...m: unknown[]) => console.log('[wardVerify]', ...m);
 
         // --- Application flow: resolve DB state + the entry under query. ---
         const { rows, tree } = await loadHead(provider, wardId);
-        const entry = await provider.lookup(wardId, address, networkSymbol);
+        if (tree?.root && rows.length === 0) {
+            console.warn(
+                `[wardVerify] INCONSISTENT host state for wardId=${wardId}: tree_state root present ` +
+                    `(counter ${tree.counter}) but 0 address rows — non-membership proofs will lack a witness ` +
+                    'and the device will reject them. The provider likely failed to persist entries.',
+            );
+        }
+        const entry = await provider.lookup(wardId, appId, address, networkSymbol);
         const isMember = entry !== null;
         vlog('ENTER', {
             wardId,
+            appId,
             address,
             networkSymbol,
+            rows: rows.length,
             isMember,
             mode: this.useDevice ? 'device' : 'offline',
         });
@@ -99,10 +129,11 @@ export default class WardVerify extends AbstractMethod<'wardVerify', WardVerifyS
             const localRoot = tree?.root ?? computeMerkleRoot(rows);
             const computedRoot = isMember
                 ? evaluateProof(
+                      appId,
                       address,
                       networkSymbol,
                       entry,
-                      generateMerkleProof(rows, address, networkSymbol),
+                      generateMerkleProof(rows, appId, address, networkSymbol),
                   )
                 : computeMerkleRoot(rows);
 
@@ -130,8 +161,19 @@ export default class WardVerify extends AbstractMethod<'wardVerify', WardVerifyS
             tree?.root,
         );
 
-        const pkg = proofFor(rows, address, networkSymbol, entry);
-        const ack = await session.lookup(toLookupParams(address, pkg));
+        const pkg = proofFor(rows, appId, address, networkSymbol, entry);
+        const ack = await session.lookup(toLookupParams(appId, address, pkg));
+        // Explicit outcome logging: a membership entry whose proof the device rejects is
+        // the silent-failure case. Make it loud so it is never mistaken for "no label".
+        if (isMember && !ack.valid) {
+            console.error(
+                `[wardVerify] MEMBERSHIP PROOF FAILED verification on device for ` +
+                    `wardId=${wardId} appId=${appId} address=${address} — the host proof did ` +
+                    "not match the device's authenticated root (stale/inconsistent host state?).",
+            );
+        } else {
+            vlog('result', { isMember, valid: ack.valid, counter: ack.counter });
+        }
         // Tolerant echo check (matches prior behavior): only reject on an explicit
         // mismatch; an absent ward_id is not treated as a failure here.
         if (ack.ward_id !== undefined && ack.ward_id !== wardId) {

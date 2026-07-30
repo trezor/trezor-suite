@@ -14,6 +14,10 @@ import type { Params, Response } from '../params';
 
 export type WardDisplayAddressSchema = Static<typeof WardDisplayAddressSchema>;
 export const WardDisplayAddressSchema = Type.Object({
+    /** The domain (application) whose label to display; the device forms
+     * entry_key = sha256(appId || 0x00 || type || 0x00 || address). Must match the
+     * domain the entry was written under (e.g. via wardUpdate). */
+    appId: Type.String(),
     address: Type.String(),
     networkSymbol: Type.String(),
     /**

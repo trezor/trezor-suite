@@ -48,8 +48,12 @@ export type TreeState = {
     mac?: string;
 };
 
-/** A single row returned for MPT construction, scoped to one wallet. */
+/** A single row returned for MPT construction, scoped to one wallet.
+ * appId is the domain that owns the entry; the trie leaf is keyed by
+ * entry_key = sha256(appId || 0x00 || type || 0x00 || address), so entries from
+ * different apps never collide even at the same address. */
 export type WardRow = {
+    appId: string;
     address: string;
     networkSymbol: string;
     entry: WardEntry;

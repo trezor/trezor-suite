@@ -12,6 +12,9 @@ import type { Params, Response } from '../params';
 
 export type WardVerifySchema = Static<typeof WardVerifySchema>;
 export const WardVerifySchema = Type.Object({
+    /** The domain (application) to verify against; the device forms
+     * entry_key = sha256(appId || 0x00 || type || 0x00 || address). */
+    appId: Type.String(),
     address: Type.String(),
     networkSymbol: Type.String(),
     /**

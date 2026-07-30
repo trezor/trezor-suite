@@ -22,6 +22,7 @@ const buildMethod = (payload: Record<string, unknown>, deviceInstance?: any) => 
     const method = new WardVerify({
         payload: {
             method: 'wardVerify',
+            appId: 'btc',
             address: 'bc1qaddr',
             networkSymbol: 'btc',
             wardId: WARD_ID,
@@ -65,7 +66,12 @@ describe('wardVerify', () => {
 
     it('bootstraps then verifies membership against the device', async () => {
         const rows: WardRow[] = [
-            { address: 'bc1qaddr', networkSymbol: 'btc', entry: { metadata: {}, counter: 2 } },
+            {
+                appId: 'btc',
+                address: 'bc1qaddr',
+                networkSymbol: 'btc',
+                entry: { metadata: {}, counter: 2 },
+            },
         ];
         settingsStore.update({
             wardDataProvider: buildProvider({
@@ -90,15 +96,14 @@ describe('wardVerify', () => {
         settingsStore.update({
             wardDataProvider: buildProvider({
                 lookup: jest.fn().mockResolvedValue({ metadata: {}, counter: 2 }),
-                getAllEntries: jest
-                    .fn()
-                    .mockResolvedValue([
-                        {
-                            address: 'bc1qaddr',
-                            networkSymbol: 'btc',
-                            entry: { metadata: {}, counter: 2 },
-                        },
-                    ]),
+                getAllEntries: jest.fn().mockResolvedValue([
+                    {
+                        appId: 'btc',
+                        address: 'bc1qaddr',
+                        networkSymbol: 'btc',
+                        entry: { metadata: {}, counter: 2 },
+                    },
+                ]),
             }),
         });
 
@@ -116,7 +121,12 @@ describe('wardVerify', () => {
 
     it('verifies non-membership against the device', async () => {
         const rows: WardRow[] = [
-            { address: 'bc1qother', networkSymbol: 'btc', entry: { metadata: {}, counter: 1 } },
+            {
+                appId: 'btc',
+                address: 'bc1qother',
+                networkSymbol: 'btc',
+                entry: { metadata: {}, counter: 1 },
+            },
         ];
         settingsStore.update({
             wardDataProvider: buildProvider({ getAllEntries: jest.fn().mockResolvedValue(rows) }),
@@ -132,7 +142,12 @@ describe('wardVerify', () => {
 
     it('verifies local consistency offline without a device', async () => {
         const rows: WardRow[] = [
-            { address: 'bc1qaddr', networkSymbol: 'btc', entry: { metadata: {}, counter: 2 } },
+            {
+                appId: 'btc',
+                address: 'bc1qaddr',
+                networkSymbol: 'btc',
+                entry: { metadata: {}, counter: 2 },
+            },
         ];
         settingsStore.update({
             wardDataProvider: buildProvider({
@@ -151,7 +166,12 @@ describe('wardVerify', () => {
 
     it('flags an inconsistent local root as invalid offline', async () => {
         const rows: WardRow[] = [
-            { address: 'bc1qaddr', networkSymbol: 'btc', entry: { metadata: {}, counter: 2 } },
+            {
+                appId: 'btc',
+                address: 'bc1qaddr',
+                networkSymbol: 'btc',
+                entry: { metadata: {}, counter: 2 },
+            },
         ];
         settingsStore.update({
             wardDataProvider: buildProvider({

@@ -21,6 +21,7 @@ const buildMethod = (payload: Record<string, unknown>, deviceInstance?: any) => 
     const method = new WardDisplayAddress({
         payload: {
             method: 'wardDisplayAddress',
+            appId: 'btc',
             address: 'bc1qaddr',
             networkSymbol: 'btc',
             wardId: WARD_ID,
@@ -75,6 +76,7 @@ describe('wardDisplayAddress', () => {
     it('bootstraps, sends DisplayAddress, and answers the pull with a MEMBERSHIP proof', async () => {
         const rows: WardRow[] = [
             {
+                appId: 'btc',
                 address: 'bc1qaddr',
                 networkSymbol: 'btc',
                 entry: { metadata: { label: 'x' }, counter: 2 },
@@ -107,7 +109,12 @@ describe('wardDisplayAddress', () => {
 
     it('answers with a NON-MEMBERSHIP proof for an absent address', async () => {
         const rows: WardRow[] = [
-            { address: 'bc1qother', networkSymbol: 'btc', entry: { metadata: {}, counter: 1 } },
+            {
+                appId: 'btc',
+                address: 'bc1qother',
+                networkSymbol: 'btc',
+                entry: { metadata: {}, counter: 1 },
+            },
         ];
         const provider = buildProvider({ getAllEntries: jest.fn().mockResolvedValue(rows) });
         settingsStore.update({ wardDataProvider: provider });

@@ -42,27 +42,49 @@ export const valueHexToEntry = (
     return { networkSymbol, metadata };
 };
 
-// leaf_hash = SHA-256(b"\x00" + address_bytes + counter(4B BE) + value_bytes)
-// counter is a first-class, cryptographically-committed per-address version number
-// (docs/ward-sync-proposal.md Part 1) -- not just text embedded in the value blob.
+const ZERO = new Uint8Array([0x00]);
+
+// MVP entry type: the only kind of identifier keyed today is an address. Baked into
+// entry_key so the layout reserves a type slot; a constant for now (no wire field).
+const ENTRY_TYPE = 'address';
+
+// entry_key = SHA-256(app_id || 0x00 || type || 0x00 || identifier). 32 bytes, and it
+// IS the trie path (no second path-hashing step). Because it is a hash, a
+// non-membership witness reveals only a hash of another app's identifier — never the
+// plaintext. Must stay byte-for-byte identical to firmware `entry_key` / Python
+// `_entry_key`.
+export const entryKey = (appId: string, identifier: string): Uint8Array =>
+    sha256(concatBytes(utf8(appId), ZERO, utf8(ENTRY_TYPE), ZERO, utf8(identifier)));
+
+// value_hash = SHA-256(counter(4B BE) || value_bytes). The counter is committed here,
+// on the value side — never in entry_key, so an entry keeps one stable path across
+// version bumps. A witness reveals only this hash, hiding the plaintext value.
+export const valueHash = (counter: number, value: Uint8Array): Uint8Array => {
+    const counterBytes = new Uint8Array(4);
+    new DataView(counterBytes.buffer).setUint32(0, counter, false);
+
+    return sha256(concatBytes(counterBytes, value));
+};
+
+// leaf_hash = SHA-256(0x00 || entry_key || value_hash) — two-level, so a witness leaf
+// can be rebuilt from two hashes without revealing the value/counter behind it.
+export const leafHashOf = (ek: Uint8Array, vh: Uint8Array): Uint8Array =>
+    sha256(concatBytes(ZERO, ek, vh));
+
 export const computeLeafHash = (
+    appId: string,
     address: string,
     networkSymbol: string,
     entry: WardEntry,
-): Uint8Array => {
-    const addrBytes = utf8(address);
-    const valBytes = entryToValueBytes(networkSymbol, entry);
-    const counterBytes = new Uint8Array(4);
-    new DataView(counterBytes.buffer).setUint32(0, entry.counter, false);
-
-    return sha256(concatBytes(new Uint8Array([0x00]), addrBytes, counterBytes, valBytes));
-};
+): Uint8Array =>
+    leafHashOf(
+        entryKey(appId, address),
+        valueHash(entry.counter, entryToValueBytes(networkSymbol, entry)),
+    );
 
 // internal_hash(left, right) = SHA-256(b"\x01" + left + right)  — positional, no sorting
 const internalHash = (left: Uint8Array, right: Uint8Array): Uint8Array =>
     sha256(concatBytes(new Uint8Array([0x01]), left, right));
-
-const addressHash = (address: string): Uint8Array => sha256(utf8(address));
 
 // Return the bit at position `bit` of `addrHash`, MSB first.
 // bit 0 = MSB of byte 0; bit 7 = LSB of byte 0; bit 8 = MSB of byte 1; …
@@ -134,10 +156,12 @@ const hashMpt = (node: MptNode): Uint8Array => {
     return internalHash(hashMpt(node.left), hashMpt(node.right));
 };
 
+// addrHash holds the 32-byte entry_key (the trie path), keyed per row by its own
+// (appId, address) — the trie is a single combined structure across domains.
 const rowsToLeaves = (rows: WardRow[]): LeafInfo[] =>
     rows.map(r => ({
-        addrHash: addressHash(r.address),
-        leafHash: computeLeafHash(r.address, r.networkSymbol, r.entry),
+        addrHash: entryKey(r.appId, r.address),
+        leafHash: computeLeafHash(r.appId, r.address, r.networkSymbol, r.entry),
     }));
 
 // ---------------------------------------------------------------------------
@@ -152,14 +176,17 @@ const rowsToLeaves = (rows: WardRow[]): LeafInfo[] =>
  */
 export const generateMerkleProof = (
     rows: WardRow[],
+    appId: string,
     address: string,
     networkSymbol: string,
 ): MerkleProof => {
-    const target = rows.find(r => r.address === address && r.networkSymbol === networkSymbol);
+    const target = rows.find(
+        r => r.appId === appId && r.address === address && r.networkSymbol === networkSymbol,
+    );
     if (!target) return [];
 
     const leaves = rowsToLeaves(rows);
-    const targetAddrHash = addressHash(address);
+    const targetAddrHash = entryKey(appId, address);
     const mptRoot = buildMpt(leaves);
 
     const proof: string[] = [];
@@ -203,30 +230,31 @@ export const computeMerkleRoot = (rows: WardRow[]): string => {
 };
 
 /**
- * Generate a non-membership proof for the given address.
+ * Generate a non-membership proof for the given (appId, address).
  * Returns the proof (same format as membership proof, but for the witness leaf),
- * plus the witness address and witness value bytes.
- * Returns null if the tree is empty (address trivially not in tree).
+ * plus the witness as two hashes — witnessEntryKey and witnessValueHash — so the
+ * neighbour's plaintext identifier and value are never revealed to the querying app.
+ * Returns empty witness hashes if the tree is empty (address trivially not in tree).
  */
 export const generateNonMembershipProof = (
     rows: WardRow[],
+    appId: string,
     address: string,
     _networkSymbol: string,
 ): {
     proof: MerkleProof;
-    witnessAddress: string | null;
-    witnessValue: Uint8Array | null;
-    witnessCounter: number | null;
+    witnessEntryKey: string | null;
+    witnessValueHash: string | null;
 } => {
     if (rows.length === 0) {
-        return { proof: [], witnessAddress: null, witnessValue: null, witnessCounter: null };
+        return { proof: [], witnessEntryKey: null, witnessValueHash: null };
     }
 
-    const targetAddrHash = addressHash(address);
+    const targetAddrHash = entryKey(appId, address);
     const leaves = rowsToLeaves(rows);
     const mptRoot = buildMpt(leaves);
 
-    // Walk the MPT following the target address path, collecting siblings.
+    // Walk the MPT following the target entry_key path, collecting siblings.
     // The leaf we land on is the witness.
     let witnessLeaf: LeafInfo | null = null;
     const proof: string[] = [];
@@ -259,20 +287,23 @@ export const generateNonMembershipProof = (
     walk(mptRoot);
 
     if (!witnessLeaf) {
-        return { proof: [], witnessAddress: null, witnessValue: null, witnessCounter: null };
+        return { proof: [], witnessEntryKey: null, witnessValueHash: null };
     }
 
     const wl: LeafInfo = witnessLeaf;
-    const wr = rows.find(r => bytesToHex(addressHash(r.address)) === bytesToHex(wl.addrHash));
+    const wr = rows.find(r => bytesToHex(entryKey(r.appId, r.address)) === bytesToHex(wl.addrHash));
     if (!wr) {
-        return { proof: [], witnessAddress: null, witnessValue: null, witnessCounter: null };
+        return { proof: [], witnessEntryKey: null, witnessValueHash: null };
     }
 
+    // The witness travels as two hashes only: its entry_key (== wl.addrHash, the path)
+    // and value_hash. Neither reveals wr's plaintext identifier or value.
     return {
         proof,
-        witnessAddress: wr.address,
-        witnessValue: entryToValueBytes(wr.networkSymbol, wr.entry),
-        witnessCounter: wr.entry.counter,
+        witnessEntryKey: bytesToHex(wl.addrHash),
+        witnessValueHash: bytesToHex(
+            valueHash(wr.entry.counter, entryToValueBytes(wr.networkSymbol, wr.entry)),
+        ),
     };
 };
 
@@ -282,13 +313,14 @@ export const generateNonMembershipProof = (
  * Each element is 66 hex chars: 2-char bit-position + 64-char sibling hash.
  */
 export const evaluateProof = (
+    appId: string,
     address: string,
     networkSymbol: string,
     entry: WardEntry,
     proof: MerkleProof,
 ): string => {
-    const addrHash = addressHash(address);
-    let current = computeLeafHash(address, networkSymbol, entry);
+    const addrHash = entryKey(appId, address);
+    let current = computeLeafHash(appId, address, networkSymbol, entry);
 
     for (const elem of proof) {
         const bit = parseInt(elem.slice(0, 2), 16);
