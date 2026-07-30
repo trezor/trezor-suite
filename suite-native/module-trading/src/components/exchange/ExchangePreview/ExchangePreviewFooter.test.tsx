@@ -5,13 +5,13 @@ import { userEvent } from '@suite-native/test-utils-store';
 import { createPrecomposedTxFinal, mercuryoFixedWorstQuote } from '@suite-native/trading-fixtures';
 import { mergeDeepObject } from '@trezor/utils';
 
+import { ExchangePreviewFooter } from './ExchangePreviewFooter';
 import {
     type PreloadedStatePartial,
     type TradingTestPreloadedState,
     renderWithTradingProvider,
-} from '../../../../__tests__/tradingTestUtils';
-import { useExchangeIssue } from '../../../../hooks/exchange/useExchangeIssue';
-import { ExchangePreviewFooter } from '../ExchangePreviewFooter';
+} from '../../../__tests__/tradingTestUtils';
+import { useExchangeIssue } from '../../../hooks/exchange/useExchangeIssue';
 
 const mockNavigate = jest.fn();
 const mockPopToTop = jest.fn();
@@ -24,7 +24,7 @@ jest.mock('@react-navigation/native', () => ({
     }),
 }));
 
-jest.mock('../../../../hooks/exchange/useExchangeIssue', () => ({
+jest.mock('../../../hooks/exchange/useExchangeIssue', () => ({
     useExchangeIssue: jest.fn(),
 }));
 

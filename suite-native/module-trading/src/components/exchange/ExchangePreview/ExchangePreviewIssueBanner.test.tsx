@@ -4,13 +4,13 @@ import { getTranslation } from '@suite-native/intl';
 import { userEvent } from '@suite-native/test-utils-store';
 import { createPrecomposedTxFinal, mercuryoFixedWorstQuote } from '@suite-native/trading-fixtures';
 
+import { ExchangePreviewIssueBanner } from './ExchangePreviewIssueBanner';
 import {
     type PreloadedStatePartial,
     type TradingTestPreloadedState,
     renderWithTradingProvider,
-} from '../../../../__tests__/tradingTestUtils';
-import { useExchangeIssue } from '../../../../hooks/exchange/useExchangeIssue';
-import { ExchangePreviewIssueBanner } from '../ExchangePreviewIssueBanner';
+} from '../../../__tests__/tradingTestUtils';
+import { useExchangeIssue } from '../../../hooks/exchange/useExchangeIssue';
 
 const mockNavigate = jest.fn();
 
@@ -21,7 +21,7 @@ jest.mock('@react-navigation/native', () => ({
     }),
 }));
 
-jest.mock('../../../../hooks/exchange/useExchangeIssue', () => ({
+jest.mock('../../../hooks/exchange/useExchangeIssue', () => ({
     useExchangeIssue: jest.fn(),
 }));
 

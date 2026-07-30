@@ -2,21 +2,21 @@ import { type CryptoId, type ExchangeTrade } from 'invity-api';
 
 import { type Account } from '@suite-common/wallet-types';
 
-import { accountEth } from '../../__fixtures__/utils';
-import { createTradingTestState, renderHookWithTradingStore } from '../../__tests__/testUtils';
-import { initialState } from '../../reducers/tradingCommonReducer';
-import { useDexExchangeTxSimulation } from '../useDexExchangeTxSimulation';
-import { useExchangeFiatDeviation } from '../useExchangeFiatDeviation';
-import { useExchangeIssue } from '../useExchangeIssue';
+import { useDexExchangeTxSimulation } from './useDexExchangeTxSimulation';
+import { useExchangeFiatDeviation } from './useExchangeFiatDeviation';
+import { useExchangeIssue } from './useExchangeIssue';
+import { accountEth } from '../__fixtures__/utils';
+import { createTradingTestState, renderHookWithTradingStore } from '../__tests__/testUtils';
+import { initialState } from '../reducers/tradingCommonReducer';
 
 type SimulationResult = NonNullable<ReturnType<typeof useDexExchangeTxSimulation>['data']>;
 type SimulationPayload = Pick<SimulationResult['payload'], 'validation' | 'simulation'>;
 
-jest.mock('../useDexExchangeTxSimulation', () => ({
+jest.mock('./useDexExchangeTxSimulation', () => ({
     useDexExchangeTxSimulation: jest.fn(),
 }));
 
-jest.mock('../useExchangeFiatDeviation', () => ({
+jest.mock('./useExchangeFiatDeviation', () => ({
     useExchangeFiatDeviation: jest.fn(),
 }));
 
