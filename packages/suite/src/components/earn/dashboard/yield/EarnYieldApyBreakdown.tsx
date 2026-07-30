@@ -4,8 +4,8 @@ import {
     type TokenDtoV2,
     sortRewardsByUnderlyingToken,
 } from '@suite-common/earn-stablecoin-api';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { getApyPercent } from '@suite-common/wallet-utils';
+import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { getApyPercent, isWrappedNativeToken } from '@suite-common/wallet-utils';
 import { Column, Icon, Row, Text } from '@trezor/components';
 import { ChartLineIcon } from '@trezor/icons';
 import { TokenIcon } from '@trezor/product-components';
@@ -73,6 +73,11 @@ export const EarnYieldApyBreakdown = ({
                 const hasRatePercent = ratePercent !== null && ratePercent > 0;
                 const descriptionId = getYieldSourceDescriptionId(reward.yieldSource);
                 const rateTranslationId = getRateTranslationId(reward.yieldSource);
+                // A wrapped-native reward (e.g. WETH in an ETH vault) is presented as its native
+                // asset (#29881), matching how the vault itself is labelled across the earn UI.
+                const displaySymbol = isWrappedNativeToken(networkSymbol, reward.token.address)
+                    ? getNetworkDisplaySymbol(networkSymbol)
+                    : reward.token.symbol;
 
                 let rateNode;
                 if (!hasRatePercent) {
@@ -88,10 +93,11 @@ export const EarnYieldApyBreakdown = ({
                 return (
                     <Row key={index} gap={8} alignItems="center">
                         <TokenIcon
-                            placeholder={reward.token.symbol || reward.token.name || 'token'}
+                            placeholder={displaySymbol || reward.token.name || 'token'}
                             symbol={networkSymbol}
                             contractAddress={reward.token.address}
                             showNetworkIcon
+                            wrappedTokenIcon="network"
                             size={20}
                             isBordered={false}
                         />
@@ -100,7 +106,7 @@ export const EarnYieldApyBreakdown = ({
                                 data-testid="@earn/dashboard/apy-breakdown/symbol"
                                 typographyStyle="body-sm"
                             >
-                                {reward.token.symbol}
+                                {displaySymbol}
                             </Text>
                             {descriptionId && (
                                 <Text
