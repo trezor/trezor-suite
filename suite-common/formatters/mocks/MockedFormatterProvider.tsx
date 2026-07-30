@@ -3,7 +3,7 @@ import { useIntl } from 'react-intl';
 
 import { PROTO } from '@trezor/connect';
 
-import { FormatterProviderContext, getFormatters } from '../FormatterProvider';
+import { FormatterProviderContext, getFormatters } from '../src/FormatterProvider';
 
 type MockedFormatterProviderProps = {
     children: ReactNode;

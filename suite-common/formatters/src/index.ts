@@ -1,5 +1,4 @@
 export * from './FormatterProvider';
-export * from './tests/MockedFormatterProvider';
 export * from './useFormatters';
 export type * from './types';
 export * from './makeFormatter';
