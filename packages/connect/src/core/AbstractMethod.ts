@@ -1,4 +1,4 @@
-import { ERRORS, UI_REQUEST } from '@trezor/connect-common';
+import { ERRORS, UI_REQUEST, asCoinSymbol } from '@trezor/connect-common';
 import type {
     CallMethodPayload,
     CallMethodResponse,
@@ -143,7 +143,7 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
     // to a known `CoinSymbol` (both derive from the same coin definitions), so
     // the cast is sound.
     private toCoinSymbol(shortcut: string): CoinSymbol {
-        return shortcut.toLowerCase() as CoinSymbol;
+        return asCoinSymbol(shortcut.toLowerCase());
     }
 
     // Build a `PermissionRequest` for a single coin (or coin-less when `coin` is

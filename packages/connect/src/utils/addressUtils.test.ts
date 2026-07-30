@@ -1,4 +1,4 @@
-import type { CoinSymbol } from '@trezor/connect-common/src/types/coinInfo';
+import { asCoinSymbol } from '@trezor/connect-common';
 
 import * as fixtures from './__fixtures__/addressUtils';
 import * as utils from './addressUtils';
@@ -9,7 +9,7 @@ describe('utils/addressUtils', () => {
         fixtures.validAddresses.forEach(f => {
             it(`${f.description} ${f.address}`, () => {
                 expect(
-                    utils.isValidAddress(f.address, getBitcoinNetwork(f.coin as CoinSymbol)!),
+                    utils.isValidAddress(f.address, getBitcoinNetwork(asCoinSymbol(f.coin))!),
                 ).toEqual(true);
             });
         });
@@ -17,7 +17,7 @@ describe('utils/addressUtils', () => {
         fixtures.invalidAddresses.forEach(f => {
             it(`Invalid ${f.coin} ${f.address}`, () => {
                 expect(
-                    utils.isValidAddress(f.address, getBitcoinNetwork(f.coin as CoinSymbol)!),
+                    utils.isValidAddress(f.address, getBitcoinNetwork(asCoinSymbol(f.coin))!),
                 ).toEqual(false);
             });
         });

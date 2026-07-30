@@ -1,11 +1,12 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/data/CoinInfo.js
 import { ERRORS } from '@trezor/connect-common/src/constants';
-import type {
-    BitcoinNetworkInfo,
-    CoinInfo,
-    CoinSymbol,
-    EthereumNetworkInfo,
-    MiscNetworkInfo,
+import {
+    type BitcoinNetworkInfo,
+    type CoinInfo,
+    type CoinSymbol,
+    type EthereumNetworkInfo,
+    type MiscNetworkInfo,
+    asCoinSymbol,
 } from '@trezor/connect-common/src/types/coinInfo';
 import coinsEth from '@trezor/connect-data/files/coins-eth.json';
 import coins from '@trezor/connect-data/files/coins.json';
@@ -121,7 +122,7 @@ const getCoinInfo = (coin: CoinSymbol) =>
 
 export const getCoinInfoOrThrow = (coin: string): Readonly<CoinInfo> => {
     // `coin` is unvalidated caller input; a non-shortcut resolves to undefined below
-    const coinInfo = getCoinInfo(coin as CoinSymbol);
+    const coinInfo = getCoinInfo(asCoinSymbol(coin));
     if (!coinInfo) {
         throw ERRORS.TypedError('Method_UnknownCoin');
     }
