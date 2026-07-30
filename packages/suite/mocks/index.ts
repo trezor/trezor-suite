@@ -1,2 +1,2 @@
-export { extraDependenciesDesktopMock } from '../src/support/tests/extraDependenciesDesktop.mock';
+export { extraDependenciesDesktopMock } from './extraDependenciesDesktopMock';
 export { mockInitialAppState } from './mockInitialAppState';

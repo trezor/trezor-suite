@@ -4,10 +4,10 @@ import { screen } from '@testing-library/react';
 
 import { type AppState } from 'src/reducers/store';
 import { configureStore } from 'src/support/tests/configureStore';
-import { extraDependenciesDesktopMock } from 'src/support/tests/extraDependenciesDesktop.mock';
 import { renderWithProviders } from 'src/support/tests/hooksHelper';
 
 import { TradingLayout } from './TradingLayout';
+import { extraDependenciesDesktopMock } from '../../../../../../mocks/extraDependenciesDesktopMock';
 import { mockInitialAppState } from '../../../../../../mocks/mockInitialAppState';
 
 jest.mock('@suite-common/tx-simulation', () => ({}));

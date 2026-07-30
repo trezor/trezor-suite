@@ -12,10 +12,10 @@ import {
     createAccountKey,
 } from '@suite-common/wallet-types';
 
-import { extraDependenciesDesktopMock } from 'src/support/tests/extraDependenciesDesktop.mock';
 import { renderWithProviders } from 'src/support/tests/hooksHelper';
 
 import { TradingTransactionsList } from './TradingTransactionsList';
+import { extraDependenciesDesktopMock } from '../../../../../../mocks/extraDependenciesDesktopMock';
 import { mockInitialAppState } from '../../../../../../mocks/mockInitialAppState';
 
 jest.mock('@suite-common/tx-simulation', () => ({}));
