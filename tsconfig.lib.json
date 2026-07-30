@@ -27,6 +27,7 @@
         "**/__fixtures__",
         "**/__mocks__/**",
         "**/*.test.ts",
+        "**/*.test.tsx",
         "**/*.type-test.ts"
     ]
 }
