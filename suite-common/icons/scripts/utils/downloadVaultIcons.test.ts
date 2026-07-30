@@ -14,7 +14,6 @@ global.fetch = fetchMock as unknown as typeof fetch;
 // `createHttpClient` captures `globalThis.fetch` when the module under test is first evaluated, so
 // the mock above has to be installed before that happens — hence the require instead of a top-level
 // import, which would be hoisted above the assignment.
-// eslint-disable-next-line @typescript-eslint/no-require-imports
 const { downloadVaultIcons } = require('./downloadVaultIcons') as {
     downloadVaultIcons: () => Promise<void>;
 };
@@ -49,13 +48,13 @@ const fakeResponse = ({ status = 200, json, buffer }: FakeResponseInit): Respons
 
 const vault = ({
     address,
-    underlyingAddress,
+    underlyingToken,
     coingeckoId,
 }: {
     address: string;
-    underlyingAddress: string;
+    underlyingToken: string;
     coingeckoId: string;
-}) => ({ yieldId: `vault-${address}`, address, underlyingAddress, coingeckoId });
+}) => ({ yieldId: `vault-${address}`, address, underlyingToken, coingeckoId });
 
 const iconUrl = (coingeckoId: string, size: (typeof COIN_IMAGE_SIZES)[number]) =>
     `${ICONS_URL_BASE}/${createCoinImageName({ coingeckoId, size })}`;
@@ -109,7 +108,7 @@ describe('downloadVaultIcons', () => {
                 ethereum: [
                     vault({
                         address: ETH_USDT_VAULT,
-                        underlyingAddress: ETH_USDT,
+                        underlyingToken: ETH_USDT,
                         coingeckoId: 'tether',
                     }),
                 ],
@@ -134,7 +133,7 @@ describe('downloadVaultIcons', () => {
                 ethereum: [
                     vault({
                         address: ETH_WETH_VAULT,
-                        underlyingAddress: ETH_WETH,
+                        underlyingToken: ETH_WETH,
                         coingeckoId: 'weth',
                     }),
                 ],
@@ -158,7 +157,7 @@ describe('downloadVaultIcons', () => {
                 base: [
                     vault({
                         address: BASE_WETH_VAULT,
-                        underlyingAddress: BASE_WETH,
+                        underlyingToken: BASE_WETH,
                         coingeckoId: 'l2-standard-bridged-weth-base',
                     }),
                 ],
@@ -181,7 +180,7 @@ describe('downloadVaultIcons', () => {
                 base: [
                     vault({
                         address: BASE_USDC_VAULT,
-                        underlyingAddress: BASE_USDC,
+                        underlyingToken: BASE_USDC,
                         coingeckoId: 'usd-coin',
                     }),
                 ],
@@ -203,7 +202,7 @@ describe('downloadVaultIcons', () => {
                 base: [
                     vault({
                         address: BASE_USDC_VAULT.toUpperCase().replace('0X', '0x'),
-                        underlyingAddress: BASE_USDC,
+                        underlyingToken: BASE_USDC,
                         coingeckoId: 'usd-coin',
                     }),
                 ],
@@ -224,14 +223,14 @@ describe('downloadVaultIcons', () => {
                 'brand-new-chain': [
                     vault({
                         address: '0xabc',
-                        underlyingAddress: '0xdef',
+                        underlyingToken: '0xdef',
                         coingeckoId: 'usd-coin',
                     }),
                 ],
                 ethereum: [
                     vault({
                         address: ETH_USDT_VAULT,
-                        underlyingAddress: ETH_USDT,
+                        underlyingToken: ETH_USDT,
                         coingeckoId: 'tether',
                     }),
                 ],
@@ -255,7 +254,7 @@ describe('downloadVaultIcons', () => {
                 ethereum: [
                     vault({
                         address: ETH_USDT_VAULT,
-                        underlyingAddress: ETH_USDT,
+                        underlyingToken: ETH_USDT,
                         coingeckoId: 'tether',
                     }),
                 ],
@@ -281,14 +280,14 @@ describe('downloadVaultIcons', () => {
                 ethereum: [
                     vault({
                         address: ETH_WETH_VAULT,
-                        underlyingAddress: ETH_WETH,
+                        underlyingToken: ETH_WETH,
                         coingeckoId: 'weth',
                     }),
                 ],
                 base: [
                     vault({
                         address: BASE_WETH_VAULT,
-                        underlyingAddress: BASE_WETH,
+                        underlyingToken: BASE_WETH,
                         coingeckoId: 'l2-standard-bridged-weth-base',
                     }),
                 ],
