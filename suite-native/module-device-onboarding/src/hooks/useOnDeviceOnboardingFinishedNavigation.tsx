@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { setIsOnboardingFeedbackBannerEnabled } from '@suite-native/banner-flags';
+import { setIsOnboardingFeedbackBannerEnabled } from '@suite-native/banners';
 import {
     type DeviceOnboardingStackParamList,
     DeviceOnboardingStackRoutes,

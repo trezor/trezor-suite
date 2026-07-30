@@ -11840,9 +11840,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@suite-native/banner-flags@workspace:*, @suite-native/banner-flags@workspace:suite-native/banner-flags":
+"@suite-native/banners@workspace:*, @suite-native/banners@workspace:suite-native/banners":
   version: 0.0.0-use.local
-  resolution: "@suite-native/banner-flags@workspace:suite-native/banner-flags"
+  resolution: "@suite-native/banners@workspace:suite-native/banners"
   dependencies:
     "@reduxjs/toolkit": "npm:2.12.0"
     "@trezor/connect": "workspace:*"
@@ -12667,7 +12667,7 @@ __metadata:
     "@suite-native/alerts": "workspace:*"
     "@suite-native/analytics": "workspace:*"
     "@suite-native/atoms": "workspace:*"
-    "@suite-native/banner-flags": "workspace:*"
+    "@suite-native/banners": "workspace:*"
     "@suite-native/bip329": "workspace:*"
     "@suite-native/config": "workspace:*"
     "@suite-native/device": "workspace:*"
@@ -12983,7 +12983,7 @@ __metadata:
     "@suite-native/alerts": "workspace:*"
     "@suite-native/analytics": "workspace:*"
     "@suite-native/atoms": "workspace:*"
-    "@suite-native/banner-flags": "workspace:*"
+    "@suite-native/banners": "workspace:*"
     "@suite-native/config": "workspace:*"
     "@suite-native/device": "workspace:*"
     "@suite-native/device-authorization": "workspace:*"
@@ -13166,7 +13166,7 @@ __metadata:
     "@suite-native/analytics": "workspace:*"
     "@suite-native/assets": "workspace:*"
     "@suite-native/atoms": "workspace:*"
-    "@suite-native/banner-flags": "workspace:*"
+    "@suite-native/banners": "workspace:*"
     "@suite-native/blockchain": "workspace:*"
     "@suite-native/bluetooth": "workspace:*"
     "@suite-native/confirm-on-trezor": "workspace:*"
@@ -13406,7 +13406,7 @@ __metadata:
     "@suite-native/alerts": "workspace:*"
     "@suite-native/analytics": "workspace:*"
     "@suite-native/atoms": "workspace:*"
-    "@suite-native/banner-flags": "workspace:*"
+    "@suite-native/banners": "workspace:*"
     "@suite-native/biometrics": "workspace:*"
     "@suite-native/coin-enabling": "workspace:*"
     "@suite-native/config": "workspace:*"
@@ -13870,7 +13870,7 @@ __metadata:
     "@suite-common/wallet-core": "workspace:*"
     "@suite-common/walletconnect": "workspace:*"
     "@suite-native/analytics": "workspace:*"
-    "@suite-native/banner-flags": "workspace:*"
+    "@suite-native/banners": "workspace:*"
     "@suite-native/biometrics": "workspace:*"
     "@suite-native/blockchain": "workspace:*"
     "@suite-native/bluetooth": "workspace:*"

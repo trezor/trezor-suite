@@ -4,7 +4,7 @@ import { FullAlertBox } from '@suite-native/atoms';
 import {
     selectIsStellarLimitedHistoryBannerClosed,
     setIsStellarLimitedHistoryBannerClosed,
-} from '@suite-native/banner-flags';
+} from '@suite-native/banners';
 import { useTranslate } from '@suite-native/intl';
 
 export const StellarLimitedHistoryBanner = () => {

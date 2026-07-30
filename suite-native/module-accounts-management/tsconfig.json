@@ -42,7 +42,7 @@
         { "path": "../alerts" },
         { "path": "../analytics" },
         { "path": "../atoms" },
-        { "path": "../banner-flags" },
+        { "path": "../banners" },
         { "path": "../bip329" },
         { "path": "../config" },
         { "path": "../device" },
