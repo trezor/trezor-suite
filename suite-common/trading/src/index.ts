@@ -12,6 +12,8 @@ export * from './hooks/useExchangeIssue';
 export * from './hooks/useProviderMetadataChangeEffect';
 export * from './hooks/useTradingFiatValues';
 export * from './hooks/useExchangeFiatDeviation';
+export * from './hooks/useTradingRequestedAmountShortfall';
+export * from './hooks/useTradingRequestedSide';
 export * from './hooks/useApprovalStep';
 export * from './hooks/useTradingExchangeWatchApproval';
 export * from './hooks/useTradingRefetchScheduler';

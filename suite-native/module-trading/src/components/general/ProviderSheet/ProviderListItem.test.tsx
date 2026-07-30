@@ -27,6 +27,7 @@ describe('ProviderListItem', () => {
     const renderProviderListItem = (
         quote: TradingTradeType,
         props?: Partial<ProviderListItemProps<TradingTradeType>>,
+        overrides: PreloadedStatePartial<TradingTestPreloadedState> = baseOverrides,
     ) =>
         renderWithTradingProvider(
             <ProviderListItem
@@ -37,7 +38,7 @@ describe('ProviderListItem', () => {
                 tradingType="buy"
                 {...props}
             />,
-            { overrides: baseOverrides },
+            { overrides },
         );
 
     it('should render provider information correctly', () => {
@@ -46,13 +47,22 @@ describe('ProviderListItem', () => {
         expect(getByText('Mercuryo')).toBeOnTheScreen();
     });
 
-    it('should render trading information with formatted strings', () => {
+    it('should render the amount in the header and not the rate row for a buy quote', () => {
         const { getByText, queryByText } = renderProviderListItem(mercuryoApplePayBuyQuote);
 
         expect(
             queryByText(getTranslation('moduleTrading.providerListItem.centralizedExchange')),
         ).toBeNull();
-        expect(getByText('€9,998.32 / 1 BTC')).toBeOnTheScreen();
+        expect(getByText('0.00100017 BTC')).toBeOnTheScreen();
+        expect(queryByText('€9,998.32 / 1 BTC')).toBeNull();
+    });
+
+    it('should render the rate row for an exchange quote', () => {
+        const { getByText } = renderProviderListItem(cexdirectFloatingQuote, {
+            tradingType: 'exchange',
+        });
+
+        expect(getByText('112,210.7767229964765816 USDC / 1 BTC')).toBeOnTheScreen();
     });
 
     it('should render centralized exchange information for CEX providers when enabled', () => {
