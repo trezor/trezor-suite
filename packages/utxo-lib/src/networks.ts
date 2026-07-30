@@ -1,7 +1,7 @@
 // upstream: https://github.com/bitcoinjs/bitcoinjs-lib/blob/master/ts_src/networks.ts
 // fork: https://github.com/trezor/trezor-utxo-lib/blob/trezor/src/networks.js
 // differences:
-// - more specific networks (zcash/komodo, dash, decred)
+// - more specific networks (zcash/komodo, decred)
 // - network type validation function.
 
 import { Type, UInt16, UInt32, UInt8, checkType } from './types/validation';
@@ -120,30 +120,6 @@ export const litecoinTest: Network = {
     wif: 0xb0,
 };
 
-export const dash: Network = {
-    messagePrefix: '\x19DarkCoin Signed Message:\n',
-    bech32: '',
-    bip32: {
-        public: 0x02fe52cc,
-        private: 0x2fe52f8,
-    },
-    pubKeyHash: 0x4c, // https://dash-docs.github.io/en/developer-reference#opcodes
-    scriptHash: 0x10,
-    wif: 0xcc,
-};
-
-export const dashTest: Network = {
-    messagePrefix: '\x19DarkCoin Signed Message:\n',
-    bech32: '',
-    bip32: {
-        public: 0x043587cf,
-        private: 0x04358394,
-    },
-    pubKeyHash: 0x8c, // https://dash-docs.github.io/en/developer-reference#opcodes
-    scriptHash: 0x13,
-    wif: 0xef, // https://github.com/dashpay/godashutil/blob/master/wif.go#L72
-};
-
 export const zcash: Network = {
     messagePrefix: '\x18ZCash Signed Message:\n',
     bech32: '',
@@ -230,7 +206,6 @@ export const doge: Network = {
 
 const NETWORK_TYPES = {
     bitcoinCash: [bitcoincash, bitcoincashTest],
-    dash: [dash, dashTest],
     decred: [decred, decredTest, decredSim],
     zcash: [zcash, zcashTest, komodo],
     litecoin: [litecoin, litecoinTest],
