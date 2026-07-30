@@ -4,7 +4,7 @@ import { FullAlertBox } from '@suite-native/atoms';
 import {
     selectIsSolanaLimitedHistoryBannerClosed,
     setIsSolanaLimitedHistoryBannerClosed,
-} from '@suite-native/banner-flags';
+} from '@suite-native/banners';
 import { useTranslate } from '@suite-native/intl';
 
 export const SolanaLimitedHistoryBanner = () => {

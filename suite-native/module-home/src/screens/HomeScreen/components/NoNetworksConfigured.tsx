@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import { Box, Button, Card, CenteredTitleHeader, VStack } from '@suite-native/atoms';
-import { selectIsOnboardingFeedbackBannerEnabled } from '@suite-native/banner-flags';
+import { selectIsOnboardingFeedbackBannerEnabled } from '@suite-native/banners';
 import { Translation } from '@suite-native/intl';
 import {
     AuthorizeDeviceStackRoutes,

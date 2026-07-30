@@ -68,7 +68,7 @@
             "path": "../../suite-common/walletconnect"
         },
         { "path": "../analytics" },
-        { "path": "../banner-flags" },
+        { "path": "../banners" },
         { "path": "../biometrics" },
         { "path": "../blockchain" },
         { "path": "../bluetooth" },

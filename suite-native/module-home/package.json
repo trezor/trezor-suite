@@ -31,7 +31,7 @@
         "@suite-native/analytics": "workspace:*",
         "@suite-native/assets": "workspace:*",
         "@suite-native/atoms": "workspace:*",
-        "@suite-native/banner-flags": "workspace:*",
+        "@suite-native/banners": "workspace:*",
         "@suite-native/blockchain": "workspace:*",
         "@suite-native/bluetooth": "workspace:*",
         "@suite-native/confirm-on-trezor": "workspace:*",

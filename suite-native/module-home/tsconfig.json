@@ -36,7 +36,7 @@
         { "path": "../analytics" },
         { "path": "../assets" },
         { "path": "../atoms" },
-        { "path": "../banner-flags" },
+        { "path": "../banners" },
         { "path": "../blockchain" },
         { "path": "../bluetooth" },
         { "path": "../confirm-on-trezor" },

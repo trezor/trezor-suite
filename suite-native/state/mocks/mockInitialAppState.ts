@@ -27,7 +27,7 @@ import {
     transactionsInitialState,
 } from '@suite-common/wallet-core';
 import { walletConnectInitialState } from '@suite-common/walletconnect';
-import { bannerFlagsInitialState } from '@suite-native/banner-flags';
+import { bannerFlagsInitialState } from '@suite-native/banners';
 import { biometricsSliceInitialState } from '@suite-native/biometrics';
 import { bluetoothInitialState } from '@suite-native/bluetooth';
 import { deviceAuthorizationInitialState } from '@suite-native/device-authorization';

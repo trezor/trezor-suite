@@ -39,7 +39,7 @@
         "@suite-native/alerts": "workspace:*",
         "@suite-native/analytics": "workspace:*",
         "@suite-native/atoms": "workspace:*",
-        "@suite-native/banner-flags": "workspace:*",
+        "@suite-native/banners": "workspace:*",
         "@suite-native/bip329": "workspace:*",
         "@suite-native/config": "workspace:*",
         "@suite-native/device": "workspace:*",
