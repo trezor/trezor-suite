@@ -9,6 +9,7 @@ import {
 import { Translation } from '@suite-native/intl';
 import { KycPolicyWarning, hasKycPolicyWarning } from '@suite-native/trading-provider-utils';
 
+import { RequestedAmountShortfallNote } from '../RequestedAmountShortfallNote';
 import { InfoLineItem } from './InfoLineItem';
 
 export type ProviderListItemInfoProps<T extends TradingTradeType> = {
@@ -41,6 +42,7 @@ export const ProviderListItemInfo = <T extends TradingTradeType>({
 
     return (
         <>
+            <RequestedAmountShortfallNote quote={quote} />
             {shouldShowExchangeType && (
                 <InfoLineItem
                     iconName="info"

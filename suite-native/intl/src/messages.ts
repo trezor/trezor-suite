@@ -3957,6 +3957,7 @@ export const messages = {
             centralizedExchange: 'Centralized exchange',
             anonymous: 'Anonymous',
             kycRequired: 'KYC is required',
+            lessToReceiveThanRequested: '{percent} less to receive than requested ({amount})',
         },
         myAssetSheet: {
             title: 'Your assets',
