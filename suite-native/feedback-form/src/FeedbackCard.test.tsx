@@ -95,4 +95,19 @@ describe('FeedbackCard', () => {
         expect(screen.getByText(SUCCESS_HEADING)).toBeOnTheScreen();
         expect(screen.queryByText(HEADING)).not.toBeOnTheScreen();
     });
+
+    it('scrolls the provided list to the bottom after a rating is selected', () => {
+        jest.useFakeTimers();
+        const scrollToEnd = jest.fn();
+        const scrollViewRef = { current: { scrollToEnd } } as unknown as Parameters<
+            typeof FeedbackCard
+        >[0]['scrollViewRef'];
+
+        renderFeedbackCard({ scrollViewRef });
+        fireEvent.press(screen.getByTestId('@feedback-form/rating/3'));
+        jest.runAllTimers();
+
+        expect(scrollToEnd).toHaveBeenCalledWith({ animated: true });
+        jest.useRealTimers();
+    });
 });

@@ -1,3 +1,4 @@
+import { type RefObject } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { selectSelectedDevice } from '@suite-common/device';
@@ -8,6 +9,7 @@ import {
     selectActiveExperimentsWithVariants,
 } from '@suite-common/message-system';
 import { type TradingType } from '@suite-common/trading';
+import { type BottomSheetScrollViewMethods } from '@suite-native/atoms';
 import { FeedbackCard } from '@suite-native/feedback-form';
 import { Translation } from '@suite-native/intl';
 
@@ -19,6 +21,7 @@ type TradingDetailFeedbackProps = {
     sendCurrency?: string;
     receiveCurrency?: string;
     country?: string;
+    scrollViewRef?: RefObject<BottomSheetScrollViewMethods | null>;
 };
 
 export const TradingDetailFeedback = ({
@@ -29,6 +32,7 @@ export const TradingDetailFeedback = ({
     sendCurrency,
     receiveCurrency,
     country,
+    scrollViewRef,
 }: TradingDetailFeedbackProps) => {
     const dispatch = useDispatch();
     const device = useSelector(selectSelectedDevice);
@@ -71,6 +75,7 @@ export const TradingDetailFeedback = ({
             successDescription={<Translation id="feedbackForm.successDescription" />}
             onSubmit={handleSubmit}
             asBottomSheetInput
+            scrollViewRef={scrollViewRef}
         />
     );
 };
