@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 import { DebugOnlyBadge, selectIsDebugModeActive } from '@suite/debug';
 import { Translation } from '@suite/intl';
-import { AnimatedDot, Card, CollapsibleBox, Column, Row } from '@trezor/components';
+import { Card, CollapsibleBox, Column, Dot, Row } from '@trezor/components';
 
 import {
     type NavigationItem,
@@ -38,7 +38,7 @@ const NotificationsView = () => {
             title: (
                 <Row gap={4} alignItems="center">
                     <Translation id="NOTIFICATIONS_IMPORTANT_TITLE" />
-                    <AnimatedDot
+                    <Dot
                         isShown={notificationPhase !== 'off'}
                         isAnimated={notificationPhase === 'ringing'}
                         intent="critical"
