@@ -3,8 +3,8 @@ import '@suite-common/test-utils/globalOverrides';
 import { screen } from '@testing-library/react';
 
 import { type AppState } from 'src/reducers/store';
+import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
 import { configureStore } from 'src/support/tests/configureStore';
-import { renderWithProviders } from 'src/support/tests/hooksHelper';
 
 import { TradingLayout } from './TradingLayout';
 import { extraDependenciesDesktopMock } from '../../../../../../mocks/extraDependenciesDesktopMock';

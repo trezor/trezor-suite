@@ -8,7 +8,7 @@ import {
 } from '@suite-native/trading-fixtures';
 
 import { useBuyPreviewFlow } from './useBuyPreviewFlow';
-import { createTradingLightStore } from '../../__tests__/tradingTestUtils';
+import { createTradingLightStore } from '../../test-utils/tradingTestUtils';
 
 const mockPopToTop = jest.fn();
 

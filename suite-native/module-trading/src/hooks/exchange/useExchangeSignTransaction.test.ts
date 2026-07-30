@@ -13,7 +13,7 @@ import {
     type PreloadedStatePartial,
     type TradingTestPreloadedState,
     renderHookWithTradingProvider,
-} from '../../__tests__/tradingTestUtils';
+} from '../../test-utils/tradingTestUtils';
 
 const mockNavigate = jest.fn();
 

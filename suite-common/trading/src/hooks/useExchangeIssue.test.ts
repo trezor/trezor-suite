@@ -6,8 +6,8 @@ import { useDexExchangeTxSimulation } from './useDexExchangeTxSimulation';
 import { useExchangeFiatDeviation } from './useExchangeFiatDeviation';
 import { useExchangeIssue } from './useExchangeIssue';
 import { accountEth } from '../__fixtures__/utils';
-import { createTradingTestState, renderHookWithTradingStore } from '../__tests__/testUtils';
 import { initialState } from '../reducers/tradingCommonReducer';
+import { createTradingTestState, renderHookWithTradingStore } from '../test-utils/testUtils';
 
 type SimulationResult = NonNullable<ReturnType<typeof useDexExchangeTxSimulation>['data']>;
 type SimulationPayload = Pick<SimulationResult['payload'], 'validation' | 'simulation'>;

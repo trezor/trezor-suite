@@ -17,8 +17,8 @@ import {
 import { type ExchangeFormType, type ReceiveAccount } from '@suite-native/trading-types';
 
 import { hasPreapprovedLimit, tradingExchangeFormToTradingExchangeFormProps } from './quotesUtils';
-import { renderHookWithTradingProvider } from '../../__tests__/tradingTestUtils';
 import { useExchangeForm } from '../../hooks/exchange/useExchangeForm';
+import { renderHookWithTradingProvider } from '../../test-utils/tradingTestUtils';
 
 describe('quotesUtils', () => {
     let form: ExchangeFormType;

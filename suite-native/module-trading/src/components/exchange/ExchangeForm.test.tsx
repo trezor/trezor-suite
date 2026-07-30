@@ -14,11 +14,11 @@ import {
 import { type ExchangeFormType } from '@suite-native/trading-types';
 
 import { ExchangeForm } from './ExchangeForm';
+import { useExchangeForm } from '../../hooks/exchange/useExchangeForm';
 import {
     createTradingFeatureFlags,
     createTradingPreloadedState,
-} from '../../__tests__/tradingTestUtils';
-import { useExchangeForm } from '../../hooks/exchange/useExchangeForm';
+} from '../../test-utils/tradingTestUtils';
 
 jest.mock('../../hooks/general/useFocusedValueWatch', () =>
     jest.requireActual('../../hooks/general/useFocusedValueWatch'),

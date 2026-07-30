@@ -4,7 +4,7 @@ import { type BuyFormType } from '@suite-native/trading-types';
 
 import { useBuyForm } from './useBuyForm';
 import { useBuyInputFormControls } from './useBuyInputFormControls';
-import { renderHookWithTradingProvider } from '../../__tests__/tradingTestUtils';
+import { renderHookWithTradingProvider } from '../../test-utils/tradingTestUtils';
 
 describe('useBuyInputFormControls', () => {
     let form: BuyFormType;

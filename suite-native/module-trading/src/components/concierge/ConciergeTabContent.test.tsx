@@ -8,7 +8,7 @@ import {
     type PreloadedStatePartial,
     type TradingTestPreloadedState,
     renderWithTradingProvider,
-} from '../../__tests__/tradingTestUtils';
+} from '../../test-utils/tradingTestUtils';
 
 const mockUseFetchOtc = jest.fn();
 jest.mock('@suite-common/trading', () => {

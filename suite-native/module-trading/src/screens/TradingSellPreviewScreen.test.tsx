@@ -13,7 +13,7 @@ import {
     type PreloadedStatePartial,
     type TradingTestPreloadedState,
     renderWithTradingProvider,
-} from '../__tests__/tradingTestUtils';
+} from '../test-utils/tradingTestUtils';
 
 jest.mock('@react-navigation/native', () => ({
     ...jest.requireActual('@react-navigation/native'),

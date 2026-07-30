@@ -4,7 +4,7 @@ import { TradingStackNavigator } from './TradingStackNavigator';
 import {
     createTradingFeatureFlags,
     renderWithTradingProvider,
-} from '../__tests__/tradingTestUtils';
+} from '../test-utils/tradingTestUtils';
 
 jest.mock('../hooks/buy/useBuyData', () => ({
     useBuyData: () => ({

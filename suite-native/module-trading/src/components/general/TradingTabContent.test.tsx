@@ -4,7 +4,7 @@ import { screen } from '@suite-native/test-utils-store';
 import { tradingInitialState } from '@suite-native/trading-state';
 
 import { TradingTabContent } from './TradingTabContent';
-import { renderWithTradingProvider } from '../../__tests__/tradingTestUtils';
+import { renderWithTradingProvider } from '../../test-utils/tradingTestUtils';
 
 let mockIsInternetReachable: boolean | null = true;
 

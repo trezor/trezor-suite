@@ -13,7 +13,7 @@ import {
     TradingExchangeOutputsReviewScreen,
     TradingSellOutputsReviewScreen,
 } from './TradingOutputsReviewScreen';
-import { createTradingLightStore, renderWithTradingProvider } from '../__tests__/tradingTestUtils';
+import { createTradingLightStore, renderWithTradingProvider } from '../test-utils/tradingTestUtils';
 
 const mockSignAndSendTransaction = jest.fn();
 const mockSignDataAndConfirm = jest.fn();

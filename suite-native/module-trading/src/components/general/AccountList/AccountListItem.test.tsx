@@ -6,7 +6,7 @@ import { type ReceiveAccount } from '@suite-native/trading-types';
 import { type StaticSessionId } from '@trezor/connect';
 
 import { AccountListItem } from './AccountListItem';
-import { createTradingTestStore } from '../../../__tests__/tradingTestUtils';
+import { createTradingTestStore } from '../../../test-utils/tradingTestUtils';
 
 const DEVICE_SESSION_ID: StaticSessionId = '1@2:3';
 

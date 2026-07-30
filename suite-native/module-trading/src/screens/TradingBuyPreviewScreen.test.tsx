@@ -8,7 +8,7 @@ import {
 } from '@suite-native/trading-fixtures';
 
 import { TradingBuyPreviewScreen } from './TradingBuyPreviewScreen';
-import { renderWithTradingProvider } from '../__tests__/tradingTestUtils';
+import { renderWithTradingProvider } from '../test-utils/tradingTestUtils';
 
 jest.mock('@react-navigation/native', () => ({
     ...jest.requireActual('@react-navigation/native'),

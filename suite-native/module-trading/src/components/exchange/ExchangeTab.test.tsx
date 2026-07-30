@@ -1,7 +1,7 @@
 import { getTranslation } from '@suite-native/intl';
 
 import { ExchangeTab } from './ExchangeTab';
-import { renderWithTradingProvider } from '../../__tests__/tradingTestUtils';
+import { renderWithTradingProvider } from '../../test-utils/tradingTestUtils';
 
 let mockIsDeviceInViewOnlyMode = false;
 let mockIsPortfolioTrackerDevice = false;

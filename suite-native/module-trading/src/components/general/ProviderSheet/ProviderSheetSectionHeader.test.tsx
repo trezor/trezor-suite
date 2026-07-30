@@ -4,7 +4,7 @@ import {
     ProviderSheetSectionHeader,
     type ProviderSheetSectionHeaderProps,
 } from './ProviderSheetSectionHeader';
-import { renderWithTradingProvider } from '../../../__tests__/tradingTestUtils';
+import { renderWithTradingProvider } from '../../../test-utils/tradingTestUtils';
 
 describe('ProviderSheetSectionHeader', () => {
     const renderProviderSheetSectionHeader = (props: ProviderSheetSectionHeaderProps) =>

@@ -4,12 +4,12 @@ import { getInitializedTradingState } from '@suite-native/trading-fixtures';
 import { type BuyFormType } from '@suite-native/trading-types';
 
 import { BuyCard } from './BuyCard';
+import { useBuyForm } from '../../hooks/buy/useBuyForm';
 import {
     createTradingFeatureFlags,
     renderHookWithTradingProvider,
     renderWithTradingProvider,
-} from '../../__tests__/tradingTestUtils';
-import { useBuyForm } from '../../hooks/buy/useBuyForm';
+} from '../../test-utils/tradingTestUtils';
 
 describe('BuyCard', () => {
     let form: BuyFormType;

@@ -7,7 +7,7 @@ import { type UseQuotesInvalidatorProps, useQuotesInvalidator } from './useQuote
 import {
     createTradingLightStore,
     renderHookWithTradingProvider,
-} from '../../__tests__/tradingTestUtils';
+} from '../../test-utils/tradingTestUtils';
 
 describe('useQuotesInvalidator', () => {
     let store: TestStore;

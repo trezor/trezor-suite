@@ -12,7 +12,7 @@ import {
     type PreloadedStatePartial,
     type TradingTestPreloadedState,
     renderWithTradingProvider,
-} from '../../../../__tests__/tradingTestUtils';
+} from '../../../../test-utils/tradingTestUtils';
 
 // Mock the SellBankAccountSheet component to isolate the picker component
 jest.mock('./SellBankAccountSheet', () => ({

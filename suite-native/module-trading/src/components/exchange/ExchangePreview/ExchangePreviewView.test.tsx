@@ -10,9 +10,9 @@ import {
 } from '@suite-native/trading-fixtures';
 
 import { ExchangePreviewView, type ExchangePreviewViewProps } from './ExchangePreviewView';
-import { renderWithTradingProvider } from '../../../__tests__/tradingTestUtils';
 import { useDexExchangeTxSimulation } from '../../../hooks/exchange/useDexExchangeTxSimulation';
 import { useExchangeIssue } from '../../../hooks/exchange/useExchangeIssue';
+import { renderWithTradingProvider } from '../../../test-utils/tradingTestUtils';
 
 jest.mock('../../../hooks/exchange/useDexExchangeTxSimulation', () => ({
     useDexExchangeTxSimulation: jest.fn(),

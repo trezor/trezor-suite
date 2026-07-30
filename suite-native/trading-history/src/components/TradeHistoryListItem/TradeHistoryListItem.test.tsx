@@ -3,7 +3,7 @@ import { fireEvent } from '@suite-native/test-utils-store';
 import { getBuyTrade, getExchangeTrade, getSellTrade } from '@suite-native/trading-fixtures';
 
 import { TradeHistoryListItem } from './TradeHistoryListItem';
-import { renderWithTradingHistoryProvider } from '../../__tests__/tradingHistoryTestUtils';
+import { renderWithTradingHistoryProvider } from '../../test-utils/tradingHistoryTestUtils';
 
 jest.mock('@suite-native/trading-atoms', () => {
     const actualImplementation = jest.requireActual('@suite-native/trading-atoms');

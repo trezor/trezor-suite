@@ -3,7 +3,7 @@ import { act } from '@suite-native/test-utils-store';
 import { btc1NormalAccount, mercuryoApplePayBuyQuote } from '@suite-native/trading-fixtures';
 
 import { BuyPreviewReceiveCard } from './BuyPreviewReceiveCard';
-import { renderWithTradingProvider } from '../../../__tests__/tradingTestUtils';
+import { renderWithTradingProvider } from '../../../test-utils/tradingTestUtils';
 
 describe('BuyPreviewReceiveCard', () => {
     const withReceiveAccount = {

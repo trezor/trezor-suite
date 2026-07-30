@@ -12,8 +12,8 @@ import { type DeepPartial } from '@trezor/type-utils';
 
 import { type AppState } from 'src/reducers/store';
 import { type SuiteState } from 'src/reducers/suite/suiteReducer';
+import { findByTestId, renderWithProviders } from 'src/support/test-utils/hooksHelper';
 import { configureStore } from 'src/support/tests/configureStore';
-import { findByTestId, renderWithProviders } from 'src/support/tests/hooksHelper';
 
 import { Preloader } from './Preloader';
 import { selectShouldDisplayDeviceCompromisedOnRoute } from './selectShouldDisplayDeviceCompromisedOnRoute';

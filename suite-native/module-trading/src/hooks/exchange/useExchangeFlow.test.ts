@@ -10,7 +10,7 @@ import {
 } from '@suite-native/trading-fixtures';
 
 import { type UseExchangeFlowProps, useExchangeFlow } from './useExchangeFlow';
-import { createTradingTestStore } from '../../__tests__/tradingTestUtils';
+import { createTradingTestStore } from '../../test-utils/tradingTestUtils';
 
 const mockNavigate = jest.fn();
 let mockConfirmTradeThunk: jest.Mock;

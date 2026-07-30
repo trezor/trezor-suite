@@ -4,7 +4,7 @@ import { type SellFormType } from '@suite-native/trading-types';
 
 import { useSellForm } from './useSellForm';
 import { useSellInputFormControls } from './useSellInputFormControls';
-import { renderHookWithTradingProvider } from '../../__tests__/tradingTestUtils';
+import { renderHookWithTradingProvider } from '../../test-utils/tradingTestUtils';
 
 describe('useSellInputFormControls', () => {
     let form: SellFormType;

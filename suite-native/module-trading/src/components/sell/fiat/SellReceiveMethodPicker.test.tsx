@@ -15,12 +15,12 @@ import { type SellFormType } from '@suite-native/trading-types';
 import { getIndexOrThrow } from '@trezor/utils';
 
 import { SellReceiveMethodPicker } from './SellReceiveMethodPicker';
+import { useSellForm } from '../../../hooks/sell/useSellForm';
 import {
     type PreloadedStatePartial,
     type TradingTestPreloadedState,
     createTradingPreloadedState,
-} from '../../../__tests__/tradingTestUtils';
-import { useSellForm } from '../../../hooks/sell/useSellForm';
+} from '../../../test-utils/tradingTestUtils';
 
 const reportMock = jest.fn();
 const creditCardPaymentMethodTranslation = getTranslation(

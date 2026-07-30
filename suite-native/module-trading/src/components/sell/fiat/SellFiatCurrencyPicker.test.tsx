@@ -15,8 +15,8 @@ import { sellActions } from '@suite-native/trading-state';
 import { type SellFormType } from '@suite-native/trading-types';
 
 import { SellFiatCurrencyPicker } from './SellFiatCurrencyPicker';
-import { createTradingLightStore } from '../../../__tests__/tradingTestUtils';
 import { useSellForm } from '../../../hooks/sell/useSellForm';
+import { createTradingLightStore } from '../../../test-utils/tradingTestUtils';
 
 let mockUseListDataFilter: typeof useListDataFilter;
 const reportMock = jest.fn();

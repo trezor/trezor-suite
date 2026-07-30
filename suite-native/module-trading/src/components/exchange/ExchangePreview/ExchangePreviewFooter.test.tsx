@@ -6,12 +6,12 @@ import { createPrecomposedTxFinal, mercuryoFixedWorstQuote } from '@suite-native
 import { mergeDeepObject } from '@trezor/utils';
 
 import { ExchangePreviewFooter } from './ExchangePreviewFooter';
+import { useExchangeIssue } from '../../../hooks/exchange/useExchangeIssue';
 import {
     type PreloadedStatePartial,
     type TradingTestPreloadedState,
     renderWithTradingProvider,
-} from '../../../__tests__/tradingTestUtils';
-import { useExchangeIssue } from '../../../hooks/exchange/useExchangeIssue';
+} from '../../../test-utils/tradingTestUtils';
 
 const mockNavigate = jest.fn();
 const mockPopToTop = jest.fn();

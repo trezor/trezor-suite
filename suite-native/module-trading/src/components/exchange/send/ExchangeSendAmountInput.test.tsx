@@ -13,13 +13,13 @@ import {
     ExchangeSendAmountInput,
     type ExchangeSendAmountInputProps,
 } from './ExchangeSendAmountInput';
+import { useExchangeForm } from '../../../hooks/exchange/useExchangeForm';
 import {
     type PreloadedStatePartial,
     type TradingTestPreloadedState,
     renderHookWithTradingProvider,
     renderWithTradingProvider,
-} from '../../../__tests__/tradingTestUtils';
-import { useExchangeForm } from '../../../hooks/exchange/useExchangeForm';
+} from '../../../test-utils/tradingTestUtils';
 
 const mockUseAmountInputDecimals = jest.fn(
     (_account?: Account, _contractAddress?: TokenAddress) => 8,

@@ -6,8 +6,8 @@ import { type TxSimulationAction } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
 import { useDexExchangeTxSimulation } from './useDexExchangeTxSimulation';
-import { createTradingTestState, renderHookWithTradingStore } from '../__tests__/testUtils';
 import { initialState } from '../reducers/tradingCommonReducer';
+import { createTradingTestState, renderHookWithTradingStore } from '../test-utils/testUtils';
 import { composeDexTxSimulationAction } from '../utils/exchange/composeDexTxSimulationAction';
 
 jest.mock('@suite-common/tx-simulation', () => ({

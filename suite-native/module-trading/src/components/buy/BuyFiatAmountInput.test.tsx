@@ -4,13 +4,13 @@ import { act, userEvent } from '@suite-native/test-utils-store';
 import { type BuyFormType } from '@suite-native/trading-types';
 
 import { BuyFiatAmountInput } from './BuyFiatAmountInput';
+import { useBuyForm } from '../../hooks/buy/useBuyForm';
 import {
     type PreloadedStatePartial,
     type TradingTestPreloadedState,
     renderHookWithTradingProvider,
     renderWithTradingProvider,
-} from '../../__tests__/tradingTestUtils';
-import { useBuyForm } from '../../hooks/buy/useBuyForm';
+} from '../../test-utils/tradingTestUtils';
 
 describe('BuyFiatAmountInput', () => {
     const renderFiatAmountInput = (

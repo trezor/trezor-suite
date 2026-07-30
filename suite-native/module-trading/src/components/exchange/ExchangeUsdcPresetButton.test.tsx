@@ -7,7 +7,7 @@ import {
     createTradingLightStore,
     createTradingPreloadedState,
     renderWithTradingProvider,
-} from '../../__tests__/tradingTestUtils';
+} from '../../test-utils/tradingTestUtils';
 
 const mockSetValue = jest.fn();
 const mockGetValues = jest.fn();

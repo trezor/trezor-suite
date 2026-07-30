@@ -6,7 +6,7 @@ import { type SellFormType } from '@suite-native/trading-types';
 
 import { useSellForm } from './useSellForm';
 import { useSellSelectQuote } from './useSellSelectQuote';
-import { createTradingLightStore } from '../../__tests__/tradingTestUtils';
+import { createTradingLightStore } from '../../test-utils/tradingTestUtils';
 
 jest.mock('@suite-common/trading', () => ({
     ...jest.requireActual('@suite-common/trading'),

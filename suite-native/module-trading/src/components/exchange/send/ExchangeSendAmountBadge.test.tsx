@@ -6,13 +6,13 @@ import { type ExchangeFormType } from '@suite-native/trading-types';
 import { PROTO } from '@trezor/connect';
 
 import { ExchangeSendAmountBadge } from './ExchangeSendAmountBadge';
+import { useExchangeForm } from '../../../hooks/exchange/useExchangeForm';
 import {
     type PreloadedStatePartial,
     type TradingTestPreloadedState,
     renderHookWithTradingProvider,
     renderWithTradingProvider,
-} from '../../../__tests__/tradingTestUtils';
-import { useExchangeForm } from '../../../hooks/exchange/useExchangeForm';
+} from '../../../test-utils/tradingTestUtils';
 
 describe('ExchangeSendAmountBadge', () => {
     let form: ExchangeFormType;

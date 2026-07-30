@@ -9,7 +9,7 @@ import {
     ExchangeConfirmationHeader,
     type ExchangeConfirmationHeaderProps,
 } from './ExchangeConfirmationHeader';
-import { createTradingLightStore } from '../../../__tests__/tradingTestUtils';
+import { createTradingLightStore } from '../../../test-utils/tradingTestUtils';
 
 const testQuote = exchangeQuotes[0];
 

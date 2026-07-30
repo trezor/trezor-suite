@@ -3,7 +3,7 @@ import { getTranslation } from '@suite-native/intl';
 import { oneInchFusionPlusWithEip712SignDataQuote } from '@suite-native/trading-fixtures';
 
 import { ReviewOutputsBody, type ReviewOutputsBodyProps } from './ReviewOutputsBody';
-import { renderWithTradingProvider } from '../../__tests__/tradingTestUtils';
+import { renderWithTradingProvider } from '../../test-utils/tradingTestUtils';
 
 const defaultProps: ReviewOutputsBodyProps = {
     tradingType: 'exchange',

@@ -10,8 +10,8 @@ import { sellQuotes, usdcAsset } from '@suite-native/trading-fixtures';
 import { type SellFormType } from '@suite-native/trading-types';
 
 import { SellCard } from './SellCard';
-import { createTradingPreloadedState } from '../../__tests__/tradingTestUtils';
 import { useSellForm } from '../../hooks/sell/useSellForm';
+import { createTradingPreloadedState } from '../../test-utils/tradingTestUtils';
 
 describe('SellCard', () => {
     let form: SellFormType;

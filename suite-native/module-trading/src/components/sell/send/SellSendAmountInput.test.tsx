@@ -8,13 +8,13 @@ import { type SellFormType } from '@suite-native/trading-types';
 import { PROTO } from '@trezor/connect';
 
 import { SellSendAmountInput, type SellSendAmountInputProps } from './SellSendAmountInput';
+import { useSellForm } from '../../../hooks/sell/useSellForm';
 import {
     type PreloadedStatePartial,
     type TradingTestPreloadedState,
     renderHookWithTradingProvider,
     renderWithTradingProvider,
-} from '../../../__tests__/tradingTestUtils';
-import { useSellForm } from '../../../hooks/sell/useSellForm';
+} from '../../../test-utils/tradingTestUtils';
 
 const mockUseAmountInputDecimals = jest.fn(
     (_account?: Account, _contractAddress?: TokenAddress) => 8,

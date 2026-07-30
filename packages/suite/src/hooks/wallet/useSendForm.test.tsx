@@ -22,7 +22,7 @@ import {
     findByTestId,
     renderWithProviders,
     waitForLoader,
-} from 'src/support/tests/hooksHelper';
+} from 'src/support/test-utils/hooksHelper';
 import { type SendContextValues } from 'src/types/wallet/sendForm';
 import SendIndex from 'src/views/wallet/send';
 

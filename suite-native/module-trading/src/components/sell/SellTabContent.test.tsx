@@ -2,7 +2,7 @@ import { getTranslation } from '@suite-native/intl';
 import { act, screen, userEvent } from '@suite-native/test-utils-store';
 
 import { SellTabContent } from './SellTabContent';
-import { renderWithTradingProvider } from '../../__tests__/tradingTestUtils';
+import { renderWithTradingProvider } from '../../test-utils/tradingTestUtils';
 
 let mockUseSellData: jest.Mock;
 

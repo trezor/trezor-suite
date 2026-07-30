@@ -12,7 +12,7 @@ import {
     createAccountKey,
 } from '@suite-common/wallet-types';
 
-import { renderWithProviders } from 'src/support/tests/hooksHelper';
+import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
 
 import { TradingTransactionsList } from './TradingTransactionsList';
 import { extraDependenciesDesktopMock } from '../../../../../../mocks/extraDependenciesDesktopMock';

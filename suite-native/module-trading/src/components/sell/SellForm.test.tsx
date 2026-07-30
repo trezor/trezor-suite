@@ -13,13 +13,13 @@ import {
 import { type SellFormType } from '@suite-native/trading-types';
 
 import { SellForm } from './SellForm';
+import { useSellForm } from '../../hooks/sell/useSellForm';
 import {
     type PreloadedStatePartial,
     type TradingTestPreloadedState,
     renderHookWithTradingProvider,
     renderWithTradingProvider,
-} from '../../__tests__/tradingTestUtils';
-import { useSellForm } from '../../hooks/sell/useSellForm';
+} from '../../test-utils/tradingTestUtils';
 
 jest.mock('../../hooks/general/useFocusedValueWatch', () =>
     jest.requireActual('../../hooks/general/useFocusedValueWatch'),

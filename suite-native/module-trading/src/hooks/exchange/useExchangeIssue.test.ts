@@ -3,8 +3,8 @@ import { FeatureFlag } from '@suite-native/feature-flags';
 import { btc1NormalAccount } from '@suite-native/trading-fixtures';
 
 import { useExchangeIssue } from './useExchangeIssue';
-import { renderHookWithTradingProvider } from '../../__tests__/tradingTestUtils';
 import { TRADING_DEX_SOURCE_ORIGIN } from '../../constants';
+import { renderHookWithTradingProvider } from '../../test-utils/tradingTestUtils';
 
 jest.mock('@suite-common/trading', () => ({
     ...jest.requireActual('@suite-common/trading'),

@@ -13,7 +13,7 @@ import {
     type PreloadedStatePartial,
     type TradingTestPreloadedState,
     renderWithTradingProvider,
-} from '../../../__tests__/tradingTestUtils';
+} from '../../../test-utils/tradingTestUtils';
 
 describe('SellPreviewView', () => {
     const getSellTradeWithBankAccounts = () => ({

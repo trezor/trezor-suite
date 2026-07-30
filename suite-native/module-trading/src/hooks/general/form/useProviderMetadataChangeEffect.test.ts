@@ -8,7 +8,7 @@ import { useProviderMetadataChangeEffect } from './useProviderMetadataChangeEffe
 import {
     createTradingLightStore,
     renderHookWithTradingProvider,
-} from '../../../__tests__/tradingTestUtils';
+} from '../../../test-utils/tradingTestUtils';
 
 type ProviderFormValues = {
     quote: {

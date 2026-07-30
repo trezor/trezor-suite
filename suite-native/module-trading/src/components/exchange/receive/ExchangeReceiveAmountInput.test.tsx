@@ -9,13 +9,13 @@ import {
     ExchangeReceiveAmountInput,
     type ExchangeReceiveAmountInputProps,
 } from './ExchangeReceiveAmountInput';
+import { useExchangeForm } from '../../../hooks/exchange/useExchangeForm';
 import {
     type PreloadedStatePartial,
     type TradingTestPreloadedState,
     renderHookWithTradingProvider,
     renderWithTradingProvider,
-} from '../../../__tests__/tradingTestUtils';
-import { useExchangeForm } from '../../../hooks/exchange/useExchangeForm';
+} from '../../../test-utils/tradingTestUtils';
 
 describe('ExchangeReceiveAmountInput', () => {
     let form: ExchangeFormType;

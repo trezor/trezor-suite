@@ -5,14 +5,14 @@ import { btcAsset, mercuryoFixedWorstQuote } from '@suite-native/trading-fixture
 import { type ExchangeFormType } from '@suite-native/trading-types';
 
 import { ExchangePickersCard } from './ExchangePickersCard';
+import { useExchangeForm } from '../../hooks/exchange/useExchangeForm';
 import {
     type PreloadedStatePartial,
     type TradingTestPreloadedState,
     createTradingFeatureFlags,
     renderHookWithTradingProvider,
     renderWithTradingProvider,
-} from '../../__tests__/tradingTestUtils';
-import { useExchangeForm } from '../../hooks/exchange/useExchangeForm';
+} from '../../test-utils/tradingTestUtils';
 
 const reportMock = jest.fn();
 const mockNavigate = jest.fn();

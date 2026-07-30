@@ -6,7 +6,7 @@ import { getTranslation } from '@suite-native/intl';
 import { act } from '@suite-native/test-utils-store';
 
 import { useSlippageForm } from './useSlippageForm';
-import { renderHookWithSlippageTestProvider } from '../__tests__/testUtils';
+import { renderHookWithSlippageTestProvider } from '../test-utils/testUtils';
 
 describe('useSlippageForm', () => {
     const renderUseSlippageForm = async () => {

@@ -5,7 +5,7 @@ import { fireEvent } from '@suite-native/test-utils-store';
 import { type ReceiveAccount } from '@suite-native/trading-types';
 
 import { AccountListAddressItem } from './AccountListAddressItem';
-import { renderWithTradingProvider } from '../../../__tests__/tradingTestUtils';
+import { renderWithTradingProvider } from '../../../test-utils/tradingTestUtils';
 
 jest.mock('@suite-common/wallet-core', () => {
     const fiatRate = { rate: 1e8 };

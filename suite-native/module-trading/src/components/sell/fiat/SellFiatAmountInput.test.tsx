@@ -4,11 +4,11 @@ import { userEvent } from '@suite-native/test-utils-store';
 import { type SellFormType } from '@suite-native/trading-types';
 
 import { SellFiatAmountInput } from './SellFiatAmountInput';
+import { useSellForm } from '../../../hooks/sell/useSellForm';
 import {
     renderHookWithTradingProvider,
     renderWithTradingProvider,
-} from '../../../__tests__/tradingTestUtils';
-import { useSellForm } from '../../../hooks/sell/useSellForm';
+} from '../../../test-utils/tradingTestUtils';
 
 describe('SellFiatAmountInput', () => {
     const renderFiatAmountInput = (form: SellFormType) =>

@@ -3,7 +3,7 @@ import { getTranslation } from '@suite-native/intl';
 import { act } from '@suite-native/test-utils-store';
 
 import { SellTab } from './SellTab';
-import { renderWithTradingProvider } from '../../__tests__/tradingTestUtils';
+import { renderWithTradingProvider } from '../../test-utils/tradingTestUtils';
 
 let mockIsDeviceInViewOnlyMode = false;
 let mockIsPortfolioTrackerDevice = false;

@@ -26,7 +26,7 @@ import {
     TradingExchangePreviewScreen,
     type TradingExchangePreviewScreenProps,
 } from './TradingExchangePreviewScreen';
-import { createTradingLightStore } from '../__tests__/tradingTestUtils';
+import { createTradingLightStore } from '../test-utils/tradingTestUtils';
 
 const btc1Account = getBtcAccount({ descriptor: asAccountDescriptor('btc1normal') });
 const eth1Account = getEthAccount({ descriptor: asAccountDescriptor('eth1normal') });

@@ -4,7 +4,7 @@ import { getTranslation } from '@suite-native/intl';
 import { type TestStore, renderWithStoreProvider } from '@suite-native/test-utils-store';
 
 import { TradingDeviceConnectionGuard } from './TradingDeviceConnectionGuard';
-import { createTradingTestStore } from '../../__tests__/tradingTestUtils';
+import { createTradingTestStore } from '../../test-utils/tradingTestUtils';
 
 const mockNavigation = {
     popToTop: jest.fn(),

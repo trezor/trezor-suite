@@ -4,7 +4,7 @@ import { type TestStore, act, renderHookWithStoreProvider } from '@suite-native/
 import { getBtcAccount, getInitializedTradingState } from '@suite-native/trading-fixtures';
 
 import { useExchangeData } from './useExchangeData';
-import { createTradingLightStore } from '../../__tests__/tradingTestUtils';
+import { createTradingLightStore } from '../../test-utils/tradingTestUtils';
 
 jest.mock('@suite-common/trading', () => ({
     ...jest.requireActual('@suite-common/trading'),

@@ -7,11 +7,11 @@ import {
     ExchangeSendAccountCryptoBalance,
     SEND_ACCOUNT_BALANCE_TEST_ID,
 } from './ExchangeSendAccountCryptoBalance';
+import { useExchangeForm } from '../../../hooks/exchange/useExchangeForm';
 import {
     renderHookWithTradingProvider,
     renderWithTradingProvider,
-} from '../../../__tests__/tradingTestUtils';
-import { useExchangeForm } from '../../../hooks/exchange/useExchangeForm';
+} from '../../../test-utils/tradingTestUtils';
 
 describe('ExchangeSendAccountCryptoBalance', () => {
     let exchangeForm: ExchangeFormType;

@@ -5,12 +5,12 @@ import { userEvent } from '@suite-native/test-utils-store';
 import { createPrecomposedTxFinal, mercuryoFixedWorstQuote } from '@suite-native/trading-fixtures';
 
 import { ExchangePreviewIssueBanner } from './ExchangePreviewIssueBanner';
+import { useExchangeIssue } from '../../../hooks/exchange/useExchangeIssue';
 import {
     type PreloadedStatePartial,
     type TradingTestPreloadedState,
     renderWithTradingProvider,
-} from '../../../__tests__/tradingTestUtils';
-import { useExchangeIssue } from '../../../hooks/exchange/useExchangeIssue';
+} from '../../../test-utils/tradingTestUtils';
 
 const mockNavigate = jest.fn();
 

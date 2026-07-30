@@ -16,12 +16,12 @@ import { type BuyFormType } from '@suite-native/trading-types';
 import { FirmwareType } from '@trezor/connect';
 
 import { BuyTradeableAssetPicker } from './BuyTradeableAssetPicker';
+import { useBuyForm } from '../../hooks/buy/useBuyForm';
 import {
     createTradingLightStore,
     renderHookWithTradingProvider,
     renderWithTradingProvider,
-} from '../../__tests__/tradingTestUtils';
-import { useBuyForm } from '../../hooks/buy/useBuyForm';
+} from '../../test-utils/tradingTestUtils';
 
 const reportMock = jest.fn();
 const services: NativeAnalyticsDep = {

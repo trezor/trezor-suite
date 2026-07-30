@@ -14,7 +14,7 @@ import {
     type TradingTestStateWithWalletSettings,
     createTestStateWithWalletSettings,
     renderHookWithTradingStore,
-} from '../__tests__/testUtils';
+} from '../test-utils/testUtils';
 
 // Mock crypto IDs for testing
 const BITCOIN_CRYPTO_ID = 'bitcoin' as CryptoId;

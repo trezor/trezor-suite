@@ -25,6 +25,7 @@ export default [
                     devDependencies: [
                         ...globalNoExtraneousDependenciesDevDependencies,
                         '**/src/support/tests/**',
+                        '**/src/support/test-utils/**',
                     ],
                 },
             ],

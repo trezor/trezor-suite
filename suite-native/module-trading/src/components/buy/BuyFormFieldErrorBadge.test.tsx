@@ -9,13 +9,13 @@ import { type BuyFormType } from '@suite-native/trading-types';
 import { PROTO } from '@trezor/connect';
 
 import { BuyFormFieldErrorBadge, type BuyFormFieldErrorBadgeProps } from './BuyFormFieldErrorBadge';
+import { useBuyForm } from '../../hooks/buy/useBuyForm';
 import {
     type PreloadedStatePartial,
     type TradingTestPreloadedState,
     renderHookWithTradingProvider,
     renderWithTradingProvider,
-} from '../../__tests__/tradingTestUtils';
-import { useBuyForm } from '../../hooks/buy/useBuyForm';
+} from '../../test-utils/tradingTestUtils';
 
 describe('BuyFormFieldErrorBadge', () => {
     let tradingForm: BuyFormType;

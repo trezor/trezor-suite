@@ -4,7 +4,7 @@ import { getTranslation } from '@suite-native/intl';
 import { exchangeOneInchFusion, exchangeOneInchFusionPlus } from '@suite-native/trading-fixtures';
 
 import { ExchangeEIP712Info, type ExchangeEIP712InfoProps } from './ExchangeEIP712Info';
-import { renderWithTradingProvider } from '../../../__tests__/tradingTestUtils';
+import { renderWithTradingProvider } from '../../../test-utils/tradingTestUtils';
 
 describe('ExchangeEIP712Info', () => {
     const renderExchangeEIP712Info = (

@@ -5,7 +5,7 @@ import {
 } from '@suite-native/trading-fixtures';
 
 import { TradingAccountCard } from './TradingAccountCard';
-import { renderWithTradingProvider } from '../../__tests__/tradingTestUtils';
+import { renderWithTradingProvider } from '../../test-utils/tradingTestUtils';
 
 describe('TradingAccountCard', () => {
     const renderCard = (overrides: Partial<React.ComponentProps<typeof TradingAccountCard>> = {}) =>

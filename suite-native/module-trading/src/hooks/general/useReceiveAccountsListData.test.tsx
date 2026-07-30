@@ -17,7 +17,7 @@ import {
     type PreloadedStatePartial,
     type TradingTestPreloadedState,
     renderHookWithTradingProvider,
-} from '../../__tests__/tradingTestUtils';
+} from '../../test-utils/tradingTestUtils';
 
 const ADDRESS_COMMON = { received: '0', sent: '0', transfers: 0 };
 
