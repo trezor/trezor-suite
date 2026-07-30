@@ -5,7 +5,7 @@ export * from './definitions';
 export * from './device';
 export * from './fees';
 export type * from './firmware';
-export type * from './method';
+export * from './method';
 export * from './params';
 export * from './settings';
 

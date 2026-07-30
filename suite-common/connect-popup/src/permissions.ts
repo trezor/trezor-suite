@@ -2,6 +2,7 @@ import { networks } from '@suite-common/wallet-config';
 import {
     type CoinSymbol,
     type EnabledNetwork,
+    GRANTABLE_PERMISSIONS,
     type PermissionRequest,
     isCoinSymbol,
 } from '@trezor/connect';
@@ -84,21 +85,6 @@ export const groupPermissionsByCoin = (permissions: PermissionRequest[]): Groupe
     return groups;
 };
 
-// Permissions a 3rd-party app may be granted up front. `management` and `internal` are never
-// grantable to a dapp, and `push_tx` is additionally excluded on deeplink sources — mirrors the
-// hard block in connectPopupCallThunkInner. Everything else (including unknown/garbage values from
-// untrusted host input, and coins that are not a known `CoinSymbol`) is dropped.
-const GRANTABLE_PERMISSIONS: ReadonlySet<PermissionRequest['permission']> = new Set([
-    'read_address',
-    'read_xpub',
-    'read_account_info',
-    'read_features',
-    'sign',
-    'sign_message',
-    'verify_message',
-    'push_tx',
-]);
-
 // Sanitize the host-declared `requestedPermissions`: drop entries whose permission is not
 // grantable, `push_tx` on deeplinks, and unknown coins; lowercase each `coin` to its `CoinSymbol`.
 export const sanitizeRequestedPermissions = (
@@ -106,7 +92,7 @@ export const sanitizeRequestedPermissions = (
     isDeeplink: boolean,
 ): PermissionRequest[] =>
     (requested ?? []).flatMap(({ permission, coin }) => {
-        if (!GRANTABLE_PERMISSIONS.has(permission)) return [];
+        if (!GRANTABLE_PERMISSIONS.includes(permission)) return [];
         if (permission === 'push_tx' && isDeeplink) return [];
         if (coin === undefined) return [{ permission }];
         const symbol = coin.toLowerCase();
