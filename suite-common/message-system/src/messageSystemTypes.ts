@@ -112,6 +112,9 @@ export const Feature = {
             redeem: 'earn.yield.redeem',
             claim: 'earn.yield.claim',
         } as const satisfies Record<YieldFlowType, string>,
+        // Global (non-vault-scoped) flags for the native-token wrap/unwrap feature (e.g. ETH ↔ WETH)
+        wrap: 'earn.wrap',
+        unwrap: 'earn.unwrap',
     },
     mevProtection: 'settings.mevProtection',
     suiteSync: 'settings.suiteSync',
