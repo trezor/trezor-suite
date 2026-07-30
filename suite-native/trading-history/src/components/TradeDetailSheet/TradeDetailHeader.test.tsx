@@ -8,7 +8,7 @@ import {
 } from '@suite-native/trading-fixtures';
 
 import { TradeDetailHeader } from './TradeDetailHeader';
-import { renderWithTradingHistoryProvider } from '../../__tests__/tradingHistoryTestUtils';
+import { renderWithTradingHistoryProvider } from '../../test-utils/tradingHistoryTestUtils';
 
 const createOverrides = (trades: TradingTransaction[]) => ({
     wallet: {

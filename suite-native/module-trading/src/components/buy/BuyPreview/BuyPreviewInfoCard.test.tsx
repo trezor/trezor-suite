@@ -2,7 +2,7 @@ import { getTranslation } from '@suite-native/intl';
 import { mercuryoApplePayBuyQuote } from '@suite-native/trading-fixtures';
 
 import { BuyPreviewInfoCard } from './BuyPreviewInfoCard';
-import { renderWithTradingProvider } from '../../../__tests__/tradingTestUtils';
+import { renderWithTradingProvider } from '../../../test-utils/tradingTestUtils';
 
 describe('BuyPreviewInfoCard', () => {
     const renderCard = (quote = mercuryoApplePayBuyQuote) =>

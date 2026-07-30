@@ -9,7 +9,7 @@ import { configureMockStore } from '@suite-common/test-utils';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
 import { SendContext } from 'src/hooks/wallet/useSendForm';
-import { renderWithProviders } from 'src/support/tests/hooksHelper';
+import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
 
 import { EthereumNonce } from './EthereumNonce';
 import { extraDependenciesDesktopMock } from '../../../../../../mocks/extraDependenciesDesktopMock';

@@ -13,7 +13,7 @@ import { useAllTradesReloadTimer } from './useAllTradesReloadTimer';
 import {
     createTradingLightStore,
     renderHookWithTradingProvider,
-} from '../../__tests__/tradingTestUtils';
+} from '../../test-utils/tradingTestUtils';
 
 // Mock the useReloadTimer hook
 jest.mock('./useReloadTimer', () => ({

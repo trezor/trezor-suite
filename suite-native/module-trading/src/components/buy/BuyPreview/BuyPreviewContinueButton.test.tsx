@@ -2,8 +2,8 @@ import { getTranslation } from '@suite-native/intl';
 import { fireEvent } from '@suite-native/test-utils-store';
 
 import { BuyPreviewContinueButton } from './BuyPreviewContinueButton';
-import { renderWithTradingProvider } from '../../../__tests__/tradingTestUtils';
 import { useBuyPreviewFlow } from '../../../hooks/buy/useBuyPreviewFlow';
+import { renderWithTradingProvider } from '../../../test-utils/tradingTestUtils';
 
 jest.mock('../../../hooks/buy/useBuyPreviewFlow', () => ({
     useBuyPreviewFlow: jest.fn(),

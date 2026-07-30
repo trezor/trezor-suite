@@ -4,7 +4,7 @@ import { Translation } from '@suite/intl';
 import { configureMockStore, screen } from '@suite-common/test-utils';
 import { type NotificationEntry } from '@suite-common/toast-notifications';
 
-import { renderWithProviders } from 'src/support/tests/hooksHelper';
+import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
 
 import { NotificationRenderer } from './NotificationRenderer';
 import { extraDependenciesDesktopMock } from '../../../../../mocks/extraDependenciesDesktopMock';

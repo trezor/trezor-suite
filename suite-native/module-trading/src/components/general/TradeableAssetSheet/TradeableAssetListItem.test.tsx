@@ -13,7 +13,7 @@ import { tradingSlice } from '@suite-native/trading-state';
 import { typedObjectTransformValues } from '@trezor/utils';
 
 import { TradeableAssetListItem, type TradeableAssetListItemProps } from './TradeableAssetListItem';
-import { createTradingPreloadedState } from '../../../__tests__/tradingTestUtils';
+import { createTradingPreloadedState } from '../../../test-utils/tradingTestUtils';
 
 const reducer = {
     ...typedObjectTransformValues(createTradingPreloadedState(), createStaticReducer),

@@ -6,7 +6,7 @@ import {
     type PreloadedStatePartial,
     type TradingTestPreloadedState,
     renderWithTradingProvider,
-} from '../../../__tests__/tradingTestUtils';
+} from '../../../test-utils/tradingTestUtils';
 
 jest.mock('@suite-common/message-system', () => {
     const messages: Record<string, unknown> = {

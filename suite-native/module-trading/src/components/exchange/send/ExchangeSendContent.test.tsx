@@ -9,11 +9,11 @@ import { usdcAsset } from '@suite-native/trading-fixtures';
 import { type ExchangeFormType } from '@suite-native/trading-types';
 
 import { ExchangeSendContent } from './ExchangeSendContent';
+import { useExchangeForm } from '../../../hooks/exchange/useExchangeForm';
 import {
     createTradingFeatureFlags,
     createTradingPreloadedState,
-} from '../../../__tests__/tradingTestUtils';
-import { useExchangeForm } from '../../../hooks/exchange/useExchangeForm';
+} from '../../../test-utils/tradingTestUtils';
 
 describe('ExchangeSendContent', () => {
     let form: ExchangeFormType;

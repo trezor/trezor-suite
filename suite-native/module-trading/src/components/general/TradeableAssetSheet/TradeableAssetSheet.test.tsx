@@ -4,7 +4,7 @@ import { adaAsset, btcAsset, usdcAsset } from '@suite-native/trading-fixtures';
 import { type TradeableAsset } from '@suite-native/trading-types';
 
 import { TradeableAssetSheet, type TradeableAssetsSheetProps } from './TradeableAssetSheet';
-import { renderWithTradingProvider } from '../../../__tests__/tradingTestUtils';
+import { renderWithTradingProvider } from '../../../test-utils/tradingTestUtils';
 
 describe('TradeableAssetSheet', () => {
     const defaultAssets: TradeableAsset[] = [btcAsset, usdcAsset, adaAsset];

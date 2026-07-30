@@ -1,8 +1,8 @@
 import { act } from 'react';
 
 import { useTradingRefetchScheduler } from './useTradingRefetchScheduler';
-import { renderHookWithTradingStore } from '../__tests__/testUtils';
 import { tradingActions } from '../reducers/tradingCommonReducer';
+import { renderHookWithTradingStore } from '../test-utils/testUtils';
 
 describe('useTradingRefetchScheduler', () => {
     it('should verify that timestapp is set and cleared on unmount', () => {

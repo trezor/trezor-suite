@@ -17,7 +17,7 @@ import { type SellFormValues } from '@suite-native/trading-types';
 
 import { useSellForm } from './useSellForm';
 import { useSellQuotes } from './useSellQuotes';
-import { createTradingLightStore } from '../../__tests__/tradingTestUtils';
+import { createTradingLightStore } from '../../test-utils/tradingTestUtils';
 
 const mockDebounce = (fn: () => unknown) => fn();
 

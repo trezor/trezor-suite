@@ -10,7 +10,7 @@ import { useTradingTransaction } from './useTradingTransaction';
 import {
     createTradingLightStore,
     renderHookWithTradingProvider,
-} from '../../__tests__/tradingTestUtils';
+} from '../../test-utils/tradingTestUtils';
 
 const mockComposeTradingTransaction = jest.fn();
 

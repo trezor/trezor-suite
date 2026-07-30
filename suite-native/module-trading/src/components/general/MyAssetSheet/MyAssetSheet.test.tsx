@@ -15,7 +15,7 @@ import { BigNumber } from '@trezor/utils';
 
 import { TEST_ID_ACCOUNT_TYPE_BADGE } from './MyAssetListSectionHeader';
 import { MyAssetSheet, type MyAssetSheetProps } from './MyAssetSheet';
-import { renderWithTradingProvider } from '../../../__tests__/tradingTestUtils';
+import { renderWithTradingProvider } from '../../../test-utils/tradingTestUtils';
 
 jest.mock('@suite-native/trading-state', () => ({
     ...jest.requireActual('@suite-native/trading-state'),

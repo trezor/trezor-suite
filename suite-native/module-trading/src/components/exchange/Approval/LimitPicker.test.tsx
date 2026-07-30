@@ -9,7 +9,7 @@ import {
 import { mercuryoFixedWorstQuote } from '@suite-native/trading-fixtures';
 
 import { LimitPicker } from './LimitPicker';
-import { createTradingLightStore } from '../../../__tests__/tradingTestUtils';
+import { createTradingLightStore } from '../../../test-utils/tradingTestUtils';
 
 describe('LimitPicker', () => {
     let store: TestStore;

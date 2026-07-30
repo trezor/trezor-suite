@@ -6,7 +6,7 @@ import { act } from '@suite-native/test-utils-store';
 import { mercuryoDexQuote, mercuryoFixedWorstQuote } from '@suite-native/trading-fixtures';
 
 import { SLIPPAGE_PICKER_TEST_ID, SlippagePicker } from './SlippagePicker';
-import { renderWithSlippageTestProvider } from '../__tests__/testUtils';
+import { renderWithSlippageTestProvider } from '../test-utils/testUtils';
 
 const mockShowSheet = jest.fn();
 const mockHideSheet = jest.fn();

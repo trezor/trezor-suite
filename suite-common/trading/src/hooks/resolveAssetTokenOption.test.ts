@@ -2,7 +2,7 @@ import { type Coins, type CryptoId } from 'invity-api';
 
 import { useTradingAssets } from './useTradingAssets';
 import coins from '../__fixtures__/coins.json';
-import { createTradingTestState, renderHookWithTradingStore } from '../__tests__/testUtils';
+import { createTradingTestState, renderHookWithTradingStore } from '../test-utils/testUtils';
 
 const AUSDC_CONTRACT = '0x98c23e9d8f34fefb1b7bd6a91b7ff122f4e16f5c';
 const UNKNOWN_TOKEN_CONTRACT = '0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef';

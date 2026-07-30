@@ -17,7 +17,7 @@ import { type ExchangeFormType } from '@suite-native/trading-types';
 
 import { useExchangeForm } from './useExchangeForm';
 import { useExchangeSelectQuote } from './useExchangeSelectQuote';
-import { createTradingLightStore } from '../../__tests__/tradingTestUtils';
+import { createTradingLightStore } from '../../test-utils/tradingTestUtils';
 
 jest.mock('@suite-common/trading', () => ({
     ...jest.requireActual('@suite-common/trading'),

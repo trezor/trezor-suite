@@ -5,7 +5,7 @@ import { type TestStore, renderWithStoreProvider, userEvent } from '@suite-nativ
 import { mercuryoFixedWorstQuote } from '@suite-native/trading-fixtures';
 
 import { ApprovalButton, type ApprovalButtonProps } from './ApprovalButton';
-import { createTradingLightStore } from '../../../__tests__/tradingTestUtils';
+import { createTradingLightStore } from '../../../test-utils/tradingTestUtils';
 
 const mockNavigate = jest.fn();
 

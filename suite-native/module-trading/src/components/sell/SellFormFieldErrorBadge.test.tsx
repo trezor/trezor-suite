@@ -9,13 +9,13 @@ import {
     SellFormFieldErrorBadge,
     type SellFormFieldErrorBadgeProps,
 } from './SellFormFieldErrorBadge';
+import { useSellForm } from '../../hooks/sell/useSellForm';
 import {
     type PreloadedStatePartial,
     type TradingTestPreloadedState,
     renderHookWithTradingProvider,
     renderWithTradingProvider,
-} from '../../__tests__/tradingTestUtils';
-import { useSellForm } from '../../hooks/sell/useSellForm';
+} from '../../test-utils/tradingTestUtils';
 
 describe('SellFormFieldErrorBadge', () => {
     let tradingForm: SellFormType;

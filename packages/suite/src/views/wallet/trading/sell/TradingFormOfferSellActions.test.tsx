@@ -8,7 +8,7 @@ import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { type StaticSessionId } from '@trezor/connect';
 
 import { type AppState } from 'src/reducers/store';
-import { renderWithProviders } from 'src/support/tests/hooksHelper';
+import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
 
 import { TradingFormOfferSellActions } from './TradingFormOfferSellActions';
 import { extraDependenciesDesktopMock } from '../../../../../mocks/extraDependenciesDesktopMock';

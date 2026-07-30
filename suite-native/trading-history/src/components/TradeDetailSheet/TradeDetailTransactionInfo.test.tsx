@@ -17,7 +17,7 @@ import {
     type PreloadedStatePartial,
     type TradingTestPreloadedState,
     renderWithTradingHistoryProvider,
-} from '../../__tests__/tradingHistoryTestUtils';
+} from '../../test-utils/tradingHistoryTestUtils';
 
 jest.mock('@suite-native/trading-state', () => {
     const actual = jest.requireActual('@suite-native/trading-state');

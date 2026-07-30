@@ -11,7 +11,7 @@ import { type TestStore, fireEvent } from '@suite-native/test-utils-store';
 import { eth1NormalAccount, mercuryoFixedWorstQuote } from '@suite-native/trading-fixtures';
 
 import { TradingExchangeApprovalScreen } from './TradingExchangeApprovalScreen';
-import { createTradingLightStore, renderWithTradingProvider } from '../__tests__/tradingTestUtils';
+import { createTradingLightStore, renderWithTradingProvider } from '../test-utils/tradingTestUtils';
 
 const mockShowSheet = jest.fn();
 const mockHideSheet = jest.fn();

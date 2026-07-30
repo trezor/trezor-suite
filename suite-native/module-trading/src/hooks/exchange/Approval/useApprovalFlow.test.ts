@@ -3,7 +3,7 @@ import { act, renderHookWithStoreProvider } from '@suite-native/test-utils-store
 import { invityDexQuote } from '@suite-native/trading-fixtures';
 
 import { useApprovalFlow } from './useApprovalFlow';
-import { createTradingLightStore } from '../../../__tests__/tradingTestUtils';
+import { createTradingLightStore } from '../../../test-utils/tradingTestUtils';
 
 const mockConfirmApprovalThunk: any = () => () => ({
     unwrap: () => Promise.resolve({}),

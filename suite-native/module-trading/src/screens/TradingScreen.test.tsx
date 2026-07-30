@@ -7,7 +7,7 @@ import {
     type TradingTestPreloadedState,
     createTradingFeatureFlags,
     renderWithTradingProvider,
-} from '../__tests__/tradingTestUtils';
+} from '../test-utils/tradingTestUtils';
 
 jest.mock('@trezor/react-utils', () => ({
     ...jest.requireActual('@trezor/react-utils'),

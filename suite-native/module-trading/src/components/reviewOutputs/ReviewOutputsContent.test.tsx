@@ -2,7 +2,7 @@ import { type TokenAddress } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 
 import { ReviewOutputsContent, type ReviewOutputsContentProps } from './ReviewOutputsContent';
-import { renderWithTradingProvider } from '../../__tests__/tradingTestUtils';
+import { renderWithTradingProvider } from '../../test-utils/tradingTestUtils';
 
 jest.mock('@suite-native/confirm-on-trezor', () => ({
     ...jest.requireActual('@suite-native/confirm-on-trezor'),

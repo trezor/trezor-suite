@@ -7,7 +7,7 @@ import { btcAsset, ethAsset, getBtcAccount, usdcAsset } from '@suite-native/trad
 import { buyActions, exchangeActions } from '@suite-native/trading-state';
 
 import { useTradeableAssetChange } from './useTradeableAssetChange';
-import { createTradingLightStore } from '../../../__tests__/tradingTestUtils';
+import { createTradingLightStore } from '../../../test-utils/tradingTestUtils';
 
 const reportMock = jest.fn();
 const services: NativeAnalyticsDep = {

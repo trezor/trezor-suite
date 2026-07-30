@@ -23,7 +23,7 @@ import { PROTO } from '@trezor/connect';
 
 import { useExchangeForm } from './useExchangeForm';
 import { useExchangeQuotes } from './useExchangeQuotes';
-import { createTradingLightStore } from '../../__tests__/tradingTestUtils';
+import { createTradingLightStore } from '../../test-utils/tradingTestUtils';
 
 const mockReport = jest.fn();
 const services: NativeAnalyticsDep = {

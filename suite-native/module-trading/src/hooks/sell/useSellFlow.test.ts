@@ -11,7 +11,7 @@ import {
 } from '@suite-native/trading-fixtures';
 
 import { useSellFlow } from './useSellFlow';
-import { createTradingLightStore } from '../../__tests__/tradingTestUtils';
+import { createTradingLightStore } from '../../test-utils/tradingTestUtils';
 
 // Store captured arguments for testing side effects (processResponseData callback)
 let capturedHandleTradeArgs: Parameters<typeof sellThunks.handleTradeThunk>[0] | null = null;

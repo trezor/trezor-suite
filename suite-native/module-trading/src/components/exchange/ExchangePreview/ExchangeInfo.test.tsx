@@ -6,7 +6,7 @@ import { getTranslation } from '@suite-native/intl';
 import { btc1NormalAccount, mercuryoFixedWorstQuote } from '@suite-native/trading-fixtures';
 
 import { ExchangeInfo, type ExchangeInfoProps } from './ExchangeInfo';
-import { renderWithTradingProvider } from '../../../__tests__/tradingTestUtils';
+import { renderWithTradingProvider } from '../../../test-utils/tradingTestUtils';
 
 // Mock FeeSelector to avoid deep dependency chain
 jest.mock('@suite-native/transaction-management', () => ({

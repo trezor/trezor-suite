@@ -6,7 +6,7 @@ import {
     ExchangeFromAccountTradePreviewCard,
     type ExchangeFromAccountTradePreviewCardProps,
 } from './ExchangeFromAccountTradePreviewCard';
-import { renderWithTradingProvider } from '../../../__tests__/tradingTestUtils';
+import { renderWithTradingProvider } from '../../../test-utils/tradingTestUtils';
 
 describe('ExchangeFromAccountTradePreviewCard', () => {
     const renderExchangeFromAccountTradePreviewCard = (

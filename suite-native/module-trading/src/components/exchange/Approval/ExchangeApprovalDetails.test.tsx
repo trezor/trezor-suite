@@ -7,7 +7,7 @@ import {
     type PreloadedStatePartial,
     type TradingTestPreloadedState,
     renderWithTradingProvider,
-} from '../../../__tests__/tradingTestUtils';
+} from '../../../test-utils/tradingTestUtils';
 
 // Mock FeeSelector to avoid deep dependency chain (useFeesManagement, etc.)
 jest.mock('@suite-native/transaction-management', () => ({

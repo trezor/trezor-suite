@@ -16,7 +16,7 @@ import {
     type PreloadedStatePartial,
     type TradingTestPreloadedState,
     createTradingLightStore,
-} from '../../../__tests__/tradingTestUtils';
+} from '../../../test-utils/tradingTestUtils';
 
 const mockComposeEvmApprovalFeeLevelsThunk = jest.fn();
 

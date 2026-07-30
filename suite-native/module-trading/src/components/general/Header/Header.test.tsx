@@ -11,7 +11,7 @@ import {
     type TradingTestPreloadedState,
     createTradingLightStore,
     renderWithTradingProvider,
-} from '../../../__tests__/tradingTestUtils';
+} from '../../../test-utils/tradingTestUtils';
 
 describe('Header', () => {
     const getFFOverrides = (): PreloadedStatePartial<TradingTestPreloadedState> => ({

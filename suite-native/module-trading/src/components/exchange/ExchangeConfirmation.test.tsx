@@ -7,14 +7,14 @@ import { act, screen } from '@suite-native/test-utils-store';
 import { type ExchangeFormType } from '@suite-native/trading-types';
 
 import { CONFIRMATION_TEST_ID, ExchangeConfirmation } from './ExchangeConfirmation';
+import { useExchangeForm } from '../../hooks/exchange/useExchangeForm';
 import {
     type PreloadedStatePartial,
     type TradingTestPreloadedState,
     createTradingFeatureFlags,
     renderHookWithTradingProvider,
     renderWithTradingProvider,
-} from '../../__tests__/tradingTestUtils';
-import { useExchangeForm } from '../../hooks/exchange/useExchangeForm';
+} from '../../test-utils/tradingTestUtils';
 
 jest.mock('../../hooks/exchange/useExchangeSelectQuote', () => ({
     useExchangeSelectQuote: jest.fn(),

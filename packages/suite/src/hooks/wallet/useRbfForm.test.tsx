@@ -14,7 +14,7 @@ import {
     findByTestId,
     renderWithProviders,
     waitForLoader,
-} from 'src/support/tests/hooksHelper';
+} from 'src/support/test-utils/hooksHelper';
 
 import * as fixtures from './__fixtures__/useRbfForm';
 import { RbfContext, useRbf, useRbfContext } from './useRbfForm';

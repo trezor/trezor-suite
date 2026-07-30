@@ -9,7 +9,7 @@ import {
 import { getFormDraftKeyByTradeType } from '@suite-native/trading-state';
 
 import { useComposeTradingTransaction } from './useComposeTradingTransaction';
-import { createTradingLightStore } from '../../__tests__/tradingTestUtils';
+import { createTradingLightStore } from '../../test-utils/tradingTestUtils';
 
 const mockComposeTradingTransactionThunk = jest.fn(
     (payload: unknown) => () =>

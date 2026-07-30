@@ -10,7 +10,7 @@ import {
     ExchangeConfirmationInfo,
     type ExchangeConfirmationInfoCardProps,
 } from './ExchangeConfirmationInfo';
-import { createTradingLightStore } from '../../../__tests__/tradingTestUtils';
+import { createTradingLightStore } from '../../../test-utils/tradingTestUtils';
 
 const testQuote = exchangeQuotes[0];
 

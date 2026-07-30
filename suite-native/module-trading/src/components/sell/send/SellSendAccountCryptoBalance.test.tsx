@@ -7,11 +7,11 @@ import {
     SEND_ACCOUNT_BALANCE_TEST_ID,
     SellSendAccountCryptoBalance,
 } from './SellSendAccountCryptoBalance';
+import { useSellForm } from '../../../hooks/sell/useSellForm';
 import {
     renderHookWithTradingProvider,
     renderWithTradingProvider,
-} from '../../../__tests__/tradingTestUtils';
-import { useSellForm } from '../../../hooks/sell/useSellForm';
+} from '../../../test-utils/tradingTestUtils';
 
 describe('SellSendAccountCryptoBalance', () => {
     let sellForm: SellFormType;

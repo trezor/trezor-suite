@@ -12,7 +12,7 @@ import {
     type PreloadedStatePartial,
     type TradingTestPreloadedState,
     renderWithTradingHistoryProvider,
-} from '../__tests__/tradingHistoryTestUtils';
+} from '../test-utils/tradingHistoryTestUtils';
 
 const mockShowSheet = jest.fn();
 const mockGoBack = jest.fn();

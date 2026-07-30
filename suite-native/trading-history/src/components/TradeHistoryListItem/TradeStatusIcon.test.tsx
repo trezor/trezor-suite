@@ -1,5 +1,5 @@
 import { TradeStatusIcon, getTradeStatusIconConfig } from './TradeStatusIcon';
-import { renderWithTradingHistoryProvider } from '../../__tests__/tradingHistoryTestUtils';
+import { renderWithTradingHistoryProvider } from '../../test-utils/tradingHistoryTestUtils';
 
 describe('TradeStatusIcon', () => {
     it.each([

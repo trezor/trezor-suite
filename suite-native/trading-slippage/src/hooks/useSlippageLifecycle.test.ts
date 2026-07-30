@@ -10,7 +10,7 @@ import { useSlippageLifecycle } from './useSlippageLifecycle';
 import {
     createSlippageTestStore,
     renderHookWithSlippageTestProvider,
-} from '../__tests__/testUtils';
+} from '../test-utils/testUtils';
 
 const renderUseSlippageLifecycle = ({
     onSlippageChanged,

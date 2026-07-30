@@ -7,7 +7,7 @@ import { getTranslation } from '@suite-native/intl';
 import { mercuryoDexQuote } from '@suite-native/trading-fixtures';
 
 import { SlippageSummary } from './SlippageSummary';
-import { renderWithSlippageTestProvider } from '../__tests__/testUtils';
+import { renderWithSlippageTestProvider } from '../test-utils/testUtils';
 
 const validationSchema = yup.object({ slippage: yup.string() });
 

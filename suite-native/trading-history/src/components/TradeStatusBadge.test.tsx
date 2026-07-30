@@ -4,7 +4,7 @@ import { getTranslation } from '@suite-native/intl';
 import { getBuyTrade, getExchangeTrade, getSellTrade } from '@suite-native/trading-fixtures';
 
 import { TradeStatusBadge, getBadgeIconName, getBadgeVariant } from './TradeStatusBadge';
-import { renderWithTradingHistoryProvider } from '../__tests__/tradingHistoryTestUtils';
+import { renderWithTradingHistoryProvider } from '../test-utils/tradingHistoryTestUtils';
 
 describe('TradeStatusBadge', () => {
     it('should render nothing when status is undefined', () => {

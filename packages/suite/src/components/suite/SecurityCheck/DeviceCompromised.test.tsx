@@ -7,8 +7,8 @@ import * as deviceUtils from '@suite-common/suite-utils';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
 import { type AppState } from 'src/reducers/store';
+import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
 import { configureStore } from 'src/support/tests/configureStore';
-import { renderWithProviders } from 'src/support/tests/hooksHelper';
 
 import { DeviceCompromised } from './DeviceCompromised';
 import { extraDependenciesDesktopMock } from '../../../../mocks/extraDependenciesDesktopMock';

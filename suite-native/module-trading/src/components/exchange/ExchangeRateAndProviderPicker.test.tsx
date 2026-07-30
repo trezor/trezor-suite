@@ -9,13 +9,13 @@ import { type ExchangeFormType } from '@suite-native/trading-types';
 import { getIndexOrThrow } from '@trezor/utils';
 
 import { ExchangeRateAndProviderPicker } from './ExchangeRateAndProviderPicker';
+import { useExchangeForm } from '../../hooks/exchange/useExchangeForm';
 import {
     type PreloadedStatePartial,
     type TradingTestPreloadedState,
     renderHookWithTradingProvider,
     renderWithTradingProvider,
-} from '../../__tests__/tradingTestUtils';
-import { useExchangeForm } from '../../hooks/exchange/useExchangeForm';
+} from '../../test-utils/tradingTestUtils';
 
 const reportMock = jest.fn();
 const services: NativeAnalyticsDep = {

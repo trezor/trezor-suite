@@ -3,7 +3,7 @@ import { act } from '@suite-native/test-utils';
 import { mercuryoFixedWorstQuote } from '@suite-native/trading-fixtures';
 
 import { ExchangeApprovalLimitSheet } from './ExchangeApprovalLimitSheet';
-import { renderWithTradingProvider } from '../../../../__tests__/tradingTestUtils';
+import { renderWithTradingProvider } from '../../../../test-utils/tradingTestUtils';
 
 const mockOnDismiss = jest.fn();
 const mockOnApprovalTypeSelect = jest.fn();

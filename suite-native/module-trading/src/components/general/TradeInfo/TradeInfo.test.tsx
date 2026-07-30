@@ -7,7 +7,7 @@ import { getTranslation } from '@suite-native/intl';
 import { mercuryoDexQuote } from '@suite-native/trading-fixtures';
 
 import { TradeInfo } from './TradeInfo';
-import { renderWithTradingProvider } from '../../../__tests__/tradingTestUtils';
+import { renderWithTradingProvider } from '../../../test-utils/tradingTestUtils';
 
 const btc1AccountKey = mockAccountKey({ symbol: 'btc', descriptor: 'btc1' });
 

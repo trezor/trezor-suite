@@ -7,7 +7,7 @@ import {
     type PreloadedStatePartial,
     type TradingTestPreloadedState,
     createTradingPreloadedState,
-} from '../../__tests__/tradingTestUtils';
+} from '../../test-utils/tradingTestUtils';
 
 describe('SellKYCWarning', () => {
     const KYC_REQUIRED_TEXT = getTranslation('moduleTrading.tradingScreen.kycRequired');

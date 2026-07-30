@@ -3,7 +3,7 @@ import { type useFormContext } from '@suite-native/forms';
 import { getTranslation } from '@suite-native/intl';
 
 import { ConciergeAlert, type ConciergeAlertFormValues } from './ConciergeAlert';
-import { renderWithTradingProvider } from '../../__tests__/tradingTestUtils';
+import { renderWithTradingProvider } from '../../test-utils/tradingTestUtils';
 import {
     CRYPTO_MAX_FORM_TYPE,
     CRYPTO_MIN_FORM_TYPE,

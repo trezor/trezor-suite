@@ -10,8 +10,8 @@ import { ethOnBaseAsset, usdcAsset } from '@suite-native/trading-fixtures';
 import { type ExchangeFormType } from '@suite-native/trading-types';
 
 import { ExchangeCard } from './ExchangeCard';
-import { createTradingPreloadedState } from '../../__tests__/tradingTestUtils';
 import { useExchangeForm } from '../../hooks/exchange/useExchangeForm';
+import { createTradingPreloadedState } from '../../test-utils/tradingTestUtils';
 
 describe('ExchangeCard', () => {
     let form: ExchangeFormType;

@@ -2,7 +2,7 @@ import { getTranslation } from '@suite-native/intl';
 import { selectIsTradingConciergeEnabled } from '@suite-native/trading-state';
 
 import { ConciergeTab } from './ConciergeTab';
-import { renderWithTradingProvider } from '../../__tests__/tradingTestUtils';
+import { renderWithTradingProvider } from '../../test-utils/tradingTestUtils';
 
 jest.mock('@suite-native/trading-state', () => ({
     ...jest.requireActual('@suite-native/trading-state'),

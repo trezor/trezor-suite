@@ -7,7 +7,7 @@ import { useTradingOutputsReviewErrorAlert } from './useTradingOutputsReviewErro
 import {
     createTradingLightStore,
     renderHookWithTradingProvider,
-} from '../../__tests__/tradingTestUtils';
+} from '../../test-utils/tradingTestUtils';
 
 const mockShowAlert = jest.fn();
 

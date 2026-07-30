@@ -4,7 +4,7 @@ import { type PreloadedStatePartial } from '@suite-native/test-utils-store';
 import { getWalletState, mercuryoFixedWorstQuote } from '@suite-native/trading-fixtures';
 
 import { ExchangeProviderPicker, type ExchangeProviderPickerProps } from './ExchangeProviderPicker';
-import { type TradingTestPreloadedState } from '../../__tests__/tradingTestUtils';
+import { type TradingTestPreloadedState } from '../../test-utils/tradingTestUtils';
 
 describe('ExchangeProviderPicker', () => {
     let preloadedState: PreloadedStatePartial<TradingTestPreloadedState>;
