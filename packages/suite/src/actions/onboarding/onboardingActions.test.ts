@@ -1,10 +1,10 @@
 import { debugInitialState } from '@suite/debug';
 import { recoveryReducer } from '@suite/recovery';
 import { suiteSettingsInitialState } from '@suite/settings';
+import { configureMockStore } from '@suite-common/test-utils';
 
 import onboardingReducer from 'src/reducers/onboarding/onboardingReducer';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
-import { configureStore } from 'src/support/tests/configureStore';
 import { type Action } from 'src/types/suite';
 
 import fixtures from './__fixtures__/onboardingActions';
@@ -45,27 +45,13 @@ const getInitialState = (custom?: any) => {
 };
 
 const createStore = (initialState: ReturnType<typeof getInitialState>) => {
-    const store = configureStore<ReturnType<typeof getInitialState>, any>()(initialState);
-
-    return store;
-};
-
-const updateStore = (store: ReturnType<typeof createStore>) => {
-    // there is not much redux logic in this test
-    // just update state on every action manually
-    store.subscribe(() => {
-        const action = store.getActions().pop();
-        const { onboarding } = store.getState();
-
-        store.getState().onboarding = onboardingReducer(onboarding, action);
-        // add action back to stack
-        store.getActions().push(action);
+    const store = configureMockStore({
+        reducer: (state = initialState, action) => ({
+            ...state,
+            onboarding: onboardingReducer(state.onboarding, action),
+        }),
+        preloadedState: initialState,
     });
-};
-
-const mockStore = (initialState: ReturnType<typeof getInitialState>) => {
-    const store = createStore(initialState);
-    store.subscribe(() => updateStore(store));
 
     return store;
 };
@@ -73,7 +59,7 @@ const mockStore = (initialState: ReturnType<typeof getInitialState>) => {
 describe('Onboarding Actions', () => {
     fixtures.forEach(f => {
         it(f.description, () => {
-            const store = mockStore(getInitialState(f.initialState));
+            const store = createStore(getInitialState(f.initialState));
             store.dispatch(f.action());
             const stateAfter = store.getState().onboarding;
             if (f.expect.toMatchObject) {

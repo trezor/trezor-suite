@@ -1,4 +1,3 @@
-import { D } from '@mobily/ts-belt';
 import {
     type Middleware as RTKMiddleware,
     type Reducer,
@@ -26,9 +25,9 @@ import { extraDependenciesCommonMock } from './extraDependenciesCommonMock';
 export const filterThunkActionTypes = (actions: AnyAction[]) =>
     actions.filter(action => !isPending(action) && !isFulfilled(action));
 
-type MockStoreConfig<S = any, A extends AnyAction = AnyAction> = {
+type MockStoreConfig<S = any, A extends AnyAction = AnyAction, Extra = ExtraDependenciesPartial> = {
     middleware?: any[];
-    extra?: ExtraDependenciesPartial;
+    extra?: Extra;
     // The third generic (PreloadedState) sits in a contravariant position in redux's Reducer
     // signature, so neither `unknown` nor `Record<string, never>` work as drop-in replacements
     // for `{}` here — both reject test fixtures that pass a Partial<S> as preloaded state.
@@ -54,39 +53,21 @@ export const initPreloadedState = ({
 /**
  * A mock store for testing Redux async action creators and middleware.
  */
-export function configureMockStore<S = any, A extends AnyAction = AnyAction>({
+export function configureMockStore<
+    S = any,
+    A extends AnyAction = AnyAction,
+    Extra = ExtraDependenciesPartial,
+>({
     middleware = [],
-    extra = {},
+    extra,
     reducer = (state: any) => state,
     preloadedState,
     serializableCheck = {},
-}: MockStoreConfig<S, A> = {}) {
+}: MockStoreConfig<S, A, Extra> = {}) {
     let actions: A[] = [];
 
     const actionLoggerMiddleware = createMiddleware((action, { next }) => {
-        if (
-            action?.meta &&
-            typeof action.meta === 'object' &&
-            action.meta !== null &&
-            'requestId' in action.meta
-        ) {
-            // requestId is generated random string, and it will break fixtures because they are static, so we remove it
-            if (!('arg' in action.meta) || action.meta.arg === undefined) {
-                // only requestId and requestStatus are left, remove meta completely
-                actions.push(D.deleteKey(action, 'meta') as any);
-            } else {
-                actions.push({
-                    ...action,
-                    meta: {
-                        ...action.meta,
-                        requestId: undefined,
-                        requestStatus: undefined,
-                    },
-                } as any);
-            }
-        } else {
-            actions.push(action as any);
-        }
+        actions.push(action as A);
 
         return next(action);
     });
@@ -95,7 +76,7 @@ export function configureMockStore<S = any, A extends AnyAction = AnyAction>({
         middleware: getDefaultMiddleware =>
             getDefaultMiddleware({
                 thunk: {
-                    extraArgument: mergeDeepObject(extraDependenciesCommonMock, extra),
+                    extraArgument: mergeDeepObject(extraDependenciesCommonMock, extra ?? {}),
                 },
                 serializableCheck,
             })

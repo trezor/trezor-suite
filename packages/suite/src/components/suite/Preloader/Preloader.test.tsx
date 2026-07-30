@@ -6,6 +6,7 @@ import { type DesktopDeviceState } from '@suite/device';
 import { type RouterState } from '@suite/router';
 import { type AnalyticsState } from '@suite-common/analytics-redux';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
+import { configureMockStore } from '@suite-common/test-utils';
 import { type TransportInfo } from '@trezor/connect';
 import { isLinux } from '@trezor/env-utils';
 import { type DeepPartial } from '@trezor/type-utils';
@@ -13,7 +14,6 @@ import { type DeepPartial } from '@trezor/type-utils';
 import { type AppState } from 'src/reducers/store';
 import { type SuiteState } from 'src/reducers/suite/suiteReducer';
 import { findByTestId, renderWithProviders } from 'src/support/test-utils/hooksHelper';
-import { configureStore } from 'src/support/tests/configureStore';
 
 import { Preloader } from './Preloader';
 import { selectShouldDisplayDeviceCompromisedOnRoute } from './selectShouldDisplayDeviceCompromisedOnRoute';
@@ -112,9 +112,10 @@ const getInitialState = ({
     },
 });
 
-const mockStore = configureStore<AppState, any>();
-
-const initStore = (state: AppState) => mockStore(state);
+const initStore = (preloadedState: AppState) =>
+    configureMockStore({
+        preloadedState,
+    });
 
 const Index = ({ app }: any) => <Preloader>{app || 'foo'}</Preloader>;
 

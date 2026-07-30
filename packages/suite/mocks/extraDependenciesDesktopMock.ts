@@ -8,7 +8,7 @@ import { type ExtraDependenciesStatic } from '@suite-common/redux-utils';
 import { extraDependenciesCommonMock } from '@suite-common/test-utils';
 import { ok } from '@trezor/type-utils';
 
-import { type SuiteServices } from '../src/support/extraDependencies';
+import { type SuiteServices, extraDependencies } from '../src/support/extraDependencies';
 
 type ExtraDependenciesSuiteMock = ExtraDependenciesStatic & { services: SuiteServices };
 
@@ -18,6 +18,7 @@ const addressValidator = createAddressValidator({ networkModuleRepository });
 
 export const extraDependenciesDesktopMock: ExtraDependenciesSuiteMock = {
     ...extraDependenciesCommonMock,
+    ...extraDependencies,
     services: {
         ...extraDependenciesCommonMock.services,
         networkModuleRepository,

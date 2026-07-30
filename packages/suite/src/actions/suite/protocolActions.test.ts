@@ -1,7 +1,7 @@
 import { NETWORK_TO_PROTOCOLS } from '@suite-common/suite-constants';
+import { configureMockStore } from '@suite-common/test-utils';
 
 import protocolReducer, { type ProtocolState } from 'src/reducers/suite/protocolReducer';
-import { configureStore } from 'src/support/tests/configureStore';
 
 import * as protocolConstants from './constants/protocolConstants';
 import * as protocolActions from './protocolActions';
@@ -17,24 +17,18 @@ const getInitialState = (state?: ProtocolState) => ({
 });
 
 type State = ReturnType<typeof getInitialState>;
-const mockStore = configureStore<State, any>();
-
-const initStore = (state: State) => {
-    const store = mockStore(state);
-    store.subscribe(() => {
-        const action = store.getActions().pop();
-        const { protocol } = store.getState();
-        store.getState().protocol = protocolReducer(protocol, action);
-        // add action back to stack
-        store.getActions().push(action);
+const mockStore = (preloadedState: State) =>
+    configureMockStore({
+        reducer: (state = preloadedState, action) => ({
+            ...state,
+            protocol: protocolReducer(state.protocol, action),
+        }),
+        preloadedState,
     });
-
-    return store;
-};
 
 describe('Protocol actions', () => {
     it('gives a command to fill a send form with address and amount', async () => {
-        const store = initStore(
+        const store = mockStore(
             getInitialState({
                 sendForm: {
                     scheme: NETWORK_TO_PROTOCOLS.btc[0],
@@ -48,15 +42,22 @@ describe('Protocol actions', () => {
         await store.dispatch(protocolActions.fillSendForm(true));
         await store.dispatch(protocolActions.fillSendForm(false));
 
-        expect(store.getActions().length).toBe(2);
-        expect(store.getActions()[0].type).toBe(protocolConstants.FILL_SEND_FORM);
-        expect(store.getActions()[0].payload).toBe(true);
-        expect(store.getActions()[1].type).toBe(protocolConstants.FILL_SEND_FORM);
-        expect(store.getActions()[1].payload).toBe(false);
+        const actions = store.getActions();
+        expect(actions).toHaveLength(2);
+
+        const [fillSendFormAction, clearFillSendFormAction] = actions;
+        expect(fillSendFormAction).toEqual({
+            type: protocolConstants.FILL_SEND_FORM,
+            payload: true,
+        });
+        expect(clearFillSendFormAction).toEqual({
+            type: protocolConstants.FILL_SEND_FORM,
+            payload: false,
+        });
     });
 
     it('gives a command to fill a send form with address', async () => {
-        const store = initStore(
+        const store = mockStore(
             getInitialState({
                 sendForm: {
                     scheme: NETWORK_TO_PROTOCOLS.btc[0],
@@ -70,45 +71,71 @@ describe('Protocol actions', () => {
         await store.dispatch(protocolActions.fillSendForm(true));
         await store.dispatch(protocolActions.fillSendForm(false));
 
-        expect(store.getActions().length).toBe(2);
-        expect(store.getActions()[0].type).toBe(protocolConstants.FILL_SEND_FORM);
-        expect(store.getActions()[0].payload).toBe(true);
-        expect(store.getActions()[1].type).toBe(protocolConstants.FILL_SEND_FORM);
-        expect(store.getActions()[1].payload).toBe(false);
+        const actions = store.getActions();
+        expect(actions).toHaveLength(2);
+
+        const [fillSendFormAction, clearFillSendFormAction] = actions;
+        expect(fillSendFormAction).toEqual({
+            type: protocolConstants.FILL_SEND_FORM,
+            payload: true,
+        });
+        expect(clearFillSendFormAction).toEqual({
+            type: protocolConstants.FILL_SEND_FORM,
+            payload: false,
+        });
     });
 
     it('saves address and amount from Bitcoin URI protocol', async () => {
-        const store = initStore(getInitialState());
+        const store = mockStore(getInitialState());
 
         await store.dispatch(
             protocolActions.handleProtocolRequest('bitcoin:12345abcde?amount=1.02'),
         );
 
-        expect(store.getActions().length).toBe(2);
-        expect(store.getActions()[0].type).toBe(protocolConstants.SAVE_COIN_PROTOCOL);
-        expect(store.getActions()[0].payload.scheme).toBe(NETWORK_TO_PROTOCOLS.btc[0]);
-        expect(store.getActions()[0].payload.address).toBe('12345abcde');
-        expect(store.getActions()[0].payload.amount).toBe('1.02');
+        const actions = store.getActions();
+        expect(actions).toHaveLength(2);
+
+        const [saveCoinProtocolAction] = actions;
+        expect(saveCoinProtocolAction).toMatchObject({
+            type: protocolConstants.SAVE_COIN_PROTOCOL,
+            payload: {
+                scheme: NETWORK_TO_PROTOCOLS.btc[0],
+                address: '12345abcde',
+                amount: '1.02',
+            },
+        });
     });
 
     it('saves address from Bitcoin URI protocol', async () => {
-        const store = initStore(getInitialState());
+        const store = mockStore(getInitialState());
 
         await store.dispatch(protocolActions.handleProtocolRequest('bitcoin:12345abcde'));
 
-        expect(store.getActions().length).toBe(2);
-        expect(store.getActions()[0].type).toBe(protocolConstants.SAVE_COIN_PROTOCOL);
-        expect(store.getActions()[0].payload.scheme).toBe(NETWORK_TO_PROTOCOLS.btc[0]);
-        expect(store.getActions()[0].payload.address).toBe('12345abcde');
-        expect(store.getActions()[0].payload.amount).toBe(undefined);
+        const actions = store.getActions();
+        expect(actions).toHaveLength(2);
+
+        const [saveCoinProtocolAction] = actions;
+        expect(saveCoinProtocolAction).toMatchObject({
+            type: protocolConstants.SAVE_COIN_PROTOCOL,
+            payload: {
+                scheme: NETWORK_TO_PROTOCOLS.btc[0],
+                address: '12345abcde',
+                amount: undefined,
+            },
+        });
     });
 
     it('resets protocol state', async () => {
-        const store = initStore(getInitialState());
+        const store = mockStore(getInitialState());
 
         await store.dispatch(protocolActions.resetProtocol());
 
-        expect(store.getActions().length).toBe(1);
-        expect(store.getActions()[0].type).toBe(protocolConstants.RESET);
+        const actions = store.getActions();
+        expect(actions).toHaveLength(1);
+
+        const [resetProtocolAction] = actions;
+        expect(resetProtocolAction).toEqual({
+            type: protocolConstants.RESET,
+        });
     });
 });

@@ -3,13 +3,15 @@ import { Provider } from 'react-redux';
 import { render } from '@testing-library/react';
 
 import type { State as ModalState } from '@suite/modal';
-
-import { configureStore } from 'src/support/tests/configureStore';
+import { configureMockStore } from '@suite-common/test-utils';
 
 import { filters, fixtures } from './__fixtures__/useFilteredModal';
 import { useFilteredModal } from './useFilteredModal';
 
-const mockStore = configureStore<{ modal: ModalState }, any>();
+const mockStore = (preloadedState: { modal: ModalState }) =>
+    configureMockStore({
+        preloadedState,
+    });
 
 type Result = ModalState | null;
 

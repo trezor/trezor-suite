@@ -6,7 +6,11 @@ import { connectInitThunk } from '@suite-common/connect-init';
 import { deviceActions } from '@suite-common/device';
 import { messageSystemInitialState } from '@suite-common/message-system';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
-import { extraDependenciesCommonMock, testMocks } from '@suite-common/test-utils';
+import {
+    configureMockStore,
+    extraDependenciesCommonMock,
+    testMocks,
+} from '@suite-common/test-utils';
 import { defaultTrezorUIEventHandlerThunk } from '@suite-common/wallet-core';
 import { UI_EVENT, UI_REQUEST } from '@trezor/connect';
 
@@ -14,8 +18,9 @@ import * as deviceSettingsActions from 'src/actions/settings/deviceSettingsActio
 import buttonRequestMiddleware from 'src/middlewares/suite/buttonRequestMiddleware';
 import { prepareSuiteMiddleware } from 'src/middlewares/suite/suiteMiddleware';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
-import { configureStore } from 'src/support/tests/configureStore';
-import { type Action, type Dispatch } from 'src/types/suite';
+import { type Dispatch } from 'src/types/suite';
+
+import { extraDependenciesDesktopMock } from '../../../mocks/extraDependenciesDesktopMock';
 
 const device = mockSuiteDevice();
 
@@ -42,11 +47,14 @@ const getInitialState = () => ({
 type State = ReturnType<typeof getInitialState>;
 
 const initStore = (state: State) => {
-    const mockStore = configureStore<State, Action>([
-        prepareSuiteMiddleware(() => extraDependenciesCommonMock),
-        buttonRequestMiddleware,
-    ]);
-    const store = mockStore(state);
+    const store = configureMockStore({
+        extra: extraDependenciesDesktopMock,
+        middleware: [
+            prepareSuiteMiddleware(() => extraDependenciesCommonMock),
+            buttonRequestMiddleware,
+        ],
+        preloadedState: state,
+    });
 
     return store;
 };

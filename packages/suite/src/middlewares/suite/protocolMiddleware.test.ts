@@ -1,4 +1,5 @@
 import { type TranslationKey } from '@suite/intl';
+import { configureMockStore } from '@suite-common/test-utils';
 import {
     type NotificationEntry,
     createNotificationsReducer,
@@ -7,7 +8,6 @@ import {
 
 import { PROTOCOL } from 'src/actions/suite/constants';
 import protocolReducer from 'src/reducers/suite/protocolReducer';
-import { configureStore } from 'src/support/tests/configureStore';
 
 import protocolMiddleware from './protocolMiddleware';
 
@@ -31,20 +31,17 @@ const getInitialState = (
 type State = ReturnType<typeof getInitialState>;
 
 const initStore = (state: State) => {
-    const mockStore = configureStore<State, any>([...middlewares]);
-
-    const store = mockStore(state);
-    store.subscribe(() => {
-        const action = store.getActions().pop();
-        const { protocol, notifications } = store.getState();
-
-        store.getState().protocol = protocolReducer(protocol, action);
-        store.getState().notifications = notificationsReducer(
-            notifications as NotificationEntry<TranslationKey>[],
-            action,
-        );
-
-        store.getActions().push(action);
+    const store = configureMockStore({
+        middleware: [...middlewares],
+        reducer: (currentState = state, action) => ({
+            ...currentState,
+            protocol: protocolReducer(currentState.protocol, action),
+            notifications: notificationsReducer(
+                currentState.notifications as NotificationEntry<TranslationKey>[],
+                action,
+            ),
+        }),
+        preloadedState: state,
     });
 
     return store;

@@ -10,6 +10,7 @@ import { type Response } from '@trezor/connect';
 
 import type suiteReducer from 'src/reducers/suite/suiteReducer';
 import { extraDependencies } from 'src/support/extraDependencies';
+import { type ThunkAction } from 'src/types/suite';
 
 import * as deviceSettingsActions from '../deviceSettingsActions';
 
@@ -26,7 +27,7 @@ assert(deviceChange.features !== undefined);
 
 type Fixture = {
     description: string;
-    action: () => void;
+    action: () => ThunkAction;
     initialState: Partial<DeviceSettingsFixtureState>;
     deviceChange?: TrezorDevice;
     mocks: Awaited<Response<{ message: string }>>;

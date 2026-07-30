@@ -4,15 +4,16 @@ import { Provider } from 'react-redux';
 
 import { type RenderResult, render } from '@testing-library/react';
 
-import { configureStore } from 'src/support/tests/configureStore';
+import { configureMockStore } from '@suite-common/test-utils';
 
 interface Props {
     locale?: string;
 }
 
 export const renderWithIntl = (ui: ReactElement, { locale = 'en' }: Props = {}): RenderResult => {
-    const mockStore = configureStore([]);
-    const store = mockStore({});
+    const store = configureMockStore({
+        preloadedState: {},
+    });
 
     return render(
         <Provider store={store}>
