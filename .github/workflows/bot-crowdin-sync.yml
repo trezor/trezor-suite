@@ -114,7 +114,8 @@ jobs:
           COMMIT_MSG="chore(${COMMIT_SCOPE}): crowdin translation update${SUFFIX}"
 
           git add .
-          git commit -m "${COMMIT_MSG}"
+          # The focused install intentionally does not include all dependencies required by Husky Git hooks (pre-commit/commit-msg), so skip hook verification.
+          git commit -m "${COMMIT_MSG}" --no-verify
           git push origin ${{ env.BRANCH_NAME }} -f
 
           gh config set prompt disabled
