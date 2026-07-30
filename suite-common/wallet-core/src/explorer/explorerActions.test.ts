@@ -2,12 +2,12 @@ import { combineReducers } from '@reduxjs/toolkit';
 
 import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
 
+import { explorerActions } from './explorerActions';
 import {
-    ExplorerConfig,
-    explorerActions,
+    type ExplorerConfig,
     explorerInitialState,
     prepareExplorerReducer,
-} from '../../src';
+} from './explorerReducer';
 
 const explorerReducer = prepareExplorerReducer(extraDependenciesCommonMock);
 
