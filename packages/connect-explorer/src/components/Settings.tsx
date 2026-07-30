@@ -4,6 +4,7 @@ import { Button } from '@trezor/components';
 
 import * as trezorConnectActions from '../actions/trezorConnectActions';
 import { getField } from '../components/Method';
+import { RequestedPermissions } from '../components/RequestedPermissions';
 import { useActions, useSelector } from '../hooks';
 
 export const SettingsContent = styled.section`
@@ -52,6 +53,7 @@ export const Settings = () => {
         <SettingsContent>
             {/* @ts-expect-error: actions is simplified for this case */}
             {fields.map(field => getField(field, { actions }))}
+            <RequestedPermissions />
             <Button onClick={actions.onSubmitInit} data-testid="@submit-button">
                 {submitButton}
             </Button>
