@@ -1,6 +1,6 @@
 {
     "name": "@trezor/transport-common",
-    "version": "1.0.0-alpha.1",
+    "version": "10.0.0-beta.1",
     "description": "Environment-agnostic transport abstractions: types, errors, abstract base classes, structural USB interface, sessions backend, THP, utils.",
     "license": "MIT",
     "repository": {
