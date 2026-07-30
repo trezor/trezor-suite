@@ -1,6 +1,7 @@
-import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
-import { dirname, join, relative, sep } from 'node:path';
+import { existsSync, readFileSync, statSync } from 'node:fs';
+import { dirname, join, relative } from 'node:path';
 
+import { normalizePath, walkDirectory } from '../../fileSystem';
 import { listAllWorkspaces } from '../../workspaces';
 import type { Requirement } from '../Requirement';
 
@@ -57,25 +58,12 @@ const KNOWN_DECLARATION_SIZE_VIOLATIONS = new Set<string>([
     'suite-common/receive/libDev/src/receiveSlice.d.ts',
 ]);
 
-const normalizePath = (filePath: string) => filePath.split(sep).join('/');
-
 const isDeclarationFile = (fileName: string) => /\.d\.[cm]?ts$/.test(fileName);
 
-const listDeclarationFiles = (directory: string): ReadonlyArray<string> => {
-    const declarations: string[] = [];
-
-    for (const entry of readdirSync(directory, { withFileTypes: true })) {
-        const entryPath = join(directory, entry.name);
-
-        if (entry.isDirectory()) {
-            declarations.push(...listDeclarationFiles(entryPath));
-        } else if (entry.isFile() && isDeclarationFile(entry.name)) {
-            declarations.push(entryPath);
-        }
-    }
-
-    return declarations;
-};
+const listDeclarationFiles = (directory: string): ReadonlyArray<string> =>
+    [...walkDirectory(directory)]
+        .filter(({ entry }) => entry.isFile() && isDeclarationFile(entry.name))
+        .map(({ path }) => path);
 
 const formatSize = (sizeBytes: number) => {
     if (sizeBytes < 1024) return `${sizeBytes} B`;

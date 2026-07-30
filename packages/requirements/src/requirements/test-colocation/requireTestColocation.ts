@@ -1,6 +1,6 @@
-import { readdirSync } from 'node:fs';
-import { join, relative, sep } from 'node:path';
+import { relative } from 'node:path';
 
+import { normalizePath, walkDirectory } from '../../fileSystem';
 import type { Requirement } from '../Requirement';
 
 const LEGACY_TEST_DIRECTORIES = new Set(['test', 'tests', '__tests__']);
@@ -53,27 +53,16 @@ export const verifyTestColocation = (filePaths: ReadonlyArray<string>): Readonly
 const listWorkspaceTestFiles = (repoRoot: string, workspaceDir: string): ReadonlyArray<string> => {
     const testFiles: string[] = [];
 
-    const visitDirectory = (directoryPath: string): void => {
-        for (const entry of readdirSync(directoryPath, { withFileTypes: true })) {
-            const entryPath = join(directoryPath, entry.name);
-
-            if (entry.isDirectory()) {
-                if (!IGNORED_DIRECTORY_NAMES.has(entry.name)) {
-                    visitDirectory(entryPath);
-                }
-
-                continue;
-            }
-
-            if ((!entry.isFile() && !entry.isSymbolicLink()) || !isTestFile(entry.name)) {
-                continue;
-            }
-
-            testFiles.push(relative(repoRoot, entryPath).split(sep).join('/'));
+    for (const { entry, path } of walkDirectory(workspaceDir, {
+        shouldEnterDirectory: ({ entry: directory }) =>
+            !IGNORED_DIRECTORY_NAMES.has(directory.name),
+    })) {
+        if ((!entry.isFile() && !entry.isSymbolicLink()) || !isTestFile(entry.name)) {
+            continue;
         }
-    };
 
-    visitDirectory(workspaceDir);
+        testFiles.push(normalizePath(relative(repoRoot, path)));
+    }
 
     return testFiles;
 };
