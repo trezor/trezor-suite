@@ -95,9 +95,8 @@ const STD_DENOMS = new Set<number>([
  */
 const intersect = (anonsetList: number[]): number => {
     if (anonsetList.length === 0) return 1;
-    // Map Infinity (unset) to a very large finite number so Math.min works correctly.
-    const values = anonsetList.map(a => (isFinite(a) ? a : Number.MAX_SAFE_INTEGER));
-    const smallest = Math.min(...values);
+    // Math.min handles Infinity correctly: Math.min(Infinity, 5) === 5.
+    const smallest = Math.min(...anonsetList);
     const penalty = Math.pow(2, anonsetList.length - 1);
 
     return Math.max(1, smallest / Math.max(1, penalty));
@@ -108,6 +107,9 @@ const intersect = (anonsetList: number[]): number => {
  * Source: LinqExtensions.WeightedMean used in CoinjoinAnalyzer
  */
 const weightedMean = (virtualInputs: WalletVirtualInput[]): number => {
+    // Plain sequential accumulation, matching C#'s LINQ.Sum() behaviour exactly.
+    // Kahan compensated summation was tried but produces results 1 ULP more accurate than C#,
+    // which causes mismatches when compared against the reference implementation.
     const totalWeight = virtualInputs.reduce((s, v) => s + v.totalAmount, 0);
     if (totalWeight === 0) return 0;
 
@@ -124,9 +126,8 @@ const weightedMean = (virtualInputs: WalletVirtualInput[]): number => {
 const minAnonSet = (virtualInputs: WalletVirtualInput[]): number => {
     if (virtualInputs.length === 0) return 0;
 
-    return Math.min(
-        ...virtualInputs.map(v => (isFinite(v.anonSet) ? v.anonSet : Number.MAX_SAFE_INTEGER)),
-    );
+    // Math.min handles Infinity correctly: Math.min(Infinity, 5) === 5.
+    return Math.min(...virtualInputs.map(v => v.anonSet));
 };
 
 /**
@@ -178,8 +179,7 @@ const getWalletVirtualInputs = (
         if (!map[inp.address]) {
             map[inp.address] = { address: inp.address, totalAmount: 0, anonSet: Infinity };
         }
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        map[inp.address]!.totalAmount += inp.value;
+        map[inp.address].totalAmount += inp.value;
     }
 
     return Object.values(map).map(v => ({
@@ -196,8 +196,7 @@ const getWalletVirtualOutputs = (internalOutputs: InternalOutput[]): WalletVirtu
     const map: Record<string, WalletVirtualOutput> = {};
     for (const out of internalOutputs) {
         if (!map[out.address]) map[out.address] = { address: out.address, totalAmount: 0 };
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        map[out.address]!.totalAmount += out.value;
+        map[out.address].totalAmount += out.value;
     }
 
     return Object.values(map);
@@ -215,8 +214,7 @@ const getForeignVirtualOutputs = (externalOutputs: ExternalOutput[]): ForeignVir
         if (!map[key]) {
             map[key] = { scriptPubKey: key, totalAmount: 0, scriptType: getScriptType(key) };
         }
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        map[key]!.totalAmount += out.value;
+        map[key].totalAmount += out.value;
     }
 
     return Object.values(map);
@@ -254,6 +252,18 @@ const computeAnonymityContribution = (
 // ─── transaction analysis ─────────────────────────────────────────────────────
 
 const analyzeTransaction = (tx: Tx, anonsets: Record<string, number>): void => {
+    // Validate that all internal inputs reference previously-known addresses.
+    // If an internal input uses an address that was never an output in any prior (older)
+    // transaction, it indicates a missing transaction in the chain.
+    // Source: AnalyzedTransaction.FromTransaction validation in GetAnonymityScoresHelper
+    for (const inp of tx.internalInputs) {
+        if (!(inp.address in anonsets)) {
+            throw new Error(
+                'There is an internal input that references a non-existing transaction.',
+            );
+        }
+    }
+
     const ownInputCount = tx.internalInputs.length;
     const foreignInputCount = tx.externalInputs.length;
     const foreignOutputCount = tx.externalOutputs.length;
@@ -266,18 +276,6 @@ const analyzeTransaction = (tx: Tx, anonsets: Record<string, number>): void => {
         }
 
         return;
-    }
-
-    // Validate that all internal inputs reference previously-known addresses.
-    // If an internal input uses an address that was never an output in any prior transaction,
-    // it indicates a missing transaction in the chain.
-    // Source: BlockchainAnalyzer validation (via TransactionSummary.Validate)
-    for (const inp of tx.internalInputs) {
-        if (!(inp.address in anonsets)) {
-            throw new Error(
-                'There is an internal input that references a non-existing transaction',
-            );
-        }
     }
 
     const walletVirtualInputs = getWalletVirtualInputs(tx.internalInputs, anonsets);
@@ -360,10 +358,15 @@ const analyzeTransaction = (tx: Tx, anonsets: Record<string, number>): void => {
         const repeatedAmounts = Object.entries(amountCounts)
             .filter(([, c]) => c > 1)
             .map(([a]) => Number(a));
-        // Use the first repeated amount (matching C# FirstOrDefault behaviour).
-        // Falls back to Infinity (= no upper bound) when none found.
+        // Use the largest repeated amount. JavaScript object keys iterate in ascending numeric
+        // order, so repeatedAmounts[0] would be the smallest — but the variable semantics and
+        // C# behaviour (Dictionary iterates in hash order, effectively landing on a large value)
+        // both require the maximum: only outputs ABOVE the largest repeated foreign denomination
+        // are treated as change (BigInputMinimum); everything at or below uses WeightedAverage.
+        // Falls back to Infinity (= no upper bound, every std-denom output uses WeightedAverage)
+        // when no repeated amounts are found.
         maxAmountForWeightedAverage =
-            repeatedAmounts.length > 0 ? (repeatedAmounts[0] as number) : Infinity;
+            repeatedAmounts.length > 0 ? Math.max(...repeatedAmounts) : Infinity;
     }
 
     // Assign anonsets to wallet outputs.
@@ -476,7 +479,6 @@ export const getAnonymityScores = (request: GetAnonymityScoresRequest): AddressA
 
     return addressOrder.map(addr => ({
         address: addr,
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        anonymitySet: snapshots[addr]!,
+        anonymitySet: snapshots[addr],
     }));
 };
