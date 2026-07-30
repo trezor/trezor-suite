@@ -1,7 +1,7 @@
 // upstream: https://github.com/bitcoinjs/bitcoinjs-lib/blob/master/ts_src/networks.ts
 // fork: https://github.com/trezor/trezor-utxo-lib/blob/trezor/src/networks.js
 // differences:
-// - more specific networks (zcash/komodo, decred)
+// - more specific networks (zcash/komodo)
 // - network type validation function.
 
 import { Type, UInt16, UInt32, UInt8, checkType } from './types/validation';
@@ -156,42 +156,6 @@ export const komodo: Network = {
     wif: 0xbc,
 };
 
-export const decred: Network = {
-    messagePrefix: '\x17Decred Signed Message:\n',
-    bech32: '',
-    bip32: {
-        public: 0x02fda926,
-        private: 0x02fda4e8,
-    },
-    pubKeyHash: 0x073f,
-    scriptHash: 0x071a,
-    wif: 0x22de,
-};
-
-export const decredTest: Network = {
-    messagePrefix: '\x17Decred Signed Message:\n',
-    bech32: '',
-    bip32: {
-        public: 0x043587d1,
-        private: 0x04358397,
-    },
-    pubKeyHash: 0x0f21,
-    scriptHash: 0x0efc,
-    wif: 0x230e,
-};
-
-export const decredSim: Network = {
-    messagePrefix: '\x17Decred Signed Message:\n',
-    bech32: '',
-    bip32: {
-        public: 0x0420bd3d,
-        private: 0x0420b903,
-    },
-    pubKeyHash: 0x0e91,
-    scriptHash: 0x0e6c,
-    wif: 0x2307,
-};
-
 export const doge: Network = {
     messagePrefix: '\x19Dogecoin Signed Message:\n',
     bech32: '',
@@ -206,7 +170,6 @@ export const doge: Network = {
 
 const NETWORK_TYPES = {
     bitcoinCash: [bitcoincash, bitcoincashTest],
-    decred: [decred, decredTest, decredSim],
     zcash: [zcash, zcashTest, komodo],
     litecoin: [litecoin, litecoinTest],
     doge: [doge],

@@ -1,6 +1,4 @@
 // upstream: https://github.com/bitcoinjs/bitcoinjs-lib/blob/master/ts_src/script.ts
-// differences:
-// - OP codes table extended by decred codes.
 
 import { DER } from '@noble/curves/abstract/weierstrass.js';
 

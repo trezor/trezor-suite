@@ -21,7 +21,7 @@ describe('address', () => {
         fixtures.invalid.fromBase58Check.forEach(f => {
             it(`throws on ${f.exception}`, () => {
                 expect(() => {
-                    baddress.fromBase58Check(f.address, getNetwork(f.network));
+                    baddress.fromBase58Check(f.address, getNetwork());
                 }).toThrow(new RegExp(`${f.address} ${f.exception}`));
             });
         });

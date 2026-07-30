@@ -1,6 +1,6 @@
 // upstream: https://github.com/bitcoinjs/bitcoinjs-lib/blob/master/ts_src/address.ts
 // differences:
-// - `fromBase58Check` method is using additional "network" param and bs58check.decodeAddress instead of bs58check.decode. checking multibyte version (Zcash and Decred support).
+// - `fromBase58Check` method is using additional "network" param and bs58check.decodeAddress instead of bs58check.decode. checking multibyte version (Zcash support).
 
 import { bech32, bech32m } from '@scure/base';
 
