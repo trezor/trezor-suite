@@ -1,26 +1,26 @@
 const name = 'stellarSignTransaction';
 
 const example = `{
-    source: "GAXSFOOGF4ELO5HT5PTN23T5XE6D5QWL3YBHSVQ2HWOFEJNYYMRJENBV",
-    fee: 100,
-    sequence: 4294967296,
-    timebounds: {
-        minTime: null,
-        maxTime: null
+    "source": "GAXSFOOGF4ELO5HT5PTN23T5XE6D5QWL3YBHSVQ2HWOFEJNYYMRJENBV",
+    "fee": 100,
+    "sequence": 4294967296,
+    "timebounds": {
+        "minTime": null,
+        "maxTime": null
     },
-    memo: {
-        id: null,
-        type: 0,
-        text: null,
-        hash: null
+    "memo": {
+        "id": null,
+        "type": 0,
+        "text": null,
+        "hash": null
     },
-    operations: [
+    "operations": [
         {
-            type: "payment",
-            source: "GAXSFOOGF4ELO5HT5PTN23T5XE6D5QWL3YBHSVQ2HWOFEJNYYMRJENBV",
-            destination: "GAXSFOOGF4ELO5HT5PTN23T5XE6D5QWL3YBHSVQ2HWOFEJNYYMRJENBV",
-            asset: null,
-            amount: "10000"
+            "type": "payment",
+            "source": "GAXSFOOGF4ELO5HT5PTN23T5XE6D5QWL3YBHSVQ2HWOFEJNYYMRJENBV",
+            "destination": "GAXSFOOGF4ELO5HT5PTN23T5XE6D5QWL3YBHSVQ2HWOFEJNYYMRJENBV",
+            "asset": null,
+            "amount": "10000"
         }
     ]
 }`;
