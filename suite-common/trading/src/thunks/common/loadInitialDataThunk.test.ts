@@ -137,6 +137,8 @@ const testUpdatedInfoData = async (type: 'outdated' | 'account-changed') => {
                 arg: {
                     activeSection: 'buy',
                 },
+                requestId: expect.any(String),
+                requestStatus: 'pending',
             },
             type: `${loadInitialDataThunk.typePrefix}/pending`,
         },
@@ -158,28 +160,67 @@ const testUpdatedInfoData = async (type: 'outdated' | 'account-changed') => {
                 config: {},
             },
         },
-        { type: buyThunks.loadInfoThunk.pending.type, payload: undefined },
+        {
+            type: buyThunks.loadInfoThunk.pending.type,
+            payload: undefined,
+            meta: {
+                arg: undefined,
+                requestId: expect.any(String),
+                requestStatus: 'pending',
+            },
+        },
         {
             type: buyThunks.loadInfoThunk.fulfilled.type,
             payload: mockBuyInfo,
+            meta: {
+                arg: undefined,
+                requestId: expect.any(String),
+                requestStatus: 'fulfilled',
+            },
         },
         {
             type: tradingBuyActions.saveBuyInfo.type,
             payload: mockBuyInfo,
         },
-        { type: exchangeThunks.loadInfoThunk.pending.type, payload: undefined },
+        {
+            type: exchangeThunks.loadInfoThunk.pending.type,
+            payload: undefined,
+            meta: {
+                arg: undefined,
+                requestId: expect.any(String),
+                requestStatus: 'pending',
+            },
+        },
         {
             type: exchangeThunks.loadInfoThunk.fulfilled.type,
             payload: mockExchangeInfo,
+            meta: {
+                arg: undefined,
+                requestId: expect.any(String),
+                requestStatus: 'fulfilled',
+            },
         },
         {
             type: tradingExchangeActions.saveExchangeInfo.type,
             payload: mockExchangeInfo,
         },
-        { type: sellThunks.loadInfoThunk.pending.type, payload: undefined },
+        {
+            type: sellThunks.loadInfoThunk.pending.type,
+            payload: undefined,
+            meta: {
+                arg: undefined,
+                requestId: expect.any(String),
+                requestStatus: 'pending',
+            },
+        },
         {
             type: sellThunks.loadInfoThunk.fulfilled.type,
             payload: mockSellInfo,
+            meta: {
+                arg: undefined,
+                requestId: expect.any(String),
+                requestStatus: 'fulfilled',
+            },
         },
         {
             type: tradingSellActions.saveSellInfo.type,
@@ -198,6 +239,8 @@ const testUpdatedInfoData = async (type: 'outdated' | 'account-changed') => {
                 arg: {
                     activeSection: 'buy',
                 },
+                requestId: expect.any(String),
+                requestStatus: 'fulfilled',
             },
             type: `${loadInitialDataThunk.typePrefix}/fulfilled`,
         },
@@ -243,6 +286,8 @@ describe('loadInitialDataThunk', () => {
                     arg: {
                         activeSection: 'buy',
                     },
+                    requestId: expect.any(String),
+                    requestStatus: 'pending',
                 },
                 type: `${loadInitialDataThunk.typePrefix}/pending`,
             },
@@ -256,6 +301,8 @@ describe('loadInitialDataThunk', () => {
                     arg: {
                         activeSection: 'buy',
                     },
+                    requestId: expect.any(String),
+                    requestStatus: 'fulfilled',
                 },
                 type: `${loadInitialDataThunk.typePrefix}/fulfilled`,
             },

@@ -1,5 +1,5 @@
 import { type TranslationKey } from '@suite/intl';
-import { filterThunkActionTypes, testMocks } from '@suite-common/test-utils';
+import { configureMockStore, filterThunkActionTypes, testMocks } from '@suite-common/test-utils';
 import {
     createNotificationsReducer,
     notificationsActions,
@@ -27,7 +27,6 @@ import {
     tradingReducer,
     transactionsReducer,
 } from 'src/reducers/wallet';
-import { configureStore } from 'src/support/tests/configureStore';
 
 import * as fixtures from './__fixtures__/blockchainActions';
 
@@ -83,27 +82,25 @@ const getInitialState = (
 });
 
 type State = ReturnType<typeof getInitialState>;
-const mockStore = configureStore<State, any>();
+const mockStore = (preloadedState: State) =>
+    configureMockStore<State>({
+        reducer: (currentState = preloadedState, action) => {
+            const state = currentState as State;
 
-const initStore = (state: State) => {
-    const store = mockStore(state);
-    store.subscribe(() => {
-        const actions = store.getActions();
-        const action = actions[actions.length - 1];
-        const state = store.getState();
-        const { wallet } = state;
-        store.getState().wallet = {
-            ...wallet,
-            accounts: accountsReducer(wallet.accounts, action),
-            transactions: transactionsReducer(wallet.transactions, action),
-            blockchain: blockchainReducer(wallet.blockchain, action),
-            fees: feesReducer(wallet.fees, action),
-        };
-        store.getState().notifications = notificationsReducer(state.notifications, action);
+            return {
+                ...state,
+                wallet: {
+                    ...state.wallet,
+                    accounts: accountsReducer(state.wallet.accounts, action),
+                    transactions: transactionsReducer(state.wallet.transactions, action),
+                    blockchain: blockchainReducer(state.wallet.blockchain, action),
+                    fees: feesReducer(state.wallet.fees, action),
+                },
+                notifications: notificationsReducer(state.notifications, action),
+            };
+        },
+        preloadedState,
     });
-
-    return store;
-};
 
 describe('Blockchain Actions', () => {
     afterEach(() => {
@@ -112,7 +109,7 @@ describe('Blockchain Actions', () => {
 
     fixtures.init.forEach(f => {
         it(`init: ${f.description}`, async () => {
-            const store = initStore(getInitialState(f.initialState as Args));
+            const store = mockStore(getInitialState(f.initialState as Args));
             await store.dispatch(initBlockchainThunk());
             expect(filterThunkActionTypes(store.getActions())).toMatchObject(f.actions);
             expect(TrezorConnect.blockchainSetCustomBackend).toHaveBeenCalledTimes(
@@ -124,7 +121,7 @@ describe('Blockchain Actions', () => {
     fixtures.onConnect.forEach(f => {
         it(`onConnect: ${f.description}`, async () => {
             testMocks.setTrezorConnectFixtures(f.connect);
-            const store = initStore(getInitialState(f.initialState as Args));
+            const store = mockStore(getInitialState(f.initialState as Args));
             await store.dispatch(onBlockchainConnectThunk(f.symbol));
             expect(filterThunkActionTypes(store.getActions())).toMatchObject(f.actions);
             expect(TrezorConnect.blockchainEstimateFee).toHaveBeenCalledTimes(
@@ -136,7 +133,7 @@ describe('Blockchain Actions', () => {
 
     fixtures.onDisconnect.forEach(f => {
         it(`onDisconnect: ${f.description}`, async () => {
-            const store = initStore(getInitialState(f.initialState as Args));
+            const store = mockStore(getInitialState(f.initialState as Args));
             await store.dispatch(
                 onBlockchainDisconnectThunk({
                     // @ts-expect-error partial params
@@ -158,7 +155,7 @@ describe('Blockchain Actions', () => {
     fixtures.onNotification.forEach(f => {
         it(`onNotification: ${f.description}`, async () => {
             // testMocks.setTrezorConnectFixtures(f.connect);
-            const store = initStore(getInitialState(f.initialState as Args));
+            const store = mockStore(getInitialState(f.initialState as Args));
             await store.dispatch(onBlockchainNotificationThunk(f.params as any));
             expect(filterThunkActionTypes(store.getActions())).toMatchObject(f.actions);
             expect(TrezorConnect.getAccountInfo).toHaveBeenCalledTimes(f.getAccountInfo);
@@ -178,7 +175,7 @@ describe('Blockchain Actions', () => {
                 );
             }
 
-            const store = initStore(getInitialState(f.state as any));
+            const store = mockStore(getInitialState(f.state as any));
             await store.dispatch(onBlockMinedThunk(f.block as any));
             const result = 'result' in f ? f.result : undefined;
 
@@ -214,7 +211,7 @@ describe('Blockchain Actions', () => {
 
     fixtures.customBackend.forEach(f => {
         it(`customBackend: ${f.description}`, async () => {
-            const store = initStore(getInitialState(f.initialState as any));
+            const store = mockStore(getInitialState(f.initialState as any));
             await store.dispatch(setCustomBackendThunk(f.symbol));
             expect(TrezorConnect.blockchainSetCustomBackend).toHaveBeenCalledTimes(
                 f.blockchainSetCustomBackend,
@@ -223,7 +220,7 @@ describe('Blockchain Actions', () => {
     });
 
     it('updateFeeInfo: just for coverage', async () => {
-        const store = initStore(
+        const store = mockStore(
             getInitialState({
                 blockchain: {
                     // @ts-expect-error partial params

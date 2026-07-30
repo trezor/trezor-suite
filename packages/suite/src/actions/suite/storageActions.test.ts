@@ -18,7 +18,7 @@ import { prepareReceiveReducer } from '@suite-common/receive';
 import { setSuiteSyncOwner } from '@suite-common/suite-sync';
 import { type SuiteSyncOwnerSerialized } from '@suite-common/suite-sync-storage';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
-import { testMocks, wireEnabledNetworksMock } from '@suite-common/test-utils';
+import { configureMockStore, testMocks, wireEnabledNetworksMock } from '@suite-common/test-utils';
 import {
     changeCoinVisibility,
     prepareDiscoveryReducer,
@@ -40,7 +40,6 @@ import graphReducer from 'src/reducers/wallet/graphReducer';
 import { db } from 'src/storage';
 import { extraDependencies } from 'src/support/extraDependencies';
 import { preloadStore } from 'src/support/suite/preloadStore';
-import { configureStore } from 'src/support/tests/configureStore';
 import { type AcquiredDevice, type AppState } from 'src/types/suite';
 
 import * as storageActions from './storageActions';
@@ -180,24 +179,25 @@ const getInitialState = (prevState?: Partial<PartialState>, action?: any) => ({
 type State = ReturnType<typeof getInitialState>;
 const middlewares = [storageMiddleware];
 
-const mockStore = configureStore<State, any>(middlewares);
+const mockStore = (preloadedState: State) =>
+    configureMockStore({
+        middleware: middlewares,
+        reducer: (state = preloadedState, action) => {
+            const nextState = getInitialState(state, action);
 
-type mockStoreType = ReturnType<typeof mockStore>;
-
-const updateStore = (store: mockStoreType) => {
-    store.subscribe(() => {
-        const action = store.getActions().pop();
-        const prevState = store.getState();
-        store.getState().suite = getInitialState(prevState, action).suite;
-        store.getState().suiteSettings = getInitialState(prevState, action).suiteSettings;
-        store.getState().flags = getInitialState(prevState, action).flags;
-        store.getState().metadata = getInitialState(prevState, action).metadata;
-        store.getState().suiteSync = getInitialState(prevState, action).suiteSync;
-        store.getState().device = getInitialState(prevState, action).device;
-        store.getState().wallet = getInitialState(prevState, action).wallet;
-        store.getActions().push(action);
+            return {
+                ...state,
+                suite: nextState.suite,
+                suiteSettings: nextState.suiteSettings,
+                flags: nextState.flags,
+                metadata: nextState.metadata,
+                suiteSync: nextState.suiteSync,
+                device: nextState.device,
+                wallet: nextState.wallet,
+            };
+        },
+        preloadedState,
     });
-};
 
 const mockFetch = (data: any) =>
     jest.fn().mockImplementation(() =>
@@ -214,14 +214,14 @@ describe('Storage actions', () => {
 
     it('should store wallet settings in the db and update them automatically', async () => {
         const store = mockStore(getInitialState());
-        updateStore(store);
 
         // save wallet settings to the db
         await store.dispatch(storageActions.saveWalletSettings());
         // change local currency in the reducer, changes should be synced to the db via storageMiddleware
         await store.dispatch(discoveryActions.setBaseCurrency('czk'));
         const { settings } = store.getState().wallet;
-        store.dispatch(await preloadStore());
+        // TODO: Handle preloadStore returning undefined when IndexedDB is unavailable.
+        store.dispatch((await preloadStore())!);
 
         // check if stored local currency is 'czk'
         expect(store.getState().wallet.settings.localCurrency).toEqual('czk');
@@ -231,7 +231,6 @@ describe('Storage actions', () => {
 
     it('should store suite settings in the db and update them automatically', async () => {
         const store = mockStore(getInitialState());
-        updateStore(store);
         const f = global.fetch;
         global.fetch = mockFetch({ TR_ID: 'Message' });
         await store.dispatch(storageActions.saveSuiteSettings());
@@ -243,7 +242,7 @@ describe('Storage actions', () => {
                 isSeen: true,
             }),
         );
-        store.dispatch(await preloadStore());
+        store.dispatch((await preloadStore())!);
 
         expect(store.getState().flags.initialRun).toEqual(false);
         expect(store.getState().flags.seenNewContentIndicators).toEqual({
@@ -255,24 +254,22 @@ describe('Storage actions', () => {
 
     it('should store, override and remove send form', async () => {
         let store = mockStore(getInitialState());
-        updateStore(store);
 
         const accountKey = mockAccountKey({ descriptor: 'accountKey' });
 
         // @ts-expect-error partial params
         await storageActions.saveDraft({ address: 'a' }, accountKey);
-        store.dispatch(await preloadStore());
+        store.dispatch((await preloadStore())!);
         expect(store.getState().wallet.send.drafts).toEqual({ [accountKey]: { address: 'a' } });
 
         // @ts-expect-error partial params
         await storageActions.saveDraft({ address: 'b' }, accountKey);
-        store.dispatch(await preloadStore());
+        store.dispatch((await preloadStore())!);
         expect(store.getState().wallet.send.drafts).toEqual({ [accountKey]: { address: 'b' } });
 
         await storageActions.removeDraft(accountKey);
         store = mockStore(getInitialState());
-        updateStore(store);
-        store.dispatch(await preloadStore());
+        store.dispatch((await preloadStore())!);
         expect(store.getState().wallet.send.drafts).toEqual({});
     });
 
@@ -296,7 +293,6 @@ describe('Storage actions', () => {
                 },
             }),
         );
-        updateStore(store);
 
         // add txs
         store.dispatch(transactionsActions.addTransaction({ transactions: [tx1], account: acc1 }));
@@ -307,7 +303,7 @@ describe('Storage actions', () => {
         await store.dispatch(storageActions.rememberDevice(dev2));
         await store.dispatch(storageActions.rememberDevice(dev2Instance1));
 
-        store.dispatch(await preloadStore());
+        store.dispatch((await preloadStore())!);
 
         // stored devices
         const load1 = store.getState();
@@ -342,8 +338,7 @@ describe('Storage actions', () => {
         // forget dev1
         await store.dispatch(storageActions.forgetDevice(dev1));
         store = mockStore(getInitialState());
-        updateStore(store);
-        store.dispatch(await preloadStore());
+        store.dispatch((await preloadStore())!);
 
         const load2 = store.getState();
         // device deleted, dev2 and dev2Instance1 should still be there
@@ -365,7 +360,7 @@ describe('Storage actions', () => {
         // forget device dev1 along with its instances
         await store.dispatch(storageActions.forgetDevice(dev2));
         await store.dispatch(storageActions.forgetDevice(dev2Instance1));
-        store.dispatch(await preloadStore());
+        store.dispatch((await preloadStore())!);
         expect(selectDevicesCount(store.getState())).toEqual(0);
     });
 
@@ -383,7 +378,6 @@ describe('Storage actions', () => {
                 },
             }),
         );
-        updateStore(store);
 
         // add txs
         store.dispatch(transactionsActions.addTransaction({ transactions: [tx1], account: acc1 }));
@@ -396,8 +390,7 @@ describe('Storage actions', () => {
         // remove txs for acc 1
         await storageActions.removeAccountTransactions(acc1);
         store = mockStore(getInitialState());
-        updateStore(store);
-        store.dispatch(await preloadStore());
+        store.dispatch((await preloadStore())!);
 
         const state = store.getState();
 
@@ -428,7 +421,6 @@ describe('Storage actions', () => {
                 },
             }),
         );
-        updateStore(store);
 
         // store device in db
         await store.dispatch(storageActions.rememberDevice(dev1));
@@ -443,7 +435,7 @@ describe('Storage actions', () => {
 
         // Hack - because the db operation is done in a middleware, it is not awaitable via dispatch
         await new Promise(resolve => setTimeout(resolve, 100));
-        store.dispatch(await preloadStore());
+        store.dispatch((await preloadStore())!);
         expect(selectDevices(store.getState())[0]?.label).toBe('New Label');
     });
 
@@ -486,12 +478,11 @@ describe('Storage actions', () => {
                 },
             }),
         );
-        updateStore(store);
         // store device in db
         await store.dispatch(storageActions.rememberDevice(dev1));
 
         // verify that graph data are stored
-        store.dispatch(await preloadStore());
+        store.dispatch((await preloadStore())!);
         expect(store.getState().wallet.graph.data.length).toBe(2);
 
         // changeCoinVisibility awaits updateConnectSettings; mock it as a no-op success.
@@ -501,7 +492,7 @@ describe('Storage actions', () => {
         await store.dispatch(changeCoinVisibility({ symbol: 'btc', shouldBeVisible: false }));
 
         // verify that graph data for acc1 were removed
-        store.dispatch(await preloadStore());
+        store.dispatch((await preloadStore())!);
         expect(store.getState().wallet.graph.data.length).toBe(1);
         expect(store.getState().wallet.graph.data[0]?.account.symbol).toBe('ltc');
     });
@@ -510,7 +501,6 @@ describe('Storage actions', () => {
         const owner = asEncryptedHex<SuiteSyncOwnerSerialized>('owner-key');
         const deviceStaticId = dev1.state!.staticSessionId!;
         const store = mockStore(getInitialState());
-        updateStore(store);
 
         store.dispatch(
             setSuiteSyncOwner({
@@ -553,14 +543,12 @@ describe('Storage actions', () => {
                 },
             }),
         );
-        updateStore(store);
 
         await store.dispatch(storageActions.saveMetadataSettings());
         await store.dispatch(storageActions.forgetDevice(forgottenDevice));
 
         store = mockStore(getInitialState());
-        updateStore(store);
-        store.dispatch(await preloadStore());
+        store.dispatch((await preloadStore())!);
 
         expect(store.getState().metadata.hasLegacyLabelsMigrated).toEqual({
             [keptWalletDescriptor]: true,

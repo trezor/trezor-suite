@@ -2,9 +2,10 @@ import '@suite-common/test-utils/globalOverrides';
 
 import { screen } from '@testing-library/react';
 
+import { configureMockStore } from '@suite-common/test-utils';
+
 import { type AppState } from 'src/reducers/store';
 import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
-import { configureStore } from 'src/support/tests/configureStore';
 
 import { TradingLayout } from './TradingLayout';
 import { extraDependenciesDesktopMock } from '../../../../../../mocks/extraDependenciesDesktopMock';
@@ -36,7 +37,10 @@ const buildState = (): AppState => ({
     } as AppState['router'],
 });
 
-const mockStore = configureStore<AppState, any>();
+const mockStore = (preloadedState: AppState) =>
+    configureMockStore({
+        preloadedState,
+    });
 
 describe('TradingLayout', () => {
     it('always renders children regardless of visible accounts or device state', () => {

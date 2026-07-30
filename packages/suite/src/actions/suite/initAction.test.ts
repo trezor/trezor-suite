@@ -32,7 +32,7 @@ import {
     prepareMessageSystemReducer,
 } from '@suite-common/message-system';
 import { validJws } from '@suite-common/message-system/src/__fixtures__/messageSystemActions';
-import { extraDependenciesCommonMock } from '@suite-common/test-utils';
+import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
 import {
     initTokenDefinitionsThunk,
     periodicCheckTokenDefinitionsThunk,
@@ -60,8 +60,9 @@ import suiteReducer from 'src/reducers/suite/suiteReducer';
 import windowReducer from 'src/reducers/suite/windowReducer';
 import { walletReducers } from 'src/reducers/wallet';
 import { extraDependencies } from 'src/support/extraDependencies';
-import { configureStore } from 'src/support/tests/configureStore';
 import type { AppState } from 'src/types/suite';
+
+import { extraDependenciesDesktopMock } from '../../../mocks/extraDependenciesDesktopMock';
 
 const deviceReducer = prepareDeviceReducer(extraDependencies);
 const analyticsReducer = prepareAnalyticsReducer(extraDependencies);
@@ -134,8 +135,8 @@ const fixtures: Fixture[] = [
             initialRedirection.pending.type,
             goto.pending.type,
             onLocationChange.pending.type,
-            routerAppChanged.type,
             routerLocationChange.type,
+            routerAppChanged.type,
             lockRouter.type,
             connectInitThunk.pending.type,
             onLocationChange.fulfilled.type,
@@ -212,8 +213,8 @@ const fixtures: Fixture[] = [
             updateMissingTxFiatRatesThunk.fulfilled.type,
             routerInit.pending.type,
             onLocationChange.pending.type,
-            routerAppChanged.type,
             routerLocationChange.type,
+            routerAppChanged.type,
             periodicCheckStakeDataThunk.pending.type,
             initStakeDataThunk.pending.type,
             stakeDataActions.fetchStakeDataRequest.type,
@@ -292,8 +293,8 @@ const fixtures: Fixture[] = [
             initialRedirection.pending.type,
             goto.pending.type,
             onLocationChange.pending.type,
-            routerAppChanged.type,
             routerLocationChange.type,
+            routerAppChanged.type,
             lockRouter.type,
             connectInitThunk.pending.type,
             onLocationChange.fulfilled.type,
@@ -310,25 +311,26 @@ type State = ReturnType<typeof getInitialState>;
 const initStore = (state: State) => {
     const memoryHistory = createMemoryHistory();
     const suiteRouterHistory = createSuiteRouterHistory({ history: memoryHistory });
-    const mockStore = configureStore<State, any>(
-        [
-            prepareSuiteMiddleware(() => extraDependenciesCommonMock),
-            routerMiddleware(() => extraDependenciesCommonMock),
-        ],
-        {
+    const store = configureMockStore({
+        extra: {
+            ...extraDependenciesDesktopMock,
             services: {
+                ...extraDependenciesDesktopMock.services,
                 suiteRouterHistory,
             },
         },
-    );
-    const store = mockStore(state);
-    store.subscribe(() => {
-        const action = store.getActions().slice(-1)[0];
-        const { suite, suiteSettings, router, locks } = store.getState();
-        store.getState().suite = suiteReducer(suite, action);
-        store.getState().suiteSettings = suiteSettingsReducer(suiteSettings, action);
-        store.getState().router = routerReducer(router, action);
-        store.getState().locks = locksReducer(locks, action);
+        middleware: [
+            prepareSuiteMiddleware(() => extraDependenciesCommonMock),
+            routerMiddleware(() => extraDependenciesCommonMock),
+        ],
+        reducer: (currentState = state, action) => ({
+            ...currentState,
+            suite: suiteReducer(currentState.suite, action),
+            suiteSettings: suiteSettingsReducer(currentState.suiteSettings, action),
+            router: routerReducer(currentState.router, action),
+            locks: locksReducer(currentState.locks, action),
+        }),
+        preloadedState: state,
     });
 
     return {

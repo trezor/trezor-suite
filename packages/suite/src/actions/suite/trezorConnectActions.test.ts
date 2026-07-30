@@ -5,12 +5,13 @@ import { suiteSettingsInitialState } from '@suite/settings';
 import { connectInitThunk } from '@suite-common/connect-init';
 import { deviceReducerInitialState } from '@suite-common/device';
 import { messageSystemInitialState } from '@suite-common/message-system';
-import { testMocks } from '@suite-common/test-utils';
+import { configureMockStore, testMocks } from '@suite-common/test-utils';
 import { BLOCKCHAIN_EVENT, DEVICE_EVENT, TRANSPORT_EVENT, UI_EVENT } from '@trezor/connect';
 
 import suiteReducer from 'src/reducers/suite/suiteReducer';
 import { extraDependencies } from 'src/support/extraDependencies';
-import { configureStore } from 'src/support/tests/configureStore';
+
+import { extraDependenciesDesktopMock } from '../../../mocks/extraDependenciesDesktopMock';
 
 const deviceReducer = prepareDesktopDeviceReducer(extraDependencies);
 
@@ -39,26 +40,21 @@ const getInitialState = (suite?: Partial<SuiteState>, device?: Partial<DevicesSt
 });
 
 type State = ReturnType<typeof getInitialState>;
-const mockStore = configureStore<State, any>();
-
-const initStore = (state: State) => {
-    const store = mockStore(state);
-    store.subscribe(() => {
-        const action = store.getActions().pop();
-        const { suite, device } = store.getState();
-        store.getState().suite = suiteReducer(suite, action);
-        store.getState().device = deviceReducer(device, action);
-        // add action back to stack
-        store.getActions().push(action);
+const mockStore = (preloadedState: State) =>
+    configureMockStore({
+        extra: extraDependenciesDesktopMock,
+        reducer: (state = preloadedState, action) => ({
+            ...state,
+            suite: suiteReducer(state.suite, action),
+            device: deviceReducer(state.device, action),
+        }),
+        preloadedState,
     });
-
-    return store;
-};
 
 describe('TrezorConnect Actions', () => {
     it('Success', () => {
         const state = getInitialState();
-        const store = initStore(state);
+        const store = mockStore(state);
         expect(() => store.dispatch(connectInitThunk())).not.toThrow();
     });
 
@@ -67,7 +63,7 @@ describe('TrezorConnect Actions', () => {
             throw new Error('Iframe error');
         });
         const state = getInitialState();
-        const store = initStore(state);
+        const store = mockStore(state);
         try {
             await store.dispatch(connectInitThunk()).unwrap();
             throw new Error('Unreachable!');
@@ -80,7 +76,7 @@ describe('TrezorConnect Actions', () => {
         const defaultSuiteType = process.env.SUITE_TYPE;
         process.env.SUITE_TYPE = 'desktop';
         const state = getInitialState();
-        const store = initStore(state);
+        const store = mockStore(state);
         expect(() => store.dispatch(connectInitThunk())).not.toThrow();
 
         const actions = store.getActions();
@@ -101,7 +97,7 @@ describe('TrezorConnect Actions', () => {
     it('Wrapped method', async () => {
         testMocks.setTrezorConnectFixtures();
         const state = getInitialState();
-        const store = initStore(state);
+        const store = mockStore(state);
         await store.dispatch(connectInitThunk());
         await testMocks.getTrezorConnectMock().getFeatures();
         const actions = store.getActions();

@@ -10,7 +10,7 @@ import { deviceActions, prepareDeviceReducer } from '@suite-common/device';
 import { prepareFirmwareReducer } from '@suite-common/firmware';
 import { suiteSyncReducer } from '@suite-common/suite-sync';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
-import { filterThunkActionTypes, testMocks } from '@suite-common/test-utils';
+import { configureMockStore, filterThunkActionTypes, testMocks } from '@suite-common/test-utils';
 import {
     acquireDevice,
     forgetDisconnectedDevices,
@@ -22,7 +22,6 @@ import {
 import { markDeviceAsRecentlyConnectedThunk } from 'src/actions/wallet/markDeviceAsRecentlyConnectedThunk';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
 import { extraDependencies } from 'src/support/extraDependencies';
-import { configureStore } from 'src/support/tests/configureStore';
 import { discardMockedConnectInitActions } from 'src/utils/suite/storage';
 
 import fixtures from './__fixtures__/suiteActions';
@@ -74,29 +73,23 @@ const getInitialState = (
 });
 
 type State = ReturnType<typeof getInitialState>;
-const mockStore = configureStore<State, any>();
-
-const initStore = (state: State) => {
-    const store = mockStore(state);
-    store.subscribe(() => {
-        const action = store.getActions().pop();
-        const { suite, flags, device, router } = store.getState();
-        store.getState().suite = suiteReducer(suite, action);
-        store.getState().flags = flagsReducer(flags, action);
-        store.getState().device = deviceReducer(device, action);
-        store.getState().router = routerReducer(router, action);
-        // add action back to stack
-        store.getActions().push(action);
+const mockStore = (preloadedState: State) =>
+    configureMockStore({
+        reducer: (state = preloadedState, action) => ({
+            ...state,
+            suite: suiteReducer(state.suite, action),
+            flags: flagsReducer(state.flags, action),
+            device: deviceReducer(state.device, action),
+            router: routerReducer(state.router, action),
+        }),
+        preloadedState,
     });
-
-    return store;
-};
 
 describe('Suite Actions', () => {
     fixtures.reducerActions.forEach(f => {
         it(f.description, () => {
             const state = getInitialState();
-            const store = initStore(state);
+            const store = mockStore(state);
             f.actions.forEach((action: any, i: number) => {
                 store.dispatch(action);
                 const result = f.result[i];
@@ -109,7 +102,7 @@ describe('Suite Actions', () => {
     fixtures.selectDevice.forEach(f => {
         it(`selectDevice: ${f.description}`, async () => {
             const state = getInitialState({}, f.state.device);
-            const store = initStore(state);
+            const store = mockStore(state);
             await store.dispatch(selectDeviceThunk({ device: f.device }));
             if (!f.result) {
                 expect(store.getActions().length).toEqual(0);
@@ -123,7 +116,7 @@ describe('Suite Actions', () => {
     fixtures.selectNewlyConnectedDevice.forEach(f => {
         it(`selectNewlyConnectedDevice: ${f.description}`, async () => {
             const state = getInitialState({}, f.state.device, undefined);
-            const store = initStore(state);
+            const store = mockStore(state);
 
             const device = f.newlyConnectedDevice;
             await store.dispatch(selectNewlyConnectedDeviceThunk({ device }));
@@ -135,7 +128,7 @@ describe('Suite Actions', () => {
     fixtures.markDeviceAsRecentlyConnected.forEach(f => {
         it(`markDeviceAsRecentlyConnected: ${f.description}`, async () => {
             const state = getInitialState(f.state.suite, f.state.device, undefined);
-            const store = initStore(state);
+            const store = mockStore(state);
 
             const device = f.newlyConnectedDevice;
             await store.dispatch(markDeviceAsRecentlyConnectedThunk(device));
@@ -148,7 +141,7 @@ describe('Suite Actions', () => {
     fixtures.forgetDisconnectedDevices.forEach(f => {
         it(`forgetDisconnectedDevices: ${f.description}`, () => {
             const state = getInitialState(f.state.suite, f.state.device);
-            const store = initStore(state);
+            const store = mockStore(state);
             store.dispatch(forgetDisconnectedDevices({ device: f.device }));
             const actions = filterThunkActionTypes(store.getActions());
             expect(actions.length).toEqual(f.result.length);
@@ -163,7 +156,7 @@ describe('Suite Actions', () => {
     fixtures.observeSelectedDevice.forEach(f => {
         it(`observeSelectedDevice: ${f.description}`, () => {
             const state = getInitialState(f.state.suite, f.state.device);
-            const store = initStore(state);
+            const store = mockStore(state);
             const changed = store.dispatch(observeSelectedDevice());
             expect(changed).toEqual(f.changed);
             if (!f.result) {
@@ -179,7 +172,7 @@ describe('Suite Actions', () => {
         it(`acquireDevice: ${f.description}`, async () => {
             testMocks.setTrezorConnectFixtures(f.getFeatures || { success: true });
             const state = getInitialState(undefined, f.state.device);
-            const store = initStore(state);
+            const store = mockStore(state);
             store.dispatch(connectInitThunk()); // trezorConnectActions.connectInitThunk needs to be called in order to wrap "getFeatures" with lockUi action
             await store.dispatch(acquireDevice({ requestedDevice: f.requestedDevice }));
             // we are not interested in thunk state here

@@ -4,11 +4,11 @@ import { type TranslationKey } from '@suite/intl';
 import { type DeviceReducerState, deviceInitialState } from '@suite-common/device';
 import { defaultDevicePersistentData, mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import * as deviceUtils from '@suite-common/suite-utils';
+import { configureMockStore } from '@suite-common/test-utils';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
 import { type AppState } from 'src/reducers/store';
 import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
-import { configureStore } from 'src/support/tests/configureStore';
 
 import { DeviceCompromised } from './DeviceCompromised';
 import { extraDependenciesDesktopMock } from '../../../../mocks/extraDependenciesDesktopMock';
@@ -31,9 +31,10 @@ global.ResizeObserver = class MockedResizeObserver {
     disconnect = jest.fn();
 };
 
-const mockStore = configureStore<AppState, any>();
-
-const initStore = (state: AppState) => mockStore(state);
+const initStore = (preloadedState: AppState) =>
+    configureMockStore({
+        preloadedState,
+    });
 
 const getInitialState = (device: DeviceReducerState): AppState =>
     ({

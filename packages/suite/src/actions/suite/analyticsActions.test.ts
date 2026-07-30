@@ -1,8 +1,8 @@
 import { analyticsActions, prepareAnalyticsReducer } from '@suite-common/analytics-redux';
+import { configureMockStore } from '@suite-common/test-utils';
 
 import { init } from 'src/actions/suite/analyticsActions';
 import { extraDependencies } from 'src/support/extraDependencies';
-import { configureStore } from 'src/support/tests/configureStore';
 
 const analyticsReducer = prepareAnalyticsReducer(extraDependencies);
 
@@ -20,20 +20,14 @@ const getInitialState = (state?: InitialState) => ({
 });
 
 type State = ReturnType<typeof getInitialState>;
-const mockStore = configureStore<State, any>();
-
-const initStore = (state: State) => {
-    const store = mockStore(state);
-    store.subscribe(() => {
-        const action = store.getActions().pop();
-        const { analytics } = store.getState();
-        store.getState().analytics = analyticsReducer(analytics, action);
-        // Add action back to stack
-        store.getActions().push(action);
+const mockStore = (preloadedState: State) =>
+    configureMockStore({
+        reducer: (state = preloadedState, action) => ({
+            ...state,
+            analytics: analyticsReducer(state.analytics, action),
+        }),
+        preloadedState,
     });
-
-    return store;
-};
 
 describe('analytics init thunks ', () => {
     beforeAll(() => {
@@ -51,7 +45,7 @@ describe('analytics init thunks ', () => {
                 instanceId: 'very-random',
             },
         });
-        const store = initStore(state);
+        const store = mockStore(state);
 
         store.dispatch(init());
         expect(store.getActions()).toMatchObject([
@@ -74,7 +68,7 @@ describe('analytics init thunks ', () => {
                 instanceId: 'very-random',
             },
         });
-        const store = initStore(state);
+        const store = mockStore(state);
 
         store.dispatch(init());
         expect(store.getActions()).toMatchObject([
@@ -97,7 +91,7 @@ describe('analytics init thunks ', () => {
                 instanceId: 'very-random',
             },
         });
-        const store = initStore(state);
+        const store = mockStore(state);
 
         store.dispatch(init());
         expect(store.getActions()).toMatchObject([

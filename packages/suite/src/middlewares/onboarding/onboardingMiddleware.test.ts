@@ -1,11 +1,11 @@
 import { modalReducer } from '@suite/modal';
 import { routerAppChanged, routerReducer } from '@suite/router';
 import { type RouterStateOverrides, createRouterStateMock } from '@suite/router/mocks';
+import { configureMockStore } from '@suite-common/test-utils';
 
 import onboardingMiddlewares from 'src/middlewares/onboarding';
 import onboardingReducer from 'src/reducers/onboarding/index';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
-import { configureStore } from 'src/support/tests/configureStore';
 
 const middlewares = [...onboardingMiddlewares];
 
@@ -39,18 +39,15 @@ const getInitialState = (
 type State = ReturnType<typeof getInitialState>;
 
 const initStore = (state: State) => {
-    const mockStore = configureStore<State, any>([...middlewares]);
-
-    const store = mockStore(state);
-    store.subscribe(() => {
-        const action = store.getActions().pop();
-        const { suite, router, onboarding } = store.getState();
-        store.getState().suite = suiteReducer(suite, action);
-        store.getState().router = routerReducer(router, action);
-        store.getState().onboarding = onboardingReducer(onboarding, action);
-
-        // add action back to stack
-        store.getActions().push(action);
+    const store = configureMockStore({
+        middleware: [...middlewares],
+        reducer: (currentState = state, action) => ({
+            ...currentState,
+            suite: suiteReducer(currentState.suite, action),
+            router: routerReducer(currentState.router, action),
+            onboarding: onboardingReducer(currentState.onboarding, action),
+        }),
+        preloadedState: state,
     });
 
     return store;

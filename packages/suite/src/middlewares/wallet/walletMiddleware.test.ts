@@ -1,8 +1,13 @@
 import { type SelectedAccountState, selectedAccountReducer } from '@suite/account';
 import { type RouterState } from '@suite/router';
-import { extraDependenciesCommonMock, testMocks } from '@suite-common/test-utils';
+import {
+    configureMockStore,
+    extraDependenciesCommonMock,
+    testMocks,
+} from '@suite-common/test-utils';
 import {
     type SendState,
+    formDraftInitialState,
     prepareBlockchainMiddleware,
     prepareSendFormReducer,
 } from '@suite-common/wallet-core';
@@ -10,10 +15,7 @@ import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
 import walletMiddleware from 'src/middlewares/wallet/walletMiddleware';
 import { accountsReducer, blockchainReducer, walletSettingsReducer } from 'src/reducers/wallet';
-import formDraftReducer from 'src/reducers/wallet/formDraftReducer';
 import { extraDependencies } from 'src/support/extraDependencies';
-import { configureStore } from 'src/support/tests/configureStore';
-import { type Action } from 'src/types/suite';
 
 import * as fixtures from './__fixtures__/walletMiddleware';
 
@@ -57,37 +59,34 @@ const getInitialState = ({ router, accounts, settings, selectedAccount, send }: 
             status: 'loaded',
         },
         send: { ...sendFormReducer(undefined, { type: 'foo' } as any), ...send },
-        formDrafts: {},
+        formDrafts: formDraftInitialState,
     },
 });
 
 type State = ReturnType<typeof getInitialState>;
 
-const mockStore = configureStore<State, Action>([
-    walletMiddleware,
-    prepareBlockchainMiddleware(() => extraDependenciesCommonMock),
-]);
-
-const initStore = (state: State) => {
-    const store = mockStore(state);
-    store.subscribe(() => {
-        const action = store.getActions().pop();
-        const { accounts, blockchain, settings, selectedAccount, send, formDrafts } =
-            store.getState().wallet;
-        store.getState().wallet = {
-            accounts: accountsReducer(accounts, action),
-            blockchain: blockchainReducer(blockchain, action),
-            settings: walletSettingsReducer(settings, action),
-            selectedAccount: selectedAccountReducer(selectedAccount as any, action),
-            send: sendFormReducer(send, action),
-            formDrafts: formDraftReducer(formDrafts, { type: 'foo' } as any),
-        };
-        // add action back to stack
-        store.getActions().push(action);
+const mockStore = (preloadedState: State) =>
+    configureMockStore({
+        middleware: [
+            walletMiddleware,
+            prepareBlockchainMiddleware(() => extraDependenciesCommonMock),
+        ],
+        reducer: (state = preloadedState, action) => ({
+            ...state,
+            wallet: {
+                ...state.wallet,
+                accounts: accountsReducer(state.wallet.accounts, action),
+                blockchain: blockchainReducer(state.wallet.blockchain, action),
+                settings: walletSettingsReducer(state.wallet.settings, action),
+                selectedAccount: selectedAccountReducer(
+                    state.wallet.selectedAccount as any,
+                    action,
+                ),
+                send: sendFormReducer(state.wallet.send, action),
+            },
+        }),
+        preloadedState,
     });
-
-    return store;
-};
 
 // testing walletMiddleware, blockchainActions (subscribe/unsubscribe)
 describe('walletMiddleware', () => {
@@ -98,7 +97,7 @@ describe('walletMiddleware', () => {
     fixtures.blockchainSubscription.forEach(f => {
         it(f.description, () => {
             const initialAccounts = f.initialAccounts.map((a: any) => mockWalletAccount(a));
-            const store = initStore(
+            const store = mockStore(
                 getInitialState({
                     accounts: initialAccounts,
                 }),
@@ -135,7 +134,7 @@ describe('walletMiddleware', () => {
     it('have send form drafts, change amount units, return to a form', () => {
         fixtures.draftsFixtures.forEach(
             ({ initialState, action, expectedActions, expectedDrafts }) => {
-                const store = initStore(getInitialState(initialState));
+                const store = mockStore(getInitialState(initialState));
 
                 store.dispatch(action);
 

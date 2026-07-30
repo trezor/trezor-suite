@@ -1,6 +1,5 @@
 import { selectedAccountReducer } from '@suite/account';
-
-import { configureStore } from 'src/support/tests/configureStore';
+import { configureMockStore } from '@suite-common/test-utils';
 
 import fixtures from './__fixtures__/selectedAccountActions';
 import { syncSelectedAccount } from './selectedAccountActions';
@@ -30,25 +29,23 @@ const getInitialState = (initialState: any = {}) => ({
 });
 
 type State = ReturnType<typeof getInitialState>;
-const mockStore = configureStore<State, any>();
-
-const initStore = (state: State) => {
-    const store = mockStore(state);
-    store.subscribe(() => {
-        const action = store.getActions().pop();
-        const { selectedAccount } = store.getState().wallet;
-        store.getState().wallet.selectedAccount = selectedAccountReducer(selectedAccount, action);
-        store.getActions().push(action);
+const mockStore = (preloadedState: State) =>
+    configureMockStore({
+        reducer: (state = preloadedState, action) => ({
+            ...state,
+            wallet: {
+                ...state.wallet,
+                selectedAccount: selectedAccountReducer(state.wallet.selectedAccount, action),
+            },
+        }),
+        preloadedState,
     });
-
-    return store;
-};
 
 describe('selectedAccount Actions', () => {
     fixtures.forEach(f => {
         it(f.description, () => {
             const state = getInitialState(f.initialState);
-            const store = initStore(state);
+            const store = mockStore(state);
             store.dispatch(syncSelectedAccount(f.action as any));
             expect(store.getState().wallet.selectedAccount).toMatchObject(f.result as any);
         });

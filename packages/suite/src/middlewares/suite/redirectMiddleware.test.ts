@@ -4,15 +4,13 @@ import { goto, routerReducer } from '@suite/router';
 import { type RouterStateOverrides, createRouterStateMock } from '@suite/router/mocks';
 import { deviceActions, prepareDeviceReducer } from '@suite-common/device';
 import { mockConnectDevice, mockSuiteDevice } from '@suite-common/suite-types/mocks';
-import { extraDependenciesCommonMock } from '@suite-common/test-utils';
+import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
 import { DEVICE } from '@trezor/connect';
 
 import redirectMiddleware from 'src/middlewares/suite/redirectMiddleware';
 import { prepareSuiteMiddleware } from 'src/middlewares/suite/suiteMiddleware';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
 import { extraDependencies } from 'src/support/extraDependencies';
-import { configureStore } from 'src/support/tests/configureStore';
-import { type Action } from 'src/types/suite';
 
 jest.mock('src/actions/suite/storageActions', () => ({ __esModule: true }));
 jest.mock('@suite/router', () => ({
@@ -53,19 +51,20 @@ type State = ReturnType<typeof getInitialState>;
 const middlewares = [redirectMiddleware, prepareSuiteMiddleware(() => extraDependenciesCommonMock)];
 
 const initStore = (state: State) => {
-    const mockStore = configureStore<State, Action>(middlewares);
-    const store = mockStore(state);
-    store.subscribe(() => {
-        const action = store.getActions().pop();
+    const store = configureMockStore<State>({
+        middleware: middlewares,
+        reducer: (currentState = state, action) => {
+            const typedState = currentState as State;
 
-        const { suite, router, device, locks } = store.getState();
-        store.getState().suite = suiteReducer(suite, action);
-        store.getState().router = routerReducer(router, action);
-        store.getState().device = deviceReducer(device, action);
-        store.getState().locks = locksReducer(locks, action);
-
-        // add action back to stack
-        store.getActions().push(action);
+            return {
+                ...typedState,
+                suite: suiteReducer(typedState.suite, action),
+                router: routerReducer(typedState.router, action),
+                device: deviceReducer(typedState.device, action),
+                locks: locksReducer(typedState.locks, action),
+            };
+        },
+        preloadedState: state,
     });
 
     return store;
