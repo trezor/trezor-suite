@@ -3,12 +3,12 @@ import '@suite-common/test-utils/globalOverrides';
 import { screen } from '@testing-library/react';
 
 import { type AppState } from 'src/reducers/store';
-import { initialAppState } from 'src/support/tests/__fixtures__/defaultAppState';
 import { configureStore } from 'src/support/tests/configureStore';
 import { extraDependenciesDesktopMock } from 'src/support/tests/extraDependenciesDesktop.mock';
 import { renderWithProviders } from 'src/support/tests/hooksHelper';
 
 import { TradingLayout } from './TradingLayout';
+import { mockInitialAppState } from '../../../../../../mocks/mockInitialAppState';
 
 jest.mock('@suite-common/tx-simulation', () => ({}));
 
@@ -24,9 +24,9 @@ jest.mock('./TradingLayoutNavigation', () => ({
 }));
 
 const buildState = (): AppState => ({
-    ...initialAppState,
+    ...mockInitialAppState,
     router: {
-        ...initialAppState.router,
+        ...mockInitialAppState.router,
         app: 'wallet',
         route: {
             name: 'wallet-trading-buy',

@@ -4,11 +4,11 @@ import { Translation } from '@suite/intl';
 import { configureMockStore, screen } from '@suite-common/test-utils';
 import { type NotificationEntry } from '@suite-common/toast-notifications';
 
-import { initialAppState } from 'src/support/tests/__fixtures__/defaultAppState';
 import { extraDependenciesDesktopMock } from 'src/support/tests/extraDependenciesDesktop.mock';
 import { renderWithProviders } from 'src/support/tests/hooksHelper';
 
 import { NotificationRenderer } from './NotificationRenderer';
+import { mockInitialAppState } from '../../../../../mocks/mockInitialAppState';
 import { type NotificationViewProps } from '../Notifications/NotificationGroup/NotificationList/NotificationView';
 
 type TradingErrorNotification = Extract<NotificationEntry, { type: 'trading-error' }>;
@@ -20,7 +20,7 @@ const MessageView = ({ message, messageValues }: NotificationViewProps) => (
 const renderTradingError = (payload: Omit<TradingErrorNotification, 'context' | 'id'>) => {
     const notification: TradingErrorNotification = { context: 'toast', id: 0, ...payload };
     const store = configureMockStore({
-        preloadedState: initialAppState,
+        preloadedState: mockInitialAppState,
         serializableCheck: { ignoredActions: [] },
     });
 

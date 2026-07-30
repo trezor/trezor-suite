@@ -13,7 +13,7 @@ import { type FirmwareUpdateState } from '@suite-common/firmware';
 import { messageSystemInitialState } from '@suite-common/message-system';
 import { type MetadataState } from '@suite-common/metadata-types';
 import { receiveInitialState } from '@suite-common/receive';
-import { quotaManagerInitialState } from '@suite-common/suite-sync-quota-manager/src/quotaManagerReducer';
+import { quotaManagerInitialState } from '@suite-common/suite-sync-quota-manager';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 
 import { initialDesktopBluetoothState } from 'src/actions/bluetooth/desktopBluetoothReducer';
@@ -23,7 +23,7 @@ import { type ProtocolState } from 'src/reducers/suite/protocolReducer';
 import { suiteInitialState } from 'src/reducers/suite/suiteReducer';
 import { type WalletState } from 'src/reducers/wallet';
 
-export const initialAppState: AppState = {
+export const mockInitialAppState: AppState = {
     suite: suiteInitialState,
     discreetMode: {
         isActive: false,

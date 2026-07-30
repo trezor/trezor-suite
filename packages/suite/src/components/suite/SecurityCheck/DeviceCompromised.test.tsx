@@ -7,12 +7,12 @@ import * as deviceUtils from '@suite-common/suite-utils';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
 import { type AppState } from 'src/reducers/store';
-import { initialAppState } from 'src/support/tests/__fixtures__/defaultAppState';
 import { configureStore } from 'src/support/tests/configureStore';
 import { extraDependenciesDesktopMock } from 'src/support/tests/extraDependenciesDesktop.mock';
 import { renderWithProviders } from 'src/support/tests/hooksHelper';
 
 import { DeviceCompromised } from './DeviceCompromised';
+import { mockInitialAppState } from '../../../../mocks/mockInitialAppState';
 
 jest.mock('@suite-common/tx-simulation', () => ({}));
 
@@ -37,12 +37,12 @@ const initStore = (state: AppState) => mockStore(state);
 
 const getInitialState = (device: DeviceReducerState): AppState =>
     ({
-        ...initialAppState,
+        ...mockInitialAppState,
         device,
         wallet: {
-            ...initialAppState.wallet,
-            selectedAccount: initialAppState.wallet?.selectedAccount ?? { account: null },
-            accounts: initialAppState.wallet?.accounts ?? [],
+            ...mockInitialAppState.wallet,
+            selectedAccount: mockInitialAppState.wallet?.selectedAccount ?? { account: null },
+            accounts: mockInitialAppState.wallet?.accounts ?? [],
         },
     }) as AppState;
 
@@ -156,13 +156,13 @@ const deviceCompromisedFixtures: Array<{
     },
     {
         description: 'Device Id check error',
-        device: { ...initialAppState.device, selectedDevice: { ...defaultDevice, id: null } },
+        device: { ...mockInitialAppState.device, selectedDevice: { ...defaultDevice, id: null } },
         result: 'TR_DEVICE_COMPROMISED_INVALID_ID_TEXT',
     },
     {
         description: 'Device invariability check error',
         device: {
-            ...initialAppState.device,
+            ...mockInitialAppState.device,
             persistentDeviceData: [matchingDevicePersistentData],
             selectedDevice: {
                 ...defaultDevice,
