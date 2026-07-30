@@ -179,6 +179,8 @@ export const coinSymbols = [
 // A supported coin symbol, e.g. `'btc'` / `'ada'`. See `coinSymbols`.
 export type CoinSymbol = (typeof coinSymbols)[number];
 
+export const asCoinSymbol = (value: string): CoinSymbol => value as CoinSymbol;
+
 const coinSymbolSet: ReadonlySet<string> = new Set(coinSymbols);
 
 // Runtime validation for `CoinSymbol`, derived from the same `coinSymbols` source as the type.

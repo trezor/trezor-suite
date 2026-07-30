@@ -4,6 +4,7 @@ import {
     type EnabledNetwork,
     GRANTABLE_PERMISSIONS,
     type PermissionRequest,
+    asCoinSymbol,
     isCoinSymbol,
 } from '@trezor/connect';
 import { unique } from '@trezor/utils/src/unique';
@@ -108,7 +109,7 @@ export const canonicalizePermissionCoins = (
     permissions.map(permission =>
         permission.coin === undefined
             ? permission
-            : { ...permission, coin: permission.coin.toLowerCase() as CoinSymbol },
+            : { ...permission, coin: asCoinSymbol(permission.coin.toLowerCase()) },
     );
 
 // Union two permission lists, de-duplicated by (permission, coin). `base` comes first, so on a
