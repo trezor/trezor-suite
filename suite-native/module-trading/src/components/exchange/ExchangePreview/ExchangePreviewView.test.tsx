@@ -9,21 +9,16 @@ import {
     oneInchFusionPlusWithoutEip712SignDataQuote,
 } from '@suite-native/trading-fixtures';
 
-<<<<<<< HEAD:suite-native/module-trading/src/components/exchange/ExchangePreview/ExchangePreviewView.test.tsx
 import { ExchangePreviewView, type ExchangePreviewViewProps } from './ExchangePreviewView';
 import { renderWithTradingProvider } from '../../../__tests__/tradingTestUtils';
-=======
-import { renderWithTradingProvider } from '../../../../__tests__/tradingTestUtils';
-import { useDexExchangeTxSimulation } from '../../../../hooks/exchange/useDexExchangeTxSimulation';
-import { useExchangeIssue } from '../../../../hooks/exchange/useExchangeIssue';
-import { ExchangePreviewView, type ExchangePreviewViewProps } from '../ExchangePreviewView';
->>>>>>> 02c2c48d5d (feat(suite-native): wire issues to exchange preview, replace ExchangeFiatDeviationWarning):suite-native/module-trading/src/components/exchange/ExchangePreview/__tests__/ExchangePreviewView.test.tsx
+import { useDexExchangeTxSimulation } from '../../../hooks/exchange/useDexExchangeTxSimulation';
+import { useExchangeIssue } from '../../../hooks/exchange/useExchangeIssue';
 
-jest.mock('../../../../hooks/exchange/useDexExchangeTxSimulation', () => ({
+jest.mock('../../../hooks/exchange/useDexExchangeTxSimulation', () => ({
     useDexExchangeTxSimulation: jest.fn(),
 }));
 
-jest.mock('../../../../hooks/exchange/useExchangeIssue', () => ({
+jest.mock('../../../hooks/exchange/useExchangeIssue', () => ({
     useExchangeIssue: jest.fn(),
 }));
 

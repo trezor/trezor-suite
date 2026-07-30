@@ -4,7 +4,7 @@ import type {
     TransactionValidation,
 } from '@blockaid/client/resources/evm';
 
-import { getTxSimulationRiskSummary } from '../getTxSimulationRiskSummary';
+import { getTxSimulationRiskSummary } from './getTxSimulationRiskSummary';
 
 const createValidation = (
     overrides: Partial<TransactionValidation> = {},

@@ -4,8 +4,8 @@ import {
     type TxSimulationEVMResult,
 } from '@suite-common/tx-simulation';
 
-import { type FiatDeviationResult } from '../../../hooks/useExchangeFiatDeviation';
-import { getExchangeIssue } from '../getExchangeIssue';
+import { getExchangeIssue } from './getExchangeIssue';
+import { type FiatDeviationResult } from '../../hooks/useExchangeFiatDeviation';
 
 const createSimulationResult = (
     scan: Pick<TxSimulationEVMResult, 'validation' | 'simulation'>,
