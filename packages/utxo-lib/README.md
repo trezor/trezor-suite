@@ -32,6 +32,6 @@ Differences are explicitly described in each file.
 
 - `Transaction` class is extended by each custom `altcoin` implementation.
 - `Transaction` class is parsing amounts as strings.
-- `address` module uses different encoding for `Decred` and handles `Bitcoin Cash` addresses.
+- `address` module handles `Bitcoin Cash` addresses.
 - added `coinselect` and `compose` modules (origin source: https://github.com/trezor/hd-wallet/tree/master/src/build-tx)
 - removed unused modules: `block`, `classify`, `ecpair`, `psbt`.

@@ -3,22 +3,7 @@ import * as utils from './__fixtures__/payments.utils';
 
 import * as PAYMENTS from './index';
 
-(
-    [
-        'embed',
-        'p2ms',
-        'p2pk',
-        'p2pkh',
-        'p2sh',
-        'p2tr',
-        'p2wpkh',
-        'p2wsh',
-        'sstxchange',
-        'sstxcommitment',
-        'sstxpkh',
-        'sstxsh',
-    ] as const
-).forEach(p => {
+(['embed', 'p2ms', 'p2pk', 'p2pkh', 'p2sh', 'p2tr', 'p2wpkh', 'p2wsh'] as const).forEach(p => {
     describe(p, () => {
         const fn: PaymentCreator = PAYMENTS[p];
         const { fixtures } = require(`./__fixtures__/${p}`);
@@ -92,9 +77,6 @@ import * as PAYMENTS from './index';
                     });
                     if (detail.network) {
                         args.network = detail.network;
-                    }
-                    if (detail.amount) {
-                        args.amount = detail.amount;
                     }
                     const expected = utils.from(key, detail);
 
