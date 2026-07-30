@@ -22,6 +22,7 @@ type Snapshot = {
 };
 
 const TARGET_PACKAGES = [
+    '@trezor/connect',
     '@trezor/connect-web',
     '@trezor/connect-mobile',
     '@trezor/connect-webextension',

@@ -24,6 +24,20 @@ const createRepoFixture = (repoRoot: string) => {
         },
     });
 
+    writePackageJson(join(repoRoot, 'packages', 'connect'), {
+        name: '@trezor/connect',
+        dependencies: {
+            '@trezor/connect-common': 'workspace:*',
+            '@trezor/internal-prod': 'workspace:*',
+        },
+        devDependencies: {
+            '@trezor/internal-dev': 'workspace:*',
+        },
+        peerDependencies: {
+            'peer-shared': '^2.0.0',
+        },
+    });
+
     writePackageJson(join(repoRoot, 'packages', 'connect-web'), {
         name: '@trezor/connect-web',
         dependencies: {
@@ -103,6 +117,7 @@ describe(requireConnectPublicDependencies.name, () => {
 
         const workspaceList = [
             { location: '.', name: 'trezor-suite' },
+            { location: 'packages/connect', name: '@trezor/connect' },
             { location: 'packages/connect-web', name: '@trezor/connect-web' },
             { location: 'packages/connect-mobile', name: '@trezor/connect-mobile' },
             { location: 'packages/connect-webextension', name: '@trezor/connect-webextension' },
