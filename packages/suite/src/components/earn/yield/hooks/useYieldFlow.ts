@@ -88,6 +88,7 @@ export type UseYieldFlowResult = {
     allowanceStatus: YieldAllowanceStatus;
     approvalAction: YieldApprovalAction;
     canRevokeAllowance: boolean;
+    hasWrappedTokenBalance: boolean;
     isAmountEmpty: boolean;
     isAmountTooHigh: boolean;
     isAmountInvalidDecimals: boolean;
@@ -159,9 +160,11 @@ export const useYieldFlow = ({
     const sessionRef = useCurrentRef(session);
 
     const isWrappedNativeVault = isWrappedNativeToken(account.symbol, vault.token.address);
-    const hasWrappedTokenBalanceRef = useCurrentRef(
-        isAmountGreaterThan({ amount: token?.balance ?? '0', threshold: '0' }),
-    );
+    const hasWrappedTokenBalance = isAmountGreaterThan({
+        amount: token?.balance ?? '0',
+        threshold: '0',
+    });
+    const hasWrappedTokenBalanceRef = useCurrentRef(hasWrappedTokenBalance);
 
     const isSharesInput = flowType === 'redeem';
     const canToggleWithdrawUnit = isYieldWithdrawFlow(flowType) && !!token && !!receiptToken;
@@ -802,6 +805,7 @@ export const useYieldFlow = ({
         allowanceStatus: session.approval.allowanceStatus,
         approvalAction,
         canRevokeAllowance,
+        hasWrappedTokenBalance,
         isAmountEmpty,
         isAmountTooHigh,
         isAmountInvalidDecimals,
