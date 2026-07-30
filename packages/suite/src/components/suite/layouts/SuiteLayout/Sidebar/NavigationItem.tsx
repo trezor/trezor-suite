@@ -5,6 +5,7 @@ import styled, { css } from 'styled-components';
 import { type ExtendedMessageDescriptor, Translation, type TranslationKey } from '@suite/intl';
 import { type Route, goto, selectRouteName } from '@suite/router';
 import {
+    Badge,
     Icon,
     type IconComponent,
     Paragraph,
@@ -60,6 +61,7 @@ export type NavigationItemProps = {
     isActive?: boolean;
     hasIndicator?: boolean;
     isIndicatorAnimated?: boolean;
+    hasNewContentIndicator?: boolean;
     'data-testid'?: string;
     className?: string;
     values?: ExtendedMessageDescriptor['values'];
@@ -83,6 +85,7 @@ const NavItem = ({
     isActive,
     hasIndicator,
     isIndicatorAnimated,
+    hasNewContentIndicator,
     'data-testid': dataTest,
     values,
     preserveParams,
@@ -111,6 +114,12 @@ const NavItem = ({
     const isItemActive = isActive || isActiveRoute;
 
     const isTooltipActive = expanded ? shortcut !== undefined : true;
+    const isNewContentBadgeShown = expanded === true && hasNewContentIndicator === true;
+    const isNewContentDotShown =
+        expanded !== true && hasNewContentIndicator === true && hasIndicator !== true;
+    const isIconIndicatorShown = hasIndicator === true || isNewContentDotShown;
+    const iconIndicatorIntent = hasIndicator === true ? 'critical' : 'accentViolet';
+    const navigationItemTestId = dataTest || `@suite/menu/${goToRoute}`;
 
     return (
         <Tooltip
@@ -133,13 +142,13 @@ const NavItem = ({
             <Container
                 $isActive={isItemActive}
                 onClick={handleClick}
-                data-testid={dataTest || `@suite/menu/${goToRoute}`}
+                data-testid={navigationItemTestId}
                 type="button"
             >
                 <StatusBadge
-                    isShown={hasIndicator}
-                    isAnimated={isIndicatorAnimated}
-                    intent="critical"
+                    isShown={isIconIndicatorShown}
+                    isAnimated={hasIndicator === true && isIndicatorAnimated}
+                    intent={iconIndicatorIntent}
                     offset={{ x: -6, y: 5 }}
                 >
                     <Icon
@@ -151,13 +160,32 @@ const NavItem = ({
                     />
                 </StatusBadge>
                 {expanded && (
-                    <Paragraph
-                        typographyStyle="body-md"
-                        intent="neutral"
-                        priority={isItemActive ? 'primary' : 'secondary'}
+                    <Row
+                        flex="1"
+                        minWidth={0}
+                        gap={8}
+                        justifyContent="space-between"
+                        alignItems="center"
                     >
-                        <Translation id={nameId} values={values} />
-                    </Paragraph>
+                        <Paragraph
+                            typographyStyle="body-md"
+                            intent="neutral"
+                            priority={isItemActive ? 'primary' : 'secondary'}
+                            minWidth={0}
+                            overflowWrap="anywhere"
+                        >
+                            <Translation id={nameId} values={values} />
+                        </Paragraph>
+                        {isNewContentBadgeShown && (
+                            <Badge
+                                size="small"
+                                intent="accentViolet"
+                                data-testid={`${navigationItemTestId}/new-content-indicator`}
+                            >
+                                <Translation id="TR_NEW" />
+                            </Badge>
+                        )}
+                    </Row>
                 )}
             </Container>
         </Tooltip>

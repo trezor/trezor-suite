@@ -5073,6 +5073,10 @@ export const messages = defineMessages({
         id: 'TR_NOTIFICATIONS',
         defaultMessage: 'Activity',
     },
+    TR_NEW: {
+        id: 'TR_NEW',
+        defaultMessage: 'New',
+    },
     TR_PERSONALIZATION: {
         id: 'TR_PERSONALIZATION',
         defaultMessage: 'Customization',

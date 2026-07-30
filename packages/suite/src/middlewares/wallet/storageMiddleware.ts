@@ -4,7 +4,7 @@ import { type MiddlewareAPI } from 'redux';
 import { COINJOIN } from '@suite/coinjoin';
 import { debugActions } from '@suite/debug';
 import { featureUsed, feedbackDismissed, feedbackRequested } from '@suite/feature-feedback';
-import { setFlag } from '@suite/flags';
+import { markNewContentIndicatorAsSeen, setFlag, setNewContentIndicatorSeen } from '@suite/flags';
 import { METADATA, metadataActions } from '@suite/metadata';
 import { suiteSettingsActions } from '@suite/settings';
 import { dismissUnsupportedDeviceBanner } from '@suite/suite-sync';
@@ -286,7 +286,7 @@ const rememberedDeviceHandlers: RememberedDeviceHandler[] = [
     }),
 ];
 
-const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
+export const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
     db.onBlocking = () => api.dispatch({ type: STORAGE.ERROR, payload: 'blocking' });
     db.onBlocked = () => api.dispatch({ type: STORAGE.ERROR, payload: 'blocked' });
 
@@ -496,6 +496,8 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                     break;
                 case suiteSettingsActions.setLanguage.type:
                 case setFlag.type:
+                case markNewContentIndicatorAsSeen.type:
+                case setNewContentIndicatorSeen.type:
                 case suiteSettingsActions.setDebugMode.type:
                 case suiteSettingsActions.setExperimentalFeatures.type:
                 case suiteSettingsActions.setOnionLinks.type:
@@ -551,5 +553,3 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
             return action;
         };
 };
-
-export default storageMiddleware;

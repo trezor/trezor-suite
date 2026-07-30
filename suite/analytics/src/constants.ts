@@ -51,6 +51,7 @@ export enum EventType {
     GuideNodeNavigation = 'guide/node/navigation',
     GuideTooltipLinkNavigation = 'guide/tooltip-link/navigation',
     MenuGuide = 'menu/guide',
+    AppNewContentBadge = 'app/new-content-badge',
     MenuNotificationsToggle = 'menu/notifications/toggle',
     MenuToggleDiscreet = 'menu/toggle-discreet',
     PromoDashboardBanner = 'promo/dashboard-banner',

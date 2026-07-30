@@ -10,6 +10,7 @@ export const mapIntentToBackgroundColor = (intent: BadgeIntent): Color => {
         info: 'elementFillInfoSoft',
         warning: 'elementFillWarningSoft',
         critical: 'elementFillCriticalSoft',
+        accentViolet: 'elementFillAccentVioletSoft',
     };
 
     return colorMap[intent];
@@ -22,6 +23,7 @@ export const mapIntentToIconColor = (intent: BadgeIntent): Color => {
         info: 'contentInfo',
         warning: 'contentWarning',
         critical: 'contentCritical',
+        accentViolet: 'contentAccentViolet',
     };
 
     return colorMap[intent];

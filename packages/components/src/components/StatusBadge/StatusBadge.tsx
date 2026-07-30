@@ -3,7 +3,8 @@ import { type ReactNode } from 'react';
 import styled from 'styled-components';
 
 import { Box } from '../Box/Box';
-import { Dot, type DotIntent } from '../Dot/Dot';
+import { Dot } from '../Dot/Dot';
+import { type DotIntent } from '../Dot/types';
 
 const DOT_SIZE = 8;
 const OUTLINE_WIDTH = 2;

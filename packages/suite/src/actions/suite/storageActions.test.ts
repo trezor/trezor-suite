@@ -2,7 +2,13 @@ import '@suite-common/test-utils/globalOverrides';
 
 import { coinjoinReducer } from '@suite/coinjoin';
 import { prepareDesktopDeviceReducer } from '@suite/device';
-import { initialRunCompleted, prepareFlagsReducer } from '@suite/flags';
+import {
+    NewContentIndicatorId,
+    initialRunCompleted,
+    markNewContentIndicatorAsSeen,
+    prepareFlagsReducer,
+    setNewContentIndicatorSeen,
+} from '@suite/flags';
 import { initialMetadataState, metadataReducer } from '@suite/metadata';
 import { suiteSettingsInitialState } from '@suite/settings';
 import { prepareSuiteSyncReducer } from '@suite/suite-sync';
@@ -27,7 +33,7 @@ import { type StaticSessionId, asWalletDescriptor } from '@trezor/device-utils';
 
 import { suiteSyncQuotaManagerSlice } from 'src/actions/suiteSyncQuotaManager/suiteSyncQuotaManagerSlice';
 import { SETTINGS } from 'src/config/suite';
-import storageMiddleware from 'src/middlewares/wallet/storageMiddleware';
+import { storageMiddleware } from 'src/middlewares/wallet/storageMiddleware';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
 import { accountsReducer, fiatRatesReducer, transactionsReducer } from 'src/reducers/wallet';
 import graphReducer from 'src/reducers/wallet/graphReducer';
@@ -230,9 +236,20 @@ describe('Storage actions', () => {
         global.fetch = mockFetch({ TR_ID: 'Message' });
         await store.dispatch(storageActions.saveSuiteSettings());
         await store.dispatch(initialRunCompleted({ isFreshDeviceSetup: true }));
+        await store.dispatch(markNewContentIndicatorAsSeen(NewContentIndicatorId.Activity26_8));
+        await store.dispatch(
+            setNewContentIndicatorSeen({
+                indicatorId: NewContentIndicatorId.Earn26_8,
+                isSeen: true,
+            }),
+        );
         store.dispatch(await preloadStore());
 
         expect(store.getState().flags.initialRun).toEqual(false);
+        expect(store.getState().flags.seenNewContentIndicators).toEqual({
+            [NewContentIndicatorId.Activity26_8]: true,
+            [NewContentIndicatorId.Earn26_8]: true,
+        });
         global.fetch = f;
     });
 

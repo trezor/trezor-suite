@@ -32,7 +32,7 @@ export const mapUpdateStatusToIntent: Record<UpdateStatus, UIIntent> = {
     'update-downloaded-manual': 'info',
     'update-downloaded-auto-restart-to-update': 'info',
     'up-to-date': 'brand',
-    'update-available': 'info',
+    'update-available': 'accentViolet',
     'just-updated': 'accentViolet',
 };
 

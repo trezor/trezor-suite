@@ -16,7 +16,7 @@ import { prepareWalletConnectMiddleware } from '@suite-common/walletconnect';
 
 import graphMiddleware from './graphMiddleware';
 import { replaceByFeeErrorMiddleware } from './replaceByFeeErrorMiddleware';
-import storageMiddleware from './storageMiddleware';
+import { storageMiddleware } from './storageMiddleware';
 import { tradingMiddleware } from './tradingMiddleware';
 import walletMiddleware from './walletMiddleware';
 
