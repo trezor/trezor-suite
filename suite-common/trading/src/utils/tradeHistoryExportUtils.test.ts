@@ -85,188 +85,190 @@ const exchangeTrade: TradingTransactionExchange = {
     receiveAccountKey: undefined,
 };
 
-describe('sanitizeTradingCsvValue', () => {
-    it('returns plain values unchanged', () => {
-        expect(sanitizeTradingCsvValue('abc')).toBe('abc');
-    });
+describe('tradeHistoryExportUtils', () => {
+    describe('sanitizeTradingCsvValue', () => {
+        it('returns plain values unchanged', () => {
+            expect(sanitizeTradingCsvValue('abc')).toBe('abc');
+        });
 
-    it('wraps values containing the separator', () => {
-        expect(sanitizeTradingCsvValue('a,b')).toBe('"a,b"');
-    });
+        it('wraps values containing the separator', () => {
+            expect(sanitizeTradingCsvValue('a,b')).toBe('"a,b"');
+        });
 
-    it('escapes and wraps values containing quotes', () => {
-        expect(sanitizeTradingCsvValue('a"b')).toBe('"a""b"');
-    });
+        it('escapes and wraps values containing quotes', () => {
+            expect(sanitizeTradingCsvValue('a"b')).toBe('"a""b"');
+        });
 
-    it('wraps values containing newlines', () => {
-        expect(sanitizeTradingCsvValue('a\nb')).toBe('"a\nb"');
-    });
+        it('wraps values containing newlines', () => {
+            expect(sanitizeTradingCsvValue('a\nb')).toBe('"a\nb"');
+        });
 
-    it('neutralizes formula-injection prefixes', () => {
-        expect(sanitizeTradingCsvValue('=cmd')).toBe("'=cmd");
-        expect(sanitizeTradingCsvValue('@SUM(1)')).toBe("'@SUM(1)");
-    });
+        it('neutralizes formula-injection prefixes', () => {
+            expect(sanitizeTradingCsvValue('=cmd')).toBe("'=cmd");
+            expect(sanitizeTradingCsvValue('@SUM(1)')).toBe("'@SUM(1)");
+        });
 
-    it('neutralizes and wraps a formula prefix that also contains a separator', () => {
-        expect(sanitizeTradingCsvValue('=a,b')).toBe('"\'=a,b"');
-    });
-});
-
-describe('getTradingHistoryCsvType', () => {
-    it.each([
-        ['buy', 'buy'],
-        ['sell', 'sell'],
-        ['exchange', 'swap'],
-    ] as const)('maps %s to %s', (tradeType, expected) => {
-        expect(getTradingHistoryCsvType(tradeType)).toBe(expected);
-    });
-});
-
-describe('getTradingHistoryCsvRow', () => {
-    it('maps a buy trade (fiat spent, crypto received, no spend tx)', () => {
-        expect(getTradingHistoryCsvRow(buyTrade, resolvers)).toEqual({
-            orderId: 'buy-order',
-            date: '2025-04-10T20:21:25.042Z',
-            type: 'buy',
-            spentAmount: '1234',
-            spendTicker: 'USD',
-            spendNetwork: '',
-            spendTransactionId: '',
-            receiveAmount: '0.462586',
-            receiveTicker: 'ETH',
-            receiveNetwork: 'Ethereum',
-            provider: 'mercuryo',
-            status: 'SUCCESS',
-            receiveTransactionId: 'buy-receive-hash',
-            paymentId: 'buy-payment',
+        it('neutralizes and wraps a formula prefix that also contains a separator', () => {
+            expect(sanitizeTradingCsvValue('=a,b')).toBe('"\'=a,b"');
         });
     });
 
-    it('maps a sell trade (crypto spent, fiat received, no receive tx)', () => {
-        expect(getTradingHistoryCsvRow(sellTrade, resolvers)).toEqual({
-            orderId: 'sell-order',
-            date: '2025-01-01T20:12:25.042Z',
-            type: 'sell',
-            spentAmount: '1.22',
-            spendTicker: 'BTC',
-            spendNetwork: 'Bitcoin',
-            spendTransactionId: 'sell-send-hash',
-            receiveAmount: '100',
-            receiveTicker: 'USD',
-            receiveNetwork: '',
-            provider: 'BTC Direct',
-            status: 'SUCCESS',
-            receiveTransactionId: '',
-            paymentId: 'sell-payment',
+    describe('getTradingHistoryCsvType', () => {
+        it.each([
+            ['buy', 'buy'],
+            ['sell', 'sell'],
+            ['exchange', 'swap'],
+        ] as const)('maps %s to %s', (tradeType, expected) => {
+            expect(getTradingHistoryCsvType(tradeType)).toBe(expected);
         });
     });
 
-    it('maps an exchange trade to swap (crypto-to-crypto, no payment id)', () => {
-        expect(getTradingHistoryCsvRow(exchangeTrade, resolvers)).toEqual({
-            orderId: 'exchange-order',
-            date: '2025-02-12T20:11:03.042Z',
-            type: 'swap',
-            spentAmount: '10.1232',
-            spendTicker: 'USDC',
-            spendNetwork: 'Ethereum',
-            spendTransactionId: '',
-            receiveAmount: '0.462586',
-            receiveTicker: 'BTC',
-            receiveNetwork: 'Bitcoin',
-            provider: 'changelly',
-            status: 'SUCCESS',
-            receiveTransactionId: 'exchange-receive-hash',
-            paymentId: '',
+    describe('getTradingHistoryCsvRow', () => {
+        it('maps a buy trade (fiat spent, crypto received, no spend tx)', () => {
+            expect(getTradingHistoryCsvRow(buyTrade, resolvers)).toEqual({
+                orderId: 'buy-order',
+                date: '2025-04-10T20:21:25.042Z',
+                type: 'buy',
+                spentAmount: '1234',
+                spendTicker: 'USD',
+                spendNetwork: '',
+                spendTransactionId: '',
+                receiveAmount: '0.462586',
+                receiveTicker: 'ETH',
+                receiveNetwork: 'Ethereum',
+                provider: 'mercuryo',
+                status: 'SUCCESS',
+                receiveTransactionId: 'buy-receive-hash',
+                paymentId: 'buy-payment',
+            });
+        });
+
+        it('maps a sell trade (crypto spent, fiat received, no receive tx)', () => {
+            expect(getTradingHistoryCsvRow(sellTrade, resolvers)).toEqual({
+                orderId: 'sell-order',
+                date: '2025-01-01T20:12:25.042Z',
+                type: 'sell',
+                spentAmount: '1.22',
+                spendTicker: 'BTC',
+                spendNetwork: 'Bitcoin',
+                spendTransactionId: 'sell-send-hash',
+                receiveAmount: '100',
+                receiveTicker: 'USD',
+                receiveNetwork: '',
+                provider: 'BTC Direct',
+                status: 'SUCCESS',
+                receiveTransactionId: '',
+                paymentId: 'sell-payment',
+            });
+        });
+
+        it('maps an exchange trade to swap (crypto-to-crypto, no payment id)', () => {
+            expect(getTradingHistoryCsvRow(exchangeTrade, resolvers)).toEqual({
+                orderId: 'exchange-order',
+                date: '2025-02-12T20:11:03.042Z',
+                type: 'swap',
+                spentAmount: '10.1232',
+                spendTicker: 'USDC',
+                spendNetwork: 'Ethereum',
+                spendTransactionId: '',
+                receiveAmount: '0.462586',
+                receiveTicker: 'BTC',
+                receiveNetwork: 'Bitcoin',
+                provider: 'changelly',
+                status: 'SUCCESS',
+                receiveTransactionId: 'exchange-receive-hash',
+                paymentId: '',
+            });
+        });
+
+        it('falls back to the raw crypto id when the ticker cannot be resolved', () => {
+            const trade: TradingTransactionExchange = {
+                ...exchangeTrade,
+                data: { ...exchangeTrade.data, send: 'unknown-coin' as CryptoId },
+            };
+
+            expect(getTradingHistoryCsvRow(trade, resolvers).spendTicker).toBe('unknown-coin');
+        });
+
+        it('uses empty strings for missing optional values', () => {
+            const trade: TradingTransactionExchange = {
+                tradeType: 'exchange',
+                date: '2025-02-12T20:11:03.042Z',
+                key: 'exchange-key',
+                // `sendStringAmount`/`receiveStringAmount` keys are what identifies an exchange trade.
+                data: { orderId: 'only-order', sendStringAmount: undefined, receiveStringAmount: undefined },
+                sendAccountKey: undefined,
+                receiveAccountKey: undefined,
+            };
+
+            expect(getTradingHistoryCsvRow(trade, resolvers)).toEqual({
+                orderId: 'only-order',
+                date: '2025-02-12T20:11:03.042Z',
+                type: 'swap',
+                spentAmount: '',
+                spendTicker: '',
+                spendNetwork: '',
+                spendTransactionId: '',
+                receiveAmount: '',
+                receiveTicker: '',
+                receiveNetwork: '',
+                provider: '',
+                status: '',
+                receiveTransactionId: '',
+                paymentId: '',
+            });
         });
     });
 
-    it('falls back to the raw crypto id when the ticker cannot be resolved', () => {
-        const trade: TradingTransactionExchange = {
-            ...exchangeTrade,
-            data: { ...exchangeTrade.data, send: 'unknown-coin' as CryptoId },
-        };
+    describe('buildTradingHistoryCsv', () => {
+        const header = Object.values(TRADING_HISTORY_CSV_FIELDS).join(',');
 
-        expect(getTradingHistoryCsvRow(trade, resolvers).spendTicker).toBe('unknown-coin');
-    });
+        it('returns only the header for an empty trade list', () => {
+            expect(buildTradingHistoryCsv([], resolvers)).toBe(header);
+        });
 
-    it('uses empty strings for missing optional values', () => {
-        const trade: TradingTransactionExchange = {
-            tradeType: 'exchange',
-            date: '2025-02-12T20:11:03.042Z',
-            key: 'exchange-key',
-            // `sendStringAmount`/`receiveStringAmount` keys are what identifies an exchange trade.
-            data: { orderId: 'only-order', sendStringAmount: undefined, receiveStringAmount: undefined },
-            sendAccountKey: undefined,
-            receiveAccountKey: undefined,
-        };
+        it('builds a header plus one line per trade', () => {
+            const trades: TradingTransaction[] = [buyTrade, sellTrade, exchangeTrade];
+            const csv = buildTradingHistoryCsv(trades, resolvers);
+            const lines = csv.split('\n');
 
-        expect(getTradingHistoryCsvRow(trade, resolvers)).toEqual({
-            orderId: 'only-order',
-            date: '2025-02-12T20:11:03.042Z',
-            type: 'swap',
-            spentAmount: '',
-            spendTicker: '',
-            spendNetwork: '',
-            spendTransactionId: '',
-            receiveAmount: '',
-            receiveTicker: '',
-            receiveNetwork: '',
-            provider: '',
-            status: '',
-            receiveTransactionId: '',
-            paymentId: '',
+            expect(lines).toHaveLength(4);
+            expect(lines[0]).toBe(header);
+            expect(lines[1]).toBe(
+                'buy-order,2025-04-10T20:21:25.042Z,buy,1234,USD,,,0.462586,ETH,Ethereum,mercuryo,SUCCESS,buy-receive-hash,buy-payment',
+            );
+        });
+
+        it('sanitizes values that contain the separator', () => {
+            const trade: TradingTransactionBuy = {
+                ...buyTrade,
+                data: { ...buyTrade.data, orderId: 'a,b' } as BuyTrade,
+            };
+            const csv = buildTradingHistoryCsv([trade], resolvers);
+            const [, row] = csv.split('\n');
+
+            expect(row?.startsWith('"a,b",')).toBe(true);
         });
     });
-});
 
-describe('buildTradingHistoryCsv', () => {
-    const header = Object.values(TRADING_HISTORY_CSV_FIELDS).join(',');
-
-    it('returns only the header for an empty trade list', () => {
-        expect(buildTradingHistoryCsv([], resolvers)).toBe(header);
-    });
-
-    it('builds a header plus one line per trade', () => {
-        const trades: TradingTransaction[] = [buyTrade, sellTrade, exchangeTrade];
-        const csv = buildTradingHistoryCsv(trades, resolvers);
-        const lines = csv.split('\n');
-
-        expect(lines).toHaveLength(4);
-        expect(lines[0]).toBe(header);
-        expect(lines[1]).toBe(
-            'buy-order,2025-04-10T20:21:25.042Z,buy,1234,USD,,,0.462586,ETH,Ethereum,mercuryo,SUCCESS,buy-receive-hash,buy-payment',
-        );
-    });
-
-    it('sanitizes values that contain the separator', () => {
-        const trade: TradingTransactionBuy = {
-            ...buyTrade,
-            data: { ...buyTrade.data, orderId: 'a,b' } as BuyTrade,
-        };
-        const csv = buildTradingHistoryCsv([trade], resolvers);
-        const [, row] = csv.split('\n');
-
-        expect(row?.startsWith('"a,b",')).toBe(true);
-    });
-});
-
-describe('prepareTradingHistoryCsv', () => {
-    const state: TradingRootState = {
-        wallet: {
-            trading: {
-                ...initialState,
-                info: { ...initialState.info, coins: coins as unknown as Coins },
+    describe('prepareTradingHistoryCsv', () => {
+        const state: TradingRootState = {
+            wallet: {
+                trading: {
+                    ...initialState,
+                    info: { ...initialState.info, coins: coins as unknown as Coins },
+                },
             },
-        },
-    };
+        };
 
-    it('resolves coin tickers from state and falls back to the raw provider name', () => {
-        const csv = prepareTradingHistoryCsv(state, [sellTrade]);
-        const [, row] = csv.split('\n');
+        it('resolves coin tickers from state and falls back to the raw provider name', () => {
+            const csv = prepareTradingHistoryCsv(state, [sellTrade]);
+            const [, row] = csv.split('\n');
 
-        // BTC ticker resolved from state coins, provider name falls back to the raw exchange id.
-        expect(row).toBe(
-            'sell-order,2025-01-01T20:12:25.042Z,sell,1.22,BTC,Bitcoin,sell-send-hash,100,USD,,btcdirect-sell,SUCCESS,,sell-payment',
-        );
+            // BTC ticker resolved from state coins, provider name falls back to the raw exchange id.
+            expect(row).toBe(
+                'sell-order,2025-01-01T20:12:25.042Z,sell,1.22,BTC,Bitcoin,sell-send-hash,100,USD,,btcdirect-sell,SUCCESS,,sell-payment',
+            );
+        });
     });
 });
