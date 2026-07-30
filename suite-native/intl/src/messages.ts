@@ -3715,12 +3715,17 @@ export const messages = {
                 description: 'Your trades will appear here and you can track their status.',
                 button: 'Back to trade form',
             },
+            export: {
+                button: 'Export trade history',
+                exportSuccessfulToast: 'Trade history exported.',
+                exportFailedToast: 'Trade history export failed.',
+                fileSavingNotSupportedToast: 'Saving files is not supported on this device.',
+            },
             statusIcon: {
                 success: 'Successful trade',
                 error: 'Failed trade',
                 warning: 'Trade requires attention',
                 pending: 'Trade in progress',
-            },
             timeAt: '{date} at {time}',
             status: {
                 badge: 'Trade status badge',
