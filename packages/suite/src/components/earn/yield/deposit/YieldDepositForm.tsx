@@ -56,6 +56,7 @@ export const YieldDepositForm = () => {
         skipWrap,
         returnToWrapStep,
         submitApprovalAction,
+        skipApprove,
         submitAction,
         revokeAllowance,
         enterModifyApproval,
@@ -119,6 +120,20 @@ export const YieldDepositForm = () => {
         });
 
         submitApprovalAction();
+    };
+
+    const handleOnSkipApprove = () => {
+        analytics.report({
+            type: events.yieldDepositEvent.name,
+            payload: {
+                type: 'approve',
+                action: 'cancel',
+                networkSymbol: token.networkSymbol,
+                vaultId: vault.id,
+            },
+        });
+
+        skipApprove();
     };
 
     const handleOnRevoke = () => {
@@ -341,6 +356,9 @@ export const YieldDepositForm = () => {
                                         pendingApproveTransaction={approvalPendingTransaction}
                                         onMaxClick={handleMaxClick}
                                         onApprovalSubmit={handleOnApprovalSubmit}
+                                        onSkip={
+                                            canRevokeAllowance ? handleOnSkipApprove : undefined
+                                        }
                                         onRevoke={handleOnRevoke}
                                         onPendingTxClick={openPendingTransaction}
                                     />

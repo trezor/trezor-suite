@@ -102,6 +102,7 @@ export type UseYieldFlowResult = {
     submitUnwrap: () => void;
     skipUnwrap: () => void;
     submitApprovalAction: () => void;
+    skipApprove: () => void;
     submitAction: () => void;
     revokeAllowance: () => void;
     enterModifyApproval: () => void;
@@ -690,6 +691,16 @@ export const useYieldFlow = ({
         await submitApprove();
     }, [approvalAction, revokeAllowance, submitApprove]);
 
+    const skipApprove = useCallback(() => {
+        dispatch(
+            stablecoinYieldActions.skipApprovalStep({
+                flowType,
+                flowKey,
+                amount: methodsRef.current.getValues('amountInput'),
+            }),
+        );
+    }, [dispatch, flowKey, flowType, methodsRef]);
+
     const submitAction = useCallback(async () => {
         if (!isDeviceConnected) {
             openDeviceConnectionModal();
@@ -832,6 +843,7 @@ export const useYieldFlow = ({
         submitUnwrap,
         skipUnwrap,
         submitApprovalAction,
+        skipApprove,
         submitAction,
         revokeAllowance,
         enterModifyApproval,

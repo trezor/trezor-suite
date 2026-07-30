@@ -409,13 +409,22 @@ const stablecoinYieldSlice = createSlice({
         },
         skipApprovalStep(
             state: StablecoinYieldState,
-            action: PayloadAction<StablecoinYieldSessionActionPayload>,
+            action: PayloadAction<
+                StablecoinYieldSessionActionPayload & {
+                    amount?: string;
+                }
+            >,
         ) {
             withSession(state, action.payload, session => {
                 if (session.step !== 'approve') {
                     return;
                 }
 
+                // A user-triggered skip carries the entered amount so the action step opens
+                // with it; the automatic allowance-check skip omits it and keeps the existing one.
+                if (action.payload.amount) {
+                    session.action.amount = action.payload.amount;
+                }
                 session.step = getNextYieldFlowStep(
                     action.payload.flowType,
                     'approve',
