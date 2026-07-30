@@ -20,7 +20,7 @@ import {
     deviceDisconnectOnHomeFixtures,
     thpPairingBlockedFixtures,
     thpPairingNavigationFixtures,
-} from './__tests__/deviceConnectionFixtures';
+} from './__fixtures__/deviceConnectionFixtures';
 import { deviceConnectionMiddleware } from './middlewares/deviceConnectionMiddleware';
 
 jest.mock('@suite-native/navigation', () => {
