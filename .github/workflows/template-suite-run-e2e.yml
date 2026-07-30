@@ -92,7 +92,7 @@ jobs:
     env:
       # [throwaway: bcl request baseline] shared by the Playwright run (taps write here) + aggregate/publish steps
       BCL_LOG: ${{ github.workspace }}/bcl.jsonl
-      BCL_COINS: "btc,eth,sol"
+      BCL_COINS: "btc,eth,sol,trx"
       BCL_IDLE_MS: "600000"
     steps:
       - name: Generate GitHub App token
