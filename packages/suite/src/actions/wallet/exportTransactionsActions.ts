@@ -68,7 +68,7 @@ export const exportTransactionsThunk = createThunk<
                 ...transaction,
                 targets: transaction.targets.map(target => ({
                     ...target,
-                    metadataLabel: accountLabels.outputLabels
+                    outputLabel: accountLabels.outputLabels
                         .get(transaction.txid)
                         ?.get(createSimpleTargetId(target)),
                 })),
