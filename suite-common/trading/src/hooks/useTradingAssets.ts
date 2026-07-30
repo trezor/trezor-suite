@@ -12,13 +12,15 @@ import { useServices } from '@suite-common/dependency-injection';
 import { selectNetworkModuleRepositoryDep } from '@suite-common/networks';
 import {
     type Network,
-    type NetworkConfigWithoutTestnets,
     type NetworkSymbol,
+    type NetworkSymbolNonTestnet,
     getDisplaySymbol,
     getMainnets,
     getNetwork,
     getNetworkDisplaySymbolName,
+    isNetworkDisplaySymbol,
     isNetworkSymbol,
+    isNetworkSymbolNonTestnet,
 } from '@suite-common/wallet-config';
 import { type TokenInfo } from '@trezor/connect';
 import { isNotNull } from '@trezor/utils';
@@ -62,12 +64,10 @@ function hasSupportedAddressValidator(
     );
 }
 
-function getNonTestnetNetworkSymbol(
-    network?: Network,
-): NetworkConfigWithoutTestnets['symbol'] | null {
-    return !network || network.testnet
-        ? null
-        : (network.symbol as NetworkConfigWithoutTestnets['symbol']);
+function getNonTestnetNetworkSymbol(network?: Network): NetworkSymbolNonTestnet | null {
+    if (!network || !isNetworkSymbolNonTestnet(network.symbol)) return null;
+
+    return network.symbol;
 }
 
 function isAssetWithSupportedNetwork(
@@ -99,31 +99,41 @@ export function createAssetOption({
         network && (!contractAddress || isCryptoIdForNativeToken(cryptoId)),
     );
 
-    if (isNativeToken) {
-        const networkConfig = network as NetworkConfigWithoutTestnets;
+    if (isNativeToken && network) {
+        const networkSymbol = getNonTestnetNetworkSymbol(network);
+
+        if (
+            !networkSymbol ||
+            !network.coingeckoId ||
+            !network.tradeCryptoId ||
+            !isNetworkDisplaySymbol(network.displaySymbol)
+        ) {
+            return null;
+        }
 
         return {
             isNativeToken: true,
-            id: networkConfig.tradeCryptoId as CryptoId,
-            name: networkConfig.name,
-            coingeckoId: networkConfig.coingeckoId,
-            symbol: networkConfig.symbol,
-            displaySymbol: networkConfig.displaySymbol,
+            id: network.tradeCryptoId as CryptoId,
+            name: network.name,
+            coingeckoId: network.coingeckoId,
+            symbol: networkSymbol,
+            displaySymbol: network.displaySymbol,
             contractAddress: contractAddress as TradingAssetOptionNativeToken['contractAddress'],
-            networkName: networkConfig.name,
-            networkSymbol: networkConfig.symbol,
-            displaySymbolName: getNetworkDisplaySymbolName(networkConfig.symbol),
+            networkName: network.name,
+            networkSymbol,
+            displaySymbolName: getNetworkDisplaySymbolName(networkSymbol),
         } satisfies TradingAssetOptionNativeToken;
     }
 
     const networkSymbol = network ? network.symbol : platformInfo?.nativeCoinSymbol;
 
     // No supported network exists for this token's network symbol, filter it out
-    if (!networkSymbol || !isNetworkSymbol(networkSymbol)) {
+    if (!networkSymbol || !isNetworkSymbolNonTestnet(networkSymbol)) {
         return null;
     }
 
-    const networkConfig = getNetwork(networkSymbol) as NetworkConfigWithoutTestnets;
+    const networkConfig = getNetwork(networkSymbol);
+    if (!networkConfig.coingeckoId) return null;
 
     const coinInfoSymbol = coinInfo.symbol;
 
@@ -136,7 +146,7 @@ export function createAssetOption({
         displaySymbol: getDisplaySymbol(coinInfoSymbol.toUpperCase(), contractAddress),
         contractAddress: contractAddress!,
         networkName: networkConfig.name,
-        networkSymbol: networkConfig.symbol,
+        networkSymbol,
         displaySymbolName: coinInfo.name,
     } satisfies TradingAssetOptionWithContractAddress;
 }
@@ -192,9 +202,15 @@ export function createAssetOption({
  */
 
 export function createAssetNativeTokenOption(
-    networkSymbol: NetworkConfigWithoutTestnets['symbol'],
+    networkSymbol: NetworkSymbolNonTestnet,
 ): TradingAssetOptionNativeToken {
-    const network = getNetwork(networkSymbol) as NetworkConfigWithoutTestnets;
+    const network = getNetwork(networkSymbol);
+    if (!network.coingeckoId) {
+        throw new Error(`Trading network is missing coingeckoId: ${networkSymbol}`);
+    }
+    if (!isNetworkDisplaySymbol(network.displaySymbol)) {
+        throw new Error(`Trading network has an invalid displaySymbol: ${networkSymbol}`);
+    }
 
     return {
         isNativeToken: true,
@@ -205,15 +221,18 @@ export function createAssetNativeTokenOption(
         displaySymbol: network.displaySymbol,
         contractAddress: null,
         networkName: network.name,
-        networkSymbol: network.symbol,
-        displaySymbolName: getNetworkDisplaySymbolName(network.symbol),
+        networkSymbol,
+        displaySymbolName: getNetworkDisplaySymbolName(networkSymbol),
     };
 }
 
 export function createAssetTokenOption<
     Token extends Pick<TokenInfo, 'contract' | 'symbol' | 'name'>,
->(networkSymbol: NetworkSymbol, token: Token): TradingAssetOptionWithContractAddress {
-    const network = getNetwork(networkSymbol) as NetworkConfigWithoutTestnets;
+>(networkSymbol: NetworkSymbolNonTestnet, token: Token): TradingAssetOptionWithContractAddress {
+    const network = getNetwork(networkSymbol);
+    if (!network.coingeckoId) {
+        throw new Error(`Trading network is missing coingeckoId: ${networkSymbol}`);
+    }
 
     return {
         id: getCryptoId(networkSymbol, token.contract),
@@ -314,7 +333,7 @@ export function useTradingAssets() {
 
     const resolveAssetTokenOption = useCallback(
         (
-            networkSymbol: NetworkSymbol,
+            networkSymbol: NetworkSymbolNonTestnet,
             token: Pick<TokenInfo, 'contract' | 'symbol' | 'name'>,
         ): TradingAssetOptionWithContractAddress => {
             const { coins, platforms } = getCoinsAndPlatforms();

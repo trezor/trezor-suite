@@ -1,7 +1,7 @@
 import { Locator, Page, test } from '@playwright/test';
 
 import type { LabelingSelectValue } from '@suite/labeling';
-import type { BackendType, NetworkSymbol } from '@suite-common/wallet-config';
+import type { BackendType } from '@suite-common/wallet-config';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { capitalizeFirstLetter } from '@trezor/utils';
 
@@ -12,6 +12,7 @@ import { WalletConnectTab } from './walletConnectTab';
 import { step } from '../../common';
 import { DeviceFixture } from '../../device';
 import { expect } from '../../testExtends/customMatchers';
+import type { E2eNetworkSymbol } from '../../types';
 
 export enum Theme {
     System = 'system',
@@ -38,8 +39,8 @@ const backgroundImageButton = {
 };
 
 export type NetworkToEnable =
-    | NetworkSymbol
-    | { symbol: NetworkSymbol; backend: { type: BackendType; url: string } };
+    | E2eNetworkSymbol
+    | { symbol: E2eNetworkSymbol; backend: { type: BackendType; url: string } };
 
 export class SettingsPage {
     private readonly TIMES_CLICK_TO_SET_DEBUG_MODE = 5;
@@ -272,7 +273,7 @@ export class SettingsPage {
     @step()
     async changeNetworks(options: {
         enableNetworks: NetworkToEnable[];
-        disableNetworks?: NetworkSymbol[];
+        disableNetworks?: E2eNetworkSymbol[];
         skipActivation?: boolean;
         skipDiscovery?: boolean;
     }) {

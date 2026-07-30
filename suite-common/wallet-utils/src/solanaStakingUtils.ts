@@ -7,7 +7,7 @@ import {
     SOLANA_EPOCH_DAYS,
     type SolanaNetworkSymbol,
     StakeState,
-    isSupportedSolanaNetwork,
+    supportedSolanaNetworks,
 } from '@trezor/network-solana/constants';
 import { BigNumber } from '@trezor/utils';
 
@@ -15,8 +15,8 @@ import { formatNetworkAmount, networkAmountToSmallestUnit } from './amountUtils'
 
 export function isSupportedSolStakingNetworkSymbol(
     symbol: NetworkSymbol,
-): symbol is SolanaNetworkSymbol {
-    return isSupportedSolanaNetwork(symbol);
+): symbol is NetworkSymbol & SolanaNetworkSymbol {
+    return supportedSolanaNetworks.some(supportedSymbol => supportedSymbol === symbol);
 }
 
 export const getSolanaStakingSymbols = (networkSymbols: NetworkSymbol[]) =>

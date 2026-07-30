@@ -2,7 +2,7 @@ import { current, isAnyOf } from '@reduxjs/toolkit';
 
 import { deviceActions } from '@suite-common/device';
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
-import { networks } from '@suite-common/wallet-config';
+import { getNetwork } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { accountEqualTo, compareAccountsByCoin, enhanceHistory } from '@suite-common/wallet-utils';
 import { typedObjectKeys } from '@trezor/utils';
@@ -101,7 +101,7 @@ export const prepareAccountsReducer = createReducerWithExtraDeps(
             })
             .addCase(accountsActions.createAccount, (state, action) => {
                 const { symbol, index } = action.payload;
-                const networkName = networks[symbol].name;
+                const networkName = getNetwork(symbol).name;
                 const accountLabel = action.payload.accountLabel ?? `${networkName} #${index + 1}`;
                 // remove "transactions" field, they are stored in "transactionReducer"
                 const history = enhanceHistory(action.payload.history);

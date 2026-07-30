@@ -1,6 +1,7 @@
 import { MODAL_CLOSE, MODAL_OPEN_USER_CONTEXT } from '@suite/modal';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type CoinjoinClientEvents,
     type CoinjoinRequestOwnershipEvent,
@@ -20,6 +21,8 @@ type FixtureState = unknown;
 
 /** Opaque mock responses passed directly to setTrezorConnectFixtures. */
 type ConnectFixtures = unknown;
+
+const btcSymbol = asNetworkSymbol('btc');
 
 type OnCoinjoinRoundChangedFixture = {
     description: string;
@@ -1127,7 +1130,7 @@ export const clientEvents: ClientEventFixture[] = [
         },
         result: {
             clients: {
-                btc: {
+                [btcSymbol]: {
                     status: 'loaded',
                     coordinationFeeRate: {
                         rate: 0.003,

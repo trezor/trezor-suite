@@ -1,0 +1,39 @@
+{
+    "name": "@trezor/network-module",
+    "version": "10.0.0-beta.1",
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/trezor/trezor-suite.git"
+    },
+    "license": "MIT",
+    "sideEffects": false,
+    "main": "./src/index.ts",
+    "type": "module",
+    "exports": {
+        ".": "./src/index.ts"
+    },
+    "publishConfig": {
+        "main": "./lib/index.js",
+        "types": "./lib/index.d.ts",
+        "exports": {
+            ".": {
+                "types": "./lib/index.d.ts",
+                "default": "./lib/index.js"
+            }
+        }
+    },
+    "files": [
+        "lib/",
+        "CHANGELOG.md"
+    ],
+    "scripts": {
+        "build:lib": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../../scripts/publish/replace-imports.sh ./lib",
+        "depcheck": "yarn g:depcheck",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "test:unit": "yarn g:jest --passWithNoTests",
+        "type-check": "yarn g:tsc --build"
+    },
+    "dependencies": {
+        "@trezor/type-utils": "workspace:*"
+    }
+}

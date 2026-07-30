@@ -1,13 +1,18 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type WalletAccountTransaction, asAccountDescriptor } from '@suite-common/wallet-types';
 import { BigNumber } from '@trezor/utils';
 
 import { type AccountHistoryMovementItem } from '../types';
 
+const ethSymbol = asNetworkSymbol('eth');
+const bscSymbol = asNetworkSymbol('bsc');
+const opSymbol = asNetworkSymbol('op');
+
 export const ethAccountTransactions: WalletAccountTransaction[] = [
     {
         descriptor: asAccountDescriptor('0x62270860B9a5337e46bE8563c512c9137AFa0384'),
         deviceState: 'state@hiddenDeviceWithImportedAccounts:1',
-        symbol: 'eth',
+        symbol: ethSymbol,
         type: 'recv',
         txid: '0x5484eea519c741b0a57b19ec5664def8d0a7291b8bf6523b6402d5969d662fc1',
         blockTime: 1720304171,
@@ -68,7 +73,7 @@ export const ethAccountTransactions: WalletAccountTransaction[] = [
     {
         descriptor: asAccountDescriptor('0x62270860B9a5337e46bE8563c512c9137AFa0384'),
         deviceState: 'state@hiddenDeviceWithImportedAccounts:1',
-        symbol: 'eth',
+        symbol: ethSymbol,
         type: 'failed',
         txid: '0x6f0002073337a2fa75d431670e52616011aafa2a9dde6dbadd4dfe90094e735e',
         blockTime: 1719941207,
@@ -130,7 +135,7 @@ export const ethAccountTransactions: WalletAccountTransaction[] = [
     {
         descriptor: asAccountDescriptor('0x62270860B9a5337e46bE8563c512c9137AFa0384'),
         deviceState: 'state@hiddenDeviceWithImportedAccounts:1',
-        symbol: 'eth',
+        symbol: ethSymbol,
         type: 'sent',
         txid: '0x825a6c28261a02df02aaef0a6922ed9cd194904a533bf8702fe203da23ec4488',
         blockTime: 1716201815,
@@ -183,7 +188,7 @@ export const ethAccountTransactions: WalletAccountTransaction[] = [
     {
         descriptor: asAccountDescriptor('0x62270860B9a5337e46bE8563c512c9137AFa0384'),
         deviceState: 'state@hiddenDeviceWithImportedAccounts:1',
-        symbol: 'eth',
+        symbol: ethSymbol,
         type: 'sent',
         txid: '0x942942271b2e729974663c81b7528e407705c44a3d43abee7c1eed1770da1107',
         blockTime: 1716201707,
@@ -255,7 +260,7 @@ export const ethAccountTransactions: WalletAccountTransaction[] = [
     {
         descriptor: asAccountDescriptor('0x62270860B9a5337e46bE8563c512c9137AFa0384'),
         deviceState: 'state@hiddenDeviceWithImportedAccounts:1',
-        symbol: 'eth',
+        symbol: ethSymbol,
         type: 'sent',
         txid: '0x00912d6743b8b6625d722d8bb05d4c02760128cf1078391ccfc45d0ce5e7add4',
         blockTime: 1715698031,
@@ -317,7 +322,7 @@ export const ethAccountTransactions: WalletAccountTransaction[] = [
     {
         descriptor: asAccountDescriptor('0x62270860B9a5337e46bE8563c512c9137AFa0384'),
         deviceState: 'state@hiddenDeviceWithImportedAccounts:1',
-        symbol: 'eth',
+        symbol: ethSymbol,
         type: 'sent',
         txid: '0x15db693ee8970a031230ce2e6761346aa24a1a19001983ca59568bf233553d95',
         blockTime: 1715328635,
@@ -383,7 +388,7 @@ export const ethAccountTransactions: WalletAccountTransaction[] = [
     {
         descriptor: asAccountDescriptor('0x62270860B9a5337e46bE8563c512c9137AFa0384'),
         deviceState: 'state@hiddenDeviceWithImportedAccounts:1',
-        symbol: 'eth',
+        symbol: ethSymbol,
         type: 'recv',
         txid: '0x59a785fa2ac16abfbf9460d4a935cef6cf4d9c25b428e948b7664aa17be5c7dc',
         blockTime: 1715027555,
@@ -437,7 +442,7 @@ export const ethAccountTransactions: WalletAccountTransaction[] = [
     {
         descriptor: asAccountDescriptor('0x62270860B9a5337e46bE8563c512c9137AFa0384'),
         deviceState: 'state@hiddenDeviceWithImportedAccounts:1',
-        symbol: 'eth',
+        symbol: ethSymbol,
         type: 'sent',
         txid: '0x77a49494df625295a836f06d54aa6ca09ef1029390a005ca9a0a205aac3d0c64',
         blockTime: 1700570711,
@@ -513,7 +518,7 @@ export const ethAccountTransactions: WalletAccountTransaction[] = [
     {
         descriptor: asAccountDescriptor('0x62270860B9a5337e46bE8563c512c9137AFa0384'),
         deviceState: 'state@hiddenDeviceWithImportedAccounts:1',
-        symbol: 'eth',
+        symbol: ethSymbol,
         type: 'recv',
         txid: '0x92599a835a14a99ec3c0b7a4faeada11c7d192f580155ae7bb6e813bf8346296',
         blockTime: 1678360427,
@@ -567,7 +572,7 @@ export const ethAccountTransactions: WalletAccountTransaction[] = [
     {
         descriptor: asAccountDescriptor('0x62270860B9a5337e46bE8563c512c9137AFa0384'),
         deviceState: 'state@hiddenDeviceWithImportedAccounts:1',
-        symbol: 'eth',
+        symbol: ethSymbol,
         type: 'sent',
         txid: '0xa6e62f58a97fca9994198e76db4964dddec64b961c71dd64dfa1f9dab252562c',
         blockTime: 1674135767,
@@ -629,7 +634,7 @@ export const ethAccountTransactions: WalletAccountTransaction[] = [
     {
         descriptor: asAccountDescriptor('0x62270860B9a5337e46bE8563c512c9137AFa0384'),
         deviceState: 'state@hiddenDeviceWithImportedAccounts:1',
-        symbol: 'eth',
+        symbol: ethSymbol,
         type: 'sent',
         txid: '0x897eaebac0cfe80852d509d58d97007c0e42d228bc974049082c92da14c7c7fa',
         blockTime: 1673008487,
@@ -693,7 +698,7 @@ export const ethAccountTransactions: WalletAccountTransaction[] = [
     {
         descriptor: asAccountDescriptor('0x62270860B9a5337e46bE8563c512c9137AFa0384'),
         deviceState: 'state@hiddenDeviceWithImportedAccounts:1',
-        symbol: 'bsc',
+        symbol: bscSymbol,
         type: 'sent',
         txid: '0xb970d1dc159a93b1f0610009ace4c51b1d0ae73891a21497075cfa725f4e35ff',
         blockTime: 1672848431,
@@ -760,7 +765,7 @@ export const ethAccountTransactions: WalletAccountTransaction[] = [
     {
         descriptor: asAccountDescriptor('0x62270860B9a5337e46bE8563c512c9137AFa0384'),
         deviceState: 'state@hiddenDeviceWithImportedAccounts:1',
-        symbol: 'eth',
+        symbol: ethSymbol,
         type: 'sent',
         txid: '0x65548c339b4ede588e604ec69ea3a2d71105f884140c8140336bb3e30f71fac7',
         blockTime: 1669295795,
@@ -834,7 +839,7 @@ export const ethAccountTransactions: WalletAccountTransaction[] = [
     {
         descriptor: asAccountDescriptor('0x62270860B9a5337e46bE8563c512c9137AFa0384'),
         deviceState: 'state@hiddenDeviceWithImportedAccounts:1',
-        symbol: 'eth',
+        symbol: ethSymbol,
         type: 'recv',
         txid: '0x185f78ab78cf563c7ac39ab237ca7617415d9c94805b1cdeb1acd6c9d1aab778',
         blockTime: 1669227215,
@@ -890,7 +895,7 @@ export const ethAccountTransactions: WalletAccountTransaction[] = [
     {
         descriptor: asAccountDescriptor('0x62270860B9a5337e46bE8563c512c9137AFa0384'),
         deviceState: 'state@hiddenDeviceWithImportedAccounts:1',
-        symbol: 'eth',
+        symbol: ethSymbol,
         type: 'sent',
         txid: '0x370303c232902b823e0537bc0ea105fed2291f6dabee816f3bf9a06a5e527294',
         blockTime: 1669112003,
@@ -957,7 +962,7 @@ export const ethAccountTransactions: WalletAccountTransaction[] = [
     {
         descriptor: asAccountDescriptor('0x62270860B9a5337e46bE8563c512c9137AFa0384'),
         deviceState: 'state@hiddenDeviceWithImportedAccounts:1',
-        symbol: 'eth',
+        symbol: ethSymbol,
         type: 'sent',
         txid: '0x68e48806bd6d6e684cd7661c60aabe1a25039cfcdf9f37b617feb6f70ee3ce82',
         blockTime: 1669015247,
@@ -1015,7 +1020,7 @@ export const ethAccountTransactions: WalletAccountTransaction[] = [
     {
         descriptor: asAccountDescriptor('0x62270860B9a5337e46bE8563c512c9137AFa0384'),
         deviceState: 'state@hiddenDeviceWithImportedAccounts:1',
-        symbol: 'eth',
+        symbol: ethSymbol,
         type: 'sent',
         txid: '0x3a98e4346e3b63723d48f9e837050b75495b0ddd24b4abfe7976a5557fbfb05f',
         blockTime: 1669015139,
@@ -1112,7 +1117,7 @@ export const ethAccountTransactions: WalletAccountTransaction[] = [
     {
         descriptor: asAccountDescriptor('0x62270860B9a5337e46bE8563c512c9137AFa0384'),
         deviceState: 'state@hiddenDeviceWithImportedAccounts:1',
-        symbol: 'eth',
+        symbol: ethSymbol,
         type: 'sent',
         txid: '0x26dff8909ebaa755b01a82265181e2c8fc8e6fc0d6217881d6e599bfb69f2b57',
         blockTime: 1669015031,
@@ -1177,7 +1182,7 @@ export const ethAccountTransactions: WalletAccountTransaction[] = [
     {
         descriptor: asAccountDescriptor('0x62270860B9a5337e46bE8563c512c9137AFa0384'),
         deviceState: 'state@hiddenDeviceWithImportedAccounts:1',
-        symbol: 'eth',
+        symbol: ethSymbol,
         type: 'sent',
         txid: '0x65430886fd0b8b03449e8752aa50edf6a92edf7739b2fec2e36c67e953bcc819',
         blockTime: 1666787435,
@@ -1241,7 +1246,7 @@ export const ethAccountTransactions: WalletAccountTransaction[] = [
     {
         descriptor: asAccountDescriptor('0x62270860B9a5337e46bE8563c512c9137AFa0384'),
         deviceState: 'state@hiddenDeviceWithImportedAccounts:1',
-        symbol: 'eth',
+        symbol: ethSymbol,
         type: 'recv',
         txid: '0x2cbbf54ee400b75ddd7f49375fd06f0a7862db8fbcfcb4c4f34b241f016e51fa',
         blockTime: 1666344347,
@@ -1295,7 +1300,7 @@ export const ethAccountTransactions: WalletAccountTransaction[] = [
     {
         descriptor: asAccountDescriptor('0x62270860B9a5337e46bE8563c512c9137AFa0384'),
         deviceState: 'state@hiddenDeviceWithImportedAccounts:1',
-        symbol: 'eth',
+        symbol: ethSymbol,
         type: 'sent',
         txid: '0xdd714419b68678ed1574ef671667ea08a749cff8ef0c5cd94b80fe50c80a53cd',
         blockTime: 1666343279,
@@ -1348,7 +1353,7 @@ export const ethAccountTransactions: WalletAccountTransaction[] = [
     {
         descriptor: asAccountDescriptor('0x62270860B9a5337e46bE8563c512c9137AFa0384'),
         deviceState: 'state@hiddenDeviceWithImportedAccounts:1',
-        symbol: 'eth',
+        symbol: ethSymbol,
         type: 'sent',
         txid: '0xdebceb20f924fe5972fa6b6d5dfee0303fee7baf182890a707170677f5613ea7',
         blockTime: 1666281347,
@@ -1401,7 +1406,7 @@ export const ethAccountTransactions: WalletAccountTransaction[] = [
     {
         descriptor: asAccountDescriptor('0x62270860B9a5337e46bE8563c512c9137AFa0384'),
         deviceState: 'state@hiddenDeviceWithImportedAccounts:1',
-        symbol: 'eth',
+        symbol: ethSymbol,
         type: 'recv',
         txid: '0x270b60eb8651c1916c275987370adb83c97cf69f47b631bca412fd9f2fc2886e',
         blockTime: 1665761171,
@@ -1465,7 +1470,7 @@ export const ethAccountTransactions: WalletAccountTransaction[] = [
     {
         descriptor: asAccountDescriptor('0x62270860B9a5337e46bE8563c512c9137AFa0384'),
         deviceState: 'state@hiddenDeviceWithImportedAccounts:1',
-        symbol: 'eth',
+        symbol: ethSymbol,
         type: 'recv',
         txid: '0x49460cf4a097564bb24fd065632984eb3a7734c5469cb42cdfaac37c0deca018',
         blockTime: 1665761075,
@@ -1529,7 +1534,7 @@ export const ethAccountTransactions: WalletAccountTransaction[] = [
     {
         descriptor: asAccountDescriptor('0x62270860B9a5337e46bE8563c512c9137AFa0384'),
         deviceState: 'state@hiddenDeviceWithImportedAccounts:1',
-        symbol: 'eth',
+        symbol: ethSymbol,
         type: 'sent',
         txid: '0x3cebeb6142548c99c90e1356aba6ca65da6eefab11c366610a504d4d3b474620',
         blockTime: 1665761003,
@@ -1582,7 +1587,7 @@ export const ethAccountTransactions: WalletAccountTransaction[] = [
     {
         descriptor: asAccountDescriptor('0x62270860B9a5337e46bE8563c512c9137AFa0384'),
         deviceState: 'state@hiddenDeviceWithImportedAccounts:1',
-        symbol: 'eth',
+        symbol: ethSymbol,
         type: 'recv',
         txid: '0x4d2bce60dd55a6a567a9e43305db4e6051e1ca252fc474d5cbe43d593176c44f',
         blockTime: 1665761003,
@@ -1646,7 +1651,7 @@ export const ethAccountTransactions: WalletAccountTransaction[] = [
     {
         descriptor: asAccountDescriptor('0x62270860B9a5337e46bE8563c512c9137AFa0384'),
         deviceState: 'state@hiddenDeviceWithImportedAccounts:1',
-        symbol: 'eth',
+        symbol: ethSymbol,
         type: 'sent',
         txid: '0x27f5e42ce95ae5c5a4786d62a4f66bfa2c090f262bbab00929da855eaefd1612',
         blockTime: 1665760907,
@@ -1699,7 +1704,7 @@ export const ethAccountTransactions: WalletAccountTransaction[] = [
     {
         descriptor: asAccountDescriptor('0x62270860B9a5337e46bE8563c512c9137AFa0384'),
         deviceState: 'state@hiddenDeviceWithImportedAccounts:1',
-        symbol: 'eth',
+        symbol: ethSymbol,
         type: 'sent',
         txid: '0x495e89c1b931cfcee7d97a39affdb63914e2d6957c3cd6e0024ae2e074b2e9fb',
         blockTime: 1665760847,
@@ -1752,7 +1757,7 @@ export const ethAccountTransactions: WalletAccountTransaction[] = [
     {
         descriptor: asAccountDescriptor('0x62270860B9a5337e46bE8563c512c9137AFa0384'),
         deviceState: 'state@hiddenDeviceWithImportedAccounts:1',
-        symbol: 'eth',
+        symbol: ethSymbol,
         type: 'recv',
         txid: '0xbcaf9676c21d29f5890e47b5d67dd7bdfe6ee85dd0353d9367f0c7982631cb6f',
         blockTime: 1665666335,
@@ -2073,7 +2078,7 @@ export const l2AccountTransactions: WalletAccountTransaction[] = [
         // plus an L1 data fee. Fee = 150000000 * 21000 + 12345 = 3150000012345.
         descriptor: asAccountDescriptor('0x1111111111111111111111111111111111111111'),
         deviceState: 'state@hiddenDeviceWithImportedAccounts:1',
-        symbol: 'op',
+        symbol: opSymbol,
         type: 'sent',
         txid: '0xaaa1',
         blockTime: 1720000000,
@@ -2120,7 +2125,7 @@ export const l2AccountTransactions: WalletAccountTransaction[] = [
         // Fee = 2000000000 * 21000 = 42000000000000.
         descriptor: asAccountDescriptor('0x1111111111111111111111111111111111111111'),
         deviceState: 'state@hiddenDeviceWithImportedAccounts:1',
-        symbol: 'op',
+        symbol: opSymbol,
         type: 'sent',
         txid: '0xaaa2',
         blockTime: 1720000100,

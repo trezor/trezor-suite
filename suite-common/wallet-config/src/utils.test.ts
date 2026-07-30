@@ -1,5 +1,6 @@
+import { asNetworkSymbol } from '@trezor/network-module';
+
 import { networks } from './networksConfig';
-import { asNetworkSymbol } from './types';
 import {
     filterNetworksByName,
     getMainnets,
@@ -8,7 +9,9 @@ import {
     getTestnets,
     isAccountBasedNetwork,
     isAccountOfNetwork,
+    isNetworkSymbolNonTestnet,
     isNetworkUsingExternalBackend,
+    toNetworkSymbolNonTestnet,
 } from './utils';
 
 const { btc: bitcoin, eth: ethereum, test: testnet, regtest } = networks;
@@ -92,8 +95,26 @@ describe('isAccountBasedNetwork', () => {
         expect(isAccountBasedNetwork(asNetworkSymbol(symbol))).toBe(true);
     });
 
-    it('returns throw for unknown network type', () => {
-        expect(() => isAccountBasedNetwork(asNetworkSymbol('unknown'))).toThrow();
+    it('throws for an unknown network type', () => {
+        expect(() => isAccountBasedNetwork(asNetworkSymbol('unknown'))).toThrow(
+            'Network configuration not found: unknown',
+        );
+    });
+});
+
+describe(isNetworkSymbolNonTestnet.name, () => {
+    it('distinguishes raw mainnet, testnet, and unknown symbols', () => {
+        expect(isNetworkSymbolNonTestnet('btc')).toBe(true);
+        expect(isNetworkSymbolNonTestnet('test')).toBe(false);
+        expect(isNetworkSymbolNonTestnet('unknown')).toBe(false);
+    });
+});
+
+describe(toNetworkSymbolNonTestnet.name, () => {
+    it('throws for a testnet symbol', () => {
+        expect(() => toNetworkSymbolNonTestnet('test')).toThrow(
+            'Expected a non-testnet network symbol: test',
+        );
     });
 });
 

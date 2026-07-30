@@ -29,6 +29,7 @@
         "@trezor/device-utils",
         "@trezor/env-utils",
         "@trezor/network-cardano",
+        "@trezor/network-module",
         "@trezor/network-ripple",
         "@trezor/network-solana",
         "@trezor/network-stellar",

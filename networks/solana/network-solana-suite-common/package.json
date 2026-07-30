@@ -13,6 +13,7 @@
     },
     "dependencies": {
         "@scure/base": "^2.0.0",
+        "@trezor/network-module": "workspace:*",
         "@trezor/network-module-suite-common-types": "workspace:*",
         "@trezor/network-solana": "workspace:*"
     }

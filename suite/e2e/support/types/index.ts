@@ -2,7 +2,6 @@ import type { CryptoId } from 'invity-api';
 import { RequireExactlyOne } from 'type-fest';
 
 import { AnalyticsDesktopEvents } from '@suite/analytics';
-import type { NetworkConfigWithoutTestnets, NetworkSymbol } from '@suite-common/wallet-config';
 import type { TrezorUserEnvLinkClass } from '@trezor/trezor-user-env-link';
 
 import { LaunchSuiteParams } from '../electron';
@@ -31,10 +30,12 @@ export type PaymentMethods =
     | 'bankTransfer'
     | 'revolutPay';
 
+export type E2eNetworkSymbol = string;
+
 export type PercentageOfBalanceParams = {
     percentage: number;
     balance: string;
-    symbol: NetworkSymbol;
+    symbol: E2eNetworkSymbol;
 };
 
 declare global {
@@ -62,14 +63,14 @@ export type TrezorUserEnv = Pick<
     | 'sendToAddressAndMineBlock'
 >;
 
-export type AssetPickerNetworkFilter = 'all-networks' | NetworkConfigWithoutTestnets['symbol'];
+export type AssetPickerNetworkFilter = 'all-networks' | E2eNetworkSymbol;
 
 export type BuyAsset = RequireExactlyOne<
     {
         searchFilter?: string;
         networkFilter?: AssetPickerNetworkFilter;
         assetCryptoId?: CryptoId;
-        networkSymbol?: NetworkSymbol;
+        networkSymbol?: E2eNetworkSymbol;
         tokenSymbol?: string;
     },
     'assetCryptoId' | 'networkSymbol'
@@ -78,7 +79,7 @@ export type BuyAsset = RequireExactlyOne<
 export type SellAsset = {
     searchFilter?: string;
     networkFilter?: AssetPickerNetworkFilter;
-    networkSymbol: NetworkSymbol;
+    networkSymbol: E2eNetworkSymbol;
     tokenSymbol?: string;
     accountIndex?: number;
 };

@@ -8,6 +8,7 @@ import {
 } from '@suite-common/redux-utils';
 import {
     type NetworkSymbol,
+    asNetworkSymbol,
     getNetwork,
     networkSymbolCollection,
 } from '@suite-common/wallet-config';
@@ -133,7 +134,7 @@ export const selectIsAnyNetworkEnabled = (state: WalletSettingsRootState) =>
 
 export const selectIsBitcoinEnabled = createMemoizedSelector(
     [selectEnabledNetworks],
-    enabledNetworks => enabledNetworks.includes('btc'),
+    enabledNetworks => enabledNetworks.includes(asNetworkSymbol('btc')),
 );
 
 export const selectAreSatsAmountUnit = (state: WalletSettingsRootState) => {
@@ -151,7 +152,7 @@ export const selectIsAmountInSats = (
     }
 
     const network = getNetwork(symbol);
-    const isAmountUnitSupported = network?.features.includes('amount-unit');
+    const isAmountUnitSupported = network.features.includes('amount-unit');
 
     return isAmountUnitSupported && selectAreSatsAmountUnit(state);
 };

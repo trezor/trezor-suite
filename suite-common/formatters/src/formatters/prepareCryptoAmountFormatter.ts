@@ -1,4 +1,4 @@
-import { A, pipe } from '@mobily/ts-belt';
+import { pipe } from '@mobily/ts-belt';
 
 import { redactNumericalSubstring } from '@suite-common/discreet-mode';
 import { LANGUAGES, type Locale } from '@suite-common/suite-types';
@@ -6,7 +6,6 @@ import {
     type NetworkSymbol,
     getNetworkOptional,
     isNetworkSymbol,
-    networks,
 } from '@suite-common/wallet-config';
 import { type TokenSymbol } from '@suite-common/wallet-types';
 import {
@@ -87,12 +86,11 @@ const convertToSubunits = ({
 }) => {
     const { symbol, isBalance = false, smallestUnitsOverride } = formatterContext;
     const { bitcoinAmountUnit } = config;
-    const decimals = getNetworkOptional(symbol)?.decimals ?? 0;
+    const network = getNetworkOptional(symbol);
+    const decimals = network?.decimals ?? 0;
 
     const areAmountUnitsSupported =
-        symbol && isNetworkSymbol(symbol)
-            ? A.includes(networks[symbol]?.features, 'amount-unit')
-            : undefined;
+        symbol && isNetworkSymbol(symbol) ? network?.features.includes('amount-unit') : undefined;
 
     if (smallestUnitsOverride === false) {
         return value;

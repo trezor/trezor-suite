@@ -1,9 +1,9 @@
-import type { NetworkSymbol } from '@suite-common/wallet-config';
 import { TestCategory, TestPriority, TestStream } from '@trezor/e2e-utils';
 
 import { DEVICE_RENDERED_EVM_INDENT } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
+import type { E2eNetworkSymbol } from '../../support/types';
 
 test.describe('Receive transaction', { tag: ['@T3W1', '@T3T1'] }, () => {
     test.use({
@@ -17,7 +17,7 @@ test.describe('Receive transaction', { tag: ['@T3W1', '@T3T1'] }, () => {
     });
 
     const testCases: Array<{
-        coin: NetworkSymbol;
+        coin: E2eNetworkSymbol;
         category: TestCategory;
         addressFormat: RegExp;
         deviceDisplayPrefix: string;

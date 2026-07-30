@@ -1,4 +1,3 @@
-import type { NetworkSymbol } from '@suite-common/wallet-config';
 import type { CoinjoinBackendSettings, CoinjoinClientSettings } from '@trezor/coinjoin';
 import {
     COORDINATOR_FEE_RATE_FALLBACK,
@@ -8,14 +7,14 @@ import {
 } from '@trezor/coinjoin/src/constants';
 import type { PartialRecord } from '@trezor/type-utils';
 
-export type CoinjoinSymbol = Extract<NetworkSymbol, 'btc' | 'test' | 'regtest'>;
+export type CoinjoinSymbol = 'btc' | 'test' | 'regtest';
 export type CoinjoinServerEnvironment = 'public' | 'staging' | 'localhost';
 export type CoinjoinNetworksConfig = CoinjoinBackendSettings &
     CoinjoinClientSettings & { blockbookUrls: string[] };
 
 type ServerEnvironment = PartialRecord<CoinjoinServerEnvironment, CoinjoinNetworksConfig>;
 
-export const COINJOIN_NETWORKS: PartialRecord<CoinjoinSymbol, ServerEnvironment> = {
+export const COINJOIN_NETWORKS: Record<CoinjoinSymbol, ServerEnvironment> = {
     btc: {
         /* default, see getCoinjoinConfig */
         public: {

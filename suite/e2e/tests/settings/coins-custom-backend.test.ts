@@ -1,11 +1,12 @@
-import type { BackendType, NetworkSymbol } from '@suite-common/wallet-config';
+import type { BackendType } from '@suite-common/wallet-config';
 import { TestCategory, TestPriority, TestStream } from '@trezor/e2e-utils';
 
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
+import type { E2eNetworkSymbol } from '../../support/types';
 
 type Coin = {
-    coin: NetworkSymbol;
+    coin: E2eNetworkSymbol;
     backendType: BackendType;
     customBackendUrlRight: string;
     customBackendUrlWrong: string;

@@ -20,8 +20,8 @@ import { parseAsset } from '@trezor/blockchain-link-utils/src/blockfrost';
 import { type DeviceState, FirmwareType } from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { isDesktop } from '@trezor/env-utils';
+import { asNetworkSymbol } from '@trezor/network-module';
 import type { OnUpgradeFunc } from '@trezor/suite-storage';
-import { type PartialRecord } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { migrateToV56 } from 'src/storage/migrations/legacyVersions/migrateToV56';
@@ -32,8 +32,10 @@ import { updateAll } from './utils';
 import type { DBWalletAccountTransaction, SuiteDBSchema } from '../definitions';
 
 type WalletWithBackends = {
-    backends?: PartialRecord<NetworkSymbol, Omit<CustomBackend, 'coin'>>;
+    backends?: Record<NetworkSymbol, Omit<CustomBackend, 'coin'>>;
 };
+
+const polSymbol = asNetworkSymbol('pol');
 
 export type DBWalletAccountTransactionCompatible = {
     order: DBWalletAccountTransaction['order'];
@@ -261,7 +263,6 @@ export const runLegacyMigrations: OnUpgradeFunc<SuiteDBSchema> = async (
 
     if (oldVersion < 26) {
         await updateAll(transaction, 'accounts', account => {
-            // @ts-expect-error
             if (account.symbol === 'vtc' && account.accountType === 'normal') {
                 // change account type from normal to segwit
                 account.accountType = 'segwit';
@@ -279,7 +280,10 @@ export const runLegacyMigrations: OnUpgradeFunc<SuiteDBSchema> = async (
             'walletSettings',
             settings => {
                 const { backends = {}, ...rest } = settings;
-                Object.entries(backends).forEach(([symbol, { type, urls }]) => {
+                Object.entries(backends).forEach(([symbol, backend]) => {
+                    if (backend === undefined) return;
+
+                    const { type, urls } = backend;
                     const settings: BackendSettings = {
                         selected: type,
                         urls: {
@@ -515,7 +519,6 @@ export const runLegacyMigrations: OnUpgradeFunc<SuiteDBSchema> = async (
     if (oldVersion < 36) {
         // remove trop network transactions, change token address to contract
         await updateAll(transaction, 'txs', tx => {
-            // @ts-expect-error
             if (tx.tx.symbol === 'trop') {
                 return null;
             }
@@ -531,7 +534,6 @@ export const runLegacyMigrations: OnUpgradeFunc<SuiteDBSchema> = async (
 
         // remove trop network accounts, change token address to contract
         await updateAll(transaction, 'accounts', account => {
-            // @ts-expect-error
             if (account.symbol === 'trop') {
                 return null;
             }
@@ -548,7 +550,6 @@ export const runLegacyMigrations: OnUpgradeFunc<SuiteDBSchema> = async (
         // remove trop from coin settings
         await updateAll(transaction, 'walletSettings', walletSettings => {
             walletSettings.enabledNetworks = walletSettings.enabledNetworks.filter(
-                // @ts-expect-error
                 network => network !== 'trop',
             );
 
@@ -732,7 +733,6 @@ export const runLegacyMigrations: OnUpgradeFunc<SuiteDBSchema> = async (
     if (oldVersion < 44) {
         // remove tgor network transactions
         await updateAll(transaction, 'txs', tx => {
-            // @ts-expect-error
             if (tx.tx.symbol === 'tgor') {
                 return null;
             }
@@ -742,7 +742,6 @@ export const runLegacyMigrations: OnUpgradeFunc<SuiteDBSchema> = async (
 
         // remove tgor network accounts
         await updateAll(transaction, 'accounts', account => {
-            // @ts-expect-error
             if (account.symbol === 'tgor') {
                 return null;
             }
@@ -753,7 +752,6 @@ export const runLegacyMigrations: OnUpgradeFunc<SuiteDBSchema> = async (
         // remove tgor from coin settings
         await updateAll(transaction, 'walletSettings', walletSettings => {
             walletSettings.enabledNetworks = walletSettings.enabledNetworks.filter(
-                // @ts-expect-error
                 network => network !== 'tgor',
             );
 
@@ -860,7 +858,7 @@ export const runLegacyMigrations: OnUpgradeFunc<SuiteDBSchema> = async (
             // @ts-expect-error
             const indexOfMatic = walletSettings.enabledNetworks.indexOf('matic');
             if (indexOfMatic !== -1) {
-                walletSettings.enabledNetworks[indexOfMatic] = 'pol';
+                walletSettings.enabledNetworks[indexOfMatic] = polSymbol;
             }
 
             return walletSettings;
@@ -871,7 +869,7 @@ export const runLegacyMigrations: OnUpgradeFunc<SuiteDBSchema> = async (
                 // @ts-expect-error
                 typeof suiteSettings.evmSettings?.confirmExplanationModalClosed?.matic == 'boolean'
             ) {
-                suiteSettings.evmSettings.confirmExplanationModalClosed.pol =
+                suiteSettings.evmSettings.confirmExplanationModalClosed[polSymbol] =
                     // @ts-expect-error
                     suiteSettings.evmSettings.confirmExplanationModalClosed.matic;
                 // @ts-expect-error
@@ -882,7 +880,7 @@ export const runLegacyMigrations: OnUpgradeFunc<SuiteDBSchema> = async (
                 // @ts-expect-error
                 typeof suiteSettings.evmSettings?.explanationBannerClosed?.matic == 'boolean'
             ) {
-                suiteSettings.evmSettings.explanationBannerClosed.pol =
+                suiteSettings.evmSettings.explanationBannerClosed[polSymbol] =
                     // @ts-expect-error
                     suiteSettings.evmSettings.explanationBannerClosed.matic;
                 // @ts-expect-error
@@ -896,7 +894,7 @@ export const runLegacyMigrations: OnUpgradeFunc<SuiteDBSchema> = async (
         // @ts-expect-error
         const maticBackendSettings = await backendSettings.get('matic');
         if (maticBackendSettings) {
-            backendSettings.add(maticBackendSettings, 'pol');
+            backendSettings.add(maticBackendSettings, polSymbol);
             // @ts-expect-error
             backendSettings.delete('matic');
         }
@@ -918,11 +916,10 @@ export const runLegacyMigrations: OnUpgradeFunc<SuiteDBSchema> = async (
         let accountsCursor = await accounts.openCursor();
         while (accountsCursor) {
             const account = accountsCursor.value;
-            // @ts-expect-error
             if (account.symbol === 'matic') {
                 const newAccount = {
                     ...account,
-                    symbol: 'pol' as const,
+                    symbol: polSymbol,
                     key: account.key.replace('matic', 'pol') as AccountKey,
                 };
                 await accountsCursor.delete();
@@ -940,7 +937,7 @@ export const runLegacyMigrations: OnUpgradeFunc<SuiteDBSchema> = async (
                     // @ts-expect-error
                     ...walletSettings.lastUsedFeeLevel,
                     // @ts-expect-error
-                    pol: { ...walletSettings.lastUsedFeeLevel['matic'] },
+                    [polSymbol]: { ...walletSettings.lastUsedFeeLevel['matic'] },
                 };
 
                 // @ts-expect-error
@@ -951,9 +948,8 @@ export const runLegacyMigrations: OnUpgradeFunc<SuiteDBSchema> = async (
         });
 
         await updateAll(transaction, 'txs', tx => {
-            // @ts-expect-error
             if (tx.tx.symbol === 'matic') {
-                tx.tx = { ...tx.tx, symbol: 'pol' };
+                tx.tx = { ...tx.tx, symbol: polSymbol };
             }
 
             return tx;
@@ -963,11 +959,10 @@ export const runLegacyMigrations: OnUpgradeFunc<SuiteDBSchema> = async (
         let graphCursor = await graphs.openCursor();
         while (graphCursor) {
             const graph = graphCursor.value;
-            //@ts-expect-error
             if (graph.account.symbol === 'matic') {
                 const newGraph = {
                     ...graph,
-                    account: { ...graph.account, symbol: 'pol' as const },
+                    account: { ...graph.account, symbol: polSymbol },
                 };
                 await graphCursor.delete();
                 await graphs.add(newGraph);

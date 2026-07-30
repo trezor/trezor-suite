@@ -1,6 +1,10 @@
 import { A, F } from '@mobily/ts-belt';
 
-import { type NetworkSymbol, type StakingNetworkSymbol } from '@suite-common/wallet-config';
+import {
+    type NetworkSymbol,
+    type StakingNetworkSymbol,
+    asNetworkSymbol,
+} from '@suite-common/wallet-config';
 import {
     type BaseCurrencyAmount,
     type CryptoBaseCurrencyPair,
@@ -122,7 +126,7 @@ export const calculateEarnDepositsFiatData = <
                 return [];
             }
 
-            const fiatRateKey = getFiatRateKey(deposit.symbol, baseCurrencyCode);
+            const fiatRateKey = getFiatRateKey(asNetworkSymbol(deposit.symbol), baseCurrencyCode);
             const fiatRate = currentFiatRates?.[fiatRateKey]?.rate;
 
             return [
@@ -165,7 +169,7 @@ export const calculateEarnDepositsFiatData = <
 
     const missingStakingRateTickers = getUniqueTickers(
         calculatedStakingDeposits.flatMap(({ deposit, hasFiatRate }) =>
-            hasFiatRate ? [] : [{ symbol: deposit.symbol }],
+            hasFiatRate ? [] : [{ symbol: asNetworkSymbol(deposit.symbol) }],
         ),
     );
     const missingStablecoinYieldRateTickers = getUniqueTickers(

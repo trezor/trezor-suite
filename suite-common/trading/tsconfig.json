@@ -29,6 +29,9 @@
         },
         { "path": "../../packages/env-utils" },
         {
+            "path": "../../networks/network-module/network-module"
+        },
+        {
             "path": "../../networks/solana/network-solana"
         },
         { "path": "../../packages/react-utils" },

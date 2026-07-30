@@ -6,11 +6,7 @@ import {
 } from '@suite-common/calldata';
 import { EVM_SPENDER_LABELS } from '@suite-common/suite-constants';
 import { type TrezorDevice } from '@suite-common/suite-types';
-import {
-    EARN_YIELD_CLAIM_PROVIDER,
-    getWrappedNativeSymbol,
-    networks,
-} from '@suite-common/wallet-config';
+import { EARN_YIELD_CLAIM_PROVIDER, getNetwork } from '@suite-common/wallet-config';
 import { WRAPPED_NATIVE_MIN_FIRMWARE } from '@suite-common/wallet-constants';
 import {
     type Account,
@@ -24,6 +20,7 @@ import {
 } from '@suite-common/wallet-types';
 import type { CardanoOutput } from '@trezor/connect';
 import { getFirmwareVersion, getFirmwareVersionArray } from '@trezor/device-utils';
+import { getWrappedNativeSymbol } from '@trezor/network-ethereum/constants';
 import { BigNumber, versionUtils } from '@trezor/utils';
 
 import { datetimeToLocktime } from './bitcoinUtils';
@@ -166,8 +163,8 @@ export const getClearSignedEvmTradingSwapCoverage = ({
     ) {
         return undefined;
     }
-    const network = networks[account.symbol];
-    if (!('chainId' in network)) {
+    const network = getNetwork(account.symbol);
+    if (!('chainId' in network) || network.chainId === undefined) {
         return undefined;
     }
     const to = precomposedTx.outputs.find(
@@ -222,8 +219,8 @@ export const isClearSignedWrappedNativeTransaction = ({
         return false;
     }
 
-    const network = networks[account.symbol];
-    if (!('chainId' in network)) {
+    const network = getNetwork(account.symbol);
+    if (!('chainId' in network) || network.chainId === undefined) {
         return false;
     }
 
@@ -510,7 +507,7 @@ const constructNewFlow = ({
                 outputs.push({
                     type: 'amount',
                     value: o.amount.toString(),
-                    value2: networks[symbol].name,
+                    value2: getNetwork(symbol).name,
                     token: precomposedTx.token,
                 });
             }
@@ -739,7 +736,7 @@ const constructNewFlow = ({
             outputs.push({
                 type: 'approve_data',
                 value: evmApprovalTxData.amount.toString(),
-                value2: networks[symbol].name,
+                value2: getNetwork(symbol).name,
                 token: precomposedTx.token,
             });
         }

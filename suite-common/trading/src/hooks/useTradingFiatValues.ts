@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import type { CryptoId } from 'invity-api';
 
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type FiatRatesRootState,
     selectBaseCurrency,
@@ -70,7 +70,9 @@ export const useTradingFiatValues = ({
         return {
             network: assetInfo?.network,
             contractAddress: isNativeToken ? undefined : assetInfo?.contractAddress,
-            symbol: assetInfo?.network?.symbol ?? TRADING_DEFAULT_CRYPTO_CURRENCY,
+            symbol: assetInfo?.network
+                ? asNetworkSymbol(assetInfo.network.symbol)
+                : TRADING_DEFAULT_CRYPTO_CURRENCY,
         };
     }, [cryptoId, isNativeToken]);
 

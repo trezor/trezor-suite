@@ -10,8 +10,10 @@ const buildArtifactPatterns = {
         'Import from the package root instead. Deep paths into "lib/" or "libDev/" target build artifacts that may not exist or may diverge from the workspace source.',
 };
 
+// The shared @trezor/network-module package exposes only its root entrypoint, so exclude it from
+// the rule that requires family packages such as @trezor/network-bitcoin to use subpath imports.
 const networksPackagePattern = {
-    regex: '^@trezor/network-[a-z]+$',
+    regex: '^@trezor/network-(?!module$)[a-z]+$',
     message: 'Import from /constants, /runtime or /types subpath.',
 };
 

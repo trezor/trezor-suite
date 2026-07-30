@@ -91,6 +91,9 @@
         { "path": "../../packages/connect" },
         { "path": "../../packages/device-utils" },
         {
+            "path": "../../networks/ethereum/network-ethereum"
+        },
+        {
             "path": "../../networks/network-module/network-module-suite-common-types"
         },
         {

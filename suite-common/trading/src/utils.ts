@@ -14,6 +14,7 @@ import {
 import {
     type Network,
     type NetworkSymbol,
+    asNetworkSymbol,
     getCoingeckoId,
     getNetwork,
     getNetworkByCoingeckoId,
@@ -29,7 +30,11 @@ import { getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
 import { type TokenInfo } from '@trezor/connect';
 import { exhaustive } from '@trezor/type-utils';
 
-import { CONTRACT_ADDRESS_FOR_NATIVE_TOKEN, CRYPTO_PLATFORM_SEPARATOR } from './constants';
+import {
+    CONTRACT_ADDRESS_FOR_NATIVE_TOKEN,
+    CRYPTO_PLATFORM_SEPARATOR,
+    TRADING_DEFAULT_CRYPTO_CURRENCY,
+} from './constants';
 import { regional } from './regional';
 import {
     type TradingCountryCode,
@@ -211,11 +216,11 @@ export const getUnusedAddressFromAccount = (account: Account) => {
 export const mapTestnetSymbol = (
     symbol: NetworkSymbol,
 ): Exclude<NetworkSymbol, 'test' | 'tsep' | 'thod' | 'txrp' | 'txlm'> => {
-    if (symbol === 'test') return 'btc';
-    if (symbol === 'tsep') return 'eth';
-    if (symbol === 'thod') return 'eth';
-    if (symbol === 'txrp') return 'xrp';
-    if (symbol === 'txlm') return 'xlm';
+    if (symbol === 'test') return asNetworkSymbol('btc');
+    if (symbol === 'tsep') return asNetworkSymbol('eth');
+    if (symbol === 'thod') return asNetworkSymbol('eth');
+    if (symbol === 'txrp') return asNetworkSymbol('xrp');
+    if (symbol === 'txlm') return asNetworkSymbol('xlm');
 
     return symbol;
 };
@@ -271,7 +276,7 @@ export const addIdsToQuotes = <T extends TradingType>(
 
 export const getNetworkDecimalsWithFallback = (
     symbol: NetworkSymbol | undefined,
-    fallback = getNetwork('btc').decimals,
+    fallback = getNetwork(TRADING_DEFAULT_CRYPTO_CURRENCY).decimals,
 ): number => (symbol ? (getNetwork(symbol).decimals ?? fallback) : fallback);
 
 export const getTradingQuotesByPaymentMethod = <T extends TradingTradeBuySellType>(

@@ -1,18 +1,23 @@
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
+import { asNetworkSymbol } from '@trezor/network-module';
 
 import { type Account } from 'src/types/wallet';
 
+const btcSymbol = asNetworkSymbol('btc');
+const ethSymbol = asNetworkSymbol('eth');
+const xrpSymbol = asNetworkSymbol('xrp');
+
 export const BTC_ACCOUNT: Account = {
     networkType: 'bitcoin',
-    symbol: 'btc',
+    symbol: btcSymbol,
     descriptor: asAccountDescriptor('btcDescriptor'),
     deviceState: '1stTestnetAddress@device_id:0',
     index: 0,
     path: "m/84'/0'/0'",
     key: mockAccountKey({
         descriptor: 'btcDescriptor',
-        symbol: 'btc',
+        symbol: btcSymbol,
         deviceStaticSessionId: '1stTestnetAddress@device_id:0',
     }),
     accountType: 'normal',
@@ -55,13 +60,13 @@ export const BTC_ACCOUNT: Account = {
 };
 
 export const ETH_ACCOUNT: Account = {
-    symbol: 'eth',
+    symbol: ethSymbol,
     networkType: 'ethereum',
     descriptor: asAccountDescriptor('0xdB09b793984B862C430b64B9ed53AcF867cC041F'),
     deviceState: '1stTestnetAddress@device_id:0',
     key: mockAccountKey({
         descriptor: '0xdB09b793984B862C430b64B9ed53AcF867cC041F',
-        symbol: 'eth',
+        symbol: ethSymbol,
         deviceStaticSessionId: '1stTestnetAddress@device_id:0',
     }),
     accountType: 'normal',
@@ -97,13 +102,13 @@ export const ETH_ACCOUNT: Account = {
 };
 
 export const XRP_ACCOUNT: Account = {
-    symbol: 'xrp',
+    symbol: xrpSymbol,
     networkType: 'ripple',
     descriptor: asAccountDescriptor('rAPERVgXZavGgiGv6xBgtiZurirW2yAmY'),
     deviceState: '1stTestnetAddress@device_id:0',
     key: mockAccountKey({
         descriptor: 'rAPERVgXZavGgiGv6xBgtiZurirW2yAmY',
-        symbol: 'xrp',
+        symbol: xrpSymbol,
         deviceStaticSessionId: '1stTestnetAddress@device_id:0',
     }),
     availableBalance: '100000000000',

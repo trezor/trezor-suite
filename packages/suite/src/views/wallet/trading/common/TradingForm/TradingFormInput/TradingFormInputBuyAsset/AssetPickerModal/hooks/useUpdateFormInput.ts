@@ -5,7 +5,7 @@ import {
     createAssetNativeTokenOption,
     useTradingAssets,
 } from '@suite-common/trading';
-import { type NetworkConfigWithoutTestnets } from '@suite-common/wallet-config';
+import { isNetworkSymbolNonTestnet } from '@suite-common/wallet-config';
 
 import { type TradingAssetListItem } from './useBuildTradingAssetOptions';
 
@@ -21,15 +21,15 @@ export function useUpdateFormInput({ closeModal, onAssetSelect }: UseUpdateFormI
         (asset: TradingAssetListItem) => {
             switch (asset.type) {
                 case 'account': {
-                    onAssetSelect(
-                        createAssetNativeTokenOption(
-                            asset.account.symbol as NetworkConfigWithoutTestnets['symbol'],
-                        ),
-                    );
+                    if (!isNetworkSymbolNonTestnet(asset.account.symbol)) break;
+
+                    onAssetSelect(createAssetNativeTokenOption(asset.account.symbol));
                     break;
                 }
 
                 case 'token': {
+                    if (!isNetworkSymbolNonTestnet(asset.account.symbol)) break;
+
                     onAssetSelect(resolveAssetTokenOption(asset.account.symbol, asset.token));
                     break;
                 }

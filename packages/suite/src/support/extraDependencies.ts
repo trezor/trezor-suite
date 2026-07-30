@@ -72,6 +72,7 @@ import {
     type TransactionsState,
     type WalletSettingsState,
     createAccountRefreshThrottle,
+    getExplorer,
     selectAccountsByDeviceState,
 } from '@suite-common/wallet-core';
 import { createAccountKey } from '@suite-common/wallet-types';
@@ -294,7 +295,7 @@ export const extraDependencies: ExtraDependenciesStatic = {
         storageLoadExplorer: (state: ExplorerConfig, { payload }: StorageLoadAction) => {
             payload.explorer.forEach(({ symbol, explorer }) => {
                 state[symbol] = {
-                    ...state[symbol],
+                    ...getExplorer(state, symbol),
                     custom: explorer,
                 };
             });

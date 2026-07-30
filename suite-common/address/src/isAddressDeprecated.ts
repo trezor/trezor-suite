@@ -1,4 +1,4 @@
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
 
 import type { AddressValidator } from './AddressValidator';
 
@@ -18,7 +18,7 @@ export const isAddressDeprecated = ({
     if (
         symbol === 'ltc' &&
         address.startsWith('3') &&
-        addressValidator.isAddressValid(address, 'btc')
+        addressValidator.isAddressValid(address, asNetworkSymbol('btc'))
     ) {
         return 'LTC_ADDRESS_INFO_URL';
     }
@@ -26,7 +26,7 @@ export const isAddressDeprecated = ({
     if (
         symbol === 'bch' &&
         address.startsWith('1') &&
-        addressValidator.isAddressValid(address, 'btc')
+        addressValidator.isAddressValid(address, asNetworkSymbol('btc'))
     ) {
         return 'HELP_CENTER_CASHADDR_URL';
     }

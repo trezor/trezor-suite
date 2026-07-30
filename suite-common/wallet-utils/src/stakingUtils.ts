@@ -83,15 +83,25 @@ export const secondsToDays = (seconds: number) => Math.round(seconds / 60 / 60 /
 export const isStakingNetworkType = (type: NetworkType): type is StakingNetworkType =>
     (STAKING_TYPES as readonly string[]).includes(type);
 
-export const isStakingSymbol = (symbol: NetworkSymbol): symbol is StakingNetworkSymbol =>
+const isStakingSymbolLiteral = (symbol: string): symbol is StakingNetworkSymbol =>
     (STAKING_SYMBOLS as readonly string[]).includes(symbol);
 
-const STAKING_BALANCE_BY_TYPE = {
+export const toStakingNetworkSymbol = (symbol: NetworkSymbol): StakingNetworkSymbol | null => {
+    const stakingSymbol: string = symbol;
+
+    return isStakingSymbolLiteral(stakingSymbol) ? stakingSymbol : null;
+};
+
+export const isStakingSymbol = (
+    symbol: NetworkSymbol,
+): symbol is NetworkSymbol & StakingNetworkSymbol => toStakingNetworkSymbol(symbol) !== null;
+
+const STAKING_BALANCE_BY_TYPE: Record<StakingNetworkType, (account: Account) => string | null> = {
     ethereum: getEthAccountTotalStakingBalance,
     solana: getSolAccountTotalStakingBalance,
     cardano: getAdaAccountTotalStakingBalance,
     tron: getTronAccountTotalStakingBalance,
-} satisfies Record<StakingNetworkType, (a: Account) => string | null>;
+};
 
 export const getAccountTotalStakingBalance = (account: Account) =>
     isStakingNetworkType(account.networkType)
@@ -110,9 +120,12 @@ export const isSupportedNativeStakingManagementSymbol = (symbol: NetworkSymbol) 
 export const getStakingLimitsByNetworkSymbol = (
     symbol: NetworkSymbol | undefined,
 ): StakingLimits | null => {
-    if (!symbol || !isStakingSymbol(symbol)) return null;
+    if (!symbol) return null;
 
-    switch (symbol) {
+    const stakingSymbol = toStakingNetworkSymbol(symbol);
+    if (stakingSymbol === null) return null;
+
+    switch (stakingSymbol) {
         case 'thod':
         case 'eth':
             return {
@@ -158,7 +171,7 @@ export const getStakingLimitsByNetworkSymbol = (
             };
 
         default:
-            return exhaustive(symbol);
+            return exhaustive(stakingSymbol);
     }
 };
 

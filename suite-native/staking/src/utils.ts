@@ -1,3 +1,3 @@
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
 
-export const AUTO_STAKED_SYMBOLS: NetworkSymbol[] = ['ada'] as const;
+export const AUTO_STAKED_SYMBOLS: readonly NetworkSymbol[] = [asNetworkSymbol('ada')];

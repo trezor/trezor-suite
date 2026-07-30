@@ -5,7 +5,7 @@ import {
 } from '@suite-common/device';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import { type TrezorDevice } from '@suite-common/suite-types';
-import { type NetworkSymbol, networks, networksCollection } from '@suite-common/wallet-config';
+import { type NetworkSymbol, getNetwork, networksCollection } from '@suite-common/wallet-config';
 import {
     type Account,
     type ReviewOutput,
@@ -122,7 +122,7 @@ export const selectDiscoveryAccountsParam = (
     knownOnly?: boolean,
 ): DiscoveryAccountsParam =>
     getDeviceAccountsPerEnabledNetwork(state, deviceState).map(({ symbol, accounts }) => {
-        const { networkType } = networks[symbol];
+        const { networkType } = getNetwork(symbol);
         const identity = tryGetAccountIdentity({ networkType, deviceState });
         const bitcoinGap = networkType === 'bitcoin' ? selectGapLimit(state, symbol) : undefined;
 

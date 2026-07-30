@@ -2,7 +2,6 @@ import { Platform } from 'react-native';
 
 import type { BuyTrade } from 'invity-api';
 
-import { type NetworkSymbol } from '@suite-common/networks';
 import { type AccountsRootState } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
@@ -13,6 +12,7 @@ import {
     getWalletState,
     mercuryoApplePayBuyQuote,
 } from '@suite-native/trading-fixtures';
+import { type NetworkSymbol } from '@trezor/network-module';
 
 import { type TradingRootState } from '../reducers';
 import {

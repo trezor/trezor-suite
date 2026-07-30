@@ -1,11 +1,12 @@
 import { Page } from '@playwright/test';
 import type { ExchangeTrade } from 'invity-api';
 
-import type { BackendType, NetworkSymbol } from '@suite-common/wallet-config';
+import type { BackendType } from '@suite-common/wallet-config';
 
 import { TradingChainBackend, createTradingChainBackend } from './tradingChainBackend';
 import { tradeEndpoint } from '../../../fixtures/trading';
 import { step } from '../../common';
+import type { E2eNetworkSymbol } from '../../types';
 
 export type CapturedLiveTrade = ExchangeTrade & { sendAddress: string; exchange: string };
 
@@ -73,7 +74,7 @@ export class TradingMockNew {
 
     // Sell + swap only; call before discovery.
     @step()
-    async startBackend(symbol: NetworkSymbol): Promise<{ type: BackendType; url: string }> {
+    async startBackend(symbol: E2eNetworkSymbol): Promise<{ type: BackendType; url: string }> {
         this.backend = createTradingChainBackend(symbol);
         this.backend.blockBroadcast();
         await this.backend.start();

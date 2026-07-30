@@ -1,6 +1,6 @@
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 
-import { getDefaultBackendType, isTrezorConnectBackendType } from './backendUtils';
+import { getBlockchain, getDefaultBackendType, isTrezorConnectBackendType } from './backendUtils';
 
 describe('backend utils', () => {
     test('getDefaultBackendType', () => {
@@ -17,5 +17,11 @@ describe('backend utils', () => {
         expect(isTrezorConnectBackendType('gibberish')).toBe(false);
         // @ts-expect-error
         expect(isTrezorConnectBackendType({})).toBe(false);
+    });
+
+    test('getBlockchain throws when state is missing', () => {
+        expect(() => getBlockchain({}, asNetworkSymbol('btc'))).toThrow(
+            'Blockchain state not found: btc',
+        );
     });
 });

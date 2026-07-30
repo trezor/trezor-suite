@@ -1,10 +1,11 @@
 import { useMemo } from 'react';
 
 import { type YieldDtoV2, useAllYieldOpportunities } from '@suite-common/earn-stablecoin-api';
-import { getNetworkByYieldXyzId, isWrappedNativeToken } from '@suite-common/wallet-config';
+import { getNetworkByYieldXyzId } from '@suite-common/wallet-config';
 import { isYieldVaultOperational } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { getApyPercent } from '@suite-common/wallet-utils';
+import { isWrappedNativeToken } from '@trezor/network-ethereum/constants';
 
 import {
     getBestEnabledYieldVault,

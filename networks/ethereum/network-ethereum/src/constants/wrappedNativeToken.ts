@@ -1,4 +1,10 @@
-import type { EthereumNetworkSymbol } from './networkSymbol';
+import type { NetworkSymbol } from '@trezor/network-module';
+
+import {
+    type EthereumNetworkSymbol,
+    isSupportedEthereumNetwork,
+    toEthereumNetworkSymbol,
+} from './networkSymbol';
 
 type WrappedNativeToken = {
     readonly address: `0x${string}`;
@@ -25,17 +31,22 @@ export const WRAPPED_NATIVE: Readonly<Record<EthereumNetworkSymbol, WrappedNativ
     thod: { address: '0xE0decAa66aED871ac9eb924443D1Bf333Fdb062E', symbol: 'WETH', decimals: 18 },
 };
 
-export const getWrappedNativeToken = (networkSymbol: EthereumNetworkSymbol) =>
-    WRAPPED_NATIVE[networkSymbol];
+export const getWrappedNativeToken = (networkSymbol: NetworkSymbol) => {
+    if (!isSupportedEthereumNetwork(networkSymbol)) {
+        return undefined;
+    }
 
-export const getWrappedNativeAddress = (networkSymbol: EthereumNetworkSymbol) =>
-    getWrappedNativeToken(networkSymbol).address;
+    return WRAPPED_NATIVE[toEthereumNetworkSymbol(networkSymbol)];
+};
 
-export const getWrappedNativeSymbol = (networkSymbol: EthereumNetworkSymbol) =>
-    getWrappedNativeToken(networkSymbol).symbol;
+export const getWrappedNativeAddress = (networkSymbol: NetworkSymbol) =>
+    getWrappedNativeToken(networkSymbol)?.address;
+
+export const getWrappedNativeSymbol = (networkSymbol: NetworkSymbol) =>
+    getWrappedNativeToken(networkSymbol)?.symbol;
 
 export const isWrappedNativeToken = (
-    networkSymbol: EthereumNetworkSymbol,
+    networkSymbol: NetworkSymbol,
     contractAddress?: string | null,
 ): boolean => {
     const wrappedNativeAddress = getWrappedNativeAddress(networkSymbol);
@@ -48,6 +59,8 @@ export const isWrappedNativeToken = (
     // the design system's TokenIcon, where an EVM address library would drag wasm-adjacent
     // dependencies into its webpack build).
     return (
-        !!contractAddress && wrappedNativeAddress.toLowerCase() === contractAddress.toLowerCase()
+        !!wrappedNativeAddress &&
+        !!contractAddress &&
+        wrappedNativeAddress.toLowerCase() === contractAddress.toLowerCase()
     );
 };

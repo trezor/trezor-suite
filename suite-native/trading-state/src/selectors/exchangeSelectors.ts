@@ -1,4 +1,3 @@
-import { type NetworkSymbol } from '@suite-common/networks';
 import {
     selectGroupedTradingExchangeQuotes,
     selectTradingExchangeBuyCryptoIds,
@@ -14,6 +13,7 @@ import {
     coinInfoToTradeableAsset,
     getReceiveAccountFromAccountAndAddressString,
 } from '@suite-native/trading-atoms';
+import { type NetworkSymbol } from '@trezor/network-module';
 
 import {
     type TradingRootState,

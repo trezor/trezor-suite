@@ -1,21 +1,34 @@
 import {
-    type EthereumNetworkSymbol,
     isSupportedEthereumNetwork,
     supportedEthereumNetworks,
+    toEthereumNetworkSymbol,
 } from '@trezor/network-ethereum/constants';
-import type { SuiteCommonNetworkModule } from '@trezor/network-module-suite-common-types';
+import { type NetworkSymbol, asNetworkSymbols } from '@trezor/network-module';
+import type {
+    AddressValidator,
+    SuiteCommonNetworkModule,
+} from '@trezor/network-module-suite-common-types';
 
 import { ethereumValidator } from './addressValidator/ethereumAddressValidator';
-import { getAccountSyncInterval, getNetworkConfig } from './networkConfig';
+import {
+    getAccountSyncInterval as getEthereumAccountSyncInterval,
+    getNetworkConfig as getEthereumNetworkConfig,
+} from './networkConfig';
 
-export type EthereumNetworkSuiteCommonNetworkModule =
-    SuiteCommonNetworkModule<EthereumNetworkSymbol>;
+const supportedNetworks = asNetworkSymbols(supportedEthereumNetworks);
 
-export const createEthereumSuiteCommonNetworkModule =
-    (): EthereumNetworkSuiteCommonNetworkModule => ({
-        addressValidator: ethereumValidator,
-        getSupportedNetworks: () => supportedEthereumNetworks,
-        isSupportedNetwork: isSupportedEthereumNetwork,
-        getNetworkConfig,
-        getAccountSyncInterval,
-    });
+const addressValidator: AddressValidator<NetworkSymbol> = {
+    isAddressValid: (address, symbol) =>
+        ethereumValidator.isAddressValid(address, toEthereumNetworkSymbol(symbol)),
+    getAddressType: (address, symbol) =>
+        ethereumValidator.getAddressType(address, toEthereumNetworkSymbol(symbol)),
+};
+
+export const createEthereumSuiteCommonNetworkModule = (): SuiteCommonNetworkModule => ({
+    addressValidator,
+    getSupportedNetworks: () => supportedNetworks,
+    isSupportedNetwork: isSupportedEthereumNetwork,
+    getNetworkConfig: symbol => getEthereumNetworkConfig(toEthereumNetworkSymbol(symbol)),
+    getAccountSyncInterval: symbol =>
+        getEthereumAccountSyncInterval(toEthereumNetworkSymbol(symbol)),
+});

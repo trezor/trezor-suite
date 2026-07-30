@@ -9,7 +9,12 @@ import {
     createAssetTokenOption,
     getCryptoId,
 } from '@suite-common/trading';
-import { type NetworkSymbol, networkSymbolCollection } from '@suite-common/wallet-config';
+import {
+    type NetworkSymbol,
+    asNetworkSymbol,
+    networkSymbolCollection,
+    toNetworkSymbolNonTestnet,
+} from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { accountSearchFn, isTokenMatchesSearch } from '@suite-common/wallet-utils';
 
@@ -27,6 +32,10 @@ import {
     type AggregatedAccountWithTokens,
     useAgregatedAccountsWithTokens,
 } from '../../hooks/useAgregatedAccountsWithTokens';
+
+const btcSymbol = toNetworkSymbolNonTestnet(asNetworkSymbol('btc'));
+const ethSymbol = toNetworkSymbolNonTestnet(asNetworkSymbol('eth'));
+const solSymbol = toNetworkSymbolNonTestnet(asNetworkSymbol('sol'));
 
 function createSearchFilter(search: string) {
     return function searchFor(property?: string | null) {
@@ -68,27 +77,24 @@ function excludeCryptoIds(excludedCryptoIds: Set<CryptoId>) {
  * Note this is going to be replaced soon with more sophisticated top assets logic.
  */
 function createTopFiveAssets(excludedCryptoIds: Set<CryptoId>) {
-    return (
-        (
-            [
-                createAssetNativeTokenOption('btc'),
-                createAssetNativeTokenOption('eth'),
-                createAssetTokenOption('eth', {
-                    contract: '0xdac17f958d2ee523a2206206994597c13d831ec7',
-                    symbol: 'USDT',
-                    name: 'Tether',
-                }),
-                createAssetTokenOption('eth', {
-                    contract: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-                    symbol: 'USDC',
-                    name: 'USDC',
-                }),
-                createAssetNativeTokenOption('sol'),
-            ] satisfies TradingAssetOption[]
-        )
-            // E.g. filter out "from" field value
-            .filter(asset => !excludedCryptoIds.has(asset.id))
-    );
+    const topFiveAssets: TradingAssetOption[] = [
+        createAssetNativeTokenOption(btcSymbol),
+        createAssetNativeTokenOption(ethSymbol),
+        createAssetTokenOption(ethSymbol, {
+            contract: '0xdac17f958d2ee523a2206206994597c13d831ec7',
+            symbol: 'USDT',
+            name: 'Tether',
+        }),
+        createAssetTokenOption(ethSymbol, {
+            contract: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+            symbol: 'USDC',
+            name: 'USDC',
+        }),
+        createAssetNativeTokenOption(solSymbol),
+    ];
+
+    // E.g. filter out "from" field value
+    return topFiveAssets.filter(asset => !excludedCryptoIds.has(asset.id));
 }
 
 type GetOrderNetworksProps = {

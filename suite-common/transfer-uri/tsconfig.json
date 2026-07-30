@@ -5,6 +5,9 @@
         { "path": "../networks" },
         { "path": "../wallet-config" },
         {
+            "path": "../../networks/network-module/network-module"
+        },
+        {
             "path": "../../networks/network-module/network-module-suite-common-types"
         },
         { "path": "../../packages/type-utils" },

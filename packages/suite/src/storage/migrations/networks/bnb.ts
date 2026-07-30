@@ -1,8 +1,11 @@
 import { type AccountKey } from '@suite-common/wallet-types';
+import { asNetworkSymbol } from '@trezor/network-module';
 import type { OnUpgradeFunc } from '@trezor/suite-storage';
 
 import type { SuiteDBSchema } from '../../definitions';
 import { updateAll } from '../utils';
+
+const bscSymbol = asNetworkSymbol('bsc');
 
 export const migrationOfBnbNetwork: OnUpgradeFunc<SuiteDBSchema> = async (
     _db,
@@ -16,7 +19,7 @@ export const migrationOfBnbNetwork: OnUpgradeFunc<SuiteDBSchema> = async (
         // @ts-expect-error
         const indexOfBnb = walletSettings.enabledNetworks.indexOf('bnb');
         if (indexOfBnb !== -1) {
-            walletSettings.enabledNetworks[indexOfBnb] = 'bsc';
+            walletSettings.enabledNetworks[indexOfBnb] = bscSymbol;
         }
 
         return walletSettings;
@@ -27,7 +30,7 @@ export const migrationOfBnbNetwork: OnUpgradeFunc<SuiteDBSchema> = async (
             // @ts-expect-error
             typeof suiteSettings.evmSettings?.confirmExplanationModalClosed?.bnb == 'boolean'
         ) {
-            suiteSettings.evmSettings.confirmExplanationModalClosed.bsc =
+            suiteSettings.evmSettings.confirmExplanationModalClosed[bscSymbol] =
                 // @ts-expect-error
                 suiteSettings.evmSettings.confirmExplanationModalClosed.bnb;
             // @ts-expect-error
@@ -38,7 +41,7 @@ export const migrationOfBnbNetwork: OnUpgradeFunc<SuiteDBSchema> = async (
             // @ts-expect-error
             typeof suiteSettings.evmSettings?.explanationBannerClosed?.bnb == 'boolean'
         ) {
-            suiteSettings.evmSettings.explanationBannerClosed.bsc =
+            suiteSettings.evmSettings.explanationBannerClosed[bscSymbol] =
                 // @ts-expect-error
                 suiteSettings.evmSettings.explanationBannerClosed.bnb;
             // @ts-expect-error
@@ -52,7 +55,7 @@ export const migrationOfBnbNetwork: OnUpgradeFunc<SuiteDBSchema> = async (
     // @ts-expect-error
     const bnbBackendSettings = await backendSettings.get('bnb');
     if (bnbBackendSettings) {
-        backendSettings.add(bnbBackendSettings, 'bsc');
+        backendSettings.add(bnbBackendSettings, bscSymbol);
         // @ts-expect-error
         backendSettings.delete('bnb');
     }
@@ -74,11 +77,10 @@ export const migrationOfBnbNetwork: OnUpgradeFunc<SuiteDBSchema> = async (
     let accountsCursor = await accounts.openCursor();
     while (accountsCursor) {
         const account = accountsCursor.value;
-        // @ts-expect-error
         if (account.symbol === 'bnb') {
             const newAccount = {
                 ...account,
-                symbol: 'bsc' as const,
+                symbol: bscSymbol,
                 key: account.key.replace('bnb', 'bsc') as AccountKey,
             };
             await accountsCursor.delete();
@@ -96,7 +98,7 @@ export const migrationOfBnbNetwork: OnUpgradeFunc<SuiteDBSchema> = async (
                 // @ts-expect-error
                 ...walletSettings.lastUsedFeeLevel,
                 // @ts-expect-error
-                bsc: { ...walletSettings.lastUsedFeeLevel['bnb'] },
+                [bscSymbol]: { ...walletSettings.lastUsedFeeLevel['bnb'] },
             };
 
             // @ts-expect-error
@@ -107,9 +109,8 @@ export const migrationOfBnbNetwork: OnUpgradeFunc<SuiteDBSchema> = async (
     });
 
     await updateAll(transaction, 'txs', tx => {
-        // @ts-expect-error
         if (tx.tx.symbol === 'bnb') {
-            tx.tx = { ...tx.tx, symbol: 'bsc' };
+            tx.tx = { ...tx.tx, symbol: bscSymbol };
         }
 
         return tx;
@@ -119,11 +120,10 @@ export const migrationOfBnbNetwork: OnUpgradeFunc<SuiteDBSchema> = async (
     let graphCursor = await graphs.openCursor();
     while (graphCursor) {
         const graph = graphCursor.value;
-        //@ts-expect-error
         if (graph.account.symbol === 'bnb') {
             const newGraph = {
                 ...graph,
-                account: { ...graph.account, symbol: 'bsc' as const },
+                account: { ...graph.account, symbol: bscSymbol },
             };
             await graphCursor.delete();
             await graphs.add(newGraph);

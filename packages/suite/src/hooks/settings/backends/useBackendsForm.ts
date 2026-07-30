@@ -14,6 +14,7 @@ import {
 } from '@suite-common/wallet-config';
 import { blockchainActions } from '@suite-common/wallet-core';
 import { type BackendSettings } from '@suite-common/wallet-types';
+import { getBlockchain } from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -72,7 +73,7 @@ const getStoredState = (
 
 export const useBackendsForm = (symbol: NetworkSymbol) => {
     const { analytics } = useServices(selectDesktopAnalyticsDep);
-    const backends = useSelector(state => state.wallet.blockchain[symbol].backends);
+    const backends = useSelector(state => getBlockchain(state.wallet.blockchain, symbol).backends);
     const dispatch = useDispatch();
     const { translationString } = useTranslation();
     const [currentValues, setCurrentValues] = useState(() =>

@@ -2,7 +2,7 @@ import { ReactSVG } from 'react-svg';
 
 import styled from 'styled-components';
 
-import { cryptoIcons } from '@suite-common/icons';
+import { type CryptoIconName, cryptoIcons, isCryptoIconSymbol } from '@suite-common/icons';
 
 import { type TokenIconProps, type TokenIconSize } from './tokenIconTypes';
 
@@ -38,7 +38,12 @@ export const NativeTokenIcon = ({
     size = 32,
     'data-testid': dataTestId,
 }: NativeTokenIconProps) => {
-    const src = cryptoIcons[symbol];
+    if (!isCryptoIconSymbol(symbol)) {
+        return null;
+    }
+
+    const iconName: CryptoIconName = symbol;
+    const src = cryptoIcons[iconName];
 
     return (
         <SvgContainer $size={size} data-testid={dataTestId}>

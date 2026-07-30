@@ -12,6 +12,9 @@
             "path": "../../networks/ethereum/network-ethereum-suite-common"
         },
         {
+            "path": "../../networks/network-module/network-module"
+        },
+        {
             "path": "../../networks/network-module/network-module-suite-common-types"
         },
         {

@@ -1,8 +1,7 @@
-import { NetworkSymbol } from '@suite-common/wallet-config';
-
 import { expect, test } from '../../support/fixtures';
+import type { E2eNetworkSymbol } from '../../support/types';
 
-const networks: NetworkSymbol[] = ['btc', 'eth', 'pol', 'bsc', 'arb'];
+const networks: E2eNetworkSymbol[] = ['btc', 'eth', 'pol', 'bsc', 'arb'];
 
 test.describe('Onboarding', { tag: ['@T3W1', '@T3T1'] }, () => {
     test.beforeEach(async ({ onboardingPage }) => {

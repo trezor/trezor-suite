@@ -2,7 +2,7 @@ import { keccak_256 } from '@noble/hashes/sha3.js';
 import { bytesToHex } from '@noble/hashes/utils.js';
 import { base58 } from '@scure/base';
 
-import type { BackendType, NetworkSymbol } from '@suite-common/wallet-config';
+import type { BackendType } from '@suite-common/wallet-config';
 import { BlockbookProxyMock, PASSTHROUGH, SolanaRpcServerMock } from '@trezor/e2e-utils';
 import { Transaction, networks } from '@trezor/utxo-lib';
 
@@ -10,6 +10,7 @@ import {
     getSignatureStatusesResponse,
     sendTransactionResponse,
 } from '../../../fixtures/solana-responses';
+import type { E2eNetworkSymbol } from '../../types';
 
 // A live passthru backend for one network, set as its custom backend so it also reaches the
 // blockchain-link worker (unlike page.route). Everything is forwarded to the live upstream
@@ -115,7 +116,7 @@ class BlockbookTradingBackend implements TradingChainBackend {
     }
 }
 
-export const createTradingChainBackend = (symbol: NetworkSymbol): TradingChainBackend => {
+export const createTradingChainBackend = (symbol: E2eNetworkSymbol): TradingChainBackend => {
     switch (symbol) {
         case 'sol':
             return new SolanaTradingBackend();

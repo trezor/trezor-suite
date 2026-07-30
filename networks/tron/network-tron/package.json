@@ -45,6 +45,7 @@
     },
     "dependencies": {
         "@noble/hashes": "^2.0.1",
+        "@trezor/network-module": "workspace:*",
         "@trezor/utils": "workspace:*"
     }
 }

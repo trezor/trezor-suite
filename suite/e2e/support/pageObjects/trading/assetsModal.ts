@@ -1,10 +1,13 @@
 import { Locator, Page } from '@playwright/test';
 import type { CryptoId } from 'invity-api';
 
-import type { NetworkSymbol } from '@suite-common/wallet-config';
-
 import { step } from '../../common';
-import { AssetPickerNetworkFilter, BuyAsset, SellAsset } from '../../types';
+import {
+    type AssetPickerNetworkFilter,
+    type BuyAsset,
+    type E2eNetworkSymbol,
+    type SellAsset,
+} from '../../types';
 
 export class TradingAssetPicker {
     readonly openSellModal: Locator;
@@ -17,11 +20,11 @@ export class TradingAssetPicker {
     readonly globalAddAccountButton: Locator;
 
     // buy and sell options
-    readonly sellOption = (networkSymbol: NetworkSymbol, tokenSymbol?: string) =>
+    readonly sellOption = (networkSymbol: E2eNetworkSymbol, tokenSymbol?: string) =>
         this.page.getByTestId(
             `@asset-picker/sell/option/${networkSymbol}${tokenSymbol ? `/${tokenSymbol}` : ''}`,
         );
-    readonly buyOption = (networkSymbol: NetworkSymbol, tokenSymbol?: string) =>
+    readonly buyOption = (networkSymbol: E2eNetworkSymbol, tokenSymbol?: string) =>
         this.page.getByTestId(
             `@asset-picker/buy/option/${networkSymbol}${tokenSymbol ? `/${tokenSymbol}` : ''}`,
         );
@@ -30,7 +33,7 @@ export class TradingAssetPicker {
 
     // send and receive options
     readonly sendOption = (params: {
-        accountSymbol: NetworkSymbol;
+        accountSymbol: E2eNetworkSymbol;
         accountType: string;
         index: number;
         tokenSymbol?: string;
@@ -41,7 +44,7 @@ export class TradingAssetPicker {
             }`,
         );
     readonly receiveOption = (params: {
-        accountSymbol: NetworkSymbol;
+        accountSymbol: E2eNetworkSymbol;
         accountType: string;
         index: number;
     }) =>

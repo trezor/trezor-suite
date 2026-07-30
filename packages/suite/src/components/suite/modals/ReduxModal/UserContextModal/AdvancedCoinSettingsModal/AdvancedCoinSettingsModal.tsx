@@ -5,6 +5,7 @@ import { selectModalType } from '@suite/modal';
 import { selectHasExperimentalFeature } from '@suite/settings';
 import { selectTorState } from '@suite/tor';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import { getExplorer } from '@suite-common/wallet-core';
 import {
     Badge,
     Banner,
@@ -47,7 +48,7 @@ export const AdvancedCoinSettingsModal = ({
     const dispatch = useDispatch();
     const [torModalOpen, setTorModalOpen] = useState(false);
 
-    const explorer = useSelector(state => state.wallet.explorer[symbol]);
+    const explorer = useSelector(state => getExplorer(state.wallet.explorer, symbol));
     const usesCustomExplorer = explorer.custom !== undefined;
 
     const isBitcoinNetwork = network.networkType === 'bitcoin';

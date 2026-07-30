@@ -1,12 +1,11 @@
-import { networks } from '@suite-common/wallet-config';
+import { getNetworkOptional } from '@suite-common/wallet-config';
 import {
-    type CoinSymbol,
     type EnabledNetwork,
     GRANTABLE_PERMISSIONS,
     type PermissionRequest,
-    asCoinSymbol,
     isCoinSymbol,
 } from '@trezor/connect';
+import { type CoinSymbol, asCoinSymbol } from '@trezor/connect-common';
 import { unique } from '@trezor/utils/src/unique';
 
 // A `PermissionRequest.coin` is the canonical lowercase `CoinSymbol`: call-derived permissions are
@@ -31,9 +30,9 @@ export const PERMISSION_PREVIEW_LIMIT = 6;
  * recognised only by `@trezor/connect`).
  */
 export const getCoinLabel = (shortcut: string): string => {
-    const key = shortcut.toLowerCase() as keyof typeof networks;
+    const network = getNetworkOptional(shortcut.toLowerCase());
 
-    return networks[key]?.name ?? shortcut.toUpperCase();
+    return network?.name ?? shortcut.toUpperCase();
 };
 
 // Icon shown for each permission. These names exist in both the web icon set and

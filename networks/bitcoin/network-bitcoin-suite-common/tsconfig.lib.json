@@ -5,6 +5,9 @@
     "references": [
         { "path": "../network-bitcoin" },
         {
+            "path": "../../network-module/network-module"
+        },
+        {
             "path": "../../network-module/network-module-suite-common-types"
         },
         { "path": "../../../packages/utils" }

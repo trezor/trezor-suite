@@ -5,9 +5,10 @@ import {
     sortRewardsByUnderlyingToken,
 } from '@suite-common/earn-stablecoin-api';
 import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
-import { getApyPercent, isWrappedNativeToken } from '@suite-common/wallet-utils';
+import { getApyPercent } from '@suite-common/wallet-utils';
 import { Column, Icon, Row, Text } from '@trezor/components';
 import { ChartLineIcon } from '@trezor/icons';
+import { isWrappedNativeToken } from '@trezor/network-ethereum/constants';
 import { TokenIcon } from '@trezor/product-components';
 
 type EarnYieldApyBreakdownProps = {

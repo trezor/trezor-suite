@@ -1,11 +1,10 @@
 import { Locator, Page } from '@playwright/test';
 
-import type { NetworkSymbol } from '@suite-common/wallet-config';
-
 import { step } from '../common';
 import { DevicePrompt } from './devicePrompt';
 import { DeviceFixture } from '../device';
 import { expect } from '../testExtends/customMatchers';
+import type { E2eNetworkSymbol } from '../types';
 
 export type graphRangeOptions = 'day' | 'week' | 'month' | 'year' | 'all';
 export type PromoBannerType = 'tex' | 'ts7';
@@ -50,9 +49,9 @@ export class DashboardPage {
     readonly openUnusedWalletButton2: Locator;
     readonly loading: Locator;
     readonly notificationNoBackupButton: Locator;
-    readonly buyButton = (networkSymbol: NetworkSymbol): Locator =>
+    readonly buyButton = (networkSymbol: E2eNetworkSymbol): Locator =>
         this.page.getByTestId(`@dashboard/asset/${networkSymbol}/buy-button`);
-    readonly stakeButton = (networkSymbol: NetworkSymbol): Locator =>
+    readonly stakeButton = (networkSymbol: E2eNetworkSymbol): Locator =>
         this.page.getByTestId(`@dashboard/asset/${networkSymbol}/stake-button`);
     readonly walletReady: Locator;
     readonly discoveryEmptyHeader: Locator;

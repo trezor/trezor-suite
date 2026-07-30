@@ -1,5 +1,6 @@
 import { type RouterState, routerLocationChange } from '@suite/router';
 import { TorStatus, torActions } from '@suite/tor';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { accountsActions } from '@suite-common/wallet-core';
 import { type Account, type SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
@@ -8,6 +9,8 @@ import { DEVICE, type StaticSessionId } from '@trezor/connect';
 
 import * as COINJOIN from '../coinjoinConstants';
 import { type CoinjoinAccount, type CoinjoinSession, type CoinjoinState } from '../coinjoinTypes';
+
+const btcSymbol = asNetworkSymbol('btc');
 
 const DEVICE_A = {
     available: true,
@@ -25,12 +28,12 @@ const DEVICE_B = {
 
 const ACCOUNT_A_KEY = mockAccountKey({
     descriptor: 'accountAKey',
-    symbol: 'btc',
+    symbol: btcSymbol,
     deviceStaticSessionId: '1stTestnet@device_A_id:0',
 });
 const ACCOUNT_B_KEY = mockAccountKey({
     descriptor: 'accountBKey',
-    symbol: 'btc',
+    symbol: btcSymbol,
     deviceStaticSessionId: '1stTestnet@device_B_id:0',
 });
 

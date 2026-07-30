@@ -1,8 +1,8 @@
-import type { NetworkSymbol } from '@suite-common/wallet-config';
 import { TestCategory, TestPriority, TestStream } from '@trezor/e2e-utils';
 
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
+import type { E2eNetworkSymbol } from '../../support/types';
 
 test.describe('Coin Settings', { tag: ['@T3W1', '@T3T1'] }, () => {
     test.beforeEach(async ({ onboardingPage, settingsPage }) => {
@@ -22,7 +22,7 @@ test.describe('Coin Settings', { tag: ['@T3W1', '@T3T1'] }, () => {
             }),
         },
         async ({ page, dashboardPage, settingsPage, assetsSection }) => {
-            const defaultUncheckedMainnet: NetworkSymbol[] = [
+            const defaultUncheckedMainnet: E2eNetworkSymbol[] = [
                 'btc',
                 'ltc',
                 'eth',
@@ -36,7 +36,7 @@ test.describe('Coin Settings', { tag: ['@T3W1', '@T3T1'] }, () => {
                 'sol',
             ];
             // Testnets are not shown in ActivateAssetsModal, must be enabled via coins settings
-            const defaultUncheckedTestnet: NetworkSymbol[] = [
+            const defaultUncheckedTestnet: E2eNetworkSymbol[] = [
                 'test',
                 'tsep',
                 'thod',
@@ -44,7 +44,7 @@ test.describe('Coin Settings', { tag: ['@T3W1', '@T3T1'] }, () => {
                 // 'txlm', add when removed from experimental features
                 'dsol',
             ];
-            const defaultUnchecked: NetworkSymbol[] = [
+            const defaultUnchecked: E2eNetworkSymbol[] = [
                 ...defaultUncheckedMainnet,
                 ...defaultUncheckedTestnet,
             ];

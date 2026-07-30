@@ -1,16 +1,16 @@
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { CARDANO_DECIMALS } from '@trezor/network-cardano/constants';
+import { asNetworkSymbol } from '@trezor/network-module';
 import { RIPPLE_DECIMALS } from '@trezor/network-ripple/constants';
 import { STELLAR_DECIMALS } from '@trezor/network-stellar/constants';
 import { TRON_DECIMALS } from '@trezor/network-tron/constants';
-import { typedObjectEntries } from '@trezor/utils';
 
 import { getExplorerUrls } from './getExplorerUrls';
-import { type NetworkFeature, type Networks } from './types';
+import { type Network, type Networks } from './types';
 
-export const networks = {
+const networkConfigs = {
     btc: {
-        symbol: 'btc',
+        symbol: asNetworkSymbol('btc'),
         displaySymbol: 'BTC',
         name: 'Bitcoin',
         networkType: 'bitcoin',
@@ -47,7 +47,7 @@ export const networks = {
         yieldXyzId: null,
     },
     eth: {
-        symbol: 'eth',
+        symbol: asNetworkSymbol('eth'),
         displaySymbol: 'ETH',
         name: 'Ethereum',
         networkType: 'ethereum',
@@ -90,7 +90,7 @@ export const networks = {
         yieldXyzId: 'ethereum',
     },
     pol: {
-        symbol: 'pol',
+        symbol: asNetworkSymbol('pol'),
         displaySymbol: 'POL',
         displaySymbolName: 'Polygon',
         name: 'Polygon PoS',
@@ -125,7 +125,7 @@ export const networks = {
         yieldXyzId: 'polygon',
     },
     bsc: {
-        symbol: 'bsc',
+        symbol: asNetworkSymbol('bsc'),
         displaySymbol: 'BNB',
         displaySymbolName: 'BNB',
         name: 'BNB Smart Chain',
@@ -160,8 +160,8 @@ export const networks = {
         yieldXyzId: 'binance',
     },
     arb: {
-        symbol: 'arb',
-        settlementLayer: 'eth',
+        symbol: asNetworkSymbol('arb'),
+        settlementLayer: asNetworkSymbol('eth'),
         displaySymbol: 'ETH',
         displaySymbolName: 'Arbitrum One Ethereum',
         name: 'Arbitrum One',
@@ -197,8 +197,8 @@ export const networks = {
         yieldXyzId: 'arbitrum',
     },
     base: {
-        symbol: 'base',
-        settlementLayer: 'eth',
+        symbol: asNetworkSymbol('base'),
+        settlementLayer: asNetworkSymbol('eth'),
         displaySymbol: 'ETH',
         displaySymbolName: 'Base Ethereum',
         name: 'Base',
@@ -235,8 +235,8 @@ export const networks = {
         yieldXyzId: 'base',
     },
     op: {
-        symbol: 'op',
-        settlementLayer: 'eth',
+        symbol: asNetworkSymbol('op'),
+        settlementLayer: asNetworkSymbol('eth'),
         displaySymbol: 'ETH',
         displaySymbolName: 'Optimism Ethereum',
         name: 'Optimism',
@@ -272,8 +272,8 @@ export const networks = {
         yieldXyzId: 'optimism',
     },
     rhc: {
-        symbol: 'rhc',
-        settlementLayer: 'eth',
+        symbol: asNetworkSymbol('rhc'),
+        settlementLayer: asNetworkSymbol('eth'),
         displaySymbol: 'ETH',
         displaySymbolName: 'Robinhood Ethereum',
         name: 'Robinhood Chain',
@@ -300,7 +300,7 @@ export const networks = {
         yieldXyzId: null,
     },
     hype: {
-        symbol: 'hype',
+        symbol: asNetworkSymbol('hype'),
         displaySymbol: 'HYPE',
         name: 'HyperEVM',
         displaySymbolName: 'Hyperliquid',
@@ -335,7 +335,7 @@ export const networks = {
         yieldXyzId: null,
     },
     avax: {
-        symbol: 'avax',
+        symbol: asNetworkSymbol('avax'),
         displaySymbol: 'AVAX',
         displaySymbolName: 'Avalanche',
         name: 'Avalanche C-Chain',
@@ -370,7 +370,7 @@ export const networks = {
         yieldXyzId: 'avalanche-c',
     },
     sol: {
-        symbol: 'sol',
+        symbol: asNetworkSymbol('sol'),
         displaySymbol: 'SOL',
         name: 'Solana',
         networkType: 'solana',
@@ -402,7 +402,7 @@ export const networks = {
         yieldXyzId: 'solana',
     },
     trx: {
-        symbol: 'trx',
+        symbol: asNetworkSymbol('trx'),
         displaySymbol: 'TRX',
         name: 'Tron',
         networkType: 'tron',
@@ -434,7 +434,7 @@ export const networks = {
     },
     ada: {
         // icarus derivation
-        symbol: 'ada',
+        symbol: asNetworkSymbol('ada'),
         displaySymbol: 'ADA',
         name: 'Cardano',
         networkType: 'cardano',
@@ -470,7 +470,7 @@ export const networks = {
         yieldXyzId: 'cardano',
     },
     etc: {
-        symbol: 'etc',
+        symbol: asNetworkSymbol('etc'),
         displaySymbol: 'ETC',
         name: 'Ethereum Classic',
         networkType: 'ethereum',
@@ -487,7 +487,7 @@ export const networks = {
         yieldXyzId: null,
     },
     xrp: {
-        symbol: 'xrp',
+        symbol: asNetworkSymbol('xrp'),
         displaySymbol: 'XRP',
         name: 'XRP Ledger',
         networkType: 'ripple',
@@ -503,7 +503,7 @@ export const networks = {
         yieldXyzId: null,
     },
     xlm: {
-        symbol: 'xlm',
+        symbol: asNetworkSymbol('xlm'),
         displaySymbol: 'XLM',
         name: 'Stellar',
         networkType: 'stellar',
@@ -520,7 +520,7 @@ export const networks = {
         caipId: 'stellar:pubnet',
     },
     ltc: {
-        symbol: 'ltc',
+        symbol: asNetworkSymbol('ltc'),
         displaySymbol: 'LTC',
         name: 'Litecoin',
         networkType: 'bitcoin',
@@ -546,7 +546,7 @@ export const networks = {
         yieldXyzId: null,
     },
     bch: {
-        symbol: 'bch',
+        symbol: asNetworkSymbol('bch'),
         displaySymbol: 'BCH',
         name: 'Bitcoin Cash',
         networkType: 'bitcoin',
@@ -562,7 +562,7 @@ export const networks = {
         yieldXyzId: null,
     },
     doge: {
-        symbol: 'doge',
+        symbol: asNetworkSymbol('doge'),
         displaySymbol: 'DOGE',
         name: 'Dogecoin',
         networkType: 'bitcoin',
@@ -579,7 +579,7 @@ export const networks = {
         yieldXyzId: null,
     },
     zec: {
-        symbol: 'zec',
+        symbol: asNetworkSymbol('zec'),
         displaySymbol: 'ZEC',
         name: 'Zcash',
         networkType: 'bitcoin',
@@ -596,7 +596,7 @@ export const networks = {
     },
     // testnets
     test: {
-        symbol: 'test',
+        symbol: asNetworkSymbol('test'),
         displaySymbol: 'TEST',
         name: 'Bitcoin Testnet',
         networkType: 'bitcoin',
@@ -633,7 +633,7 @@ export const networks = {
         yieldXyzId: null,
     },
     regtest: {
-        symbol: 'regtest',
+        symbol: asNetworkSymbol('regtest'),
         displaySymbol: 'REGTEST',
         name: 'Bitcoin Regtest',
         networkType: 'bitcoin',
@@ -670,7 +670,7 @@ export const networks = {
         yieldXyzId: null,
     },
     tsep: {
-        symbol: 'tsep',
+        symbol: asNetworkSymbol('tsep'),
         displaySymbol: 'tETH',
         name: 'Ethereum Sepolia',
         networkType: 'ethereum',
@@ -693,7 +693,7 @@ export const networks = {
         yieldXyzId: 'ethereum-sepolia',
     },
     thod: {
-        symbol: 'thod',
+        symbol: asNetworkSymbol('thod'),
         displaySymbol: 'tETH',
         name: 'Ethereum Hoodi',
         networkType: 'ethereum',
@@ -716,7 +716,7 @@ export const networks = {
         yieldXyzId: 'ethereum-hoodi',
     },
     dsol: {
-        symbol: 'dsol',
+        symbol: asNetworkSymbol('dsol'),
         displaySymbol: 'dSOL',
         name: 'Solana Devnet',
         networkType: 'solana',
@@ -740,7 +740,7 @@ export const networks = {
         yieldXyzId: 'solana-devnet',
     },
     txrp: {
-        symbol: 'txrp',
+        symbol: asNetworkSymbol('txrp'),
         displaySymbol: 'tXRP',
         name: 'XRP Testnet',
         networkType: 'ripple',
@@ -756,7 +756,7 @@ export const networks = {
         yieldXyzId: null,
     },
     txlm: {
-        symbol: 'txlm',
+        symbol: asNetworkSymbol('txlm'),
         displaySymbol: 'tXLM',
         name: 'Stellar Testnet',
         networkType: 'stellar',
@@ -773,7 +773,7 @@ export const networks = {
         caipId: 'stellar:testnet',
     },
     ttrx: {
-        symbol: 'ttrx',
+        symbol: asNetworkSymbol('ttrx'),
         displaySymbol: 'tTRX',
         name: 'Tron Nile',
         networkType: 'tron',
@@ -788,49 +788,42 @@ export const networks = {
         tradeCryptoId: 'test-tron',
         yieldXyzId: null,
     },
-} as const satisfies Networks;
+} as const satisfies Readonly<Record<string, Network>>;
 
-type NetworksConfigs = typeof networks;
+// Object keys are plain strings at runtime; this boundary exposes them as branded network symbols.
+export const networks = networkConfigs as typeof networkConfigs & Networks;
+
+type NetworksConfigs = typeof networkConfigs;
 
 export type NetworkConfig = NetworksConfigs[keyof NetworksConfigs];
 
-export type NetworkConfigWithoutTestnets = Exclude<NetworkConfig, { testnet: true }>;
-
-export const toNetworkSymbolNonTestnet = (symbol: string): NetworkConfigWithoutTestnets['symbol'] =>
-    symbol as NetworkConfigWithoutTestnets['symbol'];
-
 export type NetworkDisplaySymbol = NetworkConfig['displaySymbol'];
 
-type NetworkWithFeature<TFeature extends NetworkFeature> = {
-    [S in keyof NetworksConfigs]: TFeature extends NetworksConfigs[S]['features'][number]
-        ? NetworksConfigs[S]
-        : never;
-}[keyof NetworksConfigs];
+export type StakingNetworkSymbol = 'eth' | 'sol' | 'trx' | 'ada' | 'thod' | 'dsol';
 
-export type StakingNetworkSymbol = NetworkWithFeature<'staking'>['symbol'];
+type ProdStakingNetworkSymbol = 'eth' | 'sol' | 'trx' | 'ada';
 
-export type StakingNetworkType = NetworksConfigs[StakingNetworkSymbol]['networkType'];
+export type StakingNetworkType = 'ethereum' | 'solana' | 'cardano' | 'tron';
 
-export const [STAKING_SYMBOLS, STAKING_TYPES, PROD_STAKING_SYMBOLS] = typedObjectEntries(
-    networks,
-).reduce<[StakingNetworkSymbol[], StakingNetworkType[], StakingNetworkSymbol[]]>(
-    (acc, [symbol, { features, networkType, testnet }]) => {
-        if ((features as readonly string[]).includes('staking')) {
-            acc[0].push(symbol as StakingNetworkSymbol);
+export const STAKING_SYMBOLS: readonly StakingNetworkSymbol[] = [
+    'eth',
+    'sol',
+    'trx',
+    'ada',
+    'thod',
+    'dsol',
+];
 
-            if (!testnet) {
-                acc[2].push(symbol as StakingNetworkSymbol);
-            }
+export const STAKING_TYPES: readonly StakingNetworkType[] = [
+    'ethereum',
+    'solana',
+    'tron',
+    'cardano',
+];
 
-            const t = networkType as StakingNetworkType;
-            if (!acc[1].includes(t)) acc[1].push(t);
-        }
-
-        return acc;
-    },
-    [[], [], []],
-) as readonly [
-    readonly StakingNetworkSymbol[],
-    readonly StakingNetworkType[],
-    readonly (StakingNetworkSymbol & NetworkConfigWithoutTestnets['symbol'])[],
+export const PROD_STAKING_SYMBOLS: readonly ProdStakingNetworkSymbol[] = [
+    'eth',
+    'sol',
+    'trx',
+    'ada',
 ];

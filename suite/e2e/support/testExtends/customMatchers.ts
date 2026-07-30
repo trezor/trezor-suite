@@ -10,7 +10,7 @@ import {
     createNetworkModuleRepository,
     createNetworksCompositionRoot,
 } from '@suite-common/networks';
-import { type Account } from '@suite-common/wallet-types';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { Model } from '@trezor/trezor-user-env-link';
 import { getIndexOrThrow } from '@trezor/utils';
 
@@ -328,13 +328,13 @@ export const expect = baseExpect.extend({
         };
     },
 
-    async toHaveValidAddress(locator: Locator, symbol: Account['symbol']) {
+    async toHaveValidAddress(locator: Locator, symbol: string) {
         await baseExpect(locator).toBeVisible();
         const text = await locator.innerText();
         const stripped = text.replace(/\s/g, '');
 
         return {
-            pass: addressValidator.isAddressValid(stripped, symbol),
+            pass: addressValidator.isAddressValid(stripped, asNetworkSymbol(symbol)),
             message: () =>
                 `expected locator text to be a valid '${symbol}' address, but got '${text}' (stripped: '${stripped}')`,
         };

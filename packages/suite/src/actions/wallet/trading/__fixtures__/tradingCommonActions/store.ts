@@ -1,18 +1,21 @@
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
+import { asNetworkSymbol } from '@trezor/network-module';
 
 import { type Account } from 'src/types/wallet';
 
+const btcSymbol = asNetworkSymbol('btc');
+
 export const ACCOUNT: Account = {
     networkType: 'bitcoin',
-    symbol: 'btc' as Account['symbol'],
+    symbol: btcSymbol,
     descriptor: asAccountDescriptor('btcDescriptor'),
     deviceState: '1stTestnetAddress@device_id:0',
     index: 0,
     path: "m/84'/0'/0'",
     key: mockAccountKey({
         descriptor: 'btcDescriptor',
-        symbol: 'btc',
+        symbol: btcSymbol,
         deviceStaticSessionId: '1stTestnetAddress@device_id:0',
     }),
     accountType: 'normal',

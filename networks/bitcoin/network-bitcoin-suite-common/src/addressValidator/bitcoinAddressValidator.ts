@@ -63,16 +63,6 @@ const BITCOIN_CURRENCIES: Record<BitcoinCurrencySymbol, BitcoinCurrency> = {
     },
 };
 
-const getCurrency = (symbol: BitcoinCurrencySymbol): BitcoinCurrency => {
-    const currency = BITCOIN_CURRENCIES[symbol];
-
-    if (!currency) {
-        throw new Error(`Unsupported bitcoin network symbol: ${symbol}`);
-    }
-
-    return currency;
-};
-
 const getNetworkEnvironment = (symbol: BitcoinNetworkSymbol): NetworkEnvironment => {
     switch (symbol) {
         case 'test':
@@ -328,7 +318,7 @@ export const getAddressType = (address: string, symbol: BitcoinNetworkSymbol) =>
         return bchValidator.getAddressType(address, symbol);
     }
 
-    const currency = getCurrency(symbol);
+    const currency = BITCOIN_CURRENCIES[symbol];
     const networkEnvironments = getNetworkEnvironments(symbol, currency);
 
     for (const networkEnvironment of networkEnvironments) {

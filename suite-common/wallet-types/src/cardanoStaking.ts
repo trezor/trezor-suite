@@ -1,3 +1,5 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
+
 export type CardanoAction =
     | 'delegate'
     | 'withdrawal'
@@ -22,6 +24,6 @@ export type CardanoStaking = {
     isStakingDisabled: boolean;
 };
 
-export const supportedCardanoNetworkSymbols = ['ada'] as const;
+export const supportedCardanoNetworkSymbols = [asNetworkSymbol('ada')] as const;
 
 export type SupportedCardanoNetworkSymbols = (typeof supportedCardanoNetworkSymbols)[number];

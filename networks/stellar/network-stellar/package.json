@@ -50,6 +50,7 @@
     },
     "dependencies": {
         "@stellar/stellar-sdk": "16.1.0",
+        "@trezor/network-module": "workspace:*",
         "@trezor/utils": "workspace:*"
     }
 }

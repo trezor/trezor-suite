@@ -15,6 +15,7 @@ import {
     findAccountsByNetwork,
     findTransaction,
     getAccountTransactions,
+    getBlockchain,
     getConfirmations,
     isStakeTypeTx,
 } from '@suite-common/wallet-utils';
@@ -52,7 +53,9 @@ export const TransactionRenderer = ({ render: View, ...props }: TransactionRende
     const accountTxs = getAccountTransactions(account.key, transactions);
     const tx = findTransaction(txid, accountTxs);
     const accountDevice = findAccountDevice(account, devices);
-    const confirmations = tx ? getConfirmations(tx, blockchain[account.symbol].blockHeight) : 0;
+    const confirmations = tx
+        ? getConfirmations(tx, getBlockchain(blockchain, account.symbol).blockHeight)
+        : 0;
     const destinationRoute = isStakeTypeTx(tx?.ethereumSpecific?.parsedData?.methodId)
         ? 'wallet-staking'
         : 'wallet-index';

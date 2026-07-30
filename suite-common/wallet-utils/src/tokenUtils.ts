@@ -3,9 +3,10 @@ import {
     type NetworkSymbol,
     type NetworkSymbolExtended,
     type NetworkType,
+    asNetworkSymbol,
     getExplorerUrl,
     getNetworkDisplaySymbol,
-    getNetworkType,
+    getNetworkOptional,
 } from '@suite-common/wallet-config';
 import { type WalletAccountTransaction } from '@suite-common/wallet-types';
 import {
@@ -21,7 +22,7 @@ export const getContractAddressForNetworkSymbol = (
     symbol: NetworkSymbolExtended,
     contractAddress: string,
 ) => {
-    const networkType = getNetworkType(symbol.toLowerCase() as NetworkSymbol);
+    const networkType = getNetworkOptional(asNetworkSymbol(symbol.toLowerCase()))?.networkType;
 
     switch (networkType) {
         case 'ethereum':
@@ -35,9 +36,6 @@ export const getContractAddressForNetworkSymbol = (
             return contractAddress;
     }
 };
-
-// Moved next to the WRAPPED_NATIVE config it reads; re-exported here for existing consumers.
-export { isWrappedNativeToken } from '@suite-common/wallet-config';
 
 export const getAssetLogoContractAddresses = async (
     symbol: NetworkSymbolExtended | undefined,

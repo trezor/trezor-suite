@@ -30,6 +30,7 @@ import {
 } from 'src/reducers/wallet';
 
 import * as fixtures from './__fixtures__/blockchainActions';
+import { extraDependenciesDesktopMock } from '../../../mocks/extraDependenciesDesktopMock';
 
 const TrezorConnect = testMocks.getTrezorConnectMock();
 const btcSymbol = asNetworkSymbol('btc');
@@ -60,7 +61,7 @@ const getInitialState = (
         blockchain: {
             ...blockchainReducer(undefined, action),
             ...blockchain,
-        },
+        } as BlockchainState,
         fees: {
             ...feesReducer(undefined, action),
             ...fees,
@@ -86,6 +87,7 @@ const getInitialState = (
 type State = ReturnType<typeof getInitialState>;
 const mockStore = (preloadedState: State) =>
     configureMockStore<State>({
+        extra: extraDependenciesDesktopMock,
         reducer: (currentState = preloadedState, action) => {
             const state = currentState as State;
 

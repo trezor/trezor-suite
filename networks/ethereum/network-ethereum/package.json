@@ -39,6 +39,7 @@
         "build:lib": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../../scripts/publish/replace-imports.sh ./lib"
     },
     "dependencies": {
+        "@trezor/network-module": "workspace:*",
         "@trezor/utils": "workspace:*"
     },
     "devDependencies": {

@@ -395,5 +395,6 @@ export const calculateAverageAnonymityGainPerRound = (
     );
 };
 
-export const isCoinjoinSupportedSymbol = (symbol: NetworkSymbol): symbol is CoinjoinSymbol =>
-    isArrayMember(symbol, BITCOIN_ONLY_SYMBOLS);
+export const isCoinjoinSupportedSymbol = (
+    symbol: NetworkSymbol,
+): symbol is NetworkSymbol & CoinjoinSymbol => isArrayMember(symbol, BITCOIN_ONLY_SYMBOLS);

@@ -1,7 +1,7 @@
 import type { AddressValidator } from '@suite-common/address';
 import type { AnalyticsSharedEvents } from '@suite-common/analytics';
 import { type Bip329 } from '@suite-common/bip329-types';
-import type { NetworkModuleRepository, NetworkSymbol } from '@suite-common/networks';
+import { type NetworkModuleRepository } from '@suite-common/networks';
 import {
     mockFindNetworkSymbolForProtocol,
     mockGetNetworkConfig,
@@ -26,6 +26,7 @@ import { type ReportSecurityCheckParams, asDelegatedIdentityKey } from '@suite-c
 import { type SelectedAccountLoaded, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { mockAnalytics } from '@trezor/analytics-uploader/mocks';
+import { asNetworkSymbol } from '@trezor/network-module';
 import { err, ok } from '@trezor/type-utils';
 import { createKeyedThrottle } from '@trezor/utils';
 
@@ -73,7 +74,7 @@ const networkModuleRepositoryMock: NetworkModuleRepository = {
         throw new Error('Network module repository mock is not implemented.');
     },
     getSupportedNetworks: () => [],
-    isSupportedNetwork: (_symbol: string): _symbol is NetworkSymbol => false,
+    isSupportedNetwork: () => false,
 };
 
 const connectInitSettings: ConnectInitSettings = {
@@ -117,7 +118,7 @@ export const extraDependenciesCommonMock: ExtraDependencies = {
         migrateSuiteSyncLabelsForRbfTransaction: () => Promise.resolve([[], []]),
         getTokenDefinitionsEnabledNetworks: notImplementedGetter(
             'getTokenDefinitionsEnabledNetworks',
-            ['eth'],
+            [asNetworkSymbol('eth')],
         ),
         getDebugSettings: notImplementedGetter('getDebugSettings', {
             checkFirmwareAuthenticity: false,
@@ -130,7 +131,7 @@ export const extraDependenciesCommonMock: ExtraDependencies = {
         getSelectedAccount: notImplementedGetter('getSelectedAccount', {
             status: 'loaded',
             account: mockWalletAccount({
-                symbol: 'btc',
+                symbol: asNetworkSymbol('btc'),
                 deviceState: '1@2:3',
                 descriptor: asAccountDescriptor('btc1'),
             }),

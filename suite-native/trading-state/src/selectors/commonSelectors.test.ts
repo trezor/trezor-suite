@@ -2,7 +2,6 @@ import type { CryptoId } from 'invity-api';
 
 import { type DeviceReducerState, deviceInitialState } from '@suite-common/device';
 import { type MessageSystemState } from '@suite-common/message-system';
-import { type NetworkSymbol } from '@suite-common/networks';
 import { initialSuiteSyncDataState, initialSuiteSyncState } from '@suite-common/suite-sync';
 import {
     type Action,
@@ -32,6 +31,7 @@ import {
 } from '@suite-native/trading-fixtures';
 import { type TradeableAsset } from '@suite-native/trading-types';
 import { type StaticSessionId } from '@trezor/device-utils';
+import { type NetworkSymbol } from '@trezor/network-module';
 import { BigNumber } from '@trezor/utils';
 
 import { type TradingRootState, tradingInitialState } from '../reducers';

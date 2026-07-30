@@ -24,6 +24,7 @@
     },
     "dependencies": {
         "@suite-common/http-client": "workspace:^",
+        "@trezor/network-ethereum": "workspace:*",
         "zod": "4.3.6"
     }
 }

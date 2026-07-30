@@ -1,14 +1,15 @@
 import { Locator, Page, expect } from '@playwright/test';
 
-import type { NetworkSymbol } from '@suite-common/wallet-config';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { isTestnet } from '@suite-common/wallet-utils';
 
 import { step } from '../common';
+import type { E2eNetworkSymbol } from '../types';
 
 export type ExportType = 'pdf' | 'csv' | 'json';
 
 type WalletParams = {
-    symbol?: NetworkSymbol;
+    symbol?: E2eNetworkSymbol;
     type?: 'normal' | 'legacy' | 'segwit' | 'ledger';
     atIndex?: number;
     subAccount?: 'tokens' | 'staking';
@@ -61,7 +62,7 @@ export class WalletPage {
     readonly transactionItem: Locator;
     readonly transactionAddress: Locator;
     readonly fiatAmount: Locator;
-    readonly walletFilter = (symbol: NetworkSymbol) =>
+    readonly walletFilter = (symbol: E2eNetworkSymbol) =>
         this.page.getByTestId(`@account-menu/filter/${symbol}`);
     readonly topPanelBalance: Locator;
     readonly topPanelBalanceWithSymbol: Locator;
@@ -180,7 +181,7 @@ export class WalletPage {
     async openAccount(params: WalletParams = {}) {
         await this.accountButton(params).click();
 
-        if (!params.symbol || !isTestnet(params.symbol)) {
+        if (!params.symbol || !isTestnet(asNetworkSymbol(params.symbol))) {
             await expect(this.fiatAmount).toBeVisible({ timeout: 25_000 });
         }
     }
@@ -206,7 +207,7 @@ export class WalletPage {
     }
 
     @step()
-    async getAccountsCount(symbol: NetworkSymbol) {
+    async getAccountsCount(symbol: E2eNetworkSymbol) {
         return await this.page
             .locator(`[data-testid*="@account-menu/${symbol}"][tabindex]`)
             .count();
@@ -218,7 +219,7 @@ export class WalletPage {
     }
 
     @step()
-    getAccountsForCoinInTypeCount(type: string, symbol: NetworkSymbol) {
+    getAccountsForCoinInTypeCount(type: string, symbol: E2eNetworkSymbol) {
         return this.page.getByTestId(new RegExp(`^@account-menu/${symbol}/${type}/\\d+$`)).count();
     }
 
@@ -229,21 +230,21 @@ export class WalletPage {
     }
 
     @step()
-    async openBuyTradingOfToken(symbol: NetworkSymbol, tokenName: string) {
+    async openBuyTradingOfToken(symbol: E2eNetworkSymbol, tokenName: string) {
         await this.openAccount({ symbol, subAccount: 'tokens' });
         await this.tokenRowMoreButton(tokenName).click();
         await this.tokenBuyButton.click();
     }
 
     @step()
-    async openSellTradingOfToken(symbol: NetworkSymbol, tokenName: string) {
+    async openSellTradingOfToken(symbol: E2eNetworkSymbol, tokenName: string) {
         await this.openAccount({ symbol, subAccount: 'tokens' });
         await this.tokenRowMoreButton(tokenName).click();
         await this.tokenSellButton.click();
     }
 
     @step()
-    async openSwapTradingOfToken(symbol: NetworkSymbol, tokenName: string) {
+    async openSwapTradingOfToken(symbol: E2eNetworkSymbol, tokenName: string) {
         await this.openAccount({ symbol, subAccount: 'tokens' });
         await this.tokenRowSwapButton(tokenName).click();
     }
@@ -279,7 +280,7 @@ export class WalletPage {
         atIndex,
         tokenName,
     }: {
-        symbol: NetworkSymbol;
+        symbol: E2eNetworkSymbol;
         atIndex: number;
         tokenName: string;
     }) {

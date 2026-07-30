@@ -5,6 +5,7 @@ import {
     isSupportedEthStakingNetworkSymbol,
     isSupportedSolStakingNetworkSymbol,
     isSupportedTronStakingNetworkSymbol,
+    toStakingNetworkSymbol,
 } from '@suite-common/wallet-utils';
 import { Column } from '@trezor/components';
 
@@ -29,28 +30,33 @@ type AccountBannersProps = {
 
 export const AccountBanners = ({ account }: AccountBannersProps) => {
     const { route } = useSelector(state => state.router);
+    const stakingSymbol = account?.symbol ? toStakingNetworkSymbol(account.symbol) : null;
 
     return (
         <Column gap={12}>
             {account?.symbol &&
+                stakingSymbol !== null &&
                 isSupportedEthStakingNetworkSymbol(account.symbol) &&
                 route?.name === 'wallet-staking' && (
-                    <ContextMessage context={Context.getStaking('eth')} />
+                    <ContextMessage context={Context.getStaking(stakingSymbol)} />
                 )}
             {account?.symbol &&
+                stakingSymbol !== null &&
                 isSupportedSolStakingNetworkSymbol(account.symbol) &&
                 route?.name === 'wallet-staking' && (
-                    <ContextMessage context={Context.getStaking('sol')} />
+                    <ContextMessage context={Context.getStaking(stakingSymbol)} />
                 )}
             {account?.symbol &&
+                stakingSymbol !== null &&
                 isSupportedTronStakingNetworkSymbol(account.symbol) &&
                 route?.name === 'wallet-staking' && (
-                    <ContextMessage context={Context.getStaking('trx')} />
+                    <ContextMessage context={Context.getStaking(stakingSymbol)} />
                 )}
             {account?.symbol &&
+                stakingSymbol !== null &&
                 isSupportedAdaStakingNetworkSymbol(account.symbol) &&
                 route?.name === 'wallet-staking' && (
-                    <ContextMessage context={Context.getStaking('ada')} />
+                    <ContextMessage context={Context.getStaking(stakingSymbol)} />
                 )}
             <BackendDisconnected />
             <DeviceUnavailable />

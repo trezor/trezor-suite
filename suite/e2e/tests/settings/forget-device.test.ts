@@ -1,7 +1,7 @@
-import type { NetworkSymbol } from '@suite-common/wallet-config';
 import { TestCategory, TestPriority, TestStream, createTestAnnotation } from '@trezor/e2e-utils';
 
 import { expect, test } from '../../support/fixtures';
+import type { E2eNetworkSymbol } from '../../support/types';
 
 test.describe('Device Settings - Forget TS7', { tag: ['@T3W1'] }, () => {
     test.beforeEach(async ({ onboardingPage, settingsPage }) => {
@@ -232,7 +232,7 @@ test.describe('Device Settings - Forget TS7', { tag: ['@T3W1'] }, () => {
             }),
         },
         async ({ page, settingsPage }) => {
-            const coins: NetworkSymbol[] = ['eth', 'ada', 'sol'];
+            const coins: E2eNetworkSymbol[] = ['eth', 'ada', 'sol'];
 
             await test.step('Enable few coins', async () => {
                 await settingsPage.changeNetworks({

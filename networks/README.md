@@ -13,6 +13,14 @@ Every package name must start with `network-`, followed by the network name (for
 | Suite Common | `@trezor/network-<network>-suite-common` |
 | Suite Native | `@trezor/network-<network>-suite-native` |
 
+`@trezor/network-module` contains layer-independent primitives shared by all technical layers.
+Its `NetworkSymbol` is intentionally open-ended; exhaustive symbol unions and mappings belong to
+individual network families.
+
+`@trezor/network-<network>` is the layer-independent base package for one network family. It owns
+the supported-network tuple, the exhaustive symbol union inferred from that tuple, and conversions
+between the family symbol and `NetworkSymbol`. Every technical layer may depend on this base package.
+
 Suite and Suite Native packages may depend on Suite Common. Suite Common must remain platform-independent and must not depend on Suite or Suite Native.
 
 All the 3rd party dependencies related to a network should be defined inside that network's directory. Moreover, currently they're defined only inside general, no-suffix packages, e.g. `network-cardano` (previously coins packages) and dynamically exported.
@@ -23,6 +31,7 @@ The complete structure for Bitcoin illustrates all four layers alongside optiona
 networks/
 ├── README.md
 ├── bitcoin/
+│   ├── network-bitcoin/               → @trezor/network-bitcoin (layer-independent base)
 │   ├── network-bitcoin-connect/       → @trezor/network-bitcoin-connect
 │   ├── network-bitcoin-suite/         → @trezor/network-bitcoin-suite
 │   ├── network-bitcoin-suite-common/  → @trezor/network-bitcoin-suite-common
@@ -30,6 +39,7 @@ networks/
 │   ├── network-bitcoin-bip32/         → @trezor/network-bitcoin-bip32 (custom/internal)
 │   └── network-bitcoin-coinjoin/      → @trezor/network-bitcoin-coinjoin (custom/internal)
 └── <network>/
+    ├── network-<network>/
     ├── network-<network>-connect/
     ├── network-<network>-suite/
     ├── network-<network>-suite-common/
@@ -43,8 +53,10 @@ Types, runtime constants (independent of dependencies) and runtime functions sho
 what overhead is expected. Utilities using 3rd party code in runtime should always be exported in `runtime/exports.ts` and dynamically
 reexported in `runtime/index.ts` so this code is loaded on-demand, for security and performance reasons. From the top-level index file,
 `runtime/exports.ts` is directly exported instead, but importing from the package root is restricted by eslint rule in this monorepo.
+The lightweight `supported<Network>Networks`, `isSupported<Network>Network`, and
+`to<Network>NetworkSymbol` APIs belong to the `constants` entrypoint.
 
-Each general network package follows a consistent three-entrypoint layout:
+Each general network package uses the relevant entrypoints from this layout:
 
 ```
 networks/<network>/network-<network>/src/

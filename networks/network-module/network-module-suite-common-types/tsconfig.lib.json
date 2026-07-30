@@ -6,6 +6,7 @@
     },
     "include": ["./src"],
     "references": [
+        { "path": "../network-module" },
         { "path": "../../../packages/type-utils" }
     ]
 }

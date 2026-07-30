@@ -7,6 +7,7 @@ import path from 'node:path';
 
 import { validJws } from '@suite-common/message-system/src/__fixtures__/messageSystemActions';
 import { type TradingCountryCode, regional } from '@suite-common/trading';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { getAccountDecimals, localizeNumber } from '@suite-common/wallet-utils';
 import { Model } from '@trezor/trezor-user-env-link';
 import { BigNumber, splitStringEveryNCharacters } from '@trezor/utils';
@@ -133,7 +134,7 @@ export const getCountryLabel = (country: TradingCountryCode) => {
 
 export const calculatePercentageOfBalance = (params: PercentageOfBalanceParams) => {
     const fraction = (parseFloat(params.balance) * params.percentage) / 100;
-    const maxDecimals = getAccountDecimals(params.symbol);
+    const maxDecimals = getAccountDecimals(asNetworkSymbol(params.symbol));
 
     return localizeNumber(fraction, 'en-US', 0, maxDecimals);
 };

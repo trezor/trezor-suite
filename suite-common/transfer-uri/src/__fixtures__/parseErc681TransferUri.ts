@@ -1,3 +1,5 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
+
 import { type Erc681TransferInfo } from '../parseErc681TransferUri';
 
 type ParseErc681TransferUriFixture = {
@@ -80,7 +82,7 @@ export const parseErc681TransferUri: ParseErc681TransferUriFixture[] = [
             contractAddress: '0x89205a3a3b2a69de6dbf7f01ed13b2108b2c43e7',
             recipientAddress: '0x8e23ee67d1332ad560396262c48ffbb01f93d052',
             tokenAmount: '1000000',
-            networkSymbol: 'eth',
+            networkSymbol: asNetworkSymbol('eth'),
         },
     },
     {
@@ -90,7 +92,7 @@ export const parseErc681TransferUri: ParseErc681TransferUriFixture[] = [
             contractAddress: '0x89205a3a3b2a69de6dbf7f01ed13b2108b2c43e7',
             recipientAddress: '0x8e23ee67d1332ad560396262c48ffbb01f93d052',
             tokenAmount: '500000',
-            networkSymbol: 'pol',
+            networkSymbol: asNetworkSymbol('pol'),
         },
     },
     {
@@ -98,7 +100,7 @@ export const parseErc681TransferUri: ParseErc681TransferUriFixture[] = [
         uri: 'ethereum:0x8e23ee67d1332ad560396262c48ffbb01f93d052@8453',
         result: {
             recipientAddress: '0x8e23ee67d1332ad560396262c48ffbb01f93d052',
-            networkSymbol: 'base',
+            networkSymbol: asNetworkSymbol('base'),
         },
     },
     {
@@ -107,7 +109,7 @@ export const parseErc681TransferUri: ParseErc681TransferUriFixture[] = [
         uri: 'ethereum://0x8e23ee67d1332ad560396262c48ffbb01f93d052@8453',
         result: {
             recipientAddress: '0x8e23ee67d1332ad560396262c48ffbb01f93d052',
-            networkSymbol: 'base',
+            networkSymbol: asNetworkSymbol('base'),
         },
     },
     {

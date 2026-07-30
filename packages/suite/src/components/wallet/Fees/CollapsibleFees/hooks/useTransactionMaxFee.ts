@@ -31,7 +31,7 @@ export function useTransactionMaxFee({
             subunitsToUnits({
                 value: asAmountSubunit(new BigNumber(txFee)),
                 symbol: networkSymbol,
-                decimals: getNetwork(networkSymbol)?.decimals,
+                decimals: getNetwork(networkSymbol).decimals,
             }),
             4,
         ).toString();

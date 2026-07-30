@@ -1,8 +1,7 @@
 import { Locator, Page, expect } from '@playwright/test';
 
-import type { NetworkSymbol } from '@suite-common/wallet-config';
-
 import { step } from '../../common';
+import type { E2eNetworkSymbol } from '../../types';
 
 export class TradingReceiveAccount {
     readonly receiveAddressPicker: Locator;
@@ -26,7 +25,7 @@ export class TradingReceiveAccount {
     readonly bitcoinReceiveAddressModalOption: Locator;
 
     readonly addAccountButton: Locator;
-    readonly addAccountModalNetworkButton = (symbol: NetworkSymbol) =>
+    readonly addAccountModalNetworkButton = (symbol: E2eNetworkSymbol) =>
         this.page.getByTestId(`@settings/wallet/network/${symbol}/add-button`);
 
     constructor(private readonly page: Page) {
@@ -69,7 +68,7 @@ export class TradingReceiveAccount {
     }
 
     @step()
-    async selectSuiteReceiveAccount(index: number, symbol?: NetworkSymbol) {
+    async selectSuiteReceiveAccount(index: number, symbol?: E2eNetworkSymbol) {
         await this.receiveAddressPicker.click();
         await expect(this.receiveAccountModal).toBeVisible();
 
@@ -113,7 +112,7 @@ export class TradingReceiveAccount {
     }
 
     @step()
-    async selectAddSuiteReceiveAccount(index: number, symbol?: NetworkSymbol) {
+    async selectAddSuiteReceiveAccount(index: number, symbol?: E2eNetworkSymbol) {
         await this.receiveAddressPicker.click();
         await expect(this.receiveAccountModal).toBeVisible();
 

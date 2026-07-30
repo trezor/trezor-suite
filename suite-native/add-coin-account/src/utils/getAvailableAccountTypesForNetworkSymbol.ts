@@ -1,9 +1,8 @@
 import {
     type AccountType,
     NORMAL_ACCOUNT_TYPE,
-    type NetworkConfig,
     type NetworkSymbol,
-    networks,
+    getNetwork,
 } from '@suite-common/wallet-config';
 import { isEvmNetwork } from '@suite-common/wallet-utils';
 import { typedObjectKeys } from '@trezor/utils';
@@ -15,10 +14,7 @@ export const getAvailableAccountTypesForNetworkSymbol = ({
 }: {
     symbol: NetworkSymbol;
 }): [AccountType, ...AccountType[]] => {
-    const networkConfig = networks[symbol] as NetworkConfig | undefined;
-    if (!networkConfig) {
-        return [NORMAL_ACCOUNT_TYPE];
-    }
+    const networkConfig = getNetwork(symbol);
 
     const supportsOnlyNormalAccountType =
         isEvmNetwork(symbol) || normalOnlyNonEvmNetworkSymbols.includes(symbol);

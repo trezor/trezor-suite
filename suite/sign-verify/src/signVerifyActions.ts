@@ -3,6 +3,7 @@ import { type Dispatch } from 'redux';
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type WalletSettingsRootState, selectAddressDisplayType } from '@suite-common/wallet-core';
 import { type Account, AddressDisplayOptions } from '@suite-common/wallet-types';
 import {
@@ -30,7 +31,7 @@ export type SignVerifyAction =
 type StateParams = {
     device: TrezorDevice;
     account: Account;
-    coin: Account['symbol'];
+    symbol: NetworkSymbol;
     chunkify?: boolean;
 };
 
@@ -48,15 +49,15 @@ const getStateParams = (account: Account, getState: GetState): Promise<StatePara
         : Promise.resolve({
               device,
               account,
-              coin: account.symbol,
+              symbol: account.symbol,
               chunkify: addressDisplayType === AddressDisplayOptions.CHUNKED,
           });
 };
 
 const showAddressByNetwork =
     (_: Dispatch, address: string, path: string) =>
-    ({ account, device, coin, chunkify }: StateParams) => {
-        const params = { device, address, path, coin: asCoinSymbol(coin), chunkify };
+    ({ account, device, symbol, chunkify }: StateParams) => {
+        const params = { device, address, path, coin: asCoinSymbol(symbol), chunkify };
 
         switch (account.networkType) {
             case 'bitcoin':
@@ -76,11 +77,11 @@ const signByNetwork =
         isElectrum: boolean,
         isCose: boolean,
     ) =>
-    ({ account, device, coin }: StateParams) => {
+    ({ account, device, symbol }: StateParams) => {
         const params = {
             device,
             path,
-            coin: asCoinSymbol(coin),
+            coin: asCoinSymbol(symbol),
             message,
             hex,
             no_script_type: isElectrum,
@@ -142,8 +143,8 @@ export const isVerifySupported = (account?: Account) => {
 
 const verifyByNetwork =
     (address: string, message: string, signature: string, hex: boolean) =>
-    ({ account, device, coin }: StateParams) => {
-        const params = { device, address, coin: asCoinSymbol(coin), message, signature, hex };
+    ({ account, device, symbol }: StateParams) => {
+        const params = { device, address, coin: asCoinSymbol(symbol), message, signature, hex };
 
         switch (account.networkType) {
             case 'bitcoin':

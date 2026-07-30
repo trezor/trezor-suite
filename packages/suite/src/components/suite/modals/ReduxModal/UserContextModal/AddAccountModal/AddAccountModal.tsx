@@ -428,11 +428,7 @@ export const AddAccountModal = ({
             return;
         }
 
-        const networkToSelect = networks[networkSymbol];
-
-        if (!networkToSelect) {
-            return;
-        }
+        const networkToSelect = getNetwork(networkSymbol);
 
         const networkAccountTypes = getAccountTypesForNetwork(networkToSelect);
 

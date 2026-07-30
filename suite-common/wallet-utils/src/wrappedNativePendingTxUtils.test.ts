@@ -1,4 +1,3 @@
-import { getWrappedNativeAddress } from '@suite-common/wallet-config';
 import { type WalletAccountTransaction } from '@suite-common/wallet-types';
 
 import {
@@ -6,7 +5,7 @@ import {
     getWrappedNativePendingTxStatus,
 } from './wrappedNativePendingTxUtils';
 
-const wrappedNativeAddress = getWrappedNativeAddress('eth')!;
+const wrappedNativeAddress = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2';
 
 const createTransaction = ({
     txid,

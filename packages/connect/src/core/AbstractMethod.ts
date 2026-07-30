@@ -141,7 +141,7 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
     // `coinInfo.shortcut` keeps its original casing (e.g. `BTC`, `tDASH`) but a
     // permission `coin` is the lowercase `CoinSymbol`. Every shortcut lowercases
     // to a known `CoinSymbol` (both derive from the same coin definitions), so
-    // the cast is sound.
+    // the conversion is sound.
     private toCoinSymbol(shortcut: string): CoinSymbol {
         return asCoinSymbol(shortcut.toLowerCase());
     }

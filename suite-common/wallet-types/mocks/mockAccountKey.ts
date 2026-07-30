@@ -1,4 +1,4 @@
-import type { NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
 import type { StaticSessionId } from '@trezor/device-utils';
 
 import { type AccountKey, asAccountDescriptor, createAccountKey } from '../src/account';
@@ -15,7 +15,7 @@ const MOCK_DEVICE_STATIC_SESSION_ID: StaticSessionId =
  */
 export const mockAccountKey = ({
     descriptor = 'mockDescriptor',
-    symbol = 'btc',
+    symbol = asNetworkSymbol('btc'),
     deviceStaticSessionId = MOCK_DEVICE_STATIC_SESSION_ID,
 }: {
     descriptor?: string;

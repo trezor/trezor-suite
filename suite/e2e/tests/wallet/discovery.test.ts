@@ -1,12 +1,12 @@
-import type { NetworkSymbol } from '@suite-common/wallet-config';
 import { getRandomInt } from '@trezor/utils';
 
 import { expect, test } from '../../support/fixtures';
+import type { E2eNetworkSymbol } from '../../support/types';
 
 // discovery should end within this time frame
 const DISCOVERY_LIMIT = 1000 * 60 * 2;
 
-const coinsToActivate: NetworkSymbol[] = [
+const coinsToActivate: E2eNetworkSymbol[] = [
     'btc',
     'eth',
     'ltc',

@@ -7,7 +7,7 @@ const arbSymbol = asNetworkSymbol('arb');
 describe(isEarnYieldClaimSupported.name, () => {
     it('has a claim contract address for every network with the claim-rewards feature', () => {
         const networkSymbolsWithClaimFeature = networkSymbolCollection.filter(networkSymbol =>
-            getNetworkFeatures(networkSymbol).includes('claim-rewards'),
+            getNetworkFeatures(networkSymbol)?.includes('claim-rewards'),
         );
 
         expect(networkSymbolsWithClaimFeature.length).toBeGreaterThan(0);

@@ -1,27 +1,33 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
+
 import * as walletSettingsActions from '../walletSettingsActions';
 import { changeCoinVisibility } from '../walletSettingsThunks';
+
+const btcSymbol = asNetworkSymbol('btc');
+const ltcSymbol = asNetworkSymbol('ltc');
+const ethSymbol = asNetworkSymbol('eth');
 
 export const walletSettingsFixtures = [
     {
         description: 'No networks enabled by default if no initial state provided',
         initialState: undefined,
-        action: () => changeCoinVisibility({ symbol: 'ltc', shouldBeVisible: true }),
+        action: () => changeCoinVisibility({ symbol: ltcSymbol, shouldBeVisible: true }),
         result: {
             enabledNetworks: ['ltc'],
         },
     },
     {
         description: 'Enable already enabled network',
-        initialState: { enabledNetworks: ['btc', 'ltc'] },
-        action: () => changeCoinVisibility({ symbol: 'ltc', shouldBeVisible: true }),
+        initialState: { enabledNetworks: [btcSymbol, ltcSymbol] },
+        action: () => changeCoinVisibility({ symbol: ltcSymbol, shouldBeVisible: true }),
         result: {
             enabledNetworks: ['btc', 'ltc'],
         },
     },
     {
         description: 'Disable already enabled network',
-        initialState: { enabledNetworks: ['btc', 'ltc'] },
-        action: () => changeCoinVisibility({ symbol: 'ltc', shouldBeVisible: false }),
+        initialState: { enabledNetworks: [btcSymbol, ltcSymbol] },
+        action: () => changeCoinVisibility({ symbol: ltcSymbol, shouldBeVisible: false }),
         result: {
             enabledNetworks: ['btc'],
         },
@@ -29,7 +35,7 @@ export const walletSettingsFixtures = [
     {
         description: 'Change networks',
         initialState: { enabledNetworks: [] },
-        action: () => walletSettingsActions.changeNetworks(['ltc', 'eth']),
+        action: () => walletSettingsActions.changeNetworks([ltcSymbol, ethSymbol]),
         result: {
             enabledNetworks: ['eth', 'ltc'],
         },

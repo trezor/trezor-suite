@@ -1,8 +1,7 @@
-import type { NetworkSymbol } from '@suite-common/wallet-config';
-
 import { expect, test } from '../../support/fixtures';
+import type { E2eNetworkSymbol } from '../../support/types';
 
-const testCases: { symbol: NetworkSymbol; xpub: string }[] = [
+const testCases: { symbol: E2eNetworkSymbol; xpub: string }[] = [
     {
         symbol: 'btc',
         xpub: 'zpub6qg8ncjmySnBmRKsVc6TE3ojd89P9Ss3r7j3K121p4QJ9YAfSgy6yM1ikhxPdLxdCQvoFU73gwPDjxcGNVFo1hBUGTJZvgfrGQZ4WXDo5PF',

@@ -1,10 +1,11 @@
 import { getCryptoId } from '@suite-common/trading';
-import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 
 import dump from '../../fixtures/remembered-wallet-db-lite.json';
 import { expect, test } from '../../support/fixtures';
 import type { IndexedDbDump } from '../../support/indexedDb';
 import type { TradingPage } from '../../support/pageObjects/trading/tradingPage';
+import type { E2eNetworkSymbol } from '../../support/types';
 
 const fundedSymbol = 'eth' as const;
 const insufficientCryptoAmount = '1000';
@@ -18,7 +19,7 @@ const amount = '37.12345';
 const buyAssets: {
     label: string;
     buy: Parameters<TradingPage['assetPicker']['selectBuyAsset']>[0];
-    receiveNetwork: NetworkSymbol;
+    receiveNetwork: E2eNetworkSymbol;
     accountIndex: number;
 }[] = [
     {

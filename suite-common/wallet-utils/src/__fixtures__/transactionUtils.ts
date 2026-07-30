@@ -1,9 +1,12 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type WalletAccountTransaction, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { type TokenTransfer, type TransferType } from '@trezor/blockchain-link-types';
 import { type AccountTransaction } from '@trezor/connect';
 
 import { TXS } from './transactions';
+
+const btcSymbol = asNetworkSymbol('btc');
 
 export const token: TokenTransfer = {
     type: 'sent' as TransferType,
@@ -468,7 +471,7 @@ export const enhanceTransaction = [
             descriptor: asAccountDescriptor(
                 'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
             ),
-            symbol: 'btc',
+            symbol: btcSymbol,
         }),
         result: {
             amount: '123',
@@ -560,7 +563,7 @@ export const enhanceTransaction = [
             descriptor: asAccountDescriptor(
                 'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
             ),
-            symbol: 'btc',
+            symbol: btcSymbol,
         }),
         result: {
             amount: '0.00006497',
@@ -623,7 +626,7 @@ export const enhanceTransaction = [
             descriptor: asAccountDescriptor(
                 'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
             ),
-            symbol: 'btc',
+            symbol: btcSymbol,
         }),
         result: {
             amount: '0.00006497',
@@ -796,7 +799,7 @@ export const getRbfParams = [
     },
     {
         description: 'invalid tx (type recv)',
-        account: { networkType: 'bitcoin' },
+        account: { networkType: 'bitcoin', symbol: btcSymbol },
         tx: { type: 'recv' },
         result: undefined,
     },
@@ -866,25 +869,25 @@ export const getRbfParams = [
     },
     {
         description: 'invalid tx (rbf false)',
-        account: { networkType: 'bitcoin' },
+        account: { networkType: 'bitcoin', symbol: btcSymbol },
         tx: { type: 'sent', rbf: false },
         result: undefined,
     },
     {
         description: 'invalid tx (no details)',
-        account: { networkType: 'bitcoin' },
+        account: { networkType: 'bitcoin', symbol: btcSymbol },
         tx: { type: 'sent', rbf: true, details: undefined },
         result: undefined,
     },
     {
         description: 'invalid tx (confirmed)',
-        account: { networkType: 'bitcoin' },
+        account: { networkType: 'bitcoin', symbol: btcSymbol },
         tx: { type: 'sent', rbf: true, details: {}, blockHeight: 1 },
         result: undefined,
     },
     {
         description: 'addresses not found',
-        account: { networkType: 'bitcoin' },
+        account: { networkType: 'bitcoin', symbol: btcSymbol },
         tx: {
             type: 'sent',
             rbf: true,
@@ -908,6 +911,7 @@ export const getRbfParams = [
         description: 'outputs not found',
         account: {
             networkType: 'bitcoin',
+            symbol: btcSymbol,
             addresses: {
                 change: [],
                 used: [{ address: 'abcd' }],
@@ -932,6 +936,7 @@ export const getRbfParams = [
         description: 'without change address',
         account: {
             networkType: 'bitcoin',
+            symbol: btcSymbol,
             addresses: {
                 change: [{ address: '1234', path: 'm/44/1' }],
                 used: [{ address: 'abcd', path: 'm/44/0' }],
@@ -956,6 +961,7 @@ export const getRbfParams = [
                     {
                         isAddress: true,
                         addresses: ['xyz0'],
+                        value: '1',
                     },
                 ],
             },
@@ -982,6 +988,8 @@ export const getRbfParams = [
                 {
                     type: 'payment',
                     address: 'xyz0',
+                    amount: '1',
+                    formattedAmount: '0.00000001',
                 },
             ],
         },
@@ -990,6 +998,7 @@ export const getRbfParams = [
         description: 'success',
         account: {
             networkType: 'bitcoin',
+            symbol: btcSymbol,
             addresses: {
                 change: [{ address: '1234', path: 'm/44/1' }],
                 used: [{ address: 'abcd', path: 'm/44/0' }],
@@ -1014,10 +1023,12 @@ export const getRbfParams = [
                     {
                         isAddress: true,
                         addresses: ['xyz0'],
+                        value: '1',
                     },
                     {
                         isAddress: true,
                         addresses: ['1234'],
+                        value: '1',
                     },
                 ],
             },
@@ -1047,10 +1058,14 @@ export const getRbfParams = [
                 {
                     type: 'payment',
                     address: 'xyz0',
+                    amount: '1',
+                    formattedAmount: '0.00000001',
                 },
                 {
                     type: 'change',
                     address: '1234',
+                    amount: '1',
+                    formattedAmount: '0.00000001',
                 },
             ],
         },
@@ -1059,6 +1074,7 @@ export const getRbfParams = [
         description: 'with OP_RETURN output',
         account: {
             networkType: 'bitcoin',
+            symbol: btcSymbol,
             addresses: {
                 change: [{ address: '1234', path: 'm/44/1' }],
                 used: [{ address: 'abcd', path: 'm/44/0' }],
@@ -1083,6 +1099,7 @@ export const getRbfParams = [
                     {
                         isAddress: true,
                         addresses: ['xyz0'],
+                        value: '1',
                     },
                     {
                         isAddress: false,
@@ -1091,6 +1108,7 @@ export const getRbfParams = [
                     {
                         isAddress: true,
                         addresses: ['1234'],
+                        value: '1',
                     },
                 ],
             },
@@ -1120,6 +1138,8 @@ export const getRbfParams = [
                 {
                     type: 'payment',
                     address: 'xyz0',
+                    amount: '1',
+                    formattedAmount: '0.00000001',
                 },
                 {
                     type: 'opreturn',
@@ -1129,6 +1149,8 @@ export const getRbfParams = [
                 {
                     type: 'change',
                     address: '1234',
+                    amount: '1',
+                    formattedAmount: '0.00000001',
                 },
             ],
         },
@@ -1144,7 +1166,7 @@ export const getAccountTransactions = [
             descriptor: asAccountDescriptor(
                 'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
             ),
-            symbol: 'btc',
+            symbol: btcSymbol,
         }),
         result: [
             {
@@ -1191,7 +1213,7 @@ export const getAccountTransactions = [
         account: mockWalletAccount({
             deviceState: '1stTestnetAddress@device_id:0',
             descriptor: asAccountDescriptor('rNaqKtKrMSwpwZSzRckPf7S96DkimjkF4H'),
-            symbol: 'txrp',
+            symbol: asNetworkSymbol('txrp'),
         }),
         result: [
             {
@@ -1242,7 +1264,7 @@ export const getAccountTransactions = [
         account: mockWalletAccount({
             deviceState: '1stTestnetAddress@device_id:0',
             descriptor: asAccountDescriptor('0xFA01a39f8Abaeb660c3137f14A310d0b414b2A15'),
-            symbol: 'eth',
+            symbol: asNetworkSymbol('eth'),
         }),
         result: [
             {
@@ -1390,7 +1412,7 @@ export const getAccountTransactions = [
         account: mockWalletAccount({
             deviceState: '1stTestnetAddress@device_id:0',
             descriptor: asAccountDescriptor('0xf69619a3dCAA63757A6BA0AF3628f5F6C42c50d2'),
-            symbol: 'eth',
+            symbol: asNetworkSymbol('eth'),
         }),
         result: [],
     },
@@ -1407,7 +1429,7 @@ export const isPending: Record<string, WalletAccountTransaction | AccountTransac
         ),
         deviceState: '1stTestnetAddress@device_id:0',
         fee: '0.00002929',
-        symbol: 'btc',
+        symbol: btcSymbol,
         targets: [],
         tokens: [
             {
@@ -1461,7 +1483,7 @@ export const isPending: Record<string, WalletAccountTransaction | AccountTransac
             'vpub5YoEd2jJofNDXriAXpt4fyX23uRhrViFG3721C1wRRKUvDS4P6St7tqFfDP4JZsRARVhaVcGvW5jerdWBVc1c3fgqZeAYt29QSTiafKdwck',
         ),
         deviceState: 'mvAmt1x3QTsSmJrR4tbPtMpYnLbi3gDEBu@912734FCB107274D3CC465EC:1',
-        symbol: 'test',
+        symbol: asNetworkSymbol('test'),
         type: 'recv',
         txid: '70ad253c25aa8a76ebcdb7fded56f2f57ec9b40967b7e79937b4f44445968c93',
         blockTime: 1665050077,

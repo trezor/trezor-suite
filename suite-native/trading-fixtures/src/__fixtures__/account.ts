@@ -1,3 +1,4 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type Account,
     type AccountDescriptor,
@@ -8,6 +9,11 @@ import { type StaticSessionId } from '@trezor/device-utils';
 
 const MOCK_DEVICE_STATIC_SESSION_ID: StaticSessionId =
     'mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q@448CCE89D32A733A1632F345:0';
+const btcSymbol = asNetworkSymbol('btc');
+const ethSymbol = asNetworkSymbol('eth');
+const baseSymbol = asNetworkSymbol('base');
+const adaSymbol = asNetworkSymbol('ada');
+const solSymbol = asNetworkSymbol('sol');
 
 const buildAccount = <T extends Partial<Account>>(
     base: T & { symbol: Account['symbol']; descriptor: AccountDescriptor },
@@ -42,7 +48,7 @@ const buildAccount = <T extends Partial<Account>>(
 export const getBtcAccount = (overrides: Partial<Account> = {}) =>
     buildAccount(
         {
-            symbol: 'btc',
+            symbol: btcSymbol,
             accountType: 'normal',
             accountLabel: 'BTC Account #1',
             descriptor: asAccountDescriptor('btc1normal'),
@@ -78,7 +84,7 @@ export const getBtcAccount = (overrides: Partial<Account> = {}) =>
 export const getEthAccount = (overrides: Partial<Account> = {}) =>
     buildAccount(
         {
-            symbol: 'eth',
+            symbol: ethSymbol,
             deviceState: MOCK_DEVICE_STATIC_SESSION_ID,
             accountLabel: 'Ethereum #1',
             index: 0,
@@ -96,7 +102,6 @@ export const getEthAccount = (overrides: Partial<Account> = {}) =>
                     standard: 'ERC20',
                     name: 'USDC',
                     contract: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-                    transfers: 1,
                     symbol: 'usdc',
                     decimals: 6,
                     balance: '1',
@@ -154,7 +159,7 @@ export const getEthAccount = (overrides: Partial<Account> = {}) =>
 export const getBaseAccount = (overrides: Partial<Account> = {}) =>
     buildAccount(
         {
-            symbol: 'base',
+            symbol: baseSymbol,
             deviceState: MOCK_DEVICE_STATIC_SESSION_ID,
             accountLabel: 'Base #1',
             index: 0,
@@ -199,7 +204,7 @@ export const getBaseAccount = (overrides: Partial<Account> = {}) =>
 export const getCardanoAccount = (overrides: Partial<Account> = {}) =>
     buildAccount(
         {
-            symbol: 'ada',
+            symbol: adaSymbol,
             accountType: 'normal',
             accountLabel: 'Cardano Account #1',
             descriptor: asAccountDescriptor('ada1normal'),
@@ -221,7 +226,7 @@ export const getCardanoAccount = (overrides: Partial<Account> = {}) =>
 export const getSolAccount = (overrides: Partial<Account> = {}) =>
     buildAccount(
         {
-            symbol: 'sol',
+            symbol: solSymbol,
             deviceState: MOCK_DEVICE_STATIC_SESSION_ID,
             accountLabel: 'Solana #1',
             index: 0,

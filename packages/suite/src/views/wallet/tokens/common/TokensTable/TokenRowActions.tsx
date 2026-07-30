@@ -41,7 +41,6 @@ import {
     getContractAddressForNetworkSymbol,
     getTokenExplorerUrl,
     isErc4626,
-    isWrappedNativeToken,
 } from '@suite-common/wallet-utils';
 import {
     Button,
@@ -68,6 +67,7 @@ import {
     RepeatIcon,
     XIcon,
 } from '@trezor/icons';
+import { isWrappedNativeToken } from '@trezor/network-ethereum/constants';
 
 import { SUITE } from 'src/actions/suite/constants';
 import { setSendFormPrefill } from 'src/actions/suite/suiteActions';

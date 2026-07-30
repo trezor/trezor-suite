@@ -104,7 +104,7 @@ export const isSignedByAccount = (tx: Pick<WalletAccountTransaction, 'details' |
 export const isTransactionCancellable = (
     tx: Pick<WalletAccountTransaction, 'rbfParams' | 'type'>,
     isPendingTx: boolean,
-    networkFeatures: NetworkFeature[] | undefined,
+    networkFeatures: readonly NetworkFeature[] | undefined,
 ) =>
     isPendingTx &&
     !!tx.rbfParams &&
@@ -114,7 +114,7 @@ export const isTransactionCancellable = (
 
 export const isTransactionBumpable = (
     tx: Pick<WalletAccountTransaction, 'rbfParams' | 'deadline' | 'type'>,
-    networkFeatures: NetworkFeature[] | undefined,
+    networkFeatures: readonly NetworkFeature[] | undefined,
 ) => !!tx.rbfParams && !!networkFeatures?.includes('rbf') && !tx.deadline && tx.type !== 'joint';
 
 export type EvmNonceInfo = {

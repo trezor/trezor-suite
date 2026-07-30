@@ -6,12 +6,13 @@ import {
 } from 'invity-api';
 
 import { toChecksumAddress } from '@suite-common/address';
-import type { Network } from '@suite-common/wallet-config';
+import { type Network, asNetworkSymbol } from '@suite-common/wallet-config';
 import { asAmountUnit, unitsToSubunits } from '@suite-common/wallet-utils';
 import { type PROTO } from '@trezor/connect';
 import { validatePath } from '@trezor/connect-common';
 import { BigNumber, formatBigUintToLE } from '@trezor/utils';
 
+import { TRADING_DEFAULT_CRYPTO_CURRENCY } from '../../constants';
 import { cryptoIdToNetworkAndContractAddress } from '../../utils';
 
 export const formatSlip24SendAmountByNetwork = ({
@@ -117,7 +118,9 @@ export const tradingExchangeCreatePaymentRequest = ({
     }
 
     const sendNetworkData = cryptoIdToNetworkAndContractAddress(trade.send);
-    const sendNetworkSymbol = sendNetworkData.network?.symbol ?? 'btc';
+    const sendNetworkSymbol = asNetworkSymbol(
+        sendNetworkData.network?.symbol ?? TRADING_DEFAULT_CRYPTO_CURRENCY,
+    );
     if (!sendNetworkData.network) {
         return undefined;
     }
@@ -192,7 +195,9 @@ export const tradingSellCreatePaymentRequest = ({
     }
 
     const sendNetworkData = cryptoIdToNetworkAndContractAddress(trade.cryptoCurrency);
-    const sendNetworkSymbol = sendNetworkData.network?.symbol ?? 'btc';
+    const sendNetworkSymbol = asNetworkSymbol(
+        sendNetworkData.network?.symbol ?? TRADING_DEFAULT_CRYPTO_CURRENCY,
+    );
     if (!sendNetworkData.network) {
         return undefined;
     }

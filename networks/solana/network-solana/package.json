@@ -58,6 +58,7 @@
         "@solana/kit": "^6.9.0",
         "@solana/rpc-api": "^6.9.0",
         "@solana/rpc-types": "^6.9.0",
+        "@trezor/network-module": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*"
     }

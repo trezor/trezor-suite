@@ -28,6 +28,9 @@
         { "path": "../../packages/connect" },
         { "path": "../../packages/device-utils" },
         {
+            "path": "../../networks/network-module/network-module"
+        },
+        {
             "path": "../../packages/styles-native"
         },
         { "path": "../../packages/theme" },

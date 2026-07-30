@@ -1,6 +1,6 @@
 import { Translation } from '@suite/intl';
 import { selectRouteName } from '@suite/router';
-import { networks } from '@suite-common/wallet-config';
+import { getNetwork } from '@suite-common/wallet-config';
 
 import { SUITE } from 'src/actions/suite/constants';
 import { useDispatch } from 'src/hooks/suite/useDispatch';
@@ -25,14 +25,14 @@ export const EvmExplanationBanner = ({ account }: EvmExplanationBannerProps) => 
         account &&
         !explanationBannerClosed[account.symbol] &&
         account.symbol !== 'eth' &&
-        networks[account.symbol].networkType === 'ethereum' &&
+        getNetwork(account.symbol).networkType === 'ethereum' &&
         !isReceiveRoute;
 
     if (!isVisible) {
         return null;
     }
 
-    const network = networks[account.symbol];
+    const network = getNetwork(account.symbol);
 
     const close = () =>
         dispatch({

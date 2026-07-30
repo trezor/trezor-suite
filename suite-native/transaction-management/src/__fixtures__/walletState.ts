@@ -1,3 +1,4 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type FiatRatesState } from '@suite-common/wallet-core';
 import {
     type Account,
@@ -14,17 +15,20 @@ const ETH_ACCOUNT_DESCRIPTOR = '0x73d0385F4d8E00C5e6504C6030F47BF6212736A8';
 const BTC_ACCOUNT_DESCRIPTOR =
     'xpub6BiVtCpG9fQPxnPmHXG8PhtzQdWC2Su4qWu6XW9tpWFYhxydCLJGrWBJZ5H6qTAHdPQ7pQhtpjiYZVZARo14qHiay2fvrX996oEP42u8wZy';
 const SOL_ACCOUNT_DESCRIPTOR = 'ETxHeBBcuw9Yu4dGuP3oXrD12V5RECvmi8ogQ9PkjyVF';
+const ethSymbol = asNetworkSymbol('eth');
+const btcSymbol = asNetworkSymbol('btc');
+const solSymbol = asNetworkSymbol('sol');
 
 export const ETH_ACCOUNT_KEY = mockAccountKey({
-    symbol: 'eth',
+    symbol: ethSymbol,
     descriptor: ETH_ACCOUNT_DESCRIPTOR,
 });
 export const BTC_ACCOUNT_KEY = mockAccountKey({
-    symbol: 'btc',
+    symbol: btcSymbol,
     descriptor: BTC_ACCOUNT_DESCRIPTOR,
 });
 export const SOL_ACCOUNT_KEY = mockAccountKey({
-    symbol: 'sol',
+    symbol: solSymbol,
     descriptor: SOL_ACCOUNT_DESCRIPTOR,
 });
 
@@ -37,7 +41,7 @@ export const getEthAccount = () =>
         path: "m/44'/60'/0'/0/0",
         descriptor: ETH_ACCOUNT_DESCRIPTOR,
         accountType: 'normal',
-        symbol: 'eth',
+        symbol: ethSymbol,
         empty: false,
         backendType: 'blockbook',
         visible: true,
@@ -106,7 +110,7 @@ export const getBtcAccount = () =>
         path: "m/84'/0'/0'",
         descriptor: BTC_ACCOUNT_DESCRIPTOR,
         accountType: 'normal',
-        symbol: 'btc',
+        symbol: btcSymbol,
         empty: false,
         backendType: 'blockbook',
         visible: true,
@@ -197,7 +201,7 @@ export const getSolAccount = () =>
         path: "m/44'/501'/0'/0'",
         descriptor: SOL_ACCOUNT_DESCRIPTOR,
         accountType: 'normal',
-        symbol: 'sol',
+        symbol: solSymbol,
         empty: false,
         visible: true,
         balance: '10000000000', // 10 SOL

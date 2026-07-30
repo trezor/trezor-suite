@@ -1,11 +1,13 @@
 import { type TokenDtoV2 } from '@suite-common/earn-stablecoin-defs';
-import type { NetworkSymbol } from '@suite-common/networks';
 import type { Bip43PathTemplate } from '@trezor/crypto-utils';
 import { type DeviceModelInternal } from '@trezor/device-utils';
+import {
+    type NetworkSymbol,
+    type NetworkSymbolNonTestnet,
+    asNetworkSymbol,
+} from '@trezor/network-module';
 
-export type { NetworkSymbol };
-
-export const asNetworkSymbol = (symbol: string): NetworkSymbol => symbol as NetworkSymbol;
+export { asNetworkSymbol, type NetworkSymbol, type NetworkSymbolNonTestnet };
 
 /**
  * Used for some edge cases where extension of NetworkSymbol is necessary.
@@ -77,7 +79,7 @@ type NetworkAccountWithSpecificKey<TKey extends AccountType> = {
     accountType: TKey;
     bip43Path: Bip43PathTemplate;
     backendType?: BackendType;
-    features?: NetworkFeature[];
+    features?: readonly NetworkFeature[];
     isDebugOnlyAccountType?: boolean;
 };
 export type NetworkAccount = NetworkAccountWithSpecificKey<AccountType>;
@@ -102,8 +104,8 @@ type NetworkWithSpecificKey<TKey extends NetworkSymbol> = {
     accountTypes: NetworkAccountTypes;
     isHidden?: boolean; // not used here, but supported elsewhere
     chainId?: number;
-    features: NetworkFeature[];
-    backendOptions: BackendOption[];
+    features: readonly NetworkFeature[];
+    backendOptions: readonly BackendOption[];
     support?: NetworkDeviceSupport;
     isDebugOnlyNetwork?: boolean;
     isExperimentalOnlyNetwork?: boolean;
@@ -119,6 +121,4 @@ type NetworkWithSpecificKey<TKey extends NetworkSymbol> = {
 };
 export type Network = NetworkWithSpecificKey<NetworkSymbol>;
 
-export type Networks = {
-    [key in NetworkSymbol]: NetworkWithSpecificKey<key>;
-};
+export type Networks = Readonly<Record<NetworkSymbol, Network>>;

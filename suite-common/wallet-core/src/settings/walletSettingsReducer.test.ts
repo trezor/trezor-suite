@@ -87,7 +87,7 @@ describe('settings reducer', () => {
 });
 
 describe('selectIsHideSuspiciousTransactions', () => {
-    const getState = (hideSuspiciousTransactions: Partial<Record<NetworkSymbol, boolean>>) => ({
+    const getState = (hideSuspiciousTransactions: Record<NetworkSymbol, boolean>) => ({
         wallet: {
             settings: {
                 ...initialState,

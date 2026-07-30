@@ -1,11 +1,11 @@
 import fs from 'fs';
 
-import type { NetworkSymbol } from '@suite-common/wallet-config';
 import { TestCategory, TestPriority } from '@trezor/e2e-utils';
 
 import { expect, test } from '../../support/fixtures';
 import { ExportType } from '../../support/pageObjects/walletPage';
 import { createTestAnnotation } from '../../support/reporters/annotations';
+import type { E2eNetworkSymbol } from '../../support/types';
 
 test.describe('Export transactions', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
     test.use({
@@ -19,7 +19,7 @@ test.describe('Export transactions', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, ()
     });
 
     const runExport = async (
-        symbols: NetworkSymbol[],
+        symbols: E2eNetworkSymbol[],
         {
             page,
             settingsPage,

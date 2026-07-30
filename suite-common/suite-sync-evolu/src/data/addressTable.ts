@@ -17,7 +17,7 @@ import {
     createSuiteSyncAddressId,
     createSuiteSyncUpdateError,
 } from '@suite-common/suite-sync-storage';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { err, ok } from '@trezor/type-utils';
 
@@ -101,13 +101,13 @@ export class AddressEvoluTable implements AddressTable {
                  */
                 const idToTest = createAddressEvoluId(
                     label.address,
-                    label.networkSymbol as NetworkSymbol,
+                    asNetworkSymbol(label.networkSymbol),
                 );
                 if (idToTest.ok && label.id !== idToTest.value) {
                     continue;
                 }
 
-                const networkSymbol = label.networkSymbol as NetworkSymbol;
+                const networkSymbol = asNetworkSymbol(label.networkSymbol);
 
                 acc.push({
                     id: createSuiteSyncAddressId(label.address, networkSymbol),

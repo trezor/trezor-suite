@@ -17,6 +17,7 @@ import {
     getAccountIdentity,
     getAreSatoshisUsed,
     getBackendFromSettings,
+    getBlockchain,
     getCustomBackends,
     isTrezorConnectBackendType,
     shouldSubscribeBlocks,
@@ -32,11 +33,7 @@ import type { TimerId } from '@trezor/type-utils';
 import { arrayDistinct, arrayToDictionary } from '@trezor/utils';
 
 import { BLOCKCHAIN_MODULE_PREFIX, blockchainActions } from './blockchainActions';
-import {
-    selectBlockchainState,
-    selectIsCustomBackendConfigured,
-    selectNetworkBlockchainInfo,
-} from './blockchainReducer';
+import { selectBlockchainState, selectIsCustomBackendConfigured } from './blockchainReducer';
 import { selectAccounts } from '../accounts/accountsSelectors';
 import { fetchAndUpdateAccountThunk, reportWalletBalanceThunk } from '../accounts/accountsThunks';
 import { preloadFeeInfoThunk } from '../fees/feesThunks';
@@ -69,7 +66,9 @@ export const setCustomBackendThunk = createThunk(
     `${BLOCKCHAIN_MODULE_PREFIX}/setCustomBackendThunk`,
     (symbol: NetworkSymbol, { getState }) => {
         const blockchain = selectBlockchainState(getState());
-        const backends = [getBackendFromSettings(symbol, blockchain[symbol].backends)];
+        const backends = [
+            getBackendFromSettings(symbol, getBlockchain(blockchain, symbol).backends),
+        ];
 
         return setBackendsToConnect(backends);
     },
@@ -223,7 +222,7 @@ export const syncAccountsWithBlockchainThunk = createThunk(
         const isWindowVisible = getIsWindowVisible();
 
         // First clear, to cancel last planned sync
-        tryClearTimeout(blockchain[symbol].syncTimeout);
+        tryClearTimeout(getBlockchain(blockchain, symbol).syncTimeout);
 
         // Sync only when the app window is active
         const shouldSync = isWindowVisible;
@@ -240,7 +239,7 @@ export const syncAccountsWithBlockchainThunk = createThunk(
             );
         }
 
-        const blockchainInfo = selectNetworkBlockchainInfo(getState(), symbol);
+        const blockchainInfo = getBlockchain(blockchain, symbol);
         // Second clear, just to be sure that no other sync was planned while executing this one
         tryClearTimeout(blockchainInfo.syncTimeout);
 
@@ -365,7 +364,7 @@ export const onBlockchainDisconnectThunk = createThunk(
         if (!network) return;
 
         const blockchain = selectBlockchainState(getState());
-        const { syncTimeout } = blockchain[network.symbol];
+        const { syncTimeout } = getBlockchain(blockchain, network.symbol);
         // reset previous timeout
         tryClearTimeout(syncTimeout);
     },

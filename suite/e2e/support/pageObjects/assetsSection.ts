@@ -1,29 +1,28 @@
 import { Locator, Page, expect } from '@playwright/test';
 
-import type { NetworkSymbol } from '@suite-common/wallet-config';
-
 import { step } from '../common';
+import type { E2eNetworkSymbol } from '../types';
 
 export class AssetsSection {
     readonly section: Locator;
     readonly tableIcon: Locator;
     readonly gridIcon: Locator;
-    readonly buyAssetButton = (symbol: NetworkSymbol) =>
+    readonly buyAssetButton = (symbol: E2eNetworkSymbol) =>
         this.page.getByTestId(`@dashboard/asset/${symbol}/buy-button`);
     readonly enableMoreCoins: Locator;
     readonly activateAssetsModalSaveButton: Locator;
     readonly activateAssetsModalNoteGotItButton: Locator;
-    readonly activateAssetsModalNetworkButton = (symbol: NetworkSymbol) =>
+    readonly activateAssetsModalNetworkButton = (symbol: E2eNetworkSymbol) =>
         this.page.getByTestId(`@settings/wallet/network/${symbol}`);
-    readonly assetName = (symbol: NetworkSymbol) =>
+    readonly assetName = (symbol: E2eNetworkSymbol) =>
         this.page
             .getByTestId(`@dashboard/asset-item/${symbol}`)
             .getByTestId('@dashboard/asset/name');
-    readonly assetCard = (symbol: NetworkSymbol) =>
+    readonly assetCard = (symbol: E2eNetworkSymbol) =>
         this.page.getByTestId(`@dashboard/asset-card/${symbol}`);
-    readonly assetRow = (symbol: NetworkSymbol) =>
+    readonly assetRow = (symbol: E2eNetworkSymbol) =>
         this.page.getByTestId(`@dashboard/asset-row/${symbol}`);
-    readonly assetFiatAmount = (symbol: NetworkSymbol) =>
+    readonly assetFiatAmount = (symbol: E2eNetworkSymbol) =>
         this.page.getByTestId(`@dashboard/asset/${symbol}/fiat-amount`);
     readonly bottomInfo: Locator;
     readonly assetExchangeRate: Locator;
@@ -44,7 +43,7 @@ export class AssetsSection {
     }
 
     @step()
-    async enableNetworkViaActivateAssetsModal(symbol: NetworkSymbol | NetworkSymbol[]) {
+    async enableNetworkViaActivateAssetsModal(symbol: E2eNetworkSymbol | E2eNetworkSymbol[]) {
         const symbols = Array.isArray(symbol) ? symbol : [symbol];
 
         for (const s of symbols) {

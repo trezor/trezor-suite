@@ -7,6 +7,7 @@ import {
 } from '@suite-common/suite-types';
 import { mockConnectDevice } from '@suite-common/suite-types/mocks';
 import { testMocks } from '@suite-common/test-utils';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { FirmwareType, type TransportInfo } from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { type EnvUtils } from '@trezor/env-utils';
@@ -23,7 +24,7 @@ const getSecondActionMessage = () => {
 };
 
 const defaultOptions: Options = {
-    settings: { tor: false, enabledNetworks: ['btc'] },
+    settings: { tor: false, enabledNetworks: [asNetworkSymbol('btc')] },
     countryCode: 'US',
 };
 const defaultTransportsOption: TransportInfo = {
@@ -1652,7 +1653,10 @@ export const getValidMessages: GetValidMessagesFixture[] = [
                 },
             ],
         }),
-        options: { settings: { tor: false, enabledNetworks: ['btc'] }, countryCode: 'US' },
+        options: {
+            settings: { tor: false, enabledNetworks: [asNetworkSymbol('btc')] },
+            countryCode: 'US',
+        },
         result: [getSecondActionMessage()],
     },
     {
@@ -1862,7 +1866,7 @@ export const getValidMessages: GetValidMessagesFixture[] = [
         suiteVersion: '2.0.0',
         config: getMessageSystemConfig(),
         options: {
-            settings: { tor: true, enabledNetworks: ['btc'] },
+            settings: { tor: true, enabledNetworks: [asNetworkSymbol('btc')] },
             transports: [{ ...defaultTransportsOption, version: '2.0.30' }],
             device: getConnectAcquiredDevice(),
             countryCode: 'US',
@@ -1922,7 +1926,7 @@ export const getValidMessages: GetValidMessagesFixture[] = [
         suiteVersion: '2.0.0',
         config: getMessageSystemConfig(),
         options: {
-            settings: { tor: true, enabledNetworks: ['btc'] },
+            settings: { tor: true, enabledNetworks: [asNetworkSymbol('btc')] },
             transports: [{ ...defaultTransportsOption, version: '2.0.30' }],
             device: getConnectAcquiredDevice(),
             countryCode: 'US',
@@ -1940,7 +1944,7 @@ export const getValidMessages: GetValidMessagesFixture[] = [
         suiteVersion: '2.0.0',
         config: getMessageSystemConfig(),
         options: {
-            settings: { tor: true, enabledNetworks: ['btc'] },
+            settings: { tor: true, enabledNetworks: [asNetworkSymbol('btc')] },
             transports: [{ ...defaultTransportsOption, version: '2.0.30' }],
             device: getConnectAcquiredDevice(),
             countryCode: 'US',

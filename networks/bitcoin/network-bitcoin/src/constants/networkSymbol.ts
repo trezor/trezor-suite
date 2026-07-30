@@ -1,3 +1,4 @@
+import type { NetworkSymbol } from '@trezor/network-module';
 import { isArrayMember } from '@trezor/utils';
 
 export const supportedBitcoinNetworks = [
@@ -12,10 +13,12 @@ export const supportedBitcoinNetworks = [
 
 export type BitcoinNetworkSymbol = (typeof supportedBitcoinNetworks)[number];
 
-export const isSupportedBitcoinNetwork = (symbol: string): symbol is BitcoinNetworkSymbol =>
-    isArrayMember(symbol, supportedBitcoinNetworks);
+export const isSupportedBitcoinNetwork = (
+    symbol: NetworkSymbol,
+): symbol is NetworkSymbol & BitcoinNetworkSymbol =>
+    isArrayMember(symbol as string, supportedBitcoinNetworks);
 
-export const toBitcoinNetworkSymbol = (symbol: string): BitcoinNetworkSymbol => {
+export const toBitcoinNetworkSymbol = (symbol: NetworkSymbol): BitcoinNetworkSymbol => {
     if (!isSupportedBitcoinNetwork(symbol)) {
         throw new Error(`Unsupported Bitcoin network symbol: ${symbol}`);
     }

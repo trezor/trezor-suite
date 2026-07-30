@@ -15,6 +15,7 @@ import {
     startDiscoveryThunk,
 } from '@suite-common/wallet-core';
 import TrezorConnect from '@trezor/connect';
+import { asNetworkSymbol } from '@trezor/network-module';
 
 import { ONBOARDING } from 'src/actions/onboarding/constants';
 import { stepCategories } from 'src/config/onboarding/steps';
@@ -150,7 +151,7 @@ const goToSuite = () => (dispatch: Dispatch, getState: GetState, extra: GoToSuit
     const isBitcoinOnlyFirmware = selectHasBitcoinOnlyFirmware(getState());
     const enabledNetworks = selectEnabledNetworks(getState());
     if (isBitcoinOnlyFirmware && enabledNetworks.length === 0) {
-        dispatch(changeCoinVisibility({ symbol: 'btc', shouldBeVisible: true }));
+        dispatch(changeCoinVisibility({ symbol: asNetworkSymbol('btc'), shouldBeVisible: true }));
     }
 
     // there must be a device to progress with onboarding

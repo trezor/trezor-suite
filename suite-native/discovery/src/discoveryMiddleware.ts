@@ -22,6 +22,7 @@ import {
 import { isPassphraseDiscoveryFailure } from '@suite-native/passphrase';
 import { DEVICE } from '@trezor/connect';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
+import { asNetworkSymbol } from '@trezor/network-module';
 
 import {
     type PendingCoinVisibilityRootState,
@@ -29,6 +30,8 @@ import {
     clearPendingCoinVisibility,
     selectPendingCoinVisibilitySymbols,
 } from './pendingCoinVisibilitySlice';
+
+const btcSymbol = asNetworkSymbol('btc');
 
 export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
     (action, { dispatch, next, getState }) => {
@@ -78,7 +81,7 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
             const newDevice = action.payload;
             if (newDevice?.connected && hasBitcoinOnlyFirmware(newDevice)) {
                 if (!isBitcoinEnabled) {
-                    dispatch(changeCoinVisibility({ symbol: 'btc', shouldBeVisible: true }));
+                    dispatch(changeCoinVisibility({ symbol: btcSymbol, shouldBeVisible: true }));
                 }
             }
         }

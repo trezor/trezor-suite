@@ -1,4 +1,4 @@
-import type { NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     selectAccountByKey,
     selectAdaAccountHasStaked,
@@ -13,6 +13,7 @@ import {
     getTronCryptoBalanceWithStaking,
     getUnstakingPeriodInDays,
     isStakingSymbol,
+    toStakingNetworkSymbol,
 } from '@suite-common/wallet-utils';
 import { SOLANA_EPOCH_DAYS } from '@trezor/network-solana/constants';
 import { exhaustive } from '@trezor/type-utils';
@@ -58,28 +59,33 @@ import { type NativeStakingRootState } from './types';
 
 // create empty array in advance so it will be always same on shallow comparison
 const EMPTY_ACCOUNT_ARRAY: Account[] = [];
+const ethSymbol = asNetworkSymbol('eth');
+const solSymbol = asNetworkSymbol('sol');
+const adaSymbol = asNetworkSymbol('ada');
+const trxSymbol = asNetworkSymbol('trx');
 
 const selectDeviceAccountsWithStaking = (
     state: NativeStakingRootState,
     symbol: NetworkSymbol,
 ): Account[] => {
-    if (!isStakingSymbol(symbol)) {
+    const stakingSymbol = toStakingNetworkSymbol(symbol);
+    if (stakingSymbol === null) {
         return EMPTY_ACCOUNT_ARRAY;
     }
 
-    switch (symbol) {
+    switch (stakingSymbol) {
         case 'eth':
         case 'thod':
-            return selectVisibleDeviceEthereumAccountsWithStakingByNetworkSymbol(state, 'eth');
+            return selectVisibleDeviceEthereumAccountsWithStakingByNetworkSymbol(state, ethSymbol);
         case 'dsol':
         case 'sol':
-            return selectVisibleDeviceSolanaAccountsWithStakingByNetworkSymbol(state, 'sol');
+            return selectVisibleDeviceSolanaAccountsWithStakingByNetworkSymbol(state, solSymbol);
         case 'ada':
-            return selectVisibleDeviceCardanoAccountsWithStakingByNetworkSymbol(state, 'ada');
+            return selectVisibleDeviceCardanoAccountsWithStakingByNetworkSymbol(state, adaSymbol);
         case 'trx':
-            return selectVisibleDeviceTronAccountsWithStakingByNetworkSymbol(state, 'trx');
+            return selectVisibleDeviceTronAccountsWithStakingByNetworkSymbol(state, trxSymbol);
         default:
-            return exhaustive(symbol);
+            return exhaustive(stakingSymbol);
     }
 };
 
@@ -91,11 +97,12 @@ export const selectHasAnyDeviceAccountsWithStaking = (
 export const getAccountCryptoBalanceWithStaking = (account: Account | null) => {
     if (!account) return '0';
 
-    if (!isStakingSymbol(account.symbol)) {
+    const stakingSymbol = toStakingNetworkSymbol(account.symbol);
+    if (stakingSymbol === null) {
         return account.formattedBalance;
     }
 
-    switch (account.symbol) {
+    switch (stakingSymbol) {
         case 'eth':
         case 'thod':
             return getEthereumCryptoBalanceWithStaking(account);
@@ -107,19 +114,19 @@ export const getAccountCryptoBalanceWithStaking = (account: Account | null) => {
         case 'trx':
             return getTronCryptoBalanceWithStaking(account);
         default:
-            return exhaustive(account.symbol);
+            return exhaustive(stakingSymbol);
     }
 };
 
 export const selectAccountHasStaking = (state: NativeStakingRootState, accountKey: AccountKey) => {
     const account = selectAccountByKey(state, accountKey);
-    const symbol = account?.symbol;
+    const stakingSymbol = account ? toStakingNetworkSymbol(account.symbol) : null;
 
-    if (!symbol || !isStakingSymbol(symbol)) {
+    if (stakingSymbol === null) {
         return false;
     }
 
-    switch (symbol) {
+    switch (stakingSymbol) {
         case 'eth':
         case 'thod':
             return selectEthereumAccountHasStaking(state, accountKey);
@@ -131,7 +138,7 @@ export const selectAccountHasStaking = (state: NativeStakingRootState, accountKe
         case 'trx':
             return selectTronAccountHasStaked(state, accountKey);
         default:
-            return exhaustive(symbol);
+            return exhaustive(stakingSymbol);
     }
 };
 
@@ -140,12 +147,12 @@ export const selectIsStakePendingByAccountKey = (
     accountKey: AccountKey | null,
 ) => {
     const account = selectAccountByKey(state, accountKey);
-    const symbol = account?.symbol;
-    if (!symbol || !isStakingSymbol(symbol) || !accountKey) {
+    const stakingSymbol = account ? toStakingNetworkSymbol(account.symbol) : null;
+    if (stakingSymbol === null || !accountKey) {
         return false;
     }
 
-    switch (symbol) {
+    switch (stakingSymbol) {
         case 'eth':
         case 'thod':
             return selectEthereumIsStakePendingByAccountKey(state, accountKey);
@@ -157,7 +164,7 @@ export const selectIsStakePendingByAccountKey = (
         case 'trx':
             return false;
         default:
-            return exhaustive(symbol);
+            return exhaustive(stakingSymbol);
     }
 };
 
@@ -166,12 +173,12 @@ export const selectIsStakeConfirmingByAccountKey = (
     accountKey: AccountKey,
 ) => {
     const account = selectAccountByKey(state, accountKey);
-    const symbol = account?.symbol;
-    if (!symbol || !isStakingSymbol(symbol)) {
+    const stakingSymbol = account ? toStakingNetworkSymbol(account.symbol) : null;
+    if (stakingSymbol === null) {
         return false;
     }
 
-    switch (symbol) {
+    switch (stakingSymbol) {
         case 'eth':
         case 'thod':
             return selectEthereumIsStakeConfirmingByAccountKey(state, accountKey);
@@ -183,7 +190,7 @@ export const selectIsStakeConfirmingByAccountKey = (
         case 'trx':
             return false;
         default:
-            return exhaustive(symbol);
+            return exhaustive(stakingSymbol);
     }
 };
 
@@ -201,12 +208,12 @@ export const selectStakedBalanceByAccountKey = (
     accountKey: AccountKey,
 ) => {
     const account = selectAccountByKey(state, accountKey);
-    const symbol = account?.symbol;
-    if (!symbol || !isStakingSymbol(symbol)) {
+    const stakingSymbol = account ? toStakingNetworkSymbol(account.symbol) : null;
+    if (stakingSymbol === null) {
         return '0';
     }
 
-    switch (symbol) {
+    switch (stakingSymbol) {
         case 'eth':
         case 'thod':
             return selectEthereumStakedBalanceByAccountKey(state, accountKey);
@@ -218,7 +225,7 @@ export const selectStakedBalanceByAccountKey = (
         case 'trx':
             return selectTronStakedBalanceByAccountKey(state, accountKey);
         default:
-            return exhaustive(symbol);
+            return exhaustive(stakingSymbol);
     }
 };
 
@@ -227,12 +234,12 @@ export const selectRewardsBalanceByAccountKey = (
     accountKey: AccountKey | null,
 ) => {
     const account = selectAccountByKey(state, accountKey);
-    const symbol = account?.symbol;
-    if (!symbol || !isStakingSymbol(symbol) || !accountKey) {
+    const stakingSymbol = account ? toStakingNetworkSymbol(account.symbol) : null;
+    if (stakingSymbol === null || !accountKey) {
         return '0';
     }
 
-    switch (symbol) {
+    switch (stakingSymbol) {
         case 'eth':
         case 'thod':
             return selectEthereumRewardsBalanceByAccountKey(state, accountKey);
@@ -245,7 +252,7 @@ export const selectRewardsBalanceByAccountKey = (
         case 'trx':
             return selectTronRewardsBalanceByAccountKey(state, accountKey);
         default:
-            return exhaustive(symbol);
+            return exhaustive(stakingSymbol);
     }
 };
 
@@ -254,12 +261,12 @@ export const selectTotalStakePendingByAccountKey = (
     accountKey: AccountKey | null,
 ) => {
     const account = selectAccountByKey(state, accountKey);
-    const symbol = account?.symbol;
-    if (!symbol || !isStakingSymbol(symbol) || !accountKey) {
+    const stakingSymbol = account ? toStakingNetworkSymbol(account.symbol) : null;
+    if (stakingSymbol === null || !accountKey) {
         return '0';
     }
 
-    switch (symbol) {
+    switch (stakingSymbol) {
         case 'eth':
         case 'thod':
             return selectEthereumTotalStakePendingByAccountKey(state, accountKey);
@@ -271,7 +278,7 @@ export const selectTotalStakePendingByAccountKey = (
         case 'trx':
             return '0';
         default:
-            return exhaustive(symbol);
+            return exhaustive(stakingSymbol);
     }
 };
 
@@ -280,12 +287,12 @@ export const selectClaimableAmountByAccountKey = (
     accountKey: AccountKey,
 ) => {
     const account = selectAccountByKey(state, accountKey);
-    const symbol = account?.symbol;
-    if (!symbol || !isStakingSymbol(symbol)) {
+    const stakingSymbol = account ? toStakingNetworkSymbol(account.symbol) : null;
+    if (stakingSymbol === null) {
         return '0';
     }
 
-    switch (symbol) {
+    switch (stakingSymbol) {
         case 'eth':
         case 'thod':
             return selectEthereumClaimableAmountByAccountKey(state, accountKey);
@@ -297,7 +304,7 @@ export const selectClaimableAmountByAccountKey = (
         case 'trx':
             return '0';
         default:
-            return exhaustive(symbol);
+            return exhaustive(stakingSymbol);
     }
 };
 
@@ -306,12 +313,12 @@ export const selectCanClaimByAccountKey = (
     accountKey: AccountKey,
 ) => {
     const account = selectAccountByKey(state, accountKey);
-    const symbol = account?.symbol;
-    if (!symbol || !isStakingSymbol(symbol)) {
+    const stakingSymbol = account ? toStakingNetworkSymbol(account.symbol) : null;
+    if (stakingSymbol === null) {
         return false;
     }
 
-    switch (symbol) {
+    switch (stakingSymbol) {
         case 'eth':
         case 'thod':
             return selectEthereumCanClaimByAccountKey(state, accountKey);
@@ -323,7 +330,7 @@ export const selectCanClaimByAccountKey = (
         case 'trx':
             return false;
         default:
-            return exhaustive(symbol);
+            return exhaustive(stakingSymbol);
     }
 };
 
@@ -332,12 +339,12 @@ export const selectUnstakingBalanceByAccountKey = (
     accountKey: AccountKey,
 ) => {
     const account = selectAccountByKey(state, accountKey);
-    const symbol = account?.symbol;
-    if (!symbol || !isStakingSymbol(symbol)) {
+    const stakingSymbol = account ? toStakingNetworkSymbol(account.symbol) : null;
+    if (stakingSymbol === null) {
         return '0';
     }
 
-    switch (symbol) {
+    switch (stakingSymbol) {
         case 'eth':
         case 'thod':
             return selectEthereumUnstakingBalanceByAccountKey(state, accountKey);
@@ -349,7 +356,7 @@ export const selectUnstakingBalanceByAccountKey = (
         case 'trx':
             return selectTronUnstakedBalanceByAccountKey(state, accountKey);
         default:
-            return exhaustive(symbol);
+            return exhaustive(stakingSymbol);
     }
 };
 
@@ -369,11 +376,12 @@ export const selectEntryPeriodInDaysBySymbol = (
     state: NativeStakingRootState,
     symbol: NetworkSymbol | undefined,
 ) => {
-    if (!symbol || !isStakingSymbol(symbol)) {
+    const stakingSymbol = symbol ? toStakingNetworkSymbol(symbol) : null;
+    if (stakingSymbol === null) {
         return undefined;
     }
 
-    switch (symbol) {
+    switch (stakingSymbol) {
         case 'eth':
         case 'thod':
             return selectEthereumEntryPeriodInDays(state);
@@ -385,7 +393,7 @@ export const selectEntryPeriodInDaysBySymbol = (
         case 'trx':
             return undefined;
         default:
-            return exhaustive(symbol);
+            return exhaustive(stakingSymbol);
     }
 };
 

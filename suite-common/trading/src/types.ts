@@ -20,9 +20,9 @@ import type {
 import { type CountryCode } from '@suite-common/geolocation';
 import {
     type Network,
-    type NetworkConfig,
     type NetworkDisplaySymbol,
     type NetworkSymbol,
+    type NetworkSymbolNonTestnet,
 } from '@suite-common/wallet-config';
 import {
     type Account,
@@ -63,16 +63,16 @@ export type TradingTradeSellExchangeType = Exclude<TradingType, TradingBuyType>;
 
 type TradingAssetOptionBase = {
     id: CryptoId;
-    coingeckoId: NonNullable<NetworkConfig['coingeckoId']>;
-    networkName: NetworkConfig['name'];
-    networkSymbol: NetworkSymbol;
+    coingeckoId: string;
+    networkName: string;
+    networkSymbol: NetworkSymbolNonTestnet;
     displaySymbolName?: string;
 };
 
 export type TradingAssetOptionNativeToken = TradingAssetOptionBase & {
     isNativeToken: true;
-    name: NetworkConfig['name'];
-    symbol: NetworkSymbol;
+    name: string;
+    symbol: NetworkSymbolNonTestnet;
     displaySymbol: NetworkDisplaySymbol;
     contractAddress: null | typeof constants.CONTRACT_ADDRESS_FOR_NATIVE_TOKEN;
 };

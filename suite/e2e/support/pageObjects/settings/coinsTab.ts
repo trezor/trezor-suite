@@ -1,22 +1,23 @@
 import { Locator, Page } from '@playwright/test';
 
-import type { BackendType, NetworkSymbol } from '@suite-common/wallet-config';
+import type { BackendType } from '@suite-common/wallet-config';
 
 import { step } from '../../common';
 import { expect } from '../../testExtends/customMatchers';
+import type { E2eNetworkSymbol } from '../../types';
 
 export class CoinsTab {
-    readonly networkButton = (symbol: NetworkSymbol) =>
+    readonly networkButton = (symbol: E2eNetworkSymbol) =>
         this.page.getByTestId(`@settings/wallet/network/${symbol}`);
-    readonly networkAddButton = (symbol: NetworkSymbol) =>
+    readonly networkAddButton = (symbol: E2eNetworkSymbol) =>
         this.page.getByTestId(`@settings/wallet/network/${symbol}/add-button`);
-    readonly networkSwitch = (symbol: NetworkSymbol) =>
+    readonly networkSwitch = (symbol: E2eNetworkSymbol) =>
         this.page.getByTestId(`@settings/wallet/network/${symbol}/switch`);
-    readonly networkSwitchInput = (symbol: NetworkSymbol) =>
+    readonly networkSwitchInput = (symbol: E2eNetworkSymbol) =>
         this.networkSwitch(symbol).getByRole('switch');
-    readonly networkBackendStatus = (symbol: NetworkSymbol) =>
+    readonly networkBackendStatus = (symbol: E2eNetworkSymbol) =>
         this.page.getByTestId(`@settings/wallet/network/${symbol}/backend-status`);
-    readonly networkSymbolAdvanceSettingsButton = (symbol: NetworkSymbol) =>
+    readonly networkSymbolAdvanceSettingsButton = (symbol: E2eNetworkSymbol) =>
         this.page.getByTestId(`@settings/wallet/network/${symbol}/advance`);
     readonly coinBackendSelector: Locator;
     readonly coinBackendSelectorOption = (backend: BackendType) =>
@@ -35,7 +36,7 @@ export class CoinsTab {
     }
 
     @step()
-    async openNetworkAdvanceSettings(symbol: NetworkSymbol) {
+    async openNetworkAdvanceSettings(symbol: E2eNetworkSymbol) {
         if (!(await this.isNetworkEnabled(symbol))) {
             await this.enableNetwork(symbol);
         }
@@ -45,27 +46,27 @@ export class CoinsTab {
     }
 
     @step()
-    async isNetworkEnabled(symbol: NetworkSymbol) {
+    async isNetworkEnabled(symbol: E2eNetworkSymbol) {
         return (await this.networkSwitchInput(symbol).getAttribute('aria-checked')) === 'true';
     }
 
     @step()
-    async expectNetworkEnabled(symbol: NetworkSymbol) {
+    async expectNetworkEnabled(symbol: E2eNetworkSymbol) {
         await expect(this.networkSwitchInput(symbol)).toHaveAttribute('aria-checked', 'true');
     }
 
     @step()
-    async expectNetworkDisabled(symbol: NetworkSymbol) {
+    async expectNetworkDisabled(symbol: E2eNetworkSymbol) {
         await expect(this.networkSwitchInput(symbol)).toHaveAttribute('aria-checked', 'false');
     }
 
     @step()
-    async expectCustomBackendIndicator(symbol: NetworkSymbol) {
+    async expectCustomBackendIndicator(symbol: E2eNetworkSymbol) {
         await expect(this.networkBackendStatus(symbol)).toBeVisible();
     }
 
     @step()
-    async enableNetwork(symbol: NetworkSymbol) {
+    async enableNetwork(symbol: E2eNetworkSymbol) {
         const networkSwitch = this.networkSwitch(symbol);
         if (!(await this.isNetworkEnabled(symbol))) {
             await networkSwitch.click();
@@ -74,7 +75,7 @@ export class CoinsTab {
     }
 
     @step()
-    async disableNetwork(symbol: NetworkSymbol) {
+    async disableNetwork(symbol: E2eNetworkSymbol) {
         const networkSwitch = this.networkSwitch(symbol);
         if (await this.isNetworkEnabled(symbol)) {
             await networkSwitch.click();

@@ -1,4 +1,6 @@
-export const supportedTronNetworkSymbols = ['trx'] as const;
+import { asNetworkSymbol } from '@suite-common/wallet-config';
+
+export const supportedTronNetworkSymbols = [asNetworkSymbol('trx')] as const;
 
 export type SupportedTronNetworkSymbols = (typeof supportedTronNetworkSymbols)[number];
 

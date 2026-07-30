@@ -2,7 +2,7 @@ import { type StateFromReducersMapObject } from '@reduxjs/toolkit';
 
 import { deviceInitialState } from '@suite-common/device';
 import { type TrezorDevice } from '@suite-common/suite-types';
-import { networks } from '@suite-common/wallet-config';
+import { type NetworkSymbol, networks } from '@suite-common/wallet-config';
 import { accountsInitialState, initialWalletSettingsState } from '@suite-common/wallet-core';
 import { featureFlagsInitialState } from '@suite-native/feature-flags';
 import { appSettingsInitialState } from '@suite-native/settings';
@@ -23,14 +23,18 @@ jest.mock('@suite-native/config', () => ({
     isDetoxTestBuild: jest.fn(() => false),
 }));
 
-jest.mock('@suite-common/wallet-config', () => ({
-    ...jest.requireActual('@suite-common/wallet-config'),
-    getNetwork: jest.fn((symbol: string) => ({
-        symbol,
-        isDebugOnlyNetwork: symbol === 'xlm',
-        isHidden: false,
-    })),
-}));
+jest.mock('@suite-common/wallet-config', () => {
+    const actual = jest.requireActual('@suite-common/wallet-config');
+
+    return {
+        ...actual,
+        getNetwork: jest.fn((symbol: NetworkSymbol) => ({
+            ...actual.getNetwork(symbol),
+            isDebugOnlyNetwork: symbol === 'xlm',
+            isHidden: false,
+        })),
+    };
+});
 
 const reducer = {
     appSettings: createStaticReducer(appSettingsInitialState),

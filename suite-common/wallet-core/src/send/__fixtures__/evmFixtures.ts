@@ -1,3 +1,4 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type AccountWithNetworkType,
     type FeeInfo,
@@ -7,7 +8,7 @@ import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
 export type EthAccount = AccountWithNetworkType<'ethereum'>;
 
-export const ethAccount = mockWalletAccount({ symbol: 'eth' }) as EthAccount;
+export const ethAccount = mockWalletAccount({ symbol: asNetworkSymbol('eth') }) as EthAccount;
 
 type EvmGas = {
     gasPrice?: string;

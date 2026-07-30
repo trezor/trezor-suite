@@ -17,6 +17,7 @@
         "@suite-common/wallet-types": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/crypto-utils": "workspace:*",
+        "@trezor/network-module": "workspace:*",
         "@trezor/network-module-suite-common-types": "workspace:*",
         "viem": "^2.54.1"
     }
