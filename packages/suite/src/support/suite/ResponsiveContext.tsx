@@ -1,13 +1,13 @@
-import React, { createContext, useContext, useMemo, useState } from 'react';
+import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
 
-import { selectSidebarWidth } from '@suite/settings';
+import { selectSidebarWidth, suiteSettingsActions } from '@suite/settings';
 import { throwError } from '@trezor/utils';
 
 import {
     SIDEBAR_COLLAPSED_WIDTH,
     SIDEBAR_MIN_WIDTH,
 } from '../../components/suite/layouts/SuiteLayout/Sidebar/consts';
-import { useSelector } from '../../hooks/suite';
+import { useDispatch, useSelector } from '../../hooks/suite';
 
 type ResponsiveContextType = {
     sidebarWidth: number;
@@ -26,13 +26,23 @@ type ResponsiveContextType = {
     setAutoCollapseSuppressed: (v: boolean) => void;
 };
 
+export const normalizePersistedSidebarWidth = (width: number) => {
+    if (width <= SIDEBAR_MIN_WIDTH) {
+        return SIDEBAR_MIN_WIDTH;
+    }
+
+    return Math.max(width, SIDEBAR_COLLAPSED_WIDTH);
+};
+
 export const ResponsiveContext = createContext<ResponsiveContextType | undefined>(undefined);
 
 export const ResponsiveContextProvider = ({ children }: { children: React.ReactNode }) => {
     const sidebarWidthFromRedux = useSelector(selectSidebarWidth);
+    const dispatch = useDispatch();
+    const initialSidebarWidth = normalizePersistedSidebarWidth(sidebarWidthFromRedux);
 
-    const [sidebarWidthManual, setSidebarWidthManual] = useState<number>(sidebarWidthFromRedux);
-    const [sidebarWidthRaw, setSidebarWidthRaw] = useState<number>(sidebarWidthFromRedux);
+    const [sidebarWidthManual, setSidebarWidthManual] = useState<number>(initialSidebarWidth);
+    const [sidebarWidthRaw, setSidebarWidthRaw] = useState<number>(initialSidebarWidth);
     const [forcedSidebarWidth, setForcedSidebarWidth] = useState<number | undefined>(undefined);
     const [contentWidth, setContentWidth] = useState<number | undefined>(undefined);
     const [autoCollapsed, setAutoCollapsed] = useState<boolean>(false);
@@ -48,6 +58,12 @@ export const ResponsiveContextProvider = ({ children }: { children: React.ReactN
         () => effectiveWidth < SIDEBAR_COLLAPSED_WIDTH,
         [effectiveWidth],
     );
+
+    useEffect(() => {
+        if (sidebarWidthFromRedux !== initialSidebarWidth) {
+            dispatch(suiteSettingsActions.setSidebarWidth(initialSidebarWidth));
+        }
+    }, [dispatch, initialSidebarWidth, sidebarWidthFromRedux]);
 
     const setSidebarWidth = (width: number) => {
         if (typeof forcedSidebarWidth === 'number' && !userResizingSidebar) return;
