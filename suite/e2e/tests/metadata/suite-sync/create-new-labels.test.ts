@@ -33,13 +33,7 @@ test.describe('Suite Sync - Labelling', { tag: ['@T3W1', '@T3T1'] }, () => {
         await metadataPage.enableSuiteSync();
     });
 
-    test('Create new labels', async ({
-        evoluClient,
-        dashboardPage,
-        walletPage,
-        metadataPage,
-        page,
-    }) => {
+    test('Create new labels', async ({ evoluClient, dashboardPage, walletPage, metadataPage }) => {
         await test.step('Change account label', async () => {
             await walletPage.openAccount({ symbol: 'btc', type: 'normal', atIndex: 0 });
             await metadataPage.account.changeLabel({
@@ -91,21 +85,6 @@ test.describe('Suite Sync - Labelling', { tag: ['@T3W1', '@T3T1'] }, () => {
             ).toHaveText(expectedOutput.label);
         });
 
-        await test.step('Export account and output labels', async () => {
-            const downloadPromise = page.waitForEvent('download');
-            await walletPage.exportTransactions('csv');
-            const download = await downloadPromise;
-
-            expect(download.suggestedFilename()).toContain(
-                expectedAccount.label.replaceAll(' ', '_'),
-            );
-
-            const downloadPath = await download.path();
-            const exportedTransactions = fs.readFileSync(downloadPath, 'utf8');
-
-            expect(exportedTransactions).toContain(expectedOutput.label);
-        });
-
         await test.step('Verify data are sync to Relay', async () => {
             await evoluClient.init({ ownerSecret: mnemonic12Fixtures.ownerSecret });
             await evoluClient.expectInTable('account', [expectedAccount], { softExpect: true });
@@ -114,4 +93,39 @@ test.describe('Suite Sync - Labelling', { tag: ['@T3W1', '@T3T1'] }, () => {
             await evoluClient.expectInTable('output', [expectedOutput], { softExpect: true });
         });
     });
+
+    test(
+        'Export account and output labels',
+        { tag: ['@webOnly'] },
+        async ({ walletPage, metadataPage, page }) => {
+            await test.step('Create labels to export', async () => {
+                await walletPage.openAccount({ symbol: 'btc', type: 'normal', atIndex: 0 });
+                await metadataPage.account.changeLabel({
+                    accountId: AccountLabelId.BitcoinDefault1,
+                    label: expectedAccount.label,
+                    confirmSuiteSync: true,
+                });
+                await metadataPage.output.changeLabel({
+                    outputId: expectedOutput.txId,
+                    txNumber: Number(expectedOutput.outputIndex),
+                    label: expectedOutput.label,
+                });
+            });
+
+            await test.step('Export and verify labels', async () => {
+                const downloadPromise = page.waitForEvent('download');
+                await walletPage.exportTransactions('csv');
+                const download = await downloadPromise;
+
+                expect(download.suggestedFilename()).toContain(
+                    expectedAccount.label.replaceAll(' ', '_'),
+                );
+
+                const downloadPath = await download.path();
+                const exportedTransactions = fs.readFileSync(downloadPath, 'utf8');
+
+                expect(exportedTransactions).toContain(expectedOutput.label);
+            });
+        },
+    );
 });
