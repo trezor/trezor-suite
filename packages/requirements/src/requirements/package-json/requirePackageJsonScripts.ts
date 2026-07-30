@@ -1,8 +1,9 @@
-import { readFileSync, readdirSync } from 'node:fs';
+import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
 import { typedObjectEntries } from '@trezor/utils';
 
+import { walkDirectory } from '../../fileSystem';
 import type { Requirement } from '../Requirement';
 
 const PACKAGE_JSON_FILE = 'package.json';
@@ -22,17 +23,10 @@ const IGNORED_TEST_FILE_DIRECTORIES = new Set([
 ]);
 
 const hasUnitTestFile = (directoryPath: string): boolean => {
-    for (const entry of readdirSync(directoryPath, { withFileTypes: true })) {
-        if (entry.isDirectory()) {
-            if (IGNORED_TEST_FILE_DIRECTORIES.has(entry.name)) {
-                continue;
-            }
-
-            if (hasUnitTestFile(join(directoryPath, entry.name))) {
-                return true;
-            }
-        }
-
+    for (const { entry } of walkDirectory(directoryPath, {
+        shouldEnterDirectory: ({ entry: directory }) =>
+            !IGNORED_TEST_FILE_DIRECTORIES.has(directory.name),
+    })) {
         if (entry.isFile() && entry.name.endsWith('.test.ts')) {
             return true;
         }
