@@ -1,7 +1,7 @@
 import { type Meta, type StoryObj } from '@storybook/react';
 
 import { StatusBadge as StatusBadgeComponent } from './StatusBadge';
-import { dotIntents } from '../Dot/Dot';
+import { dotIntents } from '../Dot/types';
 
 const meta: Meta<typeof StatusBadgeComponent> = {
     title: 'StatusBadge',

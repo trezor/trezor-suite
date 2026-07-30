@@ -1,11 +1,9 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import styled, { css, keyframes } from 'styled-components';
 
+import { type DotIntent } from './types';
+import { mapIntentToBackgroundColor } from './utils';
 import { motionEasing } from '../../config/motion';
-import { type UIIntent } from '../../config/types';
-
-export const dotIntents = ['neutral', 'critical'] as const;
-export type DotIntent = Extract<UIIntent, (typeof dotIntents)[number]>;
 
 const DEFAULT_SIZE = 4;
 
@@ -37,8 +35,7 @@ const ringExpand = keyframes`
 `;
 
 const intentBackground = css<{ $intent: DotIntent }>`
-    background: ${({ theme, $intent }) =>
-        $intent === 'critical' ? theme.elementFillCriticalBold : theme.elementFillNeutralBold};
+    background: ${({ theme, $intent }) => theme[mapIntentToBackgroundColor($intent)]};
 `;
 
 const Circle = styled.div<{ $size: number; $intent: DotIntent }>`

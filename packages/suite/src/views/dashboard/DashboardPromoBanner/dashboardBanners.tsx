@@ -1,4 +1,4 @@
-import { type FlagsState } from '@suite/flags';
+import { type BooleanFlagKey } from '@suite/flags';
 import { type selectSelectedDevice } from '@suite-common/device';
 import { getDeviceInternalModel } from '@suite-common/suite-utils';
 import { DeviceModelInternal, hasBitcoinOnlyFirmware } from '@trezor/device-utils';
@@ -18,7 +18,7 @@ type BannerEligibilityContext = {
 };
 
 type DashboardBannerDefinition = {
-    flag: keyof FlagsState;
+    flag: BooleanFlagKey;
     isEligible?: (context: BannerEligibilityContext) => boolean;
     render: (handlers: BannerHandlers) => React.ReactNode;
 };
