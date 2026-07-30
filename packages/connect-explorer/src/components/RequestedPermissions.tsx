@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { Button, IconButton, Select, Text } from '@trezor/components';
 import {
     type CoinSymbol,
+    GRANTABLE_PERMISSIONS,
     type MethodPermission,
     type PermissionRequest,
     coinSymbols,
@@ -12,20 +13,6 @@ import { PlusIcon, XIcon } from '@trezor/icons';
 import * as trezorConnectActions from '../actions/trezorConnectActions';
 import { useActions, useSelector } from '../hooks';
 import type { Field } from '../types';
-
-// Permissions a dapp may declare up front. Mirrors GRANTABLE_PERMISSIONS in
-// suite-common/connect-popup — `management`/`internal` are never grantable, so they are
-// intentionally omitted here.
-const GRANTABLE_PERMISSIONS: MethodPermission[] = [
-    'read_address',
-    'read_xpub',
-    'read_account_info',
-    'read_features',
-    'sign',
-    'sign_message',
-    'verify_message',
-    'push_tx',
-];
 
 type CoinOption = CoinSymbol | '';
 
