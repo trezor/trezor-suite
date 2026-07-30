@@ -8,11 +8,11 @@ import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { type StaticSessionId } from '@trezor/connect';
 
 import { type AppState } from 'src/reducers/store';
-import { initialAppState } from 'src/support/tests/__fixtures__/defaultAppState';
 import { extraDependenciesDesktopMock } from 'src/support/tests/extraDependenciesDesktop.mock';
 import { renderWithProviders } from 'src/support/tests/hooksHelper';
 
 import { TradingFormOfferSellActions } from './TradingFormOfferSellActions';
+import { mockInitialAppState } from '../../../../../mocks/mockInitialAppState';
 
 const mockUseTradingFormContext = jest.fn();
 const mockUseTradingFormOfferCommon = jest.fn();
@@ -55,10 +55,10 @@ const account = mockWalletAccount({ symbol: 'eth', balance: '1000000000000000000
 const renderWithNetworkFee = (composed: { fee: string } | undefined) => {
     const store = configureMockStore({
         preloadedState: {
-            ...initialAppState,
+            ...mockInitialAppState,
             device: { selectedDevice: { state: { staticSessionId: DEVICE_STATE } } },
             wallet: {
-                ...initialAppState.wallet,
+                ...mockInitialAppState.wallet,
                 accounts: [account],
                 trading: {
                     ...tradingInitialState,

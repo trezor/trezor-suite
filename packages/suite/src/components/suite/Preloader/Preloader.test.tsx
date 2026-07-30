@@ -12,13 +12,13 @@ import { type DeepPartial } from '@trezor/type-utils';
 
 import { type AppState } from 'src/reducers/store';
 import { type SuiteState } from 'src/reducers/suite/suiteReducer';
-import { initialAppState } from 'src/support/tests/__fixtures__/defaultAppState';
 import { configureStore } from 'src/support/tests/configureStore';
 import { extraDependenciesDesktopMock } from 'src/support/tests/extraDependenciesDesktop.mock';
 import { findByTestId, renderWithProviders } from 'src/support/tests/hooksHelper';
 
 import { Preloader } from './Preloader';
 import { selectShouldDisplayDeviceCompromisedOnRoute } from './selectShouldDisplayDeviceCompromisedOnRoute';
+import { mockInitialAppState } from '../../../../mocks/mockInitialAppState';
 
 jest.mock('@trezor/env-utils', () => ({
     ...jest.requireActual('@trezor/env-utils'),
@@ -93,12 +93,12 @@ const getInitialState = ({
     device,
     analytics,
 }: GetInitialStateProps = {}): AppState => ({
-    ...initialAppState,
-    router: { ...initialAppState.router, ...router } as unknown as RouterState,
-    device: { ...initialAppState.device, ...device } as DesktopDeviceState,
-    analytics: { ...initialAppState.analytics, ...analytics },
+    ...mockInitialAppState,
+    router: { ...mockInitialAppState.router, ...router } as unknown as RouterState,
+    device: { ...mockInitialAppState.device, ...device } as DesktopDeviceState,
+    analytics: { ...mockInitialAppState.analytics, ...analytics },
     suite: {
-        ...initialAppState.suite,
+        ...mockInitialAppState.suite,
         lifecycle: {
             status: 'ready',
         },
@@ -106,9 +106,9 @@ const getInitialState = ({
         ...suite,
     },
     wallet: {
-        ...initialAppState.wallet,
-        selectedAccount: initialAppState.wallet?.selectedAccount ?? { account: null },
-        accounts: initialAppState.wallet?.accounts ?? [],
+        ...mockInitialAppState.wallet,
+        selectedAccount: mockInitialAppState.wallet?.selectedAccount ?? { account: null },
+        accounts: mockInitialAppState.wallet?.accounts ?? [],
     },
 });
 

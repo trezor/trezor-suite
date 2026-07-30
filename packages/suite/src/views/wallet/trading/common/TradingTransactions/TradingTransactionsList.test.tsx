@@ -12,11 +12,11 @@ import {
     createAccountKey,
 } from '@suite-common/wallet-types';
 
-import { initialAppState } from 'src/support/tests/__fixtures__/defaultAppState';
 import { extraDependenciesDesktopMock } from 'src/support/tests/extraDependenciesDesktop.mock';
 import { renderWithProviders } from 'src/support/tests/hooksHelper';
 
 import { TradingTransactionsList } from './TradingTransactionsList';
+import { mockInitialAppState } from '../../../../../../mocks/mockInitialAppState';
 
 jest.mock('@suite-common/tx-simulation', () => ({}));
 
@@ -108,13 +108,13 @@ const buildState = ({
     },
     trades = [],
 }: BuildStateParams = {}) => ({
-    ...initialAppState,
+    ...mockInitialAppState,
     device: {
-        ...initialAppState.device,
+        ...mockInitialAppState.device,
         selectedDevice: SELECTED_DEVICE,
     },
     wallet: {
-        ...initialAppState.wallet,
+        ...mockInitialAppState.wallet,
         accounts: [btcAccount],
         selectedAccount: selectedAccountStatus,
         trading: {

@@ -2,10 +2,10 @@ import { defaultDevicePersistentData, mockSuiteDevice } from '@suite-common/suit
 import * as deviceUtils from '@suite-common/suite-utils';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
-import { initialAppState } from 'src/support/tests/__fixtures__/defaultAppState';
 import { type AcquiredDevice, type AppState } from 'src/types/suite';
 
 import { selectShouldDisplayDeviceCompromisedOnRoute } from './selectShouldDisplayDeviceCompromisedOnRoute';
+import { mockInitialAppState } from '../../../../mocks/mockInitialAppState';
 
 type Fixture = {
     description: string;
@@ -39,9 +39,9 @@ const fixtures: Fixture[] = [
     {
         description: 'returns false if all checks pass',
         state: {
-            ...initialAppState,
+            ...mockInitialAppState,
             device: {
-                ...initialAppState.device,
+                ...mockInitialAppState.device,
                 selectedDevice: {
                     ...defaultDevice,
                     authenticityChecks: authenticityChecksSuccess,
@@ -53,10 +53,10 @@ const fixtures: Fixture[] = [
     {
         description: 'returns false if check errors, but on a skipped route',
         state: {
-            ...initialAppState,
+            ...mockInitialAppState,
             router: {
-                ...initialAppState.router,
-                // @ts-expect-error see defaultAppState comment about routerReducer typing
+                ...mockInitialAppState.router,
+                // @ts-expect-error see mockInitialAppState comment about routerReducer typing
                 route: {
                     name: 'settings-index',
                     pattern: '/settings',
@@ -64,7 +64,7 @@ const fixtures: Fixture[] = [
                 },
             },
             device: {
-                ...initialAppState.device,
+                ...mockInitialAppState.device,
                 selectedDevice: {
                     ...defaultDevice,
                     authenticityChecks: authenticityChecksFail,
@@ -76,9 +76,9 @@ const fixtures: Fixture[] = [
     {
         description: 'returns true if firmware check errored and not dismissed',
         state: {
-            ...initialAppState,
+            ...mockInitialAppState,
             device: {
-                ...initialAppState.device,
+                ...mockInitialAppState.device,
                 selectedDevice: {
                     ...defaultDevice,
                     authenticityChecks: authenticityChecksFail,
@@ -90,9 +90,9 @@ const fixtures: Fixture[] = [
     {
         description: 'returns false if firmware check errored and dismissed',
         state: {
-            ...initialAppState,
+            ...mockInitialAppState,
             device: {
-                ...initialAppState.device,
+                ...mockInitialAppState.device,
                 dismissedSecurityChecks: { firmwareAuthenticity: ['device-id'] },
                 selectedDevice: {
                     ...defaultDevice,
@@ -105,9 +105,9 @@ const fixtures: Fixture[] = [
     {
         description: 'returns false if a firmware check errored but is disabled',
         state: {
-            ...initialAppState,
+            ...mockInitialAppState,
             device: {
-                ...initialAppState.device,
+                ...mockInitialAppState.device,
                 selectedDevice: {
                     ...defaultDevice,
                     authenticityChecks: {
@@ -117,9 +117,9 @@ const fixtures: Fixture[] = [
                 },
             },
             suiteSettings: {
-                ...initialAppState.suiteSettings,
+                ...mockInitialAppState.suiteSettings,
                 enabledSecurityChecks: {
-                    ...initialAppState.suiteSettings.enabledSecurityChecks,
+                    ...mockInitialAppState.suiteSettings.enabledSecurityChecks,
                     firmwareRevision: false,
                 },
             },
@@ -129,9 +129,9 @@ const fixtures: Fixture[] = [
     {
         description: 'returns true if entropy check errored',
         state: {
-            ...initialAppState,
+            ...mockInitialAppState,
             device: {
-                ...initialAppState.device,
+                ...mockInitialAppState.device,
                 persistentDeviceData: [
                     {
                         ...matchingDevicePersistentData,
@@ -149,9 +149,9 @@ const fixtures: Fixture[] = [
     {
         description: 'returns false if entropy check errored but is disabled',
         state: {
-            ...initialAppState,
+            ...mockInitialAppState,
             device: {
-                ...initialAppState.device,
+                ...mockInitialAppState.device,
                 persistentDeviceData: [
                     {
                         ...matchingDevicePersistentData,
@@ -164,9 +164,9 @@ const fixtures: Fixture[] = [
                 },
             },
             suiteSettings: {
-                ...initialAppState.suiteSettings,
+                ...mockInitialAppState.suiteSettings,
                 enabledSecurityChecks: {
-                    ...initialAppState.suiteSettings.enabledSecurityChecks,
+                    ...mockInitialAppState.suiteSettings.enabledSecurityChecks,
                     entropy: false,
                 },
             },
@@ -176,17 +176,20 @@ const fixtures: Fixture[] = [
     {
         description: 'returns true for a device with an invalid id',
         state: {
-            ...initialAppState,
-            device: { ...initialAppState.device, selectedDevice: { ...defaultDevice, id: null } },
+            ...mockInitialAppState,
+            device: {
+                ...mockInitialAppState.device,
+                selectedDevice: { ...defaultDevice, id: null },
+            },
         },
         result: true,
     },
     {
         description: 'returns true for a device with mismatch against its persistent data',
         state: {
-            ...initialAppState,
+            ...mockInitialAppState,
             device: {
-                ...initialAppState.device,
+                ...mockInitialAppState.device,
                 persistentDeviceData: [matchingDevicePersistentData],
                 selectedDevice: {
                     ...defaultDevice,

@@ -9,11 +9,11 @@ import { configureMockStore } from '@suite-common/test-utils';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
 import { SendContext } from 'src/hooks/wallet/useSendForm';
-import { initialAppState } from 'src/support/tests/__fixtures__/defaultAppState';
 import { extraDependenciesDesktopMock } from 'src/support/tests/extraDependenciesDesktop.mock';
 import { renderWithProviders } from 'src/support/tests/hooksHelper';
 
 import { EthereumNonce } from './EthereumNonce';
+import { mockInitialAppState } from '../../../../../../mocks/mockInitialAppState';
 
 const ethAccount = mockWalletAccount({ symbol: 'eth' }) as any;
 
@@ -72,11 +72,11 @@ const pendingAtNonce6 = {
 const render = (props: Props) => {
     const store = configureMockStore({
         preloadedState: {
-            ...initialAppState,
+            ...mockInitialAppState,
             wallet: {
-                ...initialAppState.wallet,
+                ...mockInitialAppState.wallet,
                 transactions: {
-                    ...initialAppState.wallet.transactions,
+                    ...mockInitialAppState.wallet.transactions,
                     transactions: { [ethAccount.key]: [pendingAtNonce6] },
                 },
             },
