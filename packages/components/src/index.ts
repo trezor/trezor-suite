@@ -90,12 +90,13 @@ export * from './components/Image/Image';
 export * from './components/Image/SvgImage';
 export * from './components/Image/images';
 export { DotIndicator, type DotIndicatorProps } from './components/DotIndicator/DotIndicator';
-export { Dot, dotIntents, type DotProps, type DotIntent } from './components/Dot/Dot';
 export {
-    AnimatedDot,
-    type AnimatedDotProps,
-    ANIMATED_DOT_RINGING_DURATION,
-} from './components/Dot/AnimatedDot';
+    Dot,
+    dotIntents,
+    type DotProps,
+    type DotIntent,
+    DOT_RINGING_DURATION,
+} from './components/Dot/Dot';
 export {
     StatusBadge,
     type StatusBadgeProps,

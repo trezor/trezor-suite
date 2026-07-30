@@ -16,6 +16,8 @@ export type StatusBadgeOffset = {
 
 export type StatusBadgeProps = {
     isShown?: boolean;
+    /** Plays the "ringing" entrance/pulse animation instead of showing a static dot. */
+    isAnimated?: boolean;
     intent?: DotIntent;
     // Shift of the dot center from the top-right corner (px). Screen axes: +x right, -x left, +y down, -y up.
     offset?: StatusBadgeOffset;
@@ -40,6 +42,7 @@ const IndicatorWrapper = styled.div<{ $x: number; $y: number }>`
 
 export const StatusBadge = ({
     isShown,
+    isAnimated,
     intent = 'neutral',
     offset,
     children,
@@ -54,7 +57,12 @@ export const StatusBadge = ({
                 {children}
             </MaskedContent>
             <IndicatorWrapper $x={x} $y={y}>
-                <Dot data-testid={dataTestId} size={DOT_SIZE} intent={intent} />
+                <Dot
+                    data-testid={dataTestId}
+                    size={DOT_SIZE}
+                    intent={intent}
+                    isAnimated={isAnimated}
+                />
             </IndicatorWrapper>
         </Box>
     ) : (

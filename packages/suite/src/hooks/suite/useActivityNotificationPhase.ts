@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 
-import { ANIMATED_DOT_RINGING_DURATION } from '@trezor/components';
+import { DOT_RINGING_DURATION } from '@trezor/components';
 
 export type ActivityNotificationPhase = 'off' | 'ringing' | 'seen';
 
@@ -35,7 +35,7 @@ export const useActivityNotificationPhase = (
     useEffect(() => {
         if (phase !== 'ringing') return;
 
-        const timeout = setTimeout(() => setPhase('seen'), ANIMATED_DOT_RINGING_DURATION);
+        const timeout = setTimeout(() => setPhase('seen'), DOT_RINGING_DURATION);
 
         return () => clearTimeout(timeout);
     }, [phase]);
