@@ -1,7 +1,7 @@
-import { memo } from 'react';
+import { type Ref, memo } from 'react';
 import { type NativeScrollEvent, type NativeSyntheticEvent } from 'react-native';
 
-import { BottomSheetScrollView } from '@gorhom/bottom-sheet';
+import { BottomSheetScrollView, type BottomSheetScrollViewMethods } from '@gorhom/bottom-sheet';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
@@ -23,14 +23,16 @@ const childWrapperStyle = prepareNativeStyle<{ bottomInset: number }>(
 interface BottomSheetModalContentProps extends BoxProps {
     handleScroll: (event: NativeSyntheticEvent<NativeScrollEvent>) => void;
     bottomInset: number;
+    scrollViewRef?: Ref<BottomSheetScrollViewMethods>;
 }
 
 export const BottomSheetModalContent = memo<BottomSheetModalContentProps>(
-    ({ handleScroll, bottomInset, style, children, ...rest }) => {
+    ({ handleScroll, bottomInset, scrollViewRef, style, children, ...rest }) => {
         const { applyStyle } = useNativeStyles();
 
         return (
             <BottomSheetScrollView
+                ref={scrollViewRef}
                 style={applyStyle(containerStyle)}
                 onScroll={handleScroll}
                 testID="@bottom-sheet/scroll-view"

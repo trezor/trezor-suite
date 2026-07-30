@@ -30,7 +30,6 @@ export type FeedbackCardProps = {
     onSubmit: (rating: Rating, description: string) => void;
     defaultView?: FeedbackCardView;
     asBottomSheetInput?: boolean;
-    onRatingChange?: () => void;
 };
 
 const descriptionInputStyle = prepareNativeStyle(() => ({
