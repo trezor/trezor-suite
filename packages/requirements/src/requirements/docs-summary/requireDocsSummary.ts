@@ -9,20 +9,6 @@ const DOCS_DIR = 'docs';
 const SUMMARY_FILE = 'SUMMARY.md';
 const IGNORED_DOC_LINKS = new Set([SUMMARY_FILE, 'symlink/_README.md']);
 
-const collectMarkdownFiles = (directoryPath: string, docsPath: string): string[] => {
-    const markdownFiles: string[] = [];
-
-    for (const { entry, path } of walkDirectory(directoryPath)) {
-        if ((!entry.isFile() && !entry.isSymbolicLink()) || !entry.name.endsWith('.md')) {
-            continue;
-        }
-
-        markdownFiles.push(normalizePath(relative(docsPath, path)));
-    }
-
-    return markdownFiles;
-};
-
 /**
  * Verifies that docs/SUMMARY.md (the entrypoint for mdBook), is exhaustive = every markdown file in docs/ is linked
  */
@@ -34,12 +20,17 @@ export const requireDocsSummary: Requirement<'repo'> = {
         const docsPath = join(repoRoot, DOCS_DIR);
         const summaryPath = join(docsPath, SUMMARY_FILE);
         const summaryContent = stripComments(readFileSync(summaryPath, 'utf-8'));
-        const docFiles = collectMarkdownFiles(docsPath, docsPath);
 
-        for (const file of docFiles) {
-            if (IGNORED_DOC_LINKS.has(file)) continue;
+        const walkDirectoryGenerator = walkDirectory(docsPath, {
+            fileFilter: ({ entry }) =>
+                (entry.isFile() || entry.isSymbolicLink()) && entry.name.endsWith('.md'),
+        });
+        for (const { path } of walkDirectoryGenerator) {
+            const normalizedPath = normalizePath(relative(docsPath, path));
 
-            const link = `./${file}`;
+            if (IGNORED_DOC_LINKS.has(normalizedPath)) continue;
+
+            const link = `./${normalizedPath}`;
 
             if (!summaryContent.includes(link)) {
                 errors.push(`${DOCS_DIR}/${SUMMARY_FILE} does not link to ${link}`);

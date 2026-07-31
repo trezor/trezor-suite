@@ -35,4 +35,23 @@ describe(walkDirectory.name, () => {
 
         expect(files).toEqual(['nested/nested.ts', 'root.ts']);
     });
+
+    it('filters yielded files without affecting directory traversal', () => {
+        const nestedDirectory = join(rootDirectory, 'nested');
+        mkdirSync(nestedDirectory);
+        writeFileSync(join(rootDirectory, 'root.ts'), '');
+        writeFileSync(join(rootDirectory, 'root.md'), '');
+        writeFileSync(join(nestedDirectory, 'nested.ts'), '');
+        writeFileSync(join(nestedDirectory, 'nested.md'), '');
+
+        const files = [
+            ...walkDirectory(rootDirectory, {
+                fileFilter: ({ entry }) => entry.name.endsWith('.ts'),
+            }),
+        ]
+            .map(({ path }) => normalizePath(relative(rootDirectory, path)))
+            .sort();
+
+        expect(files).toEqual(['nested/nested.ts', 'root.ts']);
+    });
 });
