@@ -30,7 +30,7 @@ import { requestExistingAccounts } from './common/requestExistingAccounts';
 import { fixCoinInfoNetwork, getBitcoinNetwork } from '../data/coinInfo';
 import { formatAmount } from '../utils/formatUtils';
 import * as pathUtils from '../utils/pathUtils';
-import { TransactionComposer } from './bitcoin/TransactionComposer';
+import { createComposer } from './bitcoin/TransactionComposer';
 import { enhanceSignTx } from './bitcoin/enhanceSignTx';
 import { inputToTrezor } from './bitcoin/inputs';
 import { outputToTrezor, validateHDOutput } from './bitcoin/outputs';
@@ -160,14 +160,9 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
         const { coinInfo, outputs, baseFee, sortingStrategy } = this.params;
         const address_n = pathUtils.validatePath(account.path);
 
-        const composer = new TransactionComposer({
-            account: {
-                type: pathUtils.getAccountType(address_n),
-                label: 'Account',
-                descriptor: account.path,
-                address_n,
-                addresses: account.addresses,
-            },
+        const compose = createComposer({
+            txType: pathUtils.getAccountType(address_n),
+            addresses: account.addresses,
             utxos: account.utxo,
             coinInfo,
             outputs,
@@ -176,7 +171,7 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
         });
 
         const levels = feeLevels.map(level => {
-            const tx = composer.composeCustomFee(level.feePerUnit);
+            const tx = compose(level.feePerUnit);
             if (tx.type === 'final') {
                 return {
                     ...tx,
@@ -216,8 +211,9 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
         const feeLevels = getOrInitFeeLevels(coinInfo);
         await feeLevels.load(blockchain);
 
-        const composer = new TransactionComposer({
-            account,
+        const compose = createComposer({
+            txType: account.type,
+            addresses: account.addresses,
             utxos,
             coinInfo,
             outputs,
@@ -232,7 +228,7 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
         // check if any of composed transactions is valid
         for (const level of feeLevels.levels) {
             if (level.feePerUnit === '0') continue;
-            const tx = composer.composeCustomFee(level.feePerUnit);
+            const tx = compose(level.feePerUnit);
             if (tx.type !== 'final') continue;
             composed.levels.push(level);
             composed.transactions.set(level.label, tx);
@@ -240,7 +236,7 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
 
         if (!composed.levels.length) {
             const feePerUnit = String(coinInfo.minFee);
-            const minFeeTx = composer.composeCustomFee(feePerUnit);
+            const minFeeTx = compose(feePerUnit);
 
             if (minFeeTx.type === 'final') {
                 context.sendCoreMessage(
@@ -288,7 +284,7 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
 
         const tx =
             resp.payload.type === 'select-fee-custom'
-                ? composer.composeCustomFee(resp.payload.value) // recompose custom fee level with requested value
+                ? compose(resp.payload.value) // recompose custom fee level with requested value
                 : composed.transactions.get(resp.payload.value)!;
 
         const response = await this._sign(tx, context.sendCoreMessage);

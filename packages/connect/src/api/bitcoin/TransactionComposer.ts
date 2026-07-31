@@ -1,12 +1,11 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/tx/TransactionComposer.js
 
-import type { Address } from '@trezor/blockchain-link-types';
 import type {
+    AccountAddresses,
     BitcoinNetworkInfo,
     ComposeResult,
     ComposeUtxo,
-    ComposedInputs,
-    DiscoveryAccount,
+    DiscoveryAccountType,
 } from '@trezor/connect-common';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 import type {
@@ -19,7 +18,8 @@ import { composeTx, networks } from '@trezor/utxo-lib';
 import { DEFAULT_BITCOIN_LONGTERM_FEE_RATE } from '../../data/defaultFeeLevels';
 
 type Options = {
-    account: DiscoveryAccount;
+    txType: DiscoveryAccountType;
+    addresses?: AccountAddresses;
     utxos: ComposeUtxo[];
     outputs: ComposeOutput[];
     coinInfo: BitcoinNetworkInfo;
@@ -27,74 +27,53 @@ type Options = {
     sortingStrategy: TransactionInputOutputSortingStrategy;
 };
 
-export class TransactionComposer {
-    private account: DiscoveryAccount;
-    private utxos: ComposedInputs[];
-    private outputs: ComposeOutput[];
-    private coinInfo: BitcoinNetworkInfo;
-    private baseFee: number;
-    private sortingStrategy: TransactionInputOutputSortingStrategy;
-    private feePolicy: ComposeFeePolicy | undefined;
-    private changeAddress: Address | undefined;
+export const createComposer = (options: Options) => {
+    const { txType, addresses, outputs, coinInfo, baseFee = 0, sortingStrategy, utxos } = options;
 
-    constructor(options: Options) {
-        this.account = options.account;
-        this.outputs = options.outputs;
-        this.coinInfo = options.coinInfo;
-        this.baseFee = options.baseFee || 0;
-        this.sortingStrategy = options.sortingStrategy;
+    const allAddresses = new Set(
+        addresses?.used
+            .concat(addresses.unused)
+            .concat(addresses.change)
+            .map(a => a.address),
+    );
 
-        const { addresses } = options.account;
-        const allAddresses = new Set(
-            addresses?.used
-                .concat(addresses.unused)
-                .concat(addresses.change)
-                .map(a => a.address),
-        );
+    // find unused change address or fallback to the last in the list
+    const changeAddress = addresses?.change.find(a => !a.transfers) ?? addresses?.change.at(-1);
 
-        // find unused change address or fallback to the last in the list
-        this.changeAddress = addresses?.change.find(a => !a.transfers) ?? addresses?.change.at(-1);
+    // map to @trezor/utxo-lib/compose format
+    const utxosFiltered = utxos
+        // exclude amounts lower than dust limit if they are NOT required
+        .filter(u => u.required || new BigNumber(u.amount).gt(coinInfo.dustLimit))
+        .map(u => ({
+            ...u,
+            coinbase: typeof u.coinbase === 'boolean' ? u.coinbase : false, // decide it it can be spent immediately (false) or after 100 conf (true)
+            own: allAddresses.has(u.address), // decide if it can be spent immediately (own) or after 6 conf (not own)
+        }));
 
-        // map to @trezor/utxo-lib/compose format
-        this.utxos = options.utxos
-            // exclude amounts lower than dust limit if they are NOT required
-            .filter(u => u.required || new BigNumber(u.amount).gt(this.coinInfo.dustLimit))
-            .map(u => ({
-                ...u,
-                coinbase: typeof u.coinbase === 'boolean' ? u.coinbase : false, // decide it it can be spent immediately (false) or after 100 conf (true)
-                own: allAddresses.has(u.address), // decide if it can be spent immediately (own) or after 6 conf (not own)
-            }));
-
-        if (networks.isNetworkType('doge', options.coinInfo.network)) {
-            this.feePolicy = 'doge';
-        } else if (networks.isNetworkType('zcash', options.coinInfo.network)) {
-            this.feePolicy = 'zcash';
-        }
+    let feePolicy: ComposeFeePolicy | undefined;
+    if (networks.isNetworkType('doge', coinInfo.network)) {
+        feePolicy = 'doge';
+    } else if (networks.isNetworkType('zcash', coinInfo.network)) {
+        feePolicy = 'zcash';
     }
 
-    composeCustomFee(fee: string) {
-        return this.compose(fee);
-    }
-
-    private compose(feeRate: string): ComposeResult {
-        const { account, coinInfo, baseFee, changeAddress, feePolicy } = this;
-
-        if (!this.utxos.length) return { type: 'error', error: 'MISSING-UTXOS' };
+    return (feeRate: string): ComposeResult => {
+        if (!utxosFiltered.length) return { type: 'error', error: 'MISSING-UTXOS' };
         if (!changeAddress) return { type: 'error', error: 'ADDRESSES-NOT-SET' };
 
         return composeTx({
-            txType: account.type,
-            utxos: this.utxos,
-            outputs: this.outputs,
+            txType,
+            utxos: utxosFiltered,
+            outputs,
             feeRate,
             // TODO https://github.com/trezor/trezor-suite/issues/18483 rewrite with response from a new planned blockbook API
             longTermFeeRate: DEFAULT_BITCOIN_LONGTERM_FEE_RATE,
-            sortingStrategy: this.sortingStrategy,
+            sortingStrategy,
             network: coinInfo.network,
             changeAddress,
             dustThreshold: coinInfo.dustLimit,
             baseFee,
             feePolicy,
         });
-    }
-}
+    };
+};
