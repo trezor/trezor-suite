@@ -96,6 +96,13 @@ const createRepoFixture = (repoRoot: string) => {
         dependencies: {
             'prod-only-external': '^1.0.0',
         },
+        peerDependencies: {
+            'required-peer-external': '^1.0.0',
+            'optional-peer-external': '*',
+        },
+        peerDependenciesMeta: {
+            'optional-peer-external': { optional: true },
+        },
     });
 
     writePackageJson(join(repoRoot, 'packages', 'internal-dev'), {
@@ -167,6 +174,11 @@ describe(requireConnectPublicDependencies.name, () => {
 
         expect(connectWebSnapshot.prod).toContain('peer-shared');
         expect(connectWebSnapshot.prod).toContain('tslib');
+
+        // required peer dependencies are part of the prod surface, optional ones (e.g. env-utils'
+        // react-native / expo-* native modules) are not
+        expect(connectWebSnapshot.prod).toContain('required-peer-external');
+        expect(connectWebSnapshot.prod).not.toContain('optional-peer-external');
     });
 
     it('has repo scope', () => {
