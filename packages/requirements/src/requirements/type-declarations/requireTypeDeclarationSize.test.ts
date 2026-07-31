@@ -195,7 +195,7 @@ describe(requireTypeDeclarationSize.name, () => {
         expect(errors[0]).toContain('packages/example/libDev/src/nested/large.d.mts');
     });
 
-    it('ignores schema-derived types that are legitimately large', async () => {
+    it('checks schema-derived types that are no longer legitimately large', async () => {
         const knownWorkspaceDirectory = join(repoRoot, 'packages', 'device-authenticity');
         const knownDeclarationDirectory = join(knownWorkspaceDirectory, 'libDev', 'src');
         mkdirSync(knownDeclarationDirectory, { recursive: true });
@@ -209,7 +209,10 @@ describe(requireTypeDeclarationSize.name, () => {
 
         const errors = await requireTypeDeclarationSize.verify(context);
 
-        expect(errors).toEqual([]);
+        expect(errors).toHaveLength(1);
+        expect(errors[0]).toContain(
+            'packages/device-authenticity/libDev/src/authenticateDeviceParams.d.ts is 200 KiB; maximum is 50 KiB.',
+        );
     });
 
     it('does not validate legacy limits for workspaces without declaration output', async () => {
