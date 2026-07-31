@@ -9,7 +9,7 @@ import type { AnalyticsSharedEvents } from '@suite-common/analytics';
 import { type Bip329Dep } from '@suite-common/bip329-types';
 import { type EnsureDelegatedIdentityKeyDep } from '@suite-common/delegated-identity-key-types';
 import { type MetadataAddPayload } from '@suite-common/metadata-types';
-import type { NetworkModuleRepositoryDep } from '@suite-common/networks';
+import type { GetNetworkColorDep, NetworkModuleRepositoryDep } from '@suite-common/networks';
 import { type PlatformEncryptionDep } from '@suite-common/platform-encryption'; // also only types
 import { type MigrateSuiteSyncLabelsForRbfTransactionDep } from '@suite-common/suite-rbf-labels-migrations-types';
 import { type SuiteSyncDep } from '@suite-common/suite-sync-types';
@@ -73,6 +73,7 @@ export type TransportsDep = { createTransports: CreateTransports };
 
 export type CommonServices = SuiteSyncDep &
     AddressValidatorDep &
+    GetNetworkColorDep &
     NetworkModuleRepositoryDep &
     Bip329Dep &
     EnsureDelegatedIdentityKeyDep &

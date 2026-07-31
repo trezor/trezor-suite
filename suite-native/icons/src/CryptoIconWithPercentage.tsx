@@ -16,7 +16,7 @@ import {
 import { type CryptoIconName, cryptoIcons } from '@suite-common/icons';
 import { useActiveColorScheme } from '@suite-native/theme';
 import { useNativeStyles } from '@trezor/styles-native';
-import { paletteV1 } from '@trezor/theme';
+import { type CSSColor, paletteV1 } from '@trezor/theme';
 
 import { PizzaIcon, usePizzaAnimation } from './PizzaIcon';
 
@@ -26,21 +26,20 @@ const RADIUS = 21;
 
 type CryptoIconProps = {
     iconName: CryptoIconName;
+    percentageColor: CSSColor;
     percentage: number;
     percentageOffset: number;
 };
 
 export const CryptoIconWithPercentage = ({
     iconName,
+    percentageColor,
     percentage,
     percentageOffset,
 }: CryptoIconProps) => {
     const iconSvg = useSVG(cryptoIcons[iconName]);
     const { utils } = useNativeStyles();
     const colorScheme = useActiveColorScheme();
-    // @ts-expect-error: coinsColors uses "NetworkSymbol" type. However, here we use deprecated "CryptoIconName".
-    // Not worth fixing it as this package will be removed soon.
-    const percentageColor = utils.coinsColors[iconName] ?? utils.colors.contentSecondary;
 
     const path = Skia.Path.Make();
     path.addCircle(CANVAS_SIZE / 2, CANVAS_SIZE / 2, RADIUS);

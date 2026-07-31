@@ -1,7 +1,11 @@
 import type { AddressValidator } from '@suite-common/address';
 import type { AnalyticsSharedEvents } from '@suite-common/analytics';
 import { type Bip329 } from '@suite-common/bip329-types';
-import type { NetworkModuleRepository, NetworkSymbol } from '@suite-common/networks';
+import type {
+    GetNetworkColor,
+    NetworkModuleRepository,
+    NetworkSymbol,
+} from '@suite-common/networks';
 import {
     type EncryptableBranded,
     type EncryptedHex,
@@ -64,6 +68,8 @@ const addressValidatorMock: AddressValidator = {
     getAddressType: () => undefined,
 };
 
+const getNetworkColorMock: GetNetworkColor = () => '#000000';
+
 const networkModuleRepositoryMock: NetworkModuleRepository = {
     get: () => {
         throw new Error('Network module repository mock is not implemented.');
@@ -90,6 +96,7 @@ export const extraDependenciesCommonMock: ExtraDependencies = {
     },
     services: {
         addressValidator: addressValidatorMock,
+        getNetworkColor: getNetworkColorMock,
         networkModuleRepository: networkModuleRepositoryMock,
         suiteSync: suiteSyncMock,
         bip329: bip329Mock,

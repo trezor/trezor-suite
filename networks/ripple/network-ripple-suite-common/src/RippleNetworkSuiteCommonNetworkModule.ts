@@ -1,6 +1,7 @@
 import type { SuiteCommonNetworkModule } from '@trezor/network-module-suite-common-types';
 
 import { rippleValidator } from './addressValidator/rippleAddressValidator';
+import { getNetworkColor } from './networkColor';
 import {
     type RippleNetworkSymbol,
     getSupportedNetworks,
@@ -13,4 +14,5 @@ export const createRippleSuiteCommonNetworkModule = (): RippleNetworkSuiteCommon
     addressValidator: rippleValidator,
     getSupportedNetworks,
     isSupportedNetwork,
+    getNetworkColor,
 });
