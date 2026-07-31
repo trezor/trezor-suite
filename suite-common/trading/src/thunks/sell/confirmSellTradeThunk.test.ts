@@ -7,10 +7,10 @@ import { type Account } from '@suite-common/wallet-types';
 
 import { handleSellTradeThunk } from './handleSellTradeThunk';
 import { accountBtc } from '../../__fixtures__/utils';
-import { invityAPI } from '../../invityAPI';
 import { type TradingSellState } from '../../reducers/sellReducer';
 import { initialState } from '../../reducers/tradingCommonReducer';
 import { prepareTradingReducer } from '../../reducers/tradingReducer';
+import { tradeApi } from '../../tradeApi';
 import { sellUtilsFixtures } from '../../utils/sell/__fixtures__/sellUtils';
 
 import { sellThunks } from './index';
@@ -34,10 +34,10 @@ describe('confirmSellTradeThunk', () => {
         jest.clearAllMocks();
     });
 
-    jest.mock('../../invityAPI');
+    jest.mock('../../tradeApi');
 
-    invityAPI.setInvityServersEnvironment = () => {};
-    invityAPI.createInvityAPIKey = () => {};
+    tradeApi.setServersEnvironment = () => {};
+    tradeApi.createApiKey = () => {};
 
     const getMocks = (initialSellState?: Partial<TradingSellState>) => {
         const store = configureMockStore({

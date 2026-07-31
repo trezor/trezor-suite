@@ -3,10 +3,10 @@ import { type CryptoId, type SellFiatTradeQuoteRequest } from 'invity-api';
 
 import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
 
-import { invityAPI } from '../../invityAPI';
 import { type SellInfo, type TradingSellState } from '../../reducers/sellReducer';
 import { initialState } from '../../reducers/tradingCommonReducer';
 import { prepareTradingReducer } from '../../reducers/tradingReducer';
+import { tradeApi } from '../../tradeApi';
 import { sellUtilsFixtures } from '../../utils/sell/__fixtures__/sellUtils';
 
 import { sellThunks } from './index';
@@ -18,10 +18,10 @@ describe('selectSellQuoteThunk', () => {
         jest.clearAllMocks();
     });
 
-    jest.mock('../../invityAPI');
+    jest.mock('../../tradeApi');
 
-    invityAPI.setInvityServersEnvironment = () => {};
-    invityAPI.createInvityAPIKey = () => {};
+    tradeApi.setServersEnvironment = () => {};
+    tradeApi.createApiKey = () => {};
 
     const getDataMocks = () => {
         const quote = sellUtilsFixtures.MIN_MAX_QUOTES_LOW[0];

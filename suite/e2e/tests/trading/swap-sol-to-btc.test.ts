@@ -1,7 +1,7 @@
 import { getCryptoId } from '@suite-common/trading';
 import { localizeNumber } from '@suite-common/wallet-utils';
 
-import { getCompanyNameFromList } from '../../fixtures/invity';
+import { getCompanyNameFromList } from '../../fixtures/trading';
 import { swapStatusFlow } from '../../fixtures/trading/statusFlow';
 import { formatAddressWithNewlines } from '../../support/common';
 import { expect, test } from '../../support/fixtures';

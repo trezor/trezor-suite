@@ -3,11 +3,11 @@ import { capitalizeFirstLetter } from '@trezor/utils';
 
 import {
     getCompanyNameFromList,
-    invityEndpoint,
     sellQuotesSolana,
     sellTradeSolana,
     sellWatchSolana,
-} from '../../fixtures/invity';
+    tradeEndpoint,
+} from '../../fixtures/trading';
 import { formatAddressWithNewlines } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
 
@@ -49,13 +49,13 @@ test.describe('Trading - Sell Solana', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, 
             walletPage,
         }) => {
             await test.step('Mocking responses', async () => {
-                await page.route(invityEndpoint.sellQuotes, async route => {
+                await page.route(tradeEndpoint.sellQuotes, async route => {
                     await route.fulfill({ json: sellQuotesSolana });
                 });
-                await tradingMock.routeTrade(invityEndpoint.sellTrade, sellTradeSolana);
+                await tradingMock.routeTrade(tradeEndpoint.sellTrade, sellTradeSolana);
                 //IMPORTANT: Mocking this request prevents from actually sending crypto
                 await tradingMock.routeSolanaSendRequests();
-                await page.route(invityEndpoint.sellWatch, async route => {
+                await page.route(tradeEndpoint.sellWatch, async route => {
                     await route.fulfill({ json: sellWatchSolana });
                 });
             });
@@ -124,7 +124,7 @@ test.describe('Trading - Sell Solana', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, 
         });
 
         await test.step('Wait 30s for watch refresh and status change to Success', async () => {
-            await page.route(invityEndpoint.sellWatch, async route => {
+            await page.route(tradeEndpoint.sellWatch, async route => {
                 await route.fulfill({ json: { status: 'SUCCESS' } });
             });
             await page.clock.fastForward(tradingMock.watchPeriod);
@@ -154,7 +154,7 @@ test.describe('Trading - Sell Solana', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, 
         });
 
         await test.step('Select second offer from modal and check correct values are sent in trade request', async () => {
-            const sellTradePromise = page.waitForRequest(invityEndpoint.sellTrade);
+            const sellTradePromise = page.waitForRequest(tradeEndpoint.sellTrade);
             await tradingPage.quotes.selectQuoteByProvider(
                 getCompanyNameFromList(secondComparedOfferQuote?.exchange ?? '', 'sellList'),
             );

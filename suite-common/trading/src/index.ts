@@ -21,7 +21,7 @@ export {
     type UseAllowanceTxTrackingParams,
     useAllowanceTxTracking,
 } from './hooks/useAllowanceTxTracking';
-export * from './invityAPI';
+export * from './tradeApi';
 export * from './reducers/buyReducer';
 export * from './reducers/exchangeReducer';
 export * from './reducers/sellReducer';
@@ -56,5 +56,4 @@ export * from './utils/typeGuards';
 export * from './utils/numberUtils';
 export * from './utils/slippageFormValidationSchema';
 export { getOtcProvidersByCountry, useFetchOtc } from './queries';
-export * from './invityAPI';
 export * from './utils/currencyUtils';

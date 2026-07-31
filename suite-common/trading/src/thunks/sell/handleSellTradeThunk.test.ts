@@ -6,10 +6,10 @@ import { type Account } from '@suite-common/wallet-types';
 
 import { handleSellTradeThunk } from './handleSellTradeThunk';
 import { accountBtc } from '../../__fixtures__/utils';
-import { invityAPI } from '../../invityAPI';
 import { type TradingSellState } from '../../reducers/sellReducer';
 import { initialState } from '../../reducers/tradingCommonReducer';
 import { prepareTradingReducer } from '../../reducers/tradingReducer';
+import { tradeApi } from '../../tradeApi';
 import type { LogErrorThunkProps } from '../common/logErrorThunk';
 
 const tradingReducer = prepareTradingReducer(extraDependenciesCommonMock);
@@ -34,10 +34,10 @@ describe('handleSellTradeThunk', () => {
         jest.setSystemTime(date);
     });
 
-    jest.mock('../../invityAPI');
+    jest.mock('../../tradeApi');
 
-    invityAPI.setInvityServersEnvironment = () => {};
-    invityAPI.createInvityAPIKey = () => {};
+    tradeApi.setServersEnvironment = () => {};
+    tradeApi.createApiKey = () => {};
 
     const getMocks = (initialSellState?: Partial<TradingSellState>) => {
         const store = configureMockStore({
@@ -109,7 +109,7 @@ describe('handleSellTradeThunk', () => {
                 ...(initialSellState as unknown as Partial<TradingSellState>),
             });
 
-            jest.spyOn(invityAPI, 'doSellTrade');
+            jest.spyOn(tradeApi, 'doSellTrade');
 
             const result = await store
                 .dispatch(
@@ -127,7 +127,7 @@ describe('handleSellTradeThunk', () => {
 
             const tradingState = store.getState().wallet.trading;
 
-            expect(invityAPI.doSellTrade).not.toHaveBeenCalled();
+            expect(tradeApi.doSellTrade).not.toHaveBeenCalled();
             expect(result).toBeUndefined();
             expect(tradingState.sell.transactionId).toBeUndefined();
             expect(tradingState.sell.selectedQuote).toBeUndefined();
@@ -139,7 +139,7 @@ describe('handleSellTradeThunk', () => {
     it('should handle no response from the server', async () => {
         const { store, returnUrl, account, quote, mockProcessResponseData } = getMocks();
 
-        invityAPI.doSellTrade = () => Promise.resolve({} as SellFiatTradeResponse);
+        tradeApi.doSellTrade = () => Promise.resolve({} as SellFiatTradeResponse);
 
         const result = await store
             .dispatch(
@@ -171,7 +171,7 @@ describe('handleSellTradeThunk', () => {
     it('should handle trade error when status is not LOGIN_REQUEST error is filled', async () => {
         const { store, returnUrl, account, quote, mockProcessResponseData } = getMocks();
 
-        invityAPI.doSellTrade = () =>
+        tradeApi.doSellTrade = () =>
             Promise.resolve({
                 trade: { error: 'Trade error', status: 'ERROR' },
             } as SellFiatTradeResponse);
@@ -207,7 +207,7 @@ describe('handleSellTradeThunk', () => {
         const { store, returnUrl, account, quote, mockProcessResponseData } = getMocks();
         const quoteData = { status: 'SEND_CRYPTO' };
 
-        invityAPI.doSellTrade = () =>
+        tradeApi.doSellTrade = () =>
             Promise.resolve({
                 trade: quoteData,
             } as SellFiatTradeResponse);
@@ -241,7 +241,7 @@ describe('handleSellTradeThunk', () => {
             },
         } as SellFiatTradeResponse;
 
-        invityAPI.doSellTrade = () => Promise.resolve(mockResponse);
+        tradeApi.doSellTrade = () => Promise.resolve(mockResponse);
 
         const result = await store
             .dispatch(
@@ -289,7 +289,7 @@ describe('handleSellTradeThunk', () => {
             },
         } as SellFiatTradeResponse;
 
-        invityAPI.doSellTrade = () => Promise.resolve(mockResponse);
+        tradeApi.doSellTrade = () => Promise.resolve(mockResponse);
 
         const result = await store
             .dispatch(
@@ -343,7 +343,7 @@ describe('handleSellTradeThunk', () => {
             },
         });
 
-        invityAPI.doSellTrade = () =>
+        tradeApi.doSellTrade = () =>
             Promise.resolve({
                 trade: {
                     status: 'LOGIN_REQUEST',

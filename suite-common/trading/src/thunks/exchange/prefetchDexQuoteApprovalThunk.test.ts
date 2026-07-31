@@ -7,12 +7,12 @@ import { type AccountAddresses } from '@trezor/connect';
 
 import { prefetchDexQuoteApprovalThunk } from './prefetchDexQuoteApprovalThunk';
 import { accountBtc, accountEth } from '../../__fixtures__/utils';
-import { invityAPI } from '../../invityAPI';
 import { initialState } from '../../reducers/tradingCommonReducer';
 import { prepareTradingReducer } from '../../reducers/tradingReducer';
+import { tradeApi } from '../../tradeApi';
 import { getUnusedAddressFromAccount } from '../../utils';
 
-jest.mock('../../invityAPI');
+jest.mock('../../tradeApi');
 
 const tradingReducer = prepareTradingReducer(extraDependenciesCommonMock);
 
@@ -61,7 +61,7 @@ describe('prefetchDexQuoteApprovalThunk', () => {
             quoteId: undefined,
         } as unknown as ExchangeTrade;
         const store = getStore([quote]);
-        const doExchangeTrade = jest.spyOn(invityAPI, 'doExchangeTrade');
+        const doExchangeTrade = jest.spyOn(tradeApi, 'doExchangeTrade');
 
         const result = await store.dispatch(
             prefetchDexQuoteApprovalThunk({
@@ -85,7 +85,7 @@ describe('prefetchDexQuoteApprovalThunk', () => {
             addresses: { unused: [], change: [], main: [], used: [] } as AccountAddresses,
         } as Account;
         const store = getStore([quote]);
-        const doExchangeTrade = jest.spyOn(invityAPI, 'doExchangeTrade');
+        const doExchangeTrade = jest.spyOn(tradeApi, 'doExchangeTrade');
 
         const result = await store.dispatch(
             prefetchDexQuoteApprovalThunk({
@@ -106,7 +106,7 @@ describe('prefetchDexQuoteApprovalThunk', () => {
         const quote = getExchangeTrade('quote-1');
         const store = getStore([quote]);
 
-        jest.spyOn(invityAPI, 'doExchangeTrade').mockResolvedValueOnce({
+        jest.spyOn(tradeApi, 'doExchangeTrade').mockResolvedValueOnce({
             error: 'some-error',
         } as ExchangeTrade);
 
@@ -129,7 +129,7 @@ describe('prefetchDexQuoteApprovalThunk', () => {
         const quote = getExchangeTrade('quote-1');
         const store = getStore([quote]);
 
-        jest.spyOn(invityAPI, 'doExchangeTrade').mockResolvedValueOnce(
+        jest.spyOn(tradeApi, 'doExchangeTrade').mockResolvedValueOnce(
             null as unknown as ExchangeTrade,
         );
 
@@ -153,7 +153,7 @@ describe('prefetchDexQuoteApprovalThunk', () => {
         const store = getStore([quote]);
         const { address: fromAccount } = getUnusedAddressFromAccount(accountEth as Account);
 
-        const doExchangeTrade = jest.spyOn(invityAPI, 'doExchangeTrade').mockResolvedValueOnce({
+        const doExchangeTrade = jest.spyOn(tradeApi, 'doExchangeTrade').mockResolvedValueOnce({
             quoteId: quote.quoteId,
             status: 'APPROVAL_REQ',
             preapprovedStringAmount: '0',
@@ -199,7 +199,7 @@ describe('prefetchDexQuoteApprovalThunk', () => {
         const store = getStore([quote]);
         const { address: fromAccount } = getUnusedAddressFromAccount(accountEth as Account);
 
-        const doExchangeTrade = jest.spyOn(invityAPI, 'doExchangeTrade').mockResolvedValueOnce({
+        const doExchangeTrade = jest.spyOn(tradeApi, 'doExchangeTrade').mockResolvedValueOnce({
             quoteId: quote.quoteId,
         } as ExchangeTrade);
 
@@ -227,7 +227,7 @@ describe('prefetchDexQuoteApprovalThunk', () => {
         let resolveA: (() => void) | undefined;
         let resolveB: (() => void) | undefined;
 
-        jest.spyOn(invityAPI, 'doExchangeTrade').mockImplementation(
+        jest.spyOn(tradeApi, 'doExchangeTrade').mockImplementation(
             ({ trade }: { trade: ExchangeTrade }) =>
                 new Promise(resolve => {
                     const done = () => resolve({ quoteId: trade.quoteId } as ExchangeTrade);

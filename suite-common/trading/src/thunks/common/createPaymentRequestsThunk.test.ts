@@ -11,9 +11,9 @@ import { createPaymentRequestsThunk } from './createPaymentRequestsThunk';
 import { getNonce } from './getNonce';
 import { getPurchaseAddress } from './getPurchaseAddress';
 import { getRefundAddress } from './getRefundAddress';
-import { invityAPI } from '../../invityAPI';
 import { initialState } from '../../reducers/tradingCommonReducer';
 import { prepareTradingReducer } from '../../reducers/tradingReducer';
+import { tradeApi } from '../../tradeApi';
 
 const tradingReducer = prepareTradingReducer(extraDependenciesCommonMock);
 
@@ -40,9 +40,9 @@ jest.mock('../../utils/signature/signatureUtils', () => {
     };
 });
 
-// Mock invityAPI
-jest.mock('../../invityAPI', () => ({
-    invityAPI: {
+// Mock tradeApi
+jest.mock('../../tradeApi', () => ({
+    tradeApi: {
         getSignedTrade: jest.fn(),
     },
 }));
@@ -278,7 +278,7 @@ describe('createPaymentRequestsThunk', () => {
         };
 
         it('should successfully create payment request for exchange', async () => {
-            invityAPI.getSignedTrade = () => Promise.resolve(mockSignedExchangeTrade as any);
+            tradeApi.getSignedTrade = () => Promise.resolve(mockSignedExchangeTrade as any);
 
             const store = createMockStore({
                 exchange: {
@@ -356,7 +356,7 @@ describe('createPaymentRequestsThunk', () => {
         });
 
         it('should reject when signed trade is not retrieved', async () => {
-            invityAPI.getSignedTrade = () => Promise.resolve(null as any);
+            tradeApi.getSignedTrade = () => Promise.resolve(null as any);
 
             const store = createMockStore({
                 exchange: {
@@ -384,7 +384,7 @@ describe('createPaymentRequestsThunk', () => {
         });
 
         it('should reject when payment request creation errors', async () => {
-            invityAPI.getSignedTrade = () =>
+            tradeApi.getSignedTrade = () =>
                 Promise.resolve({
                     mockExchangeQuote,
                     receiveAddress: undefined, // should be filled
@@ -442,7 +442,7 @@ describe('createPaymentRequestsThunk', () => {
 
         it('should successfully create payment request for sell', async () => {
             // Setup mocks
-            invityAPI.getSignedTrade = () => Promise.resolve(mockSignedSellTrade as any);
+            tradeApi.getSignedTrade = () => Promise.resolve(mockSignedSellTrade as any);
 
             const store = createMockStore({
                 sell: {
@@ -492,7 +492,7 @@ describe('createPaymentRequestsThunk', () => {
         });
 
         it('should reject when sell payment request creation errors', async () => {
-            invityAPI.getSignedTrade = () =>
+            tradeApi.getSignedTrade = () =>
                 Promise.resolve({
                     ...mockSignedSellTrade,
                     refundAddress: undefined,
@@ -573,7 +573,7 @@ describe('createPaymentRequestsThunk', () => {
                 ],
             } as any;
 
-            invityAPI.getSignedTrade = () => Promise.resolve(mockSignedSellTrade as any);
+            tradeApi.getSignedTrade = () => Promise.resolve(mockSignedSellTrade as any);
 
             const store = createMockStore({
                 sell: {
@@ -597,8 +597,8 @@ describe('createPaymentRequestsThunk', () => {
     });
 
     describe('error handling', () => {
-        it('should handle invityAPI.getSignedTrade rejection', async () => {
-            invityAPI.getSignedTrade = () => Promise.reject('API request errored');
+        it('should handle tradeApi.getSignedTrade rejection', async () => {
+            tradeApi.getSignedTrade = () => Promise.reject('API request errored');
 
             const mockExchangeQuote = {
                 orderId: 'exchange-order-123',

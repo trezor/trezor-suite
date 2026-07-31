@@ -1,6 +1,6 @@
 import type { Page } from '@playwright/test';
 
-import { SwapHistoryItem } from '../fixtures/invity/swap/swap-history';
+import { SwapHistoryItem } from '../fixtures/trading/swap/swap-history';
 
 export class TradingStoreFixture {
     constructor(private page: Page) {}

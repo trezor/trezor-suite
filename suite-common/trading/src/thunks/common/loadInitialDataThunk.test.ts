@@ -7,7 +7,6 @@ import { type Account } from '@suite-common/wallet-types';
 import { loadInitialDataThunk } from './loadInitialDataThunk';
 import { accountBtc, accountEth } from '../../__fixtures__/utils';
 import { TRADING_FALLBACK_API_KEY } from '../../constants';
-import { invityAPI } from '../../invityAPI';
 import { tradingBuyActions } from '../../reducers/buyReducer';
 import { exchangeInitialState, tradingExchangeActions } from '../../reducers/exchangeReducer';
 import { type SellInfo, tradingSellActions } from '../../reducers/sellReducer';
@@ -18,12 +17,13 @@ import {
 } from '../../reducers/tradingCommonReducer';
 import { prepareTradingReducer } from '../../reducers/tradingReducer';
 import { regional } from '../../regional';
+import { tradeApi } from '../../tradeApi';
 import { buyThunks } from '../buy';
 import { exchangeThunks } from '../exchange';
 import { sellThunks } from '../sell';
 
-jest.mock('../../invityAPI');
-invityAPI.setInvityServersEnvironment = () => {};
+jest.mock('../../tradeApi');
+tradeApi.setServersEnvironment = () => {};
 
 const tradingReducer = prepareTradingReducer(extraDependenciesCommonMock);
 
@@ -46,7 +46,7 @@ const mockedSuiteReducer = createReducer(
     {
         settings: {
             debug: {
-                invityServerEnvironment: 'localhost',
+                tradeServerEnvironment: 'localhost',
             },
         },
     },
@@ -84,17 +84,17 @@ const initStore = (
     });
 
 const testUpdatedInfoData = async (type: 'outdated' | 'account-changed') => {
-    invityAPI.getCurrentAccountDescriptor = () =>
+    tradeApi.getCurrentAccountDescriptor = () =>
         type === 'account-changed' ? 'FakeDescriptor' : accountBtc.descriptor;
-    invityAPI.getInfo = () =>
+    tradeApi.getInfo = () =>
         Promise.resolve({
             coins: {},
             platforms: {},
             config: {},
         });
 
-    const getCurrentAccountDescriptorMock = jest.spyOn(invityAPI, 'getCurrentAccountDescriptor');
-    const setInvityServersEnvironmentMock = jest.spyOn(invityAPI, 'setInvityServersEnvironment');
+    const getCurrentAccountDescriptorMock = jest.spyOn(tradeApi, 'getCurrentAccountDescriptor');
+    const setServersEnvironmentMock = jest.spyOn(tradeApi, 'setServersEnvironment');
 
     const mockedLastLoadedTimestamp = new Date().getTime();
     jest.spyOn(Date, 'now').mockImplementation(() => mockedLastLoadedTimestamp);
@@ -246,7 +246,7 @@ const testUpdatedInfoData = async (type: 'outdated' | 'account-changed') => {
         },
     ]);
     expect(getCurrentAccountDescriptorMock).toHaveBeenCalledTimes(1);
-    expect(setInvityServersEnvironmentMock).toHaveBeenCalledTimes(1);
+    expect(setServersEnvironmentMock).toHaveBeenCalledTimes(1);
 };
 
 describe('loadInitialDataThunk', () => {
@@ -263,16 +263,10 @@ describe('loadInitialDataThunk', () => {
     });
 
     it('should keep same version of data without update', async () => {
-        invityAPI.getCurrentAccountDescriptor = () => accountBtc.descriptor;
+        tradeApi.getCurrentAccountDescriptor = () => accountBtc.descriptor;
 
-        const getCurrentAccountDescriptorMock = jest.spyOn(
-            invityAPI,
-            'getCurrentAccountDescriptor',
-        );
-        const setInvityServersEnvironmentMock = jest.spyOn(
-            invityAPI,
-            'setInvityServersEnvironment',
-        );
+        const getCurrentAccountDescriptorMock = jest.spyOn(tradeApi, 'getCurrentAccountDescriptor');
+        const setServersEnvironmentMock = jest.spyOn(tradeApi, 'setServersEnvironment');
 
         const store = initStore({
             lastLoadedTimestamp: Date.now(),
@@ -308,19 +302,19 @@ describe('loadInitialDataThunk', () => {
             },
         ]);
         expect(getCurrentAccountDescriptorMock).toHaveBeenCalledTimes(1);
-        expect(setInvityServersEnvironmentMock).toHaveBeenCalledTimes(0);
+        expect(setServersEnvironmentMock).toHaveBeenCalledTimes(0);
     });
 
     it('should reload with the fallback api key when the account disconnects while cached data is fresh', async () => {
-        invityAPI.getCurrentAccountDescriptor = () => accountBtc.descriptor;
-        invityAPI.getInfo = () =>
+        tradeApi.getCurrentAccountDescriptor = () => accountBtc.descriptor;
+        tradeApi.getInfo = () =>
             Promise.resolve({
                 coins: {},
                 platforms: {},
                 config: {},
             });
 
-        const createInvityAPIKeyMock = jest.spyOn(invityAPI, 'createInvityAPIKey');
+        const createApiKeyMock = jest.spyOn(tradeApi, 'createApiKey');
 
         const mockedLastLoadedTimestamp = new Date().getTime();
         jest.spyOn(Date, 'now').mockImplementation(() => mockedLastLoadedTimestamp);
@@ -334,7 +328,7 @@ describe('loadInitialDataThunk', () => {
 
         const dispatchedTypes = store.getActions().map(action => action.type);
         expect(dispatchedTypes).toContain(tradingActions.setLoading.type);
-        expect(createInvityAPIKeyMock).toHaveBeenCalledWith(TRADING_FALLBACK_API_KEY);
+        expect(createApiKeyMock).toHaveBeenCalledWith(TRADING_FALLBACK_API_KEY);
     });
 
     it('should update active section', async () => {

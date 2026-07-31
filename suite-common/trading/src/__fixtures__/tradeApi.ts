@@ -201,7 +201,7 @@ const sellFiatTradeSigned: SellFiatTradeSigned = {
     tradeSignature: 'test-trade-signature',
 };
 
-export const invityAPIFixtures = {
+export const tradeApiFixtures = {
     exchangeList,
     exchangeQuotesBody,
     exchangeQuotes,

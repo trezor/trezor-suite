@@ -38,8 +38,8 @@ import { type Err, type Ok, type PrimitiveType } from '@trezor/type-utils';
 
 import type * as constants from './constants';
 
-export type InvityServerEnvironment = 'production' | 'staging' | 'dev' | 'localhost';
-export type InvityServers = Record<InvityServerEnvironment, string>;
+export type TradeServerEnvironment = 'production' | 'staging' | 'dev' | 'localhost';
+export type TradeServers = Record<TradeServerEnvironment, string>;
 
 export type TradingBuyType = 'buy';
 export type TradingSellType = 'sell';

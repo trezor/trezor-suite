@@ -14,8 +14,8 @@ import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/t
 import {
     type TradingState,
     initialState,
-    invityAPI,
     prepareTradingReducer,
+    tradeApi,
     tradingExchangeActions,
     tradingSellActions,
 } from '@suite-common/trading';
@@ -35,8 +35,8 @@ jest.mock('@suite-common/trading', () => {
     return {
         __esModule: true,
         ...originalModule,
-        invityAPI: {
-            createInvityAPIKey: jest.fn(),
+        tradeApi: {
+            createApiKey: jest.fn(),
         },
     };
 });
@@ -82,7 +82,7 @@ const getInitialState = ({ trading, selectedAccount, router }: Args = {}) => ({
     suite: {
         settings: {
             debug: {
-                invityServerEnvironment: 'dev',
+                tradeServerEnvironment: 'dev',
             },
         },
     },
@@ -312,7 +312,7 @@ describe('tradingMiddleware', () => {
             payload: 'btc-descriptor',
         });
 
-        expect(invityAPI.createInvityAPIKey).toHaveBeenCalledTimes(1);
+        expect(tradeApi.createApiKey).toHaveBeenCalledTimes(1);
         expect(store.getState().wallet.trading[section].tradingAccountKey).toEqual(
             'btc-descriptor',
         );

@@ -2,7 +2,7 @@ import { getCryptoId } from '@suite-common/trading';
 import { localizeNumber } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { invityEndpoint, swapQuotesEthereumBTC, swapTradeEthereumBTC } from '../../fixtures/invity';
+import { swapQuotesEthereumBTC, swapTradeEthereumBTC, tradeEndpoint } from '../../fixtures/trading';
 import { expect, test } from '../../support/fixtures';
 
 const sendAmount = '0.008';
@@ -22,8 +22,8 @@ test.describe('Trading - Swap fees', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, ()
     test.beforeEach(
         async ({ page, onboardingPage, dashboardPage, walletPage, settingsPage, tradingMock }) => {
             await test.step('Mocking responses', async () => {
-                await tradingMock.routeInvityGeneralEndpoints();
-                await page.route(invityEndpoint.swapQuotes, route => {
+                await tradingMock.routeTradeGeneralEndpoints();
+                await page.route(tradeEndpoint.swapQuotes, route => {
                     route.fulfill({ json: swapQuotesEthereumBTC });
                 });
                 await tradingMock.routeSwapTrade(swapTradeEthereumBTC);

@@ -6,13 +6,13 @@ import { selectAccountByKey } from '@suite-common/wallet-core';
 import { convertAmountSubunitsToUnits } from '@suite-common/wallet-utils';
 
 import { TRADING_EXCHANGE_THUNK_PREFIX } from '../../constants';
-import { invityAPI } from '../../invityAPI';
 import { tradingExchangeActions } from '../../reducers/exchangeReducer';
 import { tradingActions } from '../../reducers/tradingCommonReducer';
 import {
     selectTradingCoinSymbolByCryptoId,
     selectTradingExchangeQuotesRequest,
 } from '../../selectors/tradingSelectors';
+import { tradeApi } from '../../tradeApi';
 import {
     type HandleExchangeRequestThunkProps,
     type MinimalExchangeFormProps,
@@ -28,7 +28,7 @@ type GetQuotesRequest = {
 };
 
 const getQuotesRequest = ({ requestData, signal }: GetQuotesRequest) =>
-    invityAPI.getExchangeQuotes(requestData, signal);
+    tradeApi.getExchangeQuotes(requestData, signal);
 
 type GetQuoteRequestData = {
     formValues: MinimalExchangeFormProps;

@@ -3,8 +3,8 @@ import { cryptoIdToSymbol } from '@suite-common/trading';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { localizeNumber } from '@suite-common/wallet-utils';
 
-import { invityEndpoint } from '../../fixtures/invity';
-import { PENDING_TRADE, SEEDED_TRADES } from '../../fixtures/invity/swap/swap-history';
+import { tradeEndpoint } from '../../fixtures/trading';
+import { PENDING_TRADE, SEEDED_TRADES } from '../../fixtures/trading/swap/swap-history';
 import { expect, test } from '../../support/fixtures';
 
 test.describe('Trading - Swap history', { tag: ['@webOnly', '@T3T1', '@T3W1'] }, () => {
@@ -14,7 +14,7 @@ test.describe('Trading - Swap history', { tag: ['@webOnly', '@T3T1', '@T3W1'] },
         // The app periodically calls `/exchange/watch/*` to refresh trade status.
         // For this test we keep status stable by echoing the current status from
         // the request body, so seeded `CONFIRMING` remains `Pending` in UI.
-        await page.route(invityEndpoint.swapWatch, async route => {
+        await page.route(tradeEndpoint.swapWatch, async route => {
             const body = route.request().postDataJSON() as { status?: string } | null;
             await route.fulfill({ json: { status: body?.status ?? 'SUCCESS' } });
         });

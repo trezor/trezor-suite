@@ -6,10 +6,10 @@ import { type Account } from '@suite-common/wallet-types';
 
 import { MIN_MAX_QUOTES_OK } from '../../__fixtures__/exchangeUtils';
 import { accountBtc } from '../../__fixtures__/utils';
-import { invityAPI } from '../../invityAPI';
 import { type TradingExchangeState } from '../../reducers/exchangeReducer';
 import { initialState } from '../../reducers/tradingCommonReducer';
 import { prepareTradingReducer } from '../../reducers/tradingReducer';
+import { tradeApi } from '../../tradeApi';
 import { getUnusedAddressFromAccount } from '../../utils';
 import type { LogErrorThunkProps } from '../common/logErrorThunk';
 
@@ -24,15 +24,15 @@ jest.mock('../common/logErrorThunk', () => ({
     }),
 }));
 
-jest.mock('../../invityAPI');
+jest.mock('../../tradeApi');
 
 describe('confirmApprovalThunk', () => {
     afterEach(() => {
         jest.clearAllMocks();
     });
 
-    invityAPI.setInvityServersEnvironment = () => {};
-    invityAPI.createInvityAPIKey = () => {};
+    tradeApi.setServersEnvironment = () => {};
+    tradeApi.createApiKey = () => {};
 
     const getMocks = (initialExchangeState?: Partial<TradingExchangeState>) => {
         const quoteNotTyped = MIN_MAX_QUOTES_OK[0];
@@ -155,7 +155,7 @@ describe('confirmApprovalThunk', () => {
                 orderId: 'orderId',
             } as ExchangeTrade);
 
-            invityAPI.doExchangeTrade = doExchangeTradeSpy;
+            tradeApi.doExchangeTrade = doExchangeTradeSpy;
 
             await dispatchThunk(store, {
                 receiveAddress,
@@ -180,7 +180,7 @@ describe('confirmApprovalThunk', () => {
                 orderId: 'orderId',
             } as ExchangeTrade);
 
-            invityAPI.doExchangeTrade = doExchangeTradeSpy;
+            tradeApi.doExchangeTrade = doExchangeTradeSpy;
 
             await dispatchThunk(store, {
                 receiveAddress,
@@ -201,8 +201,7 @@ describe('confirmApprovalThunk', () => {
         it('should log error and return undefined', async () => {
             const { store, receiveAddress, account, trade, mockProcessResponseData } = getMocks();
 
-            invityAPI.doExchangeTrade = () =>
-                Promise.resolve(undefined as unknown as ExchangeTrade);
+            tradeApi.doExchangeTrade = () => Promise.resolve(undefined as unknown as ExchangeTrade);
 
             const response = await dispatchThunk(store, {
                 receiveAddress,
@@ -249,7 +248,7 @@ describe('confirmApprovalThunk', () => {
                     getMocks();
                 const tradeResponse = { ...trade, ...mockResponse } as ExchangeTrade;
 
-                invityAPI.doExchangeTrade = () => Promise.resolve(tradeResponse);
+                tradeApi.doExchangeTrade = () => Promise.resolve(tradeResponse);
 
                 const response = await dispatchThunk(store, {
                     receiveAddress,
@@ -276,7 +275,7 @@ describe('confirmApprovalThunk', () => {
             const { store, receiveAddress, account, trade, mockProcessResponseData } = getMocks();
             const tradeResponse = { ...trade, ...mockResponse } as ExchangeTrade;
 
-            invityAPI.doExchangeTrade = () => Promise.resolve(tradeResponse);
+            tradeApi.doExchangeTrade = () => Promise.resolve(tradeResponse);
 
             const response = await dispatchThunk(store, {
                 receiveAddress,
@@ -300,7 +299,7 @@ describe('confirmApprovalThunk', () => {
             orderId: 'orderId',
         } as ExchangeTrade;
 
-        invityAPI.doExchangeTrade = () => Promise.resolve(tradeResponse);
+        tradeApi.doExchangeTrade = () => Promise.resolve(tradeResponse);
 
         const response = await dispatchThunk(store, {
             receiveAddress,
@@ -322,7 +321,7 @@ describe('confirmApprovalThunk', () => {
             orderId: 'orderId',
         } as ExchangeTrade;
 
-        invityAPI.doExchangeTrade = () => Promise.resolve(tradeResponse);
+        tradeApi.doExchangeTrade = () => Promise.resolve(tradeResponse);
 
         const response = await dispatchThunk(store, {
             receiveAddress,
@@ -349,7 +348,7 @@ describe('confirmApprovalThunk', () => {
                 orderId: 'orderId',
             } as ExchangeTrade;
 
-            invityAPI.doExchangeTrade = () => Promise.resolve(tradeResponse);
+            tradeApi.doExchangeTrade = () => Promise.resolve(tradeResponse);
 
             const response = await dispatchThunk(store, {
                 receiveAddress,
@@ -390,7 +389,7 @@ describe('confirmApprovalThunk', () => {
                 },
             } as ExchangeTrade;
 
-            invityAPI.doExchangeTrade = () => Promise.resolve(tradeResponse);
+            tradeApi.doExchangeTrade = () => Promise.resolve(tradeResponse);
 
             await dispatchThunk(store, {
                 receiveAddress,
@@ -413,7 +412,7 @@ describe('confirmApprovalThunk', () => {
                 orderId: 'orderId',
             } as ExchangeTrade;
 
-            invityAPI.doExchangeTrade = () => Promise.resolve(tradeResponse);
+            tradeApi.doExchangeTrade = () => Promise.resolve(tradeResponse);
 
             await dispatchThunk(store, {
                 receiveAddress,

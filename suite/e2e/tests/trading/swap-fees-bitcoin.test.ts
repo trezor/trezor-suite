@@ -1,6 +1,6 @@
 import { BigNumber } from '@trezor/utils';
 
-import { invityEndpoint, swapQuotesBTCEthereum, swapTradeBTCEthereum } from '../../fixtures/invity';
+import { swapQuotesBTCEthereum, swapTradeBTCEthereum, tradeEndpoint } from '../../fixtures/trading';
 import { expect, test } from '../../support/fixtures';
 
 const sendAmount = '0.0004';
@@ -12,7 +12,7 @@ test.describe('Trading - Swap fees Bitcoin', { tag: ['@webOnly', '@T3T1', '@T3W1
     test.beforeEach(
         async ({ onboardingPage, dashboardPage, walletPage, settingsPage, page, tradingMock }) => {
             await test.step('Mocking responses', async () => {
-                await page.route(invityEndpoint.swapQuotes, route => {
+                await page.route(tradeEndpoint.swapQuotes, route => {
                     route.fulfill({ json: swapQuotesBTCEthereum });
                 });
                 await tradingMock.routeSwapTrade(swapTradeBTCEthereum);

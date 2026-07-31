@@ -8,17 +8,17 @@ import {
 
 import { configureMockStore } from '@suite-common/test-utils';
 
-import { invityAPI } from '../../invityAPI';
 import { buyInitialState, tradingBuyReducer } from '../../reducers/buyReducer';
 import { regional } from '../../regional';
+import { tradeApi } from '../../tradeApi';
 
 import { buyThunks } from './index';
 
 describe('loadBuyInfoThunk', () => {
-    jest.mock('../../invityAPI');
+    jest.mock('../../tradeApi');
 
-    invityAPI.setInvityServersEnvironment = () => {};
-    invityAPI.createInvityAPIKey = () => {};
+    tradeApi.setServersEnvironment = () => {};
+    tradeApi.createApiKey = () => {};
 
     const store = configureMockStore({
         extra: {},
@@ -48,7 +48,7 @@ describe('loadBuyInfoThunk', () => {
             } as FiatCurrenciesProps,
         };
 
-        invityAPI.getBuyList = () => Promise.resolve(buyInfoAPI);
+        tradeApi.getBuyList = () => Promise.resolve(buyInfoAPI);
 
         const buyInfoData = await store.dispatch(buyThunks.loadInfoThunk()).unwrap();
 
@@ -66,7 +66,7 @@ describe('loadBuyInfoThunk', () => {
     });
 
     it('should load default data object when response is unsuccessful', async () => {
-        invityAPI.getBuyList = () => Promise.resolve(undefined);
+        tradeApi.getBuyList = () => Promise.resolve(undefined);
 
         const buyInfoData = await store.dispatch(buyThunks.loadInfoThunk()).unwrap();
 
@@ -104,7 +104,7 @@ describe('loadBuyInfoThunk', () => {
             } as FiatCurrenciesProps,
         };
 
-        invityAPI.getBuyList = () => Promise.resolve(buyInfoAPI);
+        tradeApi.getBuyList = () => Promise.resolve(buyInfoAPI);
 
         const buyInfoData = await store.dispatch(buyThunks.loadInfoThunk()).unwrap();
 

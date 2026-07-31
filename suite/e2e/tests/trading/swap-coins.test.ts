@@ -4,10 +4,10 @@ import { localizeNumber } from '@suite-common/wallet-utils';
 
 import {
     getCompanyNameFromList,
-    invityEndpoint,
     swapQuotesSolanaBTC,
     swapTradeSolanaBTC,
-} from '../../fixtures/invity';
+    tradeEndpoint,
+} from '../../fixtures/trading';
 import { formatAddressWithNewlines } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
 import { transformAddress } from '../../support/testExtends/customMatchers';
@@ -44,13 +44,13 @@ test.describe('Trading - Swap coins', { tag: ['@webOnly', '@T3T1', '@T3W1'] }, (
     test.beforeEach(
         async ({ page, onboardingPage, dashboardPage, tradingMock, walletPage, settingsPage }) => {
             await test.step('Mocking responses', async () => {
-                await page.route(invityEndpoint.swapQuotes, route => {
+                await page.route(tradeEndpoint.swapQuotes, route => {
                     route.fulfill({ json: swapQuotesSolanaBTC });
                 });
                 await tradingMock.routeSwapTrade(swapTradeSolanaBTC);
                 await tradingMock.routeSolanaSendRequests();
                 await tradingMock.routeDummyProviderSupportPage();
-                await page.route(invityEndpoint.swapWatch, async route => {
+                await page.route(tradeEndpoint.swapWatch, async route => {
                     await route.fulfill({ json: { status: 'SENDING', sendAddress } });
                 });
             });
@@ -160,7 +160,7 @@ test.describe('Trading - Swap coins', { tag: ['@webOnly', '@T3T1', '@T3W1'] }, (
 
         for (const { transactionStatus, displayedText, translationValues } of transactionStates) {
             await test.step(`Wait 30s for status change to ${displayedText}`, async () => {
-                await tradingMock.routeAndWaitForWatchResponse(invityEndpoint.swapWatch, {
+                await tradingMock.routeAndWaitForWatchResponse(tradeEndpoint.swapWatch, {
                     status: transactionStatus,
                     sendAddress,
                 });

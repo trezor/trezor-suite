@@ -5,10 +5,10 @@ import { type Network } from '@suite-common/wallet-config';
 import { convertAmountSubunitsToUnits } from '@suite-common/wallet-utils';
 
 import { TRADING_DEFAULT_SELL_FLOWS, TRADING_SELL_THUNK_PREFIX } from '../../constants';
-import { invityAPI } from '../../invityAPI';
 import { tradingSellActions } from '../../reducers/sellReducer';
 import { tradingActions } from '../../reducers/tradingCommonReducer';
 import { selectTradingCoinSymbolByCryptoId } from '../../selectors/tradingSelectors';
+import { tradeApi } from '../../tradeApi';
 import {
     type HandleSellRequestThunkProps,
     type MinimalSellFormProps,
@@ -29,7 +29,7 @@ type GetQuotesRequest = {
 };
 
 const getQuotesRequest = ({ requestData, signal }: GetQuotesRequest) =>
-    invityAPI.getSellQuotes(requestData, signal);
+    tradeApi.getSellQuotes(requestData, signal);
 
 type GetQuoteRequestData = {
     formValues: MinimalSellFormProps;

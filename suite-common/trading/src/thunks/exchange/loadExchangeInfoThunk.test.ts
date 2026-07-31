@@ -3,17 +3,17 @@ import { type ExchangeListResponse } from 'invity-api';
 
 import { configureMockStore } from '@suite-common/test-utils';
 
-import { invityAPI } from '../../invityAPI';
 import { exchange } from '../../reducers/__fixtures__/exchangeTradingReducer';
 import { exchangeInitialState, tradingExchangeReducer } from '../../reducers/exchangeReducer';
+import { tradeApi } from '../../tradeApi';
 
 import { exchangeThunks } from './index';
 
 describe('loadExchangeInfoThunk', () => {
-    jest.mock('../../invityAPI');
+    jest.mock('../../tradeApi');
 
-    invityAPI.setInvityServersEnvironment = () => {};
-    invityAPI.createInvityAPIKey = () => {};
+    tradeApi.setServersEnvironment = () => {};
+    tradeApi.createApiKey = () => {};
 
     const store = configureMockStore({
         extra: {},
@@ -36,7 +36,7 @@ describe('loadExchangeInfoThunk', () => {
     it('should load data when response is successful', async () => {
         const exchangeInfoApi = [exchange];
 
-        invityAPI.getExchangeList = () => Promise.resolve(exchangeInfoApi);
+        tradeApi.getExchangeList = () => Promise.resolve(exchangeInfoApi);
 
         const exchangeInfoData = await store.dispatch(exchangeThunks.loadInfoThunk()).unwrap();
 
@@ -57,7 +57,7 @@ describe('loadExchangeInfoThunk', () => {
         };
         const exchangeInfoApi = [exchangeUpdated];
 
-        invityAPI.getExchangeList = () =>
+        tradeApi.getExchangeList = () =>
             Promise.resolve(exchangeInfoApi as unknown as ExchangeListResponse);
 
         const exchangeInfoData = await store.dispatch(exchangeThunks.loadInfoThunk()).unwrap();
@@ -72,7 +72,7 @@ describe('loadExchangeInfoThunk', () => {
     });
 
     it('should load default data object when response is unsuccessful', async () => {
-        invityAPI.getExchangeList = () =>
+        tradeApi.getExchangeList = () =>
             Promise.resolve(undefined as unknown as ExchangeListResponse);
 
         const exchangeInfoData = await store.dispatch(exchangeThunks.loadInfoThunk()).unwrap();

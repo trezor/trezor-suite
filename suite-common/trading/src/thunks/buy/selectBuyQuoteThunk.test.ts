@@ -11,10 +11,10 @@ import {
 import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
 
 import { MIN_MAX_QUOTES_OK } from '../../__fixtures__/buyUtils';
-import { invityAPI } from '../../invityAPI';
 import { type BuyInfo, type TradingBuyState } from '../../reducers/buyReducer';
 import { initialState } from '../../reducers/tradingCommonReducer';
 import { prepareTradingReducer } from '../../reducers/tradingReducer';
+import { tradeApi } from '../../tradeApi';
 import { type TradingCountryCode } from '../../types';
 import type { LogErrorThunkProps } from '../common/logErrorThunk';
 
@@ -34,10 +34,10 @@ describe('selectBuyQuoteThunk', () => {
         jest.clearAllMocks();
     });
 
-    jest.mock('../../invityAPI');
+    jest.mock('../../tradeApi');
 
-    invityAPI.setInvityServersEnvironment = () => {};
-    invityAPI.createInvityAPIKey = () => {};
+    tradeApi.setServersEnvironment = () => {};
+    tradeApi.createApiKey = () => {};
 
     const getDataMocks = () => {
         const quote = MIN_MAX_QUOTES_OK[0];
@@ -258,7 +258,7 @@ describe('selectBuyQuoteThunk', () => {
                 tradeForm,
             };
 
-            invityAPI.doBuyTrade = () => Promise.resolve(buyTradeResponse);
+            tradeApi.doBuyTrade = () => Promise.resolve(buyTradeResponse);
 
             await store
                 .dispatch(
@@ -290,7 +290,7 @@ describe('selectBuyQuoteThunk', () => {
                 },
             };
 
-            invityAPI.doBuyTrade = () => Promise.resolve(buyTradeResponse);
+            tradeApi.doBuyTrade = () => Promise.resolve(buyTradeResponse);
 
             await store
                 .dispatch(
@@ -322,7 +322,7 @@ describe('selectBuyQuoteThunk', () => {
                 tradeForm,
             };
 
-            invityAPI.doBuyTrade = () => Promise.resolve(buyTradeResponse);
+            tradeApi.doBuyTrade = () => Promise.resolve(buyTradeResponse);
 
             await store
                 .dispatch(
@@ -346,7 +346,7 @@ describe('selectBuyQuoteThunk', () => {
             const { quote, state } = getDataMocks();
             const { store, mockNextStep, mockLoginRequest } = getMocks(state);
 
-            invityAPI.doBuyTrade = () => Promise.resolve(undefined as unknown as BuyTradeResponse);
+            tradeApi.doBuyTrade = () => Promise.resolve(undefined as unknown as BuyTradeResponse);
 
             await store
                 .dispatch(

@@ -6,13 +6,13 @@ import { getNetwork } from '@suite-common/wallet-config';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { convertAmountUnitsToSubunits } from '@suite-common/wallet-utils';
 
-import { invityAPI } from '../../invityAPI';
 import {
     type QuoteRefetchingState,
     REFETCH_QUOTES_MAX_COUNT,
     initialState,
 } from '../../reducers/tradingCommonReducer';
 import { prepareTradingReducer } from '../../reducers/tradingReducer';
+import { tradeApi } from '../../tradeApi';
 import {
     type HandleSellRequestThunkProps,
     type MinimalSellFormProps,
@@ -30,10 +30,10 @@ describe('handleSellRequestThunk', () => {
         jest.clearAllMocks();
     });
 
-    jest.mock('../../invityAPI');
+    jest.mock('../../tradeApi');
 
-    invityAPI.setInvityServersEnvironment = () => {};
-    invityAPI.createInvityAPIKey = () => {};
+    tradeApi.setServersEnvironment = () => {};
+    tradeApi.createApiKey = () => {};
 
     const getMocks = (refetchQuotesOverride?: Partial<QuoteRefetchingState>) => {
         const store = configureMockStore({
@@ -137,7 +137,7 @@ describe('handleSellRequestThunk', () => {
         const { input, store } = getMocks();
         const mockQuotes = [...sellUtilsFixtures.MIN_MAX_QUOTES_OK];
 
-        invityAPI.getSellQuotes = () => Promise.resolve(mockQuotes);
+        tradeApi.getSellQuotes = () => Promise.resolve(mockQuotes);
 
         const quotesResponse = await store.dispatch(sellThunks.handleRequestThunk(input)).unwrap();
 
@@ -168,7 +168,7 @@ describe('handleSellRequestThunk', () => {
             orderId: undefined,
         }));
 
-        invityAPI.getSellQuotes = () => Promise.resolve(mockQuotes);
+        tradeApi.getSellQuotes = () => Promise.resolve(mockQuotes);
 
         const quotesResponse = await store
             .dispatch(
@@ -212,7 +212,7 @@ describe('handleSellRequestThunk', () => {
             orderId: undefined,
         })) as SellFiatTrade[];
 
-        invityAPI.getSellQuotes = () => Promise.resolve(mockQuotes);
+        tradeApi.getSellQuotes = () => Promise.resolve(mockQuotes);
 
         const quotesResponse = await store
             .dispatch(
@@ -257,7 +257,7 @@ describe('handleSellRequestThunk', () => {
             orderId: undefined,
         }));
 
-        invityAPI.getSellQuotes = () => Promise.resolve(mockQuotes);
+        tradeApi.getSellQuotes = () => Promise.resolve(mockQuotes);
 
         const quotesResponse = await store
             .dispatch(
@@ -318,14 +318,14 @@ describe('handleSellRequestThunk', () => {
             },
         };
 
-        jest.spyOn(invityAPI, 'getSellQuotes');
+        jest.spyOn(tradeApi, 'getSellQuotes');
 
         const promise = store.dispatch(sellThunks.handleRequestThunk(incorrectData));
         await promise;
 
         const state = store.getState().wallet.trading;
 
-        expect(invityAPI.getSellQuotes).not.toHaveBeenCalled();
+        expect(tradeApi.getSellQuotes).not.toHaveBeenCalled();
         expect(state.sell.quotesRequest).toBeUndefined();
         expect(state.sell.quotes.length).toEqual(0);
         expect(state.isLoading).toBe(false);
@@ -335,7 +335,7 @@ describe('handleSellRequestThunk', () => {
     it('should not save quotes when request is aborted', async () => {
         const { input, store } = getMocks();
 
-        invityAPI.getSellQuotes = () => Promise.resolve([]);
+        tradeApi.getSellQuotes = () => Promise.resolve([]);
 
         const promise = store.dispatch(sellThunks.handleRequestThunk(input));
 
@@ -366,14 +366,14 @@ describe('handleSellRequestThunk', () => {
             },
         };
 
-        jest.spyOn(invityAPI, 'getSellQuotes');
+        jest.spyOn(tradeApi, 'getSellQuotes');
 
         const promise = store.dispatch(sellThunks.handleRequestThunk(incorrectData));
         await promise;
 
         const state = store.getState().wallet.trading;
 
-        expect(invityAPI.getSellQuotes).not.toHaveBeenCalled();
+        expect(tradeApi.getSellQuotes).not.toHaveBeenCalled();
         expect(state.sell.quotesRequest).toBeUndefined();
         expect(state.sell.quotes.length).toEqual(0);
         expect(state.isLoading).toBe(false);
@@ -414,7 +414,7 @@ describe('handleSellRequestThunk', () => {
     it('should not save quotes when empty array is returned from the response', async () => {
         const { input, store } = getMocks();
 
-        invityAPI.getSellQuotes = () => Promise.resolve([]);
+        tradeApi.getSellQuotes = () => Promise.resolve([]);
 
         const quotesResponse = await store.dispatch(sellThunks.handleRequestThunk(input)).unwrap();
 
@@ -435,7 +435,7 @@ describe('handleSellRequestThunk', () => {
             orderId: undefined,
         }));
 
-        invityAPI.getSellQuotes = () => Promise.resolve(mockQuotes);
+        tradeApi.getSellQuotes = () => Promise.resolve(mockQuotes);
 
         const modifiedInput = {
             ...input,
@@ -462,7 +462,7 @@ describe('handleSellRequestThunk', () => {
         const mockQuotes = sellUtilsFixtures.MIN_MAX_QUOTES_OK.map(quote => ({ ...quote }));
         const beforeTimestamp = Date.now();
 
-        invityAPI.getSellQuotes = () => Promise.resolve(mockQuotes);
+        tradeApi.getSellQuotes = () => Promise.resolve(mockQuotes);
 
         await store.dispatch(sellThunks.handleRequestThunk(input)).unwrap();
 
@@ -477,7 +477,7 @@ describe('handleSellRequestThunk', () => {
         const { input, store } = getMocks({ status: 'running', remainingRefetches: 1 });
         const mockQuotes = sellUtilsFixtures.MIN_MAX_QUOTES_OK.map(quote => ({ ...quote }));
 
-        invityAPI.getSellQuotes = () => Promise.resolve(mockQuotes);
+        tradeApi.getSellQuotes = () => Promise.resolve(mockQuotes);
 
         await store.dispatch(sellThunks.handleRequestThunk(input)).unwrap();
 
