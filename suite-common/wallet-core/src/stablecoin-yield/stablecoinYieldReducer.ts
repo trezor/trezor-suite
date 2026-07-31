@@ -425,6 +425,11 @@ const stablecoinYieldSlice = createSlice({
                 if (action.payload.amount) {
                     session.action.amount = action.payload.amount;
                 }
+                // Leaving the approve step forward clears modify mode (mirrors `completeApproval`)
+                // so the action step's insufficient-allowance guard applies — otherwise a skip
+                // with an amount above the current allowance would slip past it.
+                session.approval.isModifyMode = false;
+                session.approval.isRevokeRequired = false;
                 session.step = getNextYieldFlowStep(
                     action.payload.flowType,
                     'approve',
