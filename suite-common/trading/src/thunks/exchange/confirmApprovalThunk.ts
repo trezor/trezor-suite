@@ -73,7 +73,7 @@ export const confirmApprovalThunk = createThunk<
         // invity drops DEX-specific fields on the response — preserve those the review flow needs
         const response = rawResponse && {
             ...rawResponse,
-            swapSlippage: rawResponse.swapSlippage ?? trade.swapSlippage,
+            swapSlippage: rawResponse.swapSlippage || trade.swapSlippage,
         };
 
         if (!response) {
