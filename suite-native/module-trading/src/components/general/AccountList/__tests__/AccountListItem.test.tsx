@@ -94,7 +94,9 @@ describe('AccountListItem', () => {
             renderAccountListItem(receiveAccount);
 
         expect(getByText('My BTC account')).toBeTruthy();
-        expect(queryByAccessibilityHint('Select to display account addresses')).toBeNull();
+        expect(
+            queryByAccessibilityHint(getTranslation('moduleTrading.accountScreen.step2Hint')),
+        ).toBeNull();
         expect(
             getByLabelText(getTranslation('moduleTrading.accountScreen.balanceFiat')),
         ).toHaveTextContent('$10,000,000.00');
@@ -121,6 +123,8 @@ describe('AccountListItem', () => {
         const { getByText, getByAccessibilityHint } = renderAccountListItem(receiveAccount);
 
         expect(getByText('My BTC account')).toBeTruthy();
-        expect(getByAccessibilityHint('Select to display account addresses')).toBeTruthy();
+        expect(
+            getByAccessibilityHint(getTranslation('moduleTrading.accountScreen.step2Hint')),
+        ).toBeTruthy();
     });
 });
