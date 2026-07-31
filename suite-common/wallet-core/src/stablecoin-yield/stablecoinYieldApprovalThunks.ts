@@ -231,7 +231,10 @@ export const handleYieldApproveCancelThunk = createThunk(
 
 export const initYieldAllowanceThunk = createThunk<void, InitYieldAllowancePayload, void>(
     `${YIELD_THUNK_PREFIX}/initAllowance`,
-    async ({ flowKey, flowType, flowData, shouldSkipApprovalStep = true }, { dispatch }) => {
+    async (
+        { flowKey, flowType, flowData, shouldSkipApprovalStep = true },
+        { dispatch, getState },
+    ) => {
         dispatch(stablecoinYieldActions.startInitializingAllowance({ flowType, flowKey }));
 
         try {
@@ -264,8 +267,29 @@ export const initYieldAllowanceThunk = createThunk<void, InitYieldAllowancePaylo
                 }),
             );
 
-            if (shouldSkipApprovalStep && amount !== '0') {
-                dispatch(stablecoinYieldActions.skipApprovalStep({ flowType, flowKey }));
+            if (shouldSkipApprovalStep) {
+                const { action } = selectStablecoinYieldSession(getState(), flowType, flowKey);
+                const requestAmount = action.amount;
+                const hasRequestAmount = !!requestAmount && new BigNumber(requestAmount).gt(0);
+
+                // Only skip the approve step when the existing allowance already covers the
+                // amount being deposited. For the wrapped-native flow `action.amount` holds
+                // the just-wrapped amount, so a leftover dust allowance must NOT skip approval
+                // (issue #30551). Without an entered amount (e.g. non-wrapped deposit, where the
+                // approve step precedes amount entry) fall back to skipping on any allowance —
+                // insufficiency is still caught later via the modify-approval path.
+                const allowanceCoversRequest = hasRequestAmount
+                    ? allowanceSubunits.gte(
+                          unitsToSubunits({
+                              value: asAmountUnit(new BigNumber(requestAmount)),
+                              decimals: flowData.token.decimals,
+                          }),
+                      )
+                    : amount !== '0';
+
+                if (allowanceCoversRequest) {
+                    dispatch(stablecoinYieldActions.skipApprovalStep({ flowType, flowKey }));
+                }
             }
         } catch (error) {
             dispatch(stablecoinYieldActions.setAllowanceError({ flowType, flowKey }));
