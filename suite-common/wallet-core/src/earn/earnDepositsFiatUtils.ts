@@ -75,7 +75,7 @@ const getUniqueTickers = (tickers: TickerId[]): TickerId[] =>
         ),
     );
 
-const getTokenFiatRate = (
+export const getTokenFiatRate = (
     currentFiatRates: RatesByKey | undefined,
     fiatRateKey: CryptoBaseCurrencyPair,
 ): number | undefined => {

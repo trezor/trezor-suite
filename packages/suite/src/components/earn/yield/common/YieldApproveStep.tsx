@@ -9,7 +9,11 @@ import { Banner, Button, Column, Row } from '@trezor/components';
 import { WarningIcon } from '@trezor/icons';
 import { exhaustive } from '@trezor/type-utils';
 
-import { YieldAmountCard, type YieldApproxFiat } from './YieldAmountCard';
+import {
+    YieldAmountCard,
+    type YieldAmountCardFiatToggleProps,
+    type YieldApproxFiat,
+} from './YieldAmountCard';
 import { YieldApprovedAmountCard } from './YieldApprovedAmountCard';
 import { YieldPendingTransaction } from './YieldPendingTransaction';
 import type { YieldApprovalAction } from '../yieldFlowUtils';
@@ -43,6 +47,7 @@ export type YieldApproveStepProps = {
     canRevokeAllowance: boolean;
     warning?: ReactNode;
     pendingApproveTransaction?: YieldPendingTransactionState;
+    fiatToggle?: YieldAmountCardFiatToggleProps;
     onMaxClick?: () => void;
     onApprovalSubmit?: () => void;
     onSkip?: () => void;
@@ -63,6 +68,7 @@ export const YieldApproveStep = ({
     canRevokeAllowance,
     warning,
     pendingApproveTransaction,
+    fiatToggle,
     onMaxClick,
     onApprovalSubmit,
     onSkip,
@@ -96,6 +102,7 @@ export const YieldApproveStep = ({
                 heading={{
                     amountLabelTranslationId: 'AMOUNT',
                 }}
+                fiatToggle={pendingApproveTransaction ? undefined : fiatToggle}
                 warning={warning}
                 isDisabled={!!pendingApproveTransaction}
             />

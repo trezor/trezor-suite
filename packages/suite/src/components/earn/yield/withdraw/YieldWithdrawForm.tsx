@@ -43,10 +43,11 @@ export const YieldWithdrawForm = () => {
         isMaxWithdrawInfoVisible,
         toggleWithdrawFlowType,
         submitAction,
-        setAmountInput,
         submitUnwrap,
         skipUnwrap,
         openPendingTransaction,
+        fiatToggle,
+        setMaxAmount,
         flow,
     } = useYieldWithdrawContext();
 
@@ -249,6 +250,7 @@ export const YieldWithdrawForm = () => {
                                               }
                                             : undefined
                                     }
+                                    fiatToggle={fiatToggle}
                                     onMaxClick={handleMaxClick}
                                     onSubmit={handleOnWithdraw}
                                     onPendingTxClick={openPendingTransaction}
@@ -277,7 +279,8 @@ export const YieldWithdrawForm = () => {
                                     tokenDecimals={token.decimals}
                                     tokenBalance={token.balance}
                                     approxFiat={unwrapApproxFiat}
-                                    onMaxClick={() => setAmountInput(token.balance)}
+                                    fiatToggle={fiatToggle}
+                                    onMaxClick={() => setMaxAmount(token.balance)}
                                     isSubmitting={isSubmittingAction}
                                     isSubmitDisabled={
                                         isAmountEmpty || isAmountTooHigh || isAmountInvalidDecimals

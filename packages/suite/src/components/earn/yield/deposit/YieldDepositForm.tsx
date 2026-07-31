@@ -52,7 +52,6 @@ export const YieldDepositForm = () => {
         isApprovalInsufficient,
         isSubmittingApprove,
         isSubmittingAction,
-        setAmountInput,
         submitWrap,
         skipWrap,
         returnToWrapStep,
@@ -65,6 +64,8 @@ export const YieldDepositForm = () => {
         handleApproveSuccessTxid,
         openPendingTransaction,
         retryInitAllowance,
+        fiatToggle,
+        setMaxAmount,
         flow,
     } = useYieldDepositContext();
 
@@ -224,7 +225,8 @@ export const YieldDepositForm = () => {
             },
         });
 
-        setAmountInput(maxAmount);
+        // Fill the exact crypto max (and the rounded-down fiat display in fiat mode) without switching.
+        setMaxAmount(maxAmount);
     };
 
     const handleRetryAllowance = () => {
@@ -307,6 +309,7 @@ export const YieldDepositForm = () => {
                                         }
                                         warning={renderWrapWarning()}
                                         pendingTransaction={wrapPendingTransaction}
+                                        fiatToggle={fiatToggle}
                                         onMaxClick={handleMaxClick}
                                         onSubmit={handleOnWrap}
                                         onSkip={
@@ -362,6 +365,7 @@ export const YieldDepositForm = () => {
                                         }
                                         isLoading={isSubmittingApprove}
                                         pendingApproveTransaction={approvalPendingTransaction}
+                                        fiatToggle={fiatToggle}
                                         onMaxClick={handleMaxClick}
                                         onApprovalSubmit={handleOnApprovalSubmit}
                                         onSkip={
@@ -414,6 +418,7 @@ export const YieldDepositForm = () => {
                                         }
                                         isPending={isSubmittingAction}
                                         pendingTransaction={depositPendingTransaction}
+                                        fiatToggle={fiatToggle}
                                         onMaxClick={handleMaxClick}
                                         onSubmit={handleOnDeposit}
                                         onPendingTxClick={openPendingTransaction}

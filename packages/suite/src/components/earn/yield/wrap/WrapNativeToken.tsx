@@ -27,6 +27,7 @@ import { YieldFlowTransferRow } from '../common/YieldFlowTransferRow';
 import { YieldWrapStep } from '../common/YieldWrapStep';
 import { useWrappedNativeDeviceGuard } from '../common/useWrappedNativeDeviceGuard';
 import { useWrappedNativePendingTx } from '../common/useWrappedNativePendingTx';
+import { useYieldFiatInput } from '../hooks/useYieldFiatInput';
 
 type WrapNativeTokenProps = {
     account: Account;
@@ -46,6 +47,7 @@ export const WrapNativeToken = ({ account, token }: WrapNativeTokenProps) => {
         mode: 'onChange',
         defaultValues: {
             amountInput: '',
+            fiatInput: '',
         },
     });
 
@@ -61,6 +63,12 @@ export const WrapNativeToken = ({ account, token }: WrapNativeTokenProps) => {
     // Max leaves the gas reserve aside, but the field shows the full balance and the user may wrap
     // up to it; eating into the reserve only triggers a non-blocking recommendation.
     const maxWrapAmount = getWrappableNativeBalance(account.formattedBalance);
+
+    const { fiatToggle, setMaxAmount } = useYieldFiatInput({
+        methods,
+        symbol: account.symbol,
+        decimals: token.decimals,
+    });
 
     const amountInput = useWatch({ control: methods.control, name: 'amountInput' });
     const amount = new BigNumber(amountInput || '');
@@ -80,7 +88,7 @@ export const WrapNativeToken = ({ account, token }: WrapNativeTokenProps) => {
             }),
         );
         setBroadcast(null);
-        methods.reset({ amountInput: '' });
+        methods.reset({ amountInput: '', fiatInput: '' });
     }, [pendingTxStatus, dispatch, methods]);
 
     const wrapMutation = useMutation({
@@ -179,11 +187,8 @@ export const WrapNativeToken = ({ account, token }: WrapNativeTokenProps) => {
                                 ? { type: 'wrap', txid: broadcast.txid, amount: broadcast.amount }
                                 : undefined
                         }
-                        onMaxClick={() =>
-                            methods.setValue('amountInput', maxWrapAmount, {
-                                shouldValidate: true,
-                            })
-                        }
+                        fiatToggle={fiatToggle}
+                        onMaxClick={() => setMaxAmount(maxWrapAmount)}
                         onSubmit={handleSubmit}
                         onPendingTxClick={openTxDetail}
                     />

@@ -1,14 +1,24 @@
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type YieldFlowDisplayToken,
     type YieldFlowStepId,
     type YieldFlowToken,
+    type YieldPositionFlowType,
     type YieldWithdrawFlowType,
     getConvertedOutputTokenBalanceToInputTokenAmount,
 } from '@suite-common/wallet-core';
+import { type TokenAddress, toTokenAddress } from '@suite-common/wallet-types';
+import {
+    fromBaseCurrencyToCryptoUnit,
+    getContractAddressForNetworkSymbol,
+    toFiatCurrency,
+} from '@suite-common/wallet-utils';
 import type { StepListItemState } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 
 export { getYieldApprovalAction, type YieldApprovalAction } from '@suite-common/wallet-core';
+
+const FIAT_DISPLAY_DECIMALS = 2;
 
 type AmountComparisonParams = {
     amount?: string;
@@ -84,6 +94,112 @@ export const getYieldUnwrapDefaultAmount = ({
     }
 
     return withdrawnAssetAmount;
+};
+
+export type YieldFiatRateToken = {
+    symbol: NetworkSymbol;
+    tokenAddress?: TokenAddress;
+};
+
+type YieldFiatRateTokenParams = {
+    step: YieldFlowStepId;
+    flowType: YieldPositionFlowType;
+    accountSymbol: NetworkSymbol;
+    token: Pick<YieldFlowDisplayToken, 'networkSymbol' | 'contractAddress'> | null;
+};
+
+/**
+ * The token whose fiat rate prices the amount currently being entered:
+ * - wrap/unwrap operate on the native coin (priced by the account's native symbol),
+ * - redeem enters share units, which have no direct fiat price → no fiat entry,
+ * - deposit/withdraw/approve enter the vault asset token (priced by its contract address).
+ *
+ * Returns `null` when fiat entry is not possible for the current step.
+ */
+export const getYieldFiatRateToken = ({
+    step,
+    flowType,
+    accountSymbol,
+    token,
+}: YieldFiatRateTokenParams): YieldFiatRateToken | null => {
+    if (step === 'wrap' || step === 'unwrap') {
+        return { symbol: accountSymbol };
+    }
+
+    if (flowType === 'redeem') {
+        return null;
+    }
+
+    if (!token?.contractAddress) {
+        return null;
+    }
+
+    return {
+        symbol: token.networkSymbol,
+        tokenAddress: toTokenAddress(
+            getContractAddressForNetworkSymbol(token.networkSymbol, token.contractAddress),
+        ),
+    };
+};
+
+/** Crypto → fiat for display. Empty string when the amount is empty or no rate is available. */
+export const getYieldFiatInputValue = ({
+    amount,
+    rate,
+}: {
+    amount: string;
+    rate: number | undefined;
+}): string => {
+    if (!amount || rate === undefined) {
+        return '';
+    }
+
+    return toFiatCurrency({ amount, rate })?.toFixed(FIAT_DISPLAY_DECIMALS) ?? '';
+};
+
+/**
+ * Crypto → fiat for a Max amount. Rounds **down** (unlike the half-up `getYieldFiatInputValue`) so
+ * the shown value, if re-entered in fiat mode, never converts back above the balance — which would
+ * otherwise trip a false "insufficient funds" on the exact max.
+ */
+export const getYieldMaxFiatInputValue = ({
+    amount,
+    rate,
+}: {
+    amount: string;
+    rate: number | undefined;
+}): string => {
+    if (!amount || rate === undefined) {
+        return '';
+    }
+
+    return (
+        toFiatCurrency({ amount, rate })?.toFixed(FIAT_DISPLAY_DECIMALS, BigNumber.ROUND_DOWN) ?? ''
+    );
+};
+
+/** Fiat → crypto (the source of truth). Empty string when the fiat is empty or no rate is available. */
+export const getYieldCryptoInputValue = ({
+    fiat,
+    rate,
+    decimals,
+}: {
+    fiat: string;
+    rate: number | undefined;
+    decimals: number;
+}): string => {
+    if (!fiat || rate === undefined) {
+        return '';
+    }
+
+    // Trim trailing zeros so a round conversion shows "2" instead of "2.000000000000000000"
+    // (which visually blows out the input). `decimalPlaces` keeps full token precision and
+    // `toFixed()` (no arg) avoids the exponential notation the number input can't parse.
+    return (
+        fromBaseCurrencyToCryptoUnit({ fiatAmount: fiat, rate })
+            ?.decimalPlaces(decimals)
+            .toFixed() ?? ''
+    );
 };
 
 export type YieldFlowStepView = {

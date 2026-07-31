@@ -26,6 +26,7 @@ import { YieldFlowTransferRow } from '../common/YieldFlowTransferRow';
 import { YieldUnwrapStep } from '../common/YieldUnwrapStep';
 import { useWrappedNativeDeviceGuard } from '../common/useWrappedNativeDeviceGuard';
 import { useWrappedNativePendingTx } from '../common/useWrappedNativePendingTx';
+import { useYieldFiatInput } from '../hooks/useYieldFiatInput';
 
 type UnwrapNativeTokenProps = {
     account: Account;
@@ -54,7 +55,14 @@ export const UnwrapNativeToken = ({
         mode: 'onChange',
         defaultValues: {
             amountInput: tokenBalance,
+            fiatInput: '',
         },
+    });
+
+    const { fiatToggle, setMaxAmount } = useYieldFiatInput({
+        methods,
+        symbol: account.symbol,
+        decimals: tokenDecimals,
     });
 
     const pendingTxStatus = useWrappedNativePendingTx(account, broadcast?.txid ?? null, 'unwrap');
@@ -99,7 +107,7 @@ export const UnwrapNativeToken = ({
             }),
         );
         setBroadcast(null);
-        methods.reset({ amountInput: tokenBalance });
+        methods.reset({ amountInput: tokenBalance, fiatInput: '' });
     }, [pendingTxStatus, dispatch, methods, tokenBalance]);
 
     const unwrapMutation = useMutation({
@@ -185,11 +193,8 @@ export const UnwrapNativeToken = ({
                                 ? { type: 'unwrap', txid: broadcast.txid, amount: broadcast.amount }
                                 : undefined
                         }
-                        onMaxClick={() =>
-                            methods.setValue('amountInput', tokenBalance, {
-                                shouldValidate: true,
-                            })
-                        }
+                        fiatToggle={fiatToggle}
+                        onMaxClick={() => setMaxAmount(tokenBalance)}
                         onSubmit={handleSubmit}
                         onPendingTxClick={openTxDetail}
                     />

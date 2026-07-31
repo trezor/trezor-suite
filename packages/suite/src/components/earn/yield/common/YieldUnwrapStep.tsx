@@ -6,7 +6,11 @@ import { Button, Column, Row } from '@trezor/components';
 
 import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
 
-import { YieldAmountCard, type YieldApproxFiat } from './YieldAmountCard';
+import {
+    YieldAmountCard,
+    type YieldAmountCardFiatToggleProps,
+    type YieldApproxFiat,
+} from './YieldAmountCard';
 import { YieldPendingTransaction } from './YieldPendingTransaction';
 
 type YieldUnwrapStepProps = {
@@ -21,6 +25,7 @@ type YieldUnwrapStepProps = {
     isSubmitDisabled?: boolean;
     warning?: ReactNode;
     pendingTransaction?: YieldPendingTransactionState;
+    fiatToggle?: YieldAmountCardFiatToggleProps;
     onPendingTxClick?: (txid: string) => void;
 };
 
@@ -36,6 +41,7 @@ export const YieldUnwrapStep = ({
     isSubmitDisabled = false,
     warning,
     pendingTransaction,
+    fiatToggle,
     onPendingTxClick,
 }: YieldUnwrapStepProps) => (
     <Column gap={16}>
@@ -54,6 +60,7 @@ export const YieldUnwrapStep = ({
                 ),
                 onMaxClick: pendingTransaction ? undefined : onMaxClick,
             }}
+            fiatToggle={pendingTransaction ? undefined : fiatToggle}
             warning={warning}
         />
 

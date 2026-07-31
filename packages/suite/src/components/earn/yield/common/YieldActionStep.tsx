@@ -10,6 +10,7 @@ import { Button, Column } from '@trezor/components';
 
 import {
     YieldAmountCard,
+    type YieldAmountCardFiatToggleProps,
     type YieldAmountCardUnitToggleProps,
     type YieldApproxFiat,
 } from './YieldAmountCard';
@@ -43,6 +44,7 @@ export type YieldActionStepProps = {
     warning?: ReactNode;
     pendingTransaction?: YieldPendingTransactionState;
     unitToggle?: YieldAmountCardUnitToggleProps;
+    fiatToggle?: YieldAmountCardFiatToggleProps;
     onMaxClick?: () => void;
     onSubmit: () => void;
     onPendingTxClick: (txid: string) => void;
@@ -58,6 +60,7 @@ export const YieldActionStep = ({
     warning,
     pendingTransaction,
     unitToggle,
+    fiatToggle,
     onMaxClick,
     onSubmit,
     onPendingTxClick,
@@ -80,6 +83,7 @@ export const YieldActionStep = ({
                     amountLabelTranslationId,
                 }}
                 unitToggle={pendingTransaction ? undefined : unitToggle}
+                fiatToggle={pendingTransaction ? undefined : fiatToggle}
                 warning={warning}
                 isDisabled={!!pendingTransaction}
             />

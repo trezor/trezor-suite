@@ -9,6 +9,7 @@ import { type EarnParams } from '@suite/router';
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
+import { getNetwork } from '@suite-common/wallet-config';
 import {
     type YieldAllowanceStatus,
     type YieldApproveModalState,
@@ -42,10 +43,13 @@ import { useDispatch, useSelector } from 'src/hooks/suite';
 
 import { useEnsureYieldDeviceSession } from './useEnsureYieldDeviceSession';
 import { useResolvedYieldFlowData } from './useResolvedYieldFlowData';
+import { useYieldFiatInput } from './useYieldFiatInput';
 import { useYieldPendingTransactionTracking } from './useYieldPendingTransactionTracking';
+import { type YieldAmountCardFiatToggleProps } from '../common/YieldAmountCard';
 import {
     type YieldApprovalAction,
     getYieldApprovalAction,
+    getYieldFiatRateToken,
     getYieldModifyAmountInput,
     getYieldUnwrapDefaultAmount,
     isAmountGreaterThan,
@@ -112,6 +116,8 @@ export type UseYieldFlowResult = {
     handleApproveSuccessTxid: (txid: string) => void;
     openPendingTransaction: (txid: string) => void;
     retryInitAllowance: () => void;
+    fiatToggle: YieldAmountCardFiatToggleProps | undefined;
+    setMaxAmount: (cryptoMax: string) => void;
     methods: UseFormReturn<YieldFlowFormValues>;
     flow: UseYieldFlowStepsResult;
 };
@@ -139,6 +145,7 @@ export const useYieldFlow = ({
         mode: 'onChange',
         defaultValues: {
             amountInput: '',
+            fiatInput: '',
         },
     });
     const methodsRef = useCurrentRef(methods);
@@ -171,6 +178,21 @@ export const useYieldFlow = ({
 
     const isSharesInput = flowType === 'redeem';
     const canToggleWithdrawUnit = isYieldWithdrawFlow(flowType) && !!token && !!receiptToken;
+
+    // Fiat entry prices the amount by the token currently shown (native for wrap/unwrap, the vault
+    // asset for deposit/withdraw, none while redeeming shares).
+    const rateToken = getYieldFiatRateToken({
+        step: session.step,
+        flowType,
+        accountSymbol: account.symbol,
+        token,
+    });
+    const { fiatToggle, setMaxAmount } = useYieldFiatInput({
+        methods,
+        symbol: rateToken?.symbol,
+        tokenAddress: rateToken?.tokenAddress,
+        decimals: token?.decimals ?? getNetwork(account.symbol).decimals,
+    });
 
     const getMaxAmount = () => {
         if (flowType === 'deposit') {
@@ -216,7 +238,7 @@ export const useYieldFlow = ({
             );
         }
 
-        methodsRef.current.reset({ amountInput: '' });
+        methodsRef.current.reset({ amountInput: '', fiatInput: '' });
 
         return () => {
             dispatch(stablecoinYieldActions.disposeSession({ flowType, flowKey }));
@@ -314,11 +336,14 @@ export const useYieldFlow = ({
 
         if (prevStep !== null && prevStep !== nextStep) {
             if (prevStep === 'wrap' && nextStep === 'approve') {
-                methodsRef.current.reset({ amountInput: session.action.amount ?? '' });
+                methodsRef.current.reset({
+                    amountInput: session.action.amount ?? '',
+                    fiatInput: '',
+                });
             }
 
             if (nextStep === 'wrap') {
-                methodsRef.current.reset({ amountInput: '' });
+                methodsRef.current.reset({ amountInput: '', fiatInput: '' });
             }
 
             if (prevStep === 'approve' && nextStep === 'action') {
@@ -331,6 +356,7 @@ export const useYieldFlow = ({
                     : actionAmount;
                 methodsRef.current.reset({
                     amountInput: cappedAmount,
+                    fiatInput: '',
                 });
             }
 
@@ -341,6 +367,7 @@ export const useYieldFlow = ({
                         actionAmount: session.action.amount,
                         maxAmount,
                     }),
+                    fiatInput: '',
                 });
             }
         }
@@ -380,7 +407,7 @@ export const useYieldFlow = ({
             unwrapDefaultAmountRef.current === null ||
             currentAmount === unwrapDefaultAmountRef.current
         ) {
-            methodsRef.current.reset({ amountInput: unwrapDefaultAmount });
+            methodsRef.current.reset({ amountInput: unwrapDefaultAmount, fiatInput: '' });
         }
 
         unwrapDefaultAmountRef.current = unwrapDefaultAmount;
@@ -675,7 +702,7 @@ export const useYieldFlow = ({
                 amount,
             }),
         );
-        methodsRef.current.reset({ amountInput: '' });
+        methodsRef.current.reset({ amountInput: '', fiatInput: '' });
     }, [
         account,
         flowKey,
@@ -872,6 +899,8 @@ export const useYieldFlow = ({
         handleApproveSuccessTxid,
         openPendingTransaction,
         retryInitAllowance: runInitAllowance,
+        fiatToggle,
+        setMaxAmount,
         methods,
         flow,
     };

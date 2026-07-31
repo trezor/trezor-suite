@@ -14,7 +14,10 @@ export type YieldFlowStepId = (typeof YIELD_FLOW_STEPS)[number];
 export type WrappedNativeStepId = Extract<YieldFlowStepId, 'wrap' | 'unwrap'>;
 
 export type YieldFlowFormValues = {
+    // Crypto/token amount — the single source of truth submitted to every yield thunk.
     amountInput: string;
+    // Display-only fiat amount, kept in sync with amountInput; never submitted.
+    fiatInput: string;
 };
 
 export type YieldFlowDisplayToken = {
