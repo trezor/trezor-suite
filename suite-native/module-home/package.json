@@ -42,7 +42,6 @@
         "@suite-native/feature-feedback": "workspace:*",
         "@suite-native/firmware": "workspace:*",
         "@suite-native/graph": "workspace:*",
-        "@suite-native/icons": "workspace:*",
         "@suite-native/intl": "workspace:*",
         "@suite-native/link": "workspace:*",
         "@suite-native/navigation": "workspace:*",
