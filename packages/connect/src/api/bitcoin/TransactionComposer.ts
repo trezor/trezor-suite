@@ -110,19 +110,13 @@ export class TransactionComposer {
             return false;
         }
 
-        // @ts-expect-error: indexing with noUncheckedIndexedAccess
-        const lastLevel: (typeof levels)[number] = levels[levels.length - 1];
-        let lastFee = new BigNumber(lastLevel.feePerUnit);
-        while (lastFee.gt(this.coinInfo.minFee)) {
-            lastFee = lastFee.minus(1);
+        const minFee = String(this.coinInfo.minFee);
+        const minFeeTx = this.compose(minFee);
+        if (minFeeTx.type === 'final') {
+            this.customFee = minFee;
+            this.composed.custom = minFeeTx;
 
-            const tx = this.compose(lastFee.toString());
-            if (tx.type === 'final') {
-                this.customFee = lastFee.toString();
-                this.composed.custom = tx;
-
-                return true;
-            }
+            return true;
         }
 
         return false;
