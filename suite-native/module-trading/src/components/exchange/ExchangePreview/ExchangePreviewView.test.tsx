@@ -47,6 +47,7 @@ describe('ExchangePreviewView', () => {
                 quote={mercuryoFixedWorstQuote}
                 txnErrorString={null}
                 onSignTransactionNavigation={jest.fn()}
+                onSlippageConfirmed={jest.fn()}
                 {...props}
             />,
             {

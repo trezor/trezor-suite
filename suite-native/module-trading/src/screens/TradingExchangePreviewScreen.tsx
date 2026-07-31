@@ -22,7 +22,6 @@ import {
 } from '@suite-native/navigation';
 import { useExchangeAnalyticsStepReport } from '@suite-native/trading-analytics';
 import { Footer } from '@suite-native/trading-provider-utils';
-import { useSlippageLifecycle } from '@suite-native/trading-slippage';
 import {
     selectExchangeSelectedReceiveAccount,
     selectExchangeSelectedSendAccount,
@@ -79,17 +78,18 @@ const TradingExchangePreviewScreenContent = ({
     const isFinalized = isFinalStatus('exchange', quote?.status);
 
     const handleConfirmTrade = useCallback(async () => {
+        const currentQuote = selectTradingExchangeSelectedQuote(store.getState());
         const addressText = getReceiveAccountAddressText(toAccount);
 
         if (!addressText) {
-            console.warn('receiveAddress is not defined', quote);
+            console.warn('receiveAddress is not defined', currentQuote);
 
             return;
         }
         try {
             const success = await confirmTrade({
                 receiveAddress: addressText,
-                trade: quote,
+                trade: currentQuote,
                 approvalFlow: false,
                 nextStep: () => {},
             });
@@ -107,9 +107,7 @@ const TradingExchangePreviewScreenContent = ({
 
             console.error('Failed to confirm trade', e);
         }
-    }, [confirmTrade, debounce, composeTradingTransaction, store, quote, toAccount]);
-
-    useSlippageLifecycle(handleConfirmTrade);
+    }, [confirmTrade, debounce, composeTradingTransaction, store, toAccount]);
 
     const onSignTransactionNavigation = useCallback(() => {
         hasRequestedTradeConfirmation.current = false;
@@ -199,6 +197,7 @@ const TradingExchangePreviewScreenContent = ({
                     quote={quote}
                     txnErrorString={errorString}
                     onSignTransactionNavigation={onSignTransactionNavigation}
+                    onSlippageConfirmed={handleConfirmTrade}
                     isApproved={isApproved}
                 />
                 <Footer />
