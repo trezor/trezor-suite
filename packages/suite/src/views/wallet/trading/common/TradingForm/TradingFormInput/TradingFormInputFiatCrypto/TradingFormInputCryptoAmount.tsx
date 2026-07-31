@@ -10,6 +10,7 @@ import {
     TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT,
     type TradingBuyFormProps,
     getNetworkDecimalsWithFallback,
+    selectTradingComposedTransactionInfo,
     selectTradingSendAccount,
     useTradingUtils,
 } from '@suite-common/trading';
@@ -56,6 +57,7 @@ const TradingFormInputCryptoAmountContent = ({
     const { getAssetDecimals } = useTradingAssetDecimals();
     const locale = useSelector(selectLanguage);
     const isNetworkReserveEnabled = useSelector(selectIsNetworkReserveEnabled);
+    const composedTransactionInfo = useSelector(selectTradingComposedTransactionInfo);
 
     const context = useTradingFormContext();
     const { amountLimits, network } = context;
@@ -94,7 +96,7 @@ const TradingFormInputCryptoAmountContent = ({
         ? getFeeInUnits({
               symbol: validationAccount.symbol,
               composedLevels: context.composedLevels,
-              selectedFee: context.composedTransactionInfo?.selectedFee,
+              selectedFee: composedTransactionInfo?.selectedFee,
           })
         : undefined;
     const cryptoInputError =

@@ -12,14 +12,12 @@ import { CardList, Column, Row, Skeleton, Text } from '@trezor/components';
 
 import { useSelector } from 'src/hooks/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
-import {
-    getCryptoQuoteAmountProps,
-    isTradingExchangeContext,
-} from 'src/utils/wallet/trading/tradingTypingUtils';
+import { isTradingExchangeContext } from 'src/utils/wallet/trading/tradingTypingUtils';
 
 import { useTradingOfferRate } from './useTradingOfferRate';
 import { TradingUtilsProvider } from '../TradingUtils/TradingUtilsProvider';
 import { TradingUtilsProviderKyc } from '../TradingUtils/TradingUtilsProviderKyc';
+import { useTradingQuoteAmounts } from '../hooks/useTradingQuoteAmounts';
 
 type TradingOffersModalItemProps = {
     quote: TradingTradeType;
@@ -44,7 +42,7 @@ const TradingOffersModalItemInner = ({ quote, onSelect }: TradingOffersModalItem
             state: { isFormLoading },
         },
     } = context;
-    const cryptoAmountProps = getCryptoQuoteAmountProps(quote, context);
+    const cryptoAmountProps = useTradingQuoteAmounts(quote, context.type);
     const formattedRate = useTradingOfferRate(quote);
     const { exchange } = quote;
     const exchangeComparatorProps = isTradingExchangeContext(context)

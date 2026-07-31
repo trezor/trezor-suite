@@ -17,7 +17,6 @@ import {
     selectTradingExchangeInfo,
     selectTradingExchangeIsFromRedirect,
     selectTradingExchangeIsLoading,
-    selectTradingExchangeQuotesRequest,
     selectTradingExchangeSelectedQuote,
     selectTradingExchangeTransactionId,
     selectTradingSendAccount,
@@ -50,7 +49,6 @@ import { useTradingReceiveAddress } from '../useTradingReceiveAddress';
 export const useTradingExchangeForm = (): TradingExchangeFormContextProps => {
     const type = 'exchange';
     const dispatch = useDispatch();
-    const quotesRequest = useSelector(selectTradingExchangeQuotesRequest);
     const isFromRedirect = useSelector(selectTradingExchangeIsFromRedirect);
     const transactionId = useSelector(selectTradingExchangeTransactionId);
     const selectedQuote = useSelector(selectTradingExchangeSelectedQuote);
@@ -244,7 +242,6 @@ export const useTradingExchangeForm = (): TradingExchangeFormContextProps => {
             helpers,
         },
         methods,
-        quotesRequest,
         isComposing,
         composedLevels,
         feeInfo,
@@ -253,11 +250,9 @@ export const useTradingExchangeForm = (): TradingExchangeFormContextProps => {
         receiveAccount,
         verifiedAddress,
         shouldSendInSats,
-        trade,
         isAmountEmpty,
         setReceiveAccount,
         composeRequest,
-        composedTransactionInfo,
         changeFeeLevel,
         setAmountLimits,
         verifyAddress,
