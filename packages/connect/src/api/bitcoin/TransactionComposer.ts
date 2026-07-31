@@ -37,19 +37,10 @@ export class TransactionComposer {
     private baseFee: number;
     private sortingStrategy: TransactionInputOutputSortingStrategy;
     private feeLevels: FeeLevel[];
-    private customFee: string | undefined;
     private feePolicy: ComposeFeePolicy | undefined;
     private changeAddress: Address | undefined;
 
     composed: { [key: string]: ComposeResult } = {};
-
-    private get levels() {
-        return this.customFee
-            ? this.feeLevels.concat([
-                  { label: 'custom' as const, feePerUnit: this.customFee, blocks: -1 },
-              ])
-            : this.feeLevels;
-    }
 
     constructor(options: Options) {
         this.account = options.account;
@@ -89,49 +80,27 @@ export class TransactionComposer {
 
     // Composing fee levels for SelectFee view in popup
     composeAllFeeLevels() {
-        const { levels } = this;
-
         if (!this.utxos.length) {
             return false;
         }
 
         this.composed = Object.fromEntries(
-            levels
+            this.feeLevels
                 .filter(({ feePerUnit }) => feePerUnit !== '0')
                 .map(({ label, feePerUnit }) => [label, this.compose(feePerUnit)]),
         );
 
         const atLeastOneValid = Object.values(this.composed).some(tx => tx.type === 'final');
-        if (atLeastOneValid) {
-            return true;
-        }
 
-        if (this.composed.custom) {
-            return false;
-        }
-
-        const minFee = String(this.coinInfo.minFee);
-        const minFeeTx = this.compose(minFee);
-        if (minFeeTx.type === 'final') {
-            this.customFee = minFee;
-            this.composed.custom = minFeeTx;
-
-            return true;
-        }
-
-        return false;
+        return atLeastOneValid;
     }
 
     composeCustomFee(fee: string) {
-        const tx = this.compose(fee);
-        this.composed.custom = tx;
-        this.customFee = tx.type === 'final' ? tx.feePerByte : fee;
-
-        return tx;
+        return this.compose(fee);
     }
 
     getFeeLevelList(): FeeLevel[] {
-        return this.levels.filter(level => this.composed[level.label]?.type === 'final');
+        return this.feeLevels.filter(level => this.composed[level.label]?.type === 'final');
     }
 
     private compose(feeRate: string): ComposeResult {
