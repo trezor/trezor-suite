@@ -2,6 +2,7 @@ import { combineReducers } from '@reduxjs/toolkit';
 
 import { extraDependenciesCommonMock } from '@suite-common/test-utils';
 import { initialWalletSettingsState } from '@suite-common/wallet-core';
+import { getTranslation } from '@suite-native/intl';
 import {
     createLightStore,
     createStaticReducer,
@@ -62,17 +63,37 @@ describe('TradeableAssetListItem', () => {
     it('should add asset to favourites on star click', () => {
         const { getByAccessibilityHint } = renderComponent({ asset: btcAsset });
 
-        fireEvent.press(getByAccessibilityHint('Add to favourites'));
+        fireEvent.press(
+            getByAccessibilityHint(
+                getTranslation('moduleTrading.tradeableAssetsSheet.favouritesAdd'),
+            ),
+        );
 
-        expect(getByAccessibilityHint('Remove from favourites')).toBeTruthy();
+        expect(
+            getByAccessibilityHint(
+                getTranslation('moduleTrading.tradeableAssetsSheet.favouritesRemove'),
+            ),
+        ).toBeTruthy();
     });
 
     it('should remove asset from favourites on star click', () => {
         const { getByAccessibilityHint } = renderComponent({ asset: btcAsset });
 
-        fireEvent.press(getByAccessibilityHint('Add to favourites'));
-        fireEvent.press(getByAccessibilityHint('Remove from favourites'));
+        fireEvent.press(
+            getByAccessibilityHint(
+                getTranslation('moduleTrading.tradeableAssetsSheet.favouritesAdd'),
+            ),
+        );
+        fireEvent.press(
+            getByAccessibilityHint(
+                getTranslation('moduleTrading.tradeableAssetsSheet.favouritesRemove'),
+            ),
+        );
 
-        expect(getByAccessibilityHint('Add to favourites')).toBeTruthy();
+        expect(
+            getByAccessibilityHint(
+                getTranslation('moduleTrading.tradeableAssetsSheet.favouritesAdd'),
+            ),
+        ).toBeTruthy();
     });
 });

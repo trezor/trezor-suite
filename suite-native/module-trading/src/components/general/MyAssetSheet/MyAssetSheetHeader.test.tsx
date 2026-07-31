@@ -35,7 +35,12 @@ describe('MyAssetSheetHeader', () => {
     it('should show filter tabs after focusing the search input', () => {
         const { getByPlaceholderText, getByText, queryByText } = renderComponent();
 
-        fireEvent(getByPlaceholderText(/Search/), 'focus');
+        fireEvent(
+            getByPlaceholderText(
+                getTranslation('moduleTrading.myAssetSheet.searchInputPlaceholder'),
+            ),
+            'focus',
+        );
 
         expect(getByText(getTranslation('moduleTrading.providerSheet.filters.all'))).toBeTruthy();
         expect(queryByText(getTranslation('moduleTrading.myAssetSheet.title'))).toBeNull();
@@ -44,7 +49,12 @@ describe('MyAssetSheetHeader', () => {
     it('should display cancel button after focusing the search input', () => {
         const { getByPlaceholderText, getByText } = renderComponent();
 
-        fireEvent(getByPlaceholderText(/Search/), 'focus');
+        fireEvent(
+            getByPlaceholderText(
+                getTranslation('moduleTrading.myAssetSheet.searchInputPlaceholder'),
+            ),
+            'focus',
+        );
 
         expect(getByText(getTranslation('generic.buttons.cancel'))).toBeTruthy();
     });
@@ -68,7 +78,12 @@ describe('MyAssetSheetHeader', () => {
         const onFilterChange = jest.fn();
         const { getByPlaceholderText } = renderComponent({ onFilterChange });
 
-        fireEvent.changeText(getByPlaceholderText(/Search/), 'Bitcoin');
+        fireEvent.changeText(
+            getByPlaceholderText(
+                getTranslation('moduleTrading.myAssetSheet.searchInputPlaceholder'),
+            ),
+            'Bitcoin',
+        );
 
         expect(onFilterChange).toHaveBeenCalledWith('Bitcoin');
     });
@@ -77,7 +92,12 @@ describe('MyAssetSheetHeader', () => {
         const onSelectedNetworkFilter = jest.fn();
         const { getByPlaceholderText, getByText } = renderComponent({ onSelectedNetworkFilter });
 
-        fireEvent(getByPlaceholderText(/Search/), 'focus');
+        fireEvent(
+            getByPlaceholderText(
+                getTranslation('moduleTrading.myAssetSheet.searchInputPlaceholder'),
+            ),
+            'focus',
+        );
         fireEvent.press(getByText('Bitcoin'));
 
         expect(onSelectedNetworkFilter).toHaveBeenCalledWith('btc');
