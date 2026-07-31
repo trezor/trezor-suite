@@ -4,12 +4,6 @@ import { ScreenHeader, useNavigationRemoveActionInterceptor } from '@suite-nativ
 import { useExitAlert } from '../hooks/useExitAlert';
 import { useNavigateToNextScreenAfterFirmwareInstallation } from '../hooks/useNavigateToNextScreenAfterFirmwareInstallation';
 
-const FirmwareInstallationScreenHeader = ({
-    handleExitButtonPress,
-}: {
-    handleExitButtonPress: () => void;
-}) => <ScreenHeader closeActionType="close" closeAction={handleExitButtonPress} />;
-
 export const FirmwareInstallationScreen = () => {
     const { handleExitButtonPress } = useExitAlert();
     const { navigateToNextScreenAfterFirmwareInstallation } =
@@ -20,7 +14,7 @@ export const FirmwareInstallationScreen = () => {
     return (
         <FirmwareInstallationScreenContent
             customHeader={
-                <FirmwareInstallationScreenHeader handleExitButtonPress={handleExitButtonPress} />
+                <ScreenHeader closeActionType="close" closeAction={handleExitButtonPress} />
             }
             onCancelAction={handleExitButtonPress}
             onFirmwareInstallationSuccess={navigateToNextScreenAfterFirmwareInstallation}
