@@ -175,11 +175,7 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
         });
 
         const levels = feeLevels.map(level => {
-            composer.composeCustomFee(level.feePerUnit);
-            const { composed } = composer;
-            // @ts-expect-error: noUncheckedIndexedAccess
-            const composedCustom: ComposeResult = composed['custom'];
-            const tx = { ...composedCustom }; // needs to spread otherwise flow has a problem with ComposeResult vs PrecomposedTransaction (max could be undefined)
+            const tx = composer.composeCustomFee(level.feePerUnit);
             if (tx.type === 'final') {
                 return {
                     ...tx,
@@ -267,18 +263,10 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
             return this.interactiveFlow(context);
         }
 
-        let composedKey;
-        if (resp.payload.type === 'select-fee-custom') {
-            // recompose custom fee level with requested value
-            composer.composeCustomFee(resp.payload.value);
-            composedKey = 'custom' as const;
-        } else {
-            composedKey = resp.payload.value;
-        }
-
-        const { composed } = composer;
-        // @ts-expect-error: noUncheckedIndexedAccess
-        const tx: ComposeResult = composed[composedKey];
+        const tx =
+            resp.payload.type === 'select-fee-custom'
+                ? composer.composeCustomFee(resp.payload.value) // recompose custom fee level with requested value
+                : composer.composed[resp.payload.value]!;
 
         const response = await this._sign(tx, context.sendCoreMessage);
 

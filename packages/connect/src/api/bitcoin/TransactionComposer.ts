@@ -126,6 +126,8 @@ export class TransactionComposer {
         const tx = this.compose(fee);
         this.composed.custom = tx;
         this.customFee = tx.type === 'final' ? tx.feePerByte : fee;
+
+        return tx;
     }
 
     getFeeLevelList(): FeeLevel[] {
