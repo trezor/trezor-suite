@@ -69,7 +69,6 @@ export const ReceiveAddressDetails = ({
                         qrCodeSize={qrCodeSize}
                         paddingHorizontal="sp16"
                         paddingVertical="sp16"
-                        shouldUseStandardCenterIconBackground
                         centerIcon={
                             <TokenIcon
                                 symbol={networkSymbol}
