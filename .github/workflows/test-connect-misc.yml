@@ -17,7 +17,7 @@ on:
       - "scripts/ci/helpers.ts"
       - "scripts/ci/pack-packages.ts"
       - "scripts/publish/**"
-      - "packages/connect/e2e/test-connect-local.sh"
+      - "packages/connect-install-smoke/**"
       - ".github/workflows/test-connect-misc.yml"
   workflow_dispatch:
 
@@ -42,18 +42,18 @@ jobs:
           node-version-file: ".nvmrc"
 
       - name: Test npm install (beta)
-        run: ./packages/connect/e2e/test-npm-install.sh beta
+        run: ./packages/connect-install-smoke/test-npm-install.sh beta
 
       - name: Test npm install (latest)
-        run: ./packages/connect/e2e/test-npm-install.sh latest
+        run: ./packages/connect-install-smoke/test-npm-install.sh latest
         if: always()
 
       - name: Test yarn install (beta)
-        run: ./packages/connect/e2e/test-yarn-install.sh beta
+        run: ./packages/connect-install-smoke/test-yarn-install.sh beta
         if: always()
 
       - name: Test yarn install (latest)
-        run: ./packages/connect/e2e/test-yarn-install.sh latest
+        run: ./packages/connect-install-smoke/test-yarn-install.sh latest
         if: always()
 
   install-connect-local:
@@ -91,4 +91,4 @@ jobs:
           yarn exec attw --pack ./tmp/packed-packages/trezor-connect-webextension.tgz --profile esm-only
 
       - name: Test local install
-        run: ./packages/connect/e2e/test-connect-local.sh
+        run: ./packages/connect-install-smoke/test-connect-local.sh

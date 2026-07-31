@@ -1,0 +1,13 @@
+{
+    "rootPackage": "@trezor/connect",
+    "main": "index.mjs",
+    "runtimeEntry": "index.mjs",
+    "extraDependencies": {
+        "always": {
+            "tslib": "^2.8.1"
+        },
+        "withTypeCheck": {
+            "typescript": "^5.8.3"
+        }
+    }
+}

@@ -16327,6 +16327,14 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@trezor/connect-install-smoke@workspace:packages/connect-install-smoke":
+  version: 0.0.0-use.local
+  resolution: "@trezor/connect-install-smoke@workspace:packages/connect-install-smoke"
+  dependencies:
+    "@trezor/eslint": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
 "@trezor/connect-mobile@workspace:*, @trezor/connect-mobile@workspace:^, @trezor/connect-mobile@workspace:packages/connect-mobile":
   version: 0.0.0-use.local
   resolution: "@trezor/connect-mobile@workspace:packages/connect-mobile"
