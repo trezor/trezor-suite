@@ -7,6 +7,16 @@ import { normalizePath, walkDirectory } from './fileSystem';
 describe(walkDirectory.name, () => {
     let rootDirectory: string;
 
+    const generateMockFileSystem = () => {
+        const nestedDirectory = join(rootDirectory, 'nested');
+        const excludedDirectory = join(rootDirectory, 'excluded');
+        mkdirSync(nestedDirectory);
+        mkdirSync(excludedDirectory);
+        writeFileSync(join(rootDirectory, 'root.ts'), '');
+        writeFileSync(join(nestedDirectory, 'nested.ts'), '');
+        writeFileSync(join(excludedDirectory, 'excluded.ts'), '');
+    };
+
     beforeEach(() => {
         rootDirectory = mkdtempSync(join(tmpdir(), 'walk-directory-'));
     });
@@ -16,14 +26,7 @@ describe(walkDirectory.name, () => {
     });
 
     it('walks files recursively and skips excluded directories', () => {
-        const nestedDirectory = join(rootDirectory, 'nested');
-        const excludedDirectory = join(rootDirectory, 'excluded');
-        mkdirSync(nestedDirectory);
-        mkdirSync(excludedDirectory);
-        writeFileSync(join(rootDirectory, 'root.ts'), '');
-        writeFileSync(join(nestedDirectory, 'nested.ts'), '');
-        writeFileSync(join(excludedDirectory, 'excluded.ts'), '');
-
+        generateMockFileSystem();
         const files = [
             ...walkDirectory(rootDirectory, {
                 shouldEnterDirectory: ({ entry }) => entry.name !== 'excluded',
@@ -37,15 +40,23 @@ describe(walkDirectory.name, () => {
     });
 
     it('filters yielded files without affecting directory traversal', () => {
-        const nestedDirectory = join(rootDirectory, 'nested');
-        mkdirSync(nestedDirectory);
-        writeFileSync(join(rootDirectory, 'root.ts'), '');
-        writeFileSync(join(rootDirectory, 'root.md'), '');
-        writeFileSync(join(nestedDirectory, 'nested.ts'), '');
-        writeFileSync(join(nestedDirectory, 'nested.md'), '');
-
+        generateMockFileSystem();
         const files = [
             ...walkDirectory(rootDirectory, {
+                fileFilter: ({ entry }) => entry.name.endsWith('.ts'),
+            }),
+        ]
+            .map(({ path }) => normalizePath(relative(rootDirectory, path)))
+            .sort();
+
+        expect(files).toEqual(['excluded/excluded.ts', 'nested/nested.ts', 'root.ts']);
+    });
+
+    it('combines all options', () => {
+        generateMockFileSystem();
+        const files = [
+            ...walkDirectory(rootDirectory, {
+                shouldEnterDirectory: ({ entry }) => entry.name !== 'excluded',
                 fileFilter: ({ entry }) => entry.name.endsWith('.ts'),
             }),
         ]
