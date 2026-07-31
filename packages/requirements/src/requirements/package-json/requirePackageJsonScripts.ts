@@ -23,16 +23,15 @@ const IGNORED_TEST_FILE_DIRECTORIES = new Set([
 ]);
 
 const hasUnitTestFile = (directoryPath: string): boolean => {
-    for (const { entry } of walkDirectory(directoryPath, {
+    const walkDirectoryGenerator = walkDirectory(directoryPath, {
         shouldEnterDirectory: ({ entry: directory }) =>
             !IGNORED_TEST_FILE_DIRECTORIES.has(directory.name),
-    })) {
-        if (entry.isFile() && entry.name.endsWith('.test.ts')) {
-            return true;
-        }
-    }
+        fileFilter: ({ entry }) => entry.isFile() && entry.name.endsWith('.test.ts'),
+    });
+    // generator yielded no items, equivalent to Array.length === 0
+    const isEmpty = walkDirectoryGenerator.next().done === true;
 
-    return false;
+    return !isEmpty;
 };
 
 const REQUIRED_SCRIPTS: Record<string, RequiredScriptConfig> = {

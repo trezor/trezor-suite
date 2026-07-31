@@ -53,14 +53,14 @@ export const verifyTestColocation = (filePaths: ReadonlyArray<string>): Readonly
 const listWorkspaceTestFiles = (repoRoot: string, workspaceDir: string): ReadonlyArray<string> => {
     const testFiles: string[] = [];
 
-    for (const { entry, path } of walkDirectory(workspaceDir, {
+    const walkDirectoryGenerator = walkDirectory(workspaceDir, {
         shouldEnterDirectory: ({ entry: directory }) =>
             !IGNORED_DIRECTORY_NAMES.has(directory.name),
-    })) {
-        if ((!entry.isFile() && !entry.isSymbolicLink()) || !isTestFile(entry.name)) {
-            continue;
-        }
+        fileFilter: ({ entry }) =>
+            (entry.isFile() || entry.isSymbolicLink()) && isTestFile(entry.name),
+    });
 
+    for (const { path } of walkDirectoryGenerator) {
         testFiles.push(normalizePath(relative(repoRoot, path)));
     }
 

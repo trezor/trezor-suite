@@ -1,7 +1,7 @@
 import { existsSync, readFileSync, statSync } from 'node:fs';
 import { dirname, join, relative } from 'node:path';
 
-import { normalizePath, walkDirectory } from '../../fileSystem';
+import { type WalkDirectoryOptions, normalizePath, walkDirectory } from '../../fileSystem';
 import { listAllWorkspaces } from '../../workspaces';
 import type { Requirement } from '../Requirement';
 
@@ -60,10 +60,10 @@ const KNOWN_DECLARATION_SIZE_VIOLATIONS = new Set<string>([
 
 const isDeclarationFile = (fileName: string) => /\.d\.[cm]?ts$/.test(fileName);
 
+const isDeclarationFileFilter: WalkDirectoryOptions['fileFilter'] = ({ entry }) =>
+    entry.isFile() && isDeclarationFile(entry.name);
 const listDeclarationFiles = (directory: string): ReadonlyArray<string> =>
-    [...walkDirectory(directory)]
-        .filter(({ entry }) => entry.isFile() && isDeclarationFile(entry.name))
-        .map(({ path }) => path);
+    [...walkDirectory(directory, { fileFilter: isDeclarationFileFilter })].map(({ path }) => path);
 
 const formatSize = (sizeBytes: number) => {
     if (sizeBytes < 1024) return `${sizeBytes} B`;

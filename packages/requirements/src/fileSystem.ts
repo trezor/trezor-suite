@@ -7,7 +7,10 @@ export type WalkDirectoryEntry = {
 };
 
 export type WalkDirectoryOptions = {
+    /** Filter callback to crawl or exclude directories based on arbitrary condition. */
     readonly shouldEnterDirectory?: (entry: WalkDirectoryEntry) => boolean;
+    /** Filter callback to keep or exclude files based on arbitrary condition. */
+    readonly fileFilter?: (entry: WalkDirectoryEntry) => boolean;
 };
 
 export function* walkDirectory(
@@ -27,6 +30,11 @@ export function* walkDirectory(
 
             continue;
         }
+
+        // Technically, `shouldEnterDirectory` and `fileFilter` could be unified, as they both work over the Dirent abstraction,
+        // so one filter could do both. But in practice, different conditions are used to exclude directories vs. filter files.
+        // So it'd be impractical to use (would have to use isFile, isDirectory everywhere).
+        if (options.fileFilter?.(walkedEntry) === false) continue;
 
         yield walkedEntry;
     }
