@@ -176,7 +176,7 @@ export const selectShowRediscoverButton = (
 };
 
 /**
- * Whether re-discovery is needed (accounts missing or failed).
+ * Whether re-discovery is needed (accounts missing).
  * Warning: this can be slightly expensive computation for large wallets. It isn't viable for memoization, because
  * it depends on every account (with frequent account updates, it would fire too often to be practical).
  */
