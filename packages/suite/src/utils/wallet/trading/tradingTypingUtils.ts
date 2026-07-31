@@ -12,11 +12,7 @@ import {
 } from '@suite-common/trading';
 import { type BaseCurrencyOption } from '@suite-common/wallet-types';
 
-import {
-    type TradingGetCryptoQuoteAmountProps,
-    type TradingGetFiatCurrenciesProps,
-    type TradingGetProvidersInfoProps,
-} from 'src/types/trading/trading';
+import { type TradingGetCryptoQuoteAmountProps } from 'src/types/trading/trading';
 import {
     type TradingFormContextValues,
     type TradingFormMapProps,
@@ -88,39 +84,6 @@ export const getCryptoQuoteAmountProps = (
         receiveCurrency: quote?.receive,
         networkFee,
     };
-};
-
-export const getProvidersInfoProps = (
-    context: TradingFormContextValues<TradingType>,
-): TradingGetProvidersInfoProps => {
-    if (isTradingBuyContext(context)) {
-        return context.buyInfo?.providerInfos;
-    }
-
-    if (isTradingSellContext(context)) {
-        return context.sellInfo?.providerInfos;
-    }
-
-    return context.exchangeInfo?.providerInfos;
-};
-
-export const getFiatCurrenciesProps = (
-    context: TradingFormContextValues<TradingType>,
-): TradingGetFiatCurrenciesProps | null => {
-    if (isTradingBuyContext(context)) {
-        return {
-            supportedFiatCurrencies: context.buyInfo?.supportedFiatCurrencies,
-            defaultAmountsOfFiatCurrencies: context.buyInfo?.buyInfo.defaultAmountsOfFiatCurrencies,
-        };
-    }
-
-    if (isTradingSellContext(context)) {
-        return {
-            supportedFiatCurrencies: context.sellInfo?.supportedFiatCurrencies,
-        };
-    }
-
-    return null;
 };
 
 export const getSelectedCryptoId = (

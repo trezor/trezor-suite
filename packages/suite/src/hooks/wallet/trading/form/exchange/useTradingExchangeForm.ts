@@ -244,7 +244,6 @@ export const useTradingExchangeForm = (): TradingExchangeFormContextProps => {
             helpers,
         },
         methods,
-        exchangeInfo,
         quotesRequest,
         isComposing,
         composedLevels,

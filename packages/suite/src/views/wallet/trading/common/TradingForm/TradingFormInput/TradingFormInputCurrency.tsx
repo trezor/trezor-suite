@@ -12,17 +12,18 @@ import {
     type TradingFiatCurrencyOption,
     buildTradingFiatOption,
     isTradingFiatCurrencyOption,
+    selectTradingSupportedFiatCurrenciesByTradeType,
 } from '@suite-common/trading';
 import { buildCurrencyOptions, buildCurrencyShortOption } from '@suite-common/wallet-utils';
 import { isFiatBaseCurrencyCode } from '@trezor/blockchain-link-types';
 
+import { useSelector } from 'src/hooks/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import {
     type TradingAllFormProps,
     type TradingFormInputCurrencyProps,
 } from 'src/types/trading/tradingForm';
 import {
-    getFiatCurrenciesProps,
     getSelectedTradingCurrency,
     isTradingBuyContext,
     isTradingExchangeContext,
@@ -39,8 +40,10 @@ export const TradingFormInputCurrency = ({
         ? TRADING_FORM_FIAT_CURRENCY_SELECT
         : TRADING_FORM_OUTPUT_CURRENCY;
     const currentCurrency = getSelectedTradingCurrency(context);
-    const fiatCurrencies = getFiatCurrenciesProps(context);
-    const currencies = fiatCurrencies?.supportedFiatCurrencies ?? null;
+    const supportedFiatCurrencies = useSelector(reduxState =>
+        selectTradingSupportedFiatCurrenciesByTradeType(reduxState, context.type),
+    );
+    const currencies = supportedFiatCurrencies ?? null;
     const selectedBaseCurrencyValue = isFiatBaseCurrencyCode(currentCurrency.value)
         ? currentCurrency.value
         : '';

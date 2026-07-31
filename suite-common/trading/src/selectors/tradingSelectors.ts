@@ -326,6 +326,37 @@ export const selectTradingExchangeProviders = (state: TradingRootState) =>
 export const selectTradingSellProviders = (state: TradingRootState) =>
     selectTradingSellInfo(state)?.providerInfos;
 
+export const selectTradingProvidersByTradeType = (state: TradingRootState, type: TradingType) => {
+    switch (type) {
+        case 'buy':
+            return selectTradingBuyProviders(state);
+        case 'exchange':
+            return selectTradingExchangeProviders(state);
+        case 'sell':
+            return selectTradingSellProviders(state);
+
+        default:
+            return exhaustive(type);
+    }
+};
+
+export const selectTradingSupportedFiatCurrenciesByTradeType = (
+    state: TradingRootState,
+    type: TradingType,
+): Set<FiatCurrencyCode> | undefined => {
+    switch (type) {
+        case 'buy':
+            return selectTradingBuyInfo(state)?.supportedFiatCurrencies;
+        case 'sell':
+            return selectTradingSellInfo(state)?.supportedFiatCurrencies;
+        case 'exchange':
+            return undefined;
+
+        default:
+            return exhaustive(type);
+    }
+};
+
 export const selectTradingProviderByNameAndTradeType = (
     state: TradingRootState,
     name: string | undefined,
@@ -335,17 +366,7 @@ export const selectTradingProviderByNameAndTradeType = (
         return undefined;
     }
 
-    switch (type) {
-        case 'buy':
-            return selectTradingBuyProviders(state)?.[name];
-        case 'exchange':
-            return selectTradingExchangeProviders(state)?.[name];
-        case 'sell':
-            return selectTradingSellProviders(state)?.[name];
-
-        default:
-            return exhaustive(type);
-    }
+    return selectTradingProvidersByTradeType(state, type)?.[name];
 };
 
 export const selectTradingProviderKycPolicy = (

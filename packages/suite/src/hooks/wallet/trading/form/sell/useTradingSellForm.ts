@@ -174,7 +174,6 @@ export const useTradingSellForm = (): TradingSellFormContextProps => {
         },
         ...methods,
         methods,
-        sellInfo,
         quotesRequest,
         composedLevels,
         composedTransactionInfo,
