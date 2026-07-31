@@ -2,14 +2,10 @@ import { useCallback, useEffect, useState } from 'react';
 
 import { type EarnParams } from '@suite/router';
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
-import { getNetwork, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
-import {
-    type YieldFlowCompleteValue,
-    type YieldWithdrawFlowType,
-    getConvertedOutputTokenBalanceToInputTokenAmount,
-} from '@suite-common/wallet-core';
+import { type YieldFlowCompleteValue, type YieldWithdrawFlowType } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 
+import { getYieldWithdrawCompletedValues } from './getYieldWithdrawCompletedValues';
 import { type YieldFlowContextValues, useYieldFlow } from '../hooks/useYieldFlow';
 
 type UseYieldWithdrawProps = {
@@ -21,7 +17,7 @@ type UseYieldWithdrawProps = {
 export type YieldWithdrawContextValues = Omit<YieldFlowContextValues, 'flowType'> & {
     flowType: YieldWithdrawFlowType;
     completedInput: YieldFlowCompleteValue;
-    completedOutput?: YieldFlowCompleteValue;
+    completedOutput: YieldFlowCompleteValue;
     toggleWithdrawFlowType: () => void;
     selectMaxWithdraw: () => void;
     isMaxWithdrawInfoVisible: boolean;
@@ -94,37 +90,15 @@ export const useYieldWithdraw = ({
     }
 
     const { completedAmount, unwrappedAmount } = flowResult;
-    const isSharesInput = flowType === 'redeem';
-    const pricePerShareState = vault.state?.pricePerShareState;
-    const completedInput = {
-        token: isSharesInput ? receiptToken : token,
-        amount: completedAmount,
-    };
-    let completedOutput: YieldFlowCompleteValue | undefined;
-
-    if (unwrappedAmount !== null) {
-        completedOutput = {
-            token: {
-                networkSymbol: account.symbol,
-                symbol: getNetworkDisplaySymbol(account.symbol),
-                decimals: getNetwork(account.symbol).decimals,
-            },
-            amount: unwrappedAmount,
-        };
-    } else if (isSharesInput) {
-        completedOutput = {
-            token,
-            amount: pricePerShareState
-                ? getConvertedOutputTokenBalanceToInputTokenAmount({
-                      networkSymbol: token.networkSymbol,
-                      token,
-                      outputToken: receiptToken,
-                      outputTokenBalance: completedAmount,
-                      pricePerShareState,
-                  })
-                : completedAmount,
-        };
-    }
+    const { input: completedInput, output: completedOutput } = getYieldWithdrawCompletedValues({
+        networkSymbol: account.symbol,
+        flowType,
+        completedAmount,
+        unwrappedAmount,
+        token,
+        receiptToken,
+        pricePerShareState: vault.state?.pricePerShareState,
+    });
 
     return {
         ...flowResult,
