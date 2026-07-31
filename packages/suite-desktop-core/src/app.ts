@@ -126,7 +126,6 @@ const init = async () => {
     const logger = new Logger();
 
     global.logger = logger;
-    logger.level = isDevEnv ? 'debug' : 'info';
 
     logger.info('main', `Application starting`);
 
