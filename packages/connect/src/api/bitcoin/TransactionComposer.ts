@@ -4,6 +4,7 @@ import type { Address } from '@trezor/blockchain-link-types';
 import type {
     BitcoinNetworkInfo,
     ComposeResult,
+    ComposeResultFinal,
     ComposeUtxo,
     ComposedInputs,
     DiscoveryAccount,
@@ -25,7 +26,6 @@ type Options = {
     outputs: ComposeOutput[];
     coinInfo: BitcoinNetworkInfo;
     baseFee?: number;
-    feeLevels: FeeLevel[];
     sortingStrategy: TransactionInputOutputSortingStrategy;
 };
 
@@ -36,11 +36,8 @@ export class TransactionComposer {
     private coinInfo: BitcoinNetworkInfo;
     private baseFee: number;
     private sortingStrategy: TransactionInputOutputSortingStrategy;
-    private feeLevels: FeeLevel[];
     private feePolicy: ComposeFeePolicy | undefined;
     private changeAddress: Address | undefined;
-
-    composed: { [key: string]: ComposeResult } = {};
 
     constructor(options: Options) {
         this.account = options.account;
@@ -48,7 +45,6 @@ export class TransactionComposer {
         this.coinInfo = options.coinInfo;
         this.baseFee = options.baseFee || 0;
         this.sortingStrategy = options.sortingStrategy;
-        this.feeLevels = options.feeLevels;
 
         const { addresses } = options.account;
         const allAddresses = new Set(
@@ -79,28 +75,24 @@ export class TransactionComposer {
     }
 
     // Composing fee levels for SelectFee view in popup
-    composeAllFeeLevels() {
-        if (!this.utxos.length) {
-            return false;
+    composeAllFeeLevels(feeLevels: FeeLevel[]) {
+        const requestedLevels = this.utxos.length ? feeLevels : [];
+        const levels = [];
+        const transactions = new Map<FeeLevel['label'], ComposeResultFinal>();
+
+        for (const level of requestedLevels) {
+            if (level.feePerUnit === '0') continue;
+            const tx = this.compose(level.feePerUnit);
+            if (tx.type !== 'final') continue;
+            levels.push(level);
+            transactions.set(level.label, tx);
         }
 
-        this.composed = Object.fromEntries(
-            this.feeLevels
-                .filter(({ feePerUnit }) => feePerUnit !== '0')
-                .map(({ label, feePerUnit }) => [label, this.compose(feePerUnit)]),
-        );
-
-        const atLeastOneValid = Object.values(this.composed).some(tx => tx.type === 'final');
-
-        return atLeastOneValid;
+        return { levels, transactions };
     }
 
     composeCustomFee(fee: string) {
         return this.compose(fee);
-    }
-
-    getFeeLevelList(): FeeLevel[] {
-        return this.feeLevels.filter(level => this.composed[level.label]?.type === 'final');
     }
 
     private compose(feeRate: string): ComposeResult {
