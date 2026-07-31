@@ -11,7 +11,6 @@ import { useTranslate } from '@suite-native/intl';
 import { QRCode } from '@suite-native/qr-code';
 import type { StaticSessionId } from '@trezor/connect';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
-import { colorVariants } from '@trezor/theme';
 
 type ReceiveAddressDetailsProps = {
     address: string;
@@ -67,10 +66,10 @@ export const ReceiveAddressDetails = ({
                 <Card noPadding style={applyStyle(cardStyle)}>
                     <QRCode
                         data={address}
-                        centerIconBackgroundColor={colorVariants.standard.surfaceFillRaised}
                         qrCodeSize={qrCodeSize}
                         paddingHorizontal="sp16"
                         paddingVertical="sp16"
+                        shouldUseStandardCenterIconBackground
                         centerIcon={
                             <TokenIcon
                                 symbol={networkSymbol}

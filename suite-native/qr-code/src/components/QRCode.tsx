@@ -4,7 +4,7 @@ import ReactQRCode from 'react-qr-code';
 
 import { Box, nativeSpacingToNumber } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
-import { type CSSColor, type NativeSpacing, colorVariants } from '@trezor/theme';
+import { type NativeSpacing, colorVariants } from '@trezor/theme';
 
 type QRCodeProps = {
     data: string;
@@ -12,7 +12,7 @@ type QRCodeProps = {
     paddingHorizontal?: NativeSpacing;
     paddingVertical?: NativeSpacing;
     centerIcon?: ReactElement;
-    centerIconBackgroundColor?: CSSColor;
+    shouldUseStandardCenterIconBackground?: boolean;
 };
 
 const SCREEN_WIDTH = Dimensions.get('screen').width;
@@ -53,16 +53,18 @@ const qrCodeCenterIconWrapperStyle = prepareNativeStyle(() => ({
     justifyContent: 'center',
 }));
 
-const qrCodeCenterIconStyle = prepareNativeStyle<{ backgroundColor?: CSSColor }>(
-    (utils, { backgroundColor }) => ({
-        maxWidth: QR_CENTER_ICON_MAX_RATIO,
-        maxHeight: QR_CENTER_ICON_MAX_RATIO,
-        padding: QR_CENTER_ICON_PADDING,
-        borderRadius: utils.borders.radii.round,
-        overflow: 'hidden',
-        backgroundColor: backgroundColor ?? utils.colors.surfaceFillRaised,
-    }),
-);
+const qrCodeCenterIconStyle = prepareNativeStyle<{
+    shouldUseStandardCenterIconBackground?: boolean;
+}>((utils, { shouldUseStandardCenterIconBackground }) => ({
+    maxWidth: QR_CENTER_ICON_MAX_RATIO,
+    maxHeight: QR_CENTER_ICON_MAX_RATIO,
+    padding: QR_CENTER_ICON_PADDING,
+    borderRadius: utils.borders.radii.round,
+    overflow: 'hidden',
+    backgroundColor: shouldUseStandardCenterIconBackground
+        ? colorVariants.standard.surfaceFillRaised
+        : utils.colors.surfaceFillRaised,
+}));
 
 export const QRCode = ({
     data,
@@ -70,7 +72,7 @@ export const QRCode = ({
     paddingHorizontal,
     paddingVertical,
     centerIcon,
-    centerIconBackgroundColor,
+    shouldUseStandardCenterIconBackground,
 }: QRCodeProps) => {
     const { applyStyle } = useNativeStyles();
 
@@ -98,7 +100,7 @@ export const QRCode = ({
                     <View pointerEvents="none" style={applyStyle(qrCodeCenterIconWrapperStyle)}>
                         <View
                             style={applyStyle(qrCodeCenterIconStyle, {
-                                backgroundColor: centerIconBackgroundColor,
+                                shouldUseStandardCenterIconBackground,
                             })}
                         >
                             {centerIcon}
