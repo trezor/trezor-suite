@@ -15,4 +15,4 @@ export { isTaprootAddress } from './isTaprootAddress';
 
 export * from './evmChecksumUtils';
 export * from './getFirstFreshAddress';
-export { getUsedAddressesList } from './getUsedAddressesList';
+export * from './getReceiveAddressHistory';

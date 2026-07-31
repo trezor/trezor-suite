@@ -12,7 +12,7 @@ import { type ReceiveStackParamList, type ReceiveStackRoutes } from '@suite-nati
 import { ReceiveAddressContent } from '../components/ReceiveAddressContent';
 import { ReceiveAddressLoader } from '../components/ReceiveAddressLoader';
 
-export const ReceiveAddressScreen = () => {
+export const ReceiveFreshAddressScreen = () => {
     const {
         params: {
             accountKey: routeAccountKey,

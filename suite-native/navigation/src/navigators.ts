@@ -176,6 +176,13 @@ export type ReceiveStackParamList = {
     [ReceiveStackRoutes.ReceiveAddressVerification]: {
         source: ReceiveAddressVerificationSource;
     };
+    [ReceiveStackRoutes.ReceiveAddressList]: {
+        accountKey: AccountKey;
+    };
+    [ReceiveStackRoutes.ReceiveAddressDetail]: {
+        accountKey: AccountKey;
+        addressPath: string;
+    };
 };
 
 export type SendStackParamList = {

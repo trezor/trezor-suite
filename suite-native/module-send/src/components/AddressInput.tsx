@@ -16,7 +16,6 @@ import { formInputsMaxLength } from '@suite-common/validators';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
-    type TransactionsRootState,
     selectAccountByKey,
     selectAccountNetworkSymbol,
     selectVisibleDeviceAccounts,
@@ -86,9 +85,8 @@ export const AddressInput = ({ index, accountKey, onQrNetworkMismatch }: Address
 
     const { checkSolAssociatedTokenAddress, isSolATA } = useSolAssociatedTokenAddress();
 
-    const freshAccountAddress = useSelector(
-        (state: NativeAccountsRootState & TransactionsRootState) =>
-            selectFreshAccountAddress(state, accountKey),
+    const freshAccountAddress = useSelector((state: NativeAccountsRootState) =>
+        selectFreshAccountAddress(state, accountKey),
     );
 
     const { wasAddressChecksummed } = useAddressValidationAlerts({ inputIndex: index });

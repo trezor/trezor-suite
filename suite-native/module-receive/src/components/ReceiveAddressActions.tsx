@@ -19,10 +19,7 @@ type ReceiveAddressActionsProps = {
     onVerifyAddress: () => Promise<void>;
 };
 
-type NavigationProp = StackNavigationProps<
-    ReceiveStackParamList,
-    ReceiveStackRoutes.ReceiveAddress
->;
+type NavigationProp = StackNavigationProps<ReceiveStackParamList, ReceiveStackRoutes>;
 
 export const ReceiveAddressActions = ({ address, onVerifyAddress }: ReceiveAddressActionsProps) => {
     const copyToClipboard = useCopyToClipboard();

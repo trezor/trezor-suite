@@ -113,6 +113,7 @@ const usedIcons = [
     'lifebuoy',
     'lightbulb',
     'lightning',
+    'listBullets',
     'link',
     'linkBreak',
     'lock',
