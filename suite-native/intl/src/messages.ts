@@ -4156,6 +4156,14 @@ export const messages = {
                 'Only the most recent 100 transactions per token are shown. For the full history, view on the blockchain explorer.',
             confirmButton: 'Got it',
         },
+        stablecoinYieldPromoBanner: {
+            title: 'Earn on your stablecoins',
+            button: 'Learn more',
+        },
+        trezorSafe7PromoBanner: {
+            title: 'Introducing Trezor Safe 7',
+            button: 'Learn more',
+        },
     },
     atoms: {
         animatedDoubleView: {

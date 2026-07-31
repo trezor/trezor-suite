@@ -11,7 +11,21 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
+        "@react-navigation/native": "7.1.28",
         "@reduxjs/toolkit": "2.12.0",
-        "@trezor/connect": "workspace:*"
+        "@suite-common/analytics": "workspace:*",
+        "@suite-common/dependency-injection": "workspace:*",
+        "@suite-native/analytics": "workspace:*",
+        "@suite-native/atoms": "workspace:*",
+        "@suite-native/icons": "workspace:*",
+        "@suite-native/intl": "workspace:*",
+        "@suite-native/link": "workspace:*",
+        "@suite-native/navigation": "workspace:*",
+        "@trezor/connect": "workspace:*",
+        "@trezor/styles-native": "workspace:*",
+        "react": "19.2.3",
+        "react-native": "0.85.3",
+        "react-native-reanimated": "4.3.1",
+        "react-redux": "9.3.0"
     }
 }
