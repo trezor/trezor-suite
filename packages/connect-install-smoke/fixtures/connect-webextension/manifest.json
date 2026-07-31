@@ -1,0 +1,10 @@
+{
+    "rootPackage": "@trezor/connect-webextension",
+    "main": "index.mjs",
+    "runtimeEntry": "index.mjs",
+    "extraDependencies": {
+        "always": {
+            "tslib": "^2.8.1"
+        }
+    }
+}
