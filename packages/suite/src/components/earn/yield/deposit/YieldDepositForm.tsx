@@ -3,7 +3,12 @@ import { Translation } from '@suite/intl';
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
-import { getYieldFlowStepSequence, splitYieldPendingTransaction } from '@suite-common/wallet-core';
+import { WETH_WRAP_GAS_RESERVE } from '@suite-common/wallet-constants';
+import {
+    getYieldFlowStepSequence,
+    shouldRecommendWrapReserve,
+    splitYieldPendingTransaction,
+} from '@suite-common/wallet-core';
 import { getApyBreakdown } from '@suite-common/wallet-utils';
 import { Banner, Column, Text } from '@trezor/components';
 
@@ -71,6 +76,36 @@ export const YieldDepositForm = () => {
         flowType: 'deposit',
         isWrappedNativeVault: flow.isWrappedNativeVault,
     });
+
+    // Wrapping into the gas reserve is allowed (Max keeps it aside, but a manual entry may not),
+    // so recommend keeping it rather than blocking. `isAmountTooHigh` only fires above the full
+    // balance now, and `shouldRecommendWrapReserve` already excludes that over-balance case.
+    // Wrapping into the gas reserve is allowed (Max fills the full balance), so recommend keeping
+    // it rather than blocking. `isAmountTooHigh` only fires above the full balance, and
+    // `shouldRecommendWrapReserve` already excludes that over-balance case.
+    const showWrapReserveRecommendation =
+        flow.currentStep === 'wrap' &&
+        !isAmountInvalidDecimals &&
+        shouldRecommendWrapReserve(liveAmount, account.formattedBalance);
+
+    const renderWrapWarning = () => {
+        if (!isAmountInvalidDecimals && isAmountTooHigh) {
+            return <YieldActionStepWarning isInsufficientFunds />;
+        }
+
+        if (showWrapReserveRecommendation) {
+            return (
+                <YieldActionStepWarning
+                    reserveRecommendation={{
+                        amount: WETH_WRAP_GAS_RESERVE.toString(),
+                        nativeSymbol,
+                    }}
+                />
+            );
+        }
+
+        return null;
+    };
 
     const handleOnApprovalSubmit = () => {
         analytics.report({
@@ -241,7 +276,7 @@ export const YieldDepositForm = () => {
                                     <YieldWrapStep
                                         token={token}
                                         nativeSymbol={nativeSymbol}
-                                        availableAmount={maxAmount}
+                                        availableAmount={account.formattedBalance}
                                         receivingAmount={liveAmount || '0'}
                                         isSubmitting={isSubmittingAction}
                                         isSubmitDisabled={
@@ -249,11 +284,7 @@ export const YieldDepositForm = () => {
                                             isAmountTooHigh ||
                                             isAmountInvalidDecimals
                                         }
-                                        warning={
-                                            !isAmountInvalidDecimals && isAmountTooHigh ? (
-                                                <YieldActionStepWarning isInsufficientFunds />
-                                            ) : undefined
-                                        }
+                                        warning={renderWrapWarning()}
                                         pendingTransaction={wrapPendingTransaction}
                                         onMaxClick={handleMaxClick}
                                         onSubmit={handleOnWrap}

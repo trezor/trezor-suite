@@ -10108,6 +10108,11 @@ export const messages = defineMessages({
         id: 'TR_EARN_YIELD_AVAILABLE_TO_WRAP',
         defaultMessage: 'Available to wrap',
     },
+    TR_EARN_YIELD_WRAP_RESERVE_RECOMMENDED: {
+        id: 'TR_EARN_YIELD_WRAP_RESERVE_RECOMMENDED',
+        defaultMessage:
+            "It's recommended to leave {amount} {nativeSymbol} so you can pay for withdrawal fees.",
+    },
     TR_EARN_YIELD_WRAP_RECEIVING: {
         id: 'TR_EARN_YIELD_WRAP_RECEIVING',
         defaultMessage: 'Receiving',
