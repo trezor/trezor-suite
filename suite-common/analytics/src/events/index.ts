@@ -10,6 +10,7 @@ export { settingsDeviceChangeLabelEvent } from './settingsDeviceChangeLabelEvent
 export { settingsDeviceWipeEvent } from './settingsDeviceWipeEvent';
 export { settingsGeneralLabelingEvent } from './settingsGeneralLabelingEvent';
 export { settingsNetworkSearchUsedEvent } from './settingsNetworkSearchUsedEvent';
+export { settingsNetworksExplorerEvent } from './settingsNetworksExplorerEvent';
 export { settingsTestnetNetworksToggleEvent } from './settingsTestnetNetworksToggleEvent';
 export { walletConnectInitEvent } from './walletConnectInitEvent';
 export { walletConnectPairedEvent } from './walletConnectPairedEvent';
