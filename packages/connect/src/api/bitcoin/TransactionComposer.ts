@@ -4,11 +4,9 @@ import type { Address } from '@trezor/blockchain-link-types';
 import type {
     BitcoinNetworkInfo,
     ComposeResult,
-    ComposeResultFinal,
     ComposeUtxo,
     ComposedInputs,
     DiscoveryAccount,
-    FeeLevel,
 } from '@trezor/connect-common';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 import type {
@@ -72,22 +70,6 @@ export class TransactionComposer {
         } else if (networks.isNetworkType('zcash', options.coinInfo.network)) {
             this.feePolicy = 'zcash';
         }
-    }
-
-    // Composing fee levels for SelectFee view in popup
-    composeAllFeeLevels(feeLevels: FeeLevel[]) {
-        const levels = [];
-        const transactions = new Map<FeeLevel['label'], ComposeResultFinal>();
-
-        for (const level of feeLevels) {
-            if (level.feePerUnit === '0') continue;
-            const tx = this.compose(level.feePerUnit);
-            if (tx.type !== 'final') continue;
-            levels.push(level);
-            transactions.set(level.label, tx);
-        }
-
-        return { levels, transactions };
     }
 
     composeCustomFee(fee: string) {

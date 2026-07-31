@@ -3,9 +3,11 @@
 import {
     type BitcoinNetworkInfo,
     type ComposeResult,
+    type ComposeResultFinal,
     DEFAULT_SORTING_STRATEGY,
     type DiscoveryAccount,
     ERRORS,
+    type FeeLevel,
     type PermissionRequest,
     type PrecomposeParams,
     type PrecomposedResult,
@@ -222,9 +224,19 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
             sortingStrategy: sortingStrategy ?? DEFAULT_SORTING_STRATEGY,
         });
 
+        const levels: FeeLevel[] = [];
+        const transactions = new Map<FeeLevel['label'], ComposeResultFinal>();
+        const composed = { levels, transactions };
+
         // try to compose multiple transactions with different fee levels
         // check if any of composed transactions is valid
-        const composed = composer.composeAllFeeLevels(feeLevels.levels);
+        for (const level of feeLevels.levels) {
+            if (level.feePerUnit === '0') continue;
+            const tx = composer.composeCustomFee(level.feePerUnit);
+            if (tx.type !== 'final') continue;
+            composed.levels.push(level);
+            composed.transactions.set(level.label, tx);
+        }
 
         if (!composed.levels.length) {
             const feePerUnit = String(coinInfo.minFee);
