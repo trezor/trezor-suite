@@ -1,4 +1,4 @@
-import { type BuyTrade, type CryptoId, type ExchangeTrade, type SellFiatTrade } from 'invity-api';
+import { type CryptoId } from 'invity-api';
 
 import {
     TRADING_FORM_FIAT_CURRENCY_SELECT,
@@ -7,12 +7,10 @@ import {
     type TradingExchangeType,
     type TradingFiatCurrencyOption,
     type TradingSellType,
-    type TradingTradeType,
     type TradingType,
 } from '@suite-common/trading';
 import { type BaseCurrencyOption } from '@suite-common/wallet-types';
 
-import { type TradingGetCryptoQuoteAmountProps } from 'src/types/trading/trading';
 import {
     type TradingFormContextValues,
     type TradingFormMapProps,
@@ -34,57 +32,6 @@ export const isTradingExchangeOrSellContext = (
     context: TradingFormMapProps[keyof TradingFormMapProps],
 ): context is TradingFormMapProps[TradingExchangeType] | TradingFormMapProps[TradingSellType] =>
     isTradingExchangeContext(context) || isTradingSellContext(context);
-
-export const getCryptoQuoteAmountProps = (
-    quoteInput: TradingTradeType | undefined,
-    context: TradingFormContextValues<TradingType>,
-): TradingGetCryptoQuoteAmountProps | null => {
-    if (!quoteInput) return null;
-
-    if (isTradingBuyContext(context)) {
-        const amountInCrypto = context.quotesRequest?.wantCrypto;
-        const quote = quoteInput as BuyTrade;
-
-        if (!quote || !context.quotesRequest) return null;
-
-        return {
-            amountInCrypto,
-            sendAmount: quote?.fiatStringAmount ?? '',
-            sendCurrency: quote?.fiatCurrency,
-            receiveAmount: quote?.receiveStringAmount ?? '',
-            receiveCurrency: quote?.receiveCurrency,
-        };
-    }
-
-    if (isTradingSellContext(context)) {
-        const amountInCrypto = context.quotesRequest?.amountInCrypto;
-        const networkFee = context.composedTransactionInfo?.composed?.fee;
-        const quote = quoteInput as SellFiatTrade;
-
-        if (!quote || !context.quotesRequest) return null;
-
-        return {
-            amountInCrypto,
-            sendAmount: quote?.fiatStringAmount ?? '',
-            sendCurrency: quote?.fiatCurrency,
-            receiveAmount: quote?.cryptoStringAmount ?? '',
-            receiveCurrency: quote?.cryptoCurrency,
-            networkFee,
-        };
-    }
-
-    const quote = quoteInput as ExchangeTrade;
-    const networkFee = context.composedTransactionInfo?.composed?.fee;
-
-    return {
-        amountInCrypto: false,
-        sendAmount: quote?.sendStringAmount ?? '',
-        sendCurrency: quote?.send,
-        receiveAmount: quote?.receiveStringAmount ?? '',
-        receiveCurrency: quote?.receive,
-        networkFee,
-    };
-};
 
 export const getSelectedCryptoId = (
     context: TradingFormContextValues<TradingType>,

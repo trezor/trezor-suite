@@ -12,7 +12,6 @@ import { ArrowSquareOutIcon } from '@trezor/icons';
 import { useSelector } from 'src/hooks/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import {
-    getCryptoQuoteAmountProps,
     getSelectedCryptoId,
     isTradingExchangeContext,
 } from 'src/utils/wallet/trading/tradingTypingUtils';
@@ -20,6 +19,7 @@ import {
     tradingGetAmountLabels,
     tradingGetSectionActionLabel,
 } from 'src/utils/wallet/trading/tradingUtils';
+import { useTradingQuoteAmounts } from 'src/views/wallet/trading/common/hooks/useTradingQuoteAmounts';
 import { useTradingSelectedQuote } from 'src/views/wallet/trading/common/hooks/useTradingSelectedQuote';
 
 export const useTradingFormOfferCommon = <T extends TradingType>() => {
@@ -41,7 +41,7 @@ export const useTradingFormOfferCommon = <T extends TradingType>() => {
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
 
     const quote = useTradingSelectedQuote(type as T);
-    const quoteAmounts = getCryptoQuoteAmountProps(quote, context);
+    const quoteAmounts = useTradingQuoteAmounts(quote, type);
     const selectedCryptoId = getSelectedCryptoId(context);
 
     const sendAmount =

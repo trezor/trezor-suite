@@ -154,7 +154,6 @@ export const useTradingBuyForm = (): TradingBuyFormContextProps => {
         methods,
         amountLimits,
         network,
-        quotesRequest,
         tradingReceiveAddress,
         isAmountEmpty,
         setAmountLimits: (limits: TradingAmountLimitProps | undefined) => {
