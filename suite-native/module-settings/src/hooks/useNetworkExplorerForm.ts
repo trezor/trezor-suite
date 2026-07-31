@@ -6,8 +6,8 @@ import { yup } from '@suite-common/validators';
 import { type Explorer, type Network } from '@suite-common/wallet-config';
 import {
     type ExplorerState,
-    explorerActions,
     selectNetworkExplorers,
+    setNetworkExplorerThunk,
 } from '@suite-common/wallet-core';
 import { useForm } from '@suite-native/forms';
 import { type TxKeyPath, useTranslate } from '@suite-native/intl';
@@ -61,13 +61,13 @@ export const useNetworkExplorerForm = ({ symbol }: Network) => {
     const { isDirty } = form.formState;
 
     const submit = form.handleSubmit(values => {
-        dispatch(explorerActions.setExplorer({ symbol, explorer: values }));
+        dispatch(setNetworkExplorerThunk({ symbol, explorer: values }));
         form.reset(values);
         Keyboard.dismiss();
     });
 
     const setToDefault = () => {
-        dispatch(explorerActions.setExplorer({ symbol }));
+        dispatch(setNetworkExplorerThunk({ symbol }));
         form.reset(networkExplorers.default);
         Keyboard.dismiss();
     };
