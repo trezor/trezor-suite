@@ -155,11 +155,11 @@ jobs:
 
           FILLED=""
           for section in "${REQUIRED_SECTIONS[@]}"; do
-            # Capture everything between this heading and the next "## " heading,
+            # Capture everything between this heading and the next Markdown heading,
             # strip HTML comments and whitespace, then check if anything remains.
             CONTENT=$(awk -v h="$section" '
-              $0 ~ "^##[[:space:]]+" h "[[:space:]]*:?[[:space:]]*$" { capture=1; next }
-              capture && /^##[[:space:]]/ { capture=0 }
+              $0 ~ "^#{1,6}[[:space:]]+" h "[[:space:]]*:?[[:space:]]*$" { capture=1; next }
+              capture && /^#{1,6}[[:space:]]/ { capture=0 }
               capture { print }
             ' pr_body.md | perl -0777 -pe 's/<!--.*?-->//gs' | tr -d '[:space:]')
 
