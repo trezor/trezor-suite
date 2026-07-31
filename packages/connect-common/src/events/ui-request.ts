@@ -9,7 +9,7 @@ import type { DeviceButtonRequest, DeviceThpPairingPayload } from './device';
 import type { DiscoveryAccount, DiscoveryAccountType } from '../types/account';
 import type { BitcoinNetworkInfo, CoinInfo } from '../types/coinInfo';
 import type { Device } from '../types/device';
-import type { SelectFeeLevel } from '../types/fees';
+import type { FeeLevel } from '../types/fees';
 import { type MessageFactoryFn } from '../types/utils';
 
 export const UI_EVENT = 'UI_EVENT';
@@ -222,7 +222,7 @@ export interface UiRequestSelectFee {
     type: typeof UI_REQUEST.SELECT_FEE;
     payload: {
         coinInfo: BitcoinNetworkInfo;
-        feeLevels: SelectFeeLevel[];
+        feeLevels: FeeLevel[];
     };
 }
 

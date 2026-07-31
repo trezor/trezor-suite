@@ -85,14 +85,7 @@ const getSelectFeeData = ({ coinInfo, feeLevels }: UiRequestSelectFee['payload']
     };
     const feeInfo = {
         levels: feeLevels
-            .filter(level => level.fee != '0')
-            .filter(level => level.name !== 'low') // this option is hidden in Suite
-            .map(level => ({
-                // level.name is just a string instead of enum
-                label: level.name as any,
-                feePerUnit: level.feePerByte!,
-                blocks: level.blocks!,
-            }))
+            .filter(({ label }) => label !== 'low') // this option is hidden in Suite
             .sort(sortLevels),
 
         minFee,
