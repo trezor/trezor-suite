@@ -15,10 +15,12 @@ import { useMDXComponents } from '@trezor/connect-explorer-theme';
 import { spacings } from '@trezor/theme';
 import { isNewer } from '@trezor/utils/src/versionUtils';
 
-export const loadNPMVersions = tag =>
-    fetch(`https://registry.npmjs.org/@trezor/connect/${tag}`)
+export const MAJOR_VERSION = '9'; // This Connect Explorer is deployed for the v9 line.
+
+export const loadNPMVersions = () =>
+    fetch(`https://registry.npmjs.org/@trezor/connect`)
         .then(res => res.json())
-        .then(data => data.version);
+        .then(data => Object.keys(data.versions));
 
 export const loadChangelog = branch => fetch(
         `https://raw.githubusercontent.com/trezor/trezor-suite/${branch}/packages/connect/CHANGELOG.md`,
@@ -39,12 +41,12 @@ export const loadChangelog = branch => fetch(
         });
 
 export const loadData = async () => {
-    const [latest, beta] = await Promise.all([
-        loadNPMVersions('latest'),
-        loadNPMVersions('beta'),
-    ]);
-    const isBetaNewer = isNewer(beta.split('-')[0], latest);
-    const newestVersion = isBetaNewer ? beta : latest;
+    // Pin the changelog to the v9 line: pick the newest 9.x version from npm
+    // instead of following the `latest`/`beta` dist-tags, which now point to v10.
+    const versions = await loadNPMVersions();
+    const newestVersion = versions
+        .filter(version => version.startsWith(`${MAJOR_VERSION}.`))
+        .reduce((newest, version) => (isNewer(version, newest) ? version : newest));
 
     return loadChangelog(`release/connect/${newestVersion}`);
 
