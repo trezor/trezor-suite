@@ -13,26 +13,27 @@ import {
     type TradingFiatRatesReturn,
     mapFiatCurrencyCodeToBaseCurrencyCode,
 } from '@suite-common/trading';
-import { type Account, type TokenAddress } from '@suite-common/wallet-types';
-
 import {
-    type TradingSellExchangeFormProps,
-    type TradingUseFormActionsProps,
-} from 'src/types/trading/tradingForm';
+    type Account,
+    type PrecomposedLevels,
+    type PrecomposedLevelsCardano,
+    type TokenAddress,
+} from '@suite-common/wallet-types';
+import { type FeeLevel } from '@trezor/connect';
+
+import { type TradingSellExchangeFormProps } from 'src/types/trading/tradingForm';
+import { type AmountLimitProps } from 'src/utils/suite/validation';
 import { resolveAddressAndToken } from 'src/utils/wallet/trading/tradingUtils';
 
-// TODO: own props interface instead of Pick from the deleted useTradingFormActions; base type, not union
-interface UseTradingCryptoAssetChangeProps<T extends TradingSellExchangeFormProps> extends Pick<
-    TradingUseFormActionsProps<T>,
-    | 'account'
-    | 'methods'
-    | 'setAmountLimits'
-    | 'changeFeeLevel'
-    | 'setComposedLevels'
-    | 'setAccountOnChange'
-> {
+interface UseTradingCryptoAssetChangeProps<T extends TradingSellExchangeFormProps> {
+    account: Account | undefined;
     accounts: Account[];
+    methods: UseFormReturn<T>;
     tradingFiatValues: TradingFiatRatesReturn | null;
+    setAmountLimits: (limits?: AmountLimitProps) => void;
+    changeFeeLevel: (level: FeeLevel['label']) => void;
+    setComposedLevels: (levels: PrecomposedLevels | PrecomposedLevelsCardano | undefined) => void;
+    setAccountOnChange: (account: Account) => void;
 }
 
 /**
