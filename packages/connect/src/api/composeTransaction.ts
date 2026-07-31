@@ -251,15 +251,8 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
         );
 
         // wait for fee selection
-        let resp = await context.createUiPromise(UI_RESPONSE.RECEIVE_FEE, this.getDevice()).promise;
-
-        while (resp.payload.type === 'compose-custom') {
-            // recompose custom fee level with requested value
-            composer.composeCustomFee(resp.payload.value);
-
-            // wait for user action
-            resp = await context.createUiPromise(UI_RESPONSE.RECEIVE_FEE, this.getDevice()).promise;
-        }
+        const resp = await context.createUiPromise(UI_RESPONSE.RECEIVE_FEE, this.getDevice())
+            .promise;
 
         if (resp.payload.type === 'change-account') {
             // check for interruption
@@ -274,8 +267,16 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
             return this.interactiveFlow(context);
         }
 
+        let composedKey;
+        if (resp.payload.type === 'select-fee-custom') {
+            // recompose custom fee level with requested value
+            composer.composeCustomFee(resp.payload.value);
+            composedKey = 'custom' as const;
+        } else {
+            composedKey = resp.payload.value;
+        }
+
         const { composed } = composer;
-        const composedKey = resp.payload.value;
         // @ts-expect-error: noUncheckedIndexedAccess
         const tx: ComposeResult = composed[composedKey];
 
