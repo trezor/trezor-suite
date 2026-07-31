@@ -76,11 +76,10 @@ export class TransactionComposer {
 
     // Composing fee levels for SelectFee view in popup
     composeAllFeeLevels(feeLevels: FeeLevel[]) {
-        const requestedLevels = this.utxos.length ? feeLevels : [];
         const levels = [];
         const transactions = new Map<FeeLevel['label'], ComposeResultFinal>();
 
-        for (const level of requestedLevels) {
+        for (const level of feeLevels) {
             if (level.feePerUnit === '0') continue;
             const tx = this.compose(level.feePerUnit);
             if (tx.type !== 'final') continue;
@@ -98,6 +97,7 @@ export class TransactionComposer {
     private compose(feeRate: string): ComposeResult {
         const { account, coinInfo, baseFee, changeAddress, feePolicy } = this;
 
+        if (!this.utxos.length) return { type: 'error', error: 'MISSING-UTXOS' };
         if (!changeAddress) return { type: 'error', error: 'ADDRESSES-NOT-SET' };
 
         return composeTx({
