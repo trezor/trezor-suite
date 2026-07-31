@@ -105,10 +105,12 @@ describe('RequestPrioritizedDeviceAccess', () => {
         // Execute prioritized task.
         await requestPrioritizedDeviceAccess(deviceAccessCallbackMock);
 
-        // The prioritized task should be put at the beginning of the queue, so after its execution,
-        // so there should be still the rest of the tasks in the queue.
+        // The prioritized task was put at the beginning of the queue (position 0), so it ran
+        // right after task 0 finished, skipping all previously queued tasks.
+        // After the prioritized task finishes: task 1 has been dequeued and is running,
+        // tasks 2, 3, 4 remain in the queue.
         expect(deviceAccessMutex.isLocked).toBe(true);
-        expect(deviceAccessMutex.taskQueue.length).toBe(2);
+        expect(deviceAccessMutex.taskQueue.length).toBe(3);
     });
 });
 
@@ -132,6 +134,28 @@ describe('clearAndUnlockDeviceAccessQueue', () => {
         }
 
         // Mutex should be unlocked and empty after clearing the queue.
+        expect(deviceAccessMutex.isLocked).toBe(false);
+        expect(deviceAccessMutex.taskQueue.length).toBe(0);
+    });
+
+    test('prioritized task is cancelled by clearing the queue', async () => {
+        // Reset shared singleton state possibly left over from previous tests.
+        clearAndUnlockDeviceAccessQueue();
+
+        // Hold the lock so the prioritized request has to wait in the queue. Locking
+        // synchronously (no timer callback) keeps the setup free of leaked timers and
+        // lets us reach the clearing call without an await where a stray task could run.
+        void deviceAccessMutex.lock();
+        const prioritizedTask = requestPrioritizedDeviceAccess(deviceAccessCallbackMock);
+
+        expect(deviceAccessMutex.isLocked).toBe(true);
+        expect(deviceAccessMutex.taskQueue.length).toBe(1);
+
+        clearAndUnlockDeviceAccessQueue();
+
+        // The prioritized waiter must be rejected like any other queued task instead of
+        // resolving `true` and running its device callback after the queue was cleared.
+        expect(await prioritizedTask).toBe(DEVICE_ACCESS_ERROR);
         expect(deviceAccessMutex.isLocked).toBe(false);
         expect(deviceAccessMutex.taskQueue.length).toBe(0);
     });

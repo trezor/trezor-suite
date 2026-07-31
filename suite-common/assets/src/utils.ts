@@ -13,12 +13,16 @@ export interface AssetFiatBalanceWithPercentage extends AssetFiatBalance {
 export const calculateAssetsPercentage = <T>(
     assetsData: Array<AssetFiatBalance & T>,
 ): Array<AssetFiatBalanceWithPercentage & T> => {
-    const fiatTotal = assetsData.reduce((sum, next) => sum + Number(next.fiatBalance), 0);
+    const fiatTotal = assetsData.reduce((sum, next) => {
+        const value = Number(next.fiatBalance);
+
+        return sum + (Number.isNaN(value) ? 0 : value);
+    }, 0);
     let previousPercentage = 0;
 
     return assetsData.map(asset => {
         const fiatBalance = Number(asset.fiatBalance);
-        if (fiatTotal === 0 || Number.isNaN(asset.fiatBalance) || fiatBalance === 0) {
+        if (fiatTotal === 0 || Number.isNaN(fiatBalance) || fiatBalance === 0) {
             return { ...asset, fiatPercentage: 0, fiatPercentageOffset: 0 };
         }
 

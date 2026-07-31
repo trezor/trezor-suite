@@ -38,7 +38,7 @@ const Line = styled.div<LineProps>`
 type OptionalZXCVBNScore = ZXCVBNScore | undefined;
 
 const getColor = (score: OptionalZXCVBNScore, password: string) => {
-    if (password === '' || Number.isNaN(score)) return 'transparent';
+    if (password === '' || score === undefined) return 'transparent';
     switch (score) {
         case 0:
         case 1:

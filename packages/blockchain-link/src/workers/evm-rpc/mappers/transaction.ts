@@ -34,9 +34,11 @@ export const mapGetTransactionResponse = ({
     block,
     userAddress,
 }: MapTransactionParams): Responses.GetTransaction => {
-    const { value, gasPrice } = tx;
-    const { gasUsed } = receipt;
-    const fee = (gasUsed * (gasPrice ?? 0n)).toString(10);
+    const { value } = tx;
+    const { gasUsed, effectiveGasPrice } = receipt;
+    // `tx.gasPrice` is undefined for EIP-1559 (type-2) transactions, so the actual price paid must
+    // be read from the receipt's `effectiveGasPrice` — otherwise the fee would be 0 for every type-2 tx.
+    const fee = (gasUsed * effectiveGasPrice).toString(10);
 
     const blockTime = block ? Number(block.timestamp) : 0;
     const blockHash = tx.blockHash || '';
@@ -102,7 +104,7 @@ export const mapGetTransactionResponse = ({
                 nonce: tx.nonce,
                 gasLimit: Number(tx.gas),
                 gasUsed: Number(receipt.gasUsed),
-                gasPrice: gasPrice?.toString(),
+                gasPrice: effectiveGasPrice.toString(),
                 data: tx.input,
             },
         },

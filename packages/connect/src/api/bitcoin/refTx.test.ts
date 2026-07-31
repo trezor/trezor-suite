@@ -49,6 +49,52 @@ describe('core/methods/tx/refTx', () => {
         ).toEqual(false);
     });
 
+    it('validateReferencedTransactions applies the ZEC v5 exemption for input reference txs', () => {
+        // A valid provided refTx, unrelated to the spent input below.
+        const providedRefTx = {
+            hash: '43d273d3caf41759ad843474f960fbf80ff2ec961135d018b61e9fab3ad1fc06',
+            version: 1,
+            lock_time: 1287124,
+            inputs: [
+                {
+                    prev_hash: 'e294c4c172c3d87991b0369e45d6af8584be92914d01e3060fad1ed31d12ff00',
+                    prev_index: 0,
+                    script_sig: '',
+                    sequence: 4294967293,
+                },
+            ],
+            bin_outputs: [
+                {
+                    amount: 10000000,
+                    script_pubkey: 'a914051877a0cc43165e48975c1e62bdef3b6c942a3887',
+                },
+            ],
+        };
+        // The input references a tx that is NOT provided, so a strict validation would throw.
+        const params = {
+            transactions: [providedRefTx],
+            inputs: [
+                {
+                    prev_hash: 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+                    prev_index: 0,
+                },
+            ],
+            outputs: [],
+            coinInfo: { shortcut: 'ZEC' },
+        };
+
+        // Zcash NU5 (v5) transactions don't need input reference txs (matches the authoritative
+        // requireReferencedTransactions check in signTransaction) — validation must not throw.
+        expect(() =>
+            validateReferencedTransactions({ ...params, version: 5 } as any),
+        ).not.toThrow();
+
+        // Older Zcash versions still require them.
+        expect(() => validateReferencedTransactions({ ...params, version: 4 } as any)).toThrow(
+            'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa not provided',
+        );
+    });
+
     it('getReferencedTransactions', () => {
         const inputs = [
             { prev_hash: 'abcd' },

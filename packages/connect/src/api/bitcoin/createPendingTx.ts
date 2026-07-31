@@ -42,7 +42,7 @@ export const createPendingTransaction = (
         blockTime: Math.floor(Date.now() / 1000),
         confirmations: 0,
         vsize: tx.virtualSize(),
-        size: tx.weight(),
+        size: tx.byteLength(),
         value: valueOut.toString(),
         valueIn: valueIn.toString(),
         fees: valueIn.minus(valueOut).toString(),

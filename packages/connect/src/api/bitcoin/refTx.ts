@@ -252,16 +252,22 @@ export const validateReferencedTransactions = ({
     outputs,
     addresses,
     coinInfo,
+    version,
 }: {
     transactions?: (RefTransaction | AccountTransaction)[];
     inputs: PROTO.TxInputType[];
     outputs: PROTO.TxOutputType[];
     addresses?: AccountAddresses;
     coinInfo: BitcoinNetworkInfo;
+    version?: number;
 }): RefTransaction[] | undefined => {
     if (!Array.isArray(transactions) || transactions.length === 0) return; // allow empty, they will be downloaded later...
-    // collect sets of transactions defined by inputs/outputs
-    const refTxs = requireReferencedTransactions(inputs) ? getReferencedTransactions(inputs) : [];
+    // collect sets of transactions defined by inputs/outputs. Pass coinInfo/version so the
+    // ZEC/TAZ v5 exemption matches the authoritative fetch path (requireReferencedTransactions
+    // in signTransaction); otherwise a v5 tx would spuriously demand input reference txs here.
+    const refTxs = requireReferencedTransactions(inputs, { version }, coinInfo)
+        ? getReferencedTransactions(inputs)
+        : [];
     const origTxs = getOrigTransactions(inputs, outputs); // NOTE: origTxs are used in RBF
     const transformedTxs: RefTransaction[] = transactions.map(tx => {
         // transform AccountTransaction to RefTransaction

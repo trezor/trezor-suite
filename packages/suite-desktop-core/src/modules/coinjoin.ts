@@ -98,7 +98,10 @@ export const init: ModuleInit = ({ mainWindowProxy, store, mainThreadEmitter }) 
                     logger.debug(SERVICE_NAME, `${BACKEND_CHANNEL} call ${method}`);
                     if (method === 'disable') {
                         backend.dispose();
-                        backends.splice(backends.indexOf(backend), 1);
+                        const backendIndex = backends.indexOf(backend);
+                        if (backendIndex !== -1) {
+                            backends.splice(backendIndex, 1);
+                        }
 
                         return Promise.resolve();
                     }
@@ -157,7 +160,10 @@ export const init: ModuleInit = ({ mainWindowProxy, store, mainThreadEmitter }) 
                         }
                     }
                     if (method === 'disable') {
-                        clients.splice(clients.indexOf(client), 1);
+                        const clientIndex = clients.indexOf(client);
+                        if (clientIndex !== -1) {
+                            clients.splice(clientIndex, 1);
+                        }
 
                         if (clients.length === 0) {
                             logger.debug(SERVICE_NAME, `${CLIENT_CHANNEL} binary stop`);
