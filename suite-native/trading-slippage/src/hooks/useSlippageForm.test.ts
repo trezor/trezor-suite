@@ -9,8 +9,8 @@ import { useSlippageForm } from './useSlippageForm';
 import { renderHookWithSlippageTestProvider } from '../test-utils/testUtils';
 
 describe('useSlippageForm', () => {
-    const renderUseSlippageForm = async () => {
-        const ret = renderHookWithSlippageTestProvider(() => useSlippageForm());
+    const renderUseSlippageForm = async (initialSlippage?: string) => {
+        const ret = renderHookWithSlippageTestProvider(() => useSlippageForm(initialSlippage));
         // wait for form validation
         await act(() => Promise.resolve());
 
@@ -23,6 +23,12 @@ describe('useSlippageForm', () => {
         expect(result.current.form.getValues('slippage')).toBe(
             TRADING_SETTINGS_MAX_SLIPPAGE_PERCENTAGE_DEFAULT,
         );
+    });
+
+    it('should initialize slippage with the provided quote value', async () => {
+        const { result } = await renderUseSlippageForm('0.5');
+
+        expect(result.current.form.getValues('slippage')).toBe('0.5');
     });
 
     it('should set slippage to preset value when handlePresetPress is called', async () => {

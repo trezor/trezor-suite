@@ -25,6 +25,7 @@ export type ExchangePreviewViewProps = {
     quote: ExchangeTrade | undefined;
     txnErrorString: ReactNode | null;
     onSignTransactionNavigation: () => void;
+    onSlippageConfirmed: () => Promise<void>;
     isApproved?: boolean;
 };
 
@@ -33,6 +34,7 @@ export const ExchangePreviewView = memo(
         quote,
         txnErrorString,
         onSignTransactionNavigation,
+        onSlippageConfirmed,
         isApproved,
     }: ExchangePreviewViewProps) => {
         const { translate } = useTranslate();
@@ -65,11 +67,11 @@ export const ExchangePreviewView = memo(
                     <ExchangeToAccountTradePreviewCard quote={quote} />
                     {hasEIP712SignData ? (
                         <ExchangeEIP712Info exchange={quote?.exchange}>
-                            <SlippagePicker />
+                            <SlippagePicker onSlippageConfirmed={onSlippageConfirmed} />
                         </ExchangeEIP712Info>
                     ) : (
                         <ExchangeInfo quote={quote} isTxnError={isTxnError}>
-                            <SlippagePicker />
+                            <SlippagePicker onSlippageConfirmed={onSlippageConfirmed} />
                         </ExchangeInfo>
                     )}
 

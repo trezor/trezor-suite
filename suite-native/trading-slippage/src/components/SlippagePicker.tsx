@@ -15,11 +15,15 @@ import { SlippageBottomSheet } from './SlippageBottomSheet';
 
 export const SLIPPAGE_PICKER_TEST_ID = '@trading/exchange/slippage-picker';
 
+type SlippagePickerProps = {
+    onSlippageConfirmed: () => Promise<void>;
+};
+
 const slippagePickerStyle = prepareNativeStyle(({ spacings }) => ({
     height: spacings.sp56,
 }));
 
-export const SlippagePicker = () => {
+export const SlippagePicker = ({ onSlippageConfirmed }: SlippagePickerProps) => {
     const { isSheetVisible, showSheet, hideSheet } = useBottomSheetControls();
     const isDex = useSelector(selectTradingExchangeSelectedQuoteIsDex);
     const swapSlippage = useSelector(selectTradingExchangeSelectedQuoteSwapSlippage);
@@ -58,7 +62,11 @@ export const SlippagePicker = () => {
                     <Icon name="caretDown" size="medium" color="contentSecondary" />
                 </HStack>
             </TradeInfoRow>
-            <SlippageBottomSheet isVisible={isSheetVisible} onClose={hideSheet} />
+            <SlippageBottomSheet
+                isVisible={isSheetVisible}
+                onClose={hideSheet}
+                onSlippageConfirmed={onSlippageConfirmed}
+            />
         </>
     );
 };

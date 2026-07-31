@@ -621,20 +621,42 @@ describe('TradingExchangePreviewScreen', () => {
         });
     });
 
-    it('should not confirm DEX quote without slippage', async () => {
-        const testStore = createStore({ ...mercuryoDexQuote, swapSlippage: undefined });
+    it('should preserve quote slippage when confirming a DEX quote', async () => {
+        const testStore = createStore({ ...mercuryoDexQuote, swapSlippage: '0.5' });
 
         renderTradingExchangePreviewScreen(false, testStore);
 
         await waitFor(() => {
-            expect(mockConfirmTrade).toHaveBeenCalled();
+            expect(mockConfirmTrade).toHaveBeenCalledTimes(1);
         });
 
-        expect(mockConfirmTrade).toHaveBeenCalledTimes(1);
         expect(mockConfirmTrade).toHaveBeenCalledWith(
             expect.objectContaining({
                 trade: expect.objectContaining({
-                    swapSlippage: '1',
+                    swapSlippage: '0.5',
+                }),
+            }),
+        );
+    });
+
+    it('should confirm the trade again with user-confirmed slippage', async () => {
+        const testStore = createStore(mercuryoDexQuote);
+        const { result } = renderTradingExchangePreviewScreen(false, testStore);
+
+        await waitFor(() => {
+            expect(mockConfirmTrade).toHaveBeenCalledTimes(1);
+        });
+
+        await userEvent.press(result.getByText('3%'));
+        await userEvent.press(result.getByText(getTranslation('generic.buttons.confirm')));
+
+        await waitFor(() => {
+            expect(mockConfirmTrade).toHaveBeenCalledTimes(2);
+        });
+        expect(mockConfirmTrade).toHaveBeenLastCalledWith(
+            expect.objectContaining({
+                trade: expect.objectContaining({
+                    swapSlippage: '3',
                 }),
             }),
         );

@@ -15,11 +15,16 @@ const mockUseOpenLink = useOpenLink as jest.MockedFunction<typeof useOpenLink>;
 const mockOpenLink = jest.fn();
 
 const mockOnClose = jest.fn();
+const mockOnSlippageConfirmed = jest.fn();
 
 describe('SlippageBottomSheet', () => {
     const renderSlippageBottomSheet = async (store: TestStore) => {
         const result = renderWithSlippageTestProvider(
-            <SlippageBottomSheet isVisible={false} onClose={mockOnClose} />,
+            <SlippageBottomSheet
+                isVisible={false}
+                onClose={mockOnClose}
+                onSlippageConfirmed={mockOnSlippageConfirmed}
+            />,
             { store },
         );
 
@@ -73,7 +78,22 @@ describe('SlippageBottomSheet', () => {
         await userEvent.press(getByText(getTranslation('generic.buttons.confirm')));
 
         expect(selectTradingExchangeSelectedQuoteSwapSlippage(store.getState())).toBe('3');
+        expect(mockOnSlippageConfirmed).toHaveBeenCalledTimes(1);
         expect(mockOnClose).toHaveBeenCalledTimes(1);
+    });
+
+    it('should update slippage before calling onSlippageConfirmed', async () => {
+        const store = createSlippageTestStore();
+        mockOnSlippageConfirmed.mockImplementation(() => {
+            expect(selectTradingExchangeSelectedQuoteSwapSlippage(store.getState())).toBe('3');
+        });
+        const { getByText } = await renderSlippageBottomSheet(store);
+
+        await userEvent.press(getByText('3%'));
+        await act(() => Promise.resolve());
+        await userEvent.press(getByText(getTranslation('generic.buttons.confirm')));
+
+        expect(mockOnSlippageConfirmed).toHaveBeenCalledTimes(1);
     });
 
     it('should not update selected quote swapSlippage and call onClose when cancel is pressed', async () => {
