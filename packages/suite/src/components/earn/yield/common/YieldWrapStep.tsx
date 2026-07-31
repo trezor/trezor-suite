@@ -50,7 +50,7 @@ export const YieldWrapStep = ({
             decimals={token.decimals}
             isDisabled={!!pendingTransaction}
             heading={{
-                amountLabelTranslationId: 'TR_EARN_YIELD_WRAP_AMOUNT',
+                amountLabelTranslationId: 'TR_BALANCE',
             }}
             summary={{
                 labelTranslationId: 'TR_EARN_YIELD_AVAILABLE_TO_WRAP',

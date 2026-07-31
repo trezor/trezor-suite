@@ -7,10 +7,12 @@ import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { WETH_WRAP_GAS_RESERVE } from '@suite-common/wallet-constants';
 import {
     type YieldFlowDisplayToken,
     type YieldFlowFormValues,
     getWrappableNativeBalance,
+    shouldRecommendWrapReserve,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { Column, Text } from '@trezor/components';
@@ -56,11 +58,14 @@ export const WrapNativeToken = ({ account, token }: WrapNativeTokenProps) => {
         decimals: token.decimals,
     };
 
+    // Max leaves the gas reserve aside, but the field shows the full balance and the user may wrap
+    // up to it; eating into the reserve only triggers a non-blocking recommendation.
     const maxWrapAmount = getWrappableNativeBalance(account.formattedBalance);
 
     const amountInput = useWatch({ control: methods.control, name: 'amountInput' });
     const amount = new BigNumber(amountInput || '');
-    const isAmountTooHigh = amount.gt(maxWrapAmount);
+    const isAmountTooHigh = amount.gt(account.formattedBalance);
+    const isReserveRecommended = shouldRecommendWrapReserve(amountInput, account.formattedBalance);
     const isAmountValid = amount.gt(0) && !isAmountTooHigh && methods.formState.isValid;
 
     useEffect(() => {
@@ -109,6 +114,25 @@ export const WrapNativeToken = ({ account, token }: WrapNativeTokenProps) => {
         );
     };
 
+    const renderWrapWarning = () => {
+        if (isAmountTooHigh) {
+            return <YieldActionStepWarning isInsufficientFunds />;
+        }
+
+        if (isReserveRecommended) {
+            return (
+                <YieldActionStepWarning
+                    reserveRecommendation={{
+                        amount: WETH_WRAP_GAS_RESERVE.toString(),
+                        nativeSymbol,
+                    }}
+                />
+            );
+        }
+
+        return null;
+    };
+
     const renderContent = () => {
         if (broadcast && pendingTxStatus === 'confirmed') {
             return (
@@ -145,15 +169,11 @@ export const WrapNativeToken = ({ account, token }: WrapNativeTokenProps) => {
                     <YieldWrapStep
                         token={token}
                         nativeSymbol={nativeSymbol}
-                        availableAmount={maxWrapAmount}
+                        availableAmount={account.formattedBalance}
                         shouldShowReceivingRow={false}
                         isSubmitting={wrapMutation.isPending}
                         isSubmitDisabled={!isAmountValid}
-                        warning={
-                            isAmountTooHigh ? (
-                                <YieldActionStepWarning isInsufficientFunds />
-                            ) : undefined
-                        }
+                        warning={renderWrapWarning()}
                         pendingTransaction={
                             broadcast
                                 ? { type: 'wrap', txid: broadcast.txid, amount: broadcast.amount }

@@ -172,6 +172,8 @@ export const useYieldFlow = ({
     const getMaxAmount = () => {
         if (flowType === 'deposit') {
             if (session.step === 'wrap') {
+                // Max leaves the gas reserve aside; the field still shows the full balance and the
+                // user may wrap up to it (see `amountTooHighThreshold`), with a recommendation.
                 return getWrappableNativeBalance(account.formattedBalance);
             }
 
@@ -769,7 +771,15 @@ export const useYieldFlow = ({
         !liveAmount || !isAmountGreaterThan({ amount: liveAmount, threshold: '0' });
     const allowanceAmount = session.approval.allowanceAmount ?? '0';
     const canRevokeAllowance = isAmountGreaterThan({ amount: allowanceAmount, threshold: '0' });
-    const isAmountTooHigh = isAmountGreaterThan({ amount: liveAmount, threshold: maxAmount });
+    // On the wrap step the hard cap is the full native balance: `maxAmount` only holds the gas
+    // reserve aside for the Max button, and manually eating into it is a non-blocking
+    // recommendation rather than an "insufficient funds" error.
+    const amountTooHighThreshold =
+        flowType === 'deposit' && session.step === 'wrap' ? account.formattedBalance : maxAmount;
+    const isAmountTooHigh = isAmountGreaterThan({
+        amount: liveAmount,
+        threshold: amountTooHighThreshold,
+    });
     const isAmountInvalidDecimals = !!methods.formState.errors.amountInput;
     const isApprovalInsufficient =
         !session.approval.isModifyMode &&

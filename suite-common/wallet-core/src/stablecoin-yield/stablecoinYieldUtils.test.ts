@@ -18,6 +18,7 @@ import {
     getYieldWrapAmount,
     hasYieldVaultPosition,
     isYieldVaultOperational,
+    shouldRecommendWrapReserve,
     splitYieldPendingTransaction,
 } from './stablecoinYieldUtils';
 
@@ -408,6 +409,37 @@ describe('stablecoinYieldUtils', () => {
 
         it('treats an empty balance as zero', () => {
             expect(getWrappableNativeBalance('')).toBe('0');
+        });
+    });
+
+    describe('shouldRecommendWrapReserve', () => {
+        it('does not recommend when enough native coin is left for the reserve', () => {
+            expect(shouldRecommendWrapReserve('0.9', '1')).toBe(false);
+        });
+
+        it('recommends at exactly balance minus the reserve (the Max amount)', () => {
+            expect(shouldRecommendWrapReserve('0.995', '1')).toBe(true);
+        });
+
+        it('recommends when the amount eats into the reserve', () => {
+            expect(shouldRecommendWrapReserve('0.996', '1')).toBe(true);
+        });
+
+        it('recommends when wrapping the whole balance', () => {
+            expect(shouldRecommendWrapReserve('1', '1')).toBe(true);
+        });
+
+        it('does not recommend when the amount exceeds the balance (hard error case)', () => {
+            expect(shouldRecommendWrapReserve('1.5', '1')).toBe(false);
+        });
+
+        it('does not recommend for an empty or zero amount', () => {
+            expect(shouldRecommendWrapReserve('', '1')).toBe(false);
+            expect(shouldRecommendWrapReserve('0', '1')).toBe(false);
+        });
+
+        it('does not recommend for non-numeric input', () => {
+            expect(shouldRecommendWrapReserve('abc', '1')).toBe(false);
         });
     });
 

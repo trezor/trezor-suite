@@ -384,6 +384,29 @@ export const getWrappableNativeBalance = (nativeFormattedBalance: string): strin
     ).toString();
 
 /**
+ * Whether wrapping `amountInput` out of `nativeFormattedBalance` would leave at most
+ * `WETH_WRAP_GAS_RESERVE` behind — i.e. no safety margin above the reserve needed for the
+ * follow-up approve + deposit fees. Used to surface a non-blocking recommendation to keep a
+ * reserve; this also covers the "Max" amount, which leaves exactly the reserve.
+ *
+ * The amount is assumed to be within the balance; wrapping more than the whole balance is a
+ * hard "insufficient funds" error handled separately, so it does not count as a recommendation.
+ */
+export const shouldRecommendWrapReserve = (
+    amountInput: string,
+    nativeFormattedBalance: string,
+): boolean => {
+    const amount = new BigNumber(amountInput || '0');
+    const balance = new BigNumber(nativeFormattedBalance || '0');
+
+    if (!amount.isFinite() || !balance.isFinite()) {
+        return false;
+    }
+
+    return amount.gt(0) && amount.lte(balance) && balance.minus(amount).lte(WETH_WRAP_GAS_RESERVE);
+};
+
+/**
  * Balance available for a yield deposit. For a wrapped-native (WETH) vault the native balance can
  * be wrapped, so it counts in after keeping `WETH_WRAP_GAS_RESERVE` aside to cover the follow-up
  * wrap + approve + deposit (+ exit) fees.
