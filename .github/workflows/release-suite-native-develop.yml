@@ -53,9 +53,6 @@ jobs:
         continue-on-error: true
         with:
           version: v0.19.1
-      - name: Install libs
-        run: |
-          yarn workspaces focus @suite-native/app
       - name: Check existing EAS builds for commit
         id: check-existing-builds
         env:
@@ -77,6 +74,10 @@ jobs:
             fi
           done
         working-directory: suite-native/app
+      - name: Install libs
+        if: steps.check-existing-builds.outputs.android-build-exists == 'false' || steps.check-existing-builds.outputs.ios-build-exists == 'false'
+        run: |
+          yarn workspaces focus @suite-native/app
       - name: Build on EAS Android
         if: steps.check-existing-builds.outputs.android-build-exists == 'false'
         run: eas build
