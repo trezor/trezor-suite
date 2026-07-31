@@ -29,11 +29,10 @@ export const deriveTronColdRecipient = async ({
     );
 
     // failed discovery accounts are also flagged empty but carry a synthetic (non-address) descriptor
-    const coldAccount = walletAccounts
-        .filter(a => a.empty && !a.failed)
-        .reduce<
-            Account | undefined
-        >((best, a) => (!best || a.index > best.index ? a : best), undefined);
+    const coldAccount = walletAccounts.reduce<Account | undefined>(
+        (best, a) => (a.empty && !a.failed && (!best || a.index > best.index) ? a : best),
+        undefined,
+    );
 
     if (coldAccount) {
         return coldAccount.descriptor;
