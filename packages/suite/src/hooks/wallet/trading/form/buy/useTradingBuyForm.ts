@@ -161,8 +161,5 @@ export const useTradingBuyForm = (): TradingBuyFormContextProps => {
         setAmountLimits: (limits: TradingAmountLimitProps | undefined) => {
             dispatch(tradingBuyActions.setAmountLimits(limits));
         },
-        clearQuotesAndParams: () => {
-            dispatch(tradingBuyActions.clearQuotesAndParams());
-        },
     };
 };

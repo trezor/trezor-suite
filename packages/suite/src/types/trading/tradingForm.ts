@@ -116,7 +116,6 @@ export interface TradingBuyFormContextProps
 
     setAmountLimits: (limits?: AmountLimitProps) => void;
     methods: UseFormReturn<TradingBuyFormProps>;
-    clearQuotesAndParams: () => void;
 }
 
 export interface TradingSellFormContextProps
@@ -147,7 +146,6 @@ export interface TradingSellFormContextProps
     methods: UseFormReturn<TradingSellFormProps>;
     showReserveBanner: boolean;
     setShowReserveBanner: (showReserveBanner: boolean) => void;
-    clearQuotesAndParams: () => void;
 }
 
 export type TradingExchangeConfirmTradeProps = {
