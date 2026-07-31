@@ -130,9 +130,10 @@ export const SelectFeeModal = ({ data }: SelectAccountModalProps) => {
     const onSend = handleSubmit(data => {
         const { selectedFee, feePerUnit } = data;
         if (selectedFee === 'custom') {
-            dispatch(onReceiveFee({ type: 'compose-custom', value: feePerUnit }));
+            dispatch(onReceiveFee({ type: 'select-fee-custom', value: feePerUnit }));
+        } else {
+            dispatch(onReceiveFee({ type: 'select-fee', value: selectedFee ?? 'normal' }));
         }
-        dispatch(onReceiveFee({ type: 'send', value: selectedFee ?? 'normal' }));
     });
     const onChangeAccount = () => {
         dispatch(onReceiveFee({ type: 'change-account' }));

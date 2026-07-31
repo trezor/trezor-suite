@@ -2,6 +2,7 @@ import type { ThpPairingMethod } from '@trezor/protocol';
 
 import { type UI_EVENT } from './ui-request';
 import type { DiscoveryAccount } from '../types/account';
+import type { FeeLevel } from '../types/fees';
 import type { LocalFirmwares } from '../types/settings';
 
 /*
@@ -73,17 +74,9 @@ export interface UiResponseAccount {
 export interface UiResponseFee {
     type: typeof UI_RESPONSE.RECEIVE_FEE;
     payload:
-        | {
-              type: 'compose-custom';
-              value: string;
-          }
-        | {
-              type: 'change-account';
-          }
-        | {
-              type: 'send';
-              value: string;
-          };
+        | { type: 'change-account' }
+        | { type: 'select-fee'; value: Exclude<FeeLevel['label'], 'custom'> }
+        | { type: 'select-fee-custom'; value: string };
 }
 
 export interface UiResponseDiscoveryAccounts {
