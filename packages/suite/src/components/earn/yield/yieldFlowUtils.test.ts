@@ -1,6 +1,6 @@
 import { getYieldFlowStepSequence } from '@suite-common/wallet-core';
 
-import { getYieldFlowSteps } from './yieldFlowUtils';
+import { getYieldFlowSteps, getYieldUnwrapDefaultAmount } from './yieldFlowUtils';
 
 const depositSequence = getYieldFlowStepSequence({ flowType: 'deposit' });
 const depositWithWrapSequence = getYieldFlowStepSequence({
@@ -12,6 +12,48 @@ const withdrawWithUnwrapSequence = getYieldFlowStepSequence({
     flowType: 'withdraw',
     isWrappedNativeVault: true,
 });
+
+const WETH_ADDRESS = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2';
+const VAULT_ADDRESS = '0x58d97b57bb95320f9a05dc918aef65434969c2b2';
+
+// Vault price-per-share: 1 share (trSHETHp) is worth 0.02 WETH.
+const pricePerShareState = {
+    price: '0.02',
+    shareToken: {
+        symbol: 'trSHETHp',
+        network: 'ethereum',
+        name: 'Trezor Staked Holesky ETH',
+        decimals: 18,
+        address: VAULT_ADDRESS,
+    },
+    quoteToken: {
+        symbol: 'WETH',
+        network: 'ethereum',
+        name: 'Wrapped Ether',
+        decimals: 18,
+        address: WETH_ADDRESS,
+    },
+};
+
+const baseUnwrapParams: Parameters<typeof getYieldUnwrapDefaultAmount>[0] = {
+    flowType: 'withdraw',
+    withdrawnAmount: '0.5',
+    token: {
+        networkSymbol: 'eth',
+        symbol: 'WETH',
+        decimals: 18,
+        contractAddress: WETH_ADDRESS,
+        balance: '5',
+    },
+    receiptToken: {
+        networkSymbol: 'eth',
+        symbol: 'trSHETHp',
+        decimals: 18,
+        contractAddress: VAULT_ADDRESS,
+    },
+    pricePerShareState,
+    fallbackAmount: '5',
+};
 
 describe('yieldFlowUtils', () => {
     describe('getYieldFlowSteps', () => {
@@ -97,6 +139,52 @@ describe('yieldFlowUtils', () => {
                 unwrap: { state: 'done', indicator: { index: 0, total: 1 } },
                 complete: { state: 'pending', indicator: { index: 0, total: 1 } },
             });
+        });
+    });
+
+    describe('getYieldUnwrapDefaultAmount', () => {
+        // The regression from #30559: the unwrap step must not default to the full WETH balance.
+        it('defaults to the withdrawn asset amount for an asset (withdraw) input', () => {
+            expect(
+                getYieldUnwrapDefaultAmount({
+                    ...baseUnwrapParams,
+                    flowType: 'withdraw',
+                    withdrawnAmount: '0.5',
+                }),
+            ).toBe('0.5');
+        });
+
+        it('converts the withdrawn shares to their asset equivalent for a redeem input', () => {
+            expect(
+                getYieldUnwrapDefaultAmount({
+                    ...baseUnwrapParams,
+                    flowType: 'redeem',
+                    withdrawnAmount: '1',
+                }),
+            ).toBe('0.02');
+        });
+
+        it('falls back to the balance when the withdrawn amount is zero', () => {
+            expect(
+                getYieldUnwrapDefaultAmount({
+                    ...baseUnwrapParams,
+                    flowType: 'withdraw',
+                    withdrawnAmount: '0',
+                    fallbackAmount: '5',
+                }),
+            ).toBe('5');
+        });
+
+        it('falls back to the balance when shares cannot be converted without a price', () => {
+            expect(
+                getYieldUnwrapDefaultAmount({
+                    ...baseUnwrapParams,
+                    flowType: 'redeem',
+                    withdrawnAmount: '1',
+                    pricePerShareState: undefined,
+                    fallbackAmount: '5',
+                }),
+            ).toBe('5');
         });
     });
 });
