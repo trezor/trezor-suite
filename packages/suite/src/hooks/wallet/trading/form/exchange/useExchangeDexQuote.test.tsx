@@ -11,6 +11,7 @@ import {
     type TradingExchangeFormProps,
 } from '@suite-common/trading';
 import { mockAccountKey, mockWalletAccount } from '@suite-common/wallet-types/mocks';
+import { buildApprovalTransactionData } from '@suite-common/wallet-utils';
 
 import { useExchangeDexQuote } from './useExchangeDexQuote';
 
@@ -217,5 +218,41 @@ describe('useExchangeDexQuote', () => {
 
         expect(mockUpdateFeeInfo).toHaveBeenCalled();
         expect(mockComposeRequest).toHaveBeenCalled();
+    });
+
+    it('recomposes when an approval transaction changes to a revoke transaction', async () => {
+        const spender = '0x1231deb6f5749ef6ce6943a275a1d3e7486f4eae';
+        const approvalTransactionData = buildApprovalTransactionData({
+            spender,
+            amount: '9475047',
+        });
+        const revokeTransactionData = buildApprovalTransactionData({ spender, amount: '0' });
+        const { result } = renderExchangeDexQuote({
+            defaultValues: buildDefaults(),
+        });
+
+        await waitFor(() => {
+            expect(mockComposeRequest).toHaveBeenCalled();
+        });
+        mockUpdateFeeInfo.mockClear();
+        mockComposeRequest.mockClear();
+
+        act(() => {
+            result.current.methods.setValue('transactionData', approvalTransactionData);
+        });
+        await waitFor(() => {
+            expect(mockComposeRequest).toHaveBeenCalled();
+        });
+        mockUpdateFeeInfo.mockClear();
+        mockComposeRequest.mockClear();
+
+        act(() => {
+            result.current.methods.setValue('transactionData', revokeTransactionData);
+        });
+
+        await waitFor(() => {
+            expect(mockUpdateFeeInfo).toHaveBeenCalledTimes(1);
+            expect(mockComposeRequest).toHaveBeenCalledTimes(1);
+        });
     });
 });
