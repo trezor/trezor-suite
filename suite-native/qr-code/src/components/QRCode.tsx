@@ -12,7 +12,6 @@ type QRCodeProps = {
     paddingHorizontal?: NativeSpacing;
     paddingVertical?: NativeSpacing;
     centerIcon?: ReactElement;
-    shouldUseStandardCenterIconBackground?: boolean;
 };
 
 const SCREEN_WIDTH = Dimensions.get('screen').width;
@@ -53,17 +52,13 @@ const qrCodeCenterIconWrapperStyle = prepareNativeStyle(() => ({
     justifyContent: 'center',
 }));
 
-const qrCodeCenterIconStyle = prepareNativeStyle<{
-    shouldUseStandardCenterIconBackground?: boolean;
-}>((utils, { shouldUseStandardCenterIconBackground }) => ({
+const qrCodeCenterIconStyle = prepareNativeStyle(utils => ({
     maxWidth: QR_CENTER_ICON_MAX_RATIO,
     maxHeight: QR_CENTER_ICON_MAX_RATIO,
     padding: QR_CENTER_ICON_PADDING,
     borderRadius: utils.borders.radii.round,
     overflow: 'hidden',
-    backgroundColor: shouldUseStandardCenterIconBackground
-        ? colorVariants.standard.surfaceFillRaised
-        : utils.colors.surfaceFillRaised,
+    backgroundColor: colorVariants.standard.surfaceFillRaised,
 }));
 
 export const QRCode = ({
@@ -72,7 +67,6 @@ export const QRCode = ({
     paddingHorizontal,
     paddingVertical,
     centerIcon,
-    shouldUseStandardCenterIconBackground,
 }: QRCodeProps) => {
     const { applyStyle } = useNativeStyles();
 
@@ -98,13 +92,7 @@ export const QRCode = ({
                 />
                 {hasCenterIcon && (
                     <View pointerEvents="none" style={applyStyle(qrCodeCenterIconWrapperStyle)}>
-                        <View
-                            style={applyStyle(qrCodeCenterIconStyle, {
-                                shouldUseStandardCenterIconBackground,
-                            })}
-                        >
-                            {centerIcon}
-                        </View>
+                        <View style={applyStyle(qrCodeCenterIconStyle)}>{centerIcon}</View>
                     </View>
                 )}
             </View>
