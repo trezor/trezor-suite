@@ -60,8 +60,8 @@ export type NavigationItemProps = {
     preserveParams?: boolean;
     isActive?: boolean;
     hasIndicator?: boolean;
-    isIndicatorAnimated?: boolean;
     hasNewContentIndicator?: boolean;
+    isNewContentIndicatorAnimated?: boolean;
     'data-testid'?: string;
     className?: string;
     values?: ExtendedMessageDescriptor['values'];
@@ -84,8 +84,8 @@ const NavItem = ({
     goToRoute,
     isActive,
     hasIndicator,
-    isIndicatorAnimated,
     hasNewContentIndicator,
+    isNewContentIndicatorAnimated,
     'data-testid': dataTest,
     values,
     preserveParams,
@@ -147,7 +147,11 @@ const NavItem = ({
             >
                 <StatusBadge
                     isShown={isIconIndicatorShown}
-                    isAnimated={hasIndicator === true && isIndicatorAnimated}
+                    isAnimated={
+                        hasIndicator === true
+                            ? isIconIndicatorShown
+                            : isNewContentDotShown && isNewContentIndicatorAnimated
+                    }
                     intent={iconIndicatorIntent}
                     offset={{ x: -6, y: 5 }}
                 >
@@ -178,8 +182,9 @@ const NavItem = ({
                         </Paragraph>
                         {isNewContentBadgeShown && (
                             <Badge
-                                size="small"
+                                size="medium"
                                 intent="accentViolet"
+                                isAnimated={isNewContentIndicatorAnimated}
                                 data-testid={`${navigationItemTestId}/new-content-indicator`}
                             >
                                 <Translation id="TR_NEW" />

@@ -12,7 +12,6 @@ export { useAnonymityStatus } from './useAnonymityStatus';
 export { useDispatch } from './useDispatch';
 export { useDisplayMode } from './useDisplayMode';
 export { useAppShortcuts } from './useAppShortcuts';
-export { useActivityNotificationPhase } from './useActivityNotificationPhase';
 
 // replaced in suite-native
 export { useLocales } from 'src/hooks/suite/useLocales';

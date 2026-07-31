@@ -90,7 +90,7 @@ export * from './components/Image/Image';
 export * from './components/Image/SvgImage';
 export * from './components/Image/images';
 export { DotIndicator, type DotIndicatorProps } from './components/DotIndicator/DotIndicator';
-export { Dot, type DotProps, DOT_RINGING_DURATION } from './components/Dot/Dot';
+export { Dot, type DotProps } from './components/Dot/Dot';
 export { dotIntents, type DotIntent } from './components/Dot/types';
 export {
     StatusBadge,
