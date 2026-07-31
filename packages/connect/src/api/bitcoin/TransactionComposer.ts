@@ -8,7 +8,6 @@ import type {
     ComposedInputs,
     DiscoveryAccount,
     FeeLevel,
-    SelectFeeLevel,
 } from '@trezor/connect-common';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 import type {
@@ -135,26 +134,8 @@ export class TransactionComposer {
         this.customFee = tx.type === 'final' ? tx.feePerByte : fee;
     }
 
-    getFeeLevelList(): SelectFeeLevel[] {
-        return this.levels.map(level => {
-            const tx = this.composed[level.label];
-            if (tx?.type === 'final') {
-                return {
-                    name: level.label,
-                    fee: tx.fee,
-                    feePerByte: level.feePerUnit,
-                    blocks: level.blocks,
-                    minutes: level.blocks * this.coinInfo.blockTime,
-                    total: tx.totalSpent,
-                };
-            } else {
-                return {
-                    name: level.label,
-                    fee: '0',
-                    disabled: true,
-                };
-            }
-        });
+    getFeeLevelList(): FeeLevel[] {
+        return this.levels.filter(level => this.composed[level.label]?.type === 'final');
     }
 
     private compose(feeRate: string): ComposeResult {
