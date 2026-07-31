@@ -4,7 +4,6 @@ import { useFormContext, useWatch } from 'react-hook-form';
 import { Translation, useTranslation } from '@suite/intl';
 import type { TranslationKey } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
-import { formInputsMaxLength } from '@suite-common/validators';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import type { YieldFlowFormValues } from '@suite-common/wallet-core';
 import { toTokenAddress } from '@suite-common/wallet-types';
@@ -14,6 +13,14 @@ import { NumberInput } from '@trezor/product-components';
 import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
 import { useSelector } from 'src/hooks/suite';
 import { validateDecimals } from 'src/utils/suite/validation';
+
+import { TruncatedAmount } from './TruncatedAmount';
+
+const FIAT_DECIMALS = 2;
+// Amount inputs never need the 255-char default; cap them so a long value can't stretch the field
+// (an over-long value also breaks the card's max-width and lets sibling amounts grow with it).
+const FIAT_INPUT_MAX_LENGTH = 18;
+const AMOUNT_INPUT_MAX_LENGTH = 30;
 
 type YieldAmountCardSummaryProps = {
     value: ReactNode;
@@ -35,12 +42,20 @@ export type YieldApproxFiat = {
     tokenContractAddress?: string | null;
 };
 
+export type YieldAmountCardFiatToggleProps = {
+    currency: 'crypto' | 'fiat';
+    fiatSymbol: string;
+    onToggle: () => void;
+    onFiatAmountChange: (value: string) => void;
+};
+
 type YieldAmountCardProps = {
     tokenSymbol: string;
     decimals?: number;
     summary?: YieldAmountCardSummaryProps;
     heading?: YieldAmountCardHeadingProps;
     unitToggle?: YieldAmountCardUnitToggleProps;
+    fiatToggle?: YieldAmountCardFiatToggleProps;
     warning?: ReactNode;
     isDisabled?: boolean;
     approxFiat?: YieldApproxFiat;
@@ -52,6 +67,7 @@ export const YieldAmountCard = ({
     summary,
     heading,
     unitToggle,
+    fiatToggle,
     warning,
     isDisabled = false,
     approxFiat,
@@ -64,6 +80,8 @@ export const YieldAmountCard = ({
         trigger,
     } = useFormContext<YieldFlowFormValues>();
 
+    const isFiatMode = fiatToggle?.currency === 'fiat';
+
     const rules = useMemo(
         () =>
             decimals !== undefined
@@ -72,13 +90,47 @@ export const YieldAmountCard = ({
         [translationString, decimals],
     );
 
+    const fiatRules = useMemo(
+        () => ({
+            validate: {
+                decimals: validateDecimals(translationString, { decimals: FIAT_DECIMALS }),
+            },
+        }),
+        [translationString],
+    );
+
     const amountInput = useWatch({ control, name: 'amountInput' });
+    const fiatInput = useWatch({ control, name: 'fiatInput' });
 
     useEffect(() => {
         if (amountInput) {
             trigger('amountInput');
         }
     }, [amountInput, trigger]);
+
+    useEffect(() => {
+        if (fiatInput && isFiatMode) {
+            trigger('fiatInput');
+        }
+    }, [fiatInput, isFiatMode, trigger]);
+
+    // The switch offers the opposite unit to the one currently active.
+    const fiatSwitch = fiatToggle ? (
+        <TextButton
+            type="button"
+            size="small"
+            onClick={fiatToggle.onToggle}
+            isUnderlined
+            data-testid="@yield/form/fiat-switch"
+        >
+            <Translation
+                id="TR_EARN_ENTER_AMOUNT_IN"
+                values={{ currency: isFiatMode ? tokenSymbol : fiatToggle.fiatSymbol }}
+            />
+        </TextButton>
+    ) : undefined;
+
+    const activeError = isFiatMode ? errors.fiatInput : errors.amountInput;
 
     return (
         <Card paddingType="none">
@@ -87,7 +139,11 @@ export const YieldAmountCard = ({
                     <Text typographyStyle="body-md">
                         <Translation id={heading?.amountLabelTranslationId ?? 'AMOUNT'} />
                     </Text>
-                    {unitToggle && (
+                    {fiatSwitch}
+                </Row>
+                {/* Only the withdraw flow passes a unit toggle; it gets its own row below the label. */}
+                {unitToggle && (
+                    <Row justifyContent="flex-end" width="100%">
                         <TextButton
                             type="button"
                             size="small"
@@ -99,31 +155,56 @@ export const YieldAmountCard = ({
                                 values={{ tokenSymbol: unitToggle.otherTokenSymbol }}
                             />
                         </TextButton>
-                    )}
-                </Row>
-                <NumberInput
-                    name="amountInput"
-                    data-testid="@yield/form/amount-input"
-                    locale={locale}
-                    control={control}
-                    rules={rules}
-                    maxLength={formInputsMaxLength.amount}
-                    isDisabled={isDisabled}
-                    rightContent={
-                        <Text typographyStyle="body-md" intent="neutral" priority="secondary">
-                            {tokenSymbol}
-                        </Text>
-                    }
-                />
+                    </Row>
+                )}
+                {isFiatMode ? (
+                    <NumberInput
+                        name="fiatInput"
+                        data-testid="@yield/form/fiat-input"
+                        locale={locale}
+                        control={control}
+                        rules={fiatRules}
+                        onChange={fiatToggle?.onFiatAmountChange}
+                        maxLength={FIAT_INPUT_MAX_LENGTH}
+                        isDisabled={isDisabled}
+                        rightContent={
+                            <Text typographyStyle="body-md" intent="neutral" priority="secondary">
+                                {fiatToggle?.fiatSymbol}
+                            </Text>
+                        }
+                    />
+                ) : (
+                    <NumberInput
+                        name="amountInput"
+                        data-testid="@yield/form/amount-input"
+                        locale={locale}
+                        control={control}
+                        rules={rules}
+                        maxLength={AMOUNT_INPUT_MAX_LENGTH}
+                        isDisabled={isDisabled}
+                        rightContent={
+                            <Text typographyStyle="body-md" intent="neutral" priority="secondary">
+                                {tokenSymbol}
+                            </Text>
+                        }
+                    />
+                )}
 
                 {summary && (
                     <Row justifyContent="space-between" alignItems="center" gap={8} width="100%">
-                        <Row alignItems="center" gap={8}>
+                        <Row alignItems="center" gap={8} minWidth={0}>
                             <Text typographyStyle="body-md" intent="neutral" priority="secondary">
-                                <Translation id={summary.labelTranslationId} />
-                                {': '}
-                                {summary.value}
+                                <Translation id={summary.labelTranslationId} />:
                             </Text>
+                            <TruncatedAmount>
+                                <Text
+                                    typographyStyle="body-md"
+                                    intent="neutral"
+                                    priority="secondary"
+                                >
+                                    {summary.value}
+                                </Text>
+                            </TruncatedAmount>
                             {summary.onMaxClick && (
                                 <Button
                                     type="button"
@@ -163,11 +244,8 @@ export const YieldAmountCard = ({
                     </Row>
                 )}
 
-                {errors.amountInput?.message && (
-                    <Banner
-                        intent="warning"
-                        description={<Text>{errors.amountInput.message}</Text>}
-                    />
+                {activeError?.message && (
+                    <Banner intent="warning" description={<Text>{activeError.message}</Text>} />
                 )}
 
                 {warning}

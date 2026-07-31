@@ -5,12 +5,13 @@ import type {
     YieldFlowDisplayToken,
     YieldPendingTransactionState,
 } from '@suite-common/wallet-core';
-import { Button, Card, Column, Row, Text } from '@trezor/components';
+import { Box, Button, Card, Column, Row, Text } from '@trezor/components';
 import { TokenIcon } from '@trezor/product-components';
 
 import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
 
-import { YieldAmountCard } from './YieldAmountCard';
+import { TruncatedAmount } from './TruncatedAmount';
+import { YieldAmountCard, type YieldAmountCardFiatToggleProps } from './YieldAmountCard';
 import { YieldPendingTransaction } from './YieldPendingTransaction';
 
 type YieldWrapStepProps = {
@@ -26,6 +27,7 @@ type YieldWrapStepProps = {
     isSubmitDisabled?: boolean;
     warning?: ReactNode;
     pendingTransaction?: YieldPendingTransactionState;
+    fiatToggle?: YieldAmountCardFiatToggleProps;
     onPendingTxClick?: (txid: string) => void;
 };
 
@@ -42,6 +44,7 @@ export const YieldWrapStep = ({
     isSubmitDisabled = false,
     warning,
     pendingTransaction,
+    fiatToggle,
     onPendingTxClick,
 }: YieldWrapStepProps) => (
     <Column gap={16}>
@@ -65,16 +68,17 @@ export const YieldWrapStep = ({
                 ),
                 onMaxClick: pendingTransaction ? undefined : onMaxClick,
             }}
+            fiatToggle={pendingTransaction ? undefined : fiatToggle}
             warning={warning}
         />
 
         {shouldShowReceivingRow && (
             <Card type="contrast" paddingType="small">
-                <Row justifyContent="space-between" alignItems="center" width="100%">
+                <Row justifyContent="space-between" alignItems="center" width="100%" gap={8}>
                     <Text typographyStyle="body-md">
                         <Translation id="TR_EARN_YIELD_WRAP_RECEIVING" />
                     </Text>
-                    <Row alignItems="center" gap={8}>
+                    <Row alignItems="center" gap={8} minWidth={0}>
                         <TokenIcon
                             size={20}
                             symbol={token.networkSymbol}
@@ -83,9 +87,16 @@ export const YieldWrapStep = ({
                             showNetworkIcon
                             isBordered={false}
                         />
-                        <Text typographyStyle="body-md">
-                            <FormattedCryptoAmount value={receivingAmount} symbol={token.symbol} />
-                        </Text>
+                        <Box minWidth={0}>
+                            <TruncatedAmount>
+                                <Text typographyStyle="body-md" ellipsisLineCount={1}>
+                                    <FormattedCryptoAmount
+                                        value={receivingAmount}
+                                        symbol={token.symbol}
+                                    />
+                                </Text>
+                            </TruncatedAmount>
+                        </Box>
                     </Row>
                 </Row>
             </Card>

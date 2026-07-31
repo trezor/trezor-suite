@@ -44,6 +44,7 @@ export const useYieldWithdraw = ({
     }, []);
 
     const selectMaxWithdraw = useCallback(() => {
+        // Max redeems the whole share balance; shares have no fiat rate, so the input stays in crypto.
         if (flowType === 'redeem') {
             setAmountInput(depositedSharesAmount);
 

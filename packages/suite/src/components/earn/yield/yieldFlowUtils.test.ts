@@ -1,6 +1,18 @@
 import { getYieldFlowStepSequence } from '@suite-common/wallet-core';
 
-import { getYieldFlowSteps, getYieldUnwrapDefaultAmount } from './yieldFlowUtils';
+import {
+    getYieldCryptoInputValue,
+    getYieldFiatInputValue,
+    getYieldFiatRateToken,
+    getYieldFlowSteps,
+    getYieldMaxFiatInputValue,
+    getYieldUnwrapDefaultAmount,
+} from './yieldFlowUtils';
+
+// Checksummed WETH address; the helper lower-cases it for the (evm) rate key.
+const WETH = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2';
+const WETH_LOWER = '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2';
+const ethToken = { networkSymbol: 'eth', contractAddress: WETH } as const;
 
 const depositSequence = getYieldFlowStepSequence({ flowType: 'deposit' });
 const depositWithWrapSequence = getYieldFlowStepSequence({
@@ -185,6 +197,116 @@ describe('yieldFlowUtils', () => {
                     fallbackAmount: '5',
                 }),
             ).toBe('5');
+        });
+    });
+
+    describe('getYieldFiatRateToken', () => {
+        it('prices wrap/unwrap by the account native symbol (no token address)', () => {
+            expect(
+                getYieldFiatRateToken({
+                    step: 'wrap',
+                    flowType: 'deposit',
+                    accountSymbol: 'eth',
+                    token: ethToken,
+                }),
+            ).toEqual({ symbol: 'eth' });
+
+            expect(
+                getYieldFiatRateToken({
+                    step: 'unwrap',
+                    flowType: 'withdraw',
+                    accountSymbol: 'eth',
+                    token: ethToken,
+                }),
+            ).toEqual({ symbol: 'eth' });
+        });
+
+        it('prices deposit/withdraw by the asset token contract address (lower-cased)', () => {
+            expect(
+                getYieldFiatRateToken({
+                    step: 'action',
+                    flowType: 'deposit',
+                    accountSymbol: 'eth',
+                    token: ethToken,
+                }),
+            ).toEqual({ symbol: 'eth', tokenAddress: WETH_LOWER });
+
+            expect(
+                getYieldFiatRateToken({
+                    step: 'action',
+                    flowType: 'withdraw',
+                    accountSymbol: 'eth',
+                    token: ethToken,
+                }),
+            ).toEqual({ symbol: 'eth', tokenAddress: WETH_LOWER });
+        });
+
+        it('returns null when fiat entry is impossible (redeeming shares or no token address)', () => {
+            expect(
+                getYieldFiatRateToken({
+                    step: 'action',
+                    flowType: 'redeem',
+                    accountSymbol: 'eth',
+                    token: ethToken,
+                }),
+            ).toBeNull();
+
+            expect(
+                getYieldFiatRateToken({
+                    step: 'action',
+                    flowType: 'deposit',
+                    accountSymbol: 'eth',
+                    token: null,
+                }),
+            ).toBeNull();
+
+            expect(
+                getYieldFiatRateToken({
+                    step: 'action',
+                    flowType: 'deposit',
+                    accountSymbol: 'eth',
+                    token: { networkSymbol: 'eth', contractAddress: null },
+                }),
+            ).toBeNull();
+        });
+    });
+
+    describe('getYieldFiatInputValue', () => {
+        it('converts crypto to fiat with two decimals', () => {
+            expect(getYieldFiatInputValue({ amount: '2', rate: 1500 })).toBe('3000.00');
+            expect(getYieldFiatInputValue({ amount: '0.001', rate: 1234.5 })).toBe('1.23');
+        });
+
+        it('returns an empty string for an empty amount or missing rate', () => {
+            expect(getYieldFiatInputValue({ amount: '', rate: 1500 })).toBe('');
+            expect(getYieldFiatInputValue({ amount: '2', rate: undefined })).toBe('');
+        });
+    });
+
+    describe('getYieldMaxFiatInputValue', () => {
+        it('rounds the max fiat down so it never converts back above the balance', () => {
+            // 0.1 * 3333.35 = 333.335 → down = 333.33 (half-up would overstate it as 333.34).
+            expect(getYieldMaxFiatInputValue({ amount: '0.1', rate: 3333.35 })).toBe('333.33');
+            expect(getYieldFiatInputValue({ amount: '0.1', rate: 3333.35 })).toBe('333.34');
+        });
+
+        it('returns an empty string for an empty amount or missing rate', () => {
+            expect(getYieldMaxFiatInputValue({ amount: '', rate: 1500 })).toBe('');
+            expect(getYieldMaxFiatInputValue({ amount: '1', rate: undefined })).toBe('');
+        });
+    });
+
+    describe('getYieldCryptoInputValue', () => {
+        it('converts fiat to crypto, trimming trailing zeros and capping at the token decimals', () => {
+            expect(getYieldCryptoInputValue({ fiat: '3000', rate: 1500, decimals: 18 })).toBe('2');
+            expect(getYieldCryptoInputValue({ fiat: '10', rate: 3, decimals: 6 })).toBe('3.333333');
+        });
+
+        it('returns an empty string for an empty fiat or missing rate', () => {
+            expect(getYieldCryptoInputValue({ fiat: '', rate: 1500, decimals: 18 })).toBe('');
+            expect(getYieldCryptoInputValue({ fiat: '100', rate: undefined, decimals: 6 })).toBe(
+                '',
+            );
         });
     });
 });
