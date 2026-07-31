@@ -227,24 +227,37 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
         // try to compose multiple transactions with different fee levels
         // check if any of composed transactions is valid
         const hasFunds = composer.composeAllFeeLevels();
+
         if (!hasFunds) {
-            // show error view
-            context.sendCoreMessage(createUiMessage(UI_REQUEST.INSUFFICIENT_FUNDS));
-            // wait few seconds...
-            await resolveAfter(2000);
+            const feePerUnit = String(coinInfo.minFee);
+            const minFeeTx = composer.composeCustomFee(feePerUnit);
 
-            // and go back to discovery
-            return this.interactiveFlow(context);
+            if (minFeeTx.type === 'final') {
+                context.sendCoreMessage(
+                    createUiMessage(UI_REQUEST.SELECT_FEE, {
+                        feeLevels: [{ label: 'custom', blocks: -1, feePerUnit }],
+                        coinInfo: this.params.coinInfo,
+                    }),
+                );
+            } else {
+                // show error view
+                context.sendCoreMessage(createUiMessage(UI_REQUEST.INSUFFICIENT_FUNDS));
+                // wait few seconds...
+                await resolveAfter(2000);
+
+                // and go back to discovery
+                return this.interactiveFlow(context);
+            }
+        } else {
+            // set select account view
+            // this view will be updated from discovery events
+            context.sendCoreMessage(
+                createUiMessage(UI_REQUEST.SELECT_FEE, {
+                    feeLevels: composer.getFeeLevelList(),
+                    coinInfo: this.params.coinInfo,
+                }),
+            );
         }
-
-        // set select account view
-        // this view will be updated from discovery events
-        context.sendCoreMessage(
-            createUiMessage(UI_REQUEST.SELECT_FEE, {
-                feeLevels: composer.getFeeLevelList(),
-                coinInfo: this.params.coinInfo,
-            }),
-        );
 
         // wait for fee selection
         const resp = await context.createUiPromise(UI_RESPONSE.RECEIVE_FEE, this.getDevice())
