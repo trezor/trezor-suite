@@ -5,6 +5,7 @@ on:
     # Runs at midnight UTC every day at 01:00 AM CET
     - cron: "0 0 * * *"
   pull_request:
+    branches: [__throwaway_disabled__] # [throwaway] neutralize PR trigger on this branch to save CI
     paths:
       - "packages/blockchain-link/**"
       - "packages/blockchain-link-utils/**"

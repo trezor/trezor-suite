@@ -5,6 +5,7 @@ import { isNotUndefined } from '@trezor/utils';
 
 import * as autoStart from './auto-start';
 import * as autoUpdater from './auto-updater';
+import * as backendRequestLogger from './backend-request-logger';
 import * as bluetooth from './bluetooth';
 import * as bridge from './bridge';
 import * as coinjoin from './coinjoin';
@@ -48,6 +49,8 @@ import * as windowControls from './window-controls';
 export * from './module';
 
 const MODULES: Module[] = [
+    // [throwaway] install backend request logging before any backend traffic
+    backendRequestLogger,
     // Event Logging
     eventLogging,
     eventLoggingProcess,

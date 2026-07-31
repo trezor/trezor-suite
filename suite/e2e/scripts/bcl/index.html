@@ -1,0 +1,316 @@
+<!doctype html>
+<!--
+  [throwaway: blockchain-link request baseline] Dependency-free viewer.
+  Fetches ./runs.json + ./runs/summary-<sha>.json from the SAME origin (no CORS, no build, no CDN).
+  Deployed to https://dev.suite.sldev.cz/coverage/e2e/bcl-baseline/index.html
+-->
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>blockchain-link request baseline</title>
+    <style>
+      :root { --bg:#0e1116; --card:#171b22; --fg:#e6e6e6; --muted:#8a93a0; --line:#262c36;
+              --up:#e5534b; --down:#3fb950; --accent:#4aa3ff; --ghost:#3a4150; --chip:#1f2530; }
+      * { box-sizing: border-box; }
+      body { margin:0; background:var(--bg); color:var(--fg);
+             font:14px/1.5 -apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif; }
+      a { color:var(--accent); }
+      header { padding:18px 22px; border-bottom:1px solid var(--line); }
+      h1 { font-size:17px; margin:0 0 4px; }
+      .sub { color:var(--muted); font-size:12px; }
+      main { padding:18px 22px; max-width:1180px; }
+      .intro { background:var(--card); border:1px solid var(--line); border-radius:8px;
+               padding:14px 16px; margin-bottom:16px; font-size:13px; color:#cdd3db; }
+      .intro b { color:var(--fg); }
+      details.glossary { background:var(--card); border:1px solid var(--line); border-radius:8px;
+                         padding:2px 16px; margin-bottom:18px; }
+      details.glossary > summary { cursor:pointer; padding:11px 0; font-weight:600; font-size:13px; }
+      dl { margin:4px 0 12px; display:grid; grid-template-columns:150px 1fr; gap:6px 16px; font-size:13px; }
+      dt { color:var(--accent); font-weight:600; }
+      dd { margin:0; color:#cdd3db; }
+      .controls { display:flex; gap:14px; align-items:center; flex-wrap:wrap; margin-bottom:16px; }
+      select { background:var(--card); color:var(--fg); border:1px solid var(--line);
+               border-radius:6px; padding:6px 9px; font:inherit; }
+      label { color:var(--muted); font-size:12px; margin-right:5px; }
+      section h2 { font-size:13px; color:var(--muted); text-transform:uppercase; letter-spacing:.05em; margin-bottom:4px; }
+      section .hint { color:var(--muted); font-size:12px; margin:0 0 10px; }
+      .tblWrap { overflow:visible; }
+      table { width:100%; border-collapse:collapse; background:var(--card);
+              border:1px solid var(--line); border-radius:8px; margin-bottom:26px; }
+      th, td { padding:8px 11px; text-align:right; border-bottom:1px solid var(--line); }
+      th:first-child, td:first-child { text-align:left; }
+      thead th { color:var(--muted); font-weight:600; font-size:12px; background:#12161c; position:relative; }
+      thead .grp th { text-align:center; color:#6f7885; border-bottom:1px solid var(--line); }
+      tbody tr.coinRow:hover { background:#12161c; }
+      tbody tr:last-child td { border-bottom:0; }
+      .coinName { cursor:pointer; font-weight:600; user-select:none; }
+      .coinName .caret { color:var(--muted); font-size:11px; margin-right:5px; display:inline-block; width:9px; }
+      .delta { font-size:11px; margin-left:6px; }
+      .up { color:var(--up); } .down { color:var(--down); } .muted { color:var(--muted); }
+      .val { font-variant-numeric:tabular-nums; }
+      /* header tooltip */
+      th .tip { border-bottom:1px dotted #5b6472; cursor:help; }
+      th .tip .box { visibility:hidden; opacity:0; transition:opacity .1s; position:absolute; z-index:20;
+                     left:50%; transform:translateX(-50%); top:calc(100% + 6px); width:230px;
+                     background:#0b0e13; border:1px solid var(--line); border-radius:6px; padding:9px 11px;
+                     text-align:left; font-weight:400; color:#cdd3db; font-size:12px; line-height:1.45;
+                     box-shadow:0 6px 20px rgba(0,0,0,.5); }
+      th .tip:hover .box { visibility:visible; opacity:1; }
+      /* method detail */
+      tr.detail td { background:#0f1319; padding:0; }
+      .methods { display:flex; gap:32px; padding:12px 16px 14px 30px; flex-wrap:wrap; }
+      .methods .col { min-width:220px; }
+      .methods h4 { margin:0 0 6px; font-size:12px; color:var(--muted); text-transform:uppercase; letter-spacing:.04em; }
+      .methods .m { display:flex; justify-content:space-between; gap:14px; font-size:12px; padding:2px 0; border-bottom:1px solid #191d25; }
+      .methods .m .cnt { font-variant-numeric:tabular-nums; color:#cdd3db; }
+      .methods .empty { color:var(--muted); font-size:12px; }
+      /* bars */
+      .bars .coin { margin:0 0 14px; }
+      .bars .coin > .name { font-weight:600; margin-bottom:5px; }
+      .metric { display:grid; grid-template-columns:150px 1fr 190px; gap:10px; align-items:center; margin:3px 0; }
+      .metric .mlabel { color:var(--muted); font-size:12px; }
+      .track { background:#0b0e13; border:1px solid var(--line); border-radius:5px; height:16px; position:relative; }
+      .fill { height:100%; border-radius:4px; background:var(--accent); }
+      .fill.ghost { background:var(--ghost); position:absolute; top:0; left:0; }
+      .err { color:var(--up); padding:20px; }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>blockchain-link request baseline</h1>
+      <div class="sub" id="sub">loading…</div>
+    </header>
+    <main>
+      <div class="intro">
+        Counts how many requests Trezor Suite sends to blockchain backends, per coin, so we can
+        measure whether an optimization reduces them. <b>Lower is better.</b> Each coin is measured in
+        two phases: <b>discovery</b> (enabling the coin &amp; scanning its accounts) and <b>idle</b>
+        (the app sitting still afterwards). Every number is captured from a real desktop app run in CI.
+      </div>
+
+      <details class="glossary">
+        <summary>What do these numbers mean? (glossary)</summary>
+        <dl>
+          <dt>logical request</dt>
+          <dd>One high-level call Suite makes to the blockchain-link layer (e.g. “get account info”,
+              “estimate fee”). This is what the app <b>asks for</b>, before any per-backend fan-out.</dd>
+          <dt>backend (wire) request</dt>
+          <dd>One actual RPC / WebSocket message that <b>leaves the app to the coin’s backend server</b>.
+              Device-bridge traffic and the firmware/config CDN are excluded — only real blockchain
+              backend calls are counted.</dd>
+          <dt>amplification (amp ×)</dt>
+          <dd>backend ÷ logical. How many real backend calls each logical request explodes into.
+              <b>~1×</b> = thin (blockbook: BTC-like). <b>High</b> = fat fan-out where one logical call
+              becomes many backend calls (Solana, EVM: token accounts, per-tx fetches, staking).</dd>
+          <dt>discovery phase</dt>
+          <dd>The request burst when the coin is enabled and Suite scans its accounts to find balances
+              and history. Bounded in the log by markers.</dd>
+          <dt>idle phase</dt>
+          <dd>The app sitting idle after discovery. Measures the <b>steady-state background load</b>:
+              periodic account sync, re-sync on every new block, keep-alive pings, fiat polling.</dd>
+          <dt>idle /min</dt>
+          <dd>Idle backend requests per minute — a rate, so runs with different idle lengths compare
+              fairly.</dd>
+          <dt>before → after (diff)</dt>
+          <dd>Pick two runs to compare. A number in <span class="up">red</span> means more requests than
+              the “before” run (worse); <span class="down">green</span> means fewer (better).</dd>
+        </dl>
+        Tip: click a coin name in the table to see the per-method breakdown (which backend calls make up the total).
+      </details>
+
+      <div class="controls">
+        <span><label>view</label>
+          <select id="mode">
+            <option value="single">single run</option>
+            <option value="diff">compare (before → after)</option>
+            <option value="spread">variance across all runs</option>
+          </select>
+        </span>
+        <span id="afterWrap"><label>run (after)</label><select id="after"></select></span>
+        <span id="beforeWrap" hidden><label>compare against (before)</label><select id="before"></select></span>
+      </div>
+
+      <div id="content"><div class="err" id="err" hidden></div>
+        <section><h2 id="tblTitle">requests per coin</h2>
+          <p class="hint" id="tblHint">Hover a column header for its definition. Click a coin to expand the per-method breakdown. Lower is better.</p>
+          <div class="tblWrap"><table id="tbl">
+            <thead>
+              <tr class="grp"><th></th><th colspan="3">discovery (one-off scan)</th><th colspan="2">idle (steady state)</th></tr>
+              <tr>
+                <th>coin</th>
+                <th><span class="tip">logical<span class="box">Discovery phase: number of logical requests Suite made (one per high-level operation). What the app ASKS FOR, before per-backend fan-out.</span></span></th>
+                <th><span class="tip">backend<span class="box">Discovery phase: actual RPC/WebSocket messages sent to the coin’s backend (bridge + firmware CDN excluded). What HITS THE NETWORK.</span></span></th>
+                <th><span class="tip">amp ×<span class="box">Amplification = backend ÷ logical. How many real backend calls each logical request explodes into. ~1× thin, high = fat fan-out (Solana/EVM).</span></span></th>
+                <th><span class="tip">backend<span class="box">Idle phase (app sitting still): total backend requests during the idle window. Steady-state load: periodic sync, per-block re-sync, keep-alive pings.</span></span></th>
+                <th><span class="tip">/min<span class="box">Idle backend requests per minute. A rate, so runs with different idle lengths compare fairly.</span></span></th>
+              </tr>
+            </thead>
+            <tbody id="tbody"></tbody>
+          </table></div>
+        </section>
+        <section class="bars"><h2>discovery amplification &amp; idle rate</h2>
+          <p class="hint">Bar length is relative to the highest coin in this run. In compare mode the faded bar is the “before” run.</p>
+          <div id="bars"></div>
+        </section>
+      </div>
+    </main>
+    <script>
+      const $ = id => document.getElementById(id);
+      const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[c]));
+      const cache = {};
+      let manifest = null;
+      const expanded = {}; // coin -> bool
+
+      const fail = msg => { const e = $('err'); e.hidden = false; e.textContent = msg; };
+
+      async function loadSummary(file) {
+        if (cache[file]) return cache[file];
+        const s = await fetch('./' + file, { cache: 'no-store' }).then(r => r.json());
+        if (s.schema !== 1) throw new Error('unknown summary schema in ' + file);
+        cache[file] = s;
+        return s;
+      }
+
+      const optLabel = r => `${r.shaShort || (r.sha||'').slice(0,7)}  ·  ${(r.ts||'').replace('T',' ').replace('Z',' UTC')}  ·  [${(r.coins||[]).join(', ')}]  ·  ${r.branch||''}`;
+
+      // number cell with optional before/after delta (more requests = red/up = worse)
+      function cell(after, before, digits = 0) {
+        if (after == null) return '<td class="muted">—</td>';
+        const av = digits ? after.toFixed(digits) : after;
+        if (before == null || before === undefined) return `<td><span class="val">${av}</span></td>`;
+        const d = after - before;
+        const dv = (d > 0 ? '+' : '') + (digits ? d.toFixed(digits) : d);
+        const cls = d > 0 ? 'up' : d < 0 ? 'down' : 'muted';
+        return `<td><span class="val">${av}</span><span class="delta ${cls}">${d === 0 ? '±0' : dv}</span></td>`;
+      }
+
+      function mvals(s, coin) {
+        const c = s && s.coins[coin];
+        if (!c) return null;
+        return { dl:c.discovery.logical, dw:c.discovery.wire, amp:c.discovery.amp,
+                 iw:c.idle.wire, ir:c.idle.ratePerMin,
+                 dm:c.discovery.byMethod||{}, im:c.idle.byMethod||{} };
+      }
+
+      function methodList(m) {
+        const keys = Object.keys(m);
+        if (!keys.length) return '<div class="empty">none</div>';
+        return keys.map(k => `<div class="m"><span>${esc(k)}</span><span class="cnt">${m[k]}</span></div>`).join('');
+      }
+
+      function detailRow(coin, a) {
+        return `<tr class="detail" data-coin="${esc(coin)}"><td colspan="6"><div class="methods">
+          <div class="col"><h4>discovery — backend calls</h4>${methodList(a ? a.dm : {})}</div>
+          <div class="col"><h4>idle — backend calls</h4>${methodList(a ? a.im : {})}</div>
+        </div></td></tr>`;
+      }
+
+      function renderTable(before, after) {
+        const coins = [...new Set([...Object.keys(after.coins), ...(before ? Object.keys(before.coins) : [])])].sort();
+        const rows = [];
+        for (const coin of coins) {
+          const a = mvals(after, coin), b = before ? mvals(before, coin) : null;
+          const A = a || {}, B = b || {};
+          const caret = expanded[coin] ? '▾' : '▸';
+          rows.push(`<tr class="coinRow"><td><span class="coinName" data-coin="${esc(coin)}"><span class="caret">${caret}</span>${esc(coin)}</span></td>${
+            cell(A.dl ?? null, b ? (B.dl ?? null) : undefined)}${
+            cell(A.dw ?? null, b ? (B.dw ?? null) : undefined)}${
+            cell(A.amp ?? null, b ? (B.amp ?? null) : undefined, 2)}${
+            cell(A.iw ?? null, b ? (B.iw ?? null) : undefined)}${
+            cell(A.ir ?? null, b ? (B.ir ?? null) : undefined, 1)}</tr>`);
+          if (expanded[coin]) rows.push(detailRow(coin, a));
+        }
+        $('tbody').innerHTML = rows.join('');
+        $('tbody').querySelectorAll('.coinName').forEach(el => el.addEventListener('click', () => {
+          const c = el.getAttribute('data-coin'); expanded[c] = !expanded[c]; render();
+        }));
+      }
+
+      function bar(label, aVal, bVal, max) {
+        const pct = v => (max > 0 && v != null ? Math.max(1, (v / max) * 100) : 0);
+        const ghost = bVal != null ? `<div class="fill ghost" style="width:${pct(bVal)}%"></div>` : '';
+        return `<div class="metric"><span class="mlabel">${label}</span>
+          <div class="track">${ghost}<div class="fill" style="width:${pct(aVal)}%"></div></div>
+          <span class="val">${aVal == null ? '—' : aVal}${bVal != null ? ` <span class="muted">(was ${bVal})</span>` : ''}</span></div>`;
+      }
+
+      function renderBars(before, after) {
+        const coins = [...new Set([...Object.keys(after.coins), ...(before ? Object.keys(before.coins) : [])])].sort();
+        const maxAmp = Math.max(...coins.map(c => after.coins[c]?.discovery.amp || 0), 1);
+        const maxRate = Math.max(...coins.map(c => after.coins[c]?.idle.ratePerMin || 0), 1);
+        $('bars').innerHTML = coins.map(coin => {
+          const a = mvals(after, coin), b = before ? mvals(before, coin) : null;
+          return `<div class="coin"><div class="name">${esc(coin)}</div>
+            ${bar('discovery amp ×', a?.amp ?? null, b ? (b.amp ?? null) : null, maxAmp)}
+            ${bar('idle req / min', a?.ir ?? null, b ? (b.ir ?? null) : null, maxRate)}</div>`;
+        }).join('');
+      }
+
+      const median = a => { const s = [...a].sort((x, y) => x - y); const n = s.length;
+        return n ? (n % 2 ? s[(n - 1) / 2] : (s[n / 2 - 1] + s[n / 2]) / 2) : null; };
+
+      // variance across ALL runs in the manifest: median + range as % of median (measurement noise)
+      async function renderSpread() {
+        const summaries = (await Promise.all(manifest.runs.map(r => loadSummary(r.file).catch(() => null)))).filter(Boolean);
+        const coins = [...new Set(summaries.flatMap(s => Object.keys(s.coins)))].sort();
+        const metrics = [['dl', 0], ['dw', 0], ['amp', 2], ['iw', 0], ['ir', 1]];
+        const spreadCell = (vals, digits) => {
+          const v = vals.filter(x => x != null);
+          if (!v.length) return '<td class="muted">—</td>';
+          const med = median(v), mn = Math.min(...v), mx = Math.max(...v);
+          const pct = med ? Math.round(((mx - mn) / med) * 100) : 0;
+          const cls = pct >= 25 ? 'up' : pct >= 10 ? '' : 'muted';
+          const medS = digits ? med.toFixed(digits) : med;
+          return `<td><span class="val">${medS}</span>` +
+            (v.length > 1 ? `<span class="delta ${cls}">±${pct}%</span>` : '<span class="delta muted">n=1</span>') + '</td>';
+        };
+        $('tbody').innerHTML = coins.map(coin => {
+          const runsWith = summaries.map(s => mvals(s, coin));
+          const cells = metrics.map(([k, d]) => spreadCell(runsWith.map(rw => rw ? rw[k] : null), d)).join('');
+          const n = runsWith.filter(Boolean).length;
+          return `<tr class="coinRow"><td><span class="coinName">${esc(coin)} <span class="muted" style="font-weight:400">· ${n} run${n === 1 ? '' : 's'}</span></span></td>${cells}</tr>`;
+        }).join('');
+      }
+
+      async function render() {
+        try {
+          const mode = $('mode').value;
+          $('afterWrap').hidden = mode === 'spread';
+          $('beforeWrap').hidden = mode !== 'diff';
+          document.querySelector('.bars').style.display = mode === 'spread' ? 'none' : '';
+          if (mode === 'spread') {
+            $('tblTitle').textContent = `variance across ${manifest.runs.length} run(s)`;
+            $('tblHint').innerHTML = 'Each cell shows the <b>median</b> across all runs and <b>±%</b> = the range (max−min) as a percentage of the median — i.e. the measurement noise with no code changes. <span class="up">Red ±% ≥25%</span> = noisy metric; an optimization must beat this to be real signal.';
+            await renderSpread();
+            return;
+          }
+          $('tblTitle').textContent = 'requests per coin';
+          $('tblHint').innerHTML = 'Hover a column header for its definition. Click a coin to expand the per-method breakdown. Lower is better.';
+          const after = await loadSummary($('after').value);
+          const before = mode === 'diff' && $('before').value ? await loadSummary($('before').value) : null;
+          renderTable(before, after);
+          renderBars(before, after);
+        } catch (e) { fail(String(e.message || e)); }
+      }
+
+      async function boot() {
+        try {
+          manifest = await fetch('./runs.json', { cache: 'no-store' }).then(r => r.json());
+          if (manifest.schema !== 1) return fail('unknown runs.json schema');
+          const runs = manifest.runs || [];
+          $('sub').textContent = `${runs.length} run(s) · manifest generated ${(manifest.generated||'?').replace('T',' ').replace('Z',' UTC')}`;
+          if (!runs.length) return fail('no runs yet — the first desktop e2e run will populate this.');
+          const opts = runs.map(r => `<option value="${esc(r.file)}">${esc(optLabel(r))}</option>`).join('');
+          $('after').innerHTML = opts;
+          $('before').innerHTML = opts;
+          $('after').selectedIndex = 0;
+          $('before').selectedIndex = Math.min(1, runs.length - 1);
+          ['mode', 'after', 'before'].forEach(id => $(id).addEventListener('change', render));
+          render();
+        } catch (e) { fail('failed to load runs.json: ' + (e.message || e)); }
+      }
+      boot();
+    </script>
+  </body>
+</html>

@@ -601,6 +601,15 @@ const subscribeAccounts = async (context: Context, accounts: SubscriptionAccount
             const accountNotifications = await api.rpcSubscriptions
                 .accountNotifications(address(a.descriptor), { commitment: 'confirmed' })
                 .subscribe({ abortSignal: abortController.signal });
+            // [throwaway: blockchain-link request baseline] Solana WS-subscription tap.
+            // These outbound subscribes are NOT seen by the fetch monkeypatch (HTTP) nor by
+            // @trezor/websocket-client, so count them here to close the HTTP->WS gaming vector.
+            (globalThis as any).__bclWrite__?.({
+                lvl: 'wire',
+                tr: 'sol-ws',
+                url: 'solana-ws-subscriptions',
+                method: 'accountNotifications.subscribe',
+            });
             const subscriptionId = NEXT_ACCOUNT_SUBSCRIPTION_ID++;
             ACCOUNT_SUBSCRIPTION_ABORT_CONTROLLERS.set(subscriptionId, abortController);
             const account: SubscriptionAccountInfo = {

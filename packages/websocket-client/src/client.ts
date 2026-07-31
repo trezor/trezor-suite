@@ -138,6 +138,14 @@ export class WebsocketClient<Events extends Record<string, any>> extends TypedEm
 
         this.options.onSending?.(message);
 
+        // [throwaway: blockchain-link request baseline] WS wire-layer tap
+        (globalThis as any).__bclWrite__?.({
+            lvl: 'wire',
+            tr: 'ws',
+            url: this.options.url,
+            method: (message as any).method,
+        });
+
         ws.send(JSON.stringify(req));
 
         return promise.promise;
