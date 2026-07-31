@@ -170,7 +170,6 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
             coinInfo,
             outputs,
             baseFee,
-            feeLevels: [], // Not needed for composeCustomFee
             sortingStrategy: sortingStrategy ?? DEFAULT_SORTING_STRATEGY,
         });
 
@@ -220,15 +219,14 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
             utxos,
             coinInfo,
             outputs,
-            feeLevels: feeLevels.levels,
             sortingStrategy: sortingStrategy ?? DEFAULT_SORTING_STRATEGY,
         });
 
         // try to compose multiple transactions with different fee levels
         // check if any of composed transactions is valid
-        const hasFunds = composer.composeAllFeeLevels();
+        const composed = composer.composeAllFeeLevels(feeLevels.levels);
 
-        if (!hasFunds) {
+        if (!composed.levels.length) {
             const feePerUnit = String(coinInfo.minFee);
             const minFeeTx = composer.composeCustomFee(feePerUnit);
 
@@ -253,7 +251,7 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
             // this view will be updated from discovery events
             context.sendCoreMessage(
                 createUiMessage(UI_REQUEST.SELECT_FEE, {
-                    feeLevels: composer.getFeeLevelList(),
+                    feeLevels: composed.levels,
                     coinInfo: this.params.coinInfo,
                 }),
             );
@@ -279,7 +277,7 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
         const tx =
             resp.payload.type === 'select-fee-custom'
                 ? composer.composeCustomFee(resp.payload.value) // recompose custom fee level with requested value
-                : composer.composed[resp.payload.value]!;
+                : composed.transactions.get(resp.payload.value)!;
 
         const response = await this._sign(tx, context.sendCoreMessage);
 
