@@ -10,9 +10,9 @@ import { cloneObject, mergeDeepObject } from '@trezor/utils';
 
 import { MIN_MAX_QUOTES_OK } from '../../__fixtures__/exchangeUtils';
 import { accountEth } from '../../__fixtures__/utils';
-import { invityAPI } from '../../invityAPI';
 import { initialState } from '../../reducers/tradingCommonReducer';
 import { prepareTradingReducer } from '../../reducers/tradingReducer';
+import { tradeApi } from '../../tradeApi';
 import {
     type HandleExchangeRequestThunkProps,
     type TradingAssetOption,
@@ -31,10 +31,10 @@ describe('handleExchangeRequestThunk', () => {
         jest.clearAllMocks();
     });
 
-    jest.mock('../../invityAPI');
+    jest.mock('../../tradeApi');
 
-    invityAPI.setInvityServersEnvironment = () => {};
-    invityAPI.createInvityAPIKey = () => {};
+    tradeApi.setServersEnvironment = () => {};
+    tradeApi.createApiKey = () => {};
 
     const getMocks = () => {
         const validEthAddress = '0x742d35Cc6634C0532925a3b844Bc454e4438f44e';
@@ -153,7 +153,7 @@ describe('handleExchangeRequestThunk', () => {
         const { input, store } = getMocks();
         const mockQuotes = [...MIN_MAX_QUOTES_OK];
 
-        invityAPI.getExchangeQuotes = () => Promise.resolve(mockQuotes);
+        tradeApi.getExchangeQuotes = () => Promise.resolve(mockQuotes);
 
         const quotesResponse = await store
             .dispatch(exchangeThunks.handleRequestThunk(input))
@@ -184,7 +184,7 @@ describe('handleExchangeRequestThunk', () => {
             },
         ];
 
-        invityAPI.getExchangeQuotes = () => Promise.resolve(mockQuotes);
+        tradeApi.getExchangeQuotes = () => Promise.resolve(mockQuotes);
 
         const quotesResponse = await store
             .dispatch(
@@ -332,7 +332,7 @@ describe('handleExchangeRequestThunk', () => {
     it('should not save quotes, when request is aborted', async () => {
         const { input, store } = getMocks();
 
-        invityAPI.getExchangeQuotes = () => Promise.resolve([]);
+        tradeApi.getExchangeQuotes = () => Promise.resolve([]);
 
         const promise = store.dispatch(exchangeThunks.handleRequestThunk(input));
 
@@ -351,7 +351,7 @@ describe('handleExchangeRequestThunk', () => {
         const { input, store } = getMocks();
         const mockQuotes = cloneExchangeQuotes();
 
-        invityAPI.getExchangeQuotes = () => Promise.resolve(mockQuotes);
+        tradeApi.getExchangeQuotes = () => Promise.resolve(mockQuotes);
 
         const ethAccountKey = (accountEth as unknown as Account).key;
         const quotesResponse = await store
@@ -375,7 +375,7 @@ describe('handleExchangeRequestThunk', () => {
         const { input, store } = getMocks();
         const mockQuotes = cloneExchangeQuotes();
 
-        invityAPI.getExchangeQuotes = () => Promise.resolve(mockQuotes);
+        tradeApi.getExchangeQuotes = () => Promise.resolve(mockQuotes);
 
         const quotesResponse = await store
             .dispatch(
@@ -395,7 +395,7 @@ describe('handleExchangeRequestThunk', () => {
     it('should not save quotes when empty array is returned from the response', async () => {
         const { input, store } = getMocks();
 
-        invityAPI.getExchangeQuotes = () => Promise.resolve([]);
+        tradeApi.getExchangeQuotes = () => Promise.resolve([]);
 
         const quotesResponse = await store
             .dispatch(exchangeThunks.handleRequestThunk(input))

@@ -45,26 +45,26 @@ import swapTradeSolanaUSDC from './swap/trade-solana-usdc.json';
 import swapTradeTetherBTC from './swap/trade-tether-btc.json';
 import swapWatch from './swap/watch.json';
 
-const invityUrl = 'https://exchange.trezor.io';
+const tradeApiUrl = 'https://exchange.trezor.io';
 
-export const invityEndpoint = {
-    swapCoins: `${invityUrl}/api/v3/exchange/coins`,
-    swapList: `${invityUrl}/api/v3/exchange/list`,
-    swapQuotes: `${invityUrl}/api/v3/exchange/quotes`,
-    swapTrade: `${invityUrl}/api/v3/exchange/trade`,
-    swapWatch: `${invityUrl}/api/v3/exchange/watch/*`,
-    info: `${invityUrl}/api/info`,
-    buyList: `${invityUrl}/api/v3/buy/list`,
-    buyQuotes: `${invityUrl}/api/v3/buy/quotes`,
-    buyTrade: `${invityUrl}/api/v3/buy/trade`,
-    buyWatch: `${invityUrl}/api/v3/buy/watch/*`,
-    sellList: `${invityUrl}/api/v3/sell/list`,
-    sellQuotes: `${invityUrl}/api/v3/sell/fiat/quotes`,
-    sellTrade: `${invityUrl}/api/v3/sell/fiat/trade`,
-    sellWatch: `${invityUrl}/api/v3/sell/fiat/watch/*`,
+export const tradeEndpoint = {
+    swapCoins: `${tradeApiUrl}/api/v3/exchange/coins`,
+    swapList: `${tradeApiUrl}/api/v3/exchange/list`,
+    swapQuotes: `${tradeApiUrl}/api/v3/exchange/quotes`,
+    swapTrade: `${tradeApiUrl}/api/v3/exchange/trade`,
+    swapWatch: `${tradeApiUrl}/api/v3/exchange/watch/*`,
+    info: `${tradeApiUrl}/api/info`,
+    buyList: `${tradeApiUrl}/api/v3/buy/list`,
+    buyQuotes: `${tradeApiUrl}/api/v3/buy/quotes`,
+    buyTrade: `${tradeApiUrl}/api/v3/buy/trade`,
+    buyWatch: `${tradeApiUrl}/api/v3/buy/watch/*`,
+    sellList: `${tradeApiUrl}/api/v3/sell/list`,
+    sellQuotes: `${tradeApiUrl}/api/v3/sell/fiat/quotes`,
+    sellTrade: `${tradeApiUrl}/api/v3/sell/fiat/trade`,
+    sellWatch: `${tradeApiUrl}/api/v3/sell/fiat/watch/*`,
 } as const;
 
-export const invityRequest = {
+export const tradeApiRequest = {
     buyTradeBTCPayload,
     buyTradeSolanaPayload,
     buyWatchPayload,
@@ -75,15 +75,15 @@ export const invityRequest = {
 // [typescript-performace]: Keep this explicit type to prevent TypeScript from expanding the
 // inferred type in the emitted declaration.
 // The individual fixture exports below retain their inferred types for direct use.
-export const invityGeneralResponses: Partial<
-    Record<(typeof invityEndpoint)[keyof typeof invityEndpoint], unknown>
+export const tradeGeneralResponses: Partial<
+    Record<(typeof tradeEndpoint)[keyof typeof tradeEndpoint], unknown>
 > = {
-    [invityEndpoint.swapList]: swapList,
-    [invityEndpoint.swapWatch]: swapWatch,
-    [invityEndpoint.info]: info,
-    [invityEndpoint.buyList]: buyList,
-    [invityEndpoint.buyWatch]: buyWatch,
-    [invityEndpoint.sellList]: sellList,
+    [tradeEndpoint.swapList]: swapList,
+    [tradeEndpoint.swapWatch]: swapWatch,
+    [tradeEndpoint.info]: info,
+    [tradeEndpoint.buyList]: buyList,
+    [tradeEndpoint.buyWatch]: buyWatch,
+    [tradeEndpoint.sellList]: sellList,
 };
 
 export const getCompanyNameFromList = (name: string, type: 'buyList' | 'sellList' | 'swapList') => {

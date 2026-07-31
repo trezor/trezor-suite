@@ -6,10 +6,10 @@ import { type Account } from '@suite-common/wallet-types';
 
 import { MIN_MAX_QUOTES_OK } from '../../__fixtures__/exchangeUtils';
 import { accountBtc } from '../../__fixtures__/utils';
-import { invityAPI } from '../../invityAPI';
 import { type TradingExchangeState } from '../../reducers/exchangeReducer';
 import { initialState } from '../../reducers/tradingCommonReducer';
 import { prepareTradingReducer } from '../../reducers/tradingReducer';
+import { tradeApi } from '../../tradeApi';
 import { getUnusedAddressFromAccount } from '../../utils';
 import type { LogErrorThunkProps } from '../common/logErrorThunk';
 
@@ -29,10 +29,10 @@ describe('confirmExchangeTradeThunk', () => {
         jest.clearAllMocks();
     });
 
-    jest.mock('../../invityAPI');
+    jest.mock('../../tradeApi');
 
-    invityAPI.setInvityServersEnvironment = () => {};
-    invityAPI.createInvityAPIKey = () => {};
+    tradeApi.setServersEnvironment = () => {};
+    tradeApi.createApiKey = () => {};
 
     const getMocks = (initialExchangeState?: Partial<TradingExchangeState>) => {
         const quoteNotTyped = MIN_MAX_QUOTES_OK[0];
@@ -238,7 +238,7 @@ describe('confirmExchangeTradeThunk', () => {
             mockTriggerAnalyticsTradeConfirmation,
         } = getMocks();
 
-        invityAPI.doExchangeTrade = () => Promise.resolve(undefined as unknown as ExchangeTrade);
+        tradeApi.doExchangeTrade = () => Promise.resolve(undefined as unknown as ExchangeTrade);
 
         const response = await store
             .dispatch(
@@ -283,7 +283,7 @@ describe('confirmExchangeTradeThunk', () => {
             mockTriggerAnalyticsTradeConfirmation,
         } = getMocks();
 
-        invityAPI.doExchangeTrade = () =>
+        tradeApi.doExchangeTrade = () =>
             new Promise<ExchangeTrade>(resolve => {
                 resolve(undefined as unknown as ExchangeTrade);
             });
@@ -354,7 +354,7 @@ describe('confirmExchangeTradeThunk', () => {
             } = getMocks();
             const tradeResponse = { ...trade, ...mockResponse } as ExchangeTrade;
 
-            invityAPI.doExchangeTrade = () => Promise.resolve(tradeResponse);
+            tradeApi.doExchangeTrade = () => Promise.resolve(tradeResponse);
 
             const response = await store
                 .dispatch(
@@ -412,7 +412,7 @@ describe('confirmExchangeTradeThunk', () => {
         };
         const tradeResponse = { ...trade, ...mockResponse } as ExchangeTrade;
 
-        invityAPI.doExchangeTrade = () => Promise.resolve(tradeResponse);
+        tradeApi.doExchangeTrade = () => Promise.resolve(tradeResponse);
 
         const response = await store
             .dispatch(
@@ -467,7 +467,7 @@ describe('confirmExchangeTradeThunk', () => {
         };
         const tradeResponse = { ...trade, ...mockResponse } as ExchangeTrade;
 
-        invityAPI.doExchangeTrade = () => Promise.resolve(tradeResponse);
+        tradeApi.doExchangeTrade = () => Promise.resolve(tradeResponse);
 
         const response = await store
             .dispatch(
@@ -525,7 +525,7 @@ describe('confirmExchangeTradeThunk', () => {
 
             const tradeResponse = { ...trade, ...mockResponse } as ExchangeTrade;
 
-            invityAPI.doExchangeTrade = () => Promise.resolve(tradeResponse);
+            tradeApi.doExchangeTrade = () => Promise.resolve(tradeResponse);
 
             const response = await store
                 .dispatch(
@@ -573,7 +573,7 @@ describe('confirmExchangeTradeThunk', () => {
 
         const tradeResponse = { ...trade, ...mockResponse } as ExchangeTrade;
 
-        invityAPI.doExchangeTrade = () => Promise.resolve(tradeResponse);
+        tradeApi.doExchangeTrade = () => Promise.resolve(tradeResponse);
 
         const response = await store
             .dispatch(
@@ -621,7 +621,7 @@ describe('confirmExchangeTradeThunk', () => {
                 approvalType: 'ZERO',
             } as ExchangeTrade;
 
-            invityAPI.doExchangeTrade = () => Promise.resolve(tradeResponse);
+            tradeApi.doExchangeTrade = () => Promise.resolve(tradeResponse);
 
             const response = await store
                 .dispatch(
@@ -669,7 +669,7 @@ describe('confirmExchangeTradeThunk', () => {
 
         const tradeResponse = { ...trade, ...mockResponse } as ExchangeTrade;
 
-        invityAPI.doExchangeTrade = () => Promise.resolve(tradeResponse);
+        tradeApi.doExchangeTrade = () => Promise.resolve(tradeResponse);
 
         const response = await store
             .dispatch(
@@ -718,7 +718,7 @@ describe('confirmExchangeTradeThunk', () => {
 
         const tradeResponse = { ...trade, ...mockResponse } as ExchangeTrade;
 
-        invityAPI.doExchangeTrade = () => Promise.resolve(tradeResponse);
+        tradeApi.doExchangeTrade = () => Promise.resolve(tradeResponse);
 
         const response = await store
             .dispatch(
@@ -781,7 +781,7 @@ describe('confirmExchangeTradeThunk', () => {
             ...mockResponse,
         } as ExchangeTrade;
 
-        invityAPI.doExchangeTrade = () => Promise.resolve(tradeResponse);
+        tradeApi.doExchangeTrade = () => Promise.resolve(tradeResponse);
 
         const response = await store
             .dispatch(
@@ -848,7 +848,7 @@ describe('confirmExchangeTradeThunk', () => {
 
         const tradeResponse = { ...trade, ...mockResponse } as ExchangeTrade;
 
-        invityAPI.doExchangeTrade = () => Promise.resolve(tradeResponse);
+        tradeApi.doExchangeTrade = () => Promise.resolve(tradeResponse);
 
         const response = await store
             .dispatch(
@@ -905,7 +905,7 @@ describe('confirmExchangeTradeThunk', () => {
 
         const tradeResponse = { ...trade, ...mockResponse } as ExchangeTrade;
 
-        invityAPI.doExchangeTrade = () => Promise.resolve(tradeResponse);
+        tradeApi.doExchangeTrade = () => Promise.resolve(tradeResponse);
 
         const response = await store
             .dispatch(
@@ -959,7 +959,7 @@ describe('confirmExchangeTradeThunk', () => {
             } as ExchangeTrade;
 
             const doExchangeTradeSpy = jest.fn().mockResolvedValue(tradeResponse);
-            invityAPI.doExchangeTrade = doExchangeTradeSpy;
+            tradeApi.doExchangeTrade = doExchangeTradeSpy;
 
             await store
                 .dispatch(
@@ -1001,7 +1001,7 @@ describe('confirmExchangeTradeThunk', () => {
             } as ExchangeTrade;
 
             const doExchangeTradeSpy = jest.fn().mockResolvedValue(tradeResponse);
-            invityAPI.doExchangeTrade = doExchangeTradeSpy;
+            tradeApi.doExchangeTrade = doExchangeTradeSpy;
 
             await store
                 .dispatch(

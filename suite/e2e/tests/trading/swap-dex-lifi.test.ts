@@ -6,10 +6,10 @@ import { BigNumber } from '@trezor/utils';
 
 import {
     getCompanyNameFromList,
-    invityEndpoint,
     swapQuotesEthDex,
     swapTradeEthDex,
-} from '../../fixtures/invity';
+    tradeEndpoint,
+} from '../../fixtures/trading';
 import { expect, test } from '../../support/fixtures';
 
 // Expected values derived from the captured LI.FI trade fixture.
@@ -80,12 +80,12 @@ test.describe('Trading - DEX swap (LI.FI)', { tag: ['@webOnly', '@T3T1', '@T3W1'
             });
 
             await test.step('Mock the trading API', async () => {
-                await tradingMock.routeInvityGeneralEndpoints();
-                await page.route(invityEndpoint.swapQuotes, route => {
+                await tradingMock.routeTradeGeneralEndpoints();
+                await page.route(tradeEndpoint.swapQuotes, route => {
                     route.fulfill({ json: swapQuotesEthDex });
                 });
                 await tradingMock.routeSwapTrade(swapTradeEthDex);
-                await page.route(invityEndpoint.swapWatch, route => {
+                await page.route(tradeEndpoint.swapWatch, route => {
                     route.fulfill({ json: { status: 'CONFIRM' } });
                 });
             });
@@ -244,7 +244,7 @@ test.describe('Trading - DEX swap (LI.FI)', { tag: ['@webOnly', '@T3T1', '@T3W1'
         });
 
         await test.step('Wait 30s for watch refresh and status change to Processing', async () => {
-            await tradingMock.routeAndWaitForWatchResponse(invityEndpoint.swapWatch, {
+            await tradingMock.routeAndWaitForWatchResponse(tradeEndpoint.swapWatch, {
                 status: 'CONVERTING',
             });
             await expect(tradingPage.transactionDetailStatus).toHaveTranslation(
@@ -254,7 +254,7 @@ test.describe('Trading - DEX swap (LI.FI)', { tag: ['@webOnly', '@T3T1', '@T3W1'
         });
 
         await test.step('Wait 30s for watch refresh and status change to Success', async () => {
-            await tradingMock.routeAndWaitForWatchResponse(invityEndpoint.swapWatch, {
+            await tradingMock.routeAndWaitForWatchResponse(tradeEndpoint.swapWatch, {
                 status: 'SUCCESS',
             });
             await expect(tradingPage.transactionDetailStatus).toHaveTranslation(

@@ -9,10 +9,10 @@ import TrezorConnect from '@trezor/connect';
 
 import { MIN_MAX_QUOTES_OK } from '../../__fixtures__/exchangeUtils';
 import { accountEth } from '../../__fixtures__/utils';
-import { invityAPI } from '../../invityAPI';
 import { type TradingExchangeState } from '../../reducers/exchangeReducer';
 import { initialState } from '../../reducers/tradingCommonReducer';
 import { prepareTradingReducer } from '../../reducers/tradingReducer';
+import { tradeApi } from '../../tradeApi';
 import type { LogErrorThunkProps } from '../common/logErrorThunk';
 
 import { exchangeThunks } from './index';
@@ -31,10 +31,10 @@ describe('signDataAndConfirmThunk', () => {
         jest.clearAllMocks();
     });
 
-    jest.mock('../../invityAPI');
+    jest.mock('../../tradeApi');
 
-    invityAPI.setInvityServersEnvironment = () => {};
-    invityAPI.createInvityAPIKey = () => {};
+    tradeApi.setServersEnvironment = () => {};
+    tradeApi.createApiKey = () => {};
 
     const getMocks = (initialExchangeState?: Partial<TradingExchangeState>) => {
         const quoteNotTyped = MIN_MAX_QUOTES_OK[0];

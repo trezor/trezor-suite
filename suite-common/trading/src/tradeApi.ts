@@ -30,8 +30,8 @@ import type {
 import { getOsName, getSuiteVersion, isDesktop, isNative } from '@trezor/env-utils';
 
 import {
-    type InvityServerEnvironment,
-    type InvityServers,
+    type TradeServerEnvironment,
+    type TradeServers,
     type TradingOTC,
     type TradingPaymentMethodType,
     type TradingTradeType,
@@ -52,15 +52,15 @@ type BodyType =
 
 type SignalType = AbortSignal | null | undefined;
 
-class InvityAPI {
-    readonly SERVERS: InvityServers = {
+class TradeApi {
+    readonly SERVERS: TradeServers = {
         production: 'https://exchange.trezor.io',
         staging: 'https://staging-exchange.trezor.io',
         dev: 'https://dev-exchange.trezor.io',
         localhost: 'http://localhost:3330',
     };
 
-    private serverEnvironment: InvityServerEnvironment = 'production';
+    private serverEnvironment: TradeServerEnvironment = 'production';
 
     // info service
     private readonly INFO = '/api/info';
@@ -93,12 +93,12 @@ class InvityAPI {
     private static accountDescriptor: string | undefined;
     private static apiKey: string | undefined;
 
-    private getInvityAPIKey() {
-        if (!InvityAPI.apiKey) {
+    private getApiKey() {
+        if (!TradeApi.apiKey) {
             throw Error('apiKey not created');
         }
 
-        return InvityAPI.apiKey;
+        return TradeApi.apiKey;
     }
 
     getApiServerUrl() {
@@ -106,32 +106,32 @@ class InvityAPI {
     }
 
     getCurrentAccountDescriptor() {
-        return InvityAPI.accountDescriptor;
+        return TradeApi.accountDescriptor;
     }
 
     getCurrentApiKey() {
-        return InvityAPI.apiKey;
+        return TradeApi.apiKey;
     }
 
-    createInvityAPIKey(accountDescriptor: string) {
-        if (accountDescriptor !== InvityAPI.accountDescriptor) {
+    createApiKey(accountDescriptor: string) {
+        if (accountDescriptor !== TradeApi.accountDescriptor) {
             const hash = createHash('sha256');
             hash.update(accountDescriptor);
-            InvityAPI.apiKey = hash.digest('hex');
-            InvityAPI.accountDescriptor = accountDescriptor;
+            TradeApi.apiKey = hash.digest('hex');
+            TradeApi.accountDescriptor = accountDescriptor;
         }
     }
 
     resetCurrentAccount() {
-        InvityAPI.accountDescriptor = undefined;
+        TradeApi.accountDescriptor = undefined;
     }
 
-    setInvityServersEnvironment(serverEnvironment: InvityServerEnvironment) {
+    setServersEnvironment(serverEnvironment: TradeServerEnvironment) {
         this.serverEnvironment = serverEnvironment;
     }
 
     private getSuiteTraceHeader() {
-        return createHash('sha256').update(this.getInvityAPIKey()).digest('hex');
+        return createHash('sha256').update(this.getApiKey()).digest('hex');
     }
 
     private getOptionAPIHeader() {
@@ -153,7 +153,7 @@ class InvityAPI {
             method,
             mode: 'cors',
             headers: {
-                [apiHeader]: apiHeaderValue || this.getInvityAPIKey(),
+                [apiHeader]: apiHeaderValue || this.getApiKey(),
                 'X-Trace-Id': this.getSuiteTraceHeader(),
                 'X-Suite-Version': getSuiteVersion(),
                 'X-Suite-Platform': getOsName(),
@@ -482,4 +482,4 @@ class InvityAPI {
     };
 }
 
-export const invityAPI = new InvityAPI();
+export const tradeApi = new TradeApi();

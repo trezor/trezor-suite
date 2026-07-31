@@ -4,10 +4,10 @@ import { localizeNumber } from '@suite-common/wallet-utils';
 
 import {
     getCompanyNameFromList,
-    invityEndpoint,
     swapQuotesSolanaTokens,
     swapTradeSolanaTokens,
-} from '../../fixtures/invity';
+    tradeEndpoint,
+} from '../../fixtures/trading';
 import { formatAddressWithNewlines } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
 
@@ -28,7 +28,7 @@ test.describe('Trading - Swap tokens', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, 
     test.beforeEach(
         async ({ page, onboardingPage, dashboardPage, tradingMock, walletPage, settingsPage }) => {
             await test.step('Mocking responses', async () => {
-                await page.route(invityEndpoint.swapQuotes, route => {
+                await page.route(tradeEndpoint.swapQuotes, route => {
                     route.fulfill({ json: swapQuotesSolanaTokens });
                 });
                 await tradingMock.routeSwapTrade(swapTradeSolanaTokens);

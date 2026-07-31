@@ -1,7 +1,7 @@
 import { type ReactNode } from 'react';
 
 import { ContextMessage } from '@suite/message-system';
-import { selectInvityServerEnvironment } from '@suite/settings';
+import { selectTradeServerEnvironment } from '@suite/settings';
 import { TradingEnvironmentWarning } from '@suite/trading';
 import { Context } from '@suite-common/message-system';
 import { Box, Card, Column } from '@trezor/components';
@@ -18,11 +18,11 @@ interface TradingFormLayoutProps {
 }
 
 export const TradingFormLayout = ({ children }: TradingFormLayoutProps) => {
-    const invityServerEnvironment = useSelector(selectInvityServerEnvironment);
+    const tradeServerEnvironment = useSelector(selectTradeServerEnvironment);
 
     return (
         <Column gap={16} data-testid="@trading/form">
-            <TradingEnvironmentWarning tradingEnvironment={invityServerEnvironment} />
+            <TradingEnvironmentWarning tradingEnvironment={tradeServerEnvironment} />
 
             {/* If clicking on disabled input, the click propagates to the form and submits it (some form values are then pushed to URL search params) */}
             <form onSubmit={e => e.preventDefault()}>

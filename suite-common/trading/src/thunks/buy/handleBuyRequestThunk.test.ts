@@ -5,7 +5,6 @@ import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/t
 import { getNetwork } from '@suite-common/wallet-config';
 
 import { ALTERNATIVE_QUOTES } from '../../__fixtures__/buyUtils';
-import { invityAPI } from '../../invityAPI';
 import {
     type QuoteRefetchingState,
     REFETCH_QUOTES_MAX_COUNT,
@@ -13,6 +12,7 @@ import {
 } from '../../reducers/tradingCommonReducer';
 import { prepareTradingReducer } from '../../reducers/tradingReducer';
 import { selectTradingBuyPaymentMethods } from '../../selectors/tradingSelectors';
+import { tradeApi } from '../../tradeApi';
 import {
     type HandleBuyRequestThunkProps,
     type TradingAssetOption,
@@ -30,10 +30,10 @@ describe('handleBuyRequestThunk', () => {
         jest.clearAllMocks();
     });
 
-    jest.mock('../../invityAPI');
+    jest.mock('../../tradeApi');
 
-    invityAPI.setInvityServersEnvironment = () => {};
-    invityAPI.createInvityAPIKey = () => {};
+    tradeApi.setServersEnvironment = () => {};
+    tradeApi.createApiKey = () => {};
 
     const getMocks = (
         refetchQuotesOverride?: Partial<QuoteRefetchingState>,
@@ -125,7 +125,7 @@ describe('handleBuyRequestThunk', () => {
         const { input, store } = getMocks();
         const mockQuotes = createMockQuotes();
 
-        invityAPI.getBuyQuotes = () => Promise.resolve(mockQuotes);
+        tradeApi.getBuyQuotes = () => Promise.resolve(mockQuotes);
 
         const quotesResponse = await store.dispatch(buyThunks.handleRequestThunk(input)).unwrap();
 
@@ -205,7 +205,7 @@ describe('handleBuyRequestThunk', () => {
         const { input, store } = getMocks();
         const mockQuotes = createMockQuotes();
 
-        invityAPI.getBuyQuotes = () => Promise.resolve(mockQuotes);
+        tradeApi.getBuyQuotes = () => Promise.resolve(mockQuotes);
 
         const quotesResponse = await store
             .dispatch(
@@ -254,7 +254,7 @@ describe('handleBuyRequestThunk', () => {
     it('should save empty quotes when empty array is returned from in the response', async () => {
         const { input, store } = getMocks();
 
-        invityAPI.getBuyQuotes = () => Promise.resolve([]);
+        tradeApi.getBuyQuotes = () => Promise.resolve([]);
 
         const quotesResponse = await store.dispatch(buyThunks.handleRequestThunk(input)).unwrap();
 
@@ -279,7 +279,7 @@ describe('handleBuyRequestThunk', () => {
     it('should not save quotes, when request is aborted', async () => {
         const { input, store } = getMocks();
 
-        invityAPI.getBuyQuotes = () => Promise.resolve([]);
+        tradeApi.getBuyQuotes = () => Promise.resolve([]);
 
         const promise = store.dispatch(buyThunks.handleRequestThunk(input));
 
@@ -304,7 +304,7 @@ describe('handleBuyRequestThunk', () => {
         const mockQuotes = createMockQuotes();
         const beforeTimestamp = Date.now();
 
-        invityAPI.getBuyQuotes = () => Promise.resolve(mockQuotes);
+        tradeApi.getBuyQuotes = () => Promise.resolve(mockQuotes);
 
         await store.dispatch(buyThunks.handleRequestThunk(input)).unwrap();
 
@@ -319,7 +319,7 @@ describe('handleBuyRequestThunk', () => {
         const { input, store } = getMocks({ status: 'running', remainingRefetches: 1 });
         const mockQuotes = createMockQuotes();
 
-        invityAPI.getBuyQuotes = () => Promise.resolve(mockQuotes);
+        tradeApi.getBuyQuotes = () => Promise.resolve(mockQuotes);
 
         await store.dispatch(buyThunks.handleRequestThunk(input)).unwrap();
 

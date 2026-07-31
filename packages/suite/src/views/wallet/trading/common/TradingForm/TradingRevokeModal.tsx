@@ -6,9 +6,9 @@ import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Calldata } from '@suite-common/calldata';
 import { useServices } from '@suite-common/dependency-injection';
 import {
-    invityAPI,
     selectTradingExchangeSelectedQuote,
     selectTradingSendAccount,
+    tradeApi,
 } from '@suite-common/trading';
 
 import { RevokeModal } from 'src/components/suite/modals/ReduxModal/UserContextModal/AllowanceModals/RevokeModal';
@@ -93,7 +93,7 @@ export const TradingRevokeModal = ({ cryptoId }: TradingRevokeModalProps) => {
         return null;
     }
 
-    const providerLogo = provider.logo ? invityAPI.getProviderLogoUrl(provider.logo) : undefined;
+    const providerLogo = provider.logo ? tradeApi.getProviderLogoUrl(provider.logo) : undefined;
 
     return (
         <RevokeModal

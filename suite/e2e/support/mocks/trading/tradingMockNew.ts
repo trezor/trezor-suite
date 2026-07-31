@@ -4,19 +4,19 @@ import type { ExchangeTrade } from 'invity-api';
 import type { BackendType, NetworkSymbol } from '@suite-common/wallet-config';
 
 import { TradingChainBackend, createTradingChainBackend } from './tradingChainBackend';
-import { invityEndpoint } from '../../../fixtures/invity';
+import { tradeEndpoint } from '../../../fixtures/trading';
 import { step } from '../../common';
 
 type TradeFlow = 'buy' | 'sell' | 'swap';
-type InvityEndpoints = {
+type TradeEndpoints = {
     readonly trade: string;
     readonly watch: string;
 };
 
-const INVITY_ENDPOINTS: Record<TradeFlow, InvityEndpoints> = {
-    buy: { trade: invityEndpoint.buyTrade, watch: invityEndpoint.buyWatch },
-    sell: { trade: invityEndpoint.sellTrade, watch: invityEndpoint.sellWatch },
-    swap: { trade: invityEndpoint.swapTrade, watch: invityEndpoint.swapWatch },
+const TRADE_ENDPOINTS: Record<TradeFlow, TradeEndpoints> = {
+    buy: { trade: tradeEndpoint.buyTrade, watch: tradeEndpoint.buyWatch },
+    sell: { trade: tradeEndpoint.sellTrade, watch: tradeEndpoint.sellWatch },
+    swap: { trade: tradeEndpoint.swapTrade, watch: tradeEndpoint.swapWatch },
 };
 
 const WATCH_POLL_PERIOD = '00:30';
@@ -62,8 +62,8 @@ export class TradingMockNew {
         return this.flow;
     }
 
-    private get endpoints(): InvityEndpoints {
-        return INVITY_ENDPOINTS[this.tradeFlow];
+    private get endpoints(): TradeEndpoints {
+        return TRADE_ENDPOINTS[this.tradeFlow];
     }
 
     // Sell + swap only (buy has no on-chain send); blocks the broadcast. Call before discovery.

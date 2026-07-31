@@ -109,8 +109,8 @@ import {
     selectValidTradingSellQuotes,
 } from './tradingSelectors';
 import coins from '../__fixtures__/coins.json';
-import { invityAPIFixtures } from '../__fixtures__/invityAPI';
 import platforms from '../__fixtures__/platforms.json';
+import { tradeApiFixtures } from '../__fixtures__/tradeApi';
 import { accountBtc, accountEth } from '../__fixtures__/utils';
 import { TRADING_SLIP24_SUPPORTED_NETWORK_TYPES } from '../constants';
 import { getProviderMetadataFixture } from '../reducers/__fixtures__/providerMetadata';
@@ -141,7 +141,7 @@ describe('tradingSelectors', () => {
             buyInfo: {
                 buyInfo: {
                     country: 'CZ',
-                    providers: invityAPIFixtures.buyList,
+                    providers: tradeApiFixtures.buyList,
                     defaultAmountsOfFiatCurrencies: { usd: 150, eur: 100 } as FiatCurrenciesProps,
                     suggestedFiatCurrency: 'CZK',
                 },
@@ -154,7 +154,7 @@ describe('tradingSelectors', () => {
                     'base--0x0000000000000000000000000000000000000000',
                     'ethereum--0xWithoutObjectInCoinsInfo', // there are values not presented in info.coins map
                 ] as CryptoId[],
-                providerInfos: { test: invityAPIFixtures.buyList[0] },
+                providerInfos: { test: tradeApiFixtures.buyList[0] },
                 supportedFiatCurrencies: ['usd', 'eur', 'czk'],
             },
             quotes: [
@@ -197,7 +197,7 @@ describe('tradingSelectors', () => {
     const getSellState = () => ({
         ...initialState.sell,
         sellInfo: {
-            providerInfos: { test: invityAPIFixtures.sellList[0] },
+            providerInfos: { test: tradeApiFixtures.sellList[0] },
             supportedFiatCurrencies: ['usd', 'eur', 'czk'],
             supportedCryptoCurrencies: [
                 'eos',
@@ -256,7 +256,7 @@ describe('tradingSelectors', () => {
     const getExchangeState = () => ({
         ...initialState.exchange,
         exchangeInfo: {
-            providerInfos: { test: invityAPIFixtures.buyList[0] },
+            providerInfos: { test: tradeApiFixtures.buyList[0] },
             buyCryptoIds: ['bitcoin'] as CryptoId[],
             sellCryptoIds: [
                 'eos',
@@ -348,7 +348,7 @@ describe('tradingSelectors', () => {
             suite: {
                 settings: {
                     addressDisplayType: 'original',
-                    debug: { invityServerEnvironment: undefined },
+                    debug: { tradeServerEnvironment: undefined },
                 },
             },
             device: {
@@ -1242,19 +1242,19 @@ describe('tradingSelectors', () => {
             } as unknown as ExchangeInfo;
             state.wallet.trading.exchange.quotes = [
                 {
-                    ...invityAPIFixtures.exchangeTrade,
+                    ...tradeApiFixtures.exchangeTrade,
                     quoteId: 'fixed-quote',
                     exchange: 'fixed-provider',
                     isDex: false,
                 },
                 {
-                    ...invityAPIFixtures.exchangeTrade,
+                    ...tradeApiFixtures.exchangeTrade,
                     quoteId: 'float-quote',
                     exchange: 'float-provider',
                     isDex: false,
                 },
                 {
-                    ...invityAPIFixtures.exchangeTrade,
+                    ...tradeApiFixtures.exchangeTrade,
                     quoteId: 'dex-quote',
                     exchange: 'dex-provider',
                     isDex: true,
@@ -1286,12 +1286,12 @@ describe('tradingSelectors', () => {
             } as unknown as ExchangeInfo;
             state.wallet.trading.exchange.quotes = [
                 {
-                    ...invityAPIFixtures.exchangeTrade,
+                    ...tradeApiFixtures.exchangeTrade,
                     quoteId: 'cex-quote',
                     isDex: false,
                 },
                 {
-                    ...invityAPIFixtures.exchangeTrade,
+                    ...tradeApiFixtures.exchangeTrade,
                     quoteId: 'dex-quote',
                     isDex: true,
                 },
@@ -1315,19 +1315,19 @@ describe('tradingSelectors', () => {
             } as unknown as ExchangeInfo;
             state.wallet.trading.exchange.quotes = [
                 {
-                    ...invityAPIFixtures.exchangeTrade,
+                    ...tradeApiFixtures.exchangeTrade,
                     quoteId: 'fixed-quote',
                     exchange: 'fixed-provider',
                     isDex: false,
                 },
                 {
-                    ...invityAPIFixtures.exchangeTrade,
+                    ...tradeApiFixtures.exchangeTrade,
                     quoteId: 'float-quote',
                     exchange: 'float-provider',
                     isDex: false,
                 },
                 {
-                    ...invityAPIFixtures.exchangeTrade,
+                    ...tradeApiFixtures.exchangeTrade,
                     quoteId: 'dex-quote',
                     isDex: true,
                 },
@@ -1438,19 +1438,19 @@ describe('tradingSelectors', () => {
                 } as unknown as ExchangeInfo;
                 state.wallet.trading.exchange.quotes = [
                     {
-                        ...invityAPIFixtures.exchangeTrade,
+                        ...tradeApiFixtures.exchangeTrade,
                         quoteId: 'fixed-quote',
                         exchange: 'fixed-provider',
                         isDex: false,
                     },
                     {
-                        ...invityAPIFixtures.exchangeTrade,
+                        ...tradeApiFixtures.exchangeTrade,
                         quoteId: 'float-quote',
                         exchange: 'float-provider',
                         isDex: false,
                     },
                     {
-                        ...invityAPIFixtures.exchangeTrade,
+                        ...tradeApiFixtures.exchangeTrade,
                         quoteId: 'dex-quote',
                         exchange: 'dex-provider',
                         isDex: true,

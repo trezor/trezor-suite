@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { type BuyTrade } from 'invity-api';
 
 import { Translation, type TranslationKey } from '@suite/intl';
-import { invityAPI } from '@suite-common/trading';
+import { tradeApi } from '@suite-common/trading';
 import { Button, Card, Column, Paragraph, type StepListItemState } from '@trezor/components';
 import { ArrowSquareOutIcon } from '@trezor/icons';
 
@@ -67,7 +67,7 @@ export const TradingBuyDetailPaymentWaitingForUserStep = ({
     const goToPayment = async () => {
         setIsWorking(true);
         const returnUrl = await createTxLink(trade, account);
-        const response = await invityAPI.getBuyTradeForm({ trade, returnUrl });
+        const response = await tradeApi.getBuyTradeForm({ trade, returnUrl });
         if (response) {
             dispatch(submitRequestForm(response.form));
         }

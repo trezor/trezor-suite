@@ -3,17 +3,17 @@ import { cloneDeep } from 'lodash';
 
 import { typedObjectEntries } from '@trezor/utils';
 
-import { invityEndpoint, invityGeneralResponses } from '../../fixtures/invity';
+import {
+    getSignatureStatusesResponse,
+    sendTransactionResponse,
+} from '../../fixtures/solana-responses';
+import { tradeEndpoint, tradeGeneralResponses } from '../../fixtures/trading';
 import {
     SellTradeResponse,
     SwapDexTradeResponse,
     SwapTradeResponse,
     TradeResponse,
-} from '../../fixtures/invity/types';
-import {
-    getSignatureStatusesResponse,
-    sendTransactionResponse,
-} from '../../fixtures/solana-responses';
+} from '../../fixtures/trading/types';
 import { step } from '../common';
 
 export const solanaUrlPattern = /^https:\/\/sol\d*\.trezor\.io\//;
@@ -27,8 +27,8 @@ export class TradingMock {
 
     // Common responses for all trading tests.
     @step()
-    async routeInvityGeneralEndpoints() {
-        for (const [url, response] of typedObjectEntries(invityGeneralResponses)) {
+    async routeTradeGeneralEndpoints() {
+        for (const [url, response] of typedObjectEntries(tradeGeneralResponses)) {
             await this.page.route(url, async route => {
                 await route.fulfill({ json: response });
             });
@@ -40,7 +40,7 @@ export class TradingMock {
     // But our mocked response redirects us to back to Suite where our flow continues.
     @step()
     async routeTrade(endpointUrl: string, tradeResponse: TradeResponse | SellTradeResponse) {
-        await this.routeInvityGeneralEndpoints();
+        await this.routeTradeGeneralEndpoints();
         await this.page.route(endpointUrl, async (route, request) => {
             const redirectedTradeResponse = this.createRedirectedTradeResponse(
                 tradeResponse,
@@ -52,8 +52,8 @@ export class TradingMock {
 
     @step()
     async routeSwapTrade(tradeResponse: SwapTradeResponse | SwapDexTradeResponse) {
-        await this.routeInvityGeneralEndpoints();
-        await this.page.route(invityEndpoint.swapTrade, async (route, request) => {
+        await this.routeTradeGeneralEndpoints();
+        await this.page.route(tradeEndpoint.swapTrade, async (route, request) => {
             const modifiedTradeResponse = this.updateSwapTradeResponseIds(tradeResponse, request);
             await route.fulfill({ json: modifiedTradeResponse });
         });
@@ -90,7 +90,7 @@ export class TradingMock {
 
     @step()
     async changeBuyWatchResponseTo(status: 'SUBMITTED' | 'SUCCESS') {
-        await this.page.route(invityEndpoint.buyWatch, async route => {
+        await this.page.route(tradeEndpoint.buyWatch, async route => {
             await route.fulfill({ json: { status } });
         });
     }

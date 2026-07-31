@@ -2,9 +2,9 @@ import { createThunk } from '@suite-common/redux-utils';
 import { type Account } from '@suite-common/wallet-types';
 
 import { TRADING_EXCHANGE_THUNK_PREFIX } from '../../constants';
-import { invityAPI } from '../../invityAPI';
 import { tradingExchangeActions } from '../../reducers/exchangeReducer';
 import { selectTradingExchangeSelectedQuote } from '../../selectors/tradingSelectors';
+import { tradeApi } from '../../tradeApi';
 
 export type WatchExchangeApprovalThunkProps = {
     account: Account;
@@ -21,9 +21,9 @@ export const watchExchangeApprovalThunk = createThunk(
             return undefined;
         }
 
-        invityAPI.createInvityAPIKey(account.descriptor);
+        tradeApi.createApiKey(account.descriptor);
 
-        const response = await invityAPI.watchTrade<'exchange'>(
+        const response = await tradeApi.watchTrade<'exchange'>(
             selectedQuote,
             'exchange',
             refreshCount,

@@ -2,7 +2,7 @@ import { type PayloadAction, isAnyOf } from '@reduxjs/toolkit';
 
 import { createSliceWithExtraDeps } from '@suite-common/redux-utils';
 import {
-    type InvityServerEnvironment,
+    type TradeServerEnvironment,
     type TradingTypeWithConcierge,
     prepareTradingReducer,
 } from '@suite-common/trading';
@@ -48,7 +48,7 @@ export const tradingSlice = createSliceWithExtraDeps({
     reducers: {
         setTradingEnvironment: (
             state: TradingState,
-            { payload }: PayloadAction<InvityServerEnvironment>,
+            { payload }: PayloadAction<TradeServerEnvironment>,
         ) => {
             state.tradingEnvironment = payload;
             state.tradeOrderIdToBeOpened = undefined;

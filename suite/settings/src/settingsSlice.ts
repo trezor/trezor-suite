@@ -5,7 +5,7 @@ import { type EarnYieldWorkerBaseUrl } from '@suite-common/earn-stablecoin-defs'
 import { type OAuthServerEnvironment } from '@suite-common/metadata-types';
 import { createSliceWithExtraDeps } from '@suite-common/redux-utils';
 import { type Locale } from '@suite-common/suite-types';
-import type { InvityServerEnvironment } from '@suite-common/trading';
+import type { TradeServerEnvironment } from '@suite-common/trading';
 import type { DefinitionsChannel } from '@trezor/connect-common';
 import { isWeb } from '@trezor/env-utils';
 import { type SuiteThemeVariant } from '@trezor/suite-desktop-api';
@@ -22,7 +22,7 @@ export type DebugTransport =
     | 'WebUsbTransport';
 
 export interface DebugModeOptions {
-    invityServerEnvironment?: InvityServerEnvironment;
+    tradeServerEnvironment?: TradeServerEnvironment;
     earnYieldWorkerBaseUrl?: EarnYieldWorkerBaseUrl;
     oauthServerEnvironment?: OAuthServerEnvironment;
     transports: DebugTransport[];
@@ -84,7 +84,7 @@ export const suiteSettingsInitialState: SuiteSettingsState = {
         deviceMeta: true,
     },
     debug: {
-        invityServerEnvironment: undefined,
+        tradeServerEnvironment: undefined,
         earnYieldWorkerBaseUrl: undefined,
         transports: [],
         isUnlockedBootloaderAllowed: false,

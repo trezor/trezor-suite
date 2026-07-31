@@ -3,10 +3,10 @@ import { type Account } from '@suite-common/wallet-types';
 import { exhaustive } from '@trezor/type-utils';
 
 import { TRADING_THUNK_PREFIX } from '../../constants';
-import { invityAPI } from '../../invityAPI';
 import { tradingSellActions } from '../../reducers/sellReducer';
 import { tradingActions } from '../../reducers/tradingCommonReducer';
 import { selectTradingSellSelectedQuote } from '../../selectors/tradingSelectors';
+import { tradeApi } from '../../tradeApi';
 import {
     type TradingTradeMapProps,
     type TradingTransaction,
@@ -34,7 +34,7 @@ const watchTradeData = async <T extends TradingType>({
     trade,
     refreshCount,
 }: WatchTradeDataProps): Promise<WatchTradeDataResultProps<T> | undefined> => {
-    const response = await invityAPI.watchTrade<T>(trade.data, trade.tradeType, refreshCount);
+    const response = await tradeApi.watchTrade<T>(trade.data, trade.tradeType, refreshCount);
 
     if (!response || !response.status || response.status === trade.data.status) return;
 
@@ -53,7 +53,7 @@ const watchTradeData = async <T extends TradingType>({
 export const watchTradeThunk = createThunk(
     `${TRADING_THUNK_PREFIX}/watchTrade`,
     async ({ account, trade, refreshCount }: WatchTradeThunk, { dispatch, getState }) => {
-        invityAPI.createInvityAPIKey(account.descriptor);
+        tradeApi.createApiKey(account.descriptor);
 
         const { tradeType } = trade;
 

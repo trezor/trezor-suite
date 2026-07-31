@@ -4,12 +4,12 @@ import { createThunk } from '@suite-common/redux-utils';
 import { type Account } from '@suite-common/wallet-types';
 
 import { TRADING_EXCHANGE_THUNK_PREFIX } from '../../constants';
-import { invityAPI } from '../../invityAPI';
 import { tradingExchangeActions } from '../../reducers/exchangeReducer';
 import {
     selectTradingExchangeDexQuoteApprovalPrefetchLoadingQuoteId,
     selectTradingExchangeQuotes,
 } from '../../selectors/tradingSelectors';
+import { tradeApi } from '../../tradeApi';
 import { getUnusedAddressFromAccount } from '../../utils';
 
 export type PrefetchDexQuoteApprovalThunkProps = {
@@ -38,7 +38,7 @@ export const prefetchDexQuoteApprovalThunk = createThunk(
             const receiveAddress =
                 quoteToProcess.receiveAddress ?? quoteToProcess.fromAddress ?? '';
 
-            const response = await invityAPI.doExchangeTrade({
+            const response = await tradeApi.doExchangeTrade({
                 trade: quoteToProcess,
                 receiveAddress,
                 refundAddress: fromAddress ?? quoteToProcess.fromAddress ?? '',

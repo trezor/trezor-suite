@@ -1,6 +1,6 @@
 import {
     type TradingProviderInfo as TradingProviderInfoType,
-    invityAPI,
+    tradeApi,
 } from '@suite-common/trading';
 import { Row } from '@trezor/components';
 
@@ -23,7 +23,7 @@ export const TradingProviderInfo = ({
     return (
         <Row gap={8} data-testid="@trading/form/info/provider">
             {extractedProvider?.logo && (
-                <TradingIcon iconUrl={invityAPI.getProviderLogoUrl(extractedProvider?.logo)} />
+                <TradingIcon iconUrl={tradeApi.getProviderLogoUrl(extractedProvider?.logo)} />
             )}
             {extractedProvider?.companyName}
         </Row>

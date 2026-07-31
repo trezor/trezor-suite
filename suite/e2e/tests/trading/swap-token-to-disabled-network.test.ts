@@ -1,6 +1,6 @@
 import { getCryptoId } from '@suite-common/trading';
 
-import { invityEndpoint, swapQuotesTetherStellar } from '../../fixtures/invity';
+import { swapQuotesTetherStellar, tradeEndpoint } from '../../fixtures/trading';
 import { expect, test } from '../../support/fixtures';
 
 const sendAmount = swapQuotesTetherStellar[0]?.sendStringAmount ?? '';
@@ -18,7 +18,7 @@ test.describe(
         test.beforeEach(
             async ({ page, onboardingPage, dashboardPage, walletPage, settingsPage }) => {
                 await test.step('Mocking responses', async () => {
-                    await page.route(invityEndpoint.swapQuotes, async route => {
+                    await page.route(tradeEndpoint.swapQuotes, async route => {
                         await route.fulfill({ json: swapQuotesTetherStellar });
                     });
                 });

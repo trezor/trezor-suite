@@ -74,9 +74,9 @@ export const TRADING_SETTINGS_MAX_SLIPPAGE_PERCENTAGE_DEFAULT = '1';
 export const SLIPPAGE_MIN = '0.01';
 export const SLIPPAGE_MAX = '50';
 export const SLIPPAGE_PRESETS = ['0.1', '0.5', '1', '3'];
-export const INVITY_API_RELOAD_DATA_AFTER_MS = 10 * 60 * 1000; // 10 minutes
+export const TRADE_API_RELOAD_DATA_AFTER_MS = 10 * 60 * 1000; // 10 minutes
 export const TRADING_FALLBACK_API_KEY = getRandomAccountDescriptor();
-export const INVITY_API_RELOAD_QUOTES_AFTER_SECONDS = 30;
+export const TRADE_API_RELOAD_QUOTES_AFTER_SECONDS = 30;
 
 export const CRYPTO_PLATFORM_SEPARATOR = '--';
 /**

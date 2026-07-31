@@ -2,16 +2,16 @@ import { createHash } from 'crypto';
 import { type InfoResponse } from 'invity-api';
 
 import coins from './__fixtures__/coins.json';
-import { invityAPIFixtures } from './__fixtures__/invityAPI';
 import platforms from './__fixtures__/platforms.json';
-import { invityAPI } from './invityAPI';
+import { tradeApiFixtures } from './__fixtures__/tradeApi';
+import { tradeApi } from './tradeApi';
 
-describe('InvityAPI', () => {
+describe('TradeApi', () => {
     const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
     const error = new Error('Error');
     const accountDescriptor = 'test-account';
-    invityAPI.createInvityAPIKey(accountDescriptor);
-    const apiKey = invityAPI.getCurrentApiKey();
+    tradeApi.createApiKey(accountDescriptor);
+    const apiKey = tradeApi.getCurrentApiKey();
 
     const abortMock = (abortSignal: AbortSignal) =>
         new Promise((_, reject) => {
@@ -23,7 +23,7 @@ describe('InvityAPI', () => {
     beforeEach(() => {
         global.fetch = jest.fn();
 
-        invityAPI.setInvityServersEnvironment('production');
+        tradeApi.setServersEnvironment('production');
     });
 
     afterEach(() => {
@@ -35,42 +35,42 @@ describe('InvityAPI', () => {
         hash.update(accountDescriptor);
         const expectedApiKey = hash.digest('hex');
 
-        expect(invityAPI.getCurrentApiKey()).toBe(expectedApiKey);
+        expect(tradeApi.getCurrentApiKey()).toBe(expectedApiKey);
     });
 
     it('getCurrentAccountDescriptor', () => {
-        const descriptor = invityAPI.getCurrentAccountDescriptor();
+        const descriptor = tradeApi.getCurrentAccountDescriptor();
 
         expect(descriptor).toEqual('test-account');
     });
 
     describe('resetCurrentAccount', () => {
         it('should clear the account descriptor', () => {
-            invityAPI.resetCurrentAccount();
+            tradeApi.resetCurrentAccount();
 
-            expect(invityAPI.getCurrentAccountDescriptor()).toBeUndefined();
+            expect(tradeApi.getCurrentAccountDescriptor()).toBeUndefined();
         });
 
-        it('should recreate the descriptor and api key after createInvityAPIKey is called', () => {
-            invityAPI.resetCurrentAccount();
-            invityAPI.createInvityAPIKey(accountDescriptor);
+        it('should recreate the descriptor and api key after createApiKey is called', () => {
+            tradeApi.resetCurrentAccount();
+            tradeApi.createApiKey(accountDescriptor);
 
-            expect(invityAPI.getCurrentAccountDescriptor()).toEqual(accountDescriptor);
-            expect(typeof invityAPI.getCurrentApiKey()).toBe('string');
+            expect(tradeApi.getCurrentAccountDescriptor()).toEqual(accountDescriptor);
+            expect(typeof tradeApi.getCurrentApiKey()).toBe('string');
         });
     });
 
-    describe('getInvityAPIKey', () => {
+    describe('getApiKey', () => {
         it('should return the default API', () => {
-            expect(typeof invityAPI['getInvityAPIKey']()).toBe('string');
+            expect(typeof tradeApi['getApiKey']()).toBe('string');
         });
 
         it('should throw an error when apiKey is not set', () => {
-            (invityAPI as any).constructor.apiKey = undefined;
+            (tradeApi as any).constructor.apiKey = undefined;
 
-            expect(() => invityAPI['getInvityAPIKey']()).toThrow('apiKey not created');
+            expect(() => tradeApi['getApiKey']()).toThrow('apiKey not created');
 
-            (invityAPI as any).constructor.apiKey = apiKey; // reset
+            (tradeApi as any).constructor.apiKey = apiKey; // reset
         });
     });
 
@@ -83,7 +83,7 @@ describe('InvityAPI', () => {
             json: () => Promise.resolve(fetchError),
         });
 
-        const info = await invityAPI.getInfo();
+        const info = await tradeApi.getInfo();
         expect(consoleSpy).not.toHaveBeenCalled();
         expect(info).toEqual(fetchError);
     });
@@ -98,7 +98,7 @@ describe('InvityAPI', () => {
                 }),
         });
 
-        const info = await invityAPI.getInfo();
+        const info = await tradeApi.getInfo();
         expect(consoleSpy).toHaveBeenCalled();
         expect(info).toEqual({ platforms: {}, coins: {}, config: {} });
     });
@@ -115,7 +115,7 @@ describe('InvityAPI', () => {
                 json: () => Promise.resolve(mockInfo),
             });
 
-            const info = await invityAPI.getInfo();
+            const info = await tradeApi.getInfo();
             expect(info).toEqual(mockInfo);
         });
 
@@ -125,23 +125,23 @@ describe('InvityAPI', () => {
                 json: () => Promise.resolve(undefined),
             });
 
-            const info = await invityAPI.getInfo();
+            const info = await tradeApi.getInfo();
             expect(info).toEqual({ platforms: {}, coins: {}, config: {} });
         });
 
         it('should handle fetch info when there is error', async () => {
             (global.fetch as jest.Mock).mockRejectedValueOnce(error);
 
-            const info = await invityAPI.getInfo();
+            const info = await tradeApi.getInfo();
             expect(consoleSpy).toHaveBeenCalledWith('[getInfo]', error);
             expect(info).toEqual({ platforms: {}, coins: {}, config: {} });
         });
     });
 
     describe.each([
-        ['getBuyList' as const, 'buy', invityAPIFixtures.buyList, undefined],
-        ['getSellList' as const, 'sell', invityAPIFixtures.sellList, undefined],
-        ['getExchangeList' as const, 'exchange', invityAPIFixtures.exchangeList, []],
+        ['getBuyList' as const, 'buy', tradeApiFixtures.buyList, undefined],
+        ['getSellList' as const, 'sell', tradeApiFixtures.sellList, undefined],
+        ['getExchangeList' as const, 'exchange', tradeApiFixtures.exchangeList, []],
     ])('%s', (method, service, listFixture, returnValue) => {
         it(`should get ${service} list`, async () => {
             (global.fetch as jest.Mock).mockResolvedValueOnce({
@@ -149,21 +149,21 @@ describe('InvityAPI', () => {
                 json: () => Promise.resolve(listFixture),
             });
 
-            const list = await invityAPI[method]();
+            const list = await tradeApi[method]();
             expect(list).toEqual(listFixture);
         });
 
         it(`should handle get ${service} list when the response is undefined`, async () => {
             (global.fetch as jest.Mock).mockRejectedValueOnce(error);
 
-            const list = await invityAPI[method]();
+            const list = await tradeApi[method]();
             expect(list).toEqual(returnValue);
         });
 
         it(`should handle get ${service} list when there is error`, async () => {
             (global.fetch as jest.Mock).mockRejectedValueOnce(error);
 
-            const list = await invityAPI[method]();
+            const list = await tradeApi[method]();
             expect(consoleSpy).toHaveBeenCalledWith(`[${method}]`, error);
             expect(list).toEqual(returnValue);
         });
@@ -173,20 +173,20 @@ describe('InvityAPI', () => {
         [
             'getBuyQuotes' as const,
             'buy',
-            invityAPIFixtures.buyQuotes,
-            invityAPIFixtures.buyQuotesBody,
+            tradeApiFixtures.buyQuotes,
+            tradeApiFixtures.buyQuotesBody,
         ],
         [
             'getSellQuotes' as const,
             'sell',
-            invityAPIFixtures.sellQuotes,
-            invityAPIFixtures.sellQuotesBody,
+            tradeApiFixtures.sellQuotes,
+            tradeApiFixtures.sellQuotesBody,
         ],
         [
             'getExchangeQuotes' as const,
             'exchange',
-            invityAPIFixtures.exchangeQuotes,
-            invityAPIFixtures.exchangeQuotesBody,
+            tradeApiFixtures.exchangeQuotes,
+            tradeApiFixtures.exchangeQuotesBody,
         ],
     ])('%s', (method, service, quotesFixture, body) => {
         it(`should get ${service} quotes`, async () => {
@@ -195,7 +195,7 @@ describe('InvityAPI', () => {
                 json: () => Promise.resolve(quotesFixture),
             });
 
-            const quotes = await invityAPI[method](body as any);
+            const quotes = await tradeApi[method](body as any);
             expect(quotes).toEqual(quotesFixture);
         });
 
@@ -205,7 +205,7 @@ describe('InvityAPI', () => {
 
             (global.fetch as jest.Mock).mockImplementationOnce(() => abortMock(abortSignal));
 
-            const quotesPromise = invityAPI[method](body as any, abortSignal);
+            const quotesPromise = tradeApi[method](body as any, abortSignal);
 
             abortController.abort();
 
@@ -216,7 +216,7 @@ describe('InvityAPI', () => {
         it(`should handle get ${service} quotes when there is error`, async () => {
             (global.fetch as jest.Mock).mockRejectedValueOnce(error);
 
-            const quotes = await invityAPI[method](body as any);
+            const quotes = await tradeApi[method](body as any);
             expect(consoleSpy).toHaveBeenCalledWith(`[${method}]`, error);
             expect(quotes).toEqual(undefined);
         });
@@ -226,8 +226,8 @@ describe('InvityAPI', () => {
         [
             'doBuyTrade' as const,
             'buy',
-            invityAPIFixtures.buyTradeBody,
-            invityAPIFixtures.buyTrade,
+            tradeApiFixtures.buyTradeBody,
+            tradeApiFixtures.buyTrade,
             {
                 trade: {
                     error: 'Error: Error',
@@ -238,8 +238,8 @@ describe('InvityAPI', () => {
         [
             'doSellTrade' as const,
             'sell',
-            invityAPIFixtures.sellTradeBody,
-            invityAPIFixtures.sellTrade,
+            tradeApiFixtures.sellTradeBody,
+            tradeApiFixtures.sellTrade,
             {
                 trade: {
                     error: 'Error: Error',
@@ -250,8 +250,8 @@ describe('InvityAPI', () => {
         [
             'doExchangeTrade' as const,
             'exchange',
-            invityAPIFixtures.exchangeTradeBody,
-            invityAPIFixtures.exchangeTrade,
+            tradeApiFixtures.exchangeTradeBody,
+            tradeApiFixtures.exchangeTrade,
             {
                 error: 'Error: Error',
                 exchange: 'test-exchange',
@@ -264,14 +264,14 @@ describe('InvityAPI', () => {
                 json: () => Promise.resolve(tradeResponse),
             });
 
-            const trade = await invityAPI[method](body as any);
+            const trade = await tradeApi[method](body as any);
             expect(trade).toEqual(tradeResponse);
         });
 
         it(`should handle do ${service} trade when there is error`, async () => {
             (global.fetch as jest.Mock).mockRejectedValueOnce(error);
 
-            const trade = await invityAPI[method](body as any);
+            const trade = await tradeApi[method](body as any);
             expect(consoleSpy).toHaveBeenCalledWith(`[${method}]`, error);
             expect(trade).toEqual(errorResponse);
         });
@@ -280,20 +280,20 @@ describe('InvityAPI', () => {
     describe.each([
         [
             'buy' as const,
-            invityAPIFixtures.buyTradeBody,
-            invityAPIFixtures.buyWatchTrade,
+            tradeApiFixtures.buyTradeBody,
+            tradeApiFixtures.buyWatchTrade,
             'watchBuyTrade',
         ],
         [
             'sell' as const,
-            invityAPIFixtures.sellTradeBody,
-            invityAPIFixtures.sellWatchTrade,
+            tradeApiFixtures.sellTradeBody,
+            tradeApiFixtures.sellWatchTrade,
             'watchSellFiatTrade',
         ],
         [
             'exchange' as const,
-            invityAPIFixtures.exchangeTradeBody,
-            invityAPIFixtures.exchangeWatchTrade,
+            tradeApiFixtures.exchangeTradeBody,
+            tradeApiFixtures.exchangeWatchTrade,
             'watchExchangeTrade',
         ],
     ])('watchTrade', (service, body, response, logPrefix) => {
@@ -303,14 +303,14 @@ describe('InvityAPI', () => {
                 json: () => Promise.resolve(response),
             });
 
-            const list = await invityAPI.watchTrade(body as any, service, 0);
+            const list = await tradeApi.watchTrade(body as any, service, 0);
             expect(list).toEqual(response);
         });
 
         it(`should handle get ${service} list when there is error`, async () => {
             (global.fetch as jest.Mock).mockRejectedValueOnce(error);
 
-            const list = await invityAPI.watchTrade(body as any, service, 0);
+            const list = await tradeApi.watchTrade(body as any, service, 0);
             expect(consoleSpy).toHaveBeenCalledWith(`[${logPrefix}]`, error);
             expect(list).toEqual({
                 error: 'Error: Error',
@@ -322,17 +322,17 @@ describe('InvityAPI', () => {
         it('should get buy trade form', async () => {
             (global.fetch as jest.Mock).mockResolvedValueOnce({
                 ok: true,
-                json: () => Promise.resolve(invityAPIFixtures.buyTradeForm),
+                json: () => Promise.resolve(tradeApiFixtures.buyTradeForm),
             });
 
-            const trade = await invityAPI.getBuyTradeForm(invityAPIFixtures.buyTradeFormBody);
-            expect(trade).toEqual(invityAPIFixtures.buyTradeForm);
+            const trade = await tradeApi.getBuyTradeForm(tradeApiFixtures.buyTradeFormBody);
+            expect(trade).toEqual(tradeApiFixtures.buyTradeForm);
         });
 
         it(`should handle get buy trade form when there is error`, async () => {
             (global.fetch as jest.Mock).mockRejectedValueOnce(error);
 
-            const trade = await invityAPI.getBuyTradeForm(invityAPIFixtures.buyTradeFormBody);
+            const trade = await tradeApi.getBuyTradeForm(tradeApiFixtures.buyTradeFormBody);
             expect(consoleSpy).toHaveBeenCalledWith('[getBuyTradeForm]', error);
             expect(trade).toEqual({ error: 'Error: Error' });
         });
@@ -342,17 +342,17 @@ describe('InvityAPI', () => {
         it('should do sell confirm', async () => {
             (global.fetch as jest.Mock).mockResolvedValueOnce({
                 ok: true,
-                json: () => Promise.resolve(invityAPIFixtures.buyTradeForm),
+                json: () => Promise.resolve(tradeApiFixtures.buyTradeForm),
             });
 
-            const trade = await invityAPI.doSellConfirm(invityAPIFixtures.sellTrade);
-            expect(trade).toEqual(invityAPIFixtures.buyTradeForm);
+            const trade = await tradeApi.doSellConfirm(tradeApiFixtures.sellTrade);
+            expect(trade).toEqual(tradeApiFixtures.buyTradeForm);
         });
 
         it(`should handle do sell confirm when there is error`, async () => {
             (global.fetch as jest.Mock).mockRejectedValueOnce(error);
 
-            const trade = await invityAPI.doSellConfirm(invityAPIFixtures.sellTrade);
+            const trade = await tradeApi.doSellConfirm(tradeApiFixtures.sellTrade);
             expect(consoleSpy).toHaveBeenCalledWith('[doSellConfirm]', error);
             expect(trade).toEqual({ error: 'Error: Error', exchange: 'test-sell' });
         });
@@ -362,17 +362,17 @@ describe('InvityAPI', () => {
         it('should do sell confirm', async () => {
             (global.fetch as jest.Mock).mockResolvedValueOnce({
                 ok: true,
-                json: () => Promise.resolve(invityAPIFixtures.otc),
+                json: () => Promise.resolve(tradeApiFixtures.otc),
             });
 
-            const trade = await invityAPI.getOTCData();
-            expect(trade).toEqual(invityAPIFixtures.otc);
+            const trade = await tradeApi.getOTCData();
+            expect(trade).toEqual(tradeApiFixtures.otc);
         });
 
         it(`should handle do sell confirm when there is error`, async () => {
             (global.fetch as jest.Mock).mockRejectedValueOnce(error);
 
-            const trade = await invityAPI.getOTCData();
+            const trade = await tradeApi.getOTCData();
             expect(consoleSpy).toHaveBeenCalledWith('[getOTCData]', error);
             expect(trade).toEqual(undefined);
         });
@@ -382,22 +382,22 @@ describe('InvityAPI', () => {
         it('should get signed exchange trade', async () => {
             (global.fetch as jest.Mock).mockResolvedValueOnce({
                 ok: true,
-                json: () => Promise.resolve(invityAPIFixtures.exchangeTradeSigned),
+                json: () => Promise.resolve(tradeApiFixtures.exchangeTradeSigned),
             });
 
-            const trade = await invityAPI.getSignedTrade(
-                invityAPIFixtures.createTradeSignatureRequest,
+            const trade = await tradeApi.getSignedTrade(
+                tradeApiFixtures.createTradeSignatureRequest,
             );
-            expect(trade).toEqual(invityAPIFixtures.exchangeTradeSigned);
+            expect(trade).toEqual(tradeApiFixtures.exchangeTradeSigned);
         });
 
         it('should get signed sell trade', async () => {
             (global.fetch as jest.Mock).mockResolvedValueOnce({
                 ok: true,
-                json: () => Promise.resolve(invityAPIFixtures.sellFiatTradeSigned),
+                json: () => Promise.resolve(tradeApiFixtures.sellFiatTradeSigned),
             });
 
-            const trade = await invityAPI.getSignedTrade({
+            const trade = await tradeApi.getSignedTrade({
                 type: 'sell',
                 id: 'test-order-id',
                 nonce: 'test-nonce',
@@ -410,7 +410,7 @@ describe('InvityAPI', () => {
                 memoText: 'test-memo',
                 sendSlip44: 0,
             });
-            expect(trade).toEqual(invityAPIFixtures.sellFiatTradeSigned);
+            expect(trade).toEqual(tradeApiFixtures.sellFiatTradeSigned);
         });
 
         it('should return undefined when response is undefined', async () => {
@@ -419,8 +419,8 @@ describe('InvityAPI', () => {
                 json: () => Promise.resolve(undefined),
             });
 
-            const trade = await invityAPI.getSignedTrade(
-                invityAPIFixtures.createTradeSignatureRequest,
+            const trade = await tradeApi.getSignedTrade(
+                tradeApiFixtures.createTradeSignatureRequest,
             );
             expect(trade).toBeUndefined();
         });
@@ -428,8 +428,8 @@ describe('InvityAPI', () => {
         it('should handle error and return undefined', async () => {
             (global.fetch as jest.Mock).mockRejectedValueOnce(error);
 
-            const trade = await invityAPI.getSignedTrade(
-                invityAPIFixtures.createTradeSignatureRequest,
+            const trade = await tradeApi.getSignedTrade(
+                tradeApiFixtures.createTradeSignatureRequest,
             );
             expect(consoleSpy).toHaveBeenCalledWith('[getSignedTrade]', error);
             expect(trade).toBeUndefined();
@@ -437,40 +437,40 @@ describe('InvityAPI', () => {
     });
 
     it('getCoinLogoUrl', () => {
-        const icon = invityAPI.getCoinLogoUrl('bitcoin');
+        const icon = tradeApi.getCoinLogoUrl('bitcoin');
 
         expect(icon).toEqual('https://exchange.trezor.io/images/coins/suite/bitcoin.svg');
     });
 
     it('getProviderLogoUrl', () => {
-        const icon = invityAPI.getProviderLogoUrl('test.png');
+        const icon = tradeApi.getProviderLogoUrl('test.png');
 
         expect(icon).toEqual('https://exchange.trezor.io/images/exchange/test.png');
     });
 
     it('getPaymentMethodUrl', () => {
-        const icon = invityAPI.getPaymentMethodUrl('creditCard');
+        const icon = tradeApi.getPaymentMethodUrl('creditCard');
 
         expect(icon).toEqual(
             'https://exchange.trezor.io/images/paymentMethods/suite/creditCard.svg',
         );
     });
 
-    it('setInvityServersEnvironment', () => {
-        invityAPI.setInvityServersEnvironment('localhost');
+    it('setServersEnvironment', () => {
+        tradeApi.setServersEnvironment('localhost');
 
-        expect((invityAPI as any).serverEnvironment).toEqual('localhost');
+        expect((tradeApi as any).serverEnvironment).toEqual('localhost');
     });
 
     it('getApiServerUrl', () => {
-        const url = invityAPI.getApiServerUrl();
+        const url = tradeApi.getApiServerUrl();
 
         expect(url).toEqual('https://exchange.trezor.io');
     });
 
     describe('headers', () => {
         it('should provide X-Suite-Platform header', () => {
-            invityAPI.getInfo();
+            tradeApi.getInfo();
 
             expect(fetch).toHaveBeenCalledWith(
                 expect.any(String),

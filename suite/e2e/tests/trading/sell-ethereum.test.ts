@@ -2,11 +2,11 @@ import { capitalizeFirstLetter } from '@trezor/utils';
 
 import {
     getCompanyNameFromList,
-    invityEndpoint,
     sellQuotesEthereum,
     sellTradeEthereum,
     sellWatchEthereum,
-} from '../../fixtures/invity';
+    tradeEndpoint,
+} from '../../fixtures/trading';
 import { formatAddressWithNewlines } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
 
@@ -48,11 +48,11 @@ test.describe('Trading - Sell Ethereum', { tag: ['@webOnly', '@T3W1', '@T3T1'] }
             walletPage,
         }) => {
             await test.step('Mocking responses', async () => {
-                await page.route(invityEndpoint.sellQuotes, async route => {
+                await page.route(tradeEndpoint.sellQuotes, async route => {
                     await route.fulfill({ json: sellQuotesEthereum });
                 });
-                await tradingMock.routeTrade(invityEndpoint.sellTrade, sellTradeEthereum);
-                await page.route(invityEndpoint.sellWatch, async route => {
+                await tradingMock.routeTrade(tradeEndpoint.sellTrade, sellTradeEthereum);
+                await page.route(tradeEndpoint.sellWatch, async route => {
                     await route.fulfill({ json: sellWatchEthereum });
                 });
             });

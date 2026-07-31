@@ -1,4 +1,4 @@
-import { INVITY_API_RELOAD_QUOTES_AFTER_SECONDS } from '@suite-common/trading';
+import { TRADE_API_RELOAD_QUOTES_AFTER_SECONDS } from '@suite-common/trading';
 import { renderHook } from '@suite-native/test-utils';
 import { type useTimer } from '@trezor/react-utils';
 
@@ -55,16 +55,16 @@ describe('useReloadTimer', () => {
         expect(result.current.timer.stop).toHaveBeenCalled();
     });
 
-    it('should set shouldReload to true when time spent is equal to INVITY_API_RELOAD_QUOTES_AFTER_SECONDS', () => {
-        mockTimerReturn.timeSpent.seconds = INVITY_API_RELOAD_QUOTES_AFTER_SECONDS;
+    it('should set shouldReload to true when time spent is equal to TRADE_API_RELOAD_QUOTES_AFTER_SECONDS', () => {
+        mockTimerReturn.timeSpent.seconds = TRADE_API_RELOAD_QUOTES_AFTER_SECONDS;
 
         const { result } = renderUseReloadTimer();
 
         expect(result.current.shouldReload).toBe(true);
     });
 
-    it('should set shouldReload to true when time spent is greater than INVITY_API_RELOAD_QUOTES_AFTER_SECONDS', () => {
-        mockTimerReturn.timeSpent.seconds = INVITY_API_RELOAD_QUOTES_AFTER_SECONDS + 1;
+    it('should set shouldReload to true when time spent is greater than TRADE_API_RELOAD_QUOTES_AFTER_SECONDS', () => {
+        mockTimerReturn.timeSpent.seconds = TRADE_API_RELOAD_QUOTES_AFTER_SECONDS + 1;
 
         const { result } = renderUseReloadTimer();
 
@@ -72,7 +72,7 @@ describe('useReloadTimer', () => {
     });
 
     it('should not call stop when isStopped is true', () => {
-        mockTimerReturn.timeSpent.seconds = INVITY_API_RELOAD_QUOTES_AFTER_SECONDS + 1;
+        mockTimerReturn.timeSpent.seconds = TRADE_API_RELOAD_QUOTES_AFTER_SECONDS + 1;
         mockTimerReturn.isStopped = true;
 
         const { result } = renderUseReloadTimer();
@@ -82,7 +82,7 @@ describe('useReloadTimer', () => {
     });
 
     it('should not call stop when isLoading is true', () => {
-        mockTimerReturn.timeSpent.seconds = INVITY_API_RELOAD_QUOTES_AFTER_SECONDS + 1;
+        mockTimerReturn.timeSpent.seconds = TRADE_API_RELOAD_QUOTES_AFTER_SECONDS + 1;
         mockTimerReturn.isLoading = true;
 
         const { result } = renderUseReloadTimer();
@@ -99,7 +99,7 @@ describe('useReloadTimer', () => {
     });
 
     it('should return shouldReload false when timer is not enabled even when reload time is reached', () => {
-        mockTimerReturn.timeSpent.seconds = INVITY_API_RELOAD_QUOTES_AFTER_SECONDS + 1;
+        mockTimerReturn.timeSpent.seconds = TRADE_API_RELOAD_QUOTES_AFTER_SECONDS + 1;
         const { result } = renderUseReloadTimer(false);
 
         expect(result.current.timer.stop).toHaveBeenCalled();

@@ -13,7 +13,7 @@ import { TradingFormInputs } from './formInputs';
 import { TradingQuotesSection } from './quotesSection';
 import { TradingReceiveAccount } from './receiveAccount';
 import { TransactionDetailSidebar } from './transactionDetailSidebar';
-import { invityEndpoint } from '../../../fixtures/invity';
+import { tradeEndpoint } from '../../../fixtures/trading';
 import { step } from '../../common';
 import { expect } from '../../testExtends/customMatchers';
 import { BuyAsset, SellAsset } from '../../types';
@@ -162,7 +162,7 @@ export class TradingPage {
             await selectReceiveAddress();
         }
 
-        const quotesResponsePromise = this.page.waitForResponse(invityEndpoint.buyQuotes);
+        const quotesResponsePromise = this.page.waitForResponse(tradeEndpoint.buyQuotes);
         await inputField.fill(amount);
         await quotesResponsePromise;
         await this.quotes.waitForSync();
@@ -235,7 +235,7 @@ export class TradingPage {
     ) {
         await this.inputs.selectCountryOfResidence(country);
         await this.inputs.cryptoAmount.fill(amount);
-        await this.page.waitForRequest(invityEndpoint.sellQuotes);
+        await this.page.waitForRequest(tradeEndpoint.sellQuotes);
         await expect(
             this.page.getByText(messages['AMOUNT_IS_NOT_ENOUGH'].defaultMessage),
             'Insufficient funds in the account to run sell flow test. Please contact the "tech_qa" Slack group immediately.',
@@ -326,7 +326,7 @@ export class TradingPage {
             await selectReceiveAddress();
         }
 
-        const quotesResponsePromise = this.page.waitForResponse(invityEndpoint.swapQuotes);
+        const quotesResponsePromise = this.page.waitForResponse(tradeEndpoint.swapQuotes);
         await expect(this.quotes.bestOfferAmount).toHaveText(/0 \w+/);
         await this.inputs.cryptoAmount.fill(amount);
         await quotesResponsePromise;

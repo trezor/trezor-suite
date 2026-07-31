@@ -22,8 +22,8 @@ import {
 import {
     type SuiteSettingsState,
     selectDebugSettings,
-    selectInvityServerEnvironment,
     selectLanguage,
+    selectTradeServerEnvironment,
 } from '@suite/settings';
 import { createSuiteSyncDesktopCompositionRoot } from '@suite/suite-sync';
 import { createAddressValidator } from '@suite-common/address';
@@ -236,7 +236,7 @@ export const extraDependencies: ExtraDependenciesStatic = {
         selectSelectedAccount: (state: AppState) => state.wallet.selectedAccount,
         selectSelectedAccountStatus: (state: AppState) => state.wallet.selectedAccount.status,
         selectIsWindowVisible,
-        selectTradingEnvironment: selectInvityServerEnvironment,
+        selectTradingEnvironment: selectTradeServerEnvironment,
         selectTradedAccountKeys,
         selectIsViewOnlyByDefaultEnabled: (_: AppState) => true,
         selectThpSettings: (state: AppState) => ({
