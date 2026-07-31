@@ -13,8 +13,10 @@
     "dependencies": {
         "@react-navigation/native": "7.1.28",
         "@suite-common/assets": "workspace:*",
+        "@suite-common/dependency-injection": "workspace:*",
         "@suite-common/device": "workspace:*",
         "@suite-common/formatters": "workspace:*",
+        "@suite-common/networks": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
         "@suite-common/token-definitions": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",

@@ -8,6 +8,7 @@ import { createBip329CompositionRoot } from '@suite-common/bip329';
 import { delegatedIdentityKeyCompositionRoot } from '@suite-common/delegated-identity-key';
 import { toGetter } from '@suite-common/dependency-injection';
 import {
+    createGetNetworkColor,
     createNetworkModuleRepository,
     createNetworksCompositionRoot,
 } from '@suite-common/networks';
@@ -89,6 +90,7 @@ export const createNativeCompositionRoot = (deps: NativeAppDeps): NativeServices
     });
     const networkModules = createNetworksCompositionRoot();
     const networkModuleRepository = createNetworkModuleRepository({ networkModules });
+    const getNetworkColor = createGetNetworkColor({ networkModuleRepository });
     const addressValidator = createAddressValidator({ networkModuleRepository });
 
     const createLogger: ConnectSettings['createLogger'] = (prefix: string) =>
@@ -98,6 +100,7 @@ export const createNativeCompositionRoot = (deps: NativeAppDeps): NativeServices
 
     return {
         networkModuleRepository,
+        getNetworkColor,
         addressValidator,
         suiteSync,
         bip329,

@@ -1,6 +1,7 @@
 import type { SuiteCommonNetworkModule } from '@trezor/network-module-suite-common-types';
 
 import { tronValidator } from './addressValidator/tronAddressValidator';
+import { getNetworkColor } from './networkColor';
 import {
     type TronNetworkSymbol,
     getSupportedNetworks,
@@ -13,4 +14,5 @@ export const createTronSuiteCommonNetworkModule = (): TronNetworkSuiteCommonNetw
     addressValidator: tronValidator,
     getSupportedNetworks,
     isSupportedNetwork,
+    getNetworkColor,
 });
