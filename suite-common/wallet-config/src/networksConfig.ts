@@ -303,6 +303,7 @@ export const networks = {
         symbol: 'hype',
         displaySymbol: 'HYPE',
         name: 'HyperEVM',
+        displaySymbolName: 'Hyperliquid',
         networkType: 'ethereum',
         chainId: 999,
         bip43Path: "m/44'/60'/0'/0/i",
