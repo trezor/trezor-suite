@@ -5,6 +5,7 @@ import { type BackupType } from '@suite-common/suite-types';
 import { UI_REQUEST } from '@trezor/connect';
 
 import * as onboardingActions from 'src/actions/onboarding/onboardingActions';
+import { type GoToSuiteOptions } from 'src/actions/onboarding/onboardingActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { type BackupMedium } from 'src/reducers/onboarding/onboardingReducer';
 import { type AnyPath, type AnyStepId } from 'src/types/onboarding';
@@ -36,7 +37,8 @@ export const useOnboarding = () => {
                 dispatch(onboardingActions.updateBackupType(payload)),
             updateBackupMedium: (payload: BackupMedium) =>
                 dispatch(onboardingActions.updateBackupMedium(payload)),
-            goToSuite: () => dispatch(onboardingActions.goToSuite()),
+            goToSuite: (options?: GoToSuiteOptions) =>
+                dispatch(onboardingActions.goToSuite(options)),
             resolveNextAfterSkipped: (requestedStepId: AnyStepId) =>
                 dispatch(onboardingActions.resolveNextAfterSkipped(requestedStepId)),
         }),

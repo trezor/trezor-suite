@@ -127,65 +127,76 @@ const resetOnboarding = (): OnboardingAction => ({
 
 type GoToSuiteDeps = { services: DesktopAnalyticsDep };
 
-const goToSuite = () => (dispatch: Dispatch, getState: GetState, extra: GoToSuiteDeps) => {
-    const device = selectSelectedDevice(getState());
-    const onboardingAnalytics = selectOnboardingAnalytics(getState());
-    // Clear modals that might block navigation. They aren't relevant anyway, as there is no <ModalSwitcher /> in onboarding.
-    // After device interaction, Connect sends UI_REQUEST.CLOSE_UI_WINDOW to close any open modal. On Web this is
-    // instant, so nothing blocks navigation, but on Desktop there is delay, so we must clear the modal manually to
-    // ensure navigation to 'suite-index'. Particularly, setting PIN leaves ButtonRequest_Success hanging for a moment.
-    dispatch(closeModal());
+export type GoToSuiteOptions = {
+    skipDeviceSetupCompletedEvent?: boolean;
+};
 
-    // A non-empty onboarding path means the user went through a create or recovery flow, i.e. set up
-    // a device from scratch. Pairing an already set up device leaves the path empty.
-    const isFreshDeviceSetup = getState().onboarding.path.length > 0;
+const goToSuite =
+    ({ skipDeviceSetupCompletedEvent }: GoToSuiteOptions = {}) =>
+    (dispatch: Dispatch, getState: GetState, extra: GoToSuiteDeps) => {
+        const device = selectSelectedDevice(getState());
+        const onboardingAnalytics = selectOnboardingAnalytics(getState());
+        // Clear modals that might block navigation. They aren't relevant anyway, as there is no <ModalSwitcher /> in onboarding.
+        // After device interaction, Connect sends UI_REQUEST.CLOSE_UI_WINDOW to close any open modal. On Web this is
+        // instant, so nothing blocks navigation, but on Desktop there is delay, so we must clear the modal manually to
+        // ensure navigation to 'suite-index'. Particularly, setting PIN leaves ButtonRequest_Success hanging for a moment.
+        dispatch(closeModal());
 
-    dispatch(initialRunCompleted({ isFreshDeviceSetup }));
-    dispatch(resetOnboarding());
-    dispatch(closeModalApp(true));
+        // A non-empty onboarding path means the user went through a create or recovery flow, i.e. set up
+        // a device from scratch. Pairing an already set up device leaves the path empty.
+        const isFreshDeviceSetup = getState().onboarding.path.length > 0;
 
-    // For Bitcoin-only firmware, pre-activate BTC so the user lands on a populated dashboard
-    // instead of the empty "activate assets" state. Only do this on initial setup, when no
-    // networks have been explicitly enabled yet, to avoid overriding user's previous choices.
-    const isBitcoinOnlyFirmware = selectHasBitcoinOnlyFirmware(getState());
-    const enabledNetworks = selectEnabledNetworks(getState());
-    if (isBitcoinOnlyFirmware && enabledNetworks.length === 0) {
-        dispatch(changeCoinVisibility({ symbol: 'btc', shouldBeVisible: true }));
-    }
+        dispatch(initialRunCompleted({ isFreshDeviceSetup }));
+        dispatch(resetOnboarding());
+        dispatch(closeModalApp(true));
 
-    // there must be a device to progress with onboarding
-    if (device?.features === undefined) return;
+        // For Bitcoin-only firmware, pre-activate BTC so the user lands on a populated dashboard
+        // instead of the empty "activate assets" state. Only do this on initial setup, when no
+        // networks have been explicitly enabled yet, to avoid overriding user's previous choices.
+        const isBitcoinOnlyFirmware = selectHasBitcoinOnlyFirmware(getState());
+        const enabledNetworks = selectEnabledNetworks(getState());
+        if (isBitcoinOnlyFirmware && enabledNetworks.length === 0) {
+            dispatch(changeCoinVisibility({ symbol: 'btc', shouldBeVisible: true }));
+        }
 
-    dispatch(startDiscoveryThunk({ device }));
-    const reportAnalytics = () => {
-        const { analytics } = extra.services;
-        const { startTime, ...onboardingAttributes } = onboardingAnalytics;
-        const fullPayload = {
-            ...onboardingAttributes,
-            duration: Date.now() - startTime!,
-            device: device.features.internal_model,
-            unitPackaging: device.features.unit_packaging ?? 0,
+        // there must be a device to progress with onboarding
+        if (device?.features === undefined) return;
+
+        dispatch(startDiscoveryThunk({ device }));
+        const reportAnalytics = () => {
+            const { analytics } = extra.services;
+            const { startTime, ...onboardingAttributes } = onboardingAnalytics;
+            const fullPayload = {
+                ...onboardingAttributes,
+                duration: Date.now() - startTime!,
+                device: device.features.internal_model,
+                unitPackaging: device.features.unit_packaging ?? 0,
+            };
+
+            const hasConsent = analytics.isEnabled();
+            const payload = hasConsent
+                ? fullPayload
+                : {
+                      duration: fullPayload.duration,
+                      device: fullPayload.device,
+                      unitPackaging: fullPayload.unitPackaging,
+                  };
+
+            analytics.report(
+                {
+                    type: events.deviceSetupCompletedEvent.name,
+                    payload,
+                },
+                { force: true },
+            );
         };
 
-        const hasConsent = analytics.isEnabled();
-        const payload = hasConsent
-            ? fullPayload
-            : {
-                  duration: fullPayload.duration,
-                  device: fullPayload.device,
-                  unitPackaging: fullPayload.unitPackaging,
-              };
-
-        analytics.report(
-            {
-                type: events.deviceSetupCompletedEvent.name,
-                payload,
-            },
-            { force: true },
-        );
+        // Skipped when "Yes, I have used it before" is pressed on the security check page, as no
+        // setup happens on that flow.
+        if (!skipDeviceSetupCompletedEvent) {
+            reportAnalytics();
+        }
     };
-    reportAnalytics();
-};
 
 const goToNextStep = (nextStepId?: AnyStepId) => (dispatch: Dispatch, getState: GetState) => {
     if (nextStepId) {
