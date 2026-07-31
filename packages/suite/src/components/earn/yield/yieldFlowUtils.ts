@@ -1,4 +1,10 @@
-import { type YieldFlowStepId } from '@suite-common/wallet-core';
+import {
+    type YieldFlowDisplayToken,
+    type YieldFlowStepId,
+    type YieldFlowToken,
+    type YieldWithdrawFlowType,
+    getConvertedOutputTokenBalanceToInputTokenAmount,
+} from '@suite-common/wallet-core';
 import type { StepListItemState } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 
@@ -28,6 +34,56 @@ export const getYieldModifyAmountInput = ({
     return isAmountGreaterThan({ amount: nextAmount, threshold: maxAmount })
         ? maxAmount
         : nextAmount;
+};
+
+type YieldUnwrapDefaultAmountParams = {
+    flowType: YieldWithdrawFlowType;
+    /** Amount just withdrawn, in the flow's input unit — assets for `withdraw`, shares for `redeem`. */
+    withdrawnAmount: string;
+    /** Vault asset token being unwrapped (the wrapped-native token, e.g. WETH). */
+    token: YieldFlowToken;
+    /** Vault receipt/share token (e.g. trSHETHp). */
+    receiptToken: YieldFlowDisplayToken;
+    pricePerShareState?: Parameters<
+        typeof getConvertedOutputTokenBalanceToInputTokenAmount
+    >[0]['pricePerShareState'];
+    /** Fallback used when the withdrawn asset amount can't be resolved (e.g. missing price). */
+    fallbackAmount: string;
+};
+
+/**
+ * Amount to pre-fill in the withdraw flow's unwrap (wrapped-native → native) step.
+ *
+ * It must default to the asset amount that was just withdrawn — NOT the account's full
+ * wrapped-native balance, which would sweep in unrelated WETH the user never meant to unwrap
+ * (see trezor/trezor-suite#30559). A `withdraw` yields the asset amount directly; a `redeem`
+ * yields shares, so those are converted to their asset (WETH) equivalent via the vault
+ * price-per-share. Falls back to the full balance only when the asset amount can't be resolved.
+ */
+export const getYieldUnwrapDefaultAmount = ({
+    flowType,
+    withdrawnAmount,
+    token,
+    receiptToken,
+    pricePerShareState,
+    fallbackAmount,
+}: YieldUnwrapDefaultAmountParams): string => {
+    const withdrawnAssetAmount =
+        flowType === 'redeem'
+            ? getConvertedOutputTokenBalanceToInputTokenAmount({
+                  networkSymbol: token.networkSymbol,
+                  token,
+                  outputToken: receiptToken,
+                  outputTokenBalance: withdrawnAmount,
+                  pricePerShareState,
+              })
+            : withdrawnAmount;
+
+    if (!withdrawnAssetAmount || new BigNumber(withdrawnAssetAmount).lte(0)) {
+        return fallbackAmount;
+    }
+
+    return withdrawnAssetAmount;
 };
 
 export type YieldFlowStepView = {

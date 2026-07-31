@@ -47,6 +47,7 @@ import {
     type YieldApprovalAction,
     getYieldApprovalAction,
     getYieldModifyAmountInput,
+    getYieldUnwrapDefaultAmount,
     isAmountGreaterThan,
 } from '../yieldFlowUtils';
 
@@ -347,6 +348,25 @@ export const useYieldFlow = ({
         prevStepRef.current = nextStep;
     }, [session.step, session.action.amount, methodsRef, maxAmount]);
 
+    // The withdraw flow's unwrap step must default to the amount just withdrawn (in asset units),
+    // not the account's whole wrapped-native balance — otherwise it would sweep in unrelated WETH
+    // the user never meant to unwrap (trezor/trezor-suite#30559).
+    const pricePerShareState = vault.state?.pricePerShareState;
+    const unwrapDefaultAmount = useMemo(() => {
+        if (!token || !receiptToken || !isYieldWithdrawFlow(flowType)) {
+            return token?.balance ?? '';
+        }
+
+        return getYieldUnwrapDefaultAmount({
+            flowType,
+            withdrawnAmount: session.result.completedAmount,
+            token,
+            receiptToken,
+            pricePerShareState,
+            fallbackAmount: token.balance,
+        });
+    }, [flowType, pricePerShareState, receiptToken, session.result.completedAmount, token]);
+
     useEffect(() => {
         if (session.step !== 'unwrap') {
             unwrapDefaultAmountRef.current = null;
@@ -354,18 +374,17 @@ export const useYieldFlow = ({
             return;
         }
 
-        const nextDefaultAmount = token?.balance ?? '';
         const currentAmount = methodsRef.current.getValues('amountInput');
 
         if (
             unwrapDefaultAmountRef.current === null ||
             currentAmount === unwrapDefaultAmountRef.current
         ) {
-            methodsRef.current.reset({ amountInput: nextDefaultAmount });
+            methodsRef.current.reset({ amountInput: unwrapDefaultAmount });
         }
 
-        unwrapDefaultAmountRef.current = nextDefaultAmount;
-    }, [methodsRef, session.step, token?.balance]);
+        unwrapDefaultAmountRef.current = unwrapDefaultAmount;
+    }, [methodsRef, session.step, unwrapDefaultAmount]);
 
     const flow = useMemo(
         () => ({ currentStep: session.step, isWrappedNativeVault }),
