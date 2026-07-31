@@ -14,17 +14,19 @@ import {
 } from '@suite-native/navigation';
 import { type TokensRootState, selectAccountTokenSymbol } from '@suite-native/tokens';
 
-type ReceiveScreenHeaderProps = {
+import { ReceiveAddressListButton } from './ReceiveAddressListButton';
+
+type ReceiveFreshAddressHeaderProps = {
     accountKey?: AccountKey;
     tokenContract?: TokenAddress;
     closeActionType: CloseActionType;
 };
 
-export const ReceiveScreenHeader = ({
+export const ReceiveFreshAddressHeader = ({
     accountKey,
     tokenContract,
     closeActionType,
-}: ReceiveScreenHeaderProps) => {
+}: ReceiveFreshAddressHeaderProps) => {
     const navigateToInitialScreen = useNavigateToInitialScreen();
 
     const symbol = useSelector((state: AccountsRootState) =>
@@ -68,6 +70,9 @@ export const ReceiveScreenHeader = ({
             }
             closeActionType={closeActionType}
             closeAction={closeActionType === 'close' ? navigateToInitialScreen : undefined}
+            rightIcon={
+                <ReceiveAddressListButton accountKey={accountKey} tokenContract={tokenContract} />
+            }
         />
     );
 };

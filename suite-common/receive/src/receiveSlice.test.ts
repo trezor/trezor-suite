@@ -162,6 +162,40 @@ describe('receiveSlice', () => {
         ]);
     });
 
+    it('touches address without clearing current fresh address', () => {
+        const currentFreshAddress = {
+            path: 'fresh-btc',
+            address: 'btc-fresh-address',
+        };
+        let state = receiveReducer(undefined, { type: 'test-init' });
+
+        state = receiveReducer(
+            state,
+            receiveActions.setCurrentFreshAddress({
+                accountKey: bitcoinAccount.key,
+                currentFreshAddress,
+            }),
+        );
+        state = receiveReducer(
+            state,
+            receiveActions.touchAddress({
+                accountKey: bitcoinAccount.key,
+                path: 'reserved-btc',
+                address: 'btc-reserved-address',
+            }),
+        );
+
+        expect(state.accounts[bitcoinAccount.key]).toEqual({
+            touchedAddresses: [
+                {
+                    path: 'reserved-btc',
+                    address: 'btc-reserved-address',
+                },
+            ],
+            currentFreshAddress,
+        });
+    });
+
     it('clears removed account state on accountsActions.removeAccount', () => {
         let state = receiveReducer(undefined, { type: 'test-init' });
 

@@ -1042,6 +1042,19 @@ export const messages = {
                 reportIssueButton: 'Report security issue',
             },
         },
+        addressList: {
+            title: 'Receive addresses',
+            unused: 'Unused',
+            generateButtonAccessibilityLabel: 'Generate new address',
+            openButtonAccessibilityLabel: 'Show receive addresses',
+        },
+        addressDetail: {
+            title: 'Address details',
+            unused: 'Unused address',
+            received: 'received',
+            reuseWarning:
+                "Don't reuse this address to receive funds. It reduces your privacy. <link>Learn more.</link>",
+        },
     },
     moduleSettings: {
         getTrezorCta: {

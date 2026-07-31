@@ -12,6 +12,7 @@ import {
     messageSystemPersistedWhitelist,
     prepareMessageSystemReducer,
 } from '@suite-common/message-system';
+import { prepareReceiveReducer } from '@suite-common/receive';
 import { suiteSyncDataReducer, suiteSyncReducer } from '@suite-common/suite-sync';
 import { suiteSyncQuotaManagerReducer } from '@suite-common/suite-sync-quota-manager';
 import { prepareThpReducer } from '@suite-common/thp';
@@ -81,6 +82,7 @@ import { prepareSendFormReducer } from '@suite-native/transaction-management';
 
 import { appReducer } from './appSlice';
 import { extraDependencies } from './extraDependencies';
+import { receivePersistTransform } from './receivePersistTransform';
 
 const transactionsReducer = prepareTransactionsReducer(extraDependencies);
 const phishingReducer = preparePhishingReducer(extraDependencies);
@@ -100,6 +102,7 @@ const firmwareReducer = prepareFirmwareReducer(extraDependencies);
 const connectPopupReducer = prepareConnectPopupReducer(extraDependencies);
 const walletConnectReducer = prepareWalletConnectReducer(extraDependencies);
 const walletSettingsReducer = prepareWalletSettingsReducer(extraDependencies);
+const receiveReducer = prepareReceiveReducer(extraDependencies);
 const bluetoothReducer = prepareBluetoothReducer(extraDependencies);
 const thpReducer = prepareThpReducer(extraDependencies);
 
@@ -229,6 +232,15 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
         persistedKeys: ['dustPhishing'],
         key: 'phishingMetadata',
         version: 1,
+        storage: deps.mmkvStorage,
+    });
+
+    const receivePersistedReducer = preparePersistReducer({
+        reducer: receiveReducer,
+        persistedKeys: ['accounts'],
+        key: 'receive',
+        version: 1,
+        transforms: [receivePersistTransform],
         storage: deps.mmkvStorage,
     });
 
@@ -462,6 +474,7 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
             nativeFirmware: nativeFirmwareReducer,
             notifications: createNotificationsReducer<TxKeyPath>().reducer,
             pendingCoinVisibility: pendingCoinVisibilitySlice.reducer,
+            receive: receivePersistedReducer,
             suiteSync: suiteSyncPersistedReducer,
             suiteSyncData: suiteSyncDataReducer,
             thp: thpPersistedReducer,

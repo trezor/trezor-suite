@@ -7,8 +7,10 @@ import {
 } from '@suite-native/navigation';
 
 import { ReceiveAccountsScreen } from '../screens/ReceiveAccountsScreen';
-import { ReceiveAddressScreen } from '../screens/ReceiveAddressScreen';
+import { ReceiveAddressDetailScreen } from '../screens/ReceiveAddressDetailScreen';
+import { ReceiveAddressListScreen } from '../screens/ReceiveAddressListScreen';
 import { ReceiveAddressVerificationScreen } from '../screens/ReceiveAddressVerificationScreen';
+import { ReceiveFreshAddressScreen } from '../screens/ReceiveFreshAddressScreen';
 
 const ReceiveStack = createNativeStackNavigator<ReceiveStackParamList>();
 
@@ -23,11 +25,19 @@ export const ReceiveStackNavigator = () => (
         />
         <ReceiveStack.Screen
             name={ReceiveStackRoutes.ReceiveAddress}
-            component={ReceiveAddressScreen}
+            component={ReceiveFreshAddressScreen}
         />
         <ReceiveStack.Screen
             name={ReceiveStackRoutes.ReceiveAddressVerification}
             component={ReceiveAddressVerificationScreen}
+        />
+        <ReceiveStack.Screen
+            name={ReceiveStackRoutes.ReceiveAddressList}
+            component={ReceiveAddressListScreen}
+        />
+        <ReceiveStack.Screen
+            name={ReceiveStackRoutes.ReceiveAddressDetail}
+            component={ReceiveAddressDetailScreen}
         />
     </ReceiveStack.Navigator>
 );

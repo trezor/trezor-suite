@@ -9,7 +9,6 @@ import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import {
     getAccountListSections,
     selectFreshAccountAddress,
-    selectFreshAccountAddressValue,
     selectHasDeviceAnyFailedAccountForNetworkSymbol,
     selectIsAccountDiscoveryFailed,
 } from './selectors';
@@ -201,10 +200,6 @@ describe('selectFreshAccountAddress', () => {
             sent: '0',
             received: '0',
         });
-    });
-
-    it('should select the fresh address value', () => {
-        expect(selectFreshAccountAddressValue(mockState, mockAccount.key)).toBe('unused1');
     });
 
     it('should return undefined when no unused addresses are available', () => {
