@@ -200,8 +200,9 @@ export abstract class TradingFormActions extends TradingActions {
             await networkFilterTab.tap();
         }
 
-        await waitForVisible(by.text(asset));
-        await element(by.text(asset)).tap();
+        const firstMatchingAsset = element(by.text(asset)).atIndex(0);
+        await waitForVisible(firstMatchingAsset);
+        await firstMatchingAsset.tap();
 
         await waitFor(this.getElementById('asset-send-button/symbol'))
             .toHaveText(asset)
