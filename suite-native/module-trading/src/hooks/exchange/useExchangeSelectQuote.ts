@@ -93,7 +93,7 @@ export const useExchangeSelectQuote = (form: ExchangeFormType) => {
         }
 
         const selectedQuote =
-            candidateQuote.isDex && candidateQuote.swapSlippage === undefined
+            candidateQuote.isDex && !candidateQuote.swapSlippage
                 ? {
                       ...candidateQuote,
                       swapSlippage: TRADING_SETTINGS_MAX_SLIPPAGE_PERCENTAGE_DEFAULT,

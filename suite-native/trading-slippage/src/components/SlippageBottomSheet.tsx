@@ -63,7 +63,6 @@ export const SlippageBottomSheet = ({
     const handleConfirm = useCallback(
         async ({ slippage }: SlippageFormValues) => {
             dispatch(tradingExchangeActions.setSelectedQuoteSwapSlippage(String(slippage)));
-            // TODO: Should we handle some confirmation error because of slippage change here??
             await onSlippageConfirmed();
             closeModal();
             onClose();
