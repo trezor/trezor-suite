@@ -10,13 +10,6 @@ const legacyResults: Record<string, LegacyResult[]> = {
             success: false,
         },
     ],
-    'EIP-7702 - Uniswap': [
-        {
-            // EIP-7702 (tx_type 4) added in firmware 2.10.0
-            rules: ['<2.10.0'],
-            success: false,
-        },
-    ],
     'Hoodi Testnet, testnet path': [
         {
             // Hoodi testnet (chain_id 560048) definitions sent from host since 2.6.0
@@ -32,19 +25,9 @@ const ethereumSignTransaction: TestCase = {
     },
     tests: commonFixtures.tests
         .flatMap(({ name, parameters, result, skip_models }: any) => {
-            const isEIP7702 = parameters.tx_type === 4;
             const fixture: Fixture = {
                 description: `${name} ${parameters.comment ?? ''}`,
                 skip: skip_models?.includes('t1') ? ['1'] : undefined,
-                // EIP-7702 requires safety_checks disabled on the device
-                ...(isEIP7702 && {
-                    setup: {
-                        mnemonic: commonFixtures.setup.mnemonic,
-                        settings: {
-                            safety_checks: 2,
-                        },
-                    },
-                }),
                 params: {
                     path: parameters.path,
                     transaction: {

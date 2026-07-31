@@ -190,7 +190,8 @@ const stellarSignTransaction: TestCase = {
     },
     tests: [
         ...commonFixtures.tests
-            .filter((test: any) => !test.experimental)
+            // payment request tests need PaymentRequest data that can't be expressed in this fixture format
+            .filter((test: any) => !test.experimental && !test.parameters.payment_request)
             .flatMap(({ name, result, parameters, skip_models }: any) => [
                 {
                     name,
