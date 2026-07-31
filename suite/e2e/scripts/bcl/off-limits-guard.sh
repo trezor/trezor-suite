@@ -26,6 +26,7 @@ OFF_LIMITS=(
 TAP_FILES=(
   "packages/blockchain-link/src/index.ts"
   "packages/websocket-client/src/client.ts"
+  "packages/blockchain-link/src/workers/solana/index.ts"
 )
 
 changed="$( { git diff --name-only "$RANGE"; git diff --name-only --cached; } | sort -u )"
