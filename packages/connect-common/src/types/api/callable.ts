@@ -16,6 +16,8 @@ import { TrezorConnectStellar } from './stellar';
 import { TrezorConnectTezos } from './tezos';
 import { TrezorConnectTron } from './tron';
 
+// The explicit intersection prevents TypeBox from expanding the entire callable API in the
+// generated type declaration.
 export type TrezorConnectCallable = TrezorConnectManagement &
     TrezorConnectDevice &
     TrezorConnectBlockchain &
