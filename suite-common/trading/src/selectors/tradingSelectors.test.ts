@@ -79,6 +79,7 @@ import {
     selectTradingPrefilledFromAccount,
     selectTradingProviderByNameAndTradeType,
     selectTradingProviderMetadata,
+    selectTradingProvidersByTradeType,
     selectTradingQuotesByType,
     selectTradingQuotesPerPaymentMethodByType,
     selectTradingSelectedPaymentMethodByType,
@@ -101,6 +102,7 @@ import {
     selectTradingSellSelectedQuote,
     selectTradingSellSellCryptoIds,
     selectTradingSellSupportedCryptoIds,
+    selectTradingSupportedFiatCurrenciesByTradeType,
     selectTradingSupportedSymbols,
     selectTradingSymbolAndContractAddressByCryptoId,
     selectTradingTradeByOrderId,
@@ -2216,6 +2218,51 @@ describe('tradingSelectors', () => {
 
         it('should return an empty array for exchange type', () => {
             expect(selectTradingQuotesPerPaymentMethodByType(state, 'exchange')).toEqual([]);
+        });
+    });
+
+    describe(selectTradingProvidersByTradeType.name, () => {
+        it.each([
+            ['buy', () => state.wallet.trading.buy.buyInfo?.providerInfos],
+            ['exchange', () => state.wallet.trading.exchange.exchangeInfo?.providerInfos],
+            ['sell', () => state.wallet.trading.sell.sellInfo?.providerInfos],
+        ] as [TradingType, () => unknown][])(
+            'should return the providers for %s',
+            (type, expected) => {
+                expect(selectTradingProvidersByTradeType(state, type)).toEqual(expected());
+            },
+        );
+
+        it('should throw an error for an invalid trade type', () => {
+            expect(() =>
+                selectTradingProvidersByTradeType(state, 'invalid' as TradingType),
+            ).toThrow('Unreachable case: ["invalid"]');
+        });
+    });
+
+    describe(selectTradingSupportedFiatCurrenciesByTradeType.name, () => {
+        it('should return the supported fiat currencies for buy', () => {
+            expect(selectTradingSupportedFiatCurrenciesByTradeType(state, 'buy')).toEqual(
+                new Set(['usd', 'eur', 'czk']),
+            );
+        });
+
+        it('should return the supported fiat currencies for sell', () => {
+            expect(selectTradingSupportedFiatCurrenciesByTradeType(state, 'sell')).toEqual(
+                new Set(['usd', 'eur', 'czk']),
+            );
+        });
+
+        it('should return undefined for exchange', () => {
+            expect(
+                selectTradingSupportedFiatCurrenciesByTradeType(state, 'exchange'),
+            ).toBeUndefined();
+        });
+
+        it('should throw an error for an invalid trade type', () => {
+            expect(() =>
+                selectTradingSupportedFiatCurrenciesByTradeType(state, 'invalid' as TradingType),
+            ).toThrow('Unreachable case: ["invalid"]');
         });
     });
 

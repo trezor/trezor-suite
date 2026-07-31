@@ -152,7 +152,6 @@ export const useTradingBuyForm = (): TradingBuyFormContextProps => {
         },
         ...methods,
         methods,
-        buyInfo,
         amountLimits,
         network,
         quotesRequest,

@@ -1,13 +1,17 @@
 import { type ComponentType, type ReactNode, useCallback, useState } from 'react';
 
 import { Translation } from '@suite/intl';
-import { type TradingType, useProviderMetadataChangeEffect } from '@suite-common/trading';
+import {
+    type TradingType,
+    selectTradingProvidersByTradeType,
+    useProviderMetadataChangeEffect,
+} from '@suite-common/trading';
 import { Column, GhostContainer, Icon, Row, Skeleton, Text } from '@trezor/components';
 import { CaretRightIcon } from '@trezor/icons';
 
+import { useSelector } from 'src/hooks/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import {
-    getProvidersInfoProps,
     isTradingBuyContext,
     isTradingExchangeContext,
 } from 'src/utils/wallet/trading/tradingTypingUtils';
@@ -43,7 +47,9 @@ export const TradingSelectedOfferProvider = () => {
     const { isAmountEmpty, form, type } = context;
     const [isModalOpen, setIsModalOpen] = useState(false);
 
-    const providers = getProvidersInfoProps(context);
+    const providers = useSelector(reduxState =>
+        selectTradingProvidersByTradeType(reduxState, type),
+    );
     const quote = useTradingSelectedQuote(type);
 
     const OffersModal = offersModalComponents[type];

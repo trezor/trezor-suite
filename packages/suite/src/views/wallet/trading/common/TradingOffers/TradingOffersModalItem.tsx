@@ -3,13 +3,17 @@ import { memo, useCallback } from 'react';
 import { type ExchangeTrade } from 'invity-api';
 import styled from 'styled-components';
 
-import { type TradingTradeType } from '@suite-common/trading';
+import {
+    type TradingTradeType,
+    selectTradingExchangeProviders,
+    selectTradingProvidersByTradeType,
+} from '@suite-common/trading';
 import { CardList, Column, Row, Skeleton, Text } from '@trezor/components';
 
+import { useSelector } from 'src/hooks/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import {
     getCryptoQuoteAmountProps,
-    getProvidersInfoProps,
     isTradingExchangeContext,
 } from 'src/utils/wallet/trading/tradingTypingUtils';
 
@@ -31,7 +35,10 @@ const ProviderWrapper = styled.div`
 
 const TradingOffersModalItemInner = ({ quote, onSelect }: TradingOffersModalItemProps) => {
     const context = useTradingFormContext();
-    const providers = getProvidersInfoProps(context);
+    const providers = useSelector(reduxState =>
+        selectTradingProvidersByTradeType(reduxState, context.type),
+    );
+    const exchangeProviders = useSelector(selectTradingExchangeProviders);
     const {
         form: {
             state: { isFormLoading },
@@ -43,7 +50,7 @@ const TradingOffersModalItemInner = ({ quote, onSelect }: TradingOffersModalItem
     const exchangeComparatorProps = isTradingExchangeContext(context)
         ? {
               isDex: (quote as ExchangeTrade).isDex,
-              providers: context.exchangeInfo?.providerInfos,
+              providers: exchangeProviders,
           }
         : undefined;
 

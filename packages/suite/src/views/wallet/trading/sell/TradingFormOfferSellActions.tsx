@@ -1,5 +1,6 @@
 import {
     selectIsTradingNetworkFeeMissing,
+    selectTradingSellProviders,
     selectTradingSendAccount,
     tradingSellActions,
 } from '@suite-common/trading';
@@ -20,10 +21,10 @@ export const TradingFormOfferSellActions = () => {
     const {
         watch,
         shouldSendInSats,
-        sellInfo,
         form: { state, helpers },
     } = context;
     const account = useSelector(reduxState => selectTradingSendAccount(reduxState, 'sell'));
+    const sellProviders = useSelector(selectTradingSellProviders);
 
     const isNetworkFeeMissing = useSelector(selectIsTradingNetworkFeeMissing);
 
@@ -52,7 +53,7 @@ export const TradingFormOfferSellActions = () => {
     const onSelectQuote = () => {
         if (!quote) return;
 
-        const provider = quote.exchange ? sellInfo?.providerInfos[quote.exchange] : undefined;
+        const provider = quote.exchange ? sellProviders?.[quote.exchange] : undefined;
 
         if (provider?.flow === 'BANK_ACCOUNT') {
             dispatch(tradingSellActions.setFormStep('BANK_ACCOUNT'));

@@ -21,15 +21,12 @@ import type {
     TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT,
     TradingAssetSellOption,
     TradingBuyFormProps,
-    TradingBuyInfoSelector,
     TradingBuyType,
     TradingComposedTransactionInfo,
     TradingExchangeFormProps,
-    TradingExchangeInfoSelector,
     TradingExchangeType,
     TradingPaymentMethodType,
     TradingSellFormProps,
-    TradingSellInfoSelector,
     TradingSellType,
     TradingTradeType,
     TradingTransactionBuy,
@@ -104,7 +101,6 @@ export interface TradingBuyFormContextProps
         TradingCommonFormProps,
         TradingCommonFormBuySellProps {
     type: TradingBuyType;
-    buyInfo?: TradingBuyInfoSelector;
     quotesRequest: BuyTradeQuoteRequest | undefined;
     trade?: TradingTransactionBuy;
     // form - additional helpers for form
@@ -125,7 +121,6 @@ export interface TradingSellFormContextProps
         TradingCommonFormBuySellProps {
     type: TradingSellType;
     isComposing: boolean;
-    sellInfo?: TradingSellInfoSelector;
     composedLevels?: PrecomposedLevels | PrecomposedLevelsCardano;
     composedTransactionInfo: TradingComposedTransactionInfo;
     quotesRequest: SellFiatTradeQuoteRequest | undefined;
@@ -168,7 +163,6 @@ export interface TradingExchangeFormContextProps
     suiteReceiveAccounts?: AccountsState;
     feeInfo: FeeInfo;
 
-    exchangeInfo?: TradingExchangeInfoSelector;
     amountLimits?: CryptoAmountLimitProps;
     isComposing: boolean;
     composedLevels?: PrecomposedLevels | PrecomposedLevelsCardano;
