@@ -46,7 +46,6 @@ export const UI_REQUEST = {
     REQUEST_THP_PAIRING: 'ui-request_thp_pairing',
     SELECT_ACCOUNT: 'ui-select_account',
     SELECT_FEE: 'ui-select_fee',
-    UPDATE_CUSTOM_FEE: 'ui-update_custom_fee',
     INSUFFICIENT_FUNDS: 'ui-insufficient_funds',
     REQUEST_BUTTON: 'ui-button',
     REQUEST_WORD: 'ui-request_word',
@@ -227,14 +226,6 @@ export interface UiRequestSelectFee {
     };
 }
 
-export interface UpdateCustomFee {
-    type: typeof UI_REQUEST.UPDATE_CUSTOM_FEE;
-    payload: {
-        coinInfo: BitcoinNetworkInfo;
-        feeLevels: SelectFeeLevel[];
-    };
-}
-
 export interface BundleProgress<R> {
     type: typeof UI_REQUEST.BUNDLE_PROGRESS;
     payload: {
@@ -297,7 +288,6 @@ export type UiEvent =
     | UiRequestSelectAccount
     | UiRequestSelectFee
     | UiRequestThpPairing
-    | UpdateCustomFee
     | BundleProgress<any>
     | FirmwareProgress
     | FirmwareProgressUnexpectedDelay
