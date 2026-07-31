@@ -10,6 +10,7 @@ type PackageJson = {
     readonly optionalDependencies?: Record<string, string>;
     readonly devDependencies?: Record<string, string>;
     readonly peerDependencies?: Record<string, string>;
+    readonly peerDependenciesMeta?: Record<string, { readonly optional?: boolean }>;
 };
 
 type WorkspacePackage = {
@@ -74,6 +75,15 @@ const collectDependencyNames = (
     }
 };
 
+// Optional peer dependencies (e.g. env-utils' react-native / expo-* native modules) are not part
+// of a package's prod dependency surface — they are only required in specific host environments.
+const getRequiredPeerDependencies = (packageJson: PackageJson) =>
+    Object.fromEntries(
+        Object.entries(packageJson.peerDependencies ?? {}).filter(
+            ([name]) => !packageJson.peerDependenciesMeta?.[name]?.optional,
+        ),
+    );
+
 const createSnapshot = (
     target: string,
     workspacePackages: Map<string, WorkspacePackage>,
@@ -109,7 +119,7 @@ const createSnapshot = (
 
         collectDependencyNames(prodDependencies, pkg.packageJson.dependencies);
         collectDependencyNames(prodDependencies, pkg.packageJson.optionalDependencies);
-        collectDependencyNames(prodDependencies, pkg.packageJson.peerDependencies);
+        collectDependencyNames(prodDependencies, getRequiredPeerDependencies(pkg.packageJson));
     }
 
     return {
