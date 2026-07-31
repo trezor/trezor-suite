@@ -31,6 +31,7 @@ export * from './earn/earnDepositsFiatUtils';
 export * from './explorer/explorerActions';
 export * from './explorer/explorerReducer';
 export * from './explorer/explorerSelectors';
+export * from './explorer/explorerThunks';
 export * from './fees/feesActions';
 export * from './fees/feesConstants';
 export * from './fees/feesReducer';
