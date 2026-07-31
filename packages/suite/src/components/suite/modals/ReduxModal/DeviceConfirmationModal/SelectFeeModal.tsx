@@ -75,20 +75,16 @@ interface SelectAccountModalProps {
     data: UiRequestSelectFee['payload'];
 }
 
-export const SelectFeeModal = ({ data }: SelectAccountModalProps) => {
-    const dispatch = useDispatch();
-    const popupCall = useSelector(selectConnectPopupCall);
-
-    const fees = useMemo(() => data?.feeLevels ?? [], [data]);
-    const minFee = data.coinInfo.minFeeSatoshiKb / 1000;
-    const maxFee = data.coinInfo.maxFeeSatoshiKb / 1000;
+const getSelectFeeData = ({ coinInfo, feeLevels }: UiRequestSelectFee['payload']) => {
+    const minFee = coinInfo.minFeeSatoshiKb / 1000;
+    const maxFee = coinInfo.maxFeeSatoshiKb / 1000;
     const account = {
         networkType: 'bitcoin' as const,
-        symbol: data.coinInfo.shortcut.toLowerCase() as NetworkSymbol,
+        symbol: coinInfo.shortcut.toLowerCase() as NetworkSymbol,
         tokens: [],
     };
     const feeInfo = {
-        levels: fees
+        levels: feeLevels
             .filter(level => level.fee != '0')
             .filter(level => level.name !== 'low') // this option is hidden in Suite
             .map(level => ({
@@ -103,8 +99,17 @@ export const SelectFeeModal = ({ data }: SelectAccountModalProps) => {
         maxFee,
         minPriorityFee: -1,
         blockHeight: 0,
-        blockTime: data.coinInfo.blockTime,
+        blockTime: coinInfo.blockTime,
     };
+
+    return { account, feeInfo };
+};
+
+export const SelectFeeModal = ({ data }: SelectAccountModalProps) => {
+    const dispatch = useDispatch();
+    const popupCall = useSelector(selectConnectPopupCall);
+
+    const { account, feeInfo } = useMemo(() => getSelectFeeData(data), [data]);
 
     const methods = useForm<FormState>({
         defaultValues: {
@@ -125,26 +130,12 @@ export const SelectFeeModal = ({ data }: SelectAccountModalProps) => {
     const onSend = handleSubmit(data => {
         const { selectedFee, feePerUnit } = data;
         if (selectedFee === 'custom') {
-            dispatch(
-                onReceiveFee({
-                    type: 'compose-custom',
-                    value: feePerUnit,
-                }),
-            );
+            dispatch(onReceiveFee({ type: 'compose-custom', value: feePerUnit }));
         }
-        dispatch(
-            onReceiveFee({
-                type: 'send',
-                value: selectedFee || 'normal',
-            }),
-        );
+        dispatch(onReceiveFee({ type: 'send', value: selectedFee ?? 'normal' }));
     });
     const onChangeAccount = () => {
-        dispatch(
-            onReceiveFee({
-                type: 'change-account',
-            }),
-        );
+        dispatch(onReceiveFee({ type: 'change-account' }));
     };
     const onClose = () => {
         dispatch(onReceiveFee(null));
