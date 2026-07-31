@@ -16,6 +16,7 @@ import {
 import { isAccountBasedNetwork } from '@suite-common/wallet-config';
 import { ETHEREUM_ADJUST_GAS_LIMIT, updateFeeInfoThunk } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
+import { getEvmTransactionTextSignature } from '@suite-common/wallet-utils';
 import { useCurrentRef } from '@trezor/react-utils';
 
 import { useDispatch } from 'src/hooks/suite';
@@ -127,10 +128,11 @@ export const useExchangeDexQuote = ({
     ]);
 
     const fetchFeesAndComposeRef = useCurrentRef(fetchFeesAndCompose);
-    // fetch fees when transactionData changes
+    // Fetch fees when the transaction to estimate changes shape.
+    const transactionShape = getEvmTransactionTextSignature(transactionData);
     useEffect(() => {
         fetchFeesAndComposeRef.current();
-    }, [transactionData, outputAddress, ethereumAdjustGasLimit, fetchFeesAndComposeRef]);
+    }, [transactionShape, outputAddress, ethereumAdjustGasLimit, fetchFeesAndComposeRef]);
 
     return { fetchFeesAndCompose };
 };
