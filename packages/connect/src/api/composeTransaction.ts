@@ -256,16 +256,6 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
         while (resp.payload.type === 'compose-custom') {
             // recompose custom fee level with requested value
             composer.composeCustomFee(resp.payload.value);
-            context.sendCoreMessage(
-                createUiMessage(
-                    UI_REQUEST.UPDATE_CUSTOM_FEE,
-                    {
-                        feeLevels: composer.getFeeLevelList(),
-                        coinInfo: this.params.coinInfo,
-                    },
-                    { requestId: resp.requestId },
-                ),
-            );
 
             // wait for user action
             resp = await context.createUiPromise(UI_RESPONSE.RECEIVE_FEE, this.getDevice()).promise;
