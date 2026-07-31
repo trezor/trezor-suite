@@ -1,3 +1,4 @@
+import { clearQuotesAndParamsByTradingTypeThunk } from './clearQuotesAndParamsByTradingTypeThunk';
 import { createPaymentRequestsThunk } from './createPaymentRequestsThunk';
 import { loadInitialDataThunk } from './loadInitialDataThunk';
 import { recomposeAndSignTxThunk } from './recomposeAndSignTxThunk';
@@ -12,4 +13,5 @@ export const tradingThunks = {
     watchTradeThunk,
     createPaymentRequestsThunk,
     setLastErrorMessageByTradingType,
+    clearQuotesAndParamsByTradingTypeThunk,
 };

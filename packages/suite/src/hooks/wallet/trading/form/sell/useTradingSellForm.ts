@@ -190,8 +190,5 @@ export const useTradingSellForm = (): TradingSellFormContextProps => {
         setAmountLimits,
         showReserveBanner,
         setShowReserveBanner,
-        clearQuotesAndParams: () => {
-            dispatch(tradingSellActions.clearQuotesAndParams());
-        },
     };
 };
