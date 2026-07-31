@@ -1,0 +1,105 @@
+name: "[Release] suite release notes"
+
+permissions:
+  contents: read # for actions/checkout
+
+on:
+  workflow_dispatch:
+  release:
+    # Editing a release is included on purpose - release notes are regularly polished after publishing.
+    types: [published, edited]
+  schedule:
+    # Runs at 00:30 UTC every day, as a safety net for missed release events.
+    - cron: "30 0 * * *"
+  pull_request:
+    paths:
+      - .github/workflows/release-suite-release-notes.yml
+      - suite-common/release-notes/**
+
+concurrency:
+  # Pull requests never deploy, so they are grouped per branch. Everything else shares one group to
+  # keep the uploads to S3 serialized.
+  group: ${{ github.workflow }}-${{ github.head_ref || 'deploy' }}
+  cancel-in-progress: false
+
+jobs:
+  generate:
+    if: github.repository == 'trezor/trezor-suite'
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v6
+
+      - name: Install SafeDep PMG
+        uses: safedep/pmg@26d5c0ad71fd0e5f48c3183c9c74d4b3eb7f57c8 # v0.19.1
+        continue-on-error: true
+        with:
+          version: v0.19.1
+
+      - name: Generate release notes manifests
+        run: |
+          yarn workspaces focus @suite-common/release-notes
+          yarn workspace @suite-common/release-notes generate-manifests
+
+      - name: Upload release notes manifests as an artifact
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: release-notes-manifests
+          path: suite-common/release-notes/files
+          if-no-files-found: error
+
+  # Signing and uploading happen behind the environment approval gate. Keeping the private key out of
+  # the generate job is the whole point of the split - otherwise every run of this workflow could
+  # produce a validly signed manifest without anyone approving it.
+  publish:
+    needs: generate
+    if: github.event_name != 'pull_request'
+    environment: production-release-notes
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read # for actions/checkout
+      id-token: write # for fetching the OIDC token
+    env:
+      AWS_REGION: "eu-central-1"
+      AWS_CLOUDFRONT_ID: E1ERY5K2OTKKI1
+    steps:
+      - name: Checkout
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v6
+
+      # The manifests are never regenerated here - what gets published must be exactly what the
+      # approver reviewed. GitHub releases can be edited while the run waits for approval.
+      - name: Download release notes manifests
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
+        with:
+          name: release-notes-manifests
+          path: suite-common/release-notes/files
+
+      - name: Install SafeDep PMG
+        uses: safedep/pmg@26d5c0ad71fd0e5f48c3183c9c74d4b3eb7f57c8 # v0.19.1
+        continue-on-error: true
+        with:
+          version: v0.19.1
+
+      - name: Sign release notes manifests
+        env:
+          JWS_PRIVATE_KEY_ENV: ${{ secrets.JWS_PRIVATE_KEY_ENV }}
+        run: |
+          yarn workspaces focus @suite-common/release-notes
+          yarn workspace @suite-common/release-notes sign-manifests
+
+      - name: Configure aws credentials
+        uses: aws-actions/configure-aws-credentials@254c19bd240aabef8777f48595e9d2d7b972184b # v6
+        with:
+          role-to-assume: arn:aws:iam::538326561891:role/gh_actions_suite_production_release_notes
+          aws-region: ${{ env.AWS_REGION }}
+          role-duration-seconds: 900 # The default is 1h, 15min is enough for our use case
+
+      - name: Upload release notes manifests to S3
+        run: |
+          aws s3 cp suite-common/release-notes/files/desktop/releases.v1.jws \
+            s3://data.trezor.io/suite/release-notes/desktop/releases.v1.jws --cache-control no-cache
+          aws s3 cp suite-common/release-notes/files/mobile/releases.v1.jws \
+            s3://data.trezor.io/suite/release-notes/mobile/releases.v1.jws --cache-control no-cache
+          aws cloudfront create-invalidation --distribution-id ${AWS_CLOUDFRONT_ID} --paths '/suite/release-notes/*'

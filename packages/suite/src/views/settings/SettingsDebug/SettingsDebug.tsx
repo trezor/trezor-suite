@@ -38,6 +38,7 @@ import { OAuthApi } from './OAuthApi';
 import { PingDevice } from './PingDevice';
 import { PlatformEncryption } from './PlatformEncryption';
 import { QuotaManagerSettings } from './QuotaManagerSettings';
+import { ReleaseNotesVersion } from './ReleaseNotesVersion';
 import { ResetThpCredentials } from './ResetThpCredentials';
 import { ShowBluetoothDebugInfo } from './ShowBluetoothDebugInfo';
 import { ThrowTestingError } from './ThrowTestingError';
@@ -78,6 +79,7 @@ export const SettingsDebug = () => {
                 <TriggerHighlight />
                 <TriggerToast />
                 <TriggerActivityNotification />
+                <ReleaseNotesVersion />
             </SettingsSection>
             <SettingsSection hasVerticalLayout={hasContentBelowTabletWidth} title="Analytics">
                 <AnalyticsLogging />

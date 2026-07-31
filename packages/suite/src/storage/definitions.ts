@@ -15,6 +15,7 @@ import type { MessageState } from '@suite-common/message-system';
 import type { MetadataState } from '@suite-common/metadata-types';
 import { type EncryptedHex } from '@suite-common/platform-encryption';
 import type { ReceiveAccountState } from '@suite-common/receive';
+import { type ReleaseNotesState } from '@suite-common/release-notes';
 import type { SuiteSyncQuotaManagerState } from '@suite-common/suite-sync-quota-manager';
 import { type SuiteSyncOwnerSerialized } from '@suite-common/suite-sync-storage';
 import type {
@@ -224,5 +225,9 @@ export interface SuiteDBSchema extends DBSchema {
     debug: {
         key: 'debug';
         value: DebugState;
+    };
+    releaseNotes: {
+        key: 'releaseNotes';
+        value: Pick<ReleaseNotesState, 'releases' | 'fetchedAt' | 'generatedAt'>;
     };
 }

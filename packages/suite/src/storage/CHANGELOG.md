@@ -1,5 +1,9 @@
 # Storage changelog
 
+## 26.8.0.3
+
+- create `releaseNotes` object store for caching the release notes manifest fetched from data.trezor.io
+
 ## 26.8.0.2
 
 - convert `walletSettings.hideSuspiciousTransactions` from a single boolean to a per-network record

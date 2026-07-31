@@ -6116,6 +6116,10 @@ export const messages = defineMessages({
         id: 'TR_RELEASE_NOTES_VERSION',
         defaultMessage: 'Version',
     },
+    TR_RELEASE_NOTES_YOUR_VERSION: {
+        id: 'TR_RELEASE_NOTES_YOUR_VERSION',
+        defaultMessage: 'Your version',
+    },
     TR_NAV_TRADE: {
         id: 'TR_NAV_TRADE',
         defaultMessage: 'Trade',

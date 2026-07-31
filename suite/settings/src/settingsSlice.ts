@@ -31,6 +31,8 @@ export interface DebugModeOptions {
     definitionsChannel?: DefinitionsChannel;
     isN4w1BackupEnabled: boolean;
     showTranslationKeys: boolean;
+    /** Overrides the running app version in the release notes, to preview how older builds see the list. */
+    releaseNotesVersion?: string;
 }
 
 export interface AutodetectSettings {
@@ -91,6 +93,7 @@ export const suiteSettingsInitialState: SuiteSettingsState = {
         showConnectLogs: false,
         isN4w1BackupEnabled: false,
         showTranslationKeys: false,
+        releaseNotesVersion: undefined,
     },
     autodetect: {
         language: true,

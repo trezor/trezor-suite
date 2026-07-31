@@ -23,6 +23,7 @@ import { firmwareActions } from '@suite-common/firmware';
 import { messageSystemActions } from '@suite-common/message-system';
 import { receiveActions } from '@suite-common/receive';
 import { type ActionFromMatcher, createLegacyActionTypeMatcher } from '@suite-common/redux-utils';
+import { releaseNotesActions } from '@suite-common/release-notes';
 import {
     setSuiteSyncOwner,
     setSuiteSyncRelayUrl,
@@ -491,6 +492,10 @@ export const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
 
             if (discreetModeActions.setDiscreetMode.match(action)) {
                 api.dispatch(storageActions.saveDiscreetMode());
+            }
+
+            if (releaseNotesActions.fetchSuccess.match(action)) {
+                api.dispatch(storageActions.saveReleaseNotes());
             }
 
             switch (action.type) {

@@ -25,6 +25,7 @@ import { type geolocationActions } from '@suite-common/geolocation';
 import { type addLog } from '@suite-common/logger';
 import { type messageSystemActions } from '@suite-common/message-system';
 import { type ExtraDependencies } from '@suite-common/redux-utils';
+import { type releaseNotesActions } from '@suite-common/release-notes';
 import { type suiteSyncActions, type suiteSyncDataActions } from '@suite-common/suite-sync';
 import { type suiteSyncQuotaManagerActions } from '@suite-common/suite-sync-quota-manager';
 import { type thpActions } from '@suite-common/thp';
@@ -132,6 +133,9 @@ type DebugAction = ReturnType<(typeof debugActions)[keyof typeof debugActions]>;
 type DesktopUpdateAction = ReturnType<
     (typeof desktopUpdateActions)[keyof typeof desktopUpdateActions]
 >;
+type ReleaseNotesAction = ReturnType<
+    (typeof releaseNotesActions)[keyof typeof releaseNotesActions]
+>;
 
 // all actions from all apps used to properly type Dispatch.
 export type Action =
@@ -160,6 +164,7 @@ export type Action =
     | OnboardingAction
     | ProtocolAction
     | RecoveryAction
+    | ReleaseNotesAction
     | ReturnType<typeof addLog>
     | RouterAction
     | StorageAction

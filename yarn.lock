@@ -10785,6 +10785,21 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite-common/release-notes@workspace:*, @suite-common/release-notes@workspace:suite-common/release-notes":
+  version: 0.0.0-use.local
+  resolution: "@suite-common/release-notes@workspace:suite-common/release-notes"
+  dependencies:
+    "@reduxjs/toolkit": "npm:2.12.0"
+    "@suite-common/redux-utils": "workspace:*"
+    "@suite-common/suite-utils": "workspace:*"
+    "@suite-common/test-utils": "workspace:*"
+    "@trezor/env-utils": "workspace:*"
+    "@trezor/utils": "workspace:*"
+    jws: "npm:^4.0.1"
+    tsx: "npm:^4.21.0"
+  languageName: unknown
+  linkType: soft
+
 "@suite-common/schemas@workspace:*, @suite-common/schemas@workspace:^, @suite-common/schemas@workspace:suite-common/schemas":
   version: 0.0.0-use.local
   resolution: "@suite-common/schemas@workspace:suite-common/schemas"
@@ -17314,6 +17329,7 @@ __metadata:
     "@suite-common/react-query": "workspace:*"
     "@suite-common/receive": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
+    "@suite-common/release-notes": "workspace:*"
     "@suite-common/sentry": "workspace:*"
     "@suite-common/staking": "workspace:*"
     "@suite-common/suite-config": "workspace:*"

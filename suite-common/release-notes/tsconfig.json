@@ -1,0 +1,13 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": { "outDir": "libDev" },
+    "include": ["src", "scripts", "mocks"],
+    "references": [
+        { "path": "../redux-utils" },
+        { "path": "../suite-utils" },
+        { "path": "../test-utils" },
+        { "path": "../../packages/env-utils" },
+        { "path": "../../packages/utils" },
+        { "path": "../../packages/eslint" }
+    ]
+}

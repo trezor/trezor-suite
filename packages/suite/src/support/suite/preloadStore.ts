@@ -60,6 +60,7 @@ export const preloadStore = async () => {
             featureFeedback,
             discreetMode,
             debug,
+            releaseNotes,
         ] = await Promise.all([
             db.getItemByPK('suiteSettings', 'suite'),
             db.getItemsExtended('devices'),
@@ -94,6 +95,7 @@ export const preloadStore = async () => {
             db.getItemByPK('featureFeedback', 'featureFeedback'),
             db.getItemByPK('discreetMode', 'discreetMode'),
             db.getItemByPK('debug', 'debug'),
+            db.getItemByPK('releaseNotes', 'releaseNotes'),
         ]);
 
         return {
@@ -132,6 +134,7 @@ export const preloadStore = async () => {
                 featureFeedback,
                 discreetMode,
                 debug,
+                releaseNotes,
             },
         } as const;
     } catch (error) {

@@ -2,18 +2,20 @@ import { type Algorithm, createVerify, decode } from 'jws';
 
 import { getJWSPublicKey } from '@trezor/env-utils';
 
-const authenticityPublicKey = getJWSPublicKey();
-
-export const verifyJws = (jws: string, algorithm: Algorithm) =>
+/**
+ * The public key defaults to the one matching the current build flavour. Pass it explicitly for data
+ * that is published from a single location and therefore always signed by the same key.
+ */
+export const verifyJws = (jws: string, algorithm: Algorithm, publicKey = getJWSPublicKey()) =>
     new Promise<boolean>((resolve, reject) => {
-        if (!authenticityPublicKey) {
+        if (!publicKey) {
             throw Error('JWS public key is not defined!');
         }
 
         try {
             const verifier = createVerify({
                 algorithm,
-                publicKey: authenticityPublicKey,
+                publicKey,
                 signature: jws,
             });
             verifier.on('done', (valid: boolean) => resolve(valid));

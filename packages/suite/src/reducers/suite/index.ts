@@ -20,6 +20,7 @@ import { type FeatureFeedbackState } from '@suite-common/feedback';
 import { type LogsSliceState, logsSlice } from '@suite-common/logger';
 import { type MessageSystemState, prepareMessageSystemReducer } from '@suite-common/message-system';
 import { type MetadataState } from '@suite-common/metadata-types';
+import { type ReleaseNotesState, releaseNotesReducer } from '@suite-common/release-notes';
 import {
     type NotificationsState,
     createNotificationsReducer,
@@ -66,6 +67,7 @@ export type SuiteReducersState = {
     featureFeedback: FeatureFeedbackState<FeedbackFeatureName>;
     connectPopup: ConnectPopupState;
     walletConnect: WalletConnectState;
+    releaseNotes: ReleaseNotesState;
 };
 
 export const suiteReducers: ReducersMapObject<SuiteReducersState, Action & UnknownAction> = {
@@ -91,4 +93,5 @@ export const suiteReducers: ReducersMapObject<SuiteReducersState, Action & Unkno
     featureFeedback: featureFeedbackReducer,
     connectPopup: connectPopupReducer,
     walletConnect: walletConnectReducer,
+    releaseNotes: releaseNotesReducer,
 };
