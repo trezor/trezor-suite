@@ -25,6 +25,13 @@ const EditIndicator = styled.div`
     }
 `;
 
+// Let the Card inherit the pointer so the whole clickable area reads as one.
+const ClickableStepContent = styled.div`
+    section {
+        cursor: inherit;
+    }
+`;
+
 export type YieldFlowStepDefinition = {
     /** Label on the title row next to the step number. */
     title?: ReactNode;
@@ -144,7 +151,11 @@ export const YieldFlowStepList = <TSequence extends readonly YieldFlowStepId[]>(
                             </Column>
                         }
                     >
-                        {renderStepContent(stepId)}
+                        {onEdit ? (
+                            <ClickableStepContent>{renderStepContent(stepId)}</ClickableStepContent>
+                        ) : (
+                            renderStepContent(stepId)
+                        )}
                     </StepList.Item>
                 );
             })}
