@@ -93,7 +93,7 @@ jobs:
       # [throwaway: bcl request baseline] shared by the Playwright run (taps write here) + aggregate/publish steps
       BCL_LOG: ${{ github.workspace }}/bcl.jsonl
       BCL_COINS: "btc,eth,sol,ada,trx"
-      BCL_IDLE_MS: "60000"
+      BCL_IDLE_MS: "600000"
       BCL_GOLDEN: ${{ github.workspace }}/suite/e2e/tests/wallet/bcl-golden.json
     steps:
       - name: Generate GitHub App token
@@ -320,7 +320,7 @@ jobs:
       # [throwaway: bcl request baseline] aggregate bcl.jsonl -> summary.json and publish a
       # same-origin viewer to sldev (https://dev.suite.sldev.cz/coverage/e2e/bcl-baseline/index.html)
       - name: Aggregate BCL baseline
-        if: ${{ !cancelled() && github.repository == 'trezor/trezor-suite' }}
+        if: ${{ success() && github.repository == 'trezor/trezor-suite' }}
         shell: bash
         run: |
           if [ ! -s "$BCL_LOG" ]; then echo "no bcl.jsonl, skipping"; exit 0; fi
@@ -333,14 +333,14 @@ jobs:
           node suite/e2e/scripts/bcl/aggregate.mjs "$BCL_LOG" "$GITHUB_WORKSPACE/summary.json"
 
       - name: Configure AWS credentials (BCL baseline)
-        if: ${{ !cancelled() && github.repository == 'trezor/trezor-suite' }}
+        if: ${{ success() && github.repository == 'trezor/trezor-suite' }}
         uses: aws-actions/configure-aws-credentials@254c19bd240aabef8777f48595e9d2d7b972184b # v6
         with:
           role-to-assume: "arn:aws:iam::538326561891:role/gh_actions_trezor_suite_dev_deploy"
           aws-region: "eu-central-1"
 
       - name: Publish BCL baseline to sldev
-        if: ${{ !cancelled() && github.repository == 'trezor/trezor-suite' }}
+        if: ${{ success() && github.repository == 'trezor/trezor-suite' }}
         shell: bash
         env:
           PREFIX: coverage/e2e/bcl-baseline

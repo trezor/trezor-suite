@@ -1,1 +1,7 @@
-{}
+{
+  "btc": { "minTx": 379, "nonEmpty": true },
+  "eth": { "minTx": 143, "nonEmpty": true },
+  "sol": { "minTx": 348, "nonEmpty": true },
+  "ada": { "minTx": 99, "nonEmpty": true },
+  "trx": { "minTx": 195, "nonEmpty": true }
+}
