@@ -319,7 +319,8 @@ export const SecurityCheck = () => {
             setCheckedDevices(prev => [...prev, selectedDevice?.id ?? '']); // Device ID must be available as firmware is already installed.
             dispatch(deviceActions.selectDevice(nextDeviceToCheck));
         } else {
-            goToSuite();
+            // "Yes, I have used it before" only enters Suite, nothing is set up here.
+            goToSuite({ skipDeviceSetupCompletedEvent: true });
         }
     };
 
