@@ -115,6 +115,11 @@ export class OnboardingPage {
 
     @step()
     async enterTHPPairingCode() {
+        await expect(
+            this.thpPairingModal,
+            'expected THP pairing modal to be shown before entering the pairing code',
+        ).toBeVisible({ timeout: 10_000 });
+
         const code = await this.device.getTHPPairingCode();
 
         for (let i = 0; i < code.length; i++) {
