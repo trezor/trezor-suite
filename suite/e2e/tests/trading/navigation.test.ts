@@ -1,4 +1,4 @@
-import { expect, test } from '../../support/fixtures';
+import { test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
 
 test.describe('Trading - Navigation', { tag: ['@T3W1', '@T3T1'] }, () => {
@@ -47,7 +47,7 @@ test.describe('Trading - Navigation', { tag: ['@T3W1', '@T3T1'] }, () => {
             });
 
             await test.step('Buy from token', async () => {
-                await walletPage.openBuyTradingOfToken('eth', 'TrueUSD');
+                await walletPage.openBuyTradingOfToken('eth', 'TUSD');
                 await tradingPage.verifyBuyFormOpened(/TrueUSD/);
             });
 
@@ -66,12 +66,8 @@ test.describe('Trading - Navigation', { tag: ['@T3W1', '@T3T1'] }, () => {
             });
 
             await test.step('Sell from token', async () => {
-                // There is instability in test, sell form has Ethereum instead of USD Coin
-                // We cannot reproduce it manually, so we are using retry workaround to stabilize automation
-                await expect(async () => {
-                    await walletPage.openSellTradingOfToken('eth', 'USDC');
-                    await tradingPage.verifySellFormOpened(/USDC/);
-                }).toPass({ timeout: 15_000 });
+                await walletPage.openSellTradingOfToken('eth', 'USDC');
+                await tradingPage.verifySellFormOpened(/USDC/);
             });
 
             // SWAP

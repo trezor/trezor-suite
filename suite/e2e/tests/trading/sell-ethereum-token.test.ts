@@ -43,7 +43,7 @@ test.describe('Trading - Sell Ethereum', { tag: ['@webOnly', '@T3W1', '@T3T1'] }
                 await settingsPage.changeNetworks({ enableNetworks: ['eth'] });
                 await dashboardPage.deviceSwitchingOpenButton.click();
                 await dashboardPage.addHiddenWallet(process.env.PASSPHRASE!);
-                await walletPage.openSellTradingOfToken('eth', 'USD Coin');
+                await walletPage.openSellTradingOfToken('eth', 'USDC');
             });
         },
     );

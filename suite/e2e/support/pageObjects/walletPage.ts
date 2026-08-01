@@ -24,6 +24,14 @@ export class WalletPage {
     readonly openSellGlobalButton: Locator;
     readonly openSwapSidebarButton: Locator;
     readonly tradingDropdownBuyButton: Locator;
+    readonly tokenBuyButton: Locator;
+    readonly tokenSellButton: Locator;
+    readonly tokenRow = (tokenName: string): Locator =>
+        this.page.getByTestId(`@token-row/${tokenName}`);
+    readonly tokenRowMoreButton = (tokenName: string): Locator =>
+        this.tokenRow(tokenName).getByTestId('@trading/tokens/more-button');
+    readonly tokenRowSwapButton = (tokenName: string): Locator =>
+        this.tokenRow(tokenName).getByTestId('@trading/tokens/swap-button');
     readonly balanceOfAccount = (params: WalletParams) =>
         this.accountButton(params).getByTestId(`@wallet/coin-balance/value-${params.symbol}`);
     readonly balanceOfAccountWithSymbol = (params: WalletParams) =>
@@ -88,6 +96,8 @@ export class WalletPage {
         this.tradingDropdownBuyButton = this.page
             .getByRole('list')
             .getByTestId('@wallet/menu/wallet-trading-buy');
+        this.tokenBuyButton = this.page.getByTestId('@trading/tokens/buy-button');
+        this.tokenSellButton = this.page.getByTestId('@trading/tokens/sell-button');
         this.accountDetailsTabButton = this.page.getByTestId('@wallet/menu/wallet-details');
         this.accountDetails = this.page.getByTestId('@wallet/account-details');
         this.showPublicKeyButton = this.page.getByTestId('@wallets/details/show-xpub-button');
@@ -205,21 +215,21 @@ export class WalletPage {
     @step()
     async openBuyTradingOfToken(symbol: NetworkSymbol, tokenName: string) {
         await this.openAccount({ symbol, subAccount: 'tokens' });
-        await this.page.getByRole('row', { name: tokenName }).getByRole('button').first().click();
-        await this.page.getByTestId('@trading/tokens/buy-button').click();
+        await this.tokenRowMoreButton(tokenName).click();
+        await this.tokenBuyButton.click();
     }
 
     @step()
     async openSellTradingOfToken(symbol: NetworkSymbol, tokenName: string) {
         await this.openAccount({ symbol, subAccount: 'tokens' });
-        await this.page.getByRole('row', { name: tokenName }).getByRole('button').first().click();
-        await this.page.getByTestId('@trading/tokens/sell-button').click();
+        await this.tokenRowMoreButton(tokenName).click();
+        await this.tokenSellButton.click();
     }
 
     @step()
     async openSwapTradingOfToken(symbol: NetworkSymbol, tokenName: string) {
         await this.openAccount({ symbol, subAccount: 'tokens' });
-        await this.page.getByRole('row', { name: tokenName }).getByRole('button').nth(1).click();
+        await this.tokenRowSwapButton(tokenName).click();
     }
 
     @step()
