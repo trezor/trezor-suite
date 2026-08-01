@@ -10,7 +10,7 @@ import {
 } from '@suite-common/address';
 import { useServices } from '@suite-common/dependency-injection';
 import { type DeviceRootState } from '@suite-common/device';
-import { getNetworkSymbolForProtocol } from '@suite-common/suite-utils';
+import { selectFindNetworkSymbolForProtocolDep } from '@suite-common/networks';
 import { parseTransferUri } from '@suite-common/transfer-uri';
 import { formInputsMaxLength } from '@suite-common/validators';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
@@ -68,9 +68,10 @@ export const AddressInput = ({ index, accountKey, onQrNetworkMismatch }: Address
     const amountFieldName = getOutputFieldName(index, 'amount');
     const tokenFieldName = getOutputFieldName(index, 'token');
     const { setValue, control } = useFormContext<SendOutputsFormValues>();
-    const { analytics, addressValidator } = useServices(
+    const { analytics, addressValidator, findNetworkSymbolForProtocol } = useServices(
         selectNativeAnalyticsDep,
         selectAddressValidatorDep,
+        selectFindNetworkSymbolForProtocolDep,
     );
     const symbol = useSelector((state: AccountsRootState) =>
         selectAccountNetworkSymbol(state, accountKey),
@@ -128,7 +129,7 @@ export const AddressInput = ({ index, accountKey, onQrNetworkMismatch }: Address
     };
 
     const handleScanAddressQRCode = (qrCodeData: string) => {
-        const parsed = parseTransferUri(qrCodeData);
+        const parsed = parseTransferUri(qrCodeData, findNetworkSymbolForProtocol);
 
         // ERC-681 (Ethereum) — may switch to a matching account on another EVM network.
         const erc681 =
@@ -191,7 +192,7 @@ export const AddressInput = ({ index, accountKey, onQrNetworkMismatch }: Address
         if (
             parsed.success &&
             parsed.payload.format === 'bip321' &&
-            getNetworkSymbolForProtocol(parsed.payload.scheme) === symbol
+            findNetworkSymbolForProtocol(parsed.payload.scheme) === symbol
         ) {
             const bip321 = parsed.payload;
             onQrNetworkMismatch?.(null);

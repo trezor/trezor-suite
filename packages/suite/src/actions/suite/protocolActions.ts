@@ -1,12 +1,14 @@
+import type { DesktopAnalyticsDep } from '@suite/analytics';
 import {
     type AnchorSettingSection,
     SettingsAnchor,
+    type SuiteRouterHistoryDep,
     goto,
     mapAnchorToRoute,
     onLocationChange,
 } from '@suite/router';
 import { type CoinProtocol, handleCoinProtocolUri } from '@suite/transfer-uri';
-import { type ExtraDependencies } from '@suite-common/redux-utils';
+import type { FindNetworkSymbolForProtocolDep } from '@suite-common/networks';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import * as walletConnectActions from '@suite-common/walletconnect';
 import {
@@ -18,8 +20,7 @@ import {
 import { isArrayMember, safeParseUrl } from '@trezor/utils';
 
 import type { SendFormState } from 'src/reducers/suite/protocolReducer';
-import { asSuiteServices } from 'src/support/extraDependencies';
-import { type Dispatch, type GetState } from 'src/types/suite';
+import { type Dispatch } from 'src/types/suite';
 
 import { PROTOCOL } from './constants';
 
@@ -44,8 +45,12 @@ const saveCoinProtocol = (coinProtocol: CoinProtocol): ProtocolAction => ({
     payload: coinProtocol,
 });
 
+export type HandleProtocolRequestDeps = {
+    services: DesktopAnalyticsDep & FindNetworkSymbolForProtocolDep & SuiteRouterHistoryDep;
+};
+
 export const handleProtocolRequest =
-    (uri: string) => (dispatch: Dispatch, _getState: GetState, extra: ExtraDependencies) => {
+    (uri: string) => (dispatch: Dispatch, _getState: unknown, extra: HandleProtocolRequestDeps) => {
         dispatch(handleCoinProtocolUri(uri, saveCoinProtocol));
 
         if (uri?.startsWith(SUITE_BRIDGE_DEEPLINK)) {
@@ -84,7 +89,7 @@ export const handleProtocolRequest =
                 const [, hash] = decodedPath.split('/coinmarket-redirect/');
                 if (hash) {
                     const path = { pathname: '/coinmarket-redirect', hash: `#${hash}` } as const;
-                    asSuiteServices(extra.services).suiteRouterHistory.navigate(path);
+                    extra.services.suiteRouterHistory.navigate(path);
                     dispatch(onLocationChange(path));
                 }
             }

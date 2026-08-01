@@ -149,6 +149,7 @@
         "@trezor/dom-utils": "workspace:*",
         "@trezor/env-utils": "workspace:*",
         "@trezor/icons": "workspace:*",
+        "@trezor/network-module-suite-common-types": "workspace:*",
         "@trezor/network-solana": "workspace:*",
         "@trezor/network-stellar": "workspace:*",
         "@trezor/product-components": "workspace:*",

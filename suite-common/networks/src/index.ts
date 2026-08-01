@@ -1,11 +1,18 @@
 export { createNetworksCompositionRoot } from './createNetworksCompositionRoot';
 export {
-    createGetNetworkColor,
-    selectGetNetworkColorDep,
-    type GetNetworkColor,
-    type GetNetworkColorDep,
-    type GetNetworkColorDeps,
-} from './createGetNetworkColor';
+    createGetNetworkConfig,
+    selectGetNetworkConfigDep,
+    type GetNetworkConfig,
+    type GetNetworkConfigDep,
+    type GetNetworkConfigDeps,
+} from './createGetNetworkConfig';
+export {
+    createFindNetworkSymbolForProtocol,
+    selectFindNetworkSymbolForProtocolDep,
+    type FindNetworkSymbolForProtocol,
+    type FindNetworkSymbolForProtocolDep,
+    type FindNetworkSymbolForProtocolDeps,
+} from './createFindNetworkSymbolForProtocol';
 export {
     createNetworkModuleRepository,
     selectNetworkModuleRepositoryDep,

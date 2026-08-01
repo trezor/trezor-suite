@@ -1,10 +1,10 @@
 import { type Dispatch, type UnknownAction } from '@reduxjs/toolkit';
 
-import { asTypedDesktopAnalytics, events } from '@suite/analytics';
-import { type ExtraDependencies } from '@suite-common/redux-utils';
-import { type Protocol } from '@suite-common/suite-constants';
+import { type DesktopAnalyticsDep, events } from '@suite/analytics';
+import type { FindNetworkSymbolForProtocolDep } from '@suite-common/networks';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { isAmountPresent, parseTransferUri } from '@suite-common/transfer-uri';
+import type { Protocol } from '@trezor/network-module-suite-common-types';
 
 /** Flat transfer fields, matching the send-form state the protocol reducer persists. */
 export type CoinProtocol = {
@@ -17,6 +17,10 @@ export type CoinProtocol = {
 
 type SaveCoinProtocol = (coinProtocol: CoinProtocol) => UnknownAction;
 
+export type HandleCoinProtocolUriDeps = {
+    services: FindNetworkSymbolForProtocolDep & DesktopAnalyticsDep;
+};
+
 /**
  * Fire-and-forget thunk for an incoming transfer URI: decode it, report any
  * recognizable scheme, and for a valid transfer save it + toast the user.
@@ -26,15 +30,15 @@ type SaveCoinProtocol = (coinProtocol: CoinProtocol) => UnknownAction;
  */
 export const handleCoinProtocolUri =
     (uri: string, saveCoinProtocol: SaveCoinProtocol) =>
-    (dispatch: Dispatch, _getState: unknown, extra: ExtraDependencies) => {
+    (dispatch: Dispatch, _getState: unknown, extra: HandleCoinProtocolUriDeps) => {
         // Report any URI carrying a recognizable scheme (incl. unknown-protocol deeplinks).
         const reportScheme = (scheme: string, amountPresent: boolean) =>
-            asTypedDesktopAnalytics(extra.services.analytics).report({
+            extra.services.analytics.report({
                 type: events.appUriHandlerEvent.name,
                 payload: { scheme, isAmountPresent: amountPresent },
             });
 
-        const result = parseTransferUri(uri);
+        const result = parseTransferUri(uri, extra.services.findNetworkSymbolForProtocol);
 
         if (!result.success) {
             if (result.error.type === 'UNKNOWN_SCHEME') reportScheme(result.error.scheme, false);

@@ -11,10 +11,10 @@
             "path": "../../suite-common/formatters"
         },
         {
-            "path": "../../suite-common/suite-sync"
+            "path": "../../suite-common/networks"
         },
         {
-            "path": "../../suite-common/suite-utils"
+            "path": "../../suite-common/suite-sync"
         },
         {
             "path": "../../suite-common/token-definitions"

@@ -33,7 +33,8 @@ import { toGetter } from '@suite-common/dependency-injection';
 import { type DeviceReducerState, selectDeviceByStaticSessionId } from '@suite-common/device';
 import { FW_HASH_CHECK_DEFAULT_TIMEOUTS } from '@suite-common/firmware-authenticity';
 import {
-    createGetNetworkColor,
+    createFindNetworkSymbolForProtocol,
+    createGetNetworkConfig,
     createNetworkModuleRepository,
     createNetworksCompositionRoot,
 } from '@suite-common/networks';
@@ -175,7 +176,11 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
     });
     const networkModules = createNetworksCompositionRoot();
     const networkModuleRepository = createNetworkModuleRepository({ networkModules });
-    const getNetworkColor = createGetNetworkColor({ networkModuleRepository });
+    const getNetworkConfig = createGetNetworkConfig({ networkModuleRepository });
+    const findNetworkSymbolForProtocol = createFindNetworkSymbolForProtocol({
+        getNetworkConfig,
+        networkModuleRepository,
+    });
     const addressValidator = createAddressValidator({
         networkModuleRepository,
     });
@@ -195,7 +200,8 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
 
     return {
         networkModuleRepository,
-        getNetworkColor,
+        getNetworkConfig,
+        findNetworkSymbolForProtocol,
         addressValidator,
         suiteSync,
         bip329,

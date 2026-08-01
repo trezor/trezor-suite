@@ -1,7 +1,7 @@
 import type { SuiteCommonNetworkModule } from '@trezor/network-module-suite-common-types';
 
 import { solanaValidator } from './addressValidator/solanaAddressValidator';
-import { getNetworkColor } from './networkColor';
+import { getNetworkConfig } from './networkConfig';
 import {
     type SolanaNetworkSymbol,
     getSupportedNetworks,
@@ -14,5 +14,5 @@ export const createSolanaSuiteCommonNetworkModule = (): SolanaNetworkSuiteCommon
     addressValidator: solanaValidator,
     getSupportedNetworks,
     isSupportedNetwork,
-    getNetworkColor,
+    getNetworkConfig,
 });

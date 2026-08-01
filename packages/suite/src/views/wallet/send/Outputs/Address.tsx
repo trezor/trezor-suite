@@ -18,7 +18,7 @@ import {
     toChecksumAddress,
 } from '@suite-common/address';
 import { useServices } from '@suite-common/dependency-injection';
-import { getNetworkSymbolForProtocol } from '@suite-common/suite-utils';
+import { selectFindNetworkSymbolForProtocolDep } from '@suite-common/networks';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { isAmountPresent, parseTransferUri } from '@suite-common/transfer-uri';
 import { formInputsMaxLength } from '@suite-common/validators';
@@ -46,6 +46,7 @@ import { InputError } from 'src/components/wallet';
 import { type InputErrorProps } from 'src/components/wallet/InputError';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
+import { selectIsSuiteOnline } from 'src/selectors/suite/suiteSelectors';
 import { captureSentryMessage } from 'src/utils/suite/sentry';
 
 import { DevAddressBook } from './DevAddressBook';
@@ -83,9 +84,10 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
         clearErrors,
     } = useSendFormContext();
     const { translationString } = useTranslation();
-    const { analytics, addressValidator } = useServices(
+    const { analytics, addressValidator, findNetworkSymbolForProtocol } = useServices(
         selectDesktopAnalyticsDep,
         selectAddressValidatorDep,
+        selectFindNetworkSymbolForProtocolDep,
     );
     const { descriptor, networkType, symbol } = account;
     const inputName = `outputs.${outputId}.address` as const;
@@ -102,7 +104,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
     const selectedToken = watch(`outputs.${outputId}.token`);
     const options = getDefaultValue('options', []);
     const broadcastEnabled = options.includes('broadcast');
-    const isOnline = useSelector(state => state.suite.online);
+    const isOnline = useSelector(selectIsSuiteOnline);
     const isDebug = useSelector(selectIsDebugModeActive);
     const isMetadataEnabled = useSelector(selectIsMetadataEnabled);
     const suiteSyncInteraction = useSelector(state =>
@@ -135,7 +137,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
             return;
         }
 
-        const result = parseTransferUri(uri);
+        const result = parseTransferUri(uri, findNetworkSymbolForProtocol);
 
         let parsedScheme: string | undefined;
         if (result.success) {
@@ -181,9 +183,9 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
             return;
         }
 
-        const { scheme, address } = result.payload;
+        const { scheme, address: parsedAddress } = result.payload;
 
-        if (getNetworkSymbolForProtocol(scheme) !== symbol) {
+        if (findNetworkSymbolForProtocol(scheme) !== symbol) {
             dispatch(
                 notificationsActions.addToast({
                     type: 'qr-incorrect-coin-scheme-protocol',
@@ -194,7 +196,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
             return;
         }
 
-        setValue(inputName, address, { shouldValidate: true });
+        setValue(inputName, parsedAddress, { shouldValidate: true });
 
         if (result.payload.format === 'erc681') {
             const { token, tokenAmount } = result.payload;
@@ -238,6 +240,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
         setValue,
         symbol,
         addressValidator,
+        findNetworkSymbolForProtocol,
     ]);
 
     if (device?.state?.staticSessionId === undefined) {
@@ -366,7 +369,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                     return translationString('RECIPIENT_REQUIRES_UPDATE');
                 }
             },
-            evmChecks: async (address: string) => {
+            evmChecks: async (checkedAddress: string) => {
                 if (networkType !== 'ethereum' && networkType !== 'tron') return;
 
                 if (!isOnline) {
@@ -374,7 +377,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                 }
 
                 const result = await TrezorConnect.getAccountInfo({
-                    descriptor: address,
+                    descriptor: checkedAddress,
                     coin: symbol,
                 });
 
@@ -386,9 +389,9 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
 
                 // 1. Validate address checksum.
                 // Eth addresses are valid without checksum but Trezor displays them as checksummed.
-                if (networkType === 'ethereum' && !checkAddressChecksum(address)) {
+                if (networkType === 'ethereum' && !checkAddressChecksum(checkedAddress)) {
                     const checksumAndUsageValidationResult = checkIsAddressNotUsedNotChecksummed(
-                        address,
+                        checkedAddress,
                         payload.history,
                         checksummed => setValue(inputName, checksummed, { shouldValidate: true }),
                         setHasAddressChecksummed,

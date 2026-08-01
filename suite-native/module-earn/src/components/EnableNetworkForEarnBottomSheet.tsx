@@ -1,5 +1,5 @@
 import { useServices } from '@suite-common/dependency-injection';
-import { selectGetNetworkColorDep } from '@suite-common/networks';
+import { selectGetNetworkConfigDep } from '@suite-common/networks';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import {
     BottomSheetModal,
@@ -49,10 +49,10 @@ export const EnableNetworkForEarnBottomSheet = ({
     onDismiss,
 }: EnableNetworkForEarnBottomSheetProps) => {
     const { applyStyle } = useNativeStyles();
-    const { getNetworkColor } = useServices(selectGetNetworkColorDep);
+    const { getNetworkConfig } = useServices(selectGetNetworkConfigDep);
 
     const networkName = symbol ? getNetwork(symbol).name : '';
-    const networkColor = symbol ? getNetworkColor(symbol) : undefined;
+    const networkColor = symbol ? getNetworkConfig(symbol).color : undefined;
     const translationIds = translationIdByEarnType[type];
 
     return (
