@@ -97,7 +97,12 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
     let info;
     try {
         info = await api.accounts().accountId(payload.descriptor).call();
-    } catch {
+    } catch (error) {
+        // Other errors (rate limiting, outage) must not be reported as an empty account
+        if (!isNotFoundError(error)) {
+            throw error;
+        }
+
         // Account not found, we set the account as empty
         return {
             type: RESPONSES.GET_ACCOUNT_INFO,
