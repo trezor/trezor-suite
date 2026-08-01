@@ -71,7 +71,7 @@ export const TokenRow = ({
 
     return (
         <>
-            <Table.Row isCollapsed={isCollapsed}>
+            <Table.Row isCollapsed={isCollapsed} data-testid={`@token-row/${token.symbol}`}>
                 <Table.Cell>
                     <Row gap={8}>
                         <TokenIcon
