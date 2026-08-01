@@ -1,4 +1,6 @@
 import {
+    type AsyncThunk,
+    type AsyncThunkConfig,
     type AsyncThunkOptions,
     type AsyncThunkPayloadCreator,
     createAsyncThunk as createAsyncThunkReduxToolkit,
@@ -6,13 +8,18 @@ import {
 
 import { type CustomThunkAPI } from './extraDependenciesType';
 
-export const createThunk = <TParams = void, TPayload = void, TThunkAPI = void>(
+type ResolveThunkAPI<TThunkAPI> = [TThunkAPI] extends [void]
+    ? CustomThunkAPI
+    : Omit<CustomThunkAPI, keyof TThunkAPI> & TThunkAPI;
+
+type CreateThunk = <
+    TReturned = void,
+    TThunkArg = void,
+    TThunkAPI extends AsyncThunkConfig | void = void,
+>(
     typePrefix: string,
-    thunk: AsyncThunkPayloadCreator<TParams, TPayload, TThunkAPI & CustomThunkAPI>,
-    options?: AsyncThunkOptions<TPayload, TThunkAPI & CustomThunkAPI>,
-) =>
-    createAsyncThunkReduxToolkit<TParams, TPayload, TThunkAPI & CustomThunkAPI>(
-        typePrefix,
-        thunk,
-        options,
-    );
+    thunk: AsyncThunkPayloadCreator<TReturned, TThunkArg, ResolveThunkAPI<TThunkAPI>>,
+    options?: AsyncThunkOptions<TThunkArg, ResolveThunkAPI<TThunkAPI>>,
+) => AsyncThunk<TReturned, TThunkArg, ResolveThunkAPI<TThunkAPI>>;
+
+export const createThunk: CreateThunk = createAsyncThunkReduxToolkit;
