@@ -28,6 +28,9 @@ Your change surface is exactly two things — nothing else, no exceptions:
 1. Any file inside `suite/e2e/`.
 2. Adding a `data-testid` attribute in a product source file.
 
+Adding a `data-testid` is an ordinary, expected fix — not a last resort to be avoided. It is
+almost always the right remedy when a test cannot reliably reach an element (see Step 3).
+
 Everything else in product code is off-limits.
 This holds even when a product change is the only way to make a test pass — in that case the
 failure is not yours to fix (see Step 2, "Bail when it is not yours to fix").
@@ -67,6 +70,10 @@ Then read the source files mentioned in the analysis — spec files, page object
 (if a locator is involved) the product component that renders the target element. **Expand the
 analysis with your own product-code analysis and the preflight results (Step 2)** before
 deciding the fix.
+
+Read `suite/e2e/CLAUDE.md` and the skills it lists — they are mandatory for every change under
+`suite/e2e/`. `skills/locators.md` (testid convention and naming) and `skills/page-objects.md`
+(where locators and methods belong) govern most fixes you will make.
 
 The test name and each `test.step()` label are the specification of intended behavior — read
 them as the source of truth for what the test verifies. A correct fix restores the test's
@@ -131,16 +138,31 @@ _Cost marker: at the start of each iteration, run `echo fixagent-stage-iteration
 
 **1. Make changes** within the allowed surface (see Fix Constraints).
 
-**Missing / mismatched locator.** When a locator the test uses is not found, do not reflexively
-add it to the product. Inspect the target element in the trace (see _Reading traces_) to see what
-it actually exposes — don't guess. If it already exposes a `data-testid` (possibly renamed from what
-the test expects), point the test/page-object at the current one. Add a new `data-testid` only if
-the element genuinely has none.
+**Locators: a testid, or you add one.** This covers both a locator that finds nothing and one
+that finds the wrong element. Inspect the target in the trace (see _Reading traces_) to see what
+it actually exposes — don't guess — then:
 
-**Readability lives in clear code, not comments.** Any test file or page object you touch should
-read on its own through precise naming and obvious structure — that is the primary tool. A comment
-is the last resort, reserved for intent the code genuinely cannot carry (a non-obvious wait, a
-workaround for a known bug). When you do add one, keep it to a single line.
+- It already exposes a `data-testid`, possibly renamed from what the test expects → point the
+  test/page object at the current one.
+- It exposes none → add one in the product component, following the naming convention in
+  `suite/e2e/skills/locators.md`, and use it.
+
+That skill also forbids reaching an element by its position among siblings — `.first()`,
+`.nth(n)`, `.last()`, or a role/text chain that resolves only by DOM order. Narrowing a
+positional locator you inherited does not count as fixing it: delete it and add the testid.
+
+**No narrating comments.** Do not explain the DOM you discovered, why the old locator broke, or
+what your change does. That belongs in the commit message and `pr-description.md`, which is where
+reviewers look for it. A comment describing structure (`// the row's last cell holds the actions`)
+is worse than noise: it hard-codes an assumption that nothing verifies and that goes stale the
+moment the component changes. Carry the meaning in the name instead — `tokenRowMoreButton(tokenName)`
+explains itself. Add a comment only for intent the code genuinely cannot express: a non-obvious
+wait, a workaround for a known product bug. Keep it to one line.
+
+**An existing workaround may only go when its cause goes.** If the test wraps a step in a retry
+(`toPass`, a re-query loop) or carries a comment about known instability, remove it only if your
+change eliminates what it was masking, and say so in the PR description. If you are working
+around the same instability by other means, leave it in place.
 
 **2. Run all validations that are still failing:**
 
