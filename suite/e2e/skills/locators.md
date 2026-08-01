@@ -10,6 +10,7 @@ PRIORITY_3: MUST chain to parent if multiple instances exist
 PRIORITY_4: MUST use parameterized methods for dynamic values
 
 MUST_NOT: Use CSS classes, XPath indices, or hardcoded text selectors
+MUST_NOT: Select an element by its position among siblings
 MUST_NOT: Scatter locators in tests—only in Page Objects
 MUST_NOT: Use implicit waits or hardcoded timeouts
 
@@ -35,6 +36,8 @@ Does element have data-testid?
 
 When multiple elements share the same testid pattern, get the parent first and query the child within it.
 
+The parent must be addressable on its own—when many rows or cards repeat the same testid pattern, the row carries a testid identifying which one it is (e.g. keyed by its name), and the child is chained from it. Never index into the list instead.
+
 **Do not use** if a unique testid exists without a parent—use PRIMARY directly.
 
 ### TERTIARY: Parameterized Locators
@@ -47,6 +50,8 @@ When the testid contains a dynamic segment (token, currency, code), declare a me
 
 ❌ CSS class selectors – breaks on CSS refactor: `this.page.locator('.button-primary')`
 ❌ XPath with indices – brittle, breaks on DOM changes: `this.page.locator('//button[3]')`
+❌ Position among siblings – silently points at the wrong element when the DOM gains one: `row.getByRole('button').first()`, `.nth(1)`, `.last()`
+❌ Narrowing a positional locator – a tighter parent or a different index is the same bug, not a fix: add the missing testid instead
 ❌ Text-only selectors – fragile to copy/i18n: `this.page.getByText('Claim Rewards')`
 ❌ Hardcoded timeouts: `await page.waitForTimeout(2000)`
 
