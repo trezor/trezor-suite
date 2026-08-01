@@ -2,13 +2,15 @@ import { type ReactNode } from 'react';
 
 import { Translation, type TranslationKey } from '@suite/intl';
 import { openModal } from '@suite/modal';
+import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
-import { getNetworkSymbolForProtocol } from '@suite-common/suite-utils';
+import { selectFindNetworkSymbolForProtocolDep } from '@suite-common/networks';
 import { getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { Button, Column, Paragraph } from '@trezor/components';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
+import { selectProtocolSendFormScheme } from 'src/selectors/suite/protocolSelectors';
 
 interface AssetsListEmptyProps {
     heading: TranslationKey;
@@ -26,11 +28,12 @@ export const AssetsListEmpty = ({
     height,
 }: AssetsListEmptyProps) => {
     const dispatch = useDispatch();
-    const protocolScheme = useSelector(state => state.protocol.sendForm.scheme);
+    const { findNetworkSymbolForProtocol } = useServices(selectFindNetworkSymbolForProtocolDep);
+    const protocolScheme = useSelector(selectProtocolSendFormScheme);
     const device = useSelector(selectSelectedDevice);
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
 
-    const protocolSymbol = protocolScheme ? getNetworkSymbolForProtocol(protocolScheme) : undefined;
+    const protocolSymbol = protocolScheme ? findNetworkSymbolForProtocol(protocolScheme) : null;
     const network = protocolSymbol ? getNetworkDisplaySymbolName(protocolSymbol) : undefined;
 
     const openActivateNetworkModal = () => {

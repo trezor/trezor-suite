@@ -1,7 +1,7 @@
 import type { SuiteCommonNetworkModule } from '@trezor/network-module-suite-common-types';
 
 import { adaValidator } from './addressValidator/cardanoAddressValidator';
-import { getNetworkColor } from './networkColor';
+import { getNetworkConfig } from './networkConfig';
 import {
     type CardanoNetworkSymbol,
     getSupportedNetworks,
@@ -15,5 +15,5 @@ export const createCardanoSuiteCommonNetworkModule =
         addressValidator: adaValidator,
         getSupportedNetworks,
         isSupportedNetwork,
-        getNetworkColor,
+        getNetworkConfig,
     });

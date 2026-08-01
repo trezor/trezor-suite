@@ -1,6 +1,6 @@
 import { produce } from 'immer';
 
-import type { Protocol } from '@suite-common/suite-constants';
+import type { Protocol } from '@trezor/network-module-suite-common-types';
 
 import { PROTOCOL } from 'src/actions/suite/constants';
 import type { Action } from 'src/types/suite';

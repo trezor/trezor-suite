@@ -2,7 +2,8 @@ import type { MMKV } from 'react-native-mmkv';
 
 import { createAddressValidator } from '@suite-common/address';
 import {
-    createGetNetworkColor,
+    createFindNetworkSymbolForProtocol,
+    createGetNetworkConfig,
     createNetworkModuleRepository,
     createNetworksCompositionRoot,
 } from '@suite-common/networks';
@@ -15,7 +16,11 @@ type ExtraDependenciesNativeMock = ExtraDependenciesStatic & { services: NativeS
 
 const networkModules = createNetworksCompositionRoot();
 const networkModuleRepository = createNetworkModuleRepository({ networkModules });
-const getNetworkColor = createGetNetworkColor({ networkModuleRepository });
+const getNetworkConfig = createGetNetworkConfig({ networkModuleRepository });
+const findNetworkSymbolForProtocol = createFindNetworkSymbolForProtocol({
+    getNetworkConfig,
+    networkModuleRepository,
+});
 const addressValidator = createAddressValidator({ networkModuleRepository });
 
 export const extraDependenciesNativeMock: ExtraDependenciesNativeMock = {
@@ -23,7 +28,8 @@ export const extraDependenciesNativeMock: ExtraDependenciesNativeMock = {
     services: {
         ...extraDependenciesCommonMock.services,
         networkModuleRepository,
-        getNetworkColor,
+        getNetworkConfig,
+        findNetworkSymbolForProtocol,
         addressValidator,
         analytics: mockNativeAnalytics(),
         getMMKVStorage: () => Promise.resolve({} as MMKV),

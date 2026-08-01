@@ -232,6 +232,9 @@
         { "path": "../env-utils" },
         { "path": "../icons" },
         {
+            "path": "../../networks/network-module/network-module-suite-common-types"
+        },
+        {
             "path": "../../networks/solana/network-solana"
         },
         {

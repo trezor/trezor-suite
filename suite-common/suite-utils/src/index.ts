@@ -4,7 +4,6 @@ export * from './features';
 export * from './build';
 export * from './txsPerPage';
 export * from './parseFirmwareChangelog';
-export * from './protocol';
 export * from './invariant';
 export * from './jws';
 export * from './pollingController';

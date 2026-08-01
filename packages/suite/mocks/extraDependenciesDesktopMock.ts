@@ -1,7 +1,8 @@
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
 import { createAddressValidator } from '@suite-common/address';
 import {
-    createGetNetworkColor,
+    createFindNetworkSymbolForProtocol,
+    createGetNetworkConfig,
     createNetworkModuleRepository,
     createNetworksCompositionRoot,
 } from '@suite-common/networks';
@@ -15,7 +16,11 @@ type ExtraDependenciesSuiteMock = ExtraDependenciesStatic & { services: SuiteSer
 
 const networkModules = createNetworksCompositionRoot();
 const networkModuleRepository = createNetworkModuleRepository({ networkModules });
-const getNetworkColor = createGetNetworkColor({ networkModuleRepository });
+const getNetworkConfig = createGetNetworkConfig({ networkModuleRepository });
+const findNetworkSymbolForProtocol = createFindNetworkSymbolForProtocol({
+    getNetworkConfig,
+    networkModuleRepository,
+});
 const addressValidator = createAddressValidator({ networkModuleRepository });
 
 export const extraDependenciesDesktopMock: ExtraDependenciesSuiteMock = {
@@ -24,7 +29,8 @@ export const extraDependenciesDesktopMock: ExtraDependenciesSuiteMock = {
     services: {
         ...extraDependenciesCommonMock.services,
         networkModuleRepository,
-        getNetworkColor,
+        getNetworkConfig,
+        findNetworkSymbolForProtocol,
         addressValidator,
         analytics: mockDesktopAnalytics(),
         suiteRouterHistory: {

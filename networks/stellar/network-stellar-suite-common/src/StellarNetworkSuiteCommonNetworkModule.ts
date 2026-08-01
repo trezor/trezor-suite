@@ -1,7 +1,7 @@
 import type { SuiteCommonNetworkModule } from '@trezor/network-module-suite-common-types';
 
 import { stellarValidator } from './addressValidator/stellarAddressValidator';
-import { getNetworkColor } from './networkColor';
+import { getNetworkConfig } from './networkConfig';
 import {
     type StellarNetworkSymbol,
     getSupportedNetworks,
@@ -15,5 +15,5 @@ export const createStellarSuiteCommonNetworkModule =
         addressValidator: stellarValidator,
         getSupportedNetworks,
         isSupportedNetwork,
-        getNetworkColor,
+        getNetworkConfig,
     });

@@ -10998,9 +10998,7 @@ __metadata:
   resolution: "@suite-common/suite-utils@workspace:suite-common/suite-utils"
   dependencies:
     "@suite-common/suite-config": "workspace:*"
-    "@suite-common/suite-constants": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
-    "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/device-utils": "workspace:^"
@@ -11086,6 +11084,7 @@ __metadata:
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
     "@trezor/connect": "workspace:*"
+    "@trezor/network-module-suite-common-types": "workspace:*"
     react: "npm:19.2.3"
   languageName: unknown
   linkType: soft
@@ -11170,9 +11169,9 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/transfer-uri@workspace:suite-common/transfer-uri"
   dependencies:
-    "@suite-common/suite-constants": "workspace:*"
-    "@suite-common/suite-utils": "workspace:*"
+    "@suite-common/networks": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
+    "@trezor/network-module-suite-common-types": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
   languageName: unknown
@@ -13254,8 +13253,8 @@ __metadata:
     "@suite-common/dependency-injection": "workspace:*"
     "@suite-common/device": "workspace:*"
     "@suite-common/formatters": "workspace:*"
+    "@suite-common/networks": "workspace:*"
     "@suite-common/suite-sync": "workspace:*"
-    "@suite-common/suite-utils": "workspace:*"
     "@suite-common/token-definitions": "workspace:*"
     "@suite-common/transaction-search": "workspace:*"
     "@suite-common/transfer-uri": "workspace:*"
@@ -15416,11 +15415,11 @@ __metadata:
   resolution: "@suite/transfer-uri@workspace:suite/transfer-uri"
   dependencies:
     "@reduxjs/toolkit": "npm:2.12.0"
-    "@suite-common/redux-utils": "workspace:*"
-    "@suite-common/suite-constants": "workspace:*"
+    "@suite-common/networks": "workspace:*"
     "@suite-common/toast-notifications": "workspace:*"
     "@suite-common/transfer-uri": "workspace:*"
     "@suite/analytics": "workspace:*"
+    "@trezor/network-module-suite-common-types": "workspace:*"
   languageName: unknown
   linkType: soft
 
@@ -16659,6 +16658,8 @@ __metadata:
 "@trezor/network-module-suite-common-types@workspace:*, @trezor/network-module-suite-common-types@workspace:networks/network-module/network-module-suite-common-types":
   version: 0.0.0-use.local
   resolution: "@trezor/network-module-suite-common-types@workspace:networks/network-module/network-module-suite-common-types"
+  dependencies:
+    "@trezor/type-utils": "workspace:*"
   languageName: unknown
   linkType: soft
 
@@ -17384,6 +17385,7 @@ __metadata:
     "@trezor/env-utils": "workspace:*"
     "@trezor/eslint": "workspace:*"
     "@trezor/icons": "workspace:*"
+    "@trezor/network-module-suite-common-types": "workspace:*"
     "@trezor/network-solana": "workspace:*"
     "@trezor/network-stellar": "workspace:*"
     "@trezor/product-components": "workspace:*"

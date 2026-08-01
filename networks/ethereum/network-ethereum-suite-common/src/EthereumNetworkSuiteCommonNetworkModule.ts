@@ -1,7 +1,7 @@
 import type { SuiteCommonNetworkModule } from '@trezor/network-module-suite-common-types';
 
 import { ethereumValidator } from './addressValidator/ethereumAddressValidator';
-import { getNetworkColor } from './networkColor';
+import { getNetworkConfig } from './networkConfig';
 import {
     type EthereumNetworkSymbol,
     getSupportedNetworks,
@@ -16,5 +16,5 @@ export const createEthereumSuiteCommonNetworkModule =
         addressValidator: ethereumValidator,
         getSupportedNetworks,
         isSupportedNetwork,
-        getNetworkColor,
+        getNetworkConfig,
     });

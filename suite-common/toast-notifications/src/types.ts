@@ -1,10 +1,11 @@
 import { type CSSProperties } from 'react';
 
-import { type DesktopAppUpdateState, type Protocol } from '@suite-common/suite-constants';
+import { type DesktopAppUpdateState } from '@suite-common/suite-constants';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type FormStateTradingExchange } from '@suite-common/wallet-types';
 import { type DEVICE, type TokenInfo } from '@trezor/connect';
+import type { Protocol } from '@trezor/network-module-suite-common-types';
 
 export type UnknownTranslationKey = string;
 

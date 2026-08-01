@@ -1,4 +1,18 @@
-import { type CoinProtocol, handleCoinProtocolUri } from './handleCoinProtocolUri';
+import { mockDesktopAnalytics } from '@suite/analytics/mocks';
+import { type FindNetworkSymbolForProtocol } from '@suite-common/networks';
+
+import {
+    type CoinProtocol,
+    type HandleCoinProtocolUriDeps,
+    handleCoinProtocolUri,
+} from './handleCoinProtocolUri';
+
+const findNetworkSymbolForProtocol: FindNetworkSymbolForProtocol = protocol => {
+    if (protocol === 'bitcoin') return 'btc';
+    if (protocol === 'ethereum') return 'eth';
+
+    return null;
+};
 
 const setup = () => {
     const dispatch = jest.fn();
@@ -7,7 +21,13 @@ const setup = () => {
         type: '@protocol/save-coin-protocol',
         payload: coinProtocol,
     }));
-    const extra = { services: { analytics: { report } } } as any;
+
+    const extra: HandleCoinProtocolUriDeps = {
+        services: {
+            analytics: mockDesktopAnalytics(report),
+            findNetworkSymbolForProtocol,
+        },
+    };
 
     const run = (uri: string) =>
         handleCoinProtocolUri(uri, saveCoinProtocol)(dispatch, () => ({}), extra);
