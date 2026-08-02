@@ -12,7 +12,6 @@ import { useServices } from '@suite-common/dependency-injection';
 import { selectNetworkModuleRepositoryDep } from '@suite-common/networks';
 import {
     type Network,
-    type NetworkConfigWithoutTestnets,
     type NetworkSymbol,
     getDisplaySymbol,
     getMainnets,
@@ -42,6 +41,14 @@ import {
     getTradingPlatformsInfoByCryptoId,
 } from '../utils/infoUtils';
 
+type TradingNetwork = Network & {
+    readonly coingeckoId: string;
+    readonly tradeCryptoId: string;
+};
+
+const getTradingNetwork = (networkSymbol: NetworkSymbol): TradingNetwork =>
+    getNetwork(networkSymbol) as TradingNetwork;
+
 const mainnets = new Set(getMainnets().map(network => network.symbol));
 
 function hasSupportedAddressValidator(
@@ -62,12 +69,8 @@ function hasSupportedAddressValidator(
     );
 }
 
-function getNonTestnetNetworkSymbol(
-    network?: Network,
-): NetworkConfigWithoutTestnets['symbol'] | null {
-    return !network || network.testnet
-        ? null
-        : (network.symbol as NetworkConfigWithoutTestnets['symbol']);
+function getNonTestnetNetworkSymbol(network?: Network): NetworkSymbol | null {
+    return !network || network.testnet ? null : network.symbol;
 }
 
 function isAssetWithSupportedNetwork(
@@ -99,8 +102,8 @@ export function createAssetOption({
         network && (!contractAddress || isCryptoIdForNativeToken(cryptoId)),
     );
 
-    if (isNativeToken) {
-        const networkConfig = network as NetworkConfigWithoutTestnets;
+    if (isNativeToken && network) {
+        const networkConfig = network as TradingNetwork;
 
         return {
             isNativeToken: true,
@@ -123,7 +126,7 @@ export function createAssetOption({
         return null;
     }
 
-    const networkConfig = getNetwork(networkSymbol) as NetworkConfigWithoutTestnets;
+    const networkConfig = getTradingNetwork(networkSymbol);
 
     const coinInfoSymbol = coinInfo.symbol;
 
@@ -192,9 +195,9 @@ export function createAssetOption({
  */
 
 export function createAssetNativeTokenOption(
-    networkSymbol: NetworkConfigWithoutTestnets['symbol'],
+    networkSymbol: NetworkSymbol,
 ): TradingAssetOptionNativeToken {
-    const network = getNetwork(networkSymbol) as NetworkConfigWithoutTestnets;
+    const network = getTradingNetwork(networkSymbol);
 
     return {
         isNativeToken: true,
@@ -213,7 +216,7 @@ export function createAssetNativeTokenOption(
 export function createAssetTokenOption<
     Token extends Pick<TokenInfo, 'contract' | 'symbol' | 'name'>,
 >(networkSymbol: NetworkSymbol, token: Token): TradingAssetOptionWithContractAddress {
-    const network = getNetwork(networkSymbol) as NetworkConfigWithoutTestnets;
+    const network = getTradingNetwork(networkSymbol);
 
     return {
         id: getCryptoId(networkSymbol, token.contract),

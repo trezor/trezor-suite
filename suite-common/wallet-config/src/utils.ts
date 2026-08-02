@@ -124,6 +124,16 @@ export const isNetworkSymbol = (symbol: NetworkSymbolExtended): symbol is Networ
  */
 export const getNetwork = (symbol: NetworkSymbol): Network => networks[symbol];
 
+export const getNetworkChainId = (symbol: NetworkSymbol): number => {
+    const { chainId } = getNetwork(symbol);
+
+    if (chainId === undefined) {
+        throw new Error(`Network ${symbol} does not define a chain ID.`);
+    }
+
+    return chainId;
+};
+
 /**
  * Use instead of getNetwork, if there is not a guarantee that the symbol is a valid network symbol.
  * @param symbol
