@@ -14,7 +14,12 @@ import {
     AddressDisplayOptions,
     type EvmSelectedFee,
 } from '@suite-common/wallet-types';
-import { getAccountIdentity, getMevProtectedTxData } from '@suite-common/wallet-utils';
+import {
+    ACCOUNT_AUTHORIZATION_UNAVAILABLE_MESSAGE,
+    canAccountAuthorize,
+    getAccountIdentity,
+    getMevProtectedTxData,
+} from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
 
 import type { AppState, Dispatch } from 'src/types/suite';
@@ -72,6 +77,10 @@ export const sendYieldTransaction = async ({
 }: SendYieldTransactionParams) => {
     const device = selectSelectedDevice(getState());
     const addressDisplayType = selectAddressDisplayType(getState());
+
+    if (!canAccountAuthorize(account)) {
+        throw new Error(ACCOUNT_AUTHORIZATION_UNAVAILABLE_MESSAGE);
+    }
 
     if (!device) {
         throw new Error('Device not found.');

@@ -8,6 +8,7 @@ import { Button } from '@trezor/components';
 import { exhaustive } from '@trezor/type-utils';
 
 import { useAccountSearch, useDispatch, useSelector } from 'src/hooks/suite';
+import { getAssetAccountRouteParams } from 'src/utils/wallet/accountUtils';
 
 type AssetActionButtonRoute = Extract<Route['name'], 'wallet-staking' | 'wallet-trading-buy'>;
 
@@ -29,24 +30,22 @@ export const AssetActionButton = ({
     const dispatch = useDispatch();
     const { toggleCoinFilter, setSearchString } = useAccountSearch();
     const accounts = useSelector(selectVisibleDeviceAccounts);
+    const networkAccounts = accounts.filter(account => account.symbol === symbol);
 
     const onClick = (e: MouseEvent<HTMLButtonElement>) => {
         onButtonClick?.();
 
-        const account = accounts.find(
-            a => a.symbol === symbol && a.accountType === 'normal' && a.index === 0,
-        );
+        const account =
+            networkAccounts.find(
+                ({ accountType, index }) => accountType === 'normal' && index === 0,
+            ) ?? networkAccounts[0];
 
         switch (routeName) {
             case 'wallet-staking':
                 dispatch(
                     goto({
                         routeName,
-                        params: {
-                            symbol,
-                            accountIndex: account?.index ?? 0,
-                            accountType: account?.accountType ?? 'normal',
-                        },
+                        params: getAssetAccountRouteParams(accounts, symbol),
                     }),
                 );
                 break;

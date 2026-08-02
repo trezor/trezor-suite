@@ -12,8 +12,9 @@ import {
     selectSuiteSyncAccountLabel,
 } from '@suite-common/suite-sync';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
-import { type AccountsRootState } from '@suite-common/wallet-core';
+import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import type { AccountDescriptor, AccountKey } from '@suite-common/wallet-types';
+import { isAccountWatchOnly } from '@suite-common/wallet-utils';
 import { type StaticSessionId } from '@trezor/connect';
 import { parseStaticSessionId } from '@trezor/device-utils';
 
@@ -51,17 +52,25 @@ export const selectAccountLabel = createMemoizedSelector(
                 networkSymbol,
             );
         },
+        (state: SelectAccountLabelState, { accountKey }: SelectAccountLabelParams) =>
+            selectAccountByKey(state, accountKey),
     ],
     (
         isLegacyLabelingVisible,
-        { accountLabel },
+        { accountLabel: legacyAccountLabel },
         isSuiteSyncEnabled,
         suiteSyncAccountLabel,
+        account,
     ): string | null => {
+        const localAccountLabel =
+            account && isAccountWatchOnly(account) ? account.accountLabel : undefined;
+
         if (isSuiteSyncEnabled) {
-            return suiteSyncAccountLabel ?? null;
+            return suiteSyncAccountLabel ?? localAccountLabel ?? null;
         }
 
-        return isLegacyLabelingVisible ? (accountLabel ?? null) : null;
+        return (
+            (isLegacyLabelingVisible ? legacyAccountLabel : undefined) ?? localAccountLabel ?? null
+        );
     },
 );

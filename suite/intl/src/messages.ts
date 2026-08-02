@@ -106,6 +106,15 @@ export const messages = defineMessages({
             "A watch-only account is a public address you've imported into your wallet, allowing the wallet to watch for outputs but not spend them.",
         id: 'TR_ACCOUNT_IMPORTED_ANNOUNCEMENT',
     },
+    TR_ACCOUNT_WATCH_ONLY_ANNOUNCEMENT: {
+        defaultMessage:
+            'A watch-only account uses a public address or account key. It is read-only: you can view its activity and assets, but you cannot authorize transactions from it.',
+        id: 'TR_ACCOUNT_WATCH_ONLY_ANNOUNCEMENT',
+    },
+    TR_ACCOUNT_DETAILS_WATCH_ONLY_IDENTIFIER_DESC: {
+        defaultMessage: 'The public identifier Suite uses to load this watch-only account.',
+        id: 'TR_ACCOUNT_DETAILS_WATCH_ONLY_IDENTIFIER_DESC',
+    },
     TR_ANY_TREZOR: {
         defaultMessage: 'any Trezor',
         description: 'Used as a variable for device name',
@@ -2880,6 +2889,11 @@ export const messages = defineMessages({
     TR_ACCOUNT_TYPE_IMPORTED: {
         defaultMessage: 'Imported',
         id: 'TR_ACCOUNT_TYPE_IMPORTED',
+        dynamic: true,
+    },
+    TR_ACCOUNT_TYPE_WATCH_ONLY: {
+        defaultMessage: 'Watch-only',
+        id: 'TR_ACCOUNT_TYPE_WATCH_ONLY',
         dynamic: true,
     },
     TR_ACCOUNT_TYPE_DEFAULT: {

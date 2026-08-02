@@ -187,6 +187,7 @@ export type AccountBase = {
     empty: boolean;
     visible: boolean;
     imported?: boolean;
+    isWatchOnly?: boolean;
     balance: string;
     availableBalance: string;
     formattedBalance: string;
@@ -201,7 +202,8 @@ export type AccountBase = {
      *             deprecated in favor of Suite Sync. However, we have to keep back compatibility,
      *             as currently user has no option to label Portfolio Manager Account.
      *
-     * IMPORTANT: This is relevant only for Mobile App.
+     * This remains relevant for accounts without Suite Sync labeling, such as Portfolio Manager
+     * and local watch-only accounts.
      */
     accountLabel?: string;
 };

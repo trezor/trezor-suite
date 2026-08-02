@@ -117,4 +117,31 @@ describe('account utils', () => {
             ),
         ).toBeNull();
     });
+
+    describe('getAssetAccountRouteParams', () => {
+        const normalAccount = mockWalletAccount({
+            symbol: 'eth',
+            descriptor: asAccountDescriptor('0xnormal'),
+            accountType: 'normal',
+            index: 0,
+        });
+        const importedAccount = mockWalletAccount({
+            symbol: 'eth',
+            descriptor: asAccountDescriptor('0ximported'),
+            accountType: 'imported',
+            index: 0,
+        });
+
+        it.each([
+            [[importedAccount, normalAccount], 'eth', 'normal'],
+            [[importedAccount], 'eth', 'imported'],
+            [[importedAccount], 'btc', 'normal'],
+        ] as const)('selects the expected asset route', (accounts, symbol, accountType) => {
+            expect(accountUtils.getAssetAccountRouteParams([...accounts], symbol)).toEqual({
+                symbol,
+                accountIndex: 0,
+                accountType,
+            });
+        });
+    });
 });

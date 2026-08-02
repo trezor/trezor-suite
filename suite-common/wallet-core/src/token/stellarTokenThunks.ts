@@ -4,6 +4,8 @@ import { selectSelectedDevice } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
 import { type Account } from '@suite-common/wallet-types';
 import {
+    ACCOUNT_AUTHORIZATION_UNAVAILABLE_MESSAGE,
+    canAccountAuthorize,
     getConvertedOrDefaultFeeInfo,
     isTestnet,
     tryGetAccountIdentity,
@@ -30,6 +32,14 @@ const manageTrustline = async (
     rejectWithValue: (value: any) => any,
 ) => {
     const { account, contractAddress, selectedFee, customFeePerUnit } = payload;
+
+    if (!canAccountAuthorize(account)) {
+        return rejectWithValue({
+            error: 'sign-transaction-failed',
+            message: ACCOUNT_AUTHORIZATION_UNAVAILABLE_MESSAGE,
+        });
+    }
+
     const device = selectSelectedDevice(getState());
     const rawFeeInfo = selectRawNetworkFeeInfo(getState(), account.symbol);
 

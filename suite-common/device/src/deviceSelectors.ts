@@ -39,7 +39,7 @@ import {
     PORTFOLIO_TRACKER_DEVICE_ID,
 } from './deviceConstants';
 import { type DeviceRootState } from './deviceReducer';
-import { isTrezorDeviceWithState } from './deviceUtils';
+import { isTrezorDeviceWithState, isVirtualDevice } from './deviceUtils';
 import {
     deviceInvariabilityCheck,
     rawDataToDeviceInvariabilityCheckDTO,
@@ -447,7 +447,7 @@ export const selectDeviceFirmwareVersionArray = createMemoizedSelector(
 export const selectPhysicalDeviceWallets = createMemoizedSelector([selectDevices], devices =>
     pipe(
         devices,
-        A.filter(device => device.id !== PORTFOLIO_TRACKER_DEVICE_ID),
+        A.filter(device => !isVirtualDevice(device)),
         returnStableArrayIfEmpty,
     ),
 );

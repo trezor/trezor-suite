@@ -7,6 +7,7 @@ import {
 } from '@suite-common/test-utils';
 import {
     type SendState,
+    WALLET_SETTINGS,
     formDraftInitialState,
     prepareBlockchainMiddleware,
     prepareSendFormReducer,
@@ -16,6 +17,10 @@ import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import walletMiddleware from 'src/middlewares/wallet/walletMiddleware';
 import { accountsReducer, blockchainReducer, walletSettingsReducer } from 'src/reducers/wallet';
 import { extraDependencies } from 'src/support/extraDependencies';
+import {
+    getWatchOnlyAccountImportInstructions,
+    storeWatchOnlyAccountImportInstruction,
+} from 'src/utils/wallet/watchOnlyAccountStorage';
 
 import * as fixtures from './__fixtures__/walletMiddleware';
 
@@ -92,6 +97,7 @@ const mockStore = (preloadedState: State) =>
 describe('walletMiddleware', () => {
     afterEach(() => {
         jest.clearAllMocks();
+        window.sessionStorage.clear();
     });
 
     fixtures.blockchainSubscription.forEach(f => {
@@ -148,5 +154,32 @@ describe('walletMiddleware', () => {
                 expect(store.getState().wallet.send?.drafts).toEqual(expectedDrafts);
             },
         );
+    });
+
+    it('removes stored watch-only accounts for a disabled network', () => {
+        storeWatchOnlyAccountImportInstruction({
+            descriptor: 'ethereum-account',
+            symbol: 'eth',
+        });
+        storeWatchOnlyAccountImportInstruction({
+            descriptor: 'bitcoin-account',
+            symbol: 'btc',
+        });
+        const store = mockStore(getInitialState());
+
+        store.dispatch({
+            type: WALLET_SETTINGS.CHANGE_COIN_VISIBILITY,
+            payload: {
+                symbol: 'eth',
+                shouldBeVisible: false,
+            },
+        });
+
+        expect(getWatchOnlyAccountImportInstructions()).toEqual([
+            {
+                descriptor: 'bitcoin-account',
+                symbol: 'btc',
+            },
+        ]);
     });
 });

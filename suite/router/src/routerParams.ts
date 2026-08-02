@@ -91,7 +91,7 @@ export const validateAccountRouteParams = ({
     if (!network) return;
 
     const accountType = rawAccountType || 'normal';
-    if (!isAccountOfNetwork(network, accountType)) return;
+    if (accountType !== 'imported' && !isAccountOfNetwork(network, accountType)) return;
 
     const accountIndex = parseInt(index, 10);
     if (Number.isNaN(accountIndex)) return;

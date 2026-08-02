@@ -48,6 +48,7 @@ import { TransportBackends } from './TransportBackends';
 import { TrezorConnectLogs } from './TrezorConnectLogs';
 import { TriggerHighlight } from './TriggerHighlight';
 import { TriggerToast } from './TriggerToast';
+import { WatchOnlyAccounts } from './WatchOnlyAccounts';
 import { WipeData } from './WipeData';
 
 export const SettingsDebug = () => {
@@ -78,6 +79,12 @@ export const SettingsDebug = () => {
                 <TriggerHighlight />
                 <TriggerToast />
                 <TriggerActivityNotification />
+            </SettingsSection>
+            <SettingsSection
+                hasVerticalLayout={hasContentBelowTabletWidth}
+                title="Watch-only accounts"
+            >
+                <WatchOnlyAccounts />
             </SettingsSection>
             <SettingsSection hasVerticalLayout={hasContentBelowTabletWidth} title="Analytics">
                 <AnalyticsLogging />

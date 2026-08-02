@@ -1,4 +1,5 @@
 import { type Account } from '@suite-common/wallet-types';
+import { isAccountWatchOnly } from '@suite-common/wallet-utils';
 import { type BadgeSize, type FlexProps, Row, Text, type TextProps } from '@trezor/components';
 import { type TypographyStyle } from '@trezor/theme';
 
@@ -52,6 +53,7 @@ export const AccountLabel = ({
                     size={accountTypeBadgeSize}
                     path={path}
                     networkType={networkType}
+                    isWatchOnly={isAccountWatchOnly(account)}
                 />
             )}
         </Row>

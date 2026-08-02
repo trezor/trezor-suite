@@ -23,7 +23,12 @@ import {
 } from '@suite-common/wallet-core';
 import { ethereumGetCurrentNonceThunk } from '@suite-common/wallet-core/src/send/sendFormEthereumThunks';
 import { type Account, AddressDisplayOptions } from '@suite-common/wallet-types';
-import { getAccountIdentity, getMevProtectedTxData } from '@suite-common/wallet-utils';
+import {
+    ACCOUNT_AUTHORIZATION_UNAVAILABLE_MESSAGE,
+    canAccountAuthorize,
+    getAccountIdentity,
+    getMevProtectedTxData,
+} from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
 
 import {
@@ -68,6 +73,10 @@ export const claimMerklRewardsThunk = createThunk(
     ) => {
         const device = selectSelectedDevice(getState());
         const addressDisplayType = selectAddressDisplayType(getState());
+
+        if (!canAccountAuthorize(account)) {
+            throw new Error(ACCOUNT_AUTHORIZATION_UNAVAILABLE_MESSAGE);
+        }
 
         if (!device) {
             throw new Error('Device not found.');

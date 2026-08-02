@@ -2,6 +2,7 @@ import { type ThunkDispatch } from '@reduxjs/toolkit';
 
 import {
     deviceActions,
+    isVirtualDevice,
     selectDeviceByStaticSessionId,
     selectDevices,
     selectEntropyCheckResultByDeviceId,
@@ -285,6 +286,12 @@ export const runDiscoveryThunk = createThunk(
         { device: passedDevice, callId }: RunDiscoveryParams,
         { dispatch, getState, extra },
     ): Promise<void> => {
+        if (isVirtualDevice(passedDevice)) {
+            dispatch(discoveryActions.deleteDiscovery(passedDevice.path));
+
+            return;
+        }
+
         try {
             let device: TrezorDevice = passedDevice;
 
@@ -601,6 +608,12 @@ export const startDiscoveryThunk = createThunk(
         }: StartDiscoveryThunkParams,
         { dispatch, getState },
     ): void => {
+        if (isVirtualDevice(device)) {
+            dispatch(discoveryActions.deleteDiscovery(device.path));
+
+            return;
+        }
+
         const currentDiscovery = selectDiscoveryByDevicePath(getState(), device.path);
 
         if (isDiscoveryInProgress(currentDiscovery)) {
@@ -636,6 +649,12 @@ export const runAdditionalDiscoveryThunk = createThunk(
         // an imported wallet + wallet on the physical device. So this should run for all the applicable devices/wallets
 
         const device = selectDeviceByStaticSessionId(getState(), staticSessionId);
+
+        if (device && isVirtualDevice(device)) {
+            dispatch(discoveryActions.deleteDiscovery(device.path));
+
+            return;
+        }
 
         assertDeviceIsAuthorized(device);
 

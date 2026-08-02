@@ -121,6 +121,41 @@ describe('signDataAndConfirmThunk', () => {
         });
     });
 
+    it('should reject watch-only accounts before signing', async () => {
+        const {
+            store,
+            returnUrl,
+            device,
+            account,
+            mockProcessResponseData,
+            mockNextStep,
+            mockTriggerAnalyticsTradeConfirmation,
+        } = getMocks({
+            selectedQuote: {
+                signData: {
+                    type: 'eip712-typed-data',
+                    data: {},
+                },
+            },
+        });
+        const signTypedDataMock = jest.fn();
+        TrezorConnect.ethereumSignTypedData = signTypedDataMock;
+
+        const result = await store.dispatch(
+            exchangeThunks.signDataAndConfirmThunk({
+                account: { ...account, isWatchOnly: true },
+                returnUrl,
+                device,
+                nextStep: mockNextStep,
+                triggerAnalyticsTradeConfirmation: mockTriggerAnalyticsTradeConfirmation,
+                processResponseData: mockProcessResponseData,
+            }),
+        );
+
+        expect(result.meta.requestStatus).toBe('rejected');
+        expect(signTypedDataMock).not.toHaveBeenCalled();
+    });
+
     it('should return error notification when signData type is not eip712-typed-data', async () => {
         const {
             store,

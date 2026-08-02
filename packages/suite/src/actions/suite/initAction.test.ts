@@ -340,6 +340,10 @@ const initStore = (state: State) => {
 };
 
 describe('Suite init action', () => {
+    beforeEach(() => {
+        window.sessionStorage.clear();
+    });
+
     fixtures.forEach(({ description, options, actions }) => {
         it(description, async () => {
             const { store, suiteRouterHistory } = initStore(getInitialState(options.initialRun));

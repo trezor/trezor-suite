@@ -148,6 +148,14 @@ describe('router', () => {
                     accountType: 'legacy',
                 },
             });
+            expect(getAppWithParams({ pathname: '/accounts', hash: '#/btc/0/imported' })).toEqual({
+                ...resp,
+                params: {
+                    symbol: 'btc',
+                    accountIndex: 0,
+                    accountType: 'imported',
+                },
+            });
             expect(getAppWithParams({ pathname: '/accounts', hash: '#/btc/NaN' })).toEqual({
                 ...resp,
                 params: undefined,
