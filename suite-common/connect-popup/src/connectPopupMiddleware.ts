@@ -1,6 +1,6 @@
 import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { type Bip43Path, type NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     selectDeviceAccountsByNetworkSymbol,
     selectDiscoveryForSelectedDevice,
@@ -13,6 +13,7 @@ import TrezorConnect, {
     UI_REQUEST,
     UI_RESPONSE,
 } from '@trezor/connect';
+import type { Bip43Path } from '@trezor/crypto-utils';
 
 // Matches the order used by Discovery: p2wpkh → p2tr → p2sh → p2pkh
 const ACCOUNT_TYPE_ORDER = [

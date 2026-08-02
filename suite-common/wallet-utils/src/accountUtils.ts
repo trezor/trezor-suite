@@ -1,8 +1,6 @@
 import { type TrezorDevice } from '@suite-common/suite-types';
 import {
     type AccountType,
-    type Bip43Path,
-    type Bip43PathTemplate,
     type NetworkAccount,
     type NetworkFeature,
     type NetworkSymbol,
@@ -40,6 +38,7 @@ import TrezorConnect, {
     type StaticSessionId,
     type TokenInfo,
 } from '@trezor/connect';
+import type { Bip43Path, Bip43PathTemplate } from '@trezor/crypto-utils';
 import { SYSTEM_PROGRAM_PUBLIC_KEY } from '@trezor/network-solana/constants';
 import { exhaustive } from '@trezor/type-utils';
 import { HELP_CENTER_ADDRESSES_URL, HELP_CENTER_TAPROOT_URL } from '@trezor/urls';
