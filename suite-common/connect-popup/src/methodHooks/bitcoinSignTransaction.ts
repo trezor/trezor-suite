@@ -1,4 +1,4 @@
-import { type Bip43Path, type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import {
     accountsActions,
     selectAccountForNetworkSymbolAndPath,
@@ -7,6 +7,7 @@ import {
 import { type Account, type FormOptions } from '@suite-common/wallet-types';
 import type { CallMethodKeys, SignTransaction } from '@trezor/connect';
 import { getSerializedPath } from '@trezor/connect-common';
+import type { Bip43Path } from '@trezor/crypto-utils';
 
 import { connectPopupActions } from '../connectPopupActions';
 import { type PostCallHookParams, type PreCallHookParams } from './types';

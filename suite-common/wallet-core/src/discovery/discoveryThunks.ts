@@ -21,7 +21,7 @@ import {
     type TrezorDeviceWithState,
 } from '@suite-common/suite-types';
 import { getNewInstanceNumber } from '@suite-common/suite-utils';
-import { type Bip43Path, type TrezorConnectBackendType } from '@suite-common/wallet-config';
+import { type TrezorConnectBackendType } from '@suite-common/wallet-config';
 import { type DiscoveryStatus } from '@suite-common/wallet-types';
 import TrezorConnect, {
     type AccountInfo,
@@ -33,6 +33,7 @@ import TrezorConnect, {
     UI_RESPONSE,
 } from '@trezor/connect';
 import { type DiscoverAccountsProgress } from '@trezor/connect-common/src/types/api/account/discoverAccounts';
+import type { Bip43Path } from '@trezor/crypto-utils';
 
 import { DISCOVERY_MODULE_PREFIX, discoveryActions } from './discoveryActions';
 import { isDiscoveryInProgress, selectDiscoveryByDevicePath } from './discoverySelectors';

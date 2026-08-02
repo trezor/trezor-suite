@@ -2,8 +2,8 @@ import { combineReducers } from '@reduxjs/toolkit';
 
 import { type ExtraDependenciesPartial } from '@suite-common/redux-utils';
 import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
-import { type Bip43Path } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
+import type { Bip43Path } from '@trezor/crypto-utils';
 
 import { accountsActions } from './accountsActions';
 import { type AccountsRootState, prepareAccountsReducer } from './accountsReducer';

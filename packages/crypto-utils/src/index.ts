@@ -1,4 +1,5 @@
 export { comparePath } from './bipPath/comparePath';
+export type { Bip43Path, Bip43PathTemplate } from './bipPath/bip43Path';
 export { getAddressPathIndex } from './bipPath/getAddressPathIndex';
 export { getHDPath } from './bipPath/getHDPath';
 export {
