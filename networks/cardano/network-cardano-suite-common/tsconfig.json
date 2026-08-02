@@ -2,6 +2,9 @@
     "extends": "../../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
+        {
+            "path": "../../../packages/device-utils"
+        },
         { "path": "../network-cardano" },
         {
             "path": "../../network-module/network-module-suite-common-types"

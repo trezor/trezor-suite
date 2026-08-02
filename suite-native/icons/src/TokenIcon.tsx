@@ -5,8 +5,6 @@ import { Image } from 'expo-image';
 
 import { type CryptoIconName, cryptoIcons, genericTokenIcon } from '@suite-common/icons';
 import {
-    type NetworkDisplaySymbol,
-    type NetworkSymbol,
     getCoingeckoId,
     getNetworkDisplaySymbol,
     isNetworkSymbol,
@@ -94,7 +92,7 @@ const TokenIconPlaceholder = ({
 };
 
 interface TokenIconProps {
-    symbol: NetworkSymbol | NetworkDisplaySymbol;
+    symbol: string;
     contractAddress?: string;
     showNetworkIcon?: boolean;
     size?: TokenIconSize | number;
@@ -215,7 +213,7 @@ export const TokenIcon = ({
         return <TokenIconComponent symbol={symbol} contractAddress={contractAddress} size={size} />;
     }
 
-    const displaySymbol = getNetworkDisplaySymbol(symbol) as NetworkDisplaySymbol;
+    const displaySymbol = getNetworkDisplaySymbol(symbol);
     const showForNativeToken = displaySymbol === 'ETH' && symbol !== 'eth';
     const shouldShowNetwork =
         showForNativeToken || contractAddress || wrappedTokenIcon === 'network';

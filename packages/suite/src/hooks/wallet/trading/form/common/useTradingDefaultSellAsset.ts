@@ -7,7 +7,7 @@ import {
     createAssetNativeTokenOption,
     useTradingAssets,
 } from '@suite-common/trading';
-import { type NetworkConfigWithoutTestnets } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountKey } from '@suite-common/wallet-types';
 
 import { useTradingFindAccountOrToken } from './useTradingFindAccountOrToken';
@@ -40,20 +40,18 @@ export function useTradingDefaultSellAsset({
             return undefined;
         }
 
-        const { account, token } = accountOrToken;
+        const { account: selectedAccount, token } = accountOrToken;
 
         if (token) {
             return {
-                ...resolveAssetTokenOption(account.symbol, token),
-                accountKey: account.key,
+                ...resolveAssetTokenOption(selectedAccount.symbol, token),
+                accountKey: selectedAccount.key,
             } satisfies TradingAssetSellOption;
         }
 
         return {
-            ...createAssetNativeTokenOption(
-                account.symbol as NetworkConfigWithoutTestnets['symbol'],
-            ),
-            accountKey: account.key,
+            ...createAssetNativeTokenOption(selectedAccount.symbol as NetworkSymbol),
+            accountKey: selectedAccount.key,
         } satisfies TradingAssetSellOption;
     }, [accountOrToken, resolveAssetTokenOption]);
 
