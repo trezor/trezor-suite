@@ -109,11 +109,12 @@ describe(isNetworkUsingExternalBackend.name, () => {
         'avax',
         'sol',
         'dsol',
+        'trx',
     ])('returns true for %s', symbol => {
         expect(isNetworkUsingExternalBackend(symbol)).toBe(true);
     });
 
-    it.each<NetworkSymbol>(['btc', 'eth', 'trx', 'xlm', 'xrp', 'ada'])(
+    it.each<NetworkSymbol>(['btc', 'eth', 'xlm', 'xrp', 'ada'])(
         'returns false for %s',
         symbol => {
             expect(isNetworkUsingExternalBackend(symbol)).toBe(false);

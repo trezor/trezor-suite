@@ -418,7 +418,7 @@ export const networks = {
             [DeviceModelInternal.T3T1]: '2.11.0',
             [DeviceModelInternal.T3W1]: '2.11.0',
         },
-        backendOptions: [{ type: 'blockbook' }],
+        backendOptions: [{ type: 'blockbook', isExternalBackend: true }],
         accountTypes: {
             ledger: {
                 // ledger (live), #1 acc is same as Trezor, so it is skipped
