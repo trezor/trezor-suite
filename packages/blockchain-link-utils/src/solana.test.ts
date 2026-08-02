@@ -79,6 +79,9 @@ describe('solana/utils', () => {
                     input.effects,
                     input.txType as Transaction['type'],
                     input.accountAddress,
+                    'hasOwnBalanceInternalTransfers' in input
+                        ? input.hasOwnBalanceInternalTransfers
+                        : false,
                 );
                 expect(result).toEqual(expectedOutput);
             });
@@ -92,7 +95,6 @@ describe('solana/utils', () => {
                     // @ts-expect-error Fixtures don't fully implement this interface.
                     input.transaction,
                     input.effects,
-                    input.txType as Transaction['type'],
                     input.accountAddress,
                 );
                 expect(result).toEqual(expectedOutput);

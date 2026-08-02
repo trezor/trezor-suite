@@ -264,10 +264,30 @@ export function getNativeEffects(transaction: ParsedTransactionWithMeta): Transa
         .filter(({ amount }) => !amount.isZero()); // filter out zero effects
 }
 
+const isUnknownProgramInstruction = (
+    instruction: ParsedTransactionWithMeta['transaction']['message']['instructions'][number],
+) =>
+    ![
+        SYSTEM_PROGRAM_PUBLIC_KEY,
+        ...Object.values(tokenProgramsInfo).map(info => info.publicKey),
+        ASSOCIATED_TOKEN_PROGRAM_PUBLIC_KEY,
+        STAKE_PROGRAM_PUBLIC_KEY,
+        COMPUTE_BUDGET_PROGRAM_ID,
+        // some wallets use Serum's Assert Owner program during SPL transfer transactions
+        SERUM_ASSET_OWNER_PROGRAM_ID,
+        SERUM_ASSET_OWNER_PHANTOM_DEPLOYMENT_PROGRAM_ID,
+        MEMO_PROGRAM_PUBLIC_KEY,
+        MEMO_PROGRAM_PUBLIC_KEY_V1,
+    ].includes(instruction.programId);
+
+export const hasUnknownProgramInstructions = (transaction: ParsedTransactionWithMeta) =>
+    transaction.transaction.message.instructions.some(isUnknownProgramInstruction);
+
 export const getTargets = (
     effects: TransactionEffect[],
     txType: Transaction['type'],
     accountAddress: string,
+    hasOwnBalanceInternalTransfers: boolean,
 ): Transaction['targets'] =>
     effects
         .filter(effect => {
@@ -280,8 +300,8 @@ export const getTargets = (
                 return false;
             }
 
-            // the account's own balance change for contract transactions is represented as an internal transfer
-            if (txType === 'contract') {
+            // the account's own balance change is represented as an internal transfer
+            if (hasOwnBalanceInternalTransfers) {
                 return false;
             }
 
@@ -306,13 +326,35 @@ export const getTargets = (
             return target;
         });
 
+function getTransactionStakeType(tx: ParsedTransactionWithMeta): StakeType | undefined {
+    const { instructions } = tx.transaction.message;
+
+    if (!instructions) {
+        throw new Error('Invalid transaction data');
+    }
+
+    for (const instruction of instructions) {
+        if (instruction.programId === STAKE_PROGRAM_PUBLIC_KEY && 'parsed' in instruction) {
+            const { type } = instruction.parsed || {};
+
+            if (type === 'delegate') return 'stake';
+            if (type === 'deactivate') return 'unstake';
+            if (type === 'withdraw') return 'claim';
+        }
+    }
+
+    return undefined;
+}
+
 export const getInternalTransfers = (
     transaction: ParsedTransactionWithMeta,
     effects: TransactionEffect[],
-    txType: Transaction['type'],
     accountAddress: string,
 ): InternalTransfer[] => {
-    if (txType !== 'contract') {
+    const emitsOwnBalanceChange =
+        hasUnknownProgramInstructions(transaction) ||
+        getTransactionStakeType(transaction) === 'claim';
+    if (!emitsOwnBalanceChange) {
         return [];
     }
 
@@ -392,29 +434,14 @@ export const getTxType = (
         return 'failed';
     }
 
-    const isUnknownProgramInstruction = (
-        instruction: ParsedTransactionWithMeta['transaction']['message']['instructions'][number],
-    ) =>
-        ![
-            SYSTEM_PROGRAM_PUBLIC_KEY,
-            ...Object.values(tokenProgramsInfo).map(info => info.publicKey),
-            ASSOCIATED_TOKEN_PROGRAM_PUBLIC_KEY,
-            STAKE_PROGRAM_PUBLIC_KEY,
-            COMPUTE_BUDGET_PROGRAM_ID,
-            // some wallets use Serum's Assert Owner program during SPL transfer transactions, we don't want to report these as `contract` transactions
-            SERUM_ASSET_OWNER_PROGRAM_ID,
-            SERUM_ASSET_OWNER_PHANTOM_DEPLOYMENT_PROGRAM_ID,
-            MEMO_PROGRAM_PUBLIC_KEY,
-            MEMO_PROGRAM_PUBLIC_KEY_V1,
-        ].includes(instruction.programId);
-
-    // if there are any unknown program instructions, we interpret the transaction as `contract`
-    if (transaction.transaction.message.instructions.some(isUnknownProgramInstruction)) {
-        return 'contract';
-    }
-
     // classify by balance changes when instructions alone cannot determine the type
     const getTxTypeFromBalanceChanges = (): Transaction['type'] => {
+        // the fee payer signed and funded the transaction, which matches the semantics of `sent`
+        const feePayer = transaction.transaction.message.accountKeys[0]?.pubkey;
+        if (accountAddress === feePayer) {
+            return 'sent';
+        }
+
         if (tokenTransfers.length > 0) {
             const tokenTransferType = getTokenTransferTxType(tokenTransfers);
             if (tokenTransferType !== 'unknown') {
@@ -434,6 +461,12 @@ export const getTxType = (
 
         return 'unknown';
     };
+
+    // transactions interacting with unknown programs cannot be classified from instructions,
+    // mirroring ethereum, calling a program is not a special transaction type
+    if (hasUnknownProgramInstructions(transaction)) {
+        return getTxTypeFromBalanceChanges();
+    }
 
     // then, we consider only parsed instructions because only based on them we can determine the type of transaction
     const parsedInstructions = transaction.transaction.message.instructions.filter(
@@ -716,26 +749,6 @@ export const getTokens = (
     return effects;
 };
 
-function getTransactionStakeType(tx: SolanaValidParsedTxWithMeta): StakeType | undefined {
-    const { instructions } = tx.transaction.message;
-
-    if (!instructions) {
-        throw new Error('Invalid transaction data');
-    }
-
-    for (const instruction of instructions) {
-        if (instruction.programId === STAKE_PROGRAM_PUBLIC_KEY && 'parsed' in instruction) {
-            const { type } = instruction.parsed || {};
-
-            if (type === 'delegate') return 'stake';
-            if (type === 'deactivate') return 'unstake';
-            if (type === 'withdraw') return 'claim';
-        }
-    }
-
-    return undefined;
-}
-
 const getUnstakeAmount = (tx: SolanaValidParsedTxWithMeta): string => {
     const { transaction, meta } = tx;
     const { instructions, accountKeys } = transaction.message;
@@ -784,7 +797,6 @@ const determineTransactionType = (
 
     switch (stakeType) {
         case 'claim':
-            return 'recv';
         case 'stake':
         case 'unstake':
             return 'sent';
@@ -822,20 +834,23 @@ export const transformTransaction = (
 
     const txType = determineTransactionType(type, stakeType);
 
-    const targets = getTargets(nativeEffects, txType, accountAddress);
+    const internalTransfers = getInternalTransfers(tx, nativeEffects, accountAddress);
 
-    const internalTransfers = getInternalTransfers(tx, nativeEffects, txType, accountAddress);
+    const targets = getTargets(nativeEffects, txType, accountAddress, internalTransfers.length > 0);
 
     const isUnstakeTx = stakeType === 'unstake';
 
-    const amount = isUnstakeTx
-        ? '0' // amount for unstake transactions should be hidden
-        : getAmount(
-              nativeEffects.find(({ address }) => address === accountAddress),
-              type,
-          );
+    const accountBalanceChange = getAmount(
+        nativeEffects.find(({ address }) => address === accountAddress),
+        type,
+    );
 
-    const stakeAmount = isUnstakeTx ? getUnstakeAmount(tx) : amount;
+    const amount =
+        isUnstakeTx || internalTransfers.length > 0
+            ? '0' // hidden, the movement is represented by stakeOperation or internalTransfers
+            : accountBalanceChange;
+
+    const stakeAmount = isUnstakeTx ? getUnstakeAmount(tx) : accountBalanceChange;
 
     const details = getDetails(tx, nativeEffects, accountAddress, type);
 
