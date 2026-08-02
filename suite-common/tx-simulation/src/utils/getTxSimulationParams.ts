@@ -1,27 +1,25 @@
 import { type JsonRpcScanParams } from '@blockaid/client/resources/evm';
 
-import { type NetworkConfig, networks } from '@suite-common/wallet-config';
+import { getNetworkChainId } from '@suite-common/wallet-config';
 import { U_INT_32 } from '@suite-common/wallet-constants';
 import { type TxSimulationAction, type TxSimulationMethod } from '@suite-common/wallet-types';
 
-type ChainId = Extract<NetworkConfig, { networkType: 'ethereum'; testnet: false }>['chainId'];
-
 // Maps EVM chainId to Blockaid's canonical chain name.
-const BLOCKAID_EVM_CHAIN_BY_CHAIN_ID = {
-    [networks.eth.chainId]: 'ethereum',
-    [networks.op.chainId]: 'optimism',
-    [networks.bsc.chainId]: 'bsc',
-    [networks.etc.chainId]: 'ethereumClassic',
-    [networks.pol.chainId]: 'polygon',
-    [networks.base.chainId]: 'base',
-    [networks.arb.chainId]: 'arbitrum',
-    [networks.rhc.chainId]: 'robinhood',
-    [networks.hype.chainId]: 'hyperevm',
-    [networks.avax.chainId]: 'avalanche',
-} as const satisfies Readonly<Record<ChainId, string>>;
+const BLOCKAID_EVM_CHAIN_BY_CHAIN_ID: Readonly<Record<number, JsonRpcScanParams['chain']>> = {
+    [getNetworkChainId('eth')]: 'ethereum',
+    [getNetworkChainId('op')]: 'optimism',
+    [getNetworkChainId('bsc')]: 'bsc',
+    [getNetworkChainId('etc')]: 'ethereumClassic',
+    [getNetworkChainId('pol')]: 'polygon',
+    [getNetworkChainId('base')]: 'base',
+    [getNetworkChainId('arb')]: 'arbitrum',
+    [getNetworkChainId('rhc')]: 'robinhood',
+    [getNetworkChainId('hype')]: 'hyperevm',
+    [getNetworkChainId('avax')]: 'avalanche',
+};
 
-const resolveBlockaidEvmChain = (chainId: number | undefined = 1) =>
-    BLOCKAID_EVM_CHAIN_BY_CHAIN_ID[chainId as keyof typeof BLOCKAID_EVM_CHAIN_BY_CHAIN_ID];
+const resolveBlockaidEvmChain = (chainId: number | undefined = 1): JsonRpcScanParams['chain'] =>
+    BLOCKAID_EVM_CHAIN_BY_CHAIN_ID[chainId] as JsonRpcScanParams['chain'];
 
 function transformPayloadOfEthereumSignTransaction({
     payload: { transaction },

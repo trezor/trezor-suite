@@ -1,8 +1,16 @@
-import { type Network, getNetworkByEvmChainId, networks } from '@suite-common/wallet-config';
+import {
+    type Network,
+    getNetworkByEvmChainId,
+    getNetworkChainId,
+} from '@suite-common/wallet-config';
 import { type TxSimulationAction, type TxSimulationMethod } from '@suite-common/wallet-types';
 
-export * from './getTxSimulationParams';
-export * from './getTxSimulationRiskSummary';
+export { getTxSimulationParams, type GetTxSimulationParams } from './getTxSimulationParams';
+export {
+    getTxSimulationRiskSummary,
+    type TxSimulationRiskSummary,
+    type TxSimulationValidationSummary,
+} from './getTxSimulationRiskSummary';
 
 export function getTargetContractFromTxSimulationAction({
     method,
@@ -26,9 +34,9 @@ function resolveChainIdOfEvmNetwork({
         case 'ethereumSignTransaction':
             return payload.transaction.chainId;
         case 'ethereumSignTypedData':
-            return Number(payload.data.domain.chainId ?? networks.eth.chainId);
+            return Number(payload.data.domain.chainId ?? getNetworkChainId('eth'));
         default:
-            return networks.eth.chainId;
+            return getNetworkChainId('eth');
     }
 }
 

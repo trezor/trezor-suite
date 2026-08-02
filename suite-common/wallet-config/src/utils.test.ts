@@ -3,6 +3,7 @@ import { asNetworkSymbol } from './types';
 import {
     filterNetworksByName,
     getMainnets,
+    getNetworkChainId,
     getNetworksWithMevProtection,
     getNetworksWithNativeTokenReserve,
     getTestnets,
@@ -47,6 +48,16 @@ describe(getTestnets.name, () => {
             allNetworks: mockNetworks,
         });
         expect(result).toEqual([]);
+    });
+});
+
+describe(getNetworkChainId.name, () => {
+    it('returns the configured chain ID', () => {
+        expect(getNetworkChainId('eth')).toBe(1);
+    });
+
+    it('throws when the network does not have a chain ID', () => {
+        expect(() => getNetworkChainId('btc')).toThrow('Network btc does not define a chain ID.');
     });
 });
 
