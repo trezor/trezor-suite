@@ -307,6 +307,7 @@ export const getTargets = (
         });
 
 export const getInternalTransfers = (
+    transaction: ParsedTransactionWithMeta,
     effects: TransactionEffect[],
     txType: Transaction['type'],
     accountAddress: string,
@@ -315,16 +316,26 @@ export const getInternalTransfers = (
         return [];
     }
 
+    const feePayer = transaction.transaction.message.accountKeys[0]?.pubkey;
+    const fee = new BigNumber(transaction.meta?.fee.toString() || 0);
+
     return effects
         .filter(effect => effect.address === accountAddress)
-        .map(effect => {
-            const type = effect.amount.isNegative() ? 'sent' : 'recv';
+        .flatMap(effect => {
+            // the fee payer's balance change includes the fee, which is reported separately
+            const amount = effect.address === feePayer ? effect.amount.plus(fee) : effect.amount;
+
+            if (amount.isZero()) {
+                return [];
+            }
+
+            const type = amount.isNegative() ? 'sent' : 'recv';
 
             return {
                 type,
                 from: type === 'sent' ? accountAddress : '',
                 to: type === 'recv' ? accountAddress : '',
-                amount: effect.amount.abs().toString(),
+                amount: amount.abs().toString(),
             };
         });
 };
@@ -813,7 +824,7 @@ export const transformTransaction = (
 
     const targets = getTargets(nativeEffects, txType, accountAddress);
 
-    const internalTransfers = getInternalTransfers(nativeEffects, txType, accountAddress);
+    const internalTransfers = getInternalTransfers(tx, nativeEffects, txType, accountAddress);
 
     const isUnstakeTx = stakeType === 'unstake';
 

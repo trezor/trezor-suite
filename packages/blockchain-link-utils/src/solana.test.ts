@@ -90,6 +90,7 @@ describe('solana/utils', () => {
             it(description, () => {
                 const result = getInternalTransfers(
                     // @ts-expect-error Fixtures don't fully implement this interface.
+                    input.transaction,
                     input.effects,
                     input.txType as Transaction['type'],
                     input.accountAddress,

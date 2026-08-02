@@ -689,6 +689,10 @@ export const fixtures = {
             description:
                 'should return a sent internal transfer for "contract" transaction type with a negative account effect',
             input: {
+                transaction: {
+                    transaction: { message: { accountKeys: [{ pubkey: 'foreignFeePayer' }] } },
+                    meta: { fee: 5 },
+                },
                 effects: [effects.negative, effects.positiveForeign],
                 txType: 'contract',
                 accountAddress: effects.negative.address,
@@ -706,6 +710,10 @@ export const fixtures = {
             description:
                 'should return a recv internal transfer for "contract" transaction type with a positive account effect',
             input: {
+                transaction: {
+                    transaction: { message: { accountKeys: [{ pubkey: 'foreignFeePayer' }] } },
+                    meta: { fee: 5 },
+                },
                 effects: [effects.positive],
                 txType: 'contract',
                 accountAddress: effects.positive.address,
@@ -720,8 +728,51 @@ export const fixtures = {
             ],
         },
         {
+            description:
+                'should exclude the fee from the internal transfer when the account is the fee payer',
+            input: {
+                transaction: {
+                    transaction: {
+                        message: { accountKeys: [{ pubkey: effects.negative.address }] },
+                    },
+                    meta: { fee: 5 },
+                },
+                effects: [effects.negative],
+                txType: 'contract',
+                accountAddress: effects.negative.address,
+            },
+            expectedOutput: [
+                {
+                    type: 'sent',
+                    from: effects.negative.address,
+                    to: '',
+                    amount: effects.negative.amount.abs().minus(5).toString(),
+                },
+            ],
+        },
+        {
+            description:
+                'should return an empty array when the fee payer balance decreased only by the fee',
+            input: {
+                transaction: {
+                    transaction: {
+                        message: { accountKeys: [{ pubkey: effects.negative.address }] },
+                    },
+                    meta: { fee: effects.negative.amount.abs().toNumber() },
+                },
+                effects: [effects.negative],
+                txType: 'contract',
+                accountAddress: effects.negative.address,
+            },
+            expectedOutput: [],
+        },
+        {
             description: 'should return an empty array for non-contract transaction types',
             input: {
+                transaction: {
+                    transaction: { message: { accountKeys: [{ pubkey: 'foreignFeePayer' }] } },
+                    meta: { fee: 5 },
+                },
                 effects: [effects.negative],
                 txType: 'sent',
                 accountAddress: effects.negative.address,
