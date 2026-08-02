@@ -5,7 +5,6 @@ import { prepareDiscoveryMiddleware } from '@suite/discovery';
 import { prepareConnectPopupMiddleware } from '@suite-common/connect-popup';
 import type { ExtraDependencies } from '@suite-common/redux-utils';
 import { prepareSuiteSyncMiddleware } from '@suite-common/suite-sync';
-import { prepareTokenDefinitionsMiddleware } from '@suite-common/token-definitions';
 import {
     prepareAccountsMiddleware,
     prepareBlockchainMiddleware,
@@ -17,6 +16,7 @@ import { prepareWalletConnectMiddleware } from '@suite-common/walletconnect';
 import graphMiddleware from './graphMiddleware';
 import { replaceByFeeErrorMiddleware } from './replaceByFeeErrorMiddleware';
 import { storageMiddleware } from './storageMiddleware';
+import { prepareTokenDefinitionsMiddleware } from './tokenDefinitionsMiddleware';
 import { tradingMiddleware } from './tradingMiddleware';
 import walletMiddleware from './walletMiddleware';
 
