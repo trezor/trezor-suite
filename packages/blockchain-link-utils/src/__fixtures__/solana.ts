@@ -1,4 +1,7 @@
-import { TOKEN_PROGRAM_PUBLIC_KEY } from '@trezor/network-solana/constants';
+import {
+    STAKE_PROGRAM_PUBLIC_KEY,
+    TOKEN_PROGRAM_PUBLIC_KEY,
+} from '@trezor/network-solana/constants';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 const instructions = {
@@ -13,6 +16,13 @@ const instructions = {
         parsed: {
             type: 'nonTransfer',
         },
+    },
+    stakeWithdraw: {
+        parsed: {
+            type: 'withdraw',
+        },
+        program: 'stake',
+        programId: STAKE_PROGRAM_PUBLIC_KEY,
     },
     tokenTransferNotParsed: {
         program: 'spl-token',
@@ -434,11 +444,13 @@ export const fixtures = {
             expectedOutput: 'failed',
         },
         {
-            description: 'should return "contract" if instructions are not transfer',
+            description:
+                'should return "sent" for an unknown program interaction decreasing the account balance',
             input: {
                 transaction: {
                     transaction: {
                         message: {
+                            accountKeys: [{ pubkey: 'feePayer1' }],
                             instructions: [instructions.nonTransfer],
                         },
                     },
@@ -447,7 +459,45 @@ export const fixtures = {
                 accountAddress: effects.negative.address,
                 tokenEffects: [],
             },
-            expectedOutput: 'contract',
+            expectedOutput: 'sent',
+        },
+        {
+            description:
+                'should return "sent" for an unknown program interaction when the account is the fee payer even if its balance increased',
+            input: {
+                transaction: {
+                    transaction: {
+                        message: {
+                            accountKeys: [{ pubkey: effects.positive.address }],
+                            instructions: [instructions.nonTransfer],
+                        },
+                    },
+                    meta: { fee: 5 },
+                },
+                effects: [effects.positive],
+                accountAddress: effects.positive.address,
+                tokenEffects: [],
+            },
+            expectedOutput: 'sent',
+        },
+        {
+            description:
+                'should return "recv" for an unknown program interaction increasing the balance of an account that is not the fee payer',
+            input: {
+                transaction: {
+                    transaction: {
+                        message: {
+                            accountKeys: [{ pubkey: 'feePayer1' }],
+                            instructions: [instructions.nonTransfer],
+                        },
+                    },
+                    meta: { fee: 5 },
+                },
+                effects: [effects.positive],
+                accountAddress: effects.positive.address,
+                tokenEffects: [],
+            },
+            expectedOutput: 'recv',
         },
         {
             description:
@@ -456,6 +506,7 @@ export const fixtures = {
                 transaction: {
                     transaction: {
                         message: {
+                            accountKeys: [{ pubkey: 'feePayer1' }],
                             instructions: [instructions.tokenTransferNotParsed],
                         },
                     },
@@ -473,6 +524,7 @@ export const fixtures = {
                 transaction: {
                     transaction: {
                         message: {
+                            accountKeys: [{ pubkey: 'feePayer1' }],
                             instructions: [instructions.tokenTransferNotParsed],
                         },
                     },
@@ -490,6 +542,7 @@ export const fixtures = {
                 transaction: {
                     transaction: {
                         message: {
+                            accountKeys: [{ pubkey: 'feePayer1' }],
                             instructions: [instructions.tokenTransferNotParsed],
                         },
                     },
@@ -510,6 +563,7 @@ export const fixtures = {
                 transaction: {
                     transaction: {
                         message: {
+                            accountKeys: [{ pubkey: 'feePayer1' }],
                             instructions: [instructions.tokenTransferNotParsed],
                         },
                     },
@@ -675,10 +729,12 @@ export const fixtures = {
             expectedOutput: [],
         },
         {
-            description: 'should return an empty array for "contract" transaction type',
+            description:
+                'should return an empty array when the balance change is shown as an internal transfer',
             input: {
                 effects: [effects.positive, effects.negative],
-                txType: 'contract',
+                txType: 'sent',
+                hasOwnBalanceInternalTransfers: true,
                 accountAddress: effects.negative.address,
             },
             expectedOutput: [],
@@ -687,14 +743,18 @@ export const fixtures = {
     getInternalTransfers: [
         {
             description:
-                'should return a sent internal transfer for "contract" transaction type with a negative account effect',
+                'should return a sent internal transfer for a program interaction with a negative account effect',
             input: {
                 transaction: {
-                    transaction: { message: { accountKeys: [{ pubkey: 'foreignFeePayer' }] } },
+                    transaction: {
+                        message: {
+                            accountKeys: [{ pubkey: 'foreignFeePayer' }],
+                            instructions: [instructions.nonTransfer],
+                        },
+                    },
                     meta: { fee: 5 },
                 },
                 effects: [effects.negative, effects.positiveForeign],
-                txType: 'contract',
                 accountAddress: effects.negative.address,
             },
             expectedOutput: [
@@ -708,14 +768,18 @@ export const fixtures = {
         },
         {
             description:
-                'should return a recv internal transfer for "contract" transaction type with a positive account effect',
+                'should return a recv internal transfer for a program interaction with a positive account effect',
             input: {
                 transaction: {
-                    transaction: { message: { accountKeys: [{ pubkey: 'foreignFeePayer' }] } },
+                    transaction: {
+                        message: {
+                            accountKeys: [{ pubkey: 'foreignFeePayer' }],
+                            instructions: [instructions.nonTransfer],
+                        },
+                    },
                     meta: { fee: 5 },
                 },
                 effects: [effects.positive],
-                txType: 'contract',
                 accountAddress: effects.positive.address,
             },
             expectedOutput: [
@@ -733,12 +797,14 @@ export const fixtures = {
             input: {
                 transaction: {
                     transaction: {
-                        message: { accountKeys: [{ pubkey: effects.negative.address }] },
+                        message: {
+                            accountKeys: [{ pubkey: effects.negative.address }],
+                            instructions: [instructions.nonTransfer],
+                        },
                     },
                     meta: { fee: 5 },
                 },
                 effects: [effects.negative],
-                txType: 'contract',
                 accountAddress: effects.negative.address,
             },
             expectedOutput: [
@@ -756,25 +822,57 @@ export const fixtures = {
             input: {
                 transaction: {
                     transaction: {
-                        message: { accountKeys: [{ pubkey: effects.negative.address }] },
+                        message: {
+                            accountKeys: [{ pubkey: effects.negative.address }],
+                            instructions: [instructions.nonTransfer],
+                        },
                     },
                     meta: { fee: effects.negative.amount.abs().toNumber() },
                 },
                 effects: [effects.negative],
-                txType: 'contract',
                 accountAddress: effects.negative.address,
             },
             expectedOutput: [],
         },
         {
-            description: 'should return an empty array for non-contract transaction types',
+            description:
+                'should return a recv internal transfer with the exact claimed amount for a stake claim',
             input: {
                 transaction: {
-                    transaction: { message: { accountKeys: [{ pubkey: 'foreignFeePayer' }] } },
+                    transaction: {
+                        message: {
+                            accountKeys: [{ pubkey: effects.positive.address }],
+                            instructions: [instructions.stakeWithdraw],
+                        },
+                    },
+                    meta: { fee: 5 },
+                },
+                effects: [effects.positive],
+                accountAddress: effects.positive.address,
+            },
+            expectedOutput: [
+                {
+                    type: 'recv',
+                    from: '',
+                    to: effects.positive.address,
+                    amount: effects.positive.amount.plus(5).toString(),
+                },
+            ],
+        },
+        {
+            description:
+                'should return an empty array for transactions with only known program instructions',
+            input: {
+                transaction: {
+                    transaction: {
+                        message: {
+                            accountKeys: [{ pubkey: 'foreignFeePayer' }],
+                            instructions: [instructions.transfer],
+                        },
+                    },
                     meta: { fee: 5 },
                 },
                 effects: [effects.negative],
-                txType: 'sent',
                 accountAddress: effects.negative.address,
             },
             expectedOutput: [],
