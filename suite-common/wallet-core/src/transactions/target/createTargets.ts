@@ -61,7 +61,7 @@ export const createTargets = ({ transaction, account }: CreateCombineTargetsPara
 
     return [
         ...targets.map(createSimpleTarget),
-        ...tokens.filter(token => token.type !== 'self').map(createTokenTarget),
         ...filteredInternalTransfers(internalTransfers, account).map(createInternalTarget),
+        ...tokens.filter(token => token.type !== 'self').map(createTokenTarget),
     ];
 };

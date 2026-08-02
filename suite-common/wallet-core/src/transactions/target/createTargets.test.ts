@@ -180,8 +180,8 @@ describe(createTargets.name, () => {
         // @ts-expect-error: indexing with noUncheckedIndexedAccess
         const r2: (typeof result)[number] = result[2];
         expect(r0.type).toBe('target');
-        expect(r1.type).toBe('token');
-        expect(r2.type).toBe('internal');
+        expect(r1.type).toBe('internal');
+        expect(r2.type).toBe('token');
     });
 
     it('generates correct targetId format for each type', () => {
@@ -201,8 +201,8 @@ describe(createTargets.name, () => {
         // @ts-expect-error: indexing with noUncheckedIndexedAccess
         const r2: (typeof result)[number] = result[2];
         expect(r0.targetId).toBe('42');
-        expect(r1.targetId).toBe('token-0xDeadBeef');
-        expect(r2.targetId).toBe('internal-0xCafe');
+        expect(r1.targetId).toBe('internal-0xCafe');
+        expect(r2.targetId).toBe('token-0xDeadBeef');
     });
 
     it('preserves type, from and to of a "recv" token transfer in the TokenTarget payload', () => {
@@ -287,7 +287,7 @@ describe(createTargets.name, () => {
         // @ts-expect-error: indexing with noUncheckedIndexedAccess
         const r2: (typeof result)[number] = result[2];
         expect(r0.payload).toBe(target);
-        expect(r1.payload).toBe(token);
-        expect(r2.payload).toBe(internal);
+        expect(r1.payload).toBe(internal);
+        expect(r2.payload).toBe(token);
     });
 });
