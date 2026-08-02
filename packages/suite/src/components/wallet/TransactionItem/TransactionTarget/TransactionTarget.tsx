@@ -186,7 +186,10 @@ export const TransactionTarget = ({
                 );
             case 'internal':
                 return (
-                    <AccountLabelForOwnAddress address={payload.to} symbol={transaction.symbol} />
+                    <AccountLabelForOwnAddress
+                        address={payload.to || payload.from}
+                        symbol={transaction.symbol}
+                    />
                 );
             default:
                 return exhaustive(type);
