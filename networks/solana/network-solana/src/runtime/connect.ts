@@ -21,7 +21,7 @@ import {
     isTransactionMessageWithDurableNonceLifetime,
     lamports,
     prependTransactionMessageInstructions,
-    sendAndConfirmTransactionFactory,
+    sendTransactionWithoutConfirmingFactory,
     setTransactionMessageFeePayer,
     setTransactionMessageLifetimeUsingBlockhash,
 } from '@solana/kit';
@@ -398,13 +398,46 @@ const getSendErrorMessage = (error: any) => {
     }
 };
 
+const SIGNATURE_CONFIRMATION_TIMEOUT_MS = 60_000;
+const SIGNATURE_CONFIRMATION_POLL_INTERVAL_MS = 2_000;
+
+// Polling instead of kit's `sendAndConfirmTransactionFactory` — its internal timeout strategy
+// reads `e.target.reason` in an abort handler, and on React Native the abort event has no
+// target, so every confirmed transaction ended with an unhandled TypeError rejection.
+const waitForSignatureConfirmation = async (
+    signature: ReturnType<typeof getSignatureFromTransaction>,
+    api: SolanaAPI,
+) => {
+    const deadline = Date.now() + SIGNATURE_CONFIRMATION_TIMEOUT_MS;
+
+    while (Date.now() < deadline) {
+        const { value } = await api.rpc.getSignatureStatuses([signature]).send();
+        const status = value[0];
+
+        if (status?.err) {
+            throw new Error(`Transaction failed: ${JSON.stringify(status.err)}`);
+        }
+        if (
+            status?.confirmationStatus === 'confirmed' ||
+            status?.confirmationStatus === 'finalized'
+        ) {
+            return;
+        }
+
+        await new Promise(resolve => setTimeout(resolve, SIGNATURE_CONFIRMATION_POLL_INTERVAL_MS));
+    }
+
+    throw new Error('Timeout while waiting for the transaction to be confirmed.');
+};
+
 export const sendAndConfirmTransaction = async (rawTx: string, api: SolanaAPI) => {
     const transaction = await preparePushTransaction(rawTx, api);
 
     try {
         const signature = getSignatureFromTransaction(transaction);
-        const send = sendAndConfirmTransactionFactory(api);
+        const send = sendTransactionWithoutConfirmingFactory({ rpc: api.rpc });
         await send(transaction, { commitment: 'confirmed', skipPreflight: false });
+        await waitForSignatureConfirmation(signature, api);
 
         return signature;
     } catch (error) {
