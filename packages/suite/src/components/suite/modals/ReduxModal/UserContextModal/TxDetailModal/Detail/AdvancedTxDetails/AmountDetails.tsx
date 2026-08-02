@@ -140,44 +140,6 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                             </Table.Cell>
                         </Table.Row>
                     )}
-                {tx.internalTransfers.map((transfer, i) => (
-                    <Table.Row key={i}>
-                        <Table.Cell>
-                            {i === 0 && (!tx.targets.length || isStakeTypeTxNoAmount) ? (
-                                <Text intent="neutral" priority="secondary">
-                                    <Translation id="AMOUNT" />
-                                </Text>
-                            ) : undefined}
-                        </Table.Cell>
-                        <Table.Cell align="end">
-                            <Text intent="neutral">
-                                <FormattedCryptoAmount
-                                    value={formatNetworkAmount(transfer.amount, tx.symbol)}
-                                    symbol={tx.symbol}
-                                    signValue={getTxOperation(transfer.type, true)}
-                                />
-                            </Text>
-                        </Table.Cell>
-                        <Table.Cell align="end">
-                            <Text intent="neutral">
-                                <BaseCurrencyValue
-                                    amount={formatNetworkAmount(transfer.amount, tx.symbol)}
-                                    symbol={tx.symbol}
-                                    historicRate={historicRate}
-                                    useHistoricRate
-                                />
-                            </Text>
-                        </Table.Cell>
-                        <Table.Cell align="end">
-                            <Text intent="neutral">
-                                <BaseCurrencyValue
-                                    amount={formatNetworkAmount(transfer.amount, tx.symbol)}
-                                    symbol={tx.symbol}
-                                />
-                            </Text>
-                        </Table.Cell>
-                    </Table.Row>
-                ))}
                 {tx.type !== 'self' &&
                     tx.tokens.map((transfer, i) => {
                         const tokenFiatRateKey = getFiatRateKey(
@@ -194,9 +156,7 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                         return (
                             <Table.Row key={i}>
                                 <Table.Cell>
-                                    {i === 0 &&
-                                    !tx.targets.length &&
-                                    !tx.internalTransfers.length ? (
+                                    {i === 0 && (!tx.targets.length || isStakeTypeTxNoAmount) ? (
                                         <Text intent="neutral" priority="secondary">
                                             <Translation id="AMOUNT" />
                                         </Text>
@@ -246,6 +206,46 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                             </Table.Row>
                         );
                     })}
+                {tx.internalTransfers.map((transfer, i) => (
+                    <Table.Row key={i}>
+                        <Table.Cell>
+                            {i === 0 &&
+                            (!tx.targets.length || isStakeTypeTxNoAmount) &&
+                            !tx.tokens.length ? (
+                                <Text intent="neutral" priority="secondary">
+                                    <Translation id="AMOUNT" />
+                                </Text>
+                            ) : undefined}
+                        </Table.Cell>
+                        <Table.Cell align="end">
+                            <Text intent="neutral">
+                                <FormattedCryptoAmount
+                                    value={formatNetworkAmount(transfer.amount, tx.symbol)}
+                                    symbol={tx.symbol}
+                                    signValue={getTxOperation(transfer.type, true)}
+                                />
+                            </Text>
+                        </Table.Cell>
+                        <Table.Cell align="end">
+                            <Text intent="neutral">
+                                <BaseCurrencyValue
+                                    amount={formatNetworkAmount(transfer.amount, tx.symbol)}
+                                    symbol={tx.symbol}
+                                    historicRate={historicRate}
+                                    useHistoricRate
+                                />
+                            </Text>
+                        </Table.Cell>
+                        <Table.Cell align="end">
+                            <Text intent="neutral">
+                                <BaseCurrencyValue
+                                    amount={formatNetworkAmount(transfer.amount, tx.symbol)}
+                                    symbol={tx.symbol}
+                                />
+                            </Text>
+                        </Table.Cell>
+                    </Table.Row>
+                ))}
                 {cardanoWithdrawal && (
                     <Table.Row>
                         <Table.Cell>
