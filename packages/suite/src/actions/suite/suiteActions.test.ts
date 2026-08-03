@@ -154,10 +154,10 @@ describe('Suite Actions', () => {
     });
 
     fixtures.observeSelectedDevice.forEach(f => {
-        it(`observeSelectedDevice: ${f.description}`, () => {
+        it(`observeSelectedDevice: ${f.description}`, async () => {
             const state = getInitialState(f.state.suite, f.state.device);
             const store = mockStore(state);
-            const changed = store.dispatch(observeSelectedDevice());
+            const changed = await store.dispatch(observeSelectedDevice()).unwrap();
             expect(changed).toEqual(f.changed);
 
             const actionTypes = filterThunkActionTypes(store.getActions()).map(

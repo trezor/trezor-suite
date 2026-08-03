@@ -11,7 +11,7 @@ import {
     extraDependenciesCommonMock,
     testMocks,
 } from '@suite-common/test-utils';
-import { defaultTrezorUIEventHandlerThunk } from '@suite-common/wallet-core';
+import { defaultTrezorUIEventHandlerThunk, observeSelectedDevice } from '@suite-common/wallet-core';
 import { UI_EVENT, UI_REQUEST } from '@trezor/connect';
 
 import * as deviceSettingsActions from 'src/actions/settings/deviceSettingsActions';
@@ -78,9 +78,19 @@ describe('buttonRequest middleware', () => {
 
         await call;
 
+        // Not interested in noisy lifecycle actions from reduxJS toolkit
+        const unrelatedActionTypes = [
+            observeSelectedDevice.pending.type,
+            observeSelectedDevice.fulfilled.type,
+        ];
+        const actions = store
+            .getActions()
+            .filter(action => !unrelatedActionTypes.includes(action.type));
+
         // not interested in the last action (its from changePin mock);
-        store.getActions().pop();
-        expect(store.getActions()).toMatchObject([
+        actions.pop();
+
+        expect(actions).toMatchObject([
             { type: connectInitThunk.pending.type, payload: undefined },
             { type: connectInitThunk.fulfilled.type, payload: undefined },
             { type: lockDevice.type, payload: true },
