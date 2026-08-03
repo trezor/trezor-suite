@@ -90,6 +90,11 @@ export class ElectrumClient extends BatchingJsonRpcClient implements ElectrumAPI
     }
 
     private onBlock(blocks: BlockHeader[]) {
+        // `blocks` comes verbatim from the untrusted Electrum server's subscription
+        // notification params; a non-array (object/null/number/string) would make
+        // `.sort` throw. The JsonRpcClient.response dispatch guard already prevents a
+        // crash, but bail out explicitly so a malformed notification can't corrupt lastBlock.
+        if (!Array.isArray(blocks)) return;
         const [last] = blocks.sort((a, b) => b.height - a.height);
         if (last) this.lastBlock = last;
     }

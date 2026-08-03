@@ -76,11 +76,22 @@ export class JsonRpcClient {
     }
 
     protected response(response: any) {
-        const { id, method, params, result, error } = response;
-        if (id) {
-            this.processCallback(id, error, result);
-        } else {
-            this.emitter.emit(method, params);
+        try {
+            const { id, method, params, result, error } = response;
+            if (id) {
+                this.processCallback(id, error, result);
+            } else {
+                this.emitter.emit(method, params);
+            }
+        } catch (err) {
+            // The Electrum server is untrusted (user-selectable, incl. custom addresses).
+            // A misshapen response — a non-object line (e.g. `null`, which throws on
+            // destructuring) or subscription params a handler doesn't expect (e.g. onBlock's
+            // `blocks.sort` on a non-array) — must never throw out of the synchronous socket
+            // 'data' listener, where it would surface as an uncaughtException and tear down
+            // the worker (remote DoS). Guarding only JSON.parse in onMessage is not enough:
+            // this dispatch step consumes the parsed data and runs outside that try/catch.
+            this.log('Failed to dispatch message:', err);
         }
     }
 

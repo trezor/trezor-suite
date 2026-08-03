@@ -35,6 +35,34 @@ describe('Electrum JsonRpcClient malformed-message handling', () => {
         expect(listener).toHaveBeenCalledWith([{ height: 1 }]);
     });
 
+    it('does not throw when a subscription handler is fed non-array/misshapen params', () => {
+        const client = new JsonRpcClient();
+        // Mirrors electrum.ts onBlock, which does `blocks.sort(...)` and throws on a non-array.
+        client.on('blockchain.headers.subscribe', (blocks: any) => blocks.sort());
+
+        // An untrusted server can send a notification whose params are an object, null,
+        // a number or a string instead of the expected array.
+        for (const params of [{}, null, 42, 'oops']) {
+            expect(() =>
+                client.onReceive(
+                    JSON.stringify({
+                        jsonrpc: '2.0',
+                        method: 'blockchain.headers.subscribe',
+                        params,
+                    }) + '\n',
+                ),
+            ).not.toThrow();
+        }
+    });
+
+    it('does not throw when a whole received line is a bare JSON null', () => {
+        const client = new JsonRpcClient();
+
+        // `JSON.parse('null')` succeeds, so the parse guard passes it through; destructuring
+        // null in response() would throw without the dispatch guard.
+        expect(() => client.onReceive('null\n')).not.toThrow();
+    });
+
     it('BatchingJsonRpcClient also drops malformed lines without throwing', () => {
         const client = new BatchingJsonRpcClient();
         const listener = jest.fn();
