@@ -4,6 +4,8 @@ import { isRecoveryInProgress, recoveryActions, selectRecoveryStatus } from '@su
 import { routerAppChanged } from '@suite/router';
 import { deviceActions } from '@suite-common/device';
 import { firmwareActions } from '@suite-common/firmware';
+import { forgetDisconnectedDevices } from '@suite-common/wallet-core';
+import { UI_REQUEST } from '@trezor/connect';
 
 import * as onboardingActions from 'src/actions/onboarding/onboardingActions';
 import { type Action, type AppState, type Dispatch } from 'src/types/suite';
@@ -15,11 +17,9 @@ const onboardingMiddleware =
         const isFwInstallationDone =
             firmwareActions.setStatus.match(action) && action.payload === 'done';
 
-        if (
-            isFwInstallationDone &&
-            api.getState().onboarding.isActive &&
-            api.getState().firmware.status === 'thp-pairing'
-        ) {
+        const { firmware, onboarding } = api.getState();
+
+        if (isFwInstallationDone && onboarding.isActive && firmware.status === 'thp-pairing') {
             // After the THP pairing is finished we want to jump to the next step automatically.
             // User already drifted away from the installation flow and is not aware that THP is actually in the middle
             // of the Firmware installation.
@@ -28,6 +28,16 @@ const onboardingMiddleware =
         } else {
             // pass action
             next(action);
+        }
+
+        // seed is wiped when switching firmware type so we need to forget all device instances as well
+        if (action.type === UI_REQUEST.FIRMWARE_TYPE_CHANGED) {
+            api.dispatch(
+                forgetDisconnectedDevices({
+                    device: firmware.cachedDevice || action.payload.device,
+                    forceForget: true,
+                }),
+            );
         }
 
         if (action.type === routerAppChanged.type) {
