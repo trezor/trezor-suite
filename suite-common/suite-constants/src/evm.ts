@@ -8,7 +8,7 @@ export const EVM_SPENDER_LABELS: Record<string, string> = {
     // 1inch
     '0x111111125421ca6dc452d289314280a0f8842a65': '1inch Aggregation Router V6',
     // LI.FI
-    '0x1231deb6f5749ef6ce6943a275a1d3e7486f4eae': 'LiFI Diamond',
+    '0x1231deb6f5749ef6ce6943a275a1d3e7486f4eae': 'LI.FI',
     // Uniswap
     '0x68b3465833fb72a70ecdf485e0e4c7bd8665fc45': 'Uniswap V3 Router',
     '0xe592427a0aece92de3edee1f18e0157c05861564': 'Uniswap V3 Router',
