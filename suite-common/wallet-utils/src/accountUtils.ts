@@ -45,6 +45,7 @@ import { HELP_CENTER_ADDRESSES_URL, HELP_CENTER_TAPROOT_URL } from '@trezor/urls
 import { BigNumber, arrayDistinct, bufferUtils, typedObjectKeys } from '@trezor/utils';
 
 import { convertAmountSubunitsToUnits, formatNetworkAmount } from './amountUtils';
+import { getDerivationType } from './cardanoUtils';
 import { toFiatCurrency } from './fiatConverterUtils';
 import { getFiatRateKey } from './fiatRatesUtils';
 import { getAccountTotalStakingBalance } from './stakingUtils';
@@ -1154,9 +1155,18 @@ export const prepareNewAccountPayload = async ({
 
     if (!newPath || !device.state?.staticSessionId) return new Error('Missing path');
 
+    // Cardano derives a different key per account type (normal -> ICARUS, legacy -> ICARUS_TREZOR,
+    // ledger -> LEDGER). Without derivationType, getAccountDescriptor defaults to ICARUS_TREZOR, so a
+    // fresh `normal` ADA account would be derived with the legacy key — inconsistent with discovery
+    // and with selectAccount's on-device verify. Compute it here (rather than per caller) so no caller
+    // can reintroduce the omission; other network types ignore derivationType.
+    const derivationType =
+        network.networkType === 'cardano' ? getDerivationType(accountType) : undefined;
+
     const res = await TrezorConnect.getAccountInfo({
         path: newPath,
         coin: networkSymbol,
+        derivationType,
         device: {
             path: device.path,
             instance: device.instance,
