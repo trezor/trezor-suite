@@ -85,4 +85,34 @@ describe('blockbook/utils', () => {
             expect(account!.addresses?.used.map(a => a.address)).toEqual(['addr-valid']);
         });
     });
+
+    describe('poison-record DoS resistance (missing EVM descriptor)', () => {
+        // An untrusted/user-selectable blockbook backend may return an EVM (nonce present) account payload
+        // with the (type-required) `address` field omitted; `descriptor.toLowerCase()` in the EVM
+        // shadowed-pending-tx filter would then throw and abort the whole account's transformAccountInfo.
+        const evmTx = {
+            vin: [{ addresses: ['A'] }],
+            vout: [{ addresses: ['B'] }],
+            ethereumSpecific: { status: 1, gasLimit: 21000, gasUsed: 21000, gasPrice: '3' },
+            value: '90',
+            valueIn: '100',
+            fees: '10',
+        };
+
+        it('does not fail the whole EVM account when the address descriptor is missing', () => {
+            const payload = {
+                // no `address` field — a malicious/MITM backend can omit the echoed descriptor
+                balance: '0',
+                unconfirmedBalance: '0',
+                txs: 1,
+                unconfirmedTxs: 0,
+                nonce: '0', // marks the payload as EVM (isEVM = typeof payload.nonce === 'string')
+                transactions: [evmTx],
+            };
+            let account: ReturnType<typeof transformAccountInfo>;
+            // @ts-expect-error minimal payload shape
+            expect(() => (account = transformAccountInfo(payload))).not.toThrow();
+            expect(account!.history.transactions?.length).toBe(1);
+        });
+    });
 });

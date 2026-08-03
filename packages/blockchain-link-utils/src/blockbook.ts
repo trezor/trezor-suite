@@ -489,8 +489,12 @@ export const transformAccountInfo = (payload: BlockbookAccountInfo): AccountInfo
         ? payload.transactions.map(t => transformTransaction(t, addresses ?? descriptor))
         : undefined;
 
+    // `descriptor` (payload.address) is typed as a required string, but an untrusted/user-selectable
+    // blockbook backend may omit it (or return a non-string); `descriptor.toLowerCase()` would then throw
+    // and abort the whole account's transformAccountInfo (per-account DoS). Guard the type and fall back to
+    // the unfiltered list (shadowed-pending-tx filtering just needs the account descriptor to compare).
     const transactions =
-        isEVM && unfilteredTransactions
+        isEVM && unfilteredTransactions && typeof descriptor === 'string'
             ? filterShadowedPendingTxsByNonce(unfilteredTransactions, descriptor.toLowerCase())
             : unfilteredTransactions;
 
