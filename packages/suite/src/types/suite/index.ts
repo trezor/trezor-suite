@@ -1,3 +1,4 @@
+import type { AsyncThunkAction } from '@reduxjs/toolkit';
 import type { Store as ReduxStore } from 'redux';
 import type { ThunkAction as TAction, ThunkDispatch } from 'redux-thunk';
 
@@ -23,6 +24,7 @@ import { type firmwareActions } from '@suite-common/firmware';
 import { type geolocationActions } from '@suite-common/geolocation';
 import { type addLog } from '@suite-common/logger';
 import { type messageSystemActions } from '@suite-common/message-system';
+import { type ExtraDependencies } from '@suite-common/redux-utils';
 import { type suiteSyncActions, type suiteSyncDataActions } from '@suite-common/suite-sync';
 import { type suiteSyncQuotaManagerActions } from '@suite-common/suite-sync-quota-manager';
 import { type thpActions } from '@suite-common/thp';
@@ -178,7 +180,10 @@ export type Action =
 
 export type ThunkAction = TAction<any, AppState, any, Action>;
 
-export type Dispatch = ThunkDispatch<AppState, any, Action>;
+export type Dispatch = {
+    <T>(thunkAction: (dispatch: Dispatch, getState: GetState, extra: ExtraDependencies) => T): T;
+    <T extends AsyncThunkAction<any, any, any>>(asyncThunkAction: T): ReturnType<T>;
+} & ThunkDispatch<AppState, any, Action>;
 
 export type GetState = () => AppState;
 

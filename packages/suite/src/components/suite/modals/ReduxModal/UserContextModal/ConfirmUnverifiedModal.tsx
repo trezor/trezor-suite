@@ -1,16 +1,18 @@
 import { useEffect } from 'react';
 
+import { type ThunkAction } from 'redux-thunk';
+
 import { useDevice } from '@suite/device';
 import { Translation, type TranslationKey } from '@suite/intl';
 import { closeModal } from '@suite/modal';
 import { selectSelectedDeviceLabelOrName } from '@suite-common/device';
-import { type ExtraDependencies } from '@suite-common/redux-utils';
 import { H3, Modal, Paragraph, Tooltip } from '@trezor/components';
 import { ShieldWarningIcon } from '@trezor/icons';
 
 import { applySettings } from 'src/actions/settings/deviceSettingsActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { type Dispatch, type GetState } from 'src/types/suite';
+import { type SuiteExtra } from 'src/support/extraDependencies';
+import { type Action, type AppState, type Dispatch } from 'src/types/suite';
 
 interface ConfirmUnverifiedModalProps {
     action: {
@@ -18,11 +20,7 @@ interface ConfirmUnverifiedModalProps {
         title: TranslationKey;
         closeAfterEventTriggered?: boolean;
     };
-    verifyProcess?: () => (
-        dispatch: Dispatch,
-        getState: GetState,
-        extra: ExtraDependencies,
-    ) => Promise<void>;
+    verifyProcess?: () => ThunkAction<Promise<void>, AppState, SuiteExtra, Action>;
     warningText: TranslationKey;
 }
 
