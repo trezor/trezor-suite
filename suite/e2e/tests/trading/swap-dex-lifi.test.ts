@@ -29,10 +29,14 @@ const dexGasLimit = '26250';
 const dexMaximumFee = '0.00003161748342375 ETH';
 const gasLimitWithLabel = `${messages.TR_GAS_LIMIT.defaultMessage}: ${dexGasLimit}`;
 const accountLabel = 'Ethereum #1';
+// Provider name rendered by Suite in the confirm-on-device prompt.
+const suiteProviderName = 'LI.FI';
 
 // Firmware strings on the DEX review pages.
 const deviceReview = {
     providerTitle: 'Provider',
+    // The emulator still runs the previous FW release, which renders 'LiFI Diamond'.
+    // TODO: change to 'LI.FI' once trezor-user-env ships the firmware with the renamed provider.
     providerName: 'LiFI Diamond',
     intentTitle: 'Intent',
     intentValue: 'Swap',
@@ -152,7 +156,7 @@ test.describe('Trading - DEX swap (LI.FI)', { tag: ['@webOnly', '@T3T1', '@T3W1'
             await devicePrompt.confirmOnDevicePromptIsShown();
 
             await expect(devicePrompt.outputValueOf('recipient_name')).toHaveText(
-                deviceReview.providerName,
+                suiteProviderName,
             );
             await expect(device).toShowOnDisplay({
                 T3W1: {
@@ -215,7 +219,7 @@ test.describe('Trading - DEX swap (LI.FI)', { tag: ['@webOnly', '@T3T1', '@T3W1'
 
         await test.step('Re-verify the fully revealed review form', async () => {
             await expect(devicePrompt.outputValueOf('recipient_name')).toHaveText(
-                deviceReview.providerName,
+                suiteProviderName,
             );
             await expect(devicePrompt.outputValueOf('swap_intent')).toHaveTranslation(
                 'TR_TRADING_INTENT_SWAP',
