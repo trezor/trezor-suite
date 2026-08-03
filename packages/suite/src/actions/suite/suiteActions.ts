@@ -1,12 +1,11 @@
 import { createAction } from '@reduxjs/toolkit';
 
-import { asTypedDesktopAnalytics, events } from '@suite/analytics';
+import { type DesktopAnalyticsDep, events } from '@suite/analytics';
 import { openDeferredModal } from '@suite/modal';
 import { selectRouterUrl } from '@suite/router';
 import { suiteSettingsActions } from '@suite/settings';
 import { type TorBootstrap, TorStatus, isOnionUrl, selectTorState, torActions } from '@suite/tor';
 import { type deviceActions } from '@suite-common/device';
-import { type ExtraDependencies } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { getCustomBackends } from '@suite-common/wallet-utils';
 import { type HandshakeElectron, desktopApi } from '@trezor/suite-desktop-api';
@@ -88,9 +87,11 @@ export const updateOnlineStatus = (payload: boolean): SuiteAction => ({
 
 export const updateTorStatus = (payload: TorStatus) => torActions.setTorStatus(payload);
 
+type ToggleTorDeps = { services: DesktopAnalyticsDep };
+
 export const toggleTor =
     (shouldEnable: boolean, modal: string | undefined) =>
-    async (dispatch: Dispatch, getState: GetState, extra: ExtraDependencies) => {
+    async (dispatch: Dispatch, getState: GetState, extra: ToggleTorDeps) => {
         const { torBootstrap } = selectTorState(getState());
 
         const backends = getCustomBackends(getState().wallet.blockchain);
@@ -118,7 +119,7 @@ export const toggleTor =
         const ipcResponse = await desktopApi.toggleTor(shouldEnable);
 
         if (ipcResponse.success) {
-            asTypedDesktopAnalytics(extra.services.analytics).report({
+            extra.services.analytics.report({
                 type: events.settingsTorEvent.name,
                 payload: {
                     value: shouldEnable,

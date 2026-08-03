@@ -1,4 +1,4 @@
-import { type OnboardingAnalytics, asTypedDesktopAnalytics, events } from '@suite/analytics';
+import { type DesktopAnalyticsDep, type OnboardingAnalytics, events } from '@suite/analytics';
 import { initialRunCompleted } from '@suite/flags';
 import { closeModal } from '@suite/modal';
 import { recoveryRerunThunk } from '@suite/recovery';
@@ -8,7 +8,6 @@ import {
     selectIsUnlockedBootloaderAllowed,
 } from '@suite/settings';
 import { selectHasBitcoinOnlyFirmware, selectSelectedDevice } from '@suite-common/device';
-import { type ExtraDependencies } from '@suite-common/redux-utils';
 import { type BackupType } from '@suite-common/suite-types';
 import {
     changeCoinVisibility,
@@ -126,7 +125,9 @@ const resetOnboarding = (): OnboardingAction => ({
     type: ONBOARDING.RESET_ONBOARDING,
 });
 
-const goToSuite = () => (dispatch: Dispatch, getState: GetState, extra: ExtraDependencies) => {
+type GoToSuiteDeps = { services: DesktopAnalyticsDep };
+
+const goToSuite = () => (dispatch: Dispatch, getState: GetState, extra: GoToSuiteDeps) => {
     const device = selectSelectedDevice(getState());
     const onboardingAnalytics = selectOnboardingAnalytics(getState());
     // Clear modals that might block navigation. They aren't relevant anyway, as there is no <ModalSwitcher /> in onboarding.
@@ -175,7 +176,7 @@ const goToSuite = () => (dispatch: Dispatch, getState: GetState, extra: ExtraDep
                   unitPackaging: fullPayload.unitPackaging,
               };
 
-        asTypedDesktopAnalytics(analytics).report(
+        analytics.report(
             {
                 type: events.deviceSetupCompletedEvent.name,
                 payload,

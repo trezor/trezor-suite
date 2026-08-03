@@ -69,6 +69,7 @@
         "@suite-common/suite-config": "workspace:*",
         "@suite-common/suite-constants": "workspace:*",
         "@suite-common/suite-rbf-labels-migrations": "workspace:*",
+        "@suite-common/suite-rbf-labels-migrations-types": "workspace:*",
         "@suite-common/suite-sync": "workspace:*",
         "@suite-common/suite-sync-quota-manager": "workspace:*",
         "@suite-common/suite-sync-storage": "workspace:*",

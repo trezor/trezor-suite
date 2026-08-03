@@ -1,6 +1,6 @@
 import { type Dispatch } from '@reduxjs/toolkit';
 
-import { asTypedDesktopAnalytics, events } from '@suite/analytics';
+import { type DesktopAnalyticsDep, asTypedDesktopAnalytics, events } from '@suite/analytics';
 import { selectOAuthServerEnvironment } from '@suite/settings';
 import {
     type DataType,
@@ -103,9 +103,15 @@ type DisconnectProviderParams = {
     removeMetadata?: boolean;
 };
 
+type DisconnectProviderDeps = { services: DesktopAnalyticsDep };
+
 export const disconnectProvider =
     ({ clientId, dataType, removeMetadata = true }: DisconnectProviderParams) =>
-    async (dispatch: Dispatch, _getState: () => MetadataRootState, extra: ExtraDependencies) => {
+    async (
+        dispatch: Dispatch,
+        _getState: () => MetadataRootState,
+        extra: DisconnectProviderDeps,
+    ) => {
         typedObjectKeys(fetchIntervals).forEach((id: FetchIntervalTrackingId) => {
             const [trackedDataType, trackedClientId] = id.split('-');
             if (trackedDataType === dataType && trackedClientId === clientId) {
@@ -135,7 +141,7 @@ export const disconnectProvider =
                 payload: { dataType, clientId: undefined },
             });
 
-            asTypedDesktopAnalytics(extra.services.analytics).report({
+            extra.services.analytics.report({
                 type: events.settingsGeneralLabelingProviderEvent.name,
                 payload: {
                     provider: '',
