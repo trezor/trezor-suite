@@ -34,6 +34,7 @@ export {
     promoNoDeviceEshopCtaEvent,
     type NoDeviceEshopCtaOrigin,
 } from './promoNoDeviceEshopCtaEvent';
+export { promoDashboardBannerEvent } from './promoDashboardBannerEvent';
 export { guideSupportChatOpenedEvent } from './guideSupportChatOpenedEvent';
 export { yieldEarnDashboardReadyEvent } from './yieldEarnDashboardReadyEvent';
 export { yieldInteractionEvent } from './yieldInteractionEvent';

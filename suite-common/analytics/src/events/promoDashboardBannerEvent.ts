@@ -1,6 +1,5 @@
-import type { AttributeDef, EventDef } from '@suite-common/analytics';
-
 import { EventType } from '../constants';
+import type { AttributeDef, EventDef } from '../eventDefinition';
 
 type Attributes = {
     action: AttributeDef<'cta' | 'close'>;
@@ -13,6 +12,7 @@ export const promoDashboardBannerEvent: EventDef<Attributes, EventType.PromoDash
     changelog: [
         { version: '25.8.0', notes: 'added' },
         { version: '26.8.0', notes: 'added the `defi-yield` banner identifier' },
+        { version: '26.8.0', notes: 'implemented for mobile' },
     ],
 
     attributes: {

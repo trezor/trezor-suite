@@ -13,15 +13,6 @@ import {
     type TabNavigationProp,
 } from '@suite-native/navigation';
 
-<<<<<<<< HEAD:suite-native/banners/src/components/StablecoinYieldPromoBanner.tsx
-import { setIsStablecoinYieldPromoBannerClosed } from '../bannerFlagsSlice';
-import { Banner } from './Banner';
-import { STABLECOIN_YIELD_PROMO_BANNER_IMAGE } from '../imageSources';
-
-type NavigationProps = TabNavigationProp<AppTabsParamList, AppTabsRoutes>;
-
-export const StablecoinYieldPromoBanner = () => {
-========
 import { setIsEthVaultPromoBannerClosed } from '../bannerFlagsSlice';
 import { ETH_VAULT_PROMO_BANNER_IMAGE } from '../imageSources';
 import { Banner } from './Banner';
@@ -29,7 +20,6 @@ import { Banner } from './Banner';
 type NavigationProps = TabNavigationProp<AppTabsParamList, AppTabsRoutes>;
 
 export const EthVaultPromoBanner = () => {
->>>>>>>> 3a56b22e6a (fixup! fixup! fixup! feat(suite-native): add analytics for promo banners on homescreen):suite-native/banners/src/components/EthVaultPromoBanner.tsx
     const dispatch = useDispatch();
     const { analytics } = useServices(selectNativeAnalyticsDep);
     const navigation = useNavigation<NavigationProps>();
@@ -37,7 +27,7 @@ export const EthVaultPromoBanner = () => {
     const handlePress = () => {
         analytics.report({
             type: commonAnalyticsEvents.promoDashboardBannerEvent.name,
-            payload: { action: 'cta', bannerType: 'stablecoin-yield' },
+            payload: { action: 'cta', bannerType: 'eth-vault' },
         });
         navigation.navigate(AppTabsRoutes.EarnStack, {
             screen: EarnStackRoutes.Earn,
@@ -47,25 +37,19 @@ export const EthVaultPromoBanner = () => {
     const handleClose = () => {
         analytics.report({
             type: commonAnalyticsEvents.promoDashboardBannerEvent.name,
-            payload: { action: 'close', bannerType: 'stablecoin-yield' },
+            payload: { action: 'close', bannerType: 'eth-vault' },
         });
-        dispatch(setIsStablecoinYieldPromoBannerClosed());
+        dispatch(setIsEthVaultPromoBannerClosed());
     };
 
     return (
         <Banner
-<<<<<<<< HEAD:suite-native/banners/src/components/StablecoinYieldPromoBanner.tsx
-            title={<Translation id="banner.stablecoinYieldPromoBanner.title" />}
-            ctaText={<Translation id="banner.stablecoinYieldPromoBanner.button" />}
-            imageSource={STABLECOIN_YIELD_PROMO_BANNER_IMAGE}
-========
             title={<Translation id="banner.ethVaultPromoBanner.title" />}
             ctaText={<Translation id="banner.ethVaultPromoBanner.button" />}
             imageSource={ETH_VAULT_PROMO_BANNER_IMAGE}
->>>>>>>> 3a56b22e6a (fixup! fixup! fixup! feat(suite-native): add analytics for promo banners on homescreen):suite-native/banners/src/components/EthVaultPromoBanner.tsx
             onPress={handlePress}
             onClose={handleClose}
-            testID="@home/stablecoin-yield-promo-cta"
+            testID="@home/eth-vault-promo-cta"
         />
     );
 };

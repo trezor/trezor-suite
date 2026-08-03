@@ -4,7 +4,8 @@ import { events as commonAnalyticsEvents } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { Translation } from '@suite-native/intl';
-import { useGetTrezorEshopCta } from '@suite-native/link';
+import { useOpenLink } from '@suite-native/link';
+import { DASHBOARD_BANNER_TS7_URL } from '@trezor/urls';
 
 import { setIsTs7PromoBannerClosed } from '../bannerFlagsSlice';
 import { Banner } from './Banner';
@@ -13,13 +14,20 @@ import { TS7_PROMO_BANNER_IMAGE } from '../imageSources';
 export const TrezorSafe7PromoBanner = () => {
     const dispatch = useDispatch();
     const { analytics } = useServices(selectNativeAnalyticsDep);
-    const handleGetTrezor = useGetTrezorEshopCta('dashboard'); // should be this reported?
+    const openLink = useOpenLink();
+
+    const handlePress = () => {
+        analytics.report({
+            type: commonAnalyticsEvents.promoDashboardBannerEvent.name,
+            payload: { action: 'cta', bannerType: 'ts7' },
+        });
+        openLink(DASHBOARD_BANNER_TS7_URL);
+    };
 
     const handleClose = () => {
         analytics.report({
-            // should be this reported?
-            type: commonAnalyticsEvents.promoNoDeviceEshopCtaEvent.name,
-            payload: { origin: 'dashboard', platform: 'mobile', action: 'close' },
+            type: commonAnalyticsEvents.promoDashboardBannerEvent.name,
+            payload: { action: 'close', bannerType: 'ts7' },
         });
         dispatch(setIsTs7PromoBannerClosed());
     };
@@ -30,7 +38,7 @@ export const TrezorSafe7PromoBanner = () => {
             ctaText={<Translation id="banner.trezorSafe7PromoBanner.button" />}
             imageSource={TS7_PROMO_BANNER_IMAGE}
             ctaIcon="arrowLineUpRight"
-            onPress={handleGetTrezor}
+            onPress={handlePress}
             onClose={handleClose}
             testID="@home/get-trezor-cta"
         />

@@ -7,7 +7,7 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 const IMAGE_SIZE = 80;
 
-const imageContainerStyle = prepareNativeStyle(utils => ({
+const imageStyle = prepareNativeStyle(utils => ({
     width: IMAGE_SIZE,
     height: IMAGE_SIZE,
     borderRadius: utils.borders.radii.r12,
@@ -47,13 +47,7 @@ export const Banner = ({
     return (
         <Card noPadding style={applyStyle(cardBackgroundStyle)}>
             <HStack spacing="sp12" alignItems="center" justifyContent="space-between">
-                <Image
-                    source={imageSource}
-                    contentFit="contain"
-                    width={IMAGE_SIZE}
-                    height={IMAGE_SIZE}
-                    style={applyStyle(imageContainerStyle)}
-                />
+                <Image source={imageSource} contentFit="contain" style={applyStyle(imageStyle)} />
                 <VStack flex={1} spacing="sp2">
                     <Text variant="body-md-strong" color="contentPrimary">
                         {title}

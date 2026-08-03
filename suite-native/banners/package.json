@@ -25,6 +25,7 @@
         "@suite-native/navigation": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/styles-native": "workspace:*",
+        "@trezor/urls": "workspace:*",
         "react": "19.2.3",
         "react-native": "0.85.3",
         "react-native-gesture-handler": "2.31.1",
