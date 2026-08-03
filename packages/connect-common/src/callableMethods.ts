@@ -105,6 +105,7 @@ const connectPublicCallableMethodGroups = {
         'solanaGetAddress',
         'solanaGetPublicKey',
         'solanaSignTransaction',
+        'solanaSignMessage',
         'solanaComposeTransaction',
     ],
     stellar: ['stellarGetAddress', 'stellarSignTransaction'],

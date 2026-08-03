@@ -82,7 +82,7 @@ const groups = {
         name: 'solana',
         pattern: 'methods',
         includeFilter:
-            'solanaGetAddress,solanaGetPublicKey,solanaSignTransaction,solanaComposeTransaction',
+            'solanaGetAddress,solanaGetPublicKey,solanaSignTransaction,solanaSignMessage,solanaComposeTransaction',
     },
     experimental: {
         name: 'experimental',
