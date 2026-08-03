@@ -2,10 +2,7 @@
     "index": "Getting started",
     "methods": "Methods",
     "details": "Details",
-    "settings": {
-        "title": "Settings",
-        "display": "hidden"
-    },
+    "settings": "Settings",
     "test": {
         "title": "Test",
         "display": "hidden"
