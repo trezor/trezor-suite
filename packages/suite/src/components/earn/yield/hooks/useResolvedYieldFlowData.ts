@@ -9,10 +9,14 @@ import {
     doTokensMatch,
     getConvertedOutputTokenBalanceToInputTokenAmount,
     getStablecoinYieldFlowKey,
+    selectBaseCurrency,
+    useMissingRateTickersQuery,
 } from '@suite-common/wallet-core';
-import type { Account, TokenInfoBranded } from '@suite-common/wallet-types';
+import { type Account, type TokenInfoBranded, toTokenAddress } from '@suite-common/wallet-types';
 import { getApyPercent, getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
 import type { TokenInfo } from '@trezor/connect';
+
+import { useSelector } from 'src/hooks/suite';
 
 const hasTokenSymbol = (
     accountToken: NonNullable<Account['tokens']>[number],
@@ -143,6 +147,16 @@ export const useResolvedYieldFlowData = ({
     });
 
     const apy = vault.rewardRate.total != null ? getApyPercent(vault.rewardRate.total) : null;
+
+    const baseCurrency = useSelector(selectBaseCurrency);
+    // The deposited token (e.g. WETH) is often not held by the user, so the balance-driven fiat
+    // rate fetch skips it. Force-fetch the token's rate so the approximate fiat value can render.
+    useMissingRateTickersQuery({
+        baseCurrencyCode: baseCurrency,
+        missingRateTickers: token?.contractAddress
+            ? [{ symbol: token.networkSymbol, tokenAddress: toTokenAddress(token.contractAddress) }]
+            : [],
+    });
 
     return {
         account,

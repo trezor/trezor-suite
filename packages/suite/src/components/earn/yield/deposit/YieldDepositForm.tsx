@@ -66,6 +66,11 @@ export const YieldDepositForm = () => {
         pendingTransaction?.type === 'wrap' ? pendingTransaction : undefined;
 
     const nativeSymbol = getNetworkDisplaySymbol(account.symbol);
+    // Approximate fiat value shown under the amount input, from the token's own rate.
+    const approxFiat = {
+        symbol: token.networkSymbol,
+        tokenContractAddress: token.contractAddress,
+    };
     const sequence = getYieldFlowStepSequence({
         flowType: 'deposit',
         isWrappedNativeVault: flow.isWrappedNativeVault,
@@ -267,10 +272,12 @@ export const YieldDepositForm = () => {
                                 content: () => (
                                     <YieldApproveStep
                                         token={token}
+                                        approxFiat={approxFiat}
                                         summaryValue={
                                             <FormattedCryptoAmount
                                                 value={maxAmount}
                                                 symbol={token.symbol}
+                                                isBalance
                                             />
                                         }
                                         approvedAmount={allowanceAmount || undefined}
@@ -316,10 +323,12 @@ export const YieldDepositForm = () => {
                                     <YieldActionStep
                                         flowType="deposit"
                                         token={token}
+                                        approxFiat={approxFiat}
                                         summaryValue={
                                             <FormattedCryptoAmount
                                                 value={maxAmount}
                                                 symbol={token.symbol}
+                                                isBalance
                                             />
                                         }
                                         warning={

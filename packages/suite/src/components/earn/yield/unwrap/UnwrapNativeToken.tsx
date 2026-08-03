@@ -7,13 +7,18 @@ import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
-import { type YieldFlowDisplayToken, type YieldFlowFormValues } from '@suite-common/wallet-core';
-import { type Account } from '@suite-common/wallet-types';
+import {
+    type YieldFlowDisplayToken,
+    type YieldFlowFormValues,
+    selectBaseCurrency,
+    useMissingRateTickersQuery,
+} from '@suite-common/wallet-core';
+import { type Account, toTokenAddress } from '@suite-common/wallet-types';
 import { Column, Text } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 
 import { submitUnwrapNativeTokenThunk } from 'src/actions/wallet/unwrapNativeTokenThunks';
-import { useDispatch } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 
 import { WrappedNativeFlowComplete } from '../common/WrappedNativeFlowComplete';
 import { YieldActionStepWarning } from '../common/YieldActionStepWarning';
@@ -60,6 +65,16 @@ export const UnwrapNativeToken = ({
     const isAmountValid = amount.gt(0) && !isAmountTooHigh && methods.formState.isValid;
 
     const nativeSymbol = getNetworkDisplaySymbol(account.symbol);
+
+    const baseCurrency = useSelector(selectBaseCurrency);
+    // The wrapped-native token (WETH) is not held as a balance, so its fiat rate is not fetched by
+    // the balance-driven path. Force-fetch it so the approximate fiat value can render.
+    useMissingRateTickersQuery({
+        baseCurrencyCode: baseCurrency,
+        missingRateTickers: [
+            { symbol: account.symbol, tokenAddress: toTokenAddress(tokenContractAddress) },
+        ],
+    });
     const wrappedToken: YieldFlowDisplayToken & { contractAddress: string } = {
         networkSymbol: account.symbol,
         symbol: tokenSymbol,
@@ -157,6 +172,7 @@ export const UnwrapNativeToken = ({
                         tokenSymbol={tokenSymbol}
                         tokenDecimals={tokenDecimals}
                         tokenBalance={tokenBalance}
+                        approxFiat={{ symbol: account.symbol, tokenContractAddress }}
                         isSubmitting={unwrapMutation.isPending}
                         isSubmitDisabled={!isAmountValid}
                         warning={
