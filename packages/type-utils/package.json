@@ -32,5 +32,6 @@
         "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
-    }
+    },
+    "author": "Trezor <info@trezor.io>"
 }
