@@ -163,10 +163,20 @@ export const refetchGraphThunk = createThunk<
             dispatch,
         });
     } catch (error) {
-        // Preserve the stack trace in the local console while storing only a sanitized message.
-        console.error(error);
-
         const graphError = getGraphError(error);
+
+        // Preserve the stack trace in the local console, but sanitize it first. suite-native
+        // enables Sentry's captureConsoleIntegration, which ships console.error args verbatim
+        // to Sentry (redactSentryEvent does not scrub exception/message bodies), and the raw
+        // error can embed the account descriptor + device static session id — the accountKey in
+        // `Account not found: <descriptor>-<symbol>-<staticSessionId>`. A raw console.error(error)
+        // would leak them, unlike the two sinks below which already scrub via
+        // omitErrorMessageSensitiveData.
+        const sanitizedError = new Error(omitErrorMessageSensitiveData(graphError.message));
+        sanitizedError.name = graphError.name;
+        sanitizedError.stack = omitErrorMessageSensitiveData(graphError.stack ?? '');
+        console.error(sanitizedError);
+
         checkAndReportGraphError(graphError);
 
         return rejectWithValue(omitErrorMessageSensitiveData(graphError.message));
