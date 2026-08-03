@@ -1,5 +1,6 @@
 import type { Requirement, RequirementScope } from './Requirement';
 import { requireAgentsSkills } from './agents-skills/requireAgentsSkills';
+import { requireConnectClosureUnifiedFields } from './connect-closure-fields/requireConnectClosureUnifiedFields';
 import { requireUnifiedDependencyVersions } from './dependency-versions/requireUnifiedDependencyVersions';
 import { requireDocsSummary } from './docs-summary/requireDocsSummary';
 import { requireEasignoreMobileClosure } from './easignore/requireEasignore';
@@ -14,6 +15,7 @@ import { requireTypeDeclarationSize } from './type-declarations/requireTypeDecla
 export const requirements: ReadonlyArray<Requirement<RequirementScope>> = [
     requireAgentsSkills,
     requireUnifiedDependencyVersions,
+    requireConnectClosureUnifiedFields,
     requireConnectPublicDependencies,
     requireDocsSummary,
     requireEasignoreMobileClosure,
