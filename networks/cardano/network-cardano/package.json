@@ -52,5 +52,9 @@
         "@fivebinaries/coin-selection": "3.0.0",
         "@trezor/utils": "workspace:*",
         "cbor": "^10.0.12"
-    }
+    },
+    "bugs": {
+        "url": "https://github.com/trezor/trezor-suite/issues"
+    },
+    "author": "Trezor <info@trezor.io>"
 }
