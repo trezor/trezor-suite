@@ -82,3 +82,48 @@ describe('transport-bridge core lock safety', () => {
         }
     });
 });
+
+/**
+ * `send` (the /post handler's core call) is the only v2 path NOT wrapped in
+ * `runInIsolation` (which converts throws to a structured `unknownError`). Its
+ * `thpState` comes verbatim from the untrusted /post request body and is fed to
+ * `ThpState.deserialize`, which throws on any malformed state. Without a guard
+ * that throw escapes the promise as an unhandled rejection and crashes the
+ * bridge utility process (device-communication DoS), because the http.ts /post
+ * chain has no `.catch()` and the bridge thread installs no unhandledRejection
+ * handler.
+ */
+describe('transport-bridge core send v2 robustness', () => {
+    it('resolves to a structured error (not a rejection) on a malformed thpState', async () => {
+        const core = createCore(createFakeApi(), muteLogger);
+        const { signal } = new AbortController();
+
+        try {
+            await core.enumerate({ signal });
+
+            const acquired = await core.acquire({
+                path: PathPublic('1'),
+                previous: 'null',
+                signal,
+                sessionOwner: 'A',
+            });
+            expect(acquired.success).toBe(true);
+            if (!acquired.success) return;
+
+            // `{}` fails ThpState.deserialize's shape checks (expectedResponses not an array),
+            // so the unguarded code would throw out of `send`. The guard must turn it into a
+            // resolved { success: false } instead of a rejected promise.
+            const result = await core.send({
+                session: acquired.payload.session,
+                data: '00',
+                protocol: 'v2',
+                thpState: {} as any,
+                signal,
+            });
+
+            expect(result.success).toBe(false);
+        } finally {
+            core.dispose();
+        }
+    });
+});

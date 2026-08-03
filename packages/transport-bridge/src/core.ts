@@ -336,11 +336,24 @@ export const createCore = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) =>
                 return error({ code: ERRORS.THP_STATE_ERROR, message: 'ThpStateMissing' });
             }
 
-            const state = new protocolThp.ThpState();
-            state.deserialize(thpState);
+            // `thpState` and `data` come straight from the (untrusted) request body, so a malformed
+            // state or non-decodable payload must resolve to a structured error instead of throwing
+            // out of this promise. Unlike `call`/`receive`, `send` is not wrapped in `runInIsolation`,
+            // so without this guard an unhandled rejection would crash the bridge (device-comm DoS).
+            let state: InstanceType<typeof protocolThp.ThpState>;
+            let bytes: Buffer;
+            let chunkHeader: Buffer;
+            try {
+                state = new protocolThp.ThpState();
+                state.deserialize(thpState);
 
-            const bytes = Buffer.from(data, 'hex');
-            const [, chunkHeader] = protocol.getHeaders(bytes);
+                bytes = Buffer.from(data, 'hex');
+                [, chunkHeader] = protocol.getHeaders(bytes);
+            } catch (err) {
+                logger?.error(`core: send: invalid v2 message: ${err.message}`);
+
+                return unknownError(err);
+            }
             const chunks = createChunks(bytes, chunkHeader, api.chunkSize);
 
             const writeResult = await sendThpMessage({
