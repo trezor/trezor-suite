@@ -1162,6 +1162,7 @@
   "TR_EARN_YIELD_ALLOWANCE_FETCH_FAILED": "Failed to fetch the approved amount.",
   "TR_EARN_YIELD_AMOUNT_TO_WITHDRAW": "Withdrawal amount",
   "TR_EARN_YIELD_APPROVAL_TOO_LOW": "Approval is too low. Change approval or lower amount.",
+  "TR_EARN_YIELD_APPROVE": "Approve",
   "TR_EARN_YIELD_APPROVED_AMOUNT": "Approved amount",
   "TR_EARN_YIELD_APPROVE_SPENDING_TRANSACTION": "Approve spending transaction",
   "TR_EARN_YIELD_APPROVE_TOKEN_BUTTON": "Approve {tokenSymbol}",
