@@ -37,6 +37,7 @@ export const setNetworkReserve = createAction(
 
 export const toggleHideSuspiciousTransactions = createAction(
     WALLET_SETTINGS.TOGGLE_HIDE_SUSPICIOUS_TRANSACTIONS,
+    (symbol: NetworkSymbol) => ({ payload: symbol }),
 );
 
 export const setAutoEjectEnabled = createAction(

@@ -1,9 +1,9 @@
 import { type ReactNode } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 
 import { selectFlags, setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import { selectHasActiveModal } from '@suite/modal';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     selectIsHideSuspiciousTransactions,
     toggleHideSuspiciousTransactions,
@@ -25,6 +25,8 @@ import {
 } from '@trezor/components';
 import { FunnelSimpleIcon } from '@trezor/icons';
 import { zIndices } from '@trezor/theme';
+
+import { useDispatch, useSelector } from 'src/hooks/suite';
 
 type FilterValue = boolean | string;
 
@@ -59,9 +61,15 @@ const suspiciousTransactionsOptions: readonly FilterOption[] = [
 const getSectionDefaultValue = (section: FilterSection) =>
     section.options.find(option => option.isDefault)?.value;
 
-export const FilterAction = () => {
+type FilterActionProps = {
+    symbol: NetworkSymbol;
+};
+
+export const FilterAction = ({ symbol }: FilterActionProps) => {
     const { suspiciousTransactionsTooltipClosed } = useSelector(selectFlags);
-    const suspiciousTransactionsHidden = useSelector(selectIsHideSuspiciousTransactions);
+    const suspiciousTransactionsHidden = useSelector(state =>
+        selectIsHideSuspiciousTransactions(state, symbol),
+    );
     const hasActiveModal = useSelector(selectHasActiveModal);
     const dispatch = useDispatch();
 
@@ -73,8 +81,8 @@ export const FilterAction = () => {
     const dataTest = '@wallet/accounts/hide-scam-transactions';
 
     const handleToggleSuspiciousTransactionsRequest = (requestedHidden: FilterValue) => {
-        if (requestedHidden === Boolean(suspiciousTransactionsHidden)) return;
-        dispatch(toggleHideSuspiciousTransactions());
+        if (requestedHidden === suspiciousTransactionsHidden) return;
+        dispatch(toggleHideSuspiciousTransactions(symbol));
     };
 
     const filterSections: FilterSection[] = [
@@ -82,7 +90,7 @@ export const FilterAction = () => {
             key: 'suspiciousTransactions',
             title: <Translation id="TR_SUSPICIOUS_TRANSACTIONS" />,
             options: suspiciousTransactionsOptions,
-            value: Boolean(suspiciousTransactionsHidden),
+            value: suspiciousTransactionsHidden,
             onChange: handleToggleSuspiciousTransactionsRequest,
         },
     ];

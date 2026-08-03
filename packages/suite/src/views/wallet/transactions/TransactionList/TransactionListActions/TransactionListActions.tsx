@@ -104,7 +104,7 @@ export const TransactionListActions = ({
                 }
             />
             {isTxFilteringEnabled && hasNetworkPotentialFraudTransactions(account.symbol) && (
-                <FilterAction />
+                <FilterAction symbol={account.symbol} />
             )}
             {isExportable && <ExportAction account={account} searchQuery={searchQuery} />}
         </Row>

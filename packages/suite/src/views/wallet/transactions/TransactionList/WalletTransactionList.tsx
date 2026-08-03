@@ -38,7 +38,9 @@ export const WalletTransactionList = ({
     isExportable = true,
 }: TransactionListProps) => {
     // NOTE: The number of the displayed pages may be different from the number of the pages for all transactions
-    const suspiciousTransactionsHidden = useSelector(selectIsHideSuspiciousTransactions);
+    const suspiciousTransactionsHidden = useSelector(state =>
+        selectIsHideSuspiciousTransactions(state, symbol),
+    );
     const fraudTransactionPossible =
         suspiciousTransactionsHidden && hasNetworkPotentialFraudTransactions(symbol);
     const [visiblePages, setVisiblePages] = useState(1);

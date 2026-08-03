@@ -206,7 +206,7 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
         reducer: walletSettingsReducer,
         persistedKeys: walletSettingsPersistedWhitelist,
         key: 'walletSettings',
-        version: 3,
+        version: 4,
         migrations: {
             1: initialMigrateAppSettingsAndDiscoveryConfig({
                 mmkvStorage: deps.mmkvStorage,
@@ -222,6 +222,19 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
                 const { discreetMode: _, ...rest } = oldState;
 
                 return rest;
+            },
+            4: (oldState: any /* FIXME */) => {
+                if (!oldState) return oldState;
+
+                // hideSuspiciousTransactions changed from a single boolean to a per-network
+                // record. Mobile has no UI for it, so the stored boolean is just dropped.
+                if (typeof oldState.hideSuspiciousTransactions === 'boolean') {
+                    const { hideSuspiciousTransactions: _, ...rest } = oldState;
+
+                    return rest;
+                }
+
+                return oldState;
             },
         },
         storage: deps.mmkvStorage,
