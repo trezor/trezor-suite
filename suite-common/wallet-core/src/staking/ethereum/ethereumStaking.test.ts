@@ -185,6 +185,38 @@ describe('getStakeTxGasLimit', () => {
     });
 });
 
+// Regression: the staking tx-build catch blocks must never console.error the raw error,
+// because its message can embed the exact staked amount (fromEther throws
+// `Value '<amount>' is invalid`) which captureConsoleIntegration would forward to Sentry.
+describe('staking error logging does not leak the amount to Sentry', () => {
+    // Serialize each logged arg the way Sentry's captureConsoleIntegration does (Error → message
+    // + stack, not JSON.stringify, whose {} would falsely pass against the vulnerable source).
+    const serializeSentryLike = (arg: unknown) =>
+        arg instanceof Error ? `${arg.message}\n${arg.stack ?? ''}` : String(arg);
+
+    it('getStakeTxGasLimit logs a static string, not the amount, when fromEther throws', async () => {
+        // 19 decimal places > 18 → fromEther(amount) throws with the amount interpolated.
+        const secretAmount = '0.1234567890123456789';
+        const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+
+        const result = await getStakeTxGasLimit({
+            stakeType: 'stake',
+            from: '0xfB0bc552ab5Fa1971E8530852753c957e29eEEFC',
+            amount: secretAmount,
+            symbol: 'eth',
+            identity: '0',
+        } as GetStakeTxGasLimitParams);
+
+        expect(result.success).toBe(false);
+        expect(errorSpy).toHaveBeenCalled();
+        const logged = errorSpy.mock.calls.flat().map(serializeSentryLike).join(' | ');
+        expect(logged).not.toContain(secretAmount);
+        expect(logged).not.toContain('1234567890123456789');
+
+        errorSpy.mockRestore();
+    });
+});
+
 type GetDaysArgs = {
     unstakeTxs: WalletAccountTransaction[];
     stakeTxs: WalletAccountTransaction[];

@@ -609,7 +609,11 @@ export const prepareStakeEthTx = async ({
             tx: transformedTx,
         };
     } catch (e) {
-        console.error(e);
+        // Do not log the raw error: the staking tx-build path surfaces messages that can embed
+        // the staked amount (fromEther throws `Value '<amount>' is invalid`) and, via backend
+        // estimateFee/getAccountInfo failures, the from-address. console.error is forwarded to
+        // Sentry via captureConsoleIntegration, so log a static string instead.
+        console.error('Failed to prepare Ethereum staking transaction');
 
         return {
             success: false,
@@ -655,7 +659,11 @@ export const prepareUnstakeEthTx = async ({
             tx: transformedTx,
         };
     } catch (e) {
-        console.error(e);
+        // Do not log the raw error: the staking tx-build path surfaces messages that can embed
+        // the staked amount (fromEther throws `Value '<amount>' is invalid`) and, via backend
+        // estimateFee/getAccountInfo failures, the from-address. console.error is forwarded to
+        // Sentry via captureConsoleIntegration, so log a static string instead.
+        console.error('Failed to prepare Ethereum staking transaction');
 
         return {
             success: false,
@@ -691,7 +699,11 @@ export const prepareClaimEthTx = async ({
             tx: transformedTx,
         };
     } catch (e) {
-        console.error(e);
+        // Do not log the raw error: the staking tx-build path surfaces messages that can embed
+        // the staked amount (fromEther throws `Value '<amount>' is invalid`) and, via backend
+        // estimateFee/getAccountInfo failures, the from-address. console.error is forwarded to
+        // Sentry via captureConsoleIntegration, so log a static string instead.
+        console.error('Failed to prepare Ethereum staking transaction');
 
         return {
             success: false,
@@ -744,8 +756,12 @@ export const getStakeTxGasLimit = async ({
             success: true,
             gasLimit: txData.gasLimit.toString(),
         };
-    } catch (error) {
-        console.error(error);
+    } catch {
+        // Do not log the raw error: the gas-limit path calls fromEther(amount) (throws
+        // `Value '<amount>' is invalid`, embedding the staked amount) and backend estimateFee/
+        // getAccountInfo (whose failure message can embed the from-address). console.error is
+        // forwarded to Sentry via captureConsoleIntegration, so log a static string instead.
+        console.error('Failed to estimate Ethereum staking gas limit');
 
         return {
             success: false,
