@@ -157,14 +157,14 @@ describe('Suite Actions', () => {
         it(`observeSelectedDevice: ${f.description}`, async () => {
             const state = getInitialState(f.state.suite, f.state.device);
             const store = mockStore(state);
-            const changed = await store.dispatch(observeSelectedDevice()).unwrap();
-            expect(changed).toEqual(f.changed);
+            const observeResult = await store.dispatch(observeSelectedDevice()).unwrap();
+            expect(observeResult).toEqual(f.observeResult);
 
             const actionTypes = filterThunkActionTypes(store.getActions()).map(
                 action => action.type,
             );
 
-            expect(actionTypes).toEqual(f.result ?? []);
+            expect(actionTypes).toEqual(f.actions ?? []);
         });
     });
 

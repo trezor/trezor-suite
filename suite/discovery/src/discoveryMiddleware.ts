@@ -6,6 +6,7 @@ import { selectThpAutoconnectStep, thpActions } from '@suite-common/thp';
 import {
     accountsActions,
     changeNetworks,
+    observeSelectedDevice,
     selectShouldRediscover,
     startOrRestartDiscoveryThunk,
 } from '@suite-common/wallet-core';
@@ -23,8 +24,11 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
 
         const device = selectSelectedDevice(getState());
         if (!device) return action;
-        const becomesAcquired = deviceActions.selectedDeviceBecomingAcquired.match(action);
-        const becomesConnected = deviceActions.selectedDeviceBecomingConnected.match(action);
+
+        const isObserveSelectedDeviceMatch = observeSelectedDevice.fulfilled.match(action);
+        const { isDeviceBecomingAcquired, isDeviceBecomingConnected } = isObserveSelectedDeviceMatch
+            ? action.payload
+            : { isDeviceBecomingAcquired: false, isDeviceBecomingConnected: false };
 
         /*
          The following conditions always block discovery:
@@ -34,7 +38,10 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
         if (!selectShouldRouterAppStartDiscovery(getState())) return action;
 
         // 2. Device must be idle, not locked.
-        const isDeviceReady = selectIsDeviceReadyToStartDiscovery(getState(), becomesAcquired);
+        const isDeviceReady = selectIsDeviceReadyToStartDiscovery(
+            getState(),
+            isDeviceBecomingAcquired,
+        );
         if (!isDeviceReady) return action;
 
         // 3. Discovery must be delayed if THP Autoconnect modal is open, because it is the only THP step that takes place
@@ -47,8 +54,8 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
          Start discovery only on the following actions:
         */
         if (
-            becomesAcquired ||
-            becomesConnected ||
+            isDeviceBecomingAcquired ||
+            isDeviceBecomingConnected ||
             isTHPAutoconnectFinished || // now that the THP Autoconnect was finished, resume the delayed discovery
             routerAppChanged.match(action) || // may no longer be one of the apps where discovery is disabled
             connectPopupCallThunkInner.fulfilled.match(action) ||
