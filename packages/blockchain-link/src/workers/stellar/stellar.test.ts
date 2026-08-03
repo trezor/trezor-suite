@@ -1,5 +1,5 @@
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
-import { NotFoundError } from '@trezor/network-stellar';
+import { NotFoundError } from '@trezor/coins-stellar';
 
 import { BlockchainLink } from '../../index';
 
