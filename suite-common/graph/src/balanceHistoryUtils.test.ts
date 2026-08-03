@@ -5,6 +5,8 @@ import {
     ethAccountBalanceHistoryResult,
     ethAccountTransactions,
     ethTokenBalanceHistoryResult,
+    l2AccountBalanceHistoryResult,
+    l2AccountTransactions,
 } from './__fixtures__/eth';
 import { xrpAccountTransactions, xrpBalanceHistoryResult } from './__fixtures__/xrp';
 import { getAccountHistoryMovementFromTransactions } from './balanceHistoryUtils';
@@ -69,6 +71,15 @@ describe('Account balance movement history', () => {
         });
 
         expect(balanceHistory.main).toMatchObject(ethAccountBalanceHistoryResult);
+    });
+
+    it('should use effectiveGasPrice and add l1Fee for L2 fees, falling back to gasPrice', async () => {
+        const balanceHistory = await getAccountHistoryMovementFromTransactions({
+            transactions: l2AccountTransactions,
+            symbol: 'op',
+        });
+
+        expect(balanceHistory.main).toMatchObject(l2AccountBalanceHistoryResult);
     });
 
     it('should getAccoutBalanceHistory for ethereum with timestamp filters', async () => {

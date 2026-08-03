@@ -262,6 +262,8 @@ export enum ReceiveStackRoutes {
     ReceiveAccounts = 'ReceiveAccounts',
     ReceiveAddress = 'ReceiveAddress',
     ReceiveAddressVerification = 'ReceiveAddressVerification',
+    ReceiveAddressList = 'ReceiveAddressList',
+    ReceiveAddressDetail = 'ReceiveAddressDetail',
 }
 
 export enum ReceiveAddressVerificationSource {

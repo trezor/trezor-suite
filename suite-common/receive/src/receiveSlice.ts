@@ -65,8 +65,6 @@ const markAddressTouched = (draft: ReceiveAccountState, path: string, address: s
             address,
         });
     }
-
-    draft.currentFreshAddress = undefined;
 };
 
 const receiveSlice = createSliceWithExtraDeps({
@@ -74,6 +72,12 @@ const receiveSlice = createSliceWithExtraDeps({
     initialState: receiveInitialState,
     reducers: {
         showAddress: (state, action: PayloadAction<ReceiveActionPayload>) => {
+            const accountState = getReceiveAccountState(state, action.payload.accountKey);
+
+            markAddressTouched(accountState, action.payload.path, action.payload.address);
+            accountState.currentFreshAddress = undefined;
+        },
+        touchAddress: (state, action: PayloadAction<ReceiveActionPayload>) => {
             const accountState = getReceiveAccountState(state, action.payload.accountKey);
 
             markAddressTouched(accountState, action.payload.path, action.payload.address);

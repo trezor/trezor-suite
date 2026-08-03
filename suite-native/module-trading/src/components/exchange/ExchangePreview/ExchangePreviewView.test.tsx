@@ -28,6 +28,7 @@ const mockUseExchangeIssue = jest.mocked(useExchangeIssue);
 describe('ExchangePreviewView', () => {
     beforeEach(() => {
         jest.clearAllMocks();
+
         mockUseDexExchangeTxSimulation.mockReturnValue({
             isEnabled: false,
             isLoading: false,
@@ -37,6 +38,7 @@ describe('ExchangePreviewView', () => {
         mockUseExchangeIssue.mockReturnValue({
             isSimulationEnabled: false,
             isSimulationLoading: false,
+            isSimulation: false,
             issue: null,
         });
     });

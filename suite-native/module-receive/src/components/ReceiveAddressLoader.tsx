@@ -4,7 +4,7 @@ import { type CloseActionType, Screen } from '@suite-native/navigation';
 import { getScreenWidth } from '@trezor/env-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
-import { ReceiveScreenHeader } from './ReceiveScreenHeader';
+import { ReceiveFreshAddressHeader } from './ReceiveFreshAddressHeader';
 
 const SCREEN_WIDTH = getScreenWidth();
 
@@ -26,7 +26,7 @@ export const ReceiveAddressLoader = ({
     return (
         <Screen
             header={
-                <ReceiveScreenHeader
+                <ReceiveFreshAddressHeader
                     tokenContract={tokenContract}
                     closeActionType={closeActionType}
                 />

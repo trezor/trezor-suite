@@ -18,6 +18,7 @@ type UseExchangeIssueParams = {
 type UseExchangeIssueResult = {
     isSimulationEnabled: boolean;
     isSimulationLoading: boolean;
+    isSimulation: boolean;
     issue: ExchangeIssue | null;
 };
 
@@ -46,10 +47,12 @@ export const useExchangeIssue = ({
     });
 
     const issue = getExchangeIssue({ simulationResult, fiatDeviation });
+    const isSimulation = !!simulationResult?.payload;
 
     return {
         isSimulationEnabled,
         isSimulationLoading,
+        isSimulation,
         issue,
     };
 };

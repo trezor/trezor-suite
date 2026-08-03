@@ -238,6 +238,40 @@ describe('stablecoinYieldReducer', () => {
             expect(getSession(state, 'deposit')?.step).toBe('action');
         });
 
+        it('carries the entered amount into the action step when the approval step is skipped', () => {
+            const state = stablecoinYieldReducer(
+                initSession('deposit'),
+                stablecoinYieldActions.skipApprovalStep({
+                    flowType: 'deposit',
+                    flowKey: FLOW_KEY,
+                    amount: '25',
+                }),
+            );
+
+            expect(getSession(state, 'deposit')?.step).toBe('action');
+            expect(getSession(state, 'deposit')?.action.amount).toBe('25');
+        });
+
+        it('clears modify mode when the approval step is skipped so the action step re-guards allowance', () => {
+            const modifying = stablecoinYieldReducer(
+                initSession('deposit'),
+                stablecoinYieldActions.enterModifyMode({ flowType: 'deposit', flowKey: FLOW_KEY }),
+            );
+            expect(getSession(modifying, 'deposit')?.approval.isModifyMode).toBe(true);
+
+            const state = stablecoinYieldReducer(
+                modifying,
+                stablecoinYieldActions.skipApprovalStep({
+                    flowType: 'deposit',
+                    flowKey: FLOW_KEY,
+                    amount: '25',
+                }),
+            );
+
+            expect(getSession(state, 'deposit')?.step).toBe('action');
+            expect(getSession(state, 'deposit')?.approval.isModifyMode).toBe(false);
+        });
+
         it('does not skip the wrap step when an allowance check resolves early', () => {
             const state = stablecoinYieldReducer(
                 initSession('deposit', true),

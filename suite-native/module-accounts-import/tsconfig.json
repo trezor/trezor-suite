@@ -47,6 +47,7 @@
             "path": "../../packages/blockchain-link-types"
         },
         { "path": "../../packages/connect" },
+        { "path": "../../packages/crypto-utils" },
         {
             "path": "../../packages/styles-native"
         },

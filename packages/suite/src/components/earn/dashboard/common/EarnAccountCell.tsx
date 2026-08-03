@@ -41,14 +41,15 @@ export const EarnAccountCell = ({
                         showNetworkIcon={showAssetNetworkIcon}
                         size={32}
                         isBordered={false}
+                        isTransparent={true}
                         wrappedTokenIcon="network"
                     />
                 ) : (
-                    <TokenIcon symbol={networkSymbol} size={32} />
+                    <TokenIcon symbol={networkSymbol} size={32} isTransparent={true} />
                 )}
             </Column>
 
-            <Column flex="1" overflow="hidden" gap={2}>
+            <Column flex="1" overflow="hidden" gap={4}>
                 <EarnAccountCellDetails
                     account={account}
                     networkSymbol={networkSymbol}

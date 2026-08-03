@@ -26,6 +26,8 @@ import {
     TradingExchangePreviewScreen,
     type TradingExchangePreviewScreenProps,
 } from './TradingExchangePreviewScreen';
+import { useDexExchangeTxSimulation } from '../hooks/exchange/useDexExchangeTxSimulation';
+import { useExchangeIssue } from '../hooks/exchange/useExchangeIssue';
 import { createTradingLightStore } from '../test-utils/tradingTestUtils';
 
 const btc1Account = getBtcAccount({ descriptor: asAccountDescriptor('btc1normal') });
@@ -42,6 +44,7 @@ jest.mock('@react-navigation/native', () => ({
     ...jest.requireActual('@react-navigation/native'),
     useNavigation: () => ({
         navigate: jest.fn(),
+        popToTop: jest.fn(),
         setOptions: jest.fn(),
     }),
     useRoute: () =>
@@ -77,6 +80,29 @@ jest.mock('../hooks/exchange/useExchangeFlow', () => ({
         },
     }),
 }));
+
+jest.mock('../hooks/exchange/useExchangeIssue', () => ({
+    useExchangeIssue: jest.fn(),
+}));
+jest.mock('../hooks/exchange/useDexExchangeTxSimulation', () => ({
+    useDexExchangeTxSimulation: jest.fn(),
+}));
+
+const mockUseExchangeIssue = jest.mocked(useExchangeIssue);
+const mockUseDexExchangeTxSimulation = jest.mocked(useDexExchangeTxSimulation);
+type SimulationResult = NonNullable<ReturnType<typeof useDexExchangeTxSimulation>['data']>;
+
+const createSimulationResult = (
+    payload: Partial<SimulationResult['payload']> = {},
+): SimulationResult => ({
+    method: 'ethereumSignTransaction',
+    payload: {
+        block: '123',
+        chain: 'ethereum',
+        needsDisclaimer: false,
+        ...payload,
+    },
+});
 
 const mockShowAlert = jest.fn();
 jest.mock('@suite-native/alerts', () => ({
@@ -157,6 +183,18 @@ describe('TradingExchangePreviewScreen', () => {
         jest.clearAllMocks();
         mockTxnErrorString = null;
         mockIsDeviceConnected = true;
+        mockUseExchangeIssue.mockReturnValue({
+            isSimulationEnabled: false,
+            isSimulationLoading: false,
+            isSimulation: false,
+            issue: null,
+        });
+        mockUseDexExchangeTxSimulation.mockReturnValue({
+            isEnabled: false,
+            isLoading: false,
+            error: null,
+            data: undefined,
+        });
 
         consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
 
@@ -307,6 +345,133 @@ describe('TradingExchangePreviewScreen', () => {
                 action: 'visit',
             }),
         });
+    });
+
+    it('reports a validation risk as a high-risk issue', () => {
+        mockUseExchangeIssue.mockReturnValue({
+            isSimulationEnabled: true,
+            isSimulationLoading: false,
+            isSimulation: true,
+            issue: {
+                type: 'high-risk',
+                severity: 'critical',
+                validation: {
+                    riskLevel: 'Warning',
+                    description: 'Risk detected',
+                    features: [],
+                },
+            },
+        });
+
+        const { reportMock } = renderTradingExchangePreviewScreen();
+
+        expect(reportMock).toHaveBeenCalledWith({
+            type: events.tradingExchangeIssueEvent.name,
+            payload: {
+                issue: 'high-risk',
+                isSimulation: true,
+            },
+        });
+    });
+
+    it('reports a returned simulation failure as a slippage-too-low issue', () => {
+        mockUseExchangeIssue.mockReturnValue({
+            isSimulationEnabled: true,
+            isSimulationLoading: false,
+            isSimulation: true,
+            issue: {
+                type: 'slippage-too-low',
+                severity: 'warning',
+            },
+        });
+
+        const { reportMock } = renderTradingExchangePreviewScreen();
+
+        expect(reportMock).toHaveBeenCalledWith({
+            type: events.tradingExchangeIssueEvent.name,
+            payload: {
+                issue: 'slippage-too-low',
+                isSimulation: true,
+            },
+        });
+    });
+
+    it.each([
+        [0.15, 'price-impact-warning', false],
+        [0.2, 'price-impact-critical', true],
+    ] as const)(
+        'reports deviation %s as %s with isSimulation=%s',
+        (deviation, issue, isSimulation) => {
+            mockUseExchangeIssue.mockReturnValue({
+                isSimulationEnabled: true,
+                isSimulationLoading: false,
+                isSimulation,
+                issue: {
+                    type: 'price-impact',
+                    severity: deviation >= 0.2 ? 'critical' : 'warning',
+                    deviation,
+                },
+            });
+            mockUseDexExchangeTxSimulation.mockReturnValue({
+                isEnabled: true,
+                isLoading: false,
+                error: null,
+                data: isSimulation ? createSimulationResult() : undefined,
+            });
+
+            const { reportMock } = renderTradingExchangePreviewScreen();
+
+            expect(reportMock).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    type: events.tradingExchangeIssueEvent.name,
+                    payload: expect.objectContaining({ issue, isSimulation }),
+                }),
+            );
+        },
+    );
+
+    it('does not report an equivalent exchange issue twice', () => {
+        const firstIssue = {
+            type: 'slippage-too-low' as const,
+            severity: 'warning' as const,
+        };
+        mockUseExchangeIssue.mockReturnValue({
+            isSimulationEnabled: true,
+            isSimulationLoading: false,
+            isSimulation: true,
+            issue: firstIssue,
+        });
+
+        const { result, reportMock } = renderTradingExchangePreviewScreen();
+        const countIssueEvents = () =>
+            reportMock.mock.calls.filter(
+                ([event]) => event.type === events.tradingExchangeIssueEvent.name,
+            ).length;
+
+        expect(countIssueEvents()).toBe(1);
+
+        result.rerender(
+            <TradingExchangePreviewScreen
+                navigation={createNavigationProps()}
+                route={createRouteProps()}
+            />,
+        );
+        expect(countIssueEvents()).toBe(1);
+
+        mockUseExchangeIssue.mockReturnValue({
+            isSimulationEnabled: true,
+            isSimulationLoading: false,
+            isSimulation: true,
+            issue: { ...firstIssue },
+        });
+        result.rerender(
+            <TradingExchangePreviewScreen
+                navigation={createNavigationProps()}
+                route={createRouteProps()}
+            />,
+        );
+
+        expect(countIssueEvents()).toBe(1);
     });
 
     it('should abort confirm trade on unmount', () => {

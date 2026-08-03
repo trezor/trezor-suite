@@ -1,8 +1,8 @@
 import { type CryptoId } from 'invity-api';
 
 import {
-    INVITY_API_RELOAD_QUOTES_AFTER_SECONDS,
     type MinimalExchangeFormProps,
+    TRADE_API_RELOAD_QUOTES_AFTER_SECONDS,
     tradingActions,
     tradingExchangeActions,
 } from '@suite-common/trading';
@@ -304,7 +304,7 @@ describe('useExchangeQuotes', () => {
         act(() => {
             store.dispatch(
                 tradingActions.setRefetchQuotesTimestamp(
-                    Date.now() - INVITY_API_RELOAD_QUOTES_AFTER_SECONDS * 1000,
+                    Date.now() - TRADE_API_RELOAD_QUOTES_AFTER_SECONDS * 1000,
                 ),
             );
         });
@@ -334,7 +334,7 @@ describe('useExchangeQuotes', () => {
         act(() => {
             store.dispatch(
                 tradingActions.setRefetchQuotesTimestamp(
-                    Date.now() - INVITY_API_RELOAD_QUOTES_AFTER_SECONDS * 1000,
+                    Date.now() - TRADE_API_RELOAD_QUOTES_AFTER_SECONDS * 1000,
                 ),
             );
         });

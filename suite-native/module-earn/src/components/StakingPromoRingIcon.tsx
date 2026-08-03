@@ -3,14 +3,13 @@ import { StyleSheet } from 'react-native';
 
 import { LinearGradient } from 'expo-linear-gradient';
 
-import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Box } from '@suite-native/atoms';
 import { Icon, type IconName } from '@suite-native/icons';
+import { type NetworkColor } from '@trezor/network-module-suite-common-types';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
-import { coinsColors } from '@trezor/theme';
 import { hexToRgba } from '@trezor/utils';
 
-type StakingPromoRingIconProps = { symbol?: NetworkSymbol } & (
+type StakingPromoRingIconProps = { networkColor?: NetworkColor } & (
     | { iconName: IconName; children?: never }
     | { iconName?: never; children: ReactNode }
 );
@@ -52,12 +51,15 @@ const iconOuterContainerStyle = prepareNativeStyle(
     }),
 );
 
-export const StakingPromoRingIcon = ({ iconName, children, symbol }: StakingPromoRingIconProps) => {
+export const StakingPromoRingIcon = ({
+    iconName,
+    children,
+    networkColor,
+}: StakingPromoRingIconProps) => {
     const { applyStyle } = useNativeStyles();
 
-    const coinColor = symbol ? coinsColors[symbol] : undefined;
-    const gradientColors = coinColor
-        ? ([hexToRgba(coinColor, 0.1), 'transparent'] as const)
+    const gradientColors = networkColor
+        ? ([hexToRgba(networkColor, 0.1), 'transparent'] as const)
         : undefined;
     const hasGradient = gradientColors !== undefined;
 

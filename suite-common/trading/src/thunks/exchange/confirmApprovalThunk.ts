@@ -4,7 +4,6 @@ import { createThunk } from '@suite-common/redux-utils';
 import { type Account } from '@suite-common/wallet-types';
 
 import { TRADING_EXCHANGE_THUNK_PREFIX } from '../../constants';
-import { invityAPI } from '../../invityAPI';
 import { tradingExchangeActions } from '../../reducers/exchangeReducer';
 import { tradingActions } from '../../reducers/tradingCommonReducer';
 import {
@@ -13,6 +12,7 @@ import {
     selectTradingExchangeReceiveAccountKey,
     selectTradingExchangeSelectedQuote,
 } from '../../selectors/tradingSelectors';
+import { tradeApi } from '../../tradeApi';
 import { getUnusedAddressFromAccount } from '../../utils';
 import { resolveExchangeTradeError } from '../../utils/exchange/resolveExchangeTradeError';
 import { logErrorThunk } from '../common/logErrorThunk';
@@ -62,7 +62,7 @@ export const confirmApprovalThunk = createThunk(
 
         dispatch(tradingExchangeActions.saveTransactionId(undefined));
 
-        const rawResponse = await invityAPI.doExchangeTrade({
+        const rawResponse = await tradeApi.doExchangeTrade({
             trade,
             receiveAddress,
             refundAddress,

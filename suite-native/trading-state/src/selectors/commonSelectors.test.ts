@@ -11,7 +11,7 @@ import {
     type TrezorDevice,
 } from '@suite-common/suite-types';
 import {
-    type InvityServerEnvironment,
+    type TradeServerEnvironment,
     type TradingCountryCode,
     type TradingRootStateWithDeviceAndAccounts,
     selectTradingProviderMetadata,
@@ -205,7 +205,7 @@ describe('commonSelectors', () => {
         it('should correctly select trading environment', () => {
             const state = {
                 ...tradingInitialState,
-                tradingEnvironment: 'staging' as InvityServerEnvironment,
+                tradingEnvironment: 'staging' as TradeServerEnvironment,
             };
 
             expect(selectTradingEnvironment({ wallet: { trading: state } })).toBe('staging');

@@ -33,11 +33,10 @@ import {
     type YieldApprovalLimitType,
     type YieldReviewSigningResult,
 } from '../types';
-import { handleEarnReviewError, isUserCancelledSignError } from '../utils';
+import { isUserCancelledSignError } from '../utils';
 import { getYieldApprovalAnalyticsType } from '../utils/yieldAnalyticsUtils';
 import { getYieldAllowanceFormDraftKey } from '../yieldApprovalThunks';
-import { useShowDeviceDisconnectedDuringEarnReviewAlert } from './useShowDeviceDisconnectedDuringEarnReviewAlert';
-import { useShowPushTransactionFailedDuringReviewAlert } from './useShowPushTransactionFailedDuringReviewAlert';
+import { useHandleEarnReviewError } from './useHandleEarnReviewError';
 import { useYieldApprovalReviewNavigation } from './useYieldApprovalReviewNavigation';
 import { useYieldApprovalReviewTransaction } from './useYieldApprovalReviewTransaction';
 
@@ -75,9 +74,8 @@ export const useYieldApprovalReview = ({
     const dispatch = useDispatch();
     const navigation = useNavigation<NavigationProps>();
     const { analytics } = useServices(selectNativeAnalyticsDep);
-    const showDeviceDisconnectedAlert = useShowDeviceDisconnectedDuringEarnReviewAlert();
     const reviewAlertType = transactionType === 'revoke' ? 'yield-revoke' : 'yield-approval';
-
+    const handleReviewError = useHandleEarnReviewError(reviewAlertType, navigation);
     const reportApprovalReviewEvent = useCallback(
         (payload: { action: 'continue' | 'cancel' } | { errorMessage: string }) => {
             const networkSymbol = flowData.account.symbol;
@@ -109,8 +107,6 @@ export const useYieldApprovalReview = ({
         },
         [analytics, approvalLimitType, flowData.account.symbol, flowData.vault.id, transactionType],
     );
-    const { showPendingTransactionConflictAlert, showPushTransactionFailedAlert } =
-        useShowPushTransactionFailedDuringReviewAlert(reviewAlertType);
     const formDraftKey = useMemo(
         () => getYieldAllowanceFormDraftKey(flowKey, transactionType),
         [flowKey, transactionType],
@@ -174,15 +170,9 @@ export const useYieldApprovalReview = ({
         if (!deviceAccessResponse.success) {
             setIsSigningApproval(false);
             reportApprovalReviewEvent({ errorMessage: 'submit-failed' });
-            handleEarnReviewError({
-                payload: {
-                    error: 'sign-transaction-failed',
-                    message: 'Prioritized device access failed.',
-                },
-                navigation,
-                showPushTransactionFailedAlert,
-                showPendingTransactionConflictAlert,
-                showDeviceDisconnectedAlert,
+            handleReviewError({
+                error: 'sign-transaction-failed',
+                message: 'Prioritized device access failed.',
             });
 
             return 'failed';
@@ -200,13 +190,7 @@ export const useYieldApprovalReview = ({
             }
 
             reportApprovalReviewEvent({ errorMessage: 'submit-failed' });
-            handleEarnReviewError({
-                payload: signTransactionResponse.payload,
-                navigation,
-                showPushTransactionFailedAlert,
-                showPendingTransactionConflictAlert,
-                showDeviceDisconnectedAlert,
-            });
+            handleReviewError(signTransactionResponse.payload);
 
             return 'failed';
         }
@@ -217,14 +201,11 @@ export const useYieldApprovalReview = ({
     }, [
         dispatch,
         flowData.account,
+        handleReviewError,
         isApprovalSigned,
         isSigningApproval,
-        navigation,
         reportApprovalReviewEvent,
         reviewTransaction,
-        showDeviceDisconnectedAlert,
-        showPendingTransactionConflictAlert,
-        showPushTransactionFailedAlert,
     ]);
 
     const handleApprovalSubmitted = useCallback(async () => {
@@ -244,13 +225,7 @@ export const useYieldApprovalReview = ({
         if (isRejected(pushResponse)) {
             setIsSendingApproval(false);
             reportApprovalReviewEvent({ errorMessage: 'push-failed' });
-            handleEarnReviewError({
-                payload: pushResponse.payload,
-                navigation,
-                showPushTransactionFailedAlert,
-                showPendingTransactionConflictAlert,
-                showDeviceDisconnectedAlert,
-            });
+            handleReviewError(pushResponse.payload);
 
             return;
         }
@@ -281,6 +256,7 @@ export const useYieldApprovalReview = ({
         flowData.account,
         flowKey,
         formDraftKey,
+        handleReviewError,
         isApprovalSigned,
         isMevProtectionEnabled,
         isMevProtectionFeatureEnabled,
@@ -289,9 +265,6 @@ export const useYieldApprovalReview = ({
         navigation,
         reportApprovalReviewEvent,
         reviewTransaction?.precomposedTransaction.fee,
-        showDeviceDisconnectedAlert,
-        showPendingTransactionConflictAlert,
-        showPushTransactionFailedAlert,
         transactionType,
     ]);
 

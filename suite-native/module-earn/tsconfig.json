@@ -27,6 +27,7 @@
             "path": "../../suite-common/message-system"
         },
         { "path": "../../suite-common/mev" },
+        { "path": "../../suite-common/networks" },
         {
             "path": "../../suite-common/react-query"
         },
@@ -87,6 +88,9 @@
         },
         { "path": "../../packages/connect" },
         { "path": "../../packages/device-utils" },
+        {
+            "path": "../../networks/network-module/network-module-suite-common-types"
+        },
         {
             "path": "../../networks/solana/network-solana"
         },

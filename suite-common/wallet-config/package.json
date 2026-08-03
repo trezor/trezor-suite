@@ -18,6 +18,7 @@
         "@suite-common/earn-stablecoin-defs": "workspace:*",
         "@suite-common/networks": "workspace:*",
         "@suite-common/wallet-constants": "workspace:*",
+        "@trezor/crypto-utils": "workspace:*",
         "@trezor/device-utils": "workspace:*",
         "@trezor/network-cardano": "workspace:*",
         "@trezor/network-ripple": "workspace:*",

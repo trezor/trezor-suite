@@ -1,6 +1,12 @@
 import { selectSelectedDevice } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
-import { transformTx, verifyEthereumStakingCalldata } from '@suite-common/staking';
+import {
+    getEthereumStakingLiveStateErrorMessage,
+    getUnstakeAmountFromCalldata,
+    transformTx,
+    verifyEthereumStakingCalldata,
+    verifyEthereumStakingLiveState,
+} from '@suite-common/staking';
 import { getNetwork } from '@suite-common/wallet-config';
 import { WALLET_SDK_SOURCE_MOBILE } from '@suite-common/wallet-constants';
 import {
@@ -15,7 +21,7 @@ import {
     type PrecomposedTransactionFinal,
     type StakeFormState,
 } from '@suite-common/wallet-types';
-import { fromEther, getFormDraftKey } from '@suite-common/wallet-utils';
+import { fromEther, getAccountIdentity, getFormDraftKey } from '@suite-common/wallet-utils';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import TrezorConnect, { type FeeLevel } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils';
@@ -184,6 +190,27 @@ export const signEthereumStakingTransactionNativeThunk = createThunk<
             if (!prepared.ok) return rejectWithValue(prepared.error);
 
             const { account, chainId, gasLimit, variant, feeLevel, formState } = prepared.context;
+
+            const liveState = await verifyEthereumStakingLiveState({
+                stakeType,
+                from: account.descriptor,
+                symbol: account.symbol,
+                identity: getAccountIdentity(account),
+                amount:
+                    stakeType === 'unstake'
+                        ? (getUnstakeAmountFromCalldata(variant.calldata) ?? undefined)
+                        : undefined,
+            });
+            if (!liveState.isValid) {
+                console.error(
+                    `${LOG_PREFIX}: Live-state validation failed for ${stakeType}: ${liveState.reason.code}`,
+                );
+
+                return rejectWithValue({
+                    error: 'stake-live-state-invalid',
+                    message: getEthereumStakingLiveStateErrorMessage(liveState.reason),
+                });
+            }
 
             dispatch(
                 sendFormActions.storePrecomposedTransaction({

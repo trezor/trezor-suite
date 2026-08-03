@@ -1,4 +1,8 @@
-import { Horizon, Networks } from '@stellar/stellar-sdk';
+import { Horizon, Networks, NotFoundError } from '@stellar/stellar-sdk';
+
+export { NotFoundError };
+
+export const isNotFoundError = (error: unknown) => error instanceof NotFoundError;
 
 export const getStellarConnection = async (url: string, userAgent?: string) => {
     const api = new Horizon.Server(url, {

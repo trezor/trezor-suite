@@ -32,6 +32,7 @@ export enum EventType {
     AccountsBalance = 'accounts/balance',
     OnboardingStepViewed = 'onboarding/step-viewed',
     OnboardingFeedbackBannerClicked = 'onboarding/feedback-banner',
+    OnboardingRecoveryWarningCreateNewWallet = 'onboarding/recovery-warning/create-new-wallet',
     PromoNoDeviceEshopCta = 'promo/no-device-eshop-cta',
     GuideSupportChatOpened = 'guide/support-chat-opened',
     YieldEarnDashboardReady = 'yield/earn-dashboard-ready',

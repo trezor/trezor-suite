@@ -374,7 +374,11 @@ const observeSelectedDevice = [
         action: {
             type: 'foo',
         },
-        changed: false,
+        observeResult: {
+            isDeviceChanged: false,
+            isDeviceBecomingAcquired: false,
+            isDeviceBecomingConnected: false,
+        },
     },
     {
         description: `no selected device in reducer`,
@@ -382,7 +386,11 @@ const observeSelectedDevice = [
         action: {
             type: DEVICE.CONNECT,
         },
-        changed: false,
+        observeResult: {
+            isDeviceChanged: false,
+            isDeviceBecomingAcquired: false,
+            isDeviceBecomingConnected: false,
+        },
     },
     {
         description: `device not changed`,
@@ -396,10 +404,14 @@ const observeSelectedDevice = [
                 devices: [SUITE_DEVICE],
             },
         },
-        changed: false,
+        observeResult: {
+            isDeviceChanged: false,
+            isDeviceBecomingAcquired: false,
+            isDeviceBecomingConnected: false,
+        },
     },
     {
-        description: `device is changed`,
+        description: `device is changed when it becomes connected`,
         action: {
             type: DEVICE.CONNECT,
         },
@@ -414,8 +426,12 @@ const observeSelectedDevice = [
                 ],
             },
         },
-        result: deviceActions.updateSelectedDevice.type,
-        changed: true,
+        actions: [deviceActions.updateSelectedDevice.type],
+        observeResult: {
+            isDeviceChanged: true,
+            isDeviceBecomingAcquired: false,
+            isDeviceBecomingConnected: true,
+        },
     },
     {
         description: `device is changed (missing in reducer)`,
@@ -429,7 +445,62 @@ const observeSelectedDevice = [
                 devices: [],
             },
         },
-        changed: true,
+        observeResult: {
+            isDeviceChanged: true,
+            isDeviceBecomingAcquired: false,
+            isDeviceBecomingConnected: false,
+        },
+    },
+    {
+        description: `device is changed and becomes acquired`,
+        action: {
+            type: DEVICE.CONNECT,
+        },
+        state: {
+            suite: {},
+            device: {
+                selectedDevice: SUITE_DEVICE_UNACQUIRED,
+                devices: [
+                    mockSuiteDevice({
+                        path: SUITE_DEVICE_UNACQUIRED.path,
+                        connected: true,
+                    }),
+                ],
+            },
+        },
+        actions: [deviceActions.updateSelectedDevice.type],
+        observeResult: {
+            isDeviceChanged: true,
+            isDeviceBecomingAcquired: true,
+            isDeviceBecomingConnected: true,
+        },
+    },
+    {
+        description: `device is already connected and becomes acquired`,
+        action: {
+            type: DEVICE.CONNECT,
+        },
+        state: {
+            suite: {},
+            device: {
+                selectedDevice: {
+                    ...SUITE_DEVICE_UNACQUIRED,
+                    connected: true,
+                },
+                devices: [
+                    mockSuiteDevice({
+                        path: SUITE_DEVICE_UNACQUIRED.path,
+                        connected: true,
+                    }),
+                ],
+            },
+        },
+        actions: [deviceActions.updateSelectedDevice.type],
+        observeResult: {
+            isDeviceChanged: true,
+            isDeviceBecomingAcquired: true,
+            isDeviceBecomingConnected: false,
+        },
     },
 ];
 

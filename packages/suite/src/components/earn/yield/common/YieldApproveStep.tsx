@@ -5,7 +5,7 @@ import type {
     YieldFlowDisplayToken,
     YieldPendingTransactionState,
 } from '@suite-common/wallet-core';
-import { Banner, Button, Column } from '@trezor/components';
+import { Banner, Button, Column, Row } from '@trezor/components';
 import { WarningIcon } from '@trezor/icons';
 import { exhaustive } from '@trezor/type-utils';
 
@@ -44,6 +44,7 @@ export type YieldApproveStepProps = {
     pendingApproveTransaction?: YieldPendingTransactionState;
     onMaxClick?: () => void;
     onApprovalSubmit?: () => void;
+    onSkip?: () => void;
     onRevoke?: () => void;
     onPendingTxClick: (txid: string) => void;
 };
@@ -62,6 +63,7 @@ export const YieldApproveStep = ({
     pendingApproveTransaction,
     onMaxClick,
     onApprovalSubmit,
+    onSkip,
     onRevoke,
     onPendingTxClick,
 }: YieldApproveStepProps) => {
@@ -95,16 +97,30 @@ export const YieldApproveStep = ({
                 isDisabled={!!pendingApproveTransaction}
             />
 
-            <Button
-                size="large"
-                width="100%"
-                data-testid="@yield/form/approve-button"
-                onClick={onApprovalSubmit}
-                isDisabled={isDisabled || !!pendingApproveTransaction || !onApprovalSubmit}
-                isLoading={isLoading}
-            >
-                <Translation id={approveButtonId} values={{ tokenSymbol: token.symbol }} />
-            </Button>
+            <Row gap={8} width="100%">
+                <Button
+                    size="large"
+                    flex="1"
+                    data-testid="@yield/form/approve-button"
+                    onClick={onApprovalSubmit}
+                    isDisabled={isDisabled || !!pendingApproveTransaction || !onApprovalSubmit}
+                    isLoading={isLoading}
+                >
+                    <Translation id={approveButtonId} values={{ tokenSymbol: token.symbol }} />
+                </Button>
+                {onSkip && (
+                    <Button
+                        size="large"
+                        intent="neutral"
+                        priority="secondary"
+                        data-testid="@yield/form/approve-skip-button"
+                        onClick={onSkip}
+                        isDisabled={isLoading || !!pendingApproveTransaction}
+                    >
+                        <Translation id="TR_SKIP" />
+                    </Button>
+                )}
+            </Row>
 
             {approvalAction === 'revoke' && !isDisabled && (
                 <Banner

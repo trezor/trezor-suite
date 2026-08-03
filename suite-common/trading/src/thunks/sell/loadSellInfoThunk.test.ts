@@ -3,17 +3,17 @@ import { type CryptoId, type SellListResponse, type SellProviderInfo } from 'inv
 
 import { configureMockStore } from '@suite-common/test-utils';
 
-import { invityAPI } from '../../invityAPI';
 import { sellInitialState, tradingSellReducer } from '../../reducers/sellReducer';
 import { regional } from '../../regional';
+import { tradeApi } from '../../tradeApi';
 
 import { sellThunks } from './index';
 
 describe('loadSellInfoThunk', () => {
-    jest.mock('../../invityAPI');
+    jest.mock('../../tradeApi');
 
-    invityAPI.setInvityServersEnvironment = () => {};
-    invityAPI.createInvityAPIKey = () => {};
+    tradeApi.setServersEnvironment = () => {};
+    tradeApi.createApiKey = () => {};
 
     const sellProvider: SellProviderInfo = {
         name: 'test',
@@ -53,7 +53,7 @@ describe('loadSellInfoThunk', () => {
             country: 'CZ',
         };
 
-        invityAPI.getSellList = () => Promise.resolve(sellInfoApi);
+        tradeApi.getSellList = () => Promise.resolve(sellInfoApi);
 
         const sellInfoData = await store.dispatch(sellThunks.loadInfoThunk()).unwrap();
 
@@ -78,7 +78,7 @@ describe('loadSellInfoThunk', () => {
             country: 'CZ',
         };
 
-        invityAPI.getSellList = () => Promise.resolve(sellInfoApi);
+        tradeApi.getSellList = () => Promise.resolve(sellInfoApi);
 
         const sellInfoData = await store.dispatch(sellThunks.loadInfoThunk()).unwrap();
 
@@ -93,7 +93,7 @@ describe('loadSellInfoThunk', () => {
     });
 
     it('should load default data object when response is unsuccessful', async () => {
-        invityAPI.getSellList = () => Promise.resolve(undefined as unknown as SellListResponse);
+        tradeApi.getSellList = () => Promise.resolve(undefined as unknown as SellListResponse);
 
         const sellInfoData = await store.dispatch(sellThunks.loadInfoThunk()).unwrap();
 

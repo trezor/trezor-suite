@@ -1,5 +1,5 @@
 import {
-    INVITY_API_RELOAD_QUOTES_AFTER_SECONDS,
+    TRADE_API_RELOAD_QUOTES_AFTER_SECONDS,
     tradingActions,
     tradingSellActions,
 } from '@suite-common/trading';
@@ -209,7 +209,7 @@ describe('useSellQuotes', () => {
         dispatchSpy.mockClear();
 
         act(() => {
-            jest.advanceTimersByTime(INVITY_API_RELOAD_QUOTES_AFTER_SECONDS * 1000);
+            jest.advanceTimersByTime(TRADE_API_RELOAD_QUOTES_AFTER_SECONDS * 1000);
         });
 
         expect(dispatchSpy).toHaveBeenCalledTimes(1);
@@ -236,7 +236,7 @@ describe('useSellQuotes', () => {
         dispatchSpy.mockClear();
 
         act(() => {
-            jest.advanceTimersByTime(INVITY_API_RELOAD_QUOTES_AFTER_SECONDS * 1000);
+            jest.advanceTimersByTime(TRADE_API_RELOAD_QUOTES_AFTER_SECONDS * 1000);
         });
 
         expect(dispatchSpy).not.toHaveBeenCalledWith(

@@ -52,6 +52,28 @@ type ExchangeTransactionNotification = {
     metadata: FormStateTradingExchange;
 } & TransactionNotificationPayload;
 
+export type WrapTransactionAsset = {
+    symbol: NetworkSymbol;
+    displaySymbol: string;
+    contractAddress?: string;
+    amount: string;
+};
+
+type WrapTransactionMetadata = {
+    send: WrapTransactionAsset;
+    receive: WrapTransactionAsset;
+};
+
+type WrapTransactionNotification = {
+    type: 'tx-wrap';
+    metadata: WrapTransactionMetadata;
+} & TransactionNotificationPayload;
+
+type UnwrapTransactionNotification = {
+    type: 'tx-unwrap';
+    metadata: WrapTransactionMetadata;
+} & TransactionNotificationPayload;
+
 type ReceivedTransactionNotification = {
     type: 'tx-received' | 'tx-confirmed';
     token?: Pick<TokenInfo, 'contract' | 'name' | 'symbol'>;
@@ -80,17 +102,6 @@ type YieldWithdrawTransactionNotification = {
 type YieldClaimTransactionNotification = {
     type: 'tx-yield-claim';
 } & BaseTransactionNotificationPayload;
-
-// Wrap/unwrap toasts show the amount in the destination unit: the wrapped-native token (WETH) for
-// a wrap, the native coin (ETH) for an unwrap. That destination unit is baked into `formattedAmount`
-// by the dispatcher.
-type WrapNativeTokenTransactionNotification = {
-    type: 'tx-wrap';
-} & TransactionNotificationPayload;
-
-type UnwrapNativeTokenTransactionNotification = {
-    type: 'tx-unwrap';
-} & TransactionNotificationPayload;
 
 export type ErrorToastPayload = {
     type:
@@ -163,6 +174,8 @@ export type ToastPayload<TranslationKey extends UnknownTranslationKey = UnknownT
     | ApproveTransactionNotification
     | RevokeTransactionNotification
     | ExchangeTransactionNotification
+    | WrapTransactionNotification
+    | UnwrapTransactionNotification
     | RawSentTransactionNotification
     | ErrorToastPayload
     | {
@@ -218,8 +231,6 @@ export type ToastPayload<TranslationKey extends UnknownTranslationKey = UnknownT
     | YieldDepositTransactionNotification
     | YieldWithdrawTransactionNotification
     | YieldClaimTransactionNotification
-    | WrapNativeTokenTransactionNotification
-    | UnwrapNativeTokenTransactionNotification
     | {
           type: 'cannot-open-bluetooth-settings-error';
       }

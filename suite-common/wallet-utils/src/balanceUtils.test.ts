@@ -16,6 +16,7 @@ test('formatBalanceUtils', () => {
     expect(formatCoinBalance('1000')).toEqual('1,000');
     expect(formatCoinBalance('1000.0001')).toEqual('1,000.0001');
     expect(formatCoinBalance('1000.000000001')).toEqual('1,000.00');
+    expect(formatCoinBalance('1001.000000001')).toEqual('1,001.00');
     expect(formatCoinBalance('2600.1')).toEqual('2,600.1');
     expect(formatCoinBalance('200000')).toEqual('200,000');
     expect(formatCoinBalance('2000000')).toEqual('2,000,000');

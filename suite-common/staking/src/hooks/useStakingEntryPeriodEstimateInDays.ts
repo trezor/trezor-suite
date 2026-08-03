@@ -8,7 +8,7 @@ import {
 } from '@suite-common/wallet-utils';
 import { SOLANA_EPOCH_DAYS } from '@trezor/network-solana/constants';
 
-import { getDaysToAddToPool } from '../utils/ethereumStaking';
+import { getDaysToAddToPool } from '../ethereumStaking';
 
 type UseStakingEntryPeriodEstimateInDaysParams = {
     account: Account | null;

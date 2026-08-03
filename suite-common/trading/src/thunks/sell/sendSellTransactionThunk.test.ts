@@ -8,10 +8,10 @@ import { type Account } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 
 import { accountBtc } from '../../__fixtures__/utils';
-import { invityAPI } from '../../invityAPI';
 import { type TradingSellState, sellInitialState } from '../../reducers/sellReducer';
 import { initialState } from '../../reducers/tradingCommonReducer';
 import { prepareTradingReducer } from '../../reducers/tradingReducer';
+import { tradeApi } from '../../tradeApi';
 import { type TradingTransactionSell } from '../../types';
 import { sellUtilsFixtures } from '../../utils/sell/__fixtures__/sellUtils';
 import { tradingThunks } from '../common';
@@ -102,7 +102,7 @@ describe('sendSellTransactionThunk', () => {
         ])('%s', async (_, tradeTest) => {
             const { store, account, mockNextStep } = getMocks();
 
-            jest.spyOn(invityAPI, 'doSellConfirm');
+            jest.spyOn(tradeApi, 'doSellConfirm');
 
             const result = await store.dispatch(
                 sellThunks.sendTransactionThunk({
@@ -121,7 +121,7 @@ describe('sendSellTransactionThunk', () => {
 
             expect(tradingState.modalAccountKey).toBe(account.key);
             expect(tradingThunks.recomposeAndSignTxThunk).toHaveBeenCalledTimes(0);
-            expect(invityAPI.doSellConfirm).toHaveBeenCalledTimes(0);
+            expect(tradeApi.doSellConfirm).toHaveBeenCalledTimes(0);
             expect(mockNextStep).not.toHaveBeenCalled();
             expect(tradingState.trades).toEqual([]);
             expect(tradingState.sell.transactionId).toBeUndefined();
@@ -151,7 +151,7 @@ describe('sendSellTransactionThunk', () => {
                 ),
             );
 
-            jest.spyOn(invityAPI, 'doSellConfirm');
+            jest.spyOn(tradeApi, 'doSellConfirm');
 
             const result = await store.dispatch(
                 sellThunks.sendTransactionThunk({
@@ -167,7 +167,7 @@ describe('sendSellTransactionThunk', () => {
 
             expect(tradingState.modalAccountKey).toBe(account.key);
             expect(tradingThunks.recomposeAndSignTxThunk).toHaveBeenCalledTimes(1);
-            expect(invityAPI.doSellConfirm).toHaveBeenCalledTimes(0);
+            expect(tradeApi.doSellConfirm).toHaveBeenCalledTimes(0);
             expect(mockNextStep).not.toHaveBeenCalled();
             expect(tradingState.trades).toEqual([]);
             expect(tradingState.sell.transactionId).toBeUndefined();
@@ -206,7 +206,7 @@ describe('sendSellTransactionThunk', () => {
         ])('%s', async (_, response, error) => {
             const { store, account, trade, mockNextStep } = getMocks();
 
-            invityAPI.doSellConfirm = () => Promise.resolve(response as unknown as SellFiatTrade);
+            tradeApi.doSellConfirm = () => Promise.resolve(response as unknown as SellFiatTrade);
 
             const result = await store.dispatch(
                 sellThunks.sendTransactionThunk({
@@ -244,7 +244,7 @@ describe('sendSellTransactionThunk', () => {
             orderId: 'orderId',
         } as SellFiatTrade;
 
-        invityAPI.doSellConfirm = () => Promise.resolve(responseData);
+        tradeApi.doSellConfirm = () => Promise.resolve(responseData);
 
         const result = await store.dispatch(
             sellThunks.sendTransactionThunk({
@@ -285,7 +285,7 @@ describe('sendSellTransactionThunk', () => {
             orderId: 'orderId',
         } as SellFiatTrade;
 
-        invityAPI.doSellConfirm = () => Promise.resolve(responseData);
+        tradeApi.doSellConfirm = () => Promise.resolve(responseData);
 
         const result = await store.dispatch(
             sellThunks.sendTransactionThunk({
@@ -334,7 +334,7 @@ describe('sendSellTransactionThunk', () => {
             orderId: 'orderId',
         } as SellFiatTrade;
 
-        invityAPI.doSellConfirm = () => Promise.resolve(responseData);
+        tradeApi.doSellConfirm = () => Promise.resolve(responseData);
 
         const result = await store.dispatch(
             sellThunks.sendTransactionThunk({

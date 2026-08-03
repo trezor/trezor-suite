@@ -1,11 +1,10 @@
 import { createThunk } from '@suite-common/redux-utils';
 
 import {
-    INVITY_API_RELOAD_DATA_AFTER_MS,
+    TRADE_API_RELOAD_DATA_AFTER_MS,
     TRADING_FALLBACK_API_KEY,
     TRADING_THUNK_PREFIX,
 } from '../../constants';
-import { invityAPI } from '../../invityAPI';
 import { tradingBuyActions } from '../../reducers/buyReducer';
 import { tradingExchangeActions } from '../../reducers/exchangeReducer';
 import { tradingSellActions } from '../../reducers/sellReducer';
@@ -18,6 +17,7 @@ import {
     selectTradingLoadingAndTimestamp,
     selectTradingSellInfo,
 } from '../../selectors/tradingSelectors';
+import { tradeApi } from '../../tradeApi';
 import { type TradingType } from '../../types';
 import { loadBuyInfoThunk } from '../buy/loadBuyInfoThunk';
 import { loadExchangeInfoThunk } from '../exchange/loadExchangeInfoThunk';
@@ -46,25 +46,25 @@ export const loadInitialDataThunk = createThunk(
         const { isLoading, lastLoadedTimestamp } = selectTradingLoadingAndTimestamp(getState());
         const { platforms, coins } = selectTradingInfo(getState());
 
-        const currentAccountDescriptor = invityAPI.getCurrentAccountDescriptor();
+        const currentAccountDescriptor = tradeApi.getCurrentAccountDescriptor();
         const isDifferentAccount = currentAccountDescriptor !== account?.descriptor;
-        const areDataOutdated = lastLoadedTimestamp + INVITY_API_RELOAD_DATA_AFTER_MS < Date.now();
+        const areDataOutdated = lastLoadedTimestamp + TRADE_API_RELOAD_DATA_AFTER_MS < Date.now();
 
         dispatch(tradingActions.setTradingActiveSection(activeSection));
 
         if (!isLoading && (isDifferentAccount || areDataOutdated)) {
             dispatch(tradingActions.setLoading({ isLoading: true }));
 
-            const invityServerEnvironment = extra.selectors.selectTradingEnvironment(getState());
-            if (invityServerEnvironment) {
-                invityAPI.setInvityServersEnvironment(invityServerEnvironment);
+            const tradeServerEnvironment = extra.selectors.selectTradingEnvironment(getState());
+            if (tradeServerEnvironment) {
+                tradeApi.setServersEnvironment(tradeServerEnvironment);
             }
 
             const apiKey = account?.descriptor || forcedApiKey || TRADING_FALLBACK_API_KEY;
-            invityAPI.createInvityAPIKey(apiKey);
+            tradeApi.createApiKey(apiKey);
 
             if (isDifferentAccount || !platforms || !coins) {
-                const info = await invityAPI.getInfo();
+                const info = await tradeApi.getInfo();
 
                 dispatch(tradingActions.saveInfo(info));
             }

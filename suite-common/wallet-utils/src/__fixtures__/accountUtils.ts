@@ -1,4 +1,4 @@
-import type { Bip43Path, Bip43PathTemplate } from '@suite-common/wallet-config';
+import type { Bip43Path, Bip43PathTemplate } from '@trezor/crypto-utils';
 
 export const sortByCoin = [
     {

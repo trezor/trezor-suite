@@ -22,8 +22,8 @@ import {
 import {
     type SuiteSettingsState,
     selectDebugSettings,
-    selectInvityServerEnvironment,
     selectLanguage,
+    selectTradeServerEnvironment,
 } from '@suite/settings';
 import { createSuiteSyncDesktopCompositionRoot } from '@suite/suite-sync';
 import { createAddressValidator } from '@suite-common/address';
@@ -33,6 +33,7 @@ import { toGetter } from '@suite-common/dependency-injection';
 import { type DeviceReducerState, selectDeviceByStaticSessionId } from '@suite-common/device';
 import { FW_HASH_CHECK_DEFAULT_TIMEOUTS } from '@suite-common/firmware-authenticity';
 import {
+    createGetNetworkColor,
     createNetworkModuleRepository,
     createNetworksCompositionRoot,
 } from '@suite-common/networks';
@@ -172,6 +173,7 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
     });
     const networkModules = createNetworksCompositionRoot();
     const networkModuleRepository = createNetworkModuleRepository({ networkModules });
+    const getNetworkColor = createGetNetworkColor({ networkModuleRepository });
     const addressValidator = createAddressValidator({
         networkModuleRepository,
     });
@@ -191,6 +193,7 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
 
     return {
         networkModuleRepository,
+        getNetworkColor,
         addressValidator,
         suiteSync,
         bip329,
@@ -236,7 +239,7 @@ export const extraDependencies: ExtraDependenciesStatic = {
         selectSelectedAccount: (state: AppState) => state.wallet.selectedAccount,
         selectSelectedAccountStatus: (state: AppState) => state.wallet.selectedAccount.status,
         selectIsWindowVisible,
-        selectTradingEnvironment: selectInvityServerEnvironment,
+        selectTradingEnvironment: selectTradeServerEnvironment,
         selectTradedAccountKeys,
         selectIsViewOnlyByDefaultEnabled: (_: AppState) => true,
         selectThpSettings: (state: AppState) => ({

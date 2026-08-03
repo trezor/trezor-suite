@@ -1,5 +1,6 @@
-import { type Bip43Path, type Network } from '@suite-common/wallet-config';
+import { type Network } from '@suite-common/wallet-config';
 import { accountsActions } from '@suite-common/wallet-core';
+import type { Bip43Path } from '@trezor/crypto-utils';
 
 export const createPlaceholderAccount = (
     network: Pick<Network, 'networkType' | 'symbol' | 'name'>,

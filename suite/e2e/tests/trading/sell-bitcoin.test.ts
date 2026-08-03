@@ -2,12 +2,12 @@ import { capitalizeFirstLetter } from '@trezor/utils';
 
 import {
     getCompanyNameFromList,
-    invityEndpoint,
-    invityRequest,
     sellQuotesBTC,
     sellTradeBTC,
     sellWatchBTC,
-} from '../../fixtures/invity';
+    tradeApiRequest,
+    tradeEndpoint,
+} from '../../fixtures/trading';
 import { formatAddressWithNewlines } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
 
@@ -27,11 +27,11 @@ test.describe('Trading - Sell BTC', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () 
 
     test.beforeEach(async ({ page, tradingMock, onboardingPage, dashboardPage, settingsPage }) => {
         await test.step('Mocking responses', async () => {
-            await page.route(invityEndpoint.sellQuotes, async route => {
+            await page.route(tradeEndpoint.sellQuotes, async route => {
                 await route.fulfill({ json: sellQuotesBTC });
             });
-            await tradingMock.routeTrade(invityEndpoint.sellTrade, sellTradeBTC);
-            await page.route(invityEndpoint.sellWatch, async route => {
+            await tradingMock.routeTrade(tradeEndpoint.sellTrade, sellTradeBTC);
+            await page.route(tradeEndpoint.sellWatch, async route => {
                 await route.fulfill({ json: sellWatchBTC });
             });
             await onboardingPage.completeOnboarding();
@@ -63,9 +63,9 @@ test.describe('Trading - Sell BTC', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () 
         });
 
         await test.step('Confirm sell', async () => {
-            const tradeRequestPromise = page.waitForRequest(invityEndpoint.sellTrade);
+            const tradeRequestPromise = page.waitForRequest(tradeEndpoint.sellTrade);
             await tradingPage.sellBestOfferButton.click();
-            await expect.soft(tradeRequestPromise).toHavePayload(invityRequest.sellTradePayload, {
+            await expect.soft(tradeRequestPromise).toHavePayload(tradeApiRequest.sellTradePayload, {
                 omit: ['returnUrl', 'trade.orderId', 'trade.paymentId', 'trade.refundAddress'],
             });
         });

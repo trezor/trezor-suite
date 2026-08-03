@@ -1,5 +1,6 @@
 import { type TokenDtoV2 } from '@suite-common/earn-stablecoin-defs';
 import type { NetworkSymbol } from '@suite-common/networks';
+import type { Bip43PathTemplate } from '@trezor/crypto-utils';
 import { type DeviceModelInternal } from '@trezor/device-utils';
 
 export type { NetworkSymbol };
@@ -60,16 +61,6 @@ export type NetworkFeature =
     | 'mev-protection'
     | 'graph'
     | 'claim-rewards';
-
-type Level = `/${number}'`;
-type MaybeApostrophe = `'` | '';
-type MaybeLevel = `/${number}${MaybeApostrophe}` | '';
-type LevelOrIndex = `/${number | 'i'}'`;
-type MaybeLevelOrIndex = `/${number | 'i'}${MaybeApostrophe}` | '';
-// template with i in place of account index, which shall be substituted with a number
-export type Bip43PathTemplate =
-    `m${Level}${Level}${LevelOrIndex}${MaybeLevelOrIndex}${MaybeLevelOrIndex}`;
-export type Bip43Path = `m${Level}${Level}${Level}${MaybeLevel}${MaybeLevel}`;
 
 export type Explorer = {
     base: string;

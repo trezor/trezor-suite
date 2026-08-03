@@ -1,3 +1,5 @@
+import { useServices } from '@suite-common/dependency-injection';
+import { selectGetNetworkColorDep } from '@suite-common/networks';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import {
     BottomSheetModal,
@@ -47,15 +49,17 @@ export const EnableNetworkForEarnBottomSheet = ({
     onDismiss,
 }: EnableNetworkForEarnBottomSheetProps) => {
     const { applyStyle } = useNativeStyles();
+    const { getNetworkColor } = useServices(selectGetNetworkColorDep);
 
     const networkName = symbol ? getNetwork(symbol).name : '';
+    const networkColor = symbol ? getNetworkColor(symbol) : undefined;
     const translationIds = translationIdByEarnType[type];
 
     return (
         <BottomSheetModal ref={ref} onDismiss={onDismiss}>
             {symbol ? (
                 <Box alignItems="center" paddingHorizontal="sp16">
-                    <StakingPromoRingIcon symbol={symbol}>
+                    <StakingPromoRingIcon networkColor={networkColor}>
                         <TokenIcon symbol={symbol} size="large" />
                     </StakingPromoRingIcon>
                     <TitleHeader

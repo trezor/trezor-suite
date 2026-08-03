@@ -4,7 +4,7 @@ import { events } from '@suite-common/analytics';
 import { deviceActions, selectSelectedDevice } from '@suite-common/device';
 import { type CustomThunkAPI, createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { type Bip43PathTemplate, getNetwork } from '@suite-common/wallet-config';
+import { getNetwork } from '@suite-common/wallet-config';
 import {
     getAddressForNetworkType,
     getPublicKeyForNetworkType,
@@ -29,6 +29,7 @@ import TrezorConnect, {
 import { connectCallableMethods } from '@trezor/connect-common';
 import { TypedError, serializeError } from '@trezor/connect-common/src/constants/errors';
 import { DEEPLINK_VERSION } from '@trezor/connect-common/src/data/version';
+import type { Bip43PathTemplate } from '@trezor/crypto-utils';
 import { resolveAfter } from '@trezor/utils';
 
 import { connectPopupActions } from './connectPopupActions';
@@ -671,8 +672,17 @@ export const connectPopupLoadSelectAccountPageThunk = createThunk<void, { page: 
                     };
                 });
 
+                // Keep candidates from other tabs AND from other pages of this tab, so selections
+                // made on previously-loaded pages survive pagination (mirrors loadAccountIndexPage).
+                // Filtering by tab alone would drop every prior page, since in the manual address
+                // phase all rows share the single active tab.
                 const otherCandidates = current.candidates.filter(
-                    c => c.accountTypeKey !== activeTab.key,
+                    c =>
+                        !(
+                            c.accountTypeKey === activeTab.key &&
+                            c.accountIndex >= startIndex &&
+                            c.accountIndex < startIndex + SELECT_ACCOUNT_PAGE_SIZE
+                        ),
                 );
                 dispatch(
                     connectPopupActions.updateSelectAccount({

@@ -3,6 +3,7 @@ import {
     type Target as BlockchainTarget,
     type InternalTransfer,
     type TokenTransfer,
+    type Transaction,
 } from '@trezor/blockchain-link-types';
 
 import { createTargets } from './createTargets';
@@ -202,6 +203,67 @@ describe(createTargets.name, () => {
         expect(r0.targetId).toBe('42');
         expect(r1.targetId).toBe('token-0xDeadBeef');
         expect(r2.targetId).toBe('internal-0xCafe');
+    });
+
+    it('preserves type, from and to of a "recv" token transfer in the TokenTarget payload', () => {
+        const tokens = [
+            makeTokenTransfer({
+                type: 'recv',
+                contract: '0xA',
+                from: '0xCounterparty',
+                to: '0xMe',
+            }),
+        ];
+
+        const result = createTargets({
+            transaction: { targets: [], tokens, internalTransfers: [] },
+            account,
+        });
+
+        expect(result).toHaveLength(1);
+        expect(result[0]).toEqual({
+            type: 'token',
+            targetId: 'token-0xA',
+            payload: expect.objectContaining({
+                type: 'recv',
+                from: '0xCounterparty',
+                to: '0xMe',
+            }),
+        });
+    });
+
+    it('keeps each token transfer type independent of the overall transaction type (swap-like tx)', () => {
+        // Transaction-level type is 'sent', but the tx contains both an outgoing (token A)
+        // and an incoming (token B) transfer, as in a swap. Each TokenTarget payload must
+        // reflect its own transfer type, not the transaction's.
+        const transaction: Pick<Transaction, 'type' | 'targets' | 'tokens' | 'internalTransfers'> =
+            {
+                type: 'sent',
+                targets: [],
+                tokens: [
+                    makeTokenTransfer({ type: 'sent', contract: '0xTokenA' }),
+                    makeTokenTransfer({ type: 'recv', contract: '0xTokenB' }),
+                ],
+                internalTransfers: [],
+            };
+
+        const result = createTargets({ transaction, account });
+
+        expect(result).toHaveLength(2);
+        expect(result[0]).toEqual(
+            expect.objectContaining({
+                type: 'token',
+                targetId: 'token-0xTokenA',
+                payload: expect.objectContaining({ type: 'sent', contract: '0xTokenA' }),
+            }),
+        );
+        expect(result[1]).toEqual(
+            expect.objectContaining({
+                type: 'token',
+                targetId: 'token-0xTokenB',
+                payload: expect.objectContaining({ type: 'recv', contract: '0xTokenB' }),
+            }),
+        );
     });
 
     it('preserves the original payload references', () => {

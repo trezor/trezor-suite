@@ -4,7 +4,7 @@ import { Address, selectAddressLabelsForAccount } from '@suite/address';
 import { Translation, useTranslation } from '@suite/intl';
 import { Labeling } from '@suite/labeling';
 import { showAddressThunk, useReceiveDisabled } from '@suite/receive';
-import { getUsedAddressesList } from '@suite-common/address';
+import { getReceiveAddressHistoryList } from '@suite-common/address';
 import { type MetadataAddPayload } from '@suite-common/metadata-types';
 import { selectCurrentFreshAddress, selectTouchedAddresses } from '@suite-common/receive';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
@@ -128,12 +128,13 @@ export const UsedAddresses = ({ account, pendingAddresses, locked }: UsedAddress
         return null;
     }
 
-    const list = getUsedAddressesList({
+    const list = getReceiveAddressHistoryList({
         account,
         touchedAddresses,
         pendingAddresses,
         addressLabels,
         currentFreshAddress,
+        includeCurrentFreshAddress: false,
     });
 
     if (list.length < 1) {

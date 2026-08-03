@@ -115,6 +115,7 @@ describe('useExchangeAnalyticReportCallback', () => {
                 exchangeName: 'invity',
             }),
         });
+        expect(reportMock.mock.calls[0][0].payload).not.toHaveProperty('simulationResult');
     });
 
     it.each([

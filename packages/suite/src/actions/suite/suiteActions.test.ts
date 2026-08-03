@@ -154,17 +154,17 @@ describe('Suite Actions', () => {
     });
 
     fixtures.observeSelectedDevice.forEach(f => {
-        it(`observeSelectedDevice: ${f.description}`, () => {
+        it(`observeSelectedDevice: ${f.description}`, async () => {
             const state = getInitialState(f.state.suite, f.state.device);
             const store = mockStore(state);
-            const changed = store.dispatch(observeSelectedDevice());
-            expect(changed).toEqual(f.changed);
-            if (!f.result) {
-                expect(filterThunkActionTypes(store.getActions()).length).toEqual(0);
-            } else {
-                const action = filterThunkActionTypes(store.getActions()).pop();
-                expect(action?.type).toEqual(f.result);
-            }
+            const observeResult = await store.dispatch(observeSelectedDevice()).unwrap();
+            expect(observeResult).toEqual(f.observeResult);
+
+            const actionTypes = filterThunkActionTypes(store.getActions()).map(
+                action => action.type,
+            );
+
+            expect(actionTypes).toEqual(f.actions ?? []);
         });
     });
 

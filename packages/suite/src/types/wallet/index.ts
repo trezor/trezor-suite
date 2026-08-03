@@ -1,4 +1,5 @@
 import { type CoinjoinAccountAction, type CoinjoinClientAction } from '@suite/coinjoin';
+import { type SignVerifyAction } from '@suite/sign-verify';
 import { type connectPopupActions } from '@suite-common/connect-popup';
 import { type receiveActions } from '@suite-common/receive';
 import { type tokenDefinitionsActions } from '@suite-common/token-definitions/src/tokenDefinitionsActions';
@@ -22,7 +23,6 @@ import {
 } from '@suite-common/wallet-core';
 
 import { type GraphAction } from 'src/actions/wallet/graphActions';
-import { type SignVerifyAction } from 'src/actions/wallet/signVerifyActions';
 import { type accountSearchActions } from 'src/reducers/wallet/accountSearchReducer';
 
 // reexport

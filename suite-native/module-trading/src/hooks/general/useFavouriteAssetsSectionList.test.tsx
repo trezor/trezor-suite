@@ -1,5 +1,6 @@
 import type { CryptoId } from 'invity-api';
 
+import { getTranslation } from '@suite-native/intl';
 import {
     type PreloadedStatePartial,
     StoreProviderForTests,
@@ -67,7 +68,7 @@ describe('useFavouriteAssetsSectionList', () => {
         expect(result.current).toEqual([
             {
                 key: 'section_all',
-                label: 'All assets',
+                label: getTranslation('moduleTrading.tradeableAssetsSheet.allTitle'),
                 data: [btcAsset, usdcAsset, adaAsset],
                 sectionData: { isFavourite: false },
             },
@@ -83,7 +84,7 @@ describe('useFavouriteAssetsSectionList', () => {
         expect(result.current).toEqual([
             {
                 key: 'section_favourites',
-                label: 'Favourites',
+                label: getTranslation('moduleTrading.tradeableAssetsSheet.favouritesTitle'),
                 data: [btcAsset, usdcAsset],
                 sectionData: { isFavourite: true },
             },
@@ -99,13 +100,13 @@ describe('useFavouriteAssetsSectionList', () => {
         expect(result.current).toEqual([
             {
                 key: 'section_favourites',
-                label: 'Favourites',
+                label: getTranslation('moduleTrading.tradeableAssetsSheet.favouritesTitle'),
                 data: [btcAsset, usdcAsset],
                 sectionData: { isFavourite: true },
             },
             {
                 key: 'section_all',
-                label: 'All assets',
+                label: getTranslation('moduleTrading.tradeableAssetsSheet.allTitle'),
                 data: [adaAsset],
                 sectionData: { isFavourite: false },
             },

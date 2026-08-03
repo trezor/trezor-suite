@@ -24,6 +24,20 @@ const createRepoFixture = (repoRoot: string) => {
         },
     });
 
+    writePackageJson(join(repoRoot, 'packages', 'connect'), {
+        name: '@trezor/connect',
+        dependencies: {
+            '@trezor/connect-common': 'workspace:*',
+            '@trezor/internal-prod': 'workspace:*',
+        },
+        devDependencies: {
+            '@trezor/internal-dev': 'workspace:*',
+        },
+        peerDependencies: {
+            'peer-shared': '^2.0.0',
+        },
+    });
+
     writePackageJson(join(repoRoot, 'packages', 'connect-web'), {
         name: '@trezor/connect-web',
         dependencies: {
@@ -82,6 +96,13 @@ const createRepoFixture = (repoRoot: string) => {
         dependencies: {
             'prod-only-external': '^1.0.0',
         },
+        peerDependencies: {
+            'required-peer-external': '^1.0.0',
+            'optional-peer-external': '*',
+        },
+        peerDependenciesMeta: {
+            'optional-peer-external': { optional: true },
+        },
     });
 
     writePackageJson(join(repoRoot, 'packages', 'internal-dev'), {
@@ -103,6 +124,7 @@ describe(requireConnectPublicDependencies.name, () => {
 
         const workspaceList = [
             { location: '.', name: 'trezor-suite' },
+            { location: 'packages/connect', name: '@trezor/connect' },
             { location: 'packages/connect-web', name: '@trezor/connect-web' },
             { location: 'packages/connect-mobile', name: '@trezor/connect-mobile' },
             { location: 'packages/connect-webextension', name: '@trezor/connect-webextension' },
@@ -152,6 +174,11 @@ describe(requireConnectPublicDependencies.name, () => {
 
         expect(connectWebSnapshot.prod).toContain('peer-shared');
         expect(connectWebSnapshot.prod).toContain('tslib');
+
+        // required peer dependencies are part of the prod surface, optional ones (e.g. env-utils'
+        // react-native / expo-* native modules) are not
+        expect(connectWebSnapshot.prod).toContain('required-peer-external');
+        expect(connectWebSnapshot.prod).not.toContain('optional-peer-external');
     });
 
     it('has repo scope', () => {

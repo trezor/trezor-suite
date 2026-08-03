@@ -3,10 +3,10 @@ import { localizeNumber } from '@suite-common/wallet-utils';
 
 import {
     getCompanyNameFromList,
-    invityEndpoint,
     swapQuotesTetherBTC,
     swapTradeTetherBTC,
-} from '../../fixtures/invity';
+    tradeEndpoint,
+} from '../../fixtures/trading';
 import { formatAddressWithNewlines } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
 
@@ -27,7 +27,7 @@ test.describe('Trading - Swap token to coin', { tag: ['@webOnly', '@T3W1', '@T3T
     test.beforeEach(
         async ({ page, onboardingPage, dashboardPage, tradingMock, walletPage, settingsPage }) => {
             await test.step('Mocking responses', async () => {
-                await page.route(invityEndpoint.swapQuotes, route => {
+                await page.route(tradeEndpoint.swapQuotes, route => {
                     route.fulfill({ json: swapQuotesTetherBTC });
                 });
                 await tradingMock.routeSwapTrade(swapTradeTetherBTC);

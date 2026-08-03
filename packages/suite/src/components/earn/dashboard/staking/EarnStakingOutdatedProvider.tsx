@@ -10,8 +10,8 @@ type EarnStakingOutdatedProviderProps = {
 
 export const EarnStakingOutdatedProvider = ({ apy }: EarnStakingOutdatedProviderProps) => (
     <Row gap={4}>
-        <Icon as={WarningIcon} size={24} intent="warning" />
-        <Paragraph typographyStyle="body-md" intent="warning">
+        <Icon as={WarningIcon} size={20} intent="warning" />
+        <Paragraph typographyStyle="body-sm" intent="warning">
             <Translation
                 id="TR_EARN_STAKING_DASHBOARD_OUTDATED_PROVIDER"
                 values={{ apy: formatApyValue(apy) }}

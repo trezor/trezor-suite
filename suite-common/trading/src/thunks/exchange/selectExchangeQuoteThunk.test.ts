@@ -5,10 +5,10 @@ import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/t
 
 import { MIN_MAX_QUOTES_OK } from '../../__fixtures__/exchangeUtils';
 import { CONTRACT_ADDRESS_FOR_NATIVE_TOKEN } from '../../constants';
-import { invityAPI } from '../../invityAPI';
 import { type ExchangeInfo, type TradingExchangeState } from '../../reducers/exchangeReducer';
 import { type QuoteRefetchingState, initialState } from '../../reducers/tradingCommonReducer';
 import { prepareTradingReducer } from '../../reducers/tradingReducer';
+import { tradeApi } from '../../tradeApi';
 
 import { exchangeThunks } from './index';
 
@@ -19,10 +19,10 @@ describe('selectExchangeQuoteThunk', () => {
         jest.clearAllMocks();
     });
 
-    jest.mock('../../invityAPI');
+    jest.mock('../../tradeApi');
 
-    invityAPI.setInvityServersEnvironment = () => {};
-    invityAPI.createInvityAPIKey = () => {};
+    tradeApi.setServersEnvironment = () => {};
+    tradeApi.createApiKey = () => {};
 
     const getDataMocks = () => {
         const quote = MIN_MAX_QUOTES_OK[0];

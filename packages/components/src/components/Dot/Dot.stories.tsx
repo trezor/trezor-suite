@@ -22,5 +22,8 @@ export const Dot: StoryObj<typeof meta> = {
             options: dotIntents,
             control: 'select',
         },
+        isAnimated: {
+            control: 'boolean',
+        },
     },
 };

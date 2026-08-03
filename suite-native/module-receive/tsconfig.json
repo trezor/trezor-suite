@@ -2,10 +2,18 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
+        { "path": "../../suite-common/address" },
         {
             "path": "../../suite-common/dependency-injection"
         },
         { "path": "../../suite-common/device" },
+        { "path": "../../suite-common/receive" },
+        {
+            "path": "../../suite-common/redux-utils"
+        },
+        {
+            "path": "../../suite-common/suite-sync"
+        },
         {
             "path": "../../suite-common/wallet-config"
         },
@@ -35,6 +43,8 @@
         { "path": "../toasts" },
         { "path": "../tokens" },
         { "path": "../../packages/connect" },
+        { "path": "../../packages/crypto-utils" },
+        { "path": "../../packages/device-utils" },
         { "path": "../../packages/env-utils" },
         {
             "path": "../../packages/styles-native"

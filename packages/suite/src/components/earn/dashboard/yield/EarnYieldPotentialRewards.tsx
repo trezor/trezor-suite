@@ -26,7 +26,7 @@ export const EarnYieldPotentialRewards = ({
 }: EarnYieldPotentialRewardsProps) => {
     if (hasMaximumDeposited) {
         return (
-            <Paragraph typographyStyle="body-md" intent="neutral" priority="secondary">
+            <Paragraph typographyStyle="body-sm" intent="neutral" priority="secondary">
                 <Translation id="TR_EARN_YIELD_MAXIMUM_DEPOSITED" />
             </Paragraph>
         );
@@ -37,7 +37,7 @@ export const EarnYieldPotentialRewards = ({
     }
 
     return (
-        <Column>
+        <Column gap={4}>
             <EarnRewardsAmount
                 data-testid="@earn/dashboard/potential-rewards/amount"
                 symbol={symbol}

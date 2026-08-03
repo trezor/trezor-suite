@@ -11,6 +11,7 @@ import {
     type RootStackRoutes,
     type StackNavigationProps,
 } from '@suite-native/navigation';
+import { useExchangeAnalyticsStepReport } from '@suite-native/trading-analytics';
 
 import { ExchangePreviewContinueButton } from './ExchangePreviewContinueButton';
 import { ExchangePreviewFooterContainer } from './ExchangePreviewFooterContainer';
@@ -31,6 +32,7 @@ const BACK_TO_TRADE_FORM_BUTTON_TEST_ID = '@trading/exchange-preview/back-to-for
 export const ExchangePreviewFooter = memo(
     ({ isContinueDisabled, onSignTransactionNavigation }: ExchangePreviewFooterProps) => {
         const navigation = useNavigation<NavigationProp>();
+        const reportToAnalytics = useExchangeAnalyticsStepReport('transaction-preview');
 
         const quote = useSelector(selectTradingExchangeSelectedQuote);
         const isTradeFinalized = isFinalStatus('exchange', quote?.status);
@@ -43,7 +45,10 @@ export const ExchangePreviewFooter = memo(
                 <ExchangePreviewFooterContainer>
                     <Button
                         intent="neutral"
-                        onPress={navigation.popToTop}
+                        onPress={() => {
+                            reportToAnalytics('cancel');
+                            navigation.popToTop();
+                        }}
                         testID={BACK_TO_TRADE_FORM_BUTTON_TEST_ID}
                     >
                         <Translation id="moduleTrading.transactionSimulation.backToTradeForm" />

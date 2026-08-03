@@ -19,6 +19,7 @@
         {
             "path": "../../packages/connect-common"
         },
+        { "path": "../../packages/crypto-utils" },
         { "path": "../../packages/env-utils" },
         {
             "path": "../../networks/stellar/network-stellar"

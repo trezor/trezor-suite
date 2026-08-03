@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux';
 
 import { clamp } from '@trezor/utils';
 
-import { INVITY_API_RELOAD_QUOTES_AFTER_SECONDS } from '../constants';
+import { TRADE_API_RELOAD_QUOTES_AFTER_SECONDS } from '../constants';
 import { useSelector } from './useSelector';
 import { tradingActions } from '../reducers/tradingCommonReducer';
 import { selectTradingQuoteRefetchingState } from '../selectors/tradingSelectors';
@@ -21,7 +21,7 @@ export const useTradingRefetchScheduler = ({ onRefetch }: UseTradingRefetchSched
     useEffect(() => {
         if (status !== 'running' || !lastFetchTimestamp) return;
         const elapsed = Date.now() - lastFetchTimestamp;
-        const delay = clamp(Math.max(INVITY_API_RELOAD_QUOTES_AFTER_SECONDS * 1000 - elapsed, 0));
+        const delay = clamp(Math.max(TRADE_API_RELOAD_QUOTES_AFTER_SECONDS * 1000 - elapsed, 0));
         const id = setTimeout(() => {
             onRefetchRef.current();
         }, delay);

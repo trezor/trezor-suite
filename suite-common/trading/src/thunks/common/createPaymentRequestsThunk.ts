@@ -17,7 +17,6 @@ import { getPaymentRequestOutputs } from './getPaymentRequestOutputs';
 import { getPurchaseAddress } from './getPurchaseAddress';
 import { getRefundAddress } from './getRefundAddress';
 import { TRADING_THUNK_PREFIX } from '../../constants';
-import { invityAPI } from '../../invityAPI';
 import {
     selectTradingCoinInfoByCryptoId,
     selectTradingCoinSymbolByCryptoId,
@@ -28,6 +27,7 @@ import {
     selectTradingSellProviders,
     selectTradingSellSelectedQuote,
 } from '../../selectors/tradingSelectors';
+import { tradeApi } from '../../tradeApi';
 import { type TradingSendRejectedProps, type TradingTradeSellExchangeType } from '../../types';
 import { cryptoIdToNetwork } from '../../utils';
 import {
@@ -114,7 +114,7 @@ export const createPaymentRequestsThunk = createThunk<
                 const sendSlip44 = getSlip44ByPath(validatePath(pathRefund));
                 const receiveSlip44 = getSlip44ByPath(validatePath(pathPurchase));
 
-                const trade = await invityAPI.getSignedTrade<
+                const trade = await tradeApi.getSignedTrade<
                     ExchangeTradeSigned,
                     CreateTradeSignatureRequestExchange
                 >({
@@ -214,7 +214,7 @@ export const createPaymentRequestsThunk = createThunk<
 
                 const sendSlip44 = getSlip44ByPath(validatePath(pathRefund));
 
-                const trade = await invityAPI.getSignedTrade<
+                const trade = await tradeApi.getSignedTrade<
                     SellFiatTradeSigned,
                     CreateTradeSignatureRequestSell
                 >({

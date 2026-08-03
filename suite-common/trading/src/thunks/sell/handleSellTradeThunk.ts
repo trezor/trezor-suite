@@ -4,10 +4,10 @@ import { createThunk } from '@suite-common/redux-utils';
 import { type Account } from '@suite-common/wallet-types';
 
 import { TRADING_SELL_THUNK_PREFIX } from '../../constants';
-import { invityAPI } from '../../invityAPI';
 import { tradingSellActions } from '../../reducers/sellReducer';
 import { tradingActions } from '../../reducers/tradingCommonReducer';
 import { selectTradingSellInfo } from '../../selectors/tradingSelectors';
+import { tradeApi } from '../../tradeApi';
 import { getUnusedAddressFromAccount } from '../../utils';
 import { logErrorThunk } from '../common/logErrorThunk';
 
@@ -38,7 +38,7 @@ export const handleSellTradeThunk = createThunk(
             return;
         }
 
-        const response = await invityAPI.doSellTrade({
+        const response = await tradeApi.doSellTrade({
             trade: { ...trade, refundAddress: getUnusedAddressFromAccount(account).address },
             returnUrl,
         });

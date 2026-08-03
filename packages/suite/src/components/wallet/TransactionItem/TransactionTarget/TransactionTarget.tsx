@@ -177,13 +177,7 @@ export const TransactionTarget = ({
                     />
                 );
             case 'token':
-                return (
-                    <TokenTransferAddressLabel
-                        symbol={transaction.symbol}
-                        transfer={payload}
-                        type={transaction.type}
-                    />
-                );
+                return <TokenTransferAddressLabel symbol={transaction.symbol} transfer={payload} />;
             case 'internal':
                 return (
                     <AccountLabelForOwnAddress address={payload.to} symbol={transaction.symbol} />

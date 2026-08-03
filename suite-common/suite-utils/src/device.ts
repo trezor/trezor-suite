@@ -542,3 +542,11 @@ export const getDeviceLanguage = (device?: TrezorDevice): string | null =>
     device?.features?.language ?? null;
 
 export const getDeviceMode = (device?: TrezorDevice): DeviceMode | null => device?.mode ?? null;
+
+type DeviceComparisonParams = { prevDevice: TrezorDevice; nextDevice: TrezorDevice };
+
+export const getIsDeviceBecomingAcquired = ({ prevDevice, nextDevice }: DeviceComparisonParams) =>
+    !isDeviceAcquired(prevDevice) && isDeviceAcquired(nextDevice);
+
+export const getIsDeviceBecomingConnected = ({ prevDevice, nextDevice }: DeviceComparisonParams) =>
+    !prevDevice.connected && nextDevice.connected;

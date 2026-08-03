@@ -26,6 +26,7 @@
         "@suite-common/message-system": "workspace:*",
         "@suite-common/networks": "workspace:*",
         "@suite-common/platform-encryption-native": "workspace:*",
+        "@suite-common/receive": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
         "@suite-common/suite-rbf-labels-migrations": "workspace:*",
         "@suite-common/suite-sync": "workspace:*",

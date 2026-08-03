@@ -2,11 +2,7 @@ import { openDeferredModal } from '@suite/modal';
 import { type StablecoinYieldTxSimulationParams } from '@suite-common/earn-stablecoin/src/tx-simulation';
 import { createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import {
-    getNetwork,
-    getNetworkDisplaySymbol,
-    getWrappedNativeSymbol,
-} from '@suite-common/wallet-config';
+import { getNetwork, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     type YieldFlowDisplayToken,
     composeYieldWrapTransactionThunk,
@@ -89,17 +85,27 @@ export const submitWrapNativeTokenThunk = createThunk(
                 return undefined;
             }
 
-            const wrappedSymbol =
-                getWrappedNativeSymbol(account.symbol) ?? getNetworkDisplaySymbol(account.symbol);
-
             dispatch(
                 notificationsActions.addToast({
                     type: 'tx-wrap',
-                    // Amount shown in the destination unit — the wrapped-native token (e.g. WETH).
-                    formattedAmount: `${wrapAmount} ${wrappedSymbol}`,
                     descriptor: account.descriptor,
                     symbol: account.symbol,
                     txid: sendResult.txid,
+                    formattedAmount: wrapAmount,
+                    metadata: {
+                        send: {
+                            symbol: account.symbol,
+                            displaySymbol: getNetworkDisplaySymbol(account.symbol),
+                            amount: wrapAmount,
+                        },
+                        receive: {
+                            symbol: account.symbol,
+                            displaySymbol: token.symbol,
+                            contractAddress: token.contractAddress,
+                            amount: wrapAmount,
+                        },
+                    },
+                    style: { maxWidth: 'auto' },
                 }),
             );
 

@@ -102,6 +102,7 @@ export type StablecoinYieldSessionState = {
         completedReceiptAmount: string;
         completedRewards: YieldFlowCompleteRewardItem[];
         unwrappedAmount: string | null;
+        wrappedAmount: string | null;
     };
 };
 
@@ -144,6 +145,7 @@ export const initialStablecoinYieldSessionState: StablecoinYieldSessionState = {
         completedReceiptAmount: '0',
         completedRewards: [],
         unwrappedAmount: null,
+        wrappedAmount: null,
     },
 };
 
@@ -409,13 +411,27 @@ const stablecoinYieldSlice = createSlice({
         },
         skipApprovalStep(
             state: StablecoinYieldState,
-            action: PayloadAction<StablecoinYieldSessionActionPayload>,
+            action: PayloadAction<
+                StablecoinYieldSessionActionPayload & {
+                    amount?: string;
+                }
+            >,
         ) {
             withSession(state, action.payload, session => {
                 if (session.step !== 'approve') {
                     return;
                 }
 
+                // A user-triggered skip carries the entered amount so the action step opens
+                // with it; the automatic allowance-check skip omits it and keeps the existing one.
+                if (action.payload.amount) {
+                    session.action.amount = action.payload.amount;
+                }
+                // Leaving the approve step forward clears modify mode (mirrors `completeApproval`)
+                // so the action step's insufficient-allowance guard applies — otherwise a skip
+                // with an amount above the current allowance would slip past it.
+                session.approval.isModifyMode = false;
+                session.approval.isRevokeRequired = false;
                 session.step = getNextYieldFlowStep(
                     action.payload.flowType,
                     'approve',
@@ -444,6 +460,9 @@ const stablecoinYieldSlice = createSlice({
 
                 if (action.payload.step === 'wrap' && action.payload.amount) {
                     session.action.amount = action.payload.amount;
+                    // Record that a wrap happened so the completed deposit can be shown in the
+                    // native asset (the user's original asset), mirroring `unwrappedAmount`.
+                    session.result.wrappedAmount = action.payload.amount;
                 }
                 session.step = getNextYieldFlowStep(
                     action.payload.flowType,

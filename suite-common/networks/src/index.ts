@@ -1,5 +1,12 @@
 export { createNetworksCompositionRoot } from './createNetworksCompositionRoot';
 export {
+    createGetNetworkColor,
+    selectGetNetworkColorDep,
+    type GetNetworkColor,
+    type GetNetworkColorDep,
+    type GetNetworkColorDeps,
+} from './createGetNetworkColor';
+export {
     createNetworkModuleRepository,
     selectNetworkModuleRepositoryDep,
     type NetworkModuleRepository,

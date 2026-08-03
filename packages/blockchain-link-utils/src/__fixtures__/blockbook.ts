@@ -659,6 +659,7 @@ export const transformTransaction: {
                 gasLimit: 21000,
                 gasUsed: 21000,
                 gasPrice: '3',
+                effectiveGasPrice: '2', // L2: actual price paid, below the gasPrice bid
             },
             ...FEES,
         },
@@ -666,6 +667,10 @@ export const transformTransaction: {
             type: 'sent',
             amount: '90',
             fee: '10', // fee from blockbook, not calculated from ethereumSpecific
+            ethereumSpecific: {
+                gasPrice: '3',
+                effectiveGasPrice: '2', // passes through the transform
+            },
             targets: [
                 {
                     addresses: ['B'],

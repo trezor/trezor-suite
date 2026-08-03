@@ -74,6 +74,7 @@ export const messages = {
     icons: {
         networkIconHint: 'Network Icon',
         tokenIconHint: 'Token Icon',
+        cryptoIconHint: 'Crypto Icon',
     },
     messageSystem: {
         killswitch: {
@@ -160,7 +161,7 @@ export const messages = {
             },
             onboardingFeedbackBanner: {
                 title: 'Help us improve',
-                subtitle: 'Share your setup experience',
+                subtitle: 'Share onboarding feedback, get a 50 USD e-shop voucher',
                 button: 'Give feedback',
             },
         },
@@ -220,7 +221,7 @@ export const messages = {
         biometricsUnavailableAlert: {
             title: 'Biometric authentication',
             description:
-                "Biometric authentication isn't set up on your phone. Set it up in your phone settings and try again.",
+                "Biometric authentication isn't set up on your phone. Configure it in your phone settings and try again.",
         },
     },
     bluetooth: {
@@ -364,7 +365,7 @@ export const messages = {
         alerts: {
             tooManyAccounts: {
                 title: 'You have reached the maximum number of accounts',
-                description: 'You can create up to 10 accounts of a type for each network.',
+                description: 'You can create up to 10 accounts for each network.',
                 actionPrimary: 'Close',
             },
             anotherEmptyAccount: {
@@ -474,7 +475,7 @@ export const messages = {
                 callout: 'To get started',
                 title: 'Get your wallet backup',
                 description:
-                    'Your wallet backup is the list of words you wrote down when you set up your Trezor for the first time.',
+                    'Your wallet backup is the list of words you wrote down when you first set up your Trezor.',
                 checkButton: 'Check wallet backup',
                 noBackupButton: "I don't have my wallet backup",
             },
@@ -583,7 +584,7 @@ export const messages = {
                     stillNotWorkingButton: "It's still not working",
                 },
                 settings: {
-                    title: "Confirm that your Trezor is visible in your phone's settings",
+                    title: 'Check if your Trezor appears in phone settings',
                     description: 'If not, pair your Trezor again.',
                     goToSettingsButton: 'Go to Bluetooth settings',
                     pairAgainButton: 'Pair again',
@@ -622,6 +623,7 @@ export const messages = {
             internal: 'Internal use only',
             read: 'Access public keys from your Trezor device',
             write: 'Allow transaction and data signing on Trezor',
+            read_settings: 'Read device settings',
         },
         simulation: {
             reviewTransaction: 'Review transaction',
@@ -631,7 +633,7 @@ export const messages = {
             simulationStatusWarning:
                 'This transaction appears suspicious. Make sure you trust the source before continuing.',
             simulationStatusMalicious:
-                'This transaction is likely malicious! We recommend you do not engage with this app.',
+                'Warning: this transaction looks malicious. We recommend you do not proceed with this app.',
             disclaimerOverride: 'Ignore warning and continue',
             contractInfo: 'Contract info',
             feeInfo: 'Fee info',
@@ -743,7 +745,7 @@ export const messages = {
             description: "Trezor can't be used by multiple applications.",
             button: 'Use Trezor here',
             appendix: {
-                bullet1: 'Close other apps that might be using your Trezor.',
+                bullet1: 'Close other apps that may be using your Trezor.',
                 bullet2: 'Reconnect your Trezor',
             },
         },
@@ -805,7 +807,7 @@ export const messages = {
         },
         connection: {
             title: 'Device connection',
-            description: "Manage your Trezor's connection settings",
+            description: 'Manage your Trezor connection settings',
         },
         autoConnect: {
             title: 'Auto-connect',
@@ -849,8 +851,7 @@ export const messages = {
         },
         pinProtection: {
             title: 'PIN',
-            content:
-                'Use a strong PIN to help protect your device from unauthorized access and keep your assets safe.',
+            content: 'Set a strong PIN to secure your device and assets.',
             alertBoxTitle: "Your PIN isn't set",
             cardSubtitle: {
                 enable: 'Set a PIN for your Trezor',
@@ -914,7 +915,7 @@ export const messages = {
             },
             success: {
                 title: 'Device authenticity check passed',
-                subtitle: 'You can now be sure that your Trezor is genuine & safe to use.',
+                subtitle: 'Your Trezor is genuine & safe to use.',
             },
             toast: {
                 canceled: 'Device authenticity check canceled',
@@ -925,7 +926,7 @@ export const messages = {
         wipeDevice: {
             title: 'Wipe device',
             subtitle:
-                'Permanently erase all stored data on your Trezor, including your wallet backup and PIN.',
+                'Permanently delete all data from your Trezor, including your wallet backup and PIN.',
             confirmationCards: {
                 eraseAllData: {
                     title: 'Erase all data',
@@ -952,7 +953,7 @@ export const messages = {
             subtitle: "Firmware is your Trezor's operating system.",
             updateFirmwareButton: 'Update firmware',
             noBackupAlert: {
-                title: 'Do you really want to proceed without a backup?',
+                title: 'Are you sure you want to proceed without a backup?',
                 description:
                     'In the unlikely event of a firmware update issue, you may need your wallet backup to restore access. Check your wallet backup before you continue.',
                 primaryButton: 'No, create wallet backup',
@@ -971,6 +972,34 @@ export const messages = {
                 longCardanoAddress:
                     "This Cardano (ADA) address is too long to fit on your Trezor's screen. Scroll on both screens to view and confirm it.",
                 token: 'Your receive address is your {networkName} address',
+                success: 'The receive address has been confirmed on your Trezor.',
+            },
+            unverifiedWarning: {
+                portfolioTracker: {
+                    title: 'receive address',
+                    subtitle:
+                        'For added security, connect your Trezor to verify the receive address.',
+                },
+                viewOnly: {
+                    title: 'Verify the receive address on your Trezor',
+                    subtitle:
+                        'To prevent phishing attacks, verify the receive address on your Trezor.',
+                },
+            },
+            viewOnlyWarning: {
+                title: 'Receive address can’t be verified',
+                description: 'To confirm the receive address, connect your Trezor.',
+                primaryButton: 'Continue without verifying',
+                secondaryButton: 'Back',
+            },
+            deviceHint: {
+                description:
+                    'Verify that this receive address matches the address on your Trezor exactly.',
+            },
+            showAddress: {
+                button: 'Show full address',
+                buttonTracker: 'Show address',
+                learnMore: 'Learn more about verifying addresses',
             },
         },
         deviceCompromisedScreen: {
@@ -999,6 +1028,32 @@ export const messages = {
         addressVerificationScreen: {
             pastedTitle: 'Compare the pasted address against your Trezor',
             sharedTitle: 'Compare the shared address against your Trezor',
+        },
+        bottomSheets: {
+            addressMismatch: {
+                title: "Address doesn't match?",
+                description:
+                    'The receive address shown on the app should match the one on your Trezor device.',
+                remember: 'Keep in mind:',
+                trustDevice:
+                    "Always trust your Trezor's screen, it never lies. Your mobile may be vulnerable to hacks and security breaches.",
+                contactSupport:
+                    'For any security concerns about your app or device, contact Trezor Support.',
+                reportIssueButton: 'Report security issue',
+            },
+        },
+        addressList: {
+            title: 'Receive addresses',
+            unused: 'Unused',
+            generateButtonAccessibilityLabel: 'Generate new address',
+            openButtonAccessibilityLabel: 'Show receive addresses',
+        },
+        addressDetail: {
+            title: 'Address details',
+            unused: 'Unused address',
+            received: 'received',
+            reuseWarning:
+                "Don't reuse this address to receive funds. It reduces your privacy. <link>Learn more.</link>",
         },
     },
     moduleSettings: {
@@ -1076,7 +1131,7 @@ export const messages = {
                 },
                 advanced: {
                     title: 'Advanced',
-                    subtitle: 'Enable expert features for power users',
+                    subtitle: 'Enable expert features for advanced users',
                 },
                 experimental: {
                     title: 'Experimental',
@@ -1143,12 +1198,12 @@ export const messages = {
                 ios: {
                     '0': {
                         question: 'Can I connect my Trezor to Trezor Suite on Mobile?',
-                        answer: "Yes, you can connect your Trezor Safe 7 and use the app to manage your crypto with ease and confidence. For all Trezor devices the app is designed to work as a companion to the desktop/web version of Trezor Suite. As we add more features, it'll become a standalone mobile application to manage your crypto funds on the go.",
+                        answer: "Yes, you can connect your Trezor Safe 7 and use the app to manage your crypto. The app works as a companion to the desktop version of Trezor Suite. As we add more features, it'll become a standalone mobile application to manage your crypto funds on the go.",
                     },
                     '1': {
                         question:
                             'What is the difference between Portfolio Tracker and Connected Trezor functionality?',
-                        answer: "Portfolio Tracker helps you monitor your account balances without having to physically connect your Trezor device. Simply sync your asset addresses and keep track of your crypto on the go. You can also combine asset addresses from multiple wallets or Trezor devices to track your whole portfolio in one place. Connected Trezor allows you to manage your funds protected by your Trezor device. You can verify receive addresses and check your balances and transactions. However, if you disconnect the Trezor, you'll no longer see the data from the Trezor device.",
+                        answer: 'Portfolio Tracker helps you monitor your account balances without having to physically connect your Trezor device. Simply sync your asset addresses and keep track of your crypto on the go. You can also combine asset addresses from multiple wallets or Trezor devices to track your whole portfolio in one place. Connecting your Trezor allows you to manage your funds protected by the device. You can verify receive addresses and check your balances and transactions.',
                     },
                     '2': {
                         question: 'What are public keys (XPUB) and receive addresses?',
@@ -1165,7 +1220,7 @@ export const messages = {
                             '5': 'Forget and re-pair the devices',
                             '6': 'Update Trezor firmware and your mobile device OS',
                             subtitle:
-                                "If you're having trouble connecting your Trezor and your mobile device, try the following:",
+                                "If you can't connect your Trezor to your phone, try these steps:",
                             footer: "If you're still having issues, contact <link>Trezor Support</link>.",
                         },
                     },
@@ -1176,15 +1231,15 @@ export const messages = {
                     },
                     '5': {
                         question: "Why don't I see my asset listed?",
-                        answer: "Trezor Suite on Mobile currently supports a limited number of cryptocurrencies. If your asset isn't listed, it may not be compatible with the app. However, Trezor regularly adds support for new assets and tokens, so check back periodically to see which assets have been added.",
+                        answer: "Trezor Suite on Mobile currently supports a limited number of cryptocurrencies. If your asset isn't listed, it may not be compatible with the app. However, Trezor regularly adds support for new assets and tokens, so check back periodically to see what's been added.",
                     },
                     '6': {
                         question: 'What does the graph display?',
                         answer: "The graph displays the price history of your portfolio's synced assets over a specified period. You can adjust the time period by selecting a different range on the bottom of the graph.",
                     },
                     '7': {
-                        question: 'What is auto-eject wallets?',
-                        answer: "Auto-eject wallets automatically hides all wallets from the app when your Trezor is disconnected.\nIf disabled, you can continue viewing your balances and transaction history without connecting your Trezor. To move funds or confirm transactions, you'll always need to connect your device.",
+                        question: 'What is the auto-eject wallets feature?',
+                        answer: "The auto-eject wallets feature automatically hides all wallets from the app when your Trezor is disconnected.\nIf disabled, you can continue viewing your balances and transaction history without connecting your Trezor. To move funds or confirm transactions, you'll always need to connect your device.",
                     },
                 },
             },
@@ -1196,10 +1251,10 @@ export const messages = {
                 '1': {
                     question:
                         'What is the difference between Portfolio Tracker and Connected Trezor functionality?',
-                    answer: 'Portfolio Tracker helps you stay in touch with your portfolio balances without having to connect your Trezor device. Simply sync your asset addresses and you can keep track of your balances on the go. You can also combine asset addresses from multiple wallets or Trezor devices to track your whole portfolio in one place. Connected Trezor allows you to manage your funds associated with your Trezor device. You can verify receive addresses and check your balances and transactions. However, if you disconnect the Trezor, you will no longer see the data from the Trezor device.',
+                    answer: 'Portfolio Tracker helps you monitor your portfolio balances without having to connect your Trezor device. Simply sync your asset addresses and you can keep track of your balances on the go. You can also combine asset addresses from multiple wallets or Trezor devices to track your whole portfolio in one place. Connecting a Trezor allows you to manage your funds associated with the device. You can verify receive addresses and check your balances and transactions.',
                 },
                 '2': {
-                    question: 'What is a public key? XPUB or a receive address?',
+                    question: 'What is a public key (XPUB) or a receive address?',
                     answer: 'An XPUB is a master public key for hierarchical deterministic wallets, generating multiple child keys and receive addresses for improved privacy. Ethereum uses a single, unchanging address for all transactions. For Ethereum, share only your address, while keeping your private key secure.',
                 },
                 '3': {
@@ -1222,7 +1277,7 @@ export const messages = {
                 },
                 '5': {
                     question: "Why don't I see my asset listed?",
-                    answer: 'Trezor Suite currently supports a limited number of cryptocurrencies. If your asset is not listed, it may not be compatible with the app. However, Trezor regularly adds support for new assets, so check back periodically to see which assets have been added.',
+                    answer: "Trezor Suite currently supports a limited number of cryptocurrencies. If your asset is not listed, it may not be compatible with the app. However, Trezor regularly adds support for new assets, so check back periodically to see what's been added.",
                 },
                 '6': {
                     question: 'What does the graph display?',
@@ -1230,7 +1285,7 @@ export const messages = {
                 },
                 '7': {
                     question: 'What is the “Eject wallets” feature?',
-                    answer: "Auto-eject wallets automatically hides all wallets from the app when your Trezor is disconnected.\nIf disabled, you can continue viewing your balances and transaction history without connecting your Trezor. To move funds or confirm transactions, you'll always need to connect your device.",
+                    answer: "The auto-eject wallets feature automatically hides all wallets from the app when your Trezor is disconnected.\nIf disabled, you can continue viewing your balances and transaction history without connecting your Trezor. To move funds or confirm transactions, you'll always need to connect your device.",
                 },
             },
             trading: {
@@ -1255,6 +1310,7 @@ export const messages = {
             text: 'Manage your assets securely with Trezor Suite. Buy, sell, send, receive, and swap assets, or earn rewards through staking and DeFi yield. Track your balances anytime, even without your Trezor connected.',
             followUs: 'Follow us',
             lastCommitHash: 'Last commit hash: {lastCommitHash}',
+            body: 'Manage your assets securely with Trezor Suite. Buy, sell, send, receive, and swap assets, or earn rewards through staking and stablecoin yield. Track your balances anytime, even without your Trezor connected.',
         },
         privacyAndSecurity: {
             title: 'Privacy & security',
@@ -1272,7 +1328,7 @@ export const messages = {
         networks: {
             title: 'Networks',
             subtitle:
-                'Enable networks to buy or receive assets. Disable unused networks to improve loading speed.',
+                'Enable networks to buy or receive assets. Disable unused networks for faster loading.',
         },
         networkBackends: {
             title: '{networkName} backend',
@@ -1330,6 +1386,27 @@ export const messages = {
                 disconnected:
                     'Failed to connect to the backend server. Check your internet connection, verify your custom backend address, reconnect your device, and make sure {networkName} is enabled in Settings.',
             },
+            servers: {
+                title: 'Backend server',
+                status: {
+                    connected: 'Connected',
+                    disconnected: 'Disconnected',
+                },
+                serverType: {
+                    label: 'Server type',
+                    defaultLabel: 'Trezor (default)',
+                },
+                serverAddress: {
+                    label: 'Server address',
+                    hint: 'Format: {example}',
+                },
+                connectButton: 'Connect',
+                invalidFormat: "Server address format isn't valid.",
+                unableToConnect: {
+                    clearnet: 'Unable to connect to the server. Check the address and connection.',
+                    tor: 'Can’t connect to the server. Check the address and make sure Orbot is running.',
+                },
+            },
         },
         coinEnabling: {
             unsupportedSubtitle: 'Not supported on this device',
@@ -1368,6 +1445,8 @@ export const messages = {
                         connectedTrezorTitle:
                             'Enable auto-eject to hide your balances when you disconnect your Trezor',
                         primaryButtonTitle: 'Enable auto-eject',
+                        titleNoConnectedTrezor: 'Enable auto-eject to hide your balances',
+                        titleConnectedTrezor: 'when you disconnect your Trezor',
                     },
                 },
                 toast: {
@@ -1394,8 +1473,7 @@ export const messages = {
             },
             dustPhishing: {
                 title: 'Dust phishing protection',
-                subtitle:
-                    'Hide suspicious micro transactions used in scams from your transaction history.',
+                subtitle: 'Hide suspicious micro transactions from your transaction history.',
                 enableProtection: 'Enable protection',
                 dustThresholdTitle: 'Dust phishing threshold',
                 dustThresholdDescription:
@@ -1403,7 +1481,7 @@ export const messages = {
                 save: 'Save',
                 placeholder: 'Enter dust threshold in USD',
                 errors: {
-                    empty: 'Dust threshold is required',
+                    empty: 'Dust threshold required',
                     number: 'Enter a valid number',
                     positive: 'Dust threshold must be a positive number',
                 },
@@ -1563,7 +1641,7 @@ export const messages = {
     },
     moduleDeviceOnboarding: {
         createPinScreen: {
-            title: "Set your Trezor's PIN",
+            title: 'Set a PIN for your Trezor',
             subtitle:
                 'Use your PIN to unlock your Trezor when\nconnecting it to a phone or computer.',
             cancelAlert: {
@@ -1647,7 +1725,7 @@ export const messages = {
         },
         securityCheckScreen: {
             title: 'Security check',
-            subtitle: 'We need to make sure your device is safe to work with.',
+            subtitle: 'We need to confirm your device is safe to use.',
             step1: {
                 header: 'Trusted source',
                 description:
@@ -1656,11 +1734,11 @@ export const messages = {
             step2: {
                 header: 'Holographic seal',
                 description:
-                    'The <link>holographic seal</link> was complete and undamaged when I unboxed my device.',
+                    'The <link>holographic seal</link> was intact when I unboxed my device.',
                 modal: {
                     alertBox:
                         'We sold this Trezor model with two different holographic seals. Both of them are valid.',
-                    title: 'Verify the holographic seal',
+                    title: 'Check the holographic seal',
                     paragraph1:
                         'Ensure the holographic seal on your device was intact when unboxed, with no peeling, scratches, or damage.',
                     paragraph2: 'Proceed only if the seal was intact and undamaged.',
@@ -1669,13 +1747,13 @@ export const messages = {
             step3: {
                 header: 'Packaging',
                 description:
-                    'The package was factory sealed and intact, with no signs of tampering before unboxing.',
+                    'The package was sealed and intact, with no signs of tampering before unboxing.',
             },
             declineButton: "I'm not sure",
         },
         deviceAuthenticitySuccessScreen: {
             title: 'Your Trezor is genuine',
-            subtitle: 'You can now be sure that your Trezor is safe to use.',
+            subtitle: 'Your Trezor is now verified and safe to use.',
         },
         deviceTutorialScreen: {
             title: 'Continue with a short tutorial on your Trezor',
@@ -1714,16 +1792,16 @@ export const messages = {
             },
             step3: {
                 callout: 'How do your wallet backup and Trezor differ?',
-                title: 'Each has their own role',
+                title: 'Each has its own role',
                 section1: {
                     title: 'Trezor',
                     description: 'Confirms transactions',
                     bullet1: 'Manage assets with the Trezor Suite app.',
-                    bullet2: 'Stores & protects access to your assets.',
+                    bullet2: 'Secures access to your assets.',
                 },
                 section2: {
                     title: 'Wallet backup',
-                    description: 'Recover a wallet',
+                    description: 'Restores access to assets',
                     bullet1:
                         'Use your wallet backup to recover access to your assets if something happens to your Trezor.',
                 },
@@ -1734,41 +1812,41 @@ export const messages = {
                 description: 'No one can restore it—not even Trezor Support.',
             },
             step5: {
-                callout: 'Select how to recover access to your assets',
+                callout: 'Select how to restore access to your assets',
                 title: 'Wallet backup type',
                 moreOptionsButton: 'More options',
                 backupOptions: {
                     'shamir-single': {
                         title: 'Single-share Backup',
                         description:
-                            'Creates a single share of 20 words used to recover access to your assets.',
+                            'Creates a single share of 20 words that is used to restore access to your assets.',
                         callout: 'Recommended for your Trezor',
                     },
                     'shamir-advanced': {
                         title: 'Multi-share Backup',
                         description:
-                            'Creates multiple shares of 20 words used to recover access to your assets.',
+                            'Creates multiple shares of 20 words that are used to restore access to your assets.',
                         callout: 'For experienced users',
                         calloutActionLabel: 'Learn',
                     },
                     '12-words': {
                         title: '12-word backup',
                         description:
-                            'Creates a single set of 12 words used to recover access to your assets.',
+                            'Creates a single list of 12 words that is used to restore access to your assets.',
                     },
                     '24-words': {
                         title: '24-word backup',
                         description:
-                            'Creates a single set of 24 words used to recover access to your assets.',
+                            'Creates a single list of 24 words that is used to restore access to your assets.',
                     },
                 },
             },
             step6: {
                 callout: "Let's start off right",
                 title: 'Get set before creating your wallet backup',
-                instruction1: 'Have a pen & your wallet backup card',
+                instruction1: 'Get a pen and your wallet backup card',
                 instruction2: {
-                    single: 'Give yourself about 10 minutes to complete',
+                    single: 'Give yourself about 10 minutes to finish',
                     multiple: 'Give yourself about 10 minutes per share',
                 },
                 instruction3: "Make sure you're in a safe & private space",
@@ -1852,7 +1930,7 @@ export const messages = {
             alert: {
                 title: 'Erase all data?',
                 description:
-                    "You should not have any funds associated with this device. Wiping it will erase its data. This action can't be undone.",
+                    'No funds should be linked to this device. Wiping will delete all data. This cannot be undone.',
                 primaryButton: 'Wipe device',
                 secondaryButton: 'Contact Trezor Support',
             },
@@ -1877,8 +1955,7 @@ export const messages = {
     moduleAccountManagement: {
         discoveryFailedBanner: {
             title: 'Account couldn’t be loaded',
-            description:
-                'Something went wrong while loading this account. Check your internet connection and try again.',
+            description: 'Failed to load account. Check your connection and try again.',
             retryButton: 'Retry',
         },
         accountsScreen: {
@@ -1973,6 +2050,7 @@ export const messages = {
                     footerApyApr: 'APY and APR rates can change over time.',
                     footer: 'APY may change over time.',
                 },
+                infoText: 'This token represents your deposit and all rewards in stablecoin yield.',
             },
         },
         emptyState: {
@@ -2227,8 +2305,8 @@ export const messages = {
                 "It's essential to understand how a passphrase works before using it.",
             paragraphWarning2:
                 'Store your passphrase separately from your wallet backup and Trezor device.',
-            paragraphWarning3: 'No one can recover it, not even Trezor support.',
-            button: 'How passphrase works',
+            paragraphWarning3: 'No one can recover it, not even Trezor Support.',
+            button: 'How a passphrase works',
         },
         form: {
             createWalletInputLabel: 'Enter passphrase',
@@ -2245,7 +2323,7 @@ export const messages = {
         },
         loading: {
             title: 'Checking passphrase wallet for balances & transactions...',
-            subtitle: 'This might take up to a minute.',
+            subtitle: 'This may take up to a minute.',
         },
         confirmOnDevice: {
             title: 'Confirm passphrase\non your Trezor',
@@ -2265,34 +2343,34 @@ export const messages = {
             },
             expectingPassphraseWallet: {
                 title: 'Expecting a passphrase wallet with funds?',
-                description: "It's possible there was a typo. Try again and enter your passphrase.",
+                description: 'There may be a typo. Please re-enter your passphrase.',
                 button: 'Try again',
             },
             confirmEmptyWalletSheet: {
                 title: 'Passphrase best practices',
                 list: {
-                    backup: 'Write it down on paper & keep it away from anything digital (no cloud, USB, internet, phone).',
+                    backup: 'Write it down on paper and keep it offline (no photos or digital copies).',
                     store: 'Store it in a secure location, separate from both your wallet backup and Trezor device.',
-                    neverShare: 'Never share it with anyone, not even with Trezor Support.',
+                    neverShare: 'Never share it with anyone, not even Trezor Support.',
                 },
-                alertTitle: 'No one can recover your passphrase, not even Trezor support',
+                alertTitle: 'No one can recover your passphrase, not even Trezor Support',
             },
             verifyEmptyWallet: {
                 title: 'Confirm empty passphrase wallet',
                 description: 'Re-enter your passphrase to open this wallet.',
                 alertTitle:
-                    '<bold>Create an offline backup of your passphrase. It is irrecoverable</bold>, even by Trezor support.',
+                    "<bold>Make an offline backup of your passphrase. It can't be recovered</bold>, not even by Trezor support.",
                 passphraseMismatchAlert: {
                     title: 'Passphrase mismatch',
-                    description: 'Start over and enter your passphrase again.',
-                    primaryButton: 'Start over',
+                    description: 'Try again and re-enter your passphrase.',
+                    primaryButton: 'Try Again',
                     secondaryButton: 'Cancel',
                 },
             },
         },
         passphraseMismatch: {
             title: 'Passphrase duplicate',
-            subtitle: "You're trying to enter a passphrase wallet that's already been opened.",
+            subtitle: 'This passphrase wallet is already open.',
             button: 'Proceed to passphrase wallet',
         },
         passphraseFeatureUnlock: {
@@ -2323,10 +2401,10 @@ export const messages = {
                     },
                     outside: {
                         subtitle: 'Sending to someone else?',
-                        text: "Check with them if they're alright with receiving this token on {networkName} network.",
+                        text: 'Confirm they can accept this token on the {networkName} network.',
                     },
                 },
-                warning: 'Sending to the wrong network might result in loss of funds.',
+                warning: 'Sending to the wrong network may result in the loss of funds.',
             },
             recipients: {
                 title: 'Recipient & amount',
@@ -2337,7 +2415,7 @@ export const messages = {
                         'The address has been updated with the bitcoincash: prefix.',
                 },
                 checksum: {
-                    label: "We've adjusted the casing of your address to match checksum format. <link>Learn more</link>",
+                    label: "We've adjusted the casing of your address to match the checksum format. <link>Learn more</link>",
                     alert: {
                         title: 'This address needs to be converted to checksum format.',
                         body: 'This will adjust the casing of your address to match the checksum format and allow us to properly validate your address. <link>Learn more</link>',
@@ -2352,13 +2430,13 @@ export const messages = {
                 },
                 addressQrLabel: 'Scan recipient address',
                 qrNetworkMismatch:
-                    'This QR code is for {qrNetwork}, but your account is on {accountNetwork}. Make sure to switch to the correct network.',
+                    'This QR code is for {qrNetwork}, but your account is on {accountNetwork}. Please switch to the correct network.',
                 amountLabel: 'Amount to be sent',
                 maxButton: 'Send max',
                 destinationTag: {
                     label: 'Memo/Destination tag',
                     warning:
-                        "Online exchanges require this to identify your account. Get your memo/destination tag from your {network} account. Make sure you really don't need it.",
+                        "Exchanges use this to identify your account. Get your memo/destination tag from your {network} account. Make sure you really don't need it.",
                     info: 'Online exchanges require this to identify your account. Get your memo/destination tag from your exchange.',
                     linkText: "<link>What's this?</link>",
                 },
@@ -2408,7 +2486,7 @@ export const messages = {
                     total: 'Total fee',
                 },
             },
-            error: "You don't have enough balance to use this fee.",
+            error: 'Insufficient balance for this fee.',
             submitButton: 'Review and sign',
         },
         coinControl: {
@@ -2447,14 +2525,14 @@ export const messages = {
                 step3: 'If they match exactly, confirm on your Trezor.',
                 originBottomSheet: {
                     title: "What's the place of origin?",
-                    subtitle: "Think of how you've initially retrieved the address.",
+                    subtitle: 'Think how you initially retrieved the address.',
                     exchange: {
                         header: 'Online exchange',
                         body: 'The original address can be found in the “receive” or “deposit” section of your online exchange.',
                     },
                     person: {
                         header: 'Person or a friend',
-                        body: "If you got it from a friend or a person, they've likely sent it to you through some messaging platform.",
+                        body: 'If someone sent it to you, it was probably shared via a messaging app.',
                     },
                 },
                 compareBottomSheet: {
@@ -2479,8 +2557,7 @@ export const messages = {
                     },
                     solana: {
                         title: 'Transaction failed due to timeout',
-                        description:
-                            'Make sure you send the transaction within 1 minute from signing.',
+                        description: 'Send the transaction within 1 minute of signing.',
                     },
                 },
             },
@@ -2488,17 +2565,17 @@ export const messages = {
     },
     moduleAuthenticityChecks: {
         deviceCompromised: {
-            title: 'Your device may have been compromised',
+            title: 'Your device may be compromised',
             subtitle: {
                 fwRevision: "Your Trezor's firmware authenticity check failed.",
-                deviceAuthenticity: 'Your device authentication check failed.',
+                deviceAuthenticity: 'Device authentication check failed.',
                 deviceId: 'The security check (ID validity check) failed.',
-                invariability: "Your Trezor's model or color appears to have been manipulated.",
+                invariability: 'Your Trezor model or color appears to have been manipulated.',
                 entropy: 'Security check (entropy verification) failed.',
             },
             steps: {
                 disconnectDevice: 'Disconnect your device from your phone.',
-                avoidUsingDevice: 'Avoid using this device or sending any funds to it.',
+                avoidUsingDevice: 'Do not use this device or send funds to it.',
                 contactSupport: 'Continue to Trezor Support and use the Chat option.',
             },
             buttonContactSupport: 'Contact Trezor Support',
@@ -2514,8 +2591,7 @@ export const messages = {
         portfolioTracker: {
             alert: {
                 title: 'Staking is disabled in the portfolio tracker',
-                description:
-                    'Connect your device to enable full functionality or use our desktop app.',
+                description: 'Connect your device for full functionality or use our desktop app.',
                 copyLabel: 'Tap to copy',
             },
         },
@@ -2552,7 +2628,7 @@ export const messages = {
             solRewardsWarning:
                 'Your recent rewards are securely on the blockchain and may take more time to appear in Trezor Suite.',
             rewardsList: {
-                title: 'Total rewards',
+                title: 'Rewards history',
                 itemLabel: 'Reward',
                 epoch: 'Epoch number {epoch}',
                 empty: {
@@ -2626,6 +2702,11 @@ export const messages = {
                     'A staking transaction is already pending for this account. Wait for it to confirm before staking again.',
                 primaryButton: 'Go to Dashboard',
             },
+            signTransactionFailedAlert: {
+                title: 'Transaction was not signed',
+                description: 'Your account balance may have changed. Review and try again.',
+                primaryButton: 'Go to Dashboard',
+            },
         },
         unstakeTransactionDataReviewScreen: {
             title: 'Confirm on Trezor',
@@ -2640,6 +2721,11 @@ export const messages = {
                 title: 'Pending transaction detected',
                 description:
                     'An unstaking transaction is already pending for this account. Wait for it to confirm before unstaking again.',
+                primaryButton: 'Go to Dashboard',
+            },
+            signTransactionFailedAlert: {
+                title: 'Transaction was not signed',
+                description: 'Your account balance may have changed. Review and try again.',
                 primaryButton: 'Go to Dashboard',
             },
         },
@@ -2698,13 +2784,14 @@ export const messages = {
                     "Due to recent Solana blockchain changes, this amount can't be unstaked.\n\nTry {higher}{higherFiat},\n\nor {lower}{lowerFiat}.",
                 invalidUnstakeAmountHigherOnly:
                     "Due to recent Solana blockchain changes, this amount can't be unstaked.\n\nTry {higher}{higherFiat}.",
-                insufficientBalance: 'You don’t have enough staked balance to unstake this amount.',
+                insufficientBalance: 'Insufficient staked balance to unstake this amount.',
                 tooManyDecimals: 'Too many decimals places.',
+                amountBelowMin: 'The minimum amount to unstake is {minAmount} {networkSymbol}.',
             },
         },
         unstakeFlowScreen: {
             canClaimWarning:
-                'You can already claim {amount}. Claim now or wait until your new unstake is processed.',
+                'You can already claim {amount}. Claim now or wait for the new unstaking round to finish.',
             instantlyAvailable: {
                 label: 'Instantly available (est.)',
                 infoTitle: 'Instantly available (estimate)',
@@ -2712,7 +2799,7 @@ export const messages = {
                     'The liquidity of the staking pool can allow for instant unstake of some funds. The remaining funds will follow the unstaking period.',
             },
             accountLimitBanner:
-                'Due to Solana transaction size restriction, you can unstake from {limit} accounts at once. In the next transaction you can unstake up to {amount} {symbol}. To unstake more, repeat the process.',
+                'Due to Solana transaction size restrictions, you can unstake from {limit} accounts at once. In the next transaction you can unstake up to {amount} {symbol}. To unstake more, repeat the process.',
         },
         earnScreen: {
             title: 'Earn',
@@ -2720,7 +2807,7 @@ export const messages = {
             depositsCard: {
                 title: 'Your deposits',
                 networkStaking: '{networkName} staking',
-                availableRewards: 'Available rewards',
+                availableRewards: 'Bonus rewards',
                 claimRewardsButton: 'Claim rewards',
                 incompleteFiatTotal: 'Some fiat rates couldn’t load. Total may be incomplete.',
             },
@@ -2757,6 +2844,12 @@ export const messages = {
                     title: 'Enable {networkName} to use DeFi Yield',
                     subtitle:
                         'Add the {networkName} network to deposit eligible assets and earn yield.',
+                    cta: 'Enable {networkName}',
+                },
+                stablecoinYield: {
+                    title: 'Enable {networkName} to use stablecoin yield',
+                    subtitle:
+                        'Add the {networkName} network to deposit eligible stablecoins and earn yield.',
                     cta: 'Enable {networkName}',
                 },
             },
@@ -2839,9 +2932,8 @@ export const messages = {
                     description: 'This is your vault position.',
                 },
                 fourth: {
-                    title: "You'll earn {bonusRewardTokenSymbol} as rewards.",
-                    description:
-                        'They may only be offered for a limited time, but once earned, you can claim them in the Earn tab.',
+                    title: 'You will also earn {bonusRewardTokenName} tokens as rewards.',
+                    description: 'These must be claimed separately.',
                 },
             },
             timelineCardTitle: 'Deposit timeline',
@@ -2883,6 +2975,8 @@ export const messages = {
                     description: 'Instantly',
                 },
             },
+            title: 'How stablecoin yield works',
+            subtitle: 'Put your stablecoins to work and earn rewards.',
         },
         yieldConsentsScreen: {
             title: 'Before you continue',
@@ -2915,29 +3009,29 @@ export const messages = {
                 title: 'Select approval limit',
                 perDeposit: {
                     description:
-                        'Approve the exact amount for the provider. Valid until fully used or revoked. Then a new approval and network fee will be required.',
+                        "Approve the exact amount for the provider. Valid until fully used or revoked, then you'll need to approve again and pay a network fee.",
                 },
                 unlimited: {
                     title: 'Unlimited',
                     description:
                         'Approve once and avoid future network fees. This provider can spend any amount until you revoke the approval.',
-                    alert: 'If the provider is compromised, all your {tokenSymbol} may be taken.',
+                    alert: 'If the provider is compromised, all your {tokenSymbol} may be lost.',
                 },
             },
             validation: {
                 amountIsZero: 'Amount must be greater than 0.',
-                insufficientBalance: "You don't have enough {tokenSymbol} balance.",
-                tooManyDecimals: 'Too many decimals.',
+                insufficientBalance: 'Insufficient {tokenSymbol} balance.',
+                tooManyDecimals: 'Too many decimal places.',
             },
             alerts: {
                 approvalUnavailable: {
                     title: 'Approval unavailable',
-                    description: 'Approval could not be prepared. Check the amount and try again.',
+                    description: 'Approval failed. Check the amount and try again.',
                 },
                 approvalReviewUnavailable: {
                     title: 'Approval review unavailable',
                     description:
-                        'Approval review could not be prepared. Check the selected fee and try again.',
+                        "Approval review couldn't be prepared. Check the selected fee and try again.",
                 },
                 revokeReviewUnavailable: {
                     title: 'Revoke approval review unavailable',
@@ -2951,7 +3045,7 @@ export const messages = {
                 },
                 depositUnavailable: {
                     title: 'Deposit unavailable',
-                    description: 'Deposit could not be prepared. Check the amount and try again.',
+                    description: "Deposit couldn't be prepared. Check the amount and try again.",
                 },
                 approvalTooLow: {
                     title: 'Approval is too low. Change approval or lower amount to supply.',
@@ -2962,13 +3056,12 @@ export const messages = {
                 },
                 transactionFailed: {
                     title: 'Transaction failed',
-                    description:
-                        'The transaction failed on the network. Check the details and try again.',
+                    description: 'Transaction failed on the network. Review details and try again.',
                 },
                 approvalResetNotSupported: {
                     title: 'Approval reset not supported',
                     description:
-                        'This deposit needs an approval reset first. Revoke is not supported on mobile yet.',
+                        'This deposit needs an approval reset first. Revoking is not supported on mobile yet.',
                 },
             },
             depositCompleteStepTitle: 'Deposit complete',
@@ -2991,7 +3084,7 @@ export const messages = {
             amountToWithdraw: 'Amount to withdraw',
             amountExceedsDeposited: 'The amount exceeds your deposited balance.',
             networkFeeWarning:
-                'Network fees may exceed this amount. Your balance may decrease. Enter higher amount.',
+                'Network fees may exceed this amount and your balance may decrease. Enter a higher amount.',
             maxWithdrawInfo:
                 'Amount switched to {vaultTokenSymbol} to withdraw your entire balance, including yield earned up to the moment the transaction is processed.',
             title: 'Withdraw',
@@ -3001,7 +3094,7 @@ export const messages = {
             amountExceedsSupplied: 'The amount exceeds your supplied balance.',
             validation: {
                 amountIsZero: 'Amount must be greater than 0.',
-                tooManyDecimals: 'Too many decimals.',
+                tooManyDecimals: 'Too many decimal places.',
             },
         },
         yieldClaimFlowScreen: {
@@ -3095,6 +3188,10 @@ export const messages = {
             alerts: {
                 primaryButton: 'Go to homepage',
                 approval: {
+                    signTransactionFailed: {
+                        title: 'Transaction was not signed',
+                        description: 'Review the transaction and sign it again.',
+                    },
                     pushTransactionFailed: {
                         title: 'Approval was not submitted',
                         description:
@@ -3103,10 +3200,14 @@ export const messages = {
                     pendingTransactionConflict: {
                         title: 'Approval was not submitted',
                         description:
-                            'There is already a pending transaction for this account. Wait for it to finish before trying again.',
+                            'A transaction is already pending for this account. Wait for it to finish before trying again.',
                     },
                 },
                 revoke: {
+                    signTransactionFailed: {
+                        title: 'Transaction was not signed',
+                        description: 'Review the transaction and sign it again.',
+                    },
                     pushTransactionFailed: {
                         title: 'Revoke approval transaction not broadcast',
                         description:
@@ -3115,7 +3216,7 @@ export const messages = {
                     pendingTransactionConflict: {
                         title: 'Revoke approval transaction not broadcast',
                         description:
-                            'A revoke approval transaction is already pending for this account. Wait for it to complete and try again.',
+                            'A revoke approval transaction is already pending for this account. Wait for it to finish, then try again.',
                     },
                 },
                 deposit: {
@@ -3126,12 +3227,12 @@ export const messages = {
                     pushTransactionFailed: {
                         title: 'Deposit was not submitted',
                         description:
-                            'The deposit transaction was signed but could not be submitted to the network.',
+                            'The deposit transaction was signed but could not be sent to the network.',
                     },
                     pendingTransactionConflict: {
                         title: 'Deposit was not submitted',
                         description:
-                            'There is already a pending transaction for this account. Wait for it to finish before trying again.',
+                            'A transaction is already pending for this account. Wait for it to finish before trying again.',
                     },
                 },
                 withdraw: {
@@ -3140,12 +3241,12 @@ export const messages = {
                         description: 'Review the transaction and sign it again.',
                     },
                     pushTransactionFailed: {
-                        title: 'Withdraw was not submitted',
+                        title: 'Withdrawal not submitted',
                         description:
-                            'The withdraw transaction was signed but could not be submitted to the network.',
+                            'The withdrawal transaction was signed but could not be sent to the network.',
                     },
                     pendingTransactionConflict: {
-                        title: 'Withdraw was not submitted',
+                        title: 'Withdrawal was not submitted',
                         description:
                             'There is already a pending transaction for this account. Wait for it to finish before trying again.',
                     },
@@ -3229,9 +3330,9 @@ export const messages = {
         aprPercentage: '~{apy}% APR',
         notAvailableShort: 'N/A',
         messageSystem: {
-            depositDisabled: 'Deposit is currently disabled.',
-            withdrawDisabled: 'Withdrawal is currently disabled.',
-            claimDisabled: 'Claim is currently disabled.',
+            depositDisabled: 'Deposits currently disabled.',
+            withdrawDisabled: 'Withdrawals currently disabled.',
+            claimDisabled: 'Claims currently disabled.',
         },
         stakePendingCard: {
             totalStakePending: 'Total stake pending',
@@ -3246,7 +3347,7 @@ export const messages = {
             amountLabel: 'Amount',
             instantClaimBanner: "You'll claim the {displaySymbol} instantly",
             accountLimitBanner:
-                'Due to Solana transaction size restriction, you can claim from {limit} accounts at once. In the next transaction you can claim up to {amount} {symbol}. To claim more, repeat the process.',
+                'Due to Solana transaction size restrictions, you can claim from {limit} accounts at once. In the next transaction you can claim up to {amount} {symbol}. To claim more, repeat the process.',
             insufficientFeeBalance: {
                 title: 'Insufficient {displaySymbol} to cover the transaction fee.',
                 description: 'You only have {amount} available.',
@@ -3267,6 +3368,11 @@ export const messages = {
                     'A claim transaction is already pending for this account. Wait for it to confirm before claiming again.',
                 primaryButton: 'Go to Dashboard',
             },
+            signTransactionFailedAlert: {
+                title: 'Transaction was not signed',
+                description: 'Your account balance may have changed. Review and try again.',
+                primaryButton: 'Go to Dashboard',
+            },
         },
         claimableCard: {
             claimable: 'Claimable',
@@ -3280,6 +3386,12 @@ export const messages = {
         },
         claimSummaryOutputItem: {
             title: 'Total including fee',
+        },
+        stablecoinYield: 'Stablecoin yield',
+        stakingInsufficientBalance: {
+            title: "You don't have enough {displaySymbol}",
+            subtitle: 'Minimum amount to stake is {minAmount} {displaySymbol}.',
+            getButton: 'Get more {displaySymbol}',
         },
     },
     moduleTrading: {
@@ -3341,7 +3453,7 @@ export const messages = {
                     title: 'How trading works',
                     sheetTitle: 'How trading with Trezor works',
                     item1: 'Trezor compares trusted exchange providers to find the best offer',
-                    item2: 'Providers use your location only to show relevant offers',
+                    item2: 'Providers use your location to show relevant offers',
                     item3: 'Trezor never sees your payment or KYC data\n<text>It’s shared only with the provider if you complete your trade.</text>',
                     item4: 'How fees are calculated',
                     item5: "Trezor's Terms of Use",
@@ -3424,10 +3536,10 @@ export const messages = {
         },
         tradeableAssetsSheet: {
             title: 'Assets',
-            favouritesTitle: 'Favourites',
+            favouritesTitle: 'Favorites',
             allTitle: 'All assets',
-            favouritesAdd: 'Add to favourites',
-            favouritesRemove: 'Remove from favourites',
+            favouritesAdd: 'Add to favorites',
+            favouritesRemove: 'Remove from favorites',
             emptyTitle: 'Coin not found',
             emptyDescription: 'Check the spelling or browse the list to select an option.',
             searchInputPlaceholder: 'Search tokens or address',
@@ -3437,17 +3549,16 @@ export const messages = {
             accountEmpty: {
                 viewOnly: {
                     title: 'Account not found',
-                    description: 'You need to connect your device to add new account.',
+                    description: 'You need to connect your device to add a new account.',
                 },
                 networkNotEnabled: {
                     title: 'Account not found',
-                    description:
-                        "It seems that you don't have any account matching selected asset.",
+                    description: 'No account found for selected asset.',
                 },
                 portfolioTracker: {
                     title: 'Account not found',
                     description:
-                        "You don't have an account for this asset imported in Portfolio Tracker.",
+                        "You don't have an account for this asset imported in the Portfolio Tracker.",
                 },
             },
             addressEmpty: {
@@ -3471,7 +3582,7 @@ export const messages = {
         },
         tradingBuyPreviewScreen: {
             title: 'Complete your buy with {companyName}',
-            subtitle: 'You’ll be redirected to provider’s website to finish the payment.',
+            subtitle: 'You’ll be redirected to the provider’s website to finish the payment.',
             buyVia: 'Buy with {companyName}',
             youPay: 'You pay',
             youGet: 'You get',
@@ -3517,6 +3628,7 @@ export const messages = {
                 bullet3:
                     'Your swap may be completed in multiple parts, depending on market conditions',
             },
+            fiatDeviationWarning: 'Receiving {percent} less in estimated value.',
         },
         tradingSellPreviewScreen: {
             title: 'Sell',
@@ -3527,16 +3639,16 @@ export const messages = {
             notVerified: 'Not verified',
             bankAccountSheetTitle: 'Select an account',
             providerStatus: {
-                confirming: 'Provider is confirming your sell',
+                confirming: 'Provider confirming your sale',
                 waitingForAddress: "Waiting for the provider's receive address",
                 upTo30Seconds: 'This may take up to 30 seconds.',
                 startOver:
                     "If you didn't finish all steps on the provider's site, go back and start a new sell. Your funds are safe.",
                 cannotBeCompletedAlert: {
-                    title: "Your sell couldn't be completed",
+                    title: 'Sell failed',
                     description:
                         "We didn't receive confirmation from the provider. Your funds are safe in your account.",
-                    button: 'Start a new sell',
+                    button: 'Sell again',
                 },
             },
         },
@@ -3556,9 +3668,8 @@ export const messages = {
         },
         tradingExchangeRevokeScreen: {
             revokeTitle: 'Revoke {symbol} spending',
-            revokeSubtitle: 'Revoke provider to spend your {symbol} to swap.',
-            lowLimitInfoAlert:
-                'The spending limit too low. Revoke the current spending limit and approve a higher amount.',
+            revokeSubtitle: 'Revoke provider permission to spend your {symbol} to swap.',
+            lowLimitInfoAlert: 'Spending limit too low. Revoke it and approve a higher amount.',
             limitLabel: 'Limit',
             revokeErrorAlert: 'Error revoking spending limit. Try again.',
         },
@@ -3584,7 +3695,7 @@ export const messages = {
             pending: 'Pending',
             error: 'Failed to confirm transaction. Try again.',
             date: 'Date',
-            exploreInBlockchain: 'Explore in blockchain',
+            exploreInBlockchain: 'Explore on blockchain',
             approvalPendingAlert:
                 'Your approval is still processing. When confirmed, you’ll be able to use this approval with the same provider.',
             revocationPendingAlert:
@@ -3594,10 +3705,10 @@ export const messages = {
             title: 'Set limit',
             unlimitedCard: {
                 info: 'Approve once and avoid future network fees. This provider can spend any amount until you revoke the approval.',
-                alert: 'If the provider is compromised, all your {coinSymbol} may be taken.',
+                alert: 'If the provider is compromised, all your {coinSymbol} may be lost.',
             },
             limitedCard: {
-                info: 'Approve this amount for the provider. Valid until fully used or revoked. Then a new approval and network fee will be required.',
+                info: 'Approve this amount for the provider. Valid until used or revoked, after which a new approval and network fee will be required.',
             },
         },
         exchangeTradePreviewCard: {
@@ -3667,7 +3778,7 @@ export const messages = {
                 issued: 'Issued',
                 provider: 'Provider',
                 method: 'Via',
-                orderId: 'Order id:',
+                orderId: 'Order ID:',
                 errorAlert: {
                     title: 'Transaction failed',
                     buyDescription:
@@ -3707,7 +3818,7 @@ export const messages = {
         },
         error: {
             deviceOfflineDescription:
-                'Trading needs an internet connection to be available. Check your mobile phone settings and try again.',
+                'Trading requires an internet connection. Check your mobile phone settings and try again.',
         },
         defaultSearchLabel: 'Search',
         notSelected: 'Not selected',
@@ -3723,7 +3834,7 @@ export const messages = {
             title: 'Your assets',
             searchInputPlaceholder: 'Search assets',
             emptyTitle: 'No assets found',
-            emptyDescription: 'You do not have any assets available for this operation.',
+            emptyDescription: 'No assets available for this operation.',
             noPair: {
                 note: 'No pair',
                 toast: 'No trading pair',
@@ -3770,7 +3881,7 @@ export const messages = {
         typeBitcoinOnly: 'Bitcoin-only',
         updateNotAvailable: 'Firmware update disabled',
         seedBottomSheet: {
-            title: 'It’s a good practice to check your backup before updating firmware.',
+            title: 'We recommend checking your backup before updating device firmware.',
             description:
                 'In the unlikely event of a firmware update issue, you may need your wallet backup to restore access. Check your wallet backup before you continue.',
             continueButton: 'Yes, I do',
@@ -3814,9 +3925,9 @@ export const messages = {
             list: {
                 item1: {
                     update: 'This firmware update may take some time to complete.',
-                    install: 'This firmware installation may take some time to complete.',
+                    install: 'Firmware installation may take a while.',
                 },
-                item2: '<b> Keep the app open while installing</b> —closing it may corrupt the firmware. ',
+                item2: '<b>Keep the app open during installation</b> —closing it could corrupt the firmware. ',
                 item3: {
                     update: 'While the firmware is updating, leave your phone as is. It will remain on throughout the update.',
                     install:
@@ -3883,7 +3994,7 @@ export const messages = {
             part1: {
                 title: 'Make sure you have your wallet backup',
                 description:
-                    'Having your wallet backup is crucial as the troubleshooting might result in a corrupted state of firmware that will require reinstalling.',
+                    'Having your wallet backup is crucial. Troubleshooting might corrupt the firmware, requiring reinstallation.',
                 continueButton: 'I have my wallet backup ready',
                 closeButton: 'Cancel',
             },
@@ -3893,7 +4004,7 @@ export const messages = {
                 gotItButton: 'Got it',
                 tip1: 'Reconnect the cable to your phone',
                 tip2: 'Try a different cable',
-                tip3: 'Make sure the cable is not twisted and fits the connector properly.',
+                tip3: 'Check the cable fits the connector properly.',
             },
         },
     },
@@ -3901,7 +4012,7 @@ export const messages = {
         stellarLimitedHistoryBanner: {
             title: 'Transaction history limited to 12 months',
             description:
-                'Only transactions from the past 12 months are available in this view. To explore older activity, use the blockchain explorer.',
+                'This view only shows transactions from the past 12 months. For older activity, check the blockchain explorer.',
             confirmButton: 'Got it',
         },
         solanaLimitedHistoryBanner: {
@@ -3968,18 +4079,18 @@ export const messages = {
                         feeLimit: {
                             low: 'Gas limit must be at least {minGasLimit}',
                         },
-                        decimals: 'Too many decimals.',
+                        decimals: 'Too many decimal places.',
                         feePerUnit: {
                             low: 'Fee is too low.',
                             high: 'Fee is too high.',
                         },
                         maxFeePerGas: {
-                            lessThanPriority: "This fee can't be lower than Max priority fee.",
+                            lessThanPriority: "This fee can't be lower than the Max priority fee.",
                             outOfRange: 'Enter a max fee per gas between {minFee} and {maxFee}',
                         },
                         maxPriorityFee: {
                             min: 'Max priority fee must be at least {minPriorityFee}',
-                            higherThanMaxFee: "This fee can't be higher than Max fee per gas",
+                            higherThanMaxFee: "This fee can't be higher than the Max fee per gas",
                         },
                     },
                     total: 'Total fee',
@@ -3989,7 +4100,7 @@ export const messages = {
                     label: 'Custom',
                 },
             },
-            error: "You don't have enough balance to use this fee.",
+            error: 'Insufficient balance for this fee.',
             amount: 'Amount',
             totalAmount: 'Total amount',
             tabs: {
@@ -4084,17 +4195,17 @@ export const messages = {
         error: {
             deviceOfflineTitle: 'Trading is not available offline',
             deviceOfflineDescription:
-                'Trading needs an internet connection to be available. Check your mobile phone settings and try again.',
+                'Trading requires an internet connection. Check your phone settings and try again.',
             serverOfflineTitle: "It's not you, it's us.",
             serverOfflineDescription: 'Something went wrong. Try again in a moment.',
             serverOfflineRetry: 'Try again',
             tradingTypeDisabledTitle: '{tradingType} disabled',
             portfolioTrackerTitle: 'Portfolio Tracker',
             portfolioTrackerDescription:
-                'Selling & swapping are disabled. Connect your device to enable full functionality.',
+                'Sell & Swap are disabled. Connect your device to enable all features.',
             btcOnlyFirmwareTitle: 'Bitcoin-only firmware',
             btcOnlyFirmwareDescription:
-                'Swapping is unavailable with Bitcoin-only firmware. To enable, switch to universal firmware.',
+                'Swapping is not available with Bitcoin-only firmware. Switch to universal firmware to enable.',
             notAvailableInCountryTitle: 'Trading is not yet available in your country',
         },
         providerLogo: 'Provider logo',
@@ -4137,14 +4248,13 @@ export const messages = {
     moduleDemoAccountQuestionnaire: {
         intro: {
             title: 'Help improve Trezor Suite',
-            subtitle:
-                'We have two questions that will help us provide you with a better experience.',
-            note: "It's anonymous and will take less than a minute.",
+            subtitle: 'Answer two quick questions to help us improve your experience.',
+            note: "It's anonymous and takes less than a minute.",
             primaryCta: 'Sure, continue',
             secondaryCta: "I'm not interested",
         },
         reason: {
-            title: 'Why did you download Trezor Suite?',
+            title: 'What made you choose Trezor Suite?',
             options: {
                 considering: "I'm considering a hardware wallet",
                 ad: 'I saw an ad online',
@@ -4152,12 +4262,11 @@ export const messages = {
             },
         },
         suiteAction: {
-            title: 'What did you hope to do in Trezor Suite?',
+            title: 'What did you want to do in Trezor Suite?',
             options: {
                 explore: 'I wanted to explore the app, its interactions, and its design.',
-                transaction: 'I wanted to try to send and receive cryptocurrencies.',
-                hardwareWallet:
-                    'I wanted to understand how a hardware wallet works with Trezor Suite.',
+                transaction: 'I wanted to send and receive crypto.',
+                hardwareWallet: 'I wanted to learn how a hardware wallet works with Trezor Suite.',
             },
         },
         noneOption: 'None of the above',
@@ -4165,10 +4274,10 @@ export const messages = {
             title: 'Thanks for your help.',
             subtitle:
                 'Your responses will help us prepare the best mobile experience for users like you.',
-            recommendationsHeading: 'You might also be interested in:',
+            recommendationsHeading: 'You may also be interested in:',
             recommendations: {
                 hardwareWallet: 'What is a hardware wallet?',
-                trezorSecurity: 'Why is Trezor secure?',
+                trezorSecurity: 'What makes Trezor secure?',
                 trezorSafe7: 'Introducing the new Trezor Safe 7',
             },
             backCta: 'Back to Dashboard',
@@ -4216,7 +4325,7 @@ export const messages = {
         },
         deactivationFee: {
             warningText:
-                "You won't be able to receive, send, or trade this token until you activate it again. Deactivation makes the {reserve} reserve available for use.",
+                'You cannot receive, send, or trade this token until you reactivate it. Deactivating returns the {reserve} reserve for use.',
             deactivationFailed: 'Deactivation Failed',
             deactivationFailedDescription: 'Failed to deactivate token. Try again.',
             cantDeactivateTitle: "You can't deactivate a token with a balance",
@@ -4227,7 +4336,7 @@ export const messages = {
     networks: {
         initialSetup: {
             title: 'Add your networks',
-            subtitle: 'Enable networks to buy or receive assets. Change your selection anytime.',
+            subtitle: 'You can buy or receive assets on any network you enable.',
             banner: 'Change your networks anytime in Settings.',
         },
     },

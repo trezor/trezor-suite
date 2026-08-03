@@ -1,0 +1,150 @@
+import buyList from './buy/list.json';
+import buyQuotesBTCUpdate from './buy/quotes-bitcoin-update.json';
+import buyQuotesBTC from './buy/quotes-bitcoin.json';
+import buyQuotesNegativeMax from './buy/quotes-buy-above-max.json';
+import buyQuotesNegativeMin from './buy/quotes-buy-below-min.json';
+import buyQuotesEthereum from './buy/quotes-ethereum.json';
+import buyQuotesSolanaToken from './buy/quotes-solana-token.json';
+import buyTradeBTCPayload from './buy/requests/trade-request-bitcoin.json';
+import buyTradeSolanaPayload from './buy/requests/trade-request-solana.json';
+import buyWatchPayload from './buy/requests/watch-request.json';
+import buyTradeBTC from './buy/trade-bitcoin.json';
+import buyTradeEthereum from './buy/trade-ethereum.json';
+import buyTradeSolanaToken from './buy/trade-solana-token.json';
+import buyWatch from './buy/watch.json';
+import info from './info.json';
+import sellList from './sell/list.json';
+import sellQuotesBTC from './sell/quotes-bitcoin.json';
+import sellQuotesEthereumToken from './sell/quotes-ethereum-token.json';
+import sellQuotesEthereum from './sell/quotes-ethereum.json';
+import sellQuotesSolana from './sell/quotes-solana.json';
+import sellTradePayload from './sell/requests/trade-request.json';
+import sellWatchPayload from './sell/requests/watch-request.json';
+import sellTradeBTC from './sell/trade-bitcoin.json';
+import sellTradeEthereumToken from './sell/trade-ethereum-token.json';
+import sellTradeEthereum from './sell/trade-ethereum.json';
+import sellTradeSolana from './sell/trade-solana.json';
+import sellWatchBTC from './sell/watch-bitcoin.json';
+import sellWatchEthereum from './sell/watch-ethereum.json';
+import sellWatchSolana from './sell/watch-solana.json';
+import swapList from './swap/list.json';
+import swapQuotesBTCEthereum from './swap/quotes-btc-eth.json';
+import swapQuotesEthereumBTC from './swap/quotes-eth-btc.json';
+import swapQuotesEthDex from './swap/quotes-eth-dex.json';
+import swapQuotesSolanaBTC from './swap/quotes-solana-btc.json';
+import swapQuotesSolanaTokens from './swap/quotes-solana-tokens.json';
+import swapQuotesSolanaUSDC from './swap/quotes-solana-usdc.json';
+import swapQuotesTetherBTC from './swap/quotes-tether-btc.json';
+import swapQuotesTetherStellar from './swap/quotes-tether-stellar.json';
+import swapTradeBTCEthereum from './swap/trade-btc-eth.json';
+import swapTradeEthereumBTC from './swap/trade-eth-btc.json';
+import swapTradeEthDex from './swap/trade-eth-dex.json';
+import swapTradeSolanaBTC from './swap/trade-solana-btc.json';
+import swapTradeSolanaTokens from './swap/trade-solana-tokens.json';
+import swapTradeSolanaUSDC from './swap/trade-solana-usdc.json';
+import swapTradeTetherBTC from './swap/trade-tether-btc.json';
+import swapWatch from './swap/watch.json';
+
+const tradeApiUrl = 'https://exchange.trezor.io';
+
+export const tradeEndpoint = {
+    swapCoins: `${tradeApiUrl}/api/v3/exchange/coins`,
+    swapList: `${tradeApiUrl}/api/v3/exchange/list`,
+    swapQuotes: `${tradeApiUrl}/api/v3/exchange/quotes`,
+    swapTrade: `${tradeApiUrl}/api/v3/exchange/trade`,
+    swapWatch: `${tradeApiUrl}/api/v3/exchange/watch/*`,
+    info: `${tradeApiUrl}/api/info`,
+    buyList: `${tradeApiUrl}/api/v3/buy/list`,
+    buyQuotes: `${tradeApiUrl}/api/v3/buy/quotes`,
+    buyTrade: `${tradeApiUrl}/api/v3/buy/trade`,
+    buyWatch: `${tradeApiUrl}/api/v3/buy/watch/*`,
+    sellList: `${tradeApiUrl}/api/v3/sell/list`,
+    sellQuotes: `${tradeApiUrl}/api/v3/sell/fiat/quotes`,
+    sellTrade: `${tradeApiUrl}/api/v3/sell/fiat/trade`,
+    sellWatch: `${tradeApiUrl}/api/v3/sell/fiat/watch/*`,
+} as const;
+
+export const tradeApiRequest = {
+    buyTradeBTCPayload,
+    buyTradeSolanaPayload,
+    buyWatchPayload,
+    sellTradePayload,
+    sellWatchPayload,
+};
+
+// [typescript-performace]: Keep this explicit type to prevent TypeScript from expanding the
+// inferred type in the emitted declaration.
+// The individual fixture exports below retain their inferred types for direct use.
+export const tradeGeneralResponses: Partial<
+    Record<(typeof tradeEndpoint)[keyof typeof tradeEndpoint], unknown>
+> = {
+    [tradeEndpoint.swapList]: swapList,
+    [tradeEndpoint.swapWatch]: swapWatch,
+    [tradeEndpoint.info]: info,
+    [tradeEndpoint.buyList]: buyList,
+    [tradeEndpoint.buyWatch]: buyWatch,
+    [tradeEndpoint.sellList]: sellList,
+};
+
+export const getCompanyNameFromList = (name: string, type: 'buyList' | 'sellList' | 'swapList') => {
+    const listMap = {
+        buyList: buyList.providers,
+        sellList: sellList.providers,
+        swapList,
+    };
+    const providersArray = listMap[type];
+    const filteredProviders = providersArray.filter(item => item.name === name);
+
+    const provider = filteredProviders[0];
+    if (filteredProviders.length !== 1 || !provider) {
+        throw new Error(
+            `Expected exactly one item, but found ${filteredProviders.length}\n${JSON.stringify(filteredProviders, null, 2)}`,
+        );
+    }
+
+    return provider.companyName;
+};
+
+export {
+    info,
+    buyList,
+    buyQuotesBTC,
+    buyQuotesBTCUpdate,
+    buyQuotesEthereum,
+    buyQuotesNegativeMax,
+    buyQuotesNegativeMin,
+    buyQuotesSolanaToken,
+    buyTradeBTC,
+    buyTradeEthereum,
+    buyTradeSolanaToken,
+    buyWatch,
+    sellList,
+    sellQuotesBTC,
+    sellQuotesEthereum,
+    sellQuotesEthereumToken,
+    sellQuotesSolana,
+    sellTradeBTC,
+    sellTradeEthereum,
+    sellTradeEthereumToken,
+    sellTradeSolana,
+    sellWatchBTC,
+    sellWatchEthereum,
+    sellWatchSolana,
+    swapList,
+    swapQuotesBTCEthereum,
+    swapQuotesEthDex,
+    swapQuotesEthereumBTC,
+    swapQuotesSolanaBTC,
+    swapQuotesSolanaTokens,
+    swapQuotesSolanaUSDC,
+    swapQuotesTetherBTC,
+    swapQuotesTetherStellar,
+    swapTradeBTCEthereum,
+    swapTradeEthDex,
+    swapTradeEthereumBTC,
+    swapTradeSolanaBTC,
+    swapTradeSolanaTokens,
+    swapTradeSolanaUSDC,
+    swapTradeTetherBTC,
+    swapWatch,
+};

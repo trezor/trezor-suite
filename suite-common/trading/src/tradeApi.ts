@@ -1,0 +1,485 @@
+import { createHash } from 'crypto';
+import type {
+    BuyListResponse,
+    BuyTrade,
+    BuyTradeFormResponse,
+    BuyTradeQuoteRequest,
+    BuyTradeQuoteResponse,
+    BuyTradeRequest,
+    BuyTradeResponse,
+    ConfirmExchangeTradeRequest,
+    CreateTradeSignatureRequestExchange,
+    CreateTradeSignatureRequestSell,
+    ExchangeListResponse,
+    ExchangeTrade,
+    ExchangeTradeQuoteRequest,
+    ExchangeTradeQuoteResponse,
+    ExchangeTradeSigned,
+    InfoResponse,
+    SellFiatTrade,
+    SellFiatTradeQuoteRequest,
+    SellFiatTradeQuoteResponse,
+    SellFiatTradeRequest,
+    SellFiatTradeResponse,
+    SellFiatTradeSigned,
+    SellListResponse,
+    SellVoucherTradeQuoteRequest,
+    SellVoucherTradeRequest,
+} from 'invity-api';
+
+import { getOsName, getSuiteVersion, isDesktop, isNative } from '@trezor/env-utils';
+
+import {
+    type TradeServerEnvironment,
+    type TradeServers,
+    type TradingOTC,
+    type TradingPaymentMethodType,
+    type TradingTradeType,
+    type TradingType,
+    type TradingWatchTradeResponsePropsMap,
+} from './types';
+
+type BodyType =
+    | BuyTrade
+    | ExchangeTradeQuoteRequest
+    | ConfirmExchangeTradeRequest
+    | ExchangeTrade
+    | BuyTradeQuoteRequest
+    | BuyTradeRequest
+    | SellVoucherTradeQuoteRequest
+    | SellVoucherTradeRequest
+    | SellFiatTradeRequest;
+
+type SignalType = AbortSignal | null | undefined;
+
+class TradeApi {
+    readonly SERVERS: TradeServers = {
+        production: 'https://exchange.trezor.io',
+        staging: 'https://staging-exchange.trezor.io',
+        dev: 'https://dev-exchange.trezor.io',
+        localhost: 'http://localhost:3330',
+    };
+
+    private serverEnvironment: TradeServerEnvironment = 'production';
+
+    // info service
+    private readonly INFO = '/api/info';
+    // SLIP24 - sign trade
+    private readonly TRADE_SIGN = '/api/sign-trade';
+
+    // exchange service
+    private readonly EXCHANGE_LIST = '/api/v3/exchange/list';
+    private readonly EXCHANGE_QUOTES = '/api/v3/exchange/quotes';
+    private readonly EXCHANGE_DO_TRADE = '/api/v3/exchange/trade';
+    private readonly EXCHANGE_WATCH_TRADE = '/api/v3/exchange/watch/{{counter}}';
+
+    // buy service
+    private readonly BUY_LIST = '/api/v3/buy/list';
+    private readonly BUY_QUOTES = '/api/v3/buy/quotes';
+    private readonly BUY_DO_TRADE = '/api/v3/buy/trade';
+    private readonly BUY_GET_TRADE_FORM = '/api/v3/buy/tradeform';
+    private readonly BUY_WATCH_TRADE = '/api/v3/buy/watch/{{counter}}';
+
+    // sell service
+    private readonly SELL_LIST = '/api/v3/sell/list';
+    private readonly SELL_FIAT_QUOTES = '/api/v3/sell/fiat/quotes';
+    private readonly SELL_FIAT_DO_TRADE = '/api/v3/sell/fiat/trade';
+    private readonly SELL_FIAT_CONFIRM = '/api/v3/sell/fiat/confirm';
+    private readonly SELL_FIAT_WATCH_TRADE = '/api/v3/sell/fiat/watch/{{counter}}';
+
+    // otc service
+    private readonly OTC_INFO = '/api/v2/otc';
+
+    private static accountDescriptor: string | undefined;
+    private static apiKey: string | undefined;
+
+    private getApiKey() {
+        if (!TradeApi.apiKey) {
+            throw Error('apiKey not created');
+        }
+
+        return TradeApi.apiKey;
+    }
+
+    getApiServerUrl() {
+        return this.SERVERS[this.serverEnvironment];
+    }
+
+    getCurrentAccountDescriptor() {
+        return TradeApi.accountDescriptor;
+    }
+
+    getCurrentApiKey() {
+        return TradeApi.apiKey;
+    }
+
+    createApiKey(accountDescriptor: string) {
+        if (accountDescriptor !== TradeApi.accountDescriptor) {
+            const hash = createHash('sha256');
+            hash.update(accountDescriptor);
+            TradeApi.apiKey = hash.digest('hex');
+            TradeApi.accountDescriptor = accountDescriptor;
+        }
+    }
+
+    resetCurrentAccount() {
+        TradeApi.accountDescriptor = undefined;
+    }
+
+    setServersEnvironment(serverEnvironment: TradeServerEnvironment) {
+        this.serverEnvironment = serverEnvironment;
+    }
+
+    private getSuiteTraceHeader() {
+        return createHash('sha256').update(this.getApiKey()).digest('hex');
+    }
+
+    private getOptionAPIHeader() {
+        if (isNative()) return 'X-SuiteN-Api';
+        if (isDesktop()) return 'X-SuiteA-Api';
+
+        return 'X-SuiteW-Api';
+    }
+
+    private options(
+        body: BodyType = {},
+        method = 'POST',
+        apiHeaderValue?: string,
+        signal?: SignalType,
+    ): RequestInit {
+        const apiHeader = this.getOptionAPIHeader();
+
+        return {
+            method,
+            mode: 'cors',
+            headers: {
+                [apiHeader]: apiHeaderValue || this.getApiKey(),
+                'X-Trace-Id': this.getSuiteTraceHeader(),
+                'X-Suite-Version': getSuiteVersion(),
+                'X-Suite-Platform': getOsName(),
+                ...(method === 'POST' && {
+                    'Cache-Control': 'no-cache',
+                    'Content-Type': 'application/json',
+                }),
+            },
+            ...(method === 'POST' && {
+                body: JSON.stringify(body),
+            }),
+            signal,
+        };
+    }
+
+    private async request(
+        url: string,
+        body: BodyType = {},
+        method = 'POST',
+        apiHeaderValue?: string,
+        signal?: SignalType,
+    ): Promise<any> {
+        const finalUrl = `${this.getApiServerUrl()}${url}`;
+        const opts = this.options(body, method, apiHeaderValue, signal);
+
+        return await fetch(finalUrl, opts).then(response => {
+            if (response.ok) {
+                return response
+                    .json()
+                    .then(json => json)
+                    .catch(error => {
+                        throw Error(`Not possible to parse response ${error.message}`);
+                    });
+            }
+
+            return response
+                .json()
+                .then(output => {
+                    if (output.error) {
+                        return output;
+                    }
+                    throw Error(`Request rejected with status ${response.status}`);
+                })
+                .catch(error => {
+                    throw Error(`Not possible to parse response ${error.message}`);
+                });
+        });
+    }
+
+    getInfo = async (): Promise<InfoResponse> => {
+        try {
+            const response = await this.request(this.INFO, {}, 'GET');
+            if (response) {
+                return response;
+            }
+        } catch (error) {
+            console.error('[getInfo]', error);
+        }
+
+        return { platforms: {}, coins: {}, config: {} };
+    };
+
+    getExchangeList = async (): Promise<ExchangeListResponse> => {
+        try {
+            const response = await this.request(this.EXCHANGE_LIST, {}, 'GET');
+
+            if (response) {
+                return response;
+            }
+        } catch (error) {
+            console.error('[getExchangeList]', error);
+        }
+
+        return [];
+    };
+
+    getExchangeQuotes = async (
+        params: ExchangeTradeQuoteRequest,
+        signal?: SignalType,
+    ): Promise<ExchangeTrade[] | undefined> => {
+        try {
+            const response: ExchangeTradeQuoteResponse = await this.request(
+                this.EXCHANGE_QUOTES,
+                params,
+                'POST',
+                undefined,
+                signal,
+            );
+
+            return response;
+        } catch (error) {
+            if (error.name === 'AbortError') return;
+
+            console.error('[getExchangeQuotes]', error);
+        }
+    };
+
+    doExchangeTrade = async (
+        tradeRequest: ConfirmExchangeTradeRequest,
+        signal?: SignalType,
+    ): Promise<ExchangeTrade> => {
+        try {
+            const response: ExchangeTrade = await this.request(
+                this.EXCHANGE_DO_TRADE,
+                tradeRequest,
+                'POST',
+                undefined,
+                signal,
+            );
+
+            return response;
+        } catch (error) {
+            console.error('[doExchangeTrade]', error);
+
+            return { error: error.toString(), exchange: tradeRequest.trade.exchange };
+        }
+    };
+
+    getBuyList = async (): Promise<BuyListResponse | undefined> => {
+        try {
+            const response = await this.request(this.BUY_LIST, {}, 'GET');
+
+            return response;
+        } catch (error) {
+            console.error('[getBuyList]', error);
+        }
+    };
+
+    getBuyQuotes = async (
+        params: BuyTradeQuoteRequest,
+        signal?: SignalType,
+    ): Promise<BuyTradeQuoteResponse | undefined> => {
+        try {
+            const response: BuyTradeQuoteResponse = await this.request(
+                this.BUY_QUOTES,
+                params,
+                'POST',
+                undefined,
+                signal,
+            );
+
+            return response;
+        } catch (error) {
+            if (error.name === 'AbortError') return;
+
+            console.error('[getBuyQuotes]', error);
+        }
+    };
+
+    doBuyTrade = async (tradeRequest: BuyTradeRequest): Promise<BuyTradeResponse> => {
+        try {
+            const response: BuyTradeResponse = await this.request(
+                this.BUY_DO_TRADE,
+                tradeRequest,
+                'POST',
+            );
+
+            return response;
+        } catch (error) {
+            console.error('[doBuyTrade]', error);
+
+            return { trade: { error: error.toString(), exchange: tradeRequest.trade.exchange } };
+        }
+    };
+
+    getBuyTradeForm = async (tradeRequest: BuyTradeRequest): Promise<BuyTradeFormResponse> => {
+        try {
+            const response: BuyTradeFormResponse = await this.request(
+                this.BUY_GET_TRADE_FORM,
+                tradeRequest,
+                'POST',
+            );
+
+            return response;
+        } catch (error) {
+            console.error('[getBuyTradeForm]', error);
+
+            return { error: error.toString() };
+        }
+    };
+
+    getSellList = async (): Promise<SellListResponse | undefined> => {
+        try {
+            const response = await this.request(this.SELL_LIST, {}, 'GET');
+
+            return response;
+        } catch (error) {
+            console.error('[getSellList]', error);
+        }
+    };
+
+    getSellQuotes = async (
+        params: SellFiatTradeQuoteRequest,
+        signal?: SignalType,
+    ): Promise<SellFiatTrade[] | undefined> => {
+        try {
+            const response: SellFiatTradeQuoteResponse = await this.request(
+                this.SELL_FIAT_QUOTES,
+                params,
+                'POST',
+                undefined,
+                signal,
+            );
+
+            return response;
+        } catch (error) {
+            if (error.name === 'AbortError') return;
+
+            console.error('[getSellQuotes]', error);
+        }
+    };
+
+    doSellTrade = async (tradeRequest: SellFiatTradeRequest): Promise<SellFiatTradeResponse> => {
+        try {
+            const response: SellFiatTradeResponse = await this.request(
+                this.SELL_FIAT_DO_TRADE,
+                tradeRequest,
+                'POST',
+            );
+
+            return response;
+        } catch (error) {
+            console.error('[doSellTrade]', error);
+
+            return { trade: { error: error.toString(), exchange: tradeRequest.trade.exchange } };
+        }
+    };
+
+    doSellConfirm = async (trade: SellFiatTrade): Promise<SellFiatTrade> => {
+        try {
+            const response: SellFiatTrade = await this.request(
+                this.SELL_FIAT_CONFIRM,
+                trade,
+                'POST',
+            );
+
+            return response;
+        } catch (error) {
+            console.error('[doSellConfirm]', error);
+
+            return { error: error.toString(), exchange: trade.exchange };
+        }
+    };
+
+    getCoinLogoUrl(coin: string): string {
+        return `${this.getApiServerUrl()}/images/coins/suite/${coin}.svg`;
+    }
+
+    getProviderLogoUrl(logo: string): string {
+        return `${this.getApiServerUrl()}/images/exchange/${logo}`;
+    }
+
+    getPaymentMethodUrl(paymentMethod: TradingPaymentMethodType): string {
+        return `${this.getApiServerUrl()}/images/paymentMethods/suite/${paymentMethod}.svg`;
+    }
+
+    private getWatchTradeData = (tradeType: TradingType) => {
+        const tradesData = {
+            exchange: {
+                url: this.EXCHANGE_WATCH_TRADE,
+                logPrefix: '[watchExchangeTrade]',
+            },
+            buy: {
+                url: this.BUY_WATCH_TRADE,
+                logPrefix: '[watchBuyTrade]',
+            },
+
+            sell: {
+                url: this.SELL_FIAT_WATCH_TRADE,
+                logPrefix: '[watchSellFiatTrade]',
+            },
+        };
+
+        return tradesData[tradeType];
+    };
+
+    watchTrade = async <T extends TradingType>(
+        tradeData: TradingTradeType,
+        tradeType: TradingType,
+        counter: number,
+    ): Promise<TradingWatchTradeResponsePropsMap[T]> => {
+        const tradesData = this.getWatchTradeData(tradeType);
+
+        try {
+            const response: TradingWatchTradeResponsePropsMap[T] = await this.request(
+                tradesData.url.replace('{{counter}}', counter.toString()),
+                tradeData,
+                'POST',
+            );
+
+            return response;
+        } catch (error) {
+            console.error(tradesData.logPrefix, error);
+
+            return { error: error.toString() };
+        }
+    };
+
+    getOTCData = async (): Promise<TradingOTC | undefined> => {
+        try {
+            const response = await this.request(this.OTC_INFO, {}, 'GET');
+
+            if (response) {
+                return response;
+            }
+        } catch (error) {
+            console.error('[getOTCData]', error);
+        }
+    };
+
+    getSignedTrade = async <
+        T extends SellFiatTradeSigned | ExchangeTradeSigned,
+        P extends CreateTradeSignatureRequestSell | CreateTradeSignatureRequestExchange,
+    >(
+        params: P,
+    ): Promise<T | undefined> => {
+        try {
+            const response = await this.request(this.TRADE_SIGN, params, 'POST');
+
+            if (response) {
+                return response;
+            }
+        } catch (error) {
+            console.error('[getSignedTrade]', error);
+        }
+    };
+}
+
+export const tradeApi = new TradeApi();

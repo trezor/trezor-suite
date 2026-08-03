@@ -102,6 +102,12 @@ const disconnectedDevice = mockSuiteDevice({
     state: { staticSessionId: 'device@selected:1' },
 });
 
+const createObserveSelectedDeviceFulfilledAction = (payload: {
+    isDeviceChanged: boolean;
+    isDeviceBecomingAcquired: boolean;
+    isDeviceBecomingConnected: boolean;
+}) => walletCore.observeSelectedDevice.fulfilled(payload, 'request-id', undefined);
+
 const fixtures: Fixture[] = [
     {
         description: 'starts discovery when device is selected',
@@ -145,6 +151,14 @@ const fixtures: Fixture[] = [
         steps: [
             {
                 action: deviceActions.updateSelectedDevice(selectedDevice),
+                expectedCallCount: 0,
+            },
+            {
+                action: createObserveSelectedDeviceFulfilledAction({
+                    isDeviceChanged: true,
+                    isDeviceBecomingAcquired: true,
+                    isDeviceBecomingConnected: true,
+                }),
                 expectedCallCount: 1,
             },
         ],
@@ -158,6 +172,14 @@ const fixtures: Fixture[] = [
         steps: [
             {
                 action: deviceActions.updateSelectedDevice(selectedDevice),
+                expectedCallCount: 0,
+            },
+            {
+                action: createObserveSelectedDeviceFulfilledAction({
+                    isDeviceChanged: true,
+                    isDeviceBecomingAcquired: false,
+                    isDeviceBecomingConnected: true,
+                }),
                 expectedCallCount: 1,
             },
         ],
@@ -174,6 +196,14 @@ const fixtures: Fixture[] = [
         steps: [
             {
                 action: deviceActions.updateSelectedDevice(selectedDevice),
+                expectedCallCount: 0,
+            },
+            {
+                action: createObserveSelectedDeviceFulfilledAction({
+                    isDeviceChanged: true,
+                    isDeviceBecomingAcquired: false,
+                    isDeviceBecomingConnected: true,
+                }),
                 expectedCallCount: 0,
             },
         ],
@@ -202,6 +232,14 @@ const fixtures: Fixture[] = [
         steps: [
             {
                 action: deviceActions.updateSelectedDevice(selectedDevice),
+                expectedCallCount: 0,
+            },
+            {
+                action: createObserveSelectedDeviceFulfilledAction({
+                    isDeviceChanged: true,
+                    isDeviceBecomingAcquired: true,
+                    isDeviceBecomingConnected: true,
+                }),
                 expectedCallCount: 0,
             },
             {

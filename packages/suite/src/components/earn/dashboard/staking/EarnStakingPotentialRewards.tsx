@@ -22,7 +22,7 @@ export const EarnStakingPotentialRewards = ({
     formattedAccountBalance,
     displaySymbol,
 }: EarnStakingPotentialRewardsProps) => (
-    <Column>
+    <Column gap={4}>
         {apy && <EarnRewardsAmount symbol={symbol} rewards={rewards} apy={apy} intent="brand" />}
 
         {!isCardanoNetworkType && apy && (

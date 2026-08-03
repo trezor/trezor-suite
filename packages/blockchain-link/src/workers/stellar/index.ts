@@ -93,10 +93,16 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
     };
 
     const api = await request.connect();
+    const { identifyTransaction, isNotFoundError } = await stellar();
     let info;
     try {
         info = await api.accounts().accountId(payload.descriptor).call();
-    } catch {
+    } catch (error) {
+        // Other errors (rate limiting, outage) must not be reported as an empty account
+        if (!isNotFoundError(error)) {
+            throw error;
+        }
+
         // Account not found, we set the account as empty
         return {
             type: RESPONSES.GET_ACCOUNT_INFO,
@@ -167,8 +173,22 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
     if (payload.page && payload.page !== 1 && payload.pageCursor) {
         requestBuilder.cursor(payload.pageCursor);
     }
-    const transactions = await requestBuilder.call();
-    const { identifyTransaction } = await stellar();
+    let transactions;
+    try {
+        transactions = await requestBuilder.call();
+    } catch (error) {
+        if (isNotFoundError(error)) {
+            // Horizon retains limited history; accounts without activity in the retained
+            // window return 404 on the transactions endpoint even though they exist
+            account.history.transactions = [];
+
+            return {
+                type: RESPONSES.GET_ACCOUNT_INFO,
+                payload: { ...account, stellarCursor: undefined },
+            } as const;
+        }
+        throw error;
+    }
 
     account.history.transactions = transactions.records
         .map(identifyTransaction)

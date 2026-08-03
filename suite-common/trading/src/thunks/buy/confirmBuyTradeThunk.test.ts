@@ -5,10 +5,10 @@ import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/t
 import { type Account, type AccountKey } from '@suite-common/wallet-types';
 
 import { MIN_MAX_QUOTES_OK } from '../../__fixtures__/buyUtils';
-import { invityAPI } from '../../invityAPI';
 import { type TradingBuyState } from '../../reducers/buyReducer';
 import { initialState } from '../../reducers/tradingCommonReducer';
 import { prepareTradingReducer } from '../../reducers/tradingReducer';
+import { tradeApi } from '../../tradeApi';
 import type { LogErrorThunkProps } from '../common/logErrorThunk';
 
 import { buyThunks } from './index';
@@ -27,10 +27,10 @@ describe('confirmBuyTradeThunk', () => {
         jest.clearAllMocks();
     });
 
-    jest.mock('../../invityAPI');
+    jest.mock('../../tradeApi');
 
-    invityAPI.setInvityServersEnvironment = () => {};
-    invityAPI.createInvityAPIKey = () => {};
+    tradeApi.setServersEnvironment = () => {};
+    tradeApi.createApiKey = () => {};
 
     const getMocks = (initialBuyState?: Partial<TradingBuyState>) => {
         const store = configureMockStore({
@@ -108,7 +108,7 @@ describe('confirmBuyTradeThunk', () => {
             const { store, mockProcessResponseData, mocktriggerAnalyticsTradeConfirmation } =
                 getMocks();
 
-            invityAPI.doBuyTrade = () => Promise.resolve(undefined as unknown as BuyTradeResponse);
+            tradeApi.doBuyTrade = () => Promise.resolve(undefined as unknown as BuyTradeResponse);
 
             await store.dispatch(
                 buyThunks.confirmTradeThunk({
@@ -142,7 +142,7 @@ describe('confirmBuyTradeThunk', () => {
             const { store, mockProcessResponseData, mocktriggerAnalyticsTradeConfirmation } =
                 getMocks();
 
-            invityAPI.doBuyTrade = () => Promise.resolve({} as BuyTradeResponse);
+            tradeApi.doBuyTrade = () => Promise.resolve({} as BuyTradeResponse);
 
             await store.dispatch(
                 buyThunks.confirmTradeThunk({
@@ -176,7 +176,7 @@ describe('confirmBuyTradeThunk', () => {
             const { store, mockProcessResponseData, mocktriggerAnalyticsTradeConfirmation } =
                 getMocks();
 
-            invityAPI.doBuyTrade = () =>
+            tradeApi.doBuyTrade = () =>
                 Promise.resolve({
                     trade: {
                         ...MIN_MAX_QUOTES_OK[1],
@@ -217,7 +217,7 @@ describe('confirmBuyTradeThunk', () => {
                 getMocks();
             const error = 'Error message from API';
 
-            invityAPI.doBuyTrade = () =>
+            tradeApi.doBuyTrade = () =>
                 Promise.resolve({
                     trade: {
                         ...MIN_MAX_QUOTES_OK[1],
@@ -260,7 +260,7 @@ describe('confirmBuyTradeThunk', () => {
         const dateString = new Date().toISOString();
         jest.spyOn(Date.prototype, 'toISOString').mockImplementation(() => dateString);
 
-        invityAPI.doBuyTrade = () =>
+        tradeApi.doBuyTrade = () =>
             Promise.resolve({
                 trade: {
                     ...MIN_MAX_QUOTES_OK[1],

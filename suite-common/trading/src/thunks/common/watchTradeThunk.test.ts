@@ -5,9 +5,9 @@ import { type Account, type AccountKey } from '@suite-common/wallet-types';
 
 import { watchTradeThunk } from './watchTradeThunk';
 import { accountBtc } from '../../__fixtures__/utils';
-import { invityAPI } from '../../invityAPI';
 import { type TradingState, initialState } from '../../reducers/tradingCommonReducer';
 import { prepareTradingReducer } from '../../reducers/tradingReducer';
+import { tradeApi } from '../../tradeApi';
 import {
     type TradingTransaction,
     type TradingTransactionBuy,
@@ -16,7 +16,7 @@ import {
 } from '../../types';
 
 describe('watchTradeThunk', () => {
-    jest.mock('../../invityAPI');
+    jest.mock('../../tradeApi');
 
     const tradingReducer = prepareTradingReducer(extraDependenciesCommonMock);
     const account = accountBtc as Account;
@@ -68,7 +68,7 @@ describe('watchTradeThunk', () => {
                 trades: [trade],
             });
 
-            invityAPI.watchTrade = () => Promise.resolve(undefined as any);
+            tradeApi.watchTrade = () => Promise.resolve(undefined as any);
 
             await store.dispatch(
                 watchTradeThunk({
@@ -100,7 +100,7 @@ describe('watchTradeThunk', () => {
             trades: [trade],
         });
 
-        invityAPI.watchTrade = () =>
+        tradeApi.watchTrade = () =>
             Promise.resolve({
                 status: 'LOGIN_REQUEST',
             } as any);
@@ -134,7 +134,7 @@ describe('watchTradeThunk', () => {
             trades: [trade],
         });
 
-        invityAPI.watchTrade = () =>
+        tradeApi.watchTrade = () =>
             Promise.resolve({
                 status: 'ERROR',
                 error: 'Some error occurred',
@@ -197,7 +197,7 @@ describe('watchTradeThunk', () => {
                 trades: [trade],
             });
 
-            invityAPI.watchTrade = () =>
+            tradeApi.watchTrade = () =>
                 Promise.resolve({
                     status: 'CONFIRM',
                     ...responseData,
@@ -253,7 +253,7 @@ describe('watchTradeThunk', () => {
                 trades: [trade],
             });
 
-            invityAPI.watchTrade = () =>
+            tradeApi.watchTrade = () =>
                 Promise.resolve({
                     status: 'CONFIRM',
                     ...responseData,

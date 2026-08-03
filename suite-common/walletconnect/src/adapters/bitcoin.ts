@@ -4,16 +4,12 @@ import type { ProposalTypes } from '@walletconnect/types';
 import * as trezorConnectPopupActions from '@suite-common/connect-popup';
 import { selectSelectedDevice } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
-import {
-    type Bip43Path,
-    type Network,
-    getNetwork,
-    networksCollection,
-} from '@suite-common/wallet-config';
+import { type Network, getNetwork, networksCollection } from '@suite-common/wallet-config';
 import { selectAccounts } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { getAccountIdentity } from '@suite-common/wallet-utils';
 import TrezorConnect, { type CallMethodResponse, type ComposeOutput } from '@trezor/connect';
+import type { Bip43Path } from '@trezor/crypto-utils';
 
 import { WALLETCONNECT_MODULE } from '../walletConnectConstants';
 import { selectSessionByTopic } from '../walletConnectReducer';
@@ -220,7 +216,7 @@ export const getChainId = (network: Network) => {
     return [];
 };
 
-export const getNamespace = (accounts: Account[]) => {
+export const getNamespace = (accounts: Account[]): Record<string, WalletConnectNamespace> => {
     const bip122 = {
         chains: [],
         accounts: [],
@@ -244,6 +240,10 @@ export const getNamespace = (accounts: Account[]) => {
             bip122.accounts.push(`${network.caipId}:${firstAddress}`);
         }
     });
+
+    if (bip122.chains.length === 0) {
+        return {};
+    }
 
     return { bip122 };
 };

@@ -1,4 +1,4 @@
-import { type FC, useCallback, useMemo } from 'react';
+import { type FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import {
@@ -13,7 +13,7 @@ import { selectHasBitcoinOnlyFirmware } from '@suite-common/device';
 import { Column } from '@trezor/components';
 import { BellIcon, GearSixIcon, HouseIcon, PiggyBankIcon, RepeatIcon } from '@trezor/icons';
 
-import { useActivityNotificationPhase, useDispatch, useSelector } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { type AppState } from 'src/reducers/store';
 import { useResponsiveContext } from 'src/support/suite/ResponsiveContext';
 import { isTransactionNotification } from 'src/utils/suite/notification';
@@ -31,6 +31,8 @@ export const SETTINGS_ROUTES: Route['name'][] = [
 type NavigationProps = {
     children?: React.ReactNode;
 };
+
+const newContentIndicatorIntro = { hasPlayed: false };
 
 const selectHasUnseenNotifications = (state: AppState) =>
     state.notifications.some(
@@ -54,13 +56,14 @@ export const Navigation = ({ children }: NavigationProps) => {
     const isEarnNewContentIndicatorVisible = useSelector(
         selectIsNewContentIndicatorVisible(NewContentIndicatorId.Earn26_8),
     );
+    const [shouldAnimateNewContentIndicators] = useState(() => !newContentIndicatorIntro.hasPlayed);
+
+    useEffect(() => {
+        newContentIndicatorIntro.hasPlayed = true;
+    }, []);
 
     const isActivityOpen = useSelector(selectRouteName) === 'notifications-index';
-    const activityNotificationPhase = useActivityNotificationPhase(
-        hasUnseenNotifications,
-        isActivityOpen,
-    );
-    const hasActivityIndicator = activityNotificationPhase !== 'off';
+    const hasActivityIndicator = hasUnseenNotifications && !isActivityOpen;
 
     const reportSwapNavigation = useCallback(() => {
         analytics.report({
@@ -134,6 +137,7 @@ export const Navigation = ({ children }: NavigationProps) => {
                               icon: PiggyBankIcon,
                               goToRoute: 'suite-earn',
                               hasNewContentIndicator: isEarnNewContentIndicatorVisible,
+                              isNewContentIndicatorAnimated: shouldAnimateNewContentIndicators,
                               onClick: handleEarnNavigation,
                               shortcut: ['ALT', 'KEY_E'],
                               routes: [
@@ -159,8 +163,8 @@ export const Navigation = ({ children }: NavigationProps) => {
                     goToRoute: 'notifications-index',
                     routes: ['notifications-index'],
                     hasIndicator: hasActivityIndicator,
-                    isIndicatorAnimated: activityNotificationPhase === 'ringing',
                     hasNewContentIndicator: isActivityNewContentIndicatorVisible,
+                    isNewContentIndicatorAnimated: shouldAnimateNewContentIndicators,
                     onClick: handleActivityNavigation,
                     'data-testid': '@suite/menu/notifications',
                     shortcut: ['ALT', 'KEY_I'],
@@ -179,9 +183,9 @@ export const Navigation = ({ children }: NavigationProps) => {
                 isBtcOnly,
                 reportSwapNavigation,
                 isEarnNewContentIndicatorVisible,
+                shouldAnimateNewContentIndicators,
                 handleEarnNavigation,
                 hasActivityIndicator,
-                activityNotificationPhase,
                 isActivityNewContentIndicatorVisible,
                 handleActivityNavigation,
             ],

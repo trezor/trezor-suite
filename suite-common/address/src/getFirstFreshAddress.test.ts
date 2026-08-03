@@ -191,6 +191,32 @@ describe(getFirstFreshAddress.name, () => {
             path: "m/44'/144'/0'/0/0",
             address: 'rXrpDescriptor',
             transfers: 7,
+            balance: '0',
+            sent: '0',
+            received: '0',
+        });
+    });
+
+    it('returns the descriptor-based receive address for non-utxo accounts with empty addresses', () => {
+        const account = mockWalletAccount({
+            symbol: 'trx',
+            path: "m/44'/195'/0'/0/0",
+            descriptor: asAccountDescriptor('tTrxDescriptor'),
+            history: { total: 3, tokens: 0, unconfirmed: 0 },
+            addresses: {
+                used: [],
+                unused: [],
+                change: [],
+            },
+        });
+
+        expect(getFirstFreshAddress(account, [], [], false)).toEqual({
+            path: "m/44'/195'/0'/0/0",
+            address: 'tTrxDescriptor',
+            transfers: 3,
+            balance: '0',
+            sent: '0',
+            received: '0',
         });
     });
 

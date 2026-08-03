@@ -34,8 +34,24 @@ jest.mock('@trezor/connect', () => ({
             success: true,
             payload: { txid: '0xpushedtxid' },
         }),
+        getAccountInfo: jest.fn(),
     },
 }));
+
+const VALID_LIVE_STAKING_POOL = {
+    success: true,
+    payload: {
+        misc: {
+            stakingPools: [
+                {
+                    autocompoundBalance: '2000000000000000000',
+                    withdrawTotalAmount: '100000000000000000',
+                    claimableAmount: '100000000000000000',
+                },
+            ],
+        },
+    },
+};
 
 jest.mock('@suite-native/device-mutex', () => ({
     requestPrioritizedDeviceAccess: async (callback: () => Promise<unknown>) => ({
@@ -153,6 +169,7 @@ const buildStore = ({
 
 const ethereumSignTransactionMock = TrezorConnect.ethereumSignTransaction as jest.Mock;
 const pushTransactionMock = TrezorConnect.pushTransaction as jest.Mock;
+const getAccountInfoMock = TrezorConnect.getAccountInfo as jest.Mock;
 
 const dispatchFlow = async (
     store: ReturnType<typeof buildStore>,
@@ -169,6 +186,7 @@ const dispatchFlow = async (
 beforeEach(() => {
     ethereumSignTransactionMock.mockClear();
     pushTransactionMock.mockClear();
+    getAccountInfoMock.mockClear();
     ethereumSignTransactionMock.mockResolvedValue({
         success: true,
         payload: { serializedTx: '0xsignedtx' },
@@ -177,6 +195,7 @@ beforeEach(() => {
         success: true,
         payload: { txid: '0xpushedtxid' },
     });
+    getAccountInfoMock.mockResolvedValue(VALID_LIVE_STAKING_POOL);
 });
 
 describe('signEthereumStakingTransactionNativeThunk', () => {
@@ -250,6 +269,80 @@ describe('signEthereumStakingTransactionNativeThunk', () => {
         expect(signCall.transaction.to).toBe(ACCOUNTING_ADDRESS);
         expect(signCall.transaction.value).toBe('0x0');
         expect(signCall.transaction.data).toBe(buildClaimWithdrawRequestData());
+    });
+
+    it('rejects an unstake when the live staked balance dropped below the requested amount', async () => {
+        const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+        getAccountInfoMock.mockResolvedValue({
+            success: true,
+            payload: {
+                misc: {
+                    stakingPools: [{ autocompoundBalance: '1000000000000000000' }],
+                },
+            },
+        });
+        const store = buildStore({
+            formDrafts: {
+                [getFormDraftKey('unstake', ETH_ACCOUNT_KEY)]: buildComposeFormDraft(
+                    'unstake',
+                    '1.5',
+                ),
+            },
+        });
+
+        const result = await dispatchFlow(store, {
+            accountKey: ETH_ACCOUNT_KEY,
+            stakeType: 'unstake',
+            precomposedTransaction: buildPrecomposedTransaction(),
+        });
+
+        expect(result).toEqual({
+            ok: false,
+            error: {
+                error: 'stake-live-state-invalid',
+                message: 'Max Amount For Unstake 1',
+            },
+        });
+        expect(ethereumSignTransactionMock).not.toHaveBeenCalled();
+        errorSpy.mockRestore();
+    });
+
+    it('rejects a claim when the withdraw request is not fully filled yet', async () => {
+        const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+        getAccountInfoMock.mockResolvedValue({
+            success: true,
+            payload: {
+                misc: {
+                    stakingPools: [
+                        {
+                            withdrawTotalAmount: '200000000000000000',
+                            claimableAmount: '100000000000000000',
+                        },
+                    ],
+                },
+            },
+        });
+        const store = buildStore({
+            formDrafts: {
+                [getFormDraftKey('claim', ETH_ACCOUNT_KEY)]: buildComposeFormDraft('claim', '0'),
+            },
+        });
+
+        const result = await dispatchFlow(store, {
+            accountKey: ETH_ACCOUNT_KEY,
+            stakeType: 'claim',
+            precomposedTransaction: buildPrecomposedTransaction(),
+        });
+
+        expect(result).toEqual({
+            ok: false,
+            error: {
+                error: 'stake-live-state-invalid',
+                message: 'Unstake request not filled yet',
+            },
+        });
+        expect(ethereumSignTransactionMock).not.toHaveBeenCalled();
+        errorSpy.mockRestore();
     });
 
     it('fails when the compose form draft is missing', async () => {
