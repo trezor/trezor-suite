@@ -110,6 +110,16 @@ export const transformTransaction = (transaction: Transaction) => {
     const operations = transaction.operations.map((o, i) => {
         const operation: any = { ...o };
 
+        // stellar-sdk 16 returns null for absent optional setOptions fields; connect expects
+        // them undefined (manageData keeps null — there it means removal of the entry)
+        if (operation.type === 'setOptions') {
+            Object.keys(operation).forEach(field => {
+                if (operation[field] === null) {
+                    delete operation[field];
+                }
+            });
+        }
+
         // transform Signer
         if (operation.signer) {
             operation.signer = transformSigner(operation.signer);
@@ -122,12 +132,13 @@ export const transformTransaction = (transaction: Transaction) => {
 
         // transform "price" field to { n: number, d: number }
         if (typeof operation.price === 'string') {
-            // @ts-expect-error
-            const xdrOperation = transaction.tx.operations()[i];
-            operation.price = {
-                n: xdrOperation.body().value().price().n(),
-                d: xdrOperation.body().value().price().d(),
-            };
+            const xdrOperationBody = transaction.tx.operations()[i]?.body().value();
+            if (xdrOperationBody && 'price' in xdrOperationBody) {
+                operation.price = {
+                    n: xdrOperationBody.price().n(),
+                    d: xdrOperationBody.price().d(),
+                };
+            }
         }
 
         // transform amounts
