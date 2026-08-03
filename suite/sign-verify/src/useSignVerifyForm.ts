@@ -7,8 +7,7 @@ import { type AddressValidator, selectAddressValidatorDep } from '@suite-common/
 import { useServices } from '@suite-common/dependency-injection';
 import { yup } from '@suite-common/validators';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-
-import type { Account } from 'src/types/wallet';
+import { type Account } from '@suite-common/wallet-types';
 
 export const MAX_LENGTH_MESSAGE = 1024;
 export const MAX_LENGTH_SIGNATURE = 255;

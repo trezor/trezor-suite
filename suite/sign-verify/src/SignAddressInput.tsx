@@ -1,12 +1,8 @@
 import { Address } from '@suite/address';
-import { type ReceiveInfo } from '@suite-common/wallet-types';
+import { type Account, type ReceiveInfo } from '@suite-common/wallet-types';
 import { Box, Row, Select, type SelectProps, Text } from '@trezor/components';
 
-import {
-    type AddressItem,
-    useSignAddressOptions,
-} from 'src/hooks/wallet/sign-verify/useSignAddressOptions';
-import type { Account } from 'src/types/wallet';
+import { type AddressItem, useSignAddressOptions } from './useSignAddressOptions';
 
 const optionToAddress = (option: AddressItem | null) =>
     option ? { address: option.label, path: option.value } : null;

@@ -1,12 +1,14 @@
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { configureMockStore, testMocks } from '@suite-common/test-utils';
+import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
-import { showAddress, sign, verify } from 'src/actions/wallet/signVerifyActions';
+import { showAddress, sign, verify } from './signVerifyActions';
 
 const PATH = 'PATH';
 const ADDRESS = 'ADDRESS';
 const MESSAGE = 'MESSAGE';
 const SIGNATURE = 'SIGNATURE';
+const ACCOUNT = mockWalletAccount({ symbol: 'btc' });
 
 describe('Sign/Verify actions', () => {
     let store: any;
@@ -15,7 +17,6 @@ describe('Sign/Verify actions', () => {
         store = configureMockStore({
             preloadedState: {
                 wallet: {
-                    selectedAccount: { account: { symbol: 'btc', networkType: 'bitcoin' } },
                     settings: { addressDisplayType: 'chunked' },
                 },
                 device: { selectedDevice: mockSuiteDevice({ connected: true, available: true }) },
@@ -28,7 +29,7 @@ describe('Sign/Verify actions', () => {
             success: true,
             payload: { address: ADDRESS },
         });
-        const res = await store.dispatch(showAddress(ADDRESS, PATH));
+        const res = await store.dispatch(showAddress(ACCOUNT, ADDRESS, PATH));
         expect(res).toStrictEqual({ address: ADDRESS });
     });
 
@@ -40,7 +41,7 @@ describe('Sign/Verify actions', () => {
                 signature: SIGNATURE,
             },
         });
-        const res = await store.dispatch(sign(PATH, MESSAGE));
+        const res = await store.dispatch(sign(ACCOUNT, PATH, MESSAGE));
         expect(res.address).toStrictEqual(ADDRESS);
         expect(res.signature).toStrictEqual(SIGNATURE);
     });
@@ -50,7 +51,7 @@ describe('Sign/Verify actions', () => {
             success: true,
             payload: { message: MESSAGE },
         });
-        const res = await store.dispatch(verify(ADDRESS, MESSAGE, SIGNATURE));
+        const res = await store.dispatch(verify(ACCOUNT, ADDRESS, MESSAGE, SIGNATURE));
         expect(res).toStrictEqual(true);
     });
 });
