@@ -96,7 +96,7 @@ import {
     DebugLinkSetBatteryState,
     DebugLinkSetLogFilter,
 } from './messages-debug';
-import { DisplayAddress } from './messages-display_address';
+import { DisplayAddress, DisplayAddressWithProof } from './messages-display_address';
 import {
     EosGetPublicKey,
     EosPublicKey,
@@ -314,6 +314,8 @@ import {
     WARDDebugSetRootAck,
     WARDDiscardPending,
     WARDDiscardPendingAck,
+    WARDExportKeys,
+    WARDExportKeysAck,
     WARDIngestAttestation,
     WARDIngestAttestationAck,
     WARDListPendingEdits,
@@ -342,8 +344,8 @@ export * from './messages-cardano';
 export * from './messages-crypto';
 export * from './messages-management';
 export * from './messages-debug';
-export * from './messages-display_address';
 export * from './messages-definitions';
+export * from './messages-display_address';
 export * from './messages-eos';
 export * from './messages-ethereum';
 export * from './messages-ethereum-eip712';
@@ -457,7 +459,6 @@ export const MessageType = Type.Object(
         Entropy,
         GetFirmwareHash,
         FirmwareHash,
-        DisplayAddress,
         AuthenticateDevice,
         AuthenticityProof,
         AuthenticityProofSizes,
@@ -502,6 +503,8 @@ export const MessageType = Type.Object(
         DebugLinkN4W1Write,
         DebugLinkN4W1Read,
         DebugLinkN4W1Response,
+        DisplayAddress,
+        DisplayAddressWithProof,
         EosGetPublicKey,
         EosPublicKey,
         EosSignTx,
@@ -662,6 +665,8 @@ export const MessageType = Type.Object(
         WARDDebugSetRootAck,
         WARDProofRequest,
         WARDProofAck,
+        WARDExportKeys,
+        WARDExportKeysAck,
         WARDDiscardPending,
         WARDDiscardPendingAck,
     },
@@ -735,7 +740,6 @@ export type WireInMessage =
     | 'Cancel'
     | 'GetEntropy'
     | 'GetFirmwareHash'
-    | 'DisplayAddress'
     | 'AuthenticateDevice'
     | 'GetAuthenticityProofChunk'
     | 'WipeDevice'
@@ -757,6 +761,8 @@ export type WireInMessage =
     | 'UnlockBootloader'
     | 'SetBrightness'
     | 'GetSerialNumber'
+    | 'DisplayAddress'
+    | 'DisplayAddressWithProof'
     | 'EosGetPublicKey'
     | 'EosSignTx'
     | 'EosTxActionAck'
@@ -849,6 +855,7 @@ export type WireInMessage =
     | 'WARDLookup'
     | 'WARDDebugSetRoot'
     | 'WARDProofAck'
+    | 'WARDExportKeys'
     | 'WARDDiscardPending';
 
 export type WireOutMessage =
@@ -960,6 +967,7 @@ export type WireOutMessage =
     | 'WARDLookupAck'
     | 'WARDDebugSetRootAck'
     | 'WARDProofRequest'
+    | 'WARDExportKeysAck'
     | 'WARDDiscardPendingAck';
 
 export type MessageKey = keyof MessageType;

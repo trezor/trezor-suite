@@ -3,12 +3,12 @@ import type { MethodPermission } from '@trezor/connect-common';
 import { WardUpdateSchema } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { Assert } from '@trezor/schema-utils';
-import { commitLocal, loadHead, offlineRoot, prepareChange } from '@trezor/ward';
+import { blobRows, commitLocal, loadHead, offlineRoot, prepareChange } from '@trezor/ward';
 
 import type { MethodMessage } from '../../../core/AbstractMethod';
 import { AbstractMethod } from '../../../core/AbstractMethod';
 import * as settingsStore from '../../../data/settingsStore';
-import { toProofAck } from '../proofAck';
+import { buildAckByKey } from '../proofAck';
 import { WardCommitConflictError, getWardManagerService } from '../wardManagerService';
 import { WardSession } from '../wardSession';
 
@@ -123,9 +123,15 @@ export default class WardUpdate extends AbstractMethod<'wardUpdate', WardUpdateS
             tree?.root,
         );
 
-        // Queue → perform → confirm. The device is the counter authority.
+        // Queue → perform → confirm. The device is the counter authority. It pulls the
+        // pre-state proof BY the opaque entry_key it computed; we answer reactively from
+        // the host's stored leaf blobs (we hold no keys and can't compute entry_key).
+        const preBlobs = blobRows(rows);
         const { pendingId } = await session.queue(appId, address, change.newValueHex);
-        const candidate = await session.perform(toProofAck(change.oldProof, appId), pendingId);
+        const candidate = await session.perform(
+            req => buildAckByKey(preBlobs, req.entry_key),
+            pendingId,
+        );
         WardSession.assertWardId(candidate.wardId, wardId, 'wardUpdate');
 
         let finalSig: string;
@@ -169,6 +175,19 @@ export default class WardUpdate extends AbstractMethod<'wardUpdate', WardUpdateS
                 counter: installed.counter,
                 root: installed.root,
                 rootMac: installed.rootMac,
+                // Persist the device's encrypted leaf blob so future proofs (and roots)
+                // are served by entry_key. Present for insert/update (non-empty ct).
+                ...(candidate.entryKey !== undefined &&
+                    candidate.ct !== undefined &&
+                    candidate.ct !== '' && {
+                        blob: {
+                            entryKey: candidate.entryKey,
+                            entryType: candidate.entryType ?? 'address',
+                            nonce: candidate.nonce ?? '',
+                            tag: candidate.tag ?? '',
+                            ct: candidate.ct,
+                        },
+                    }),
             });
         } catch (err) {
             localCacheError = err instanceof Error ? err.message : String(err);

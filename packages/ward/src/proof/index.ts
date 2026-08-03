@@ -82,6 +82,53 @@ export const computeLeafHash = (
         valueHash(entry.counter, entryToValueBytes(networkSymbol, entry)),
     );
 
+// ---------------------------------------------------------------------------
+// Keyed / encrypted-leaf model (ward-design.md §2.1/§2.2) — the device is the
+// encryptor and the sole holder of K_index/K_data. The host therefore CANNOT
+// compute entry_key or the leaf from plaintext; it stores the device's opaque leaf
+// blob (nonce, tag, ct) keyed by the device-supplied entry_key and builds proofs
+// BY that entry_key. Must stay byte-for-byte identical to trezorlib ward_crypto /
+// firmware apps.ward.service.
+// ---------------------------------------------------------------------------
+
+const len32 = (n: number): Uint8Array => {
+    const b = new Uint8Array(4);
+    new DataView(b.buffer).setUint32(0, n, false);
+
+    return b;
+};
+
+// commit = SHA-256(0x02 || nonce || tag || len32(ct) || ct)  (keyless, §2.2)
+export const commitOf = (nonce: Uint8Array, tag: Uint8Array, ct: Uint8Array): Uint8Array =>
+    sha256(concatBytes(new Uint8Array([0x02]), nonce, tag, len32(ct.length), ct));
+
+// leaf = SHA-256(0x00 || entry_key || commit)  (§2.2)
+export const leafFromCommit = (ek: Uint8Array, commit: Uint8Array): Uint8Array =>
+    sha256(concatBytes(ZERO, ek, commit));
+
+/** A stored leaf blob the device produced (all hex), keyed by its entry_key.
+ * `entryType` is carried for the membership ack (K_data selector) but is not part
+ * of proof hashing. */
+export type BlobRow = {
+    entryKeyHex: string;
+    nonceHex: string;
+    tagHex: string;
+    ctHex: string;
+    entryType?: string;
+};
+
+const blobLeaf = (r: BlobRow): LeafInfo => {
+    const ek = hexToBytes(r.entryKeyHex);
+
+    return {
+        addrHash: ek,
+        leafHash: leafFromCommit(
+            ek,
+            commitOf(hexToBytes(r.nonceHex), hexToBytes(r.tagHex), hexToBytes(r.ctHex)),
+        ),
+    };
+};
+
 // internal_hash(left, right) = SHA-256(b"\x01" + left + right)  — positional, no sorting
 const internalHash = (left: Uint8Array, right: Uint8Array): Uint8Array =>
     sha256(concatBytes(new Uint8Array([0x01]), left, right));
@@ -330,4 +377,89 @@ export const evaluateProof = (
     }
 
     return bytesToHex(current);
+};
+
+// ---------------------------------------------------------------------------
+// By-entry_key proof API (keyed/encrypted-leaf model). Serves proofs purely from
+// the device-supplied entry_key + stored leaf blobs — no plaintext, no keys.
+// Mirrors trezorlib WARDTree get_proof_by_key / get_nonmembership_proof_by_key.
+// ---------------------------------------------------------------------------
+
+/** Recompute the root over stored leaf blobs. '' when empty. */
+export const computeRootFromBlobs = (rows: BlobRow[]): string =>
+    rows.length === 0 ? '' : bytesToHex(hashMpt(buildMpt(rows.map(blobLeaf))));
+
+/** Membership proof for `entryKeyHex` over stored blobs (leaf→root order). */
+export const proofByKey = (rows: BlobRow[], entryKeyHex: string): MerkleProof => {
+    if (rows.length === 0) return [];
+    const target = hexToBytes(entryKeyHex);
+    const root = buildMpt(rows.map(blobLeaf));
+    const proof: string[] = [];
+    const walk = (node: MptNode): Uint8Array => {
+        if (node.kind === 'leaf') return node.leafHash;
+        const bitHex = node.bit.toString(16).padStart(2, '0');
+        if (getBit(target, node.bit) === 0) {
+            const l = walk(node.left);
+            const r = hashMpt(node.right);
+            proof.push(bitHex + bytesToHex(r));
+
+            return internalHash(l, r);
+        }
+        const l = hashMpt(node.left);
+        const r = walk(node.right);
+        proof.push(bitHex + bytesToHex(l));
+
+        return internalHash(l, r);
+    };
+    walk(root);
+
+    return proof;
+};
+
+/** Non-membership proof for `entryKeyHex`: the witness leaf on its path, as two
+ * hashes (witnessEntryKey, witnessCommit). Empty witnesses when the tree is empty. */
+export const nonMembershipByKey = (
+    rows: BlobRow[],
+    entryKeyHex: string,
+): { proof: MerkleProof; witnessEntryKeyHex: string | null; witnessCommitHex: string | null } => {
+    if (rows.length === 0) {
+        return { proof: [], witnessEntryKeyHex: null, witnessCommitHex: null };
+    }
+    const target = hexToBytes(entryKeyHex);
+    const root = buildMpt(rows.map(blobLeaf));
+    let witness: LeafInfo | null = null;
+    const proof: string[] = [];
+    const walk = (node: MptNode): Uint8Array => {
+        if (node.kind === 'leaf') {
+            witness = node;
+
+            return node.leafHash;
+        }
+        const bitHex = node.bit.toString(16).padStart(2, '0');
+        if (getBit(target, node.bit) === 0) {
+            const l = walk(node.left);
+            const r = hashMpt(node.right);
+            proof.push(bitHex + bytesToHex(r));
+
+            return internalHash(l, r);
+        }
+        const l = hashMpt(node.left);
+        const r = walk(node.right);
+        proof.push(bitHex + bytesToHex(l));
+
+        return internalHash(l, r);
+    };
+    walk(root);
+    if (!witness) return { proof: [], witnessEntryKeyHex: null, witnessCommitHex: null };
+    const wek = bytesToHex((witness as LeafInfo).addrHash);
+    const wr = rows.find(r => r.entryKeyHex === wek);
+    if (!wr) return { proof: [], witnessEntryKeyHex: null, witnessCommitHex: null };
+
+    return {
+        proof,
+        witnessEntryKeyHex: wek,
+        witnessCommitHex: bytesToHex(
+            commitOf(hexToBytes(wr.nonceHex), hexToBytes(wr.tagHex), hexToBytes(wr.ctHex)),
+        ),
+    };
 };

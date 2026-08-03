@@ -10,7 +10,7 @@ import { mkdirSync } from 'fs';
 import { dirname } from 'path';
 
 import type { WardProvider } from '../';
-import type { TreeState, WardEntry, WardLabel, WardRow } from '../../types';
+import type { TreeState, WardEntry, WardLabel, WardLeafBlob, WardRow } from '../../types';
 
 type SqliteAddressRow = {
     ward_id: string;
@@ -19,12 +19,14 @@ type SqliteAddressRow = {
     network_symbol: string;
     data: string;
     counter: number;
+    blob: string | null;
 };
 type TreeStateRow = { root: string; counter: number; mac: string | null };
 
 const parseRow = (row: SqliteAddressRow): WardEntry => ({
     metadata: JSON.parse(row.data) as WardLabel,
     counter: row.counter ?? 0,
+    ...(row.blob != null && { blob: JSON.parse(row.blob) as WardLeafBlob }),
 });
 
 export class WardDb implements WardProvider {
@@ -42,6 +44,7 @@ export class WardDb implements WardProvider {
                 network_symbol TEXT NOT NULL,
                 counter        INTEGER NOT NULL DEFAULT 0,
                 data           TEXT NOT NULL,
+                blob           TEXT,
                 PRIMARY KEY (ward_id, app_id, address, network_symbol)
             );
             CREATE TABLE IF NOT EXISTS tree_state (
@@ -51,6 +54,12 @@ export class WardDb implements WardProvider {
                 mac       TEXT
             );
         `);
+        // Migrate a pre-keyed-model DB: add the device leaf-blob column if missing.
+        try {
+            this.db.exec('ALTER TABLE addresses ADD COLUMN blob TEXT');
+        } catch {
+            // already present — ignore
+        }
     }
 
     lookup(
@@ -61,11 +70,11 @@ export class WardDb implements WardProvider {
     ): WardEntry | null {
         const row = this.db
             .prepare(
-                `SELECT data, counter FROM addresses
+                `SELECT data, counter, blob FROM addresses
                  WHERE ward_id = ? AND app_id = ? AND address = ? AND network_symbol = ?`,
             )
             .get(wardId, appId, address, networkSymbol) as
-            | Pick<SqliteAddressRow, 'data' | 'counter'>
+            | Pick<SqliteAddressRow, 'data' | 'counter' | 'blob'>
             | undefined;
 
         return row
@@ -88,11 +97,12 @@ export class WardDb implements WardProvider {
     ): void {
         this.db
             .prepare(
-                `INSERT INTO addresses (ward_id, app_id, address, network_symbol, counter, data)
-                 VALUES (?, ?, ?, ?, ?, ?)
+                `INSERT INTO addresses (ward_id, app_id, address, network_symbol, counter, data, blob)
+                 VALUES (?, ?, ?, ?, ?, ?, ?)
                  ON CONFLICT(ward_id, app_id, address, network_symbol) DO UPDATE SET
                      counter = excluded.counter,
-                     data    = excluded.data`,
+                     data    = excluded.data,
+                     blob    = excluded.blob`,
             )
             .run(
                 wardId,
@@ -101,13 +111,14 @@ export class WardDb implements WardProvider {
                 networkSymbol,
                 entry.counter,
                 JSON.stringify(entry.metadata),
+                entry.blob !== undefined ? JSON.stringify(entry.blob) : null,
             );
     }
 
     getAllEntries(wardId: string): WardRow[] {
         const rows = this.db
             .prepare(
-                `SELECT ward_id, app_id, address, network_symbol, counter, data FROM addresses
+                `SELECT ward_id, app_id, address, network_symbol, counter, data, blob FROM addresses
                  WHERE ward_id = ? ORDER BY rowid`,
             )
             .all(wardId) as SqliteAddressRow[];

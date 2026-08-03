@@ -28,9 +28,25 @@ export type MerkleProof = string[];
  * on each successful dbchange so stale updates can be rejected.
  * proof is NOT stored; it is generated from the MPT before each device interaction.
  */
+/**
+ * The device-produced encrypted leaf blob (ward-design.md §2.1), all hex. The host
+ * is NOT the encryptor and cannot compute it — it stores exactly what the device
+ * returned in WARDPerformUpdateAck, keyed by the device-supplied `entryKey`, and
+ * uses it to build proofs BY entry_key (commit = sha256(0x02||nonce||tag||len32(ct)||ct)).
+ */
+export type WardLeafBlob = {
+    entryKey: string;
+    entryType: string;
+    nonce: string;
+    tag: string;
+    ct: string;
+};
+
 export type WardEntry = {
     metadata: WardLabel;
     counter: number;
+    /** Present once the entry has been written via a device round (needed for proofs). */
+    blob?: WardLeafBlob;
 };
 
 /**

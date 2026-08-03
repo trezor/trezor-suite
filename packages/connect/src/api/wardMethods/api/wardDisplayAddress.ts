@@ -3,12 +3,12 @@ import type { MethodPermission } from '@trezor/connect-common';
 import { WardDisplayAddressSchema } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { Assert } from '@trezor/schema-utils';
-import { loadHead, proofFor } from '@trezor/ward';
+import { blobRows, loadHead } from '@trezor/ward';
 
 import type { MethodMessage } from '../../../core/AbstractMethod';
 import { AbstractMethod } from '../../../core/AbstractMethod';
 import * as settingsStore from '../../../data/settingsStore';
-import { toProofAck } from '../proofAck';
+import { buildAckByKey } from '../proofAck';
 import { getWardManagerService } from '../wardManagerService';
 import { WardSession } from '../wardSession';
 
@@ -76,7 +76,7 @@ export default class WardDisplayAddress extends AbstractMethod<
         }
         const entry = await provider.lookup(wardId, appId, address, networkSymbol);
         const isMember = entry !== null;
-        const pkg = proofFor(rows, appId, address, networkSymbol, entry);
+        const preBlobs = blobRows(rows);
         vlog('ENTER', {
             wardId,
             appId,
@@ -105,12 +105,11 @@ export default class WardDisplayAddress extends AbstractMethod<
             tree?.root,
         );
 
-        // WARD flow: the device pulls the proof (answered from `pkg`), verifies it
-        // against the adopted root, and renders the label on the trusted address screen.
-        // ward_proof is required on DisplayAddress but unused on the PULL path.
-        await session.displayAddress(
-            { address, app_id: appId, ward_proof: [] },
-            toProofAck(pkg, appId),
+        // WARD flow: the device pulls the proof BY the entry_key it computed; we answer
+        // reactively from the host's stored leaf blobs, and the device verifies it
+        // against the adopted root and renders the label on the trusted address screen.
+        await session.displayAddress({ address, app_id: appId }, req =>
+            buildAckByKey(preBlobs, req.entry_key),
         );
 
         return { shown: true, isMember };

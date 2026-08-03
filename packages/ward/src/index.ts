@@ -11,7 +11,14 @@ export {
     computeMerkleRoot,
     generateNonMembershipProof,
     evaluateProof,
+    // keyed / encrypted-leaf model (serve proofs by the device's entry_key)
+    commitOf,
+    leafFromCommit,
+    computeRootFromBlobs,
+    proofByKey,
+    nonMembershipByKey,
 } from './proof';
+export type { BlobRow } from './proof';
 
 // Shared DTO types.
 export type * from './types';

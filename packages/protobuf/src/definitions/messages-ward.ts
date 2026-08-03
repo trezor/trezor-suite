@@ -62,6 +62,24 @@ export const WARDDiscardPendingAck = Type.Object(
     { $id: 'WARDDiscardPendingAck' },
 );
 
+export type WARDExportKeys = Static<typeof WARDExportKeys>;
+export const WARDExportKeys = Type.Object(
+    {
+        key_type: Type.Optional(Type.String()),
+    },
+    { $id: 'WARDExportKeys' },
+);
+
+export type WARDExportKeysAck = Static<typeof WARDExportKeysAck>;
+export const WARDExportKeysAck = Type.Object(
+    {
+        k_index: Type.Optional(Type.String()),
+        k_data: Type.Optional(Type.String()),
+        key_type: Type.Optional(Type.String()),
+    },
+    { $id: 'WARDExportKeysAck' },
+);
+
 export type WARDIngestAttestation = Static<typeof WARDIngestAttestation>;
 export const WARDIngestAttestation = Type.Object(
     {
@@ -101,12 +119,15 @@ export type WARDLookup = Static<typeof WARDLookup>;
 export const WARDLookup = Type.Object(
     {
         address: Type.String(),
-        value: Type.Optional(Type.String()),
         proof: Type.Array(Type.String()),
         witness_entry_key: Type.Optional(Type.String()),
-        witness_value_hash: Type.Optional(Type.String()),
-        counter: Type.Optional(Type.Number()),
+        witness_commit: Type.Optional(Type.String()),
         app_id: Type.Optional(Type.String()),
+        key_type: Type.Optional(Type.String()),
+        device_id: Type.Optional(Type.Number()),
+        nonce: Type.Optional(Type.String()),
+        tag: Type.Optional(Type.String()),
+        ct: Type.Optional(Type.String()),
     },
     { $id: 'WARDLookup' },
 );
@@ -139,6 +160,11 @@ export const WARDPerformUpdateAck = Type.Object(
         mac: Type.Optional(Type.String()),
         wallet_id: Type.Optional(Type.String()),
         ward_id: Type.Optional(Type.String()),
+        entry_key: Type.Optional(Type.String()),
+        entry_type: Type.Optional(Type.String()),
+        nonce: Type.Optional(Type.String()),
+        tag: Type.Optional(Type.String()),
+        ct: Type.Optional(Type.String()),
     },
     { $id: 'WARDPerformUpdateAck' },
 );
@@ -146,12 +172,13 @@ export const WARDPerformUpdateAck = Type.Object(
 export type WARDProofAck = Static<typeof WARDProofAck>;
 export const WARDProofAck = Type.Object(
     {
-        value: Type.Optional(Type.String()),
         proof: Type.Array(Type.String()),
-        counter: Type.Optional(Type.Number()),
         witness_entry_key: Type.Optional(Type.String()),
-        witness_value_hash: Type.Optional(Type.String()),
-        app_id: Type.Optional(Type.String()),
+        witness_commit: Type.Optional(Type.String()),
+        entry_type: Type.Optional(Type.String()),
+        nonce: Type.Optional(Type.String()),
+        tag: Type.Optional(Type.String()),
+        ct: Type.Optional(Type.String()),
     },
     { $id: 'WARDProofAck' },
 );
@@ -159,9 +186,8 @@ export const WARDProofAck = Type.Object(
 export type WARDProofRequest = Static<typeof WARDProofRequest>;
 export const WARDProofRequest = Type.Object(
     {
-        address: Type.String(),
         pending_id: Type.Optional(Type.Number()),
-        app_id: Type.Optional(Type.String()),
+        entry_key: Type.String(),
     },
     { $id: 'WARDProofRequest' },
 );
@@ -172,6 +198,8 @@ export const WARDQueueUpdate = Type.Object(
         address: Type.String(),
         new_value: Type.String(),
         app_id: Type.Optional(Type.String()),
+        key_type: Type.Optional(Type.String()),
+        device_id: Type.Optional(Type.Number()),
     },
     { $id: 'WARDQueueUpdate' },
 );

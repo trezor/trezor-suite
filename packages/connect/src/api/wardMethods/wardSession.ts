@@ -46,13 +46,19 @@ export type WardInstalled = {
     rootMac?: string;
 };
 
-/** The authorized candidate returned by perform (WARDPerformUpdateAck). */
+/** The authorized candidate returned by perform (WARDPerformUpdateAck). Includes the
+ * device-produced encrypted leaf blob the host must store (it can't compute it). */
 export type WardCandidate = {
     counter: number;
     root?: string;
     mac?: string;
     walletId?: string;
     wardId?: string;
+    entryKey?: string;
+    entryType?: string;
+    nonce?: string;
+    tag?: string;
+    ct?: string;
 };
 
 export class WardSession {
@@ -129,11 +135,16 @@ export class WardSession {
      * on demand — answered by `proofAck` via the WARDProofRequest callback, which is
      * scoped to this call (set before, cleared in finally).
      */
-    async perform(proofAck: Messages.WARDProofAck, pendingId?: number): Promise<WardCandidate> {
+    async perform(
+        buildAck: (request: Messages.WARDProofRequest) => Messages.WARDProofAck,
+        pendingId?: number,
+    ): Promise<WardCandidate> {
+        // The device pulls the proof by the opaque entry_key it computed; the host
+        // answers reactively from its stored blobs (it can't compute entry_key).
         this.cmd.setWardProofCallback(request => {
             this.vlog('<- WARDProofRequest', request);
 
-            return proofAck;
+            return buildAck(request);
         });
         try {
             this.vlog('-> WARDPerformUpdate');
@@ -150,6 +161,12 @@ export class WardSession {
                 mac: message.mac,
                 walletId: message.wallet_id,
                 wardId: message.ward_id,
+                // The device is the encryptor: store the leaf blob it returned.
+                entryKey: message.entry_key,
+                entryType: message.entry_type,
+                nonce: message.nonce,
+                tag: message.tag,
+                ct: message.ct,
             };
         } finally {
             this.cmd.setWardProofCallback(undefined);
@@ -188,12 +205,12 @@ export class WardSession {
      */
     async displayAddress(
         params: Messages.DisplayAddress,
-        proofAck: Messages.WARDProofAck,
+        buildAck: (request: Messages.WARDProofRequest) => Messages.WARDProofAck,
     ): Promise<void> {
         this.cmd.setWardProofCallback(request => {
             this.vlog('<- WARDProofRequest', request);
 
-            return proofAck;
+            return buildAck(request);
         });
         try {
             this.vlog('-> DisplayAddress');

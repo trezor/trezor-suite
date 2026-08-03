@@ -13,15 +13,20 @@ export default createRawWardMethod({
     useEmptyPassphrase: false,
     buildParams: (payload: PROTO.WARDLookup) => ({
         address: payload.address,
-        ...(payload.value !== undefined && { value: payload.value }),
         proof: payload.proof ?? [],
+        ...(payload.app_id !== undefined && { app_id: payload.app_id }),
+        ...(payload.key_type !== undefined && { key_type: payload.key_type }),
+        ...(payload.device_id !== undefined && { device_id: payload.device_id }),
+        // membership: encrypted leaf blob (nonce/tag/ct)
+        ...(payload.nonce !== undefined && { nonce: payload.nonce }),
+        ...(payload.tag !== undefined && { tag: payload.tag }),
+        ...(payload.ct !== undefined && { ct: payload.ct }),
+        // non-membership: witness as two hashes
         ...(payload.witness_entry_key !== undefined && {
             witness_entry_key: payload.witness_entry_key,
         }),
-        ...(payload.witness_value_hash !== undefined && {
-            witness_value_hash: payload.witness_value_hash,
+        ...(payload.witness_commit !== undefined && {
+            witness_commit: payload.witness_commit,
         }),
-        ...(payload.counter !== undefined && { counter: payload.counter }),
-        ...(payload.app_id !== undefined && { app_id: payload.app_id }),
     }),
 });

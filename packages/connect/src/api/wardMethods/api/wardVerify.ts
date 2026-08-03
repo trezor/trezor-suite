@@ -4,16 +4,8 @@ import { bytesToHex } from '@noble/hashes/utils.js';
 import type { MethodPermission } from '@trezor/connect-common';
 import { WardVerifySchema } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
-import type { MessagesSchema as Messages } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
-import type { ProofPackage } from '@trezor/ward';
-import {
-    computeMerkleRoot,
-    evaluateProof,
-    generateMerkleProof,
-    loadHead,
-    proofFor,
-} from '@trezor/ward';
+import { blobRows, computeRootFromBlobs, loadHead, proofByKey } from '@trezor/ward';
 
 import type { MethodMessage } from '../../../core/AbstractMethod';
 import { AbstractMethod } from '../../../core/AbstractMethod';
@@ -22,40 +14,6 @@ import { getWardManagerService } from '../wardManagerService';
 import { WardSession } from '../wardSession';
 
 const utf8Hex = (s: string) => bytesToHex(new TextEncoder().encode(s));
-
-// Map a normalized app-layer ProofPackage onto WARDLookup wire params. `appId` names
-// the domain; the device forms entry_key(appId, address). A non-membership witness
-// travels as two hashes (no plaintext leak across apps).
-const toLookupParams = (appId: string, address: string, pkg: ProofPackage): Messages.WARDLookup => {
-    if (pkg.kind === 'membership') {
-        return {
-            address: utf8Hex(address),
-            value: pkg.valueHex,
-            proof: pkg.proof,
-            counter: pkg.counter,
-            app_id: appId,
-        };
-    }
-    const params: Messages.WARDLookup = {
-        address: utf8Hex(address),
-        proof: pkg.proof,
-        app_id: appId,
-        ...(pkg.witnessEntryKeyHex !== undefined && {
-            witness_entry_key: pkg.witnessEntryKeyHex,
-            witness_value_hash: pkg.witnessValueHashHex!,
-        }),
-    };
-    // Drift guard (see proofAck.ts): a witness we meant to send must survive into the
-    // wire message, or the device rejects the non-membership proof with a cryptic error.
-    if (pkg.witnessEntryKeyHex !== undefined && params.witness_entry_key === undefined) {
-        throw new Error(
-            'toLookupParams: witness present in ProofPackage but dropped from WARDLookup — ' +
-                'protobuf binding out of sync with witness_entry_key/witness_value_hash',
-        );
-    }
-
-    return params;
-};
 
 export default class WardVerify extends AbstractMethod<'wardVerify', WardVerifySchema> {
     constructor(message: MethodMessage<'wardVerify'>) {
@@ -125,19 +83,13 @@ export default class WardVerify extends AbstractMethod<'wardVerify', WardVerifyS
         });
 
         if (!this.useDevice) {
-            // Offline consistency: does the proof over stored rows round-trip to the stored root?
-            const localRoot = tree?.root ?? computeMerkleRoot(rows);
-            const computedRoot = isMember
-                ? evaluateProof(
-                      appId,
-                      address,
-                      networkSymbol,
-                      entry,
-                      generateMerkleProof(rows, appId, address, networkSymbol),
-                  )
-                : computeMerkleRoot(rows);
+            // Offline consistency: the root over stored device leaf blobs must match the
+            // stored checkpoint. (The host holds no keys, so it can only check blob-root
+            // consistency — not decrypt/verify a specific entry.)
+            const blobRoot = computeRootFromBlobs(blobRows(rows));
+            const localRoot = tree?.root ?? blobRoot;
 
-            return { isMember, valid: computedRoot === localRoot, counter: entry?.counter ?? 0 };
+            return { isMember, valid: blobRoot === localRoot, counter: entry?.counter ?? 0 };
         }
 
         // --- WARD flow: verify the proof against the device's authenticated root. ---
@@ -161,8 +113,35 @@ export default class WardVerify extends AbstractMethod<'wardVerify', WardVerifyS
             tree?.root,
         );
 
-        const pkg = proofFor(rows, appId, address, networkSymbol, entry);
-        const ack = await session.lookup(toLookupParams(appId, address, pkg));
+        // Non-membership PUSH-verify needs the DEVICE to compute the target entry_key
+        // (a pull); the host holds no keys and cannot form it for an absent address.
+        // Report host-DB absence without a device proof.
+        if (entry === null) {
+            vlog('result', {
+                isMember: false,
+                valid: false,
+                note: 'non-membership (host-side only)',
+            });
+
+            return { isMember: false, valid: false, counter: 0 };
+        }
+        const blob = rows.find(
+            r => r.appId === appId && r.address === address && r.networkSymbol === networkSymbol,
+        )?.entry.blob;
+        if (blob === undefined) {
+            // Entry present but written before the keyed model (no leaf blob) — cannot
+            // build a device-verifiable proof.
+            return { isMember: true, valid: false, counter: entry.counter };
+        }
+        const ack = await session.lookup({
+            address: utf8Hex(address),
+            app_id: appId,
+            key_type: blob.entryType,
+            proof: proofByKey(blobRows(rows), blob.entryKey),
+            nonce: blob.nonce,
+            tag: blob.tag,
+            ct: blob.ct,
+        });
         // Explicit outcome logging: a membership entry whose proof the device rejects is
         // the silent-failure case. Make it loud so it is never mistaken for "no label".
         if (isMember && !ack.valid) {
