@@ -22,7 +22,7 @@ export const EarnYieldYearlyRewards = ({
     formattedDepositedAmount,
     displaySymbol,
 }: EarnYieldYearlyRewardsProps) => (
-    <Column>
+    <Column gap={4}>
         <EarnRewardsAmount
             data-testid="@earn/dashboard/yearly-rewards/amount"
             symbol={symbol}

@@ -48,7 +48,7 @@ export const EarnAccountCell = ({
                 )}
             </Column>
 
-            <Column flex="1" overflow="hidden" gap={2}>
+            <Column flex="1" overflow="hidden" gap={4}>
                 <EarnAccountCellDetails
                     account={account}
                     networkSymbol={networkSymbol}

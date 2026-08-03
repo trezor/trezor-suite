@@ -3,7 +3,7 @@ import { Translation } from '@suite/intl';
 import { useFormatters } from '@suite-common/formatters';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type TokenSymbol } from '@suite-common/wallet-types';
-import { H4, type TextProps } from '@trezor/components';
+import { Text, type TextProps } from '@trezor/components';
 
 type EarnRewardsAmountProps = {
     symbol: NetworkSymbol | TokenSymbol;
@@ -28,13 +28,24 @@ export const EarnRewardsAmount = ({
 
     if (!apy)
         return (
-            <H4 intent={intent} priority={priority} isDisabled={isDisabled}>
+            <Text
+                typographyStyle="body-sm-strong"
+                intent={intent}
+                priority={priority}
+                isDisabled={isDisabled}
+            >
                 <Translation id="TR_EARN_APY_REQUIRED" />
-            </H4>
+            </Text>
         );
 
     return (
-        <H4 data-testid={dataTestId} intent={intent} priority={priority} isDisabled={isDisabled}>
+        <Text
+            typographyStyle="body-sm-strong"
+            data-testid={dataTestId}
+            intent={intent}
+            priority={priority}
+            isDisabled={isDisabled}
+        >
             <HiddenPlaceholder>
                 <CryptoAmountFormatter
                     value={rewards}
@@ -45,6 +56,6 @@ export const EarnRewardsAmount = ({
                     maxDisplayedDecimals={8}
                 />
             </HiddenPlaceholder>
-        </H4>
+        </Text>
     );
 };

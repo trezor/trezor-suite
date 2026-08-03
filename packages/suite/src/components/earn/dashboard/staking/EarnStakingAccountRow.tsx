@@ -21,7 +21,7 @@ import {
     getStakingLimitsByNetworkSymbol,
     isPending,
 } from '@suite-common/wallet-utils';
-import { Card, Column, Icon, Paragraph, Row, Table } from '@trezor/components';
+import { Card, Column, Icon, Paragraph, Row, Table, Text } from '@trezor/components';
 import { ArrowDownIcon, ArrowRightIcon } from '@trezor/icons';
 import { BigNumber } from '@trezor/utils';
 
@@ -224,7 +224,7 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
     } as const;
 
     const minStakeParagraph = (
-        <Paragraph typographyStyle="body-md" intent="neutral" priority="secondary">
+        <Paragraph typographyStyle="body-sm" intent="neutral" priority="secondary">
             <Translation
                 id="TR_EARN_STAKING_DASHBOARD_MINIMUM_STAKE"
                 values={{ amount: minStakingAmount?.toString(), displaySymbol }}
@@ -233,7 +233,7 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
     );
 
     const maxStakeParagraph = (
-        <Paragraph typographyStyle="body-md" intent="neutral" priority="secondary">
+        <Paragraph typographyStyle="body-sm" intent="neutral" priority="secondary">
             <Translation id="TR_EARN_STAKING_DASHBOARD_MAXIMUM_STAKE" />
         </Paragraph>
     );
@@ -325,7 +325,9 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
                         {apyAvailable ? (
                             <EarnStakingRateTooltip networkType={account.networkType} rate={rate} />
                         ) : (
-                            <Translation id="TR_EARN_NOT_AVAILABLE" />
+                            <Text typographyStyle="body-sm">
+                                <Translation id="TR_EARN_NOT_AVAILABLE" />
+                            </Text>
                         )}
                     </Row>
 
@@ -422,7 +424,9 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
                 {apyAvailable ? (
                     <EarnStakingRateTooltip networkType={account.networkType} rate={rate} />
                 ) : (
-                    <Translation id="TR_EARN_NOT_AVAILABLE" />
+                    <Text typographyStyle="body-sm">
+                        <Translation id="TR_EARN_NOT_AVAILABLE" />
+                    </Text>
                 )}
             </Table.Cell>
 

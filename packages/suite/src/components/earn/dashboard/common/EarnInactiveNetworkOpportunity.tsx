@@ -23,7 +23,7 @@ export const EarnInactiveNetworkOpportunity = ({
     const networkType = getNetworkType(symbol);
 
     const noteParagraph = note && (
-        <Paragraph typographyStyle="body-md" intent="neutral">
+        <Paragraph typographyStyle="body-sm" intent="neutral">
             {note}
         </Paragraph>
     );
