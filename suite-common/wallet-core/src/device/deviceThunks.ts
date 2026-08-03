@@ -18,6 +18,8 @@ import { type AcquiredDevice, type TrezorDevice } from '@suite-common/suite-type
 import {
     getDeviceInstances,
     getFirstDeviceInstance,
+    getIsDeviceBecomingAcquired,
+    getIsDeviceBecomingConnected,
     getIsThpDevice,
     getSelectedDevice,
 } from '@suite-common/suite-utils';
@@ -108,22 +110,33 @@ export const forgetDisconnectedDevices = createThunk(
 );
 
 /**
- * Called from `suiteMiddleware`
- * Keep `suite` reducer synchronized with `devices` reducer
+ * Keep selected device synchronized with the `devices` reducer, because selected device is a copy
+ * of one of the `devices` (and those are updated via DEVICE.CHANGED. etc.).
+ * Called from `suiteMiddleware` (Desktop) or `deviceMiddleware` (Mobile).
  */
 export const observeSelectedDevice = () => (dispatch: any, getState: any) => {
     const devices = selectDevices(getState());
 
     const selectedDevice = selectSelectedDevice(getState());
-
     if (!selectedDevice) return false;
 
+    // Device in `devices` may have been already updated via DEVICE.CHANGED action
     const deviceFromReducer = getSelectedDevice(selectedDevice, devices);
     if (!deviceFromReducer) return true;
 
     const changed = isChanged(selectedDevice, deviceFromReducer);
     if (changed) {
         dispatch(deviceActions.updateSelectedDevice(deviceFromReducer));
+
+        // This lives here, because currently we only care about selected device updating.
+        // TBD: maybe this would be cleaner in connectInitThunk – if we care about all devices?
+        const deviceComparison = { prevDevice: selectedDevice, nextDevice: deviceFromReducer };
+        if (getIsDeviceBecomingAcquired(deviceComparison)) {
+            dispatch(deviceActions.selectedDeviceBecomingAcquired());
+        }
+        if (getIsDeviceBecomingConnected(deviceComparison)) {
+            dispatch(deviceActions.selectedDeviceBecomingConnected());
+        }
     }
 
     return changed;

@@ -159,12 +159,12 @@ describe('Suite Actions', () => {
             const store = mockStore(state);
             const changed = store.dispatch(observeSelectedDevice());
             expect(changed).toEqual(f.changed);
-            if (!f.result) {
-                expect(filterThunkActionTypes(store.getActions()).length).toEqual(0);
-            } else {
-                const action = filterThunkActionTypes(store.getActions()).pop();
-                expect(action?.type).toEqual(f.result);
-            }
+
+            const actionTypes = filterThunkActionTypes(store.getActions()).map(
+                action => action.type,
+            );
+
+            expect(actionTypes).toEqual(f.result ?? []);
         });
     });
 

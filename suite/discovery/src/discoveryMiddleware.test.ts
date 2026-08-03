@@ -145,6 +145,10 @@ const fixtures: Fixture[] = [
         steps: [
             {
                 action: deviceActions.updateSelectedDevice(selectedDevice),
+                expectedCallCount: 0,
+            },
+            {
+                action: deviceActions.selectedDeviceBecomingAcquired(),
                 expectedCallCount: 1,
             },
         ],
@@ -158,6 +162,10 @@ const fixtures: Fixture[] = [
         steps: [
             {
                 action: deviceActions.updateSelectedDevice(selectedDevice),
+                expectedCallCount: 0,
+            },
+            {
+                action: deviceActions.selectedDeviceBecomingConnected(),
                 expectedCallCount: 1,
             },
         ],
@@ -174,6 +182,10 @@ const fixtures: Fixture[] = [
         steps: [
             {
                 action: deviceActions.updateSelectedDevice(selectedDevice),
+                expectedCallCount: 0,
+            },
+            {
+                action: deviceActions.selectedDeviceBecomingConnected(),
                 expectedCallCount: 0,
             },
         ],
@@ -202,6 +214,10 @@ const fixtures: Fixture[] = [
         steps: [
             {
                 action: deviceActions.updateSelectedDevice(selectedDevice),
+                expectedCallCount: 0,
+            },
+            {
+                action: deviceActions.selectedDeviceBecomingAcquired(),
                 expectedCallCount: 0,
             },
             {

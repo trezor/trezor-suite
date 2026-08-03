@@ -12,42 +12,25 @@ import {
     startOrRestartDiscoveryThunk,
 } from '@suite-common/wallet-core';
 
-import {
-    isDeviceBecomingAcquired,
-    isDeviceBecomingConnected,
-    selectShouldRouterAppStartDiscovery,
-} from './conditions';
+import { selectShouldRouterAppStartDiscovery } from './conditions';
 
 export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
     async (action, { dispatch, next, getState }): Promise<AnyAction> => {
-        // We are only taking a snapshot, but yes, the same rules shall apply: prevState and nextState MUST NOT be used without a selector.
-        // eslint-disable-next-line no-restricted-syntax
-        const prevState: any = getState();
-
         // Pass action to next middleware, meaning that the code below runs *only after* the action has been completely processed in Redux.
         // Note: TS says next(action) generally isn't async, but the action may return anything; sometimes it's a Promise → needs to be awaited
         await next(action);
 
-        // eslint-disable-next-line no-restricted-syntax
-        const nextState: any = getState();
-
-        const prevDevice = selectSelectedDevice(prevState);
-        const device = selectSelectedDevice(nextState);
-        const isDeviceLocked = selectIsDeviceLocked(nextState);
-
-        const wasDeviceUpdated =
-            !!prevDevice && !!device && deviceActions.updateSelectedDevice.match(action);
-        const becomesAcquired =
-            wasDeviceUpdated && isDeviceBecomingAcquired({ prevDevice, device });
-        const becomesConnected =
-            wasDeviceUpdated && isDeviceBecomingConnected({ prevDevice, device });
+        const device = selectSelectedDevice(getState());
+        const isDeviceLocked = selectIsDeviceLocked(getState());
+        const becomesAcquired = deviceActions.selectedDeviceBecomingAcquired.match(action);
+        const becomesConnected = deviceActions.selectedDeviceBecomingConnected.match(action);
 
         /*
          The following conditions always block discovery:
         */
 
         // 1. Discovery should only start on certain apps
-        if (!selectShouldRouterAppStartDiscovery(nextState)) return action;
+        if (!selectShouldRouterAppStartDiscovery(getState())) return action;
 
         // 2. Device must be unlocked. The only exception is, when it is locked and just has been acquired.
         //    In that case, device-change is emitted right before acquireDevice ends (and unlocks the device).

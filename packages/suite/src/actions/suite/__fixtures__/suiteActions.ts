@@ -414,7 +414,10 @@ const observeSelectedDevice = [
                 ],
             },
         },
-        result: deviceActions.updateSelectedDevice.type,
+        result: [
+            deviceActions.updateSelectedDevice.type,
+            deviceActions.selectedDeviceBecomingConnected.type,
+        ],
         changed: true,
     },
     {
@@ -429,6 +432,30 @@ const observeSelectedDevice = [
                 devices: [],
             },
         },
+        changed: true,
+    },
+    {
+        description: `device is changed and becomes acquired`,
+        action: {
+            type: DEVICE.CONNECT,
+        },
+        state: {
+            suite: {},
+            device: {
+                selectedDevice: SUITE_DEVICE_UNACQUIRED,
+                devices: [
+                    mockSuiteDevice({
+                        path: SUITE_DEVICE_UNACQUIRED.path,
+                        connected: true,
+                    }),
+                ],
+            },
+        },
+        result: [
+            deviceActions.updateSelectedDevice.type,
+            deviceActions.selectedDeviceBecomingAcquired.type,
+            deviceActions.selectedDeviceBecomingConnected.type,
+        ],
         changed: true,
     },
 ];
