@@ -31,7 +31,7 @@ export const createMemoizedSelector = createWeakMapSelector.withTypes<WalletSett
 const initialState: WalletSettingsState = {
     localCurrency: 'usd',
     enabledNetworks: [],
-    hideSuspiciousTransactions: false,
+    hideSuspiciousTransactions: {},
     bitcoinAmountUnit: PROTO.AmountUnit.BITCOIN,
     mevProtection: true,
     networkReserve: true,
@@ -89,9 +89,17 @@ export const prepareWalletSettingsReducer = createReducerWithExtraDeps(
                 state.networkReserve = action.payload;
             },
         );
-        builder.addCase(WALLET_SETTINGS.TOGGLE_HIDE_SUSPICIOUS_TRANSACTIONS, state => {
-            state.hideSuspiciousTransactions = !state.hideSuspiciousTransactions;
-        });
+        builder.addCase(
+            WALLET_SETTINGS.TOGGLE_HIDE_SUSPICIOUS_TRANSACTIONS,
+            (
+                state,
+                action: ReturnType<typeof walletSettingsActions.toggleHideSuspiciousTransactions>,
+            ) => {
+                const symbol = action.payload;
+                state.hideSuspiciousTransactions[symbol] =
+                    !state.hideSuspiciousTransactions[symbol];
+            },
+        );
         builder.addCase(
             WALLET_SETTINGS.SET_AUTO_EJECT,
             (state, action: ReturnType<typeof walletSettingsActions.setAutoEjectEnabled>) => {
@@ -111,8 +119,10 @@ export const selectEnabledNetworks = (state: WalletSettingsRootState) =>
     returnStableArrayIfEmpty(state.wallet.settings.enabledNetworks);
 export const selectBaseCurrency = (state: WalletSettingsRootState) =>
     state.wallet.settings.localCurrency;
-export const selectIsHideSuspiciousTransactions = (state: WalletSettingsRootState) =>
-    state.wallet.settings.hideSuspiciousTransactions;
+export const selectIsHideSuspiciousTransactions = (
+    state: WalletSettingsRootState,
+    symbol: NetworkSymbol,
+) => Boolean(state.wallet.settings.hideSuspiciousTransactions[symbol]);
 export const selectBitcoinAmountUnit = (state: WalletSettingsRootState) =>
     state.wallet.settings.bitcoinAmountUnit;
 export const selectIsDeviceAutoEjectEnabled = (state: WalletSettingsRootState) =>

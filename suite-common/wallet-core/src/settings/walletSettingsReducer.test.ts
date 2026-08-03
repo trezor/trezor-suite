@@ -1,12 +1,14 @@
 import { deviceInitialState } from '@suite-common/device';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { extraDependenciesCommonMock } from '@suite-common/test-utils';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { FirmwareType } from '@trezor/device-utils';
 
 import * as walletSettingsActions from './walletSettingsActions';
 import {
     initialWalletSettingsState,
     prepareWalletSettingsReducer,
+    selectIsHideSuspiciousTransactions,
     selectIsNetworkReserveSettingsVisible,
 } from './walletSettingsReducer';
 
@@ -56,6 +58,51 @@ describe('settings reducer', () => {
             ...initialState,
             enabledNetworks: ['eth'],
         });
+    });
+
+    it('TOGGLE_HIDE_SUSPICIOUS_TRANSACTIONS toggles the setting only for the given network', () => {
+        const toggledOn = reducer(
+            undefined,
+            walletSettingsActions.toggleHideSuspiciousTransactions('op'),
+        );
+
+        expect(toggledOn).toEqual({
+            ...initialState,
+            hideSuspiciousTransactions: { op: true },
+        });
+
+        const toggledOff = reducer(
+            toggledOn,
+            walletSettingsActions.toggleHideSuspiciousTransactions('op'),
+        );
+
+        expect(toggledOff).toEqual({
+            ...initialState,
+            hideSuspiciousTransactions: { op: false },
+        });
+    });
+});
+
+describe('selectIsHideSuspiciousTransactions', () => {
+    const getState = (hideSuspiciousTransactions: Partial<Record<NetworkSymbol, boolean>>) => ({
+        wallet: {
+            settings: {
+                ...initialState,
+                hideSuspiciousTransactions,
+            },
+        },
+    });
+
+    it('returns true only for networks with the setting enabled', () => {
+        expect(selectIsHideSuspiciousTransactions(getState({ op: true, eth: false }), 'op')).toBe(
+            true,
+        );
+        expect(selectIsHideSuspiciousTransactions(getState({ op: true, eth: false }), 'eth')).toBe(
+            false,
+        );
+        expect(selectIsHideSuspiciousTransactions(getState({ op: true, eth: false }), 'btc')).toBe(
+            false,
+        );
     });
 });
 

@@ -1,5 +1,9 @@
 # Storage changelog
 
+## 26.8.0.2
+
+- convert `walletSettings.hideSuspiciousTransactions` from a single boolean to a per-network record
+
 ## 26.8.0
 
 - remove inaccurate historic ERC4626 fiat rates from storage

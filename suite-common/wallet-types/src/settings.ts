@@ -20,7 +20,7 @@ export type WalletType = (typeof WalletType)[keyof typeof WalletType];
 export interface WalletSettings {
     localCurrency: BaseCurrencyCode;
     enabledNetworks: NetworkSymbol[];
-    hideSuspiciousTransactions: boolean;
+    hideSuspiciousTransactions: Partial<Record<NetworkSymbol, boolean>>;
     bitcoinAmountUnit: PROTO.AmountUnit;
     mevProtection: boolean;
     networkReserve: boolean;
