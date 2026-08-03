@@ -111,7 +111,7 @@ runs:
         NODE_ENV=production yarn workspace @trezor/webextension-mv3-sw-ts build
         echo "FULL_URL is set to ${FULL_URL}"
         node ./packages/connect-examples/update-webextensions-sw.js --trezor-connect-src "${FULL_URL}"
-        ./packages/connect-examples/webextension/scripts/check-webextension-bundle-size.sh
+        ./scripts/check-build-size.sh webextension-mv3 packages/connect-examples/webextension/build 16 18
 
     - name: Build connect-explorer-webextension
       if: inputs.buildArtifacts == 'true'

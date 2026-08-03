@@ -41,6 +41,8 @@
         "type-check": "yarn g:tsc --build",
         "build:lib": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib && DTS_OUT_DIR=lib yarn build:dts:inline",
         "build:dts:inline": "node ../../scripts/inline-devdep-types.mjs",
+        "size": "size-limit",
+        "size:why": "size-limit --why",
         "test:e2e": "yarn playwright install && yarn xvfb-maybe -- playwright test --config=./e2e/playwright.config.ts",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
@@ -51,12 +53,15 @@
     },
     "devDependencies": {
         "@playwright/test": "1.60.0",
+        "@size-limit/esbuild": "^11.1.6",
+        "@size-limit/file": "^11.1.6",
         "@trezor/eslint": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "@types/chrome": "^0.1.40",
         "@types/jest": "30.0.0",
         "@types/w3c-web-usb": "^1.0.14",
         "@types/web": "^0.0.345",
+        "size-limit": "^11.1.6",
         "xvfb-maybe": "^0.2.1"
     },
     "peerDependencies": {
