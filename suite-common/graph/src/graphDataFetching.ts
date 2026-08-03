@@ -410,9 +410,18 @@ export const getMultipleAccountBalanceHistoryWithFiat = async ({
                         balanceHistory,
                     }))
                     .catch(error => {
+                        // Do NOT pass the raw `error` to console.error here. This runs in the shared
+                        // @suite-common/graph package (no access to the native error sanitizer), and
+                        // the rejection from `fetchTransactionsFromNowUntilTimestamp` is
+                        // `Account not found: <accountKey>` whose accountKey embeds the account
+                        // descriptor (xpub) + device static session id — both confidential. Sentry's
+                        // captureConsoleIntegration promotes an Error argument into a real exception
+                        // (exception.values[].value = error.message), which redactSentryEvent does not
+                        // scrub, so the raw error would leak on every platform. The error is still
+                        // rethrown for upstream (native-sanitized) handling; log only the
+                        // non-confidential symbol for local context.
                         console.error(
-                            `Unable to fetch GRAPH balance history for ${symbol} account:`,
-                            error,
+                            `Unable to fetch GRAPH balance history for ${symbol} account`,
                         );
                         error.message = `${symbol.toUpperCase()}: ${error.message}`;
                         throw error;
