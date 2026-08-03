@@ -52,22 +52,32 @@ export const getAccountEverstakeStakingPool = (
 
     if (!pool) return undefined;
 
-    return {
-        ...pool,
-        autocompoundBalance: fromWei(pool.autocompoundBalance).toEther(),
-        claimableAmount: fromWei(pool.claimableAmount).toEther(),
-        depositedBalance: fromWei(pool.depositedBalance).toEther(),
-        pendingBalance: fromWei(pool.pendingBalance).toEther(),
-        pendingDepositedBalance: fromWei(pool.pendingDepositedBalance).toEther(),
-        restakedReward: fromWei(pool.restakedReward).toEther(),
-        withdrawTotalAmount: fromWei(pool.withdrawTotalAmount).toEther(),
-        totalPendingStakeBalance: fromWei(
-            new BigNumber(pool.pendingBalance).plus(pool.pendingDepositedBalance).toString(),
-        ).toEther(),
-        canClaim:
-            new BigNumber(pool.claimableAmount).gt(0) &&
-            new BigNumber(pool.withdrawTotalAmount).eq(pool.claimableAmount),
-    };
+    // The pool balance fields originate verbatim from the (untrusted) backend account info
+    // (blockbook `stakingPools` / evm-rpc mapper) with no numeric validation. `fromWei` -> `toBN`
+    // throws on any non-integer/NaN/negative/infinite value, so a single malformed field from a
+    // malicious or compromised backend would throw out of this getter. Because this getter is
+    // reached from Redux selectors during render (and account.misc is persisted), an unguarded
+    // throw becomes a persistent render-crash DoS. Treat a malformed pool as absent instead.
+    try {
+        return {
+            ...pool,
+            autocompoundBalance: fromWei(pool.autocompoundBalance).toEther(),
+            claimableAmount: fromWei(pool.claimableAmount).toEther(),
+            depositedBalance: fromWei(pool.depositedBalance).toEther(),
+            pendingBalance: fromWei(pool.pendingBalance).toEther(),
+            pendingDepositedBalance: fromWei(pool.pendingDepositedBalance).toEther(),
+            restakedReward: fromWei(pool.restakedReward).toEther(),
+            withdrawTotalAmount: fromWei(pool.withdrawTotalAmount).toEther(),
+            totalPendingStakeBalance: fromWei(
+                new BigNumber(pool.pendingBalance).plus(pool.pendingDepositedBalance).toString(),
+            ).toEther(),
+            canClaim:
+                new BigNumber(pool.claimableAmount).gt(0) &&
+                new BigNumber(pool.withdrawTotalAmount).eq(pool.claimableAmount),
+        };
+    } catch {
+        return undefined;
+    }
 };
 
 export const getEthAccountTotalStakingBalance = (account?: Account) => {
