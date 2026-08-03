@@ -2,6 +2,7 @@ import styled from 'styled-components';
 
 import { useExternalLink } from '@suite/external-links';
 import { Translation } from '@suite/intl';
+import { notificationsActions } from '@suite-common/toast-notifications';
 import { type Network } from '@suite-common/wallet-config';
 import {
     type PendingEvmNonceStatus,
@@ -17,6 +18,7 @@ import {
     Grid,
     H3,
     Icon,
+    IconButton,
     InfoItem,
     type InfoItemProps,
     InfoSegments,
@@ -25,8 +27,10 @@ import {
     Text,
     Tooltip,
 } from '@trezor/components';
+import { copyToClipboard } from '@trezor/dom-utils';
 import {
     CalendarIcon,
+    CopyIcon,
     FingerprintIcon,
     GasPumpIcon,
     PencilIcon,
@@ -39,6 +43,7 @@ import { BigNumber } from '@trezor/utils';
 
 import { FormattedDateWithBullet } from 'src/components/suite/FormattedDateWithBullet';
 import { TransactionHeader } from 'src/components/wallet/TransactionItem/TransactionHeader';
+import { useDispatch } from 'src/hooks/suite';
 import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
 import { type WalletAccountTransaction } from 'src/types/wallet';
 import { getTransactionIcon } from 'src/utils/wallet/transactionIconUtils';
@@ -96,10 +101,17 @@ export const BasicTxDetails = ({
     nonceStatus,
     nextNonce,
 }: BasicTxDetailsProps) => {
+    const dispatch = useDispatch();
+
     const { isBelowTablet } = useLayoutSize();
     const explorerLink = useExternalLink(`${explorerUrl}${tx.txid}${explorerUrlQueryString ?? ''}`);
     // all solana txs which are fetched are already confirmed
     const isConfirmed = confirmations > 0 || tx.solanaSpecific?.status === 'confirmed';
+
+    const onTxIdCopy = () => {
+        copyToClipboard(tx.txid);
+        dispatch(notificationsActions.addToast({ type: 'copy-to-clipboard' }));
+    };
 
     return (
         <Card>
@@ -323,13 +335,29 @@ export const BasicTxDetails = ({
 
                 {/* TX ID */}
                 <Item label={<Translation id="TR_TXID" />} icon={FingerprintIcon}>
-                    <Link
-                        href={explorerLink}
-                        data-testid="@tx-detail/txid-value"
-                        overflowWrap="anywhere"
+                    <Tooltip
+                        content={
+                            <Row gap={8}>
+                                {tx.txid}
+                                <IconButton
+                                    icon={CopyIcon}
+                                    size="small"
+                                    intent="neutral"
+                                    priority="secondary"
+                                    onClick={onTxIdCopy}
+                                    tooltip={{ isActive: false }}
+                                />
+                            </Row>
+                        }
                     >
-                        {tx.txid}
-                    </Link>
+                        <Link
+                            href={explorerLink}
+                            data-testid="@tx-detail/txid-value"
+                            overflowWrap="anywhere"
+                        >
+                            {tx.txid}
+                        </Link>
+                    </Tooltip>
                 </Item>
 
                 {tx.tronSpecific?.energyUsage && (
