@@ -16,6 +16,7 @@ import {
 import {
     createAndBackupWalletThunk,
     recoverWalletThunk,
+    selectCompromisedDeviceFailedCheck,
     selectIsDeviceFirmwareSupported,
 } from '@suite-native/device';
 import { isPassphraseDiscoveryFailure } from '@suite-native/passphrase';
@@ -41,10 +42,16 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
         // We need to wait until `authorizeDeviceThunk` action is fulfilled, because we need
         // to know the device state when starting discovery of newly authorized device.
         next(action);
+        const device = selectSelectedDevice(getState());
+        if (!device) return action;
 
         const isDeviceFirmwareVersionSupported = selectIsDeviceFirmwareSupported(getState());
         const isAnyNetworkEnabled = selectIsAnyNetworkEnabled(getState());
         const isBitcoinEnabled = selectIsBitcoinEnabled(getState());
+
+        // Discovery must be blocked while the compromised device warning is shown.
+        const failedCheck = selectCompromisedDeviceFailedCheck(getState(), device);
+        if (failedCheck !== null) return action;
 
         // Clear pending coins on discovery success, revert on passphrase failure
         if (discoveryActions.updateDiscovery.match(action)) {
@@ -68,8 +75,8 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
         // ensure that BTC is enabled when device with BTC-only firmware is connected
         // (it could have been disabled via some other device with universal firmware)
         if (deviceActions.selectDevice.match(action)) {
-            const device = action.payload;
-            if (device?.connected && hasBitcoinOnlyFirmware(device)) {
+            const newDevice = action.payload;
+            if (newDevice?.connected && hasBitcoinOnlyFirmware(newDevice)) {
                 if (!isBitcoinEnabled) {
                     dispatch(changeCoinVisibility({ symbol: 'btc', shouldBeVisible: true }));
                 }
@@ -85,16 +92,15 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
             action.type === DEVICE.CONNECT ||
             deviceActions.selectDevice.match(action) ||
             changeCoinVisibility.fulfilled.match(action) ||
+            deviceActions.dismissFirmwareAuthenticityCheck.match(action) || // may no longer be device compromised
             accountsActions.updateAccount.match(action) || // empty account can become nonempty
             accountsActions.changeAccountVisibility.match(action) ||
             createAndBackupWalletThunk.fulfilled.match(action) ||
             recoverWalletThunk.fulfilled.match(action)
         ) {
-            const device = selectSelectedDevice(getState());
             if (
                 isAnyNetworkEnabled &&
                 isDeviceFirmwareVersionSupported &&
-                device &&
                 device.connected &&
                 isDeviceAcquired(device)
             ) {
