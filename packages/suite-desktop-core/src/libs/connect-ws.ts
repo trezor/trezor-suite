@@ -148,14 +148,27 @@ export const exposeConnectWs = ({
                 version = parseVersion(message.payload.settings.version);
                 requestedPermissions = message.payload.settings.requestedPermissions;
                 ws.send(JSON.stringify({ id: message.id, type: POPUP.HANDSHAKE, payload: 'ok' }));
-            } else if (message.type === POPUP.CLOSED) {
+            } else if (message.type === POPUP.CLOSED || message.type === CORE_CALL_CANCEL) {
+                // Only a connection that actually has an in-flight call may cancel it.
+                // The upgrade path (http-receiver 'upgrade') applies no origin allowlist —
+                // only ip===127.0.0.1/::1 — so any local page can open a ws to
+                // /connect-ws. Without this guard a bare CORE_CALL_CANCEL (or POPUP.CLOSED)
+                // from such a connection would tear down another dApp's in-flight signing
+                // request via the unconditional teardown in connectPopupCancelThunk. Mirrors
+                // the same `connectionPendingMessages.size` guard used on `ws.close` below.
+                if (connectionPendingMessages.size === 0) {
+                    logger.error(
+                        LOG_PREFIX,
+                        'ignoring cancel from connection with no pending call',
+                    );
+
+                    return;
+                }
                 mainWindowProxy.getInstance()?.webContents.send('connect-popup/cancel', {
-                    error: message.payload?.error,
-                    callId: message.payload?.callId,
-                });
-            } else if (message.type === CORE_CALL_CANCEL) {
-                mainWindowProxy.getInstance()?.webContents.send('connect-popup/cancel', {
-                    error: message.payload?.reason,
+                    error:
+                        message.type === POPUP.CLOSED
+                            ? message.payload?.error
+                            : message.payload?.reason,
                     callId: message.payload?.callId,
                 });
             } else if (message.type === CORE_CALL) {
