@@ -22,8 +22,8 @@ const alertWrapperStyle = prepareNativeStyle<
     borderColor: utils.colors[borderColor],
     backgroundColor: utils.colors[backgroundColor],
     paddingVertical: isButtonDisplayed ? utils.spacings.sp8 : utils.spacings.sp10,
-    paddingRight: isButtonDisplayed ? utils.spacings.sp8 : utils.spacings.sp16,
-    paddingLeft: utils.spacings.sp16,
+    paddingRight: isButtonDisplayed ? utils.spacings.sp8 : utils.spacings.sp12,
+    paddingLeft: utils.spacings.sp12,
 }));
 
 const textStyle = prepareNativeStyle(utils => ({
