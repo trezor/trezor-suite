@@ -86,23 +86,37 @@ export const createCore = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) =>
         protocol: TransportProtocol;
     }) => {
         logger?.debug(`core: writeUtil protocol ${protocol.name}`);
-        const buffer = Buffer.from(data, 'hex');
-        let encodedMessage;
-        let chunkHeader;
-        if (protocol.name === 'bridge') {
-            const { messageType, payload } = protocolBridge.decode(buffer);
-            encodedMessage = protocolV1.encode(payload, { messageType });
-            [, chunkHeader] = protocolV1.getHeaders(encodedMessage);
-        } else {
-            encodedMessage = buffer;
-            [, chunkHeader] = protocol.getHeaders(encodedMessage);
+        // `data` comes straight from the (untrusted) /post request body. protocolBridge.decode
+        // throws PROTOCOL_MALFORMED on a payload shorter than the 6-byte header, and getHeaders/
+        // encode can also throw on malformed input. `call`/`receive` reach writeUtil inside
+        // api.runInIsolation (which try/catches → unknownError), but `send`'s bridge/v1 tail is
+        // NOT wrapped in runInIsolation (unlike its v2 branch, guarded since iter21) and the
+        // http.ts /post `.then()` chain has no `.catch()`, so an escaping throw becomes an
+        // unhandled rejection that crashes the bridge utility process (device-comm DoS). Guard
+        // the body directly, mirroring the sibling readUtil.
+        try {
+            const buffer = Buffer.from(data, 'hex');
+            let encodedMessage;
+            let chunkHeader;
+            if (protocol.name === 'bridge') {
+                const { messageType, payload } = protocolBridge.decode(buffer);
+                encodedMessage = protocolV1.encode(payload, { messageType });
+                [, chunkHeader] = protocolV1.getHeaders(encodedMessage);
+            } else {
+                encodedMessage = buffer;
+                [, chunkHeader] = protocol.getHeaders(encodedMessage);
+            }
+
+            const chunks = createChunks(encodedMessage, chunkHeader, api.chunkSize);
+            const apiWrite = (chunk: Buffer) => api.write(path, chunk, { signal });
+            const sendResult = await sendChunks(chunks, apiWrite);
+
+            return sendResult;
+        } catch (err) {
+            logger?.debug(`core: writeUtil catch: ${err.message}`);
+
+            return unknownError(err);
         }
-
-        const chunks = createChunks(encodedMessage, chunkHeader, api.chunkSize);
-        const apiWrite = (chunk: Buffer) => api.write(path, chunk, { signal });
-        const sendResult = await sendChunks(chunks, apiWrite);
-
-        return sendResult;
     };
 
     const readUtil = async ({
@@ -133,7 +147,18 @@ export const createCore = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) =>
     };
 
     const enumerate = async ({ signal }: { signal: AbortSignal }) => {
-        const enumerateResult = await api.enumerate(signal);
+        // api.enumerate performs device I/O (e.g. the `usb` library) which can throw
+        // on hardware/driver errors. The http.ts /enumerate and /status-data handlers
+        // float this promise with no `.catch()`, and the bridge utility process installs
+        // no unhandledRejection handler, so an uncaught throw here crashes the whole
+        // bridge (device-communication DoS). Convert it to a structured error instead,
+        // mirroring the runInIsolation/`send` guard on the sibling core methods.
+        let enumerateResult;
+        try {
+            enumerateResult = await api.enumerate(signal);
+        } catch (err) {
+            return unknownError(err);
+        }
 
         if (!enumerateResult.success) {
             return enumerateResult;
@@ -160,10 +185,21 @@ export const createCore = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) =>
             return acquireIntentResult;
         }
 
-        const openDeviceResult = await api.openDevice(acquireIntentResult.payload.path, {
-            reset: acquireInput.previous !== 'null',
-            signal: acquireInput.signal,
-        });
+        // api.openDevice performs device I/O and can throw on hardware/driver errors.
+        // Convert a throw into the same structured failure the guard below already
+        // handles, so (a) the acquireIntent lock is still released via acquireDone(abort)
+        // instead of leaking (device wedges → every later acquire deadlocks), and
+        // (b) the throw does not escape as an unhandled rejection out of the http.ts
+        // /acquire chain (which has no `.catch()`) and crash the bridge utility process.
+        let openDeviceResult;
+        try {
+            openDeviceResult = await api.openDevice(acquireIntentResult.payload.path, {
+                reset: acquireInput.previous !== 'null',
+                signal: acquireInput.signal,
+            });
+        } catch (err) {
+            openDeviceResult = unknownError(err);
+        }
         logger?.debug(`core: openDevice: result: ${JSON.stringify(openDeviceResult)}`);
 
         if (!openDeviceResult.success) {
@@ -193,7 +229,17 @@ export const createCore = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) =>
 
         const { path } = releaseIntentResult.payload;
 
-        const closeRes = await api.closeDevice(path);
+        // api.closeDevice performs device I/O and can throw on hardware/driver errors.
+        // A throw here would skip releaseDone below (leaking the session lock → deadlock)
+        // and escape as an unhandled rejection out of the http.ts /release chain (no
+        // `.catch()`), crashing the bridge utility process. Treat a throw like a failed
+        // closeDevice so releaseDone still runs and the lock is freed.
+        let closeRes;
+        try {
+            closeRes = await api.closeDevice(path);
+        } catch (err) {
+            closeRes = unknownError(err);
+        }
 
         if (!closeRes.success) {
             logger?.error(`core: release: api.closeDevice error: ${closeRes.error}`);
