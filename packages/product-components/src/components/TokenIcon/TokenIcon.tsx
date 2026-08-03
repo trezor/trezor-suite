@@ -21,6 +21,7 @@ export const TokenIcon = ({
     placeholder = '',
     customLogoUrl,
     isBordered = true,
+    isTransparent = false,
     wrappedTokenIcon = 'token',
     'data-testid': dataTestId,
 }: TokenIconProps) => {
@@ -79,6 +80,7 @@ export const TokenIcon = ({
             placeholder={placeholder}
             customLogoUrl={customLogoUrl}
             isBordered={isBordered}
+            isTransparent={isTransparent}
             coingeckoId={coingeckoId}
             data-testid={dataTestId}
         />
