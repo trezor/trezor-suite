@@ -27,6 +27,7 @@ export {
     onboardingFeedbackBannerClickedEvent,
     type OnboardingFeedbackBannerOrigin,
 } from './onboardingFeedbackBannerClickedEvent';
+export { onboardingRecoveryWarningCreateNewWalletEvent } from './onboardingRecoveryWarningCreateNewWalletEvent';
 export { suiteSyncLabelCreatedEvent } from './suiteSyncLabelCreatedEvent';
 export { walletBalanceEvent } from './walletBalanceEvent';
 export {

@@ -1,3 +1,4 @@
+import { selectDesktopAnalyticsDep } from '@suite/analytics';
 import { TrezorLink } from '@suite/external-links';
 import { Translation, type TranslationKey } from '@suite/intl';
 import { selectRecoveryWordRequestInputType } from '@suite/modal';
@@ -10,14 +11,22 @@ import {
     selectRecoveryStatus,
     selectWordsCount,
 } from '@suite/recovery';
+import { events } from '@suite-common/analytics';
+import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import { isDeviceWithButtonOnlyNoTouchscreen } from '@suite-common/suite-utils';
-import { Badge, Column } from '@trezor/components';
+import { Badge, Banner, Column } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { HELP_CENTER_ADVANCED_RECOVERY_URL } from '@trezor/urls';
 
-import { goToNextStep, updateAnalytics } from 'src/actions/onboarding/onboardingActions';
+import {
+    addPath,
+    goToNextStep,
+    goToPreviousStep,
+    updateAnalytics,
+} from 'src/actions/onboarding/onboardingActions';
 import { SelectRecoveryType, SelectRecoveryWord, SelectWordCount } from 'src/components/recovery';
+import * as STEP from 'src/constants/onboarding/steps';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
 import RecoveryStepBox from './RecoveryStepBox';
@@ -28,6 +37,7 @@ export const RecoveryStep = () => {
     const error = useSelector(selectRecoveryError);
     const wordsCount = useSelector(selectWordsCount);
     const recoveryWordRequestInputType = useSelector(selectRecoveryWordRequestInputType);
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
     const dispatch = useDispatch();
 
     if (!device?.features) {
@@ -38,6 +48,17 @@ export const RecoveryStep = () => {
     const subheadingKey: TranslationKey = isDeviceWithButtonOnlyNoTouchscreen(deviceModelInternal)
         ? 'TR_RECOVER_SUBHEADING_BUTTONS'
         : 'TR_RECOVER_SUBHEADING_TOUCH';
+
+    const handleCreateWallet = () => {
+        analytics.report({
+            type: events.onboardingRecoveryWarningCreateNewWalletEvent.name,
+            payload: { platform: 'desktop' },
+        });
+        dispatch(goToPreviousStep());
+        dispatch(addPath(STEP.PATH_CREATE));
+        dispatch(goToNextStep());
+        dispatch(updateAnalytics({ seed: 'create' }));
+    };
 
     if (status === 'initial') {
         // 1. step where users chooses number of words in case of T1B1.
@@ -98,7 +119,22 @@ export const RecoveryStep = () => {
                         <Translation id="TR_START_RECOVERY" />
                     </OnboardingCard.Button>
                 }
-            />
+            >
+                <Banner
+                    intent="neutral"
+                    icon
+                    title={<Translation id="TR_RECOVERY_SOURCE_WARNING_TITLE" />}
+                    description={<Translation id="TR_RECOVERY_SOURCE_WARNING_DESCRIPTION" />}
+                    rightContent={
+                        <Banner.Button
+                            data-testid="@onboarding/recovery/create-wallet-button"
+                            onClick={handleCreateWallet}
+                        >
+                            <Translation id="TR_NEW_WALLET" />
+                        </Banner.Button>
+                    }
+                />
+            </RecoveryStepBox>
         );
     }
 

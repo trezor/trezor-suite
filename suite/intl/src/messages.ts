@@ -3206,6 +3206,15 @@ export const messages = defineMessages({
         description: 'Subheading in recover page. Basic info about recovery',
         id: 'TR_RECOVER_SUBHEADING_BUTTONS',
     },
+    TR_RECOVERY_SOURCE_WARNING_TITLE: {
+        defaultMessage: 'Was this wallet created on a Trezor?',
+        id: 'TR_RECOVERY_SOURCE_WARNING_TITLE',
+    },
+    TR_RECOVERY_SOURCE_WARNING_DESCRIPTION: {
+        defaultMessage:
+            'A wallet created elsewhere may not have the same security as one created on your Trezor. If you are unsure, we recommend setting up a new wallet here and moving your funds to it.',
+        id: 'TR_RECOVERY_SOURCE_WARNING_DESCRIPTION',
+    },
     TR_RECOVERY_ERROR: {
         defaultMessage: 'Wallet recovery failed: {error}',
         description: 'Error during recovery. For example wrong word retyped or device disconnected',
