@@ -49,12 +49,20 @@ export const YieldWrapStep = ({
             tokenSymbol={nativeSymbol}
             decimals={token.decimals}
             isDisabled={!!pendingTransaction}
+            // The wrap amount is the native coin, so no token contract address.
+            approxFiat={{ symbol: token.networkSymbol }}
             heading={{
                 amountLabelTranslationId: 'TR_BALANCE',
             }}
             summary={{
                 labelTranslationId: 'TR_EARN_YIELD_AVAILABLE_TO_WRAP',
-                value: <FormattedCryptoAmount value={availableAmount} symbol={nativeSymbol} />,
+                value: (
+                    <FormattedCryptoAmount
+                        value={availableAmount}
+                        symbol={nativeSymbol}
+                        isBalance
+                    />
+                ),
                 onMaxClick: pendingTransaction ? undefined : onMaxClick,
             }}
             warning={warning}

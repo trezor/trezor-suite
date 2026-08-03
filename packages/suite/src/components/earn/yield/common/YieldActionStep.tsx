@@ -8,7 +8,11 @@ import type {
 } from '@suite-common/wallet-core';
 import { Button, Column } from '@trezor/components';
 
-import { YieldAmountCard, type YieldAmountCardUnitToggleProps } from './YieldAmountCard';
+import {
+    YieldAmountCard,
+    type YieldAmountCardUnitToggleProps,
+    type YieldApproxFiat,
+} from './YieldAmountCard';
 import { YieldPendingTransaction } from './YieldPendingTransaction';
 
 const actionStepTranslationMap = {
@@ -33,6 +37,7 @@ export type YieldActionStepProps = {
     flowType: YieldPositionFlowType;
     token: YieldFlowDisplayToken;
     summaryValue: ReactNode;
+    approxFiat?: YieldApproxFiat;
     isDisabled?: boolean;
     isPending?: boolean;
     warning?: ReactNode;
@@ -47,6 +52,7 @@ export const YieldActionStep = ({
     flowType,
     token,
     summaryValue,
+    approxFiat,
     isDisabled = false,
     isPending = false,
     warning,
@@ -64,6 +70,7 @@ export const YieldActionStep = ({
             <YieldAmountCard
                 tokenSymbol={token.symbol}
                 decimals={token.decimals}
+                approxFiat={approxFiat}
                 summary={{
                     labelTranslationId: balanceLabelTranslationId,
                     value: summaryValue,

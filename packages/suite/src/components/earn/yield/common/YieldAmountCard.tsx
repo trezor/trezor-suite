@@ -5,16 +5,19 @@ import { Translation, useTranslation } from '@suite/intl';
 import type { TranslationKey } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
 import { formInputsMaxLength } from '@suite-common/validators';
+import type { NetworkSymbol } from '@suite-common/wallet-config';
 import type { YieldFlowFormValues } from '@suite-common/wallet-core';
+import { toTokenAddress } from '@suite-common/wallet-types';
 import { Banner, Button, Card, Column, Row, Text, TextButton } from '@trezor/components';
 import { NumberInput } from '@trezor/product-components';
 
+import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
 import { useSelector } from 'src/hooks/suite';
 import { validateDecimals } from 'src/utils/suite/validation';
 
 type YieldAmountCardSummaryProps = {
     value: ReactNode;
-    labelTranslationId?: TranslationKey;
+    labelTranslationId: TranslationKey;
     onMaxClick?: () => void;
 };
 
@@ -27,6 +30,11 @@ export type YieldAmountCardUnitToggleProps = {
     onClick: () => void;
 };
 
+export type YieldApproxFiat = {
+    symbol: NetworkSymbol;
+    tokenContractAddress?: string | null;
+};
+
 type YieldAmountCardProps = {
     tokenSymbol: string;
     decimals?: number;
@@ -35,6 +43,7 @@ type YieldAmountCardProps = {
     unitToggle?: YieldAmountCardUnitToggleProps;
     warning?: ReactNode;
     isDisabled?: boolean;
+    approxFiat?: YieldApproxFiat;
 };
 
 export const YieldAmountCard = ({
@@ -45,6 +54,7 @@ export const YieldAmountCard = ({
     unitToggle,
     warning,
     isDisabled = false,
+    approxFiat,
 }: YieldAmountCardProps) => {
     const locale = useSelector(selectLanguage);
     const { translationString } = useTranslation();
@@ -107,22 +117,48 @@ export const YieldAmountCard = ({
                 />
 
                 {summary && (
-                    <Row alignItems="center" gap={8} flexWrap="wrap">
-                        <Text typographyStyle="body-md" intent="neutral" priority="secondary">
-                            <Translation id={summary.labelTranslationId ?? 'TR_STAKE_AVAILABLE'} />
-                            {': '}
-                            {summary.value}
-                        </Text>
-                        {summary.onMaxClick && (
-                            <Button
-                                type="button"
-                                size="small"
-                                intent="neutral"
-                                priority="secondary"
-                                onClick={() => summary.onMaxClick?.()}
+                    <Row justifyContent="space-between" alignItems="center" gap={8} width="100%">
+                        <Row alignItems="center" gap={8}>
+                            <Text typographyStyle="body-md" intent="neutral" priority="secondary">
+                                <Translation id={summary.labelTranslationId} />
+                                {': '}
+                                {summary.value}
+                            </Text>
+                            {summary.onMaxClick && (
+                                <Button
+                                    type="button"
+                                    size="small"
+                                    intent="neutral"
+                                    priority="secondary"
+                                    onClick={() => summary.onMaxClick?.()}
+                                >
+                                    <Translation id="TR_FRACTION_BUTTONS_MAX" />
+                                </Button>
+                            )}
+                        </Row>
+                        {approxFiat && (
+                            <BaseCurrencyValue
+                                amount={amountInput ?? ''}
+                                symbol={approxFiat.symbol}
+                                tokenAddress={
+                                    approxFiat.tokenContractAddress
+                                        ? toTokenAddress(approxFiat.tokenContractAddress)
+                                        : undefined
+                                }
+                                showApproximationIndicator
                             >
-                                <Translation id="TR_FRACTION_BUTTONS_MAX" />
-                            </Button>
+                                {({ value }) =>
+                                    value ? (
+                                        <Text
+                                            typographyStyle="body-xs"
+                                            intent="neutral"
+                                            priority="secondary"
+                                        >
+                                            {value}
+                                        </Text>
+                                    ) : null
+                                }
+                            </BaseCurrencyValue>
                         )}
                     </Row>
                 )}

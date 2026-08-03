@@ -59,6 +59,16 @@ export const YieldWithdrawForm = () => {
     const withdrawInputUnit = flowType === 'redeem' ? 'shares' : 'asset';
 
     const nativeSymbol = getNetworkDisplaySymbol(account.symbol);
+    const withdrawActionToken = flowType === 'redeem' ? receiptToken : token;
+    // Approximate fiat value shown under the amount input, from the token's own rate.
+    const actionApproxFiat = {
+        symbol: withdrawActionToken.networkSymbol,
+        tokenContractAddress: withdrawActionToken.contractAddress,
+    };
+    const unwrapApproxFiat = {
+        symbol: token.networkSymbol,
+        tokenContractAddress: token.contractAddress,
+    };
     const sequence = getYieldFlowStepSequence({
         flowType,
         isWrappedNativeVault: flow.isWrappedNativeVault,
@@ -212,11 +222,13 @@ export const YieldWithdrawForm = () => {
                             content: () => (
                                 <YieldActionStep
                                     flowType={flowType}
-                                    token={flowType === 'redeem' ? receiptToken : token}
+                                    token={withdrawActionToken}
+                                    approxFiat={actionApproxFiat}
                                     summaryValue={
                                         <FormattedCryptoAmount
                                             value={maxAmount}
                                             symbol={inputTokenSymbol}
+                                            isBalance
                                         />
                                     }
                                     warning={getWithdrawWarning()}
@@ -264,6 +276,7 @@ export const YieldWithdrawForm = () => {
                                     tokenSymbol={token.symbol}
                                     tokenDecimals={token.decimals}
                                     tokenBalance={token.balance}
+                                    approxFiat={unwrapApproxFiat}
                                     onMaxClick={() => setAmountInput(token.balance)}
                                     isSubmitting={isSubmittingAction}
                                     isSubmitDisabled={
