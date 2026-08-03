@@ -61,5 +61,113 @@ describe('blockfrost/utils', () => {
                 expect(transformAccountInfo(f.data)).toEqual(f.result);
             });
         });
+
+        // A user-selectable (untrusted) blockfrost backend can return an otherwise-valid
+        // account-info response containing a single transaction record with a field the wire
+        // type marks non-optional omitted. transformTransaction unconditionally dereferences
+        // those fields (here an input's `.amount` array via transformInputOutput), so one poison
+        // record used to throw out of the whole-page `.map` and fail the entire history page
+        // (poison-one-record DoS). Verify the bad record is dropped and valid ones survive.
+        describe('poison-record DoS resistance', () => {
+            const validTx = {
+                address: 'addr_valid',
+                txHash: 'validhash',
+                txData: {
+                    hash: 'validhash',
+                    block: 'blk',
+                    block_height: 1,
+                    block_time: 1629388426,
+                    slot: 1,
+                    index: 0,
+                    output_amount: [{ unit: 'lovelace', quantity: '100' }],
+                    fees: '10',
+                    deposit: '0',
+                    size: 100,
+                    invalid_before: null,
+                    invalid_hereafter: null,
+                    utxo_count: 1,
+                    withdrawal_count: 0,
+                    delegation_count: 0,
+                    stake_cert_count: 0,
+                },
+                txUtxos: {
+                    hash: 'validhash',
+                    inputs: [
+                        {
+                            address: 'in_addr',
+                            amount: [{ unit: 'lovelace', quantity: '110' }],
+                            tx_hash: 'prev',
+                            output_index: 0,
+                            collateral: false,
+                            data_hash: null,
+                        },
+                    ],
+                    outputs: [
+                        {
+                            address: 'out_addr',
+                            amount: [{ unit: 'lovelace', quantity: '100' }],
+                            output_index: 0,
+                            data_hash: null,
+                        },
+                    ],
+                },
+            };
+
+            // Identical to validTx but the input omits the `.amount` array a malformed backend
+            // would drop → transformInputOutput's `utxo.amount.find(...)` throws.
+            const poisonTx = {
+                ...validTx,
+                txHash: 'poisonhash',
+                txData: { ...validTx.txData, hash: 'poisonhash' },
+                txUtxos: {
+                    hash: 'poisonhash',
+                    inputs: [
+                        {
+                            address: 'in_addr',
+                            tx_hash: 'prev',
+                            output_index: 0,
+                            collateral: false,
+                            data_hash: null,
+                        },
+                    ],
+                    outputs: validTx.txUtxos.outputs,
+                },
+            };
+
+            const buildInfo = (transactions: unknown[]) => ({
+                descriptor: 'desc',
+                empty: false,
+                balance: '0',
+                availableBalance: '0',
+                history: { total: transactions.length, unconfirmed: 0, transactions },
+                page: { index: 1, size: 25, total: transactions.length },
+                misc: {
+                    staking: {
+                        address: 'stake',
+                        rewards: '0',
+                        isActive: false,
+                        poolId: null,
+                        drep: null,
+                    },
+                },
+            });
+
+            it('drops a single malformed tx instead of crashing the whole history page', () => {
+                // Pre-fix this call throws out of the whole-page `.map` (test errors); post-fix the
+                // poison record is dropped and the valid one survives.
+                // @ts-expect-error minimal untrusted-backend shape
+                const result = transformAccountInfo(buildInfo([poisonTx, validTx]));
+                const txs = result.history.transactions ?? [];
+
+                expect(txs).toHaveLength(1);
+                expect(txs[0]?.txid).toBe('validhash');
+            });
+
+            it('still transforms every record when none are malformed', () => {
+                // @ts-expect-error minimal untrusted-backend shape
+                const result = transformAccountInfo(buildInfo([validTx, validTx]));
+                expect(result.history.transactions ?? []).toHaveLength(2);
+            });
+        });
     });
 });

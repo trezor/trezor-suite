@@ -353,9 +353,22 @@ export const transformAccountInfo = (info: BlockfrostAccountInfo): AccountInfo =
             ...info.history,
             transactions: !blockfrostTxs
                 ? []
-                : blockfrostTxs?.map(tx =>
-                      transformTransaction(tx, info.addresses ?? info.descriptor),
-                  ),
+                : blockfrostTxs
+                      .map(tx => {
+                          try {
+                              return transformTransaction(tx, info.addresses ?? info.descriptor);
+                          } catch {
+                              // A single malformed/poison transaction record from an untrusted
+                              // (user-selectable custom) blockfrost backend must not crash the
+                              // transformation of the whole account-history page. transformTransaction
+                              // unconditionally dereferences fields the wire type marks non-optional
+                              // (txUtxos inputs/outputs `.amount` arrays, txData.output_amount, …), so
+                              // a backend omitting one would throw; drop just the bad record at the
+                              // boundary instead of failing the entire page (poison-one-record DoS).
+                              return undefined;
+                          }
+                      })
+                      .filter(isNotNullOrUndefined),
         },
     };
 
