@@ -53,6 +53,19 @@ describe('sendForm utils', () => {
         spy.mockRestore();
     });
 
+    // Confidential-leak guard: the NaN-branch console.error (forwarded to Sentry via
+    // captureConsoleIntegration) must not carry the confidential amount/fee values.
+    it('calculateTotal does not log the confidential amount/fee to console.error', () => {
+        const spy = jest.spyOn(console, 'error').mockImplementation(() => {});
+        // '133700000000000000000' is a confidential exact amount; force the NaN branch via a bad fee
+        expect(calculateTotal('133700000000000000000', 'not-a-number')).toEqual('0');
+        expect(spy).toHaveBeenCalledTimes(1);
+        const loggedArgs = spy.mock.calls.flat().join(' ');
+        expect(loggedArgs).not.toContain('133700000000000000000');
+        expect(loggedArgs).not.toContain('not-a-number');
+        spy.mockRestore();
+    });
+
     it('calculateMax', () => {
         const spy = jest.spyOn(console, 'error').mockImplementation(() => {});
         expect(calculateMax('2', '1')).toEqual('1');
@@ -64,6 +77,19 @@ describe('sendForm utils', () => {
         // @ts-expect-error: args are not a string
         expect(calculateMax(null, null)).toEqual('0');
         expect(spy).toHaveBeenCalledTimes(3);
+        spy.mockRestore();
+    });
+
+    // Confidential-leak guard: the NaN-branch console.error must not carry the exact account
+    // balance (availableBalance) — it reaches Sentry via captureConsoleIntegration.
+    it('calculateMax does not log the confidential availableBalance to console.error', () => {
+        const spy = jest.spyOn(console, 'error').mockImplementation(() => {});
+        // '424242424242424242' is a confidential exact balance; force the NaN branch via a bad fee
+        expect(calculateMax('424242424242424242', 'not-a-number')).toEqual('0');
+        expect(spy).toHaveBeenCalledTimes(1);
+        const loggedArgs = spy.mock.calls.flat().join(' ');
+        expect(loggedArgs).not.toContain('424242424242424242');
+        expect(loggedArgs).not.toContain('not-a-number');
         spy.mockRestore();
     });
 

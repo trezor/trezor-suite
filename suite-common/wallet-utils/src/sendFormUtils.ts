@@ -63,7 +63,9 @@ export const calculateTotal = (amount: string, fee: string): string => {
     try {
         const total = new BigNumber(amount).plus(fee);
         if (total.isNaN()) {
-            console.error('calculateTotal: Amount is not a number', amount, fee);
+            // Do not log amount/fee: these are confidential and console.error is forwarded to
+            // Sentry via captureConsoleIntegration ({ levels: ['error'] }) in the renderer/native.
+            console.error('calculateTotal: Amount is not a number');
 
             return '0';
         }
@@ -80,7 +82,9 @@ export const calculateMax = (availableBalance: string, fee: string): string => {
     try {
         const max = new BigNumber(availableBalance).minus(fee);
         if (max.isNaN()) {
-            console.error('calculateMax: Amount is not a number', availableBalance, fee);
+            // Do not log availableBalance/fee: the balance is confidential and console.error is
+            // forwarded to Sentry via captureConsoleIntegration ({ levels: ['error'] }).
+            console.error('calculateMax: Amount is not a number');
 
             return '0';
         }
