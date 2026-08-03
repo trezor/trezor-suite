@@ -7,5 +7,6 @@ export {
     selectIsEntropyCheckEnabledAndFailed,
     selectIsFirmwareAuthenticityCheckEnabledAndHardFailed,
     selectShouldDisplayDeviceCompromised,
+    selectShouldDisplayDeviceCompromisedOnRoute,
     type AuthenticityChecksRootState,
 } from './authenticityChecksSelectors';

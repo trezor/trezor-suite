@@ -1,21 +1,22 @@
+import { type Route } from '@suite/router';
+import { createRouterStateMock } from '@suite/router/mocks';
+import { suiteSettingsInitialState } from '@suite/settings';
+import { deviceInitialState } from '@suite-common/device';
+import { messageSystemInitialState } from '@suite-common/message-system';
+import { type AcquiredDevice } from '@suite-common/suite-types';
 import { defaultDevicePersistentData, mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import * as deviceUtils from '@suite-common/suite-utils';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
-import { type AcquiredDevice, type AppState } from 'src/types/suite';
-
-import { selectShouldDisplayDeviceCompromisedOnRoute } from './selectShouldDisplayDeviceCompromisedOnRoute';
-import { mockInitialAppState } from '../../../../mocks/mockInitialAppState';
+import {
+    type AuthenticityChecksRootState,
+    selectShouldDisplayDeviceCompromisedOnRoute,
+} from './authenticityChecksSelectors';
 
 type Fixture = {
     description: string;
-    state: AppState;
+    state: AuthenticityChecksRootState;
     result: boolean;
-};
-
-const authenticityChecksSuccess: AcquiredDevice['authenticityChecks'] = {
-    firmwareRevision: { success: true },
-    firmwareHash: null,
 };
 
 const authenticityChecksFail: AcquiredDevice['authenticityChecks'] = {
@@ -27,7 +28,22 @@ const defaultDevice = mockSuiteDevice();
 if (!deviceUtils.isDeviceAcquired(defaultDevice)) {
     throw `${mockSuiteDevice.name}() must return an AcquiredDevice here.`;
 }
-// derived from this device
+const authenticityChecksSuccess = defaultDevice.authenticityChecks;
+
+const initialState: AuthenticityChecksRootState = {
+    device: deviceInitialState,
+    messageSystem: messageSystemInitialState,
+    router: createRouterStateMock({
+        app: 'dashboard',
+        route: {
+            name: 'suite-index',
+            pattern: '/',
+            app: 'dashboard',
+        } as Route,
+    }),
+    suiteSettings: suiteSettingsInitialState,
+};
+
 const matchingDevicePersistentData = {
     ...defaultDevicePersistentData,
     device_id: defaultDevice.features.device_id,
@@ -39,9 +55,9 @@ const fixtures: Fixture[] = [
     {
         description: 'returns false if all checks pass',
         state: {
-            ...mockInitialAppState,
+            ...initialState,
             device: {
-                ...mockInitialAppState.device,
+                ...initialState.device,
                 selectedDevice: {
                     ...defaultDevice,
                     authenticityChecks: authenticityChecksSuccess,
@@ -53,32 +69,31 @@ const fixtures: Fixture[] = [
     {
         description: 'returns false if check errors, but on a skipped route',
         state: {
-            ...mockInitialAppState,
-            router: {
-                ...mockInitialAppState.router,
-                // @ts-expect-error see mockInitialAppState comment about routerReducer typing
-                route: {
-                    name: 'settings-index',
-                    pattern: '/settings',
-                    app: 'settings',
-                },
-            },
+            ...initialState,
             device: {
-                ...mockInitialAppState.device,
+                ...initialState.device,
                 selectedDevice: {
                     ...defaultDevice,
                     authenticityChecks: authenticityChecksFail,
                 },
             },
+            router: createRouterStateMock({
+                app: 'settings',
+                route: {
+                    name: 'settings-index',
+                    pattern: '/settings',
+                    app: 'settings',
+                } as Route,
+            }),
         },
         result: false,
     },
     {
         description: 'returns true if firmware check errored and not dismissed',
         state: {
-            ...mockInitialAppState,
+            ...initialState,
             device: {
-                ...mockInitialAppState.device,
+                ...initialState.device,
                 selectedDevice: {
                     ...defaultDevice,
                     authenticityChecks: authenticityChecksFail,
@@ -90,9 +105,9 @@ const fixtures: Fixture[] = [
     {
         description: 'returns false if firmware check errored and dismissed',
         state: {
-            ...mockInitialAppState,
+            ...initialState,
             device: {
-                ...mockInitialAppState.device,
+                ...initialState.device,
                 dismissedSecurityChecks: { firmwareAuthenticity: ['device-id'] },
                 selectedDevice: {
                     ...defaultDevice,
@@ -105,9 +120,9 @@ const fixtures: Fixture[] = [
     {
         description: 'returns false if a firmware check errored but is disabled',
         state: {
-            ...mockInitialAppState,
+            ...initialState,
             device: {
-                ...mockInitialAppState.device,
+                ...initialState.device,
                 selectedDevice: {
                     ...defaultDevice,
                     authenticityChecks: {
@@ -117,9 +132,9 @@ const fixtures: Fixture[] = [
                 },
             },
             suiteSettings: {
-                ...mockInitialAppState.suiteSettings,
+                ...initialState.suiteSettings,
                 enabledSecurityChecks: {
-                    ...mockInitialAppState.suiteSettings.enabledSecurityChecks,
+                    ...initialState.suiteSettings.enabledSecurityChecks,
                     firmwareRevision: false,
                 },
             },
@@ -129,9 +144,9 @@ const fixtures: Fixture[] = [
     {
         description: 'returns true if entropy check errored',
         state: {
-            ...mockInitialAppState,
+            ...initialState,
             device: {
-                ...mockInitialAppState.device,
+                ...initialState.device,
                 persistentDeviceData: [
                     {
                         ...matchingDevicePersistentData,
@@ -149,9 +164,9 @@ const fixtures: Fixture[] = [
     {
         description: 'returns false if entropy check errored but is disabled',
         state: {
-            ...mockInitialAppState,
+            ...initialState,
             device: {
-                ...mockInitialAppState.device,
+                ...initialState.device,
                 persistentDeviceData: [
                     {
                         ...matchingDevicePersistentData,
@@ -164,9 +179,9 @@ const fixtures: Fixture[] = [
                 },
             },
             suiteSettings: {
-                ...mockInitialAppState.suiteSettings,
+                ...initialState.suiteSettings,
                 enabledSecurityChecks: {
-                    ...mockInitialAppState.suiteSettings.enabledSecurityChecks,
+                    ...initialState.suiteSettings.enabledSecurityChecks,
                     entropy: false,
                 },
             },
@@ -176,9 +191,9 @@ const fixtures: Fixture[] = [
     {
         description: 'returns true for a device with an invalid id',
         state: {
-            ...mockInitialAppState,
+            ...initialState,
             device: {
-                ...mockInitialAppState.device,
+                ...initialState.device,
                 selectedDevice: { ...defaultDevice, id: null },
             },
         },
@@ -187,9 +202,9 @@ const fixtures: Fixture[] = [
     {
         description: 'returns true for a device with mismatch against its persistent data',
         state: {
-            ...mockInitialAppState,
+            ...initialState,
             device: {
-                ...mockInitialAppState.device,
+                ...initialState.device,
                 persistentDeviceData: [matchingDevicePersistentData],
                 selectedDevice: {
                     ...defaultDevice,
@@ -208,7 +223,7 @@ const fixtures: Fixture[] = [
 describe(selectShouldDisplayDeviceCompromisedOnRoute.name, () => {
     fixtures.forEach(f => {
         it(f.description, () => {
-            expect(selectShouldDisplayDeviceCompromisedOnRoute(f.state as AppState)).toBe(f.result);
+            expect(selectShouldDisplayDeviceCompromisedOnRoute(f.state)).toBe(f.result);
         });
     });
 });

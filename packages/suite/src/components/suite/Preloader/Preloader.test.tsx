@@ -2,6 +2,7 @@ import '@suite-common/test-utils/globalOverrides';
 
 import { fireEvent } from '@testing-library/react';
 
+import { selectShouldDisplayDeviceCompromisedOnRoute } from '@suite/authenticity-checks';
 import { type DesktopDeviceState } from '@suite/device';
 import { type RouterState } from '@suite/router';
 import { type AnalyticsState } from '@suite-common/analytics-redux';
@@ -16,7 +17,6 @@ import { type SuiteState } from 'src/reducers/suite/suiteReducer';
 import { findByTestId, renderWithProviders } from 'src/support/test-utils/hooksHelper';
 
 import { Preloader } from './Preloader';
-import { selectShouldDisplayDeviceCompromisedOnRoute } from './selectShouldDisplayDeviceCompromisedOnRoute';
 import { extraDependenciesDesktopMock } from '../../../../mocks/extraDependenciesDesktopMock';
 import { mockInitialAppState } from '../../../../mocks/mockInitialAppState';
 
@@ -25,10 +25,10 @@ jest.mock('@trezor/env-utils', () => ({
     isLinux: jest.fn(() => true),
 }));
 
-jest.mock('./selectShouldDisplayDeviceCompromisedOnRoute', () => ({
-    ...jest.requireActual('./selectShouldDisplayDeviceCompromisedOnRoute'),
+jest.mock('@suite/authenticity-checks', () => ({
+    ...jest.requireActual('@suite/authenticity-checks'),
     selectShouldDisplayDeviceCompromisedOnRoute: jest.fn(
-        jest.requireActual('./selectShouldDisplayDeviceCompromisedOnRoute')
+        jest.requireActual('@suite/authenticity-checks')
             .selectShouldDisplayDeviceCompromisedOnRoute,
     ),
 }));
@@ -544,7 +544,7 @@ describe(`${Preloader.name} component`, () => {
 
         unmount();
         (selectShouldDisplayDeviceCompromisedOnRoute as jest.Mock).mockImplementation(
-            jest.requireActual('./selectShouldDisplayDeviceCompromisedOnRoute')
+            jest.requireActual('@suite/authenticity-checks')
                 .selectShouldDisplayDeviceCompromisedOnRoute,
         );
     });

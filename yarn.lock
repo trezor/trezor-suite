@@ -14631,7 +14631,12 @@ __metadata:
     "@suite-common/device": "workspace:*"
     "@suite-common/firmware-authenticity": "workspace:*"
     "@suite-common/message-system": "workspace:*"
+    "@suite-common/suite-types": "workspace:*"
+    "@suite-common/suite-utils": "workspace:*"
+    "@suite/router": "workspace:*"
+    "@suite/router-config": "workspace:*"
     "@suite/settings": "workspace:*"
+    "@trezor/device-utils": "workspace:*"
   languageName: unknown
   linkType: soft
 
