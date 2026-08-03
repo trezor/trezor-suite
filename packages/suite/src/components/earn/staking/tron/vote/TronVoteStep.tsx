@@ -15,7 +15,7 @@ import { TronVoteSubmitButton } from './TronVoteSubmitButton';
 
 export const TronVoteStep = () => {
     const { form, actions, account, fees } = useTronStakeContext();
-    const { error } = actions;
+    const { error, pendingTxid } = actions;
 
     const { isVotingDisabled, votingMessageContent } = useMessageSystemStaking(account.symbol);
 
@@ -32,7 +32,7 @@ export const TronVoteStep = () => {
 
                 <TronStakeFees />
 
-                {hasInsufficientFunds && (
+                {hasInsufficientFunds && pendingTxid === null && (
                     <Banner
                         intent="warning"
                         description={
