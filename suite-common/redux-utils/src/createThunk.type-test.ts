@@ -29,9 +29,28 @@ createThunk<void, void, void>('test/noDependencies', (_, { extra, getState }) =>
     void extra.services.analytics;
 });
 
+createThunk<void, void, { state: SelectedState }>(
+    'test/selectedStateWithoutExtraDependencies',
+    (_, { extra, getState }) => {
+        const selectedValue: string = selectSelectedValue(getState());
+
+        // @ts-expect-error The thunk has no extra dependencies.
+        void extra.services.analytics;
+
+        void selectedValue;
+    },
+);
+
 createThunk('test/defaultDependencies', (_, { extra }) => {
     void extra.services.analytics;
 });
+
+createThunk<void, void, { rejectValue: string }>(
+    'test/defaultDependenciesWithThunkConfig',
+    (_, { extra }) => {
+        void extra.services.analytics;
+    },
+);
 
 createThunk<void, void, { state: SelectedState; extra: SelectedExtraDependencies }>(
     'test/selectiveExtraDependencies',

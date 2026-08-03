@@ -45,7 +45,7 @@ type UnpairCurrentBondThunkParams = Record<never, never>;
 export const unpairCurrentBondThunk = createThunk<
     boolean,
     UnpairCurrentBondThunkParams,
-    { state: DeviceRootState; extra: Record<never, never> }
+    { state: DeviceRootState }
 >(`${BLUETOOTH_PREFIX}/unpairCurrentBond`, async (_, { dispatch, getState }) => {
     const device = selectSelectedDevice(getState());
 

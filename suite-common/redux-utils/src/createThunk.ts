@@ -14,7 +14,12 @@ type ResolveThunkAPI<TThunkAPI> = [TThunkAPI] extends [DefaultThunkAPI]
     ? CustomThunkAPI
     : [TThunkAPI] extends [void]
       ? { state: unknown; extra: Record<never, never> }
-      : Omit<CustomThunkAPI, keyof TThunkAPI> & TThunkAPI;
+      : TThunkAPI extends { state: unknown }
+        ? Omit<CustomThunkAPI, keyof TThunkAPI | 'extra'> &
+              TThunkAPI & {
+                  extra: TThunkAPI extends { extra: infer TExtra } ? TExtra : Record<never, never>;
+              }
+        : Omit<CustomThunkAPI, keyof TThunkAPI> & TThunkAPI;
 
 type CreateThunk = <
     TReturned = void,
