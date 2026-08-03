@@ -6,11 +6,11 @@ import { selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { Translation } from '@suite-native/intl';
 import { useGetTrezorEshopCta } from '@suite-native/link';
 
-import { setIsGetTrezorBannerClosed } from '../bannerFlagsSlice';
+import { setIsTs7PromoBannerClosed } from '../bannerFlagsSlice';
 import { Banner } from './Banner';
 import { TS7_PROMO_BANNER_IMAGE } from '../imageSources';
 
-export const NoDevicePromoBanner = () => {
+export const TrezorSafe7PromoBanner = () => {
     const dispatch = useDispatch();
     const { analytics } = useServices(selectNativeAnalyticsDep);
     const handleGetTrezor = useGetTrezorEshopCta('dashboard'); // should be this reported?
@@ -21,7 +21,7 @@ export const NoDevicePromoBanner = () => {
             type: commonAnalyticsEvents.promoNoDeviceEshopCtaEvent.name,
             payload: { origin: 'dashboard', platform: 'mobile', action: 'close' },
         });
-        dispatch(setIsGetTrezorBannerClosed());
+        dispatch(setIsTs7PromoBannerClosed());
     };
 
     return (

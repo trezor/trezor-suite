@@ -8,6 +8,10 @@
         {
             "path": "../../suite-common/dependency-injection"
         },
+        { "path": "../../suite-common/device" },
+        {
+            "path": "../../suite-common/message-system"
+        },
         { "path": "../analytics" },
         { "path": "../atoms" },
         { "path": "../icons" },
