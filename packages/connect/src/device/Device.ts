@@ -861,13 +861,25 @@ export class Device extends TypedEmitter<DeviceEvents> implements IDevice {
                     session_id: undefined,
                     label: undefined,
                 });
+                // Transport descriptors carry the device id and session token, which are confidential
+                // and must be stripped before this reaches Sentry. The remaining fields (path, model,
+                // type, api metadata) are enough to diagnose the transport-level bug.
+                const stripDescriptorConfidential = (d: Descriptor) => ({
+                    ...d,
+                    id: undefined,
+                    session: null,
+                    sessionOwner: undefined,
+                    debugSession: null,
+                });
                 // this.features is overwritten with feat right after this method returns, so capture
                 // the old features reference synchronously; it is redacted at the log site below.
                 const oldFeatures = this.features;
                 const { uniquePath: path } = this;
                 // transport descriptors are useful debug info, but no need to await, the side-effect to log to Sentry can run async
                 this.transport.enumerate().then(res => {
-                    const descriptors = res.success ? res.payload : undefined;
+                    const descriptors = res.success
+                        ? res.payload.map(stripDescriptorConfidential)
+                        : undefined;
                     console.error('getFeatures device id mismatch', {
                         path,
                         oldFeatures: oldFeatures && stripConfidential(oldFeatures),
