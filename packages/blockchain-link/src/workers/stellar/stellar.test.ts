@@ -13,6 +13,7 @@ jest.mock('@trezor/blockchain-link-utils/src/stellar', () => ({
 const mockState: {
     accountError?: unknown;
     transactionsError?: unknown;
+    ledgerRecords?: unknown[];
 } = {};
 
 const mockNotFoundError = () => new NotFoundError('Not Found', { status: 404 });
@@ -44,6 +45,27 @@ jest.mock('@trezor/network-stellar/runtime', () => ({
                                 },
                             }),
                         }),
+                        ledgers: () => {
+                            const builder = {
+                                order: () => builder,
+                                limit: () => builder,
+                                call: () =>
+                                    Promise.resolve({
+                                        // an empty `records` list makes fetchLatestLedger throw
+                                        // `worker_invalid_horizon_response` — the untrusted-backend
+                                        // malformed-response case exercised by the DoS test below
+                                        records: mockState.ledgerRecords ?? [
+                                            {
+                                                sequence: 42,
+                                                hash: 'deadbeef',
+                                                base_reserve_in_stroops: '5000000',
+                                            },
+                                        ],
+                                    }),
+                            };
+
+                            return builder;
+                        },
                         transactions: () => {
                             const builder = {
                                 forAccount: () => builder,
@@ -75,6 +97,7 @@ describe('Stellar worker error handling', () => {
     beforeEach(() => {
         mockState.accountError = undefined;
         mockState.transactionsError = undefined;
+        mockState.ledgerRecords = undefined;
         blockchain = new BlockchainLink({
             name: 'Stellar',
             worker: StellarWorker,
@@ -115,5 +138,29 @@ describe('Stellar worker error handling', () => {
         await expect(
             blockchain.getAccountInfo({ descriptor: 'A', details: 'txs' }),
         ).rejects.toThrow('Too Many Requests');
+    });
+
+    it('block subscription does not crash the worker on a malformed ledger response', async () => {
+        // An untrusted/user-selectable Horizon backend returning an empty ledger list makes
+        // fetchLatestLedger throw. subscribeBlock invokes fetchBlock fire-and-forget (directly
+        // and via setInterval), so without the guard the throw becomes an unhandledRejection
+        // that tears down the blockchain worker (remote DoS).
+        mockState.ledgerRecords = [];
+
+        const rejections: unknown[] = [];
+        const onUnhandled = (reason: unknown) => rejections.push(reason);
+        process.on('unhandledRejection', onUnhandled);
+
+        try {
+            const response = await blockchain.subscribe({ type: 'block' });
+            expect(response.subscribed).toBe(true);
+
+            // let the detached fetchBlock() promise settle and any unhandledRejection surface
+            await new Promise(resolve => setTimeout(resolve, 50));
+
+            expect(rejections).toEqual([]);
+        } finally {
+            process.off('unhandledRejection', onUnhandled);
+        }
     });
 });

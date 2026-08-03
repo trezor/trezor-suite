@@ -13,18 +13,27 @@ export const subscribeBlock = async ({ state, connect, post }: Context) => {
     const api = await connect();
 
     const fetchBlock = async () => {
-        const { sequence: blockHeight, hash: blockHash } = await fetchLatestLedger(api);
-        post({
-            id: -1,
-            type: RESPONSES.NOTIFICATION,
-            payload: {
-                type: 'block',
+        // The Horizon backend is untrusted (user-selectable per network, incl. custom URLs).
+        // fetchLatestLedger throws on an empty/malformed ledger response, and the underlying
+        // network call can reject at any time. Since fetchBlock is invoked fire-and-forget
+        // (both directly below and via setInterval), an uncaught throw would surface as an
+        // unhandledRejection that tears down the blockchain worker (remote DoS). Swallow it.
+        try {
+            const { sequence: blockHeight, hash: blockHash } = await fetchLatestLedger(api);
+            post({
+                id: -1,
+                type: RESPONSES.NOTIFICATION,
                 payload: {
-                    blockHeight,
-                    blockHash,
+                    type: 'block',
+                    payload: {
+                        blockHeight,
+                        blockHash,
+                    },
                 },
-            },
-        });
+            });
+        } catch {
+            // drop the malformed/failed ledger poll; the next interval tick will retry
+        }
     };
     fetchBlock();
 

@@ -11,21 +11,30 @@ export const subscribeBlock = async ({ state, connect, post }: Context) => {
     const api = await connect();
 
     const fetchBlock = async () => {
-        const {
-            value: { blockhash: blockHash, lastValidBlockHeight: blockHeight },
-        } = await api.rpc.getLatestBlockhash({ commitment: 'confirmed' }).send();
-        if (blockHeight) {
-            post({
-                id: -1,
-                type: RESPONSES.NOTIFICATION,
-                payload: {
-                    type: 'block',
+        // The Solana RPC backend is untrusted (user-selectable per network, incl. custom URLs).
+        // Destructuring `value.blockhash`/`value.lastValidBlockHeight` throws on a malformed
+        // response and the network call can reject at any time. Since fetchBlock is invoked
+        // fire-and-forget (both directly below and via setInterval), an uncaught throw would
+        // surface as an unhandledRejection that tears down the blockchain worker (remote DoS).
+        try {
+            const {
+                value: { blockhash: blockHash, lastValidBlockHeight: blockHeight },
+            } = await api.rpc.getLatestBlockhash({ commitment: 'confirmed' }).send();
+            if (blockHeight) {
+                post({
+                    id: -1,
+                    type: RESPONSES.NOTIFICATION,
                     payload: {
-                        blockHeight: Number(blockHeight),
-                        blockHash,
+                        type: 'block',
+                        payload: {
+                            blockHeight: Number(blockHeight),
+                            blockHash,
+                        },
                     },
-                },
-            });
+                });
+            }
+        } catch {
+            // drop the malformed/failed block poll; the next interval tick will retry
         }
     };
     fetchBlock();
