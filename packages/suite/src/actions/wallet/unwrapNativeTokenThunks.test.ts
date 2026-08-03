@@ -100,6 +100,45 @@ describe('submitUnwrapNativeTokenThunk', () => {
         );
     });
 
+    it('does not log the raw broadcast error (which can embed the signed tx hex) to console.error', async () => {
+        const store = buildStore(jest.fn());
+        mockOpenDeferredModal.mockImplementation(
+            () => () => Promise.resolve({ value: true, resolve: jest.fn() }),
+        );
+
+        // A failed EVM broadcast throws with the node's rejection message, which (via viem)
+        // echoes the full raw signed transaction hex and the from-address — confidential data.
+        const confidentialTx =
+            '0x02f8b10182...deadbeefaddress0xabc1234signedserializedtransactionhexSECRET';
+        mockSendYieldTransaction.mockRejectedValue(
+            new Error(`Push_TransactionFailed: RPC error, request: ${confidentialTx}`),
+        );
+
+        const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+
+        await store
+            .dispatch(
+                submitUnwrapNativeTokenThunk({
+                    account,
+                    token,
+                    unwrapAmount: '1',
+                }),
+            )
+            .unwrap();
+
+        // Serialize each logged arg the way Sentry's captureConsoleIntegration does
+        // (Error → message + stack, which JSON.stringify would drop as non-enumerable).
+        const serializeArg = (arg: unknown) =>
+            arg instanceof Error ? `${arg.message}\n${arg.stack ?? ''}` : String(arg);
+        const loggedText = consoleErrorSpy.mock.calls.flat().map(serializeArg).join('\n');
+
+        expect(consoleErrorSpy).toHaveBeenCalled();
+        expect(loggedText).not.toContain(confidentialTx);
+        expect(loggedText).not.toContain('SECRET');
+
+        consoleErrorSpy.mockRestore();
+    });
+
     it('uses the parent yield flow identity when provided', async () => {
         const store = createTestStore({ extra: createExtra(), preloadedState: {} });
         mockOpenDeferredModal.mockImplementation(

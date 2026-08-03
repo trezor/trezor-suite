@@ -182,7 +182,10 @@ export const submitUnwrapNativeTokenThunk = createThunk<
 
             return { txid: sendResult.txid, fee: sendResult.fee };
         } catch (error) {
-            console.error(error);
+            // Static string only: the raw error can embed the signed tx hex / from-address
+            // (the EVM node's rejection message) and console.error is forwarded to Sentry.
+            // The message is still shown to the user locally via the toast below.
+            console.error('submitUnwrapNativeTokenThunk failed');
             reportError(getYieldSubmitErrorAnalyticsMessage(error));
             dispatch(
                 notificationsActions.addToast({

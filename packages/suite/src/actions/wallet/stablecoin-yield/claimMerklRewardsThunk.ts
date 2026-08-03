@@ -342,7 +342,10 @@ export const claimMerklRewardsThunk = createThunk<
                 dispatch(yieldActions.discardTransaction());
             }
         } catch (error) {
-            console.error(error);
+            // Static string only: the raw error can embed the signed tx hex / from-address
+            // (see sendYieldTransaction) and console.error is forwarded to Sentry.
+            // The sanitized message is reported separately via getYieldSubmitErrorAnalyticsMessage below.
+            console.error('claimMerklRewardsThunk failed');
             reportSubmitError(getYieldSubmitErrorAnalyticsMessage(error));
             dispatch(
                 yieldActions.setError({

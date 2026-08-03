@@ -156,7 +156,10 @@ export const submitYieldDepositThunk = createThunk<
                 }),
             );
         } catch (error) {
-            console.error(error);
+            // Static string only: the raw error can embed the signed tx hex / from-address
+            // (see sendYieldTransaction) and console.error is forwarded to Sentry.
+            // The sanitized message is reported separately via getYieldSubmitErrorAnalyticsMessage below.
+            console.error('submitYieldDepositThunk failed');
             extra.services.analytics.report({
                 type: events.yieldDepositEvent.name,
                 payload: {
