@@ -414,6 +414,11 @@ export const transformAddresses = (
     if (!tokens || !Array.isArray(tokens)) return undefined;
     const addresses = tokens.reduce((arr, t) => {
         if (t.type !== 'XPUBAddress') return arr;
+        // `path` is optional on the untrusted backend `Token` type but required to classify the
+        // address (internal/external) via `a.path.split('/')` below. A malicious/misbehaving
+        // blockbook omitting it would otherwise throw there and abort the whole account's
+        // transformAccountInfo (poison-record DoS); drop the malformed record at the boundary.
+        if (typeof t.path !== 'string') return arr;
 
         return arr.concat([
             {

@@ -1,5 +1,10 @@
 import * as fixtures from './__fixtures__/blockbook';
-import { filterTokenTransfers, transformTransaction } from './blockbook';
+import {
+    filterTokenTransfers,
+    transformAccountInfo,
+    transformAddresses,
+    transformTransaction,
+} from './blockbook';
 
 describe('blockbook/utils', () => {
     describe('filterTokenTransfers', () => {
@@ -28,6 +33,56 @@ describe('blockbook/utils', () => {
                 const tx = transformTransaction(f.tx, f.addresses ?? f.descriptor);
                 expect(tx).toMatchObject(f.parsed);
             });
+        });
+    });
+
+    describe('poison-record DoS resistance (missing XPUBAddress path)', () => {
+        // An untrusted/user-selectable blockbook backend may return an XPUBAddress token with the
+        // (type-optional) `path` field omitted; `a.path.split('/')` in transformAddresses would then
+        // throw and abort the whole account's transformAccountInfo (all txs/balances fail to load).
+        const validToken = {
+            type: 'XPUBAddress' as const,
+            name: 'addr-valid',
+            path: "m/84'/0'/0'/0/0",
+            transfers: 1,
+            balance: '0',
+            totalSent: '0',
+            totalReceived: '0',
+        };
+        const poisonToken = {
+            type: 'XPUBAddress' as const,
+            name: 'addr-nopath',
+            transfers: 0,
+            balance: '0',
+            totalSent: '0',
+            totalReceived: '0',
+        };
+
+        it('drops a path-less XPUBAddress token instead of throwing', () => {
+            let result: ReturnType<typeof transformAddresses>;
+            // @ts-expect-error minimal token shape
+            expect(() => (result = transformAddresses([validToken, poisonToken]))).not.toThrow();
+            const all = [
+                ...(result?.change ?? []),
+                ...(result?.used ?? []),
+                ...(result?.unused ?? []),
+            ];
+            expect(all.map(a => a.address)).toEqual(['addr-valid']);
+        });
+
+        it('does not fail the whole account when one XPUBAddress token lacks a path', () => {
+            const payload = {
+                address: 'addr-valid',
+                balance: '0',
+                unconfirmedBalance: '0',
+                txs: 0,
+                unconfirmedTxs: 0,
+                tokens: [validToken, poisonToken],
+            };
+            let account: ReturnType<typeof transformAccountInfo>;
+            // @ts-expect-error minimal payload shape
+            expect(() => (account = transformAccountInfo(payload))).not.toThrow();
+            expect(account!.addresses?.used.map(a => a.address)).toEqual(['addr-valid']);
         });
     });
 });
