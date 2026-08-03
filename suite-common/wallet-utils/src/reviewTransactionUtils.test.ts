@@ -44,6 +44,13 @@ const ERC20_REVOKE_DATA = buildApprovalTransactionData({
     spender: ERC20_APPROVE_SPENDER,
 });
 
+// Canonical WETH (Wrapped Ether) — clear-signed wrap/unwrap (deposit/withdraw) on mainnet
+const WETH_MAINNET = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2';
+const WETH_DEPOSIT_DATA = '0xd0e30db0'; // deposit() — wrap
+const WETH_WITHDRAW_DATA = `0x2e1a7d4d${'00'.repeat(32)}`; // withdraw(uint256) — unwrap
+// WBNB on BSC — a wrapped native the firmware does NOT clear-sign
+const WBNB_BSC = '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c';
+
 const buildTrading = (overrides: Partial<FormStateTrading> = {}): FormStateTrading => ({
     activeSection: 'exchange',
     isSlip24Active: false,
@@ -382,4 +389,44 @@ describe('constructTransactionReviewOutputs', () => {
             );
         },
     );
+
+    it.each([
+        { op: 'wrap', transactionData: WETH_DEPOSIT_DATA },
+        { op: 'unwrap', transactionData: WETH_WITHDRAW_DATA },
+    ])('suppresses the raw data row for a clear-signed WETH $op', ({ transactionData }) => {
+        const outputs = constructTransactionReviewOutputs({
+            account,
+            device,
+            decreaseOutputId: undefined,
+            precomposedForm: buildFormState({ transactionData }),
+            precomposedTx: buildPrecomposedTransaction({ to: WETH_MAINNET }),
+        });
+
+        // The device clear-signs the intent + amount, so the raw calldata row is dropped...
+        expect(outputs).not.toEqual(
+            expect.arrayContaining([expect.objectContaining({ type: 'data' })]),
+        );
+        // ...but the contract address (and the fee/total summary) still show.
+        expect(outputs).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({ type: 'contract', value: WETH_MAINNET }),
+            ]),
+        );
+    });
+
+    it('keeps the raw data row for a wrapped native the firmware does not clear-sign (WBNB on BSC)', () => {
+        const outputs = constructTransactionReviewOutputs({
+            account: buildEthereumAccount({ symbol: 'bsc' }),
+            device,
+            decreaseOutputId: undefined,
+            precomposedForm: buildFormState({ transactionData: WETH_DEPOSIT_DATA }),
+            precomposedTx: buildPrecomposedTransaction({ to: WBNB_BSC }),
+        });
+
+        expect(outputs).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({ type: 'data', value: WETH_DEPOSIT_DATA }),
+            ]),
+        );
+    });
 });
