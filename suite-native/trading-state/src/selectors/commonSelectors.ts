@@ -133,6 +133,12 @@ export const selectIsTradingConciergeEnabled = (
     state: MessageSystemRootState & FeatureFlagsRootState,
 ) => selectIsFeatureEnabled(state, Feature.trading.concierge, true);
 
+export const selectIsTradingTxSimulationEnabled = (
+    state: MessageSystemRootState & FeatureFlagsRootState,
+) =>
+    selectIsFeatureEnabled(state, Feature.trading.txSimulation, true) &&
+    selectIsFeatureFlagEnabled(state, FeatureFlag.IsTradingTxSimulationEnabled);
+
 export const selectIsTradingSlip24Enabled = (
     state: MessageSystemRootState & FeatureFlagsRootState & TradingRootStateWithDeviceAndAccounts,
     account: Account | undefined | null,

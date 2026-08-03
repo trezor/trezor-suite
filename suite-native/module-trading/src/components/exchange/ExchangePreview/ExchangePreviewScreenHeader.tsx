@@ -8,9 +8,9 @@ import { ScreenHeader } from '@suite-native/navigation';
 import { useDexExchangeTxSimulation } from '../../../hooks/exchange/useDexExchangeTxSimulation';
 
 const HeaderTitle = () => {
-    const { isLoading, isEnabled } = useDexExchangeTxSimulation();
+    const { isLoading, isEnabled, error } = useDexExchangeTxSimulation();
 
-    if (!isEnabled) {
+    if (!isEnabled || error) {
         return (
             <Text variant="body-md-strong">
                 <Translation id="moduleTrading.tradingExchangePreviewScreen.title" />
