@@ -75,16 +75,21 @@ export const mergeDeepObject = <T extends IObject[]>(...objects: T): TMerged<T[n
         }
 
         Object.keys(current).forEach(key => {
-            if (!isSafeObjectKey(key)) {
-                return;
-            }
-
             if (mergeDeepObject.options.dotNotation) {
-                const [first, ...rest] = key.split('.');
-                // @ts-expect-error: noUncheckedIndexedAccess
-                const firstKey: string = first;
+                // In dot-notation mode every path segment becomes an object key, so each
+                // one must be validated. Checking only the whole key would let a key like
+                // `__proto__.x` slip past the guard and replace the merged object's
+                // prototype with an attacker-controlled object.
+                const segments = key.split('.');
+                if (!segments.every(isSafeObjectKey)) {
+                    return;
+                }
+                const [firstKey = '', ...rest] = segments;
                 result[firstKey] = mergeValuesWithPath(result[firstKey], current[key], rest);
             } else {
+                if (!isSafeObjectKey(key)) {
+                    return;
+                }
                 result[key] = mergeValues(result[key], current[key]);
             }
         });

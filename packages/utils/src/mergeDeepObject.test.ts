@@ -216,5 +216,20 @@ describe('mergeDeepObject', () => {
                 l: { m: [8, 9] },
             });
         });
+
+        it('safeguards against prototype pollution via a dot-notation path segment', () => {
+            const merged: any = mergeDeepObject.withOptions(
+                { dotNotation: true },
+                {},
+                JSON.parse('{ "__proto__.hasProto": true, "constructor.prototype.polluted": 1 }'),
+            );
+
+            // The unsafe keys must be dropped entirely: neither the merged object's
+            // prototype nor the global Object.prototype may be affected.
+            expect(Object.getPrototypeOf(merged)).toBe(Object.prototype);
+            expect(merged.hasProto).toBe(undefined);
+            expect(({} as any).polluted).toBe(undefined);
+            expect(Object.keys(merged)).toHaveLength(0);
+        });
     });
 });
