@@ -133,6 +133,42 @@ describe('receive', () => {
         expect(spyWarn).toHaveBeenCalledTimes(1);
     });
 
+    test('protocol-v1 rejects an implausibly large declared message length before allocating', async () => {
+        const spyWarn = jest.spyOn(console, 'warn').mockImplementation();
+        // Guard the test process itself: cap the real allocation so this test can
+        // never commit ~2 GiB even if the length check regresses, while still
+        // recording the size `receive` asks Buffer.alloc for.
+        const realAlloc = Buffer.alloc.bind(Buffer);
+        const allocSpy = jest
+            .spyOn(Buffer, 'alloc')
+            .mockImplementation((size: number, ...rest: any[]) =>
+                typeof size === 'number' && size > 1024 * 1024
+                    ? realAlloc(0)
+                    : (realAlloc as any)(size, ...rest),
+            );
+
+        // v1 header: magic 3f2323 | messageType 0002 | length 7fffffff (~2 GiB) | 1-byte payload 0a
+        const result = await receive(getApiRead(['3f232300027fffffff0a']), protocolV1);
+
+        expect(result.success).toBe(false);
+        if (!result.success) {
+            expect(result.error.code).toBe('Malformed protocol format');
+        }
+        // The oversized length must be rejected before Buffer.alloc is ever asked
+        // for ~2 GiB (this assertion fails against the unbounded pre-fix source).
+        expect(allocSpy).not.toHaveBeenCalledWith(0x7fffffff);
+
+        allocSpy.mockRestore();
+        spyWarn.mockRestore();
+    });
+
+    test('protocol-v1 accepts a message length just under the cap', async () => {
+        // A header declaring a plausible length must still allocate and reassemble
+        // normally, proving the cap does not reject legitimate messages.
+        const result = await receive(getApiRead(['3f23230002000000060a046d656f77']), protocolV1);
+        expect(result).toMatchObject({ success: true, payload: { messageType: 2 } });
+    });
+
     test('protocol-v2 receive one chunk', async () => {
         const result = await receive(getApiRead(['2833da0004527eb068']), protocolV2);
         expect(result).toMatchObject({
