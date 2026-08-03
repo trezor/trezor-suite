@@ -2,7 +2,6 @@
 
 import {
     type BitcoinNetworkInfo,
-    type ComposeResult,
     type ComposeResultFinal,
     DEFAULT_SORTING_STRATEGY,
     type DiscoveryAccount,
@@ -285,7 +284,11 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
         const tx =
             resp.payload.type === 'select-fee-custom'
                 ? compose(resp.payload.value) // recompose custom fee level with requested value
-                : composed.transactions.get(resp.payload.value)!;
+                : composed.transactions.get(resp.payload.value);
+
+        if (tx?.type !== 'final') {
+            throw ERRORS.TypedError('Runtime', 'ComposeTransaction: Trying to sign unfinished tx');
+        }
 
         const response = await this._sign(tx, context.sendCoreMessage);
 
@@ -455,12 +458,9 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
         return { account, utxo };
     }
 
-    private async _sign(tx: ComposeResult, sendCoreMessage: MethodContext['sendCoreMessage']) {
+    private async _sign(tx: ComposeResultFinal, sendCoreMessage: MethodContext['sendCoreMessage']) {
         const device = this.getDevice();
         const { params } = this;
-
-        if (tx.type !== 'final')
-            throw ERRORS.TypedError('Runtime', 'ComposeTransaction: Trying to sign unfinished tx');
 
         const { coinInfo } = params;
 
