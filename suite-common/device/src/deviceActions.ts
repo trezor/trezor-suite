@@ -113,14 +113,6 @@ const updateSelectedDevice = createAction(
     (payload: TrezorDevice) => ({ payload }),
 );
 
-const selectedDeviceBecomingAcquired = createAction(
-    `${DEVICE_MODULE_PREFIX}/selectedDeviceBecomingAcquired`,
-);
-
-const selectedDeviceBecomingConnected = createAction(
-    `${DEVICE_MODULE_PREFIX}/selectedDeviceBecomingConnected`,
-);
-
 // Remove button requests for specific device by button request code or all button requests if no code is provided.
 const removeButtonRequests = createAction(
     `${DEVICE_MODULE_PREFIX}/removeButtonRequests`,
@@ -195,8 +187,6 @@ export const deviceActions = {
     requestDeviceReconnect,
     selectDevice,
     updateSelectedDevice,
-    selectedDeviceBecomingAcquired,
-    selectedDeviceBecomingConnected,
     removeButtonRequests,
     setEntropyCheckResult,
     setDelegatedIdentityKey,

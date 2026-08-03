@@ -109,39 +109,56 @@ export const forgetDisconnectedDevices = createThunk(
     },
 );
 
+type ObserveSelectedDeviceResult = {
+    isDeviceChanged: boolean;
+    isDeviceBecomingAcquired: boolean;
+    isDeviceBecomingConnected: boolean;
+};
+
 /**
  * Keep selected device synchronized with the `devices` reducer, because selected device is a copy
  * of one of the `devices` (and those are updated via DEVICE.CHANGED. etc.).
  * Called from `suiteMiddleware` (Desktop) or `deviceMiddleware` (Mobile).
  */
-export const observeSelectedDevice = createThunk<boolean, void>(
+export const observeSelectedDevice = createThunk<ObserveSelectedDeviceResult, void>(
     `${DEVICE_MODULE_PREFIX}/observeSelectedDevice`,
-    (_, { dispatch, getState }) => {
+    (_, { dispatch, getState, fulfillWithValue }) => {
         const devices = selectDevices(getState());
 
         const selectedDevice = selectSelectedDevice(getState());
-        if (!selectedDevice) return false;
+        if (!selectedDevice)
+            return fulfillWithValue({
+                isDeviceChanged: false,
+                isDeviceBecomingAcquired: false,
+                isDeviceBecomingConnected: false,
+            });
 
         // Device in `devices` may have been already updated via DEVICE.CHANGED action
         const deviceFromReducer = getSelectedDevice(selectedDevice, devices);
-        if (!deviceFromReducer) return true;
+        if (!deviceFromReducer)
+            return fulfillWithValue({
+                isDeviceChanged: true,
+                isDeviceBecomingAcquired: false,
+                isDeviceBecomingConnected: false,
+            });
 
-        const changed = isChanged(selectedDevice, deviceFromReducer);
-        if (changed) {
+        const isDeviceChanged = isChanged(selectedDevice, deviceFromReducer);
+        if (isDeviceChanged) {
             dispatch(deviceActions.updateSelectedDevice(deviceFromReducer));
-
-            // This lives here, because currently we only care about selected device updating.
-            // TBD: maybe this would be cleaner in connectInitThunk – if we care about all devices?
-            const deviceComparison = { prevDevice: selectedDevice, nextDevice: deviceFromReducer };
-            if (getIsDeviceBecomingAcquired(deviceComparison)) {
-                dispatch(deviceActions.selectedDeviceBecomingAcquired());
-            }
-            if (getIsDeviceBecomingConnected(deviceComparison)) {
-                dispatch(deviceActions.selectedDeviceBecomingConnected());
-            }
         }
 
-        return changed;
+        // The "Is becoming acquired/connect" logic lives here, because currently we only care about
+        // that for the selected device updates.
+        // TBD: maybe this would be cleaner in connectInitThunk – if we care about all devices?
+        const deviceComparison = { prevDevice: selectedDevice, nextDevice: deviceFromReducer };
+        const isDeviceBecomingAcquired = getIsDeviceBecomingAcquired(deviceComparison);
+        const isDeviceBecomingConnected = getIsDeviceBecomingConnected(deviceComparison);
+
+        return fulfillWithValue({
+            isDeviceChanged,
+            isDeviceBecomingAcquired,
+            isDeviceBecomingConnected,
+        });
     },
 );
 
