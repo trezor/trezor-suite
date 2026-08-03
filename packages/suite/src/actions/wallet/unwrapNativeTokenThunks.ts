@@ -82,11 +82,24 @@ export const submitUnwrapNativeTokenThunk = createThunk(
             dispatch(
                 notificationsActions.addToast({
                     type: 'tx-unwrap',
-                    // Amount shown in the destination unit — the native coin (e.g. ETH).
-                    formattedAmount: `${unwrapAmount} ${getNetworkDisplaySymbol(account.symbol)}`,
                     descriptor: account.descriptor,
                     symbol: account.symbol,
                     txid: sendResult.txid,
+                    formattedAmount: unwrapAmount,
+                    metadata: {
+                        send: {
+                            symbol: account.symbol,
+                            displaySymbol: token.symbol,
+                            contractAddress: token.contractAddress,
+                            amount: unwrapAmount,
+                        },
+                        receive: {
+                            symbol: account.symbol,
+                            displaySymbol: getNetworkDisplaySymbol(account.symbol),
+                            amount: unwrapAmount,
+                        },
+                    },
+                    style: { maxWidth: 'auto' },
                 }),
             );
 

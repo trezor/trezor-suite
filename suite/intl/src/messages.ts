@@ -4173,6 +4173,14 @@ export const messages = defineMessages({
         defaultMessage:
             'Swap transaction from {sendAccount} to {receiveAccount} has been broadcast',
     },
+    TOAST_TX_WRAP_BROADCASTED: {
+        id: 'TOAST_TX_WRAP_BROADCASTED',
+        defaultMessage: 'Wrap transaction has been broadcast',
+    },
+    TOAST_TX_UNWRAP_BROADCASTED: {
+        id: 'TOAST_TX_UNWRAP_BROADCASTED',
+        defaultMessage: 'Unwrap transaction has been broadcast',
+    },
     TOAST_TX_RECEIVED: {
         id: 'TOAST_TX_RECEIVED',
         defaultMessage: 'Received to {account}',
@@ -11641,14 +11649,6 @@ export const messages = defineMessages({
     TOAST_TX_YIELD_CLAIM: {
         id: 'TOAST_TX_YIELD_CLAIM',
         defaultMessage: 'Claim transaction from {account} has been broadcast',
-    },
-    TOAST_TX_WRAP: {
-        id: 'TOAST_TX_WRAP',
-        defaultMessage: 'Wrap transaction from {account} has been broadcast',
-    },
-    TOAST_TX_UNWRAP: {
-        id: 'TOAST_TX_UNWRAP',
-        defaultMessage: 'Unwrap transaction from {account} has been broadcast',
     },
     TOAST_SUCCESSFUL_CLAIM: {
         id: 'TOAST_SUCCESSFUL_CLAIM',

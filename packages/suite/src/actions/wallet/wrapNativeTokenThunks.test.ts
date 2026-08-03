@@ -1,4 +1,5 @@
 import { configureMockStore } from '@suite-common/test-utils';
+import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { type YieldFlowDisplayToken } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
@@ -98,5 +99,37 @@ describe('submitWrapNativeTokenThunk', () => {
                 flowType: 'deposit',
             }),
         );
+    });
+
+    it('shows a wrap toast displaying both the native and wrapped assets', async () => {
+        const store = configureMockStore({ extra: {}, preloadedState: {} });
+        mockOpenDeferredModal.mockImplementation(
+            () => () => Promise.resolve({ value: true, resolve: jest.fn() }),
+        );
+        mockSendYieldTransaction.mockResolvedValue({ txid: '0xwrap' });
+
+        await store
+            .dispatch(submitWrapNativeTokenThunk({ account, token, wrapAmount: '1.5' }))
+            .unwrap();
+
+        const wrapToast = store.getActions().find(action => action.payload?.type === 'tx-wrap');
+
+        expect(wrapToast?.payload).toMatchObject({
+            type: 'tx-wrap',
+            txid: '0xwrap',
+            metadata: {
+                send: {
+                    symbol: account.symbol,
+                    displaySymbol: getNetworkDisplaySymbol(account.symbol),
+                    amount: '1.5',
+                },
+                receive: {
+                    symbol: account.symbol,
+                    displaySymbol: token.symbol,
+                    contractAddress: token.contractAddress,
+                    amount: '1.5',
+                },
+            },
+        });
     });
 });
