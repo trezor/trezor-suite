@@ -114,33 +114,36 @@ export const forgetDisconnectedDevices = createThunk(
  * of one of the `devices` (and those are updated via DEVICE.CHANGED. etc.).
  * Called from `suiteMiddleware` (Desktop) or `deviceMiddleware` (Mobile).
  */
-export const observeSelectedDevice = () => (dispatch: any, getState: any) => {
-    const devices = selectDevices(getState());
+export const observeSelectedDevice = createThunk<boolean, void>(
+    `${DEVICE_MODULE_PREFIX}/observeSelectedDevice`,
+    (_, { dispatch, getState }) => {
+        const devices = selectDevices(getState());
 
-    const selectedDevice = selectSelectedDevice(getState());
-    if (!selectedDevice) return false;
+        const selectedDevice = selectSelectedDevice(getState());
+        if (!selectedDevice) return false;
 
-    // Device in `devices` may have been already updated via DEVICE.CHANGED action
-    const deviceFromReducer = getSelectedDevice(selectedDevice, devices);
-    if (!deviceFromReducer) return true;
+        // Device in `devices` may have been already updated via DEVICE.CHANGED action
+        const deviceFromReducer = getSelectedDevice(selectedDevice, devices);
+        if (!deviceFromReducer) return true;
 
-    const changed = isChanged(selectedDevice, deviceFromReducer);
-    if (changed) {
-        dispatch(deviceActions.updateSelectedDevice(deviceFromReducer));
+        const changed = isChanged(selectedDevice, deviceFromReducer);
+        if (changed) {
+            dispatch(deviceActions.updateSelectedDevice(deviceFromReducer));
 
-        // This lives here, because currently we only care about selected device updating.
-        // TBD: maybe this would be cleaner in connectInitThunk – if we care about all devices?
-        const deviceComparison = { prevDevice: selectedDevice, nextDevice: deviceFromReducer };
-        if (getIsDeviceBecomingAcquired(deviceComparison)) {
-            dispatch(deviceActions.selectedDeviceBecomingAcquired());
+            // This lives here, because currently we only care about selected device updating.
+            // TBD: maybe this would be cleaner in connectInitThunk – if we care about all devices?
+            const deviceComparison = { prevDevice: selectedDevice, nextDevice: deviceFromReducer };
+            if (getIsDeviceBecomingAcquired(deviceComparison)) {
+                dispatch(deviceActions.selectedDeviceBecomingAcquired());
+            }
+            if (getIsDeviceBecomingConnected(deviceComparison)) {
+                dispatch(deviceActions.selectedDeviceBecomingConnected());
+            }
         }
-        if (getIsDeviceBecomingConnected(deviceComparison)) {
-            dispatch(deviceActions.selectedDeviceBecomingConnected());
-        }
-    }
 
-    return changed;
-};
+        return changed;
+    },
+);
 
 /**
  * Called from <AcquireDevice /> component
