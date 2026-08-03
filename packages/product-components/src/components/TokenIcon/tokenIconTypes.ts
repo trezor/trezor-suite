@@ -18,6 +18,7 @@ export interface TokenIconProps extends AllowedFrameProps {
     'data-testid'?: string;
     customLogoUrl?: string;
     isBordered?: boolean;
+    isTransparent?: boolean;
     /**
      * If the token is a wrapped native token (e.g. WETH), this prop determines whether to show the icon of the token itself or its network icon.
      */
