@@ -64,7 +64,6 @@
         "@trezor/theme": "workspace:*",
         "@trezor/transport-common": "workspace:*",
         "@trezor/trezor-user-env-link": "workspace:*",
-        "@trezor/type-utils": "workspace:*",
         "@trezor/urls": "workspace:*",
         "@trezor/utils": "workspace:*",
         "@trezor/utxo-lib": "workspace:*",

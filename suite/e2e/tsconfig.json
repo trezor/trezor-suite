@@ -81,7 +81,6 @@
         {
             "path": "../../packages/trezor-user-env-link"
         },
-        { "path": "../../packages/type-utils" },
         { "path": "../../packages/urls" },
         { "path": "../../packages/utils" },
         { "path": "../../packages/utxo-lib" }
