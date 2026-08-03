@@ -11849,6 +11849,8 @@ __metadata:
     "@reduxjs/toolkit": "npm:2.12.0"
     "@suite-common/analytics": "workspace:*"
     "@suite-common/dependency-injection": "workspace:*"
+    "@suite-common/device": "workspace:*"
+    "@suite-common/message-system": "workspace:*"
     "@suite-native/analytics": "workspace:*"
     "@suite-native/atoms": "workspace:*"
     "@suite-native/icons": "workspace:*"
@@ -11859,6 +11861,7 @@ __metadata:
     "@trezor/styles-native": "workspace:*"
     react: "npm:19.2.3"
     react-native: "npm:0.85.3"
+    react-native-gesture-handler: "npm:2.31.1"
     react-native-reanimated: "npm:4.3.1"
     react-redux: "npm:9.3.0"
   languageName: unknown
