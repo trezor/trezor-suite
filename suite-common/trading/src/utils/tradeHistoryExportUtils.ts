@@ -1,7 +1,5 @@
 import { type CryptoId } from 'invity-api';
 
-import { typedObjectKeys } from '@trezor/utils';
-
 import { type TradingRootState } from '../reducers/tradingCommonReducer';
 import {
     selectTradingCoinSymbolByCryptoId,
@@ -34,27 +32,36 @@ export const sanitizeTradingCsvValue = (value: string): string => {
     return sanitizedValue;
 };
 
-/** CSV column keys mapped to their human-readable header labels. */
-export const TRADING_HISTORY_CSV_FIELDS = {
-    orderId: 'Trade ID',
-    date: 'Date and time',
-    type: 'Type',
-    spentAmount: 'Spent amount',
-    spendTicker: 'Spend ticker',
-    spendNetwork: 'Spend network',
-    spendTransactionId: 'Spend transaction ID',
-    receiveAmount: 'Receive amount',
-    receiveTicker: 'Receive ticker',
-    receiveNetwork: 'Receive network',
-    provider: 'Provider',
-    status: 'Status',
-    receiveTransactionId: 'Receive transaction ID',
-    paymentId: 'Payment ID',
-} as const;
+/**
+ * Ordered list of CSV columns. Defines both the column set and their order; the header row and
+ * every data row iterate this list so they always stay aligned.
+ */
+export const TRADING_HISTORY_CSV_COLUMNS = [
+    'orderId',
+    'date',
+    'type',
+    'spentAmount',
+    'spendTicker',
+    'spendNetwork',
+    'spendTransactionId',
+    'receiveAmount',
+    'receiveTicker',
+    'receiveNetwork',
+    'provider',
+    'status',
+    'receiveTransactionId',
+    'paymentId',
+] as const;
 
-type TradingHistoryCsvField = keyof typeof TRADING_HISTORY_CSV_FIELDS;
+export type TradingHistoryCsvColumn = (typeof TRADING_HISTORY_CSV_COLUMNS)[number];
 
-export type TradingHistoryCsvRow = Record<TradingHistoryCsvField, string>;
+/**
+ * Translated header labels, keyed by column. Injected by the consuming app so this shared util
+ * stays i18n-agnostic (mobile and desktop each have their own translation catalog).
+ */
+export type TradingHistoryCsvColumnLabels = Record<TradingHistoryCsvColumn, string>;
+
+export type TradingHistoryCsvRow = Record<TradingHistoryCsvColumn, string>;
 
 type TradingHistoryCsvResolvers = {
     getCoinSymbol: (cryptoId: CryptoId) => string | undefined;
@@ -66,8 +73,8 @@ export const getTradingHistoryCsvType = (tradeType: TradingType): string =>
     tradeType === 'exchange' ? 'swap' : tradeType;
 
 /**
- * Map a single trade to a flat, human-readable CSV row. Buy/sell/exchange trades are normalized
- * into a common `spend`/`receive` shape so a single set of columns fits all trade types.
+ * Map a single trade to a flat CSV row. Buy/sell/exchange trades are normalized into a common
+ * `spend`/`receive` shape so a single set of columns fits all trade types.
  */
 export const getTradingHistoryCsvRow = (
     trade: TradingTransaction,
@@ -120,38 +127,38 @@ export const getTradingHistoryCsvRow = (
 };
 
 /**
- * Build a CSV document (header + one line per trade) from the given trades. The provider name and
- * coin ticker resolution is injected so this stays platform-agnostic and easy to test.
+ * Build a CSV document (header + one line per trade). Curried: the translated column `labels` are
+ * supplied first, the trades and resolvers second. Keeping label resolution in the caller lets this
+ * stay platform-agnostic and easy to test.
  */
-export const buildTradingHistoryCsv = (
-    trades: TradingTransaction[],
-    resolvers: TradingHistoryCsvResolvers,
-): string => {
-    const fieldKeys = typedObjectKeys(TRADING_HISTORY_CSV_FIELDS);
+export const buildTradingHistoryCsv =
+    (labels: TradingHistoryCsvColumnLabels) =>
+    (trades: TradingTransaction[], resolvers: TradingHistoryCsvResolvers): string => {
+        const header = TRADING_HISTORY_CSV_COLUMNS.map(column =>
+            sanitizeTradingCsvValue(labels[column]),
+        ).join(CSV_SEPARATOR);
 
-    const header = fieldKeys
-        .map(key => sanitizeTradingCsvValue(TRADING_HISTORY_CSV_FIELDS[key]))
-        .join(CSV_SEPARATOR);
+        const rows = trades.map(trade => {
+            const row = getTradingHistoryCsvRow(trade, resolvers);
 
-    const rows = trades.map(trade => {
-        const row = getTradingHistoryCsvRow(trade, resolvers);
+            return TRADING_HISTORY_CSV_COLUMNS.map(column =>
+                sanitizeTradingCsvValue(row[column]),
+            ).join(CSV_SEPARATOR);
+        });
 
-        return fieldKeys.map(key => sanitizeTradingCsvValue(row[key])).join(CSV_SEPARATOR);
-    });
-
-    return [header, ...rows].join(CSV_NEWLINE);
-};
+        return [header, ...rows].join(CSV_NEWLINE);
+    };
 
 /**
- * Prepare the trade history CSV string. Reusable across the mobile and desktop apps as both compose
- * the shared `@suite-common/trading` state.
+ * Prepare the trade history CSV string. Curried: pass the translated column `labels` first, then the
+ * state and trades. Reusable across the mobile and desktop apps as both compose the shared
+ * `@suite-common/trading` state and inject their own translations.
  */
-export const prepareTradingHistoryCsv = (
-    state: TradingRootState,
-    trades: TradingTransaction[],
-): string =>
-    buildTradingHistoryCsv(trades, {
-        getCoinSymbol: cryptoId => selectTradingCoinSymbolByCryptoId(state, cryptoId),
-        getProviderName: (name, tradeType) =>
-            selectTradingProviderCompanyName(state, name, tradeType),
-    });
+export const prepareTradingHistoryCsv =
+    (labels: TradingHistoryCsvColumnLabels) =>
+    (state: TradingRootState, trades: TradingTransaction[]): string =>
+        buildTradingHistoryCsv(labels)(trades, {
+            getCoinSymbol: cryptoId => selectTradingCoinSymbolByCryptoId(state, cryptoId),
+            getProviderName: (name, tradeType) =>
+                selectTradingProviderCompanyName(state, name, tradeType),
+        });

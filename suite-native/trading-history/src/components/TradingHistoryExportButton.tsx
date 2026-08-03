@@ -13,6 +13,7 @@ import { useToast } from '@suite-native/toasts';
 import { exhaustive } from '@trezor/type-utils';
 
 import { exportTradingHistoryCsv } from '../exportTradingHistoryCsv';
+import { getTradingHistoryCsvColumnLabels } from '../getTradingHistoryCsvColumnLabels';
 
 export const TradingHistoryExportButton = () => {
     const { showToast } = useToast();
@@ -30,7 +31,8 @@ export const TradingHistoryExportButton = () => {
 
         const state = store.getState();
         const trades = selectDeviceTradingTradesOrderedByDate(state);
-        const csvContent = prepareTradingHistoryCsv(state, trades);
+        const columnLabels = getTradingHistoryCsvColumnLabels(translate);
+        const csvContent = prepareTradingHistoryCsv(columnLabels)(state, trades);
 
         const result = await exportTradingHistoryCsv(csvContent);
 
