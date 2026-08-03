@@ -265,7 +265,18 @@ export const YieldDepositForm = () => {
                                 ),
                             },
                             approve: {
-                                title: <Translation id="TR_EARN_YIELD_SELECT_AMOUNT_AND_APPROVE" />,
+                                // For wrapped-native (WETH) vaults the amount is entered in the
+                                // preceding wrap step, so the approve step is just "Approve".
+                                // Non-wrapped vaults have no wrap step and select the amount here.
+                                title: (
+                                    <Translation
+                                        id={
+                                            flow.isWrappedNativeVault
+                                                ? 'TR_EARN_YIELD_APPROVE'
+                                                : 'TR_EARN_YIELD_SELECT_AMOUNT_AND_APPROVE'
+                                        }
+                                    />
+                                ),
                                 onEdit: handleOnModify,
                                 content: () => (
                                     <YieldApproveStep

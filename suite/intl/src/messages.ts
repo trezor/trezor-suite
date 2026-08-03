@@ -10153,6 +10153,10 @@ export const messages = defineMessages({
         id: 'TR_EARN_YIELD_SELECT_AMOUNT_AND_APPROVE',
         defaultMessage: 'Select amount & approve',
     },
+    TR_EARN_YIELD_APPROVE: {
+        id: 'TR_EARN_YIELD_APPROVE',
+        defaultMessage: 'Approve',
+    },
     TR_EARN_YIELD_DEPOSIT: {
         id: 'TR_EARN_YIELD_DEPOSIT',
         defaultMessage: 'Deposit',
