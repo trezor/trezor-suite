@@ -174,12 +174,14 @@ export class TrezorConnectDeeplink implements TrezorConnectCore<ConnectMobileSet
             /* empty */
         }
 
-        if (!parsedParams) {
+        if (!parsedParams || typeof parsedParams !== 'object') {
             this.messages.resolve(id, {
                 id,
                 success: false,
                 error: 'Error parsing deeplink params.',
             });
+
+            return;
         }
 
         const { success, payload } = parsedParams;
