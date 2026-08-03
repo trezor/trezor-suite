@@ -1,9 +1,7 @@
-import { selectIsDeviceLocked } from '@suite/locks';
 import { routerAppChanged } from '@suite/router';
 import { connectPopupCallThunkInner } from '@suite-common/connect-popup';
 import { deviceActions, selectSelectedDevice } from '@suite-common/device';
 import { type AnyAction, createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
-import { isDeviceAcquired } from '@suite-common/suite-utils';
 import { selectThpAutoconnectStep, thpActions } from '@suite-common/thp';
 import {
     accountsActions,
@@ -12,7 +10,10 @@ import {
     startOrRestartDiscoveryThunk,
 } from '@suite-common/wallet-core';
 
-import { selectShouldRouterAppStartDiscovery } from './conditions';
+import {
+    selectIsDeviceReadyToStartDiscovery,
+    selectShouldRouterAppStartDiscovery,
+} from './conditions';
 
 export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
     async (action, { dispatch, next, getState }): Promise<AnyAction> => {
@@ -21,7 +22,7 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
         await next(action);
 
         const device = selectSelectedDevice(getState());
-        const isDeviceLocked = selectIsDeviceLocked(getState());
+        if (!device) return action;
         const becomesAcquired = deviceActions.selectedDeviceBecomingAcquired.match(action);
         const becomesConnected = deviceActions.selectedDeviceBecomingConnected.match(action);
 
@@ -32,10 +33,8 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
         // 1. Discovery should only start on certain apps
         if (!selectShouldRouterAppStartDiscovery(getState())) return action;
 
-        // 2. Device must be unlocked. The only exception is, when it is locked and just has been acquired.
-        //    In that case, device-change is emitted right before acquireDevice ends (and unlocks the device).
-        const isDeviceReady =
-            device?.connected && isDeviceAcquired(device) && (!isDeviceLocked || becomesAcquired);
+        // 2. Device must be idle, not locked.
+        const isDeviceReady = selectIsDeviceReadyToStartDiscovery(getState(), becomesAcquired);
         if (!isDeviceReady) return action;
 
         // 3. Discovery must be delayed if THP Autoconnect modal is open, because it is the only THP step that takes place
