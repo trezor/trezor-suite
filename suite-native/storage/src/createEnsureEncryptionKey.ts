@@ -13,8 +13,20 @@ export type EnsureEncryptionKeyDep = {
     ensureEncryptionKey: EnsureEncryptionKey;
 };
 
+// This key decrypts the whole encrypted MMKV store, which persists confidential device data
+// (device state / static session id, label, id — see `devicePersistTransform`). Without an explicit
+// accessibility option expo-secure-store defaults to `WHEN_UNLOCKED`, which is included in encrypted
+// device backups and MIGRATES to a new device on restore — so anyone able to restore a backup would
+// obtain both the encrypted store and the key that decrypts it. `*_THIS_DEVICE_ONLY` blocks that
+// backup/device-migration extraction. We use `AFTER_FIRST_UNLOCK_THIS_DEVICE_ONLY` (not
+// `WHEN_UNLOCKED_THIS_DEVICE_ONLY`) so the key stays readable in the background after the first
+// unlock even while the phone is locked, which the read paths below rely on.
+const secureStoreOptions: SecureStore.SecureStoreOptions = {
+    keychainAccessible: SecureStore.AFTER_FIRST_UNLOCK_THIS_DEVICE_ONLY,
+};
+
 const resolveEncryptionKey = (): Promise<StorageEncryptionKey | null> =>
-    SecureStore.getItemAsync(ENCRYPTION_KEY)
+    SecureStore.getItemAsync(ENCRYPTION_KEY, secureStoreOptions)
         .catch(error => {
             // If there is an error, report it and try to read one more time.
             captureException(error, { tags: { attempt: 1 } });
@@ -22,7 +34,7 @@ const resolveEncryptionKey = (): Promise<StorageEncryptionKey | null> =>
             // There were some trouble reading from the SecureStore,
             // let's wait a bit to make sure it wasn't just temporary error.
             return new Promise(resolve => setTimeout(resolve, 100))
-                .then(() => SecureStore.getItemAsync(ENCRYPTION_KEY))
+                .then(() => SecureStore.getItemAsync(ENCRYPTION_KEY, secureStoreOptions))
                 .catch(errorOnGet => {
                     captureException(errorOnGet, { tags: { attempt: 2 } });
 
@@ -41,7 +53,7 @@ const resolveEncryptionKey = (): Promise<StorageEncryptionKey | null> =>
                 'hex',
             ) as StorageEncryptionKey;
 
-            return SecureStore.setItemAsync(ENCRYPTION_KEY, newSecureKey)
+            return SecureStore.setItemAsync(ENCRYPTION_KEY, newSecureKey, secureStoreOptions)
                 .then(() => newSecureKey)
                 .catch(err => {
                     captureException(err);
