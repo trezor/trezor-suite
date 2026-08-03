@@ -6,9 +6,6 @@
         { "path": "../../suite-common/device" },
         { "path": "../../suite-common/receive" },
         {
-            "path": "../../suite-common/redux-utils"
-        },
-        {
             "path": "../../suite-common/suite-types"
         },
         {

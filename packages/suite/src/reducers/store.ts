@@ -25,7 +25,6 @@ import { type PlatformEncryptionDep } from '@suite-common/platform-encryption';
 import { type ReceiveState, prepareReceiveReducer } from '@suite-common/receive';
 import {
     type ExtraDependencies,
-    type ExtraDependenciesStatic,
     type GetTransportsFactoriesDep,
     type ThpHostNameDep,
     castExtraStore,
@@ -66,6 +65,7 @@ import {
 } from '../actions/bluetooth/desktopBluetoothReducer';
 import { type CreateConnectLoggerFactoryDep } from '../support/createConnectLoggerFactory';
 import {
+    type SuiteExtra,
     type SuiteServices,
     createSuiteServicesCompositionRoot,
     extraDependencies,
@@ -174,8 +174,6 @@ export type SuiteStoreDeps = HistoryDep &
     ReloadAppDep &
     ThpHostNameDep &
     GetTransportsFactoriesDep;
-
-type SuiteExtra = ExtraDependenciesStatic & { services: SuiteServices };
 
 export type SuiteStore = ReturnType<
     typeof castExtraStore<SuiteExtra, EnhancedStore<AppState, Action | UnknownAction>>

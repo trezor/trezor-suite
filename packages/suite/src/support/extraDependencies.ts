@@ -118,6 +118,8 @@ export type SuiteServices = CommonServices &
     SuiteRouterHistoryDep &
     TransportsDep;
 
+export type SuiteExtra = ExtraDependenciesStatic & { services: SuiteServices };
+
 export const selectSuiteServices = (services: any): SuiteServices => services;
 
 export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteServices => {
