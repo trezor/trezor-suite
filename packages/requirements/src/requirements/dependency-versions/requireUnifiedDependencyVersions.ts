@@ -1,7 +1,7 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
-import * as semver from 'semver';
 
+import { pickCanonicalVersion } from '../../versions';
 import { listAllWorkspaces, readPackageJson } from '../../workspaces';
 import type { Requirement } from '../Requirement';
 
@@ -123,34 +123,6 @@ const formatDriftError = (depName: string, occurrences: VersionOccurrence[]): st
 };
 
 /**
- * Strip common version range prefixes (^, ~, >=, <=, >, <, =) so that the
- * bare version string can be compared numerically.
- */
-const stripRangePrefix = (specifier: string): string => specifier.replace(/^[~^]|^[><=]+\s*/g, '');
-
-/**
- * Pick the canonical version for a drifted dependency.
- * Strategy: most frequent version wins; ties broken by the numerically higher
- * version specifier (e.g. "^10.2.0" wins over "^9.5.0").
- */
-const pickCanonicalVersion = (occurrences: VersionOccurrence[]): string => {
-    const frequencyMap = new Map<string, number>();
-
-    for (const o of occurrences) {
-        frequencyMap.set(o.version, (frequencyMap.get(o.version) ?? 0) + 1);
-    }
-
-    const sorted = [...frequencyMap.entries()].sort((a, b) => {
-        if (b[1] !== a[1]) return b[1] - a[1]; // higher frequency first
-
-        // later versions first
-        return semver.rcompare(stripRangePrefix(a[0]), stripRangePrefix(b[0]), { loose: true });
-    });
-
-    return sorted[0]?.[0] ?? '';
-};
-
-/**
  * Verifies that every external (non-workspace) dependency uses the same version specifier
  * across all workspaces in the monorepo.
  */
@@ -189,7 +161,10 @@ export const requireUnifiedDependencyVersions: Requirement<'repo'> = {
         const canonicalVersions = new Map<string, string>();
 
         for (const [depName, occurrences] of drifts) {
-            canonicalVersions.set(depName, pickCanonicalVersion(occurrences));
+            canonicalVersions.set(
+                depName,
+                pickCanonicalVersion(occurrences.map(occurrence => occurrence.version)),
+            );
         }
 
         // Apply fixes to workspace package.json files
