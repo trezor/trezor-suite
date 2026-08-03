@@ -20,6 +20,19 @@ const incrementOrResetCounter = () => {
 export const redactSentryEvent: ChainableBeforeSend = event => {
     if (event === null) return null;
 
+    // Sentry's captureConsoleIntegration dumps the *raw, unredacted* console.* arguments into
+    // `event.extra.arguments` (see @sentry/core captureconsole.js: `captureContext.extra.arguments = args`).
+    // For an Error argument these get normalized via convertToPlainObject, which spreads the Error's
+    // own-enumerable properties too — so e.g. an up-fetch `ResponseError.data` (the full HTTP response
+    // body) or any confidential object/value passed as a console.error arg reaches Sentry here, even
+    // though this function otherwise never scrubs `event.extra`. The captured exception (message + stack)
+    // and `event.message` are preserved, so only this redundant raw-args dump is dropped. This mirrors the
+    // apps' existing posture of dropping all console-category breadcrumbs, and closes the whole class of
+    // "console.error('...', confidentialValue)" leaks at the sink instead of per call site.
+    if (event.extra && 'arguments' in event.extra) {
+        delete event.extra.arguments;
+    }
+
     incrementOrResetCounter();
     // hard limit the number of events sent this session (app instance), to prevent a flurry of events sent in a loop
     if (eventCountThisSession > MAX_EVENTS_PER_INTERVAL) {
