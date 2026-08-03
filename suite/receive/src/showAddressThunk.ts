@@ -1,10 +1,9 @@
 import { type Dispatch } from '@reduxjs/toolkit';
 
 import { type SelectedAccountRootState, selectSelectedAccount } from '@suite/account';
-import { asTypedDesktopAnalytics, events } from '@suite/analytics';
+import { type DesktopAnalyticsDep, events } from '@suite/analytics';
 import { closeModal, openModal, preserveModal, removePreserveModal } from '@suite/modal';
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
-import { type ExtraDependencies } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     type WalletSettingsRootState,
@@ -15,12 +14,14 @@ import { AddressDisplayOptions } from '@suite-common/wallet-types';
 
 import { openAddressModal } from './openAddressModal';
 
+type ShowAddressThunkDeps = { services: DesktopAnalyticsDep };
+
 export const showAddressThunk =
     ({ path, address }: { path: string; address: string }) =>
     async (
         dispatch: Dispatch,
         getState: () => DeviceRootState & WalletSettingsRootState & SelectedAccountRootState,
-        extra: ExtraDependencies,
+        extra: ShowAddressThunkDeps,
     ) => {
         const device = selectSelectedDevice(getState());
         const account = selectSelectedAccount(getState());
@@ -45,7 +46,7 @@ export const showAddressThunk =
                 }),
             );
 
-            asTypedDesktopAnalytics(extra.services.analytics).report({
+            extra.services.analytics.report({
                 type: events.createReceiveAddressShowAddressEvent.name,
                 payload: {
                     assetSymbol: account.symbol,
@@ -58,7 +59,7 @@ export const showAddressThunk =
 
         dispatch(preserveModal());
 
-        asTypedDesktopAnalytics(extra.services.analytics).report({
+        extra.services.analytics.report({
             type: events.createReceiveAddressShowAddressEvent.name,
             payload: {
                 assetSymbol: account.symbol,
@@ -77,7 +78,7 @@ export const showAddressThunk =
             // Show second part of the confirm address modal.
             dispatch(openAddressModal({ ...modalPayload, isConfirmed: true }));
 
-            asTypedDesktopAnalytics(extra.services.analytics).report({
+            extra.services.analytics.report({
                 type: events.createReceiveAddressConfirmOnTrezorEvent.name,
                 payload: { assetSymbol: account.symbol },
             });

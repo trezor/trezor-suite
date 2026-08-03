@@ -1,6 +1,6 @@
 import { moveLabelsForRbfOldMetadataThunk } from '@suite/metadata';
-import { type ExtraDependencies } from '@suite-common/redux-utils';
 import { findLabelsToBeMovedOrDeleted } from '@suite-common/suite-rbf-labels-migrations';
+import { type MigrateSuiteSyncLabelsForRbfTransactionDep } from '@suite-common/suite-rbf-labels-migrations-types';
 import { selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
 import { selectTransactions } from '@suite-common/wallet-core';
 import { type StaticSessionId } from '@trezor/connect';
@@ -21,9 +21,13 @@ type MoveLabelsForRbfThunkParams = {
     stateBeforePush: StateBeforePush;
 };
 
+type MoveLabelsForRbfThunkDeps = {
+    services: MigrateSuiteSyncLabelsForRbfTransactionDep;
+};
+
 export const moveLabelsForRbfThunk =
     ({ newTxId, prevTxId, deviceStaticSessionId, stateBeforePush }: MoveLabelsForRbfThunkParams) =>
-    async (dispatch: Dispatch, getState: GetState, extra: ExtraDependencies) => {
+    async (dispatch: Dispatch, getState: GetState, extra: MoveLabelsForRbfThunkDeps) => {
         const toBeMovedOrDeletedList = findLabelsToBeMovedOrDeleted({
             prevTxId,
             // NOTE: beware of stateBeforePush, this has to be passed here which is a state

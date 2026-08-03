@@ -3,7 +3,7 @@
  * @docs docs/misc/analytics.md
  */
 
-import { asTypedDesktopAnalytics, events } from '@suite/analytics';
+import { type DesktopAnalyticsDep, events } from '@suite/analytics';
 import {
     analyticsActions,
     selectAnalyticsInstanceId,
@@ -13,7 +13,6 @@ import {
     selectIsAnalyticsEnabled,
     selectLoggerEnabled,
 } from '@suite-common/analytics-redux';
-import { type ExtraDependencies } from '@suite-common/redux-utils';
 import { type InitOptions, getTrackingRandomId } from '@trezor/analytics-uploader';
 import { getCommitHash, getEnvironment, isCodesignBuild } from '@trezor/env-utils';
 
@@ -24,11 +23,13 @@ type SendReportProps = {
     sendReport: boolean;
 };
 
+type EnableAnalyticsThunkDeps = { services: DesktopAnalyticsDep };
+
 export const enableAnalyticsThunk =
     ({ sendReport }: SendReportProps) =>
-    (dispatch: Dispatch, _getState: GetState, extra: ExtraDependencies) => {
+    (dispatch: Dispatch, _getState: GetState, extra: EnableAnalyticsThunkDeps) => {
         if (sendReport) {
-            asTypedDesktopAnalytics(extra.services.analytics).report({
+            extra.services.analytics.report({
                 type: events.settingsAnalyticsEvent.name,
                 payload: { value: true },
             });
@@ -38,11 +39,13 @@ export const enableAnalyticsThunk =
         dispatch(analyticsActions.enableAnalytics());
     };
 
+type DisableAnalyticsThunkDeps = { services: DesktopAnalyticsDep };
+
 export const disableAnalyticsThunk =
     ({ sendReport }: SendReportProps) =>
-    (dispatch: Dispatch, _getState: GetState, extra: ExtraDependencies) => {
+    (dispatch: Dispatch, _getState: GetState, extra: DisableAnalyticsThunkDeps) => {
         if (sendReport) {
-            asTypedDesktopAnalytics(extra.services.analytics).report(
+            extra.services.analytics.report(
                 { type: events.settingsAnalyticsEvent.name, payload: { value: false } },
                 { force: true },
             );
@@ -52,13 +55,15 @@ export const disableAnalyticsThunk =
         dispatch(analyticsActions.disableAnalytics());
     };
 
+type InitDeps = { services: DesktopAnalyticsDep };
+
 /**
  * Init analytics, should be always run on application start (see suiteMiddleware). It:
  * - sets common analytics variables based on what was loaded from storage
  * - set sentry user id
  * @param state - tracking state loaded from storage
  */
-export const init = () => (dispatch: Dispatch, getState: GetState, extra: ExtraDependencies) => {
+export const init = () => (dispatch: Dispatch, getState: GetState, extra: InitDeps) => {
     const sessionId = getTrackingRandomId();
     // if instanceId does not exist yet (was not loaded from storage), create a new one
     const instanceId = selectAnalyticsInstanceId(getState()) ?? getTrackingRandomId();
