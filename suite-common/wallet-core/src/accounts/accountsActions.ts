@@ -100,9 +100,16 @@ const createAccount = createAction(
             };
 
             return { payload };
-        } catch (error) {
-            console.error('Error creating account payload:', error);
-            throw new Error('Failed to create account payload', { cause: error });
+        } catch {
+            // Log a static string only, never the raw `error`: createAccountKey embeds the
+            // account descriptor (xpub) and the device static session id directly in its throw
+            // message, and this console.error is forwarded to Sentry via captureConsoleIntegration
+            // on all platforms (web/desktop/native) — logging the error object would leak
+            // confidential account data off the device. For the same reason we do NOT attach the
+            // original error as `cause` on the re-throw: it would re-introduce the confidential
+            // error into the propagation chain (a caller serializing the cause would leak it).
+            console.error('Error creating account payload');
+            throw new Error('Failed to create account payload');
         }
     },
 );
