@@ -190,12 +190,23 @@ export const initThunk = () => async (dispatch: Dispatch, getState: () => InitTh
             if (!selectIsSuiteOnline(getState()) || !device?.state || !fileName || !aesKey) {
                 return;
             }
-            dispatch(
-                fetchPasswordsThunk({
-                    fileName,
-                    aesKey,
-                }),
-            );
+            // fetchPasswordsThunk returns a promise that rejects on a failed provider
+            // fetch or a decrypt error. Unlike the labels sibling
+            // (fetchAndSaveMetadata, which self-catches internally), it is dispatched
+            // here fire-and-forget, so without a .catch every failing poll produces a
+            // recurring unhandled promise rejection. Swallow it with a static log only
+            // — the rejection value can embed provider/decrypt details that must not be
+            // forwarded raw to Sentry via captureConsoleIntegration.
+            Promise.resolve(
+                dispatch(
+                    fetchPasswordsThunk({
+                        fileName,
+                        aesKey,
+                    }),
+                ),
+            ).catch(() => {
+                console.error('metadata passwords fetch interval failed');
+            });
         }, METADATA_PASSWORDS.FETCH_INTERVAL);
     }
 };
