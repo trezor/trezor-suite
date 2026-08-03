@@ -14,7 +14,7 @@ import { getTransaction } from './handlers/getTransaction';
 import { pushTransaction } from './handlers/pushTransaction';
 import { subscribe } from './handlers/subscribe';
 import { unsubscribe } from './handlers/unsubscribe';
-import { RESERVE } from './reserve';
+import { RESERVE, updateReserveFromLedger } from './reserve';
 import type { Request } from './types';
 
 const onRequest = (request: Request<MessageTypes.Message>) => {
@@ -69,9 +69,8 @@ export class RippleWorker extends BaseWorker<XrplAPI> {
 
         // xrpl API automatically sets a ledger listener
         client.on('ledgerClosed', ledger => {
-            // store current ledger values
-            RESERVE.BASE = ledger.reserve_base.toString();
-            RESERVE.OWNER = ledger.reserve_inc.toString();
+            // store current ledger values (guarded — see updateReserveFromLedger)
+            updateReserveFromLedger(RESERVE, ledger);
         });
 
         client.on('disconnected', () => {
