@@ -23,6 +23,10 @@ Optional flags:
 # Run only one requirement by name
 yarn workspace @trezor/requirements requirements:verify --only=package-json
 
+# Align release-critical package.json fields (version, repository) across
+# every published package in the @trezor/connect release closure
+yarn workspace @trezor/requirements requirements:fix --only=connect-closure-fields
+
 # Limit to affected workspaces containing the given text
 yarn workspace @trezor/requirements requirements:verify --filter=@trezor/connect
 
