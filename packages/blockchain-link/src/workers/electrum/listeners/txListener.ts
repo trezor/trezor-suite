@@ -36,29 +36,42 @@ export const txListener = (worker: BaseWorker<ElectrumAPI>) => {
 
     const addressManager = createAddressManager(() => api().getInfo()?.network);
 
-    const onTransaction = async ([scripthash, _status]: ElectrumStatusChange) => {
-        const { descriptor, addresses } = addressManager.getInfo(scripthash);
-        if (descriptor === scripthash) {
-            // scripthash was subscribed to only internally, not explicitly from Suite
-            return;
-        }
-        const history = await api().request('blockchain.scripthash.get_history', scripthash);
-        const recent = history.reduce<ElectrumHistoryTx | undefined>(mostRecent, undefined);
-        if (!recent) return;
-        const txs = await getTransactions(api(), [recent]);
-        // @ts-expect-error: indexing with noUncheckedIndexedAccess
-        const tx: (typeof txs)[number] = txs[0];
-        worker.post({
-            id: -1,
-            type: RESPONSES.NOTIFICATION,
-            payload: {
-                type: 'notification',
+    const onTransaction = async (notification: ElectrumStatusChange) => {
+        // The Electrum server is untrusted (user-selectable, incl. custom addresses). Unlike the
+        // synchronous block listener — whose throws are caught by the JsonRpcClient.response()
+        // try/catch around emit() — this handler is async: any throw after (or before) the first
+        // await is converted into a rejected promise that emit() ignores, surfacing as an
+        // unhandledRejection that tears down the worker (remote DoS). A malformed subscription
+        // notification (e.g. a non-array param, which throws on destructuring) or a misshapen
+        // get_history / transaction.get response (non-array, missing fields) must therefore be
+        // logged and dropped here rather than allowed to escape.
+        try {
+            const [scripthash, _status] = notification;
+            const { descriptor, addresses } = addressManager.getInfo(scripthash);
+            if (descriptor === scripthash) {
+                // scripthash was subscribed to only internally, not explicitly from Suite
+                return;
+            }
+            const history = await api().request('blockchain.scripthash.get_history', scripthash);
+            const recent = history.reduce<ElectrumHistoryTx | undefined>(mostRecent, undefined);
+            if (!recent) return;
+            const txs = await getTransactions(api(), [recent]);
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const tx: (typeof txs)[number] = txs[0];
+            worker.post({
+                id: -1,
+                type: RESPONSES.NOTIFICATION,
                 payload: {
-                    descriptor,
-                    tx: transformTransaction(tx, addresses ?? descriptor),
+                    type: 'notification',
+                    payload: {
+                        descriptor,
+                        tx: transformTransaction(tx, addresses ?? descriptor),
+                    },
                 },
-            },
-        });
+            });
+        } catch (error) {
+            worker.debug(`Failed to handle transaction notification: ${error}`);
+        }
     };
 
     const subscribe = async (data: Payload<Subscribe>) => {
