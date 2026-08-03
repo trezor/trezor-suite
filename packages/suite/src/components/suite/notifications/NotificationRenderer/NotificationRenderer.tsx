@@ -23,6 +23,7 @@ import { AutoEjectRenderer } from './AutoEjectRenderer';
 import { CoinProtocolRenderer } from './CoinProtocolRenderer';
 import { ExchangeInfoRenderer } from './ExchangeInfoRenderer';
 import { TransactionRenderer } from './TransactionRenderer';
+import { WrapInfoRenderer } from './WrapInfoRenderer';
 import { type NotificationViewProps } from '../Notifications/NotificationGroup/NotificationList/NotificationView';
 
 type LocalizedNotificationEntry = NotificationEntry<TranslationKey>;
@@ -502,6 +503,28 @@ export const NotificationRenderer = ({
                 />
             );
 
+        case 'tx-wrap':
+            return (
+                <WrapInfoRenderer
+                    render={render}
+                    notification={notification}
+                    icon={ArrowUpIcon}
+                    variant="success"
+                    message="TOAST_TX_WRAP_BROADCASTED"
+                />
+            );
+
+        case 'tx-unwrap':
+            return (
+                <WrapInfoRenderer
+                    render={render}
+                    notification={notification}
+                    icon={ArrowUpIcon}
+                    variant="success"
+                    message="TOAST_TX_UNWRAP_BROADCASTED"
+                />
+            );
+
         case 'tx-sent':
             return (
                 <TransactionRenderer
@@ -646,34 +669,6 @@ export const NotificationRenderer = ({
                     icon={ArrowUpIcon}
                     variant="success"
                     message="TOAST_TX_YIELD_CLAIM"
-                    messageValues={{
-                        account: notification.descriptor,
-                    }}
-                />
-            );
-
-        case 'tx-wrap':
-            return (
-                <TransactionRenderer
-                    render={render}
-                    notification={notification}
-                    icon={ArrowUpIcon}
-                    variant="success"
-                    message="TOAST_TX_WRAP"
-                    messageValues={{
-                        account: notification.descriptor,
-                    }}
-                />
-            );
-
-        case 'tx-unwrap':
-            return (
-                <TransactionRenderer
-                    render={render}
-                    notification={notification}
-                    icon={ArrowUpIcon}
-                    variant="success"
-                    message="TOAST_TX_UNWRAP"
                     messageValues={{
                         account: notification.descriptor,
                     }}
