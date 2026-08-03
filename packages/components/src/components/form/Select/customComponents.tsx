@@ -39,6 +39,12 @@ const DropdownWrapper = styled.div<{ $isOpen: boolean }>`
     transition: transform 0.2s ease-in-out;
 `;
 
+// The control can grow beyond its minimum height when the value wraps to multiple lines,
+// so the label is anchored to the middle of the first row instead of the whole control.
+const SelectFloatingLabel = styled(FloatingLabel)<{ $size: InputSize }>`
+    top: ${({ $size }) => mapSizeToHeight($size) / 2}px;
+`;
+
 type ControlComponentProps = ControlProps<OptionType, boolean> & {
     'data-testid'?: string;
     hasError?: boolean;
@@ -71,15 +77,16 @@ export const Control = ({
                 isClean={isClean}
             >
                 {label && !isLoading && !isClean && (
-                    <FloatingLabel
+                    <SelectFloatingLabel
                         $isActive={hasValue || !!placeholder || !!isSearchable}
                         $isDisabled={isDisabled}
+                        $size={size}
                     >
                         {label}
-                    </FloatingLabel>
+                    </SelectFloatingLabel>
                 )}
                 <Row
-                    height={isClean ? undefined : mapSizeToHeight(size)}
+                    minHeight={isClean ? undefined : mapSizeToHeight(size)}
                     gap={4}
                     padding={isClean ? undefined : { horizontal: INPUT_PADDING }}
                     overflow="hidden"
