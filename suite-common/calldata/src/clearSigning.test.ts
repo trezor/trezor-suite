@@ -13,6 +13,18 @@ const APPROVE_DATA = '0x095ea7b3000000000000000000000000000000000000000000000000
 // transfer(address,uint256)
 const TRANSFER_DATA = '0xa9059cbb000000000000000000000000000000000000000000000000000000000000dead';
 
+// Canonical WETH contracts firmware clear-signs (mirror of sc_constants.py weth_deployments)
+const WETH_MAINNET = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2';
+const WETH_BASE = '0x4200000000000000000000000000000000000006';
+const WETH_ARBITRUM = '0x82aF49447D8a07e3bd95BD0d56f35241523fBab1';
+const WETH_SEPOLIA = '0x7b79995e5f793A07Bc00c21412e50Ecae098E7f9';
+// A wrapped-native token that firmware does NOT clear-sign (WBNB on BSC, chain 56)
+const WBNB_BSC = '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c';
+// deposit() — wrap (no args, bare selector)
+const DEPOSIT_DATA = '0xd0e30db0';
+// withdraw(uint256) — unwrap
+const WITHDRAW_DATA = '0x2e1a7d4d000000000000000000000000000000000000000000000000000000000000dead';
+
 describe(isEvmClearSigningTx.name, () => {
     describe('no data', () => {
         it('returns false for undefined data', () => {
@@ -136,6 +148,49 @@ describe(isEvmClearSigningTx.name, () => {
 
         it('does not match the chain-specific address on a chain it is not deployed on', () => {
             expect(isEvmClearSigningTx(1, ZKSYNC_ALT_ADDRESS, LIFI_DATA)).toBe(false);
+        });
+    });
+
+    describe('WETH wrap/unwrap (deposit/withdraw)', () => {
+        it('recognises deposit() (wrap) on mainnet WETH', () => {
+            expect(isEvmClearSigningTx(1, WETH_MAINNET, DEPOSIT_DATA)).toBe(true);
+        });
+
+        it('recognises withdraw(uint256) (unwrap) on mainnet WETH', () => {
+            expect(isEvmClearSigningTx(1, WETH_MAINNET, WITHDRAW_DATA)).toBe(true);
+        });
+
+        it.each([
+            ['Base', 8453, WETH_BASE],
+            ['Arbitrum', 42161, WETH_ARBITRUM],
+            ['Sepolia testnet', 11155111, WETH_SEPOLIA],
+        ])('recognises deposit() on %s WETH', (_name, chainId, address) => {
+            expect(isEvmClearSigningTx(chainId, address, DEPOSIT_DATA)).toBe(true);
+        });
+
+        it('returns false for a wrapped-native that firmware does not cover (WBNB on BSC)', () => {
+            expect(isEvmClearSigningTx(56, WBNB_BSC, DEPOSIT_DATA)).toBe(false);
+        });
+
+        it('returns false for a WETH address on a chain it is not deployed on', () => {
+            // Polygon (137) is not a WETH deployment
+            expect(isEvmClearSigningTx(137, WETH_MAINNET, DEPOSIT_DATA)).toBe(false);
+        });
+
+        it('returns false for deposit() on a non-WETH contract', () => {
+            expect(isEvmClearSigningTx(1, RANDOM_ADDRESS, DEPOSIT_DATA)).toBe(false);
+        });
+
+        it('returns false for an unrelated selector on a WETH contract', () => {
+            expect(isEvmClearSigningTx(1, WETH_MAINNET, '0xdeadbeef')).toBe(false);
+        });
+
+        it('handles a mixed-case to address', () => {
+            expect(isEvmClearSigningTx(1, WETH_MAINNET.toLowerCase(), DEPOSIT_DATA)).toBe(true);
+        });
+
+        it('handles uppercase hex in data', () => {
+            expect(isEvmClearSigningTx(1, WETH_MAINNET, DEPOSIT_DATA.toUpperCase())).toBe(true);
         });
     });
 });

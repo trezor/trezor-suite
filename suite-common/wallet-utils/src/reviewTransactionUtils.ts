@@ -2,6 +2,7 @@ import {
     Calldata,
     type ClearSigningCoverage,
     getEvmClearSignedSwapCoverage,
+    isEvmClearSigningTx,
 } from '@suite-common/calldata';
 import { EVM_SPENDER_LABELS } from '@suite-common/suite-constants';
 import { type TrezorDevice } from '@suite-common/suite-types';
@@ -31,6 +32,8 @@ import {
     getEvmTransactionTextSignature,
     isEvmApprovalTx,
     isEvmYieldTxByTextSignature,
+    isUnwrapNativeTx,
+    isWrapNativeTx,
 } from './ethUtils';
 import { getStakeType } from './ethereumStakingUtils';
 import { isExchangeTradingForm } from './sendFormUtils';
@@ -380,6 +383,26 @@ const constructNewFlow = ({
     const isYieldOp = isEvmYieldTxByTextSignature(evmTxType);
     const isEvmClaimClearSign = isUpdatedEthereumSendFlow && isEvmClearSigningSupported;
 
+    // The device clear-signs WETH wrap/unwrap (deposit()/withdraw(), fw 2.12.4+) as a
+    // "Wrap/Unwrap ETH … Amount" screen, so the raw calldata Data row is redundant — suppress
+    // it, mirroring clear-signed swaps. Gated on isEvmClearSigningTx so a wrapped native the
+    // firmware does not clear-sign (e.g. WBNB on BSC) still shows the raw data.
+    const evmNetwork = networks[symbol];
+    const evmChainId = 'chainId' in evmNetwork ? evmNetwork.chainId : undefined;
+    const evmContractAddress = precomposedTx.outputs.find(
+        o => 'address' in o && typeof o.address === 'string',
+    )?.address;
+    const wrappedNativeTxParams = {
+        networkSymbol: symbol,
+        to: evmContractAddress,
+        data: precomposedForm.transactionData,
+    };
+    const isClearSignedWrapUnwrap =
+        isEvmClearSigningSupported &&
+        evmChainId !== undefined &&
+        (isWrapNativeTx(wrappedNativeTxParams) || isUnwrapNativeTx(wrappedNativeTxParams)) &&
+        isEvmClearSigningTx(evmChainId, evmContractAddress, precomposedForm.transactionData);
+
     if (networkType === 'ethereum' && stakeType && isUpdatedEthereumSendFlow) {
         // The firmware clear-signs staking operations as a single confirmation screen followed
         // by the amount/fee summary, so the review consists of one output only.
@@ -480,7 +503,8 @@ const constructNewFlow = ({
             (precomposedForm.transactionData && isEvmApproval && !isApprovalFlowSupported) ||
             (precomposedForm.transactionData && isYieldOp && !isUpdatedEthereumSendFlow) ||
             (precomposedForm.transactionData && isClaimOp && !isEvmClaimClearSign)) &&
-        !isClearSignedTradingSwap
+        !isClearSignedTradingSwap &&
+        !isClearSignedWrapUnwrap
     ) {
         outputs.push({ type: 'data', value: precomposedForm.transactionData });
     }
