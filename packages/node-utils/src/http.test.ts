@@ -1,14 +1,18 @@
+import { EventEmitter } from 'events';
+
 import { type Log } from '@trezor/utils';
 
 import { getFreePort } from './getFreePort';
 import {
     HttpServer,
     type ParamsValidatorHandler,
+    PayloadTooLargeError,
     type RequestHandler,
     allowReferers,
     parseBodyJSON,
     parseBodyJSONWithLimit,
     parseBodyText,
+    parseBodyTextHelper,
 } from './http';
 import { parseRequestUrl } from './parseRequestUrl';
 
@@ -976,6 +980,76 @@ describe('HttpServer', () => {
 
             expect(res.status).toEqual(200);
             expect(await res.json()).toEqual({});
+        });
+    });
+
+    describe('request body size cap', () => {
+        const makeReq = (headers: Record<string, string>) => {
+            const req = new EventEmitter() as any;
+            req.headers = headers;
+            req.resume = jest.fn();
+
+            return req;
+        };
+
+        const flushMicrotasks = () => new Promise(resolve => setImmediate(resolve));
+
+        test('parseBodyTextHelper rejects an over-cap chunked body with PayloadTooLargeError', async () => {
+            const req = makeReq({ 'transfer-encoding': 'chunked' });
+            const promise = parseBodyTextHelper(req, 10);
+            req.emit('data', Buffer.from('12345'));
+            req.emit('data', Buffer.from('678901')); // cumulative 11 > 10
+
+            await expect(promise).rejects.toBeInstanceOf(PayloadTooLargeError);
+            // the remaining stream must be drained, not buffered
+            expect(req.resume).toHaveBeenCalled();
+        });
+
+        test('parseBodyTextHelper ignores chunks that arrive after the cap is hit', async () => {
+            const req = makeReq({ 'transfer-encoding': 'chunked' });
+            const promise = parseBodyTextHelper(req, 3);
+            req.emit('data', Buffer.from('abcd')); // 4 > 3 -> reject
+            req.emit('data', Buffer.from('this-should-not-be-buffered'));
+            req.emit('end');
+
+            await expect(promise).rejects.toBeInstanceOf(PayloadTooLargeError);
+        });
+
+        test('parseBodyTextHelper resolves a body within the cap', async () => {
+            const req = makeReq({ 'content-length': '5' });
+            const promise = parseBodyTextHelper(req, 10);
+            req.emit('data', Buffer.from('hello'));
+            req.emit('end');
+
+            await expect(promise).resolves.toEqual('hello');
+        });
+
+        test('parseBodyText responds 413 (not an unhandled rejection) on an over-cap body', async () => {
+            const req = makeReq({ 'transfer-encoding': 'chunked' });
+            const response = { statusCode: 200, end: jest.fn() } as any;
+            const next = jest.fn();
+
+            parseBodyText(req, response, next, { logger: muteLogger });
+            // a single chunk exceeding the 8 MiB default cap
+            req.emit('data', Buffer.alloc(8 * 1024 * 1024 + 1));
+            await flushMicrotasks();
+
+            expect(response.statusCode).toEqual(413);
+            expect(response.end).toHaveBeenCalled();
+            expect(next).not.toHaveBeenCalled();
+        });
+
+        test('parseBodyJSON responds 413 on an over-cap body', async () => {
+            const req = makeReq({ 'transfer-encoding': 'chunked' });
+            const response = { statusCode: 200, end: jest.fn() } as any;
+            const next = jest.fn();
+
+            parseBodyJSON(req, response, next, { logger: muteLogger });
+            req.emit('data', Buffer.alloc(16 * 1024 * 1024 + 1));
+            await flushMicrotasks();
+
+            expect(response.statusCode).toEqual(413);
+            expect(next).not.toHaveBeenCalled();
         });
     });
 });
