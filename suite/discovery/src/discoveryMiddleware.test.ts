@@ -10,13 +10,25 @@ import {
 } from '@suite/router';
 import { type RouterStateOverrides, createRouterStateMock } from '@suite/router/mocks';
 import {
+    type SuiteSettingsState,
+    prepareSuiteSettingsReducer,
+    suiteSettingsInitialState,
+} from '@suite/settings';
+import {
     type DeviceReducerState,
     deviceActions,
     deviceReducerInitialState,
     prepareDeviceReducer,
 } from '@suite-common/device';
+import {
+    type MessageSystemState,
+    messageSystemInitialState,
+    prepareMessageSystemReducer,
+} from '@suite-common/message-system';
 import { type AnyAction } from '@suite-common/redux-utils';
+import { type AcquiredDevice } from '@suite-common/suite-types';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
+import { isDeviceAcquired } from '@suite-common/suite-utils';
 import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
 import { type ThpState, initialThpState, prepareThpReducer, thpActions } from '@suite-common/thp';
 import * as walletCore from '@suite-common/wallet-core';
@@ -39,12 +51,16 @@ const mockedStartOrRestartDiscoveryThunk = jest.mocked(walletCore.startOrRestart
 
 const deviceReducer = prepareDeviceReducer(extraDependenciesCommonMock);
 const discoveryReducer = prepareDiscoveryReducer(extraDependenciesCommonMock);
+const messageSystemReducer = prepareMessageSystemReducer(extraDependenciesCommonMock);
+const suiteSettingsReducer = prepareSuiteSettingsReducer(extraDependenciesCommonMock);
 const thpReducer = prepareThpReducer(extraDependenciesCommonMock);
 
 type State = {
     device: DeviceReducerState;
     locks: LocksState;
+    messageSystem: MessageSystemState;
     router: RouterState;
+    suiteSettings: SuiteSettingsState;
     thp: ThpState;
     wallet: { discovery: Discovery };
 };
@@ -86,6 +102,17 @@ const selectedDevice = mockSuiteDevice({
     state: { staticSessionId: 'device@selected:1' },
 });
 
+if (!isDeviceAcquired(selectedDevice)) {
+    throw `${mockSuiteDevice.name}() must return an AcquiredDevice here.`;
+}
+const compromisedDevice: AcquiredDevice = {
+    ...selectedDevice,
+    authenticityChecks: {
+        firmwareRevision: { success: false, error: 'revision-mismatch' },
+        firmwareHash: { success: false, error: 'hash-mismatch' },
+    },
+};
+
 const unacquiredDevice = mockSuiteDevice({
     type: 'unacquired',
     path,
@@ -118,6 +145,18 @@ const fixtures: Fixture[] = [
             {
                 action: deviceActions.selectDevice(selectedDevice),
                 expectedCallCount: 1,
+            },
+        ],
+    },
+    {
+        description: 'does not start discovery when compromised device warning should be displayed',
+        state: {
+            router: { app: 'dashboard' },
+        },
+        steps: [
+            {
+                action: deviceActions.selectDevice(compromisedDevice),
+                expectedCallCount: 0,
             },
         ],
     },
@@ -259,7 +298,9 @@ const getInitialState = (state: FixtureState = {}): State => ({
         ...locksInitialState,
         ...state.locks,
     },
+    messageSystem: messageSystemInitialState,
     router: createRouterStateMock(state.router),
+    suiteSettings: suiteSettingsInitialState,
     thp: {
         ...initialThpState,
         ...state.thp,
@@ -273,7 +314,9 @@ const initStore = (state?: FixtureState) =>
         reducer: {
             device: deviceReducer,
             locks: locksReducer,
+            messageSystem: messageSystemReducer,
             router: routerReducer,
+            suiteSettings: suiteSettingsReducer,
             thp: thpReducer,
             wallet: combineReducers({ discovery: discoveryReducer }),
         },

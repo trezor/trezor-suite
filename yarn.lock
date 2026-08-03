@@ -14779,6 +14779,7 @@ __metadata:
   dependencies:
     "@suite-common/connect-popup": "workspace:*"
     "@suite-common/device": "workspace:*"
+    "@suite-common/message-system": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/suite-utils": "workspace:*"
@@ -14786,9 +14787,11 @@ __metadata:
     "@suite-common/thp": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
+    "@suite/authenticity-checks": "workspace:*"
     "@suite/locks": "workspace:*"
     "@suite/router": "workspace:*"
     "@suite/router-config": "workspace:*"
+    "@suite/settings": "workspace:*"
     "@trezor/connect-common": "workspace:*"
     redux: "npm:^5.0.1"
   languageName: unknown

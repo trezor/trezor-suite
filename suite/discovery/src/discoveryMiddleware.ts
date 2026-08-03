@@ -1,3 +1,4 @@
+import { selectShouldDisplayDeviceCompromised } from '@suite/authenticity-checks';
 import { routerAppChanged } from '@suite/router';
 import { connectPopupCallThunkInner } from '@suite-common/connect-popup';
 import { deviceActions, selectSelectedDevice } from '@suite-common/device';
@@ -44,7 +45,10 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
         );
         if (!isDeviceReady) return action;
 
-        // 3. Discovery must be delayed if THP Autoconnect modal is open, because it is the only THP step that takes place
+        // 3. Discovery must be blocked while the compromised device warning is shown.
+        if (selectShouldDisplayDeviceCompromised(getState())) return action;
+
+        // 4. Discovery must be delayed if THP Autoconnect modal is open, because it is the only THP step that takes place
         //    *after* device acquisition, and also needs device interaction to complete (would block discovery).
         const isTHPAutoconnectModal = selectThpAutoconnectStep(getState()) === 'AutoconnectInfo';
         const isTHPAutoconnectFinished = thpActions.finishAutoconnectFlow.match(action);
@@ -58,13 +62,14 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
             isDeviceBecomingConnected ||
             isTHPAutoconnectFinished || // now that the THP Autoconnect was finished, resume the delayed discovery
             routerAppChanged.match(action) || // may no longer be one of the apps where discovery is disabled
+            deviceActions.dismissFirmwareAuthenticityCheck.match(action) || // may no longer be device compromised
             connectPopupCallThunkInner.fulfilled.match(action) ||
             deviceActions.selectDevice.match(action) ||
             changeNetworks.match(action) ||
             accountsActions.updateAccount.match(action) || // empty account can become nonempty
             accountsActions.changeAccountVisibility.match(action)
         ) {
-            // 4. Nothing to discover (discovery would be no-op). It's intentionally inside the action matcher condition
+            // 5. Nothing to discover (discovery would be no-op). It's intentionally inside the action matcher condition
             // so it won't be called on every action, because the selector is expensive and not viable for memoization.
             const shouldRediscover = selectShouldRediscover(getState(), device);
             if (!shouldRediscover) return action;
