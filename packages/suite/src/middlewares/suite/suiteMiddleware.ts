@@ -2,8 +2,7 @@ import { isAnyOf } from '@reduxjs/toolkit';
 
 import { disconnectDeviceThunk } from '@suite/device';
 import { METADATA } from '@suite/metadata';
-import { recoveryActions } from '@suite/recovery';
-import { goto, routerAppChanged } from '@suite/router';
+import { goto } from '@suite/router';
 import { deviceActions, isTrezorDeviceWithState } from '@suite-common/device';
 import { type AnyAction, createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
 import { isAnyDeviceEventAction } from '@suite-common/suite-utils';
@@ -47,13 +46,6 @@ const isActionDeviceRelated = (action: AnyAction): boolean => {
 
 export const prepareSuiteMiddleware = createMiddlewareWithExtraDeps(
     (action, { dispatch, next, getState, extra }) => {
-        if (
-            action.type === routerAppChanged.type &&
-            (action.payload === 'recovery' || action.payload === 'onboarding')
-        ) {
-            dispatch(recoveryActions.resetReducer());
-        }
-
         // this action needs to be processed before propagation to deviceReducer
         // otherwise device will not be accessible and related data will not be removed (accounts, txs...)
         if (action.type === DEVICE.DISCONNECT) {

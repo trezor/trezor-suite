@@ -74,6 +74,7 @@ describe('onboardingMiddleware', () => {
             const result = store.getActions();
             expect(result).toEqual([
                 { type: routerAppChanged.type, payload: 'onboarding' },
+                { type: 'recovery/resetReducer', payload: undefined },
                 { type: '@onboarding/enable-onboarding-reducer', payload: true },
             ]);
         });
