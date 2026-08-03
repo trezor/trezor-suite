@@ -1,7 +1,12 @@
 import { type ReactNode, useCallback, useEffect, useState } from 'react';
 import { View, useWindowDimensions } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
-import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
+import Animated, {
+    useAnimatedReaction,
+    useAnimatedStyle,
+    useSharedValue,
+    withSpring,
+} from 'react-native-reanimated';
 import { scheduleOnRN } from 'react-native-worklets';
 
 import { AnimatedVStack } from '@suite-native/atoms';
@@ -76,6 +81,7 @@ export const PromoBannerCarousel = ({ items }: PromoBannerCarouselProps) => {
     const [activeIndex, setActiveIndex] = useState(0);
     const translateX = useSharedValue(0);
     const dragStartX = useSharedValue(0);
+    const targetTranslateX = useSharedValue<number | null>(null);
 
     const count = items.length;
 
@@ -84,9 +90,18 @@ export const PromoBannerCarousel = ({ items }: PromoBannerCarouselProps) => {
         if (activeIndex > maxIndex) {
             const clamped = Math.max(0, maxIndex);
             setActiveIndex(clamped);
-            translateX.value = withSpring(-clamped * slotWidth, SNAP_SPRING);
+            targetTranslateX.value = -clamped * slotWidth;
         }
-    }, [count, activeIndex, slotWidth, translateX]);
+    }, [count, activeIndex, slotWidth, targetTranslateX]);
+
+    useAnimatedReaction(
+        () => targetTranslateX.value,
+        target => {
+            if (target !== null) {
+                translateX.value = withSpring(target, SNAP_SPRING);
+            }
+        },
+    );
 
     const handleSnapEnd = useCallback((index: number) => {
         setActiveIndex(index);
@@ -99,6 +114,7 @@ export const PromoBannerCarousel = ({ items }: PromoBannerCarouselProps) => {
         })
         .onUpdate(e => {
             const min = -(count - 1) * slotWidth;
+            // eslint-disable-next-line react-hooks/immutability
             translateX.value = Math.max(min, Math.min(0, dragStartX.value + e.translationX));
         })
         .onEnd(e => {
@@ -110,6 +126,7 @@ export const PromoBannerCarousel = ({ items }: PromoBannerCarouselProps) => {
             }
 
             next = Math.max(0, Math.min(count - 1, next));
+            // eslint-disable-next-line react-hooks/immutability
             translateX.value = withSpring(-next * slotWidth, SNAP_SPRING);
             scheduleOnRN(handleSnapEnd, next);
         });

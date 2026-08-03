@@ -38,7 +38,7 @@ export { guideTooltipLinkNavigationEvent } from './guideTooltipLinkNavigationEve
 export { menuGuideEvent } from './menuGuideEvent';
 export { menuNotificationsToggleEvent } from './menuNotificationsToggleEvent';
 export { menuToggleDiscreetEvent } from './menuToggleDiscreetEvent';
-export { promoDashboardBannerEvent } from './promoDashboardBannerEvent';
+export { promoDashboardBannerEvent } from '@suite-common/analytics';
 export { promoDesktopEvent } from './promoDesktopEvent';
 export { promoMobileEvent } from './promoMobileEvent';
 export { promoReferralButtonEvent } from './promoReferralButtonEvent';

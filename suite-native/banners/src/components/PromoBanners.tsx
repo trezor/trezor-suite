@@ -4,6 +4,8 @@ import { useSelector } from 'react-redux';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { type VisiblePromoBannerKey, selectVisiblePromoBanners } from '../selectors';
+import { DefiYieldPromoBanner } from './DefiYieldPromoBanner';
+import { EthVaultPromoBanner } from './EthVaultPromoBanner';
 import { PromoBannerCarousel } from './PromoBannerCarousel';
 import { StablecoinYieldPromoBanner } from './StablecoinYieldPromoBanner';
 import { TrezorSafe7PromoBanner } from './TrezorSafe7PromoBanner';
@@ -16,9 +18,11 @@ const carouselWrapperStyle = prepareNativeStyle(utils => ({
 const BANNER_COMPONENTS: Record<VisiblePromoBannerKey, React.ReactElement> = {
     ts7: <TrezorSafe7PromoBanner />,
     'stablecoin-yield': <StablecoinYieldPromoBanner />,
+    'defi-yield': <DefiYieldPromoBanner />,
+    'eth-vault': <EthVaultPromoBanner />,
 };
 
-export const PromoBannersStack = () => {
+export const PromoBanners = () => {
     const { applyStyle } = useNativeStyles();
     const visiblePromoBanners = useSelector(selectVisiblePromoBanners);
 
