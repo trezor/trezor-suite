@@ -10,22 +10,21 @@ type RemoveThpCredentialsThunkParams = {
     credentials?: ThpCredentials[];
 };
 
-export const removeThpCredentialsThunk = createThunk<
-    void,
-    RemoveThpCredentialsThunkParams,
-    { extra: Record<never, never> }
->(`${THP_PREFIX}/removeThpCredentialsThunk`, async (params, { dispatch }) => {
-    const { device } = params;
-    const credentials = params.credentials || device?.thp?.credentials || [];
-    if (credentials.length === 0) {
-        return;
-    }
+export const removeThpCredentialsThunk = createThunk<void, RemoveThpCredentialsThunkParams, void>(
+    `${THP_PREFIX}/removeThpCredentialsThunk`,
+    async (params, { dispatch }) => {
+        const { device } = params;
+        const credentials = params.credentials || device?.thp?.credentials || [];
+        if (credentials.length === 0) {
+            return;
+        }
 
-    // NOTE: we don't care about the result (for example missing device) we tried our best
-    await TrezorConnect.thpRemoveCredentials({
-        device: device?.connected ? device : undefined,
-        credentials,
-    });
+        // NOTE: we don't care about the result (for example missing device) we tried our best
+        await TrezorConnect.thpRemoveCredentials({
+            device: device?.connected ? device : undefined,
+            credentials,
+        });
 
-    dispatch(thpActions.removeCredentials({ credentials }));
-});
+        dispatch(thpActions.removeCredentials({ credentials }));
+    },
+);

@@ -295,16 +295,15 @@ const completeDiscovery = (
     );
 };
 
-export const cancelDiscoveryThunk = createThunk<
-    void,
-    TrezorDevice,
-    { extra: Record<never, never> }
->(`${DISCOVERY_MODULE_PREFIX}/cancel`, (device: TrezorDevice, { dispatch }) => {
-    // cancel with a custom error code so we can distinguish it from device cancellation
-    TrezorConnect.cancel({ reason: USER_UI_CANCEL_CODE });
+export const cancelDiscoveryThunk = createThunk<void, TrezorDevice, void>(
+    `${DISCOVERY_MODULE_PREFIX}/cancel`,
+    (device: TrezorDevice, { dispatch }) => {
+        // cancel with a custom error code so we can distinguish it from device cancellation
+        TrezorConnect.cancel({ reason: USER_UI_CANCEL_CODE });
 
-    dispatch(discoveryActions.updateDiscovery({ status: 'cancelled' }, device.path));
-});
+        dispatch(discoveryActions.updateDiscovery({ status: 'cancelled' }, device.path));
+    },
+);
 
 type RunDiscoveryParams = {
     device: TrezorDevice;

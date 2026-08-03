@@ -20,7 +20,7 @@ export const getTokenDefinitionThunk = createThunk<
         symbol: NetworkSymbol;
         type: DefinitionType;
     },
-    { extra: Record<never, never> }
+    void
 >(
     `${TOKEN_DEFINITIONS_MODULE}/getTokenDefinitionsThunk`,
     async (params, { fulfillWithValue, rejectWithValue }) => {

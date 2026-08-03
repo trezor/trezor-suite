@@ -74,7 +74,7 @@ const getAccountSyncInterval = (symbol: NetworkSymbol) =>
 export const reconnectBlockchainThunk = createThunk<
     unknown,
     { symbol: NetworkSymbol; identity?: string },
-    { extra: Record<never, never> }
+    void
 >(
     `${BLOCKCHAIN_MODULE_PREFIX}/reconnectBlockchainThunk`,
     (payload: { symbol: NetworkSymbol; identity?: string }) =>

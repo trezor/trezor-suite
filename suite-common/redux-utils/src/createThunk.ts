@@ -8,14 +8,18 @@ import {
 
 import { type CustomThunkAPI } from './extraDependenciesType';
 
-type ResolveThunkAPI<TThunkAPI> = [TThunkAPI] extends [void]
+type DefaultThunkAPI = { readonly __defaultThunkAPI: unique symbol };
+
+type ResolveThunkAPI<TThunkAPI> = [TThunkAPI] extends [DefaultThunkAPI]
     ? CustomThunkAPI
-    : Omit<CustomThunkAPI, keyof TThunkAPI> & TThunkAPI;
+    : [TThunkAPI] extends [void]
+      ? { state: unknown; extra: Record<never, never> }
+      : Omit<CustomThunkAPI, keyof TThunkAPI> & TThunkAPI;
 
 type CreateThunk = <
     TReturned = void,
     TThunkArg = void,
-    TThunkAPI extends AsyncThunkConfig | void = void,
+    TThunkAPI extends AsyncThunkConfig | void | DefaultThunkAPI = DefaultThunkAPI,
 >(
     typePrefix: string,
     thunk: AsyncThunkPayloadCreator<TReturned, TThunkArg, ResolveThunkAPI<TThunkAPI>>,
