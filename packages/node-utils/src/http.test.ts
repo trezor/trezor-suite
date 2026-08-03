@@ -6,6 +6,7 @@ import {
     type ParamsValidatorHandler,
     type RequestHandler,
     allowReferers,
+    checkReferer,
     parseBodyJSON,
     parseBodyJSONWithLimit,
     parseBodyText,
@@ -977,5 +978,59 @@ describe('HttpServer', () => {
             expect(res.status).toEqual(200);
             expect(await res.json()).toEqual({});
         });
+    });
+});
+
+describe('checkReferer', () => {
+    const run = (referer: string | undefined, allowedReferer: string[]) =>
+        checkReferer({
+            request: { url: '/oauth', headers: { referer } } as any,
+            allowedReferer,
+            pathname: '/oauth',
+            logger: muteLogger,
+        });
+
+    test('allows wildcard for all referers', () => {
+        expect(run('https://anything.example/', ['*'])).toBe(true);
+    });
+
+    test('allows missing referer only when empty entry is present', () => {
+        expect(run(undefined, ['', 'invity.io'])).toBe(true);
+        expect(run(undefined, ['invity.io'])).toBe(false);
+    });
+
+    test('allows exact hostname match', () => {
+        expect(run('https://invity.io/foo', ['invity.io'])).toBe(true);
+        expect(run('https://www.dropbox.com/bar', ['', '127.0.0.1', 'www.dropbox.com'])).toBe(true);
+    });
+
+    test('allows host with port match (e.g. localhost:3000)', () => {
+        expect(run('http://localhost:3000/x', ['', 'localhost:3000', 'invity.io'])).toBe(true);
+    });
+
+    test('allows subdomains only via a "*." wildcard entry', () => {
+        expect(run('https://foo.invity.io/', ['*.invity.io'])).toBe(true);
+        // a plain apex entry must not implicitly allow its subdomains
+        expect(run('https://foo.invity.io/', ['invity.io'])).toBe(false);
+    });
+
+    test('rejects a domain that is merely a substring of an allowed entry', () => {
+        // regression guard: previously `allowed.includes(domain)` let 'vity.io' pass for 'invity.io'
+        expect(run('https://vity.io/', ['invity.io'])).toBe(false);
+        expect(run('https://box.com/', ['www.dropbox.com'])).toBe(false);
+        expect(run('https://ropbox.com/', ['www.dropbox.com'])).toBe(false);
+    });
+
+    test('rejects an unrelated domain', () => {
+        expect(run('https://evil.example/', ['invity.io', 'www.dropbox.com'])).toBe(false);
+    });
+
+    test('rejects an attacker apex that ends with the allowed apex but is not a subdomain', () => {
+        // 'evil-invity.io' ends with 'invity.io' but is a different registrable domain
+        expect(run('https://evil-invity.io/', ['*.invity.io', 'invity.io'])).toBe(false);
+    });
+
+    test('rejects an invalid referer URL', () => {
+        expect(run('not a url', ['invity.io'])).toBe(false);
     });
 });

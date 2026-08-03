@@ -573,7 +573,7 @@ export const checkOrigin = ({
     return true;
 };
 
-const checkReferer = ({
+export const checkReferer = ({
     request,
     allowedReferer,
     pathname,
@@ -596,31 +596,35 @@ const checkReferer = ({
     else if (referer === undefined) {
         isRefererAllowed = referers.includes('');
     } else {
-        // Domain of referer has to be in the allowed origins for that endpoint
-        let domain: string;
+        // Host (with port) and hostname (without port) of the referer. Both are needed
+        // because allowed entries may or may not carry a port (e.g. 'localhost:3000' vs 'invity.io').
+        let host: string;
+        let hostname: string;
         try {
-            domain = new URL(referer).hostname;
+            const url = new URL(referer);
+            host = url.host;
+            hostname = url.hostname;
         } catch {
             logger.warn(`Invalid referer ${referer}`);
 
             return false;
         }
 
-        return (
-            referers.findIndex(r => {
-                // Wildcard for subdomains
-                if (r.startsWith('*')) {
-                    return domain.endsWith(r.substring(1));
-                }
+        isRefererAllowed = referers.some(r => {
+            // Wildcard for subdomains, e.g. '*.invity.io' matches 'foo.invity.io' (but not the apex).
+            if (r.startsWith('*')) {
+                return hostname.endsWith(r.substring(1));
+            }
 
-                return r.includes(domain);
-            }) > -1
-        );
+            // Exact match against the referer host (with port) or hostname (without port).
+            // A plain entry does NOT match unrelated domains or subdomains; use a '*.' wildcard for subdomains.
+            return r === host || r === hostname;
+        });
     }
 
     if (!isRefererAllowed) {
         logger.warn(`Referer rejected for ${pathname}`);
-        logger.warn(`- Received: referer: '${referer}', origin: '${origin}'`);
+        logger.warn(`- Received: referer: '${referer}'`);
         logger.warn(`- Allowed referers: ${referers.map(o => `'${o}'`).join(', ')}`);
 
         return false;
