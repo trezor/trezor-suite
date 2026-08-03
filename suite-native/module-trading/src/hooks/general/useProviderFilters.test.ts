@@ -1,6 +1,7 @@
 import type { ExchangeTrade } from 'invity-api';
 
 import { EMPTY_GROUPED_TRADING_EXCHANGE_QUOTES } from '@suite-common/trading';
+import { getTranslation } from '@suite-native/intl';
 import { act, renderHookWithBasicProvider } from '@suite-native/test-utils';
 import { type QuotesByCategories } from '@suite-native/trading-types';
 
@@ -26,9 +27,9 @@ describe('useProviderFilters', () => {
         const initialFilterItems = result.current.filterItems;
 
         expect(initialFilterItems).toEqual([
-            { label: 'All', value: 'all' },
-            { label: 'CEX', value: 'cex' },
-            { label: 'DEX', value: 'dex' },
+            { label: getTranslation('moduleTrading.providerSheet.filters.all'), value: 'all' },
+            { label: getTranslation('moduleTrading.providerSheet.filters.cex'), value: 'cex' },
+            { label: getTranslation('moduleTrading.providerSheet.filters.dex'), value: 'dex' },
         ]);
 
         rerender({});

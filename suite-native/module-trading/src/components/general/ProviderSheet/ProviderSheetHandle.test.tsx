@@ -33,9 +33,18 @@ describe('ProviderSheetHandle', () => {
                 selectedFilter="all"
                 setSelectedFilter={jest.fn()}
                 filterItems={[
-                    { label: 'All', value: 'all' },
-                    { label: 'CEX', value: 'cex' },
-                    { label: 'DEX', value: 'dex' },
+                    {
+                        label: getTranslation('moduleTrading.providerSheet.filters.all'),
+                        value: 'all',
+                    },
+                    {
+                        label: getTranslation('moduleTrading.providerSheet.filters.cex'),
+                        value: 'cex',
+                    },
+                    {
+                        label: getTranslation('moduleTrading.providerSheet.filters.dex'),
+                        value: 'dex',
+                    },
                 ]}
                 {...props}
             />,
