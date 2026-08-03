@@ -48,7 +48,16 @@ export class BatchingJsonRpcClient extends JsonRpcClient {
     }
 
     protected onMessage(body: string) {
-        const msg = JSON.parse(body);
+        let msg;
+        try {
+            msg = JSON.parse(body);
+        } catch {
+            // See JsonRpcClient.onMessage: never let a malformed line from an untrusted
+            // Electrum server throw out of the socket 'data' listener (remote DoS).
+            this.log('Failed to parse message:', body);
+
+            return;
+        }
         this.log('RECEIVED:', msg);
         if (Array.isArray(msg)) {
             msg.forEach(this.response, this);

@@ -95,7 +95,17 @@ export class JsonRpcClient {
     }
 
     protected onMessage(body: string) {
-        const msg = JSON.parse(body);
+        let msg;
+        try {
+            msg = JSON.parse(body);
+        } catch {
+            // The Electrum server is untrusted (user-selectable, incl. custom addresses).
+            // A malformed line must never throw out of the socket 'data' listener, where it
+            // would surface as an uncaughtException and tear down the worker (remote DoS).
+            this.log('Failed to parse message:', body);
+
+            return;
+        }
         this.log('RECEIVED:', msg);
         this.response(msg);
     }
