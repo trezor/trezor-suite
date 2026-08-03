@@ -9854,7 +9854,7 @@ export const messages = defineMessages({
     },
     TR_ONBOARDING_FEEDBACK_BANNER_DESCRIPTION: {
         id: 'TR_ONBOARDING_FEEDBACK_BANNER_DESCRIPTION',
-        defaultMessage: 'Share onboarding feedback, get a 50 USD e-shop voucher',
+        defaultMessage: 'Share onboarding feedback and get a 50 USD e-shop voucher',
     },
     TR_ONBOARDING_FEEDBACK_BANNER_BUTTON: {
         id: 'TR_ONBOARDING_FEEDBACK_BANNER_BUTTON',
