@@ -19,15 +19,20 @@
         {
             "path": "../../suite-common/wallet-core"
         },
+        { "path": "../authenticity-checks" },
         { "path": "../locks" },
         { "path": "../router" },
         { "path": "../router-config" },
+        {
+            "path": "../../suite-common/message-system"
+        },
         {
             "path": "../../suite-common/test-utils"
         },
         {
             "path": "../../suite-common/wallet-types"
         },
+        { "path": "../settings" },
         {
             "path": "../../packages/connect-common"
         }
