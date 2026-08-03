@@ -20,6 +20,7 @@
 
 ### 🔧 Bug fixes
 
+- Fixed Stellar account discovery issues
 - Prevention of canceling or speeding up EVM transactions with a nonce gap
 - Hidden assets are excluded from token search results
 - Unification of Bitcoin Cash address prefix throughout Suite
