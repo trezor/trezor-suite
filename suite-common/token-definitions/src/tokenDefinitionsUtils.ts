@@ -30,6 +30,15 @@ export const isTokenDefinitionKnown = (
 ) => {
     if (!tokenDefinitions) return false;
 
+    // `tokenDefinitions` is typed as `string[]`, but it originates verbatim from an
+    // unsigned data.trezor.io JSON fetch (getTokenDefinitionThunk stores the response with
+    // no runtime shape validation). A compromised/buggy backend returning a non-array (e.g.
+    // `{}`, a number or a bare string) would otherwise crash here — `new Set(nonIterable)`
+    // throws, and a string key throws "Invalid value used as weak map key" in WeakMap.set.
+    // Because this runs inside render-time Redux selectors with no ErrorBoundary, that throw
+    // becomes a render crash across transaction/token lists. Drop the malformed definition.
+    if (!Array.isArray(tokenDefinitions)) return false;
+
     if (!tokenDefinitionsMap.has(tokenDefinitions)) {
         tokenDefinitionsMap.set(tokenDefinitions, new Set(tokenDefinitions));
     }

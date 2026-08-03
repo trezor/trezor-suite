@@ -36,6 +36,29 @@ export const isTokenDefinitionKnownFixtures = [
         contractAddress: '0xA',
         result: false,
     },
+    {
+        // Malformed non-array payload from a compromised/buggy data.trezor.io fetch must be
+        // dropped (returns false) instead of crashing render-time selectors via `new Set()`.
+        testName: 'Token definitions are a non-array object (untrusted backend)',
+        tokenDefinitions: {} as unknown as string[],
+        symbol: 'eth' as const,
+        contractAddress: '0xA',
+        result: false,
+    },
+    {
+        testName: 'Token definitions are a number (untrusted backend)',
+        tokenDefinitions: 42 as unknown as string[],
+        symbol: 'eth' as const,
+        contractAddress: '0xA',
+        result: false,
+    },
+    {
+        testName: 'Token definitions are a bare string (untrusted backend)',
+        tokenDefinitions: '0xA' as unknown as string[],
+        symbol: 'eth' as const,
+        contractAddress: '0xA',
+        result: false,
+    },
 ];
 
 export const getSupportedDefinitionTypesFixtures = [
