@@ -235,7 +235,10 @@ export const signSolanaStakingTransactionNativeThunk = createThunk<
             });
 
             if (!txData?.success) {
-                console.error(`${SIGN_LOG_PREFIX}: ${txData?.errorMessage}`);
+                // Do not interpolate txData.errorMessage: it is the raw prepare*SolTx backend/RPC
+                // message which can embed the sender address / amount, and console.error is
+                // forwarded to Sentry via captureConsoleIntegration (event.message is not redacted).
+                console.error(`${SIGN_LOG_PREFIX}: Failed to prepare Solana staking transaction.`);
 
                 return rejectWithValue({
                     error: 'sign-transaction-failed',
