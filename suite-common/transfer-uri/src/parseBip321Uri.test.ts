@@ -64,6 +64,30 @@ const cases: { description: string; uri: string; expected: Result<unknown, unkno
         }),
     },
     {
+        description: 'ignores a non-finite amount (Infinity)',
+        uri: 'bitcoin:bc1qaddr?amount=Infinity',
+        expected: ok({
+            format: 'bip321',
+            scheme: 'bitcoin',
+            address: 'bc1qaddr',
+            amount: undefined,
+            label: undefined,
+            message: undefined,
+        }),
+    },
+    {
+        description: 'ignores an amount that overflows to Infinity (1e999)',
+        uri: 'bitcoin:bc1qaddr?amount=1e999',
+        expected: ok({
+            format: 'bip321',
+            scheme: 'bitcoin',
+            address: 'bc1qaddr',
+            amount: undefined,
+            label: undefined,
+            message: undefined,
+        }),
+    },
+    {
         description: 'parses the address from the host form (bitcoin://addr)',
         uri: 'bitcoin://bc1qaddr?amount=1',
         expected: ok({

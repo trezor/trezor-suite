@@ -26,8 +26,15 @@ export const parseBip321Uri = (uri: URL): Result<BipTransferUriInfo, TransferUri
     );
     if (hasDuplicateParam) return err({ type: 'INVALID_URI' });
 
+    // Keep the raw string to preserve precision, but only accept a finite, positive value —
+    // `Number.parseFloat` returns `Infinity` for `amount=Infinity` and `amount=1e999`, both of
+    // which would otherwise pass a bare `> 0` check and inject a non-finite amount into the form.
     const rawAmount = searchParams.get('amount');
-    const amount = rawAmount !== null && Number.parseFloat(rawAmount) > 0 ? rawAmount : undefined;
+    const parsedAmount = rawAmount !== null ? Number.parseFloat(rawAmount) : NaN;
+    const amount =
+        rawAmount !== null && Number.isFinite(parsedAmount) && parsedAmount > 0
+            ? rawAmount
+            : undefined;
 
     return ok({
         format: 'bip321',
