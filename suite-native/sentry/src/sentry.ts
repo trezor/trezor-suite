@@ -39,6 +39,18 @@ export const setSentryUser = (instanceId: string) => {
     Sentry.setUser({ id: instanceId });
 };
 
+/**
+ * The @sentry/react-native default `breadcrumbsIntegration` records every `console.*` call as a
+ * `console`-category breadcrumb whose message is the joined arguments. Across the shared wallet
+ * code (wallet-core/wallet-utils) those arguments routinely include confidential data (exact
+ * amounts, addresses, xpubs) — and once the user consents to analytics, `redactSentryEvent` no
+ * longer strips breadcrumbs, so they would be attached to error events and sent to Sentry.
+ * The browser/desktop config (suite/sentry config.ts) drops console breadcrumbs for exactly this
+ * reason; mirror that here so native is not the outlier.
+ */
+const beforeBreadcrumb = (breadcrumb: Sentry.Breadcrumb): Sentry.Breadcrumb | null =>
+    breadcrumb.category === 'console' ? null : breadcrumb;
+
 export const initSentry = () => {
     const isPerformanceEnabledOnAppStart = getPersistedSentryPerformanceConsent();
     let performanceTracesSampleRate = 0;
@@ -53,6 +65,7 @@ export const initSentry = () => {
         dsn: 'https://d473f56df60c4974ae3f3ce00547c2a9@o117836.ingest.sentry.io/4504214699245568',
         enableAutoSessionTracking: false,
         environment: isDetoxTestBuild() ? 'test' : getEnv(),
+        beforeBreadcrumb,
         // Important: must be a function to keep default Sentry integrations; an array would mean ONLY those specific integrations.
         integrations: defaults => [
             // Remove consoleLoggingIntegration, which sends console.errors as logs, and
