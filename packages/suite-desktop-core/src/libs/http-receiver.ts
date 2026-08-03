@@ -222,7 +222,7 @@ export const createHttpReceiver = (options?: {
 
     httpReceiver.get('/buy-post', [
         allowReferers(['']), // No referer
-        (request, response) => {
+        (request, response, _next, { logger }) => {
             try {
                 const { searchParams } = new URL(request.url, 'http://127.0.0.1:21335'); // hostname is not important here, just to be able to validate relative URL
                 const { href: action, protocol } = new URL(searchParams.get('a') || ''); // action has to be a valid URL, otherwise throw an error
@@ -249,12 +249,20 @@ export const createHttpReceiver = (options?: {
 
                 const template = applyTemplate(content);
                 response.end(template);
-            } catch (error) {
+            } catch {
+                // Do NOT throw here, and do NOT log `request.url` or the raw error. This handler
+                // runs as the http.createServer request listener (via `run(handlers)`, which is not
+                // wrapped in try/catch — see @trezor/node-utils http.ts), so a synchronous throw
+                // escapes `onRequest` and becomes an uncaughtException in the Electron main process.
+                // Moreover `request.url` carries the payment-partner POST form fields (destination
+                // address, amount), and the thrown/logged message would be forwarded to Sentry via
+                // captureConsoleIntegration. Sibling routes (buy-redirect/sell-redirect) never throw.
+                // Respond and log only a static, non-confidential message.
+                // `logger` (from convertILoggerToLog) already prefixes the 'http-receiver'
+                // service name and takes a single message argument.
+                logger.error('Could not handle buy post request (invalid action URL)');
                 const template = applyTemplate('Error');
                 response.end(template);
-                throw new Error(`Could not handle buy post request at ${request.url} : ${error}`, {
-                    cause: error,
-                });
             }
         },
     ]);
