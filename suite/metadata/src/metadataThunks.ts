@@ -8,7 +8,7 @@ import { selectIsMetadataEnabled } from './metadataReducer';
 
 export * from './metadataDataThunks';
 
-export const initNewDeviceStateMetadataThunk = createThunk(
+export const initNewDeviceStateMetadataThunk = createThunk<void, StaticSessionId>(
     '@suite/metadata/initNewDeviceStateMetadataThunk',
     async (staticSessionId: StaticSessionId, { getState, dispatch }) => {
         if (!selectIsMetadataEnabled(getState())) {

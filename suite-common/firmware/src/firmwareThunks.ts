@@ -1,12 +1,15 @@
-import { selectSelectedDevice } from '@suite-common/device';
-import { createThunk } from '@suite-common/redux-utils';
-import { type TrezorDevice } from '@suite-common/suite-types';
+import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
+import { type ExtraDependencies, createThunk } from '@suite-common/redux-utils';
+import { type ReportSecurityCheckDep, type TrezorDevice } from '@suite-common/suite-types';
 import TrezorConnect, { FirmwareType } from '@trezor/connect';
 import { hasBitcoinOnlyFirmware, isBitcoinOnlyDevice } from '@trezor/device-utils';
 
 import { FIRMWARE_MODULE_PREFIX, firmwareActions } from './firmwareActions';
-import { selectFirmware } from './firmwareReducer';
-import { getBinFilesBaseUrlThunk } from './getBinFilesBaseUrlThunk';
+import { type FirmwareRootState, selectFirmware } from './firmwareReducer';
+import {
+    type GetBinFilesBaseUrlThunkDeps,
+    getBinFilesBaseUrlThunk,
+} from './getBinFilesBaseUrlThunk';
 
 export type FirmwareUpdateProps = {
     firmwareType?: FirmwareType;
@@ -23,10 +26,20 @@ export type FirmwareUpdateResult = {
     connectResponse?: Awaited<ReturnType<typeof TrezorConnect.firmwareUpdate>>;
 };
 
+type FirmwareUpdateThunkDeps = GetBinFilesBaseUrlThunkDeps & {
+    selectors: Pick<ExtraDependencies['selectors'], 'selectLanguage'>;
+    services: ReportSecurityCheckDep;
+};
+type FirmwareUpdateThunkState = DeviceRootState & FirmwareRootState;
+
 export const firmwareUpdate = createThunk<
     FirmwareUpdateResult,
     FirmwareUpdateProps,
-    { rejectValue: FirmwareUpdateResult }
+    {
+        rejectValue: FirmwareUpdateResult;
+        state: FirmwareUpdateThunkState;
+        extra: FirmwareUpdateThunkDeps;
+    }
 >(
     `${FIRMWARE_MODULE_PREFIX}/firmwareUpdate`,
     async (

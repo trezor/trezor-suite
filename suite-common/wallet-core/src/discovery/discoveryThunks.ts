@@ -1,6 +1,7 @@
 import { type ThunkDispatch } from '@reduxjs/toolkit';
 
 import {
+    type DeviceRootState,
     deviceActions,
     selectDeviceByStaticSessionId,
     selectDevices,
@@ -21,6 +22,7 @@ import {
     type TrezorDeviceWithState,
 } from '@suite-common/suite-types';
 import { getNewInstanceNumber } from '@suite-common/suite-utils';
+import { type TokenDefinitionsRootState } from '@suite-common/token-definitions';
 import { type TrezorConnectBackendType } from '@suite-common/wallet-config';
 import { type DiscoveryStatus } from '@suite-common/wallet-types';
 import TrezorConnect, {
@@ -36,16 +38,32 @@ import { type DiscoverAccountsProgress } from '@trezor/connect-common/src/types/
 import type { Bip43Path } from '@trezor/crypto-utils';
 
 import { DISCOVERY_MODULE_PREFIX, discoveryActions } from './discoveryActions';
+import { type DiscoveryRootState } from './discoveryReducer';
 import { isDiscoveryInProgress, selectDiscoveryByDevicePath } from './discoverySelectors';
 import { selectDeviceThunk } from './selectDeviceThunk';
 import { type CreateAccountActionProps, accountsActions } from '../accounts/accountsActions';
 import { selectAccountsByDeviceState } from '../accounts/accountsSelectors';
-import { reportAccountInfoThunk, reportWalletBalanceThunk } from '../accounts/accountsThunks';
-import { selectAccountsToBeForgotten, selectDiscoveryAccountsParam } from '../selectors';
-import { selectIsDeviceAutoEjectEnabled } from '../settings/walletSettingsReducer';
+import {
+    type ReportAccountInfoThunkDeps,
+    type ReportWalletBalanceThunkDeps,
+    reportAccountInfoThunk,
+    reportWalletBalanceThunk,
+} from '../accounts/accountsThunks';
+import {
+    type WalletCoreCompoundRootState,
+    selectAccountsToBeForgotten,
+    selectDiscoveryAccountsParam,
+} from '../selectors';
+import {
+    type WalletSettingsRootState,
+    selectIsDeviceAutoEjectEnabled,
+} from '../settings/walletSettingsReducer';
 
 const USER_UI_CANCEL_CODE = 'USER_UI_CANCEL';
 const DEVICE_CANCELLATION_CODES = ['Method_Cancel', 'Failure_ActionCancelled'];
+
+type DiscoveryReportingThunkDeps = ReportAccountInfoThunkDeps & ReportWalletBalanceThunkDeps;
+type DiscoveryReportingThunkState = TokenDefinitionsRootState & WalletCoreCompoundRootState;
 
 type ProgressEvent = BundleProgress<DiscoverAccountsProgress>['payload'];
 
@@ -83,7 +101,11 @@ export const applyDeviceStatesThunk = createThunk<
         newDeviceState: DeviceState;
         devicePath: DeviceUniquePath;
     },
-    { rejectValue: string }
+    {
+        rejectValue: string;
+        state: DeviceRootState & WalletSettingsRootState;
+        extra: Record<never, never>;
+    }
 >(
     `${DISCOVERY_MODULE_PREFIX}/applyDeviceStates`,
     (
@@ -214,7 +236,11 @@ type ApplyDeviceStateErrorThunkProps = {
     devicePath: DeviceUniquePath;
 };
 
-const applyDeviceStateErrorThunk = createThunk(
+const applyDeviceStateErrorThunk = createThunk<
+    void,
+    ApplyDeviceStateErrorThunkProps,
+    { state: DiscoveryRootState; extra: Record<never, never> }
+>(
     `${DISCOVERY_MODULE_PREFIX}/applyDeviceStateError`,
     ({ error, code, devicePath }: ApplyDeviceStateErrorThunkProps, { dispatch, getState }) => {
         // means that `cancelDiscoveryThunk` has been called and device returned code:Method_Cancel and this specific `error`
@@ -249,8 +275,12 @@ const completeDiscovery = (
         fetchAndSaveMetadata,
         getState,
     }: {
-        getState: () => any;
-        dispatch: ThunkDispatch<any, ExtraDependencies, AnyAction>;
+        getState: () => DiscoveryReportingThunkState;
+        dispatch: ThunkDispatch<
+            DiscoveryReportingThunkState,
+            DiscoveryReportingThunkDeps,
+            AnyAction
+        >;
         fetchAndSaveMetadata: SuiteCompatibleThunk<StaticSessionId>;
     },
 ) => {
@@ -265,22 +295,32 @@ const completeDiscovery = (
     );
 };
 
-export const cancelDiscoveryThunk = createThunk(
-    `${DISCOVERY_MODULE_PREFIX}/cancel`,
-    (device: TrezorDevice, { dispatch }) => {
-        // cancel with a custom error code so we can distinguish it from device cancellation
-        TrezorConnect.cancel({ reason: USER_UI_CANCEL_CODE });
+export const cancelDiscoveryThunk = createThunk<
+    void,
+    TrezorDevice,
+    { extra: Record<never, never> }
+>(`${DISCOVERY_MODULE_PREFIX}/cancel`, (device: TrezorDevice, { dispatch }) => {
+    // cancel with a custom error code so we can distinguish it from device cancellation
+    TrezorConnect.cancel({ reason: USER_UI_CANCEL_CODE });
 
-        dispatch(discoveryActions.updateDiscovery({ status: 'cancelled' }, device.path));
-    },
-);
+    dispatch(discoveryActions.updateDiscovery({ status: 'cancelled' }, device.path));
+});
 
 type RunDiscoveryParams = {
     device: TrezorDevice;
     callId?: string;
 };
 
-export const runDiscoveryThunk = createThunk(
+export type RunDiscoveryThunkDeps = DiscoveryReportingThunkDeps & {
+    thunks: Pick<ExtraDependencies['thunks'], 'fetchAndSaveMetadata'>;
+};
+export type RunDiscoveryThunkState = DiscoveryReportingThunkState;
+
+export const runDiscoveryThunk = createThunk<
+    void,
+    RunDiscoveryParams,
+    { state: RunDiscoveryThunkState; extra: RunDiscoveryThunkDeps }
+>(
     `${DISCOVERY_MODULE_PREFIX}/run`,
     async (
         { device: passedDevice, callId }: RunDiscoveryParams,
@@ -591,7 +631,11 @@ type StartDiscoveryThunkParams = {
     useScopedCallIds?: boolean;
 };
 
-export const startDiscoveryThunk = createThunk(
+export const startDiscoveryThunk = createThunk<
+    void,
+    StartDiscoveryThunkParams,
+    { state: RunDiscoveryThunkState; extra: RunDiscoveryThunkDeps }
+>(
     `${DISCOVERY_MODULE_PREFIX}/start`,
     (
         {
@@ -630,7 +674,11 @@ export const startDiscoveryThunk = createThunk(
     },
 );
 
-export const runAdditionalDiscoveryThunk = createThunk(
+export const runAdditionalDiscoveryThunk = createThunk<
+    void,
+    StaticSessionId,
+    { state: RunDiscoveryThunkState; extra: DiscoveryReportingThunkDeps }
+>(
     `${DISCOVERY_MODULE_PREFIX}/runAdditional`,
     async (staticSessionId: StaticSessionId, { dispatch, getState }): Promise<void> => {
         // todo: not now, but in the future, there could be more devices (wallets) sharing the same static session id, for example
@@ -751,7 +799,16 @@ export const runAdditionalDiscoveryThunk = createThunk(
     },
 );
 
-export const submitPassphrase = createThunk(
+export const submitPassphrase = createThunk<
+    void,
+    {
+        device: TrezorDevice;
+        passphrase: string;
+        passphraseOnDevice?: boolean;
+        requestId?: string;
+    },
+    { state: DiscoveryRootState }
+>(
     `${DISCOVERY_MODULE_PREFIX}/submitPassphrase`,
     (
         {
@@ -797,49 +854,51 @@ export const submitPassphrase = createThunk(
 /**
  * Helper to restart discovery for currently selected device
  */
-export const startOrRestartDiscoveryThunk = createThunk(
-    `${DISCOVERY_MODULE_PREFIX}/restart`,
-    (_, { dispatch, getState }) => {
-        const device = selectSelectedDevice(getState());
-        if (!device) return;
-        const staticSessionId = device.state?.staticSessionId;
-        if (staticSessionId) {
-            // we already have staticSessionId (=passphrase state), we probably failed during blockchain discovery
-            dispatch(runAdditionalDiscoveryThunk(staticSessionId));
+export const startOrRestartDiscoveryThunk = createThunk<
+    void,
+    void,
+    { state: RunDiscoveryThunkState; extra: RunDiscoveryThunkDeps }
+>(`${DISCOVERY_MODULE_PREFIX}/restart`, (_, { dispatch, getState }) => {
+    const device = selectSelectedDevice(getState());
+    if (!device) return;
+    const staticSessionId = device.state?.staticSessionId;
+    if (staticSessionId) {
+        // we already have staticSessionId (=passphrase state), we probably failed during blockchain discovery
+        dispatch(runAdditionalDiscoveryThunk(staticSessionId));
 
-            return;
-        }
+        return;
+    }
 
-        // if no staticSessionId available yet it means we failed sooner, for example during pin input
-        dispatch(
-            startDiscoveryThunk({
-                device,
-                isAddingExistingWallet: true,
-                isAddingHiddenWallet: false,
-            }),
-        );
-    },
-);
+    // if no staticSessionId available yet it means we failed sooner, for example during pin input
+    dispatch(
+        startDiscoveryThunk({
+            device,
+            isAddingExistingWallet: true,
+            isAddingHiddenWallet: false,
+        }),
+    );
+});
 
-export const switchToDuplicatedWallet = createThunk(
-    `${DISCOVERY_MODULE_PREFIX}/switchToDuplicatedWallet`,
-    (_, { dispatch, getState }) => {
-        const device = selectSelectedDevice(getState());
-        if (!device) return;
+export const switchToDuplicatedWallet = createThunk<
+    void,
+    void,
+    { state: DeviceRootState & DiscoveryRootState }
+>(`${DISCOVERY_MODULE_PREFIX}/switchToDuplicatedWallet`, (_, { dispatch, getState }) => {
+    const device = selectSelectedDevice(getState());
+    if (!device) return;
 
-        const discovery = selectDiscoveryByDevicePath(getState(), device.path);
+    const discovery = selectDiscoveryByDevicePath(getState(), device.path);
 
-        if (discovery?.status !== 'passphrase-duplicate') return;
+    if (discovery?.status !== 'passphrase-duplicate') return;
 
-        dispatch(cancelDiscoveryThunk(device));
+    dispatch(cancelDiscoveryThunk(device));
 
-        const duplicatedDevice = selectDeviceByStaticSessionId(
-            getState(),
-            discovery.duplicateDeviceStaticSessionId,
-        );
+    const duplicatedDevice = selectDeviceByStaticSessionId(
+        getState(),
+        discovery.duplicateDeviceStaticSessionId,
+    );
 
-        if (!duplicatedDevice) return;
-        // Switch to the duplicated wallet
-        dispatch(selectDeviceThunk({ device: duplicatedDevice }));
-    },
-);
+    if (!duplicatedDevice) return;
+    // Switch to the duplicated wallet
+    dispatch(selectDeviceThunk({ device: duplicatedDevice }));
+});

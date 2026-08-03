@@ -1,66 +1,74 @@
-import { selectSelectedDevice } from '@suite-common/device';
+import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
 import { type NetworkSymbol, getNetwork, networksCollection } from '@suite-common/wallet-config';
-import { type FeeInfo, type FeesState } from '@suite-common/wallet-types';
+import { type FeeInfo } from '@suite-common/wallet-types';
 import TrezorConnect from '@trezor/connect';
 import { isNotUndefined, resolveAfter, typedObjectFromEntries } from '@trezor/utils';
 
 import { FEES_MODULE_PREFIX, feesActions } from './feesActions';
 import { DEFAULT_FEE_INFO } from './feesConstants';
+import { type FeesRootState, selectRawNetworkFeeInfo } from './feesReducer';
 import { getNewFeeInfo, sortLevels } from './feesUtils';
-import { selectNetworkBlockchainInfo } from '../blockchain/blockchainReducer';
-import { selectEnabledNetworks } from '../settings/walletSettingsReducer';
+import {
+    type BlockchainRootState,
+    selectNetworkBlockchainInfo,
+} from '../blockchain/blockchainReducer';
+import {
+    type WalletSettingsRootState,
+    selectEnabledNetworks,
+} from '../settings/walletSettingsReducer';
 
 // Conditionally subscribe to blockchain backend
 // called after TrezorConnect.init successfully emits TRANSPORT.START event
 // checks if there are discovery processes loaded from LocalStorage
 // if so starts subscription to proper networks
 
-export const preloadFeeInfoThunk = createThunk(
-    `${FEES_MODULE_PREFIX}/preloadFeeInfoThunk`,
-    async (_, { dispatch, getState }) => {
-        const enabledNetworks = selectEnabledNetworks(getState());
+export const preloadFeeInfoThunk = createThunk<
+    void,
+    void,
+    { state: WalletSettingsRootState; extra: Record<never, never> }
+>(`${FEES_MODULE_PREFIX}/preloadFeeInfoThunk`, async (_, { dispatch, getState }) => {
+    const enabledNetworks = selectEnabledNetworks(getState());
 
-        // Fetch default fee levels
-        const networks = networksCollection.filter(
-            n => !n.isHidden && enabledNetworks?.includes(n.symbol),
-        );
+    // Fetch default fee levels
+    const networks = networksCollection.filter(
+        n => !n.isHidden && enabledNetworks?.includes(n.symbol),
+    );
 
-        const levels = await Promise.all(
-            networks.map(async network => {
-                const result = await TrezorConnect.blockchainEstimateFee({
-                    coin: network.symbol,
-                    request: { feeLevels: 'preloaded' },
-                });
+    const levels = await Promise.all(
+        networks.map(async network => {
+            const result = await TrezorConnect.blockchainEstimateFee({
+                coin: network.symbol,
+                request: { feeLevels: 'preloaded' },
+            });
 
-                return result.success ? ([network, result] as const) : undefined;
-            }),
-        );
+            return result.success ? ([network, result] as const) : undefined;
+        }),
+    );
 
-        const partial = typedObjectFromEntries(
-            levels.filter(isNotUndefined).map(([network, result]) => {
-                const { payload } = result;
-                const feeInfo: FeeInfo = {
-                    blockHeight: 0,
-                    ...payload,
-                    levels: payload.levels
-                        // hack to hide "low" fee option
-                        // (we do not want to change the connect API as it is a potentially breaking change)
-                        .filter(level => level.label !== 'low')
-                        .sort(sortLevels)
-                        .map(level => ({
-                            ...level,
-                            label: level.label || 'normal',
-                        })),
-                };
+    const partial = typedObjectFromEntries(
+        levels.filter(isNotUndefined).map(([network, result]) => {
+            const { payload } = result;
+            const feeInfo: FeeInfo = {
+                blockHeight: 0,
+                ...payload,
+                levels: payload.levels
+                    // hack to hide "low" fee option
+                    // (we do not want to change the connect API as it is a potentially breaking change)
+                    .filter(level => level.label !== 'low')
+                    .sort(sortLevels)
+                    .map(level => ({
+                        ...level,
+                        label: level.label || 'normal',
+                    })),
+            };
 
-                return [network.symbol, { status: 'preloaded' as const, data: feeInfo }];
-            }),
-        );
+            return [network.symbol, { status: 'preloaded' as const, data: feeInfo }];
+        }),
+    );
 
-        dispatch(feesActions.updateMultipleFees(partial));
-    },
-);
+    dispatch(feesActions.updateMultipleFees(partial));
+});
 
 type UpdateFeeInfoThunkProps = {
     networkSymbol: NetworkSymbol;
@@ -75,7 +83,11 @@ type UpdateFeeInfoThunkProps = {
 export const updateFeeInfoThunk = createThunk<
     FeeInfo,
     UpdateFeeInfoThunkProps,
-    { rejectValue: undefined }
+    {
+        rejectValue: undefined;
+        state: BlockchainRootState & DeviceRootState & FeesRootState;
+        extra: Record<never, never>;
+    }
 >(
     `${FEES_MODULE_PREFIX}/updateFeeInfoThunk`,
     async ({ networkSymbol, artificialDelay }, { getState, fulfillWithValue, rejectWithValue }) => {
@@ -86,9 +98,7 @@ export const updateFeeInfoThunk = createThunk<
         // Tron fees are derived per transaction from bandwidth/energy, there is no
         // network-level fee estimate to fetch. Keep the current (preloaded) data.
         if (network.networkType === 'tron') {
-            const currentFeeInfo = (getState() as { wallet: { fees: FeesState } }).wallet.fees[
-                symbol
-            ]?.data;
+            const currentFeeInfo = selectRawNetworkFeeInfo(getState(), symbol);
 
             return fulfillWithValue(
                 currentFeeInfo ?? { ...DEFAULT_FEE_INFO, blockHeight: blockchainInfo.blockHeight },

@@ -1,5 +1,6 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
+import { deviceInitialState, prepareDeviceReducer } from '@suite-common/device';
 import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
 import { type FeeInfo } from '@suite-common/wallet-types';
 
@@ -9,6 +10,7 @@ import { updateFeeInfoThunk } from './feesThunks';
 import { blockchainInitialState, prepareBlockchainReducer } from '../blockchain/blockchainReducer';
 
 const blockchainReducer = prepareBlockchainReducer(extraDependenciesCommonMock);
+const deviceReducer = prepareDeviceReducer(extraDependenciesCommonMock);
 
 const tronFeeInfo: FeeInfo = {
     blockHeight: 100,
@@ -22,12 +24,14 @@ const tronFeeInfo: FeeInfo = {
 const initStore = (feeInfo?: FeeInfo) =>
     configureMockStore({
         reducer: combineReducers({
+            device: deviceReducer,
             wallet: combineReducers({
                 fees: feesReducer,
                 blockchain: blockchainReducer,
             }),
         }),
         preloadedState: {
+            device: deviceInitialState,
             wallet: {
                 fees: feeInfo ? { trx: { status: 'preloaded', data: feeInfo } } : {},
                 blockchain: blockchainInitialState,

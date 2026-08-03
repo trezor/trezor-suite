@@ -2,7 +2,7 @@ import { BLUETOOTH_PREFIX, bluetoothActions } from '@suite-common/bluetooth';
 import { createThunk } from '@suite-common/redux-utils';
 import { bluetoothIpc } from '@trezor/transport-bluetooth';
 
-export const bluetoothStartScanningThunk = createThunk<void, void, void>(
+export const bluetoothStartScanningThunk = createThunk<void, void, { extra: Record<never, never> }>(
     `${BLUETOOTH_PREFIX}/bluetoothStartScanningThunk`,
     (_, { dispatch }) => {
         dispatch(bluetoothActions.scanStatusAction({ status: 'running' }));

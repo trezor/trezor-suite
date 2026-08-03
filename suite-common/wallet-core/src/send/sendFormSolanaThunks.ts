@@ -34,8 +34,14 @@ import {
     type SignTransactionError,
     type SignTransactionThunkArguments,
 } from './sendFormTypes';
-import { selectBlockchainBlockInfoBySymbol } from '../blockchain/blockchainReducer';
-import { selectAddressDisplayType } from '../settings/walletSettingsReducer';
+import {
+    type BlockchainRootState,
+    selectBlockchainBlockInfoBySymbol,
+} from '../blockchain/blockchainReducer';
+import {
+    type WalletSettingsRootState,
+    selectAddressDisplayType,
+} from '../settings/walletSettingsReducer';
 
 const calculate = (
     availableBalance: string,
@@ -164,7 +170,7 @@ function assertIsSolanaAccount(
 export const composeSolanaTransactionFeeLevelsThunk = createThunk<
     PrecomposedLevels,
     ComposeTransactionThunkArguments,
-    { rejectValue: ComposeFeeLevelsError }
+    { rejectValue: ComposeFeeLevelsError; state: BlockchainRootState; extra: Record<never, never> }
 >(
     `${SEND_MODULE_PREFIX}/composeSolanaTransactionFeeLevelsThunk`,
     async (
@@ -328,7 +334,11 @@ export const composeSolanaTransactionFeeLevelsThunk = createThunk<
 export const signSolanaSendFormTransactionThunk = createThunk<
     { serializedTx: string },
     SignTransactionThunkArguments,
-    { rejectValue: SignTransactionError }
+    {
+        rejectValue: SignTransactionError;
+        state: WalletSettingsRootState;
+        extra: Record<never, never>;
+    }
 >(
     `${SEND_MODULE_PREFIX}/signSolanaSendFormTransactionThunk`,
     async (

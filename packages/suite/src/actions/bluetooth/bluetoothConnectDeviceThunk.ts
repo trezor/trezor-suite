@@ -19,7 +19,7 @@ type BluetoothConnectDeviceThunkResult = {
 export const bluetoothConnectDeviceThunk = createThunk<
     BluetoothConnectDeviceThunkResult,
     { deviceId: BluetoothDeviceId },
-    void
+    { extra: Record<never, never> }
 >(
     `${BLUETOOTH_PREFIX}/bluetoothConnectDeviceThunk`,
     async ({ deviceId }, { fulfillWithValue, dispatch }) => {

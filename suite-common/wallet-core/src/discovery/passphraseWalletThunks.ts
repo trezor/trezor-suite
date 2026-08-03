@@ -5,13 +5,28 @@ import { type PopupEventMessage, type UiEventMessage } from '@trezor/connect-com
 
 import { DISCOVERY_MODULE_PREFIX, discoveryActions } from './discoveryActions';
 import { isDiscoveryInProgress, selectDiscoveryByDevicePath } from './discoverySelectors';
-import { runDiscoveryThunk, startDiscoveryThunk } from './discoveryThunks';
-import { defaultTrezorUIEventHandlerThunk } from '../uiEvent/defaultTrezorUIEventHandlerThunk';
+import {
+    type RunDiscoveryThunkDeps,
+    type RunDiscoveryThunkState,
+    runDiscoveryThunk,
+    startDiscoveryThunk,
+} from './discoveryThunks';
+import {
+    type DefaultTrezorUIEventHandlerThunkDeps,
+    defaultTrezorUIEventHandlerThunk,
+} from '../uiEvent/defaultTrezorUIEventHandlerThunk';
+
+type RunPassphraseWalletAddingDiscoveryThunkDeps = DefaultTrezorUIEventHandlerThunkDeps &
+    RunDiscoveryThunkDeps;
 
 // The "run" step. Exported because for a *new* hidden wallet the run is deferred from
 // start — called from PassphraseWalletIsNotExistFlow's "Next" once the user confirms
 // best practices (and reused internally for the existing-wallet flow below).
-export const runPassphraseWalletAddingDiscoveryThunk = createThunk(
+export const runPassphraseWalletAddingDiscoveryThunk = createThunk<
+    void,
+    { device: TrezorDevice },
+    { state: RunDiscoveryThunkState; extra: RunPassphraseWalletAddingDiscoveryThunkDeps }
+>(
     `${DISCOVERY_MODULE_PREFIX}/runPassphraseWalletAddingDiscovery`,
     async ({ device }: { device: TrezorDevice }, { dispatch }) => {
         const callId = crypto.randomUUID();
@@ -34,18 +49,24 @@ export const runPassphraseWalletAddingDiscoveryThunk = createThunk(
 
 // Internal: for an *existing* hidden wallet, starts and runs immediately (no
 // best-practices step to wait for). Only called by startAddWalletDiscoveryThunk.
-const startDiscoveryOfExistingPassphraseWalletThunk = createThunk(
+type StartDiscoveryOfExistingPassphraseWalletThunkPayload = {
+    device: TrezorDevice;
+    isAddingHiddenWallet?: boolean;
+    useScopedCallIds?: boolean;
+};
+
+const startDiscoveryOfExistingPassphraseWalletThunk = createThunk<
+    void,
+    StartDiscoveryOfExistingPassphraseWalletThunkPayload,
+    { state: RunDiscoveryThunkState; extra: RunPassphraseWalletAddingDiscoveryThunkDeps }
+>(
     `${DISCOVERY_MODULE_PREFIX}/startDiscoveryOfExistingPassphraseWallet`,
     (
         {
             device,
             isAddingHiddenWallet,
             useScopedCallIds,
-        }: {
-            device: TrezorDevice;
-            isAddingHiddenWallet?: boolean;
-            useScopedCallIds?: boolean;
-        },
+        }: StartDiscoveryOfExistingPassphraseWalletThunkPayload,
         { dispatch, getState },
     ): void => {
         const currentDiscovery = selectDiscoveryByDevicePath(getState(), device.path);

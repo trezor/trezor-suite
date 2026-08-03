@@ -11,6 +11,7 @@ import { BigNumber } from '@trezor/utils';
 
 import { STABLECOIN_YIELD_PREFIX } from './stablecoinYieldConstants';
 import {
+    type StablecoinYieldRootState,
     type StablecoinYieldTranslationKey,
     stablecoinYieldActions,
 } from './stablecoinYieldReducer';
@@ -183,7 +184,16 @@ export const openYieldRevokeModal = ({
     });
 };
 
-export const handleYieldApproveSuccessTxidThunk = createThunk(
+export const handleYieldApproveSuccessTxidThunk = createThunk<
+    void,
+    YieldSessionPayload & {
+        fee?: string;
+        isAmountUnlimited?: boolean;
+        submittedAt?: number;
+        txid: string;
+    },
+    { state: StablecoinYieldRootState; extra: Record<never, never> }
+>(
     `${YIELD_THUNK_PREFIX}/handleApproveSuccessTxid`,
     (
         {
@@ -298,7 +308,11 @@ export const initYieldAllowanceThunk = createThunk<void, InitYieldAllowancePaylo
     },
 );
 
-export const submitYieldRevokeThunk = createThunk(
+export const submitYieldRevokeThunk = createThunk<
+    void,
+    YieldSessionDataAmountPayload,
+    { state: StablecoinYieldRootState; extra: Record<never, never> }
+>(
     `${YIELD_THUNK_PREFIX}/submitRevoke`,
     (
         { flowKey, flowType, flowData, amount }: YieldSessionDataAmountPayload,

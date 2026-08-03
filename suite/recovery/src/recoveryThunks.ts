@@ -1,17 +1,19 @@
-import { asTypedDesktopAnalytics, events } from '@suite/analytics';
-import { selectSelectedDevice } from '@suite-common/device';
+import { type DesktopAnalyticsDep, events } from '@suite/analytics';
+import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
 import TrezorConnect, { PROTO, type RecoveryDevice } from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
 import { isRecoveryInProgress } from './isRecoveryInProgress';
-import { recoveryActions } from './recoveryReducer';
+import { type RecoveryState, recoveryActions } from './recoveryReducer';
 import { selectRecoveryInputType, selectWordsCount } from './recoverySelectors';
 import { type RecoveryInputType } from './types';
 
 const DEFAULT_PASSPHRASE_PROTECTION = false;
 
 const actionPrefix = '@suite/recovery';
+
+type RecoveryThunkState = DeviceRootState & { recovery: RecoveryState };
 
 /**
  * Maps the product-level recovery type to the firmware seed input method.
@@ -23,7 +25,13 @@ const recoveryInputTypeToInputMethod: Record<RecoveryInputType, PROTO.RecoveryDe
     advanced: PROTO.RecoveryDeviceInputMethod.Matrix,
 };
 
-export const checkSeedThunk = createThunk(
+type CheckSeedThunkDeps = { services: DesktopAnalyticsDep };
+
+export const checkSeedThunk = createThunk<
+    void,
+    void,
+    { state: RecoveryThunkState; extra: CheckSeedThunkDeps }
+>(
     `${actionPrefix}/checkSeedThunk`,
     async (_, { dispatch, getState, extra }) => {
         const recoveryInputType = selectRecoveryInputType(getState());
@@ -52,7 +60,7 @@ export const checkSeedThunk = createThunk(
 
         if (!response.success) {
             dispatch(recoveryActions.setError(response.error.message));
-            asTypedDesktopAnalytics(extra.services.analytics).report({
+            extra.services.analytics.report({
                 type: events.settingsDeviceCheckSeedEvent.name,
                 payload: {
                     status: 'error',
@@ -60,7 +68,7 @@ export const checkSeedThunk = createThunk(
                 },
             });
         } else {
-            asTypedDesktopAnalytics(extra.services.analytics).report({
+            extra.services.analytics.report({
                 type: events.settingsDeviceCheckSeedEvent.name,
                 payload: {
                     status: 'finished',
@@ -72,7 +80,7 @@ export const checkSeedThunk = createThunk(
     },
 );
 
-export const recoverDeviceThunk = createThunk(
+export const recoverDeviceThunk = createThunk<void, void, { state: RecoveryThunkState }>(
     `${actionPrefix}/recoverDeviceThunk`,
     async (_, { dispatch, getState }) => {
         const recoveryInputType = selectRecoveryInputType(getState());
@@ -123,7 +131,7 @@ export const recoverDeviceThunk = createThunk(
 export const recoveryRerunThunk = createThunk<
     { initialized: boolean | null | undefined },
     void,
-    { rejectValue: string }
+    { rejectValue: string; state: RecoveryThunkState; extra: CheckSeedThunkDeps }
 >(`${actionPrefix}/recoveryRerunThunk`, async (_, { dispatch, getState, rejectWithValue }) => {
     const device = selectSelectedDevice(getState());
     if (!device?.features) {

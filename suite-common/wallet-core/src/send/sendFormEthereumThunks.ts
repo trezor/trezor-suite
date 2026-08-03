@@ -1,4 +1,8 @@
-import { isApprovalFlowSupported, selectSelectedDevice } from '@suite-common/device';
+import {
+    type DeviceRootState,
+    isApprovalFlowSupported,
+    selectSelectedDevice,
+} from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
 import { type EvmGasParamsGwei } from '@suite-common/schemas/src/evm';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -57,7 +61,12 @@ import {
     type SignTransactionError,
     type SignTransactionThunkArguments,
 } from './sendFormTypes';
-import { selectAddressDisplayType } from '../settings/walletSettingsReducer';
+import { type AccountsRootState } from '../accounts/accountsReducer';
+import {
+    type WalletSettingsRootState,
+    selectAddressDisplayType,
+} from '../settings/walletSettingsReducer';
+import { type TransactionsRootState } from '../transactions/transactionsReducerTypes';
 import { selectAccountTransactions } from '../transactions/transactionsSelectors';
 
 /**
@@ -261,7 +270,7 @@ export const calculate = (
 export const composeEthereumTransactionFeeLevelsThunk = createThunk<
     PrecomposedLevels,
     ComposeTransactionThunkArguments,
-    { rejectValue: ComposeFeeLevelsError }
+    { rejectValue: ComposeFeeLevelsError; state: DeviceRootState; extra: Record<never, never> }
 >(
     `${SEND_MODULE_PREFIX}/composeEthereumTransactionFeeLevelsThunk`,
     async (
@@ -525,7 +534,8 @@ interface EthereumGetCurrentNonceThunkParams {
 
 export const ethereumGetCurrentNonceThunk = createThunk<
     ResolveEthereumNonceResult,
-    EthereumGetCurrentNonceThunkParams
+    EthereumGetCurrentNonceThunkParams,
+    { state: AccountsRootState & TransactionsRootState; extra: Record<never, never> }
 >(
     `${SEND_MODULE_PREFIX}/ethereumGetCurrentNonceThunk`,
     ({ selectedAccount, rbfParams, fetchConfirmedNonce }, { getState }) => {
@@ -545,7 +555,11 @@ export const ethereumGetCurrentNonceThunk = createThunk<
 export const signEthereumSendFormTransactionThunk = createThunk<
     { serializedTx: string },
     SignTransactionThunkArguments,
-    { rejectValue: SignTransactionError }
+    {
+        rejectValue: SignTransactionError;
+        state: AccountsRootState & TransactionsRootState & WalletSettingsRootState;
+        extra: Record<never, never>;
+    }
 >(
     `${SEND_MODULE_PREFIX}/signEthereumSendFormTransactionThunk`,
     async (

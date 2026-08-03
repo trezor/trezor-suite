@@ -13,7 +13,7 @@ type BluetoothDisconnectDeviceThunkResult = {
 export const bluetoothDisconnectDeviceThunk = createThunk<
     BluetoothDisconnectDeviceThunkResult,
     { id: BluetoothDeviceId },
-    void
+    { extra: Record<never, never> }
 >(
     `${BLUETOOTH_PREFIX}/bluetoothDisconnectDeviceThunk`,
     async ({ id }, { fulfillWithValue, dispatch }) => {

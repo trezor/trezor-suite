@@ -37,6 +37,7 @@ import TrezorConnect, {
 import { __btcUnknownTxDebug__ } from '@trezor/connect/src/utils/pathUtils';
 
 import { TRANSACTIONS_MODULE_PREFIX, transactionsActions } from './transactionsActions';
+import { type TransactionsRootState } from './transactionsReducerTypes';
 import {
     selectAccountTransactions,
     selectAccountTransactionsFromNowUntilTimestamp,
@@ -46,10 +47,16 @@ import {
     selectTransactions,
 } from './transactionsSelectors';
 import { accountsActions } from '../accounts/accountsActions';
+import { type AccountsRootState } from '../accounts/accountsReducer';
 import { selectAccountByKey, selectAccounts } from '../accounts/accountsSelectors';
-import { selectBlockchainHeightBySymbol, selectGapLimit } from '../blockchain/blockchainReducer';
-import { selectRawNetworkFeeInfo } from '../fees/feesReducer';
+import {
+    type BlockchainRootState,
+    selectBlockchainHeightBySymbol,
+    selectGapLimit,
+} from '../blockchain/blockchainReducer';
+import { type FeesRootState, selectRawNetworkFeeInfo } from '../fees/feesReducer';
 import { ethereumGetCurrentNonceThunk } from '../send/sendFormEthereumThunks';
+import { type SendRootState } from '../send/sendFormReducer';
 import { selectSendSignedTx } from '../send/sendFormSelectors';
 
 /**
@@ -63,7 +70,14 @@ interface ReplaceTransactionThunkParams {
     newTxid: string;
 }
 
-export const replaceTransactionThunk = createThunk(
+export const replaceTransactionThunk = createThunk<
+    void,
+    ReplaceTransactionThunkParams,
+    {
+        state: AccountsRootState & SendRootState & TransactionsRootState;
+        extra: Record<never, never>;
+    }
+>(
     `${TRANSACTIONS_MODULE_PREFIX}/replaceTransactionThunk`,
     (
         { precomposedTransaction, newTxid }: ReplaceTransactionThunkParams,
@@ -134,7 +148,11 @@ interface AddFakePendingTransactionParams {
     account: Account;
 }
 
-export const addFakePendingTxThunk = createThunk(
+export const addFakePendingTxThunk = createThunk<
+    void,
+    AddFakePendingTransactionParams,
+    { state: AccountsRootState & BlockchainRootState & SendRootState; extra: Record<never, never> }
+>(
     `${TRANSACTIONS_MODULE_PREFIX}/addFakePendingTransaction`,
     (
         { precomposedTransaction, account }: AddFakePendingTransactionParams,
@@ -349,7 +367,27 @@ const buildFakePendingEvmTx = ({
     };
 };
 
-export const addFakePendingEvmTxThunk = createThunk(
+type AddFakePendingEvmTxThunkParams = {
+    precomposedTransaction: PrecomposedTransactionFinal;
+    precomposedForm?: FormState;
+    txid: string;
+    account: Account;
+    // The nonce the tx was actually signed with. Preferred source: re-deriving it here from
+    // account.misc.nonce reads one too high while the just-broadcast tx sits in the mempool
+    // but isn't yet in the local tx list — blockbook's misc.nonce is pending-inclusive
+    // (trezor/blockbook#1562), so the lowestPendingNonce clamp in getEvmNonceInfo can't
+    // correct it yet.
+    ethereumNonce?: string;
+};
+
+export const addFakePendingEvmTxThunk = createThunk<
+    void,
+    AddFakePendingEvmTxThunkParams,
+    {
+        state: AccountsRootState & BlockchainRootState & FeesRootState & TransactionsRootState;
+        extra: Record<never, never>;
+    }
+>(
     `${TRANSACTIONS_MODULE_PREFIX}/addFakePendingTransaction`,
     async (
         {
@@ -358,18 +396,7 @@ export const addFakePendingEvmTxThunk = createThunk(
             txid,
             account,
             ethereumNonce,
-        }: {
-            precomposedTransaction: PrecomposedTransactionFinal;
-            precomposedForm?: FormState;
-            txid: string;
-            account: Account;
-            // The nonce the tx was actually signed with. Preferred source: re-deriving it here from
-            // account.misc.nonce reads one too high while the just-broadcast tx sits in the mempool
-            // but isn't yet in the local tx list — blockbook's misc.nonce is pending-inclusive
-            // (trezor/blockbook#1562), so the lowestPendingNonce clamp in getEvmNonceInfo can't
-            // correct it yet.
-            ethereumNonce?: string;
-        },
+        }: AddFakePendingEvmTxThunkParams,
         { dispatch, getState },
     ) => {
         if (
@@ -423,7 +450,18 @@ export const addFakePendingEvmTxThunk = createThunk(
     },
 );
 
-export const addFakePendingCardanoTxThunk = createThunk(
+type AddFakePendingCardanoTxThunkParams = {
+    precomposedTransaction: Pick<PrecomposedTransactionCardanoFinal, 'totalSpent' | 'fee'>;
+    txid: string;
+    account: Account;
+    cardanoSpecific?: WalletAccountTransaction['cardanoSpecific'];
+};
+
+export const addFakePendingCardanoTxThunk = createThunk<
+    void,
+    AddFakePendingCardanoTxThunkParams,
+    { state: BlockchainRootState; extra: Record<never, never> }
+>(
     `${TRANSACTIONS_MODULE_PREFIX}/addFakePendingTransaction`,
     (
         {
@@ -431,12 +469,7 @@ export const addFakePendingCardanoTxThunk = createThunk(
             txid,
             account,
             cardanoSpecific,
-        }: {
-            precomposedTransaction: Pick<PrecomposedTransactionCardanoFinal, 'totalSpent' | 'fee'>;
-            txid: string;
-            account: Account;
-            cardanoSpecific?: WalletAccountTransaction['cardanoSpecific'];
-        },
+        }: AddFakePendingCardanoTxThunkParams,
         { dispatch, getState },
     ) => {
         const blockHeight = selectBlockchainHeightBySymbol(getState(), account.symbol);
@@ -480,7 +513,11 @@ interface AddFakePendingTronTxThunkParams {
     tronSpecific?: WalletAccountTransaction['tronSpecific'];
 }
 
-export const addFakePendingTronTxThunk = createThunk(
+export const addFakePendingTronTxThunk = createThunk<
+    void,
+    AddFakePendingTronTxThunkParams,
+    { state: BlockchainRootState & FeesRootState; extra: Record<never, never> }
+>(
     `${TRANSACTIONS_MODULE_PREFIX}/addFakePendingTransaction`,
     (
         { txid, account, amount, fee, type, target, tronSpecific }: AddFakePendingTronTxThunkParams,
@@ -544,7 +581,14 @@ type FetchTransactionsPageThunkParams = {
     forceRefetch?: boolean;
 };
 
-export const fetchTransactionsPageThunk = createThunk(
+export const fetchTransactionsPageThunk = createThunk<
+    AccountInfo | 'ALREADY_FETCHED',
+    FetchTransactionsPageThunkParams,
+    {
+        state: AccountsRootState & BlockchainRootState & TransactionsRootState;
+        extra: Record<never, never>;
+    }
+>(
     `${TRANSACTIONS_MODULE_PREFIX}/fetchTransactionsPageThunk`,
     async (
         { accountKey, page, perPage, forceRefetch }: FetchTransactionsPageThunkParams,

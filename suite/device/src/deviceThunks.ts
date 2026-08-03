@@ -1,5 +1,5 @@
-import { selectRouterApp } from '@suite/router';
-import { selectSelectedDevice } from '@suite-common/device';
+import { type RouterRootState, selectRouterApp } from '@suite/router';
+import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
 import type { TrezorDevice } from '@suite-common/suite-types';
 import { handleDeviceDisconnect, selectDeviceThunk } from '@suite-common/wallet-core';
@@ -7,7 +7,13 @@ import type { Device } from '@trezor/connect';
 
 const DEVICE_MODULE_PREFIX = '@suite';
 
-export const disconnectDeviceThunk = createThunk(
+type DisconnectDeviceThunkState = DeviceRootState & RouterRootState;
+
+export const disconnectDeviceThunk = createThunk<
+    void,
+    Device | TrezorDevice,
+    { state: DisconnectDeviceThunkState; extra: Record<never, never> }
+>(
     `${DEVICE_MODULE_PREFIX}/handleDeviceDisconnect`,
     (device: Device | TrezorDevice, { dispatch, getState }) => {
         const selectedDevice = selectSelectedDevice(getState());

@@ -20,6 +20,7 @@ import {
     selectMessageSystemCurrentSequence,
     selectMessageSystemTimestamp,
 } from './messageSystemSelectors';
+import { type MessageSystemRootState } from './messageSystemTypes';
 import { jws as configJwsLocal } from '../files/config.v1';
 
 const messageSystemPolling = new PollingController();
@@ -70,64 +71,65 @@ const shouldFetchConfig = (isLocal: boolean, lastTimestamp: number) => {
     return now >= lastTimestamp + interval;
 };
 
-export const fetchConfigThunk = createThunk(
-    `${ACTION_PREFIX}/fetchConfig`,
-    async (_, { dispatch, getState }) => {
-        const timestamp = selectMessageSystemTimestamp(getState());
-        const currentSequence = selectMessageSystemCurrentSequence(getState());
-        const configSource = selectMessageSystemConfigSource(getState());
-        const useLocalConfig = configSource === 'local';
+export const fetchConfigThunk = createThunk<
+    void,
+    void,
+    { state: MessageSystemRootState; extra: Record<never, never> }
+>(`${ACTION_PREFIX}/fetchConfig`, async (_, { dispatch, getState }) => {
+    const timestamp = selectMessageSystemTimestamp(getState());
+    const currentSequence = selectMessageSystemCurrentSequence(getState());
+    const configSource = selectMessageSystemConfigSource(getState());
+    const useLocalConfig = configSource === 'local';
 
-        if (shouldFetchConfig(useLocalConfig, timestamp)) {
-            try {
-                const { configJws, isRemote } = await getConfigJws(useLocalConfig);
+    if (shouldFetchConfig(useLocalConfig, timestamp)) {
+        try {
+            const { configJws, isRemote } = await getConfigJws(useLocalConfig);
 
-                const decodedJws = decodeJws(configJws);
+            const decodedJws = decodeJws(configJws);
 
-                if (!decodedJws) {
-                    throw Error('Decoding of config failed');
-                }
-
-                const algorithmInHeader = decodedJws?.header.alg;
-                if (algorithmInHeader !== JWS_SIGN_ALGORITHM) {
-                    throw Error(`Wrong algorithm in JWS config header: ${algorithmInHeader}`);
-                }
-
-                const isAuthenticityValid = await verifyJws(configJws, JWS_SIGN_ALGORITHM);
-
-                if (!isAuthenticityValid) {
-                    throw Error('Config authenticity is invalid');
-                }
-
-                const config: MessageSystem = JSON.parse(decodedJws.payload);
-
-                if (VERSION !== config.version) {
-                    throw Error('Config version is not supported');
-                }
-
-                const timestampNew = isRemote ? Date.now() : 0;
-
-                if (currentSequence < config.sequence || useLocalConfig) {
-                    dispatch(
-                        messageSystemActions.fetchSuccessUpdate({
-                            config,
-                            timestamp: timestampNew,
-                        }),
-                    );
-                } else if (currentSequence === config.sequence) {
-                    dispatch(messageSystemActions.fetchSuccess({ timestamp: timestampNew }));
-                } else {
-                    throw Error(
-                        `Sequence of config (${config.sequence}) is older than the current one (${currentSequence}).`,
-                    );
-                }
-            } catch (error) {
-                console.error(error);
-                await dispatch(messageSystemActions.fetchError());
+            if (!decodedJws) {
+                throw Error('Decoding of config failed');
             }
+
+            const algorithmInHeader = decodedJws?.header.alg;
+            if (algorithmInHeader !== JWS_SIGN_ALGORITHM) {
+                throw Error(`Wrong algorithm in JWS config header: ${algorithmInHeader}`);
+            }
+
+            const isAuthenticityValid = await verifyJws(configJws, JWS_SIGN_ALGORITHM);
+
+            if (!isAuthenticityValid) {
+                throw Error('Config authenticity is invalid');
+            }
+
+            const config: MessageSystem = JSON.parse(decodedJws.payload);
+
+            if (VERSION !== config.version) {
+                throw Error('Config version is not supported');
+            }
+
+            const timestampNew = isRemote ? Date.now() : 0;
+
+            if (currentSequence < config.sequence || useLocalConfig) {
+                dispatch(
+                    messageSystemActions.fetchSuccessUpdate({
+                        config,
+                        timestamp: timestampNew,
+                    }),
+                );
+            } else if (currentSequence === config.sequence) {
+                dispatch(messageSystemActions.fetchSuccess({ timestamp: timestampNew }));
+            } else {
+                throw Error(
+                    `Sequence of config (${config.sequence}) is older than the current one (${currentSequence}).`,
+                );
+            }
+        } catch (error) {
+            console.error(error);
+            await dispatch(messageSystemActions.fetchError());
         }
-    },
-);
+    }
+});
 
 export const initMessageSystemThunk = createThunk(
     `${ACTION_PREFIX}/init`,

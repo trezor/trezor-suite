@@ -20,9 +20,11 @@ import {
     getAllowanceSpender,
     getWithdrawRequestAmount,
 } from './stablecoinYieldUtils';
+import { type AccountsRootState } from '../accounts/accountsReducer';
 import { fetchAllowance } from '../allowance/fetchAllowance';
-import { selectRawNetworkFeeInfo } from '../fees/feesReducer';
+import { type FeesRootState, selectRawNetworkFeeInfo } from '../fees/feesReducer';
 import { ethereumGetCurrentNonceThunk } from '../send/sendFormEthereumThunks';
+import { type TransactionsRootState } from '../transactions/transactionsReducerTypes';
 
 const YIELD_DEPOSIT_THUNK_PREFIX = `${STABLECOIN_YIELD_PREFIX}/thunk`;
 
@@ -66,7 +68,10 @@ type ComposeYieldDepositTransactionPayload = {
 export const composeYieldDepositTransactionThunk = createThunk<
     PrepareYieldDepositResult,
     ComposeYieldDepositTransactionPayload,
-    void
+    {
+        state: AccountsRootState & FeesRootState & TransactionsRootState;
+        extra: Record<never, never>;
+    }
 >(
     `${YIELD_DEPOSIT_THUNK_PREFIX}/composeDepositTransaction`,
     async ({ flowData, amount }, { dispatch, getState }) => {

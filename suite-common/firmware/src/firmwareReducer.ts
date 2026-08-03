@@ -55,7 +55,7 @@ const initialState: FirmwareUpdateState = {
 };
 export const firmwareInitialState = initialState;
 
-type RootState = {
+export type FirmwareRootState = {
     firmware: typeof initialState;
 };
 
@@ -127,12 +127,13 @@ export const prepareFirmwareReducer = createReducerWithExtraDeps(initialState, (
         );
 });
 
-export const selectFirmware = (state: RootState) => state.firmware;
-export const selectUseDevkit = (state: RootState) => state.firmware.useDevkit;
-export const selectFirmwareChannel = (state: RootState) => state.firmware.firmwareChannel;
-export const selectSwitchFirmwareType = (state: RootState) => state.firmware.switchFirmwareType;
+export const selectFirmware = (state: FirmwareRootState) => state.firmware;
+export const selectUseDevkit = (state: FirmwareRootState) => state.firmware.useDevkit;
+export const selectFirmwareChannel = (state: FirmwareRootState) => state.firmware.firmwareChannel;
+export const selectSwitchFirmwareType = (state: FirmwareRootState) =>
+    state.firmware.switchFirmwareType;
 
-export const selectIsFirmwareInstallationRunning = (state: RootState) =>
+export const selectIsFirmwareInstallationRunning = (state: FirmwareRootState) =>
     state.firmware.status === 'started';
 
 export const selectEffectiveFirmwareChannel =

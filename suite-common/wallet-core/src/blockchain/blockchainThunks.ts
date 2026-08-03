@@ -1,5 +1,5 @@
-import { selectDevices } from '@suite-common/device';
-import { createThunk } from '@suite-common/redux-utils';
+import { type DeviceRootState, selectDevices } from '@suite-common/device';
+import { type ExtraDependencies, createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     type NetworkSymbol,
@@ -32,14 +32,25 @@ import { arrayDistinct, arrayToDictionary } from '@trezor/utils';
 
 import { BLOCKCHAIN_MODULE_PREFIX, blockchainActions } from './blockchainActions';
 import {
+    type BlockchainRootState,
     selectBlockchainState,
     selectIsCustomBackendConfigured,
     selectNetworkBlockchainInfo,
 } from './blockchainReducer';
+import { type AccountsRootState } from '../accounts/accountsReducer';
 import { selectAccounts } from '../accounts/accountsSelectors';
-import { fetchAndUpdateAccountThunk, reportWalletBalanceThunk } from '../accounts/accountsThunks';
+import {
+    type FetchAndUpdateAccountThunkDeps,
+    type FetchAndUpdateAccountThunkState,
+    type ReportWalletBalanceThunkDeps,
+    fetchAndUpdateAccountThunk,
+    reportWalletBalanceThunk,
+} from '../accounts/accountsThunks';
 import { preloadFeeInfoThunk } from '../fees/feesThunks';
-import { selectBitcoinAmountUnit } from '../settings/walletSettingsReducer';
+import {
+    type WalletSettingsRootState,
+    selectBitcoinAmountUnit,
+} from '../settings/walletSettingsReducer';
 
 export const DEFAULT_ACCOUNT_SYNC_INTERVAL = 60 * 1000; // 1 minute
 
@@ -60,7 +71,11 @@ const getAccountSyncInterval = (symbol: NetworkSymbol) =>
     CUSTOM_ACCOUNT_SYNC_INTERVALS[symbol] || DEFAULT_ACCOUNT_SYNC_INTERVAL;
 
 // call TrezorConnect.unsubscribe, it doesn't cost anything and should emit BLOCKCHAIN.CONNECT or BLOCKCHAIN.ERROR event
-export const reconnectBlockchainThunk = createThunk(
+export const reconnectBlockchainThunk = createThunk<
+    unknown,
+    { symbol: NetworkSymbol; identity?: string },
+    { extra: Record<never, never> }
+>(
     `${BLOCKCHAIN_MODULE_PREFIX}/reconnectBlockchainThunk`,
     (payload: { symbol: NetworkSymbol; identity?: string }) =>
         TrezorConnect.blockchainUnsubscribeFiatRates({
@@ -82,54 +97,62 @@ const setBackendsToConnect = (backends: CustomBackend[]) =>
         ),
     );
 
-export const setCustomBackendThunk = createThunk(
-    `${BLOCKCHAIN_MODULE_PREFIX}/setCustomBackendThunk`,
-    (symbol: NetworkSymbol, { getState }) => {
-        const blockchain = selectBlockchainState(getState());
-        const backends = [getBackendFromSettings(symbol, blockchain[symbol].backends)];
+export const setCustomBackendThunk = createThunk<
+    unknown,
+    NetworkSymbol,
+    { state: BlockchainRootState; extra: Record<never, never> }
+>(`${BLOCKCHAIN_MODULE_PREFIX}/setCustomBackendThunk`, (symbol: NetworkSymbol, { getState }) => {
+    const blockchain = selectBlockchainState(getState());
+    const backends = [getBackendFromSettings(symbol, blockchain[symbol].backends)];
 
-        return setBackendsToConnect(backends);
-    },
-);
+    return setBackendsToConnect(backends);
+});
 
-export const initBlockchainThunk = createThunk(
-    `${BLOCKCHAIN_MODULE_PREFIX}/initBlockchainThunk`,
-    async (_, { dispatch, getState }) => {
-        await dispatch(preloadFeeInfoThunk());
+type InitBlockchainThunkState = AccountsRootState & BlockchainRootState & WalletSettingsRootState;
 
-        // Load custom blockbook backend
-        const blockchain = selectBlockchainState(getState());
-        const backends = getCustomBackends(blockchain);
-        await setBackendsToConnect(backends);
+export const initBlockchainThunk = createThunk<
+    void,
+    void,
+    { state: InitBlockchainThunkState; extra: ReportWalletBalanceThunkDeps }
+>(`${BLOCKCHAIN_MODULE_PREFIX}/initBlockchainThunk`, async (_, { dispatch, getState }) => {
+    await dispatch(preloadFeeInfoThunk());
 
-        const accounts = selectAccounts(getState());
-        if (accounts.length <= 0) {
-            // continue suite initialization
-            return;
-        }
+    // Load custom blockbook backend
+    const blockchain = selectBlockchainState(getState());
+    const backends = getCustomBackends(blockchain);
+    await setBackendsToConnect(backends);
 
-        const symbols: NetworkSymbol[] = [];
-        accounts.forEach(a => {
-            if (!symbols.includes(a.symbol)) {
-                symbols.push(a.symbol);
-            }
-        });
-
-        const promises = symbols.map(symbol => dispatch(reconnectBlockchainThunk({ symbol })));
-        await Promise.all(promises);
-
-        dispatch(reportWalletBalanceThunk());
-
+    const accounts = selectAccounts(getState());
+    if (accounts.length <= 0) {
         // continue suite initialization
-    },
-);
+        return;
+    }
+
+    const symbols: NetworkSymbol[] = [];
+    accounts.forEach(a => {
+        if (!symbols.includes(a.symbol)) {
+            symbols.push(a.symbol);
+        }
+    });
+
+    const promises = symbols.map(symbol => dispatch(reconnectBlockchainThunk({ symbol })));
+    await Promise.all(promises);
+
+    dispatch(reportWalletBalanceThunk());
+
+    // continue suite initialization
+});
 
 const isAccountSubscribable = (account: Account) =>
     !account.failed && isTrezorConnectBackendType(account.backendType);
 
 // called from WalletMiddleware after ACCOUNT.ADD/UPDATE action
 // or after BLOCKCHAIN.CONNECT event (blockchainActions.onConnect)
-export const subscribeBlockchainThunk = createThunk(
+export const subscribeBlockchainThunk = createThunk<
+    unknown,
+    { symbol: NetworkSymbol; fiatRates?: boolean; onConnect?: boolean },
+    { state: AccountsRootState; extra: Record<never, never> }
+>(
     `${BLOCKCHAIN_MODULE_PREFIX}/subscribeBlockchainThunk`,
     async (
         { symbol, onConnect }: { symbol: NetworkSymbol; fiatRates?: boolean; onConnect?: boolean },
@@ -167,7 +190,11 @@ export const subscribeBlockchainThunk = createThunk(
 );
 
 // called from WalletMiddleware after ACCOUNT.REMOVE action
-export const unsubscribeBlockchainThunk = createThunk(
+export const unsubscribeBlockchainThunk = createThunk<
+    unknown,
+    Account[],
+    { state: AccountsRootState; extra: Record<never, never> }
+>(
     `${BLOCKCHAIN_MODULE_PREFIX}/unsubscribeBlockchainThunk`,
     (removedAccounts: Account[], { getState }) => {
         // collect unique symbols
@@ -229,7 +256,20 @@ const tryClearTimeout = (timeout?: TimerId) => {
     if (timeout) clearTimeout(timeout);
 };
 
-export const syncAccountsWithBlockchainThunk = createThunk(
+export type SyncAccountsWithBlockchainThunkDeps = FetchAndUpdateAccountThunkDeps & {
+    selectors: Pick<ExtraDependencies['selectors'], 'selectIsWindowVisible'>;
+};
+export type SyncAccountsWithBlockchainThunkState = BlockchainRootState &
+    FetchAndUpdateAccountThunkState;
+
+export const syncAccountsWithBlockchainThunk = createThunk<
+    void,
+    NetworkSymbol,
+    {
+        state: SyncAccountsWithBlockchainThunkState;
+        extra: SyncAccountsWithBlockchainThunkDeps;
+    }
+>(
     `${BLOCKCHAIN_MODULE_PREFIX}/syncAccountsThunk`,
     async (symbol: NetworkSymbol, { getState, dispatch, extra }) => {
         const accounts = selectAccounts(getState());
@@ -270,22 +310,33 @@ export const syncAccountsWithBlockchainThunk = createThunk(
     },
 );
 
-export const onBlockchainConnectThunk = createThunk(
-    `${BLOCKCHAIN_MODULE_PREFIX}/onBlockchainConnectThunk`,
-    async (symbol: string, { dispatch }) => {
-        const network = getNetworkOptional(symbol.toLowerCase());
-        if (!network) return;
+export const onBlockchainConnectThunk = createThunk<
+    void,
+    string,
+    {
+        state: SyncAccountsWithBlockchainThunkState;
+        extra: SyncAccountsWithBlockchainThunkDeps;
+    }
+>(`${BLOCKCHAIN_MODULE_PREFIX}/onBlockchainConnectThunk`, async (symbol: string, { dispatch }) => {
+    const network = getNetworkOptional(symbol.toLowerCase());
+    if (!network) return;
 
-        await dispatch(
-            subscribeBlockchainThunk({ symbol: network.symbol, fiatRates: true, onConnect: true }),
-        );
-        // update accounts for connected network
-        await dispatch(syncAccountsWithBlockchainThunk(network.symbol));
-        dispatch(blockchainActions.connected(network.symbol));
-    },
-);
+    await dispatch(
+        subscribeBlockchainThunk({ symbol: network.symbol, fiatRates: true, onConnect: true }),
+    );
+    // update accounts for connected network
+    await dispatch(syncAccountsWithBlockchainThunk(network.symbol));
+    dispatch(blockchainActions.connected(network.symbol));
+});
 
-export const onBlockMinedThunk = createThunk(
+export const onBlockMinedThunk = createThunk<
+    unknown,
+    BlockchainBlock,
+    {
+        state: SyncAccountsWithBlockchainThunkState;
+        extra: SyncAccountsWithBlockchainThunkDeps;
+    }
+>(
     `${BLOCKCHAIN_MODULE_PREFIX}/onBlockMinedThunk`,
     (block: BlockchainBlock, { dispatch, getState }) => {
         const symbol = block.coin.shortcut.toLowerCase();
@@ -309,7 +360,18 @@ export const onBlockMinedThunk = createThunk(
     },
 );
 
-export const onBlockchainNotificationThunk = createThunk(
+type OnBlockchainNotificationThunkState = DeviceRootState &
+    SyncAccountsWithBlockchainThunkState &
+    WalletSettingsRootState;
+
+export const onBlockchainNotificationThunk = createThunk<
+    void,
+    BlockchainNotification,
+    {
+        state: OnBlockchainNotificationThunkState;
+        extra: SyncAccountsWithBlockchainThunkDeps;
+    }
+>(
     `${BLOCKCHAIN_MODULE_PREFIX}/onNotificationThunk`,
     (payload: BlockchainNotification, { dispatch, getState, extra }) => {
         const { descriptor, tx } = payload.notification;
@@ -375,7 +437,11 @@ export const onBlockchainNotificationThunk = createThunk(
     },
 );
 
-export const onBlockchainDisconnectThunk = createThunk(
+export const onBlockchainDisconnectThunk = createThunk<
+    void,
+    BlockchainError,
+    { state: BlockchainRootState; extra: Record<never, never> }
+>(
     `${BLOCKCHAIN_MODULE_PREFIX}/onBlockchainDisconnectThunk`,
     (error: BlockchainError, { getState }) => {
         const network = getNetworkOptional(error.coin.shortcut.toLowerCase());

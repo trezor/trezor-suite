@@ -1,9 +1,13 @@
 import { METADATA } from '@suite/metadata';
-import { createThunk } from '@suite-common/redux-utils';
+import { type ExtraDependencies, createThunk } from '@suite-common/redux-utils';
 import { triggerWebDownloadFile } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { type Account } from '@suite-common/wallet-types';
 import { sanitizeFilename } from '@trezor/utils';
+
+type ExportMetadataToBip329FileDeps = {
+    services: Pick<ExtraDependencies['services'], 'bip329'>;
+};
 
 export const exportMetadataToBip329File = createThunk<
     void,
@@ -11,7 +15,7 @@ export const exportMetadataToBip329File = createThunk<
         account: Account;
         defaultAccountLabel: string;
     },
-    void
+    { extra: ExportMetadataToBip329FileDeps }
 >(
     METADATA.EXPORT_METADATA_TO_BIP329_FILE,
     ({ account, defaultAccountLabel }, { dispatch, extra: { services } }) => {

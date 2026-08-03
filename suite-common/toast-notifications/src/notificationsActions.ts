@@ -8,6 +8,7 @@ import {
     type NotificationEntry,
     type NotificationEventPayload,
     type NotificationId,
+    type NotificationsRootState,
     type ToastPayload,
 } from './types';
 
@@ -47,14 +48,15 @@ export const addToast = createAction(
 );
 
 // Adds a Toast if there is not one of same type visible.
-export const addToastOnceThunk = createThunk<void, ToastPayload, void>(
-    `${ACTION_PREFIX}/addToastOnce`,
-    (payload, { getState, dispatch }) => {
-        const notifications = selectVisibleNotificationsByType(getState(), payload.type);
-        if (notifications.length > 0) return;
-        dispatch(addToast(payload));
-    },
-);
+export const addToastOnceThunk = createThunk<
+    void,
+    ToastPayload,
+    { state: NotificationsRootState; extra: Record<never, never> }
+>(`${ACTION_PREFIX}/addToastOnce`, (payload, { getState, dispatch }) => {
+    const notifications = selectVisibleNotificationsByType(getState(), payload.type);
+    if (notifications.length > 0) return;
+    dispatch(addToast(payload));
+});
 
 export const addEvent = createAction(
     `${ACTION_PREFIX}/addEvent`,
