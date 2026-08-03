@@ -69,8 +69,11 @@ export const composeDexTxSimulationAction = ({
                 },
             },
         };
-    } catch (error) {
-        console.error('Failed to compose DEX tx simulation action', error);
+    } catch {
+        // Do NOT log the raw error: fromEther(quote.dexTx.value) throws
+        // `Value '<value>' is invalid (...)` embedding the exact transaction amount, which would
+        // reach Sentry via captureConsoleIntegration (renderer + native). Log a static string only.
+        console.error('Failed to compose DEX tx simulation action');
 
         return null;
     }
