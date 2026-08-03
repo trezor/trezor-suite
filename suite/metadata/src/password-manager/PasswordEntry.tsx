@@ -93,6 +93,14 @@ export const PasswordEntry = ({
                     }
                 }
             })
+            .catch(() => {
+                // A tampered or corrupt provider blob makes metadataUtils.decrypt throw on the
+                // AES-GCM auth check; swallow it so it doesn't surface as an unhandled rejection.
+                // Deliberately do NOT log the raw error: a JSON.parse failure on the decrypted
+                // payload would put confidential plaintext into the message (and, on desktop, into
+                // Sentry via captureConsoleIntegration).
+                console.error('Failed to decrypt password entry');
+            })
             .finally(() => {
                 setInProgress(false);
             });

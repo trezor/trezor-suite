@@ -93,6 +93,30 @@ describe('metadata', () => {
         expect(data).toEqual(decrypted);
     });
 
+    it('decrypt throws on a tampered ciphertext without leaking plaintext', async () => {
+        const secret = 'super-secret-password';
+        const key = '9bc3736f0b45cd681854a724b5bba67b9da1e50bc9983fd2dd56e53e74b75480';
+
+        const encrypted = await encrypt(secret, Buffer.from(key, 'hex'));
+
+        // flip a byte inside the ciphertext region (after the 12-byte IV + 16-byte auth tag)
+        // to simulate a tampered/corrupt provider blob
+        const tampered = Buffer.from(encrypted);
+        const lastIndex = tampered.length - 1;
+        tampered[lastIndex] = getIndexOrThrow(tampered, lastIndex) ^ 0xff;
+
+        // the AES-GCM auth check must reject the tampered blob (this is the throw that
+        // PasswordEntry.decrypt must catch to avoid an unhandled rejection)
+        expect(() => decrypt(tampered, key)).toThrow();
+
+        // and the thrown error must not leak the decrypted plaintext
+        try {
+            decrypt(tampered, key);
+        } catch (error) {
+            expect((error as Error).message).not.toContain(secret);
+        }
+    });
+
     it('read file content (ArrayBuffer)', () => {
         const file = fs.readFileSync(path.resolve(__dirname, `./__fixtures__/${filename}.mtdt`));
 
