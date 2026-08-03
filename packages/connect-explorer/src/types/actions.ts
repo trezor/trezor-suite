@@ -22,7 +22,7 @@ export const SET_METHOD_PROCESSING = 'method_set_processing';
 
 // TrezorConnect action constants
 export const ON_CHANGE_CONNECT_OPTIONS = 'action__on_change_connect_options';
-export const ON_CHANGE_CONNECT_OPTION = 'action__on_change_connect_option';
+export const ON_INIT_START = 'action__on_init_start';
 export const ON_INIT_ERROR = 'action__on_init_error';
 
 // Method action types
@@ -49,8 +49,5 @@ export type ConnectOptions = Partial<
 
 export type TrezorConnectAction =
     | { type: typeof ON_CHANGE_CONNECT_OPTIONS; payload: ConnectOptions }
-    | { type: typeof ON_INIT_ERROR; payload: string }
-    | {
-          type: typeof ON_CHANGE_CONNECT_OPTION;
-          payload: { option: Field<any>; value: any };
-      };
+    | { type: typeof ON_INIT_START }
+    | { type: typeof ON_INIT_ERROR; payload: string };

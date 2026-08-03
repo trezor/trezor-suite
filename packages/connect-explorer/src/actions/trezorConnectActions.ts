@@ -1,28 +1,22 @@
 import TrezorConnectMobile from '@trezor/connect-mobile';
 import TrezorConnect from '@trezor/connect-web';
 
-import type { Dispatch, Field, GetState } from '../types';
+import type { Dispatch, GetState } from '../types';
 import {
     type ConnectOptions,
-    ON_CHANGE_CONNECT_OPTION,
     ON_CHANGE_CONNECT_OPTIONS,
     ON_INIT_ERROR,
+    ON_INIT_START,
 } from '../types/actions';
 
 let _deeplinkChannel: BroadcastChannel | undefined;
-
-export const onConnectOptionChange = (option: Field<any>, value: any) => ({
-    type: ON_CHANGE_CONNECT_OPTION,
-    payload: {
-        option,
-        value,
-    },
-});
 
 export const init =
     (options: ConnectOptions = {}) =>
     async (dispatch: Dispatch) => {
         window.TrezorConnect = TrezorConnect;
+
+        dispatch({ type: ON_INIT_START });
 
         // Get default coreMode from URL params (?core-mode=auto)
         const urlParams = new URLSearchParams(window.location.search);
@@ -67,19 +61,27 @@ export const init =
                 await TrezorConnect.init({ ...connectOptions, coreMode: connectOptions.coreMode });
             }
         } catch (err) {
-            dispatch({ type: ON_INIT_ERROR, payload: err.message });
+            const message = err instanceof Error ? err.message : String(err);
+            dispatch({ type: ON_INIT_ERROR, payload: message });
 
-            return;
+            return false;
         }
 
         dispatch({ type: ON_CHANGE_CONNECT_OPTIONS, payload: connectOptions });
+
+        return true;
     };
 
-export const onSubmitInit = () => async (dispatch: Dispatch, getState: GetState) => {
-    const { connect } = getState();
-    // Disposing TrezorConnect to init it again.
-    TrezorConnect.dispose();
-    await TrezorConnectMobile.dispose();
+// Re-initialize by calling init() again rather than dispose()+init(). connect's init() re-applies the
+// settings and resolves fast (an already-connected target returns immediately), whereas disposing
+// first tears the websocket down and the follow-up connect() can hang waiting on a 'disconnected'
+// event that already fired — the cause of the infinite "Re-initialize" loader. The very first init
+// (middleware auto-init) never disposed either, so this keeps both paths consistent.
+export const initWithOptions = (options: ConnectOptions) => (dispatch: Dispatch) =>
+    dispatch(init(options));
 
-    return dispatch(init(connect.options));
+export const onSubmitInit = () => (dispatch: Dispatch, getState: GetState) => {
+    const { connect } = getState();
+
+    return dispatch(initWithOptions(connect.options ?? {}));
 };
