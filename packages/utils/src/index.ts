@@ -54,6 +54,7 @@ export * from './parseHostname';
 export * from './promiseAllSequence';
 export * from './redactUserPath';
 export * from './resolveAfter';
+export * from './safeDecodeURIComponent';
 export * from './safeParseUrl';
 export * from './scheduleAction';
 export * from './serializeError';

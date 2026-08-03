@@ -26,7 +26,7 @@ import {
     SUITE_TRADING_REDIRECT_DEEPLINKS,
     SUITE_WALLETCONNECT_DEEPLINK,
 } from '@trezor/urls';
-import { isArrayMember, safeParseUrl } from '@trezor/utils';
+import { isArrayMember, safeDecodeURIComponent, safeParseUrl } from '@trezor/utils';
 
 import type { SendFormState } from 'src/reducers/suite/protocolReducer';
 
@@ -93,11 +93,19 @@ export const handleProtocolRequestThunk =
                 dispatch(gotoThunk({ routeName: targetRoute, anchor }));
             }
         } else if (SUITE_TRADING_REDIRECT_DEEPLINKS.some(deeplink => uri?.startsWith(deeplink))) {
-            const parsedUri = safeParseUrl(decodeURIComponent(uri));
+            // The URI comes from an untrusted source (web `?uri=` param / desktop
+            // `protocol/open` OS deeplink). Malformed percent-encoding makes
+            // decodeURIComponent throw a URIError, so decode defensively.
+            const decodedUri = safeDecodeURIComponent(uri);
+            if (decodedUri === null) return;
+
+            const parsedUri = safeParseUrl(decodedUri);
             const redirectPath = parsedUri?.searchParams?.get('p');
 
             if (redirectPath) {
-                const decodedPath = decodeURIComponent(redirectPath);
+                const decodedPath = safeDecodeURIComponent(redirectPath);
+                if (decodedPath === null) return;
+
                 const [, hash] = decodedPath.split('/coinmarket-redirect/');
                 if (hash) {
                     const path = { pathname: '/coinmarket-redirect', hash: `#${hash}` } as const;
