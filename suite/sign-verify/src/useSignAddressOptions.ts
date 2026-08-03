@@ -111,9 +111,11 @@ export const useSignAddressOptions = (
         );
 
         return Object.entries(groupedAddresses).map(([label, options]) => {
-            const translatedLabel = label
-                ? translationString(label as ExtendedMessageDescriptor['id'])
-                : label;
+            if (!label) {
+                return { label: '', options };
+            }
+
+            const translatedLabel = translationString(label as ExtendedMessageDescriptor['id']);
 
             // @ts-expect-error: indexing with noUncheckedIndexedAccess
             const firstOption: (typeof options)[number] = options[0];
