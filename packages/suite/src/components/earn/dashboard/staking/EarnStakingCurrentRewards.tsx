@@ -22,7 +22,7 @@ export const EarnStakingCurrentRewards = ({
     formattedStakingBalance,
     displaySymbol,
 }: EarnStakingCurrentRewardsProps) => (
-    <Column alignItems="flex-start">
+    <Column alignItems="flex-start" gap={4}>
         <EarnRewardsAmount symbol={symbol} rewards={isStakingActive ? rewards : '0'} apy={apy} />
 
         {isStakingActive && (
