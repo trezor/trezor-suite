@@ -206,6 +206,7 @@
         { "path": "../../suite/router" },
         { "path": "../../suite/sentry" },
         { "path": "../../suite/settings" },
+        { "path": "../../suite/sign-verify" },
         { "path": "../../suite/suite-sync" },
         { "path": "../../suite/thp" },
         { "path": "../../suite/tor" },

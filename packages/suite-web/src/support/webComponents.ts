@@ -121,8 +121,10 @@ export const webComponents: Record<PageName, LazyExoticComponent<ComponentType>>
             ({ WalletStaking }) => ({ default: WalletStaking }),
         ),
     ),
-    'wallet-sign-verify': lazy(
-        () => import(/* webpackChunkName: "wallet" */ 'src/views/wallet/sign-verify'),
+    'wallet-sign-verify': lazy(() =>
+        import(/* webpackChunkName: "wallet" */ 'src/views/wallet/sign-verify/SignVerifyPage').then(
+            ({ SignVerifyPage }) => ({ default: SignVerifyPage }),
+        ),
     ),
     'wallet-anonymize': lazy(
         () => import(/* webpackChunkName: "wallet" */ 'src/views/wallet/anonymize'),

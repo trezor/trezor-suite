@@ -1,0 +1,47 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": { "outDir": "libDev" },
+    "references": [
+        { "path": "../../suite-common/address" },
+        {
+            "path": "../../suite-common/dependency-injection"
+        },
+        { "path": "../../suite-common/device" },
+        { "path": "../../suite-common/receive" },
+        {
+            "path": "../../suite-common/suite-types"
+        },
+        {
+            "path": "../../suite-common/toast-notifications"
+        },
+        {
+            "path": "../../suite-common/validators"
+        },
+        {
+            "path": "../../suite-common/wallet-config"
+        },
+        {
+            "path": "../../suite-common/wallet-core"
+        },
+        {
+            "path": "../../suite-common/wallet-types"
+        },
+        {
+            "path": "../../suite-common/wallet-utils"
+        },
+        { "path": "../address" },
+        { "path": "../device" },
+        { "path": "../intl" },
+        { "path": "../../packages/components" },
+        { "path": "../../packages/connect" },
+        {
+            "path": "../../packages/connect-common"
+        },
+        { "path": "../../packages/dom-utils" },
+        { "path": "../../packages/icons" },
+        { "path": "../../packages/type-utils" },
+        {
+            "path": "../../suite-common/test-utils"
+        }
+    ]
+}

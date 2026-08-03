@@ -30,7 +30,7 @@ import WalletDetails from 'src/views/wallet/details';
 import { Nfts } from 'src/views/wallet/nfts';
 import { Receive } from 'src/views/wallet/receive/Receive';
 import WalletSend from 'src/views/wallet/send';
-import WalletSignVerify from 'src/views/wallet/sign-verify';
+import { SignVerifyPage } from 'src/views/wallet/sign-verify/SignVerifyPage';
 import { WalletStaking } from 'src/views/wallet/staking/WalletStaking';
 import { Tokens } from 'src/views/wallet/tokens';
 import { TradingBuyConfirm } from 'src/views/wallet/trading/buy/TradingBuyConfirm';
@@ -78,7 +78,7 @@ export const desktopComponents: Record<PageName, ComponentType> = {
     'wallet-details': WalletDetails,
     'wallet-send': WalletSend,
     'wallet-staking': WalletStaking,
-    'wallet-sign-verify': WalletSignVerify,
+    'wallet-sign-verify': SignVerifyPage,
     'wallet-anonymize': WalletAnonymize,
     'wallet-tokens': Tokens,
     'wallet-nfts': Nfts,

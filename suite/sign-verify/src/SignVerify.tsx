@@ -1,10 +1,12 @@
-import { useEffect, useState } from 'react';
+import { type ReactNode, useEffect, useState } from 'react';
 import { type FieldError } from 'react-hook-form';
+import { useDispatch, useSelector } from 'react-redux';
 
-import { selectFullSelectedAccount, selectSelectedAccountKey } from '@suite/account';
 import { useDevice } from '@suite/device';
 import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
 import { type ReceiveRootState, selectTouchedAddresses } from '@suite-common/receive';
+import { type Network } from '@suite-common/wallet-config';
+import { type Account } from '@suite-common/wallet-types';
 import {
     Box,
     Button,
@@ -22,28 +24,35 @@ import {
 import { copyToClipboard } from '@trezor/dom-utils';
 import { CheckIcon, CopyIcon } from '@trezor/icons';
 
-import { isVerifySupported, sign, verify } from 'src/actions/wallet/signVerifyActions';
-import { WalletLayout, WalletSubpageHeading } from 'src/components/wallet';
-import { useDispatch, useSelector } from 'src/hooks/suite';
-import { useCopySignedMessage } from 'src/hooks/wallet/sign-verify/useCopySignedMessage';
+import { SignAddressInput } from './SignAddressInput';
+import { isVerifySupported, sign, verify } from './signVerifyActions';
+import { useCopySignedMessage } from './useCopySignedMessage';
 import {
     MAX_LENGTH_MESSAGE,
     MAX_LENGTH_SIGNATURE,
     type SignVerifyFields,
     useSignVerifyForm,
-} from 'src/hooks/wallet/sign-verify/useSignVerifyForm';
-import { ConnectDeviceGenericPromo } from 'src/views/wallet/receive/components/ConnectDevicePromo';
+} from './useSignVerifyForm';
 
-import { SignAddressInput } from './components/SignAddressInput';
+type SignVerifyShellProps = {
+    title: 'TR_NAV_SIGN_VERIFY' | 'TR_SIGN_MESSAGE';
+    isDeviceConnected: boolean | undefined;
+    headingAction: ReactNode;
+    children: ReactNode;
+};
 
-const SignVerify = () => {
+type SignVerifyProps = {
+    account: Account;
+    network?: Network;
+    renderShell: (props: SignVerifyShellProps) => ReactNode;
+};
+
+export const SignVerify = ({ account, network, renderShell }: SignVerifyProps) => {
     const [page, setPage] = useState<'sign' | 'verify'>('sign');
     const [isCompleted, setIsCompleted] = useState(false);
 
-    const selectedAccount = useSelector(selectFullSelectedAccount);
-    const selectedAccountKey = useSelector(selectSelectedAccountKey);
     const touchedAddresses = useSelector((state: ReceiveRootState) =>
-        selectTouchedAddresses(state, selectedAccountKey),
+        selectTouchedAddresses(state, account.key),
     );
     const dispatch = useDispatch();
 
@@ -63,11 +72,11 @@ const SignVerify = () => {
         pathField,
         isElectrumField,
         cardanoPubKeyCoseField,
-    } = useSignVerifyForm(isSignPage, selectedAccount.account!);
+    } = useSignVerifyForm(isSignPage, account);
 
     const { isLocked, device } = useDevice();
     const { translationString } = useTranslation();
-    const { canCopy, copy } = useCopySignedMessage(formValues, selectedAccount.network);
+    const { canCopy, copy } = useCopySignedMessage(formValues, network);
 
     const getErrorMessage = (error?: FieldError) =>
         error ? translationString(error.message as TranslationKey) : undefined;
@@ -109,14 +118,16 @@ const SignVerify = () => {
         const { address, path, message, signature, hex, isElectrum, cardanoPubKeyCose } = data;
 
         if (isSignPage && path !== undefined) {
-            const result = await dispatch(sign(path, message, hex, isElectrum, cardanoPubKeyCose));
+            const result = await dispatch(
+                sign(account, path, message, hex, isElectrum, cardanoPubKeyCose),
+            );
 
             if (result) {
                 formSetSignature(result);
                 setIsCompleted(true);
             }
         } else if (signature !== undefined) {
-            const result = await dispatch(verify(address, message, signature, hex));
+            const result = await dispatch(verify(account, address, message, signature, hex));
 
             if (result) setIsCompleted(true);
         }
@@ -126,34 +137,27 @@ const SignVerify = () => {
 
     // Empty accountTypes means there is only 'normal' accountType and therefore the signatures are same.
     const signFormatsDiffer =
-        selectedAccount.account?.networkType === 'bitcoin' &&
-        selectedAccount.account?.accountType !== 'legacy' &&
-        Object.keys(selectedAccount.network?.accountTypes ?? {}).length >= 1;
-    const canVerify = isVerifySupported(selectedAccount.account);
-    const isCardano = selectedAccount.network?.networkType === 'cardano';
+        account.networkType === 'bitcoin' &&
+        account.accountType !== 'legacy' &&
+        Object.keys(network?.accountTypes ?? {}).length >= 1;
+    const canVerify = isVerifySupported(account);
+    const isCardano = network?.networkType === 'cardano';
 
-    return (
-        <WalletLayout
-            title={canVerify ? 'TR_NAV_SIGN_VERIFY' : 'TR_SIGN_MESSAGE'}
-            isSubpage
-            account={selectedAccount}
-        >
-            <WalletSubpageHeading title={canVerify ? 'TR_NAV_SIGN_VERIFY' : 'TR_SIGN_MESSAGE'}>
-                {isFormDirty && (
-                    <Button
-                        type="button"
-                        size="small"
-                        intent="neutral"
-                        priority="secondary"
-                        onClick={resetForm}
-                    >
-                        <Translation id="TR_CLEAR_ALL" />
-                    </Button>
-                )}
-            </WalletSubpageHeading>
-
-            {!isDeviceConnected && <ConnectDeviceGenericPromo />}
-
+    return renderShell({
+        title: canVerify ? 'TR_NAV_SIGN_VERIFY' : 'TR_SIGN_MESSAGE',
+        isDeviceConnected,
+        headingAction: isFormDirty ? (
+            <Button
+                type="button"
+                size="small"
+                intent="neutral"
+                priority="secondary"
+                onClick={resetForm}
+            >
+                <Translation id="TR_CLEAR_ALL" />
+            </Button>
+        ) : null,
+        children: (
             <Card>
                 <Tabs activeItemId={page} size="large" margin={{ bottom: 20 }}>
                     <Tabs.Item
@@ -203,7 +207,7 @@ const SignVerify = () => {
                                         <SignAddressInput
                                             name="path"
                                             label={<Translation id="TR_ADDRESS" />}
-                                            account={selectedAccount.account}
+                                            account={account}
                                             touchedAddresses={touchedAddresses}
                                             hasError={!!formErrors.path}
                                             bottomText={pathError || null}
@@ -368,8 +372,6 @@ const SignVerify = () => {
                     </Button>
                 </form>
             </Card>
-        </WalletLayout>
-    );
+        ),
+    });
 };
-
-export default SignVerify;
