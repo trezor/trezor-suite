@@ -55,7 +55,12 @@ export const reportEthereumFeeEstimationFailed = ({
         scope.setTag('fee.hasTransactionData', !!formState.transactionData);
         scope.setTag('fee.selectedFee', formState.selectedFee ?? 'unknown');
         scope.setTag('fee.connectErrorCode', connectErrorCode);
-        scope.setExtra('connectErrorMessage', error.message);
+        // NOTE: intentionally do NOT attach the raw backend error.message here. A geth
+        // eth_estimateGas failure forwarded by blockbook can embed confidential data
+        // (e.g. `insufficient funds for gas * price + value: address 0x… have X want Y`
+        // leaks the from-address, account balance and the intended amount). redactSentryEvent
+        // does not scrub `extra`, so this would reach Sentry once analytics is consented.
+        // The sanitized connectErrorCode tag above is enough to bucket the failure.
         captureException(
             new Error(
                 `Ethereum fee estimation failed, using backup gas limit [${connectErrorCode}]`,
