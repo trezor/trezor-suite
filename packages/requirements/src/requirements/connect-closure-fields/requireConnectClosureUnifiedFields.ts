@@ -1,0 +1,175 @@
+import { readFileSync, writeFileSync } from 'node:fs';
+import { join } from 'node:path';
+
+import { arrayToDictionary, deepEqual, typedObjectEntries } from '@trezor/utils';
+
+import { mostCommon, pickCanonicalVersion } from '../../versions';
+import type { Requirement } from '../Requirement';
+import {
+    type WorkspacePackage,
+    collectProdWorkspaceClosure,
+    collectWorkspacePackages,
+} from '../connectClosure';
+
+/**
+ * Entry packages of the Trezor Connect family. Every internal workspace package
+ * reachable from these through production dependencies (`dependencies` and
+ * `optionalDependencies`) is published together as part of a Connect release.
+ *
+ * `@trezor/connect` (the core) is included on purpose: the public entry points
+ * (`connect-web`/`connect-mobile`/`connect-webextension`) are thin and do not
+ * reach deeper packages such as `@trezor/transport-*`, which nevertheless ship
+ * with every Connect release.
+ */
+const CONNECT_CLOSURE_ROOTS = [
+    '@trezor/connect',
+    '@trezor/connect-web',
+    '@trezor/connect-mobile',
+    '@trezor/connect-webextension',
+] as const;
+
+type UnifiedField = {
+    readonly name: string;
+    /** Chooses the value the whole closure should agree on. */
+    readonly pickCanonical: (values: ReadonlyArray<unknown>) => unknown;
+};
+
+/**
+ * package.json fields that every published package in the Connect closure must
+ * share. Each field either shares one value across the closure or is missing on
+ * the packages that lag behind; both are treated as drift and aligned on fix.
+ *
+ * A field only belongs here if it (1) is release/publish metadata, (2) has a
+ * single canonical value the whole family should share, and (3) is safe to
+ * rewrite. Deliberately excluded:
+ * - `license` — NOT uniform for a real reason: `@trezor/connect` and several
+ *   others are under the repository's TREZOR REFERENCE SOURCE LICENSE (via
+ *   "SEE LICENSE IN LICENSE.md"), while the utility packages are "MIT". These are
+ *   two different licenses, so unifying to the most common value (MIT) would
+ *   mis-license the restricted packages. License changes need human review.
+ * - `type`, `sideEffects` — build/bundler semantics, not release metadata.
+ * - `homepage`, `main`, `exports`, `publishConfig`, `browser`, `keywords`, … —
+ *   inherently per-package.
+ * - `dependencies` / `devDependencies` versions are covered by
+ *   requireUnifiedDependencyVersions.
+ */
+const UNIFIED_FIELDS: ReadonlyArray<UnifiedField> = [
+    // Release lockstep — see #30575.
+    { name: 'version', pickCanonical: values => pickCanonicalVersion(values.map(String)) },
+    // NPM provenance requires a repository field on every published package — see #30591.
+    { name: 'repository', pickCanonical: mostCommon },
+    // Issue tracker; every published package should point at the same tracker.
+    { name: 'bugs', pickCanonical: mostCommon },
+    // Package author; uniform across the Trezor-published family.
+    { name: 'author', pickCanonical: mostCommon },
+];
+
+type FieldDrift = {
+    readonly field: string;
+    readonly packageName: string;
+    readonly dir: string;
+    readonly actual: unknown;
+    readonly canonical: unknown;
+};
+
+const analyzeClosure = (
+    repoRoot: string,
+): { readonly drifts: ReadonlyArray<FieldDrift> } | { readonly error: string } => {
+    const packages = collectWorkspacePackages(repoRoot);
+    const closureNames = [...collectProdWorkspaceClosure(CONNECT_CLOSURE_ROOTS, packages)].sort();
+
+    if (closureNames.length === 0) {
+        return {
+            error: `No Connect closure packages found. Expected at least one of: ${CONNECT_CLOSURE_ROOTS.join(', ')}.`,
+        };
+    }
+
+    const publicPackages = closureNames
+        .map(name => packages.get(name))
+        .filter(
+            (pkg): pkg is WorkspacePackage => pkg !== undefined && pkg.packageJson.private !== true,
+        );
+
+    if (publicPackages.length === 0) {
+        return { error: 'No published Connect closure packages found.' };
+    }
+
+    const drifts: FieldDrift[] = [];
+
+    for (const field of UNIFIED_FIELDS) {
+        const presentValues = publicPackages
+            .map(pkg => pkg.packageJson[field.name])
+            .filter(value => value !== undefined);
+
+        if (presentValues.length === 0) continue;
+
+        const canonical = field.pickCanonical(presentValues);
+
+        for (const pkg of publicPackages) {
+            const actual = pkg.packageJson[field.name];
+
+            if (deepEqual(actual, canonical)) continue;
+
+            drifts.push({
+                field: field.name,
+                packageName: pkg.name,
+                dir: pkg.dir,
+                actual,
+                canonical,
+            });
+        }
+    }
+
+    return { drifts };
+};
+
+const formatDriftError = ({ field, packageName, actual, canonical }: FieldDrift): string => {
+    const current =
+        actual === undefined
+            ? `has no "${field}" field`
+            : `has "${field}" = ${JSON.stringify(actual)}`;
+
+    return `"${packageName}" ${current} but the Connect closure uses ${JSON.stringify(canonical)}. Run requirements:fix --only=connect-closure-fields.`;
+};
+
+/**
+ * Verifies that every published package in the `@trezor/connect` production
+ * closure shares the same value for a set of release-critical package.json fields
+ * (see UNIFIED_FIELDS), so the whole family is published in lockstep and no
+ * package is released with stale or missing metadata.
+ */
+export const requireConnectClosureUnifiedFields: Requirement<'repo'> = {
+    name: 'connect-closure-fields',
+    scope: 'repo',
+    verify: ({ repoRoot }) => {
+        const analysis = analyzeClosure(repoRoot);
+
+        if ('error' in analysis) {
+            return Promise.resolve([analysis.error]);
+        }
+
+        return Promise.resolve(analysis.drifts.map(formatDriftError));
+    },
+    fix: ({ repoRoot }) => {
+        const analysis = analyzeClosure(repoRoot);
+
+        if ('error' in analysis) {
+            return Promise.resolve([analysis.error]);
+        }
+
+        const driftsByDir = arrayToDictionary([...analysis.drifts], drift => drift.dir, true);
+
+        for (const [dir, drifts] of typedObjectEntries(driftsByDir)) {
+            const pkgPath = join(dir, 'package.json');
+            const parsed = JSON.parse(readFileSync(pkgPath, 'utf-8')) as Record<string, unknown>;
+
+            for (const drift of drifts) {
+                parsed[drift.field] = drift.canonical;
+            }
+
+            writeFileSync(pkgPath, JSON.stringify(parsed, null, 4) + '\n', 'utf-8');
+        }
+
+        return Promise.resolve([]);
+    },
+};
