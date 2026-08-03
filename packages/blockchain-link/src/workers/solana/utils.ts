@@ -126,9 +126,26 @@ export const fetchTransactionPage = async (
 export const isValidTransaction = (
     tx: ParsedTransactionWithMeta,
 ): tx is SolanaValidParsedTxWithMeta =>
-    // `transaction.signatures[0]` is dereferenced unconditionally by solanaUtils.transformTransaction
-    // (txid) and getDetails, so an untrusted/compromised RPC returning an otherwise-valid tx with an
-    // empty (or missing) `signatures` array would crash the whole account-history `.map` (poison one
-    // record → fail entire page). Require at least one signature here so such records are dropped at
-    // the boundary instead.
-    !!(tx?.meta && tx.transaction && tx.blockTime && tx.transaction.signatures?.length);
+    // This type-predicate must guarantee everything solanaUtils.transformTransaction / getDetails
+    // dereference *unconditionally* while mapping a whole account-history page — an untrusted or
+    // compromised RPC (endpoint is user-selectable / MITM-able and the `jsonParsed` response is not
+    // schema-validated) can return an otherwise-valid tx that omits one of these fields, and a single
+    // throw fails the entire page `.map` (poison one record → fail entire page). Concretely:
+    //   - `transaction.signatures[0]` → txid (solana.ts getDetails / transformTransaction)
+    //   - `transaction.message.accountKeys.map(...)` (getNativeEffects, reached first)
+    //   - `transaction.message.instructions.some(...)` (getTxType)
+    //   - `meta.preBalances[i]` / `meta.postBalances[i]` (extractAccountBalanceDiff)
+    //   - `meta.fee.toString()` (getNativeTransferTxType)
+    // Their TS types mark them non-optional, so downstream code trusts them; validate them here so
+    // malformed records are dropped at the boundary instead of crashing the page.
+    !!(
+        tx?.meta &&
+        tx.transaction &&
+        tx.blockTime &&
+        tx.transaction.signatures?.length &&
+        Array.isArray(tx.transaction.message?.accountKeys) &&
+        Array.isArray(tx.transaction.message?.instructions) &&
+        Array.isArray(tx.meta.preBalances) &&
+        Array.isArray(tx.meta.postBalances) &&
+        tx.meta.fee != null
+    );
