@@ -1,86 +1,26 @@
 ---
 name: comments
-description: Comment conventions for Trezor Suite — prefer self-documenting code, and how to write and format a comment when one is actually needed. Use when writing or reviewing code comments.
+description: Comment conventions for Trezor Suite. Use when adding, editing, or reviewing code comments, JSDoc, JSX comments, TODOs, or suppression directives.
 ---
 
 # Comments
 
-## Prefer self-documenting code
-
-The best comment is usually no comment. A clear name says more than a line explaining an unclear one, so reach for a comment only when the code genuinely can't speak for itself.
-
-```tsx
-// bad - the comment only restates the code
-// Get the account balance.
-const b = getBalance(account);
-
-// good - the name carries the meaning, no comment needed
-const accountBalance = getBalance(account);
-```
-
-## Comment the _why_, not the _what_
-
-When you do comment, explain intent, edge cases, or non-obvious reasoning — things the code cannot express on its own.
+- Prefer self-documenting code. Rename or restructure unclear code instead of adding a comment
+  that only restates what it does.
+- Comment information the code cannot express: rationale, invariants, non-obvious constraints,
+  workarounds, and edge cases.
+- Keep comments synchronized with the code. Remove stale comments and commented-out code.
+- Write prose comments as complete sentences: start with an uppercase letter, end with punctuation,
+  and wrap consecutive `//` lines at the print width.
+- Do not apply prose rules to tool directives such as `eslint-disable`, `@ts-expect-error`, coverage
+  pragmas, URLs, or generated comments.
+- When suppressing a lint or type error, include the reason where the directive syntax supports it.
+- Use `/** */` when editor- or tool-consumed documentation adds value, such as public API behavior or
+  `@deprecated`. Do not repeat information already expressed by TypeScript types or the function
+  signature.
+- In JSX, place `{/* ... */}` immediately before the node it describes.
 
 ```tsx
-// bad - restates what the reader can already see
-// Increment the index.
-index += 1;
-
-// good - explains a decision the reader can't infer from the code
-// Firmware < 2.6.0 reports the fee in a different unit, so we normalize here.
-const fee = normalizeFee(rawFee, firmwareVersion);
-```
-
-## Start with an uppercase letter and end with a period
-
-Applies to every comment, single- or multi-line.
-
-```tsx
-// This is a comment that helps you understand what is happening in the code
-// below.
-const someFunction = () => null;
-```
-
-## Multiline comments
-
-Stack `//` lines and wrap at the print width. Capitalize only the first line and end only the last line with a period.
-
-```tsx
-// We debounce the search input because the backend rate-limits requests, and
-// firing on every keystroke would exhaust the quota during fast typing.
-const debouncedSearch = useDebounce(search, 300);
-```
-
-Reserve `/** */` JSDoc blocks for documenting exported APIs, where editors surface the description on hover.
-
-```tsx
-/**
- * Converts an amount from the smallest unit (e.g. satoshis) to the main unit.
- */
-export const formatAmount = (amount: string, decimals: number) => {
-    // ...
-};
-```
-
-## Comments in components (JSX)
-
-Inside JSX, wrap comments in `{/* */}` and place them above the element they describe. The uppercase-and-period rule still applies.
-
-```tsx
-export const AccountBalance = ({ account, isLoading }: AccountBalanceProps) => (
-    <Row>
-        {/* Skeleton keeps the layout stable while the balance loads. */}
-        {isLoading ? <Skeleton /> : <Balance value={account.balance} />}
-    </Row>
-);
-```
-
-Multiline JSX comments keep the same wrapping rules:
-
-```tsx
-{
-    /* The balance aligns with the right edge of the vault name above; when the
-    name is shorter, the gap keeps it 24px from the label. */
-}
+// Firmware < 2.6.0 reports fees in a different unit, so normalize them here.
+const normalizedFee = normalizeFee(rawFee, firmwareVersion);
 ```
