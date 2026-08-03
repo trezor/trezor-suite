@@ -2,11 +2,12 @@ import '@suite-common/test-utils/globalOverrides';
 
 import { fireEvent } from '@testing-library/react';
 
-import { selectShouldDisplayDeviceCompromisedOnRoute } from '@suite/authenticity-checks';
 import { type DesktopDeviceState } from '@suite/device';
 import { type RouterState } from '@suite/router';
 import { type AnalyticsState } from '@suite-common/analytics-redux';
+import { type AcquiredDevice } from '@suite-common/suite-types';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
+import { isDeviceAcquired } from '@suite-common/suite-utils';
 import { configureMockStore } from '@suite-common/test-utils';
 import { type TransportInfo } from '@trezor/connect';
 import { isLinux } from '@trezor/env-utils';
@@ -23,14 +24,6 @@ import { mockInitialAppState } from '../../../../mocks/mockInitialAppState';
 jest.mock('@trezor/env-utils', () => ({
     ...jest.requireActual('@trezor/env-utils'),
     isLinux: jest.fn(() => true),
-}));
-
-jest.mock('@suite/authenticity-checks', () => ({
-    ...jest.requireActual('@suite/authenticity-checks'),
-    selectShouldDisplayDeviceCompromisedOnRoute: jest.fn(
-        jest.requireActual('@suite/authenticity-checks')
-            .selectShouldDisplayDeviceCompromisedOnRoute,
-    ),
 }));
 
 class ResizeObserverMock {
@@ -78,6 +71,18 @@ const createTransportInfo = (transportInfo: Partial<TransportInfo>): TransportIn
     version: '',
     ...transportInfo,
 });
+
+const defaultDevice = mockSuiteDevice();
+if (!isDeviceAcquired(defaultDevice)) {
+    throw `${mockSuiteDevice.name}() must return an AcquiredDevice here.`;
+}
+const compromisedDevice: AcquiredDevice = {
+    ...defaultDevice,
+    authenticityChecks: {
+        firmwareRevision: { success: false, error: 'revision-mismatch' },
+        firmwareHash: { success: false, error: 'hash-mismatch' },
+    },
+};
 
 type GetInitialStateProps = {
     suite?: Partial<SuiteState>;
@@ -532,9 +537,7 @@ describe(`${Preloader.name} component`, () => {
     });
 
     it('displays DeviceCompromised when shouldDisplayDeviceCompromised is true', () => {
-        (selectShouldDisplayDeviceCompromisedOnRoute as jest.Mock).mockImplementation(() => true);
-
-        const store = initStore(getInitialState());
+        const store = initStore(getInitialState({ device: { selectedDevice: compromisedDevice } }));
         const { unmount } = renderWithProviders(
             store,
             extraDependenciesDesktopMock.services,
@@ -543,10 +546,6 @@ describe(`${Preloader.name} component`, () => {
         expect(findByTestId('@device-compromised')).not.toBeNull();
 
         unmount();
-        (selectShouldDisplayDeviceCompromisedOnRoute as jest.Mock).mockImplementation(
-            jest.requireActual('@suite/authenticity-checks')
-                .selectShouldDisplayDeviceCompromisedOnRoute,
-        );
     });
 
     it('Required FW update device', () => {
