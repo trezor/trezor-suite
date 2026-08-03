@@ -1,5 +1,6 @@
 import { type FC, type PropsWithChildren, useEffect } from 'react';
 
+import { selectShouldDisplayDeviceCompromisedOnRoute } from '@suite/authenticity-checks';
 import { selectDesktopUpdateAllowPrerelease } from '@suite/desktop-update';
 import { useDevice } from '@suite/device';
 import { KillswitchMessageScreen } from '@suite/message-system';
@@ -26,7 +27,6 @@ import { ErrorPage } from 'src/views/suite/ErrorPage';
 import { DatabaseCorruptedModal } from './DatabaseCorruptedModal';
 import { DatabaseUpgradeModal } from './DatabaseUpgradeModal';
 import { InitialLoading } from './InitialLoading';
-import { selectShouldDisplayDeviceCompromisedOnRoute } from './selectShouldDisplayDeviceCompromisedOnRoute';
 import { PrerequisitesGuide } from '../PrerequisitesGuide/PrerequisitesGuide';
 import { DeviceCompromised } from '../SecurityCheck/DeviceCompromised';
 import { useDeviceCompromisedNotification } from '../SecurityCheck/useDeviceCompromisedNotification';
