@@ -168,7 +168,13 @@ const CopyWrapper = styled.div`
     }
 `;
 
-export const ConnectInitForm = () => {
+interface ConnectInitFormProps {
+    /** Called when a user-triggered (re-)init succeeds — the method tool uses it to switch to a
+     *  success screen; the standalone Settings page omits it and relies on the button confirmation. */
+    onInitialized?: () => void;
+}
+
+export const ConnectInitForm = ({ onInitialized }: ConnectInitFormProps = {}) => {
     const isInitializing = useSelector(selectIsConnectInitializing);
     const isInitSuccess = useSelector(selectIsConnectInitSuccess);
     const initError = useSelector(selectConnectInitError);
@@ -227,6 +233,14 @@ export const ConnectInitForm = () => {
         setJustInitialized(false);
         const initialized = await actions.initWithOptions(options);
         if (!initialized) return;
+
+        // In the method tool the panel shows a success overlay, so skip the button confirmation there;
+        // the standalone Settings page has no overlay and relies on it.
+        if (onInitialized) {
+            onInitialized();
+
+            return;
+        }
 
         setJustInitialized(true);
         clearTimeout(confirmationTimeout.current);
