@@ -53,6 +53,7 @@ export { default as signTransactionZcash } from './signTransactionZcash';
 export { default as solanaComposeTransaction } from './solanaComposeTransaction';
 export { default as solanaGetAddress } from './solanaGetAddress';
 export { default as solanaGetPublicKey } from './solanaGetPublicKey';
+export { default as solanaSignMessage } from './solanaSignMessage';
 export { default as solanaSignTransaction } from './solanaSignTransaction';
 export { default as stellarGetAddress } from './stellarGetAddress';
 export { default as stellarSignTransaction } from './stellarSignTransaction';

@@ -160,6 +160,18 @@ export const config: Config = {
             },
         },
         {
+            methods: ['solanaSignMessage'],
+            min: {
+                T1B1: '0',
+                T2T1: '2.12.4',
+                T2B1: '2.12.4',
+                T3B1: '2.12.4',
+                T3T1: '2.12.4',
+                T3W1: '2.12.4',
+            },
+            comment: ['Solana off-chain message signing (OCMS v1) added in 2.12.4'],
+        },
+        {
             capabilities: ['chunkify'],
             min: {
                 T1B1: '0',
