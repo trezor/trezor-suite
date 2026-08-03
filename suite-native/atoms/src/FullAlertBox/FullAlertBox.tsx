@@ -16,7 +16,7 @@ const containerStyle = prepareNativeStyle<Pick<AlertBoxStyles, 'backgroundColor'
         borderWidth: utils.borders.widths.small,
         borderColor: utils.colors[borderColor],
         borderRadius: utils.borders.radii.r12,
-        padding: utils.spacings.sp16,
+        padding: utils.spacings.sp12,
     }),
 );
 
@@ -59,13 +59,13 @@ export const FullAlertBox = ({
                     <Icon
                         name={iconName ?? intentToIconName[intent]}
                         color={textColor}
-                        size="large"
+                        size="mediumLarge"
                     />
                     <VStack spacing="sp12" flex={1}>
                         <VStack spacing="sp2">
                             <Text color={textColor}>{title}</Text>
                             {description && (
-                                <Text color={textColor} priority="secondary" variant="body-sm">
+                                <Text color={textColor} variant="body-sm">
                                     {description}
                                 </Text>
                             )}
