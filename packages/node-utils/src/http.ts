@@ -651,8 +651,24 @@ export const allowReferers =
         }
     };
 
-export const parseBodyTextHelper = (request: Request) =>
-    new Promise<string>(resolve => {
+// Upper bound on the request body we are willing to buffer in memory. Only the bridge
+// /call and /post routes carry a large body — a hex-encoded device message; the biggest
+// legitimate one is a firmware-upload frame (worst case the largest firmware image sent
+// in a single message, ~6.5 MiB of hex), so 8 MiB fits it with margin while everything
+// else (signing, /listen descriptors, /acquire params) is a few KB. Without a cap a caller
+// streaming an unbounded chunked body would grow `tmp` until `Buffer.concat` OOMs and
+// takes down the bridge process.
+const MAX_BODY_SIZE = 8 * 1024 * 1024;
+
+export class PayloadTooLargeError extends Error {
+    constructor() {
+        super('Payload too large');
+        this.name = 'PayloadTooLargeError';
+    }
+}
+
+export const parseBodyTextHelper = (request: Request, maxBytes: number = MAX_BODY_SIZE) =>
+    new Promise<string>((resolve, reject) => {
         const hasData =
             (request.headers['content-length'] &&
                 Number.parseInt(request.headers['content-length']) > 0) ||
@@ -662,11 +678,24 @@ export const parseBodyTextHelper = (request: Request) =>
             return resolve('');
         }
         const tmp: Buffer[] = [];
+        let size = 0;
+        let rejected = false;
         request
             .on('data', chunk => {
+                if (rejected) return;
+                size += chunk.length;
+                if (size > maxBytes) {
+                    // stop buffering, drain the rest of the stream without keeping it, and bail
+                    rejected = true;
+                    request.resume();
+                    reject(new PayloadTooLargeError());
+
+                    return;
+                }
                 tmp.push(chunk);
             })
             .on('end', () => {
+                if (rejected) return;
                 const body = Buffer.concat(tmp).toString();
                 // at this point, `body` has the entire request body stored in it as a string
                 resolve(body);
@@ -689,6 +718,12 @@ export const parseBodyJSON: RequestHandler<unknown, JSON> = (request, response, 
             next({ ...request, body }, response);
         })
         .catch(error => {
+            if (error instanceof PayloadTooLargeError) {
+                response.statusCode = 413;
+                response.end(JSON.stringify({ error: 'Payload too large' }));
+
+                return;
+            }
             response.statusCode = 400;
             response.end(JSON.stringify({ error: `Invalid json body: ${error.message}` }));
         });
@@ -754,7 +789,14 @@ export const parseBodyJSONWithLimit =
  * set request.body as string
  */
 export const parseBodyText: RequestHandler<unknown, string> = (request, response, next) => {
-    parseBodyTextHelper(request).then(body => {
-        next({ ...request, body }, response);
-    });
+    parseBodyTextHelper(request)
+        .then(body => {
+            next({ ...request, body }, response);
+        })
+        .catch(() => {
+            // parseBodyTextHelper only rejects on an over-cap body; without this catch the
+            // rejection would surface as an unhandled rejection in the bridge utility process.
+            response.statusCode = 413;
+            response.end(JSON.stringify({ error: 'Payload too large' }));
+        });
 };
