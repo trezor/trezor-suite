@@ -234,9 +234,12 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
             };
 
             return Promise.resolve(result);
-        } catch (e) {
-            // Don't throw errors from this method
-            console.error('Error in payloadToPrecomposed', e);
+        } catch {
+            // Don't throw errors from this method.
+            // Do NOT log the raw error: it is derived from the transaction
+            // (inputs/outputs/amounts) and would leak to Sentry via
+            // captureConsoleIntegration in the popup/renderer.
+            console.error('Error in payloadToPrecomposed (bitcoin)');
 
             return Promise.resolve(undefined);
         }

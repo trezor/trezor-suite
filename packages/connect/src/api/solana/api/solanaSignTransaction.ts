@@ -196,9 +196,13 @@ export default class SolanaSignTransaction extends AbstractMethod<'solanaSignTra
                 createdTimestamp:
                     'blockhash' in message.lifetimeConstraint ? new Date().getTime() : undefined,
             };
-        } catch (e) {
-            // Don't throw errors from this method
-            console.error('Error in payloadToPrecomposed', e);
+        } catch {
+            // Don't throw errors from this method.
+            // Do NOT log the raw error: it can embed the serialized transaction
+            // (addresses/amounts) — e.g. the base16 decoder throws
+            // "Invalid value <serializedTx> ..." — which would leak to Sentry
+            // via captureConsoleIntegration in the popup/renderer.
+            console.error('Error in payloadToPrecomposed (solana)');
         }
     }
 
