@@ -1,4 +1,3 @@
-import { type Route } from '@suite/router';
 import { createRouterStateMock } from '@suite/router/mocks';
 import { suiteSettingsInitialState } from '@suite/settings';
 import { deviceInitialState } from '@suite-common/device';
@@ -10,7 +9,7 @@ import { DeviceModelInternal } from '@trezor/device-utils';
 
 import {
     type AuthenticityChecksRootState,
-    selectShouldDisplayDeviceCompromisedOnRoute,
+    selectShouldDisplayDeviceCompromised,
 } from './authenticityChecksSelectors';
 
 type Fixture = {
@@ -33,14 +32,7 @@ const authenticityChecksSuccess = defaultDevice.authenticityChecks;
 const initialState: AuthenticityChecksRootState = {
     device: deviceInitialState,
     messageSystem: messageSystemInitialState,
-    router: createRouterStateMock({
-        app: 'dashboard',
-        route: {
-            name: 'suite-index',
-            pattern: '/',
-            app: 'dashboard',
-        } as Route,
-    }),
+    router: createRouterStateMock(),
     suiteSettings: suiteSettingsInitialState,
 };
 
@@ -63,28 +55,6 @@ const fixtures: Fixture[] = [
                     authenticityChecks: authenticityChecksSuccess,
                 },
             },
-        },
-        result: false,
-    },
-    {
-        description: 'returns false if check errors, but on a skipped route',
-        state: {
-            ...initialState,
-            device: {
-                ...initialState.device,
-                selectedDevice: {
-                    ...defaultDevice,
-                    authenticityChecks: authenticityChecksFail,
-                },
-            },
-            router: createRouterStateMock({
-                app: 'settings',
-                route: {
-                    name: 'settings-index',
-                    pattern: '/settings',
-                    app: 'settings',
-                } as Route,
-            }),
         },
         result: false,
     },
@@ -220,10 +190,10 @@ const fixtures: Fixture[] = [
     },
 ];
 
-describe(selectShouldDisplayDeviceCompromisedOnRoute.name, () => {
+describe(selectShouldDisplayDeviceCompromised.name, () => {
     fixtures.forEach(f => {
         it(f.description, () => {
-            expect(selectShouldDisplayDeviceCompromisedOnRoute(f.state)).toBe(f.result);
+            expect(selectShouldDisplayDeviceCompromised(f.state)).toBe(f.result);
         });
     });
 });
