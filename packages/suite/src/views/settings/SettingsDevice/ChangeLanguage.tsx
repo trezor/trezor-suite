@@ -1,6 +1,7 @@
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
+import { NON_BETA_DEVICE_LANGUAGES } from '@suite-common/device';
 import { LANGUAGES, type Locale } from '@suite-common/suite-types';
 import { ActionColumn, ActionSelect, SectionItem, TextColumn } from '@trezor/product-components';
 
@@ -31,9 +32,13 @@ export const ChangeLanguage = ({ isDeviceLocked }: ChangeLanguageProps) => {
                 return null;
             }
 
+            const isBeta = !NON_BETA_DEVICE_LANGUAGES.includes(it as Locale);
+
             return {
                 value: it,
-                label: `${LANGUAGES[it as Locale].name} (beta)`,
+                label: isBeta
+                    ? `${LANGUAGES[it as Locale].name} (beta)`
+                    : LANGUAGES[it as Locale].name,
             };
         })
         .filter((lang): lang is { value: string; label: string } => Boolean(lang));
