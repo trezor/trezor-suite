@@ -322,7 +322,10 @@ const bootstrapIframe = (): Promise<void> => {
     return new Promise<void>(resolve => {
         // Handle 3rd party window -> iframe.
         window.addEventListener('message', async (event: MessageEvent) => {
-            if (event.data.channel?.here !== PEERS.WEB || event.data.channel?.peer !== PEERS.HERE) {
+            if (
+                event.data?.channel?.here !== PEERS.WEB ||
+                event.data?.channel?.peer !== PEERS.HERE
+            ) {
                 return;
             }
 

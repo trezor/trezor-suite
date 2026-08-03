@@ -218,6 +218,23 @@ describe('bootstrap (iframe mode)', () => {
         );
     });
 
+    it('does not reject on a malformed message with null/undefined data (DoS guard)', async () => {
+        bootstrap();
+
+        // The iframe message handler is registered synchronously by bootstrapIframe.
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const listener: EventListener = registeredListeners[0];
+        expect(listener).toBeDefined();
+
+        // An embedding third-party page can postMessage arbitrary payloads to the
+        // iframe. A non-object `data` must not throw out of the async handler (which
+        // would surface as a zero-interaction unhandled promise rejection).
+        for (const data of [null, undefined]) {
+            const event = new MessageEvent('message', { data, origin: OWNER_ORIGIN });
+            await expect((listener as any)(event)).resolves.toBeUndefined();
+        }
+    });
+
     it('completes full handshake flow and starts forwarding', async () => {
         const fakeBc = new MockBroadcastChannel('test');
         (document as any).requestStorageAccess = jest.fn().mockResolvedValue({
