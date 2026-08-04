@@ -15575,7 +15575,7 @@
                             "transports": [],
                             "isUnlockedBootloaderAllowed": false,
                             "showConnectLogs": false,
-                            "isN4w1BackupEnabled": false,
+                            "isNfcBackupEnabled": false,
                             "showTranslationKeys": false
                         },
                         "autodetect": {

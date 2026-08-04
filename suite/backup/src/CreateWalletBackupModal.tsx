@@ -9,7 +9,7 @@ import {
     AdditionalBackupSuccess,
 } from '@suite/nfc';
 import { isAdditionalShamirBackupInProgress } from '@suite/recovery';
-import { selectIsN4w1BackupEnabled } from '@suite/settings';
+import { selectIsNfcBackupEnabled } from '@suite/settings';
 import { selectSelectedDevice } from '@suite-common/device';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { Modal } from '@trezor/components';
@@ -27,9 +27,9 @@ type Step = 'disclaimer' | 'how-it-works' | 'verify-ownership' | 'backup' | 'don
 export const CreateWalletBackupModal = ({ onCancel }: CreateWalletBackupModalProps) => {
     const device = useSelector(selectSelectedDevice);
     const dispatch = useDispatch();
-    const isN4w1BackupEnabled = useSelector(selectIsN4w1BackupEnabled);
+    const isNfcBackupEnabled = useSelector(selectIsNfcBackupEnabled);
 
-    const backupMethod = isN4w1BackupEnabled ? PROTO.BackupMethod.N4W1 : PROTO.BackupMethod.Display;
+    const backupMethod = isNfcBackupEnabled ? PROTO.BackupMethod.N4W1 : PROTO.BackupMethod.Display;
 
     const isInBackupMode =
         device?.features !== undefined && isAdditionalShamirBackupInProgress(device.features);

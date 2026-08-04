@@ -15,6 +15,5 @@ export type LaunchArguments = {
     isTradingDebugEnabled?: boolean;
     isTradingSlip24Enabled?: boolean;
     isTradingTxSimulationEnabled?: boolean;
-    isN4w1BackupEnabled?: boolean;
-    isN4W1BackupEnabled?: boolean;
+    isNfcBackupEnabled?: boolean;
 };

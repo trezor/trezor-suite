@@ -55,7 +55,7 @@ export const selectSidebarWidth = (state: SuiteSettingsRootState) =>
     state.suiteSettings.sidebarWidth;
 export const selectIsCoinsFilterVisible = (state: SuiteSettingsRootState) =>
     state.suiteSettings.isCoinsFilterVisible;
-export const selectIsN4w1BackupEnabled = (state: SuiteSettingsRootState) =>
-    state.suiteSettings.debug.isN4w1BackupEnabled;
+export const selectIsNfcBackupEnabled = (state: SuiteSettingsRootState) =>
+    state.suiteSettings.debug.isNfcBackupEnabled;
 export const selectShowTranslationKeys = (state: SuiteSettingsRootState) =>
     state.suiteSettings.debug.showTranslationKeys;

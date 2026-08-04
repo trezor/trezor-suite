@@ -117,6 +117,7 @@ export enum DeviceSettingsStackRoutes {
     DevicePinProtectionStack = 'DevicePinProtectionStack',
     DeviceBackupAndPassphrase = 'DeviceBackupAndPassphrase',
     DeviceCheckBackupStack = 'DeviceCheckBackupStack',
+    DeviceCreateAdditionalBackupStack = 'DeviceCreateAdditionalBackupStack',
     DevicePassphraseStack = 'DevicePassphraseStack',
     DeviceAuthenticity = 'DeviceAuthenticity',
     DeviceAuthenticityStack = 'DeviceAuthenticityStack',
@@ -171,6 +172,16 @@ export enum DeviceCheckBackupStackRoutes {
     CheckBackupRecap = 'CheckBackupRecap',
     CheckBackupFail = 'CheckBackupFail',
     CheckBackupSupport = 'CheckBackupSupport',
+}
+
+export enum CreateAdditionalBackupStackRoutes {
+    DeviceConnectionGuard = 'DeviceConnectionGuard',
+    Disclaimer = 'Disclaimer',
+    HowItWorks = 'HowItWorks',
+    FollowInstructions = 'FollowInstructions',
+    Success = 'Success',
+    Recap = 'Recap',
+    Error = 'Error',
 }
 
 export enum DevicePassphraseStackRoutes {
