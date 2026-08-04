@@ -413,6 +413,15 @@ export const transformTokenInfo = (
         return arr.concat([
             {
                 ...token,
+                // `TokenInfo.contract` is typed as a required string, but the untrusted/
+                // user-selectable blockbook `Token.contract` is optional (blockbook-api.ts).
+                // The value is later deref'd unconditionally by consumers of AccountInfo.tokens
+                // (e.g. accountsThunks.ts fetchAccountTokens `p.contract.toLowerCase()` on the EVM
+                // branch, token-definition selectors) → a single contract-less token from a
+                // malicious backend would throw and abort the whole account update (poison-record
+                // DoS). Normalize to an empty string so runtime honors the declared type — mirrors
+                // the filterTokenTransfers sibling in this file.
+                contract: typeof token.contract === 'string' ? token.contract : '',
                 decimals: token.decimals || DEFAULT_TOKEN_DECIMALS,
                 standard: token.standard,
             },

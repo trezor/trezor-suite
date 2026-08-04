@@ -5,6 +5,7 @@ import {
     transformAccountInfo,
     transformAccountUtxo,
     transformAddresses,
+    transformTokenInfo,
     transformTransaction,
 } from './blockbook';
 
@@ -192,6 +193,44 @@ describe('blockbook/utils', () => {
                 { from: address, to: '0x2222', decimals: 18, value: '7' },
             ]);
             expect(() => result.map(t => t.contract.toLowerCase())).not.toThrow();
+        });
+    });
+
+    describe('transformTokenInfo contract normalization (poison-record DoS resistance)', () => {
+        // Token.contract is optional on the untrusted/user-selectable blockbook backend, but
+        // TokenInfo.contract is a required string. Consumers of AccountInfo.tokens deref it
+        // unconditionally (e.g. accountsThunks fetchAccountTokens `p.contract.toLowerCase()` on the
+        // EVM branch, token-definition selectors), so a contract-less token would abort the whole
+        // account update. transformTokenInfo now normalizes contract to a string.
+        it('normalizes a missing contract to an empty string and keeps the token', () => {
+            const result = transformTokenInfo([
+                // @ts-expect-error poison record missing the required contract field
+                { type: 'ERC20', standard: 'ERC20', name: 'X', symbol: 'X', decimals: 18 },
+            ]);
+            expect(result).toHaveLength(1);
+            expect(result?.[0]?.contract).toBe('');
+        });
+
+        it('produces tokens whose contract is always deref-safe (.toLowerCase does not throw)', () => {
+            const result = transformTokenInfo([
+                // @ts-expect-error poison record missing the required contract field
+                { type: 'ERC20', standard: 'ERC20', name: 'X', symbol: 'X', decimals: 18 },
+            ]);
+            expect(() => (result ?? []).map(t => t.contract.toLowerCase())).not.toThrow();
+        });
+
+        it('preserves a valid contract value unchanged', () => {
+            const result = transformTokenInfo([
+                {
+                    type: 'ERC20',
+                    standard: 'ERC20',
+                    name: 'X',
+                    symbol: 'X',
+                    contract: '0xAbC',
+                    decimals: 18,
+                },
+            ]);
+            expect(result?.[0]?.contract).toBe('0xAbC');
         });
     });
 
