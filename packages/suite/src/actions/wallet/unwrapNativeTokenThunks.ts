@@ -127,6 +127,7 @@ export const submitUnwrapNativeTokenThunk = createThunk(
             dispatch(
                 notificationsActions.addToast({
                     type: 'tx-unwrap',
+                    isYieldFlowStep: !!yieldFlow,
                     descriptor: account.descriptor,
                     symbol: account.symbol,
                     txid: sendResult.txid,

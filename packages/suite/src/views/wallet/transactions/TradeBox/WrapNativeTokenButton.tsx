@@ -68,7 +68,7 @@ export const WrapNativeTokenButton = ({ account }: WrapNativeTokenButtonProps) =
             type: events.yieldNavigateEvent.name,
             payload: {
                 action: 'continue',
-                from: 'account-defi-tokens',
+                from: 'account-tradebox',
                 to: 'wrap-form',
                 networkSymbol: account.symbol,
             },

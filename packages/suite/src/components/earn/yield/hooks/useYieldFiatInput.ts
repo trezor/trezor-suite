@@ -1,6 +1,9 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { type UseFormReturn, useWatch } from 'react-hook-form';
 
+import { selectDesktopAnalyticsDep } from '@suite/analytics';
+import { events } from '@suite-common/analytics';
+import { useServices } from '@suite-common/dependency-injection';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type YieldFlowFormValues,
@@ -28,6 +31,7 @@ type UseYieldFiatInputParams = {
     symbol: NetworkSymbol | undefined;
     tokenAddress?: TokenAddress;
     decimals: number;
+    vaultId?: string;
 };
 
 export type UseYieldFiatInputResult = {
@@ -46,7 +50,9 @@ export const useYieldFiatInput = ({
     symbol,
     tokenAddress,
     decimals,
+    vaultId,
 }: UseYieldFiatInputParams): UseYieldFiatInputResult => {
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
     const baseCurrencyCode = useSelector(selectBaseCurrency);
     const currentFiatRates = useSelector(selectCurrentFiatRates);
     const [currency, setCurrency] = useState<YieldCurrency>('crypto');
@@ -96,11 +102,28 @@ export const useYieldFiatInput = ({
         [currentRate, decimals, methods],
     );
 
+    // Derived from `currency` rather than the `setCurrency` updater, which React may invoke twice.
+    const onToggle = useCallback(() => {
+        const nextCurrency: YieldCurrency = currency === 'crypto' ? 'fiat' : 'crypto';
+
+        analytics.report({
+            type: events.yieldInteractionEvent.name,
+            payload: {
+                element: 'amount-currency-toggle',
+                value: nextCurrency,
+                networkSymbol: symbol,
+                vaultId,
+            },
+        });
+
+        setCurrency(nextCurrency);
+    }, [analytics, currency, symbol, vaultId]);
+
     const fiatToggle: YieldAmountCardFiatToggleProps | undefined = hasFiatRate
         ? {
               currency,
               fiatSymbol,
-              onToggle: () => setCurrency(prev => (prev === 'crypto' ? 'fiat' : 'crypto')),
+              onToggle,
               onFiatAmountChange,
           }
         : undefined;

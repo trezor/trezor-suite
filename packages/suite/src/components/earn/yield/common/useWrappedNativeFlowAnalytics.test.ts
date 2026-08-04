@@ -54,6 +54,25 @@ describe('useWrappedNativeFlowAnalytics', () => {
         );
     });
 
+    it.each([
+        ['wrap', 'wrap-max'],
+        ['unwrap', 'unwrap-max'],
+    ] as const)('reportMaxClick fires %s-max on the interaction event', (flowType, element) => {
+        const { result } = renderFlowAnalytics({
+            flowType,
+            status: null,
+            txid: null,
+            networkSymbol: 'eth',
+        });
+
+        act(() => result.current.reportMaxClick());
+
+        expect(mockReport).toHaveBeenCalledWith({
+            type: events.yieldInteractionEvent.name,
+            payload: { element, networkSymbol: 'eth' },
+        });
+    });
+
     it('reports success with a duration when the broadcast confirms', () => {
         const { rerender } = renderFlowAnalytics(pendingWrap);
 

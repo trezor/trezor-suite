@@ -2,6 +2,7 @@ import { useForm } from 'react-hook-form';
 
 import { act, renderHook } from '@testing-library/react';
 
+import { events } from '@suite-common/analytics';
 import { type YieldFlowFormValues } from '@suite-common/wallet-core';
 
 import { useYieldFiatInput } from './useYieldFiatInput';
@@ -15,21 +16,38 @@ const mockState = {
     },
 };
 
+const mockReport = jest.fn();
+
 jest.mock('src/hooks/suite', () => ({
     useSelector: (selector: (state: unknown) => unknown) => selector(mockState),
 }));
 
-const renderYieldFiatInput = () =>
+jest.mock('@suite-common/dependency-injection', () => {
+    const analytics = { report: (...args: unknown[]) => mockReport(...args) };
+
+    return { useServices: () => ({ analytics }) };
+});
+
+jest.mock('@suite/analytics', () => ({ selectDesktopAnalyticsDep: () => ({}) }));
+
+const renderYieldFiatInput = (vaultId?: string) =>
     renderHook(() => {
         const methods = useForm<YieldFlowFormValues>({
             mode: 'onChange',
             defaultValues: { amountInput: '', fiatInput: '' },
         });
 
-        return { methods, fiat: useYieldFiatInput({ methods, symbol: 'eth', decimals: 18 }) };
+        return {
+            methods,
+            fiat: useYieldFiatInput({ methods, symbol: 'eth', decimals: 18, vaultId }),
+        };
     });
 
 describe('useYieldFiatInput', () => {
+    beforeEach(() => {
+        jest.clearAllMocks();
+    });
+
     it('offers the fiat switch when a rate is available', () => {
         const { result } = renderYieldFiatInput();
 
@@ -68,5 +86,38 @@ describe('useYieldFiatInput', () => {
         act(() => result.current.fiat.fiatToggle?.onFiatAmountChange('333.33'));
 
         expect(result.current.methods.getValues('amountInput')).toBe('0.099998500007499963');
+    });
+
+    it('reports the unit switched to, in both directions', () => {
+        const { result } = renderYieldFiatInput();
+
+        act(() => result.current.fiat.fiatToggle?.onToggle());
+        act(() => result.current.fiat.fiatToggle?.onToggle());
+
+        expect(mockReport.mock.calls.map(([event]) => event.payload.value)).toEqual([
+            'fiat',
+            'crypto',
+        ]);
+        expect(mockReport).toHaveBeenCalledWith({
+            type: events.yieldInteractionEvent.name,
+            payload: {
+                element: 'amount-currency-toggle',
+                value: 'fiat',
+                networkSymbol: 'eth',
+                vaultId: undefined,
+            },
+        });
+    });
+
+    it('carries the vault id when the amount belongs to a vault flow', () => {
+        const { result } = renderYieldFiatInput('morpho-weth');
+
+        act(() => result.current.fiat.fiatToggle?.onToggle());
+
+        expect(mockReport).toHaveBeenCalledWith(
+            expect.objectContaining({
+                payload: expect.objectContaining({ vaultId: 'morpho-weth' }),
+            }),
+        );
     });
 });

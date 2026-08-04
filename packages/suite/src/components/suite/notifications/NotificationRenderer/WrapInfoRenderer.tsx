@@ -1,5 +1,8 @@
+import { selectDesktopAnalyticsDep } from '@suite/analytics';
 import { HiddenPlaceholder } from '@suite/discreet-mode';
 import { Translation } from '@suite/intl';
+import { events } from '@suite-common/analytics';
+import { useServices } from '@suite-common/dependency-injection';
 import { type WrapTransactionAsset } from '@suite-common/toast-notifications';
 import { ExchangeInfoNotification } from '@trezor/product-components';
 
@@ -16,11 +19,34 @@ const withFormattedAmount = (asset: WrapTransactionAsset) => ({
 });
 
 export const WrapInfoRenderer = ({ render: View, ...props }: WrapInfoRendererProps) => {
-    const { send, receive } = props.notification.metadata;
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { notification } = props;
+    const { send, receive } = notification.metadata;
+
+    // Pairs with the `sent` report the thunk fires when this toast is dispatched. In-flow steps
+    // report on yield/deposit instead, so counting them here would skew the dismissal rate.
+    const handleDismiss = () => {
+        if (notification.isYieldFlowStep) {
+            return;
+        }
+
+        analytics.report({
+            type:
+                notification.type === 'tx-wrap'
+                    ? events.yieldWrapEvent.name
+                    : events.yieldUnwrapEvent.name,
+            payload: {
+                type: 'sent',
+                action: 'close',
+                networkSymbol: notification.symbol,
+            },
+        });
+    };
 
     return (
         <View
             {...props}
+            onCancel={handleDismiss}
             message="TOAST_TX_COMPOSED"
             messageValues={{
                 content: (

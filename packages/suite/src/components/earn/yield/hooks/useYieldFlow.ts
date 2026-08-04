@@ -189,6 +189,7 @@ export const useYieldFlow = ({
         symbol: rateToken?.symbol,
         tokenAddress: rateToken?.tokenAddress,
         decimals: token?.decimals ?? getNetwork(account.symbol).decimals,
+        vaultId: vault.id,
     });
 
     const getMaxAmount = () => {

@@ -1,7 +1,8 @@
 import '@suite-common/test-utils/globalOverrides';
 
 import { Translation } from '@suite/intl';
-import { configureMockStore, screen } from '@suite-common/test-utils';
+import { events } from '@suite-common/analytics';
+import { configureMockStore, fireEvent, screen } from '@suite-common/test-utils';
 import { type NotificationEntry } from '@suite-common/toast-notifications';
 
 import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
@@ -12,9 +13,19 @@ import { mockInitialAppState } from '../../../../../mocks/mockInitialAppState';
 import { type NotificationViewProps } from '../Notifications/NotificationGroup/NotificationList/NotificationView';
 
 type TradingErrorNotification = Extract<NotificationEntry, { type: 'trading-error' }>;
+type WrapNotification = Extract<NotificationEntry, { type: 'tx-wrap' | 'tx-unwrap' }>;
+
+const mockReport = jest.fn();
 
 const MessageView = ({ message, messageValues }: NotificationViewProps) => (
     <Translation id={message} values={messageValues} />
+);
+
+// Stands in for ToastNotificationView, the only view that wires `onCancel`.
+const DismissableView = ({ onCancel }: NotificationViewProps & { onCancel?: () => void }) => (
+    <button type="button" onClick={onCancel}>
+        dismiss
+    </button>
 );
 
 const renderTradingError = (payload: Omit<TradingErrorNotification, 'context' | 'id'>) => {
@@ -30,6 +41,64 @@ const renderTradingError = (payload: Omit<TradingErrorNotification, 'context' | 
         <NotificationRenderer render={MessageView} notification={notification} />,
     );
 };
+
+const renderWrapToast = (payload: Omit<WrapNotification, 'context' | 'id'>) => {
+    const notification = { context: 'toast', id: 0, ...payload } as WrapNotification;
+    const store = configureMockStore({
+        preloadedState: mockInitialAppState,
+        serializableCheck: { ignoredActions: [] },
+    });
+    const services = {
+        ...extraDependenciesDesktopMock.services,
+        analytics: { ...extraDependenciesDesktopMock.services.analytics, report: mockReport },
+    };
+
+    renderWithProviders(
+        store,
+        services,
+        <NotificationRenderer render={DismissableView} notification={notification} />,
+    );
+
+    fireEvent.click(screen.getByText('dismiss'));
+};
+
+const wrapMetadata = {
+    send: { symbol: 'eth', displaySymbol: 'ETH', amount: '1' },
+    receive: { symbol: 'eth', displaySymbol: 'WETH', amount: '1' },
+} as const;
+
+const wrapToastPayload = {
+    type: 'tx-wrap',
+    metadata: wrapMetadata,
+    descriptor: '0xdescriptor',
+    symbol: 'eth',
+    txid: '0xwrap',
+    formattedAmount: '1',
+} as const;
+
+describe('NotificationRenderer wrap toast dismissal', () => {
+    beforeEach(() => {
+        jest.clearAllMocks();
+    });
+
+    it.each([
+        ['tx-wrap', 'yieldWrapEvent'],
+        ['tx-unwrap', 'yieldUnwrapEvent'],
+    ] as const)('reports %s dismissal as sent/close', (type, eventKey) => {
+        renderWrapToast({ ...wrapToastPayload, type });
+
+        expect(mockReport).toHaveBeenCalledWith({
+            type: events[eventKey].name,
+            payload: { type: 'sent', action: 'close', networkSymbol: 'eth' },
+        });
+    });
+
+    it('stays silent for an in-flow yield step', () => {
+        renderWrapToast({ ...wrapToastPayload, isYieldFlowStep: true });
+
+        expect(mockReport).not.toHaveBeenCalled();
+    });
+});
 
 describe('NotificationRenderer trading-error', () => {
     it('step 1: renders the structured message when data is present, ignoring the partner message', () => {

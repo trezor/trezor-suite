@@ -65,15 +65,23 @@ type WrapTransactionMetadata = {
     receive: WrapTransactionAsset;
 };
 
+// Set when the wrap/unwrap is a step of a yield deposit/withdraw rather than the standalone page,
+// which report their analytics on `yield/deposit` / `yield/withdraw` instead.
+type YieldFlowStepFlag = {
+    isYieldFlowStep?: boolean;
+};
+
 type WrapTransactionNotification = {
     type: 'tx-wrap';
     metadata: WrapTransactionMetadata;
-} & TransactionNotificationPayload;
+} & YieldFlowStepFlag &
+    TransactionNotificationPayload;
 
 type UnwrapTransactionNotification = {
     type: 'tx-unwrap';
     metadata: WrapTransactionMetadata;
-} & TransactionNotificationPayload;
+} & YieldFlowStepFlag &
+    TransactionNotificationPayload;
 
 type ReceivedTransactionNotification = {
     type: 'tx-received' | 'tx-confirmed';
