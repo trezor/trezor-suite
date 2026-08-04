@@ -45,7 +45,7 @@ export class MetadataPage {
         this.address = new AddressMetadata(page, devicePrompt);
 
         this.metadataModal = page.getByTestId('@modal/metadata-provider');
-        this.copyAddressButton = page.getByTestId('@metadata/copy-address-button');
+        this.copyAddressButton = page.getByTestId('@wallet/receive/copy-address-button');
         this.suiteSyncBanner = page.getByTestId('@notification/suite-sync-keys');
         this.suiteSyncBannerButton = page.getByTestId('@notification/suite-sync-keys/button');
         this.legacyNotification = this.page.getByTestId('@notification/legacy-labeling-upgrade');
