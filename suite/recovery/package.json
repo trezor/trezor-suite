@@ -18,6 +18,7 @@
         "@suite-common/test-utils": "workspace:*",
         "@suite/analytics": "workspace:*",
         "@trezor/connect": "workspace:*",
-        "@trezor/device-utils": "workspace:*"
+        "@trezor/device-utils": "workspace:*",
+        "@trezor/type-utils": "workspace:*"
     }
 }
