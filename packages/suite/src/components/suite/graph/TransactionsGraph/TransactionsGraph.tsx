@@ -5,6 +5,7 @@ import styled, { useTheme } from 'styled-components';
 
 import { selectAccountTransactionsWithNulls } from '@suite-common/wallet-core';
 import { isPending } from '@suite-common/wallet-utils';
+import { useFreshRef } from '@trezor/react-utils';
 import { typography, zIndices } from '@trezor/theme';
 
 import { GraphSkeleton } from 'src/components/suite/graph/GraphSkeleton';
@@ -78,6 +79,8 @@ const useTransactionGraphUpdater = ({
 
     const promiseId = newestTransactions.map(tx => tx.txid).join('-');
 
+    const onRequestGraphUpdateRef = useFreshRef(onRequestGraphUpdate);
+
     useEffect(() => {
         if (promiseId !== currentPromise?.promiseId && account) {
             const nextAbortController = new AbortController();
@@ -99,7 +102,9 @@ const useTransactionGraphUpdater = ({
                     .then(() => {
                         nextAbortController.signal.throwIfAborted();
 
-                        return Promise.resolve(onRequestGraphUpdate(nextAbortController));
+                        return Promise.resolve(
+                            onRequestGraphUpdateRef.current(nextAbortController),
+                        );
                     }),
             });
         }
@@ -109,7 +114,7 @@ const useTransactionGraphUpdater = ({
         currentPromise?.promise,
         currentPromise?.promiseId,
         promiseId,
-        onRequestGraphUpdate,
+        onRequestGraphUpdateRef,
     ]);
 };
 
