@@ -119,6 +119,26 @@ describe('blockbook/utils', () => {
         });
     });
 
+    describe('poison-record DoS resistance (non-array transactions)', () => {
+        // `payload.transactions` is typed as an array but comes verbatim from an untrusted/user-selectable
+        // blockbook backend. A truthy non-array (e.g. an object) passes a bare truthiness check and then
+        // throws on `.map`, aborting the whole account's transformAccountInfo (per-account DoS).
+        it('does not fail the whole account when transactions is a non-array object', () => {
+            const payload = {
+                address: 'addr-valid',
+                balance: '0',
+                unconfirmedBalance: '0',
+                txs: 1,
+                unconfirmedTxs: 0,
+                transactions: {}, // malicious/MITM backend returns a truthy non-array
+            };
+            let account: ReturnType<typeof transformAccountInfo>;
+            // @ts-expect-error poison non-array transactions shape
+            expect(() => (account = transformAccountInfo(payload))).not.toThrow();
+            expect(account!.history.transactions).toBeUndefined();
+        });
+    });
+
     describe('filterEthereumInternalTransfers poison-record DoS resistance', () => {
         // ethereumSpecific.internalTransfers comes verbatim from an untrusted/user-selectable blockbook
         // backend. A null / non-object entry would throw on destructuring (unlike the guarded

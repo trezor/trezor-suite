@@ -508,7 +508,10 @@ export const transformAccountInfo = (payload: BlockbookAccountInfo): AccountInfo
         payload.unconfirmedTxs === 0 &&
         new BigNumber(availableBalance).isZero();
 
-    const unfilteredTransactions = payload.transactions
+    // `payload.transactions` is typed as an array but comes verbatim from an untrusted/user-selectable
+    // blockbook backend; a truthy non-array (e.g. an object) would pass a bare truthiness check and then
+    // throw on `.map`, aborting the whole account's transformAccountInfo (per-account DoS). Guard the type.
+    const unfilteredTransactions = Array.isArray(payload.transactions)
         ? payload.transactions.map(t => transformTransaction(t, addresses ?? descriptor))
         : undefined;
 
