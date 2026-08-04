@@ -94,6 +94,7 @@ export const submitUnwrapNativeTokenThunk = createThunk(
             }
 
             const sendResult = await sendYieldTransaction({
+                ...extra.services,
                 account,
                 amount: unwrapAmount,
                 token,
@@ -141,7 +142,7 @@ export const submitUnwrapNativeTokenThunk = createThunk(
                         },
                         receive: {
                             symbol: account.symbol,
-                            displaySymbol: getNetworkDisplaySymbol(account.symbol),
+                            displaySymbol: getNetworkDisplaySymbol(extra.services, account.symbol),
                             amount: unwrapAmount,
                         },
                     },

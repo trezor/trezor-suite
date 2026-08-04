@@ -3,6 +3,7 @@ import { type UseFormReturn, useWatch } from 'react-hook-form';
 
 import { type ExchangeTrade } from 'invity-api';
 
+import { useServices } from '@suite-common/dependency-injection';
 import {
     TRADING_EXCHANGE_FORM_DEX,
     TRADING_FORM_OUTPUT_ADDRESS,
@@ -13,7 +14,7 @@ import {
     getDexEstimationData,
     isSendingEvmNativeToken,
 } from '@suite-common/trading';
-import { isAccountBasedNetwork } from '@suite-common/wallet-config';
+import { isAccountBasedNetwork , selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { ETHEREUM_ADJUST_GAS_LIMIT, updateFeeInfoThunk } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { getEvmTransactionTextSignature } from '@suite-common/wallet-utils';
@@ -51,6 +52,7 @@ export const useExchangeDexQuote = ({
     dexQuotes,
     composeRequest,
 }: UseExchangeDexQuoteProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const dispatch = useDispatch();
     const { setValue, control } = methods;
 
@@ -82,7 +84,9 @@ export const useExchangeDexQuote = ({
             return;
         }
 
-        const fromAddress = isAccountBasedNetwork(account.symbol) ? account.descriptor : undefined;
+        const fromAddress = isAccountBasedNetwork(networkConfigDeps, account.symbol)
+            ? account.descriptor
+            : undefined;
 
         setValue('fromAddress', fromAddress);
     }, [account, setValue]);
@@ -99,8 +103,8 @@ export const useExchangeDexQuote = ({
             return;
         }
 
-        const sendNetwork = cryptoIdToNetwork(sendCryptoSelect.id);
-        const isEvmNativeToken = isSendingEvmNativeToken(sendCryptoSelect.id);
+        const sendNetwork = cryptoIdToNetwork(networkConfigDeps, sendCryptoSelect.id);
+        const isEvmNativeToken = isSendingEvmNativeToken(networkConfigDeps, sendCryptoSelect.id);
         const requiresApproval = sendNetwork?.networkType === 'ethereum' && !isEvmNativeToken;
 
         const quote = requiresApproval ? selectedQuote : dexQuotes[0];
@@ -114,7 +118,7 @@ export const useExchangeDexQuote = ({
 
         const { dexTx } = quote;
 
-        setValue('transactionData', getDexEstimationData(quote) ?? '');
+        setValue('transactionData', getDexEstimationData(networkConfigDeps, quote) ?? '');
         setValue(TRADING_FORM_OUTPUT_ADDRESS, dexTx.to);
         setValue('ethereumAdjustGasLimit', ETHEREUM_ADJUST_GAS_LIMIT);
     }, [

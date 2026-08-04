@@ -2,6 +2,7 @@ import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { getTronWithdrawableBalance } from '@suite-common/wallet-utils';
 import { Button, Tooltip } from '@trezor/components';
@@ -13,6 +14,7 @@ import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking
 import { useTronStakeContext } from '../TronStakeContext';
 
 export const TronWithdrawSubmitButton = () => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const { device, isLocked } = useDevice();
     const { analytics } = useServices(selectDesktopAnalyticsDep);
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
@@ -23,7 +25,9 @@ export const TronWithdrawSubmitButton = () => {
         account.symbol,
     );
 
-    const hasWithdrawableAmount = new BigNumber(getTronWithdrawableBalance(account)).gt(0);
+    const hasWithdrawableAmount = new BigNumber(
+        getTronWithdrawableBalance(networkConfigDeps, account),
+    ).gt(0);
     const isDeviceUnavailable = !!device?.connected && !!device?.available && isLocked();
 
     const handleClick = () => {

@@ -1,8 +1,9 @@
 import { type CryptoId } from 'invity-api';
 import styled from 'styled-components';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { useTradingUtils } from '@suite-common/trading';
-import { getDisplaySymbol } from '@suite-common/wallet-config';
+import { getDisplaySymbol , selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { Row } from '@trezor/components';
 
 import { FormattedCryptoAmount } from 'src/components/suite';
@@ -25,6 +26,7 @@ export const TradingCryptoAmount = ({
     displayLogo,
     testId,
 }: TradingCryptoAmountProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const { cryptoIdToSymbolAndContractAddress } = useTradingUtils();
     const { coinSymbol, contractAddress } = cryptoIdToSymbolAndContractAddress(cryptoId);
 
@@ -36,7 +38,7 @@ export const TradingCryptoAmount = ({
                         <TradingCoinLogo cryptoId={cryptoId} margin={{ right: 8 }} />
                     </LogoWrapper>
                 )}
-                {coinSymbol ? getDisplaySymbol(coinSymbol, contractAddress) : ''}
+                {coinSymbol ? getDisplaySymbol(networkConfigDeps, coinSymbol, contractAddress) : ''}
             </Row>
         );
     }

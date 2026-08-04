@@ -4,8 +4,10 @@ import useDebounce from 'react-use/lib/useDebounce';
 
 import { Translation } from '@suite/intl';
 import { findAnchorTransactionPage, selectRouterAnchor } from '@suite/router';
+import { useServices } from '@suite-common/dependency-injection';
 import { getTxsPerPage } from '@suite-common/suite-utils';
 import { advancedSearchTransactions } from '@suite-common/transaction-search';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { groupTransactionsByDate, isPending } from '@suite-common/wallet-utils';
 import { Column } from '@trezor/components';
 
@@ -53,6 +55,7 @@ export const TransactionList = ({
 }: TransactionListProps) => {
     const anchor = useSelector(selectRouterAnchor);
     const dispatch = useDispatch();
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const searchLabels = useSelector(state => selectAccountLabelsForSearch(state, account));
 
     const { fetchPage, fetchedAll, fetchAll } = useFetchTransactions(account, allTransactions);
@@ -65,11 +68,16 @@ export const TransactionList = ({
 
     useDebounce(
         () => {
-            const results = advancedSearchTransactions(transactions, searchLabels, searchQuery);
+            const results = advancedSearchTransactions(
+                networkConfigDeps,
+                transactions,
+                searchLabels,
+                searchQuery,
+            );
             setSearchedTransactions(results);
         },
         200,
-        [transactions, searchQuery, searchLabels],
+        [networkConfigDeps, searchLabels, searchQuery, transactions],
     );
 
     useEffect(() => {

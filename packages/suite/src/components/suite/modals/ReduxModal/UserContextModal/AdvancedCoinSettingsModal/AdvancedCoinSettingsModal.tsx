@@ -4,7 +4,9 @@ import { Translation } from '@suite/intl';
 import { selectModalType } from '@suite/modal';
 import { selectHasExperimentalFeature } from '@suite/settings';
 import { selectTorState } from '@suite/tor';
-import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectGetNetworkConfigDep } from '@suite-common/networks';
+import { type NetworkSymbol, toNetwork } from '@suite-common/wallet-config';
 import {
     Badge,
     Banner,
@@ -41,7 +43,8 @@ export const AdvancedCoinSettingsModal = ({
     onCancel,
     onBackClick,
 }: AdvancedCoinSettingsModalProps) => {
-    const network = getNetwork(symbol);
+    const { getNetworkConfig } = useServices(selectGetNetworkConfigDep);
+    const network = toNetwork(symbol, getNetworkConfig(symbol));
     const { isTorEnabled } = useSelector(selectTorState);
     const modalType = useSelector(selectModalType);
     const dispatch = useDispatch();

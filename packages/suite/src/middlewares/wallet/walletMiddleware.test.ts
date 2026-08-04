@@ -13,7 +13,7 @@ import {
 } from '@suite-common/wallet-core';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
-import walletMiddleware from 'src/middlewares/wallet/walletMiddleware';
+import { prepareWalletMiddleware } from 'src/middlewares/wallet/walletMiddleware';
 import { accountsReducer, blockchainReducer, walletSettingsReducer } from 'src/reducers/wallet';
 import { extraDependencies } from 'src/support/extraDependencies';
 
@@ -68,7 +68,7 @@ type State = ReturnType<typeof getInitialState>;
 const mockStore = (preloadedState: State) =>
     configureMockStore({
         middleware: [
-            walletMiddleware,
+            prepareWalletMiddleware(() => extraDependenciesCommonMock),
             prepareBlockchainMiddleware(() => extraDependenciesCommonMock),
         ],
         reducer: (state = preloadedState, action) => ({

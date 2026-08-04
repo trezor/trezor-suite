@@ -2,7 +2,9 @@ import { type JSX } from 'react';
 
 import { selectSelectedAccount } from '@suite/account';
 import { Translation } from '@suite/intl';
-import { getNetwork } from '@suite-common/wallet-config';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectGetNetworkConfigDep } from '@suite-common/networks';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { hasNetworkFeatures } from '@suite-common/wallet-utils';
 import { Dropdown, type DropdownMenuItemProps, type IconComponent } from '@trezor/components';
 import { PencilLineIcon, WalletConnectIcon } from '@trezor/icons';
@@ -26,6 +28,8 @@ type HeaderDropdownProps = {
     showSignAndVerify?: boolean;
 };
 export const HeaderDropdown = ({ isDisabled, showSignAndVerify }: HeaderDropdownProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+    const { getNetworkConfig } = useServices(selectGetNetworkConfigDep);
     const goToWithAnalytics = useGoToWithAnalytics();
     const account = useSelector(selectSelectedAccount);
 
@@ -42,7 +46,9 @@ export const HeaderDropdown = ({ isDisabled, showSignAndVerify }: HeaderDropdown
                       },
                       title: <Translation id="TR_NAV_SIGN_AND_VERIFY" />,
                       icon: PencilLineIcon,
-                      isHidden: account ? !hasNetworkFeatures(account, 'sign-verify') : false,
+                      isHidden: account
+                          ? !hasNetworkFeatures(networkConfigDeps, account, 'sign-verify')
+                          : false,
                   },
               ]
             : []),
@@ -57,7 +63,7 @@ export const HeaderDropdown = ({ isDisabled, showSignAndVerify }: HeaderDropdown
             title: <Translation id="TR_WALLETCONNECT" />,
             icon: WalletConnectIcon,
             // caipId marks networks with a WalletConnect adapter (see suite-common/walletconnect)
-            isHidden: account ? !getNetwork(account.symbol).caipId : true,
+            isHidden: account ? !getNetworkConfig(account.symbol).caipId : true,
         },
     ];
 

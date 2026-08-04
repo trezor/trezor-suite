@@ -2,7 +2,9 @@ import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { type UseFormReturn, useForm } from 'react-hook-form';
 
 import { selectCurrentTargetAnonymity } from '@suite/coinjoin';
-import { type Network, getNetwork } from '@suite-common/wallet-config';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectGetNetworkConfigDep } from '@suite-common/networks';
+import { type Network, toNetwork } from '@suite-common/wallet-config';
 import {
     DEFAULT_OPRETURN,
     DEFAULT_PAYMENT,
@@ -173,12 +175,13 @@ const getRbfFeeInfo = (info: FeeInfo, rbfParams: RbfTransactionParams) => {
 };
 
 const useRbfState = ({ account, rbfParams, chainedTxs }: UseRbfProps): RbfState => {
+    const { getNetworkConfig } = useServices(selectGetNetworkConfigDep);
     const networkFees = useSelector(state => selectRawNetworkFeeInfo(state, account.symbol));
     const targetAnonymity = useSelector(selectCurrentTargetAnonymity);
     const coinjoinRegisteredUtxos = useCoinjoinRegisteredUtxos({ account });
 
     const { shouldSendInSats } = useBitcoinAmountUnit(account.symbol);
-    const network = getNetwork(account.symbol);
+    const network = toNetwork(account.symbol, getNetworkConfig(account.symbol));
 
     return useMemo(() => {
         const rbfFeeInfo = networkFees ? getRbfFeeInfo(networkFees, rbfParams) : DEFAULT_FEE_INFO;

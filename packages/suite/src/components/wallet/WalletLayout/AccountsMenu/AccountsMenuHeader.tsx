@@ -2,7 +2,9 @@ import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
 import { selectIsCoinsFilterVisible, suiteSettingsActions } from '@suite/settings';
+import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { selectAllAccountsToList, selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { Box, Column, Divider, Icon, Row, Skeleton, Tooltip } from '@trezor/components';
 import { FunnelSimpleIcon } from '@trezor/icons';
@@ -32,10 +34,11 @@ const RelativeWrapper = styled.div`
 `;
 
 export const AccountsMenuHeader = () => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const { coinFilter } = useAccountSearch();
 
     const device = useSelector(selectSelectedDevice);
-    const accounts = useSelector(selectAllAccountsToList);
+    const accounts = useSelector(state => selectAllAccountsToList(state, networkConfigDeps));
 
     const isEmpty = accounts.length === 0;
 

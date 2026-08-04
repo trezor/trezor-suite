@@ -13,6 +13,7 @@ import { selectIsTestnetNetworksEnabled } from '@suite/settings';
 import { useServices } from '@suite-common/dependency-injection';
 import { Context } from '@suite-common/message-system';
 import { type Network, type NetworkSymbol } from '@suite-common/wallet-config';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import {
     changeCoinVisibility,
     selectDeviceSupportedNetworks,
@@ -49,6 +50,7 @@ const discoveryButtonAnimationConfig: MotionProps = {
 };
 
 export const SettingsCoins = () => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const hasContentBelowTabletWidth = useIsContentBelowBreakpoint(breakpoints.tablet);
     const { analytics } = useServices(selectDesktopAnalyticsDep);
     const dispatch = useDispatch();
@@ -61,11 +63,13 @@ export const SettingsCoins = () => {
         supportedTestnets,
         unsupportedTestnets,
     } = useNetworkSupport();
-    const deviceSupportedNetworkSymbols = useSelector(selectDeviceSupportedNetworks);
+    const deviceSupportedNetworkSymbols = useSelector(state =>
+        selectDeviceSupportedNetworks(state, networkConfigDeps),
+    );
     const { device, isLocked } = useDevice();
     const isDeviceLocked = !!device && isLocked();
     const isDiscoveryButtonVisible = useSelector(state =>
-        selectShowRediscoverButton(state, device),
+        selectShowRediscoverButton(state, networkConfigDeps, device),
     );
     const useTestnetNetworks = useSelector(selectIsTestnetNetworksEnabled);
 

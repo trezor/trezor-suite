@@ -2,7 +2,7 @@ import { selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
-import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { getNetworkDisplaySymbol , selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { WETH_WRAP_GAS_RESERVE } from '@suite-common/wallet-constants';
 import {
     getYieldFlowStepSequence,
@@ -27,6 +27,7 @@ import { YieldFlowStepList } from '../common/YieldFlowStepList';
 import { YieldWrapStep } from '../common/YieldWrapStep';
 
 export const YieldDepositForm = () => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const { analytics } = useServices(selectDesktopAnalyticsDep);
 
     const {
@@ -82,7 +83,7 @@ export const YieldDepositForm = () => {
     const wrapPendingTransaction =
         pendingTransaction?.type === 'wrap' ? pendingTransaction : undefined;
 
-    const nativeSymbol = getNetworkDisplaySymbol(account.symbol);
+    const nativeSymbol = getNetworkDisplaySymbol(networkConfigDeps, account.symbol);
     // Approximate fiat value shown under the amount input, from the token's own rate.
     const approxFiat = {
         symbol: token.networkSymbol,

@@ -1,8 +1,10 @@
+import { useServices } from '@suite-common/dependency-injection';
 import {
     selectIsTradingNetworkFeeMissing,
     selectTradingSendAccount,
     tradingSellActions,
 } from '@suite-common/trading';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { isAmountTooHigh } from '@suite-common/wallet-utils';
 
 import { selectSellQuoteThunk } from 'src/actions/wallet/trading/sell/selectSellQuoteThunk';
@@ -15,6 +17,7 @@ import { useTradingFormOfferCommon } from 'src/views/wallet/trading/common/Tradi
 import { TradingKYCWarning } from 'src/views/wallet/trading/common/TradingKYCWarning';
 
 export const TradingFormOfferSellActions = () => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const dispatch = useDispatch();
     const context = useTradingFormContext<'sell'>();
     const {
@@ -23,7 +26,9 @@ export const TradingFormOfferSellActions = () => {
         sellInfo,
         form: { state, helpers },
     } = context;
-    const account = useSelector(reduxState => selectTradingSendAccount(reduxState, 'sell'));
+    const account = useSelector(reduxState =>
+        selectTradingSendAccount(reduxState, 'sell', networkConfigDeps),
+    );
 
     const isNetworkFeeMissing = useSelector(selectIsTradingNetworkFeeMissing);
 
@@ -33,6 +38,7 @@ export const TradingFormOfferSellActions = () => {
 
     const amountTooHigh = account
         ? isAmountTooHigh({
+              ...networkConfigDeps,
               amount,
               contractAddress: tokenAddress,
               account,

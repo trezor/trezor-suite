@@ -20,6 +20,7 @@ import {
     selectTradingSendAccount,
     tradingActions,
 } from '@suite-common/trading';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { type TokenAddress } from '@suite-common/wallet-types';
 import { asAmountSubunit, subunitsToUnits } from '@suite-common/wallet-utils';
 import { Column, Row } from '@trezor/components';
@@ -51,6 +52,7 @@ import { TradingFractionButtons } from './TradingFractionButtons';
 import { TradingNetworkReserveBanner } from './TradingNetworkReserveBanner';
 
 export const TradingExchangeFormInputs = () => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const context = useTradingFormContext<TradingExchangeType>();
     const { networkModuleRepository } = useServices(selectNetworkModuleRepositoryDep);
 
@@ -69,7 +71,7 @@ export const TradingExchangeFormInputs = () => {
         setAmountLimits,
     } = context;
     const asset = useSelectedTradingAsset(type);
-    const account = useSelector(state => selectTradingSendAccount(state, type));
+    const account = useSelector(state => selectTradingSendAccount(state, type, networkConfigDeps));
 
     const displayComposedLevels = useMemo(
         () => getDisplayComposedLevels(selectedQuote, composedLevels),
@@ -133,10 +135,10 @@ export const TradingExchangeFormInputs = () => {
 
     const supportedNetworks = networkModuleRepository.getSupportedNetworks();
     const exchangeBuySupportedCryptoIds = useSelector(state =>
-        selectTradingExchangeBuyCryptoIds(state, supportedNetworks),
+        selectTradingExchangeBuyCryptoIds(state, supportedNetworks, networkConfigDeps),
     );
     const exchangeSellSupportedCryptoIds = useSelector(state =>
-        selectTradingExchangeSellCryptoIds(state, supportedNetworks),
+        selectTradingExchangeSellCryptoIds(state, supportedNetworks, networkConfigDeps),
     );
 
     return (

@@ -11,12 +11,11 @@ import {
     buyInitialState,
     initialState as tradingInitialState,
 } from '@suite-common/trading';
-import { asNetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import { toNetwork } from '@suite-common/wallet-config';
+import { mockNetworkConfigDeps } from '@suite-common/wallet-config/mocks';
 
 import { useBuyQuotes } from './useBuyQuotes';
 import { DEBOUNCE_DELAY_MS } from '../common/useTradingQuoteRequest';
-
-const btcSymbol = asNetworkSymbol('btc');
 
 const QUOTES: BuyTrade[] = [
     {
@@ -61,7 +60,7 @@ const VALID_DEFAULTS: TradingBuyFormProps = {
     fiatInput: '100',
     cryptoInput: '',
     currencySelect: { value: 'eur', label: 'EUR' },
-    cryptoSelect: { id: 'bitcoin' as CryptoId, networkSymbol: btcSymbol } as TradingAssetOption,
+    cryptoSelect: { id: 'bitcoin' as CryptoId, networkSymbol: 'btc' } as TradingAssetOption,
     countrySelect: { value: 'DE', label: 'Germany' } as TradingCountryOption,
     countrySubdivisionSelect: undefined,
     paymentMethod: undefined,
@@ -103,7 +102,11 @@ const renderBuyQuotes = (
                 defaultValues,
                 resolver,
             });
-            useBuyQuotes({ methods, network: getNetwork(btcSymbol), shouldSendInSats: false });
+            useBuyQuotes({
+                methods,
+                network: toNetwork('btc', mockNetworkConfigDeps.getNetworkConfig('btc')),
+                shouldSendInSats: false,
+            });
 
             return methods;
         },

@@ -1,5 +1,7 @@
 import { useMemo } from 'react';
 
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { type WalletAccountTransaction } from '@suite-common/wallet-types';
 import {
     asAmountSubunit,
@@ -16,6 +18,7 @@ interface UnstakingTxAmountProps {
 }
 
 export const UnstakingTxAmount = ({ transaction }: UnstakingTxAmountProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const { ethereumSpecific, solanaSpecific, tronSpecific, symbol } = transaction;
 
     const unstakeAmount = useMemo(() => {
@@ -39,6 +42,7 @@ export const UnstakingTxAmount = ({ transaction }: UnstakingTxAmountProps) => {
             {' '}
             <FormattedCryptoAmount
                 value={subunitsToUnits({
+                    ...networkConfigDeps,
                     value: asAmountSubunit(new BigNumber(unstakeAmount)),
                     symbol,
                 })}

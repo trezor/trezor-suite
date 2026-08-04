@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 
+import { useServices } from '@suite-common/dependency-injection';
 import {
     type TradingType,
     selectTradingAccountKeyByTradeType,
@@ -11,14 +12,20 @@ import {
     tradingExchangeActions,
     tradingSellActions,
 } from '@suite-common/trading';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
 export const useTradingFormAccount = (tradingType: TradingType) => {
     const dispatch = useDispatch();
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
 
-    const account = useSelector(state => selectTradingFormAccount(state, tradingType));
-    const cryptoId = useSelector(state => selectTradingFormCryptoId(state, tradingType));
+    const account = useSelector(state =>
+        selectTradingFormAccount(state, tradingType, networkConfigDeps),
+    );
+    const cryptoId = useSelector(state =>
+        selectTradingFormCryptoId(state, tradingType, networkConfigDeps),
+    );
     const accountKey = useSelector(state => selectTradingAccountKeyByTradeType(state, tradingType));
     const prefilled = useSelector(selectTradingPrefilledFromAccount);
 

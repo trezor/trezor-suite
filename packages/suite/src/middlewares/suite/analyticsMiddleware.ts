@@ -168,8 +168,11 @@ const analyticsMiddleware = createMiddlewareWithExtraDeps(
                     .filter(
                         account =>
                             new BigNumber(account.balance).gt(0) ||
-                            new BigNumber(getAccountTotalStakingBalance(account) || 0).gt(0) ||
+                            new BigNumber(
+                                getAccountTotalStakingBalance(extra.services, account) || 0,
+                            ).gt(0) ||
                             hasVisibleTokens(
+                                extra.services,
                                 account.symbol,
                                 account.tokens ?? [],
                                 state.tokenDefinitions,
@@ -182,7 +185,12 @@ const analyticsMiddleware = createMiddlewareWithExtraDeps(
                     .reduce<Record<string, number>>((acc, { symbol, tokens }) => {
                         if (
                             tokens?.length &&
-                            !hasVisibleTokens(symbol, tokens, state.tokenDefinitions)
+                            !hasVisibleTokens(
+                                extra.services,
+                                symbol,
+                                tokens,
+                                state.tokenDefinitions,
+                            )
                         ) {
                             return acc;
                         }
@@ -193,7 +201,9 @@ const analyticsMiddleware = createMiddlewareWithExtraDeps(
 
                 const accountsWithStaking = state.wallet.accounts
                     .filter(account =>
-                        new BigNumber(getAccountTotalStakingBalance(account) || 0).gt(0),
+                        new BigNumber(
+                            getAccountTotalStakingBalance(extra.services, account) || 0,
+                        ).gt(0),
                     )
                     .reduce(accumulateAccountCountBySymbolAndType, {});
 

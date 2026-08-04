@@ -3,6 +3,8 @@ import { useMemo } from 'react';
 import { getDefaultAccountLabel } from '@suite/account';
 import { useTranslation } from '@suite/intl';
 import { selectAccountLabelsLegacy } from '@suite/metadata';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { accountSearchFn, isTokenMatchesSearch } from '@suite-common/wallet-utils';
 
@@ -16,6 +18,7 @@ export function useFilterAccountsWithTokens(
     search: string,
 ) {
     const { translationString } = useTranslation();
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const accountLegacyLabels = useSelector(selectAccountLabelsLegacy);
 
     return useMemo(() => {
@@ -39,11 +42,16 @@ export function useFilterAccountsWithTokens(
                     const accountLabel =
                         item.account.label ??
                         accountLegacyLabels[key] ??
-                        getDefaultAccountLabel(translationString, item.account) ??
+                        getDefaultAccountLabel(
+                            networkConfigDeps,
+                            translationString,
+                            item.account,
+                        ) ??
                         '';
 
                     if (
                         accountSearchFn(item.account, search, {
+                            ...networkConfigDeps,
                             tokensMatch: false,
                             accountLabel,
                         })
@@ -109,5 +117,5 @@ export function useFilterAccountsWithTokens(
 
                 return item;
             });
-    }, [accountLegacyLabels, accountsWithTokens, search, translationString]);
+    }, [accountLegacyLabels, accountsWithTokens, networkConfigDeps, search, translationString]);
 }

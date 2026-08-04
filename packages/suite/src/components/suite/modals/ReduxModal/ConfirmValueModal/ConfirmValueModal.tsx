@@ -13,7 +13,7 @@ import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDeviceLabelOrName } from '@suite-common/device';
 import { getDeviceInternalModel } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { getDisplaySymbol } from '@suite-common/wallet-config';
+import { getDisplaySymbol , selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import {
     Banner,
@@ -73,6 +73,7 @@ export const ConfirmValueModal = ({
     isAddress = false,
     value,
 }: ConfirmValueModalProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const [isCopied, setIsCopied] = useState(false);
     const { device } = useDevice();
     const modalContext = useSelector(state => state.modal.context);
@@ -188,7 +189,10 @@ export const ConfirmValueModal = ({
                                         a: chunks => (
                                             <Link onClick={handleOpenGuide}>{chunks}</Link>
                                         ),
-                                        displaySymbol: getDisplaySymbol(account.symbol),
+                                        displaySymbol: getDisplaySymbol(
+                                            networkConfigDeps,
+                                            account.symbol,
+                                        ),
                                     }}
                                 />
                             }

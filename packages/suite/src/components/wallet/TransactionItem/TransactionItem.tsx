@@ -6,7 +6,9 @@ import { selectSelectedAccount } from '@suite/account';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { AccountTransactionBaseAnchor, useAnchor } from '@suite/router';
+import { useServices } from '@suite-common/dependency-injection';
 import { type AccountType, type Network } from '@suite-common/wallet-config';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import {
     createTargets,
     selectAccountByKey,
@@ -70,6 +72,7 @@ export const TransactionItem = memo(
         disableBumpFee,
         index,
     }: TransactionItemProps) => {
+        const networkConfigDeps = useServices(selectNetworkConfigDeps);
         const { shallDisplayBaseCurrency } = useDisplayBaseCurrency(transaction.symbol);
 
         const account = useSelector(selectSelectedAccount) || null;
@@ -85,7 +88,7 @@ export const TransactionItem = memo(
 
         const allOutputs = account !== null ? createTargets({ transaction, account }) : [];
 
-        const fee = formatNetworkAmount(transaction.fee, transaction.symbol);
+        const fee = formatNetworkAmount(networkConfigDeps, transaction.fee, transaction.symbol);
         const showFeeRow = isTxFeePaid(transaction);
 
         const isTxCancellable = isTransactionCancellable(transaction, isPending, networkFeatures);
@@ -154,7 +157,8 @@ export const TransactionItem = memo(
             );
         };
         const { isPhishing: isPhishingTransaction, detectorId: phishingDetectorId } = useSelector(
-            state => selectIsPhishingTransaction(state, transaction.txid, accountKey),
+            state =>
+                selectIsPhishingTransaction(state, transaction.txid, accountKey, networkConfigDeps),
         );
 
         const dataTestBase = `@transaction-item/${index}${

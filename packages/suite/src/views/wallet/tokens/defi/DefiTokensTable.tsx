@@ -1,8 +1,10 @@
 import { useMemo } from 'react';
 
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
 import { useAllYieldOpportunities } from '@suite-common/earn-stablecoin-api';
 import { TokenManagementAction, selectCoinDefinitions } from '@suite-common/token-definitions';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { selectBaseCurrency, selectCurrentFiatRates } from '@suite-common/wallet-core';
 import { type SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { isErc4626, sortTokensByName } from '@suite-common/wallet-utils';
@@ -24,6 +26,7 @@ interface DefiTokensTableProps {
 }
 
 export const DefiTokensTable = ({ selectedAccount, searchQuery }: DefiTokensTableProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const { account, network } = selectedAccount;
 
     const fiatRates = useSelector(selectCurrentFiatRates);
@@ -47,6 +50,7 @@ export const DefiTokensTable = ({ selectedAccount, searchQuery }: DefiTokensTabl
 
     const tokens = useMemo(() => {
         const groupedTokens = getTokens({
+            ...networkConfigDeps,
             tokens: enhancedTokens,
             symbol: account.symbol,
             tokenDefinitions: coinDefinitions,

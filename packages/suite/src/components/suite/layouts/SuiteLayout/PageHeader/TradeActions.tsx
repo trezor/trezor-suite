@@ -3,6 +3,7 @@ import { Translation } from '@suite/intl';
 import { goto, selectIsAccountTabPage, selectRouteName } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { getTradingPrefilledFromAccountData, tradingActions } from '@suite-common/trading';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { type SelectedAccountStatus } from '@suite-common/wallet-types';
 import { ButtonGroup, Row } from '@trezor/components';
 import { MinusIcon, PlusIcon } from '@trezor/icons';
@@ -16,6 +17,7 @@ interface TradeActionsProps {
 }
 
 export const TradeActions = ({ selectedAccount }: TradeActionsProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const { analytics } = useServices(selectDesktopAnalyticsDep);
     const dispatch = useDispatch();
     const account = selectedAccount?.account;
@@ -46,7 +48,7 @@ export const TradeActions = ({ selectedAccount }: TradeActionsProps) => {
         if (account) {
             dispatch(
                 tradingActions.setTradingFromPrefilledAccount(
-                    getTradingPrefilledFromAccountData(account),
+                    getTradingPrefilledFromAccountData(networkConfigDeps, account),
                 ),
             );
         }

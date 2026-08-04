@@ -3,7 +3,9 @@ import { type ReactNode } from 'react';
 import { selectFullSelectedAccount } from '@suite/account';
 import { Address } from '@suite/address';
 import { useExternalLink } from '@suite/external-links';
+import { useServices } from '@suite-common/dependency-injection';
 import { type NetworkSymbolExtended, isNetworkSymbol } from '@suite-common/wallet-config';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { getExplorerUrl } from '@suite-common/wallet-config/src/getExplorerUrls';
 import { selectExplorer } from '@suite-common/wallet-core';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
@@ -33,6 +35,7 @@ export const IOItem = ({
     amount,
     isPhishingTransaction,
 }: IOItem) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const { network } = useSelector(selectFullSelectedAccount);
     const explorer = useSelector(state => selectExplorer(state, network?.symbol));
     const explorerUrl = getExplorerUrl(explorer, 'address');
@@ -62,8 +65,12 @@ export const IOItem = ({
                                     <Text intent="neutral" priority="secondary" as="div">
                                         <FormattedCryptoAmount
                                             value={
-                                                isNetworkSymbol(symbol)
-                                                    ? formatNetworkAmount(amount, symbol)
+                                                isNetworkSymbol(networkConfigDeps, symbol)
+                                                    ? formatNetworkAmount(
+                                                          networkConfigDeps,
+                                                          amount,
+                                                          symbol,
+                                                      )
                                                     : amount
                                             }
                                             symbol={symbol}

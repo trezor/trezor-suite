@@ -13,6 +13,7 @@ import {
     toTokenCryptoId,
     tradingActions,
 } from '@suite-common/trading';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import {
     getYieldVaultContractAddress,
     isStablecoinYieldSupported,
@@ -46,6 +47,7 @@ export const EarnYieldAccountOpportunity = ({
     opportunity,
     isCardLayout,
 }: EarnYieldAccountOpportunityProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const dispatch = useDispatch();
     const { analytics } = useServices(selectDesktopAnalyticsDep);
     const { CryptoAmountFormatter } = useFormatters();
@@ -113,14 +115,23 @@ export const EarnYieldAccountOpportunity = ({
         if (opportunity.account) {
             const tokenCryptoId = tokenAddress
                 ? toTokenCryptoId(
+                      networkConfigDeps,
                       networkSymbol,
-                      getContractAddressForNetworkSymbol(networkSymbol, tokenAddress),
+                      getContractAddressForNetworkSymbol(
+                          networkConfigDeps,
+                          networkSymbol,
+                          tokenAddress,
+                      ),
                   )
                 : undefined;
 
             dispatch(
                 tradingActions.setTradingFromPrefilledAccount(
-                    getTradingPrefilledFromAccountData(opportunity.account, tokenCryptoId),
+                    getTradingPrefilledFromAccountData(
+                        networkConfigDeps,
+                        opportunity.account,
+                        tokenCryptoId,
+                    ),
                 ),
             );
         }
@@ -230,6 +241,7 @@ export const EarnYieldAccountOpportunity = ({
             goto({
                 routeName: 'earn-yield-deposit',
                 params: getEarnRouteParams({
+                    ...networkConfigDeps,
                     account: opportunity.account,
                     vaultAddress: vaultContractAddress,
                 }),
@@ -272,6 +284,7 @@ export const EarnYieldAccountOpportunity = ({
             goto({
                 routeName: 'earn-yield-withdraw',
                 params: getEarnRouteParams({
+                    ...networkConfigDeps,
                     account: opportunity.account,
                     vaultAddress: vaultContractAddress,
                 }),

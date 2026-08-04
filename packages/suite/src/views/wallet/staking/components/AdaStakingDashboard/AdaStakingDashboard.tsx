@@ -1,5 +1,7 @@
 import { useEffect } from 'react';
 
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { CARDANO_EPOCH_DAYS } from '@suite-common/wallet-constants';
 import {
     fetchAllTransactionsForAccountThunk,
@@ -32,6 +34,7 @@ interface AdaStakingDashboardProps {
 }
 
 export const AdaStakingDashboard = ({ selectedAccount }: AdaStakingDashboardProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const { account } = selectedAccount;
     const accountKey = account?.key ?? '';
 
@@ -51,11 +54,13 @@ export const AdaStakingDashboard = ({ selectedAccount }: AdaStakingDashboardProp
         }
     }, [accountKey, dispatch]);
 
-    const { canClaim = false } = getStakingDataForNetwork(account) ?? {};
+    const { canClaim = false } = getStakingDataForNetwork(networkConfigDeps, account) ?? {};
 
     const apy = useSelector(state => selectPoolStatsApy(state, { account }));
 
-    const isStakingActive = useSelector(state => selectAccountIsStakingActive(state, account.key));
+    const isStakingActive = useSelector(state =>
+        selectAccountIsStakingActive(state, account.key, networkConfigDeps),
+    );
     const hasPendingTx = useSelector(state => hasPendingStakeTypeTransaction(state, account.key));
     const cardanoStakingPools = useSelector(selectCardanoPoolsInfo);
     const isStakedWithEverstake =

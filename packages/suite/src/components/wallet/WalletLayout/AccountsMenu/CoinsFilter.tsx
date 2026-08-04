@@ -1,7 +1,8 @@
 import { AnimatePresence, type MotionProps, motion } from 'framer-motion';
 import styled from 'styled-components';
 
-import { getNetwork } from '@suite-common/wallet-config';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectGetNetworkConfigDep } from '@suite-common/networks';
 import { TOOLTIP_DELAY_NORMAL, Tooltip, motionEasing } from '@trezor/components';
 import { NetworkIcon } from '@trezor/product-components';
 
@@ -42,6 +43,7 @@ const Container = styled.div`
 `;
 
 export const CoinsFilter = () => {
+    const { getNetworkConfig } = useServices(selectGetNetworkConfigDep);
     const { coinFilter, setCoinFilter, toggleCoinFilter } = useAccountSearch();
     const availableNetworksSymbols = useAvailableNetworkSymbols();
 
@@ -79,7 +81,7 @@ export const CoinsFilter = () => {
                     return (
                         <Tooltip
                             key={networkSymbol}
-                            content={getNetwork(networkSymbol).name}
+                            content={getNetworkConfig(networkSymbol).name}
                             cursor="pointer"
                             delayShow={TOOLTIP_DELAY_NORMAL}
                         >

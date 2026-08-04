@@ -1,7 +1,9 @@
 import { useMemo } from 'react';
 import { useThrottle } from 'react-use';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { selectTokenDefinitions } from '@suite-common/token-definitions';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import {
     selectAllAccountsToList,
     selectBaseCurrency,
@@ -46,8 +48,9 @@ type AccountTokenId = `${Account['symbol']}--${TokenInfo['contract']}`;
  * Aggregate all accounts and tokens per network, sum up its balances per network, sort by fiat balance in descending order
  */
 export function useAgregatedAccountsWithTokens() {
-    const accounts = useSelector(
-        selectAllAccountsToList,
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+    const accounts = useSelector<Account[]>(
+        state => selectAllAccountsToList(state, networkConfigDeps),
         // Prevent re-redering the `useAgregatedAccountsWithTokens` hook and thus its children when the accounts change (accounts are being constantly updated in Redux)
         areAccountsEqual,
     );
@@ -66,6 +69,7 @@ export function useAgregatedAccountsWithTokens() {
         }
 
         const accountsWithPositiveBalanceOrTokens = getAccountsWithPositiveBalanceOrVisibleTokens(
+            networkConfigDeps,
             throttledAccounts,
             tokenDefinitions,
         );
@@ -90,6 +94,7 @@ export function useAgregatedAccountsWithTokens() {
             }
 
             const { shownWithBalance } = getTokens({
+                ...networkConfigDeps,
                 tokens: account.tokens ?? [],
                 symbol: account.symbol,
                 tokenDefinitions: tokenDefinitions?.[account.symbol]?.coin,
@@ -149,6 +154,7 @@ export function useAgregatedAccountsWithTokens() {
             type: 'account' as const,
             account,
             fiatAmount: getAccountFiatBalance({
+                ...networkConfigDeps,
                 account,
                 baseCurrencyCode,
                 rates: fiatRates,
@@ -177,7 +183,7 @@ export function useAgregatedAccountsWithTokens() {
         });
 
         return sortedAgregatedAccountsAndTokens;
-    }, [throttledAccounts, baseCurrencyCode, fiatRatesRef, tokenDefinitions]);
+    }, [throttledAccounts, baseCurrencyCode, fiatRatesRef, tokenDefinitions, networkConfigDeps]);
 }
 
 export type AggregatedAccountWithTokens = ReturnType<typeof useAgregatedAccountsWithTokens>[number];

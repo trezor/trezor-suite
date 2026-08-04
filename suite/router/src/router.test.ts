@@ -133,10 +133,18 @@ describe('router', () => {
                 },
                 route: getRoute('wallet-index'),
             };
-            expect(getAppWithParams({ pathname: '/accounts', hash: '#/btc/0/normal' })).toEqual(
-                resp,
-            );
-            expect(getAppWithParams({ pathname: '/accounts', hash: '#/btc/1/segwit' })).toEqual({
+            expect(
+                getAppWithParams(mockNetworkConfigDeps, {
+                    pathname: '/accounts',
+                    hash: '#/btc/0/normal',
+                }),
+            ).toEqual(resp);
+            expect(
+                getAppWithParams(mockNetworkConfigDeps, {
+                    pathname: '/accounts',
+                    hash: '#/btc/1/segwit',
+                }),
+            ).toEqual({
                 ...resp,
                 params: {
                     symbol: 'btc',
@@ -144,7 +152,12 @@ describe('router', () => {
                     accountType: 'segwit',
                 },
             });
-            expect(getAppWithParams({ pathname: '/accounts', hash: '#/btc/1/legacy' })).toEqual({
+            expect(
+                getAppWithParams(mockNetworkConfigDeps, {
+                    pathname: '/accounts',
+                    hash: '#/btc/1/legacy',
+                }),
+            ).toEqual({
                 ...resp,
                 params: {
                     symbol: 'btc',
@@ -152,25 +165,42 @@ describe('router', () => {
                     accountType: 'legacy',
                 },
             });
-            expect(getAppWithParams({ pathname: '/accounts', hash: '#/btc/NaN' })).toEqual({
-                ...resp,
-                params: undefined,
-            });
-            expect(getAppWithParams({ pathname: '/accounts', hash: '#/btc-invalid/0' })).toEqual({
-                ...resp,
-                params: undefined,
-            });
             expect(
-                getAppWithParams({ pathname: '/accounts', hash: '#/btc/0/unknown-type' }),
+                getAppWithParams(mockNetworkConfigDeps, {
+                    pathname: '/accounts',
+                    hash: '#/btc/NaN',
+                }),
             ).toEqual({
                 ...resp,
                 params: undefined,
             });
-            expect(getAppWithParams({ pathname: '/accounts', hash: '#/btc' })).toEqual({
+            expect(
+                getAppWithParams(mockNetworkConfigDeps, {
+                    pathname: '/accounts',
+                    hash: '#/btc-invalid/0',
+                }),
+            ).toEqual({
                 ...resp,
                 params: undefined,
             });
-            expect(getAppWithParams({ pathname: '/accounts', hash: '' })).toEqual({
+            expect(
+                getAppWithParams(mockNetworkConfigDeps, {
+                    pathname: '/accounts',
+                    hash: '#/btc/0/unknown-type',
+                }),
+            ).toEqual({
+                ...resp,
+                params: undefined,
+            });
+            expect(
+                getAppWithParams(mockNetworkConfigDeps, { pathname: '/accounts', hash: '#/btc' }),
+            ).toEqual({
+                ...resp,
+                params: undefined,
+            });
+            expect(
+                getAppWithParams(mockNetworkConfigDeps, { pathname: '/accounts', hash: '' }),
+            ).toEqual({
                 ...resp,
                 params: undefined,
                 route: getRoute('wallet-index'),
@@ -178,26 +208,28 @@ describe('router', () => {
         });
 
         it('other params validation', () => {
-            expect(getAppWithParams({ pathname: '/' })).toEqual({
+            expect(getAppWithParams(mockNetworkConfigDeps, { pathname: '/' })).toEqual({
                 app: 'dashboard',
                 params: undefined,
                 route: getRoute('suite-index'),
             });
 
-            expect(getAppWithParams({ pathname: '/onboarding/' })).toEqual({
+            expect(getAppWithParams(mockNetworkConfigDeps, { pathname: '/onboarding/' })).toEqual({
                 app: 'onboarding',
                 params: undefined,
                 route: getRoute('onboarding-index'),
             });
 
-            expect(getAppWithParams({ pathname: '/unknown-route/' })).toEqual({
+            expect(
+                getAppWithParams(mockNetworkConfigDeps, { pathname: '/unknown-route/' }),
+            ).toEqual({
                 app: 'unknown',
                 params: undefined,
                 route: undefined,
             });
 
             expect(
-                getAppWithParams({
+                getAppWithParams(mockNetworkConfigDeps, {
                     pathname: '/earn/yield/deposit',
                     hash: '#/eth/0/normal/0xvault',
                 }),
@@ -213,7 +245,7 @@ describe('router', () => {
             });
 
             expect(
-                getAppWithParams({
+                getAppWithParams(mockNetworkConfigDeps, {
                     pathname: '/earn/yield/withdraw',
                     hash: '#/eth/0/normal/0xvault',
                 }),
@@ -229,7 +261,7 @@ describe('router', () => {
             });
 
             expect(
-                getAppWithParams({
+                getAppWithParams(mockNetworkConfigDeps, {
                     pathname: '/earn/yield/deposit',
                     hash: '#/eth/0/normal',
                 }),
@@ -240,7 +272,7 @@ describe('router', () => {
             });
 
             expect(
-                getAppWithParams({
+                getAppWithParams(mockNetworkConfigDeps, {
                     pathname: '/earn/yield/claim',
                     hash: '#/eth/0/normal',
                 }),
@@ -255,7 +287,7 @@ describe('router', () => {
             });
 
             expect(
-                getAppWithParams({
+                getAppWithParams(mockNetworkConfigDeps, {
                     pathname: '/earn/tron/stake',
                     hash: '#/trx/0/normal',
                 }),
@@ -271,3 +303,4 @@ describe('router', () => {
         });
     });
 });
+import { mockNetworkConfigDeps } from '@suite-common/wallet-config/mocks';

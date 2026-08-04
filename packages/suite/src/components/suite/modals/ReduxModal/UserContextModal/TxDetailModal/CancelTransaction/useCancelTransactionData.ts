@@ -1,4 +1,6 @@
 import { type TranslationKey } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { type Account, type WalletAccountTransaction } from '@suite-common/wallet-types';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
@@ -28,16 +30,17 @@ export const useCancelTransactionData = ({
     tx,
     account,
 }: UseCancelTransactionDataParams): UseCancelTransactionDataResult => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const { networkType } = account;
     const { composedCancelTx } = useCancelTxContext();
 
     if (!composedCancelTx) return null;
 
     const feePerByte = new BigNumber(composedCancelTx.feePerByte);
-    const newFee = formatNetworkAmount(composedCancelTx.fee, tx.symbol) ?? '0';
+    const newFee = formatNetworkAmount(networkConfigDeps, composedCancelTx.fee, tx.symbol) ?? '0';
 
     if (networkType === 'ethereum') {
-        const originalFee = formatNetworkAmount(tx.fee, tx.symbol) ?? '0';
+        const originalFee = formatNetworkAmount(networkConfigDeps, tx.fee, tx.symbol) ?? '0';
 
         return {
             noticeId: 'TR_CANCEL_TX_NOTICE_EVM',
@@ -51,7 +54,8 @@ export const useCancelTransactionData = ({
     if (composedCancelTx.outputs.length !== 1) return null;
 
     const output = composedCancelTx.outputs[0];
-    const returnAmount = formatNetworkAmount(output?.amount.toString() ?? '', tx.symbol) ?? '0';
+    const returnAmount =
+        formatNetworkAmount(networkConfigDeps, output?.amount.toString() ?? '', tx.symbol) ?? '0';
 
     return {
         noticeId: 'TR_CANCEL_TX_NOTICE',

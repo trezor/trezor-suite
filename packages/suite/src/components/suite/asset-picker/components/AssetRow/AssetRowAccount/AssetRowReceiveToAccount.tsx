@@ -2,7 +2,8 @@ import { useMemo } from 'react';
 
 import { AccountLabel } from '@suite/account';
 import { Translation } from '@suite/intl';
-import { getNetworkFeatures } from '@suite-common/wallet-config';
+import { useServices } from '@suite-common/dependency-injection';
+import { getNetworkFeatures , selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { Column, Row, Text } from '@trezor/components';
 import { TokenIcon } from '@trezor/product-components';
@@ -20,8 +21,9 @@ export function AssetRowReceiveToAccount({
     account,
     onClick,
 }: AssetRowReceiveToAccountProps) {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const supportsTokens = useMemo(
-        () => getNetworkFeatures(account.symbol).includes('tokens'),
+        () => getNetworkFeatures(networkConfigDeps, account.symbol).includes('tokens'),
         [account.symbol],
     );
 

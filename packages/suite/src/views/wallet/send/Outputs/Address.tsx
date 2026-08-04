@@ -22,6 +22,7 @@ import { selectFindNetworkSymbolForProtocolDep } from '@suite-common/networks';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { isAmountPresent, parseTransferUri } from '@suite-common/transfer-uri';
 import { formInputsMaxLength } from '@suite-common/validators';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import type { Output } from '@suite-common/wallet-types';
 import {
     checkIsAddressNotUsedNotChecksummed,
@@ -85,10 +86,17 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
         clearErrors,
     } = useSendFormContext();
     const { translationString } = useTranslation();
-    const { analytics, addressValidator, findNetworkSymbolForProtocol } = useServices(
+    const {
+        analytics,
+        addressValidator,
+        findNetworkSymbolForProtocol,
+        getNetworkConfig,
+        networkModuleRepository,
+    } = useServices(
         selectDesktopAnalyticsDep,
         selectAddressValidatorDep,
         selectFindNetworkSymbolForProtocolDep,
+        selectNetworkConfigDeps,
     );
     const { descriptor, networkType, symbol } = account;
     const inputName = `outputs.${outputId}.address` as const;
@@ -138,7 +146,10 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
             return;
         }
 
-        const result = parseTransferUri(uri, findNetworkSymbolForProtocol);
+        const result = parseTransferUri(
+            { findNetworkSymbolForProtocol, getNetworkConfig, networkModuleRepository },
+            uri,
+        );
 
         let parsedScheme: string | undefined;
         if (result.success) {

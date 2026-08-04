@@ -3,7 +3,8 @@ import { memo, useMemo } from 'react';
 import { useDevice } from '@suite/device';
 import { selectFlags, setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
-import { networksCollection } from '@suite-common/wallet-config';
+import { useServices } from '@suite-common/dependency-injection';
+import { getNetworks , selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import {
     selectAllAccountsToList,
     selectBaseCurrency,
@@ -42,13 +43,14 @@ import { PortfolioCardHeader } from './PortfolioCardHeader';
 import { UnsupportedAssetsMessage, useUnsupportedNetworkMessage } from './UnsupportedAssetsMessage';
 
 export const PortfolioCard = memo(() => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const currentFiatRates = useSelector(selectCurrentFiatRates);
     const baseCurrencyCode = useSelector(selectBaseCurrency);
     const { discovery, isDiscoveryRunning } = useDiscovery();
     const discoveryStatus = useSelector(selectDiscoveryOverallStatus);
     const enabledNetworks = useSelector(selectEnabledNetworks);
 
-    const accounts = useSelector(selectAllAccountsToList);
+    const accounts = useSelector(state => selectAllAccountsToList(state, networkConfigDeps));
     const { dashboardGraphHidden } = useSelector(selectFlags);
     const dispatch = useDispatch();
     const { device } = useDevice();
@@ -65,9 +67,10 @@ export const PortfolioCard = memo(() => {
     const passphraseEntryCanceled =
         accounts.length === 0 && discoveryStatus === undefined && discovery?.status === 'cancelled';
 
-    const hasNetworkWithEnabledGraph = networksCollection.some(
+    const hasNetworkWithEnabledGraph = getNetworks(networkConfigDeps).some(
         network =>
-            isNetworkWithGraphFeature(network.symbol) && enabledNetworks.includes(network.symbol),
+            isNetworkWithGraphFeature(networkConfigDeps, network.symbol) &&
+            enabledNetworks.includes(network.symbol),
     );
 
     // TODO: DashboardGraph will get mounted twice (thus triggering data processing twice)

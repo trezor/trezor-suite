@@ -10,6 +10,7 @@ import {
     selectSuiteRouterHistoryDep,
 } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { selectAccounts } from '@suite-common/wallet-core';
 import { Row } from '@trezor/components';
 import { zIndices } from '@trezor/theme';
@@ -67,8 +68,12 @@ interface PageHeaderProps {
 export const PageHeader = ({ children, expandable }: PageHeaderProps) => {
     const selectedAccountKey = useSelector(selectSelectedAccountKey);
     const route = useSelector(selectRoute);
-    const { suiteRouterHistory } = useServices(selectSuiteRouterHistoryDep);
+    const { suiteRouterHistory, ...networkConfigDeps } = useServices(
+        selectSuiteRouterHistoryDep,
+        selectNetworkConfigDeps,
+    );
     const effectiveRouteName = resolveEffectiveBackgroundRouteName(
+        networkConfigDeps,
         route,
         suiteRouterHistory.getLocation(),
     );

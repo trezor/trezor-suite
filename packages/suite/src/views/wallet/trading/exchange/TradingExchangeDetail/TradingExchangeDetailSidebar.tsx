@@ -1,8 +1,9 @@
 import type { ExchangeTrade } from 'invity-api';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
 import { cryptoIdToNetwork, useTradingUtils } from '@suite-common/trading';
-import { networksCollection } from '@suite-common/wallet-config';
+import { getNetworks , selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { selectIsMevProtectionEnabled } from '@suite-common/wallet-core';
 import { Card, Column } from '@trezor/components';
 
@@ -31,13 +32,14 @@ export const TradingExchangeDetailSidebar = ({
     sendAccount,
     trade,
 }: TradingExchangeDetailSidebarProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const isMevProtectionEnabled = useSelector(selectIsMevProtectionEnabled);
     const isMevProtectionFeatureEnabled = useSelector(selectIsMevProtectionFeatureEnabled);
     const { cryptoIdToSymbolAndContractAddress } = useTradingUtils();
     const { getAssetDecimals } = useTradingAssetDecimals();
-    const sendNetwork = cryptoIdToNetwork(trade.send);
+    const sendNetwork = cryptoIdToNetwork(networkConfigDeps, trade.send);
     const isMevProtectionSupported = sendNetwork?.features.includes('mev-protection') ?? false;
-    const supportedMevProtectionNetworks = networksCollection
+    const supportedMevProtectionNetworks = getNetworks(networkConfigDeps)
         .filter(network => network.features.includes('mev-protection'))
         .map(network => network.name);
 

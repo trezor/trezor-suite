@@ -4,7 +4,8 @@ import { act, waitFor } from '@testing-library/react';
 
 import { configureMockStore, renderHookWithStoreProvider } from '@suite-common/test-utils';
 import { type TradingSellFormProps } from '@suite-common/trading';
-import { asNetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import { asNetworkSymbol, toNetwork } from '@suite-common/wallet-config';
+import { mockNetworkConfigDeps } from '@suite-common/wallet-config/mocks';
 import { type Account } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
@@ -101,7 +102,10 @@ const renderComposeTransaction = () => {
             const compose = useTradingComposeTransaction({
                 type: 'sell',
                 account,
-                network: getNetwork(account.symbol),
+                network: toNetwork(
+                    account.symbol,
+                    mockNetworkConfigDeps.getNetworkConfig(account.symbol),
+                ),
                 methods,
                 setShowReserveBanner: jest.fn(),
             });

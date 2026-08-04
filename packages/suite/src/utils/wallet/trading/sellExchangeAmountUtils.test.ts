@@ -1,4 +1,5 @@
 import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { mockNetworkConfigDeps } from '@suite-common/wallet-config/mocks';
 
 import { calcCryptoFromFiat, calcMaxTokenAmount, calcRatioAmount } from './sellExchangeAmountUtils';
 
@@ -39,6 +40,7 @@ describe('calcCryptoFromFiat', () => {
 
 describe('calcRatioAmount', () => {
     const defaultParams = {
+        ...mockNetworkConfigDeps,
         balance: '2',
         decimals: 8,
         networkDecimals: 8,

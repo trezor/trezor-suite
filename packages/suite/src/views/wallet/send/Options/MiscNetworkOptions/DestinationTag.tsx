@@ -1,6 +1,8 @@
 import { Translation, useTranslation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectGetNetworkConfigDep } from '@suite-common/networks';
 import { formInputsMaxLength } from '@suite-common/validators';
-import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { U_INT_32 } from '@suite-common/wallet-constants';
 import { isInteger } from '@suite-common/wallet-utils';
 import { Banner, Button, Card, Column, Input, Note, Row, Switch } from '@trezor/components';
@@ -18,6 +20,7 @@ interface DestinationTagProps {
 }
 
 export const DestinationTag = ({ networkSymbol }: DestinationTagProps) => {
+    const { getNetworkConfig } = useServices(selectGetNetworkConfigDep);
     const {
         register,
         getDefaultValue,
@@ -30,7 +33,7 @@ export const DestinationTag = ({ networkSymbol }: DestinationTagProps) => {
     const { translationString } = useTranslation();
     const { openNodeById } = useGuideOpenNode();
 
-    const { networkType, name } = getNetwork(networkSymbol);
+    const { networkType, name } = getNetworkConfig(networkSymbol);
 
     if (networkType !== 'ripple' && networkType !== 'stellar') {
         return null;

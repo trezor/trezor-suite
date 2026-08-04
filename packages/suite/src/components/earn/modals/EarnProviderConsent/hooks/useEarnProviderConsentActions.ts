@@ -8,6 +8,7 @@ import {
     type EarnYieldContext,
 } from '@suite-common/suite-types/src/staking';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import {
     DEFAULT_VOTING_OPTION,
     selectVotingDelegationOption,
@@ -39,6 +40,7 @@ export const useEarnProviderConsentActions = ({
 }: UseEarnProviderConsentActionsProps) => {
     const dispatch = useDispatch();
     const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const selectedVotingDelegation = useSelector(selectVotingDelegationOption);
 
     const report = (action: EarnModalAction) => {
@@ -67,6 +69,7 @@ export const useEarnProviderConsentActions = ({
                         goto({
                             routeName: 'earn-yield-deposit',
                             params: getEarnRouteParams({
+                                ...networkConfigDeps,
                                 account,
                                 vaultAddress: yieldContext.vaultAddress,
                             }),

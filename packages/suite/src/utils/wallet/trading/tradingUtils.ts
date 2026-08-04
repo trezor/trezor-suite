@@ -1,6 +1,7 @@
 import { type ExtendedMessageDescriptor } from '@suite/intl';
+import { type GetNetworkConfigDep } from '@suite-common/networks';
 import type { TradingType } from '@suite-common/trading';
-import { type Network, type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
+import { type Network, type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type Output,
     type PrecomposedLevels,
@@ -165,14 +166,16 @@ interface ResolveAddressAndTokenProps {
     token: string | null;
 }
 
-export const resolveAddressAndToken = <A extends Pick<Account, 'symbol' | 'descriptor'>>(
+export const resolveAddressAndToken = <
+    A extends Pick<Account, 'symbol' | 'descriptor' | 'networkType'>,
+>(
     account: A | undefined | null,
     tokenContractAddress: TokenInfo['contract'] | undefined | null,
 ): ResolveAddressAndTokenProps => {
     if (!account) {
         return { address: '', token: null };
     }
-    const networkType = getNetworkType(account.symbol);
+    const { networkType } = account;
 
     // set token address for ERC20 transaction to estimate the fees more precisely
     if (networkType === 'ethereum') {
@@ -189,7 +192,7 @@ export const resolveAddressAndToken = <A extends Pick<Account, 'symbol' | 'descr
     return { address: '', token: tokenContractAddress ?? null };
 };
 
-interface GetFeeInUnitsProps {
+interface GetFeeInUnitsProps extends GetNetworkConfigDep {
     symbol: NetworkSymbol;
     composedLevels?: PrecomposedLevels | PrecomposedLevelsCardano;
     selectedFee?: FeeLevel['label'];
@@ -199,6 +202,7 @@ export const getFeeInUnits = ({
     symbol,
     composedLevels,
     selectedFee = 'normal',
+    getNetworkConfig,
 }: GetFeeInUnitsProps): string => {
     const selectedFeeLevel = composedLevels?.[selectedFee];
     if (!selectedFeeLevel) return '0';
@@ -210,6 +214,7 @@ export const getFeeInUnits = ({
     const { fee } = selectedFeeLevel;
 
     const feeInUnits = subunitsToUnits({
+        getNetworkConfig,
         value: asAmountSubunit(new BigNumber(fee)),
         symbol,
     }).toString();

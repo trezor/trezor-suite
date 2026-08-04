@@ -1,3 +1,4 @@
+import type { GetNetworkConfigDep } from '@suite-common/networks';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type YieldAllowanceStatus,
@@ -48,7 +49,7 @@ export const getYieldModifyAmountInput = ({
         : nextAmount;
 };
 
-type YieldUnwrapDefaultAmountParams = {
+type YieldUnwrapDefaultAmountParams = GetNetworkConfigDep & {
     flowType: YieldWithdrawFlowType;
     /** Amount just withdrawn, in the flow's input unit — assets for `withdraw`, shares for `redeem`. */
     withdrawnAmount: string;
@@ -73,6 +74,7 @@ type YieldUnwrapDefaultAmountParams = {
  * price-per-share. Falls back to the full balance only when the asset amount can't be resolved.
  */
 export const getYieldUnwrapDefaultAmount = ({
+    getNetworkConfig,
     flowType,
     withdrawnAmount,
     token,
@@ -83,6 +85,7 @@ export const getYieldUnwrapDefaultAmount = ({
     const withdrawnAssetAmount =
         flowType === 'redeem'
             ? getConvertedOutputTokenBalanceToInputTokenAmount({
+                  getNetworkConfig,
                   networkSymbol: token.networkSymbol,
                   token,
                   outputToken: receiptToken,
@@ -138,7 +141,7 @@ export type YieldFiatRateToken = {
     tokenAddress?: TokenAddress;
 };
 
-type YieldFiatRateTokenParams = {
+type YieldFiatRateTokenParams = GetNetworkConfigDep & {
     step: YieldFlowStepId;
     flowType: YieldPositionFlowType;
     accountSymbol: NetworkSymbol;
@@ -154,6 +157,7 @@ type YieldFiatRateTokenParams = {
  * Returns `null` when fiat entry is not possible for the current step.
  */
 export const getYieldFiatRateToken = ({
+    getNetworkConfig,
     step,
     flowType,
     accountSymbol,
@@ -174,7 +178,11 @@ export const getYieldFiatRateToken = ({
     return {
         symbol: token.networkSymbol,
         tokenAddress: toTokenAddress(
-            getContractAddressForNetworkSymbol(token.networkSymbol, token.contractAddress),
+            getContractAddressForNetworkSymbol(
+                { getNetworkConfig },
+                token.networkSymbol,
+                token.contractAddress,
+            ),
         ),
     };
 };

@@ -8,7 +8,7 @@ import { goto } from '@suite/router';
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
-import { getNetworkType } from '@suite-common/wallet-config';
+import { getNetworkType, selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { isWrappedNativeFlowSupported } from '@suite-common/wallet-core';
 import { Button, Tooltip } from '@trezor/components';
 import {
@@ -31,6 +31,7 @@ type WrapNativeTokenButtonProps = {
  * without a wrapped-native contract configured.
  */
 export const WrapNativeTokenButton = ({ account }: WrapNativeTokenButtonProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const dispatch = useDispatch();
     const { translationString } = useTranslation();
     const { analytics } = useServices(selectDesktopAnalyticsDep);
@@ -48,7 +49,7 @@ export const WrapNativeTokenButton = ({ account }: WrapNativeTokenButtonProps) =
 
     if (
         !isDebugModeActive ||
-        getNetworkType(symbol) !== 'ethereum' ||
+        getNetworkType(networkConfigDeps, symbol) !== 'ethereum' ||
         !wrappedAddress ||
         !wrappedSymbol
     ) {

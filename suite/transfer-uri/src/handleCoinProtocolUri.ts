@@ -4,6 +4,7 @@ import { type DesktopAnalyticsDep, events } from '@suite/analytics';
 import type { FindNetworkSymbolForProtocolDep } from '@suite-common/networks';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { isAmountPresent, parseTransferUri } from '@suite-common/transfer-uri';
+import type { NetworkConfigDeps } from '@suite-common/wallet-config';
 import type { Protocol } from '@trezor/network-module-suite-common-types';
 
 /** Flat transfer fields, matching the send-form state the protocol reducer persists. */
@@ -18,7 +19,7 @@ export type CoinProtocol = {
 type SaveCoinProtocol = (coinProtocol: CoinProtocol) => UnknownAction;
 
 export type HandleCoinProtocolUriDeps = {
-    services: FindNetworkSymbolForProtocolDep & DesktopAnalyticsDep;
+    services: FindNetworkSymbolForProtocolDep & DesktopAnalyticsDep & NetworkConfigDeps;
 };
 
 /**
@@ -38,7 +39,7 @@ export const handleCoinProtocolUri =
                 payload: { scheme, isAmountPresent: amountPresent },
             });
 
-        const result = parseTransferUri(uri, extra.services.findNetworkSymbolForProtocol);
+        const result = parseTransferUri(extra.services, uri);
 
         if (!result.success) {
             if (result.error.type === 'UNKNOWN_SCHEME') reportScheme(result.error.scheme, false);

@@ -18,14 +18,14 @@ import graphMiddleware from './graphMiddleware';
 import { replaceByFeeErrorMiddleware } from './replaceByFeeErrorMiddleware';
 import { storageMiddleware } from './storageMiddleware';
 import { tradingMiddleware } from './tradingMiddleware';
-import walletMiddleware from './walletMiddleware';
+import { prepareWalletMiddleware } from './walletMiddleware';
 
 export const getWalletMiddlewares = (
     getExtra: () => ExtraDependencies | null,
 ): ((api: MiddlewareAPI) => any)[] => [
     prepareBlockchainMiddleware(getExtra),
     prepareAccountsMiddleware(getExtra),
-    walletMiddleware,
+    prepareWalletMiddleware(getExtra),
     prepareDiscoveryMiddleware(getExtra),
     prepareFiatRatesMiddleware(getExtra),
     prepareTokenDefinitionsMiddleware(getExtra),

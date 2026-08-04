@@ -1,4 +1,6 @@
 import { useTranslation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { type GeneralPrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import {
     asAmountSubunit,
@@ -21,11 +23,12 @@ export const TransactionReviewTronFeeNotes = ({
     tx,
     account,
 }: TransactionReviewTronFeeNotesProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const { translationString } = useTranslation();
 
     const tronResources = account.networkType === 'tron' ? account.misc.tronResources : undefined;
     const { trxBurned, coveredEnergy, coveredBandwidth } =
-        calculateTronFeeBreakdown(tx, tronResources, account.symbol) ?? {};
+        calculateTronFeeBreakdown(networkConfigDeps, tx, tronResources, account.symbol) ?? {};
 
     const accountActivationFee = 'accountActivationFee' in tx ? tx.accountActivationFee : undefined;
 
@@ -34,6 +37,7 @@ export const TransactionReviewTronFeeNotes = ({
             ? trxBurned.plus(
                   new BigNumber(
                       subunitsToUnits({
+                          ...networkConfigDeps,
                           value: asAmountSubunit(new BigNumber(accountActivationFee)),
                           symbol: account.symbol,
                       }),

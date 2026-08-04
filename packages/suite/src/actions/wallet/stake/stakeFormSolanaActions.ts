@@ -21,7 +21,7 @@ const getSolanaUserAgent = () => `Trezor Suite ${getSuiteVersion()}`;
 
 export const composeTransaction =
     (formValues: StakeFormState, formState: ComposeActionContext) =>
-    async (_: Dispatch, getState: GetState) => {
+    async (_: Dispatch, getState: GetState, extra: ExtraDependencies) => {
         const { selectedAccount, blockchain } = getState().wallet;
 
         if (selectedAccount.status !== 'loaded') return;
@@ -33,6 +33,7 @@ export const composeTransaction =
         if (!blockchainUrl) return;
 
         return await composeSolanaStakingTransaction({
+            ...extra.services,
             formValues,
             composeContext: formState,
             blockchainUrl,

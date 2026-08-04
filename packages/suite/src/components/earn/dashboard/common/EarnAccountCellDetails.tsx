@@ -1,7 +1,9 @@
 import { type ReactNode } from 'react';
 
 import { AccountLabel } from '@suite/account';
-import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectGetNetworkConfigDep } from '@suite-common/networks';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { Text } from '@trezor/components';
 
@@ -22,6 +24,7 @@ export const EarnAccountCellDetails = ({
     tokenBalance,
     subtitle,
 }: EarnAccountCellDetailsProps) => {
+    const { getNetworkConfig } = useServices(selectGetNetworkConfigDep);
     if (!account) {
         return (
             <>
@@ -32,7 +35,7 @@ export const EarnAccountCellDetails = ({
                     ellipsisLineCount={1}
                     maxWidth="100%"
                 >
-                    {getNetwork(networkSymbol).name}
+                    {getNetworkConfig(networkSymbol).name}
                 </Text>
 
                 {subtitle && (

@@ -5,7 +5,7 @@ import { Translation, useTranslation } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
 import { useServices } from '@suite-common/dependency-injection';
 import { formInputsMaxLength } from '@suite-common/validators';
-import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { getNetworkDisplaySymbol , selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { selectIsNetworkReserveEnabled } from '@suite-common/wallet-core';
 import { type Output, type TokenAddress } from '@suite-common/wallet-types';
 import {
@@ -45,6 +45,7 @@ interface AmountProps {
 }
 
 export const Amount = ({ output, outputId }: AmountProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const { translationString } = useTranslation();
     const { analytics } = useServices(selectDesktopAnalyticsDep);
     const {
@@ -106,8 +107,10 @@ export const Amount = ({ output, outputId }: AmountProps) => {
         decimals = network.decimals;
     }
 
-    const withTokens = hasNetworkFeatures(account, 'tokens');
-    const displayTicker = shouldSendInSats ? 'sat' : getNetworkDisplaySymbol(symbol);
+    const withTokens = hasNetworkFeatures(networkConfigDeps, account, 'tokens');
+    const displayTicker = shouldSendInSats
+        ? 'sat'
+        : getNetworkDisplaySymbol(networkConfigDeps, symbol);
     const isLowAnonymity = isLowAnonymityWarning(outputError);
     const hasError = !!error;
     const bottomText = isLowAnonymity ? undefined : error?.message;
@@ -115,6 +118,7 @@ export const Amount = ({ output, outputId }: AmountProps) => {
     const handleInputChange = (value: string) => handleAmountChange({ outputId, value });
 
     const feeInUnits = getFeeInUnits({
+        ...networkConfigDeps,
         symbol: account.symbol,
         composedLevels,
         selectedFee: getValues().selectedFee,
@@ -140,7 +144,10 @@ export const Amount = ({ output, outputId }: AmountProps) => {
 
                 // amounts below dust are not allowed
                 let dust =
-                    rawDust && (shouldSendInSats ? rawDust : formatNetworkAmount(rawDust, symbol));
+                    rawDust &&
+                    (shouldSendInSats
+                        ? rawDust
+                        : formatNetworkAmount(networkConfigDeps, rawDust, symbol));
 
                 if (dust && amountBig.lt(dust)) {
                     if (shouldSendInSats) {
@@ -148,11 +155,12 @@ export const Amount = ({ output, outputId }: AmountProps) => {
                     }
 
                     return translationString('AMOUNT_IS_BELOW_DUST', {
-                        dust: `${dust} ${shouldSendInSats ? 'sat' : getNetworkDisplaySymbol(symbol)}`,
+                        dust: `${dust} ${shouldSendInSats ? 'sat' : getNetworkDisplaySymbol(networkConfigDeps, symbol)}`,
                     });
                 }
             },
             reserveOrBalance: validateReserveOrBalance(translationString, {
+                ...networkConfigDeps,
                 account,
                 areSatsUsed: !!shouldSendInSats,
                 contractAddress: tokenValue,
@@ -160,6 +168,7 @@ export const Amount = ({ output, outputId }: AmountProps) => {
             networkReserve: isNetworkReserveEnabled
                 ? validateNetworkReserve(translationString, {
                       reserve: getNetworkReserve({
+                          ...networkConfigDeps,
                           symbol: account.symbol,
                           contractAddress: tokenValue,
                           isEnabled: isNetworkReserveEnabled,

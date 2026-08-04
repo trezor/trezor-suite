@@ -15,6 +15,7 @@
         "@suite-common/address": "workspace:*",
         "@suite-common/dependency-injection": "workspace:*",
         "@suite-common/device": "workspace:*",
+        "@suite-common/networks": "workspace:*",
         "@suite-common/receive": "workspace:*",
         "@suite-common/toast-notifications": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",

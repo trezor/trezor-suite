@@ -7,6 +7,7 @@ import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { type YieldAccountsRewards } from '@suite-common/earn-stablecoin-api';
 import { useFormatters } from '@suite-common/formatters';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { selectBaseCurrency } from '@suite-common/wallet-core';
 import { compareAccountsByCoin } from '@suite-common/wallet-utils';
 import { CardList, Column, Modal, Row, Text, Tooltip } from '@trezor/components';
@@ -26,12 +27,13 @@ export const EarnYieldClaimSelectAccountModal = ({
     onClose,
 }: EarnYieldClaimSelectAccountModalProps) => {
     const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const { BaseCurrencyAmountFormatter } = useFormatters();
     const isDebugModeActive = useSelector(selectIsDebugModeActive);
     const baseCurrency = useSelector(selectBaseCurrency);
 
     const sortedAccountsRewards = [...accountsRewards].sort((a, b) =>
-        compareAccountsByCoin(a.account, b.account),
+        compareAccountsByCoin(networkConfigDeps, a.account, b.account),
     );
 
     const handleOnSelect = (account: YieldAccountsRewards[number]) => {

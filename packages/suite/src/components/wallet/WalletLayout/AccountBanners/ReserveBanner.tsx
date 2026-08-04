@@ -1,5 +1,7 @@
 import { Translation } from '@suite/intl';
-import { getDisplaySymbol, getNetwork } from '@suite-common/wallet-config';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectGetNetworkConfigDep } from '@suite-common/networks';
+import { getDisplaySymbol , selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { Banner } from '@trezor/components';
 import { HELP_CENTER_XLM_URL, HELP_CENTER_XRP_URL } from '@trezor/urls';
@@ -12,6 +14,8 @@ interface ReserveBannerProps {
 }
 
 export const ReserveBanner = ({ account }: ReserveBannerProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+    const { getNetworkConfig } = useServices(selectGetNetworkConfigDep);
     let learnMoreUrl: string;
 
     switch (account?.networkType) {
@@ -40,9 +44,13 @@ export const ReserveBanner = ({ account }: ReserveBannerProps) => {
                 <Translation
                     id="TR_RESERVE_INFO"
                     values={{
-                        minBalance: formatNetworkAmount(account.misc.reserve, account.symbol),
-                        networkName: getNetwork(account.symbol).name,
-                        displaySymbol: getDisplaySymbol(account.symbol),
+                        minBalance: formatNetworkAmount(
+                            networkConfigDeps,
+                            account.misc.reserve,
+                            account.symbol,
+                        ),
+                        networkName: getNetworkConfig(account.symbol).name,
+                        displaySymbol: getDisplaySymbol(networkConfigDeps, account.symbol),
                     }}
                 />
             }

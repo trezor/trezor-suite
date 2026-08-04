@@ -11,18 +11,11 @@ import {
     type TradingAssetSellOption,
     type TradingExchangeFormProps,
 } from '@suite-common/trading';
-import {
-    type Network,
-    type NetworkSymbol,
-    getNetwork,
-    toNetworkSymbolNonTestnet,
-} from '@suite-common/wallet-config';
+import { type Network, type NetworkSymbol, toNetwork } from '@suite-common/wallet-config';
+import { mockNetworkConfigDeps } from '@suite-common/wallet-config/mocks';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 
 import { useExchangeQuotes } from './useExchangeQuotes';
-
-const btcSymbol = toNetworkSymbolNonTestnet('btc');
-const ethSymbol = toNetworkSymbolNonTestnet('eth');
 
 const QUOTES: ExchangeTrade[] = [
     { exchange: 'provider-1', send: 'bitcoin' as CryptoId, receive: 'ethereum' as CryptoId },
@@ -79,11 +72,11 @@ const SEND_CRYPTO_SELECT: TradingAssetSellOption = {
     name: 'Bitcoin',
     coingeckoId: 'bitcoin',
     contractAddress: null,
-    symbol: btcSymbol,
+    symbol: 'btc',
     displaySymbol: 'BTC',
     networkName: 'Bitcoin',
-    networkSymbol: btcSymbol,
-    accountKey: mockAccountKey({ descriptor: 'descriptor123', symbol: btcSymbol }),
+    networkSymbol: 'btc',
+    accountKey: mockAccountKey({ descriptor: 'descriptor123', symbol: 'btc' }),
 };
 
 const RECEIVE_CRYPTO_SELECT: TradingAssetOption = {
@@ -92,10 +85,10 @@ const RECEIVE_CRYPTO_SELECT: TradingAssetOption = {
     name: 'Ethereum',
     coingeckoId: 'ethereum',
     contractAddress: null,
-    symbol: ethSymbol,
+    symbol: 'eth',
     displaySymbol: 'ETH',
     networkName: 'Ethereum',
-    networkSymbol: ethSymbol,
+    networkSymbol: 'eth',
 };
 
 const VALID_DEFAULTS: TradingExchangeFormProps = {
@@ -151,7 +144,10 @@ const renderExchangeQuotes = (
     } = {},
 ) => {
     const { receiveAddress, receiveAccountKey, receiveAccountSymbol, resolver } = options;
-    const network = 'network' in options ? options.network : getNetwork(btcSymbol);
+    const network =
+        'network' in options
+            ? options.network
+            : toNetwork('btc', mockNetworkConfigDeps.getNetworkConfig('btc'));
 
     const store = configureMockStore({
         preloadedState: {
@@ -253,8 +249,8 @@ describe('useExchangeQuotes', () => {
     it('does not dispatch a quotes request while the receive identity is incoherent (#28143/#30213)', async () => {
         const { result } = renderExchangeQuotes(VALID_DEFAULTS, {
             receiveAddress: '0x742d35Cc6634C0532925a3b844Bc454e4438f44e',
-            receiveAccountKey: mockAccountKey({ descriptor: 'receiveaccount1', symbol: ethSymbol }),
-            receiveAccountSymbol: ethSymbol,
+            receiveAccountKey: mockAccountKey({ descriptor: 'receiveaccount1', symbol: 'eth' }),
+            receiveAccountSymbol: 'eth',
         });
 
         await act(async () => {
@@ -290,8 +286,8 @@ describe('useExchangeQuotes', () => {
 
         const { result } = renderExchangeQuotes(VALID_DEFAULTS, {
             receiveAddress: '0x742d35Cc6634C0532925a3b844Bc454e4438f44e',
-            receiveAccountKey: mockAccountKey({ descriptor: 'receiveaccount1', symbol: ethSymbol }),
-            receiveAccountSymbol: ethSymbol,
+            receiveAccountKey: mockAccountKey({ descriptor: 'receiveaccount1', symbol: 'eth' }),
+            receiveAccountSymbol: 'eth',
         });
 
         await act(async () => {
@@ -316,8 +312,8 @@ describe('useExchangeQuotes', () => {
     it('clears the selected quote and refetches when only the receive account changes', async () => {
         const { result, rerender } = renderExchangeQuotes(VALID_DEFAULTS, {
             receiveAddress: '0x742d35Cc6634C0532925a3b844Bc454e4438f44e',
-            receiveAccountKey: mockAccountKey({ descriptor: 'receiveaccount1', symbol: ethSymbol }),
-            receiveAccountSymbol: ethSymbol,
+            receiveAccountKey: mockAccountKey({ descriptor: 'receiveaccount1', symbol: 'eth' }),
+            receiveAccountSymbol: 'eth',
         });
 
         await act(async () => {
@@ -329,10 +325,10 @@ describe('useExchangeQuotes', () => {
         mockSaveSelectedQuote.mockClear();
 
         rerender({
-            currentNetwork: getNetwork(btcSymbol),
+            currentNetwork: toNetwork('btc', mockNetworkConfigDeps.getNetworkConfig('btc')),
             currentReceiveAccountKey: mockAccountKey({
                 descriptor: 'receiveaccount2',
-                symbol: ethSymbol,
+                symbol: 'eth',
             }),
         });
 
@@ -355,7 +351,7 @@ describe('useExchangeQuotes', () => {
         expect(mockHandleRequest).not.toHaveBeenCalled();
 
         rerender({
-            currentNetwork: getNetwork(btcSymbol),
+            currentNetwork: toNetwork('btc', mockNetworkConfigDeps.getNetworkConfig('btc')),
             currentReceiveAccountKey: undefined,
         });
 

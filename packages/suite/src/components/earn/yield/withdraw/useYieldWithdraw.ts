@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useState } from 'react';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
+import { selectGetNetworkConfigDep } from '@suite-common/networks';
 import { type YieldFlowCompleteValue, type YieldWithdrawFlowType } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 
@@ -25,6 +27,7 @@ export const useYieldWithdraw = ({
     account,
     vault,
 }: UseYieldWithdrawProps): YieldWithdrawContextValues | null => {
+    const { getNetworkConfig } = useServices(selectGetNetworkConfigDep);
     const [flowType, setFlowType] = useState<YieldWithdrawFlowType>('withdraw');
     const [isMaxWithdrawSelectionPending, setIsMaxWithdrawSelectionPending] = useState(false);
     const [maxWithdrawInfoAmount, setMaxWithdrawInfoAmount] = useState<string | null>(null);
@@ -88,6 +91,7 @@ export const useYieldWithdraw = ({
 
     const { completedAmount, unwrappedAmount } = flowResult;
     const { input: completedInput, output: completedOutput } = getYieldWithdrawCompletedValues({
+        getNetworkConfig,
         networkSymbol: account.symbol,
         flowType,
         completedAmount,

@@ -1,6 +1,6 @@
 import { messages } from '@suite/intl';
-import { cryptoIdToNetworkSymbol } from '@suite-common/trading';
-import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import { cryptoIdToSymbol } from '@suite-common/trading';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { localizeNumber } from '@suite-common/wallet-utils';
 
 import { tradeEndpoint } from '../../fixtures/trading';
@@ -70,8 +70,8 @@ test.describe('Trading - Swap history', { tag: ['@webOnly', '@T3T1', '@T3W1'] },
                 type StatusKey = keyof typeof statusTranslationKeys;
                 const row = tradingPage.transactions.swapTransactionRow(trade.orderId);
                 const receiveSymbol = (
-                    cryptoIdToNetworkSymbol(
-                        trade.data.receive as Parameters<typeof cryptoIdToNetworkSymbol>[0],
+                    cryptoIdToSymbol(
+                        trade.data.receive as Parameters<typeof cryptoIdToSymbol>[0],
                     ) ?? trade.data.receive
                 ).toUpperCase();
 
@@ -117,9 +117,8 @@ test.describe('Trading - Swap history', { tag: ['@webOnly', '@T3T1', '@T3W1'] },
 
         for (const trade of SEEDED_TRADES) {
             const receiveSymbol = (
-                cryptoIdToNetworkSymbol(
-                    trade.data.receive as Parameters<typeof cryptoIdToNetworkSymbol>[0],
-                ) ?? trade.data.receive
+                cryptoIdToSymbol(trade.data.receive as Parameters<typeof cryptoIdToSymbol>[0]) ??
+                trade.data.receive
             ).toUpperCase();
 
             await test.step(`Open detail for trade ${trade.orderId}`, async () => {
@@ -161,7 +160,7 @@ test.describe('Trading - Swap history', { tag: ['@webOnly', '@T3T1', '@T3W1'] },
                     .toHaveText(trade.orderId);
 
                 await expect(tradingPage.transactionDetailSidebar.sendAccount).toContainText(
-                    getNetwork(trade.sendSymbol as NetworkSymbol).name,
+                    getNetworkConfig(trade.sendSymbol as NetworkSymbol).name,
                 );
                 await expect(tradingPage.transactionDetailSidebar.receiveAccount).toBeVisible();
             });

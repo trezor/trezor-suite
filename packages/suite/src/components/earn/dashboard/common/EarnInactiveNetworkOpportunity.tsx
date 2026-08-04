@@ -1,6 +1,8 @@
 import { type ReactNode } from 'react';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { Card, Column, Paragraph, Row, Table } from '@trezor/components';
 
 import { EarnAccountCell } from './EarnAccountCell';
@@ -20,7 +22,8 @@ export const EarnInactiveNetworkOpportunity = ({
     note,
     isCardLayout,
 }: EarnInactiveNetworkOpportunityProps) => {
-    const networkType = getNetworkType(symbol);
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+    const networkType = getNetworkType(networkConfigDeps, symbol);
 
     const noteParagraph = note && (
         <Paragraph typographyStyle="body-sm" intent="neutral">

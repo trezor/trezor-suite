@@ -5,9 +5,10 @@ import { ContextMessage } from '@suite/message-system';
 import { selectIsLegacyLabelingVisible, selectSelectedProviderForLabels } from '@suite/metadata';
 import { selectHasExperimentalFeature } from '@suite/settings';
 import { TorStatus, selectTorState } from '@suite/tor';
+import { useServices } from '@suite-common/dependency-injection';
 import { Context } from '@suite-common/message-system';
 import { selectIsMevProtectionSettingsVisible } from '@suite-common/mev';
-import { getNetwork } from '@suite-common/wallet-config';
+import { selectGetNetworkConfigDep } from '@suite-common/networks';
 import {
     selectEnabledNetworks,
     selectIsNetworkReserveSettingsVisible,
@@ -61,6 +62,7 @@ import { TorOnionLinks } from './TorOnionLinks';
 import { VersionWithUpdate } from './VersionWithUpdate';
 
 export const SettingsGeneral = () => {
+    const { getNetworkConfig } = useServices(selectGetNetworkConfigDep);
     const shouldShowSettingsDesktopAppPromoBanner = useSelector(
         selectIsSettingsDesktopAppPromoBannerShown,
     );
@@ -74,7 +76,7 @@ export const SettingsGeneral = () => {
     const hasContentBelowMobileWidth = useIsContentBelowBreakpoint(breakpoints.mobile);
 
     const hasBitcoinNetworks = enabledNetworks.some(symbol => {
-        const networkFeatures = getNetwork(symbol).features;
+        const networkFeatures = getNetworkConfig(symbol).features;
 
         return networkFeatures.includes('amount-unit');
     });

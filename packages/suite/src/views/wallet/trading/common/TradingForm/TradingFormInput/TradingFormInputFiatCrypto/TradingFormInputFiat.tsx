@@ -3,6 +3,7 @@ import { type FieldErrors, useFormContext, useWatch } from 'react-hook-form';
 
 import { useTranslation } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
+import { useServices } from '@suite-common/dependency-injection';
 import {
     type SelectedTradingAsset,
     TRADING_FORM_FIAT_CURRENCY_SELECT,
@@ -14,6 +15,7 @@ import {
     getNetworkDecimalsWithFallback,
 } from '@suite-common/trading';
 import { formInputsMaxLength } from '@suite-common/validators';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { selectCurrentFiatRates, selectIsNetworkReserveEnabled } from '@suite-common/wallet-core';
 import { type TokenAddress } from '@suite-common/wallet-types';
 import {
@@ -57,6 +59,7 @@ const TradingFormInputFiatContent = ({
     labelLeft,
     labelRight,
 }: TradingFormInputFiatContentProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const { translationString } = useTranslation();
     const locale = useSelector(selectLanguage);
     const isNetworkReserveEnabled = useSelector(selectIsNetworkReserveEnabled);
@@ -95,12 +98,14 @@ const TradingFormInputFiatContent = ({
         ? findToken(asset.tokens, tokenAddress)?.balance
         : asset.formattedBalance;
     const networkReserve = getNetworkReserve({
+        ...networkConfigDeps,
         symbol: asset.symbol,
         contractAddress: tokenAddress,
         isEnabled: isNetworkReserveEnabled,
     });
     const feeInUnits = isExchangeOrSellContext
         ? getFeeInUnits({
+              ...networkConfigDeps,
               symbol: asset.symbol,
               composedLevels: context.composedLevels,
               selectedFee: context.composedTransactionInfo?.selectedFee,
@@ -130,7 +135,7 @@ const TradingFormInputFiatContent = ({
         asset.symbol === 'btc' && areSatsDisplayed && cryptoAmount
             ? convertAmountSubunitsToUnits(
                   cryptoAmount,
-                  getNetworkDecimalsWithFallback(asset.symbol),
+                  getNetworkDecimalsWithFallback(networkConfigDeps, asset.symbol),
               )
             : cryptoAmount;
 
@@ -155,6 +160,7 @@ const TradingFormInputFiatContent = ({
     const fiatInputRules = useMemo(
         () =>
             getFiatInputRules({
+                ...networkConfigDeps,
                 isExchangeContext,
                 isSellContext,
                 translationString,

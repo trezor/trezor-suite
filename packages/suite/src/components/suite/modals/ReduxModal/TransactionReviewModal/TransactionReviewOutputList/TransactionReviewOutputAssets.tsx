@@ -4,8 +4,9 @@ import { type CryptoId } from 'invity-api';
 
 import { Address } from '@suite/address';
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
 import { selectTradingCoinSymbolByCryptoId, toTokenCryptoId } from '@suite-common/trading';
-import { getCoingeckoId, getNetwork } from '@suite-common/wallet-config';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import {
     type FormStateTradingCryptoCurrency,
     type FormStateTradingFiatCurrency,
@@ -40,14 +41,16 @@ const TransactionReviewOutputAssetsCryptoCurrency = ({
     cryptoCurrency,
     type,
 }: TransactionReviewOutputAssetsCryptoCurrencyProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+    const { getNetworkConfig } = networkConfigDeps;
     const { symbol, contractAddress, amount } = cryptoCurrency;
-    const network = getNetwork(symbol);
+    const network = getNetworkConfig(symbol);
     const isTokenAmount = !!cryptoCurrency.contractAddress;
     const formattedAmount = localizeNumber(amount, 'en-US');
 
     const cryptoId = contractAddress
-        ? toTokenCryptoId(symbol, contractAddress)
-        : (getCoingeckoId(symbol) as CryptoId);
+        ? toTokenCryptoId(networkConfigDeps, symbol, contractAddress)
+        : (network.coingeckoId as CryptoId);
     const displaySymbol = useSelector(state =>
         contractAddress
             ? selectTradingCoinSymbolByCryptoId(state, cryptoId)
@@ -62,7 +65,11 @@ const TransactionReviewOutputAssetsCryptoCurrency = ({
                     symbol={symbol}
                     contractAddress={contractAddress}
                     placeholder={displaySymbol ?? ''}
-                    showNetworkIcon={shouldShowNetworkIcon(symbol, contractAddress)}
+                    showNetworkIcon={shouldShowNetworkIcon(
+                        networkConfigDeps,
+                        symbol,
+                        contractAddress,
+                    )}
                 />
             );
         }

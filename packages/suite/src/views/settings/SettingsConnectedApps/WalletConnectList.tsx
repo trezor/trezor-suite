@@ -1,5 +1,7 @@
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import {
     getSessionNetworks,
     selectSessions,
@@ -18,6 +20,7 @@ import { useDispatch, useSelector } from 'src/hooks/suite';
 
 export const WalletConnectList = () => {
     const dispatch = useDispatch();
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const sessions = useSelector(selectSessions);
 
     if (sessions.length === 0) {
@@ -71,7 +74,7 @@ export const WalletConnectList = () => {
                             </Row>
 
                             <Text intent="neutral" priority="secondary">
-                                {getSessionNetworks(session)
+                                {getSessionNetworks(networkConfigDeps, session)
                                     .map(network => network.name)
                                     .join(', ')}
                             </Text>

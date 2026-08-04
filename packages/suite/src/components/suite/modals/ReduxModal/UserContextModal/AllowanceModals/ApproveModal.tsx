@@ -6,7 +6,8 @@ import { type CryptoId, type DexApprovalType } from 'invity-api';
 import { DebugOnlyBadge, selectIsDebugModeActive } from '@suite/debug';
 import { useDevice } from '@suite/device';
 import { Translation, type TranslationKey } from '@suite/intl';
-import { getDisplaySymbol } from '@suite-common/wallet-config';
+import { useServices } from '@suite-common/dependency-injection';
+import { getDisplaySymbol , selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { isAllowanceUnlimited } from '@suite-common/wallet-utils';
 import {
@@ -49,6 +50,7 @@ interface ApproveModalProps {
 }
 
 export const ApproveModal = (props: ApproveModalProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const { account, provider, spender, preapprovedAmount, showSpender, heading, description } =
         props;
     const { device } = useDevice();
@@ -75,7 +77,7 @@ export const ApproveModal = (props: ApproveModalProps) => {
 
     if (!token?.symbol) return null;
 
-    const displaySymbol = getDisplaySymbol(token.symbol, token.contract);
+    const displaySymbol = getDisplaySymbol(networkConfigDeps, token.symbol, token.contract);
     const hasPreapprovedAmount = !!preapprovedAmount && preapprovedAmount !== '0';
     const isPreapprovedAmountUnlimited =
         hasPreapprovedAmount &&

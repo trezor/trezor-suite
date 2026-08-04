@@ -7,7 +7,9 @@ import { Translation } from '@suite/intl';
 import { closeModal } from '@suite/modal';
 import { goto } from '@suite/router';
 import { TxSimulationBanner } from '@suite/tx-simulation/src/common';
+import { useServices } from '@suite-common/dependency-injection';
 import { useDappScan } from '@suite-common/tx-simulation';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { selectAllAccountsToList } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { sortByCoin } from '@suite-common/wallet-utils';
@@ -48,12 +50,14 @@ interface WalletConnectProposalModalProps {
 }
 
 export const WalletConnectProposalModal = ({ eventId }: WalletConnectProposalModalProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const dispatch = useDispatch();
     const pendingProposal = useSelector(selectPendingProposal);
-    const accounts = useSelector(selectAllAccountsToList);
+    const accounts = useSelector(state => selectAllAccountsToList(state, networkConfigDeps));
     const selectableAccounts = useMemo<Account[]>(
         () =>
             sortByCoin(
+                networkConfigDeps,
                 pendingProposal?.networks
                     .filter(network => network.status === 'active')
                     .flatMap(network =>

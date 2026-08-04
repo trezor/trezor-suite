@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 
+import { useServices } from '@suite-common/dependency-injection';
 import {
     TRADING_EXCHANGE_FORM,
     TRADING_FORM_OUTPUT_AMOUNT,
@@ -24,7 +25,7 @@ import {
     selectTradingVerifiedAddress,
     tradingExchangeActions,
 } from '@suite-common/trading';
-import { getNetwork } from '@suite-common/wallet-config';
+import { selectNetworkConfigDeps, toNetwork } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -48,6 +49,7 @@ import { useTradingFormAccount } from '../useTradingFormAccount';
 import { useTradingReceiveAddress } from '../useTradingReceiveAddress';
 
 export const useTradingExchangeForm = (): TradingExchangeFormContextProps => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const type = 'exchange';
     const dispatch = useDispatch();
     const quotesRequest = useSelector(selectTradingExchangeQuotesRequest);
@@ -62,7 +64,7 @@ export const useTradingExchangeForm = (): TradingExchangeFormContextProps => {
     const { tradingAccountKey: accountKey, cryptoId } = useTradingFormAccount(type);
 
     const trade = useSelector(selectTradingExchangeActiveTrade);
-    const account = useSelector(state => selectTradingSendAccount(state, type));
+    const account = useSelector(state => selectTradingSendAccount(state, type, networkConfigDeps));
 
     const [showReserveBanner, setShowReserveBanner] = useState<boolean>(false);
     const [isApproval, setIsApproval] = useState<boolean>(false);
@@ -73,7 +75,9 @@ export const useTradingExchangeForm = (): TradingExchangeFormContextProps => {
 
     const symbol = account?.symbol;
     const { isBtcSatsAmountUnit: shouldSendInSats } = useBitcoinAmountUnit(symbol);
-    const network = symbol ? getNetwork(symbol) : undefined;
+    const network = symbol
+        ? toNetwork(symbol, networkConfigDeps.getNetworkConfig(symbol))
+        : undefined;
 
     const { defaultValues } = useTradingExchangeFormDefaultValues(accountKey, cryptoId);
 
