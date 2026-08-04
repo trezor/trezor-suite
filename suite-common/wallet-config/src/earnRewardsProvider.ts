@@ -1,5 +1,6 @@
+import type { GetNetworkConfigDep } from '@suite-common/networks';
+
 import { type NetworkSymbol } from './types';
-import { getNetworkFeatures } from './utils';
 
 export const EARN_YIELD_CLAIM_PROVIDER = 'Merkl.xyz';
 
@@ -11,6 +12,7 @@ const MERKL_XYZ_CONTRACT: Partial<Record<NetworkSymbol, `0x${string}`>> = {
 };
 
 export const isEarnYieldClaimSupported = (
+    deps: GetNetworkConfigDep,
     networkSymbol: NetworkSymbol,
     { isDebugMode = false }: { isDebugMode?: boolean } = {},
 ) => {
@@ -20,7 +22,9 @@ export const isEarnYieldClaimSupported = (
         return hasClaimContract;
     }
 
-    return hasClaimContract && getNetworkFeatures(networkSymbol).includes('claim-rewards');
+    return (
+        hasClaimContract && deps.getNetworkConfig(networkSymbol).features.includes('claim-rewards')
+    );
 };
 
 export const getEarnYieldClaimContractAddress = (networkSymbol: NetworkSymbol) =>

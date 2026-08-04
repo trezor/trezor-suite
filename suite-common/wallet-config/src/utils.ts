@@ -1,96 +1,101 @@
 import { type TokenDtoV2 } from '@suite-common/earn-stablecoin-defs';
+import type {
+    GetNetworkConfigDep,
+    NetworkModuleRepositoryDep,
+    NetworkSymbol,
+} from '@suite-common/networks';
 import { exhaustive } from '@trezor/type-utils';
 
-import { networks } from './networksConfig';
-import {
-    type AccountType,
-    type Network,
-    type NetworkDisplaySymbol,
-    type NetworkFeature,
-    type NetworkSymbol,
-    type NetworkSymbolExtended,
-    type NetworkType,
+import { type NetworkConfigDeps, getNetworks } from './networksConfig';
+import type {
+    AccountType,
+    Network,
+    NetworkDisplaySymbol,
+    NetworkFeature,
+    NetworkSymbolExtended,
+    NetworkType,
 } from './types';
 
 export const NORMAL_ACCOUNT_TYPE = 'normal' satisfies AccountType;
 
-/**
- * array from `networks` as a `Network[]` type instead of inferred type
- */
-export const networksCollection: Network[] = Object.values(networks);
-
-/**
- * array of network symbols
- */
-export const networkSymbolCollection = networksCollection.map(n => n.symbol);
-
-interface GetMainnetsProps {
+type GetMainnetsProps = {
     debug?: boolean;
     useExperimentalNetworks?: boolean;
-    allNetworks?: Network[];
-}
+    allNetworks: readonly Network[];
+};
 
 export const getMainnets = ({
     debug = false,
     useExperimentalNetworks = false,
-    allNetworks = networksCollection,
-}: GetMainnetsProps = {}): Network[] =>
+    allNetworks,
+}: GetMainnetsProps): Network[] =>
     allNetworks.filter(
-        n =>
-            !n.testnet &&
-            (!n.isDebugOnlyNetwork || debug) &&
-            (!n.isExperimentalOnlyNetwork || useExperimentalNetworks),
+        network =>
+            !network.testnet &&
+            (!network.isDebugOnlyNetwork || debug) &&
+            (!network.isExperimentalOnlyNetwork || useExperimentalNetworks),
     );
 
-interface GetTestnetsProps {
+type GetTestnetsProps = {
     debug?: boolean;
     useExperimentalNetworks?: boolean;
     useTestnetNetworks?: boolean;
-    allNetworks?: Network[];
-}
+    allNetworks: readonly Network[];
+};
 
 export const getTestnets = ({
     debug = false,
     useExperimentalNetworks = false,
     useTestnetNetworks = false,
-    allNetworks = networksCollection,
+    allNetworks,
 }: GetTestnetsProps): Network[] =>
     allNetworks.filter(
-        n =>
-            n.testnet &&
+        network =>
+            network.testnet &&
             useTestnetNetworks &&
-            (!n.isDebugOnlyNetwork || debug) &&
-            (!n.isExperimentalOnlyNetwork || useExperimentalNetworks),
+            (!network.isDebugOnlyNetwork || debug) &&
+            (!network.isExperimentalOnlyNetwork || useExperimentalNetworks),
     );
 
-export const getTestnetSymbols = (): NetworkSymbol[] =>
-    getTestnets({ useTestnetNetworks: true }).map(n => n.symbol);
+export const getTestnetSymbols = (deps: NetworkConfigDeps): NetworkSymbol[] =>
+    getNetworks(deps)
+        .filter(network => network.testnet)
+        .map(network => network.symbol);
 
-export const filterNetworksByName = (someNetworks: Network[], searchQuery: string): Network[] => {
+export const filterNetworksByName = (
+    networks: readonly Network[],
+    searchQuery: string,
+): Network[] => {
     const normalizedQuery = searchQuery.trim().toLowerCase();
 
     if (!normalizedQuery) {
-        return someNetworks;
+        return [...networks];
     }
 
-    return someNetworks.filter(
+    return networks.filter(
         ({ symbol, name }) =>
             symbol.includes(normalizedQuery) || name.toLowerCase().includes(normalizedQuery),
     );
 };
 
-export const isBlockbookBasedNetwork = (symbol: NetworkSymbol) =>
-    networks[symbol]?.backendOptions.some(option => option.type === 'blockbook');
+export const isBlockbookBasedNetwork = (
+    deps: GetNetworkConfigDep,
+    symbol: NetworkSymbol,
+): boolean =>
+    deps.getNetworkConfig(symbol).backendOptions.some(option => option.type === 'blockbook');
 
-export const isNetworkUsingExternalBackend = (symbol: NetworkSymbol) =>
-    !!networks[symbol]?.backendOptions.some(
-        option => 'isExternalBackend' in option && option.isExternalBackend,
-    );
+export const isNetworkUsingExternalBackend = (
+    deps: GetNetworkConfigDep,
+    symbol: NetworkSymbol,
+): boolean =>
+    deps.getNetworkConfig(symbol).backendOptions.some(option => option.isExternalBackend === true);
 
-export const getNetworkType = (symbol: NetworkSymbol): NetworkType => networks[symbol]?.networkType;
+export const isAccountBasedNetwork = (
+    deps: GetNetworkConfigDep,
+    symbol: NetworkSymbol,
+): boolean => {
+    const { networkType } = deps.getNetworkConfig(symbol);
 
-export const isAccountBasedNetwork = (symbol: NetworkSymbol) => {
-    const networkType = getNetworkType(symbol);
     switch (networkType) {
         case 'ethereum':
         case 'ripple':
@@ -108,25 +113,26 @@ export const isAccountBasedNetwork = (symbol: NetworkSymbol) => {
     }
 };
 
-// Takes into account just network features, not features for specific accountTypes.
-export const getNetworkFeatures = (symbol: NetworkSymbol): NetworkFeature[] =>
-    networks[symbol]?.features;
+export const isNetworkSymbol = (
+    deps: NetworkModuleRepositoryDep,
+    symbol: NetworkSymbolExtended,
+): symbol is NetworkSymbol => deps.networkModuleRepository.isSupportedNetwork(symbol);
 
-export const getCoingeckoId = (symbol: NetworkSymbol): string | undefined =>
-    networks[symbol].coingeckoId;
+export const getNetworkType = (deps: GetNetworkConfigDep, symbol: NetworkSymbol): NetworkType =>
+    deps.getNetworkConfig(symbol).networkType;
 
-export const isNetworkSymbol = (symbol: NetworkSymbolExtended): symbol is NetworkSymbol =>
-    Object.hasOwn(networks, symbol);
+export const getNetworkFeatures = (
+    deps: GetNetworkConfigDep,
+    symbol: NetworkSymbol,
+): readonly NetworkFeature[] => deps.getNetworkConfig(symbol).features;
 
-/**
- * Get network object by symbol as a generic `Network` type.
- * If you need the exact inferred type, use `networks[symbol]` directly.
- * @param symbol
- */
-export const getNetwork = (symbol: NetworkSymbol): Network => networks[symbol];
+export const getCoingeckoId = (
+    deps: GetNetworkConfigDep,
+    symbol: NetworkSymbol,
+): string | undefined => deps.getNetworkConfig(symbol).coingeckoId;
 
-export const getNetworkChainId = (symbol: NetworkSymbol): number => {
-    const { chainId } = getNetwork(symbol);
+export const getNetworkChainId = (deps: GetNetworkConfigDep, symbol: NetworkSymbol): number => {
+    const { chainId } = deps.getNetworkConfig(symbol);
 
     if (chainId === undefined) {
         throw new Error(`Network ${symbol} does not define a chain ID.`);
@@ -135,13 +141,6 @@ export const getNetworkChainId = (symbol: NetworkSymbol): number => {
     return chainId;
 };
 
-/**
- * Use instead of getNetwork, if there is not a guarantee that the symbol is a valid network symbol.
- * @param symbol
- */
-export const getNetworkOptional = (symbol?: string): Network | undefined =>
-    symbol && isNetworkSymbol(symbol) ? getNetwork(symbol) : undefined;
-
 export const isAccountOfNetwork = (
     network: Network,
     accountType: string,
@@ -149,57 +148,77 @@ export const isAccountOfNetwork = (
     Object.prototype.hasOwnProperty.call(network.accountTypes, accountType) ||
     accountType === 'normal';
 
-export const getNetworkByCoingeckoId = (coingeckoId: string): Network | undefined =>
-    networksCollection.find(n => n.coingeckoId === coingeckoId);
+export const findNetworkByCoingeckoId = (
+    networks: readonly Network[],
+    coingeckoId: string,
+): Network | null => networks.find(network => network.coingeckoId === coingeckoId) ?? null;
 
-export const getNetworkByTradeCryptoId = (tradeCryptoId: string): Network | undefined =>
-    networksCollection.find(n => n.tradeCryptoId === tradeCryptoId);
+export const findNetworkByTradeCryptoId = (
+    networks: readonly Network[],
+    tradeCryptoId: string,
+): Network | null => networks.find(network => network.tradeCryptoId === tradeCryptoId) ?? null;
 
-export const getNetworkByEvmChainId = (chainId: number): Network | undefined =>
-    networksCollection.find(n => n.chainId === chainId);
+export const findNetworkByEvmChainId = (
+    networks: readonly Network[],
+    chainId: number,
+): Network | null => networks.find(network => network.chainId === chainId) ?? null;
 
-export const getNetworkDisplaySymbol = (symbol: NetworkSymbol): NetworkDisplaySymbol =>
-    getNetwork(symbol).displaySymbol;
-
-export const getDisplaySymbol = (coinSymbol: string, contractAddress?: string | null) => {
-    const MAX_SYMBOL_LENGTH = 10;
-    const isTokenSymbolLong = coinSymbol.length > MAX_SYMBOL_LENGTH;
-
+export const getDisplaySymbol = (
+    deps: GetNetworkConfigDep & NetworkModuleRepositoryDep,
+    coinSymbol: string,
+    contractAddress?: string | null,
+): string => {
+    const maxSymbolLength = 10;
     const symbol = coinSymbol.toLowerCase();
 
-    // TODO: L2 networks - Base, Arbitrum, Optimism native tokens
-    if (isNetworkSymbol(symbol) && !contractAddress) {
-        return getNetworkDisplaySymbol(symbol);
+    if (deps.networkModuleRepository.isSupportedNetwork(symbol) && !contractAddress) {
+        return deps.getNetworkConfig(symbol).displaySymbol;
     }
 
-    return isTokenSymbolLong ? `${coinSymbol.slice(0, MAX_SYMBOL_LENGTH)}...` : coinSymbol;
+    return coinSymbol.length > maxSymbolLength
+        ? `${coinSymbol.slice(0, maxSymbolLength)}...`
+        : coinSymbol;
 };
 
-export const getNetworkDisplaySymbolName = (symbol: NetworkSymbol): string => {
-    const network = getNetwork(symbol);
+export const getNetworkDisplaySymbolName = (
+    deps: GetNetworkConfigDep,
+    symbol: NetworkSymbol,
+): string => {
+    const network = deps.getNetworkConfig(symbol);
 
     return network.displaySymbolName || network.name;
 };
 
-export const getNetworkDecimals = (symbol: NetworkSymbolExtended): number | undefined => {
-    const lowerCasedSymbol = symbol.toLowerCase();
-    if (isNetworkSymbol(lowerCasedSymbol)) {
-        return getNetwork(lowerCasedSymbol).decimals;
-    }
+export const getNetworkDisplaySymbol = (
+    deps: GetNetworkConfigDep,
+    symbol: NetworkSymbol,
+): NetworkDisplaySymbol => deps.getNetworkConfig(symbol).displaySymbol;
 
-    return undefined;
+export const getNetworkDecimals = (
+    deps: GetNetworkConfigDep & NetworkModuleRepositoryDep,
+    symbol: NetworkSymbolExtended,
+): number | undefined => {
+    const lowerCasedSymbol = symbol.toLowerCase();
+
+    return deps.networkModuleRepository.isSupportedNetwork(lowerCasedSymbol)
+        ? deps.getNetworkConfig(lowerCasedSymbol).decimals
+        : undefined;
 };
 
-export const getNetworkByYieldXyzId = (yieldXyzId: TokenDtoV2['network']): Network | null =>
-    networksCollection.find(n => n.yieldXyzId === yieldXyzId) ?? null;
+export const findNetworkByYieldXyzId = (
+    networks: readonly Network[],
+    yieldXyzId: TokenDtoV2['network'],
+): Network | null => networks.find(network => network.yieldXyzId === yieldXyzId) ?? null;
 
-const formatNetworksAsString = (someNetworks: Network[]): string =>
-    someNetworks.map(network => network.name).join(', ');
+const formatNetworksAsString = (networks: readonly Network[]): string =>
+    networks.map(network => network.name).join(', ');
 
-export const getNetworksWithMevProtection = (): string =>
-    formatNetworksAsString(
-        networksCollection.filter(network => network.features.includes('mev-protection')),
-    );
+export const getNetworksWithFeature = (
+    networks: readonly Network[],
+    feature: NetworkFeature,
+): string => formatNetworksAsString(networks.filter(network => network.features.includes(feature)));
 
-export const getNetworksWithNativeTokenReserve = (): string =>
-    formatNetworksAsString(networksCollection.filter(network => !!network.nativeTokenReserve));
+export const getNetworksWithNativeTokenReserve = (networks: readonly Network[]): string =>
+    formatNetworksAsString(networks.filter(network => !!network.nativeTokenReserve));
+
+export type { NetworkType };
