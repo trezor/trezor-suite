@@ -3,15 +3,33 @@ import type {
     AccountInfoParams,
     MessageTypes,
     ResponseTypes as Responses,
+    Transaction,
 } from '@trezor/blockchain-link-types';
 import { RESPONSES } from '@trezor/blockchain-link-types';
 import { transformTransaction } from '@trezor/blockchain-link-utils/src/ripple';
 import xrpl from '@trezor/network-ripple/runtime';
-import type { XrplAPI } from '@trezor/network-ripple/types';
+import type { AccountTxTransaction, XrplAPI } from '@trezor/network-ripple/types';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { RESERVE } from '../reserve';
 import type { Request } from '../types';
+
+// The `account_tx` `transactions` field is raw JSON from a user-selectable rippled
+// backend; the xrpl type declares it as an array, but a malformed or malicious backend
+// may return a non-array (or omit it). A bare `.flatMap` on such a value throws
+// synchronously and rejects the whole getAccountInfo handler (per-account history DoS).
+// Guard the array shape and skip records missing `tx_json`.
+export const transformAccountTransactions = (
+    transactions: AccountTxTransaction[] | undefined,
+    descriptor: string,
+): Transaction[] =>
+    Array.isArray(transactions)
+        ? transactions.flatMap(raw =>
+              raw?.tx_json != null
+                  ? [transformTransaction(raw.hash, raw.tx_json, raw.meta, descriptor)]
+                  : [],
+          )
+        : [];
 
 // Custom request to get account info from mempool
 const getMempoolAccountInfo = async (client: XrplAPI, account: string) => {
@@ -124,10 +142,9 @@ export const getAccountInfo = async (
         api_version: 2,
     });
 
-    account.history.transactions = response.result.transactions.flatMap(raw =>
-        raw.tx_json != null
-            ? [transformTransaction(raw.hash, raw.tx_json, raw.meta, payload.descriptor)]
-            : [],
+    account.history.transactions = transformAccountTransactions(
+        response.result.transactions,
+        payload.descriptor,
     );
 
     return {
