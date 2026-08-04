@@ -60,13 +60,14 @@ const getSequence = ({ account, formValues }: GetSequenceParams) => {
 
     return undefined; // Must be undefined for final (non-RBF) transaction with no locktime
 };
+type ComposeBitcoinTransactionFeeLevelsThunkState = DeviceRootState & WalletSettingsRootState;
 
 export const composeBitcoinTransactionFeeLevelsThunk = createThunk<
     PrecomposedLevels,
     ComposeTransactionThunkArguments,
     {
         rejectValue: ComposeFeeLevelsError;
-        state: DeviceRootState & WalletSettingsRootState;
+        state: ComposeBitcoinTransactionFeeLevelsThunkState;
     }
 >(
     `${SEND_MODULE_PREFIX}/composeBitcoinTransactionFeeLevelsThunk`,
@@ -257,12 +258,14 @@ export const composeBitcoinTransactionFeeLevelsThunk = createThunk<
     },
 );
 
+type SignBitcoinSendFormTransactionThunkState = TransactionsRootState & WalletSettingsRootState;
+
 export const signBitcoinSendFormTransactionThunk = createThunk<
     SignedTransaction,
     SignTransactionThunkArguments,
     {
         rejectValue: SignTransactionError;
-        state: TransactionsRootState & WalletSettingsRootState;
+        state: SignBitcoinSendFormTransactionThunkState;
     }
 >(
     `${SEND_MODULE_PREFIX}/signBitcoinSendFormTransactionThunk`,

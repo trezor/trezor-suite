@@ -27,9 +27,8 @@ import {
     type ExtraDependencies,
     type GetTransportsFactoriesDep,
     type ThpHostNameDep,
-    castExtraStore,
-    createStoreWithExtraStoreMiddleware,
-} from '@suite-common/redux-utils';
+} from '@suite-common/redux-extra-dependencies';
+import { castExtraStore, createStoreWithExtraStoreMiddleware } from '@suite-common/redux-utils';
 import { type SuiteSyncDataState, suiteSyncDataReducer } from '@suite-common/suite-sync';
 import { type SuiteSyncQuotaManagerState } from '@suite-common/suite-sync-quota-manager';
 import { type ReloadAppDep } from '@suite-common/suite-types';

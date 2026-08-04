@@ -12,10 +12,12 @@ const findTransactionEvents = (descriptor: string, notifications: NotificationEn
         .filter((n): n is TransactionEntry => isTransactionNotification(n))
         .filter(n => n.descriptor === descriptor || n.txid === descriptor);
 
+type RemoveAccountEventsThunkState = NotificationsRootState;
+
 export const removeAccountEventsThunk = createThunk<
     void,
     string,
-    { state: NotificationsRootState }
+    { state: RemoveAccountEventsThunkState }
 >(`${ACTION_PREFIX}/removeAccountEventsThunk`, (descriptor: string, { dispatch, getState }) => {
     const entries = findTransactionEvents(descriptor, selectNotifications(getState()));
     if (entries.length > 0) dispatch(notificationsActions.remove(entries));

@@ -3,7 +3,7 @@ import type { MiddlewareAPI } from 'redux';
 import { coinjoinMiddleware } from '@suite/coinjoin';
 import { prepareDiscoveryMiddleware } from '@suite/discovery';
 import { prepareConnectPopupMiddleware } from '@suite-common/connect-popup';
-import type { ExtraDependencies } from '@suite-common/redux-utils';
+import type { ExtraDependencies } from '@suite-common/redux-extra-dependencies';
 import { prepareSuiteSyncMiddleware } from '@suite-common/suite-sync';
 import { prepareTokenDefinitionsMiddleware } from '@suite-common/token-definitions';
 import {

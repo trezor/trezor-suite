@@ -11,7 +11,7 @@ import {
     ProviderErrorAction,
     type Tokens,
 } from '@suite-common/metadata-types';
-import { type ExtraDependencies } from '@suite-common/redux-utils';
+import { type ExtraDependencies } from '@suite-common/redux-extra-dependencies';
 import { triggerWebDownloadFile } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { exhaustive } from '@trezor/type-utils';

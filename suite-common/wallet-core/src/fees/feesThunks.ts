@@ -17,13 +17,14 @@ import {
     type WalletSettingsRootState,
     selectEnabledNetworks,
 } from '../settings/walletSettingsReducer';
+type PreloadFeeInfoThunkState = WalletSettingsRootState;
 
 // Conditionally subscribe to blockchain backend
 // called after TrezorConnect.init successfully emits TRANSPORT.START event
 // checks if there are discovery processes loaded from LocalStorage
 // if so starts subscription to proper networks
 
-export const preloadFeeInfoThunk = createThunk<void, void, { state: WalletSettingsRootState }>(
+export const preloadFeeInfoThunk = createThunk<void, void, { state: PreloadFeeInfoThunkState }>(
     `${FEES_MODULE_PREFIX}/preloadFeeInfoThunk`,
     async (_, { dispatch, getState }) => {
         const enabledNetworks = selectEnabledNetworks(getState());
@@ -73,6 +74,7 @@ type UpdateFeeInfoThunkProps = {
     networkSymbol: NetworkSymbol;
     artificialDelay?: number;
 };
+type UpdateFeeInfoThunkState = BlockchainRootState & DeviceRootState & FeesRootState;
 
 /**
  * Fetches feeInfo for a given network from backend.
@@ -84,7 +86,7 @@ export const updateFeeInfoThunk = createThunk<
     UpdateFeeInfoThunkProps,
     {
         rejectValue: undefined;
-        state: BlockchainRootState & DeviceRootState & FeesRootState;
+        state: UpdateFeeInfoThunkState;
     }
 >(
     `${FEES_MODULE_PREFIX}/updateFeeInfoThunk`,

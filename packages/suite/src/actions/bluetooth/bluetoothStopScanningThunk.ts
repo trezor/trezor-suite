@@ -7,10 +7,12 @@ import { BLUETOOTH_PREFIX, bluetoothActions } from '@suite-common/bluetooth';
 import { createThunk } from '@suite-common/redux-utils';
 import { bluetoothIpc } from '@trezor/transport-bluetooth';
 
+type BluetoothStopScanningThunkState = DesktopDeviceRootState;
+
 export const bluetoothStopScanningThunk = createThunk<
     void,
     void,
-    { state: DesktopDeviceRootState }
+    { state: BluetoothStopScanningThunkState }
 >(`${BLUETOOTH_PREFIX}/bluetoothStopScanningThunk`, (_, { dispatch, getState }) => {
     const defaultConnectionMode = selectDeviceDefaultConnectionMode(getState());
     const isModalOpen = selectIsConnectionModalOpen(getState());

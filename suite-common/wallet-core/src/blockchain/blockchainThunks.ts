@@ -1,3 +1,4 @@
+import { type AnalyticsDep } from '@suite-common/analytics';
 import { type DeviceRootState, selectDevices } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
 import { type SelectIsWindowVisibleDep } from '@suite-common/suite-types';
@@ -8,7 +9,11 @@ import {
     isNetworkSymbol,
     isNetworkUsingExternalBackend,
 } from '@suite-common/wallet-config';
-import type { Account, CustomBackend } from '@suite-common/wallet-types';
+import type {
+    Account,
+    CustomBackend,
+    SelectTradedAccountKeysDep,
+} from '@suite-common/wallet-types';
 import {
     findAccountDevice,
     findAccountsByDescriptor,
@@ -41,9 +46,7 @@ import {
 import { type AccountsRootState } from '../accounts/accountsReducer';
 import { selectAccounts } from '../accounts/accountsSelectors';
 import {
-    type FetchAndUpdateAccountThunkDeps,
     type FetchAndUpdateAccountThunkState,
-    type ReportWalletBalanceThunkDeps,
     fetchAndUpdateAccountThunk,
     reportWalletBalanceThunk,
 } from '../accounts/accountsThunks';
@@ -98,10 +101,12 @@ const setBackendsToConnect = (backends: CustomBackend[]) =>
         ),
     );
 
+type SetCustomBackendThunkState = BlockchainRootState;
+
 export const setCustomBackendThunk = createThunk<
     unknown,
     NetworkSymbol,
-    { state: BlockchainRootState }
+    { state: SetCustomBackendThunkState }
 >(`${BLOCKCHAIN_MODULE_PREFIX}/setCustomBackendThunk`, (symbol: NetworkSymbol, { getState }) => {
     const blockchain = selectBlockchainState(getState());
     const backends = [getBackendFromSettings(symbol, blockchain[symbol].backends)];
@@ -110,11 +115,14 @@ export const setCustomBackendThunk = createThunk<
 });
 
 type InitBlockchainThunkState = AccountsRootState & BlockchainRootState & WalletSettingsRootState;
+type InitBlockchainThunkDeps = {
+    services: AnalyticsDep;
+};
 
 export const initBlockchainThunk = createThunk<
     void,
     void,
-    { state: InitBlockchainThunkState; extra: ReportWalletBalanceThunkDeps }
+    { state: InitBlockchainThunkState; extra: InitBlockchainThunkDeps }
 >(`${BLOCKCHAIN_MODULE_PREFIX}/initBlockchainThunk`, async (_, { dispatch, getState }) => {
     await dispatch(preloadFeeInfoThunk());
 
@@ -147,12 +155,14 @@ export const initBlockchainThunk = createThunk<
 const isAccountSubscribable = (account: Account) =>
     !account.failed && isTrezorConnectBackendType(account.backendType);
 
+type SubscribeBlockchainThunkState = AccountsRootState;
+
 // called from WalletMiddleware after ACCOUNT.ADD/UPDATE action
 // or after BLOCKCHAIN.CONNECT event (blockchainActions.onConnect)
 export const subscribeBlockchainThunk = createThunk<
     unknown,
     { symbol: NetworkSymbol; fiatRates?: boolean; onConnect?: boolean },
-    { state: AccountsRootState }
+    { state: SubscribeBlockchainThunkState }
 >(
     `${BLOCKCHAIN_MODULE_PREFIX}/subscribeBlockchainThunk`,
     async (
@@ -190,11 +200,13 @@ export const subscribeBlockchainThunk = createThunk<
     },
 );
 
+type UnsubscribeBlockchainThunkState = AccountsRootState;
+
 // called from WalletMiddleware after ACCOUNT.REMOVE action
 export const unsubscribeBlockchainThunk = createThunk<
     unknown,
     Account[],
-    { state: AccountsRootState }
+    { state: UnsubscribeBlockchainThunkState }
 >(
     `${BLOCKCHAIN_MODULE_PREFIX}/unsubscribeBlockchainThunk`,
     (removedAccounts: Account[], { getState }) => {
@@ -257,8 +269,9 @@ const tryClearTimeout = (timeout?: TimerId) => {
     if (timeout) clearTimeout(timeout);
 };
 
-export type SyncAccountsWithBlockchainThunkDeps = FetchAndUpdateAccountThunkDeps & {
-    selectors: SelectIsWindowVisibleDep;
+export type SyncAccountsWithBlockchainThunkDeps = {
+    services: AnalyticsDep;
+    selectors: SelectIsWindowVisibleDep & SelectTradedAccountKeysDep;
 };
 export type SyncAccountsWithBlockchainThunkState = BlockchainRootState &
     FetchAndUpdateAccountThunkState;
@@ -311,12 +324,18 @@ export const syncAccountsWithBlockchainThunk = createThunk<
     },
 );
 
+type OnBlockchainConnectThunkState = SyncAccountsWithBlockchainThunkState;
+type OnBlockchainConnectThunkDeps = {
+    services: AnalyticsDep;
+    selectors: SelectIsWindowVisibleDep & SelectTradedAccountKeysDep;
+};
+
 export const onBlockchainConnectThunk = createThunk<
     void,
     string,
     {
-        state: SyncAccountsWithBlockchainThunkState;
-        extra: SyncAccountsWithBlockchainThunkDeps;
+        state: OnBlockchainConnectThunkState;
+        extra: OnBlockchainConnectThunkDeps;
     }
 >(`${BLOCKCHAIN_MODULE_PREFIX}/onBlockchainConnectThunk`, async (symbol: string, { dispatch }) => {
     const network = getNetworkOptional(symbol.toLowerCase());
@@ -330,12 +349,18 @@ export const onBlockchainConnectThunk = createThunk<
     dispatch(blockchainActions.connected(network.symbol));
 });
 
+type OnBlockMinedThunkState = SyncAccountsWithBlockchainThunkState;
+type OnBlockMinedThunkDeps = {
+    services: AnalyticsDep;
+    selectors: SelectIsWindowVisibleDep & SelectTradedAccountKeysDep;
+};
+
 export const onBlockMinedThunk = createThunk<
     unknown,
     BlockchainBlock,
     {
-        state: SyncAccountsWithBlockchainThunkState;
-        extra: SyncAccountsWithBlockchainThunkDeps;
+        state: OnBlockMinedThunkState;
+        extra: OnBlockMinedThunkDeps;
     }
 >(
     `${BLOCKCHAIN_MODULE_PREFIX}/onBlockMinedThunk`,
@@ -364,13 +389,17 @@ export const onBlockMinedThunk = createThunk<
 type OnBlockchainNotificationThunkState = DeviceRootState &
     SyncAccountsWithBlockchainThunkState &
     WalletSettingsRootState;
+type OnBlockchainNotificationThunkDeps = {
+    services: AnalyticsDep;
+    selectors: SelectIsWindowVisibleDep & SelectTradedAccountKeysDep;
+};
 
 export const onBlockchainNotificationThunk = createThunk<
     void,
     BlockchainNotification,
     {
         state: OnBlockchainNotificationThunkState;
-        extra: SyncAccountsWithBlockchainThunkDeps;
+        extra: OnBlockchainNotificationThunkDeps;
     }
 >(
     `${BLOCKCHAIN_MODULE_PREFIX}/onNotificationThunk`,
@@ -438,10 +467,12 @@ export const onBlockchainNotificationThunk = createThunk<
     },
 );
 
+type OnBlockchainDisconnectThunkState = BlockchainRootState;
+
 export const onBlockchainDisconnectThunk = createThunk<
     void,
     BlockchainError,
-    { state: BlockchainRootState }
+    { state: OnBlockchainDisconnectThunkState }
 >(
     `${BLOCKCHAIN_MODULE_PREFIX}/onBlockchainDisconnectThunk`,
     (error: BlockchainError, { getState }) => {

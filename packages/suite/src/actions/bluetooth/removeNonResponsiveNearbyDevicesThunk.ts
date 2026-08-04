@@ -9,10 +9,12 @@ import { createThunk } from '@suite-common/redux-utils';
 import { type DesktopBluetoothDevice } from './DesktopBluetoothDevice';
 import { filterOutNonResponsiveDevices } from './filterOutNonResponsiveDevices';
 
+type RemoveNonResponsiveNearbyDevicesThunkState = WithBluetoothState<DesktopBluetoothDevice>;
+
 export const removeNonResponsiveNearbyDevicesThunk = createThunk<
     void,
     void,
-    { state: WithBluetoothState<DesktopBluetoothDevice> }
+    { state: RemoveNonResponsiveNearbyDevicesThunkState }
 >(`${BLUETOOTH_PREFIX}/removeNonResponsiveNearbyDevicesThunk`, (_, { dispatch, getState }) => {
     const nearbyDevices = selectNearbyDevices<DesktopBluetoothDevice>(getState());
 

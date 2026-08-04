@@ -6,11 +6,13 @@ import { type Device } from '@trezor/connect';
 import { type DesktopBluetoothDevice } from './DesktopBluetoothDevice';
 import { bluetoothDisconnectDeviceThunk } from './bluetoothDisconnectDeviceThunk';
 
+type BluetoothOnDeviceConnectedThunkState = WithBluetoothState<DesktopBluetoothDevice>;
+
 // called on DEVICE.CONNECT event
 export const bluetoothOnDeviceConnectedThunk = createThunk<
     void,
     Device,
-    { state: WithBluetoothState<DesktopBluetoothDevice> }
+    { state: BluetoothOnDeviceConnectedThunkState }
 >(`${BLUETOOTH_PREFIX}/bluetoothOnDeviceConnectedThunk`, (device, { dispatch, getState }) => {
     const knownDevice = selectKnownDeviceByDeviceId(getState(), device.id ?? undefined);
 

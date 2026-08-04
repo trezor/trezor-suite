@@ -223,11 +223,12 @@ type UpdateCurrentFiatRatesThunkPayload = {
     forceFetchToken?: boolean;
     skipCache?: boolean;
 };
+type UpdateFiatRatesThunkState = BlockchainRootState & TokenDefinitionsRootState;
 
 export const updateFiatRatesThunk = createThunk<
     PromiseSettledResult<FiatRatesResult>[],
     UpdateCurrentFiatRatesThunkPayload,
-    { state: BlockchainRootState & TokenDefinitionsRootState }
+    { state: UpdateFiatRatesThunkState }
 >(
     `${FIAT_RATES_MODULE_PREFIX}/updateFiatRates`,
     async (
@@ -419,11 +420,12 @@ type PeriodicFetchFiatRatesThunkPayload = {
 type PeriodicFetchFiatRatesThunkDeps = {
     selectors: SelectIsWindowVisibleDep;
 };
+type PeriodicFetchFiatRatesThunkState = FetchFiatRatesThunkState;
 
 export const periodicFetchFiatRatesThunk = createThunk<
     void,
     PeriodicFetchFiatRatesThunkPayload,
-    { state: FetchFiatRatesThunkState; extra: PeriodicFetchFiatRatesThunkDeps }
+    { state: PeriodicFetchFiatRatesThunkState; extra: PeriodicFetchFiatRatesThunkDeps }
 >(
     `${FIAT_RATES_MODULE_PREFIX}/periodicFetchFiatRates`,
     async (

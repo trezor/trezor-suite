@@ -18,19 +18,19 @@ import {
     parseTimeoutThresholdsPerModel,
     selectFeatureConfig,
 } from '@suite-common/message-system';
+import { type FetchAndSaveMetadataDep } from '@suite-common/metadata-types';
 import { createThunk } from '@suite-common/redux-utils';
 import { type ConnectInitHooksDeps, type GetAllowPrereleaseDep } from '@suite-common/suite-types';
 import { type GetThpSettingsDep, type ThpHostNameDep } from '@suite-common/thp';
 import {
-    type DefaultTrezorUIEventHandlerThunkDeps,
     type DefaultTrezorUIEventHandlerThunkState,
-    type DeviceConnectThunkDeps,
     type DeviceConnectThunkState,
     type WalletSettingsRootState,
     defaultTrezorUIEventHandlerThunk,
     deviceConnectThunks,
     selectEnabledNetworks,
 } from '@suite-common/wallet-core';
+import { type GetTradedAccountKeysDep } from '@suite-common/wallet-types';
 import TrezorConnect, {
     BLOCKCHAIN_EVENT,
     type CallMethodPayload,
@@ -56,20 +56,21 @@ const CONNECT_INIT_MODULE = '@common/connect-init';
 // If you are looking where connectInitSettings is defined, it is defined in packages/suite/src/support/extraDependencies.ts
 // or in suite-native/state/src/extraDependencies.ts depends on which platform this connectInitThunk runs.
 
-type ConnectInitThunkDeps = DeviceConnectThunkDeps &
-    DefaultTrezorUIEventHandlerThunkDeps & {
-        actions: LockDeviceDep;
-        services: AnalyticsDep &
-            ConnectInitHooksDeps &
-            ConnectInitSettingsDep &
-            CreateLoggerDep &
-            CreateTransportsDep &
-            GetAllowPrereleaseDep &
-            GetDebugSettingsDep &
-            GetDesktopBinDirDep &
-            GetThpSettingsDep &
-            ThpHostNameDep;
-    };
+type ConnectInitThunkDeps = {
+    actions: LockDeviceDep;
+    services: AnalyticsDep &
+        ConnectInitHooksDeps &
+        ConnectInitSettingsDep &
+        CreateLoggerDep &
+        CreateTransportsDep &
+        GetAllowPrereleaseDep &
+        GetDebugSettingsDep &
+        GetDesktopBinDirDep &
+        GetThpSettingsDep &
+        GetTradedAccountKeysDep &
+        ThpHostNameDep;
+    thunks: FetchAndSaveMetadataDep;
+};
 
 type ConnectInitThunkState = DeviceRootState &
     FirmwareRootState &

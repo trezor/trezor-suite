@@ -266,11 +266,12 @@ export const calculate = (
 
     return payloadData;
 };
+type ComposeEthereumTransactionFeeLevelsThunkState = DeviceRootState;
 
 export const composeEthereumTransactionFeeLevelsThunk = createThunk<
     PrecomposedLevels,
     ComposeTransactionThunkArguments,
-    { rejectValue: ComposeFeeLevelsError; state: DeviceRootState }
+    { rejectValue: ComposeFeeLevelsError; state: ComposeEthereumTransactionFeeLevelsThunkState }
 >(
     `${SEND_MODULE_PREFIX}/composeEthereumTransactionFeeLevelsThunk`,
     async (
@@ -531,11 +532,12 @@ interface EthereumGetCurrentNonceThunkParams {
     // See ResolveEthereumNonceParams: temporarily required so no caller can silently fall back to the stale nonce.
     fetchConfirmedNonce?: boolean;
 }
+type EthereumGetCurrentNonceThunkState = AccountsRootState & TransactionsRootState;
 
 export const ethereumGetCurrentNonceThunk = createThunk<
     ResolveEthereumNonceResult,
     EthereumGetCurrentNonceThunkParams,
-    { state: AccountsRootState & TransactionsRootState }
+    { state: EthereumGetCurrentNonceThunkState }
 >(
     `${SEND_MODULE_PREFIX}/ethereumGetCurrentNonceThunk`,
     ({ selectedAccount, rbfParams, fetchConfirmedNonce }, { getState }) => {
@@ -552,12 +554,16 @@ export const ethereumGetCurrentNonceThunk = createThunk<
     },
 );
 
+type SignEthereumSendFormTransactionThunkState = AccountsRootState &
+    TransactionsRootState &
+    WalletSettingsRootState;
+
 export const signEthereumSendFormTransactionThunk = createThunk<
     { serializedTx: string },
     SignTransactionThunkArguments,
     {
         rejectValue: SignTransactionError;
-        state: AccountsRootState & TransactionsRootState & WalletSettingsRootState;
+        state: SignEthereumSendFormTransactionThunkState;
     }
 >(
     `${SEND_MODULE_PREFIX}/signEthereumSendFormTransactionThunk`,

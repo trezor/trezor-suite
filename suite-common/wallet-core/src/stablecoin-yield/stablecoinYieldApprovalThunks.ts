@@ -183,6 +183,7 @@ export const openYieldRevokeModal = ({
         txType: 'revoke',
     });
 };
+type HandleYieldApproveSuccessTxidThunkState = StablecoinYieldRootState;
 
 export const handleYieldApproveSuccessTxidThunk = createThunk<
     void,
@@ -192,7 +193,7 @@ export const handleYieldApproveSuccessTxidThunk = createThunk<
         submittedAt?: number;
         txid: string;
     },
-    { state: StablecoinYieldRootState }
+    { state: HandleYieldApproveSuccessTxidThunkState }
 >(
     `${YIELD_THUNK_PREFIX}/handleApproveSuccessTxid`,
     (
@@ -239,10 +240,12 @@ export const handleYieldApproveCancelThunk = createThunk(
     },
 );
 
+type InitYieldAllowanceThunkState = StablecoinYieldRootState;
+
 export const initYieldAllowanceThunk = createThunk<
     void,
     InitYieldAllowancePayload,
-    { state: StablecoinYieldRootState }
+    { state: InitYieldAllowanceThunkState }
 >(
     `${YIELD_THUNK_PREFIX}/initAllowance`,
     async (
@@ -312,10 +315,12 @@ export const initYieldAllowanceThunk = createThunk<
     },
 );
 
+type SubmitYieldRevokeThunkState = StablecoinYieldRootState;
+
 export const submitYieldRevokeThunk = createThunk<
     void,
     YieldSessionDataAmountPayload,
-    { state: StablecoinYieldRootState }
+    { state: SubmitYieldRevokeThunkState }
 >(
     `${YIELD_THUNK_PREFIX}/submitRevoke`,
     (

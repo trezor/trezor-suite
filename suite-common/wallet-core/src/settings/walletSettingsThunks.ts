@@ -10,13 +10,15 @@ import { selectBitcoinAmountUnit, selectEnabledNetworks } from './walletSettings
 import { accountsActions } from '../accounts/accountsActions';
 import { type WalletCoreCompoundRootState, selectAccountsToBeForgotten } from '../selectors';
 
+type ChangeCoinVisibilityThunkState = WalletCoreCompoundRootState;
+
 export const changeCoinVisibility = createThunk<
     void,
     {
         symbol: NetworkSymbol;
         shouldBeVisible: boolean;
     },
-    { state: WalletCoreCompoundRootState }
+    { state: ChangeCoinVisibilityThunkState }
 >(
     WALLET_SETTINGS.CHANGE_COIN_VISIBILITY,
     async ({ symbol, shouldBeVisible }, { dispatch, getState }) => {

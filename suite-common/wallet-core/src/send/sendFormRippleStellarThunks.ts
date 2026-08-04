@@ -110,11 +110,15 @@ const calculate = (
 
     return payloadData;
 };
+type ComposeRippleStellarTransactionFeeLevelsThunkState = unknown;
 
 export const composeRippleStellarTransactionFeeLevelsThunk = createThunk<
     PrecomposedLevels,
     ComposeTransactionThunkArguments,
-    { rejectValue: ComposeFeeLevelsError; state: unknown }
+    {
+        rejectValue: ComposeFeeLevelsError;
+        state: ComposeRippleStellarTransactionFeeLevelsThunkState;
+    }
 >(
     `${SEND_MODULE_PREFIX}/composeRippleStellarTransactionFeeLevelsThunk`,
     async ({ formState, composeContext }, { rejectWithValue }) => {
@@ -234,12 +238,14 @@ export const composeRippleStellarTransactionFeeLevelsThunk = createThunk<
     },
 );
 
+type SignRippleStellarSendFormTransactionThunkState = WalletSettingsRootState;
+
 export const signRippleStellarSendFormTransactionThunk = createThunk<
     { serializedTx: string },
     SignTransactionThunkArguments,
     {
         rejectValue: SignTransactionError;
-        state: WalletSettingsRootState;
+        state: SignRippleStellarSendFormTransactionThunkState;
     }
 >(
     `${SEND_MODULE_PREFIX}/signRippleStellarSendFormTransactionThunk`,

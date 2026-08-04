@@ -1,5 +1,6 @@
 import { type ThunkDispatch } from '@reduxjs/toolkit';
 
+import { type AnalyticsDep } from '@suite-common/analytics';
 import {
     type DeviceRootState,
     deviceActions,
@@ -20,7 +21,7 @@ import {
 import { getNewInstanceNumber } from '@suite-common/suite-utils';
 import { type TokenDefinitionsRootState } from '@suite-common/token-definitions';
 import { type TrezorConnectBackendType } from '@suite-common/wallet-config';
-import { type DiscoveryStatus } from '@suite-common/wallet-types';
+import { type DiscoveryStatus, type SelectTradedAccountKeysDep } from '@suite-common/wallet-types';
 import TrezorConnect, {
     type AccountInfo,
     type BundleProgress,
@@ -39,12 +40,7 @@ import { isDiscoveryInProgress, selectDiscoveryByDevicePath } from './discoveryS
 import { selectDeviceThunk } from './selectDeviceThunk';
 import { type CreateAccountActionProps, accountsActions } from '../accounts/accountsActions';
 import { selectAccountsByDeviceState } from '../accounts/accountsSelectors';
-import {
-    type ReportAccountInfoThunkDeps,
-    type ReportWalletBalanceThunkDeps,
-    reportAccountInfoThunk,
-    reportWalletBalanceThunk,
-} from '../accounts/accountsThunks';
+import { reportAccountInfoThunk, reportWalletBalanceThunk } from '../accounts/accountsThunks';
 import {
     type WalletCoreCompoundRootState,
     selectAccountsToBeForgotten,
@@ -58,8 +54,11 @@ import {
 const USER_UI_CANCEL_CODE = 'USER_UI_CANCEL';
 const DEVICE_CANCELLATION_CODES = ['Method_Cancel', 'Failure_ActionCancelled'];
 
-type DiscoveryReportingThunkDeps = ReportAccountInfoThunkDeps & ReportWalletBalanceThunkDeps;
 type DiscoveryReportingThunkState = TokenDefinitionsRootState & WalletCoreCompoundRootState;
+type DiscoveryReportingDeps = {
+    services: AnalyticsDep;
+    selectors: SelectTradedAccountKeysDep;
+};
 
 type ProgressEvent = BundleProgress<DiscoverAccountsProgress>['payload'];
 
@@ -89,6 +88,7 @@ const deviceStateEqualTo = (first: DeviceState) => {
     return (second?: DeviceState) =>
         firstParsed ? firstParsed === second?.staticSessionId?.split(':')[0] : false;
 };
+type ApplyDeviceStatesThunkState = DeviceRootState & WalletSettingsRootState;
 
 export const applyDeviceStatesThunk = createThunk<
     { device: TrezorDevice },
@@ -99,7 +99,7 @@ export const applyDeviceStatesThunk = createThunk<
     },
     {
         rejectValue: string;
-        state: DeviceRootState & WalletSettingsRootState;
+        state: ApplyDeviceStatesThunkState;
     }
 >(
     `${DISCOVERY_MODULE_PREFIX}/applyDeviceStates`,
@@ -230,11 +230,12 @@ type ApplyDeviceStateErrorThunkProps = {
     code: string | undefined;
     devicePath: DeviceUniquePath;
 };
+type ApplyDeviceStateErrorThunkState = DiscoveryRootState;
 
 const applyDeviceStateErrorThunk = createThunk<
     void,
     ApplyDeviceStateErrorThunkProps,
-    { state: DiscoveryRootState }
+    { state: ApplyDeviceStateErrorThunkState }
 >(
     `${DISCOVERY_MODULE_PREFIX}/applyDeviceStateError`,
     ({ error, code, devicePath }: ApplyDeviceStateErrorThunkProps, { dispatch, getState }) => {
@@ -271,11 +272,7 @@ const completeDiscovery = (
         getState,
     }: {
         getState: () => DiscoveryReportingThunkState;
-        dispatch: ThunkDispatch<
-            DiscoveryReportingThunkState,
-            DiscoveryReportingThunkDeps,
-            AnyAction
-        >;
+        dispatch: ThunkDispatch<DiscoveryReportingThunkState, DiscoveryReportingDeps, AnyAction>;
         fetchAndSaveMetadata: SuiteCompatibleThunk<StaticSessionId>;
     },
 ) => {
@@ -305,7 +302,9 @@ type RunDiscoveryParams = {
     callId?: string;
 };
 
-export type RunDiscoveryThunkDeps = DiscoveryReportingThunkDeps & {
+export type RunDiscoveryThunkDeps = {
+    services: AnalyticsDep;
+    selectors: SelectTradedAccountKeysDep;
     thunks: FetchAndSaveMetadataDep;
 };
 export type RunDiscoveryThunkState = DiscoveryReportingThunkState;
@@ -624,11 +623,17 @@ type StartDiscoveryThunkParams = {
     isAddingExistingWallet?: boolean;
     useScopedCallIds?: boolean;
 };
+type StartDiscoveryThunkState = RunDiscoveryThunkState;
+type StartDiscoveryThunkDeps = {
+    services: AnalyticsDep;
+    selectors: SelectTradedAccountKeysDep;
+    thunks: FetchAndSaveMetadataDep;
+};
 
 export const startDiscoveryThunk = createThunk<
     void,
     StartDiscoveryThunkParams,
-    { state: RunDiscoveryThunkState; extra: RunDiscoveryThunkDeps }
+    { state: StartDiscoveryThunkState; extra: StartDiscoveryThunkDeps }
 >(
     `${DISCOVERY_MODULE_PREFIX}/start`,
     (
@@ -668,10 +673,16 @@ export const startDiscoveryThunk = createThunk<
     },
 );
 
+type RunAdditionalDiscoveryThunkState = RunDiscoveryThunkState;
+type RunAdditionalDiscoveryThunkDeps = {
+    services: AnalyticsDep;
+    selectors: SelectTradedAccountKeysDep;
+};
+
 export const runAdditionalDiscoveryThunk = createThunk<
     void,
     StaticSessionId,
-    { state: RunDiscoveryThunkState; extra: DiscoveryReportingThunkDeps }
+    { state: RunAdditionalDiscoveryThunkState; extra: RunAdditionalDiscoveryThunkDeps }
 >(
     `${DISCOVERY_MODULE_PREFIX}/runAdditional`,
     async (staticSessionId: StaticSessionId, { dispatch, getState }): Promise<void> => {
@@ -793,6 +804,8 @@ export const runAdditionalDiscoveryThunk = createThunk<
     },
 );
 
+type SubmitPassphraseThunkState = DiscoveryRootState;
+
 export const submitPassphrase = createThunk<
     void,
     {
@@ -801,7 +814,7 @@ export const submitPassphrase = createThunk<
         passphraseOnDevice?: boolean;
         requestId?: string;
     },
-    { state: DiscoveryRootState }
+    { state: SubmitPassphraseThunkState }
 >(
     `${DISCOVERY_MODULE_PREFIX}/submitPassphrase`,
     (
@@ -845,13 +858,20 @@ export const submitPassphrase = createThunk<
     },
 );
 
+type StartOrRestartDiscoveryThunkState = RunDiscoveryThunkState;
+type StartOrRestartDiscoveryThunkDeps = {
+    services: AnalyticsDep;
+    selectors: SelectTradedAccountKeysDep;
+    thunks: FetchAndSaveMetadataDep;
+};
+
 /**
  * Helper to restart discovery for currently selected device
  */
 export const startOrRestartDiscoveryThunk = createThunk<
     void,
     void,
-    { state: RunDiscoveryThunkState; extra: RunDiscoveryThunkDeps }
+    { state: StartOrRestartDiscoveryThunkState; extra: StartOrRestartDiscoveryThunkDeps }
 >(`${DISCOVERY_MODULE_PREFIX}/restart`, (_, { dispatch, getState }) => {
     const device = selectSelectedDevice(getState());
     if (!device) return;
@@ -873,10 +893,12 @@ export const startOrRestartDiscoveryThunk = createThunk<
     );
 });
 
+type SwitchToDuplicatedWalletThunkState = DeviceRootState & DiscoveryRootState;
+
 export const switchToDuplicatedWallet = createThunk<
     void,
     void,
-    { state: DeviceRootState & DiscoveryRootState }
+    { state: SwitchToDuplicatedWalletThunkState }
 >(`${DISCOVERY_MODULE_PREFIX}/switchToDuplicatedWallet`, (_, { dispatch, getState }) => {
     const device = selectSelectedDevice(getState());
     if (!device) return;

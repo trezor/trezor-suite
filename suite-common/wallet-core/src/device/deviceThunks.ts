@@ -1,3 +1,4 @@
+import { type AnalyticsDep } from '@suite-common/analytics';
 import {
     type BluetoothDeviceCommon,
     type ForgetBluetoothDeviceDep,
@@ -23,6 +24,7 @@ import {
     type FirmwareRootState,
     selectIsFirmwareInstallationRunning,
 } from '@suite-common/firmware';
+import { type FetchAndSaveMetadataDep } from '@suite-common/metadata-types';
 import { createThunk } from '@suite-common/redux-utils';
 import {
     type AcquiredDevice,
@@ -39,7 +41,7 @@ import {
 } from '@suite-common/suite-utils';
 import { removeThpCredentialsThunk } from '@suite-common/thp';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { type AccountKey } from '@suite-common/wallet-types';
+import { type AccountKey, type SelectTradedAccountKeysDep } from '@suite-common/wallet-types';
 import {
     getAddressParameters,
     getDerivationType,
@@ -60,17 +62,14 @@ import { isChanged } from '@trezor/utils';
 import { getAddressForNetworkType } from './deviceAddressUtils';
 import { type AccountsRootState } from '../accounts/accountsReducer';
 import { selectAccountByKey } from '../accounts/accountsSelectors';
-import {
-    type RunDiscoveryThunkDeps,
-    type RunDiscoveryThunkState,
-    startDiscoveryThunk,
-} from '../discovery/discoveryThunks';
+import { type RunDiscoveryThunkState, startDiscoveryThunk } from '../discovery/discoveryThunks';
 import { selectDeviceThunk, selectNewlyConnectedDeviceThunk } from '../discovery/selectDeviceThunk';
 import { setAutoEjectEnabled } from '../settings/walletSettingsActions';
 import {
     type WalletSettingsRootState,
     selectIsDeviceAutoEjectEnabled,
 } from '../settings/walletSettingsReducer';
+type HandleDeviceDisconnectThunkState = DeviceRootState;
 
 /**
  * Triggered by `@trezor/connect DEVICE_EVENT`
@@ -79,7 +78,7 @@ import {
 export const handleDeviceDisconnect = createThunk<
     void,
     Device | TrezorDevice,
-    { state: DeviceRootState }
+    { state: HandleDeviceDisconnectThunkState }
 >(
     `${DEVICE_MODULE_PREFIX}/handleDeviceDisconnect`,
     (device: Device | TrezorDevice, { dispatch, getState }) => {
@@ -107,6 +106,8 @@ export const handleDeviceDisconnect = createThunk<
     },
 );
 
+type ForgetDisconnectedDevicesThunkState = DeviceRootState;
+
 /**
  * Triggered by `@trezor/connect DEVICE_EVENT` via suiteMiddleware
  * Remove all data related to all instances of disconnected device if they are not remembered
@@ -115,7 +116,7 @@ export const handleDeviceDisconnect = createThunk<
 export const forgetDisconnectedDevices = createThunk<
     void,
     { device: Device | TrezorDevice; forceForget?: boolean },
-    { state: DeviceRootState }
+    { state: ForgetDisconnectedDevicesThunkState }
 >(
     `${DEVICE_MODULE_PREFIX}/forgetDisconnectedDevices`,
     (params: { device: Device | TrezorDevice; forceForget?: boolean }, { dispatch, getState }) => {
@@ -144,6 +145,7 @@ type ObserveSelectedDeviceResult = {
     isDeviceBecomingAcquired: boolean;
     isDeviceBecomingConnected: boolean;
 };
+type ObserveSelectedDeviceThunkState = DeviceRootState;
 
 /**
  * Keep selected device synchronized with the `devices` reducer, because selected device is a copy
@@ -153,7 +155,7 @@ type ObserveSelectedDeviceResult = {
 export const observeSelectedDevice = createThunk<
     ObserveSelectedDeviceResult,
     void,
-    { state: DeviceRootState }
+    { state: ObserveSelectedDeviceThunkState }
 >(
     `${DEVICE_MODULE_PREFIX}/observeSelectedDevice`,
     (_, { dispatch, getState, fulfillWithValue }) => {
@@ -205,11 +207,17 @@ type AcquireDeviceThunkParams = {
     requestedDevice?: TrezorDevice | null;
     startDiscovery?: boolean;
 };
+type AcquireDeviceThunkState = RunDiscoveryThunkState;
+type AcquireDeviceThunkDeps = {
+    services: AnalyticsDep;
+    selectors: SelectTradedAccountKeysDep;
+    thunks: FetchAndSaveMetadataDep;
+};
 
 export const acquireDevice = createThunk<
     void,
     AcquireDeviceThunkParams,
-    { state: RunDiscoveryThunkState; extra: RunDiscoveryThunkDeps }
+    { state: AcquireDeviceThunkState; extra: AcquireDeviceThunkDeps }
 >(
     `${DEVICE_MODULE_PREFIX}/acquireDevice`,
     async (
@@ -242,7 +250,9 @@ export const acquireDevice = createThunk<
     },
 );
 
-export const initDevices = createThunk<void, void, { state: DeviceRootState }>(
+type InitDevicesThunkState = DeviceRootState;
+
+export const initDevices = createThunk<void, void, { state: InitDevicesThunkState }>(
     `${DEVICE_MODULE_PREFIX}/initDevices`,
     (_, { dispatch, getState }) => {
         const devices = selectDevices(getState());
@@ -255,12 +265,14 @@ export const initDevices = createThunk<void, void, { state: DeviceRootState }>(
     },
 );
 
+type CreateImportedDeviceThunkState = DeviceRootState;
+
 export const createImportedDeviceThunk = createThunk<
     void,
     undefined,
     {
         rejectValue: { error: 'already-created' };
-        state: DeviceRootState;
+        state: CreateImportedDeviceThunkState;
     }
 >(`${DEVICE_MODULE_PREFIX}/createImportedDevice`, (_, { dispatch, getState, rejectWithValue }) => {
     if (selectDeviceById(getState(), PORTFOLIO_TRACKER_DEVICE_ID)) {
@@ -286,11 +298,12 @@ type ConfirmAddressOnDeviceThunk = {
     chunkify: boolean;
     showOnTrezor?: boolean;
 };
+type ConfirmAddressOnDeviceThunkState = AccountsRootState & DeviceRootState;
 
 export const confirmAddressOnDeviceThunk = createThunk<
     ConnectResponse<Address | CardanoAddress>,
     ConfirmAddressOnDeviceThunk,
-    { state: AccountsRootState & DeviceRootState }
+    { state: ConfirmAddressOnDeviceThunkState }
 >(
     `${DEVICE_MODULE_PREFIX}/confirmAddressOnDeviceThunk`,
     async (
@@ -334,7 +347,11 @@ type DeviceConnectThunksParams = {
     device: Device;
 };
 
-export type DeviceConnectThunkDeps = RunDiscoveryThunkDeps;
+export type DeviceConnectThunkDeps = {
+    services: AnalyticsDep;
+    selectors: SelectTradedAccountKeysDep;
+    thunks: FetchAndSaveMetadataDep;
+};
 
 export type DeviceConnectThunkState = FirmwareRootState & RunDiscoveryThunkState;
 
@@ -367,11 +384,12 @@ export const deviceConnectThunks = createThunk<
 type SetDeviceAutoEjectThunkParams = {
     shouldEnable: boolean;
 };
+type SetDeviceAutoEjectThunkState = DeviceRootState & WalletSettingsRootState;
 
 export const setDeviceAutoEjectThunk = createThunk<
     void,
     SetDeviceAutoEjectThunkParams,
-    { state: DeviceRootState & WalletSettingsRootState }
+    { state: SetDeviceAutoEjectThunkState }
 >(
     `${DEVICE_MODULE_PREFIX}/setDeviceAutoEjectThunk`,
     ({ shouldEnable }: SetDeviceAutoEjectThunkParams, { dispatch, getState }) => {
@@ -408,10 +426,12 @@ export const setDeviceAutoEjectThunk = createThunk<
     },
 );
 
+type ToggleAutoEjectThunkState = DeviceRootState & WalletSettingsRootState;
+
 export const toggleAutoEjectThunk = createThunk<
     unknown,
     void,
-    { state: DeviceRootState & WalletSettingsRootState }
+    { state: ToggleAutoEjectThunkState }
 >(`${DEVICE_MODULE_PREFIX}/toggleAutoEjectThunk`, (_, { dispatch, getState }) =>
     dispatch(
         setDeviceAutoEjectThunk({
@@ -500,13 +520,17 @@ export type ForgetDeviceThunkParams = {
     skipDisconnect?: boolean;
     deviceId?: TrezorDevice['id'];
 };
+type ForgetDeviceThunkState = ForgetDevicePersistentDataThunkState;
+type ForgetDeviceThunkDeps = {
+    thunks: ForgetBluetoothDeviceDep;
+};
 
 export const forgetDeviceThunk = createThunk<
     void,
     ForgetDeviceThunkParams | undefined,
     {
-        state: ForgetDevicePersistentDataThunkState;
-        extra: ForgetDevicePersistentDataThunkDeps;
+        state: ForgetDeviceThunkState;
+        extra: ForgetDeviceThunkDeps;
     }
 >(
     `${DEVICE_MODULE_PREFIX}/forgetDevice`,
@@ -553,15 +577,17 @@ type HandlePostWipeCleanupThunkParams = {
     initialDevice: TrezorDevice;
     deviceInstances: AcquiredDevice[];
 };
-type HandlePostWipeCleanupThunkDeps = ForgetDevicePersistentDataThunkDeps & {
+type HandlePostWipeCleanupThunkDeps = {
     actions: OpenModalDep;
+    thunks: ForgetBluetoothDeviceDep;
 };
+type HandlePostWipeCleanupThunkState = ForgetDevicePersistentDataThunkState;
 
 const handlePostWipeCleanupThunk = createThunk<
     void,
     HandlePostWipeCleanupThunkParams,
     {
-        state: ForgetDevicePersistentDataThunkState;
+        state: HandlePostWipeCleanupThunkState;
         extra: HandlePostWipeCleanupThunkDeps;
     }
 >(
@@ -601,12 +627,18 @@ const handlePostWipeCleanupThunk = createThunk<
     },
 );
 
+type DeviceWipedFromDeviceThunkState = ForgetDevicePersistentDataThunkState;
+type DeviceWipedFromDeviceThunkDeps = {
+    thunks: ForgetBluetoothDeviceDep;
+    actions: OpenModalDep;
+};
+
 export const deviceWipedFromDeviceThunk = createThunk<
     void,
     void,
     {
-        state: ForgetDevicePersistentDataThunkState;
-        extra: HandlePostWipeCleanupThunkDeps;
+        state: DeviceWipedFromDeviceThunkState;
+        extra: DeviceWipedFromDeviceThunkDeps;
     }
 >(`${DEVICE_MODULE_PREFIX}/deviceWipedFromDeviceThunk`, (_, { dispatch, getState }) => {
     const device = selectSelectedDevice(getState());
@@ -619,12 +651,18 @@ export const deviceWipedFromDeviceThunk = createThunk<
     dispatch(handlePostWipeCleanupThunk({ initialDevice: device, deviceInstances }));
 });
 
+type WipeDeviceThunkState = ForgetDevicePersistentDataThunkState;
+type WipeDeviceThunkDeps = {
+    thunks: ForgetBluetoothDeviceDep;
+    actions: OpenModalDep;
+};
+
 export const wipeDeviceThunk = createThunk<
     void,
     void,
     {
-        state: ForgetDevicePersistentDataThunkState;
-        extra: HandlePostWipeCleanupThunkDeps;
+        state: WipeDeviceThunkState;
+        extra: WipeDeviceThunkDeps;
         rejectValue: string;
     }
 >(`${DEVICE_MODULE_PREFIX}/wipeDevice`, async (_, { dispatch, getState, rejectWithValue }) => {

@@ -6,6 +6,8 @@ import {
     createSlice,
 } from '@reduxjs/toolkit';
 
+// TODO: This dependency on the global ExtraDependencies type is bad, temporary, terrible, and
+// disastrous. Remove it in follow-ups tracked by https://github.com/trezor/trezor-suite/issues/30770.
 import { type ExtraDependenciesForReducer } from '@suite-common/redux-extra-dependencies';
 
 /*

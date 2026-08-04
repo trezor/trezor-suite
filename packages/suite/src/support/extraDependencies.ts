@@ -48,7 +48,7 @@ import {
     type GetTransportsFactoriesDep,
     type ThpHostNameDep,
     type TransportsDep,
-} from '@suite-common/redux-utils';
+} from '@suite-common/redux-extra-dependencies';
 import { createMigrateSuiteSyncLabelsForRbfTransactionCompositionRoot } from '@suite-common/suite-rbf-labels-migrations';
 import {
     createSuiteSyncWriteLabels,

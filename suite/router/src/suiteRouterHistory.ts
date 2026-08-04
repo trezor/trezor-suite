@@ -1,6 +1,6 @@
 import { type History } from 'history';
 
-import type { CommonServices } from '@suite-common/redux-utils';
+import type { CommonServices } from '@suite-common/redux-extra-dependencies';
 
 import type { RouterPath } from './router';
 

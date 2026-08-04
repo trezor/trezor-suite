@@ -166,11 +166,12 @@ function assertIsSolanaAccount(
     if (account.networkType !== 'solana')
         throw new Error(`Invalid network type. ${account.networkType}`);
 }
+type ComposeSolanaTransactionFeeLevelsThunkState = BlockchainRootState;
 
 export const composeSolanaTransactionFeeLevelsThunk = createThunk<
     PrecomposedLevels,
     ComposeTransactionThunkArguments,
-    { rejectValue: ComposeFeeLevelsError; state: BlockchainRootState }
+    { rejectValue: ComposeFeeLevelsError; state: ComposeSolanaTransactionFeeLevelsThunkState }
 >(
     `${SEND_MODULE_PREFIX}/composeSolanaTransactionFeeLevelsThunk`,
     async (
@@ -331,12 +332,14 @@ export const composeSolanaTransactionFeeLevelsThunk = createThunk<
     },
 );
 
+type SignSolanaSendFormTransactionThunkState = WalletSettingsRootState;
+
 export const signSolanaSendFormTransactionThunk = createThunk<
     { serializedTx: string },
     SignTransactionThunkArguments,
     {
         rejectValue: SignTransactionError;
-        state: WalletSettingsRootState;
+        state: SignSolanaSendFormTransactionThunkState;
     }
 >(
     `${SEND_MODULE_PREFIX}/signSolanaSendFormTransactionThunk`,

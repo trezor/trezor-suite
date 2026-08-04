@@ -15,6 +15,8 @@ import {
 import {
     type ConnectInitSettings,
     type ExtraDependencies,
+} from '@suite-common/redux-extra-dependencies';
+import {
     notImplementedAction,
     notImplementedActionType,
     notImplementedGetter,

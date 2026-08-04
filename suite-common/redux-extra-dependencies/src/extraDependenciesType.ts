@@ -158,9 +158,9 @@ export type ExtraDependenciesStatic = {
     // having "any" type for action.payload in reducer. We can overcome this issue if we define reducers of storageLoad
     // in place where we have all types available to ensure type safety.
     actionTypes: {
-        storageLoad: ActionType;
-        setDeviceMetadata: ActionType;
-        setDeviceMetadataPasswords: ActionType;
+        storageLoad: string;
+        setDeviceMetadata: string;
+        setDeviceMetadataPasswords: string;
     };
     reducers: {
         storageLoadBlockchain: StorageLoadReducer;

@@ -14,6 +14,7 @@ import { isNative } from '@trezor/env-utils';
 type SelectDeviceThunkParams = {
     device: Device | TrezorDevice | undefined;
 };
+type SelectDeviceThunkState = DeviceRootState;
 
 /**
  * Called from:
@@ -23,7 +24,7 @@ type SelectDeviceThunkParams = {
 export const selectDeviceThunk = createThunk<
     { device: TrezorDevice | undefined },
     SelectDeviceThunkParams,
-    { state: DeviceRootState }
+    { state: SelectDeviceThunkState }
 >(
     `${DEVICE_MODULE_PREFIX}/selectDevice`,
     ({ device }, { dispatch, getState, fulfillWithValue }) => {
@@ -50,10 +51,12 @@ export const selectDeviceThunk = createThunk<
     },
 );
 
+type SelectNewlyConnectedDeviceThunkState = DeviceRootState;
+
 export const selectNewlyConnectedDeviceThunk = createThunk<
     void,
     SelectDeviceThunkParams,
-    { state: DeviceRootState }
+    { state: SelectNewlyConnectedDeviceThunkState }
 >(
     `${DEVICE_MODULE_PREFIX}/selectNewlyConnectedDevice`,
     ({ device }, { dispatch, getState, rejectWithValue }) => {

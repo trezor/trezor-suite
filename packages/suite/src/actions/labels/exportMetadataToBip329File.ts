@@ -6,7 +6,7 @@ import { notificationsActions } from '@suite-common/toast-notifications';
 import { type Account } from '@suite-common/wallet-types';
 import { sanitizeFilename } from '@trezor/utils';
 
-type ExportMetadataToBip329FileDeps = {
+type ExportMetadataToBip329FileThunkDeps = {
     services: Bip329Dep;
 };
 
@@ -16,7 +16,7 @@ export const exportMetadataToBip329File = createThunk<
         account: Account;
         defaultAccountLabel: string;
     },
-    { extra: ExportMetadataToBip329FileDeps }
+    { extra: ExportMetadataToBip329FileThunkDeps }
 >(
     METADATA.EXPORT_METADATA_TO_BIP329_FILE,
     ({ account, defaultAccountLabel }, { dispatch, extra: { services } }) => {

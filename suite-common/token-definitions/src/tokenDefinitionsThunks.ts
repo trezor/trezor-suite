@@ -42,11 +42,12 @@ export const getTokenDefinitionThunk = createThunk<
 type InitTokenDefinitionsThunkDeps = {
     services: GetTokenDefinitionsEnabledNetworksDep;
 };
+type InitTokenDefinitionsThunkState = TokenDefinitionsRootState;
 
 export const initTokenDefinitionsThunk = createThunk<
     unknown[],
     void,
-    { state: TokenDefinitionsRootState; extra: InitTokenDefinitionsThunkDeps }
+    { state: InitTokenDefinitionsThunkState; extra: InitTokenDefinitionsThunkDeps }
 >(`${TOKEN_DEFINITIONS_MODULE}/initTokenDefinitionsThunk`, (_, { getState, dispatch, extra }) => {
     const enabledNetworks = extra.services.getTokenDefinitionsEnabledNetworks();
 

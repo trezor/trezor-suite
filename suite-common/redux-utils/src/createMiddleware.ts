@@ -1,6 +1,8 @@
 import { type ThunkDispatch } from '@reduxjs/toolkit';
 import { type Action, type Dispatch, type Middleware, type MiddlewareAPI } from 'redux';
 
+// TODO: This dependency on the global ExtraDependencies type is bad, temporary, terrible, and
+// disastrous. Remove it in follow-ups tracked by https://github.com/trezor/trezor-suite/issues/30770.
 import { type ExtraDependencies } from '@suite-common/redux-extra-dependencies';
 
 import { type AnyAction } from './types';

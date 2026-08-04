@@ -64,12 +64,15 @@ type ComposeYieldDepositTransactionPayload = {
     flowData: YieldFlowResolvedData;
     amount: string;
 };
+type ComposeYieldDepositTransactionThunkState = AccountsRootState &
+    FeesRootState &
+    TransactionsRootState;
 
 export const composeYieldDepositTransactionThunk = createThunk<
     PrepareYieldDepositResult,
     ComposeYieldDepositTransactionPayload,
     {
-        state: AccountsRootState & FeesRootState & TransactionsRootState;
+        state: ComposeYieldDepositTransactionThunkState;
     }
 >(
     `${YIELD_DEPOSIT_THUNK_PREFIX}/composeDepositTransaction`,

@@ -51,6 +51,9 @@ type ComposeYieldUnwrapTransactionPayload = {
     token: Pick<YieldFlowDisplayToken, 'contractAddress' | 'decimals'>;
     unwrapAmount: string;
 };
+type ComposeYieldWrapTransactionThunkState = AccountsRootState &
+    FeesRootState &
+    TransactionsRootState;
 
 /**
  * Composes an unsigned WETH `deposit()` (wrap) transaction that carries `wrapAmount` in its value.
@@ -61,7 +64,7 @@ export const composeYieldWrapTransactionThunk = createThunk<
     ComposeYieldWrapResult,
     ComposeYieldWrapTransactionPayload,
     {
-        state: AccountsRootState & FeesRootState & TransactionsRootState;
+        state: ComposeYieldWrapTransactionThunkState;
     }
 >(
     `${YIELD_WRAP_THUNK_PREFIX}/composeWrapTransaction`,
@@ -138,6 +141,10 @@ export const composeYieldWrapTransactionThunk = createThunk<
     },
 );
 
+type ComposeYieldUnwrapTransactionThunkState = AccountsRootState &
+    FeesRootState &
+    TransactionsRootState;
+
 /**
  * Composes an unsigned WETH `withdraw(uint256)` (unwrap) transaction — the standalone WETH→ETH
  * action for the wrapped-native token.
@@ -146,7 +153,7 @@ export const composeYieldUnwrapTransactionThunk = createThunk<
     ComposeYieldWrapResult,
     ComposeYieldUnwrapTransactionPayload,
     {
-        state: AccountsRootState & FeesRootState & TransactionsRootState;
+        state: ComposeYieldUnwrapTransactionThunkState;
     }
 >(
     `${YIELD_WRAP_THUNK_PREFIX}/composeUnwrapTransaction`,

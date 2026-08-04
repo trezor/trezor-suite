@@ -4,6 +4,8 @@ import {
     createAsyncThunk as createAsyncThunkReduxToolkit,
 } from '@reduxjs/toolkit';
 
+// TODO: This dependency on the global ExtraDependencies type is bad, temporary, terrible, and
+// disastrous. Remove it in follow-ups tracked by https://github.com/trezor/trezor-suite/issues/30770.
 import { type CustomThunkAPI } from '@suite-common/redux-extra-dependencies';
 
 /**

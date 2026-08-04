@@ -69,12 +69,13 @@ interface ReplaceTransactionThunkParams {
     precomposedTransaction: PrecomposedTransactionFinalBumpFeeRbf;
     newTxid: string;
 }
+type ReplaceTransactionThunkState = AccountsRootState & SendRootState & TransactionsRootState;
 
 export const replaceTransactionThunk = createThunk<
     void,
     ReplaceTransactionThunkParams,
     {
-        state: AccountsRootState & SendRootState & TransactionsRootState;
+        state: ReplaceTransactionThunkState;
     }
 >(
     `${TRANSACTIONS_MODULE_PREFIX}/replaceTransactionThunk`,
@@ -146,11 +147,12 @@ interface AddFakePendingTransactionParams {
     precomposedTransaction: PrecomposedTransactionFinal;
     account: Account;
 }
+type AddFakePendingTxThunkState = AccountsRootState & BlockchainRootState & SendRootState;
 
 export const addFakePendingTxThunk = createThunk<
     void,
     AddFakePendingTransactionParams,
-    { state: AccountsRootState & BlockchainRootState & SendRootState }
+    { state: AddFakePendingTxThunkState }
 >(
     `${TRANSACTIONS_MODULE_PREFIX}/addFakePendingTransaction`,
     (
@@ -378,12 +380,16 @@ type AddFakePendingEvmTxThunkParams = {
     // correct it yet.
     ethereumNonce?: string;
 };
+type AddFakePendingEvmTxThunkState = AccountsRootState &
+    BlockchainRootState &
+    FeesRootState &
+    TransactionsRootState;
 
 export const addFakePendingEvmTxThunk = createThunk<
     void,
     AddFakePendingEvmTxThunkParams,
     {
-        state: AccountsRootState & BlockchainRootState & FeesRootState & TransactionsRootState;
+        state: AddFakePendingEvmTxThunkState;
     }
 >(
     `${TRANSACTIONS_MODULE_PREFIX}/addFakePendingTransaction`,
@@ -454,11 +460,12 @@ type AddFakePendingCardanoTxThunkParams = {
     account: Account;
     cardanoSpecific?: WalletAccountTransaction['cardanoSpecific'];
 };
+type AddFakePendingCardanoTxThunkState = BlockchainRootState;
 
 export const addFakePendingCardanoTxThunk = createThunk<
     void,
     AddFakePendingCardanoTxThunkParams,
-    { state: BlockchainRootState }
+    { state: AddFakePendingCardanoTxThunkState }
 >(
     `${TRANSACTIONS_MODULE_PREFIX}/addFakePendingTransaction`,
     (
@@ -510,11 +517,12 @@ interface AddFakePendingTronTxThunkParams {
     target?: { addresses: string[]; amount: string };
     tronSpecific?: WalletAccountTransaction['tronSpecific'];
 }
+type AddFakePendingTronTxThunkState = BlockchainRootState & FeesRootState;
 
 export const addFakePendingTronTxThunk = createThunk<
     void,
     AddFakePendingTronTxThunkParams,
-    { state: BlockchainRootState & FeesRootState }
+    { state: AddFakePendingTronTxThunkState }
 >(
     `${TRANSACTIONS_MODULE_PREFIX}/addFakePendingTransaction`,
     (
@@ -578,12 +586,15 @@ type FetchTransactionsPageThunkParams = {
     noLoading?: boolean;
     forceRefetch?: boolean;
 };
+type FetchTransactionsPageThunkState = AccountsRootState &
+    BlockchainRootState &
+    TransactionsRootState;
 
 export const fetchTransactionsPageThunk = createThunk<
     AccountInfo | 'ALREADY_FETCHED',
     FetchTransactionsPageThunkParams,
     {
-        state: AccountsRootState & BlockchainRootState & TransactionsRootState;
+        state: FetchTransactionsPageThunkState;
     }
 >(
     `${TRANSACTIONS_MODULE_PREFIX}/fetchTransactionsPageThunk`,

@@ -1,6 +1,6 @@
 import { asTypedDesktopAnalytics, events } from '@suite/analytics';
 import { selectSelectedDevice } from '@suite-common/device';
-import { type ExtraDependencies } from '@suite-common/redux-utils';
+import { type ExtraDependencies } from '@suite-common/redux-extra-dependencies';
 import { composeSolanaStakingTransaction, prepareSolanaStakeTxData } from '@suite-common/staking';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { selectAddressDisplayType } from '@suite-common/wallet-core';

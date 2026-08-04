@@ -59,5 +59,8 @@
         "react": "19.2.3",
         "react-hook-form": "^7.77.0",
         "react-redux": "9.3.0"
+    },
+    "devDependencies": {
+        "@suite-common/redux-extra-dependencies": "workspace:*"
     }
 }

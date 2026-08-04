@@ -1,5 +1,4 @@
 export type * from './types';
-export type * from '@suite-common/redux-extra-dependencies';
 export * from './createThunk';
 export * from './createSliceWithExtraDeps';
 export * from './createMiddleware';

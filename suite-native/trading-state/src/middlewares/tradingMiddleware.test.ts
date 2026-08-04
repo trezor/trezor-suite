@@ -1,5 +1,5 @@
 import { deviceActions } from '@suite-common/device';
-import type { ExtraDependencies } from '@suite-common/redux-utils';
+import type { ExtraDependencies } from '@suite-common/redux-extra-dependencies';
 import type { TrezorDevice } from '@suite-common/suite-types';
 import { formDraftActions } from '@suite-common/wallet-core';
 

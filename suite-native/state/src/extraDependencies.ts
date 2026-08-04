@@ -14,8 +14,8 @@ import {
     createNetworksCompositionRoot,
 } from '@suite-common/networks';
 import { createNativePlatformEncryption } from '@suite-common/platform-encryption-native';
+import { type ExtraDependenciesStatic } from '@suite-common/redux-extra-dependencies';
 import {
-    type ExtraDependenciesStatic,
     notImplementedAction,
     notImplementedActionType,
     notImplementedGetter,

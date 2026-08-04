@@ -1,23 +1,26 @@
+import { type AnalyticsDep } from '@suite-common/analytics';
+import { type FetchAndSaveMetadataDep } from '@suite-common/metadata-types';
 import { createThunk } from '@suite-common/redux-utils';
-import { type TrezorDevice } from '@suite-common/suite-types';
+import { type ConnectInitHooksDeps, type TrezorDevice } from '@suite-common/suite-types';
+import { type SelectTradedAccountKeysDep } from '@suite-common/wallet-types';
 import TrezorConnect, { UI_EVENT, UI_REQUEST } from '@trezor/connect';
 import { type PopupEventMessage, type UiEventMessage } from '@trezor/connect-common';
 
 import { DISCOVERY_MODULE_PREFIX, discoveryActions } from './discoveryActions';
 import { isDiscoveryInProgress, selectDiscoveryByDevicePath } from './discoverySelectors';
 import {
-    type RunDiscoveryThunkDeps,
     type RunDiscoveryThunkState,
     runDiscoveryThunk,
     startDiscoveryThunk,
 } from './discoveryThunks';
-import {
-    type DefaultTrezorUIEventHandlerThunkDeps,
-    defaultTrezorUIEventHandlerThunk,
-} from '../uiEvent/defaultTrezorUIEventHandlerThunk';
+import { defaultTrezorUIEventHandlerThunk } from '../uiEvent/defaultTrezorUIEventHandlerThunk';
 
-type RunPassphraseWalletAddingDiscoveryThunkDeps = DefaultTrezorUIEventHandlerThunkDeps &
-    RunDiscoveryThunkDeps;
+type RunPassphraseWalletAddingDiscoveryThunkDeps = {
+    services: AnalyticsDep & ConnectInitHooksDeps;
+    selectors: SelectTradedAccountKeysDep;
+    thunks: FetchAndSaveMetadataDep;
+};
+type RunPassphraseWalletAddingDiscoveryThunkState = RunDiscoveryThunkState;
 
 // The "run" step. Exported because for a *new* hidden wallet the run is deferred from
 // start — called from PassphraseWalletIsNotExistFlow's "Next" once the user confirms
@@ -25,7 +28,10 @@ type RunPassphraseWalletAddingDiscoveryThunkDeps = DefaultTrezorUIEventHandlerTh
 export const runPassphraseWalletAddingDiscoveryThunk = createThunk<
     void,
     { device: TrezorDevice },
-    { state: RunDiscoveryThunkState; extra: RunPassphraseWalletAddingDiscoveryThunkDeps }
+    {
+        state: RunPassphraseWalletAddingDiscoveryThunkState;
+        extra: RunPassphraseWalletAddingDiscoveryThunkDeps;
+    }
 >(
     `${DISCOVERY_MODULE_PREFIX}/runPassphraseWalletAddingDiscovery`,
     async ({ device }: { device: TrezorDevice }, { dispatch }) => {
@@ -54,11 +60,20 @@ type StartDiscoveryOfExistingPassphraseWalletThunkPayload = {
     isAddingHiddenWallet?: boolean;
     useScopedCallIds?: boolean;
 };
+type StartDiscoveryOfExistingPassphraseWalletThunkState = RunDiscoveryThunkState;
+type StartDiscoveryOfExistingPassphraseWalletThunkDeps = {
+    services: AnalyticsDep & ConnectInitHooksDeps;
+    selectors: SelectTradedAccountKeysDep;
+    thunks: FetchAndSaveMetadataDep;
+};
 
 const startDiscoveryOfExistingPassphraseWalletThunk = createThunk<
     void,
     StartDiscoveryOfExistingPassphraseWalletThunkPayload,
-    { state: RunDiscoveryThunkState; extra: RunPassphraseWalletAddingDiscoveryThunkDeps }
+    {
+        state: StartDiscoveryOfExistingPassphraseWalletThunkState;
+        extra: StartDiscoveryOfExistingPassphraseWalletThunkDeps;
+    }
 >(
     `${DISCOVERY_MODULE_PREFIX}/startDiscoveryOfExistingPassphraseWallet`,
     (

@@ -10,6 +10,7 @@
         { "path": "../earn-staking-api" },
         { "path": "../fiat-services" },
         { "path": "../firmware" },
+        { "path": "../metadata-types" },
         { "path": "../react-query" },
         { "path": "../redux-utils" },
         { "path": "../schemas" },
@@ -58,6 +59,7 @@
         },
         { "path": "../../packages/protobuf" },
         { "path": "../../packages/type-utils" },
-        { "path": "../../packages/utils" }
+        { "path": "../../packages/utils" },
+        { "path": "../redux-extra-dependencies" }
     ]
 }
