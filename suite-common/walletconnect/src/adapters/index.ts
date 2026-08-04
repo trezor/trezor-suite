@@ -1,5 +1,6 @@
 import type { ProposalTypes } from '@walletconnect/types';
 
+import type { NetworkConfigDeps } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 
 import { bitcoinAdapter } from './bitcoin';
@@ -26,7 +27,7 @@ export const getAdapterByMethod = (method: string) =>
 export const getAdapterByNetwork = (networkType: string) =>
     adapters.find(adapter => adapter.networkType === networkType);
 
-export const getNamespaces = (accounts: Account[]) => {
+export const getNamespaces = (deps: NetworkConfigDeps, accounts: Account[]) => {
     const accountsDeduped: Account[] = [];
     accounts.forEach(account => {
         if (
@@ -39,7 +40,7 @@ export const getNamespaces = (accounts: Account[]) => {
     });
 
     return adapters
-        .map(adapter => adapter.getNamespace(accountsDeduped))
+        .map(adapter => adapter.getNamespace(deps, accountsDeduped))
         .reduce((acc, val) => {
             Object.assign(acc, val);
 
@@ -48,11 +49,12 @@ export const getNamespaces = (accounts: Account[]) => {
 };
 
 export const processNamespaces = (
+    deps: NetworkConfigDeps,
     accounts: Account[],
     networks: PendingConnectionProposalNetwork[],
     namespaces: ProposalTypes.RequiredNamespaces,
     required: boolean,
 ) =>
     adapters.forEach(adapter =>
-        adapter.processNamespaces(accounts, networks, namespaces, required),
+        adapter.processNamespaces(deps, accounts, networks, namespaces, required),
     );

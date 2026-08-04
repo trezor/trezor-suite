@@ -1,8 +1,9 @@
 import { addDays, startOfMonth } from 'date-fns';
 
 import { Calldata } from '@suite-common/calldata';
+import type { GetNetworkConfigDep } from '@suite-common/networks';
 import { type SignOperator } from '@suite-common/suite-types';
-import { type NetworkFeature, type NetworkType, getNetworkType } from '@suite-common/wallet-config';
+import { type NetworkFeature, type NetworkType } from '@suite-common/wallet-config';
 import {
     type Account,
     type AccountKey,
@@ -421,14 +422,14 @@ export const groupJointTransactions = (transactions: WalletAccountTransaction[])
             return { type: 'single-tx', tx: onlyTx } as const;
         });
 
-export const formatCardanoWithdrawal = (tx: WalletAccountTransaction) =>
+export const formatCardanoWithdrawal = (deps: GetNetworkConfigDep, tx: WalletAccountTransaction) =>
     tx.cardanoSpecific?.withdrawal
-        ? formatNetworkAmount(tx.cardanoSpecific.withdrawal, tx.symbol)
+        ? formatNetworkAmount(deps, tx.cardanoSpecific.withdrawal, tx.symbol)
         : undefined;
 
-export const formatCardanoDeposit = (tx: WalletAccountTransaction) =>
+export const formatCardanoDeposit = (deps: GetNetworkConfigDep, tx: WalletAccountTransaction) =>
     tx.cardanoSpecific?.deposit
-        ? formatNetworkAmount(tx.cardanoSpecific.deposit, tx.symbol)
+        ? formatNetworkAmount(deps, tx.cardanoSpecific.deposit, tx.symbol)
         : undefined;
 
 export const getCardanoStakingSignValue = (transaction: WalletAccountTransaction) => {
@@ -466,19 +467,22 @@ export const isTxFeePaid = (tx: WalletAccountTransaction) => {
  *
  * @param {WalletAccountTransaction[]} transactions
  */
-export const sumTransactions = (transactions: WalletAccountTransaction[]) => {
+export const sumTransactions = (
+    deps: GetNetworkConfigDep,
+    transactions: WalletAccountTransaction[],
+) => {
     let totalAmount = new BigNumber(0);
     transactions.forEach(tx => {
-        const amount = formatNetworkAmount(tx.amount, tx.symbol);
-        const fee = formatNetworkAmount(tx.fee, tx.symbol);
+        const amount = formatNetworkAmount(deps, tx.amount, tx.symbol);
+        const fee = formatNetworkAmount(deps, tx.fee, tx.symbol);
 
         if (tx.type === 'self') {
-            const cardanoWithdrawal = formatCardanoWithdrawal(tx);
+            const cardanoWithdrawal = formatCardanoWithdrawal(deps, tx);
             if (cardanoWithdrawal) {
                 totalAmount = totalAmount.plus(cardanoWithdrawal);
             }
 
-            const cardanoDeposit = formatCardanoDeposit(tx);
+            const cardanoDeposit = formatCardanoDeposit(deps, tx);
             if (cardanoDeposit) {
                 totalAmount = totalAmount.minus(cardanoDeposit);
             }
@@ -498,7 +502,7 @@ export const sumTransactions = (transactions: WalletAccountTransaction[]) => {
         }
 
         tx.internalTransfers.forEach(internalTx => {
-            const amountInternal = formatNetworkAmount(internalTx.amount, tx.symbol);
+            const amountInternal = formatNetworkAmount(deps, internalTx.amount, tx.symbol);
 
             if (internalTx.type === 'sent') {
                 totalAmount = totalAmount.minus(amountInternal);
@@ -513,28 +517,29 @@ export const sumTransactions = (transactions: WalletAccountTransaction[]) => {
 };
 
 export const sumTransactionsFiat = (
+    deps: GetNetworkConfigDep,
     transactions: WalletAccountTransaction[],
     fiatCurrency: BaseCurrencyCode,
     historicFiatRates: RatesByTimestamps | undefined,
 ) => {
     let totalAmount = new BigNumber(0);
     transactions.forEach(tx => {
-        const amount = formatNetworkAmount(tx.amount, tx.symbol);
-        const fee = formatNetworkAmount(tx.fee, tx.symbol);
+        const amount = formatNetworkAmount(deps, tx.amount, tx.symbol);
+        const fee = formatNetworkAmount(deps, tx.fee, tx.symbol);
 
         const fiatRateKey = getFiatRateKey(tx.symbol, fiatCurrency);
         const roundedTimestamp = roundTimestampToNearestPastHour(tx.blockTime as Timestamp);
         const historicRate = historicFiatRates?.[fiatRateKey]?.[roundedTimestamp];
 
         if (tx.type === 'self') {
-            const cardanoWithdrawal = formatCardanoWithdrawal(tx);
+            const cardanoWithdrawal = formatCardanoWithdrawal(deps, tx);
             if (cardanoWithdrawal) {
                 totalAmount = totalAmount.plus(
                     toFiatCurrency({ amount: cardanoWithdrawal, rate: historicRate }) ?? 0,
                 );
             }
 
-            const cardanoDeposit = formatCardanoDeposit(tx);
+            const cardanoDeposit = formatCardanoDeposit(deps, tx);
             if (cardanoDeposit) {
                 totalAmount = totalAmount.minus(
                     toFiatCurrency({ amount: cardanoDeposit, rate: historicRate }) ?? 0,
@@ -586,7 +591,7 @@ export const sumTransactionsFiat = (
         }
 
         tx.internalTransfers.forEach(internalTx => {
-            const amountInternal = formatNetworkAmount(internalTx.amount, tx.symbol);
+            const amountInternal = formatNetworkAmount(deps, internalTx.amount, tx.symbol);
             const amountInternalFiat =
                 toFiatCurrency({ amount: amountInternal, rate: historicRate }) ?? 0;
 
@@ -925,12 +930,13 @@ export const getTargetAmountRaw = (
 };
 
 export const getTargetAmount = (
+    deps: GetNetworkConfigDep,
     target: WalletAccountTransaction['targets'][number] | undefined,
     transaction: WalletAccountTransaction,
 ) => {
     const value = getTargetAmountRaw(target, transaction);
 
-    return value ? formatNetworkAmount(value.toString(), transaction.symbol) : null;
+    return value ? formatNetworkAmount(deps, value.toString(), transaction.symbol) : null;
 };
 
 export const getFeeRate = (tx: AccountTransaction) =>
@@ -952,6 +958,7 @@ export const replaceEthereumSpecific = (
 };
 
 const getEthereumRbfParams = (
+    deps: GetNetworkConfigDep,
     tx: AccountTransaction,
     account: Account,
 ): RbfTransactionParamsEthereum | undefined => {
@@ -1031,7 +1038,7 @@ const getEthereumRbfParams = (
                 output = {
                     address: toAddress,
                     amount: vout[0]!.value!,
-                    formattedAmount: formatNetworkAmount(vout[0]!.value!, account.symbol),
+                    formattedAmount: formatNetworkAmount(deps, vout[0]!.value!, account.symbol),
                 };
             }
         }
@@ -1055,6 +1062,7 @@ const getEthereumRbfParams = (
 };
 
 const getBitcoinRbfParams = (
+    deps: GetNetworkConfigDep,
     tx: AccountTransaction,
     account: Account,
 ): RbfTransactionParamsBitcoin | undefined => {
@@ -1091,7 +1099,7 @@ const getBitcoinRbfParams = (
                 type: changeOutput ? 'change' : 'payment',
                 address: firstAddress,
                 amount: output.value!,
-                formattedAmount: formatNetworkAmount(output.value!, account.symbol),
+                formattedAmount: formatNetworkAmount(deps, output.value!, account.symbol),
             });
             if (changeOutput) {
                 changeAddress = changeOutput;
@@ -1117,20 +1125,22 @@ const getBitcoinRbfParams = (
 };
 
 export const getRbfParams = (
+    deps: GetNetworkConfigDep,
     tx: AccountTransaction,
     account: Account,
 ): WalletAccountTransaction['rbfParams'] => {
     switch (account.networkType) {
         case 'bitcoin':
-            return getBitcoinRbfParams(tx, account);
+            return getBitcoinRbfParams(deps, tx, account);
         case 'ethereum':
-            return getEthereumRbfParams(tx, account);
+            return getEthereumRbfParams(deps, tx, account);
         default:
             return undefined;
     }
 };
 
 const enhanceTokenTransfers = (
+    deps: GetNetworkConfigDep,
     tokenTransfers: AccountTransaction['tokens'],
     accountSymbol: Account['symbol'],
 ) => {
@@ -1138,7 +1148,7 @@ const enhanceTokenTransfers = (
         return tokenTransfers;
     }
 
-    const isEvmNetwork = getNetworkType(accountSymbol) === 'ethereum';
+    const isEvmNetwork = deps.getNetworkConfig(accountSymbol).networkType === 'ethereum';
 
     return tokenTransfers.map(transfer => {
         if (!transfer.symbol) {
@@ -1160,6 +1170,7 @@ const enhanceTokenTransfers = (
  * @returns {WalletAccountTransaction}
  */
 export const enhanceTransaction = (
+    deps: GetNetworkConfigDep,
     origTx: AccountTransaction,
     account: Account,
 ): WalletAccountTransaction => ({
@@ -1167,8 +1178,8 @@ export const enhanceTransaction = (
     deviceState: account.deviceState,
     symbol: account.symbol,
     ...origTx,
-    tokens: enhanceTokenTransfers(origTx.tokens, account.symbol),
-    rbfParams: getRbfParams(origTx, account),
+    tokens: enhanceTokenTransfers(deps, origTx.tokens, account.symbol),
+    rbfParams: getRbfParams(deps, origTx, account),
     hex: (origTx.blockHeight ?? 0) <= 0 && origTx.rbf ? origTx.hex : undefined, // store tx hex **only** for pending transactions (used by rbf)
 });
 

@@ -36,7 +36,12 @@ describe(advancedSearchTransactions.name, () => {
 
     searchTransactionsFixture.forEach(f => {
         it(f.description, () => {
-            const search = advancedSearchTransactions(transactions, accountLabels, f.search);
+            const search = advancedSearchTransactions(
+                mockNetworkConfigDeps,
+                transactions,
+                accountLabels,
+                f.search,
+            );
 
             if (f.result) {
                 // expect(search.length).toBe(f.result.length);
@@ -53,3 +58,4 @@ describe(advancedSearchTransactions.name, () => {
         });
     });
 });
+import { mockNetworkConfigDeps } from '@suite-common/wallet-config/mocks';

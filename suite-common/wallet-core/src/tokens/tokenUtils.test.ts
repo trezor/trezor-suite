@@ -1,10 +1,8 @@
 import { type TokenDefinition } from '@suite-common/token-definitions';
-import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { mockNetworkConfigDeps } from '@suite-common/wallet-config/mocks';
 import { mockAccountToken, mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
 import { getAccountAnalyticsTokenSymbols } from './tokenUtils';
-
-const ethSymbol = asNetworkSymbol('eth');
 
 const legitContract = '0x' + 'a'.repeat(40);
 const spamContract = '0x' + 'b'.repeat(40);
@@ -21,28 +19,28 @@ const ethDefinitions: TokenDefinition = {
 
 describe('getAccountAnalyticsTokenSymbols', () => {
     it('lists the native token first when the account holds a native balance', () => {
-        const account = mockWalletAccount({
-            symbol: ethSymbol,
-            balance: '1000',
-            tokens: [],
-        });
+        const account = mockWalletAccount({ symbol: 'eth', balance: '1000', tokens: [] });
 
-        expect(getAccountAnalyticsTokenSymbols(account, ethDefinitions)).toEqual(['ETH']);
+        expect(
+            getAccountAnalyticsTokenSymbols(mockNetworkConfigDeps, account, ethDefinitions),
+        ).toEqual(['ETH']);
     });
 
     it('omits the native token when the native balance is zero', () => {
         const account = mockWalletAccount({
-            symbol: ethSymbol,
+            symbol: 'eth',
             balance: '0',
             tokens: [mockAccountToken({ symbol: 'USDC', contract: legitContract, balance: '100' })],
         });
 
-        expect(getAccountAnalyticsTokenSymbols(account, ethDefinitions)).toEqual(['USDC']);
+        expect(
+            getAccountAnalyticsTokenSymbols(mockNetworkConfigDeps, account, ethDefinitions),
+        ).toEqual(['USDC']);
     });
 
     it('includes only legit tokens with balance, native first', () => {
         const account = mockWalletAccount({
-            symbol: ethSymbol,
+            symbol: 'eth',
             balance: '1000',
             tokens: [
                 mockAccountToken({ symbol: 'USDC', contract: legitContract, balance: '100' }),
@@ -52,7 +50,9 @@ describe('getAccountAnalyticsTokenSymbols', () => {
             ],
         });
 
-        expect(getAccountAnalyticsTokenSymbols(account, ethDefinitions)).toEqual(['ETH', 'USDC']);
+        expect(
+            getAccountAnalyticsTokenSymbols(mockNetworkConfigDeps, account, ethDefinitions),
+        ).toEqual(['ETH', 'USDC']);
     });
 
     it('deduplicates repeated token symbols', () => {
@@ -65,7 +65,7 @@ describe('getAccountAnalyticsTokenSymbols', () => {
             show: [],
         };
         const account = mockWalletAccount({
-            symbol: ethSymbol,
+            symbol: 'eth',
             balance: '0',
             tokens: [
                 mockAccountToken({ symbol: 'USDC', contract: legitContract, balance: '100' }),
@@ -73,16 +73,20 @@ describe('getAccountAnalyticsTokenSymbols', () => {
             ],
         });
 
-        expect(getAccountAnalyticsTokenSymbols(account, definitions)).toEqual(['USDC']);
+        expect(
+            getAccountAnalyticsTokenSymbols(mockNetworkConfigDeps, account, definitions),
+        ).toEqual(['USDC']);
     });
 
     it('omits definition-dependent tokens until token definitions are loaded', () => {
         const account = mockWalletAccount({
-            symbol: ethSymbol,
+            symbol: 'eth',
             balance: '1000',
             tokens: [mockAccountToken({ symbol: 'USDC', contract: legitContract, balance: '100' })],
         });
 
-        expect(getAccountAnalyticsTokenSymbols(account, undefined)).toEqual(['ETH']);
+        expect(getAccountAnalyticsTokenSymbols(mockNetworkConfigDeps, account, undefined)).toEqual([
+            'ETH',
+        ]);
     });
 });

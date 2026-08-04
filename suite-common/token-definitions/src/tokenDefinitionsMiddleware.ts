@@ -8,7 +8,7 @@ import { getSupportedDefinitionTypes } from './tokenDefinitionsUtils';
 const CHANGE_NETWORKS = '@wallet-settings/change-networks'; // from walletSettings.ts
 
 export const prepareTokenDefinitionsMiddleware = createMiddlewareWithExtraDeps(
-    (action, { dispatch, next, getState }) => {
+    (action, { dispatch, next, getState, extra }) => {
         next(action);
 
         if (action.type === CHANGE_NETWORKS) {
@@ -16,7 +16,7 @@ export const prepareTokenDefinitionsMiddleware = createMiddlewareWithExtraDeps(
                 const tokenDefinitions = selectNetworkTokenDefinitions(getState(), symbol);
 
                 if (!tokenDefinitions) {
-                    const definitionTypes = getSupportedDefinitionTypes(symbol);
+                    const definitionTypes = getSupportedDefinitionTypes(extra.services, symbol);
 
                     definitionTypes.forEach(type => {
                         dispatch(

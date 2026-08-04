@@ -1,5 +1,6 @@
 import { createIntl } from 'react-intl';
 
+import { mockNetworkConfigDeps } from '@suite-common/wallet-config/mocks';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { PROTO } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils';
@@ -11,7 +12,7 @@ const intl = createIntl({
     messages: {},
 });
 
-const xauFormatter = prepareBaseCurrencyAmountFormatter({
+const xauFormatter = prepareBaseCurrencyAmountFormatter(mockNetworkConfigDeps, {
     locale: 'en',
     bitcoinAmountUnit: PROTO.AmountUnit.BITCOIN,
     intl,
@@ -19,7 +20,7 @@ const xauFormatter = prepareBaseCurrencyAmountFormatter({
     is24HourFormat: false,
 });
 
-const btcSatsFormatter = prepareBaseCurrencyAmountFormatter({
+const btcSatsFormatter = prepareBaseCurrencyAmountFormatter(mockNetworkConfigDeps, {
     locale: 'en',
     bitcoinAmountUnit: PROTO.AmountUnit.SATOSHI,
     intl,

@@ -1,41 +1,41 @@
 import { extraDependenciesCommonMock } from '@suite-common/test-utils';
-import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { mockNetworkConfigDeps } from '@suite-common/wallet-config/mocks';
 import { type BackendSettings } from '@suite-common/wallet-types';
 
 import { type SetBackendPayload, blockchainActions } from './blockchainActions';
-import { blockchainInitialState, prepareBlockchainReducer } from './blockchainReducer';
+import { createBlockchainInitialState, prepareBlockchainReducer } from './blockchainReducer';
 
 const blockchainReducer = prepareBlockchainReducer(extraDependenciesCommonMock);
-const btcSymbol = asNetworkSymbol('btc');
+const blockchainInitialState = createBlockchainInitialState(mockNetworkConfigDeps);
 
 const urls = ['http://a, http://b, http://c'];
 
 type BlockchainFixture = [string, BackendSettings, SetBackendPayload, BackendSettings];
 
 const fixtures: BlockchainFixture[] = [
-    ['try to set empty', {}, { symbol: btcSymbol, type: 'electrum', urls: [] }, {}],
+    ['try to set empty', {}, { symbol: 'btc', type: 'electrum', urls: [] }, {}],
     [
         'set custom',
         {},
-        { symbol: btcSymbol, type: 'electrum', urls },
+        { symbol: 'btc', type: 'electrum', urls },
         { selected: 'electrum', urls: { electrum: urls } },
     ],
     [
         'change custom',
         { selected: 'electrum', urls: { electrum: urls } },
-        { symbol: btcSymbol, type: 'blockbook', urls },
+        { symbol: 'btc', type: 'blockbook', urls },
         { selected: 'blockbook', urls: { electrum: urls, blockbook: urls } },
     ],
     [
         'reset with remembering',
         { selected: 'blockbook', urls: { electrum: urls, blockbook: urls } },
-        { symbol: btcSymbol, type: 'default' },
+        { symbol: 'btc', type: 'default' },
         { urls: { electrum: urls, blockbook: urls } },
     ],
     [
         'reset with forgetting',
         { selected: 'electrum', urls: { electrum: urls, blockbook: urls } },
-        { symbol: btcSymbol, type: 'electrum', urls: [] },
+        { symbol: 'btc', type: 'electrum', urls: [] },
         { urls: { blockbook: urls } },
     ],
 ];

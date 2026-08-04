@@ -1,6 +1,7 @@
 import type { CryptoId, ExchangeTrade, ExchangeTradeStatus } from 'invity-api';
 
 import { invariant } from '@suite-common/suite-utils';
+import type { NetworkConfigDeps } from '@suite-common/wallet-config';
 import { type GeneralPrecomposedLevels } from '@suite-common/wallet-types';
 import {
     buildApprovalTransactionData,
@@ -20,12 +21,12 @@ type GetAmountLimitsProps = {
     currency: string;
 };
 
-export const isSendingEvmNativeToken = (cryptoId?: CryptoId) => {
+export const isSendingEvmNativeToken = (deps: NetworkConfigDeps, cryptoId?: CryptoId) => {
     if (!cryptoId) {
         return false;
     }
 
-    const isEvmNetwork = cryptoIdToNetwork(cryptoId)?.networkType === 'ethereum';
+    const isEvmNetwork = cryptoIdToNetwork(deps, cryptoId)?.networkType === 'ethereum';
     const { contractAddress } = parseCryptoId(cryptoId);
 
     return (
@@ -123,11 +124,11 @@ export const hasEip712SignDataType = (quote?: ExchangeTrade): boolean =>
 export const hasEip712SignData = (quote?: ExchangeTrade) =>
     quote?.status === 'SIGN_DATA' && hasEip712SignDataType(quote);
 
-export const requiresTokenApproval = (quote?: ExchangeTrade): boolean =>
+export const requiresTokenApproval = (deps: NetworkConfigDeps, quote?: ExchangeTrade): boolean =>
     !!quote &&
     !!quote.isDex &&
     !!quote.send &&
-    !isSendingEvmNativeToken(quote.send) &&
+    !isSendingEvmNativeToken(deps, quote.send) &&
     !hasEip712SignData(quote);
 
 export const getDisplayNetworkFee = (
@@ -151,12 +152,15 @@ export const getDisplayComposedLevels = <T extends GeneralPrecomposedLevels>(
     return composedLevels;
 };
 
-export const getApprovalStatus = (candidateQuote?: ExchangeTrade): ApprovalStatus => {
+export const getApprovalStatus = (
+    deps: NetworkConfigDeps,
+    candidateQuote?: ExchangeTrade,
+): ApprovalStatus => {
     if (!candidateQuote) {
         return null;
     }
 
-    if (!requiresTokenApproval(candidateQuote)) {
+    if (!requiresTokenApproval(deps, candidateQuote)) {
         return 'not_needed';
     }
 
@@ -180,12 +184,15 @@ export const getApprovalStatus = (candidateQuote?: ExchangeTrade): ApprovalStatu
     return 'needs_approval';
 };
 
-export const getDexEstimationData = (quote: ExchangeTrade): string | undefined => {
+export const getDexEstimationData = (
+    deps: NetworkConfigDeps,
+    quote: ExchangeTrade,
+): string | undefined => {
     if (!quote.dexTx?.data) {
         return undefined;
     }
 
-    if (getApprovalStatus(quote) === 'needs_revoke') {
+    if (getApprovalStatus(deps, quote) === 'needs_revoke') {
         const spender = getErc20ApproveSpender(quote.dexTx.data);
         if (spender) {
             try {

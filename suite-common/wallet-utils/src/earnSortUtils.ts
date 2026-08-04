@@ -1,13 +1,14 @@
 import {
     type AccountType,
+    type NetworkConfigDeps,
     type NetworkSymbol,
-    networkSymbolCollection,
-    networks,
+    getNetworks,
 } from '@suite-common/wallet-config';
 import { BigNumber, type BigNumberValue, typedObjectKeys } from '@trezor/utils';
 
 // Canonical position of a network in the coin list (networkSymbolCollection order).
-const getNetworkOrder = (symbol: NetworkSymbol) => networkSymbolCollection.indexOf(symbol);
+const getNetworkOrder = (deps: NetworkConfigDeps, symbol: NetworkSymbol) =>
+    getNetworks(deps).findIndex(network => network.symbol === symbol);
 
 export type EarnNetworkTokenSortKey = {
     symbol: NetworkSymbol;
@@ -22,7 +23,7 @@ export type EarnNetworkTokenSortKey = {
  * controlled by the balance/deposited amount.
  */
 export const compareEarnByNetwork =
-    <T>(getSymbol: (item: T) => NetworkSymbol | undefined) =>
+    <T>(deps: NetworkConfigDeps, getSymbol: (item: T) => NetworkSymbol | undefined) =>
     (a: T, b: T) => {
         const symbolA = getSymbol(a);
         const symbolB = getSymbol(b);
@@ -31,7 +32,7 @@ export const compareEarnByNetwork =
             return 0;
         }
 
-        return getNetworkOrder(symbolA) - getNetworkOrder(symbolB);
+        return getNetworkOrder(deps, symbolA) - getNetworkOrder(deps, symbolB);
     };
 
 /**
@@ -39,7 +40,7 @@ export const compareEarnByNetwork =
  * same network and token together regardless of account type (normal/legacy/ledger).
  */
 export const compareEarnByNetworkTokenOrder =
-    <T>(getKey: (item: T) => EarnNetworkTokenSortKey | undefined) =>
+    <T>(deps: NetworkConfigDeps, getKey: (item: T) => EarnNetworkTokenSortKey | undefined) =>
     (a: T, b: T) => {
         const keyA = getKey(a);
         const keyB = getKey(b);
@@ -48,7 +49,8 @@ export const compareEarnByNetworkTokenOrder =
             return 0;
         }
 
-        const networkOrderDiff = getNetworkOrder(keyA.symbol) - getNetworkOrder(keyB.symbol);
+        const networkOrderDiff =
+            getNetworkOrder(deps, keyA.symbol) - getNetworkOrder(deps, keyB.symbol);
         if (networkOrderDiff !== 0) {
             return networkOrderDiff;
         }
@@ -62,7 +64,9 @@ export const compareEarnByNetworkTokenOrder =
             // collapse `keyof` to `never`; widening to the field's declared keyset yields
             // `AccountType[]` soundly.
             const orderedAccountTypes = typedObjectKeys(
-                networks[keyA.symbol].accountTypes as Partial<Record<AccountType, unknown>>,
+                deps.getNetworkConfig(keyA.symbol).accountTypes as Partial<
+                    Record<AccountType, unknown>
+                >,
             );
 
             return (

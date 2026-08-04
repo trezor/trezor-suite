@@ -1,5 +1,6 @@
+import { useServices } from '@suite-common/dependency-injection';
 import { isCryptoIconSymbol, isNetworkIconSymbol } from '@suite-common/icons';
-import { getCoingeckoId, getNetworkOptional, isNetworkSymbol } from '@suite-common/wallet-config';
+import { selectNetworkConfigDeps, toNetwork } from '@suite-common/wallet-config';
 import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 
 import { NativeTokenIcon } from './NativeTokenIcon';
@@ -21,14 +22,17 @@ export const TokenIcon = ({
     wrappedTokenIcon = 'token',
     'data-testid': dataTestId,
 }: TokenIconProps) => {
+    const { getNetworkConfig, networkModuleRepository } = useServices(selectNetworkConfigDeps);
+
     if (wrappedTokenIcon === 'network' && isWrappedNativeToken(symbol, contractAddress)) {
         contractAddress = null;
     }
 
     if (!contractAddress) {
         if (showNetworkIcon) {
-            const network = getNetworkOptional(symbol);
-            const networkSymbol = network?.settlementLayer ?? symbol;
+            const networkSymbol = networkModuleRepository.isSupportedNetwork(symbol)
+                ? (toNetwork(symbol, getNetworkConfig(symbol)).settlementLayer ?? symbol)
+                : symbol;
             const displaySymbol = networkSymbol !== symbol ? networkSymbol : symbol;
             const tokenIcon = (
                 <NativeTokenIcon symbol={displaySymbol} size={size} data-testid={dataTestId} />
@@ -55,7 +59,9 @@ export const TokenIcon = ({
         return <NativeTokenIcon symbol={symbol} size={size} data-testid={dataTestId} />;
     }
 
-    const coingeckoId = isNetworkSymbol(symbol) ? getCoingeckoId(symbol) : undefined;
+    const coingeckoId = networkModuleRepository.isSupportedNetwork(symbol)
+        ? getNetworkConfig(symbol).coingeckoId
+        : undefined;
 
     if (!coingeckoId) {
         if (isCryptoIconSymbol(symbol)) {

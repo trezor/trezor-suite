@@ -20,7 +20,7 @@ export const changeCoinVisibility = createThunk<
     void
 >(
     WALLET_SETTINGS.CHANGE_COIN_VISIBILITY,
-    async ({ symbol, shouldBeVisible }, { dispatch, getState }) => {
+    async ({ symbol, shouldBeVisible }, { dispatch, getState, extra }) => {
         let enabledNetworks = selectEnabledNetworks(getState());
         const isAlreadyEnabled = enabledNetworks.find(enabledSymbol => enabledSymbol === symbol);
         if (!shouldBeVisible) {
@@ -41,7 +41,7 @@ export const changeCoinVisibility = createThunk<
             });
         }
 
-        const accountsToRemove = selectAccountsToBeForgotten(getState());
+        const accountsToRemove = selectAccountsToBeForgotten(getState(), extra.services);
         if (accountsToRemove.length > 0) {
             dispatch(accountsActions.removeAccount(accountsToRemove));
         }

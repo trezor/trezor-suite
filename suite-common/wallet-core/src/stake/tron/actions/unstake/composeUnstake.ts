@@ -1,5 +1,4 @@
 import { createThunk } from '@suite-common/redux-utils';
-import { getNetwork } from '@suite-common/wallet-config';
 import {
     type Account,
     type PrecomposedLevels,
@@ -34,7 +33,7 @@ export const composeTronUnstakeFeeLevelsThunk = createThunk<
     { rejectValue: TronStakeError }
 >(
     `${TRON_STAKE_MODULE}/composeTronUnstakeFeeLevelsThunk`,
-    async ({ account, amount, resourceType }, { rejectWithValue }) => {
+    async ({ account, amount, resourceType }, { rejectWithValue, extra }) => {
         if (account.networkType !== 'tron') {
             return rejectWithValue({ kind: 'compose-failed', message: 'Invalid network type.' });
         }
@@ -45,7 +44,7 @@ export const composeTronUnstakeFeeLevelsThunk = createThunk<
             return rejectWithValue({ kind: 'compose-failed', message: 'Invalid amount.' });
         }
 
-        const contract = buildUnstakeContract(account, amount, resourceType);
+        const contract = buildUnstakeContract(extra.services, account, amount, resourceType);
 
         if (!contract) {
             return rejectWithValue({ kind: 'compose-failed', message: 'Invalid owner address.' });
@@ -72,7 +71,7 @@ export const composeTronUnstakeFeeLevelsThunk = createThunk<
         const feeInSun = feeLevel.feePerTx || '0';
         const amountInSun = unitsToSubunits({
             value: asAmountUnit(new BigNumber(amount)),
-            decimals: getNetwork(account.symbol).decimals,
+            decimals: extra.services.getNetworkConfig(account.symbol).decimals,
         }).toString();
 
         const tx: PrecomposedTransactionFinal = {

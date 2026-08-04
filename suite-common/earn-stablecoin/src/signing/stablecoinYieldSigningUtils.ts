@@ -1,4 +1,5 @@
 import { parseUnsignedEvmTransactionForSigning } from '@suite-common/earn-stablecoin-api';
+import type { GetNetworkConfigDep } from '@suite-common/networks';
 import { flattenEvmFees, parseEvmFeeHex } from '@suite-common/schemas/src/evm';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
@@ -19,7 +20,7 @@ export type StablecoinYieldParsedTransactionForSigning = NonNullable<
     ReturnType<typeof parseUnsignedEvmTransactionForSigning>
 >;
 
-type BuildStablecoinYieldReviewTokenParams = {
+type BuildStablecoinYieldReviewTokenParams = GetNetworkConfigDep & {
     token: {
         contractAddress?: string | null;
         decimals: number;
@@ -102,6 +103,7 @@ export const getStablecoinYieldTransactionForSigning = (
 };
 
 const buildStablecoinYieldReviewToken = ({
+    getNetworkConfig,
     token,
     symbol,
 }: BuildStablecoinYieldReviewTokenParams): TokenInfo | undefined => {
@@ -111,7 +113,11 @@ const buildStablecoinYieldReviewToken = ({
 
     return {
         standard: 'ERC20',
-        contract: getContractAddressForNetworkSymbol(symbol, token.contractAddress),
+        contract: getContractAddressForNetworkSymbol(
+            { getNetworkConfig },
+            symbol,
+            token.contractAddress,
+        ),
         symbol: token.symbol,
         decimals: token.decimals,
         name: token.symbol,
@@ -119,6 +125,7 @@ const buildStablecoinYieldReviewToken = ({
 };
 
 export const buildStablecoinYieldReviewState = ({
+    getNetworkConfig,
     tx,
     amount,
     token,
@@ -129,7 +136,7 @@ export const buildStablecoinYieldReviewState = ({
     const gasPrice = fromHex(gasPriceHex);
     const feePerUnit = fromHex(gasPriceHex).asWei().toGwei();
     const fee = gasLimit.toBigNumber().multipliedBy(gasPrice.toBigNumber());
-    const reviewToken = buildStablecoinYieldReviewToken({ token, symbol });
+    const reviewToken = buildStablecoinYieldReviewToken({ getNetworkConfig, token, symbol });
     const amountSubunits = unitsToSubunits({
         value: asAmountUnit(new BigNumber(amount)),
         decimals: token.decimals,

@@ -1,6 +1,7 @@
 import { fromUnixTime } from 'date-fns';
 
 import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { mockNetworkConfigDeps } from '@suite-common/wallet-config/mocks';
 
 import {
     findOldestBalanceMovementTimestamp,
@@ -117,6 +118,7 @@ describe(mapCryptoBalanceMovementToFixedTimeFrame.name, () => {
         ];
         expect(
             mapCryptoBalanceMovementToFixedTimeFrame({
+                ...mockNetworkConfigDeps,
                 balanceHistory,
                 fiatRates,
                 baseCurrencyCode: 'eur',
@@ -215,6 +217,7 @@ describe(mapCryptoBalanceMovementToFixedTimeFrame.name, () => {
         ];
         expect(
             mapCryptoBalanceMovementToFixedTimeFrame({
+                ...mockNetworkConfigDeps,
                 balanceHistory,
                 fiatRates,
                 baseCurrencyCode: 'eur',
@@ -284,6 +287,7 @@ describe(mapCryptoBalanceMovementToFixedTimeFrame.name, () => {
         ];
         expect(
             mapCryptoBalanceMovementToFixedTimeFrame({
+                ...mockNetworkConfigDeps,
                 balanceHistory,
                 fiatRates,
                 baseCurrencyCode: 'eur',

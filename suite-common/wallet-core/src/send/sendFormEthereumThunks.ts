@@ -1,8 +1,9 @@
 import { isApprovalFlowSupported, selectSelectedDevice } from '@suite-common/device';
+import type { GetNetworkConfigDep } from '@suite-common/networks';
 import { createThunk } from '@suite-common/redux-utils';
 import { type EvmGasParamsGwei } from '@suite-common/schemas/src/evm';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { getNetwork, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT,
     ETH_SPEED_UP_TX_MULTIPLIER,
@@ -132,6 +133,7 @@ export const getEthereumRbfFeeInfo = (
 };
 
 export const calculate = (
+    deps: GetNetworkConfigDep,
     availableBalance: string,
     output: ExternalOutput,
     feeLevel: FeeLevel,
@@ -161,16 +163,19 @@ export const calculate = (
 
         if (composeContext) {
             const feesInUnits = subunitsToUnits({
+                ...deps,
                 value: asAmountSubunit(new BigNumber(totalGasCostInWei)),
                 symbol: composeContext.account.symbol,
             }).toString();
 
             const maxInUnits = subunitsToUnits({
+                ...deps,
                 value: asAmountSubunit(new BigNumber(max)),
                 symbol: composeContext.account.symbol,
             }).toString();
 
             max = getCryptoMaxAmountWithReserve({
+                ...deps,
                 symbol: composeContext.account.symbol,
                 contractAddress: token?.contract,
                 balance: composeContext.account.formattedBalance,
@@ -180,6 +185,7 @@ export const calculate = (
             });
 
             max = unitsToSubunits({
+                ...deps,
                 value: asAmountUnit(new BigNumber(max)),
                 symbol: composeContext.account.symbol,
             }).toString();
@@ -270,7 +276,7 @@ export const composeEthereumTransactionFeeLevelsThunk = createThunk<
     `${SEND_MODULE_PREFIX}/composeEthereumTransactionFeeLevelsThunk`,
     async (
         { formState, composeContext, isNetworkReserveEnabled = false },
-        { dispatch, rejectWithValue, getState },
+        { dispatch, rejectWithValue, getState, extra },
     ) => {
         const device = selectSelectedDevice(getState());
 
@@ -399,6 +405,7 @@ export const composeEthereumTransactionFeeLevelsThunk = createThunk<
         const resultLevels: PrecomposedLevels = {};
         const response = predefinedLevels.map(level =>
             calculate(
+                extra.services,
                 availableBalance,
                 output,
                 level,
@@ -431,7 +438,10 @@ export const composeEthereumTransactionFeeLevelsThunk = createThunk<
             ) {
                 tx.errorMessage = {
                     values: {
-                        networkDisplaySymbol: getNetworkDisplaySymbol(network.symbol),
+                        networkDisplaySymbol: getNetworkDisplaySymbol(
+                            extra.services,
+                            network.symbol,
+                        ),
                         feeAmount: tx.errorMessage?.values?.feeAmount || '',
                     },
                     id: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE_WITH_ETH_AMOUNT',
@@ -559,9 +569,9 @@ export const signEthereumSendFormTransactionThunk = createThunk<
     `${SEND_MODULE_PREFIX}/signEthereumSendFormTransactionThunk`,
     async (
         { formState, precomposedTransaction, selectedAccount, device, paymentRequests },
-        { dispatch, getState, rejectWithValue },
+        { dispatch, getState, rejectWithValue, extra },
     ) => {
-        const network = getNetwork(selectedAccount.symbol);
+        const network = extra.services.getNetworkConfig(selectedAccount.symbol);
 
         if (selectedAccount.networkType !== 'ethereum' || !network.chainId)
             return rejectWithValue({

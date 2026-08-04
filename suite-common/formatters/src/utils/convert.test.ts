@@ -1,4 +1,4 @@
-import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { mockNetworkConfigDeps } from '@suite-common/wallet-config/mocks';
 import { BigNumber } from '@trezor/utils';
 
 import { convertCryptoToFiatAmount } from './convert';
@@ -23,8 +23,9 @@ describe('convertCryptoToFiatAmount', () => {
     ])('amount=%s isAmountInSats=%s', (amount, isAmountInSats, expectedAmount) => {
         expect(
             convertCryptoToFiatAmount({
+                ...mockNetworkConfigDeps,
                 amount,
-                symbol: asNetworkSymbol('btc'),
+                symbol: 'btc',
                 isAmountInSats,
                 rate: 22666,
             }),

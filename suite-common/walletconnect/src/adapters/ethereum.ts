@@ -5,7 +5,12 @@ import * as trezorConnectPopupActions from '@suite-common/connect-popup';
 import { selectSelectedDevice } from '@suite-common/device';
 import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
 import { createThunk } from '@suite-common/redux-utils';
-import { type Network, getNetwork, networksCollection } from '@suite-common/wallet-config';
+import {
+    type Network,
+    type NetworkConfigDeps,
+    getNetworks,
+    toNetwork,
+} from '@suite-common/wallet-config';
 import { ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT } from '@suite-common/wallet-constants';
 import {
     ethereumGetCurrentNonceThunk,
@@ -42,7 +47,7 @@ const ethereumRequestThunk = createThunk<
     {
         event: WalletKitTypes.SessionRequest;
     }
->(`${WALLETCONNECT_MODULE}/ethereumRequest`, async ({ event }, { dispatch, getState }) => {
+>(`${WALLETCONNECT_MODULE}/ethereumRequest`, async ({ event }, { dispatch, getState, extra }) => {
     const device = selectSelectedDevice(getState());
     const isMevProtectionEnabled = selectIsMevProtectionEnabled(getState());
     const isMevProtectionFeatureEnabled = selectIsMevProtectionFeatureEnabled(getState());
@@ -52,7 +57,7 @@ const ethereumRequestThunk = createThunk<
             a =>
                 a.descriptor.toLowerCase() === address.toLowerCase() &&
                 a.networkType === 'ethereum' &&
-                (!chainId || getNetwork(a.symbol).chainId === chainId),
+                (!chainId || extra.services.getNetworkConfig(a.symbol).chainId === chainId),
         ) || throwError('Account not found');
 
     const session = selectSessionByTopic(getState(), event.topic);
@@ -205,6 +210,7 @@ const ethereumRequestThunk = createThunk<
                 signResponse.payload as CallMethodResponse<'ethereumSignTransaction'>;
 
             const txData = getMevProtectedTxData(
+                extra.services,
                 account.symbol,
                 typedSignPayload.serializedTx,
                 isMevProtectionEnabled && isMevProtectionFeatureEnabled,
@@ -233,7 +239,10 @@ const ethereumRequestThunk = createThunk<
 
 export const getChainId = (network: Network) => [`eip155:${network.chainId}`];
 
-export const getNamespace = (accounts: Account[]): Record<string, WalletConnectNamespace> => {
+export const getNamespace = (
+    deps: NetworkConfigDeps,
+    accounts: Account[],
+): Record<string, WalletConnectNamespace> => {
     const eip155 = {
         chains: [],
         accounts: [],
@@ -242,7 +251,7 @@ export const getNamespace = (accounts: Account[]): Record<string, WalletConnectN
     } as WalletConnectNamespace;
 
     accounts.forEach(account => {
-        const network = getNetwork(account.symbol);
+        const network = toNetwork(account.symbol, deps.getNetworkConfig(account.symbol));
         const { networkType } = network;
 
         if (!account.visible || networkType !== 'ethereum') return;
@@ -267,6 +276,7 @@ export const getNamespace = (accounts: Account[]): Record<string, WalletConnectN
 };
 
 const processNamespaces = (
+    deps: NetworkConfigDeps,
     accounts: Account[],
     networks: PendingConnectionProposalNetwork[],
     namespaces: ProposalTypes.RequiredNamespaces,
@@ -278,7 +288,7 @@ const processNamespaces = (
                 namespace.chains?.forEach(chain => {
                     const alreadyAdded = networks.some(network => network.namespaceId === chain);
                     if (alreadyAdded) return;
-                    const supported = networksCollection.find(
+                    const supported = getNetworks(deps).find(
                         nc => chain === `eip155:${nc.chainId}`,
                     );
                     const getStatus = () => {

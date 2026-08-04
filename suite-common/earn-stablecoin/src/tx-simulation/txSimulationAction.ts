@@ -1,22 +1,28 @@
 import z from 'zod';
 
 import { UnsignedEvmTransactionForSigningSchema } from '@suite-common/earn-stablecoin-api';
+import type { NetworkSymbol } from '@suite-common/networks';
 import { evmHexString } from '@suite-common/schemas/src/evm';
-import {
-    getNetwork,
-    networkSymbolCollection,
-    networksCollection,
-} from '@suite-common/wallet-config';
+import { type NetworkConfigDeps, type NetworkType, getNetworks } from '@suite-common/wallet-config';
 import { type AccountKey, type TxSimulationMethod } from '@suite-common/wallet-types';
 import { type EthereumSignTransaction } from '@trezor/connect-common';
 
-const partialAccount = z.object({
-    key: z.string(),
-    networkType: z.enum(networksCollection.map(n => n.networkType)),
-    symbol: z.enum(networkSymbolCollection),
-    descriptor: z.string(),
-    path: z.string(),
-});
+const createPartialAccountSchema = (deps: NetworkConfigDeps) => {
+    const networks = getNetworks(deps);
+
+    return z.object({
+        key: z.string(),
+        networkType: z.custom<NetworkType>(value =>
+            networks.some(network => network.networkType === value),
+        ),
+        symbol: z.custom<NetworkSymbol>(
+            value =>
+                typeof value === 'string' && deps.networkModuleRepository.isSupportedNetwork(value),
+        ),
+        descriptor: z.string(),
+        path: z.string(),
+    });
+};
 
 const claimUnsignedTxBase = {
     to: evmHexString,
@@ -26,36 +32,39 @@ const claimUnsignedTxBase = {
     nonce: z.union([z.number(), z.string()]).transform(value => value.toString()),
 };
 
-const stablecoinYieldTxSimulationParams = z.discriminatedUnion('flow', [
-    z.strictObject({
-        flow: z.union([
-            z.literal('deposit'),
-            z.literal('withdraw'),
-            z.literal('redeem'),
-            z.literal('wrap'),
-            z.literal('unwrap'),
-        ]),
-        account: partialAccount,
-        unsignedTx: z.string(),
-    }),
-    z.strictObject({
-        flow: z.literal('claim'),
-        account: partialAccount,
-        unsignedTx: z.union([
-            z.strictObject({
-                ...claimUnsignedTxBase,
-                maxFeePerGas: z.string(),
-                maxPriorityFeePerGas: z.string(),
-            }),
-            z.strictObject({
-                ...claimUnsignedTxBase,
-                gasPrice: z.string(),
-            }),
-        ]),
-    }),
-]);
+const createStablecoinYieldTxSimulationParamsSchema = (deps: NetworkConfigDeps) =>
+    z.discriminatedUnion('flow', [
+        z.strictObject({
+            flow: z.union([
+                z.literal('deposit'),
+                z.literal('withdraw'),
+                z.literal('redeem'),
+                z.literal('wrap'),
+                z.literal('unwrap'),
+            ]),
+            account: createPartialAccountSchema(deps),
+            unsignedTx: z.string(),
+        }),
+        z.strictObject({
+            flow: z.literal('claim'),
+            account: createPartialAccountSchema(deps),
+            unsignedTx: z.union([
+                z.strictObject({
+                    ...claimUnsignedTxBase,
+                    maxFeePerGas: z.string(),
+                    maxPriorityFeePerGas: z.string(),
+                }),
+                z.strictObject({
+                    ...claimUnsignedTxBase,
+                    gasPrice: z.string(),
+                }),
+            ]),
+        }),
+    ]);
 
-export type StablecoinYieldTxSimulationParams = z.infer<typeof stablecoinYieldTxSimulationParams>;
+export type StablecoinYieldTxSimulationParams = z.infer<
+    ReturnType<typeof createStablecoinYieldTxSimulationParamsSchema>
+>;
 
 function composeUnsignedEvmTx(
     params: StablecoinYieldTxSimulationParams,
@@ -113,14 +122,16 @@ function composeUnsignedEvmTx(
 }
 
 export function composeStablecoinYieldTxSimulationAction(
+    deps: NetworkConfigDeps,
     unknownParams: unknown,
     sourceOrigin: string,
 ) {
     try {
-        const parsedParams = stablecoinYieldTxSimulationParams.parse(unknownParams);
+        const parsedParams =
+            createStablecoinYieldTxSimulationParamsSchema(deps).parse(unknownParams);
         const unsignedTx = composeUnsignedEvmTx(parsedParams);
         const { account } = parsedParams;
-        const network = getNetwork(account.symbol);
+        const network = deps.getNetworkConfig(account.symbol);
 
         switch (network.networkType) {
             case 'ethereum': {

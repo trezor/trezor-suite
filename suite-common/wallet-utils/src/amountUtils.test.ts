@@ -1,17 +1,16 @@
-import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { mockNetworkConfigDeps } from '@suite-common/wallet-config/mocks';
 import { BigNumber } from '@trezor/utils';
 
 import { asAmountSubunit, asAmountUnit } from './AmountTypes';
 import { subunitsToUnits, unitsToSubunits } from './amountUtils';
-
-const btcSymbol = asNetworkSymbol('btc');
 
 describe(subunitsToUnits.name, () => {
     it('converts Sats->BTC', () => {
         expect(
             subunitsToUnits({
                 value: asAmountSubunit(new BigNumber(1)),
-                symbol: btcSymbol,
+                symbol: 'btc',
+                getNetworkConfig: mockNetworkConfigDeps.getNetworkConfig,
             }).toString(),
         ).toEqual('0.00000001');
     });
@@ -21,7 +20,8 @@ describe(unitsToSubunits.name, () => {
     it('converts BTC->Sats', () => {
         const btcSymbolResult = unitsToSubunits({
             value: asAmountUnit(new BigNumber(1)),
-            symbol: btcSymbol,
+            symbol: 'btc',
+            getNetworkConfig: mockNetworkConfigDeps.getNetworkConfig,
         });
         expect(btcSymbolResult.toString()).toEqual(String(100_000_000));
 

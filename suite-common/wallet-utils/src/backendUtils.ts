@@ -1,9 +1,8 @@
+import type { GetNetworkConfigDep } from '@suite-common/networks';
 import {
     type BackendType,
     type NetworkSymbol,
     TREZOR_CONNECT_BACKENDS,
-    getNetworkType,
-    networkSymbolCollection,
 } from '@suite-common/wallet-config';
 import type {
     Account,
@@ -11,7 +10,7 @@ import type {
     BlockchainNetworks,
     CustomBackend,
 } from '@suite-common/wallet-types';
-import { parseElectrumUrl } from '@trezor/utils';
+import { parseElectrumUrl, typedObjectEntries } from '@trezor/utils';
 
 export const getDefaultBackendType = (symbol: NetworkSymbol) => {
     if (symbol === 'ada') {
@@ -42,8 +41,8 @@ const isBackend = (backend: Partial<CustomBackend>): backend is CustomBackend =>
     !!(backend.type && backend.urls?.length);
 
 export const getCustomBackends = (blockchains: BlockchainNetworks): CustomBackend[] =>
-    networkSymbolCollection
-        .map(symbol => ({ symbol, blockchain: blockchains[symbol] }))
+    typedObjectEntries(blockchains)
+        .map(([symbol, blockchain]) => ({ symbol, blockchain }))
         .filter(({ blockchain }) => !!blockchain)
         .map(({ symbol, blockchain: { backends } }) => ({
             symbol,
@@ -62,9 +61,11 @@ export const isTrezorConnectBackendType = (type?: BackendType) => {
     return !!TREZOR_CONNECT_BACKENDS.find(b => b === type);
 };
 
-export const shouldUseIdentities = (symbol: NetworkSymbol) => getNetworkType(symbol) === 'ethereum';
+export const shouldUseIdentities = (deps: GetNetworkConfigDep, symbol: NetworkSymbol) =>
+    deps.getNetworkConfig(symbol).networkType === 'ethereum';
 
-export const shouldSubscribeBlocks = (symbol: NetworkSymbol) => getNetworkType(symbol) !== 'solana';
+export const shouldSubscribeBlocks = (deps: GetNetworkConfigDep, symbol: NetworkSymbol) =>
+    deps.getNetworkConfig(symbol).networkType !== 'solana';
 
 export const getAccountIdentity = (account: Pick<Account, 'deviceState'>) => account.deviceState;
 

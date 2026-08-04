@@ -1,3 +1,4 @@
+import type { GetNetworkConfigDep } from '@suite-common/networks';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { TRON_STAKING_CONTRACT_TYPES } from '@suite-common/wallet-constants';
@@ -40,10 +41,11 @@ export const isTronClaimSupported = (device: TrezorDevice | undefined): boolean 
 export const isTronStakingTx = (transaction: WalletAccountTransaction) =>
     TRON_STAKING_CONTRACT_TYPES.some(type => type === transaction.tronSpecific?.contractType);
 
-export const sunToTrx = (sun: string, symbol: NetworkSymbol) =>
+export const sunToTrx = (deps: GetNetworkConfigDep, sun: string, symbol: NetworkSymbol) =>
     subunitsToUnits({
         value: asAmountSubunit(new BigNumber(sun)),
         symbol,
+        getNetworkConfig: deps.getNetworkConfig,
     }).toString();
 
 export const getTronResources = (account?: Account): TronAccountExtraData | undefined =>
@@ -59,24 +61,30 @@ export const isTronStakingActive = (account: Account | null): boolean => {
     return new BigNumber(stakingInfo.stakedBalance).isGreaterThan(0);
 };
 
-export const getTronAccountTotalStakingBalance = (account: Account): string | null => {
+export const getTronAccountTotalStakingBalance = (
+    deps: GetNetworkConfigDep,
+    account: Account,
+): string | null => {
     const stakingInfo = getTronStakingInfo(account);
     if (!stakingInfo) return null;
 
-    return sunToTrx(stakingInfo.stakedBalance, account.symbol);
+    return sunToTrx(deps, stakingInfo.stakedBalance, account.symbol);
 };
 
-export const getTronCryptoBalanceWithStaking = (account: Account): string => {
-    const stakingBalance = getTronAccountTotalStakingBalance(account) ?? '0';
+export const getTronCryptoBalanceWithStaking = (
+    deps: GetNetworkConfigDep,
+    account: Account,
+): string => {
+    const stakingBalance = getTronAccountTotalStakingBalance(deps, account) ?? '0';
 
     return new BigNumber(account.formattedBalance).plus(stakingBalance).toString();
 };
 
-export const getTronStakingRewards = (account: Account): string => {
+export const getTronStakingRewards = (deps: GetNetworkConfigDep, account: Account): string => {
     const stakingInfo = getTronStakingInfo(account);
     if (!stakingInfo) return '0';
 
-    return sunToTrx(stakingInfo.unclaimedReward, account.symbol);
+    return sunToTrx(deps, stakingInfo.unclaimedReward, account.symbol);
 };
 
 export const TRON_REWARD_CLAIM_COOLDOWN_SECONDS = 24 * 60 * 60;
@@ -96,6 +104,7 @@ export const isTronRewardClaimOnCooldown = (account: Account): boolean => {
 };
 
 const sumUnstakingBatchesSun = (
+    deps: GetNetworkConfigDep,
     account: Account,
     predicate: (batch: TronUnstakingBatch) => boolean,
 ): string => {
@@ -107,22 +116,25 @@ const sumUnstakingBatchesSun = (
         new BigNumber(0),
     );
 
-    return sunToTrx(totalSun.toString(), account.symbol);
+    return sunToTrx(deps, totalSun.toString(), account.symbol);
 };
 
-export const getTronUnstakingBalance = (account: Account): string =>
-    sumUnstakingBatchesSun(account, () => true);
+export const getTronUnstakingBalance = (deps: GetNetworkConfigDep, account: Account): string =>
+    sumUnstakingBatchesSun(deps, account, () => true);
 
-export const getTronWithdrawableBalance = (account: Account): string => {
+export const getTronWithdrawableBalance = (deps: GetNetworkConfigDep, account: Account): string => {
     const nowSeconds = Date.now() / 1000;
 
-    return sumUnstakingBatchesSun(account, batch => batch.expireTime <= nowSeconds);
+    return sumUnstakingBatchesSun(deps, account, batch => batch.expireTime <= nowSeconds);
 };
 
-export const getTronPendingUnstakeBalance = (account: Account): string => {
+export const getTronPendingUnstakeBalance = (
+    deps: GetNetworkConfigDep,
+    account: Account,
+): string => {
     const nowSeconds = Date.now() / 1000;
 
-    return sumUnstakingBatchesSun(account, batch => batch.expireTime > nowSeconds);
+    return sumUnstakingBatchesSun(deps, account, batch => batch.expireTime > nowSeconds);
 };
 
 export const getTronVotes = (account?: Account): TronVote[] =>

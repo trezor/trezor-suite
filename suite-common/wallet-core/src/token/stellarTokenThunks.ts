@@ -1,6 +1,7 @@
 import { G } from '@mobily/ts-belt';
 
 import { selectSelectedDevice } from '@suite-common/device';
+import type { GetNetworkConfigDep } from '@suite-common/networks';
 import { createThunk } from '@suite-common/redux-utils';
 import { type Account } from '@suite-common/wallet-types';
 import {
@@ -27,6 +28,7 @@ const STELLAR_TOKEN_MODULE_PREFIX = '@common/wallet-core/stellar-token';
 const manageTrustline = async (
     payload: TokenThunkPayload,
     operation: 'activate' | 'deactivate',
+    deps: GetNetworkConfigDep,
     getState: () => any,
     rejectWithValue: (value: any) => any,
 ) => {
@@ -77,7 +79,7 @@ const manageTrustline = async (
     const transactionBuilder =
         operation === 'activate' ? buildAddTrustlineTransaction : buildRemoveTrustlineTransaction;
 
-    const testnet = isTestnet(account.symbol);
+    const testnet = isTestnet(deps, account.symbol);
     const transaction = transactionBuilder({
         descriptor: account.descriptor,
         sequence: misc.stellarSequence,
@@ -131,8 +133,8 @@ export const activateStellarTokenThunk = createThunk<
     { rejectValue: { error: string; message: string } }
 >(
     `${STELLAR_TOKEN_MODULE_PREFIX}/activateStellarTokenThunk`,
-    (payload, { getState, rejectWithValue }) =>
-        manageTrustline(payload, 'activate', getState, rejectWithValue),
+    (payload, { getState, rejectWithValue, extra }) =>
+        manageTrustline(payload, 'activate', extra.services, getState, rejectWithValue),
 );
 
 export const deactivateStellarTokenThunk = createThunk<
@@ -141,6 +143,6 @@ export const deactivateStellarTokenThunk = createThunk<
     { rejectValue: { error: string; message: string } }
 >(
     `${STELLAR_TOKEN_MODULE_PREFIX}/deactivateStellarTokenThunk`,
-    (payload, { getState, rejectWithValue }) =>
-        manageTrustline(payload, 'deactivate', getState, rejectWithValue),
+    (payload, { getState, rejectWithValue, extra }) =>
+        manageTrustline(payload, 'deactivate', extra.services, getState, rejectWithValue),
 );

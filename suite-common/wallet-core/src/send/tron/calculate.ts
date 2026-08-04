@@ -1,3 +1,4 @@
+import type { GetNetworkConfigDep } from '@suite-common/networks';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type ExternalOutput, type PrecomposedTransaction } from '@suite-common/wallet-types';
 import { type TokenInfo } from '@trezor/connect';
@@ -8,6 +9,7 @@ import { calculateTrxTransfer } from './calculateTrxTransfer';
 import { type EstimateFeeLevel } from './types';
 
 export const calculate = (
+    deps: GetNetworkConfigDep,
     availableBalance: string,
     output: ExternalOutput,
     feeLevel: EstimateFeeLevel,
@@ -20,6 +22,7 @@ export const calculate = (
 ): PrecomposedTransaction => {
     if (token) {
         return calculateTrc20Transfer(
+            deps,
             availableBalance,
             output,
             feeLevel,
@@ -31,6 +34,7 @@ export const calculate = (
     }
     if (userCallDataHex) {
         return calculateRawContractCall(
+            deps,
             availableBalance,
             output,
             feeLevel,

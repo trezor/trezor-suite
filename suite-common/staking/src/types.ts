@@ -1,9 +1,10 @@
+import type { GetNetworkConfigDep } from '@suite-common/networks';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type StakeFormState, type StakeType } from '@suite-common/wallet-types';
 
 export type EthNetwork = 'hoodi' | 'mainnet';
 
-export type StakeTxBaseArgs = {
+export type StakeTxBaseArgs = GetNetworkConfigDep & {
     from: string;
     symbol: NetworkSymbol;
     identity?: string;
@@ -16,7 +17,7 @@ export interface GetStakeFormsDefaultValuesParams {
     amount?: string;
 }
 
-export interface PrepareStakeEthTxParams {
+export interface PrepareStakeEthTxParams extends GetNetworkConfigDep {
     symbol: NetworkSymbol;
     identity?: string;
     from: string;
@@ -35,7 +36,7 @@ export interface PrepareUnstakeEthTxParams extends PrepareStakeEthTxParams {
 
 export type PrepareClaimEthTxParams = Omit<PrepareStakeEthTxParams, 'amount'>;
 
-export interface GetStakeTxGasLimitParams {
+export interface GetStakeTxGasLimitParams extends GetNetworkConfigDep {
     stakeType: StakeType;
     from: string;
     amount: string;

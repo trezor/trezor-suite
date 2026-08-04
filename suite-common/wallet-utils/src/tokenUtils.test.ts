@@ -1,9 +1,10 @@
+import { mockNetworkConfigDeps } from '@suite-common/wallet-config/mocks';
 import type { TokenInfo, TokenTransfer } from '@trezor/blockchain-link-types';
 
 import { getContractAddressForNetworkSymbolFixtures } from './__fixtures__/tokenUtils';
 import {
-    getAssetLogoContractAddresses,
-    getContractAddressForNetworkSymbol,
+    getAssetLogoContractAddresses as getAssetLogoContractAddressesBase,
+    getContractAddressForNetworkSymbol as getContractAddressForNetworkSymbolBase,
     getErc4626Contracts,
     isTokenTransferMatchesSearch,
     sortTokensByName,
@@ -33,6 +34,16 @@ describe('isTokenTransferMatchesSearch', () => {
         expect(isTokenTransferMatchesSearch(usdt, 'dac17f')).toBe(true);
     });
 });
+
+const getContractAddressForNetworkSymbol = (
+    symbol: Parameters<typeof getContractAddressForNetworkSymbolBase>[1],
+    contractAddress: Parameters<typeof getContractAddressForNetworkSymbolBase>[2],
+) => getContractAddressForNetworkSymbolBase(mockNetworkConfigDeps, symbol, contractAddress);
+
+const getAssetLogoContractAddresses = (
+    symbol: Parameters<typeof getAssetLogoContractAddressesBase>[1],
+    contractAddress: Parameters<typeof getAssetLogoContractAddressesBase>[2],
+) => getAssetLogoContractAddressesBase(mockNetworkConfigDeps, symbol, contractAddress);
 
 describe('getContractAddressForNetworkSymbol', () => {
     getContractAddressForNetworkSymbolFixtures.forEach(

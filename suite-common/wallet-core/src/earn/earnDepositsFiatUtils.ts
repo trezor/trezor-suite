@@ -1,5 +1,6 @@
 import { A, F } from '@mobily/ts-belt';
 
+import type { GetNetworkConfigDep } from '@suite-common/networks';
 import { type NetworkSymbol, type StakingNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type BaseCurrencyAmount,
@@ -53,7 +54,7 @@ export type CalculatedEarnStablecoinYieldDeposit<
 type CalculateEarnDepositsFiatDataParams<
     TStakingDeposit extends EarnStakingDepositFiatInput,
     TStablecoinYieldDeposit extends EarnStablecoinYieldDepositFiatInput,
-> = {
+> = GetNetworkConfigDep & {
     stakingDeposits: TStakingDeposit[];
     stablecoinYieldDeposits: TStablecoinYieldDeposit[];
     currentFiatRates: RatesByKey | undefined;
@@ -111,6 +112,7 @@ export const calculateEarnDepositsFiatData = <
     TStakingDeposit extends EarnStakingDepositFiatInput,
     TStablecoinYieldDeposit extends EarnStablecoinYieldDepositFiatInput,
 >({
+    getNetworkConfig,
     stakingDeposits,
     stablecoinYieldDeposits,
     currentFiatRates,
@@ -142,6 +144,7 @@ export const calculateEarnDepositsFiatData = <
 
             const normalizedTokenAddress = toTokenAddress(
                 getContractAddressForNetworkSymbol(
+                    { getNetworkConfig },
                     deposit.networkSymbol,
                     deposit.tokenContractAddress,
                 ),

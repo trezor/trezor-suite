@@ -1,3 +1,4 @@
+import type { GetNetworkConfigDep } from '@suite-common/networks';
 import type { WalletAccountTransaction } from '@suite-common/wallet-types';
 import { type InternalTransfer, type TokenTransfer } from '@trezor/blockchain-link-types';
 
@@ -17,7 +18,7 @@ export interface TransactionWithFiatAmount extends WalletAccountTransaction {
     internalTransfers: InternalTransferWithFiatAmount[];
 }
 
-type PhishingDetectorFnProps = {
+type PhishingDetectorFnProps = GetNetworkConfigDep & {
     transaction: TransactionWithFiatAmount;
     tokenDefinitions?: TokenDefinitions;
     dustThreshold?: string;

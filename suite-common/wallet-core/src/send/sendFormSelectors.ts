@@ -1,6 +1,7 @@
 import { G } from '@mobily/ts-belt';
 
 import { type DeviceRootState, selectDeviceButtonRequests } from '@suite-common/device';
+import type { GetNetworkConfigDep } from '@suite-common/networks';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import {
@@ -51,9 +52,13 @@ export const selectSendFormDraftOutputsByAccountKey = (
 };
 
 export const selectSendFormButtonRequestCodes = createMemoizedSelector(
-    [selectDeviceButtonRequests, (_state: DeviceRootState, symbol: NetworkSymbol) => symbol],
-    (buttonRequests, symbol) => {
-        const networkType = getNetworkType(symbol);
+    [
+        selectDeviceButtonRequests,
+        (_state: DeviceRootState, deps: GetNetworkConfigDep) => deps,
+        (_state, _deps: GetNetworkConfigDep, symbol: NetworkSymbol) => symbol,
+    ],
+    (buttonRequests, deps, symbol) => {
+        const networkType = getNetworkType(deps, symbol);
 
         const isCardano = networkType === 'cardano';
         const isEthereum = networkType === 'ethereum';
@@ -83,15 +88,16 @@ export const selectSendFormButtonRequestCodes = createMemoizedSelector(
 
 export const selectSendFormReviewButtonRequestsCount = (
     state: DeviceRootState,
+    deps: GetNetworkConfigDep,
     symbol?: NetworkSymbol,
     decreaseOutputId?: number,
 ) => {
     if (symbol === undefined) return 0;
 
-    const networkType = getNetworkType(symbol);
+    const networkType = getNetworkType(deps, symbol);
     const isCardano = networkType === 'cardano';
 
-    const sendFormReviewRequest = selectSendFormButtonRequestCodes(state, symbol);
+    const sendFormReviewRequest = selectSendFormButtonRequestCodes(state, deps, symbol);
 
     let count = sendFormReviewRequest.length;
 
@@ -109,11 +115,12 @@ export const selectSendFormReviewButtonRequestsCount = (
 
 export const selectSendFormReviewLastButtonCode = (
     state: DeviceRootState,
+    deps: GetNetworkConfigDep,
     symbol?: NetworkSymbol,
 ) => {
     if (symbol === undefined) return null;
 
-    const sendFormReviewRequest = selectSendFormButtonRequestCodes(state, symbol);
+    const sendFormReviewRequest = selectSendFormButtonRequestCodes(state, deps, symbol);
 
     // Return the last button request code from the filtered list
     return sendFormReviewRequest[sendFormReviewRequest.length - 1] ?? null;

@@ -4,7 +4,12 @@ import { A, D, F, G, O, pipe } from '@mobily/ts-belt';
 import { fromUnixTime, getUnixTime } from 'date-fns';
 
 import { getFiatRatesForTimestamps } from '@suite-common/fiat-services';
-import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
+import { type GetNetworkConfigDep } from '@suite-common/networks';
+import {
+    type NetworkConfigDeps,
+    type NetworkSymbol,
+    getNetworkType,
+} from '@suite-common/wallet-config';
 import { fetchTransactionsFromNowUntilTimestamp } from '@suite-common/wallet-core';
 import { type Timestamp, type TokenAddress } from '@suite-common/wallet-types';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
@@ -38,6 +43,7 @@ import type {
 } from './types';
 
 const addBalanceForAccountMovementHistory = (
+    deps: NetworkConfigDeps,
     data: AccountMovementHistory[] | AccountHistoryMovementItem[],
     symbol: NetworkSymbol,
     initialBalance = '0',
@@ -63,7 +69,7 @@ const addBalanceForAccountMovementHistory = (
 
         return {
             time: dataPoint.time,
-            cryptoBalance: formatNetworkAmount(balance.toFixed(), symbol),
+            cryptoBalance: formatNetworkAmount(deps, balance.toFixed(), symbol),
         };
     });
 
@@ -98,15 +104,16 @@ const getLatestAccountInfo = async ({
 };
 
 const getBalanceFromAccountInfo = ({
+    getNetworkConfig,
     accountInfo,
     symbol,
     contractId,
-}: {
+}: NetworkConfigDeps & {
     accountInfo: AccountInfo;
     symbol: NetworkSymbol;
     contractId?: string;
 }) => {
-    const networkType = getNetworkType(symbol);
+    const networkType = getNetworkType({ getNetworkConfig }, symbol);
 
     const findTokenBalance = () => {
         const token = accountInfo.tokens?.find(t => t.contract === contractId);
@@ -138,6 +145,8 @@ const getBalanceFromAccountInfo = ({
 const accountBalanceHistoryCache: Record<string, AccountBalanceHistoryWithTokens> = {};
 
 const getAccountBalanceHistory = async ({
+    getNetworkConfig,
+    networkModuleRepository,
     accountItem,
     endOfTimeFrameDate,
     startOfTimeFrameDate,
@@ -145,7 +154,7 @@ const getAccountBalanceHistory = async ({
     // We pass dispatch because we need to fetch all transactions using redux thunk. This is a workaround for now to keep things simple.
     // In future we should convert this to proper thunk so we can use dispatch and selectors from thunkAPI.
     dispatch,
-}: {
+}: NetworkConfigDeps & {
     accountItem: AccountItem;
     endOfTimeFrameDate: Date;
     startOfTimeFrameDate: Date | null;
@@ -226,9 +235,15 @@ const getAccountBalanceHistory = async ({
     ]);
 
     const accountMovementHistoryWithBalance = addBalanceForAccountMovementHistory(
+        { getNetworkConfig, networkModuleRepository },
         accountMovementHistory.main,
         symbol,
-        getBalanceFromAccountInfo({ accountInfo: latestAccountInfo, symbol }),
+        getBalanceFromAccountInfo({
+            getNetworkConfig,
+            networkModuleRepository,
+            accountInfo: latestAccountInfo,
+            symbol,
+        }),
     );
 
     const tokens: Array<readonly [TokenAddress, AccountHistoryMovementItem[]]> = pipe(
@@ -248,11 +263,14 @@ const getAccountBalanceHistory = async ({
         D.fromPairs(tokens),
         (contractId, tokenHistory) => {
             const latestBalance = getBalanceFromAccountInfo({
+                getNetworkConfig,
+                networkModuleRepository,
                 accountInfo: latestAccountInfo,
                 symbol,
                 contractId: contractId.toString(),
             });
             const historyWithBalance = addBalanceForAccountMovementHistory(
+                { getNetworkConfig, networkModuleRepository },
                 tokenHistory,
                 symbol,
                 latestBalance,
@@ -272,7 +290,13 @@ const getAccountBalanceHistory = async ({
     accountMovementHistoryWithBalance.push({
         time: endTimeFrameTimestamp,
         cryptoBalance: formatNetworkAmount(
-            getBalanceFromAccountInfo({ accountInfo: latestAccountInfo, symbol }),
+            { getNetworkConfig },
+            getBalanceFromAccountInfo({
+                getNetworkConfig,
+                networkModuleRepository,
+                accountInfo: latestAccountInfo,
+                symbol,
+            }),
             symbol,
         ),
     });
@@ -289,7 +313,7 @@ const getAccountBalanceHistory = async ({
 
 const fiatRatesCache: Record<string, FiatRatesItem[]> = {};
 
-type GetFiatRatesForNetworkInTimeFrame = {
+type GetFiatRatesForNetworkInTimeFrame = GetNetworkConfigDep & {
     timestamps: number[];
     symbol: NetworkSymbol;
     contractId?: TokenAddress;
@@ -299,6 +323,7 @@ type GetFiatRatesForNetworkInTimeFrame = {
 };
 
 const getFiatRatesForNetworkInTimeFrame = async ({
+    getNetworkConfig,
     timestamps,
     symbol,
     contractId,
@@ -313,6 +338,7 @@ const getFiatRatesForNetworkInTimeFrame = async ({
     }
 
     const fiatRates = await getFiatRatesForTimestamps(
+        { getNetworkConfig },
         { symbol, tokenAddress: contractId },
         timestamps,
         baseCurrencyCode,
@@ -332,7 +358,7 @@ const getFiatRatesForNetworkInTimeFrame = async ({
     return formattedFiatRates;
 };
 
-type GetMultipleAccountBalanceHistoryWithFiatParams = {
+type GetMultipleAccountBalanceHistoryWithFiatParams = NetworkConfigDeps & {
     accounts: AccountItem[];
     startOfTimeFrameDate: Date | null;
     endOfTimeFrameDate: Date;
@@ -344,6 +370,8 @@ type GetMultipleAccountBalanceHistoryWithFiatParams = {
 };
 
 export const getMultipleAccountBalanceHistoryWithFiat = async ({
+    getNetworkConfig,
+    networkModuleRepository,
     accounts,
     startOfTimeFrameDate,
     endOfTimeFrameDate,
@@ -362,6 +390,8 @@ export const getMultipleAccountBalanceHistoryWithFiat = async ({
                 const { symbol } = accountItem;
 
                 return getAccountBalanceHistory({
+                    getNetworkConfig,
+                    networkModuleRepository,
                     endOfTimeFrameDate,
                     startOfTimeFrameDate,
                     forceRefetch,
@@ -477,6 +507,7 @@ export const getMultipleAccountBalanceHistoryWithFiat = async ({
     const pairs = await Promise.all(
         coins.map(({ symbol, contractId }) =>
             getFiatRatesForNetworkInTimeFrame({
+                getNetworkConfig,
                 timestamps,
                 symbol,
                 contractId,
@@ -518,6 +549,8 @@ export const getMultipleAccountBalanceHistoryWithFiat = async ({
         const coinKey = getCoinKey({ symbol, contractId });
 
         return mapCryptoBalanceMovementToFixedTimeFrame({
+            getNetworkConfig,
+            networkModuleRepository,
             fiatRates: coinsFiatRates[coinKey] ?? [],
             baseCurrencyCode,
             balanceHistory,
@@ -536,6 +569,8 @@ export const getMultipleAccountBalanceHistoryWithFiat = async ({
             }
 
             const m = mapCryptoBalanceMovementToFixedTimeFrame({
+                getNetworkConfig,
+                networkModuleRepository,
                 fiatRates: coinFiatRates,
                 baseCurrencyCode,
                 balanceHistory,

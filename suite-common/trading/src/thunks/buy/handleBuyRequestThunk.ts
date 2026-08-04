@@ -1,7 +1,7 @@
 import { type BuyTrade, type BuyTradeQuoteRequest } from 'invity-api';
 
 import { createThunk } from '@suite-common/redux-utils';
-import { type Network } from '@suite-common/wallet-config';
+import { type Network, type NetworkConfigDeps } from '@suite-common/wallet-config';
 import { convertAmountSubunitsToUnits } from '@suite-common/wallet-utils';
 
 import { TRADING_BUY_THUNK_PREFIX } from '../../constants';
@@ -37,12 +37,10 @@ type GetQuoteRequestData = {
     shouldSendInSats: boolean | undefined;
 };
 
-const getQuoteRequestData = ({
-    formValues,
-    quotesRequest,
-    network,
-    shouldSendInSats,
-}: GetQuoteRequestData): BuyTradeQuoteRequest | undefined => {
+const getQuoteRequestData = (
+    deps: NetworkConfigDeps,
+    { formValues, quotesRequest, network, shouldSendInSats }: GetQuoteRequestData,
+): BuyTradeQuoteRequest | undefined => {
     const {
         fiatInput,
         cryptoInput,
@@ -53,7 +51,7 @@ const getQuoteRequestData = ({
         countrySubdivisionSelect,
     } = formValues;
 
-    const decimals = getNetworkDecimalsWithFallback(network.symbol);
+    const decimals = getNetworkDecimalsWithFallback(deps, network.symbol);
     const cryptoStringAmount =
         cryptoInput && shouldSendInSats
             ? convertAmountSubunitsToUnits(cryptoInput, decimals)
@@ -97,11 +95,11 @@ export const handleBuyRequestThunk = createThunk<
     `${TRADING_BUY_THUNK_PREFIX}/handleRequest`,
     async (
         { formValues, network, shouldSendInSats }: HandleBuyRequestThunkProps,
-        { dispatch, getState, fulfillWithValue, rejectWithValue, signal },
+        { dispatch, getState, fulfillWithValue, rejectWithValue, signal, extra },
     ) => {
         const quotesRequest = selectTradingBuyQuotesRequest(getState());
 
-        const requestData = getQuoteRequestData({
+        const requestData = getQuoteRequestData(extra.services, {
             formValues,
             quotesRequest,
             network,

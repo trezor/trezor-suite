@@ -1,8 +1,14 @@
+import { mockNetworkConfigDeps } from '@suite-common/wallet-config/mocks';
 import { type Account } from '@suite-common/wallet-types';
 import { type SolanaStakingAccount } from '@trezor/blockchain-link-types';
 import { StakeState } from '@trezor/network-solana/constants';
 
-import { getSolanaUnstakeAmountBounds } from './solanaStakingUtils';
+import { getSolanaUnstakeAmountBounds as getSolanaUnstakeAmountBoundsBase } from './solanaStakingUtils';
+
+const getSolanaUnstakeAmountBounds = (
+    account: Parameters<typeof getSolanaUnstakeAmountBoundsBase>[1],
+    amount: Parameters<typeof getSolanaUnstakeAmountBoundsBase>[2],
+) => getSolanaUnstakeAmountBoundsBase(mockNetworkConfigDeps, account, amount);
 
 const SOL = 1_000_000_000;
 

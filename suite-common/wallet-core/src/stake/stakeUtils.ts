@@ -1,3 +1,4 @@
+import type { GetNetworkConfigDep } from '@suite-common/networks';
 import { type Account, type WalletAccountTransaction } from '@suite-common/wallet-types';
 import {
     getStakingDataForNetwork,
@@ -8,6 +9,7 @@ import {
 import { BigNumber } from '@trezor/utils';
 
 export const isAccountStakingActive = (
+    deps: GetNetworkConfigDep,
     account: Account | null,
     claimTransactions: WalletAccountTransaction[],
 ) => {
@@ -25,7 +27,7 @@ export const isAccountStakingActive = (
         claimableAmount = '0',
         canClaim = false,
         depositedBalance = '0',
-    } = getStakingDataForNetwork(account) ?? {};
+    } = getStakingDataForNetwork(deps, account) ?? {};
 
     const pendingClaimTxs = claimTransactions.filter(tx => isPending(tx));
 

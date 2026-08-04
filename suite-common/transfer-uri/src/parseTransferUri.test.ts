@@ -1,16 +1,17 @@
-import { type FindNetworkSymbolForProtocol } from '@suite-common/networks';
-import { asNetworkSymbol } from '@suite-common/wallet-config';
+import type { FindNetworkSymbolForProtocol } from '@suite-common/networks';
+import { mockNetworkConfigDeps } from '@suite-common/wallet-config/mocks';
 import { err, ok } from '@trezor/type-utils';
 
 import { parseTransferUri } from './parseTransferUri';
 
 const findNetworkSymbolForProtocol: FindNetworkSymbolForProtocol = protocol => {
-    if (protocol === 'bitcoin') return asNetworkSymbol('btc');
-    if (protocol === 'ethereum') return asNetworkSymbol('eth');
+    if (protocol === 'bitcoin') return 'btc';
+    if (protocol === 'ethereum') return 'eth';
 
     return null;
 };
-const parse = (uri: string) => parseTransferUri(uri, findNetworkSymbolForProtocol);
+const parse = (uri: string) =>
+    parseTransferUri({ ...mockNetworkConfigDeps, findNetworkSymbolForProtocol }, uri);
 
 describe(parseTransferUri.name, () => {
     // --- ERC-681 dispatch ---

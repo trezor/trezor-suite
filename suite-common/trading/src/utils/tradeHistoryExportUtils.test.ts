@@ -1,5 +1,7 @@
 import { type BuyTrade, type Coins, type CryptoId, type SellFiatTrade } from 'invity-api';
 
+import { mockNetworkConfigDeps } from '@suite-common/wallet-config/mocks';
+
 import coins from '../__fixtures__/coins.json';
 import { type TradingRootState, initialState } from '../reducers/tradingCommonReducer';
 import {
@@ -44,6 +46,12 @@ const resolvers = {
                 'ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48': 'USDC',
             }) as Record<string, string>
         )[cryptoId],
+    getNetworkName: (cryptoId: CryptoId) => {
+        if (cryptoId === 'bitcoin') return 'Bitcoin';
+        if (cryptoId.startsWith('ethereum')) return 'Ethereum';
+
+        return '';
+    },
     getProviderName: (name: string | undefined) =>
         name === 'btcdirect-sell' ? 'BTC Direct' : name,
 };
@@ -297,7 +305,7 @@ describe('tradeHistoryExportUtils', () => {
         };
 
         it('resolves coin tickers from state and falls back to the raw provider name', () => {
-            const csv = prepareTradingHistoryCsv(labels)(state, [sellTrade]);
+            const csv = prepareTradingHistoryCsv(labels)(mockNetworkConfigDeps, state, [sellTrade]);
             const [, row] = csv.split('\n');
 
             // BTC ticker resolved from state coins, provider name falls back to the raw exchange id.

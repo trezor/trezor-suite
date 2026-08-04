@@ -1,3 +1,4 @@
+import type { GetNetworkConfigDep } from '@suite-common/networks';
 import { type WalletAccountTransaction } from '@suite-common/wallet-types';
 import {
     isFunctionSelectorMatchesSearch,
@@ -77,6 +78,7 @@ const groupAddressesByLabel = (accountLabels: SearchAccountLabels) => {
 };
 
 export const simpleSearchTransactions = (
+    deps: GetNetworkConfigDep,
     transactions: WalletAccountTransaction[],
     accountLabels: SearchAccountLabels,
     search: string,
@@ -132,7 +134,7 @@ export const simpleSearchTransactions = (
         if (!Number.isNaN(search)) {
             const amount = new BigNumber(search);
 
-            return transactions.filter(t => numberSearchFilter(t, amount, searchOperator));
+            return transactions.filter(t => numberSearchFilter(deps, t, amount, searchOperator));
         }
 
         return [];
@@ -143,7 +145,7 @@ export const simpleSearchTransactions = (
     // Searching for an amount (without operator)
     if (!Number.isNaN(search)) {
         const foundTxsForNumber = transactions.flatMap(transaction => {
-            const targetAmounts = getTargetAmounts(transaction);
+            const targetAmounts = getTargetAmounts(deps, transaction);
             if (targetAmounts.filter(targetAmount => targetAmount.includes(search)).length === 0) {
                 return [];
             }
@@ -191,6 +193,7 @@ export const simpleSearchTransactions = (
     // Find by token name, symbol or contract
     const foundTxsForToken = transactions.flatMap(transaction => {
         const isNativeSymbolSearch = isNativeDisplaySymbolSearch(
+            deps,
             transaction.symbol,
             search.toLowerCase(),
         );
@@ -213,7 +216,7 @@ export const simpleSearchTransactions = (
 
     // Find by native coin symbol
     const foundTxsForNativeSymbol = transactions.flatMap(transaction => {
-        if (isNativeTransferMatchesSearch(transaction, search.toLowerCase())) {
+        if (isNativeTransferMatchesSearch(deps, transaction, search.toLowerCase())) {
             return transaction.txid;
         }
 

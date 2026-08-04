@@ -1,6 +1,8 @@
 import { useMemo } from 'react';
 
-import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectGetNetworkConfigDep } from '@suite-common/networks';
+import { type NetworkSymbol, toNetwork } from '@suite-common/wallet-config';
 
 import { type CommonIconSetProps, IconSetBase, IconWrapper } from '../IconSet/IconSetBase';
 import { TokenIcon } from '../TokenIcon/TokenIcon';
@@ -25,6 +27,7 @@ export const TokenIconSet = ({
     isCentered = false,
     isReversed = false,
 }: TokenIconSetProps) => {
+    const { getNetworkConfig } = useServices(selectGetNetworkConfigDep);
     const { length } = tokens;
 
     const visibleTokensContent = useMemo(() => {
@@ -32,7 +35,8 @@ export const TokenIconSet = ({
 
         return visibleTokens.map(token => {
             const key = token.contract ?? token.symbol ?? symbol;
-            const nativeCoinSymbol = getNetwork(symbol).settlementLayer ?? symbol;
+            const nativeCoinSymbol =
+                toNetwork(symbol, getNetworkConfig(symbol)).settlementLayer ?? symbol;
 
             return (
                 <IconWrapper key={key} $size={size} $gap={gap} $length={length}>
@@ -52,7 +56,7 @@ export const TokenIconSet = ({
                 </IconWrapper>
             );
         });
-    }, [tokens, maxVisibleIcons, symbol, size, gap, length]);
+    }, [tokens, maxVisibleIcons, symbol, size, gap, length, getNetworkConfig]);
 
     return (
         <IconSetBase
