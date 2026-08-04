@@ -25,6 +25,11 @@ jest.mock('@suite/debug', () => ({
     selectIsDebugModeActive: () => mockSelectIsDebugModeActive(),
 }));
 
+const mockIsWrapDisabled = jest.fn();
+jest.mock('src/hooks/suite/useMessageSystemWrappedNative', () => ({
+    useMessageSystemWrappedNative: () => ({ isDisabled: mockIsWrapDisabled() }),
+}));
+
 const mockGetNetworkType = jest.fn();
 const mockGetWrappedNativeAddress = jest.fn();
 const mockGetWrappedNativeSymbol = jest.fn();
@@ -59,6 +64,7 @@ describe('WrapNativeTokenButton', () => {
         mockGetNetworkType.mockReturnValue('ethereum');
         mockGetWrappedNativeAddress.mockReturnValue('0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2');
         mockGetWrappedNativeSymbol.mockReturnValue('WETH');
+        mockIsWrapDisabled.mockReturnValue(false);
     });
 
     it('renders nothing when debug mode is off', () => {
@@ -78,6 +84,13 @@ describe('WrapNativeTokenButton', () => {
         mockGetWrappedNativeSymbol.mockReturnValue(undefined);
         renderButton();
         expect(screen.queryByTestId(WRAP_BUTTON_TESTID)).not.toBeInTheDocument();
+    });
+
+    it('disables the button when wrapping is disabled by the message system', () => {
+        mockIsWrapDisabled.mockReturnValue(true);
+        renderButton();
+
+        expect(screen.getByTestId(WRAP_BUTTON_TESTID)).toBeDisabled();
     });
 
     it('navigates to the standalone wrap page when all conditions are met', () => {

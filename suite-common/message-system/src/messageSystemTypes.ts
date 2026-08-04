@@ -3,6 +3,7 @@ import type {
     ExperimentsItem,
     MessageSystem,
     TradingType,
+    WrappedNativeFlowType,
     YieldFlowType,
 } from '@suite-common/suite-types';
 import type { AccountType, NetworkSymbol, StakingNetworkSymbol } from '@suite-common/wallet-config';
@@ -114,6 +115,13 @@ export const Feature = {
             redeem: 'earn.yield.redeem',
             claim: 'earn.yield.claim',
         } as const satisfies Record<YieldFlowType, string>,
+        // Wrapping the native coin into its wrapped-native token (e.g. ETH → WETH) and back. It is
+        // a step of the yield deposit/withdraw flows, but also a standalone flow, so it is gated
+        // separately from the yield flow types.
+        wrappedNative: {
+            wrap: 'earn.wrappedNative.wrap',
+            unwrap: 'earn.wrappedNative.unwrap',
+        } as const satisfies Record<WrappedNativeFlowType, string>,
     },
     mevProtection: 'settings.mevProtection',
     suiteSync: 'settings.suiteSync',
