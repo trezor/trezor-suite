@@ -82,6 +82,34 @@ describe('loadBuyInfoThunk', () => {
         });
     });
 
+    it('returns the default data object when providers is a truthy non-array (untrusted trade server)', async () => {
+        // an untrusted/user-selectable trade server returns `providers` as a truthy non-array
+        // (typed as a non-optional array); a falsy-only guard let it through and the subsequent
+        // `providers.forEach` threw "not a function", rejecting the thunk and leaving trading stuck
+        // loading for the whole session. Array.isArray must route it to the safe default instead.
+        const buyInfoAPI = {
+            country: 'CZ',
+            suggestedFiatCurrency: 'CZK',
+            providers: {} as unknown as BuyProviderInfo[],
+            defaultAmountsOfFiatCurrencies: {} as FiatCurrenciesProps,
+        };
+
+        tradeApi.getBuyList = () => Promise.resolve(buyInfoAPI);
+
+        const buyInfoData = await store.dispatch(buyThunks.loadInfoThunk()).unwrap();
+
+        expect(buyInfoData).toEqual({
+            buyInfo: {
+                country: regional.UNKNOWN_COUNTRY,
+                providers: [],
+                defaultAmountsOfFiatCurrencies: {},
+            },
+            providerInfos: {},
+            supportedFiatCurrencies: [],
+            supportedCryptoCurrencies: [],
+        });
+    });
+
     it('should build supportedFiatCurrencies and supportedCryptoCurrencies from providers', async () => {
         const provider1: BuyProviderInfo = {
             name: 'PROVIDER 1',

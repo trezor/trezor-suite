@@ -13,7 +13,13 @@ export const loadBuyInfoThunk = createThunk<BuyInfo, void, void>(
     async (_, { fulfillWithValue }) => {
         const buyInfo = await tradeApi.getBuyList();
 
-        if (!buyInfo?.providers) {
+        // `providers` is a non-optional array in the invity-api types, but the response comes from an
+        // untrusted/user-selectable trade server (exchange.trezor.io, or a dev/staging/localhost env).
+        // A falsy-only guard let a truthy non-array (e.g. an object or number) through, so the
+        // `providers.forEach` below would throw "not a function" and reject the whole thunk — leaving
+        // `isLoading` stuck `true` and bricking trading for the session (see loadInitialDataThunk).
+        // Guard with Array.isArray, matching the sell/exchange siblings.
+        if (!Array.isArray(buyInfo?.providers)) {
             return fulfillWithValue({
                 buyInfo: {
                     country: regional.UNKNOWN_COUNTRY,
