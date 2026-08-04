@@ -9841,18 +9841,6 @@ export const messages = defineMessages({
         id: 'TR_DASHBOARD_REFERRAL_BUTTON',
         defaultMessage: 'Earn $20 per referral',
     },
-    TR_PROMO_BANNER_DASHBOARD_TEX_TITLE: {
-        id: 'TR_PROMO_BANNER_DASHBOARD_TEX_TITLE',
-        defaultMessage: '<rest>Trezor Expert</rest> <underline>Consultation</underline>',
-    },
-    TR_PROMO_BANNER_DASHBOARD_TEX_DESCRIPTION: {
-        id: 'TR_PROMO_BANNER_DASHBOARD_TEX_DESCRIPTION',
-        defaultMessage: 'Unlock the full potential of your hardware wallet.',
-    },
-    TR_PROMO_BANNER_DASHBOARD_TEX_BUTTON: {
-        id: 'TR_PROMO_BANNER_DASHBOARD_TEX_BUTTON',
-        defaultMessage: 'Learn more',
-    },
     TR_PROMO_BANNER_DASHBOARD_TS7_TITLE: {
         id: 'TR_PROMO_BANNER_DASHBOARD_TS7_TITLE',
         defaultMessage: 'Introducing Trezor Safe 7',
@@ -9864,6 +9852,18 @@ export const messages = defineMessages({
     TR_PROMO_BANNER_DASHBOARD_TS7_BUTTON: {
         id: 'TR_PROMO_BANNER_DASHBOARD_TS7_BUTTON',
         defaultMessage: 'Learn more',
+    },
+    TR_PROMO_BANNER_DASHBOARD_ETH_VAULT_TITLE: {
+        id: 'TR_PROMO_BANNER_DASHBOARD_ETH_VAULT_TITLE',
+        defaultMessage: 'A new way to earn with ETH',
+    },
+    TR_PROMO_BANNER_DASHBOARD_ETH_VAULT_DESCRIPTION: {
+        id: 'TR_PROMO_BANNER_DASHBOARD_ETH_VAULT_DESCRIPTION',
+        defaultMessage: 'The new ETH vault is now available in DeFi Yield.',
+    },
+    TR_PROMO_BANNER_DASHBOARD_ETH_VAULT_BUTTON: {
+        id: 'TR_PROMO_BANNER_DASHBOARD_ETH_VAULT_BUTTON',
+        defaultMessage: 'Explore vault',
     },
     TR_PROMO_BANNER_DASHBOARD_STABLECOIN_YIELD_TITLE: {
         id: 'TR_PROMO_BANNER_DASHBOARD_STABLECOIN_YIELD_TITLE',

@@ -3,6 +3,7 @@ import { type selectSelectedDevice } from '@suite-common/device';
 import { getDeviceInternalModel } from '@suite-common/suite-utils';
 import { DeviceModelInternal, hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 
+import { ETHVaultBanner } from './ETHVaultBanner';
 import { StablecoinYieldBanner } from './StablecoinYieldBanner';
 import { TS7Banner } from './TS7Banner';
 import { type DashboardBannerType } from './dashboardBannerTypes';
@@ -41,5 +42,10 @@ export const DASHBOARD_BANNERS: Record<DashboardBannerType, DashboardBannerDefin
         flag: 'showStablecoinYieldDashboardPromoBanner',
         isEligible: ({ selectedDevice }) => !hasBitcoinOnlyFirmware(selectedDevice),
         render: handlers => <StablecoinYieldBanner {...handlers} />,
+    },
+    'eth-vault': {
+        flag: 'showETHVaultDashboardPromoBanner',
+        isEligible: ({ selectedDevice }) => !hasBitcoinOnlyFirmware(selectedDevice),
+        render: handlers => <ETHVaultBanner {...handlers} />,
     },
 };
