@@ -80,6 +80,7 @@ const usedIcons = [
     'devicesFilled',
     'discover',
     'discoverFilled',
+    'downloadSimple',
     'eject',
     'ejectSimple',
     'everstakeLogo',
