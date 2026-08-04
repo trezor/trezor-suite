@@ -137,6 +137,7 @@ export type InvokeResult<Payload = undefined> =
 
 export type ConnectPopupCall = {
     id: string;
+    connectionId?: string;
     method: string;
     payload: any;
     sourceType?: string;
@@ -160,6 +161,7 @@ export type ConnectPopupCall = {
 export type ConnectPopupCancel = {
     error?: string;
     callId?: string;
+    connectionId?: string;
 };
 
 export type ConnectPopupResponse = {

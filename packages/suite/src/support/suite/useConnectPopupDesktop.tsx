@@ -26,6 +26,8 @@ import { exhaustive } from '@trezor/type-utils';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
+import { createConnectPopupCallTracker } from './connectPopupCallTracker';
+
 export const useConnectPopupDesktop = () => {
     const dispatch = useDispatch();
     const { analytics } = useServices(selectDesktopAnalyticsDep);
@@ -35,6 +37,10 @@ export const useConnectPopupDesktop = () => {
     selectedDeviceRef.current = selectedDevice;
     const lifecycle = useSelector(state => state.suite.lifecycle);
     const initialized = useRef(false);
+
+    // Tracks which connection owns each in-flight call so a cancel can be scoped to its issuer
+    // (see connectPopupCallTracker). Kept in a ref so it survives effect re-runs.
+    const callTracker = useRef(createConnectPopupCallTracker());
 
     useEffect(() => {
         const init = async () => {
@@ -93,46 +99,82 @@ export const useConnectPopupDesktop = () => {
                     return;
                 }
 
-                await queuePopupCall();
-                const deferred = getPopupCallDeferred(true);
-                const isMcp = params.sourceType === CALL_SOURCE_MCP;
-                dispatch(
-                    connectPopupCallThunk({
-                        method: params.method as CallMethodKeys,
-                        payload: params.payload,
-                        source: isMcp
-                            ? {
-                                  type: CALL_SOURCE_MCP,
-                                  process: params.process,
-                                  origin: params.origin,
-                                  manifest: params.manifest,
-                              }
-                            : {
-                                  type: CALL_SOURCE_DESKTOP_WS,
-                                  process: params.process ?? {
-                                      name: 'Unknown',
-                                      fullPath: 'Unknown',
-                                      warning: true,
+                const { connectionId } = params;
+                // Register this call while it waits in the queue, so a cancel that arrives before
+                // it becomes active can flag it to self-reject on wake (see below).
+                const entry = callTracker.current.register(connectionId);
+
+                try {
+                    await queuePopupCall();
+
+                    // Canceled (or its connection disconnected) while queued: don't open the
+                    // popup or start a device flow for a client that already gave up.
+                    if (entry.canceled) {
+                        desktopApi.connectPopupResponse({
+                            success: false,
+                            error: 'Request was canceled',
+                            payload: 'Request was canceled',
+                            id: params.id,
+                        });
+
+                        return;
+                    }
+
+                    callTracker.current.setActive(connectionId);
+                    const deferred = getPopupCallDeferred(true);
+                    const isMcp = params.sourceType === CALL_SOURCE_MCP;
+                    dispatch(
+                        connectPopupCallThunk({
+                            method: params.method as CallMethodKeys,
+                            payload: params.payload,
+                            source: isMcp
+                                ? {
+                                      type: CALL_SOURCE_MCP,
+                                      process: params.process,
+                                      origin: params.origin,
+                                      manifest: params.manifest,
+                                  }
+                                : {
+                                      type: CALL_SOURCE_DESKTOP_WS,
+                                      process: params.process ?? {
+                                          name: 'Unknown',
+                                          fullPath: 'Unknown',
+                                          warning: true,
+                                      },
+                                      origin: params.origin,
+                                      manifest: params.manifest,
                                   },
-                                  origin: params.origin,
-                                  manifest: params.manifest,
-                              },
-                    }),
-                );
-                const response = await deferred.promise;
-                if (response.success) {
-                    desktopApi.connectPopupResponse({ ...response, id: params.id });
-                } else {
-                    desktopApi.connectPopupResponse({
-                        success: false,
-                        error: response.error,
-                        payload: response.error, // for backward compatibility with v9
-                        id: params.id,
-                    });
+                        }),
+                    );
+                    const response = await deferred.promise;
+                    if (response.success) {
+                        desktopApi.connectPopupResponse({ ...response, id: params.id });
+                    } else {
+                        desktopApi.connectPopupResponse({
+                            success: false,
+                            error: response.error,
+                            payload: response.error, // for backward compatibility with v9
+                            id: params.id,
+                        });
+                    }
+                } finally {
+                    callTracker.current.unregister(connectionId, entry);
+                    callTracker.current.clearActive(connectionId);
                 }
             });
             desktopApi.on('connect-popup/cancel', params => {
-                dispatch(connectPopupCancelThunk(params));
+                const { connectionId } = params;
+                // Flag this connection's queued calls so they self-reject instead of opening a
+                // popup once they reach the front of the queue.
+                callTracker.current.cancelQueued(connectionId);
+                // Only cancel the active call when the request owns it (or there is no
+                // per-connection transport, e.g. web) — this stops one client from canceling
+                // another client's active call.
+                if (callTracker.current.ownsActiveCall(connectionId)) {
+                    dispatch(
+                        connectPopupCancelThunk({ error: params.error, callId: params.callId }),
+                    );
+                }
             });
             desktopApi.on('app/auto-start/popup-request', () => {
                 dispatch(openModal({ type: 'auto-start-before-quit' }));
