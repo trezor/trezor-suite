@@ -205,7 +205,18 @@ export const isErc4626 = (token?: TokenInfo | null) =>
     !!token && (token.protocols?.includes('erc4626') ?? false);
 
 export const getErc4626Contracts = (tokens: TokenInfo[] | undefined) =>
-    new Set(tokens?.filter(isErc4626).map(token => token.contract.toLowerCase()));
+    // `TokenInfo.contract` is typed as a required string, but the value originates from an
+    // untrusted/user-selectable backend where the field is optional (Token.contract?: string).
+    // A malicious backend returning an erc4626-tagged token without `contract` would otherwise
+    // throw on `.toLowerCase()` and crash the render-time TransactionsGroup (no ErrorBoundary),
+    // the memoized transactions selector, and the fiat-rates thunk. Drop non-string records.
+    new Set(
+        tokens
+            ?.filter(isErc4626)
+            .map(token => token.contract)
+            .filter((contract): contract is string => typeof contract === 'string')
+            .map(contract => contract.toLowerCase()),
+    );
 
 export const sortTokensByName = (a: Pick<TokenInfo, 'name'>, b: Pick<TokenInfo, 'name'>) =>
     (a.name ?? '').localeCompare(b.name ?? '');

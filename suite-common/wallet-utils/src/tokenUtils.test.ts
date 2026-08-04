@@ -99,6 +99,18 @@ describe('getErc4626Contracts', () => {
     it('returns an empty set when tokens are undefined', () => {
         expect(getErc4626Contracts(undefined)).toEqual(new Set());
     });
+
+    it('drops erc4626 tokens with a missing/non-string contract from an untrusted backend', () => {
+        // `contract` is required in the TS type but optional on the untrusted backend payload.
+        const poisonToken = {
+            standard: 'ERC20',
+            decimals: 6,
+            protocols: ['erc4626'],
+        } as unknown as TokenInfo;
+
+        expect(() => getErc4626Contracts([poisonToken, vaultToken])).not.toThrow();
+        expect(getErc4626Contracts([poisonToken, vaultToken])).toEqual(new Set(['0xvault']));
+    });
 });
 
 describe('sortTokensByName', () => {
