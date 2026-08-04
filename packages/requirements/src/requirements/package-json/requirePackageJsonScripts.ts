@@ -4,6 +4,7 @@ import { join } from 'node:path';
 import { typedObjectEntries } from '@trezor/utils';
 
 import { walkDirectory } from '../../fileSystem';
+import type { PackageJson } from '../../workspaces';
 import type { Requirement } from '../Requirement';
 
 const PACKAGE_JSON_FILE = 'package.json';
@@ -61,10 +62,6 @@ const REQUIRED_SCRIPTS: Record<string, RequiredScriptConfig> = {
         ignoredPackages: ['@trezor/suite-e2e'],
         isRequired: hasUnitTestFile,
     },
-};
-
-type PackageJson = {
-    readonly scripts?: Record<string, string | undefined>;
 };
 
 const matchesScriptCommand = (

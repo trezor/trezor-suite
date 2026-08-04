@@ -1,17 +1,4 @@
-import { listAllWorkspaces, readPackageJson } from '../workspaces';
-
-export type PackageJson = {
-    readonly name?: string;
-    readonly version?: string;
-    readonly private?: boolean;
-    readonly dependencies?: Record<string, string>;
-    readonly optionalDependencies?: Record<string, string>;
-    readonly peerDependencies?: Record<string, string>;
-    readonly peerDependenciesMeta?: Record<string, { readonly optional?: boolean }>;
-    readonly devDependencies?: Record<string, string>;
-    // package.json carries arbitrary metadata fields (repository, bugs, author, …).
-    readonly [field: string]: unknown;
-};
+import { type PackageJson, listAllWorkspaces, readPackageJson } from '../workspaces';
 
 export type WorkspacePackage = {
     readonly name: string;

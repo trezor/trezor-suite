@@ -1,9 +1,9 @@
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 
+import type { PackageJson } from '../../workspaces';
 import type { Requirement } from '../Requirement';
 import {
-    type PackageJson,
     type WorkspacePackage,
     collectProdWorkspaceClosure,
     collectWorkspacePackages,
