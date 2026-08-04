@@ -1,4 +1,4 @@
-import { readFileSync, writeFileSync } from 'node:fs';
+import { writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 
 import { pickCanonicalVersion } from '../../versions';
@@ -166,10 +166,7 @@ export const requireUnifiedDependencyVersions: Requirement<'repo'> = {
 
         for (const dir of workspaceDirs) {
             const pkgPath = join(dir, 'package.json');
-
-            const rawContent = readFileSync(pkgPath, 'utf-8');
-
-            const pkg: PackageJson = JSON.parse(rawContent) as PackageJson;
+            const pkg = readPackageJson<PackageJson>(dir);
             let modified = false;
 
             for (const depType of ['dependencies', 'devDependencies'] as const) {

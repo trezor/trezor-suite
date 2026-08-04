@@ -1,6 +1,7 @@
 import { execFileSync } from 'node:child_process';
-import { readFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
+
+import { readJson } from './fileSystem';
 
 type YarnWorkspaceInfo = {
     readonly name: string;
@@ -91,4 +92,4 @@ export type PackageJson = {
 };
 
 export const readPackageJson = <T = PackageJson>(workspaceDir: string): T =>
-    JSON.parse(readFileSync(join(workspaceDir, 'package.json'), 'utf-8')) as T;
+    readJson<T>(join(workspaceDir, 'package.json'));
