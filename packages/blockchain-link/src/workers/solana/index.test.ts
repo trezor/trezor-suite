@@ -1,6 +1,6 @@
 import type { ParsedTransactionWithMeta } from '@trezor/network-solana/types';
 
-import { isValidTransaction } from './utils';
+import { isValidTransaction, transformSignatureInfos } from './utils';
 
 // Minimal object that satisfies every isValidTransaction check. It mirrors the fields that
 // solanaUtils.transformTransaction / getDetails dereference unconditionally while mapping a page of
@@ -79,5 +79,34 @@ describe('solana worker isValidTransaction', () => {
         expect(
             isValidTransaction({ ...baseValidTx, blockTime: null } as ParsedTransactionWithMeta),
         ).toBe(false);
+    });
+});
+
+describe('solana worker transformSignatureInfos', () => {
+    it('maps a valid signatures array to { signature, slot }', () => {
+        const infos = [
+            { signature: 'sigA', slot: 1n },
+            { signature: 'sigB', slot: 2n },
+        ] as unknown as Parameters<typeof transformSignatureInfos>[0];
+        expect(transformSignatureInfos(infos)).toEqual([
+            { signature: 'sigA', slot: 1n },
+            { signature: 'sigB', slot: 2n },
+        ]);
+    });
+
+    it('returns [] for a truthy non-array (untrusted RPC poison response)', () => {
+        // A malicious/MITM Solana RPC returning `getSignaturesForAddress` result as a truthy
+        // non-array (e.g. `{}`) would make a bare `.map` throw and reject getAllSignatures,
+        // aborting account discovery / getAccountInfo (per-account history DoS).
+        expect(() =>
+            transformSignatureInfos({} as unknown as Parameters<typeof transformSignatureInfos>[0]),
+        ).not.toThrow();
+        expect(
+            transformSignatureInfos({} as unknown as Parameters<typeof transformSignatureInfos>[0]),
+        ).toEqual([]);
+    });
+
+    it('returns [] for undefined / omitted result', () => {
+        expect(transformSignatureInfos(undefined)).toEqual([]);
     });
 });

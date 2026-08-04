@@ -3,12 +3,25 @@ import solana from '@trezor/network-solana/runtime';
 import type {
     ParsedTransactionWithMeta,
     Signature,
+    Slot,
     SolanaAPI,
     SolanaValidParsedTxWithMeta,
 } from '@trezor/network-solana/types';
 import { type Cache, isNotNullOrUndefined } from '@trezor/utils';
 
 import type { SignatureWithSlot } from './types';
+
+// The `getSignaturesForAddress` result is raw JSON from a user-selectable Solana RPC backend; the
+// @solana/kit rpc layer performs no response-shape validation, so a malformed or malicious backend
+// may return a non-array (or omit it). A bare `.map` on such a value throws synchronously and
+// rejects the whole getAllSignatures call, which aborts account discovery / getAccountInfo
+// (per-account history DoS). Guard the array shape before mapping.
+export const transformSignatureInfos = (
+    signaturesInfos: readonly { signature: Signature; slot: Slot }[] | undefined,
+): SignatureWithSlot[] =>
+    Array.isArray(signaturesInfos)
+        ? signaturesInfos.map(info => ({ signature: info.signature, slot: info.slot }))
+        : [];
 
 export const getAllSignatures = async (
     api: SolanaAPI,
@@ -29,10 +42,7 @@ export const getAllSignatures = async (
             })
             .send();
 
-        const signatures = signaturesInfos.map(info => ({
-            signature: info.signature,
-            slot: info.slot,
-        }));
+        const signatures = transformSignatureInfos(signaturesInfos);
         lastSignature = signatures[signatures.length - 1];
         keepFetching = signatures.length === defaultValueLimit && fullHistory;
         allSignatures = [...allSignatures, ...signatures];
