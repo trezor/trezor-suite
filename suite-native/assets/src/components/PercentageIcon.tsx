@@ -12,10 +12,10 @@ import { type AssetsRootState } from '../types';
 type PercentageIconProps = { symbol: NetworkSymbol };
 
 export const PercentageIcon = memo(({ symbol }: PercentageIconProps) => {
+    const { getNetworkConfig } = useServices(selectGetNetworkConfigDep);
     const assetPercentages = useSelector((state: AssetsRootState) =>
         selectAssetFiatValuePercentage(state, symbol),
     );
-    const { getNetworkConfig } = useServices(selectGetNetworkConfigDep);
 
     const { color: percentageColor } = getNetworkConfig(symbol);
 

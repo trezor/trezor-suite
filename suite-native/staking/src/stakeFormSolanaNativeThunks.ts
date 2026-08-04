@@ -1,7 +1,7 @@
 import { selectSelectedDevice } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
 import { composeSolanaStakingTransaction, prepareSolanaStakeTxData } from '@suite-common/staking';
-import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { WALLET_SDK_SOURCE_MOBILE } from '@suite-common/wallet-constants';
 import {
     selectAccountByKey,
@@ -124,7 +124,7 @@ export const composeSolanaStakingTransactionFeeLevelsNativeThunk = createThunk<
     { rejectValue: SolanaStakingComposeRejectValue }
 >(
     `${STAKE_NATIVE_MODULE_PREFIX}/${COMPOSE_LOG_PREFIX}`,
-    async ({ accountKey, stakeType, amount }, { getState, rejectWithValue }) => {
+    async ({ accountKey, stakeType, amount }, { getState, rejectWithValue, extra }) => {
         if (!amount || amount === '0') return undefined;
 
         const resolved = await resolveSolanaStakingContext(getState(), accountKey);
@@ -141,7 +141,7 @@ export const composeSolanaStakingTransactionFeeLevelsNativeThunk = createThunk<
             formValues: buildSolanaStakeFormState(account, amount, stakeType),
             composeContext: {
                 account,
-                network: getNetwork(account.symbol),
+                network: extra.services.getNetworkConfig(account.symbol),
                 feeInfo,
             },
             blockchainUrl,

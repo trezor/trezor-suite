@@ -6,7 +6,7 @@ import { type RouteProp, useIsFocused, useNavigation, useRoute } from '@react-na
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { Context } from '@suite-common/message-system';
-import { getNetwork } from '@suite-common/wallet-config';
+import { selectGetNetworkConfigDep } from '@suite-common/networks';
 import {
     type AccountsRootState,
     selectAccountByKey,
@@ -43,10 +43,12 @@ import { useYieldSession } from '../hooks/useYieldSession';
 import { getStablecoinYieldClaimRewardsSnapshot } from '../utils/stablecoinYieldClaimSummaryUtils';
 import { getClaimFeeWarning } from '../utils/yieldClaimFeeWarningUtils';
 
+
 type RouteProps = RouteProp<YieldStackParamList, YieldStackRoutes.YieldClaim>;
 type NavigationProps = StackNavigationProps<YieldStackParamList, YieldStackRoutes.YieldClaim>;
 
 export const YieldClaimScreen = () => {
+    const { getNetworkConfig } = useServices(selectGetNetworkConfigDep);
     const route = useRoute<RouteProps>();
     const navigation = useNavigation<NavigationProps>();
     const { accountKey } = route.params;
@@ -235,7 +237,7 @@ export const YieldClaimScreen = () => {
         return null;
     }
 
-    const accountLabel = account.accountLabel ?? getNetwork(account.symbol).name;
+    const accountLabel = account.accountLabel ?? getNetworkConfig(account.symbol).name;
 
     return (
         <Screen

@@ -4,7 +4,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { isFulfilled } from '@reduxjs/toolkit';
 import type { ExchangeTrade, SellFiatTrade } from 'invity-api';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { type MessageSystemRootState } from '@suite-common/message-system';
+import { selectGetNetworkConfigDep } from '@suite-common/networks';
 import {
     type TradingFulfillValue,
     type TradingRootStateWithDeviceAndAccounts,
@@ -17,7 +19,6 @@ import {
     selectTradingSellSelectedQuote,
     sellThunks,
 } from '@suite-common/trading';
-import { getNetwork } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     type FormDraftRootState,
@@ -82,6 +83,7 @@ export const useTradingTransaction = ({
     processResponseData,
     triggerAnalyticsTradeConfirmation,
 }: UseTradingTransactionProps): UseTradingTransactionReturnProps => {
+    const { getNetworkConfig } = useServices(selectGetNetworkConfigDep);
     const dispatch = useDispatch();
 
     const sendAccountKey = useSelector((state: TradingRootState) =>
@@ -188,7 +190,7 @@ export const useTradingTransaction = ({
                 return false;
             }
 
-            const network = getNetwork(sendAccount.symbol);
+            const network = getNetworkConfig(sendAccount.symbol);
             const decimals = tokenDecimals ?? network.decimals;
 
             try {

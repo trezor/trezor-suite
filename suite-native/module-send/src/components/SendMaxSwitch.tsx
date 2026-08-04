@@ -3,7 +3,8 @@ import { Keyboard } from 'react-native';
 import Animated, { FadeIn } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 
-import { getNetwork } from '@suite-common/wallet-config';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectGetNetworkConfigDep } from '@suite-common/networks';
 import {
     type AccountsRootState,
     selectAccountNetworkSymbol,
@@ -34,10 +35,11 @@ export const SendMaxSwitch = ({
     tokenContract,
     maxSpendableAmount,
 }: SendMaxSwitchProps) => {
+    const { getNetworkConfig } = useServices(selectGetNetworkConfigDep);
     const symbol = useSelector((state: AccountsRootState) =>
         selectAccountNetworkSymbol(state, accountKey),
     );
-    const decimals = symbol && getNetwork(symbol).decimals;
+    const decimals = symbol && getNetworkConfig(symbol).decimals;
 
     const isBtcAmountInSats = useSelector(selectAreSatsAmountUnit);
     const baseCurrencyCode = useSelector(selectBaseCurrency);

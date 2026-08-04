@@ -1,6 +1,7 @@
 import { useSelector } from 'react-redux';
 
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { useServices } from '@suite-common/dependency-injection';
+import { type NetworkSymbol, selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import {
     type WalletSettingsRootState,
     selectIsAmountInSats,
@@ -11,8 +12,9 @@ import { decimalTransformer, integerTransformer } from '@trezor/utils';
 export { decimalTransformer, integerTransformer } from '@trezor/utils';
 
 export const useAmountInputTransformers = (symbol: NetworkSymbol | undefined) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const isAmountInSats = useSelector((state: WalletSettingsRootState) =>
-        selectIsAmountInSats(state, symbol),
+        selectIsAmountInSats(state, symbol, networkConfigDeps),
     );
     const isBaseCurrencyInSats = useSelector(selectIsBaseCurrencyInSats);
 

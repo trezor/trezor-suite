@@ -3,7 +3,9 @@ import { useSelector } from 'react-redux';
 
 import { type BottomSheetModalMethods } from '@gorhom/bottom-sheet/lib/typescript/types';
 
-import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectGetNetworkConfigDep } from '@suite-common/networks';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     BottomSheetModal,
     Button,
@@ -31,6 +33,7 @@ export const NetworkFilterBottomSheet = forwardRef(
         { selectedNetworks, onApply, onClear, isSendFlow }: NetworkFilterBottomSheetProps,
         ref: Ref<BottomSheetModalMethods>,
     ) => {
+        const { getNetworkConfig } = useServices(selectGetNetworkConfigDep);
         const { translate } = useTranslate();
         const [pendingSelection, setPendingSelection] = useState<NetworkSymbol[]>(selectedNetworks);
         const selectedNetworksRef = useRef(selectedNetworks);
@@ -95,7 +98,7 @@ export const NetworkFilterBottomSheet = forwardRef(
                                     <TokenIcon symbol={symbol} />
                                     <VStack flex={1} spacing={0}>
                                         <Text variant="body-md-strong">
-                                            {getNetwork(symbol).name}
+                                            {getNetworkConfig(symbol).name}
                                         </Text>
                                         <Text variant="body-sm" color="contentSecondary">
                                             <Translation

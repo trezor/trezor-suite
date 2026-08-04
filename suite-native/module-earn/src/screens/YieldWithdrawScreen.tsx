@@ -7,7 +7,7 @@ import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { useFormatters } from '@suite-common/formatters';
 import { Context } from '@suite-common/message-system';
-import { getNetwork } from '@suite-common/wallet-config';
+import { selectGetNetworkConfigDep } from '@suite-common/networks';
 import {
     type YieldWithdrawFlowType,
     getConvertedOutputTokenBalanceToInputTokenAmount,
@@ -64,6 +64,7 @@ import { useYieldSession } from '../hooks/useYieldSession';
 import { useYieldWithdrawFees } from '../hooks/useYieldWithdrawFees';
 import { getYieldWithdrawAmountValidationError } from '../utils/yieldWithdrawUtils';
 
+
 type RouteProps = RouteProp<YieldStackParamList, YieldStackRoutes.YieldWithdraw>;
 type NavigationProps = StackNavigationProps<YieldStackParamList, YieldStackRoutes.YieldWithdraw>;
 
@@ -87,6 +88,7 @@ const getYieldWithdrawFlowTypeByInputView = (
 ): YieldWithdrawFlowType => (activeView === 'secondary' ? 'redeem' : 'withdraw');
 
 export const YieldWithdrawScreen = () => {
+    const { getNetworkConfig } = useServices(selectGetNetworkConfigDep);
     const route = useRoute<RouteProps>();
     const navigation = useNavigation<NavigationProps>();
     const dispatch = useDispatch();
@@ -509,7 +511,7 @@ export const YieldWithdrawScreen = () => {
     const headerTokenContract = vault.token.address
         ? toTokenAddress(vault.token.address)
         : route.params.tokenContract;
-    const accountLabel = account.accountLabel ?? getNetwork(account.symbol).name;
+    const accountLabel = account.accountLabel ?? getNetworkConfig(account.symbol).name;
     const depositedAmountLabel = maxAmount
         ? CryptoAmountFormatter.format(maxAmount, {
               symbol: activeUnitSymbol,

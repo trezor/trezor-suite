@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 
-import { networks } from '@suite-common/wallet-config';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectGetNetworkConfigDep } from '@suite-common/networks';
 import { type WalletAccountTransaction } from '@suite-common/wallet-types';
 import { fromWei, getEffectiveGasPrice, getFeeRate, getFeeUnits } from '@suite-common/wallet-utils';
 import { Text } from '@suite-native/atoms';
@@ -10,7 +11,8 @@ type FeeFormatterProps = {
 };
 
 export const FeeFormatter = ({ transaction }: FeeFormatterProps) => {
-    const { networkType } = networks[transaction.symbol];
+    const { getNetworkConfig } = useServices(selectGetNetworkConfigDep);
+    const { networkType } = getNetworkConfig(transaction.symbol);
 
     const formattedValue = useMemo(
         () =>

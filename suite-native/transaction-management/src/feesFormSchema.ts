@@ -1,5 +1,6 @@
+import { type GetNetworkConfigDep } from '@suite-common/networks';
 import { yup } from '@suite-common/validators';
-import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type FeeInfo, type FeeLevelLabel } from '@suite-common/wallet-types';
 import { isDecimalsValid } from '@suite-common/wallet-utils';
 import type { UseFormReturn } from '@suite-native/forms';
@@ -8,7 +9,7 @@ import { BigNumber } from '@trezor/utils';
 
 import { getFeeDecimals } from './utils';
 
-export type FeesFormContext = {
+export type FeesFormContext = GetNetworkConfigDep & {
     symbol?: NetworkSymbol;
     networkFeeInfo?: FeeInfo;
     minimalFeeLimit?: string;
@@ -21,15 +22,15 @@ const FeeLevelLabels: Array<FeeLevelLabel> = ['economy', 'low', 'normal', 'high'
 const validateFeeDecimalLength = (value: string | undefined, context: Partial<FeesFormContext>) => {
     if (!value) return true;
 
-    const { networkFeeInfo, symbol } = context;
+    const { networkFeeInfo, symbol, getNetworkConfig } = context;
 
-    if (!symbol) return false;
+    if (!symbol || !getNetworkConfig) return false;
 
-    const { networkType } = getNetwork(symbol);
+    const { networkType } = getNetworkConfig(symbol);
 
     if (!networkFeeInfo || !networkType) return false;
 
-    const maxDecimals = getFeeDecimals({ symbol });
+    const maxDecimals = getFeeDecimals({ getNetworkConfig, symbol });
 
     if (maxDecimals === null) return true;
 
@@ -99,11 +100,12 @@ export const feesFormValidationSchema = yup.object({
 
         function (value) {
             if (!value) return true;
-            const { symbol, minimalFeeLimit, translate } = this.options.context as FeesFormContext;
+            const { symbol, minimalFeeLimit, translate, getNetworkConfig } = this.options
+                .context as FeesFormContext;
 
             if (!symbol) return true;
 
-            const { networkType } = getNetwork(symbol);
+            const { networkType } = getNetworkConfig(symbol);
 
             if (networkType !== 'ethereum' && networkType !== 'tron') return true;
 

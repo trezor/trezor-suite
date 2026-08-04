@@ -3,6 +3,7 @@ import { Text, View } from 'react-native';
 
 import { Image } from 'expo-image';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { type CryptoIconName, cryptoIcons, genericTokenIcon } from '@suite-common/icons';
 import {
     type NetworkDisplaySymbol,
@@ -10,6 +11,7 @@ import {
     getCoingeckoId,
     getNetworkDisplaySymbol,
     isNetworkSymbol,
+    selectNetworkConfigDeps,
 } from '@suite-common/wallet-config';
 import { getAssetLogoContractAddresses } from '@suite-common/wallet-utils';
 import { useTranslate } from '@suite-native/intl';
@@ -105,6 +107,7 @@ interface TokenIconProps {
 }
 
 const TokenIconComponent = ({ symbol, contractAddress, size = 'small' }: TokenIconProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const { applyStyle } = useNativeStyles();
     const { translate } = useTranslate();
 
@@ -127,10 +130,14 @@ const TokenIconComponent = ({ symbol, contractAddress, size = 'small' }: TokenIc
     } | null>(null);
 
     const resolvedUrls = useAsyncMemo(async (): Promise<(string | number)[]> => {
-        if (isNetworkSymbol(symbol)) {
-            const coingeckoId = getCoingeckoId(symbol);
+        if (isNetworkSymbol(networkConfigDeps, symbol)) {
+            const coingeckoId = getCoingeckoId(networkConfigDeps, symbol);
             if (coingeckoId && contractAddress) {
-                const logoAddresses = await getAssetLogoContractAddresses(symbol, contractAddress);
+                const logoAddresses = await getAssetLogoContractAddresses(
+                    networkConfigDeps,
+                    symbol,
+                    contractAddress,
+                );
                 if (logoAddresses?.length) {
                     return logoAddresses.map(address =>
                         getAssetLogoUrl({
@@ -145,7 +152,7 @@ const TokenIconComponent = ({ symbol, contractAddress, size = 'small' }: TokenIc
         }
 
         return [cryptoIcons[symbol.toLowerCase() as CryptoIconName]];
-    }, [contractAddress, sizeNumber, symbol]);
+    }, [contractAddress, networkConfigDeps, sizeNumber, symbol]);
 
     const sourceUrls = resolvedUrls ?? [];
     const sourceKey = resolvedUrls ? `${asyncKey}#resolved` : `${asyncKey}#fallback`;
@@ -201,21 +208,22 @@ export const TokenIcon = ({
     size = 'small',
     wrappedTokenIcon = 'token',
 }: TokenIconProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const { applyStyle } = useNativeStyles();
 
     if (
         wrappedTokenIcon === 'network' &&
-        isNetworkSymbol(symbol) &&
+        isNetworkSymbol(networkConfigDeps, symbol) &&
         isWrappedNativeToken(symbol, contractAddress)
     ) {
         contractAddress = undefined;
     }
 
-    if (!showNetworkIcon || !isNetworkSymbol(symbol)) {
+    if (!showNetworkIcon || !isNetworkSymbol(networkConfigDeps, symbol)) {
         return <TokenIconComponent symbol={symbol} contractAddress={contractAddress} size={size} />;
     }
 
-    const displaySymbol = getNetworkDisplaySymbol(symbol);
+    const displaySymbol = getNetworkDisplaySymbol(networkConfigDeps, symbol);
     const showForNativeToken = displaySymbol === 'ETH' && symbol !== 'eth';
     const shouldShowNetwork =
         showForNativeToken || contractAddress || wrappedTokenIcon === 'network';

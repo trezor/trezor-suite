@@ -1,7 +1,9 @@
 import { type ReactNode } from 'react';
 import { type AccessibilityRole } from 'react-native';
 
-import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectGetNetworkConfigDep } from '@suite-common/networks';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Box, Card, PressableOpacity } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
@@ -33,9 +35,10 @@ export const NetworkListItem = ({
     accessibilityRole,
     testID,
 }: NetworkListItemProps) => {
+    const { getNetworkConfig } = useServices(selectGetNetworkConfigDep);
     const { applyStyle } = useNativeStyles();
 
-    const network = getNetwork(symbol);
+    const network = getNetworkConfig(symbol);
     const { testnet: isTestnet } = network;
 
     return (

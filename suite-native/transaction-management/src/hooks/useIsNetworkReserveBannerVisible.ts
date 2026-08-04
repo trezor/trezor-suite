@@ -1,6 +1,7 @@
 import { useSelector } from 'react-redux';
 
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { useServices } from '@suite-common/dependency-injection';
+import { type NetworkSymbol, selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { selectIsNetworkReserveEnabled } from '@suite-common/wallet-core';
 import { getNetworkReserve } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
@@ -20,11 +21,13 @@ export const useIsNetworkReserveBannerVisible = ({
     balance,
     maxAmount,
 }: UseIsNetworkReserveBannerVisibleParams): boolean => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const isNetworkReserveEnabled = useSelector(selectIsNetworkReserveEnabled);
 
     if (!symbol) return false;
 
     const networkReserve = getNetworkReserve({
+        ...networkConfigDeps,
         symbol,
         contractAddress,
         isEnabled: isNetworkReserveEnabled,

@@ -13,7 +13,7 @@ import { type DeviceRootState } from '@suite-common/device';
 import { selectFindNetworkSymbolForProtocolDep } from '@suite-common/networks';
 import { parseTransferUri } from '@suite-common/transfer-uri';
 import { formInputsMaxLength } from '@suite-common/validators';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol, selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     selectAccountByKey,
@@ -68,10 +68,17 @@ export const AddressInput = ({ index, accountKey, onQrNetworkMismatch }: Address
     const amountFieldName = getOutputFieldName(index, 'amount');
     const tokenFieldName = getOutputFieldName(index, 'token');
     const { setValue, control } = useFormContext<SendOutputsFormValues>();
-    const { analytics, addressValidator, findNetworkSymbolForProtocol } = useServices(
+    const {
+        analytics,
+        addressValidator,
+        findNetworkSymbolForProtocol,
+        getNetworkConfig,
+        networkModuleRepository,
+    } = useServices(
         selectNativeAnalyticsDep,
         selectAddressValidatorDep,
         selectFindNetworkSymbolForProtocolDep,
+        selectNetworkConfigDeps,
     );
     const symbol = useSelector((state: AccountsRootState) =>
         selectAccountNetworkSymbol(state, accountKey),
@@ -129,7 +136,10 @@ export const AddressInput = ({ index, accountKey, onQrNetworkMismatch }: Address
     };
 
     const handleScanAddressQRCode = (qrCodeData: string) => {
-        const parsed = parseTransferUri(qrCodeData, findNetworkSymbolForProtocol);
+        const parsed = parseTransferUri(
+            { findNetworkSymbolForProtocol, getNetworkConfig, networkModuleRepository },
+            qrCodeData,
+        );
 
         // ERC-681 (Ethereum) — may switch to a matching account on another EVM network.
         const erc681 =

@@ -4,8 +4,9 @@ import { useSelector } from 'react-redux';
 
 import type { BuyCryptoPaymentMethod, BuyTrade } from 'invity-api';
 
+import { useServices } from '@suite-common/dependency-injection';
+import { selectGetNetworkConfigDep } from '@suite-common/networks';
 import { type TradingAmountLimitProps, selectTradingBuyQuotesRequest } from '@suite-common/trading';
-import { getNetwork } from '@suite-common/wallet-config';
 import { type WalletSettingsRootState, selectIsAmountInSats } from '@suite-common/wallet-core';
 import { convertAmountUnitsToSubunits } from '@suite-common/wallet-utils';
 import { useForm, useWatch } from '@suite-native/forms';
@@ -83,6 +84,7 @@ const useBuyQuotesChangeEffect = ({ getValues, setValue }: BuyFormType) => {
 };
 
 const useBuyQuoteChangeEffect = ({ control, getValues, setValue }: BuyFormType) => {
+    const { getNetworkConfig } = useServices(selectGetNetworkConfigDep);
     const [asset, quote] = useWatch({ control, name: ['asset', 'quote'] });
     const symbol = getSymbolFromTradeableAsset(asset);
 
@@ -112,7 +114,7 @@ const useBuyQuoteChangeEffect = ({ control, getValues, setValue }: BuyFormType) 
                 isAmountInSats && truncatedCryptoAmount && symbol
                     ? convertAmountUnitsToSubunits(
                           truncatedCryptoAmount,
-                          getNetwork(symbol).decimals,
+                          getNetworkConfig(symbol).decimals,
                       )
                     : truncatedCryptoAmount;
             setValue('cryptoValue', value);

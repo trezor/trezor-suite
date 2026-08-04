@@ -4,7 +4,8 @@ import { useDispatch } from 'react-redux';
 import { type RouteProp, useIsFocused, useNavigation, useRoute } from '@react-navigation/native';
 import { isFulfilled } from '@reduxjs/toolkit';
 
-import { getNetwork } from '@suite-common/wallet-config';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectGetNetworkConfigDep } from '@suite-common/networks';
 import {
     REVOKE_ALLOWANCE_AMOUNT,
     stablecoinYieldActions,
@@ -36,6 +37,7 @@ type NavigationProps = StackNavigationProps<
 >;
 
 export const useYieldDepositRevokeScreen = () => {
+    const { getNetworkConfig } = useServices(selectGetNetworkConfigDep);
     const route = useRoute<RouteProps>();
     const navigation = useNavigation<NavigationProps>();
     const dispatch = useDispatch();
@@ -316,7 +318,7 @@ export const useYieldDepositRevokeScreen = () => {
         return null;
     }
 
-    const accountLabel = account.accountLabel ?? getNetwork(account.symbol).name;
+    const accountLabel = account.accountLabel ?? getNetworkConfig(account.symbol).name;
     const feeSelectorProps =
         revokeFeeTransaction !== null
             ? {

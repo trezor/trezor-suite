@@ -1,6 +1,8 @@
 import { useSelector } from 'react-redux';
 
-import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectGetNetworkConfigDep } from '@suite-common/networks';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { formatNetworkAmount, getStakingLimitsByNetworkSymbol } from '@suite-common/wallet-utils';
@@ -15,6 +17,7 @@ type EarnWithdrawalFeesBannerProps = {
 };
 
 export const EarnWithdrawalFeesBanner = ({ accountKey, symbol }: EarnWithdrawalFeesBannerProps) => {
+    const { getNetworkConfig } = useServices(selectGetNetworkConfigDep);
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
@@ -24,7 +27,7 @@ export const EarnWithdrawalFeesBanner = ({ accountKey, symbol }: EarnWithdrawalF
 
     if (!limits || !account) return null;
 
-    const { displaySymbol } = getNetwork(symbol);
+    const { displaySymbol } = getNetworkConfig(symbol);
     const formattedBalance = formatNetworkAmount(account.availableBalance, symbol);
 
     const isVisible =

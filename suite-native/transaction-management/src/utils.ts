@@ -1,8 +1,12 @@
-import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import type { GetNetworkConfigDep } from '@suite-common/networks';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { BigNumber, isNotNull } from '@trezor/utils';
 
-export const getFeeDecimals = ({ symbol }: { symbol: NetworkSymbol }) => {
-    const network = getNetwork(symbol);
+export const getFeeDecimals = ({
+    symbol,
+    getNetworkConfig,
+}: { symbol: NetworkSymbol } & GetNetworkConfigDep) => {
+    const network = getNetworkConfig(symbol);
 
     switch (network.networkType) {
         case 'ethereum': {
@@ -21,15 +25,16 @@ export const getFeeDecimals = ({ symbol }: { symbol: NetworkSymbol }) => {
 export const getFeeValue = ({
     feeRate,
     symbol,
+    getNetworkConfig,
 }: {
     feeRate: string | undefined;
     symbol: NetworkSymbol | undefined;
-}) => {
+} & GetNetworkConfigDep) => {
     if (!feeRate || !symbol) {
         return undefined;
     }
 
-    const decimals = getFeeDecimals({ symbol });
+    const decimals = getFeeDecimals({ symbol, getNetworkConfig });
 
     if (isNotNull(decimals)) {
         return new BigNumber(feeRate).decimalPlaces(decimals, 1 /*ROUND_DOWN*/).toFixed();

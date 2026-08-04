@@ -1,8 +1,6 @@
-import {
-    type NetworkSymbol,
-    getNetwork,
-    getRepresentativeAssets,
-} from '@suite-common/wallet-config';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectGetNetworkConfigDep } from '@suite-common/networks';
+import { type NetworkSymbol, getRepresentativeAssets } from '@suite-common/wallet-config';
 import { Box, Text } from '@suite-native/atoms';
 import { TokenIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
@@ -41,6 +39,7 @@ const countStyle = prepareNativeStyle(utils => ({
 }));
 
 export const CryptoIconSet = ({ symbol }: CryptoIconSetProps) => {
+    const { getNetworkConfig } = useServices(selectGetNetworkConfigDep);
     const { applyStyle } = useNativeStyles();
 
     const assets = getRepresentativeAssets(symbol);
@@ -53,7 +52,7 @@ export const CryptoIconSet = ({ symbol }: CryptoIconSetProps) => {
 
     // Native coins have no contract – render their icon via the settlement layer symbol
     // (e.g. Base/Arbitrum... → ETH), falling back to the network symbol itself.
-    const nativeCoinSymbol = getNetwork(symbol).settlementLayer ?? symbol;
+    const nativeCoinSymbol = getNetworkConfig(symbol).settlementLayer ?? symbol;
 
     return (
         <Box flexDirection="row" alignItems="center">

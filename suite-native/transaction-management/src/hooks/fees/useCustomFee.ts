@@ -3,7 +3,9 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { isRejected } from '@reduxjs/toolkit';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { invariant } from '@suite-common/suite-utils';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     type FeesRootState,
@@ -38,6 +40,7 @@ type UseCustomFeeProps = {
 };
 
 export const useCustomFee = ({ accountKey, formState }: UseCustomFeeProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const debounce = useDebounce();
     const { translate } = useTranslate();
     const dispatch = useDispatch();
@@ -56,7 +59,7 @@ export const useCustomFee = ({ accountKey, formState }: UseCustomFeeProps) => {
     );
 
     const isEip1559Fee = useSelector((state: FeesRootState) =>
-        selectIsEip1559Fee(state, symbol ?? undefined),
+        selectIsEip1559Fee(state, symbol ?? undefined, networkConfigDeps),
     );
 
     const {
