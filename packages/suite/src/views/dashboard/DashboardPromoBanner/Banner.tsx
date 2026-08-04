@@ -73,7 +73,12 @@ export const Banner = ({
                     flex="1"
                     gap={12}
                 >
-                    <Column>
+                    <Column
+                        padding={getResponsiveValue({
+                            default: {},
+                            tablet: { right: 24 },
+                        })}
+                    >
                         <Text
                             typographyStyle={getResponsiveValue({
                                 default: 'headline-md',
