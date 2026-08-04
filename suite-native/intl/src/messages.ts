@@ -1521,7 +1521,7 @@ export const messages = {
             networkReserve: {
                 title: 'Network reserve',
                 subtitle:
-                    'Reserve a small amount of the native token on {supportedNetworks} to cover any extra network fees when you send, swap, or sell your assets.',
+                    'Reserve a small amount of the native token to cover any extra network fees when you send, swap, or sell your assets.',
             },
             addressDisplay: {
                 title: 'Spaced address formatting',
