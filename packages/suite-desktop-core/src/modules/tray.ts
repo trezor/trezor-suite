@@ -30,7 +30,9 @@ export const initBackground: ModuleInitBackground = ({ store, mainWindowProxy })
             case 'win32':
                 return 'trayWin.ico';
             case 'darwin':
-                return 'trayMacTemplate.png';
+                // Suite Dark flavour: colored (non-template) menu-bar icon. macOS only tints
+                // "*Template" images monochrome, so we use a plain orange asset instead.
+                return 'trayMac.png';
             default:
                 return 'trayLin.png';
         }

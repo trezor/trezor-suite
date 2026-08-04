@@ -196,7 +196,7 @@ const config: webpack.Configuration = {
         new webpack.DefinePlugin({
             'process.browser': true,
             'process.env.SUITE_TYPE': JSON.stringify(project),
-            'process.env.VERSION': JSON.stringify(suiteVersion),
+            'process.env.VERSION': JSON.stringify(`${suiteVersion}-suitedark`),
             'process.env.COMMITHASH': JSON.stringify(gitRevision),
             'process.env.ASSET_PREFIX': JSON.stringify(assetPrefix),
             'process.env.IS_CODESIGN_BUILD': `"${isCodesignBuild}"`, // to keep it as string "true"/"false" and not boolean

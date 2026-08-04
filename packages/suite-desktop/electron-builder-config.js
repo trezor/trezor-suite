@@ -6,13 +6,13 @@ const isCodesignBuild = process.env.IS_CODESIGN_BUILD === 'true';
 // to be able to use patterns like ${author} and ${arch}
 module.exports = {
     // distinguish between dev and prod builds
-    appId: `io.trezor.TrezorSuite${isCodesignBuild ? '' : '.dev'}`,
+    appId: `io.suitedark.app${isCodesignBuild ? '' : '.dev'}`,
     extraMetadata: {
         version: suiteVersion,
         // distinguish between dev and prod builds so different userDataDir is used
-        name: `@trezor/suite-desktop${isCodesignBuild ? '' : '-dev'}`,
+        name: `suitedark-desktop${isCodesignBuild ? '' : '-dev'}`,
     },
-    productName: 'Trezor Suite',
+    productName: 'Suite Dark',
     copyright: 'Copyright © ${author}',
     asar: true,
     asarUnpack: ['**/*.node'],
@@ -49,12 +49,12 @@ module.exports = {
         },
     ],
     protocols: {
-        name: 'Trezor Suite',
+        name: 'Suite Dark',
         schemes,
     },
     publish: {
         provider: 'generic',
-        url: 'https://data.trezor.io/suite/releases/desktop/latest',
+        url: 'https://example.com/suitedark/releases/desktop/latest',
     },
     dmg: {
         sign: false,
@@ -93,7 +93,7 @@ module.exports = {
             },
         ],
         icon: 'build/static/images/desktop/512x512.icns',
-        artifactName: 'Trezor-Suite-${version}-mac-${arch}.${ext}',
+        artifactName: 'SuiteDark-${version}-mac-${arch}.${ext}',
         identity: isCodesignBuild ? undefined : '-',
         hardenedRuntime: isCodesignBuild,
         gatekeeperAssess: false,
@@ -102,12 +102,12 @@ module.exports = {
         entitlementsInherit: 'entitlements.mac.inherit.plist',
         extendInfo: {
             NSBluetoothAlwaysUsageDescription:
-                'Allow Trezor Suite to use Bluetooth to securely connect and communicate with your Trezor device.',
+                'Allow Suite Dark to use Bluetooth to securely connect and communicate with your Trezor device.',
             // Delete those keys from Info.plist, Electron adds them by default but Trezor Suite does not need these permissions
             NSMicrophoneUsageDescription: undefined,
             // Replace default "This app needs access to the camera" message with our own
             NSCameraUsageDescription:
-                'Allow Trezor Suite to access the camera to scan QR codes? Or enter the address manually.',
+                'Allow Suite Dark to access the camera to scan QR codes? Or enter the address manually.',
         },
         target: ['dmg', 'zip'],
     },
@@ -131,7 +131,7 @@ module.exports = {
             },
         ],
         icon: 'build/static/images/desktop/512x512.png',
-        artifactName: 'Trezor-Suite-${version}-win-${arch}.${ext}',
+        artifactName: 'SuiteDark-${version}-win-${arch}.${ext}',
         target: ['nsis'],
         signExts: ['.exe', '.dll'],
         signtoolOptions: {
@@ -160,8 +160,8 @@ module.exports = {
             },
         ],
         icon: 'build/static/images/desktop/512x512.png',
-        artifactName: 'Trezor-Suite-${version}-linux-${arch}.${ext}',
-        executableName: 'trezor-suite',
+        artifactName: 'SuiteDark-${version}-linux-${arch}.${ext}',
+        executableName: 'suitedark',
         category: 'Utility',
         target: ['AppImage'],
     },
