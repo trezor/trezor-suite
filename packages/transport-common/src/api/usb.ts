@@ -333,6 +333,17 @@ export class UsbApi extends AbstractApi {
             this.logger?.debug(`usb: device.open done. device: ${this.formatDeviceForLog(device)}`);
         } catch (err) {
             this.logger?.error(`usb: device.open error ${err}`);
+            // TODO(usb-v3): the `usb` v3 rewrite (node-usb-rs / nusb) no longer throws
+            // libusb-style messages, so this `LIBUSB_ERROR_ACCESS` match (used on Linux to
+            // surface the "missing udev rules" hint) will not fire on v3. Capture the real
+            // error shape from a device, then replace the string below with the v3 equivalent.
+            // The console.log is temporary migration instrumentation — remove before merge.
+            // eslint-disable-next-line no-console
+            console.log('[usb-v3-migration] device.open error:', {
+                name: err.name,
+                message: err.message,
+                ctor: err?.constructor?.name,
+            });
             if (err.message.includes('LIBUSB_ERROR_ACCESS')) {
                 return error({ code: ERRORS.LIBUSB_ERROR_ACCESS });
             }
@@ -577,9 +588,22 @@ export class UsbApi extends AbstractApi {
     }
     // https://github.com/trezor/trezord-go/blob/db03d99230f5b609a354e3586f1dfc0ad6da16f7/usb/libusb.go#L545
     private handleReadWriteError(err: Error) {
+        // TODO(usb-v3): the `LIBUSB_*` entries below match messages from the v2 libusb
+        // bindings. usb v3 (node-usb-rs / nusb) emits different, Rust-side error strings,
+        // so a mid-transfer disconnect on v3 may fall through to `unknownError` instead of
+        // `DEVICE_DISCONNECTED_DURING_ACTION`. The WebUSB-spec branch
+        // ("The device was disconnected.") should still catch spec-compliant disconnects,
+        // but confirm against a device and add the v3 read/write error strings here.
+        // The console.log is temporary migration instrumentation — remove before merge.
+        // eslint-disable-next-line no-console
+        console.log('[usb-v3-migration] read/write error:', {
+            name: err.name,
+            message: err.message,
+            ctor: err?.constructor?.name,
+        });
         if (
             [
-                // node usb
+                // node usb (v2 libusb bindings — see TODO above re: v3)
                 'LIBUSB_TRANSFER_ERROR',
                 'LIBUSB_ERROR_PIPE',
                 'LIBUSB_ERROR_IO',
