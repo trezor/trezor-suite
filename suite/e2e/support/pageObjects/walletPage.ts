@@ -47,8 +47,13 @@ export class WalletPage {
     readonly sendFormHeader: Locator;
     readonly totalSent: Locator;
     readonly receiveButton: Locator;
-    readonly revealAddressButton: Locator;
+    readonly verifyAddressButton: Locator;
     readonly copyAddressButton: Locator;
+    readonly receiveAddress: Locator;
+    readonly showNextAddressButton: Locator;
+    readonly addressCopiedModal: Locator;
+    readonly addressCopiedModalVerifyButton: Locator;
+    readonly addressCopiedModalSkipButton: Locator;
     readonly stakingButton: Locator;
     readonly signAndVerifyButton: Locator;
     readonly stakingCardano: Locator;
@@ -58,7 +63,6 @@ export class WalletPage {
     readonly fiatAmount: Locator;
     readonly walletFilter = (symbol: NetworkSymbol) =>
         this.page.getByTestId(`@account-menu/filter/${symbol}`);
-    readonly showMoreButton: Locator;
     readonly topPanelBalance: Locator;
     readonly topPanelBalanceWithSymbol: Locator;
     readonly addAccountButton: Locator;
@@ -81,8 +85,10 @@ export class WalletPage {
     readonly discoveryWarning: Locator;
     readonly usedAddress = (index: number) =>
         this.page.getByTestId(`@wallet/receive/used-address/${index}`);
-    readonly usedAddressRevealButton = (index: number) =>
-        this.page.getByTestId(`@wallet/receive/reveal-address-button/${index}`);
+    readonly usedAddressVerifyButton = (index: number) =>
+        this.page.getByTestId(`@wallet/receive/used-address/${index}/verify-button`);
+    readonly usedAddressCopyButton = (index: number) =>
+        this.page.getByTestId(`@wallet/receive/used-address/${index}/copy-button`);
 
     constructor(private readonly page: Page) {
         this.transactionSearch = this.page.getByTestId('@wallet/accounts/search-icon');
@@ -107,8 +113,19 @@ export class WalletPage {
         this.sendFormHeader = this.page.getByTestId('@wallet/send-header');
         this.totalSent = this.page.getByTestId('@wallet/send/total-sent');
         this.receiveButton = this.page.getByTestId('@wallet/menu/wallet-receive');
-        this.revealAddressButton = this.page.getByTestId('@wallet/receive/reveal-address-button');
-        this.copyAddressButton = this.page.getByTestId('@metadata/copy-address-button');
+        this.verifyAddressButton = this.page.getByTestId('@wallet/receive/verify-address-button');
+        this.copyAddressButton = this.page.getByTestId('@wallet/receive/copy-address-button');
+        this.receiveAddress = this.page.getByTestId('@wallet/receive/address');
+        this.showNextAddressButton = this.page.getByTestId(
+            '@wallet/receive/show-next-address-button',
+        );
+        this.addressCopiedModal = this.page.getByTestId('@wallet/receive/address-copied-modal');
+        this.addressCopiedModalVerifyButton = this.page.getByTestId(
+            '@wallet/receive/address-copied-modal/verify-button',
+        );
+        this.addressCopiedModalSkipButton = this.page.getByTestId(
+            '@wallet/receive/address-copied-modal/skip-button',
+        );
         this.stakingButton = this.page.getByTestId('@wallet/menu/staking');
         this.signAndVerifyButton = this.page.getByTestId('@wallet/menu/wallet-sign-verify');
         this.stakingCardano = this.page.getByTestId('@wallet/cardano/staking');
@@ -118,7 +135,6 @@ export class WalletPage {
         this.transactionItem = this.page.getByTestId('@wallet/transaction-item');
         this.transactionAddress = this.page.getByTestId('@wallet/transaction/target-address');
         this.fiatAmount = this.page.getByTestId('@wallet/account/fiat-amount').first();
-        this.showMoreButton = this.page.getByTestId('@wallet/receive/used-address/show-more');
         this.topPanelBalance = this.page.getByTestId('@wallet/account/crypto-balance');
         this.topPanelBalanceWithSymbol = this.page.getByTestId(
             '@wallet/account/crypto-balance-with-symbol',

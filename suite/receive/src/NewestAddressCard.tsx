@@ -10,8 +10,10 @@ import {
     selectLabeledUnusedAddresses,
 } from '@suite/address';
 import { Translation } from '@suite/intl';
+import { getReceiveAddressForFlowEntry, getReceiveAddressToAdd } from '@suite-common/address';
 import {
     type ReceiveRootState,
+    receiveActions,
     selectCurrentFreshAddress,
     selectTouchedAddresses,
 } from '@suite-common/receive';
@@ -32,7 +34,6 @@ import {
     type ReceiveAddressItem,
     buildReceiveAddressItems,
 } from './address/buildReceiveAddressItems';
-import { deriveCurrentFreshAddressThunk } from './address/deriveCurrentFreshAddressThunk';
 import { revealNextAddressThunk } from './address/revealNextAddressThunk';
 
 type NewestAddressCardRootState = AccountsRootState &
@@ -62,6 +63,7 @@ export const NewestAddressCard = ({
     const account = useSelector((state: NewestAddressCardRootState) =>
         selectAccountByKey(state, accountKey),
     );
+
     const isUtxo = useSelector((state: NewestAddressCardRootState) =>
         selectIsAccountUtxoBased(state, accountKey),
     );
@@ -74,7 +76,7 @@ export const NewestAddressCard = ({
     const pendingAddresses = useSelector((state: NewestAddressCardRootState) =>
         selectPendingAccountAddresses(state, accountKey),
     );
-    const labeledAddresses = useSelector((state: NewestAddressCardRootState) =>
+    const labeledUnusedAddresses = useSelector((state: NewestAddressCardRootState) =>
         account ? selectLabeledUnusedAddresses(state, account) : [],
     );
     const currentFreshAddressLabel = useSelector((state: NewestAddressCardRootState) =>
@@ -104,20 +106,23 @@ export const NewestAddressCard = ({
             : {},
     );
 
-    // Keep the fresh address derivation running for as long as the always rendered newest card is
-    // mounted; the thunk re-derives whenever any of its inputs change.
     useEffect(() => {
-        dispatch(deriveCurrentFreshAddressThunk({ accountKey }));
-    }, [
-        accountKey,
-        account,
-        currentFreshAddress,
-        isUtxo,
-        labeledAddresses,
-        pendingAddresses,
-        touchedAddresses,
-        dispatch,
-    ]);
+        if (!account) return;
+
+        dispatch(
+            receiveActions.setCurrentFreshAddress({
+                accountKey,
+                currentFreshAddress: getReceiveAddressForFlowEntry({
+                    account,
+                    touchedAddresses,
+                    labeledUnusedAddresses,
+                    pendingAddresses,
+                    isAccountUtxoBased: isUtxo,
+                }),
+            }),
+        );
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [accountKey, dispatch]);
 
     const usedItems = useMemo(
         () =>
@@ -131,6 +136,28 @@ export const NewestAddressCard = ({
                   })
                 : [],
         [account, touchedAddresses, pendingAddresses, addressLabels, currentFreshAddress],
+    );
+
+    const addressToAdd = useMemo(
+        () =>
+            account
+                ? getReceiveAddressToAdd({
+                      account,
+                      touchedAddresses,
+                      labeledUnusedAddresses,
+                      pendingAddresses,
+                      currentFreshAddress,
+                      isAccountUtxoBased: isUtxo,
+                  })
+                : undefined,
+        [
+            account,
+            touchedAddresses,
+            labeledUnusedAddresses,
+            pendingAddresses,
+            currentFreshAddress,
+            isUtxo,
+        ],
     );
 
     const freshItem: ReceiveAddressItem | undefined = currentFreshAddress
@@ -160,7 +187,7 @@ export const NewestAddressCard = ({
         if (isCoinjoinRevealDisallowed) {
             return <Translation id="RECEIVE_ADDRESS_COINJOIN_DISALLOW" />;
         }
-        if (!currentFreshAddress) {
+        if (!addressToAdd) {
             return <Translation id="RECEIVE_UNUSED_ADDRESS_LIMIT_REACHED" />;
         }
 

@@ -17,7 +17,6 @@ test.describe('Metadata - address labeling', { tag: ['@webOnly', '@T3W1', '@T3T1
         await test.step('Interact with accounts and metadata', async () => {
             await walletPage.openAccount();
             await walletPage.receiveButton.click();
-            await walletPage.showMoreButton.click();
             await metadataPage.address.clickEditLabel(metadataAddress);
         });
 

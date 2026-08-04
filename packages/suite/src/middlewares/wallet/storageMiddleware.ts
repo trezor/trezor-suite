@@ -155,7 +155,11 @@ const rememberedDeviceHandlers: RememberedDeviceHandler[] = [
         },
     }),
     defineRememberedDeviceHandler({
-        match: [receiveActions.showAddress.match, receiveActions.setCurrentFreshAddress.match],
+        match: [
+            receiveActions.showAddress.match,
+            receiveActions.touchAddress.match,
+            receiveActions.setCurrentFreshAddress.match,
+        ],
         getDevice: (action, state) => getDeviceByAccountKey(action.payload.accountKey, state),
         save: ({ action }, { dispatch }) => {
             dispatch(storageActions.saveAccountReceive(action.payload.accountKey));

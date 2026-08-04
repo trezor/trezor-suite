@@ -62,9 +62,6 @@ test.describe('Receive transaction', { tag: ['@T3W1', '@T3T1'] }, () => {
                 await settingsPage.changeNetworks({ enableNetworks: [coin] });
                 await walletPage.accountButton({ symbol: coin }).click();
                 await walletPage.receiveButton.click();
-                await walletPage.revealAddressButton.click();
-                const address = await devicePrompt.getAddressFromDisplay();
-                await devicePrompt.waitForPromptAndConfirm();
                 // Intercept writeText before clicking copy — Chromium enforces Permissions-Policy
                 // at the HTTP header level, so navigator.clipboard.readText() is blocked in CI
                 // even when context permissions are granted. Capture the value on write instead.
@@ -77,8 +74,15 @@ test.describe('Receive transaction', { tag: ['@T3W1', '@T3T1'] }, () => {
                         return original(text).catch(() => undefined);
                     };
                 });
+                // Copying is the entry point to verification: it opens the prompt offering to
+                // verify the address that was just copied.
                 await walletPage.copyAddressButton.click();
                 await expect(walletPage.copyToCliboardToast).toBeVisible();
+                await expect(walletPage.addressCopiedModal).toBeVisible();
+                await walletPage.addressCopiedModalVerifyButton.click();
+                const address = await devicePrompt.getAddressFromDisplay();
+                await devicePrompt.waitForPromptAndConfirm();
+                await expect(walletPage.addressCopiedModal).toBeHidden();
                 const clipboardText = await page.evaluate(
                     () => (window as any).__clipboardCapture as string,
                 );

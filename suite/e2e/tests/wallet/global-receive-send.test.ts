@@ -42,11 +42,15 @@ test.describe('Global receive and send', { tag: ['@T3T1', '@T3W1'] }, () => {
             ).toHaveTranslation('LABELING_ACCOUNT', {
                 values: { networkName: 'Ethereum', index: '3' },
             });
-            await walletPage.revealAddressButton.click();
-            const addressDisplayedInSuite = await devicePrompt.outputValueOf('address').innerText();
-            expect.soft(addressDisplayedInSuite.replace(/\s/g, '')).toEqual(ETHEREUM_ADDRESS_3);
+            // The address is rendered on the receive screen itself, so there is no modal to read
+            // it from; the labeling container is keyed by the address it renders.
+            await expect(
+                page.getByTestId(`@metadata/addressLabel/${ETHEREUM_ADDRESS_3}/hover-container`),
+            ).toBeVisible();
+            await walletPage.verifyAddressButton.click();
             const addressDisplayedOnDevice = await devicePrompt.getAddressFromDisplay();
             expect.soft(addressDisplayedOnDevice).toEqual(DEVICE_ETHEREUM_ADDRESS_3);
+            await devicePrompt.waitForPromptAndConfirm();
             await expect(walletPage.copyAddressButton).toBeEnabled();
         });
     });
