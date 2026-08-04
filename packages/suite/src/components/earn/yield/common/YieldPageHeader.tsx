@@ -11,6 +11,7 @@ import {
     EarnFlow,
     EarnProvider,
 } from '@suite-common/suite-types/src/staking';
+import { getYieldVaultContractAddress } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { Box, Button, Column, IconButton, Row, Text } from '@trezor/components';
 import { CaretLeftIcon, InfoIcon } from '@trezor/icons';
@@ -61,7 +62,7 @@ export const YieldPageHeader = ({
                 })(),
                 to: 'earn-dashboard',
                 networkSymbol: account?.symbol,
-                vaultId: routeParams?.yieldId,
+                vaultId: vault?.id,
             },
         });
 
@@ -69,7 +70,7 @@ export const YieldPageHeader = ({
     };
 
     const onHowItWorksClick = () => {
-        if (!account || !routeParams) {
+        if (!account || !vault) {
             return;
         }
 
@@ -79,7 +80,7 @@ export const YieldPageHeader = ({
                 element: 'how-it-works',
                 value: analyticsStep,
                 networkSymbol: account.symbol,
-                vaultId: routeParams.yieldId,
+                vaultId: vault.id,
             },
         });
 
@@ -92,8 +93,9 @@ export const YieldPageHeader = ({
                 analyticsStep,
                 actionType: 'close',
                 yieldContext: {
-                    id: routeParams.yieldId,
-                    tokenContractAddress: vault?.token.address ?? undefined,
+                    id: vault.id,
+                    vaultAddress: getYieldVaultContractAddress(vault) ?? undefined,
+                    tokenContractAddress: vault.token.address ?? undefined,
                 },
             }),
         );
@@ -179,7 +181,7 @@ export const YieldPageHeader = ({
                                 size="large"
                                 aria-label={translationString('TR_EARN_HOW_IT_WORKS')}
                                 onClick={onHowItWorksClick}
-                                isDisabled={!account || !routeParams}
+                                isDisabled={!account || !vault}
                                 tooltip={{ content: <Translation id="TR_EARN_HOW_IT_WORKS" /> }}
                             />
                         ) : (
@@ -187,7 +189,7 @@ export const YieldPageHeader = ({
                                 intent="neutral"
                                 priority="secondary"
                                 onClick={onHowItWorksClick}
-                                isDisabled={!account || !routeParams}
+                                isDisabled={!account || !vault}
                             >
                                 <Translation id="TR_EARN_HOW_IT_WORKS" />
                             </Button>

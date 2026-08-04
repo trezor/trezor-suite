@@ -3,7 +3,7 @@ import { type WalletParams as CommonWalletParams } from '@suite-common/wallet-ty
 import { type Route } from './route';
 import {
     type DashboardParams,
-    decodeEarnRouteParams,
+    decodeEarnVaultAddress,
     parseDashboardParams,
     parseEarnParams,
     validateAccountRouteParams,
@@ -105,16 +105,12 @@ const accountScopedEarnYieldRoutes: Route['name'][] = [
 ];
 
 const validateEarnYieldParams = (route: Route, hash: HashString) => {
-    const [symbol, index, rawAccountType, rawYieldId, rawContractAddress] = parseHash(hash);
+    const [symbol, index, rawAccountType, rawVaultAddress] = parseHash(hash);
 
     const accountRouteParams = validateAccountRouteParams({
         symbol,
         index,
         rawAccountType,
-    });
-    const decodedEarnRouteParams = decodeEarnRouteParams({
-        rawYieldId,
-        rawContractAddress,
     });
 
     if (!accountRouteParams) {
@@ -125,13 +121,15 @@ const validateEarnYieldParams = (route: Route, hash: HashString) => {
         return accountRouteParams;
     }
 
-    if (!rawYieldId) {
+    const vaultAddress = decodeEarnVaultAddress(rawVaultAddress);
+
+    if (!vaultAddress) {
         return;
     }
 
     return parseEarnParams({
         ...accountRouteParams,
-        ...decodedEarnRouteParams,
+        vaultAddress,
     });
 };
 

@@ -16,8 +16,7 @@ type AppParamsTypes = {
     accountIndex: number;
     accountType: NonNullable<AccountType>;
     cancelable: boolean;
-    yieldId: string;
-    contractAddress?: string;
+    vaultAddress?: string;
 };
 
 type ExtractType<T extends keyof AppParamsTypes> = {

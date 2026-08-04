@@ -1,6 +1,5 @@
 import { useMemo } from 'react';
 
-import { type EarnParams } from '@suite/router';
 import { type TokenDtoV2, type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
@@ -60,16 +59,14 @@ type UseResolvedYieldFlowDataResult = {
 
 type UseResolvedYieldFlowDataProps = {
     account: Account;
-    routeParams: EarnParams;
     vault: YieldDtoV2;
 };
 
 export const useResolvedYieldFlowData = ({
     account,
-    routeParams,
     vault,
 }: UseResolvedYieldFlowDataProps): UseResolvedYieldFlowDataResult => {
-    const resolvedContractAddress = routeParams.contractAddress ?? vault.token.address;
+    const resolvedContractAddress = vault.token.address;
 
     const matchedToken = useMemo(() => {
         if (resolvedContractAddress) {
@@ -143,7 +140,7 @@ export const useResolvedYieldFlowData = ({
     const flowKey = getStablecoinYieldFlowKey({
         accountKey: account.key,
         tokenContract: resolvedContractAddress,
-        yieldId: routeParams.yieldId,
+        yieldId: vault.id,
     });
 
     const apy = vault.rewardRate.total != null ? getApyPercent(vault.rewardRate.total) : null;
