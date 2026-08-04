@@ -190,6 +190,7 @@ jobs:
         uses: ./.github/actions/llm-test-selector
         with:
           openrouter-api-key: ${{ secrets.E2E_SELECTOR_API_KEY }}
+          slack-webhook: ${{ secrets.SLACK_FIX_AGENT_WEBHOOK }}
       - name: Post LLM analysis to PR description
         if: steps.check-size.outputs.is_small_pr == 'true'
         uses: ./.github/actions/post-llm-analysis
