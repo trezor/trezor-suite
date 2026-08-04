@@ -122,7 +122,7 @@ export interface InvokeChannels {
     'metadata/write': (options: { file: string; content: string }) => InvokeResult;
     'metadata/get-files': () => InvokeResult<string[]>;
     'metadata/rename-file': (options: { file: string; to: string }) => InvokeResult;
-    'server/request-address': (route: string) => string | undefined;
+    'server/request-address': (route: string) => HttpReceiverAddress | undefined;
     'tor/toggle': (shouldEnableTor: boolean) => InvokeResult;
     'tor/change-settings': (payload: TorSettings) => InvokeResult;
     'tor/get-settings': () => InvokeResult<TorSettings>;
@@ -176,6 +176,17 @@ export interface InvokeChannels {
     // Browser Window
     'browser-window/reload': () => void;
 }
+
+/**
+ * Returned by `getHttpReceiverAddress`. `url` is the base URL of the route.
+ * `token` is a single-use token to be appended as `?token=<token>` (or used as
+ * the `state` parameter for OAuth flows). On platforms where the request is
+ * served by a deeplink instead of the HTTP receiver, `token` is an empty string.
+ */
+export type HttpReceiverAddress = {
+    url: string;
+    token: string;
+};
 
 type DesktopApiListener = ListenerMethod<RendererChannels>;
 

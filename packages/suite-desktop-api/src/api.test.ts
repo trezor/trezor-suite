@@ -192,12 +192,13 @@ describe('DesktopApi', () => {
         });
 
         it('DesktopApi.getHttpReceiverAddress', async () => {
+            const fakeAddress = { url: 'http://127.0.0.1:21335/coinmarket', token: 'tk-1' };
             const spy = jest
                 .spyOn(ipcRenderer, 'invoke')
-                .mockImplementation(() => Promise.resolve('prefixed/coinmarket'));
+                .mockImplementation(() => Promise.resolve(fakeAddress));
             const result = await api.getHttpReceiverAddress('/coinmarket');
             expect(spy).toHaveBeenCalledWith('server/request-address', '/coinmarket');
-            expect(result).toBe('prefixed/coinmarket');
+            expect(result).toEqual(fakeAddress);
 
             // @ts-expect-error invalid params
             const fail = await api.getHttpReceiverAddress(true);

@@ -52,13 +52,16 @@ export class DropboxProvider extends AbstractMetadataProvider {
     }
 
     async connect() {
-        const redirectUrl = await getOauthReceiverUrl();
+        const oauthAddress = await getOauthReceiverUrl();
 
-        if (!redirectUrl) return this.error('AUTH_ERROR', 'Failed to get oauth receiver url');
+        if (!oauthAddress) return this.error('AUTH_ERROR', 'Failed to get oauth receiver url');
 
         const url = await this.auth.getAuthenticationUrl(
-            redirectUrl,
-            getWeakRandomId(10),
+            oauthAddress.url,
+            // On desktop the receiver token is carried as `state` to authenticate
+            // the redirect back to the local HTTP server; on web (no token) fall
+            // back to a random CSRF nonce.
+            oauthAddress.token || getWeakRandomId(10),
             'code',
             'offline',
             undefined, // If this parameter is omitted, the authorization page will request all scopes selected on the Permissions tab
@@ -73,7 +76,7 @@ export class DropboxProvider extends AbstractMetadataProvider {
             if (!code)
                 return this.error('AUTH_ERROR', 'Failed to extract code from authorization flow');
 
-            const { result } = await this.auth.getAccessTokenFromCode(redirectUrl, code);
+            const { result } = await this.auth.getAccessTokenFromCode(oauthAddress.url, code);
 
             // @ts-expect-error dropbox lib types result as Object, but access_token & refresh_token are available there as strings
             const { access_token: accessToken, refresh_token: refreshToken } = result;

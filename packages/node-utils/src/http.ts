@@ -1,4 +1,5 @@
 import { sanitizeUrl } from '@braintree/sanitize-url';
+import { randomUUID } from 'crypto';
 import * as http from 'http';
 import type * as net from 'net';
 
@@ -7,6 +8,8 @@ import { type Log, TypedEmitter, arrayPartition } from '@trezor/utils';
 
 import { findProcessFromIncomingPort } from './findProcessFromIncomingPort';
 import { formatRequestUrl, parseRequestUrl } from './parseRequestUrl';
+
+const DEFAULT_TOKEN_TTL_MS = 60 * 60 * 1000;
 
 type Request = RequiredKey<http.IncomingMessage, 'url'>;
 const isRequest = (request: http.IncomingMessage): request is Request => request.url !== undefined;
@@ -74,6 +77,18 @@ type Route = {
     params: string[];
     handler: AnyRequestHandler[];
     isActive: boolean;
+    /** Live tokens issued for this route, mapped to their absolute expiry timestamp (ms). */
+    tokens: Map<string, number>;
+};
+
+/**
+ * Result of activating a route: a base URL pointing at the route on this server,
+ * and a single-use token that must be presented by the incoming request to be
+ * accepted by the `requireToken` middleware.
+ */
+export type ActivatedRoute = {
+    url: string;
+    token: string;
 };
 /**
  * Events that may be emitted or listened to by HttpServer
@@ -99,17 +114,20 @@ export class HttpServer<T extends EventMap> extends TypedEmitter<T & BaseEvents>
     private sockets: Record<number, net.Socket> = {};
     private onConnection?: (socket: net.Socket) => void;
     private onError?: (e: Error) => void;
+    private tokenTtlMs: number;
 
     constructor({
         logger,
         port,
         ports,
         address = '127.0.0.1',
+        tokenTtlMs = DEFAULT_TOKEN_TTL_MS,
     }: {
         logger: Log;
         port?: number;
         ports?: number[];
         address?: string;
+        tokenTtlMs?: number;
     }) {
         super();
 
@@ -124,6 +142,7 @@ export class HttpServer<T extends EventMap> extends TypedEmitter<T & BaseEvents>
         this.logger = logger;
         this.server = http.createServer(this.onRequest);
         this.address = address;
+        this.tokenTtlMs = tokenTtlMs;
     }
 
     get logName() {
@@ -145,20 +164,25 @@ export class HttpServer<T extends EventMap> extends TypedEmitter<T & BaseEvents>
         return address;
     }
 
-    getRouteAddress(pathname: string) {
-        const address = this.getServerAddress();
-        const route = this.routes.find(r => r.pathname === pathname);
-        if (!route) return;
-
-        return `http://${address.address}:${address.port}${route.pathname}`;
-    }
-
     public getInfo() {
         const address = this.getServerAddress();
 
         return {
             url: `http://${address.address}:${address.port}`,
         };
+    }
+
+    /**
+     * Returns the URL for a registered route without activating it or issuing a
+     * token. Suitable for routes that don't use the `requireToken` middleware
+     * (e.g. always-on transport-bridge endpoints).
+     */
+    public getRouteAddress(pathname: string) {
+        const address = this.getServerAddress();
+        const route = this.routes.find(r => r.pathname === pathname);
+        if (!route) return;
+
+        return `http://${address.address}:${address.port}${route.pathname}`;
     }
 
     public start() {
@@ -297,6 +321,7 @@ export class HttpServer<T extends EventMap> extends TypedEmitter<T & BaseEvents>
             params: paramsSegments,
             handler,
             isActive: true,
+            tokens: new Map(),
         });
     }
 
@@ -325,21 +350,105 @@ export class HttpServer<T extends EventMap> extends TypedEmitter<T & BaseEvents>
             handler,
             params: [],
             isActive: true,
+            tokens: new Map(),
         });
     }
 
-    public activateRoute(pathname: string) {
+    /**
+     * Activate a route and issue a single-use token for the next incoming request.
+     * The token must be passed in the URL by the caller and validated by the
+     * `requireToken` middleware on the route. Returns the base URL and the token,
+     * or `undefined` if the route is unknown or the server is not listening.
+     */
+    public activateRoute(pathname: string): ActivatedRoute | undefined {
         const route = this.routes.find(r => r.pathname === pathname);
-        if (route) {
-            route.isActive = true;
+        if (!route) return;
+
+        let address;
+        try {
+            address = this.getServerAddress();
+        } catch {
+            return;
         }
+
+        const token = randomUUID();
+        this.purgeExpiredTokens(route);
+        route.tokens.set(token, Date.now() + this.tokenTtlMs);
+        route.isActive = true;
+
+        return {
+            url: `http://${address.address}:${address.port}${route.pathname}`,
+            token,
+        };
     }
 
     public deactivateRoute(pathname: string) {
         const route = this.routes.find(r => r.pathname === pathname);
         if (route) {
             route.isActive = false;
+            route.tokens.clear();
         }
+    }
+
+    private purgeExpiredTokens(route: Route) {
+        const now = Date.now();
+        for (const [t, exp] of route.tokens) {
+            if (exp <= now) route.tokens.delete(t);
+        }
+    }
+
+    /**
+     * Middleware that requires a valid single-use token in the request query.
+     * The token is consumed on success; once a route has no live tokens left,
+     * it is automatically deactivated (subsequent unauthenticated probes get 404).
+     *
+     * `from` selects the query parameter name carrying the token (default `token`).
+     * Use `from: 'state'` for OAuth flows where the provider only echoes the
+     * `state` parameter back to the redirect URL.
+     */
+    public requireToken({ from = 'token' }: { from?: string } = {}): AnyRequestHandler {
+        return (request, response, next, { logger }) => {
+            // Reject with a bare 404 that is indistinguishable from the "route not
+            // found / inactive" response produced by `onRequest`. Upstream common
+            // middleware may already have set headers (e.g. a global Content-Type),
+            // so strip them to avoid leaking that the route exists and is currently
+            // activated (route-discovery signal).
+            const reject = () => {
+                response.removeHeader('Content-Type');
+                response.statusCode = 404;
+
+                return response.end();
+            };
+
+            const { pathname, query } = parseRequestUrl(request.url);
+            const route = pathname ? this.routes.find(r => r.pathname === pathname) : undefined;
+            if (!route) {
+                return reject();
+            }
+
+            this.purgeExpiredTokens(route);
+            if (route.tokens.size === 0) {
+                route.isActive = false;
+            }
+
+            const raw = query?.[from];
+            const token = Array.isArray(raw) ? raw[0] : raw;
+            if (!token) {
+                return reject();
+            }
+            if (!route.tokens.has(token)) {
+                logger.info(`Token rejected for ${pathname} (param '${from}')`);
+
+                return reject();
+            }
+
+            route.tokens.delete(token);
+            if (route.tokens.size === 0) {
+                route.isActive = false;
+            }
+
+            next(request, response);
+        };
     }
 
     private getSafeDecodedURI(param: string) {

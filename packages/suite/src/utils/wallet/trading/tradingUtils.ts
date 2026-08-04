@@ -9,6 +9,7 @@ import {
 } from '@suite-common/wallet-types';
 import { asAmountSubunit, substituteBip43Path, subunitsToUnits } from '@suite-common/wallet-utils';
 import TrezorConnect, { type FeeLevel, type TokenInfo } from '@trezor/connect';
+import { type HttpReceiverAddress } from '@trezor/suite-desktop-api';
 import { exhaustive } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils';
 
@@ -18,6 +19,21 @@ import {
     type TradingGetAmountLabelsReturnProps,
 } from 'src/types/trading/trading';
 import { type Account } from 'src/types/wallet';
+
+/**
+ * Build a redirect URL for an HTTP-receiver-backed coinmarket flow on desktop.
+ * On platforms where the receiver is bypassed for a `trezorsuite://` deeplink
+ * (`token === ''`), the token query parameter is omitted.
+ */
+export const buildHttpReceiverRedirectUrl = (
+    address: HttpReceiverAddress | undefined,
+    redirectPath: string,
+): string => {
+    const params = new URLSearchParams({ p: redirectPath });
+    if (address?.token) params.set('token', address.token);
+
+    return `${address?.url}?${params.toString()}`;
+};
 
 export const translationKeys: Record<
     TradingType,
