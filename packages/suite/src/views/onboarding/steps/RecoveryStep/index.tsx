@@ -5,7 +5,7 @@ import { selectRecoveryWordRequestInputType } from '@suite/modal';
 import { OnboardingCard } from '@suite/onboarding-components';
 import {
     type RecoveryInputType,
-    isStandardRecoveryDisabled,
+    isRecoveryInputTypeDisabled,
     recoverDeviceThunk,
     recoveryActions,
     selectRecoveryError,
@@ -82,7 +82,7 @@ export const RecoveryStep = () => {
                             dispatch(recoveryActions.setWordsCount(number));
                             // For T1B1 with 12 or 18 words, skip recovery type selection and use Advanced recovery
                             // For 24 words, show the recovery type selection
-                            const shouldSkipSelection = isStandardRecoveryDisabled(
+                            const shouldSkipSelection = isRecoveryInputTypeDisabled(
                                 deviceModelInternal,
                                 number,
                                 'standard',

@@ -1,4 +1,5 @@
 import { DeviceModelInternal } from '@trezor/device-utils';
+import { exhaustive } from '@trezor/type-utils';
 
 import { type RecoveryInputType, type WordCount } from './types';
 
@@ -13,20 +14,22 @@ const WORD_COUNT_18 = 18 as const;
  * - Standard recovery is enabled for 24-word seeds (sufficient entropy)
  * - Advanced recovery is always available for all word counts
  */
-export const isStandardRecoveryDisabled = (
+export const isRecoveryInputTypeDisabled = (
     deviceModelInternal: DeviceModelInternal,
     wordCount: WordCount,
     recoveryInputType: RecoveryInputType,
 ): boolean => {
-    // Advanced recovery is never disabled
-    if (recoveryInputType === 'advanced') {
-        return false;
+    switch (recoveryInputType) {
+        // Advanced recovery is never disabled
+        case 'advanced':
+            return false;
+        // Only disable Standard recovery for T1B1 with 12 or 18-word seeds
+        case 'standard':
+            return (
+                deviceModelInternal === DeviceModelInternal.T1B1 &&
+                (wordCount === WORD_COUNT_12 || wordCount === WORD_COUNT_18)
+            );
+        default:
+            return exhaustive(recoveryInputType);
     }
-
-    // Only disable Standard recovery for T1B1 with 12 or 18-word seeds
-    return (
-        recoveryInputType === 'standard' &&
-        deviceModelInternal === DeviceModelInternal.T1B1 &&
-        (wordCount === WORD_COUNT_12 || wordCount === WORD_COUNT_18)
-    );
 };

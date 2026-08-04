@@ -9,7 +9,7 @@ import {
     type SeedInputStatus,
     type WordCount,
     checkSeedThunk,
-    isStandardRecoveryDisabled,
+    isRecoveryInputTypeDisabled,
     recoveryActions,
     selectRecovery,
 } from '@suite/recovery';
@@ -202,7 +202,7 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
 
                             // For T1B1 with 12 or 18 words, skip recovery type selection and use Advanced recovery
                             // For 24 words, show the recovery type selection
-                            const shouldSkipSelection = isStandardRecoveryDisabled(
+                            const shouldSkipSelection = isRecoveryInputTypeDisabled(
                                 deviceModelInternal,
                                 wordCount,
                                 'standard',
