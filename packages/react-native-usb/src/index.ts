@@ -155,7 +155,11 @@ export function onDeviceDisconnect(listener: (event: OnConnectEvent) => void): E
     });
 }
 
-export async function getDevices(): Promise<WebUSBDevice[]> {
+// NOTE: return type intentionally kept loose (`Promise<any>`) so the WebUSB stub stays
+// assignable to transport-common's `UsbInterfaceApi` (its `UsbDeviceLike.configuration` is
+// required, whereas the WebUSB-spec `configuration` is optional). Do not tighten to
+// `Promise<WebUSBDevice[]>` without also reconciling that contract.
+export async function getDevices(): Promise<any> {
     const devices = await ReactNativeUsbModule.getDevices();
 
     return devices.map((device: NativeDevice) => createWebUSBDevice(device));
