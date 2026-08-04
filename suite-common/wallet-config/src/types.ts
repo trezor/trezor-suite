@@ -30,7 +30,3 @@ export type Network = Omit<SuiteCommonNetworkConfig, 'settlementLayer' | 'yieldX
     readonly settlementLayer?: NetworkSymbol;
     readonly yieldXyzId: TokenDtoV2['network'] | null;
 };
-
-export type Networks = {
-    readonly [key in NetworkSymbol]: Network;
-};
