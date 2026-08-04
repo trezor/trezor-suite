@@ -10,7 +10,7 @@ import { bluetoothDisconnectDeviceThunk } from './bluetoothDisconnectDeviceThunk
 export const bluetoothOnDeviceConnectedThunk = createThunk<
     void,
     Device,
-    { state: WithBluetoothState<DesktopBluetoothDevice>; extra: Record<never, never> }
+    { state: WithBluetoothState<DesktopBluetoothDevice> }
 >(`${BLUETOOTH_PREFIX}/bluetoothOnDeviceConnectedThunk`, (device, { dispatch, getState }) => {
     const knownDevice = selectKnownDeviceByDeviceId(getState(), device.id ?? undefined);
 
