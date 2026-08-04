@@ -34,7 +34,7 @@ export const loadInitialDataThunk = createThunk(
         { activeSection, forcedApiKey }: LoadInitialDataThunkProps,
         { dispatch, getState, extra },
     ) => {
-        const selectedAccount = extra.selectors.selectSelectedAccount(getState());
+        const selectedAccount = extra.services.getSelectedAccount();
         const account = selectTradingAccountAccordingActiveSection(
             getState(),
             activeSection,
@@ -55,7 +55,7 @@ export const loadInitialDataThunk = createThunk(
         if (!isLoading && (isDifferentAccount || areDataOutdated)) {
             dispatch(tradingActions.setLoading({ isLoading: true }));
 
-            const tradeServerEnvironment = extra.selectors.selectTradingEnvironment(getState());
+            const tradeServerEnvironment = extra.services.getTradingEnvironment();
             if (tradeServerEnvironment) {
                 tradeApi.setServersEnvironment(tradeServerEnvironment);
             }

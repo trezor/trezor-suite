@@ -17,8 +17,8 @@ import {
     type ExtraDependencies,
     notImplementedAction,
     notImplementedActionType,
+    notImplementedGetter,
     notImplementedReducer,
-    notImplementedSelector,
     notImplementedThunk,
 } from '@suite-common/redux-utils';
 import type { SuiteSync } from '@suite-common/suite-sync-types';
@@ -115,21 +115,19 @@ export const extraDependenciesCommonMock: ExtraDependencies = {
         createTransports: () => [],
         accountRefreshThrottle: createKeyedThrottle(10_000, () => undefined),
         migrateSuiteSyncLabelsForRbfTransaction: () => Promise.resolve([[], []]),
-    },
-    selectors: {
-        selectTokenDefinitionsEnabledNetworks: notImplementedSelector(
-            'selectTokenDefinitonsEnabledNetworks',
+        getTokenDefinitionsEnabledNetworks: notImplementedGetter(
+            'getTokenDefinitionsEnabledNetworks',
             ['eth'],
         ),
-        selectDebugSettings: notImplementedSelector('selectDebugSettings', {
+        getDebugSettings: notImplementedGetter('getDebugSettings', {
             checkFirmwareAuthenticity: false,
             showDebugMenu: false,
             transports: [],
         }),
-        selectDesktopBinDir: notImplementedSelector('selectDesktopBinDir', '/bin'),
-        selectLanguage: notImplementedSelector('selectLanguage', 'en'),
+        getDesktopBinDir: notImplementedGetter('getDesktopBinDir', '/bin'),
+        getLanguage: notImplementedGetter('getLanguage', 'en'),
 
-        selectSelectedAccount: notImplementedSelector('selectSelectedAccount', {
+        getSelectedAccount: notImplementedGetter('getSelectedAccount', {
             status: 'loaded',
             account: mockWalletAccount({
                 symbol: 'btc',
@@ -137,21 +135,15 @@ export const extraDependenciesCommonMock: ExtraDependencies = {
                 descriptor: asAccountDescriptor('btc1'),
             }),
         } as SelectedAccountLoaded),
-        selectSelectedAccountStatus: notImplementedSelector(
-            'selectSelectedAccountStatus',
-            'loaded',
-        ),
-        selectIsWindowVisible: notImplementedSelector('selectIsWindowVisible', true),
-        selectTradingEnvironment: notImplementedSelector('selectTradingEnvironment', 'localhost'),
-        selectTradedAccountKeys: notImplementedSelector('selectTradedAccountKeys', []),
-        selectIsViewOnlyByDefaultEnabled: notImplementedSelector(
-            'selectIsViewOnlyByDefaultEnabled',
-            true,
-        ),
-        selectThpSettings: notImplementedSelector('selectThpSettings', {
+        getSelectedAccountStatus: notImplementedGetter('getSelectedAccountStatus', 'loaded'),
+        getIsWindowVisible: notImplementedGetter('getIsWindowVisible', true),
+        getTradingEnvironment: notImplementedGetter('getTradingEnvironment', 'localhost'),
+        getTradedAccountKeys: notImplementedGetter('getTradedAccountKeys', []),
+        getIsViewOnlyByDefaultEnabled: notImplementedGetter('getIsViewOnlyByDefaultEnabled', true),
+        getThpSettings: notImplementedGetter('getThpSettings', {
             pairingMethods: ['CodeEntry'],
         }),
-        selectAllowPrerelease: notImplementedSelector('selectAllowPrerelease', false),
+        getAllowPrerelease: notImplementedGetter('getAllowPrerelease', false),
     },
     actions: {
         setAccountAddMetadata: notImplementedAction('setAccountAddMetadata'),

@@ -18,8 +18,8 @@ import {
     type ExtraDependenciesStatic,
     notImplementedAction,
     notImplementedActionType,
+    notImplementedGetter,
     notImplementedReducer,
-    notImplementedSelector,
     notImplementedThunk,
 } from '@suite-common/redux-utils';
 import { createMigrateSuiteSyncLabelsForRbfTransactionCompositionRoot } from '@suite-common/suite-rbf-labels-migrations';
@@ -145,6 +145,35 @@ export const createNativeCompositionRoot = (deps: NativeAppDeps): NativeServices
                 }
             }),
         accountRefreshThrottle: createAccountRefreshThrottle(deps.getState),
+        getLanguage: toGetter(deps.getState, selectSupportedLanguageLocale),
+        getTokenDefinitionsEnabledNetworks: toGetter(
+            deps.getState,
+            selectTokenDefinitionsEnabledNetworks,
+        ),
+        getDebugSettings: toGetter(deps.getState, () => ({ transports })),
+        getTradingEnvironment: toGetter(deps.getState, selectTradingEnvironment),
+        getTradedAccountKeys: toGetter(deps.getState, selectTradedAccountKeys),
+        // This getter is not used in native app, but it is used in @suite-common/trading in loadInitialDataThunk.
+        getSelectedAccount: toGetter(deps.getState, () => ({
+            status: 'none',
+            loader: undefined,
+            account: undefined,
+            network: undefined,
+            params: undefined,
+        })),
+        getThpSettings: toGetter(deps.getState, state => ({
+            // On iOS 16 and newer, deviceName is set to "iPhone" without the correct entitlement.
+            hostName: (Platform.OS === 'ios' ? Device.modelName : Device.deviceName) ?? undefined,
+            pairingMethods: ['CodeEntry', 'NFC'],
+            knownCredentials: state.thp?.credentials,
+        })),
+        getAllowPrerelease: toGetter(deps.getState, () => false),
+
+        // Not implemented. We assume those are NEVER called on Native.
+        getDesktopBinDir: notImplementedGetter('getDesktopBinDir', '/bin'),
+        getSelectedAccountStatus: notImplementedGetter('getSelectedAccountStatus', 'loaded'),
+        getIsWindowVisible: notImplementedGetter('getIsWindowVisible', true),
+        getIsViewOnlyByDefaultEnabled: notImplementedGetter('getIsViewOnlyByDefaultEnabled', true),
         migrateSuiteSyncLabelsForRbfTransaction:
             createMigrateSuiteSyncLabelsForRbfTransactionCompositionRoot({
                 dispatch: deps.dispatch,
@@ -155,45 +184,6 @@ export const createNativeCompositionRoot = (deps: NativeAppDeps): NativeServices
 };
 
 export const extraDependencies: ExtraDependenciesStatic = {
-    selectors: {
-        selectLanguage: selectSupportedLanguageLocale,
-        selectTokenDefinitionsEnabledNetworks,
-        selectDebugSettings: () => ({
-            transports,
-        }),
-        selectTradingEnvironment,
-        selectTradedAccountKeys,
-        // this selector is not used in native app, but it is used in @suite-common/trading in loadInitialDataThunk
-        //  and without defining the selector, it would use extraDependenciesMock value there
-        selectSelectedAccount: () => ({
-            status: 'none',
-            loader: undefined,
-            account: undefined,
-            network: undefined,
-            params: undefined,
-        }),
-        selectThpSettings: state => ({
-            // On iOS 16 and newer, deviceName is set to "iPhone" without the correct entitlement.
-            hostName: (Platform.OS === 'ios' ? Device.modelName : Device.deviceName) ?? undefined,
-            pairingMethods: ['CodeEntry', 'NFC'],
-            knownCredentials: state.thp?.credentials,
-        }),
-        selectAllowPrerelease: () => false,
-
-        // Not implemented. We assume those are NEVER called on Native
-        // need for this is architectural mistake. Please DO NOT add more and try
-        // to remove them.
-        selectDesktopBinDir: notImplementedSelector('selectDesktopBinDir', '/bin'),
-        selectSelectedAccountStatus: notImplementedSelector(
-            'selectSelectedAccountStatus',
-            'loaded',
-        ),
-        selectIsWindowVisible: notImplementedSelector('selectIsWindowVisible', true),
-        selectIsViewOnlyByDefaultEnabled: notImplementedSelector(
-            'selectIsViewOnlyByDefaultEnabled',
-            true,
-        ),
-    },
     thunks: {
         forgetBluetoothDevice: forgetBluetoothDeviceThunk,
 

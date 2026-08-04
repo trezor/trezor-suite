@@ -221,6 +221,39 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         createLogger: deps.createLogger,
         thpHostName: deps.thpHostName,
         createTransports,
+        getTokenDefinitionsEnabledNetworks: toGetter(
+            deps.getState,
+            (state: AppState) => state.wallet.settings.enabledNetworks,
+        ),
+        // TODO: Coinjoin has not been moved to @suite-common yet, so its debug settings type is not available here.
+        getDebugSettings: toGetter(deps.getState, selectDebugSettings),
+        // FW binaries on desktop are stored in "*/static/connect/data/firmware/*/*.bin" (see "connect-common" package)
+        getDesktopBinDir: toGetter(
+            deps.getState,
+            (state: AppState) => state.desktop?.paths?.binDir,
+        ),
+        getLanguage: toGetter(deps.getState, selectLanguage),
+        getSelectedAccount: toGetter(
+            deps.getState,
+            (state: AppState) => state.wallet.selectedAccount,
+        ),
+        getSelectedAccountStatus: toGetter(
+            deps.getState,
+            (state: AppState) => state.wallet.selectedAccount.status,
+        ),
+        getIsWindowVisible: toGetter(deps.getState, selectIsWindowVisible),
+        getTradingEnvironment: toGetter(deps.getState, selectTradeServerEnvironment),
+        getTradedAccountKeys: toGetter(deps.getState, selectTradedAccountKeys),
+        getIsViewOnlyByDefaultEnabled: toGetter(deps.getState, (_: AppState) => true),
+        getThpSettings: toGetter(deps.getState, (state: AppState) => ({
+            appName: 'Trezor Suite', // NOTE: this is displayed on Trezor. not the same as manifest.appName
+            pairingMethods: ['CodeEntry'],
+            knownCredentials: state.thp?.credentials,
+        })),
+        getAllowPrerelease: toGetter(
+            deps.getState,
+            (state: AppState) => state.desktopUpdate?.allowPrerelease ?? false,
+        ),
         migrateSuiteSyncLabelsForRbfTransaction:
             createMigrateSuiteSyncLabelsForRbfTransactionCompositionRoot({
                 dispatch: deps.dispatch,
@@ -236,26 +269,6 @@ export const extraDependencies: ExtraDependenciesStatic = {
         fetchAndSaveMetadata: metadataLabelingActions.fetchAndSaveMetadata,
         addAccountMetadata: metadataLabelingActions.addAccountMetadata,
         forgetBluetoothDevice: forgetBluetoothDeviceThunk,
-    },
-    selectors: {
-        selectTokenDefinitionsEnabledNetworks: (state: AppState) =>
-            state.wallet.settings.enabledNetworks,
-        selectDebugSettings,
-        // FW binaries on desktop are stored in "*/static/connect/data/firmware/*/*.bin" (see "connect-common" package)
-        selectDesktopBinDir: (state: AppState) => state.desktop?.paths?.binDir,
-        selectLanguage,
-        selectSelectedAccount: (state: AppState) => state.wallet.selectedAccount,
-        selectSelectedAccountStatus: (state: AppState) => state.wallet.selectedAccount.status,
-        selectIsWindowVisible,
-        selectTradingEnvironment: selectTradeServerEnvironment,
-        selectTradedAccountKeys,
-        selectIsViewOnlyByDefaultEnabled: (_: AppState) => true,
-        selectThpSettings: (state: AppState) => ({
-            appName: 'Trezor Suite', // NOTE: this is displayed on Trezor. not the same as manifest.appName
-            pairingMethods: ['CodeEntry'],
-            knownCredentials: state.thp?.credentials,
-        }),
-        selectAllowPrerelease: (state: AppState) => state.desktopUpdate?.allowPrerelease ?? false,
     },
     actions: {
         setAccountAddMetadata: metadataActions.setAccountAdd,

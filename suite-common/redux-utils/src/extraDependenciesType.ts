@@ -42,7 +42,7 @@ import type { Transport } from '@trezor/transport-common';
 import { type KeyedThrottle } from '@trezor/utils';
 
 import { type ConnectInitHooks } from './connectInitHooksType';
-import { type ActionType, type SuiteCompatibleSelector, type SuiteCompatibleThunk } from './types';
+import { type ActionType, type SuiteCompatibleThunk } from './types';
 
 type BaseReducer = (state: any, action: { type: any; payload: any }) => void;
 type StorageLoadReducer = (state: any, action: { type: any; payload: any }) => void;
@@ -88,6 +88,18 @@ export type CommonServices = SuiteSyncDep &
         connectInitSettings: ConnectInitSettings;
         connectInitHooks: ConnectInitHooks;
         accountRefreshThrottle: KeyedThrottle<Account['key']>;
+        getTokenDefinitionsEnabledNetworks: () => NetworkSymbol[];
+        getDebugSettings: () => any;
+        getDesktopBinDir: () => string | undefined;
+        getLanguage: () => string;
+        getIsWindowVisible: () => boolean;
+        getSelectedAccount: () => SelectedAccountStatus;
+        getSelectedAccountStatus: () => SelectedAccountStatus['status'];
+        getTradingEnvironment: () => 'production' | 'staging' | 'dev' | 'localhost' | undefined;
+        getTradedAccountKeys: () => AccountKey[];
+        getIsViewOnlyByDefaultEnabled: () => boolean;
+        getThpSettings: () => ThpSettings;
+        getAllowPrerelease: () => boolean;
     } & ReportSecurityCheckDep &
     ReloadAppDep &
     MigrateSuiteSyncLabelsForRbfTransactionDep &
@@ -109,26 +121,6 @@ export type ExtraDependenciesStatic = {
             isOsUnpairingFinished?: boolean;
             skipDisconnect?: boolean;
         }>;
-    };
-    selectors: {
-        // TODO when tokens are implemented 1:1 in both apps, delete from extras
-        // wallet-core selector is used in desktop, but suite-native has its own implementation
-        selectTokenDefinitionsEnabledNetworks: SuiteCompatibleSelector<NetworkSymbol[]>;
-        // todo: we do not want to, so far, transfer coinjoin to @suite-common
-        // but this is exactly what I need to get DebugModeOptions type instead of any
-        selectDebugSettings: SuiteCompatibleSelector<any>;
-        selectDesktopBinDir: SuiteCompatibleSelector<string | undefined>;
-        selectLanguage: SuiteCompatibleSelector<string>;
-        selectIsWindowVisible: SuiteCompatibleSelector<boolean>;
-        selectSelectedAccount: SuiteCompatibleSelector<SelectedAccountStatus>;
-        selectSelectedAccountStatus: SuiteCompatibleSelector<SelectedAccountStatus['status']>;
-        selectTradingEnvironment: SuiteCompatibleSelector<
-            'production' | 'staging' | 'dev' | 'localhost' | undefined
-        >;
-        selectTradedAccountKeys: SuiteCompatibleSelector<AccountKey[]>;
-        selectIsViewOnlyByDefaultEnabled: SuiteCompatibleSelector<boolean>;
-        selectThpSettings: SuiteCompatibleSelector<ThpSettings>;
-        selectAllowPrerelease: SuiteCompatibleSelector<boolean>;
     };
     // You should only use ActionCreatorWithPayload from redux-toolkit!
     // That means you will need to convert actual action creators in packages/suite to use createAction from redux-toolkit,

@@ -382,12 +382,12 @@ export const periodicFetchFiatRatesThunk = createThunk(
     `${FIAT_RATES_MODULE_PREFIX}/periodicFetchFiatRates`,
     async (
         { rateType, localCurrency }: PeriodicFetchFiatRatesThunkPayload,
-        { dispatch, getState, extra },
+        { dispatch, extra },
     ) => {
         const {
-            selectors: { selectIsWindowVisible },
+            services: { getIsWindowVisible },
         } = extra;
-        const isWindowVisible = selectIsWindowVisible(getState());
+        const isWindowVisible = getIsWindowVisible();
 
         if (ratesTimeouts[rateType]) {
             clearTimeout(ratesTimeouts[rateType]);

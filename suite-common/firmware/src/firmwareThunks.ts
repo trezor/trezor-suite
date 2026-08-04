@@ -41,13 +41,12 @@ export const firmwareUpdate = createThunk<
         }
 
         const {
-            selectors: { selectLanguage },
-            services: { reportSecurityCheck },
+            services: { getLanguage, reportSecurityCheck },
         } = extra;
 
         const device = selectSelectedDevice(getState());
         const binFilesBaseUrl = await dispatch(getBinFilesBaseUrlThunk()).unwrap();
-        const suiteLanguage = selectLanguage(getState());
+        const suiteLanguage = getLanguage();
         const { useDevkit, cachedDevice, error } = selectFirmware(getState());
 
         if (error) {
