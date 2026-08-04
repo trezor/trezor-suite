@@ -21,7 +21,7 @@ import {
 import { getNewInstanceNumber } from '@suite-common/suite-utils';
 import { type TokenDefinitionsRootState } from '@suite-common/token-definitions';
 import { type TrezorConnectBackendType } from '@suite-common/wallet-config';
-import { type DiscoveryStatus, type SelectTradedAccountKeysDep } from '@suite-common/wallet-types';
+import { type DiscoveryStatus, type GetTradedAccountKeysDep } from '@suite-common/wallet-types';
 import TrezorConnect, {
     type AccountInfo,
     type BundleProgress,
@@ -56,8 +56,7 @@ const DEVICE_CANCELLATION_CODES = ['Method_Cancel', 'Failure_ActionCancelled'];
 
 type DiscoveryReportingThunkState = TokenDefinitionsRootState & WalletCoreCompoundRootState;
 type DiscoveryReportingDeps = {
-    services: AnalyticsDep;
-    selectors: SelectTradedAccountKeysDep;
+    services: AnalyticsDep & GetTradedAccountKeysDep;
 };
 
 type ProgressEvent = BundleProgress<DiscoverAccountsProgress>['payload'];
@@ -303,8 +302,7 @@ type RunDiscoveryParams = {
 };
 
 export type RunDiscoveryThunkDeps = {
-    services: AnalyticsDep;
-    selectors: SelectTradedAccountKeysDep;
+    services: AnalyticsDep & GetTradedAccountKeysDep;
     thunks: FetchAndSaveMetadataDep;
 };
 export type RunDiscoveryThunkState = DiscoveryReportingThunkState;
@@ -625,8 +623,7 @@ type StartDiscoveryThunkParams = {
 };
 type StartDiscoveryThunkState = RunDiscoveryThunkState;
 type StartDiscoveryThunkDeps = {
-    services: AnalyticsDep;
-    selectors: SelectTradedAccountKeysDep;
+    services: AnalyticsDep & GetTradedAccountKeysDep;
     thunks: FetchAndSaveMetadataDep;
 };
 
@@ -675,8 +672,7 @@ export const startDiscoveryThunk = createThunk<
 
 type RunAdditionalDiscoveryThunkState = RunDiscoveryThunkState;
 type RunAdditionalDiscoveryThunkDeps = {
-    services: AnalyticsDep;
-    selectors: SelectTradedAccountKeysDep;
+    services: AnalyticsDep & GetTradedAccountKeysDep;
 };
 
 export const runAdditionalDiscoveryThunk = createThunk<
@@ -860,8 +856,7 @@ export const submitPassphrase = createThunk<
 
 type StartOrRestartDiscoveryThunkState = RunDiscoveryThunkState;
 type StartOrRestartDiscoveryThunkDeps = {
-    services: AnalyticsDep;
-    selectors: SelectTradedAccountKeysDep;
+    services: AnalyticsDep & GetTradedAccountKeysDep;
     thunks: FetchAndSaveMetadataDep;
 };
 

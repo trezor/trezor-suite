@@ -2,8 +2,6 @@ import { type SuiteRouterHistoryDep, findRoute, goto } from '@suite/router';
 import { DEVICE_MODULE_PREFIX } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
 
-import { asSuiteServices } from 'src/support/extraDependencies';
-
 type RedirectAfterWalletSelectedThunkDeps = {
     services: SuiteRouterHistoryDep;
 };
@@ -15,7 +13,7 @@ export const redirectAfterWalletSelectedThunk = createThunk<
 >(
     `${DEVICE_MODULE_PREFIX}/redirectAfterWalletSelectedThunk`,
     async (options, { dispatch, extra }) => {
-        const location = asSuiteServices(extra.services).suiteRouterHistory.getLocation();
+        const location = extra.services.suiteRouterHistory.getLocation();
         const backgroundRoute = findRoute(location.pathname);
 
         // NOTE: the URL is being static when you switch device like /btc/4/norma

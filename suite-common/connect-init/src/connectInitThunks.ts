@@ -182,11 +182,7 @@ export const connectInitThunk = createThunk<
         ...firmwareHashCheckTimeoutsOverride,
     };
 
-    const {
-        transports: debugTransports,
-        showConnectLogs,
-        definitionsChannel,
-    } = getDebugSettings();
+    const { transports: debugTransports, showConnectLogs, definitionsChannel } = getDebugSettings();
     const thp = getThpSettings();
     // desktop thp appName/hostName enhanced in ./packages/suite-desktop-core/src/modules/trezor-connect.ts
     if (thpHostName !== undefined) {

@@ -1,15 +1,15 @@
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
 import {
+    type GetLanguageDep,
     type ReportSecurityCheckDep,
-    type SelectLanguageDep,
     type TrezorDevice,
 } from '@suite-common/suite-types';
 import TrezorConnect, { FirmwareType } from '@trezor/connect';
 import { hasBitcoinOnlyFirmware, isBitcoinOnlyDevice } from '@trezor/device-utils';
 
 import { FIRMWARE_MODULE_PREFIX, firmwareActions } from './firmwareActions';
-import { type SelectDesktopBinDirDep } from './firmwareDeps';
+import { type GetDesktopBinDirDep } from './firmwareDeps';
 import { type FirmwareRootState, selectFirmware } from './firmwareReducer';
 import { getBinFilesBaseUrlThunk } from './getBinFilesBaseUrlThunk';
 
@@ -29,8 +29,7 @@ export type FirmwareUpdateResult = {
 };
 
 type FirmwareUpdateThunkDeps = {
-    selectors: SelectDesktopBinDirDep & SelectLanguageDep;
-    services: ReportSecurityCheckDep;
+    services: GetDesktopBinDirDep & GetLanguageDep & ReportSecurityCheckDep;
 };
 type FirmwareUpdateThunkState = DeviceRootState & FirmwareRootState;
 

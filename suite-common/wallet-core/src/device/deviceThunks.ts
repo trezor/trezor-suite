@@ -41,7 +41,7 @@ import {
 } from '@suite-common/suite-utils';
 import { removeThpCredentialsThunk } from '@suite-common/thp';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { type AccountKey, type SelectTradedAccountKeysDep } from '@suite-common/wallet-types';
+import { type AccountKey, type GetTradedAccountKeysDep } from '@suite-common/wallet-types';
 import {
     getAddressParameters,
     getDerivationType,
@@ -209,8 +209,7 @@ type AcquireDeviceThunkParams = {
 };
 type AcquireDeviceThunkState = RunDiscoveryThunkState;
 type AcquireDeviceThunkDeps = {
-    services: AnalyticsDep;
-    selectors: SelectTradedAccountKeysDep;
+    services: AnalyticsDep & GetTradedAccountKeysDep;
     thunks: FetchAndSaveMetadataDep;
 };
 
@@ -348,8 +347,7 @@ type DeviceConnectThunksParams = {
 };
 
 export type DeviceConnectThunkDeps = {
-    services: AnalyticsDep;
-    selectors: SelectTradedAccountKeysDep;
+    services: AnalyticsDep & GetTradedAccountKeysDep;
     thunks: FetchAndSaveMetadataDep;
 };
 

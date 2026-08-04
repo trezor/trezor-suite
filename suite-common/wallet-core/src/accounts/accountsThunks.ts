@@ -142,8 +142,7 @@ export const reportAccountInfoThunk = createThunk<
 // Left here for clarity, but shouldn't be called anywhere but in blockchainActions.syncAccounts
 // as we usually want to update all accounts for a single coin at once
 export type FetchAndUpdateAccountThunkDeps = {
-    services: AnalyticsDep;
-    selectors: SelectTradedAccountKeysDep;
+    services: AnalyticsDep & GetTradedAccountKeysDep;
 };
 export type FetchAndUpdateAccountThunkState = AccountsRootState &
     BlockchainRootState &

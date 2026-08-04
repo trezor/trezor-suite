@@ -59,10 +59,6 @@ export type FirmwareRootState = {
     firmware: typeof initialState;
 };
 
-export type SelectAllowPrereleaseDep = {
-    selectAllowPrerelease: SuiteCompatibleSelector<boolean>;
-};
-
 type StorageActionPayload = {
     firmware: {
         firmwareChannel: FirmwareChannel;
@@ -142,14 +138,14 @@ export const selectIsFirmwareInstallationRunning = (state: FirmwareRootState) =>
 
 export const selectEffectiveFirmwareChannel =
     (allowPrerelease: boolean) =>
-    (state: RootState): FirmwareChannel =>
+    (state: FirmwareRootState): FirmwareChannel =>
         // When a user is in the Early Access Program, the firmware channel is forced to `production-early-access`.
         // This factory accepts `allowPrerelease` as a parameter because it is a platform-specific extra dependency.
         allowPrerelease ? 'production-early-access' : selectFirmwareChannel(state);
 
 export const selectIsProductionFirmwareChannel =
     (allowPrerelease: boolean) =>
-    (state: RootState): boolean =>
+    (state: FirmwareRootState): boolean =>
         ['production', 'production-early-access'].includes(
             selectEffectiveFirmwareChannel(allowPrerelease)(state),
         );

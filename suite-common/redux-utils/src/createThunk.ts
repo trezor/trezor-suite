@@ -3,6 +3,8 @@ import {
     type AsyncThunkConfig,
     type AsyncThunkOptions,
     type AsyncThunkPayloadCreator,
+    type ThunkDispatch,
+    type UnknownAction,
     createAsyncThunk as createAsyncThunkReduxToolkit,
 } from '@reduxjs/toolkit';
 
@@ -11,17 +13,20 @@ import {
 import { type CustomThunkAPI } from '@suite-common/redux-extra-dependencies';
 
 type DefaultThunkAPI = { readonly __defaultThunkAPI: unique symbol };
+type CreateThunkDispatch = ThunkDispatch<any, any, UnknownAction>;
 
 type ResolveThunkAPI<TThunkAPI> = [TThunkAPI] extends [DefaultThunkAPI]
-    ? CustomThunkAPI
+    ? CustomThunkAPI & { dispatch: CreateThunkDispatch }
     : [TThunkAPI] extends [void]
-      ? { state: unknown; extra: Record<never, never> }
+      ? { state: unknown; extra: Record<never, never>; dispatch: CreateThunkDispatch }
       : TThunkAPI extends { state: unknown }
-        ? Omit<CustomThunkAPI, keyof TThunkAPI | 'extra'> &
+        ? Omit<CustomThunkAPI, keyof TThunkAPI | 'dispatch' | 'extra'> &
               TThunkAPI & {
                   extra: TThunkAPI extends { extra: infer TExtra } ? TExtra : Record<never, never>;
+                  dispatch: CreateThunkDispatch;
               }
-        : Omit<CustomThunkAPI, keyof TThunkAPI> & TThunkAPI;
+        : Omit<CustomThunkAPI, keyof TThunkAPI | 'dispatch'> &
+              TThunkAPI & { dispatch: CreateThunkDispatch };
 
 type CreateThunk = <
     TReturned = void,

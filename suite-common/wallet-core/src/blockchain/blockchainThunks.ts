@@ -1,7 +1,7 @@
 import { type AnalyticsDep } from '@suite-common/analytics';
 import { type DeviceRootState, selectDevices } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
-import { type SelectIsWindowVisibleDep } from '@suite-common/suite-types';
+import { type GetIsWindowVisibleDep } from '@suite-common/suite-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     type NetworkSymbol,
@@ -9,11 +9,7 @@ import {
     isNetworkSymbol,
     isNetworkUsingExternalBackend,
 } from '@suite-common/wallet-config';
-import type {
-    Account,
-    CustomBackend,
-    SelectTradedAccountKeysDep,
-} from '@suite-common/wallet-types';
+import type { Account, CustomBackend, GetTradedAccountKeysDep } from '@suite-common/wallet-types';
 import {
     findAccountDevice,
     findAccountsByDescriptor,
@@ -270,8 +266,7 @@ const tryClearTimeout = (timeout?: TimerId) => {
 };
 
 export type SyncAccountsWithBlockchainThunkDeps = {
-    services: AnalyticsDep;
-    selectors: SelectIsWindowVisibleDep & SelectTradedAccountKeysDep;
+    services: AnalyticsDep & GetIsWindowVisibleDep & GetTradedAccountKeysDep;
 };
 export type SyncAccountsWithBlockchainThunkState = BlockchainRootState &
     FetchAndUpdateAccountThunkState;
@@ -326,8 +321,7 @@ export const syncAccountsWithBlockchainThunk = createThunk<
 
 type OnBlockchainConnectThunkState = SyncAccountsWithBlockchainThunkState;
 type OnBlockchainConnectThunkDeps = {
-    services: AnalyticsDep;
-    selectors: SelectIsWindowVisibleDep & SelectTradedAccountKeysDep;
+    services: AnalyticsDep & GetIsWindowVisibleDep & GetTradedAccountKeysDep;
 };
 
 export const onBlockchainConnectThunk = createThunk<
@@ -351,8 +345,7 @@ export const onBlockchainConnectThunk = createThunk<
 
 type OnBlockMinedThunkState = SyncAccountsWithBlockchainThunkState;
 type OnBlockMinedThunkDeps = {
-    services: AnalyticsDep;
-    selectors: SelectIsWindowVisibleDep & SelectTradedAccountKeysDep;
+    services: AnalyticsDep & GetIsWindowVisibleDep & GetTradedAccountKeysDep;
 };
 
 export const onBlockMinedThunk = createThunk<
@@ -390,8 +383,7 @@ type OnBlockchainNotificationThunkState = DeviceRootState &
     SyncAccountsWithBlockchainThunkState &
     WalletSettingsRootState;
 type OnBlockchainNotificationThunkDeps = {
-    services: AnalyticsDep;
-    selectors: SelectIsWindowVisibleDep & SelectTradedAccountKeysDep;
+    services: AnalyticsDep & GetIsWindowVisibleDep & GetTradedAccountKeysDep;
 };
 
 export const onBlockchainNotificationThunk = createThunk<

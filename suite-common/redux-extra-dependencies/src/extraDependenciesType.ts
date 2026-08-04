@@ -61,8 +61,6 @@ type SuiteCompatibleThunk<TPayload, TReturn = void> =
     | AsyncThunk<TReturn, TPayload, Record<never, never>>
     | OriginalReduxThunk<TPayload, TReturn>;
 
-type ActionType = string;
-
 type BaseReducer = (state: any, action: { type: any; payload: any }) => void;
 type StorageLoadReducer = (state: any, action: { type: any; payload: any }) => void;
 type StorageLoadTransactionsReducer = (state: any, action: { type: any; payload: any }) => void;

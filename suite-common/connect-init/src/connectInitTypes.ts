@@ -17,9 +17,12 @@ export type CreateTransportsDep = {
 };
 
 export type GetDebugSettingsDep = {
-    getDebugSettings: Getter<[], {
-        transports: ConnectInitTransportName[];
-        showConnectLogs: boolean;
-        definitionsChannel?: DefinitionsChannel;
-    }>;
+    getDebugSettings: Getter<
+        [],
+        {
+            transports: ConnectInitTransportName[];
+            showConnectLogs: boolean;
+            definitionsChannel?: DefinitionsChannel;
+        }
+    >;
 };

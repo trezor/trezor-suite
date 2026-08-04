@@ -4,14 +4,16 @@ import { isRejected } from '@reduxjs/toolkit';
 import { selectIsSelectedAccountLoaded, selectSelectedAccountKey } from '@suite/account';
 import { asTypedDesktopAnalytics, events } from '@suite/analytics';
 import { processLegacyMetadataIntoSuiteSyncThunk } from '@suite/labeling';
-import { metadataLabelingActions, selectMetadata } from '@suite/metadata';
+import { type MetadataRootState, metadataLabelingActions, selectMetadata } from '@suite/metadata';
 import { closeModal, openDeferredModal, preserveModal } from '@suite/modal';
-import { selectSelectedDevice } from '@suite-common/device';
+import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
+import { type MessageSystemRootState } from '@suite-common/message-system';
 import { type MetadataAddPayload } from '@suite-common/metadata-types';
 import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
 import { createThunk } from '@suite-common/redux-utils';
-import { selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
+import { type WithSuiteSyncState, selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
 import {
+    type SendRootState,
     cancelSignSendFormTransactionThunk,
     enhancePrecomposedTransactionThunk,
     pushSendFormTransactionThunk,
@@ -121,11 +123,16 @@ type ApplySendFormMetadataLabelsThunkParams = {
     precomposedTransaction: GeneralPrecomposedTransactionFinal;
     txid: string;
 };
+type ApplySendFormMetadataLabelsThunkState = DeviceRootState &
+    MessageSystemRootState &
+    MetadataRootState &
+    SendRootState &
+    WithSuiteSyncState;
 
 const applySendFormMetadataLabelsThunk = createThunk<
     void,
     ApplySendFormMetadataLabelsThunkParams,
-    void
+    { state: ApplySendFormMetadataLabelsThunkState }
 >(
     `${MODULE_PREFIX}/applyMetadataLabelsThunk`,
     ({ selectedAccount, precomposedTransaction, txid }, { dispatch, getState }) => {
