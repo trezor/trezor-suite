@@ -107,6 +107,7 @@ export const EthereumSignAuth7702 = Type.Object(
         chain_id: Type.Number(),
         delegate: Type.String(),
         nonce: Type.Number(),
+        definitions: Type.Optional(EthereumDefinitions),
     },
     { $id: 'EthereumSignAuth7702' },
 );
