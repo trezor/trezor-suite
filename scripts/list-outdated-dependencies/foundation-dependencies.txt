@@ -17,6 +17,7 @@
 @evolu/web
 @noble/curves
 @pmmmwh/react-refresh-webpack-plugin
+@react-native-async-storage/async-storage
 @sentry/browser
 @sentry/core
 @sentry/electron
