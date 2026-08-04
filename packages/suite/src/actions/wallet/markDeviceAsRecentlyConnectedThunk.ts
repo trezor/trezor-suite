@@ -10,8 +10,6 @@ import { setRecentlyConnectedDevicePath } from '../suite/suiteActions';
 // duration to visually indicate the device as recently connected
 const RECENTLY_CONNECTED_DEVICE_TIMEOUT = 5_000;
 
-type MarkDeviceAsRecentlyConnectedThunkDeps = Record<never, never>;
-
 type MarkDeviceAsRecentlyConnectedThunkState = AppState;
 
 export const markDeviceAsRecentlyConnectedThunk = createThunk<
@@ -19,7 +17,6 @@ export const markDeviceAsRecentlyConnectedThunk = createThunk<
     Device,
     {
         state: MarkDeviceAsRecentlyConnectedThunkState;
-        extra: MarkDeviceAsRecentlyConnectedThunkDeps;
     }
 >(`${DEVICE_MODULE_PREFIX}/handleDeviceConnect`, (device, { dispatch, getState }) => {
     const selectedDevice = selectSelectedDevice(getState());

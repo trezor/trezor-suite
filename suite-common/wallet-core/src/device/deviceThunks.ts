@@ -1,5 +1,6 @@
 import {
     type BluetoothDeviceCommon,
+    type ForgetBluetoothDeviceDep,
     type WithBluetoothState,
     bluetoothActions,
     selectKnownDeviceByDeviceId,
@@ -22,8 +23,12 @@ import {
     type FirmwareRootState,
     selectIsFirmwareInstallationRunning,
 } from '@suite-common/firmware';
-import { type ExtraDependencies, createThunk } from '@suite-common/redux-utils';
-import { type AcquiredDevice, type TrezorDevice } from '@suite-common/suite-types';
+import { createThunk } from '@suite-common/redux-utils';
+import {
+    type AcquiredDevice,
+    type OpenModalDep,
+    type TrezorDevice,
+} from '@suite-common/suite-types';
 import {
     getDeviceInstances,
     getFirstDeviceInstance,
@@ -237,19 +242,18 @@ export const acquireDevice = createThunk<
     },
 );
 
-export const initDevices = createThunk<
-    void,
-    void,
-    { state: DeviceRootState }
->(`${DEVICE_MODULE_PREFIX}/initDevices`, (_, { dispatch, getState }) => {
-    const devices = selectDevices(getState());
+export const initDevices = createThunk<void, void, { state: DeviceRootState }>(
+    `${DEVICE_MODULE_PREFIX}/initDevices`,
+    (_, { dispatch, getState }) => {
+        const devices = selectDevices(getState());
 
-    const device = selectSelectedDevice(getState());
+        const device = selectSelectedDevice(getState());
 
-    if (!device && devices?.[0]) {
-        dispatch(selectDeviceThunk({ device: sortDevices(devices)[0] }));
-    }
-});
+        if (!device && devices?.[0]) {
+            dispatch(selectDeviceThunk({ device: sortDevices(devices)[0] }));
+        }
+    },
+);
 
 export const createImportedDeviceThunk = createThunk<
     void,
@@ -429,7 +433,7 @@ type ForgetDevicePersistentDataThunkParams = {
  * But not wallets, see `forgetDevice` (ejecting wallets & forgetting the rest are separate features).
  */
 export type ForgetDevicePersistentDataThunkDeps = {
-    thunks: Pick<ExtraDependencies['thunks'], 'forgetBluetoothDevice'>;
+    thunks: ForgetBluetoothDeviceDep;
 };
 export type ForgetDevicePersistentDataThunkState = DeviceRootState &
     WithBluetoothState<BluetoothDeviceCommon>;
@@ -550,7 +554,7 @@ type HandlePostWipeCleanupThunkParams = {
     deviceInstances: AcquiredDevice[];
 };
 type HandlePostWipeCleanupThunkDeps = ForgetDevicePersistentDataThunkDeps & {
-    actions: Pick<ExtraDependencies['actions'], 'openModal'>;
+    actions: OpenModalDep;
 };
 
 const handlePostWipeCleanupThunk = createThunk<

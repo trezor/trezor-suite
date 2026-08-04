@@ -23,12 +23,10 @@ export interface TokenThunkPayload {
 
 const STELLAR_TOKEN_MODULE_PREFIX = '@common/wallet-core/stellar-token';
 
-type StellarTokenThunkState = DeviceRootState & FeesRootState;
-
 const manageTrustline = async (
     payload: TokenThunkPayload,
     operation: 'activate' | 'deactivate',
-    getState: () => StellarTokenThunkState,
+    getState: () => DeviceRootState & FeesRootState,
     rejectWithValue: (value: any) => any,
 ) => {
     const { account, contractAddress, selectedFee, customFeePerUnit } = payload;
@@ -126,12 +124,14 @@ const manageTrustline = async (
     }
 };
 
+type ActivateStellarTokenThunkState = DeviceRootState & FeesRootState;
+
 export const activateStellarTokenThunk = createThunk<
     void,
     TokenThunkPayload,
     {
         rejectValue: { error: string; message: string };
-        state: StellarTokenThunkState;
+        state: ActivateStellarTokenThunkState;
     }
 >(
     `${STELLAR_TOKEN_MODULE_PREFIX}/activateStellarTokenThunk`,
@@ -139,12 +139,14 @@ export const activateStellarTokenThunk = createThunk<
         manageTrustline(payload, 'activate', getState, rejectWithValue),
 );
 
+type DeactivateStellarTokenThunkState = DeviceRootState & FeesRootState;
+
 export const deactivateStellarTokenThunk = createThunk<
     void,
     TokenThunkPayload,
     {
         rejectValue: { error: string; message: string };
-        state: StellarTokenThunkState;
+        state: DeactivateStellarTokenThunkState;
     }
 >(
     `${STELLAR_TOKEN_MODULE_PREFIX}/deactivateStellarTokenThunk`,

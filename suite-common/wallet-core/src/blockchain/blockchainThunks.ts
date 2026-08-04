@@ -1,5 +1,6 @@
 import { type DeviceRootState, selectDevices } from '@suite-common/device';
-import { type ExtraDependencies, createThunk } from '@suite-common/redux-utils';
+import { createThunk } from '@suite-common/redux-utils';
+import { type SelectIsWindowVisibleDep } from '@suite-common/suite-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     type NetworkSymbol,
@@ -257,7 +258,7 @@ const tryClearTimeout = (timeout?: TimerId) => {
 };
 
 export type SyncAccountsWithBlockchainThunkDeps = FetchAndUpdateAccountThunkDeps & {
-    selectors: Pick<ExtraDependencies['selectors'], 'selectIsWindowVisible'>;
+    selectors: SelectIsWindowVisibleDep;
 };
 export type SyncAccountsWithBlockchainThunkState = BlockchainRootState &
     FetchAndUpdateAccountThunkState;

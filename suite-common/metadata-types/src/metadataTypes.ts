@@ -1,4 +1,14 @@
-import type { WalletDescriptor } from '@trezor/device-utils';
+import { type AnyAction, type AsyncThunk, type ThunkAction } from '@reduxjs/toolkit';
+
+import type { StaticSessionId, WalletDescriptor } from '@trezor/device-utils';
+
+type MetadataThunk<TPayload> =
+    | AsyncThunk<void, TPayload, Record<never, never>>
+    | ((payload: TPayload) => ThunkAction<void, any, any, AnyAction>);
+
+export type FetchAndSaveMetadataDep = {
+    fetchAndSaveMetadata: MetadataThunk<StaticSessionId>;
+};
 
 export interface LabelableEntityKeys {
     fileName: string; // file name in data provider

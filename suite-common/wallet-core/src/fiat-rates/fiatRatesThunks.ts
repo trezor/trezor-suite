@@ -1,5 +1,6 @@
 import { fetchCurrentFiatRates, fetchLastWeekFiatRates } from '@suite-common/fiat-services';
-import { type ExtraDependencies, createThunk } from '@suite-common/redux-utils';
+import { createThunk } from '@suite-common/redux-utils';
+import { type SelectIsWindowVisibleDep } from '@suite-common/suite-types';
 import {
     type TokenDefinitionsRootState,
     selectIsSpecificCoinDefinitionKnown,
@@ -416,7 +417,7 @@ type PeriodicFetchFiatRatesThunkPayload = {
 };
 
 type PeriodicFetchFiatRatesThunkDeps = {
-    selectors: Pick<ExtraDependencies['selectors'], 'selectIsWindowVisible'>;
+    selectors: SelectIsWindowVisibleDep;
 };
 
 export const periodicFetchFiatRatesThunk = createThunk<

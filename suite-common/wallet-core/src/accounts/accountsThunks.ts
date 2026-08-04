@@ -1,9 +1,6 @@
-import { events } from '@suite-common/analytics';
+import { type AnalyticsDep, events } from '@suite-common/analytics';
 import { type DeviceRootState, selectDevices } from '@suite-common/device';
-import {
-    type CommonServices,
-    createThunk,
-} from '@suite-common/redux-utils';
+import { createThunk } from '@suite-common/redux-utils';
 import { getTxsPerPage } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
@@ -11,7 +8,11 @@ import {
     selectCoinDefinitions,
 } from '@suite-common/token-definitions';
 import { getNetworkFeatures } from '@suite-common/wallet-config';
-import { type Account, type AccountKey } from '@suite-common/wallet-types';
+import {
+    type Account,
+    type AccountKey,
+    type GetTradedAccountKeysDep,
+} from '@suite-common/wallet-types';
 import {
     analyzeTransactions,
     findAccountDevice,
@@ -94,7 +95,7 @@ const fetchAccountTokens = async (account: Account, payloadTokens: AccountInfo['
 };
 
 export type ReportWalletBalanceThunkDeps = {
-    services: Pick<CommonServices, 'analytics'>;
+    services: AnalyticsDep;
 };
 export type ReportWalletBalanceThunkState = AccountsRootState;
 
@@ -110,7 +111,7 @@ export const reportWalletBalanceThunk = createThunk<
 });
 
 export type ReportAccountInfoThunkDeps = {
-    services: Pick<CommonServices, 'analytics' | 'getTradedAccountKeys'>;
+    services: AnalyticsDep & GetTradedAccountKeysDep;
 };
 export type ReportAccountInfoThunkState = AccountsRootState & TokenDefinitionsRootState;
 

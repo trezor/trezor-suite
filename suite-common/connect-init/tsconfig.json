@@ -3,6 +3,7 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         { "path": "../analytics" },
+        { "path": "../dependency-injection" },
         { "path": "../device" },
         { "path": "../firmware" },
         { "path": "../message-system" },

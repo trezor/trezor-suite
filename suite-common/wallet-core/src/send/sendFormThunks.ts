@@ -3,11 +3,8 @@ import { isRejected } from '@reduxjs/toolkit';
 
 import { Calldata } from '@suite-common/calldata';
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
-import {
-    type ActionsFromAsyncThunk,
-    type ExtraDependencies,
-    createThunk,
-} from '@suite-common/redux-utils';
+import { type ActionsFromAsyncThunk, createThunk } from '@suite-common/redux-utils';
+import { type OnModalCancelDep } from '@suite-common/suite-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import {
@@ -257,7 +254,7 @@ export const composeSendFormTransactionFeeLevelsThunk = createThunk<
 );
 
 type CancelSignSendFormTransactionThunkDeps = {
-    actions: Pick<ExtraDependencies['actions'], 'onModalCancel'>;
+    actions: OnModalCancelDep;
 };
 
 export const cancelSignSendFormTransactionThunk = createThunk<

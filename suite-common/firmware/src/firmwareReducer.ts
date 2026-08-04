@@ -59,6 +59,10 @@ export type FirmwareRootState = {
     firmware: typeof initialState;
 };
 
+export type SelectAllowPrereleaseDep = {
+    selectAllowPrerelease: SuiteCompatibleSelector<boolean>;
+};
+
 type StorageActionPayload = {
     firmware: {
         firmwareChannel: FirmwareChannel;

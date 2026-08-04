@@ -179,14 +179,12 @@ export const resetDevice =
         return result;
     };
 
-type ChangeLanguageThunkDeps = Record<never, never>;
-
 type ChangeLanguageThunkState = DeviceRootState;
 
 export const changeLanguage = createThunk<
     Awaited<ReturnType<typeof TrezorConnect.changeLanguage>> | undefined,
     Parameters<typeof TrezorConnect.changeLanguage>[0],
-    { state: ChangeLanguageThunkState; extra: ChangeLanguageThunkDeps }
+    { state: ChangeLanguageThunkState }
 >(`${FIRMWARE_MODULE_PREFIX}/update-firmware-language`, async (params, { dispatch, getState }) => {
     const device = selectSelectedDevice(getState());
 

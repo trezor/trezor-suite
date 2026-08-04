@@ -21,6 +21,7 @@ export const bluetoothStopScanningThunk = createThunk<
 
     dispatch(bluetoothActions.scanStatusAction({ status: 'idle' }));
     // This can fail, but there is nothing we can do about it
-    console.warn('_____BT: scanning - STOP');
+    // eslint-disable-next-line no-console
+    console.log('_____BT: scanning - STOP');
     bluetoothIpc.stopScan();
 });

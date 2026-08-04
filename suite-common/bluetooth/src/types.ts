@@ -1,3 +1,4 @@
+import { type SuiteCompatibleThunk } from '@suite-common/redux-utils';
 import { type BluetoothDeviceId } from '@trezor/connect';
 import { type DeviceModelInternal } from '@trezor/device-utils';
 
@@ -65,4 +66,8 @@ export type ForgetBluetoothDeviceThunkParams = {
     skipToggleModalConnection?: boolean;
     isOsUnpairingFinished?: boolean;
     skipDisconnect?: boolean;
+};
+
+export type ForgetBluetoothDeviceDep = {
+    forgetBluetoothDevice: SuiteCompatibleThunk<ForgetBluetoothDeviceThunkParams>;
 };

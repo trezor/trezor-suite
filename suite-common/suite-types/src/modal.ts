@@ -1,3 +1,5 @@
+import { type ActionCreatorWithPayload, type ActionCreatorWithoutPayload } from '@reduxjs/toolkit';
+
 import { type RequestEnableTorResponse } from '@suite-common/suite-config';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
@@ -262,3 +264,11 @@ export type UserContextPayload =
     | {
           type: 'wipe-device-success';
       };
+
+export type OpenModalDep = {
+    openModal: ActionCreatorWithPayload<UserContextPayload>;
+};
+
+export type OnModalCancelDep = {
+    onModalCancel: ActionCreatorWithoutPayload;
+};

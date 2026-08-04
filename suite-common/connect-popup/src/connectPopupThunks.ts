@@ -1,8 +1,13 @@
 import { type AsyncThunkAction } from '@reduxjs/toolkit';
 
-import { events } from '@suite-common/analytics';
-import { type DeviceRootState, deviceActions, selectSelectedDevice } from '@suite-common/device';
-import { type ExtraDependencies, createThunk } from '@suite-common/redux-utils';
+import { type AnalyticsDep, events } from '@suite-common/analytics';
+import {
+    type DeviceRootState,
+    type LockDeviceDep,
+    deviceActions,
+    selectSelectedDevice,
+} from '@suite-common/device';
+import { createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
@@ -66,11 +71,11 @@ type ConnectPopupCallThunkParams<M extends CallMethodKeys> = {
     source: ConnectCallSource;
 };
 
-type ConnectPopupCallThunkDeps = Pick<ExtraDependencies, 'actions'> & {
-    services: Pick<ExtraDependencies['services'], 'analytics'>;
-};
-
 type ConnectPopupCallThunkState = DeviceRootState & ConnectPopupStateRootState & AccountsRootState;
+type ConnectPopupCallThunkDeps = {
+    actions: LockDeviceDep;
+    services: AnalyticsDep;
+};
 
 export const connectPopupCallThunkInner = createThunk<
     void,
@@ -296,9 +301,13 @@ export const connectPopupCallThunk = <M extends CallMethodKeys>(
     { state: ConnectPopupCallThunkState; extra: ConnectPopupCallThunkDeps }
 > => connectPopupCallThunkInner(params) as any;
 
-type ConnectPopupDeeplinkThunkDeps = ConnectPopupCallThunkDeps;
-
-type ConnectPopupDeeplinkThunkState = ConnectPopupCallThunkState;
+type ConnectPopupDeeplinkThunkState = DeviceRootState &
+    ConnectPopupStateRootState &
+    AccountsRootState;
+type ConnectPopupDeeplinkThunkDeps = {
+    actions: LockDeviceDep;
+    services: AnalyticsDep;
+};
 
 export const connectPopupDeeplinkThunk = createThunk<
     void,
@@ -379,9 +388,10 @@ export const connectPopupDeeplinkThunk = createThunk<
     );
 });
 
-type ConnectPopupVerifyAddressThunkDeps = Pick<ExtraDependencies, 'actions'>;
-
 type ConnectPopupVerifyAddressThunkState = DeviceRootState & ConnectPopupStateRootState;
+type ConnectPopupVerifyAddressThunkDeps = {
+    actions: LockDeviceDep;
+};
 
 export const connectPopupVerifyAddressThunk = createThunk<
     void,
@@ -476,11 +486,12 @@ const resolveCandidateValue = (
     return { path: account.path, address: account.descriptor };
 };
 
-type ConnectPopupLoadSelectAccountPageThunkDeps = Pick<ExtraDependencies, 'actions'>;
-
 type ConnectPopupLoadSelectAccountPageThunkState = DeviceRootState &
     ConnectPopupStateRootState &
     AccountsRootState;
+type ConnectPopupLoadSelectAccountPageThunkDeps = {
+    actions: LockDeviceDep;
+};
 
 export const connectPopupLoadSelectAccountPageThunk = createThunk<
     void,
@@ -834,9 +845,12 @@ export const connectPopupLoadSelectAccountPageThunk = createThunk<
 
 // UTXO `addressSelection: 'manual'` only: the user picked an account in the account phase — drill
 // into it by switching to the address phase and loading its used addresses from page 0.
-type ConnectPopupSelectManualAccountThunkDeps = ConnectPopupLoadSelectAccountPageThunkDeps;
-
-type ConnectPopupSelectManualAccountThunkState = ConnectPopupLoadSelectAccountPageThunkState;
+type ConnectPopupSelectManualAccountThunkState = DeviceRootState &
+    ConnectPopupStateRootState &
+    AccountsRootState;
+type ConnectPopupSelectManualAccountThunkDeps = {
+    actions: LockDeviceDep;
+};
 
 export const connectPopupSelectManualAccountThunk = createThunk<
     void,
@@ -864,9 +878,12 @@ export const connectPopupSelectManualAccountThunk = createThunk<
 );
 
 // UTXO `addressSelection: 'manual'` only: back out of the address phase to the account list.
-type ConnectPopupBackToManualAccountsThunkDeps = ConnectPopupLoadSelectAccountPageThunkDeps;
-
-type ConnectPopupBackToManualAccountsThunkState = ConnectPopupLoadSelectAccountPageThunkState;
+type ConnectPopupBackToManualAccountsThunkState = DeviceRootState &
+    ConnectPopupStateRootState &
+    AccountsRootState;
+type ConnectPopupBackToManualAccountsThunkDeps = {
+    actions: LockDeviceDep;
+};
 
 export const connectPopupBackToManualAccountsThunk = createThunk<
     void,
@@ -893,9 +910,10 @@ export const connectPopupBackToManualAccountsThunk = createThunk<
 
 // Verifies a single candidate address on the device. Safe to run while the selectAccount call is
 // pending because that method holds no device session (useDevice = false).
-type ConnectPopupVerifySelectAccountThunkDeps = Pick<ExtraDependencies, 'actions'>;
-
 type ConnectPopupVerifySelectAccountThunkState = DeviceRootState & ConnectPopupStateRootState;
+type ConnectPopupVerifySelectAccountThunkDeps = {
+    actions: LockDeviceDep;
+};
 
 export const connectPopupVerifySelectAccountThunk = createThunk<
     void,
@@ -1011,8 +1029,6 @@ export const connectPopupVerifySelectAccountThunk = createThunk<
 // and unblock the hook (which then flips the picker into its `exported` phase). Mirrors
 // ConnectAddressConfirmation: after export the modal stays open so the user can keep verifying the
 // exported addresses on device, and only `finishCall` (Close) actually closes it.
-type ConnectPopupResolveSelectAccountThunkDeps = Record<never, never>;
-
 type ConnectPopupResolveSelectAccountThunkState = ConnectPopupStateRootState;
 
 export const connectPopupResolveSelectAccountThunk = createThunk<
@@ -1020,7 +1036,6 @@ export const connectPopupResolveSelectAccountThunk = createThunk<
     { confirmed: boolean },
     {
         state: ConnectPopupResolveSelectAccountThunkState;
-        extra: ConnectPopupResolveSelectAccountThunkDeps;
     }
 >(`${CONNECT_POPUP_MODULE}/resolveSelectAccountThunk`, ({ confirmed }, { dispatch, getState }) => {
     const call = selectConnectPopupCall(getState());

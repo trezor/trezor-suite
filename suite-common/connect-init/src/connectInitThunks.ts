@@ -1,19 +1,26 @@
-import { events as sharedEvents } from '@suite-common/analytics';
+import { type AnalyticsDep, events as sharedEvents } from '@suite-common/analytics';
 import {
     type DeviceRootState,
+    type LockDeviceDep,
     deviceActions,
     selectDevices,
     selectIsPendingTransportEvent,
     selectSelectedDevice,
 } from '@suite-common/device';
-import { type FirmwareRootState, selectEffectiveFirmwareChannel } from '@suite-common/firmware';
+import {
+    type FirmwareRootState,
+    type GetDesktopBinDirDep,
+    selectEffectiveFirmwareChannel,
+} from '@suite-common/firmware';
 import {
     Feature,
     type MessageSystemRootState,
     parseTimeoutThresholdsPerModel,
     selectFeatureConfig,
 } from '@suite-common/message-system';
-import { type ExtraDependencies, createThunk } from '@suite-common/redux-utils';
+import { createThunk } from '@suite-common/redux-utils';
+import { type ConnectInitHooksDeps, type GetAllowPrereleaseDep } from '@suite-common/suite-types';
+import { type GetThpSettingsDep, type ThpHostNameDep } from '@suite-common/thp';
 import {
     type DefaultTrezorUIEventHandlerThunkDeps,
     type DefaultTrezorUIEventHandlerThunkState,
@@ -27,6 +34,7 @@ import {
 import TrezorConnect, {
     BLOCKCHAIN_EVENT,
     type CallMethodPayload,
+    type CreateLoggerDep,
     DEVICE,
     DEVICE_EVENT,
     TRANSPORT_EVENT,
@@ -37,6 +45,11 @@ import { DATA_URL } from '@trezor/urls';
 import { getSynchronize, isArrayMember } from '@trezor/utils';
 
 import { blacklist } from './blacklist';
+import {
+    type ConnectInitSettingsDep,
+    type CreateTransportsDep,
+    type GetDebugSettingsDep,
+} from './connectInitTypes';
 
 const CONNECT_INIT_MODULE = '@common/connect-init';
 
@@ -45,20 +58,17 @@ const CONNECT_INIT_MODULE = '@common/connect-init';
 
 type ConnectInitThunkDeps = DeviceConnectThunkDeps &
     DefaultTrezorUIEventHandlerThunkDeps & {
-        actions: Pick<ExtraDependencies['actions'], 'lockDevice'>;
-        services: Pick<
-            ExtraDependencies['services'],
-            | 'analytics'
-            | 'connectInitHooks'
-            | 'connectInitSettings'
-            | 'createLogger'
-            | 'createTransports'
-            | 'getAllowPrerelease'
-            | 'getDebugSettings'
-            | 'getDesktopBinDir'
-            | 'getThpSettings'
-            | 'thpHostName'
-        >;
+        actions: LockDeviceDep;
+        services: AnalyticsDep &
+            ConnectInitHooksDeps &
+            ConnectInitSettingsDep &
+            CreateLoggerDep &
+            CreateTransportsDep &
+            GetAllowPrereleaseDep &
+            GetDebugSettingsDep &
+            GetDesktopBinDirDep &
+            GetThpSettingsDep &
+            ThpHostNameDep;
     };
 
 type ConnectInitThunkState = DeviceRootState &

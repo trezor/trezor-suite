@@ -1,12 +1,13 @@
 import { D } from '@mobily/ts-belt';
 
-import { type ExtraDependencies, createThunk } from '@suite-common/redux-utils';
+import { createThunk } from '@suite-common/redux-utils';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type TimerId } from '@trezor/type-utils';
 
 import { selectNetworkTokenDefinitions } from './tokenDefinitionsSelectors';
 import {
     type DefinitionType,
+    type GetTokenDefinitionsEnabledNetworksDep,
     type TokenDefinitionsRootState,
     TokenStructureType,
 } from './tokenDefinitionsTypes';
@@ -39,7 +40,7 @@ export const getTokenDefinitionThunk = createThunk<
 );
 
 type InitTokenDefinitionsThunkDeps = {
-    services: Pick<ExtraDependencies['services'], 'getTokenDefinitionsEnabledNetworks'>;
+    services: GetTokenDefinitionsEnabledNetworksDep;
 };
 
 export const initTokenDefinitionsThunk = createThunk<

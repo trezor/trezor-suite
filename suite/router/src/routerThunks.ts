@@ -24,17 +24,16 @@ import {
 import { type RouteParams } from './routes';
 import { type SuiteRouterHistoryDep } from './suiteRouterHistory';
 
-type RouterThunkState = LocksRootState & ModalRootState & RouterRootState;
-type RouterThunkDeps = { services: SuiteRouterHistoryDep };
-
 /**
  * Handle changes of history.location and history.location.hash
  * Called from ./support/RouterHandler
  */
+type OnLocationChangeThunkState = LocksRootState & ModalRootState & RouterRootState;
+
 export const onLocationChange = createThunk<
     ReturnType<typeof routerLocationChange> | null | undefined,
     RouterPathOptional & { anchor?: AnchorType },
-    { state: RouterThunkState }
+    { state: OnLocationChangeThunkState }
 >(
     '@router/onLocationChange',
     (location: RouterPathOptional & { anchor?: AnchorType }, { dispatch, getState }) => {
@@ -57,10 +56,13 @@ export const onLocationChange = createThunk<
  * Dispatch initial url
  * Called from `@suite-middlewares/suiteMiddleware`
  */
+type RouterInitThunkState = LocksRootState & ModalRootState & RouterRootState;
+type RouterInitThunkDeps = { services: SuiteRouterHistoryDep };
+
 export const routerInit = createThunk<
     void,
     void,
-    { state: RouterThunkState; extra: RouterThunkDeps }
+    { state: RouterInitThunkState; extra: RouterInitThunkDeps }
 >('@router/init', (_, { dispatch, getState, extra }) => {
     // check if location was not already changed by initialRedirection
     if (selectRouterApp(getState()) === 'unknown') {
@@ -76,11 +78,10 @@ type GotoPayload = {
     anchor?: AnchorType;
 };
 
-export const goto = createThunk<
-    void,
-    GotoPayload,
-    { state: RouterThunkState; extra: RouterThunkDeps }
->(
+type GotoThunkState = LocksRootState & ModalRootState & RouterRootState;
+type GotoThunkDeps = { services: SuiteRouterHistoryDep };
+
+export const goto = createThunk<void, GotoPayload, { state: GotoThunkState; extra: GotoThunkDeps }>(
     '@router/goto',
     ({ routeName, params, preserveParams, anchor }: GotoPayload, { dispatch, getState, extra }) => {
         const hasRouterLock = selectIsRouterLocked(getState());
@@ -136,38 +137,43 @@ export const goto = createThunk<
  * Application modal does not push route into router history, it changes it only in reducer (see goto action).
  * Reverse operation (again without touching history) needs to be done in back action.
  */
-export const closeModalApp = createThunk<void, boolean | undefined, { extra: RouterThunkDeps }>(
-    '@router/closeModalApp',
-    (preserveParams = true, { dispatch, extra }) => {
-        dispatch(lockRouter(false));
+type CloseModalAppThunkDeps = { services: SuiteRouterHistoryDep };
 
-        const location = extra.services.suiteRouterHistory.getLocation();
-        const route = findRoute(location.pathname);
+export const closeModalApp = createThunk<
+    void,
+    boolean | undefined,
+    { extra: CloseModalAppThunkDeps }
+>('@router/closeModalApp', (preserveParams = true, { dispatch, extra }) => {
+    dispatch(lockRouter(false));
 
-        if (route?.isForegroundApp) {
-            dispatch(goto({ routeName: 'suite-index' }));
+    const location = extra.services.suiteRouterHistory.getLocation();
+    const route = findRoute(location.pathname);
 
-            return;
-        }
+    if (route?.isForegroundApp) {
+        dispatch(goto({ routeName: 'suite-index' }));
 
-        if (!preserveParams && location.hash.length > 0) {
-            extra.services.suiteRouterHistory.navigate({
-                pathname: location.pathname,
-            });
-        } else {
-            dispatch(onLocationChange(location));
-        }
-    },
-);
+        return;
+    }
+
+    if (!preserveParams && location.hash.length > 0) {
+        extra.services.suiteRouterHistory.navigate({
+            pathname: location.pathname,
+        });
+    } else {
+        dispatch(onLocationChange(location));
+    }
+});
 
 /**
  * Called from `@suite-middlewares/suiteMiddleware`
  * Redirects to requested modal app or welcome screen if `suite.flags.initialRun` is set to true
  */
+type InitialRedirectionThunkDeps = { services: SuiteRouterHistoryDep };
+
 export const initialRedirection = createThunk<
     void,
     { isInitialRun?: boolean },
-    { extra: RouterThunkDeps }
+    { extra: InitialRedirectionThunkDeps }
 >(
     '@suite/initial-redirection',
     ({ isInitialRun = true }: { isInitialRun?: boolean }, { dispatch, extra }) => {

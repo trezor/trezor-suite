@@ -39,3 +39,7 @@ export const LANGUAGES = {
 } as const satisfies Record<string, LocaleInfo>;
 
 export type Locale = keyof typeof LANGUAGES;
+
+export type SelectLanguageDep = {
+    selectLanguage: (state: any) => string;
+};

@@ -1,11 +1,12 @@
 import { goto } from '@suite/router';
-import { type ExtraDependencies, createThunk } from '@suite-common/redux-utils';
+import { createThunk } from '@suite-common/redux-utils';
+import { type ReloadAppDep } from '@suite-common/suite-types';
 import { desktopApi } from '@trezor/suite-desktop-api';
 
 import { removeDatabase } from './storageActions';
 
 type ResetSuiteAppThunkDeps = {
-    services: Pick<ExtraDependencies['services'], 'reloadApp'>;
+    services: ReloadAppDep;
 };
 
 export const resetSuiteAppThunk = createThunk<void, void, { extra: ResetSuiteAppThunkDeps }>(

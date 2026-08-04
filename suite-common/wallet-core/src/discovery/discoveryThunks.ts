@@ -9,12 +9,8 @@ import {
     selectSelectedDevice,
     shouldDeviceBeRemembered,
 } from '@suite-common/device';
-import {
-    type AnyAction,
-    type ExtraDependencies,
-    type SuiteCompatibleThunk,
-    createThunk,
-} from '@suite-common/redux-utils';
+import { type FetchAndSaveMetadataDep } from '@suite-common/metadata-types';
+import { type AnyAction, type SuiteCompatibleThunk, createThunk } from '@suite-common/redux-utils';
 import {
     type AcquiredDevice,
     type AuthorizedDevice,
@@ -310,7 +306,7 @@ type RunDiscoveryParams = {
 };
 
 export type RunDiscoveryThunkDeps = DiscoveryReportingThunkDeps & {
-    thunks: Pick<ExtraDependencies['thunks'], 'fetchAndSaveMetadata'>;
+    thunks: FetchAndSaveMetadataDep;
 };
 export type RunDiscoveryThunkState = DiscoveryReportingThunkState;
 
