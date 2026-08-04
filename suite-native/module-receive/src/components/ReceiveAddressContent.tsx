@@ -15,7 +15,6 @@ import { ReceiveAddressCard } from './ReceiveAddressCard';
 import { ReceiveAddressLoader } from './ReceiveAddressLoader';
 import { ReceiveDestinationTagInfo } from './ReceiveDestinationTagInfo';
 import { ReceiveFreshAddressHeader } from './ReceiveFreshAddressHeader';
-import { useReceiveAddressVerification } from '../hooks/useReceiveAddressVerification';
 import { setCurrentFreshAddressForFlowEntryThunk } from '../receiveThunks';
 import { ReceiveBlockedDeviceCompromisedScreen } from '../screens/ReceiveBlockedDeviceCompromisedScreen';
 import { type ReceiveAddressListRootState } from '../selectors';
@@ -47,11 +46,6 @@ export const ReceiveAddressContent = ({
             dispatch(setCurrentFreshAddressForFlowEntryThunk({ accountKey }));
             setInitializedAccountKey(accountKey);
         }, [accountKey, dispatch, initializedAccountKey]),
-    );
-
-    const { verifyAddressOnDevice } = useReceiveAddressVerification(
-        accountKey,
-        currentFreshAddress?.path,
     );
 
     const hasFirmwareAuthenticityCheckHardFailed = useSelector(
@@ -87,8 +81,9 @@ export const ReceiveAddressContent = ({
                     <ScreenFooterGradient />
                     <VStack paddingHorizontal="sp16" paddingTop="sp8" paddingBottom="sp16">
                         <ReceiveAddressActions
+                            accountKey={accountKey}
                             address={currentFreshAddress.address}
-                            onVerifyAddress={verifyAddressOnDevice}
+                            addressPath={currentFreshAddress.path}
                         />
                     </VStack>
                 </>

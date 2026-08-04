@@ -18,7 +18,6 @@ import { ReceiveAddressActions } from '../components/ReceiveAddressActions';
 import { ReceiveAddressDetailHeader } from '../components/ReceiveAddressDetailHeader';
 import { ReceiveAddressDetails } from '../components/ReceiveAddressDetails';
 import { ReceiveAddressReuseWarning } from '../components/ReceiveAddressReuseWarning';
-import { useReceiveAddressVerification } from '../hooks/useReceiveAddressVerification';
 import { type ReceiveAddressRootState, selectReceiveAccountAddressByPath } from '../selectors';
 
 export const ReceiveAddressDetailScreen = () => {
@@ -33,8 +32,6 @@ export const ReceiveAddressDetailScreen = () => {
     const hasFirmwareAuthenticityCheckHardFailed = useSelector(
         selectHasFirmwareAuthenticityCheckHardFailedForSelectedDevice,
     );
-    const { verifyAddressOnDevice } = useReceiveAddressVerification(accountKey, addressPath);
-
     if (hasFirmwareAuthenticityCheckHardFailed) {
         return <ReceiveBlockedDeviceCompromisedScreen />;
     }
@@ -64,8 +61,9 @@ export const ReceiveAddressDetailScreen = () => {
                     <ScreenFooterGradient />
                     <VStack paddingHorizontal="sp16" paddingTop="sp8" paddingBottom="sp16">
                         <ReceiveAddressActions
+                            accountKey={accountKey}
                             address={address.address}
-                            onVerifyAddress={verifyAddressOnDevice}
+                            addressPath={addressPath}
                         />
                     </VStack>
                 </>

@@ -10,8 +10,8 @@ import { useAlert } from '@suite-native/alerts';
 import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { Translation } from '@suite-native/intl';
 import type {
-    ReceiveStackParamList,
-    ReceiveStackRoutes,
+    ReceiveAddressVerificationStackParamList,
+    ReceiveAddressVerificationStackRoutes,
     StackNavigationProps,
 } from '@suite-native/navigation';
 import { useToast } from '@suite-native/toasts';
@@ -20,7 +20,10 @@ import { exhaustive } from '@trezor/type-utils';
 
 import { AddressVerificationResultType, verifyReceiveAddress } from '../addressVerification';
 
-type NavigationProp = StackNavigationProps<ReceiveStackParamList, ReceiveStackRoutes>;
+type NavigationProp = StackNavigationProps<
+    ReceiveAddressVerificationStackParamList,
+    ReceiveAddressVerificationStackRoutes.ContinueOnTrezor
+>;
 
 export const useReceiveAddressVerification = (
     accountKey: AccountKey,
