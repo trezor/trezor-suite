@@ -13,6 +13,8 @@ export type PackageJson = {
     readonly version?: string;
     readonly private?: boolean;
     readonly type?: string;
+    readonly main?: string;
+    readonly files?: ReadonlyArray<string>;
     readonly scripts?: Record<string, string | undefined>;
     readonly workspaces?: { readonly packages?: ReadonlyArray<string> } | ReadonlyArray<string>;
     readonly resolutions?: Record<string, string>;
