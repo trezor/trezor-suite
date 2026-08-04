@@ -549,7 +549,7 @@ export const transformTx = (
         value: fromWei(tx.value).toWei('hex'),
         chainId,
         nonce: fromIntegerString(nonce).toHex(),
-        gasLimit: fromIntegerString(tx.gasLimit).toHex(),
+        gasLimit: fromIntegerString(String(tx.gasLimit)).toHex(),
         data: sanitizeHex(tx.data),
     };
 
