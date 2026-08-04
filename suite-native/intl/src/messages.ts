@@ -971,6 +971,8 @@ export const messages = {
             alert: {
                 longCardanoAddress:
                     "This Cardano (ADA) address is too long to fit on your Trezor's screen. Scroll on both screens to view and confirm it.",
+                sharedAssetsAndTokens:
+                    'The receive address is the same for all assets and tokens within this account.',
                 token: 'Your receive address is your {networkName} address',
                 success: 'The receive address has been confirmed on your Trezor.',
             },
