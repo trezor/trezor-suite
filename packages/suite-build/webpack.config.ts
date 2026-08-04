@@ -6,6 +6,7 @@ import { merge } from 'webpack-merge';
 import base from './configs/base.webpack.config';
 import desktop from './configs/desktop.webpack.config';
 import dev from './configs/dev.webpack.config';
+import tauri from './configs/tauri.webpack.config';
 import web from './configs/web.webpack.config';
 import { isDev, project } from './utils/env';
 
@@ -14,6 +15,7 @@ const configs = [
     ...(isDev ? [dev] : []),
     ...(project === 'web' ? [web] : []),
     ...(project === 'desktop' ? [desktop] : []),
+    ...(project === 'tauri' ? [tauri] : []),
 ];
 
 // Prevent "webpack: TypeError: Do not know how to serialize a BigInt"

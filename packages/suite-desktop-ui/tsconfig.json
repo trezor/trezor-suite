@@ -21,11 +21,14 @@
         { "path": "../../suite/router" },
         { "path": "../../suite/sentry" },
         { "path": "../components" },
+        { "path": "../connect-common" },
         { "path": "../connect-electron" },
         { "path": "../icons" },
         { "path": "../suite" },
         { "path": "../suite-desktop-api" },
         { "path": "../theme" },
+        { "path": "../transport-common" },
+        { "path": "../transport-web" },
         { "path": "../urls" },
         { "path": "../utils" }
     ]

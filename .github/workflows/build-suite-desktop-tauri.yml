@@ -1,0 +1,156 @@
+name: "[Build] suite-desktop-tauri apps"
+
+# Builds the Tauri desktop shell (packages/suite-desktop-tauri). Mirrors build-desktop-apps.yml
+# (the Electron build): the heavy webpack frontend is built once on Linux and cached, then each
+# platform compiles the Rust shell and bundles the app.
+
+on:
+  push:
+    branches:
+      - develop
+    paths-ignore:
+      - "suite-native/**"
+      - "docs/**"
+      - "docker/**"
+      - "ci/**"
+      - ".vscode/**"
+      - ".maestro/**"
+      - "**.md"
+  pull_request:
+    types: [labeled]
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  build-and-cache-tauri-frontend:
+    if: (github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'build-tauri') || (github.event_name == 'push' && github.ref == 'refs/heads/develop')) && (github.repository == 'trezor/trezor-suite' || github.repository == 'trezor/trezor-suite-private')
+    name: Build and cache Tauri frontend bundle
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v6
+        with:
+          lfs: true
+          submodules: true
+      - name: Install node and yarn
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
+        with:
+          node-version-file: ".nvmrc"
+      - name: Install SafeDep PMG
+        uses: safedep/pmg@26d5c0ad71fd0e5f48c3183c9c74d4b3eb7f57c8 # v0.19.1
+        continue-on-error: true
+        with:
+          version: v0.19.1
+      - name: Install deps and build libs
+        # The Tauri frontend (unlike Electron) bundles the connect-web popup bootstrap and the
+        # @trezor/connect browser build directly, so both are focused explicitly.
+        run: |
+          yarn workspaces focus trezor-suite @trezor/suite-desktop-ui @trezor/suite-build @trezor/suite-data @trezor/transport-bridge @suite-common/message-system @trezor/connect @trezor/connect-web
+          yarn message-system-sign-config
+          yarn workspace @trezor/suite-data build:lib
+          yarn workspace @trezor/transport-bridge build:lib
+      - name: Build Tauri frontend bundle
+        run: yarn workspace @trezor/suite-build build:tauri
+      - name: Cache Tauri frontend bundle
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v5
+        with:
+          path: packages/suite-desktop-tauri/build
+          key: tauri-frontend-${{ github.sha }}
+
+  suite-desktop-tauri:
+    if: (github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'build-tauri') || (github.event_name == 'push' && github.ref == 'refs/heads/develop')) && (github.repository == 'trezor/trezor-suite' || github.repository == 'trezor/trezor-suite-private')
+    name: Build suite-desktop-tauri-${{ matrix.platform }}
+    needs: build-and-cache-tauri-frontend
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 40
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-14]
+        include:
+          # `bundles` must succeed (validates compile + primary artifact); `optionalBundles` are
+          # best-effort (appimage / dmg can be flaky on runners — e.g. dmg needs a Finder
+          # AppleScript session) and never fail the job.
+          - os: ubuntu-latest
+            platform: linux
+            bundles: deb
+            optionalBundles: appimage
+          - os: macos-14
+            platform: mac
+            bundles: app
+            optionalBundles: dmg
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v6
+        with:
+          lfs: true
+          submodules: true
+      - name: Install node and yarn
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
+        with:
+          node-version-file: ".nvmrc"
+
+      # Tauri v2 Linux runtime/build dependencies (WebKitGTK). Not needed on macOS.
+      - name: Install Linux WebView dependencies
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            libwebkit2gtk-4.1-dev \
+            libgtk-3-dev \
+            libayatana-appindicator3-dev \
+            librsvg2-dev \
+            libsoup-3.0-dev \
+            patchelf
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@4cda84d5c5c54efe2404f9d843567869ab1699d4 # stable
+
+      - name: Cache Rust build
+        uses: Swatinem/rust-cache@e18b497796c12c097a38f9edb9d0641fb99eee32 # v2
+        with:
+          workspaces: packages/suite-desktop-tauri/src-tauri
+
+      - name: Restore Tauri frontend bundle
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v5
+        with:
+          path: packages/suite-desktop-tauri/build
+          key: tauri-frontend-${{ github.sha }}
+          fail-on-cache-miss: true
+
+      # Stage the bundle resources. The Trezor Bridge AND the BLE management host are now native Rust
+      # (compiled into the app binary) — NO Node.js runtime is bundled. The only bundled binaries are
+      # the tor daemon and the native trezor-bluetooth BLE server. The tor binaries are git-lfs (see
+      # .gitattributes); the checkout already pulled them via lfs:true, and this explicit pull is a
+      # belt-and-suspenders no-op. The trezor-bluetooth binary is plain git (not LFS), already on disk.
+      - name: Assemble bundled resources (tor + bluetooth)
+        run: |
+          git lfs pull --include="packages/suite-data/files/bin/tor/*"
+          bash packages/suite-desktop-tauri/scripts/assemble-all.sh
+
+      # Compiles the release binary and bundles the primary artifact (frontendDist = ../build).
+      - name: Build ${{ matrix.platform }} suite-desktop-tauri
+        working-directory: packages/suite-desktop-tauri
+        run: npx --yes @tauri-apps/cli@2 build --bundles ${{ matrix.bundles }}
+
+      # Reuses the already-compiled release binary; best-effort so a flaky packager never fails CI.
+      - name: Bundle optional ${{ matrix.platform }} artifacts
+        continue-on-error: true
+        working-directory: packages/suite-desktop-tauri
+        run: npx --yes @tauri-apps/cli@2 build --bundles ${{ matrix.optionalBundles }}
+
+      - name: Upload suite-desktop-tauri artifacts
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: suite-desktop-tauri-${{ matrix.platform }}
+          # macos: bundle/macos/*.app + bundle/dmg/*.dmg; linux: bundle/deb/*.deb + bundle/appimage/*.AppImage
+          path: |
+            packages/suite-desktop-tauri/src-tauri/target/release/bundle/macos/**
+            packages/suite-desktop-tauri/src-tauri/target/release/bundle/dmg/*.dmg
+            packages/suite-desktop-tauri/src-tauri/target/release/bundle/deb/*.deb
+            packages/suite-desktop-tauri/src-tauri/target/release/bundle/appimage/*.AppImage
+          retention-days: 3
+          if-no-files-found: warn

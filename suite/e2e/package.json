@@ -9,6 +9,7 @@
         "type-check": "yarn g:tsc --build",
         "test:e2e:desktop": "yarn xvfb-maybe -- playwright test --config=./playwright-config/playwright-desktop.config.ts",
         "test:e2e:web": "yarn xvfb-maybe -- playwright test --config=./playwright-config/playwright-web.config.ts",
+        "test:e2e:tauri": "yarn xvfb-maybe -- playwright test --config=./playwright-config/playwright-tauri.config.ts",
         "test:e2e:desktop:canary": "yarn xvfb-maybe -- playwright test --config=./playwright-config/playwright-desktop-local-canary.config.ts",
         "test:e2e:web:canary": "yarn xvfb-maybe -- playwright test --config=./playwright-config/playwright-web-local-canary.config.ts",
         "test:orchestrated:e2e": "NODE_OPTIONS='--no-warnings=DEP0040' yarn xvfb-maybe -- pwc-p",
@@ -68,6 +69,7 @@
         "@trezor/utils": "workspace:*",
         "@types/invity-api": "^1.1.19",
         "@types/lodash": "^4.17.16",
+        "@types/ws": "^8.5.13",
         "@walletconnect/sign-client": "^2.23.9",
         "@walletconnect/types": "^2.23.9",
         "dotenv": "17.2.3",
@@ -77,6 +79,7 @@
         "react-intl": "^8.1.3",
         "tsx": "^4.21.0",
         "type-fest": "5.5.0",
+        "ws": "^8.20.0",
         "xvfb-maybe": "^0.2.1"
     }
 }
