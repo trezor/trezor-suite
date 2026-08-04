@@ -2,7 +2,7 @@ import { readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 
 import { pickCanonicalVersion } from '../../versions';
-import { listAllWorkspaces, readPackageJson } from '../../workspaces';
+import { type PackageJson, listAllWorkspaces, readPackageJson } from '../../workspaces';
 import type { Requirement } from '../Requirement';
 
 /**
@@ -15,14 +15,6 @@ import type { Requirement } from '../Requirement';
 export const ALLOWED_DRIFTS = new Set([
     'babel-jest', // waiting for suite-native who are waiting for expo to update babel-jest
 ]);
-
-type PackageJson = {
-    readonly name?: string;
-    readonly workspaces?: { readonly packages?: ReadonlyArray<string> } | ReadonlyArray<string>;
-    readonly resolutions?: Record<string, string>;
-    readonly dependencies?: Record<string, string>;
-    readonly devDependencies?: Record<string, string>;
-};
 
 type VersionOccurrence = {
     readonly version: string;
