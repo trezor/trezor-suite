@@ -82,10 +82,15 @@ export enum EventType {
     PassphraseMismatch = 'passphrase/mismatch',
     // eslint-disable-next-line local-rules/analytics-event-name
     PassphraseTryAgain = 'passphrase/try_again',
+    ReceiveAddAddress = 'receive/add-address',
     // eslint-disable-next-line local-rules/analytics-event-name
     ReceiveAddressConfirmOnTrezor = 'receiveAddress/confirm_on_trezor',
+    ReceiveCopyAddress = 'receive/copy-address',
     // eslint-disable-next-line local-rules/analytics-event-name
     ReceiveFlowEntered = 'receive/flow_entered',
+    ReceiveOpenNonFreshAddress = 'receive/open-non-fresh-address',
+    ReceiveShareAddress = 'receive/share-address',
+    ReceiveStartVerification = 'receive/start-verification',
     // eslint-disable-next-line local-rules/analytics-event-name
     ReferralButtonPress = 'referral/button_press',
     // eslint-disable-next-line local-rules/analytics-event-name

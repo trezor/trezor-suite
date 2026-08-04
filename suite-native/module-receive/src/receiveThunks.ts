@@ -2,6 +2,7 @@ import { getReceiveAddressForFlowEntry, getReceiveAddressToAdd } from '@suite-co
 import { receiveActions, selectCurrentFreshAddress } from '@suite-common/receive';
 import { createThunk } from '@suite-common/redux-utils';
 import { type AccountKey } from '@suite-common/wallet-types';
+import { asTypedNativeAnalytics, events } from '@suite-native/analytics';
 
 import {
     type ReceiveAddressListRootState,
@@ -50,7 +51,7 @@ export const setCurrentFreshAddressForFlowEntryThunk = createThunk<
 
 export const addReceiveAddressThunk = createThunk<void, AddReceiveAddressThunkParams>(
     `${RECEIVE_THUNK_PREFIX}/addReceiveAddress`,
-    ({ accountKey }, { dispatch, getState }) => {
+    ({ accountKey }, { dispatch, extra, getState }) => {
         const state = getState() as ReceiveAddressListRootState;
         const account = selectReceiveAccount(state, accountKey);
 
@@ -86,5 +87,9 @@ export const addReceiveAddressThunk = createThunk<void, AddReceiveAddressThunkPa
                 address: addressToAdd.address,
             }),
         );
+
+        asTypedNativeAnalytics(extra.services.analytics).report({
+            type: events.receiveAddAddressEvent.name,
+        });
     },
 );

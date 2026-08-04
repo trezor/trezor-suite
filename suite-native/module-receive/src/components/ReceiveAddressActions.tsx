@@ -2,6 +2,8 @@ import { Alert, Share } from 'react-native';
 
 import { useNavigation } from '@react-navigation/native';
 
+import { useServices } from '@suite-common/dependency-injection';
+import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { Button, HStack, VStack, useBottomSheetModal } from '@suite-native/atoms';
 import { useCopyToClipboard } from '@suite-native/clipboard';
 import { Translation, useTranslate } from '@suite-native/intl';
@@ -22,6 +24,7 @@ type ReceiveAddressActionsProps = {
 type NavigationProp = StackNavigationProps<ReceiveStackParamList, ReceiveStackRoutes>;
 
 export const ReceiveAddressActions = ({ address, onVerifyAddress }: ReceiveAddressActionsProps) => {
+    const { analytics } = useServices(selectNativeAnalyticsDep);
     const copyToClipboard = useCopyToClipboard();
     const navigation = useNavigation<NavigationProp>();
     const { translate } = useTranslate();
@@ -38,10 +41,12 @@ export const ReceiveAddressActions = ({ address, onVerifyAddress }: ReceiveAddre
 
     const handleCopyAddress = async () => {
         await copyToClipboard(address, translate('qrCode.addressCopied'));
+        analytics.report({ type: events.receiveCopyAddressEvent.name });
         openCopiedAddressBottomSheet();
     };
 
     const handleVerifyAddress = (source: ReceiveAddressVerificationSource) => {
+        analytics.report({ type: events.receiveStartVerificationEvent.name });
         navigation.navigate(ReceiveStackRoutes.ReceiveAddressVerification, { source });
         void onVerifyAddress();
     };
@@ -66,6 +71,7 @@ export const ReceiveAddressActions = ({ address, onVerifyAddress }: ReceiveAddre
                 return;
             }
 
+            analytics.report({ type: events.receiveShareAddressEvent.name });
             openSharedAddressBottomSheet();
         } catch (error) {
             Alert.alert('Something went wrong.', error.message);
