@@ -44,4 +44,30 @@ describe('getOtcProvidersByCountry', () => {
         expect(firstResult).toEqual([]);
         expect(firstResult).toBe(secondResult);
     });
+
+    it('should not throw when links is a non-array (poison record from untrusted trade server)', () => {
+        const poisonData = { ...otcData, links: 'not-an-array' } as unknown as TradingOTC;
+
+        expect(() => getOtcProvidersByCountry(poisonData, 'CZ')).not.toThrow();
+        expect(getOtcProvidersByCountry(poisonData, 'CZ')).toEqual([]);
+    });
+
+    it('should not throw when a link has non-array allowedCountries (poison record)', () => {
+        const poisonData = {
+            ...otcData,
+            links: [
+                { name: 'Poison', url: 'https://poison.example', allowedCountries: 'CZ' },
+                {
+                    name: 'Provider CZ',
+                    url: 'https://provider-cz.example',
+                    allowedCountries: ['CZ'],
+                },
+            ],
+        } as unknown as TradingOTC;
+
+        expect(() => getOtcProvidersByCountry(poisonData, 'CZ')).not.toThrow();
+        expect(getOtcProvidersByCountry(poisonData, 'CZ')).toEqual([
+            expect.objectContaining({ name: 'Provider CZ' }),
+        ]);
+    });
 });

@@ -11,7 +11,15 @@ export const getOtcProvidersByCountry = (
     data: TradingOTC | null | undefined,
     country: TradingCountryCode,
 ) =>
-    returnStableArrayIfEmpty(data?.links?.filter(link => link.allowedCountries?.includes(country)));
+    returnStableArrayIfEmpty(
+        Array.isArray(data?.links)
+            ? data.links.filter(
+                  link =>
+                      Array.isArray(link?.allowedCountries) &&
+                      link.allowedCountries.includes(country),
+              )
+            : undefined,
+    );
 
 export const useFetchOtc = () =>
     useQuery({
