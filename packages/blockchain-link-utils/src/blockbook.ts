@@ -86,6 +86,14 @@ export const filterTokenTransfers = (
             const tokenTransfer = {
                 ...transfer,
                 type,
+                // TokenTransfer.contract is typed as a required string, but an untrusted/
+                // user-selectable blockbook backend may omit it. The value is later deref'd
+                // unconditionally in render-time code with no ErrorBoundary (e.g.
+                // token.contract.toLowerCase() in the transaction list, and
+                // getContractAddressForNetworkSymbol via isTokenDefinitionKnown) → a single
+                // contract-less record would throw and crash the whole account transaction view.
+                // Normalize to an empty string so runtime honors the declared type.
+                contract: typeof transfer.contract === 'string' ? transfer.contract : '',
                 decimals: transfer.decimals || DEFAULT_TOKEN_DECIMALS,
                 amount: transfer.value || '',
                 standard: transfer.standard,

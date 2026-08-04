@@ -169,6 +169,32 @@ describe('blockbook/utils', () => {
         });
     });
 
+    describe('filterTokenTransfers contract normalization (poison-record DoS resistance)', () => {
+        // TokenTransfer.contract is typed as a required string, but an untrusted/user-selectable
+        // blockbook backend may omit it. Downstream render-time code (transaction list) deref's
+        // token.contract.toLowerCase() and passes it to getContractAddressForNetworkSymbol with no
+        // ErrorBoundary, so a contract-less record would crash the whole account view. The util now
+        // normalizes contract to a string so runtime honors the declared type.
+        const address = '0x1111111111111111111111111111111111111111';
+
+        it('normalizes a missing contract to an empty string and keeps the transfer', () => {
+            const result = filterTokenTransfers(address, [
+                // @ts-expect-error poison record missing the required contract field
+                { from: address, to: '0x2222', decimals: 18, value: '7' },
+            ]);
+            expect(result).toHaveLength(1);
+            expect(result[0]?.contract).toBe('');
+        });
+
+        it('produces tokens whose contract is always deref-safe (.toLowerCase does not throw)', () => {
+            const result = filterTokenTransfers(address, [
+                // @ts-expect-error poison record missing the required contract field
+                { from: address, to: '0x2222', decimals: 18, value: '7' },
+            ]);
+            expect(() => result.map(t => t.contract.toLowerCase())).not.toThrow();
+        });
+    });
+
     describe('transformAccountUtxo poison-record DoS resistance', () => {
         const validUtxo = {
             txid: 'abcd',
