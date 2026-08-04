@@ -15,6 +15,7 @@ import {
     type Api,
     discoverAddress,
     getTransactions,
+    sanitizeHistory,
     tryGetScripthash,
 } from '../utils';
 
@@ -83,7 +84,7 @@ const getAccountInfo: Api<Req, Res> = async ({ client, addressCache }, payload) 
         ]).then(([{ confirmed, unconfirmed }, history]) => ({
             confirmed,
             unconfirmed,
-            history,
+            history: sanitizeHistory(history),
         }));
         const historyUnconfirmed = history.filter(r => r.height <= 0).length;
 

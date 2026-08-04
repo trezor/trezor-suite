@@ -16,6 +16,7 @@ import {
     type Api,
     discoverAddress,
     getTransactions,
+    sanitizeHistory,
     tryGetScripthash,
 } from '../utils';
 
@@ -96,7 +97,9 @@ const getAccountBalanceHistory: Api<Req, Res> = async (
 
     const parsed = tryGetScripthash(descriptor, network);
     if (parsed.valid) {
-        history = await client.request('blockchain.scripthash.get_history', parsed.scripthash);
+        history = sanitizeHistory(
+            await client.request('blockchain.scripthash.get_history', parsed.scripthash),
+        );
         addresses = undefined;
     } else {
         const discover = discoverAddress(client);
