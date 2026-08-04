@@ -129,4 +129,57 @@ describe('getSimulatedReceiveAmount', () => {
 
         expect(getSimulatedReceiveAmount(result, tokenQuoteReceive)).toBeNull();
     });
+
+    // The Blockaid response is proxied through an unsigned CDN (cdn.trezor.io/dynamic/blockaid) and
+    // is not runtime-validated, so a malicious/MITM body could ship malformed diffs. This util runs in
+    // a render body, so a throw would crash the exchange preview — it must degrade to null instead.
+    describe('poison Blockaid response hardening', () => {
+        const { asset: _nativeAsset, ...nativeDiffWithoutAsset } = nativeAssetDiff;
+        const { asset: _usdcAsset, ...usdcDiffWithoutAsset } = usdcAssetDiff;
+
+        it('does not throw when a native receive diff is missing its asset object', () => {
+            const result = createSimulationResult([nativeDiffWithoutAsset]);
+
+            // 1 ETH `value` still resolves once the missing-asset `in`-operator crash is guarded.
+            expect(() => getSimulatedReceiveAmount(result, nativeQuoteReceive)).not.toThrow();
+            expect(getSimulatedReceiveAmount(result, nativeQuoteReceive)).toBe('1');
+        });
+
+        it('does not throw when an ERC20 receive diff is missing its asset object', () => {
+            const result = createSimulationResult([usdcDiffWithoutAsset]);
+
+            expect(() => getSimulatedReceiveAmount(result, tokenQuoteReceive)).not.toThrow();
+            expect(getSimulatedReceiveAmount(result, tokenQuoteReceive)).toBeNull();
+        });
+
+        it('does not throw when a diff carries a non-array `in`', () => {
+            const result = createSimulationResult([{ ...nativeAssetDiff, in: null }]);
+
+            expect(() => getSimulatedReceiveAmount(result, nativeQuoteReceive)).not.toThrow();
+            expect(getSimulatedReceiveAmount(result, nativeQuoteReceive)).toBeNull();
+        });
+
+        it('does not throw on a poison (null/primitive) incoming transfer entry', () => {
+            const result = createSimulationResult([{ ...nativeAssetDiff, in: [null, 42] }]);
+
+            expect(() => getSimulatedReceiveAmount(result, nativeQuoteReceive)).not.toThrow();
+            expect(getSimulatedReceiveAmount(result, nativeQuoteReceive)).toBeNull();
+        });
+
+        it('does not throw when account_summary.assets_diffs is not an array', () => {
+            const result = {
+                method: 'ethereumSignTransaction',
+                payload: {
+                    needsDisclaimer: false,
+                    simulation: {
+                        status: 'Success',
+                        account_summary: { assets_diffs: { length: 3 } },
+                    },
+                },
+            } as unknown as NetworkTxSimulationResult;
+
+            expect(() => getSimulatedReceiveAmount(result, nativeQuoteReceive)).not.toThrow();
+            expect(getSimulatedReceiveAmount(result, nativeQuoteReceive)).toBeNull();
+        });
+    });
 });

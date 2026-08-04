@@ -57,7 +57,12 @@ export const getEvmSimulationSummary = (
 
     return {
         simulation,
-        assetsDiffs: (assetsDiffs ?? []).toSorted(byEvmOutgoingFirst),
+        // `assets_diffs` comes verbatim from an unsigned CDN (the cdn.trezor.io/dynamic/blockaid
+        // proxy is NOT JWS-verified) and the `@blockaid/client` SDK does not runtime-validate the
+        // response shape, so a malicious/MITM body could ship a truthy non-array. `.toSorted` would
+        // then throw synchronously here; consumers such as getSimulatedReceiveAmount run in a render
+        // body with no ErrorBoundary, so coerce a non-array to an empty list at this boundary.
+        assetsDiffs: (Array.isArray(assetsDiffs) ? assetsDiffs : []).toSorted(byEvmOutgoingFirst),
         exposures: exposures ?? [],
     };
 };
