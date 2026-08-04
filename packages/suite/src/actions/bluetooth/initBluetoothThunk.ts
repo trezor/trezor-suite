@@ -32,7 +32,7 @@ type InitBluetoothThunkState = DeviceRootState & FirmwareRootState & WithBluetoo
 export const initBluetoothThunk = createThunk<
     void,
     void,
-    { state: InitBluetoothThunkState; extra: Record<never, never> }
+    { state: InitBluetoothThunkState }
 >(`${BLUETOOTH_PREFIX}/initBluetoothThunk`, async (_, { getState, dispatch }) => {
     const knownDevices = selectKnownDevices<DesktopBluetoothDevice>(getState());
 

@@ -10,7 +10,7 @@ import { bluetoothIpc } from '@trezor/transport-bluetooth';
 export const bluetoothStopScanningThunk = createThunk<
     void,
     void,
-    { state: DesktopDeviceRootState; extra: Record<never, never> }
+    { state: DesktopDeviceRootState }
 >(`${BLUETOOTH_PREFIX}/bluetoothStopScanningThunk`, (_, { dispatch, getState }) => {
     const defaultConnectionMode = selectDeviceDefaultConnectionMode(getState());
     const isModalOpen = selectIsConnectionModalOpen(getState());

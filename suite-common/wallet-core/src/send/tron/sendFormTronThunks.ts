@@ -31,7 +31,7 @@ import { resolveCalldata } from './resolveCalldata';
 export const composeTronTransactionFeeLevelsThunk = createThunk<
     PrecomposedLevels,
     ComposeTransactionThunkArguments,
-    { rejectValue: ComposeFeeLevelsError; extra: Record<never, never> }
+    { rejectValue: ComposeFeeLevelsError; state: unknown }
 >(
     `${SEND_MODULE_PREFIX}/composeTronTransactionFeeLevelsThunk`,
     async ({ formState, composeContext }, { dispatch, rejectWithValue }) => {
@@ -200,7 +200,7 @@ export const composeTronTransactionFeeLevelsThunk = createThunk<
 export const signTronSendFormTransactionThunk = createThunk<
     { serializedTx: string },
     SignTransactionThunkArguments,
-    { rejectValue: SignTransactionError; extra: Record<never, never> }
+    { rejectValue: SignTransactionError; state: unknown }
 >(
     `${SEND_MODULE_PREFIX}/signTronSendFormTransactionThunk`,
     async ({ formState, precomposedTransaction, selectedAccount, device }, { rejectWithValue }) => {

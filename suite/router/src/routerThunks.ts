@@ -34,7 +34,7 @@ type RouterThunkDeps = { services: SuiteRouterHistoryDep };
 export const onLocationChange = createThunk<
     ReturnType<typeof routerLocationChange> | null | undefined,
     RouterPathOptional & { anchor?: AnchorType },
-    { state: RouterThunkState; extra: Record<never, never> }
+    { state: RouterThunkState }
 >(
     '@router/onLocationChange',
     (location: RouterPathOptional & { anchor?: AnchorType }, { dispatch, getState }) => {

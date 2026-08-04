@@ -32,7 +32,7 @@ import {
 export const composeCardanoTransactionFeeLevelsThunk = createThunk<
     PrecomposedLevelsCardano,
     ComposeTransactionThunkArguments,
-    { rejectValue: ComposeFeeLevelsError; extra: Record<never, never> }
+    { rejectValue: ComposeFeeLevelsError; state: unknown }
 >(
     `${SEND_MODULE_PREFIX}/composeCardanoTransactionFeeLevelsThunk`,
     async ({ formState, composeContext }, { dispatch, rejectWithValue }) => {
@@ -154,7 +154,6 @@ export const signCardanoSendFormTransactionThunk = createThunk<
     {
         rejectValue: SignTransactionError;
         state: WalletSettingsRootState;
-        extra: Record<never, never>;
     }
 >(
     `${SEND_MODULE_PREFIX}/signCardanoSendFormTransactionThunk`,

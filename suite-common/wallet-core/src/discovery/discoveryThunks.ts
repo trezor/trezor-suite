@@ -104,7 +104,6 @@ export const applyDeviceStatesThunk = createThunk<
     {
         rejectValue: string;
         state: DeviceRootState & WalletSettingsRootState;
-        extra: Record<never, never>;
     }
 >(
     `${DISCOVERY_MODULE_PREFIX}/applyDeviceStates`,
@@ -239,7 +238,7 @@ type ApplyDeviceStateErrorThunkProps = {
 const applyDeviceStateErrorThunk = createThunk<
     void,
     ApplyDeviceStateErrorThunkProps,
-    { state: DiscoveryRootState; extra: Record<never, never> }
+    { state: DiscoveryRootState }
 >(
     `${DISCOVERY_MODULE_PREFIX}/applyDeviceStateError`,
     ({ error, code, devicePath }: ApplyDeviceStateErrorThunkProps, { dispatch, getState }) => {

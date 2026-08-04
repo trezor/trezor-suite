@@ -23,7 +23,7 @@ type SelectDeviceThunkParams = {
 export const selectDeviceThunk = createThunk<
     { device: TrezorDevice | undefined },
     SelectDeviceThunkParams,
-    { state: DeviceRootState; extra: Record<never, never> }
+    { state: DeviceRootState }
 >(
     `${DEVICE_MODULE_PREFIX}/selectDevice`,
     ({ device }, { dispatch, getState, fulfillWithValue }) => {
@@ -53,7 +53,7 @@ export const selectDeviceThunk = createThunk<
 export const selectNewlyConnectedDeviceThunk = createThunk<
     void,
     SelectDeviceThunkParams,
-    { state: DeviceRootState; extra: Record<never, never> }
+    { state: DeviceRootState }
 >(
     `${DEVICE_MODULE_PREFIX}/selectNewlyConnectedDevice`,
     ({ device }, { dispatch, getState, rejectWithValue }) => {

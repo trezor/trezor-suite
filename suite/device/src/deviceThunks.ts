@@ -12,7 +12,7 @@ type DisconnectDeviceThunkState = DeviceRootState & RouterRootState;
 export const disconnectDeviceThunk = createThunk<
     void,
     Device | TrezorDevice,
-    { state: DisconnectDeviceThunkState; extra: Record<never, never> }
+    { state: DisconnectDeviceThunkState }
 >(
     `${DEVICE_MODULE_PREFIX}/handleDeviceDisconnect`,
     (device: Device | TrezorDevice, { dispatch, getState }) => {

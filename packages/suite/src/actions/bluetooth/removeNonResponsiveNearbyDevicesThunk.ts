@@ -12,7 +12,7 @@ import { filterOutNonResponsiveDevices } from './filterOutNonResponsiveDevices';
 export const removeNonResponsiveNearbyDevicesThunk = createThunk<
     void,
     void,
-    { state: WithBluetoothState<DesktopBluetoothDevice>; extra: Record<never, never> }
+    { state: WithBluetoothState<DesktopBluetoothDevice> }
 >(`${BLUETOOTH_PREFIX}/removeNonResponsiveNearbyDevicesThunk`, (_, { dispatch, getState }) => {
     const nearbyDevices = selectNearbyDevices<DesktopBluetoothDevice>(getState());
 

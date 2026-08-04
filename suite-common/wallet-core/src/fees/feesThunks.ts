@@ -26,7 +26,7 @@ import {
 export const preloadFeeInfoThunk = createThunk<
     void,
     void,
-    { state: WalletSettingsRootState; extra: Record<never, never> }
+    { state: WalletSettingsRootState }
 >(`${FEES_MODULE_PREFIX}/preloadFeeInfoThunk`, async (_, { dispatch, getState }) => {
     const enabledNetworks = selectEnabledNetworks(getState());
 
@@ -86,7 +86,6 @@ export const updateFeeInfoThunk = createThunk<
     {
         rejectValue: undefined;
         state: BlockchainRootState & DeviceRootState & FeesRootState;
-        extra: Record<never, never>;
     }
 >(
     `${FEES_MODULE_PREFIX}/updateFeeInfoThunk`,

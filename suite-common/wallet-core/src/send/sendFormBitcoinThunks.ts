@@ -67,7 +67,6 @@ export const composeBitcoinTransactionFeeLevelsThunk = createThunk<
     {
         rejectValue: ComposeFeeLevelsError;
         state: DeviceRootState & WalletSettingsRootState;
-        extra: Record<never, never>;
     }
 >(
     `${SEND_MODULE_PREFIX}/composeBitcoinTransactionFeeLevelsThunk`,
@@ -264,7 +263,6 @@ export const signBitcoinSendFormTransactionThunk = createThunk<
     {
         rejectValue: SignTransactionError;
         state: TransactionsRootState & WalletSettingsRootState;
-        extra: Record<never, never>;
     }
 >(
     `${SEND_MODULE_PREFIX}/signBitcoinSendFormTransactionThunk`,

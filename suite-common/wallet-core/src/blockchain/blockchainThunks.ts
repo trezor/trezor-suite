@@ -100,7 +100,7 @@ const setBackendsToConnect = (backends: CustomBackend[]) =>
 export const setCustomBackendThunk = createThunk<
     unknown,
     NetworkSymbol,
-    { state: BlockchainRootState; extra: Record<never, never> }
+    { state: BlockchainRootState }
 >(`${BLOCKCHAIN_MODULE_PREFIX}/setCustomBackendThunk`, (symbol: NetworkSymbol, { getState }) => {
     const blockchain = selectBlockchainState(getState());
     const backends = [getBackendFromSettings(symbol, blockchain[symbol].backends)];
@@ -151,7 +151,7 @@ const isAccountSubscribable = (account: Account) =>
 export const subscribeBlockchainThunk = createThunk<
     unknown,
     { symbol: NetworkSymbol; fiatRates?: boolean; onConnect?: boolean },
-    { state: AccountsRootState; extra: Record<never, never> }
+    { state: AccountsRootState }
 >(
     `${BLOCKCHAIN_MODULE_PREFIX}/subscribeBlockchainThunk`,
     async (
@@ -193,7 +193,7 @@ export const subscribeBlockchainThunk = createThunk<
 export const unsubscribeBlockchainThunk = createThunk<
     unknown,
     Account[],
-    { state: AccountsRootState; extra: Record<never, never> }
+    { state: AccountsRootState }
 >(
     `${BLOCKCHAIN_MODULE_PREFIX}/unsubscribeBlockchainThunk`,
     (removedAccounts: Account[], { getState }) => {
@@ -440,7 +440,7 @@ export const onBlockchainNotificationThunk = createThunk<
 export const onBlockchainDisconnectThunk = createThunk<
     void,
     BlockchainError,
-    { state: BlockchainRootState; extra: Record<never, never> }
+    { state: BlockchainRootState }
 >(
     `${BLOCKCHAIN_MODULE_PREFIX}/onBlockchainDisconnectThunk`,
     (error: BlockchainError, { getState }) => {

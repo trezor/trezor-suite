@@ -114,7 +114,7 @@ const calculate = (
 export const composeRippleStellarTransactionFeeLevelsThunk = createThunk<
     PrecomposedLevels,
     ComposeTransactionThunkArguments,
-    { rejectValue: ComposeFeeLevelsError; extra: Record<never, never> }
+    { rejectValue: ComposeFeeLevelsError; state: unknown }
 >(
     `${SEND_MODULE_PREFIX}/composeRippleStellarTransactionFeeLevelsThunk`,
     async ({ formState, composeContext }, { rejectWithValue }) => {
@@ -240,7 +240,6 @@ export const signRippleStellarSendFormTransactionThunk = createThunk<
     {
         rejectValue: SignTransactionError;
         state: WalletSettingsRootState;
-        extra: Record<never, never>;
     }
 >(
     `${SEND_MODULE_PREFIX}/signRippleStellarSendFormTransactionThunk`,

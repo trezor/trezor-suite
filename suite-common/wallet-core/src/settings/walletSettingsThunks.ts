@@ -16,7 +16,7 @@ export const changeCoinVisibility = createThunk<
         symbol: NetworkSymbol;
         shouldBeVisible: boolean;
     },
-    { state: WalletCoreCompoundRootState; extra: Record<never, never> }
+    { state: WalletCoreCompoundRootState }
 >(
     WALLET_SETTINGS.CHANGE_COIN_VISIBILITY,
     async ({ symbol, shouldBeVisible }, { dispatch, getState }) => {

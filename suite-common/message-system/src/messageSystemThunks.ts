@@ -74,7 +74,7 @@ const shouldFetchConfig = (isLocal: boolean, lastTimestamp: number) => {
 export const fetchConfigThunk = createThunk<
     void,
     void,
-    { state: MessageSystemRootState; extra: Record<never, never> }
+    { state: MessageSystemRootState }
 >(`${ACTION_PREFIX}/fetchConfig`, async (_, { dispatch, getState }) => {
     const timestamp = selectMessageSystemTimestamp(getState());
     const currentSequence = selectMessageSystemCurrentSequence(getState());

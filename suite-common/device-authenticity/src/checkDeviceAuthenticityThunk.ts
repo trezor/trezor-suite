@@ -26,7 +26,6 @@ export const checkDeviceAuthenticityThunk = createThunk<
     {
         rejectValue: StoredAuthenticateDeviceResult;
         state: CheckDeviceAuthenticityThunkState;
-        extra: Record<never, never>;
     }
 >(
     `${ACTION_PREFIX}/checkDeviceAuthenticity`,

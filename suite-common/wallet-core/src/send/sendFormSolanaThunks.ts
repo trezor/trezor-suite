@@ -170,7 +170,7 @@ function assertIsSolanaAccount(
 export const composeSolanaTransactionFeeLevelsThunk = createThunk<
     PrecomposedLevels,
     ComposeTransactionThunkArguments,
-    { rejectValue: ComposeFeeLevelsError; state: BlockchainRootState; extra: Record<never, never> }
+    { rejectValue: ComposeFeeLevelsError; state: BlockchainRootState }
 >(
     `${SEND_MODULE_PREFIX}/composeSolanaTransactionFeeLevelsThunk`,
     async (
@@ -337,7 +337,6 @@ export const signSolanaSendFormTransactionThunk = createThunk<
     {
         rejectValue: SignTransactionError;
         state: WalletSettingsRootState;
-        extra: Record<never, never>;
     }
 >(
     `${SEND_MODULE_PREFIX}/signSolanaSendFormTransactionThunk`,

@@ -270,7 +270,7 @@ export const calculate = (
 export const composeEthereumTransactionFeeLevelsThunk = createThunk<
     PrecomposedLevels,
     ComposeTransactionThunkArguments,
-    { rejectValue: ComposeFeeLevelsError; state: DeviceRootState; extra: Record<never, never> }
+    { rejectValue: ComposeFeeLevelsError; state: DeviceRootState }
 >(
     `${SEND_MODULE_PREFIX}/composeEthereumTransactionFeeLevelsThunk`,
     async (
@@ -535,7 +535,7 @@ interface EthereumGetCurrentNonceThunkParams {
 export const ethereumGetCurrentNonceThunk = createThunk<
     ResolveEthereumNonceResult,
     EthereumGetCurrentNonceThunkParams,
-    { state: AccountsRootState & TransactionsRootState; extra: Record<never, never> }
+    { state: AccountsRootState & TransactionsRootState }
 >(
     `${SEND_MODULE_PREFIX}/ethereumGetCurrentNonceThunk`,
     ({ selectedAccount, rbfParams, fetchConfirmedNonce }, { getState }) => {
@@ -558,7 +558,6 @@ export const signEthereumSendFormTransactionThunk = createThunk<
     {
         rejectValue: SignTransactionError;
         state: AccountsRootState & TransactionsRootState & WalletSettingsRootState;
-        extra: Record<never, never>;
     }
 >(
     `${SEND_MODULE_PREFIX}/signEthereumSendFormTransactionThunk`,

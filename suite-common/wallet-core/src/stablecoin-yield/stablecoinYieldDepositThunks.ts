@@ -70,7 +70,6 @@ export const composeYieldDepositTransactionThunk = createThunk<
     ComposeYieldDepositTransactionPayload,
     {
         state: AccountsRootState & FeesRootState & TransactionsRootState;
-        extra: Record<never, never>;
     }
 >(
     `${YIELD_DEPOSIT_THUNK_PREFIX}/composeDepositTransaction`,

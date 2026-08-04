@@ -121,7 +121,7 @@ type ConvertSendFormDraftsBtcAmountUnitsThunkState = AccountsRootState &
 export const convertSendFormDraftsBtcAmountUnitsThunk = createThunk<
     void,
     { selectedAccountKey?: AccountKey; isOnSendPage?: boolean },
-    { state: ConvertSendFormDraftsBtcAmountUnitsThunkState; extra: Record<never, never> }
+    { state: ConvertSendFormDraftsBtcAmountUnitsThunkState }
 >(
     `${SEND_MODULE_PREFIX}/convertSendFormDraftsBtcAmountUnitsThunk`,
     (
@@ -191,7 +191,6 @@ export const composeSendFormTransactionFeeLevelsThunk = createThunk<
     {
         rejectValue: ComposeFeeLevelsError;
         state: BlockchainRootState & DeviceRootState & WalletSettingsRootState;
-        extra: Record<never, never>;
     }
 >(
     `${SEND_MODULE_PREFIX}/composeSendFormTransactionThunk`,
@@ -647,7 +646,6 @@ export const signTransactionThunk = createThunk<
             DeviceRootState &
             TransactionsRootState &
             WalletSettingsRootState;
-        extra: Record<never, never>;
     }
 >(
     `${SEND_MODULE_PREFIX}/signTransactionThunk`,
@@ -756,7 +754,7 @@ export const enhancePrecomposedTransactionThunk = createThunk<
         precomposedTransaction: GeneralPrecomposedTransactionFinal;
         selectedAccount: Account;
     },
-    { rejectValue: string; state: DeviceRootState; extra: Record<never, never> }
+    { rejectValue: string; state: DeviceRootState }
 >(
     `${SEND_MODULE_PREFIX}/enhancePrecomposedTransactionThunk`,
     async (

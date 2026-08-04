@@ -74,7 +74,7 @@ import {
 export const handleDeviceDisconnect = createThunk<
     void,
     Device | TrezorDevice,
-    { state: DeviceRootState; extra: Record<never, never> }
+    { state: DeviceRootState }
 >(
     `${DEVICE_MODULE_PREFIX}/handleDeviceDisconnect`,
     (device: Device | TrezorDevice, { dispatch, getState }) => {
@@ -110,7 +110,7 @@ export const handleDeviceDisconnect = createThunk<
 export const forgetDisconnectedDevices = createThunk<
     void,
     { device: Device | TrezorDevice; forceForget?: boolean },
-    { state: DeviceRootState; extra: Record<never, never> }
+    { state: DeviceRootState }
 >(
     `${DEVICE_MODULE_PREFIX}/forgetDisconnectedDevices`,
     (params: { device: Device | TrezorDevice; forceForget?: boolean }, { dispatch, getState }) => {
@@ -148,7 +148,7 @@ type ObserveSelectedDeviceResult = {
 export const observeSelectedDevice = createThunk<
     ObserveSelectedDeviceResult,
     void,
-    { state: DeviceRootState; extra: Record<never, never> }
+    { state: DeviceRootState }
 >(
     `${DEVICE_MODULE_PREFIX}/observeSelectedDevice`,
     (_, { dispatch, getState, fulfillWithValue }) => {
@@ -240,7 +240,7 @@ export const acquireDevice = createThunk<
 export const initDevices = createThunk<
     void,
     void,
-    { state: DeviceRootState; extra: Record<never, never> }
+    { state: DeviceRootState }
 >(`${DEVICE_MODULE_PREFIX}/initDevices`, (_, { dispatch, getState }) => {
     const devices = selectDevices(getState());
 
@@ -257,7 +257,6 @@ export const createImportedDeviceThunk = createThunk<
     {
         rejectValue: { error: 'already-created' };
         state: DeviceRootState;
-        extra: Record<never, never>;
     }
 >(`${DEVICE_MODULE_PREFIX}/createImportedDevice`, (_, { dispatch, getState, rejectWithValue }) => {
     if (selectDeviceById(getState(), PORTFOLIO_TRACKER_DEVICE_ID)) {
@@ -287,7 +286,7 @@ type ConfirmAddressOnDeviceThunk = {
 export const confirmAddressOnDeviceThunk = createThunk<
     ConnectResponse<Address | CardanoAddress>,
     ConfirmAddressOnDeviceThunk,
-    { state: AccountsRootState & DeviceRootState; extra: Record<never, never> }
+    { state: AccountsRootState & DeviceRootState }
 >(
     `${DEVICE_MODULE_PREFIX}/confirmAddressOnDeviceThunk`,
     async (
@@ -368,7 +367,7 @@ type SetDeviceAutoEjectThunkParams = {
 export const setDeviceAutoEjectThunk = createThunk<
     void,
     SetDeviceAutoEjectThunkParams,
-    { state: DeviceRootState & WalletSettingsRootState; extra: Record<never, never> }
+    { state: DeviceRootState & WalletSettingsRootState }
 >(
     `${DEVICE_MODULE_PREFIX}/setDeviceAutoEjectThunk`,
     ({ shouldEnable }: SetDeviceAutoEjectThunkParams, { dispatch, getState }) => {
@@ -408,7 +407,7 @@ export const setDeviceAutoEjectThunk = createThunk<
 export const toggleAutoEjectThunk = createThunk<
     unknown,
     void,
-    { state: DeviceRootState & WalletSettingsRootState; extra: Record<never, never> }
+    { state: DeviceRootState & WalletSettingsRootState }
 >(`${DEVICE_MODULE_PREFIX}/toggleAutoEjectThunk`, (_, { dispatch, getState }) =>
     dispatch(
         setDeviceAutoEjectThunk({

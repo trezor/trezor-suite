@@ -143,7 +143,7 @@ type UpdateTxsFiatRatesThunkState = AccountsRootState &
 export const updateTxsFiatRatesThunk = createThunk<
     UpdateTxsFiatRatesThunkResult,
     UpdateTxsFiatRatesThunkPayload,
-    { state: UpdateTxsFiatRatesThunkState; extra: Record<never, never> }
+    { state: UpdateTxsFiatRatesThunkState }
 >(
     `${FIAT_RATES_MODULE_PREFIX}/updateTxsRates`,
     async ({ accountKey, txs, baseCurrencyCode }: UpdateTxsFiatRatesThunkPayload, { getState }) => {
@@ -226,7 +226,7 @@ type UpdateCurrentFiatRatesThunkPayload = {
 export const updateFiatRatesThunk = createThunk<
     PromiseSettledResult<FiatRatesResult>[],
     UpdateCurrentFiatRatesThunkPayload,
-    { state: BlockchainRootState & TokenDefinitionsRootState; extra: Record<never, never> }
+    { state: BlockchainRootState & TokenDefinitionsRootState }
 >(
     `${FIAT_RATES_MODULE_PREFIX}/updateFiatRates`,
     async (
@@ -319,7 +319,7 @@ type UpdateMissingTxFiatRatesThunkState = FiatRatesRootState &
 export const updateMissingTxFiatRatesThunk = createThunk<
     void,
     { localCurrency: BaseCurrencyCode; accountKey?: AccountKey },
-    { state: UpdateMissingTxFiatRatesThunkState; extra: Record<never, never> }
+    { state: UpdateMissingTxFiatRatesThunkState }
 >(
     `${FIAT_RATES_MODULE_PREFIX}/updateMissingTxRates`,
     (
@@ -357,7 +357,7 @@ type FetchFiatRatesThunkState = AccountsRootState &
 export const fetchFiatRatesThunk = createThunk<
     void,
     FetchFiatRatesThunkPayload,
-    { state: FetchFiatRatesThunkState; extra: Record<never, never> }
+    { state: FetchFiatRatesThunkState }
 >(
     `${FIAT_RATES_MODULE_PREFIX}/fetchFiatRates`,
     ({ rateType, localCurrency }: FetchFiatRatesThunkPayload, { dispatch, getState }) => {

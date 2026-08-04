@@ -28,7 +28,7 @@ function stakingDataNeedsRefetch(data: StakeRootState['wallet']['stake']['data']
 export const initStakeDataThunk = createThunk<
     void,
     void,
-    { state: StakeRootState & WalletSettingsRootState; extra: Record<never, never> }
+    { state: StakeRootState & WalletSettingsRootState }
 >(`${STAKE_MODULE}/initStakeDataThunk`, async (_, { getState, dispatch }) => {
     const enabledNetworks = selectEnabledNetworks(getState());
     const isBtcOnly = enabledNetworks.length === 1 && enabledNetworks.includes('btc');

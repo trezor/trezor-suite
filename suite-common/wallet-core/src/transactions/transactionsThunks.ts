@@ -75,7 +75,6 @@ export const replaceTransactionThunk = createThunk<
     ReplaceTransactionThunkParams,
     {
         state: AccountsRootState & SendRootState & TransactionsRootState;
-        extra: Record<never, never>;
     }
 >(
     `${TRANSACTIONS_MODULE_PREFIX}/replaceTransactionThunk`,
@@ -151,7 +150,7 @@ interface AddFakePendingTransactionParams {
 export const addFakePendingTxThunk = createThunk<
     void,
     AddFakePendingTransactionParams,
-    { state: AccountsRootState & BlockchainRootState & SendRootState; extra: Record<never, never> }
+    { state: AccountsRootState & BlockchainRootState & SendRootState }
 >(
     `${TRANSACTIONS_MODULE_PREFIX}/addFakePendingTransaction`,
     (
@@ -385,7 +384,6 @@ export const addFakePendingEvmTxThunk = createThunk<
     AddFakePendingEvmTxThunkParams,
     {
         state: AccountsRootState & BlockchainRootState & FeesRootState & TransactionsRootState;
-        extra: Record<never, never>;
     }
 >(
     `${TRANSACTIONS_MODULE_PREFIX}/addFakePendingTransaction`,
@@ -460,7 +458,7 @@ type AddFakePendingCardanoTxThunkParams = {
 export const addFakePendingCardanoTxThunk = createThunk<
     void,
     AddFakePendingCardanoTxThunkParams,
-    { state: BlockchainRootState; extra: Record<never, never> }
+    { state: BlockchainRootState }
 >(
     `${TRANSACTIONS_MODULE_PREFIX}/addFakePendingTransaction`,
     (
@@ -516,7 +514,7 @@ interface AddFakePendingTronTxThunkParams {
 export const addFakePendingTronTxThunk = createThunk<
     void,
     AddFakePendingTronTxThunkParams,
-    { state: BlockchainRootState & FeesRootState; extra: Record<never, never> }
+    { state: BlockchainRootState & FeesRootState }
 >(
     `${TRANSACTIONS_MODULE_PREFIX}/addFakePendingTransaction`,
     (
@@ -586,7 +584,6 @@ export const fetchTransactionsPageThunk = createThunk<
     FetchTransactionsPageThunkParams,
     {
         state: AccountsRootState & BlockchainRootState & TransactionsRootState;
-        extra: Record<never, never>;
     }
 >(
     `${TRANSACTIONS_MODULE_PREFIX}/fetchTransactionsPageThunk`,

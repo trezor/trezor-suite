@@ -51,7 +51,7 @@ export const addToast = createAction(
 export const addToastOnceThunk = createThunk<
     void,
     ToastPayload,
-    { state: NotificationsRootState; extra: Record<never, never> }
+    { state: NotificationsRootState }
 >(`${ACTION_PREFIX}/addToastOnce`, (payload, { getState, dispatch }) => {
     const notifications = selectVisibleNotificationsByType(getState(), payload.type);
     if (notifications.length > 0) return;

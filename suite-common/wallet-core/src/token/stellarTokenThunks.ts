@@ -132,7 +132,6 @@ export const activateStellarTokenThunk = createThunk<
     {
         rejectValue: { error: string; message: string };
         state: StellarTokenThunkState;
-        extra: Record<never, never>;
     }
 >(
     `${STELLAR_TOKEN_MODULE_PREFIX}/activateStellarTokenThunk`,
@@ -146,7 +145,6 @@ export const deactivateStellarTokenThunk = createThunk<
     {
         rejectValue: { error: string; message: string };
         state: StellarTokenThunkState;
-        extra: Record<never, never>;
     }
 >(
     `${STELLAR_TOKEN_MODULE_PREFIX}/deactivateStellarTokenThunk`,

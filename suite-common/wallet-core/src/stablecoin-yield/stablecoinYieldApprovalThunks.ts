@@ -192,7 +192,7 @@ export const handleYieldApproveSuccessTxidThunk = createThunk<
         submittedAt?: number;
         txid: string;
     },
-    { state: StablecoinYieldRootState; extra: Record<never, never> }
+    { state: StablecoinYieldRootState }
 >(
     `${YIELD_THUNK_PREFIX}/handleApproveSuccessTxid`,
     (
@@ -311,7 +311,7 @@ export const initYieldAllowanceThunk = createThunk<void, InitYieldAllowancePaylo
 export const submitYieldRevokeThunk = createThunk<
     void,
     YieldSessionDataAmountPayload,
-    { state: StablecoinYieldRootState; extra: Record<never, never> }
+    { state: StablecoinYieldRootState }
 >(
     `${YIELD_THUNK_PREFIX}/submitRevoke`,
     (

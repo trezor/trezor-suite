@@ -91,7 +91,7 @@ type MoveLabelsForRbfOldMetadataThunkState = AccountsRootState & MetadataRootSta
 export const moveLabelsForRbfOldMetadataThunk = createThunk<
     void,
     MoveLabelsForRbfOldMetadataThunkParams,
-    { state: MoveLabelsForRbfOldMetadataThunkState; extra: Record<never, never> }
+    { state: MoveLabelsForRbfOldMetadataThunkState }
 >(
     `${METADATA.MODULE_PREFIX}/applyMetadataLabelsThunk`,
     async ({ accountKey, data, newTxid }, { dispatch, getState }) => {

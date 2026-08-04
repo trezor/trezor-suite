@@ -62,7 +62,6 @@ export const composeYieldWrapTransactionThunk = createThunk<
     ComposeYieldWrapTransactionPayload,
     {
         state: AccountsRootState & FeesRootState & TransactionsRootState;
-        extra: Record<never, never>;
     }
 >(
     `${YIELD_WRAP_THUNK_PREFIX}/composeWrapTransaction`,
@@ -148,7 +147,6 @@ export const composeYieldUnwrapTransactionThunk = createThunk<
     ComposeYieldUnwrapTransactionPayload,
     {
         state: AccountsRootState & FeesRootState & TransactionsRootState;
-        extra: Record<never, never>;
     }
 >(
     `${YIELD_WRAP_THUNK_PREFIX}/composeUnwrapTransaction`,
