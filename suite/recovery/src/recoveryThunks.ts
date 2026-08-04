@@ -6,16 +6,27 @@ import { DeviceModelInternal } from '@trezor/device-utils';
 
 import { isRecoveryInProgress } from './isRecoveryInProgress';
 import { recoveryActions } from './recoveryReducer';
-import { selectAdvancedRecovery, selectWordsCount } from './recoverySelectors';
+import { selectRecoveryInputType, selectWordsCount } from './recoverySelectors';
+import { type RecoveryInputType } from './types';
 
 const DEFAULT_PASSPHRASE_PROTECTION = false;
 
 const actionPrefix = '@suite/recovery';
 
+/**
+ * Maps the product-level recovery type to the firmware seed input method.
+ * - standard → ScrambledWords: user re-enters the seed word by word on the host
+ * - advanced → Matrix: user enters each letter directly on the device via the matrix keypad
+ */
+const recoveryInputTypeToInputMethod: Record<RecoveryInputType, PROTO.RecoveryDeviceInputMethod> = {
+    standard: PROTO.RecoveryDeviceInputMethod.ScrambledWords,
+    advanced: PROTO.RecoveryDeviceInputMethod.Matrix,
+};
+
 export const checkSeedThunk = createThunk(
     `${actionPrefix}/checkSeedThunk`,
     async (_, { dispatch, getState, extra }) => {
-        const advancedRecovery = selectAdvancedRecovery(getState());
+        const recoveryInputType = selectRecoveryInputType(getState());
         const wordsCount = selectWordsCount(getState());
         const device = selectSelectedDevice(getState());
 
@@ -31,9 +42,7 @@ export const checkSeedThunk = createThunk(
 
         const response = await TrezorConnect.recoveryDevice({
             type: device.features.recovery_type ?? 'DryRun', // For old firmware, we assume DryRun as it was the only option before
-            input_method: advancedRecovery
-                ? PROTO.RecoveryDeviceInputMethod.Matrix
-                : PROTO.RecoveryDeviceInputMethod.ScrambledWords,
+            input_method: recoveryInputTypeToInputMethod[recoveryInputType],
             word_count: wordsCount,
             enforce_wordlist: true,
             device: {
@@ -66,7 +75,7 @@ export const checkSeedThunk = createThunk(
 export const recoverDeviceThunk = createThunk(
     `${actionPrefix}/recoverDeviceThunk`,
     async (_, { dispatch, getState }) => {
-        const advancedRecovery = selectAdvancedRecovery(getState());
+        const recoveryInputType = selectRecoveryInputType(getState());
         const wordsCount = selectWordsCount(getState());
         const device = selectSelectedDevice(getState());
 
@@ -83,9 +92,7 @@ export const recoverDeviceThunk = createThunk(
 
         const params: RecoveryDevice = {
             type: device.features.recovery_type ?? 'NormalRecovery', // For old firmware, we assume NormalRecovery as it was the only option before
-            input_method: advancedRecovery
-                ? PROTO.RecoveryDeviceInputMethod.Matrix
-                : PROTO.RecoveryDeviceInputMethod.ScrambledWords,
+            input_method: recoveryInputTypeToInputMethod[recoveryInputType],
             word_count: wordsCount,
             passphrase_protection: DEFAULT_PASSPHRASE_PROTECTION,
             enforce_wordlist: true,
