@@ -5,9 +5,6 @@
         {
             "path": "../../suite-common/redux-extra-dependencies"
         },
-        {
-            "path": "../../suite-common/redux-utils"
-        },
         { "path": "../analytics" }
     ]
 }

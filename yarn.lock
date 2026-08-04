@@ -10266,6 +10266,7 @@ __metadata:
     "@suite-common/wallet-core": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
     "@trezor/connect": "workspace:*"
+    "@trezor/connect-common": "workspace:*"
     "@trezor/env-utils": "workspace:*"
     "@trezor/urls": "workspace:*"
     "@trezor/utils": "workspace:*"
@@ -11002,6 +11003,7 @@ __metadata:
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
     "@trezor/connect": "workspace:*"
+    "@trezor/connect-common": "workspace:*"
     "@trezor/device-utils": "workspace:*"
     "@trezor/protocol": "workspace:*"
     "@trezor/type-utils": "workspace:*"
@@ -13748,7 +13750,6 @@ __metadata:
   resolution: "@suite-native/services@workspace:suite-native/services"
   dependencies:
     "@suite-common/redux-extra-dependencies": "workspace:*"
-    "@suite-common/redux-utils": "workspace:*"
     "@suite-native/analytics": "workspace:*"
     react-native-mmkv: "npm:~4.3.1"
   languageName: unknown
@@ -14009,7 +14010,6 @@ __metadata:
     "@suite-common/networks": "workspace:*"
     "@suite-common/react-query": "workspace:*"
     "@suite-common/redux-extra-dependencies": "workspace:*"
-    "@suite-common/redux-utils": "workspace:*"
     "@suite-common/test-utils": "workspace:*"
     "@suite-native/analytics": "workspace:*"
     "@suite-native/intl": "workspace:*"

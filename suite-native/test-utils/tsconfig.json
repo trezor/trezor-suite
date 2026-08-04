@@ -17,9 +17,6 @@
             "path": "../../suite-common/redux-extra-dependencies"
         },
         {
-            "path": "../../suite-common/redux-utils"
-        },
-        {
             "path": "../../suite-common/test-utils"
         },
         { "path": "../analytics" },
