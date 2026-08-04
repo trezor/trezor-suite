@@ -52,7 +52,15 @@ export const getTokenMetadata = async (): Promise<TokenDetailByMint> => {
         throw Error(response.statusText);
     }
 
-    const data: TokenDetailByMint = await response.json();
+    const parsed: unknown = await response.json();
+
+    // The body comes verbatim from an unsigned CDN (data.trezor.io) that is NOT JWS-verified and is
+    // thus attacker/MITM-controllable. A JSON `null` (or primitive) body would make the
+    // `data[WSOL_MINT] = ...` assignment below throw ("Cannot set properties of null") — and callers'
+    // `tokenDetailByMint[mint]` derefs throw too — aborting the whole solana getAccountInfo/discovery
+    // (per-account DoS). Coerce to a plain object at this data boundary.
+    const data: TokenDetailByMint =
+        parsed !== null && typeof parsed === 'object' ? (parsed as TokenDetailByMint) : {};
 
     // Explicitly set Wrapped SOL symbol to wSol instead of the official 'SOL' which leads to confusion in UI
     data[WSOL_MINT] = { symbol: 'wSOL', name: 'Wrapped SOL' };

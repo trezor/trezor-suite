@@ -132,7 +132,11 @@ export const getTokenMetadata = async (): Promise<TokenDetailByMint> => {
         throw Error(`Failed to fetch token metadata: ${response.statusText}`);
     }
 
-    const data: TokenDetailByMint = await response.json();
+    const parsed: unknown = await response.json();
 
-    return data;
+    // The body comes verbatim from an unsigned CDN (data.trezor.io) that is NOT JWS-verified and is
+    // thus attacker/MITM-controllable. A JSON `null` (or primitive) body would make callers'
+    // `tokenMetadata[contract]?.name` derefs throw ("Cannot read properties of null"), aborting the
+    // whole stellar getAccountInfo (per-account DoS). Coerce to a plain object at this data boundary.
+    return parsed !== null && typeof parsed === 'object' ? (parsed as TokenDetailByMint) : {};
 };

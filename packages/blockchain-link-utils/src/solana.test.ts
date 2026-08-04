@@ -1,4 +1,5 @@
 import { type TokenTransfer, type Transaction } from '@trezor/blockchain-link-types/src';
+import { WSOL_MINT } from '@trezor/network-solana/constants';
 import type {
     ParsedTransactionWithMeta,
     SolanaValidParsedTxWithMeta,
@@ -13,6 +14,7 @@ import {
     getInternalTransfers,
     getNativeEffects,
     getTargets,
+    getTokenMetadata,
     getTokenNameAndSymbol,
     getTokens,
     getTxType,
@@ -171,6 +173,42 @@ describe('solana/utils', () => {
                     ),
                 ).toEqual(expectedOutput);
             });
+        });
+    });
+
+    describe('getTokenMetadata', () => {
+        const originalFetch = global.fetch;
+        const mockFetch = (jsonBody: unknown) => {
+            global.fetch = jest.fn().mockResolvedValue({
+                ok: true,
+                statusText: 'OK',
+                json: () => Promise.resolve(jsonBody),
+            }) as unknown as typeof global.fetch;
+        };
+
+        afterEach(() => {
+            global.fetch = originalFetch;
+        });
+
+        it('coerces a JSON `null` CDN body to a plain object (poison-response DoS)', async () => {
+            // The unsigned data.trezor.io CDN is attacker/MITM-controllable; a `null` body must not
+            // throw on the `data[WSOL_MINT] = ...` assignment.
+            mockFetch(null);
+            const result = await getTokenMetadata();
+            expect(result).toEqual({ [WSOL_MINT]: { symbol: 'wSOL', name: 'Wrapped SOL' } });
+        });
+
+        it('coerces a primitive CDN body to a plain object', async () => {
+            mockFetch(42);
+            const result = await getTokenMetadata();
+            expect(result).toEqual({ [WSOL_MINT]: { symbol: 'wSOL', name: 'Wrapped SOL' } });
+        });
+
+        it('passes a valid object body through and always sets wSOL', async () => {
+            mockFetch({ someMint: { symbol: 'ABC', name: 'Alpha' } });
+            const result = await getTokenMetadata();
+            expect(result.someMint).toEqual({ symbol: 'ABC', name: 'Alpha' });
+            expect(result[WSOL_MINT]).toEqual({ symbol: 'wSOL', name: 'Wrapped SOL' });
         });
     });
 });
