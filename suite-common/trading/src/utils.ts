@@ -413,3 +413,14 @@ export const getStatusUrl = (provider?: TradingProviderInfo, trade?: TradingTrad
 
     return tradeStatusUrl || provider?.statusUrl;
 };
+
+export const isCrossChainTrade = (sendCryptoId?: CryptoId, receiveCryptoId?: CryptoId) => {
+    const sendNetwork = cryptoIdToNetwork(sendCryptoId);
+    const receiveNetwork = cryptoIdToNetwork(receiveCryptoId);
+
+    if (!sendNetwork || !receiveNetwork) {
+        return false;
+    }
+
+    return sendNetwork.symbol !== receiveNetwork.symbol;
+};
