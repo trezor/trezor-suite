@@ -4,7 +4,10 @@ import { selectShouldDisplayDeviceCompromisedOnRoute } from '@suite/authenticity
 import { useDevice } from '@suite/device';
 import { KillswitchMessageScreen } from '@suite/message-system';
 import { selectIsAnalyticsConfirmed } from '@suite-common/analytics-redux';
-import { useReportDeviceCompromised } from '@suite-common/firmware-authenticity';
+import {
+    useReportDeviceCompromised,
+    useRetryFwAuthenticityChecks,
+} from '@suite-common/firmware-authenticity';
 import { selectActiveKillswitchMessage } from '@suite-common/message-system';
 import { Card } from '@trezor/components';
 
@@ -62,6 +65,7 @@ export const Preloader = ({ children }: PropsWithChildren) => {
     useDeviceCompromisedNotification();
 
     const dispatch = useDispatch();
+    useRetryFwAuthenticityChecks();
 
     useEffect(() => {
         // Analytics needs to be resolved before we show anything to the user. Until this is solved,
