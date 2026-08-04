@@ -11,6 +11,23 @@ import { type Api, discoverAddress, tryGetScripthash } from '../utils';
 type Req = MessageTypes.GetAccountUtxo;
 type Res = ResponseTypes.GetAccountUtxo;
 
+// The `blockchain.scripthash.listunspent` response is raw JSON-RPC data from a user-selectable
+// (and MITM-able) Electrum server and is not runtime-validated. A non-array response makes the
+// bare `.map` below throw, and a record with a missing `value` makes `value.toString()` (in
+// transformUtxo) throw — either aborts the whole getAccountUtxo request, so a single poison record
+// would drop *all* of the account's spendable UTXOs and block sending. Coerce to an array and drop
+// malformed records at this untrusted-data boundary so the valid UTXOs still load.
+export const sanitizeUtxos = (utxos: unknown): Utxo[] =>
+    Array.isArray(utxos)
+        ? utxos.filter(
+              (u): u is Utxo =>
+                  u != null &&
+                  typeof u === 'object' &&
+                  (u as Utxo).value != null &&
+                  (u as Utxo).tx_hash != null,
+          )
+        : [];
+
 const transformUtxo =
     (currentHeight: number, addressInfo: { address?: string; path?: string } = {}) =>
     ({ height, tx_hash, tx_pos, value }: Utxo): Res['payload'][number] => ({
@@ -42,7 +59,7 @@ const getAccountUtxo: Api<Req, Res> = async ({ client, addressCache }, descripto
     if (parsed.valid) {
         const utxos = await client.request('blockchain.scripthash.listunspent', parsed.scripthash);
 
-        return utxos.map(transformUtxo(height));
+        return sanitizeUtxos(utxos).map(transformUtxo(height));
     }
 
     const discover = discoverAddress(client);
@@ -55,7 +72,9 @@ const getAccountUtxo: Api<Req, Res> = async ({ client, addressCache }, descripto
             .map(({ address, path, scripthash }) =>
                 client
                     .request('blockchain.scripthash.listunspent', scripthash)
-                    .then(utxos => utxos.map(transformUtxo(height, { address, path }))),
+                    .then(utxos =>
+                        sanitizeUtxos(utxos).map(transformUtxo(height, { address, path })),
+                    ),
             ),
     ).then(res => res.flat());
 
