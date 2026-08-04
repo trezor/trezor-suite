@@ -6,7 +6,7 @@ import {
     createAsyncThunk as createAsyncThunkReduxToolkit,
 } from '@reduxjs/toolkit';
 
-import { type CustomThunkAPI } from './extraDependenciesType';
+import { type CustomThunkAPI } from '@suite-common/redux-extra-dependencies';
 
 type DefaultThunkAPI = { readonly __defaultThunkAPI: unique symbol };
 

@@ -6,7 +6,7 @@ import {
     createSlice,
 } from '@reduxjs/toolkit';
 
-import { type ExtraDependenciesForReducer } from './extraDependenciesType';
+import { type ExtraDependenciesForReducer } from '@suite-common/redux-extra-dependencies';
 
 /*
 This is nearly same function as createSlice from redux-toolkit, but instead of generating reducer it will generate

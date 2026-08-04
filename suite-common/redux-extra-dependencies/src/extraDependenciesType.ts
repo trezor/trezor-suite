@@ -1,7 +1,10 @@
 import {
+    type Action,
     type ActionCreatorWithPayload,
     type ActionCreatorWithPreparedPayload,
     type ActionCreatorWithoutPayload,
+    type AsyncThunk,
+    type ThunkAction,
 } from '@reduxjs/toolkit';
 
 import type { AddressValidatorDep } from '@suite-common/address';
@@ -15,10 +18,11 @@ import type {
     GetNetworkConfigDep,
     NetworkModuleRepositoryDep,
 } from '@suite-common/networks';
-import { type PlatformEncryptionDep } from '@suite-common/platform-encryption'; // also only types
+import { type PlatformEncryptionDep } from '@suite-common/platform-encryption';
 import { type MigrateSuiteSyncLabelsForRbfTransactionDep } from '@suite-common/suite-rbf-labels-migrations-types';
 import { type SuiteSyncDep } from '@suite-common/suite-sync-types';
 import {
+    type ConnectInitHooks,
     type GetAllowPrereleaseDep,
     type ReloadAppDep,
     type ReportSecurityCheckDep,
@@ -43,8 +47,19 @@ import {
 import type { Transport } from '@trezor/transport-common';
 import { type KeyedThrottle } from '@trezor/utils';
 
-import { type ConnectInitHooks } from './connectInitHooksType';
-import { type ActionType, type SuiteCompatibleThunk } from './types';
+interface AnyAction extends Action {
+    [extraProps: string]: any;
+}
+
+type OriginalReduxThunk<TPayload, TReturn = void> = (
+    payload: TPayload,
+) => ThunkAction<TReturn, any, any, AnyAction>;
+
+type SuiteCompatibleThunk<TPayload, TReturn = void> =
+    | AsyncThunk<TReturn, TPayload, Record<never, never>>
+    | OriginalReduxThunk<TPayload, TReturn>;
+
+type ActionType = string;
 
 type BaseReducer = (state: any, action: { type: any; payload: any }) => void;
 type StorageLoadReducer = (state: any, action: { type: any; payload: any }) => void;

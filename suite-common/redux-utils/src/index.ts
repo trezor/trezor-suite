@@ -1,9 +1,8 @@
 export type * from './types';
+export type * from '@suite-common/redux-extra-dependencies';
 export * from './createThunk';
 export * from './createSliceWithExtraDeps';
 export * from './createMiddleware';
-export type * from './extraDependenciesType';
-export type * from './connectInitHooksType';
 export * from './createReducerWithExtraDeps';
 export * from './createSingleInstanceThunk';
 export * from './hooks/useSelectorDeepComparison';
