@@ -48,6 +48,7 @@ import {
     type TradingStackRoutes,
     type TransactionDetailStackRoutes,
     type WipeDeviceStackRoutes,
+    type WrappedNativeTokenStackRoutes,
     type YieldStackRoutes,
 } from './routes';
 import { type NavigateParameters } from './types';
@@ -98,6 +99,13 @@ export type YieldClaimParams = {
     accountKey: AccountKey;
 };
 
+export type WrappedNativeTokenPendingTxParams = {
+    amount: string;
+    fee?: string;
+    submittedAt: number;
+    txid: string;
+};
+
 export type YieldInsufficientBalanceParams = {
     accountKey: AccountKey;
     tokenContract: TokenAddress;
@@ -139,6 +147,29 @@ export type YieldStackParamList = {
     [YieldStackRoutes.YieldWithdrawReview]: YieldWithdrawParams;
     [YieldStackRoutes.YieldDepositComplete]: YieldFlowParams;
     [YieldStackRoutes.YieldWithdrawComplete]: YieldWithdrawParams;
+};
+
+type WrappedNativeTokenFormParams = {
+    accountKey: AccountKey;
+    pendingTransaction?: WrappedNativeTokenPendingTxParams;
+};
+
+type WrappedNativeTokenReviewParams = {
+    accountKey: AccountKey;
+    amount: string;
+    unsignedTransaction: string;
+};
+
+type WrappedNativeTokenCompleteParams = {
+    accountKey: AccountKey;
+    amount: string;
+    txid: string;
+};
+
+export type WrappedNativeTokenStackParamList = {
+    [WrappedNativeTokenStackRoutes.WrapNativeToken]: WrappedNativeTokenFormParams;
+    [WrappedNativeTokenStackRoutes.WrapNativeTokenReview]: WrappedNativeTokenReviewParams;
+    [WrappedNativeTokenStackRoutes.WrapNativeTokenComplete]: WrappedNativeTokenCompleteParams;
 };
 
 export type HomeStackParamList = {
@@ -481,6 +512,7 @@ export type RootStackParamList = {
     };
     [RootStackRoutes.YieldNavigator]: NavigatorScreenParams<YieldStackParamList>;
     [RootStackRoutes.YieldInsufficientBalance]: YieldInsufficientBalanceParams;
+    [RootStackRoutes.WrappedNativeTokenNavigator]: NavigatorScreenParams<WrappedNativeTokenStackParamList>;
     [RootStackRoutes.EarnForm]: {
         accountKey: AccountKey;
     };

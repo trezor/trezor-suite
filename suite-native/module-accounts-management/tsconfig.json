@@ -44,6 +44,7 @@
         { "path": "../atoms" },
         { "path": "../banner-flags" },
         { "path": "../bip329" },
+        { "path": "../config" },
         { "path": "../device" },
         { "path": "../device-manager" },
         { "path": "../discovery" },

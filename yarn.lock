@@ -12642,6 +12642,7 @@ __metadata:
     "@suite-native/atoms": "workspace:*"
     "@suite-native/banner-flags": "workspace:*"
     "@suite-native/bip329": "workspace:*"
+    "@suite-native/config": "workspace:*"
     "@suite-native/device": "workspace:*"
     "@suite-native/device-manager": "workspace:*"
     "@suite-native/discovery": "workspace:*"

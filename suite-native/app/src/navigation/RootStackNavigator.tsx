@@ -39,6 +39,7 @@ import {
     StakingManagementScreen,
     UnstakeFlowScreen,
     UnstakeTransactionDataReviewScreen,
+    WrappedNativeTokenStackNavigator,
     YieldInsufficientBalanceScreen,
     YieldStackNavigator,
 } from '@suite-native/module-earn';
@@ -154,6 +155,11 @@ export const RootStackNavigator = () => {
                 options={{ title: RootStackRoutes.YieldInsufficientBalance }}
                 name={RootStackRoutes.YieldInsufficientBalance}
                 component={YieldInsufficientBalanceScreen}
+            />
+            <RootStack.Screen
+                options={{ title: RootStackRoutes.WrappedNativeTokenNavigator }}
+                name={RootStackRoutes.WrappedNativeTokenNavigator}
+                component={WrappedNativeTokenStackNavigator}
             />
             <RootStack.Screen
                 options={{ title: RootStackRoutes.EarnForm }}

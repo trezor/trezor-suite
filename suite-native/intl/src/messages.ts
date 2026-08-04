@@ -2681,6 +2681,30 @@ export const messages = {
             subtitle: 'Get more {tokenSymbol} in this account to start earning yield.',
             getButton: 'Get more {tokenSymbol}',
         },
+        wrapNativeToken: {
+            entryButton: 'Wrap',
+            title: 'Wrap {nativeSymbol} to {wrappedSymbol}',
+            amountToWrap: 'Amount to wrap',
+            reserveRecommendation:
+                "It's recommended to leave {amount} {nativeSymbol} so you can pay for transaction fees.",
+            submitButton: 'Wrap',
+            closeButton: 'Close',
+            pendingTransactionTitle: 'Wrapping in progress',
+            review: {
+                title: 'Confirm wrap',
+                submitButton: 'Wrap now',
+            },
+            complete: {
+                title: 'Wrapping complete',
+                subtitle: '{nativeSymbol} was wrapped and {wrappedSymbol} is now in your account.',
+                failedTitle: 'Wrap transaction failed',
+                failedSubtitle:
+                    'The transaction was not confirmed. Check the account history and try again.',
+            },
+            errors: {
+                deviceNotConnected: 'Connect your Trezor to continue.',
+            },
+        },
         earnConsentsScreen: {
             title: 'Before you continue',
             entryPeriodCard: {
@@ -3194,9 +3218,29 @@ export const messages = {
                 withdrawDescription: 'Review details to withdraw from vault.',
                 withdrawFrom: 'Withdraw from',
                 withdrawTitle: 'Withdraw',
+                wrapAmount: 'Wrap amount',
+                wrapDescription: 'Review details to wrap the native coin.',
+                wrapTitle: 'Wrap',
+                wrapTo: 'Wrap via',
             },
             alerts: {
                 primaryButton: 'Go to homepage',
+                wrap: {
+                    signTransactionFailed: {
+                        title: 'Transaction was not signed',
+                        description: 'Review the transaction and sign it again.',
+                    },
+                    pushTransactionFailed: {
+                        title: 'Wrap was not submitted',
+                        description:
+                            'The wrap transaction was signed but could not be submitted to the network.',
+                    },
+                    pendingTransactionConflict: {
+                        title: 'Wrap was not submitted',
+                        description:
+                            'A transaction is already pending for this account. Wait for it to finish before trying again.',
+                    },
+                },
                 approval: {
                     signTransactionFailed: {
                         title: 'Transaction was not signed',
