@@ -239,7 +239,11 @@ export const handleYieldApproveCancelThunk = createThunk(
     },
 );
 
-export const initYieldAllowanceThunk = createThunk<void, InitYieldAllowancePayload, void>(
+export const initYieldAllowanceThunk = createThunk<
+    void,
+    InitYieldAllowancePayload,
+    { state: StablecoinYieldRootState }
+>(
     `${YIELD_THUNK_PREFIX}/initAllowance`,
     async (
         { flowKey, flowType, flowData, shouldSkipApprovalStep = true },
