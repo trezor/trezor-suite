@@ -154,8 +154,9 @@ export const cryptoIdToNetworkAndContractAddress = (
 export const cryptoIdToNetwork = (cryptoId: CryptoId | undefined): Network | undefined =>
     cryptoIdToNetworkAndContractAddress(cryptoId)?.network;
 
-export const cryptoIdToSymbol = (cryptoId: CryptoId | undefined): NetworkSymbol | undefined =>
-    cryptoIdToNetwork(cryptoId)?.symbol;
+export const cryptoIdToNetworkSymbol = (
+    cryptoId: CryptoId | undefined,
+): NetworkSymbol | undefined => cryptoIdToNetwork(cryptoId)?.symbol;
 
 export const cryptoIdToNetworkSymbolAndContractAddress = (cryptoId: CryptoId | undefined) => {
     const { network, contractAddress } = cryptoIdToNetworkAndContractAddress(cryptoId);
@@ -415,12 +416,12 @@ export const getStatusUrl = (provider?: TradingProviderInfo, trade?: TradingTrad
 };
 
 export const isCrossChainTrade = (sendCryptoId?: CryptoId, receiveCryptoId?: CryptoId) => {
-    const sendNetwork = cryptoIdToNetwork(sendCryptoId);
-    const receiveNetwork = cryptoIdToNetwork(receiveCryptoId);
+    const sendNetworkSymbol = cryptoIdToNetworkSymbol(sendCryptoId);
+    const receiveNetworkSymbol = cryptoIdToNetworkSymbol(receiveCryptoId);
 
-    if (!sendNetwork || !receiveNetwork) {
+    if (!sendNetworkSymbol || !receiveNetworkSymbol) {
         return false;
     }
 
-    return sendNetwork.symbol !== receiveNetwork.symbol;
+    return sendNetworkSymbol !== receiveNetworkSymbol;
 };

@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux';
 
-import { cryptoIdToSymbol, tradingExchangeActions } from '@suite-common/trading';
+import { cryptoIdToNetworkSymbol, tradingExchangeActions } from '@suite-common/trading';
 import { type AccountsRootState, selectAccounts } from '@suite-common/wallet-core';
 import { type TokenAddress } from '@suite-common/wallet-types';
 import { Button, Text } from '@suite-native/atoms';
@@ -54,8 +54,8 @@ export const ExchangeUsdcPresetButton = () => {
     }
 
     const handlePress = () => {
-        const previousReceiveSymbol = cryptoIdToSymbol(getValues('receiveAsset')?.cryptoId);
-        const receiveSymbol = cryptoIdToSymbol(USDT_ETH.cryptoId);
+        const previousReceiveSymbol = cryptoIdToNetworkSymbol(getValues('receiveAsset')?.cryptoId);
+        const receiveSymbol = cryptoIdToNetworkSymbol(USDT_ETH.cryptoId);
 
         setValue('sendAsset', USDC_ETH);
         setValue('sendAccount', debugAccount);

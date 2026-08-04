@@ -3,7 +3,7 @@ import { type CryptoId } from 'invity-api';
 import { type AddressValidator } from '@suite-common/address';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 
-import { cryptoIdToSymbol } from '../../utils';
+import { cryptoIdToNetworkSymbol } from '../../utils';
 
 export const isReceiveAddressValid = (
     addressValidator: AddressValidator,
@@ -36,7 +36,7 @@ export const isReceiveAddressCoherent = ({
         return true;
     }
 
-    const receiveSymbol = receiveCryptoId ? cryptoIdToSymbol(receiveCryptoId) : undefined;
+    const receiveSymbol = receiveCryptoId ? cryptoIdToNetworkSymbol(receiveCryptoId) : undefined;
     if (!receiveSymbol) {
         return false;
     }

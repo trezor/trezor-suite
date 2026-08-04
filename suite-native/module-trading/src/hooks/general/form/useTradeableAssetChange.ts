@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux';
 import { type UnknownAction } from '@reduxjs/toolkit';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { type TradingType, cryptoIdToSymbol } from '@suite-common/trading';
+import { type TradingType, cryptoIdToNetworkSymbol } from '@suite-common/trading';
 import { type Account, type AccountKey } from '@suite-common/wallet-types';
 import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { type FieldValues, type Path, type UseFormReturn } from '@suite-native/forms';
@@ -86,7 +86,8 @@ export const useTradeableAssetChange = <TFieldValues extends FieldValues>({
             }
 
             const isTokenChange =
-                cryptoIdToSymbol(selectedValue?.cryptoId) === cryptoIdToSymbol(asset.cryptoId);
+                cryptoIdToNetworkSymbol(selectedValue?.cryptoId) ===
+                cryptoIdToNetworkSymbol(asset.cryptoId);
 
             setSelectedValue(asset);
 

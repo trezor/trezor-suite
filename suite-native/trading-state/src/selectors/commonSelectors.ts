@@ -18,7 +18,7 @@ import {
     type TradingTransaction,
     type TradingType,
     type TradingTypeWithConcierge,
-    cryptoIdToSymbol,
+    cryptoIdToNetworkSymbol,
     isFinalStatus,
     selectDeviceTradingTrades,
     selectTradingIsSlip24Allowed,
@@ -468,7 +468,7 @@ export const selectAccountLabelWithNetworkFallback = (
     }
 
     if (cryptoId) {
-        const networkSymbol = cryptoIdToSymbol(cryptoId);
+        const networkSymbol = cryptoIdToNetworkSymbol(cryptoId);
         if (networkSymbol) {
             return getNetwork(networkSymbol).name;
         }

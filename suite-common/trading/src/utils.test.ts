@@ -19,7 +19,7 @@ import {
     addIdsToQuotes,
     cryptoIdToNetwork,
     cryptoIdToNetworkAndContractAddress,
-    cryptoIdToSymbol,
+    cryptoIdToNetworkSymbol,
     filterQuotesAccordingTags,
     getDefaultCountry,
     getDefaultCountrySubdivision,
@@ -176,7 +176,7 @@ describe('getTradingQuotesDedupedByProvider', () => {
     });
 });
 
-describe('cryptoIdToSymbol', () => {
+describe('cryptoIdToNetworkSymbol', () => {
     it.each([
         ['bitcoin', 'btc'],
         ['ethereum', 'eth'],
@@ -184,7 +184,7 @@ describe('cryptoIdToSymbol', () => {
     ] as [CryptoId, NetworkSymbol][])(
         'should return correct symbol for %s',
         (cryptoId, expectedSymbol) => {
-            expect(cryptoIdToSymbol(cryptoId)).toBe(expectedSymbol);
+            expect(cryptoIdToNetworkSymbol(cryptoId)).toBe(expectedSymbol);
         },
     );
 });

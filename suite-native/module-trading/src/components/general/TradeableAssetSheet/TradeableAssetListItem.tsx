@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { invariant } from '@suite-common/suite-utils';
 import {
-    cryptoIdToSymbol,
+    cryptoIdToNetworkSymbol,
     selectIsTradingFavouriteAssetByCryptoId,
     tradingActions,
 } from '@suite-common/trading';
@@ -25,7 +25,7 @@ export const TradeableAssetListItem = ({ asset, onPress }: TradeableAssetListIte
     );
     const { symbol, name, contractAddress, cryptoId } = asset;
 
-    const networkSymbol = cryptoIdToSymbol(cryptoId);
+    const networkSymbol = cryptoIdToNetworkSymbol(cryptoId);
     invariant(networkSymbol, `Network symbol not found for cryptoId: ${cryptoId}`);
 
     const onFavouritePress = () => {
