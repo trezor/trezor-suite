@@ -3,7 +3,7 @@ import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device
 import { type TransportInfo } from '@trezor/connect';
 
 import { type SuiteRootState } from 'src/reducers/suite/suiteReducer';
-import { type AppState, type PrerequisiteType, type TrezorDevice } from 'src/types/suite';
+import { type PrerequisiteType, type TrezorDevice } from 'src/types/suite';
 import { getPrerequisiteName, isPrerequisiteGloballyExcluded } from 'src/utils/suite/prerequisites';
 
 export const selectIsSuiteOnline = (state: SuiteRootState) => state.suite.online;
@@ -38,7 +38,9 @@ export const selectPrerequisite = (
 };
 
 // TODO use selectDeviceByDeviceRef from wallet-core; currently WIP in https://github.com/trezor/trezor-suite/pull/20955
-export const selectRecentlyConnectedDevice = (state: AppState): TrezorDevice | undefined =>
+export const selectRecentlyConnectedDevice = (
+    state: SuiteRootState & DeviceRootState,
+): TrezorDevice | undefined =>
     state.suite.recentlyConnectedDeviceRef !== null
         ? state.device.devices.find(
               device =>

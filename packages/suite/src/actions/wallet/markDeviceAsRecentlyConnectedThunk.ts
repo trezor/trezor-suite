@@ -1,23 +1,25 @@
-import { DEVICE_MODULE_PREFIX, selectSelectedDevice } from '@suite-common/device';
+import {
+    DEVICE_MODULE_PREFIX,
+    type DeviceRootState,
+    selectSelectedDevice,
+} from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
 import { type Device } from '@trezor/connect';
 
+import { type SuiteRootState } from 'src/reducers/suite/suiteReducer';
 import { selectRecentlyConnectedDevice } from 'src/selectors/suite/suiteSelectors';
-import { type AppState } from 'src/types/suite';
 
 import { setRecentlyConnectedDevicePath } from '../suite/suiteActions';
 
 // duration to visually indicate the device as recently connected
 const RECENTLY_CONNECTED_DEVICE_TIMEOUT = 5_000;
 
-type MarkDeviceAsRecentlyConnectedThunkState = AppState;
+type MarkDeviceAsRecentlyConnectedThunkState = SuiteRootState & DeviceRootState;
 
 export const markDeviceAsRecentlyConnectedThunk = createThunk<
     void,
     Device,
-    {
-        state: MarkDeviceAsRecentlyConnectedThunkState;
-    }
+    { state: MarkDeviceAsRecentlyConnectedThunkState }
 >(`${DEVICE_MODULE_PREFIX}/handleDeviceConnect`, (device, { dispatch, getState }) => {
     const selectedDevice = selectSelectedDevice(getState());
 
