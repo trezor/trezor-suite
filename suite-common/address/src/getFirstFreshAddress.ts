@@ -1,7 +1,6 @@
 import { type Account, type ReceiveInfo } from '@suite-common/wallet-types';
+import { type AccountAddress } from '@trezor/connect';
 import { comparePath } from '@trezor/crypto-utils';
-
-type AccountAddress = NonNullable<Account['addresses']>['used'][number];
 
 const isPathLowerThanAnyUsedPath = (path: string, usedPaths: string[]) =>
     usedPaths.some(usedPath => comparePath(path, usedPath) < 0);

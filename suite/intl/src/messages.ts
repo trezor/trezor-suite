@@ -1823,11 +1823,6 @@ export const messages = defineMessages({
         defaultMessage: "I don't have a wallet backup",
         id: 'TR_DONT_HAVE_BACKUP',
     },
-    TR_BCH_ADDRESS_INFO: {
-        defaultMessage:
-            'Bitcoin Cash changed the address format to cashaddr. Find more info about how to convert your address on our blog. {TR_LEARN_MORE}',
-        id: 'TR_BCH_ADDRESS_INFO',
-    },
     TR_BUY: {
         defaultMessage: 'Buy',
         id: 'TR_BUY',
@@ -1927,6 +1922,10 @@ export const messages = defineMessages({
     TR_CONFIRM_ACTION_ON_YOUR: {
         defaultMessage: "Follow the instructions on your Trezor's screen.",
         id: 'TR_CONFIRM_ACTION_ON_YOUR',
+    },
+    TR_COMPARE_ADDRESS_ON_TREZOR: {
+        defaultMessage: 'View the address on your Trezor',
+        id: 'TR_COMPARE_ADDRESS_ON_TREZOR',
     },
     TR_CONFIRM_EMPTY_HIDDEN_WALLET_ON: {
         defaultMessage: 'Confirm empty Passphrase wallet on your {deviceLabel}',
@@ -2906,11 +2905,6 @@ export const messages = defineMessages({
         defaultMessage:
             'Use this log to access essential technical information about Trezor Suite, which may be needed when contacting Trezor Support.',
     },
-    TR_LTC_ADDRESS_INFO: {
-        defaultMessage:
-            'Litecoin changed the address format. Find more info about how to convert your address on our blog. {TR_LEARN_MORE}',
-        id: 'TR_LTC_ADDRESS_INFO',
-    },
     TR_MAXIMUM_PIN_LENGTH: {
         defaultMessage: 'Enter up to 50 digits.',
         id: 'TR_MAXIMUM_PIN_LENGTH',
@@ -3156,10 +3150,6 @@ export const messages = defineMessages({
     TR_RECEIVE_NETWORK: {
         defaultMessage: 'Receive {networkDisplaySymbol}',
         id: 'TR_RECEIVE_NETWORK',
-    },
-    TR_RECEIVE_NETWORK_INCLUDING_TOKENS: {
-        defaultMessage: 'Receive {networkDisplaySymbol} including tokens',
-        id: 'TR_RECEIVE_NETWORK_INCLUDING_TOKENS',
     },
     TR_SEND_SEARCH: {
         defaultMessage: 'Search account',
@@ -4898,22 +4888,55 @@ export const messages = defineMessages({
         id: 'RECEIVE_DESC_ETHEREUM',
         defaultMessage: 'Use this address to receive tokens as well.',
     },
-    RECEIVE_ADDRESS_FRESH: {
-        id: 'RECEIVE_ADDRESS_FRESH',
-        defaultMessage: 'Fresh address',
-    },
     RECEIVE_ADDRESS: {
         id: 'RECEIVE_ADDRESS',
         defaultMessage: 'Address',
         description: 'Alternative title for alt-coins',
     },
-    RECEIVE_ADDRESS_REVEAL: {
-        id: 'RECEIVE_ADDRESS_REVEAL',
-        defaultMessage: 'Show full address',
+    RECEIVE_ADDRESS_COPIED_TITLE: {
+        id: 'RECEIVE_ADDRESS_COPIED_TITLE',
+        defaultMessage: 'Address copied. Verify before you receive.',
     },
-    RECEIVE_UNVERIFIED_ADDRESS_REVEAL: {
-        id: 'RECEIVE_UNVERIFIED_ADDRESS_REVEAL',
-        defaultMessage: 'Generate unverified address',
+    RECEIVE_ADDRESS_COPIED_STEP_PASTE: {
+        id: 'RECEIVE_ADDRESS_COPIED_STEP_PASTE',
+        defaultMessage:
+            'Paste the address into the exchange or app from where you will receive the funds.',
+    },
+    RECEIVE_ADDRESS_COPIED_STEP_VERIFY: {
+        id: 'RECEIVE_ADDRESS_COPIED_STEP_VERIFY',
+        defaultMessage: 'Verify the pasted address against your Trezor for maximum safety.',
+    },
+    RECEIVE_VERIFY_ON_TREZOR: {
+        id: 'RECEIVE_VERIFY_ON_TREZOR',
+        defaultMessage: 'Verify on Trezor',
+    },
+    RECEIVE_SHARE: {
+        id: 'RECEIVE_SHARE',
+        defaultMessage: 'Share',
+    },
+    RECEIVE_NEWEST_ADDRESS: {
+        id: 'RECEIVE_NEWEST_ADDRESS',
+        defaultMessage: 'Newest address',
+    },
+    RECEIVE_ADDRESS_TITLE: {
+        id: 'RECEIVE_ADDRESS_TITLE',
+        defaultMessage: 'Receive address',
+    },
+    RECEIVE_ADDRESS_HISTORY: {
+        id: 'RECEIVE_ADDRESS_HISTORY',
+        defaultMessage: 'Address history',
+    },
+    RECEIVE_SHOW_NEXT: {
+        id: 'RECEIVE_SHOW_NEXT',
+        defaultMessage: 'Show next',
+    },
+    RECEIVE_COPY_ADDRESS: {
+        id: 'RECEIVE_COPY_ADDRESS',
+        defaultMessage: 'Copy address',
+    },
+    RECEIVE_SKIP_VERIFICATION: {
+        id: 'RECEIVE_SKIP_VERIFICATION',
+        defaultMessage: 'Skip verification',
     },
     RECEIVE_ADDRESS_COINJOIN_DISALLOW: {
         id: 'RECEIVE_ADDRESS_COINJOIN_DISALLOW',
@@ -4924,21 +4947,13 @@ export const messages = defineMessages({
         id: 'TR_RECEIVE_ADDRESS_SECURITY_CHECK_FAILED',
         defaultMessage: 'Your device may have been compromised. Do not send funds to it.',
     },
-    RECEIVE_ADDRESS_LIMIT_REACHED: {
-        id: 'RECEIVE_ADDRESS_LIMIT_REACHED',
-        defaultMessage: "You've reached the maximum limit of 21 fresh, unused addresses",
-    },
-    RECEIVE_ADDRESS_UNAVAILABLE: {
-        id: 'RECEIVE_ADDRESS_UNAVAILABLE',
-        defaultMessage: 'Unavailable',
+    RECEIVE_UNUSED_ADDRESS_LIMIT_REACHED: {
+        id: 'RECEIVE_UNUSED_ADDRESS_LIMIT_REACHED',
+        defaultMessage: 'You can generate only 20 unused addresses.',
     },
     RECEIVE_TABLE_ADDRESS: {
         id: 'RECEIVE_TABLE_ADDRESS',
         defaultMessage: 'Address',
-    },
-    RECEIVE_TABLE_RECEIVED: {
-        id: 'RECEIVE_TABLE_RECEIVED',
-        defaultMessage: 'Total received',
     },
     RECEIVE_TABLE_NOT_USED: {
         id: 'RECEIVE_TABLE_NOT_USED',

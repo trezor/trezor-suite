@@ -14,7 +14,6 @@ import { ConfirmPassphraseBeforeAction } from './ConfirmPassphraseBeforeAction';
 import { PassphraseOnDeviceModal } from './PassphraseOnDeviceModal';
 import { PinModal } from './PinModal';
 import { SignMessageModal } from './SignMessageModal';
-import { ConfirmAddressModal } from '../ConfirmAddressModal';
 import { ConfirmXpubModal } from '../ConfirmXpubModal';
 import type { ReduxModalProps } from '../ReduxModalProps';
 import { TransactionReviewModal } from '../TransactionReviewModal/TransactionReviewModal';
@@ -81,11 +80,7 @@ export const DeviceContextModal = ({
         }
         case 'ButtonRequest_Address':
             return data?.type === 'address' ? (
-                <ConfirmAddressModal
-                    value={data.address}
-                    addressPath={data.serializedPath}
-                    onCancel={abort}
-                />
+                <ConfirmActionModal device={device} title="TR_COMPARE_ADDRESS_ON_TREZOR" />
             ) : null;
         case 'ButtonRequest_PublicKey':
             return <ConfirmXpubModal onCancel={abort} />;

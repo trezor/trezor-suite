@@ -1,13 +1,12 @@
-import { type Account, asAccountDescriptor } from '@suite-common/wallet-types';
+import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount, networkSpecificDefaultCardano } from '@suite-common/wallet-types/mocks';
+import { type AccountAddress } from '@trezor/connect';
 
 import {
     getReceiveAddressForFlowEntry,
     getReceiveAddressHistoryList,
     getReceiveAddressToAdd,
 } from './getReceiveAddressHistory';
-
-type AccountAddress = NonNullable<Account['addresses']>['used'][number];
 
 const ACCOUNT_DESCRIPTOR = asAccountDescriptor(
     'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',

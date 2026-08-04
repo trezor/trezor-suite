@@ -1,11 +1,6 @@
 import { type RequestEnableTorResponse } from '@suite-common/suite-config';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import {
-    type Account,
-    type AccountKey,
-    type AddressType,
-    type EvmSelectedFee,
-} from '@suite-common/wallet-types';
+import { type Account, type AddressType, type EvmSelectedFee } from '@suite-common/wallet-types';
 import { type UI_REQUEST } from '@trezor/connect';
 import { type Deferred } from '@trezor/utils';
 
@@ -25,23 +20,11 @@ export type UserContextPayload =
           decision: Deferred<string>;
       }
     | {
-          type: 'unverified-address';
-          accountKey: AccountKey;
-          value: string;
-          addressPath: string;
-      }
-    | {
           type: 'unverified-xpub';
       }
     | {
           type: 'unverified-address-proceed';
           value: string;
-      }
-    | {
-          type: 'address';
-          value: string;
-          addressPath: string;
-          isConfirmed?: boolean;
       }
     | {
           type: 'xpub';

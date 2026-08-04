@@ -2,8 +2,10 @@ import { type Dispatch } from '@reduxjs/toolkit';
 
 import { type SelectedAccountRootState, selectSelectedAccount } from '@suite/account';
 import { type DesktopAnalyticsDep, events } from '@suite/analytics';
-import { closeModal, openModal, preserveModal, removePreserveModal } from '@suite/modal';
+import { setConnectionModal, setConnectionMode } from '@suite/device';
+import { closeModal, preserveModal, removePreserveModal } from '@suite/modal';
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
+import { type ReceiveRootState, selectCurrentFreshAddress } from '@suite-common/receive';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     type WalletSettingsRootState,
@@ -12,15 +14,16 @@ import {
 } from '@suite-common/wallet-core';
 import { AddressDisplayOptions } from '@suite-common/wallet-types';
 
-import { openAddressModal } from './openAddressModal';
-
 type ShowAddressThunkDeps = { services: DesktopAnalyticsDep };
 
 export const showAddressThunk =
-    ({ path, address }: { path: string; address: string }) =>
+    ({ path }: { path: string }) =>
     async (
         dispatch: Dispatch,
-        getState: () => DeviceRootState & WalletSettingsRootState & SelectedAccountRootState,
+        getState: () => DeviceRootState &
+            WalletSettingsRootState &
+            SelectedAccountRootState &
+            ReceiveRootState,
         extra: ShowAddressThunkDeps,
     ) => {
         const device = selectSelectedDevice(getState());
@@ -28,34 +31,25 @@ export const showAddressThunk =
 
         if (!device || !account) return;
 
-        const modalPayload = {
-            accountKey: account.key,
-            value: address,
-            addressPath: path,
-        };
+        const currentFreshAddress = selectCurrentFreshAddress(getState(), account.key);
 
-        const addressDisplayType = selectAddressDisplayType(getState());
-        const chunkify = addressDisplayType === AddressDisplayOptions.CHUNKED;
+        extra.services.analytics.report({
+            type: events.receiveStartVerificationEvent.name,
+            payload: { isFreshAddress: currentFreshAddress?.path === path },
+        });
 
-        // Show warning when device is not connected.
+        // Verification cannot start without a device, so ask the user to connect one.
         if (!device.connected || !device.available) {
-            dispatch(
-                openModal({
-                    type: 'unverified-address',
-                    ...modalPayload,
-                }),
-            );
-
-            extra.services.analytics.report({
-                type: events.createReceiveAddressShowAddressEvent.name,
-                payload: {
-                    assetSymbol: account.symbol,
-                    type: 'unverified',
-                },
-            });
+            if (device.descriptor?.apiType === 'bluetooth') {
+                dispatch(setConnectionMode('bluetooth'));
+            }
+            dispatch(setConnectionModal(true));
 
             return;
         }
+
+        const addressDisplayType = selectAddressDisplayType(getState());
+        const chunkify = addressDisplayType === AddressDisplayOptions.CHUNKED;
 
         dispatch(preserveModal());
 
@@ -75,8 +69,9 @@ export const showAddressThunk =
         dispatch(removePreserveModal());
 
         if (response.success) {
-            // Show second part of the confirm address modal.
-            dispatch(openAddressModal({ ...modalPayload, isConfirmed: true }));
+            // Address verified on device — just close the confirm-on-device modal, don't show the
+            // address modal afterwards.
+            dispatch(closeModal());
 
             extra.services.analytics.report({
                 type: events.createReceiveAddressConfirmOnTrezorEvent.name,

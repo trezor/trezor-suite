@@ -17,7 +17,6 @@ import { ConnectPopupTxSimulationModal } from 'src/components/tx-simulation/conn
 import { EarnYieldTxSimulationModal } from 'src/components/tx-simulation/earn-stablecoin';
 import { useDispatch } from 'src/hooks/suite';
 
-import { ConfirmAddressModal } from '../ConfirmAddressModal';
 import { ConfirmXpubModal } from '../ConfirmXpubModal';
 import { CopyAddressModal } from '../CopyAddressModal';
 import { ActivateAssetsModal } from './ActivateAssetsModal';
@@ -33,7 +32,6 @@ import { UnhideTokenModal } from '../UnhideTokenModal';
 import { AutoStartBeforeQuitModal } from './AutoStartBeforeQuitModal';
 import { CancelCoinjoinModal } from './CancelCoinjoinModal';
 import { CoinjoinSuccessModal } from './CoinjoinSuccessModal';
-import { ConfirmUnverifiedAddressModal } from './ConfirmUnverifiedAddressModal';
 import { ConfirmUnverifiedProceedModal } from './ConfirmUnverifiedProceedModal';
 import { ConfirmUnverifiedXpubModal } from './ConfirmUnverifiedXpubModal';
 import { ConnectAddressConfirmation } from './ConnectAddressConfirmation';
@@ -79,20 +77,10 @@ export const UserContextModal = ({ payload }: ReduxModalProps<typeof MODAL_CONTE
                     onConfirm={payload.onConfirm}
                 />
             );
-        case 'unverified-address':
-            return (
-                <ConfirmUnverifiedAddressModal
-                    accountKey={payload.accountKey}
-                    addressPath={payload.addressPath}
-                    value={payload.value}
-                />
-            );
         case 'unverified-xpub':
             return <ConfirmUnverifiedXpubModal />;
         case 'unverified-address-proceed':
             return <ConfirmUnverifiedProceedModal value={payload.value} />;
-        case 'address':
-            return <ConfirmAddressModal {...payload} onCancel={onCancel} />;
         case 'xpub':
             return <ConfirmXpubModal {...payload} onCancel={onCancel} />;
         case 'device-background-gallery':

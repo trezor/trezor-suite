@@ -58,6 +58,10 @@ export enum EventType {
     PromoDesktop = 'promo/desktop',
     PromoMobile = 'promo/mobile',
     PromoReferralButton = 'promo/referral-button',
+    ReceiveAddAddress = 'receive/add-address',
+    ReceiveCopyAddress = 'receive/copy-address',
+    ReceiveShareAddress = 'receive/share-address',
+    ReceiveStartVerification = 'receive/start-verification',
     // eslint-disable-next-line local-rules/analytics-event-name
     RemoveToken = 'remove-token',
     // eslint-disable-next-line local-rules/analytics-event-name

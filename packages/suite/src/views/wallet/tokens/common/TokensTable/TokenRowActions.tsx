@@ -9,7 +9,6 @@ import { FirmwareUpgradeNeededModal } from '@suite/firmware-upgrade';
 import { selectIsCopyAddressModalShown, selectIsUnhideTokenModalShown } from '@suite/flags';
 import { Translation, useTranslation } from '@suite/intl';
 import { openModal } from '@suite/modal';
-import { showAddressThunk } from '@suite/receive';
 import { goto } from '@suite/router';
 import { events as sharedEvents } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
@@ -110,7 +109,7 @@ const TokenRowBasicActions = ({
     const shouldShowCopyAddressModal = useSelector(selectIsCopyAddressModalShown);
     const shouldShowUnhideTokenModal = useSelector(selectIsUnhideTokenModalShown);
 
-    const { address: unusedAddress, path } = getUnusedAddressFromAccount(account);
+    const { address: unusedAddress } = getUnusedAddressFromAccount(account);
 
     const { coins } = useSelector(selectTradingInfo);
     const isDeviceLocked = isLocked(true);
@@ -280,11 +279,7 @@ const TokenRowBasicActions = ({
     };
 
     const onReceiveButtonClick = () => {
-        if (network.networkType === 'cardano') {
-            goToWithAnalytics({ routeName: 'wallet-receive', preserveParams: true });
-        } else {
-            dispatch(showAddressThunk({ path, address: unusedAddress }));
-        }
+        goToWithAnalytics({ routeName: 'wallet-receive', preserveParams: true });
     };
 
     const onShowHideButtonClick = () => {
