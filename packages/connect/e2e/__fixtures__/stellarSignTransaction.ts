@@ -190,8 +190,16 @@ const stellarSignTransaction: TestCase = {
     },
     tests: [
         ...commonFixtures.tests
-            // payment request tests need PaymentRequest data that can't be expressed in this fixture format
-            .filter((test: any) => !test.experimental && !test.parameters.payment_request)
+            .filter(
+                (test: any) =>
+                    !test.experimental &&
+                    // payment request tests need PaymentRequest data that can't be expressed in this fixture format
+                    !test.parameters.payment_request &&
+                    // Soroban InvokeHostFunction operations are not supported by connect yet
+                    !test.parameters.operations?.some(
+                        (op: any) => op._message_type === 'StellarInvokeHostFunctionOp',
+                    ),
+            )
             .flatMap(({ name, result, parameters, skip_models }: any) => [
                 {
                     name,
