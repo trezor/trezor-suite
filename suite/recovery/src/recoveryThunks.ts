@@ -1,7 +1,7 @@
 import { asTypedDesktopAnalytics, events } from '@suite/analytics';
 import { selectSelectedDevice } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
-import TrezorConnect, { PROTO, type RecoveryDevice, UI_RESPONSE } from '@trezor/connect';
+import TrezorConnect, { PROTO, type RecoveryDevice } from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
 import { isRecoveryInProgress } from './isRecoveryInProgress';
@@ -11,13 +11,6 @@ import { selectAdvancedRecovery, selectWordsCount } from './recoverySelectors';
 const DEFAULT_PASSPHRASE_PROTECTION = false;
 
 const actionPrefix = '@suite/recovery';
-
-export const submitThunk = createThunk(
-    `${actionPrefix}/submitThunk`,
-    ({ word, requestId }: { word: string; requestId?: string }) => {
-        TrezorConnect.uiResponse({ type: UI_RESPONSE.RECEIVE_WORD, payload: word, requestId });
-    },
-);
 
 export const checkSeedThunk = createThunk(
     `${actionPrefix}/checkSeedThunk`,
