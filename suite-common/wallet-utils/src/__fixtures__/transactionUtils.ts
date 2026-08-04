@@ -1133,6 +1133,61 @@ export const getRbfParams = [
             ],
         },
     },
+    {
+        // Poison-record DoS: the ethereum branch (unlike bitcoin) does not guard `!tx.details`,
+        // so an untrusted backend returning a pending rbf tx with no details would throw on the
+        // `const { vout } = tx.details` destructure and fail the whole history page load.
+        description: 'ethereum: pending rbf tx with missing details degrades to undefined',
+        account: { networkType: 'ethereum' },
+        tx: {
+            type: 'sent',
+            rbf: true,
+            blockHeight: 0,
+            details: undefined,
+            ethereumSpecific: { nonce: 1, gasPrice: '20000000000' },
+        },
+        result: undefined,
+    },
+    {
+        // Poison-record DoS: a malformed (non-integer) gasPrice from an untrusted backend makes
+        // fromWei -> toBN throw; degrade to undefined instead of crashing the page.
+        description: 'ethereum: pending rbf tx with malformed gasPrice degrades to undefined',
+        account: { networkType: 'ethereum', symbol: 'eth' },
+        tx: {
+            type: 'sent',
+            rbf: true,
+            blockHeight: 0,
+            txid: '0xabc',
+            details: {
+                vin: [],
+                vout: [{ addresses: ['0xdead'], value: '1', isAddress: true }],
+                size: 0,
+                totalInput: '0',
+                totalOutput: '0',
+            },
+            ethereumSpecific: { nonce: 1, gasPrice: '1.5' },
+        },
+        result: undefined,
+    },
+    {
+        // Poison-record DoS: a bitcoin vout output missing `addresses` from an untrusted backend
+        // makes `outputAddresses[0]` throw inside the vout.forEach; degrade to undefined.
+        description: 'bitcoin: pending rbf tx with output missing addresses degrades to undefined',
+        account: {
+            networkType: 'bitcoin',
+            addresses: { change: [], used: [{ address: 'abcd' }], unused: [] },
+        },
+        tx: {
+            type: 'sent',
+            rbf: true,
+            blockHeight: 0,
+            details: {
+                vin: [{ addresses: ['abcd'] }],
+                vout: [{ isAddress: true }],
+            },
+        },
+        result: undefined,
+    },
 ];
 
 export const getAccountTransactions = [

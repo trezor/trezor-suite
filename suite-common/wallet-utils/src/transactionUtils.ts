@@ -1114,13 +1114,27 @@ export const getRbfParams = (
     tx: AccountTransaction,
     account: Account,
 ): WalletAccountTransaction['rbfParams'] => {
-    switch (account.networkType) {
-        case 'bitcoin':
-            return getBitcoinRbfParams(tx, account);
-        case 'ethereum':
-            return getEthereumRbfParams(tx, account);
-        default:
-            return undefined;
+    try {
+        switch (account.networkType) {
+            case 'bitcoin':
+                return getBitcoinRbfParams(tx, account);
+            case 'ethereum':
+                return getEthereumRbfParams(tx, account);
+            default:
+                return undefined;
+        }
+    } catch {
+        // getRbfParams runs on every transaction inside enhanceTransaction, which is called
+        // synchronously in the addTransaction action prepare callback while loading a page of
+        // history straight from an untrusted (user-selectable/custom) backend. The extractors
+        // dereference backend-controlled fields the wire type marks non-optional without validating
+        // them: the ethereum branch destructures `tx.details` (unlike the bitcoin branch it does not
+        // guard `!tx.details`) and indexes `vout[0].addresses`, and both branches feed values into
+        // `fromWei`, which throws on a non-integer/NaN/negative gasPrice. A single malformed pending
+        // rbf transaction would otherwise throw out of the whole `transactions.map(enhanceTransaction)`
+        // and fail the entire history page load (poison-one-record DoS). Degrade the bad record to
+        // "no rbf params" (fee bump unavailable) instead — every consumer already guards `!!rbfParams`.
+        return undefined;
     }
 };
 
