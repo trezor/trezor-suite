@@ -22,6 +22,7 @@ import {
 import {
     getFirmwareAuthenticityCheckErrors,
     getIsHardRevisionCheckError,
+    getIsRetriableRevisionCheckError,
 } from '@suite-common/firmware-authenticity';
 import {
     Feature,
@@ -210,6 +211,12 @@ export const selectSelectedDeviceFirmwareRevisionCheckErrorIfEnabled = (
 
     return selectFirmwareRevisionCheckErrorIfEnabled(state, device);
 };
+export const selectShouldRetryFirmwareRevisionCheckError = (
+    state: FwAuthenticityCheckState,
+): boolean =>
+    getIsRetriableRevisionCheckError(
+        selectSelectedDeviceFirmwareRevisionCheckErrorIfEnabled(state),
+    );
 
 /**
  * Determine if either of firmware authenticity checks is considered as hard failure (in order to restrict interaction with device).

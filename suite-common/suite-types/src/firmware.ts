@@ -48,3 +48,27 @@ export type GetAllowPrereleaseDep = {
 export const selectGetAllowPrereleaseDep = (services: any): GetAllowPrereleaseDep => ({
     getAllowPrerelease: services.getAllowPrerelease,
 });
+
+export type ShouldRetryFirmwareRevisionCheckError = Getter<[], boolean>;
+
+export type ShouldRetryFirmwareRevisionCheckErrorDep = {
+    shouldRetryFirmwareRevisionCheckError: ShouldRetryFirmwareRevisionCheckError;
+};
+
+export const selectShouldRetryFirmwareRevisionCheckErrorDep = (
+    services: any,
+): ShouldRetryFirmwareRevisionCheckErrorDep => ({
+    shouldRetryFirmwareRevisionCheckError: services.shouldRetryFirmwareRevisionCheckError,
+});
+
+export type RerunFwAuthenticityChecksCall = () => void;
+
+export type RerunFwAuthenticityChecksCallDep = {
+    rerunFwAuthenticityChecksCall: RerunFwAuthenticityChecksCall;
+};
+
+export const selectRerunFwAuthenticityChecksCallDep = (
+    services: any,
+): RerunFwAuthenticityChecksCallDep => ({
+    rerunFwAuthenticityChecksCall: services.rerunFwAuthenticityChecksCall,
+});

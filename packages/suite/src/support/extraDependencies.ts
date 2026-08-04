@@ -2,7 +2,9 @@ import type { Dispatch, PayloadAction } from '@reduxjs/toolkit';
 import { saveAs } from 'file-saver';
 
 import { type DesktopAnalyticsDep, createAnalytics } from '@suite/analytics';
+import { selectShouldRetryFirmwareRevisionCheckError } from '@suite/authenticity-checks';
 import { fixLoadedCoinjoinAccount } from '@suite/coinjoin';
+import { rerunFwAuthenticityChecksThunk } from '@suite/device';
 import type { FlagsState } from '@suite/flags';
 import { lockDevice } from '@suite/locks';
 import {
@@ -253,6 +255,13 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
             deps.getState,
             (state: AppState) => state.desktopUpdate?.allowPrerelease ?? false,
         ),
+        shouldRetryFirmwareRevisionCheckError: toGetter(
+            deps.getState,
+            selectShouldRetryFirmwareRevisionCheckError,
+        ),
+        rerunFwAuthenticityChecksCall: () => {
+            deps.dispatch(rerunFwAuthenticityChecksThunk());
+        },
         migrateSuiteSyncLabelsForRbfTransaction:
             createMigrateSuiteSyncLabelsForRbfTransactionCompositionRoot({
                 dispatch: deps.dispatch,

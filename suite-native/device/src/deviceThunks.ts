@@ -13,7 +13,11 @@ import {
 import { createThunk } from '@suite-common/redux-utils';
 import { type BackupType, type ReportSecurityCheckDep } from '@suite-common/suite-types';
 import { processEntropyCheckResultThunk } from '@suite-common/wallet-core';
-import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
+import {
+    deviceAccessMutex,
+    requestDeviceAccess,
+    requestPrioritizedDeviceAccess,
+} from '@suite-native/device-mutex';
 import TrezorConnect, { type OkWithDevice, PROTO, type Response } from '@trezor/connect';
 import { type SerializedError } from '@trezor/connect-common/src/constants/errors';
 import { type Err, exhaustive } from '@trezor/type-utils';
@@ -141,3 +145,20 @@ export const recoverWalletThunk = createThunk<
 
     return deviceResponse.payload;
 });
+
+/**
+ * Connect call to rerun FW authenticity checks (getFeatures used as the most basic no-op device call).
+ */
+export const rerunFwAuthenticityChecksThunk = createThunk(
+    `${NATIVE_DEVICE_MODULE_PREFIX}/rerunFwAuthenticityChecksThunk`,
+    (_, { getState }) => {
+        const device = selectSelectedDevice(getState());
+        if (device === undefined) return;
+        // refrain from scheduling multiple tasks (since this runs in a loop)
+        if (deviceAccessMutex.taskQueue.length === 0) {
+            void requestDeviceAccess(() =>
+                TrezorConnect.getFeatures({ device: { path: device.path } }),
+            );
+        }
+    },
+);

@@ -27,6 +27,10 @@ import { selectAllLabelsForAccount, selectIsSuiteSyncEnabled } from '@suite-comm
 import { createAccountRefreshThrottle } from '@suite-common/wallet-core';
 import { analytics } from '@suite-native/analytics';
 import { forgetBluetoothDeviceThunk } from '@suite-native/bluetooth';
+import {
+    rerunFwAuthenticityChecksThunk,
+    selectShouldRetryFirmwareRevisionCheckError,
+} from '@suite-native/device';
 import { selectTokenDefinitionsEnabledNetworks } from '@suite-native/discovery';
 import { selectSupportedLanguageLocale } from '@suite-native/intl';
 import { reportSecurityCheck } from '@suite-native/sentry';
@@ -169,6 +173,13 @@ export const createNativeCompositionRoot = (deps: NativeAppDeps): NativeServices
             knownCredentials: state.thp?.credentials,
         })),
         getAllowPrerelease: toGetter(deps.getState, () => false),
+        shouldRetryFirmwareRevisionCheckError: toGetter(
+            deps.getState,
+            selectShouldRetryFirmwareRevisionCheckError,
+        ),
+        rerunFwAuthenticityChecksCall: () => {
+            deps.dispatch(rerunFwAuthenticityChecksThunk());
+        },
         getBinFilesBaseUrl: asGetter(() => resolveConnectPath('data')),
 
         // Not implemented. We assume those are NEVER called on Native.

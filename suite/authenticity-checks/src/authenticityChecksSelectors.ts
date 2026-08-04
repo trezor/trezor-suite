@@ -18,6 +18,7 @@ import {
     getFirmwareAuthenticityCheckErrors,
     getIsHardHashCheckError,
     getIsHardRevisionCheckError,
+    getIsRetriableRevisionCheckError,
     getIsSkippedHashCheckError,
     getIsSkippedRevisionCheckError,
 } from '@suite-common/firmware-authenticity';
@@ -48,6 +49,10 @@ export const selectFirmwareRevisionCheckErrorIfEnabled = (state: AuthenticityChe
 
     return revisionCheckError;
 };
+
+export const selectShouldRetryFirmwareRevisionCheckError = (
+    state: AuthenticityChecksRootState,
+): boolean => getIsRetriableRevisionCheckError(selectFirmwareRevisionCheckErrorIfEnabled(state));
 
 export const selectFirmwareHashCheckErrorIfEnabled = (state: AuthenticityChecksRootState) => {
     const device = selectSelectedDevice(state);

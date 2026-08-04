@@ -1,14 +1,16 @@
 import { useSelector } from 'react-redux';
 
 import { selectSelectedDevice } from '@suite-common/device';
-import { useReportDeviceCompromised } from '@suite-common/firmware-authenticity';
+import {
+    useReportDeviceCompromised,
+    useRetryFwAuthenticityChecks,
+} from '@suite-common/firmware-authenticity';
 import { useBlockchainConnectionManager } from '@suite-native/blockchain';
 import { useBluetoothAdapter } from '@suite-native/bluetooth';
 import {
     useDetectDeviceError,
     useDeviceCompromisedNotification,
     useRenderDeviceDangerBanner,
-    useRetryFwAuthenticityChecks,
 } from '@suite-native/device';
 import { useHandleDeviceAuthorization } from '@suite-native/device-authorization';
 import { useConnectPopupNavigation } from '@suite-native/module-connect-popup';
@@ -30,6 +32,5 @@ export const useGlobalHooks = () => {
     useReportDeviceCompromised({ device });
     useRenderDeviceDangerBanner();
     useDeviceCompromisedNotification();
-
     useRetryFwAuthenticityChecks();
 };
