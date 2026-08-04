@@ -1,5 +1,6 @@
 export {
     createAnalytics,
+    type DesktopAnalytics,
     type DesktopAnalyticsDep,
     selectDesktopAnalyticsDep,
 } from './createAnalytics';

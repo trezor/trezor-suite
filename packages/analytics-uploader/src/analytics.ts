@@ -7,7 +7,7 @@ import type {
 } from './types';
 import { encodeDataToQueryString, getRandomId, getUrl, reportEvent } from './utils';
 
-export interface Analytics<T extends AnalyticsEvent> {
+export interface Analytics<T> {
     init: (enabled: boolean | undefined, options: InitOptions) => void;
     enable: () => void;
     disable: () => void;

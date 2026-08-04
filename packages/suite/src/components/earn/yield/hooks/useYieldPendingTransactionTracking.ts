@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 
-import { type AnalyticsDesktopEvents, selectDesktopAnalyticsDep } from '@suite/analytics';
-import { events } from '@suite-common/analytics';
+import { selectDesktopAnalyticsDep } from '@suite/analytics';
+import { type EventInstance, events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
 import {
@@ -86,6 +86,13 @@ type ReportContext = {
     durationMs?: number;
 };
 
+type YieldResolutionAnalyticsEvent =
+    | EventInstance<typeof events.yieldDepositEvent>
+    | EventInstance<typeof events.yieldWithdrawEvent>
+    | EventInstance<typeof events.yieldClaimEvent>;
+
+type YieldResolutionAnalytics = Pick<Analytics<YieldResolutionAnalyticsEvent>, 'report'>;
+
 const resolveReportedType = <T extends string>(
     outcome: 'success' | 'error' | 'leftPending',
     successType: T,
@@ -97,7 +104,7 @@ const resolveReportedType = <T extends string>(
 };
 
 const reportResolution = (
-    analytics: Analytics<AnalyticsDesktopEvents>,
+    analytics: YieldResolutionAnalytics,
     resolution: ResolutionEventType,
     outcome: 'success' | 'error' | 'leftPending',
     context: ReportContext,

@@ -76,7 +76,7 @@ export type EventDef<A, N extends EventName = EventName> =
 // `infer` pulls the data type (`A`) and event name (`N`) out of `EventDef`. If `E` contains several
 // event definitions joined with `|`, TypeScript translates each one separately. This keeps every
 // event name paired with the correct payload.
-export type EventInstance<E extends EventDef<any, any>> =
+export type EventInstance<E> =
     E extends EventDef<infer A, infer N>
         ? IsAttributeMap<A> extends true
             ? AttributeEventInstance<A, N>
