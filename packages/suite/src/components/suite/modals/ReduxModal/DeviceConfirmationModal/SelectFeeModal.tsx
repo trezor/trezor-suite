@@ -76,45 +76,38 @@ interface SelectAccountModalProps {
 }
 
 const getSelectFeeData = ({ coinInfo, feeLevels }: UiRequestSelectFee['payload']) => {
-    const minFee = coinInfo.minFeeSatoshiKb / 1000;
-    const maxFee = coinInfo.maxFeeSatoshiKb / 1000;
-    const account = {
-        networkType: 'bitcoin' as const,
-        symbol: coinInfo.shortcut.toLowerCase() as NetworkSymbol,
-        tokens: [],
-    };
-    const feeInfo = {
-        levels: feeLevels
-            .filter(({ label }) => label !== 'low') // this option is hidden in Suite
-            .sort(sortLevels),
+    const { shortcut, blockTime, minFeeSatoshiKb, maxFeeSatoshiKb } = coinInfo;
+    const minFee = minFeeSatoshiKb / 1000;
+    const maxFee = maxFeeSatoshiKb / 1000;
+    const symbol = shortcut.toLowerCase() as NetworkSymbol;
 
-        minFee,
-        maxFee,
-        minPriorityFee: -1,
-        blockHeight: 0,
-        blockTime: coinInfo.blockTime,
-    };
+    const levels = feeLevels.filter(({ label }) => label !== 'low').sort(sortLevels); // 'low' option is hidden in Suite
+    const defaultLevel = levels.find(l => l.label === 'normal') ?? levels[0]; // use preferably normal level as default, fall back to any other
+    const selectedFee = defaultLevel?.label ?? 'normal';
+    const feePerUnit = selectedFee === 'custom' ? defaultLevel?.feePerUnit : undefined;
 
-    return { account, feeInfo };
+    return {
+        account: { networkType: 'bitcoin' as const, symbol, tokens: [] },
+        feeInfo: { levels, minFee, maxFee, minPriorityFee: -1, blockHeight: 0, blockTime },
+        defaultValues: { outputs: [], selectedFee, feePerUnit },
+    };
 };
 
 export const SelectFeeModal = ({ data }: SelectAccountModalProps) => {
     const dispatch = useDispatch();
     const popupCall = useSelector(selectConnectPopupCall);
 
-    const { account, feeInfo } = useMemo(() => getSelectFeeData(data), [data]);
+    const { account, feeInfo, defaultValues } = useMemo(() => getSelectFeeData(data), [data]);
 
-    const methods = useForm<FormState>({
-        defaultValues: {
-            outputs: [],
-        },
-    });
+    const methods = useForm<FormState>({ defaultValues });
+
     const { changeFeeLevel } = useFees({
         ...methods,
-        defaultValue: 'normal',
+        defaultValue: defaultValues.selectedFee,
         feeInfo,
         composeRequest: () => {},
     });
+
     const {
         handleSubmit,
         formState: { errors },
