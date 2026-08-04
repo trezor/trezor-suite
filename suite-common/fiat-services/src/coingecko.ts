@@ -135,6 +135,19 @@ export const fetchCurrentFiatRates = async (
 };
 
 /**
+ * Coingecko `prices` come from an untrusted third-party API (only proxied, never signed, by
+ * cdn.trezor.io), so the response shape cannot be relied upon. A malformed/poison `prices`
+ * (non-array, or entries that aren't `[number, number]` tuples) would otherwise crash the
+ * downstream `.map`/`findClosestTimestampValue` deref and abort the whole fiat-rate/graph fetch.
+ * Coerce to `[]` and drop poison entries at this data boundary.
+ */
+const isValidPricePoint = (point: unknown): point is [number, number] =>
+    Array.isArray(point) && Number.isFinite(point[0]) && Number.isFinite(point[1]);
+
+export const sanitizePrices = (prices: unknown): Array<[number, number]> =>
+    Array.isArray(prices) ? prices.filter(isValidPricePoint) : [];
+
+/**
  * Helper function that goes through timestamped fiat rates returned from Coingecko and finds the closest one to the provided timestamp.
  * @returns [timestamp, fiatRate] pair
  */
@@ -196,10 +209,11 @@ export const getFiatRatesForTimestamps = async (
     for (const coinUrl of coinUrls) {
         const url = `${coinUrl}/${urlEndpoint}${params}`;
         const response = await fetchCoinGecko(url);
-        if (response?.prices && response.prices.length > 0) {
+        const prices = sanitizePrices(response?.prices);
+        if (prices.length > 0) {
             const tickers = timestamps.map(ts => ({
                 ts,
-                rates: { [fiatCurrencyCode]: findClosestTimestampValue(ts, response.prices) },
+                rates: { [fiatCurrencyCode]: findClosestTimestampValue(ts, prices) },
             }));
 
             return {
@@ -236,18 +250,18 @@ export const fetchLastWeekRates = async (
     for (const coinUrl of coinUrls) {
         const url = `${coinUrl}/${urlEndpoint}?${urlParams}`;
         const data = await fetchCoinGecko(url);
-        if (data) {
-            const tickers = data.prices?.map((d: [number, number]) => ({
-                ts: Math.floor(d[0] / 1000),
-                rates: { [fiatCurrencyCode]: d[1] },
+        const prices = sanitizePrices(data?.prices);
+        if (prices.length > 0) {
+            const tickers = prices.map(([ts, rate]) => ({
+                ts: Math.floor(ts / 1000),
+                rates: { [fiatCurrencyCode]: rate },
             }));
-            if (tickers) {
-                return {
-                    symbol,
-                    tickers,
-                    ts: new Date().getTime(),
-                };
-            }
+
+            return {
+                symbol,
+                tickers,
+                ts: new Date().getTime(),
+            };
         }
     }
 
