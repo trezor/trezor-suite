@@ -154,18 +154,27 @@ export const decodeEthereumDefinition = (
             return;
         }
 
-        const { definitionType, protobufPayload } = trzd.decode(encodedPayload);
-        const { message: decodedDefinition } = protobufManager.decode(
-            definitionType === 0 ? 'EthereumNetworkInfo' : 'EthereumTokenInfo',
-            protobufPayload,
-        );
+        // The payload is fetched verbatim from the (untrusted) definitions server; a truncated
+        // or malformed `.dat` blob makes `trzd.decode` (fixed-offset readUInt* on a short buffer),
+        // `protobufManager.decode`, or the schema `Assert` throw. Definitions are purely
+        // display-only ("if definitions are not provided UNKNOWN is shown"), so a poison entry
+        // must degrade to `undefined` instead of throwing out of the signing/getAddress method.
+        try {
+            const { definitionType, protobufPayload } = trzd.decode(encodedPayload);
+            const { message: decodedDefinition } = protobufManager.decode(
+                definitionType === 0 ? 'EthereumNetworkInfo' : 'EthereumTokenInfo',
+                protobufPayload,
+            );
 
-        if (key === 'encoded_network') {
-            Assert(EthereumNetworkDefinitionDecoded, decodedDefinition);
-            decoded.network = decodedDefinition;
-        } else if (key === 'encoded_token') {
-            Assert(EthereumTokenDefinitionDecoded, decodedDefinition);
-            decoded.token = decodedDefinition;
+            if (key === 'encoded_network') {
+                Assert(EthereumNetworkDefinitionDecoded, decodedDefinition);
+                decoded.network = decodedDefinition;
+            } else if (key === 'encoded_token') {
+                Assert(EthereumTokenDefinitionDecoded, decodedDefinition);
+                decoded.token = decodedDefinition;
+            }
+        } catch (err) {
+            console.warn(`unable to decode ethereum ${key} definition. detail: ${err.message}`);
         }
     });
 
