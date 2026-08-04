@@ -217,7 +217,9 @@ export const YieldAmountCard = ({
                                 </Button>
                             )}
                         </Row>
-                        {approxFiat && (
+                        {/* In fiat mode the user already types the fiat amount, so converting
+                        it back would just restate the input. */}
+                        {approxFiat && !isFiatMode && (
                             <BaseCurrencyValue
                                 amount={amountInput ?? ''}
                                 symbol={approxFiat.symbol}
