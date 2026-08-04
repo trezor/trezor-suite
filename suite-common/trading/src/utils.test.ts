@@ -27,6 +27,7 @@ import {
     getTradingQuotesByPaymentMethod,
     getTradingQuotesDedupedByProvider,
     getUnusedAddressFromAccount,
+    isCrossChainTrade,
     isCryptoIdForNativeToken,
     isFinalStatus,
     mapTestnetSymbol,
@@ -222,6 +223,12 @@ describe('cryptoIdToNetwork', () => {
             expect(cryptoIdToNetwork(cryptoId)?.symbol).toBe(expectedSymbol);
         },
     );
+});
+
+describe('isCrossChainTrade', () => {
+    it('should return true when send and receive assets are on different networks', () => {
+        expect(isCrossChainTrade('ethereum' as CryptoId, 'bitcoin' as CryptoId)).toBe(true);
+    });
 });
 
 describe('toTokenCryptoId', () => {
