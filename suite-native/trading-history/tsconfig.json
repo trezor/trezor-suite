@@ -12,6 +12,7 @@
         {
             "path": "../../suite-common/wallet-core"
         },
+        { "path": "../alerts" },
         { "path": "../atoms" },
         { "path": "../clipboard" },
         { "path": "../device" },
@@ -19,6 +20,7 @@
         { "path": "../intl" },
         { "path": "../labeling" },
         { "path": "../link" },
+        { "path": "../toasts" },
         { "path": "../trading-atoms" },
         { "path": "../trading-browser-auth" },
         { "path": "../trading-provider-utils" },

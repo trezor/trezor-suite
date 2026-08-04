@@ -1,4 +1,5 @@
 export { TradingHistory } from './components/TradingHistory';
+export { TradingHistoryExportButton } from './components/TradingHistoryExportButton';
 export { TradeStatusBadge, getBadgeIconName, getBadgeVariant } from './components/TradeStatusBadge';
 export { TradeDetailHeader } from './components/TradeDetailSheet/TradeDetailHeader';
 export {

@@ -1,6 +1,6 @@
 import { Translation } from '@suite-native/intl';
 import { Screen, ScreenHeader } from '@suite-native/navigation';
-import { TradingHistory } from '@suite-native/trading-history';
+import { TradingHistory, TradingHistoryExportButton } from '@suite-native/trading-history';
 
 export const TradingHistoryScreen = () => (
     <Screen
@@ -8,6 +8,7 @@ export const TradingHistoryScreen = () => (
             <ScreenHeader
                 title={<Translation id="moduleTrading.tradeHistory.list.title" />}
                 closeActionType="back"
+                rightIcon={<TradingHistoryExportButton />}
             />
         }
         isScrollable={false}
