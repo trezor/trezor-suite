@@ -8802,6 +8802,18 @@ export const messages = defineMessages({
         id: 'TR_EARN_CLAIM_REWARDS_BUTTON',
         defaultMessage: 'Claim',
     },
+    TR_EARN_CLAIM_REWARDS_TOKEN_LABEL: {
+        id: 'TR_EARN_CLAIM_REWARDS_TOKEN_LABEL',
+        defaultMessage: 'in {symbol}',
+    },
+    TR_EARN_CLAIM_REWARDS_TOKENS_LABEL: {
+        id: 'TR_EARN_CLAIM_REWARDS_TOKENS_LABEL',
+        defaultMessage: 'in {tokens} tokens',
+    },
+    TR_EARN_CLAIM_REWARDS_ACCOUNTS_LABEL: {
+        id: 'TR_EARN_CLAIM_REWARDS_ACCOUNTS_LABEL',
+        defaultMessage: 'on {accounts} accounts',
+    },
     TR_EARN_ENTER_AMOUNT_IN: {
         id: 'TR_EARN_ENTER_AMOUNT_IN',
         defaultMessage: 'Enter amount in {currency}',

@@ -30,12 +30,12 @@ import { useMessageSystemYield } from 'src/hooks/suite/useMessageSystemYield';
 import { EarnYieldClaimRewardsBanner } from './EarnYieldClaimRewardsBanner';
 import { EarnYieldClaimSelectAccountModal } from './EarnYieldClaimSelectAccountModal';
 import { EarnYieldTableBody } from './EarnYieldTableBody';
-import { useYieldAccountsVisibility } from './hooks/useYieldAccountsVisibility';
-import { useYieldTableData } from './hooks/useYieldTableData';
 import { PoweredByBadge } from '../../providers/PoweredByBadge';
 import { getYieldOpportunityAnchor } from '../../utils/getYieldOpportunityAnchor';
 import { useMerklRewards } from '../../yield/claim/hooks';
 import { EarnDashboardTableHeader } from '../common/EarnDashboardTableHeader';
+import { useYieldAccountsVisibility } from './hooks/useYieldAccountsVisibility';
+import { useYieldTableData } from './hooks/useYieldTableData';
 
 const emptyVaults: YieldDtoV2[] = [];
 
@@ -183,9 +183,7 @@ export const EarnYieldTable = () => {
                     {(isYieldActive || accountsRewards.length > 0) && (
                         <>
                             <EarnYieldClaimRewardsBanner
-                                value={merklRewardsQuery.data.totalRewardsToClaim.value}
-                                currency={merklRewardsQuery.data.totalRewardsToClaim.currency}
-                                isValueLoading={merklRewardsQuery.isLoading}
+                                rewards={merklRewardsQuery}
                                 isClaimDisabled={isClaimDisabled}
                                 claimDisabledTooltip={
                                     claimMessageSystem.isDisabled
