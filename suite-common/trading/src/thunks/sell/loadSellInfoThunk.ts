@@ -29,12 +29,19 @@ export const loadSellInfoThunk = createThunk<SellInfo, void, void>(
         sellList.providers.forEach(provider => (providerInfos[provider.name] = provider));
 
         sellList.providers.forEach(provider => {
-            if (provider.tradedFiatCurrencies) {
-                provider.tradedFiatCurrencies.forEach(currency =>
-                    supportedFiatCurrencies.push(currency.toLowerCase() as FiatCurrencyCode),
-                );
+            // Guard against an untrusted trade-server response where a provider omits/mistypes these
+            // fields: an unguarded `.forEach`/`.toLowerCase()` would throw and reject the thunk,
+            // leaving the trading feature stuck in `isLoading` for the session (see loadInitialDataThunk).
+            if (Array.isArray(provider.tradedFiatCurrencies)) {
+                provider.tradedFiatCurrencies.forEach(currency => {
+                    if (typeof currency === 'string') {
+                        supportedFiatCurrencies.push(currency.toLowerCase() as FiatCurrencyCode);
+                    }
+                });
             }
-            provider.tradedCoins.forEach(coin => supportedCryptoCurrencies.push(coin));
+            if (Array.isArray(provider.tradedCoins)) {
+                provider.tradedCoins.forEach(coin => supportedCryptoCurrencies.push(coin));
+            }
         });
 
         return fulfillWithValue({

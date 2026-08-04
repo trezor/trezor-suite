@@ -92,6 +92,39 @@ describe('loadSellInfoThunk', () => {
         });
     });
 
+    it('does not throw on a poison provider missing tradedCoins (untrusted trade server)', async () => {
+        // untrusted trade server returns a provider that omits tradedCoins (typed non-optional) and
+        // includes a non-string fiat currency; without a guard `.forEach`/`.toLowerCase()` throws and
+        // rejects the thunk, leaving the trading feature stuck loading for the whole session.
+        const poisonProvider = {
+            ...sellProvider,
+            name: 'poison',
+            tradedCoins: undefined,
+            tradedFiatCurrencies: ['CZK', 123],
+        } as unknown as SellProviderInfo;
+
+        const sellInfoApi: SellListResponse = {
+            providers: [poisonProvider, sellProvider],
+            country: 'CZ',
+        };
+
+        tradeApi.getSellList = () => Promise.resolve(sellInfoApi);
+
+        const sellInfoData = await store.dispatch(sellThunks.loadInfoThunk()).unwrap();
+
+        // poison provider's non-string currency dropped and missing tradedCoins skipped; the valid
+        // provider's entries survive (unique() dedupes czk shared with the poison provider)
+        expect(sellInfoData).toEqual({
+            providerInfos: {
+                poison: poisonProvider,
+                [sellProvider.name]: sellProvider,
+            },
+            supportedFiatCurrencies: ['czk', 'usd'],
+            supportedCryptoCurrencies: ['bitcoin'],
+            country: sellInfoApi.country,
+        });
+    });
+
     it('should load default data object when response is unsuccessful', async () => {
         tradeApi.getSellList = () => Promise.resolve(undefined as unknown as SellListResponse);
 

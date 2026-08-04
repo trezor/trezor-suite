@@ -118,4 +118,50 @@ describe('loadBuyInfoThunk', () => {
             }),
         );
     });
+
+    it('does not throw on a poison provider missing tradedFiatCurrencies/tradedCoins (untrusted trade server)', async () => {
+        // untrusted/user-selectable trade server returns a provider that omits the (typed as
+        // non-optional) fields; without a guard `.map`/`.toLowerCase()`/spread throws and rejects
+        // the thunk, leaving the trading feature stuck loading for the whole session.
+        const poisonProvider = {
+            name: 'POISON',
+            companyName: 'POISON',
+            logo: 'logo',
+            isActive: true,
+            paymentMethods: [] as BuyCryptoPaymentMethod[],
+            supportedCountries: [],
+            supportedSubdivisions: {},
+        } as unknown as BuyProviderInfo;
+        const goodProvider: BuyProviderInfo = {
+            name: 'GOOD',
+            companyName: 'GOOD',
+            tradedCoins: ['bitcoin'] as CryptoId[],
+            // a non-string element must not crash the per-element .toLowerCase()
+            tradedFiatCurrencies: ['USD', 123 as unknown as string],
+            logo: 'logo',
+            isActive: true,
+            paymentMethods: [] as BuyCryptoPaymentMethod[],
+            supportedCountries: [],
+            supportedSubdivisions: {},
+        };
+
+        const buyInfoAPI = {
+            country: 'CZ',
+            suggestedFiatCurrency: 'CZK',
+            providers: [poisonProvider, goodProvider] as BuyProviderInfo[],
+            defaultAmountsOfFiatCurrencies: {} as FiatCurrenciesProps,
+        };
+
+        tradeApi.getBuyList = () => Promise.resolve(buyInfoAPI);
+
+        const buyInfoData = await store.dispatch(buyThunks.loadInfoThunk()).unwrap();
+
+        // poison provider is skipped, the valid provider's valid entries survive
+        expect(buyInfoData).toEqual(
+            expect.objectContaining({
+                supportedFiatCurrencies: ['usd'],
+                supportedCryptoCurrencies: ['bitcoin'],
+            }),
+        );
+    });
 });

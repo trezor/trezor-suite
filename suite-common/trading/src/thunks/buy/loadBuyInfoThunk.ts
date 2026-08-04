@@ -33,12 +33,21 @@ export const loadBuyInfoThunk = createThunk<BuyInfo, void, void>(
         const supportedFiatCurrencies: FiatCurrencyCode[] = [];
         const supportedCryptoCurrencies: CryptoId[] = [];
         buyInfo.providers.forEach(provider => {
-            supportedFiatCurrencies.push(
-                ...provider.tradedFiatCurrencies.map(
-                    currency => currency.toLowerCase() as FiatCurrencyCode,
-                ),
-            );
-            supportedCryptoCurrencies.push(...provider.tradedCoins);
+            // `tradedFiatCurrencies`/`tradedCoins` are non-optional in the invity-api types, but the
+            // response comes from an untrusted/user-selectable trade server (exchange.trezor.io, or a
+            // dev/staging/localhost env), so a single provider missing/mistyping either field would
+            // otherwise throw and reject the whole thunk — leaving `isLoading` stuck `true` and
+            // bricking the trading feature for the rest of the session (see loadInitialDataThunk).
+            if (Array.isArray(provider.tradedFiatCurrencies)) {
+                provider.tradedFiatCurrencies.forEach(currency => {
+                    if (typeof currency === 'string') {
+                        supportedFiatCurrencies.push(currency.toLowerCase() as FiatCurrencyCode);
+                    }
+                });
+            }
+            if (Array.isArray(provider.tradedCoins)) {
+                supportedCryptoCurrencies.push(...provider.tradedCoins);
+            }
         });
 
         return fulfillWithValue({
