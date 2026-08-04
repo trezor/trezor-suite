@@ -4,7 +4,7 @@ import { type WalletAccountTransaction } from '@suite-common/wallet-types';
 import {
     findTrackedWrappedNativeTransaction,
     getWrappedNativePendingTxStatus,
-} from './useWrappedNativePendingTx';
+} from './wrappedNativePendingTxUtils';
 
 const wrappedNativeAddress = getWrappedNativeAddress('eth')!;
 
