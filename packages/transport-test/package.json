@@ -30,7 +30,7 @@
         "jest-extended": "^4.0.2",
         "ts-node": "^10.9.2",
         "tsx": "^4.21.0",
-        "usb": "^2.17.0"
+        "usb": "^3.0.1"
     },
     "dependencies": {
         "@trezor/transport-common": "workspace:*"

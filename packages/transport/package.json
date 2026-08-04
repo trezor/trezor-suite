@@ -50,7 +50,7 @@
         "@trezor/transport-common": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
-        "usb": "^2.17.0"
+        "usb": "^3.0.1"
     },
     "peerDependencies": {
         "tslib": "^2.6.2"
