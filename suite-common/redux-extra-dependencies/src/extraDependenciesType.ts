@@ -1,18 +1,19 @@
 import {
     type Action,
-    type ActionCreatorWithPayload,
     type ActionCreatorWithPreparedPayload,
-    type ActionCreatorWithoutPayload,
     type AsyncThunk,
     type ThunkAction,
 } from '@reduxjs/toolkit';
 
 import type { AddressValidatorDep } from '@suite-common/address';
-import type { AnalyticsSharedEvents } from '@suite-common/analytics';
+import type { AnalyticsDep } from '@suite-common/analytics';
 import { type Bip329Dep } from '@suite-common/bip329-types';
 import { type EnsureDelegatedIdentityKeyDep } from '@suite-common/delegated-identity-key-types';
 import { type Getter } from '@suite-common/dependency-injection';
-import { type MetadataAddPayload } from '@suite-common/metadata-types';
+import {
+    type FetchAndSaveMetadataDep,
+    type MetadataAddPayload,
+} from '@suite-common/metadata-types';
 import type {
     FindNetworkSymbolForProtocolDep,
     GetNetworkConfigDep,
@@ -22,26 +23,27 @@ import { type PlatformEncryptionDep } from '@suite-common/platform-encryption';
 import { type MigrateSuiteSyncLabelsForRbfTransactionDep } from '@suite-common/suite-rbf-labels-migrations-types';
 import { type SuiteSyncDep } from '@suite-common/suite-sync-types';
 import {
-    type ConnectInitHooks,
+    type ConnectInitHooksDeps,
     type GetAllowPrereleaseDep,
+    type GetIsWindowVisibleDep,
+    type GetLanguageDep,
+    type OnModalCancelDep,
+    type OpenModalDep,
     type ReloadAppDep,
     type ReportSecurityCheckDep,
-    type UserContextPayload,
 } from '@suite-common/suite-types';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type Account,
-    type AccountKey,
+    type GetTradedAccountKeysDep,
     type SelectedAccountStatus,
 } from '@suite-common/wallet-types';
-import { type Analytics } from '@trezor/analytics-uploader';
 import {
     type BluetoothDeviceId,
     type ConnectSettings,
     type CreateLogger,
     type CreateLoggerDep,
     type Manifest,
-    type StaticSessionId,
     type ThpSettings,
 } from '@trezor/connect';
 import type { Transport } from '@trezor/transport-common';
@@ -100,26 +102,26 @@ export type CommonServices = SuiteSyncDep &
     Bip329Dep &
     EnsureDelegatedIdentityKeyDep &
     PlatformEncryptionDep &
-    GetAllowPrereleaseDep & {
-        analytics: Analytics<AnalyticsSharedEvents>;
+    AnalyticsDep &
+    ConnectInitHooksDeps &
+    GetAllowPrereleaseDep &
+    GetIsWindowVisibleDep &
+    GetLanguageDep &
+    GetTradedAccountKeysDep & {
         saveAs: (data: Blob, fileName: string) => void;
         connectInitSettings: ConnectInitSettings;
-        connectInitHooks: ConnectInitHooks;
         accountRefreshThrottle: KeyedThrottle<Account['key']>;
         // Getters, so a component cannot read them during render and miss later state changes.
         // See `toGetter`/`useGetter` in @suite-common/dependency-injection.
         getTokenDefinitionsEnabledNetworks: Getter<[], NetworkSymbol[]>;
         getDebugSettings: Getter<[], any>;
         getDesktopBinDir: Getter<[], string | undefined>;
-        getLanguage: Getter<[], string>;
-        getIsWindowVisible: Getter<[], boolean>;
         getSelectedAccount: Getter<[], SelectedAccountStatus>;
         getSelectedAccountStatus: Getter<[], SelectedAccountStatus['status']>;
         getTradingEnvironment: Getter<
             [],
             'production' | 'staging' | 'dev' | 'localhost' | undefined
         >;
-        getTradedAccountKeys: Getter<[], AccountKey[]>;
         getIsViewOnlyByDefaultEnabled: Getter<[], boolean>;
         getThpSettings: Getter<[], ThpSettings>;
     } & ReportSecurityCheckDep &
@@ -131,9 +133,8 @@ export type CommonServices = SuiteSyncDep &
 
 export type ExtraDependenciesStatic = {
     /** @deprecated Do not add any thunks here, this is antipattern. */
-    thunks: {
+    thunks: FetchAndSaveMetadataDep & {
         initMetadata: SuiteCompatibleThunk<boolean>;
-        fetchAndSaveMetadata: SuiteCompatibleThunk<StaticSessionId>;
         addAccountMetadata: SuiteCompatibleThunk<
             Exclude<MetadataAddPayload, { type: 'walletLabel' }>
         >;
@@ -147,12 +148,11 @@ export type ExtraDependenciesStatic = {
     // You should only use ActionCreatorWithPayload from redux-toolkit!
     // That means you will need to convert actual action creators in packages/suite to use createAction from redux-toolkit,
     // but that shouldn't be problem.
-    actions: {
-        setAccountAddMetadata: ActionCreatorWithPreparedPayload<[payload: Account], Account>;
-        lockDevice: ActionCreatorWithPreparedPayload<[payload: boolean], boolean>;
-        onModalCancel: ActionCreatorWithoutPayload;
-        openModal: ActionCreatorWithPayload<UserContextPayload>;
-    };
+    actions: OnModalCancelDep &
+        OpenModalDep & {
+            setAccountAddMetadata: ActionCreatorWithPreparedPayload<[payload: Account], Account>;
+            lockDevice: ActionCreatorWithPreparedPayload<[payload: boolean], boolean>;
+        };
     // Use action types + reducers as last resort if you can't use actions creators. For example for storageLoad it is used because
     // it would be really hard to move all types to @suite-common that are needed to type payload. This comes at cost of
     // having "any" type for action.payload in reducer. We can overcome this issue if we define reducers of storageLoad

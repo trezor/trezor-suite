@@ -25,7 +25,6 @@
         "@suite-common/suite-types": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",
         "@suite-common/wallet-types": "workspace:*",
-        "@trezor/analytics-uploader": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/transport-common": "workspace:*",
         "@trezor/utils": "workspace:*"
