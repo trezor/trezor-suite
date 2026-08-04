@@ -101,6 +101,17 @@ export const poolBech32ToHex = (poolId: string): string => {
     return Buffer.from(bytes).toString('hex');
 };
 
+// poolBech32ToHex throws (bech32.decode) on a malformed pool id, and selectBestCardanoPool runs
+// inside a render-time selector (selectPoolStatsApy) as well as during tx composition — a throw
+// would crash the render. This returns null instead so callers can fall back to the Everstake pool.
+const tryPoolBech32ToHex = (poolId: string): string | null => {
+    try {
+        return poolBech32ToHex(poolId);
+    } catch {
+        return null;
+    }
+};
+
 export const selectBestCardanoPool = (pools?: AdaPools['pools'], currentPoolId?: string | null) => {
     // An account already delegated to an Everstake pool must never be moved to another
     // pool, no matter which UI flow composes the delegation.
@@ -108,8 +119,11 @@ export const selectBestCardanoPool = (pools?: AdaPools['pools'], currentPoolId?:
         currentPoolId &&
         (EVERSTAKE_POOLS.includes(currentPoolId) || pools?.some(pool => pool.id === currentPoolId))
     ) {
+        const hex = tryPoolBech32ToHex(currentPoolId);
+        if (hex === null) return CARDANO_EVERSTAKE_STAKING_POOL;
+
         return {
-            hex: poolBech32ToHex(currentPoolId),
+            hex,
             bech32: currentPoolId,
         };
     }
@@ -122,8 +136,11 @@ export const selectBestCardanoPool = (pools?: AdaPools['pools'], currentPoolId?:
 
     if (!bestPool) return CARDANO_EVERSTAKE_STAKING_POOL;
 
+    const hex = tryPoolBech32ToHex(bestPool.id);
+    if (hex === null) return CARDANO_EVERSTAKE_STAKING_POOL;
+
     return {
-        hex: poolBech32ToHex(bestPool.id),
+        hex,
         bech32: bestPool.id,
     };
 };
