@@ -12,7 +12,7 @@ import {
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { Context } from '@suite-common/message-system';
-import { getNetwork } from '@suite-common/wallet-config';
+import { selectGetNetworkConfigDep } from '@suite-common/networks';
 import { getYieldVaultContractAddress, stablecoinYieldActions } from '@suite-common/wallet-core';
 import { getApyBreakdown } from '@suite-common/wallet-utils';
 import { selectNativeAnalyticsDep } from '@suite-native/analytics';
@@ -54,10 +54,12 @@ import { useYieldPendingTransactionTracking } from '../hooks/useYieldPendingTran
 import { useYieldSession } from '../hooks/useYieldSession';
 import { isYieldApprovalAllowanceUnlimited } from '../yieldApprovalUtils';
 
+
 type RouteProps = RouteProp<YieldStackParamList, YieldStackRoutes.YieldDeposit>;
 type NavigationProps = StackNavigationProps<YieldStackParamList, YieldStackRoutes.YieldDeposit>;
 
 export const YieldDepositScreen = () => {
+    const { getNetworkConfig } = useServices(selectGetNetworkConfigDep);
     const route = useRoute<RouteProps>();
     const navigation = useNavigation<NavigationProps>();
     const dispatch = useDispatch();
@@ -369,7 +371,7 @@ export const YieldDepositScreen = () => {
         return null;
     }
 
-    const accountLabel = account.accountLabel ?? getNetwork(account.symbol).name;
+    const accountLabel = account.accountLabel ?? getNetworkConfig(account.symbol).name;
     const shouldShowDepositFee = isValid && !!amountValue && !isApprovalInsufficient;
 
     return (

@@ -24,6 +24,7 @@ import {
 } from '@suite-common/redux-utils';
 import { createMigrateSuiteSyncLabelsForRbfTransactionCompositionRoot } from '@suite-common/suite-rbf-labels-migrations';
 import { selectAllLabelsForAccount, selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
+import { type NetworkConfigDeps } from '@suite-common/wallet-config';
 import { createAccountRefreshThrottle } from '@suite-common/wallet-core';
 import { analytics } from '@suite-native/analytics';
 import { forgetBluetoothDeviceThunk } from '@suite-native/bluetooth';
@@ -60,6 +61,15 @@ type NativeAppDeps = {
 } & EnsureEncryptionKeyDep &
     MMKVStorageDep;
 
+const networkModules = createNetworksCompositionRoot();
+const networkModuleRepository = createNetworkModuleRepository({ networkModules });
+const getNetworkConfig = createGetNetworkConfig({ networkModuleRepository });
+
+export const nativeNetworkConfigDeps: NetworkConfigDeps = {
+    networkModuleRepository,
+    getNetworkConfig,
+};
+
 export const createNativeCompositionRoot = (deps: NativeAppDeps): NativeServices => {
     const platformEncryption = createNativePlatformEncryption({
         ensureEncryptionKey: deps.ensureEncryptionKey,
@@ -89,9 +99,6 @@ export const createNativeCompositionRoot = (deps: NativeAppDeps): NativeServices
         updateAddressLabel: suiteSync.labeling.updateAddressLabel,
         updateOutputLabel: suiteSync.labeling.updateOutputLabel,
     });
-    const networkModules = createNetworksCompositionRoot();
-    const networkModuleRepository = createNetworkModuleRepository({ networkModules });
-    const getNetworkConfig = createGetNetworkConfig({ networkModuleRepository });
     const findNetworkSymbolForProtocol = createFindNetworkSymbolForProtocol({
         getNetworkConfig,
         networkModuleRepository,

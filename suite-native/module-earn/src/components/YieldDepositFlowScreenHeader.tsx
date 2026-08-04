@@ -1,6 +1,7 @@
 import { useSelector } from 'react-redux';
 
-import { getNetwork, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectGetNetworkConfigDep } from '@suite-common/networks';
 import { type Account, type TokenAddress } from '@suite-common/wallet-types';
 import { formatCoinBalance } from '@suite-common/wallet-utils';
 import { Box, DiscreetText, HStack, IconButton, Text, VStack } from '@suite-native/atoms';
@@ -23,11 +24,13 @@ export const YieldDepositFlowScreenHeader = ({
     tokenContract,
     vaultName,
 }: YieldDepositFlowScreenHeaderProps) => {
+    const { getNetworkConfig } = useServices(selectGetNetworkConfigDep);
     const locale = useSelector(selectSupportedLanguageLocale);
-    const accountLabel = account.accountLabel ?? getNetwork(account.symbol).name;
+    const network = getNetworkConfig(account.symbol);
+    const accountLabel = account.accountLabel ?? network.name;
     // Same format as the desktop yield page header: `formatCoinBalance` keeps the leading
     // significant digits and appends an ellipsis (…) once the fractional part gets too long.
-    const formattedBalance = `${formatCoinBalance(account.formattedBalance, locale)} ${getNetworkDisplaySymbol(account.symbol)}`;
+    const formattedBalance = `${formatCoinBalance(account.formattedBalance, locale)} ${network.displaySymbol}`;
 
     return (
         <ScreenHeader

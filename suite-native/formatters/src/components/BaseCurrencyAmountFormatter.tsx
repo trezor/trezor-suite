@@ -1,7 +1,8 @@
 import React from 'react';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { useFormatters } from '@suite-common/formatters';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol, selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { type BaseCurrencyAmount } from '@suite-common/wallet-types';
 import { isTestnet } from '@suite-common/wallet-utils';
 import { type TextProps } from '@suite-native/atoms';
@@ -31,9 +32,10 @@ export const BaseCurrencyAmountFormatter = React.memo(
         maximumFractionDigits,
         ...otherProps
     }: FiatAmountFormatterProps) => {
+        const networkConfigDeps = useServices(selectNetworkConfigDeps);
         const { BaseCurrencyAmountFormatter: formatter } = useFormatters();
 
-        if (!!symbol && isTestnet(symbol)) {
+        if (!!symbol && isTestnet(networkConfigDeps, symbol)) {
             return <EmptyAmountText variant={variant} />;
         }
         if (isLoading || (value === null && !isForcedDiscreetMode)) {

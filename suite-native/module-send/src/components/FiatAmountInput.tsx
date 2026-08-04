@@ -1,8 +1,9 @@
 import { useSelector } from 'react-redux';
 
+import { useServices } from '@suite-common/dependency-injection';
 import type { DeviceRootState } from '@suite-common/device';
+import { selectGetNetworkConfigDep } from '@suite-common/networks';
 import { type TokenDefinitionsRootState } from '@suite-common/token-definitions';
-import { getNetwork } from '@suite-common/wallet-config';
 import {
     type TransactionsRootState,
     type WalletSettingsRootState,
@@ -32,6 +33,7 @@ export const FiatAmountInput = ({
     isDisabled = false,
     accountKey,
 }: SendAmountInputProps) => {
+    const { getNetworkConfig } = useServices(selectGetNetworkConfigDep);
     const { setValue } = useFormContext<SendOutputsFormValues>();
     const baseCurrencyCode = useSelector(selectBaseCurrency);
     const isBaseCurrencyInSats = useSelector(selectIsBaseCurrencyInSats);
@@ -39,7 +41,7 @@ export const FiatAmountInput = ({
         selectIsAmountInSats(state, symbol),
     );
     const { fiatAmountTransformer } = useAmountInputTransformers(symbol);
-    const { decimals } = getNetwork(symbol);
+    const { decimals } = getNetworkConfig(symbol);
     const tokenDecimals = useSelector(
         (state: DeviceRootState & TokenDefinitionsRootState & TransactionsRootState) =>
             selectAccountTokenDecimals(state, accountKey, tokenContract),

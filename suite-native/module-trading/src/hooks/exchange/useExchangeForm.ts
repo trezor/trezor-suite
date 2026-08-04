@@ -3,6 +3,8 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import type { ExchangeTrade } from 'invity-api';
 
+import { useServices } from '@suite-common/dependency-injection';
+import { selectGetNetworkConfigDep } from '@suite-common/networks';
 import {
     type TradingExchangeAmountLimitProps,
     exchangeThunks,
@@ -10,7 +12,6 @@ import {
     selectTradingExchangeProviders,
     selectTradingExchangeQuotesRequest,
 } from '@suite-common/trading';
-import { getNetwork } from '@suite-common/wallet-config';
 import { type WalletSettingsRootState, selectIsAmountInSats } from '@suite-common/wallet-core';
 import { convertAmountUnitsToSubunits } from '@suite-common/wallet-utils';
 import { useForm, useWatch } from '@suite-native/forms';
@@ -87,6 +88,7 @@ const useExchangeQuotesChangeEffect = ({ getValues, setValue }: ExchangeFormType
 };
 
 const useExchangeQuoteChangeEffect = ({ control, setValue }: ExchangeFormType) => {
+    const { getNetworkConfig } = useServices(selectGetNetworkConfigDep);
     const [selectedQuote, receiveAsset] = useWatch({
         control,
         name: ['quote', 'receiveAsset'],
@@ -107,7 +109,7 @@ const useExchangeQuoteChangeEffect = ({ control, setValue }: ExchangeFormType) =
 
         const value =
             isAmountInSats && amount && symbol
-                ? convertAmountUnitsToSubunits(amount, getNetwork(symbol).decimals)
+                ? convertAmountUnitsToSubunits(amount, getNetworkConfig(symbol).decimals)
                 : amount;
         setValue('receiveCryptoAmount', value, { shouldValidate: true });
     }, [selectedQuote, isAmountInSats, symbol, setValue]);

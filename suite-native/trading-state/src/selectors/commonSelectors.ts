@@ -25,11 +25,7 @@ import {
     selectTradingSupportedSymbols,
     toTokenCryptoId,
 } from '@suite-common/trading';
-import {
-    getNetwork,
-    getNetworkDisplaySymbolName,
-    getNetworkType,
-} from '@suite-common/wallet-config';
+import { getNetworkDisplaySymbolName, getNetworkType } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     type FiatRatesRootState,
@@ -272,7 +268,7 @@ export const selectAccountsWithTokensToSellSectionListByTradingType =
             // TODO: Remove this filter when Cardano send is implemented (#15068)
             // Currently filtering out Cardano accounts and tokens from trading until Cardano send is supported
             const filteredAccounts = accounts.filter(account => {
-                if (!getNetwork(account.symbol).tradeCryptoId) {
+                if (!getNetworkConfig(account.symbol).tradeCryptoId) {
                     return false;
                 }
                 const networkType = getNetworkType(account.symbol);
@@ -345,7 +341,7 @@ export const selectAccountsWithTokensToSellSectionListByTradingType =
                         });
 
                     const cryptoId = toCaseAwareCryptoId(
-                        getNetwork(account.symbol).tradeCryptoId as CryptoId,
+                        getNetworkConfig(account.symbol).tradeCryptoId as CryptoId,
                     );
 
                     const accountAsset = {
@@ -470,7 +466,7 @@ export const selectAccountLabelWithNetworkFallback = (
     if (cryptoId) {
         const networkSymbol = cryptoIdToNetworkSymbol(cryptoId);
         if (networkSymbol) {
-            return getNetwork(networkSymbol).name;
+            return getNetworkConfig(networkSymbol).name;
         }
     }
 

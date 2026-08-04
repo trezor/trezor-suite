@@ -3,12 +3,13 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import type { SellFiatTrade } from 'invity-api';
 
+import { useServices } from '@suite-common/dependency-injection';
+import { selectGetNetworkConfigDep } from '@suite-common/networks';
 import {
     type TradingAmountLimitProps,
     selectTradingSellQuotesRequest,
     selectValidTradingSellQuotes,
 } from '@suite-common/trading';
-import { getNetwork } from '@suite-common/wallet-config';
 import { type WalletSettingsRootState, selectIsAmountInSats } from '@suite-common/wallet-core';
 import { convertAmountUnitsToSubunits } from '@suite-common/wallet-utils';
 import { useForm, useWatch } from '@suite-native/forms';
@@ -73,6 +74,7 @@ const useSellQuotesChangeEffect = ({ getValues, setValue }: SellFormType) => {
 };
 
 const useSellQuoteChangeEffect = ({ control, getValues, setValue }: SellFormType) => {
+    const { getNetworkConfig } = useServices(selectGetNetworkConfigDep);
     const [sendAsset, quote] = useWatch({ control, name: ['sendAsset', 'quote'] });
     const symbol = getSymbolFromTradeableAsset(sendAsset);
 
@@ -102,7 +104,7 @@ const useSellQuoteChangeEffect = ({ control, getValues, setValue }: SellFormType
                 isAmountInSats && truncatedCryptoAmount && symbol
                     ? convertAmountUnitsToSubunits(
                           truncatedCryptoAmount,
-                          getNetwork(symbol).decimals,
+                          getNetworkConfig(symbol).decimals,
                       )
                     : truncatedCryptoAmount;
             setValue('cryptoStringAmount', value, { shouldValidate: true });

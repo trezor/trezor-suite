@@ -7,7 +7,6 @@ import {
     verifyEthereumStakingCalldata,
     verifyEthereumStakingLiveState,
 } from '@suite-common/staking';
-import { getNetwork } from '@suite-common/wallet-config';
 import { WALLET_SDK_SOURCE_MOBILE } from '@suite-common/wallet-constants';
 import {
     ethereumGetCurrentNonceThunk,
@@ -106,7 +105,7 @@ const prepareEthereumStakingContext = (
         return failed('Ethereum account not found.');
     }
 
-    const { chainId } = getNetwork(account.symbol);
+    const { chainId } = getNetworkConfig(account.symbol);
     if (!chainId) {
         return failed(
             'Chain ID not found for network.',

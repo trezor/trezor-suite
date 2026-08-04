@@ -1,7 +1,8 @@
 import { useSelector } from 'react-redux';
 
+import { useServices } from '@suite-common/dependency-injection';
 import type { DeviceRootState } from '@suite-common/device';
-import { getNetwork } from '@suite-common/wallet-config';
+import { selectGetNetworkConfigDep } from '@suite-common/networks';
 import {
     type AccountsRootState,
     selectDeviceAccountsByNetworkSymbol,
@@ -28,6 +29,7 @@ export const AddCoinDiscoveryFinishedScreen = ({
     AddCoinAccountStackParamList,
     AddCoinAccountStackRoutes.AddCoinDiscoveryFinished
 >) => {
+    const { getNetworkConfig } = useServices(selectGetNetworkConfigDep);
     const { networkSymbol, flowType } = route.params;
 
     const { applyStyle } = useNativeStyles();
@@ -71,7 +73,7 @@ export const AddCoinDiscoveryFinishedScreen = ({
                         id={titleKey}
                         values={{
                             count: accounts.length.toString(),
-                            coin: getNetwork(networkSymbol).name,
+                            coin: getNetworkConfig(networkSymbol).name,
                         }}
                     />
                 </Text>

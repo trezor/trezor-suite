@@ -2,7 +2,7 @@ import { D, pipe } from '@mobily/ts-belt';
 import { isFulfilled, isRejected } from '@reduxjs/toolkit';
 
 import { createThunk } from '@suite-common/redux-utils';
-import { getNetwork } from '@suite-common/wallet-config';
+import { toNetwork } from '@suite-common/wallet-config';
 import {
     composeSendFormTransactionFeeLevelsThunk,
     selectAccountByKey,
@@ -49,13 +49,17 @@ export const calculateFeeLevelsMaxAmountThunk = createThunk<
     `${TRANSACTION_MANAGEMENT_PREFIX}/calculateMaxAmountThunk`,
     async (
         { formState, accountKey },
-        { dispatch, getState, rejectWithValue, fulfillWithValue },
+        { dispatch, getState, rejectWithValue, fulfillWithValue, extra },
     ) => {
         const account = selectAccountByKey(getState(), accountKey);
         if (!account) throw new Error('Account not found.');
 
-        const networkFeeInfo = selectConvertedNetworkFeeInfo(getState(), account.symbol);
-        const network = getNetwork(account.symbol);
+        const networkFeeInfo = selectConvertedNetworkFeeInfo(
+            getState(),
+            account.symbol,
+            extra.services,
+        );
+        const network = toNetwork(account.symbol, extra.services.getNetworkConfig(account.symbol));
 
         if (!networkFeeInfo) throw new Error('Network fees not found.');
 
@@ -111,10 +115,10 @@ export const calculateCustomFeeLevelThunk = createThunk<
             customMaxFeePerGas,
             customMaxPriorityFeePerGas,
         },
-        { dispatch, getState, fulfillWithValue, rejectWithValue },
+        { dispatch, getState, fulfillWithValue, rejectWithValue, extra },
     ) => {
         const account = selectAccountByKey(getState(), accountKey);
-        const feeInfo = selectConvertedNetworkFeeInfo(getState(), account?.symbol);
+        const feeInfo = selectConvertedNetworkFeeInfo(getState(), account?.symbol, extra.services);
         if (!account) {
             return rejectWithValue('Account not found.');
         }
@@ -123,7 +127,7 @@ export const calculateCustomFeeLevelThunk = createThunk<
             return rejectWithValue('Fee info not found.');
         }
 
-        const network = getNetwork(account.symbol);
+        const network = toNetwork(account.symbol, extra.services.getNetworkConfig(account.symbol));
 
         // make a copy of the form state to avoid mutating the original state
         const formStateCopy = { ...formState };

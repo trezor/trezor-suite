@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { getNetwork } from '@suite-common/wallet-config';
+import { selectGetNetworkConfigDep } from '@suite-common/networks';
 import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
@@ -31,6 +31,7 @@ import { EarnConsentsDelegatingCard } from '../components/EarnConsentsDelegating
 import { EarnConsentsEntryPeriodCard } from '../components/EarnConsentsEntryPeriodCard';
 import { useNavigateBackAnalytics } from '../hooks/useNavigateBackAnalytics';
 
+
 const STAKING_LEARN_MORE_URLS: Partial<Record<string, Url>> = {
     ethereum: HELP_CENTER_ETH_STAKING,
     solana: HELP_CENTER_SOL_STAKING,
@@ -42,6 +43,7 @@ const titleStyle = prepareNativeStyle(utils => ({
 }));
 
 export const EarnConsentsScreen = () => {
+    const { getNetworkConfig } = useServices(selectGetNetworkConfigDep);
     const { applyStyle } = useNativeStyles();
     const [isSecondCardExpanded, setIsSecondCardExpanded] = useState(false);
     const route = useRoute<RouteProp<RootStackParamList, RootStackRoutes.EarnConsents>>();
@@ -89,7 +91,7 @@ export const EarnConsentsScreen = () => {
         selectEntryPeriodInDaysBySymbol(state, networkSymbol),
     );
 
-    const learnMoreUrl = STAKING_LEARN_MORE_URLS[getNetwork(account.symbol).networkType];
+    const learnMoreUrl = STAKING_LEARN_MORE_URLS[getNetworkConfig(account.symbol).networkType];
 
     return (
         <Screen header={<ScreenHeader closeActionType="back" />}>

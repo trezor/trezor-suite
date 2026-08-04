@@ -1,7 +1,9 @@
 import { useEffect, useMemo, useState } from 'react';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
-import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectGetNetworkConfigDep } from '@suite-common/networks';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { useTranslate } from '@suite-native/intl';
 import { type FilterItem, FilterTabs } from '@suite-native/trading-atoms';
 
@@ -19,6 +21,7 @@ const MyAssetFilterTabsContent = ({
     onSelectedNetworkFilter,
     availableNetworks,
 }: Omit<MyAssetFilterTabsProps, 'isVisible'>) => {
+    const { getNetworkConfig } = useServices(selectGetNetworkConfigDep);
     const [selectedValue, setSelectedValue] = useState<NetworkSymbol | undefined>(undefined);
 
     const { translate } = useTranslate();
@@ -37,7 +40,7 @@ const MyAssetFilterTabsContent = ({
                 value: undefined,
             },
             ...availableNetworks.map(symbol => ({
-                label: getNetwork(symbol).name,
+                label: getNetworkConfig(symbol).name,
                 value: symbol,
             })),
         ],

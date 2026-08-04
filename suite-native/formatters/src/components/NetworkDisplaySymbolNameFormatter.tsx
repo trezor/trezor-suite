@@ -1,4 +1,9 @@
-import { type NetworkSymbol, getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
+import { useServices } from '@suite-common/dependency-injection';
+import {
+    type NetworkSymbol,
+    getNetworkDisplaySymbolName,
+    selectNetworkConfigDeps,
+} from '@suite-common/wallet-config';
 import { type TextProps } from '@suite-native/atoms';
 
 import { type FormatterProps } from '../types';
@@ -7,4 +12,8 @@ type NetworkDisplaySymbolNameFormatterProps = FormatterProps<NetworkSymbol> & Te
 
 export const NetworkDisplaySymbolNameFormatter = ({
     value,
-}: NetworkDisplaySymbolNameFormatterProps) => getNetworkDisplaySymbolName(value);
+}: NetworkDisplaySymbolNameFormatterProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
+    return getNetworkDisplaySymbolName(networkConfigDeps, value);
+};

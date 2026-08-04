@@ -1,7 +1,12 @@
 import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
-import { type NetworkType, getNetworkType } from '@suite-common/wallet-config';
+import { useServices } from '@suite-common/dependency-injection';
+import {
+    type NetworkType,
+    getNetworkType,
+    selectNetworkConfigDeps,
+} from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     type FeesRootState,
@@ -67,6 +72,7 @@ export const useFeesForm = ({
     defaultFeeLevel,
     defaultFeePerUnit,
 }: UseFeesFormProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
@@ -76,14 +82,15 @@ export const useFeesForm = ({
     const feeLevels = useSelector(selectFeeLevels);
 
     const networkFeeInfo = useSelector((state: FeesRootState) =>
-        selectConvertedNetworkFeeInfo(state, account?.symbol),
+        selectConvertedNetworkFeeInfo(state, account?.symbol, networkConfigDeps),
     );
 
     const isEip1559Fee = useSelector((state: FeesRootState) =>
-        selectIsEip1559Fee(state, account?.symbol),
+        selectIsEip1559Fee(state, account?.symbol, networkConfigDeps),
     );
 
     const trimmedFeePerUnit = getFeeValue({
+        ...networkConfigDeps,
         feeRate: defaultFeePerUnit,
         symbol: account?.symbol,
     });
@@ -97,7 +104,9 @@ export const useFeesForm = ({
         ? feeLevels.normal
         : undefined;
 
-    const networkType = account?.symbol ? getNetworkType(account.symbol) : undefined;
+    const networkType = account?.symbol
+        ? getNetworkType(networkConfigDeps, account.symbol)
+        : undefined;
 
     const form = useForm<FeesFormValues>({
         validation: feesFormValidationSchema,
@@ -109,6 +118,7 @@ export const useFeesForm = ({
             customMaxPriorityFeePerGas: normalFee?.maxPriorityFeePerGas,
         },
         context: {
+            ...networkConfigDeps,
             networkFeeInfo,
             symbol: account?.symbol,
             minimalFeeLimit,

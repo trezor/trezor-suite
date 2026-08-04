@@ -1,14 +1,12 @@
-import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { mockNetworkConfigDeps } from '@suite-common/wallet-config/mocks';
 
 import { type FeesFormContext, feesFormValidationSchema } from './feesFormSchema';
 
-const btcSymbol = asNetworkSymbol('btc');
-const ethSymbol = asNetworkSymbol('eth');
-const adaSymbol = asNetworkSymbol('ada');
-
 describe('feesFormValidationSchema', () => {
     const createContext = (overrides: Partial<FeesFormContext> = {}): FeesFormContext => ({
-        symbol: ethSymbol,
+        ...mockNetworkConfigDeps,
+        symbol: 'eth' as NetworkSymbol,
         isEip1559Fee: false,
         networkFeeInfo: {
             minFee: 100,
@@ -42,7 +40,7 @@ describe('feesFormValidationSchema', () => {
                 customFeePerUnit: '100.50',
                 customFeeLimit: '1000',
             };
-            const context = createContext({ symbol: btcSymbol });
+            const context = createContext({ symbol: 'btc' });
 
             await expect(feesFormValidationSchema.validate(data, { context })).resolves.toEqual(
                 data,
@@ -87,7 +85,7 @@ describe('feesFormValidationSchema', () => {
                 customFeePerUnit: '100.50', // Valid for Bitcoin (2 decimals)
                 customFeeLimit: '1000',
             };
-            const context = createContext({ symbol: btcSymbol, minimalFeeLimit: '21000' });
+            const context = createContext({ symbol: 'btc', minimalFeeLimit: '21000' });
 
             await expect(feesFormValidationSchema.validate(data, { context })).resolves.toEqual(
                 data,
@@ -98,7 +96,7 @@ describe('feesFormValidationSchema', () => {
     describe('decimals validation', () => {
         it('should accept correct decimals for bitcoin', async () => {
             const data = { feeLevel: 'custom', customFeePerUnit: '100.50' };
-            const context = createContext({ symbol: btcSymbol });
+            const context = createContext({ symbol: 'btc' });
 
             await expect(feesFormValidationSchema.validate(data, { context })).resolves.toEqual(
                 data,
@@ -107,10 +105,7 @@ describe('feesFormValidationSchema', () => {
 
         it('should reject too many decimals for bitcoin', async () => {
             const data = { feeLevel: 'custom', customFeePerUnit: '100.123' };
-            const context = createContext({
-                symbol: btcSymbol,
-                translate: () => 'Too many decimals.',
-            });
+            const context = createContext({ symbol: 'btc', translate: () => 'Too many decimals.' });
 
             await expect(feesFormValidationSchema.validate(data, { context })).rejects.toThrow(
                 'Too many decimals.',
@@ -119,7 +114,7 @@ describe('feesFormValidationSchema', () => {
 
         it('should pass for non-bitcoin/ethereum networks', async () => {
             const data = { feeLevel: 'custom', customFeePerUnit: '100.123456789012345' };
-            const context = createContext({ symbol: adaSymbol });
+            const context = createContext({ symbol: 'ada' });
 
             await expect(feesFormValidationSchema.validate(data, { context })).resolves.toEqual(
                 data,

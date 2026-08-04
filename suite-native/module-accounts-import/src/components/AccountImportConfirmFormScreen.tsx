@@ -6,11 +6,12 @@ import { FlashList } from '@shopify/flash-list';
 
 import { useServices } from '@suite-common/dependency-injection';
 import { PORTFOLIO_TRACKER_DEVICE_STATE } from '@suite-common/device';
+import { selectGetNetworkConfigDep } from '@suite-common/networks';
 import {
     type TokenDefinitionsRootState,
     selectFilterKnownTokens,
 } from '@suite-common/token-definitions';
-import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     selectAccountsByNetworkAndDeviceState,
@@ -36,6 +37,7 @@ import { AccountImportOverview } from './AccountImportOverview';
 import { AccountImportSummaryScreen } from './AccountImportSummaryScreen';
 import { TokenInfoCard } from './TokenInfoCard';
 
+
 type AccountImportConfirmFormScreenProps = {
     symbol: NetworkSymbol;
     accountInfo: AccountInfo;
@@ -51,6 +53,7 @@ export const AccountImportConfirmFormScreen = ({
     symbol,
     accountInfo,
 }: AccountImportConfirmFormScreenProps) => {
+    const { getNetworkConfig } = useServices(selectGetNetworkConfigDep);
     const dispatch = useDispatch();
     const { analytics } = useServices(selectNativeAnalyticsDep);
     const navigation = useNavigation<NavigationProp>();
@@ -66,7 +69,7 @@ export const AccountImportConfirmFormScreen = ({
     );
 
     const nonEmptyTokens = knownTokens.filter(info => parseFloat(info.balance ?? '0') > 0);
-    const defaultAccountLabel = `${getNetwork(symbol).name} #${deviceNetworkAccounts.length + 1}`;
+    const defaultAccountLabel = `${getNetworkConfig(symbol).name} #${deviceNetworkAccounts.length + 1}`;
 
     const form = useAccountLabelForm(defaultAccountLabel);
     const {

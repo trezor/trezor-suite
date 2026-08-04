@@ -2,9 +2,10 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { asEvmAddress } from '@suite-common/calldata';
+import { useServices } from '@suite-common/dependency-injection';
 import { buildStablecoinYieldTransactionReview } from '@suite-common/earn-stablecoin/src/signing';
+import { selectGetNetworkConfigDep } from '@suite-common/networks';
 import { createThunk } from '@suite-common/redux-utils';
-import { getNetwork } from '@suite-common/wallet-config';
 import {
     type FeesRootState,
     type FormDraftRootState,
@@ -222,6 +223,7 @@ const composeYieldWithdrawTransaction = async ({
     flowData,
     flowType,
 }: ComposeYieldWithdrawTransactionParams): Promise<Result<string, YieldFeeEstimationError>> => {
+    const { getNetworkConfig } = useServices(selectGetNetworkConfigDep);
     const { account, receiptToken, vault } = flowData;
 
     if (account.networkType !== 'ethereum') {
@@ -229,7 +231,7 @@ const composeYieldWithdrawTransaction = async ({
     }
 
     const vaultAddress = receiptToken.contractAddress ?? vault.outputToken?.address;
-    const network = getNetwork(account.symbol);
+    const network = getNetworkConfig(account.symbol);
 
     if (!vaultAddress || !network.chainId || vault.chainId !== network.chainId) {
         throw new Error('Yield withdraw cannot be composed for this vault.');

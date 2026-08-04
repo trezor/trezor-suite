@@ -4,7 +4,6 @@ import { type AccountWithSuiteSyncLabel } from '@suite-common/suite-sync';
 import {
     type AccountType,
     type NetworkSymbol,
-    getNetwork,
     networkSymbolCollection,
     networks,
 } from '@suite-common/wallet-config';
@@ -33,7 +32,7 @@ export const isFilterValueMatchingAccount = (
 
     if (isMatchingLabel) return true;
 
-    const accountNetwork = getNetwork(account.symbol);
+    const accountNetwork = getNetworkConfig(account.symbol);
     const isMatchingNetworkName = accountNetwork.name.toLowerCase().includes(lowerCaseFilterValue);
 
     if (isMatchingNetworkName) return true;

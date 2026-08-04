@@ -8,8 +8,9 @@ import {
     groupPermissionsByCoin,
     permissionIcons,
 } from '@suite-common/connect-popup';
+import { useServices } from '@suite-common/dependency-injection';
 import { isNetworkIconSymbol } from '@suite-common/icons';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol, selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { AccordionContent, AnimatedBox, Box, HStack, Text, VStack } from '@suite-native/atoms';
 import { Icon, NetworkIcon } from '@suite-native/icons';
 import { Translation, type TxKeyPath } from '@suite-native/intl';
@@ -88,6 +89,7 @@ type PermissionGroupProps = {
 };
 
 const PermissionGroup = ({ coin, permissions, defaultIsOpen }: PermissionGroupProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const [isOpen, setIsOpen] = useState(defaultIsOpen);
     const isOpenedShared = useSharedValue(defaultIsOpen);
 
@@ -122,7 +124,7 @@ const PermissionGroup = ({ coin, permissions, defaultIsOpen }: PermissionGroupPr
                             {coin ? (
                                 <Translation
                                     id="moduleConnectPopup.permissions.coinHeading"
-                                    values={{ coin: getCoinLabel(coin) }}
+                                    values={{ coin: getCoinLabel(networkConfigDeps, coin) }}
                                 />
                             ) : (
                                 <Translation id="moduleConnectPopup.permissions.deviceHeading" />

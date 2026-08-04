@@ -1,13 +1,15 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
+import { useServices } from '@suite-common/dependency-injection';
 import {
     buildClaimCalldata,
     buildUnsignedClaimTransaction,
 } from '@suite-common/earn-stablecoin/src/signing';
 import type { UnsignedClaimTransaction } from '@suite-common/earn-stablecoin/src/signing';
+import { selectGetNetworkConfigDep } from '@suite-common/networks';
 import { type EvmHexString } from '@suite-common/schemas/src/evm';
-import { getEarnYieldClaimContractAddress, getNetwork } from '@suite-common/wallet-config';
+import { getEarnYieldClaimContractAddress } from '@suite-common/wallet-config';
 import {
     type FeesRootState,
     type FormDraftRootState,
@@ -84,6 +86,7 @@ const getClaimFormDraft = ({
 });
 
 export const useYieldClaimFees = ({ accountRewards, isEnabled }: UseYieldClaimFeesParams) => {
+    const { getNetworkConfig } = useServices(selectGetNetworkConfigDep);
     const dispatch = useDispatch();
     const debounce = useDebounce();
     const requestIdRef = useRef(0);
@@ -133,7 +136,7 @@ export const useYieldClaimFees = ({ accountRewards, isEnabled }: UseYieldClaimFe
             return null;
         }
 
-        const network = getNetwork(accountRewards.account.symbol);
+        const network = getNetworkConfig(accountRewards.account.symbol);
         const contractAddress = getEarnYieldClaimContractAddress(accountRewards.account.symbol);
 
         if (

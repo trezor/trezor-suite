@@ -3,8 +3,9 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
+import { useServices } from '@suite-common/dependency-injection';
 import type { DeviceRootState } from '@suite-common/device';
-import { getNetwork } from '@suite-common/wallet-config';
+import { selectGetNetworkConfigDep } from '@suite-common/networks';
 import {
     type AccountsRootState,
     changeCoinVisibility,
@@ -31,6 +32,7 @@ import { isPassphraseDiscoveryFailure } from '@suite-native/passphrase';
 export const AddCoinDiscoveryRunningScreen = ({
     route,
 }: StackProps<AddCoinAccountStackParamList, AddCoinAccountStackRoutes.AddCoinDiscoveryRunning>) => {
+    const { getNetworkConfig } = useServices(selectGetNetworkConfigDep);
     const { networkSymbol, flowType } = route.params;
     const dispatch = useDispatch();
     const navigation = useNavigation<AddCoinAccountNavigationProps>();
@@ -134,7 +136,7 @@ export const AddCoinDiscoveryRunningScreen = ({
                     <Text variant="headline-sm" textAlign="center">
                         <Translation
                             id="moduleAddAccounts.coinDiscoveryRunningScreen.title"
-                            values={{ coin: getNetwork(networkSymbol).name }}
+                            values={{ coin: getNetworkConfig(networkSymbol).name }}
                         />
                     </Text>
                     <Text variant="body-md" textAlign="center" color="contentSecondary">

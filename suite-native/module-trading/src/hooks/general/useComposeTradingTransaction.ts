@@ -1,12 +1,14 @@
 import { useCallback } from 'react';
 import { useDispatch, useStore } from 'react-redux';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { type MessageSystemRootState } from '@suite-common/message-system';
+import { selectGetNetworkConfigDep } from '@suite-common/networks';
 import {
     type TradingRootStateWithDeviceAndAccounts,
     selectTradingAccountKeyByTradeType,
 } from '@suite-common/trading';
-import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type FeesRootState,
     type FormDraftRootState,
@@ -35,6 +37,7 @@ type UseComposeTradingTransactionProps = {
 };
 
 export const useComposeTradingTransaction = ({ tradeType }: UseComposeTradingTransactionProps) => {
+    const { getNetworkConfig } = useServices(selectGetNetworkConfigDep);
     const dispatch = useDispatch();
     const store = useStore<TradingTransactionRootState>();
 
@@ -77,7 +80,7 @@ export const useComposeTradingTransaction = ({ tradeType }: UseComposeTradingTra
                 composeTradingTransactionThunk({
                     tradeType,
                     account: sendAccount,
-                    network: getNetwork(sendAccount.symbol),
+                    network: getNetworkConfig(sendAccount.symbol),
                     feeInfo: networkFeeInfo,
                     selectedFeeLevel: draft?.selectedFee as FeeLevelLabel,
                     feePerUnit: draft?.feePerUnit,

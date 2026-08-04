@@ -6,7 +6,7 @@ import { type RouteProp, useIsFocused, useNavigation, useRoute } from '@react-na
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { Context } from '@suite-common/message-system';
-import { getNetwork } from '@suite-common/wallet-config';
+import { selectGetNetworkConfigDep } from '@suite-common/networks';
 import {
     getYieldApprovalAction,
     getYieldVaultContractAddress,
@@ -51,6 +51,7 @@ import { useYieldSession } from '../hooks/useYieldSession';
 import { getYieldApprovalAnalyticsType } from '../utils/yieldAnalyticsUtils';
 import { isYieldApprovalAllowanceUnlimited } from '../yieldApprovalUtils';
 
+
 type RouteProps = RouteProp<YieldStackParamList, YieldStackRoutes.YieldDepositApproval>;
 type NavigationProps = StackNavigationProps<
     YieldStackParamList,
@@ -58,6 +59,7 @@ type NavigationProps = StackNavigationProps<
 >;
 
 export const YieldDepositApprovalScreen = () => {
+    const { getNetworkConfig } = useServices(selectGetNetworkConfigDep);
     const route = useRoute<RouteProps>();
     const navigation = useNavigation<NavigationProps>();
     const dispatch = useDispatch();
@@ -297,7 +299,7 @@ export const YieldDepositApprovalScreen = () => {
         return null;
     }
 
-    const accountLabel = account.accountLabel ?? getNetwork(account.symbol).name;
+    const accountLabel = account.accountLabel ?? getNetworkConfig(account.symbol).name;
     const pendingModalAmount = approvalPendingTransaction?.isAmountUnlimited ? (
         <Translation id="earn.yieldDepositFlowScreen.approvalLimitSheet.unlimited.title" />
     ) : (

@@ -1,9 +1,11 @@
 import { useMemo } from 'react';
 
+import { useServices } from '@suite-common/dependency-injection';
 import {
     type StablecoinYieldTxSimulationParams,
     composeStablecoinYieldTxSimulationAction,
 } from '@suite-common/earn-stablecoin/src/tx-simulation';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import {
     BottomSheetModal,
@@ -43,9 +45,11 @@ export const YieldTxSimulationBottomSheet = ({
     ref,
     unsignedTx,
 }: YieldTxSimulationBottomSheetProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const parsedData = useMemo(
         () =>
             composeStablecoinYieldTxSimulationAction(
+                networkConfigDeps,
                 {
                     flow,
                     account,
@@ -53,7 +57,7 @@ export const YieldTxSimulationBottomSheet = ({
                 },
                 STABLECOIN_YIELD_NATIVE_SOURCE_ORIGIN,
             ),
-        [account, flow, unsignedTx],
+        [account, flow, networkConfigDeps, unsignedTx],
     );
 
     return (

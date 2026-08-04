@@ -4,8 +4,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useIsFocused } from '@react-navigation/native';
 import { isFulfilled } from '@reduxjs/toolkit';
 
+import { useServices } from '@suite-common/dependency-injection';
+import { selectGetNetworkConfigDep } from '@suite-common/networks';
 import { createThunk } from '@suite-common/redux-utils';
-import { getNetwork } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     type FeesRootState,
@@ -82,6 +83,7 @@ export const useComposeEarnFees = ({
     formState,
     formDraftPrefix,
 }: UseComposeEarnFeesParams) => {
+    const { getNetworkConfig } = useServices(selectGetNetworkConfigDep);
     const dispatch = useDispatch();
     const debounce = useDebounce();
     const isFocused = useIsFocused();
@@ -162,7 +164,7 @@ export const useComposeEarnFees = ({
                                   composeContext: {
                                       account,
                                       feeInfo,
-                                      network: getNetwork(account.symbol),
+                                      network: getNetworkConfig(account.symbol),
                                   },
                               }),
                           );

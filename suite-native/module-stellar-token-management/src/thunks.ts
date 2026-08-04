@@ -1,7 +1,6 @@
 import { isFulfilled } from '@reduxjs/toolkit';
 
 import { createThunk } from '@suite-common/redux-utils';
-import { getNetwork } from '@suite-common/wallet-config';
 import {
     type FormDraftRootState,
     composeSendFormTransactionFeeLevelsThunk,
@@ -112,7 +111,7 @@ export const composeStellarTrustlineFeesThunk = createThunk(
     `${STELLAR_TOKEN_MODULE_PREFIX}/composeTrustlineFees`,
     async (
         { accountKey, tokenContract }: ComposeStellarTrustlineFeesParams,
-        { dispatch, getState, rejectWithValue, fulfillWithValue },
+        { dispatch, getState, rejectWithValue, fulfillWithValue, extra },
     ) => {
         const account = selectAccountByKey(getState(), accountKey);
         if (!account) {
@@ -124,7 +123,7 @@ export const composeStellarTrustlineFeesThunk = createThunk(
             return rejectWithValue('Fee info not available');
         }
 
-        const network = getNetwork(account.symbol);
+        const network = extra.services.getNetworkConfig(account.symbol);
         const normalFeeLevel = feeInfo.levels.find(level => level.label === 'normal');
         const normalFeePerUnit = normalFeeLevel?.feePerUnit ?? STELLAR_DEFAULT_FEE_STROOPS;
 

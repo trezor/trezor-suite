@@ -18,7 +18,7 @@ import { suiteSyncQuotaManagerReducer } from '@suite-common/suite-sync-quota-man
 import { prepareThpReducer } from '@suite-common/thp';
 import { createNotificationsReducer } from '@suite-common/toast-notifications';
 import { prepareTokenDefinitionsReducer } from '@suite-common/token-definitions';
-import { networkSymbolCollection } from '@suite-common/wallet-config';
+import { getNetworks } from '@suite-common/wallet-config';
 import {
     accountsRefreshTimeReducer,
     feesReducer,
@@ -81,7 +81,7 @@ import { tradingInitialState, tradingSlice } from '@suite-native/trading-state';
 import { prepareSendFormReducer } from '@suite-native/transaction-management';
 
 import { appReducer } from './appSlice';
-import { extraDependencies } from './extraDependencies';
+import { extraDependencies, nativeNetworkConfigDeps } from './extraDependencies';
 import { receivePersistTransform } from './receivePersistTransform';
 
 const transactionsReducer = prepareTransactionsReducer(extraDependencies);
@@ -109,6 +109,7 @@ const thpReducer = prepareThpReducer(extraDependencies);
 type PrepareRootReducersDeps = MMKVStorageDep;
 
 export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
+    const networkSymbols = getNetworks(nativeNetworkConfigDeps).map(network => network.symbol);
     const appSettingsPersistedReducer = preparePersistReducer({
         reducer: appSettingsReducer,
         persistedKeys: appSettingsPersistWhitelist,
@@ -123,7 +124,7 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
 
     const blockchainPersistedReducer = preparePersistReducer({
         reducer: blockchainReducer,
-        persistedKeys: networkSymbolCollection,
+        persistedKeys: networkSymbols,
         key: 'blockchain',
         version: 1,
         transforms: [blockchainPersistTransform],
@@ -132,7 +133,7 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
 
     const explorerPersistedReducer = preparePersistReducer({
         reducer: explorerReducer,
-        persistedKeys: networkSymbolCollection,
+        persistedKeys: networkSymbols,
         key: 'explorer',
         version: 1,
         transforms: [explorerPersistTransform],
@@ -209,6 +210,7 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
         version: 4,
         migrations: {
             1: initialMigrateAppSettingsAndDiscoveryConfig({
+                ...nativeNetworkConfigDeps,
                 mmkvStorage: deps.mmkvStorage,
                 getStoredState,
             }),
@@ -304,7 +306,10 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
             4: (oldState: any /* FIXME */) => {
                 if (!oldState?.accounts) return oldState;
 
-                return { ...oldState, accounts: sortAccountsByCoin(oldState.accounts) };
+                return {
+                    ...oldState,
+                    accounts: sortAccountsByCoin(nativeNetworkConfigDeps, oldState.accounts),
+                };
             },
         },
         transforms: [walletStopPersistTransform],
@@ -581,7 +586,10 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
                     ...oldState,
                     wallet: {
                         ...oldState.wallet,
-                        accounts: sortAccountsByCoin(oldState.wallet.accounts),
+                        accounts: sortAccountsByCoin(
+                            nativeNetworkConfigDeps,
+                            oldState.wallet.accounts,
+                        ),
                     },
                 };
             },

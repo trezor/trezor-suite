@@ -1,4 +1,6 @@
-import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectGetNetworkConfigDep } from '@suite-common/networks';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Card, HStack, InlineAlertBox, Text } from '@suite-native/atoms';
 import { NetworkIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
@@ -24,9 +26,10 @@ export const CorrectNetworkMessageCard = ({
     symbol,
     qrNetworkSymbol,
 }: CorrectNetworkMessageCardProps) => {
+    const { getNetworkConfig } = useServices(selectGetNetworkConfigDep);
     const { applyStyle } = useNativeStyles();
 
-    const network = getNetwork(symbol);
+    const network = getNetworkConfig(symbol);
 
     if (qrNetworkSymbol) {
         return (
@@ -36,7 +39,7 @@ export const CorrectNetworkMessageCard = ({
                     <Translation
                         id="moduleSend.outputs.recipients.qrNetworkMismatch"
                         values={{
-                            qrNetwork: getNetwork(qrNetworkSymbol).name,
+                            qrNetwork: getNetworkConfig(qrNetworkSymbol).name,
                             accountNetwork: network.name,
                         }}
                     />

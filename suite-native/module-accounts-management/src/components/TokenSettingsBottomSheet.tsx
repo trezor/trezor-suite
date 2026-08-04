@@ -5,19 +5,16 @@ import { useDispatch, useSelector } from 'react-redux';
 import { type BottomSheetModalMethods } from '@gorhom/bottom-sheet/lib/typescript/types';
 import { useNavigation } from '@react-navigation/native';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
+import { selectGetNetworkConfigDep } from '@suite-common/networks';
 import {
     DefinitionType,
     type TokenDefinitionsRootState,
     TokenManagementAction,
     tokenDefinitionsActions,
 } from '@suite-common/token-definitions';
-import {
-    getDisplaySymbol,
-    getNetwork,
-    getWrappedNativeAddress,
-    isWrappedNativeToken,
-} from '@suite-common/wallet-config';
+import { getDisplaySymbol } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     type TokensRootState,
@@ -59,6 +56,10 @@ import {
     selectAccountTokenInfo,
 } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
+import {
+    getWrappedNativeAddress,
+    isWrappedNativeToken,
+} from '@trezor/network-ethereum-suite-common';
 
 import { selectIsUnrecognizedToken } from '../selectors';
 
@@ -104,6 +105,7 @@ export const TokenSettingsBottomSheet = forwardRef(
         { accountKey, tokenContract, onNavigateAway }: TokenSettingsBottomSheetProps,
         ref: Ref<BottomSheetModalMethods>,
     ) => {
+        const { getNetworkConfig } = useServices(selectGetNetworkConfigDep);
         const { applyStyle } = useNativeStyles();
         const dispatch = useDispatch();
         const navigation =
@@ -131,10 +133,10 @@ export const TokenSettingsBottomSheet = forwardRef(
 
         if (!account || !symbol) return null;
 
-        const displaySymbol = getDisplaySymbol(account.symbol);
+        const displaySymbol = getDisplaySymbol({ getNetworkConfig }, account.symbol);
 
         const balance = token?.balance ?? account.balance;
-        const networkName = getNetwork(symbol).name;
+        const networkName = getNetworkConfig(symbol).name;
 
         const isHidden = hiddenTokens.some(
             t => t.contract.toLowerCase() === tokenContract?.toLowerCase(),

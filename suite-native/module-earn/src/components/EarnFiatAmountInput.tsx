@@ -2,7 +2,9 @@ import { type RefObject } from 'react';
 import { type TextInputProps } from 'react-native';
 import { useSelector } from 'react-redux';
 
-import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectGetNetworkConfigDep } from '@suite-common/networks';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { selectBaseCurrency, selectIsBaseCurrencyInSats } from '@suite-common/wallet-core';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { Input, type InputType, Text } from '@suite-native/atoms';
@@ -26,9 +28,10 @@ export const EarnFiatAmountInput = ({
     isDisabled = false,
     onPress,
 }: EarnFiatAmountInputProps) => {
+    const { getNetworkConfig } = useServices(selectGetNetworkConfigDep);
     const { setValue } = useFormContext<EarnFormValues>();
     const { fiatAmountTransformer } = useAmountInputTransformers(symbol);
-    const { decimals } = getNetwork(symbol);
+    const { decimals } = getNetworkConfig(symbol);
     const baseCurrencyCode = useSelector(selectBaseCurrency);
     const isBaseCurrencyInSats = useSelector(selectIsBaseCurrencyInSats);
     const converters = useCryptoFiatConverters({ symbol });

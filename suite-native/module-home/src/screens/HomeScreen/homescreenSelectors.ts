@@ -18,7 +18,6 @@ import {
     selectHasDeviceSuiteSyncError,
     selectSuiteSyncInteraction,
 } from '@suite-common/suite-sync';
-import { getNetwork } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     type DiscoveryRootState,
@@ -46,7 +45,7 @@ export const selectDeviceHistoryIgnoredNetworksString = createMemoizedSelector(
     networkSymbols =>
         networkSymbols.length === 0
             ? null
-            : networkSymbols.map(networkSymbol => getNetwork(networkSymbol).name).join(', '),
+            : networkSymbols.map(networkSymbol => getNetworkConfig(networkSymbol).name).join(', '),
 );
 
 export const selectShouldDisplayUpgradeFirmwareAlert = createMemoizedSelector(
