@@ -147,7 +147,15 @@ export const getBip43Type = (path: string) => {
 export const substituteBip43Path = (
     bip43PathTemplate: Bip43PathTemplate,
     accountIndex: string | number = '0',
-) => bip43PathTemplate.replace('i', String(accountIndex)) as Bip43Path;
+) =>
+    // `bip43PathTemplate` is TS-typed as a string, but the Cardano callers (enhanceAddresses /
+    // enhanceUtxo) pass `address.path` / `utxo.path` straight from an untrusted, user-selectable
+    // Blockfrost backend without runtime validation. A missing/non-string `path` would make
+    // `.replace` throw and abort the whole account enhance in createAccount / updateAccount
+    // (poison-record DoS — a permanent per-account state-freeze). Guard the single choke point.
+    (typeof bip43PathTemplate === 'string'
+        ? bip43PathTemplate.replace('i', String(accountIndex))
+        : bip43PathTemplate) as Bip43Path;
 
 type getAccountTypeNameProps = {
     path?: Bip43PathTemplate;

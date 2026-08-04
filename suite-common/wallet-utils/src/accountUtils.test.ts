@@ -13,6 +13,7 @@ import {
     accountSearchFn,
     enhanceAddresses,
     enhanceTokens,
+    enhanceUtxo,
     findAccountDevice,
     findAccountsByAddress,
     findTransactionSenderAccount,
@@ -590,5 +591,55 @@ describe(enhanceTokens.name, () => {
 
         expect(() => enhanceTokens(poisonTokens)).not.toThrow();
         expect(enhanceTokens(poisonTokens)?.[0]?.symbol).toEqual('');
+    });
+});
+
+// The Cardano branches of enhanceAddresses / enhanceUtxo feed `address.path` / `utxo.path`
+// (verbatim from an untrusted, user-selectable Blockfrost backend) into substituteBip43Path.
+// A missing/non-string `path` used to throw on `.replace`, aborting createAccount / updateAccount
+// for the whole account (poison-record DoS — a permanent per-account state-freeze).
+describe('substituteBip43Path poison-record DoS resistance', () => {
+    it('does not throw on a missing/non-string path template', () => {
+        expect(() => substituteBip43Path(undefined as any, 3)).not.toThrow();
+        expect(() => substituteBip43Path(123 as any, 3)).not.toThrow();
+        // a valid template still gets substituted
+        expect(substituteBip43Path("m/1852'/1815'/i'", 5)).toBe("m/1852'/1815'/5'");
+    });
+
+    it('enhanceAddresses does not throw on a Cardano address with a poison path', () => {
+        const accountInfo = {
+            addresses: {
+                used: [{ address: 'addr-used', path: undefined }],
+                unused: [{ address: 'addr-unused', path: 123 }],
+                change: [{ address: 'addr-change', path: "m/1852'/1815'/i'/1/0" }],
+            },
+            history: { transactions: [] },
+        } as any;
+
+        expect(() =>
+            enhanceAddresses(accountInfo, {
+                networkType: 'cardano',
+                index: 2,
+                addresses: undefined,
+            }),
+        ).not.toThrow();
+        // the valid change path is still substituted
+        expect(
+            enhanceAddresses(accountInfo, {
+                networkType: 'cardano',
+                index: 2,
+                addresses: undefined,
+            })?.change?.[0]?.path,
+        ).toBe("m/1852'/1815'/2'/1/0");
+    });
+
+    it('enhanceUtxo does not throw on a Cardano utxo with a poison path', () => {
+        const utxos = [
+            { txid: '00', vout: 0, amount: '1', path: undefined },
+            { txid: '01', vout: 0, amount: '2', path: "m/1852'/1815'/i'/0/0" },
+        ] as any;
+
+        expect(() => enhanceUtxo(utxos, 'cardano', 4)).not.toThrow();
+        expect(enhanceUtxo(utxos, 'cardano', 4)?.[1]?.path).toBe("m/1852'/1815'/4'/0/0");
     });
 });
