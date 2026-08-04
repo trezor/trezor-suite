@@ -1,10 +1,15 @@
 import fs from 'fs/promises';
 import { join } from 'path';
+import sharp from 'sharp';
 
 import { COIN_IMAGE_SIZES, ICONS_URL_BASE, createCoinImageName } from '../../src/coinImages';
-import { FILES_CRYPTOICONS_PATH, YIELD_VAULTS_URL } from '../constants';
+import { CRYPTO_ICONS_SVG_PATH, FILES_CRYPTOICONS_PATH, YIELD_VAULTS_URL } from '../constants';
+import { rasterizeSvg } from './images';
 
+// `readFile` stays real so the bundled-icon path actually rasterizes the design-system SVG, while
+// `writeFile` is mocked to keep the run off the disk.
 jest.mock('fs/promises', () => ({
+    ...jest.requireActual('fs/promises'),
     writeFile: jest.fn(),
 }));
 
@@ -20,12 +25,14 @@ const { downloadVaultIcons } = require('./downloadVaultIcons') as {
 
 const ETH_WETH_VAULT = '0x704cfb08969048a8dff298b214f959791d8da509';
 const ETH_USDT_VAULT = '0xe4db1c5a1b709ce4d2ada6985d9d506e58f73829';
+const ETH_USDC_VAULT = '0x8cb3649114051ca5119141a34c200d65dc0faa73';
 const BASE_WETH_VAULT = '0x4edc6ab1964e25eb2c202ab9f201e9548baa53df';
 const BASE_USDC_VAULT = '0x5e6fc406960a1c2d9ab6813ff1c914c6836bc53e';
 
 // Underlying tokens; the WETH ones are the wrapped-native contracts from @suite-common/wallet-config.
 const ETH_WETH = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2';
 const BASE_WETH = '0x4200000000000000000000000000000000000006';
+const ETH_USDC = '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48';
 const BASE_USDC = '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913';
 const ETH_USDT = '0xdAC17F958D2ee523a2206206994597C13D831ec7';
 
@@ -85,7 +92,19 @@ const mockFetchRoutes = (routes: Record<string, Response>) => {
 
 const writtenFiles = () => (fs.writeFile as jest.Mock).mock.calls.map(([path]) => String(path));
 
+const writtenIcon = (fileName: string): Buffer | undefined =>
+    (fs.writeFile as jest.Mock).mock.calls.find(
+        ([path]) => String(path) === join(FILES_CRYPTOICONS_PATH, fileName),
+    )?.[1];
+
 const requestedUrls = () => fetchMock.mock.calls.map(([input]) => urlOf(input));
+
+// What the app itself renders for a native coin, i.e. what the published vault icon has to equal.
+const bundledIcon = async (networkSymbol: string, size: (typeof COIN_IMAGE_SIZES)[number]) =>
+    await rasterizeSvg(
+        await fs.readFile(join(CRYPTO_ICONS_SVG_PATH, `${networkSymbol}.svg`)),
+        size,
+    );
 
 describe('downloadVaultIcons', () => {
     let consoleErrorSpy: jest.SpyInstance;
@@ -127,7 +146,7 @@ describe('downloadVaultIcons', () => {
         expect(fs.writeFile).toHaveBeenCalledTimes(COIN_IMAGE_SIZES.length);
     });
 
-    it('substitutes the native coin icon when the underlying is the wrapped native token', async () => {
+    it('renders the bundled native coin disc when the underlying is the wrapped native token', async () => {
         mockFetchRoutes({
             ...vaultListRoute({
                 ethereum: [
@@ -143,12 +162,41 @@ describe('downloadVaultIcons', () => {
 
         await downloadVaultIcons();
 
-        // The WETH icon must never be requested — the vault reads as ETH.
-        expect(requestedUrls()).toContain(iconUrl('ethereum', 24));
-        expect(requestedUrls()).not.toContain(iconUrl('weth', 24));
-        expect(writtenFiles()).toContain(
-            join(FILES_CRYPTOICONS_PATH, `ethereum--${ETH_WETH_VAULT}@24.webp`),
+        // A WETH vault reads as an ETH vault, and the app renders native ETH from the bundled disc
+        // rather than from CoinGecko — so neither the WETH nor the CoinGecko ETH rendition is used.
+        expect(requestedUrls()).toEqual([YIELD_VAULTS_URL]);
+        for (const size of COIN_IMAGE_SIZES) {
+            expect(writtenIcon(`ethereum--${ETH_WETH_VAULT}@${size}.webp`)).toEqual(
+                await bundledIcon('eth', size),
+            );
+        }
+    });
+
+    it('renders each size of the bundled disc at its own pixel dimensions', async () => {
+        mockFetchRoutes(
+            vaultListRoute({
+                ethereum: [
+                    vault({
+                        address: ETH_WETH_VAULT,
+                        underlyingToken: ETH_WETH,
+                        coingeckoId: 'weth',
+                    }),
+                ],
+            }),
         );
+
+        await downloadVaultIcons();
+
+        for (const size of COIN_IMAGE_SIZES) {
+            const icon = writtenIcon(`ethereum--${ETH_WETH_VAULT}@${size}.webp`);
+            const { format, width, height } = await sharp(icon).metadata();
+
+            expect({ format, width, height }).toEqual({
+                format: 'webp',
+                width: size,
+                height: size,
+            });
+        }
     });
 
     it('resolves an L2 wrapped-native underlying to the settlement layer native coin', async () => {
@@ -167,10 +215,13 @@ describe('downloadVaultIcons', () => {
 
         await downloadVaultIcons();
 
-        expect(requestedUrls()).toContain(iconUrl('ethereum', 24));
-        expect(requestedUrls()).not.toContain(iconUrl('l2-standard-bridged-weth-base', 24));
-        expect(writtenFiles()).toContain(
-            join(FILES_CRYPTOICONS_PATH, `base--${BASE_WETH_VAULT}@24.webp`),
+        // Base settles on Ethereum, so its native coin — and hence its disc — is ETH, not BASE.
+        expect(requestedUrls()).toEqual([YIELD_VAULTS_URL]);
+        expect(writtenIcon(`base--${BASE_WETH_VAULT}@24.webp`)).toEqual(
+            await bundledIcon('eth', 24),
+        );
+        expect(writtenIcon(`base--${BASE_WETH_VAULT}@24.webp`)).not.toEqual(
+            await bundledIcon('base', 24),
         );
     });
 
@@ -279,6 +330,34 @@ describe('downloadVaultIcons', () => {
             ...vaultListRoute({
                 ethereum: [
                     vault({
+                        address: ETH_USDC_VAULT,
+                        underlyingToken: ETH_USDC,
+                        coingeckoId: 'usd-coin',
+                    }),
+                ],
+                base: [
+                    vault({
+                        address: BASE_USDC_VAULT,
+                        underlyingToken: BASE_USDC,
+                        coingeckoId: 'usd-coin',
+                    }),
+                ],
+            }),
+            ...sourceIconRoutes('usd-coin'),
+        });
+
+        await downloadVaultIcons();
+
+        // Both vaults resolve to usd-coin: one vault-list request plus one per source size.
+        expect(fetchMock).toHaveBeenCalledTimes(1 + COIN_IMAGE_SIZES.length);
+        expect(fs.writeFile).toHaveBeenCalledTimes(2 * COIN_IMAGE_SIZES.length);
+    });
+
+    it('renders a shared bundled disc once for vaults across platforms', async () => {
+        mockFetchRoutes(
+            vaultListRoute({
+                ethereum: [
+                    vault({
                         address: ETH_WETH_VAULT,
                         underlyingToken: ETH_WETH,
                         coingeckoId: 'weth',
@@ -292,14 +371,17 @@ describe('downloadVaultIcons', () => {
                     }),
                 ],
             }),
-            ...sourceIconRoutes('ethereum'),
-        });
+        );
 
         await downloadVaultIcons();
 
-        // Both vaults resolve to native ETH: one vault-list request plus one per source size.
-        expect(fetchMock).toHaveBeenCalledTimes(1 + COIN_IMAGE_SIZES.length);
+        // Both vaults read as native ETH, so nothing beyond the vault list is fetched and the two
+        // vault addresses end up with byte-identical renditions.
+        expect(requestedUrls()).toEqual([YIELD_VAULTS_URL]);
         expect(fs.writeFile).toHaveBeenCalledTimes(2 * COIN_IMAGE_SIZES.length);
+        expect(writtenIcon(`base--${BASE_WETH_VAULT}@80.webp`)).toEqual(
+            writtenIcon(`ethereum--${ETH_WETH_VAULT}@80.webp`),
+        );
     });
 
     it('throws when the vault list cannot be fetched', async () => {
