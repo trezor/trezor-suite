@@ -104,21 +104,28 @@ export const resolveExchangeTradeError = (
             };
         }
         case 'invalid_input': {
+            // errorDetails comes from the untrusted invity trade server without runtime
+            // validation, so `inputs` may not actually be an array — guard before .join to
+            // avoid throwing while building a *safe* error display.
+            const inputs = Array.isArray(details.inputs) ? details.inputs : undefined;
+
             return {
                 ...base,
                 code: 'invalid_input',
                 // temporary comma join; replace with locale-aware list formatting at render later
                 // TODO: Solve with design/UX team how to display multiple errors in a user-friendly way
-                values: details.inputs?.length ? { inputs: details.inputs.join(', ') } : undefined,
+                values: inputs?.length ? { inputs: inputs.join(', ') } : undefined,
             };
         }
         case 'invalid_response': {
+            const errors = Array.isArray(details.errors) ? details.errors : undefined;
+
             return {
                 ...base,
                 code: 'invalid_response',
                 // temporary comma join; replace with locale-aware list formatting at render later
                 // TODO: Solve with design/UX team how to display multiple errors in a user-friendly way
-                values: details.errors?.length ? { errors: details.errors.join(', ') } : undefined,
+                values: errors?.length ? { errors: errors.join(', ') } : undefined,
             };
         }
         case 'trade_not_found': {

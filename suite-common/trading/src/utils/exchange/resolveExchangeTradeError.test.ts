@@ -295,6 +295,32 @@ describe('resolveExchangeTradeError', () => {
 
             expect(resolveExchangeTradeError(source).values).toBeUndefined();
         });
+
+        it('does not throw when the untrusted server sends a non-array inputs (poison record)', () => {
+            // invity responses are not runtime-validated, so `inputs` may be a string with a
+            // truthy `length` — the old `inputs.join` would crash while building the error display.
+            const source = {
+                errorDetails: { origin: 'partner', code: 'invalid_input', inputs: 'fromAddress' },
+            } as unknown as Partial<TradeError>;
+
+            expect(() => resolveExchangeTradeError(source)).not.toThrow();
+            expect(resolveExchangeTradeError(source)).toMatchObject({
+                code: 'invalid_input',
+                values: undefined,
+            });
+        });
+
+        it('does not throw when the untrusted server sends a non-array errors (poison record)', () => {
+            const source = {
+                errorDetails: { origin: 'external', code: 'invalid_response', errors: 'boom' },
+            } as unknown as Partial<TradeError>;
+
+            expect(() => resolveExchangeTradeError(source)).not.toThrow();
+            expect(resolveExchangeTradeError(source)).toMatchObject({
+                code: 'invalid_response',
+                values: undefined,
+            });
+        });
     });
 
     describe('trade_not_found', () => {
