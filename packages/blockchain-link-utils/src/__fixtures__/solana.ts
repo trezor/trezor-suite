@@ -1371,5 +1371,104 @@ export const fixtures = {
                 },
             ],
         },
+        {
+            // poison-record DoS resistance: an untrusted/MITM Solana RPC returns a token account
+            // with a valid program name (passes the short-circuit) but `parsed` as a string, which
+            // would throw `'info' in parsed` (TypeError) and crash the whole getAccountInfo page.
+            description: 'drops a poison token account whose parsed field is not an object',
+            input: {
+                accountInfo: [
+                    {
+                        account: {
+                            data: { parsed: 'not-an-object', program: 'spl-token', space: 165n },
+                        },
+                        pubkey: 'PoIsonAccount1111111111111111111111111111111',
+                    },
+                    ...tokenAccountInfo,
+                ],
+                map: sampleMintToDetailMap,
+            },
+            expectedOutput: [
+                {
+                    standard: 'SPL',
+                    contract: '4k3Dyjzvzp8eMZWUXbBCjEvwSkkk59S5iCNLY3QrkX6R',
+                    balance: '2000000',
+                    decimals: 6,
+                    name: 'Raydium',
+                    symbol: 'RAY',
+                    accounts: [
+                        {
+                            balance: '2000000',
+                            publicKey: 'ETxHeBBcuw9Yu4dGuP3oXrD12V5RECvmi8ogQ9PkjyVF',
+                        },
+                    ],
+                },
+            ],
+        },
+        {
+            // poison-record DoS resistance: `parsed.info` is a truthy non-object string, which would
+            // throw `'mint' in parsed.info` after the plain `!!parsed.info` truthy check.
+            description: 'drops a poison token account whose parsed.info field is not an object',
+            input: {
+                accountInfo: [
+                    {
+                        account: {
+                            data: {
+                                parsed: { info: 'not-an-object', type: 'account' },
+                                program: 'spl-token',
+                                space: 165n,
+                            },
+                        },
+                        pubkey: 'PoIsonAccount2222222222222222222222222222222',
+                    },
+                    ...tokenAccountInfo,
+                ],
+                map: sampleMintToDetailMap,
+            },
+            expectedOutput: [
+                {
+                    standard: 'SPL',
+                    contract: '4k3Dyjzvzp8eMZWUXbBCjEvwSkkk59S5iCNLY3QrkX6R',
+                    balance: '2000000',
+                    decimals: 6,
+                    name: 'Raydium',
+                    symbol: 'RAY',
+                    accounts: [
+                        {
+                            balance: '2000000',
+                            publicKey: 'ETxHeBBcuw9Yu4dGuP3oXrD12V5RECvmi8ogQ9PkjyVF',
+                        },
+                    ],
+                },
+            ],
+        },
+        {
+            // poison-record DoS resistance: a null/malformed record with no `account` at all would
+            // throw on the `tokenAccount.account.data` destructure.
+            description: 'drops a poison token account that is missing account/data',
+            input: {
+                accountInfo: [
+                    { pubkey: 'PoIsonAccount3333333333333333333333333333333' },
+                    ...tokenAccountInfo,
+                ],
+                map: sampleMintToDetailMap,
+            },
+            expectedOutput: [
+                {
+                    standard: 'SPL',
+                    contract: '4k3Dyjzvzp8eMZWUXbBCjEvwSkkk59S5iCNLY3QrkX6R',
+                    balance: '2000000',
+                    decimals: 6,
+                    name: 'Raydium',
+                    symbol: 'RAY',
+                    accounts: [
+                        {
+                            balance: '2000000',
+                            publicKey: 'ETxHeBBcuw9Yu4dGuP3oXrD12V5RECvmi8ogQ9PkjyVF',
+                        },
+                    ],
+                },
+            ],
+        },
     ],
 };

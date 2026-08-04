@@ -44,8 +44,12 @@ export const getAccountInfo = async (request: Request<MessageTypes.GetAccountInf
             ),
         )
     )
-        .map(res => res.value)
-        .flat();
+        // `res.value` and its records come from an untrusted, user-selectable RPC backend and
+        // are not runtime-validated; drop non-array pages and null/malformed records so a single
+        // poison token account cannot crash the derefs below (and transformTokenInfo) via
+        // `acc.account.data` and fail the whole getAccountInfo request.
+        .flatMap(res => (Array.isArray(res?.value) ? res.value : []))
+        .filter(acc => acc?.account?.data != null);
 
     const recognisedWithBalance = tokenAccounts.filter(acc => {
         const info = acc.account.data.parsed?.info;

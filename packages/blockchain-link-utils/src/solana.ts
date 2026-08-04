@@ -105,12 +105,23 @@ type SplTokenAccountData = {
 type SplTokenAccount = { account: AccountInfo<SplTokenAccountData>; pubkey: Address };
 
 const isSplTokenAccount = (tokenAccount: ApiTokenAccount): tokenAccount is SplTokenAccount => {
-    const { parsed } = tokenAccount.account.data;
+    // The values below come verbatim from an untrusted, user-selectable Solana RPC backend,
+    // so every deref must be shape-checked before the `in` operator or a property access:
+    // `'x' in y` throws a TypeError when `y` is not an object, and a single poison token
+    // account record would otherwise crash transformTokenInfo over the whole account page.
+    const data = tokenAccount?.account?.data;
+
+    if (!data || typeof data !== 'object') return false;
+
+    const { parsed } = data;
 
     return (
-        isTokenProgramName(tokenAccount.account.data.program) &&
+        isTokenProgramName(data.program) &&
+        !!parsed &&
+        typeof parsed === 'object' &&
         'info' in parsed &&
         !!parsed.info &&
+        typeof parsed.info === 'object' &&
         'mint' in parsed.info &&
         typeof parsed.info.mint === 'string' &&
         'tokenAmount' in parsed.info &&
