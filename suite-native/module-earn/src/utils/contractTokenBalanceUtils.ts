@@ -36,9 +36,9 @@ export const getAccountTokenByContract = (
 };
 
 /**
- * Balance a yield vault deposit can spend from the account. For a wrapped-native (WETH) vault
- * the wrappable native balance counts in too, minus the fee reserve kept for the follow-up
- * wrap + approve + deposit fees.
+ * Balance a yield vault deposit can spend from the account. For a wrapped-native (WETH) vault the
+ * native balance can be wrapped, so it counts in too; the fee reserve is deducted later, by the
+ * wrap step's available-to-wrap amount.
  */
 export const getYieldVaultDepositableBalance = (
     account: Account,
