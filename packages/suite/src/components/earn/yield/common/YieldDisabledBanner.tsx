@@ -2,11 +2,11 @@ import { type ReactNode } from 'react';
 
 import { Translation } from '@suite/intl';
 import { type Variant } from '@suite-common/suite-types';
-import type { YieldFlowType } from '@suite-common/wallet-core';
+import type { WrappedNativeFlowType, YieldFlowType } from '@suite-common/wallet-core';
 import { Banner } from '@trezor/components';
 
 type YieldDisabledBannerProps = {
-    type: YieldFlowType;
+    type: YieldFlowType | WrappedNativeFlowType;
     content?: ReactNode;
     variant?: Variant;
 };
@@ -16,6 +16,8 @@ const yieldDisabledMessageMap = {
     withdraw: 'TR_EARN_YIELD_WITHDRAW_DISABLED',
     redeem: 'TR_EARN_YIELD_WITHDRAW_DISABLED',
     claim: 'TR_EARN_YIELD_CLAIM_DISABLED',
+    wrap: 'TR_EARN_YIELD_WRAP_DISABLED',
+    unwrap: 'TR_EARN_YIELD_UNWRAP_DISABLED',
 } as const;
 
 export const YieldDisabledBanner = ({ type, content, variant }: YieldDisabledBannerProps) => (

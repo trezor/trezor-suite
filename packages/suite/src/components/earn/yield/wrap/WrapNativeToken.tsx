@@ -20,9 +20,11 @@ import { BigNumber } from '@trezor/utils';
 
 import { submitWrapNativeTokenThunk } from 'src/actions/wallet/wrapNativeTokenThunks';
 import { useDispatch } from 'src/hooks/suite';
+import { useMessageSystemWrappedNative } from 'src/hooks/suite/useMessageSystemWrappedNative';
 
 import { WrappedNativeFlowComplete } from '../common/WrappedNativeFlowComplete';
 import { YieldActionStepWarning } from '../common/YieldActionStepWarning';
+import { YieldDisabledBanner } from '../common/YieldDisabledBanner';
 import { YieldFlowTransferRow } from '../common/YieldFlowTransferRow';
 import { YieldWrapStep } from '../common/YieldWrapStep';
 import { useWrappedNativeDeviceGuard } from '../common/useWrappedNativeDeviceGuard';
@@ -42,6 +44,11 @@ type BroadcastWrap = {
 export const WrapNativeToken = ({ account, token }: WrapNativeTokenProps) => {
     const dispatch = useDispatch();
     const ensureDeviceReady = useWrappedNativeDeviceGuard();
+    const {
+        isDisabled,
+        content: disabledContent,
+        variant: disabledVariant,
+    } = useMessageSystemWrappedNative('wrap');
     const [broadcast, setBroadcast] = useState<BroadcastWrap | null>(null);
     const methods = useForm<YieldFlowFormValues>({
         mode: 'onChange',
@@ -161,6 +168,17 @@ export const WrapNativeToken = ({ account, token }: WrapNativeTokenProps) => {
                         output={{ token, amount: broadcast.amount }}
                     />
                 </WrappedNativeFlowComplete>
+            );
+        }
+
+        // A wrap already broadcast keeps rendering the form, so its pending transaction stays visible.
+        if (isDisabled && !broadcast) {
+            return (
+                <YieldDisabledBanner
+                    type="wrap"
+                    content={disabledContent}
+                    variant={disabledVariant}
+                />
             );
         }
 

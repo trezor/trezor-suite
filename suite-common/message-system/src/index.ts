@@ -16,4 +16,5 @@ export * from './useExperiment';
 export * from './useMessageSystemEarnDashboard';
 export * from './useMessageSystemMessageForm';
 export * from './useMessageSystemStaking';
+export * from './useMessageSystemWrappedNative';
 export * from './useMessageSystemYield';
