@@ -1,6 +1,6 @@
 import { DeviceModelInternal } from '@trezor/device-utils';
 
-import { type RecoveryType, type WordCount } from './types';
+import { type RecoveryInputType, type WordCount } from './types';
 
 const WORD_COUNT_12 = 12 as const;
 const WORD_COUNT_18 = 18 as const;
@@ -16,16 +16,16 @@ const WORD_COUNT_18 = 18 as const;
 export const isStandardRecoveryDisabled = (
     deviceModelInternal: DeviceModelInternal,
     wordCount: WordCount,
-    recoveryType: RecoveryType,
+    recoveryInputType: RecoveryInputType,
 ): boolean => {
     // Advanced recovery is never disabled
-    if (recoveryType === 'advanced') {
+    if (recoveryInputType === 'advanced') {
         return false;
     }
 
     // Only disable Standard recovery for T1B1 with 12 or 18-word seeds
     return (
-        recoveryType === 'standard' &&
+        recoveryInputType === 'standard' &&
         deviceModelInternal === DeviceModelInternal.T1B1 &&
         (wordCount === WORD_COUNT_12 || wordCount === WORD_COUNT_18)
     );

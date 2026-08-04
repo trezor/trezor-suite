@@ -5,7 +5,7 @@ import { useDevice } from '@suite/device';
 import { Translation, messages } from '@suite/intl';
 import { MODAL_CONTEXT_DEVICE, selectModalRequestId } from '@suite/modal';
 import {
-    type RecoveryType,
+    type RecoveryInputType,
     type SeedInputStatus,
     type WordCount,
     checkSeedThunk,
@@ -39,7 +39,7 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
     const { device, isLocked } = useDevice();
     const [isUnderstood, setIsUnderstood] = useState(false);
     const [wordCount, setWordCount] = useState<WordCount | undefined>();
-    const [recoveryType, setRecoveryType] = useState<RecoveryType | undefined>();
+    const [recoveryInputType, setRecoveryInputType] = useState<RecoveryInputType | undefined>();
     const intl = useIntl();
     const pinRequestId = useSelector(selectModalRequestId);
     const { pin, setPin, handlePinSubmit } = usePin(device?.buttonRequests ?? [], pinRequestId);
@@ -98,8 +98,8 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
             case 'select-recovery-type':
                 return (
                     <SelectRecoveryTypeStep
-                        setRecoveryType={setRecoveryType}
-                        recoveryType={recoveryType}
+                        setRecoveryInputType={setRecoveryInputType}
+                        recoveryInputType={recoveryInputType}
                     />
                 );
             case 'waiting-for-confirmation':
@@ -209,7 +209,7 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
                             );
 
                             if (shouldSkipSelection) {
-                                dispatch(recoveryActions.setAdvancedRecovery(true));
+                                dispatch(recoveryActions.setRecoveryInputType('advanced'));
                                 dispatch(checkSeedThunk());
                             } else {
                                 dispatch(recoveryActions.setStatus('select-recovery-type'));
@@ -223,11 +223,11 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
             case 'select-recovery-type':
                 return (
                     <Modal.Button
-                        isDisabled={!recoveryType}
+                        isDisabled={!recoveryInputType}
                         onClick={() => {
-                            dispatch(
-                                recoveryActions.setAdvancedRecovery(recoveryType === 'advanced'),
-                            );
+                            if (!recoveryInputType) return;
+
+                            dispatch(recoveryActions.setRecoveryInputType(recoveryInputType));
                             dispatch(checkSeedThunk());
                         }}
                         data-testid="@recovery/continue-button"

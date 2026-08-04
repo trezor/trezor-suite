@@ -98,7 +98,7 @@ export const mockInitialAppState: AppState = {
         },
     } as RouterState, // TODO: this is state copied from actual app runtime, so how can there be type error???
     recovery: {
-        advancedRecovery: false,
+        recoveryInputType: 'standard',
         wordsCount: 12,
         status: 'initial',
     },

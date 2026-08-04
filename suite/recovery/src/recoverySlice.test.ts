@@ -30,17 +30,17 @@ describe('Recovery Slice', () => {
         expect(store.getActions().length).toEqual(1);
     });
 
-    it('setAdvancedRecovery', () => {
+    it('setRecoveryInputType', () => {
         const store = initStore();
 
         // default state
         const stateBefore = store.getState().recovery;
-        expect(stateBefore.advancedRecovery).toEqual(false);
+        expect(stateBefore.recoveryInputType).toEqual('standard');
 
-        store.dispatch(recoveryActions.setAdvancedRecovery(true));
+        store.dispatch(recoveryActions.setRecoveryInputType('advanced'));
 
         const stateAfter = store.getState().recovery;
-        expect(stateAfter.advancedRecovery).toEqual(true);
+        expect(stateAfter.recoveryInputType).toEqual('advanced');
 
         // should not trigger side-effect actions
         expect(store.getActions().length).toEqual(1);

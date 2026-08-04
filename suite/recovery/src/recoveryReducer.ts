@@ -1,16 +1,16 @@
 import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
 
-import { type SeedInputStatus, type WordCount } from './types';
+import { type RecoveryInputType, type SeedInputStatus, type WordCount } from './types';
 
 export interface RecoveryState {
-    advancedRecovery: boolean;
+    recoveryInputType: RecoveryInputType;
     wordsCount: WordCount;
     status: SeedInputStatus;
     error?: string;
 }
 
 const initialState: RecoveryState = {
-    advancedRecovery: false,
+    recoveryInputType: 'standard',
     wordsCount: 12,
     error: undefined,
     status: 'initial',
@@ -23,8 +23,8 @@ export const recoverySlice = createSlice({
         setWordsCount: (state, { payload }: PayloadAction<WordCount>) => {
             state.wordsCount = payload;
         },
-        setAdvancedRecovery: (state, { payload }: PayloadAction<boolean>) => {
-            state.advancedRecovery = payload;
+        setRecoveryInputType: (state, { payload }: PayloadAction<RecoveryInputType>) => {
+            state.recoveryInputType = payload;
         },
         setError: (state, { payload }: PayloadAction<string | undefined>) => {
             state.error = payload;
