@@ -8,8 +8,10 @@ import {
     composeYieldWrapTransactionThunk,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
+import { type TokenInfo } from '@trezor/connect';
 
 import { sendYieldTransaction } from './stablecoin-yield/signingHelpers';
+import { addToken } from './tokenActions';
 
 const WRAP_NATIVE_TOKEN_PREFIX = '@wallet/wrap-native-token';
 
@@ -83,6 +85,27 @@ export const submitWrapNativeTokenThunk = createThunk(
 
             if (!sendResult) {
                 return undefined;
+            }
+
+            // Make sure re-wrapping doesn't create a duplicate
+            const isAlreadyTracked = account.tokens?.some(
+                accountToken =>
+                    accountToken.contract.toLowerCase() === token.contractAddress.toLowerCase(),
+            );
+
+            if (!isAlreadyTracked) {
+                const wrappedTokenInfo: TokenInfo = {
+                    // Only affects symbol casing (both ERC20 and BEP20 preserve it); the real
+                    // standard/balance are filled in by the next backend account refresh.
+                    standard: 'ERC20',
+                    contract: token.contractAddress,
+                    symbol: token.symbol,
+                    name: token.symbol,
+                    decimals: token.decimals,
+                    balance: '0',
+                };
+
+                dispatch(addToken(account, [wrappedTokenInfo], { showSuccessToast: false }));
             }
 
             dispatch(
