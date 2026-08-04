@@ -11414,6 +11414,19 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite-native/activity-center@workspace:*, @suite-native/activity-center@workspace:suite-native/activity-center":
+  version: 0.0.0-use.local
+  resolution: "@suite-native/activity-center@workspace:suite-native/activity-center"
+  dependencies:
+    "@suite-native/atoms": "workspace:*"
+    "@suite-native/icons": "workspace:*"
+    "@suite-native/toasts": "workspace:*"
+    "@trezor/styles-native": "workspace:*"
+    react: "npm:19.2.3"
+    react-native: "npm:0.85.3"
+  languageName: unknown
+  linkType: soft
+
 "@suite-native/add-coin-account@workspace:*, @suite-native/add-coin-account@workspace:suite-native/add-coin-account":
   version: 0.0.0-use.local
   resolution: "@suite-native/add-coin-account@workspace:suite-native/add-coin-account"
@@ -12063,9 +12076,11 @@ __metadata:
     "@suite-common/suite-utils": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
     "@suite-common/wallet-types": "workspace:^"
+    "@suite-native/activity-center": "workspace:*"
     "@suite-native/analytics": "workspace:*"
     "@suite-native/atoms": "workspace:*"
     "@suite-native/device": "workspace:*"
+    "@suite-native/feature-flags": "workspace:*"
     "@suite-native/formatters": "workspace:*"
     "@suite-native/icons": "workspace:*"
     "@suite-native/intl": "workspace:*"
