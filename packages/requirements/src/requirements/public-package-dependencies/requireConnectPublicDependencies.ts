@@ -1,8 +1,8 @@
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 
-import { readJson } from '../../fileSystem';
-import type { PackageJson } from '../../workspaces';
+import { type PackageJson, readJson } from '@trezor/node-utils';
+
 import type { Requirement } from '../Requirement';
 import {
     type WorkspacePackage,

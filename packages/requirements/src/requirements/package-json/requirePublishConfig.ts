@@ -1,4 +1,5 @@
-import { readPackageJson } from '../../workspaces';
+import { readPackageJson } from '@trezor/node-utils';
+
 import type { Requirement } from '../Requirement';
 
 const PACKAGE_JSON_FILE = 'package.json';

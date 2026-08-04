@@ -1,4 +1,6 @@
-import { type PackageJson, listAllWorkspaces, readPackageJson } from '../workspaces';
+import { type PackageJson, readPackageJson } from '@trezor/node-utils';
+
+import { listAllWorkspaces } from '../workspaces';
 
 export type WorkspacePackage = {
     readonly name: string;

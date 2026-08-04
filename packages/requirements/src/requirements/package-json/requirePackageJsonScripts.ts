@@ -1,7 +1,7 @@
+import { type PackageJson, readPackageJson } from '@trezor/node-utils';
 import { typedObjectEntries } from '@trezor/utils';
 
 import { walkDirectory } from '../../fileSystem';
-import { type PackageJson, readPackageJson } from '../../workspaces';
 import type { Requirement } from '../Requirement';
 
 const PACKAGE_JSON_FILE = 'package.json';

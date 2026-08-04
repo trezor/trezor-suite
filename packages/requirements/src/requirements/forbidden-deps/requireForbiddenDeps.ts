@@ -2,10 +2,11 @@ import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
 
+import { type PackageJson, readPackageJson } from '@trezor/node-utils';
 import { typedObjectKeys } from '@trezor/utils';
 
 import type { AllowedOnlyInRule, ForbiddenDepsConfig } from './forbiddenDepsTypes';
-import { type PackageJson, getWorkspaceDirectoryMap, readPackageJson } from '../../workspaces';
+import { getWorkspaceDirectoryMap } from '../../workspaces';
 import type { Requirement } from '../Requirement';
 
 const FORBIDDEN_DEPS_CONFIG_FILE = 'forbiddenDeps.config.ts';

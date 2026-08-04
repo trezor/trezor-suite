@@ -1,8 +1,10 @@
 import { writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 
+import { type PackageJson, readPackageJson } from '@trezor/node-utils';
+
 import { pickCanonicalVersion } from '../../versions';
-import { type PackageJson, listAllWorkspaces, readPackageJson } from '../../workspaces';
+import { listAllWorkspaces } from '../../workspaces';
 import type { Requirement } from '../Requirement';
 
 /**
