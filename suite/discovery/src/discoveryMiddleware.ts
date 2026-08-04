@@ -2,7 +2,7 @@ import { type UnknownAction } from 'redux';
 
 import {
     type AuthenticityChecksRootState,
-    selectShouldDisplayDeviceCompromised,
+    selectIsDeviceCompromised,
 } from '@suite/authenticity-checks';
 import { type LocksRootState } from '@suite/locks';
 import { type RouterRootState, routerAppChanged } from '@suite/router';
@@ -59,7 +59,7 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps<
     if (!isDeviceReady) return action;
 
     // 3. Discovery must be blocked while the compromised device warning is shown.
-    if (selectShouldDisplayDeviceCompromised(getState())) return action;
+    if (selectIsDeviceCompromised(getState())) return action;
 
     // 4. Discovery must be delayed if THP Autoconnect modal is open, because it is the only THP step that takes place
     //    *after* device acquisition, and also needs device interaction to complete (would block discovery).
