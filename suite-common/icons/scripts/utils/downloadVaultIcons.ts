@@ -11,13 +11,16 @@ import {
     isWrappedNativeToken,
 } from '@suite-common/wallet-config';
 
+import { rasterizeSvg } from './images';
 import {
     COIN_IMAGE_SIZES,
     type CoinImageSize,
     ICONS_URL_BASE,
     createCoinImageName,
 } from '../../src/coinImages';
-import { FILES_CRYPTOICONS_PATH, YIELD_VAULTS_URL } from '../constants';
+import { type NetworkIconSymbol } from '../../src/iconSymbols';
+import { isCryptoIconSymbol } from '../../src/iconUtils';
+import { CRYPTO_ICONS_SVG_PATH, FILES_CRYPTOICONS_PATH, YIELD_VAULTS_URL } from '../constants';
 import { type YieldVault, yieldVaultsSchema } from '../schemas';
 
 const earnYieldApi = createHttpClient({
@@ -50,20 +53,40 @@ const fetchPublishedIcon = (fileName: string) =>
     })();
 
 /**
- * A vault-position token renders as the asset the vault is denominated in — except that a
- * wrapped-native underlying reads as the native coin: a WETH vault is an ETH vault.
- * On an L2 the native coin is the settlement layer's, so ETH is
- * resolved through `settlementLayer` rather than from the L2 itself.
+ * Where the icon of the asset a vault is denominated in comes from: either an already published
+ * CoinGecko rendition, or — for a native coin — the bundled design-system disc the apps render
+ * themselves instead of the CoinGecko one.
  */
-const resolveSourceCoingeckoId = (network: Network, vault: YieldVault) => {
+type VaultIconSource =
+    | { kind: 'published'; coingeckoId: string }
+    | { kind: 'bundled'; networkSymbol: NetworkIconSymbol };
+
+/**
+ * A vault-position token renders as the asset the vault is denominated in — except that a
+ * wrapped-native underlying reads as the native coin: a WETH vault is an ETH vault. On an L2 the
+ * native coin is the settlement layer's, so ETH is resolved through `settlementLayer` rather than
+ * from the L2 itself.
+ */
+const resolveIconSource = (network: Network, vault: YieldVault): VaultIconSource | undefined => {
     if (!isWrappedNativeToken(network.symbol, vault.underlyingToken)) {
-        return vault.coingeckoId;
+        return { kind: 'published', coingeckoId: vault.coingeckoId };
     }
 
-    return getNetwork(network.settlementLayer ?? network.symbol).tradeCryptoId;
+    const nativeSymbol = network.settlementLayer ?? network.symbol;
+
+    // `TokenIcon` resolves a native coin the same way and renders it through `NativeTokenIcon`, so
+    // deriving the vault icon from any other source would make it differ from the coin it stands
+    // for everywhere else in the app.
+    if (isCryptoIconSymbol(nativeSymbol)) {
+        return { kind: 'bundled', networkSymbol: nativeSymbol };
+    }
+
+    const coingeckoId = getNetwork(nativeSymbol).tradeCryptoId;
+
+    return coingeckoId ? { kind: 'published', coingeckoId } : undefined;
 };
 
-const fetchSourceIcon = async (
+const fetchPublishedSourceIcon = async (
     coingeckoId: string,
     size: CoinImageSize,
 ): Promise<Buffer | undefined> => {
@@ -82,16 +105,41 @@ const fetchSourceIcon = async (
     }
 };
 
+const renderBundledSourceIcon = async (
+    networkSymbol: NetworkIconSymbol,
+    size: CoinImageSize,
+): Promise<Buffer | undefined> => {
+    const svgPath = join(CRYPTO_ICONS_SVG_PATH, `${networkSymbol}.svg`);
+
+    try {
+        return await rasterizeSvg(await fs.readFile(svgPath), size);
+    } catch (error) {
+        console.error('Vault icons: failed to render the bundled icon:', svgPath, error);
+
+        return undefined;
+    }
+};
+
+const loadSourceIcon = (source: VaultIconSource, size: CoinImageSize) =>
+    source.kind === 'bundled'
+        ? renderBundledSourceIcon(source.networkSymbol, size)
+        : fetchPublishedSourceIcon(source.coingeckoId, size);
+
+const sourceIconKey = (source: VaultIconSource, size: CoinImageSize) =>
+    source.kind === 'bundled'
+        ? `bundled:${source.networkSymbol}@${size}`
+        : createCoinImageName({ coingeckoId: source.coingeckoId, size });
+
 /**
  * Derives icons for yield-vault position tokens. The vault contracts are not listed on CoinGecko
  * (and even if they were, they would carry the vault operator's branding), so the main
- * CoinGecko-driven pipeline never produces them — instead, copy the underlying asset's already
- * published renditions under each vault-address file name.
+ * CoinGecko-driven pipeline never produces them — instead, write the icon of the asset the vault is
+ * denominated in under each vault-address file name.
  */
 export const downloadVaultIcons = async (): Promise<void> => {
     const vaults = await fetchYieldVaults();
 
-    // The same underlying backs vaults on several platforms, so fetch each source rendition once.
+    // The same underlying backs vaults on several platforms, so load each source rendition once.
     const sourceIconCache = new Map<string, Buffer | undefined>();
     const savedIcons: string[] = [];
 
@@ -110,8 +158,8 @@ export const downloadVaultIcons = async (): Promise<void> => {
         }
 
         for (const vault of platformVaults) {
-            const sourceCoingeckoId = resolveSourceCoingeckoId(network, vault);
-            if (!sourceCoingeckoId) {
+            const source = resolveIconSource(network, vault);
+            if (!source) {
                 console.error(
                     `Vault icons: no source coin resolved for "${vault.yieldId}", skipping it:`,
                     vault.address,
@@ -120,9 +168,9 @@ export const downloadVaultIcons = async (): Promise<void> => {
             }
 
             for (const size of COIN_IMAGE_SIZES) {
-                const cacheKey = createCoinImageName({ coingeckoId: sourceCoingeckoId, size });
+                const cacheKey = sourceIconKey(source, size);
                 if (!sourceIconCache.has(cacheKey)) {
-                    sourceIconCache.set(cacheKey, await fetchSourceIcon(sourceCoingeckoId, size));
+                    sourceIconCache.set(cacheKey, await loadSourceIcon(source, size));
                 }
 
                 const imageBuffer = sourceIconCache.get(cacheKey);

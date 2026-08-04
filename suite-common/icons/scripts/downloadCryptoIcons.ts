@@ -2,8 +2,6 @@
 import { createHash } from 'crypto';
 import fs from 'fs/promises';
 import { join } from 'path';
-// eslint-disable-next-line import/no-extraneous-dependencies
-import sharp from 'sharp';
 
 import {
     FILES_CRYPTOICONS_PATH,
@@ -24,24 +22,13 @@ import {
     getCoinData,
     getCoinMarketImageUrls,
 } from './utils/fetchCoins';
+import { resizeImage } from './utils/images';
 import { sleep } from './utils/sleep';
 
 async function writeImage(fileName: string, imageBuffer: Buffer) {
     const destinationFile = join(FILES_CRYPTOICONS_PATH, fileName);
 
     await fs.writeFile(destinationFile, Buffer.from(imageBuffer));
-}
-
-async function resizeImage(imageBuffer: ArrayBuffer, size: number) {
-    const resizedImage = sharp(imageBuffer).resize(size, size);
-
-    const fullQualityImageBuffer = await resizedImage.webp({ quality: 100 }).toBuffer();
-    const lossLessImageBuffer = await resizedImage.clone().webp({ lossless: true }).toBuffer();
-
-    // sometimes lossless image is much smaller than 100 quality compressed image
-    return fullQualityImageBuffer.byteLength < lossLessImageBuffer.byteLength
-        ? fullQualityImageBuffer
-        : lossLessImageBuffer;
 }
 
 function isValidUrl(url: string): boolean {
