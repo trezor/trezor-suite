@@ -1,4 +1,5 @@
 @exodus/patch-broken-hermes-typed-arrays
+@expo/ui
 @fivebinaries/coin-selection
 @hookform/resolvers
 @noble/hashes
@@ -28,6 +29,7 @@ ajv
 bignumber.js
 cashaddrjs
 event-target-shim
+expo-media-library
 golomb
 immer
 json-schema-to-typescript
@@ -43,6 +45,7 @@ redux-logger
 redux-mock-store
 react-native-quick-crypto
 react-native-tcp-socket
+react-native-view-shot
 redux-persist
 redux-thunk
 reselect

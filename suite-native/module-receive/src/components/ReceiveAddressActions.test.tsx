@@ -10,6 +10,7 @@ import { ReceiveAddressVerificationSource, ReceiveStackRoutes } from '@suite-nat
 import { renderWithBasicProvider, userEvent, waitFor } from '@suite-native/test-utils';
 
 import { ReceiveAddressActions } from './ReceiveAddressActions';
+import { ReceiveAddressInteractionsProvider } from './ReceiveAddressInteractionsProvider';
 
 const mockCopyToClipboard = jest.fn();
 const mockOpenCopiedAddressBottomSheet = jest.fn();
@@ -46,11 +47,13 @@ describe('ReceiveAddressActions', () => {
 
     const renderActions = () =>
         renderWithBasicProvider(
-            <ReceiveAddressActions
+            <ReceiveAddressInteractionsProvider
                 accountKey={accountKey}
                 address={address}
                 addressPath={addressPath}
-            />,
+            >
+                <ReceiveAddressActions address={address} />
+            </ReceiveAddressInteractionsProvider>,
             { services },
         );
 
@@ -78,10 +81,9 @@ describe('ReceiveAddressActions', () => {
         await userEvent.press(getByText(getTranslation('qrCode.copyButton')));
 
         await waitFor(() => {
-            expect(mockCopyToClipboard).toHaveBeenCalledWith(
-                address,
-                getTranslation('qrCode.addressCopied'),
-            );
+            expect(mockCopyToClipboard).toHaveBeenCalledWith(address, undefined, {
+                shouldShowToast: false,
+            });
             expect(mockOpenCopiedAddressBottomSheet).toHaveBeenCalledTimes(1);
             expect(mockOpenSharedAddressBottomSheet).not.toHaveBeenCalled();
             expect(mockAnalyticsReport).toHaveBeenCalledWith({

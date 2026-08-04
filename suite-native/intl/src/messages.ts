@@ -1009,6 +1009,16 @@ export const messages = {
         },
         addressActions: {
             verify: 'Verify',
+            copyAddress: 'Copy Address',
+            saveQRCodeImage: 'Save to photos',
+            shareQRCodeImage: 'Share',
+            qrCodeSavedToPhotos: 'QR code saved to photos.',
+            qrCodeCopiedToClipboard: 'QR code copied to clipboard.',
+            photoPermissionDenied: {
+                title: 'Photo access denied',
+                description: 'Enable photo access in your device settings to save QR codes.',
+                openSettings: 'Open settings',
+            },
         },
         addressCopiedBottomSheet: {
             title: 'Address copied.',
