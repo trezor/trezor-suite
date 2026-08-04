@@ -15,6 +15,7 @@ const mockState: {
     transactionsError?: unknown;
     ledgerRecords?: unknown[];
     accountBalances?: unknown[];
+    transactionsRecords?: unknown;
 } = {};
 
 const mockNotFoundError = () => new NotFoundError('Not Found', { status: 404 });
@@ -81,7 +82,9 @@ jest.mock('@trezor/network-stellar/runtime', () => ({
                                         throw mockState.transactionsError;
                                     }
 
-                                    return Promise.resolve({ records: [] });
+                                    return Promise.resolve({
+                                        records: mockState.transactionsRecords ?? [],
+                                    });
                                 },
                             };
 
@@ -102,6 +105,7 @@ describe('Stellar worker error handling', () => {
         mockState.transactionsError = undefined;
         mockState.ledgerRecords = undefined;
         mockState.accountBalances = undefined;
+        mockState.transactionsRecords = undefined;
         blockchain = new BlockchainLink({
             name: 'Stellar',
             worker: StellarWorker,
@@ -169,6 +173,21 @@ describe('Stellar worker error handling', () => {
         expect(result.tokens).toHaveLength(1);
         expect(result.tokens?.[0]?.contract).toBe('usdc-GISSUER');
         expect(result.tokens?.[0]?.symbol).toBe('USDC');
+    });
+
+    it('a non-array transactions.records response does not crash the account load', async () => {
+        // An untrusted/user-selectable Horizon backend returns a transactions response whose
+        // `records` is a truthy non-array. Without the guard, `.map` on it throws and nukes the
+        // entire getAccountInfo (all balances + history) — poison-response DoS. The account must
+        // still load with an empty history instead.
+        mockState.transactionsRecords = {};
+
+        const result = await blockchain.getAccountInfo({ descriptor: 'A', details: 'txs' });
+
+        expect(result.empty).toBe(false);
+        expect(result.balance).toBe('33580137');
+        expect(result.history.transactions).toEqual([]);
+        expect(result.stellarCursor).toBeUndefined();
     });
 
     it('block subscription does not crash the worker on a malformed ledger response', async () => {

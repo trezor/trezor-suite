@@ -145,13 +145,19 @@ export const getAccountInfo = async (request: Request<MessageTypes.GetAccountInf
         throw error;
     }
 
-    account.history.transactions = transactions.records
+    // The Horizon backend is untrusted (user-selectable per network, incl. custom URLs). A
+    // malformed transactions response whose `records` is not an array would otherwise crash the
+    // whole getAccountInfo via `.map` (poison-response DoS: no balances/history load for the
+    // account). Coerce to an empty list at this data boundary so the account still loads.
+    const records = Array.isArray(transactions.records) ? transactions.records : [];
+
+    account.history.transactions = records
         .map(identifyTransaction)
         .map(identified =>
             utils.transformTransaction(identified, payload.descriptor, tokenMetadata),
         );
 
-    const cursor = transactions.records[transactions.records.length - 1]?.paging_token;
+    const cursor = records[records.length - 1]?.paging_token;
 
     return {
         type: RESPONSES.GET_ACCOUNT_INFO,
