@@ -36,6 +36,8 @@ export const getMainnets = ({
 }: GetMainnetsProps = {}): Network[] =>
     allNetworks.filter(
         n =>
+            // Suite Dark flavour: Bitcoin-only — only btc is ever selectable.
+            n.symbol === 'btc' &&
             !n.testnet &&
             (!n.isDebugOnlyNetwork || debug) &&
             (!n.isExperimentalOnlyNetwork || useExperimentalNetworks),
@@ -56,6 +58,8 @@ export const getTestnets = ({
 }: GetTestnetsProps): Network[] =>
     allNetworks.filter(
         n =>
+            // Suite Dark flavour: Bitcoin-only — only btc testnets (test, regtest).
+            (n.symbol === 'test' || n.symbol === 'regtest') &&
             n.testnet &&
             useTestnetNetworks &&
             (!n.isDebugOnlyNetwork || debug) &&

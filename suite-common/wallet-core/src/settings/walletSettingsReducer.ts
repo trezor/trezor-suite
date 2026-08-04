@@ -30,7 +30,7 @@ export const createMemoizedSelector = createWeakMapSelector.withTypes<WalletSett
 
 const initialState: WalletSettingsState = {
     localCurrency: 'usd',
-    enabledNetworks: [],
+    enabledNetworks: ['btc'], // Suite Dark flavour: Bitcoin-only default
     hideSuspiciousTransactions: {},
     bitcoinAmountUnit: PROTO.AmountUnit.BITCOIN,
     mevProtection: true,

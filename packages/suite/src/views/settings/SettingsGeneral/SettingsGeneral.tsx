@@ -6,7 +6,6 @@ import { selectIsLegacyLabelingVisible, selectSelectedProviderForLabels } from '
 import { selectHasExperimentalFeature } from '@suite/settings';
 import { TorStatus, selectTorState } from '@suite/tor';
 import { Context } from '@suite-common/message-system';
-import { selectIsMevProtectionSettingsVisible } from '@suite-common/mev';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
     selectEnabledNetworks,
@@ -48,7 +47,6 @@ import { Experimental } from './Experimental';
 import { Language } from './Language';
 import { LegacyLabelingMigration } from './LegacyLabelingMigration';
 import { McpServer } from './McpServer';
-import { MevProtection } from './MevProtection';
 import { NetworkReserve } from './NetworkReserve';
 import { NftSection } from './NftSection';
 import { ShowApplicationLog } from './ShowApplicationLog';
@@ -85,7 +83,6 @@ export const SettingsGeneral = () => {
     const mcpServerEnabled = useSelector(selectHasExperimentalFeature('mcp-server'));
 
     const isProviderConnected = useSelector(selectSelectedProviderForLabels);
-    const isMevProtectionSettingsVisible = useSelector(selectIsMevProtectionSettingsVisible);
     const isNetworkReserveSettingsVisible = useSelector(selectIsNetworkReserveSettingsVisible);
 
     return (
@@ -159,7 +156,6 @@ export const SettingsGeneral = () => {
                 icon={ShieldIcon}
                 hasVerticalLayout={hasContentBelowTabletWidth}
             >
-                {isMevProtectionSettingsVisible && <MevProtection />}
                 <DustPhishing />
             </SettingsSection>
 
