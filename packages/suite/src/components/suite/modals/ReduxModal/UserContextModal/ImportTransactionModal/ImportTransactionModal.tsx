@@ -1,8 +1,9 @@
 import { type ReactNode, useState } from 'react';
 
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
 import { type UserContextPayload } from '@suite-common/suite-types';
-import { networksCollection } from '@suite-common/wallet-config';
+import { getNetworks, selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { parseCSV } from '@suite-common/wallet-utils';
 import { Card, CollapsibleBox, Column, Modal, Tabs, Text, Textarea } from '@trezor/components';
 import { FileCsvIcon } from '@trezor/icons';
@@ -17,6 +18,8 @@ type ImportTransactionModalProps = {
 };
 
 export const ImportTransactionModal = ({ onCancel, decision }: ImportTransactionModalProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+    const networks = getNetworks(networkConfigDeps);
     const [mode, setMode] = useState<'upload' | 'manual'>('upload');
     const [delimiter, setDelimiter] = useState<string | undefined>(undefined);
     const [content, setContent] = useState<string>('');
@@ -26,9 +29,7 @@ export const ImportTransactionModal = ({ onCancel, decision }: ImportTransaction
         const parsed = parseCSV(input, ['address', 'amount', 'currency', 'label'], delimiter);
 
         parsed.forEach(item => {
-            const network = networksCollection.find(
-                network => network.displaySymbol === item.currency,
-            );
+            const network = networks.find(network => network.displaySymbol === item.currency);
 
             if (network) {
                 item.currency = network.symbol;

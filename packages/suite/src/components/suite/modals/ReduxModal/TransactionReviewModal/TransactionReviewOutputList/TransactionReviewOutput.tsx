@@ -7,9 +7,12 @@ import {
     useTranslation,
 } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
+import { useServices } from '@suite-common/dependency-injection';
 import { isApprovalFlowSupported, selectSelectedDevice } from '@suite-common/device';
+import { type GetNetworkConfigDep } from '@suite-common/networks';
 import { type Locale, type TrezorDevice } from '@suite-common/suite-types';
 import { type NetworkType, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { BTC_LOCKTIME_VALUE } from '@suite-common/wallet-constants';
 import { selectAccounts } from '@suite-common/wallet-core';
 import {
@@ -288,7 +291,7 @@ const getOutputTitle = (
     }
 };
 
-interface GetOutputLinesParams {
+interface GetOutputLinesParams extends GetNetworkConfigDep {
     type: ReviewOutput['type'];
     account: Account;
     value: string;
@@ -305,6 +308,7 @@ interface GetOutputLinesParams {
 }
 
 const getOutputLines = ({
+    getNetworkConfig,
     type,
     account,
     value,
@@ -450,7 +454,7 @@ const getOutputLines = ({
                         id: 'data',
                         type: 'default',
                         value: translationString(translation, {
-                            symbol: getNetworkDisplaySymbol(symbol),
+                            symbol: getNetworkDisplaySymbol({ getNetworkConfig }, symbol),
                         }),
                     },
                 ];
@@ -489,7 +493,7 @@ const getOutputLines = ({
                     type: 'data',
                     value: isWrappedNativeAction(evmTxType)
                         ? translationString(wrappedNativeIntentStrings[evmTxType], {
-                              nativeSymbol: getNetworkDisplaySymbol(symbol),
+                              nativeSymbol: getNetworkDisplaySymbol({ getNetworkConfig }, symbol),
                               tokenSymbol: getWrappedNativeSymbol(symbol),
                           })
                         : '',
@@ -651,6 +655,7 @@ export type TransactionReviewOutputProps = {
 } & ReviewOutput;
 
 export const TransactionReviewOutput = (props: TransactionReviewOutputProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const {
         type,
         state,
@@ -678,7 +683,7 @@ export const TransactionReviewOutput = (props: TransactionReviewOutputProps) => 
     const { translationString } = useTranslation();
     const isFiatVisible =
         ['fee', 'amount', 'gas', 'fee-replace', 'reduce-output'].includes(type) &&
-        !isTestnet(symbol) &&
+        !isTestnet(networkConfigDeps, symbol) &&
         !nativeToken;
 
     const outputTitle = getOutputTitle(
@@ -694,6 +699,7 @@ export const TransactionReviewOutput = (props: TransactionReviewOutputProps) => 
     );
 
     const outputLines = getOutputLines({
+        ...networkConfigDeps,
         type,
         account,
         value: value ?? '',

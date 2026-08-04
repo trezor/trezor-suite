@@ -1,4 +1,6 @@
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { getTronStakingRewards } from '@suite-common/wallet-utils';
 import { Card, Column, Row, Text } from '@trezor/components';
 import { TokenIcon } from '@trezor/product-components';
@@ -10,9 +12,10 @@ import { useTronStakeContext } from '../TronStakeContext';
 import { TronStakeInfoRow } from '../TronStakeInfoRow';
 
 export const TronClaimAmount = () => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const { account, form } = useTronStakeContext();
     const snapshotAmount = form.methods.watch('amount');
-    const reward = snapshotAmount || getTronStakingRewards(account);
+    const reward = snapshotAmount || getTronStakingRewards(networkConfigDeps, account);
 
     return (
         <Card paddingType="none">

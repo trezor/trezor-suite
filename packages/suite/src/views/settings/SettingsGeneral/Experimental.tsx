@@ -16,7 +16,7 @@ import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-component
 import { EXPERIMENTAL_FEATURES_KB_URL } from '@trezor/urls';
 import { typedObjectKeys } from '@trezor/utils';
 
-import { EXPERIMENTAL_FEATURES } from 'src/constants/suite/experimental';
+import { createExperimentalFeatures } from 'src/constants/suite/experimental';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectSuiteServices } from 'src/support/extraDependencies';
 
@@ -28,9 +28,10 @@ type FeatureLineProps = {
 const FeatureLine = ({ feature, enabledFeatures }: FeatureLineProps) => {
     const dispatch = useDispatch();
     const services = useImperativeServices(selectSuiteServices);
+    const experimentalFeaturesConfig = createExperimentalFeatures(services);
     const checked = enabledFeatures.includes(feature);
 
-    const config = EXPERIMENTAL_FEATURES[feature];
+    const config = experimentalFeaturesConfig[feature];
     const { title, description } = config;
     const url = config.knowledgeBaseUrl;
 
@@ -122,10 +123,14 @@ export const Experimental = () => {
 
     const dispatch = useDispatch();
     const services = useImperativeServices(selectSuiteServices);
+    const experimentalFeaturesConfig = useMemo(
+        () => createExperimentalFeatures(services),
+        [services],
+    );
 
     const onSwitchExperimental = () => {
         enabledFeatures?.forEach(feature =>
-            EXPERIMENTAL_FEATURES[feature]?.onToggle?.({
+            experimentalFeaturesConfig[feature]?.onToggle?.({
                 services,
                 newValue: !isExperimentalEnabled,
                 dispatch,
@@ -141,13 +146,13 @@ export const Experimental = () => {
 
     const experimentalFeatures = useMemo(
         () =>
-            typedObjectKeys(EXPERIMENTAL_FEATURES).filter(
+            typedObjectKeys(experimentalFeaturesConfig).filter(
                 feature =>
-                    !EXPERIMENTAL_FEATURES[feature]?.isDisabled?.({
+                    !experimentalFeaturesConfig[feature]?.isDisabled?.({
                         isDebug,
                     }),
             ),
-        [isDebug],
+        [experimentalFeaturesConfig, isDebug],
     );
 
     return (

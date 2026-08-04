@@ -11,6 +11,7 @@ import {
     getOtcProvidersByCountry,
     useFetchOtc,
 } from '@suite-common/trading';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { selectBaseCurrency } from '@suite-common/wallet-core';
 import { localizeNumber } from '@suite-common/wallet-utils';
 import { Banner, Column, Text } from '@trezor/components';
@@ -24,6 +25,7 @@ import {
 } from 'src/utils/wallet/trading/tradingTypingUtils';
 
 export const TradingFormOfferOTC = () => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const dispatch = useDispatch();
     const { analytics } = useServices(selectDesktopAnalyticsDep);
     const otcQuery = useFetchOtc();
@@ -61,7 +63,7 @@ export const TradingFormOfferOTC = () => {
     }
 
     const { network, contractAddress } = cryptoCurrency
-        ? cryptoIdToNetworkAndContractAddress(cryptoCurrency)
+        ? cryptoIdToNetworkAndContractAddress(networkConfigDeps, cryptoCurrency)
         : { network: undefined, contractAddress: undefined };
 
     const countrySelect = context.getValues().countrySelect.value;

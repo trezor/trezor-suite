@@ -5,7 +5,8 @@ import { useDevice } from '@suite/device';
 import { Translation, type TranslationKey } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { useServices } from '@suite-common/dependency-injection';
-import { type NetworkType, getNetwork } from '@suite-common/wallet-config';
+import { selectGetNetworkConfigDep } from '@suite-common/networks';
+import { type NetworkType } from '@suite-common/wallet-config';
 import { startOrRestartDiscoveryThunk } from '@suite-common/wallet-core';
 import { type DiscoveryStatus, type FailedAccount } from '@suite-common/wallet-types';
 import {
@@ -23,6 +24,7 @@ import { PlusIcon, RepeatIcon, WarningIcon } from '@trezor/icons';
 import { applySettings } from 'src/actions/settings/deviceSettingsActions';
 import { useDispatch } from 'src/hooks/suite';
 import { type DiscoveryStatusType } from 'src/types/wallet';
+
 
 interface CTA {
     label?: TranslationKey;
@@ -103,6 +105,7 @@ const discoveryFailedMessage = (
     discovery: DiscoveryStatus | undefined,
     failed: FailedAccount[],
 ) => {
+    const { getNetworkConfig } = useServices(selectGetNetworkConfigDep);
     if (discovery?.status !== 'failed') return '';
     if (discovery.error) return <div>{discovery.error}</div>;
 
@@ -110,7 +113,7 @@ const discoveryFailedMessage = (
     const networkError: string[] = [];
 
     const details = failed.reduce((value, account) => {
-        const network = getNetwork(account.symbol);
+        const network = getNetworkConfig(account.symbol);
         if (networkError.includes(account.symbol)) return value;
         networkError.push(account.symbol);
 

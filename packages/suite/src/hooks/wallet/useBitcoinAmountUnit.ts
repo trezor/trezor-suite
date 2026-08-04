@@ -1,11 +1,13 @@
+import { useServices } from '@suite-common/dependency-injection';
 import { selectDeviceUnavailableCapabilities } from '@suite-common/device';
-import { type NetworkSymbol, getNetworkOptional } from '@suite-common/wallet-config';
+import { type NetworkSymbol, selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { setBitcoinAmountUnits, toggleBitcoinAmountUnits } from '@suite-common/wallet-core';
 import { PROTO } from '@trezor/connect';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
 export const useBitcoinAmountUnit = (symbol?: NetworkSymbol) => {
+    const { getNetworkConfig } = useServices(selectNetworkConfigDeps);
     const bitcoinAmountUnit = useSelector(state => state.wallet.settings.bitcoinAmountUnit);
     const unavailableCapabilities = useSelector(selectDeviceUnavailableCapabilities);
     const dispatch = useDispatch();
@@ -23,7 +25,9 @@ export const useBitcoinAmountUnit = (symbol?: NetworkSymbol) => {
 
     const areUnitsSupportedByDevice = !unavailableCapabilities?.amountUnit;
 
-    const areUnitsSupportedByNetwork = getNetworkOptional(symbol)?.features.includes('amount-unit');
+    const areUnitsSupportedByNetwork = symbol
+        ? getNetworkConfig(symbol).features.includes('amount-unit')
+        : false;
 
     return {
         bitcoinAmountUnit,

@@ -2,7 +2,11 @@ import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
-import { getNetworksWithMevProtection } from '@suite-common/wallet-config';
+import {
+    getNetworks,
+    getNetworksWithFeature,
+    selectNetworkConfigDeps,
+} from '@suite-common/wallet-config';
 import { selectIsMevProtectionEnabled, setMevProtection } from '@suite-common/wallet-core';
 import { Column, Switch } from '@trezor/components';
 import {
@@ -16,10 +20,14 @@ import { useDispatch, useSelector } from 'src/hooks/suite';
 
 export const MevProtection = () => {
     const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const dispatch = useDispatch();
     const isMevProtectionEnabled = useSelector(selectIsMevProtectionEnabled);
 
-    const supportedNetworks = getNetworksWithMevProtection();
+    const supportedNetworks = getNetworksWithFeature(
+        getNetworks(networkConfigDeps),
+        'mev-protection',
+    );
 
     const handleSwitchChange = () => {
         const nextIsMevProtectionEnabled = !isMevProtectionEnabled;

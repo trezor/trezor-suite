@@ -1,3 +1,5 @@
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { hasNetworkFeatures, isApyAvailable } from '@suite-common/wallet-utils';
 
 import { useNativeYieldVault } from 'src/hooks/earn/useNativeYieldVault';
@@ -15,6 +17,7 @@ type TradeBoxEarnOptions = {
 };
 
 export const useTradeBoxEarnOptions = (account: Account): TradeBoxEarnOptions => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const { hasYieldOption, bestVault } = useNativeYieldVault(account);
     const { rate: stakingRate } = useStakingRate({
         symbol: account.symbol,
@@ -34,7 +37,7 @@ export const useTradeBoxEarnOptions = (account: Account): TradeBoxEarnOptions =>
         : null;
 
     return {
-        hasEarnOption: hasNetworkFeatures(account, 'staking') || hasYieldOption,
+        hasEarnOption: hasNetworkFeatures(networkConfigDeps, account, 'staking') || hasYieldOption,
         yieldBadge,
     };
 };

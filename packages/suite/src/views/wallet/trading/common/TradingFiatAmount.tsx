@@ -1,4 +1,6 @@
+import { useServices } from '@suite-common/dependency-injection';
 import { useFormatters } from '@suite-common/formatters';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { type BaseCurrencyAmount } from '@suite-common/wallet-types';
 import { getDecimalsForBaseCurrency } from '@suite-common/wallet-utils';
 import { isFiatBaseCurrencyCode } from '@trezor/blockchain-link-types';
@@ -16,6 +18,7 @@ export const TradingFiatAmount = ({
     currency,
     disableHiddenPlaceholder,
 }: TradingFiatAmountProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const { BaseCurrencyAmountFormatter } = useFormatters();
 
     const formatterOptions =
@@ -23,6 +26,7 @@ export const TradingFiatAmount = ({
             ? {
                   minimumFractionDigits: 0,
                   maximumFractionDigits: getDecimalsForBaseCurrency({
+                      ...networkConfigDeps,
                       code: currency,
                       isInSats: false,
                   }),

@@ -1,4 +1,5 @@
-import { getDisplaySymbol } from '@suite-common/wallet-config';
+import { useServices } from '@suite-common/dependency-injection';
+import { getDisplaySymbol , selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { type Account, asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { Row } from '@trezor/components';
 import { TokenIcon, shouldShowNetworkIcon } from '@trezor/product-components';
@@ -24,6 +25,8 @@ export function AssetRowToken({
     onClick,
     isHiddenToken = false,
 }: AssetRowTokenProps) {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     return (
         <ItemClickableContainer
             onClick={() => {
@@ -37,8 +40,12 @@ export function AssetRowToken({
                     size={40}
                     symbol={account.symbol}
                     contractAddress={token.contract}
-                    placeholder={getDisplaySymbol(token.symbol!, token.contract)}
-                    showNetworkIcon={shouldShowNetworkIcon(account.symbol, token.contract)}
+                    placeholder={getDisplaySymbol(networkConfigDeps, token.symbol!, token.contract)}
+                    showNetworkIcon={shouldShowNetworkIcon(
+                        networkConfigDeps,
+                        account.symbol,
+                        token.contract,
+                    )}
                 />
                 <AssetDetails
                     name={token.name!}

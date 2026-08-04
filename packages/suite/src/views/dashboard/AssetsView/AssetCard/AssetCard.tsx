@@ -8,6 +8,7 @@ import { type AssetFiatBalance } from '@suite-common/assets';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectCoinDefinitions } from '@suite-common/token-definitions';
 import { type Network, type NetworkSymbol } from '@suite-common/wallet-config';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { selectAnyAccountIsStakingActive, useDisplayBaseCurrency } from '@suite-common/wallet-core';
 import { type Account, type RatesByKey } from '@suite-common/wallet-types';
 import { type AmountUnit } from '@suite-common/wallet-utils';
@@ -88,6 +89,7 @@ export const AssetCard = ({
     accounts,
     isStakeNetwork,
 }: AssetCardProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const { symbol } = network;
     const dispatch = useDispatch();
     const { analytics } = useServices(selectDesktopAnalyticsDep);
@@ -110,11 +112,12 @@ export const AssetCard = ({
     const coinDefinitions = useSelector(state => selectCoinDefinitions(state, symbol));
 
     const isStakingActive = useSelector(state =>
-        selectAnyAccountIsStakingActive(state, stakingAccountsForAsset),
+        selectAnyAccountIsStakingActive(state, stakingAccountsForAsset, networkConfigDeps),
     );
 
     const { tokensFiatBalance, assetStakingBalance, shouldRenderStakingRow, shouldRenderTokenRow } =
         handleTokensAndStakingData(
+            networkConfigDeps,
             assetTokens,
             stakingAccountsForAsset,
             isStakingActive,

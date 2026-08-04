@@ -12,7 +12,7 @@ import { type YieldAccountsRewards } from '@suite-common/earn-stablecoin-api';
 import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
 import { createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { getEarnYieldClaimContractAddress, getNetwork } from '@suite-common/wallet-config';
+import { getEarnYieldClaimContractAddress } from '@suite-common/wallet-config';
 import {
     STABLECOIN_YIELD_PREFIX,
     type YieldEstimatedFeeLevel,
@@ -79,13 +79,13 @@ export const claimMerklRewardsThunk = createThunk(
             throw new Error('Yield claim currently supports only EVM accounts.');
         }
 
-        const network = getNetwork(account.symbol);
+        const network = extra.services.getNetworkConfig(account.symbol);
 
         if (!network.chainId) {
             throw new Error('Chain ID not found for network.');
         }
 
-        const merklXyzContractAddress = getEarnYieldClaimContractAddress(network.symbol);
+        const merklXyzContractAddress = getEarnYieldClaimContractAddress(account.symbol);
 
         if (!merklXyzContractAddress) {
             throw new Error('Merkl.xyz contract address not found for network.');
@@ -253,6 +253,7 @@ export const claimMerklRewardsThunk = createThunk(
 
                 const pushResponse = await TrezorConnect.pushTransaction({
                     tx: getMevProtectedTxData(
+                        extra.services,
                         account.symbol,
                         signingResponse.payload.serializedTx,
                         isMevProtectionEnabled && isMevProtectionFeatureEnabled,

@@ -3,7 +3,9 @@ import { useRef } from 'react';
 import { type DexApprovalType } from 'invity-api';
 
 import { Translation, type TranslationKey } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
 import { type NetworkSymbol, getDisplaySymbol } from '@suite-common/wallet-config';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { type AmountSubunit, subunitsToUnits } from '@suite-common/wallet-utils';
 import { type TokenInfo } from '@trezor/blockchain-link-types';
 import {
@@ -60,9 +62,10 @@ export const ApproveModalTypeSelector = ({
     displayAmount,
     hasPreapprovedAmount,
 }: ApproveModalTypeSelectorProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const popoverRef = useRef<PopoverRef>(null);
     const displaySymbol = token.symbol
-        ? getDisplaySymbol(token.symbol, token.contract)
+        ? getDisplaySymbol(networkConfigDeps, token.symbol, token.contract)
         : token.name;
 
     const translationValues = {

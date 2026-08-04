@@ -11,6 +11,8 @@ import {
 } from '@suite/address';
 import { Translation } from '@suite/intl';
 import { getReceiveAddressForFlowEntry, getReceiveAddressToAdd } from '@suite-common/address';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectGetNetworkConfigDep } from '@suite-common/networks';
 import {
     type ReceiveRootState,
     receiveActions,
@@ -59,6 +61,7 @@ export const NewestAddressCard = ({
     onVerify,
 }: NewestAddressCardProps) => {
     const dispatch = useDispatch();
+    const { getNetworkConfig } = useServices(selectGetNetworkConfigDep);
 
     const account = useSelector((state: NewestAddressCardRootState) =>
         selectAccountByKey(state, accountKey),
@@ -128,6 +131,7 @@ export const NewestAddressCard = ({
         () =>
             account
                 ? buildReceiveAddressItems({
+                      getNetworkConfig,
                       account,
                       touchedAddresses,
                       pendingAddresses,
@@ -135,7 +139,14 @@ export const NewestAddressCard = ({
                       currentFreshAddress,
                   })
                 : [],
-        [account, touchedAddresses, pendingAddresses, addressLabels, currentFreshAddress],
+        [
+            account,
+            touchedAddresses,
+            pendingAddresses,
+            addressLabels,
+            currentFreshAddress,
+            getNetworkConfig,
+        ],
     );
 
     const addressToAdd = useMemo(

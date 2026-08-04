@@ -4,7 +4,7 @@ import { selectLanguage } from '@suite/settings';
 import { useServices } from '@suite-common/dependency-injection';
 import { useFormatters } from '@suite-common/formatters';
 import { formInputsMaxLength } from '@suite-common/validators';
-import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { getNetworkDisplaySymbol , selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { type StakeFormState } from '@suite-common/wallet-types';
 import { getStakingLimitsByNetworkSymbol } from '@suite-common/wallet-utils';
 import { Banner, Column, Text } from '@trezor/components';
@@ -26,6 +26,7 @@ import {
 import { type FormPercentButtonValue } from 'src/views/wallet/trading/common/TradingForm/tradingFormInputsUtils';
 
 export const StakeInputs = () => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const { translationString } = useTranslation();
     const { CryptoAmountFormatter, BaseCurrencyAmountFormatter } = useFormatters();
     const locale = useSelector(selectLanguage);
@@ -86,9 +87,11 @@ export const StakeInputs = () => {
             }),
             decimals: validateDecimals(translationString, { decimals: network.decimals }),
             reserveOrBalance: validateReserveOrBalance(translationString, {
+                ...networkConfigDeps,
                 account,
             }),
             limits: validateCryptoLimits(translationString, {
+                ...networkConfigDeps,
                 amountLimits,
                 formatter: CryptoAmountFormatter,
             }),
@@ -98,7 +101,7 @@ export const StakeInputs = () => {
     const shouldShowAmountForWithdrawalWarning =
         isLessAmountForWithdrawalWarningShown || isAmountForWithdrawalWarningShown;
 
-    const networkDisplaySymbol = getNetworkDisplaySymbol(account.symbol);
+    const networkDisplaySymbol = getNetworkDisplaySymbol(networkConfigDeps, account.symbol);
 
     const isFractionButtonDisabled = (divisor: number) => {
         if (!account.formattedBalance || !network.decimals) return false;

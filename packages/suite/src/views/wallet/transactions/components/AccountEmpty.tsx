@@ -2,29 +2,31 @@ import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
+import { selectGetNetworkConfigDep } from '@suite-common/networks';
 import { getTradingPrefilledFromAccountData, tradingActions } from '@suite-common/trading';
-import {
-    getNetwork,
-    getNetworkDisplaySymbol,
-    getNetworkFeatures,
-} from '@suite-common/wallet-config';
+import { getNetworkDisplaySymbol, getNetworkFeatures , selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { ArrowDownIcon, ArrowsLeftRightIcon, CurrencyCircleDollarIcon } from '@trezor/icons';
 
 import { AccountExceptionLayout } from 'src/components/wallet';
 import { useDispatch } from 'src/hooks/suite';
 import { type Account } from 'src/types/wallet';
+
 interface AccountEmptyProps {
     account: Account;
 }
 
 export const AccountEmpty = ({ account }: AccountEmptyProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+    const { getNetworkConfig } = useServices(selectGetNetworkConfigDep);
     const dispatch = useDispatch();
     const { analytics } = useServices(selectDesktopAnalyticsDep);
 
-    const isTokensNetwork = getNetworkFeatures(account.symbol).includes('tokens');
+    const isTokensNetwork = getNetworkFeatures(networkConfigDeps, account.symbol).includes(
+        'tokens',
+    );
 
-    const displaySymbol = getNetworkDisplaySymbol(account.symbol);
-    const networkName = getNetwork(account.symbol).name;
+    const displaySymbol = getNetworkDisplaySymbol(networkConfigDeps, account.symbol);
+    const networkName = getNetworkConfig(account.symbol).name;
 
     const handleNavigateToReceivePage = () => {
         dispatch(goto({ routeName: 'wallet-receive', preserveParams: true }));
@@ -38,7 +40,7 @@ export const AccountEmpty = ({ account }: AccountEmptyProps) => {
     const handleNavigateToBuyPage = () => {
         dispatch(
             tradingActions.setTradingFromPrefilledAccount(
-                getTradingPrefilledFromAccountData(account),
+                getTradingPrefilledFromAccountData(networkConfigDeps, account),
             ),
         );
         dispatch(goto({ routeName: 'wallet-trading-buy' }));

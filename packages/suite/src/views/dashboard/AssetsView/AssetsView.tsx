@@ -6,12 +6,14 @@ import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { type AssetFiatBalance } from '@suite-common/assets';
 import { useServices } from '@suite-common/dependency-injection';
+import { selectGetNetworkConfigDep } from '@suite-common/networks';
 import {
     type NetworkSymbol,
-    getNetwork,
     getNetworkFeatures,
     isNetworkSymbol,
+    toNetwork,
 } from '@suite-common/wallet-config';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import {
     selectAllAccountsToList,
     selectBaseCurrency,
@@ -55,6 +57,7 @@ import { AssetCard, AssetCardSkeleton } from './AssetCard/AssetCard';
 import { type AssetData } from './AssetData';
 import { AssetTable } from './AssetTable/AssetTable';
 
+
 const InfoMessage = styled.div`
     padding: 16px 24px;
     align-items: center;
@@ -90,6 +93,8 @@ const useAssetsFiatBalances = (
     }, []);
 
 export const AssetsView = () => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+    const { getNetworkConfig } = useServices(selectGetNetworkConfigDep);
     const { dashboardAssetsGridMode } = useSelector(selectFlags);
     const enabledNetworks = useSelector(selectEnabledNetworks);
 
@@ -97,7 +102,7 @@ export const AssetsView = () => {
     const { analytics } = useServices(selectDesktopAnalyticsDep);
     const { isDiscoveryRunning } = useDiscovery();
     const discoveryStatus = useSelector(selectDiscoveryOverallStatus);
-    const accounts = useSelector(selectAllAccountsToList);
+    const accounts = useSelector(state => selectAllAccountsToList(state, networkConfigDeps));
     const { supportedMainnets } = useNetworkSupport();
     const { isBelowTablet } = useLayoutSize();
 
@@ -121,10 +126,12 @@ export const AssetsView = () => {
         assets[account.symbol] = symbolAssets;
     });
 
-    const assetSymbols = typedObjectKeys(assets).filter(symbol => isNetworkSymbol(symbol));
+    const assetSymbols = typedObjectKeys(assets).filter(symbol =>
+        isNetworkSymbol(networkConfigDeps, symbol),
+    );
 
     const assetsData: AssetData[] = assetSymbols.map((symbol): AssetData => {
-        const network = getNetwork(symbol);
+        const network = toNetwork(symbol, getNetworkConfig(symbol));
 
         const assetNativeCryptoBalance =
             assets[symbol] !== undefined
@@ -160,7 +167,7 @@ export const AssetsView = () => {
                     isSupportedTronStakingNetworkSymbol(account.symbol),
             ),
             accounts,
-            isStakeNetwork: getNetworkFeatures(symbol).includes('staking'),
+            isStakeNetwork: getNetworkFeatures(networkConfigDeps, symbol).includes('staking'),
         };
     });
 

@@ -6,6 +6,7 @@ import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { useServices } from '@suite-common/dependency-injection';
 import { notificationsActions } from '@suite-common/toast-notifications';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { selectAccountClaimTransactions } from '@suite-common/wallet-core';
 import { getStakingDataForNetwork, isPending } from '@suite-common/wallet-utils';
 import { Button, Card, Column, InfoItem, Paragraph, Tooltip } from '@trezor/components';
@@ -16,6 +17,7 @@ import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 
 export const ClaimCard = () => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const { analytics } = useServices(selectDesktopAnalyticsDep);
     const selectedAccount = useSelector(selectSelectedAccount);
     const claimTxs = useSelector(state =>
@@ -28,7 +30,7 @@ export const ClaimCard = () => {
     const isClaimPending = useMemo(() => claimTxs.some(tx => isPending(tx)), [claimTxs]);
 
     const { canClaim = false, claimableAmount = '0' } =
-        getStakingDataForNetwork(selectedAccount) ?? {};
+        getStakingDataForNetwork(networkConfigDeps, selectedAccount) ?? {};
     const isClaimButtonDisabled = isClaimingDisabled || !selectedAccount;
 
     // Show success message when claim tx confirmation is complete.

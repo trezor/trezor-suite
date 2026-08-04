@@ -35,6 +35,7 @@ export const selectSellQuoteThunk = createThunk(
                 quotesRequest.cryptoCurrency,
             );
         const { symbol: cryptoNetworkSymbol } = cryptoIdToNetworkSymbolAndContractAddress(
+            extra.services,
             quotesRequest.cryptoCurrency,
         );
 

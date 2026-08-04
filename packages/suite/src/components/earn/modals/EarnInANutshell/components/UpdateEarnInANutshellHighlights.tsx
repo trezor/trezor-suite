@@ -1,9 +1,11 @@
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
 import {
     type NetworkSymbol,
     type StakingNetworkType,
     getNetworkDisplaySymbol,
 } from '@suite-common/wallet-config';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { HandCoinsIcon, PiggyBankIcon, WalletIcon } from '@trezor/icons';
 import { exhaustive } from '@trezor/type-utils';
 
@@ -25,7 +27,8 @@ export const UpdateEarnInANutshellHighlights = ({
     networkSymbol,
     apy,
 }: UpdateEarnInANutshellHighlightsProps) => {
-    const networkDisplaySymbol = getNetworkDisplaySymbol(networkSymbol);
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+    const networkDisplaySymbol = getNetworkDisplaySymbol(networkConfigDeps, networkSymbol);
 
     const highlights: EarnInANutshellHighlight[] = [
         {

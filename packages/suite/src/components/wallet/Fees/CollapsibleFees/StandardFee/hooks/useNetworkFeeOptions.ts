@@ -1,6 +1,8 @@
 import { useMemo } from 'react';
 
-import { type NetworkSymbol, type NetworkType, getNetwork } from '@suite-common/wallet-config';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectGetNetworkConfigDep } from '@suite-common/networks';
+import { type NetworkSymbol, type NetworkType } from '@suite-common/wallet-config';
 import { type PrecomposedLevels, type PrecomposedLevelsCardano } from '@suite-common/wallet-types';
 import { type AmountUnit, asAmountSubunit, subunitsToUnits } from '@suite-common/wallet-utils';
 import { type FeeLevel } from '@trezor/connect';
@@ -31,6 +33,8 @@ export function useNetworkFeeOptions({
     levels,
     composedLevels,
 }: UseNetworkFeeOptionsProps): FeeOptionType[] {
+    const { getNetworkConfig } = useServices(selectGetNetworkConfigDep);
+
     return useMemo(() => {
         const filteredLevels = levels.filter(level => level.label !== 'custom');
 
@@ -42,7 +46,7 @@ export function useNetworkFeeOptions({
                 ? subunitsToUnits({
                       value: asAmountSubunit(new BigNumber(transactionInfo.fee)),
                       symbol: networkSymbol,
-                      decimals: getNetwork(networkSymbol)?.decimals,
+                      decimals: getNetworkConfig(networkSymbol)?.decimals,
                   })
                 : null;
             // Needed only for Solana because of fee estimation on compose Tx

@@ -1,6 +1,7 @@
 import { type TranslationFunction } from '@suite/intl';
 import { type Formatter, type Formatters } from '@suite-common/formatters';
 import {
+    type NetworkConfigDeps,
     getDisplaySymbol,
     getNetworkDisplaySymbol,
     isNetworkSymbol,
@@ -59,7 +60,7 @@ export type AmountLimitProps = {
 
 export type CryptoAmountLimitProps = Pick<AmountLimitProps, 'currency' | 'minCrypto' | 'maxCrypto'>;
 
-interface ValidateCryptoLimitsOptions {
+interface ValidateCryptoLimitsOptions extends NetworkConfigDeps {
     amountLimits?: AmountLimitProps;
     areSatsUsed?: boolean;
     formatter: Formatter<string, string>;
@@ -68,7 +69,7 @@ interface ValidateCryptoLimitsOptions {
 export const validateCryptoLimits =
     (
         translationString: TranslationFunction,
-        { amountLimits, areSatsUsed, formatter }: ValidateCryptoLimitsOptions,
+        { amountLimits, areSatsUsed, formatter, ...networkConfigDeps }: ValidateCryptoLimitsOptions,
     ) =>
     (value: string) => {
         if (value && amountLimits) {
@@ -78,9 +79,13 @@ export const validateCryptoLimits =
 
             if (amountLimits.minCrypto) {
                 minCrypto =
-                    areSatsUsed && isNetworkSymbol(currency)
+                    areSatsUsed && isNetworkSymbol(networkConfigDeps, currency)
                         ? new BigNumber(
-                              networkAmountToSmallestUnit(amountLimits.minCrypto, currency),
+                              networkAmountToSmallestUnit(
+                                  networkConfigDeps,
+                                  amountLimits.minCrypto,
+                                  currency,
+                              ),
                           )
                         : new BigNumber(amountLimits.minCrypto);
             }
@@ -99,9 +104,13 @@ export const validateCryptoLimits =
 
             if (amountLimits.maxCrypto) {
                 maxCrypto =
-                    areSatsUsed && isNetworkSymbol(currency)
+                    areSatsUsed && isNetworkSymbol(networkConfigDeps, currency)
                         ? new BigNumber(
-                              networkAmountToSmallestUnit(amountLimits.maxCrypto, currency),
+                              networkAmountToSmallestUnit(
+                                  networkConfigDeps,
+                                  amountLimits.maxCrypto,
+                                  currency,
+                              ),
                           )
                         : new BigNumber(amountLimits.maxCrypto);
             }
@@ -135,19 +144,22 @@ export const validateCryptoLimits =
         }
     };
 
-interface ValidateSolanaUnstakeAmountOptions {
+interface ValidateSolanaUnstakeAmountOptions extends NetworkConfigDeps {
     account: Account;
 }
 
 export const validateSolanaUnstakeAmount =
-    (translationString: TranslationFunction, { account }: ValidateSolanaUnstakeAmountOptions) =>
+    (
+        translationString: TranslationFunction,
+        { account, ...networkConfigDeps }: ValidateSolanaUnstakeAmountOptions,
+    ) =>
     (value: string) => {
         if (!value) return;
 
-        const bounds = getSolanaUnstakeAmountBounds(account, value);
+        const bounds = getSolanaUnstakeAmountBounds(networkConfigDeps, account, value);
         if (!bounds) return;
 
-        const symbol = getNetworkDisplaySymbol(account.symbol);
+        const symbol = getNetworkDisplaySymbol(networkConfigDeps, account.symbol);
 
         // the fiat approximations are only rendered in the rich <Translation> banner
         return bounds.closestLower
@@ -165,7 +177,7 @@ export const validateSolanaUnstakeAmount =
               });
     };
 
-interface ValidateSolanaUnstakeFiatAmountOptions {
+interface ValidateSolanaUnstakeFiatAmountOptions extends NetworkConfigDeps {
     account: Account;
     decimals: number;
     rate?: number;
@@ -174,7 +186,7 @@ interface ValidateSolanaUnstakeFiatAmountOptions {
 export const validateSolanaUnstakeFiatAmount =
     (
         translationString: TranslationFunction,
-        { account, decimals, rate }: ValidateSolanaUnstakeFiatAmountOptions,
+        { account, decimals, rate, ...networkConfigDeps }: ValidateSolanaUnstakeFiatAmountOptions,
     ) =>
     (value: string, formValues?: { outputs?: { amount?: string }[] }) => {
         if (!value) return;
@@ -190,7 +202,7 @@ export const validateSolanaUnstakeFiatAmount =
             toFiatCurrency({ amount: outputAmount, rate })?.toFixed(2, BigNumber.ROUND_FLOOR) ===
                 value;
 
-        return validateSolanaUnstakeAmount(translationString, { account })(
+        return validateSolanaUnstakeAmount(translationString, { ...networkConfigDeps, account })(
             isFiatOfOutputAmount ? outputAmount : cryptoAmount,
         );
     };
@@ -296,7 +308,7 @@ export const validateMin =
         }
     };
 
-interface ValidateReserveOrBalanceOptions {
+interface ValidateReserveOrBalanceOptions extends NetworkConfigDeps {
     account: Account;
     areSatsUsed?: boolean;
     contractAddress?: string | null;
@@ -305,10 +317,16 @@ interface ValidateReserveOrBalanceOptions {
 export const validateReserveOrBalance =
     (
         translationString: TranslationFunction,
-        { account, areSatsUsed, contractAddress }: ValidateReserveOrBalanceOptions,
+        {
+            account,
+            areSatsUsed,
+            contractAddress,
+            ...networkConfigDeps
+        }: ValidateReserveOrBalanceOptions,
     ) =>
     (value: string) => {
         const result = getAmountValidationResult({
+            ...networkConfigDeps,
             amount: value,
             account,
             areSatsUsed,
@@ -318,7 +336,7 @@ export const validateReserveOrBalance =
         if (result.type === 'reserve') {
             return translationString('AMOUNT_IS_MORE_THAN_RESERVE', {
                 reserve: result.reserve,
-                displaySymbol: getDisplaySymbol(account.symbol),
+                displaySymbol: getDisplaySymbol(networkConfigDeps, account.symbol),
             });
         }
 

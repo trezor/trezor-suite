@@ -3,8 +3,10 @@ import { useForm, useWatch } from 'react-hook-form';
 
 import useDebounce from 'react-use/lib/useDebounce';
 
+import { useServices } from '@suite-common/dependency-injection';
+import { selectGetNetworkConfigDep } from '@suite-common/networks';
 import { getStakeFormsDefaultValues, getStakingContractAddress } from '@suite-common/staking';
-import { getNetwork } from '@suite-common/wallet-config';
+import { toNetwork } from '@suite-common/wallet-config';
 import {
     selectBaseCurrency,
     selectFiatRatesByFiatRateKey,
@@ -42,8 +44,9 @@ type UseStakeFormProps = {
 };
 
 export const useStakeForm = ({ account }: UseStakeFormProps): StakeContextValues => {
+    const { getNetworkConfig } = useServices(selectGetNetworkConfigDep);
     const dispatch = useDispatch();
-    const network = getNetwork(account.symbol);
+    const network = toNetwork(account.symbol, getNetworkConfig(account.symbol));
 
     const baseCurrencyCode = useSelector(selectBaseCurrency);
     const networkFees = useSelector(state => selectRawNetworkFeeInfo(state, account.symbol));

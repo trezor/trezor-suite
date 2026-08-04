@@ -1,6 +1,7 @@
 import { Translation, useTranslation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
 import { redactNumericalSubstring, useDiscreetMode } from '@suite-common/discreet-mode';
-import { getNetworkDisplaySymbol, isNetworkSymbol } from '@suite-common/wallet-config';
+import { getNetworkDisplaySymbol, isNetworkSymbol , selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { type TronTxContractType } from '@suite-common/wallet-constants';
 import { type StakeType } from '@suite-common/wallet-types';
 import {
@@ -123,6 +124,7 @@ const getTronTransactionMessageId = (transaction: WalletAccountTransaction) => {
 };
 
 export const TransactionHeader = ({ transaction, isPending }: TransactionHeaderProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const { translationString } = useTranslation();
     const { isDiscreetMode } = useDiscreetMode();
 
@@ -140,7 +142,7 @@ export const TransactionHeader = ({ transaction, isPending }: TransactionHeaderP
             <Translation
                 id={wrapKind === 'wrap' ? 'TR_TX_WRAP' : 'TR_TX_UNWRAP'}
                 values={{
-                    nativeSymbol: getNetworkDisplaySymbol(transaction.symbol),
+                    nativeSymbol: getNetworkDisplaySymbol(networkConfigDeps, transaction.symbol),
                     wrappedAmount: <WrapTxAmount transaction={transaction} wrapped />,
                 }}
             />
@@ -237,11 +239,11 @@ export const TransactionHeader = ({ transaction, isPending }: TransactionHeaderP
             ...transaction.tokens,
             ...transaction.internalTransfers.map(t => ({
                 type: t.type,
-                symbol: getNetworkDisplaySymbol(transaction.symbol),
+                symbol: getNetworkDisplaySymbol(networkConfigDeps, transaction.symbol),
             })),
             ...transaction.targets.map(_ => ({
                 type: 'sent',
-                symbol: getNetworkDisplaySymbol(transaction.symbol),
+                symbol: getNetworkDisplaySymbol(networkConfigDeps, transaction.symbol),
             })),
         ];
         const fromSymbol = combined.find(t => t.type === 'sent')?.symbol;
@@ -259,8 +261,8 @@ export const TransactionHeader = ({ transaction, isPending }: TransactionHeaderP
     const isMultiTokenTransaction = transaction.tokens.length > 1;
     const transactionSymbol = getTxHeaderSymbol(transaction);
     const symbol =
-        transactionSymbol && isNetworkSymbol(transactionSymbol)
-            ? getNetworkDisplaySymbol(transactionSymbol)
+        transactionSymbol && isNetworkSymbol(networkConfigDeps, transactionSymbol)
+            ? getNetworkDisplaySymbol(networkConfigDeps, transactionSymbol)
             : transactionSymbol?.toUpperCase();
 
     return (

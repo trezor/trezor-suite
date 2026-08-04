@@ -1,8 +1,9 @@
 import { type RouteParams } from '@suite/router';
+import { type GetNetworkConfigDep } from '@suite-common/networks';
 import { type Account } from '@suite-common/wallet-types';
 import { getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
 
-type GetEarnRouteParamsProps = {
+type GetEarnRouteParamsProps = GetNetworkConfigDep & {
     account: Account;
     vaultAddress: string;
 };
@@ -12,6 +13,7 @@ type GetEarnRouteParamsProps = {
  * normalized so the same vault always yields the same URL, whatever casing the API reports.
  */
 export const getEarnRouteParams = ({
+    getNetworkConfig,
     account,
     vaultAddress,
 }: GetEarnRouteParamsProps): RouteParams => ({
@@ -19,6 +21,6 @@ export const getEarnRouteParams = ({
     accountIndex: account.index,
     accountType: account.accountType,
     vaultAddress: encodeURIComponent(
-        getContractAddressForNetworkSymbol(account.symbol, vaultAddress),
+        getContractAddressForNetworkSymbol({ getNetworkConfig }, account.symbol, vaultAddress),
     ),
 });

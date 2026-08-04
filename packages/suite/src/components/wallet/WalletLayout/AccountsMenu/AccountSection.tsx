@@ -1,4 +1,6 @@
+import { useServices } from '@suite-common/dependency-injection';
 import { selectCoinDefinitions } from '@suite-common/token-definitions';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { selectAccountIsStakingActive } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { hasNetworkFeatures } from '@suite-common/wallet-utils';
@@ -25,6 +27,7 @@ export const AccountSection = ({
     selected,
     onItemClick,
 }: AccountSectionProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const {
         symbol,
         accountType,
@@ -36,14 +39,15 @@ export const AccountSection = ({
 
     const coinDefinitions = useSelector(state => selectCoinDefinitions(state, symbol));
 
-    const showGroup = hasNetworkFeatures(account, 'tokens');
+    const showGroup = hasNetworkFeatures(networkConfigDeps, account, 'tokens');
 
     const isStakeShownStored = useSelector(state =>
-        selectAccountIsStakingActive(state, account.key),
+        selectAccountIsStakingActive(state, account.key, networkConfigDeps),
     );
     const isStakeShown = !hideStaking && isStakeShownStored;
 
     const tokens = getTokens({
+        ...networkConfigDeps,
         tokens: accountTokens,
         symbol: account.symbol,
         tokenDefinitions: coinDefinitions,

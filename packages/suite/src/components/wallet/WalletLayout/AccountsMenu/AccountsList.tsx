@@ -3,9 +3,11 @@ import { selectCoinjoinIsPreloading } from '@suite/coinjoin';
 import { Translation, useTranslation } from '@suite/intl';
 import { selectAccountLabelsLegacy } from '@suite/metadata';
 import { type RouteParams, selectRouterParams } from '@suite/router';
+import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import { selectAccountsWithSuiteSyncLabel } from '@suite-common/suite-sync';
 import { selectTokenDefinitions } from '@suite-common/token-definitions';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { getTokens, selectAllAccountsToList } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { accountSearchFn, getAccountTypeName } from '@suite-common/wallet-utils';
@@ -66,7 +68,7 @@ export const AccountsList = ({
     onItemClick,
 }: AccountListProps) => {
     const device = useSelector(selectSelectedDevice);
-    const baseAccounts = useSelector(selectAllAccountsToList);
+    const baseAccounts = useSelector(state => selectAllAccountsToList(state, networkConfigDeps));
 
     const coinjoinIsPreloading = useSelector(selectCoinjoinIsPreloading);
     const accountLegacyLabels = useSelector(selectAccountLabelsLegacy);
@@ -80,6 +82,7 @@ export const AccountsList = ({
     );
 
     const { translationString } = useTranslation();
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const { isSidebarCollapsed } = useResponsiveContext();
     const { coinFilter, searchString } = useAccountSearch();
     const discoveryStatus = useSelector(selectDiscoveryOverallStatus);
@@ -99,10 +102,15 @@ export const AccountsList = ({
                       account.label ??
                       (Object.prototype.hasOwnProperty.call(accountLegacyLabels, key)
                           ? accountLegacyLabels[key]
-                          : getDefaultAccountLabel(translationString, account)) ??
+                          : getDefaultAccountLabel(
+                                networkConfigDeps,
+                                translationString,
+                                account,
+                            )) ??
                       '';
 
                   const { shownWithBalance } = getTokens({
+                      ...networkConfigDeps,
                       tokens: account.tokens ?? [],
                       symbol: account.symbol,
                       tokenDefinitions: tokenDefinitions[account.symbol]?.coin,
@@ -119,6 +127,7 @@ export const AccountsList = ({
                             });
 
                   return accountSearchFn(account, searchString, {
+                      ...networkConfigDeps,
                       coinsFilter: coinFilter,
                       accountLabel,
                       searchableTokens: shownWithBalance,

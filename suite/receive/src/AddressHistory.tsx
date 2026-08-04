@@ -6,6 +6,8 @@ import {
     selectAddressLabelsForAccount,
 } from '@suite/address';
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectGetNetworkConfigDep } from '@suite-common/networks';
 import {
     type ReceiveRootState,
     selectCurrentFreshAddress,
@@ -46,6 +48,7 @@ export const AddressHistory = ({
     onCopied,
     onVerify,
 }: AddressHistoryProps) => {
+    const { getNetworkConfig } = useServices(selectGetNetworkConfigDep);
     const account = useSelector((state: AddressHistoryRootState) =>
         selectAccountByKey(state, accountKey),
     );
@@ -82,6 +85,7 @@ export const AddressHistory = ({
         () =>
             account
                 ? buildReceiveAddressItems({
+                      getNetworkConfig,
                       account,
                       touchedAddresses,
                       pendingAddresses,
@@ -89,7 +93,14 @@ export const AddressHistory = ({
                       currentFreshAddress,
                   })
                 : [],
-        [account, touchedAddresses, pendingAddresses, addressLabels, currentFreshAddress],
+        [
+            account,
+            touchedAddresses,
+            pendingAddresses,
+            addressLabels,
+            currentFreshAddress,
+            getNetworkConfig,
+        ],
     );
 
     // With no fresh address left, the newest card shows the most recent used address, so drop it here

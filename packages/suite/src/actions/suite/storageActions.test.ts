@@ -299,8 +299,18 @@ describe('Storage actions', () => {
         );
 
         // add txs
-        store.dispatch(transactionsActions.addTransaction({ transactions: [tx1], account: acc1 }));
-        store.dispatch(transactionsActions.addTransaction({ transactions: [tx2], account: acc2 }));
+        store.dispatch(
+            transactionsActions.addTransaction(
+                { transactions: [tx1], account: acc1 },
+                extraDependencies.services.getNetworkConfig,
+            ),
+        );
+        store.dispatch(
+            transactionsActions.addTransaction(
+                { transactions: [tx2], account: acc2 },
+                extraDependencies.services.getNetworkConfig,
+            ),
+        );
 
         // remember devices
         await store.dispatch(storageActions.rememberDevice(dev1));
@@ -384,8 +394,18 @@ describe('Storage actions', () => {
         );
 
         // add txs
-        store.dispatch(transactionsActions.addTransaction({ transactions: [tx1], account: acc1 }));
-        store.dispatch(transactionsActions.addTransaction({ transactions: [tx2], account: acc2 }));
+        store.dispatch(
+            transactionsActions.addTransaction(
+                { transactions: [tx1], account: acc1 },
+                extraDependencies.services.getNetworkConfig,
+            ),
+        );
+        store.dispatch(
+            transactionsActions.addTransaction(
+                { transactions: [tx2], account: acc2 },
+                extraDependencies.services.getNetworkConfig,
+            ),
+        );
 
         // store in db
         await store.dispatch(storageActions.rememberDevice(dev1));

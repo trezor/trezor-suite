@@ -1,6 +1,10 @@
 import { type TranslationId } from '@suite/intl';
 import { type TokenDefinitionsState } from '@suite-common/token-definitions';
-import { type NetworkSymbol, type NetworkType } from '@suite-common/wallet-config';
+import {
+    type NetworkConfigDeps,
+    type NetworkSymbol,
+    type NetworkType,
+} from '@suite-common/wallet-config';
 import { type GetTokensOutputType, getTokens } from '@suite-common/wallet-core';
 import {
     type Account,
@@ -66,6 +70,7 @@ export const enhanceTokensWithRates = (
 export type EnahncedTokenInfoWithFiat = ReturnType<typeof enhanceTokensWithRates>[number];
 
 export const hasVisibleTokens = (
+    networkConfigDeps: NetworkConfigDeps,
     symbol: NetworkSymbol,
     tokens: TokenInfo[] | undefined,
     tokenDefinitions: Partial<TokenDefinitionsState>,
@@ -77,6 +82,7 @@ export const hasVisibleTokens = (
     if (!coinDefinitions) return false;
 
     const currentTokens = getTokens({
+        ...networkConfigDeps,
         tokens,
         symbol,
         tokenDefinitions: coinDefinitions,
@@ -101,10 +107,11 @@ export const getTokenAddressTranslationId = (networkType: NetworkType): Translat
 };
 
 export function getAccountsWithPositiveBalanceOrVisibleTokens(
+    networkConfigDeps: NetworkConfigDeps,
     accounts: Account[],
     tokenDefinitions: TokenDefinitionsState,
 ): Account[] {
     return accounts.filter(account =>
-        hasVisibleTokens(account.symbol, account.tokens, tokenDefinitions),
+        hasVisibleTokens(networkConfigDeps, account.symbol, account.tokens, tokenDefinitions),
     );
 }

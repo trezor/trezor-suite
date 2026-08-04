@@ -4,6 +4,7 @@ import { selectIsDeviceLocked } from '@suite/locks';
 import { openModal } from '@suite/modal';
 import { goto, selectRouteName } from '@suite/router';
 import { selectDevices, selectSelectedDevice } from '@suite-common/device';
+import type { ExtraDependencies } from '@suite-common/redux-utils';
 import { isDevEnv } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import type { Network, NetworkAccount, NetworkSymbol } from '@suite-common/wallet-config';
@@ -330,9 +331,10 @@ const coinjoinAccountCheckReorg =
     };
 
 const coinjoinAccountAddTransactions =
-    (props: Parameters<typeof transactionsActions.addTransaction>[0]) => (dispatch: Dispatch) => {
+    (props: Parameters<typeof transactionsActions.addTransaction>[0]) =>
+    (dispatch: Dispatch, _getState: unknown, extra: ExtraDependencies) => {
         if (props.transactions.length > 0) {
-            dispatch(transactionsActions.addTransaction(props));
+            dispatch(transactionsActions.addTransaction(props, extra.services.getNetworkConfig));
         }
     };
 
@@ -349,7 +351,8 @@ const coinjoinAccountAddTransactions =
  In case of adding a coinjoin transaction, log anonymity gain.
  */
 export const updatePendingAccountInfo =
-    (accountKey: AccountKey) => async (dispatch: Dispatch, getState: GetState) => {
+    (accountKey: AccountKey) =>
+    async (dispatch: Dispatch, getState: GetState, extra: ExtraDependencies) => {
         const state = getState();
         const account = selectAccountByKey(state, accountKey);
         const coinjoinAccount = selectCoinjoinAccountByKey(state, accountKey);
@@ -376,7 +379,9 @@ export const updatePendingAccountInfo =
         );
         accountInfo.addresses.anonymitySet = anonymityScores;
 
-        dispatch(accountsActions.updateAccount(account, accountInfo));
+        dispatch(
+            accountsActions.updateAccount(account, extra.services.getNetworkConfig, accountInfo),
+        );
 
         // Log anonymity gain if the newly added transaction is a coinjoin transaction.
         if (accountInfo.history.transactions[0]?.type === 'joint') {
@@ -445,7 +450,7 @@ const cleanPendingTransactions =
 
 export const fetchAndUpdateAccount =
     ({ key: accountKey, symbol }: Account) =>
-    async (dispatch: Dispatch, getState: GetState) => {
+    async (dispatch: Dispatch, getState: GetState, extra: ExtraDependencies) => {
         const state = getState();
         // do not sync if any account CoinjoinSession is in critical phase
         if (selectIsAnySessionInCriticalPhase(state)) return;
@@ -529,6 +534,7 @@ export const fetchAndUpdateAccount =
                 dispatch(
                     accountsActions.updateAccount(
                         { ...account, status: 'ready' as const },
+                        extra.services.getNetworkConfig,
                         accountInfo,
                     ),
                 );
@@ -564,7 +570,7 @@ const handleError = (error: string) => (dispatch: Dispatch) => {
 
 export const createCoinjoinAccount =
     (network: Network, account: NetworkAccount) =>
-    async (dispatch: Dispatch, getState: GetState) => {
+    async (dispatch: Dispatch, getState: GetState, extra: ExtraDependencies) => {
         if (account.accountType !== 'coinjoin') {
             throw new Error('createCoinjoinAccount: invalid account type');
         }
@@ -611,22 +617,25 @@ export const createCoinjoinAccount =
 
         // create empty account
         const coinjoinAccount = dispatch(
-            accountsActions.createAccount({
-                deviceState: device!.state!.staticSessionId!,
-                index: 0,
-                path,
-                unlockPath: unlockPath.payload,
-                accountType: account.accountType,
-                backendType: 'coinjoin',
-                status: 'initial',
-                symbol: network.symbol,
-                accountInfo: {
-                    ...EMPTY_ACCOUNT_INFO,
-                    descriptor: publicKey.payload.xpubSegwit || publicKey.payload.xpub,
-                    legacyXpub: publicKey.payload.xpub,
+            accountsActions.createAccount(
+                {
+                    deviceState: device!.state!.staticSessionId!,
+                    index: 0,
+                    path,
+                    unlockPath: unlockPath.payload,
+                    accountType: account.accountType,
+                    backendType: 'coinjoin',
+                    status: 'initial',
+                    symbol: network.symbol,
+                    accountInfo: {
+                        ...EMPTY_ACCOUNT_INFO,
+                        descriptor: publicKey.payload.xpubSegwit || publicKey.payload.xpub,
+                        legacyXpub: publicKey.payload.xpub,
+                    },
+                    visible: true,
                 },
-                visible: true,
-            }),
+                extra.services.getNetworkConfig,
+            ),
         );
 
         log(`CoinjoinAccount created: ${getAccountProgressHandle(coinjoinAccount.payload)}`);
@@ -657,7 +666,7 @@ export const createCoinjoinAccount =
 
 export const rescanCoinjoinAccount =
     (accountKey: AccountKey, fullRescan = false) =>
-    async (dispatch: Dispatch, getState: GetState) => {
+    async (dispatch: Dispatch, getState: GetState, extra: ExtraDependencies) => {
         const state = getState();
         const account = selectAccountByKey(state, accountKey);
         if (account?.backendType !== 'coinjoin' || account.syncing) return;
@@ -681,6 +690,7 @@ export const rescanCoinjoinAccount =
         const { payload } = dispatch(
             accountsActions.updateAccount(
                 { ...account, status: 'initial' as const },
+                extra.services.getNetworkConfig,
                 { ...EMPTY_ACCOUNT_INFO, descriptor: account.descriptor },
             ),
         );

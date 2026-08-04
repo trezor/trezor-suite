@@ -37,11 +37,11 @@ export const selectExchangeQuoteThunk = createThunk(
         }
 
         const { symbol: sendCryptoNetworkSymbol, contractAddress: sendCryptoContractAddress } =
-            cryptoIdToNetworkSymbolAndContractAddress(quotesRequest.send);
+            cryptoIdToNetworkSymbolAndContractAddress(extra.services, quotesRequest.send);
         const {
             symbol: receiveCryptoNetworkSymbol,
             contractAddress: receiveCryptoContractAddress,
-        } = cryptoIdToNetworkSymbolAndContractAddress(quotesRequest.receive);
+        } = cryptoIdToNetworkSymbolAndContractAddress(extra.services, quotesRequest.receive);
 
         asTypedDesktopAnalytics(extra.services.analytics).report({
             type: events.tradeExchangeEvent.name,

@@ -1,7 +1,9 @@
 import { type ReactNode } from 'react';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { isTokenDefinitionKnown, selectCoinDefinitions } from '@suite-common/token-definitions';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { selectHistoricFiatRates } from '@suite-common/wallet-core';
 import { type Timestamp, type TokenAddress } from '@suite-common/wallet-types';
 import {
@@ -41,10 +43,12 @@ export const TransactionsGroup = ({
     children,
     index,
 }: TransactionsGroupProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const historicFiatRates = useSelector(selectHistoricFiatRates);
     const tokenDefinitions = useSelector(state => selectCoinDefinitions(state, symbol));
-    const totalAmountPerDay = sumTransactions(transactions);
+    const totalAmountPerDay = sumTransactions(networkConfigDeps, transactions);
     const totalFiatAmountPerDay = sumTransactionsFiat(
+        networkConfigDeps,
         transactions,
         baseCurrencyCode,
         historicFiatRates,
@@ -63,6 +67,7 @@ export const TransactionsGroup = ({
             )
             .some(token => {
                 const isTokenKnown = isTokenDefinitionKnown(
+                    networkConfigDeps,
                     tokenDefinitions?.data,
                     symbol,
                     token.contract,

@@ -12,9 +12,9 @@ import {
     type Network,
     type NetworkAccount,
     type NetworkSymbol,
-    getNetwork,
-    networks,
+    toNetwork,
 } from '@suite-common/wallet-config';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import {
     accountsActions,
     changeCoinVisibility,
@@ -42,6 +42,7 @@ import { SelectNetwork } from './SelectNetwork';
 import { verifyAvailability } from './verifyAvailability';
 import { AdvancedCoinSettingsModal } from '../AdvancedCoinSettingsModal/AdvancedCoinSettingsModal';
 
+
 type AddAccountProps = {
     device: TrezorDevice;
     onCancel: () => void;
@@ -63,6 +64,7 @@ export const AddAccountModal = ({
     isCoinjoinDisabled,
     isBackClickDisabled,
 }: AddAccountProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const accounts = useSelector(selectAccounts);
     const app = useSelector(selectRouterApp);
     const isDebug = useSelector(selectIsDebugModeActive);
@@ -111,7 +113,7 @@ export const AddAccountModal = ({
     // or in case of only btc is enabled on bitcoin-only firmware
     const bitcoinOnlyDefaultNetworkSelection =
         isBitcoinOnlyFirmware && supportedMainnets.length === 1 && allTestnetNetworksDisabled
-            ? networks.btc
+            ? supportedMainnets.find(network => network.symbol === 'btc')
             : undefined;
 
     const isCoinjoinVisible = (isCoinjoinPublic || isDebug) && !isCoinjoinDisabled;
@@ -122,7 +124,7 @@ export const AddAccountModal = ({
                 return undefined;
             }
 
-            return getAvailableAccountTypes(network.symbol, {
+            return getAvailableAccountTypes(networkConfigDeps, network.symbol, {
                 isCoinjoinVisible,
                 isDebug,
             });
@@ -151,7 +153,7 @@ export const AddAccountModal = ({
     const availableNetworksSymbols = useAvailableNetworkSymbols();
 
     const enabledNetworks = availableNetworksSymbols.map(networkSymbol =>
-        getNetwork(networkSymbol),
+        toNetwork(networkSymbol, networkConfigDeps.getNetworkConfig(networkSymbol)),
     );
     const [enabledMainnetNetworks, enabledTestnetNetworks] = useMemo(
         () => arrayPartition(enabledNetworks, network => !network?.testnet),
@@ -358,6 +360,7 @@ export const AddAccountModal = ({
         }
 
         const newAccount = await prepareNewAccountPayload({
+            ...networkConfigDeps,
             accountType: account.accountType,
             networkSymbol: account.symbol,
             index: account.index + 1,
@@ -378,7 +381,10 @@ export const AddAccountModal = ({
             return;
         }
 
-        const createAccountAction = accountsActions.createAccount(newAccount);
+        const createAccountAction = accountsActions.createAccount(
+            newAccount,
+            networkConfigDeps.getNetworkConfig,
+        );
         dispatch(createAccountAction);
         finishEnableAccount(createAccountAction.payload);
     }
@@ -393,6 +399,7 @@ export const AddAccountModal = ({
         accountTypes: NetworkAccount[];
     }) {
         const newAccount = await prepareNewAccountPayload({
+            ...networkConfigDeps,
             accountType: account.accountType,
             networkSymbol: network.symbol,
             index: 0,
@@ -414,7 +421,7 @@ export const AddAccountModal = ({
         }
 
         onCancel();
-        dispatch(accountsActions.createAccount(newAccount));
+        dispatch(accountsActions.createAccount(newAccount, networkConfigDeps.getNetworkConfig));
         resetAccountSearch(newAccount.symbol);
         reportNewAccountAnalytics(newAccount);
         dispatch(reportWalletBalanceThunk());
@@ -428,7 +435,10 @@ export const AddAccountModal = ({
             return;
         }
 
-        const networkToSelect = networks[networkSymbol];
+        const networkToSelect = toNetwork(
+            networkSymbol,
+            networkConfigDeps.getNetworkConfig(networkSymbol),
+        );
 
         if (!networkToSelect) {
             return;

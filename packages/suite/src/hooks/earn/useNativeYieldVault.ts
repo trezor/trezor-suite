@@ -1,7 +1,12 @@
 import { useMemo } from 'react';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { type YieldDtoV2, useAllYieldOpportunities } from '@suite-common/earn-stablecoin-api';
-import { getNetworkByYieldXyzId } from '@suite-common/wallet-config';
+import {
+    findNetworkByYieldXyzId,
+    getNetworks,
+    selectNetworkConfigDeps,
+} from '@suite-common/wallet-config';
 import { isYieldVaultOperational } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { getApyPercent } from '@suite-common/wallet-utils';
@@ -21,6 +26,8 @@ const emptyVaults: YieldDtoV2[] = [];
  * wrapped-native token (the native balance can be wrapped on the way into the vault).
  */
 export const useNativeYieldVault = (account: Account) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+    const networks = getNetworks(networkConfigDeps);
     const yieldDepositMessageSystem = useMessageSystemYield('deposit');
     const isYieldOptionRelevant =
         account.networkType === 'ethereum' && !yieldDepositMessageSystem.isDisabled;
@@ -35,11 +42,12 @@ export const useNativeYieldVault = (account: Account) => {
                       vault =>
                           isYieldVaultOperational(vault) &&
                           vault.status.enter &&
-                          getNetworkByYieldXyzId(vault.network)?.symbol === account.symbol &&
+                          findNetworkByYieldXyzId(networks, vault.network)?.symbol ===
+                              account.symbol &&
                           isWrappedNativeToken(account.symbol, vault.token.address),
                   )
                 : emptyVaults,
-        [isYieldOptionRelevant, availableVaults, account.symbol],
+        [isYieldOptionRelevant, availableVaults, account.symbol, networks],
     );
 
     const hasYieldOption = useSelector(state =>

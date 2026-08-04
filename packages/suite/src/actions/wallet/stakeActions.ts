@@ -105,6 +105,7 @@ const pushTransaction =
         if (!serializedTx || !precomposedTx || !account) return;
 
         const txData = getMevProtectedTxData(
+            extra.services,
             serializedTx.symbol,
             serializedTx.tx,
             isMevProtectionEnabled && isMevProtectionFeatureEnabled,
@@ -124,7 +125,13 @@ const pushTransaction =
             .toString();
 
         // get total amount without fee
-        const formattedAmount = formatNetworkAmount(spentWithoutFee, account.symbol, true, false);
+        const formattedAmount = formatNetworkAmount(
+            extra.services,
+            spentWithoutFee,
+            account.symbol,
+            true,
+            false,
+        );
 
         if (sentTx.success) {
             const { txid } = sentTx.payload;

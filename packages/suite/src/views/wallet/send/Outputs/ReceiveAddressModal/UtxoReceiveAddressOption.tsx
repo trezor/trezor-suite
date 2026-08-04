@@ -1,6 +1,7 @@
 import { Address } from '@suite/address';
+import { useServices } from '@suite-common/dependency-injection';
 import { useFormatters } from '@suite-common/formatters';
-import { getNetwork } from '@suite-common/wallet-config';
+import { selectGetNetworkConfigDep } from '@suite-common/networks';
 import { selectBaseCurrency } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { BASE_CURRENCY_ZERO, asAmountSubunit, subunitsToUnits } from '@suite-common/wallet-utils';
@@ -24,7 +25,8 @@ export const UtxoReceiveAddressOption = ({
     address,
     onAddressSelect,
 }: UtxoReceiveAddressOptionProps) => {
-    const network = getNetwork(account.symbol);
+    const { getNetworkConfig } = useServices(selectGetNetworkConfigDep);
+    const network = getNetworkConfig(account.symbol);
 
     const baseCurrency = useSelector(selectBaseCurrency);
     const { BaseCurrencyAmountFormatter } = useFormatters();

@@ -1,3 +1,5 @@
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { type Account, type RatesByKey } from '@suite-common/wallet-types';
 import { getTotalFiatBalance } from '@suite-common/wallet-utils/src/accountUtils';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
@@ -10,10 +12,12 @@ export const useTotalFiatBalance = (
     baseCurrencyCode: BaseCurrencyCode,
     rates?: RatesByKey,
 ) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const tokenDefinitions = useSelector(state => state.tokenDefinitions);
     const deviceAccounts: Account[] = accounts.map(account => {
         const coinDefinitions = tokenDefinitions?.[account.symbol]?.coin;
         const tokens = getTokens({
+            ...networkConfigDeps,
             tokens: account.tokens ?? [],
             symbol: account.symbol,
             tokenDefinitions: coinDefinitions,
@@ -23,6 +27,7 @@ export const useTotalFiatBalance = (
     });
 
     const totalBaseCurrencyBalance = getTotalFiatBalance({
+        ...networkConfigDeps,
         deviceAccounts,
         baseCurrencyCode,
         rates,

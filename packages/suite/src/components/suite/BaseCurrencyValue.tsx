@@ -5,9 +5,11 @@ import styled from 'styled-components';
 
 import { HiddenPlaceholder, type HiddenPlaceholderProps } from '@suite/discreet-mode';
 import { selectShouldAnimateLoadingSkeleton } from '@suite/ui-animations';
+import { useServices } from '@suite-common/dependency-injection';
 import { useFormatters } from '@suite-common/formatters';
 import { selectIsSpecificCoinDefinitionKnown } from '@suite-common/token-definitions';
 import { CONTRACT_ADDRESS_FOR_NATIVE_TOKEN } from '@suite-common/trading';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import {
     type RateTypeWithoutHistoric,
     type TokenAddress,
@@ -75,6 +77,7 @@ export const BaseCurrencyValue = ({
     isLoading,
     rateType,
 }: BaseCurrencyValueProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const shouldAnimate = useSelector(selectShouldAnimateLoadingSkeleton);
     const isNativeToken = !tokenAddress || tokenAddress === CONTRACT_ADDRESS_FOR_NATIVE_TOKEN;
     const { baseCurrencyCode, fiatAmount, rate, currentRate } = useFiatFromCryptoValue({
@@ -95,7 +98,12 @@ export const BaseCurrencyValue = ({
     const WrapperComponent = disableHiddenPlaceholder ? SameWidthNums : HiddenPlaceholder;
 
     const isTokenKnown = useSelector(state =>
-        selectIsSpecificCoinDefinitionKnown(state, symbol, tokenAddress || ('' as TokenAddress)),
+        selectIsSpecificCoinDefinitionKnown(
+            state,
+            symbol,
+            tokenAddress || ('' as TokenAddress),
+            networkConfigDeps,
+        ),
     );
 
     const isZeroAmount = new BigNumber(amount ?? 0).isZero();

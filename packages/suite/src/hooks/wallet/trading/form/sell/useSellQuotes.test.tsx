@@ -10,13 +10,12 @@ import {
     sellInitialState,
     initialState as tradingInitialState,
 } from '@suite-common/trading';
-import { type Network, getNetwork, toNetworkSymbolNonTestnet } from '@suite-common/wallet-config';
+import { type Network, toNetwork } from '@suite-common/wallet-config';
+import { mockNetworkConfigDeps } from '@suite-common/wallet-config/mocks';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 
 import { useSellQuotes } from './useSellQuotes';
 import { DEBOUNCE_DELAY_MS } from '../common/useTradingQuoteRequest';
-
-const btcSymbol = toNetworkSymbolNonTestnet('btc');
 
 const QUOTES: SellFiatTrade[] = [
     {
@@ -72,11 +71,11 @@ const SEND_CRYPTO_SELECT: TradingAssetSellOption = {
     name: 'Bitcoin',
     coingeckoId: 'bitcoin',
     contractAddress: null,
-    symbol: btcSymbol,
+    symbol: 'btc',
     displaySymbol: 'BTC',
     networkName: 'Bitcoin',
-    networkSymbol: btcSymbol,
-    accountKey: mockAccountKey({ descriptor: 'descriptor123', symbol: btcSymbol }),
+    networkSymbol: 'btc',
+    accountKey: mockAccountKey({ descriptor: 'descriptor123', symbol: 'btc' }),
 };
 
 const VALID_DEFAULTS: TradingSellFormProps = {
@@ -133,7 +132,7 @@ const renderSellQuotes = (
 ) => {
     const { resolver } = options;
     const initialProps: { currentNetwork: Network | undefined } = {
-        currentNetwork: getNetwork(btcSymbol),
+        currentNetwork: toNetwork('btc', mockNetworkConfigDeps.getNetworkConfig('btc')),
     };
 
     const store = configureMockStore({

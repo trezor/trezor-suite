@@ -1,5 +1,7 @@
 import { Translation } from '@suite/intl';
-import { type Explorer, getNetwork } from '@suite-common/wallet-config';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectGetNetworkConfigDep } from '@suite-common/networks';
+import { type Explorer, toNetwork } from '@suite-common/wallet-config';
 import { getExplorerUrl } from '@suite-common/wallet-config/src/getExplorerUrls';
 import { selectAccountByKey, selectExplorer } from '@suite-common/wallet-core';
 import {
@@ -42,13 +44,14 @@ export const DetailModal = ({
     nonceStatus,
     nextNonce,
 }: DetailModalProps) => {
+    const { getNetworkConfig } = useServices(selectGetNetworkConfigDep);
     const accountKey = createAccountKey({
         accountDescriptor: tx.descriptor,
         networkSymbol: tx.symbol,
         deviceStaticSessionId: tx.deviceState,
     });
     const account = useSelector(state => selectAccountByKey(state, accountKey)) as Account;
-    const network = getNetwork(account.symbol);
+    const network = toNetwork(account.symbol, getNetworkConfig(account.symbol));
     const explorer = useSelector(state => selectExplorer(state, network.symbol)) as Explorer;
 
     return (

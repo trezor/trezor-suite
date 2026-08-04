@@ -1,7 +1,8 @@
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
+import { useServices } from '@suite-common/dependency-injection';
 import { EarnFlow, EarnProvider } from '@suite-common/suite-types/src/staking';
-import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { getNetworkDisplaySymbol , selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { selectPoolStatsApy } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { isCardanoStakedWithFiveBinaries } from '@suite-common/wallet-utils';
@@ -17,6 +18,7 @@ interface NewProviderCardProps {
 }
 
 export const NewProviderCard = ({ account }: NewProviderCardProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const dispatch = useDispatch();
 
     const { isStakingDisabled, stakingMessageContent } = useMessageSystemStaking(account?.symbol);
@@ -25,7 +27,9 @@ export const NewProviderCard = ({ account }: NewProviderCardProps) => {
 
     const isStakedWithFiveBinaries = isCardanoStakedWithFiveBinaries(account);
 
-    const displaySymbol = account?.symbol ? getNetworkDisplaySymbol(account.symbol) : '';
+    const displaySymbol = account?.symbol
+        ? getNetworkDisplaySymbol(networkConfigDeps, account.symbol)
+        : '';
 
     const openStakeInANutshellModal = () => {
         if (!isStakingDisabled) {

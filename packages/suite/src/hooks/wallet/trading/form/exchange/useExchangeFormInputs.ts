@@ -1,5 +1,6 @@
 import { useWatch } from 'react-hook-form';
 
+import { useServices } from '@suite-common/dependency-injection';
 import {
     TRADING_FORM_CRYPTO_TOKEN,
     TRADING_FORM_OUTPUT_AMOUNT,
@@ -10,6 +11,7 @@ import {
     type TradingExchangeFormProps,
     tradingExchangeActions,
 } from '@suite-common/trading';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import {
     selectIsNetworkReserveEnabled,
     selectVisibleDeviceAccounts,
@@ -43,6 +45,7 @@ export const useExchangeFormInputs = ({
     setShowReserveBanner,
     setAccountOnChange,
 }: UseExchangeFormInputsProps): TradingUseFormActionsReturnProps => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const dispatch = useDispatch();
     const { isBtcSatsAmountUnit: shouldSendInSats } = useBitcoinAmountUnit(account?.symbol);
     const isNetworkReserveEnabled = useSelector(selectIsNetworkReserveEnabled);
@@ -95,6 +98,7 @@ export const useExchangeFormInputs = ({
         clearErrors([TRADING_FORM_OUTPUT_FIAT, TRADING_FORM_OUTPUT_AMOUNT]);
 
         const { cryptoInputValue, cryptoAmountWithReserve } = calcRatioAmount({
+            ...networkConfigDeps,
             divisor,
             balance: tokenData ? tokenData.balance || '0' : account.formattedBalance,
             decimals: tokenData ? tokenData.decimals : networkDecimals,

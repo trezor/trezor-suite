@@ -4,7 +4,9 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { useTranslation } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
+import { useServices } from '@suite-common/dependency-injection';
 import { formInputsMaxLength } from '@suite-common/validators';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { updateFiatRatesThunk } from '@suite-common/wallet-core';
 import {
     type BaseCurrencyOption,
@@ -52,6 +54,7 @@ export const BaseCurrencyInput = ({
     labelHoverRight,
     labelRight,
 }: FiatInputProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const {
         account,
         network,
@@ -87,6 +90,7 @@ export const BaseCurrencyInput = ({
     const baseCurrencyCode = currencyValue.value;
 
     const baseCurrencyDecimals = getDecimalsForBaseCurrency({
+        ...networkConfigDeps,
         code: baseCurrencyCode,
         isInSats: areSatsDisplayed,
     });
@@ -105,6 +109,7 @@ export const BaseCurrencyInput = ({
 
             if (isSendMaxActive) {
                 const formattedAmount = parseCryptoToFormattedBaseCurrency({
+                    ...networkConfigDeps,
                     ...baseFormatOptions,
                     value: cryptoValue,
                     baseCurrencyCode,
@@ -115,6 +120,7 @@ export const BaseCurrencyInput = ({
                 });
             } else {
                 const formattedAmount = parseBaseCurrencyToFormattedCrypto({
+                    ...networkConfigDeps,
                     ...baseFormatOptions,
                     value: fiatValue,
                     isCryptoInSats: shouldSendInSats === true,

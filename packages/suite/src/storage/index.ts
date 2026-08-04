@@ -4,8 +4,10 @@ import { idbVersionToString } from '@suite/idb-migration-utils';
 import { desktopApi } from '@trezor/suite-desktop-api';
 import SuiteDB, { type OnUpgradeFunc } from '@trezor/suite-storage';
 
+import { suiteNetworkConfigDeps } from 'src/support/extraDependencies';
+
 import type { SuiteDBSchema } from './definitions';
-import { runLegacyMigrations } from './migrations';
+import { createRunLegacyMigrations } from './migrations';
 import * as migrations from './migrations/versions';
 
 const LAST_LEGACY_VERSION = 57;
@@ -17,6 +19,9 @@ const LAST_LEGACY_VERSION = 57;
 const normalizeVersion = (version: number) => (version < 0x01000000 ? version << 8 : version);
 
 const MIGRATIONS = Object.values(migrations)
+    .map(migration =>
+        typeof migration === 'function' ? migration(suiteNetworkConfigDeps) : migration,
+    )
     .map(m => ({ ...m, threshold: normalizeVersion(m.threshold) }))
     .sort((a, b) => a.threshold - b.threshold);
 
@@ -61,7 +66,12 @@ const onUpgrade: OnUpgradeFunc<SuiteDBSchema> = async (db, oldVersion, newVersio
     }
 
     if (oldVersion < LAST_LEGACY_VERSION) {
-        await runLegacyMigrations(db, oldVersion, newVersion, transaction);
+        await createRunLegacyMigrations(suiteNetworkConfigDeps)(
+            db,
+            oldVersion,
+            newVersion,
+            transaction,
+        );
     }
 
     await runMigrations(db, oldVersion, transaction);

@@ -62,7 +62,7 @@ import {
     buildTokenDefinitionsFromStorage,
 } from '@suite-common/token-definitions';
 import { selectTradedAccountKeys } from '@suite-common/trading';
-import { isNetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkConfigDeps, isNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type BlockchainState,
     type ExplorerConfig,
@@ -123,6 +123,15 @@ export type SuiteExtra = ExtraDependenciesStatic & { services: SuiteServices };
 
 export const selectSuiteServices = (services: any): SuiteServices => services;
 
+const networkModules = createNetworksCompositionRoot();
+const networkModuleRepository = createNetworkModuleRepository({ networkModules });
+const getNetworkConfig = createGetNetworkConfig({ networkModuleRepository });
+
+export const suiteNetworkConfigDeps: NetworkConfigDeps = {
+    networkModuleRepository,
+    getNetworkConfig,
+};
+
 export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteServices => {
     const { ensureDelegatedIdentityKey } = delegatedIdentityKeyCompositionRoot({
         dispatch: deps.dispatch,
@@ -174,9 +183,6 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         dispatch: deps.dispatch,
         getState: deps.getState,
     });
-    const networkModules = createNetworksCompositionRoot();
-    const networkModuleRepository = createNetworkModuleRepository({ networkModules });
-    const getNetworkConfig = createGetNetworkConfig({ networkModuleRepository });
     const findNetworkSymbolForProtocol = createFindNetworkSymbolForProtocol({
         getNetworkConfig,
         networkModuleRepository,
@@ -263,7 +269,8 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
     };
 };
 
-export const extraDependencies: ExtraDependenciesStatic = {
+export const extraDependencies: ExtraDependenciesStatic & { services: NetworkConfigDeps } = {
+    services: suiteNetworkConfigDeps,
     thunks: {
         initMetadata: metadataLabelingActions.init,
         fetchAndSaveMetadata: metadataLabelingActions.fetchAndSaveMetadata,
@@ -341,7 +348,7 @@ export const extraDependencies: ExtraDependenciesStatic = {
             if (payload.tokenManagement) {
                 const tokenDefinitions = buildTokenDefinitionsFromStorage(payload.tokenManagement);
                 Object.keys(tokenDefinitions).forEach(symbol => {
-                    if (isNetworkSymbol(symbol)) {
+                    if (isNetworkSymbol(suiteNetworkConfigDeps, symbol)) {
                         state[symbol] = tokenDefinitions[symbol];
                     }
                 });
@@ -350,6 +357,7 @@ export const extraDependencies: ExtraDependenciesStatic = {
         storageLoadAccounts: (_, { payload }: StorageLoadAction) =>
             // Storage returns accounts in IndexedDB key order, sort them like the reducer does.
             sortByCoin(
+                suiteNetworkConfigDeps,
                 payload.accounts.map(acc =>
                     acc.backendType === 'coinjoin' ? fixLoadedCoinjoinAccount(acc) : acc,
                 ),

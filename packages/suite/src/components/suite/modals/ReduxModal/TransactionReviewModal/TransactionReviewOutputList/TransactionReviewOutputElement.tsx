@@ -4,7 +4,9 @@ import styled, { css } from 'styled-components';
 
 import { Address } from '@suite/address';
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { useDisplayBaseCurrency } from '@suite-common/wallet-core';
 import { type TokenAddress } from '@suite-common/wallet-types';
 import { convertAmountSubunitsToUnits, formatNetworkAmount } from '@suite-common/wallet-utils';
@@ -105,6 +107,7 @@ type ValueProps = {
 };
 
 const Value = ({ value, type, symbol, token, isFiatVisible, state, isChunked }: ValueProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const { shallDisplayBaseCurrency } = useDisplayBaseCurrency(symbol);
 
     switch (type) {
@@ -125,7 +128,7 @@ const Value = ({ value, type, symbol, token, isFiatVisible, state, isChunked }: 
         case 'amount': {
             const formattedValue = token
                 ? convertAmountSubunitsToUnits(value, token.decimals)
-                : formatNetworkAmount(value, symbol);
+                : formatNetworkAmount(networkConfigDeps, value, symbol);
 
             return (
                 <Column alignItems="flex-end">

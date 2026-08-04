@@ -3,8 +3,10 @@ import { useSelector } from 'react-redux';
 
 import { selectSelectedAccount } from '@suite/account';
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
 import { getInstantStakeType } from '@suite-common/staking';
 import { type NetworkSymbol, isNetworkSymbol } from '@suite-common/wallet-config';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { type StakeType } from '@suite-common/wallet-types';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { Badge, Row } from '@trezor/components';
@@ -39,9 +41,11 @@ interface InstantStakeBadgeProps {
 }
 
 export const InstantStakeBadge = memo(({ transaction, symbol }: InstantStakeBadgeProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const { descriptor: selectedAccountAddress } = useSelector(selectSelectedAccount) || {};
 
-    if (!selectedAccountAddress || !symbol || !isNetworkSymbol(symbol)) return null;
+    if (!selectedAccountAddress || !symbol || !isNetworkSymbol(networkConfigDeps, symbol))
+        return null;
 
     const internalTx = getInternalTransaction(transaction, selectedAccountAddress, symbol);
     if (!internalTx) return null;
@@ -52,7 +56,8 @@ export const InstantStakeBadge = memo(({ transaction, symbol }: InstantStakeBadg
     const translationId = getTranslationId(instantStakeType);
     if (!translationId) return null;
 
-    const amount = internalTx.amount && formatNetworkAmount(internalTx.amount, symbol);
+    const amount =
+        internalTx.amount && formatNetworkAmount(networkConfigDeps, internalTx.amount, symbol);
 
     return (
         <Badge size="small" iconLeft={LightningIcon}>

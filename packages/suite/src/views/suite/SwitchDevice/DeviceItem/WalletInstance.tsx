@@ -5,6 +5,8 @@ import { Labeling } from '@suite/labeling';
 import { selectIsLegacyLabelingVisible } from '@suite/metadata';
 import { SuiteSyncWalletDebug } from '@suite/suite-sync';
 import { useWalletLabel } from '@suite/wallet';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import {
     getAccountsByDeviceState,
     selectAllAccountsToList,
@@ -52,6 +54,7 @@ export const WalletInstance = ({
     onCancel,
     ...rest
 }: WalletInstanceProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const [isEjecting, setIsEjecting] = useState(false);
     const accounts = useSelector(state => state.wallet.accounts);
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
@@ -86,7 +89,10 @@ export const WalletInstance = ({
 
             // NOTE: to determine which account is the first one, we need to filter out empty accounts
             // that are currently displayed in the UI
-            const unfilteredUIAccountGroups = selectAllAccountsToList(store.getState());
+            const unfilteredUIAccountGroups = selectAllAccountsToList(
+                store.getState(),
+                networkConfigDeps,
+            );
             const currentFirstAccount = unfilteredUIAccountGroups[0];
             // NOTE: attempt to determine, if the currently selected account
             // has a corresponding account in the next wallet accounts

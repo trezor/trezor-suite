@@ -3,12 +3,14 @@ import { useForm, useWatch } from 'react-hook-form';
 
 import useDebounce from 'react-use/lib/useDebounce';
 
+import { useServices } from '@suite-common/dependency-injection';
+import { selectGetNetworkConfigDep } from '@suite-common/networks';
 import {
     getStakeFormsDefaultValues,
     getStakingContractAddress,
     simulateUnstake,
 } from '@suite-common/staking';
-import { getNetwork } from '@suite-common/wallet-config';
+import { selectNetworkConfigDeps, toNetwork } from '@suite-common/wallet-config';
 import {
     selectBaseCurrency,
     selectFiatRatesByFiatRateKey,
@@ -53,12 +55,14 @@ type UseWithdrawalFormProps = {
 };
 
 export const useWithdrawalForm = ({ account }: UseWithdrawalFormProps): WithdrawalContextValues => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+    const { getNetworkConfig } = useServices(selectGetNetworkConfigDep);
     const dispatch = useDispatch();
     const [approximatedInstantEthAmount, setApproximatedInstantEthAmount] = useState<string | null>(
         null,
     );
 
-    const network = getNetwork(account.symbol);
+    const network = toNetwork(account.symbol, getNetworkConfig(account.symbol));
     const { symbol } = account;
 
     const baseCurrencyCode = useSelector(selectBaseCurrency);
@@ -74,7 +78,8 @@ export const useWithdrawalForm = ({ account }: UseWithdrawalFormProps): Withdraw
         selectFiatRatesByFiatRateKey(state, getFiatRateKey(symbol, baseCurrencyCode), 'current'),
     );
 
-    const { autocompoundBalance = '0' } = getStakingDataForNetwork(account) ?? {};
+    const { autocompoundBalance = '0' } =
+        getStakingDataForNetwork(networkConfigDeps, account) ?? {};
     const amountLimits: AmountLimitProps = {
         currency: symbol,
         maxCrypto: autocompoundBalance,
@@ -135,6 +140,7 @@ export const useWithdrawalForm = ({ account }: UseWithdrawalFormProps): Withdraw
 
         const simulateUnstakeAmount = async () => {
             const approximatedEthAmount = await simulateUnstake({
+                getNetworkConfig,
                 amount: cryptoInput,
                 from: account.descriptor,
                 symbol: account.symbol,

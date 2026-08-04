@@ -1,5 +1,7 @@
 import { useEffect } from 'react';
 
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import {
     type TronFlow,
     fetchAndUpdateAccountThunk,
@@ -32,12 +34,15 @@ export const useTronStakePendingTransactionTracking = ({
     account,
     flow,
 }: UseTronStakePendingTransactionTrackingProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const dispatch = useDispatch();
     const { pendingTxid } = useSelector(state => selectTronStakeSession(state, account.key, flow));
     const trackedTransaction = useSelector(state =>
         pendingTxid ? selectTransactionByAccountKeyAndTxid(state, account.key, pendingTxid) : null,
     );
-    const feeInfo = useSelector(state => selectConvertedNetworkFeeInfo(state, account.symbol));
+    const feeInfo = useSelector(state =>
+        selectConvertedNetworkFeeInfo(state, account.symbol, networkConfigDeps),
+    );
     const pollIntervalMs = getPollIntervalMs(feeInfo?.blockTime);
 
     const isCurrentlyPending =

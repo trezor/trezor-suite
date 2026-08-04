@@ -1,7 +1,7 @@
 import { type CryptoId } from 'invity-api';
 
 import { type TradingAssetOption, getCryptoId } from '@suite-common/trading';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkConfigDeps, type NetworkSymbol } from '@suite-common/wallet-config';
 import { type TokenInfo } from '@trezor/connect';
 
 export type TokenDisplayNameSource = {
@@ -14,32 +14,34 @@ export type TokenDisplayNameSource = {
     };
 };
 
-type GetTokensDisplaySymbolNamesProps = {
+type GetTokensDisplaySymbolNamesProps = NetworkConfigDeps & {
     assets: TradingAssetOption[];
     tokens: TokenDisplayNameSource[];
 };
 
-type GetTokenDisplaySymbolNameProps = {
+type GetTokenDisplaySymbolNameProps = NetworkConfigDeps & {
     tokenDisplaySymbolNames: Map<CryptoId, string>;
     account: TokenDisplayNameSource['account'];
     token: TokenDisplayNameSource['token'];
 };
 
-export const getTokenCryptoIds = (tokens: TokenDisplayNameSource[]) => {
+export const getTokenCryptoIds = (deps: NetworkConfigDeps, tokens: TokenDisplayNameSource[]) => {
     const tokenCryptoIds = new Set<CryptoId>();
 
     for (const { account, token } of tokens) {
-        tokenCryptoIds.add(getCryptoId(account.symbol, token.contract));
+        tokenCryptoIds.add(getCryptoId(deps, account.symbol, token.contract));
     }
 
     return tokenCryptoIds;
 };
 
 export const getTokensDisplaySymbolNames = ({
+    getNetworkConfig,
+    networkModuleRepository,
     assets,
     tokens,
 }: GetTokensDisplaySymbolNamesProps) => {
-    const tokenCryptoIds = getTokenCryptoIds(tokens);
+    const tokenCryptoIds = getTokenCryptoIds({ getNetworkConfig, networkModuleRepository }, tokens);
     const displaySymbolNames = new Map<CryptoId, string>();
 
     if (tokenCryptoIds.size === 0) {
@@ -62,8 +64,12 @@ export const getTokensDisplaySymbolNames = ({
 };
 
 export const getTokenDisplaySymbolName = ({
+    getNetworkConfig,
+    networkModuleRepository,
     tokenDisplaySymbolNames,
     account,
     token,
 }: GetTokenDisplaySymbolNameProps) =>
-    tokenDisplaySymbolNames.get(getCryptoId(account.symbol, token.contract)) ?? token.name;
+    tokenDisplaySymbolNames.get(
+        getCryptoId({ getNetworkConfig, networkModuleRepository }, account.symbol, token.contract),
+    ) ?? token.name;

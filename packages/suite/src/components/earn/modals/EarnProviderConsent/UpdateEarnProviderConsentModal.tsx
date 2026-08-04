@@ -1,10 +1,11 @@
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
 import {
     EarnFlow,
     type EarnProvider,
     type EarnYieldContext,
 } from '@suite-common/suite-types/src/staking';
-import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { getNetworkDisplaySymbol , selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 
 import { EarnProviderConsentModalLayout } from './components/EarnProviderConsentModalLayout';
@@ -26,6 +27,7 @@ export const UpdateEarnProviderConsentModal = ({
     provider,
     yieldContext,
 }: UpdateEarnProviderConsentModalProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const { proceedToEarnFlow, onCancelClick } = useEarnProviderConsentActions({
         flow: EarnFlow.UpdateProvider,
         onCancel,
@@ -35,7 +37,7 @@ export const UpdateEarnProviderConsentModal = ({
         yieldContext,
     });
 
-    const displaySymbol = getNetworkDisplaySymbol(account.symbol);
+    const displaySymbol = getNetworkDisplaySymbol(networkConfigDeps, account.symbol);
     const providerName = getEarnProviderName(provider);
 
     return (

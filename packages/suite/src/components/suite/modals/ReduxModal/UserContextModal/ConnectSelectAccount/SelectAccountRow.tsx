@@ -2,6 +2,8 @@ import { type MouseEvent, type ReactNode } from 'react';
 
 import { Translation } from '@suite/intl';
 import { type SelectAccountCandidate } from '@suite-common/connect-popup';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config/src/utils';
 import {
     Badge,
@@ -57,6 +59,7 @@ export const SelectAccountRow = ({
     onVerify,
     onRetry,
 }: SelectAccountRowProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const {
         accountIndex,
         address,
@@ -111,7 +114,7 @@ export const SelectAccountRow = ({
             return (
                 <Row alignItems="center" gap={8}>
                     <Text typographyStyle="body-sm">
-                        {balance ?? '0'} {getNetworkDisplaySymbol(symbol)}
+                        {balance ?? '0'} {getNetworkDisplaySymbol(networkConfigDeps, symbol)}
                     </Text>
                     <Icon as={CaretRightIcon} size={16} intent="neutral" />
                 </Row>
@@ -121,7 +124,7 @@ export const SelectAccountRow = ({
         return (
             <>
                 <Text typographyStyle="body-sm">
-                    {balance ?? '0'} {getNetworkDisplaySymbol(symbol)}
+                    {balance ?? '0'} {getNetworkDisplaySymbol(networkConfigDeps, symbol)}
                 </Text>
                 {displayValue && (
                     <Row alignItems="center" gap={8} onClick={stop}>

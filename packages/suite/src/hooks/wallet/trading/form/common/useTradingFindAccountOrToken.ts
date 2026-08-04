@@ -2,7 +2,9 @@ import { useCallback } from 'react';
 
 import { type CryptoId } from 'invity-api';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { getCryptoId, parseCryptoId } from '@suite-common/trading';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { selectVisibleDeviceAccounts } from '@suite-common/wallet-core';
 import { getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
 import { useCurrentRef } from '@trezor/react-utils';
@@ -18,6 +20,7 @@ export interface UseTradingFindAccountOrTokenProps {
  * Based on `accountKey` and `cryptoId` find corresponding account or its token
  */
 export function useTradingFindAccountOrToken() {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const accounts = useSelector(selectVisibleDeviceAccounts);
     const findAccountOrToken = useCallback(
         ({ accountKey, cryptoId }: UseTradingFindAccountOrTokenProps) => {
@@ -29,19 +32,23 @@ export function useTradingFindAccountOrToken() {
 
             const { contractAddress } = parseCryptoId(cryptoId);
 
-            if (getCryptoId(account.symbol) === cryptoId || !contractAddress) {
+            if (getCryptoId(networkConfigDeps, account.symbol) === cryptoId || !contractAddress) {
                 return { account, token: null };
             }
 
             const contractAddressForNetworkSymbol = getContractAddressForNetworkSymbol(
+                networkConfigDeps,
                 account.symbol,
                 contractAddress,
             );
             const token =
                 account.tokens?.find(
                     token =>
-                        getContractAddressForNetworkSymbol(account.symbol, token.contract) ===
-                        contractAddressForNetworkSymbol,
+                        getContractAddressForNetworkSymbol(
+                            networkConfigDeps,
+                            account.symbol,
+                            token.contract,
+                        ) === contractAddressForNetworkSymbol,
                 ) ?? null;
 
             return { account, token };

@@ -5,8 +5,9 @@ import { useMutation } from '@tanstack/react-query';
 
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
+import { useServices } from '@suite-common/dependency-injection';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { getNetworkDisplaySymbol, selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { WETH_WRAP_GAS_RESERVE } from '@suite-common/wallet-constants';
 import {
     type YieldFlowDisplayToken,
@@ -45,6 +46,7 @@ type BroadcastWrap = {
 };
 
 export const WrapNativeToken = ({ account, token, onFlowCompleteChange }: WrapNativeTokenProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const dispatch = useDispatch();
     const ensureDeviceReady = useWrappedNativeDeviceGuard();
     const {
@@ -61,7 +63,12 @@ export const WrapNativeToken = ({ account, token, onFlowCompleteChange }: WrapNa
         },
     });
 
-    const pendingTxStatus = useWrappedNativePendingTx(account, broadcast?.txid ?? null, 'wrap');
+    const pendingTxStatus = useWrappedNativePendingTx(
+        networkConfigDeps,
+        account,
+        broadcast?.txid ?? null,
+        'wrap',
+    );
     const isFlowComplete = !!broadcast && pendingTxStatus === 'confirmed';
 
     useEffect(() => {
@@ -75,7 +82,7 @@ export const WrapNativeToken = ({ account, token, onFlowCompleteChange }: WrapNa
         networkSymbol: account.symbol,
     });
 
-    const nativeSymbol = getNetworkDisplaySymbol(account.symbol);
+    const nativeSymbol = getNetworkDisplaySymbol(networkConfigDeps, account.symbol);
     const nativeToken: YieldFlowDisplayToken = {
         networkSymbol: account.symbol,
         symbol: nativeSymbol,

@@ -1,5 +1,6 @@
 import { Translation } from '@suite/intl';
-import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { useServices } from '@suite-common/dependency-injection';
+import { getNetworkDisplaySymbol , selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { MIN_CARDANO_AMOUNT_FOR_SEND } from '@suite-common/wallet-constants';
 import {
     asAmountSubunit,
@@ -14,6 +15,7 @@ import { FormattedCryptoAmount } from 'src/components/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 
 export const CardanoMinAmountInfo = () => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const {
         account: { symbol, networkType, balance },
         composedLevels,
@@ -41,11 +43,17 @@ export const CardanoMinAmountInfo = () => {
             ? transactionInfo.totalSpent
             : new BigNumber(MIN_CARDANO_AMOUNT_FOR_SEND)
                   .times(formOutputs.length)
-                  .plus(unitsToSubunits({ symbol, value: asAmountUnit(totalAdaAmount) })),
+                  .plus(
+                      unitsToSubunits({
+                          ...networkConfigDeps,
+                          symbol,
+                          value: asAmountUnit(totalAdaAmount),
+                      }),
+                  ),
     );
 
     const hasEnoughADA = new BigNumber(balance).minus(minAdaAmount).gte(0);
-    const networkDisplaySymbol = getNetworkDisplaySymbol(symbol);
+    const networkDisplaySymbol = getNetworkDisplaySymbol(networkConfigDeps, symbol);
 
     return (
         <>
@@ -73,6 +81,7 @@ export const CardanoMinAmountInfo = () => {
                     <FormattedCryptoAmount
                         disableHiddenPlaceholder
                         value={subunitsToUnits({
+                            ...networkConfigDeps,
                             symbol,
                             value: asAmountSubunit(minAdaAmount),
                         })}

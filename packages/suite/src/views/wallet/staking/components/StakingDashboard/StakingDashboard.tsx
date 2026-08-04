@@ -1,4 +1,5 @@
-import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { useServices } from '@suite-common/dependency-injection';
+import { getNetworkDisplaySymbol , selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { type SelectedAccountStatus } from '@suite-common/wallet-types';
 
 import { WalletLayout } from 'src/components/wallet';
@@ -11,12 +12,15 @@ interface StakingDashboardProps {
 }
 
 export const StakingDashboard = ({ selectedAccount, dashboard }: StakingDashboardProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     if (selectedAccount.status !== 'loaded') return null;
 
     return (
         <WalletLayout
             title="TR_EARN_STAKE_TOKEN"
-            titleValues={{ symbol: getNetworkDisplaySymbol(selectedAccount.account.symbol) }}
+            titleValues={{
+                symbol: getNetworkDisplaySymbol(networkConfigDeps, selectedAccount.account.symbol),
+            }}
             account={selectedAccount}
         >
             {dashboard}

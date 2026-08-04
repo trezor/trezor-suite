@@ -1,3 +1,4 @@
+import type { ExtraDependencies } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { accountsActions } from '@suite-common/wallet-core';
 import * as accountUtils from '@suite-common/wallet-utils';
@@ -8,12 +9,15 @@ import { type Account } from 'src/types/wallet';
 
 export const addToken =
     (account: Account, tokenInfo: TokenInfo[], options?: { showSuccessToast?: boolean }) =>
-    (dispatch: Dispatch) => {
+    (dispatch: Dispatch, _getState: unknown, extra: ExtraDependencies) => {
         dispatch(
-            accountsActions.updateAccount({
-                ...account,
-                tokens: (account.tokens || []).concat(accountUtils.enhanceTokens(tokenInfo)),
-            }),
+            accountsActions.updateAccount(
+                {
+                    ...account,
+                    tokens: (account.tokens || []).concat(accountUtils.enhanceTokens(tokenInfo)),
+                },
+                extra.services.getNetworkConfig,
+            ),
         );
 
         // Auto-tracking flows (e.g. wrapping a native token) add a token as a side effect and show

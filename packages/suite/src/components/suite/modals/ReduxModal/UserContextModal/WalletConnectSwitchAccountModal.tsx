@@ -4,6 +4,8 @@ import { useDispatch } from 'react-redux';
 import { AccountLabel, AccountTypeBadge } from '@suite/account';
 import { Translation } from '@suite/intl';
 import { closeModal } from '@suite/modal';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { selectAllAccountsToList } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { sortByCoin } from '@suite-common/wallet-utils';
@@ -26,22 +28,24 @@ export const WalletConnectSwitchAccountModal = ({
     sessionTopic,
 }: WalletConnectSwitchAccountModalProps) => {
     const dispatch = useDispatch();
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const sessions = useSelector(selectSessions);
     const session = sessions.find(s => s.topic === sessionTopic);
-    const accounts = useSelector(selectAllAccountsToList);
+    const accounts = useSelector(state => selectAllAccountsToList(state, networkConfigDeps));
 
     const selectableAccounts = useMemo<Account[]>(
         () =>
             session
                 ? sortByCoin(
-                      getSessionNetworks(session)
+                      networkConfigDeps,
+                      getSessionNetworks(networkConfigDeps, session)
                           .filter(network => network.status === 'active')
                           .flatMap(network =>
                               accounts.filter(account => account.symbol === network.symbol),
                           ),
                   )
                 : [],
-        [accounts, session],
+        [accounts, networkConfigDeps, session],
     );
     const [selectedDefaultAccount, setSelectedDefaultAccount] = useState<Account | null>(
         session?.lastAccount || selectableAccounts[0] || null,

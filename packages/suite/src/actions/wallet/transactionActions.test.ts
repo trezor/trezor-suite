@@ -2,7 +2,7 @@ import { configureStore } from '@reduxjs/toolkit';
 
 import { getTxsPerPage } from '@suite-common/suite-utils';
 import { testMocks } from '@suite-common/test-utils';
-import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { mockNetworkConfigDeps } from '@suite-common/wallet-config/mocks';
 import {
     type TransactionsState,
     transactionsActions,
@@ -13,8 +13,6 @@ import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { getAccountTransactions } from '@suite-common/wallet-utils';
 
 import { transactionsReducer } from 'src/reducers/wallet';
-
-const btcSymbol = asNetworkSymbol('btc');
 
 const { getWalletTransaction } = testMocks;
 
@@ -32,14 +30,17 @@ const initStore = (transactionsState?: TransactionsState) =>
 describe('Transaction Actions', () => {
     it('Add transaction for first page (used on account create)', () => {
         const store = initStore();
-        const account = mockWalletAccount({ symbol: btcSymbol });
+        const account = mockWalletAccount({ symbol: 'btc' });
         store.dispatch(
-            transactionsActions.addTransaction({
-                transactions: [getWalletTransaction()],
-                account,
-                page: 1,
-                perPage: getTxsPerPage(account.networkType),
-            }),
+            transactionsActions.addTransaction(
+                {
+                    transactions: [getWalletTransaction()],
+                    account,
+                    page: 1,
+                    perPage: getTxsPerPage(account.networkType),
+                },
+                mockNetworkConfigDeps.getNetworkConfig,
+            ),
         );
         expect(
             getAccountTransactions(account.key, store.getState().transactions.transactions).length,
@@ -48,11 +49,11 @@ describe('Transaction Actions', () => {
 
     it('Remove txs for a given account', () => {
         const account1 = mockWalletAccount({
-            symbol: btcSymbol,
+            symbol: 'btc',
             descriptor: asAccountDescriptor('xpub1'),
         });
         const account2 = mockWalletAccount({
-            symbol: btcSymbol,
+            symbol: 'btc',
             descriptor: asAccountDescriptor('xpub2'),
         });
         const store = initStore({

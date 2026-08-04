@@ -1,3 +1,4 @@
+import type { NetworkConfigDeps } from '@suite-common/wallet-config';
 import { type WalletParams as CommonWalletParams } from '@suite-common/wallet-types';
 
 import { type Route } from './route';
@@ -88,10 +89,10 @@ export const findRoute = (pathname: PathString): Route | undefined => {
 
 const parseHash = (hash: HashString) => hash.replace(/^#/, '').split('/').filter(Boolean);
 
-const validateWalletParams = (hash: HashString): CommonWalletParams => {
+const validateWalletParams = (deps: NetworkConfigDeps, hash: HashString): CommonWalletParams => {
     const [symbol, index, rawAccountType] = parseHash(hash);
 
-    return validateAccountRouteParams({
+    return validateAccountRouteParams(deps, {
         symbol,
         index,
         rawAccountType,
@@ -104,10 +105,10 @@ const accountScopedEarnYieldRoutes: Route['name'][] = [
     'earn-yield-wrap',
 ];
 
-const validateEarnYieldParams = (route: Route, hash: HashString) => {
+const validateEarnYieldParams = (deps: NetworkConfigDeps, route: Route, hash: HashString) => {
     const [symbol, index, rawAccountType, rawVaultAddress] = parseHash(hash);
 
-    const accountRouteParams = validateAccountRouteParams({
+    const accountRouteParams = validateAccountRouteParams(deps, {
         symbol,
         index,
         rawAccountType,
@@ -133,10 +134,10 @@ const validateEarnYieldParams = (route: Route, hash: HashString) => {
     });
 };
 
-const validateEarnStakingParams = (hash: HashString) => {
+const validateEarnStakingParams = (deps: NetworkConfigDeps, hash: HashString) => {
     const [symbol, index, rawAccountType] = parseHash(hash);
 
-    return validateAccountRouteParams({
+    return validateAccountRouteParams(deps, {
         symbol,
         index,
         rawAccountType,
@@ -191,37 +192,41 @@ const validateDashboardParams = (hash: HashString): DashboardParams | undefined 
     return params;
 };
 
-const getAppParams = (route: Route, hash: HashString = '') => {
+const getAppParams = (deps: NetworkConfigDeps, route: Route, hash: HashString = '') => {
     switch (route.app) {
         case 'dashboard':
             return validateDashboardParams(hash);
         case 'earn':
             return undefined;
         case 'earn-yield':
-            return validateEarnYieldParams(route, hash);
+            return validateEarnYieldParams(deps, route, hash);
         case 'earn-staking':
-            return validateEarnStakingParams(hash);
+            return validateEarnStakingParams(deps, hash);
         case 'wallet':
-            return validateWalletParams(hash);
+            return validateWalletParams(deps, hash);
         default:
             return route.params ? validateModalAppParams(hash, route.params) : undefined;
     }
 };
 
-export const getAppWithParams = (path: { pathname: PathString; hash?: HashString }) => {
+export const getAppWithParams = (
+    deps: NetworkConfigDeps,
+    path: { pathname: PathString; hash?: HashString },
+) => {
     const route = findRoute(path.pathname);
     const app = route?.app ?? 'unknown';
-    const params = route && getAppParams(route, path.hash);
+    const params = route && getAppParams(deps, route, path.hash);
 
     return { app, params, route } as RouterAppWithParams;
 };
 
 export const resolveEffectiveBackgroundRouteName = (
+    deps: NetworkConfigDeps,
     route: Route | undefined,
     location: { pathname: PathString; hash?: HashString },
 ) => {
     if (route?.isForegroundApp) {
-        return getAppWithParams(location).route?.name ?? route?.name;
+        return getAppWithParams(deps, location).route?.name ?? route?.name;
     }
 
     return route?.name;

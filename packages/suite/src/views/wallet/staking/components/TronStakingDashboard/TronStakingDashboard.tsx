@@ -1,4 +1,6 @@
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { selectAccountIsStakingActive } from '@suite-common/wallet-core';
 import { type SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { Column, Row, TextButton } from '@trezor/components';
@@ -22,10 +24,13 @@ interface TronStakingDashboardProps {
 }
 
 export const TronStakingDashboard = ({ selectedAccount }: TronStakingDashboardProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const { account } = selectedAccount;
     const { openNodeById } = useGuideOpenNode();
 
-    const isStakingActive = useSelector(state => selectAccountIsStakingActive(state, account.key));
+    const isStakingActive = useSelector(state =>
+        selectAccountIsStakingActive(state, account.key, networkConfigDeps),
+    );
 
     return (
         <WalletLayout title="TR_NAV_STAKING" account={selectedAccount}>
