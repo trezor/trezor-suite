@@ -8,7 +8,6 @@ import {
     selectPersistentDeviceDataById,
 } from '@suite-common/device';
 import { selectIsProductionFirmwareChannel } from '@suite-common/firmware';
-import { type SuiteCompatibleSelector } from '@suite-common/redux-utils';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { isDeviceKnown as getIsDeviceKnown, isDeviceAcquired } from '@suite-common/suite-utils';
 import { FIRMWARE } from '@trezor/connect';
@@ -19,12 +18,15 @@ import { reportSecurityCheckThunk } from './reportSecurityCheckThunk';
 import { hashCheckErrorScenarios, revisionCheckErrorScenarios } from './scenariosConfig';
 
 // to avoid unnecessary wallet-core import
-type CommonProps = {
+type DeviceProps = {
     device: TrezorDevice | undefined;
-    selectAllowPrerelease: SuiteCompatibleSelector<boolean>;
 };
 
-const useCommonData = ({ device }: Pick<CommonProps, 'device'>) => {
+type CommonProps<TState> = DeviceProps & {
+    selectAllowPrerelease: (state: TState) => boolean;
+};
+
+const useCommonData = ({ device }: DeviceProps) => {
     const model = device?.features?.internal_model;
     const revision = device?.features?.revision;
     const version = getFirmwareVersion(device);
@@ -36,7 +38,7 @@ const useCommonData = ({ device }: Pick<CommonProps, 'device'>) => {
     );
 };
 
-const useReportRevisionCheck = ({ device, selectAllowPrerelease }: CommonProps) => {
+const useReportRevisionCheck = <TState>({ device, selectAllowPrerelease }: CommonProps<TState>) => {
     const dispatch = useDispatch();
     const commonData = useCommonData({ device });
     const isProductionFirmwareChannel = useSelector(
@@ -70,7 +72,7 @@ const useReportRevisionCheck = ({ device, selectAllowPrerelease }: CommonProps) 
     }, [dispatch, commonData, errorType, errorPayload, shouldReport]);
 };
 
-const useReportHashCheck = ({ device, selectAllowPrerelease }: CommonProps) => {
+const useReportHashCheck = <TState>({ device, selectAllowPrerelease }: CommonProps<TState>) => {
     const dispatch = useDispatch();
     const commonData = useCommonData({ device });
     const isProductionFirmwareChannel = useSelector(
@@ -125,7 +127,7 @@ const useReportHashCheck = ({ device, selectAllowPrerelease }: CommonProps) => {
 };
 
 // Report meta check results (Id check & device invariability checks ) to Sentry
-const useReportDeviceMetaChecks = ({ device }: CommonProps) => {
+const useReportDeviceMetaChecks = ({ device }: DeviceProps) => {
     const dispatch = useDispatch();
     const commonData = useCommonData({ device });
     const previousData = useSelector((state: DeviceRootState) =>
@@ -192,8 +194,11 @@ const useReportDeviceMetaChecks = ({ device }: CommonProps) => {
  * Optionally report both FW authenticity checks (revision and hash) to Sentry and/or show toast notifications,
  * based on behavior scenarios definitions. This may happen even when no UI is displayed for the checks.
  */
-export const useReportDeviceCompromised = ({ device, selectAllowPrerelease }: CommonProps) => {
+export const useReportDeviceCompromised = <TState>({
+    device,
+    selectAllowPrerelease,
+}: CommonProps<TState>) => {
     useReportRevisionCheck({ device, selectAllowPrerelease });
     useReportHashCheck({ device, selectAllowPrerelease });
-    useReportDeviceMetaChecks({ device, selectAllowPrerelease });
+    useReportDeviceMetaChecks({ device });
 };
