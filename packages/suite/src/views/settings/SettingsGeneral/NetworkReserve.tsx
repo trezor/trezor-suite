@@ -44,12 +44,7 @@ export const NetworkReserve = () => {
                 >
                     <TextColumn
                         title={<Translation id="TR_NETWORK_RESERVE" />}
-                        description={
-                            <Translation
-                                id="TR_NETWORK_RESERVE_DESCRIPTION"
-                                values={{ supportedNetworks }}
-                            />
-                        }
+                        description={<Translation id="TR_NETWORK_RESERVE_DESCRIPTION" />}
                         bottomContent={
                             <Column gap={8} alignItems="flex-start">
                                 <SettingsRequirementBanner>
