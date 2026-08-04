@@ -1,6 +1,11 @@
 import { defineMessages } from 'react-intl';
 
 export const messages = defineMessages({
+    // Suite Dark flavour: label for the promoted password-manager left-menu item.
+    TR_PASSWORDS: {
+        defaultMessage: 'Passwords',
+        id: 'TR_PASSWORDS',
+    },
     TR_404_DESCRIPTION: {
         defaultMessage: 'Looks like a wrong URL or broken link.',
         id: 'TR_404_DESCRIPTION',

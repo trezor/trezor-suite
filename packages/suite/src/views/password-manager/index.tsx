@@ -11,7 +11,7 @@ const PasswordManagerView = () => {
         'Password manager',
         <PageHeader>
             <BasicName>
-                <Translation id="TR_PASSWORD_MANAGER" />
+                <Translation id="TR_PASSWORDS" />
             </BasicName>
         </PageHeader>,
     );

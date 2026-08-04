@@ -2034,6 +2034,7 @@
   "TR_PASSPHRASE_WALLET_CONFIRMATION_STEP3_TITLE": "Confirm passphrase",
   "TR_PASSPHRASE_WALLET_CONFIRMATION_STEP3_WARNING": "Write it down on paper, store it in a safe place, and keep it away from anything digital. No one can recover it, not even Trezor Support.",
   "TR_PASSPHRASE_WALLET_NEEDS_ENABLED_NETWORK": "Activate at least one asset before adding a Passphrase wallet.",
+  "TR_PASSWORDS": "Passwords",
   "TR_PASSWORD_MANAGER": "Migrate Dropbox passwords",
   "TR_PAUSED": "Paused",
   "TR_PAYMENT_METHOD_ACH": "ACH",

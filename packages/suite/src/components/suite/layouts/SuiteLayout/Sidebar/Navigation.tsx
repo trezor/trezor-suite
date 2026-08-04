@@ -11,7 +11,7 @@ import { type Route, selectRouteName } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectHasUnseenNotifications } from '@suite-common/toast-notifications';
 import { Column } from '@trezor/components';
-import { BellIcon, GearSixIcon, HouseIcon } from '@trezor/icons';
+import { BellIcon, GearSixIcon, HouseIcon, KeyIcon } from '@trezor/icons';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useResponsiveContext } from 'src/support/suite/ResponsiveContext';
@@ -85,6 +85,13 @@ export const Navigation = ({ children }: NavigationProps) => {
                     goToRoute: startRoute,
                     routes: [startRoute],
                     shortcut: ['MOD', 'ALT', 'KEY_0'],
+                },
+                {
+                    // Suite Dark flavour: promote the password manager to a full left-menu feature.
+                    nameId: 'TR_PASSWORDS',
+                    icon: KeyIcon,
+                    goToRoute: 'password-manager-index',
+                    routes: ['password-manager-index'],
                 },
                 {
                     nameId: 'TR_NOTIFICATIONS',
