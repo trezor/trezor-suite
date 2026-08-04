@@ -520,14 +520,27 @@ export const transformAccountInfo = (payload: BlockbookAccountInfo): AccountInfo
     };
 };
 
-export const transformAccountUtxo = (payload: BlockbookAccountUtxo): Utxo[] =>
-    payload.map(utxo => ({
-        txid: utxo.txid,
-        vout: utxo.vout,
-        amount: utxo.value,
-        blockHeight: utxo.height,
-        address: utxo.address,
-        path: utxo.path,
-        confirmations: utxo.confirmations,
-        coinbase: utxo.coinbase,
-    }));
+export const transformAccountUtxo = (payload: BlockbookAccountUtxo): Utxo[] => {
+    // A non-array response from an untrusted/user-selectable (custom) blockbook backend must not
+    // crash the whole getAccountUtxo request (payload.map is not a function → breaks coin
+    // control / send-form); degrade to an empty UTXO set, mirroring the blockfrost transformUtxos
+    // sibling. Each record is only scalar reads, but a poison non-object entry (e.g. null) would
+    // throw on property access, so drop malformed entries at the boundary instead of the request.
+    if (!Array.isArray(payload)) return [];
+
+    return payload.reduce<Utxo[]>((acc, utxo) => {
+        if (utxo == null || typeof utxo !== 'object') return acc;
+        acc.push({
+            txid: utxo.txid,
+            vout: utxo.vout,
+            amount: utxo.value,
+            blockHeight: utxo.height,
+            address: utxo.address,
+            path: utxo.path,
+            confirmations: utxo.confirmations,
+            coinbase: utxo.coinbase,
+        });
+
+        return acc;
+    }, []);
+};

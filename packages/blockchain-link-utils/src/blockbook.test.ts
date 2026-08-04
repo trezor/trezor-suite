@@ -2,6 +2,7 @@ import * as fixtures from './__fixtures__/blockbook';
 import {
     filterTokenTransfers,
     transformAccountInfo,
+    transformAccountUtxo,
     transformAddresses,
     transformTransaction,
 } from './blockbook';
@@ -113,6 +114,38 @@ describe('blockbook/utils', () => {
             // @ts-expect-error minimal payload shape
             expect(() => (account = transformAccountInfo(payload))).not.toThrow();
             expect(account!.history.transactions?.length).toBe(1);
+        });
+    });
+
+    describe('transformAccountUtxo poison-record DoS resistance', () => {
+        const validUtxo = {
+            txid: 'abcd',
+            vout: 0,
+            value: '1000',
+            height: 100,
+            address: 'bc1qexampleaddress',
+            path: "m/84'/0'/0'/0/0",
+            confirmations: 3,
+        };
+
+        it('returns [] for a non-array response instead of throwing', () => {
+            // An untrusted/user-selectable blockbook backend can return a non-array (e.g. {} / null)
+            // for getAccountUtxo; `payload.map` would then throw and fail the whole request.
+            // @ts-expect-error malformed non-array payload
+            expect(() => transformAccountUtxo({})).not.toThrow();
+            // @ts-expect-error malformed non-array payload
+            expect(transformAccountUtxo({})).toEqual([]);
+            // @ts-expect-error malformed non-array payload
+            expect(transformAccountUtxo(null)).toEqual([]);
+        });
+
+        it('drops a poison non-object entry and keeps the valid UTXOs', () => {
+            const payload = [null, validUtxo];
+            let result: ReturnType<typeof transformAccountUtxo>;
+            // @ts-expect-error poison null element
+            expect(() => (result = transformAccountUtxo(payload))).not.toThrow();
+            expect(result!).toHaveLength(1);
+            expect(result![0]).toMatchObject({ txid: 'abcd', amount: '1000' });
         });
     });
 });
