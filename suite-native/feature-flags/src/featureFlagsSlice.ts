@@ -10,7 +10,6 @@ export const FeatureFlag = {
     IsTradingResidenceCheckEnabled: 'isTradingResidenceCheckEnabled',
     IsTradingDebugEnabled: 'isTradingDebugEnabled',
     IsTradingSlip24Enabled: 'isTradingSlip24Enabled',
-    IsTradingTxSimulationEnabled: 'isTradingTxSimulationEnabled',
     IsN4w1BackupEnabled: 'isN4w1BackupEnabled',
 } as const;
 
@@ -37,8 +36,6 @@ export const featureFlagsInitialState: FeatureFlagsState = {
         process.env.EXPO_PUBLIC_FF_IS_TRADING_DEBUG_ENABLED === 'true',
     [FeatureFlag.IsTradingSlip24Enabled]:
         process.env.EXPO_PUBLIC_FF_IS_TRADING_SLIP24_ENABLED === 'true',
-    [FeatureFlag.IsTradingTxSimulationEnabled]:
-        process.env.EXPO_PUBLIC_FF_IS_TRADING_TX_SIMULATION_ENABLED === 'true',
     [FeatureFlag.IsN4w1BackupEnabled]: process.env.EXPO_PUBLIC_FF_IS_N4W1_BACKUP_ENABLED === 'true',
 };
 
@@ -49,7 +46,6 @@ export const featureFlagsPersistedKeys: Array<keyof FeatureFlagsState> = [
     FeatureFlag.IsTradingResidenceCheckEnabled,
     FeatureFlag.IsTradingDebugEnabled,
     FeatureFlag.IsTradingSlip24Enabled,
-    FeatureFlag.IsTradingTxSimulationEnabled,
     FeatureFlag.IsN4w1BackupEnabled,
 ];
 
