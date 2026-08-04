@@ -2,6 +2,7 @@ import { useCallback, useMemo } from 'react';
 
 import { type SellFiatTradeQuoteRequest } from 'invity-api';
 
+import { useServices } from '@suite-common/dependency-injection';
 import {
     type TradingAssetOption,
     type TradingAssetSellOption,
@@ -13,6 +14,7 @@ import {
     selectTradingComposedTransactionInfo,
     useTradingAssets,
 } from '@suite-common/trading';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants';
 import { selectVisibleDeviceAccounts } from '@suite-common/wallet-core';
 import { getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
@@ -25,6 +27,7 @@ export const useTradingSellFormRedirectValues = (
     isFromRedirect: boolean,
     quotesRequest: SellFiatTradeQuoteRequest | undefined,
 ): TradingSellFormProps | null => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const { composed, selectedFee } = useSelector(selectTradingComposedTransactionInfo);
     const { createAssetOptionFromCryptoId } = useTradingAssets();
     const accounts = useSelector(selectVisibleDeviceAccounts);
@@ -40,8 +43,13 @@ export const useTradingSellFormRedirectValues = (
                     assetOption.contractAddress &&
                     !!account.tokens?.find(
                         token =>
-                            getContractAddressForNetworkSymbol(account.symbol, token.contract) ===
                             getContractAddressForNetworkSymbol(
+                                networkConfigDeps,
+                                account.symbol,
+                                token.contract,
+                            ) ===
+                            getContractAddressForNetworkSymbol(
+                                networkConfigDeps,
                                 assetOption.networkSymbol,
                                 assetOption.contractAddress,
                             ),

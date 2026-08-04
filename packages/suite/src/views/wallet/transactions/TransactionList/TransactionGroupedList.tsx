@@ -1,4 +1,6 @@
-import { getNetwork } from '@suite-common/wallet-config';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectGetNetworkConfigDep } from '@suite-common/networks';
+import { toNetwork } from '@suite-common/wallet-config';
 import { selectBaseCurrency } from '@suite-common/wallet-core';
 import {
     type GroupedTransactionsByDate,
@@ -13,6 +15,7 @@ import { type Account, type WalletAccountTransaction } from 'src/types/wallet';
 
 import { TransactionsGroup } from './TransactionsGroup/TransactionsGroup';
 
+
 interface TransactionGroupedListProps {
     transactionGroups: GroupedTransactionsByDate;
     symbol: WalletAccountTransaction['symbol'];
@@ -26,8 +29,9 @@ export const TransactionGroupedList = ({
     account,
     isPending,
 }: TransactionGroupedListProps) => {
+    const { getNetworkConfig } = useServices(selectGetNetworkConfigDep);
     const baseCurrencyCode = useSelector(selectBaseCurrency);
-    const network = getNetwork(symbol);
+    const network = toNetwork(symbol, getNetworkConfig(symbol));
 
     const transactionWithLowestNonce: WalletAccountTransaction | null =
         getTransactionWithLowestNonce(transactionGroups);

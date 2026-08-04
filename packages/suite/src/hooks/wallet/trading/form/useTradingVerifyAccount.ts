@@ -3,9 +3,10 @@ import { useForm } from 'react-hook-form';
 
 import { selectIsDebugModeActive } from '@suite/debug';
 import { openModal } from '@suite/modal';
+import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import {
-    cryptoIdToNetworkSymbol,
+    cryptoIdToSymbol,
     getUnusedAddressFromAccount,
     parseCryptoId,
     selectTradingAccountKeyByTradeType,
@@ -13,6 +14,7 @@ import {
     selectTradingBuyReceiveAccountKey,
     selectTradingExchangeAccountKey,
 } from '@suite-common/trading';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { filterReceiveAccounts } from '@suite-common/wallet-utils';
 
@@ -46,6 +48,7 @@ const useTradingVerifyAccount = ({
     cryptoId,
     nonSuiteAccount,
 }: TradingVerifyAccountProps): TradingVerifyAccountReturnProps => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const activeSection = useSelector(selectTradingActiveSection);
     const formAccountKey = useSelector(state =>
         selectTradingAccountKeyByTradeType(state, activeSection),
@@ -72,7 +75,7 @@ const useTradingVerifyAccount = ({
     const [hasSelectionInitialized, setHasSelectionInitialized] = useState(false);
 
     const networkId = cryptoId && parseCryptoId(cryptoId).networkId;
-    const symbol = cryptoId && cryptoIdToNetworkSymbol(cryptoId);
+    const symbol = cryptoId && cryptoIdToSymbol(networkConfigDeps, cryptoId);
 
     const isSupportedNetwork = [...supportedMainnets, ...supportedTestnets].some(
         network => network.symbol === symbol,
@@ -84,6 +87,7 @@ const useTradingVerifyAccount = ({
         }
 
         return filterReceiveAccounts({
+            ...networkConfigDeps,
             accounts,
             deviceState: device?.state?.staticSessionId,
             symbol,

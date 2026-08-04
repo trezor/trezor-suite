@@ -60,6 +60,7 @@ export const submitYieldWithdrawThunk = createThunk(
                 flowType,
                 dispatch,
                 getState,
+                getNetworkConfig: extra.services.getNetworkConfig,
             });
 
             if (!composeResult.success) {
@@ -107,6 +108,7 @@ export const submitYieldWithdrawThunk = createThunk(
             const reviewToken = flowType === 'redeem' ? flowData.receiptToken : flowData.token;
 
             const result = await sendYieldTransaction({
+                ...extra.services,
                 account,
                 amount,
                 token: reviewToken,

@@ -2,7 +2,7 @@ import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
 import { EarnFlow } from '@suite-common/suite-types/src/staking';
-import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { getNetworkDisplaySymbol , selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { CollapsibleBox, Column, Grid, H3, Modal } from '@trezor/components';
 
@@ -19,6 +19,7 @@ type UnstakeModalProps = {
 };
 
 export const UnstakeModal = ({ onCancel, account }: UnstakeModalProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const { analytics } = useServices(selectDesktopAnalyticsDep);
     const withdrawalContextValues = useWithdrawalForm({ account });
     const { isBelowTablet } = useLayoutSize();
@@ -43,7 +44,9 @@ export const UnstakeModal = ({ onCancel, account }: UnstakeModalProps) => {
                 heading={
                     <Translation
                         id="TR_STAKE_UNSTAKE_TOKEN"
-                        values={{ symbol: getNetworkDisplaySymbol(account.symbol) }}
+                        values={{
+                            symbol: getNetworkDisplaySymbol(networkConfigDeps, account.symbol),
+                        }}
                     />
                 }
                 description={

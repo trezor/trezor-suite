@@ -5,8 +5,9 @@ import { useMutation } from '@tanstack/react-query';
 
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
+import { useServices } from '@suite-common/dependency-injection';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { getNetworkDisplaySymbol, selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import {
     type YieldFlowDisplayToken,
     type YieldFlowFormValues,
@@ -54,6 +55,7 @@ export const UnwrapNativeToken = ({
     tokenContractAddress,
     onFlowCompleteChange,
 }: UnwrapNativeTokenProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const dispatch = useDispatch();
     const ensureDeviceReady = useWrappedNativeDeviceGuard();
     const {
@@ -76,7 +78,12 @@ export const UnwrapNativeToken = ({
         decimals: tokenDecimals,
     });
 
-    const pendingTxStatus = useWrappedNativePendingTx(account, broadcast?.txid ?? null, 'unwrap');
+    const pendingTxStatus = useWrappedNativePendingTx(
+        networkConfigDeps,
+        account,
+        broadcast?.txid ?? null,
+        'unwrap',
+    );
     const isFlowComplete = !!broadcast && pendingTxStatus === 'confirmed';
 
     useEffect(() => {
@@ -95,7 +102,7 @@ export const UnwrapNativeToken = ({
     const isAmountTooHigh = amount.gt(tokenBalance);
     const isAmountValid = amount.gt(0) && !isAmountTooHigh && methods.formState.isValid;
 
-    const nativeSymbol = getNetworkDisplaySymbol(account.symbol);
+    const nativeSymbol = getNetworkDisplaySymbol(networkConfigDeps, account.symbol);
 
     const baseCurrency = useSelector(selectBaseCurrency);
     // The wrapped-native token (WETH) is not held as a balance, so its fiat rate is not fetched by

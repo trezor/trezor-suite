@@ -12,6 +12,8 @@ import {
     permissionIcons,
     selectConnectAppPermissions,
 } from '@suite-common/connect-popup';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import {
     Box,
     Card,
@@ -180,6 +182,7 @@ const PermissionGroup = ({
     onRemovePermission,
 }: PermissionGroupProps) => {
     const { translationString } = useTranslation();
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const [isOpen, setIsOpen] = useState(defaultIsOpen);
 
     return (
@@ -190,7 +193,11 @@ const PermissionGroup = ({
                         <Row gap={12}>
                             <GroupBadge coin={coin} />
                             <Text typographyStyle="body-md-strong">
-                                {coin ? getCoinLabel(coin) : <Translation id="TR_DEVICE" />}
+                                {coin ? (
+                                    getCoinLabel(networkConfigDeps, coin)
+                                ) : (
+                                    <Translation id="TR_DEVICE" />
+                                )}
                             </Text>
                         </Row>
                         {!isOpen && <PermissionPreview permissions={permissions} />}

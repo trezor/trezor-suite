@@ -1,6 +1,7 @@
 import { Translation } from '@suite/intl';
 import { selectRouteName } from '@suite/router';
-import { networks } from '@suite-common/wallet-config';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 
 import { SUITE } from 'src/actions/suite/constants';
 import { useDispatch } from 'src/hooks/suite/useDispatch';
@@ -15,6 +16,7 @@ interface EvmExplanationBannerProps {
 }
 
 export const EvmExplanationBanner = ({ account }: EvmExplanationBannerProps) => {
+    const { getNetworkConfig } = useServices(selectNetworkConfigDeps);
     const { explanationBannerClosed } = useSelector(state => state.suite.evmSettings);
     const routeName = useSelector(selectRouteName);
     const dispatch = useDispatch();
@@ -25,14 +27,14 @@ export const EvmExplanationBanner = ({ account }: EvmExplanationBannerProps) => 
         account &&
         !explanationBannerClosed[account.symbol] &&
         account.symbol !== 'eth' &&
-        networks[account.symbol].networkType === 'ethereum' &&
+        getNetworkConfig(account.symbol).networkType === 'ethereum' &&
         !isReceiveRoute;
 
     if (!isVisible) {
         return null;
     }
 
-    const network = networks[account.symbol];
+    const network = getNetworkConfig(account.symbol);
 
     const close = () =>
         dispatch({

@@ -5,10 +5,10 @@ import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { useTranslation } from '@suite/intl';
 import { isOnionUrl } from '@suite/tor';
 import { useServices } from '@suite-common/dependency-injection';
+import { selectGetNetworkConfigDep } from '@suite-common/networks';
 import {
     type NetworkSymbol,
     type ServerType,
-    getNetwork,
     getServerAddressExample,
     validateServerAddress,
 } from '@suite-common/wallet-config';
@@ -17,6 +17,7 @@ import { type BackendSettings } from '@suite-common/wallet-types';
 import TrezorConnect from '@trezor/connect';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
+
 
 type BackendsFormData = {
     type: ServerType;
@@ -71,6 +72,7 @@ const getStoredState = (
 });
 
 export const useBackendsForm = (symbol: NetworkSymbol) => {
+    const { getNetworkConfig } = useServices(selectGetNetworkConfigDep);
     const { analytics } = useServices(selectDesktopAnalyticsDep);
     const backends = useSelector(state => state.wallet.blockchain[symbol].backends);
     const dispatch = useDispatch();
@@ -126,7 +128,7 @@ export const useBackendsForm = (symbol: NetworkSymbol) => {
         setIsValidating(true);
         setValidationError(null);
 
-        const network = getNetwork(symbol);
+        const network = getNetworkConfig(symbol);
         const expectedChainId = network.chainId;
 
         if (!expectedChainId) {

@@ -1,6 +1,8 @@
 import { useMemo } from 'react';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { type TradingAssetOption, useTradingAssets } from '@suite-common/trading';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 
 import {
     type TokenDisplayNameSource,
@@ -12,6 +14,7 @@ export const useTokenDisplaySymbolNames = (
     tokens: TokenDisplayNameSource[],
     assets?: TradingAssetOption[],
 ) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const { buildAssetOptions } = useTradingAssets();
 
     const resolvedAssets = useMemo(() => {
@@ -19,7 +22,7 @@ export const useTokenDisplaySymbolNames = (
             return assets;
         }
 
-        const includedCryptoIds = getTokenCryptoIds(tokens);
+        const includedCryptoIds = getTokenCryptoIds(networkConfigDeps, tokens);
 
         if (includedCryptoIds.size === 0) {
             return [];
@@ -31,7 +34,7 @@ export const useTokenDisplaySymbolNames = (
     }, [assets, buildAssetOptions, tokens]);
 
     return useMemo(
-        () => getTokensDisplaySymbolNames({ assets: resolvedAssets, tokens }),
+        () => getTokensDisplaySymbolNames({ ...networkConfigDeps, assets: resolvedAssets, tokens }),
         [resolvedAssets, tokens],
     );
 };

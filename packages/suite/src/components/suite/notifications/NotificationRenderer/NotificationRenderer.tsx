@@ -10,10 +10,11 @@ import {
     useTranslation,
 } from '@suite/intl';
 import { TRADING_ERROR_MESSAGE } from '@suite/trading';
+import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDeviceLabelOrName } from '@suite-common/device';
 import { AUTH_DEVICE, type NotificationEntry } from '@suite-common/toast-notifications';
 import { getTradingErrorDisplay } from '@suite-common/trading';
-import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { getNetworkDisplaySymbol , selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { DEVICE } from '@trezor/connect';
 import { ArrowDownIcon, ArrowUpIcon, CheckIcon, GearIcon, TorBrowserIcon } from '@trezor/icons';
 import { exhaustive } from '@trezor/type-utils';
@@ -72,6 +73,7 @@ export const NotificationRenderer = ({
     notification,
     render,
 }: NotificationRendererProps): JSX.Element => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const deviceLabel = useSelector(selectSelectedDeviceLabelOrName);
     const { translationString } = useTranslation();
 
@@ -681,7 +683,10 @@ export const NotificationRenderer = ({
                 message: 'TOAST_SUCCESSFUL_CLAIM',
                 icon: CheckIcon,
                 values: {
-                    networkDisplaySymbol: getNetworkDisplaySymbol(notification.symbol),
+                    networkDisplaySymbol: getNetworkDisplaySymbol(
+                        networkConfigDeps,
+                        notification.symbol,
+                    ),
                 },
             });
 

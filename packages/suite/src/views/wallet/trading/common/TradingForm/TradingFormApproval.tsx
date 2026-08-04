@@ -14,6 +14,7 @@ import {
     useApprovalStep,
     useTradingUtils,
 } from '@suite-common/trading';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { selectAreFeesLoading, selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { Banner, Button, Column } from '@trezor/components';
 import { WarningIcon } from '@trezor/icons';
@@ -38,6 +39,7 @@ const TextButton = styled.div<{ $disabled: boolean }>`
 `;
 
 export const TradingFormApproval = () => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const context = useTradingFormContext<TradingExchangeType>();
     const dispatch = useDispatch();
     const { analytics } = useServices(selectDesktopAnalyticsDep);
@@ -58,7 +60,9 @@ export const TradingFormApproval = () => {
         },
     } = context;
     const selectedQuote = useSelector(selectTradingExchangeSelectedQuote);
-    const account = useSelector(reduxState => selectTradingSendAccount(reduxState, 'exchange'));
+    const account = useSelector(reduxState =>
+        selectTradingSendAccount(reduxState, 'exchange', networkConfigDeps),
+    );
 
     const { exchangeType, rateType } = watch();
 
@@ -85,7 +89,7 @@ export const TradingFormApproval = () => {
     });
 
     const onApproveTransactionClick = async () => {
-        if (!selectedQuote || !requiresTokenApproval(selectedQuote)) {
+        if (!selectedQuote || !requiresTokenApproval(networkConfigDeps, selectedQuote)) {
             return;
         }
 

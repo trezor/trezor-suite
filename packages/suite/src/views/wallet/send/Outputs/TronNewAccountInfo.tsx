@@ -1,5 +1,6 @@
 import { Translation } from '@suite/intl';
-import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { useServices } from '@suite-common/dependency-injection';
+import { getNetworkDisplaySymbol , selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { InfoItem, Tooltip } from '@trezor/components';
 
@@ -7,6 +8,7 @@ import { FormattedCryptoAmount } from 'src/components/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 
 export const TronNewAccountInfo = () => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const {
         account: { symbol, networkType },
         composedLevels,
@@ -40,7 +42,12 @@ export const TronNewAccountInfo = () => {
                     content={
                         <Translation
                             id="TR_TRON_ACCOUNT_ACTIVATION_FEE_TOOLTIP"
-                            values={{ networkDisplaySymbol: getNetworkDisplaySymbol(symbol) }}
+                            values={{
+                                networkDisplaySymbol: getNetworkDisplaySymbol(
+                                    networkConfigDeps,
+                                    symbol,
+                                ),
+                            }}
                         />
                     }
                 >
@@ -50,7 +57,7 @@ export const TronNewAccountInfo = () => {
         >
             <FormattedCryptoAmount
                 disableHiddenPlaceholder
-                value={formatNetworkAmount(accountActivationFee, symbol)}
+                value={formatNetworkAmount(networkConfigDeps, accountActivationFee, symbol)}
                 symbol={symbol}
             />
         </InfoItem>

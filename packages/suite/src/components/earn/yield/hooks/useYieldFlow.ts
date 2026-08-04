@@ -8,7 +8,7 @@ import { openModal } from '@suite/modal';
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
-import { getNetwork } from '@suite-common/wallet-config';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import {
     type YieldAllowanceStatus,
     type YieldApproveModalState,
@@ -138,6 +138,7 @@ export const useYieldFlow = ({
 }: UseYieldFlowProps): UseYieldFlowResult => {
     const dispatch = useDispatch();
     const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const { device } = useDevice();
     const methods = useForm<YieldFlowFormValues>({
         mode: 'onChange',
@@ -179,6 +180,7 @@ export const useYieldFlow = ({
     // Fiat entry prices the amount by the token currently shown (native for wrap/unwrap, the vault
     // asset for deposit/withdraw, none while redeeming shares).
     const rateToken = getYieldFiatRateToken({
+        ...networkConfigDeps,
         step: session.step,
         flowType,
         accountSymbol: account.symbol,
@@ -188,7 +190,7 @@ export const useYieldFlow = ({
         methods,
         symbol: rateToken?.symbol,
         tokenAddress: rateToken?.tokenAddress,
-        decimals: token?.decimals ?? getNetwork(account.symbol).decimals,
+        decimals: token?.decimals ?? networkConfigDeps.getNetworkConfig(account.symbol).decimals,
         vaultId: vault.id,
     });
 
@@ -392,6 +394,7 @@ export const useYieldFlow = ({
         }
 
         return getYieldUnwrapDefaultAmount({
+            ...networkConfigDeps,
             flowType,
             withdrawnAmount: session.result.completedAmount,
             token,
@@ -399,7 +402,14 @@ export const useYieldFlow = ({
             pricePerShareState,
             fallbackAmount: token.balance,
         });
-    }, [flowType, pricePerShareState, receiptToken, session.result.completedAmount, token]);
+    }, [
+        flowType,
+        networkConfigDeps,
+        pricePerShareState,
+        receiptToken,
+        session.result.completedAmount,
+        token,
+    ]);
 
     useEffect(() => {
         if (session.step !== 'unwrap') {

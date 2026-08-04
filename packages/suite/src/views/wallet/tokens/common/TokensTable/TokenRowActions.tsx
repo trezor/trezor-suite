@@ -29,6 +29,7 @@ import {
     tradingActions,
 } from '@suite-common/trading';
 import { type Explorer, type Network } from '@suite-common/wallet-config';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import {
     getYieldVaultContractAddress,
     getYieldVaultForOutputToken,
@@ -100,6 +101,7 @@ const TokenRowBasicActions = ({
     yieldOpportunities,
     setShowDeactivateModal,
 }: TokenRowBasicActionsProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const dispatch = useDispatch();
     const { analytics } = useServices(selectDesktopAnalyticsDep);
     const device = useSelector(selectSelectedDevice);
@@ -118,8 +120,12 @@ const TokenRowBasicActions = ({
     const explorer = useSelector(state => selectExplorer(state, network.symbol)) as Explorer;
     const explorerUrl = useExternalLink(getTokenExplorerUrl(explorer, network.networkType, token));
 
-    const contractAddress = getContractAddressForNetworkSymbol(account.symbol, token.contract);
-    const tokenCryptoId = toTokenCryptoId(account.symbol, contractAddress);
+    const contractAddress = getContractAddressForNetworkSymbol(
+        networkConfigDeps,
+        account.symbol,
+        token.contract,
+    );
+    const tokenCryptoId = toTokenCryptoId(networkConfigDeps, account.symbol, contractAddress);
     const tokenTradingOptions = coins?.[tokenCryptoId]?.services;
 
     const canBuyToken = !!tokenTradingOptions && tokenTradingOptions.buy;
@@ -131,6 +137,7 @@ const TokenRowBasicActions = ({
     const availableVault = useMemo(
         () =>
             getYieldVaultForOutputToken({
+                ...networkConfigDeps,
                 vaults: yieldOpportunities,
                 networkSymbol: account.symbol,
                 token: {
@@ -139,7 +146,14 @@ const TokenRowBasicActions = ({
                     decimals: token.decimals,
                 },
             }),
-        [yieldOpportunities, account.symbol, token.contract, token.symbol, token.decimals],
+        [
+            yieldOpportunities,
+            account.symbol,
+            token.contract,
+            token.symbol,
+            token.decimals,
+            networkConfigDeps,
+        ],
     );
     const availableVaultAddress = availableVault
         ? getYieldVaultContractAddress(availableVault)
@@ -189,6 +203,7 @@ const TokenRowBasicActions = ({
             goto({
                 routeName: 'earn-yield-deposit',
                 params: getEarnRouteParams({
+                    ...networkConfigDeps,
                     account,
                     vaultAddress: availableVaultAddress,
                 }),
@@ -214,6 +229,7 @@ const TokenRowBasicActions = ({
             goto({
                 routeName: 'earn-yield-withdraw',
                 params: getEarnRouteParams({
+                    ...networkConfigDeps,
                     account,
                     vaultAddress: availableVaultAddress,
                 }),
@@ -224,7 +240,7 @@ const TokenRowBasicActions = ({
     const onTradeButtonClick = (type: TradingType, ...[payload]: Parameters<typeof goto>) => {
         dispatch(
             tradingActions.setTradingFromPrefilledAccount(
-                getTradingPrefilledFromAccountData(account, tokenCryptoId),
+                getTradingPrefilledFromAccountData(networkConfigDeps, account, tokenCryptoId),
             ),
         );
 

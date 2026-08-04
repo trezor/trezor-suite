@@ -2,12 +2,14 @@ import { useMemo } from 'react';
 
 import { type CryptoId } from 'invity-api';
 
+import { useServices } from '@suite-common/dependency-injection';
 import {
     type TradingAssetSellOption,
     createAssetNativeTokenOption,
     useTradingAssets,
 } from '@suite-common/trading';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { type AccountKey } from '@suite-common/wallet-types';
 
 import { useTradingFindAccountOrToken } from './useTradingFindAccountOrToken';
@@ -24,6 +26,7 @@ export function useTradingDefaultSellAsset({
     accountKey,
     cryptoId,
 }: UseTradingDefaultSellAssetProps) {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const findAccountOrToken = useTradingFindAccountOrToken();
     const { resolveAssetTokenOption } = useTradingAssets();
     const accountOrToken = useMemo(() => {
@@ -50,7 +53,10 @@ export function useTradingDefaultSellAsset({
         }
 
         return {
-            ...createAssetNativeTokenOption(selectedAccount.symbol as NetworkSymbol),
+            ...createAssetNativeTokenOption(
+                networkConfigDeps,
+                selectedAccount.symbol as NetworkSymbol,
+            ),
             accountKey: selectedAccount.key,
         } satisfies TradingAssetSellOption;
     }, [accountOrToken, resolveAssetTokenOption]);

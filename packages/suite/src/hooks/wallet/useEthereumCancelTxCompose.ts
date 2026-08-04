@@ -2,7 +2,9 @@ import { useEffect } from 'react';
 
 import { useMutation } from '@tanstack/react-query';
 
-import { getNetwork } from '@suite-common/wallet-config';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectGetNetworkConfigDep } from '@suite-common/networks';
+import { toNetwork } from '@suite-common/wallet-config';
 import {
     type ComposeFeeLevelsError,
     composeSendFormTransactionFeeLevelsThunk,
@@ -44,8 +46,11 @@ const parseError = (mutationError: unknown): string | null => {
 };
 
 export const useEthereumCancelTxCompose = ({ account, tx }: UseEthereumCancelTxComposeParams) => {
+    const { getNetworkConfig } = useServices(selectGetNetworkConfigDep);
     const dispatch = useDispatch();
-    const feeInfo = useSelector(state => selectConvertedNetworkFeeInfo(state, account.symbol));
+    const feeInfo = useSelector(state =>
+        selectConvertedNetworkFeeInfo(state, account.symbol, { getNetworkConfig }),
+    );
 
     const {
         mutate,
@@ -62,7 +67,7 @@ export const useEthereumCancelTxCompose = ({ account, tx }: UseEthereumCancelTxC
             }
 
             const { rbfParams } = tx;
-            const network = getNetwork(account.symbol);
+            const network = toNetwork(account.symbol, getNetworkConfig(account.symbol));
 
             const formState: FormState = {
                 outputs: [

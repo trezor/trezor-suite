@@ -3,12 +3,11 @@ import { useEffect, useMemo, useState } from 'react';
 import { Address, copyAddressToClipboard, showCopyAddressModal } from '@suite/address';
 import { selectIsCopyAddressModalShown } from '@suite/flags';
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectGetNetworkConfigDep } from '@suite-common/networks';
 import { selectIsSpecificCoinDefinitionKnown } from '@suite-common/token-definitions';
-import {
-    type Explorer,
-    getNetwork,
-    getNetworkDisplaySymbolName,
-} from '@suite-common/wallet-config';
+import { type Explorer, getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { selectExplorer } from '@suite-common/wallet-core';
 import { type TokenAddress } from '@suite-common/wallet-types';
 import {
@@ -35,6 +34,8 @@ type TokenSelectProps = {
 };
 
 export const TokenSelect = ({ outputId }: TokenSelectProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+    const { getNetworkConfig } = useServices(selectGetNetworkConfigDep);
     const { account, setAmount, getValues, getDefaultValue, watch, setValue, setDraftSaveRequest } =
         useSendFormContext();
 
@@ -56,6 +57,7 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
             state,
             account.symbol,
             (tokenContractAddress || '') as TokenAddress,
+            networkConfigDeps,
         ),
     );
 
@@ -68,7 +70,7 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
     const tokenWatch = watch(tokenInputName, null);
 
     useEffect(() => {
-        if (hasNetworkFeatures(account, 'tokens') && !isSetMaxActive) {
+        if (hasNetworkFeatures(networkConfigDeps, account, 'tokens') && !isSetMaxActive) {
             const amountValue = getValues(`outputs.${outputId}.amount`);
             if (amountValue) setAmount(outputId, amountValue);
         }
@@ -95,7 +97,12 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
     const onOpenTokensModal = !hasNoStandardTokens ? () => setIsTokensModalActive(true) : undefined;
 
     const networkTokenContractAddress =
-        selectedToken && getContractAddressForNetworkSymbol(account.symbol, selectedToken.contract);
+        selectedToken &&
+        getContractAddressForNetworkSymbol(
+            networkConfigDeps,
+            account.symbol,
+            selectedToken.contract,
+        );
 
     const isDeFiToken = !!selectedToken && isErc4626(selectedToken);
 
@@ -128,7 +135,10 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
                             <Row justifyContent="flex-start">
                                 <Text intent="neutral" typographyStyle="body-md">
                                     {selectedToken?.name ||
-                                        getNetworkDisplaySymbolName(account.symbol)}
+                                        getNetworkDisplaySymbolName(
+                                            networkConfigDeps,
+                                            account.symbol,
+                                        )}
                                 </Text>
                             </Row>
                             <Row>
@@ -171,7 +181,7 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
                                             <Link
                                                 href={getTokenExplorerUrl(
                                                     explorer,
-                                                    getNetwork(account.symbol).networkType,
+                                                    getNetworkConfig(account.symbol).networkType,
                                                     selectedToken,
                                                 )}
                                                 onClick={ev => ev.stopPropagation()}

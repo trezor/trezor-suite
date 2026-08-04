@@ -2,8 +2,10 @@ import { useState } from 'react';
 
 import { Translation } from '@suite/intl';
 import { isOnionUrl } from '@suite/tor';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectGetNetworkConfigDep } from '@suite-common/networks';
 import { type UserContextPayload } from '@suite-common/suite-types';
-import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { blockchainActions, selectCustomBackends } from '@suite-common/wallet-core';
 import { Banner, Button, Card, Column, H3, Modal, Paragraph, Row } from '@trezor/components';
 import { GearIcon, TorBrowserIcon } from '@trezor/icons';
@@ -18,6 +20,7 @@ type DisableTorModalProps = Omit<Extract<UserContextPayload, { type: 'disable-to
 };
 
 export const DisableTorModal = ({ onCancel, decision }: DisableTorModalProps) => {
+    const { getNetworkConfig } = useServices(selectGetNetworkConfigDep);
     const dispatch = useDispatch();
     const [symbol, setSymbol] = useState<NetworkSymbol>();
     const customBackends = useSelector(selectCustomBackends);
@@ -87,7 +90,7 @@ export const DisableTorModal = ({ onCancel, decision }: DisableTorModalProps) =>
                                 <Row key={symbol} gap={16}>
                                     <TokenIcon symbol={symbol} />
                                     <Column>
-                                        <Paragraph>{getNetwork(symbol).name}</Paragraph>
+                                        <Paragraph>{getNetworkConfig(symbol).name}</Paragraph>
                                         <Paragraph
                                             intent="neutral"
                                             priority="secondary"

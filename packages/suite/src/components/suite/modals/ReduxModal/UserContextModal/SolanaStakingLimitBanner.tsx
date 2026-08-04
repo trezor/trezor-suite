@@ -2,7 +2,8 @@ import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { Translation } from '@suite/intl';
-import { getDisplaySymbol } from '@suite-common/wallet-config';
+import { useServices } from '@suite-common/dependency-injection';
+import { getDisplaySymbol , selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { selectBlockchainState } from '@suite-common/wallet-core';
 import { type Account, type PrecomposedLevels } from '@suite-common/wallet-types';
 import {
@@ -29,6 +30,7 @@ export const SolanaStakingLimitBanner = ({
     composedLevels,
     type,
 }: SolanaStakingLimitBannerProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const blockchain = useSelector(selectBlockchainState);
 
     const [limit, setLimit] = useState<SolanaStakingLimit>(NO_LIMIT);
@@ -83,8 +85,12 @@ export const SolanaStakingLimitBanner = ({
                     }
                     values={{
                         limit: MAX_DEACTIVATE_ACCOUNTS_WITH_SPLIT,
-                        amount: formatNetworkAmount(limit.estimatedAmount, account.symbol),
-                        symbol: getDisplaySymbol(account.symbol),
+                        amount: formatNetworkAmount(
+                            networkConfigDeps,
+                            limit.estimatedAmount,
+                            account.symbol,
+                        ),
+                        symbol: getDisplaySymbol(networkConfigDeps, account.symbol),
                     }}
                 />
             }

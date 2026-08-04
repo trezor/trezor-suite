@@ -1,7 +1,9 @@
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
-import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectGetNetworkConfigDep } from '@suite-common/networks';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     selectEnabledNetworks,
     selectHasRunningDiscovery,
@@ -16,13 +18,14 @@ type EarnActivateButtonProps = {
 };
 
 export const EarnActivateButton = ({ symbol }: EarnActivateButtonProps) => {
+    const { getNetworkConfig } = useServices(selectGetNetworkConfigDep);
     const dispatch = useDispatch();
     const { device } = useDevice();
     const enabledNetworks = useSelector(selectEnabledNetworks);
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
     const isNetworkEnabled = enabledNetworks.includes(symbol);
     const isDiscoveringThisNetwork = isDiscoveryRunning && isNetworkEnabled;
-    const { name } = getNetwork(symbol);
+    const { name } = getNetworkConfig(symbol);
 
     const isDeviceDisconnected = !device?.connected;
     const isButtonDisabled = isDeviceDisconnected || isDiscoveryRunning;

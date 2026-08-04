@@ -1,6 +1,8 @@
 import { memo } from 'react';
 
 import { useDevice } from '@suite/device';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { selectAllAccountsToList } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 
@@ -18,11 +20,12 @@ import { useGlobalSendReceiveAnalytics } from './hooks/useGlobalSendReceiveAnaly
 import { useGlobalSendReceiveModal } from './hooks/useGlobalSendReceiveModal';
 
 export const GlobalSendReceive = memo(function GlobalSendReceiveInner() {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const { device } = useDevice();
     const { activeModal, openModal, closeModal } = useGlobalSendReceiveModal();
     const { sendAnalytics, receiveAnalytics } = useGlobalSendReceiveAnalytics();
     const dispatch = useDispatch();
-    const accounts = useSelector(selectAllAccountsToList);
+    const accounts = useSelector(state => selectAllAccountsToList(state, networkConfigDeps));
     const discoveryStatus = useSelector(selectDiscoveryOverallStatus);
 
     const isDeviceConnected = !!device?.connected && !!device?.available;

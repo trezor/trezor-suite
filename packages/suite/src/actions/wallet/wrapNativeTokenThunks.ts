@@ -3,7 +3,7 @@ import { events } from '@suite-common/analytics';
 import { type StablecoinYieldTxSimulationParams } from '@suite-common/earn-stablecoin/src/tx-simulation';
 import { createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { getNetwork, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     type YieldFlowDisplayToken,
     composeYieldWrapTransactionThunk,
@@ -102,14 +102,15 @@ export const submitWrapNativeTokenThunk = createThunk(
                 return undefined;
             }
 
-            const network = getNetwork(account.symbol);
+            const network = extra.services.getNetworkConfig(account.symbol);
 
             const sendResult = await sendYieldTransaction({
+                ...extra.services,
                 account,
                 amount: wrapAmount,
                 token: {
                     networkSymbol: account.symbol,
-                    symbol: getNetworkDisplaySymbol(account.symbol),
+                    symbol: getNetworkDisplaySymbol(extra.services, account.symbol),
                     decimals: network.decimals,
                     contractAddress: null,
                 },
@@ -172,7 +173,7 @@ export const submitWrapNativeTokenThunk = createThunk(
                     metadata: {
                         send: {
                             symbol: account.symbol,
-                            displaySymbol: getNetworkDisplaySymbol(account.symbol),
+                            displaySymbol: getNetworkDisplaySymbol(extra.services, account.symbol),
                             amount: wrapAmount,
                         },
                         receive: {

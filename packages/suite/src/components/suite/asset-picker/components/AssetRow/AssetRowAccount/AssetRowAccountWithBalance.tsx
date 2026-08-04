@@ -1,4 +1,5 @@
-import { getDisplaySymbol, getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
+import { useServices } from '@suite-common/dependency-injection';
+import { getDisplaySymbol, getNetworkDisplaySymbolName , selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { Column, Row, Text } from '@trezor/components';
 import { TokenIcon } from '@trezor/product-components';
@@ -17,16 +18,18 @@ export function AssetRowAccountWithBalance({
     account,
     onClick,
 }: AssetRowAccountWithBalanceProps) {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     return (
         <ItemClickableContainer onClick={() => onClick(account)}>
             <Row data-testid={dataTestId} gap={12} alignItems="center" overflow="hidden">
                 <TokenIcon symbol={account.symbol} size={40} showNetworkIcon />
                 <Column overflow="hidden" alignItems="flex-start" justifyContent="flex-start">
                     <Text typographyStyle="body-md" ellipsisLineCount={1} maxWidth="100%">
-                        {getNetworkDisplaySymbolName(account.symbol)}
+                        {getNetworkDisplaySymbolName(networkConfigDeps, account.symbol)}
                     </Text>
                     <Text intent="neutral" priority="secondary" typographyStyle="body-sm">
-                        {getDisplaySymbol(account.symbol)}
+                        {getDisplaySymbol(networkConfigDeps, account.symbol)}
                     </Text>
                 </Column>
             </Row>

@@ -9,7 +9,7 @@ import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import {
     type TradingType,
-    cryptoIdToNetworkSymbol,
+    cryptoIdToSymbol,
     getUnusedAddressFromAccount,
     selectTradingBuyReceiveAccountKey,
     selectTradingBuyReceiveAddress,
@@ -19,6 +19,7 @@ import {
     tradingBuyActions,
     tradingExchangeActions,
 } from '@suite-common/trading';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { selectAccountByKey } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { filterReceiveAccounts } from '@suite-common/wallet-utils';
@@ -59,6 +60,7 @@ export const useTradingReceiveAddress = ({
     cryptoId,
     nonSuiteAccount,
 }: UseTradingReceiveAddressProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const dispatch = useDispatch();
     const { addressValidator } = useServices(selectAddressValidatorDep);
     const accounts = useSelector(state => state.wallet.accounts);
@@ -79,7 +81,7 @@ export const useTradingReceiveAddress = ({
 
     const isDebug = useSelector(selectIsDebugModeActive);
 
-    const symbol = cryptoId && cryptoIdToNetworkSymbol(cryptoId);
+    const symbol = cryptoId && cryptoIdToSymbol(networkConfigDeps, cryptoId);
     const { supportedMainnets, supportedTestnets } = useNetworkSupport();
 
     const methods = useForm<TradingVerifyFormProps>({
@@ -101,6 +103,7 @@ export const useTradingReceiveAddress = ({
     const suiteReceiveAccounts = useMemo(
         () =>
             filterReceiveAccounts({
+                ...networkConfigDeps,
                 accounts,
                 deviceState: device?.state?.staticSessionId,
                 symbol,

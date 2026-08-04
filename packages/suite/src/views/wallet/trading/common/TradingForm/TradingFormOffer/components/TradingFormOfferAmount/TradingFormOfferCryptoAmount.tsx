@@ -1,6 +1,8 @@
 import { type CryptoId } from 'invity-api';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { cryptoIdToNetwork, useTradingUtils } from '@suite-common/trading';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { type TokenAddress } from '@suite-common/wallet-types';
 import { Column, Row, Text } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
@@ -14,6 +16,7 @@ interface TradingCryptoAmountProps {
 }
 
 export const TradingFormOfferCryptoAmount = ({ amount, cryptoId }: TradingCryptoAmountProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const { cryptoIdToSymbolAndContractAddress } = useTradingUtils();
     const { coinSymbol, contractAddress } = cryptoIdToSymbolAndContractAddress(cryptoId);
 
@@ -21,7 +24,7 @@ export const TradingFormOfferCryptoAmount = ({ amount, cryptoId }: TradingCrypto
         return null;
     }
 
-    const network = cryptoId && cryptoIdToNetwork(cryptoId);
+    const network = cryptoId && cryptoIdToNetwork(networkConfigDeps, cryptoId);
     const hasAmount = new BigNumber(amount).gt(0);
 
     return (

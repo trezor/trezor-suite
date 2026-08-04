@@ -2,6 +2,8 @@ import { useMemo } from 'react';
 
 import { selectSelectedAccount } from '@suite/account';
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { BACKUP_REWARD_PAYOUT_DAYS } from '@suite-common/wallet-constants';
 import { getStakingDataForNetwork, secondsToDays } from '@suite-common/wallet-utils';
 import { Paragraph } from '@trezor/components';
@@ -22,9 +24,11 @@ export const PayoutCardNextRewards = ({
     daysToAddToPool,
     validatorWithdrawTime,
 }: PayoutCardNextRewardsProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const selectedAccount = useSelector(selectSelectedAccount);
 
-    const { autocompoundBalance = '0' } = getStakingDataForNetwork(selectedAccount) ?? {};
+    const { autocompoundBalance = '0' } =
+        getStakingDataForNetwork(networkConfigDeps, selectedAccount) ?? {};
 
     const payout = useMemo(() => {
         if (!nextRewardPayout || !daysToAddToPool) return undefined;

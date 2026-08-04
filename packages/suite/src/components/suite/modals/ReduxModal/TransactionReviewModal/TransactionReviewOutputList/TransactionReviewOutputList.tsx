@@ -3,7 +3,9 @@ import { useEffect, useRef } from 'react';
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
 import type { DeviceRootState } from '@suite-common/device';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { selectSendFormReviewLastButtonCode } from '@suite-common/wallet-core';
 import type {
     FormState,
@@ -76,6 +78,7 @@ export const TransactionReviewOutputList = ({
     onTryAgain,
     isSending,
 }: TransactionReviewOutputListProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const outputRefs = useRef<(HTMLDivElement | null)[]>([]);
     const totalOutputRef = useRef<HTMLDivElement | null>(null);
     const accounts = useSelector(state => state.wallet.accounts);
@@ -84,7 +87,7 @@ export const TransactionReviewOutputList = ({
     const isFirstOutputAddress = outputs[0]?.type === 'address';
 
     const lastButtonRequestCode = useSelector((state: DeviceRootState) =>
-        selectSendFormReviewLastButtonCode(state, symbol),
+        selectSendFormReviewLastButtonCode(state, networkConfigDeps, symbol),
     );
 
     const reviewState = getTransactionReviewState({

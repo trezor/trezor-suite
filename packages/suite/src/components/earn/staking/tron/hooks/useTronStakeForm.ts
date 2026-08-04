@@ -3,6 +3,8 @@ import { useForm } from 'react-hook-form';
 import { useTranslation } from '@suite/intl';
 import { selectAddressValidatorDep } from '@suite-common/address';
 import { useServices } from '@suite-common/dependency-injection';
+import { type GetNetworkConfigDep } from '@suite-common/networks';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { type TronFlow } from '@suite-common/wallet-core';
 import { type Account, type TronResourceType } from '@suite-common/wallet-types';
 import { type FeeLevel } from '@trezor/connect';
@@ -10,17 +12,17 @@ import { type FeeLevel } from '@trezor/connect';
 import { getStakedBalance } from '../unstake/unstakeUtils';
 import { CUSTOM_REPRESENTATIVE } from '../vote/constants';
 
-interface GetDefaultResourceTypeProps {
+interface GetDefaultResourceTypeProps extends GetNetworkConfigDep {
     account: Account;
     flow: TronFlow;
 }
 
-const getDefaultResourceType = ({ account, flow }: GetDefaultResourceTypeProps) => {
+const getDefaultResourceType = ({ account, flow, ...deps }: GetDefaultResourceTypeProps) => {
     if (flow !== 'unstake') {
         return 'bandwidth';
     }
 
-    const stakedBandwidthBalance = getStakedBalance(account, 'bandwidth');
+    const stakedBandwidthBalance = getStakedBalance(deps, account, 'bandwidth');
 
     return stakedBandwidthBalance === '0' ? 'energy' : 'bandwidth';
 };
@@ -42,13 +44,14 @@ interface UseTronStakeFormProps {
 export const useTronStakeForm = ({ account, flow }: UseTronStakeFormProps) => {
     const { translationString } = useTranslation();
     const { addressValidator } = useServices(selectAddressValidatorDep);
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
 
     const methods = useForm<TronStakeFormValues>({
         mode: 'onChange',
         defaultValues: {
             amount: '',
             fiatAmount: '',
-            resourceType: getDefaultResourceType({ account, flow }),
+            resourceType: getDefaultResourceType({ ...networkConfigDeps, account, flow }),
             selectedFee: 'normal',
             representative: '',
             customRepresentativeAddress: '',

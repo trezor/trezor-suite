@@ -1,5 +1,6 @@
 import { asTypedDesktopAnalytics, events } from '@suite/analytics';
 import { selectSelectedDevice } from '@suite-common/device';
+import { type GetNetworkConfigDep } from '@suite-common/networks';
 import { type ExtraDependencies } from '@suite-common/redux-utils';
 import {
     getStakeTxGasLimit,
@@ -40,6 +41,7 @@ import TrezorConnect, { type FeeLevel } from '@trezor/connect';
 import { type Dispatch, type GetState } from 'src/types/suite';
 
 const calculateStakingTransaction = (
+    deps: GetNetworkConfigDep,
     availableBalance: string,
     output: ExternalOutput,
     feeLevel: FeeLevel,
@@ -58,11 +60,20 @@ const calculateStakingTransaction = (
         minAmountForWithdrawalInBaseUnits: fromEther(MIN_ETH_FOR_WITHDRAWALS.toString()).toWei(),
     };
 
-    return calculate(availableBalance, output, feeLevel, compareWithAmount, symbol, stakingParams);
+    return calculate(
+        deps,
+        availableBalance,
+        output,
+        feeLevel,
+        compareWithAmount,
+        symbol,
+        stakingParams,
+    );
 };
 
 export const composeTransaction =
-    (formValues: StakeFormState, formState: ComposeActionContext) => async () => {
+    (formValues: StakeFormState, formState: ComposeActionContext) =>
+    async (_dispatch: Dispatch, _getState: GetState, extra: ExtraDependencies) => {
         const { account, feeInfo } = formState;
         if (!account || !feeInfo) return;
 
@@ -73,6 +84,7 @@ export const composeTransaction =
         // gasLimit calculation based on account.descriptor and amount
         const { stakeType } = formValues;
         const stakeTxGasLimit = await getStakeTxGasLimit({
+            ...extra.services,
             stakeType,
             from: account.descriptor,
             amount,
@@ -104,6 +116,7 @@ export const composeTransaction =
         }
 
         return composeStakingTransaction(
+            extra.services,
             formValues,
             formState,
             predefinedLevels,
@@ -147,6 +160,7 @@ export const signTransaction =
             const amount = formValues.outputs[0]?.amount ?? '0';
 
             txData = await prepareStakeEthTx({
+                ...extra.services,
                 symbol: account.symbol,
                 from: account.descriptor,
                 identity,
@@ -163,6 +177,7 @@ export const signTransaction =
             const amount = formValues.outputs[0]?.amount ?? '0';
 
             txData = await prepareUnstakeEthTx({
+                ...extra.services,
                 symbol: account.symbol,
                 from: account.descriptor,
                 identity,
@@ -178,6 +193,7 @@ export const signTransaction =
         }
         if (stakeType === 'claim') {
             txData = await prepareClaimEthTx({
+                ...extra.services,
                 symbol: account.symbol,
                 from: account.descriptor,
                 identity,

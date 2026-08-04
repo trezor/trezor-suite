@@ -1,6 +1,8 @@
 import { Translation } from '@suite/intl';
 import { SettingsAnchor, goto } from '@suite/router';
-import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import { useServices } from '@suite-common/dependency-injection';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { selectIsNetworkReserveEnabled } from '@suite-common/wallet-core';
 import { getNetworkReserve } from '@suite-common/wallet-utils';
 import { Banner } from '@trezor/components';
@@ -16,6 +18,7 @@ export const TradingNetworkReserveBanner = ({
     symbol,
     contractAddress,
 }: TradingNetworkReserveBannerProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const dispatch = useDispatch();
     const isNetworkReserveEnabled = useSelector(selectIsNetworkReserveEnabled);
 
@@ -32,13 +35,14 @@ export const TradingNetworkReserveBanner = ({
     if (!isNetworkReserveEnabled) return null;
 
     const networkReserve = getNetworkReserve({
+        ...networkConfigDeps,
         symbol,
         contractAddress,
         isEnabled: isNetworkReserveEnabled,
     });
     if (!networkReserve) return null;
 
-    const network = getNetwork(symbol);
+    const network = networkConfigDeps.getNetworkConfig(symbol);
 
     return (
         <Banner

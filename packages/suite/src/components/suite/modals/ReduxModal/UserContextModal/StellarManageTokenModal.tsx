@@ -5,13 +5,15 @@ import { selectSelectedAccount } from '@suite/account';
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation, useTranslation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
+import { selectGetNetworkConfigDep } from '@suite-common/networks';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     DefinitionType,
     TokenManagementAction,
     tokenDefinitionsActions,
 } from '@suite-common/token-definitions';
-import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import {
     activateStellarTokenThunk,
     deactivateStellarTokenThunk,
@@ -29,6 +31,7 @@ import { Fees } from 'src/components/wallet/Fees/Fees';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useComposedLevelsPlaceholder } from 'src/hooks/wallet/form/useComposedLevelsPlaceholder';
 import { useFees } from 'src/hooks/wallet/form/useFees';
+
 
 type StellarManageTokenModalProps =
     | {
@@ -48,6 +51,8 @@ type StellarManageTokenModalProps =
       };
 
 export const StellarManageTokenModal = (props: StellarManageTokenModalProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+    const { getNetworkConfig } = useServices(selectGetNetworkConfigDep);
     const { analytics } = useServices(selectDesktopAnalyticsDep);
     const { mode, symbol, contractAddress, onCancel } = props;
     const tokenBalance = mode === 'deactivate' ? props.tokenBalance : undefined;
@@ -58,7 +63,7 @@ export const StellarManageTokenModal = (props: StellarManageTokenModalProps) => 
     const { translationString } = useTranslation();
     const [isProcessing, setIsProcessing] = useState(false);
 
-    const network = getNetwork(symbol);
+    const network = getNetworkConfig(symbol);
     const resolvedNetworkType = account?.networkType ?? network.networkType;
 
     const feeInfo = getConvertedOrDefaultFeeInfo({
@@ -106,8 +111,18 @@ export const StellarManageTokenModal = (props: StellarManageTokenModalProps) => 
 
         if (availableBalance.lt(requiredAmount)) {
             return {
-                required: formatNetworkAmount(requiredAmount.toString(), symbol, true),
-                available: formatNetworkAmount(availableBalance.toString(), symbol, true),
+                required: formatNetworkAmount(
+                    networkConfigDeps,
+                    requiredAmount.toString(),
+                    symbol,
+                    true,
+                ),
+                available: formatNetworkAmount(
+                    networkConfigDeps,
+                    availableBalance.toString(),
+                    symbol,
+                    true,
+                ),
             };
         }
 
@@ -271,8 +286,9 @@ export const StellarManageTokenModal = (props: StellarManageTokenModalProps) => 
                                 id={descriptionId}
                                 values={{
                                     token: tokenCode,
-                                    network: getNetwork(symbol).name,
+                                    network: getNetworkConfig(symbol).name,
                                     reserve: formatNetworkAmount(
+                                        networkConfigDeps,
                                         account.misc.baseReserve ?? STELLAR_BASE_RESERVE,
                                         symbol,
                                         true,

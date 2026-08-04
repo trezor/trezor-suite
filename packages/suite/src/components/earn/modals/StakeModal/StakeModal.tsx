@@ -2,7 +2,7 @@ import { selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
 import { type StakeModalFlow } from '@suite-common/suite-types/src/staking';
-import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { getNetworkDisplaySymbol , selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { selectAccountIsStakingActive } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { Grid, Modal } from '@trezor/components';
@@ -22,11 +22,14 @@ type StakeModalProps = {
 };
 
 export const StakeModal = ({ onCancel, account, flow }: StakeModalProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const { analytics } = useServices(selectDesktopAnalyticsDep);
     const stakeContextValues = useStakeForm({ account });
     const { isBelowTablet } = useLayoutSize();
 
-    const isStakingActive = useSelector(state => selectAccountIsStakingActive(state, account.key));
+    const isStakingActive = useSelector(state =>
+        selectAccountIsStakingActive(state, account.key, networkConfigDeps),
+    );
     const isUpdateProviderFlow = isStakingActive && account.networkType === 'cardano';
 
     const onCancelClick = () => {
@@ -55,7 +58,9 @@ export const StakeModal = ({ onCancel, account, flow }: StakeModalProps) => {
                         id={
                             isUpdateProviderFlow ? 'TR_EARN_UPDATE_PROVIDER' : 'TR_EARN_STAKE_TOKEN'
                         }
-                        values={{ symbol: getNetworkDisplaySymbol(account.symbol) }}
+                        values={{
+                            symbol: getNetworkDisplaySymbol(networkConfigDeps, account.symbol),
+                        }}
                     />
                 }
                 onCancel={onCancelClick}

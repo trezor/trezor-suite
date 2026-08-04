@@ -5,8 +5,10 @@ import { useToggleDebugMode } from '@suite/debug';
 import { openModal } from '@suite/modal';
 import { SettingsAnchor, closeModalApp, goto } from '@suite/router';
 import { selectAutodetectTheme, selectTheme, suiteSettingsActions } from '@suite/settings';
+import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import { useDiscreetMode } from '@suite-common/discreet-mode';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { selectAllAccountsToList, startDiscoveryThunk } from '@suite-common/wallet-core';
 import { KEYBOARD_CODE } from '@trezor/components';
 import { isDesktop } from '@trezor/env-utils';
@@ -31,13 +33,14 @@ const isTypingTarget = (target: EventTarget | null): boolean => {
 };
 
 export const useAppShortcuts = () => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const selectedDevice = useSelector(selectSelectedDevice);
     const dispatch = useDispatch();
 
     const discoveryStatus = useSelector(selectDiscoveryOverallStatus);
     const discoveryInProgress = discoveryStatus?.status === 'loading';
 
-    const accounts = useSelector(selectAllAccountsToList);
+    const accounts = useSelector(state => selectAllAccountsToList(state, networkConfigDeps));
     const selectedAccount = useSelector(selectSelectedAccount);
     const currentTheme = useSelector(selectTheme);
     const autodetectTheme = useSelector(selectAutodetectTheme);

@@ -1,5 +1,7 @@
 import { type ReactNode } from 'react';
 
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import {
     selectAccountTransactionsWithNulls,
     selectIsLoadingAccountTransactions,
@@ -35,6 +37,7 @@ const Layout = ({ selectedAccount, children }: LayoutProps) => (
 );
 
 export const Transactions = () => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
     const transactionsIsLoading = useSelector(state =>
         selectIsLoadingAccountTransactions(state, selectedAccount.account?.key || null),
@@ -49,7 +52,11 @@ export const Transactions = () => {
 
     const { account } = selectedAccount;
 
-    const isGraphSupported = isNetworkWithGraphFeature(account.symbol, account.backendType);
+    const isGraphSupported = isNetworkWithGraphFeature(
+        networkConfigDeps,
+        account.symbol,
+        account.backendType,
+    );
 
     if (account.backendType === 'coinjoin') {
         const isLoading = account.status === 'out-of-sync' && !!account.syncing;

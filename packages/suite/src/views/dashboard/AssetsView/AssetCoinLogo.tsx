@@ -20,8 +20,8 @@ type AssetCoinLogoProps = {
 };
 
 export const AssetCoinLogo = ({ symbol, assetsFiatBalances, index }: AssetCoinLogoProps) => {
-    const locale = useSelector(selectLanguage);
     const { getNetworkConfig } = useServices(selectGetNetworkConfigDep);
+    const locale = useSelector(selectLanguage);
 
     const assetPercentage = assetsFiatBalances
         ? calculateAssetsPercentage(assetsFiatBalances).find(

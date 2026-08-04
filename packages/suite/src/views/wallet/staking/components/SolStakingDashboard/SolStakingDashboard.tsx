@@ -1,9 +1,11 @@
 import { useEffect } from 'react';
 
+import { useServices } from '@suite-common/dependency-injection';
 import {
     useSolStakingRewardsWarning,
     useSolanaRewardsHistory,
 } from '@suite-common/earn-staking-api/src/staking';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import {
     selectAccountIsStakingActive,
     selectHasRunningDiscovery,
@@ -36,16 +38,19 @@ interface SolStakingDashboardProps {
 }
 
 export const SolStakingDashboard = ({ selectedAccount }: SolStakingDashboardProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const { account } = selectedAccount;
 
     const { isBelowLaptop } = useLayoutSize();
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
 
-    const { canClaim = false } = getStakingDataForNetwork(account) ?? {};
+    const { canClaim = false } = getStakingDataForNetwork(networkConfigDeps, account) ?? {};
 
     const apy = useSelector(state => selectPoolStatsApy(state, { account }));
 
-    const isStakingActive = useSelector(state => selectAccountIsStakingActive(state, account.key));
+    const isStakingActive = useSelector(state =>
+        selectAccountIsStakingActive(state, account.key, networkConfigDeps),
+    );
 
     const initialPage = 1;
     const pagination = usePagination({ pageSize: 10, initialPage });

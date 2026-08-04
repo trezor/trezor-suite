@@ -2,8 +2,9 @@ import { useEffect, useRef, useState } from 'react';
 
 import { selectSelectedAccount } from '@suite/account';
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
 import { getChangedInternalTx, getInstantStakeType } from '@suite-common/staking';
-import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { getNetworkDisplaySymbol , selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { type StakeType, type WalletAccountTransaction } from '@suite-common/wallet-types';
 import { fromWei } from '@suite-common/wallet-utils';
 import { Banner } from '@trezor/components';
@@ -35,6 +36,7 @@ export const InstantStakeBanner = ({
     daysToAddToPool,
     daysToUnstake,
 }: InstantStakeBannerProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const { descriptor: address, symbol } = useSelector(selectSelectedAccount) || {};
 
     const [instantStakeTransfer, setInstantStakeTransfer] = useState<InternalTransfer | null>(null);
@@ -65,7 +67,7 @@ export const InstantStakeBanner = ({
 
     if (!stakeType || stakeType === 'claim') return null; // claim is not supported
 
-    const displaySymbol = getNetworkDisplaySymbol(symbol);
+    const displaySymbol = getNetworkDisplaySymbol(networkConfigDeps, symbol);
     const remainingDays = stakeType === 'stake' ? daysToAddToPool : daysToUnstake;
 
     return (

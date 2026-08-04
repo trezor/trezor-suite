@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 
+import { useServices } from '@suite-common/dependency-injection';
 import {
     TRADING_FORM_OUTPUT_AMOUNT,
     TRADING_FORM_OUTPUT_FIAT,
@@ -17,7 +18,7 @@ import {
     selectTradingSendAccount,
     tradingSellActions,
 } from '@suite-common/trading';
-import { networks } from '@suite-common/wallet-config';
+import { selectNetworkConfigDeps, toNetwork } from '@suite-common/wallet-config';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useSolanaSubscribeBlocks } from 'src/hooks/wallet/form/useSolanaSubscribeBlocks';
@@ -36,6 +37,7 @@ import { useTradingFormReset } from '../common/useTradingFormReset';
 import { useTradingFormAccount } from '../useTradingFormAccount';
 
 export const useTradingSellForm = (): TradingSellFormContextProps => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const type = 'sell';
     const dispatch = useDispatch();
     const isLoading = useSelector(selectTradingSellIsLoading);
@@ -50,13 +52,15 @@ export const useTradingSellForm = (): TradingSellFormContextProps => {
     const { tradingAccountKey: accountKey, cryptoId } = useTradingFormAccount(type);
 
     const trade = useSelector(selectTradingSellActiveTrade);
-    const account = useSelector(state => selectTradingSendAccount(state, type));
+    const account = useSelector(state => selectTradingSendAccount(state, type, networkConfigDeps));
 
     useServerEnvironment();
 
     const composedTransactionInfo = useSelector(selectTradingComposedTransactionInfo);
 
-    const network = account ? networks[account.symbol] : undefined;
+    const network = account
+        ? toNetwork(account.symbol, networkConfigDeps.getNetworkConfig(account.symbol))
+        : undefined;
     const { isBtcSatsAmountUnit: shouldSendInSats } = useBitcoinAmountUnit(account?.symbol);
 
     const { defaultValues } = useTradingSellFormDefaultValues(

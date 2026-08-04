@@ -2,12 +2,14 @@ import styled from 'styled-components';
 
 import { AccountLabel } from '@suite/account';
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
 import type { DeviceRootState } from '@suite-common/device';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import {
     type NetworkSymbol,
-    getNetwork,
-    getNetworkByEvmChainId,
+    findNetworkByEvmChainId,
+    getNetworks,
+    selectNetworkConfigDeps,
 } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
@@ -50,6 +52,8 @@ export const SignMessageModal = ({
     coin,
     serializedPath,
 }: SignMessageModalProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+    const networks = getNetworks(networkConfigDeps);
     const accounts = useSelector(selectDeviceAccounts);
     const deviceModelInternal = device.features?.internal_model;
 
@@ -70,15 +74,16 @@ export const SignMessageModal = ({
         eip712parsed()?.primaryType && eip712parsed()?.domain && eip712parsed()?.message;
     const eip712ChainId = eip712parsed()?.domain?.chainId;
     const network = eip712ChainId
-        ? getNetworkByEvmChainId(eip712ChainId)
-        : getNetwork(networkSymbol ?? 'eth');
+        ? findNetworkByEvmChainId(networks, eip712ChainId)
+        : networks.find(({ symbol }) => symbol === (networkSymbol ?? 'eth'));
+    const selectedNetwork = network ?? undefined;
 
     const address = useSelector((state: AccountsRootState & DeviceRootState) =>
-        selectAddressByNetworkAndPath(state, network, serializedPath),
+        selectAddressByNetworkAndPath(state, selectedNetwork, serializedPath),
     );
     const account =
-        network && address
-            ? findAccountsByAddress(network.symbol, address, accounts)[0]
+        selectedNetwork && address
+            ? findAccountsByAddress(selectedNetwork.symbol, address, accounts)[0]
             : undefined;
 
     return (
@@ -101,9 +106,9 @@ export const SignMessageModal = ({
                 }
                 description={
                     <Row columnGap={16} rowGap={4} flexWrap="wrap" margin={{ top: 8 }}>
-                        {network && (
+                        {selectedNetwork && (
                             <Row gap={4}>
-                                <TokenIcon size={16} symbol={network.symbol} />
+                                <TokenIcon size={16} symbol={selectedNetwork.symbol} />
                                 {account ? (
                                     <AccountLabel
                                         account={account}
@@ -111,7 +116,7 @@ export const SignMessageModal = ({
                                         accountTypeBadgeSize="small"
                                     />
                                 ) : (
-                                    network.name
+                                    selectedNetwork.name
                                 )}
                             </Row>
                         )}

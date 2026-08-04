@@ -2,7 +2,10 @@ import { type ReactNode } from 'react';
 import { FormProvider } from 'react-hook-form';
 
 import { Translation } from '@suite/intl';
-import { type NetworkType, getNetwork } from '@suite-common/wallet-config';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectGetNetworkConfigDep } from '@suite-common/networks';
+import { type NetworkType } from '@suite-common/wallet-config';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { type WalletAccountTransaction } from '@suite-common/wallet-types';
 import { formatNetworkAmount, isEip1559 } from '@suite-common/wallet-utils';
 import { Card, Divider, InfoItem, Row, Text } from '@trezor/components';
@@ -46,6 +49,8 @@ const getFeeRate = (tx: WalletAccountTransaction, networkType: NetworkType) => {
 };
 
 const ChangeFeeLoaded = (props: ChangeFeeProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+    const { getNetworkConfig } = useServices(selectGetNetworkConfigDep);
     const { tx, showChained, children } = props;
     const {
         account: { networkType },
@@ -53,7 +58,7 @@ const ChangeFeeLoaded = (props: ChangeFeeProps) => {
         methods,
     } = useRbfContext();
 
-    const fee = formatNetworkAmount(tx.fee, tx.symbol);
+    const fee = formatNetworkAmount(networkConfigDeps, tx.fee, tx.symbol);
 
     return (
         <FormProvider {...methods}>
@@ -68,7 +73,7 @@ const ChangeFeeLoaded = (props: ChangeFeeProps) => {
                         <>
                             <Translation
                                 id={
-                                    getNetwork(tx.symbol).networkType === 'ethereum'
+                                    getNetworkConfig(tx.symbol).networkType === 'ethereum'
                                         ? 'TR_CURRENT_MAXIMUM_FEE_SPEED_UP'
                                         : 'TR_CURRENT_FEE_SPEED_UP'
                                 }

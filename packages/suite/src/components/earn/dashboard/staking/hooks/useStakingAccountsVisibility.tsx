@@ -1,6 +1,8 @@
 import { useCallback, useMemo, useState } from 'react';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { type StakingNetworkSymbol } from '@suite-common/wallet-config';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import {
     compareEarnByAmountDesc,
@@ -29,6 +31,7 @@ export const useStakingAccountsVisibility = ({
     adaNotActivated,
     trxNotActivated,
 }: UseAccountVisibilityProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const [isExpanded, setIsExpanded] = useState(false);
 
     const toggleExpanded = useCallback(() => {
@@ -38,7 +41,7 @@ export const useStakingAccountsVisibility = ({
     const getAccountStakedAmountInFiat = useCallback(
         (account: Account) =>
             toFiatCurrency({
-                amount: getAccountTotalStakingBalance(account) ?? '0',
+                amount: getAccountTotalStakingBalance(networkConfigDeps, account) ?? '0',
                 rate: isStakingSymbol(account.symbol) ? currentRates[account.symbol] : undefined,
             }) ?? '0',
         [currentRates],
@@ -56,7 +59,7 @@ export const useStakingAccountsVisibility = ({
     const [accountsStakingActive, accountsStakingNotActive] = arrayPartition(
         stakingAccounts,
         (account: Account) => {
-            const stakedAmount = getAccountTotalStakingBalance(account);
+            const stakedAmount = getAccountTotalStakingBalance(networkConfigDeps, account);
 
             return stakedAmount !== null && stakedAmount !== '0';
         },
@@ -97,7 +100,9 @@ export const useStakingAccountsVisibility = ({
         const hasAdaBaseAccount = alwaysVisibleAccounts.some(account => account.symbol === 'ada');
         const hasTrxBaseAccount = alwaysVisibleAccounts.some(account => account.symbol === 'trx');
 
-        const sortedInsufficientFundsAccounts = sortByCoin([...accountsInsufficientFunds]);
+        const sortedInsufficientFundsAccounts = sortByCoin(networkConfigDeps, [
+            ...accountsInsufficientFunds,
+        ]);
 
         const additionalAccounts: Account[] = [];
 
@@ -133,7 +138,7 @@ export const useStakingAccountsVisibility = ({
             if (account) additionalAccounts.push(account);
         }
 
-        return sortByCoin([...additionalAccounts]);
+        return sortByCoin(networkConfigDeps, [...additionalAccounts]);
     }, [
         alwaysVisibleAccounts,
         accountsInsufficientFunds,
@@ -147,7 +152,7 @@ export const useStakingAccountsVisibility = ({
 
     const expandedAccounts = [
         ...alwaysVisibleAccounts,
-        ...sortByCoin([...accountsInsufficientFunds]),
+        ...sortByCoin(networkConfigDeps, [...accountsInsufficientFunds]),
     ];
 
     const displayedAccounts = isExpanded ? expandedAccounts : collapsedAccounts;

@@ -18,7 +18,7 @@ import {
 } from './conditions';
 
 export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
-    async (action, { dispatch, next, getState }): Promise<AnyAction> => {
+    async (action, { dispatch, next, getState, extra }): Promise<AnyAction> => {
         // Pass action to next middleware, meaning that the code below runs *only after* the action has been completely processed in Redux.
         // Note: TS says next(action) generally isn't async, but the action may return anything; sometimes it's a Promise → needs to be awaited
         await next(action);
@@ -71,7 +71,7 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
         ) {
             // 5. Nothing to discover (discovery would be no-op). It's intentionally inside the action matcher condition
             // so it won't be called on every action, because the selector is expensive and not viable for memoization.
-            const shouldRediscover = selectShouldRediscover(getState(), device);
+            const shouldRediscover = selectShouldRediscover(getState(), extra.services, device);
             if (!shouldRediscover) return action;
             dispatch(startOrRestartDiscoveryThunk());
         }

@@ -9,7 +9,7 @@ import {
     type EarnProvider,
     type EarnYieldContext,
 } from '@suite-common/suite-types/src/staking';
-import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { getNetworkDisplaySymbol , selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { type YieldFlowType } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { getApyPercent, isStakingNetworkType } from '@suite-common/wallet-utils';
@@ -42,6 +42,7 @@ export const YieldEarnInANutshellModal = ({
     actionType,
     yieldContext,
 }: YieldEarnInANutshellModalProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const { analytics } = useServices(selectDesktopAnalyticsDep);
 
     const { handleAction, onCancelClick } = useEarnInANutshell({
@@ -68,7 +69,7 @@ export const YieldEarnInANutshellModal = ({
     // an intro highlight plus a wrap step on deposit and an unwrap step on withdrawal.
     const isWrappedNativeVault =
         vault !== undefined && isWrappedNativeToken(account.symbol, vault.token.address);
-    const nativeSymbol = getNetworkDisplaySymbol(account.symbol);
+    const nativeSymbol = getNetworkDisplaySymbol(networkConfigDeps, account.symbol);
 
     const processes: EarnInANutshellProcess[] = [
         {

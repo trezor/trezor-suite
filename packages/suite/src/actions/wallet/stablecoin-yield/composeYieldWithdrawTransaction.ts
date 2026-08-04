@@ -1,6 +1,6 @@
 import { asEvmAddress } from '@suite-common/calldata';
 import { getYieldVault } from '@suite-common/earn-stablecoin-api';
-import { getNetwork } from '@suite-common/wallet-config';
+import type { GetNetworkConfigDep } from '@suite-common/networks';
 import {
     type YieldFeeEstimationError,
     type YieldFlowResolvedData,
@@ -17,7 +17,7 @@ import { type Result, err, ok } from '@trezor/type-utils';
 
 import type { AppState, Dispatch } from 'src/types/suite';
 
-export type ComposeYieldWithdrawTransactionParams = {
+export type ComposeYieldWithdrawTransactionParams = GetNetworkConfigDep & {
     account: Account & { networkType: 'ethereum' };
     flowData: YieldFlowResolvedData;
     amount: string;
@@ -33,6 +33,7 @@ export const composeYieldWithdrawTransaction = async ({
     flowType,
     dispatch,
     getState,
+    getNetworkConfig,
 }: ComposeYieldWithdrawTransactionParams): Promise<Result<string, YieldFeeEstimationError>> => {
     const { vault } = flowData;
 
@@ -42,7 +43,7 @@ export const composeYieldWithdrawTransaction = async ({
             vaultId: vault.id,
         },
     });
-    const network = getNetwork(account.symbol);
+    const network = getNetworkConfig(account.symbol);
 
     if (!network.chainId) {
         throw new Error(`Network ${account.symbol} is missing chainId.`);

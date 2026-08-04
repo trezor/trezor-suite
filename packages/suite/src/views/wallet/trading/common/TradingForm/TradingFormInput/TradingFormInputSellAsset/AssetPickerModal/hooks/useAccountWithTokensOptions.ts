@@ -3,11 +3,13 @@ import { useThrottle } from 'react-use';
 
 import { type CryptoId } from 'invity-api';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import { selectAccountsWithSuiteSyncLabel } from '@suite-common/suite-sync';
 import { type EnhancedTokenInfo, selectTokenDefinitions } from '@suite-common/token-definitions';
 import { getCryptoId } from '@suite-common/trading';
-import { type NetworkSymbol, networkSymbolCollection } from '@suite-common/wallet-config';
+import { type NetworkConfigDeps, type NetworkSymbol } from '@suite-common/wallet-config';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import {
     selectBaseCurrency,
     selectCurrentFiatRates,
@@ -32,23 +34,40 @@ import {
     sortTokensWithRates,
 } from 'src/utils/wallet/tokenUtils';
 
-interface GetSupportedTokensProps<T extends TokenInfo | EnhancedTokenInfo> {
+interface GetSupportedTokensProps<
+    T extends TokenInfo | EnhancedTokenInfo,
+> extends NetworkConfigDeps {
     networkSymbol: NetworkSymbol;
     tokens: T[] | undefined;
     supportedCryptoIds: Set<CryptoId>;
 }
 
 function getSupportedAndUnsupportedTokens<T extends TokenInfo | EnhancedTokenInfo>({
+    getNetworkConfig,
+    networkModuleRepository,
     networkSymbol,
     tokens = [],
     supportedCryptoIds,
 }: GetSupportedTokensProps<T>) {
     const supportedTokens = tokens.filter(token =>
-        supportedCryptoIds.has(getCryptoId(networkSymbol, token.contract)),
+        supportedCryptoIds.has(
+            getCryptoId(
+                { getNetworkConfig, networkModuleRepository },
+                networkSymbol,
+                token.contract,
+            ),
+        ),
     );
 
     const unsupportedTokens = tokens.filter(
-        token => !supportedCryptoIds.has(getCryptoId(networkSymbol, token.contract)),
+        token =>
+            !supportedCryptoIds.has(
+                getCryptoId(
+                    { getNetworkConfig, networkModuleRepository },
+                    networkSymbol,
+                    token.contract,
+                ),
+            ),
     );
 
     return { supportedTokens, unsupportedTokens };
@@ -70,6 +89,7 @@ export function useAccountWithTokensOptions({
     accountsWithTokens: AccountWithTokensOption[];
     networks: NetworkSymbol[];
 } {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const device = useSelector(selectSelectedDevice);
     const baseAccounts = useSelector(selectVisibleDeviceAccounts);
 
@@ -101,7 +121,10 @@ export function useAccountWithTokensOptions({
         }
 
         const validAccounts = throttledAccounts.filter(account => {
-            if (isTestnet(account.symbol) || account.accountType === 'coinjoin') {
+            if (
+                isTestnet(networkConfigDeps, account.symbol) ||
+                account.accountType === 'coinjoin'
+            ) {
                 return false;
             }
 
@@ -110,6 +133,7 @@ export function useAccountWithTokensOptions({
             }
 
             const { shownWithBalance, hiddenWithBalance } = getTokens({
+                ...networkConfigDeps,
                 tokens: account.tokens ?? [],
                 symbol: account.symbol,
                 tokenDefinitions: tokenDefinitions?.[account.symbol]?.coin,
@@ -119,11 +143,13 @@ export function useAccountWithTokensOptions({
         });
 
         const networks = new Set(validAccounts.map(account => account.symbol));
-        const orderedNetworks = networkSymbolCollection.filter(network => networks.has(network));
+        const orderedNetworks = networkConfigDeps.networkModuleRepository
+            .getSupportedNetworks()
+            .filter(network => networks.has(network));
 
         const networkAccounts = filterAccountsByNetworkSymbol(validAccounts, networkSymbolFilter);
         const supportedNetworkAccounts = networkAccounts.filter(account =>
-            includedCryptoIds.has(getCryptoId(account.symbol)),
+            includedCryptoIds.has(getCryptoId(networkConfigDeps, account.symbol)),
         );
         const supportedCryptoIds = new Set(
             Array.from(includedCryptoIds).filter(cryptoId => !excludedCryptoIds.has(cryptoId)),
@@ -131,12 +157,14 @@ export function useAccountWithTokensOptions({
 
         const accountsAndTokensSortedByCoin = supportedNetworkAccounts.map(account => {
             const { shownWithBalance, hiddenWithBalance } = getTokens({
+                ...networkConfigDeps,
                 tokens: account.tokens ?? [],
                 symbol: account.symbol,
                 tokenDefinitions: tokenDefinitions?.[account.symbol]?.coin,
             });
 
             const { supportedTokens, unsupportedTokens } = getSupportedAndUnsupportedTokens({
+                ...networkConfigDeps,
                 networkSymbol: account.symbol,
                 tokens: shownWithBalance.concat(hiddenWithBalance),
                 supportedCryptoIds,
@@ -183,7 +211,7 @@ export function useAccountWithTokensOptions({
 
         for (const { account, tokens, nonTradableTokens } of accountsWithTokens) {
             if (
-                supportedCryptoIds.has(getCryptoId(account.symbol)) &&
+                supportedCryptoIds.has(getCryptoId(networkConfigDeps, account.symbol)) &&
                 new BigNumber(account.balance).gt(0)
             ) {
                 accountsWithTokensOptions.push(createAccountOption(account));

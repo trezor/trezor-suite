@@ -1,15 +1,18 @@
 import { useMemo } from 'react';
 import { useThrottle } from 'react-use';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import { selectAccountsWithSuiteSyncLabel } from '@suite-common/suite-sync';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { selectAllAccountsToList } from '@suite-common/wallet-core';
 
 import { ASSET_ROW_HEIGHT } from 'src/components/suite/asset-picker/constants';
 import { useSelector } from 'src/hooks/suite';
 
 export function useAccountsOptions() {
-    const baseAccounts = useSelector(selectAllAccountsToList);
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+    const baseAccounts = useSelector(state => selectAllAccountsToList(state, networkConfigDeps));
     const device = useSelector(selectSelectedDevice);
 
     const accounts = useSelector(state =>

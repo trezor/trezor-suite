@@ -1,3 +1,4 @@
+import { type GetNetworkConfigDep } from '@suite-common/networks';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     asAmountUnit,
@@ -35,7 +36,7 @@ export const calcCryptoFromFiat = ({
         : cryptoAmount;
 };
 
-type CalcRatioAmountParams = {
+type CalcRatioAmountParams = GetNetworkConfigDep & {
     divisor: number;
     balance: string;
     decimals: number;
@@ -59,6 +60,7 @@ export const calcRatioAmount = ({
     contractAddress,
     formattedBalance,
     fee,
+    getNetworkConfig,
 }: CalcRatioAmountParams): { cryptoInputValue: string; cryptoAmountWithReserve: string } => {
     const amount = new BigNumber(balance || '0').dividedBy(divisor).decimalPlaces(decimals);
 
@@ -68,6 +70,7 @@ export const calcRatioAmount = ({
 
     const cryptoAmountWithReserve = isNetworkReserveEnabled
         ? getCryptoAmountWithReserve({
+              getNetworkConfig,
               symbol,
               contractAddress,
               balance: formattedBalance,

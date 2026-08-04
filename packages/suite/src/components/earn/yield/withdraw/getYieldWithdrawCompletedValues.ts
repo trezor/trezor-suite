@@ -1,9 +1,6 @@
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
-import {
-    type NetworkSymbol,
-    getNetwork,
-    getNetworkDisplaySymbol,
-} from '@suite-common/wallet-config';
+import type { GetNetworkConfigDep } from '@suite-common/networks';
+import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     type YieldFlowCompleteValue,
     type YieldFlowDisplayToken,
@@ -15,7 +12,7 @@ import {
 
 type PricePerShareState = NonNullable<YieldDtoV2['state']>['pricePerShareState'];
 
-type GetYieldWithdrawCompletedValuesParams = {
+type GetYieldWithdrawCompletedValuesParams = GetNetworkConfigDep & {
     networkSymbol: NetworkSymbol;
     flowType: YieldWithdrawFlowType;
     completedAmount: string;
@@ -50,12 +47,14 @@ export const getYieldWithdrawCompletedValues = ({
     token,
     receiptToken,
     pricePerShareState,
+    getNetworkConfig,
 }: GetYieldWithdrawCompletedValuesParams): YieldWithdrawCompletedValues => {
     const isSharesInput = flowType === 'redeem';
 
     const sentReceiptAmount = isSharesInput
         ? completedAmount
         : (getWithdrawRequestAmount({
+              getNetworkConfig,
               networkSymbol,
               amount: completedAmount,
               token,
@@ -74,8 +73,8 @@ export const getYieldWithdrawCompletedValues = ({
             output: {
                 token: {
                     networkSymbol,
-                    symbol: getNetworkDisplaySymbol(networkSymbol),
-                    decimals: getNetwork(networkSymbol).decimals,
+                    symbol: getNetworkDisplaySymbol({ getNetworkConfig }, networkSymbol),
+                    decimals: getNetworkConfig(networkSymbol).decimals,
                 },
                 amount: unwrappedAmount,
             },
@@ -89,6 +88,7 @@ export const getYieldWithdrawCompletedValues = ({
             amount:
                 isSharesInput && pricePerShareState
                     ? getConvertedOutputTokenBalanceToInputTokenAmount({
+                          getNetworkConfig,
                           networkSymbol,
                           token,
                           outputToken: receiptToken,

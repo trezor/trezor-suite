@@ -7,7 +7,7 @@ import { useFormatters } from '@suite-common/formatters';
 import { getNetworkAdjustedStakingBalance } from '@suite-common/staking';
 import { EarnFlow } from '@suite-common/suite-types/src/staking';
 import { getTradingPrefilledFromAccountData, tradingActions } from '@suite-common/trading';
-import { getDisplaySymbol } from '@suite-common/wallet-config';
+import { getDisplaySymbol , selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import {
     selectAccountClaimTransactions,
     selectAccountIsStakingActive,
@@ -45,6 +45,7 @@ interface EarnStakingAccountRowProps {
 }
 
 export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAccountRowProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const dispatch = useDispatch();
     const { CryptoAmountFormatter } = useFormatters();
     const { analytics } = useServices(selectDesktopAnalyticsDep);
@@ -57,9 +58,11 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
         selectPoolStatsApy(state, { networkSymbol: account.symbol }),
     );
 
-    const displaySymbol = getDisplaySymbol(account.symbol);
+    const displaySymbol = getDisplaySymbol(networkConfigDeps, account.symbol);
     const isCardanoNetworkType = account.networkType === 'cardano';
-    const isStakingActive = useSelector(state => selectAccountIsStakingActive(state, account.key));
+    const isStakingActive = useSelector(state =>
+        selectAccountIsStakingActive(state, account.key, networkConfigDeps),
+    );
     const isClaimPending = useSelector(state =>
         selectAccountClaimTransactions(state, account.key).some(tx => isPending(tx)),
     );
@@ -72,7 +75,7 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
         votingMessageContent,
     } = useMessageSystemStaking(account.symbol);
 
-    const { canClaim = false } = getStakingDataForNetwork(account) ?? {};
+    const { canClaim = false } = getStakingDataForNetwork(networkConfigDeps, account) ?? {};
     const isClaimButtonDisabled = isClaimingDisabled || isClaimPending;
 
     const minStakingAmount = getStakingLimitsByNetworkSymbol(
@@ -80,7 +83,7 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
     )?.MIN_AMOUNT_FOR_STAKING_DASHBOARD;
 
     const accountBalance = account.formattedBalance;
-    const stakingBalance = getAccountTotalStakingBalance(account) ?? '0';
+    const stakingBalance = getAccountTotalStakingBalance(networkConfigDeps, account) ?? '0';
 
     const stakingStatus = useStakingAccountStatus(account);
 
@@ -89,7 +92,7 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
 
         dispatch(
             tradingActions.setTradingFromPrefilledAccount(
-                getTradingPrefilledFromAccountData(account),
+                getTradingPrefilledFromAccountData(networkConfigDeps, account),
             ),
         );
         dispatch(goto({ routeName: 'wallet-trading-buy' }));

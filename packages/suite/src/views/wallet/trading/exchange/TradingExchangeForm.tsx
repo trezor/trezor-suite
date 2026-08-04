@@ -2,8 +2,10 @@ import { FormProvider } from 'react-hook-form';
 
 import { selectIsDeviceCompromised } from '@suite/authenticity-checks';
 import { ContextMessage } from '@suite/message-system';
+import { useServices } from '@suite-common/dependency-injection';
 import { Context } from '@suite-common/message-system';
 import { type TradingType, selectTradingSendAccount } from '@suite-common/trading';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 
 import { useSelector } from 'src/hooks/suite';
 import { useMessageSystemTrading } from 'src/hooks/suite/useMessageSystemTrading';
@@ -18,8 +20,11 @@ import { TradingDisabled } from '../common/TradingDisabled';
 import { TradingExchangeFormInputs } from '../common/TradingForm/TradingExchangeFormInputs';
 
 const TradingExchangeFormWrapper = () => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const tradingExchangeContextValue = useTradingExchangeForm();
-    const account = useSelector(state => selectTradingSendAccount(state, 'exchange'));
+    const account = useSelector(state =>
+        selectTradingSendAccount(state, 'exchange', networkConfigDeps),
+    );
     const allowanceContextValue = useAllowance({ account });
 
     return (

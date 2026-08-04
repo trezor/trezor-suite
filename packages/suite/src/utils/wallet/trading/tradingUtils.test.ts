@@ -1,4 +1,5 @@
-import { type Network, asNetworkSymbol, networks } from '@suite-common/wallet-config';
+import { type Network, toNetwork } from '@suite-common/wallet-config';
+import { mockNetworkConfigDeps } from '@suite-common/wallet-config/mocks';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
@@ -90,7 +91,7 @@ describe('trading utils', () => {
                     },
                 } as unknown as Account;
 
-                const network = networks.btc;
+                const network = toNetwork('btc', mockNetworkConfigDeps.getNetworkConfig('btc'));
 
                 const result = await getComposeAddressPlaceholder(account, network);
 
@@ -143,7 +144,7 @@ describe('trading utils', () => {
 
         it('returns empty string for tron (fee uses compose context recipient)', async () => {
             const account = mockWalletAccount({
-                symbol: asNetworkSymbol('trx'),
+                symbol: 'trx',
                 descriptor: asAccountDescriptor('TTronAddress123'),
             });
 

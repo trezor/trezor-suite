@@ -6,6 +6,7 @@ import { closeModal } from '@suite/modal';
 import { useServices } from '@suite-common/dependency-injection';
 import type { DeviceRootState } from '@suite-common/device';
 import { selectTradingComposedTransactionInfo } from '@suite-common/trading';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import {
     type SerializedTx,
     selectIsTxOutputInternal,
@@ -106,6 +107,7 @@ export const TransactionReviewModalBodyInner = ({
     setIsSending,
     hasTxReviewExpired,
 }: TransactionReviewModalBodyInnerProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const { analytics } = useServices(selectDesktopAnalyticsDep);
     const dispatch = useDispatch();
     const [areDetailsVisible, setAreDetailsVisible] = useState(false);
@@ -133,13 +135,18 @@ export const TransactionReviewModalBodyInner = ({
             : undefined;
 
     const buttonRequestsCount = useSelector((state: DeviceRootState) =>
-        selectSendFormReviewButtonRequestsCount(state, account?.symbol, decreaseOutputId),
+        selectSendFormReviewButtonRequestsCount(
+            state,
+            networkConfigDeps,
+            account?.symbol,
+            decreaseOutputId,
+        ),
     );
 
     const lastButtonRequestCount = useRef(buttonRequestsCount);
 
     const lastButtonRequestCode = useSelector((state: DeviceRootState) =>
-        selectSendFormReviewLastButtonCode(state, symbol),
+        selectSendFormReviewLastButtonCode(state, networkConfigDeps, symbol),
     );
 
     const [reviewStep, setReviewStep] = useState(0);
@@ -212,6 +219,7 @@ export const TransactionReviewModalBodyInner = ({
 
     const actionTranslation = (source: 'heading' | 'button') =>
         getTransactionReviewModalActionTranslation({
+            ...networkConfigDeps,
             symbol,
             stakeType,
             precomposedForm,

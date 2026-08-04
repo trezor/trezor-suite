@@ -1,8 +1,10 @@
 import { useMemo } from 'react';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
 import { type EnhancedTokenInfo } from '@suite-common/token-definitions';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import {
     getYieldVaultForOutputToken,
     getYieldVaultsForInputToken,
@@ -39,6 +41,7 @@ export const useTokenYieldBadge = ({
     type,
     yieldOpportunities,
 }: UseTokenYieldBadgeParams): TokenYieldBadgeData | null => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const matchedVaults = useMemo(() => {
         const heldToken = {
             address: token.contract,
@@ -52,6 +55,7 @@ export const useTokenYieldBadge = ({
         switch (type) {
             case 'defi': {
                 const vault = getYieldVaultForOutputToken({
+                    ...networkConfigDeps,
                     vaults: yieldOpportunities,
                     networkSymbol,
                     token: heldToken,
@@ -61,6 +65,7 @@ export const useTokenYieldBadge = ({
             }
             case 'default':
                 return getYieldVaultsForInputToken({
+                    ...networkConfigDeps,
                     vaults: yieldOpportunities,
                     networkSymbol,
                     token: heldToken,
@@ -70,14 +75,27 @@ export const useTokenYieldBadge = ({
             default:
                 return exhaustive(type);
         }
-    }, [yieldOpportunities, networkSymbol, token.contract, token.symbol, token.decimals, type]);
+    }, [
+        yieldOpportunities,
+        networkSymbol,
+        token.contract,
+        token.symbol,
+        token.decimals,
+        type,
+        networkConfigDeps,
+    ]);
 
     const vaultsWithPosition = useMemo(
         () =>
             matchedVaults.filter(vault =>
-                hasYieldVaultPosition({ networkSymbol, vault, accountTokens }),
+                hasYieldVaultPosition({
+                    ...networkConfigDeps,
+                    networkSymbol,
+                    vault,
+                    accountTokens,
+                }),
             ),
-        [matchedVaults, networkSymbol, accountTokens],
+        [matchedVaults, networkSymbol, accountTokens, networkConfigDeps],
     );
 
     // A vault the user already deposited into states the rate they actually earn, so it

@@ -7,6 +7,7 @@ import { type AssetFiatBalance } from '@suite-common/assets';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectCoinDefinitions } from '@suite-common/token-definitions';
 import { type Network } from '@suite-common/wallet-config';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { selectAnyAccountIsStakingActive, useDisplayBaseCurrency } from '@suite-common/wallet-core';
 import { type Account, type RatesByKey } from '@suite-common/wallet-types';
 import { type AmountUnit, isTestnet } from '@suite-common/wallet-utils';
@@ -58,6 +59,7 @@ export const AssetRow = memo(
         accounts,
         isStakeNetwork,
     }: AssetTableRowProps) => {
+        const networkConfigDeps = useServices(selectNetworkConfigDeps);
         const { symbol } = network;
         const dispatch = useDispatch();
         const { analytics } = useServices(selectDesktopAnalyticsDep);
@@ -81,7 +83,7 @@ export const AssetRow = memo(
         );
 
         const isStakingActive = useSelector(state =>
-            selectAnyAccountIsStakingActive(state, stakingAccountsForAsset),
+            selectAnyAccountIsStakingActive(state, stakingAccountsForAsset, networkConfigDeps),
         );
 
         const {
@@ -90,6 +92,7 @@ export const AssetRow = memo(
             shouldRenderStakingRow,
             shouldRenderTokenRow,
         } = handleTokensAndStakingData(
+            networkConfigDeps,
             assetTokens,
             stakingAccountsForAsset,
             isStakingActive,
@@ -198,7 +201,7 @@ export const AssetRow = memo(
                                 </AssetActionButton>
                             )}
 
-                            {!isTestnet(symbol) && (
+                            {!isTestnet(networkConfigDeps, symbol) && (
                                 <AssetActionButton
                                     symbol={symbol}
                                     routeName="wallet-trading-buy"
