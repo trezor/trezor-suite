@@ -81,18 +81,34 @@ export const getAccountInfo = async (request: Request<MessageTypes.GetAccountInf
                 balanceInfo.asset_type === 'credit_alphanum4' ||
                 balanceInfo.asset_type === 'credit_alphanum12',
         )
-        .map(balanceInfo => {
+        .flatMap(balanceInfo => {
+            // The Horizon backend is untrusted (user-selectable per network, incl. custom URLs).
+            // A malformed credit_alphanum balance record omitting asset_code/asset_issuer would
+            // otherwise crash the whole getAccountInfo via `.toUpperCase()` on the undefined
+            // asset_code (poison-record DoS): one bad token nukes all balances + history for the
+            // account. Drop the unidentifiable record — its contract key can't be formed anyway.
+            if (
+                typeof balanceInfo.asset_code !== 'string' ||
+                typeof balanceInfo.asset_issuer !== 'string'
+            ) {
+                return [];
+            }
+
             const contract = `${balanceInfo.asset_code}-${balanceInfo.asset_issuer}`;
             const balance = toStroops(balanceInfo.balance);
 
-            return {
-                standard: 'STELLAR-CLASSIC',
-                contract,
-                balance: balance.toString(),
-                name: tokenMetadata[contract]?.name || balanceInfo.asset_code,
-                symbol: (tokenMetadata[contract]?.symbol || balanceInfo.asset_code).toUpperCase(),
-                decimals: STELLAR_DECIMALS,
-            };
+            return [
+                {
+                    standard: 'STELLAR-CLASSIC',
+                    contract,
+                    balance: balance.toString(),
+                    name: tokenMetadata[contract]?.name || balanceInfo.asset_code,
+                    symbol: (
+                        tokenMetadata[contract]?.symbol || balanceInfo.asset_code
+                    ).toUpperCase(),
+                    decimals: STELLAR_DECIMALS,
+                },
+            ];
         });
     account.empty = false;
 

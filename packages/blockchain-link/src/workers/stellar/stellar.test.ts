@@ -14,17 +14,20 @@ const mockState: {
     accountError?: unknown;
     transactionsError?: unknown;
     ledgerRecords?: unknown[];
+    accountBalances?: unknown[];
 } = {};
 
 const mockNotFoundError = () => new NotFoundError('Not Found', { status: 404 });
 
-const mockAccount = {
+const nativeBalance = { asset_type: 'native', balance: '3.3580137', selling_liabilities: '0' };
+
+const mockAccount = () => ({
     sequence: '123456',
     subentry_count: 0,
     num_sponsoring: 0,
     num_sponsored: 0,
-    balances: [{ asset_type: 'native', balance: '3.3580137', selling_liabilities: '0' }],
-};
+    balances: mockState.accountBalances ?? [nativeBalance],
+});
 
 jest.mock('@trezor/network-stellar/runtime', () => ({
     __esModule: true,
@@ -41,7 +44,7 @@ jest.mock('@trezor/network-stellar/runtime', () => ({
                                 call: () => {
                                     if (mockState.accountError) throw mockState.accountError;
 
-                                    return Promise.resolve(mockAccount);
+                                    return Promise.resolve(mockAccount());
                                 },
                             }),
                         }),
@@ -98,6 +101,7 @@ describe('Stellar worker error handling', () => {
         mockState.accountError = undefined;
         mockState.transactionsError = undefined;
         mockState.ledgerRecords = undefined;
+        mockState.accountBalances = undefined;
         blockchain = new BlockchainLink({
             name: 'Stellar',
             worker: StellarWorker,
@@ -138,6 +142,33 @@ describe('Stellar worker error handling', () => {
         await expect(
             blockchain.getAccountInfo({ descriptor: 'A', details: 'txs' }),
         ).rejects.toThrow('Too Many Requests');
+    });
+
+    it('a poison token balance (missing asset_code) is dropped, not crashing the account load', async () => {
+        // An untrusted/user-selectable Horizon backend returns a credit_alphanum4 balance record
+        // that omits asset_code. Without the guard, `.toUpperCase()` on the undefined asset_code
+        // throws and nukes the entire getAccountInfo (all balances + history) — poison-record DoS.
+        mockState.accountBalances = [
+            nativeBalance,
+            // poison record: correct type but no asset_code/asset_issuer
+            { asset_type: 'credit_alphanum4', balance: '10' },
+            // valid token that must survive
+            {
+                asset_type: 'credit_alphanum4',
+                asset_code: 'usdc',
+                asset_issuer: 'GISSUER',
+                balance: '5',
+            },
+        ];
+
+        const result = await blockchain.getAccountInfo({ descriptor: 'A', details: 'txs' });
+
+        expect(result.empty).toBe(false);
+        expect(result.balance).toBe('33580137');
+        // the poison record is dropped; only the well-formed token remains
+        expect(result.tokens).toHaveLength(1);
+        expect(result.tokens?.[0]?.contract).toBe('usdc-GISSUER');
+        expect(result.tokens?.[0]?.symbol).toBe('USDC');
     });
 
     it('block subscription does not crash the worker on a malformed ledger response', async () => {
