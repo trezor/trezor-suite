@@ -5,6 +5,8 @@ export const IMAGES = {
     CONFIRM_FW_INSTALLATION_SCREEN_T1B1: 'confirm-fw-installation-screen-t1b1.png',
     CONNECTOR: 'connector.webp',
     CONNECT_DEVICE: 'connect-device.svg',
+    DASHBOARD_PROMO_BANNER_ETH_VAULT: 'dashboard-promo-banner/eth-vault.webp',
+    DASHBOARD_PROMO_BANNER_ETH_VAULT_2x: 'dashboard-promo-banner/eth-vault@2x.webp',
     DASHBOARD_PROMO_BANNER_T3W1: 'dashboard-promo-banner/t3w1.webp',
     DASHBOARD_PROMO_BANNER_T3W1_2x: 'dashboard-promo-banner/t3w1@2x.webp',
     DASHBOARD_PROMO_BANNER_TEX: 'dashboard-promo-banner/tex.webp',

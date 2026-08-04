@@ -75,7 +75,7 @@ export const ForceDarkTheme = ({
         children
     );
 
-const CTAButton = ({ onClick, isBelowLaptop }: { onClick: () => void; isBelowLaptop: boolean }) => {
+const CTAButton = ({ onClick }: { onClick: () => void }) => {
     const href = useExternalLink(DASHBOARD_ONBOARDING_FEEDBACK_URL);
 
     return (
@@ -147,10 +147,7 @@ export const OnboardingFeedbackBanner = () => {
                                         <Description />
                                     </Column>
 
-                                    <CTAButton
-                                        onClick={handleCTAClick}
-                                        isBelowLaptop={isBelowLaptop}
-                                    />
+                                    <CTAButton onClick={handleCTAClick} />
                                 </Column>
 
                                 <Row
