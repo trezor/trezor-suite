@@ -374,7 +374,11 @@ export const transformAccountInfo = (info: BlockfrostAccountInfo): AccountInfo =
         tokens: transformTokenInfo(info.tokens),
         history: {
             ...info.history,
-            transactions: !blockfrostTxs
+            // `info.history.transactions` is typed as an array but comes verbatim from an
+            // untrusted/user-selectable (custom) blockfrost backend; a truthy non-array (e.g. an
+            // object) passes a bare truthiness check and then throws on `.map`, aborting the whole
+            // account's transformAccountInfo (per-account history/balance DoS). Guard the type.
+            transactions: !Array.isArray(blockfrostTxs)
                 ? []
                 : blockfrostTxs
                       .map(tx => {

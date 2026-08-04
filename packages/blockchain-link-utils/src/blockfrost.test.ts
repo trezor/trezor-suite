@@ -249,6 +249,21 @@ describe('blockfrost/utils', () => {
                 const result = transformAccountInfo(buildInfo([validTx, validTx]));
                 expect(result.history.transactions ?? []).toHaveLength(2);
             });
+
+            it('degrades to an empty history when transactions is a truthy non-array', () => {
+                // A malicious/malformed backend returns `transactions` as a truthy non-array (here an
+                // object). Pre-fix the bare `!blockfrostTxs` truthiness check passes it straight to
+                // `.map`, throwing out of transformAccountInfo (per-account DoS); post-fix the type
+                // guard degrades to an empty history instead of crashing the whole account.
+                expect(() =>
+                    // @ts-expect-error non-array transactions from untrusted backend
+                    transformAccountInfo(buildInfo({} as unknown as unknown[])),
+                ).not.toThrow();
+
+                // @ts-expect-error non-array transactions from untrusted backend
+                const result = transformAccountInfo(buildInfo({} as unknown as unknown[]));
+                expect(result.history.transactions).toEqual([]);
+            });
         });
     });
 });
