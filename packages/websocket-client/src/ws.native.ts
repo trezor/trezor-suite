@@ -56,7 +56,7 @@ class WSWrapper extends EventEmitter {
         }
     }
 
-    send(message: string | ArrayBufferLike | Blob | ArrayBufferView) {
+    send(message: Parameters<WebSocket['send']>[0]) {
         if (this.readyState !== WSWrapper.OPEN) {
             throw new WebsocketError(`Connection is not open. state: ${this.readyState}`);
         }
