@@ -1,6 +1,7 @@
-import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { mkdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 
+import { readJson } from '../../fileSystem';
 import type { PackageJson } from '../../workspaces';
 import type { Requirement } from '../Requirement';
 import {
@@ -28,8 +29,6 @@ const SNAPSHOT_DIR = join(
     'public-package-dependencies',
     '__snapshots__',
 );
-
-const readJson = <T>(filePath: string): T => JSON.parse(readFileSync(filePath, 'utf8')) as T;
 
 const collectDependencyNames = (
     collector: Set<string>,

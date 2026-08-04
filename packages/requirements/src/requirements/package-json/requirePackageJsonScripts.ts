@@ -1,10 +1,7 @@
-import { readFileSync } from 'node:fs';
-import { join } from 'node:path';
-
 import { typedObjectEntries } from '@trezor/utils';
 
 import { walkDirectory } from '../../fileSystem';
-import type { PackageJson } from '../../workspaces';
+import { type PackageJson, readPackageJson } from '../../workspaces';
 import type { Requirement } from '../Requirement';
 
 const PACKAGE_JSON_FILE = 'package.json';
@@ -92,12 +89,10 @@ export const requirePackageJsonScripts: Requirement<'workspace'> = {
     name: 'package-json-scripts',
     scope: 'workspace',
     verify: context => {
-        const packageJsonPath = join(context.workspaceDir, PACKAGE_JSON_FILE);
-
         let parsed: PackageJson;
 
         try {
-            parsed = JSON.parse(readFileSync(packageJsonPath, 'utf-8')) as PackageJson;
+            parsed = readPackageJson<PackageJson>(context.workspaceDir);
         } catch {
             return Promise.resolve([
                 `${context.workspaceName}: ${PACKAGE_JSON_FILE} is missing or contains invalid JSON.`,
