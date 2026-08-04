@@ -3,9 +3,12 @@ import { Translation } from '@suite/intl';
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { useFormatters } from '@suite-common/formatters';
+import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { type BaseCurrencyAmount } from '@suite-common/wallet-types';
 import { Banner, Row, Skeleton, Tooltip } from '@trezor/components';
 import { HandCoinsIcon, InfoIcon } from '@trezor/icons';
+
+import { useSelector } from 'src/hooks/suite';
 
 type EarnYieldClaimRewardsBannerProps = {
     value: BaseCurrencyAmount;
@@ -26,6 +29,8 @@ export const EarnYieldClaimRewardsBanner = ({
 }: EarnYieldClaimRewardsBannerProps) => {
     const { analytics } = useServices(selectDesktopAnalyticsDep);
     const { BaseCurrencyAmountFormatter } = useFormatters();
+
+    const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
 
     const handleOnClaim = () => {
         analytics.report({
@@ -49,7 +54,7 @@ export const EarnYieldClaimRewardsBanner = ({
                     <span>
                         <Translation id="TR_EARN_CLAIM_REWARDS_LABEL" />:
                     </span>
-                    {isValueLoading ? (
+                    {isValueLoading || isDiscoveryRunning ? (
                         <Skeleton width={50} height={16} animate />
                     ) : (
                         <>
@@ -62,7 +67,7 @@ export const EarnYieldClaimRewardsBanner = ({
             rightContent={
                 <Tooltip content={claimDisabledTooltip}>
                     <Banner.Button
-                        isDisabled={isClaimDisabled}
+                        isDisabled={isClaimDisabled || isDiscoveryRunning}
                         iconLeft={claimDisabledTooltip ? InfoIcon : undefined}
                         onClick={handleOnClaim}
                     >
