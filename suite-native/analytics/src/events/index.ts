@@ -46,6 +46,7 @@ export { receiveAddressConfirmOnTrezorEvent } from './receiveAddressConfirmOnTre
 export { receiveCopyAddressEvent } from './receiveCopyAddressEvent';
 export { receiveFlowEnteredEvent } from './receiveFlowEnteredEvent';
 export { receiveOpenNonFreshAddressEvent } from './receiveOpenNonFreshAddressEvent';
+export { receiveOptionsScreenEvent } from './receiveOptionsScreenEvent';
 export { receiveShareAddressEvent } from './receiveShareAddressEvent';
 export { receiveStartVerificationEvent } from './receiveStartVerificationEvent';
 export { referralButtonPressEvent } from './referralButtonPressEvent';
@@ -55,6 +56,7 @@ export { sendAmountInputSwitchedEvent } from './sendAmountInputSwitchedEvent';
 export { sendFeeLevelChangedEvent } from './sendFeeLevelChangedEvent';
 export { sendFlowEnteredEvent } from './sendFlowEnteredEvent';
 export { sendFlowExitedEvent } from './sendFlowExitedEvent';
+export { sendOptionsScreenEvent } from './sendOptionsScreenEvent';
 export { sendTransactionDispatchedEvent } from './sendTransactionDispatchedEvent';
 export { settingsAutoEjectToggleEvent } from './settingsAutoEjectToggleEvent';
 export { settingsChangeBtcUnitEvent } from './settingsChangeBtcUnitEvent';

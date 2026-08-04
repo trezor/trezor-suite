@@ -2,9 +2,11 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { selectIsDeviceAuthorized } from '@suite-common/device';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { selectHasDeviceAnySendAvailableAccount } from '@suite-native/accounts';
+import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { Button, HStack } from '@suite-native/atoms';
 import { selectHasFirmwareAuthenticityCheckHardFailedForSelectedDevice } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';
@@ -17,6 +19,7 @@ import {
 } from '@suite-native/navigation';
 
 const ReceiveButton = () => {
+    const { analytics } = useServices(selectNativeAnalyticsDep);
     const navigation = useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes>>();
     const hasFirmwareAuthenticityCheckHardFailed = useSelector(
         selectHasFirmwareAuthenticityCheckHardFailedForSelectedDevice,
@@ -25,6 +28,10 @@ const ReceiveButton = () => {
     const showReceiveButton = !hasFirmwareAuthenticityCheckHardFailed;
 
     const handleReceive = () => {
+        analytics.report({
+            type: events.receiveFlowEnteredEvent.name,
+            payload: { location: 'dashboard' },
+        });
         navigation.navigate(RootStackRoutes.ReceiveStack, {
             screen: ReceiveStackRoutes.ReceiveAccounts,
         });
@@ -45,11 +52,16 @@ const ReceiveButton = () => {
 };
 
 export const SendButton = () => {
+    const { analytics } = useServices(selectNativeAnalyticsDep);
     const navigation = useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes>>();
     const hasDeviceAnySendAvailableAccount = useSelector(selectHasDeviceAnySendAvailableAccount);
     const showSendButton = hasDeviceAnySendAvailableAccount;
 
     const handleSend = () => {
+        analytics.report({
+            type: events.sendFlowEnteredEvent.name,
+            payload: { location: 'dashboard' },
+        });
         navigation.navigate(RootStackRoutes.SendStack, {
             screen: SendStackRoutes.SendAccounts,
         });

@@ -27,6 +27,7 @@ type AccountsListWithFilterProps = {
     networksFilter?: NetworkSymbol[];
     closeActionType?: CloseActionType;
     closeAction?: () => void;
+    onAddAccount?: () => void;
     isSendFlow?: boolean;
     children?: ReactNode;
 };
@@ -38,6 +39,7 @@ export const AccountsListWithFilter = ({
     networksFilter = EMPTY_NETWORKS_FILTER,
     closeActionType,
     closeAction,
+    onAddAccount,
     isSendFlow,
     children,
 }: AccountsListWithFilterProps) => {
@@ -105,6 +107,7 @@ export const AccountsListWithFilter = ({
                 flowType={flowType}
                 closeActionType={closeActionType}
                 closeAction={closeAction}
+                onAddAccount={onAddAccount}
                 onFilterPress={isNetworkFilterVisible ? handleFilterPress : undefined}
                 activeFilterCount={filteredNetworks.length}
             />
