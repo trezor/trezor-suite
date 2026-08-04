@@ -1,6 +1,6 @@
 import { createIntl, createIntlCache } from 'react-intl';
 
-import test, { Locator, Page, TestInfo } from '@playwright/test';
+import test, { Locator, Page, TestInfo, expect } from '@playwright/test';
 import { isEqual, omit } from 'lodash';
 import { readdirSync } from 'node:fs';
 import path from 'node:path';
@@ -132,9 +132,6 @@ export const getCountryLabel = (country: TradingCountryCode) => {
 };
 
 export const calculatePercentageOfBalance = (params: PercentageOfBalanceParams) => {
-    if (params.balance === null) {
-        throw new Error('Account balance is null');
-    }
     const fraction = (parseFloat(params.balance) * params.percentage) / 100;
     const maxDecimals = getAccountDecimals(params.symbol);
 
@@ -150,12 +147,9 @@ export const countDecimalPlaces = (value: string | number) => {
 };
 
 export const getBigNumberFromBalance = async (locator: Locator) => {
-    let originalBalanceText = await locator.textContent();
-    if (!originalBalanceText) {
-        throw new Error('Balance text content is empty');
-    }
-
-    const hasEllipsis = originalBalanceText?.includes('…');
+    await expect(locator).toHaveText(/\d/);
+    let originalBalanceText = await locator.innerText();
+    const hasEllipsis = originalBalanceText.includes('…');
     if (hasEllipsis) {
         originalBalanceText = originalBalanceText.slice(0, -1);
     }

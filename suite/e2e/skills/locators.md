@@ -13,6 +13,7 @@ MUST_NOT: Use CSS classes, XPath indices, or hardcoded text selectors
 MUST_NOT: Select an element by its position among siblings
 MUST_NOT: Scatter locators in tests—only in Page Objects
 MUST_NOT: Use implicit waits or hardcoded timeouts
+MUST_NOT: Read text with `textContent()`/`allTextContents()`—use `innerText()`/`allInnerTexts()`
 
 ## Decision Tree for Locator Selection
 
@@ -54,6 +55,7 @@ When the testid contains a dynamic segment (token, currency, code), declare a me
 ❌ Narrowing a positional locator – a tighter parent or a different index is the same bug, not a fix: add the missing testid instead
 ❌ Text-only selectors – fragile to copy/i18n: `this.page.getByText('Claim Rewards')`
 ❌ Hardcoded timeouts: `await page.waitForTimeout(2000)`
+❌ `textContent()`/`allTextContents()` – returns `string | null` and unrendered text, forcing null guards: `await locator.innerText()`
 
 ---
 

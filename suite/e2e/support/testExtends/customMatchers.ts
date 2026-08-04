@@ -35,10 +35,10 @@ const compareTextAndNumber = async (
     compareFnName: string,
 ) => {
     await baseExpect(locator).toBeVisible();
-    const text = await locator.textContent();
-    const textWithoutEllipsis = text?.endsWith('…') ? text.slice(0, -1) : text;
+    const text = await locator.innerText();
+    const textWithoutEllipsis = text.endsWith('…') ? text.slice(0, -1) : text;
     const numericValue = Number(textWithoutEllipsis);
-    const isNumber = Number.isFinite(numericValue);
+    const isNumber = textWithoutEllipsis.trim() !== '' && Number.isFinite(numericValue);
 
     return {
         pass: isNumber && compareFn(numericValue, expectedValue),
@@ -330,8 +330,8 @@ export const expect = baseExpect.extend({
 
     async toHaveValidAddress(locator: Locator, symbol: Account['symbol']) {
         await baseExpect(locator).toBeVisible();
-        const text = await locator.textContent();
-        const stripped = text?.replace(/\s/g, '') ?? '';
+        const text = await locator.innerText();
+        const stripped = text.replace(/\s/g, '');
 
         return {
             pass: addressValidator.isAddressValid(stripped, symbol),

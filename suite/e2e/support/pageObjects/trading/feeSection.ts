@@ -80,11 +80,7 @@ export class FeeSection {
     @step()
     async getSolanaFee() {
         await expect(this.maxFee).toBeVisible();
-        const feeWithSymbol = await this.maxFee.textContent();
-        if (!feeWithSymbol) {
-            throw new Error('Fee amount is undefined or null');
-        }
-
+        const feeWithSymbol = await this.maxFee.innerText();
         const feeParts = feeWithSymbol.split(' ');
         const feeValue = feeParts[0];
         if (!feeValue || isNaN(parseFloat(feeValue))) {
@@ -116,14 +112,14 @@ export class FeeSection {
 
     @step()
     async getBitcoinFeeRate(type: FeeTypes | 'custom') {
-        let feeRateText: string | null;
+        let feeRateText: string;
         const nonBreakingSpace = '\u00A0';
         const suffixForDustPreventionFee = `${nonBreakingSpace}sat/vB`;
         const suffixForCustomFee = `.00${nonBreakingSpace}sat/vB`;
 
         if (type !== 'custom') {
             await this.expectBitcoinFeeCalculated();
-            feeRateText = await this.rateOnCard(type).textContent();
+            feeRateText = await this.rateOnCard(type).innerText();
         } else {
             feeRateText = (await this.customInput.inputValue()) + suffixForCustomFee;
         }
@@ -131,10 +127,6 @@ export class FeeSection {
         const isDustPreventionRateApplied = await this.dustPreventionNotice.isVisible();
         if (isDustPreventionRateApplied) {
             feeRateText = (await this.getDustPreventionFeeRate()) + suffixForDustPreventionFee;
-        }
-
-        if (!feeRateText) {
-            throw new Error('Fee amount is undefined or null');
         }
 
         return feeRateText;
@@ -168,11 +160,7 @@ before rounding: ${maxFeeInEthereum} ETH, after rounding: ${maxFeeRounded} ETH`;
 
     @step()
     async getDustPreventionFeeRate() {
-        const dustPreventionText = await this.dustPreventionNotice.textContent();
-        if (!dustPreventionText) {
-            throw new Error('Dust prevention text is undefined or null');
-        }
-
+        const dustPreventionText = await this.dustPreventionNotice.innerText();
         const regex = /has been adjusted to (?<value>\d+\.\d+) sat\/vB/;
         const match = dustPreventionText.match(regex);
 
@@ -208,11 +196,7 @@ before rounding: ${maxFeeInEthereum} ETH, after rounding: ${maxFeeRounded} ETH`;
 
     @step()
     async getNetworkReserveAmount() {
-        const bannerText = await this.networkReserveBanner.textContent();
-        if (!bannerText) {
-            throw new Error('Network reserve banner text is undefined or null');
-        }
-
+        const bannerText = await this.networkReserveBanner.innerText();
         const regex = /(\d+(?:\.\d+)?)(?=\s*SOL)/;
         const match = bannerText.match(regex);
 

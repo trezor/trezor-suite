@@ -29,6 +29,48 @@ export const noCastedObjectHelpersSyntax = [
     },
 ];
 
+/**
+ * Base `no-restricted-syntax` selectors. Exported so configs that add their own selectors can
+ * spread these back in — the rule's options are replaced, not merged, when it is re-declared.
+ */
+export const noRestrictedSyntax = [
+    {
+        message:
+            "Please don't use createAsyncThunk. Use createThunk from @suite-common/redux-utils instead.",
+        selector: "CallExpression[callee.name='createAsyncThunk']",
+    },
+    {
+        message:
+            'Please don\'t use getState directly. Always use strongly typed selector, because geState is typed as "any" and it\'s dangerous to use it directly.',
+        selector:
+            'MemberExpression[property.type="Identifier"]:matches([object.callee.name="getState"])',
+    },
+    {
+        message:
+            'Do not assign "getState" directly. Always use strongly typed selector, because getState is typed as "any" and it\'s dangerous to use it directly.',
+        selector:
+            "VariableDeclarator[init.type='CallExpression']:matches([init.callee.name='getState'])",
+    },
+    {
+        message:
+            'Please don\'t use "state" directly because it\'s typed as "any". Always use it only as parameter for strongly typed selector function.',
+        selector:
+            "CallExpression[callee.name='useSelector'] MemberExpression[object.name='state']:matches([property.type='Identifier'])",
+    },
+    {
+        message:
+            'Use Array/String .includes() instead of .indexOf() comparison (e.g. `arr.indexOf(x) >= 0` → `arr.includes(x)`, `arr.indexOf(x) === -1` → `!arr.includes(x)`).',
+        selector:
+            "BinaryExpression[left.type='CallExpression'][left.callee.type='MemberExpression'][left.callee.property.name='indexOf']:matches([operator='>='][right.value=0], [operator='<'][right.value=0], [operator='>'][right.type='UnaryExpression'][right.operator='-'][right.argument.value=1], [operator='==='][right.type='UnaryExpression'][right.operator='-'][right.argument.value=1], [operator='!=='][right.type='UnaryExpression'][right.operator='-'][right.argument.value=1], [operator='=='][right.type='UnaryExpression'][right.operator='-'][right.argument.value=1], [operator='!='][right.type='UnaryExpression'][right.operator='-'][right.argument.value=1])",
+    },
+    {
+        selector: "TSTypeQuery > Identifier[name='undefined']",
+        message:
+            'Use `undefined` (or `never` in discriminated unions) instead of `typeof undefined` in type position.',
+    },
+    ...noCastedObjectHelpersSyntax,
+];
+
 /** @type {Config[]} */
 export const javascriptConfig = [
     pluginJs.configs.recommended,
@@ -57,44 +99,7 @@ export const javascriptConfig = [
             ],
             'no-label-var': 'error', // Disallow labels that share a name with a variable
             'no-undef-init': 'error', // Disallow initializing variables to undefined
-            'no-restricted-syntax': [
-                'error',
-                {
-                    message:
-                        "Please don't use createAsyncThunk. Use createThunk from @suite-common/redux-utils instead.",
-                    selector: "CallExpression[callee.name='createAsyncThunk']",
-                },
-                {
-                    message:
-                        'Please don\'t use getState directly. Always use strongly typed selector, because geState is typed as "any" and it\'s dangerous to use it directly.',
-                    selector:
-                        'MemberExpression[property.type="Identifier"]:matches([object.callee.name="getState"])',
-                },
-                {
-                    message:
-                        'Do not assign "getState" directly. Always use strongly typed selector, because geState is typed as "any" and it\'s dangerous to use it directly.',
-                    selector:
-                        "VariableDeclarator[init.type='CallExpression']:matches([init.callee.name='getState'])",
-                },
-                {
-                    message:
-                        'Please don\'t use "state" directly because it\'s typed as "any". Always use it only as parameter for strongly typed selector function.',
-                    selector:
-                        "CallExpression[callee.name='useSelector'] MemberExpression[object.name='state']:matches([property.type='Identifier'])",
-                },
-                {
-                    message:
-                        'Use Array/String .includes() instead of .indexOf() comparison (e.g. `arr.indexOf(x) >= 0` → `arr.includes(x)`, `arr.indexOf(x) === -1` → `!arr.includes(x)`).',
-                    selector:
-                        "BinaryExpression[left.type='CallExpression'][left.callee.type='MemberExpression'][left.callee.property.name='indexOf']:matches([operator='>='][right.value=0], [operator='<'][right.value=0], [operator='>'][right.type='UnaryExpression'][right.operator='-'][right.argument.value=1], [operator='==='][right.type='UnaryExpression'][right.operator='-'][right.argument.value=1], [operator='!=='][right.type='UnaryExpression'][right.operator='-'][right.argument.value=1], [operator='=='][right.type='UnaryExpression'][right.operator='-'][right.argument.value=1], [operator='!='][right.type='UnaryExpression'][right.operator='-'][right.argument.value=1])",
-                },
-                {
-                    selector: "TSTypeQuery > Identifier[name='undefined']",
-                    message:
-                        'Use `undefined` (or `never` in discriminated unions) instead of `typeof undefined` in type position.',
-                },
-                ...noCastedObjectHelpersSyntax,
-            ],
+            'no-restricted-syntax': ['error', ...noRestrictedSyntax],
             'object-shorthand': [
                 'error',
                 'always',

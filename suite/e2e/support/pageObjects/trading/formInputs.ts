@@ -68,8 +68,8 @@ export class TradingFormInputs {
 
     @step()
     async selectCountryOfResidence(countryCode: TradingCountryCode) {
-        const currentCountry = await this.countryValue.textContent();
-        if (currentCountry?.includes(countryCode)) {
+        const currentCountry = await this.countryValue.innerText();
+        if (currentCountry.includes(countryCode)) {
             return;
         }
         await this.countrySelect.click();

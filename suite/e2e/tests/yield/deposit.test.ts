@@ -45,12 +45,12 @@ test.describe('stablecoin yield', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () =>
 
             const ethAccountName = await walletPage
                 .accountLabel({ symbol: 'eth', type: 'normal', atIndex: 0 })
-                .textContent();
+                .innerText();
 
             await expect(yieldSection.yieldTitle).toHaveTranslation('TR_EARN_DEFI_YIELD_TITLE');
 
             for (const expectedRow of EXPECT_YIELD_DASHBOARD_ROWS) {
-                await expect(yieldSection.accountLabel(expectedRow.id)).toHaveText(ethAccountName!);
+                await expect(yieldSection.accountLabel(expectedRow.id)).toHaveText(ethAccountName);
                 await expect(yieldSection.vaultSubtitle(expectedRow.id)).toHaveText(
                     expectedRow.name,
                 );

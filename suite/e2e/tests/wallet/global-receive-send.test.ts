@@ -43,12 +43,7 @@ test.describe('Global receive and send', { tag: ['@T3T1', '@T3W1'] }, () => {
                 values: { networkName: 'Ethereum', index: '3' },
             });
             await walletPage.revealAddressButton.click();
-            const addressDisplayedInSuite = await devicePrompt
-                .outputValueOf('address')
-                .textContent();
-            if (!addressDisplayedInSuite) {
-                throw new Error('Address is missing in receive modal');
-            }
+            const addressDisplayedInSuite = await devicePrompt.outputValueOf('address').innerText();
             expect.soft(addressDisplayedInSuite.replace(/\s/g, '')).toEqual(ETHEREUM_ADDRESS_3);
             const addressDisplayedOnDevice = await devicePrompt.getAddressFromDisplay();
             expect.soft(addressDisplayedOnDevice).toEqual(DEVICE_ETHEREUM_ADDRESS_3);
