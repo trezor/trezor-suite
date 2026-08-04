@@ -8796,7 +8796,7 @@ export const messages = defineMessages({
     },
     TR_EARN_CLAIM_REWARDS_LABEL: {
         id: 'TR_EARN_CLAIM_REWARDS_LABEL',
-        defaultMessage: 'Available rewards',
+        defaultMessage: 'Available bonus rewards',
     },
     TR_EARN_CLAIM_REWARDS_BUTTON: {
         id: 'TR_EARN_CLAIM_REWARDS_BUTTON',
