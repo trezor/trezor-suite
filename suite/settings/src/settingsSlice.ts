@@ -70,7 +70,7 @@ export type SuiteSettingsRootState = {
 
 export const suiteSettingsInitialState: SuiteSettingsState = {
     theme: {
-        variant: 'light',
+        variant: 'dark', // Suite Dark flavour: dark by default (user can still switch)
     },
     language: 'en-US',
     torOnionLinks: isWeb(),
@@ -94,7 +94,7 @@ export const suiteSettingsInitialState: SuiteSettingsState = {
     },
     autodetect: {
         language: true,
-        theme: true,
+        theme: false, // Suite Dark flavour: default to the dark theme, not the OS setting
     },
     isTestnetNetworksEnabled: false,
     isNftSectionEnabled: false,
