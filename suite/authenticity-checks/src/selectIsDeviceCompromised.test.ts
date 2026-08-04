@@ -9,7 +9,7 @@ import { DeviceModelInternal } from '@trezor/device-utils';
 
 import {
     type AuthenticityChecksRootState,
-    selectShouldDisplayDeviceCompromised,
+    selectIsDeviceCompromised,
 } from './authenticityChecksSelectors';
 
 type Fixture = {
@@ -190,10 +190,10 @@ const fixtures: Fixture[] = [
     },
 ];
 
-describe(selectShouldDisplayDeviceCompromised.name, () => {
+describe(selectIsDeviceCompromised.name, () => {
     fixtures.forEach(f => {
         it(f.description, () => {
-            expect(selectShouldDisplayDeviceCompromised(f.state)).toBe(f.result);
+            expect(selectIsDeviceCompromised(f.state)).toBe(f.result);
         });
     });
 });

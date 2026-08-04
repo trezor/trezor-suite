@@ -1,6 +1,6 @@
 import { type FC, type PropsWithChildren, useEffect } from 'react';
 
-import { selectShouldDisplayDeviceCompromisedOnRoute } from '@suite/authenticity-checks';
+import { selectShouldDisplayDeviceCompromised } from '@suite/authenticity-checks';
 import { useDevice } from '@suite/device';
 import { KillswitchMessageScreen } from '@suite/message-system';
 import { selectIsAnalyticsConfirmed } from '@suite-common/analytics-redux';
@@ -53,9 +53,7 @@ export const Preloader = ({ children }: PropsWithChildren) => {
     const isTransportInitialized = useSelector(selectIsTransportInitialized);
     const router = useSelector(state => state.router);
     const prerequisite = useSelector(selectPrerequisite);
-    const shouldDisplayDeviceCompromisedOnRoute = useSelector(
-        selectShouldDisplayDeviceCompromisedOnRoute,
-    );
+    const shouldDisplayDeviceCompromisedOnRoute = useSelector(selectShouldDisplayDeviceCompromised);
     const killswitch = useSelector(selectActiveKillswitchMessage);
 
     const isAnalyticsConsentConfirmed = useSelector(selectIsAnalyticsConfirmed);
