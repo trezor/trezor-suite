@@ -1,7 +1,7 @@
 {
     "version": 1,
-    "timestamp": "2026-08-04T17:00:00+00:00",
-    "sequence": 151,
+    "timestamp": "2026-08-04T22:00:00+00:00",
+    "sequence": 152,
     "actions": [
         {
             "conditions": [
@@ -1113,36 +1113,6 @@
                     }
                 },
                 "context": { "domain": ["accounts.coinjoin", "accounts.btc.coinjoin"] }
-            }
-        },
-        {
-            "conditions": [
-                {
-                    "duration": {
-                        "from": "2026-08-04T00:00:00.000Z",
-                        "to": "2026-08-25T22:00:00.000Z"
-                    },
-                    "environment": {
-                        "desktop": "*",
-                        "mobile": "*",
-                        "web": "*"
-                    }
-                }
-            ],
-            "message": {
-                "id": "1ae436e7-bb03-41a0-b173-86d40b9f112c",
-                "priority": 92,
-                "dismissible": true,
-                "variant": "info",
-                "category": "banner",
-                "content": {
-                    "en": "Recovered your wallet? A wallet created elsewhere may not have the same security as one created on your Trezor. If you are unsure, we recommend setting up a new wallet here and moving your funds to it.",
-                    "cs": "Obnovili jste svou peněženku? Peněženka vytvořená jinde nemusí mít stejné zabezpečení jako peněženka vytvořená na vašem Trezoru. Pokud si nejste jisti, doporučujeme zde nastavit novou peněženku a převést do ní své prostředky.",
-                    "es": "¿Has recuperado tu cartera? Una cartera creada en otro lugar puede no tener la misma seguridad que una creada en tu Trezor. Si tienes dudas, te recomendamos configurar una nueva cartera aquí y transferir tus fondos a ella.",
-                    "de": "Wallet wiederhergestellt? Eine anderswo erstellte Wallet bietet möglicherweise nicht dieselbe Sicherheit wie eine auf deinem Trezor erstellte. Wenn du unsicher bist, empfehlen wir, hier eine neue Wallet einzurichten und deine Gelder darauf zu übertragen.",
-                    "fr": "Vous avez récupéré votre portefeuille ? Un portefeuille créé ailleurs peut ne pas offrir la même sécurité qu'un portefeuille créé sur votre Trezor. En cas de doute, nous vous recommandons de configurer un nouveau portefeuille ici et d'y transférer vos fonds.",
-                    "pt": "Recuperou a sua carteira? Uma carteira criada noutro local pode não ter a mesma segurança que uma criada no seu Trezor. Se não tiver a certeza, recomendamos configurar uma nova carteira aqui e transferir os seus fundos para ela."
-                }
             }
         },
         {
