@@ -299,13 +299,13 @@ const run = async () => {
         'SkipPairing',
     ];
     if (args.pairing === 'none') {
-        pairingMethods = ['SkipPairing'].concat(pairingMethods.filter(m => m === 'SkipPairing'));
+        pairingMethods = ['SkipPairing', ...pairingMethods.filter(m => m === 'SkipPairing')];
     }
     if (args.pairing === 'qr') {
-        pairingMethods = ['QrCode'].concat(pairingMethods.filter(m => m === 'QrCode'));
+        pairingMethods = ['QrCode', ...pairingMethods.filter(m => m === 'QrCode')];
     }
     if (args.pairing === 'nfc') {
-        pairingMethods = ['NFC'].concat(pairingMethods.filter(m => m === 'NFC'));
+        pairingMethods = ['NFC', ...pairingMethods.filter(m => m === 'NFC')];
     }
 
     await initDebugLink();
