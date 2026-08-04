@@ -1,39 +1,13 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useCallback, useMemo } from 'react';
+import { useDispatch } from 'react-redux';
 
-import {
-    type FeesRootState,
-    type FormDraftRootState,
-    composeYieldDepositTransactionThunk,
-    formDraftActions,
-    selectConvertedNetworkFeeInfo,
-    selectFormDraft,
-} from '@suite-common/wallet-core';
-import {
-    type FeeInfo,
-    type FeeLevelLabel,
-    type FormState,
-    type GeneralPrecomposedLevels,
-    type PrecomposedTransactionFinal,
-    isFinalPrecomposedTransaction,
-} from '@suite-common/wallet-types';
-import {
-    type NativeSendRootState,
-    getFeeAvailability,
-    selectFeeLevels,
-    transactionManagementActions,
-} from '@suite-native/transaction-management';
-import { useDebounce } from '@trezor/react-utils';
-import { deepEqual } from '@trezor/utils';
+import { composeYieldDepositTransactionThunk } from '@suite-common/wallet-core';
+import { type PrecomposedTransactionFinal } from '@suite-common/wallet-types';
 
 import { updateEarnSelectedFeeLevelThunk } from './useComposeEarnFees';
+import { type ComposeTxResult, type ComposedTxBase, usePreparedTxFees } from './usePreparedTxFees';
 import { type ResolvedYieldFlowData } from './useResolvedYieldFlowData';
-import { useYieldFeeEstimationError } from './useYieldFeeEstimationError';
 import { getYieldDepositFormDraftKey } from '../utils/yieldDepositUtils';
-import {
-    buildYieldDepositFeeDraftState,
-    buildYieldDepositFeePreview,
-} from '../yieldDepositFeeUtils';
 
 export type PreparedYieldDepositAction = {
     amount: string;
@@ -47,28 +21,7 @@ type UseYieldDepositFeesParams = Pick<ResolvedYieldFlowData, 'flowData' | 'flowK
     isEnabled: boolean;
 };
 
-type BaseYieldDepositActionContext = {
-    amount: string;
-    baseFeePreview: PrecomposedTransactionFinal;
-    receiptAmount: string;
-    symbol: NonNullable<ResolvedYieldFlowData['flowData']>['account']['symbol'];
-    token: NonNullable<ResolvedYieldFlowData['flowData']>['token'];
-    unsignedTransaction: string;
-};
-
-type ComposeDepositBaseActionParams = {
-    amount: string;
-    flowData: NonNullable<ResolvedYieldFlowData['flowData']>;
-};
-
-const getYieldDepositFeeInfoRevision = (feeInfo: FeeInfo | null | undefined) =>
-    feeInfo?.levels
-        .map(({ baseFeePerGas, blocks, feePerUnit, label, maxFeePerGas, maxPriorityFeePerGas }) =>
-            [label, feePerUnit, blocks, maxFeePerGas, maxPriorityFeePerGas, baseFeePerGas].join(
-                ':',
-            ),
-        )
-        .join('|') ?? '';
+type ComposedDepositTransaction = ComposedTxBase & { receiptAmount: string };
 
 export const useYieldDepositFees = ({
     amount,
@@ -77,285 +30,81 @@ export const useYieldDepositFees = ({
     isEnabled,
 }: UseYieldDepositFeesParams) => {
     const dispatch = useDispatch();
-    const debounce = useDebounce();
-    const requestIdRef = useRef(0);
-    const [baseActionContext, setBaseActionContext] =
-        useState<BaseYieldDepositActionContext | null>(null);
-    const [isPreparingDepositFee, setIsPreparingDepositFee] = useState(false);
-    const {
-        feeEstimationRetryKey,
-        hasFeeEstimationError,
-        retryFeeEstimation,
-        setHasFeeEstimationError,
-    } = useYieldFeeEstimationError();
 
     const formDraftKey = useMemo(
         () => (flowKey ? getYieldDepositFormDraftKey(flowKey) : ''),
         [flowKey],
     );
-    const formDraft = useSelector((state: FormDraftRootState) =>
-        formDraftKey ? selectFormDraft<FormState>(state, formDraftKey) : undefined,
-    );
-    const feeInfo = useSelector((state: FeesRootState) =>
-        selectConvertedNetworkFeeInfo(state, flowData?.account.symbol),
-    );
-    const feeLevels = useSelector((state: NativeSendRootState) => selectFeeLevels(state));
+    const hasInvalidContext = !amount || !flowData || !flowKey || !formDraftKey;
 
-    const feeLevelsRef = useRef(feeLevels);
-    feeLevelsRef.current = feeLevels;
-    const storedDepositFeeLevelsRef = useRef<GeneralPrecomposedLevels | null>(null);
-    const feeInfoRef = useRef(feeInfo);
-    feeInfoRef.current = feeInfo;
-    const feeInfoRevision = useMemo(() => getYieldDepositFeeInfoRevision(feeInfo), [feeInfo]);
+    const composeTransaction = useCallback(
+        async (composeAmount: string): Promise<ComposeTxResult<ComposedDepositTransaction>> => {
+            if (!flowData) {
+                return { type: 'error', isFeeEstimationError: false };
+            }
 
-    const clearDepositFeeLevels = useCallback(() => {
-        if (
-            storedDepositFeeLevelsRef.current &&
-            feeLevelsRef.current === storedDepositFeeLevelsRef.current
-        ) {
-            dispatch(transactionManagementActions.clearFeeLevels());
-        }
-
-        storedDepositFeeLevelsRef.current = null;
-    }, [dispatch]);
-
-    const clearDepositFeeStore = useCallback(() => {
-        clearDepositFeeLevels();
-
-        if (formDraftKey) {
-            dispatch(formDraftActions.removeDraft({ key: formDraftKey }));
-        }
-    }, [clearDepositFeeLevels, dispatch, formDraftKey]);
-
-    const clearDepositFeeState = useCallback(() => {
-        setBaseActionContext(null);
-        setIsPreparingDepositFee(false);
-        clearDepositFeeStore();
-    }, [clearDepositFeeStore]);
-
-    const hasInvalidDepositContext = !amount || !flowData || !flowKey || !formDraftKey;
-
-    const composeDepositBaseActionParams = useMemo((): ComposeDepositBaseActionParams | null => {
-        if (hasInvalidDepositContext || !isEnabled) {
-            return null;
-        }
-
-        return { amount, flowData };
-    }, [amount, flowData, hasInvalidDepositContext, isEnabled]);
-
-    const prepareDepositBaseAction = useCallback(
-        async (
-            { amount: preparedAmount, flowData: preparedFlowData }: ComposeDepositBaseActionParams,
-            requestId: number,
-        ) => {
             try {
                 const result = await dispatch(
-                    composeYieldDepositTransactionThunk({
-                        amount: preparedAmount,
-                        flowData: preparedFlowData,
-                    }),
+                    composeYieldDepositTransactionThunk({ amount: composeAmount, flowData }),
                 ).unwrap();
 
-                if (requestId !== requestIdRef.current) {
-                    return;
-                }
-
                 if (result.type !== 'action-ready') {
-                    if (result.type === 'error' && result.reason === 'fee-estimation-failed') {
-                        setHasFeeEstimationError(true);
-                    }
-
-                    clearDepositFeeState();
-
-                    return;
+                    return {
+                        type: 'error',
+                        isFeeEstimationError:
+                            result.type === 'error' && result.reason === 'fee-estimation-failed',
+                    };
                 }
 
-                const baseFeePreview = buildYieldDepositFeePreview(result.unsignedTransaction);
-
-                if (!baseFeePreview) {
-                    clearDepositFeeState();
-
-                    return;
-                }
-
-                setBaseActionContext({
-                    amount: preparedAmount,
-                    baseFeePreview,
-                    receiptAmount: result.receiptAmount,
-                    symbol: preparedFlowData.account.symbol,
-                    token: preparedFlowData.token,
-                    unsignedTransaction: result.unsignedTransaction,
-                });
-                setIsPreparingDepositFee(false);
+                return {
+                    type: 'ready',
+                    transaction: {
+                        receiptAmount: result.receiptAmount,
+                        symbol: flowData.account.symbol,
+                        token: flowData.token,
+                        unsignedTransaction: result.unsignedTransaction,
+                    },
+                };
             } catch {
-                if (requestId === requestIdRef.current) {
-                    clearDepositFeeState();
-                }
+                return { type: 'error', isFeeEstimationError: false };
             }
         },
-        [clearDepositFeeState, dispatch, setHasFeeEstimationError],
+        [dispatch, flowData],
     );
 
-    const depositFeeDraftState = useMemo(() => {
-        const currentFeeInfo = feeInfoRef.current;
-
-        if (
-            !baseActionContext ||
-            !feeInfoRevision ||
-            !currentFeeInfo ||
-            !baseActionContext.baseFeePreview.feeLimit
-        ) {
-            return null;
-        }
-
-        return buildYieldDepositFeeDraftState({
-            currentFormDraft: formDraft,
-            amount: baseActionContext.amount,
-            feeInfo: currentFeeInfo,
-            gasLimit: baseActionContext.baseFeePreview.feeLimit,
-            symbol: baseActionContext.symbol,
-            token: baseActionContext.token,
-            unsignedTransaction: baseActionContext.unsignedTransaction,
-        });
-    }, [baseActionContext, feeInfoRevision, formDraft]);
-
-    const preparedAction = useMemo((): PreparedYieldDepositAction | null => {
-        if (!baseActionContext) {
-            return null;
-        }
-
-        if (!depositFeeDraftState && (feeInfo || formDraft)) {
-            return null;
-        }
-
-        const unsignedTransaction =
-            depositFeeDraftState?.selectedFeeUnsignedTransaction ??
-            baseActionContext.unsignedTransaction;
-        const feePreview =
-            unsignedTransaction === baseActionContext.unsignedTransaction
-                ? baseActionContext.baseFeePreview
-                : buildYieldDepositFeePreview(unsignedTransaction);
-
-        if (!feePreview) {
-            return null;
-        }
-
-        return {
-            amount: baseActionContext.amount,
-            feePreview,
-            receiptAmount: baseActionContext.receiptAmount,
-            unsignedTransaction,
-        };
-    }, [baseActionContext, depositFeeDraftState, feeInfo, formDraft]);
-
-    useEffect(() => {
-        if (!baseActionContext) {
-            return;
-        }
-
-        if (!depositFeeDraftState) {
-            clearDepositFeeLevels();
-
-            return;
-        }
-
-        if (
-            feeLevelsRef.current !== storedDepositFeeLevelsRef.current ||
-            !deepEqual(storedDepositFeeLevelsRef.current, depositFeeDraftState.feeLevels)
-        ) {
-            dispatch(
-                transactionManagementActions.storeFeeLevels({
-                    feeLevels: depositFeeDraftState.feeLevels,
-                }),
-            );
-            storedDepositFeeLevelsRef.current = depositFeeDraftState.feeLevels;
-        }
-
-        if (formDraftKey && !deepEqual(formDraft, depositFeeDraftState.formDraft)) {
-            dispatch(
-                formDraftActions.storeDraft({
-                    key: formDraftKey,
-                    formDraft: depositFeeDraftState.formDraft,
-                }),
-            );
-        }
-    }, [
-        baseActionContext,
-        clearDepositFeeLevels,
-        depositFeeDraftState,
-        dispatch,
-        formDraft,
+    const fees = usePreparedTxFees({
+        amount,
+        composeTransaction,
         formDraftKey,
-    ]);
-
-    const selectedFee: FeeLevelLabel =
-        depositFeeDraftState?.formDraft.selectedFee ?? formDraft?.selectedFee ?? 'normal';
-    const localFeeLevels = depositFeeDraftState?.feeLevels ?? {};
-    const selectedFeeLevel = localFeeLevels[selectedFee];
-    const fee = isFinalPrecomposedTransaction(selectedFeeLevel) ? selectedFeeLevel.fee : null;
-    const feeAvailability = getFeeAvailability({
-        fee,
-        feeLevels: localFeeLevels,
-        selectedFee,
-        isLoading: isPreparingDepositFee,
+        hasInvalidContext,
+        isEnabled,
+        symbol: flowData?.account.symbol,
     });
-    const isFeeUnavailable =
-        (!!baseActionContext && !depositFeeDraftState && !isPreparingDepositFee) ||
-        feeAvailability.isFeeUnavailable;
-    const isCurrentDepositFeePreparing = !!composeDepositBaseActionParams && isPreparingDepositFee;
-    const isDepositFeeReady = isEnabled && preparedAction?.amount === amount && !isFeeUnavailable;
 
-    useEffect(() => {
-        const requestId = requestIdRef.current + 1;
-        requestIdRef.current = requestId;
-
-        setHasFeeEstimationError(false);
-
-        if (!composeDepositBaseActionParams) {
-            setBaseActionContext(null);
-            setIsPreparingDepositFee(false);
-
-            if (hasInvalidDepositContext) {
-                clearDepositFeeStore();
-            }
-
-            return;
-        }
-
-        setBaseActionContext(null);
-        setIsPreparingDepositFee(true);
-        void debounce(
-            () => void prepareDepositBaseAction(composeDepositBaseActionParams, requestId),
-        );
-    }, [
-        clearDepositFeeStore,
-        composeDepositBaseActionParams,
-        debounce,
-        feeEstimationRetryKey,
-        hasInvalidDepositContext,
-        prepareDepositBaseAction,
-        setHasFeeEstimationError,
-    ]);
-
-    useEffect(
-        () => () => {
-            requestIdRef.current += 1;
-            clearDepositFeeStore();
-        },
-        [clearDepositFeeStore],
+    const preparedAction = useMemo(
+        (): PreparedYieldDepositAction | null =>
+            fees.preparedTx
+                ? {
+                      amount: fees.preparedTx.amount,
+                      feePreview: fees.preparedTx.feePreview,
+                      receiptAmount: fees.preparedTx.transaction.receiptAmount,
+                      unsignedTransaction: fees.preparedTx.unsignedTransaction,
+                  }
+                : null,
+        [fees.preparedTx],
     );
 
     return {
         feePreview: preparedAction?.feePreview ?? null,
-        formDraft,
-        formDraftKey,
-        hasFeeEstimationError,
-        isDepositFeeReady,
-        isFeeUnavailable,
-        isPreparingDepositFee: isCurrentDepositFeePreparing,
+        formDraft: fees.formDraft,
+        formDraftKey: fees.formDraftKey,
+        hasFeeEstimationError: fees.hasFeeEstimationError,
+        isDepositFeeReady: fees.isFeeReady,
+        isFeeUnavailable: fees.isFeeUnavailable,
+        isPreparingDepositFee: fees.isFeePreparing,
         preparedAction,
-        retryFeeEstimation,
-        selectedFee,
+        retryFeeEstimation: fees.retryFeeEstimation,
+        selectedFee: fees.selectedFee,
         updateFeeLevelThunk: updateEarnSelectedFeeLevelThunk,
     };
 };

@@ -15,7 +15,7 @@ type ParsedUnsignedEvmTransaction = NonNullable<
     ReturnType<typeof parseUnsignedEvmTransactionForSigning>
 >;
 
-type YieldDepositFeeToken = {
+export type YieldDepositFeeToken = {
     contractAddress?: string | null;
     decimals: number;
     symbol: string;
