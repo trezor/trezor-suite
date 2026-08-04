@@ -12,6 +12,7 @@ import {
     ReceiveStackRoutes,
     Screen,
     type StackNavigationProps,
+    useNavigateToInitialScreen,
 } from '@suite-native/navigation';
 
 import { ReceiveBlockedDeviceCompromisedScreen } from './ReceiveBlockedDeviceCompromisedScreen';
@@ -22,6 +23,7 @@ type NavigationProp = StackNavigationProps<
 >;
 
 export const ReceiveAccountsScreen = () => {
+    const navigateToInitialScreen = useNavigateToInitialScreen();
     const { analytics } = useServices(selectNativeAnalyticsDep);
     const navigation = useNavigation<NavigationProp>();
     const hasFirmwareAuthenticityCheckHardFailed = useSelector(
@@ -30,21 +32,31 @@ export const ReceiveAccountsScreen = () => {
 
     if (hasFirmwareAuthenticityCheckHardFailed) return <ReceiveBlockedDeviceCompromisedScreen />;
 
-    const navigateToReceiveScreen: OnSelectAccount = ({ account, tokenAddress, tokenSymbol }) => {
+    const navigateToReceiveScreen: OnSelectAccount = ({ account, tokenAddress }) => {
         analytics.report({
-            type: events.receiveFlowEnteredEvent.name,
-            payload: {
-                location: 'dashboard',
-                assetSymbol: account.symbol,
-                tokenContract: tokenAddress,
-                tokenSymbol,
-            },
+            type: events.receiveOptionsScreenEvent.name,
+            payload: { option: 'account' },
         });
 
         navigation.navigate(ReceiveStackRoutes.ReceiveAddress, {
             accountKey: account.key,
             tokenContract: tokenAddress,
             closeActionType: 'back',
+        });
+    };
+
+    const handleClose = () => {
+        analytics.report({
+            type: events.receiveOptionsScreenEvent.name,
+            payload: { option: 'close' },
+        });
+        navigateToInitialScreen();
+    };
+
+    const handleAddAccount = () => {
+        analytics.report({
+            type: events.receiveOptionsScreenEvent.name,
+            payload: { option: 'addAccount' },
         });
     };
 
@@ -55,6 +67,8 @@ export const ReceiveAccountsScreen = () => {
                 onSelectAccount={navigateToReceiveScreen}
                 flowType="receive"
                 closeActionType="close"
+                closeAction={handleClose}
+                onAddAccount={handleAddAccount}
             />
         </Screen>
     );

@@ -26,6 +26,11 @@ export const SendAccountsScreen = () => {
     const navigation = useNavigation<NavigationProps>();
 
     const handleSelectAccount: OnSelectAccount = ({ account, hasAnyKnownTokens }) => {
+        analytics.report({
+            type: events.sendOptionsScreenEvent.name,
+            payload: { option: 'account' },
+        });
+
         if (hasAnyKnownTokens) {
             navigation.navigate(RootStackRoutes.AccountAssets, {
                 accountKey: account.key,
@@ -35,17 +40,17 @@ export const SendAccountsScreen = () => {
             return;
         }
 
-        analytics.report({
-            type: events.sendFlowEnteredEvent.name,
-            payload: {
-                location: 'dashboard',
-                assetSymbol: account.symbol,
-            },
-        });
-
         navigation.navigate(SendStackRoutes.SendOutputs, {
             accountKey: account.key,
         });
+    };
+
+    const handleClose = () => {
+        analytics.report({
+            type: events.sendOptionsScreenEvent.name,
+            payload: { option: 'close' },
+        });
+        navigateToInitialScreen();
     };
 
     return (
@@ -54,7 +59,7 @@ export const SendAccountsScreen = () => {
                 title={<Translation id="moduleSend.accountsList.title" />}
                 onSelectAccount={handleSelectAccount}
                 closeActionType="close"
-                closeAction={navigateToInitialScreen}
+                closeAction={handleClose}
                 isSendFlow
             />
         </Screen>

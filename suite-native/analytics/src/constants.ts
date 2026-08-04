@@ -89,6 +89,7 @@ export enum EventType {
     // eslint-disable-next-line local-rules/analytics-event-name
     ReceiveFlowEntered = 'receive/flow_entered',
     ReceiveOpenNonFreshAddress = 'receive/open-non-fresh-address',
+    ReceiveOptionsScreen = 'receive/options-screen',
     ReceiveShareAddress = 'receive/share-address',
     ReceiveStartVerification = 'receive/start-verification',
     // eslint-disable-next-line local-rules/analytics-event-name
@@ -105,6 +106,7 @@ export enum EventType {
     SendFlowEntered = 'send/flow_entered',
     // eslint-disable-next-line local-rules/analytics-event-name
     SendFlowExited = 'send/flow_exited',
+    SendOptionsScreen = 'send/options-screen',
     // eslint-disable-next-line local-rules/analytics-event-name
     SendTransactionDispatched = 'send/transaction_dispatched',
     // eslint-disable-next-line local-rules/analytics-event-name

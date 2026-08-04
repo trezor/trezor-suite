@@ -8,7 +8,7 @@ type ReceiveFlowLocation = 'dashboard' | 'accountDetail';
 
 type Attributes = {
     location: AttributeDef<ReceiveFlowLocation>;
-    assetSymbol: AttributeDef<NetworkSymbol>;
+    assetSymbol?: AttributeDef<NetworkSymbol>;
     tokenSymbol?: AttributeDef<TokenSymbol>;
     tokenContract?: AttributeDef<TokenAddress>;
 };
@@ -26,8 +26,11 @@ export const receiveFlowEnteredEvent: EventDef<Attributes, EventType.ReceiveFlow
         },
         assetSymbol: {
             description:
-                'The blockchain network symbol for which the user is generating a receive address (e.g., `btc`, `eth`, `ada`)',
-            changelog: [{ version: '26.2.2', notes: 'added' }],
+                'The blockchain network symbol for which the user is generating a receive address (e.g., `btc`, `eth`, `ada`); omitted when entering from the dashboard before selecting an account',
+            changelog: [
+                { version: '26.2.2', notes: 'added' },
+                { version: '26.8.1', notes: 'made optional for dashboard entry' },
+            ],
         },
         tokenSymbol: {
             description:

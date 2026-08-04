@@ -24,6 +24,7 @@ type SearchableAccountsListHeaderProps = {
     flowType?: AddCoinFlowType;
     closeActionType?: CloseActionType;
     closeAction?: () => void;
+    onAddAccount?: () => void;
     onFilterPress?: () => void;
     activeFilterCount?: number;
 };
@@ -42,6 +43,7 @@ export const SearchableAccountsListHeader = ({
     flowType,
     closeActionType,
     closeAction,
+    onAddAccount,
     onFilterPress,
     activeFilterCount = 0,
 }: SearchableAccountsListHeaderProps) => {
@@ -131,6 +133,7 @@ export const SearchableAccountsListHeader = ({
                             {flowType && (
                                 <AddAccountButton
                                     flowType={flowType}
+                                    onPress={onAddAccount}
                                     testID="@myAssets/addAccountButton"
                                 />
                             )}
