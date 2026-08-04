@@ -1,6 +1,8 @@
 import { useCallback } from 'react';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { PressableOpacity } from '@suite-native/atoms';
 import { type AccountAddress, type StaticSessionId } from '@trezor/connect';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
@@ -15,6 +17,7 @@ type ListItemContainerStyleProps = {
 type ReceiveAddressListItemRowProps = {
     address: AccountAddress;
     deviceStaticSessionId: StaticSessionId;
+    isFresh: boolean;
     isFirst: boolean;
     isLast: boolean;
     onPress: (addressPath: string) => void;
@@ -53,16 +56,22 @@ const listItemContainerStyle = prepareNativeStyle<ListItemContainerStyleProps>(
 export const ReceiveAddressListItemRow = ({
     address,
     deviceStaticSessionId,
+    isFresh,
     isFirst,
     isLast,
     onPress,
     symbol,
 }: ReceiveAddressListItemRowProps) => {
+    const { analytics } = useServices(selectNativeAnalyticsDep);
     const { applyStyle } = useNativeStyles();
 
     const handlePress = useCallback(() => {
+        if (!isFresh) {
+            analytics.report({ type: events.receiveOpenNonFreshAddressEvent.name });
+        }
+
         onPress(address.path);
-    }, [address.path, onPress]);
+    }, [address.path, analytics, isFresh, onPress]);
 
     return (
         <PressableOpacity

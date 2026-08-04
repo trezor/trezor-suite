@@ -2,6 +2,8 @@ import { Share } from 'react-native';
 
 import { useNavigation } from '@react-navigation/native';
 
+import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
+import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { getTranslation } from '@suite-native/intl';
 import { ReceiveAddressVerificationSource, ReceiveStackRoutes } from '@suite-native/navigation';
 import { renderWithBasicProvider, userEvent, waitFor } from '@suite-native/test-utils';
@@ -17,6 +19,10 @@ const mockVerifyAddress = jest.fn();
 const mockShare = jest.spyOn(Share, 'share');
 const mockUseBottomSheetModal = jest.fn();
 const mockNavigate = jest.fn();
+const mockAnalyticsReport = jest.fn();
+const services: NativeAnalyticsDep = {
+    analytics: mockNativeAnalytics(mockAnalyticsReport),
+};
 
 jest.mock('@react-navigation/native', () => ({
     ...jest.requireActual('@react-navigation/native'),
@@ -39,6 +45,7 @@ describe('ReceiveAddressActions', () => {
     const renderActions = () =>
         renderWithBasicProvider(
             <ReceiveAddressActions address={address} onVerifyAddress={mockVerifyAddress} />,
+            { services },
         );
 
     beforeEach(() => {
@@ -72,6 +79,9 @@ describe('ReceiveAddressActions', () => {
             );
             expect(mockOpenCopiedAddressBottomSheet).toHaveBeenCalledTimes(1);
             expect(mockOpenSharedAddressBottomSheet).not.toHaveBeenCalled();
+            expect(mockAnalyticsReport).toHaveBeenCalledWith({
+                type: events.receiveCopyAddressEvent.name,
+            });
         });
     });
 
@@ -85,6 +95,9 @@ describe('ReceiveAddressActions', () => {
             source: ReceiveAddressVerificationSource.Pasted,
         });
         expect(mockVerifyAddress).toHaveBeenCalledWith();
+        expect(mockAnalyticsReport).toHaveBeenCalledWith({
+            type: events.receiveStartVerificationEvent.name,
+        });
     });
 
     it('starts address verification directly', async () => {
@@ -98,6 +111,9 @@ describe('ReceiveAddressActions', () => {
             source: ReceiveAddressVerificationSource.Pasted,
         });
         expect(mockVerifyAddress).toHaveBeenCalledWith();
+        expect(mockAnalyticsReport).toHaveBeenCalledWith({
+            type: events.receiveStartVerificationEvent.name,
+        });
     });
 
     it('opens shared address verification after sharing', async () => {
@@ -113,6 +129,12 @@ describe('ReceiveAddressActions', () => {
             source: ReceiveAddressVerificationSource.Shared,
         });
         expect(mockVerifyAddress).toHaveBeenCalledWith();
+        expect(mockAnalyticsReport).toHaveBeenCalledWith({
+            type: events.receiveShareAddressEvent.name,
+        });
+        expect(mockAnalyticsReport).toHaveBeenCalledWith({
+            type: events.receiveStartVerificationEvent.name,
+        });
     });
 
     it('does not open shared address verification after cancelling sharing', async () => {
@@ -123,5 +145,6 @@ describe('ReceiveAddressActions', () => {
 
         expect(mockShare).toHaveBeenCalledWith({ message: address });
         expect(mockOpenSharedAddressBottomSheet).not.toHaveBeenCalled();
+        expect(mockAnalyticsReport).not.toHaveBeenCalled();
     });
 });
