@@ -56,16 +56,11 @@ export const init: ModuleInit = ({ mainWindowProxy, store }) => {
         return;
     }
 
-    // Suite Dark flavour: auto-update runs only on Windows and Linux. macOS is excluded
-    // because Squirrel.Mac refuses to install an unsigned/ad-hoc update (this build is
-    // not code-signed); macOS users update by downloading a new build. This early return
-    // also means the Settings auto-update section stays hidden on macOS (the module does
-    // not contribute its handshake payload -> desktopUpdate.enabled stays false).
-    if (process.platform === 'darwin' && !enableUpdater) {
-        logger.info(SERVICE_NAME, 'Disabled on macOS (unsigned build; Squirrel.Mac needs a signature)');
-
-        return;
-    }
+    // Suite Dark flavour: macOS auto-update is enabled via a stable self-signed code-signing
+    // identity (see patch 0010 + electron-builder-config macSelfSignedIdentity). Squirrel.Mac
+    // accepts the update because the running app and the update share the same cert-based
+    // designated requirement. (Locally-built ad-hoc macOS dev builds can't self-update, but
+    // that's a dev-only build; distributed builds are signed.)
 
     if (process.env.SNAP_NAME || process.env.FLATPAK_ID) {
         logger.info(SERVICE_NAME, 'Disabled - native store');

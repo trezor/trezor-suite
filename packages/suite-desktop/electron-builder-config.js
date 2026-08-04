@@ -2,17 +2,23 @@ const schemes = require('./uriSchemes.json');
 const { suiteVersion } = require('../suite/package.json');
 
 const isCodesignBuild = process.env.IS_CODESIGN_BUILD === 'true';
+// Suite Dark flavour: self-signed macOS code-signing identity (set in the CI mac job).
+// Enables Squirrel.Mac auto-update on macOS with a stable, cert-based designated
+// requirement. When present we also use the stable (non-.dev) appId/name so that
+// requirement stays constant across builds.
+const macSelfSignedIdentity = process.env.FLAVOUR_MAC_IDENTITY;
+const isMacSigned = isCodesignBuild || Boolean(macSelfSignedIdentity);
 
 // to be able to use patterns like ${author} and ${arch}
 module.exports = {
     // distinguish between dev and prod builds
-    appId: `io.suitedark.app${isCodesignBuild ? '' : '.dev'}`,
+    appId: `io.suitedark.app${isMacSigned ? '' : '.dev'}`,
     extraMetadata: {
         // Suite Dark flavour: CI stamps FLAVOUR_VERSION (e.g. 26.8.0-suitedark.<run>) so the
         // auto-updater sees a monotonically increasing version; falls back to suiteVersion locally.
         version: process.env.FLAVOUR_VERSION || suiteVersion,
         // distinguish between dev and prod builds so different userDataDir is used
-        name: `suitedark-desktop${isCodesignBuild ? '' : '-dev'}`,
+        name: `suitedark-desktop${isMacSigned ? '' : '-dev'}`,
     },
     productName: 'Suite Dark',
     copyright: 'Copyright © ${author}',
@@ -100,7 +106,7 @@ module.exports = {
         ],
         icon: 'build/static/images/desktop/512x512.icns',
         artifactName: 'SuiteDark-mac-${arch}.${ext}',
-        identity: isCodesignBuild ? undefined : '-',
+        identity: macSelfSignedIdentity || (isCodesignBuild ? undefined : '-'),
         hardenedRuntime: isCodesignBuild,
         gatekeeperAssess: false,
         darkModeSupport: true,
