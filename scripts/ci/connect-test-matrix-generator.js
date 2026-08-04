@@ -150,7 +150,7 @@ args.forEach(arg => {
     const argName = key.replace(/^--/, '');
 
     // Check if the value contains commas to create an array
-    parsedArgs[argName] = value.includes(',') ? value.split(',') : value;
+    parsedArgs[argName] = value.includes(',') ? value.split(',') : [value];
 });
 
 log('parsedArgs', parsedArgs);
@@ -166,6 +166,22 @@ const validateArgs = () => {
 };
 
 validateArgs();
+
+const addExplicitFirmware = firmware => {
+    if (!firmware || firmware === 'all') {
+        return;
+    }
+
+    if (firmware.startsWith('1') && !firmwares1.includes(firmware)) {
+        firmwares1.push(firmware);
+    }
+
+    if (firmware.startsWith('2') && !firmwares2.includes(firmware)) {
+        firmwares2.push(firmware);
+    }
+};
+
+[...parsedArgs.firmware].forEach(addExplicitFirmware);
 
 log('validated args', parsedArgs);
 
