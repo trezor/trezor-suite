@@ -274,6 +274,12 @@ export enum ReceiveStackRoutes {
 export enum ReceiveAddressVerificationSource {
     Pasted = 'pasted',
     Shared = 'shared',
+    Verified = 'verified',
+}
+
+export enum ReceiveAddressVerificationStackRoutes {
+    DeviceConnectionGuard = 'DeviceConnectionGuard',
+    ContinueOnTrezor = 'ContinueOnTrezor',
 }
 
 export enum SendStackRoutes {

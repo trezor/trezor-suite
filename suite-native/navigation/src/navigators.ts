@@ -39,6 +39,7 @@ import {
     type OnboardingStackRoutes,
     type PassphraseStackRoutes,
     type ReceiveAddressVerificationSource,
+    type ReceiveAddressVerificationStackRoutes,
     type ReceiveStackRoutes,
     type RootStackRoutes,
     type SendStackRoutes,
@@ -175,6 +176,8 @@ export type ReceiveStackParamList = {
     [ReceiveStackRoutes.ReceiveAccounts]: undefined;
     [ReceiveStackRoutes.ReceiveAddress]: AccountDetailParams;
     [ReceiveStackRoutes.ReceiveAddressVerification]: {
+        accountKey: AccountKey;
+        addressPath: string;
         source: ReceiveAddressVerificationSource;
     };
     [ReceiveStackRoutes.ReceiveAddressList]: {
@@ -183,6 +186,15 @@ export type ReceiveStackParamList = {
     [ReceiveStackRoutes.ReceiveAddressDetail]: {
         accountKey: AccountKey;
         addressPath: string;
+    };
+};
+
+export type ReceiveAddressVerificationStackParamList = {
+    [ReceiveAddressVerificationStackRoutes.DeviceConnectionGuard]: undefined;
+    [ReceiveAddressVerificationStackRoutes.ContinueOnTrezor]: {
+        accountKey: AccountKey;
+        addressPath: string;
+        source: ReceiveAddressVerificationSource;
     };
 };
 

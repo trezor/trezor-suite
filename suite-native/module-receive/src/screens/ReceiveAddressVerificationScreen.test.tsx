@@ -3,13 +3,25 @@ import { Text } from 'react-native';
 
 import { useRoute } from '@react-navigation/native';
 
+import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { ReceiveAddressVerificationSource } from '@suite-native/navigation';
-import { renderWithBasicProvider } from '@suite-native/test-utils';
+import { act, renderWithBasicProvider } from '@suite-native/test-utils';
 
 import { ReceiveAddressVerificationScreen } from './ReceiveAddressVerificationScreen';
 
+const mockVerifyAddressOnDevice = jest.fn();
+const mockUseFocusEffect = jest.fn();
+let handleScreenFocus = () => {};
+
+jest.mock('../hooks/useReceiveAddressVerification', () => ({
+    useReceiveAddressVerification: () => ({
+        verifyAddressOnDevice: mockVerifyAddressOnDevice,
+    }),
+}));
+
 jest.mock('@react-navigation/native', () => ({
     ...jest.requireActual('@react-navigation/native'),
+    useFocusEffect: (callback: () => void) => mockUseFocusEffect(callback),
     useRoute: jest.fn(),
 }));
 
@@ -27,12 +39,22 @@ jest.mock('@suite-native/navigation', () => ({
 }));
 
 describe('ReceiveAddressVerificationScreen', () => {
+    const accountKey = mockAccountKey();
+    const addressPath = "m/84'/0'/0'/0/0";
     const mockUseRoute = jest.mocked(useRoute);
 
     beforeEach(() => {
         jest.clearAllMocks();
+        mockUseFocusEffect.mockImplementation(callback => {
+            handleScreenFocus = callback;
+        });
+        mockVerifyAddressOnDevice.mockResolvedValue(undefined);
         mockUseRoute.mockReturnValue({
-            params: { source: ReceiveAddressVerificationSource.Pasted },
+            params: {
+                accountKey,
+                addressPath,
+                source: ReceiveAddressVerificationSource.Pasted,
+            },
         } as never);
     });
 
@@ -42,9 +64,22 @@ describe('ReceiveAddressVerificationScreen', () => {
         expect(getByText('moduleReceive.addressVerificationScreen.pastedTitle')).toBeTruthy();
     });
 
+    it('starts address verification only once when focused repeatedly', () => {
+        renderWithBasicProvider(<ReceiveAddressVerificationScreen />);
+
+        act(handleScreenFocus);
+        act(handleScreenFocus);
+
+        expect(mockVerifyAddressOnDevice).toHaveBeenCalledTimes(1);
+    });
+
     it('displays shared address verification instructions', () => {
         mockUseRoute.mockReturnValue({
-            params: { source: ReceiveAddressVerificationSource.Shared },
+            params: {
+                accountKey,
+                addressPath,
+                source: ReceiveAddressVerificationSource.Shared,
+            },
         } as never);
 
         const { getByText } = renderWithBasicProvider(<ReceiveAddressVerificationScreen />);

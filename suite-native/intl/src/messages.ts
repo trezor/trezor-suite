@@ -1030,6 +1030,7 @@ export const messages = {
         addressVerificationScreen: {
             pastedTitle: 'Compare the pasted address against your Trezor',
             sharedTitle: 'Compare the shared address against your Trezor',
+            verifiedTitle: 'Check the address on your Trezor',
         },
         bottomSheets: {
             addressMismatch: {
