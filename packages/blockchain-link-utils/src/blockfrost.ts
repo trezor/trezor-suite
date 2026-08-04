@@ -136,11 +136,24 @@ export const transformTokenInfo = (
         return undefined;
     }
 
-    const info = tokens.map(token => ({
-        balance: token.quantity,
-        standard: 'BLOCKFROST' as const,
-        ...transformToken(token),
-    }));
+    const info = tokens
+        .map(token => {
+            try {
+                return {
+                    balance: token.quantity,
+                    standard: 'BLOCKFROST' as const,
+                    ...transformToken(token),
+                };
+            } catch {
+                // A single malformed/poison token balance from an untrusted (user-selectable
+                // custom) blockfrost backend must not crash the whole account-info transform.
+                // AssetBalance.unit is TS-required but not runtime-validated; transformToken →
+                // parseAsset(token.unit).slice() throws when the backend omits it, so drop just
+                // the bad token record at the boundary instead of failing the entire account.
+                return undefined;
+            }
+        })
+        .filter(isNotNullOrUndefined);
 
     return info.length > 0 ? info : undefined;
 };

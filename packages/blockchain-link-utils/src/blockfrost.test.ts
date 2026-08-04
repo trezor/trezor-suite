@@ -32,6 +32,39 @@ describe('blockfrost/utils', () => {
                 expect(transformTokenInfo(f.tokens)).toEqual(f.result);
             });
         });
+
+        // A user-selectable (untrusted) blockfrost backend can return an account-info response
+        // whose `tokens` list contains one entry with `unit` (TS-required) omitted. transformToken
+        // → parseAsset(token.unit).slice() throws on such a record, which used to abort the whole
+        // transformTokenInfo (and therefore transformAccountInfo) → per-account DoS. Verify the bad
+        // token is dropped and the valid ones survive.
+        it('drops a poison token record with missing `unit` instead of throwing', () => {
+            const validToken = {
+                unit: '279c909f348e533da5808898f87f9a14bb2c3dfbbacccd631d927a3f534e454b',
+                quantity: '4',
+                decimals: 0,
+                fingerprint: 'asset108xu02ckwrfc8qs9d97mgyh4kn8gdu9w8f5sxk',
+                ticker: 'SNEK',
+                name: 'Snek',
+            };
+            const poisonToken = {
+                // `unit` omitted on purpose (untrusted backend), the rest is well-formed
+                quantity: '1',
+                decimals: 0,
+                fingerprint: 'asset1zvclg2cvj4e5jfz5vswf3sx0lasy79xn8cdap9',
+                ticker: 'GRIC',
+                name: null,
+            };
+
+            let result;
+            expect(() => {
+                // @ts-expect-error poisonToken intentionally omits the TS-required `unit`
+                result = transformTokenInfo([poisonToken, validToken]);
+            }).not.toThrow();
+
+            expect(result).toHaveLength(1);
+            expect(result?.[0]).toMatchObject({ symbol: 'SNEK', contract: validToken.unit });
+        });
     });
 
     describe('transformInputOutput', () => {
