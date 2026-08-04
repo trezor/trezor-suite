@@ -19,9 +19,7 @@ import { useSelector } from 'src/hooks/suite';
 
 import { GlobalSendReceive } from './GlobalSendReceive/GlobalSendReceive';
 import { HeaderActions } from './HeaderActions';
-import { HeaderDropdown } from './HeaderDropdown';
 import { PageName } from './PageNames/PageName';
-import { TradeActions } from './TradeActions';
 
 const Container = styled.div<{ $expandable?: boolean }>`
     position: sticky;
@@ -52,8 +50,6 @@ const PageHeaderIndex = () => {
 
     return (
         <Row gap={12}>
-            <HeaderDropdown />
-            <TradeActions />
             <GlobalSendReceive />
         </Row>
     );

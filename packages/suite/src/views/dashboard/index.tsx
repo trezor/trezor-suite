@@ -8,7 +8,6 @@ import { useLayout } from 'src/hooks/suite';
 
 import { AssetsView } from './AssetsView/AssetsView';
 import { DashboardFooter } from './DashboardFooter';
-import { DashboardPromoBanner } from './DashboardPromoBanner/DashboardPromoBanner';
 import { OnboardingFeedbackBanner } from './OnboardingFeedbackBanner/OnboardingFeedbackBanner';
 import { PortfolioCard } from './PortfolioCard/PortfolioCard';
 import { useNotificationForDisconnectedDevice } from './useNotificationForDisconnectedDevice';
@@ -25,7 +24,6 @@ export const Dashboard = () => {
                 <PortfolioCard />
                 <OnboardingFeedbackBanner />
             </Column>
-            <DashboardPromoBanner />
             <AssetsView />
         </Column>
     );

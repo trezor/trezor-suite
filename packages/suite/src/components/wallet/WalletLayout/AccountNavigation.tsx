@@ -70,7 +70,7 @@ export const AccountNavigation = () => {
                 });
             },
             title: <Translation id="TR_NAV_STAKING" />,
-            isHidden: !hasNetworkFeatures(account, 'staking'),
+            isHidden: true, // Suite Dark flavour: staking/earn hidden
             'data-testid': '@wallet/menu/staking',
         },
         {

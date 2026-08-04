@@ -9,10 +9,9 @@ import {
 } from '@suite/flags';
 import { type Route, selectRouteName } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectHasBitcoinOnlyFirmware } from '@suite-common/device';
 import { selectHasUnseenNotifications } from '@suite-common/toast-notifications';
 import { Column } from '@trezor/components';
-import { BellIcon, GearSixIcon, HouseIcon, PiggyBankIcon, RepeatIcon } from '@trezor/icons';
+import { BellIcon, GearSixIcon, HouseIcon } from '@trezor/icons';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useResponsiveContext } from 'src/support/suite/ResponsiveContext';
@@ -41,14 +40,9 @@ export const Navigation = ({ children }: NavigationProps) => {
     const isInitialRun = useSelector(selectIsInitialRun);
     const startRoute: Route['name'] = isInitialRun ? 'suite-start' : 'suite-index';
 
-    const isBtcOnly = useSelector(selectHasBitcoinOnlyFirmware);
-
     const hasUnseenNotifications = useSelector(selectHasUnseenNotifications);
     const isActivityNewContentIndicatorVisible = useSelector(
         selectIsNewContentIndicatorVisible(NewContentIndicatorId.Activity26_8),
-    );
-    const isEarnNewContentIndicatorVisible = useSelector(
-        selectIsNewContentIndicatorVisible(NewContentIndicatorId.Earn26_8),
     );
     const [shouldAnimateNewContentIndicators] = useState(() => !newContentIndicatorIntro.hasPlayed);
 
@@ -58,17 +52,6 @@ export const Navigation = ({ children }: NavigationProps) => {
 
     const isActivityOpen = useSelector(selectRouteName) === 'notifications-index';
     const hasActivityIndicator = hasUnseenNotifications && !isActivityOpen;
-
-    const reportSwapNavigation = useCallback(() => {
-        analytics.report({
-            type: events.tradeNavigateEvent.name,
-            payload: {
-                action: 'navigate',
-                type: 'exchange',
-                from: 'sidebar',
-            },
-        });
-    }, [analytics]);
 
     const handleActivityNavigation = useCallback(() => {
         if (isActivityNewContentIndicatorVisible) {
@@ -92,22 +75,9 @@ export const Navigation = ({ children }: NavigationProps) => {
         isSidebarCollapsed,
     ]);
 
-    const handleEarnNavigation = useCallback(() => {
-        if (isEarnNewContentIndicatorVisible) {
-            analytics.report({
-                type: events.appNewContentBadgeEvent.name,
-                payload: {
-                    badgeId: NewContentIndicatorId.Earn26_8,
-                    origin: 'nav',
-                },
-            });
-
-            dispatch(markNewContentIndicatorAsSeen(NewContentIndicatorId.Earn26_8));
-        }
-    }, [analytics, dispatch, isEarnNewContentIndicatorVisible]);
-
     const navItems: Array<NavigationItemProps & { CustomComponent?: FC<NavigationItemProps> }> =
         useMemo(
+            // Suite Dark flavour: Earn and Trading are always hidden (Bitcoin-maximalist build).
             () => [
                 {
                     nameId: 'TR_DASHBOARD',
@@ -116,41 +86,6 @@ export const Navigation = ({ children }: NavigationProps) => {
                     routes: [startRoute],
                     shortcut: ['MOD', 'ALT', 'KEY_0'],
                 },
-                ...(!isBtcOnly
-                    ? [
-                          {
-                              nameId: 'TR_TRADING_SWAP',
-                              icon: RepeatIcon,
-                              goToRoute: 'wallet-trading-exchange',
-                              routes: ['wallet-trading-exchange'],
-                              onClick: reportSwapNavigation,
-                              shortcut: ['ALT', 'KEY_X'],
-                          } as NavigationItemProps,
-                          {
-                              nameId: 'TR_EARN',
-                              icon: PiggyBankIcon,
-                              goToRoute: 'suite-earn',
-                              hasNewContentIndicator: isEarnNewContentIndicatorVisible,
-                              isNewContentIndicatorAnimated: shouldAnimateNewContentIndicators,
-                              onClick: handleEarnNavigation,
-                              shortcut: ['ALT', 'KEY_E'],
-                              routes: [
-                                  'suite-earn',
-                                  'earn-yield-deposit',
-                                  'earn-yield-withdraw',
-                                  'earn-yield-claim',
-                                  'earn-yield-unwrap',
-                                  'earn-yield-wrap',
-                                  'earn-tron',
-                                  'earn-tron-stake',
-                                  'earn-tron-vote',
-                                  'earn-tron-unstake',
-                                  'earn-tron-withdraw',
-                                  'earn-tron-claim',
-                              ],
-                          } as NavigationItemProps,
-                      ]
-                    : []),
                 {
                     nameId: 'TR_NOTIFICATIONS',
                     icon: BellIcon,
@@ -174,11 +109,7 @@ export const Navigation = ({ children }: NavigationProps) => {
             ],
             [
                 startRoute,
-                isBtcOnly,
-                reportSwapNavigation,
-                isEarnNewContentIndicatorVisible,
                 shouldAnimateNewContentIndicators,
-                handleEarnNavigation,
                 hasActivityIndicator,
                 isActivityNewContentIndicatorVisible,
                 handleActivityNavigation,

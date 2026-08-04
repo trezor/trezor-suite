@@ -1,7 +1,6 @@
 import { selectFullSelectedAccount } from '@suite/account';
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
-import { selectRouterParams } from '@suite/router';
 import { Row } from '@trezor/components';
 import { ButtonGroup } from '@trezor/components/src/components/buttons/ButtonGroup/ButtonGroup';
 import { ArrowDownIcon, ArrowUpIcon } from '@trezor/icons';
@@ -10,7 +9,6 @@ import { AppNavigationTooltip } from 'src/components/suite/AppNavigation/AppNavi
 import { HeaderActionButton } from 'src/components/suite/layouts/SuiteLayout/PageHeader/HeaderActionButton';
 import { TradeActions } from 'src/components/suite/layouts/SuiteLayout/PageHeader/TradeActions';
 import { useSelector } from 'src/hooks/suite';
-import { type WalletParams } from 'src/types/wallet';
 
 import { HeaderDropdown } from './HeaderDropdown';
 import { useGoToWithAnalytics } from './useGoToWithAnalytics';
@@ -18,11 +16,10 @@ import { useGoToWithAnalytics } from './useGoToWithAnalytics';
 export const HeaderActions = () => {
     const goToWithAnalytics = useGoToWithAnalytics();
     const selectedAccount = useSelector(selectFullSelectedAccount);
-    const routerParams = useSelector(selectRouterParams) as WalletParams;
     const { device } = useDevice();
 
-    const accountType = selectedAccount.account?.accountType || routerParams?.accountType || '';
-    const isTradingAvailable = !['coinjoin'].includes(accountType);
+    // Suite Dark flavour: trading hidden
+    const isTradingAvailable = false;
     const isAccountLoading = selectedAccount.status === 'loading';
     const isDeviceConnected = device?.connected && device?.available;
 
