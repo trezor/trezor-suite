@@ -84,7 +84,9 @@ describe('account utils', () => {
         expect(formatNetworkAmount('', btcSymbol)).toEqual('0');
         expect(formatNetworkAmount('', btcSymbol, true)).toEqual('0 BTC');
         expect(formatNetworkAmount('', btcSymbol, true, true)).toEqual('0 sat BTC');
-        expect(() => formatNetworkAmount('aaa', ethSymbol)).toThrow();
+        // non-numeric garbage degrades to the '-1' sentinel instead of throwing
+        // (untrusted-backend amounts must not crash render-time formatting)
+        expect(formatNetworkAmount('aaa', ethSymbol)).toEqual('-1');
     });
 
     it('format amount to satoshi', () => {
@@ -540,5 +542,19 @@ describe(convertAmountUnitsToSubunits.name, () => {
 describe(convertAmountSubunitsToUnits.name, () => {
     it('converts Sats->BTC', () => {
         expect(convertAmountSubunitsToUnits('1', 8)).toEqual('0.00000001');
+    });
+
+    it('treats a falsy amount as zero', () => {
+        expect(convertAmountSubunitsToUnits('', 8)).toEqual('0');
+    });
+
+    // A malicious/compromised backend can put non-numeric garbage into an unvalidated
+    // TokenTransfer.amount (blockbook `transfer.value`); this value reaches render-time
+    // components (TransactionTarget/AmountComponent/...) via formatTokenAmount, so the
+    // helper must degrade to the '-1' sentinel (like its siblings) instead of throwing
+    // and crashing the React render (poison-record render-crash DoS).
+    it('returns the -1 sentinel instead of throwing on non-numeric garbage', () => {
+        expect(() => convertAmountSubunitsToUnits('not-a-number', 8)).not.toThrow();
+        expect(convertAmountSubunitsToUnits('not-a-number', 8)).toEqual('-1');
     });
 });

@@ -40,16 +40,21 @@ export const unitsToSubunits = (params: UnitsToSubunitsParams): AmountSubunit =>
  * @deprecated Use `subunitsToUnits` instead!
  */
 export const convertAmountSubunitsToUnits = (amount: BigNumberValue, decimals: number) => {
-    const safeAmount = amount || '0';
-    const bAmount = new BigNumber(safeAmount);
+    try {
+        const safeAmount = amount || '0';
+        const bAmount = new BigNumber(safeAmount);
 
-    if (bAmount.isNaN()) {
-        throw new Error('Amount is not a number');
+        if (bAmount.isNaN()) {
+            throw new Error('Amount is not a number');
+        }
+
+        const factor = new BigNumber(10).exponentiatedBy(decimals);
+
+        return bAmount.div(factor).toString(10);
+    } catch {
+        // TODO: return null, so we can decide how to handle missing value in caller component
+        return '-1';
     }
-
-    const factor = new BigNumber(10).exponentiatedBy(decimals);
-
-    return bAmount.div(factor).toString(10);
 };
 
 /**
