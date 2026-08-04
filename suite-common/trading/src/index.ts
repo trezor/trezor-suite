@@ -42,6 +42,7 @@ export * from './utils/tradingAccountUtils';
 export * from './utils/buy/buyUtils';
 export * from './utils/receiveAccountUtils';
 export * from './utils/tradeOperationUtils';
+export * from './utils/tradeHistoryExportUtils';
 export * from './utils/exchange/composeDexTxSimulationAction';
 export * from './utils/exchange/exchangeUtils';
 export * from './utils/exchange/getExchangeIssue';
