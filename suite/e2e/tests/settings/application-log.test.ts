@@ -18,7 +18,7 @@ test.describe('Application Logs', { tag: ['@T3W1', '@T3T1'] }, () => {
                 await expect(page.getByTestId('@modal/application-log')).toBeVisible();
                 await expect(page.getByTestId('@log/content')).not.toBeEmpty();
 
-                return page.getByTestId('@log/content').textContent();
+                return page.getByTestId('@log/content').innerText();
             });
 
             const exportedLogPath =

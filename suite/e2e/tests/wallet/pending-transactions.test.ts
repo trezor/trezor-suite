@@ -96,11 +96,9 @@ test.describe(
                         .getByTestId('@transaction-item/0/heading')
                         .click();
 
-                    const txid = await page.getByTestId('@tx-detail/txid-value').textContent();
-                    if (!txid) {
-                        throw new Error('Transaction ID not found');
-                    }
-                    transaction.txid = txid;
+                    const txidValue = page.getByTestId('@tx-detail/txid-value');
+                    await expect(txidValue).not.toBeEmpty();
+                    transaction.txid = await txidValue.innerText();
 
                     await devicePrompt.closeModal();
                 }

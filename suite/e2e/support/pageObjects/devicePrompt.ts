@@ -166,14 +166,13 @@ export class DevicePrompt {
         if (!isSeparatorVisible) {
             return false;
         }
-        const separatorText = await this.paginatedTextSeparator.textContent();
 
-        return typeof separatorText === 'string' ? separatorText : false;
+        return await this.paginatedTextSeparator.innerText();
     }
 
     @step()
     async combinedPaginatedText() {
-        let textsArray = await this.paginatedText.allTextContents();
+        let textsArray = await this.paginatedText.allInnerTexts();
         const separatorText = await this.getPaginatedTextSeparator();
         if (separatorText) {
             textsArray = textsArray.map(text => text.replace(separatorText, ''));
@@ -186,11 +185,7 @@ export class DevicePrompt {
     @step()
     async getFeeRate() {
         // Element format is: Bitcoin #1 \n+ ≈ 10 minutes \n+ 4.00 sat/vB
-        const fullText = await this.headerParagraph.textContent();
-        if (!fullText) {
-            throw new Error('No text found in header paragraph of device prompt');
-        }
-
+        const fullText = await this.headerParagraph.innerText();
         const lines = fullText
             .split('\n')
             .map(line => line.trim())

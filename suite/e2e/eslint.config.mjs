@@ -1,4 +1,4 @@
-import { eslint, playwrightEslintFlat } from '@trezor/eslint';
+import { eslint, noRestrictedSyntax, playwrightEslintFlat } from '@trezor/eslint';
 
 export default [
     ...eslint,
@@ -13,6 +13,20 @@ export default [
         },
     },
     playwrightEslintFlat,
+    {
+        rules: {
+            'no-restricted-syntax': [
+                'error',
+                ...noRestrictedSyntax,
+                {
+                    selector:
+                        "CallExpression[callee.type='MemberExpression'][callee.property.name=/^(textContent|allTextContents)$/]",
+                    message:
+                        'To assert text prefer the auto-retrying expect(locator).toHaveText(), otherwise use innerText()/allInnerTexts().',
+                },
+            ],
+        },
+    },
     {
         files: ['**/tests/manual/**'],
         rules: {

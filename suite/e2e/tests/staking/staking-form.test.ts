@@ -6,7 +6,7 @@ import { calculatePercentageOfBalance } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
 
-let ethereumStakingBalance: string | null;
+let ethereumStakingBalance: string;
 const WITHDRAWAL_BUFFER = 0.005;
 
 test.describe('ETH staking form', { tag: ['@T3W1', '@T3T1'] }, () => {
@@ -42,11 +42,11 @@ test.describe('ETH staking form', { tag: ['@T3W1', '@T3T1'] }, () => {
         async ({ walletPage, stakingSection }) => {
             await test.step('Identify possible staking balance', async () => {
                 await walletPage.openAccount({ symbol: 'eth', type: 'normal', atIndex: 0 });
-                ethereumStakingBalance = await walletPage.topPanelBalance.textContent();
-                if (!ethereumStakingBalance) {
-                    throw new Error('Ethereum staking balance is undefined or null');
-                }
-                ethereumStakingBalance = ethereumStakingBalance?.replace(/,/g, '');
+                await expect(walletPage.topPanelBalance).toHaveText(/\d/);
+                ethereumStakingBalance = (await walletPage.topPanelBalance.innerText()).replace(
+                    /,/g,
+                    '',
+                );
                 await stakingSection.stakingTabButton.click();
                 await stakingSection.stakeMoreButton.click();
             });
@@ -105,7 +105,7 @@ test.describe('ETH staking form', { tag: ['@T3W1', '@T3T1'] }, () => {
                             .click();
                         const expectedValue = calculatePercentageOfBalance({
                             percentage,
-                            balance: ethereumStakingBalance!,
+                            balance: ethereumStakingBalance,
                             symbol: 'eth',
                         });
                         await expect.soft(stakingSection.cryptoInput).toHaveValue(expectedValue);
@@ -121,7 +121,7 @@ test.describe('ETH staking form', { tag: ['@T3W1', '@T3T1'] }, () => {
                         .toHaveTranslation('TR_STAKE_LEFT_AMOUNT_FOR_WITHDRAWAL', {
                             values: { amount: '0.005', networkDisplaySymbol: 'ETH' },
                         });
-                    const expectedMax = new BigNumber(ethereumStakingBalance!).minus(
+                    const expectedMax = new BigNumber(ethereumStakingBalance).minus(
                         WITHDRAWAL_BUFFER,
                     );
                     const formattedExpectedMax = localizeNumber(expectedMax);

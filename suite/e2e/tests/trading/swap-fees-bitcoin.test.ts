@@ -60,10 +60,7 @@ test.describe('Trading - Swap fees Bitcoin', { tag: ['@webOnly', '@T3T1', '@T3W1
         });
 
         await test.step('Verify fees on modal and emulator', async () => {
-            const feeFromDeviceModal = await devicePrompt.cryptoAmountOf('fee').textContent();
-            if (!feeFromDeviceModal) {
-                throw new Error('"Including fee" is not displayed on the device prompt modal');
-            }
+            const feeFromDeviceModal = await devicePrompt.cryptoAmountOf('fee').innerText();
             const totalAmount = new BigNumber(feeFromDeviceModal).plus(sendAmount).toString();
             await expect(devicePrompt.cryptoAmountWithSymbolOf('total')).toHaveText(
                 `${totalAmount} BTC`,

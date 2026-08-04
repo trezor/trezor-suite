@@ -4,7 +4,11 @@ import globals from 'globals';
 
 import { areExpensiveChecksEnabled } from './expensiveChecks.mjs';
 import { globalNoExtraneousDependenciesDevDependencies, importConfig } from './importConfig.mjs';
-import { javascriptConfig, noCastedObjectHelpersSyntax } from './javascriptConfig.mjs';
+import {
+    javascriptConfig,
+    noCastedObjectHelpersSyntax,
+    noRestrictedSyntax,
+} from './javascriptConfig.mjs';
 import { javascriptNodejsConfig } from './javascriptNodejsConfig.mjs';
 import { jestConfig } from './jestConfig.mjs';
 import { localRulesConfig } from './localRulesConfig.mjs';
@@ -18,6 +22,7 @@ import { restrictedImportsPatterns, typescriptConfig } from './typescriptConfig.
 export {
     globalNoExtraneousDependenciesDevDependencies,
     noCastedObjectHelpersSyntax,
+    noRestrictedSyntax,
     restrictedImportsPatterns,
 };
 

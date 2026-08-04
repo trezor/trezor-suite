@@ -34,12 +34,8 @@ export class TradingQuotesSection {
     @step()
     async getBestOfferAmount(): Promise<string> {
         await expect(this.bestOfferAmount).toHaveText(/^(?=[\d,.]*[1-9])[\d,]+(\.\d+)?\s+\w+$/);
-        const rawText = await this.bestOfferAmount.textContent();
-        if (!rawText) {
-            throw new Error('Best offer amount did not have any text content');
-        }
-
-        const [amount] = rawText.trim().split(/\s+/);
+        const rawText = await this.bestOfferAmount.innerText();
+        const [amount] = rawText.split(/\s+/);
         if (!amount) {
             throw new Error(`Best offer amount could not be parsed from "${rawText}"`);
         }
@@ -58,16 +54,14 @@ export class TradingQuotesSection {
 
     @step()
     async chooseDifferentOfferIfAvailable(provider?: string): Promise<void> {
-        const initialProvider = (await this.selectedProviderName.textContent())?.trim();
-        if (!initialProvider) {
-            throw new Error('Cannot get text content from the initial provider.');
-        }
+        await expect(this.selectedProviderName).not.toBeEmpty();
+        const initialProvider = (await this.selectedProviderName.innerText()).trim();
 
         await this.selectedProvider.click();
         await expect(this.list.first()).toBeVisible();
 
         const offerProviderNames = (
-            await this.list.getByTestId('@trading/offers/quote/provider').allTextContents()
+            await this.list.getByTestId('@trading/offers/quote/provider').allInnerTexts()
         ).map(name => name.trim());
 
         let differentProvider: string | undefined;

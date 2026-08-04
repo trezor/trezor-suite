@@ -75,12 +75,11 @@ export class TradingReceiveAccount {
 
         const selectedOption = this.receiveAccountModalSuiteOption.nth(index);
         // Capture the option's account name (not the balance/address)
-        const selectedAccountName =
-            (
-                await selectedOption
-                    .getByTestId('@trading/receive-account-modal/option/suite/name')
-                    .textContent()
-            )?.trim() ?? '';
+        const selectedOptionName = selectedOption.getByTestId(
+            '@trading/receive-account-modal/option/suite/name',
+        );
+        await expect(selectedOptionName).not.toBeEmpty();
+        const selectedAccountName = await selectedOptionName.innerText();
         await selectedOption.click();
 
         if (symbol === 'btc') {

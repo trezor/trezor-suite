@@ -33,7 +33,7 @@ export type PaymentMethods =
 
 export type PercentageOfBalanceParams = {
     percentage: number;
-    balance: string | null;
+    balance: string;
     symbol: NetworkSymbol;
 };
 

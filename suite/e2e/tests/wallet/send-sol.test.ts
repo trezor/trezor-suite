@@ -56,9 +56,10 @@ test.describe('Send - Solana', { tag: ['@webOnly', '@T3T1', '@T3W1'] }, () => {
                 await tradingPage.setMax.click();
 
                 await expect(tradingPage.fees.maxFee).not.toBeEmpty();
+                await expect(tradingPage.sendBalance).toHaveText(/\d/);
 
-                const balance = Number(await tradingPage.sendBalance.textContent());
-                maxFee = Number(await tradingPage.fees.maxFee.textContent());
+                const balance = Number(await tradingPage.sendBalance.innerText());
+                maxFee = Number(await tradingPage.fees.maxFee.innerText());
                 const reservedAmount = await tradingPage.fees.getNetworkReserveAmount();
                 sendMaxAmountWithReserve = localizeNumber(
                     new BigNumber(balance - maxFee - reservedAmount),
