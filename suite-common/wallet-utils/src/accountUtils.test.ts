@@ -12,6 +12,7 @@ import * as fixtures from './__fixtures__/accountUtils';
 import {
     accountSearchFn,
     enhanceAddresses,
+    enhanceTokens,
     findAccountDevice,
     findAccountsByAddress,
     findTransactionSenderAccount,
@@ -556,5 +557,38 @@ describe(convertAmountSubunitsToUnits.name, () => {
     it('returns the -1 sentinel instead of throwing on non-numeric garbage', () => {
         expect(() => convertAmountSubunitsToUnits('not-a-number', 8)).not.toThrow();
         expect(convertAmountSubunitsToUnits('not-a-number', 8)).toEqual('-1');
+    });
+});
+
+describe(enhanceTokens.name, () => {
+    it('uppercases the symbol for a normal token', () => {
+        const result = enhanceTokens([
+            {
+                type: 'ERC20',
+                symbol: 'usdt',
+                contract: '0xdac17f958d2ee523a2206206994597c13d831ec7',
+                decimals: 6,
+            },
+        ] as unknown as Account['tokens']);
+
+        expect(result?.[0]?.symbol).toEqual('USDT');
+    });
+
+    // `TokenInfo.symbol` and the runtime `contract` value both come from an untrusted/
+    // user-selectable backend and can be missing. A poison token with neither, plus a falsy
+    // `standard` (shouldUppercaseTokenSymbol → true), used to throw on `symbol.toUpperCase()`,
+    // aborting createAccount / updateAccount (tx-history refresh) / addTokenToAccount for the
+    // whole account (poison-record DoS).
+    it('does not throw on a poison token missing both symbol and contract', () => {
+        const poisonTokens = [
+            {
+                type: '',
+                standard: '',
+                decimals: 0,
+            },
+        ] as unknown as Account['tokens'];
+
+        expect(() => enhanceTokens(poisonTokens)).not.toThrow();
+        expect(enhanceTokens(poisonTokens)?.[0]?.symbol).toEqual('');
     });
 });

@@ -384,7 +384,13 @@ export const enhanceTokens = (tokens: Account['tokens']) => {
     if (!tokens) return [];
 
     return tokens.map(t => {
-        const symbol = t.symbol || t.contract;
+        // `TokenInfo.contract` is typed as a required string, but the value originates from an
+        // untrusted/user-selectable backend where both `symbol` and `contract` are optional
+        // (Token.symbol?/contract? in blockbook-api). A poison token missing both, with a falsy
+        // `standard` (shouldUppercaseTokenSymbol → true), would otherwise throw on
+        // `symbol.toUpperCase()` — aborting createAccount, updateAccount (tx-history refresh) and
+        // addTokenToAccount for the whole account. Default to '' so the deref is always safe.
+        const symbol = t.symbol || t.contract || '';
 
         return {
             ...t,
