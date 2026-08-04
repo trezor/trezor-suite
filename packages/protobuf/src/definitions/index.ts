@@ -263,8 +263,10 @@ import {
     StellarPathPaymentStrictSendOp,
     StellarPaymentOp,
     StellarSetOptionsOp,
+    StellarSignSorobanAuthorization,
     StellarSignTx,
     StellarSignedTx,
+    StellarSorobanAuthorizationSignature,
     StellarTxExt,
     StellarTxExtRequest,
     StellarTxOpRequest,
@@ -313,7 +315,7 @@ import {
     TronWithdrawUnfreeze,
 } from './messages-tron';
 
-export type * from './options';
+export * from './options';
 export * from './messages-common';
 export * from './messages-bitcoin';
 export * from './messages-ble';
@@ -336,7 +338,7 @@ export * from './messages-telemetry';
 export * from './messages-tezos';
 export * from './messages-thp';
 export * from './messages-tron';
-export type * from './messages';
+export * from './messages';
 
 export type MessageType = Static<typeof MessageType>;
 export const MessageType = Type.Object(
@@ -589,6 +591,8 @@ export const MessageType = Type.Object(
         StellarClaimClaimableBalanceOp,
         StellarSignedTx,
         StellarInvokeHostFunctionOp,
+        StellarSignSorobanAuthorization,
+        StellarSorobanAuthorizationSignature,
         StellarTxExtRequest,
         StellarTxExt,
         TelemetryGet,
@@ -785,6 +789,7 @@ export type WireInMessage =
     | 'StellarBumpSequenceOp'
     | 'StellarClaimClaimableBalanceOp'
     | 'StellarInvokeHostFunctionOp'
+    | 'StellarSignSorobanAuthorization'
     | 'StellarTxExt'
     | 'TelemetryGet'
     | 'TezosGetAddress'
@@ -895,6 +900,7 @@ export type WireOutMessage =
     | 'StellarAddress'
     | 'StellarTxOpRequest'
     | 'StellarSignedTx'
+    | 'StellarSorobanAuthorizationSignature'
     | 'StellarTxExtRequest'
     | 'Telemetry'
     | 'TezosAddress'
