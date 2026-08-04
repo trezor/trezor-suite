@@ -75,7 +75,7 @@ export const UnwrapNativeToken = ({
 
     const pendingTxStatus = useWrappedNativePendingTx(account, broadcast?.txid ?? null, 'unwrap');
 
-    const { reportSubmit } = useWrappedNativeFlowAnalytics({
+    const { reportSubmit, reportMaxClick } = useWrappedNativeFlowAnalytics({
         flowType: 'unwrap',
         status: pendingTxStatus,
         txid: broadcast?.txid ?? null,
@@ -146,6 +146,12 @@ export const UnwrapNativeToken = ({
 
         unwrapMutation.mutate(unwrapAmount);
     });
+
+    const handleMaxClick = () => {
+        reportMaxClick();
+
+        setMaxAmount(tokenBalance);
+    };
 
     const openTxDetail = (txid: string) => {
         dispatch(
@@ -223,7 +229,7 @@ export const UnwrapNativeToken = ({
                                 : undefined
                         }
                         fiatToggle={fiatToggle}
-                        onMaxClick={() => setMaxAmount(tokenBalance)}
+                        onMaxClick={handleMaxClick}
                         onSubmit={handleSubmit}
                         onPendingTxClick={openTxDetail}
                     />

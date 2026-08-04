@@ -21,6 +21,7 @@ type UseWrappedNativeFlowAnalyticsParams = {
 /**
  * Fires the `yield/wrap` / `yield/unwrap` events for the standalone wrap/unwrap flows: `submit` via
  * the returned `reportSubmit`, `success` / `error` on-chain, `leftPending` if the user leaves first.
+ * `reportMaxClick` fires the max-button `yield/interaction` event.
  */
 export const useWrappedNativeFlowAnalytics = ({
     flowType,
@@ -46,6 +47,17 @@ export const useWrappedNativeFlowAnalytics = ({
     const reportSubmit = useCallback(() => {
         report({ type: 'submit', action: 'continue', networkSymbol });
     }, [report, networkSymbol]);
+
+    // No `vaultId` — that is what separates these from the in-flow deposit-max / withdraw-max.
+    const reportMaxClick = useCallback(() => {
+        analytics.report({
+            type: events.yieldInteractionEvent.name,
+            payload: {
+                element: flowType === 'wrap' ? 'wrap-max' : 'unwrap-max',
+                networkSymbol,
+            },
+        });
+    }, [analytics, flowType, networkSymbol]);
 
     // Timed in an effect rather than during render so the hook stays pure.
     useEffect(() => {
@@ -95,5 +107,5 @@ export const useWrappedNativeFlowAnalytics = ({
         [report, latestRef],
     );
 
-    return { reportSubmit };
+    return { reportSubmit, reportMaxClick };
 };

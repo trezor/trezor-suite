@@ -3,16 +3,10 @@ import type { EarnModalAction } from '@suite-common/suite-types';
 import type { AttributeDef } from '../eventDefinition';
 
 /**
- * Shared attribute schema for the native-token wrap (ETH → WETH) and unwrap (WETH → ETH) flows.
- * Both `yieldWrapEvent` and `yieldUnwrapEvent` are structurally identical, so they reuse this
- * single type + metadata object.
+ * Shared by `yieldWrapEvent` and `yieldUnwrapEvent`, which are structurally identical.
  *
- * Fired from the standalone Wrap/Unwrap pages (no `vaultId`) and, as an in-flow step, from the
- * yield deposit/withdraw flows for wrapped-native vaults (`vaultId` set to the vault being
- * deposited into / withdrawn from).
- *
- * Deliberately carries NO amount/balance/txid/descriptor — those are device-confidential and must
- * never leave the device (see CLAUDE.md), mirroring `yieldDepositEvent` / `yieldWithdrawEvent`.
+ * Carries no amount/balance/txid/descriptor — those are device-confidential and must never leave
+ * the device (see CLAUDE.md).
  */
 export type WrappedNativeFlowAttributes = {
     action: AttributeDef<EarnModalAction>;
@@ -27,11 +21,13 @@ export type WrappedNativeFlowAttributes = {
 
 export const wrappedNativeFlowAttributes = {
     action: {
+        description:
+            'What the user did with the surface the `type` names. `continue` on every lifecycle report; `cancel` when the tx-simulation modal was declined; `close` when the "transaction sent" toast was dismissed with its dismiss button.',
         changelog: [{ version: '26.8.0', notes: 'added' }],
     },
     type: {
         description:
-            '`submit` = user confirmed the wrap/unwrap form, `tx-simulation-modal` = simulation modal shown (with `action` continue/cancel), `sent` = transaction signed &amp; broadcast accepted (the "transaction sent" toast is shown), `success` / `error` / `leftPending` = on-chain resolution of the broadcast transaction',
+            '`submit` = user confirmed the wrap/unwrap form, `tx-simulation-modal` = simulation modal shown (with `action` continue/cancel), `sent` = transaction signed &amp; broadcast accepted — emitted with `action=continue` when the "transaction sent" toast is shown and again with `action=close` if the user dismisses that toast (letting it auto-close is not reported), `success` / `error` / `leftPending` = on-chain resolution of the broadcast transaction',
         changelog: [{ version: '26.8.0', notes: 'added' }],
     },
     networkSymbol: {
