@@ -48,6 +48,16 @@ export const isTokenDefinitionKnown = (
     return tokenDefinitionsMap.get(tokenDefinitions)?.has(contractAddressForNetwork);
 };
 
+// The token definitions payload is typed as `string[]`, but it originates verbatim from an
+// unsigned data.trezor.io JSON fetch (see `fetchTokenDefinitions`) with no runtime shape
+// validation, so a compromised/MITM backend can return a non-array or an array containing
+// non-string entries. Consumers deref it as a real `string[]` — e.g. `contract.split('-')`
+// in suite-native `useInactiveStellarTokens`, which runs at render time with no ErrorBoundary
+// — where a poison value throws a TypeError and crashes the consuming render/selector.
+// Coerce to a genuine `string[]` at this single data boundary so the declared type holds.
+export const sanitizeTokenDefinitions = (data: unknown): string[] =>
+    Array.isArray(data) ? data.filter((item): item is string => typeof item === 'string') : [];
+
 export const filterKnownTokens = (
     tokenDefinitions: SimpleTokenStructure | undefined,
     symbol: NetworkSymbol,

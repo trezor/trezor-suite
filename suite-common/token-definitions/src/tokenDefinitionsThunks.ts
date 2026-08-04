@@ -11,7 +11,11 @@ import {
     type TokenDefinitionsRootState,
     TokenStructureType,
 } from './tokenDefinitionsTypes';
-import { fetchTokenDefinitions, getSupportedDefinitionTypes } from './tokenDefinitionsUtils';
+import {
+    fetchTokenDefinitions,
+    getSupportedDefinitionTypes,
+    sanitizeTokenDefinitions,
+} from './tokenDefinitionsUtils';
 
 const TOKEN_DEFINITIONS_MODULE = '@common/wallet-core/token-definitions';
 
@@ -26,13 +30,16 @@ export const getTokenDefinitionThunk = createThunk<
     `${TOKEN_DEFINITIONS_MODULE}/getTokenDefinitionsThunk`,
     async (params, { fulfillWithValue, rejectWithValue }) => {
         try {
-            const data: string[] = await fetchTokenDefinitions(
+            const data = await fetchTokenDefinitions(
                 params.symbol,
                 params.type,
                 TokenStructureType.SIMPLE,
             );
 
-            return fulfillWithValue(data);
+            // `data` comes verbatim from the unsigned token-definitions CDN; coerce it to a
+            // genuine `string[]` so a poison (non-array / non-string-element) response cannot
+            // crash raw consumers such as `useInactiveStellarTokens` (`contract.split('-')`).
+            return fulfillWithValue(sanitizeTokenDefinitions(data));
         } catch (error) {
             return rejectWithValue(error.toString());
         }
