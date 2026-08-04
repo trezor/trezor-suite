@@ -1,33 +1,42 @@
 import { type JsonRpcScanParams } from '@blockaid/client/resources/evm';
 
+import type { GetNetworkConfigDep } from '@suite-common/networks';
 import { getNetworkChainId } from '@suite-common/wallet-config';
 import { U_INT_32 } from '@suite-common/wallet-constants';
 import { type TxSimulationAction, type TxSimulationMethod } from '@suite-common/wallet-types';
 
 // Maps EVM chainId to Blockaid's canonical chain name.
-const BLOCKAID_EVM_CHAIN_BY_CHAIN_ID: Readonly<Record<number, JsonRpcScanParams['chain']>> = {
-    [getNetworkChainId('eth')]: 'ethereum',
-    [getNetworkChainId('op')]: 'optimism',
-    [getNetworkChainId('bsc')]: 'bsc',
-    [getNetworkChainId('etc')]: 'ethereumClassic',
-    [getNetworkChainId('pol')]: 'polygon',
-    [getNetworkChainId('base')]: 'base',
-    [getNetworkChainId('arb')]: 'arbitrum',
-    [getNetworkChainId('rhc')]: 'robinhood',
-    [getNetworkChainId('hype')]: 'hyperevm',
-    [getNetworkChainId('avax')]: 'avalanche',
-};
+const createBlockaidEvmChainByChainId = (
+    deps: GetNetworkConfigDep,
+): Readonly<Record<number, JsonRpcScanParams['chain']>> => ({
+    [getNetworkChainId(deps, 'eth')]: 'ethereum',
+    [getNetworkChainId(deps, 'op')]: 'optimism',
+    [getNetworkChainId(deps, 'bsc')]: 'bsc',
+    [getNetworkChainId(deps, 'etc')]: 'ethereumClassic',
+    [getNetworkChainId(deps, 'pol')]: 'polygon',
+    [getNetworkChainId(deps, 'base')]: 'base',
+    [getNetworkChainId(deps, 'arb')]: 'arbitrum',
+    [getNetworkChainId(deps, 'rhc')]: 'robinhood',
+    [getNetworkChainId(deps, 'hype')]: 'hyperevm',
+    [getNetworkChainId(deps, 'avax')]: 'avalanche',
+});
 
-const resolveBlockaidEvmChain = (chainId: number | undefined = 1): JsonRpcScanParams['chain'] =>
-    BLOCKAID_EVM_CHAIN_BY_CHAIN_ID[chainId] as JsonRpcScanParams['chain'];
+const resolveBlockaidEvmChain = (
+    deps: GetNetworkConfigDep,
+    chainId: number | undefined = 1,
+): JsonRpcScanParams['chain'] =>
+    createBlockaidEvmChainByChainId(deps)[chainId] as JsonRpcScanParams['chain'];
 
-function transformPayloadOfEthereumSignTransaction({
-    payload: { transaction },
-    fromAddress,
-    sourceOrigin,
-}: TxSimulationMethod<'ethereumSignTransaction'>) {
+function transformPayloadOfEthereumSignTransaction(
+    {
+        payload: { transaction },
+        fromAddress,
+        sourceOrigin,
+    }: TxSimulationMethod<'ethereumSignTransaction'>,
+    deps: GetNetworkConfigDep,
+) {
     return {
-        chain: resolveBlockaidEvmChain(transaction.chainId),
+        chain: resolveBlockaidEvmChain(deps, transaction.chainId),
         data: {
             method: 'eth_sendTransaction',
             params: [
@@ -52,13 +61,13 @@ function transformPayloadOfEthereumSignTransaction({
     } as const satisfies JsonRpcScanParams;
 }
 
-function transformPayloadOfEthereumSignTypedData({
-    payload: { data },
-    fromAddress,
-    sourceOrigin,
-}: TxSimulationMethod<'ethereumSignTypedData'>) {
+function transformPayloadOfEthereumSignTypedData(
+    { payload: { data }, fromAddress, sourceOrigin }: TxSimulationMethod<'ethereumSignTypedData'>,
+    deps: GetNetworkConfigDep,
+) {
     return {
         chain: resolveBlockaidEvmChain(
+            deps,
             data.domain.chainId ? Number(data.domain.chainId) : undefined,
         ),
         data: {
@@ -79,7 +88,10 @@ function transformPayloadOfEthereumSignTypedData({
 /**
  * Transform payload to the format expected by the tx simulation API.
  */
-export function getTxSimulationParams(action: TxSimulationAction | null) {
+export function getTxSimulationParams(
+    deps: GetNetworkConfigDep,
+    action: TxSimulationAction | null,
+) {
     if (!action) {
         return null;
     }
@@ -88,12 +100,12 @@ export function getTxSimulationParams(action: TxSimulationAction | null) {
         case 'ethereumSignTransaction':
             return {
                 method: action.method,
-                params: transformPayloadOfEthereumSignTransaction(action),
+                params: transformPayloadOfEthereumSignTransaction(action, deps),
             } as const;
         case 'ethereumSignTypedData':
             return {
                 method: action.method,
-                params: transformPayloadOfEthereumSignTypedData(action),
+                params: transformPayloadOfEthereumSignTypedData(action, deps),
             } as const;
         default:
             return null;

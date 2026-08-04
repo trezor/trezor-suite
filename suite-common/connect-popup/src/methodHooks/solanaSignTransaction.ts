@@ -1,4 +1,4 @@
-import { getNetwork } from '@suite-common/wallet-config';
+import type { NetworkSymbol } from '@suite-common/wallet-config';
 import {
     accountsActions,
     selectAccountForNetworkSymbolAndPath,
@@ -20,13 +20,15 @@ const preCallHook = async <M extends CallMethodKeys>({
     payload,
     getState,
     dispatch,
+    services,
     txSigningPrecomposed,
 }: PreCallHookParams<M>) => {
     try {
         if (method === 'solanaSignTransaction' && txSigningPrecomposed) {
             const typedPayload = payload as any as SolanaSignTransaction;
             const path = getSerializedPath(validatePath(typedPayload.path)) as Bip43Path;
-            const network = getNetwork(typedPayload.additionalInfo?.isDevnet ? 'dsol' : 'sol');
+            const symbol: NetworkSymbol = typedPayload.additionalInfo?.isDevnet ? 'dsol' : 'sol';
+            const network = { symbol, ...services.getNetworkConfig(symbol) };
             // Try to find matching account
             let selectedAccount = selectAccountForNetworkSymbolAndPath(
                 getState(),
@@ -35,7 +37,9 @@ const preCallHook = async <M extends CallMethodKeys>({
             );
             if (!selectedAccount) {
                 // Create a new placeholder account
-                const createdAccount = await dispatch(createPlaceholderAccount(network, path));
+                const createdAccount = await dispatch(
+                    createPlaceholderAccount(services, network, path),
+                );
                 temporaryAccounts.push(createdAccount.payload);
                 selectedAccount = createdAccount.payload;
             }

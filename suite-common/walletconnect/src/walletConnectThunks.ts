@@ -12,7 +12,6 @@ import * as trezorConnectPopupActions from '@suite-common/connect-popup';
 import { createThunk } from '@suite-common/redux-utils';
 import { isDevEnv } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { getNetwork } from '@suite-common/wallet-config';
 import { selectAllSuccessfulAccountsToList } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { type CallMethodResponse } from '@trezor/connect';
@@ -35,86 +34,89 @@ const sessionAuthenticateThunk = createThunk<
     {
         event: WalletKitTypes.SessionAuthenticate;
     }
->(`${WALLETCONNECT_MODULE}/sessionAuthenticateThunk`, async ({ event }, { getState, dispatch }) => {
-    // Support for Sign-In with Ethereum (SIWE) message, enhanced by ReCaps (ReCap Capabilities)
-    try {
-        const accounts = selectAllSuccessfulAccountsToList(getState());
-        const supportedNamespaces = getNamespaces(accounts);
-        // @ts-expect-error: indexing with noUncheckedIndexedAccess
-        const eip155Namespace: (typeof supportedNamespaces)[keyof typeof supportedNamespaces] =
-            supportedNamespaces.eip155;
-        const authPayload = populateAuthPayload({
-            authPayload: event.params.authPayload,
-            chains: eip155Namespace.chains,
-            methods: eip155Namespace.methods,
-        });
-        const ethAccount = accounts.find(a => a.symbol === 'eth');
-        if (!ethAccount) {
-            throw new Error('No ETH account');
-        }
-        const iss = `eip155:1:${ethAccount.descriptor}`;
-        const message = walletKit.formatAuthMessage({
-            request: authPayload,
-            iss,
-        });
+>(
+    `${WALLETCONNECT_MODULE}/sessionAuthenticateThunk`,
+    async ({ event }, { getState, dispatch, extra }) => {
+        // Support for Sign-In with Ethereum (SIWE) message, enhanced by ReCaps (ReCap Capabilities)
+        try {
+            const accounts = selectAllSuccessfulAccountsToList(getState(), extra.services);
+            const supportedNamespaces = getNamespaces(extra.services, accounts);
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const eip155Namespace: (typeof supportedNamespaces)[keyof typeof supportedNamespaces] =
+                supportedNamespaces.eip155;
+            const authPayload = populateAuthPayload({
+                authPayload: event.params.authPayload,
+                chains: eip155Namespace.chains,
+                methods: eip155Namespace.methods,
+            });
+            const ethAccount = accounts.find(a => a.symbol === 'eth');
+            if (!ethAccount) {
+                throw new Error('No ETH account');
+            }
+            const iss = `eip155:1:${ethAccount.descriptor}`;
+            const message = walletKit.formatAuthMessage({
+                request: authPayload,
+                iss,
+            });
 
-        dispatch(
-            trezorConnectPopupActions.connectPopupCallThunk({
-                source: {
-                    type: 'walletconnect' as const,
-                    origin: event.verifyContext.verified.origin,
-                    manifest: {
-                        appName: event.params.requester.metadata.name,
-                        appIcon: event.params.requester.metadata.icons?.[0],
-                    },
-                },
-                method: 'ethereumSignMessage',
-                payload: {
-                    path: ethAccount.path,
-                    message,
-                },
-            }),
-        );
-        const response = await trezorConnectPopupActions.getPopupCallDeferred(true).promise;
-        if (!response.success) {
-            throw new Error('Sign message error');
-        }
-        const typedPayload = response.payload as CallMethodResponse<'ethereumSignMessage'>;
-
-        const auth = buildAuthObject(
-            authPayload,
-            {
-                t: 'eip191',
-                s: `0x${typedPayload.signature}`,
-            },
-            iss,
-        );
-
-        const { session } = await walletKit.approveSessionAuthenticate({
-            id: event.id,
-            auths: [auth],
-        });
-        if (session) {
             dispatch(
-                walletConnectActions.saveSession({
-                    ...session,
-                    validation: event.verifyContext.verified.validation,
+                trezorConnectPopupActions.connectPopupCallThunk({
+                    source: {
+                        type: 'walletconnect' as const,
+                        origin: event.verifyContext.verified.origin,
+                        manifest: {
+                            appName: event.params.requester.metadata.name,
+                            appIcon: event.params.requester.metadata.icons?.[0],
+                        },
+                    },
+                    method: 'ethereumSignMessage',
+                    payload: {
+                        path: ethAccount.path,
+                        message,
+                    },
                 }),
             );
+            const response = await trezorConnectPopupActions.getPopupCallDeferred(true).promise;
+            if (!response.success) {
+                throw new Error('Sign message error');
+            }
+            const typedPayload = response.payload as CallMethodResponse<'ethereumSignMessage'>;
+
+            const auth = buildAuthObject(
+                authPayload,
+                {
+                    t: 'eip191',
+                    s: `0x${typedPayload.signature}`,
+                },
+                iss,
+            );
+
+            const { session } = await walletKit.approveSessionAuthenticate({
+                id: event.id,
+                auths: [auth],
+            });
+            if (session) {
+                dispatch(
+                    walletConnectActions.saveSession({
+                        ...session,
+                        validation: event.verifyContext.verified.validation,
+                    }),
+                );
+            }
+        } catch (error) {
+            dispatch(
+                notificationsActions.addToast({
+                    type: 'error',
+                    error: error.message,
+                }),
+            );
+            await walletKit.rejectSessionAuthenticate({
+                id: event.id,
+                reason: getSdkError('USER_REJECTED'),
+            });
         }
-    } catch (error) {
-        dispatch(
-            notificationsActions.addToast({
-                type: 'error',
-                error: error.message,
-            }),
-        );
-        await walletKit.rejectSessionAuthenticate({
-            id: event.id,
-            reason: getSdkError('USER_REJECTED'),
-        });
-    }
-});
+    },
+);
 
 const sessionProposalThunk = createThunk<
     void,
@@ -123,10 +125,10 @@ const sessionProposalThunk = createThunk<
     }
 >(`${WALLETCONNECT_MODULE}/sessionProposalThunk`, ({ event }, { dispatch, getState, extra }) => {
     // Check supported networks
-    const accounts = selectAllSuccessfulAccountsToList(getState());
+    const accounts = selectAllSuccessfulAccountsToList(getState(), extra.services);
     const networks: PendingConnectionProposalNetwork[] = [];
-    processNamespaces(accounts, networks, event.params.requiredNamespaces, true);
-    processNamespaces(accounts, networks, event.params.optionalNamespaces, false);
+    processNamespaces(extra.services, accounts, networks, event.params.requiredNamespaces, true);
+    processNamespaces(extra.services, accounts, networks, event.params.optionalNamespaces, false);
 
     dispatch(
         walletConnectActions.createSessionProposal({
@@ -201,10 +203,10 @@ export const switchSelectedAccountThunk = createThunk<
     { account: Account; sessionTopic: string }
 >(
     `${WALLETCONNECT_MODULE}/switchSelectedAccountThunk`,
-    async ({ account, sessionTopic }, { getState }) => {
-        const accounts = selectAllSuccessfulAccountsToList(getState());
-        const updatedNamespaces = getNamespaces([account, ...accounts]);
-        const network = getNetwork(account.symbol);
+    async ({ account, sessionTopic }, { getState, extra }) => {
+        const accounts = selectAllSuccessfulAccountsToList(getState(), extra.services);
+        const updatedNamespaces = getNamespaces(extra.services, [account, ...accounts]);
+        const network = extra.services.getNetworkConfig(account.symbol);
         if (!network) {
             return console.warn(`No network found for account symbol ${account.symbol}`);
         }
@@ -282,8 +284,8 @@ export const sessionProposalApproveThunk = createThunk<
                 throw new Error('Proposal not found');
             }
 
-            const accounts = selectAllSuccessfulAccountsToList(getState());
-            const supportedNamespaces = getNamespaces([
+            const accounts = selectAllSuccessfulAccountsToList(getState(), extra.services);
+            const supportedNamespaces = getNamespaces(extra.services, [
                 ...(selectedDefaultAccount ? [selectedDefaultAccount] : []),
                 ...accounts,
             ]);

@@ -1,10 +1,8 @@
 import { useMemo } from 'react';
 
-import {
-    type NetworkSymbol,
-    getNetwork,
-    isEarnYieldClaimSupported,
-} from '@suite-common/wallet-config';
+import { useServices } from '@suite-common/dependency-injection';
+import { type GetNetworkConfigDep, selectGetNetworkConfigDep } from '@suite-common/networks';
+import { type NetworkSymbol, isEarnYieldClaimSupported } from '@suite-common/wallet-config';
 import { type Account, type AccountWithNetworkType } from '@suite-common/wallet-types';
 import { unique } from '@trezor/utils';
 
@@ -46,9 +44,9 @@ type MerklRewardsQueryEntriesOptions = {
     skipEmptyAccountCheck?: boolean;
 };
 
-function getMerklRewardsQueryEntries(sources: MerklRewardsSource[]) {
+function getMerklRewardsQueryEntries(deps: GetNetworkConfigDep, sources: MerklRewardsSource[]) {
     const candidatesForMerklRewards = sources.flatMap(source => {
-        const network = getNetwork(source.symbol);
+        const network = deps.getNetworkConfig(source.symbol);
 
         if (!network?.chainId) {
             return [];
@@ -71,6 +69,7 @@ function getMerklRewardsQueryEntries(sources: MerklRewardsSource[]) {
 }
 
 export function getMerklRewardsQueryEntriesForAccounts(
+    deps: GetNetworkConfigDep,
     accounts: Account[],
     { isDebugMode, skipEmptyAccountCheck = false }: MerklRewardsQueryEntriesOptions = {},
 ) {
@@ -78,7 +77,7 @@ export function getMerklRewardsQueryEntriesForAccounts(
         .filter(
             (account): account is AccountWithNetworkType<'ethereum'> =>
                 account?.networkType === 'ethereum' &&
-                isEarnYieldClaimSupported(account.symbol, { isDebugMode }) &&
+                isEarnYieldClaimSupported(deps, account.symbol, { isDebugMode }) &&
                 (skipEmptyAccountCheck || !isEmptyEvmAccount(account)),
         )
         .map(account => ({
@@ -86,19 +85,21 @@ export function getMerklRewardsQueryEntriesForAccounts(
             address: account.descriptor,
         }));
 
-    return getMerklRewardsQueryEntries(accountsRewardSources);
+    return getMerklRewardsQueryEntries(deps, accountsRewardSources);
 }
 
 export function useGetMerklRewardsQueryEntries(
     accounts: Account[],
     { isDebugMode, skipEmptyAccountCheck }: MerklRewardsQueryEntriesOptions = {},
 ) {
+    const deps = useServices(selectGetNetworkConfigDep);
+
     return useMemo(
         () =>
-            getMerklRewardsQueryEntriesForAccounts(accounts, {
+            getMerklRewardsQueryEntriesForAccounts(deps, accounts, {
                 isDebugMode,
                 skipEmptyAccountCheck,
             }),
-        [accounts, isDebugMode, skipEmptyAccountCheck],
+        [accounts, deps, isDebugMode, skipEmptyAccountCheck],
     );
 }

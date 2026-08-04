@@ -1,6 +1,6 @@
 import { selectSelectedDevice } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
-import { type NetworkSymbol, getNetwork, networksCollection } from '@suite-common/wallet-config';
+import { type NetworkSymbol, getNetworks, toNetwork } from '@suite-common/wallet-config';
 import { type FeeInfo, type FeesState } from '@suite-common/wallet-types';
 import TrezorConnect from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
@@ -19,11 +19,11 @@ import { selectEnabledNetworks } from '../settings/walletSettingsReducer';
 
 export const preloadFeeInfoThunk = createThunk(
     `${FEES_MODULE_PREFIX}/preloadFeeInfoThunk`,
-    async (_, { dispatch, getState }) => {
+    async (_, { dispatch, getState, extra }) => {
         const enabledNetworks = selectEnabledNetworks(getState());
 
         // Fetch default fee levels
-        const networks = networksCollection.filter(
+        const networks = getNetworks(extra.services).filter(
             n => !n.isHidden && enabledNetworks?.includes(n.symbol),
         );
 
@@ -79,16 +79,19 @@ export const updateFeeInfoThunk = createThunk<
     { rejectValue: undefined }
 >(
     `${FEES_MODULE_PREFIX}/updateFeeInfoThunk`,
-    async ({ networkSymbol, artificialDelay }, { getState, fulfillWithValue, rejectWithValue }) => {
-        const network = getNetwork(networkSymbol);
-        const { symbol } = network;
-        const blockchainInfo = selectNetworkBlockchainInfo(getState(), symbol);
+    async (
+        { networkSymbol, artificialDelay },
+        { getState, fulfillWithValue, rejectWithValue, extra },
+    ) => {
+        const networkConfig = extra.services.getNetworkConfig(networkSymbol);
+        const network = toNetwork(networkSymbol, networkConfig);
+        const blockchainInfo = selectNetworkBlockchainInfo(getState(), networkSymbol);
 
         // Tron fees are derived per transaction from bandwidth/energy, there is no
         // network-level fee estimate to fetch. Keep the current (preloaded) data.
-        if (network.networkType === 'tron') {
+        if (networkConfig.networkType === 'tron') {
             const currentFeeInfo = (getState() as { wallet: { fees: FeesState } }).wallet.fees[
-                symbol
+                networkSymbol
             ]?.data;
 
             return fulfillWithValue(
@@ -99,7 +102,7 @@ export const updateFeeInfoThunk = createThunk<
         const device = selectSelectedDevice(getState());
 
         const [newFeeInfo] = await Promise.all([
-            getNewFeeInfo({ network, device }),
+            getNewFeeInfo({ ...extra.services, network, device }),
             resolveAfter(artificialDelay ?? 0),
         ]);
 

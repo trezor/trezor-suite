@@ -1,5 +1,6 @@
 import { type Dispatch } from '@reduxjs/toolkit/react';
 
+import type { NetworkConfigDeps } from '@suite-common/wallet-config';
 import { type PrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import {
     type CallMethodKeys,
@@ -19,6 +20,7 @@ export type CompatibilityHookParams<M extends CallMethodKeys> = {
 };
 
 export type PreCallHookParams<M extends CallMethodKeys> = {
+    services: NetworkConfigDeps;
     method: M;
     payload: Omit<CallMethodParams<M>, 'method'>;
     dispatch: Dispatch;

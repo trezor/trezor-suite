@@ -14,6 +14,7 @@ describe('isDustValuePhishing', () => {
         test(testName, () => {
             expect(
                 detectors.dustValue.validator({
+                    ...mockNetworkConfigDeps,
                     transaction,
                     dustThreshold: DUST_PHISHING_THRESHOLD,
                 }).isPhishing,
@@ -25,7 +26,9 @@ describe('isDustValuePhishing', () => {
 describe('isZeroValuePhishing', () => {
     isZeroValuePhishingFixtures.forEach(({ testName, transaction, result }) => {
         test(testName, () => {
-            expect(detectors.zeroValue.validator({ transaction }).isPhishing).toBe(result);
+            expect(
+                detectors.zeroValue.validator({ ...mockNetworkConfigDeps, transaction }).isPhishing,
+            ).toBe(result);
         });
     });
 });
@@ -34,7 +37,11 @@ describe('isFakeTokenPhishing', () => {
     isFakeTokenPhishingFixtures.forEach(({ testName, transaction, tokenDefinitions, result }) => {
         test(testName, () => {
             expect(
-                detectors.fakeToken.validator({ transaction, tokenDefinitions }).isPhishing,
+                detectors.fakeToken.validator({
+                    ...mockNetworkConfigDeps,
+                    transaction,
+                    tokenDefinitions,
+                }).isPhishing,
             ).toBe(result);
         });
     });
@@ -43,7 +50,9 @@ describe('isFakeTokenPhishing', () => {
 describe('isUnknownTxPhishing', () => {
     isUnknownTxPhishingFixtures.forEach(({ testName, transaction, result }) => {
         test(testName, () => {
-            expect(detectors.unknownTx.validator({ transaction }).isPhishing).toBe(result);
+            expect(
+                detectors.unknownTx.validator({ ...mockNetworkConfigDeps, transaction }).isPhishing,
+            ).toBe(result);
         });
     });
 });
@@ -53,6 +62,7 @@ describe('isPhishingTransaction', () => {
         test(testName, () => {
             expect(
                 isPhishingTransaction({
+                    ...mockNetworkConfigDeps,
                     transaction,
                     tokenDefinitions,
                     txsMarkedAsNotScam: [],
@@ -62,3 +72,4 @@ describe('isPhishingTransaction', () => {
         });
     });
 });
+import { mockNetworkConfigDeps } from '@suite-common/wallet-config/mocks';

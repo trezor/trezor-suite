@@ -1,3 +1,4 @@
+import type { GetNetworkConfigDep } from '@suite-common/networks';
 import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { type ExternalOutput, type PrecomposedTransaction } from '@suite-common/wallet-types';
 import { calculateTotal } from '@suite-common/wallet-utils';
@@ -7,6 +8,7 @@ import { BigNumber } from '@trezor/utils';
 import { type EstimateFeeLevel } from './types';
 
 export const calculateRawContractCall = (
+    deps: GetNetworkConfigDep,
     availableBalance: string,
     output: ExternalOutput,
     feeLevel: EstimateFeeLevel,
@@ -26,7 +28,7 @@ export const calculateRawContractCall = (
             errorMessage: {
                 id: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE',
                 values: {
-                    networkDisplaySymbol: getNetworkDisplaySymbol(networkSymbol),
+                    networkDisplaySymbol: getNetworkDisplaySymbol(deps, networkSymbol),
                 },
             },
         } as const;

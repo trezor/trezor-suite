@@ -22,8 +22,8 @@ import {
     selectTokenDefinitions,
 } from '@suite-common/token-definitions';
 import {
+    type NetworkConfigDeps,
     type NetworkSymbolExtended,
-    getNetwork,
     isNetworkSymbol,
 } from '@suite-common/wallet-config';
 import {
@@ -521,6 +521,7 @@ export const selectTradingSymbolAndContractAddressByCryptoId: (
 );
 
 const getFilteredCryptoIds = (
+    deps: NetworkConfigDeps,
     supportedCryptoIds: CryptoId[],
     coins: Coins | undefined,
     platforms: Platforms | undefined,
@@ -535,16 +536,16 @@ const getFilteredCryptoIds = (
 
     return uniqueSupportedCryptoIds
         .filter(cryptoId => !!coins[cryptoId])
-        .filter(cryptoId => cryptoIdToNetwork(cryptoId))
+        .filter(cryptoId => cryptoIdToNetwork(deps, cryptoId))
         .filter(cryptoId => {
             const prodCryptoId = testnetToProdCryptoId(cryptoId);
             const nativeCoinSymbol =
-                cryptoIdToNetwork(prodCryptoId)?.symbol ??
+                cryptoIdToNetwork(deps, prodCryptoId)?.symbol ??
                 getTradingNativeCoinSymbolByCryptoId(platforms, coins, prodCryptoId);
 
             return (
                 nativeCoinSymbol !== undefined &&
-                isNetworkSymbol(nativeCoinSymbol) &&
+                isNetworkSymbol(deps, nativeCoinSymbol) &&
                 supportedAddressValidatorSymbols.has(nativeCoinSymbol)
             );
         });
@@ -559,9 +560,10 @@ export const selectTradingBuySupportedCryptoIds = createMemoizedSelector(
                 wallet.trading.buy.buyInfo?.supportedCryptoCurrencies,
             ),
         (_: TradingRootState, supportedCoins: readonly NetworkSymbol[]) => supportedCoins,
+        (_state, _supportedCoins, deps: NetworkConfigDeps) => deps,
     ],
-    (coins, platforms, supportedCryptoIds, supportedCoins) =>
-        getFilteredCryptoIds(supportedCryptoIds, coins, platforms, supportedCoins),
+    (coins, platforms, supportedCryptoIds, supportedCoins, deps) =>
+        getFilteredCryptoIds(deps, supportedCryptoIds, coins, platforms, supportedCoins),
 );
 
 export const selectTradingSellSupportedCryptoIds = createMemoizedSelector(
@@ -573,9 +575,10 @@ export const selectTradingSellSupportedCryptoIds = createMemoizedSelector(
                 wallet.trading.sell.sellInfo?.supportedCryptoCurrencies,
             ),
         (_: TradingRootState, supportedCoins: readonly NetworkSymbol[]) => supportedCoins,
+        (_state, _supportedCoins, deps: NetworkConfigDeps) => deps,
     ],
-    (coins, platforms, supportedCryptoIds, supportedCoins) =>
-        getFilteredCryptoIds(supportedCryptoIds, coins, platforms, supportedCoins),
+    (coins, platforms, supportedCryptoIds, supportedCoins, deps) =>
+        getFilteredCryptoIds(deps, supportedCryptoIds, coins, platforms, supportedCoins),
 );
 
 const createExchangeCryptoIdsSelector = (key: 'buyCryptoIds' | 'sellCryptoIds') =>
@@ -586,9 +589,10 @@ const createExchangeCryptoIdsSelector = (key: 'buyCryptoIds' | 'sellCryptoIds') 
             ({ wallet }) =>
                 returnStableArrayIfEmpty<CryptoId>(wallet.trading.exchange.exchangeInfo?.[key]),
             (_: TradingRootState, supportedCoins: readonly NetworkSymbol[]) => supportedCoins,
+            (_state, _supportedCoins, deps: NetworkConfigDeps) => deps,
         ],
-        (coins, platforms, cryptoIds, supportedCoins) =>
-            getFilteredCryptoIds(cryptoIds, coins, platforms, supportedCoins),
+        (coins, platforms, cryptoIds, supportedCoins, deps) =>
+            getFilteredCryptoIds(deps, cryptoIds, coins, platforms, supportedCoins),
     );
 
 export const selectTradingExchangeSellCryptoIds = createExchangeCryptoIdsSelector('sellCryptoIds');
@@ -600,9 +604,11 @@ export const selectTradingSellSellCryptoIds = createMemoizedSelector(
         ({ wallet }) => wallet.trading.info.platforms,
         ({ wallet }) => wallet.trading.sell.sellInfo?.supportedCryptoCurrencies,
         (_: TradingRootState, supportedCoins: readonly NetworkSymbol[]) => supportedCoins,
+        (_state, _supportedCoins, deps: NetworkConfigDeps) => deps,
     ],
-    (coins, platforms, supportedCryptoIds, supportedCoins) =>
+    (coins, platforms, supportedCryptoIds, supportedCoins, deps) =>
         getFilteredCryptoIds(
+            deps,
             returnStableArrayIfEmpty<CryptoId>(supportedCryptoIds),
             coins,
             platforms,
@@ -962,12 +968,24 @@ export const selectTradingActiveSection = (state: TradingRootState) =>
 
 export const selectTradingSupportedSymbols = createMemoizedSelector(
     [
-        (state: TradingRootState, _type: TradingType, supportedCoins: readonly NetworkSymbol[]) =>
-            selectTradingBuySupportedCryptoIds(state, supportedCoins),
-        (state: TradingRootState, _type: TradingType, supportedCoins: readonly NetworkSymbol[]) =>
-            selectTradingExchangeSellCryptoIds(state, supportedCoins),
-        (state: TradingRootState, _type: TradingType, supportedCoins: readonly NetworkSymbol[]) =>
-            selectTradingSellSupportedCryptoIds(state, supportedCoins),
+        (
+            state: TradingRootState,
+            _type: TradingType,
+            supportedCoins: readonly NetworkSymbol[],
+            deps: NetworkConfigDeps,
+        ) => selectTradingBuySupportedCryptoIds(state, supportedCoins, deps),
+        (
+            state: TradingRootState,
+            _type: TradingType,
+            supportedCoins: readonly NetworkSymbol[],
+            deps: NetworkConfigDeps,
+        ) => selectTradingExchangeSellCryptoIds(state, supportedCoins, deps),
+        (
+            state: TradingRootState,
+            _type: TradingType,
+            supportedCoins: readonly NetworkSymbol[],
+            deps: NetworkConfigDeps,
+        ) => selectTradingSellSupportedCryptoIds(state, supportedCoins, deps),
         (_: TradingRootState, type: TradingType) => type,
     ],
     (buyCryptoIds, exchangeCryptoIds, sellCryptoIds, type) => {
@@ -1045,6 +1063,7 @@ export const selectTradingFormAccount = createMemoizedFormAccountSelector(
         selectTradingPrefilledFromAccount,
         selectPreferredTradingAccount,
         (_state: TradingFormAccountRootState, tradingType: TradingType) => tradingType,
+        (_state, _tradingType, deps: NetworkConfigDeps) => deps,
     ],
     (
         visibleDeviceAccounts,
@@ -1052,11 +1071,12 @@ export const selectTradingFormAccount = createMemoizedFormAccountSelector(
         prefilled,
         preferredAccount,
         tradingType,
+        deps,
     ): Account | undefined => {
         const eligibilityCryptoId = prefilled.key ? prefilled.cryptoId : undefined;
 
         const isEligible = (account: Account, cryptoId?: CryptoId) =>
-            isAccountEligibleForTrade(account, tradingType, tokenDefinitions, cryptoId);
+            isAccountEligibleForTrade(deps, account, tradingType, tokenDefinitions, cryptoId);
 
         if (preferredAccount && isEligible(preferredAccount, eligibilityCryptoId)) {
             return preferredAccount;
@@ -1077,8 +1097,13 @@ export const selectTradingFormAccount = createMemoizedFormAccountSelector(
 );
 
 export const selectTradingFormCryptoId = createMemoizedFormAccountSelector(
-    [selectTradingFormAccount, selectPreferredTradingAccount, selectTradingPrefilledFromAccount],
-    (account, preferredAccount, prefilled): CryptoId | undefined => {
+    [
+        selectTradingFormAccount,
+        selectPreferredTradingAccount,
+        selectTradingPrefilledFromAccount,
+        (_state, _tradingType, deps: NetworkConfigDeps) => deps,
+    ],
+    (account, preferredAccount, prefilled, deps): CryptoId | undefined => {
         if (!account) {
             return undefined;
         }
@@ -1087,7 +1112,7 @@ export const selectTradingFormCryptoId = createMemoizedFormAccountSelector(
             return prefilled.cryptoId;
         }
 
-        return (getNetwork(account.symbol).tradeCryptoId ?? 'bitcoin') as CryptoId;
+        return (deps.getNetworkConfig(account.symbol).tradeCryptoId ?? 'bitcoin') as CryptoId;
     },
 );
 
@@ -1116,20 +1141,24 @@ export const selectTradingSendAccount = createMemoizedFormAccountSelector(
 );
 
 export const selectSelectedTradingAsset = createMemoizedFormAccountSelector(
-    [selectTradingSendAccount, selectTradingFormCryptoId],
-    (account, cryptoId): SelectedTradingAsset | undefined => {
+    [
+        selectTradingSendAccount,
+        selectTradingFormCryptoId,
+        (_state, _tradingType, deps: NetworkConfigDeps) => deps,
+    ],
+    (account, cryptoId, deps): SelectedTradingAsset | undefined => {
         if (!account || !cryptoId) {
             return undefined;
         }
 
         return {
             symbol: account.symbol,
-            decimals: getNetwork(account.symbol).decimals,
+            decimals: deps.getNetworkConfig(account.symbol).decimals,
             balance: account.balance,
             formattedBalance: account.formattedBalance,
             tokens: account.tokens,
             cryptoId,
-            isToken: !!cryptoIdToNetworkSymbolAndContractAddress(cryptoId).contractAddress,
+            isToken: !!cryptoIdToNetworkSymbolAndContractAddress(deps, cryptoId).contractAddress,
         };
     },
 );

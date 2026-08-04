@@ -6,7 +6,7 @@ import {
 } from 'invity-api';
 
 import { toChecksumAddress } from '@suite-common/address';
-import type { Network } from '@suite-common/wallet-config';
+import type { Network, NetworkConfigDeps } from '@suite-common/wallet-config';
 import { asAmountUnit, unitsToSubunits } from '@suite-common/wallet-utils';
 import { type PROTO } from '@trezor/connect';
 import { validatePath } from '@trezor/connect-common';
@@ -77,7 +77,7 @@ export const formatSlip24AddressByNetwork = ({
     }
 };
 
-type TradingExchangeCreatePaymentRequestProps = {
+type TradingExchangeCreatePaymentRequestProps = NetworkConfigDeps & {
     trade: ExchangeTradeSigned;
     provider: ExchangeProviderInfo;
     macRefund: string;
@@ -103,6 +103,7 @@ export const tradingExchangeCreatePaymentRequest = ({
     receiveDisplaySymbol,
     sendStringAmount,
     sendTokenDecimals,
+    ...deps
 }: TradingExchangeCreatePaymentRequestProps): PROTO.PaymentRequest | undefined => {
     if (
         !provider?.companyName ||
@@ -116,7 +117,7 @@ export const tradingExchangeCreatePaymentRequest = ({
         return undefined;
     }
 
-    const sendNetworkData = cryptoIdToNetworkAndContractAddress(trade.send);
+    const sendNetworkData = cryptoIdToNetworkAndContractAddress(deps, trade.send);
     const sendNetworkSymbol = sendNetworkData.network?.symbol ?? 'btc';
     if (!sendNetworkData.network) {
         return undefined;
@@ -126,6 +127,7 @@ export const tradingExchangeCreatePaymentRequest = ({
     const sendAmount = unitsToSubunits({
         value: asAmountUnit(new BigNumber(sendStringAmount)),
         symbol: sendNetworkSymbol,
+        getNetworkConfig: deps.getNetworkConfig,
         ...(sendTokenDecimals !== undefined ? { decimals: sendTokenDecimals } : undefined),
     }).toString();
 
@@ -159,7 +161,7 @@ export const tradingExchangeCreatePaymentRequest = ({
     };
 };
 
-type TradingSellCreatePaymentRequestProps = {
+type TradingSellCreatePaymentRequestProps = NetworkConfigDeps & {
     trade: SellFiatTradeSigned;
     provider: SellProviderInfo;
     macRefund: string;
@@ -179,6 +181,7 @@ export const tradingSellCreatePaymentRequest = ({
     memoText,
     sendStringAmount,
     sendTokenDecimals,
+    ...deps
 }: TradingSellCreatePaymentRequestProps): PROTO.PaymentRequest | undefined => {
     if (
         !provider?.companyName ||
@@ -191,7 +194,7 @@ export const tradingSellCreatePaymentRequest = ({
         return undefined;
     }
 
-    const sendNetworkData = cryptoIdToNetworkAndContractAddress(trade.cryptoCurrency);
+    const sendNetworkData = cryptoIdToNetworkAndContractAddress(deps, trade.cryptoCurrency);
     const sendNetworkSymbol = sendNetworkData.network?.symbol ?? 'btc';
     if (!sendNetworkData.network) {
         return undefined;
@@ -201,6 +204,7 @@ export const tradingSellCreatePaymentRequest = ({
     const sendAmount = unitsToSubunits({
         value: asAmountUnit(new BigNumber(sendStringAmount)),
         symbol: sendNetworkSymbol,
+        getNetworkConfig: deps.getNetworkConfig,
         ...(sendTokenDecimals !== undefined ? { decimals: sendTokenDecimals } : undefined),
     }).toString();
 

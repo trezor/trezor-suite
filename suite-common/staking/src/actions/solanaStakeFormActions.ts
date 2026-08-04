@@ -1,3 +1,4 @@
+import type { GetNetworkConfigDep } from '@suite-common/networks';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type ComposeActionContext,
@@ -33,6 +34,7 @@ import { calculate, composeStakingTransaction } from './stakeFormActions';
 
 // Rent-aware Solana stake fee calc for `composeStakingTransaction` / `calculate`.
 const calculateSolanaStakeTransaction = (
+    deps: GetNetworkConfigDep,
     availableBalance: string,
     output: ExternalOutput,
     feeLevel: FeeLevel,
@@ -46,14 +48,17 @@ const calculateSolanaStakeTransaction = (
     const stakingParams = {
         feeInBaseUnits: feeInLamports,
         minBalanceForStakingInBaseUnits: networkAmountToSmallestUnit(
+            deps,
             MIN_SOL_BALANCE_FOR_STAKING.toString(),
             symbol,
         ),
         minAmountForStakingInBaseUnits: networkAmountToSmallestUnit(
+            deps,
             MIN_SOL_AMOUNT_FOR_STAKING.toString(),
             symbol,
         ),
         minAmountForWithdrawalInBaseUnits: networkAmountToSmallestUnit(
+            deps,
             MIN_SOL_FOR_WITHDRAWALS.toString(),
             symbol,
         ),
@@ -62,6 +67,7 @@ const calculateSolanaStakeTransaction = (
     const estimatedFeeLevel = { ...feeLevel, ...estimatedFee?.payload };
 
     return calculate(
+        deps,
         availableBalance,
         output,
         estimatedFeeLevel,
@@ -177,7 +183,7 @@ export const prepareSolanaStakeTxData = async ({
     return undefined;
 };
 
-type ComposeSolanaStakingTransactionParams = {
+type ComposeSolanaStakingTransactionParams = GetNetworkConfigDep & {
     formValues: StakeFormState;
     composeContext: ComposeActionContext;
     blockchainUrl: string;
@@ -187,6 +193,7 @@ type ComposeSolanaStakingTransactionParams = {
 
 // Solana stake compose: build tx, estimate fee, rebuild with fee and solanaTxMeta (not send-form).
 export const composeSolanaStakingTransaction = async ({
+    getNetworkConfig,
     formValues,
     composeContext,
     blockchainUrl,
@@ -218,6 +225,7 @@ export const composeSolanaStakingTransaction = async ({
     const predefinedLevels = feeInfo.levels.filter(level => level.label !== 'custom');
 
     const composed = composeStakingTransaction(
+        { getNetworkConfig },
         formValues,
         composeContext,
         predefinedLevels,

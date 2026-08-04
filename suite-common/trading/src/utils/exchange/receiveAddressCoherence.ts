@@ -1,9 +1,9 @@
 import { type CryptoId } from 'invity-api';
 
 import { type AddressValidator } from '@suite-common/address';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkConfigDeps, type NetworkSymbol } from '@suite-common/wallet-config';
 
-import { cryptoIdToNetworkSymbol } from '../../utils';
+import { cryptoIdToSymbol } from '../../utils';
 
 export const isReceiveAddressValid = (
     addressValidator: AddressValidator,
@@ -17,7 +17,7 @@ export const isReceiveAddressValid = (
     }
 };
 
-type IsReceiveAddressCoherentProps = {
+type IsReceiveAddressCoherentProps = NetworkConfigDeps & {
     addressValidator: AddressValidator;
     receiveAddress: string | undefined;
     receiveCryptoId: CryptoId | undefined;
@@ -31,12 +31,13 @@ export const isReceiveAddressCoherent = ({
     receiveCryptoId,
     receiveAccountKey,
     receiveAccountSymbol,
+    ...deps
 }: IsReceiveAddressCoherentProps): boolean => {
     if (!receiveAddress) {
         return true;
     }
 
-    const receiveSymbol = receiveCryptoId ? cryptoIdToNetworkSymbol(receiveCryptoId) : undefined;
+    const receiveSymbol = receiveCryptoId ? cryptoIdToSymbol(deps, receiveCryptoId) : undefined;
     if (!receiveSymbol) {
         return false;
     }

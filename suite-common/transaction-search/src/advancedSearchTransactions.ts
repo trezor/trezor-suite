@@ -4,13 +4,14 @@ import { type SearchAccountLabels } from './searchLabels';
 import { simpleSearchTransactions } from './simpleSearchTransactions';
 
 export const advancedSearchTransactions = (
+    deps: GetNetworkConfigDep,
     transactions: WalletAccountTransaction[],
     accountLabels: SearchAccountLabels,
     search: string,
 ) => {
     // No AND/OR operators, just run a simple search
     if (!search.includes('&') && !search.includes('|')) {
-        return simpleSearchTransactions(transactions, accountLabels, search);
+        return simpleSearchTransactions(deps, transactions, accountLabels, search);
     }
 
     // Split by OR operator first
@@ -26,6 +27,7 @@ export const advancedSearchTransactions = (
             const andSplit = or.split('&');
             if (!andSplit || andSplit.length === 1) {
                 return simpleSearchTransactions(
+                    deps,
                     transactions,
                     accountLabels,
                     or.replace('&', ''),
@@ -33,7 +35,7 @@ export const advancedSearchTransactions = (
             }
 
             const andTxs = andSplit.flatMap(and =>
-                simpleSearchTransactions(transactions, accountLabels, and).map(t => t.txid),
+                simpleSearchTransactions(deps, transactions, accountLabels, and).map(t => t.txid),
             );
 
             const transactionCount: { [txid: string]: number } = {};
@@ -52,3 +54,4 @@ export const advancedSearchTransactions = (
 
     return transactions.filter(t => filteredTxIDs.has(t.txid));
 };
+import type { GetNetworkConfigDep } from '@suite-common/networks';

@@ -1,4 +1,5 @@
-import { type NetworkSymbol, networks } from '@suite-common/wallet-config';
+import type { GetNetworkConfigDep } from '@suite-common/networks';
+import { type NetworkConfigDeps, type NetworkSymbol } from '@suite-common/wallet-config';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { BigNumber } from '@trezor/utils';
@@ -11,7 +12,7 @@ export const BASE_CURRENCY_ZERO = asBaseCurrencyAmount(new BigNumber(0));
 
 export const isBaseCurrencyWithSats = (baseCurrency: BaseCurrencyCode) => baseCurrency === 'btc';
 
-type GetDecimalsForBaseCurrencyParams = {
+type GetDecimalsForBaseCurrencyParams = NetworkConfigDeps & {
     code: BaseCurrencyCode | '';
     isInSats: boolean;
 };
@@ -19,15 +20,17 @@ type GetDecimalsForBaseCurrencyParams = {
 export const getDecimalsForBaseCurrency = ({
     code,
     isInSats,
+    getNetworkConfig,
+    networkModuleRepository,
 }: GetDecimalsForBaseCurrencyParams) => {
     if (code !== '' && isBaseCurrencyWithSats(code) && isInSats) {
         return 0;
     }
 
-    return code in networks ? networks[code as NetworkSymbol].decimals : 2;
+    return networkModuleRepository.isSupportedNetwork(code) ? getNetworkConfig(code).decimals : 2;
 };
 
-type AmountToFiatCurrencyWithSatsConversionParams = {
+type AmountToFiatCurrencyWithSatsConversionParams = GetNetworkConfigDep & {
     cryptoAmount: AmountUnit;
     rate: number;
     baseCurrencyCode: BaseCurrencyCode;
@@ -39,6 +42,7 @@ const amountToFiatCurrencyWithSatsConversion = ({
     rate,
     baseCurrencyCode,
     baseCurrencyToSats,
+    getNetworkConfig,
 }: AmountToFiatCurrencyWithSatsConversionParams) => {
     // 2. toFiatCurrency always works with Unit Amount (BTC, not Satoshis)
     const baseCurrencyAmountUnit = toFiatCurrency({ amount: cryptoAmount, rate });
@@ -55,12 +59,13 @@ const amountToFiatCurrencyWithSatsConversion = ({
               unitsToSubunits({
                   value: asAmountUnit(baseCurrencyAmountUnit),
                   symbol: 'btc',
+                  getNetworkConfig,
               }),
           )
         : baseCurrencyAmountUnit;
 };
 
-type ParseCryptoToFormattedBaseCurrencyParams = {
+type ParseCryptoToFormattedBaseCurrencyParams = NetworkConfigDeps & {
     areSatsDisplayed: boolean;
     baseCurrencyToSats: boolean; // This is related to `areSatsDisplayed` but should also cover the capability of network, etc...
     symbol: NetworkSymbol;
@@ -76,10 +81,12 @@ export const parseCryptoToFormattedBaseCurrency = ({
     value,
     rate,
     baseCurrencyCode,
+    getNetworkConfig,
+    networkModuleRepository,
 }: ParseCryptoToFormattedBaseCurrencyParams) => {
     // 1. Get the correct Crypto Amount (in units, as I could have been entered in Sats)
     const cryptoAmount = baseCurrencyToSats
-        ? subunitsToUnits({ value: asAmountSubunit(value), symbol })
+        ? subunitsToUnits({ value: asAmountSubunit(value), symbol, getNetworkConfig })
         : asAmountUnit(value);
 
     const baseCurrencyDisplay = amountToFiatCurrencyWithSatsConversion({
@@ -87,18 +94,21 @@ export const parseCryptoToFormattedBaseCurrency = ({
         rate,
         baseCurrencyCode,
         baseCurrencyToSats: areSatsDisplayed,
+        getNetworkConfig,
     });
 
     // 4. We have to return this correctly rounded as this value is used in the NumberInput
     const baseCurrencyDecimals = getDecimalsForBaseCurrency({
         isInSats: areSatsDisplayed,
         code: baseCurrencyCode,
+        getNetworkConfig,
+        networkModuleRepository,
     });
 
     return baseCurrencyDisplay?.toFixed(baseCurrencyDecimals) ?? null;
 };
 
-type ParseBaseCurrencyToFormattedCryptoParams = {
+type ParseBaseCurrencyToFormattedCryptoParams = NetworkConfigDeps & {
     areSatsDisplayed: boolean;
     isCryptoInSats: boolean; // This is related to `areSatsDisplayed` but should also cover the capability of network, etc...
     value: BigNumber; // Intentionally no Branded Type. We don't know if it is in Units or Sub-Units.
@@ -112,6 +122,7 @@ export const parseBaseCurrencyToFormattedCrypto = ({
     value,
     rate,
     cryptoDecimals,
+    getNetworkConfig,
 }: ParseBaseCurrencyToFormattedCryptoParams) => {
     // 1. When BTC is used as BaseCurrency, and we display all in Sats, we have to perform
     // the conversion from sats->btc
@@ -120,6 +131,7 @@ export const parseBaseCurrencyToFormattedCrypto = ({
             ? subunitsToUnits({
                   value: asAmountSubunit(value),
                   symbol: 'btc',
+                  getNetworkConfig,
               })
             : value,
     );

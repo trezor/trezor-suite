@@ -2,7 +2,9 @@ import { useEffect, useMemo, useState } from 'react';
 
 import styled, { css } from 'styled-components';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { isNetworkIconSymbol } from '@suite-common/icons';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { getAssetLogoContractAddresses } from '@suite-common/wallet-utils/src/tokenUtils';
 import { getAssetLogoUrl } from '@trezor/asset-utils';
 import {
@@ -75,16 +77,23 @@ export const NonNativeTokenIcon = ({
     'data-testid': dataTestId,
     ...rest
 }: NonNativeTokenIconProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const [contractAddressArray, setContractAddressArray] = useState<string[] | undefined>();
 
     useEffect(() => {
-        getAssetLogoContractAddresses(symbol, contractAddress).then(setContractAddressArray);
-    }, [symbol, contractAddress]);
+        getAssetLogoContractAddresses(networkConfigDeps, symbol, contractAddress).then(
+            setContractAddressArray,
+        );
+    }, [networkConfigDeps, symbol, contractAddress]);
 
     const normalizedAddresses = useMemo(
         () =>
-            getCoingeckoIdAndContractAddressIncludesNativeTokens(coingeckoId, contractAddressArray),
-        [coingeckoId, contractAddressArray],
+            getCoingeckoIdAndContractAddressIncludesNativeTokens(
+                networkConfigDeps,
+                coingeckoId,
+                contractAddressArray,
+            ),
+        [networkConfigDeps, coingeckoId, contractAddressArray],
     );
     const { coingeckoId: coingeckoIdLogo, contractAddresses } = normalizedAddresses;
 

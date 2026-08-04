@@ -1,6 +1,5 @@
 import { createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { getNetwork } from '@suite-common/wallet-config';
 import { type PrecomposedLevels } from '@suite-common/wallet-types';
 import {
     asAmountSubunit,
@@ -35,7 +34,7 @@ export const composeTronTransactionFeeLevelsThunk = createThunk<
     { rejectValue: ComposeFeeLevelsError }
 >(
     `${SEND_MODULE_PREFIX}/composeTronTransactionFeeLevelsThunk`,
-    async ({ formState, composeContext }, { dispatch, rejectWithValue }) => {
+    async ({ formState, composeContext }, { dispatch, rejectWithValue, extra }) => {
         const { account, network } = composeContext;
 
         if (account.networkType !== 'tron') {
@@ -172,6 +171,7 @@ export const composeTronTransactionFeeLevelsThunk = createThunk<
         }
 
         const tx = calculate(
+            extra.services,
             account.availableBalance,
             output,
             feeLevel,
@@ -204,7 +204,10 @@ export const signTronSendFormTransactionThunk = createThunk<
     { rejectValue: SignTransactionError }
 >(
     `${SEND_MODULE_PREFIX}/signTronSendFormTransactionThunk`,
-    async ({ formState, precomposedTransaction, selectedAccount, device }, { rejectWithValue }) => {
+    async (
+        { formState, precomposedTransaction, selectedAccount, device },
+        { rejectWithValue, extra },
+    ) => {
         if (selectedAccount.networkType !== 'tron') {
             return rejectWithValue({
                 error: 'sign-transaction-failed',
@@ -234,7 +237,7 @@ export const signTronSendFormTransactionThunk = createThunk<
             });
         }
 
-        const network = getNetwork(selectedAccount.symbol);
+        const network = extra.services.getNetworkConfig(selectedAccount.symbol);
         const amountInSubunits = unitsToSubunits({
             value: asAmountUnit(new BigNumber(output.amount)),
             decimals: token ? token.decimals : network.decimals,

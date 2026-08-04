@@ -1,23 +1,28 @@
-import { type AccountType, type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import {
+    type AccountType,
+    type NetworkConfigDeps,
+    type NetworkSymbol,
+} from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import type { StaticSessionId } from '@trezor/connect';
 
 import { sortByCoin } from './accountUtils';
 
 export const isDebugOnlyAccountType = (
+    deps: NetworkConfigDeps,
     accountType: AccountType,
     symbol?: NetworkSymbol,
 ): boolean => {
     if (!symbol) return false;
 
-    const network = getNetwork(symbol);
+    const network = deps.getNetworkConfig(symbol);
 
     const accountTypeInfo = network.accountTypes[accountType];
 
     return !!accountTypeInfo?.isDebugOnlyAccountType;
 };
 
-type FilterReceiveAccountsProps = {
+type FilterReceiveAccountsProps = NetworkConfigDeps & {
     accounts: Account[];
     deviceState?: StaticSessionId;
     symbol?: NetworkSymbol;
@@ -29,13 +34,19 @@ export const filterReceiveAccounts = ({
     deviceState,
     symbol,
     isDebug,
+    getNetworkConfig,
+    networkModuleRepository,
 }: FilterReceiveAccountsProps): Account[] => {
     const isSameDevice = (account: Account) => account.deviceState === deviceState;
     const isSameNetwork = (account: Account) => account.symbol === symbol;
     const isNotEmptyAccount = (account: Account) => !account.empty;
     const shouldDisplayDebugOnly = (account: Account) =>
         isDebug ||
-        !isDebugOnlyAccountType(account.accountType, account.symbol) ||
+        !isDebugOnlyAccountType(
+            { getNetworkConfig, networkModuleRepository },
+            account.accountType,
+            account.symbol,
+        ) ||
         isNotEmptyAccount(account);
     const isVisibleAccount = (account: Account) => account.visible;
     const isFirstNormalAccount = (account: Account) =>
@@ -49,5 +60,8 @@ export const filterReceiveAccounts = ({
         shouldDisplayDebugOnly(account) &&
         (isNotEmptyAccount(account) || isVisibleAccount(account) || isFirstNormalAccount(account));
 
-    return sortByCoin(accounts.filter(isRelevantAccount));
+    return sortByCoin(
+        { getNetworkConfig, networkModuleRepository },
+        accounts.filter(isRelevantAccount),
+    );
 };

@@ -1,5 +1,6 @@
 import { A, F, pipe } from '@mobily/ts-belt';
 
+import type { GetNetworkConfigDep } from '@suite-common/networks';
 import {
     type TokenDefinitionsRootState,
     selectIsSpecificCoinDefinitionKnown,
@@ -90,6 +91,7 @@ export const selectShouldUpdateFiatRate = (
 
 export const selectTickerFromAccounts = (
     state: FiatRatesRootState & TokenDefinitionsRootState & AccountsRootState,
+    deps: GetNetworkConfigDep,
 ): TickerId[] => {
     // Use accounts of all remembered devices/wallets, not just the selected one, so that
     // token fiat rates are fetched for every wallet. Otherwise tokens that exist only on a
@@ -117,7 +119,12 @@ export const selectTickerFromAccounts = (
         A.filter(
             ticker =>
                 !ticker.tokenAddress ||
-                selectIsSpecificCoinDefinitionKnown(state, ticker.symbol, ticker.tokenAddress),
+                selectIsSpecificCoinDefinitionKnown(
+                    state,
+                    ticker.symbol,
+                    ticker.tokenAddress,
+                    deps,
+                ),
         ),
         A.uniqBy(ticker =>
             ticker.tokenAddress ? `${ticker.symbol}-${ticker.tokenAddress}` : ticker.symbol,
@@ -129,11 +136,12 @@ export const selectTickerFromAccounts = (
 
 export const selectTickersToBeUpdated = (
     state: FiatRatesRootState & TokenDefinitionsRootState & AccountsRootState,
+    deps: GetNetworkConfigDep,
     currentTimestamp: Timestamp,
     fiatCurrency: BaseCurrencyCode,
     rateType: RateTypeWithoutHistoric,
 ): TickerId[] => {
-    const tickers = selectTickerFromAccounts(state);
+    const tickers = selectTickerFromAccounts(state, deps);
 
     return tickers.filter(ticker => {
         const fiatRateKey = getFiatRateKeyFromTicker(ticker, fiatCurrency);

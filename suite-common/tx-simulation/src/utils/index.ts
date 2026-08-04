@@ -1,7 +1,9 @@
 import {
     type Network,
-    getNetworkByEvmChainId,
+    type NetworkConfigDeps,
+    findNetworkByEvmChainId,
     getNetworkChainId,
+    getNetworks,
 } from '@suite-common/wallet-config';
 import { type TxSimulationAction, type TxSimulationMethod } from '@suite-common/wallet-types';
 
@@ -26,30 +28,33 @@ export function getTargetContractFromTxSimulationAction({
     }
 }
 
-function resolveChainIdOfEvmNetwork({
-    method,
-    payload,
-}: TxSimulationMethod<'ethereumSignTransaction' | 'ethereumSignTypedData'>): number {
+function resolveChainIdOfEvmNetwork(
+    { method, payload }: TxSimulationMethod<'ethereumSignTransaction' | 'ethereumSignTypedData'>,
+    deps: NetworkConfigDeps,
+): number {
     switch (method) {
         case 'ethereumSignTransaction':
             return payload.transaction.chainId;
         case 'ethereumSignTypedData':
-            return Number(payload.data.domain.chainId ?? getNetworkChainId('eth'));
+            return Number(payload.data.domain.chainId ?? getNetworkChainId(deps, 'eth'));
         default:
-            return getNetworkChainId('eth');
+            return getNetworkChainId(deps, 'eth');
     }
 }
 
 /**
  * Get network based on the tx simulation action, default to Ethereum mainnet.
  */
-export function getNetworkFromTxSimulationAction(action: TxSimulationAction): Network | null {
+export function getNetworkFromTxSimulationAction(
+    deps: NetworkConfigDeps,
+    action: TxSimulationAction,
+): Network | null {
     switch (action.method) {
         case 'ethereumSignTransaction':
         case 'ethereumSignTypedData': {
-            const chainId = resolveChainIdOfEvmNetwork(action);
+            const chainId = resolveChainIdOfEvmNetwork(action, deps);
 
-            return getNetworkByEvmChainId(chainId) ?? null;
+            return findNetworkByEvmChainId(getNetworks(deps), chainId);
         }
 
         default:

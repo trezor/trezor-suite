@@ -1,3 +1,4 @@
+import type { GetNetworkConfigDep } from '@suite-common/networks';
 import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     type ComposeActionContext,
@@ -24,6 +25,7 @@ type StakingParams = {
 };
 
 export const calculate = (
+    deps: GetNetworkConfigDep,
     availableBalance: string,
     output: ExternalOutput,
     feeLevel: FeeLevel,
@@ -79,7 +81,7 @@ export const calculate = (
             error,
             errorMessage: {
                 id: error,
-                values: { networkDisplaySymbol: getNetworkDisplaySymbol(symbol) },
+                values: { networkDisplaySymbol: getNetworkDisplaySymbol(deps, symbol) },
             },
         } as const;
     }
@@ -118,10 +120,12 @@ export const calculate = (
 };
 
 export const composeStakingTransaction = (
+    deps: GetNetworkConfigDep,
     formValues: StakeFormState,
     formState: ComposeActionContext,
     predefinedLevels: FeeLevel[],
     calculateTransaction: (
+        deps: GetNetworkConfigDep,
         availableBalance: string,
         output: ExternalOutput,
         feeLevel: FeeLevel,
@@ -144,6 +148,7 @@ export const composeStakingTransaction = (
     const compareWithAmount = formValues.stakeType === 'stake';
     const response = predefinedLevels.map(level =>
         calculateTransaction(
+            deps,
             availableBalance,
             output,
             level,
@@ -169,7 +174,7 @@ export const composeStakingTransaction = (
         if (tx.type === 'error' && tx.error === 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE') {
             tx.errorMessage = {
                 id: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE',
-                values: { networkDisplaySymbol: getNetworkDisplaySymbol(network.symbol) },
+                values: { networkDisplaySymbol: getNetworkDisplaySymbol(deps, network.symbol) },
             };
         }
     });

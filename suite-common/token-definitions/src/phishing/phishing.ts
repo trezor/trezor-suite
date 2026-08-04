@@ -1,3 +1,4 @@
+import type { GetNetworkConfigDep } from '@suite-common/networks';
 import {
     type NetworkSymbol,
     type NetworkType,
@@ -58,10 +59,12 @@ const PHISHING_VALIDATORS: NetworkPhishingValidators = new Map([
 
 // NOTE: This function determines for which symbols there are filters in the UI to hide/display spam transactions
 // when handling fraud for other symbols, make sure this function is updated!
-export const hasNetworkPotentialFraudTransactions = (symbol: NetworkSymbol) =>
-    PHISHING_VALIDATORS.has(getNetworkType(symbol));
+export const hasNetworkPotentialFraudTransactions = (
+    deps: GetNetworkConfigDep,
+    symbol: NetworkSymbol,
+) => PHISHING_VALIDATORS.has(getNetworkType(deps, symbol));
 
-interface IsPhishingTransactionProps {
+interface IsPhishingTransactionProps extends GetNetworkConfigDep {
     transaction?: WalletAccountTransaction;
     tokenDefinitions?: TokenDefinitions;
     historicRates?: RatesByTimestamps;
@@ -71,6 +74,7 @@ interface IsPhishingTransactionProps {
 
 /** This is the single main function that is used across Suite to determine if a transaction is phishing */
 export const isPhishingTransaction = ({
+    getNetworkConfig,
     transaction,
     tokenDefinitions,
     historicRates,
@@ -80,23 +84,25 @@ export const isPhishingTransaction = ({
     if (!transaction) return createPhishingResult(false);
 
     const { symbol } = transaction;
-    const networkFeatures = getNetworkFeatures(symbol);
+    const networkFeatures = getNetworkFeatures({ getNetworkConfig }, symbol);
     const hasCoinDefinitionsFeature = networkFeatures.includes('coin-definitions');
 
     if (!tokenDefinitions && hasCoinDefinitionsFeature) return createPhishingResult(false);
     if (txsMarkedAsNotScam.includes(transaction.txid)) return createPhishingResult(false);
 
     const transactionWithFiatAmounts = getTransactionWithFiatAmounts({
+        getNetworkConfig,
         transaction,
         historicRates,
     });
 
-    const networkType = getNetworkType(transactionWithFiatAmounts.symbol);
+    const networkType = getNetworkType({ getNetworkConfig }, transactionWithFiatAmounts.symbol);
     const validator = PHISHING_VALIDATORS.get(networkType);
 
     if (!validator || validator.getDetectors().length === 0) return createPhishingResult(false);
 
     return validator
+        .setGetNetworkConfig(getNetworkConfig)
         .setTransaction(transactionWithFiatAmounts)
         .setTokenDefinitions(tokenDefinitions)
         .setDustThreshold(dustThreshold)

@@ -18,9 +18,10 @@ export const getTokenDefinitionThunk = createThunk<
     }
 >(
     `${TOKEN_DEFINITIONS_MODULE}/getTokenDefinitionsThunk`,
-    async (params, { fulfillWithValue, rejectWithValue }) => {
+    async (params, { fulfillWithValue, rejectWithValue, extra }) => {
         try {
             const data: string[] = await fetchTokenDefinitions(
+                extra.services,
                 params.symbol,
                 params.type,
                 TokenStructureType.SIMPLE,
@@ -40,7 +41,7 @@ export const initTokenDefinitionsThunk = createThunk(
 
         const promises = enabledNetworks
             .map(symbol => {
-                let definitionTypes = getSupportedDefinitionTypes(symbol);
+                let definitionTypes = getSupportedDefinitionTypes(extra.services, symbol);
 
                 const tokenDefinitions = selectNetworkTokenDefinitions(getState(), symbol);
 

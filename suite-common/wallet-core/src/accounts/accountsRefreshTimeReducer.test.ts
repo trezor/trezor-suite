@@ -1,4 +1,4 @@
-import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { mockGetNetworkConfig } from '@suite-common/networks/mocks';
 import { type Account, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
@@ -10,15 +10,13 @@ import {
     selectAccountRefreshTime,
 } from './accountsRefreshTimeReducer';
 
-const btcSymbol = asNetworkSymbol('btc');
-
 const account = mockWalletAccount({
-    symbol: btcSymbol,
+    symbol: 'btc',
     deviceState: '1@2:3',
     descriptor: asAccountDescriptor('accA'),
 });
 const otherAccount = mockWalletAccount({
-    symbol: btcSymbol,
+    symbol: 'btc',
     deviceState: '1@2:3',
     descriptor: asAccountDescriptor('accB'),
 });
@@ -51,7 +49,10 @@ describe('accountsRefreshTimeReducer', () => {
         expect(created[account.key]).toBe(NOW);
 
         jest.setSystemTime(NOW + 5000);
-        const updated = accountsRefreshTimeReducer(created, accountsActions.updateAccount(account));
+        const updated = accountsRefreshTimeReducer(
+            created,
+            accountsActions.updateAccount(account, mockGetNetworkConfig),
+        );
         expect(updated[account.key]).toBe(NOW + 5000);
     });
 

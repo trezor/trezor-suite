@@ -37,7 +37,10 @@ export const composeAllowanceTransactionThunk = createThunk<
     { rejectValue: ComposeFeeLevelsError }
 >(
     `${ALLOWANCE_MODULE_PREFIX}/composeAllowanceTransactionThunk`,
-    async ({ feeInfo, account, contract, selectedFee, customFee, data }, { rejectWithValue }) => {
+    async (
+        { feeInfo, account, contract, selectedFee, customFee, data },
+        { rejectWithValue, extra },
+    ) => {
         const token = findToken(account.tokens, contract);
 
         if (!token) {
@@ -99,7 +102,7 @@ export const composeAllowanceTransactionThunk = createThunk<
                     account.availableBalance,
                     contract,
                     level,
-                    getNetworkDisplaySymbol(account.symbol),
+                    getNetworkDisplaySymbol(extra.services, account.symbol),
                     token,
                     adjustedGasLimit.toFixed(0),
                 ),

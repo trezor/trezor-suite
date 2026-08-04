@@ -2,6 +2,7 @@ import { type useDispatch } from 'react-redux';
 
 import { A } from '@mobily/ts-belt';
 
+import { type NetworkConfigDeps } from '@suite-common/wallet-config';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 
 import { getAccountMovementEvents } from './graphBalanceEvents';
@@ -42,7 +43,7 @@ const normalizeExtremeGraphEvents = (
     }
 };
 
-export type FetchGraphDataParams = {
+export type FetchGraphDataParams = NetworkConfigDeps & {
     accounts: AccountItem[];
     baseCurrencyCode: BaseCurrencyCode;
     endOfTimeFrameDate: Date;
@@ -61,6 +62,8 @@ export type GraphData = {
 };
 
 export const fetchGraphData = async ({
+    getNetworkConfig,
+    networkModuleRepository,
     accounts,
     baseCurrencyCode,
     endOfTimeFrameDate,
@@ -71,6 +74,8 @@ export const fetchGraphData = async ({
     dispatch,
 }: FetchGraphDataParams): Promise<GraphData> => {
     const points = await getMultipleAccountBalanceHistoryWithFiat({
+        getNetworkConfig,
+        networkModuleRepository,
         accounts,
         baseCurrencyCode,
         startOfTimeFrameDate,

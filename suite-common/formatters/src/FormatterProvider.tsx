@@ -3,12 +3,13 @@ import { useIntl } from 'react-intl';
 
 import type { FormatNumberOptions } from '@formatjs/intl';
 
+import { useServices } from '@suite-common/dependency-injection';
 import type { SignValue } from '@suite-common/suite-types';
-import type { NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkConfigDeps, type NetworkSymbol , selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import type { BaseCurrencyAmount } from '@suite-common/wallet-types';
 
 import { AddressFormatter, type AddressFormatterDataContext } from './formatters/AddressFormatter';
-import { NetworkNameFormatter } from './formatters/NetworkNameFormatter';
+import { prepareNetworkNameFormatter } from './formatters/NetworkNameFormatter';
 import { SignValueFormatter } from './formatters/SignValueFormatter';
 import {
     type BaseCurrencyAmountFormatterDataContext,
@@ -58,10 +59,11 @@ export type Formatters = {
 
 export const FormatterProviderContext = createContext<Formatters>({} as Formatters);
 
-export const getFormatters = (config: FormatterConfig): Formatters => {
-    const CryptoAmountFormatter = prepareCryptoAmountFormatter(config);
-    const DisplaySymbolFormatter = prepareDisplaySymbolFormatter(config);
-    const BaseCurrencyAmountFormatter = prepareBaseCurrencyAmountFormatter(config);
+export const getFormatters = (deps: NetworkConfigDeps, config: FormatterConfig): Formatters => {
+    const CryptoAmountFormatter = prepareCryptoAmountFormatter(deps, config);
+    const DisplaySymbolFormatter = prepareDisplaySymbolFormatter(deps, config);
+    const NetworkNameFormatter = prepareNetworkNameFormatter(deps);
+    const BaseCurrencyAmountFormatter = prepareBaseCurrencyAmountFormatter(deps, config);
     const DateFormatter = prepareDateFormatter(config);
     const TimeFormatter = prepareTimeFormatter(config);
     const DateTimeFormatter = prepareDateTimeFormatter(config);
@@ -82,6 +84,7 @@ export const getFormatters = (config: FormatterConfig): Formatters => {
 
 export const FormatterProvider = ({ config, children }: FormatterProviderProps) => {
     const intl = useIntl();
+    const deps = useServices(selectNetworkConfigDeps);
 
     const contextValue = useMemo(() => {
         const extendedConfig = {
@@ -89,8 +92,8 @@ export const FormatterProvider = ({ config, children }: FormatterProviderProps) 
             intl,
         };
 
-        return getFormatters(extendedConfig);
-    }, [config, intl]);
+        return getFormatters(deps, extendedConfig);
+    }, [config, deps, intl]);
 
     return (
         <FormatterProviderContext.Provider value={contextValue}>

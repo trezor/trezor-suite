@@ -1,6 +1,6 @@
 import { getStakingBatch } from '@suite-common/earn-staking-api';
 import { createThunk } from '@suite-common/redux-utils';
-import { PROD_STAKING_SYMBOLS } from '@suite-common/wallet-config';
+import { getProdStakingNetworkSymbols } from '@suite-common/wallet-config';
 import { type TimerId } from '@trezor/type-utils';
 
 import { stakeDataActions } from './stakeDataSlice';
@@ -24,7 +24,7 @@ function stakingDataNeedsRefetch(data: StakeRootState['wallet']['stake']['data']
 
 export const initStakeDataThunk = createThunk(
     `${STAKE_MODULE}/initStakeDataThunk`,
-    async (_, { getState, dispatch }) => {
+    async (_, { getState, dispatch, extra }) => {
         const enabledNetworks = selectEnabledNetworks(getState());
         const isBtcOnly = enabledNetworks.length === 1 && enabledNetworks.includes('btc');
 
@@ -35,17 +35,24 @@ export const initStakeDataThunk = createThunk(
 
         if (!needsRefetch) return;
 
+        type StakingBatchNetworks = Exclude<
+            NonNullable<NonNullable<Parameters<typeof getStakingBatch>[0]>['params']>['networks'],
+            string | undefined
+        >;
+        const prodStakingNetworkSymbols = getProdStakingNetworkSymbols(
+            extra.services,
+        ) as StakingBatchNetworks;
         try {
             // If we use thunk actions, there'll cir. deps
             dispatch(stakeDataActions.fetchStakeDataRequest(undefined));
 
             const stakingData = await getStakingBatch({
-                params: { networks: PROD_STAKING_SYMBOLS },
+                params: { networks: prodStakingNetworkSymbols },
             });
 
             // A part of the batch requests failed.
             if (stakingData.errors.length) {
-                const failedNetworkSymbols = PROD_STAKING_SYMBOLS.filter(
+                const failedNetworkSymbols = prodStakingNetworkSymbols.filter(
                     symbol => !stakingData.data.some(item => item.symbol === symbol),
                 );
                 const errorSummary = stakingData.errors

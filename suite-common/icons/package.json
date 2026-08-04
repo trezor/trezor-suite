@@ -25,6 +25,7 @@
     },
     "dependencies": {
         "@suite-common/http-client": "workspace:^",
+        "@suite-common/networks": "workspace:^",
         "zod": "4.3.6"
     }
 }

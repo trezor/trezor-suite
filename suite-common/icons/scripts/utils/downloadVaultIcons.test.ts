@@ -2,6 +2,8 @@ import fs from 'fs/promises';
 import { join } from 'path';
 import sharp from 'sharp';
 
+import { mockNetworkConfigDeps } from '@suite-common/wallet-config/mocks';
+
 import { COIN_IMAGE_SIZES, ICONS_URL_BASE, createCoinImageName } from '../../src/coinImages';
 import { CRYPTO_ICONS_SVG_PATH, FILES_CRYPTOICONS_PATH, YIELD_VAULTS_URL } from '../constants';
 import { rasterizeSvg } from './images';
@@ -20,7 +22,7 @@ global.fetch = fetchMock as unknown as typeof fetch;
 // the mock above has to be installed before that happens — hence the require instead of a top-level
 // import, which would be hoisted above the assignment.
 const { downloadVaultIcons } = require('./downloadVaultIcons') as {
-    downloadVaultIcons: () => Promise<void>;
+    downloadVaultIcons: (deps: typeof mockNetworkConfigDeps) => Promise<void>;
 };
 
 const ETH_WETH_VAULT = '0x704cfb08969048a8dff298b214f959791d8da509';
@@ -135,7 +137,7 @@ describe('downloadVaultIcons', () => {
             ...sourceIconRoutes('tether'),
         });
 
-        await downloadVaultIcons();
+        await downloadVaultIcons(mockNetworkConfigDeps);
 
         for (const size of COIN_IMAGE_SIZES) {
             expect(fs.writeFile).toHaveBeenCalledWith(
@@ -160,7 +162,7 @@ describe('downloadVaultIcons', () => {
             ...sourceIconRoutes('ethereum'),
         });
 
-        await downloadVaultIcons();
+        await downloadVaultIcons(mockNetworkConfigDeps);
 
         // A WETH vault reads as an ETH vault, and the app renders native ETH from the bundled disc
         // rather than from CoinGecko — so neither the WETH nor the CoinGecko ETH rendition is used.
@@ -185,7 +187,7 @@ describe('downloadVaultIcons', () => {
             }),
         );
 
-        await downloadVaultIcons();
+        await downloadVaultIcons(mockNetworkConfigDeps);
 
         for (const size of COIN_IMAGE_SIZES) {
             const icon = writtenIcon(`ethereum--${ETH_WETH_VAULT}@${size}.webp`);
@@ -213,7 +215,7 @@ describe('downloadVaultIcons', () => {
             ...sourceIconRoutes('ethereum'),
         });
 
-        await downloadVaultIcons();
+        await downloadVaultIcons(mockNetworkConfigDeps);
 
         // Base settles on Ethereum, so its native coin — and hence its disc — is ETH, not BASE.
         expect(requestedUrls()).toEqual([YIELD_VAULTS_URL]);
@@ -239,7 +241,7 @@ describe('downloadVaultIcons', () => {
             ...sourceIconRoutes('usd-coin'),
         });
 
-        await downloadVaultIcons();
+        await downloadVaultIcons(mockNetworkConfigDeps);
 
         expect(requestedUrls()).toContain(iconUrl('usd-coin', 24));
         expect(writtenFiles()).toContain(
@@ -261,7 +263,7 @@ describe('downloadVaultIcons', () => {
             ...sourceIconRoutes('usd-coin'),
         });
 
-        await downloadVaultIcons();
+        await downloadVaultIcons(mockNetworkConfigDeps);
 
         expect(writtenFiles()).toContain(
             join(FILES_CRYPTOICONS_PATH, `base--${BASE_USDC_VAULT}@24.webp`),
@@ -289,7 +291,7 @@ describe('downloadVaultIcons', () => {
             ...sourceIconRoutes('tether'),
         });
 
-        await downloadVaultIcons();
+        await downloadVaultIcons(mockNetworkConfigDeps);
 
         expect(consoleErrorSpy).toHaveBeenCalledWith(
             expect.stringContaining('brand-new-chain'),
@@ -316,7 +318,7 @@ describe('downloadVaultIcons', () => {
 
         mockFetchRoutes(routes);
 
-        await downloadVaultIcons();
+        await downloadVaultIcons(mockNetworkConfigDeps);
 
         expect(fs.writeFile).toHaveBeenCalledTimes(COIN_IMAGE_SIZES.length - 1);
         expect(writtenFiles()).not.toContain(
@@ -346,7 +348,7 @@ describe('downloadVaultIcons', () => {
             ...sourceIconRoutes('usd-coin'),
         });
 
-        await downloadVaultIcons();
+        await downloadVaultIcons(mockNetworkConfigDeps);
 
         // Both vaults resolve to usd-coin: one vault-list request plus one per source size.
         expect(fetchMock).toHaveBeenCalledTimes(1 + COIN_IMAGE_SIZES.length);
@@ -373,7 +375,7 @@ describe('downloadVaultIcons', () => {
             }),
         );
 
-        await downloadVaultIcons();
+        await downloadVaultIcons(mockNetworkConfigDeps);
 
         // Both vaults read as native ETH, so nothing beyond the vault list is fetched and the two
         // vault addresses end up with byte-identical renditions.
@@ -387,14 +389,14 @@ describe('downloadVaultIcons', () => {
     it('throws when the vault list cannot be fetched', async () => {
         mockFetchRoutes({});
 
-        await expect(downloadVaultIcons()).rejects.toThrow();
+        await expect(downloadVaultIcons(mockNetworkConfigDeps)).rejects.toThrow();
         expect(fs.writeFile).not.toHaveBeenCalled();
     });
 
     it('throws when the vault list does not match the expected schema', async () => {
         mockFetchRoutes(vaultListRoute({ ethereum: [{ yieldId: 'missing-fields' }] }));
 
-        await expect(downloadVaultIcons()).rejects.toThrow();
+        await expect(downloadVaultIcons(mockNetworkConfigDeps)).rejects.toThrow();
         expect(fs.writeFile).not.toHaveBeenCalled();
     });
 });

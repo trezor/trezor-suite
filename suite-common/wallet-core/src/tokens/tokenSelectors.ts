@@ -1,3 +1,4 @@
+import type { GetNetworkConfigDep } from '@suite-common/networks';
 import { createWeakMapSelector } from '@suite-common/redux-utils';
 import {
     type TokenDefinitionsRootState,
@@ -24,11 +25,16 @@ export type TokensRootState = AccountsRootState &
 const createMemoizedSelector = createWeakMapSelector.withTypes<TokensRootState>();
 
 export const selectAccountTokens = createMemoizedSelector(
-    [selectAccountByKey, selectTokenDefinitions],
-    (account, tokenDefinitions): GetTokensOutputType | null => {
+    [
+        selectAccountByKey,
+        selectTokenDefinitions,
+        (_state, _accountKey, deps: GetNetworkConfigDep) => deps,
+    ],
+    (account, tokenDefinitions, deps): GetTokensOutputType | null => {
         if (!account) return null;
 
         return getTokens({
+            ...deps,
             tokens: account.tokens ?? [],
             symbol: account.symbol,
             tokenDefinitions: tokenDefinitions[account.symbol]?.coin,

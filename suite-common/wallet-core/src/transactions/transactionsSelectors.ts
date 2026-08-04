@@ -1,5 +1,6 @@
 import { A, D, pipe } from '@mobily/ts-belt';
 
+import type { GetNetworkConfigDep } from '@suite-common/networks';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import {
     type TokenDefinitionsRootState,
@@ -208,6 +209,7 @@ export const selectIsPhishingTransaction = (
         PhishingRootState,
     txid: string,
     accountKey: AccountKey,
+    deps: GetNetworkConfigDep,
 ) => {
     const transaction = selectTransactionByAccountKeyAndTxid(state, accountKey, txid);
     if (!transaction) return createPhishingResult(false);
@@ -218,6 +220,7 @@ export const selectIsPhishingTransaction = (
     const dustThreshold = selectActiveDustPhishingThreshold(state);
 
     return isPhishingTransaction({
+        ...deps,
         transaction,
         tokenDefinitions,
         historicRates,
@@ -274,20 +277,28 @@ export const selectAccountClaimTransactions = createMemoizedSelector(
 );
 
 export const selectAccountIsStakingActive = createMemoizedSelector(
-    [selectAccountClaimTransactions, selectAccountByKey],
-    (claimTransactions, account) => isAccountStakingActive(account, claimTransactions),
+    [
+        selectAccountClaimTransactions,
+        selectAccountByKey,
+        (_state, _accountKey, deps: GetNetworkConfigDep) => deps,
+    ],
+    (claimTransactions, account, deps) => isAccountStakingActive(deps, account, claimTransactions),
 );
 
 export const selectAnyAccountIsStakingActive = createMemoizedSelector(
-    [selectTransactions, (_: TransactionsRootState, accounts: Account[]) => accounts],
-    (transactions, accounts) =>
+    [
+        selectTransactions,
+        (_: TransactionsRootState, accounts: Account[]) => accounts,
+        (_state, _accounts, deps: GetNetworkConfigDep) => deps,
+    ],
+    (transactions, accounts, deps) =>
         accounts.some(account => {
             const accountTransactions = transactions[account.key] ?? [];
             const claimTransactions = accountTransactions.filter(tx =>
                 isClaimTx(tx?.ethereumSpecific?.parsedData?.methodId),
             );
 
-            return isAccountStakingActive(account, claimTransactions);
+            return isAccountStakingActive(deps, account, claimTransactions);
         }),
 );
 

@@ -54,7 +54,7 @@ export const createPaymentRequestsThunk = createThunk<
     `${TRADING_THUNK_PREFIX}/createPaymentRequests`,
     async (
         { type, account, composedLevels, formattedMaxAmount, destinationTag },
-        { dispatch, getState, fulfillWithValue, rejectWithValue },
+        { dispatch, getState, fulfillWithValue, rejectWithValue, extra },
     ) => {
         const { mac: macRefund, path: pathRefund } = await dispatch(
             getRefundAddress({ account }),
@@ -82,7 +82,7 @@ export const createPaymentRequestsThunk = createThunk<
                 const receiveAccountKey = selectTradingExchangeReceiveAccountKey(getState());
                 const receiveAddress = selectTradingExchangeReceiveAddress(getState());
                 const receiveAccount = selectAccountByKey(getState(), receiveAccountKey);
-                const sendNetwork = cryptoIdToNetwork(quote?.send);
+                const sendNetwork = cryptoIdToNetwork(extra.services, quote?.send);
 
                 if (
                     !quote?.orderId ||
@@ -139,6 +139,7 @@ export const createPaymentRequestsThunk = createThunk<
                 }
 
                 const paymentRequest = tradingExchangeCreatePaymentRequest({
+                    ...extra.services,
                     trade,
                     provider,
                     macPurchase,
@@ -186,7 +187,7 @@ export const createPaymentRequestsThunk = createThunk<
                     });
                 }
 
-                const sendNetwork = cryptoIdToNetwork(quote.cryptoCurrency);
+                const sendNetwork = cryptoIdToNetwork(extra.services, quote.cryptoCurrency);
                 if (!sendNetwork) {
                     return rejectWithValue({
                         type: 'sign-tx-error',
@@ -239,6 +240,7 @@ export const createPaymentRequestsThunk = createThunk<
                 }
 
                 const paymentRequest = tradingSellCreatePaymentRequest({
+                    ...extra.services,
                     trade,
                     provider,
                     macRefund,

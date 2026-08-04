@@ -1,4 +1,5 @@
-import { type AccountType, type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import type { GetNetworkConfigDep } from '@suite-common/networks';
+import { type AccountType, type NetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountKey, type TxSimulationAction } from '@suite-common/wallet-types';
 import { type CallMethodKeys, type PermissionRequest } from '@trezor/connect';
 import { type SerializedError } from '@trezor/connect-common/src/constants/errors';
@@ -7,8 +8,8 @@ import { type AddressSelection } from '@trezor/connect-common/src/types/api/sele
 // UTXO coins have accounts with many addresses (mirrors `isUtxoBased` in
 // wallet-utils/accountUtils, which operates on an already-loaded `Account` instead of a symbol) —
 // `selectAccount`'s `addressSelection`/xpub-vs-address distinction only applies to them.
-export const isUtxoNetwork = (symbol: NetworkSymbol) => {
-    const { networkType } = getNetwork(symbol);
+export const isUtxoNetwork = (deps: GetNetworkConfigDep, symbol: NetworkSymbol) => {
+    const { networkType } = deps.getNetworkConfig(symbol);
 
     return networkType === 'bitcoin' || networkType === 'cardano';
 };

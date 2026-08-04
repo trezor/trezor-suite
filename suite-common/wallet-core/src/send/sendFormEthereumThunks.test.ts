@@ -5,6 +5,7 @@ describe(calculate.name, () => {
     fixtures.calculate.forEach(f => {
         it(`${f.description}`, () => {
             const result = calculate(
+                mockNetworkConfigDeps,
                 f.input.availableBalance,
                 f.input.output,
                 f.input.feeLevel,
@@ -15,3 +16,4 @@ describe(calculate.name, () => {
         });
     });
 });
+import { mockNetworkConfigDeps } from '@suite-common/wallet-config/mocks';

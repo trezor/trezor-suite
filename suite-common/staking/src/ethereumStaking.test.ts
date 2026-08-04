@@ -1,5 +1,5 @@
 import { type EthValidatorsQueue } from '@suite-common/earn-staking-api';
-import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { mockNetworkConfigDeps } from '@suite-common/wallet-config/mocks';
 import { type WalletAccountTransaction } from '@suite-common/wallet-types';
 import TrezorConnect, {
     type AccountInfo,
@@ -60,8 +60,6 @@ import {
     type StakeTxBaseArgs,
 } from './types';
 
-const ethSymbol = asNetworkSymbol('eth');
-
 describe('transformTx', () => {
     transformTxFixtures.forEach(test => {
         it(test.description, () => {
@@ -100,14 +98,16 @@ describe('stake', () => {
     stakeFixture.forEach(test => {
         it(test.description, async () => {
             mockTrezorConnect(test);
-            const result = await stake(test.args as StakeTxArgs);
+            const result = await stake({ ...test.args, ...mockNetworkConfigDeps } as StakeTxArgs);
             expect(result).toEqual(test.result);
         });
     });
     stakeFailedFixture.forEach(test => {
         it(test.description, async () => {
             mockTrezorConnect(test);
-            await expect(stake(test.args as StakeTxArgs)).rejects.toThrow(test.result);
+            await expect(
+                stake({ ...test.args, ...mockNetworkConfigDeps } as StakeTxArgs),
+            ).rejects.toThrow(test.result);
         });
     });
 });
@@ -121,14 +121,19 @@ describe('unstake', () => {
     unstakeFixture.forEach(test => {
         it(test.description, async () => {
             mockTrezorConnect(test);
-            const result = await unstake(test.args as UnstakeTxArgs);
+            const result = await unstake({
+                ...test.args,
+                ...mockNetworkConfigDeps,
+            } as UnstakeTxArgs);
             expect(result).toEqual(test.result);
         });
     });
     unstakeFailedFixture.forEach(test => {
         it(test.description, async () => {
             mockTrezorConnect(test);
-            await expect(unstake(test.args as UnstakeTxArgs)).rejects.toThrow(test.result);
+            await expect(
+                unstake({ ...test.args, ...mockNetworkConfigDeps } as UnstakeTxArgs),
+            ).rejects.toThrow(test.result);
         });
     });
 });
@@ -137,16 +142,22 @@ describe('claim', () => {
     claimFixture.forEach(test => {
         it(test.description, async () => {
             mockTrezorConnect(test);
-            const result = await claimWithdrawRequest(test.args as StakeTxBaseArgs);
+            const result = await claimWithdrawRequest({
+                ...test.args,
+                ...mockNetworkConfigDeps,
+            } as StakeTxBaseArgs);
             expect(result).toEqual(test.result);
         });
     });
     claimFailedFixture.forEach(test => {
         it(test.description, async () => {
             mockTrezorConnect(test);
-            await expect(claimWithdrawRequest(test.args as StakeTxBaseArgs)).rejects.toThrow(
-                test.result,
-            );
+            await expect(
+                claimWithdrawRequest({
+                    ...test.args,
+                    ...mockNetworkConfigDeps,
+                } as StakeTxBaseArgs),
+            ).rejects.toThrow(test.result);
         });
     });
 });
@@ -179,7 +190,10 @@ describe('getStakeTxGasLimit', () => {
     getStakeTxGasLimitFixture.forEach(test => {
         it(test.description, async () => {
             mockTrezorConnect(test);
-            const result = await getStakeTxGasLimit(test.args as GetStakeTxGasLimitParams);
+            const result = await getStakeTxGasLimit({
+                ...test.args,
+                ...mockNetworkConfigDeps,
+            } as GetStakeTxGasLimitParams);
             expect(result).toEqual(test.result);
         });
     });
@@ -238,11 +252,7 @@ describe('getAdjustedGasLimitConsumption', () => {
 describe('getEthNetworkForWalletSdk', () => {
     getEthNetworkForWalletSdkFixture.forEach(test => {
         it(test.description, () => {
-            const result = getEthNetworkForWalletSdk(
-                test.args.symbol && test.args.symbol !== 'unknown'
-                    ? asNetworkSymbol(test.args.symbol)
-                    : test.args.symbol,
-            );
+            const result = getEthNetworkForWalletSdk(test.args.symbol);
             expect(result).toEqual(test.result);
         });
     });
@@ -254,7 +264,7 @@ describe('getInstantStakeType', () => {
             const result = getInstantStakeType(
                 test.args.internalTransfer as InternalTransfer,
                 test.args.address,
-                test.args.symbol && asNetworkSymbol(test.args.symbol),
+                test.args.symbol,
             );
             expect(result).toEqual(test.result);
         });
@@ -268,7 +278,7 @@ describe('getChangedInternalTx', () => {
                 test.args.prevTxs as WalletAccountTransaction[],
                 test.args.currentTxs as WalletAccountTransaction[],
                 test.args.selectedAccountAddress,
-                test.args.symbol && asNetworkSymbol(test.args.symbol),
+                test.args.symbol,
             );
             expect(result).toEqual(test.result);
         });
@@ -286,8 +296,8 @@ describe('simulateUnstake', () => {
             );
             const result = await simulateUnstake({
                 ...test.args,
-                symbol: test.args.symbol ? asNetworkSymbol(test.args.symbol) : test.args.symbol,
-            } as unknown as SimulateUnstakeArgs);
+                ...mockNetworkConfigDeps,
+            } as SimulateUnstakeArgs);
             expect(result).toEqual(test.result);
         });
     });
@@ -386,7 +396,7 @@ describe('verifyEthereumStakingLiveState', () => {
         const result = await verifyEthereumStakingLiveState({
             stakeType: 'stake',
             from: '0xabc',
-            symbol: ethSymbol,
+            symbol: 'eth',
         });
 
         expect(result).toEqual({ isValid: true });
@@ -406,7 +416,7 @@ describe('verifyEthereumStakingLiveState', () => {
         const result = await verifyEthereumStakingLiveState({
             stakeType: 'unstake',
             from: '0xabc',
-            symbol: ethSymbol,
+            symbol: 'eth',
             amount: '1.5',
         });
 
@@ -426,7 +436,7 @@ describe('verifyEthereumStakingLiveState', () => {
         const result = await verifyEthereumStakingLiveState({
             stakeType: 'unstake',
             from: '0xabc',
-            symbol: ethSymbol,
+            symbol: 'eth',
         });
 
         expect(result).toEqual({
@@ -455,7 +465,7 @@ describe('verifyEthereumStakingLiveState', () => {
         const result = await verifyEthereumStakingLiveState({
             stakeType: 'claim',
             from: '0xabc',
-            symbol: ethSymbol,
+            symbol: 'eth',
         });
 
         expect(result).toEqual({ isValid: true });
@@ -469,7 +479,7 @@ describe('verifyEthereumStakingLiveState', () => {
         const result = await verifyEthereumStakingLiveState({
             stakeType: 'claim',
             from: '0xabc',
-            symbol: ethSymbol,
+            symbol: 'eth',
         });
 
         expect(result).toEqual({

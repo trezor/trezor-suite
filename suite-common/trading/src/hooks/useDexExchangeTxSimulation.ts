@@ -1,6 +1,8 @@
 import { useMemo } from 'react';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { useTxSimulation } from '@suite-common/tx-simulation';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 
 import { useSelector } from './useSelector';
@@ -19,17 +21,19 @@ export const useDexExchangeTxSimulation = ({
     sourceOrigin,
 }: UseDexExchangeTxSimulationParams) => {
     const quote = useSelector(selectTradingExchangeSelectedQuote);
+    const deps = useServices(selectNetworkConfigDeps);
 
     const action = useMemo(
         () =>
             isEnabled
                 ? composeDexTxSimulationAction({
+                      ...deps,
                       quote,
                       account,
                       sourceOrigin,
                   })
                 : null,
-        [isEnabled, quote, account, sourceOrigin],
+        [account, deps, isEnabled, quote, sourceOrigin],
     );
 
     const simulation = useTxSimulation(action);

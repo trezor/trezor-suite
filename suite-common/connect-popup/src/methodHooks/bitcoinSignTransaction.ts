@@ -1,4 +1,4 @@
-import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     accountsActions,
     selectAccountForNetworkSymbolAndPath,
@@ -20,15 +20,17 @@ const preCallHook = async <M extends CallMethodKeys>({
     payload,
     getState,
     dispatch,
+    services,
     txSigningPrecomposed,
 }: PreCallHookParams<M>) => {
     try {
         if (method === 'signTransaction' && txSigningPrecomposed) {
             const typedPayload = payload as any as SignTransaction;
-            const network = getNetwork(typedPayload.coin as NetworkSymbol);
-            if (!network) {
-                throw new Error(`Network not supported`);
-            }
+            const symbol = typedPayload.coin as NetworkSymbol;
+            const network = {
+                symbol,
+                ...services.getNetworkConfig(symbol),
+            };
             const accountPath = txSigningPrecomposed.inputs.find(i => i.address_n);
             if (!accountPath?.address_n) {
                 throw new Error('Account not found in inputs');
@@ -42,7 +44,9 @@ const preCallHook = async <M extends CallMethodKeys>({
             );
             if (!selectedAccount) {
                 // Create a new placeholder account
-                const createdAccount = await dispatch(createPlaceholderAccount(network, path));
+                const createdAccount = await dispatch(
+                    createPlaceholderAccount(services, network, path),
+                );
                 temporaryAccounts.push(createdAccount.payload);
                 selectedAccount = createdAccount.payload;
             }
