@@ -77,8 +77,19 @@ export const sortTxsFromLatest = (transactions: Transaction[]) => {
     return txs;
 };
 
-const isOutgoing = (lowerCasedDescriptor: string, tx: Transaction) =>
-    tx.details?.vin?.[0]?.addresses?.[0]?.toLowerCase() === lowerCasedDescriptor;
+const isOutgoing = (lowerCasedDescriptor: string, tx: Transaction) => {
+    // `addresses[0]` comes straight from an untrusted/user-selectable backend's tx.vin and is only
+    // TS-typed as string — a malicious backend can return a non-string (e.g. a number). Optional
+    // chaining short-circuits only on null/undefined, so `.toLowerCase()` on such a value would throw
+    // and abort the whole account's transformAccountInfo via filterShadowedPendingTxsByNonce
+    // (per-account history DoS). Guard the type before calling the string method.
+    const firstInputAddress = tx.details?.vin?.[0]?.addresses?.[0];
+
+    return (
+        typeof firstInputAddress === 'string' &&
+        firstInputAddress.toLowerCase() === lowerCasedDescriptor
+    );
+};
 
 export const filterShadowedPendingTxsByNonce = (
     txs: Transaction[],

@@ -205,4 +205,33 @@ export const filterShadowedPendingTxsByNonce = [
         lowerCasedDescriptor: me,
         expectedTxids: ['mined-8', 'pending-9'],
     },
+    {
+        // Poison record: an untrusted/user-selectable backend returns a non-string vin[0].addresses[0]
+        // (here a number). Without a type guard `.toLowerCase()` throws and aborts the whole account's
+        // transformAccountInfo. The poison tx must be dropped/ignored and the valid txs still filtered.
+        description: 'does not throw on a non-string vin address (poison record)',
+        input: [
+            {
+                txid: 'poison-1',
+                type: 'sent',
+                blockTime: 0,
+                blockHeight: -1,
+                amount: '0',
+                fee: '0',
+                targets: [],
+                details: {
+                    vin: [{ n: 0, isAddress: true, addresses: [123] }],
+                    vout: [],
+                    size: 0,
+                    totalInput: '0',
+                    totalOutput: '0',
+                },
+                ethereumSpecific: { status: -1, nonce: 40 },
+            } as unknown as Transaction,
+            makeEthTx({ txid: 'pending-40', status: -1, nonce: 40, from: me }),
+            makeEthTx({ txid: 'mined-40', status: 1, nonce: 40, from: me }),
+        ],
+        lowerCasedDescriptor: me,
+        expectedTxids: ['poison-1', 'mined-40'],
+    },
 ];
