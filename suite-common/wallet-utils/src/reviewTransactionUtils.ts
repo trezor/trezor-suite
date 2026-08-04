@@ -6,7 +6,11 @@ import {
 } from '@suite-common/calldata';
 import { EVM_SPENDER_LABELS } from '@suite-common/suite-constants';
 import { type TrezorDevice } from '@suite-common/suite-types';
-import { EARN_YIELD_CLAIM_PROVIDER, networks } from '@suite-common/wallet-config';
+import {
+    EARN_YIELD_CLAIM_PROVIDER,
+    getWrappedNativeSymbol,
+    networks,
+} from '@suite-common/wallet-config';
 import {
     type Account,
     type FormState,
@@ -29,6 +33,7 @@ import {
 } from './deviceUtils';
 import { fromGwei, fromWei } from './ethConverter';
 import {
+    getEvmTransactionPurpose,
     getEvmTransactionTextSignature,
     isEvmApprovalTx,
     isEvmYieldTxByTextSignature,
@@ -179,6 +184,49 @@ export const getClearSignedEvmTradingSwapCoverage = ({
 export const isClearSignedEvmTradingSwapTransaction = (
     params: ClearSignedEvmTradingSwapParams,
 ): boolean => getClearSignedEvmTradingSwapCoverage(params) !== undefined;
+
+type ClearSignedWrappedNativeParams = {
+    account: Account;
+    device: TrezorDevice;
+    precomposedTx: GeneralPrecomposedTransactionFinal;
+    transactionData?: string;
+};
+
+/**
+ * Whether the device will clear-sign this transaction as a canonical WETH wrap/unwrap
+ * (deposit()/withdraw(), fw 2.12.4+), which it renders as provider → intent → amount → fee
+ * summary. Gated on `isEvmClearSigningTx` so a wrapped native the firmware does not clear-sign
+ * (e.g. WBNB on BSC) still falls through to the blind-signing rows.
+ */
+export const isClearSignedWrappedNativeTransaction = ({
+    account,
+    device,
+    precomposedTx,
+    transactionData,
+}: ClearSignedWrappedNativeParams): boolean => {
+    if (account.networkType !== 'ethereum' || !isEvmClearSigningSupportedByDevice(device)) {
+        return false;
+    }
+
+    const network = networks[account.symbol];
+    if (!('chainId' in network)) {
+        return false;
+    }
+
+    const to = precomposedTx.outputs.find(
+        o => 'address' in o && typeof o.address === 'string',
+    )?.address;
+    const wrappedNativeTxParams = {
+        networkSymbol: account.symbol,
+        to,
+        data: transactionData,
+    };
+
+    return (
+        (isWrapNativeTx(wrappedNativeTxParams) || isUnwrapNativeTx(wrappedNativeTxParams)) &&
+        isEvmClearSigningTx(network.chainId, to, transactionData)
+    );
+};
 
 const constructOldFlow = ({
     precomposedTx,
@@ -350,11 +398,13 @@ const constructNewFlow = ({
     availableRewards,
     swapSlippage,
     clearSignedSwapCoverage,
+    isClearSignedWrapUnwrap,
     isApprovalFlowSupported,
     isEvmClearSigningSupported,
     isUpdatedEthereumSendFlow,
     isUpdatedStellarSendFlow,
 }: ConstructOutputsParams & {
+    isClearSignedWrapUnwrap: boolean;
     isUpdatedEthereumSendFlow: boolean;
     isUpdatedStellarSendFlow: boolean;
     isApprovalFlowSupported: boolean;
@@ -378,30 +428,17 @@ const constructNewFlow = ({
     const hasDestinationTag = 'destinationTag' in precomposedForm;
     const trading = precomposedForm?.trading;
 
-    const evmTxType = getEvmTransactionTextSignature(precomposedForm.transactionData);
+    // Resolved from the full context rather than the calldata alone, so that the WETH
+    // deposit()/withdraw() selectors classify as wrap/unwrap instead of 'unknown'.
+    const evmTxType = getEvmTransactionPurpose({
+        networkSymbol: symbol,
+        to: precomposedTx.outputs.find(o => 'address' in o && typeof o.address === 'string')
+            ?.address,
+        data: precomposedForm.transactionData,
+    });
     const isClaimOp = evmTxType === 'claim';
     const isYieldOp = isEvmYieldTxByTextSignature(evmTxType);
     const isEvmClaimClearSign = isUpdatedEthereumSendFlow && isEvmClearSigningSupported;
-
-    // The device clear-signs WETH wrap/unwrap (deposit()/withdraw(), fw 2.12.4+) as a
-    // "Wrap/Unwrap ETH … Amount" screen, so the raw calldata Data row is redundant — suppress
-    // it, mirroring clear-signed swaps. Gated on isEvmClearSigningTx so a wrapped native the
-    // firmware does not clear-sign (e.g. WBNB on BSC) still shows the raw data.
-    const evmNetwork = networks[symbol];
-    const evmChainId = 'chainId' in evmNetwork ? evmNetwork.chainId : undefined;
-    const evmContractAddress = precomposedTx.outputs.find(
-        o => 'address' in o && typeof o.address === 'string',
-    )?.address;
-    const wrappedNativeTxParams = {
-        networkSymbol: symbol,
-        to: evmContractAddress,
-        data: precomposedForm.transactionData,
-    };
-    const isClearSignedWrapUnwrap =
-        isEvmClearSigningSupported &&
-        evmChainId !== undefined &&
-        (isWrapNativeTx(wrappedNativeTxParams) || isUnwrapNativeTx(wrappedNativeTxParams)) &&
-        isEvmClearSigningTx(evmChainId, evmContractAddress, precomposedForm.transactionData);
 
     if (networkType === 'ethereum' && stakeType && isUpdatedEthereumSendFlow) {
         // The firmware clear-signs staking operations as a single confirmation screen followed
@@ -409,6 +446,28 @@ const constructNewFlow = ({
         precomposedTx.outputs.forEach(o => {
             if ('address' in o && typeof o.address === 'string') {
                 outputs.push({ type: 'address', value: o.address });
+            }
+        });
+
+        return outputs;
+    }
+
+    if (isClearSignedWrapUnwrap) {
+        // The firmware walks a clear-signed wrap/unwrap through four screens — provider, intent,
+        // the amount, then the fee summary (`confirm_ethereum_clear_signing`). Mirror them 1:1
+        // (the summary is the review's own total row) so the modal's step pill tracks what is
+        // actually on the device.
+        outputs.push(
+            { type: 'recipient_name', value: getWrappedNativeSymbol(symbol) ?? '' },
+            { type: 'contract_intent', value: '' },
+        );
+
+        precomposedTx.outputs.forEach(o => {
+            if ('address' in o && typeof o.address === 'string') {
+                // Deliberately no `token`: wrapping is 1:1 and the device renders both legs with
+                // the native currency formatter, so passing the WETH token info would make an
+                // unwrap read "WETH" where the device says "ETH".
+                outputs.push({ type: 'amount', value: o.amount.toString() });
             }
         });
 
@@ -503,8 +562,7 @@ const constructNewFlow = ({
             (precomposedForm.transactionData && isEvmApproval && !isApprovalFlowSupported) ||
             (precomposedForm.transactionData && isYieldOp && !isUpdatedEthereumSendFlow) ||
             (precomposedForm.transactionData && isClaimOp && !isEvmClaimClearSign)) &&
-        !isClearSignedTradingSwap &&
-        !isClearSignedWrapUnwrap
+        !isClearSignedTradingSwap
     ) {
         outputs.push({ type: 'data', value: precomposedForm.transactionData });
     }
@@ -754,6 +812,14 @@ export const constructTransactionReviewOutputs = ({
     return constructNewFlow({
         ...params,
         clearSignedSwapCoverage,
+        // Firmware that predates the updated send flow cannot clear-sign at all, so this is
+        // resolved only for the new flow.
+        isClearSignedWrapUnwrap: isClearSignedWrappedNativeTransaction({
+            account: params.account,
+            device,
+            precomposedTx: params.precomposedTx,
+            transactionData: params.precomposedForm.transactionData,
+        }),
         isUpdatedEthereumSendFlow,
         isApprovalFlowSupported: isApprovalSupported(device),
         isEvmClearSigningSupported: isEvmClearSigningSupportedByDevice(device),

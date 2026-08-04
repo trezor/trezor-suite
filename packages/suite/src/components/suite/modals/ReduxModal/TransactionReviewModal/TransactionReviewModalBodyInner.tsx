@@ -116,6 +116,10 @@ export const TransactionReviewModalBodyInner = ({
     const tradingToken = useSelector(selectTradingComposedTransactionInfo).composed?.token;
 
     const isApprovalTx = isEvmApprovalTx(precomposedForm.transactionData);
+    // A contract call's single "address" row is the contract, not a payment recipient, so the
+    // step-back heuristic below must not treat its ConfirmOutput as a re-confirmed output. A vault
+    // deposit otherwise matches every condition and walks the review backwards mid-signing.
+    const isContractCall = !!precomposedForm.transactionData;
 
     const totalRecipients = outputs.filter(({ type }) => type === 'address').length;
     const hasOpReturn = outputs.some(output => output.type === 'opreturn');
@@ -151,7 +155,8 @@ export const TransactionReviewModalBodyInner = ({
                 totalRecipients === 1 && // Currently we only support going bak for =1
                 lastButtonRequestCode === 'ButtonRequest_ConfirmOutput' &&
                 !hasOpReturn &&
-                !isApprovalTx
+                !isApprovalTx &&
+                !isContractCall
             ) {
                 setReviewStep(prev => prev - 1);
             } else {
@@ -166,6 +171,7 @@ export const TransactionReviewModalBodyInner = ({
         totalRecipients,
         hasOpReturn,
         isApprovalTx,
+        isContractCall,
     ]);
 
     const isInternalTransfer = useSelector(state =>
