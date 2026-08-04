@@ -315,7 +315,7 @@ import {
     TronWithdrawUnfreeze,
 } from './messages-tron';
 
-export * from './options';
+export type * from './options';
 export * from './messages-common';
 export * from './messages-bitcoin';
 export * from './messages-ble';
@@ -338,7 +338,7 @@ export * from './messages-telemetry';
 export * from './messages-tezos';
 export * from './messages-thp';
 export * from './messages-tron';
-export * from './messages';
+export type * from './messages';
 
 export type MessageType = Static<typeof MessageType>;
 export const MessageType = Type.Object(
