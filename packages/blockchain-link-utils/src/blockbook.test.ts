@@ -1,5 +1,6 @@
 import * as fixtures from './__fixtures__/blockbook';
 import {
+    filterEthereumInternalTransfers,
     filterTokenTransfers,
     transformAccountInfo,
     transformAccountUtxo,
@@ -108,6 +109,57 @@ describe('blockbook/utils', () => {
                 txs: 1,
                 unconfirmedTxs: 0,
                 nonce: '0', // marks the payload as EVM (isEVM = typeof payload.nonce === 'string')
+                transactions: [evmTx],
+            };
+            let account: ReturnType<typeof transformAccountInfo>;
+            // @ts-expect-error minimal payload shape
+            expect(() => (account = transformAccountInfo(payload))).not.toThrow();
+            expect(account!.history.transactions?.length).toBe(1);
+        });
+    });
+
+    describe('filterEthereumInternalTransfers poison-record DoS resistance', () => {
+        // ethereumSpecific.internalTransfers comes verbatim from an untrusted/user-selectable blockbook
+        // backend. A null / non-object entry would throw on destructuring (unlike the guarded
+        // filterTokenTransfers sibling) and abort the whole account-history .map (per-account DoS).
+        const address = '0x1111111111111111111111111111111111111111';
+        const validTransfer = { type: 0, from: address, to: '0x2222', value: '5' };
+
+        it('drops a poison null entry and keeps the valid internal transfer', () => {
+            let result: ReturnType<typeof filterEthereumInternalTransfers>;
+            expect(
+                () =>
+                    (result = filterEthereumInternalTransfers(address, {
+                        // @ts-expect-error poison null element among typed transfers
+                        internalTransfers: [validTransfer, null],
+                    })),
+            ).not.toThrow();
+            expect(result!).toHaveLength(1);
+            expect(result![0]).toMatchObject({ type: 'sent', amount: '5', from: address });
+        });
+
+        it('does not fail the whole account history when a tx carries a poison internal transfer', () => {
+            const evmTx = {
+                vin: [{ addresses: [address] }],
+                vout: [{ addresses: ['0x2222'] }],
+                ethereumSpecific: {
+                    status: 1,
+                    gasLimit: 21000,
+                    gasUsed: 21000,
+                    gasPrice: '3',
+                    internalTransfers: [validTransfer, null],
+                },
+                value: '90',
+                valueIn: '100',
+                fees: '10',
+            };
+            const payload = {
+                address,
+                balance: '0',
+                unconfirmedBalance: '0',
+                txs: 1,
+                unconfirmedTxs: 0,
+                nonce: '0',
                 transactions: [evmTx],
             };
             let account: ReturnType<typeof transformAccountInfo>;

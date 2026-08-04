@@ -127,10 +127,16 @@ export const filterEthereumInternalTransfers = (
     return (
         internalTransfers
             // type 1 and 2 are filtered out (contract creating and destruction)
+            // guard each record: an untrusted/user-selectable blockbook backend may return a
+            // null / non-object entry, and destructuring it would throw synchronously and abort
+            // the whole account-history .map (per-account DoS). Mirror the filterTokenTransfers sibling.
             .filter(
-                ({ type, from, to }) =>
-                    type === 0 &&
-                    ([from, to].includes(address) || isEthereumStakingInternalTransfer(from, to)),
+                transfer =>
+                    !!transfer &&
+                    typeof transfer === 'object' &&
+                    transfer.type === 0 &&
+                    ([transfer.from, transfer.to].includes(address) ||
+                        isEthereumStakingInternalTransfer(transfer.from, transfer.to)),
             )
             .map(({ from, to, value }) => {
                 const isIncoming = from === address;
