@@ -49,6 +49,7 @@ export { receiveCopyAddressEvent } from './receiveCopyAddressEvent';
 export { receiveFlowEnteredEvent } from './receiveFlowEnteredEvent';
 export { receiveOpenNonFreshAddressEvent } from './receiveOpenNonFreshAddressEvent';
 export { receiveOptionsScreenEvent } from './receiveOptionsScreenEvent';
+export { receiveQRCodeActionEvent } from './receiveQRCodeActionEvent';
 export { receiveShareAddressEvent } from './receiveShareAddressEvent';
 export { receiveStartVerificationEvent } from './receiveStartVerificationEvent';
 export { referralButtonPressEvent } from './referralButtonPressEvent';

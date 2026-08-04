@@ -92,6 +92,7 @@ export enum EventType {
     ReceiveFlowEntered = 'receive/flow_entered',
     ReceiveOpenNonFreshAddress = 'receive/open-non-fresh-address',
     ReceiveOptionsScreen = 'receive/options-screen',
+    ReceiveQRCodeAction = 'receive/qr-code-action',
     ReceiveShareAddress = 'receive/share-address',
     ReceiveStartVerification = 'receive/start-verification',
     // eslint-disable-next-line local-rules/analytics-event-name
