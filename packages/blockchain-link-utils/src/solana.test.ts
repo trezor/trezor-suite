@@ -149,6 +149,51 @@ describe('solana/utils', () => {
         });
     });
 
+    describe('getTokens poison-record hardening', () => {
+        const accountAddress = 'ETxHeBBcuw9Yu4dGuP3oXrD12V5RECvmi8ogQ9PkjyVF';
+        const callGetTokens = (transaction: unknown) =>
+            getTokens(transaction as ParsedTransactionWithMeta, accountAddress, {}, []);
+
+        it('does not throw when meta.innerInstructions is a truthy non-array', () => {
+            const transaction = {
+                transaction: { message: { instructions: [] } },
+                // a malicious/MITM Solana RPC can return an object here instead of an array;
+                // `?.flatMap` optional-chaining does NOT guard against `flatMap is not a function`
+                meta: { innerInstructions: {} },
+            };
+            expect(() => callGetTokens(transaction)).not.toThrow();
+            expect(callGetTokens(transaction)).toEqual([]);
+        });
+
+        it('does not throw when an innerIx.instructions sub-list is a non-array', () => {
+            const transaction = {
+                transaction: { message: { instructions: [] } },
+                meta: { innerInstructions: [{ index: 0, instructions: 'not-an-array' }] },
+            };
+            expect(() => callGetTokens(transaction)).not.toThrow();
+            expect(callGetTokens(transaction)).toEqual([]);
+        });
+
+        it('does not throw when an instruction-list element is a primitive', () => {
+            const transaction = {
+                // `'parsed' in ix` throws on a primitive element ("Cannot use 'in' operator ...")
+                transaction: { message: { instructions: ['poison', 42, null] } },
+                meta: { innerInstructions: [] },
+            };
+            expect(() => callGetTokens(transaction)).not.toThrow();
+            expect(callGetTokens(transaction)).toEqual([]);
+        });
+
+        it('does not throw when a flattened inner instruction element is a primitive', () => {
+            const transaction = {
+                transaction: { message: { instructions: [] } },
+                meta: { innerInstructions: [{ index: 0, instructions: ['poison'] }] },
+            };
+            expect(() => callGetTokens(transaction)).not.toThrow();
+            expect(callGetTokens(transaction)).toEqual([]);
+        });
+    });
+
     describe('transformTransaction', () => {
         fixtures.transformTransaction.forEach(({ description, input, expectedOutput }) => {
             it(description, () => {

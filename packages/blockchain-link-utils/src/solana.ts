@@ -612,6 +612,13 @@ type TokenTransferInstruction = {
 const isTokenTransferInstruction = (
     ix: ParsedInstruction | PartiallyDecodedInstruction,
 ): ix is TokenTransferInstruction => {
+    // `ix` originates from an untrusted/user-selectable Solana RPC; its TS type says it is an object, but
+    // a malicious/MITM backend can return a primitive (e.g. a bare string) as an instruction-list element.
+    // The `'parsed' in ix` check below throws `Cannot use 'in' operator ...` on a primitive, which would
+    // abort the whole account-history page `.map` (per-account DoS). Reject non-object elements up front.
+    if (ix == null || typeof ix !== 'object') {
+        return false;
+    }
     if (!('parsed' in ix)) {
         return false;
     }
@@ -675,10 +682,19 @@ export const getTokens = (
         address === parsed.info.destination ||
         address === parsed.info?.authority;
 
-    const instructions = [
-        ...tx.transaction.message.instructions,
-        ...(tx.meta?.innerInstructions?.flatMap(innerIx => innerIx.instructions) ?? []),
-    ];
+    // `meta.innerInstructions` comes verbatim from an untrusted/user-selectable Solana RPC; its TS type is
+    // `array | undefined`, but a malicious/MITM backend can return a truthy non-array (e.g. `{}`) that the
+    // `?.flatMap` optional-chain does NOT guard against → `flatMap is not a function` throws synchronously
+    // inside the whole-page `.map` in the worker (isValidTransaction does not validate this field) and
+    // aborts the entire account-history page (per-account DoS). Coerce to an array at the boundary and
+    // likewise guard each `innerIx.instructions` sub-array before flattening.
+    const rawInnerInstructions = tx.meta?.innerInstructions;
+    const innerInstructions = Array.isArray(rawInnerInstructions)
+        ? rawInnerInstructions.flatMap(innerIx =>
+              Array.isArray(innerIx?.instructions) ? innerIx.instructions : [],
+          )
+        : [];
+    const instructions = [...tx.transaction.message.instructions, ...innerInstructions];
 
     const effects = instructions
         // filter token transfer instructions that are relevant to the user token accounts
