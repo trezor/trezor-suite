@@ -1,0 +1,294 @@
+:root {
+    --bg: #0b0b0c;
+    --bg-2: #141416;
+    --fg: #e9e9ea;
+    --muted: #9a9aa0;
+    --accent: #f7931a;
+    --accent-dim: #c46e0e;
+    --border: #26262b;
+    --radius: 12px;
+    --mono: ui-monospace, "SF Mono", "JetBrains Mono", "Cascadia Code", Menlo, Consolas, monospace;
+    --sans: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--fg);
+    font-family: var(--sans);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+}
+
+a {
+    color: var(--accent);
+    text-decoration: none;
+}
+a:hover {
+    text-decoration: underline;
+}
+
+code {
+    font-family: var(--mono);
+    font-size: 0.9em;
+    background: rgba(247, 147, 26, 0.1);
+    color: var(--accent);
+    padding: 0.1em 0.35em;
+    border-radius: 5px;
+}
+
+/* ---------- layout ---------- */
+.hero,
+main,
+.footer {
+    max-width: 860px;
+    margin-inline: auto;
+    padding-inline: 24px;
+}
+
+.section {
+    padding-block: 40px;
+    border-top: 1px solid var(--border);
+}
+
+h2 {
+    font-size: 1.5rem;
+    margin: 0 0 16px;
+    letter-spacing: -0.01em;
+}
+
+.prose,
+.note {
+    color: var(--muted);
+    max-width: 64ch;
+}
+
+/* ---------- hero ---------- */
+.hero {
+    padding-top: 24px;
+    padding-bottom: 16px;
+}
+
+.nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-block: 8px 48px;
+}
+
+.brand {
+    font-weight: 700;
+    letter-spacing: -0.01em;
+}
+.brand .mark,
+.ic {
+    color: var(--accent);
+}
+.nav-src {
+    color: var(--muted);
+    font-size: 0.9rem;
+}
+
+.eyebrow {
+    font-family: var(--mono);
+    font-size: 0.8rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 16px;
+}
+
+h1 {
+    font-size: clamp(2.2rem, 6vw, 3.6rem);
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    margin: 0 0 24px;
+}
+
+.lede {
+    font-size: 1.2rem;
+    color: var(--fg);
+    max-width: 56ch;
+    margin: 0 0 32px;
+}
+.lede strong {
+    color: var(--accent);
+}
+
+.cta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+.btn {
+    display: inline-block;
+    padding: 11px 20px;
+    border-radius: 9px;
+    border: 1px solid var(--border);
+    color: var(--fg);
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: border-color 0.15s, background 0.15s, transform 0.05s;
+}
+.btn:hover {
+    text-decoration: none;
+    border-color: var(--accent);
+}
+.btn:active {
+    transform: translateY(1px);
+}
+.btn-primary {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #0b0b0c;
+}
+.btn-primary:hover {
+    background: #ffa733;
+    border-color: #ffa733;
+}
+.btn-ghost {
+    color: var(--muted);
+}
+
+.pin {
+    font-family: var(--mono);
+    font-size: 0.82rem;
+    color: var(--muted);
+    margin: 0;
+}
+
+/* ---------- cards ---------- */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 16px;
+}
+
+.card {
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+}
+.card h3 {
+    margin: 0 0 8px;
+    font-size: 1.05rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.card .ic {
+    font-size: 1.1rem;
+}
+.card p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.95rem;
+}
+
+/* ---------- patch list ---------- */
+.patches {
+    list-style: none;
+    padding: 0;
+    margin: 20px 0 0;
+    counter-reset: none;
+}
+.patches li {
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+    color: var(--fg);
+    font-size: 0.95rem;
+}
+.patches li:last-child {
+    border-bottom: none;
+}
+.pn {
+    display: inline-block;
+    min-width: 3.2em;
+    font-family: var(--mono);
+    color: var(--accent);
+    font-size: 0.85rem;
+}
+
+/* ---------- code block ---------- */
+pre {
+    position: relative;
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    overflow-x: auto;
+    margin: 20px 0;
+}
+pre code {
+    background: none;
+    color: #d4d4d8;
+    padding: 0;
+    font-size: 0.86rem;
+    line-height: 1.7;
+}
+pre code .c {
+    color: var(--muted);
+}
+
+.copy {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: var(--bg);
+    color: var(--muted);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 3px 9px;
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    cursor: pointer;
+}
+.copy:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+}
+
+.note {
+    font-size: 0.9rem;
+    border-left: 2px solid var(--accent-dim);
+    padding-left: 14px;
+}
+
+/* ---------- footer ---------- */
+.footer {
+    padding-block: 40px 64px;
+    border-top: 1px solid var(--border);
+    margin-top: 24px;
+}
+.disclaimer {
+    color: var(--muted);
+    font-size: 0.82rem;
+    max-width: 70ch;
+}
+.links {
+    font-size: 0.9rem;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    color: var(--border);
+}
+
+@media (max-width: 520px) {
+    h1 {
+        letter-spacing: -0.02em;
+    }
+    .lede {
+        font-size: 1.08rem;
+    }
+}

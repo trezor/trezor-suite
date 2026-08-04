@@ -1,0 +1,35 @@
+{
+    "id": "suitedark",
+    "displayName": "Suite Dark",
+    "appId": "io.suitedark.app",
+    "uriScheme": "suitedark",
+    "versionSuffix": "-suitedark",
+    "accentColor": "#F7931A",
+    "telemetry": {
+        "sentry": "disabled",
+        "analytics": "disabled",
+        "autoUpdater": "disabled",
+        "messageSystem": "local"
+    },
+    "features": {
+        "earn": "hidden",
+        "trading": "hidden",
+        "bitcoinOnly": true,
+        "discreetModeByDefault": true,
+        "analyticsToggle": "disabled",
+        "torOnStartup": true,
+        "coinjoin": {
+            "default": true,
+            "coordinatorUrl": "https://coinjoin.kruw.io/wabisabi/",
+            "affiliationId": null
+        }
+    },
+    "publishUrl": null,
+    "upstream": {
+        "repo": "trezor/trezor-suite",
+        "ref": "231704cefe8aa7f7e97cb28ffbc543aa4129a55f",
+        "branch": "develop",
+        "suiteVersion": "26.8.0",
+        "note": "Pinned to an exact develop snapshot (not a stable release tag) so the patch series applies onto the precise tree it was exported against."
+    }
+}

@@ -1,0 +1,208 @@
+name: nightly
+
+# Daily build against the LATEST trezor-suite develop (not the pinned snapshot),
+# published to the rolling "continuous" release. Because the version bumps every run
+# (suiteVersion-suitedark.<run>), installed Windows/Linux/macOS clients auto-update to
+# it — so this doubles as a continuous auto-update test.
+#
+# How it stays a "fork": the fork is the source of truth. This job derives the flavour
+# CODE commits from the fork as patches, clones a fresh develop, and applies them
+# (branding assets + the .yarnrc fix are re-applied by script, not patched, to avoid
+# churn). On conflict (develop drifted from the flavour) the job fails and opens a
+# tracking issue — rebase the fork, then it's green again.
+on:
+    schedule:
+        - cron: "0 3 * * *" # daily 03:00 UTC
+    workflow_dispatch:
+
+concurrency:
+    group: nightly
+    cancel-in-progress: false
+
+permissions:
+    contents: write
+    issues: write
+
+jobs:
+    release:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - name: Ensure rolling "continuous" release exists
+              env:
+                  GH_TOKEN: ${{ github.token }}
+              run: |
+                  gh release view continuous -R "$GITHUB_REPOSITORY" >/dev/null 2>&1 || \
+                      gh release create continuous -R "$GITHUB_REPOSITORY" --prerelease \
+                          --title "Continuous build" \
+                          --notes "Unsigned community desktop builds. Verify downloads against SHA256SUMS."
+
+    build:
+        needs: release
+        timeout-minutes: 120
+        strategy:
+            fail-fast: false
+            matrix:
+                include:
+                    - os: macos-latest
+                      target: mac
+                    - os: ubuntu-latest
+                      target: linux
+                    - os: windows-latest
+                      target: win
+        runs-on: ${{ matrix.os }}
+        steps:
+            - name: Checkout fork (source of truth for the flavour)
+              uses: actions/checkout@v4
+              with:
+                  path: fork
+                  fetch-depth: 0
+                  lfs: true
+
+            - name: Export flavour code patches from the fork
+              shell: bash
+              run: |
+                  set -euo pipefail
+                  cd fork
+                  SNAP=$(git log --format='%H %s' | awk '/Import trezor-suite/{print $1; exit}')
+                  [ -n "$SNAP" ] || { echo "snapshot commit not found"; exit 1; }
+                  mkdir -p "$RUNNER_TEMP/flavour"
+                  # only the "flavour …" code commits (not the distribution/infra commit);
+                  # --binary so any binary hunks carry.
+                  for c in $(git rev-list --reverse "$SNAP"..HEAD); do
+                      case "$(git log -1 --format='%s' "$c")" in
+                          flavour\ *) git format-patch -1 --binary "$c" -o "$RUNNER_TEMP/flavour" >/dev/null ;;
+                      esac
+                  done
+                  echo "exported $(ls "$RUNNER_TEMP/flavour"/*.patch | wc -l) flavour patches"
+
+            - name: Clone trezor-suite @ develop
+              shell: bash
+              run: |
+                  set -euo pipefail
+                  git clone --depth 1 --branch develop --recurse-submodules \
+                      https://github.com/trezor/trezor-suite work
+                  cd work
+                  git lfs install --local
+                  git lfs pull
+
+            - name: Apply flavour onto develop
+              id: apply
+              shell: bash
+              run: |
+                  set -euo pipefail
+                  cd work
+                  git -c user.name="nightly" -c user.email="nightly@localhost" \
+                      am --3way "$RUNNER_TEMP"/flavour/*.patch || {
+                      echo "conflict=1" >> "$GITHUB_OUTPUT"
+                      echo "!! flavour patches do not apply cleanly onto current develop." >&2
+                      git am --show-current-patch=diff >&2 || true
+                      git am --abort || true
+                      exit 1
+                  }
+                  # branding assets + the fragile yarn plugin are handled by script (not patched)
+                  cp ../fork/packages/suite-data/files/images/desktop/512x512.png  packages/suite-data/files/images/desktop/512x512.png
+                  cp ../fork/packages/suite-data/files/images/desktop/512x512.icns packages/suite-data/files/images/desktop/512x512.icns
+                  cp ../fork/packages/suite-data/files/images/favicons/trayMac.png    packages/suite-data/files/images/favicons/trayMac.png 2>/dev/null || true
+                  cp ../fork/packages/suite-data/files/images/favicons/trayMac@2x.png packages/suite-data/files/images/favicons/trayMac@2x.png 2>/dev/null || true
+                  # drop the remote yarn-outdated plugin (breaks yarn install in CI)
+                  perl -0777 -pi -e 's/^plugins:\n(?:  .*\n)*\n//m' .yarnrc.yml || true
+
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: 24
+
+            - name: Compute version (develop's suiteVersion + run number)
+              shell: bash
+              run: |
+                  SV=$(node -p "require('./work/packages/suite/package.json').suiteVersion")
+                  # timestamp suffix = globally monotonic across every workflow/run
+                  TS=$(date -u +%Y%m%d%H%M%S)
+                  echo "FLAVOUR_VERSION=${SV}-suitedark.${TS}" >> "$GITHUB_ENV"
+                  echo "==> Building ${SV}-suitedark.${TS} (from develop)"
+
+            - name: Set up macOS self-signed signing
+              if: matrix.target == 'mac'
+              shell: bash
+              env:
+                  MAC_CSC_LINK: ${{ secrets.MAC_CSC_LINK }}
+                  MAC_CSC_KEY_PASSWORD: ${{ secrets.MAC_CSC_KEY_PASSWORD }}
+              run: |
+                  set -euo pipefail
+                  if [ -z "${MAC_CSC_LINK:-}" ]; then echo "no cert secret — ad-hoc"; exit 0; fi
+                  KC="$RUNNER_TEMP/sd-sign.keychain-db"; KCPW="$(openssl rand -hex 12)"
+                  echo "$MAC_CSC_LINK" | base64 -d > "$RUNNER_TEMP/cert.p12"
+                  security create-keychain -p "$KCPW" "$KC"
+                  security set-keychain-settings -lut 3600 "$KC"
+                  security unlock-keychain -p "$KCPW" "$KC"
+                  security import "$RUNNER_TEMP/cert.p12" -k "$KC" -P "$MAC_CSC_KEY_PASSWORD" -T /usr/bin/codesign
+                  security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "$KCPW" "$KC" >/dev/null
+                  security list-keychains -d user -s "$KC" $(security list-keychains -d user | tr -d '"')
+                  openssl pkcs12 -in "$RUNNER_TEMP/cert.p12" -passin pass:"$MAC_CSC_KEY_PASSWORD" -nokeys -legacy -clcerts -out "$RUNNER_TEMP/cert.cer" 2>/dev/null
+                  sudo security add-trusted-cert -d -r trustRoot -p codeSign -k /Library/Keychains/System.keychain "$RUNNER_TEMP/cert.cer"
+                  echo "CSC_KEYCHAIN=$KC" >> "$GITHUB_ENV"
+                  echo "FLAVOUR_MAC_IDENTITY=Suite Dark Self-Signed" >> "$GITHUB_ENV"
+                  echo "CSC_IDENTITY_AUTO_DISCOVERY=true" >> "$GITHUB_ENV"
+                  rm -f "$RUNNER_TEMP/cert.p12" "$RUNNER_TEMP/cert.cer"
+
+            - name: Build desktop (${{ matrix.target }})
+              shell: bash
+              working-directory: work
+              env:
+                  NODE_ENV: production
+                  FLAVOUR_VERSION: ${{ env.FLAVOUR_VERSION }}
+              run: |
+                  set -euo pipefail
+                  corepack enable
+                  yarn install --immutable
+                  yarn build:libs
+                  yarn build:essential
+                  yarn workspace @trezor/suite-desktop build:${{ matrix.target }}
+
+            - name: Collect installers
+              shell: bash
+              env:
+                  WORK: ${{ github.workspace }}/work
+              run: fork/scripts/release-assets.sh ${{ matrix.target }}
+
+            - name: Upload to rolling release
+              shell: bash
+              env:
+                  GH_TOKEN: ${{ github.token }}
+              run: gh release upload continuous -R "$GITHUB_REPOSITORY" fork/dist/* --clobber
+
+    checksums:
+        needs: build
+        if: always()
+        runs-on: ubuntu-latest
+        steps:
+            - name: Rebuild SHA256SUMS
+              env:
+                  GH_TOKEN: ${{ github.token }}
+              run: |
+                  mkdir sums && cd sums
+                  for i in 1 2 3 4 5; do
+                      gh release download continuous -R "$GITHUB_REPOSITORY" -p 'SuiteDark-*' --clobber && break
+                      sleep 15
+                  done
+                  sha256sum SuiteDark-* > SHA256SUMS
+                  gh release upload continuous -R "$GITHUB_REPOSITORY" SHA256SUMS --clobber
+
+    # If the flavour no longer applies to develop, open/update a tracking issue.
+    notify:
+        needs: build
+        if: failure()
+        runs-on: ubuntu-latest
+        steps:
+            - name: Open conflict tracking issue
+              env:
+                  GH_TOKEN: ${{ github.token }}
+              run: |
+                  TITLE="nightly: flavour no longer applies onto develop"
+                  EXISTING=$(gh issue list -R "$GITHUB_REPOSITORY" --state open --search "$TITLE in:title" --json number -q '.[0].number')
+                  BODY="The nightly develop build failed — most likely the flavour commits no longer apply cleanly onto the current develop. Rebase the fork's flavour commits onto the latest upstream and push. Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+                  if [ -n "$EXISTING" ]; then
+                      gh issue comment "$EXISTING" -R "$GITHUB_REPOSITORY" --body "$BODY"
+                  else
+                      gh issue create -R "$GITHUB_REPOSITORY" --title "$TITLE" --body "$BODY"
+                  fi

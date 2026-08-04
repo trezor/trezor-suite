@@ -1,79 +1,71 @@
-# TREZOR SUITE MONOREPO
+# Suite Dark
 
-Welcome to the Trezor Suite repository! This repository contains the source code for 3 projects:
+An unofficial, **Bitcoin-only, privacy-first** build of
+[Trezor Suite](https://github.com/trezor/trezor-suite) desktop.
 
-- **Connect** - tool that offers developers an easy way to integrate Trezor's functionality into their own applications
-- **Trezor Suite** - desktop and web application for managing Trezor hardware wallet
-- **Trezor Suite Mobile** - Mobile/Tablet application designed for managing Trezor hardware wallet
+Suite Dark is a **fork** of Trezor Suite: the full upstream source pinned at a
+specific commit, plus a small, readable set of commits that cut it down to Bitcoin
+and turn privacy on by default. No shitcoins. No tracking. Tor by default. CoinJoin
+enabled. Dark by default. **No compromise.**
 
-![img](https://repository-images.githubusercontent.com/148657224/439f6100-765f-11e9-9bff-b725eef3c4a6)
+> Website: <https://suite-dark.github.io/suite-dark/> · Desktop only.
 
-# Development
+## What's different from upstream
 
-### Prerequisities
+The entire delta is a handful of single-purpose commits on top of the upstream
+snapshot — read them with `git log <snapshot>..HEAD` or on the
+[commits page](https://github.com/suite-dark/suite-dark/commits/main):
 
-- Install [NVM](https://github.com/nvm-sh/nvm)
-    - _Hint: you can have your shell [automatically switch versions](https://github.com/nvm-sh/nvm/blob/master/README.md#calling-nvm-use-automatically-in-a-directory-with-a-nvmrc-file) in each repo_
-- Enable [Yarn](https://yarnpkg.com/getting-started/install) through npm
-- Install [Git LFS](https://git-lfs.github.com/) (For Linux/Ubuntu, [after adding the repository](https://packagecloud.io/github/git-lfs/install) do `sudo apt-get install git-lfs`, more info [here](https://github.com/git-lfs/git-lfs/blob/main/INSTALLING.md))
-- Optional recommended: [setup PMG](https://docs.trezor.io/trezor-suite/misc/local-development-security.html)
+| Commit | Effect |
+|---|---|
+| Branding | Product name / app id / URI scheme, Bitcoin-orange theme + tray icon. |
+| Privacy — nothing phones home | No Sentry / analytics / auto-updater-telemetry; message-system local-only; re-texted consent; disabled Settings analytics toggle. |
+| Privacy defaults | Tor and discreet mode on by default. |
+| Bitcoin-only | Only BTC everywhere; removes the add-account network search and the MEV protection setting. |
+| Hide Earn / Trading / promo | Removes the Earn & Trading surfaces and the dashboard promo banners. |
+| CoinJoin | Default coordinator `coinjoin.kruw.io`; all "discontinued" messaging removed. |
+| Passwords | Promotes the password manager to a first-class **Passwords** menu item. |
+| Auto-update | From this repo's `continuous` release (Windows/Linux; macOS via a self-signed build — experimental). |
+| Dark theme by default | Light / system still selectable in Settings. |
 
-### Getting started
+## Build it yourself
 
-- `git clone git@github.com:trezor/trezor-suite.git`
-- `cd trezor-suite`
-- `git submodule update --init --recursive`
-- `git lfs install` // Set up Git LFS for your user account. You only need to run this once per user account.
-- `git lfs pull`
-- `nvm install`
-- `yarn`
-- `yarn build:essential`
+Prereqs: **Node 24**, **Yarn** (via corepack), git.
 
-It's recommended to enable `git config --global submodule.recurse true` so you don't need to run `git submodule update --init --recursive` every time when submodules are updated.
+```bash
+git clone --recurse-submodules https://github.com/suite-dark/suite-dark
+cd suite-dark
+yarn install
+yarn build:libs
+yarn build:essential          # signs the bundled message-system config (dev key, no secrets)
+yarn workspace @trezor/suite-desktop build:mac   # or build:linux / build:win
+# → packages/suite-desktop/build-electron/SuiteDark-*
+```
 
-> You don't need a Trezor device to get into the app, you can use emulator. There is a [Trezor User Env](https://github.com/trezor/trezor-user-env) to help you set it up and run emulator for any Trezor model 🎉
+Builds are **unsigned**, so macOS Gatekeeper / Windows SmartScreen warn on first
+launch — expected for a build you verify yourself.
 
-> You can use Nix to set up the repository — see [Nix Documentation](docs/misc/development-on-nix.md).
+## Download
 
-## **Connect** @trezor/connect
+Prebuilt desktop binaries: **[Releases](https://github.com/suite-dark/suite-dark/releases)**
+(rolling `continuous` tag). Verify your download against `SHA256SUMS`.
 
-This repository is used for development of version 10 of @trezor/connect. For detailed documentation, please refer to this [page](./docs/packages/connect/index.md).
+## Tracking upstream
 
-Historically, Trezor Connect had its [own repository](https://github.com/trezor/connect). This repository is now archived.
+Suite Dark pins an upstream snapshot (see the `Import trezor-suite …` commit) and
+carries its changes as commits on top. To move onto a newer upstream release,
+re-import the snapshot and rebase the Suite Dark commits onto it — the delta stays
+small and explicit.
 
-## **Trezor Suite** @trezor/suite
+## CI
 
-Dev environment is primarily supported on **macOS or Linux**,
-though development on Windows is possible by following [this guide](https://docs.trezor.io/trezor-suite/misc/development-on-windows.html).
+`.github/workflows/build.yml` is a manual (`workflow_dispatch`) matrix build for
+macOS / Linux / Windows that publishes to the `continuous` release. `pages.yml`
+publishes `site/` to GitHub Pages. (Upstream's workflows are intentionally removed.)
 
-Run a dev build:
+---
 
-- `yarn suite:dev` (web app)
-- `yarn suite:dev:vite` (⚠️ EXPERIMENTAL: web app with Vite bundler used for **development only**, use `yarn suite:dev` if you want fidelity to production app)
-- `yarn suite:dev:desktop` (electron app)
-    - React dev tools are available with a known caveat: you need to reload the renderer process (Ctrl+R or Cmd+R) while having the dev tools open
-- `yarn suite:build:web:preview` (localhost of production web app with applied security headers)
-
-Local `.env` setup (optional):
-
-- Rename `env.local.example` to `.env.local` in the repo root.
-- Set `TANSTACK_REACT_QUERY_DEV_TOOLS=true` to enable TanStack React Query Devtools on localhost.
-- Set `TRANSPORT_BROWSER_PING=false` to disable transport period ping.
-
-## **Trezor Suite Mobile** @suite-native/app
-
-> To set up your dev environment for a native platform (iOS/Android) follow [these additional steps](https://github.com/trezor/trezor-suite/tree/develop/suite-native/app#prerequisites).
-
-## Contribute
-
-Inspired by [GitLab Contributing Guide](https://docs.gitlab.com/ee/development/contributing/)
-
-Using [Conventional Commits](COMMITS.md) is required.
-
-## Security vulnerability disclosure
-
-Please report suspected security vulnerabilities in private to [security@satoshilabs.com](mailto:security@satoshilabs.com), also see [the disclosure section on the Trezor.io website](https://trezor.io/security). Please do NOT create publicly viewable issues for suspected security vulnerabilities.
-
-## IDE specific settings
-
-Find specific settings for Integrated Development Environments (IDE) in [IDE.md](./IDE.md)
+Suite Dark is an **unofficial, community-built** distribution. It is **not**
+affiliated with, endorsed by, or supported by SatoshiLabs / Trezor. "Trezor" and
+"Trezor Suite" are trademarks of their respective owners. Provided as-is, no
+warranty. Always verify what you run.

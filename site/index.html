@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>Suite Dark — a Bitcoin-only, privacy-first build of Trezor Suite</title>
+        <meta
+            name="description"
+            content="Suite Dark is an unofficial, Bitcoin-only, privacy-first build of Trezor Suite. No shitcoins, no tracking, Tor by default, CoinJoin enabled. A small, auditable fork of Trezor Suite — reproduce it yourself."
+        />
+        <meta name="color-scheme" content="dark" />
+        <meta property="og:title" content="Suite Dark — Trezor Suite, stripped to what matters" />
+        <meta
+            property="og:description"
+            content="Bitcoin-only. Privacy by default. No compromise. A small, auditable fork of Trezor Suite."
+        />
+        <meta property="og:type" content="website" />
+        <!-- Inline SVG favicon — no external request -->
+        <link
+            rel="icon"
+            href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23F7931A'/%3E%3Ctext x='16' y='23' font-size='20' font-family='monospace' font-weight='bold' text-anchor='middle' fill='%230b0b0c'%3E%E2%82%BF%3C/text%3E%3C/svg%3E"
+        />
+        <link rel="stylesheet" href="style.css" />
+    </head>
+    <body>
+        <header class="hero">
+            <nav class="nav">
+                <span class="brand"><span class="mark">₿</span> Suite Dark</span>
+                <a class="nav-src" href="https://github.com/suite-dark/suite-dark">source ↗</a>
+            </nav>
+
+            <p class="eyebrow">Unofficial build · Bitcoin-only · Privacy-first</p>
+            <h1>Trezor Suite,<br />stripped to what matters.</h1>
+            <p class="lede">
+                The same trusted Trezor Suite codebase — with the altcoins, the upsells and the
+                telemetry removed, and privacy turned on by default. No shitcoins. No tracking.
+                <strong>No compromise.</strong>
+            </p>
+            <div class="cta">
+                <a class="btn btn-primary" href="#download">Download</a>
+                <a class="btn" href="#reproduce">Verify the build</a>
+                <a
+                    class="btn btn-ghost"
+                    href="https://github.com/suite-dark/suite-dark/commits/main"
+                    >Read the commits ↗</a
+                >
+            </div>
+            <p class="pin">
+                Pinned to Trezor Suite <code>develop @ 860f96c</code> (suite 26.9.0) · 10 commits ·
+                desktop only
+            </p>
+        </header>
+
+        <main>
+            <section class="section">
+                <h2>Why this build exists</h2>
+                <p class="prose">
+                    Trezor Suite is excellent software buried under features you never asked for —
+                    altcoins, staking, yield, exchange integrations, anonymous analytics. Suite Dark is
+                    that same software with the noise cut out and privacy switched on. It is not a
+                    rewrite and it is not a closed fork: it is a short, ordered set of commits applied
+                    on top of <em>official</em> Trezor Suite source, pinned to an exact commit.
+                    Nothing more, nothing hidden.
+                </p>
+            </section>
+
+            <section class="section">
+                <h2>What you get</h2>
+                <div class="grid">
+                    <article class="card">
+                        <h3><span class="ic">₿</span> Bitcoin-only focus</h3>
+                        <p>
+                            Earn, staking, yield and the entire buy / sell / swap surface are hidden.
+                            No altcoin clutter pulling at your attention.
+                        </p>
+                    </article>
+                    <article class="card">
+                        <h3><span class="ic">⊘</span> No tracking</h3>
+                        <p>
+                            Analytics and Sentry crash reporting are disabled at build time. The app
+                            talks to your node and your coordinator — plus, on Windows/Linux, an update
+                            check against this project's own GitHub releases (opt-out in Settings).
+                        </p>
+                    </article>
+                    <article class="card">
+                        <h3><span class="ic">↻</span> Auto-updates</h3>
+                        <p>
+                            Windows and Linux builds update themselves from this repo's releases — no
+                            re-downloading. macOS too, via a self-signed build (experimental; first
+                            launch still shows the usual unsigned-app warning).
+                        </p>
+                    </article>
+                    <article class="card">
+                        <h3><span class="ic">🧅</span> Tor by default</h3>
+                        <p>
+                            The desktop app routes through Tor from the very first launch, instead of
+                            asking you to remember to turn it on.
+                        </p>
+                    </article>
+                    <article class="card">
+                        <h3><span class="ic">⇄</span> CoinJoin, working</h3>
+                        <p>
+                            CoinJoin is re-enabled and pointed at a live community coordinator
+                            (<code>coinjoin.kruw.io</code>) — and the "discontinued" banner is gone.
+                        </p>
+                    </article>
+                    <article class="card">
+                        <h3><span class="ic">⌂</span> Local config</h3>
+                        <p>
+                            No remote "message system." The app does not fetch banners, promos or
+                            remote feature flags. What ships is what runs.
+                        </p>
+                    </article>
+                    <article class="card">
+                        <h3><span class="ic">✓</span> Don't trust, verify</h3>
+                        <p>
+                            Every difference from upstream is a plain, readable commit. Build it
+                            yourself and check it matches.
+                        </p>
+                    </article>
+                    <article class="card">
+                        <h3><span class="ic">🔑</span> Passwords, first-class</h3>
+                        <p>
+                            The Trezor-backed password manager is promoted out of experimental into a
+                            full "Passwords" item in the left menu.
+                        </p>
+                    </article>
+                </div>
+            </section>
+
+            <section class="section">
+                <h2>Exactly what changed</h2>
+                <p class="prose">
+                    The whole flavour is 10 commits on top of <code>develop @ 860f96c</code>. That's
+                    the complete diff — read every line in the
+                    <a href="https://github.com/suite-dark/suite-dark/commits/main">repo</a>.
+                </p>
+                <ol class="patches">
+                    <li>
+                        <span class="pn">0001</span> Branding — product name / app id / URI scheme,
+                        version suffix, Bitcoin-orange theme &amp; tray icon.
+                    </li>
+                    <li>
+                        <span class="pn">0002</span> Nothing phones home — analytics, Sentry and the
+                        auto-updater off; message system local-only; consent screen re-texted; settings
+                        toggle disabled.
+                    </li>
+                    <li>
+                        <span class="pn">0003</span> Privacy defaults — Tor and discreet mode on by
+                        default.
+                    </li>
+                    <li>
+                        <span class="pn">0004</span> Bitcoin-only — only BTC everywhere; removes the
+                        add-account network search and the MEV protection setting.
+                    </li>
+                    <li>
+                        <span class="pn">0005</span> Hide Earn, Trading and the dashboard promo banners.
+                    </li>
+                    <li>
+                        <span class="pn">0006</span> CoinJoin enabled — default coordinator + all
+                        "discontinued" messaging removed.
+                    </li>
+                    <li>
+                        <span class="pn">0007</span> Password manager promoted to a first-class
+                        "Passwords" menu feature.
+                    </li>
+                    <li>
+                        <span class="pn">0008</span> Auto-update from this repo's releases
+                        (Windows/Linux; macOS gated off — unsigned).
+                    </li>
+                    <li>
+                        <span class="pn">0009</span> Dark theme by default (light/system still
+                        selectable in Settings).
+                    </li>
+                    <li>
+                        <span class="pn">0010</span> macOS auto-update via a self-signed build
+                        (experimental).
+                    </li>
+                </ol>
+            </section>
+
+            <section class="section">
+                <h2>A fork, kept honest</h2>
+                <p class="prose">
+                    Suite Dark is a fork of Trezor Suite pinned at a specific upstream commit, with the
+                    changes above as a small set of commits on top. The whole delta is
+                    <code>git log &lt;snapshot&gt;..HEAD</code> — a handful of readable commits, nothing
+                    hidden. When upstream moves, we re-pin the snapshot and rebase, so you always know
+                    exactly what you're running and how far it sits from the original.
+                </p>
+            </section>
+
+            <section class="section" id="reproduce">
+                <h2>Reproduce the build yourself</h2>
+                <p class="prose">
+                    The point of an open build is that you don't have to take our word for it. With
+                    git, <strong>Node 24</strong> and <strong>Yarn</strong> installed, you can produce
+                    the desktop app from official source on your own machine:
+                </p>
+                <pre data-copy><code># 1. Clone the fork (full source + Suite Dark's commits)
+git clone --recurse-submodules https://github.com/suite-dark/suite-dark
+cd suite-dark
+
+# 2. Install + build the shared libs and the signed message-system config
+yarn install
+yarn build:libs
+yarn build:essential
+
+# 3. Build the desktop app (mac | linux | win)
+yarn workspace @trezor/suite-desktop build:mac
+
+# → packages/suite-desktop/build-electron/SuiteDark-mac-*.dmg</code></pre>
+                <p class="note">
+                    The community builds are <strong>unsigned</strong>, so macOS Gatekeeper and Windows
+                    SmartScreen will warn on first launch — that is expected for a build you verify
+                    yourself rather than one signed by a vendor. Want a signed build? You'll need your
+                    own certificates.
+                </p>
+            </section>
+
+            <section class="section" id="download">
+                <h2>Get it</h2>
+                <p class="prose">
+                    Pre-built, <strong>unsigned</strong> desktop binaries from the latest continuous
+                    build. Your OS will warn on first launch (that's expected — see
+                    <a href="#reproduce">below</a>) — or build from source and trust your own machine.
+                </p>
+                <div class="cta">
+                    <a
+                        class="btn btn-primary"
+                        href="https://github.com/suite-dark/suite-dark/releases/download/continuous/SuiteDark-mac-arm64.dmg"
+                        >macOS · Apple Silicon</a
+                    >
+                    <a
+                        class="btn"
+                        href="https://github.com/suite-dark/suite-dark/releases/download/continuous/SuiteDark-mac-x64.dmg"
+                        >macOS · Intel</a
+                    >
+                    <a
+                        class="btn"
+                        href="https://github.com/suite-dark/suite-dark/releases/download/continuous/SuiteDark-win-x64.exe"
+                        >Windows</a
+                    >
+                    <a
+                        class="btn"
+                        href="https://github.com/suite-dark/suite-dark/releases/download/continuous/SuiteDark-linux-x86_64.AppImage"
+                        >Linux · AppImage</a
+                    >
+                </div>
+                <p class="note">
+                    Verify your download against
+                    <a
+                        href="https://github.com/suite-dark/suite-dark/releases/download/continuous/SHA256SUMS"
+                        >SHA256SUMS</a
+                    >, browse
+                    <a href="https://github.com/suite-dark/suite-dark/releases">all releases</a>, or
+                    <a href="#reproduce">reproduce the build</a> yourself.
+                </p>
+            </section>
+        </main>
+
+        <footer class="footer">
+            <p class="disclaimer">
+                Suite Dark is an <strong>unofficial, community-built</strong> distribution. It is
+                <strong>not</strong> affiliated with, endorsed by, or supported by SatoshiLabs /
+                Trezor. "Trezor" and "Trezor Suite" are trademarks of their respective owners. This
+                software is provided as-is, with no warranty. Always verify what you run.
+            </p>
+            <p class="links">
+                <a href="https://github.com/suite-dark/suite-dark">Source</a>
+                <span>·</span>
+                <a href="https://github.com/suite-dark/suite-dark/commits/main">Commits</a>
+                <span>·</span>
+                <a href="https://github.com/trezor/trezor-suite">Upstream Trezor Suite ↗</a>
+            </p>
+        </footer>
+
+        <script>
+            // Progressive enhancement: add a copy button to each code block.
+            // The page is fully usable (and readable) without JavaScript.
+            document.querySelectorAll('pre[data-copy]').forEach(pre => {
+                const btn = document.createElement('button');
+                btn.className = 'copy';
+                btn.type = 'button';
+                btn.textContent = 'copy';
+                btn.addEventListener('click', () => {
+                    navigator.clipboard
+                        ?.writeText(pre.querySelector('code').innerText)
+                        .then(() => {
+                            btn.textContent = 'copied';
+                            setTimeout(() => (btn.textContent = 'copy'), 1500);
+                        });
+                });
+                pre.appendChild(btn);
+            });
+        </script>
+    </body>
+</html>

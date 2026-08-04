@@ -1,0 +1,141 @@
+name: build
+
+# Matrix build of the Suite Dark desktop app for macOS / Linux / Windows, published
+# to a rolling "continuous" GitHub Release with stable, versionless asset names so the
+# website can link to permanent /releases/download/continuous/<file> URLs.
+#
+# This is a fork of trezor-suite: the app is built directly from this repo (no patch
+# apply step). Manual trigger. Free on a public repo.
+on:
+    workflow_dispatch:
+
+concurrency:
+    group: build
+    cancel-in-progress: false
+
+permissions:
+    contents: write # create the release + upload assets via GITHUB_TOKEN
+
+jobs:
+    release:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - name: Ensure rolling "continuous" release exists
+              env:
+                  GH_TOKEN: ${{ github.token }}
+              run: |
+                  gh release view continuous -R "$GITHUB_REPOSITORY" >/dev/null 2>&1 || \
+                      gh release create continuous -R "$GITHUB_REPOSITORY" \
+                          --prerelease \
+                          --title "Continuous build" \
+                          --notes "Unsigned community desktop builds. First launch triggers OS warnings (macOS Gatekeeper / Windows SmartScreen) — expected for a build you verify yourself. Check downloads against SHA256SUMS."
+
+    build:
+        needs: release
+        timeout-minutes: 120
+        strategy:
+            fail-fast: false
+            matrix:
+                include:
+                    - os: macos-latest
+                      target: mac
+                    - os: ubuntu-latest
+                      target: linux
+                    - os: windows-latest
+                      target: win
+        runs-on: ${{ matrix.os }}
+        steps:
+            - uses: actions/checkout@v4
+              with:
+                  submodules: recursive # trezor-common
+                  lfs: true # coinjoin / tor / bluetooth binaries are LFS-tracked
+
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: 24
+
+            # Monotonically increasing version so electron-updater detects new builds
+            # (e.g. 26.8.0-suitedark.42).
+            - name: Compute rolling version
+              shell: bash
+              run: |
+                  SV=$(node -p "require('./packages/suite/package.json').suiteVersion")
+                  # timestamp suffix = globally monotonic across every workflow/run
+                  TS=$(date -u +%Y%m%d%H%M%S)
+                  echo "FLAVOUR_VERSION=${SV}-suitedark.${TS}" >> "$GITHUB_ENV"
+                  echo "==> Building version ${SV}-suitedark.${TS}"
+
+            # macOS only: sign with the stable self-signed cert so Squirrel.Mac accepts
+            # auto-updates. No-op (ad-hoc) if the MAC_CSC_LINK secret isn't set.
+            - name: Set up macOS self-signed signing
+              if: matrix.target == 'mac'
+              shell: bash
+              env:
+                  MAC_CSC_LINK: ${{ secrets.MAC_CSC_LINK }}
+                  MAC_CSC_KEY_PASSWORD: ${{ secrets.MAC_CSC_KEY_PASSWORD }}
+              run: |
+                  set -euo pipefail
+                  if [ -z "${MAC_CSC_LINK:-}" ]; then
+                      echo "MAC_CSC_LINK not set — building ad-hoc (no macOS auto-update)."
+                      exit 0
+                  fi
+                  KC="$RUNNER_TEMP/sd-sign.keychain-db"
+                  KCPW="$(openssl rand -hex 12)"
+                  echo "$MAC_CSC_LINK" | base64 -d > "$RUNNER_TEMP/cert.p12"
+                  security create-keychain -p "$KCPW" "$KC"
+                  security set-keychain-settings -lut 3600 "$KC"
+                  security unlock-keychain -p "$KCPW" "$KC"
+                  security import "$RUNNER_TEMP/cert.p12" -k "$KC" -P "$MAC_CSC_KEY_PASSWORD" -T /usr/bin/codesign
+                  security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "$KCPW" "$KC" >/dev/null
+                  security list-keychains -d user -s "$KC" $(security list-keychains -d user | tr -d '"')
+                  openssl pkcs12 -in "$RUNNER_TEMP/cert.p12" -passin pass:"$MAC_CSC_KEY_PASSWORD" -nokeys -legacy -clcerts -out "$RUNNER_TEMP/cert.cer" 2>/dev/null
+                  sudo security add-trusted-cert -d -r trustRoot -p codeSign -k /Library/Keychains/System.keychain "$RUNNER_TEMP/cert.cer"
+                  security find-identity -v -p codesigning "$KC"
+                  echo "CSC_KEYCHAIN=$KC" >> "$GITHUB_ENV"
+                  echo "FLAVOUR_MAC_IDENTITY=Suite Dark Self-Signed" >> "$GITHUB_ENV"
+                  echo "CSC_IDENTITY_AUTO_DISCOVERY=true" >> "$GITHUB_ENV"
+                  rm -f "$RUNNER_TEMP/cert.p12" "$RUNNER_TEMP/cert.cer"
+
+            - name: Build desktop (${{ matrix.target }})
+              shell: bash
+              env:
+                  NODE_ENV: production
+                  FLAVOUR_VERSION: ${{ env.FLAVOUR_VERSION }}
+              run: |
+                  set -euo pipefail
+                  corepack enable
+                  yarn install --immutable
+                  yarn build:libs
+                  yarn build:essential
+                  yarn workspace @trezor/suite-desktop build:${{ matrix.target }}
+
+            - name: Collect installers (stable names)
+              shell: bash
+              env:
+                  WORK: ${{ github.workspace }}
+              run: scripts/release-assets.sh ${{ matrix.target }}
+
+            - name: Upload to rolling release
+              shell: bash
+              env:
+                  GH_TOKEN: ${{ github.token }}
+              run: gh release upload continuous -R "$GITHUB_REPOSITORY" dist/* --clobber
+
+    checksums:
+        needs: build
+        if: always()
+        runs-on: ubuntu-latest
+        steps:
+            - name: Rebuild SHA256SUMS from release assets
+              env:
+                  GH_TOKEN: ${{ github.token }}
+              run: |
+                  mkdir sums && cd sums
+                  for i in 1 2 3 4 5; do
+                      gh release download continuous -R "$GITHUB_REPOSITORY" -p 'SuiteDark-*' --clobber && break
+                      echo "download attempt $i failed; retrying in 15s"; sleep 15
+                  done
+                  sha256sum SuiteDark-* > SHA256SUMS
+                  echo "== SHA256SUMS =="; cat SHA256SUMS
+                  gh release upload continuous -R "$GITHUB_REPOSITORY" SHA256SUMS --clobber
