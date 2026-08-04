@@ -84,6 +84,7 @@ const connectPublicCallableMethodGroups = {
         'ethereumSignTransaction',
         'ethereumSignMessage',
         'ethereumSignTypedData',
+        'ethereumSignAuth7702',
         'ethereumVerifyMessage',
     ],
     cardano: [

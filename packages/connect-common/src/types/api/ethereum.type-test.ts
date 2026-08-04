@@ -251,3 +251,37 @@ export const signTypedData = async (api: TrezorConnect) => {
         domain_separator_hash: '0x',
     });
 };
+
+export const signAuth7702 = async (api: TrezorConnect) => {
+    const signed = await api.ethereumSignAuth7702({
+        path: "m/44'/60'/0'/0/0",
+        chainId: 1,
+        delegate: '0x63c0c19a282a1b52b07dd5a65b58948a07dae32b',
+        nonce: 0,
+        __experimental: true,
+    });
+
+    if (signed.success) {
+        const { payload } = signed;
+        payload.yParity.toFixed();
+        payload.r.toLowerCase();
+        payload.s.toLowerCase();
+    }
+
+    // @ts-expect-error: `__experimental` opt-in is missing
+    await api.ethereumSignAuth7702({
+        path: "m/44'/60'/0'/0/0",
+        chainId: 1,
+        delegate: '0x63c0c19a282a1b52b07dd5a65b58948a07dae32b',
+        nonce: 0,
+    });
+
+    await api.ethereumSignAuth7702({
+        path: "m/44'/60'/0'/0/0",
+        chainId: 1,
+        delegate: '0x63c0c19a282a1b52b07dd5a65b58948a07dae32b',
+        // @ts-expect-error: nonce is a number
+        nonce: '0x0',
+        __experimental: true,
+    });
+};
