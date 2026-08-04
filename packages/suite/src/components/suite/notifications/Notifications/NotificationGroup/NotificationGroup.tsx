@@ -1,9 +1,9 @@
 import { Translation, type TranslationKey } from '@suite/intl';
+import { getSeenAndUnseenNotifications } from '@suite-common/toast-notifications';
 import { Column, H2, H4, IconCircle, Paragraph } from '@trezor/components';
 import { BellZIcon } from '@trezor/icons';
 
 import { type AppState } from 'src/types/suite';
-import { getSeenAndUnseenNotifications } from 'src/utils/suite/notification';
 
 import { NotificationList } from './NotificationList/NotificationList';
 
