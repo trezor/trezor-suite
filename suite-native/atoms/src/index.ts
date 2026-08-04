@@ -60,7 +60,6 @@ export * from './Pictogram/Pictogram';
 export * from './TitleHeader/PictogramTitleHeader';
 export * from './TitleHeader/TitleHeader';
 export * from './TitleHeader/CenteredTitleHeader';
-export * from './NotificationDot';
 export * from './RoundedIcon';
 export * from './CompoundRoundedIcon';
 export * from './TrezorSuiteHeader';

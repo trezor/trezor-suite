@@ -33,6 +33,7 @@ const usedIcons = [
     'atom',
     'backspace',
     'bank',
+    'bell',
     'bluetooth',
     'bluetoothConnected',
     'bluetoothSlash',
