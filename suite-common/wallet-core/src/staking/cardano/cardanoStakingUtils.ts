@@ -128,6 +128,10 @@ export const selectBestCardanoPool = (pools?: AdaPools['pools'], currentPoolId?:
     };
 };
 
+// https://cips.cardano.org/cip/CIP-0129 governance key header bytes for DRep ids.
+const CIP129_DREP_KEY_HASH_HEADER = 0x22;
+const CIP129_DREP_SCRIPT_HASH_HEADER = 0x23;
+
 export const validateCardanoDrep = (drepId: string): boolean => {
     try {
         const { prefix, words } = bech32.decode(drepId as `${string}1${string}`);
@@ -137,6 +141,18 @@ export const validateCardanoDrep = (drepId: string): boolean => {
         if (bytes.length !== 28 && bytes.length !== 29) return false;
 
         if (prefix === 'drep_script' && bytes.length !== 28) return false;
+
+        // CIP-129 (29-byte) ids carry a header byte that must map to a supported
+        // DRep type; otherwise parseDrepCip129 would throw. Keep validation aligned
+        // with parsing so a bech32-valid but unsupported-header id is rejected here
+        // instead of throwing later during transaction composition.
+        if (
+            bytes.length === 29 &&
+            bytes[0] !== CIP129_DREP_KEY_HASH_HEADER &&
+            bytes[0] !== CIP129_DREP_SCRIPT_HASH_HEADER
+        ) {
+            return false;
+        }
 
         return true;
     } catch {
@@ -150,9 +166,9 @@ const parseDrepCip129 = (bytes: number[]) => {
     const hex = Buffer.from(bytes.slice(1)).toString('hex');
 
     switch (header) {
-        case 0x22:
+        case CIP129_DREP_KEY_HASH_HEADER:
             return { type: PROTO.CardanoDRepType.KEY_HASH, hex };
-        case 0x23:
+        case CIP129_DREP_SCRIPT_HASH_HEADER:
             return { type: PROTO.CardanoDRepType.SCRIPT_HASH, hex };
         default:
             throw new Error(`Unsupported DRep id CIP-129 header: ${header}`);
