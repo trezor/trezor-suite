@@ -27,7 +27,10 @@ interface SubmitWithdrawThunkArguments extends WithdrawThunkArguments {
 
 export const submitTronWithdrawThunk = createThunk<void, SubmitWithdrawThunkArguments>(
     `${TRON_STAKE_MODULE}/submitTronWithdrawThunk`,
-    async ({ account, device, requestPushApproval, onSigningStart, onSettled }, { dispatch }) => {
+    async (
+        { account, device, requestPushApproval, onSigningStart, onSettled },
+        { dispatch, extra },
+    ) => {
         const { key: accountKey } = account;
         const flow: TronFlow = 'withdraw';
 
@@ -147,7 +150,10 @@ export const submitTronWithdrawThunk = createThunk<void, SubmitWithdrawThunkArgu
                     target: {
                         addresses: [account.descriptor],
                         amount: unitsToSubunits({
-                            value: asAmountUnit(new BigNumber(getTronWithdrawableBalance(account))),
+                            ...extra.services,
+                            value: asAmountUnit(
+                                new BigNumber(getTronWithdrawableBalance(extra.services, account)),
+                            ),
                             symbol: account.symbol,
                         }).toString(),
                     },

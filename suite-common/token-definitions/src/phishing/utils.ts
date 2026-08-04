@@ -1,3 +1,4 @@
+import type { GetNetworkConfigDep } from '@suite-common/networks';
 import type {
     RatesByTimestamps,
     Timestamp,
@@ -23,7 +24,7 @@ import {
 export const isTransactionWhitelisted = (transaction: TransactionWithFiatAmount) =>
     PHISHING_WHITELISTED_TX_TYPES.includes(transaction.type);
 
-interface GetTransactionAmountInFiatProps {
+interface GetTransactionAmountInFiatProps extends GetNetworkConfigDep {
     transaction: WalletAccountTransaction;
     amount: string;
     contractAddress?: TokenAddress;
@@ -32,6 +33,7 @@ interface GetTransactionAmountInFiatProps {
 }
 
 const getTransactionAmountInFiat = ({
+    getNetworkConfig,
     transaction,
     amount,
     contractAddress,
@@ -47,35 +49,33 @@ const getTransactionAmountInFiat = ({
     );
     const roundedTimestamp = roundTimestampToNearestPastHour(transaction.blockTime as Timestamp);
 
-    const amountInUnits = subunitsToUnits(
-        decimals
-            ? {
-                  value: asAmountSubunit(new BigNumber(amount)),
-                  decimals,
-              }
-            : {
-                  value: asAmountSubunit(new BigNumber(amount)),
-                  symbol: transaction.symbol,
-              },
-    );
+    const amountInUnits = decimals
+        ? subunitsToUnits({ value: asAmountSubunit(new BigNumber(amount)), decimals })
+        : subunitsToUnits({
+              getNetworkConfig,
+              value: asAmountSubunit(new BigNumber(amount)),
+              symbol: transaction.symbol,
+          });
 
     const fiatRate = historicRates?.[fiatRateKey]?.[roundedTimestamp];
 
     return toFiatCurrency({ amount: amountInUnits, rate: fiatRate })?.toString();
 };
 
-interface GetTransactionWithFiatAmountsProps {
+interface GetTransactionWithFiatAmountsProps extends GetNetworkConfigDep {
     transaction: WalletAccountTransaction;
     historicRates?: RatesByTimestamps;
 }
 
 export const getTransactionWithFiatAmounts = ({
+    getNetworkConfig,
     transaction,
     historicRates,
 }: GetTransactionWithFiatAmountsProps): TransactionWithFiatAmount => ({
     ...transaction,
     amountInFiat: getTransactionAmountInFiat({
         transaction,
+        getNetworkConfig,
         amount: transaction.amount,
         historicRates,
     }),
@@ -83,6 +83,7 @@ export const getTransactionWithFiatAmounts = ({
         ...token,
         amountInFiat: getTransactionAmountInFiat({
             transaction,
+            getNetworkConfig,
             amount: token.amount,
             contractAddress: token.contract as TokenAddress,
             decimals: token.decimals,
@@ -93,6 +94,7 @@ export const getTransactionWithFiatAmounts = ({
         ...internalTransfer,
         amountInFiat: getTransactionAmountInFiat({
             transaction,
+            getNetworkConfig,
             amount: internalTransfer.amount,
             historicRates,
         }),

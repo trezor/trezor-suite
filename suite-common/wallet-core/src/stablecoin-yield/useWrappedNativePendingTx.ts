@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
+import { type GetNetworkConfigDep } from '@suite-common/networks';
 import { type Account } from '@suite-common/wallet-types';
 import {
     type WrappedNativePendingTxStatus,
@@ -22,6 +23,7 @@ export type { WrappedNativePendingTxStatus };
  * while pending. Follows a fee-bump replacement by its EVM nonce.
  */
 export const useWrappedNativePendingTx = (
+    deps: GetNetworkConfigDep,
     account: Account | null,
     txid: string | null,
     flowType: WrappedNativeFlowType,
@@ -31,7 +33,7 @@ export const useWrappedNativePendingTx = (
         selectAccountTransactions(state, account?.key ?? null),
     );
     const feeInfo = useSelector((state: FeesRootState) =>
-        selectConvertedNetworkFeeInfo(state, account?.symbol),
+        selectConvertedNetworkFeeInfo(state, account?.symbol, deps),
     );
     const [trackedNonce, setTrackedNonce] = useState<{ txid: string; nonce: number } | null>(null);
     const trackedTransaction = txid

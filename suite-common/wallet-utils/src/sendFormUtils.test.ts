@@ -1,4 +1,5 @@
-import { asNetworkSymbol, networks, networksCollection } from '@suite-common/wallet-config';
+import { getNetworks } from '@suite-common/wallet-config';
+import { mockNetworkConfigDeps } from '@suite-common/wallet-config/mocks';
 import {
     mockWalletAccount,
     networkSpecificDefaultRipple,
@@ -13,10 +14,10 @@ import {
     calculateTotal,
     calculateTotalGasCost,
     findComposeErrors,
-    getAmountValidationResult,
-    getBitcoinComposeOutputs,
-    getCryptoAmountWithReserve,
-    getCryptoMaxAmountWithReserve,
+    getAmountValidationResult as getAmountValidationResultBase,
+    getBitcoinComposeOutputs as getBitcoinComposeOutputsBase,
+    getCryptoAmountWithReserve as getCryptoAmountWithReserveBase,
+    getCryptoMaxAmountWithReserve as getCryptoMaxAmountWithReserveBase,
     getExternalComposeOutput,
     getLowestFeeFromLevels,
     isAmountWithinNetworkReserve,
@@ -24,8 +25,38 @@ import {
     restoreOrigOutputsOrder,
 } from './sendFormUtils';
 
-const btcSymbol = asNetworkSymbol('btc');
-const ethSymbol = asNetworkSymbol('eth');
+const networksCollection = getNetworks(mockNetworkConfigDeps);
+const networks = {
+    eth: networksCollection.find(network => network.symbol === 'eth')!,
+    xrp: networksCollection.find(network => network.symbol === 'xrp')!,
+};
+
+const getBitcoinComposeOutputs = (
+    values: Parameters<typeof getBitcoinComposeOutputsBase>[1],
+    symbol: Parameters<typeof getBitcoinComposeOutputsBase>[2],
+    isSatoshis?: Parameters<typeof getBitcoinComposeOutputsBase>[3],
+) => getBitcoinComposeOutputsBase(mockNetworkConfigDeps, values, symbol, isSatoshis);
+
+const getAmountValidationResult = (
+    params: Omit<
+        Parameters<typeof getAmountValidationResultBase>[0],
+        keyof typeof mockNetworkConfigDeps
+    >,
+) => getAmountValidationResultBase({ ...mockNetworkConfigDeps, ...params });
+
+const getCryptoAmountWithReserve = (
+    params: Omit<
+        Parameters<typeof getCryptoAmountWithReserveBase>[0],
+        keyof typeof mockNetworkConfigDeps
+    >,
+) => getCryptoAmountWithReserveBase({ ...mockNetworkConfigDeps, ...params });
+
+const getCryptoMaxAmountWithReserve = (
+    params: Omit<
+        Parameters<typeof getCryptoMaxAmountWithReserveBase>[0],
+        keyof typeof mockNetworkConfigDeps
+    >,
+) => getCryptoMaxAmountWithReserveBase({ ...mockNetworkConfigDeps, ...params });
 
 describe('sendForm utils', () => {
     fixtures.prepareEthereumTransaction.forEach(f => {
@@ -115,7 +146,7 @@ describe('sendForm utils', () => {
         // @ts-expect-error: invalid params
         expect(getBitcoinComposeOutputs('A', 'btc')).toEqual([]);
 
-        expect(getBitcoinComposeOutputs({ outputs: [] }, btcSymbol)).toEqual([]);
+        expect(getBitcoinComposeOutputs({ outputs: [] }, 'btc')).toEqual([]);
 
         let outputs: any[] = [
             null,
@@ -123,10 +154,10 @@ describe('sendForm utils', () => {
             { type: 'payment', amount: '' },
             { type: 'payment', amount: '1' },
         ];
-        expect(getBitcoinComposeOutputs({ outputs }, btcSymbol)).toEqual([
+        expect(getBitcoinComposeOutputs({ outputs }, 'btc')).toEqual([
             { type: 'payment-noaddress', amount: '100000000' },
         ]);
-        expect(getBitcoinComposeOutputs({ outputs }, btcSymbol, true)).toEqual([
+        expect(getBitcoinComposeOutputs({ outputs }, 'btc', true)).toEqual([
             { type: 'payment-noaddress', amount: '1' },
         ]);
 
@@ -146,7 +177,7 @@ describe('sendForm utils', () => {
                     setMaxOutputId: 2,
                     outputs,
                 },
-                btcSymbol,
+                'btc',
             ),
         ).toEqual([
             { type: 'payment', amount: '100000000', address: 'A' },
@@ -162,7 +193,7 @@ describe('sendForm utils', () => {
                     setMaxOutputId: 0,
                     outputs,
                 },
-                btcSymbol,
+                'btc',
             ),
         ).toEqual([{ type: 'send-max-noaddress' }]);
 
@@ -173,7 +204,7 @@ describe('sendForm utils', () => {
                     setMaxOutputId: 0,
                     outputs,
                 },
-                btcSymbol,
+                'btc',
             ),
         ).toEqual([{ type: 'send-max', address: 'A' }]);
 
@@ -182,7 +213,7 @@ describe('sendForm utils', () => {
             { type: 'payment', amount: '', address: 'A' },
             { type: 'payment', amount: '1', address: 'B' },
         ];
-        expect(getBitcoinComposeOutputs({ outputs }, btcSymbol)).toEqual([
+        expect(getBitcoinComposeOutputs({ outputs }, 'btc')).toEqual([
             { type: 'payment-noaddress', amount: '100000000', address: 'B' },
         ]);
 
@@ -197,7 +228,7 @@ describe('sendForm utils', () => {
                     setMaxOutputId: 1,
                     outputs,
                 },
-                btcSymbol,
+                'btc',
             ),
         ).toEqual([{ type: 'send-max-noaddress', address: 'B' }]);
 
@@ -205,7 +236,7 @@ describe('sendForm utils', () => {
             { type: 'payment', amount: '', address: 'A' },
             { type: 'payment', amount: '1' },
         ];
-        expect(getBitcoinComposeOutputs({ outputs }, btcSymbol)).toEqual([
+        expect(getBitcoinComposeOutputs({ outputs }, 'btc')).toEqual([
             { type: 'payment-noaddress', amount: '100000000' },
         ]);
     });
@@ -241,7 +272,7 @@ describe('sendForm utils', () => {
         };
 
         const EthAccount = mockWalletAccount({
-            symbol: ethSymbol,
+            symbol: 'eth',
             tokens: [
                 {
                     standard: 'ERC20',
@@ -377,7 +408,7 @@ describe('sendForm utils', () => {
     describe('getAmountValidationResult', () => {
         describe('should test bitcoin without tokens', () => {
             const btcAccount = mockWalletAccount({
-                symbol: btcSymbol,
+                symbol: 'btc',
                 tokens: undefined,
                 balance: '1000000000', // 10 BTC
                 availableBalance: '10000000', // 0.1 BTC
@@ -403,7 +434,7 @@ describe('sendForm utils', () => {
         describe('should test ripple (with reserve)', () => {
             const rippleAccount = mockWalletAccount(
                 {
-                    symbol: asNetworkSymbol('xrp'),
+                    symbol: 'xrp',
                     tokens: undefined,
                     balance: '10000000', // 10 XRP
                     availableBalance: '9000000', // 9 XRP
@@ -430,7 +461,7 @@ describe('sendForm utils', () => {
         describe('should test stellar (with reserve)', () => {
             const stellarAccount = mockWalletAccount(
                 {
-                    symbol: asNetworkSymbol('xlm'),
+                    symbol: 'xlm',
                     balance: '100000000', // 10 XLM
                     availableBalance: '95000000', // 9.5 XLM
                 },
@@ -458,7 +489,7 @@ describe('sendForm utils', () => {
 
         describe('should test token balances', () => {
             const tokenAccount = mockWalletAccount({
-                symbol: ethSymbol,
+                symbol: 'eth',
                 balance: '0',
                 availableBalance: '0',
                 tokens: [

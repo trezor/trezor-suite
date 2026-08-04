@@ -1,3 +1,4 @@
+import type { GetNetworkConfigDep } from '@suite-common/networks';
 import { createThunk } from '@suite-common/redux-utils';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
@@ -39,6 +40,7 @@ import { selectBlockchainBlockInfoBySymbol } from '../blockchain/blockchainReduc
 import { selectAddressDisplayType } from '../settings/walletSettingsReducer';
 
 const calculate = (
+    deps: GetNetworkConfigDep,
     availableBalance: string,
     output: ExternalOutput,
     feeLevel: FeeLevel,
@@ -61,16 +63,19 @@ const calculate = (
 
         if (composeContext) {
             const feesInUnits = subunitsToUnits({
+                ...deps,
                 value: asAmountSubunit(new BigNumber(feeInLamports)),
                 symbol: composeContext.account.symbol,
             }).toString();
 
             const maxInUnits = subunitsToUnits({
+                ...deps,
                 value: asAmountSubunit(new BigNumber(max)),
                 symbol: composeContext.account.symbol,
             }).toString();
 
             max = getCryptoMaxAmountWithReserve({
+                ...deps,
                 symbol: composeContext.account.symbol,
                 contractAddress: token?.contract,
                 balance: composeContext.account.formattedBalance,
@@ -80,6 +85,7 @@ const calculate = (
             });
 
             max = unitsToSubunits({
+                ...deps,
                 value: asAmountUnit(new BigNumber(max)),
                 symbol: composeContext.account.symbol,
             }).toString();
@@ -170,7 +176,7 @@ export const composeSolanaTransactionFeeLevelsThunk = createThunk<
     `${SEND_MODULE_PREFIX}/composeSolanaTransactionFeeLevelsThunk`,
     async (
         { formState, composeContext, isNetworkReserveEnabled = false },
-        { getState, rejectWithValue },
+        { getState, rejectWithValue, extra },
     ) => {
         const { account, network, feeInfo } = composeContext;
         const composedOutput = getExternalComposeOutput(formState, account, network);
@@ -287,6 +293,7 @@ export const composeSolanaTransactionFeeLevelsThunk = createThunk<
 
         const response = predefinedLevels.map(level =>
             calculate(
+                extra.services,
                 account.availableBalance,
                 output,
                 level,
@@ -316,7 +323,10 @@ export const composeSolanaTransactionFeeLevelsThunk = createThunk<
                 tx.errorMessage = {
                     id: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE',
                     values: {
-                        networkDisplaySymbol: getNetworkDisplaySymbol(network.symbol),
+                        networkDisplaySymbol: getNetworkDisplaySymbol(
+                            extra.services,
+                            network.symbol,
+                        ),
                     },
                 };
             }

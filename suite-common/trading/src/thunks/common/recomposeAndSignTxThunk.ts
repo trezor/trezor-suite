@@ -2,7 +2,7 @@ import { isRejectedWithValue } from '@reduxjs/toolkit';
 
 import { isApprovalFlowSupported, selectSelectedDevice } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
-import { getNetwork } from '@suite-common/wallet-config';
+import { toNetwork } from '@suite-common/wallet-config';
 import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants';
 import {
     composeSendFormTransactionFeeLevelsThunk,
@@ -90,12 +90,12 @@ export const recomposeAndSignTxThunk = createThunk<
             tradingFormState,
             signAndPushSendFormTransaction,
         }: RecomposeAndSignTxThunkProps,
-        { dispatch, getState, rejectWithValue, fulfillWithValue },
+        { dispatch, getState, rejectWithValue, fulfillWithValue, extra },
     ) => {
         const { composed, selectedFee } = selectTradingComposedTransactionInfo(getState());
         const options: FormOptions[] = ['broadcast'];
-        const network = getNetwork(account.symbol);
-        const feeInfo = selectConvertedNetworkFeeInfo(getState(), account.symbol);
+        const network = toNetwork(account.symbol, extra.services.getNetworkConfig(account.symbol));
+        const feeInfo = selectConvertedNetworkFeeInfo(getState(), account.symbol, extra.services);
         const device = selectSelectedDevice(getState());
 
         const isPaymentRequestsAllowed = selectTradingIsSlip24Allowed(
@@ -242,6 +242,7 @@ export const recomposeAndSignTxThunk = createThunk<
             ? subunitsToUnits({
                   value: asAmountSubunit(new BigNumber(sendAmount)),
                   symbol: account.symbol,
+                  getNetworkConfig: extra.services.getNetworkConfig,
                   ...(composed.token?.decimals
                       ? { decimals: composed.token?.decimals }
                       : undefined),

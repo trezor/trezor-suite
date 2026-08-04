@@ -403,6 +403,7 @@ export const runDiscoveryThunk = createThunk(
 
             const accountsParam = selectDiscoveryAccountsParam(
                 getState(),
+                extra.services,
                 deviceState.staticSessionId,
                 discovered,
             );
@@ -438,11 +439,21 @@ export const runDiscoveryThunk = createThunk(
                         }
 
                         accountQueue.forEach(account =>
-                            dispatch(accountsActions.createAccount(account)),
+                            dispatch(
+                                accountsActions.createAccount(
+                                    account,
+                                    extra.services.getNetworkConfig,
+                                ),
+                            ),
                         );
                         accountQueue.splice(0, accountQueue.length);
                     }
-                    dispatch(accountsActions.createAccount(accountPayload));
+                    dispatch(
+                        accountsActions.createAccount(
+                            accountPayload,
+                            extra.services.getNetworkConfig,
+                        ),
+                    );
                 }
 
                 dispatch(discoveryActions.updateDiscovery(discoveryPayload, device.path));
@@ -632,7 +643,7 @@ export const startDiscoveryThunk = createThunk(
 
 export const runAdditionalDiscoveryThunk = createThunk(
     `${DISCOVERY_MODULE_PREFIX}/runAdditional`,
-    async (staticSessionId: StaticSessionId, { dispatch, getState }): Promise<void> => {
+    async (staticSessionId: StaticSessionId, { dispatch, getState, extra }): Promise<void> => {
         // todo: not now, but in the future, there could be more devices (wallets) sharing the same static session id, for example
         // an imported wallet + wallet on the physical device. So this should run for all the applicable devices/wallets
 
@@ -640,7 +651,7 @@ export const runAdditionalDiscoveryThunk = createThunk(
 
         assertDeviceIsAuthorized(device);
 
-        const accountsToRemove = selectAccountsToBeForgotten(getState());
+        const accountsToRemove = selectAccountsToBeForgotten(getState(), extra.services);
         if (accountsToRemove.length > 0) {
             dispatch(accountsActions.removeAccount(accountsToRemove));
         }
@@ -686,6 +697,7 @@ export const runAdditionalDiscoveryThunk = createThunk(
 
         const accountsParam = selectDiscoveryAccountsParam(
             getState(),
+            extra.services,
             staticSessionId,
             device.discovered,
         );
@@ -702,7 +714,9 @@ export const runAdditionalDiscoveryThunk = createThunk(
                 discovery,
             );
 
-            dispatch(accountsActions.createAccount(accountPayload));
+            dispatch(
+                accountsActions.createAccount(accountPayload, extra.services.getNetworkConfig),
+            );
             dispatch(discoveryActions.updateDiscovery(discoveryPayload, device.path));
         };
 

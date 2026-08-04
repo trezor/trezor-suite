@@ -1,5 +1,6 @@
 import { createReducer } from '@reduxjs/toolkit';
 
+import type { GetNetworkConfigDep } from '@suite-common/networks';
 import { createWeakMapSelector } from '@suite-common/redux-utils';
 import { formatDurationStrict } from '@suite-common/suite-utils';
 import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
@@ -54,30 +55,42 @@ export const selectRawNetworkFeeInfo = createMemoizedSelector(
     (fees, symbol): FeeInfo | undefined => (symbol !== undefined ? fees[symbol]?.data : undefined),
 );
 
+const getConvertedNetworkFeeInfo = (
+    fees: FeesState,
+    symbol: NetworkSymbol | undefined,
+    deps: GetNetworkConfigDep,
+): FeeInfo | null => {
+    if (!symbol || !fees[symbol]) return null;
+
+    return getConvertedOrDefaultFeeInfo({
+        networkType: getNetworkType(deps, symbol),
+        feeInfo: fees[symbol].data,
+    });
+};
+
 /**
  * Returns feeInfo per network, cleaned up, and for Ethereum also converted from wei to Gwei.
  */
 export const selectConvertedNetworkFeeInfo = createMemoizedSelector(
-    [selectFees, (_state: FeesRootState, symbol?: NetworkSymbol) => symbol],
-    (fees, symbol): FeeInfo | null => {
-        if (!symbol || !fees[symbol]) return null;
-
-        const networkType = getNetworkType(symbol);
-        const feeInfo = getConvertedOrDefaultFeeInfo({
-            networkType,
-            feeInfo: fees[symbol].data,
-        });
-
-        return feeInfo;
-    },
+    [
+        selectFees,
+        (_state: FeesRootState, symbol?: NetworkSymbol) => symbol,
+        (_state, _symbol: NetworkSymbol | undefined, deps: GetNetworkConfigDep) => deps,
+    ],
+    getConvertedNetworkFeeInfo,
 );
 
 /**
  * Returns whether the network supports EIP-1559 based on the fee info.
  */
 export const selectIsEip1559Fee = createMemoizedSelector(
-    [(_state: FeesRootState, symbol?: NetworkSymbol) => symbol, selectConvertedNetworkFeeInfo],
-    (symbol, feeInfo): boolean => {
+    [
+        selectFees,
+        (_state: FeesRootState, symbol?: NetworkSymbol) => symbol,
+        (_state, _symbol: NetworkSymbol | undefined, deps: GetNetworkConfigDep) => deps,
+    ],
+    (fees, symbol, deps): boolean => {
+        const feeInfo = getConvertedNetworkFeeInfo(fees, symbol, deps);
         if (!symbol || !feeInfo?.levels?.[0]) return false;
 
         return isEip1559(feeInfo.levels[0]);
@@ -86,10 +99,18 @@ export const selectIsEip1559Fee = createMemoizedSelector(
 
 export const selectNetworkFeeLevel = createMemoizedSelector(
     [
-        selectConvertedNetworkFeeInfo,
+        selectFees,
+        (_state: FeesRootState, symbol?: NetworkSymbol) => symbol,
         (_state: FeesRootState, _symbol?: NetworkSymbol, level?: FeeLevelLabel) => level,
+        (
+            _state: FeesRootState,
+            _symbol: NetworkSymbol | undefined,
+            _level: FeeLevelLabel | undefined,
+            deps: GetNetworkConfigDep,
+        ) => deps,
     ],
-    (networkFeeInfo, level): FeeLevel | null => {
+    (fees, symbol, level, deps): FeeLevel | null => {
+        const networkFeeInfo = getConvertedNetworkFeeInfo(fees, symbol, deps);
         if (!networkFeeInfo) return null;
         const feeLevel = networkFeeInfo.levels.find(x => x.label === level);
 
@@ -99,14 +120,22 @@ export const selectNetworkFeeLevel = createMemoizedSelector(
 
 export const selectConvertedNetworkFeeLevelTimeEstimate = createMemoizedSelector(
     [
-        selectConvertedNetworkFeeInfo,
-        selectNetworkFeeLevel,
+        selectFees,
         (_state: FeesRootState, symbol?: NetworkSymbol) => symbol,
+        (_state: FeesRootState, _symbol?: NetworkSymbol, level?: FeeLevelLabel) => level,
+        (
+            _state: FeesRootState,
+            _symbol: NetworkSymbol | undefined,
+            _level: FeeLevelLabel | undefined,
+            deps: GetNetworkConfigDep,
+        ) => deps,
     ],
-    (networkFeeInfo, feeLevel, symbol): string | null => {
+    (fees, symbol, level, deps): string | null => {
+        const networkFeeInfo = getConvertedNetworkFeeInfo(fees, symbol, deps);
+        const feeLevel = networkFeeInfo?.levels.find(item => item.label === level);
         if (!feeLevel || !networkFeeInfo) return null;
 
-        const networkType = symbol ? getNetworkType(symbol) : null;
+        const networkType = symbol ? getNetworkType(deps, symbol) : null;
 
         const multiplier = networkType === 'bitcoin' ? 60 : 1;
 
@@ -115,8 +144,20 @@ export const selectConvertedNetworkFeeLevelTimeEstimate = createMemoizedSelector
 );
 
 export const selectConvertedNetworkFeeLevelFeePerUnit = createMemoizedSelector(
-    [selectNetworkFeeLevel],
-    (feeLevel): string | null => {
+    [
+        selectFees,
+        (_state: FeesRootState, symbol?: NetworkSymbol) => symbol,
+        (_state: FeesRootState, _symbol?: NetworkSymbol, level?: FeeLevelLabel) => level,
+        (
+            _state: FeesRootState,
+            _symbol: NetworkSymbol | undefined,
+            _level: FeeLevelLabel | undefined,
+            deps: GetNetworkConfigDep,
+        ) => deps,
+    ],
+    (fees, symbol, level, deps): string | null => {
+        const networkFeeInfo = getConvertedNetworkFeeInfo(fees, symbol, deps);
+        const feeLevel = networkFeeInfo?.levels.find(item => item.label === level);
         if (!feeLevel) return null;
 
         return feeLevel.feePerUnit;

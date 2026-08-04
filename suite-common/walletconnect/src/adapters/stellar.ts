@@ -4,7 +4,12 @@ import type { ProposalTypes } from '@walletconnect/types';
 import * as trezorConnectPopupActions from '@suite-common/connect-popup';
 import { selectSelectedDevice } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
-import { type Network, getNetwork, networksCollection } from '@suite-common/wallet-config';
+import {
+    type Network,
+    type NetworkConfigDeps,
+    getNetworks,
+    toNetwork,
+} from '@suite-common/wallet-config';
 import { selectAccounts } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import TrezorConnect, { type CallMethodResponse } from '@trezor/connect';
@@ -42,9 +47,12 @@ const SUPPORTED_OPERATION_TYPES = new Set([
     'claimClaimableBalance',
 ]);
 
-const resolveStellarRequestContext = (event: WalletKitTypes.SessionRequest) => {
+const resolveStellarRequestContext = (
+    deps: NetworkConfigDeps,
+    event: WalletKitTypes.SessionRequest,
+) => {
     const { chainId } = event.params;
-    const network = networksCollection.find(
+    const network = getNetworks(deps).find(
         nc => nc.networkType === 'stellar' && nc.caipId === chainId,
     );
 
@@ -68,8 +76,8 @@ const stellarSignXDR = createThunk<
     }
 >(
     `${WALLETCONNECT_MODULE}/stellarSignXDR`,
-    async ({ session, xdrBase64, origin, event }, { dispatch, getState }) => {
-        const { testnet } = resolveStellarRequestContext(event);
+    async ({ session, xdrBase64, origin, event }, { dispatch, getState, extra }) => {
+        const { testnet } = resolveStellarRequestContext(extra.services, event);
 
         const { parseTransactionFromXDR } = await loadStellar();
 
@@ -132,7 +140,7 @@ const stellarRequestThunk = createThunk<
     {
         event: WalletKitTypes.SessionRequest;
     }
->(`${WALLETCONNECT_MODULE}/stellarRequest`, async ({ event }, { dispatch, getState }) => {
+>(`${WALLETCONNECT_MODULE}/stellarRequest`, async ({ event }, { dispatch, getState, extra }) => {
     const session = selectSessionByTopic(getState(), event.topic);
     if (!session) {
         throw new Error('WalletConnect Session not found');
@@ -153,7 +161,7 @@ const stellarRequestThunk = createThunk<
         case 'stellar_signAndSubmitXDR': {
             const { xdr } = event.params.request.params;
             const { origin } = event.verifyContext.verified;
-            const context = resolveStellarRequestContext(event);
+            const context = resolveStellarRequestContext(extra.services, event);
 
             const result = await dispatch(
                 stellarSignXDR({ session, xdrBase64: xdr, origin, event }),
@@ -174,7 +182,10 @@ const stellarRequestThunk = createThunk<
 
 export const getChainId = (network: Network) => (network.caipId ? [network.caipId] : []);
 
-export const getNamespace = (accounts: Account[]): Record<string, WalletConnectNamespace> => {
+export const getNamespace = (
+    deps: NetworkConfigDeps,
+    accounts: Account[],
+): Record<string, WalletConnectNamespace> => {
     const stellar = {
         chains: [],
         accounts: [],
@@ -183,7 +194,7 @@ export const getNamespace = (accounts: Account[]): Record<string, WalletConnectN
     } as WalletConnectNamespace;
 
     accounts.forEach(account => {
-        const network = getNetwork(account.symbol);
+        const network = toNetwork(account.symbol, deps.getNetworkConfig(account.symbol));
         const { networkType } = network;
 
         if (!account.visible || networkType !== 'stellar') return;
@@ -205,6 +216,7 @@ export const getNamespace = (accounts: Account[]): Record<string, WalletConnectN
 };
 
 const processNamespaces = (
+    deps: NetworkConfigDeps,
     accounts: Account[],
     networks: PendingConnectionProposalNetwork[],
     namespaces: ProposalTypes.RequiredNamespaces,
@@ -216,7 +228,7 @@ const processNamespaces = (
                 namespace.chains?.forEach(chain => {
                     const alreadyAdded = networks.some(network => network.namespaceId === chain);
                     if (alreadyAdded) return;
-                    const supported = networksCollection.find(nc => chain === nc.caipId);
+                    const supported = getNetworks(deps).find(network => chain === network.caipId);
                     const getStatus = () => {
                         if (!supported) return 'unsupported';
                         const hasAccounts = accounts.some(

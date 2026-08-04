@@ -1,4 +1,5 @@
 import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { mockNetworkConfigDeps } from '@suite-common/wallet-config/mocks';
 import { PROTO } from '@trezor/connect';
 
 import { prepareDisplaySymbolFormatter } from './prepareDisplaySymbolFormatter';
@@ -7,7 +8,7 @@ describe('prepareDisplaySymbolFormatter', () => {
     let displaySymbolFormatter: ReturnType<typeof prepareDisplaySymbolFormatter>;
 
     beforeEach(() => {
-        displaySymbolFormatter = prepareDisplaySymbolFormatter({
+        displaySymbolFormatter = prepareDisplaySymbolFormatter(mockNetworkConfigDeps, {
             coins: [],
             locale: 'en',
             bitcoinAmountUnit: PROTO.AmountUnit.BITCOIN,

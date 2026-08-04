@@ -1,4 +1,5 @@
-import { type NetworkSymbol, getNetworkFeatures } from '@suite-common/wallet-config';
+import type { GetNetworkConfigDep } from '@suite-common/networks';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { type SolanaStakingAccount } from '@trezor/blockchain-link-types';
 import {
@@ -19,11 +20,14 @@ export function isSupportedSolStakingNetworkSymbol(
     return isSupportedSolanaNetwork(symbol);
 }
 
-export const getSolanaStakingSymbols = (networkSymbols: NetworkSymbol[]) =>
+export const getSolanaStakingSymbols = (
+    deps: GetNetworkConfigDep,
+    networkSymbols: NetworkSymbol[],
+) =>
     networkSymbols.reduce((acc, networkSymbol) => {
         if (
             isSupportedSolStakingNetworkSymbol(networkSymbol) &&
-            getNetworkFeatures(networkSymbol).includes('staking')
+            deps.getNetworkConfig(networkSymbol).features.includes('staking')
         ) {
             acc.push(networkSymbol);
         }
@@ -49,7 +53,7 @@ export const calculateTotalSolStakingBalance = (stakingAccounts: SolanaStakingAc
     return totalAmount.toString();
 };
 
-export const getSolAccountTotalStakingBalance = (account: Account) => {
+export const getSolAccountTotalStakingBalance = (deps: GetNetworkConfigDep, account: Account) => {
     if (!account?.misc || account.networkType !== 'solana') {
         return null;
     }
@@ -60,11 +64,11 @@ export const getSolAccountTotalStakingBalance = (account: Account) => {
     const totalStakingBalance = calculateTotalSolStakingBalance(solStakingAccounts);
     if (!totalStakingBalance) return null;
 
-    return formatNetworkAmount(totalStakingBalance, account.symbol);
+    return formatNetworkAmount(deps, totalStakingBalance, account.symbol);
 };
 
-export const getSolanaCryptoBalanceWithStaking = (account: Account) => {
-    const stakingBalance = getSolAccountTotalStakingBalance(account);
+export const getSolanaCryptoBalanceWithStaking = (deps: GetNetworkConfigDep, account: Account) => {
+    const stakingBalance = getSolAccountTotalStakingBalance(deps, account);
 
     return new BigNumber(account.formattedBalance).plus(stakingBalance ?? 0).toString();
 };
@@ -103,13 +107,17 @@ export const getStakingAccountCurrentStatus = (account?: Account) => {
     return null;
 };
 
-export const getSolStakingAccountTotalBalanceByStatus = (account: Account, status: string) => {
+export const getSolStakingAccountTotalBalanceByStatus = (
+    deps: GetNetworkConfigDep,
+    account: Account,
+    status: string,
+) => {
     if (account.networkType !== 'solana') return '0';
 
     const selectedStakingAccounts = getSolanaStakingAccountsByStatus(account, status);
     const stakingBalance = calculateTotalSolStakingBalance(selectedStakingAccounts) ?? '0';
 
-    return formatNetworkAmount(stakingBalance, account.symbol);
+    return formatNetworkAmount(deps, stakingBalance, account.symbol);
 };
 
 export type SolanaUnstakeAmountBounds = {
@@ -121,12 +129,15 @@ export type SolanaUnstakeAmountBounds = {
 // accounts are consumed whole in ASC order and the requested remainder is split off the next one,
 // which is only possible when both split legs stay above MIN_STAKE_DELEGATION.
 export const getSolanaUnstakeAmountBounds = (
+    deps: GetNetworkConfigDep,
     account: Account,
     requestedAmount: string,
 ): SolanaUnstakeAmountBounds | null => {
     if (account.networkType !== 'solana') return null;
 
-    const requested = new BigNumber(networkAmountToSmallestUnit(requestedAmount, account.symbol));
+    const requested = new BigNumber(
+        networkAmountToSmallestUnit(deps, requestedAmount, account.symbol),
+    );
     if (!requested.isFinite() || requested.lte(0)) return null;
 
     const activeAccounts = getSolanaStakingAccountsByStatus(account, StakeState.Active);
@@ -170,9 +181,15 @@ export const getSolanaUnstakeAmountBounds = (
 
         return {
             ...(closestLower.gt(0)
-                ? { closestLower: formatNetworkAmount(closestLower.toString(), account.symbol) }
+                ? {
+                      closestLower: formatNetworkAmount(
+                          deps,
+                          closestLower.toString(),
+                          account.symbol,
+                      ),
+                  }
                 : {}),
-            closestHigher: formatNetworkAmount(closestHigher.toString(), account.symbol),
+            closestHigher: formatNetworkAmount(deps, closestHigher.toString(), account.symbol),
         };
     }
 
@@ -181,9 +198,9 @@ export const getSolanaUnstakeAmountBounds = (
 
 type StakeStateType = (typeof StakeState)[keyof typeof StakeState];
 
-export const getSolStakingAccountsInfo = (account: Account) => {
+export const getSolStakingAccountsInfo = (deps: GetNetworkConfigDep, account: Account) => {
     const balanceResults = Object.values(StakeState).map(status => {
-        const balance = getSolStakingAccountTotalBalanceByStatus(account, status);
+        const balance = getSolStakingAccountTotalBalanceByStatus(deps, account, status);
 
         return [status, balance];
     });

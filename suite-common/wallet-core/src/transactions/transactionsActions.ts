@@ -1,5 +1,6 @@
 import { createAction } from '@reduxjs/toolkit';
 
+import type { GetNetworkConfig } from '@suite-common/networks';
 import {
     type Account,
     type AccountKey,
@@ -48,14 +49,14 @@ type AddTransactionActionResult = {
 
 const addTransaction = createAction(
     `${TRANSACTIONS_MODULE_PREFIX}/addTransaction`,
-    ({
-        transactions,
-        account,
-        page,
-        perPage,
-    }: AddTransactionActionProps): AddTransactionActionResult => ({
+    (
+        { transactions, account, page, perPage }: AddTransactionActionProps,
+        getNetworkConfig: GetNetworkConfig,
+    ): AddTransactionActionResult => ({
         payload: {
-            transactions: transactions.map(t => enhanceTransaction(t, account)),
+            transactions: transactions.map(t =>
+                enhanceTransaction({ getNetworkConfig }, t, account),
+            ),
             account,
             page,
             perPage,

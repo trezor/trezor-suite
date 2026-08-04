@@ -1,4 +1,4 @@
-import { getNetwork } from '@suite-common/wallet-config';
+import type { GetNetworkConfigDep } from '@suite-common/networks';
 import { type Account, type FormState, type TronResourceType } from '@suite-common/wallet-types';
 import { asAmountUnit, unitsToSubunits } from '@suite-common/wallet-utils';
 import * as tronUtils from '@trezor/network-tron/utils';
@@ -31,6 +31,7 @@ export const buildUnfreezeBalanceV2Contract = ({
 export type TronUnstakeContract = ReturnType<typeof buildUnfreezeBalanceV2Contract>;
 
 export const buildUnstakeContract = (
+    deps: GetNetworkConfigDep,
     account: Account,
     amount: string,
     resourceType: TronResourceType,
@@ -43,7 +44,7 @@ export const buildUnstakeContract = (
 
     const balance = unitsToSubunits({
         value: asAmountUnit(new BigNumber(amount)),
-        decimals: getNetwork(account.symbol).decimals,
+        decimals: deps.getNetworkConfig(account.symbol).decimals,
     }).toNumber();
 
     return buildUnfreezeBalanceV2Contract({

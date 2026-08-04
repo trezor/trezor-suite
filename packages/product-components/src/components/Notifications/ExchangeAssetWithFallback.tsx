@@ -1,4 +1,5 @@
-import { getDisplaySymbol } from '@suite-common/wallet-config';
+import { useServices } from '@suite-common/dependency-injection';
+import { getDisplaySymbol, selectNetworkConfigDeps } from '@suite-common/wallet-config';
 
 import { type ExchangeInfoAsset } from './notificationsTypes';
 import { TokenIcon } from '../TokenIcon/TokenIcon';
@@ -8,7 +9,8 @@ type ExchangeAssetWithFallbackProps = {
 };
 
 export const ExchangeAssetWithFallback = ({ asset }: ExchangeAssetWithFallbackProps) => {
-    const resolvedDisplaySymbol = asset.displaySymbol ?? getDisplaySymbol(asset.symbol);
+    const deps = useServices(selectNetworkConfigDeps);
+    const resolvedDisplaySymbol = asset.displaySymbol ?? getDisplaySymbol(deps, asset.symbol);
 
     return (
         asset.icon ?? (

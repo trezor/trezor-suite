@@ -2,7 +2,8 @@ import { combineReducers } from '@reduxjs/toolkit';
 import { type CryptoId, type ExchangeTrade } from 'invity-api';
 
 import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
-import { getNetwork, toNetworkSymbolNonTestnet } from '@suite-common/wallet-config';
+import { toNetwork } from '@suite-common/wallet-config';
+import { mockNetworkConfigDeps } from '@suite-common/wallet-config/mocks';
 import { prepareAccountsReducer } from '@suite-common/wallet-core';
 import { type Account, type AccountKey } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
@@ -25,10 +26,6 @@ import { exchangeThunks } from './index';
 const tradingReducer = prepareTradingReducer(extraDependenciesCommonMock);
 const accountsReducer = prepareAccountsReducer(extraDependenciesCommonMock);
 const cloneExchangeQuotes = () => cloneObject(MIN_MAX_QUOTES_OK) as ExchangeTrade[];
-const btcSymbol = toNetworkSymbolNonTestnet('btc');
-const ethSymbol = toNetworkSymbolNonTestnet('eth');
-const bscSymbol = toNetworkSymbolNonTestnet('bsc');
-const etcSymbol = toNetworkSymbolNonTestnet('etc');
 
 describe('handleExchangeRequestThunk', () => {
     afterEach(() => {
@@ -45,6 +42,7 @@ describe('handleExchangeRequestThunk', () => {
         const store = configureMockStore({
             extra: {
                 services: {
+                    ...extraDependenciesCommonMock.services,
                     addressValidator: {
                         getAddressType: jest.fn(),
                         isAddressValid: jest.fn(
@@ -117,11 +115,11 @@ describe('handleExchangeRequestThunk', () => {
                 name: 'Bitcoin',
                 coingeckoId: 'bitcoin',
                 contractAddress: null,
-                symbol: btcSymbol,
+                symbol: 'btc',
                 displaySymbol: 'BTC',
                 networkName: 'Bitcoin',
-                networkSymbol: btcSymbol,
-                accountKey: mockAccountKey({ descriptor: 'descriptor123', symbol: btcSymbol }),
+                networkSymbol: 'btc',
+                accountKey: mockAccountKey({ descriptor: 'descriptor123', symbol: 'btc' }),
             } satisfies TradingAssetSellOption,
             receiveCryptoSelect: {
                 id: 'ethereum' as CryptoId,
@@ -129,11 +127,11 @@ describe('handleExchangeRequestThunk', () => {
                 name: 'Ethereum',
                 coingeckoId: 'ethereum',
                 contractAddress: null,
-                symbol: ethSymbol,
+                symbol: 'eth',
                 displaySymbol: 'ETH',
                 displaySymbolName: 'Ethereum',
                 networkName: 'Ethereum',
-                networkSymbol: ethSymbol,
+                networkSymbol: 'eth',
             } satisfies TradingAssetOption,
             rateType: 'fixed',
             exchangeType: 'CEX',
@@ -142,7 +140,7 @@ describe('handleExchangeRequestThunk', () => {
         };
         const input: HandleExchangeRequestThunkProps = {
             formValues,
-            network: getNetwork(btcSymbol),
+            network: toNetwork('btc', mockNetworkConfigDeps.getNetworkConfig('btc')),
             shouldSendInSats: false,
             composeRequestCallback: mockComposeRequestCallback,
         };
@@ -253,10 +251,10 @@ describe('handleExchangeRequestThunk', () => {
                     name: 'BNB Smart Chain',
                     coingeckoId: 'binance-smart-chain',
                     contractAddress: null,
-                    symbol: bscSymbol,
+                    symbol: 'bsc',
                     displaySymbol: 'BNB',
                     networkName: 'BNB Smart Chain',
-                    networkSymbol: bscSymbol,
+                    networkSymbol: 'bsc',
                 } satisfies TradingAssetOption,
                 receiveAddress: ethAddress,
                 receiveAccountKey: ethAccountKey,
@@ -271,10 +269,10 @@ describe('handleExchangeRequestThunk', () => {
                     name: 'Ethereum Classic',
                     coingeckoId: 'ethereum-classic',
                     contractAddress: null,
-                    symbol: etcSymbol,
+                    symbol: 'etc',
                     displaySymbol: 'ETC',
                     networkName: 'Ethereum Classic',
-                    networkSymbol: etcSymbol,
+                    networkSymbol: 'etc',
                 } satisfies TradingAssetOption,
                 receiveAddress: ethAddress,
                 receiveAccountKey: ethAccountKey,

@@ -1,8 +1,11 @@
 import { current, isAnyOf } from '@reduxjs/toolkit';
 
 import { deviceActions } from '@suite-common/device';
-import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
-import { networks } from '@suite-common/wallet-config';
+import {
+    type ExtraDependenciesForReducer,
+    createReducerWithExtraDeps,
+} from '@suite-common/redux-utils';
+import type { NetworkConfigDeps } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { accountEqualTo, compareAccountsByCoin, enhanceHistory } from '@suite-common/wallet-utils';
 import { typedObjectKeys } from '@trezor/utils';
@@ -92,73 +95,76 @@ const setMetadata = (state: Account[], account: Account) => {
     state[index].metadata = account.metadata;
 };
 
-export const prepareAccountsReducer = createReducerWithExtraDeps(
-    accountsInitialState,
-    (builder, extra) => {
-        builder
-            .addCase(accountsActions.removeAccount, (state, action) => {
-                remove(state, action.payload);
-            })
-            .addCase(accountsActions.createAccount, (state, action) => {
-                const { symbol, index } = action.payload;
-                const networkName = networks[symbol].name;
-                const accountLabel = action.payload.accountLabel ?? `${networkName} #${index + 1}`;
-                // remove "transactions" field, they are stored in "transactionReducer"
-                const history = enhanceHistory(action.payload.history);
+type AccountsReducerDeps = ExtraDependenciesForReducer & { services: NetworkConfigDeps };
 
-                const account = { ...action.payload, accountLabel, history };
+export const prepareAccountsReducer = createReducerWithExtraDeps<
+    AccountsState,
+    AccountsReducerDeps
+>(accountsInitialState, (builder, extra) => {
+    builder
+        .addCase(accountsActions.removeAccount, (state, action) => {
+            remove(state, action.payload);
+        })
+        .addCase(accountsActions.createAccount, (state, action) => {
+            const { symbol, index } = action.payload;
+            const networkName = extra.services.getNetworkConfig(symbol).name;
+            const accountLabel = action.payload.accountLabel ?? `${networkName} #${index + 1}`;
+            // remove "transactions" field, they are stored in "transactionReducer"
+            const history = enhanceHistory(action.payload.history);
 
-                if (state.some(accountEqualTo(account))) {
-                    console.warn(
-                        // do not log the whole account: descriptor/addresses/balance are confidential and would leak into Sentry breadcrumbs
-                        `Duplicated account found, updating instead (symbol: ${account.symbol}, type: ${account.accountType}, index: ${account.index})`,
-                    );
-                    update(state, account);
+            const account = { ...action.payload, accountLabel, history };
+
+            if (state.some(accountEqualTo(account))) {
+                console.warn(
+                    // do not log the whole account: descriptor/addresses/balance are confidential and would leak into Sentry breadcrumbs
+                    `Duplicated account found, updating instead (symbol: ${account.symbol}, type: ${account.accountType}, index: ${account.index})`,
+                );
+                update(state, account);
+            } else {
+                // Keep the state sorted by coin so that consumers get the canonical order for free.
+                const insertAtIndex = state.findIndex(
+                    existingAccount =>
+                        compareAccountsByCoin(extra.services, account, existingAccount) < 0,
+                );
+
+                if (insertAtIndex === -1) {
+                    state.push(account);
                 } else {
-                    // Keep the state sorted by coin so that consumers get the canonical order for free.
-                    const insertAtIndex = state.findIndex(
-                        existingAccount => compareAccountsByCoin(account, existingAccount) < 0,
-                    );
-
-                    if (insertAtIndex === -1) {
-                        state.push(account);
-                    } else {
-                        state.splice(insertAtIndex, 0, account);
-                    }
+                    state.splice(insertAtIndex, 0, account);
                 }
-            })
-            .addCase(accountsActions.updateAccount, (state, action) => {
-                update(state, action.payload);
-            })
-            .addCase(accountsActions.renameAccount, (state, action) => {
-                const { accountKey, accountLabel } = action.payload;
-                const accountByAccountKey = state.find(account => account.key === accountKey);
-                if (accountByAccountKey) accountByAccountKey.accountLabel = accountLabel;
-            })
-            .addCase(accountsActions.changeAccountVisibility, (state, action) => {
-                update(state, action.payload);
-            })
-            .addCase(accountsActions.startCoinjoinAccountSync, (state, action) => {
-                const account = state.find(findCoinjoinAccount(action.payload.accountKey));
-                if (account) {
-                    account.syncing = true;
-                }
-            })
-            .addCase(accountsActions.endCoinjoinAccountSync, (state, action) => {
-                const account = state.find(findCoinjoinAccount(action.payload.accountKey));
-                if (account) {
-                    account.syncing = undefined;
-                    account.status = action.payload.status;
-                }
-            })
-            .addCase(extra.actionTypes.storageLoad, extra.reducers.storageLoadAccounts)
-            // Persistence of accounts and transactions in suite-native depends on device.remember state,
-            // but redux-persist is not checking for changes in other reducers.
-            // This is a workaround to update redux-persist state.
-            .addCase(deviceActions.setRememberDevice, state => [...state])
-            .addMatcher(isAnyOf(extra.actions.setAccountAddMetadata), (state, action) => {
-                const { payload } = action;
-                setMetadata(state, payload);
-            });
-    },
-);
+            }
+        })
+        .addCase(accountsActions.updateAccount, (state, action) => {
+            update(state, action.payload);
+        })
+        .addCase(accountsActions.renameAccount, (state, action) => {
+            const { accountKey, accountLabel } = action.payload;
+            const accountByAccountKey = state.find(account => account.key === accountKey);
+            if (accountByAccountKey) accountByAccountKey.accountLabel = accountLabel;
+        })
+        .addCase(accountsActions.changeAccountVisibility, (state, action) => {
+            update(state, action.payload);
+        })
+        .addCase(accountsActions.startCoinjoinAccountSync, (state, action) => {
+            const account = state.find(findCoinjoinAccount(action.payload.accountKey));
+            if (account) {
+                account.syncing = true;
+            }
+        })
+        .addCase(accountsActions.endCoinjoinAccountSync, (state, action) => {
+            const account = state.find(findCoinjoinAccount(action.payload.accountKey));
+            if (account) {
+                account.syncing = undefined;
+                account.status = action.payload.status;
+            }
+        })
+        .addCase(extra.actionTypes.storageLoad, extra.reducers.storageLoadAccounts)
+        // Persistence of accounts and transactions in suite-native depends on device.remember state,
+        // but redux-persist is not checking for changes in other reducers.
+        // This is a workaround to update redux-persist state.
+        .addCase(deviceActions.setRememberDevice, state => [...state])
+        .addMatcher(isAnyOf(extra.actions.setAccountAddMetadata), (state, action) => {
+            const { payload } = action;
+            setMetadata(state, payload);
+        });
+});

@@ -1,6 +1,6 @@
 import { createAction } from '@reduxjs/toolkit';
 
-import { getNetwork } from '@suite-common/wallet-config';
+import type { GetNetworkConfig } from '@suite-common/networks';
 import {
     type Account,
     type AccountBackendSpecific,
@@ -58,13 +58,16 @@ type CoinjoinAccountStatus = CoinjoinAccount['status'];
 
 const createAccount = createAction(
     `${ACCOUNTS_MODULE_PREFIX}/createAccount`,
-    ({ accountInfo, ...account }: CreateAccountActionProps): { payload: Account } => {
+    (
+        { accountInfo, ...account }: CreateAccountActionProps,
+        getNetworkConfig: GetNetworkConfig,
+    ): { payload: Account } => {
         const { symbol, index, deviceState } = account;
         const { descriptor, descriptorChecksum, legacyXpub } = accountInfo;
         const { empty, balance, availableBalance, addresses, history, utxo, tokens } = accountInfo;
 
         try {
-            const { chainId, networkType } = getNetwork(symbol);
+            const { chainId, networkType } = getNetworkConfig(symbol);
 
             const isNonEthEvm = networkType === 'ethereum' && symbol !== 'eth';
             const metadataKey = isNonEthEvm ? `${descriptor}-${chainId}` : legacyXpub || descriptor;
@@ -83,6 +86,7 @@ const createAccount = createAction(
                     deviceStaticSessionId: deviceState,
                 }),
                 formattedBalance: formatNetworkAmount(
+                    { getNetworkConfig },
                     // Ripple and Stellar `availableBalance` is reduced by reserve, use regular balance
                     isArrayMember(networkType, ['ripple', 'stellar']) ? balance : availableBalance,
                     symbol,
@@ -122,7 +126,11 @@ const createAccountFromAccountInfo = createAction(
 
 const updateAccount = createAction(
     `${ACCOUNTS_MODULE_PREFIX}/updateAccount`,
-    (account: Account, accountInfo: AccountInfo | null = null): { payload: Account } => {
+    (
+        account: Account,
+        getNetworkConfig: GetNetworkConfig,
+        accountInfo: AccountInfo | null = null,
+    ): { payload: Account } => {
         if (accountInfo) {
             return {
                 payload: {
@@ -133,6 +141,7 @@ const updateAccount = createAction(
                     empty: accountInfo.empty,
                     visible: account.visible || !accountInfo.empty,
                     formattedBalance: formatNetworkAmount(
+                        { getNetworkConfig },
                         // Ripple and Stellar `availableBalance` is reduced by reserve, use regular balance
                         ['ripple', 'stellar'].includes(account.networkType)
                             ? accountInfo.balance

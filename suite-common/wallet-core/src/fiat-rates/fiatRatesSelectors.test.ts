@@ -2,6 +2,7 @@ import { type DeviceRootState } from '@suite-common/device';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { type TokenDefinitionsRootState } from '@suite-common/token-definitions';
+import { mockNetworkConfigDeps } from '@suite-common/wallet-config/mocks';
 import {
     type Account,
     type CryptoBaseCurrencyPair,
@@ -9,7 +10,10 @@ import {
     type TokenAddress,
 } from '@suite-common/wallet-types';
 
-import { selectHistoricFiatRatesByTimestamp, selectTickerFromAccounts } from './fiatRatesSelectors';
+import {
+    selectHistoricFiatRatesByTimestamp,
+    selectTickerFromAccounts as selectTickerFromAccountsWithDeps,
+} from './fiatRatesSelectors';
 import { type FiatRatesRootState } from './fiatRatesTypes';
 import { type AccountsRootState } from '../accounts/accountsReducer';
 
@@ -21,6 +25,9 @@ const PASSPHRASE_WALLET = mockSuiteDevice({ state: { staticSessionId: PASSPHRASE
 
 const USDT = '0xdac17f958d2ee523a2206206994597c13d831ec7' as TokenAddress;
 const USDC = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as TokenAddress;
+
+const selectTickerFromAccounts = (state: State) =>
+    selectTickerFromAccountsWithDeps(state, mockNetworkConfigDeps);
 
 const ethAccount = (deviceState: string, tokenContract: TokenAddress): Account =>
     ({

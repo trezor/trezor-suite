@@ -1,5 +1,6 @@
 import { getUnixTime, subWeeks } from 'date-fns';
 
+import type { GetNetworkConfigDep } from '@suite-common/networks';
 import { type BackendType, isBlockbookBasedNetwork } from '@suite-common/wallet-config';
 import type {
     FiatRatesResult,
@@ -25,7 +26,7 @@ const CONNECT_FETCH_TIMEOUT = 10_000;
 
 const parallelRequestsCache = new ParallelRequestsCache();
 
-type FiatRatesParams = {
+type FiatRatesParams = GetNetworkConfigDep & {
     ticker: TickerId;
     localCurrency: BaseCurrencyCode;
     backendType?: BackendType;
@@ -76,13 +77,18 @@ export const fetchCurrentFiatRates = ({
     localCurrency,
     backendType,
     skipCache,
+    getNetworkConfig,
 }: FiatRatesParams): Promise<FiatRatesResult | null> =>
     parallelRequestsCache.cache(
         ['fetchCurrentFiatRates', ticker.symbol, ticker.tokenAddress, localCurrency],
         async () => {
             // If skipCache is true, skip Blockbook support check and fetch fiat rates
             // directly from Coingecko to ensure up-to-date values.
-            if (isBlockbookBasedNetwork(ticker.symbol) && backendType !== 'evm-rpc' && !skipCache) {
+            if (
+                isBlockbookBasedNetwork({ getNetworkConfig }, ticker.symbol) &&
+                backendType !== 'evm-rpc' &&
+                !skipCache
+            ) {
                 if (backendType !== 'electrum') {
                     const result = await scheduleAction(
                         () =>
@@ -96,7 +102,10 @@ export const fetchCurrentFiatRates = ({
 
                     if (!result.success && result.error.message === 'No tickers found!') {
                         const fallbackCoinGeckoResponse =
-                            await coingeckoService.fetchCurrentFiatRates(ticker);
+                            await coingeckoService.fetchCurrentFiatRates(
+                                { getNetworkConfig },
+                                ticker,
+                            );
 
                         if (!fallbackCoinGeckoResponse) {
                             return null;
@@ -134,9 +143,11 @@ export const fetchCurrentFiatRates = ({
                     };
             }
 
-            const coingeckoResponse = await coingeckoService.fetchCurrentFiatRates(ticker, {
-                skipCache,
-            });
+            const coingeckoResponse = await coingeckoService.fetchCurrentFiatRates(
+                { getNetworkConfig },
+                ticker,
+                { skipCache },
+            );
 
             if (!coingeckoResponse) {
                 return null;
@@ -153,6 +164,7 @@ export const fetchLastWeekFiatRates = ({
     ticker,
     localCurrency,
     backendType,
+    getNetworkConfig,
 }: FiatRatesParams): Promise<FiatRatesResult | null> =>
     parallelRequestsCache.cache(
         ['fetchLastWeekFiatRates', ticker.symbol, ticker.tokenAddress, localCurrency],
@@ -160,7 +172,7 @@ export const fetchLastWeekFiatRates = ({
             const weekAgoTimestamp = getUnixTime(subWeeks(new Date(), 1));
             const timestamps = [weekAgoTimestamp];
 
-            if (isBlockbookBasedNetwork(ticker.symbol)) {
+            if (isBlockbookBasedNetwork({ getNetworkConfig }, ticker.symbol)) {
                 if (backendType !== 'electrum') {
                     const result = await getConnectFiatRatesForTimestamp(
                         ticker,
@@ -194,6 +206,7 @@ export const fetchLastWeekFiatRates = ({
             }
 
             const coingeckoResponse = await coingeckoService.fetchLastWeekRates(
+                { getNetworkConfig },
                 ticker,
                 localCurrency,
             );
@@ -210,6 +223,7 @@ export const fetchLastWeekFiatRates = ({
     );
 
 export const getFiatRatesForTimestamps = (
+    deps: GetNetworkConfigDep,
     ticker: TickerId,
     timestamps: number[],
     baseCurrencyCode: BaseCurrencyCode,
@@ -225,7 +239,7 @@ export const getFiatRatesForTimestamps = (
             ...timestamps,
         ],
         async () => {
-            if (isBlockbookBasedNetwork(ticker.symbol) && !isCoingeckoForced) {
+            if (isBlockbookBasedNetwork(deps, ticker.symbol) && !isCoingeckoForced) {
                 if (!isElectrumBackend) {
                     const result = await getConnectFiatRatesForTimestamp(
                         ticker,
@@ -257,6 +271,7 @@ export const getFiatRatesForTimestamps = (
             }
 
             const coingeckoResponse = await coingeckoService.getFiatRatesForTimestamps(
+                deps,
                 ticker,
                 timestamps,
                 baseCurrencyCode,

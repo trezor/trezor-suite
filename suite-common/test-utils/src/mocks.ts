@@ -1,7 +1,12 @@
 /* WARNING! This file should be imported ONLY in tests! */
 
+import {
+    createGetNetworkConfig,
+    createNetworkModuleRepository,
+    createNetworksCompositionRoot,
+} from '@suite-common/networks';
 import { type Action, type GuideNode, type MessageSystem } from '@suite-common/suite-types';
-import { networksCollection } from '@suite-common/wallet-config';
+import { getNetworks } from '@suite-common/wallet-config';
 import {
     type BlockchainNetworks,
     type FeeInfo,
@@ -462,25 +467,31 @@ const intlMock = {
     formatMessage: (s: any) => s.defaultMessage,
 };
 
-const mockedBlockchainNetworks = networksCollection.reduce((result, network) => {
-    result[network.symbol] = {
-        connected: false,
-        blockHash: '0',
-        blockHeight: 0,
-        version: '0',
-        backends:
-            network.symbol === 'regtest'
-                ? {
-                      selected: 'blockbook',
-                      urls: {
-                          blockbook: ['http://localhost:19121'],
-                      },
-                  }
-                : {},
-    };
+const networkModules = createNetworksCompositionRoot();
+const networkModuleRepository = createNetworkModuleRepository({ networkModules });
+const getNetworkConfig = createGetNetworkConfig({ networkModuleRepository });
+const mockedBlockchainNetworks = getNetworks({ networkModuleRepository, getNetworkConfig }).reduce(
+    (result, network) => {
+        result[network.symbol] = {
+            connected: false,
+            blockHash: '0',
+            blockHeight: 0,
+            version: '0',
+            backends:
+                network.symbol === 'regtest'
+                    ? {
+                          selected: 'blockbook',
+                          urls: {
+                              blockbook: ['http://localhost:19121'],
+                          },
+                      }
+                    : {},
+        };
 
-    return result;
-}, {} as BlockchainNetworks);
+        return result;
+    },
+    {} as BlockchainNetworks,
+);
 
 // use mock from @suite-common/test-utils/__mocks__
 type MockTrezorConnect = jest.Mocked<TrezorConnectPrivilegedAPI> & {

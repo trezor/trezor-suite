@@ -68,7 +68,7 @@ export const replaceTransactionThunk = createThunk(
     `${TRANSACTIONS_MODULE_PREFIX}/replaceTransactionThunk`,
     (
         { precomposedTransaction, newTxid }: ReplaceTransactionThunkParams,
-        { getState, dispatch },
+        { getState, dispatch, extra },
     ) => {
         if (!isRbfBumpFeeTransaction(precomposedTransaction)) return; // ignore if it's not a replacement tx
 
@@ -90,6 +90,7 @@ export const replaceTransactionThunk = createThunk(
             if (signedTransaction) {
                 // bitcoin-like: profile transaction for affected account
                 newTx = enhanceTransaction(
+                    extra.services,
                     blockbookUtils.transformTransaction(
                         signedTransaction,
                         affectedAccount.addresses,
@@ -114,7 +115,7 @@ export const replaceTransactionThunk = createThunk(
                     delete newTx.rbfParams;
                 } else {
                     // update tx rbfParams
-                    newTx.rbfParams = getRbfParams(newTx, affectedAccount);
+                    newTx.rbfParams = getRbfParams(extra.services, newTx, affectedAccount);
                 }
             }
 
@@ -139,7 +140,7 @@ export const addFakePendingTxThunk = createThunk(
     `${TRANSACTIONS_MODULE_PREFIX}/addFakePendingTransaction`,
     (
         { precomposedTransaction, account }: AddFakePendingTransactionParams,
-        { dispatch, getState, rejectWithValue },
+        { dispatch, getState, rejectWithValue, extra },
     ) => {
         const blockHeight = selectBlockchainHeightBySymbol(getState(), account.symbol);
         const accounts = selectAccounts(getState());
@@ -191,10 +192,13 @@ export const addFakePendingTxThunk = createThunk(
                 }
                 const prependingTx = { ...affectedAccountTransaction, deadline: blockHeight + 2 };
                 dispatch(
-                    transactionsActions.addTransaction({
-                        transactions: [prependingTx],
-                        account: affectedAccount,
-                    }),
+                    transactionsActions.addTransaction(
+                        {
+                            transactions: [prependingTx],
+                            account: affectedAccount,
+                        },
+                        extra.services.getNetworkConfig,
+                    ),
                 );
             }
 
@@ -204,6 +208,7 @@ export const addFakePendingTxThunk = createThunk(
             }
 
             const pendingAccount = getPendingAccount({
+                ...extra.services,
                 account: affectedAccount,
                 tx: precomposedTransaction,
                 txid: signedTransaction.txid,
@@ -211,7 +216,9 @@ export const addFakePendingTxThunk = createThunk(
             });
 
             if (pendingAccount) {
-                dispatch(accountsActions.updateAccount(pendingAccount));
+                dispatch(
+                    accountsActions.updateAccount(pendingAccount, extra.services.getNetworkConfig),
+                );
             }
         });
     },
@@ -371,7 +378,7 @@ export const addFakePendingEvmTxThunk = createThunk(
             // correct it yet.
             ethereumNonce?: string;
         },
-        { dispatch, getState },
+        { dispatch, getState, extra },
     ) => {
         if (
             account.networkType !== 'ethereum' ||
@@ -420,7 +427,12 @@ export const addFakePendingEvmTxThunk = createThunk(
             deadline,
         });
 
-        dispatch(transactionsActions.addTransaction({ transactions: [fakeTx], account }));
+        dispatch(
+            transactionsActions.addTransaction(
+                { transactions: [fakeTx], account },
+                extra.services.getNetworkConfig,
+            ),
+        );
     },
 );
 
@@ -438,7 +450,7 @@ export const addFakePendingCardanoTxThunk = createThunk(
             account: Account;
             cardanoSpecific?: WalletAccountTransaction['cardanoSpecific'];
         },
-        { dispatch, getState },
+        { dispatch, getState, extra },
     ) => {
         const blockHeight = selectBlockchainHeightBySymbol(getState(), account.symbol);
 
@@ -467,7 +479,12 @@ export const addFakePendingCardanoTxThunk = createThunk(
             },
             deadline: blockHeight + 10,
         };
-        dispatch(transactionsActions.addTransaction({ transactions: [fakeTx], account }));
+        dispatch(
+            transactionsActions.addTransaction(
+                { transactions: [fakeTx], account },
+                extra.services.getNetworkConfig,
+            ),
+        );
     },
 );
 
@@ -485,7 +502,7 @@ export const addFakePendingTronTxThunk = createThunk(
     `${TRANSACTIONS_MODULE_PREFIX}/addFakePendingTransaction`,
     (
         { txid, account, amount, fee, type, target, tronSpecific }: AddFakePendingTronTxThunkParams,
-        { dispatch, getState },
+        { dispatch, getState, extra },
     ) => {
         if (account.networkType !== 'tron') return;
 
@@ -529,7 +546,12 @@ export const addFakePendingTronTxThunk = createThunk(
             },
             deadline,
         };
-        dispatch(transactionsActions.addTransaction({ transactions: [fakeTx], account }));
+        dispatch(
+            transactionsActions.addTransaction(
+                { transactions: [fakeTx], account },
+                extra.services.getNetworkConfig,
+            ),
+        );
     },
 );
 
@@ -549,7 +571,7 @@ export const fetchTransactionsPageThunk = createThunk(
     `${TRANSACTIONS_MODULE_PREFIX}/fetchTransactionsPageThunk`,
     async (
         { accountKey, page, perPage, forceRefetch }: FetchTransactionsPageThunkParams,
-        { dispatch, getState },
+        { dispatch, getState, extra },
     ) => {
         const account = selectAccountByKey(getState(), accountKey);
         if (!account) {
@@ -599,17 +621,24 @@ export const fetchTransactionsPageThunk = createThunk(
         }
 
         if (result?.success) {
-            const updateAction = accountsActions.updateAccount(currentAccount, result.payload);
+            const updateAction = accountsActions.updateAccount(
+                currentAccount,
+                extra.services.getNetworkConfig,
+                result.payload,
+            );
             const updatedAccount = updateAction.payload;
             const updatedTransactions = result.payload.history.transactions || [];
 
             dispatch(
-                transactionsActions.addTransaction({
-                    transactions: updatedTransactions,
-                    account: updatedAccount,
-                    page,
-                    perPage,
-                }),
+                transactionsActions.addTransaction(
+                    {
+                        transactions: updatedTransactions,
+                        account: updatedAccount,
+                        page,
+                        perPage,
+                    },
+                    extra.services.getNetworkConfig,
+                ),
             );
             // updates the marker/page object for the account
             dispatch(updateAction);
@@ -631,7 +660,7 @@ export const fetchUtxoTransactionsForAccountThunk = createSingleInstanceThunk(
     `${TRANSACTIONS_MODULE_PREFIX}/fetchUtxoTransactionsForAccountThunk`,
     async (
         { accountKey }: FetchUtxoTransactionsForAccountThunkParams,
-        { dispatch, getState, signal },
+        { dispatch, getState, signal, extra },
     ) => {
         const account = selectAccountByKey(getState(), accountKey);
         if (!account) {
@@ -657,10 +686,13 @@ export const fetchUtxoTransactionsForAccountThunk = createSingleInstanceThunk(
         }
 
         dispatch(
-            transactionsActions.addTransaction({
-                transactions: result.payload,
-                account,
-            }),
+            transactionsActions.addTransaction(
+                {
+                    transactions: result.payload,
+                    account,
+                },
+                extra.services.getNetworkConfig,
+            ),
         );
 
         return selectAccountTransactions(getState(), accountKey);

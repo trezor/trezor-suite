@@ -40,7 +40,7 @@ export const sendSellTransactionThunk = createThunk(
             nextStep,
             signAndPushSendFormTransaction,
         }: SendSellTransactionThunkProps,
-        { dispatch, getState, rejectWithValue },
+        { dispatch, getState, rejectWithValue, extra },
     ) => {
         const selectedQuote = selectTradingSellSelectedQuote(getState());
         const providers = selectTradingSellProviders(getState());
@@ -56,7 +56,7 @@ export const sendSellTransactionThunk = createThunk(
                 error: { id: 'TR_TRADING_CANNOT_SEND_TRANSACTION' },
             });
         }
-        const tradingFormState = getTradingFormState({
+        const tradingFormState = getTradingFormState(extra.services, {
             activeSection: 'sell',
             providers,
             trade: selectedTrade,

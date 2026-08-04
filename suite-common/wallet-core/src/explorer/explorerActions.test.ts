@@ -1,17 +1,17 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
 import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
-import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { mockNetworkConfigDeps } from '@suite-common/wallet-config/mocks';
 
 import { explorerActions } from './explorerActions';
 import {
     type ExplorerConfig,
-    explorerInitialState,
+    createExplorerInitialState,
     prepareExplorerReducer,
 } from './explorerReducer';
 
 const explorerReducer = prepareExplorerReducer(extraDependenciesCommonMock);
-const btcSymbol = asNetworkSymbol('btc');
+const explorerInitialState = createExplorerInitialState(mockNetworkConfigDeps);
 
 const initStore = (state: Partial<ExplorerConfig> = {}) =>
     configureMockStore({
@@ -37,7 +37,7 @@ describe('setExplorer', () => {
 
         store.dispatch(
             explorerActions.setExplorer({
-                symbol: btcSymbol,
+                symbol: 'btc',
                 explorer,
             }),
         );
@@ -47,13 +47,13 @@ describe('setExplorer', () => {
 
     test('removes stored custom explorer', () => {
         const store = initStore({
-            [btcSymbol]: {
+            btc: {
                 default: { base: 'https://mempool.space', tx: 'tx', address: 'address' },
                 custom: { base: 'https://mempool.space', tx: 'tx', address: 'address' },
             },
         });
 
-        store.dispatch(explorerActions.setExplorer({ symbol: btcSymbol }));
+        store.dispatch(explorerActions.setExplorer({ symbol: 'btc' }));
 
         expect(store.getState().wallet.explorer.btc.custom).toEqual(undefined);
     });
@@ -68,7 +68,7 @@ describe('setExplorer', () => {
 
         store.dispatch(
             explorerActions.setExplorer({
-                symbol: btcSymbol,
+                symbol: 'btc',
                 explorer,
             }),
         );

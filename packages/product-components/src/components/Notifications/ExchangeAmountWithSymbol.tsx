@@ -1,6 +1,7 @@
 import { type ReactNode } from 'react';
 
-import { getDisplaySymbol } from '@suite-common/wallet-config';
+import { useServices } from '@suite-common/dependency-injection';
+import { getDisplaySymbol, selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { Row, Text } from '@trezor/components';
 
 import { type ExchangeInfoAsset } from './notificationsTypes';
@@ -11,7 +12,8 @@ type ExchangeAmountWithSymbolProps = {
 };
 
 export const ExchangeAmountWithSymbol = ({ amount, asset }: ExchangeAmountWithSymbolProps) => {
-    const resolvedDisplaySymbol = asset.displaySymbol ?? getDisplaySymbol(asset.symbol);
+    const deps = useServices(selectNetworkConfigDeps);
+    const resolvedDisplaySymbol = asset.displaySymbol ?? getDisplaySymbol(deps, asset.symbol);
 
     return (
         <Row gap={4} alignItems="baseline">

@@ -1,7 +1,8 @@
 import { bech32 } from '@scure/base';
 
 import { type AdaPools } from '@suite-common/earn-staking-api';
-import { type NetworkSymbol, getNetworkFeatures } from '@suite-common/wallet-config';
+import type { GetNetworkConfigDep } from '@suite-common/networks';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     CARDANO_EVERSTAKE_STAKING_POOL,
     EVERSTAKE_POOLS,
@@ -26,11 +27,14 @@ export function isSupportedAdaStakingNetworkSymbol(
     return isArrayMember(symbol, supportedCardanoNetworkSymbols);
 }
 
-export const getCardanoStakingSymbols = (networkSymbols: NetworkSymbol[]) =>
+export const getCardanoStakingSymbols = (
+    deps: GetNetworkConfigDep,
+    networkSymbols: NetworkSymbol[],
+) =>
     networkSymbols.reduce((acc, networkSymbol) => {
         if (
             isSupportedAdaStakingNetworkSymbol(networkSymbol) &&
-            getNetworkFeatures(networkSymbol).includes('staking')
+            deps.getNetworkConfig(networkSymbol).features.includes('staking')
         ) {
             acc.push(networkSymbol);
         }
@@ -181,11 +185,12 @@ export const parseDrepBech32 = (drepId: string): { type: PROTO.CardanoDRepType; 
     throw new Error(`Unsupported DRep payload length: ${bytes.length}`);
 };
 
-export const getAdaAccountTotalStakingBalance = (account: Account) =>
+export const getAdaAccountTotalStakingBalance = (deps: GetNetworkConfigDep, account: Account) =>
     account?.networkType === 'cardano' && account.misc?.staking?.isActive
         ? subunitsToUnits({
               value: asAmountSubunit(new BigNumber(account.balance)),
               symbol: account.symbol,
+              getNetworkConfig: deps.getNetworkConfig,
           }).toString()
         : null;
 

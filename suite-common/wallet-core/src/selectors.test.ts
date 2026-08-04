@@ -1,6 +1,7 @@
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
-import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { mockNetworkConfigDeps } from '@suite-common/wallet-config/mocks';
 import {
     type Account,
     type AccountFailureSpecific,
@@ -8,18 +9,24 @@ import {
 } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
-import { blockchainInitialState } from './blockchain/blockchainReducer';
+import { createBlockchainInitialState } from './blockchain/blockchainReducer';
 import {
     type WalletCoreCompoundRootState,
-    selectDiscoveryAccountsParam,
-    selectShouldRediscover,
+    selectDiscoveryAccountsParam as selectDiscoveryAccountsParamWithDeps,
+    selectShouldRediscover as selectShouldRediscoverWithDeps,
 } from './selectors';
 import { initialWalletSettingsState } from './settings/walletSettingsReducer';
 
 const STATIC_SESSION_ID: `${string}@${string}:${number}` =
     'mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q@ABC123:1';
 const DEVICE_PATH = 'device-path';
-const solSymbol = asNetworkSymbol('sol');
+const blockchainInitialState = createBlockchainInitialState(mockNetworkConfigDeps);
+const selectDiscoveryAccountsParam = (
+    state: WalletCoreCompoundRootState,
+    deviceState: typeof STATIC_SESSION_ID,
+) => selectDiscoveryAccountsParamWithDeps(state, mockNetworkConfigDeps, deviceState);
+const selectShouldRediscover = (state: WalletCoreCompoundRootState, device: TrezorDevice) =>
+    selectShouldRediscoverWithDeps(state, mockNetworkConfigDeps, device);
 
 const mockSolAccount = (
     account: Omit<Partial<Account>, 'failed' | 'error'>,
@@ -27,7 +34,7 @@ const mockSolAccount = (
 ) =>
     mockWalletAccount(
         {
-            symbol: solSymbol,
+            symbol: 'sol',
             deviceState: STATIC_SESSION_ID,
             ...account,
         },
@@ -54,7 +61,7 @@ const getState = ({
     accounts = [],
     device = mockDeviceWithPathAndState(),
     discovery,
-    enabledNetworks = [solSymbol],
+    enabledNetworks = ['sol'],
 }: GetStateOptions = {}): WalletCoreCompoundRootState => ({
     wallet: {
         accounts,

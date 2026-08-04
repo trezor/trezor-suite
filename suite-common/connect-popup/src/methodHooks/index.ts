@@ -20,7 +20,7 @@ export const compatibilityHooks = <M extends CallMethodKeys>(
 
 // Runs before the permissions modal, so a call the host cannot fulfil is rejected up front.
 export const validateCallHooks = <M extends CallMethodKeys>(
-    params: Pick<PreCallHookParams<M>, 'method' | 'payload'>,
+    params: Pick<PreCallHookParams<M>, 'method' | 'payload' | 'services'>,
 ) => {
     selectAccountHooks.validateHook(params);
 };

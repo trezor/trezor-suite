@@ -1,3 +1,5 @@
+import type { GetNetworkConfig } from '@suite-common/networks';
+
 import { type TokenDefinitions } from '../tokenDefinitionsTypes';
 import type {
     PhishingDetector,
@@ -6,6 +8,7 @@ import type {
 } from './types';
 import { createPhishingResult } from './utils';
 export class PhishingTransactionValidator {
+    private getNetworkConfig?: GetNetworkConfig;
     private transaction?: TransactionWithFiatAmount;
     private tokenDefinitions?: TokenDefinitions;
     private dustThreshold?: string;
@@ -23,6 +26,12 @@ export class PhishingTransactionValidator {
         return this;
     }
 
+    public setGetNetworkConfig(getNetworkConfig: GetNetworkConfig) {
+        this.getNetworkConfig = getNetworkConfig;
+
+        return this;
+    }
+
     public setTokenDefinitions(tokenDefinitions?: TokenDefinitions) {
         this.tokenDefinitions = tokenDefinitions;
 
@@ -36,10 +45,11 @@ export class PhishingTransactionValidator {
     }
 
     public validate(): PhishingTransactionValidatorResult {
-        if (!this.transaction) return createPhishingResult(false);
+        if (!this.transaction || !this.getNetworkConfig) return createPhishingResult(false);
 
         for (const detector of this.detectors) {
             const { isPhishing, transaction } = detector.validator({
+                getNetworkConfig: this.getNetworkConfig,
                 transaction: this.transaction,
                 tokenDefinitions: this.tokenDefinitions,
                 dustThreshold: this.dustThreshold,

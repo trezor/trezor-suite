@@ -101,16 +101,22 @@ export const reportAccountInfoThunk = createThunk(
         const tokenDefinitions = selectCoinDefinitions(getState(), account.symbol);
         // wait for token definitions before reporting, otherwise the account would be deduped with an
         // incorrect token list with phishing tokens could be reported
-        const requiresTokenDefinitions = getNetworkFeatures(account.symbol).includes(
-            'coin-definitions',
-        );
+        const requiresTokenDefinitions = getNetworkFeatures(
+            extra.services,
+            account.symbol,
+        ).includes('coin-definitions');
         if (requiresTokenDefinitions && !tokenDefinitions?.data) return;
 
         const hasTraded = extra.services.getTradedAccountKeys().includes(account.key);
 
         extra.services.analytics.report({
             type: events.accountsInfoEvent.name,
-            payload: getAccountInfoAnalyticsPayload(account, tokenDefinitions, hasTraded),
+            payload: getAccountInfoAnalyticsPayload(
+                extra.services,
+                account,
+                tokenDefinitions,
+                hasTraded,
+            ),
         });
     },
 );
@@ -119,7 +125,7 @@ export const reportAccountInfoThunk = createThunk(
 // as we usually want to update all accounts for a single coin at once
 export const fetchAndUpdateAccountThunk = createThunk(
     `${ACCOUNTS_MODULE_PREFIX}/fetchAndUpdateAccountThunk`,
-    async ({ accountKey }: { accountKey: AccountKey }, { dispatch, getState }) => {
+    async ({ accountKey }: { accountKey: AccountKey }, { dispatch, getState, extra }) => {
         const account = selectAccountByKey(getState(), accountKey);
 
         if (!account || account.failed || account.accountType === 'placeholder') return;
@@ -219,10 +225,13 @@ export const fetchAndUpdateAccountThunk = createThunk(
                 });
 
                 dispatch(
-                    transactionsActions.addTransaction({
-                        transactions: enrichedAdd.reverse(),
-                        account,
-                    }),
+                    transactionsActions.addTransaction(
+                        {
+                            transactions: enrichedAdd.reverse(),
+                            account,
+                        },
+                        extra.services.getNetworkConfig,
+                    ),
                 );
             }
 
@@ -232,11 +241,21 @@ export const fetchAndUpdateAccountThunk = createThunk(
                 const token = tx.tokens?.[0];
 
                 const bitcoinAmountUnit = selectBitcoinAmountUnit(getState());
-                const areSatoshisUsed = getAreSatoshisUsed(bitcoinAmountUnit, account);
+                const areSatoshisUsed = getAreSatoshisUsed(
+                    extra.services,
+                    bitcoinAmountUnit,
+                    account,
+                );
 
                 const formattedAmount = token
                     ? formatTokenAmount(token)
-                    : formatNetworkAmount(tx.amount, account.symbol, true, areSatoshisUsed);
+                    : formatNetworkAmount(
+                          extra.services,
+                          tx.amount,
+                          account.symbol,
+                          true,
+                          areSatoshisUsed,
+                      );
 
                 dispatch(
                     notificationsActions.addEvent({
@@ -265,7 +284,13 @@ export const fetchAndUpdateAccountThunk = createThunk(
             ) {
                 // updateAccount restarts the throttle window via the accountsRefreshTime slice
                 // (mirrors old account.ts)
-                dispatch(accountsActions.updateAccount(account, payload));
+                dispatch(
+                    accountsActions.updateAccount(
+                        account,
+                        extra.services.getNetworkConfig,
+                        payload,
+                    ),
+                );
                 dispatch(reportAccountInfoThunk(account.key));
             } else {
                 // refreshed, nothing changed - restart the throttle window directly

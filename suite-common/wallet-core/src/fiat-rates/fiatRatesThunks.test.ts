@@ -1,5 +1,6 @@
 import { getFiatRatesForTimestamps } from '@suite-common/fiat-services';
 import { configureMockStore } from '@suite-common/test-utils';
+import { mockNetworkConfigDeps } from '@suite-common/wallet-config/mocks';
 import {
     type Account,
     type AccountKey,
@@ -10,7 +11,9 @@ import {
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 
 import { updateTxsFiatRatesThunk } from './fiatRatesThunks';
-import { blockchainInitialState } from '../blockchain/blockchainReducer';
+import { createBlockchainInitialState } from '../blockchain/blockchainReducer';
+
+const blockchainInitialState = createBlockchainInitialState(mockNetworkConfigDeps);
 
 jest.mock('@suite-common/fiat-services', () => ({
     getFiatRatesForTimestamps: jest.fn(),
@@ -60,7 +63,7 @@ const initStore = () =>
 
 describe('updateTxsFiatRatesThunk', () => {
     beforeEach(() => {
-        jest.mocked(getFiatRatesForTimestamps).mockImplementation((_tickerId, timestamps) =>
+        jest.mocked(getFiatRatesForTimestamps).mockImplementation((_deps, _tickerId, timestamps) =>
             Promise.resolve({
                 ts: 0,
                 symbol: 'eth',

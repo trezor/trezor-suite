@@ -1,6 +1,7 @@
 import { type CryptoId, type ExchangeProviderInfo, type SellProviderInfo } from 'invity-api';
 
 import { type Network } from '@suite-common/wallet-config';
+import { mockNetworkConfigDeps } from '@suite-common/wallet-config/mocks';
 
 import {
     formatSlip24AddressByNetwork,
@@ -12,7 +13,7 @@ import {
 jest.mock('../../utils', () => ({
     cryptoIdToNetworkAndContractAddress: jest
         .fn()
-        .mockImplementation((cryptoId: CryptoId | undefined) => {
+        .mockImplementation((_deps: unknown, cryptoId: CryptoId | undefined) => {
             if (cryptoId === 'ethereum') {
                 return {
                     network: { decimals: 18, networkType: 'ethereum', symbol: 'eth' },
@@ -111,6 +112,7 @@ describe('signatureUtils', () => {
         };
 
         const defaultProps = {
+            ...mockNetworkConfigDeps,
             trade: mockTrade,
             provider: mockProvider,
             macPurchase: 'macPurchase123',
@@ -316,6 +318,7 @@ describe('signatureUtils', () => {
         };
 
         const defaultSellProps = {
+            ...mockNetworkConfigDeps,
             trade: mockSellTrade,
             provider: mockSellProvider,
             macRefund: 'sellMacRefund789',
@@ -483,6 +486,7 @@ describe('signatureUtils', () => {
             };
 
             const result = tradingExchangeCreatePaymentRequest({
+                ...mockNetworkConfigDeps,
                 trade: largeTrade,
                 provider,
                 macPurchase: 'mac1',
@@ -531,6 +535,7 @@ describe('signatureUtils', () => {
             };
 
             const result = tradingExchangeCreatePaymentRequest({
+                ...mockNetworkConfigDeps,
                 trade: smallTrade,
                 provider,
                 macPurchase: 'mac1',

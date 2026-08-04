@@ -77,7 +77,11 @@ const isZeroValuePhishing: PhishingDetectorFn = ({ transaction }) => {
     return createResult(true, transaction);
 };
 
-const isFakeTokenPhishing: PhishingDetectorFn = ({ transaction, tokenDefinitions }) => {
+const isFakeTokenPhishing: PhishingDetectorFn = ({
+    getNetworkConfig,
+    transaction,
+    tokenDefinitions,
+}) => {
     if (
         !tokenDefinitions ||
         D.isEmpty(tokenDefinitions) ||
@@ -104,7 +108,12 @@ const isFakeTokenPhishing: PhishingDetectorFn = ({ transaction, tokenDefinitions
         const isShown = definition?.show?.includes(token.contract);
 
         const isLegit =
-            (isTokenDefinitionKnown(definition?.data, transaction.symbol, token.contract) ||
+            (isTokenDefinitionKnown(
+                { getNetworkConfig },
+                definition?.data,
+                transaction.symbol,
+                token.contract,
+            ) ||
                 isShown) &&
             !isHidden;
 

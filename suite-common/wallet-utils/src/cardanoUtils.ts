@@ -1,3 +1,4 @@
+import type { GetNetworkConfigDep } from '@suite-common/networks';
 import { type AccountType } from '@suite-common/wallet-config';
 import {
     type Account,
@@ -56,6 +57,7 @@ export const getAddressParameters = (account: Pick<Account, 'index'>, path: stri
 });
 
 export const transformUserOutputs = (
+    deps: GetNetworkConfigDep,
     outputs: Output[],
     accountTokens: Account['tokens'],
     symbol: Account['symbol'],
@@ -64,7 +66,9 @@ export const transformUserOutputs = (
     outputs.map((output, i) => {
         const setMax = i === maxOutputIndex;
         const amount =
-            output.amount === '' ? undefined : networkAmountToSmallestUnit(output.amount, symbol);
+            output.amount === ''
+                ? undefined
+                : networkAmountToSmallestUnit(deps, output.amount, symbol);
         const tokenDecimals = accountTokens?.find(t => t.contract === output.token)?.decimals ?? 0;
 
         return {
@@ -140,6 +144,7 @@ export const isCardanoTx = (
 ): _tx is PrecomposedTransactionFinalCardano => account.networkType === 'cardano';
 
 export const formatMaxOutputAmount = (
+    deps: GetNetworkConfigDep,
     maxAmount: string | undefined,
     maxOutput: ReturnType<typeof transformUserOutputs>[number] | undefined,
     account: Account,
@@ -148,7 +153,7 @@ export const formatMaxOutputAmount = (
     if (!maxOutput || !maxAmount) return maxAmount;
     if (maxOutput.assets.length === 0) {
         // output without asset, convert lovelaces to ADA
-        return formatNetworkAmount(maxAmount, account.symbol);
+        return formatNetworkAmount(deps, maxAmount, account.symbol);
     }
 
     const { assets } = maxOutput;

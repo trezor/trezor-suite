@@ -3,10 +3,9 @@ import { A, pipe } from '@mobily/ts-belt';
 import { redactNumericalSubstring } from '@suite-common/discreet-mode';
 import { LANGUAGES, type Locale } from '@suite-common/suite-types';
 import {
+    type NetworkConfigDeps,
     type NetworkSymbol,
-    getNetworkOptional,
     isNetworkSymbol,
-    networks,
 } from '@suite-common/wallet-config';
 import { type TokenSymbol } from '@suite-common/wallet-types';
 import {
@@ -77,22 +76,24 @@ const localizedNumber = ({
 };
 
 const convertToSubunits = ({
+    deps,
     value,
     config,
     formatterContext,
 }: {
+    deps: NetworkConfigDeps;
     value: string;
     config: FormatterConfig;
     formatterContext: Partial<CryptoAmountFormatterDataContext>;
 }) => {
     const { symbol, isBalance = false, smallestUnitsOverride } = formatterContext;
     const { bitcoinAmountUnit } = config;
-    const decimals = getNetworkOptional(symbol)?.decimals ?? 0;
+    const network = symbol && isNetworkSymbol(deps, symbol) ? deps.getNetworkConfig(symbol) : null;
+    const decimals = network?.decimals ?? 0;
 
-    const areAmountUnitsSupported =
-        symbol && isNetworkSymbol(symbol)
-            ? A.includes(networks[symbol]?.features, 'amount-unit')
-            : undefined;
+    const areAmountUnitsSupported = network
+        ? A.includes(network.features, 'amount-unit')
+        : undefined;
 
     if (smallestUnitsOverride === false) {
         return value;
@@ -117,10 +118,12 @@ const convertToSubunits = ({
 };
 
 const appendSymbol = ({
+    deps,
     value,
     config,
     formatterContext,
 }: {
+    deps: NetworkConfigDeps;
     value: string;
     config: FormatterConfig;
     formatterContext: Partial<CryptoAmountFormatterDataContext>;
@@ -131,9 +134,9 @@ const appendSymbol = ({
         return value;
     }
 
-    const DisplaySymbolFormatter = prepareDisplaySymbolFormatter(config);
+    const DisplaySymbolFormatter = prepareDisplaySymbolFormatter(deps, config);
     const formattedSymbol =
-        symbol && isNetworkSymbol(symbol)
+        symbol && isNetworkSymbol(deps, symbol)
             ? DisplaySymbolFormatter.format(symbol, {
                   areAmountUnitsEnabled: smallestUnitsOverride,
               })
@@ -142,16 +145,16 @@ const appendSymbol = ({
     return `${value} ${formattedSymbol}`;
 };
 
-export const prepareCryptoAmountFormatter = (config: FormatterConfig) =>
+export const prepareCryptoAmountFormatter = (deps: NetworkConfigDeps, config: FormatterConfig) =>
     makeFormatter<CryptoAmountFormatterInputValue, string, CryptoAmountFormatterDataContext>(
         (value, formatterContext, shouldRedactNumbers) =>
             pipe(
-                convertToSubunits({ value, config, formatterContext }),
+                convertToSubunits({ deps, value, config, formatterContext }),
                 unitValue => localizedNumber({ value: unitValue, config, formatterContext }),
                 ({ formattedValue, wasResultRounded }) =>
                     appendEllipsis({ value: formattedValue, wasResultRounded, formatterContext }),
                 ellipsizedNumber =>
-                    appendSymbol({ value: ellipsizedNumber, config, formatterContext }),
+                    appendSymbol({ deps, value: ellipsizedNumber, config, formatterContext }),
                 valueWithSymbol =>
                     shouldRedactNumbers
                         ? redactNumericalSubstring(valueWithSymbol)

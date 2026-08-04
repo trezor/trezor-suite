@@ -1,3 +1,4 @@
+import type { GetNetworkConfigDep } from '@suite-common/networks';
 import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { type ExternalOutput, type PrecomposedTransaction } from '@suite-common/wallet-types';
 import { asAmountUnit, unitsToSubunits } from '@suite-common/wallet-utils';
@@ -8,6 +9,7 @@ import { BigNumber } from '@trezor/utils';
 import { type EstimateFeeLevel } from './types';
 
 export const calculateTrc20Transfer = (
+    deps: GetNetworkConfigDep,
     availableBalance: string,
     output: ExternalOutput,
     feeLevel: EstimateFeeLevel,
@@ -36,7 +38,7 @@ export const calculateTrc20Transfer = (
             errorMessage: {
                 id: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE',
                 values: {
-                    networkDisplaySymbol: getNetworkDisplaySymbol(networkSymbol),
+                    networkDisplaySymbol: getNetworkDisplaySymbol(deps, networkSymbol),
                 },
             },
         } as const;

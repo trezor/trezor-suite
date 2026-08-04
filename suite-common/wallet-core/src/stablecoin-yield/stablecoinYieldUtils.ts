@@ -1,6 +1,12 @@
 import { Calldata, type EvmAddress } from '@suite-common/calldata';
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
-import { type NetworkSymbol, getNetworkByYieldXyzId } from '@suite-common/wallet-config';
+import type { GetNetworkConfigDep } from '@suite-common/networks';
+import {
+    type NetworkConfigDeps,
+    type NetworkSymbol,
+    findNetworkByYieldXyzId,
+    getNetworks,
+} from '@suite-common/wallet-config';
 import { WETH_WRAP_GAS_RESERVE } from '@suite-common/wallet-constants';
 import { type AccountKey, type EvmSelectedFee } from '@suite-common/wallet-types';
 import {
@@ -30,18 +36,18 @@ type TokenLike = {
     decimals: number;
 };
 
-type NormalizedTokenAddressParams = {
+type NormalizedTokenAddressParams = GetNetworkConfigDep & {
     networkSymbol: NetworkSymbol;
     tokenAddress?: string | null;
 };
 
-type TokenMatchParams = {
+type TokenMatchParams = GetNetworkConfigDep & {
     networkSymbol: NetworkSymbol;
     firstToken?: TokenLike;
     secondToken?: TokenLike;
 };
 
-type WithdrawRequestAmountParams = {
+type WithdrawRequestAmountParams = GetNetworkConfigDep & {
     networkSymbol: NetworkSymbol;
     amount: string;
     token: TokenLike;
@@ -49,7 +55,7 @@ type WithdrawRequestAmountParams = {
     pricePerShare?: string | number;
 };
 
-type ConvertOutputTokenBalanceParams = {
+type ConvertOutputTokenBalanceParams = GetNetworkConfigDep & {
     networkSymbol: NetworkSymbol;
     token: TokenLike;
     outputToken?: TokenLike;
@@ -499,6 +505,7 @@ export const splitYieldPendingTransaction = (
 };
 
 const getNormalizedTokenAddress = ({
+    getNetworkConfig,
     networkSymbol,
     tokenAddress,
 }: NormalizedTokenAddressParams): string | undefined => {
@@ -506,10 +513,11 @@ const getNormalizedTokenAddress = ({
         return undefined;
     }
 
-    return getContractAddressForNetworkSymbol(networkSymbol, tokenAddress);
+    return getContractAddressForNetworkSymbol({ getNetworkConfig }, networkSymbol, tokenAddress);
 };
 
 export const doTokensMatch = ({
+    getNetworkConfig,
     networkSymbol,
     firstToken,
     secondToken,
@@ -519,10 +527,12 @@ export const doTokensMatch = ({
     }
 
     const firstTokenAddress = getNormalizedTokenAddress({
+        getNetworkConfig,
         networkSymbol,
         tokenAddress: firstToken.address,
     });
     const secondTokenAddress = getNormalizedTokenAddress({
+        getNetworkConfig,
         networkSymbol,
         tokenAddress: secondToken.address,
     });
@@ -538,13 +548,21 @@ export const doTokensMatch = ({
 };
 
 export const getWithdrawRequestAmount = ({
+    getNetworkConfig,
     networkSymbol,
     amount,
     token,
     receiptToken,
     pricePerShare,
 }: WithdrawRequestAmountParams): string | null => {
-    if (doTokensMatch({ networkSymbol, firstToken: token, secondToken: receiptToken })) {
+    if (
+        doTokensMatch({
+            getNetworkConfig,
+            networkSymbol,
+            firstToken: token,
+            secondToken: receiptToken,
+        })
+    ) {
         return amount;
     }
 
@@ -559,6 +577,7 @@ export const getWithdrawRequestAmount = ({
 };
 
 export const getConvertedOutputTokenBalanceToInputTokenAmount = ({
+    getNetworkConfig,
     networkSymbol,
     token,
     outputToken,
@@ -569,18 +588,27 @@ export const getConvertedOutputTokenBalanceToInputTokenAmount = ({
         return '0';
     }
 
-    if (doTokensMatch({ networkSymbol, firstToken: outputToken, secondToken: token })) {
+    if (
+        doTokensMatch({
+            getNetworkConfig,
+            networkSymbol,
+            firstToken: outputToken,
+            secondToken: token,
+        })
+    ) {
         return outputTokenBalance;
     }
 
     if (
         !pricePerShareState ||
         !doTokensMatch({
+            getNetworkConfig,
             networkSymbol,
             firstToken: pricePerShareState.shareToken,
             secondToken: outputToken,
         }) ||
         !doTokensMatch({
+            getNetworkConfig,
             networkSymbol,
             firstToken: pricePerShareState.quoteToken,
             secondToken: token,
@@ -609,17 +637,22 @@ type YieldVaultMatchFields = Pick<
     'metadata' | 'network' | 'status' | 'token' | 'outputToken'
 >;
 
-type GetYieldVaultsForTokenParams<TVault extends YieldVaultMatchFields> = {
+type GetYieldVaultsForTokenParams<TVault extends YieldVaultMatchFields> = NetworkConfigDeps & {
     vaults: TVault[] | undefined;
     networkSymbol: NetworkSymbol;
     token: TokenLike;
 };
 
-const isYieldVaultOnNetwork = (vault: YieldVaultMatchFields, networkSymbol: NetworkSymbol) =>
-    getNetworkByYieldXyzId(vault.network)?.symbol === networkSymbol;
+const isYieldVaultOnNetwork = (
+    deps: NetworkConfigDeps,
+    vault: YieldVaultMatchFields,
+    networkSymbol: NetworkSymbol,
+) => findNetworkByYieldXyzId(getNetworks(deps), vault.network)?.symbol === networkSymbol;
 
 // Input-token matching invites a deposit, so it also requires deposits to be open.
 export const getYieldVaultsForInputToken = <TVault extends YieldVaultMatchFields>({
+    getNetworkConfig,
+    networkModuleRepository,
     vaults,
     networkSymbol,
     token,
@@ -628,11 +661,22 @@ export const getYieldVaultsForInputToken = <TVault extends YieldVaultMatchFields
         vault =>
             isYieldVaultOperational(vault) &&
             vault.status.enter &&
-            isYieldVaultOnNetwork(vault, networkSymbol) &&
-            doTokensMatch({ networkSymbol, firstToken: token, secondToken: vault.token }),
+            isYieldVaultOnNetwork(
+                { getNetworkConfig, networkModuleRepository },
+                vault,
+                networkSymbol,
+            ) &&
+            doTokensMatch({
+                getNetworkConfig,
+                networkSymbol,
+                firstToken: token,
+                secondToken: vault.token,
+            }),
     );
 
 export const getYieldVaultForOutputToken = <TVault extends YieldVaultMatchFields>({
+    getNetworkConfig,
+    networkModuleRepository,
     vaults,
     networkSymbol,
     token,
@@ -640,11 +684,20 @@ export const getYieldVaultForOutputToken = <TVault extends YieldVaultMatchFields
     vaults?.find(
         vault =>
             isYieldVaultOperational(vault) &&
-            isYieldVaultOnNetwork(vault, networkSymbol) &&
-            doTokensMatch({ networkSymbol, firstToken: token, secondToken: vault.outputToken }),
+            isYieldVaultOnNetwork(
+                { getNetworkConfig, networkModuleRepository },
+                vault,
+                networkSymbol,
+            ) &&
+            doTokensMatch({
+                getNetworkConfig,
+                networkSymbol,
+                firstToken: token,
+                secondToken: vault.outputToken,
+            }),
     );
 
-type YieldVaultPositionParams = {
+type YieldVaultPositionParams = GetNetworkConfigDep & {
     networkSymbol: NetworkSymbol;
     vault: Pick<YieldDtoV2, 'outputToken'>;
     accountTokens: Pick<TokenInfo, 'contract' | 'symbol' | 'decimals' | 'balance'>[] | undefined;
@@ -652,6 +705,7 @@ type YieldVaultPositionParams = {
 
 /** Whether the account already holds the vault's receipt token, i.e. has deposited into it. */
 export const hasYieldVaultPosition = ({
+    getNetworkConfig,
     networkSymbol,
     vault,
     accountTokens,
@@ -660,6 +714,7 @@ export const hasYieldVaultPosition = ({
         accountToken =>
             accountToken.symbol !== undefined &&
             doTokensMatch({
+                getNetworkConfig,
                 networkSymbol,
                 firstToken: {
                     address: accountToken.contract,

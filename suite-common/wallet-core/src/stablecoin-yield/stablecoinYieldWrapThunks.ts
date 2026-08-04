@@ -1,5 +1,4 @@
 import { createThunk } from '@suite-common/redux-utils';
-import { getNetwork } from '@suite-common/wallet-config';
 import { WETH_DEPOSIT_BACKUP_GAS_LIMIT } from '@suite-common/wallet-constants';
 import { type Account } from '@suite-common/wallet-types';
 import { getAccountIdentity, getConvertedOrDefaultFeeInfo } from '@suite-common/wallet-utils';
@@ -58,7 +57,7 @@ export const composeYieldWrapTransactionThunk = createThunk<
     void
 >(
     `${YIELD_WRAP_THUNK_PREFIX}/composeWrapTransaction`,
-    async ({ account, token, wrapAmount }, { dispatch, getState }) => {
+    async ({ account, token, wrapAmount }, { dispatch, getState, extra }) => {
         if (account.networkType !== 'ethereum') {
             return { type: 'error', reason: 'unsupported-network' } as const;
         }
@@ -69,7 +68,7 @@ export const composeYieldWrapTransactionThunk = createThunk<
             return { type: 'error', reason: 'not-wrapped-native' } as const;
         }
 
-        const network = getNetwork(account.symbol);
+        const network = extra.services.getNetworkConfig(account.symbol);
 
         if (!network.chainId) {
             return { type: 'error', reason: 'missing-chain-id' } as const;
@@ -141,7 +140,7 @@ export const composeYieldUnwrapTransactionThunk = createThunk<
     void
 >(
     `${YIELD_WRAP_THUNK_PREFIX}/composeUnwrapTransaction`,
-    async ({ account, token, unwrapAmount }, { dispatch, getState }) => {
+    async ({ account, token, unwrapAmount }, { dispatch, getState, extra }) => {
         if (account.networkType !== 'ethereum') {
             return { type: 'error', reason: 'unsupported-network' } as const;
         }
@@ -152,7 +151,7 @@ export const composeYieldUnwrapTransactionThunk = createThunk<
             return { type: 'error', reason: 'not-wrapped-native' } as const;
         }
 
-        const network = getNetwork(account.symbol);
+        const network = extra.services.getNetworkConfig(account.symbol);
 
         if (!network.chainId) {
             return { type: 'error', reason: 'missing-chain-id' } as const;

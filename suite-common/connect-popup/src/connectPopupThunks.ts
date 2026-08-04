@@ -4,7 +4,6 @@ import { events } from '@suite-common/analytics';
 import { deviceActions, selectSelectedDevice } from '@suite-common/device';
 import { type CustomThunkAPI, createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { getNetwork } from '@suite-common/wallet-config';
 import {
     getAddressForNetworkType,
     getPublicKeyForNetworkType,
@@ -119,7 +118,7 @@ export const connectPopupCallThunkInner = createThunk<
 
             // Reject a call this host cannot fulfil (e.g. selectAccount for a coin Suite can't render)
             // before asking for permissions, so the user doesn't approve access only to hit an error.
-            validateCallHooks({ method, payload });
+            validateCallHooks({ method, payload, services: extra.services });
 
             // Check if permission remembered (permission, coin). Keyed on THIS call's required
             // permissions (not the declared superset) so a call is silent whenever its own needs are
@@ -178,6 +177,7 @@ export const connectPopupCallThunkInner = createThunk<
                 getState,
                 txSigningPrecomposed,
                 source,
+                services: extra.services,
             });
 
             // refresh device state before call (could have changed during preCallHooks)
@@ -204,6 +204,7 @@ export const connectPopupCallThunkInner = createThunk<
                 dispatch,
                 getState,
                 source,
+                services: extra.services,
             });
             if (!response.success) {
                 throw response.error;
@@ -496,7 +497,7 @@ export const connectPopupLoadSelectAccountPageThunk = createThunk<void, { page: 
 
             const { options, candidates: prevCandidates, selectedAccountTypeKey } = initialCall;
             const { symbol, accountTypeTabs, mode } = options;
-            const isUtxo = isUtxoNetwork(symbol);
+            const isUtxo = isUtxoNetwork(extra.services, symbol);
             // accountTypeTabs is guaranteed non-empty by the methodHook that builds it
             const activeTab =
                 accountTypeTabs.find(tab => tab.key === selectedAccountTypeKey) ??
@@ -582,6 +583,7 @@ export const connectPopupLoadSelectAccountPageThunk = createThunk<void, { page: 
                 if (!row.loading) continue;
 
                 const result = await prepareNewAccountPayload({
+                    ...extra.services,
                     accountType: activeTab.accountType ?? 'normal',
                     networkSymbol: symbol,
                     index: row.accountIndex,
@@ -615,7 +617,11 @@ export const connectPopupLoadSelectAccountPageThunk = createThunk<void, { page: 
                                         addresses: result.accountInfo.addresses,
                                     })
                                   : { path: result.path }),
-                              balance: formatNetworkAmount(result.accountInfo.balance, symbol),
+                              balance: formatNetworkAmount(
+                                  extra.services,
+                                  result.accountInfo.balance,
+                                  symbol,
+                              ),
                               used: !result.accountInfo.empty,
                               loading: false,
                               loadFailed: false,
@@ -686,7 +692,7 @@ export const connectPopupLoadSelectAccountPageThunk = createThunk<void, { page: 
                         accountTypeKey: activeTab.key,
                         path: addr.path,
                         address: addr.address,
-                        balance: formatNetworkAmount(addr.balance, symbol),
+                        balance: formatNetworkAmount(extra.services, addr.balance, symbol),
                         used: true,
                         selected: cached?.selected ?? false,
                         loading: false,
@@ -736,6 +742,7 @@ export const connectPopupLoadSelectAccountPageThunk = createThunk<void, { page: 
             }
 
             const result = await prepareNewAccountPayload({
+                ...extra.services,
                 accountType: activeTab.accountType ?? 'normal',
                 networkSymbol: symbol,
                 index: manualAccountIndex,
@@ -873,7 +880,7 @@ export const connectPopupVerifySelectAccountThunk = createThunk<
             useEmptyPassphrase: device.useEmptyPassphrase,
         };
 
-        const { networkType } = getNetwork(candidate.symbol);
+        const { networkType } = extra.services.getNetworkConfig(candidate.symbol);
         const accountType =
             call.options.accountTypeTabs.find(tab => tab.key === candidate.accountTypeKey)
                 ?.accountType ?? 'normal';

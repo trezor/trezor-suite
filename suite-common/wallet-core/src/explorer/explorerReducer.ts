@@ -1,9 +1,13 @@
-import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
+import {
+    type ExtraDependenciesForReducer,
+    createReducerWithExtraDeps,
+} from '@suite-common/redux-utils';
 import {
     type Explorer,
+    type NetworkConfigDeps,
     type NetworkSymbol,
+    getNetworks,
     getParsedExplorerUrls,
-    networksCollection,
 } from '@suite-common/wallet-config';
 import { typedObjectKeys } from '@trezor/utils';
 
@@ -19,14 +23,18 @@ export type ExplorerState = { wallet: { explorer: ExplorerConfig } };
 
 const initialStatePredefined: Partial<ExplorerConfig> = {};
 
-export const explorerInitialState: ExplorerConfig = networksCollection.reduce((state, network) => {
-    state[network.symbol] = {
-        default: getParsedExplorerUrls(network.explorer),
-        custom: undefined,
-    };
+export const createExplorerInitialState = (deps: NetworkConfigDeps): ExplorerConfig =>
+    getNetworks(deps).reduce(
+        (state, network) => {
+            state[network.symbol] = {
+                default: getParsedExplorerUrls(network.explorer),
+                custom: undefined,
+            };
 
-    return state;
-}, initialStatePredefined as ExplorerConfig);
+            return state;
+        },
+        { ...initialStatePredefined } as ExplorerConfig,
+    );
 
 const normalizeExplorer = (explorer: Explorer) => {
     typedObjectKeys(explorer).forEach(key => {
@@ -38,8 +46,13 @@ const normalizeExplorer = (explorer: Explorer) => {
     return explorer;
 };
 
-export const prepareExplorerReducer = createReducerWithExtraDeps(
-    explorerInitialState,
+type ExplorerReducerDeps = ExtraDependenciesForReducer & { services: NetworkConfigDeps };
+
+export const prepareExplorerReducer = createReducerWithExtraDeps<
+    ExplorerConfig,
+    ExplorerReducerDeps
+>(
+    extra => createExplorerInitialState(extra.services),
     (builder, extra) => {
         builder
             .addCase(explorerActions.setExplorer, (state, action) => {

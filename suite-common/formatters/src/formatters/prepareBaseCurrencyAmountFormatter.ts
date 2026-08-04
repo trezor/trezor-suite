@@ -3,6 +3,7 @@ import { type IntlShape } from 'react-intl';
 import { type FormatNumberOptions } from '@formatjs/intl';
 
 import { redactNumericalSubstring } from '@suite-common/discreet-mode';
+import type { GetNetworkConfigDep } from '@suite-common/networks';
 import { type BaseCurrencyAmount, asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { asAmountUnit, isBaseCurrencyWithSats, unitsToSubunits } from '@suite-common/wallet-utils';
 import { type BaseCurrencyCode } from '@trezor/blockchain-link-types';
@@ -26,9 +27,13 @@ type FormatParams = {
     dataContext: Omit<BaseCurrencyAmountFormatterDataContext<FormatNumberOptions>, 'currency'>;
 };
 
-const formatSats = ({ intl, dataContext, value }: FormatParams) => {
+const formatSats = (deps: GetNetworkConfigDep, { intl, dataContext, value }: FormatParams) => {
     const currencyForDisplay = BITCOIN_SATS_PLACEHOLDER;
-    const baseCurrencyValue = unitsToSubunits({ value: asAmountUnit(value), symbol: 'btc' });
+    const baseCurrencyValue = unitsToSubunits({
+        ...deps,
+        value: asAmountUnit(value),
+        symbol: 'btc',
+    });
 
     if (baseCurrencyValue.gt(Number.MAX_VALUE)) {
         // backup when number is too big, the formatting is different from what should be for currencies
@@ -69,6 +74,7 @@ const formatStandard = ({ intl, currency, value, dataContext }: FormatParams) =>
 };
 
 const handleBigNumberFormatting = (
+    deps: GetNetworkConfigDep,
     value: BaseCurrencyAmount,
     dataContext: BaseCurrencyAmountFormatterDataContext<FormatNumberOptions>,
     config: FormatterConfig,
@@ -90,10 +96,13 @@ const handleBigNumberFormatting = (
         currency,
     };
 
-    return isSats ? formatSats(formatParams) : formatStandard(formatParams);
+    return isSats ? formatSats(deps, formatParams) : formatStandard(formatParams);
 };
 
-export const prepareBaseCurrencyAmountFormatter = (config: FormatterConfig) =>
+export const prepareBaseCurrencyAmountFormatter = (
+    deps: GetNetworkConfigDep,
+    config: FormatterConfig,
+) =>
     makeFormatter<
         BaseCurrencyAmount,
         string | null,
@@ -107,7 +116,7 @@ export const prepareBaseCurrencyAmountFormatter = (config: FormatterConfig) =>
             return null;
         }
 
-        const formattedValue = handleBigNumberFormatting(fixedValue, dataContext, config);
+        const formattedValue = handleBigNumberFormatting(deps, fixedValue, dataContext, config);
 
         return shouldRedactNumbers ? redactNumericalSubstring(formattedValue) : formattedValue;
     }, 'BaseCurrencyAmountFormatter');
