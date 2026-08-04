@@ -145,6 +145,15 @@ export const extraDependenciesCommonMock: ExtraDependencies = {
             pairingMethods: ['CodeEntry'],
         }),
         getAllowPrerelease: notImplementedGetter('getAllowPrerelease', false),
+        shouldRetryFirmwareRevisionCheckError: notImplementedGetter(
+            'shouldRetryFirmwareRevisionCheckError',
+            false,
+        ),
+        /**
+         * Any Connect call that will cause the checks to rerun.
+         * The result does not matter here, Connect updates the Device payload and it gets propagated into redux.
+         * */
+        rerunFwAuthenticityChecksCall: () => undefined,
     },
     actions: {
         setAccountAddMetadata: notImplementedAction('setAccountAddMetadata'),

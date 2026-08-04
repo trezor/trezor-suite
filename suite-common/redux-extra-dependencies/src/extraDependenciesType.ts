@@ -33,6 +33,8 @@ import {
     type OpenModalDep,
     type ReloadAppDep,
     type ReportSecurityCheckDep,
+    type RerunFwAuthenticityChecksCallDep,
+    type ShouldRetryFirmwareRevisionCheckErrorDep,
     type ThpHostNameDep,
     type TransportsDep,
 } from '@suite-common/suite-types';
@@ -79,6 +81,8 @@ export type CommonServices = SuiteSyncDep &
     ConnectInitHooksDeps &
     GetAllowPrereleaseDep &
     GetBinFilesBaseUrlDep &
+    ShouldRetryFirmwareRevisionCheckErrorDep &
+    RerunFwAuthenticityChecksCallDep &
     GetIsWindowVisibleDep &
     GetLanguageDep &
     GetTradedAccountKeysDep & {

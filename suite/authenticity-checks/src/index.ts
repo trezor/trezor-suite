@@ -8,5 +8,6 @@ export {
     selectIsFirmwareAuthenticityCheckEnabledAndHardFailed,
     selectShouldDisplayDeviceCompromised,
     selectShouldDisplayDeviceCompromisedOnRoute,
+    selectShouldRetryFirmwareRevisionCheckError,
     type AuthenticityChecksRootState,
 } from './authenticityChecksSelectors';
