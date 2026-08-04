@@ -15187,7 +15187,6 @@ __metadata:
   resolution: "@suite/recovery@workspace:suite/recovery"
   dependencies:
     "@reduxjs/toolkit": "npm:2.12.0"
-    "@suite-common/backup": "workspace:*"
     "@suite-common/device": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/test-utils": "workspace:*"
@@ -17266,6 +17265,7 @@ __metadata:
     "@suite-common/analytics": "workspace:*"
     "@suite-common/analytics-redux": "workspace:*"
     "@suite-common/assets": "workspace:*"
+    "@suite-common/backup": "workspace:*"
     "@suite-common/bip329": "workspace:*"
     "@suite-common/bip329-types": "workspace:*"
     "@suite-common/bluetooth": "workspace:*"
