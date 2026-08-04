@@ -11,6 +11,7 @@ export enum RootStackRoutes {
     HowStakeWorksScreen = 'HowStakeWorksScreen',
     YieldNavigator = 'YieldNavigator',
     YieldInsufficientBalance = 'YieldInsufficientBalance',
+    WrappedNativeTokenNavigator = 'WrappedNativeTokenNavigator',
     EarnForm = 'EarnForm',
     EarnConsents = 'EarnConsents',
     EarnTransactionDataReview = 'EarnTransactionDataReview',
@@ -261,6 +262,12 @@ export enum YieldStackRoutes {
     YieldWithdrawReview = 'YieldWithdrawReview',
     YieldDepositComplete = 'YieldDepositComplete',
     YieldWithdrawComplete = 'YieldWithdrawComplete',
+}
+
+export enum WrappedNativeTokenStackRoutes {
+    WrapNativeToken = 'WrapNativeToken',
+    WrapNativeTokenReview = 'WrapNativeTokenReview',
+    WrapNativeTokenComplete = 'WrapNativeTokenComplete',
 }
 
 export enum ReceiveStackRoutes {

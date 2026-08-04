@@ -37,7 +37,7 @@ type YieldClaimReview = Extract<StablecoinYieldActionReviewState, { type: 'claim
 
 export type YieldReviewEvmTransactionPurpose = Extract<
     EvmTransactionPurpose,
-    'approve' | 'claim' | 'deposit' | 'redeem' | 'revoke' | 'withdraw'
+    'approve' | 'claim' | 'deposit' | 'redeem' | 'revoke' | 'withdraw' | 'wrap'
 >;
 export type YieldApprovalReviewEvmTransactionPurpose = Extract<
     YieldReviewEvmTransactionPurpose,
@@ -63,6 +63,7 @@ type BuildYieldReviewPreviewBaseParams = {
     account: Account;
     availableRewards?: YieldClaimReward[];
     device: TrezorDevice;
+    evmTransactionPurposeOverride?: YieldReviewEvmTransactionPurpose;
     formState: FormState;
     precomposedTransaction: PrecomposedTransactionFinal;
     vaultName?: string;
@@ -93,6 +94,18 @@ type BuildYieldClaimReviewPreviewParams = {
     type: 'claim';
 };
 
+type BuildYieldWrapReviewPreviewParams = {
+    account: Account;
+    device: TrezorDevice;
+    review: {
+        amount: string;
+        unsignedTransaction: string;
+    };
+    /** Native coin of the account (`contractAddress: null`) — the token being spent. */
+    reviewToken: YieldFlowDisplayToken;
+    type: 'wrap';
+};
+
 type BuildYieldAllowanceReviewPreviewParams = {
     account: Account;
     device: TrezorDevice;
@@ -106,7 +119,8 @@ export type BuildYieldReviewPreviewParams =
     | BuildYieldDepositReviewPreviewParams
     | BuildYieldWithdrawReviewPreviewParams
     | BuildYieldClaimReviewPreviewParams
-    | BuildYieldAllowanceReviewPreviewParams;
+    | BuildYieldAllowanceReviewPreviewParams
+    | BuildYieldWrapReviewPreviewParams;
 
 export type YieldReviewPreview = {
     evmTransactionPurpose: YieldReviewEvmTransactionPurpose;
@@ -161,11 +175,16 @@ const buildYieldReviewPreviewResult = ({
     account,
     availableRewards,
     device,
+    evmTransactionPurposeOverride,
     formState,
     precomposedTransaction,
     vaultName,
 }: BuildYieldReviewPreviewBaseParams): YieldReviewPreview => {
-    const evmTransactionPurpose = getYieldReviewEvmTransactionPurpose(formState);
+    // The wrap purpose cannot be derived from calldata alone — WETH deposit() is a generic
+    // selector that only means "wrap" together with the wrapped-native target — so the caller
+    // provides it explicitly.
+    const evmTransactionPurpose =
+        evmTransactionPurposeOverride ?? getYieldReviewEvmTransactionPurpose(formState);
     const outputs = constructTransactionReviewOutputs({
         account,
         availableRewards,
@@ -251,6 +270,25 @@ export const buildYieldReviewPreview = (
                     account: params.account,
                     availableRewards,
                     device: params.device,
+                    formState,
+                    precomposedTransaction,
+                });
+            }
+            case 'wrap': {
+                const { formState, precomposedTransaction } = buildStablecoinYieldTransactionReview(
+                    {
+                        amount: params.review.amount,
+                        selectedFee: null,
+                        symbol: params.account.symbol,
+                        token: params.reviewToken,
+                        unsignedTransaction: params.review.unsignedTransaction,
+                    },
+                );
+
+                return buildYieldReviewPreviewResult({
+                    account: params.account,
+                    device: params.device,
+                    evmTransactionPurposeOverride: 'wrap',
                     formState,
                     precomposedTransaction,
                 });

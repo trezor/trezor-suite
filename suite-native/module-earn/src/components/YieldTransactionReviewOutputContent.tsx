@@ -54,6 +54,12 @@ const yieldActionOutputMessages = {
         description: 'earn.yieldReview.outputs.redeemDescription',
         title: 'earn.yieldReview.outputs.redeemTitle',
     },
+    wrap: {
+        addressTitle: 'earn.yieldReview.outputs.wrapTo',
+        amountLabel: 'earn.yieldReview.outputs.wrapAmount',
+        description: 'earn.yieldReview.outputs.wrapDescription',
+        title: 'earn.yieldReview.outputs.wrapTitle',
+    },
 } satisfies Record<YieldActionReviewEvmTransactionPurpose, YieldActionOutputMessages>;
 
 export const getYieldTransactionReviewOutputTitle = ({

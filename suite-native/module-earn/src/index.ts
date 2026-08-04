@@ -8,6 +8,7 @@ export { useStakingDetailNavigation } from './hooks/useStakingDetailNavigation';
 export { useStakingNavigateAnalytics } from './hooks/useStakingNavigateAnalytics';
 export { useWorkInProgressAlert } from './hooks/useWorkInProgressAlert';
 export { EarnStackNavigator } from './navigation/EarnStackNavigator';
+export { WrappedNativeTokenStackNavigator } from './navigation/WrappedNativeTokenStackNavigator';
 export { YieldStackNavigator } from './navigation/YieldStackNavigator';
 export { ClaimReviewScreen } from './screens/ClaimReviewScreen';
 export { ClaimTransactionDataReviewScreen } from './screens/ClaimTransactionDataReviewScreen';

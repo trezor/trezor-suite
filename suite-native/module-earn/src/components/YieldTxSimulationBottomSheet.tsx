@@ -26,7 +26,7 @@ type YieldTxSimulationBottomSheetProps = {
     ref: BottomSheetModalRef;
 } & (
     | {
-          flow: 'deposit' | 'withdraw';
+          flow: 'deposit' | 'withdraw' | 'wrap';
           unsignedTx: string;
       }
     | {

@@ -21,7 +21,8 @@ export type ReviewFormType =
     | 'yield-deposit'
     | 'yield-revoke'
     | 'yield-withdraw'
-    | 'yield-claim';
+    | 'yield-claim'
+    | 'wrap-native';
 
 export type ReviewAlertKind = 'pushFailed' | 'pendingConflict' | 'signFailed';
 
@@ -195,6 +196,23 @@ const translationKeys = {
         pendingConflict: {
             title: 'earn.yieldReview.alerts.claim.pendingTransactionConflict.title',
             description: 'earn.yieldReview.alerts.claim.pendingTransactionConflict.description',
+            primaryButton: 'earn.yieldReview.alerts.primaryButton',
+        },
+    },
+    'wrap-native': {
+        signFailed: {
+            title: 'earn.yieldReview.alerts.wrap.signTransactionFailed.title',
+            description: 'earn.yieldReview.alerts.wrap.signTransactionFailed.description',
+            primaryButton: 'earn.yieldReview.alerts.primaryButton',
+        },
+        pushFailed: {
+            title: 'earn.yieldReview.alerts.wrap.pushTransactionFailed.title',
+            description: 'earn.yieldReview.alerts.wrap.pushTransactionFailed.description',
+            primaryButton: 'earn.yieldReview.alerts.primaryButton',
+        },
+        pendingConflict: {
+            title: 'earn.yieldReview.alerts.wrap.pendingTransactionConflict.title',
+            description: 'earn.yieldReview.alerts.wrap.pendingTransactionConflict.description',
             primaryButton: 'earn.yieldReview.alerts.primaryButton',
         },
     },
