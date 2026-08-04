@@ -244,38 +244,50 @@ export const getBroadcastedTxDetails = ({
     if (!IsFullySigned || !Witnesses || !transactionData) return;
 
     const { reverseBuffer, BufferReader } = bufferutils;
-    const tx = new Transaction({ network });
 
-    // constants assigned by coordinator
-    tx.version = 1;
-    tx.locktime = 0;
-    const sequence = 4294967295;
+    // `Witnesses` is supplied by the (untrusted) coordinator as a `Record<number, string>`, so it may
+    // be missing an entry for some input index or contain malformed hex. `Buffer.from(undefined, 'hex')`
+    // and `BufferReader.readVector()` on a short/garbage buffer both throw; because this runs on the
+    // fire-and-forget `onStatusUpdate` -> `round.process()` path (no surrounding try/catch), such a throw
+    // becomes an unhandled rejection that a malicious coordinator could trigger. `broadcastedTxDetails` is
+    // an optional, purely informational field (the security-critical input detention already happened in
+    // `ended()`), so degrade to `undefined` instead of crashing on poison coordinator data.
+    try {
+        const tx = new Transaction({ network });
 
-    transactionData.inputs.forEach((input, index) => {
-        // @ts-expect-error: indexing with noUncheckedIndexedAccess
-        const witnessHex: string = Witnesses[index];
-        tx.ins.push({
-            hash: reverseBuffer(Buffer.from(input.hash, 'hex')),
-            index: input.index,
-            script: Buffer.allocUnsafe(0), // script is not used in calculation
-            sequence,
-            witness: new BufferReader(Buffer.from(witnessHex, 'hex')).readVector(),
+        // constants assigned by coordinator
+        tx.version = 1;
+        tx.locktime = 0;
+        const sequence = 4294967295;
+
+        transactionData.inputs.forEach((input, index) => {
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const witnessHex: string = Witnesses[index];
+            tx.ins.push({
+                hash: reverseBuffer(Buffer.from(input.hash, 'hex')),
+                index: input.index,
+                script: Buffer.allocUnsafe(0), // script is not used in calculation
+                sequence,
+                witness: new BufferReader(Buffer.from(witnessHex, 'hex')).readVector(),
+            });
         });
-    });
 
-    transactionData.outputs.forEach(output => {
-        tx.outs.push({
-            value: output.amount.toString(),
-            script: Buffer.from(output.scriptPubKey, 'hex'),
+        transactionData.outputs.forEach(output => {
+            tx.outs.push({
+                value: output.amount.toString(),
+                script: Buffer.from(output.scriptPubKey, 'hex'),
+            });
         });
-    });
 
-    return {
-        ...transactionData,
-        hex: tx.toHex(),
-        hash: tx.getHash().toString('hex'),
-        txid: tx.getId(),
-        size: tx.byteLength(),
-        vsize: tx.virtualSize(),
-    };
+        return {
+            ...transactionData,
+            hex: tx.toHex(),
+            hash: tx.getHash().toString('hex'),
+            txid: tx.getId(),
+            size: tx.byteLength(),
+            vsize: tx.virtualSize(),
+        };
+    } catch {
+        return undefined;
+    }
 };

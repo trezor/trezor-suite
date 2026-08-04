@@ -1,7 +1,9 @@
 import { getWeakRandomNumberInRange } from '@trezor/utils';
+import { networks } from '@trezor/utxo-lib';
 
 import {
     getAffiliateRequest,
+    getBroadcastedTxDetails,
     getCommitmentData,
     getRoundParams,
     readTimeSpan,
@@ -77,6 +79,54 @@ describe('roundUtils', () => {
             signature:
                 '106bf94e6c325e3f9a8627ac6a8ebe71f322edcde26b43add515d81fc306a309a914ff0e7cfc75b05fc1cddbb60f0f5594642991a23f19b4a4794000d4169db2',
             coinjoin_flags_array: [1, 1],
+        });
+    });
+
+    describe('getBroadcastedTxDetails', () => {
+        // one trusted input (built from our own signed transaction data) + one output
+        const transactionData = {
+            inputs: [{ hash: 'aa'.repeat(32), index: 0, amount: 1000 }],
+            outputs: [{ scriptPubKey: '0014' + '00'.repeat(20), amount: 900 }],
+            affiliateRequest: {},
+        } as any;
+
+        it('returns tx details for a well-formed (empty) coordinator witness', () => {
+            const result = getBroadcastedTxDetails({
+                // '00' = witness vector with 0 items
+                coinjoinState: { IsFullySigned: true, Witnesses: { 0: '00' } } as any,
+                transactionData,
+                network: networks.regtest,
+            });
+
+            expect(result).toBeDefined();
+            expect(typeof result?.txid).toBe('string');
+        });
+
+        // A malicious/misbehaving coordinator supplies `Witnesses` (Record<number,string>).
+        // These records must not crash round processing (fire-and-forget onStatusUpdate -> round.process()).
+        it('does not throw and returns undefined when a witness entry for an input is missing', () => {
+            let result;
+            expect(() => {
+                result = getBroadcastedTxDetails({
+                    coinjoinState: { IsFullySigned: true, Witnesses: {} } as any,
+                    transactionData,
+                    network: networks.regtest,
+                });
+            }).not.toThrow();
+            expect(result).toBeUndefined();
+        });
+
+        it('does not throw and returns undefined when a witness entry is malformed hex', () => {
+            let result;
+            expect(() => {
+                result = getBroadcastedTxDetails({
+                    // 'ff' = varint count 253 promising more items than the buffer can hold
+                    coinjoinState: { IsFullySigned: true, Witnesses: { 0: 'ff' } } as any,
+                    transactionData,
+                    network: networks.regtest,
+                });
+            }).not.toThrow();
+            expect(result).toBeUndefined();
         });
     });
 
