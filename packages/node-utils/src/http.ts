@@ -408,12 +408,22 @@ export class HttpServer<T extends EventMap> extends TypedEmitter<T & BaseEvents>
      */
     public requireToken({ from = 'token' }: { from?: string } = {}): AnyRequestHandler {
         return (request, response, next, { logger }) => {
-            const { pathname, query } = parseRequestUrl(request.url);
-            const route = pathname ? this.routes.find(r => r.pathname === pathname) : undefined;
-            if (!route) {
+            // Reject with a bare 404 that is indistinguishable from the "route not
+            // found / inactive" response produced by `onRequest`. Upstream common
+            // middleware may already have set headers (e.g. a global Content-Type),
+            // so strip them to avoid leaking that the route exists and is currently
+            // activated (route-discovery signal).
+            const reject = () => {
+                response.removeHeader('Content-Type');
                 response.statusCode = 404;
 
                 return response.end();
+            };
+
+            const { pathname, query } = parseRequestUrl(request.url);
+            const route = pathname ? this.routes.find(r => r.pathname === pathname) : undefined;
+            if (!route) {
+                return reject();
             }
 
             this.purgeExpiredTokens(route);
@@ -424,15 +434,12 @@ export class HttpServer<T extends EventMap> extends TypedEmitter<T & BaseEvents>
             const raw = query?.[from];
             const token = Array.isArray(raw) ? raw[0] : raw;
             if (!token) {
-                response.statusCode = 404;
-
-                return response.end();
+                return reject();
             }
             if (!route.tokens.has(token)) {
                 logger.info(`Token rejected for ${pathname} (param '${from}')`);
-                response.statusCode = 404;
 
-                return response.end();
+                return reject();
             }
 
             route.tokens.delete(token);

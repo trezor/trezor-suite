@@ -57,6 +57,34 @@ describe('http receiver', () => {
         }
     });
 
+    it('buy-post does not forward the receiver token to the partner form', async () => {
+        const receiver = createHttpReceiver({ port: 0 });
+        try {
+            const startResult = await receiver.start();
+            if (!startResult.success) throw new Error('start failed');
+            const address = receiver.getServerAddress();
+
+            const activated = receiver.activateRoute('/buy-post');
+            expect(activated).toBeDefined();
+
+            const action = 'https://partner.example/pay';
+            const url =
+                `http://${address.address}:${address.port}/buy-post` +
+                `?a=${encodeURIComponent(action)}&amount=42&token=${activated!.token}`;
+            const res = await fetch(url);
+            const body = await res.text();
+
+            expect(res.status).toEqual(200);
+            // partner fields are forwarded as hidden inputs...
+            expect(body).toContain('name="amount"');
+            // ...but the receiver-internal token must never leak to the partner
+            expect(body).not.toContain('name="token"');
+            expect(body).not.toContain(activated!.token);
+        } finally {
+            await receiver.stop();
+        }
+    });
+
     it('rejects request without token (auto-deactivated route)', async () => {
         const receiver = createHttpReceiver({ port: 0 });
         try {

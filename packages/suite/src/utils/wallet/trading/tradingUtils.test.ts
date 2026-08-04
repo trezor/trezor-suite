@@ -93,10 +93,10 @@ describe('trading utils', () => {
         it('omits token query for deeplink (empty token)', () => {
             expect(
                 buildHttpReceiverRedirectUrl(
-                    { url: 'trezorsuite:/buy-redirect', token: '' },
+                    { url: 'trezorsuite://buy-redirect', token: '' },
                     '/coinmarket-redirect/foo',
                 ),
-            ).toBe('trezorsuite:/buy-redirect?p=%2Fcoinmarket-redirect%2Ffoo');
+            ).toBe('trezorsuite://buy-redirect?p=%2Fcoinmarket-redirect%2Ffoo');
         });
 
         it('falls back to a string when address is missing', () => {

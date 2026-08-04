@@ -240,7 +240,10 @@ export const createHttpReceiver = (options?: {
             Forwarding to ${xssFilters.inHTML(action)}...
             <form id="buy-form" method="POST" action="${xssFilters.inDoubleQuotes(action)}">
             ${Array.from(searchParams)
-                .filter(([key]) => key !== 'a')
+                // `a` holds the action URL and `token` is the receiver's single-use
+                // auth token — both are receiver-internal and must not be forwarded
+                // to the external partner endpoint.
+                .filter(([key]) => key !== 'a' && key !== 'token')
                 .map(
                     ([key, value]) =>
                         `<input type="hidden" name="${xssFilters.inDoubleQuotes(key)}" value="${xssFilters.inDoubleQuotes(

@@ -503,6 +503,34 @@ describe('HttpServer', () => {
             expect(handler).not.toHaveBeenCalled();
         });
 
+        test('rejection response strips headers set by common middleware (stealth 404)', async () => {
+            const handler = jest.fn((_request, response) => {
+                response.end('ok');
+            });
+            // common middleware sets a Content-Type for every request, before the
+            // per-route requireToken runs
+            server.use([
+                (request, response, next) => {
+                    response.setHeader('Content-Type', 'text/html; charset=UTF-8');
+                    next(request, response);
+                },
+            ]);
+            server.get('/foo', [server.requireToken(), handler]);
+            server.deactivateRoute('/foo');
+            await server.start();
+            const address = server.getServerAddress();
+            const base = `http://${address.address}:${address.port}`;
+
+            // route is activated, so common middleware runs, but the token is wrong →
+            // the 404 must not carry the Content-Type header, otherwise a probe could
+            // tell an activated route apart from an unregistered/inactive one
+            server.activateRoute('/foo');
+            const res = await fetch(`${base}/foo?token=wrong`);
+            expect(res.status).toEqual(404);
+            expect(res.headers.get('content-type')).toBeNull();
+            expect(handler).not.toHaveBeenCalled();
+        });
+
         test('accepts valid token, then auto-deactivates after single use', async () => {
             const { handler, base } = await setup();
             const activated = server.activateRoute('/foo')!;
