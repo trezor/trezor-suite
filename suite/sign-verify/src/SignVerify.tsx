@@ -202,7 +202,7 @@ export const SignVerify = ({ account, network, renderShell }: SignVerifyProps) =
                         />
                         {isSignPage ? (
                             <>
-                                <Row gap={40} alignItems="flex-start">
+                                <Row gap={40} alignItems="flex-start" flexWrap="wrap">
                                     <Box flex="1" minWidth={0}>
                                         <SignAddressInput
                                             name="path"
