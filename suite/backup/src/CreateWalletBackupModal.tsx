@@ -8,8 +8,8 @@ import {
     AdditionalBackupSteps,
     AdditionalBackupSuccess,
 } from '@suite/nfc';
-import { isAdditionalShamirBackupInProgress } from '@suite/recovery';
 import { selectIsN4w1BackupEnabled } from '@suite/settings';
+import { isAdditionalShamirBackupInProgress } from '@suite-common/backup';
 import { selectSelectedDevice } from '@suite-common/device';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { Modal } from '@trezor/components';

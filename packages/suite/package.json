@@ -34,6 +34,7 @@
         "@suite-common/analytics": "workspace:*",
         "@suite-common/analytics-redux": "workspace:*",
         "@suite-common/assets": "workspace:*",
+        "@suite-common/backup": "workspace:*",
         "@suite-common/bip329": "workspace:*",
         "@suite-common/bip329-types": "workspace:*",
         "@suite-common/bluetooth": "workspace:*",
