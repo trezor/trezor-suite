@@ -927,9 +927,9 @@
             "conditions": [
                 {
                     "environment": {
-                        "desktop": ">=24.5.1",
+                        "desktop": "!",
                         "mobile": "!",
-                        "web": ">=24.5.1"
+                        "web": "!"
                     }
                 }
             ],

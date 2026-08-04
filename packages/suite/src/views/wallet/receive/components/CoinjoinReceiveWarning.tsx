@@ -28,7 +28,6 @@ export const CoinjoinReceiveWarning = () => {
                     </H4>
                     <Column>
                         <Translation id="TR_COINJOIN_CEX_WARNING" />
-                        <Translation id="TR_UNECO_COINJOIN_RECEIVE_WARNING" />
                     </Column>
                 </>
             }

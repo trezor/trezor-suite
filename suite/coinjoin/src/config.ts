@@ -21,7 +21,7 @@ export const COINJOIN_NETWORKS: PartialRecord<CoinjoinSymbol, ServerEnvironment>
         public: {
             network: 'btc',
             coordinatorName: 'CoinJoinCoordinatorIdentifier',
-            coordinatorUrl: 'https://wasabiwallet.io/wabisabi/',
+            coordinatorUrl: 'https://coinjoin.kruw.io/wabisabi/',
             wabisabiBackendUrl: 'https://api.wasabiwallet.io/',
             blockbookUrls: ['https://btc.trezor.io'],
             onionDomains: {
@@ -171,5 +171,5 @@ export const getCoinjoinConfig = (
     if (!settings)
         throw new Error(`Missing settings for coinjoin network ${symbol} env ${environment}`);
 
-    return { affiliationId: 'trezor', ...settings };
+    return { affiliationId: null, ...settings }; // Suite Dark flavour: kruw.io coordinator, no affiliation
 };
