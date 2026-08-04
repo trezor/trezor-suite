@@ -37,7 +37,10 @@ export const transformTransaction = (
         if (
             meta != null &&
             typeof meta !== 'string' &&
-            !meta.TransactionResult?.startsWith('tes')
+            !(
+                typeof meta.TransactionResult === 'string' &&
+                meta.TransactionResult.startsWith('tes')
+            )
         ) {
             txType = 'failed';
         } else if (!descriptor || isTokenTransaction) {
