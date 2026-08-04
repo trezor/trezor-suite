@@ -14,6 +14,7 @@ import { buildApprovalTransactionData } from './ethUtils';
 import {
     constructTransactionReviewOutputs,
     isClearSignedEvmTradingSwapTransaction,
+    isClearSignedWrappedNativeTransaction,
 } from './reviewTransactionUtils';
 
 const buildPrecomposedTx = (to: string | undefined): GeneralPrecomposedTransactionFinal =>
@@ -118,6 +119,15 @@ const buildPrecomposedTransaction = ({
         isTokenKnown,
     }) as unknown as GeneralPrecomposedTransactionFinal;
 
+const wethToken: TokenInfo = {
+    balance: '1000000',
+    contract: WETH_MAINNET.toLowerCase(),
+    decimals: 18,
+    name: 'Wrapped Ether',
+    standard: 'ERC20',
+    symbol: 'WETH',
+};
+
 const usdcToken: TokenInfo = {
     balance: '1000000',
     contract: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
@@ -179,6 +189,61 @@ describe('isClearSignedEvmTradingSwapTransaction', () => {
             precomposedTx: buildPrecomposedTx(LIFI_DIAMOND),
             transactionData: LIFI_SWAP_DATA,
             trading: buildTrading(),
+        });
+
+        expect(result).toBe(false);
+    });
+});
+
+describe('isClearSignedWrappedNativeTransaction', () => {
+    const account = buildEthereumAccount();
+    const device = buildUpdatedDevice();
+
+    it.each([
+        { op: 'wrap', transactionData: WETH_DEPOSIT_DATA },
+        { op: 'unwrap', transactionData: WETH_WITHDRAW_DATA },
+    ])('returns true for a canonical WETH $op', ({ transactionData }) => {
+        const result = isClearSignedWrappedNativeTransaction({
+            account,
+            device,
+            precomposedTx: buildPrecomposedTransaction({ to: WETH_MAINNET }),
+            transactionData,
+        });
+
+        expect(result).toBe(true);
+    });
+
+    it('returns false for a wrapped native the firmware does not clear-sign (WBNB on BSC)', () => {
+        const result = isClearSignedWrappedNativeTransaction({
+            account: buildEthereumAccount({ symbol: 'bsc' }),
+            device,
+            precomposedTx: buildPrecomposedTransaction({ to: WBNB_BSC }),
+            transactionData: WETH_DEPOSIT_DATA,
+        });
+
+        expect(result).toBe(false);
+    });
+
+    it('returns false when the device cannot clear-sign', () => {
+        const result = isClearSignedWrappedNativeTransaction({
+            account,
+            device: mockSuiteDevice(
+                { unavailableCapabilities: { evmClearSigning: 'no-support' } },
+                { major_version: 2, minor_version: 8, patch_version: 0 },
+            ),
+            precomposedTx: buildPrecomposedTransaction({ to: WETH_MAINNET }),
+            transactionData: WETH_DEPOSIT_DATA,
+        });
+
+        expect(result).toBe(false);
+    });
+
+    it('returns false for an unrelated contract call to the WETH address', () => {
+        const result = isClearSignedWrappedNativeTransaction({
+            account,
+            device,
+            precomposedTx: buildPrecomposedTransaction({ to: WETH_MAINNET }),
+            transactionData: ERC20_TRANSFER_DATA,
         });
 
         expect(result).toBe(false);
@@ -393,24 +458,51 @@ describe('constructTransactionReviewOutputs', () => {
     it.each([
         { op: 'wrap', transactionData: WETH_DEPOSIT_DATA },
         { op: 'unwrap', transactionData: WETH_WITHDRAW_DATA },
-    ])('suppresses the raw data row for a clear-signed WETH $op', ({ transactionData }) => {
+    ])('mirrors the four device screens for a clear-signed WETH $op', ({ transactionData, op }) => {
         const outputs = constructTransactionReviewOutputs({
             account,
             device,
             decreaseOutputId: undefined,
             precomposedForm: buildFormState({ transactionData }),
+            precomposedTx: buildPrecomposedTransaction({
+                to: WETH_MAINNET,
+                // An unwrap review carries the WETH token; the amount row must still be
+                // native, matching the device's AmountFormatter.
+                token: op === 'unwrap' ? wethToken : undefined,
+            }),
+        });
+
+        // `confirm_ethereum_clear_signing` walks provider → intent → amount → summary. The
+        // summary is the review's own total row, so three outputs precede it.
+        expect(outputs).toEqual([
+            { type: 'recipient_name', value: 'WETH' },
+            { type: 'contract_intent', value: '' },
+            { type: 'amount', value: '1000000' },
+        ]);
+        // No token on the amount row: wrapping is 1:1 and the device prints ETH both ways.
+        expect(outputs[2]).not.toHaveProperty('token');
+    });
+
+    it('renders the blind-signing rows for a WETH wrap on firmware without clear signing', () => {
+        const outputs = constructTransactionReviewOutputs({
+            account,
+            device: mockSuiteDevice(
+                { unavailableCapabilities: { evmClearSigning: 'update-required' } },
+                { major_version: 2, minor_version: 8, patch_version: 0 },
+            ),
+            decreaseOutputId: undefined,
+            precomposedForm: buildFormState({ transactionData: WETH_DEPOSIT_DATA }),
             precomposedTx: buildPrecomposedTransaction({ to: WETH_MAINNET }),
         });
 
-        // The device clear-signs the intent + amount, so the raw calldata row is dropped...
-        expect(outputs).not.toEqual(
-            expect.arrayContaining([expect.objectContaining({ type: 'data' })]),
-        );
-        // ...but the contract address (and the fee/total summary) still show.
         expect(outputs).toEqual(
             expect.arrayContaining([
+                expect.objectContaining({ type: 'data', value: WETH_DEPOSIT_DATA }),
                 expect.objectContaining({ type: 'contract', value: WETH_MAINNET }),
             ]),
+        );
+        expect(outputs).not.toEqual(
+            expect.arrayContaining([expect.objectContaining({ type: 'contract_intent' })]),
         );
     });
 

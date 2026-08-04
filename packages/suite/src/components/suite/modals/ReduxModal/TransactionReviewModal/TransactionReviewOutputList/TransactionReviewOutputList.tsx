@@ -14,7 +14,7 @@ import type {
 } from '@suite-common/wallet-types';
 import {
     findAccountsByAddress,
-    getEvmTransactionTextSignature,
+    getEvmTransactionPurpose,
     isEvmApprovalTx,
     isEvmYieldTxByTextSignature,
 } from '@suite-common/wallet-utils';
@@ -102,7 +102,15 @@ export const TransactionReviewOutputList = ({
 
     const isApprovalTx = isEvmApprovalTx(precomposedForm.transactionData);
 
-    const evmTxType = getEvmTransactionTextSignature(precomposedForm.transactionData);
+    // Resolved from the full context, not the calldata alone, so a WETH deposit()/withdraw() is
+    // classified as wrap/unwrap — the review rows for those mirror the device's clear-signing
+    // screens and need to know which of the two it is.
+    const evmTxType = getEvmTransactionPurpose({
+        networkSymbol: symbol,
+        to: precomposedTx.outputs.find(o => 'address' in o && typeof o.address === 'string')
+            ?.address,
+        data: precomposedForm.transactionData,
+    });
 
     const isYieldOperation = isEvmYieldTxByTextSignature(evmTxType) || evmTxType === 'claim';
 
