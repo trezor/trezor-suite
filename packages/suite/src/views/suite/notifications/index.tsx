@@ -2,7 +2,6 @@ import { useState } from 'react';
 
 import { DebugOnlyBadge, selectIsDebugModeActive } from '@suite/debug';
 import { Translation } from '@suite/intl';
-import { Card, CollapsibleBox, Column, Dot, Row } from '@trezor/components';
 import { isTransactionNotification } from '@suite-common/toast-notifications';
 import { Card, CollapsibleBox, Column, Dot, Row } from '@trezor/components';
 
