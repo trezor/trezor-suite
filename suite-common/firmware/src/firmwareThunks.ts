@@ -10,10 +10,7 @@ import { hasBitcoinOnlyFirmware, isBitcoinOnlyDevice } from '@trezor/device-util
 
 import { FIRMWARE_MODULE_PREFIX, firmwareActions } from './firmwareActions';
 import { type FirmwareRootState, selectFirmware } from './firmwareReducer';
-import {
-    type GetBinFilesBaseUrlThunkDeps,
-    getBinFilesBaseUrlThunk,
-} from './getBinFilesBaseUrlThunk';
+import { type SelectDesktopBinDirDep, getBinFilesBaseUrlThunk } from './getBinFilesBaseUrlThunk';
 
 export type FirmwareUpdateProps = {
     firmwareType?: FirmwareType;
@@ -30,8 +27,8 @@ export type FirmwareUpdateResult = {
     connectResponse?: Awaited<ReturnType<typeof TrezorConnect.firmwareUpdate>>;
 };
 
-type FirmwareUpdateThunkDeps = GetBinFilesBaseUrlThunkDeps & {
-    selectors: SelectLanguageDep;
+type FirmwareUpdateThunkDeps = {
+    selectors: SelectDesktopBinDirDep & SelectLanguageDep;
     services: ReportSecurityCheckDep;
 };
 type FirmwareUpdateThunkState = DeviceRootState & FirmwareRootState;
