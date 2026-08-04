@@ -27,6 +27,8 @@ import { AmountComponent } from 'src/components/wallet/AmountComponent';
 import { useSelector } from 'src/hooks/suite';
 import { type WalletAccountTransaction } from 'src/types/wallet';
 
+import { HistoricRateChange } from './HistoricRateChange';
+
 type AmountDetailsProps = {
     tx: WalletAccountTransaction;
     isTestnet: boolean;
@@ -66,6 +68,14 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
         return amount.isNegative() ? 'negative' : 'positive';
     };
 
+    const nativeRateChange = tx.blockTime ? (
+        <HistoricRateChange
+            symbol={tx.symbol}
+            historicRate={historicRate}
+            historicTimestamp={tx.blockTime as Timestamp}
+        />
+    ) : null;
+
     return (
         <Table hasBorders={false} isRowHighlightedOnHover={false} typographyStyle="body-sm">
             {!isTestnet && (
@@ -96,6 +106,7 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                                 }}
                             />
                         </Table.Cell>
+                        <Table.Cell />
                     </Table.Row>
                 </Table.Header>
             )}
@@ -138,6 +149,7 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                                     />
                                 </Text>
                             </Table.Cell>
+                            <Table.Cell align="end">{nativeRateChange}</Table.Cell>
                         </Table.Row>
                     )}
                 {tx.internalTransfers.map((transfer, i) => (
@@ -176,6 +188,7 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                                 />
                             </Text>
                         </Table.Cell>
+                        <Table.Cell align="end">{nativeRateChange}</Table.Cell>
                     </Table.Row>
                 ))}
                 {tx.type !== 'self' &&
@@ -243,6 +256,17 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                                         </Text>
                                     )}
                                 </Table.Cell>
+                                <Table.Cell align="end">
+                                    {tx.blockTime && (
+                                        <HistoricRateChange
+                                            symbol={tx.symbol}
+                                            historicRate={historicTokenRate}
+                                            historicTimestamp={tx.blockTime as Timestamp}
+                                            tokenAddress={transfer.contract as TokenAddress}
+                                            displaySymbol={transfer.symbol}
+                                        />
+                                    )}
+                                </Table.Cell>
                             </Table.Row>
                         );
                     })}
@@ -277,6 +301,7 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                                 <BaseCurrencyValue amount={cardanoWithdrawal} symbol={tx.symbol} />
                             </Text>
                         </Table.Cell>
+                        <Table.Cell align="end">{nativeRateChange}</Table.Cell>
                     </Table.Row>
                 )}
                 {cardanoDeposit && (
@@ -310,6 +335,7 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                                 <BaseCurrencyValue amount={cardanoDeposit} symbol={tx.symbol} />
                             </Text>
                         </Table.Cell>
+                        <Table.Cell align="end">{nativeRateChange}</Table.Cell>
                     </Table.Row>
                 )}
                 {/* TX FEE */}
@@ -344,6 +370,7 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                                 <BaseCurrencyValue amount={fee} symbol={tx.symbol} />
                             </Text>
                         </Table.Cell>
+                        <Table.Cell align="end">{nativeRateChange}</Table.Cell>
                     </Table.Row>
                 )}
             </Table.Body>
