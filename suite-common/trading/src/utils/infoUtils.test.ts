@@ -23,6 +23,29 @@ describe('infoUtils', () => {
         it('should return undefined for non-existing coin', () => {
             expect(getTradingCoinSymbolByCryptoId({}, 'bitcoin' as CryptoId)).toBeUndefined();
         });
+
+        // `coins` comes verbatim from an untrusted trade server (`tradeApi.getInfo()`), so a coin
+        // entry with a missing/non-string `symbol` must not crash `.toUpperCase()` — these getters
+        // run inside memoized selectors consumed during render.
+        it('should not throw and return undefined for a poison coin missing symbol', () => {
+            const poisonCoins = { bitcoin: { name: 'Bitcoin' } } as any;
+            expect(() =>
+                getTradingCoinSymbolByCryptoId(poisonCoins, 'bitcoin' as CryptoId),
+            ).not.toThrow();
+            expect(
+                getTradingCoinSymbolByCryptoId(poisonCoins, 'bitcoin' as CryptoId),
+            ).toBeUndefined();
+        });
+
+        it('should not throw and return undefined for a poison coin with a non-string symbol', () => {
+            const poisonCoins = { bitcoin: { symbol: 123 } } as any;
+            expect(() =>
+                getTradingCoinSymbolByCryptoId(poisonCoins, 'bitcoin' as CryptoId),
+            ).not.toThrow();
+            expect(
+                getTradingCoinSymbolByCryptoId(poisonCoins, 'bitcoin' as CryptoId),
+            ).toBeUndefined();
+        });
     });
 
     it('getTradingPlatformsInfoByCryptoId should select platform', () => {
@@ -78,6 +101,16 @@ describe('infoUtils', () => {
                 coinSymbol: undefined,
                 contractAddress: undefined,
             });
+        });
+
+        it('should not throw for a poison coin missing symbol', () => {
+            const poisonCoins = { bitcoin: { name: 'Bitcoin' } } as any;
+            expect(() =>
+                getTradingSymbolAndContractAddressByCryptoId(poisonCoins, 'bitcoin' as CryptoId),
+            ).not.toThrow();
+            expect(
+                getTradingSymbolAndContractAddressByCryptoId(poisonCoins, 'bitcoin' as CryptoId),
+            ).toEqual({ coinSymbol: undefined, contractAddress: undefined });
         });
     });
 });

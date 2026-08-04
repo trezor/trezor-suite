@@ -41,6 +41,21 @@ describe('tradeableAssetUtils', () => {
                 networkId: 'ethereum',
             });
         });
+
+        // `coinInfo` comes verbatim from an untrusted trade server (`tradeApi.getInfo()`), so a
+        // poison coin with a missing/non-string `symbol` or `name` must not crash — these run in
+        // memoized selectors consumed during the asset-picker render.
+        it('should not throw for a poison coin with a non-string symbol', () => {
+            const poison = { name: 'Bitcoin', coingeckoId: 'bitcoin', symbol: 123 } as any;
+            expect(() => coinInfoToTradeableAsset('bitcoin' as CryptoId, poison)).not.toThrow();
+            expect(coinInfoToTradeableAsset('bitcoin' as CryptoId, poison).name).toBe('Bitcoin');
+        });
+
+        it('should not throw and coerce name for a poison coin with a non-string name', () => {
+            const poison = { symbol: 'btc', coingeckoId: 'bitcoin', name: 42 } as any;
+            expect(() => coinInfoToTradeableAsset('bitcoin' as CryptoId, poison)).not.toThrow();
+            expect(coinInfoToTradeableAsset('bitcoin' as CryptoId, poison).name).toBe('');
+        });
     });
 
     describe('getSymbolFromTradeableAsset', () => {

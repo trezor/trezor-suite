@@ -19,12 +19,21 @@ export const coinInfoToTradeableAsset = (
 
     const tokenContractAddress = isEthNativeCoin ? undefined : (contractAddress as TokenAddress);
 
+    // `CoinInfo` (`symbol`/`name`) is declared with required `string` fields, but `coins` comes
+    // verbatim from an untrusted/user-selectable trade server (`tradeApi.getInfo()` returns the
+    // response unvalidated). A poison coin with a missing/non-string `symbol` would throw on
+    // `.toUpperCase()`, and a non-string `name` would later throw in `normalizeForSearch` (String
+    // .normalize) when the asset picker builds its search index — both inside memoized selectors /
+    // `useMemo` consumed during render, so one bad record crashes the whole trading asset picker.
+    const safeSymbol = typeof symbol === 'string' ? symbol : '';
+
     return {
         cryptoId,
-        symbol: getDisplaySymbol(symbol.toUpperCase(), tokenContractAddress),
+        symbol: getDisplaySymbol(safeSymbol.toUpperCase(), tokenContractAddress),
         contractAddress: tokenContractAddress,
         networkId,
         ...info,
+        name: typeof info.name === 'string' ? info.name : '',
     };
 };
 

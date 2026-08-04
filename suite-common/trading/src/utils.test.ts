@@ -82,6 +82,27 @@ describe('filterQuotesAccordingTags', () => {
             quotes.filter(q => !q.tags?.includes('alternativeCurrency')).length,
         );
     });
+
+    // `tags` comes verbatim from an untrusted trade server (quotes are returned without runtime
+    // schema validation). A non-array `tags` must not throw on `.includes` and abort the whole
+    // `.filter` inside handleBuy/SellRequestThunk.
+    it('should not throw and keep the quote when tags is a non-array (poison record)', () => {
+        const poisonQuotes = [
+            { tags: 123 },
+            { tags: { alternativeCurrency: true } },
+            { tags: ['alternativeCurrency'] },
+            { tags: undefined },
+        ] as any;
+
+        expect(() => filterQuotesAccordingTags(poisonQuotes)).not.toThrow();
+        // The two non-array poison quotes and the tag-less quote are kept; only the genuine
+        // `alternativeCurrency`-tagged quote is filtered out.
+        expect(filterQuotesAccordingTags(poisonQuotes)).toStrictEqual([
+            { tags: 123 },
+            { tags: { alternativeCurrency: true } },
+            { tags: undefined },
+        ]);
+    });
 });
 
 describe('addIdsToQuotes', () => {

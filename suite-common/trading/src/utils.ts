@@ -241,7 +241,13 @@ export const getDefaultCountrySubdivision = (
 
 export const filterQuotesAccordingTags = <T extends TradingTradeBuySellType>(
     quotes: TradingTradeBuySellMapProps[T][],
-) => quotes.filter(q => !q.tags?.includes('alternativeCurrency'));
+    // `tags` is typed `BuyTradeTag[] | SellTradeTag[] | undefined`, but each quote comes verbatim
+    // from an untrusted trade server (`tradeApi.getBuyQuotes`/`getSellQuotes` return the raw
+    // response with no runtime schema validation). A non-array `tags` (object/number/boolean) would
+    // make `.includes` throw — optional chaining only guards null/undefined — aborting this
+    // whole-list `.filter` inside handleBuy/SellRequestThunk and rejecting the thunk, so the offers
+    // list never populates for as long as the attacker controls the response. Guard the field type.
+) => quotes.filter(q => !(Array.isArray(q.tags) && q.tags.includes('alternativeCurrency')));
 
 // fill orderId for all, paymentId for sell and buy, quoteId for exchange
 export const addIdsToQuotes = <T extends TradingType>(
