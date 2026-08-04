@@ -47,6 +47,32 @@ const getTickers = (ticker: Ticker, timestamp?: number, currency?: string) => {
     return request<TimestampedRates>(url);
 };
 
+/**
+ * Blockbook fiat-rate responses are fetched from `*.trezor.io/api/v2` over TLS but are NOT
+ * signed, so a compromised/MITM backend could return a truthy non-array body. Guarding the
+ * `.map` here at the data boundary prevents `rates.map is not a function` from rejecting the
+ * parallelRequestsCache promise and aborting the whole fiat-rate/graph fetch (sibling of the
+ * Coingecko `sanitizePrices` guard). `null` (fetch failure) is passed through as before.
+ */
+export const buildHistoricRates = (
+    ticker: Ticker,
+    rates: unknown,
+    timestamps: number[],
+): HistoricRates | null => {
+    if (!Array.isArray(rates)) return null;
+
+    return {
+        ts: new Date().getTime(),
+        symbol: ticker,
+        tickers: rates.map((rate, i) => {
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const ts: (typeof timestamps)[number] = timestamps[i];
+
+            return { ...rate, ts };
+        }),
+    };
+};
+
 const getMultiTickers = async (
     ticker: Ticker,
     timestamps: number[],
@@ -59,18 +85,7 @@ const getMultiTickers = async (
 
     const rates = !timestamps.length ? [] : await request<TimestampedRates[]>(url);
 
-    return (
-        rates && {
-            ts: new Date().getTime(),
-            symbol: ticker,
-            tickers: rates.map((rate, i) => {
-                // @ts-expect-error: indexing with noUncheckedIndexedAccess
-                const ts: (typeof timestamps)[number] = timestamps[i];
-
-                return { ...rate, ts };
-            }),
-        }
-    );
+    return buildHistoricRates(ticker, rates, timestamps);
 };
 
 const getLastWeekTimestamps = () =>
