@@ -1,6 +1,7 @@
-import { readFileSync, writeFileSync } from 'node:fs';
+import { writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 
+import { readPackageJson } from '@trezor/node-utils';
 import { arrayToDictionary, deepEqual, typedObjectEntries } from '@trezor/utils';
 
 import { pickCanonicalVersion } from '../../versions';
@@ -205,7 +206,7 @@ export const requireConnectClosureUnifiedFields: Requirement<'repo'> = {
 
         for (const [dir, drifts] of typedObjectEntries(driftsByDir)) {
             const pkgPath = join(dir, 'package.json');
-            const parsed = JSON.parse(readFileSync(pkgPath, 'utf-8')) as Record<string, unknown>;
+            const parsed = readPackageJson<Record<string, unknown>>(dir);
 
             for (const drift of drifts) {
                 parsed[drift.field] = drift.canonical;
