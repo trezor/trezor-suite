@@ -9865,6 +9865,18 @@ export const messages = defineMessages({
         id: 'TR_PROMO_BANNER_DASHBOARD_ETH_VAULT_BUTTON',
         defaultMessage: 'Explore vault',
     },
+    TR_PROMO_BANNER_DASHBOARD_DEFI_YIELD_TITLE: {
+        id: 'TR_PROMO_BANNER_DASHBOARD_DEFI_YIELD_TITLE',
+        defaultMessage: 'Put your assets to work securely',
+    },
+    TR_PROMO_BANNER_DASHBOARD_DEFI_YIELD_DESCRIPTION: {
+        id: 'TR_PROMO_BANNER_DASHBOARD_DEFI_YIELD_DESCRIPTION',
+        defaultMessage: 'Earn DeFi yield on ETH, USDC and USDT with Trezor-grade security.',
+    },
+    TR_PROMO_BANNER_DASHBOARD_DEFI_YIELD_BUTTON: {
+        id: 'TR_PROMO_BANNER_DASHBOARD_DEFI_YIELD_BUTTON',
+        defaultMessage: 'Get started',
+    },
     TR_PROMO_BANNER_DASHBOARD_STABLECOIN_YIELD_TITLE: {
         id: 'TR_PROMO_BANNER_DASHBOARD_STABLECOIN_YIELD_TITLE',
         defaultMessage: 'Earn on your stablecoins',
