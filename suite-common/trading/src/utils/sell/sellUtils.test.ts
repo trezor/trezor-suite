@@ -76,6 +76,15 @@ describe('sellUtils', () => {
                 'CH93 0076 2011 6238 5295 7',
             );
         });
+
+        it('should not throw on a non-string iban (poison record from untrusted trade server)', () => {
+            // The invity sell trade response is not runtime-validated; a wrong-typed
+            // bankAccount value must not crash the bank-account picker render.
+            expect(() => sellUtils.formatIban(123 as unknown as string)).not.toThrow();
+            expect(sellUtils.formatIban(123 as unknown as string)).toBe('');
+            expect(sellUtils.formatIban(undefined as unknown as string)).toBe('');
+            expect(sellUtils.formatIban(null as unknown as string)).toBe('');
+        });
     });
 
     describe('getStatusMessage', () => {
@@ -221,6 +230,29 @@ describe('sellUtils', () => {
                                 verified: false,
                             },
                         ],
+                    },
+                }),
+            ).toBe(true);
+        });
+
+        it('should not throw on non-array bankAccounts (poison record from untrusted trade server)', () => {
+            // The invity sell quote response is not runtime-validated; a wrong-typed
+            // bankAccounts value must not crash the BANK_ACCOUNT verification check.
+            expect(() =>
+                sellUtils.needToRegisterOrVerifyBankAccount({
+                    sellInfo,
+                    quote: {
+                        ...quote,
+                        bankAccounts: 123 as unknown as SellFiatTrade['bankAccounts'],
+                    },
+                }),
+            ).not.toThrow();
+            expect(
+                sellUtils.needToRegisterOrVerifyBankAccount({
+                    sellInfo,
+                    quote: {
+                        ...quote,
+                        bankAccounts: 123 as unknown as SellFiatTrade['bankAccounts'],
                     },
                 }),
             ).toBe(true);

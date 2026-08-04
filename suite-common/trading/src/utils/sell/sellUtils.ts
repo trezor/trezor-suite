@@ -59,11 +59,18 @@ const getAmountLimits = ({
     }
 };
 
-const formatIban = (iban: string) =>
-    iban
+const formatIban = (iban: string) => {
+    // `iban` comes from a sell trade's bankAccounts, part of the untrusted invity trade
+    // server response (raw fetch + JSON, no runtime schema validation). Its TS type is a
+    // non-optional string, but a wrong-typed value would crash .replace() during render of
+    // the (web + native) bank-account picker — optional chaining wouldn't help a non-string.
+    if (typeof iban !== 'string') return '';
+
+    return iban
         .replace(/ /g, '')
         .replace(/(.{4})/g, '$1 ')
         .trimEnd();
+};
 
 const getStatusMessage = (status: SellTradeStatus) => {
     switch (status) {
@@ -93,9 +100,12 @@ const needToRegisterOrVerifyBankAccount = ({
 
     // for BANK_ACCOUNT flow a message is shown if bank account is not verified
     if (provider?.flow === 'BANK_ACCOUNT') {
-        const isSomeBankAccountVerified = quote.bankAccounts?.some(
-            bankAccount => bankAccount.verified,
-        );
+        // `bankAccounts` comes from the untrusted invity sell-quote response (not runtime
+        // validated); a non-array value would crash .some() — optional chaining only guards
+        // null/undefined, so Array.isArray is required before iterating.
+        const isSomeBankAccountVerified =
+            Array.isArray(quote.bankAccounts) &&
+            quote.bankAccounts.some(bankAccount => bankAccount.verified);
 
         return !!quote.quoteId && !isSomeBankAccountVerified;
     }
