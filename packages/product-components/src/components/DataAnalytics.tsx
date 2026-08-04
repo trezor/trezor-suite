@@ -24,18 +24,18 @@ export const DataAnalytics = ({
                 <Column gap={16}>
                     <Text typographyStyle="body-sm-strong" data-testid="@analytics/consent/heading">
                         <FormattedMessage
-                            id="TR_ONBOARDING_DATA_COLLECTION_HEADING"
-                            defaultMessage="Anonymous data collection"
+                            id="TR_SUITEDARK_PRIVACY_HEADING"
+                            defaultMessage="Privacy-preserving build"
                         />
                     </Text>
                     <Text typographyStyle="body-xs" intent="neutral" priority="secondary">
                         <FormattedMessage
-                            id="TR_ONBOARDING_DATA_COLLECTION_DESCRIPTION"
+                            id="TR_SUITEDARK_PRIVACY_DESCRIPTION"
                             values={{
                                 analytics: analyticsLink || (chunks => chunks),
                                 tos: tosLink || (chunks => chunks),
                             }}
-                            defaultMessage="All data is anonymous and is used only for product development purposes. Read more in our <analytics>technical documentation</analytics> and <tos>Terms & Conditions</tos>."
+                            defaultMessage="You're using a special privacy-preserving build of Trezor Suite. Telemetry is disabled at build time — nothing is collected or sent anywhere. Everything else works exactly as you're used to."
                         />
                     </Text>
 
@@ -46,8 +46,8 @@ export const DataAnalytics = ({
                                     <Column gap={2} flex="1">
                                         <Text typographyStyle="body-sm-strong">
                                             <FormattedMessage
-                                                id="TR_ALLOW_ANALYTICS_PRIVACY_TITLE"
-                                                defaultMessage="You data is private"
+                                                id="TR_SUITEDARK_PRIVACY_ITEM_TITLE"
+                                                defaultMessage="Your data stays yours"
                                             />
                                         </Text>
                                         <Text
@@ -56,8 +56,8 @@ export const DataAnalytics = ({
                                             priority="secondary"
                                         >
                                             <FormattedMessage
-                                                id="TR_ALLOW_ANALYTICS_PRIVACY_DESCRIPTION"
-                                                defaultMessage="We don't gather sensitive personal data like balances, transactions, or profile details."
+                                                id="TR_SUITEDARK_PRIVACY_ITEM_DESCRIPTION"
+                                                defaultMessage="No analytics, no error reporting, no remote tracking — all removed from this build."
                                             />
                                         </Text>
                                     </Column>
@@ -66,8 +66,8 @@ export const DataAnalytics = ({
                                     <Column gap={2} flex="1">
                                         <Text typographyStyle="body-sm-strong">
                                             <FormattedMessage
-                                                id="TR_WHAT_DATA_WE_COLLECT"
-                                                defaultMessage="What data do we collect"
+                                                id="TR_SUITEDARK_WHAT_WE_COLLECT"
+                                                defaultMessage="What we collect"
                                             />
                                         </Text>
                                         <Text
@@ -76,8 +76,8 @@ export const DataAnalytics = ({
                                             priority="secondary"
                                         >
                                             <FormattedMessage
-                                                id="TR_ALLOW_ANALYTICS_WHAT_WE_COLLECT_DESCRIPTION"
-                                                defaultMessage="We collect data on app performance, user interaction, and potential technical issues to enhance the user experience."
+                                                id="TR_SUITEDARK_WHAT_WE_COLLECT_DESCRIPTION"
+                                                defaultMessage="Nothing. This build sends no telemetry whatsoever."
                                             />
                                         </Text>
                                     </Column>
@@ -88,8 +88,8 @@ export const DataAnalytics = ({
                                 <Row justifyContent="space-between">
                                     <Text typographyStyle="body-sm-strong">
                                         <FormattedMessage
-                                            id="TR_ONBOARDING_ALLOW_ANALYTICS"
-                                            defaultMessage="Help us anonymously"
+                                            id="TR_SUITEDARK_ANALYTICS_TOGGLE"
+                                            defaultMessage="Analytics (disabled in this build)"
                                         />
                                     </Text>
                                     <Switch

@@ -7,7 +7,7 @@
 export const FLAGS = {
     FILE_SYSTEM_SYNC: false, // File system sync (used for labeling)
     ONION_LOCATION_META: true, // Show TOR onion-location meta tag in page head
-    DESKTOP_AUTO_UPDATER: true, // Runs auto updater code on desktop
+    DESKTOP_AUTO_UPDATER: false, // Suite Dark flavour: auto-updater disabled (no flavour update server)
 } as const;
 
 // Web specific flags

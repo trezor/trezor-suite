@@ -18,6 +18,9 @@ export interface Analytics<T extends AnalyticsEvent> {
 }
 
 export class QueuedAnalytics<T extends AnalyticsEvent> implements Analytics<T> {
+    // Suite Dark flavour: telemetry hard-disabled. No analytics events are ever sent.
+    private readonly flavourTelemetryDisabled: boolean = true;
+
     private enabled: boolean | undefined;
 
     private useQueue = false;
@@ -100,6 +103,10 @@ export class QueuedAnalytics<T extends AnalyticsEvent> implements Analytics<T> {
     };
 
     public report = (data: T, config?: ReportConfig) => {
+        if (this.flavourTelemetryDisabled) {
+            return;
+        }
+
         // Add a timestamp to each event to track its actual occurrence time, considering possible queuing delays.
         if (!data.timestamp) {
             data.timestamp = Date.now().toString();

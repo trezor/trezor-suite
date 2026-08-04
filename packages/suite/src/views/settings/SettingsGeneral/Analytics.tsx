@@ -7,7 +7,7 @@ import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
 import { selectIsAnalyticsEnabled } from '@suite-common/analytics-redux';
 import { useServices } from '@suite-common/dependency-injection';
-import { Switch } from '@trezor/components';
+import { Switch, Tooltip } from '@trezor/components';
 import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
 const PositionedSwitch = styled.div`
@@ -32,17 +32,28 @@ export const Analytics = () => {
                     />
                     <ActionColumn>
                         <PositionedSwitch>
-                            <Switch
-                                data-testid="@analytics/toggle-switch"
-                                isChecked={isAnalyticsEnabled}
-                                onChange={() => {
-                                    if (isAnalyticsEnabled) {
-                                        analytics.disable();
-                                    } else {
-                                        analytics.enable();
-                                    }
-                                }}
-                            />
+                            {/* Suite Dark flavour: telemetry is disabled at build time, so this
+                                toggle is non-interactive with an explanatory tooltip. */}
+                            <Tooltip
+                                isActive
+                                width="100%"
+                                placement="bottom"
+                                cursor="not-allowed"
+                                content="Telemetry is disabled in this build."
+                            >
+                                <Switch
+                                    isDisabled
+                                    data-testid="@analytics/toggle-switch"
+                                    isChecked={isAnalyticsEnabled}
+                                    onChange={() => {
+                                        if (isAnalyticsEnabled) {
+                                            analytics.disable();
+                                        } else {
+                                            analytics.enable();
+                                        }
+                                    }}
+                                />
+                            </Tooltip>
                         </PositionedSwitch>
                     </ActionColumn>
                 </SectionItem>

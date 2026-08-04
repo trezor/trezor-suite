@@ -20,7 +20,7 @@ const initialState: MessageSystemState = {
 
     validExperiments: [],
 
-    configSource: 'remote',
+    configSource: 'local',
 
     manuallyAddedMessageIds: {},
 
