@@ -79,6 +79,7 @@ export * from './stablecoin-yield/stablecoinYieldFeeEstimation';
 export * from './stablecoin-yield/stablecoinYieldTypes';
 export * from './stablecoin-yield/stablecoinYieldUtils';
 export * from './stablecoin-yield/stablecoinYieldWrapThunks';
+export * from './stablecoin-yield/useWrappedNativePendingTx';
 export * from './stake/tron/tronStakeReducer';
 export * from './stake/tron/tronStakeSelectors';
 export { composeTronFreezeFeeLevelsThunk } from './stake/tron/actions/freeze/composeFreeze';

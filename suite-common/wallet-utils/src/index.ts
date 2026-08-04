@@ -29,6 +29,7 @@ export * from './stakingUtils';
 export * from './tokenUtils';
 export * from './transactionUtils';
 export * from './validationUtils';
+export * from './wrappedNativePendingTxUtils';
 export * from './AmountTypes';
 export * from './baseCurrency';
 export * from './cardanoStakingUtils';

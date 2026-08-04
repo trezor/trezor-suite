@@ -3,10 +3,11 @@ import { useCallback, useEffect, useRef } from 'react';
 import { selectDesktopAnalyticsDep } from '@suite/analytics';
 import { type EventInstance, events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
-import { type WrappedNativeFlowType } from '@suite-common/wallet-core';
+import {
+    type WrappedNativeFlowType,
+    type WrappedNativePendingTxStatus,
+} from '@suite-common/wallet-core';
 import { useCurrentRef } from '@trezor/react-utils';
-
-import { type WrappedNativePendingTxStatus } from './useWrappedNativePendingTx';
 
 // Wrap and unwrap share one attribute schema, so one payload type serves both events.
 type WrappedNativeFlowPayload = EventInstance<typeof events.yieldWrapEvent>['payload'];

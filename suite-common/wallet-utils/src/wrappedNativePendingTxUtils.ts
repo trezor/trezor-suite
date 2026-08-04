@@ -1,0 +1,67 @@
+import { type WalletAccountTransaction } from '@suite-common/wallet-types';
+
+import { getNativeWrapTxKind } from './ethUtils';
+import { isPending } from './transactionUtils';
+
+export type WrappedNativePendingTxStatus = 'pending' | 'confirmed' | 'failed';
+
+export type TrackedWrappedNativeTransaction = {
+    transaction: WalletAccountTransaction;
+    isReplacement: boolean;
+};
+
+export const findTrackedWrappedNativeTransaction = ({
+    transactions,
+    txid,
+    nonce,
+}: {
+    transactions: WalletAccountTransaction[];
+    txid: string;
+    nonce?: number;
+}): TrackedWrappedNativeTransaction | undefined => {
+    const originalTransaction = transactions.find(transaction => transaction.txid === txid);
+
+    if (originalTransaction) {
+        return { transaction: originalTransaction, isReplacement: false };
+    }
+
+    if (nonce === undefined) {
+        return undefined;
+    }
+
+    const replacementTransaction = transactions.find(
+        transaction => transaction.ethereumSpecific?.nonce === nonce,
+    );
+
+    return replacementTransaction
+        ? { transaction: replacementTransaction, isReplacement: true }
+        : undefined;
+};
+
+export const getWrappedNativePendingTxStatus = ({
+    txid,
+    trackedTransaction,
+    flowType,
+}: {
+    txid: string | null;
+    trackedTransaction?: TrackedWrappedNativeTransaction;
+    flowType: 'wrap' | 'unwrap';
+}): WrappedNativePendingTxStatus | null => {
+    if (!txid) {
+        return null;
+    }
+
+    if (!trackedTransaction || isPending(trackedTransaction.transaction)) {
+        return 'pending';
+    }
+
+    if (
+        trackedTransaction.transaction.type === 'failed' ||
+        (trackedTransaction.isReplacement &&
+            getNativeWrapTxKind(trackedTransaction.transaction) !== flowType)
+    ) {
+        return 'failed';
+    }
+
+    return 'confirmed';
+};

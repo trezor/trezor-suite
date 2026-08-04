@@ -13,6 +13,7 @@ import {
     type YieldFlowFormValues,
     getMaxWrapAmount,
     shouldRecommendWrapReserve,
+    useWrappedNativePendingTx,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { Column, Text } from '@trezor/components';
@@ -29,7 +30,6 @@ import { YieldFlowTransferRow } from '../common/YieldFlowTransferRow';
 import { YieldWrapStep } from '../common/YieldWrapStep';
 import { useWrappedNativeDeviceGuard } from '../common/useWrappedNativeDeviceGuard';
 import { useWrappedNativeFlowAnalytics } from '../common/useWrappedNativeFlowAnalytics';
-import { useWrappedNativePendingTx } from '../common/useWrappedNativePendingTx';
 import { useYieldFiatInput } from '../hooks/useYieldFiatInput';
 
 type WrapNativeTokenProps = {

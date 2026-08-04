@@ -12,6 +12,7 @@ import {
     type YieldFlowFormValues,
     selectBaseCurrency,
     useMissingRateTickersQuery,
+    useWrappedNativePendingTx,
 } from '@suite-common/wallet-core';
 import { type Account, toTokenAddress } from '@suite-common/wallet-types';
 import { Column, Text } from '@trezor/components';
@@ -28,7 +29,6 @@ import { YieldFlowTransferRow } from '../common/YieldFlowTransferRow';
 import { YieldUnwrapStep } from '../common/YieldUnwrapStep';
 import { useWrappedNativeDeviceGuard } from '../common/useWrappedNativeDeviceGuard';
 import { useWrappedNativeFlowAnalytics } from '../common/useWrappedNativeFlowAnalytics';
-import { useWrappedNativePendingTx } from '../common/useWrappedNativePendingTx';
 import { useYieldFiatInput } from '../hooks/useYieldFiatInput';
 
 type UnwrapNativeTokenProps = {
