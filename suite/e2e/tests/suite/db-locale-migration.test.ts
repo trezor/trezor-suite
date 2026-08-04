@@ -12,9 +12,9 @@ const suiteDevInstance = 'https://dev.suite.sldev.cz/suite-web';
 test.describe(
     'Database migration',
     // This test is run only on web nightly builds, it works with web instances of 25.7 and develop branch
-    // On PR and release CI run it would provide no value and potentially false failures
+    // On PR and release CI run it would provide no value and potentially false failures, same goes for canary firmware runs
     // Note: Trezor user env doesn't support legacy bridge versions on macOs, which is needed to connect the device to the old Suite version. Use linux or only run in CI.
-    { tag: ['@webOnly', '@nightlyOnly', '@T3T1'] },
+    { tag: ['@webOnly', '@nightlyOnly', '@T3T1', '@specificFirmware'] },
     () => {
         test.use({
             deviceSetup: { passphrase_protection: true, mnemonic: 'mnemonic_all' },
