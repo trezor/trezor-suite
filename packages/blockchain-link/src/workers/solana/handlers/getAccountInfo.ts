@@ -14,6 +14,29 @@ import { createDeferred, isNotNullOrUndefined } from '@trezor/utils';
 import type { Request } from '../types';
 import { fetchTransactionPage, getSignaturesForAddresses, isValidTransaction } from '../utils';
 
+// A token transfer's counterparty (`from`/`to` when it isn't the user's own descriptor) is taken
+// verbatim from the parsed instruction data of an untrusted, user-selectable Solana RPC backend.
+// `address()` validates base58 and throws on a malformed value, so mapping a transaction page without
+// this guard lets a single poison token transfer reject the whole `Promise.all` and abort the entire
+// history page (per-account getAccountInfo DoS). Fall back to the raw string so the record survives.
+export const resolveTransferOwner = async (
+    owner: string,
+    descriptor: string,
+    validate: (owner: string) => Address,
+    resolveAtaOwner: (validatedOwner: Address) => Promise<string>,
+): Promise<string> => {
+    if (owner === descriptor) return owner;
+
+    let validatedOwner: Address;
+    try {
+        validatedOwner = validate(owner);
+    } catch {
+        return owner;
+    }
+
+    return await resolveAtaOwner(validatedOwner);
+};
+
 export const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => {
     const { payload } = request;
     const { details = 'basic' } = payload;
@@ -170,14 +193,18 @@ export const getAccountInfo = async (request: Request<MessageTypes.GetAccountInf
                 const tokens = await Promise.all(
                     tx.tokens.map(async transfer => {
                         // token account address is derived from the wallet address who is owner of that account
-                        const from =
-                            transfer.from !== payload.descriptor
-                                ? await getATAOwnerAddress(address(transfer.from))
-                                : transfer.from;
-                        const to =
-                            transfer.to !== payload.descriptor
-                                ? await getATAOwnerAddress(address(transfer.to))
-                                : transfer.to;
+                        const from = await resolveTransferOwner(
+                            transfer.from,
+                            payload.descriptor,
+                            address,
+                            getATAOwnerAddress,
+                        );
+                        const to = await resolveTransferOwner(
+                            transfer.to,
+                            payload.descriptor,
+                            address,
+                            getATAOwnerAddress,
+                        );
 
                         return {
                             ...transfer,

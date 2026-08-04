@@ -1,6 +1,19 @@
 import type { ParsedTransactionWithMeta } from '@trezor/network-solana/types';
 
+import { resolveTransferOwner } from './handlers/getAccountInfo';
 import { isValidTransaction, transformSignatureInfos } from './utils';
+
+// Mirrors @solana/kit `address()`: unconditionally validates base58 and throws on a malformed value.
+const fakeAddress: Parameters<typeof resolveTransferOwner>[2] = owner => {
+    if (!/^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(owner)) {
+        throw new Error(`invalid address: ${owner}`);
+    }
+
+    return owner as ReturnType<Parameters<typeof resolveTransferOwner>[2]>;
+};
+
+const VALID_OWNER = 'So11111111111111111111111111111111111111112';
+const VALID_DESCRIPTOR = '11111111111111111111111111111111';
 
 // Minimal object that satisfies every isValidTransaction check. It mirrors the fields that
 // solanaUtils.transformTransaction / getDetails dereference unconditionally while mapping a page of
@@ -108,5 +121,43 @@ describe('solana worker transformSignatureInfos', () => {
 
     it('returns [] for undefined / omitted result', () => {
         expect(transformSignatureInfos(undefined)).toEqual([]);
+    });
+});
+
+describe('solana worker resolveTransferOwner', () => {
+    it('returns the descriptor untouched without validating or resolving', async () => {
+        const resolveAta = jest.fn();
+        await expect(
+            resolveTransferOwner(VALID_DESCRIPTOR, VALID_DESCRIPTOR, fakeAddress, resolveAta),
+        ).resolves.toBe(VALID_DESCRIPTOR);
+        expect(resolveAta).not.toHaveBeenCalled();
+    });
+
+    it('resolves the ATA owner for a valid external counterparty address', async () => {
+        const resolveAta = jest.fn(() => Promise.resolve('ownerWallet'));
+        await expect(
+            resolveTransferOwner(VALID_OWNER, VALID_DESCRIPTOR, fakeAddress, resolveAta),
+        ).resolves.toBe('ownerWallet');
+        expect(resolveAta).toHaveBeenCalledTimes(1);
+    });
+
+    it('falls back to the raw value for a malformed counterparty (untrusted RPC poison record)', async () => {
+        // A malicious/MITM Solana RPC can put an arbitrary string in a token transfer's
+        // authority/source/destination. `address()` throws on it, and without this guard that throw
+        // would reject the whole Promise.all mapping the history page (per-account getAccountInfo DoS).
+        const resolveAta = jest.fn();
+        const poison = 'not-a-valid-base58-address!!!';
+        await expect(
+            resolveTransferOwner(poison, VALID_DESCRIPTOR, fakeAddress, resolveAta),
+        ).resolves.toBe(poison);
+        expect(resolveAta).not.toHaveBeenCalled();
+    });
+
+    it('does not throw when the counterparty is an empty string', async () => {
+        const resolveAta = jest.fn();
+        await expect(
+            resolveTransferOwner('', VALID_DESCRIPTOR, fakeAddress, resolveAta),
+        ).resolves.toBe('');
+        expect(resolveAta).not.toHaveBeenCalled();
     });
 });
