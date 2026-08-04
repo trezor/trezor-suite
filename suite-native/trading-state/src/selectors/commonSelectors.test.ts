@@ -50,6 +50,7 @@ import {
     selectIsTradingExchangeEnabled,
     selectIsTradingSellEnabled,
     selectIsTradingSlip24Enabled,
+    selectIsTradingTxSimulationEnabled,
     selectTradeToBeOpened,
     selectTradesToWatchByAccount,
     selectTradingEnvironment,
@@ -84,6 +85,7 @@ const getPreloadedState = ({
     sell,
     exchange,
     concierge,
+    txSimulation,
     blacklist,
     slip24,
     residence,
@@ -93,6 +95,7 @@ const getPreloadedState = ({
     sell?: boolean;
     exchange?: boolean;
     concierge?: boolean;
+    txSimulation?: boolean;
     blacklist?: boolean;
     slip24?: boolean;
     residence?: boolean;
@@ -121,6 +124,12 @@ const getPreloadedState = ({
         features.push({
             domain: 'trading.concierge',
             flag: concierge,
+        });
+    }
+    if (txSimulation !== undefined) {
+        features.push({
+            domain: 'trading.txSimulation',
+            flag: txSimulation,
         });
     }
     if (blacklist !== undefined) {
@@ -269,6 +278,32 @@ describe('commonSelectors', () => {
 
         it('should correctly select that concierge is enabled if remote feature is not set', () => {
             expect(selectIsTradingConciergeEnabled(getPreloadedState({}))).toBe(true);
+        });
+    });
+
+    describe('selectIsTradingTxSimulationEnabled', () => {
+        it('should be enabled when the remote feature is enabled', () => {
+            expect(
+                selectIsTradingTxSimulationEnabled(
+                    getPreloadedState({
+                        txSimulation: true,
+                    }),
+                ),
+            ).toBe(true);
+        });
+
+        it('should be disabled when the remote feature is disabled', () => {
+            expect(
+                selectIsTradingTxSimulationEnabled(
+                    getPreloadedState({
+                        txSimulation: false,
+                    }),
+                ),
+            ).toBe(false);
+        });
+
+        it('should default the remote feature to enabled', () => {
+            expect(selectIsTradingTxSimulationEnabled(getPreloadedState({}))).toBe(true);
         });
     });
 

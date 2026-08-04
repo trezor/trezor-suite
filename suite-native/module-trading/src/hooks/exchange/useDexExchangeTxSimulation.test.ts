@@ -1,33 +1,33 @@
 import { mockMessageSystemStateWithFeatureFlags } from '@suite-common/message-system/mocks';
-import { useExchangeIssue as useCommonExchangeIssue } from '@suite-common/trading';
+import { useDexExchangeTxSimulation as useCommonDexExchangeTxSimulation } from '@suite-common/trading';
 import { btc1NormalAccount } from '@suite-native/trading-fixtures';
 
-import { useExchangeIssue } from './useExchangeIssue';
+import { useDexExchangeTxSimulation } from './useDexExchangeTxSimulation';
 import { TRADING_DEX_SOURCE_ORIGIN } from '../../constants';
 import { renderHookWithTradingProvider } from '../../test-utils/tradingTestUtils';
 
 jest.mock('@suite-common/trading', () => ({
     ...jest.requireActual('@suite-common/trading'),
-    useExchangeIssue: jest.fn(),
+    useDexExchangeTxSimulation: jest.fn(),
 }));
 
-const mockUseCommonExchangeIssue = jest.mocked(useCommonExchangeIssue);
+const mockUseCommonDexExchangeTxSimulation = jest.mocked(useCommonDexExchangeTxSimulation);
 
-describe('useExchangeIssue', () => {
-    const exchangeIssue = {
-        isSimulationEnabled: true,
-        isSimulationLoading: false,
-        isSimulation: false,
-        issue: null,
+describe('useDexExchangeTxSimulation', () => {
+    const simulation = {
+        isEnabled: true,
+        isLoading: false,
+        error: null,
+        data: undefined,
     };
 
     beforeEach(() => {
         jest.clearAllMocks();
-        mockUseCommonExchangeIssue.mockReturnValue(exchangeIssue);
+        mockUseCommonDexExchangeTxSimulation.mockReturnValue(simulation);
     });
 
-    const renderUseExchangeIssue = (isRemoteFeatureEnabled?: boolean) =>
-        renderHookWithTradingProvider(() => useExchangeIssue(), {
+    const renderUseDexExchangeTxSimulation = (isRemoteFeatureEnabled?: boolean) =>
+        renderHookWithTradingProvider(() => useDexExchangeTxSimulation(), {
             tradeType: 'exchange',
             overrides: {
                 ...(isRemoteFeatureEnabled === undefined
@@ -49,20 +49,20 @@ describe('useExchangeIssue', () => {
         });
 
     it('passes the enabled native exchange context to the common hook', () => {
-        const { result } = renderUseExchangeIssue();
+        const { result } = renderUseDexExchangeTxSimulation();
 
-        expect(mockUseCommonExchangeIssue).toHaveBeenCalledWith({
+        expect(mockUseCommonDexExchangeTxSimulation).toHaveBeenCalledWith({
             account: btc1NormalAccount,
             isEnabled: true,
             sourceOrigin: TRADING_DEX_SOURCE_ORIGIN,
         });
-        expect(result.current).toBe(exchangeIssue);
+        expect(result.current).toBe(simulation);
     });
 
     it('passes a disabled state when the message-system feature is disabled', () => {
-        renderUseExchangeIssue(false);
+        renderUseDexExchangeTxSimulation(false);
 
-        expect(mockUseCommonExchangeIssue).toHaveBeenCalledWith({
+        expect(mockUseCommonDexExchangeTxSimulation).toHaveBeenCalledWith({
             account: btc1NormalAccount,
             isEnabled: false,
             sourceOrigin: TRADING_DEX_SOURCE_ORIGIN,
