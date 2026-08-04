@@ -26,9 +26,18 @@ export const loadSellInfoThunk = createThunk<SellInfo, void, void>(
             });
         }
 
-        sellList.providers.forEach(provider => (providerInfos[provider.name] = provider));
+        // The `Array.isArray` guard above only rejects a non-array top-level value — it does NOT drop
+        // poison *elements* (a `null`/primitive inside an otherwise-valid array). Reading `.name` on a
+        // `null` element throws and rejects the whole thunk, leaving `isLoading` stuck `true` and
+        // bricking trading for the session (see loadInitialDataThunk). Drop non-object elements first.
+        const providers = sellList.providers.filter(
+            (provider): provider is SellProviderInfo =>
+                provider != null && typeof provider === 'object',
+        );
 
-        sellList.providers.forEach(provider => {
+        providers.forEach(provider => (providerInfos[provider.name] = provider));
+
+        providers.forEach(provider => {
             // Guard against an untrusted trade-server response where a provider omits/mistypes these
             // fields: an unguarded `.forEach`/`.toLowerCase()` would throw and reject the thunk,
             // leaving the trading feature stuck in `isLoading` for the session (see loadInitialDataThunk).

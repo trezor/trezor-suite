@@ -110,6 +110,40 @@ describe('loadBuyInfoThunk', () => {
         });
     });
 
+    it('does not throw and drops poison (null/primitive) provider elements', async () => {
+        // A malicious/mistyped trade-server response where the providers array contains a `null` or
+        // primitive element must not crash the first `providerInfos[provider.name] = provider` deref
+        // and reject the thunk (which would leave trading stuck loading for the whole session).
+        const goodProvider: BuyProviderInfo = {
+            name: 'GOOD',
+            companyName: 'GOOD',
+            tradedCoins: ['bitcoin'] as CryptoId[],
+            tradedFiatCurrencies: ['USD'],
+            logo: 'logo',
+            isActive: true,
+            paymentMethods: [] as BuyCryptoPaymentMethod[],
+            supportedCountries: [],
+            supportedSubdivisions: {},
+        };
+
+        const buyInfoAPI = {
+            country: 'CZ',
+            suggestedFiatCurrency: 'CZK',
+            providers: [null, 42, 'evil', goodProvider] as unknown as BuyProviderInfo[],
+            defaultAmountsOfFiatCurrencies: {} as FiatCurrenciesProps,
+        };
+
+        tradeApi.getBuyList = () => Promise.resolve(buyInfoAPI);
+
+        const buyInfoData = await store.dispatch(buyThunks.loadInfoThunk()).unwrap();
+
+        // only the valid provider survives, both in the map and in the stored providers array
+        expect(buyInfoData.providerInfos).toEqual({ GOOD: goodProvider });
+        expect(buyInfoData.buyInfo.providers).toEqual([goodProvider]);
+        expect(buyInfoData.supportedFiatCurrencies).toEqual(['usd']);
+        expect(buyInfoData.supportedCryptoCurrencies).toEqual(['bitcoin']);
+    });
+
     it('should build supportedFiatCurrencies and supportedCryptoCurrencies from providers', async () => {
         const provider1: BuyProviderInfo = {
             name: 'PROVIDER 1',

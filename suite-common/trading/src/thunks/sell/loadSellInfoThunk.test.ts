@@ -125,6 +125,24 @@ describe('loadSellInfoThunk', () => {
         });
     });
 
+    it('does not throw and drops poison (null/primitive) provider elements', async () => {
+        // A malicious/mistyped trade-server response where the providers array contains a `null` or
+        // primitive element must not crash the first `providerInfos[provider.name] = provider` deref
+        // and reject the thunk (which would leave trading stuck loading for the whole session).
+        const sellInfoApi = {
+            providers: [null, 42, 'evil', sellProvider],
+            country: 'CZ',
+        } as unknown as SellListResponse;
+
+        tradeApi.getSellList = () => Promise.resolve(sellInfoApi);
+
+        const sellInfoData = await store.dispatch(sellThunks.loadInfoThunk()).unwrap();
+
+        // only the valid provider survives
+        expect(sellInfoData.providerInfos).toEqual({ [sellProvider.name]: sellProvider });
+        expect(sellInfoData.supportedCryptoCurrencies).toEqual(['bitcoin']);
+    });
+
     it('should load default data object when response is unsuccessful', async () => {
         tradeApi.getSellList = () => Promise.resolve(undefined as unknown as SellListResponse);
 

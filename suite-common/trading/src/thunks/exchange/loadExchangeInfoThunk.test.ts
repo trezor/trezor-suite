@@ -92,6 +92,23 @@ describe('loadExchangeInfoThunk', () => {
         expect(exchangeInfoData.sellCryptoIds).toEqual(exchange.sellTickers);
     });
 
+    it('does not throw and drops poison (null/primitive) provider elements', async () => {
+        // A malicious/mistyped trade-server response where the provider array contains a `null` or
+        // primitive element must not crash the first `providerInfos[exchange.name] = exchange` deref
+        // and reject the thunk (which would leave trading stuck loading for the whole session).
+        const exchangeInfoApi = [null, 42, 'evil', exchange];
+
+        tradeApi.getExchangeList = () =>
+            Promise.resolve(exchangeInfoApi as unknown as ExchangeListResponse);
+
+        const exchangeInfoData = await store.dispatch(exchangeThunks.loadInfoThunk()).unwrap();
+
+        // only the valid provider survives
+        expect(exchangeInfoData.providerInfos).toEqual({ [exchange.name]: exchange });
+        expect(exchangeInfoData.buyCryptoIds).toEqual(exchange.buyTickers);
+        expect(exchangeInfoData.sellCryptoIds).toEqual(exchange.sellTickers);
+    });
+
     it('should load default data object when response is unsuccessful', async () => {
         tradeApi.getExchangeList = () =>
             Promise.resolve(undefined as unknown as ExchangeListResponse);

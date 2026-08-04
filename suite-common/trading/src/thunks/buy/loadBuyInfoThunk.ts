@@ -34,11 +34,20 @@ export const loadBuyInfoThunk = createThunk<BuyInfo, void, void>(
 
         const providerInfos: { [name: string]: BuyProviderInfo } = {};
 
-        buyInfo.providers.forEach(provider => (providerInfos[provider.name] = provider));
+        // The `Array.isArray` guard above only rejects a non-array top-level value — it does NOT drop
+        // poison *elements* (a `null`/primitive inside an otherwise-valid array). Reading `.name` on a
+        // `null` element throws and rejects the whole thunk, leaving `isLoading` stuck `true` and
+        // bricking trading for the session (see loadInitialDataThunk). Drop non-object elements first.
+        const providers = buyInfo.providers.filter(
+            (provider): provider is BuyProviderInfo =>
+                provider != null && typeof provider === 'object',
+        );
+
+        providers.forEach(provider => (providerInfos[provider.name] = provider));
 
         const supportedFiatCurrencies: FiatCurrencyCode[] = [];
         const supportedCryptoCurrencies: CryptoId[] = [];
-        buyInfo.providers.forEach(provider => {
+        providers.forEach(provider => {
             // `tradedFiatCurrencies`/`tradedCoins` are non-optional in the invity-api types, but the
             // response comes from an untrusted/user-selectable trade server (exchange.trezor.io, or a
             // dev/staging/localhost env), so a single provider missing/mistyping either field would
@@ -59,6 +68,7 @@ export const loadBuyInfoThunk = createThunk<BuyInfo, void, void>(
         return fulfillWithValue({
             buyInfo: {
                 ...buyInfo,
+                providers,
                 country: toTradingCountryCode(buyInfo.country),
             },
             providerInfos,
