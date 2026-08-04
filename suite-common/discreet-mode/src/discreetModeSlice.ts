@@ -5,7 +5,7 @@ export type DiscreetModeState = {
 };
 
 const initialState: DiscreetModeState = {
-    isActive: false,
+    isActive: true, // Suite Dark flavour: discreet mode (hidden balances) on by default
 };
 
 export const discreetModeSlice = createSlice({

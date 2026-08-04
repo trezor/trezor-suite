@@ -70,7 +70,7 @@ export class Store {
 
     public getTorSettings() {
         return this.store.get('torSettings', {
-            running: false,
+            running: true, // Suite Dark flavour: Tor enabled by default at startup
             port: 9050,
             controlPort: 9051,
             host: '127.0.0.1',
