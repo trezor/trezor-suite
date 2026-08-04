@@ -71,12 +71,11 @@ export const TransactionSummary = ({ account }: TransactionSummaryProps) => {
     // Interval shown in InfoCard below the graph
     // For 'all' range pick first and last datapoint's timestamps
     // For other intervals do same date calculation as in calcTicks func
-    const dataInterval: [number, number] =
+    const dataInterval: [number | undefined, number | undefined] =
         selectedRange.label === 'all'
             ? [
-                  intervalGraphData[0]?.data[0]?.time ?? 0,
-                  intervalGraphData[0]?.data[(intervalGraphData[0]?.data.length ?? 1) - 1]?.time ??
-                      0,
+                  intervalGraphData[0]?.data[0]?.time,
+                  intervalGraphData[0]?.data[(intervalGraphData[0]?.data.length ?? 1) - 1]?.time,
               ]
             : [getUnixTime(selectedRange.startDate), getUnixTime(selectedRange.endDate)];
 

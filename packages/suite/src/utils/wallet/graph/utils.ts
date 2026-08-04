@@ -1,4 +1,4 @@
-import { differenceInMonths, fromUnixTime, isWithinInterval } from 'date-fns';
+import { differenceInMonths, fromUnixTime, getUnixTime, isWithinInterval } from 'date-fns';
 
 import { getFiatRatesForTimestamps } from '@suite-common/fiat-services';
 import { resetTime } from '@suite-common/suite-utils';
@@ -215,8 +215,11 @@ export const calcXDomain = (
     data: { time: number }[],
     range: GraphRange,
 ): [number, number] => {
-    const start = ticks[0] ?? 0;
-    const lastTick = ticks[ticks.length - 1] ?? 0;
+    // falling back to the unix epoch would render an axis around 1970,
+    // so when there are no ticks yet we center the interval around now instead
+    const now = getUnixTime(new Date());
+    const start = ticks[0] ?? now;
+    const lastTick = ticks[ticks.length - 1] ?? now;
     const lastData = data[data.length - 1];
     // if the last data point is after last tick/label use datapoint's timestamp to mark the end of the interval
     const end = lastData && lastTick < lastData.time ? lastData.time : lastTick;
