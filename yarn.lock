@@ -16969,6 +16969,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/requirements@workspace:packages/requirements"
   dependencies:
+    "@trezor/node-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
     chalk: "npm:^5.6.2"
     semver: "npm:^7.7.1"

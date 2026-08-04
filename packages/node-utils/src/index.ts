@@ -15,3 +15,5 @@ export { checkSocks5Proxy } from './checkSocks5Proxy';
 export { validateJsonSchema } from './validateJsonSchema';
 export { findProcessFromIncomingPort, type ProcessInfo } from './findProcessFromIncomingPort';
 export { parseRequestUrl, formatRequestUrl, type ParsedRequestUrl } from './parseRequestUrl';
+export { readJson } from './readJson';
+export { readPackageJson, type PackageJson } from './packageJson';

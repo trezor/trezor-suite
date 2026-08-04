@@ -1,4 +1,4 @@
-import { type Dirent, readFileSync, readdirSync } from 'node:fs';
+import { type Dirent, readdirSync } from 'node:fs';
 import { join, sep } from 'node:path';
 
 export type WalkDirectoryEntry = {
@@ -41,7 +41,3 @@ export function* walkDirectory(
 }
 
 export const normalizePath = (filePath: string): string => filePath.split(sep).join('/');
-
-/** Read and parse a JSON file. Throws if the file is missing or contains invalid JSON. */
-export const readJson = <T>(filePath: string): T =>
-    JSON.parse(readFileSync(filePath, 'utf-8')) as T;
