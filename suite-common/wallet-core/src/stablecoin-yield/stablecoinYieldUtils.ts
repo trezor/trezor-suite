@@ -408,8 +408,10 @@ export const shouldRecommendWrapReserve = (
 
 /**
  * Balance available for a yield deposit. For a wrapped-native (WETH) vault the native balance can
- * be wrapped, so it counts in after keeping `WETH_WRAP_GAS_RESERVE` aside to cover the follow-up
- * wrap + approve + deposit (+ exit) fees.
+ * be wrapped, so the full native balance counts in on top of the already-held wrapped token. The
+ * `WETH_WRAP_GAS_RESERVE` is intentionally NOT deducted here — the summary shows the user's full
+ * depositable amount (native + wrapped); the fee reserve is a concern of the deposit flow, not the
+ * headline figure.
  */
 export const getYieldDepositableBalance = ({
     networkSymbol,
@@ -424,10 +426,8 @@ export const getYieldDepositableBalance = ({
         return tokenDepositBalance;
     }
 
-    // Native-asset deposit: the wrappable native balance also counts in.
-    return new BigNumber(tokenDepositBalance)
-        .plus(getWrappableNativeBalance(nativeFormattedBalance))
-        .toString();
+    // Native-asset deposit: the full native balance can be wrapped and counts in.
+    return new BigNumber(tokenDepositBalance).plus(nativeFormattedBalance || '0').toString();
 };
 
 type GetYieldWrapAmountParams = {

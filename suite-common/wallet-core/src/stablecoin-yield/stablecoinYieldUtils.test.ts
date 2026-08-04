@@ -364,7 +364,7 @@ describe('stablecoinYieldUtils', () => {
             ).toBe('100');
         });
 
-        it('adds the native balance minus the gas reserve for a wrapped-native vault', () => {
+        it('adds the full native balance for a wrapped-native vault', () => {
             expect(
                 getYieldDepositableBalance({
                     networkSymbol: 'eth',
@@ -372,10 +372,10 @@ describe('stablecoinYieldUtils', () => {
                     vaultTokenAddress: WETH_ADDRESS,
                     matchedTokenBalance: '1.5',
                 }),
-            ).toBe('1.695');
+            ).toBe('1.7');
         });
 
-        it('ignores native balance below the gas reserve', () => {
+        it('counts the full native balance even below the gas reserve', () => {
             expect(
                 getYieldDepositableBalance({
                     networkSymbol: 'eth',
@@ -383,10 +383,10 @@ describe('stablecoinYieldUtils', () => {
                     vaultTokenAddress: WETH_ADDRESS,
                     matchedTokenBalance: '1',
                 }),
-            ).toBe('1');
+            ).toBe('1.003');
         });
 
-        it('returns the spendable native balance when no token is matched', () => {
+        it('returns the full native balance when no token is matched', () => {
             expect(
                 getYieldDepositableBalance({
                     networkSymbol: 'eth',
@@ -394,7 +394,7 @@ describe('stablecoinYieldUtils', () => {
                     vaultTokenAddress: WETH_ADDRESS,
                     matchedTokenBalance: undefined,
                 }),
-            ).toBe('0.995');
+            ).toBe('1');
         });
     });
 
