@@ -169,6 +169,44 @@ describe('connectPopupLoadSelectAccountPageThunk — concurrent loads', () => {
         await Promise.all([loadB, loadC]);
     });
 
+    it('a re-issued selectAccount setup clears a stale loadingKey so the new picker can load', async () => {
+        const inflight = createDeferred();
+        const reopened = createDeferred();
+        mockedPrepare.mockReturnValueOnce(inflight.promise).mockReturnValueOnce(reopened.promise);
+
+        const store = initStore();
+
+        // A load is in flight, so loadingKey is stamped and still held.
+        const loadInflight = store.dispatch(connectPopupLoadSelectAccountPageThunk({ page: 0 }));
+        expect(
+            selectConnectPopupCallWithState(store.getState(), 'select-account')?.loadingKey,
+        ).toBeDefined();
+
+        // A new selectAccount call must not keep the old loadingKey. See #29662.
+        store.dispatch(
+            connectPopupActions.selectAccount({
+                options: selectAccountState.options,
+                selectedAccountTypeKey: 'custom',
+                candidates: [],
+                page: 0,
+                manualPhase: 'address',
+                exported: false,
+            } as unknown as Parameters<typeof connectPopupActions.selectAccount>[0]),
+        );
+        expect(
+            selectConnectPopupCallWithState(store.getState(), 'select-account')?.loadingKey,
+        ).toBeUndefined();
+
+        // The re-initialized picker can load again — its round-trip is not swallowed by the dedup
+        // guard (the count goes 1 → 2, so a genuinely new load ran).
+        const loadReopened = store.dispatch(connectPopupLoadSelectAccountPageThunk({ page: 0 }));
+        expect(mockedPrepare).toHaveBeenCalledTimes(2);
+
+        inflight.resolve(usedAddress('ADDR_INFLIGHT'));
+        reopened.resolve(usedAddress('ADDR_REOPENED'));
+        await Promise.all([loadInflight, loadReopened]);
+    });
+
     it('loads the page when a single load runs to completion (no deadlock)', async () => {
         const only = createDeferred();
         mockedPrepare.mockReturnValueOnce(only.promise);

@@ -133,6 +133,9 @@ export const prepareConnectPopupReducer = createReducerWithExtraDeps(
                         ...state.activeCall,
                         state: 'select-account',
                         ...payload,
+                        // Clear the load state for a new selectAccount call. See #29662.
+                        loadingKey: undefined,
+                        loadEpoch: undefined,
                     };
                 }
             })
