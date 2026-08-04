@@ -526,8 +526,15 @@ export const getStakeFormsDefaultValues = ({
     selectedUtxos: [],
 });
 
+export type TransformTxInput = {
+    to: string;
+    value: string;
+    gasLimit: string | number;
+    data: string;
+};
+
 export const transformTx = (
-    tx: any,
+    tx: TransformTxInput,
     nonce: string,
     chainId: number,
     gasPrice?: string,
@@ -542,7 +549,7 @@ export const transformTx = (
         value: fromWei(tx.value).toWei('hex'),
         chainId,
         nonce: fromIntegerString(nonce).toHex(),
-        gasLimit: fromIntegerString(tx.gasLimit).toHex(),
+        gasLimit: fromIntegerString(String(tx.gasLimit)).toHex(),
         data: sanitizeHex(tx.data),
     };
 

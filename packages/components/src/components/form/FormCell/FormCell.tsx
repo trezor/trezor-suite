@@ -34,9 +34,9 @@ const formCellProps = [
     ...allowedFormCellFrameProps,
 ] as const satisfies (keyof FormCellProps)[];
 
-export const pickFormCellProps = (props: Record<string, any>): Partial<FormCellProps> =>
-    formCellProps.reduce(
-        (acc: Partial<FormCellProps>, prop: string) => ({ ...acc, [prop]: props[prop] }),
+export const pickFormCellProps = (props: Partial<FormCellProps>): Partial<FormCellProps> =>
+    formCellProps.reduce<Partial<FormCellProps>>(
+        (acc, prop) => ({ ...acc, [prop]: props[prop] }),
         {},
     );
 

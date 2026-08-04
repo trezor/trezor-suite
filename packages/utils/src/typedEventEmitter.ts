@@ -19,7 +19,7 @@ type IsUnion<T, U extends T = T> = T extends unknown ? ([U] extends [T] ? 0 : 1)
 type EventReceiver<T> =
     IsUnion<T> extends 1
         ? (event: T) => void // 1. use union payload
-        : T extends (...args: any[]) => any
+        : T extends (...args: never[]) => unknown
           ? T // 2. use custom callback
           : T extends undefined
             ? () => void // 3. enforce empty params

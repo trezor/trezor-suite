@@ -8,7 +8,7 @@ import { IntlProvider } from './components/IntlProvider';
 import { useTheme } from './hooks/useTheme';
 import { GlobalStyle } from './styles/GlobalStyle';
 import { messages as cs } from './translations/cs';
-import { defaultMessages } from './translations/default';
+import { type Messages, defaultMessages } from './translations/default';
 
 type AppProps = {
     children: ReactNode;
@@ -21,7 +21,7 @@ const Wrapper = styled.div`
 
 export const App = ({ children }: AppProps) => {
     const themeVariant: 'light' | 'dark' = useTheme();
-    const messages: Record<string, any> = { default: defaultMessages, cs };
+    const messages: Record<string, Messages> = { default: defaultMessages, cs };
 
     const language = window.navigator.language.split('-')[0] ?? '';
     const navigatorLocaleIsSupported = Object.keys(messages).includes(language);

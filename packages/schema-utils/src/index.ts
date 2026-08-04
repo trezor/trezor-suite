@@ -35,7 +35,7 @@ export function Validate<T extends TSchema>(schema: T, value: unknown): value is
 }
 
 function FindErrorInUnion(error: ValueError) {
-    const currentValue: any = error.value;
+    const currentValue: unknown = error.value;
     const unionMembers: TSchema[] = error.schema.anyOf;
     const hasValidMember = unionMembers.find(unionSchema => Validate(unionSchema, currentValue));
     if (!hasValidMember) {
@@ -45,7 +45,8 @@ function FindErrorInUnion(error: ValueError) {
 
             return !Object.entries(unionSchema.properties as TObject['properties']).find(
                 ([property, propertySchema]) =>
-                    propertySchema.const && propertySchema.const !== currentValue[property],
+                    propertySchema.const &&
+                    propertySchema.const !== (currentValue as Record<string, unknown>)[property],
             );
         });
         const singleMatch = possibleMatchesByLiterals[0];
@@ -91,7 +92,7 @@ export function Assert<T extends TSchema>(schema: T, value: unknown): asserts va
             if (!Number.isNaN(parsedNumber) && currentValue === parsedNumber.toString()) {
                 // Autocast successful
                 const pathParts = error.path.slice(1).split('/');
-                setDeepValue(value, pathParts, parsedNumber);
+                setDeepValue(value as Record<string, unknown>, pathParts, parsedNumber);
             } else {
                 throw new InvalidParameter(error.message, error.path, error.type, error.value);
             }

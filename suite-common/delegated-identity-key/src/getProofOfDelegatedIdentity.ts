@@ -6,7 +6,7 @@ import { type ProofOfDelegatedIdentity, asProofOfDelegatedIdentity } from '@trez
 import { type Result, err, ok } from '@trezor/type-utils';
 import { bufferUtils } from '@trezor/utils';
 
-export const ProofOfDelegatedSignFailed = (caused: any): ProofOfDelegatedSignFailedType => ({
+export const ProofOfDelegatedSignFailed = (caused: unknown): ProofOfDelegatedSignFailedType => ({
     type: 'ProofOfDelegatedSignFailed',
     caused,
 });

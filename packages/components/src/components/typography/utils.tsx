@@ -32,11 +32,14 @@ export type TextPropsKeys = keyof TextProps;
 type TransientTextProps = TransientProps<TextProps>;
 
 export const pickAndPrepareTextProps = (
-    props: Record<string, any>,
+    props: Partial<TextProps>,
     allowedTextProps: Array<TextPropsKeys>,
 ) =>
     makePropsTransient(
-        allowedTextProps.reduce((acc, item) => ({ ...acc, [item]: props[item] }), {}),
+        allowedTextProps.reduce<Partial<TextProps>>(
+            (acc, item) => ({ ...acc, [item]: props[item] }),
+            {},
+        ),
     );
 
 export const withTextProps = ({

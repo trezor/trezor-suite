@@ -15,8 +15,8 @@ export interface Err<out E> {
 
 export type Result<T, E = never> = Ok<T> | Err<E>;
 
-export type InferOk<R extends Result<any, any>> = R extends Ok<infer T> ? T : never;
-export type InferErr<R extends Result<any, any>> = R extends Err<infer E> ? E : never;
+export type InferOk<R extends Result<unknown, unknown>> = R extends Ok<infer T> ? T : never;
+export type InferErr<R extends Result<unknown, unknown>> = R extends Err<infer E> ? E : never;
 
 export function ok(): Result<void>;
 export function ok<T>(payload: T): Result<T>;

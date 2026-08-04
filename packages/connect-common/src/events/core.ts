@@ -41,9 +41,16 @@ export type CoreEventMessage = {
 
 // parse MessageEvent .data into CoreMessage
 export const parseMessage = <T extends CoreRequestMessage | CoreEventMessage = never>(
-    messageData: any,
+    messageData: Record<string, unknown>,
 ): T => {
-    const message = {
+    const message: {
+        event: unknown;
+        type: unknown;
+        payload: unknown;
+        device: unknown;
+        id?: string;
+        success?: boolean;
+    } = {
         event: messageData.event,
         type: messageData.type,
         payload: messageData.payload,
@@ -51,14 +58,14 @@ export const parseMessage = <T extends CoreRequestMessage | CoreEventMessage = n
     };
 
     if (typeof messageData.id === 'string') {
-        (message as any).id = messageData.id;
+        message.id = messageData.id;
     }
 
     if (typeof messageData.success === 'boolean') {
-        (message as any).success = messageData.success;
+        message.success = messageData.success;
     }
 
-    return message as T;
+    return message as unknown as T;
 };
 
 // common response used straight from npm index (not from Core)

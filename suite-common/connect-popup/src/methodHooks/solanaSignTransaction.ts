@@ -24,7 +24,7 @@ const preCallHook = async <M extends CallMethodKeys>({
 }: PreCallHookParams<M>) => {
     try {
         if (method === 'solanaSignTransaction' && txSigningPrecomposed) {
-            const typedPayload = payload as any as SolanaSignTransaction;
+            const typedPayload = payload as unknown as SolanaSignTransaction;
             const path = getSerializedPath(validatePath(typedPayload.path)) as Bip43Path;
             const network = getNetwork(typedPayload.additionalInfo?.isDevnet ? 'dsol' : 'sol');
             // Try to find matching account

@@ -13,7 +13,7 @@ class WSWrapper extends EventEmitter {
     static CLOSING = 2;
     static CLOSED = 3;
 
-    constructor(url: string, _protocols: any, _websocketOptions: any) {
+    constructor(url: string, _protocols: unknown, _websocketOptions: unknown) {
         super();
 
         // React Native WebSocket is able to accept headers compared to the native browser `WebSocket`.
@@ -56,7 +56,7 @@ class WSWrapper extends EventEmitter {
         }
     }
 
-    send(message: any) {
+    send(message: Parameters<WebSocket['send']>[0]) {
         if (this.readyState !== WSWrapper.OPEN) {
             throw new WebsocketError(`Connection is not open. state: ${this.readyState}`);
         }

@@ -15,7 +15,7 @@
  *  type T = UnionToIntersection<A | B>; // A & B
  *  ```
  */
-export type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (
+export type UnionToIntersection<U> = (U extends unknown ? (k: U) => void : never) extends (
     k: infer I,
 ) => void
     ? I
@@ -54,7 +54,7 @@ export type OptionalKey<M, K extends keyof M> = Omit<M, K> & Partial<Pick<M, K>>
  *  type V: ObjectValues<T>; // number | string
  *  ```
  */
-export type ObjectValues<T extends { [key: string]: any }> = T[keyof T];
+export type ObjectValues<T extends object> = T[keyof T];
 
 /**
  * Distributes the Omit across a union. using distributive conditional types to achieve this:
@@ -68,7 +68,7 @@ export type ObjectValues<T extends { [key: string]: any }> = T[keyof T];
  *  const w: W = { keep1: 1, keep2: true };
  *  ```
  */
-export type Without<T, K extends keyof T> = T extends any ? Omit<T, K> : never;
+export type Without<T, K extends keyof T> = T extends unknown ? Omit<T, K> : never;
 
 /**
  * Const with optional types.
@@ -80,11 +80,7 @@ export type ConstWithOptionalFields<
     Fields extends string | number | symbol,
 > = {
     [Key in keyof Const]: {
-        [FieldKey in Fields]: Const[Key][FieldKey] extends
-            | string
-            | number
-            | { [key: string]: any }
-            | boolean
+        [FieldKey in Fields]: Const[Key][FieldKey] extends string | number | object | boolean
             ? Const[Key][FieldKey]
             : undefined;
     };
@@ -101,9 +97,9 @@ export type ConstWithOptionalFields<
  *  const p: P = { b: { d: 1 } }; // As everything is deeply optional
  *  ```
  */
-export type DeepPartial<T> = T extends () => any
+export type DeepPartial<T> = T extends () => unknown
     ? T
-    : T extends { [key: string]: any }
+    : T extends object
       ? { [P in keyof T]?: DeepPartial<T[P]> }
       : T;
 

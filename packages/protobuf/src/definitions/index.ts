@@ -923,7 +923,7 @@ export type MessageKey = keyof MessageType;
 
 export type MessagePayload<T extends MessageKey = MessageKey> = MessageType[T];
 
-export type MessageResponse<T extends MessageKey = MessageKey> = T extends any
+export type MessageResponse<T extends MessageKey = MessageKey> = T extends unknown
     ? {
           type: T;
           message: MessagePayload<T>;

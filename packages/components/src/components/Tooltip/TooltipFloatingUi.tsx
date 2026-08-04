@@ -3,6 +3,7 @@ import {
     type HTMLProps,
     type MutableRefObject,
     type ReactNode,
+    type Ref,
     type RefObject,
     cloneElement,
     createContext,
@@ -152,7 +153,9 @@ export const TooltipTrigger = forwardRef<HTMLElement, TooltipTriggerProps>(
     ({ children, ...props }, propRef) => {
         const state = useTooltipState();
 
-        const childrenRef = (children as any).ref;
+        const childrenRef = isValidElement<{ ref?: Ref<HTMLElement> }>(children)
+            ? children.props.ref
+            : undefined;
         const ref = useMergeRefs([state.refs.setReference, propRef, childrenRef]);
 
         if (!isValidElement(children)) {

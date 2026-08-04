@@ -4,7 +4,7 @@ export class InvalidParameter extends Error {
     field: string;
     type: ValueErrorType;
 
-    constructor(reason: string, field: string, type: ValueErrorType, value?: any) {
+    constructor(reason: string, field: string, type: ValueErrorType, value?: unknown) {
         let message = `Invalid parameter`;
         message += ` "${field.substring(1)}"`;
         message += ` (= ${JSON.stringify(value)})`;

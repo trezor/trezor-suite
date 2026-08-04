@@ -1,6 +1,6 @@
 import { type Deferred, createDeferred } from './createDeferred';
 
-export const createLazy = <T, TArgs extends Array<any>>(
+export const createLazy = <T, TArgs extends readonly unknown[]>(
     initLazy: (...args: TArgs) => Promise<T>,
     disposeLazy?: (t: T) => void,
 ) => {

@@ -14,6 +14,15 @@ import { CoreInSuiteDesktop } from '@trezor/connect-web/src/impl/core-in-suite-d
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports -- intra-tier wiring: connect-webextension composes implementations from connect-web (see #27376)
 import { CoreInSuiteWeb } from '@trezor/connect-web/src/impl/core-in-suite-web';
 
+const getErrorMessage = (e: unknown): string => {
+    if (e instanceof Error) return e.message;
+    if (typeof e === 'object' && e !== null && 'message' in e) {
+        return String((e as { message: unknown }).message);
+    }
+
+    return String(e);
+};
+
 const impl = new TrezorConnectDynamic({
     implementations: {
         'core-in-suite-desktop': new CoreInSuiteDesktop(),
@@ -72,9 +81,12 @@ const initProxyChannel = () => {
         }
 
         // Core is loaded in popup and initialized every time, so we send the settings from here.
+        const callMethod = TrezorConnect[method] as unknown as (
+            payload: unknown,
+        ) => Promise<unknown>;
         impl.init({ env: 'webextension', ...proxySettings })
             .then(() =>
-                (TrezorConnect as any)[method](payload).then((response: any) => {
+                callMethod(payload).then((response: unknown) => {
                     // Response must use usePromise: false so the original
                     // message `id` from the proxy is preserved.  The default
                     // (usePromise: true) would overwrite `id` with the SW's
@@ -82,18 +94,18 @@ const initProxyChannel = () => {
                     // counter and leave the proxy's call() promise unresolved.
                     channel.postMessage(
                         {
-                            ...response,
+                            ...(response as Record<string, unknown>),
                             id,
                         },
                         { usePromise: false },
                     );
                 }),
             )
-            .catch((error: any) => {
+            .catch((error: unknown) => {
                 channel.postMessage(
                     {
                         success: false,
-                        payload: { error: error?.message ?? String(error) },
+                        payload: { error: getErrorMessage(error) },
                         id,
                     },
                     { usePromise: false },

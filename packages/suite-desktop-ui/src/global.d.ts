@@ -1,4 +1,4 @@
-type TrezorConnectIpcChannel = (method: string, ...params: any[]) => Promise<any>;
+type TrezorConnectIpcChannel = (method: string, ...params: unknown[]) => Promise<unknown>;
 
 declare global {
     var __webpack_nonce__: string | undefined;
@@ -7,6 +7,7 @@ declare global {
         TrezorConnectIpcChannel?: TrezorConnectIpcChannel; // Electron API
         desktopFlags?: { exposeStore?: boolean };
         cspNonce: string;
+        store?: unknown;
     }
 }
 

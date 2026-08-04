@@ -285,7 +285,7 @@ export class TrezorUserEnvLinkClass extends TypedEmitter<WebsocketClientEvents> 
 
         return null;
     }
-    async resetDevice(options: any) {
+    async resetDevice(options: Record<string, unknown>) {
         await resolveAfter(EMU_RACE_CONDITION_WORKAROUND_DELAY);
         await this.client.send({ type: 'emulator-reset-device', ...options });
 

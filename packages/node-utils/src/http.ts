@@ -48,15 +48,16 @@ export type ParamsValidatorHandler<Valid extends Record<string, any>> = RequestH
     Valid
 >;
 
-type UnwrapHandler<Handler, Field extends keyof RequestWithParams<any, any>> = Handler extends (
-    ...args: any[]
-) => any
-    ? Parameters<Handler>[0] extends RequestWithParams<any, any>
+type UnwrapHandler<
+    Handler,
+    Field extends keyof RequestWithParams<unknown, unknown>,
+> = Handler extends (...args: never[]) => unknown
+    ? Parameters<Handler>[0] extends RequestWithParams<unknown, unknown>
         ? Parameters<Handler>[0][Field]
         : never
     : never;
 
-type ResolveHandler<First, Last> = Last extends (...args: any[]) => any
+type ResolveHandler<First, Last> = Last extends (...args: never[]) => unknown
     ? First extends ParamsValidatorHandler<Record<string, any>>
         ? (
               req: Parameters<Last>[2] & {

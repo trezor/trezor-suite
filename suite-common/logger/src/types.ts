@@ -1,1 +1,1 @@
-export type LogEntry = { datetime: string; type: any; payload?: Record<any, any> };
+export type LogEntry = { datetime: string; type: string; payload?: Record<any, any> };

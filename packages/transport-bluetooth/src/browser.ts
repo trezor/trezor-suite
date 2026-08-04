@@ -22,8 +22,8 @@ const proxyState = () => {
 // create ipcProxy and wrap each bluetoothIpc method
 const getProxy = proxyState();
 typedObjectKeys(bluetoothIpc).forEach(key => {
-    (bluetoothIpc[key] as unknown) = (...args: any[]) =>
-        getProxy().then(p => (p[key] as any)(...args));
+    (bluetoothIpc[key] as unknown) = (...args: unknown[]) =>
+        getProxy().then(p => (p[key] as (...args: unknown[]) => unknown)(...args));
 });
 
 // export modified bluetoothIpc

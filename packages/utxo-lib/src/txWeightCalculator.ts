@@ -54,12 +54,12 @@ type Input = {
     script_type: string;
     multisig?: {
         // protobuf.MultisigRedeemScriptType
-        nodes?: any[];
-        pubkeys: any[];
+        nodes?: unknown[];
+        pubkeys: unknown[];
         m: number;
     };
     witness?: Buffer[];
-    ownership_proof?: any;
+    ownership_proof?: unknown;
 };
 
 export class TxWeightCalculator {

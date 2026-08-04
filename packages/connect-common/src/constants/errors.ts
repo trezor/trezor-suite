@@ -91,15 +91,21 @@ export const TypedError = (id: ErrorCode, message?: string) =>
     new TrezorError(id, message || ERROR_CODES[id as TypedErrorCode] || id);
 
 // serialize Error/TypeError object into payload error type (Error object/class is converted to string while sent via postMessage)
-export const serializeError = (payload: any): SerializedError => {
-    const error = payload?.error instanceof Error ? payload.error : payload;
+export const serializeError = (payload: unknown): SerializedError => {
+    const error =
+        payload &&
+        typeof payload === 'object' &&
+        'error' in payload &&
+        payload.error instanceof Error
+            ? payload.error
+            : payload;
 
     return error instanceof Error
         ? {
               message: error.message,
               code: 'code' in error ? (error.code as ErrorCode) : 'Failure_UnknownCode',
           }
-        : { ...payload };
+        : ({ ...(payload as object) } as SerializedError);
 };
 
 export type SerializedError = {

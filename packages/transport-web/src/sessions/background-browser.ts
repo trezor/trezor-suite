@@ -31,7 +31,7 @@ export class BrowserSessionsBackground implements SessionsBackgroundInterface {
         const { background } = this;
 
         return new Promise(resolve => {
-            const onmessage = (message: MessageEvent<any>) => {
+            const onmessage = (message: MessageEvent<HandleMessageResponse<M>>) => {
                 if (params.id === message.data.id) {
                     resolve(message.data);
                     background.port.removeEventListener('message', onmessage);
@@ -52,7 +52,7 @@ export class BrowserSessionsBackground implements SessionsBackgroundInterface {
 
     on(event: 'descriptors', listener: (descriptors: Descriptor[]) => void): void;
     on(event: 'releaseRequest', listener: (descriptor: Descriptor) => void): void;
-    on(event: 'descriptors' | 'releaseRequest', listener: (descriptors: any) => void): void {
+    on(event: 'descriptors' | 'releaseRequest', listener: (payload: never) => void): void {
         this.background.port.addEventListener(
             'message',
             (
@@ -65,7 +65,7 @@ export class BrowserSessionsBackground implements SessionsBackgroundInterface {
             ) => {
                 if (e && 'type' in e.data) {
                     if (e.data.type === event) {
-                        listener(e.data.payload);
+                        listener(e.data.payload as never);
                     }
                 }
             },

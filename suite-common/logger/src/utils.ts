@@ -24,7 +24,7 @@ export const REDACTED_REPLACEMENT = '[redacted]';
 
 export const startTime = new Date().toUTCString();
 
-export const prettifyLog = (json: Record<any, any>) => JSON.stringify(json, null, 2);
+export const prettifyLog = (json: unknown) => JSON.stringify(json, null, 2);
 
 // [typescript-performace]: Keep this explicit type to prevent TypeScript from expanding the
 // inferred type in the emitted declaration.

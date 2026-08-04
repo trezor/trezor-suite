@@ -5,7 +5,7 @@ import { ReactNativeUsbModule } from './ReactNativeUsbModule';
 
 const DEBUG_LOGS = false;
 
-const debugLog = (...args: any[]) => {
+const debugLog = (...args: unknown[]) => {
     if (DEBUG_LOGS) {
         // eslint-disable-next-line no-console
         console.log(...args);
@@ -30,7 +30,7 @@ const releaseInterface = (deviceName: string, interfaceNumber: number) =>
 const transferIn = async (deviceName: string, endpointNumber: number, length: number) => {
     const perf = performance.now();
     const data = await ReactNativeUsbModule.transferIn(deviceName, endpointNumber, length)
-        .catch((error: any) => {
+        .catch((error: unknown) => {
             debugLog('JS: USB read error: ', error);
             throw error;
         })
@@ -155,6 +155,10 @@ export function onDeviceDisconnect(listener: (event: OnConnectEvent) => void): E
     });
 }
 
+// NOTE: return type intentionally kept loose (`Promise<any>`) so the WebUSB stub stays
+// assignable to transport-common's `UsbInterfaceApi` (its `UsbDeviceLike.configuration` is
+// required, whereas the WebUSB-spec `configuration` is optional). Do not tighten to
+// `Promise<WebUSBDevice[]>` without also reconciling that contract.
 export async function getDevices(): Promise<any> {
     const devices = await ReactNativeUsbModule.getDevices();
 
@@ -172,8 +176,9 @@ export class WebUSB {
     }
 
     // TODO: implement these commented out properties, because they are part of WebUSB specs, but very low priority we are not using them anywhere
-    requestDevice = async (..._params: any[]): Promise<any> => {};
-    addEventListener = (..._params: any[]): any => {};
-    removeEventListener = (..._params: any[]): any => {};
-    dispatchEvent = (..._params: any[]): any => {};
+    requestDevice = (..._params: unknown[]): Promise<never> =>
+        Promise.reject(new Error('requestDevice is not implemented in @trezor/react-native-usb'));
+    addEventListener = (..._params: unknown[]): void => {};
+    removeEventListener = (..._params: unknown[]): void => {};
+    dispatchEvent = (..._params: unknown[]): boolean => false;
 }

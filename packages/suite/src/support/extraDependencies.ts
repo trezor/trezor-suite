@@ -6,6 +6,7 @@ import { fixLoadedCoinjoinAccount } from '@suite/coinjoin';
 import type { FlagsState } from '@suite/flags';
 import { lockDevice } from '@suite/locks';
 import {
+    type MetadataRootState,
     metadataActions,
     metadataLabelingActions,
     selectLabelingDataForAccount,
@@ -51,6 +52,7 @@ import {
 } from '@suite-common/redux-utils';
 import { createMigrateSuiteSyncLabelsForRbfTransactionCompositionRoot } from '@suite-common/suite-rbf-labels-migrations';
 import {
+    type SuiteSyncCompositionRootState,
     createSuiteSyncWriteLabels,
     selectAllLabelsForAccount,
     selectIsSuiteSyncEnabled,
@@ -101,7 +103,7 @@ const connectInitSettings: ConnectInitSettings = {
 };
 
 export type StoreAPIDep = {
-    getState: () => any;
+    getState: () => SuiteSyncCompositionRootState & MetadataRootState;
     dispatch: Dispatch;
 };
 

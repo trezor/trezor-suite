@@ -89,4 +89,4 @@ export const createBlockchainMessage: MessageFactoryFn<typeof BLOCKCHAIN_EVENT, 
         event: BLOCKCHAIN_EVENT,
         type,
         payload,
-    }) as any;
+    }) as never;

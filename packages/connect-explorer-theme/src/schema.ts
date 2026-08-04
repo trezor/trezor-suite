@@ -24,7 +24,7 @@ function isReactNode(value: unknown): boolean {
         value == null ||
         typeof value === 'string' ||
         isFunction(value) ||
-        isValidElement(value as any)
+        isValidElement(value as object)
     );
 }
 

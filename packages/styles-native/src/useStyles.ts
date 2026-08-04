@@ -1,6 +1,7 @@
 import { useCallback, useContext, useMemo } from 'react';
 import { RendererContext, ThemeContext } from 'react-fela';
 
+import { type TRule } from 'fela';
 import { darken, lighten, transparentize } from 'polished';
 
 import {
@@ -59,7 +60,8 @@ export const useNativeStyles = () => {
     ) => {
         const [styleOrStyles, props] = params;
 
-        const invokeStyle = (style: NativeStyle<any>) => style(nativeUtils, props ?? {});
+        const invokeStyle = (style: NativeStyle<TProps>) =>
+            style(nativeUtils, props ?? ({} as TProps));
 
         const rule = () => {
             if (Array.isArray(styleOrStyles)) {
@@ -69,7 +71,7 @@ export const useNativeStyles = () => {
             return processNativeStyles([styleOrStyles], invokeStyle);
         };
 
-        return renderer.renderRule(rule as any, {}) as NativeStyleObject;
+        return renderer.renderRule(rule as unknown as TRule, {}) as unknown as NativeStyleObject;
     };
 
     const memoizedApplyNativeStyle = useCallback(applyNativeStyle, [renderer, nativeUtils]);

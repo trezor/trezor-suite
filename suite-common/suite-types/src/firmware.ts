@@ -19,7 +19,7 @@ export type FirmwareCheckType =
 export type ReportSecurityCheckParams = {
     level: 'error' | 'warning';
     checkType: FirmwareCheckType;
-    contextData: Record<string, any>;
+    contextData: Record<string, unknown>;
     payload?: unknown;
 };
 

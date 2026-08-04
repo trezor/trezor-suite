@@ -40,16 +40,16 @@ export type RequireAtLeastOne<T, K extends keyof T = keyof T> = {
 }[K] &
     Omit<T, K>;
 
-export type NarrowObjectWithKey<T, K extends PropertyKey> = T extends any
+export type NarrowObjectWithKey<T, K extends PropertyKey> = T extends unknown
     ? K extends keyof T
         ? T
         : never
     : never;
 
-export type NullablePropsRecursive<T extends Record<string, any>> = {
+export type NullablePropsRecursive<T extends object> = {
     [K in keyof T]: T[K] extends (...args: any[]) => any
         ? T[K] | null
-        : T[K] extends Record<string, any>
+        : T[K] extends object
           ? NullablePropsRecursive<T[K]> | null
           : T[K] | null;
 };

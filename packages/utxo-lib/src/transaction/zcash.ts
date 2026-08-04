@@ -5,7 +5,14 @@ import { blake2b } from '@noble/hashes/blake2.js';
 import * as varuint from 'varuint-bitcoin';
 
 import { BufferReader, BufferWriter, varIntSize } from '../bufferutils';
-import { EMPTY_SCRIPT, TransactionBase, type TransactionOptions, varSliceSize } from './base';
+import {
+    EMPTY_SCRIPT,
+    TransactionBase,
+    type TransactionOptions,
+    type TxInput,
+    type TxOutput,
+    varSliceSize,
+} from './base';
 import { hash256 } from '../crypto';
 
 const ZCASH_JOINSPLITS_SUPPORT_VERSION = 2;
@@ -331,7 +338,7 @@ function getHeaderDigest(tx: TransactionBase<ZcashSpecific>) {
 }
 
 // https://zips.z.cash/zip-0244#t-2a-prevouts-digest
-function getPrevoutsDigest(ins: any[]) {
+function getPrevoutsDigest(ins: TxInput[]) {
     const bufferWriter = new BufferWriter(Buffer.allocUnsafe(36 * ins.length));
     ins.forEach(txIn => {
         bufferWriter.writeSlice(txIn.hash);
@@ -342,7 +349,7 @@ function getPrevoutsDigest(ins: any[]) {
 }
 
 // https://zips.z.cash/zip-0244#t-2b-sequence-digest
-function getSequenceDigest(ins: any[]) {
+function getSequenceDigest(ins: TxInput[]) {
     const bufferWriter = new BufferWriter(Buffer.allocUnsafe(4 * ins.length));
     ins.forEach(txIn => {
         bufferWriter.writeUInt32(txIn.sequence);
@@ -352,7 +359,7 @@ function getSequenceDigest(ins: any[]) {
 }
 
 // https://zips.z.cash/zip-0244#t-2c-outputs-digest
-function getOutputsDigest(outs: any[]) {
+function getOutputsDigest(outs: TxOutput[]) {
     const txOutsSize = outs.reduce((sum, output) => sum + 8 + varSliceSize(output.script), 0);
     const bufferWriter = new BufferWriter(Buffer.allocUnsafe(txOutsSize));
     outs.forEach(out => {

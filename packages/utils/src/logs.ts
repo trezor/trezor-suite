@@ -1,7 +1,7 @@
 export type LogMessage = {
     level: string;
     prefix: string;
-    message: any[];
+    message: unknown[];
     timestamp: number;
 };
 
@@ -45,7 +45,7 @@ export class Log implements Logger {
 
     addMessage(
         { level, prefix, timestamp }: { level: string; prefix: string; timestamp?: number },
-        ...args: any[]
+        ...args: unknown[]
     ) {
         const message = {
             level,
@@ -71,11 +71,11 @@ export class Log implements Logger {
         }
     }
 
-    setWriter(logWriter: any) {
+    setWriter(logWriter: LogWriter) {
         this.logWriter = logWriter;
     }
 
-    log(...args: any[]) {
+    log(...args: unknown[]) {
         this.addMessage({ level: 'log', prefix: this.prefix }, ...args);
         if (this.enabled) {
             // eslint-disable-next-line no-console
@@ -83,14 +83,14 @@ export class Log implements Logger {
         }
     }
 
-    error(...args: any[]) {
+    error(...args: unknown[]) {
         this.addMessage({ level: 'error', prefix: this.prefix }, ...args);
         if (this.enabled) {
             console.error(`%c${this.prefix}`, this.css, ...args);
         }
     }
 
-    info(...args: any[]) {
+    info(...args: unknown[]) {
         this.addMessage({ level: 'info', prefix: this.prefix }, ...args);
         if (this.enabled) {
             // eslint-disable-next-line no-console
@@ -98,14 +98,14 @@ export class Log implements Logger {
         }
     }
 
-    warn(...args: any[]) {
+    warn(...args: unknown[]) {
         this.addMessage({ level: 'warn', prefix: this.prefix }, ...args);
         if (this.enabled) {
             console.warn(`%c${this.prefix}`, this.css, ...args);
         }
     }
 
-    debug(...args: any[]) {
+    debug(...args: unknown[]) {
         this.addMessage({ level: 'debug', prefix: this.prefix }, ...args);
         if (this.enabled) {
             if (this.css) {

@@ -24,8 +24,7 @@ import { type Log, Throttler, arrayPartition } from '@trezor/utils';
 
 import { createCore } from './core';
 
-const str = (value: Record<string, any> | string) =>
-    typeof value === 'string' ? value : JSON.stringify(value);
+const str = (value: unknown) => (typeof value === 'string' ? value : JSON.stringify(value));
 
 const validateDescriptorsJSON: RequestHandler<JSON, Descriptor[]> = (request, response, next) => {
     if (Array.isArray(request.body)) {

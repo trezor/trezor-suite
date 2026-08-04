@@ -19,8 +19,10 @@ import {
     type ModelFor,
 } from './deviceAnimationConfig';
 
-const getThemeVariant = (theme: any) =>
-    (theme?.legacy?.THEME as string | undefined)?.toLowerCase() === 'dark' ? 'dark' : 'light';
+const getThemeVariant = (theme: unknown) =>
+    (theme as { legacy?: { THEME?: string } }).legacy?.THEME?.toLowerCase() === 'dark'
+        ? 'dark'
+        : 'light';
 
 type Base = AllowedAnimationPrimitiveFrameProps & {
     loop?: boolean;

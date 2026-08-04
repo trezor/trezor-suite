@@ -32,17 +32,22 @@ export const validateJsonSchema = (config: string, schema: string) => {
         throw Error(`Config is invalid: ${JSON.stringify(validate.errors)}`);
     }
 
+    type ExperimentShape = {
+        experiment?: { id?: unknown; groups?: { percentage?: unknown }[] };
+    };
+
     const invalidExperiments =
         (parsedConfig as { experiments?: unknown[] }).experiments
-            ?.map((experiment: any) => {
-                const sum = (experiment?.experiment?.groups as any[]).reduce(
-                    (acc: number, g: any) => acc + Number(g?.percentage ?? 0),
-                    0,
-                );
+            ?.map(experiment => {
+                const groups = (experiment as ExperimentShape)?.experiment?.groups ?? [];
+                const sum = groups.reduce((acc: number, g) => acc + Number(g?.percentage ?? 0), 0);
 
-                return { id: experiment?.experiment?.id as string | undefined, sum };
+                return {
+                    id: (experiment as ExperimentShape)?.experiment?.id as string | undefined,
+                    sum,
+                };
             })
-            .filter((experiment: { sum: number }) => experiment.sum !== 100) ?? [];
+            .filter(experiment => experiment.sum !== 100) ?? [];
 
     if (invalidExperiments.length > 0) {
         const details = invalidExperiments.map(exp => `id=${exp.id}, sum=${exp.sum}`).join('; ');

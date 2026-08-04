@@ -18,8 +18,8 @@ const ActiveAnchorContext = createContext<ActiveAnchor>({});
 const SetActiveAnchorContext = createContext<Dispatch<SetStateAction<ActiveAnchor>>>(v => v);
 
 const IntersectionObserverContext = createContext<IntersectionObserver | null>(null);
-const slugs = new WeakMap();
-const SlugsContext = createContext<WeakMap<any, any>>(slugs);
+const slugs = new WeakMap<Element, [string, number]>();
+const SlugsContext = createContext<WeakMap<Element, [string, number]>>(slugs);
 // Separate the state as 2 contexts here to avoid
 // re-renders of the content triggered by the state update.
 export const useActiveAnchor = () => useContext(ActiveAnchorContext);
@@ -38,8 +38,9 @@ export const ActiveAnchorProvider = ({ children }: { children: ReactNode }): Rea
                     const ret = { ...f };
 
                     for (const entry of entries) {
-                        if (entry?.rootBounds && slugs.has(entry.target)) {
-                            const [slug, index] = slugs.get(entry.target);
+                        const slugEntry = entry?.rootBounds && slugs.get(entry.target);
+                        if (entry?.rootBounds && slugEntry) {
+                            const [slug, index] = slugEntry;
                             const aboveHalfViewport =
                                 entry.boundingClientRect.y + entry.boundingClientRect.height <=
                                 entry.rootBounds.y + entry.rootBounds.height;

@@ -18,7 +18,7 @@ export const stdioManager = () => {
         return {
             promise: new Promise<string>(resolve => {
                 setTimeout(() => {
-                    rl.question(promptText + ' ', (answer: any) => {
+                    rl.question(promptText + ' ', (answer: string) => {
                         rl.close();
                         resolve(answer);
                     });

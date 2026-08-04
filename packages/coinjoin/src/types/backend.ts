@@ -39,11 +39,15 @@ export interface CoinjoinBackendClientShape {
 }
 
 // shape of src/backend/CoinjoinFilterController.ts
+export type BlockFilterIteration = BlockFilter & {
+    filterParams: { M: number | undefined; P: number | undefined; key: string | undefined };
+};
+
 export interface FilterControllerShape {
     getFilterIterator(
         params: FilterControllerParams,
         ctx: FilterControllerContext,
-    ): AsyncGenerator<any, void, unknown>;
+    ): AsyncGenerator<BlockFilterIteration, void, unknown>;
 }
 
 // shape of src/backend/CoinjoinAddressController.ts

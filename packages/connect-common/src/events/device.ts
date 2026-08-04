@@ -129,4 +129,4 @@ export const createDeviceMessage: MessageFactoryFn<typeof DEVICE_EVENT, DeviceEv
         event: DEVICE_EVENT,
         type,
         payload,
-    }) as any;
+    }) as never;

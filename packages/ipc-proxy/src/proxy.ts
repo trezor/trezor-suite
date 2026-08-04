@@ -4,11 +4,13 @@ const getIpcProxyApi = (proxyName: string): IpcProxyApi | undefined =>
     // @ts-expect-error this is the only window reference. not worth typing in global scope
     typeof window !== 'undefined' ? window[proxyName] : undefined;
 
+type ProxyListener = (...args: unknown[]) => unknown;
+
 const getIpcMethods = (ipcProxy: IpcProxyApi, channelName: string, instanceId: string) => {
-    let listeners: { eventName: string; listener: (...args: any[]) => any }[] = [];
+    let listeners: { eventName: string; listener: ProxyListener }[] = [];
     let created = false;
 
-    const create = async (constructorParams: any) => {
+    const create = async (constructorParams: unknown) => {
         if (created) return true;
         // Handshake with electron main
         await ipcProxy.create(channelName, instanceId, constructorParams);
@@ -19,13 +21,13 @@ const getIpcMethods = (ipcProxy: IpcProxyApi, channelName: string, instanceId: s
     // read more in ./proxy-handler
     const request =
         (method: string) =>
-        (...args: any[]) =>
+        (...args: unknown[]) =>
             ipcProxy.request(channelName, instanceId, method, args);
 
     const setOrClearHandler = (eventName: string) => {
         const eventListeners = listeners.filter(l => l.eventName === eventName);
         if (eventListeners.length) {
-            ipcProxy.setHandler(channelName, instanceId, eventName, (event: any) =>
+            ipcProxy.setHandler(channelName, instanceId, eventName, event =>
                 eventListeners.forEach(l => l.listener(...event)),
             );
         } else {
@@ -33,12 +35,12 @@ const getIpcMethods = (ipcProxy: IpcProxyApi, channelName: string, instanceId: s
         }
     };
 
-    const addListener = (eventName: string, listener: any) => {
+    const addListener = (eventName: string, listener: ProxyListener) => {
         listeners.push({ eventName, listener });
         setOrClearHandler(eventName);
     };
 
-    const removeListener = (eventName: string, listener?: any) => {
+    const removeListener = (eventName: string, listener?: ProxyListener) => {
         listeners = listeners.filter(
             l => l.eventName !== eventName || (listener && l.listener !== listener),
         );
@@ -55,7 +57,7 @@ const getIpcMethods = (ipcProxy: IpcProxyApi, channelName: string, instanceId: s
 
 interface IpcProxyOptions {
     proxyName?: string; // needs to be also set in `exposeIpcProxy` if changed here (see ./proxy-generator)
-    target?: Record<string, any>; // set default fields in Proxy (initial fields which are not functions called on electron main context)
+    target?: Record<string, unknown>; // set default fields in Proxy (initial fields which are not functions called on electron main context)
 }
 
 // This should be used only in electron renderer context.
@@ -63,7 +65,7 @@ interface IpcProxyOptions {
 export const createIpcProxy = async <T extends object>(
     channelName: string, // declared in `exposeIpcProxy` (see ./proxy-generator)
     options: IpcProxyOptions = {},
-    ...constructorParams: any[] // constructor of <T> params, could be undefined
+    ...constructorParams: unknown[] // constructor of <T> params, could be undefined
 ): Promise<T> => {
     const proxyName = options?.proxyName || 'ipcProxy';
 
@@ -90,7 +92,8 @@ export const createIpcProxy = async <T extends object>(
     const proxyHandler: ProxyHandler<T> = {
         // NOTE: pass only serializable object, params of `ProxyHandler` (target, name) to electron preload context.
         // `receiver` parameter (3rd) is an instance of Proxy object and could not be serialized
-        get: (proxyTarget: any, name) => {
+        get: (proxyHandlerTarget, name) => {
+            const proxyTarget = proxyHandlerTarget as Record<string | symbol, unknown>;
             if (typeof name === 'symbol') return proxyTarget[name];
 
             // exclude promise-like methods. they presence may be checked since the whole process is async

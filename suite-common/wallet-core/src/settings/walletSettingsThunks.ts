@@ -6,7 +6,11 @@ import TrezorConnect, { PROTO } from '@trezor/connect';
 
 import { changeNetworks, setBitcoinAmountUnits } from './walletSettingsActions';
 import { WALLET_SETTINGS } from './walletSettingsConstants';
-import { selectBitcoinAmountUnit, selectEnabledNetworks } from './walletSettingsReducer';
+import {
+    type WalletSettingsRootState,
+    selectBitcoinAmountUnit,
+    selectEnabledNetworks,
+} from './walletSettingsReducer';
 import { accountsActions } from '../accounts/accountsActions';
 import { selectAccountsToBeForgotten } from '../selectors';
 
@@ -52,13 +56,14 @@ export const changeCoinVisibility = createThunk<
     },
 );
 
-export const toggleBitcoinAmountUnits = () => (dispatch: Dispatch, getState: () => any) => {
-    const currentUnits = selectBitcoinAmountUnit(getState());
+export const toggleBitcoinAmountUnits =
+    () => (dispatch: Dispatch, getState: () => WalletSettingsRootState) => {
+        const currentUnits = selectBitcoinAmountUnit(getState());
 
-    const nextUnits =
-        currentUnits === PROTO.AmountUnit.BITCOIN
-            ? PROTO.AmountUnit.SATOSHI
-            : PROTO.AmountUnit.BITCOIN;
+        const nextUnits =
+            currentUnits === PROTO.AmountUnit.BITCOIN
+                ? PROTO.AmountUnit.SATOSHI
+                : PROTO.AmountUnit.BITCOIN;
 
-    dispatch(setBitcoinAmountUnits(nextUnits));
-};
+        dispatch(setBitcoinAmountUnits(nextUnits));
+    };

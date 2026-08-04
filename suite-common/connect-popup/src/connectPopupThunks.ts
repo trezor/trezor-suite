@@ -279,7 +279,11 @@ export const connectPopupCallThunkInner = createThunk<
 export const connectPopupCallThunk = <M extends CallMethodKeys>(
     params: ConnectPopupCallThunkParams<M>,
 ): AsyncThunkAction<void, ConnectPopupCallThunkParams<M>, CustomThunkAPI> =>
-    connectPopupCallThunkInner(params) as any;
+    connectPopupCallThunkInner(params) as AsyncThunkAction<
+        void,
+        ConnectPopupCallThunkParams<M>,
+        CustomThunkAPI
+    >;
 
 export const connectPopupDeeplinkThunk = createThunk<void, { url: string }>(
     `${CONNECT_POPUP_MODULE}/deeplinkThunk`,

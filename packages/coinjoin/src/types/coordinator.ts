@@ -21,16 +21,16 @@ export interface SoftwareVersion {
 }
 
 export interface CredentialsResponseValidation {
-    Transcript: Record<string, any>;
-    Presented: any[];
-    Requested: any[];
+    Transcript: Record<string, unknown>;
+    Presented: unknown[];
+    Requested: unknown[];
 }
 
 export interface CredentialsRequestData {
     Delta: number;
-    Presented: any[];
-    Proofs: any[];
-    Requested: any[];
+    Presented: unknown[];
+    Proofs: unknown[];
+    Requested: unknown[];
 }
 
 export interface ZeroCredentials {

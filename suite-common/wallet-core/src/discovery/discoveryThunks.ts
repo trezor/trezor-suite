@@ -39,6 +39,7 @@ import { DISCOVERY_MODULE_PREFIX, discoveryActions } from './discoveryActions';
 import { isDiscoveryInProgress, selectDiscoveryByDevicePath } from './discoverySelectors';
 import { selectDeviceThunk } from './selectDeviceThunk';
 import { type CreateAccountActionProps, accountsActions } from '../accounts/accountsActions';
+import { type AccountsRootState } from '../accounts/accountsReducer';
 import { selectAccountsByDeviceState } from '../accounts/accountsSelectors';
 import { reportAccountInfoThunk, reportWalletBalanceThunk } from '../accounts/accountsThunks';
 import { selectAccountsToBeForgotten, selectDiscoveryAccountsParam } from '../selectors';
@@ -249,7 +250,7 @@ const completeDiscovery = (
         fetchAndSaveMetadata,
         getState,
     }: {
-        getState: () => any;
+        getState: () => AccountsRootState;
         dispatch: ThunkDispatch<any, ExtraDependencies, AnyAction>;
         fetchAndSaveMetadata: SuiteCompatibleThunk<StaticSessionId>;
     },

@@ -23,7 +23,11 @@ import {
     notImplementedThunk,
 } from '@suite-common/redux-utils';
 import { createMigrateSuiteSyncLabelsForRbfTransactionCompositionRoot } from '@suite-common/suite-rbf-labels-migrations';
-import { selectAllLabelsForAccount, selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
+import {
+    type SuiteSyncCompositionRootState,
+    selectAllLabelsForAccount,
+    selectIsSuiteSyncEnabled,
+} from '@suite-common/suite-sync';
 import { createAccountRefreshThrottle } from '@suite-common/wallet-core';
 import { analytics } from '@suite-native/analytics';
 import { forgetBluetoothDeviceThunk } from '@suite-native/bluetooth';
@@ -55,7 +59,7 @@ const transportsPerDeviceType = {
 const transports = transportsPerDeviceType[deviceType];
 
 type NativeAppDeps = {
-    getState: () => any;
+    getState: () => SuiteSyncCompositionRootState;
     dispatch: any;
 } & EnsureEncryptionKeyDep &
     MMKVStorageDep;

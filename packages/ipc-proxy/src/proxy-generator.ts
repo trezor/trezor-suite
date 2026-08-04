@@ -1,17 +1,17 @@
 import type { IpcProxyApi } from './types';
 
 // partial Electron.IpcRendererEvent
-type IpcCallback = (event: any, ...args: any[]) => void;
+type IpcCallback = (event: unknown, ...args: unknown[]) => void;
 
 // partial Electron.IpcRenderer
 interface IpcRenderer {
-    on: (channel: string, callback: IpcCallback) => any;
-    off: (channel: string, callback: IpcCallback) => any;
-    once: (channel: string, callback: IpcCallback) => any;
-    removeAllListeners: (channel: string) => any;
+    on: (channel: string, callback: IpcCallback) => unknown;
+    off: (channel: string, callback: IpcCallback) => unknown;
+    once: (channel: string, callback: IpcCallback) => unknown;
+    removeAllListeners: (channel: string) => unknown;
     listenerCount: (channel: string) => number;
-    send: (channel: string, ...args: any[]) => any;
-    invoke: (channel: string, ...args: any[]) => Promise<any>;
+    send: (channel: string, args: unknown[]) => unknown;
+    invoke: (channel: string, args: unknown[]) => Promise<unknown>;
 }
 
 const createIpcProxyApi = (ipcRenderer: IpcRenderer, validChannels: string[]): IpcProxyApi => {
@@ -24,24 +24,29 @@ const createIpcProxyApi = (ipcRenderer: IpcRenderer, validChannels: string[]): I
         return true;
     };
 
-    const create = (channelName: string, instanceId: string, constructorParams: any) =>
+    const create = (channelName: string, instanceId: string, constructorParams: unknown) =>
         validateChannel(channelName) &&
         ipcRenderer.invoke(`${channelName}/create`, [
             `${channelName}/${instanceId}`,
             constructorParams,
         ]);
 
-    const request = (channelName: string, instanceId: string, method: string, args: any[]) =>
+    const request = (channelName: string, instanceId: string, method: string, args: unknown[]) =>
         validateChannel(channelName) &&
-        new Promise<any>((resolve, reject) => {
+        new Promise<unknown>((resolve, reject) => {
             requestId++;
             const responseEvent = `${channelName}/${instanceId}/response/${requestId}`;
             ipcRenderer.once(responseEvent, (_, response) => {
                 // success/failure is wrapped in object. see ipcProxyHandler
-                if (response.success) {
-                    resolve(response.payload);
+                const { success, payload, error } = response as {
+                    success: boolean;
+                    payload: unknown;
+                    error: unknown;
+                };
+                if (success) {
+                    resolve(payload);
                 } else {
-                    reject(response.error);
+                    reject(error);
                 }
             });
             ipcRenderer.send(`${channelName}/${instanceId}/request`, [responseEvent, method, args]);
@@ -51,7 +56,7 @@ const createIpcProxyApi = (ipcRenderer: IpcRenderer, validChannels: string[]): I
         channelName: string,
         instanceId: string,
         eventName: string,
-        listener: any,
+        listener: (event: unknown[]) => void,
     ) => {
         validateChannel(channelName);
         const ipcEventName = `${channelName}/${instanceId}/event-listener/${eventName}`;
@@ -63,7 +68,7 @@ const createIpcProxyApi = (ipcRenderer: IpcRenderer, validChannels: string[]): I
                 ipcEventName,
             ]);
         }
-        ipcRenderer.on(ipcEventName, (_, event) => listener(event));
+        ipcRenderer.on(ipcEventName, (_, event) => listener(event as unknown[]));
     };
 
     const clearHandler = (channelName: string, instanceId: string, eventName: string) => {
