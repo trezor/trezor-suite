@@ -23,9 +23,10 @@ import { app, ipcMain } from '../typed-electron';
 export const SERVICE_NAME = 'auto-updater';
 
 const defaultFeedURLs = {
-    // This should correspond with the publish.url value in electron-builder-config.js file.
-    latest: 'https://data.trezor.io/suite/releases/desktop/latest',
-    preRelease: 'https://data.trezor.io/suite/releases/desktop/canary',
+    // Suite Dark flavour: updates come from the flavour's own GitHub "continuous" release.
+    // Must correspond with the publish.url value in electron-builder-config.js.
+    latest: 'https://github.com/suite-dark/suite-dark/releases/download/continuous/',
+    preRelease: 'https://github.com/suite-dark/suite-dark/releases/download/continuous/',
 };
 
 // Runtime flags
@@ -51,6 +52,17 @@ export const init: ModuleInit = ({ mainWindowProxy, store }) => {
 
     if (isFeatureFlagEnabled('DESKTOP_AUTO_UPDATER') && disableUpdater) {
         logger.info(SERVICE_NAME, 'Disabled via command line parameter');
+
+        return;
+    }
+
+    // Suite Dark flavour: auto-update runs only on Windows and Linux. macOS is excluded
+    // because Squirrel.Mac refuses to install an unsigned/ad-hoc update (this build is
+    // not code-signed); macOS users update by downloading a new build. This early return
+    // also means the Settings auto-update section stays hidden on macOS (the module does
+    // not contribute its handshake payload -> desktopUpdate.enabled stays false).
+    if (process.platform === 'darwin' && !enableUpdater) {
+        logger.info(SERVICE_NAME, 'Disabled on macOS (unsigned build; Squirrel.Mac needs a signature)');
 
         return;
     }

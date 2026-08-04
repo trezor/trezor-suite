@@ -8,7 +8,9 @@ module.exports = {
     // distinguish between dev and prod builds
     appId: `io.suitedark.app${isCodesignBuild ? '' : '.dev'}`,
     extraMetadata: {
-        version: suiteVersion,
+        // Suite Dark flavour: CI stamps FLAVOUR_VERSION (e.g. 26.8.0-suitedark.<run>) so the
+        // auto-updater sees a monotonically increasing version; falls back to suiteVersion locally.
+        version: process.env.FLAVOUR_VERSION || suiteVersion,
         // distinguish between dev and prod builds so different userDataDir is used
         name: `suitedark-desktop${isCodesignBuild ? '' : '-dev'}`,
     },
@@ -54,7 +56,11 @@ module.exports = {
     },
     publish: {
         provider: 'generic',
-        url: 'https://example.com/suitedark/releases/desktop/latest',
+        // Suite Dark flavour: the "continuous" GitHub release hosts latest*.yml + installers.
+        url: 'https://github.com/suite-dark/suite-dark/releases/download/continuous/',
+        // Force the "latest" channel so the monotonic prerelease version
+        // (e.g. 26.8.0-suitedark.<run>) still writes latest*.yml, not <tag>*.yml.
+        channel: 'latest',
     },
     dmg: {
         sign: false,
@@ -93,7 +99,7 @@ module.exports = {
             },
         ],
         icon: 'build/static/images/desktop/512x512.icns',
-        artifactName: 'SuiteDark-${version}-mac-${arch}.${ext}',
+        artifactName: 'SuiteDark-mac-${arch}.${ext}',
         identity: isCodesignBuild ? undefined : '-',
         hardenedRuntime: isCodesignBuild,
         gatekeeperAssess: false,
@@ -131,7 +137,7 @@ module.exports = {
             },
         ],
         icon: 'build/static/images/desktop/512x512.png',
-        artifactName: 'SuiteDark-${version}-win-${arch}.${ext}',
+        artifactName: 'SuiteDark-win-${arch}.${ext}',
         target: ['nsis'],
         signExts: ['.exe', '.dll'],
         signtoolOptions: {
@@ -160,7 +166,7 @@ module.exports = {
             },
         ],
         icon: 'build/static/images/desktop/512x512.png',
-        artifactName: 'SuiteDark-${version}-linux-${arch}.${ext}',
+        artifactName: 'SuiteDark-linux-${arch}.${ext}',
         executableName: 'suitedark',
         category: 'Utility',
         target: ['AppImage'],
