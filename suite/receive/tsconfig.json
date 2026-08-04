@@ -3,11 +3,11 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         { "path": "../../suite-common/address" },
+        {
+            "path": "../../suite-common/dependency-injection"
+        },
         { "path": "../../suite-common/device" },
         { "path": "../../suite-common/receive" },
-        {
-            "path": "../../suite-common/suite-types"
-        },
         {
             "path": "../../suite-common/toast-notifications"
         },
@@ -20,17 +20,23 @@
         {
             "path": "../../suite-common/wallet-types"
         },
+        {
+            "path": "../../suite-common/wallet-utils"
+        },
         { "path": "../account" },
         { "path": "../address" },
         { "path": "../analytics" },
         { "path": "../authenticity-checks" },
-        { "path": "../external-links" },
+        { "path": "../device" },
         { "path": "../intl" },
         { "path": "../labeling" },
         { "path": "../modal" },
         { "path": "../../packages/components" },
+        { "path": "../../packages/crypto-utils" },
+        { "path": "../../packages/icons" },
         {
             "path": "../../packages/product-components"
-        }
+        },
+        { "path": "../../packages/theme" }
     ]
 }

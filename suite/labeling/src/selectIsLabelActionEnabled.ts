@@ -18,11 +18,13 @@ import {
 } from '@suite-common/suite-sync';
 import { type StaticSessionId } from '@trezor/connect';
 
+export type SelectIsLabelActionEnabledState = WithSuiteSyncAndDeviceState &
+    MetadataRootState &
+    DesktopSuiteSyncRootState &
+    MessageSystemRootState;
+
 export const selectIsLabelActionEnabled = (
-    state: WithSuiteSyncAndDeviceState &
-        MetadataRootState &
-        DesktopSuiteSyncRootState &
-        MessageSystemRootState,
+    state: SelectIsLabelActionEnabledState,
     deviceStaticSessionId: StaticSessionId,
     legacyEntityKey: string,
 ): boolean => {
