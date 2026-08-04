@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import type { CryptoId } from 'invity-api';
 
 import {
-    cryptoIdToSymbol,
+    cryptoIdToNetworkSymbol,
     useTradingFiatValues as useCommonTradingFiatValues,
 } from '@suite-common/trading';
 import {
@@ -18,7 +18,7 @@ export const useTradingFiatValues = (
     amount: string | undefined,
     cryptoId: CryptoId | undefined,
 ) => {
-    const symbol = cryptoIdToSymbol(cryptoId);
+    const symbol = cryptoIdToNetworkSymbol(cryptoId);
     const shouldSendInSats = useSelector((state: WalletSettingsRootState) =>
         selectIsAmountInSats(state, symbol),
     );

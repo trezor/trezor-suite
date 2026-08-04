@@ -3,7 +3,7 @@ import { useMemo, useState } from 'react';
 import { type CryptoId } from 'invity-api';
 
 import { normalizeForSearch } from '@suite-common/suite-utils';
-import { cryptoIdToSymbol } from '@suite-common/trading';
+import { cryptoIdToNetworkSymbol } from '@suite-common/trading';
 import { type NetworkSymbol, getNetworkByCoingeckoId } from '@suite-common/wallet-config';
 import { type TradeableAsset } from '@suite-native/trading-types';
 
@@ -94,7 +94,7 @@ export const useTradeableAssetsFilteredData = ({ assets }: { assets: TradeableAs
             return assets;
         }
 
-        return assets.filter(a => filterSymbol === cryptoIdToSymbol(a.cryptoId));
+        return assets.filter(a => filterSymbol === cryptoIdToNetworkSymbol(a.cryptoId));
     }, [assets, filterSymbol]);
 
     const filteredData = useMemo(() => {

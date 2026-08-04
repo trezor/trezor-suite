@@ -1,5 +1,5 @@
 import { messages } from '@suite/intl';
-import { cryptoIdToSymbol } from '@suite-common/trading';
+import { cryptoIdToNetworkSymbol } from '@suite-common/trading';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { localizeNumber } from '@suite-common/wallet-utils';
 
@@ -70,8 +70,8 @@ test.describe('Trading - Swap history', { tag: ['@webOnly', '@T3T1', '@T3W1'] },
                 type StatusKey = keyof typeof statusTranslationKeys;
                 const row = tradingPage.transactions.swapTransactionRow(trade.orderId);
                 const receiveSymbol = (
-                    cryptoIdToSymbol(
-                        trade.data.receive as Parameters<typeof cryptoIdToSymbol>[0],
+                    cryptoIdToNetworkSymbol(
+                        trade.data.receive as Parameters<typeof cryptoIdToNetworkSymbol>[0],
                     ) ?? trade.data.receive
                 ).toUpperCase();
 
@@ -117,8 +117,9 @@ test.describe('Trading - Swap history', { tag: ['@webOnly', '@T3T1', '@T3W1'] },
 
         for (const trade of SEEDED_TRADES) {
             const receiveSymbol = (
-                cryptoIdToSymbol(trade.data.receive as Parameters<typeof cryptoIdToSymbol>[0]) ??
-                trade.data.receive
+                cryptoIdToNetworkSymbol(
+                    trade.data.receive as Parameters<typeof cryptoIdToNetworkSymbol>[0],
+                ) ?? trade.data.receive
             ).toUpperCase();
 
             await test.step(`Open detail for trade ${trade.orderId}`, async () => {

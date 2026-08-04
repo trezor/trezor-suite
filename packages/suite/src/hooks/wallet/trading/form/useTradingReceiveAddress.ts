@@ -9,7 +9,7 @@ import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import {
     type TradingType,
-    cryptoIdToSymbol,
+    cryptoIdToNetworkSymbol,
     getUnusedAddressFromAccount,
     selectTradingBuyReceiveAccountKey,
     selectTradingBuyReceiveAddress,
@@ -79,7 +79,7 @@ export const useTradingReceiveAddress = ({
 
     const isDebug = useSelector(selectIsDebugModeActive);
 
-    const symbol = cryptoId && cryptoIdToSymbol(cryptoId);
+    const symbol = cryptoId && cryptoIdToNetworkSymbol(cryptoId);
     const { supportedMainnets, supportedTestnets } = useNetworkSupport();
 
     const methods = useForm<TradingVerifyFormProps>({

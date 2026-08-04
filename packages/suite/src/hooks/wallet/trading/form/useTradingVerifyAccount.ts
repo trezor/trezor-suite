@@ -5,7 +5,7 @@ import { selectIsDebugModeActive } from '@suite/debug';
 import { openModal } from '@suite/modal';
 import { selectSelectedDevice } from '@suite-common/device';
 import {
-    cryptoIdToSymbol,
+    cryptoIdToNetworkSymbol,
     getUnusedAddressFromAccount,
     parseCryptoId,
     selectTradingAccountKeyByTradeType,
@@ -72,7 +72,7 @@ const useTradingVerifyAccount = ({
     const [hasSelectionInitialized, setHasSelectionInitialized] = useState(false);
 
     const networkId = cryptoId && parseCryptoId(cryptoId).networkId;
-    const symbol = cryptoId && cryptoIdToSymbol(cryptoId);
+    const symbol = cryptoId && cryptoIdToNetworkSymbol(cryptoId);
 
     const isSupportedNetwork = [...supportedMainnets, ...supportedTestnets].some(
         network => network.symbol === symbol,

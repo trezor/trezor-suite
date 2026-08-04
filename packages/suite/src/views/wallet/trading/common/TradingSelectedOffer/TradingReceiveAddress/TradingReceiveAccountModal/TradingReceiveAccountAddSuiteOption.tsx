@@ -1,7 +1,7 @@
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { selectSelectedDevice } from '@suite-common/device';
-import { cryptoIdToSymbol, parseCryptoId, useTradingUtils } from '@suite-common/trading';
+import { cryptoIdToNetworkSymbol, parseCryptoId, useTradingUtils } from '@suite-common/trading';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { IconCircle, Row } from '@trezor/components';
 import { PlusIcon } from '@trezor/icons';
@@ -21,7 +21,7 @@ export const TradingReceiveAccountAddSuiteOption = () => {
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
     const { cryptoIdToPlatformName, cryptoIdToCoinName } = useTradingUtils();
 
-    const symbol = cryptoIdToSymbol(cryptoId);
+    const symbol = cryptoIdToNetworkSymbol(cryptoId);
 
     const { networkId, contractAddress } = parseCryptoId(cryptoId);
     const networkName = contractAddress

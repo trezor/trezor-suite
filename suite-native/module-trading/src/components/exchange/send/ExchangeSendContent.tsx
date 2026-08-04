@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 
-import { cryptoIdToSymbol } from '@suite-common/trading';
+import { cryptoIdToNetworkSymbol } from '@suite-common/trading';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountsRootState, selectAccountFormattedBalance } from '@suite-common/wallet-core';
 import { HStack } from '@suite-native/atoms';
@@ -52,7 +52,7 @@ export const ExchangeSendContent = () => {
     const { control } = useExchangeFormContext();
 
     const asset = useWatch({ name: 'sendAsset', control });
-    const symbol = cryptoIdToSymbol(asset?.cryptoId);
+    const symbol = cryptoIdToNetworkSymbol(asset?.cryptoId);
 
     return (
         <>
