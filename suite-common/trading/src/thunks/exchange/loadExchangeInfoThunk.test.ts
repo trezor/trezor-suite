@@ -71,6 +71,27 @@ describe('loadExchangeInfoThunk', () => {
         });
     });
 
+    it('does not throw and skips a provider with non-array (poison) tickers', async () => {
+        // A malicious/mistyped trade-server response where a provider sends a truthy non-array
+        // for buyTickers/sellTickers must not make the spread throw and reject the thunk (which
+        // would leave the trading feature stuck loading for the whole session).
+        const poisonProvider = {
+            ...exchange,
+            buyTickers: 123 as unknown as (typeof exchange)['buyTickers'],
+            sellTickers: {} as unknown as (typeof exchange)['sellTickers'],
+        };
+        const exchangeInfoApi = [poisonProvider, exchange];
+
+        tradeApi.getExchangeList = () =>
+            Promise.resolve(exchangeInfoApi as unknown as ExchangeListResponse);
+
+        const exchangeInfoData = await store.dispatch(exchangeThunks.loadInfoThunk()).unwrap();
+
+        // the valid provider's tickers still load; the poison provider contributes nothing
+        expect(exchangeInfoData.buyCryptoIds).toEqual(exchange.buyTickers);
+        expect(exchangeInfoData.sellCryptoIds).toEqual(exchange.sellTickers);
+    });
+
     it('should load default data object when response is unsuccessful', async () => {
         tradeApi.getExchangeList = () =>
             Promise.resolve(undefined as unknown as ExchangeListResponse);

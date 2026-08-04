@@ -23,11 +23,17 @@ export const loadExchangeInfoThunk = createThunk<ExchangeInfo, void, void>(
 
         // merge symbols supported by at least one partner
         exchangeList.forEach(provider => {
-            if (provider.buyTickers) {
+            // `buyTickers`/`sellTickers` are non-optional arrays in the invity-api types, but the
+            // response comes from an untrusted/user-selectable trade server (exchange.trezor.io, or a
+            // dev/staging/localhost env), so a provider mistyping either field to a truthy non-iterable
+            // (e.g. a number or object) would make the spread throw "not iterable" and reject the whole
+            // thunk — leaving `isLoading` stuck `true` and bricking trading for the rest of the session
+            // (see loadInitialDataThunk). Guard with Array.isArray, matching the buy/sell siblings.
+            if (Array.isArray(provider.buyTickers)) {
                 buyCryptoIds.push(...provider.buyTickers);
             }
 
-            if (provider.sellTickers) {
+            if (Array.isArray(provider.sellTickers)) {
                 sellCryptoIds.push(...provider.sellTickers);
             }
         });
