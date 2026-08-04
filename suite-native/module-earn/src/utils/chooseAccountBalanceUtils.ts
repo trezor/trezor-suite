@@ -30,9 +30,9 @@ export const getChooseAccountBalanceData = (
         };
     }
 
-    // A wrapped-native (WETH) vault can also spend the wrappable native balance (minus the fee
-    // reserve), so the depositable amount is denominated as the native asset — which also makes
-    // the fiat conversion use the native rate.
+    // A wrapped-native (WETH) vault can also spend the wrappable native balance, so the
+    // depositable amount is denominated as the native asset — which also makes the fiat
+    // conversion use the native rate.
     if (isWrappedNativeToken(account.symbol, tokenBalance.tokenContractAddress)) {
         return {
             type: 'account',

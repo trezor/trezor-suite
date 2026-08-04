@@ -77,8 +77,14 @@ describe(navigateByYieldAccountState.name, () => {
         });
     });
 
-    it('routes to the insufficient-balance screen when the native balance is below the gas reserve', () => {
+    it('counts a small native balance as fully depositable (no gas reserve deducted)', () => {
         const account = mockWalletAccount({ symbol: 'eth', formattedBalance: '0.003' });
+
+        expect(navigate(account)).toBe('deposit-in-a-nutshell-modal');
+    });
+
+    it('routes to the insufficient-balance screen when the account is empty', () => {
+        const account = mockWalletAccount({ symbol: 'eth', formattedBalance: '0' });
 
         expect(navigate(account)).toBe('insufficient-balance-screen');
         expect(mockNavigate).toHaveBeenCalledWith(RootStackRoutes.YieldInsufficientBalance, {

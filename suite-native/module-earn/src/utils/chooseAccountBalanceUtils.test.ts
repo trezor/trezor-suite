@@ -16,7 +16,7 @@ describe(getChooseAccountBalanceData.name, () => {
         });
     });
 
-    it('combines the token and wrappable native balance for a wrapped-native vault, denominated as native', () => {
+    it('combines the token balance with the full native balance for a wrapped-native vault, denominated as native', () => {
         const account = mockWalletAccount({
             symbol: 'eth',
             formattedBalance: '1',
@@ -30,7 +30,7 @@ describe(getChooseAccountBalanceData.name, () => {
             }),
         ).toEqual({
             type: 'account',
-            value: '1.495',
+            value: '1.5',
         });
     });
 
@@ -44,7 +44,7 @@ describe(getChooseAccountBalanceData.name, () => {
             }),
         ).toEqual({
             type: 'account',
-            value: '0.995',
+            value: '1',
         });
     });
 
