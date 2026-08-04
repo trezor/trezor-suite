@@ -96,7 +96,7 @@ test.describe('Trading - Swap', { tag: ['@T3W1', '@T3T1'] }, () => {
                 formattedSendAmount,
             );
             // The EVM max fee is live; we just crosscheck modal and device.
-            const reviewFee = (await devicePrompt.cryptoAmountOf('fee').textContent())?.trim();
+            const reviewFee = (await devicePrompt.cryptoAmountOf('fee').innerText())?.trim();
             if (!reviewFee) {
                 throw new Error('Review fee amount was not displayed on the confirmation modal');
             }
