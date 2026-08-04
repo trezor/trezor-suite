@@ -48,15 +48,14 @@ export const addToast = createAction(
 );
 
 // Adds a Toast if there is not one of same type visible.
-export const addToastOnceThunk = createThunk<
-    void,
-    ToastPayload,
-    { state: NotificationsRootState }
->(`${ACTION_PREFIX}/addToastOnce`, (payload, { getState, dispatch }) => {
-    const notifications = selectVisibleNotificationsByType(getState(), payload.type);
-    if (notifications.length > 0) return;
-    dispatch(addToast(payload));
-});
+export const addToastOnceThunk = createThunk<void, ToastPayload, { state: NotificationsRootState }>(
+    `${ACTION_PREFIX}/addToastOnce`,
+    (payload, { getState, dispatch }) => {
+        const notifications = selectVisibleNotificationsByType(getState(), payload.type);
+        if (notifications.length > 0) return;
+        dispatch(addToast(payload));
+    },
+);
 
 export const addEvent = createAction(
     `${ACTION_PREFIX}/addEvent`,

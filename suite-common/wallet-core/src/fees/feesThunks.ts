@@ -7,7 +7,7 @@ import { isNotUndefined, resolveAfter, typedObjectFromEntries } from '@trezor/ut
 
 import { FEES_MODULE_PREFIX, feesActions } from './feesActions';
 import { DEFAULT_FEE_INFO } from './feesConstants';
-import { type FeesRootState, selectRawNetworkFeeInfo } from './feesReducer';
+import { type FeesRootState, selectRawNetworkFeeInfo } from './feesSelectors';
 import { getNewFeeInfo, sortLevels } from './feesUtils';
 import {
     type BlockchainRootState,
@@ -23,52 +23,51 @@ import {
 // checks if there are discovery processes loaded from LocalStorage
 // if so starts subscription to proper networks
 
-export const preloadFeeInfoThunk = createThunk<
-    void,
-    void,
-    { state: WalletSettingsRootState }
->(`${FEES_MODULE_PREFIX}/preloadFeeInfoThunk`, async (_, { dispatch, getState }) => {
-    const enabledNetworks = selectEnabledNetworks(getState());
+export const preloadFeeInfoThunk = createThunk<void, void, { state: WalletSettingsRootState }>(
+    `${FEES_MODULE_PREFIX}/preloadFeeInfoThunk`,
+    async (_, { dispatch, getState }) => {
+        const enabledNetworks = selectEnabledNetworks(getState());
 
-    // Fetch default fee levels
-    const networks = networksCollection.filter(
-        n => !n.isHidden && enabledNetworks?.includes(n.symbol),
-    );
+        // Fetch default fee levels
+        const networks = networksCollection.filter(
+            n => !n.isHidden && enabledNetworks?.includes(n.symbol),
+        );
 
-    const levels = await Promise.all(
-        networks.map(async network => {
-            const result = await TrezorConnect.blockchainEstimateFee({
-                coin: network.symbol,
-                request: { feeLevels: 'preloaded' },
-            });
+        const levels = await Promise.all(
+            networks.map(async network => {
+                const result = await TrezorConnect.blockchainEstimateFee({
+                    coin: network.symbol,
+                    request: { feeLevels: 'preloaded' },
+                });
 
-            return result.success ? ([network, result] as const) : undefined;
-        }),
-    );
+                return result.success ? ([network, result] as const) : undefined;
+            }),
+        );
 
-    const partial = typedObjectFromEntries(
-        levels.filter(isNotUndefined).map(([network, result]) => {
-            const { payload } = result;
-            const feeInfo: FeeInfo = {
-                blockHeight: 0,
-                ...payload,
-                levels: payload.levels
-                    // hack to hide "low" fee option
-                    // (we do not want to change the connect API as it is a potentially breaking change)
-                    .filter(level => level.label !== 'low')
-                    .sort(sortLevels)
-                    .map(level => ({
-                        ...level,
-                        label: level.label || 'normal',
-                    })),
-            };
+        const partial = typedObjectFromEntries(
+            levels.filter(isNotUndefined).map(([network, result]) => {
+                const { payload } = result;
+                const feeInfo: FeeInfo = {
+                    blockHeight: 0,
+                    ...payload,
+                    levels: payload.levels
+                        // hack to hide "low" fee option
+                        // (we do not want to change the connect API as it is a potentially breaking change)
+                        .filter(level => level.label !== 'low')
+                        .sort(sortLevels)
+                        .map(level => ({
+                            ...level,
+                            label: level.label || 'normal',
+                        })),
+                };
 
-            return [network.symbol, { status: 'preloaded' as const, data: feeInfo }];
-        }),
-    );
+                return [network.symbol, { status: 'preloaded' as const, data: feeInfo }];
+            }),
+        );
 
-    dispatch(feesActions.updateMultipleFees(partial));
-});
+        dispatch(feesActions.updateMultipleFees(partial));
+    },
+);
 
 type UpdateFeeInfoThunkProps = {
     networkSymbol: NetworkSymbol;

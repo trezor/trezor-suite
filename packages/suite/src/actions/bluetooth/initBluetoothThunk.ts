@@ -137,7 +137,6 @@ export const initBluetoothThunk = createThunk<void, void, { state: InitBluetooth
         bluetoothIpc.on('device-list-update', nearbyDevicesIpc => {
             const nearbyDevices = nearbyDevicesIpc.map(fromBluetoothDevice);
 
-            // eslint-disable-next-line @typescript-eslint/no-shadow
             const knownDevices = selectKnownDevices<DesktopBluetoothDevice>(getState());
 
             const remappedKnownDevices = remapKnownDevicesForLinuxAndWindows({
@@ -169,7 +168,6 @@ export const initBluetoothThunk = createThunk<void, void, { state: InitBluetooth
         });
 
         bluetoothIpc.on('open-bluetooth-settings', async ({ id }) => {
-            // eslint-disable-next-line @typescript-eslint/no-shadow
             const result = await desktopApi.openSystemSettings('bluetooth');
             if (!result.success) {
                 // stop here and disconnect the device (abort pairing before it starts)
