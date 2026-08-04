@@ -10,13 +10,13 @@ import {
 import { type Route, selectRouteName } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectHasBitcoinOnlyFirmware } from '@suite-common/device';
+import { isTransactionNotification } from '@suite-common/toast-notifications';
 import { Column } from '@trezor/components';
 import { BellIcon, GearSixIcon, HouseIcon, PiggyBankIcon, RepeatIcon } from '@trezor/icons';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { type AppState } from 'src/reducers/store';
 import { useResponsiveContext } from 'src/support/suite/ResponsiveContext';
-import { isTransactionNotification } from 'src/utils/suite/notification';
 
 import { NavigationItem, type NavigationItemProps } from './NavigationItem';
 
