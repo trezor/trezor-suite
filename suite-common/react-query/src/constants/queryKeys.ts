@@ -14,10 +14,10 @@ export const commonQueryKeys = {
     tronStakingStats: () => ['tron-staking-stats'],
     yieldOpportunity: (vaultId: string | undefined) => ['yield-opportunities', 'single', vaultId],
     yieldOpportunitiesList: (params: { limit: number }) => ['yield-opportunities', 'list', params],
-    yieldOpportunitiesByAddress: (outputToken: string | undefined) => [
+    yieldOpportunitiesByAddress: (params: { outputToken?: string; network?: string }) => [
         'yield-opportunities',
         'by-address',
-        outputToken,
+        params,
     ],
     yieldOpportunitiesPages: (params: { limit: number; sort: string }) => [
         'yield-opportunities',

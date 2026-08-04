@@ -185,6 +185,7 @@ export const EarnYieldAccountOpportunity = ({
                 analyticsStep: 'earn-dashboard',
                 yieldContext: {
                     id: opportunity.vault.id,
+                    vaultAddress: vaultContractAddress ?? undefined,
                     tokenContractAddress: opportunity.vault.token.address ?? undefined,
                 },
             }),
@@ -192,7 +193,7 @@ export const EarnYieldAccountOpportunity = ({
     };
 
     const navigateToYieldDeposit = () => {
-        if (!opportunity.account) {
+        if (!opportunity.account || !vaultContractAddress) {
             return;
         }
 
@@ -227,15 +228,14 @@ export const EarnYieldAccountOpportunity = ({
                 routeName: 'earn-yield-deposit',
                 params: getEarnRouteParams({
                     account: opportunity.account,
-                    yieldId: opportunity.vault.id,
-                    contractAddress: opportunity.vault.token.address ?? undefined,
+                    vaultAddress: vaultContractAddress,
                 }),
             }),
         );
     };
 
     const navigateToYieldWithdraw = () => {
-        if (!opportunity.account) {
+        if (!opportunity.account || !vaultContractAddress) {
             return;
         }
 
@@ -270,8 +270,7 @@ export const EarnYieldAccountOpportunity = ({
                 routeName: 'earn-yield-withdraw',
                 params: getEarnRouteParams({
                     account: opportunity.account,
-                    yieldId: opportunity.vault.id,
-                    contractAddress: opportunity.vault.token.address ?? undefined,
+                    vaultAddress: vaultContractAddress,
                 }),
             }),
         );

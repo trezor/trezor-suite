@@ -30,6 +30,7 @@ import {
 } from '@suite-common/trading';
 import { type Explorer, type Network } from '@suite-common/wallet-config';
 import {
+    getYieldVaultContractAddress,
     getYieldVaultForOutputToken,
     selectExplorer,
     sendFormActions,
@@ -137,6 +138,9 @@ const TokenRowBasicActions = ({
             }),
         [yieldOpportunities, account.symbol, token.contract, token.symbol, token.decimals],
     );
+    const availableVaultAddress = availableVault
+        ? getYieldVaultContractAddress(availableVault)
+        : null;
 
     const isDepositButtonDisabled = !availableVault?.status.enter;
     const isWithdrawButtonDisabled = !availableVault?.status.exit;
@@ -154,10 +158,7 @@ const TokenRowBasicActions = ({
     };
 
     const navigateToYieldDeposit = () => {
-        if (!availableVault) return;
-
-        const yieldId = availableVault.id;
-        const contractAddress = availableVault.token.address;
+        if (!availableVault || !availableVaultAddress) return;
 
         analytics.report({
             type: sharedEvents.yieldNavigateEvent.name,
@@ -166,7 +167,7 @@ const TokenRowBasicActions = ({
                 from: 'account-defi-tokens',
                 to: 'deposit-form',
                 networkSymbol: account.symbol,
-                vaultId: yieldId,
+                vaultId: availableVault.id,
             },
         });
 
@@ -175,18 +176,14 @@ const TokenRowBasicActions = ({
                 routeName: 'earn-yield-deposit',
                 params: getEarnRouteParams({
                     account,
-                    yieldId,
-                    contractAddress,
+                    vaultAddress: availableVaultAddress,
                 }),
             }),
         );
     };
 
     const navigateToYieldWithdraw = () => {
-        if (!availableVault) return;
-
-        const yieldId = availableVault.id;
-        const contractAddress = availableVault.token.address;
+        if (!availableVault || !availableVaultAddress) return;
 
         analytics.report({
             type: sharedEvents.yieldNavigateEvent.name,
@@ -195,7 +192,7 @@ const TokenRowBasicActions = ({
                 from: 'account-defi-tokens',
                 to: 'withdraw-form',
                 networkSymbol: account.symbol,
-                vaultId: yieldId,
+                vaultId: availableVault.id,
             },
         });
 
@@ -204,8 +201,7 @@ const TokenRowBasicActions = ({
                 routeName: 'earn-yield-withdraw',
                 params: getEarnRouteParams({
                     account,
-                    yieldId,
-                    contractAddress,
+                    vaultAddress: availableVaultAddress,
                 }),
             }),
         );

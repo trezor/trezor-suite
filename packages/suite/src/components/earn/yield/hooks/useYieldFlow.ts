@@ -5,7 +5,6 @@ import { selectDesktopAnalyticsDep } from '@suite/analytics';
 import { setConnectionModal, setConnectionMode, useDevice } from '@suite/device';
 import { type TranslationKey } from '@suite/intl';
 import { openModal } from '@suite/modal';
-import { type EarnParams } from '@suite/router';
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
@@ -53,7 +52,6 @@ import {
 
 type UseYieldFlowProps = {
     account: Account;
-    routeParams: EarnParams;
     vault: YieldDtoV2;
     flowType: YieldPositionFlowType;
 };
@@ -128,7 +126,6 @@ export type YieldFlowContextValues = Omit<
 
 export const useYieldFlow = ({
     account,
-    routeParams,
     vault,
     flowType,
 }: UseYieldFlowProps): UseYieldFlowResult => {
@@ -148,7 +145,6 @@ export const useYieldFlow = ({
     const { token, receiptToken, apy, depositedAmount, depositedSharesAmount, flowKey } =
         useResolvedYieldFlowData({
             account,
-            routeParams,
             vault,
         });
     const allowanceFlowDataRef = useCurrentRef({

@@ -13,6 +13,8 @@ export enum EarnProvider {
 
 export type EarnYieldContext = {
     id: string;
+    /** vault (share token) contract address — how vault-scoped Earn routes address the vault */
+    vaultAddress?: string;
     tokenContractAddress?: string;
 };
 

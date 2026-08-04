@@ -62,14 +62,13 @@ export const useEarnProviderConsentActions = ({
 
         switch (flow) {
             case EarnFlow.Yield:
-                if (yieldContext) {
+                if (yieldContext?.vaultAddress) {
                     dispatch(
                         goto({
                             routeName: 'earn-yield-deposit',
                             params: getEarnRouteParams({
                                 account,
-                                yieldId: yieldContext.id,
-                                contractAddress: yieldContext.tokenContractAddress,
+                                vaultAddress: yieldContext.vaultAddress,
                             }),
                         }),
                     );

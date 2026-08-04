@@ -48,18 +48,17 @@ describe('router', () => {
                     symbol: 'eth',
                     accountIndex: 0,
                     accountType: 'normal',
-                    yieldId: 'vault-1',
-                    contractAddress: '0xabc',
+                    vaultAddress: '0xvault',
                 }),
-            ).toEqual('/earn/yield/deposit#/eth/0/normal/vault-1/0xabc');
+            ).toEqual('/earn/yield/deposit#/eth/0/normal/0xvault');
             expect(
                 test('earn-yield-withdraw', {
                     symbol: 'eth',
                     accountIndex: 0,
                     accountType: 'normal',
-                    yieldId: 'vault-1',
+                    vaultAddress: '0xvault',
                 }),
-            ).toEqual('/earn/yield/withdraw#/eth/0/normal/vault-1');
+            ).toEqual('/earn/yield/withdraw#/eth/0/normal/0xvault');
             expect(
                 test('earn-yield-claim', {
                     symbol: 'eth',
@@ -195,7 +194,7 @@ describe('router', () => {
             expect(
                 getAppWithParams({
                     pathname: '/earn/yield/deposit',
-                    hash: '#/eth/0/normal/vault-1/0xabc',
+                    hash: '#/eth/0/normal/0xvault',
                 }),
             ).toEqual({
                 app: 'earn-yield',
@@ -203,8 +202,7 @@ describe('router', () => {
                     symbol: 'eth',
                     accountIndex: 0,
                     accountType: 'normal',
-                    yieldId: 'vault-1',
-                    contractAddress: '0xabc',
+                    vaultAddress: '0xvault',
                 },
                 route: getRoute('earn-yield-deposit'),
             });
@@ -212,7 +210,7 @@ describe('router', () => {
             expect(
                 getAppWithParams({
                     pathname: '/earn/yield/withdraw',
-                    hash: '#/eth/0/normal/vault-1',
+                    hash: '#/eth/0/normal/0xvault',
                 }),
             ).toEqual({
                 app: 'earn-yield',
@@ -220,8 +218,7 @@ describe('router', () => {
                     symbol: 'eth',
                     accountIndex: 0,
                     accountType: 'normal',
-                    yieldId: 'vault-1',
-                    contractAddress: undefined,
+                    vaultAddress: '0xvault',
                 },
                 route: getRoute('earn-yield-withdraw'),
             });
