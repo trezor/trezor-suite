@@ -20,22 +20,32 @@ import { enhanceVinVout, filterTargets, sumVinVout, transformTarget } from './ut
 
 export const transformUtxos = (utxos: BlockfrostUtxos[]): Utxo[] => {
     const result: Utxo[] = [];
-    utxos.forEach(utxo =>
-        utxo.utxoData.amount.forEach(u => {
-            result.push({
-                address: utxo.address,
-                txid: utxo.utxoData.tx_hash,
-                confirmations: utxo.blockInfo.confirmations,
-                blockHeight: utxo.blockInfo.height || 0,
-                amount: u.quantity,
-                vout: utxo.utxoData.output_index,
-                path: utxo.path,
-                cardanoSpecific: {
-                    unit: u.unit,
-                },
+    if (!Array.isArray(utxos)) return result;
+    utxos.forEach(utxo => {
+        try {
+            utxo.utxoData.amount.forEach(u => {
+                result.push({
+                    address: utxo.address,
+                    txid: utxo.utxoData.tx_hash,
+                    confirmations: utxo.blockInfo.confirmations,
+                    blockHeight: utxo.blockInfo.height || 0,
+                    amount: u.quantity,
+                    vout: utxo.utxoData.output_index,
+                    path: utxo.path,
+                    cardanoSpecific: {
+                        unit: u.unit,
+                    },
+                });
             });
-        }),
-    );
+        } catch {
+            // A single malformed/poison UTXO record from an untrusted (user-selectable
+            // custom) blockfrost backend must not crash the whole getAccountUtxo response.
+            // utxoData/amount/blockInfo are TS-required but not runtime-validated; a missing
+            // utxoData.amount makes the inner .forEach throw, so drop just the bad UTXO record
+            // at the boundary instead of failing the entire account (poison-one-record DoS),
+            // mirroring the transformAccountInfo/transformTokenInfo siblings in this file.
+        }
+    });
 
     return result;
 };

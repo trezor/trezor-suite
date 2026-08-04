@@ -16,6 +16,54 @@ describe('blockfrost/utils', () => {
                 expect(transformUtxos(f.utxos)).toEqual(f.result);
             });
         });
+
+        // A user-selectable (untrusted) blockfrost backend can return a GET_ACCOUNT_UTXO
+        // response with one record whose `utxoData.amount` (TS-required array) is omitted.
+        // `utxoData.amount.forEach(...)` throws on such a record, which used to abort the whole
+        // transformUtxos call → all UTXOs fail to load (coin control / send-form breaks) — a
+        // poison-one-record DoS. Verify the bad UTXO is dropped and the valid ones survive.
+        it('drops a poison UTXO record with missing `utxoData.amount` instead of throwing', () => {
+            const validUtxo = {
+                address: 'addr1qywvux9d5u4cqyzrhp587sty33gt5pl5hpxmnzrw5nk5j87fdzm3eywgf7',
+                path: 'path',
+                utxoData: {
+                    tx_hash: '28172ea876c3d1e691284e5179fae2feb3e69d7d41e43f8023dc380115741026',
+                    amount: [{ unit: 'lovelace', quantity: '1000000' }],
+                    output_index: 1,
+                    tx_index: 1,
+                    block: '5c571f83fe6c784d3fbc223792627ccf0eea96773100f9aedecf8b1eda4544d7',
+                },
+                blockInfo: { confirmations: 100, height: 101 },
+            };
+            const poisonUtxo = {
+                address: 'addr1qywvux9d5u4cqyzrhp587sty33gt5pl5hpxmnzrw5nk5j87fdzm3eywgf7',
+                path: 'path2',
+                // `utxoData.amount` omitted on purpose (untrusted backend)
+                utxoData: {
+                    tx_hash: '28172ea876c3d1e691284e5179fae2feb3e69d7d41e43f8023dc380115741026',
+                    output_index: 2,
+                    tx_index: 1,
+                    block: '5c571f83fe6c784d3fbc223792627ccf0eea96773100f9aedecf8b1eda4544d7',
+                },
+                blockInfo: { confirmations: 0, height: undefined },
+            };
+
+            let result;
+            expect(() => {
+                // @ts-expect-error poisonUtxo intentionally omits the TS-required amount
+                result = transformUtxos([poisonUtxo, validUtxo]);
+            }).not.toThrow();
+
+            expect(result).toHaveLength(1);
+            expect(result?.[0]).toMatchObject({ path: 'path', amount: '1000000' });
+        });
+
+        it('returns an empty array when the whole utxos payload is not an array', () => {
+            // @ts-expect-error non-array payload from an untrusted backend
+            expect(transformUtxos(undefined)).toEqual([]);
+            // @ts-expect-error non-array payload from an untrusted backend
+            expect(transformUtxos({})).toEqual([]);
+        });
     });
 
     describe('parseAsset', () => {
