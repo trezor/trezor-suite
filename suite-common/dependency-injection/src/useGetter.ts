@@ -13,10 +13,21 @@ type OnlyKey<TSelected> = [UnionToIntersection<keyof TSelected>] extends [never]
     ? never
     : keyof TSelected;
 
-type GetterValue<TSelected> =
-    TSelected[OnlyKey<TSelected>] extends Getter<[], infer TReturn>
+type OnlyGetter<TSelected> = [OnlyKey<TSelected>] extends [never]
+    ? never
+    : TSelected[OnlyKey<TSelected>] extends Getter<any[], any>
+      ? TSelected[OnlyKey<TSelected>]
+      : never;
+
+type GetterParams<TSelected> =
+    OnlyGetter<TSelected> extends Getter<infer TParams, any>
+        ? TParams
+        : ['This dependency must hold exactly one getter.'];
+
+type GetterReturn<TSelected> =
+    OnlyGetter<TSelected> extends Getter<any[], infer TReturn>
         ? TReturn
-        : 'This dependency must hold exactly one getter, taking no params.';
+        : 'This dependency must hold exactly one getter.';
 
 /**
  * Reads the value of an injected getter-service reactively: the component re-renders whenever the
@@ -36,13 +47,14 @@ type GetterValue<TSelected> =
  */
 export function useGetter<const TSelector extends ServiceSelector<any>>(
     selectGetterDep: TSelector,
-): GetterValue<SelectorResult<TSelector>>;
+    ...params: GetterParams<SelectorResult<TSelector>>
+): GetterReturn<SelectorResult<TSelector>>;
 
-export function useGetter(selectGetterDep: ServiceSelector<any>) {
+export function useGetter(selectGetterDep: ServiceSelector<any>, ...params: unknown[]) {
     const services = useServicesContext();
 
     const getter = React.useMemo(() => {
-        const [onlyGetter, ...rest] = typedObjectValues<Record<string, Getter<[], unknown>>>(
+        const [onlyGetter, ...rest] = typedObjectValues<Record<string, Getter<unknown[], unknown>>>(
             selectGetterDep(services),
         );
 
@@ -55,5 +67,5 @@ export function useGetter(selectGetterDep: ServiceSelector<any>) {
         return onlyGetter;
     }, [services, selectGetterDep]);
 
-    return useSelector(() => getter());
+    return useSelector(() => getter(...params));
 }
