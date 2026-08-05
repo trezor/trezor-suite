@@ -79,12 +79,18 @@ describe('selectTransactionsWithMissingRates', () => {
 describe('selectEvmPrivatePendingHint', () => {
     const HINT_ACCOUNT_KEY = 'account-hint' as AccountKey;
 
+    const HINT_DESCRIPTOR = '0x37567E60ab231b7D7f26B5b34FDD719098E4Ee1b';
+
+    // The hint declares the account's *own* pending txs, which is decided by authorship (an input
+    // belonging to the account), not by the display type — see isSignedByAccount.
     const pendingSentTx = (nonce: number): WalletAccountTransaction =>
         ({
             txid: `pending-${nonce}`,
             type: 'sent',
             blockHeight: -1,
+            descriptor: HINT_DESCRIPTOR,
             ethereumSpecific: { nonce },
+            details: { vin: [{ addresses: [HINT_DESCRIPTOR], isAccountOwned: true }] },
         }) as unknown as WalletAccountTransaction;
 
     const getHintState = (

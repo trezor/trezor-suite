@@ -62,10 +62,14 @@ const Harness = ({ displayNonce, confirmedNonce }: Props) => {
     );
 };
 
-// Pending tx occupying nonce 6 (gas in Wei), the replacement target for the fee-bump button.
+// Pending tx occupying nonce 6 (gas in Wei), the replacement target for the fee-bump button. The
+// account's own txs are recognized by authorship (an input belonging to the account), not by `type`
+// — see isSignedByAccount — so `details.vin` has to say the account signed it.
 const pendingAtNonce6 = {
     type: 'sent',
     blockHeight: 0,
+    descriptor: ethAccount.descriptor,
+    details: { vin: [{ n: 0, isAddress: true, isAccountOwned: true }] },
     ethereumSpecific: { nonce: 6, maxFeePerGas: '50000000000', maxPriorityFeePerGas: '5000000000' },
 } as any;
 

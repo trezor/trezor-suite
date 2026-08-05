@@ -70,11 +70,28 @@ export const isPending = (tx: WalletAccountTransaction | AccountTransaction) => 
     return !!tx && (!tx.blockHeight || tx.blockHeight < 0);
 };
 
-// Also matches 'contract': a contract-deployment tx is signed and broadcast from the account's own
-// address and consumes an EVM nonce exactly like a plain send, so it must count toward the same
-// nonce pool (see getEvmNonceInfo) even though blockbook classifies it under a distinct type.
-export const isSentTransaction = (tx: WalletAccountTransaction | AccountTransaction) =>
-    ['sent', 'self', 'contract'].includes(tx.type);
+// isAccountOwned is set by enhanceVinVout at transform time; the descriptor comparison is the
+// fallback for records where it is absent, and is case-insensitive because EVM addresses reach us in
+// mixed EIP-55 casing (cf. isOutgoing in blockchain-link-utils).
+const isSignedByDescriptor = (details: AccountTransaction['details'], descriptor: string) =>
+    !!details?.vin?.some(
+        vin =>
+            vin.isAccountOwned ||
+            vin.addresses?.some(address => address.toLowerCase() === descriptor.toLowerCase()),
+    );
+
+/**
+ * Whether the account itself signed (and paid for) the transaction.
+ *
+ * Deliberately not `tx.type`, which is a display label: it reads 'sent' for any transaction moving
+ * value out of the account — including one signed by a stranger, since an ERC-20 Transfer log or a
+ * transferFrom(account, …) call may name any `from` — and 'failed' for the account's own reverted
+ * sends. EVM nonce arithmetic needs authorship instead: a foreign transaction carries the *signer's*
+ * nonce, which says nothing about this account, while an own failed or contract-deployment
+ * transaction consumes a nonce exactly like a plain send.
+ */
+export const isSignedByAccount = (tx: Pick<WalletAccountTransaction, 'details' | 'descriptor'>) =>
+    isSignedByDescriptor(tx.details, tx.descriptor);
 
 // Shared by the transaction list and its detail modal so both agree on which pending transactions
 // offer a cancel action. Cancelling replaces the tx with a 0-value self-send at the same
@@ -111,7 +128,7 @@ export type EvmNonceInfo = {
 };
 
 export const getOwnEvmNonceSets = (transactions: WalletAccountTransaction[]) => {
-    const ownNonceTxs = transactions.filter(isSentTransaction);
+    const ownNonceTxs = transactions.filter(isSignedByAccount);
 
     // A nonce that's confirmed locally is ground truth. If a stale "pending" record for the same
     // nonce also lingers (e.g. a speed-up/cancel replacement got confirmed but the original's
@@ -157,10 +174,12 @@ export const getEvmNonceInfo = (
 
     // accountNonce (e.g. account.misc.nonce) can lag behind the local tx list if it hasn't been
     // refreshed since a confirmed tx was locally picked up. A locally confirmed nonce proves a
-    // higher true nonce exists, so it's a floor accountNonce can't be below. When no confirmed
-    // nonce is locally known this is 0, so it never lowers accountNonce.
-    const maxLocalConfirmedNonce = confirmedNonces.size > 0 ? Math.max(...confirmedNonces) + 1 : 0;
-    const effectiveAccountNonce = Math.max(accountNonce, maxLocalConfirmedNonce);
+    // higher true nonce exists, so it's a floor accountNonce can't be below. The floor walks up
+    // contiguously rather than jumping to max(confirmedNonces): an isolated outlier (a corrupted
+    // record, or a nonce that never belonged to this account) is then never reached — see
+    // getEvmNonceInfoFromConfirmedNonce for the same reasoning.
+    let effectiveAccountNonce = accountNonce;
+    while (confirmedNonces.has(effectiveAccountNonce)) effectiveAccountNonce += 1;
 
     // effectiveAccountNonce may still overstate reality via blockbook's pending nonce
     // (eth_getTransactionCount("pending")), which already advances past consecutive mempool txs —
@@ -239,7 +258,7 @@ export const getEvmPrivatePendingHint = (
         ...new Set(
             transactions
                 .filter(isPending)
-                .filter(isSentTransaction)
+                .filter(isSignedByAccount)
                 .filter(tx => {
                     const nonce = tx.ethereumSpecific?.nonce;
 
@@ -939,6 +958,10 @@ const getEthereumRbfParams = (
     if (
         account.networkType !== 'ethereum' ||
         tx.type === 'recv' ||
+        // Replacing a transaction means re-signing at its nonce, which only makes sense for a
+        // transaction the account signed itself. A third-party transfer out of the account is
+        // labelled 'sent' too (see isSignedByAccount) and carries the other signer's nonce.
+        !isSignedByDescriptor(tx.details, account.descriptor) ||
         !tx.ethereumSpecific ||
         !isPending(tx) ||
         !tx.rbf
@@ -1186,7 +1209,7 @@ export const getTransactionWithLowestNonce = (
 ): WalletAccountTransaction | null => {
     const txs = Object.values(transactionGroups)
         .flat()
-        .filter(tx => tx.ethereumSpecific && isSentTransaction(tx));
+        .filter(tx => tx.ethereumSpecific && isSignedByAccount(tx));
 
     if (txs.length === 0) return null;
 

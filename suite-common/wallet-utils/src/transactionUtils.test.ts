@@ -1,5 +1,5 @@
 import { testMocks } from '@suite-common/test-utils';
-import { type WalletAccountTransaction } from '@suite-common/wallet-types';
+import { type WalletAccountTransaction, asAccountDescriptor } from '@suite-common/wallet-types';
 
 import * as fixtures from './__fixtures__/transactionUtils';
 import {
@@ -21,12 +21,57 @@ import {
     groupTokensTransactionsByContractAddress,
     groupTransactionsByDate,
     isPending,
+    isSignedByAccount,
     isTransactionCancellable,
     parseTransactionDateKey,
     parseTransactionMonthKey,
 } from './transactionUtils';
 
 const { getWalletTransaction } = testMocks;
+
+const ACCOUNT_DESCRIPTOR = '0x37567E60ab231b7D7f26B5b34FDD719098E4Ee1b';
+// A stranger who signed (and paid for) a transaction that blockbook indexes against the account
+// because one of its token transfers names the account as the sender.
+const FOREIGN_SIGNER = '0x0F6666bC699aec39b846E898473e9CAec5a6b821';
+
+type EvmTransactionParams = {
+    nonce: number;
+    blockHeight?: number;
+    type?: WalletAccountTransaction['type'];
+    txid?: string;
+};
+
+// Nonce derivation keys off authorship, so an EVM fixture has to say who signed it. `isAccountOwned`
+// is set exactly as enhanceVinVout would set it at transform time.
+const getEvmTransaction = (
+    signer: string,
+    { nonce, blockHeight = 100, type = 'sent', txid }: EvmTransactionParams,
+) =>
+    getWalletTransaction({
+        descriptor: asAccountDescriptor(ACCOUNT_DESCRIPTOR),
+        symbol: 'eth',
+        type,
+        blockHeight,
+        ...(txid ? { txid } : {}),
+        ethereumSpecific: { nonce } as any,
+        details: {
+            ...getWalletTransaction().details,
+            vin: [
+                {
+                    n: 0,
+                    isAddress: true,
+                    addresses: [signer],
+                    isAccountOwned: signer === ACCOUNT_DESCRIPTOR || undefined,
+                },
+            ],
+        },
+    });
+
+const getOwnEvmTransaction = (params: EvmTransactionParams) =>
+    getEvmTransaction(ACCOUNT_DESCRIPTOR, params);
+
+const getForeignEvmTransaction = (params: EvmTransactionParams) =>
+    getEvmTransaction(FOREIGN_SIGNER, params);
 
 describe('transaction utils', () => {
     describe('parseTransactionDateKey', () => {
@@ -173,24 +218,18 @@ describe('transaction utils', () => {
     describe('getTransactionWithLowestNonce', () => {
         it('ethereum network', () => {
             const transactionGroups = {
-                '2019-10-3': [getWalletTransaction({ ethereumSpecific: { nonce: 1 } as any })],
-                '2019-10-4': [
-                    getWalletTransaction({
-                        ethereumSpecific: { nonce: 0 },
-                    } as any),
-                ],
+                '2019-10-3': [getOwnEvmTransaction({ nonce: 1 })],
+                '2019-10-4': [getOwnEvmTransaction({ nonce: 0 })],
                 '2019-8-14': [
-                    getWalletTransaction({ ethereumSpecific: { nonce: 2 } as any }),
-                    getWalletTransaction({ ethereumSpecific: { nonce: 3 } as any }),
+                    getOwnEvmTransaction({ nonce: 2 }),
+                    getOwnEvmTransaction({ nonce: 3 }),
                 ],
             };
 
             const transactionWithLowestNonce: WalletAccountTransaction | null =
                 getTransactionWithLowestNonce(transactionGroups);
 
-            expect(transactionWithLowestNonce).toStrictEqual(
-                getWalletTransaction({ ethereumSpecific: { nonce: 0 } as any }),
-            );
+            expect(transactionWithLowestNonce).toStrictEqual(getOwnEvmTransaction({ nonce: 0 }));
         });
 
         it('non ethereum network', () => {
@@ -206,29 +245,18 @@ describe('transaction utils', () => {
             expect(transactionWithLowestNonce).toStrictEqual(null);
         });
 
-        it('returns sent tx with the lowest nonce across multiple dates, ignoring recv txs', () => {
-            const recvTx = getWalletTransaction({
-                type: 'recv',
-                ethereumSpecific: { nonce: 0 } as any,
-            });
+        it('returns the own tx with the lowest nonce across multiple dates, ignoring txs the account did not sign', () => {
+            const recvTx = getForeignEvmTransaction({ nonce: 0, type: 'recv' });
+            // A stranger's transfer *out of* the account: labelled 'sent', but its nonce is the
+            // stranger's, so it must not steal the bump-fee slot from our own lowest-nonce tx.
+            const foreignSentTx = getForeignEvmTransaction({ nonce: 0 });
 
-            const sentTxLow = getWalletTransaction({
-                type: 'sent',
-                ethereumSpecific: { nonce: 1 } as any,
-            });
-
-            const sentTxHigh = getWalletTransaction({
-                type: 'sent',
-                ethereumSpecific: { nonce: 5 } as any,
-            });
-
-            const sentTxMid = getWalletTransaction({
-                type: 'sent',
-                ethereumSpecific: { nonce: 3 } as any,
-            });
+            const sentTxLow = getOwnEvmTransaction({ nonce: 1 });
+            const sentTxHigh = getOwnEvmTransaction({ nonce: 5 });
+            const sentTxMid = getOwnEvmTransaction({ nonce: 3 });
 
             const transactionGroups = {
-                '2019-10-2': [recvTx], // nonce = 0 (should be ignored)
+                '2019-10-2': [recvTx, foreignSentTx], // nonce = 0 (should be ignored)
                 '2019-10-3': [sentTxHigh], // nonce = 5
                 '2019-10-4': [sentTxMid, sentTxLow], // nonce = 3 and 1 (should return 1)
             };
@@ -238,18 +266,12 @@ describe('transaction utils', () => {
             expect(result).toBe(sentTxLow);
         });
 
-        it('returns null when all transactions are of type recv', () => {
-            const recvTx1 = getWalletTransaction({
-                type: 'recv',
-                ethereumSpecific: { nonce: 1 } as any,
-            });
-            const recvTx2 = getWalletTransaction({
-                type: 'recv',
-                ethereumSpecific: { nonce: 2 } as any,
-            });
-
+        it('returns null when the account signed none of the transactions', () => {
             const transactionGroups = {
-                '2019-10-04': [recvTx1, recvTx2],
+                '2019-10-04': [
+                    getForeignEvmTransaction({ nonce: 1, type: 'recv' }),
+                    getForeignEvmTransaction({ nonce: 2 }),
+                ],
             };
 
             const result = getTransactionWithLowestNonce(transactionGroups);
@@ -449,13 +471,56 @@ describe('transaction utils', () => {
         });
     });
 
-    describe('getEvmNonceInfo', () => {
-        const pendingSentTx = (nonce: number) =>
+    describe('isSignedByAccount', () => {
+        const withVin = (vin: WalletAccountTransaction['details']['vin']) =>
             getWalletTransaction({
-                blockHeight: -1,
-                type: 'sent',
-                ethereumSpecific: { nonce } as any,
+                descriptor: asAccountDescriptor(ACCOUNT_DESCRIPTOR),
+                details: { ...getWalletTransaction().details, vin },
             });
+
+        it('an input flagged as owned by the account means the account signed it', () => {
+            expect(
+                isSignedByAccount(withVin([{ n: 0, isAddress: true, isAccountOwned: true }])),
+            ).toBe(true);
+        });
+
+        it('matches the descriptor regardless of EIP-55 casing', () => {
+            expect(
+                isSignedByAccount(
+                    withVin([
+                        {
+                            n: 0,
+                            isAddress: true,
+                            addresses: [ACCOUNT_DESCRIPTOR.toLowerCase()],
+                        },
+                    ]),
+                ),
+            ).toBe(true);
+        });
+
+        it('matches when only one of several inputs belongs to the account', () => {
+            expect(
+                isSignedByAccount(
+                    withVin([
+                        { n: 0, isAddress: true, addresses: [FOREIGN_SIGNER] },
+                        { n: 1, isAddress: true, addresses: [ACCOUNT_DESCRIPTOR] },
+                    ]),
+                ),
+            ).toBe(true);
+        });
+
+        it('a transaction signed by somebody else does not belong to the account', () => {
+            const foreignVin = [{ n: 0, isAddress: true, addresses: [FOREIGN_SIGNER] }];
+            expect(isSignedByAccount(withVin(foreignVin))).toBe(false);
+        });
+
+        it('no inputs means no proof of authorship', () => {
+            expect(isSignedByAccount(withVin([]))).toBe(false);
+        });
+    });
+
+    describe('getEvmNonceInfo', () => {
+        const pendingSentTx = (nonce: number) => getOwnEvmTransaction({ nonce, blockHeight: -1 });
 
         it('no pending txs: nextNonce = accountNonce', () => {
             expect(getEvmNonceInfo(41, [])).toEqual({
@@ -523,11 +588,7 @@ describe('transaction utils', () => {
         it('stale pending record superseded by a locally-confirmed tx at the same nonce is ignored', () => {
             // nonce 41's replacement (e.g. a speed-up) confirmed locally, but the original pending
             // record for 41 was never swept — it must not count toward the pending nonce pool.
-            const confirmedTx41 = getWalletTransaction({
-                blockHeight: 100,
-                type: 'sent',
-                ethereumSpecific: { nonce: 41 } as any,
-            });
+            const confirmedTx41 = getOwnEvmTransaction({ nonce: 41 });
             const transactions = [confirmedTx41, pendingSentTx(41), pendingSentTx(42)];
             expect(getEvmNonceInfo(41, transactions)).toEqual({
                 confirmedNonce: 42,
@@ -536,27 +597,49 @@ describe('transaction utils', () => {
                 confirmedNonces: [41],
             });
         });
+
+        it('locally-confirmed nonces raise the floor only contiguously', () => {
+            // 41 and 42 are ours and confirmed, so the true nonce is at least 43. An own tx at 90 is
+            // not contiguous with them (a corrupted record, or the list is missing 43-89), so the
+            // floor must stop at 43 instead of jumping to the maximum.
+            const transactions = [
+                getOwnEvmTransaction({ nonce: 41 }),
+                getOwnEvmTransaction({ nonce: 42 }),
+                getOwnEvmTransaction({ nonce: 90 }),
+            ];
+            expect(getEvmNonceInfo(41, transactions)).toMatchObject({
+                confirmedNonce: 43,
+                nextNonce: 43,
+            });
+        });
+
+        it("a foreign signer's nonce cannot inflate the fallback nonce", () => {
+            // The 2026-08-02 incident on the fallback path: a fake-token airdrop signed by a
+            // stranger at their nonce 288130 emits a transfer *out of* the account, so it is
+            // labelled 'sent' and indexed against the account. Keying off the label offered
+            // nonce 288131, which can never be mined.
+            const transactions = [
+                getForeignEvmTransaction({ nonce: 288130 }),
+                getForeignEvmTransaction({ nonce: 45 }),
+            ];
+            expect(getEvmNonceInfo(45, transactions)).toEqual({
+                confirmedNonce: 45,
+                nextNonce: 45,
+                pendingNonces: [],
+                confirmedNonces: [],
+            });
+        });
     });
 
     describe('getEvmPrivatePendingHint', () => {
-        const pendingTx = (
-            nonce: number,
-            {
-                type = 'sent',
-                txid = `0x${nonce}`,
-            }: { type?: WalletAccountTransaction['type']; txid?: string } = {},
-        ) =>
-            getWalletTransaction({
-                txid,
-                blockHeight: -1,
-                type,
-                ethereumSpecific: { nonce } as any,
-            });
+        const pendingTx = (nonce: number, { txid = `0x${nonce}` }: { txid?: string } = {}) =>
+            getOwnEvmTransaction({ nonce, blockHeight: -1, txid });
 
         it('returns undefined when there is no pending own-nonce tx', () => {
             expect(getEvmPrivatePendingHint([])).toBeUndefined();
             // an incoming pending tx does not consume our nonce and must not be declared
-            expect(getEvmPrivatePendingHint([pendingTx(41, { type: 'recv' })])).toBeUndefined();
+            const incoming = getForeignEvmTransaction({ nonce: 41, blockHeight: -1, type: 'recv' });
+            expect(getEvmPrivatePendingHint([incoming])).toBeUndefined();
         });
 
         it('declares a local pending nonce and its txid', () => {
@@ -566,13 +649,17 @@ describe('transaction utils', () => {
             });
         });
 
-        it('declares all pending sent/self/contract nonces and their txids', () => {
+        it('declares every pending nonce the account signed, whatever the tx is labelled', () => {
             const transactions = [
-                pendingTx(43, { type: 'contract' }),
-                pendingTx(41, { type: 'sent' }),
-                pendingTx(42, { type: 'self' }),
-                pendingTx(40, { type: 'recv' }), // ignored — not an own-nonce-consuming tx
-                pendingTx(44, { type: 'sent' }),
+                getOwnEvmTransaction({
+                    nonce: 43,
+                    blockHeight: -1,
+                    txid: '0x43',
+                    type: 'contract',
+                }),
+                pendingTx(41),
+                getOwnEvmTransaction({ nonce: 42, blockHeight: -1, txid: '0x42', type: 'self' }),
+                pendingTx(44),
             ];
             expect(getEvmPrivatePendingHint(transactions)).toEqual({
                 nonces: [41, 42, 43, 44],
@@ -580,13 +667,19 @@ describe('transaction utils', () => {
             });
         });
 
+        it('never declares a pending tx the account did not sign', () => {
+            // A stranger's mempool transferFrom(account, …) is labelled 'sent' and indexed against
+            // the account. Declaring its nonce would have blockbook report a pending nonce the
+            // account never used, and its txid is not ours to declare either.
+            const transactions = [
+                getForeignEvmTransaction({ nonce: 40, blockHeight: -1, txid: '0x40' }),
+                getForeignEvmTransaction({ nonce: 45, blockHeight: -1, txid: '0x45' }),
+            ];
+            expect(getEvmPrivatePendingHint(transactions)).toBeUndefined();
+        });
+
         it('excludes the nonce and txid of a tx that is already locally confirmed', () => {
-            const confirmedTx41 = getWalletTransaction({
-                txid: '0x41-confirmed',
-                blockHeight: 100,
-                type: 'sent',
-                ethereumSpecific: { nonce: 41 } as any,
-            });
+            const confirmedTx41 = getOwnEvmTransaction({ nonce: 41, txid: '0x41-confirmed' });
             const transactions = [confirmedTx41, pendingTx(41), pendingTx(42)];
             expect(getEvmPrivatePendingHint(transactions)).toEqual({
                 nonces: [42],
@@ -608,12 +701,7 @@ describe('transaction utils', () => {
     });
 
     describe('getEvmNonceInfoFromConfirmedNonce', () => {
-        const pendingSentTx = (nonce: number) =>
-            getWalletTransaction({
-                blockHeight: -1,
-                type: 'sent',
-                ethereumSpecific: { nonce } as any,
-            });
+        const pendingSentTx = (nonce: number) => getOwnEvmTransaction({ nonce, blockHeight: -1 });
 
         it('no pending txs: nextNonce = confirmedNonce', () => {
             expect(getEvmNonceInfoFromConfirmedNonce(1418, [])).toEqual({
@@ -649,11 +737,7 @@ describe('transaction utils', () => {
             // highest locally-confirmed nonce) must NOT apply here — a single malformed/corrupted
             // local tx record with a huge nonce must not push a trusted, backend-fetched
             // confirmedNonce upward.
-            const corruptedConfirmedTx = getWalletTransaction({
-                blockHeight: 100,
-                type: 'sent',
-                ethereumSpecific: { nonce: 335753 } as any,
-            });
+            const corruptedConfirmedTx = getOwnEvmTransaction({ nonce: 335753 });
             expect(getEvmNonceInfoFromConfirmedNonce(1418, [corruptedConfirmedTx])).toEqual({
                 confirmedNonce: 1418,
                 nextNonce: 1418,
@@ -663,11 +747,7 @@ describe('transaction utils', () => {
         });
 
         it('stale pending record superseded by a locally-confirmed tx at the same nonce is ignored', () => {
-            const confirmedTx1418 = getWalletTransaction({
-                blockHeight: 100,
-                type: 'sent',
-                ethereumSpecific: { nonce: 1418 } as any,
-            });
+            const confirmedTx1418 = getOwnEvmTransaction({ nonce: 1418 });
             const transactions = [confirmedTx1418, pendingSentTx(1418), pendingSentTx(1419)];
             expect(getEvmNonceInfoFromConfirmedNonce(1419, transactions)).toEqual({
                 confirmedNonce: 1419,
@@ -683,17 +763,61 @@ describe('transaction utils', () => {
             // backend confirmedNonce still lags at 1418. The just-confirmed slot must still advance
             // nextNonce past the contiguous pending 1419/1420, otherwise those higher pending txs
             // would momentarily read as a nonce gap and flash a false warning in the tx list.
-            const confirmedTx1418 = getWalletTransaction({
-                blockHeight: 100,
-                type: 'sent',
-                ethereumSpecific: { nonce: 1418 } as any,
-            });
+            const confirmedTx1418 = getOwnEvmTransaction({ nonce: 1418 });
             const transactions = [confirmedTx1418, pendingSentTx(1419), pendingSentTx(1420)];
             expect(getEvmNonceInfoFromConfirmedNonce(1418, transactions)).toEqual({
                 confirmedNonce: 1418,
                 nextNonce: 1421,
                 pendingNonces: [1419, 1420],
                 confirmedNonces: [1418],
+            });
+        });
+
+        it('a confirmed tx signed by somebody else does not occupy a nonce slot', () => {
+            // The 2026-08-02 incident: a fake-USDC airdrop signed by a stranger at *their* nonce 45
+            // emits a transfer out of the account, so blockbook indexes it against the account and
+            // Suite labels it 'sent'. Counting it made Suite offer 46 while 45 was free, stranding
+            // the send in a permanent nonce gap.
+            const foreignTxAtNonce45 = getForeignEvmTransaction({ nonce: 45 });
+            expect(getEvmNonceInfoFromConfirmedNonce(45, [foreignTxAtNonce45])).toEqual({
+                confirmedNonce: 45,
+                nextNonce: 45,
+                pendingNonces: [],
+                confirmedNonces: [],
+            });
+        });
+
+        it('a pending tx signed by somebody else does not occupy a nonce slot', () => {
+            // Same vector from the mempool: a transferFrom(account, …) call whose `from` argument
+            // blockbook takes at face value, indexed against the account with the caller's nonce.
+            const foreignPendingTx = getForeignEvmTransaction({ nonce: 45, blockHeight: -1 });
+            expect(getEvmNonceInfoFromConfirmedNonce(45, [foreignPendingTx])).toEqual({
+                confirmedNonce: 45,
+                nextNonce: 45,
+                pendingNonces: [],
+                confirmedNonces: [],
+            });
+        });
+
+        it("the account's own failed tx occupies its nonce", () => {
+            // isTxFailed rewrites type to 'failed', which the old type-based filter dropped — but a
+            // reverted tx consumes its nonce like any other.
+            const ownFailedTx = getOwnEvmTransaction({ nonce: 45, type: 'failed' });
+            expect(getEvmNonceInfoFromConfirmedNonce(45, [ownFailedTx])).toEqual({
+                confirmedNonce: 45,
+                nextNonce: 46,
+                pendingNonces: [],
+                confirmedNonces: [45],
+            });
+        });
+
+        it("the account's own contract deployment occupies its nonce", () => {
+            const ownContractTx = getOwnEvmTransaction({ nonce: 45, type: 'contract' });
+            expect(getEvmNonceInfoFromConfirmedNonce(45, [ownContractTx])).toEqual({
+                confirmedNonce: 45,
+                nextNonce: 46,
+                pendingNonces: [],
+                confirmedNonces: [45],
             });
         });
     });
