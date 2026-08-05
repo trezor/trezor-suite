@@ -111,11 +111,14 @@ export const setCustomBackendThunk = createThunk<
     unknown,
     NetworkSymbol,
     { state: SetCustomBackendThunkState }
->(`${BLOCKCHAIN_MODULE_PREFIX}/setCustomBackendThunk`, (symbol, { getState }) => {
+>(`${BLOCKCHAIN_MODULE_PREFIX}/setCustomBackendThunk`, async (symbol, { dispatch, getState }) => {
     const blockchain = selectBlockchainState(getState());
     const backends = [getBackendFromSettings(symbol, blockchain[symbol].backends)];
+    const result = await setBackendsToConnect(backends);
 
-    return setBackendsToConnect(backends);
+    await dispatch(reconnectBlockchainThunk({ symbol }));
+
+    return result;
 });
 
 export type InitBlockchainThunkState = AccountsRootState &
