@@ -35,6 +35,8 @@ import { useYieldFiatInput } from '../hooks/useYieldFiatInput';
 type WrapNativeTokenProps = {
     account: Account;
     token: YieldFlowDisplayToken & { contractAddress: string };
+    /** Reported upward because the page header lives outside this subtree, in the layout. */
+    onFlowCompleteChange?: (isComplete: boolean) => void;
 };
 
 type BroadcastWrap = {
@@ -42,7 +44,7 @@ type BroadcastWrap = {
     amount: string;
 };
 
-export const WrapNativeToken = ({ account, token }: WrapNativeTokenProps) => {
+export const WrapNativeToken = ({ account, token, onFlowCompleteChange }: WrapNativeTokenProps) => {
     const dispatch = useDispatch();
     const ensureDeviceReady = useWrappedNativeDeviceGuard();
     const {
@@ -60,6 +62,11 @@ export const WrapNativeToken = ({ account, token }: WrapNativeTokenProps) => {
     });
 
     const pendingTxStatus = useWrappedNativePendingTx(account, broadcast?.txid ?? null, 'wrap');
+    const isFlowComplete = !!broadcast && pendingTxStatus === 'confirmed';
+
+    useEffect(() => {
+        onFlowCompleteChange?.(isFlowComplete);
+    }, [isFlowComplete, onFlowCompleteChange]);
 
     const { reportSubmit, reportMaxClick } = useWrappedNativeFlowAnalytics({
         flowType: 'wrap',
@@ -173,7 +180,7 @@ export const WrapNativeToken = ({ account, token }: WrapNativeTokenProps) => {
     };
 
     const renderContent = () => {
-        if (broadcast && pendingTxStatus === 'confirmed') {
+        if (broadcast && isFlowComplete) {
             return (
                 <WrappedNativeFlowComplete
                     account={account}

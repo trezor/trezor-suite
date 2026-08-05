@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 import { goto } from '@suite/router';
 import { WRAPPED_NATIVE } from '@suite-common/wallet-config';
@@ -14,6 +14,8 @@ export const EarnWrap = () => {
     const dispatch = useDispatch();
     const { account, routeParams } = useEarnRouteAccount();
     const wrappedNative = account ? WRAPPED_NATIVE[account.symbol] : undefined;
+    // Held here rather than in WrapNativeToken because useLayout renders the header outside it.
+    const [isFlowComplete, setIsFlowComplete] = useState(false);
 
     useEffect(() => {
         if (!routeParams) {
@@ -28,6 +30,7 @@ export const EarnWrap = () => {
             flow="wrap"
             account={account}
             contractAddress={wrappedNative?.address}
+            isFlowComplete={isFlowComplete}
         />,
     );
 
@@ -48,5 +51,7 @@ export const EarnWrap = () => {
         contractAddress: wrappedNative.address,
     };
 
-    return <WrapNativeToken account={account} token={token} />;
+    return (
+        <WrapNativeToken account={account} token={token} onFlowCompleteChange={setIsFlowComplete} />
+    );
 };
