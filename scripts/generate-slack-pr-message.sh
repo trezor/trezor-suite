@@ -141,8 +141,10 @@ check_branch
 # Determine platform icon
 ICON=$(get_platform_icon "$1")
 
-# Read PR info based on current branch
-if ! PR_JSON=$(gh pr view --json title,changedFiles,additions,deletions,url 2>&1); then
+# Pass the branch name explicitly. Without it, gh searches for a PR opened from
+# the branch's upstream instead, which is develop for branches created from
+# origin/develop, so no PR is found.
+if ! PR_JSON=$(gh pr view "$CURRENT_BRANCH" --json title,changedFiles,additions,deletions,url 2>&1); then
     echo -e "\033[0;31mError: Failed to fetch PR information.
 $PR_JSON
 Make sure you have a PR open for the current branch.\033[0m
