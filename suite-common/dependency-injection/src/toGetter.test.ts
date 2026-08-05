@@ -43,4 +43,23 @@ describe(toGetter.name, () => {
 
         expect(getRelayLabel('relay', 2)).toBe('relay:wss://relay.example.com:2');
     });
+
+    it('exposes the original selector, usable with the standard Redux selector API', () => {
+        const selectRelayUrl = (currentState: TestState) => currentState.relayUrl;
+        const getRelayUrl = toGetter(getState, selectRelayUrl);
+
+        expect(getRelayUrl.selector).toBe(selectRelayUrl);
+        expect(getRelayUrl.selector(state)).toBe('wss://relay.example.com');
+    });
+
+    it('exposes the selector with its extra params', () => {
+        const isSelectedWallet = toGetter(
+            getState,
+            (currentState: TestState, walletDescriptor: string) =>
+                currentState.selectedWalletDescriptor === walletDescriptor,
+        );
+
+        expect(isSelectedWallet.selector(state, 'wallet-1')).toBe(true);
+        expect(isSelectedWallet.selector(state, 'wallet-2')).toBe(false);
+    });
 });
