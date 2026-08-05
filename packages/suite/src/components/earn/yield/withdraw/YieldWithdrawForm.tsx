@@ -261,7 +261,6 @@ export const YieldWithdrawForm = () => {
                                               }
                                             : undefined
                                     }
-                                    fiatToggle={fiatToggle}
                                     onMaxClick={handleMaxClick}
                                     onSubmit={handleOnWithdraw}
                                     onPendingTxClick={openPendingTransaction}

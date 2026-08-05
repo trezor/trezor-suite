@@ -130,6 +130,15 @@ export const YieldAmountCard = ({
         </TextButton>
     ) : undefined;
 
+    const unitSwitch = unitToggle ? (
+        <TextButton type="button" size="small" onClick={unitToggle.onClick} isUnderlined>
+            <Translation
+                id="TR_EARN_YIELD_ENTER_AMOUNT_IN_TOKEN"
+                values={{ tokenSymbol: unitToggle.otherTokenSymbol }}
+            />
+        </TextButton>
+    ) : undefined;
+
     const activeError = isFiatMode ? errors.fiatInput : errors.amountInput;
 
     return (
@@ -139,24 +148,8 @@ export const YieldAmountCard = ({
                     <Text typographyStyle="body-md">
                         <Translation id={heading?.amountLabelTranslationId ?? 'AMOUNT'} />
                     </Text>
-                    {fiatSwitch}
+                    {unitSwitch ?? fiatSwitch}
                 </Row>
-                {/* Only the withdraw flow passes a unit toggle; it gets its own row below the label. */}
-                {unitToggle && (
-                    <Row justifyContent="flex-end" width="100%">
-                        <TextButton
-                            type="button"
-                            size="small"
-                            onClick={unitToggle.onClick}
-                            isUnderlined
-                        >
-                            <Translation
-                                id="TR_EARN_YIELD_ENTER_AMOUNT_IN_TOKEN"
-                                values={{ tokenSymbol: unitToggle.otherTokenSymbol }}
-                            />
-                        </TextButton>
-                    </Row>
-                )}
                 {isFiatMode ? (
                     <NumberInput
                         name="fiatInput"
