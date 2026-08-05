@@ -10,7 +10,6 @@ import {
 } from '../currency';
 import { type TradingFiatCurrencyOption } from '../types';
 
-// Invity API works with uppercase currency codes, internally we keep them lowercase.
 const normalizeCurrencyCode = (currencyCode: string) => currencyCode.toLowerCase();
 
 export const getCurrencyLabel = (currencyCode: FiatCurrencyCode | string): string => {
