@@ -67,6 +67,16 @@ describe('Recovery Thunks', () => {
         expect(store.getState().recovery.status).toMatch('finished');
     });
 
+    it('recoveryRerunThunk resets the status and rejects when the device already left recovery', async () => {
+        // fresh features report no recovery in progress
+        testMocks.setTrezorConnectFixtures({ success: true, payload: {} });
+        const store = initStore({ status: 'finished' });
+        const result = await store.dispatch(recoveryRerunThunk());
+        expect(recoveryRerunThunk.rejected.match(result)).toBe(true);
+        // the transient 'in-progress' set by the thunk must be cleared, not left stuck
+        expect(store.getState().recovery.status).toEqual('initial');
+    });
+
     it('recoveryRerunThunk fulfills with initialized and does not start the seed-input flow itself', async () => {
         testMocks.setTrezorConnectFixtures({
             success: true,

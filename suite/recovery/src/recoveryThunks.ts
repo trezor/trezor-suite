@@ -146,6 +146,10 @@ export const recoveryRerunThunk = createThunk<
     const features = response.payload;
 
     if (!isRecoveryInProgress(features)) {
+        // Device already left recovery mode; clear the transient 'in-progress' status set above so
+        // the recovery-detection guard and the recovery-mode banner CTA don't get stuck.
+        dispatch(recoveryActions.resetReducer());
+
         return rejectWithValue('recovery not in progress');
     }
 
