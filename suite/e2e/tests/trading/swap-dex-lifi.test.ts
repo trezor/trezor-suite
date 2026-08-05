@@ -1,36 +1,22 @@
-import type { CryptoId } from 'invity-api';
-
 import { messages } from '@suite/intl';
-import { localizeNumber } from '@suite-common/wallet-utils';
+import { getCryptoId } from '@suite-common/trading';
+import { fromGwei, localizeNumber } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
-import {
-    getCompanyNameFromList,
-    swapQuotesEthDex,
-    swapTradeEthDex,
-    tradeEndpoint,
-} from '../../fixtures/trading';
+import { getCompanyNameFromList } from '../../fixtures/trading';
+import { swapStatusFlow } from '../../fixtures/trading/statusFlow';
 import { expect, test } from '../../support/fixtures';
 
-// Expected values derived from the captured LI.FI trade fixture.
-const sendAmount = swapTradeEthDex.sendStringAmount;
-const receiveAmount = localizeNumber(swapTradeEthDex.receiveStringAmount);
-const dexProvider = getCompanyNameFromList(swapTradeEthDex.exchange, 'swapList');
+const sendAmount = '0.03';
 const formattedSendAmount = `${localizeNumber(sendAmount)} ETH`;
-const formattedReceiveAmount = `${receiveAmount} USDC`;
-const usdcCryptoId = swapTradeEthDex.receive as CryptoId;
-const slippagePercent = `${swapTradeEthDex.swapSlippage}%`;
-const guaranteedShare = new BigNumber(100).minus(swapTradeEthDex.swapSlippage).div(100);
-const minimumReceived = new BigNumber(swapTradeEthDex.receiveStringAmount).times(guaranteedShare);
-const formattedMinimumReceived = `${localizeNumber(minimumReceived.toFixed(4))} USDC`;
-// Mocked feeLimit 21000 (eth-endpoints estimateFee) × the 1.25 DEX buffer (ETHEREUM_ADJUST_GAS_LIMIT).
-const dexGasLimit = '26250';
-// dexGasLimit × the mocked gas price.
-const dexMaximumFee = '0.00003161748342375 ETH';
-const gasLimitWithLabel = `${messages.TR_GAS_LIMIT.defaultMessage}: ${dexGasLimit}`;
 const accountLabel = 'Ethereum #1';
-// Provider name rendered by Suite in the confirm-on-device prompt.
-const suiteProviderName = 'LI.FI';
+const usdcCryptoId = getCryptoId('eth', '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48');
+const dexProvider = getCompanyNameFromList('lifi', 'swapList');
+
+const gasLimitPattern = new RegExp(`^${messages.TR_GAS_LIMIT.defaultMessage}: (\\d+)$`);
+
+// A DEX swap broadcasts the swap itself, so there is no CONFIRMING deposit phase.
+const dexStatusFlow = swapStatusFlow.filter(phase => phase.status !== 'CONFIRMING');
 
 // Firmware strings on the DEX review pages.
 const deviceReview = {
@@ -49,70 +35,35 @@ const deviceReview = {
     signButton: 'Hold to sign',
 };
 
-test.describe('Trading - DEX swap (LI.FI)', { tag: ['@webOnly', '@T3T1', '@T3W1'] }, () => {
-    test.use({
-        deviceSetup: {
-            mnemonic: 'access juice claim special truth ugly swarm rabbit hair man error bar',
-        },
-    });
+test.describe('Trading - DEX swap (LI.FI)', { tag: ['@T3T1', '@T3W1'] }, () => {
+    test.use({ deviceSetup: { mnemonic: 'mnemonic_academic', passphrase_protection: true } });
 
     test.beforeEach(
-        async ({
-            page,
-            onboardingPage,
-            dashboardPage,
-            settingsPage,
-            walletPage,
-            tradingMock,
-            blockbookMock,
-        }) => {
-            await test.step('Mock the ETH backend', async () => {
-                await onboardingPage.completeOnboarding();
-                await settingsPage.navigateTo('coins');
-                await blockbookMock.start('eth');
-                blockbookMock.updateAccountState({
-                    balance: '1000000000000000000', // 1 ETH
-                    nonce: '0',
-                    txs: 0,
-                    nonTokenTxs: 0,
-                    internalTxs: 0,
-                    transactions: [],
-                });
-                //TODO: Switch to changeNetworks once mocks are refactored
-                await settingsPage.coinsTab.openNetworkAdvanceSettings('eth');
-                await settingsPage.coinsTab.changeBackend('blockbook', blockbookMock.url);
-            });
+        async ({ onboardingPage, dashboardPage, settingsPage, walletPage, tradingMockNew }) => {
+            tradingMockNew.setTradeFlow('swap');
+            const ethBackend = await tradingMockNew.startBackend('eth');
 
-            await test.step('Mock the trading API', async () => {
-                await tradingMock.routeTradeGeneralEndpoints();
-                await page.route(tradeEndpoint.swapQuotes, route => {
-                    route.fulfill({ json: swapQuotesEthDex });
-                });
-                await tradingMock.routeSwapTrade(swapTradeEthDex);
-                await page.route(tradeEndpoint.swapWatch, route => {
-                    route.fulfill({ json: { status: 'CONFIRM' } });
-                });
+            await onboardingPage.completeOnboarding();
+            await settingsPage.changeNetworks({
+                enableNetworks: [{ symbol: 'eth', backend: ethBackend }],
             });
-
-            await dashboardPage.navigateTo();
-            await page.discoveryShouldFinish();
+            await dashboardPage.deviceSwitchingOpenButton.click();
+            await dashboardPage.addHiddenWallet(process.env.PASSPHRASE!);
             await walletPage.openSwapTrading({ symbol: 'eth' });
         },
     );
 
     test('User can swap ETH to USDC via LI.FI DEX', async ({
         page,
-        tradingPage,
-        tradingMock,
-        devicePrompt,
         device,
+        tradingPage,
+        devicePrompt,
+        tradingMockNew,
     }) => {
         await test.step('Fill in the Swap form (ETH -> USDC)', async () => {
             await tradingPage.fillSwapForm({
                 amount: sendAmount,
-                sellAsset: {
-                    networkSymbol: 'eth',
-                },
+                sellAsset: { networkSymbol: 'eth' },
                 buyAsset: {
                     searchFilter: 'USDC',
                     networkFilter: 'eth',
@@ -121,14 +72,43 @@ test.describe('Trading - DEX swap (LI.FI)', { tag: ['@webOnly', '@T3T1', '@T3W1'
             });
         });
 
+        let maxFeePerGas: string;
+        let feeRate: string;
+        let priorityFeeRate: string;
+
         await test.step('Select the LI.FI DEX offer', async () => {
             await tradingPage.quotes.chooseDifferentOfferIfAvailable(dexProvider);
             await expect(tradingPage.quotes.selectedProviderName).toHaveText(dexProvider);
-            await expect(tradingPage.quotes.bestOfferAmount).toHaveText(formattedReceiveAmount);
+            await tradingPage.quotes.waitForSync();
+
+            let maxFeePerGasRounded: string;
+            let maxPriorityFeePerGasRounded: string;
+            ({ maxFeePerGas, maxFeePerGasRounded, maxPriorityFeePerGasRounded } =
+                await tradingPage.fees.getStandardFeeWorkaround());
+            feeRate = `${maxFeePerGasRounded} Gwei`;
+            priorityFeeRate = `${maxPriorityFeePerGasRounded} Gwei`;
+
+            const liveTradePromise = tradingMockNew.waitForLiveTrade();
             await tradingPage.swapBestOfferButton.click();
+            await liveTradePromise;
         });
 
+        // The DEX re-quotes on trade creation, so amounts come from the trade, not the offer.
+        let receiveAmount: string;
+        let formattedReceiveAmount: string;
+        let minimumReceived: BigNumber;
+        let formattedMinimumReceived: string;
+        let slippagePercent: string;
+
         await test.step('Verify DEX details on the Confirm & send screen', async () => {
+            const { receiveStringAmount, swapSlippage } = tradingMockNew.liveTrade;
+            receiveAmount = localizeNumber(receiveStringAmount);
+            formattedReceiveAmount = `${receiveAmount} USDC`;
+            slippagePercent = `${swapSlippage}%`;
+            const guaranteedShare = new BigNumber(100).minus(swapSlippage!).div(100);
+            minimumReceived = new BigNumber(receiveStringAmount).times(guaranteedShare);
+            formattedMinimumReceived = `${localizeNumber(minimumReceived.toFixed(4))} USDC`;
+
             await expect(tradingPage.confirmation.dexExchangeType).toHaveTranslation(
                 'TR_EXCHANGE_DEX',
             );
@@ -143,8 +123,10 @@ test.describe('Trading - DEX swap (LI.FI)', { tag: ['@webOnly', '@T3T1', '@T3W1'
             await expect(tradingPage.confirmation.sendAccount).toHaveText(`from ${accountLabel}`);
             await expect(tradingPage.confirmation.receiveAccount).toHaveText(`to ${accountLabel}`);
             await expect(tradingPage.confirmation.sendCryptoAmount).toHaveText(formattedSendAmount);
+            // REWORK: The receiveCryptoAmount amount is now simulated and differs from trade offer
             await expect(tradingPage.confirmation.receiveCryptoAmount).toHaveText(
-                formattedReceiveAmount,
+                // positive amount, optional thousands separators, up to 6 decimals, then the symbol
+                /^(?=.*[1-9])\d{1,3}(,\d{3})*(\.\d{1,6})? USDC$/,
             );
         });
 
@@ -152,16 +134,16 @@ test.describe('Trading - DEX swap (LI.FI)', { tag: ['@webOnly', '@T3T1', '@T3W1'
             await tradingPage.confirmation.openConfirmAndSendModal();
         });
 
+        let gasLimitWithLabel: string;
+
         await test.step('Confirm the DEX transaction on device', async () => {
             await devicePrompt.confirmOnDevicePromptIsShown();
 
-            await expect(devicePrompt.outputValueOf('recipient_name')).toHaveText(
-                suiteProviderName,
-            );
+            await expect(devicePrompt.outputValueOf('recipient_name')).toHaveText(dexProvider);
             await expect(device).toShowOnDisplay({
                 T3W1: {
                     header: { title: deviceReview.providerTitle },
-                    body: [[suiteProviderName]],
+                    body: [[dexProvider]],
                     actions: { right_button: deviceReview.confirmButton },
                 },
             });
@@ -187,7 +169,7 @@ test.describe('Trading - DEX swap (LI.FI)', { tag: ['@webOnly', '@T3T1', '@T3W1'
             );
             // The recipient is the user's own receive address, not the LI.FI router (dexTx.to).
             await expect(devicePrompt.assetsReceiveAddress).toHaveText(
-                swapTradeEthDex.receiveAddress,
+                tradingMockNew.liveTrade.receiveAddress!,
             );
             await expect(device).toShowOnDisplay({
                 T3W1: {
@@ -203,13 +185,25 @@ test.describe('Trading - DEX swap (LI.FI)', { tag: ['@webOnly', '@T3T1', '@T3W1'
             });
             await devicePrompt.waitForPromptAndConfirm();
 
-            await expect(devicePrompt.ethereumGasLimit).toHaveText(gasLimitWithLabel);
+            await expect(devicePrompt.ethereumFeeRate).toHaveText(feeRate);
+            await expect(devicePrompt.ethereumPriorityFeeRate).toHaveText(priorityFeeRate);
+
+            await expect(devicePrompt.ethereumGasLimit).toHaveText(gasLimitPattern);
+            gasLimitWithLabel = await devicePrompt.ethereumGasLimit.innerText();
+            const reviewedGasLimit = gasLimitWithLabel.match(gasLimitPattern)?.[1];
+            if (!reviewedGasLimit) {
+                throw new Error(`Unexpected gas limit format: ${gasLimitWithLabel}`);
+            }
+
+            const maximumFeeInGwei = new BigNumber(maxFeePerGas).times(reviewedGasLimit).toFixed();
+            const maximumFee = `${localizeNumber(fromGwei(maximumFeeInGwei).toEther())} ETH`;
+            await expect(devicePrompt.cryptoAmountWithSymbolOf('fee')).toHaveText(maximumFee);
             await expect(device).toShowOnDisplay({
                 T3W1: {
                     header: { title: deviceReview.feeTitle },
                     body: [
                         [deviceReview.feeLabel],
-                        device.wrapText(dexMaximumFee, { isAmount: true }),
+                        device.wrapText(maximumFee, { isAmount: true }),
                     ],
                     actions: { right_button: deviceReview.signButton },
                 },
@@ -218,9 +212,7 @@ test.describe('Trading - DEX swap (LI.FI)', { tag: ['@webOnly', '@T3T1', '@T3W1'
         });
 
         await test.step('Re-verify the fully revealed review form', async () => {
-            await expect(devicePrompt.outputValueOf('recipient_name')).toHaveText(
-                suiteProviderName,
-            );
+            await expect(devicePrompt.outputValueOf('recipient_name')).toHaveText(dexProvider);
             await expect(devicePrompt.outputValueOf('swap_intent')).toHaveTranslation(
                 'TR_TRADING_INTENT_SWAP',
             );
@@ -231,40 +223,34 @@ test.describe('Trading - DEX swap (LI.FI)', { tag: ['@webOnly', '@T3T1', '@T3W1'
                 `+ ${minimumReceived.toFixed()} USDC`,
             );
             await expect(devicePrompt.assetsReceiveAddress).toHaveText(
-                swapTradeEthDex.receiveAddress,
+                tradingMockNew.liveTrade.receiveAddress!,
             );
             await expect(devicePrompt.ethereumGasLimit).toHaveText(gasLimitWithLabel);
         });
 
-        await test.step('Broadcast the signed DEX transaction', async () => {
+        await test.step('Send the DEX transaction (broadcast blocked by mock)', async () => {
+            await tradingMockNew.setStatus('SENDING');
             await page.clock.install();
             await devicePrompt.sendButton.click();
+
             await tradingPage.verifySwapToast({
                 sendAccount: accountLabel,
                 receiveAccount: accountLabel,
-                sendAmount,
+                // The toast echoes the provider's formatting of the amount, not the one we typed.
+                sendAmount: tradingMockNew.liveTrade.sendStringAmount,
                 receiveAmount,
             });
         });
 
-        await test.step('Wait 30s for watch refresh and status change to Processing', async () => {
-            await tradingMock.routeAndWaitForWatchResponse(tradeEndpoint.swapWatch, {
-                status: 'CONVERTING',
+        for (const step of dexStatusFlow) {
+            await test.step(`Wait for status change to ${step.status}`, async () => {
+                await tradingMockNew.advanceStatus(step.status);
+                await expect(tradingPage.transactionDetailStatus).toHaveTranslation(
+                    step.translationKey,
+                    { values: step.translationValues?.(dexProvider) },
+                );
             });
-            await expect(tradingPage.transactionDetailStatus).toHaveTranslation(
-                'TR_TRADING_DETAIL_PROCESSING',
-                { values: { providerName: dexProvider, type: 'swap' } },
-            );
-        });
-
-        await test.step('Wait 30s for watch refresh and status change to Success', async () => {
-            await tradingMock.routeAndWaitForWatchResponse(tradeEndpoint.swapWatch, {
-                status: 'SUCCESS',
-            });
-            await expect(tradingPage.transactionDetailStatus).toHaveTranslation(
-                'TR_EXCHANGE_DETAIL_SUCCESS_TITLE',
-            );
-        });
+        }
 
         await test.step('Verify final transaction detail values', async () => {
             await expect(tradingPage.confirmation.sendCryptoAmount).toHaveText(formattedSendAmount);

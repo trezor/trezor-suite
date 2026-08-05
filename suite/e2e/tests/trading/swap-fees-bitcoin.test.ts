@@ -1,25 +1,23 @@
 import { BigNumber } from '@trezor/utils';
 
-import { swapQuotesBTCEthereum, swapTradeBTCEthereum, tradeEndpoint } from '../../fixtures/trading';
 import { expect, test } from '../../support/fixtures';
 
-const sendAmount = '0.0004';
+const sendAmount = '0.0015';
 const customFee = '10';
 
-test.describe('Trading - Swap fees Bitcoin', { tag: ['@webOnly', '@T3T1', '@T3W1'] }, () => {
+test.describe('Trading - Swap fees Bitcoin', { tag: ['@T3T1', '@T3W1'] }, () => {
     test.use({ deviceSetup: { mnemonic: 'mnemonic_academic', passphrase_protection: true } });
 
     test.beforeEach(
-        async ({ onboardingPage, dashboardPage, walletPage, settingsPage, page, tradingMock }) => {
-            await test.step('Mocking responses', async () => {
-                await page.route(tradeEndpoint.swapQuotes, route => {
-                    route.fulfill({ json: swapQuotesBTCEthereum });
-                });
-                await tradingMock.routeSwapTrade(swapTradeBTCEthereum);
-            });
+        async ({ onboardingPage, dashboardPage, walletPage, settingsPage, tradingMockNew }) => {
+            tradingMockNew.setTradeFlow('swap');
+            // Backend is wired only as a broadcast guard; the test never gets past the device.
+            const btcBackend = await tradingMockNew.startBackend('btc');
 
             await onboardingPage.completeOnboarding();
-            await settingsPage.changeNetworks({ enableNetworks: ['btc', 'eth'] });
+            await settingsPage.changeNetworks({
+                enableNetworks: [{ symbol: 'btc', backend: btcBackend }, 'eth'],
+            });
             await dashboardPage.deviceSwitchingOpenButton.click();
             await dashboardPage.addHiddenWallet(process.env.PASSPHRASE!);
             await walletPage.openSwapTrading({ symbol: 'btc' });
@@ -45,9 +43,7 @@ test.describe('Trading - Swap fees Bitcoin', { tag: ['@webOnly', '@T3T1', '@T3W1
             await tradingPage.fees.switchToCustom();
             await tradingPage.fees.customInput.fill(customFee);
             feeRate = await tradingPage.fees.getBitcoinFeeRate('custom');
-
-            // Wait for TX precomposition to avoid
-            await new Promise(resolve => setTimeout(resolve, 2500));
+            await tradingPage.fees.waitToBeCalculated();
         });
 
         await test.step('Continue Swap flow towards Send section', async () => {

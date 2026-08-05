@@ -7,10 +7,12 @@ import { TradingChainBackend, createTradingChainBackend } from './tradingChainBa
 import { tradeEndpoint } from '../../../fixtures/trading';
 import { step } from '../../common';
 
+// TODO: loose for DEX (no sendAddress, optional fields); revisit in the sell migration PR.
 export type CapturedLiveTrade = ExchangeTrade & {
     sendAddress: string;
     exchange: string;
     sendStringAmount: string;
+    receiveStringAmount: string;
 };
 
 type TradeFlow = 'buy' | 'sell' | 'swap';
@@ -137,9 +139,16 @@ export class TradingMockNew {
     async waitForLiveTrade() {
         const response = await this.page.waitForResponse(this.endpoints.trade);
         const trade = (await response.json()) as ExchangeTrade;
-        if (!trade.sendAddress || !trade.exchange || !trade.sendStringAmount) {
+        // A DEX trade sends to the provider's router contract (`dexTx`), so it has no sendAddress.
+        const hasDepositAddress = trade.isDex || trade.sendAddress;
+        if (
+            !trade.exchange ||
+            !trade.sendStringAmount ||
+            !trade.receiveStringAmount ||
+            !hasDepositAddress
+        ) {
             throw new Error(
-                'Live trade response is missing sendAddress, exchange or sendStringAmount',
+                'Live trade response is missing exchange, sendStringAmount, receiveStringAmount or sendAddress',
             );
         }
 
