@@ -3,18 +3,18 @@ import { useForm, useWatch } from 'react-hook-form';
 
 import { useTranslation } from '@suite/intl';
 import { type Explorer, type NetworkSymbol } from '@suite-common/wallet-config';
-import { explorerActions, selectNetworkExplorers } from '@suite-common/wallet-core';
-import { isUrl } from '@trezor/utils';
+import { selectNetworkExplorers, setNetworkExplorerThunk } from '@suite-common/wallet-core';
+import { deepEqual, isUrl } from '@trezor/utils';
 
 import { useDispatch, useSelector } from '../suite';
 
 const useExplorerInput = (currentValues: Explorer) => {
     const {
         register,
-        formState: { errors },
+        formState: { isDirty, errors },
         trigger,
         control,
-        setValue,
+        reset,
     } = useForm<Explorer>({
         mode: 'onChange',
         defaultValues: currentValues,
@@ -67,7 +67,8 @@ const useExplorerInput = (currentValues: Explorer) => {
 
         trigger,
         register,
-        setValue,
+        reset,
+        isDirty,
         errors,
 
         fields: {
@@ -132,17 +133,13 @@ export const useExplorerForm = (symbol: NetworkSymbol) => {
     );
 
     const save = () => {
-        dispatch(explorerActions.setExplorer({ symbol, explorer }));
+        if (input.isDirty) {
+            dispatch(setNetworkExplorerThunk({ symbol, explorer }));
+        }
     };
 
     const setDefaultValues = () => {
-        input.setValue('base', explorerConfig.default.base);
-        input.setValue('tx', explorerConfig.default.tx);
-        input.setValue('address', explorerConfig.default.address);
-        input.setValue('token', explorerConfig.default.token);
-        input.setValue('nft', explorerConfig.default.nft);
-        input.setValue('queryString', explorerConfig.default.queryString);
-
+        input.reset(explorerConfig.default, { keepDefaultValues: true });
         input.trigger();
     };
 
@@ -157,7 +154,7 @@ export const useExplorerForm = (symbol: NetworkSymbol) => {
     return {
         save,
         setDefaultValues,
-        usesDefaultExplorer: explorerConfig.custom === undefined,
+        usesDefaultExplorer: deepEqual(explorer, explorerConfig.default),
         explorerConfig,
         input,
         isValid,
