@@ -57,7 +57,7 @@ export const yieldNavigateEvent: EventDef<Attributes, EventType.YieldNavigate> =
         },
         from: {
             description:
-                'Origin of the navigation. On mobile, `deposit-in-a-nutshell-modal` = How yield works screen and `deposit-legal-modal` = consents screen (named after their desktop counterparts); `choose-account-sheet`, `account-detail` and `insufficient-balance-screen` are mobile-only, `account-defi-tokens`, `claim-select-account-modal`, `wrap-form` and `unwrap-form` are desktop-only; `account-tokens` = yield badge on the account Tokens tab, `account-defi-tokens` also covers the yield badge on the DeFi tab, `account-tradebox` = yield badge or Earn button in the account trade box',
+                'Origin of the navigation. On mobile, `deposit-in-a-nutshell-modal` = How yield works screen and `deposit-legal-modal` = consents screen (named after their desktop counterparts); `choose-account-sheet`, `account-detail` and `insufficient-balance-screen` are mobile-only as an origin, `account-defi-tokens`, `claim-select-account-modal`, `wrap-form` and `unwrap-form` are desktop-only; `account-tokens` = yield badge on the account Tokens tab or the token row actions there, `account-defi-tokens` also covers the yield badge and token row actions on the DeFi tab, `account-tradebox` = yield badge or Earn button in the account trade box',
             changelog: [
                 { version: '26.5.0', notes: 'added' },
                 {
@@ -71,7 +71,8 @@ export const yieldNavigateEvent: EventDef<Attributes, EventType.YieldNavigate> =
             ],
         },
         to: {
-            description: 'Destination of the navigation',
+            description:
+                'Destination of the navigation. Desktop also reports `account-detail` when leaving the wrap/unwrap pages, where it means the account Tokens tab',
             changelog: [
                 { version: '26.5.0', notes: 'added' },
                 {
@@ -80,7 +81,7 @@ export const yieldNavigateEvent: EventDef<Attributes, EventType.YieldNavigate> =
                 },
                 {
                     version: '26.8.0',
-                    notes: 'added `wrap-form` and `unwrap-form` values (desktop)',
+                    notes: 'added `wrap-form` and `unwrap-form` values, and `account-detail` is now also reported (desktop)',
                 },
             ],
         },
