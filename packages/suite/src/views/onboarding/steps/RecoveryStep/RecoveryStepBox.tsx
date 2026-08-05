@@ -2,7 +2,6 @@ import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { OnboardingCard, type OnboardingCardProps } from '@suite/onboarding-components';
 import { recoveryActions, selectRecoveryError, selectRecoveryStatus } from '@suite/recovery';
-import { DeviceModelInternal } from '@trezor/device-utils';
 import { TrezorBackupIcon } from '@trezor/icons';
 
 import { goToPreviousStep } from 'src/actions/onboarding/onboardingActions';
@@ -25,13 +24,11 @@ const RecoveryStepBox = (props: OnboardingCardProps) => {
         if (recoveryStatus === 'select-recovery-type') {
             return dispatch(recoveryActions.setStatus('initial'));
         }
-        // allow to change recovery settings for T1B1 in case of error
-        if (
-            recoveryStatus === 'finished' &&
-            recoveryError &&
-            deviceModelInternal === DeviceModelInternal.T1B1
-        ) {
-            return dispatch(recoveryActions.setStatus('initial'));
+        // Allow the user to restart recovery after an error (any device model). Reset the whole
+        // reducer so the stale error/status is cleared; otherwise re-entering the step would render
+        // the "recovery failed" screen again instead of a clean start.
+        if (recoveryStatus === 'finished' && recoveryError) {
+            return dispatch(recoveryActions.resetReducer());
         }
 
         return dispatch(goToPreviousStep());
