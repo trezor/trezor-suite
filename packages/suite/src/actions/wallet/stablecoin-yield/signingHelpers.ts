@@ -1,6 +1,7 @@
 import { closeModal, openDeferredModal, preserveModal } from '@suite/modal';
 import { selectSelectedDevice } from '@suite-common/device';
 import { buildStablecoinYieldTransactionReview } from '@suite-common/earn-stablecoin/src/signing';
+import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
 import {
     type YieldFlowDisplayToken,
     type YieldFlowType,
@@ -148,11 +149,13 @@ export const sendYieldTransaction = async ({
         }
 
         const isMevProtectionEnabled = selectIsMevProtectionEnabled(getState());
+        const isMevProtectionFeatureEnabled = selectIsMevProtectionFeatureEnabled(getState());
+
         const pushResponse = await TrezorConnect.pushTransaction({
             tx: getMevProtectedTxData(
                 account.symbol,
                 signingResponse.payload.serializedTx,
-                isMevProtectionEnabled,
+                isMevProtectionEnabled && isMevProtectionFeatureEnabled,
             ),
             coin: account.symbol,
             identity: getAccountIdentity(account),
