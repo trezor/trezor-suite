@@ -250,8 +250,10 @@ export const YieldWithdrawForm = () => {
                                     }
                                     isPending={isSubmittingAction}
                                     pendingTransaction={withdrawPendingTransaction}
+                                    // Toggling the unit switches `flowType`, disposing the
+                                    // session — mid-submit that drops a broadcast transaction.
                                     unitToggle={
-                                        canToggleWithdrawUnit
+                                        canToggleWithdrawUnit && !isSubmittingAction
                                             ? {
                                                   otherTokenSymbol: otherUnitTokenSymbol,
                                                   onClick: handleToggleWithdrawInputUnit,

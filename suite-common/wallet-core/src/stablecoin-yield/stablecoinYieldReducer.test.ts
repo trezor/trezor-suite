@@ -431,4 +431,91 @@ describe('stablecoinYieldReducer', () => {
             });
         });
     });
+
+    describe('allowance lifecycle', () => {
+        const sessionPayload = { flowType: 'deposit', flowKey: FLOW_KEY } as const;
+
+        const loadAllowance = (state: StablecoinYieldState, amount: string) =>
+            stablecoinYieldReducer(
+                state,
+                stablecoinYieldActions.setInitializedAllowance({ ...sessionPayload, amount }),
+            );
+
+        it('stores the read allowance', () => {
+            const state = loadAllowance(initSession('deposit'), '100');
+
+            expect(getSession(state, 'deposit')?.approval.allowanceAmount).toBe('100');
+            expect(getSession(state, 'deposit')?.approval.allowanceStatus).toBe('loaded');
+        });
+
+        it('clears the amount when the read fails', () => {
+            const state = stablecoinYieldReducer(
+                loadAllowance(initSession('deposit'), '100'),
+                stablecoinYieldActions.setAllowanceError(sessionPayload),
+            );
+
+            expect(getSession(state, 'deposit')?.approval.allowanceAmount).toBeNull();
+            expect(getSession(state, 'deposit')?.approval.allowanceStatus).toBe('error');
+        });
+
+        it('keeps the last amount when the allowance is only invalidated', () => {
+            const state = stablecoinYieldReducer(
+                loadAllowance(initSession('deposit'), '100'),
+                stablecoinYieldActions.invalidateAllowance(sessionPayload),
+            );
+
+            expect(getSession(state, 'deposit')?.approval.allowanceAmount).toBe('100');
+            expect(getSession(state, 'deposit')?.approval.allowanceStatus).toBe('idle');
+        });
+
+        it('reports a zero allowance as loaded after a revoke', () => {
+            const state = stablecoinYieldReducer(
+                loadAllowance(initSession('deposit'), '100'),
+                stablecoinYieldActions.revokeSuccess(sessionPayload),
+            );
+
+            expect(getSession(state, 'deposit')?.approval.allowanceAmount).toBe('0');
+            expect(getSession(state, 'deposit')?.approval.allowanceStatus).toBe('loaded');
+        });
+
+        // A confirmed approval dispatches these two back to back — the state the read must catch.
+        it('leaves a wrapped-native deposit on the action step with an idle allowance', () => {
+            const state = stablecoinYieldReducer(
+                stablecoinYieldReducer(
+                    loadAllowance(initSession('deposit', true), '100'),
+                    stablecoinYieldActions.resolveWrappedNativeStep({
+                        ...sessionPayload,
+                        step: 'wrap',
+                    }),
+                ),
+                stablecoinYieldActions.completeApproval({ ...sessionPayload, amount: '0.2' }),
+            );
+            const invalidated = stablecoinYieldReducer(
+                state,
+                stablecoinYieldActions.invalidateAllowance(sessionPayload),
+            );
+
+            expect(getSession(invalidated, 'deposit')?.step).toBe('action');
+            expect(getSession(invalidated, 'deposit')?.approval.allowanceStatus).toBe('idle');
+        });
+
+        it('refuses to return to the wrap step while the allowance is being read', () => {
+            const state = stablecoinYieldReducer(
+                stablecoinYieldReducer(
+                    initSession('deposit', true),
+                    stablecoinYieldActions.resolveWrappedNativeStep({
+                        ...sessionPayload,
+                        step: 'wrap',
+                    }),
+                ),
+                stablecoinYieldActions.startInitializingAllowance(sessionPayload),
+            );
+            const returned = stablecoinYieldReducer(
+                state,
+                stablecoinYieldActions.returnToWrapStep(sessionPayload),
+            );
+
+            expect(getSession(returned, 'deposit')?.step).toBe('approve');
+        });
+    });
 });

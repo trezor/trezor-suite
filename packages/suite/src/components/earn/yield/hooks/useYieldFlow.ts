@@ -52,6 +52,7 @@ import {
     getYieldModifyAmountInput,
     getYieldUnwrapDefaultAmount,
     isAmountGreaterThan,
+    shouldInitializeYieldAllowance,
 } from '../yieldFlowUtils';
 
 type UseYieldFlowProps = {
@@ -278,6 +279,9 @@ export const useYieldFlow = ({
                     token: currentToken,
                     receiptToken: currentReceiptToken,
                 },
+                // Only the approve step may auto-advance on a sufficient allowance; from the
+                // action step this would undo a "modify approval" click made mid-read.
+                shouldSkipApprovalStep: sessionRef.current.step === 'approve',
             }),
         );
 
@@ -299,15 +303,20 @@ export const useYieldFlow = ({
                     initAllowancePromiseRef.current = null;
                 }
             });
-    }, [allowanceFlowDataRef, analytics, dispatch, flowKey, flowType]);
+    }, [allowanceFlowDataRef, analytics, dispatch, flowKey, flowType, sessionRef]);
 
     useEffect(() => {
-        const canInitializeAllowance =
-            !isWrappedNativeVault || (session.isWrappedNativeVault && session.step === 'approve');
-
-        if (allowanceStatus !== 'idle' || !canInitializeAllowance) {
+        if (
+            !shouldInitializeYieldAllowance({
+                isWrappedNativeVault,
+                hasWrappedNativeSession: session.isWrappedNativeVault,
+                step: session.step,
+                allowanceStatus,
+            })
+        ) {
             return;
         }
+
         runInitAllowance();
     }, [
         allowanceStatus,

@@ -35,12 +35,20 @@ export const YieldDeposit = ({ account, vault }: YieldDepositProps) => {
         return null;
     }
 
+    // Every step — the allowance read, the approval, the deposit calldata — needs this address,
+    // so without it the flow can only fail, and even the allowance retry never succeeds.
+    const hasVaultTokenContract = !!yieldDepositContextValues.token.contractAddress;
+
     return (
         <AllowanceContext.Provider value={allowanceContextValue}>
             <Column gap={24}>
                 <ContextMessage context={Context.getEarnYield('deposit')} />
-                {isDisabled ? (
-                    <YieldDisabledBanner type="deposit" content={content} variant={variant} />
+                {isDisabled || !hasVaultTokenContract ? (
+                    <YieldDisabledBanner
+                        type="deposit"
+                        content={isDisabled ? content : undefined}
+                        variant={isDisabled ? variant : undefined}
+                    />
                 ) : (
                     <YieldDepositContext.Provider value={yieldDepositContextValues}>
                         <FormProvider {...yieldDepositContextValues.methods}>

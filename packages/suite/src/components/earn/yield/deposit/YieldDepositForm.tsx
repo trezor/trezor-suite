@@ -92,6 +92,7 @@ export const YieldDepositForm = () => {
         flowType: 'deposit',
         isWrappedNativeVault: flow.isWrappedNativeVault,
     });
+    const hasAllowanceError = allowanceStatus === 'error';
 
     // Wrapping into the gas reserve is allowed — Max keeps it aside only while the balance covers
     // it — so recommend keeping it rather than blocking. `isAmountTooHigh` only fires above the
@@ -264,7 +265,7 @@ export const YieldDepositForm = () => {
                                 />
                             )}
 
-                            {allowanceStatus === 'error' && (
+                            {hasAllowanceError && (
                                 <Banner
                                     icon
                                     intent="warning"
@@ -365,7 +366,7 @@ export const YieldDepositForm = () => {
                                         }
                                         approvedAmount={allowanceAmount || undefined}
                                         isApprovedAmountLoading={allowanceStatus === 'loading'}
-                                        hasApprovedAmountError={allowanceStatus === 'error'}
+                                        hasApprovedAmountError={hasAllowanceError}
                                         approvalAction={approvalAction}
                                         canRevokeAllowance={canRevokeAllowance}
                                         warning={
@@ -377,7 +378,6 @@ export const YieldDepositForm = () => {
                                         }
                                         isDisabled={
                                             isAmountEmpty ||
-                                            (flow.isWrappedNativeVault && isAmountTooHigh) ||
                                             isAmountInvalidDecimals ||
                                             isSubmittingApprove ||
                                             !!approvalPendingTransaction
@@ -387,8 +387,12 @@ export const YieldDepositForm = () => {
                                         fiatToggle={fiatToggle}
                                         onMaxClick={handleMaxClick}
                                         onApprovalSubmit={handleOnApprovalSubmit}
+                                        // An unreadable allowance coerces to '0', which would
+                                        // otherwise hide Skip just when it is the only way on.
                                         onSkip={
-                                            canRevokeAllowance ? handleOnSkipApprove : undefined
+                                            canRevokeAllowance || hasAllowanceError
+                                                ? handleOnSkipApprove
+                                                : undefined
                                         }
                                         onRevoke={handleOnRevoke}
                                         onPendingTxClick={openPendingTransaction}
@@ -400,7 +404,7 @@ export const YieldDepositForm = () => {
                                             token={token}
                                             amount={allowanceAmount}
                                             isLoading={allowanceStatus === 'loading'}
-                                            hasError={allowanceStatus === 'error'}
+                                            hasError={hasAllowanceError}
                                         />
                                     ),
                             },
