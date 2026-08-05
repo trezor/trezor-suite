@@ -384,6 +384,25 @@ export const getWrappableNativeBalance = (nativeFormattedBalance: string): strin
     ).toString();
 
 /**
+ * Amount the wrap step's "Max" button fills in: the balance minus `WETH_WRAP_GAS_RESERVE` while
+ * that leaves something to wrap, otherwise the whole balance. A balance at or below the reserve
+ * has nothing to keep aside, and offering `0` reads as a dead button
+ * (trezor/trezor-suite#30842). Wrapping it all is allowed, and `shouldRecommendWrapReserve` then
+ * surfaces the non-blocking recommendation to keep some native coin for the follow-up fees.
+ */
+export const getMaxWrapAmount = (nativeFormattedBalance: string): string => {
+    const balance = new BigNumber(nativeFormattedBalance || '0');
+
+    if (!balance.isFinite() || balance.lte(0)) {
+        return '0';
+    }
+
+    const wrappableBalance = new BigNumber(getWrappableNativeBalance(nativeFormattedBalance));
+
+    return wrappableBalance.gt(0) ? wrappableBalance.toString() : balance.toString();
+};
+
+/**
  * Whether wrapping `amountInput` out of `nativeFormattedBalance` would leave at most
  * `WETH_WRAP_GAS_RESERVE` behind — i.e. no safety margin above the reserve needed for the
  * follow-up approve + deposit fees. Used to surface a non-blocking recommendation to keep a

@@ -93,12 +93,9 @@ export const YieldDepositForm = () => {
         isWrappedNativeVault: flow.isWrappedNativeVault,
     });
 
-    // Wrapping into the gas reserve is allowed (Max keeps it aside, but a manual entry may not),
-    // so recommend keeping it rather than blocking. `isAmountTooHigh` only fires above the full
-    // balance now, and `shouldRecommendWrapReserve` already excludes that over-balance case.
-    // Wrapping into the gas reserve is allowed (Max fills the full balance), so recommend keeping
-    // it rather than blocking. `isAmountTooHigh` only fires above the full balance, and
-    // `shouldRecommendWrapReserve` already excludes that over-balance case.
+    // Wrapping into the gas reserve is allowed — Max keeps it aside only while the balance covers
+    // it — so recommend keeping it rather than blocking. `isAmountTooHigh` only fires above the
+    // full balance, and `shouldRecommendWrapReserve` already excludes that over-balance case.
     const showWrapReserveRecommendation =
         flow.currentStep === 'wrap' &&
         !isAmountInvalidDecimals &&

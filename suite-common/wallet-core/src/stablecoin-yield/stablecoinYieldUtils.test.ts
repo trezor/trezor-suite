@@ -9,6 +9,7 @@ import {
     buildYieldUnwrapTransactionData,
     buildYieldWithdrawCalldata,
     buildYieldWrapTransactionData,
+    getMaxWrapAmount,
     getNextYieldFlowStep,
     getWrappableNativeBalance,
     getYieldDepositableBalance,
@@ -409,6 +410,42 @@ describe('stablecoinYieldUtils', () => {
 
         it('treats an empty balance as zero', () => {
             expect(getWrappableNativeBalance('')).toBe('0');
+        });
+    });
+
+    describe('getMaxWrapAmount', () => {
+        it('keeps the gas reserve aside when the balance covers it', () => {
+            expect(getMaxWrapAmount('0.2')).toBe('0.195');
+        });
+
+        it('offers the whole balance when it does not cover the reserve', () => {
+            expect(getMaxWrapAmount('0.003')).toBe('0.003');
+        });
+
+        it('offers the whole balance when it exactly matches the reserve', () => {
+            expect(getMaxWrapAmount('0.005')).toBe('0.005');
+        });
+
+        // Max must offer an amount that is both usable and flagged, otherwise the button reads as
+        // dead — the regression behind trezor/trezor-suite#30842.
+        it('offers an amount that triggers the reserve recommendation', () => {
+            expect(shouldRecommendWrapReserve(getMaxWrapAmount('0.003'), '0.003')).toBe(true);
+        });
+
+        it('treats an empty balance as zero', () => {
+            expect(getMaxWrapAmount('')).toBe('0');
+        });
+
+        it('returns zero for a zero balance', () => {
+            expect(getMaxWrapAmount('0')).toBe('0');
+        });
+
+        it('returns zero for a negative balance', () => {
+            expect(getMaxWrapAmount('-1')).toBe('0');
+        });
+
+        it('returns zero for non-numeric input', () => {
+            expect(getMaxWrapAmount('abc')).toBe('0');
         });
     });
 
