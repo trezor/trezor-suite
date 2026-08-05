@@ -135,8 +135,8 @@ export const selectSwitchFirmwareType = (state: RootState) => state.firmware.swi
 export const selectIsFirmwareInstallationRunning = (state: RootState) =>
     state.firmware.status === 'started';
 
-// `allowPrerelease` is passed as a value because it comes from a platform-specific extra dependency.
-// In React, read it with `useSelector(getAllowPrerelease.selector)`; elsewhere call the getter.
+// `allowPrerelease` is passed as a value because it comes from a platform-specific extra dependency:
+// in React read it with `useGetter(selectGetAllowPrereleaseDep)`, elsewhere call the getter itself.
 // Both selectors return a primitive, so they need no memoization.
 export const selectEffectiveFirmwareChannel =
     (allowPrerelease: boolean) =>
