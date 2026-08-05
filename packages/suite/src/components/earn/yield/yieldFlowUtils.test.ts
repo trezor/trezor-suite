@@ -222,7 +222,7 @@ describe('yieldFlowUtils', () => {
             ).toEqual({ symbol: 'eth' });
         });
 
-        it('prices deposit/withdraw by the asset token contract address (lower-cased)', () => {
+        it('prices deposit by the asset token contract address (lower-cased)', () => {
             expect(
                 getYieldFiatRateToken({
                     step: 'action',
@@ -231,7 +231,9 @@ describe('yieldFlowUtils', () => {
                     token: ethToken,
                 }),
             ).toEqual({ symbol: 'eth', tokenAddress: WETH_LOWER });
+        });
 
+        it('returns null when fiat entry is impossible (withdraw flow or no token address)', () => {
             expect(
                 getYieldFiatRateToken({
                     step: 'action',
@@ -239,10 +241,8 @@ describe('yieldFlowUtils', () => {
                     accountSymbol: 'eth',
                     token: ethToken,
                 }),
-            ).toEqual({ symbol: 'eth', tokenAddress: WETH_LOWER });
-        });
+            ).toBeNull();
 
-        it('returns null when fiat entry is impossible (redeeming shares or no token address)', () => {
             expect(
                 getYieldFiatRateToken({
                     step: 'action',

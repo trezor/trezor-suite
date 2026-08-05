@@ -7,6 +7,7 @@ import {
     type YieldPositionFlowType,
     type YieldWithdrawFlowType,
     getConvertedOutputTokenBalanceToInputTokenAmount,
+    isYieldWithdrawFlow,
 } from '@suite-common/wallet-core';
 import { type TokenAddress, toTokenAddress } from '@suite-common/wallet-types';
 import {
@@ -147,8 +148,8 @@ type YieldFiatRateTokenParams = {
 /**
  * The token whose fiat rate prices the amount currently being entered:
  * - wrap/unwrap operate on the native coin (priced by the account's native symbol),
- * - redeem enters share units, which have no direct fiat price → no fiat entry,
- * - deposit/withdraw/approve enter the vault asset token (priced by its contract address).
+ * - withdraw/redeem have no fiat entry,
+ * - deposit/approve enter the vault asset token (priced by its contract address).
  *
  * Returns `null` when fiat entry is not possible for the current step.
  */
@@ -162,7 +163,7 @@ export const getYieldFiatRateToken = ({
         return { symbol: accountSymbol };
     }
 
-    if (flowType === 'redeem') {
+    if (isYieldWithdrawFlow(flowType)) {
         return null;
     }
 
