@@ -509,6 +509,7 @@ export const onCallFirmwareUpdate = async ({
     }
 
     const deviceInitiallyConnectedInBootloader = device.features.bootloader_mode;
+    const firmwareTypeChanged = device.firmwareType && device.firmwareType !== firmwareType;
 
     let reconnectedDevice: Device = device;
 
@@ -582,6 +583,7 @@ export const onCallFirmwareUpdate = async ({
         device: reconnectedDevice,
         firmwareUploadRequest: { payload },
         updateFlowType,
+        firmwareTypeChanged,
     });
 
     log.info('onCallFirmwareUpdate', 'firmware uploaded');
@@ -604,6 +606,7 @@ export const onCallFirmwareUpdate = async ({
             device: reconnectedDevice,
             firmwareUploadRequest: { payload: stripped },
             updateFlowType,
+            firmwareTypeChanged,
         });
     }
 
