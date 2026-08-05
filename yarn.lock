@@ -2328,16 +2328,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@currents/playwright@npm:^2.1.4":
-  version: 2.1.4
-  resolution: "@currents/playwright@npm:2.1.4"
+"@currents/playwright@npm:^2.5.0":
+  version: 2.5.0
+  resolution: "@currents/playwright@npm:2.5.0"
   dependencies:
-    "@babel/code-frame": "npm:^7.29.0"
+    "@babel/code-frame": "npm:^7.29.7"
     "@commander-js/extra-typings": "npm:^13.1.0"
     "@currents/commit-info": "npm:1.0.1-beta.0"
     async-retry: "npm:^1.3.3"
-    axios: "npm:^1.16.0"
-    axios-retry: "npm:4.5.0"
     chalk: "npm:^4.1.2"
     commander: "npm:^13.1.0"
     date-fns: "npm:^4.3.0"
@@ -2345,9 +2343,8 @@ __metadata:
     dotenv: "npm:^17.4.2"
     execa: "npm:^9.6.0"
     getos: "npm:^3.2.1"
-    https-proxy-agent: "npm:^7.0.5"
     istanbul-lib-coverage: "npm:^3.2.2"
-    jiti: "npm:2.6.1"
+    jiti: "npm:2.7.0"
     json-stringify-safe: "npm:^5.0.1"
     lil-http-terminator: "npm:^1.2.3"
     lodash: "npm:^4.18.1"
@@ -2363,14 +2360,15 @@ __metadata:
     safe-regex2: "npm:^5.1.1"
     source-map-support: "npm:^0.5.21"
     stack-utils: "npm:^2.0.6"
-    tmp: "npm:^0.2.6"
+    tmp: "npm:^0.2.7"
     tmp-promise: "npm:^3.0.3"
     ts-pattern: "npm:^5.8.0"
+    undici: "npm:^6.27.0"
     ws: "npm:^8.21.0"
   bin:
     pwc: dist/bin/pwc.js
     pwc-p: dist/bin/pwc-p.js
-  checksum: 10/a8023afabb3eac2ec3801a3ba6efc0d01b4c6a580b16366f1717a5e67fbfd7d8dbb814a9565b7dc383b9fb07e2a58ecadfd06220083ab0e251e00b3b057eca6f
+  checksum: 10/26a8033982c3af06e6acec415a576d88547a14e5a396745fbaa00f40cc8d2e4c825adb1a0c215a084ddeeac82629961baecd90f773ed2d831154700c5bec54ef
   languageName: node
   linkType: hard
 
@@ -6618,41 +6616,41 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@playwright/browser-chromium@npm:1.60.0":
-  version: 1.60.0
-  resolution: "@playwright/browser-chromium@npm:1.60.0"
+"@playwright/browser-chromium@npm:1.61.1":
+  version: 1.61.1
+  resolution: "@playwright/browser-chromium@npm:1.61.1"
   dependencies:
-    playwright-core: "npm:1.60.0"
-  checksum: 10/294ae631f4cd0c352290eeb71d771f621890be9da4e9ebf10b51429c34ae574b3c571022f0639d5d0f73d825250238515f3c865a206269e10fde210154531cfb
+    playwright-core: "npm:1.61.1"
+  checksum: 10/14b19c17d509b5d4fd70d6f9eec9d69fd1f0031fc6bc9c86c6213f79c562aee12484ec6a71ba0900d6883c76db6f3376009647a717bcb86f02c36c65a180e26f
   languageName: node
   linkType: hard
 
-"@playwright/browser-firefox@npm:1.60.0":
-  version: 1.60.0
-  resolution: "@playwright/browser-firefox@npm:1.60.0"
+"@playwright/browser-firefox@npm:1.61.1":
+  version: 1.61.1
+  resolution: "@playwright/browser-firefox@npm:1.61.1"
   dependencies:
-    playwright-core: "npm:1.60.0"
-  checksum: 10/1bc5217041aecd46c42e5709591b573e74ef27927965fc40e2d0166b7ea3666a663dcbf235e67c22584b364b82b7765f00b14b739fa3b982b705e00363425be7
+    playwright-core: "npm:1.61.1"
+  checksum: 10/2b8c10d658f9e7b7eab5cf098707649e932fa0b4a29659452682c1e7e8a77d0cf6ee2d08c56e456674cf96a6880e05548303fa19df9ab60e4af17fbdd08741e4
   languageName: node
   linkType: hard
 
-"@playwright/browser-webkit@npm:1.60.0":
-  version: 1.60.0
-  resolution: "@playwright/browser-webkit@npm:1.60.0"
+"@playwright/browser-webkit@npm:1.61.1":
+  version: 1.61.1
+  resolution: "@playwright/browser-webkit@npm:1.61.1"
   dependencies:
-    playwright-core: "npm:1.60.0"
-  checksum: 10/f45c8c9367de60703cc67a8c505ddca0a8db9b16beddc75b6d798a9d207717ab21b8c390e6404e6a072a88b7dc9a2be3c1edd3054eb5383033e71f934f6460e9
+    playwright-core: "npm:1.61.1"
+  checksum: 10/c40dc3c26c5b9bb9a5b4f80961c83dcf8f36c2cad50c57290f4ff5c795937555aecb24f07cec573366331d0409be9250236137d1cb384659c87d038585bae112
   languageName: node
   linkType: hard
 
-"@playwright/test@npm:1.60.0":
-  version: 1.60.0
-  resolution: "@playwright/test@npm:1.60.0"
+"@playwright/test@npm:1.61.1":
+  version: 1.61.1
+  resolution: "@playwright/test@npm:1.61.1"
   dependencies:
-    playwright: "npm:1.60.0"
+    playwright: "npm:1.61.1"
   bin:
     playwright: cli.js
-  checksum: 10/a13d369014e1934b0aa484c5d59537f5249af0fe006ac4ecbcbe14c673221412706193ea2d9cf3b2c0cc69e3ddbb4daddb006f0bedfdeb05f687776ed8c35f5f
+  checksum: 10/08915357031e1bc273a19bb428fb7e51031ca44f25750832e389bcd69c399f6a243f5f832e7832d46153b57b1305f1f5f5dd63f3a3261f928f61e464c6b3c64e
   languageName: node
   linkType: hard
 
@@ -16429,7 +16427,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/connect-web@workspace:packages/connect-web"
   dependencies:
-    "@playwright/test": "npm:1.60.0"
+    "@playwright/test": "npm:1.61.1"
     "@trezor/connect-common": "workspace:*"
     "@trezor/eslint": "workspace:*"
     "@trezor/type-utils": "workspace:*"
@@ -16560,9 +16558,9 @@ __metadata:
     "@anthropic-ai/claude-code": "npm:^2.1.179"
     "@anthropic-ai/sdk": "npm:0.100.0"
     "@currents/mcp": "npm:^2.3.2"
-    "@currents/playwright": "npm:^2.1.4"
+    "@currents/playwright": "npm:^2.5.0"
     "@octokit/rest": "npm:^21.1.1"
-    "@playwright/test": "npm:1.60.0"
+    "@playwright/test": "npm:1.61.1"
     "@trezor/node-utils": "workspace:*"
     "@trezor/trezor-user-env-link": "workspace:*"
     "@trezor/utils": "workspace:*"
@@ -17162,13 +17160,13 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/suite-e2e@workspace:suite/e2e"
   dependencies:
-    "@currents/playwright": "npm:^2.1.4"
+    "@currents/playwright": "npm:^2.5.0"
     "@evolu/common": "npm:8.0.0-next.5"
     "@noble/hashes": "npm:^2.0.1"
-    "@playwright/browser-chromium": "npm:1.60.0"
-    "@playwright/browser-firefox": "npm:1.60.0"
-    "@playwright/browser-webkit": "npm:1.60.0"
-    "@playwright/test": "npm:1.60.0"
+    "@playwright/browser-chromium": "npm:1.61.1"
+    "@playwright/browser-firefox": "npm:1.61.1"
+    "@playwright/browser-webkit": "npm:1.61.1"
+    "@playwright/test": "npm:1.61.1"
     "@scure/base": "npm:^2.0.0"
     "@suite-common/address": "workspace:*"
     "@suite-common/analytics": "workspace:*"
@@ -20919,7 +20917,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios-retry@npm:4.5.0, axios-retry@npm:^4.5.0":
+"axios-retry@npm:^4.5.0":
   version: 4.5.0
   resolution: "axios-retry@npm:4.5.0"
   dependencies:
@@ -20953,7 +20951,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios@npm:^1.13.6, axios@npm:^1.16.0":
+"axios@npm:^1.13.6":
   version: 1.18.1
   resolution: "axios@npm:1.18.1"
   dependencies:
@@ -32868,12 +32866,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jiti@npm:2.6.1, jiti@npm:^2.1.2, jiti@npm:^2.4.2, jiti@npm:^2.5.1, jiti@npm:^2.6.1":
-  version: 2.6.1
-  resolution: "jiti@npm:2.6.1"
+"jiti@npm:2.7.0, jiti@npm:^2.1.2, jiti@npm:^2.4.2, jiti@npm:^2.5.1, jiti@npm:^2.6.1":
+  version: 2.7.0
+  resolution: "jiti@npm:2.7.0"
   bin:
     jiti: lib/jiti-cli.mjs
-  checksum: 10/8cd72c5fd03a0502564c3f46c49761090f6dadead21fa191b73535724f095ad86c2fa89ee6fe4bc3515337e8d406cc8fb2d37b73fa0c99a34584bac35cd4a4de
+  checksum: 10/6d75a8dbd61dbee031aa0937fabb748ff8ddf370b971958cc704f5cf26b4c5bdc9dcd0563059b2627a2bd41d946fa0bc64f912fdc8981ca7945a9d63c74ad0f9
   languageName: node
   linkType: hard
 
@@ -39048,27 +39046,27 @@ __metadata:
   languageName: node
   linkType: hard
 
-"playwright-core@npm:1.60.0":
-  version: 1.60.0
-  resolution: "playwright-core@npm:1.60.0"
+"playwright-core@npm:1.61.1":
+  version: 1.61.1
+  resolution: "playwright-core@npm:1.61.1"
   bin:
     playwright-core: cli.js
-  checksum: 10/66c0f83d627e673261c848dd6fe1f2856d5b5b6859268acb61a45c00f5bf926e596a351a9c481a3a4e82a45022c7c6b5d99ebc3906fc6876ac582ed6f7e16190
+  checksum: 10/b0e7b1d4de7ca6c1a57eb88f1709609a8b7637092f149e703d84d6c8e01835992ec5ca26b86f1a32fb5f5bc1aad042c3ae27311e131b3dda8a27824a543eb3c7
   languageName: node
   linkType: hard
 
-"playwright@npm:1.60.0":
-  version: 1.60.0
-  resolution: "playwright@npm:1.60.0"
+"playwright@npm:1.61.1":
+  version: 1.61.1
+  resolution: "playwright@npm:1.61.1"
   dependencies:
     fsevents: "npm:2.3.2"
-    playwright-core: "npm:1.60.0"
+    playwright-core: "npm:1.61.1"
   dependenciesMeta:
     fsevents:
       optional: true
   bin:
     playwright: cli.js
-  checksum: 10/8569770637ee35d08cca3b53a5b56c21e9236bd1ac4718456d5988fb8acd51c5b3cc2cf90748363a36199529e870a9b6c68d6fc9e19571261cd867005d6331c1
+  checksum: 10/0cd1a8a7e106202e785450763973bf326d4aa112ed195bbd78b17af43dcfd12e29bc8204ae61c88f748dd0f2bdf69a7827bc3bbf8c1ec4c71b8e35586e05f13c
   languageName: node
   linkType: hard
 
@@ -44728,7 +44726,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tmp@npm:^0.2.0, tmp@npm:^0.2.1, tmp@npm:^0.2.5, tmp@npm:^0.2.6":
+"tmp@npm:^0.2.0, tmp@npm:^0.2.1, tmp@npm:^0.2.5, tmp@npm:^0.2.7":
   version: 0.2.7
   resolution: "tmp@npm:0.2.7"
   checksum: 10/0a3bc90beb0c6275273c3475fb57e466eaab1c9c4a101d029ff62b18146ce136e7f75d09de34863d9f2c2a492751402508f9e028bc98eb34a1416195d4b15619
@@ -45584,7 +45582,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"undici@npm:^6.18.2, undici@npm:^6.22.0":
+"undici@npm:^6.18.2, undici@npm:^6.22.0, undici@npm:^6.27.0":
   version: 6.27.0
   resolution: "undici@npm:6.27.0"
   checksum: 10/30c18cdb235edf4dd36f8aa3ace1ffaf44060289a7d62ad44c33180d2d74a224015d25574812f62ce9c625b5beb1b0b766495b650fedf356aca11eed7ce2c816
