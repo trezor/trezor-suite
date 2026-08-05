@@ -152,6 +152,17 @@ export const recoveryRerunThunk = createThunk<
     // reload fresh features before deciding what to do
     const response = await TrezorConnect.getFeatures({ device: { path: device.path } });
 
+    // If the selected device changed during the getFeatures round-trip (a multi-device switch), bail
+    // out before touching shared recovery state on EITHER response branch — otherwise this device's
+    // outcome (including a stale 'failed to rerun' error) would be applied to a different device, and
+    // the seed-input call the caller starts next would target the wrong device. Reset so the status
+    // set above is not left stuck; the newly-selected device re-triggers its own rerun if needed.
+    if (selectSelectedDevice(getState())?.path !== device.path) {
+        dispatch(recoveryActions.resetReducer());
+
+        return rejectWithValue('selected device changed');
+    }
+
     if (!response.success) {
         dispatch(recoveryActions.setStatus('finished'));
         dispatch(recoveryActions.setError('failed to rerun recovery'));
@@ -160,16 +171,6 @@ export const recoveryRerunThunk = createThunk<
     }
 
     const features = response.payload;
-
-    // The selected device may have changed during the getFeatures round-trip (e.g. a multi-device
-    // switch). Bail out instead of applying this device's initialized/recover-vs-check decision — and
-    // the seed-input call the caller starts next — to a different device. Reset so the status set
-    // above is not left stuck; the newly-selected device re-triggers its own rerun if needed.
-    if (selectSelectedDevice(getState())?.path !== device.path) {
-        dispatch(recoveryActions.resetReducer());
-
-        return rejectWithValue('selected device changed');
-    }
 
     if (!isRecoveryInProgress(features)) {
         // Device already left recovery mode; clear the transient 'in-progress' status set above so
