@@ -479,14 +479,14 @@ const TokenRowBasicActions = ({
                     {
                         label: <Translation id="TR_EARN_YIELD_DEPOSIT" />,
                         icon: PlusIcon,
-                        onClick: () => {},
+                        onClick: navigateToYieldDeposit,
                         isDisabled: type === 'defi' ? isDepositButtonDisabled : true,
                         isHidden: type === 'defi' ? !isBelowTablet : !isErc4626(token),
                     },
                     {
                         label: <Translation id="TR_EARN_YIELD_WITHDRAW" />,
                         icon: MinusIcon,
-                        onClick: () => {},
+                        onClick: navigateToYieldWithdraw,
                         isDisabled: type === 'defi' ? isWithdrawButtonDisabled : true,
                         isHidden: type === 'defi' ? !isBelowTablet : !isErc4626(token),
                     },
