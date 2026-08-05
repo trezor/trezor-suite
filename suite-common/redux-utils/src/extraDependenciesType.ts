@@ -8,6 +8,7 @@ import type { AddressValidatorDep } from '@suite-common/address';
 import type { AnalyticsSharedEvents } from '@suite-common/analytics';
 import { type Bip329Dep } from '@suite-common/bip329-types';
 import { type EnsureDelegatedIdentityKeyDep } from '@suite-common/delegated-identity-key-types';
+import { type Getter } from '@suite-common/dependency-injection';
 import { type MetadataAddPayload } from '@suite-common/metadata-types';
 import type {
     FindNetworkSymbolForProtocolDep,
@@ -90,17 +91,22 @@ export type CommonServices = SuiteSyncDep &
         connectInitSettings: ConnectInitSettings;
         connectInitHooks: ConnectInitHooks;
         accountRefreshThrottle: KeyedThrottle<Account['key']>;
-        getTokenDefinitionsEnabledNetworks: () => NetworkSymbol[];
-        getDebugSettings: () => any;
-        getDesktopBinDir: () => string | undefined;
-        getLanguage: () => string;
-        getIsWindowVisible: () => boolean;
-        getSelectedAccount: () => SelectedAccountStatus;
-        getSelectedAccountStatus: () => SelectedAccountStatus['status'];
-        getTradingEnvironment: () => 'production' | 'staging' | 'dev' | 'localhost' | undefined;
-        getTradedAccountKeys: () => AccountKey[];
-        getIsViewOnlyByDefaultEnabled: () => boolean;
-        getThpSettings: () => ThpSettings;
+        // Getters, so a component cannot read them during render and miss later state changes.
+        // See `toGetter`/`useGetter` in @suite-common/dependency-injection.
+        getTokenDefinitionsEnabledNetworks: Getter<[], NetworkSymbol[]>;
+        getDebugSettings: Getter<[], any>;
+        getDesktopBinDir: Getter<[], string | undefined>;
+        getLanguage: Getter<[], string>;
+        getIsWindowVisible: Getter<[], boolean>;
+        getSelectedAccount: Getter<[], SelectedAccountStatus>;
+        getSelectedAccountStatus: Getter<[], SelectedAccountStatus['status']>;
+        getTradingEnvironment: Getter<
+            [],
+            'production' | 'staging' | 'dev' | 'localhost' | undefined
+        >;
+        getTradedAccountKeys: Getter<[], AccountKey[]>;
+        getIsViewOnlyByDefaultEnabled: Getter<[], boolean>;
+        getThpSettings: Getter<[], ThpSettings>;
     } & ReportSecurityCheckDep &
     ReloadAppDep &
     MigrateSuiteSyncLabelsForRbfTransactionDep &
