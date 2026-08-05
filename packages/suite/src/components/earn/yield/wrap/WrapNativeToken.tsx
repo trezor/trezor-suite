@@ -118,6 +118,13 @@ export const WrapNativeToken = ({ account, token }: WrapNativeTokenProps) => {
     });
 
     const handleSubmit = methods.handleSubmit(async ({ amountInput: wrapAmount }) => {
+        // The form stays mounted while a wrap is pending so its transaction remains visible, which
+        // leaves this path reachable after the feature has been disabled remotely. Checked before
+        // reporting so a blocked submit is not counted as one.
+        if (isDisabled) {
+            return;
+        }
+
         reportSubmit();
 
         if (!(await ensureDeviceReady())) {
@@ -216,7 +223,7 @@ export const WrapNativeToken = ({ account, token }: WrapNativeTokenProps) => {
                         availableAmount={account.formattedBalance}
                         shouldShowReceivingRow={false}
                         isSubmitting={wrapMutation.isPending}
-                        isSubmitDisabled={!isAmountValid}
+                        isSubmitDisabled={!isAmountValid || isDisabled}
                         warning={renderWrapWarning()}
                         pendingTransaction={
                             broadcast
