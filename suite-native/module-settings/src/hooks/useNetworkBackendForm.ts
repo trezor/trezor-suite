@@ -16,7 +16,6 @@ import {
 import {
     type BlockchainRootState,
     blockchainActions,
-    reconnectBlockchainThunk,
     selectNetworkBlockchainInfo,
 } from '@suite-common/wallet-core';
 import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
@@ -119,7 +118,6 @@ export const useNetworkBackendForm = ({ symbol, backendOptions }: Network) => {
                 urls: serverType !== 'default' ? [serverAddress] : [],
             }),
         );
-        dispatch(reconnectBlockchainThunk({ symbol }));
         analytics.report({
             type: events.settingsChangeCoinBackendEvent.name,
             payload: { symbol, type: serverType },
