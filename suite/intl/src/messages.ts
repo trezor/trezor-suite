@@ -1221,7 +1221,7 @@ export const messages = defineMessages({
         id: 'TR_TRADING_TRADE_HISTORY_COUNTER',
     },
     TR_TRADING_ENTER_AMOUNT_IN: {
-        defaultMessage: 'Enter amount in {currency}',
+        defaultMessage: 'Enter in {currency}',
         id: 'TR_TRADING_ENTER_AMOUNT_IN',
     },
     TR_TRADING_SELL: {
@@ -8831,7 +8831,7 @@ export const messages = defineMessages({
     },
     TR_EARN_ENTER_AMOUNT_IN: {
         id: 'TR_EARN_ENTER_AMOUNT_IN',
-        defaultMessage: 'Enter amount in {currency}',
+        defaultMessage: 'Enter in {currency}',
     },
     TR_RECEIVING_SYMBOL: {
         id: 'TR_RECEIVING_SYMBOL',
@@ -9935,11 +9935,11 @@ export const messages = defineMessages({
     },
     TR_NO_DEVICE_ESHOP_BANNER_BULLET_SECURITY: {
         id: 'TR_NO_DEVICE_ESHOP_BANNER_BULLET_SECURITY',
-        defaultMessage: 'Advanced open-source security',
+        defaultMessage: '100% open-source code & design',
     },
     TR_NO_DEVICE_ESHOP_BANNER_BULLET_APP: {
         id: 'TR_NO_DEVICE_ESHOP_BANNER_BULLET_APP',
-        defaultMessage: 'Powerful crypto app for mobile & desktop',
+        defaultMessage: 'Secure crypto app for mobile & desktop',
     },
     TR_NO_DEVICE_ESHOP_BANNER_BULLET_SETUP: {
         id: 'TR_NO_DEVICE_ESHOP_BANNER_BULLET_SETUP',
@@ -10159,7 +10159,7 @@ export const messages = defineMessages({
     TR_EARN_YIELD_WRAP_RESERVE_RECOMMENDED: {
         id: 'TR_EARN_YIELD_WRAP_RESERVE_RECOMMENDED',
         defaultMessage:
-            "It's recommended to leave {amount} {nativeSymbol} so you can pay for withdrawal fees.",
+            'We recommend leaving {amount} {nativeSymbol} so you can pay withdrawal fees.',
     },
     TR_EARN_YIELD_WRAP_RECEIVING: {
         id: 'TR_EARN_YIELD_WRAP_RECEIVING',
@@ -10272,7 +10272,7 @@ export const messages = defineMessages({
     },
     TR_EARN_YIELD_ENTER_AMOUNT_IN_TOKEN: {
         id: 'TR_EARN_YIELD_ENTER_AMOUNT_IN_TOKEN',
-        defaultMessage: 'Enter amount in {tokenSymbol}',
+        defaultMessage: 'Enter in {tokenSymbol}',
     },
     TR_EARN_YIELD_APPROVED_AMOUNT: {
         id: 'TR_EARN_YIELD_APPROVED_AMOUNT',
@@ -12568,7 +12568,7 @@ export const messages = defineMessages({
     },
     TR_FW_UPDATE_REQUIRED_MODAL_DESCRIPTION: {
         id: 'TR_FW_UPDATE_REQUIRED_MODAL_DESCRIPTION',
-        defaultMessage: 'Update firmware on the device {name} to continue.',
+        defaultMessage: 'Update firmware on the device {name} to continue',
     },
     TR_TURN_ON_SECURE_SYNC_FW_UPDATE_MODAL_UPGRADE: {
         id: 'TR_TURN_ON_SECURE_SYNC_FW_UPDATE_MODAL_UPGRADE',
