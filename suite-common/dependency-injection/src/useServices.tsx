@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { type UnionToIntersection } from '@trezor/type-utils';
+import { type IsAny, type UnionToIntersection } from '@trezor/type-utils';
 
 import { type Getter } from './toGetter';
 
@@ -19,8 +19,6 @@ export type SelectorResult<TSelector> =
 
 export type SelectedServices<TSelectors extends readonly ServiceSelector<any>[]> =
     UnionToIntersection<SelectorResult<TSelectors[number]>>;
-
-type IsAny<T> = 0 extends 1 & T ? true : false;
 
 type GetterKeys<TSelected> = {
     [K in keyof TSelected]-?: TSelected[K] extends Getter<any[], any> ? K : never;
