@@ -212,7 +212,7 @@
         "react-native-performance": "^5.1.4",
         "ts-jest": "29.4.1",
         "tsx": "^4.21.0",
-        "uri-scheme": "^2.0.18"
+        "uri-scheme": "^2.2.0"
     },
     "private": true
 }
