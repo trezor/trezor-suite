@@ -1,17 +1,17 @@
-import { type AccountType, type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import {
+    type AccountType,
+    type NetworkSymbol,
+    type NetworkType,
+} from '@suite-common/wallet-config';
 import { type AccountKey, type TxSimulationAction } from '@suite-common/wallet-types';
-import { type CallMethodKeys, type PermissionRequest } from '@trezor/connect';
+import { type CallMethodKeys, type CoinInfo, type PermissionRequest } from '@trezor/connect';
 import { type SerializedError } from '@trezor/connect-common/src/constants/errors';
 import { type AddressSelection } from '@trezor/connect-common/src/types/api/selectAccount';
 
-// UTXO coins have accounts with many addresses (mirrors `isUtxoBased` in
-// wallet-utils/accountUtils, which operates on an already-loaded `Account` instead of a symbol) —
-// `selectAccount`'s `addressSelection`/xpub-vs-address distinction only applies to them.
-export const isUtxoNetwork = (symbol: NetworkSymbol) => {
-    const { networkType } = getNetwork(symbol);
-
-    return networkType === 'bitcoin' || networkType === 'cardano';
-};
+// UTXO coins (bitcoin type, plus Cardano which Connect files under `misc`) — mirrors `isUtxoBased`
+// in @trezor/connect. Only these have `selectAccount`'s xpub-vs-address distinction.
+export const isUtxoCoinInfo = (coinInfo: CoinInfo) =>
+    coinInfo.type === 'bitcoin' || coinInfo.shortcut === 'ADA' || coinInfo.shortcut === 'tADA';
 
 export type ManifestPartial = {
     appName: string;
@@ -131,6 +131,13 @@ export type SelectAccountOptions = {
     symbol: NetworkSymbol;
     selectionType: 'single' | 'multi';
     accountTypeTabs: SelectAccountTypeTab[]; // at least one
+    // Whether the coin is UTXO-based (see isUtxoCoinInfo); drives `mode`/`addressSelection` below.
+    isUtxo: boolean;
+    // Coin metadata resolved once when the picker opens — from wallet-config for Suite coins, else
+    // from the fetched CoinInfo — so per-page derivation and on-device verification never call the
+    // Suite-only getNetwork (which is undefined for coins Connect supports but Suite does not).
+    networkType: NetworkType;
+    decimals: number;
     // Resolved once from `addressSelection` + the coin's network type (see SelectAccountCandidate).
     mode: 'xpub' | 'address';
     // Normalized: 'fullAccount' when the coin is UTXO-based and the param was omitted or explicit;

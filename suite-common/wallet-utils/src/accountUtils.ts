@@ -8,6 +8,7 @@ import {
     type NetworkType,
     type TrezorConnectBackendType,
     getNetwork,
+    getNetworkOptional,
     networkSymbolCollection,
     networks,
 } from '@suite-common/wallet-config';
@@ -1148,11 +1149,15 @@ export const prepareNewAccountPayload = async ({
     accountTypes?: NetworkAccount[];
     device: TrezorDevice;
 }) => {
-    const network = getNetwork(networkSymbol);
+    // getNetworkOptional (not getNetwork): the connect-popup selectAccount picker derives accounts
+    // for coins Connect supports but Suite has no config for, where the caller supplies bip43Path
+    // via selectedAccount. Unknown network -> no index offset and no ethereum-only protocols.
+    const network = getNetworkOptional(networkSymbol);
     const networkAccount =
         selectedAccount ?? accountTypes?.find(v => v.accountType === accountType);
 
-    const accountIndex = index + getAccountIndexOffset(network.networkType, accountType);
+    const accountIndex =
+        index + (network ? getAccountIndexOffset(network.networkType, accountType) : 0);
 
     const newPath = networkAccount?.bip43Path.replace('i', String(accountIndex));
 
@@ -1168,7 +1173,7 @@ export const prepareNewAccountPayload = async ({
             useEmptyPassphrase: device.useEmptyPassphrase,
         },
         details: 'txs',
-        protocols: network.networkType === 'ethereum' ? ['erc4626'] : undefined,
+        protocols: network?.networkType === 'ethereum' ? ['erc4626'] : undefined,
     });
 
     if (!res.success) return new Error(res.error.message);

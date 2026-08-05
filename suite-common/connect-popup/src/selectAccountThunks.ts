@@ -1,13 +1,12 @@
 import { selectSelectedDevice } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
-import { getNetwork } from '@suite-common/wallet-config';
 import {
     getAddressForNetworkType,
     getPublicKeyForNetworkType,
     selectDeviceAccountsByNetworkSymbol,
 } from '@suite-common/wallet-core';
 import {
-    formatNetworkAmount,
+    convertAmountSubunitsToUnits,
     getAddressParameters,
     getDerivationType,
     getNetworkId,
@@ -25,7 +24,6 @@ import {
     CONNECT_POPUP_MODULE,
     SELECT_ACCOUNT_PAGE_SIZE,
     type SelectAccountCandidate,
-    isUtxoNetwork,
 } from './connectPopupTypes';
 
 // Resolves what a picker row actually exports, given the picker's mode:
@@ -96,8 +94,7 @@ export const connectPopupLoadSelectAccountPageThunk = createThunk<void, { page: 
             if (initialCall?.state !== 'select-account') return;
 
             const { options, candidates: prevCandidates, selectedAccountTypeKey } = initialCall;
-            const { symbol, accountTypeTabs, mode } = options;
-            const isUtxo = isUtxoNetwork(symbol);
+            const { symbol, accountTypeTabs, mode, isUtxo, decimals } = options;
             // accountTypeTabs is guaranteed non-empty by the methodHook that builds it
             const activeTab =
                 accountTypeTabs.find(tab => tab.key === selectedAccountTypeKey) ??
@@ -216,7 +213,10 @@ export const connectPopupLoadSelectAccountPageThunk = createThunk<void, { page: 
                                         addresses: result.accountInfo.addresses,
                                     })
                                   : { path: result.path }),
-                              balance: formatNetworkAmount(result.accountInfo.balance, symbol),
+                              balance: convertAmountSubunitsToUnits(
+                                  result.accountInfo.balance,
+                                  decimals,
+                              ),
                               used: !result.accountInfo.empty,
                               loading: false,
                               loadFailed: false,
@@ -246,7 +246,7 @@ export const connectPopupLoadSelectAccountPageThunk = createThunk<void, { page: 
             if (initialCall?.state !== 'select-account') return;
 
             const { options, selectedAccountTypeKey } = initialCall;
-            const { symbol, accountTypeTabs } = options;
+            const { symbol, accountTypeTabs, decimals } = options;
             const activeTab =
                 accountTypeTabs.find(tab => tab.key === selectedAccountTypeKey) ??
                 accountTypeTabs[0]!;
@@ -287,7 +287,7 @@ export const connectPopupLoadSelectAccountPageThunk = createThunk<void, { page: 
                         accountTypeKey: activeTab.key,
                         path: addr.path,
                         address: addr.address,
-                        balance: formatNetworkAmount(addr.balance, symbol),
+                        balance: convertAmountSubunitsToUnits(addr.balance, decimals),
                         used: true,
                         selected: cached?.selected ?? false,
                         loading: false,
@@ -474,7 +474,7 @@ export const connectPopupVerifySelectAccountThunk = createThunk<
             useEmptyPassphrase: device.useEmptyPassphrase,
         };
 
-        const { networkType } = getNetwork(candidate.symbol);
+        const { networkType } = call.options;
         const accountType =
             call.options.accountTypeTabs.find(tab => tab.key === candidate.accountTypeKey)
                 ?.accountType ?? 'normal';
