@@ -7,6 +7,7 @@ import {
     getYieldFlowSteps,
     getYieldMaxFiatInputValue,
     getYieldUnwrapDefaultAmount,
+    shouldInitializeYieldAllowance,
 } from './yieldFlowUtils';
 
 // Checksummed WETH address; the helper lower-cases it for the (evm) rate key.
@@ -307,6 +308,79 @@ describe('yieldFlowUtils', () => {
             expect(getYieldCryptoInputValue({ fiat: '100', rate: undefined, decimals: 6 })).toBe(
                 '',
             );
+        });
+    });
+
+    describe('shouldInitializeYieldAllowance', () => {
+        const wrappedNativeParams = {
+            isWrappedNativeVault: true,
+            hasWrappedNativeSession: true,
+            step: 'approve',
+            allowanceStatus: 'idle',
+        } as const;
+
+        it('reads the allowance for a plain ERC-20 vault on any step', () => {
+            const erc20Params = {
+                isWrappedNativeVault: false,
+                hasWrappedNativeSession: false,
+                allowanceStatus: 'idle',
+            } as const;
+
+            expect(shouldInitializeYieldAllowance({ ...erc20Params, step: 'approve' })).toBe(true);
+            expect(shouldInitializeYieldAllowance({ ...erc20Params, step: 'action' })).toBe(true);
+        });
+
+        it('reads the allowance only when it is idle', () => {
+            expect(
+                shouldInitializeYieldAllowance({
+                    ...wrappedNativeParams,
+                    allowanceStatus: 'loading',
+                }),
+            ).toBe(false);
+            expect(
+                shouldInitializeYieldAllowance({
+                    ...wrappedNativeParams,
+                    allowanceStatus: 'loaded',
+                }),
+            ).toBe(false);
+            expect(
+                shouldInitializeYieldAllowance({
+                    ...wrappedNativeParams,
+                    allowanceStatus: 'error',
+                }),
+            ).toBe(false);
+        });
+
+        it('skips the read on the wrap step, before the amount to approve is known', () => {
+            expect(shouldInitializeYieldAllowance({ ...wrappedNativeParams, step: 'wrap' })).toBe(
+                false,
+            );
+        });
+
+        it('reads the allowance on the approve step of a wrapped-native deposit', () => {
+            expect(shouldInitializeYieldAllowance(wrappedNativeParams)).toBe(true);
+        });
+
+        // Otherwise the status stays idle for the rest of the flow and the banner never returns.
+        it('re-reads the allowance on the action step of a wrapped-native deposit', () => {
+            expect(shouldInitializeYieldAllowance({ ...wrappedNativeParams, step: 'action' })).toBe(
+                true,
+            );
+        });
+
+        it('skips the read until the session reports the wrapped-native shape', () => {
+            expect(
+                shouldInitializeYieldAllowance({
+                    ...wrappedNativeParams,
+                    hasWrappedNativeSession: false,
+                }),
+            ).toBe(false);
+        });
+
+        it('skips the read once the flow is complete', () => {
+            expect(
+                shouldInitializeYieldAllowance({ ...wrappedNativeParams, step: 'complete' }),
+            ).toBe(false);
         });
     });
 });

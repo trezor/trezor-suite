@@ -1,5 +1,6 @@
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
+    type YieldAllowanceStatus,
     type YieldFlowDisplayToken,
     type YieldFlowStepId,
     type YieldFlowToken,
@@ -94,6 +95,41 @@ export const getYieldUnwrapDefaultAmount = ({
     }
 
     return withdrawnAssetAmount;
+};
+
+type ShouldInitializeYieldAllowanceParams = {
+    isWrappedNativeVault: boolean;
+    /** Whether the Redux session already reflects that shape; false until `initSession` lands. */
+    hasWrappedNativeSession: boolean;
+    step: YieldFlowStepId;
+    allowanceStatus: YieldAllowanceStatus;
+};
+
+/**
+ * Whether the on-chain allowance should be read now.
+ *
+ * A wrapped-native deposit must not read it before the wrap step resolves: the amount to approve
+ * is only known then, and a leftover dust allowance would otherwise auto-skip the approve step
+ * (see trezor/trezor-suite#30551). From the approve step onwards it must be read again whenever
+ * it is invalidated — including on the action step, which a confirmed approval invalidates.
+ * Leaving it idle there hides the fetch-failure banner and permanently disables the
+ * insufficient-approval warning.
+ */
+export const shouldInitializeYieldAllowance = ({
+    isWrappedNativeVault,
+    hasWrappedNativeSession,
+    step,
+    allowanceStatus,
+}: ShouldInitializeYieldAllowanceParams): boolean => {
+    if (allowanceStatus !== 'idle') {
+        return false;
+    }
+
+    if (!isWrappedNativeVault) {
+        return true;
+    }
+
+    return hasWrappedNativeSession && (step === 'approve' || step === 'action');
 };
 
 export type YieldFiatRateToken = {

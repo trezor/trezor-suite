@@ -64,6 +64,10 @@ const getStep = (store: ReturnType<typeof initStore>) =>
     selectStablecoinYieldSession(store.getState() as StablecoinYieldRootState, 'deposit', FLOW_KEY)
         .step;
 
+const getApproval = (store: ReturnType<typeof initStore>) =>
+    selectStablecoinYieldSession(store.getState() as StablecoinYieldRootState, 'deposit', FLOW_KEY)
+        .approval;
+
 // Seed a wrapped-native deposit session sitting on the `approve` step, with the
 // just-wrapped amount stored in `session.action.amount` (mirrors the wrap→approve
 // transition produced by resolveWrappedNativeStep after the wrap tx confirms).
@@ -160,6 +164,81 @@ describe('initYieldAllowanceThunk', () => {
             .dispatch(initYieldAllowanceThunk({ flowType: 'deposit', flowKey: FLOW_KEY, flowData }))
             .unwrap();
 
+        expect(getStep(store)).toBe('approve');
+    });
+
+    it('holds the step when skipping is opted out of, even on a covering allowance', async () => {
+        (fetchAllowance as jest.Mock).mockResolvedValue(toSubunits('0.3'));
+
+        const store = initStore();
+        seedWrappedDepositAtApprove(store, WRAPPED_AMOUNT);
+
+        await store
+            .dispatch(
+                initYieldAllowanceThunk({
+                    flowType: 'deposit',
+                    flowKey: FLOW_KEY,
+                    flowData,
+                    shouldSkipApprovalStep: false,
+                }),
+            )
+            .unwrap();
+
+        expect(getStep(store)).toBe('approve');
+        expect(getApproval(store).allowanceAmount).toBe('0.3');
+    });
+
+    it('refreshes the allowance on the action step without moving the flow', async () => {
+        (fetchAllowance as jest.Mock).mockResolvedValue(toSubunits('0.3'));
+
+        const store = initStore();
+        seedWrappedDepositAtApprove(store, WRAPPED_AMOUNT);
+        store.dispatch(
+            stablecoinYieldActions.completeApproval({
+                flowType: 'deposit',
+                flowKey: FLOW_KEY,
+                amount: WRAPPED_AMOUNT,
+            }),
+        );
+        store.dispatch(
+            stablecoinYieldActions.invalidateAllowance({ flowType: 'deposit', flowKey: FLOW_KEY }),
+        );
+        expect(getStep(store)).toBe('action');
+
+        await store
+            .dispatch(
+                initYieldAllowanceThunk({
+                    flowType: 'deposit',
+                    flowKey: FLOW_KEY,
+                    flowData,
+                    shouldSkipApprovalStep: false,
+                }),
+            )
+            .unwrap();
+
+        expect(getStep(store)).toBe('action');
+        expect(getApproval(store).allowanceStatus).toBe('loaded');
+        expect(getApproval(store).allowanceAmount).toBe('0.3');
+    });
+
+    it('records an error and rethrows when the allowance cannot be read', async () => {
+        (fetchAllowance as jest.Mock).mockRejectedValue(new Error('rpc unavailable'));
+
+        const store = initStore();
+        seedWrappedDepositAtApprove(store, WRAPPED_AMOUNT);
+
+        // `unwrap` rethrows redux's serialized error, which is a plain object rather than an
+        // Error instance — hence matching on the shape instead of `toThrow`.
+        await expect(
+            store
+                .dispatch(
+                    initYieldAllowanceThunk({ flowType: 'deposit', flowKey: FLOW_KEY, flowData }),
+                )
+                .unwrap(),
+        ).rejects.toMatchObject({ message: 'rpc unavailable' });
+
+        expect(getApproval(store).allowanceStatus).toBe('error');
+        expect(getApproval(store).allowanceAmount).toBeNull();
         expect(getStep(store)).toBe('approve');
     });
 });
