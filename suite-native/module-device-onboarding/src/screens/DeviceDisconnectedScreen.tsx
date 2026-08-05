@@ -46,6 +46,14 @@ export const DeviceDisconnectedScreen = ({
             },
         });
 
+    // Leaving this screen (via the alert's Cancel or the header close) means the user gave up on this
+    // onboarding; flag it so the connection middleware keeps them on Home instead of pulling them back
+    // into onboarding on the next connect. Both exit paths must use this handler.
+    const cancelOnboardingAndGoHome = () => {
+        dispatch(setWasDeviceOnboardingCancelled(true));
+        navigateToHome();
+    };
+
     useEffect(() => {
         dispatch(setWasDeviceOnboardingCancelled(false));
 
@@ -60,10 +68,7 @@ export const DeviceDisconnectedScreen = ({
             onPressPrimaryButton: () => setIsAlertDismissed(true),
             secondaryButtonTitle: translate('generic.buttons.cancel'),
             secondaryButtonColorProps: { intent: 'critical', priority: 'secondary' },
-            onPressSecondaryButton: () => {
-                dispatch(setWasDeviceOnboardingCancelled(true));
-                navigateToHome();
-            },
+            onPressSecondaryButton: cancelOnboardingAndGoHome,
         });
 
         // This effect should be called only once during the first render.
@@ -72,7 +77,9 @@ export const DeviceDisconnectedScreen = ({
 
     return (
         <Screen
-            header={<ScreenHeader closeAction={navigateToHome} closeActionType="close" />}
+            header={
+                <ScreenHeader closeAction={cancelOnboardingAndGoHome} closeActionType="close" />
+            }
             isScrollable={false}
         >
             {wasDeviceConnectedViaBluetooth ? (
