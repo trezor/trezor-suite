@@ -71,9 +71,12 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
     };
 
     const handleBackClick = () => {
-        const previousIndex = statesInProgressBar.indexOf(recovery.status) - 1;
-        // @ts-expect-error: indexing with noUncheckedIndexedAccess
-        const previousState: SeedInputStatus = statesInProgressBar[previousIndex];
+        const currentIndex = statesInProgressBar.indexOf(recovery.status);
+        // Fall back to 'initial' when the current status is not part of this device model's progress
+        // bar (e.g. a T1B1-only status lingering after hot-swapping to a touch device), which would
+        // otherwise produce an out-of-bounds index and dispatch setStatus(undefined).
+        const previousState: SeedInputStatus =
+            (currentIndex > 0 ? statesInProgressBar[currentIndex - 1] : undefined) ?? 'initial';
         dispatch(recoveryActions.setStatus(previousState));
     };
 
