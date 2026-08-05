@@ -237,7 +237,7 @@ const applyDeviceStateErrorThunk = createThunk<
     { state: ApplyDeviceStateErrorThunkState }
 >(
     `${DISCOVERY_MODULE_PREFIX}/applyDeviceStateError`,
-    ({ error, code, devicePath }: ApplyDeviceStateErrorThunkProps, { dispatch, getState }) => {
+    ({ error, code, devicePath }, { dispatch, getState }) => {
         // means that `cancelDiscoveryThunk` has been called and device returned code:Method_Cancel and this specific `error`
         if (error === USER_UI_CANCEL_CODE) return;
 
@@ -288,7 +288,7 @@ const completeDiscovery = (
 
 export const cancelDiscoveryThunk = createThunk<void, TrezorDevice, void>(
     `${DISCOVERY_MODULE_PREFIX}/cancel`,
-    (device: TrezorDevice, { dispatch }) => {
+    (device, { dispatch }) => {
         // cancel with a custom error code so we can distinguish it from device cancellation
         TrezorConnect.cancel({ reason: USER_UI_CANCEL_CODE });
 
@@ -313,10 +313,7 @@ export const runDiscoveryThunk = createThunk<
     { state: RunDiscoveryThunkState; extra: RunDiscoveryThunkDeps }
 >(
     `${DISCOVERY_MODULE_PREFIX}/run`,
-    async (
-        { device: passedDevice, callId }: RunDiscoveryParams,
-        { dispatch, getState, extra },
-    ): Promise<void> => {
+    async ({ device: passedDevice, callId }, { dispatch, getState, extra }): Promise<void> => {
         try {
             let device: TrezorDevice = passedDevice;
 
@@ -634,12 +631,7 @@ export const startDiscoveryThunk = createThunk<
 >(
     `${DISCOVERY_MODULE_PREFIX}/start`,
     (
-        {
-            device,
-            isAddingHiddenWallet,
-            isAddingExistingWallet,
-            useScopedCallIds,
-        }: StartDiscoveryThunkParams,
+        { device, isAddingHiddenWallet, isAddingExistingWallet, useScopedCallIds },
         { dispatch, getState },
     ): void => {
         const currentDiscovery = selectDiscoveryByDevicePath(getState(), device.path);
@@ -681,7 +673,7 @@ export const runAdditionalDiscoveryThunk = createThunk<
     { state: RunAdditionalDiscoveryThunkState; extra: RunAdditionalDiscoveryThunkDeps }
 >(
     `${DISCOVERY_MODULE_PREFIX}/runAdditional`,
-    async (staticSessionId: StaticSessionId, { dispatch, getState }): Promise<void> => {
+    async (staticSessionId, { dispatch, getState }): Promise<void> => {
         // todo: not now, but in the future, there could be more devices (wallets) sharing the same static session id, for example
         // an imported wallet + wallet on the physical device. So this should run for all the applicable devices/wallets
 
@@ -801,32 +793,20 @@ export const runAdditionalDiscoveryThunk = createThunk<
 );
 
 type SubmitPassphraseThunkState = DiscoveryRootState;
+type SubmitPassphraseThunkParams = {
+    device: TrezorDevice;
+    passphrase: string;
+    passphraseOnDevice?: boolean;
+    requestId?: string;
+};
 
 export const submitPassphrase = createThunk<
     void,
-    {
-        device: TrezorDevice;
-        passphrase: string;
-        passphraseOnDevice?: boolean;
-        requestId?: string;
-    },
+    SubmitPassphraseThunkParams,
     { state: SubmitPassphraseThunkState }
 >(
     `${DISCOVERY_MODULE_PREFIX}/submitPassphrase`,
-    (
-        {
-            device,
-            passphrase,
-            passphraseOnDevice,
-            requestId,
-        }: {
-            device: TrezorDevice;
-            passphrase: string;
-            passphraseOnDevice?: boolean;
-            requestId?: string;
-        },
-        { dispatch, getState },
-    ) => {
+    ({ device, passphrase, passphraseOnDevice, requestId }, { dispatch, getState }) => {
         const currentDiscovery = selectDiscoveryByDevicePath(getState(), device.path);
 
         if (currentDiscovery) {

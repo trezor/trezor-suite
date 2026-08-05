@@ -79,10 +79,7 @@ export const replaceTransactionThunk = createThunk<
     }
 >(
     `${TRANSACTIONS_MODULE_PREFIX}/replaceTransactionThunk`,
-    (
-        { precomposedTransaction, newTxid }: ReplaceTransactionThunkParams,
-        { getState, dispatch },
-    ) => {
+    ({ precomposedTransaction, newTxid }, { getState, dispatch }) => {
         if (!isRbfBumpFeeTransaction(precomposedTransaction)) return; // ignore if it's not a replacement tx
 
         const walletTransactions = selectTransactions(getState());
@@ -155,10 +152,7 @@ export const addFakePendingTxThunk = createThunk<
     { state: AddFakePendingTxThunkState }
 >(
     `${TRANSACTIONS_MODULE_PREFIX}/addFakePendingTransaction`,
-    (
-        { precomposedTransaction, account }: AddFakePendingTransactionParams,
-        { dispatch, getState, rejectWithValue },
-    ) => {
+    ({ precomposedTransaction, account }, { dispatch, getState, rejectWithValue }) => {
         const blockHeight = selectBlockchainHeightBySymbol(getState(), account.symbol);
         const accounts = selectAccounts(getState());
         const signedTransaction = selectSendSignedTx(getState());
@@ -394,13 +388,7 @@ export const addFakePendingEvmTxThunk = createThunk<
 >(
     `${TRANSACTIONS_MODULE_PREFIX}/addFakePendingTransaction`,
     async (
-        {
-            precomposedTransaction,
-            precomposedForm,
-            txid,
-            account,
-            ethereumNonce,
-        }: AddFakePendingEvmTxThunkParams,
+        { precomposedTransaction, precomposedForm, txid, account, ethereumNonce },
         { dispatch, getState },
     ) => {
         if (
@@ -468,15 +456,7 @@ export const addFakePendingCardanoTxThunk = createThunk<
     { state: AddFakePendingCardanoTxThunkState }
 >(
     `${TRANSACTIONS_MODULE_PREFIX}/addFakePendingTransaction`,
-    (
-        {
-            precomposedTransaction,
-            txid,
-            account,
-            cardanoSpecific,
-        }: AddFakePendingCardanoTxThunkParams,
-        { dispatch, getState },
-    ) => {
+    ({ precomposedTransaction, txid, account, cardanoSpecific }, { dispatch, getState }) => {
         const blockHeight = selectBlockchainHeightBySymbol(getState(), account.symbol);
 
         // Used in cardano send form and staking tab until Blockfrost supports pending txs on its backend
@@ -525,10 +505,7 @@ export const addFakePendingTronTxThunk = createThunk<
     { state: AddFakePendingTronTxThunkState }
 >(
     `${TRANSACTIONS_MODULE_PREFIX}/addFakePendingTransaction`,
-    (
-        { txid, account, amount, fee, type, target, tronSpecific }: AddFakePendingTronTxThunkParams,
-        { dispatch, getState },
-    ) => {
+    ({ txid, account, amount, fee, type, target, tronSpecific }, { dispatch, getState }) => {
         if (account.networkType !== 'tron') return;
 
         const FAKE_TX_TTL_SECONDS = 15 * 60;
@@ -598,10 +575,7 @@ export const fetchTransactionsPageThunk = createThunk<
     }
 >(
     `${TRANSACTIONS_MODULE_PREFIX}/fetchTransactionsPageThunk`,
-    async (
-        { accountKey, page, perPage, forceRefetch }: FetchTransactionsPageThunkParams,
-        { dispatch, getState },
-    ) => {
+    async ({ accountKey, page, perPage, forceRefetch }, { dispatch, getState }) => {
         const account = selectAccountByKey(getState(), accountKey);
         if (!account) {
             throw new Error(`Account not found: ${accountKey}`);

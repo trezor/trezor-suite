@@ -184,34 +184,20 @@ export const openYieldRevokeModal = ({
     });
 };
 type HandleYieldApproveSuccessTxidThunkState = StablecoinYieldRootState;
+type HandleYieldApproveSuccessTxidThunkParams = YieldSessionPayload & {
+    fee?: string;
+    isAmountUnlimited?: boolean;
+    submittedAt?: number;
+    txid: string;
+};
 
 export const handleYieldApproveSuccessTxidThunk = createThunk<
     void,
-    YieldSessionPayload & {
-        fee?: string;
-        isAmountUnlimited?: boolean;
-        submittedAt?: number;
-        txid: string;
-    },
+    HandleYieldApproveSuccessTxidThunkParams,
     { state: HandleYieldApproveSuccessTxidThunkState }
 >(
     `${YIELD_THUNK_PREFIX}/handleApproveSuccessTxid`,
-    (
-        {
-            fee,
-            flowType,
-            flowKey,
-            isAmountUnlimited,
-            submittedAt,
-            txid,
-        }: YieldSessionPayload & {
-            fee?: string;
-            isAmountUnlimited?: boolean;
-            submittedAt?: number;
-            txid: string;
-        },
-        { dispatch, getState },
-    ) => {
+    ({ fee, flowType, flowKey, isAmountUnlimited, submittedAt, txid }, { dispatch, getState }) => {
         const { approval } = selectStablecoinYieldSession(getState(), flowType, flowKey);
         const approveTxType = approval.modalState?.txType ?? 'approve';
 
@@ -323,10 +309,7 @@ export const submitYieldRevokeThunk = createThunk<
     { state: SubmitYieldRevokeThunkState }
 >(
     `${YIELD_THUNK_PREFIX}/submitRevoke`,
-    (
-        { flowKey, flowType, flowData, amount }: YieldSessionDataAmountPayload,
-        { dispatch, getState },
-    ) => {
+    ({ flowKey, flowType, flowData, amount }, { dispatch, getState }) => {
         const { approval } = selectStablecoinYieldSession(getState(), flowType, flowKey);
         const spender = getAllowanceSpender(flowData);
 

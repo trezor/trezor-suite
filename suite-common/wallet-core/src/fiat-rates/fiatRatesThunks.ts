@@ -147,7 +147,7 @@ export const updateTxsFiatRatesThunk = createThunk<
     { state: UpdateTxsFiatRatesThunkState }
 >(
     `${FIAT_RATES_MODULE_PREFIX}/updateTxsRates`,
-    async ({ accountKey, txs, baseCurrencyCode }: UpdateTxsFiatRatesThunkPayload, { getState }) => {
+    async ({ accountKey, txs, baseCurrencyCode }, { getState }) => {
         const account = selectAccountByKey(getState(), accountKey);
         if (!account || txs?.length === 0 || isTestnet(account.symbol))
             return { account, rates: [] };
@@ -317,17 +317,18 @@ export const updateFiatRatesThunk = createThunk<
 type UpdateMissingTxFiatRatesThunkState = FiatRatesRootState &
     TransactionsRootState &
     UpdateTxsFiatRatesThunkState;
+type UpdateMissingTxFiatRatesThunkParams = {
+    localCurrency: BaseCurrencyCode;
+    accountKey?: AccountKey;
+};
 
 export const updateMissingTxFiatRatesThunk = createThunk<
     void,
-    { localCurrency: BaseCurrencyCode; accountKey?: AccountKey },
+    UpdateMissingTxFiatRatesThunkParams,
     { state: UpdateMissingTxFiatRatesThunkState }
 >(
     `${FIAT_RATES_MODULE_PREFIX}/updateMissingTxRates`,
-    (
-        { localCurrency, accountKey }: { localCurrency: BaseCurrencyCode; accountKey?: AccountKey },
-        { dispatch, getState },
-    ) => {
+    ({ localCurrency, accountKey }, { dispatch, getState }) => {
         const transactionsWithMissingRates = selectTransactionsWithMissingRates(
             getState(),
             localCurrency,
@@ -362,7 +363,7 @@ export const fetchFiatRatesThunk = createThunk<
     { state: FetchFiatRatesThunkState }
 >(
     `${FIAT_RATES_MODULE_PREFIX}/fetchFiatRates`,
-    ({ rateType, localCurrency }: FetchFiatRatesThunkPayload, { dispatch, getState }) => {
+    ({ rateType, localCurrency }, { dispatch, getState }) => {
         const currentTimestamp = asTimestamp(Date.now());
         const tickers = selectTickersToBeUpdated(
             getState(),
@@ -428,10 +429,7 @@ export const periodicFetchFiatRatesThunk = createThunk<
     { state: PeriodicFetchFiatRatesThunkState; extra: PeriodicFetchFiatRatesThunkDeps }
 >(
     `${FIAT_RATES_MODULE_PREFIX}/periodicFetchFiatRates`,
-    async (
-        { rateType, localCurrency }: PeriodicFetchFiatRatesThunkPayload,
-        { dispatch, extra },
-    ) => {
+    async ({ rateType, localCurrency }, { dispatch, extra }) => {
         const {
             services: { getIsWindowVisible },
         } = extra;

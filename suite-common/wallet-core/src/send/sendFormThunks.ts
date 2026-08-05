@@ -115,20 +115,18 @@ import {
 type ConvertSendFormDraftsBtcAmountUnitsThunkState = AccountsRootState &
     SendRootState &
     WalletSettingsRootState;
+type ConvertSendFormDraftsBtcAmountUnitsThunkParams = {
+    selectedAccountKey?: AccountKey;
+    isOnSendPage?: boolean;
+};
 
 export const convertSendFormDraftsBtcAmountUnitsThunk = createThunk<
     void,
-    { selectedAccountKey?: AccountKey; isOnSendPage?: boolean },
+    ConvertSendFormDraftsBtcAmountUnitsThunkParams,
     { state: ConvertSendFormDraftsBtcAmountUnitsThunkState }
 >(
     `${SEND_MODULE_PREFIX}/convertSendFormDraftsBtcAmountUnitsThunk`,
-    (
-        {
-            selectedAccountKey,
-            isOnSendPage,
-        }: { selectedAccountKey?: AccountKey; isOnSendPage?: boolean },
-        { dispatch, getState, rejectWithValue },
-    ) => {
+    ({ selectedAccountKey, isOnSendPage }, { dispatch, getState, rejectWithValue }) => {
         const sendFormDrafts = selectSendFormDrafts(getState());
         const areSatsAmountUnit = selectAreSatsAmountUnit(getState());
 
@@ -318,13 +316,7 @@ export const synchronizeSentTransactionThunk = createThunk<
 >(
     `${SEND_MODULE_PREFIX}/synchronizePendingTransactionsThunk`,
     (
-        {
-            selectedAccount,
-            precomposedTransaction,
-            precomposedForm,
-            txid,
-            ethereumNonce,
-        }: SynchronizeSentTransactionThunkParams,
+        { selectedAccount, precomposedTransaction, precomposedForm, txid, ethereumNonce },
         { dispatch },
     ) => {
         // notification from the backend may be delayed.
@@ -591,10 +583,7 @@ export const pushSendFormRawTransactionThunk = createThunk<
     }
 >(
     `${SEND_MODULE_PREFIX}/pushSendFormRawTransactionThunk`,
-    async (
-        payload: PushSendFormRawTransactionThunkParams,
-        { dispatch, getState, fulfillWithValue, rejectWithValue },
-    ) => {
+    async (payload, { dispatch, getState, fulfillWithValue, rejectWithValue }) => {
         const txData = getMevProtectedTxData(
             payload.symbol,
             payload.tx,

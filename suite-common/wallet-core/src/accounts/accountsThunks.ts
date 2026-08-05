@@ -119,7 +119,7 @@ export const reportAccountInfoThunk = createThunk<
     void,
     AccountKey,
     { state: ReportAccountInfoThunkState; extra: ReportAccountInfoThunkDeps }
->(`${ACCOUNTS_MODULE_PREFIX}/reportAccountInfo`, (accountKey: AccountKey, { getState, extra }) => {
+>(`${ACCOUNTS_MODULE_PREFIX}/reportAccountInfo`, (accountKey, { getState, extra }) => {
     const account = selectAccountByKey(getState(), accountKey);
     if (!account || !isAccountActiveForAnalytics(account)) return;
 
@@ -150,14 +150,17 @@ export type FetchAndUpdateAccountThunkState = AccountsRootState &
     TokenDefinitionsRootState &
     TransactionsRootState &
     WalletSettingsRootState;
+type FetchAndUpdateAccountThunkParams = {
+    accountKey: AccountKey;
+};
 
 export const fetchAndUpdateAccountThunk = createThunk<
     void,
-    { accountKey: AccountKey },
+    FetchAndUpdateAccountThunkParams,
     { state: FetchAndUpdateAccountThunkState; extra: FetchAndUpdateAccountThunkDeps }
 >(
     `${ACCOUNTS_MODULE_PREFIX}/fetchAndUpdateAccountThunk`,
-    async ({ accountKey }: { accountKey: AccountKey }, { dispatch, getState }) => {
+    async ({ accountKey }, { dispatch, getState }) => {
         const account = selectAccountByKey(getState(), accountKey);
 
         if (!account || account.failed || account.accountType === 'placeholder') return;

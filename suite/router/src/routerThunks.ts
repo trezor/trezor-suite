@@ -29,28 +29,28 @@ import { type SuiteRouterHistoryDep } from './suiteRouterHistory';
  * Called from ./support/RouterHandler
  */
 type OnLocationChangeThunkState = LocksRootState & ModalRootState & RouterRootState;
+type OnLocationChangeThunkParams = RouterPathOptional & {
+    anchor?: AnchorType;
+};
 
 export const onLocationChange = createThunk<
     ReturnType<typeof routerLocationChange> | null | undefined,
-    RouterPathOptional & { anchor?: AnchorType },
+    OnLocationChangeThunkParams,
     { state: OnLocationChangeThunkState }
->(
-    '@router/onLocationChange',
-    (location: RouterPathOptional & { anchor?: AnchorType }, { dispatch, getState }) => {
-        const unlocked = selectCanNavigate(getState());
-        const router = selectRouter(getState());
-        if (!unlocked && router.loaded) return;
+>('@router/onLocationChange', (location, { dispatch, getState }) => {
+    const unlocked = selectCanNavigate(getState());
+    const router = selectRouter(getState());
+    if (!unlocked && router.loaded) return;
 
-        if (isEqualLocation(router, location) && router.app !== 'unknown') {
-            return null;
-        }
+    if (isEqualLocation(router, location) && router.app !== 'unknown') {
+        return null;
+    }
 
-        // TODO: check if the view is not locked by the device request
-        const appWithParams = getAppWithParams(location);
+    // TODO: check if the view is not locked by the device request
+    const appWithParams = getAppWithParams(location);
 
-        return dispatch(routerLocationChange({ ...location, ...appWithParams }));
-    },
-);
+    return dispatch(routerLocationChange({ ...location, ...appWithParams }));
+});
 
 /**
  * Dispatch initial url
@@ -83,7 +83,7 @@ type GotoThunkDeps = { services: SuiteRouterHistoryDep };
 
 export const goto = createThunk<void, GotoPayload, { state: GotoThunkState; extra: GotoThunkDeps }>(
     '@router/goto',
-    ({ routeName, params, preserveParams, anchor }: GotoPayload, { dispatch, getState, extra }) => {
+    ({ routeName, params, preserveParams, anchor }, { dispatch, getState, extra }) => {
         const hasRouterLock = selectIsRouterLocked(getState());
 
         if (hasRouterLock) {
@@ -169,27 +169,27 @@ export const closeModalApp = createThunk<
  * Redirects to requested modal app or welcome screen if `suite.flags.initialRun` is set to true
  */
 type InitialRedirectionThunkDeps = { services: SuiteRouterHistoryDep };
+type InitialRedirectionThunkParams = {
+    isInitialRun?: boolean;
+};
 
 export const initialRedirection = createThunk<
     void,
-    { isInitialRun?: boolean },
+    InitialRedirectionThunkParams,
     { extra: InitialRedirectionThunkDeps }
->(
-    '@suite/initial-redirection',
-    ({ isInitialRun = true }: { isInitialRun?: boolean }, { dispatch, extra }) => {
-        const location = extra.services.suiteRouterHistory.getLocation();
-        const route = findRoute(location.pathname);
+>('@suite/initial-redirection', ({ isInitialRun = true }, { dispatch, extra }) => {
+    const location = extra.services.suiteRouterHistory.getLocation();
+    const route = findRoute(location.pathname);
 
-        // only do initial redirection of route is valid
-        // otherwise do nothing -> just show 404 page
-        if (!route) {
-            return;
-        }
+    // only do initial redirection of route is valid
+    // otherwise do nothing -> just show 404 page
+    if (!route) {
+        return;
+    }
 
-        if (route.isForegroundApp) {
-            dispatch(goto({ routeName: route.name }));
-        } else if (isInitialRun) {
-            dispatch(goto({ routeName: 'suite-start' }));
-        }
-    },
-);
+    if (route.isForegroundApp) {
+        dispatch(goto({ routeName: route.name }));
+    } else if (isInitialRun) {
+        dispatch(goto({ routeName: 'suite-start' }));
+    }
+});

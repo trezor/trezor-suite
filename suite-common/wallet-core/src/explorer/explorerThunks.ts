@@ -10,21 +10,22 @@ type SetNetworkExplorerThunkDeps = {
     services: AnalyticsDep;
 };
 type SetNetworkExplorerThunkState = ExplorerState;
+type SetNetworkExplorerThunkParams = {
+    symbol: NetworkSymbol;
+    explorer?: Explorer;
+};
 
 export const setNetworkExplorerThunk = createThunk<
     void,
-    { symbol: NetworkSymbol; explorer?: Explorer },
+    SetNetworkExplorerThunkParams,
     { state: SetNetworkExplorerThunkState; extra: SetNetworkExplorerThunkDeps }
->(
-    `${EXPLORER_MODULE_PREFIX}/setExplorerThunk`,
-    (payload: { symbol: NetworkSymbol; explorer?: Explorer }, { dispatch, getState, extra }) => {
-        dispatch(explorerActions.setExplorer(payload));
-        extra.services.analytics.report({
-            type: events.settingsNetworksExplorerEvent.name,
-            payload: {
-                networkSymbol: payload.symbol,
-                type: selectNetworkExplorerType(getState(), payload.symbol),
-            },
-        });
-    },
-);
+>(`${EXPLORER_MODULE_PREFIX}/setExplorerThunk`, (payload, { dispatch, getState, extra }) => {
+    dispatch(explorerActions.setExplorer(payload));
+    extra.services.analytics.report({
+        type: events.settingsNetworksExplorerEvent.name,
+        payload: {
+            networkSymbol: payload.symbol,
+            type: selectNetworkExplorerType(getState(), payload.symbol),
+        },
+    });
+});

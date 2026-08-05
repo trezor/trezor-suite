@@ -21,27 +21,24 @@ const failEntropyCheckThunk = createThunk<
     void,
     FailEntropyCheckParams,
     { extra: FailEntropyCheckThunkDeps }
->(
-    `${DEVICE_MODULE_PREFIX}/failEntropyCheckThunk`,
-    ({ device, error }: FailEntropyCheckParams, { dispatch, extra }) => {
-        const contextData = {
-            model: device?.features?.internal_model,
-            revision: device?.features?.revision,
-            version: getFirmwareVersion(device),
-            vendor: device?.features?.fw_vendor,
-        };
-        extra.services.reportSecurityCheck({
-            level: 'error',
-            checkType: 'Entropy',
-            contextData,
-            payload: error,
-        });
+>(`${DEVICE_MODULE_PREFIX}/failEntropyCheckThunk`, ({ device, error }, { dispatch, extra }) => {
+    const contextData = {
+        model: device?.features?.internal_model,
+        revision: device?.features?.revision,
+        version: getFirmwareVersion(device),
+        vendor: device?.features?.fw_vendor,
+    };
+    extra.services.reportSecurityCheck({
+        level: 'error',
+        checkType: 'Entropy',
+        contextData,
+        payload: error,
+    });
 
-        if (!getIsIgnoredEntropyCheckError(error.message)) {
-            dispatch(deviceActions.setEntropyCheckResult({ deviceId: device.id, success: false }));
-        }
-    },
-);
+    if (!getIsIgnoredEntropyCheckError(error.message)) {
+        dispatch(deviceActions.setEntropyCheckResult({ deviceId: device.id, success: false }));
+    }
+});
 
 type ProcessEntropyCheckResultThunkParams = {
     device: AcquiredDevice;

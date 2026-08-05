@@ -10,7 +10,7 @@ export * from './metadataDataThunks';
 
 export const initNewDeviceStateMetadataThunk = createThunk<void, StaticSessionId>(
     '@suite/metadata/initNewDeviceStateMetadataThunk',
-    async (staticSessionId: StaticSessionId, { getState, dispatch }) => {
+    async (staticSessionId, { getState, dispatch }) => {
         if (!selectIsMetadataEnabled(getState())) {
             return;
         }

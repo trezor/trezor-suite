@@ -18,7 +18,7 @@ export const removeAccountEventsThunk = createThunk<
     void,
     string,
     { state: RemoveAccountEventsThunkState }
->(`${ACTION_PREFIX}/removeAccountEventsThunk`, (descriptor: string, { dispatch, getState }) => {
+>(`${ACTION_PREFIX}/removeAccountEventsThunk`, (descriptor, { dispatch, getState }) => {
     const entries = findTransactionEvents(descriptor, selectNotifications(getState()));
     if (entries.length > 0) dispatch(notificationsActions.remove(entries));
 });

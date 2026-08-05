@@ -20,20 +20,23 @@ type RunPassphraseWalletAddingDiscoveryThunkDeps = {
     thunks: FetchAndSaveMetadataDep;
 };
 type RunPassphraseWalletAddingDiscoveryThunkState = RunDiscoveryThunkState;
+type RunPassphraseWalletAddingDiscoveryThunkParams = {
+    device: TrezorDevice;
+};
 
 // The "run" step. Exported because for a *new* hidden wallet the run is deferred from
 // start — called from PassphraseWalletIsNotExistFlow's "Next" once the user confirms
 // best practices (and reused internally for the existing-wallet flow below).
 export const runPassphraseWalletAddingDiscoveryThunk = createThunk<
     void,
-    { device: TrezorDevice },
+    RunPassphraseWalletAddingDiscoveryThunkParams,
     {
         state: RunPassphraseWalletAddingDiscoveryThunkState;
         extra: RunPassphraseWalletAddingDiscoveryThunkDeps;
     }
 >(
     `${DISCOVERY_MODULE_PREFIX}/runPassphraseWalletAddingDiscovery`,
-    async ({ device }: { device: TrezorDevice }, { dispatch }) => {
+    async ({ device }, { dispatch }) => {
         const callId = crypto.randomUUID();
         const onUiEvent = (message: UiEventMessage | PopupEventMessage) => {
             const { event: _, ...action } = message;
@@ -74,14 +77,7 @@ const startDiscoveryOfExistingPassphraseWalletThunk = createThunk<
     }
 >(
     `${DISCOVERY_MODULE_PREFIX}/startDiscoveryOfExistingPassphraseWallet`,
-    (
-        {
-            device,
-            isAddingHiddenWallet,
-            useScopedCallIds,
-        }: StartDiscoveryOfExistingPassphraseWalletThunkPayload,
-        { dispatch, getState },
-    ): void => {
+    ({ device, isAddingHiddenWallet, useScopedCallIds }, { dispatch, getState }): void => {
         const currentDiscovery = selectDiscoveryByDevicePath(getState(), device.path);
 
         if (isDiscoveryInProgress(currentDiscovery)) {
