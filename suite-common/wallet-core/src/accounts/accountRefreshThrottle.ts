@@ -19,3 +19,7 @@ export const createAccountRefreshThrottle = (getState: () => AccountsRefreshTime
 export type AccountRefreshThrottleDep = {
     accountRefreshThrottle: ReturnType<typeof createAccountRefreshThrottle>;
 };
+
+export function isAccountStale(accountLastSuccessfulRefreshTime: number = 0) {
+    return Date.now() - accountLastSuccessfulRefreshTime >= MIN_ACCOUNT_REFRESH_INTERVAL;
+}

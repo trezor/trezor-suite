@@ -38,7 +38,7 @@ import {
     roundTimestampToNearestPastHour,
 } from '@suite-common/wallet-utils';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
-import { isNotNullOrUndefined, typedObjectKeys } from '@trezor/utils';
+import { isNotNullOrUndefined, typedObjectKeys, typedObjectValues } from '@trezor/utils';
 
 import type { TransactionsByAccount, TransactionsRootState } from './transactionsReducerTypes';
 import type { AccountsRootState } from '../accounts/accountsReducer';
@@ -134,6 +134,17 @@ export const selectEvmPrivatePendingHint = (
     state: TransactionsRootState & AccountsRootState,
     accountKey: AccountKey,
 ) => getEvmPrivatePendingHint(selectAccountTransactions(state, accountKey));
+
+export const selectNetworksWithPendingTxs = createMemoizedSelector(
+    [selectTransactions],
+    transactions => {
+        const networksWithPendingTxs = typedObjectValues(transactions)
+            .map(txs => txs.find(isPending)?.symbol)
+            .filter((symbol): symbol is NetworkSymbol => symbol != null);
+
+        return new Set(networksWithPendingTxs);
+    },
+);
 
 export const selectTransactionByAccountKeyAndTxid = createMemoizedSelector(
     [selectAccountTransactions, (_state, _accountKey: AccountKey | null, txid: string) => txid],

@@ -4,6 +4,7 @@ import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import TrezorConnect from '@trezor/connect';
 
 import { synchronizeSentTransactionThunk } from './sendFormThunks';
+import { syncAccountsWithBlockchainThunk } from '../blockchain/blockchainThunks';
 import { transactionsActions } from '../transactions/transactionsActions';
 
 const ethAccount = mockWalletAccount({ symbol: asNetworkSymbol('eth') });
@@ -107,5 +108,28 @@ describe('synchronizeSentTransactionThunk – EVM fake pending tx nonce', () => 
         );
 
         expect(getAddedFakeTx(store)?.ethereumSpecific?.nonce).toBe(7);
+    });
+});
+
+describe('synchronizeSentTransactionThunk – periodic sync kick', () => {
+    // External-backend EVM networks get no block-driven syncs and the confirmation
+    // notification can be missed, so a send must (re)start the self-re-arming per-symbol
+    // sync — otherwise the freshly added pending tx may never flip to confirmed.
+    it('dispatches syncAccountsWithBlockchainThunk for the sent EVM account', () => {
+        const store = configureMockStore({});
+
+        store.dispatch(
+            synchronizeSentTransactionThunk({
+                selectedAccount: ethAccount,
+                precomposedTransaction: precomposed(),
+                txid: 'NEW',
+            }),
+        );
+
+        const syncActions = store
+            .getActions()
+            .filter(action => action.type === syncAccountsWithBlockchainThunk.pending.type);
+        expect(syncActions).toHaveLength(1);
+        expect(syncActions[0]!.meta.arg).toBe(ethAccount.symbol);
     });
 });

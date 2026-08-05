@@ -11,7 +11,9 @@ import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type AccountsState,
     type BlockchainState,
+    DEFAULT_ACCOUNT_SYNC_INTERVAL,
     type TransactionsState,
+    blockchainActions,
     feesReducer,
     initBlockchainThunk,
     initialWalletSettingsState,
@@ -142,21 +144,48 @@ describe('Blockchain Actions', () => {
 
     fixtures.onDisconnect.forEach(f => {
         it(`onDisconnect: ${f.description}`, async () => {
-            const store = mockStore(getInitialState(f.initialState as Args));
-            await store.dispatch(
-                onBlockchainDisconnectThunk({
-                    // @ts-expect-error partial params
-                    coin: { shortcut: f.symbol },
-                }),
-            );
-            const actions = filterThunkActionTypes(store.getActions());
-            expect(actions).toMatchObject(f.actions);
-            if (actions.length) {
-                // wait for reconnection timeout
-                const timeout = (actions[0]?.payload.time ?? 0) - new Date().getTime() + 500;
-                jest.setTimeout(10000);
-                await new Promise(resolve => setTimeout(resolve, timeout));
-                expect(TrezorConnect.blockchainUnsubscribeFiatRates).toHaveBeenCalledTimes(1);
+            // The repo defaults to legacy fake timers; the async advance needs the modern ones.
+            if (f.armsTimer) jest.useFakeTimers({ legacyFakeTimers: false });
+            const clearTimeoutSpy = jest.spyOn(global, 'clearTimeout');
+
+            try {
+                const store = mockStore(getInitialState(f.initialState as Args));
+                await store.dispatch(
+                    onBlockchainDisconnectThunk({
+                        // @ts-expect-error partial params
+                        coin: { shortcut: f.symbol },
+                        identity: f.identity,
+                    }),
+                );
+                const actions = filterThunkActionTypes(store.getActions());
+                expect(actions).toMatchObject(f.actions);
+
+                if (f.keepsTimer) {
+                    // The armed handle must be left alone — clearing it would kill the chain
+                    // while the state still holds the stale handle.
+                    expect(clearTimeoutSpy).not.toHaveBeenCalledWith(fixtures.MOCK_SYNC_TIMEOUT);
+                }
+                if (f.clearsTimer) {
+                    expect(clearTimeoutSpy).toHaveBeenCalledWith(fixtures.MOCK_SYNC_TIMEOUT);
+                }
+                if (f.armsTimer) {
+                    expect(actions[0]?.payload.timeout).toBeDefined();
+                    // The armed timer must actually continue the chain, not just exist: firing
+                    // it has to run syncAccountsWithBlockchainThunk, which re-arms via a second
+                    // synced action.
+                    await jest.advanceTimersByTimeAsync(DEFAULT_ACCOUNT_SYNC_INTERVAL);
+                    const syncedActions = store
+                        .getActions()
+                        .filter(
+                            a =>
+                                a.type === blockchainActions.synced.type &&
+                                a.payload.symbol === f.symbol,
+                        );
+                    expect(syncedActions.length).toBeGreaterThanOrEqual(2);
+                }
+            } finally {
+                clearTimeoutSpy.mockRestore();
+                if (f.armsTimer) jest.useRealTimers();
             }
         });
     });

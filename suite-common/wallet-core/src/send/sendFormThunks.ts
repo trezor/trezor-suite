@@ -379,6 +379,13 @@ export const synchronizeSentTransactionThunk = createThunk<
                     }),
                 );
             }
+
+            // Kick the periodic sync chain: external-backend EVM networks get no block-driven
+            // syncs and the confirmation notification can be missed, so the self-re-arming
+            // per-symbol sync is the guaranteed path from pending to confirmed — make sure it
+            // is running now that a pending tx exists. The fake pending tx added above carries
+            // a deadline, so the immediate fetch keeps it until the backend picks up the real tx.
+            dispatch(syncAccountsWithBlockchainThunk(selectedAccount.symbol));
         } else {
             // there is no point in fetching account data right after tx submit
             //  as the account will update only after the tx is confirmed

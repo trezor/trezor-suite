@@ -260,10 +260,20 @@ type OnConnectFixture = {
     blockchainSubscribe: number;
 };
 
+// Fake timer handle seeded into blockchain[symbol].syncTimeout by the onDisconnect fixtures.
+export const MOCK_SYNC_TIMEOUT = 42;
+
 type OnDisconnectFixture = {
     description: string;
     initialState?: FixtureState;
     symbol: string;
+    identity?: string;
+    // The thunk armed a new sync timeout; the test asserts it fires syncAccountsWithBlockchainThunk.
+    armsTimer?: boolean;
+    // The seeded MOCK_SYNC_TIMEOUT handle must survive untouched (no clearTimeout call).
+    keepsTimer?: boolean;
+    // The seeded MOCK_SYNC_TIMEOUT handle must be cleared.
+    clearsTimer?: boolean;
     actions: AnyAction[];
 };
 
@@ -587,32 +597,84 @@ export const onDisconnect: OnDisconnectFixture[] = [
         actions: [],
     },
     {
-        description: 'without accounts, not reconnection',
+        description: 'without accounts, without armed timer, does nothing',
         symbol: 'btc',
         actions: [],
     },
     {
-        description: 'with accounts, reconnection started',
+        description: 'without accounts, with armed timer, stops the sync chain',
         initialState: {
-            accounts: [{ symbol: 'btc' }],
-        },
-        symbol: 'btc',
-        actions: [],
-    },
-    {
-        description: 'with accounts, with reconnection, reconnection restarted',
-        initialState: {
-            accounts: [{ symbol: 'btc' }],
             blockchain: {
-                btc: {
-                    reconnection: {
-                        id: 1,
-                        count: 1,
-                    },
-                },
+                btc: { syncTimeout: MOCK_SYNC_TIMEOUT },
             },
         },
         symbol: 'btc',
+        clearsTimer: true,
+        actions: [
+            {
+                type: blockchainActions.synced.type,
+                payload: { symbol: 'btc', timeout: undefined },
+            },
+        ],
+    },
+    {
+        description: 'with accounts, without armed timer, re-arms the sync chain',
+        initialState: {
+            accounts: [{ symbol: 'btc', visible: true }],
+        },
+        symbol: 'btc',
+        armsTimer: true,
+        actions: [
+            {
+                type: blockchainActions.synced.type,
+                payload: { symbol: 'btc' },
+            },
+        ],
+    },
+    {
+        description: 'with accounts, with armed timer, keeps the existing chain',
+        initialState: {
+            accounts: [{ symbol: 'btc' }],
+            blockchain: {
+                btc: { syncTimeout: MOCK_SYNC_TIMEOUT },
+            },
+        },
+        symbol: 'btc',
+        keepsTimer: true,
+        actions: [],
+    },
+    {
+        description: 'identity-scoped error, with accounts, re-arms a missing sync chain',
+        initialState: {
+            accounts: [
+                {
+                    symbol: 'eth',
+                    visible: true,
+                    deviceState: '1stTestnetAddress@device_id:0',
+                },
+            ],
+        },
+        symbol: 'eth',
+        identity: '1stTestnetAddress@device_id:0',
+        armsTimer: true,
+        actions: [
+            {
+                type: blockchainActions.synced.type,
+                payload: { symbol: 'eth' },
+            },
+        ],
+    },
+    {
+        description: 'identity-scoped error, with accounts, keeps an armed chain',
+        initialState: {
+            accounts: [{ symbol: 'eth', deviceState: '1stTestnetAddress@device_id:0' }],
+            blockchain: {
+                eth: { syncTimeout: MOCK_SYNC_TIMEOUT },
+            },
+        },
+        symbol: 'eth',
+        identity: '1stTestnetAddress@device_id:0',
+        keepsTimer: true,
         actions: [],
     },
 ];

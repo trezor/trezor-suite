@@ -23,7 +23,9 @@ const accountsRefreshTimeSlice = createSlice({
     name: 'accountsRefreshTime',
     initialState: accountsRefreshTimeInitialState,
     reducers: {
-        // Marks a refresh event that did not change the account – i.e. did not dispatch createAccount or updateAccount.
+        /**
+         * Marks a refresh event that did not change the account – i.e. did not dispatch createAccount or updateAccount.
+         */
         accountRefreshed: (state, action: PayloadAction<Account['key']>) => {
             state[action.payload] = Date.now();
         },
