@@ -5,8 +5,9 @@ import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { selectIsDeviceCompromised } from '@suite/authenticity-checks';
 import { useDevice } from '@suite/device';
 import { useExternalLink } from '@suite/external-links';
+import { FirmwareUpgradeNeededModal } from '@suite/firmware-upgrade';
 import { selectIsCopyAddressModalShown, selectIsUnhideTokenModalShown } from '@suite/flags';
-import { Translation } from '@suite/intl';
+import { Translation, useTranslation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { showAddressThunk } from '@suite/receive';
 import { goto } from '@suite/router';
@@ -32,6 +33,7 @@ import { type Explorer, type Network } from '@suite-common/wallet-config';
 import {
     getYieldVaultContractAddress,
     getYieldVaultForOutputToken,
+    isWrappedNativeFlowSupported,
     selectExplorer,
     sendFormActions,
 } from '@suite-common/wallet-core';
@@ -72,6 +74,7 @@ import { SUITE } from 'src/actions/suite/constants';
 import { setSendFormPrefill } from 'src/actions/suite/suiteActions';
 import { getEarnRouteParams } from 'src/components/earn/utils/getEarnRouteParams';
 import { useDispatch, useLayoutSize, useSelector } from 'src/hooks/suite';
+import { useFirmwareUpgradeModal } from 'src/hooks/suite/useFirmwareUpgradeModal';
 import { useMessageSystemWrappedNative } from 'src/hooks/suite/useMessageSystemWrappedNative';
 import { getTokenAddressTranslationId } from 'src/utils/wallet/tokenUtils';
 
@@ -147,6 +150,11 @@ const TokenRowBasicActions = ({
     const isWithdrawButtonDisabled = !availableVault?.status.exit;
 
     const { isDisabled: isUnwrapDisabled } = useMessageSystemWrappedNative('unwrap');
+
+    const { translationString } = useTranslation();
+    const isUnwrapFirmwareOutdated = !isWrappedNativeFlowSupported(device);
+    const { isFirmwareModalOpen, openFirmwareModal, closeFirmwareModal, updateFirmware } =
+        useFirmwareUpgradeModal();
 
     if (!unusedAddress || !device) return null;
 
@@ -306,6 +314,25 @@ const TokenRowBasicActions = ({
         });
     };
 
+    const onUnwrapButtonClick = () => {
+        if (isUnwrapFirmwareOutdated) {
+            openFirmwareModal();
+
+            return;
+        }
+
+        dispatch(
+            goto({
+                routeName: 'earn-yield-unwrap',
+                params: {
+                    symbol: account.symbol,
+                    accountIndex: account.index,
+                    accountType: account.accountType,
+                },
+            }),
+        );
+    };
+
     const onViewInExplorerButtonClick = () => {
         window.open(explorerUrl, '_blank');
     };
@@ -344,6 +371,13 @@ const TokenRowBasicActions = ({
 
     return (
         <Row gap={8}>
+            {isFirmwareModalOpen && (
+                <FirmwareUpgradeNeededModal
+                    onClose={closeFirmwareModal}
+                    onUpdate={updateFirmware}
+                    featureName={translationString('TR_EARN_DEFI_YIELD_TITLE')}
+                />
+            )}
             <Dropdown
                 data-testid="@trading/tokens/more-button"
                 placement={{ position: 'bottom', alignment: 'start' }}
@@ -429,17 +463,7 @@ const TokenRowBasicActions = ({
                     {
                         label: <Translation id="TR_UNWRAP_NATIVE_TOKEN" />,
                         icon: ArrowUUpLeftIcon,
-                        onClick: () =>
-                            dispatch(
-                                goto({
-                                    routeName: 'earn-yield-unwrap',
-                                    params: {
-                                        symbol: account.symbol,
-                                        accountIndex: account.index,
-                                        accountType: account.accountType,
-                                    },
-                                }),
-                            ),
+                        onClick: onUnwrapButtonClick,
                         isDisabled: token.balance === '0' || isUnwrapDisabled,
                         isHidden: !isWrappedNativeToken(account.symbol, token.contract),
                     },

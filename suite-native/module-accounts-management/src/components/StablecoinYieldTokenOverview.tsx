@@ -81,11 +81,16 @@ export const StablecoinYieldTokenOverview = ({
     const withdrawMessageSystem = useMessageSystemYield('withdraw', { vaultContractAddress });
 
     const handleDepositMorePress = useCallback(() => {
-        if (!vault?.token.address) {
+        if (!account || !vault?.token.address) {
             return;
         }
 
-        if (!isFirmwareSupported('deposit')) {
+        if (
+            !isFirmwareSupported('deposit', {
+                networkSymbol: account.symbol,
+                contractAddress: vault.token.address,
+            })
+        ) {
             analytics.report({
                 type: events.yieldDepositEvent.name,
                 payload: {
@@ -123,7 +128,7 @@ export const StablecoinYieldTokenOverview = ({
             },
         });
     }, [
-        account?.symbol,
+        account,
         analytics,
         accountKey,
         isFirmwareSupported,
@@ -133,7 +138,16 @@ export const StablecoinYieldTokenOverview = ({
     ]);
 
     const handleWithdrawPress = useCallback(() => {
-        if (!isFirmwareSupported('withdraw')) {
+        if (!account || !vault?.token.address) {
+            return;
+        }
+
+        if (
+            !isFirmwareSupported('withdraw', {
+                networkSymbol: account.symbol,
+                contractAddress: vault.token.address,
+            })
+        ) {
             analytics.report({
                 type: events.yieldWithdrawEvent.name,
                 payload: {
@@ -168,7 +182,7 @@ export const StablecoinYieldTokenOverview = ({
             },
         });
     }, [
-        account?.symbol,
+        account,
         analytics,
         accountKey,
         isFirmwareSupported,

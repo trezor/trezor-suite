@@ -1,4 +1,4 @@
-import { type YieldFlowType } from '@suite-common/wallet-core';
+import { type StablecoinYieldVaultToken, type YieldFlowType } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import {
     type RootStackParamList,
@@ -29,7 +29,10 @@ export const navigateByYieldAccountState = (
     account: Account,
     item: StablecoinYieldNavigationItem,
     navigate: YieldNavigateFn,
-    isFirmwareSupported: (flowType: YieldFlowType) => boolean,
+    isFirmwareSupported: (
+        flowType: YieldFlowType,
+        vaultToken?: StablecoinYieldVaultToken,
+    ) => boolean,
     showFirmwareUpdateAlert: () => void,
 ): YieldAccountNavigationDestination => {
     const { yieldId, underlyingTokenContract, receiptTokenContract } = item;
@@ -51,7 +54,12 @@ export const navigateByYieldAccountState = (
     ).gt(0);
 
     if (hasDepositableBalance) {
-        if (!isFirmwareSupported('deposit')) {
+        if (
+            !isFirmwareSupported('deposit', {
+                networkSymbol: account.symbol,
+                contractAddress: underlyingTokenContract,
+            })
+        ) {
             showFirmwareUpdateAlert();
 
             return 'firmware-update-alert';

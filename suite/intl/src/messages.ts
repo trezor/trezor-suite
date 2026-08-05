@@ -12553,7 +12553,7 @@ export const messages = defineMessages({
     },
     TR_FW_UPDATE_REQUIRED_MODAL_DESCRIPTION: {
         id: 'TR_FW_UPDATE_REQUIRED_MODAL_DESCRIPTION',
-        defaultMessage: 'Update firmware on the device {name} to use {featureName}.',
+        defaultMessage: 'Update firmware on the device {name} to continue.',
     },
     TR_TURN_ON_SECURE_SYNC_FW_UPDATE_MODAL_UPGRADE: {
         id: 'TR_TURN_ON_SECURE_SYNC_FW_UPDATE_MODAL_UPGRADE',

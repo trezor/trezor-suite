@@ -54,7 +54,12 @@ export const EarnYieldAccountOpportunity = ({
     const { translationString } = useTranslation();
     const { isBelowMobile } = useLayoutSize();
     const selectedDevice = useSelector(selectSelectedDevice);
-    const isFirmwareOutdated = !isStablecoinYieldSupported(selectedDevice);
+    const isFirmwareOutdated = !isStablecoinYieldSupported(selectedDevice, {
+        vaultToken: {
+            networkSymbol: opportunity.networkSymbol,
+            contractAddress: opportunity.vault.token.address,
+        },
+    });
     const { isFirmwareModalOpen, openFirmwareModal, closeFirmwareModal, updateFirmware } =
         useFirmwareUpgradeModal();
 
