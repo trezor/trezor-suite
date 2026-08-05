@@ -135,14 +135,11 @@ export const selectSwitchFirmwareType = (state: RootState) => state.firmware.swi
 export const selectIsFirmwareInstallationRunning = (state: RootState) =>
     state.firmware.status === 'started';
 
-// Both factories return a primitive, so they need no memoization.
 export const selectEffectiveFirmwareChannel =
     (allowPrerelease: boolean) =>
     (state: RootState): FirmwareChannel =>
         // When a user is in the Early Access Program, the firmware channel is forced to `production-early-access`.
-        // This factory accepts `allowPrerelease` as a parameter because it comes from a platform-specific
-        // extra dependency: in React read it with `useGetter(selectGetAllowPrereleaseDep)`, elsewhere call
-        // the getter itself.
+        // This factory accepts `allowPrerelease` as a parameter because it is a platform-specific extra dependency.
         allowPrerelease ? 'production-early-access' : selectFirmwareChannel(state);
 
 export const selectIsProductionFirmwareChannel =
