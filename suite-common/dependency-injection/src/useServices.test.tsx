@@ -3,7 +3,7 @@ import React, { type PropsWithChildren } from 'react';
 import { renderHook } from '@testing-library/react';
 
 import { type Getter, asGetter } from './toGetter';
-import { ServicesProvider, useServices } from './useServices';
+import { ServicesProvider, useImperativeServices, useServices } from './useServices';
 
 type ADep = { a: () => void };
 type BDep = { b: () => void };
@@ -63,5 +63,13 @@ describe(useServices.name, () => {
         );
 
         expect(result.current).toBe(appServices.a);
+    });
+});
+
+describe(useImperativeServices.name, () => {
+    it('hands out a dependency containing a getter', () => {
+        const { result } = renderHook(() => useImperativeServices(selectGetterDep), { wrapper });
+
+        expect(result.current.getSomething).toBe(appServices.getSomething);
     });
 });

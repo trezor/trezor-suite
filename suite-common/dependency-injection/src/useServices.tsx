@@ -38,7 +38,7 @@ type RejectGetters<TSelected> =
         ? TSelected
         : [GetterKeys<TSelected>] extends [never]
           ? TSelected
-          : 'This dependency contains a getter. Read its value with useGetter instead.';
+          : 'This dependency contains a getter. Read its value with useGetter, or take the whole dependency with useImperativeServices if nothing is read during render.';
 
 type ServicesProviderProps = {
     services: Services;
@@ -64,13 +64,32 @@ export const useServicesContext = (): Services => {
     return services;
 };
 
+const useSelectedServices = (selectors: ServiceSelector<any>[]) => {
+    const services = useServicesContext();
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    return React.useMemo(() => selectServices(services, ...selectors), [services, ...selectors]);
+};
+
 export function useServices<
     const TSelectors extends readonly [ServiceSelector<any>, ...ServiceSelector<any>[]],
 >(...selectors: TSelectors): RejectGetters<SelectedServices<TSelectors>>;
 
 export function useServices(...selectors: ServiceSelector<any>[]) {
-    const services = useServicesContext();
+    return useSelectedServices(selectors);
+}
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    return React.useMemo(() => selectServices(services, ...selectors), [services, ...selectors]);
+/**
+ * `useServices` for dependencies that do contain getters, which it otherwise refuses to hand out.
+ *
+ * Only for dependencies passed on as a whole and used imperatively — from event handlers and
+ * callbacks, where nothing is read during render. To read a getter's value in render use `useGetter`,
+ * otherwise the component will not re-render when the value changes.
+ */
+export function useImperativeServices<
+    const TSelectors extends readonly [ServiceSelector<any>, ...ServiceSelector<any>[]],
+>(...selectors: TSelectors): SelectedServices<TSelectors>;
+
+export function useImperativeServices(...selectors: ServiceSelector<any>[]) {
+    return useSelectedServices(selectors);
 }

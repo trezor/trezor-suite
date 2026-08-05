@@ -12,6 +12,7 @@ import {
     type Url,
 } from '@trezor/urls';
 
+import { type SuiteServices } from '../../support/extraDependencies';
 import { type Dispatch } from '../../types/suite';
 
 const experimentalNetworks = networksCollection.filter(
@@ -25,7 +26,15 @@ export type ExperimentalFeatureConfig = {
     knowledgeBaseUrl?: Url;
     routeName?: Route['name'];
     isDisabled?: (context: { isDebug: boolean }) => boolean;
-    onToggle?: ({ newValue, dispatch }: { newValue: boolean; dispatch: Dispatch }) => void;
+    onToggle?: ({
+        newValue,
+        services,
+        dispatch,
+    }: {
+        newValue: boolean;
+        services: SuiteServices;
+        dispatch: Dispatch;
+    }) => void;
 };
 
 export const EXPERIMENTAL_FEATURES: Record<ExperimentalFeature, ExperimentalFeatureConfig> = {
