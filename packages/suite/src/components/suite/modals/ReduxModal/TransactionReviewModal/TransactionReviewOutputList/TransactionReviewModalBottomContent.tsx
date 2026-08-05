@@ -81,7 +81,7 @@ export const TransactionReviewModalBottomContent = ({
     const connectPopupCall = useSelector(selectConnectPopupCall);
     const { precomposedTx, serializedTx } = txInfoState;
 
-    const { symbol, networkType } = account;
+    const { symbol } = account;
     const { options, selectedFee } = precomposedForm;
 
     const isBroadcastEnabled = options.includes('broadcast');
@@ -118,9 +118,12 @@ export const TransactionReviewModalBottomContent = ({
         });
 
     const handleSend = () => {
-        if (networkType === 'solana' || networkType === 'stellar' || networkType === 'tron') {
-            onSend(true);
-        }
+        // Every network: the push can take tens of seconds (a private/MEV relay send waits for the
+        // relay), and without this the button stays enabled and the cancel "X" stays live on a modal
+        // that looks idle - so the user can dismiss a broadcast that is already on its way, or click
+        // Send again. isSending is reset if the push fails (see TransactionReviewModalBody), and the
+        // modal is closed by pushSendFormTransactionThunk either way.
+        onSend(true);
 
         if (decision) {
             decision.resolve(true);
