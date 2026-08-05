@@ -55,7 +55,7 @@ export const connectInitThunk = createThunk<void, void, void>(
             },
         } = extra;
 
-        const getEffectiveFirmwareChannel = selectEffectiveFirmwareChannel(getAllowPrerelease);
+        const getEffectiveFirmwareChannel = selectEffectiveFirmwareChannel(getAllowPrerelease());
 
         // set event listeners and dispatch as
         TrezorConnect.on(DEVICE_EVENT, ({ event: _, ...eventData }) => {

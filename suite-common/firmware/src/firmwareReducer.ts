@@ -1,11 +1,7 @@
-import { type PayloadAction, createSelector } from '@reduxjs/toolkit';
+import { type PayloadAction } from '@reduxjs/toolkit';
 
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
-import {
-    type FirmwareStatus,
-    type GetAllowPrerelease,
-    type TrezorDevice,
-} from '@suite-common/suite-types';
+import { type FirmwareStatus, type TrezorDevice } from '@suite-common/suite-types';
 import {
     DEVICE,
     type DeviceButtonRequest,
@@ -139,17 +135,18 @@ export const selectSwitchFirmwareType = (state: RootState) => state.firmware.swi
 export const selectIsFirmwareInstallationRunning = (state: RootState) =>
     state.firmware.status === 'started';
 
-export const selectEffectiveFirmwareChannel = (getAllowPrerelease: GetAllowPrerelease) =>
-    createSelector(
-        selectFirmwareChannel,
-        getAllowPrerelease,
-        (firmwareChannel, allowPrerelease): FirmwareChannel =>
-            // When a user is in the Early Access Program, the firmware channel is forced to `production-early-access`.
-            // This factory accepts `getAllowPrerelease` as a parameter because it is a platform-specific extra dependency.
-            allowPrerelease ? 'production-early-access' : firmwareChannel,
-    );
+// `allowPrerelease` is passed as a value because it comes from a platform-specific extra dependency.
+// In React, read it with `useSelector(getAllowPrerelease.selector)`; elsewhere call the getter.
+// Both selectors return a primitive, so they need no memoization.
+export const selectEffectiveFirmwareChannel =
+    (allowPrerelease: boolean) =>
+    (state: RootState): FirmwareChannel =>
+        // When a user is in the Early Access Program, the firmware channel is forced to `production-early-access`.
+        allowPrerelease ? 'production-early-access' : selectFirmwareChannel(state);
 
-export const selectIsProductionFirmwareChannel = (getAllowPrerelease: GetAllowPrerelease) =>
-    createSelector(selectEffectiveFirmwareChannel(getAllowPrerelease), (firmwareChannel): boolean =>
-        ['production', 'production-early-access'].includes(firmwareChannel),
-    );
+export const selectIsProductionFirmwareChannel =
+    (allowPrerelease: boolean) =>
+    (state: RootState): boolean =>
+        ['production', 'production-early-access'].includes(
+            selectEffectiveFirmwareChannel(allowPrerelease)(state),
+        );

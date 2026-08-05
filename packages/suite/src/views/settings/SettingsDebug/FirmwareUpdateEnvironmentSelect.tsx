@@ -9,8 +9,8 @@ import { useDispatch, useSelector } from 'src/hooks/suite';
 
 export const FirmwareUpdateEnvironmentSelect = () => {
     const { getAllowPrerelease } = useServices(selectGetAllowPrereleaseDep);
-    const firmwareChannel = useSelector(selectEffectiveFirmwareChannel(getAllowPrerelease));
-    const isAllowPrerelease = useSelector(getAllowPrerelease);
+    const isAllowPrerelease = useSelector(getAllowPrerelease.selector);
+    const firmwareChannel = useSelector(selectEffectiveFirmwareChannel(isAllowPrerelease));
     const dispatch = useDispatch();
 
     const options: { label: string; value: FirmwareChannel }[] = [

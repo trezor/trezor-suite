@@ -29,9 +29,12 @@ export const notImplementedThunk = (type: string) =>
         return thunkPayload;
     });
 
-export const notImplementedGetter =
-    <TReturn>(name: string, mockedReturnValue: TReturn, getterArgs: any = {}) =>
-    () => {
+export const notImplementedGetter = <TReturn>(
+    name: string,
+    mockedReturnValue: TReturn,
+    getterArgs: any = {},
+) => {
+    const getter = () => {
         mockedConsoleLog(
             `Calling not implemented getter "${name}" with mocked value: `,
             mockedReturnValue,
@@ -41,6 +44,10 @@ export const notImplementedGetter =
 
         return mockedReturnValue;
     };
+
+    // Mirrors the shape produced by `toGetter`: the getter doubles as a Redux selector.
+    return Object.assign(getter, { selector: getter });
+};
 
 export const notImplementedActionType = (type: string) => `actionType/notImplemented/${type}`;
 

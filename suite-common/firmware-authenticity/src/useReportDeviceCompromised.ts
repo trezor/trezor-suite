@@ -34,13 +34,17 @@ const useCommonData = ({ device }: DeviceProps) => {
     );
 };
 
+const useIsProductionFirmwareChannel = () => {
+    const { getAllowPrerelease } = useServices(selectGetAllowPrereleaseDep);
+    const allowPrerelease = useSelector(getAllowPrerelease.selector);
+
+    return useSelector(selectIsProductionFirmwareChannel(allowPrerelease));
+};
+
 const useReportRevisionCheck = ({ device }: DeviceProps) => {
     const dispatch = useDispatch();
     const commonData = useCommonData({ device });
-    const { getAllowPrerelease } = useServices(selectGetAllowPrereleaseDep);
-    const isProductionFirmwareChannel = useSelector(
-        selectIsProductionFirmwareChannel(getAllowPrerelease),
-    );
+    const isProductionFirmwareChannel = useIsProductionFirmwareChannel();
 
     const revisionCheck = isDeviceAcquired(device)
         ? device.authenticityChecks.firmwareRevision
@@ -72,10 +76,7 @@ const useReportRevisionCheck = ({ device }: DeviceProps) => {
 const useReportHashCheck = ({ device }: DeviceProps) => {
     const dispatch = useDispatch();
     const commonData = useCommonData({ device });
-    const { getAllowPrerelease } = useServices(selectGetAllowPrereleaseDep);
-    const isProductionFirmwareChannel = useSelector(
-        selectIsProductionFirmwareChannel(getAllowPrerelease),
-    );
+    const isProductionFirmwareChannel = useIsProductionFirmwareChannel();
 
     const hashCheck = isDeviceAcquired(device) ? device.authenticityChecks.firmwareHash : null;
     const isError = hashCheck && !hashCheck.success;

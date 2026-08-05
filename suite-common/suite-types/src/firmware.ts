@@ -1,3 +1,5 @@
+import { type Getter } from '@suite-common/dependency-injection';
+
 export type FirmwareStatus =
     | 'initial' // initial state
     | 'started' // progress - firmware update has started, waiting for events from trezor-connect
@@ -29,7 +31,9 @@ export type ReportSecurityCheckDep = {
     reportSecurityCheck: ReportSecurityCheck;
 };
 
-export type GetAllowPrerelease = () => boolean;
+// A getter, so it can be both called from non-React code and used as a plain Redux selector
+// in components (`useSelector(getAllowPrerelease.selector)`).
+export type GetAllowPrerelease = Getter<any, [], boolean>;
 
 export type GetAllowPrereleaseDep = {
     getAllowPrerelease: GetAllowPrerelease;
