@@ -1,5 +1,7 @@
 import React from 'react';
 
+import { type UnionToIntersection } from '@trezor/type-utils';
+
 const ServicesContext = React.createContext<any>(null);
 
 // This is intentional `any`. Services cannot be known in advance,
@@ -12,12 +14,6 @@ export type ServiceSelector<TSelected> = (services: Services) => TSelected;
 
 type SelectorResult<TSelector> =
     TSelector extends ServiceSelector<infer TSelected> ? TSelected : never;
-
-type UnionToIntersection<TUnion> = (
-    TUnion extends unknown ? (value: TUnion) => void : never
-) extends (value: infer TIntersection) => void
-    ? TIntersection
-    : never;
 
 type SelectedServices<TSelectors extends readonly ServiceSelector<any>[]> = UnionToIntersection<
     SelectorResult<TSelectors[number]>
