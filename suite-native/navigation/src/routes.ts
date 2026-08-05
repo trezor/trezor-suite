@@ -51,6 +51,11 @@ export enum RootStackRoutes {
     ReceiveAccounts = 'ReceiveAccounts',
     TradingHistory = 'TradingHistory',
     TradingBuyPreview = 'TradingBuyPreview',
+    ActivityCenterStack = 'ActivityCenterStack',
+}
+
+export enum ActivityCenterStackRoutes {
+    ActivityCenter = 'ActivityCenter',
 }
 
 export enum AppTabsRoutes {

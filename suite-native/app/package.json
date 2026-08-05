@@ -70,6 +70,7 @@
         "@suite-native/message-system": "workspace:*",
         "@suite-native/module-accounts-import": "workspace:*",
         "@suite-native/module-accounts-management": "workspace:*",
+        "@suite-native/module-activity-center": "workspace:*",
         "@suite-native/module-add-accounts": "workspace:*",
         "@suite-native/module-authenticity-checks": "workspace:*",
         "@suite-native/module-authorize-device": "workspace:*",

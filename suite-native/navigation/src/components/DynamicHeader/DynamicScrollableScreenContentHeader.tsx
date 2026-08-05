@@ -2,17 +2,20 @@ import { type ReactNode } from 'react';
 import { type LayoutChangeEvent } from 'react-native';
 
 import { Text, VStack } from '@suite-native/atoms';
+import { type NativeSpacing } from '@trezor/theme';
 
 import { useDynamicHeader } from './DynamicScreenHeaderContext';
 import { type ScreenHeaderProps } from '../ScreenHeader';
 
 type DynamicScrollableScreenContentHeaderProps = {
     subtitle?: ReactNode;
+    marginBottom?: NativeSpacing;
 } & Pick<ScreenHeaderProps, 'title'>;
 
 export const DynamicScrollableScreenContentHeader = ({
     title,
     subtitle,
+    marginBottom = 'sp32',
 }: DynamicScrollableScreenContentHeaderProps) => {
     const { setScrollableHeaderHeight } = useDynamicHeader();
 
@@ -22,7 +25,7 @@ export const DynamicScrollableScreenContentHeader = ({
     };
 
     return (
-        <VStack paddingHorizontal="sp16" marginTop="sp16" marginBottom="sp32">
+        <VStack paddingHorizontal="sp16" marginTop="sp16" marginBottom={marginBottom}>
             <Text variant="headline-md" onLayout={handleLayout}>
                 {title}
             </Text>

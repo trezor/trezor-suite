@@ -1,8 +1,15 @@
 import { useState } from 'react';
 
+import { useNavigation } from '@react-navigation/native';
+import { type NativeStackNavigationProp } from '@react-navigation/native-stack';
+
 import { AnimatedPressable, Box, useButtonPressAnimatedStyle } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
-import { useToast } from '@suite-native/toasts';
+import {
+    ActivityCenterStackRoutes,
+    type RootStackParamList,
+    RootStackRoutes,
+} from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { NotificationDot } from './NotificationDot';
@@ -36,7 +43,7 @@ export const ActivityCenterButton = ({
 }: ActivityCenterButtonProps) => {
     const [isPressed, setIsPressed] = useState(false);
     const { applyStyle } = useNativeStyles();
-    const { showToast } = useToast();
+    const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
     const animatedPressStyle = useButtonPressAnimatedStyle(
         isPressed,
@@ -45,7 +52,10 @@ export const ActivityCenterButton = ({
         'surfaceFillActionPressed',
     );
 
-    const handlePress = () => showToast({ intent: 'info', message: 'Coming soon' });
+    const handlePress = () =>
+        navigation.navigate(RootStackRoutes.ActivityCenterStack, {
+            screen: ActivityCenterStackRoutes.ActivityCenter,
+        });
 
     return (
         <AnimatedPressable

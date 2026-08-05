@@ -10,6 +10,7 @@ import {
     AccountDetailScreen,
     AccountSettingsScreen,
 } from '@suite-native/module-accounts-management';
+import { ActivityCenterStackNavigator } from '@suite-native/module-activity-center';
 import { AddCoinAccountStackNavigator } from '@suite-native/module-add-accounts';
 import { DeviceCompromisedModalScreen } from '@suite-native/module-authenticity-checks';
 import { AuthorizeDeviceStackNavigator } from '@suite-native/module-authorize-device';
@@ -279,6 +280,11 @@ export const RootStackNavigator = () => {
                 name={RootStackRoutes.BootloaderMode}
                 component={BootloaderModeScreen}
             />
+            <RootStack.Screen
+                name={RootStackRoutes.ActivityCenterStack}
+                component={ActivityCenterStackNavigator}
+            />
+
             {/* Navigation flows that start by push from bottom animation on the first screen of its stack. */}
             <RootStack.Group screenOptions={{ animation: 'slide_from_bottom' }}>
                 <RootStack.Screen

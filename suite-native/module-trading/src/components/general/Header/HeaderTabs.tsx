@@ -67,13 +67,11 @@ export const HeaderTabs = () => {
     };
 
     return (
-        <>
-            <Box paddingHorizontal="sp16">
-                <HStack spacing={0}>
-                    <SubTabs items={data} onChange={onTabPress} value={activeTab} />
-                    <EdgeFades direction="horizontal" startSize={utils.spacings.sp20} />
-                </HStack>
-            </Box>
-        </>
+        <Box paddingHorizontal="sp16">
+            <HStack spacing={0}>
+                <SubTabs items={data} onChange={onTabPress} value={activeTab} />
+                <EdgeFades direction="horizontal" startSize={utils.spacings.sp20} />
+            </HStack>
+        </Box>
     );
 };

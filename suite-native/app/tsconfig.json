@@ -54,6 +54,7 @@
         {
             "path": "../module-accounts-management"
         },
+        { "path": "../module-activity-center" },
         { "path": "../module-add-accounts" },
         {
             "path": "../module-authenticity-checks"

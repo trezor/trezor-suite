@@ -18,6 +18,7 @@ import { type DeviceModelInternal } from '@trezor/device-utils';
 import {
     type AccountsImportStackRoutes,
     type AccountsStackRoutes,
+    type ActivityCenterStackRoutes,
     type AddCoinAccountStackRoutes,
     type AppTabsRoutes,
     type AuthorizeDeviceStackRoutes,
@@ -545,6 +546,11 @@ export type RootStackParamList = {
     };
     [RootStackRoutes.TradingHistory]: undefined;
     [RootStackRoutes.TradingBuyPreview]: undefined;
+    [RootStackRoutes.ActivityCenterStack]: NavigatorScreenParams<ActivityCenterStackParamList>;
+};
+
+export type ActivityCenterStackParamList = {
+    [ActivityCenterStackRoutes.ActivityCenter]: undefined;
 };
 
 export type TransactionDetailStackParamList = {
