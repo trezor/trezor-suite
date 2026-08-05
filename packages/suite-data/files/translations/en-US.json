@@ -1533,7 +1533,7 @@
   "TR_FROM": "From",
   "TR_FW_INSTALLATION_FAILED": "Installation failed",
   "TR_FW_INSTALL_MAY_TAKE_A_WHILE": "This firmware installation may take some time to complete.",
-  "TR_FW_UPDATE_REQUIRED_MODAL_DESCRIPTION": "Update firmware on the device {name} to use {featureName}.",
+  "TR_FW_UPDATE_REQUIRED_MODAL_DESCRIPTION": "Update firmware on the device {name} to continue.",
   "TR_GAP_LIMIT_ERROR_POSITIVE": "Gap limit must be a positive number",
   "TR_GAP_LIMIT_ERROR_TOO_LOW": "Gap limit must be at least {min}",
   "TR_GAS_LIMIT": "Gas limit",

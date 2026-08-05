@@ -132,7 +132,13 @@ const getEarnLayoutResult = ({
         return { status: 'invalid', reason: 'missing-vault' };
     }
 
-    if (device && !isStablecoinYieldSupported(device, type)) {
+    if (
+        device &&
+        !isStablecoinYieldSupported(device, {
+            flowType: type,
+            vaultToken: { networkSymbol: account.symbol, contractAddress: vault.token.address },
+        })
+    ) {
         return { status: 'invalid', reason: 'firmware-not-supported' };
     }
 

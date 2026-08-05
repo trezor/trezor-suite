@@ -4,7 +4,11 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import { selectSelectedDevice, selectSelectedDeviceLabelOrName } from '@suite-common/device';
-import { type YieldFlowType, isStablecoinYieldSupported } from '@suite-common/wallet-core';
+import {
+    type StablecoinYieldVaultToken,
+    type YieldFlowType,
+    isStablecoinYieldSupported,
+} from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
 import { Translation, useTranslate } from '@suite-native/intl';
 import {
@@ -27,7 +31,8 @@ export const useStablecoinYieldFirmwareUpdateAlert = () => {
     const deviceLabel = useSelector(selectSelectedDeviceLabelOrName);
 
     const isFirmwareSupported = useCallback(
-        (flowType: YieldFlowType) => isStablecoinYieldSupported(selectedDevice, flowType),
+        (flowType: YieldFlowType, vaultToken?: StablecoinYieldVaultToken) =>
+            isStablecoinYieldSupported(selectedDevice, { flowType, vaultToken }),
         [selectedDevice],
     );
 

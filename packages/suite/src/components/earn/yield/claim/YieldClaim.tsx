@@ -58,7 +58,7 @@ export const YieldClaim = ({ account }: YieldClaimProps) => {
         (!!yieldTxReview.precomposedTx && yieldTxReview.accountKey === account.key);
     const isClaiming = isClaimSubmitting || !!claimSession.action.pendingTransaction;
     const isDeviceConnected = !!device?.connected && device.available;
-    const isClaimFirmwareOutdated = !isStablecoinYieldSupported(device, 'claim');
+    const isClaimFirmwareOutdated = !isStablecoinYieldSupported(device, { flowType: 'claim' });
 
     const ensureDeviceSession = useEnsureYieldDeviceSession({ flowType: 'claim', flowKey });
     const { merklRewardsQuery, missingRateTickersQuery } = useMerklRewards(account);
