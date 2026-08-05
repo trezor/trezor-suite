@@ -7,7 +7,11 @@ import { TradingChainBackend, createTradingChainBackend } from './tradingChainBa
 import { tradeEndpoint } from '../../../fixtures/trading';
 import { step } from '../../common';
 
-export type CapturedLiveTrade = ExchangeTrade & { sendAddress: string; exchange: string };
+export type CapturedLiveTrade = ExchangeTrade & {
+    sendAddress: string;
+    exchange: string;
+    sendStringAmount: string;
+};
 
 type TradeFlow = 'buy' | 'sell' | 'swap';
 type TradeEndpoints = {
@@ -71,6 +75,16 @@ export class TradingMockNew {
         return TRADE_ENDPOINTS[this.tradeFlow];
     }
 
+    // Txid of the broadcast blocked by the backend (source of truth for post-send assertions).
+    get lastBroadcastTxid(): string {
+        const txid = this.backend?.lastBroadcastTxid;
+        if (!txid) {
+            throw new Error('Backend has not recorded a broadcast yet (is startBackend set up?)');
+        }
+
+        return txid;
+    }
+
     // Sell + swap only; call before discovery.
     @step()
     async startBackend(symbol: NetworkSymbol): Promise<{ type: BackendType; url: string }> {
@@ -95,16 +109,6 @@ export class TradingMockNew {
             body.tradeForm.form.formAction = returnUrl;
             await route.fulfill({ response, json: body });
         });
-    }
-
-    // Txid of the broadcast blocked by the backend (source of truth for post-send assertions).
-    get lastBroadcastTxid(): string {
-        const txid = this.backend?.lastBroadcastTxid;
-        if (!txid) {
-            throw new Error('Backend has not recorded a broadcast yet (is startBackend set up?)');
-        }
-
-        return txid;
     }
 
     @step()
@@ -133,8 +137,10 @@ export class TradingMockNew {
     async waitForLiveTrade() {
         const response = await this.page.waitForResponse(this.endpoints.trade);
         const trade = (await response.json()) as ExchangeTrade;
-        if (!trade.sendAddress || !trade.exchange) {
-            throw new Error('Live trade response is missing sendAddress or exchange');
+        if (!trade.sendAddress || !trade.exchange || !trade.sendStringAmount) {
+            throw new Error(
+                'Live trade response is missing sendAddress, exchange or sendStringAmount',
+            );
         }
 
         this.capturedTrade = trade as CapturedLiveTrade;
