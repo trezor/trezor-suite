@@ -980,9 +980,12 @@ const getEthereumRbfParams = (
     let output;
     switch (txSignature) {
         case 'transfer': {
-            const { tokens } = tx;
-            // @ts-expect-error: indexing with noUncheckedIndexedAccess
-            const token: (typeof tokens)[number] = tokens[0];
+            // A `transfer` call whose token transfer blockbook could not decode (it needs the exact
+            // calldata length) leaves tokens empty, and there is nothing to bump without it.
+            const token = tx.tokens?.[0];
+            if (!token) {
+                return;
+            }
 
             output = {
                 address: token.to,
