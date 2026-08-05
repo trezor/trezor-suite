@@ -1,6 +1,7 @@
 import React, { type PropsWithChildren } from 'react';
 import { Provider } from 'react-redux';
 
+import { type PayloadAction, configureStore, createSlice } from '@reduxjs/toolkit';
 import { act, renderHook } from '@testing-library/react';
 
 import { type Getter, toGetter } from './toGetter';
@@ -9,30 +10,27 @@ import { ServicesProvider } from './useServices';
 
 type TestState = { relayUrl: string; isTorEnabled: boolean; selectedWalletDescriptor: string };
 
-// A minimal store, so the test does not depend on any app state shape.
-const createTestStore = () => {
-    let state: TestState = {
-        relayUrl: 'wss://relay.example.com',
-        isTorEnabled: false,
-        selectedWalletDescriptor: 'wallet-1',
-    };
-    const listeners = new Set<() => void>();
-
-    return {
-        getState: () => state,
-        subscribe: (listener: () => void) => {
-            listeners.add(listener);
-
-            return () => listeners.delete(listener);
-        },
-        dispatch: (action: Partial<TestState>) => {
-            state = { ...state, ...action };
-            listeners.forEach(listener => listener());
-
-            return action;
-        },
-    };
+const initialState: TestState = {
+    relayUrl: 'wss://relay.example.com',
+    isTorEnabled: false,
+    selectedWalletDescriptor: 'wallet-1',
 };
+
+// A store of its own, so the test does not depend on any app state shape.
+const testSlice = createSlice({
+    name: 'test',
+    initialState,
+    reducers: {
+        setTestState: (state, { payload }: PayloadAction<Partial<TestState>>) => ({
+            ...state,
+            ...payload,
+        }),
+    },
+});
+
+const { setTestState } = testSlice.actions;
+
+const createTestStore = () => configureStore({ reducer: testSlice.reducer });
 
 type RelayUrlDep = { getRelayUrl: Getter<[], string> };
 type TorDep = { getIsTorEnabled: Getter<[], boolean> };
@@ -64,7 +62,7 @@ const renderUseGetter = <TResult, TProps>(
     };
 
     const wrapper = ({ children }: PropsWithChildren) => (
-        <Provider store={store as any}>
+        <Provider store={store}>
             <ServicesProvider services={services}>{children}</ServicesProvider>
         </Provider>
     );
@@ -92,7 +90,7 @@ describe(useGetter.name, () => {
         const { store, result } = renderUseGetter(() => useGetter(selectRelayUrlDep));
 
         act(() => {
-            store.dispatch({ relayUrl: 'wss://other.example.com' });
+            store.dispatch(setTestState({ relayUrl: 'wss://other.example.com' }));
         });
 
         expect(result.current).toBe('wss://other.example.com');
@@ -103,7 +101,7 @@ describe(useGetter.name, () => {
         const rendersBefore = renderSpy.mock.calls.length;
 
         act(() => {
-            store.dispatch({ isTorEnabled: true });
+            store.dispatch(setTestState({ isTorEnabled: true }));
         });
 
         expect(renderSpy.mock.calls.length).toBe(rendersBefore);
@@ -139,7 +137,7 @@ describe(useGetter.name, () => {
         rerender('wallet-3');
 
         act(() => {
-            store.dispatch({ selectedWalletDescriptor: 'wallet-3' });
+            store.dispatch(setTestState({ selectedWalletDescriptor: 'wallet-3' }));
         });
 
         expect(result.current).toBe(true);
