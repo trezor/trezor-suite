@@ -287,14 +287,17 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
 
     return (
         <Modal.Backdrop>
-            {['in-progress', 'waiting-for-confirmation'].includes(recovery.status) && (
-                <ConfirmOnDevicePill
-                    title={<Translation id="TR_CONFIRM_ON_TREZOR" />}
-                    deviceModelInternal={device.features.internal_model}
-                    deviceUnitColor={device.features.unit_color}
-                    onCancel={handleClose}
-                />
-            )}
+            {['in-progress', 'waiting-for-confirmation'].includes(recovery.status) &&
+                modal.context === MODAL_CONTEXT_DEVICE && (
+                    // Gate on the device modal context so the pill is not left orphaned after the
+                    // device disconnects mid-recovery (which clears the modal context to 'none').
+                    <ConfirmOnDevicePill
+                        title={<Translation id="TR_CONFIRM_ON_TREZOR" />}
+                        deviceModelInternal={device.features.internal_model}
+                        deviceUnitColor={device.features.unit_color}
+                        onCancel={handleClose}
+                    />
+                )}
             <Modal.ModalBase
                 heading={hasError ? undefined : <Translation id="TR_CHECK_RECOVERY_SEED" />}
                 description={
