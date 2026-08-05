@@ -38,8 +38,8 @@
     "devDependencies": {
         "@anthropic-ai/claude-code": "^2.1.179",
         "@currents/mcp": "^2.3.2",
-        "@currents/playwright": "^2.1.4",
-        "@playwright/test": "1.60.0",
+        "@currents/playwright": "^2.5.0",
+        "@playwright/test": "1.61.1",
         "@trezor/node-utils": "workspace:*",
         "tsx": "^4.21.0"
     }
