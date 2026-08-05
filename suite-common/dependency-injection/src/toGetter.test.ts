@@ -44,22 +44,33 @@ describe(toGetter.name, () => {
         expect(getRelayLabel('relay', 2)).toBe('relay:wss://relay.example.com:2');
     });
 
-    it('exposes the original selector, usable with the standard Redux selector API', () => {
-        const selectRelayUrl = (currentState: TestState) => currentState.relayUrl;
-        const getRelayUrl = toGetter(getState, selectRelayUrl);
+    it('exposes a selector reading through getState, ignoring the state it is passed', () => {
+        let currentRelayUrl = 'wss://relay.example.com';
+        const getRelayUrl = toGetter(
+            () => ({ relayUrl: currentRelayUrl }),
+            currentState => currentState.relayUrl,
+        );
 
-        expect(getRelayUrl.selector).toBe(selectRelayUrl);
-        expect(getRelayUrl.selector(state)).toBe('wss://relay.example.com');
+        // Whatever `useSelector` hands over is irrelevant, the getter's own getState decides.
+        expect(getRelayUrl.selector(undefined)).toBe('wss://relay.example.com');
+        expect(getRelayUrl.selector({ relayUrl: 'wss://ignored.example.com' })).toBe(
+            'wss://relay.example.com',
+        );
+
+        // A store change is picked up, which is the point of subscribing through useSelector.
+        currentRelayUrl = 'wss://other.example.com';
+
+        expect(getRelayUrl.selector(undefined)).toBe('wss://other.example.com');
     });
 
-    it('exposes the selector with its extra params', () => {
+    it('forwards extra params through the selector', () => {
         const isSelectedWallet = toGetter(
             getState,
             (currentState: TestState, walletDescriptor: string) =>
                 currentState.selectedWalletDescriptor === walletDescriptor,
         );
 
-        expect(isSelectedWallet.selector(state, 'wallet-1')).toBe(true);
-        expect(isSelectedWallet.selector(state, 'wallet-2')).toBe(false);
+        expect(isSelectedWallet.selector(undefined, 'wallet-1')).toBe(true);
+        expect(isSelectedWallet.selector(undefined, 'wallet-2')).toBe(false);
     });
 });

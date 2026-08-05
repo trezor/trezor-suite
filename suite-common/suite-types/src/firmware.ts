@@ -31,9 +31,9 @@ export type ReportSecurityCheckDep = {
     reportSecurityCheck: ReportSecurityCheck;
 };
 
-// A getter, so it can be both called from non-React code and used as a plain Redux selector
-// in components (`useSelector(getAllowPrerelease.selector)`).
-export type GetAllowPrerelease = Getter<any, [], boolean>;
+// A getter, so it can be both called from non-React code and subscribed to in components
+// (`useSelector(getAllowPrerelease.selector)`).
+export type GetAllowPrerelease = Getter<[], boolean>;
 
 export type GetAllowPrereleaseDep = {
     getAllowPrerelease: GetAllowPrerelease;

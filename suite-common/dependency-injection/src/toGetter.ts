@@ -1,14 +1,17 @@
 /**
  * A getter-service created by `toGetter`.
- *
- * Apart from being callable without the state, it exposes the original selector
- * under the `selector` property, so the very same dependency can be reused in React
- * components: `const value = useSelector(getSomething.selector);`
  */
-export type Getter<TState, TParams extends unknown[], TReturn> = ((
-    ...params: TParams
-) => TReturn) & {
-    selector: (state: TState, ...params: TParams) => TReturn;
+export type Getter<TParams extends unknown[], TReturn> = ((...params: TParams) => TReturn) & {
+    /**
+     * The getter in the shape of a standard Redux selector, so a component can subscribe to it:
+     * `const value = useSelector(getSomething.selector);`
+     *
+     * The passed state is deliberately ignored — the value is read through the getter's own
+     * `getState`. The state argument exists only so `useSelector` re-evaluates on every store
+     * change, which keeps the component (and its tests) independent of the state shape: mocking
+     * the getter is enough, no store state has to be built.
+     */
+    selector: (state: unknown, ...params: TParams) => TReturn;
 };
 
 /**
@@ -20,12 +23,12 @@ export type Getter<TState, TParams extends unknown[], TReturn> = ((
 export function toGetter<TState, TReturn>(
     getState: () => TState,
     selector: (state: TState) => TReturn,
-): Getter<TState, [], TReturn>;
+): Getter<[], TReturn>;
 
 export function toGetter<TState, TParams extends unknown[], TReturn>(
     getState: () => TState,
     selector: (state: TState, ...params: TParams) => TReturn,
-): Getter<TState, TParams, TReturn>;
+): Getter<TParams, TReturn>;
 
 export function toGetter<TState, TParams extends unknown[], TReturn>(
     getState: () => TState,
@@ -33,5 +36,7 @@ export function toGetter<TState, TParams extends unknown[], TReturn>(
 ) {
     const getter = (...params: TParams): TReturn => selector(getState(), ...params);
 
-    return Object.assign(getter, { selector });
+    return Object.assign(getter, {
+        selector: (_state: unknown, ...params: TParams): TReturn => getter(...params),
+    });
 }
