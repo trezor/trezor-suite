@@ -4,7 +4,6 @@ export type * from './phishing/types';
 export * from './phishing/utils';
 export * from './tokenDefinitionsActions';
 export * from './tokenDefinitionsConstants';
-export * from './tokenDefinitionsMiddleware';
 export * from './tokenDefinitionsReducer';
 export * from './tokenDefinitionsSelectors';
 export * from './tokenDefinitionsThunks';
