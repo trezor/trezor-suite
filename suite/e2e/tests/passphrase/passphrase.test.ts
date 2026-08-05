@@ -102,6 +102,7 @@ test.describe('Passphrase', { tag: ['@T3W1', '@T3T1'] }, () => {
                 await expect(walletPage.usedAddress(0)).toBeVisible();
                 await expect(walletPage.verifyAddressButton).toBeEnabled();
 
+                await walletPage.usedAddress(0).hover();
                 await walletPage.usedAddressVerifyButton(0).click();
                 await devicePrompt.confirmOnDevicePromptIsShown();
                 await expect(device).toShowReceiveAddress(abcAddr);
