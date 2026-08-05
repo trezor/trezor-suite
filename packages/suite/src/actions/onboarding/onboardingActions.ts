@@ -4,7 +4,12 @@ import { type ThunkDispatch } from 'redux-thunk';
 import { type DesktopAnalyticsDep, type OnboardingAnalytics, events } from '@suite/analytics';
 import { initialRunCompletedThunk } from '@suite/flags';
 import { closeModal } from '@suite/modal';
-import { type RecoveryState, recoveryRerunThunk } from '@suite/recovery';
+import {
+    type RecoveryState,
+    checkSeedThunk,
+    recoverDeviceThunk,
+    recoveryRerunThunk,
+} from '@suite/recovery';
 import {
     type GotoThunkState,
     type SuiteRouterHistoryDep,
@@ -293,14 +298,22 @@ const rerunRecoveryThunk =
         }
 
         const { initialized } = result.payload;
+
+        // Navigate to the recovery view FIRST. The app change triggers routerAppChanged ->
+        // suiteMiddleware.resetReducer, which resets the recovery reducer to 'initial'. Only after that
+        // do we start the seed-input thunk, so its setStatus('in-progress') survives the reset. Starting
+        // it before navigation would let the reset wipe the in-progress status and drop the UI back to the
+        // "Start" screen while a recoveryDevice call is already in flight (allowing a double-dispatch).
         if (initialized) {
             dispatch(gotoThunk({ routeName: 'recovery-index' }));
+            dispatch(checkSeedThunk());
         } else {
             if (selectRouterApp(getState()) !== 'onboarding') {
                 dispatch(gotoThunk({ routeName: 'onboarding-index' }));
             }
             dispatch(goToStep('recovery'));
             dispatch(addPath('recovery'));
+            dispatch(recoverDeviceThunk());
         }
     };
 
