@@ -2,6 +2,7 @@ import type { EthereumNetworkSymbol } from '@trezor/network-ethereum/constants';
 import {
     type Explorer,
     type SuiteCommonNetworkConfig,
+    asNetworkDisplaySymbol,
     asProtocol,
 } from '@trezor/network-module-suite-common-types';
 
@@ -16,7 +17,7 @@ const networkConfigBySymbol: Readonly<Record<EthereumNetworkSymbol, SuiteCommonN
     eth: {
         color: '#454a75',
         protocols: [asProtocol('ethereum'), asProtocol('eth')],
-        displaySymbol: 'ETH',
+        displaySymbol: asNetworkDisplaySymbol('ETH'),
         name: 'Ethereum',
         networkType: 'ethereum',
         chainId: 1,
@@ -60,7 +61,7 @@ const networkConfigBySymbol: Readonly<Record<EthereumNetworkSymbol, SuiteCommonN
     pol: {
         color: '#7b3fe4',
         protocols: [asProtocol('polygon'), asProtocol('matic'), asProtocol('pol')],
-        displaySymbol: 'POL',
+        displaySymbol: asNetworkDisplaySymbol('POL'),
         displaySymbolName: 'Polygon',
         name: 'Polygon PoS',
         networkType: 'ethereum',
@@ -96,7 +97,7 @@ const networkConfigBySymbol: Readonly<Record<EthereumNetworkSymbol, SuiteCommonN
     bsc: {
         color: '#f0b90b',
         protocols: [asProtocol('binance'), asProtocol('bnb'), asProtocol('bsc')],
-        displaySymbol: 'BNB',
+        displaySymbol: asNetworkDisplaySymbol('BNB'),
         displaySymbolName: 'BNB',
         name: 'BNB Smart Chain',
         networkType: 'ethereum',
@@ -138,7 +139,7 @@ const networkConfigBySymbol: Readonly<Record<EthereumNetworkSymbol, SuiteCommonN
             asProtocol('arbitrum-ethereum'),
         ],
         settlementLayer: 'eth',
-        displaySymbol: 'ETH',
+        displaySymbol: asNetworkDisplaySymbol('ETH'),
         displaySymbolName: 'Arbitrum One Ethereum',
         name: 'Arbitrum One',
         networkType: 'ethereum',
@@ -176,7 +177,7 @@ const networkConfigBySymbol: Readonly<Record<EthereumNetworkSymbol, SuiteCommonN
         color: '#0052ff',
         protocols: [asProtocol('base')],
         settlementLayer: 'eth',
-        displaySymbol: 'ETH',
+        displaySymbol: asNetworkDisplaySymbol('ETH'),
         displaySymbolName: 'Base Ethereum',
         name: 'Base',
         networkType: 'ethereum',
@@ -215,7 +216,7 @@ const networkConfigBySymbol: Readonly<Record<EthereumNetworkSymbol, SuiteCommonN
         color: '#ff0720',
         protocols: [asProtocol('optimism'), asProtocol('op')],
         settlementLayer: 'eth',
-        displaySymbol: 'ETH',
+        displaySymbol: asNetworkDisplaySymbol('ETH'),
         displaySymbolName: 'Optimism Ethereum',
         name: 'Optimism',
         networkType: 'ethereum',
@@ -253,7 +254,7 @@ const networkConfigBySymbol: Readonly<Record<EthereumNetworkSymbol, SuiteCommonN
         color: '#ccff00',
         protocols: [asProtocol('robinhood'), asProtocol('robinhood-chain'), asProtocol('rhc')],
         settlementLayer: 'eth',
-        displaySymbol: 'ETH',
+        displaySymbol: asNetworkDisplaySymbol('ETH'),
         displaySymbolName: 'Robinhood Ethereum',
         name: 'Robinhood Chain',
         networkType: 'ethereum',
@@ -281,7 +282,7 @@ const networkConfigBySymbol: Readonly<Record<EthereumNetworkSymbol, SuiteCommonN
     hype: {
         color: '#97fce4',
         protocols: [asProtocol('hyperliquid'), asProtocol('hyperevm'), asProtocol('hype')],
-        displaySymbol: 'HYPE',
+        displaySymbol: asNetworkDisplaySymbol('HYPE'),
         name: 'HyperEVM',
         displaySymbolName: 'Hyperliquid',
         networkType: 'ethereum',
@@ -318,7 +319,7 @@ const networkConfigBySymbol: Readonly<Record<EthereumNetworkSymbol, SuiteCommonN
     avax: {
         color: '#e84142',
         protocols: [asProtocol('avalanche'), asProtocol('avax')],
-        displaySymbol: 'AVAX',
+        displaySymbol: asNetworkDisplaySymbol('AVAX'),
         displaySymbolName: 'Avalanche',
         name: 'Avalanche C-Chain',
         networkType: 'ethereum',
@@ -354,7 +355,7 @@ const networkConfigBySymbol: Readonly<Record<EthereumNetworkSymbol, SuiteCommonN
     etc: {
         color: '#60c67e',
         protocols: [asProtocol('ethclassic'), asProtocol('etc')],
-        displaySymbol: 'ETC',
+        displaySymbol: asNetworkDisplaySymbol('ETC'),
         name: 'Ethereum Classic',
         networkType: 'ethereum',
         chainId: 61,
@@ -372,7 +373,7 @@ const networkConfigBySymbol: Readonly<Record<EthereumNetworkSymbol, SuiteCommonN
     tsep: {
         color: '#454a75',
         protocols: [asProtocol('tsep')],
-        displaySymbol: 'tETH',
+        displaySymbol: asNetworkDisplaySymbol('tETH'),
         name: 'Ethereum Sepolia',
         networkType: 'ethereum',
         bip43Path: "m/44'/60'/0'/0/i",
@@ -396,7 +397,7 @@ const networkConfigBySymbol: Readonly<Record<EthereumNetworkSymbol, SuiteCommonN
     thod: {
         color: '#454a75',
         protocols: [asProtocol('thod')],
-        displaySymbol: 'tETH',
+        displaySymbol: asNetworkDisplaySymbol('tETH'),
         name: 'Ethereum Hoodi',
         networkType: 'ethereum',
         bip43Path: "m/44'/60'/0'/0/i",

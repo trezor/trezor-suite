@@ -1,8 +1,15 @@
-import { type NetworkSymbol, getNetworkDisplaySymbol, networks } from '@suite-common/wallet-config';
+import {
+    type NetworkDisplaySymbol,
+    type NetworkSymbol,
+    getNetworkDisplaySymbol,
+    networks,
+} from '@suite-common/wallet-config';
 import type { TokenTransfer } from '@trezor/connect';
 import { BigNumber, type BigNumberValue } from '@trezor/utils';
 
 import { type AmountSubunit, type AmountUnit, asAmountSubunit, asAmountUnit } from './AmountTypes';
+
+type FormattedNetworkDisplaySymbol = NetworkDisplaySymbol | `sat ${NetworkDisplaySymbol}`;
 
 export const getAccountDecimals = (symbol: NetworkSymbol) => networks[symbol]?.decimals;
 
@@ -117,7 +124,7 @@ export const formatNetworkAmount = (
     let formattedAmount = convertAmountSubunitsToUnits(amount, decimals);
 
     if (withSymbol) {
-        let formattedSymbol = getNetworkDisplaySymbol(symbol);
+        let formattedSymbol: FormattedNetworkDisplaySymbol = getNetworkDisplaySymbol(symbol);
 
         if (isSatoshis) {
             formattedAmount = amount || '0';

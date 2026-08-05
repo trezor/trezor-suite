@@ -8,7 +8,7 @@ import {
     getNetworkDisplaySymbol,
     getNetworkFeatures,
 } from '@suite-common/wallet-config';
-import { type Account, type TokenSymbol } from '@suite-common/wallet-types';
+import { type Account, type TokenSymbol, toTokenSymbol } from '@suite-common/wallet-types';
 import { isNftMatchesSearch, isNftToken, isTokenMatchesSearch } from '@suite-common/wallet-utils';
 import { type TokenInfo } from '@trezor/blockchain-link-types';
 import { BigNumber } from '@trezor/utils';
@@ -108,7 +108,7 @@ export const getAccountAnalyticsTokenSymbols = (
     const { symbol } = account;
 
     const nativeTokenSymbol = new BigNumber(account.balance).gt(0)
-        ? (getNetworkDisplaySymbol(symbol) as TokenSymbol)
+        ? toTokenSymbol(getNetworkDisplaySymbol(symbol))
         : undefined;
 
     const tokenSymbols = getTokens({ tokens: account.tokens ?? [], symbol, tokenDefinitions })

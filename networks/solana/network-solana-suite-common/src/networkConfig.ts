@@ -2,6 +2,7 @@ import { DeviceModelInternal } from '@trezor/device-utils';
 import {
     type Explorer,
     type SuiteCommonNetworkConfig,
+    asNetworkDisplaySymbol,
     asProtocol,
 } from '@trezor/network-module-suite-common-types';
 import type { SolanaNetworkSymbol } from '@trezor/network-solana/constants';
@@ -17,7 +18,7 @@ const networkConfigBySymbol: Readonly<Record<SolanaNetworkSymbol, SuiteCommonNet
     sol: {
         color: '#9945ff',
         protocols: [asProtocol('solana'), asProtocol('sol')],
-        displaySymbol: 'SOL',
+        displaySymbol: asNetworkDisplaySymbol('SOL'),
         name: 'Solana',
         networkType: 'solana',
         bip43Path: "m/44'/501'/i'/0'", // phantom - bip44Change
@@ -50,7 +51,7 @@ const networkConfigBySymbol: Readonly<Record<SolanaNetworkSymbol, SuiteCommonNet
     dsol: {
         color: '#9945ff',
         protocols: [asProtocol('dsol')],
-        displaySymbol: 'dSOL',
+        displaySymbol: asNetworkDisplaySymbol('dSOL'),
         name: 'Solana Devnet',
         networkType: 'solana',
         bip43Path: "m/44'/501'/i'/0'",

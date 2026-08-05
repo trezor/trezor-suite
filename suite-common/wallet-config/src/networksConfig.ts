@@ -13,11 +13,12 @@ const networkModuleRepository = createNetworkModuleRepository({ networkModules }
 const getNetworkConfig = createGetNetworkConfig({ networkModuleRepository });
 
 const createNetwork = (networkSymbol: NetworkSymbol): Network => {
-    const { settlementLayer, ...networkConfig } = getNetworkConfig(networkSymbol);
+    const { settlementLayer, yieldXyzId, ...networkConfig } = getNetworkConfig(networkSymbol);
 
     return {
         symbol: networkSymbol,
         settlementLayer: settlementLayer as NetworkSymbol | undefined,
+        yieldXyzId: yieldXyzId as Network['yieldXyzId'],
         ...networkConfig,
     };
 };
@@ -72,6 +73,7 @@ export const networks: Networks = typedObjectFromEntries(
 
 export type StakingNetworkSymbol = 'eth' | 'sol' | 'trx' | 'ada' | 'thod' | 'dsol';
 export type StakingNetworkType = Extract<NetworkType, 'ethereum' | 'solana' | 'tron' | 'cardano'>;
+type ProdStakingNetworkSymbol = 'eth' | 'sol' | 'trx' | 'ada';
 
 const isStakingNetworkSymbol = (
     networkSymbol: NetworkSymbol,
@@ -81,8 +83,12 @@ const isStakingNetworkSymbol = (
 export const STAKING_SYMBOLS: readonly StakingNetworkSymbol[] =
     registeredNetworkSymbols.filter(isStakingNetworkSymbol);
 
-export const PROD_STAKING_SYMBOLS: readonly StakingNetworkSymbol[] = STAKING_SYMBOLS.filter(
-    networkSymbol => !getNetworkConfig(networkSymbol).testnet,
+const isProdStakingNetworkSymbol = (
+    networkSymbol: StakingNetworkSymbol,
+): networkSymbol is ProdStakingNetworkSymbol => !getNetworkConfig(networkSymbol).testnet;
+
+export const PROD_STAKING_SYMBOLS: readonly ProdStakingNetworkSymbol[] = STAKING_SYMBOLS.filter(
+    isProdStakingNetworkSymbol,
 );
 
 export const STAKING_TYPES: readonly StakingNetworkType[] = [
