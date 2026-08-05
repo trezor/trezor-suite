@@ -1,14 +1,49 @@
 import { type ReactNode } from 'react';
-import { Pressable } from 'react-native';
+import { type PressableProps } from 'react-native';
+import {
+    interpolateColor,
+    useAnimatedStyle,
+    useSharedValue,
+    withTiming,
+} from 'react-native-reanimated';
 
 import { type NetworkSymbol, type NetworkSymbolExtended } from '@suite-common/wallet-config';
 import { type TokenAddress } from '@suite-common/wallet-types';
-import { Box, HStack, Text, VStack } from '@suite-native/atoms';
+import { AnimatedPressable, Box, HStack, Text, VStack } from '@suite-native/atoms';
 import { TokenIcon } from '@suite-native/icons';
 import { NetworkBadge } from '@suite-native/trading-atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { NetworkSymbolExtendedFormatter } from './NetworkSymbolExtendedFormatter';
+
+const ANIMATION_DURATION = 200;
+
+export const AssetAnimatedPressable = ({ onPress, style, children, ...rest }: PressableProps) => {
+    const { utils } = useNativeStyles();
+    const progress = useSharedValue(0);
+    const handlePressIn = () => (progress.value = withTiming(1, { duration: ANIMATION_DURATION }));
+    const handlePressOut = () => (progress.value = withTiming(0, { duration: ANIMATION_DURATION }));
+
+    const animatedStyle = useAnimatedStyle(() => ({
+        backgroundColor: interpolateColor(
+            progress.value,
+            [0, 1],
+            ['transparent', utils.colors.elementFillGhostPressed],
+        ),
+    }));
+
+    return (
+        <AnimatedPressable
+            onPress={onPress}
+            onPressIn={handlePressIn}
+            onPressOut={handlePressOut}
+            style={[animatedStyle, style]}
+            {...rest}
+        >
+            {children}
+        </AnimatedPressable>
+    );
+};
 
 export type AssetListItemProps = {
     name: string;
@@ -18,17 +53,19 @@ export type AssetListItemProps = {
     onPress: () => void;
     rightContent?: ReactNode;
 };
-
-const vStackStyle = prepareNativeStyle(({ spacings }) => ({
+const vStackStyle = prepareNativeStyle(() => ({
     justifyContent: 'center',
     flex: 1,
     gap: 0,
-    paddingVertical: spacings.sp12,
 }));
 
 const rightContentStyle = prepareNativeStyle(() => ({
     maxWidth: '40%',
     justifyContent: 'center',
+}));
+
+const containerStyle = prepareNativeStyle(({ borders }) => ({
+    borderRadius: borders.radii.r12,
 }));
 
 export const AssetListItem = ({
@@ -42,18 +79,25 @@ export const AssetListItem = ({
     const { applyStyle } = useNativeStyles();
 
     return (
-        <Pressable
+        <AssetAnimatedPressable
             onPress={onPress}
             accessible={true}
             accessibilityRole="button"
             accessibilityLabel={name}
+            style={applyStyle(containerStyle)}
         >
-            <HStack alignItems="center" spacing="sp12">
+            <HStack
+                alignItems="center"
+                spacing="sp8"
+                paddingHorizontal="sp8"
+                paddingVertical="sp12"
+            >
                 <Box justifyContent="center">
                     <TokenIcon
                         symbol={networkSymbol}
                         contractAddress={contractAddress}
                         showNetworkIcon
+                        size="medium"
                     />
                 </Box>
                 <VStack style={applyStyle(vStackStyle)}>
@@ -62,13 +106,13 @@ export const AssetListItem = ({
                             {name}
                         </Text>
                     </HStack>
-                    <HStack alignItems="center" justifyContent="flex-start">
+                    <HStack spacing="sp4" alignItems="center" justifyContent="flex-start">
                         <NetworkSymbolExtendedFormatter symbol={symbol} />
                         <NetworkBadge symbol={networkSymbol} />
                     </HStack>
                 </VStack>
                 {rightContent && <Box style={applyStyle(rightContentStyle)}>{rightContent}</Box>}
             </HStack>
-        </Pressable>
+        </AssetAnimatedPressable>
     );
 };
