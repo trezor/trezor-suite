@@ -28,3 +28,13 @@ export type ReportSecurityCheck = (params: ReportSecurityCheckParams) => void;
 export type ReportSecurityCheckDep = {
     reportSecurityCheck: ReportSecurityCheck;
 };
+
+export type GetAllowPrerelease = () => boolean;
+
+export type GetAllowPrereleaseDep = {
+    getAllowPrerelease: GetAllowPrerelease;
+};
+
+export const selectGetAllowPrereleaseDep = (services: any): GetAllowPrereleaseDep => ({
+    getAllowPrerelease: services.getAllowPrerelease,
+});

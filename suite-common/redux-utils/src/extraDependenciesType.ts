@@ -18,6 +18,7 @@ import { type PlatformEncryptionDep } from '@suite-common/platform-encryption'; 
 import { type MigrateSuiteSyncLabelsForRbfTransactionDep } from '@suite-common/suite-rbf-labels-migrations-types';
 import { type SuiteSyncDep } from '@suite-common/suite-sync-types';
 import {
+    type GetAllowPrereleaseDep,
     type ReloadAppDep,
     type ReportSecurityCheckDep,
     type UserContextPayload,
@@ -82,7 +83,8 @@ export type CommonServices = SuiteSyncDep &
     NetworkModuleRepositoryDep &
     Bip329Dep &
     EnsureDelegatedIdentityKeyDep &
-    PlatformEncryptionDep & {
+    PlatformEncryptionDep &
+    GetAllowPrereleaseDep & {
         analytics: Analytics<AnalyticsSharedEvents>;
         saveAs: (data: Blob, fileName: string) => void;
         connectInitSettings: ConnectInitSettings;
@@ -99,7 +101,6 @@ export type CommonServices = SuiteSyncDep &
         getTradedAccountKeys: () => AccountKey[];
         getIsViewOnlyByDefaultEnabled: () => boolean;
         getThpSettings: () => ThpSettings;
-        getAllowPrerelease: () => boolean;
     } & ReportSecurityCheckDep &
     ReloadAppDep &
     MigrateSuiteSyncLabelsForRbfTransactionDep &

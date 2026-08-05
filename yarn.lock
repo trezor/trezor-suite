@@ -10485,6 +10485,7 @@ __metadata:
   resolution: "@suite-common/firmware-authenticity@workspace:suite-common/firmware-authenticity"
   dependencies:
     "@reduxjs/toolkit": "npm:2.12.0"
+    "@suite-common/dependency-injection": "workspace:*"
     "@suite-common/device": "workspace:*"
     "@suite-common/firmware": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
