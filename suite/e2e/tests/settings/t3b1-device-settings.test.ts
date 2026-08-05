@@ -28,7 +28,7 @@ test.describe('T3B1 - Device settings', { tag: ['@T3B1'] }, () => {
         async ({ settingsPage, page }) => {
             await test.step('Verify firmware modal', async () => {
                 await page.getByTestId('@settings/device/update-button').click();
-                await page.getByTestId('@modal/close-button').click();
+                await page.modalCloseButton.click();
             });
 
             await test.step("Change and verify device's name", async () => {

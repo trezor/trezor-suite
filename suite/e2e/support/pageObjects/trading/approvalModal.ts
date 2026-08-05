@@ -19,7 +19,7 @@ export class TradingApprovalModal {
     readonly feeAmountWithSymbol: Locator;
 
     constructor(private readonly page: Page) {
-        this.modal = this.page.getByTestId('@modal');
+        this.modal = this.page.modal;
         this.heading = this.modal.getByTestId('@modal/header');
         this.continueButton = this.modal.getByTestId('@modal/approve/continue-button');
         this.accountValue = this.modal.getByTestId('@modal/approve/account-value');

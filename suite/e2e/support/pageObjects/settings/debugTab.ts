@@ -21,8 +21,8 @@ export class DebugTab {
     constructor(private readonly page: Page) {
         this.suiteSyncUrlInput = page.getByTestId('@settings/debug/suite-sync/relay-url-input');
         this.suiteSyncUrlSaveButton = page.getByTestId('@settings/debug/suite-sync/save-button');
-        this.modal = page.getByTestId('@modal');
-        this.modalCloseButton = page.getByTestId('@modal/close-button');
+        this.modal = page.modal;
+        this.modalCloseButton = page.modalCloseButton;
         this.messageManagerButton = page.getByTestId(
             '@settings/debug/message-system/message-manager-button',
         );

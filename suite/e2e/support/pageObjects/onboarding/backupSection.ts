@@ -20,6 +20,8 @@ export class BackupSection {
     readonly backupFailedSettingLink: Locator;
     readonly backupFailedSettingButton: Locator;
     readonly skipBackupButton: Locator;
+    readonly createBackupButton: Locator;
+    readonly continueButton: Locator;
 
     constructor(
         private readonly page: Page,
@@ -51,6 +53,8 @@ export class BackupSection {
             '@device-settings/backup-failed/disabled-button',
         );
         this.skipBackupButton = this.page.getByTestId('@onboarding/skip-backup');
+        this.createBackupButton = this.page.getByTestId('@onboarding/create-backup-button');
+        this.continueButton = this.page.getByTestId('@onboarding/continue-button');
     }
 
     @step()
@@ -63,16 +67,13 @@ export class BackupSection {
         threshold?: number;
         deviceConfirmations: number;
     }) {
-        const backupButton = this.page.getByTestId('@onboarding/create-backup-button');
-        const closeButton = this.page.getByTestId('@onboarding/continue-button');
-
-        await expect(backupButton).toBeDisabled();
+        await expect(this.createBackupButton).toBeDisabled();
 
         await this.wroteSeedProperlyCheckbox.click();
         await this.madeNoDigitalCopyCheckbox.click();
         await this.willHideSeedCheckbox.click();
 
-        await backupButton.click();
+        await this.createBackupButton.click();
 
         await this.devicePrompt.confirmOnDevicePromptIsShown();
         for (let i = 0; i < deviceConfirmations; i++) {
@@ -88,21 +89,18 @@ export class BackupSection {
             await this.device.readAndConfirmSingleShamirMnemonic();
         }
 
-        await closeButton.click();
+        await this.continueButton.click();
     }
 
     @step()
     async passThroughBip39Backup({ deviceConfirmations }: { deviceConfirmations: number }) {
-        const backupButton = this.page.getByTestId('@onboarding/create-backup-button');
-        const closeButton = this.page.getByTestId('@onboarding/continue-button');
-
-        await expect(backupButton).toBeDisabled();
+        await expect(this.createBackupButton).toBeDisabled();
 
         await this.wroteSeedProperlyCheckbox.click();
         await this.madeNoDigitalCopyCheckbox.click();
         await this.willHideSeedCheckbox.click();
 
-        await backupButton.click();
+        await this.createBackupButton.click();
 
         await this.devicePrompt.confirmOnDevicePromptIsShown();
         for (let i = 0; i < deviceConfirmations; i++) {
@@ -116,6 +114,6 @@ export class BackupSection {
             await this.device.pressYes();
         }
 
-        await closeButton.click();
+        await this.continueButton.click();
     }
 }

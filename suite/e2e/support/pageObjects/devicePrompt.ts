@@ -50,7 +50,7 @@ export class DevicePrompt {
         this.confirmOnDevicePrompt = page.getByTestId('@prompts/confirm-on-device');
         this.confirmOnDevicePromptSuccess = page.getByTestId('@prompts/confirm-on-device/success');
         this.connectDevicePrompt = page.getByTestId('@connect-device-prompt');
-        this.modalCloseButton = page.getByTestId('@modal/close-button');
+        this.modalCloseButton = page.modalCloseButton;
         this.modal = page.modal;
         this.paginatedText = page.locator("[data-testid-alt='@device-display/paginated-text']");
         this.paginatedTextSeparator = page.getByTestId('@device-display/paginated-text/separator');

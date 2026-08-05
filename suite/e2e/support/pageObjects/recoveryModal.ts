@@ -8,6 +8,7 @@ export class RecoveryModal {
         this.page.getByTestId(`@recovery/select-type/${type}`);
     readonly userUnderstandsCheckbox: Locator;
     readonly startButton: Locator;
+    readonly continueButton: Locator;
     readonly successTitle: Locator;
     readonly header: Locator;
     readonly prompt: Locator;
@@ -17,9 +18,10 @@ export class RecoveryModal {
     constructor(private page: Page) {
         this.userUnderstandsCheckbox = page.getByTestId('@recovery/user-understands-checkbox');
         this.startButton = page.getByTestId('@recovery/start-button');
+        this.continueButton = page.getByTestId('@recovery/continue-button');
         this.successTitle = page.getByTestId('@recovery/success-title');
-        this.header = page.getByTestId('@modal/header');
-        this.prompt = page.getByTestId('@modal').getByTestId('@recovery/paragraph');
+        this.header = page.modalHeader;
+        this.prompt = page.modal.getByTestId('@recovery/paragraph');
     }
 
     @step()
@@ -32,9 +34,9 @@ export class RecoveryModal {
         await this.userUnderstandsCheckbox.click();
         await this.startButton.click();
         await this.selectWordCount(numberOfWords);
-        await this.page.getByTestId('@recovery/continue-button').click();
+        await this.continueButton.click();
         await this.selectRecoveryButton(type).click();
-        await this.page.getByTestId('@recovery/continue-button').click();
+        await this.continueButton.click();
     }
 
     @step()
