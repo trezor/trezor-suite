@@ -11,6 +11,7 @@ import {
     getWrappedNativeSymbol,
     networks,
 } from '@suite-common/wallet-config';
+import { WRAPPED_NATIVE_MIN_FIRMWARE } from '@suite-common/wallet-constants';
 import {
     type Account,
     type FormState,
@@ -22,7 +23,7 @@ import {
     type YieldClaimReward,
 } from '@suite-common/wallet-types';
 import type { CardanoOutput } from '@trezor/connect';
-import { getFirmwareVersion } from '@trezor/device-utils';
+import { getFirmwareVersion, getFirmwareVersionArray } from '@trezor/device-utils';
 import { BigNumber, versionUtils } from '@trezor/utils';
 
 import { datetimeToLocktime } from './bitcoinUtils';
@@ -194,9 +195,14 @@ type ClearSignedWrappedNativeParams = {
 
 /**
  * Whether the device will clear-sign this transaction as a canonical WETH wrap/unwrap
- * (deposit()/withdraw(), fw 2.12.4+), which it renders as provider → intent → amount → fee
- * summary. Gated on `isEvmClearSigningTx` so a wrapped native the firmware does not clear-sign
- * (e.g. WBNB on BSC) still falls through to the blind-signing rows.
+ * (deposit()/withdraw()), which it renders as provider → intent → amount → fee summary. Gated on
+ * `isEvmClearSigningTx` so a wrapped native the firmware does not clear-sign (e.g. WBNB on BSC)
+ * still falls through to the blind-signing rows.
+ *
+ * The `evmClearSigning` capability is not sufficient on its own: connect reports it from 2.12.1,
+ * while WETH gained its clear-signing definition in 2.12.4. Without the version gate a device on
+ * 2.12.1–2.12.3 would get the mirrored review while it actually blind-signs — the same
+ * modal/device mismatch this mirroring exists to remove, inverted.
  */
 export const isClearSignedWrappedNativeTransaction = ({
     account,
@@ -205,6 +211,14 @@ export const isClearSignedWrappedNativeTransaction = ({
     transactionData,
 }: ClearSignedWrappedNativeParams): boolean => {
     if (account.networkType !== 'ethereum' || !isEvmClearSigningSupportedByDevice(device)) {
+        return false;
+    }
+
+    const firmwareVersion = getFirmwareVersionArray(device);
+    if (
+        firmwareVersion === null ||
+        !versionUtils.isNewerOrEqual(firmwareVersion, WRAPPED_NATIVE_MIN_FIRMWARE)
+    ) {
         return false;
     }
 
