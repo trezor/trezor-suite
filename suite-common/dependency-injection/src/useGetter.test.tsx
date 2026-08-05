@@ -7,15 +7,11 @@ import { type Getter, toGetter } from './toGetter';
 import { useGetter } from './useGetter';
 import { ServicesProvider } from './useServices';
 
-type TestState = { relayUrl: string; isTorEnabled: boolean; selectedWalletDescriptor: string };
+type TestState = { relayUrl: string; isTorEnabled: boolean };
 
 // A minimal store, so the test does not depend on any app state shape.
 const createTestStore = () => {
-    let state: TestState = {
-        relayUrl: 'wss://relay.example.com',
-        isTorEnabled: false,
-        selectedWalletDescriptor: 'wallet-1',
-    };
+    let state: TestState = { relayUrl: 'wss://relay.example.com', isTorEnabled: false };
     const listeners = new Set<() => void>();
 
     return {
@@ -36,12 +32,8 @@ const createTestStore = () => {
 
 type RelayUrlDep = { getRelayUrl: Getter<[], string> };
 type TorDep = { getIsTorEnabled: Getter<[], boolean> };
-type SelectedWalletDep = { getIsSelectedWallet: Getter<[walletDescriptor: string], boolean> };
 
 const selectRelayUrlDep = (services: any): RelayUrlDep => ({ getRelayUrl: services.getRelayUrl });
-const selectSelectedWalletDep = (services: any): SelectedWalletDep => ({
-    getIsSelectedWallet: services.getIsSelectedWallet,
-});
 const selectTwoGettersDep = (services: any): RelayUrlDep & TorDep => ({
     getRelayUrl: services.getRelayUrl,
     getIsTorEnabled: services.getIsTorEnabled,
@@ -53,11 +45,6 @@ const renderUseGetter = <TResult,>(useHook: () => TResult) => {
     const services = {
         getRelayUrl: toGetter(store.getState, state => state.relayUrl),
         getIsTorEnabled: toGetter(store.getState, state => state.isTorEnabled),
-        getIsSelectedWallet: toGetter(
-            store.getState,
-            (state: TestState, walletDescriptor: string) =>
-                state.selectedWalletDescriptor === walletDescriptor,
-        ),
     };
 
     const wrapper = ({ children }: PropsWithChildren) => (
@@ -104,14 +91,6 @@ describe(useGetter.name, () => {
         });
 
         expect(renderSpy.mock.calls.length).toBe(rendersBefore);
-    });
-
-    it('forwards params to the getter', () => {
-        const { result } = renderUseGetter(() =>
-            useGetter(selectSelectedWalletDep, 'wallet-2' as string),
-        );
-
-        expect(result.current).toBe(false);
     });
 
     it('rejects a dependency holding more than one getter', () => {

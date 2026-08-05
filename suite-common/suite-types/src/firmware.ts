@@ -31,8 +31,8 @@ export type ReportSecurityCheckDep = {
     reportSecurityCheck: ReportSecurityCheck;
 };
 
-// A getter, so it can be both called from non-React code and subscribed to in components
-// (`useSelector(getAllowPrerelease.selector)`).
+// A getter: called directly from non-React code, and subscribed to in components with
+// `useGetter(selectGetAllowPrereleaseDep)`.
 export type GetAllowPrerelease = Getter<[], boolean>;
 
 export type GetAllowPrereleaseDep = {

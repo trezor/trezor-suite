@@ -24,14 +24,11 @@ const selectPlainServiceDep = (services: any): PlainServiceDep => ({
 // The getter's value, no aliasing needed.
 const _allowPrerelease: boolean = useGetter(selectAllowPrereleaseDep);
 
-// A getter with params takes them after the dependency selector.
-const _isSelectedWallet: boolean = useGetter(selectSelectedWalletDep, 'wallet-1');
+// @ts-expect-error useGetter takes a single dependency selector, nothing else
+useGetter(selectAllowPrereleaseDep, selectTwoGettersDep);
 
-// @ts-expect-error the params of the selected getter are type-checked
-useGetter(selectSelectedWalletDep, 42);
-
-// @ts-expect-error a getter without params takes no extra arguments
-useGetter(selectAllowPrereleaseDep, 'wallet-1');
+// @ts-expect-error a getter taking params cannot be read, there is nowhere to pass them
+const _isSelectedWallet: boolean = useGetter(selectSelectedWalletDep);
 
 // @ts-expect-error which of the two getters would be read is ambiguous
 const _twoGetters: boolean = useGetter(selectTwoGettersDep);

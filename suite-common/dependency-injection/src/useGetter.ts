@@ -2,6 +2,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 
 import { type UnionToIntersection } from '@trezor/type-utils';
+import { typedObjectValues } from '@trezor/utils';
 
 import { type Getter } from './toGetter';
 import { type SelectorResult, type ServiceSelector, useServicesContext } from './useServices';
@@ -12,21 +13,10 @@ type OnlyKey<TSelected> = [UnionToIntersection<keyof TSelected>] extends [never]
     ? never
     : keyof TSelected;
 
-type OnlyGetter<TSelected> = [OnlyKey<TSelected>] extends [never]
-    ? never
-    : TSelected[OnlyKey<TSelected>] extends Getter<any[], any>
-      ? TSelected[OnlyKey<TSelected>]
-      : never;
-
-type GetterParams<TSelected> =
-    OnlyGetter<TSelected> extends Getter<infer TParams, any>
-        ? TParams
-        : ['This dependency must hold exactly one getter.'];
-
-type GetterReturn<TSelected> =
-    OnlyGetter<TSelected> extends Getter<any[], infer TReturn>
+type GetterValue<TSelected> =
+    TSelected[OnlyKey<TSelected>] extends Getter<[], infer TReturn>
         ? TReturn
-        : 'This dependency must hold exactly one getter.';
+        : 'This dependency must hold exactly one getter, taking no params.';
 
 /**
  * Reads the value of an injected getter-service reactively: the component re-renders whenever the
@@ -46,14 +36,13 @@ type GetterReturn<TSelected> =
  */
 export function useGetter<const TSelector extends ServiceSelector<any>>(
     selectGetterDep: TSelector,
-    ...params: GetterParams<SelectorResult<TSelector>>
-): GetterReturn<SelectorResult<TSelector>>;
+): GetterValue<SelectorResult<TSelector>>;
 
-export function useGetter(selectGetterDep: ServiceSelector<any>, ...params: unknown[]) {
+export function useGetter(selectGetterDep: ServiceSelector<any>) {
     const services = useServicesContext();
 
     const getter = React.useMemo(() => {
-        const [onlyGetter, ...rest] = Object.values<Getter<unknown[], unknown>>(
+        const [onlyGetter, ...rest] = typedObjectValues<Record<string, Getter<[], unknown>>>(
             selectGetterDep(services),
         );
 
@@ -66,5 +55,5 @@ export function useGetter(selectGetterDep: ServiceSelector<any>, ...params: unkn
         return onlyGetter;
     }, [services, selectGetterDep]);
 
-    return useSelector(() => getter(...params));
+    return useSelector(() => getter());
 }

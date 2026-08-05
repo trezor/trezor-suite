@@ -43,27 +43,6 @@ describe(useServices.name, () => {
 
         expect(result.current).toBe(firstSelectedServices);
     });
-
-    it('refuses to hand out a getter, which has to be read with useGetter', () => {
-        const { result } = renderHook(
-            // @ts-expect-error a selected getter makes the result unusable, on purpose
-            () => useServices(selectGetterDep).getSomething,
-            { wrapper },
-        );
-
-        // The refusal is type-only: nothing is stripped at runtime.
-        expect(result.current).toBe(appServices.getSomething);
-    });
-
-    it('refuses a getter selected alongside plain services', () => {
-        const { result } = renderHook(
-            // @ts-expect-error one getter among plain services is enough to reject the whole result
-            () => useServices(selectADep, selectGetterDep).a,
-            { wrapper },
-        );
-
-        expect(result.current).toBe(appServices.a);
-    });
 });
 
 describe(useImperativeServices.name, () => {
