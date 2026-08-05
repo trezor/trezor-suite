@@ -115,4 +115,41 @@ describe('Recovery Thunks', () => {
         // has run here; the status must remain 'in-progress' (it would be 'finished' otherwise)
         expect(store.getState().recovery.status).toEqual('in-progress');
     });
+
+    it('recoveryRerunThunk resets and rejects when the selected device changes during getFeatures', async () => {
+        testMocks.setTrezorConnectFixtures({
+            success: true,
+            payload: { recovery_status: 'Recovery', initialized: true },
+        });
+        // A store whose selected-device path is swapped mid-thunk (while getFeatures is awaited),
+        // to exercise the device-changed guard.
+        const store = configureMockStore({
+            preloadedState: {
+                ...getInitialState(),
+                device: {
+                    selectedDevice: {
+                        features: { major_version: 2, internal_model: DeviceModelInternal.T2T1 },
+                        path: 'device-a',
+                    },
+                },
+            },
+            reducer: (state: any, action: any) => ({
+                ...state,
+                recovery: recoveryReducer(state.recovery, action),
+                device:
+                    action.type === 'TEST/SWAP_DEVICE'
+                        ? { selectedDevice: { ...state.device.selectedDevice, path: 'device-b' } }
+                        : state.device,
+            }),
+        });
+
+        const action = store.dispatch(recoveryRerunThunk());
+        // the thunk has captured 'device-a' and is now awaiting getFeatures; swap the selected device
+        store.dispatch({ type: 'TEST/SWAP_DEVICE' });
+        const result = await action;
+
+        expect(recoveryRerunThunk.rejected.match(result)).toBe(true);
+        // the transient 'in-progress' set before the await must be cleared
+        expect(store.getState().recovery.status).toEqual('initial');
+    });
 });
