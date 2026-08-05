@@ -129,7 +129,9 @@
         "@types/react": "19.2.14",
         "react-dom": "19.2.3",
         "expo-modules-core": "patch:expo-modules-core@npm%3A56.0.13#~/.yarn/patches/expo-modules-core-npm-56.0.13-6a0e36c09c.patch",
-        "react-test-renderer": "19.2.3"
+        "react-test-renderer": "19.2.3",
+        "### Force axios >=1.18.0 to fix GHSA-gcfj-64vw-6mp9 (nx@23.0.0 pins the vulnerable 1.16.0)": "1.0.0",
+        "axios": "1.18.1"
     },
     "devDependencies": {
         "@arethetypeswrong/cli": "^0.18.2",
