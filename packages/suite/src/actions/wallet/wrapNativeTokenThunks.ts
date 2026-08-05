@@ -6,11 +6,15 @@ import { getNetwork, getNetworkDisplaySymbol } from '@suite-common/wallet-config
 import {
     type YieldFlowDisplayToken,
     composeYieldWrapTransactionThunk,
+    setYieldError,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { type TokenInfo } from '@trezor/connect';
 
-import { sendYieldTransaction } from './stablecoin-yield/signingHelpers';
+import {
+    getYieldErrorTranslationKey,
+    sendYieldTransaction,
+} from './stablecoin-yield/signingHelpers';
 import { addToken } from './tokenActions';
 
 const WRAP_NATIVE_TOKEN_PREFIX = '@wallet/wrap-native-token';
@@ -43,6 +47,12 @@ export const submitWrapNativeTokenThunk = createThunk(
                         error: `Failed to compose wrap transaction (${result.reason}).`,
                     }),
                 );
+
+                // A wrap started from the deposit flow needs the failure on the step itself; the
+                // toast alone leaves the flow looking idle.
+                if (yieldFlow) {
+                    setYieldError({ dispatch, ...yieldFlow });
+                }
 
                 return undefined;
             }
@@ -141,6 +151,17 @@ export const submitWrapNativeTokenThunk = createThunk(
                     error: error instanceof Error ? error.message : String(error),
                 }),
             );
+
+            // Same reasoning as the compose failure above. A push failure in particular means the
+            // transaction was already signed, which is worth saying rather than leaving the step
+            // looking idle.
+            if (yieldFlow) {
+                setYieldError({
+                    dispatch,
+                    ...yieldFlow,
+                    error: getYieldErrorTranslationKey(error),
+                });
+            }
 
             return undefined;
         }
