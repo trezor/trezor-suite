@@ -5,7 +5,7 @@ import * as walletUtils from '@suite-common/wallet-utils';
 
 import { connectPopupActions } from './connectPopupActions';
 import { prepareConnectPopupReducer, selectConnectPopupCallWithState } from './connectPopupReducer';
-import { connectPopupLoadSelectAccountPageThunk } from './connectPopupThunks';
+import { connectPopupLoadSelectAccountPageThunk } from './selectAccountThunks';
 
 // prepareNewAccountPayload is the device round-trip the load thunk awaits — exactly once on the
 // manual address-phase path these tests exercise (the account-index path loops it per row). Mocking

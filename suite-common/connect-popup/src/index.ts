@@ -1,5 +1,6 @@
 export * from './connectPopupActions';
 export * from './connectPopupThunks';
+export * from './selectAccountThunks';
 export * from './connectPopupMiddleware';
 export * from './connectPopupReducer';
 export * from './connectPopupTypes';

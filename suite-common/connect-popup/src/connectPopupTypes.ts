@@ -21,6 +21,9 @@ export type ManifestPartial = {
     npmVersion?: string;
 };
 
+// Action-type prefix shared by every connect-popup thunk.
+export const CONNECT_POPUP_MODULE = '@common/connect-popup';
+
 export const CALL_SOURCE_DESKTOP_WS = 'desktop-ws';
 export const CALL_SOURCE_MCP = 'mcp';
 export const CALL_SOURCE_WEB = 'web';
