@@ -1,7 +1,7 @@
 {
     "version": 1,
-    "timestamp": "2026-08-04T22:00:00+00:00",
-    "sequence": 152,
+    "timestamp": "2026-08-05T12:00:00+00:00",
+    "sequence": 153,
     "actions": [
         {
             "conditions": [
@@ -850,6 +850,43 @@
                     "domain": ["trading.exchange", "trading.buy", "trading.sell"]
                 }
             }
+        },
+        {
+            "message": {
+                "id": "5877b299-c8d7-46af-a339-a64c683c8cdd",
+                "priority": 94,
+                "dismissible": true,
+                "variant": "info",
+                "category": "banner",
+                "content": {
+                    "en": "MEV protection for Ethereum is temporarily disabled while we improve transaction reliability — even if it's enabled in your settings. Your funds are not at risk.",
+                    "es": "La protección MEV para Ethereum está temporalmente desactivada mientras mejoramos la fiabilidad de las transacciones, incluso si está activada en tu configuración. Tus fondos no están en riesgo.",
+                    "cs": "Ochrana MEV pro Ethereum je dočasně vypnutá, zatímco zlepšujeme spolehlivost transakcí – i když ji máte zapnutou v nastavení. Vaše prostředky nejsou v ohrožení.",
+                    "ru": "Защита от MEV для Ethereum временно отключена, пока мы улучшаем надёжность транзакций — даже если она включена в ваших настройках. Ваши средства в безопасности.",
+                    "ja": "イーサリアムのMEV保護は、取引の信頼性を向上させるため一時的に無効になっています（設定で有効になっている場合でも）。お客様の資金が危険にさらされることはありません。",
+                    "hu": "Az Ethereum MEV-védelme átmenetileg ki van kapcsolva, amíg javítjuk a tranzakciók megbízhatóságát – még akkor is, ha a beállításokban engedélyezve van. A pénzed nincs veszélyben.",
+                    "it": "La protezione MEV per Ethereum è temporaneamente disattivata mentre miglioriamo l'affidabilità delle transazioni, anche se è attivata nelle tue impostazioni. I tuoi fondi non sono a rischio.",
+                    "fr": "La protection MEV pour Ethereum est temporairement désactivée pendant que nous améliorons la fiabilité des transactions, même si elle est activée dans vos paramètres. Vos fonds ne sont pas en danger.",
+                    "de": "Der MEV-Schutz für Ethereum ist vorübergehend deaktiviert, während wir die Zuverlässigkeit der Transaktionen verbessern – auch wenn er in deinen Einstellungen aktiviert ist. Deine Gelder sind nicht in Gefahr.",
+                    "tr": "Ethereum için MEV koruması, işlem güvenilirliğini iyileştirdiğimiz sırada geçici olarak devre dışı bırakıldı — ayarlarınızda etkin olsa bile. Fonlarınız risk altında değil.",
+                    "pt": "A proteção MEV para Ethereum está temporariamente desativada enquanto melhoramos a fiabilidade das transações — mesmo que esteja ativada nas tuas definições. Os teus fundos não estão em risco.",
+                    "uk": "Захист від MEV для Ethereum тимчасово вимкнено, поки ми покращуємо надійність транзакцій — навіть якщо його ввімкнено у ваших налаштуваннях. Ваші кошти в безпеці."
+                }
+            },
+            "conditions": [
+                {
+                    "settings": [
+                        {
+                            "eth": true
+                        }
+                    ],
+                    "environment": {
+                        "desktop": "*",
+                        "mobile": "*",
+                        "web": "*"
+                    }
+                }
+            ]
         },
         {
             "conditions": [
