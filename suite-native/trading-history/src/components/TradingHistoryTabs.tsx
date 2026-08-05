@@ -1,5 +1,5 @@
 import { type TradingType } from '@suite-common/trading';
-import { type SubTabItem, SubTabs } from '@suite-native/atoms';
+import { Box, type SubTabItem, SubTabs } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
 export type TradingHistoryFilter = TradingType | 'all';
@@ -36,11 +36,13 @@ const items: SubTabItem<TradingHistoryFilter>[] = [
 ];
 
 export const TradingHistoryTabs = ({ value, onChange }: TradingHistoryTabsProps) => (
-    <SubTabs
-        items={items}
-        onChange={onChange}
-        size="large"
-        testID="@trading/history/tabs"
-        value={value}
-    />
+    <Box paddingHorizontal="sp16">
+        <SubTabs
+            items={items}
+            onChange={onChange}
+            size="large"
+            testID="@trading/history/tabs"
+            value={value}
+        />
+    </Box>
 );

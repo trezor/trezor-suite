@@ -51,7 +51,6 @@ const iconSizeBySize = {
 
 const tabsStyle = prepareNativeStyle(({ spacings }) => ({
     gap: spacings.sp12,
-    paddingHorizontal: spacings.sp16,
 }));
 
 const tabStyle = prepareNativeStyle<SubTabStyleProps>((utils, { isActive, size }) => ({
