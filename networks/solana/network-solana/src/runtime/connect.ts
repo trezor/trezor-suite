@@ -5,6 +5,7 @@ import {
     SOLANA_ERROR__RPC_SUBSCRIPTIONS__CHANNEL_FAILED_TO_CONNECT,
     SOLANA_ERROR__RPC__TRANSPORT_HTTP_ERROR,
     SOLANA_ERROR__TRANSACTION_ERROR__BLOCKHASH_NOT_FOUND,
+    SolanaError,
     address,
     appendTransactionMessageInstruction,
     appendTransactionMessageInstructions,
@@ -16,12 +17,13 @@ import {
     getBase16Encoder,
     getCompiledTransactionMessageDecoder,
     getSignatureFromTransaction,
+    getSolanaErrorFromTransactionError,
     getTransactionDecoder,
     isSolanaError,
     isTransactionMessageWithDurableNonceLifetime,
     lamports,
     prependTransactionMessageInstructions,
-    sendAndConfirmTransactionFactory,
+    sendTransactionWithoutConfirmingFactory,
     setTransactionMessageFeePayer,
     setTransactionMessageLifetimeUsingBlockhash,
 } from '@solana/kit';
@@ -398,13 +400,88 @@ const getSendErrorMessage = (error: any) => {
     }
 };
 
+// Backstop only — confirmation normally ends with the blockhash expiry below.
+const SIGNATURE_CONFIRMATION_TIMEOUT_MS = 300_000;
+const SIGNATURE_CONFIRMATION_POLL_INTERVAL_MS = 2_000;
+
+const isConfirmed = (status?: { confirmationStatus: string | null } | null) =>
+    status?.confirmationStatus === 'confirmed' || status?.confirmationStatus === 'finalized';
+
+// `@solana/kit`'s confirmation throws on React Native/Hermes, so poll instead.
+export const waitForSignatureConfirmation = async (
+    signature: ReturnType<typeof getSignatureFromTransaction>,
+    lastValidBlockHeight: bigint,
+    api: SolanaAPI,
+) => {
+    const deadline = Date.now() + SIGNATURE_CONFIRMATION_TIMEOUT_MS;
+
+    // A transient RPC error (timeout, 429, connection blip) is treated as "no status yet"
+    // rather than failing confirmation outright, since the tx may still land on-chain.
+    const getStatus = () =>
+        api.rpc
+            .getSignatureStatuses([signature])
+            .send()
+            .then(
+                ({ value }) => value[0],
+                () => undefined,
+            );
+
+    while (Date.now() < deadline) {
+        const status = await getStatus();
+
+        if (status?.err) {
+            throw getSolanaErrorFromTransactionError(status.err);
+        }
+        if (isConfirmed(status)) {
+            return;
+        }
+
+        // The transaction cannot land anymore once its blockhash expires — the same rule
+        // kit's confirmation applies. Reporting a timeout while the blockhash is still valid
+        // would read as a failure for a transaction that may yet confirm.
+        const currentBlockHeight = await api.rpc
+            .getEpochInfo({ commitment: 'confirmed' })
+            .send()
+            .then(
+                ({ blockHeight }) => blockHeight,
+                () => undefined,
+            );
+
+        if (currentBlockHeight !== undefined && currentBlockHeight > lastValidBlockHeight) {
+            // The tx could have confirmed between the two RPC calls above.
+            const finalStatus = await getStatus();
+
+            if (finalStatus?.err) {
+                throw getSolanaErrorFromTransactionError(finalStatus.err);
+            }
+            if (isConfirmed(finalStatus)) {
+                return;
+            }
+
+            throw new SolanaError(SOLANA_ERROR__BLOCK_HEIGHT_EXCEEDED, {
+                currentBlockHeight,
+                lastValidBlockHeight,
+            });
+        }
+
+        await new Promise(resolve => setTimeout(resolve, SIGNATURE_CONFIRMATION_POLL_INTERVAL_MS));
+    }
+
+    throw new Error('Timeout while waiting for the transaction to be confirmed.');
+};
+
 export const sendAndConfirmTransaction = async (rawTx: string, api: SolanaAPI) => {
     const transaction = await preparePushTransaction(rawTx, api);
 
     try {
         const signature = getSignatureFromTransaction(transaction);
-        const send = sendAndConfirmTransactionFactory(api);
+        const send = sendTransactionWithoutConfirmingFactory({ rpc: api.rpc });
         await send(transaction, { commitment: 'confirmed', skipPreflight: false });
+        await waitForSignatureConfirmation(
+            signature,
+            transaction.lifetimeConstraint.lastValidBlockHeight,
+            api,
+        );
 
         return signature;
     } catch (error) {
