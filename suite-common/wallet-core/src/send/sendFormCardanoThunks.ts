@@ -28,7 +28,7 @@ import {
     type WalletSettingsRootState,
     selectAddressDisplayType,
 } from '../settings/walletSettingsReducer';
-type ComposeCardanoTransactionFeeLevelsThunkState = unknown;
+type ComposeCardanoTransactionFeeLevelsThunkState = void;
 
 export const composeCardanoTransactionFeeLevelsThunk = createThunk<
     PrecomposedLevelsCardano,

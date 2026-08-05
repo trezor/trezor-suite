@@ -28,7 +28,7 @@ import { estimateContractCallFeeLevel } from './feeLevel';
 import { isNewTronAccount } from './isNewTronAccount';
 import { resolveCalldata } from './resolveCalldata';
 
-type ComposeTronTransactionFeeLevelsThunkState = unknown;
+type ComposeTronTransactionFeeLevelsThunkState = void;
 
 export const composeTronTransactionFeeLevelsThunk = createThunk<
     PrecomposedLevels,
@@ -199,7 +199,7 @@ export const composeTronTransactionFeeLevelsThunk = createThunk<
     },
 );
 
-type SignTronSendFormTransactionThunkState = unknown;
+type SignTronSendFormTransactionThunkState = void;
 
 export const signTronSendFormTransactionThunk = createThunk<
     { serializedTx: string },
