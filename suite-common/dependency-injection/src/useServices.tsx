@@ -38,7 +38,7 @@ type RejectGetters<TSelected> =
         ? TSelected
         : [GetterKeys<TSelected>] extends [never]
           ? TSelected
-          : 'This dependency contains a getter. Read its value with useGetter, or take the whole dependency with useImperativeServices if nothing is read during render.';
+          : 'This dependency contains a getter. Select the getter on its own and read it with useGetter, or take the whole dependency with the deprecated useImperativeServices if it is only called from event handlers.';
 
 type ServicesProviderProps = {
     services: Services;
@@ -82,9 +82,11 @@ export function useServices(...selectors: ServiceSelector<any>[]) {
 /**
  * `useServices` for dependencies that do contain getters, which it otherwise refuses to hand out.
  *
- * Only for dependencies passed on as a whole and used imperatively — from event handlers and
- * callbacks, where nothing is read during render. To read a getter's value in render use `useGetter`,
- * otherwise the component will not re-render when the value changes.
+ * @deprecated Select the individual services instead. Getters and plain services are consumed
+ * differently — a getter holds a value that changes over time and has to be subscribed to with
+ * `useGetter`, while a service is just called — so a dependency lumping both together cannot be
+ * consumed correctly as a whole. This exists for bags that are only passed on and called from event
+ * handlers, where nothing is read during render; anything else will silently miss state changes.
  */
 export function useImperativeServices<
     const TSelectors extends readonly [ServiceSelector<any>, ...ServiceSelector<any>[]],
