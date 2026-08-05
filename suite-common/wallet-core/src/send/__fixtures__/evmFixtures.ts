@@ -15,9 +15,13 @@ type EvmGas = {
     maxPriorityFeePerGas?: string;
 };
 
+export const FOREIGN_SIGNER = '0x0F6666bC699aec39b846E898473e9CAec5a6b821';
+
 /**
  * Minimal EVM `WalletAccountTransaction` for nonce/fee unit tests. Only the fields the code under
- * test reads (`type`, `blockHeight` -> isPending, `ethereumSpecific`) are meaningful.
+ * test reads (`type`, `blockHeight` -> isPending, `ethereumSpecific`, and `details.vin` ->
+ * isSignedByAccount) are meaningful. `signer` defaults to the account itself; pass a foreign address
+ * for a transaction that merely names the account, which must not count toward its nonces.
  */
 export const evmTx = (
     nonce: number,
@@ -25,12 +29,30 @@ export const evmTx = (
         confirmed = true,
         type = 'sent',
         gas,
-    }: { confirmed?: boolean; type?: WalletAccountTransaction['type']; gas?: EvmGas } = {},
+        signer = ethAccount.descriptor,
+    }: {
+        confirmed?: boolean;
+        type?: WalletAccountTransaction['type'];
+        gas?: EvmGas;
+        signer?: string;
+    } = {},
 ): WalletAccountTransaction =>
     ({
         type,
         txid: `0x${nonce}`,
         blockHeight: confirmed ? 100 : 0,
+        descriptor: ethAccount.descriptor,
+        details: {
+            vin: [
+                {
+                    n: 0,
+                    isAddress: true,
+                    addresses: [signer],
+                    isAccountOwned: signer === ethAccount.descriptor || undefined,
+                },
+            ],
+            vout: [],
+        },
         ethereumSpecific: {
             status: confirmed ? 1 : -1,
             nonce,

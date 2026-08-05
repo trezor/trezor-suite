@@ -16,7 +16,7 @@ import {
     findChainedTransactions,
     getPendingEvmNonceStatus,
     isPending,
-    isSentTransaction,
+    isSignedByAccount,
     isTransactionBumpable,
     isTransactionCancellable,
 } from '@suite-common/wallet-utils';
@@ -151,7 +151,7 @@ export const TxDetailModal = ({
     // Computed once here and threaded down through DetailModal/BumpFeeModal/CancelTransactionModal
     // to TxDetailModalBase, instead of each of those independently re-fetching/recomputing it.
     const evmNonce = network.networkType === 'ethereum' ? tx.ethereumSpecific?.nonce : undefined;
-    const pendingEvmNonce = isPending(tx) && isSentTransaction(tx) ? evmNonce : undefined;
+    const pendingEvmNonce = isPending(tx) && isSignedByAccount(tx) ? evmNonce : undefined;
     const nonceStatus =
         pendingEvmNonce !== undefined && fetchedNonceInfo
             ? getPendingEvmNonceStatus(pendingEvmNonce, fetchedNonceInfo)
