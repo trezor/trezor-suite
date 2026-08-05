@@ -16,6 +16,13 @@ const onboardingMiddleware =
             firmwareActions.setStatus.match(action) && action.payload === 'done';
 
         if (
+            action.type === routerAppChanged.type &&
+            (action.payload === 'recovery' || action.payload === 'onboarding')
+        ) {
+            api.dispatch(recoveryActions.resetReducer());
+        }
+
+        if (
             isFwInstallationDone &&
             api.getState().onboarding.isActive &&
             api.getState().firmware.status === 'thp-pairing'

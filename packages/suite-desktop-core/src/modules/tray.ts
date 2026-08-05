@@ -125,7 +125,7 @@ export const initBackground: ModuleInitBackground = ({ store, mainWindowProxy })
         renderTray();
     });
     mainThreadEmitter.on('module/bridge/status', (status: Status) => {
-        logger.debug(SERVICE_NAME, 'Bridge status ' + status);
+        logger.debug(SERVICE_NAME, 'Bridge status ' + JSON.stringify(status));
         state.bridgeStatus = status.process;
         renderTray();
     });
