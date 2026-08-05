@@ -10,6 +10,7 @@ import { type Status, type TraySettings } from '@trezor/suite-desktop-api';
 
 import { app, ipcMain } from '../typed-electron';
 import { type ModuleInitBackground, mainThreadEmitter } from './module';
+import { APP_NAME_BARE } from '../libs/constants';
 
 export const SERVICE_NAME = 'tray';
 
@@ -51,7 +52,7 @@ export const initBackground: ModuleInitBackground = ({ store, mainWindowProxy })
                 getPlatformIcon(),
             );
             tray = new Tray(iconPath);
-            tray.setToolTip('Trezor Suite');
+            tray.setToolTip(APP_NAME_BARE);
         }
         const contextMenu = Menu.buildFromTemplate([
             {
@@ -71,7 +72,7 @@ export const initBackground: ModuleInitBackground = ({ store, mainWindowProxy })
                 type: 'separator',
             },
             {
-                label: 'Launch Trezor Suite',
+                label: `Launch ${APP_NAME_BARE}`,
                 click: () => mainThreadEmitter.emit('app/show'),
             },
             {
@@ -111,14 +112,14 @@ export const initBackground: ModuleInitBackground = ({ store, mainWindowProxy })
             state.devices += 1;
             tray?.displayBalloon({
                 iconType: 'info',
-                title: 'Trezor Suite',
+                title: APP_NAME_BARE,
                 content: `Device ${event.payload.name} connected`,
             });
         } else if (event.type === DEVICE.DISCONNECT && state.devices > 0) {
             state.devices -= 1;
             tray?.displayBalloon({
                 iconType: 'info',
-                title: 'Trezor Suite',
+                title: APP_NAME_BARE,
                 content: `Device ${event.payload.name} disconnected`,
             });
         }
