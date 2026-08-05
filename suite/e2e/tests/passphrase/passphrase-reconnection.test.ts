@@ -76,6 +76,7 @@ test.describe('Passphrase reconnection', { tag: ['@T3W1', '@T3T1'] }, () => {
             await dashboardPage.walletAtIndex(1).click();
             await walletPage.receiveButton.click();
             await expect(walletPage.usedAddress(0)).toBeVisible();
+            await walletPage.usedAddress(0).hover();
             await walletPage.usedAddressVerifyButton(0).click();
             await expect(page.getByText('Confirm passphrase')).toBeVisible();
             await dashboardPage.passphraseInput.fill('abc');
@@ -94,6 +95,7 @@ test.describe('Passphrase reconnection', { tag: ['@T3W1', '@T3T1'] }, () => {
         });
 
         await test.step('Second displaying receive address after reconnect should NOT prompt for passphrase', async () => {
+            await walletPage.usedAddress(0).hover();
             await walletPage.usedAddressVerifyButton(0).click();
             // Going straight to the device prompt proves no passphrase was requested again.
             await devicePrompt.confirmOnDevicePromptIsShown();
