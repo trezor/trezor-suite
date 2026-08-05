@@ -5,6 +5,7 @@ import {
 import { type TrezorDevice } from '@suite-common/suite-types';
 import {
     type StablecoinYieldActionReviewState,
+    type WrappedNativeFlowType,
     type YieldFlowDisplayToken,
     type YieldFlowResolvedData,
     type YieldWithdrawFlowType,
@@ -37,7 +38,7 @@ type YieldClaimReview = Extract<StablecoinYieldActionReviewState, { type: 'claim
 
 export type YieldReviewEvmTransactionPurpose = Extract<
     EvmTransactionPurpose,
-    'approve' | 'claim' | 'deposit' | 'redeem' | 'revoke' | 'withdraw' | 'wrap'
+    'approve' | 'claim' | 'deposit' | 'redeem' | 'revoke' | 'withdraw' | 'wrap' | 'unwrap'
 >;
 export type YieldApprovalReviewEvmTransactionPurpose = Extract<
     YieldReviewEvmTransactionPurpose,
@@ -94,16 +95,15 @@ type BuildYieldClaimReviewPreviewParams = {
     type: 'claim';
 };
 
-type BuildYieldWrapReviewPreviewParams = {
+type BuildWrappedNativeReviewPreviewParams = {
     account: Account;
     device: TrezorDevice;
     review: {
         amount: string;
         unsignedTransaction: string;
     };
-    /** Native coin of the account (`contractAddress: null`) — the token being spent. */
     reviewToken: YieldFlowDisplayToken;
-    type: 'wrap';
+    type: WrappedNativeFlowType;
 };
 
 type BuildYieldAllowanceReviewPreviewParams = {
@@ -120,7 +120,7 @@ export type BuildYieldReviewPreviewParams =
     | BuildYieldWithdrawReviewPreviewParams
     | BuildYieldClaimReviewPreviewParams
     | BuildYieldAllowanceReviewPreviewParams
-    | BuildYieldWrapReviewPreviewParams;
+    | BuildWrappedNativeReviewPreviewParams;
 
 export type YieldReviewPreview = {
     evmTransactionPurpose: YieldReviewEvmTransactionPurpose;
@@ -274,7 +274,8 @@ export const buildYieldReviewPreview = (
                     precomposedTransaction,
                 });
             }
-            case 'wrap': {
+            case 'wrap':
+            case 'unwrap': {
                 const { formState, precomposedTransaction } = buildStablecoinYieldTransactionReview(
                     {
                         amount: params.review.amount,
@@ -288,7 +289,7 @@ export const buildYieldReviewPreview = (
                 return buildYieldReviewPreviewResult({
                     account: params.account,
                     device: params.device,
-                    evmTransactionPurposeOverride: 'wrap',
+                    evmTransactionPurposeOverride: params.type,
                     formState,
                     precomposedTransaction,
                 });

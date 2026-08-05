@@ -4,17 +4,14 @@ import { useSelector } from 'react-redux';
 import { type RouteProp, useIsFocused, useNavigation, useRoute } from '@react-navigation/native';
 
 import { selectIsDeviceConnected } from '@suite-common/device';
-import { WRAPPED_NATIVE, getNetwork, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
-import { WETH_WRAP_GAS_RESERVE } from '@suite-common/wallet-constants';
+import { WRAPPED_NATIVE, getNetwork } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     type YieldPendingTransactionState,
-    getWrappableNativeBalance,
     selectAccountByKey,
-    shouldRecommendWrapReserve,
     useWrappedNativePendingTx,
 } from '@suite-common/wallet-core';
-import { toTokenSymbol } from '@suite-common/wallet-types';
+import { toTokenAddress, toTokenSymbol } from '@suite-common/wallet-types';
 import { Box, Button, FullAlertBox, VStack, useBottomSheetModal } from '@suite-native/atoms';
 import { Form } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
@@ -28,36 +25,39 @@ import {
 import { FeeSelector } from '@suite-native/transaction-management';
 
 import { YieldDepositAmountInputCard } from '../components/YieldDepositAmountInputCard';
+import { YieldDisabledAlert } from '../components/YieldDisabledAlert';
 import { YieldFeeEstimationErrorAlert } from '../components/YieldFeeEstimationErrorAlert';
 import { YieldPendingTransactionModal } from '../components/YieldPendingTransactionModal';
 import { YieldTxSimulationBottomSheet } from '../components/YieldTxSimulationBottomSheet';
+import { useMessageSystemWrappedNative } from '../hooks/useMessageSystemWrappedNative';
 import { useWrappedNativeTokenFees } from '../hooks/useWrappedNativeTokenFees';
 import { useWrappedNativeTokenForm } from '../hooks/useWrappedNativeTokenForm';
 import { useYieldPendingTransaction } from '../hooks/useYieldPendingTransaction';
+import { getAccountTokenByContract } from '../utils/contractTokenBalanceUtils';
 
 type RouteProps = RouteProp<
     WrappedNativeTokenStackParamList,
-    WrappedNativeTokenStackRoutes.WrapNativeToken
+    WrappedNativeTokenStackRoutes.UnwrapNativeToken
 >;
 type NavigationProps = StackNavigationProps<
     WrappedNativeTokenStackParamList,
-    WrappedNativeTokenStackRoutes.WrapNativeToken
+    WrappedNativeTokenStackRoutes.UnwrapNativeToken
 >;
 
-type PreparedWrap = {
+type PreparedUnwrap = {
     amount: string;
     unsignedTransaction: string;
 };
 
-export const WrapNativeTokenScreen = () => {
+export const UnwrapNativeTokenScreen = () => {
     const route = useRoute<RouteProps>();
     const navigation = useNavigation<NavigationProps>();
     const isFocused = useIsFocused();
     const { accountKey, pendingTransaction: pendingParam } = route.params;
 
     const [isDeviceNotConnectedVisible, setIsDeviceNotConnectedVisible] = useState(false);
-    const [hasWrapFailed, setHasWrapFailed] = useState(false);
-    const [preparedWrap, setPreparedWrap] = useState<PreparedWrap | null>(null);
+    const [hasUnwrapFailed, setHasUnwrapFailed] = useState(false);
+    const [preparedUnwrap, setPreparedUnwrap] = useState<PreparedUnwrap | null>(null);
 
     const {
         bottomSheetRef: simulationBottomSheetRef,
@@ -71,41 +71,47 @@ export const WrapNativeTokenScreen = () => {
     const isDeviceConnected = useSelector(selectIsDeviceConnected);
 
     const wrappedNative = account ? WRAPPED_NATIVE[account.symbol] : undefined;
-    const nativeSymbol = toTokenSymbol(account ? getNetworkDisplaySymbol(account.symbol) : '');
+    const wrappedBalance =
+        account && wrappedNative
+            ? (getAccountTokenByContract(account, wrappedNative.address)?.balance ?? '0')
+            : '0';
+
+    const {
+        isDisabled: isUnwrapDisabled,
+        content: unwrapDisabledContent,
+        variant: unwrapDisabledVariant,
+    } = useMessageSystemWrappedNative('unwrap');
 
     const form = useWrappedNativeTokenForm({
-        availableBalance: account?.formattedBalance ?? '0',
-        decimals: account ? getNetwork(account.symbol).decimals : 0,
-        // Max leaves the gas reserve aside; the field still accepts up to the full balance and
-        // eating into the reserve only triggers a non-blocking recommendation.
-        maxAmount: getWrappableNativeBalance(account?.formattedBalance ?? '0'),
-        tokenSymbol: nativeSymbol,
+        availableBalance: wrappedBalance,
+        decimals: wrappedNative?.decimals ?? 0,
+        tokenSymbol: wrappedNative?.symbol ?? '',
     });
     const { amountValue, handleAmountChange, handleMaxChange, isMaxSelected } = form;
     const {
         formState: { isValid },
     } = form.form;
 
-    const isWrapPending = !!pendingParam;
-    const isWrapAmountReady = isValid && !!amountValue;
+    const isUnwrapPending = !!pendingParam;
+    const isUnwrapAmountReady = isValid && !!amountValue;
 
-    const wrapFee = useWrappedNativeTokenFees({
+    const unwrapFee = useWrappedNativeTokenFees({
         account: account ?? null,
         amount: amountValue,
-        flowType: 'wrap',
-        isEnabled: isWrapAmountReady && !isWrapPending,
+        flowType: 'unwrap',
+        isEnabled: isUnwrapAmountReady && !isUnwrapPending,
     });
 
     const pendingStatus = useWrappedNativePendingTx(
         account ?? null,
         pendingParam?.txid ?? null,
-        'wrap',
+        'unwrap',
     );
     const pendingTransaction: YieldPendingTransactionState | null = useMemo(
         () =>
             pendingParam
                 ? {
-                      type: 'wrap',
+                      type: 'unwrap',
                       txid: pendingParam.txid,
                       amount: pendingParam.amount,
                       fee: pendingParam.fee,
@@ -118,7 +124,7 @@ export const WrapNativeTokenScreen = () => {
         accountKey,
         isFocused,
         pendingTransaction,
-        transactionType: 'wrap',
+        transactionType: 'unwrap',
     });
 
     useEffect(() => {
@@ -127,7 +133,7 @@ export const WrapNativeTokenScreen = () => {
         }
 
         if (pendingStatus === 'confirmed') {
-            navigation.replace(WrappedNativeTokenStackRoutes.WrapNativeTokenComplete, {
+            navigation.replace(WrappedNativeTokenStackRoutes.UnwrapNativeTokenComplete, {
                 accountKey,
                 amount: pendingParam.amount,
                 txid: pendingParam.txid,
@@ -137,27 +143,27 @@ export const WrapNativeTokenScreen = () => {
         }
 
         if (pendingStatus === 'failed') {
-            setHasWrapFailed(true);
+            setHasUnwrapFailed(true);
             navigation.setParams({ pendingTransaction: undefined });
         }
-    }, [accountKey, navigation, pendingParam, pendingStatus]);
+    }, [accountKey, navigation, pendingStatus, pendingParam]);
 
     const handleSubmit = useCallback(() => {
-        const { preparedAction } = wrapFee;
+        const { preparedAction } = unwrapFee;
 
         if (preparedAction?.amount !== amountValue) {
             return;
         }
 
-        setHasWrapFailed(false);
-        setPreparedWrap(preparedAction);
+        setHasUnwrapFailed(false);
+        setPreparedUnwrap(preparedAction);
         requestAnimationFrame(openSimulationBottomSheet);
-    }, [amountValue, openSimulationBottomSheet, wrapFee]);
+    }, [amountValue, openSimulationBottomSheet, unwrapFee]);
 
     const handleConfirmSimulation = useCallback(() => {
         closeSimulationBottomSheet();
 
-        if (!preparedWrap) {
+        if (!preparedUnwrap) {
             return;
         }
 
@@ -168,12 +174,12 @@ export const WrapNativeTokenScreen = () => {
         }
 
         setIsDeviceNotConnectedVisible(false);
-        navigation.navigate(WrappedNativeTokenStackRoutes.WrapNativeTokenReview, {
+        navigation.navigate(WrappedNativeTokenStackRoutes.UnwrapNativeTokenReview, {
             accountKey,
-            amount: preparedWrap.amount,
-            unsignedTransaction: preparedWrap.unsignedTransaction,
+            amount: preparedUnwrap.amount,
+            unsignedTransaction: preparedUnwrap.unsignedTransaction,
         });
-    }, [accountKey, closeSimulationBottomSheet, isDeviceConnected, navigation, preparedWrap]);
+    }, [accountKey, closeSimulationBottomSheet, isDeviceConnected, navigation, preparedUnwrap]);
 
     const handleCancelSimulation = useCallback(() => {
         closeSimulationBottomSheet();
@@ -184,100 +190,87 @@ export const WrapNativeTokenScreen = () => {
     }
 
     const accountLabel = account.accountLabel ?? getNetwork(account.symbol).name;
-    const isReserveRecommended = shouldRecommendWrapReserve(
-        amountValue ?? '',
-        account.formattedBalance,
-    );
-    const isSubmitDisabled = !isWrapAmountReady || !wrapFee.isFeeReady || isWrapPending;
+    const wrappedTokenSymbol = toTokenSymbol(wrappedNative.symbol);
+    const isSubmitDisabled =
+        !isUnwrapAmountReady || !unwrapFee.isFeeReady || isUnwrapPending || isUnwrapDisabled;
 
     return (
         <Screen
             header={
                 <ScreenHeader
                     closeActionType="back"
-                    title={
-                        <Translation
-                            id="earn.wrapNativeToken.title"
-                            values={{ nativeSymbol, wrappedSymbol: wrappedNative.symbol }}
-                        />
-                    }
+                    title={<Translation id="earn.unwrapNativeToken.title" />}
                 />
             }
         >
-            <Box marginTop="sp16" pointerEvents={isWrapPending ? 'none' : 'auto'}>
+            <Box marginTop="sp16" pointerEvents={isUnwrapPending ? 'none' : 'auto'}>
                 <VStack spacing="sp16">
+                    {isUnwrapDisabled && (
+                        <YieldDisabledAlert
+                            type="unwrap"
+                            content={unwrapDisabledContent}
+                            variant={unwrapDisabledVariant}
+                        />
+                    )}
                     <Form form={form.form}>
                         <YieldDepositAmountInputCard
-                            amountLabel={<Translation id="earn.wrapNativeToken.amountToWrap" />}
-                            balance={account.formattedBalance}
+                            amountLabel={<Translation id="earn.unwrapNativeToken.amountToUnwrap" />}
+                            balance={wrappedBalance}
                             isMaxSelected={isMaxSelected}
                             onAmountChange={handleAmountChange}
                             onMaxChange={handleMaxChange}
-                            tokenSymbol={nativeSymbol}
+                            tokenSymbol={wrappedTokenSymbol}
                         />
                     </Form>
-                    {isReserveRecommended && (
-                        <FullAlertBox
-                            intent="info"
-                            title={
-                                <Translation
-                                    id="earn.wrapNativeToken.reserveRecommendation"
-                                    values={{
-                                        amount: WETH_WRAP_GAS_RESERVE.toString(),
-                                        nativeSymbol,
-                                    }}
-                                />
-                            }
-                        />
-                    )}
-                    {isWrapAmountReady &&
-                        !isWrapPending &&
-                        (wrapFee.hasFeeEstimationError ? (
-                            <YieldFeeEstimationErrorAlert onRetry={wrapFee.retryFeeEstimation} />
+                    {isUnwrapAmountReady &&
+                        !isUnwrapPending &&
+                        (unwrapFee.hasFeeEstimationError ? (
+                            <YieldFeeEstimationErrorAlert onRetry={unwrapFee.retryFeeEstimation} />
                         ) : (
                             <FeeSelector
                                 accountKey={account.key}
-                                updateThunk={wrapFee.updateFeeLevelThunk}
-                                selectedFee={wrapFee.selectedFee}
-                                selectedFeePerUnit={wrapFee.formDraft?.feePerUnit}
-                                formDraft={wrapFee.formDraft}
-                                formDraftKey={wrapFee.formDraftKey}
+                                tokenContract={toTokenAddress(wrappedNative.address)}
+                                updateThunk={unwrapFee.updateFeeLevelThunk}
+                                selectedFee={unwrapFee.selectedFee}
+                                selectedFeePerUnit={unwrapFee.formDraft?.feePerUnit}
+                                formDraft={unwrapFee.formDraft}
+                                formDraftKey={unwrapFee.formDraftKey}
                             />
                         ))}
                     {isDeviceNotConnectedVisible && (
                         <FullAlertBox
                             intent="critical"
                             title={
-                                <Translation id="earn.wrapNativeToken.errors.deviceNotConnected" />
+                                <Translation id="earn.unwrapNativeToken.errors.deviceNotConnected" />
                             }
                         />
                     )}
-                    {hasWrapFailed && (
+                    {hasUnwrapFailed && (
                         <FullAlertBox
                             intent="critical"
-                            title={<Translation id="earn.wrapNativeToken.complete.failedTitle" />}
+                            title={<Translation id="earn.unwrapNativeToken.complete.failedTitle" />}
                             description={
-                                <Translation id="earn.wrapNativeToken.complete.failedSubtitle" />
+                                <Translation id="earn.unwrapNativeToken.complete.failedSubtitle" />
                             }
                         />
                     )}
                     <Button
                         isDisabled={isSubmitDisabled}
                         onPress={handleSubmit}
-                        testID="@wrap-native-token/submit-button"
+                        testID="@unwrap-native-token/submit-button"
                     >
-                        <Translation id="earn.wrapNativeToken.submitButton" />
+                        <Translation id="earn.unwrapNativeToken.submitButton" />
                     </Button>
                 </VStack>
             </Box>
-            {preparedWrap && (
+            {preparedUnwrap && (
                 <YieldTxSimulationBottomSheet
                     ref={simulationBottomSheetRef}
                     account={account}
-                    flow="wrap"
+                    flow="unwrap"
                     onCancel={handleCancelSimulation}
                     onConfirm={handleConfirmSimulation}
-                    unsignedTx={preparedWrap.unsignedTransaction}
+                    unsignedTx={preparedUnwrap.unsignedTransaction}
                 />
             )}
             {pendingParam && pendingModalProps && (
@@ -286,13 +279,14 @@ export const WrapNativeTokenScreen = () => {
                     accountLabel={accountLabel}
                     accountSymbol={account.symbol}
                     amount={pendingParam.amount}
-                    amountLabel={<Translation id="earn.wrapNativeToken.amountToWrap" />}
-                    amountTokenSymbol={nativeSymbol}
+                    amountLabel={<Translation id="earn.unwrapNativeToken.amountToUnwrap" />}
+                    amountTokenContract={toTokenAddress(wrappedNative.address)}
+                    amountTokenSymbol={wrappedTokenSymbol}
                     fee={pendingModalProps.fee}
                     isExploreDisabled={pendingModalProps.isExploreDisabled}
                     onExplorePress={pendingModalProps.onExplorePress}
                     submittedAt={pendingModalProps.submittedAt}
-                    title={<Translation id="earn.wrapNativeToken.pendingTransactionTitle" />}
+                    title={<Translation id="earn.unwrapNativeToken.pendingTransactionTitle" />}
                 />
             )}
         </Screen>

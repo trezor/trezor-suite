@@ -3,6 +3,7 @@ import { View } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { type BottomSheetModalMethods } from '@gorhom/bottom-sheet/lib/typescript/types';
+import { useNavigation } from '@react-navigation/native';
 
 import {
     DefinitionType,
@@ -10,7 +11,7 @@ import {
     TokenManagementAction,
     tokenDefinitionsActions,
 } from '@suite-common/token-definitions';
-import { getDisplaySymbol, getNetwork } from '@suite-common/wallet-config';
+import { getDisplaySymbol, getNetwork, isWrappedNativeToken } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     type TokensRootState,
@@ -22,6 +23,7 @@ import { type AccountKey, type TokenAddress, toTokenSymbol } from '@suite-common
 import {
     BottomSheetModal,
     Box,
+    Button,
     Card,
     CardDivider,
     HStack,
@@ -37,6 +39,12 @@ import {
 } from '@suite-native/formatters';
 import { TokenIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
+import {
+    type RootStackParamList,
+    RootStackRoutes,
+    type StackNavigationProps,
+    WrappedNativeTokenStackRoutes,
+} from '@suite-native/navigation';
 import {
     type TokensRootState as NativeTokensRootState,
     selectAccountTokenInfo,
@@ -79,15 +87,20 @@ const DetailRow = ({ label, children }: DetailRowProps) => {
 type TokenSettingsBottomSheetProps = {
     accountKey: AccountKey;
     tokenContract?: TokenAddress;
+    onNavigateAway?: () => void;
 };
 
 export const TokenSettingsBottomSheet = forwardRef(
     (
-        { accountKey, tokenContract }: TokenSettingsBottomSheetProps,
+        { accountKey, tokenContract, onNavigateAway }: TokenSettingsBottomSheetProps,
         ref: Ref<BottomSheetModalMethods>,
     ) => {
         const { applyStyle } = useNativeStyles();
         const dispatch = useDispatch();
+        const navigation =
+            useNavigation<
+                StackNavigationProps<RootStackParamList, RootStackRoutes.AccountDetail>
+            >();
 
         const token = useSelector((state: NativeTokensRootState) =>
             selectAccountTokenInfo(state, accountKey, tokenContract),
@@ -127,6 +140,18 @@ export const TokenSettingsBottomSheet = forwardRef(
                     contractAddress: tokenContract,
                 }),
             );
+        };
+
+        const isUnwrapDisplayed =
+            account.networkType === 'ethereum' &&
+            isWrappedNativeToken(account.symbol, tokenContract);
+
+        const handleUnwrapPress = () => {
+            onNavigateAway?.();
+            navigation.navigate(RootStackRoutes.WrappedNativeTokenNavigator, {
+                screen: WrappedNativeTokenStackRoutes.UnwrapNativeToken,
+                params: { accountKey },
+            });
         };
 
         return (
@@ -214,6 +239,16 @@ export const TokenSettingsBottomSheet = forwardRef(
                             onChange={handleToggleHide}
                             testID="@token-detail/hide-token-switch"
                         />
+                    )}
+                    {isUnwrapDisplayed && (
+                        <Button
+                            intent="neutral"
+                            priority="secondary"
+                            onPress={handleUnwrapPress}
+                            testID="@token-detail/unwrap-native-token-button"
+                        >
+                            <Translation id="earn.unwrapNativeToken.entryButton" />
+                        </Button>
                     )}
                 </VStack>
             </BottomSheetModal>

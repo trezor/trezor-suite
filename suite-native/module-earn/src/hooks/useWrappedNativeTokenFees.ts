@@ -2,38 +2,48 @@ import { useCallback, useMemo } from 'react';
 import { useDispatch } from 'react-redux';
 
 import { WRAPPED_NATIVE, getNetwork, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
-import { composeYieldWrapTransactionThunk, updateFeeInfoThunk } from '@suite-common/wallet-core';
+import {
+    type WrappedNativeFlowType,
+    composeYieldUnwrapTransactionThunk,
+    composeYieldWrapTransactionThunk,
+    updateFeeInfoThunk,
+} from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 
 import { updateEarnSelectedFeeLevelThunk } from './useComposeEarnFees';
 import { type ComposeTxResult, type ComposedTxBase, usePreparedTxFees } from './usePreparedTxFees';
 import { EARN_MODULE_PREFIX } from '../constants';
 
-export type PreparedWrapNativeTokenAction = {
+export type PreparedWrappedNativeTokenAction = {
     amount: string;
     unsignedTransaction: string;
 };
 
-type UseWrapNativeTokenFeesParams = {
+type UseWrappedNativeTokenFeesParams = {
     account: Account | null;
     amount: string | undefined;
+    flowType: WrappedNativeFlowType;
     isEnabled: boolean;
 };
 
-const getWrapNativeTokenFormDraftKey = (accountKey: string) =>
-    `${EARN_MODULE_PREFIX}/wrap-native/${accountKey}`;
+const getWrappedNativeTokenFormDraftKey = (flowType: WrappedNativeFlowType, accountKey: string) =>
+    `${EARN_MODULE_PREFIX}/${flowType === 'wrap' ? 'wrap-native' : 'unwrap-native'}/${accountKey}`;
 
-/** Wrap analogue of `useYieldDepositFees` — see `usePreparedTxFees` for the shared machinery. */
-export const useWrapNativeTokenFees = ({
+/**
+ * Wrap/unwrap analogue of `useYieldDepositFees` — see `usePreparedTxFees` for the shared
+ * machinery.
+ */
+export const useWrappedNativeTokenFees = ({
     account,
     amount,
+    flowType,
     isEnabled,
-}: UseWrapNativeTokenFeesParams) => {
+}: UseWrappedNativeTokenFeesParams) => {
     const dispatch = useDispatch();
 
     const formDraftKey = useMemo(
-        () => (account ? getWrapNativeTokenFormDraftKey(account.key) : ''),
-        [account],
+        () => (account ? getWrappedNativeTokenFormDraftKey(flowType, account.key) : ''),
+        [account, flowType],
     );
     const hasInvalidContext = !amount || !account || !formDraftKey;
 
@@ -51,31 +61,47 @@ export const useWrapNativeTokenFees = ({
                 // the store and errors with `missing-fee-level` when the network has none yet.
                 await dispatch(updateFeeInfoThunk({ networkSymbol: account.symbol })).unwrap();
 
+                const composePayload = {
+                    account,
+                    token: {
+                        contractAddress: wrappedNative.address,
+                        decimals: wrappedNative.decimals,
+                    },
+                };
                 const result = await dispatch(
-                    composeYieldWrapTransactionThunk({
-                        account,
-                        token: {
-                            contractAddress: wrappedNative.address,
-                            decimals: wrappedNative.decimals,
-                        },
-                        wrapAmount: composeAmount,
-                    }),
+                    flowType === 'wrap'
+                        ? composeYieldWrapTransactionThunk({
+                              ...composePayload,
+                              wrapAmount: composeAmount,
+                          })
+                        : composeYieldUnwrapTransactionThunk({
+                              ...composePayload,
+                              unwrapAmount: composeAmount,
+                          }),
                 ).unwrap();
 
                 if (result.type !== 'action-ready') {
                     return { type: 'error', isFeeEstimationError: true };
                 }
 
+                const spentToken =
+                    flowType === 'wrap'
+                        ? {
+                              contractAddress: null,
+                              decimals: getNetwork(account.symbol).decimals,
+                              symbol: getNetworkDisplaySymbol(account.symbol),
+                          }
+                        : {
+                              contractAddress: wrappedNative.address,
+                              decimals: wrappedNative.decimals,
+                              symbol: wrappedNative.symbol,
+                          };
+
                 return {
                     type: 'ready',
                     transaction: {
                         symbol: account.symbol,
-                        // Native coin of the account (`contractAddress: null`) — the token being spent.
-                        token: {
-                            contractAddress: null,
-                            decimals: getNetwork(account.symbol).decimals,
-                            symbol: getNetworkDisplaySymbol(account.symbol),
-                        },
+                        token: spentToken,
                         unsignedTransaction: result.unsignedTransaction,
                     },
                 };
@@ -83,7 +109,7 @@ export const useWrapNativeTokenFees = ({
                 return { type: 'error', isFeeEstimationError: true };
             }
         },
-        [account, dispatch],
+        [account, dispatch, flowType],
     );
 
     const fees = usePreparedTxFees({
@@ -96,7 +122,7 @@ export const useWrapNativeTokenFees = ({
     });
 
     const preparedAction = useMemo(
-        (): PreparedWrapNativeTokenAction | null =>
+        (): PreparedWrappedNativeTokenAction | null =>
             fees.preparedTx
                 ? {
                       amount: fees.preparedTx.amount,
@@ -110,8 +136,8 @@ export const useWrapNativeTokenFees = ({
         formDraft: fees.formDraft,
         formDraftKey: fees.formDraftKey,
         hasFeeEstimationError: fees.hasFeeEstimationError,
-        isPreparingWrapFee: fees.isFeePreparing,
-        isWrapFeeReady: fees.isFeeReady,
+        isFeePreparing: fees.isFeePreparing,
+        isFeeReady: fees.isFeeReady,
         preparedAction,
         retryFeeEstimation: fees.retryFeeEstimation,
         selectedFee: fees.selectedFee,

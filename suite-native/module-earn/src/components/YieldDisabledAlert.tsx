@@ -1,7 +1,7 @@
 import { type ReactNode } from 'react';
 
 import { type Variant } from '@suite-common/suite-types';
-import { type YieldFlowType } from '@suite-common/wallet-core';
+import { type WrappedNativeFlowType, type YieldFlowType } from '@suite-common/wallet-core';
 import { InlineAlertBox } from '@suite-native/atoms';
 import { Translation, type TxKeyPath } from '@suite-native/intl';
 
@@ -10,10 +10,12 @@ const yieldDisabledTitleMap = {
     withdraw: 'earn.messageSystem.withdrawDisabled',
     redeem: 'earn.messageSystem.withdrawDisabled',
     claim: 'earn.messageSystem.claimDisabled',
-} as const satisfies Record<YieldFlowType, TxKeyPath>;
+    wrap: 'earn.messageSystem.wrapDisabled',
+    unwrap: 'earn.messageSystem.unwrapDisabled',
+} as const satisfies Record<YieldFlowType | WrappedNativeFlowType, TxKeyPath>;
 
 type YieldDisabledAlertProps = {
-    type: YieldFlowType;
+    type: YieldFlowType | WrappedNativeFlowType;
     content?: ReactNode;
     variant?: Variant;
 };

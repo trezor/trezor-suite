@@ -18,50 +18,51 @@ import TrezorConnect from '@trezor/connect';
 import { EARN_MODULE_PREFIX } from './constants';
 import { getPushErrorType } from './yieldTransactionThunks';
 
-const WRAP_NATIVE_TOKEN_THUNK_PREFIX = `${EARN_MODULE_PREFIX}/wrap-native-token`;
+const WRAPPED_NATIVE_TOKEN_THUNK_PREFIX = `${EARN_MODULE_PREFIX}/wrapped-native-token`;
 
-export type WrapNativeTokenSignError = {
+export type WrappedNativeTokenSignError = {
     error: 'sign-transaction-failed';
     errorCode?: string;
     message?: string;
 };
 
-export type WrapNativeTokenPushError = {
+export type WrappedNativeTokenPushError = {
     error: 'push-transaction-failed' | 'push-transaction-pending-conflict';
     message?: string;
 };
 
 /** Everything the push phase needs, returned by the sign thunk and held by the review screen. */
-export type SignedWrapNativeTokenTransaction = {
+export type SignedWrappedNativeTokenTransaction = {
     serializedTx: string;
     precomposedTransaction: PrecomposedTransactionFinal;
     formState: FormState;
 };
 
-type SignWrapNativeTokenPayload = {
+type SignWrappedNativeTokenPayload = {
     account: Account;
-    /** Native coin of the account (`contractAddress: null`) — the token being spent. */
+    /** Token being spent — the native coin for a wrap, the wrapped token for an unwrap. */
     token: YieldFlowDisplayToken;
     amount: string;
     unsignedTransaction: string;
 };
 
-type PushWrapNativeTokenPayload = {
+type PushWrappedNativeTokenPayload = {
     account: Account;
-    signedTransaction: SignedWrapNativeTokenTransaction;
+    signedTransaction: SignedWrappedNativeTokenTransaction;
 };
 
 /**
- * Signs a composed wrap transaction on the device. Unlike the yield action review thunks, it is
- * session-less — the standalone wrap has no vault, so all inputs are carried in the payload and
- * the signed transaction is returned to the caller instead of being stored in the yield session.
+ * Signs a composed wrap/unwrap transaction on the device. Unlike the yield action review thunks,
+ * it is session-less — the standalone wrapped-native flows have no vault, so all inputs are
+ * carried in the payload and the signed transaction is returned to the caller instead of being
+ * stored in the yield session.
  */
-export const signWrapNativeTokenThunk = createThunk<
-    SignedWrapNativeTokenTransaction,
-    SignWrapNativeTokenPayload,
-    { rejectValue: WrapNativeTokenSignError }
+export const signWrappedNativeTokenThunk = createThunk<
+    SignedWrappedNativeTokenTransaction,
+    SignWrappedNativeTokenPayload,
+    { rejectValue: WrappedNativeTokenSignError }
 >(
-    `${WRAP_NATIVE_TOKEN_THUNK_PREFIX}/sign`,
+    `${WRAPPED_NATIVE_TOKEN_THUNK_PREFIX}/sign`,
     async ({ account, token, amount, unsignedTransaction }, { getState, rejectWithValue }) => {
         const device = selectSelectedDevice(getState());
 
@@ -88,7 +89,7 @@ export const signWrapNativeTokenThunk = createThunk<
                 message:
                     error instanceof Error
                         ? error.message
-                        : 'Unsupported wrap transaction payload.',
+                        : 'Unsupported wrapped-native transaction payload.',
             });
         }
 
@@ -123,12 +124,12 @@ export const signWrapNativeTokenThunk = createThunk<
     },
 );
 
-export const pushWrapNativeTokenThunk = createThunk<
+export const pushWrappedNativeTokenThunk = createThunk<
     { txid: string },
-    PushWrapNativeTokenPayload,
-    { rejectValue: WrapNativeTokenPushError }
+    PushWrappedNativeTokenPayload,
+    { rejectValue: WrappedNativeTokenPushError }
 >(
-    `${WRAP_NATIVE_TOKEN_THUNK_PREFIX}/push`,
+    `${WRAPPED_NATIVE_TOKEN_THUNK_PREFIX}/push`,
     async ({ account, signedTransaction }, { dispatch, rejectWithValue }) => {
         const pushResponse = await TrezorConnect.pushTransaction({
             tx: signedTransaction.serializedTx,
