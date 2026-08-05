@@ -10,7 +10,14 @@ import { mkdirSync } from 'fs';
 import { dirname } from 'path';
 
 import type { WardProvider } from '../';
-import type { TreeState, WardEntry, WardLabel, WardLeafBlob, WardRow } from '../../types';
+import type {
+    TreeState,
+    WardEntry,
+    WardLabel,
+    WardLeafBlob,
+    WardRow,
+    WardTransition,
+} from '../../types';
 
 type SqliteAddressRow = {
     ward_id: string;
@@ -20,14 +27,28 @@ type SqliteAddressRow = {
     data: string;
     counter: number;
     blob: string | null;
+    entry_key: string | null;
 };
+
 type TreeStateRow = { root: string; counter: number; mac: string | null };
 
-const parseRow = (row: SqliteAddressRow): WardEntry => ({
+const parseRow = (row: Pick<SqliteAddressRow, 'data' | 'counter' | 'blob'>): WardEntry => ({
     metadata: JSON.parse(row.data) as WardLabel,
     counter: row.counter ?? 0,
     ...(row.blob != null && { blob: JSON.parse(row.blob) as WardLeafBlob }),
 });
+
+const toRow = (r: SqliteAddressRow): WardRow => {
+    const entry = parseRow(r);
+
+    return {
+        appId: r.app_id,
+        address: r.address,
+        networkSymbol: r.network_symbol,
+        ...(r.entry_key != null && { entryKey: r.entry_key }),
+        entry,
+    };
+};
 
 export class WardDb implements WardProvider {
     private db: Database.Database;
@@ -45,20 +66,36 @@ export class WardDb implements WardProvider {
                 counter        INTEGER NOT NULL DEFAULT 0,
                 data           TEXT NOT NULL,
                 blob           TEXT,
+                entry_key      TEXT,
                 PRIMARY KEY (ward_id, app_id, address, network_symbol)
             );
+            CREATE INDEX IF NOT EXISTS addresses_entry_key ON addresses (ward_id, entry_key);
             CREATE TABLE IF NOT EXISTS tree_state (
                 ward_id TEXT PRIMARY KEY,
                 root      TEXT NOT NULL,
                 counter   INTEGER NOT NULL DEFAULT 0,
                 mac       TEXT
             );
+            CREATE TABLE IF NOT EXISTS transitions (
+                ward_id         TEXT NOT NULL,
+                counter         INTEGER NOT NULL,
+                prev_root       TEXT NOT NULL,
+                target_root     TEXT NOT NULL,
+                target_root_mac TEXT,
+                leaves          TEXT NOT NULL,   -- JSON array of WardLeafBlob (batch, 1..N)
+                auth_commit     TEXT,
+                head_mac        TEXT,
+                sig_commit      TEXT,
+                PRIMARY KEY (ward_id, counter)
+            );
         `);
-        // Migrate a pre-keyed-model DB: add the device leaf-blob column if missing.
-        try {
-            this.db.exec('ALTER TABLE addresses ADD COLUMN blob TEXT');
-        } catch {
-            // already present — ignore
+        // Migrate a pre-keyed-model DB: add the device leaf-blob + entry_key columns if missing.
+        for (const col of ['blob TEXT', 'entry_key TEXT']) {
+            try {
+                this.db.exec(`ALTER TABLE addresses ADD COLUMN ${col}`);
+            } catch {
+                // already present — ignore
+            }
         }
     }
 
@@ -77,15 +114,7 @@ export class WardDb implements WardProvider {
             | Pick<SqliteAddressRow, 'data' | 'counter' | 'blob'>
             | undefined;
 
-        return row
-            ? parseRow({
-                  ward_id: wardId,
-                  app_id: appId,
-                  address,
-                  network_symbol: networkSymbol,
-                  ...row,
-              })
-            : null;
+        return row ? parseRow(row) : null;
     }
 
     upsert(
@@ -97,12 +126,13 @@ export class WardDb implements WardProvider {
     ): void {
         this.db
             .prepare(
-                `INSERT INTO addresses (ward_id, app_id, address, network_symbol, counter, data, blob)
-                 VALUES (?, ?, ?, ?, ?, ?, ?)
+                `INSERT INTO addresses (ward_id, app_id, address, network_symbol, counter, data, blob, entry_key)
+                 VALUES (?, ?, ?, ?, ?, ?, ?, ?)
                  ON CONFLICT(ward_id, app_id, address, network_symbol) DO UPDATE SET
-                     counter = excluded.counter,
-                     data    = excluded.data,
-                     blob    = excluded.blob`,
+                     counter   = excluded.counter,
+                     data      = excluded.data,
+                     blob      = excluded.blob,
+                     entry_key = excluded.entry_key`,
             )
             .run(
                 wardId,
@@ -112,23 +142,30 @@ export class WardDb implements WardProvider {
                 entry.counter,
                 JSON.stringify(entry.metadata),
                 entry.blob !== undefined ? JSON.stringify(entry.blob) : null,
+                entry.blob?.entryKey ?? null,
             );
     }
 
     getAllEntries(wardId: string): WardRow[] {
         const rows = this.db
             .prepare(
-                `SELECT ward_id, app_id, address, network_symbol, counter, data, blob FROM addresses
-                 WHERE ward_id = ? ORDER BY rowid`,
+                `SELECT ward_id, app_id, address, network_symbol, counter, data, blob, entry_key
+                 FROM addresses WHERE ward_id = ? ORDER BY rowid`,
             )
             .all(wardId) as SqliteAddressRow[];
 
-        return rows.map(r => ({
-            appId: r.app_id,
-            address: r.address,
-            networkSymbol: r.network_symbol,
-            entry: parseRow(r),
-        }));
+        return rows.map(toRow);
+    }
+
+    getByEntryKey(wardId: string, entryKey: string): WardRow | null {
+        const row = this.db
+            .prepare(
+                `SELECT ward_id, app_id, address, network_symbol, counter, data, blob, entry_key
+                 FROM addresses WHERE ward_id = ? AND entry_key = ?`,
+            )
+            .get(wardId, entryKey) as SqliteAddressRow | undefined;
+
+        return row ? toRow(row) : null;
     }
 
     getTreeState(wardId: string): TreeState | null {
@@ -151,9 +188,69 @@ export class WardDb implements WardProvider {
             .run(wardId, state.root, state.counter, state.mac ?? null);
     }
 
+    appendTransition(wardId: string, t: WardTransition): void {
+        this.db
+            .prepare(
+                `INSERT INTO transitions
+                     (ward_id, counter, prev_root, target_root, target_root_mac,
+                      leaves, auth_commit, head_mac, sig_commit)
+                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                 ON CONFLICT(ward_id, counter) DO UPDATE SET
+                     prev_root       = excluded.prev_root,
+                     target_root     = excluded.target_root,
+                     target_root_mac = excluded.target_root_mac,
+                     leaves          = excluded.leaves,
+                     auth_commit     = excluded.auth_commit,
+                     head_mac        = excluded.head_mac,
+                     sig_commit      = excluded.sig_commit`,
+            )
+            .run(
+                wardId,
+                t.counter,
+                t.prevRoot,
+                t.targetRoot,
+                t.targetRootMac ?? null,
+                JSON.stringify(t.leaves),
+                t.authCommit ?? null,
+                t.headMac ?? null,
+                t.sigCommit ?? null,
+            );
+    }
+
+    getTransitions(wardId: string): WardTransition[] {
+        const rows = this.db
+            .prepare(
+                `SELECT counter, prev_root, target_root, target_root_mac,
+                        leaves, auth_commit, head_mac, sig_commit
+                 FROM transitions WHERE ward_id = ? ORDER BY counter`,
+            )
+            .all(wardId) as {
+            counter: number;
+            prev_root: string;
+            target_root: string;
+            target_root_mac: string | null;
+            leaves: string;
+            auth_commit: string | null;
+            head_mac: string | null;
+            sig_commit: string | null;
+        }[];
+
+        return rows.map(r => ({
+            counter: r.counter,
+            prevRoot: r.prev_root,
+            targetRoot: r.target_root,
+            ...(r.target_root_mac != null && { targetRootMac: r.target_root_mac }),
+            leaves: JSON.parse(r.leaves) as WardLeafBlob[],
+            ...(r.auth_commit != null && { authCommit: r.auth_commit }),
+            ...(r.head_mac != null && { headMac: r.head_mac }),
+            ...(r.sig_commit != null && { sigCommit: r.sig_commit }),
+        }));
+    }
+
     clearAll(): void {
         this.db.prepare('DELETE FROM addresses').run();
         this.db.prepare('DELETE FROM tree_state').run();
+        this.db.prepare('DELETE FROM transitions').run();
     }
 
     private closed = false;

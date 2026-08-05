@@ -201,6 +201,39 @@ export default class WardUpdate extends AbstractMethod<'wardUpdate', WardUpdateS
             );
         }
 
+        // §7 lineage: record the authenticated transition (prev→target root at this
+        // counter + the leaf blob it wrote) so a fresh/partial host can hydrate + VERIFY
+        // the MPT by backward-walk instead of trusting a flat rebuild (see @trezor/ward
+        // `hydrate`). All values are already in hand — no extra device round. Best-effort
+        // like commitLocal: a failure only degrades future hydration, not this write.
+        if (provider.appendTransition !== undefined && installed.root !== undefined) {
+            try {
+                await provider.appendTransition(wardId, {
+                    counter: installed.counter,
+                    prevRoot: tree?.root ?? '',
+                    targetRoot: installed.root,
+                    ...(installed.rootMac !== undefined && { targetRootMac: installed.rootMac }),
+                    // A single-leaf commit is a batch of one (batch-native transition).
+                    leaves: [
+                        {
+                            entryKey: candidate.entryKey ?? '',
+                            entryType: candidate.entryType ?? 'address',
+                            nonce: candidate.nonce ?? '',
+                            tag: candidate.tag ?? '',
+                            ct: candidate.ct ?? '',
+                        },
+                    ],
+                });
+            } catch (err) {
+                console.error(
+                    `[wardUpdate] appendTransition FAILED (device committed counter ` +
+                        `${installed.counter}) for wardId=${wardId}: ` +
+                        `${err instanceof Error ? err.message : String(err)}. ` +
+                        'Lineage log is incomplete — hydration will reject until resynced.',
+                );
+            }
+        }
+
         return {
             counter: installed.counter,
             root: installed.root ?? '',

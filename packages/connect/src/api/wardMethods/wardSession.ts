@@ -238,6 +238,34 @@ export class WardSession {
         return message;
     }
 
+    /**
+     * PULL verify: send WARDLookup with NO pushed proof material, so the device
+     * computes the target entry_key itself, emits WARDProofRequest, and returns the
+     * verdict. `buildAck` answers that request reactively from the host's stored
+     * blobs (scoped to this call, like perform/displayAddress). This lets a
+     * non-membership verdict for an absent address be device-proven — the host
+     * never needs the target entry_key.
+     */
+    async lookupPull(
+        params: Messages.WARDLookup,
+        buildAck: (request: Messages.WARDProofRequest) => Messages.WARDProofAck,
+    ): Promise<Messages.WARDLookupAck> {
+        this.cmd.setWardProofCallback(request => {
+            this.vlog('<- WARDProofRequest', request);
+
+            return buildAck(request);
+        });
+        try {
+            this.vlog('-> WARDLookup (pull)');
+            const { message } = await this.cmd.typedCall('WARDLookup', 'WARDLookupAck', params);
+            this.vlog('<- WARDLookupAck', message);
+
+            return message;
+        } finally {
+            this.cmd.setWardProofCallback(undefined);
+        }
+    }
+
     /** Report the device's queued pending-edit addresses (and echoed identities). */
     async listPending(): Promise<{
         addresses: string[];

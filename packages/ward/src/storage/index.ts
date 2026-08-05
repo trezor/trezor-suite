@@ -5,7 +5,7 @@
  * ./sqlite subpath). The only production implementation today is the sqlite WardDb;
  * an Evolu-backed implementation for suite-desktop is planned.
  */
-import type { TreeState, WardEntry, WardRow } from '../types';
+import type { TreeState, WardEntry, WardRow, WardTransition } from '../types';
 
 /**
  * WardProvider — the host-storage seam (data plane).
@@ -36,9 +36,19 @@ export type WardProvider = {
         entry: WardEntry,
     ): void | Promise<void>;
     getAllEntries(wardId: string): WardRow[] | Promise<WardRow[]>;
+    /** Serve a proof by the opaque trie path: the row whose entry_key matches, or
+     * null. The keyed-path read primitive (the host never needs the identifier).
+     * Optional so existing/mock providers stay valid; concrete providers implement it
+     * and Gap 10 serve-by-key can require it via a guard. */
+    getByEntryKey?(wardId: string, entryKey: string): WardRow | null | Promise<WardRow | null>;
     /** Each wallet keeps its own root checkpoint, identified by wardId. */
     getTreeState(wardId: string): TreeState | null | Promise<TreeState | null>;
     setTreeState(wardId: string, state: TreeState): void | Promise<void>;
+    /** Append the authenticated transition for a committed write (§7 lineage), and
+     * read them back (ascending `counter`) for backward-walk hydration. Optional so
+     * existing/mock providers stay valid; the sqlite/in-memory ones implement them. */
+    appendTransition?(wardId: string, transition: WardTransition): void | Promise<void>;
+    getTransitions?(wardId: string): WardTransition[] | Promise<WardTransition[]>;
     /** Releases any held resources (e.g. an open database handle). */
     dispose?(): void | Promise<void>;
 };
@@ -55,6 +65,7 @@ export class InMemoryWardDb implements WardProvider {
     private entries = new Map<string, WardRow>();
     private order: string[] = [];
     private treeState = new Map<string, TreeState>();
+    private transitions = new Map<string, WardTransition[]>();
 
     lookup(
         wardId: string,
@@ -74,7 +85,13 @@ export class InMemoryWardDb implements WardProvider {
     ): void {
         const k = key(wardId, appId, address, networkSymbol);
         if (!this.entries.has(k)) this.order.push(k);
-        this.entries.set(k, { appId, address, networkSymbol, entry });
+        this.entries.set(k, {
+            appId,
+            address,
+            networkSymbol,
+            entryKey: entry.blob?.entryKey,
+            entry,
+        });
     }
 
     getAllEntries(wardId: string): WardRow[] {
@@ -86,11 +103,32 @@ export class InMemoryWardDb implements WardProvider {
             .filter((r): r is WardRow => r !== undefined);
     }
 
+    getByEntryKey(wardId: string, entryKey: string): WardRow | null {
+        const prefix = `${wardId} `;
+
+        return (
+            this.order
+                .filter(k => k.startsWith(prefix))
+                .map(k => this.entries.get(k))
+                .find((r): r is WardRow => r?.entryKey === entryKey) ?? null
+        );
+    }
+
     getTreeState(wardId: string): TreeState | null {
         return this.treeState.get(wardId) ?? null;
     }
 
     setTreeState(wardId: string, state: TreeState): void {
         this.treeState.set(wardId, state);
+    }
+
+    appendTransition(wardId: string, transition: WardTransition): void {
+        const list = this.transitions.get(wardId) ?? [];
+        list.push(transition);
+        this.transitions.set(wardId, list);
+    }
+
+    getTransitions(wardId: string): WardTransition[] {
+        return [...(this.transitions.get(wardId) ?? [])].sort((a, b) => a.counter - b.counter);
     }
 }

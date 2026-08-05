@@ -5,11 +5,12 @@ import type { MethodPermission } from '@trezor/connect-common';
 import { WardVerifySchema } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { Assert } from '@trezor/schema-utils';
-import { blobRows, computeRootFromBlobs, loadHead, proofByKey } from '@trezor/ward';
+import { blobRows, computeRootFromBlobs, loadHead } from '@trezor/ward';
 
 import type { MethodMessage } from '../../../core/AbstractMethod';
 import { AbstractMethod } from '../../../core/AbstractMethod';
 import * as settingsStore from '../../../data/settingsStore';
+import { buildAckByKey } from '../proofAck';
 import { getWardManagerService } from '../wardManagerService';
 import { WardSession } from '../wardSession';
 
@@ -113,45 +114,27 @@ export default class WardVerify extends AbstractMethod<'wardVerify', WardVerifyS
             tree?.root,
         );
 
-        // Non-membership PUSH-verify needs the DEVICE to compute the target entry_key
-        // (a pull); the host holds no keys and cannot form it for an absent address.
-        // Report host-DB absence without a device proof.
-        if (entry === null) {
-            vlog('result', {
-                isMember: false,
-                valid: false,
-                note: 'non-membership (host-side only)',
-            });
-
-            return { isMember: false, valid: false, counter: 0 };
-        }
-        const blob = rows.find(
-            r => r.appId === appId && r.address === address && r.networkSymbol === networkSymbol,
-        )?.entry.blob;
-        if (blob === undefined) {
-            // Entry present but written before the keyed model (no leaf blob) — cannot
-            // build a device-verifiable proof.
-            return { isMember: true, valid: false, counter: entry.counter };
-        }
-        const ack = await session.lookup({
-            address: utf8Hex(address),
-            app_id: appId,
-            key_type: blob.entryType,
-            proof: proofByKey(blobRows(rows), blob.entryKey),
-            nonce: blob.nonce,
-            tag: blob.tag,
-            ct: blob.ct,
-        });
-        // Explicit outcome logging: a membership entry whose proof the device rejects is
-        // the silent-failure case. Make it loud so it is never mistaken for "no label".
+        // PULL verify: send WARDLookup with NO pushed proof material, so the DEVICE
+        // computes the target entry_key and pulls the proof; we answer reactively from
+        // the entry_keys already in the DB. This makes BOTH membership and
+        // non-membership device-proven — the host never needs the target entry_key, so
+        // an absent address yields a real proven non-membership (not host-side guess).
+        const preBlobs = blobRows(rows);
+        const ack = await session.lookupPull(
+            { address: utf8Hex(address), app_id: appId, key_type: 'address', proof: [] },
+            req => buildAckByKey(preBlobs, req.entry_key),
+        );
+        const membership = ack.membership ?? isMember;
+        // A host that believes the entry exists but whose proof the device rejects is
+        // the silent-failure case — make it loud, never mistaken for "no label".
         if (isMember && !ack.valid) {
             console.error(
                 `[wardVerify] MEMBERSHIP PROOF FAILED verification on device for ` +
-                    `wardId=${wardId} appId=${appId} address=${address} — the host proof did ` +
+                    `wardId=${wardId} appId=${appId} address=${address} — the host state did ` +
                     "not match the device's authenticated root (stale/inconsistent host state?).",
             );
         } else {
-            vlog('result', { isMember, valid: ack.valid, counter: ack.counter });
+            vlog('result', { isMember: membership, valid: ack.valid, counter: ack.counter });
         }
         // Tolerant echo check (matches prior behavior): only reject on an explicit
         // mismatch; an absent ward_id is not treated as a failure here.
@@ -163,7 +146,7 @@ export default class WardVerify extends AbstractMethod<'wardVerify', WardVerifyS
         }
 
         return {
-            isMember,
+            isMember: membership,
             valid: ack.valid,
             counter: ack.counter,
             wardId: ack.ward_id,
