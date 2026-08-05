@@ -26,6 +26,7 @@ export const UI_REQUEST = {
     FIRMWARE_NOT_INSTALLED: 'ui-device_firmware_not_installed',
     FIRMWARE_PROGRESS: 'ui-firmware-progress',
     FIRMWARE_PROGRESS_UNEXPECTED_DELAY: 'ui-firmware-progress-unexpected-delay',
+    FIRMWARE_TYPE_CHANGED: 'ui-firmware_type_changed',
 
     /** connect is waiting for device to be automatically reconnected */
     FIRMWARE_RECONNECT: 'ui-firmware_reconnect',
@@ -250,6 +251,13 @@ export interface FirmwareProgressUnexpectedDelay {
     payload: Record<string, never>;
 }
 
+export interface FirmwareTypeChanged {
+    type: typeof UI_REQUEST.FIRMWARE_TYPE_CHANGED;
+    payload: {
+        device: Device;
+    };
+}
+
 /**
  * Prompt user to reconnect device during firmware installation.
  */
@@ -291,6 +299,7 @@ export type UiEvent =
     | BundleProgress<any>
     | FirmwareProgress
     | FirmwareProgressUnexpectedDelay
+    | FirmwareTypeChanged
     | FirmwareException
     | FirmwareReconnect
     | FirmwareDisconnect

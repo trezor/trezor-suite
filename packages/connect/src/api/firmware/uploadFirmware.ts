@@ -34,6 +34,17 @@ const postProgressMessage = (
     );
 };
 
+const postFirmwareTypeChangedMessage = (
+    device: IDevice,
+    postMessage: (message: CoreEventMessage) => void,
+) => {
+    postMessage(
+        createUiMessage(UI_REQUEST.FIRMWARE_TYPE_CHANGED, {
+            device: device.toMessageObject(),
+        }),
+    );
+};
+
 const FIRMWARE_ERASE_TIMEOUT_MILLISECONDS = 15_000;
 const TIMEOUT_MIN_FW_VERSION = '1.12.1';
 const TIMEOUT_MAX_FW_VERSION = '1.13.0';
@@ -44,6 +55,7 @@ type UploadFirmwareProps = {
     device: IDevice;
     firmwareUploadRequest: PROTO.FirmwareUpload;
     updateFlowType: FirmwareUpdateFlowType;
+    firmwareTypeChanged?: boolean;
 };
 
 export const uploadFirmware = async ({
@@ -52,6 +64,7 @@ export const uploadFirmware = async ({
     device,
     firmwareUploadRequest: { payload },
     updateFlowType,
+    firmwareTypeChanged,
 }: UploadFirmwareProps) => {
     if (device.features.major_version === 1) {
         postConfirmationMessage(device, updateFlowType);
@@ -83,6 +96,10 @@ export const uploadFirmware = async ({
             clearInterval(progressTimer);
         });
 
+        if (firmwareTypeChanged) {
+            postFirmwareTypeChangedMessage(device, postMessage);
+        }
+
         postProgressMessage(device, 100, postMessage);
 
         return message;
@@ -101,6 +118,7 @@ export const uploadFirmware = async ({
                 progress,
             }),
         );
+
         while (response.type !== 'Success') {
             // NOTE: offset and message are present in T2
             const start = response.message.offset;
@@ -126,6 +144,10 @@ export const uploadFirmware = async ({
             }).finally(() => {
                 device.transport.removeAllListeners(TRANSPORT.SEND_MESSAGE_PROGRESS);
             });
+
+            if (start === 0 && firmwareTypeChanged) {
+                postFirmwareTypeChangedMessage(device, postMessage);
+            }
         }
         postProgressMessage(device, 100, postMessage);
 
