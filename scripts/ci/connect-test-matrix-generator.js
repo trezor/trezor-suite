@@ -239,7 +239,9 @@ const filterCartesianResultByArgs = () => {
     return cartesian.filter(m =>
         Object.keys(m).every(key => {
             const filterBy = parsedArgs[key];
-            if (filterBy === 'all') {
+            // CLI args parse into arrays, so `all` arrives as `['all']`
+            const filterValues = Array.isArray(filterBy) ? filterBy : [filterBy];
+            if (filterValues.includes('all')) {
                 // experimental methods are opt-in; they never run as part of `all`
                 if (key === 'groups' && getValue(m[key]) === 'experimental') {
                     return false;
