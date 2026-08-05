@@ -218,8 +218,6 @@
   "TOAST_TX_SENT": "从 {account} 发送",
   "TOAST_TX_STAKED": "从 {account} 质押",
   "TOAST_TX_UNSTAKED": "从 {account} 中解除质押",
-  "TOAST_TX_UNWRAP": "来自 {account} 的解包交易已广播",
-  "TOAST_TX_WRAP": "来自 {account} 的包装交易已广播",
   "TOAST_TX_YIELD_CLAIM": "来自 {account} 的认领交易已广播",
   "TOAST_TX_YIELD_DEPOSIT": "来自 {account} 的充值交易已广播",
   "TOAST_TX_YIELD_WITHDRAW": "来自 {account} 的提款交易已广播",
