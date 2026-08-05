@@ -57,6 +57,14 @@ export const checkSeedThunk = createThunk<
     });
 
     if (!response.success) {
+        // A user-initiated cancellation is not a failure: reset the flow instead of leaving the
+        // reducer on the 'finished' + error state, which renders the "seed check failed" screen.
+        if (response.error.code === 'Method_Cancel') {
+            dispatch(recoveryActions.resetReducer());
+
+            return;
+        }
+
         dispatch(recoveryActions.setError(response.error.message));
         extra.services.analytics.report({
             type: events.settingsDeviceCheckSeedEvent.name,
@@ -117,6 +125,14 @@ export const recoverDeviceThunk = createThunk<void, void, { state: RecoverDevice
         });
 
         if (!response.success) {
+            // A user-initiated cancellation is not a failure: reset the flow instead of leaving the
+            // reducer on the 'finished' + error state, which renders the "recovery failed" screen.
+            if (response.error.code === 'Method_Cancel') {
+                dispatch(recoveryActions.resetReducer());
+
+                return;
+            }
+
             dispatch(recoveryActions.setError(response.error.message));
         }
 
