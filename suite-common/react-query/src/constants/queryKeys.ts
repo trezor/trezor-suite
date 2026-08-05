@@ -43,6 +43,14 @@ export const desktopQueryKeys = {
         descriptor,
         lastKnownNonce,
     ],
+    // The fetched graph data is stored in redux (`wallet.graph`), the query itself only drives the
+    // fetching — `newestConfirmedTxids` is what makes it refetch once a transaction the graph data
+    // doesn't include yet gets mined. See `useTransactionGraphUpdater`.
+    accountGraphUpdate: (accountKey: string | undefined, newestConfirmedTxids: string) => [
+        'account-graph-update',
+        accountKey,
+        newestConfirmedTxids,
+    ],
 } as const satisfies Record<string, AllowedQueryKey>;
 
 export const tradingQueryKeys = {

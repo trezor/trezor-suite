@@ -79,11 +79,11 @@ export const TransactionSummary = ({ account }: TransactionSummaryProps) => {
               ]
             : [getUnixTime(selectedRange.startDate), getUnixTime(selectedRange.endDate)];
 
-    const onRefresh = (abortController?: AbortController) =>
+    const onRefresh = (abortSignal?: AbortSignal) =>
         dispatch(
             updateGraphData({
                 accounts: [account],
-                abortSignal: abortController?.signal,
+                abortSignal,
             }),
         ).unwrap();
     const onSelectedRange = () =>
