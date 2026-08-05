@@ -1,16 +1,16 @@
-import { selectDesktopUpdateAllowPrerelease } from '@suite/desktop-update';
+import { useServices } from '@suite-common/dependency-injection';
 import { firmwareActions, selectEffectiveFirmwareChannel } from '@suite-common/firmware';
+import { selectGetAllowPrereleaseDep } from '@suite-common/suite-types';
 import { Column, Text } from '@trezor/components';
 import { type FirmwareChannel } from '@trezor/connect-common/src/types/firmware';
 import { ActionColumn, ActionSelect, SectionItem, TextColumn } from '@trezor/product-components';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
-const effectiveFirmwareChannel = selectEffectiveFirmwareChannel(selectDesktopUpdateAllowPrerelease);
-
 export const FirmwareUpdateEnvironmentSelect = () => {
-    const firmwareChannel = useSelector(effectiveFirmwareChannel);
-    const isAllowPrerelease = useSelector(selectDesktopUpdateAllowPrerelease);
+    const { getAllowPrerelease } = useServices(selectGetAllowPrereleaseDep);
+    const firmwareChannel = useSelector(selectEffectiveFirmwareChannel(getAllowPrerelease));
+    const isAllowPrerelease = useSelector(getAllowPrerelease);
     const dispatch = useDispatch();
 
     const options: { label: string; value: FirmwareChannel }[] = [
