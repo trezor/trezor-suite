@@ -65,7 +65,7 @@ jobs:
       # safedep/pmg not available on macOS (that's ok, PMG must be run on PR workflows but here it's optional)
       - name: Install deps and build libs
         run: |
-          yarn workspaces focus @trezor/suite-desktop @trezor/suite-desktop-ui @trezor/suite-desktop-core @trezor/suite-build @trezor/suite-data @trezor/transport-bridge @suite-common/message-system
+          yarn workspaces focus trezor-suite @trezor/suite-desktop @trezor/suite-desktop-ui @trezor/suite-desktop-core @trezor/suite-build @trezor/suite-data @trezor/transport-bridge @suite-common/message-system
           yarn message-system-sign-config
           yarn workspace @trezor/suite-data build:lib
           yarn workspace @trezor/transport-bridge build:lib
@@ -189,7 +189,7 @@ jobs:
       - name: Install dependencies
         run: |
           echo -e "\nenableHardenedMode: false" >> .yarnrc.yml
-          yarn workspaces focus @trezor/suite-web @trezor/suite-data @suite-common/message-system
+          yarn workspaces focus trezor-suite @trezor/suite-web @trezor/suite-data @suite-common/message-system
 
       - name: Build suite-web
         env:
@@ -242,7 +242,7 @@ jobs:
       # safedep/pmg not available on macOS (that's ok, PMG must be run on PR workflows but here it's optional)
       - name: Install deps and build libs
         run: |
-          yarn workspaces focus @trezor/suite-desktop @trezor/suite-desktop-ui @trezor/suite-desktop-core @trezor/suite-build @trezor/suite-data @trezor/transport-bridge @suite-common/message-system
+          yarn workspaces focus trezor-suite @trezor/suite-desktop @trezor/suite-desktop-ui @trezor/suite-desktop-core @trezor/suite-build @trezor/suite-data @trezor/transport-bridge @suite-common/message-system
           yarn message-system-sign-config
           yarn workspace @trezor/suite-data build:lib
           yarn workspace @trezor/transport-bridge build:lib
