@@ -10,10 +10,16 @@ import {
 } from '../currency';
 import { type TradingFiatCurrencyOption } from '../types';
 
-export const getCurrencyLabel = (currencyCode: FiatCurrencyCode | string): string =>
-    isSupportedFiatCurrency(currencyCode)
-        ? supportedFiatCurrenciesMap[currencyCode]
+// Invity API works with uppercase currency codes, internally we keep them lowercase.
+const normalizeCurrencyCode = (currencyCode: string) => currencyCode.toLowerCase();
+
+export const getCurrencyLabel = (currencyCode: FiatCurrencyCode | string): string => {
+    const normalizedCode = normalizeCurrencyCode(currencyCode);
+
+    return isSupportedFiatCurrency(normalizedCode)
+        ? supportedFiatCurrenciesMap[normalizedCode]
         : currencyCode.toUpperCase();
+};
 
 export const buildTradingFiatOption = (currency: FiatCurrencyCode): TradingFiatCurrencyOption => ({
     value: currency,
@@ -27,7 +33,9 @@ export const mapFiatCurrencyCodeToBaseCurrencyCode = (
         return undefined;
     }
 
-    return isBaseCurrencyCode(fiatCurrencyCode) ? fiatCurrencyCode : undefined;
+    const normalizedCode = normalizeCurrencyCode(fiatCurrencyCode);
+
+    return isBaseCurrencyCode(normalizedCode) ? normalizedCode : undefined;
 };
 
 export const buildTradingBaseCurrencyOptionFromFiat = (
@@ -43,8 +51,10 @@ export const buildTradingBaseCurrencyOptionFromFiat = (
 };
 
 export const getSupportedFiatCurrencyWithFallback = (currencyCode: string): FiatCurrencyCode => {
-    if (isSupportedFiatCurrency(currencyCode)) {
-        return currencyCode;
+    const normalizedCode = normalizeCurrencyCode(currencyCode);
+
+    if (isSupportedFiatCurrency(normalizedCode)) {
+        return normalizedCode;
     }
 
     return DEFAULT_FIAT_CURRENCY_FALLBACK;
