@@ -47,7 +47,10 @@ const selectTwoGettersDep = (services: any): RelayUrlDep & TorDep => ({
     getIsTorEnabled: services.getIsTorEnabled,
 });
 
-const renderUseGetter = <TResult,>(useHook: () => TResult) => {
+const renderUseGetter = <TResult, TProps>(
+    useHook: (props: TProps) => TResult,
+    initialProps?: TProps,
+) => {
     const store = createTestStore();
     const renderSpy = jest.fn();
     const services = {
@@ -67,12 +70,12 @@ const renderUseGetter = <TResult,>(useHook: () => TResult) => {
     );
 
     const rendered = renderHook(
-        () => {
+        (props: TProps) => {
             renderSpy();
 
-            return useHook();
+            return useHook(props);
         },
-        { wrapper },
+        { wrapper, initialProps: initialProps as TProps },
     );
 
     return { store, renderSpy, ...rendered };
@@ -112,6 +115,34 @@ describe(useGetter.name, () => {
         );
 
         expect(result.current).toBe(false);
+    });
+
+    it('reads the value for the new params when they change', () => {
+        const { result, rerender } = renderUseGetter(
+            (walletDescriptor: string) => useGetter(selectSelectedWalletDep, walletDescriptor),
+            'wallet-2' as string,
+        );
+
+        expect(result.current).toBe(false);
+
+        rerender('wallet-1');
+
+        expect(result.current).toBe(true);
+    });
+
+    it('keeps watching the value for the params that were last passed', () => {
+        const { store, result, rerender } = renderUseGetter(
+            (walletDescriptor: string) => useGetter(selectSelectedWalletDep, walletDescriptor),
+            'wallet-2' as string,
+        );
+
+        rerender('wallet-3');
+
+        act(() => {
+            store.dispatch({ selectedWalletDescriptor: 'wallet-3' });
+        });
+
+        expect(result.current).toBe(true);
     });
 
     it('rejects a dependency holding more than one getter', () => {
