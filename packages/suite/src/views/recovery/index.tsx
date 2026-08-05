@@ -61,10 +61,13 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
 
     const handleClose = () => {
         if (['in-progress', 'waiting-for-confirmation'].includes(recovery.status)) {
+            // Abort the running device call. The resulting Method_Cancel is handled by the recovery
+            // thunks (which reset the reducer), so the modal can close right away instead of leaving
+            // the user on a "seed check failed" screen.
             TrezorConnect.cancel({ reason: intl.formatMessage(messages.TR_CANCELLED) });
-        } else {
-            onCancel();
         }
+
+        onCancel();
     };
 
     const handleBackClick = () => {

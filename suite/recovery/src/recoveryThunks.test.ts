@@ -67,6 +67,29 @@ describe('Recovery Thunks', () => {
         expect(store.getState().recovery.status).toMatch('finished');
     });
 
+    it('checkSeedThunk resets the flow on user cancel instead of showing a failure screen', async () => {
+        testMocks.setTrezorConnectFixtures({
+            success: false,
+            error: { code: 'Method_Cancel', message: 'Cancelled' },
+        });
+        const store = initStore({ error: 'stale error' });
+        await store.dispatch(checkSeedThunk());
+        // reset -> 'initial', NOT the 'finished' + error state that renders the failure screen
+        expect(store.getState().recovery.status).toEqual('initial');
+        expect(store.getState().recovery.error).toBeUndefined();
+    });
+
+    it('recoverDeviceThunk resets the flow on user cancel instead of showing a failure screen', async () => {
+        testMocks.setTrezorConnectFixtures({
+            success: false,
+            error: { code: 'Method_Cancel', message: 'Cancelled' },
+        });
+        const store = initStore({ error: 'stale error' });
+        await store.dispatch(recoverDeviceThunk());
+        expect(store.getState().recovery.status).toEqual('initial');
+        expect(store.getState().recovery.error).toBeUndefined();
+    });
+
     it('recoveryRerunThunk resets the status and rejects when the device already left recovery', async () => {
         // fresh features report no recovery in progress
         testMocks.setTrezorConnectFixtures({ success: true, payload: {} });
