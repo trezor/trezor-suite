@@ -4344,6 +4344,15 @@ export const messages = {
             banner: 'Change your networks anytime in Settings.',
         },
     },
+    moduleActivityCenter: {
+        title: 'Activity',
+        screenHeader: 'Activity Center',
+        tabs: {
+            notifications: 'Notifications',
+            system: 'System',
+            releaseNotes: 'Release notes',
+        },
+    },
     biometricsButton: 'Unlock with biometrics',
     search: {
         noResults: 'No results',
