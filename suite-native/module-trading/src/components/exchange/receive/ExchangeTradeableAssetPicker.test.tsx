@@ -12,6 +12,8 @@ import {
     btcAsset,
     eth1NormalAccount,
     eth2legacyAccount,
+    ethAsset,
+    usdcAsset,
 } from '@suite-native/trading-fixtures';
 import { exchangeActions } from '@suite-native/trading-state';
 import { type ExchangeFormType } from '@suite-native/trading-types';
@@ -33,6 +35,28 @@ const services: NativeAnalyticsDep = {
 const btc1AccountKey = btc1NormalAccount.key;
 const eth1AccountKey = eth1NormalAccount.key;
 const eth2AccountKey = eth2legacyAccount.key;
+const mockNavigate = jest.fn();
+let mockTradingType = 'exchange';
+let mockSelectedTradeableAssetCryptoId: string | undefined;
+const mockSetParams = jest.fn(
+    ({ selectedTradeableAssetCryptoId }: { selectedTradeableAssetCryptoId?: string }) => {
+        mockSelectedTradeableAssetCryptoId = selectedTradeableAssetCryptoId;
+    },
+);
+
+jest.mock('@react-navigation/native', () => ({
+    ...jest.requireActual('@react-navigation/native'),
+    useNavigation: () => ({
+        navigate: mockNavigate,
+        setParams: mockSetParams,
+    }),
+    useRoute: () => ({
+        params: {
+            tradingType: mockTradingType,
+            selectedTradeableAssetCryptoId: mockSelectedTradeableAssetCryptoId,
+        },
+    }),
+}));
 
 describe('ExchangeTradeableAssetPicker', () => {
     let store: TestStore;
@@ -84,7 +108,9 @@ describe('ExchangeTradeableAssetPicker', () => {
         });
 
     beforeEach(() => {
-        reportMock.mockClear();
+        jest.clearAllMocks();
+        mockTradingType = 'exchange';
+        mockSelectedTradeableAssetCryptoId = undefined;
         store = initPreloadedStore(FirmwareType.Universal);
         form = renderFormHook();
     });
@@ -103,20 +129,25 @@ describe('ExchangeTradeableAssetPicker', () => {
         );
     });
 
-    it('should render bottom sheet with all assets', () => {
-        const { getAllByText } = renderTradeableAssetPicker();
-
-        expect(getAllByText('Bitcoin')).toBeTruthy();
-        expect(getAllByText('USDC')).toBeTruthy();
-    });
-
-    it('should apply receive asset change effects on item press', () => {
-        const dispatchSpy = jest.spyOn(store, 'dispatch');
+    it('should navigate to the exchange asset screen', () => {
         const { getByLabelText } = renderTradeableAssetPicker();
 
-        fireEvent.press(getByLabelText('Bitcoin'));
+        fireEvent.press(getByLabelText(getTranslation('moduleTrading.selectCoin.buttonTitle')));
+
+        expect(mockNavigate).toHaveBeenCalledWith('TradingTradeableAsset', {
+            tradingType: 'exchange',
+        });
+    });
+
+    it('should apply receive asset change effects for an asset selected on the screen', () => {
+        mockSelectedTradeableAssetCryptoId = btcAsset.cryptoId;
+        const dispatchSpy = jest.spyOn(store, 'dispatch');
+        renderTradeableAssetPicker();
 
         expect(dispatchSpy).toHaveBeenCalledWith(exchangeActions.receiveAssetChanged());
+        expect(mockSetParams).toHaveBeenCalledWith({
+            selectedTradeableAssetCryptoId: undefined,
+        });
         expect(reportMock).toHaveBeenCalledWith({
             type: events.tradingParameterChangedEvent.name,
             payload: {
@@ -129,9 +160,8 @@ describe('ExchangeTradeableAssetPicker', () => {
     it('should clear the send asset and its typed amount when it collides with the newly selected receive asset', () => {
         form.setValue('sendAsset', btcAsset);
         form.setValue('sendCryptoAmount', '1');
-        const { getByLabelText } = renderTradeableAssetPicker();
-
-        fireEvent.press(getByLabelText('Bitcoin'));
+        mockSelectedTradeableAssetCryptoId = btcAsset.cryptoId;
+        renderTradeableAssetPicker();
 
         expect(form.getValues('sendAsset')).toBeUndefined();
         expect(form.getValues('sendCryptoAmount')).toBeUndefined();
@@ -146,15 +176,15 @@ describe('ExchangeTradeableAssetPicker', () => {
 
     describe('receiveAccount preselection', () => {
         beforeEach(() => {
-            reportMock.mockClear();
+            jest.clearAllMocks();
+            mockSelectedTradeableAssetCryptoId = undefined;
             store = initPreloadedStoreWithAccounts();
             form = renderFormHook();
         });
 
         it('should preselect a new receiveAccount for the new asset network after a cross-network change', async () => {
-            const { getByLabelText } = renderTradeableAssetPicker();
-
-            fireEvent.press(getByLabelText('Bitcoin'));
+            mockSelectedTradeableAssetCryptoId = btcAsset.cryptoId;
+            const result = renderTradeableAssetPicker();
 
             await waitFor(() => {
                 expect(form.getValues('receiveAccount')).toEqual(
@@ -164,7 +194,8 @@ describe('ExchangeTradeableAssetPicker', () => {
                 );
             });
 
-            fireEvent.press(getByLabelText('USDC'));
+            mockSelectedTradeableAssetCryptoId = usdcAsset.cryptoId;
+            result.rerender(<ExchangeTradeableAssetPicker />);
 
             await waitFor(() => {
                 expect(form.getValues('receiveAccount')).toEqual(
@@ -176,9 +207,8 @@ describe('ExchangeTradeableAssetPicker', () => {
         });
 
         it('should keep the selected receiveAccount when switching to another asset on the same network', async () => {
-            const { getByLabelText } = renderTradeableAssetPicker();
-
-            fireEvent.press(getByLabelText('Ethereum'));
+            mockSelectedTradeableAssetCryptoId = ethAsset.cryptoId;
+            const result = renderTradeableAssetPicker();
 
             await waitFor(() => {
                 expect(form.getValues('receiveAccount')).toEqual(
@@ -200,7 +230,8 @@ describe('ExchangeTradeableAssetPicker', () => {
                 );
             });
 
-            fireEvent.press(getByLabelText('USDC'));
+            mockSelectedTradeableAssetCryptoId = usdcAsset.cryptoId;
+            result.rerender(<ExchangeTradeableAssetPicker />);
 
             await waitFor(() => {
                 expect(form.getValues('receiveAccount')).toEqual(

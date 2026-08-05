@@ -1,0 +1,85 @@
+import { type RouteProp } from '@react-navigation/native';
+
+import {
+    AppTabsRoutes,
+    type RootStackParamList,
+    RootStackRoutes,
+    TradingStackRoutes,
+} from '@suite-native/navigation';
+import { fireEvent } from '@suite-native/test-utils-store';
+import { btcAsset, usdcAsset } from '@suite-native/trading-fixtures';
+
+import {
+    TradingTradeableAssetScreen,
+    type TradingTradeableAssetScreenProps,
+} from './TradingTradeableAssetScreen';
+import { renderWithTradingProvider } from '../test-utils/tradingTestUtils';
+
+const mockBuyFilteredData = {
+    filteredData: [btcAsset],
+    filterValue: '',
+    setFilterValue: jest.fn(),
+    setFilterSymbol: jest.fn(),
+};
+const mockExchangeFilteredData = {
+    filteredData: [usdcAsset],
+    filterValue: '',
+    setFilterValue: jest.fn(),
+    setFilterSymbol: jest.fn(),
+};
+
+jest.mock('@react-navigation/native', () => ({
+    ...jest.requireActual('@react-navigation/native'),
+    useRoute: () => ({ name: RootStackRoutes.TradingTradeableAsset }),
+}));
+
+jest.mock('../hooks/buy/useBuyTradeableAssetsFilteredData', () => ({
+    useBuyTradeableAssetsFilteredData: () => mockBuyFilteredData,
+}));
+
+jest.mock('../hooks/exchange/useExchangeBuyTradeableAssetsFilteredData', () => ({
+    useExchangeBuyTradeableAssetsFilteredData: () => mockExchangeFilteredData,
+}));
+
+const createRoute = (
+    tradingType: 'buy' | 'exchange',
+): RouteProp<RootStackParamList, RootStackRoutes.TradingTradeableAsset> => ({
+    key: RootStackRoutes.TradingTradeableAsset,
+    name: RootStackRoutes.TradingTradeableAsset,
+    params: { tradingType },
+});
+
+describe('TradingTradeableAssetScreen', () => {
+    const navigation = {
+        popTo: jest.fn(),
+    } as unknown as TradingTradeableAssetScreenProps['navigation'];
+
+    beforeEach(() => {
+        jest.clearAllMocks();
+    });
+
+    it.each([
+        ['buy', 'Bitcoin', btcAsset.cryptoId],
+        ['exchange', 'USDC', usdcAsset.cryptoId],
+    ] as const)('renders and selects the %s asset data', (tradingType, assetName, cryptoId) => {
+        const { getByLabelText } = renderWithTradingProvider(
+            <TradingTradeableAssetScreen
+                navigation={navigation}
+                route={createRoute(tradingType)}
+            />,
+        );
+
+        fireEvent.press(getByLabelText(assetName));
+
+        expect(navigation.popTo).toHaveBeenCalledWith(RootStackRoutes.AppTabs, {
+            screen: AppTabsRoutes.TradeStack,
+            params: {
+                screen: TradingStackRoutes.Trading,
+                params: {
+                    tradingType,
+                    selectedTradeableAssetCryptoId: cryptoId,
+                },
+            },
+        });
+    });
+});
