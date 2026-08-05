@@ -2705,6 +2705,29 @@ export const messages = {
                 deviceNotConnected: 'Connect your Trezor to continue.',
             },
         },
+        unwrapNativeToken: {
+            entryButton: 'Unwrap',
+            title: 'Unwrap',
+            amountToUnwrap: 'Amount to unwrap',
+            submitButton: 'Unwrap',
+            closeButton: 'Close',
+            pendingTransactionTitle: 'Unwrapping in progress',
+            review: {
+                title: 'Confirm unwrap',
+                submitButton: 'Unwrap now',
+            },
+            complete: {
+                title: 'Unwrapping complete',
+                subtitle:
+                    '{wrappedSymbol} was unwrapped and {nativeSymbol} is now in your account.',
+                failedTitle: 'Unwrap transaction failed',
+                failedSubtitle:
+                    'The transaction was not confirmed. Check the account history and try again.',
+            },
+            errors: {
+                deviceNotConnected: 'Connect your Trezor to continue.',
+            },
+        },
         earnConsentsScreen: {
             title: 'Before you continue',
             entryPeriodCard: {
@@ -3222,6 +3245,10 @@ export const messages = {
                 wrapDescription: 'Review details to wrap the native coin.',
                 wrapTitle: 'Wrap',
                 wrapTo: 'Wrap via',
+                unwrapAmount: 'Unwrap amount',
+                unwrapDescription: 'Review details to unwrap back to the native coin.',
+                unwrapFrom: 'Unwrap via',
+                unwrapTitle: 'Unwrap',
             },
             alerts: {
                 primaryButton: 'Go to homepage',
@@ -3237,6 +3264,22 @@ export const messages = {
                     },
                     pendingTransactionConflict: {
                         title: 'Wrap was not submitted',
+                        description:
+                            'A transaction is already pending for this account. Wait for it to finish before trying again.',
+                    },
+                },
+                unwrap: {
+                    signTransactionFailed: {
+                        title: 'Transaction was not signed',
+                        description: 'Review the transaction and sign it again.',
+                    },
+                    pushTransactionFailed: {
+                        title: 'Unwrap was not submitted',
+                        description:
+                            'The unwrap transaction was signed but could not be submitted to the network.',
+                    },
+                    pendingTransactionConflict: {
+                        title: 'Unwrap was not submitted',
                         description:
                             'A transaction is already pending for this account. Wait for it to finish before trying again.',
                     },
@@ -3387,6 +3430,8 @@ export const messages = {
             depositDisabled: 'Deposits currently disabled.',
             withdrawDisabled: 'Withdrawals currently disabled.',
             claimDisabled: 'Claims currently disabled.',
+            wrapDisabled: 'Wrapping currently disabled.',
+            unwrapDisabled: 'Unwrapping currently disabled.',
         },
         stakePendingCard: {
             totalStakePending: 'Total stake pending',

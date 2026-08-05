@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { type RouteProp, useRoute } from '@react-navigation/native';
 
 import { selectSelectedDevice } from '@suite-common/device';
-import { WRAPPED_NATIVE, getNetwork, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { WRAPPED_NATIVE } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     type YieldFlowDisplayToken,
@@ -20,10 +20,10 @@ import { buildYieldReviewPreview } from '../utils/yieldReviewOutputUtils';
 
 type RouteProps = RouteProp<
     WrappedNativeTokenStackParamList,
-    WrappedNativeTokenStackRoutes.WrapNativeTokenReview
+    WrappedNativeTokenStackRoutes.UnwrapNativeTokenReview
 >;
 
-export const WrapNativeTokenReviewScreen = () => {
+export const UnwrapNativeTokenReviewScreen = () => {
     const route = useRoute<RouteProps>();
     const { accountKey, amount, unsignedTransaction } = route.params;
 
@@ -34,21 +34,21 @@ export const WrapNativeTokenReviewScreen = () => {
 
     const wrappedNative = account ? WRAPPED_NATIVE[account.symbol] : undefined;
 
-    const nativeToken: YieldFlowDisplayToken | null = useMemo(
+    const wrappedToken: YieldFlowDisplayToken | null = useMemo(
         () =>
-            account
+            account && wrappedNative
                 ? {
                       networkSymbol: account.symbol,
-                      symbol: getNetworkDisplaySymbol(account.symbol),
-                      decimals: getNetwork(account.symbol).decimals,
-                      contractAddress: null,
+                      symbol: wrappedNative.symbol,
+                      decimals: wrappedNative.decimals,
+                      contractAddress: wrappedNative.address,
                   }
                 : null,
-        [account],
+        [account, wrappedNative],
     );
 
     const preview = useMemo(() => {
-        if (!account || !device || !nativeToken) {
+        if (!account || !device || !wrappedToken) {
             return null;
         }
 
@@ -56,12 +56,12 @@ export const WrapNativeTokenReviewScreen = () => {
             account,
             device,
             review: { amount, unsignedTransaction },
-            reviewToken: nativeToken,
-            type: 'wrap',
+            reviewToken: wrappedToken,
+            type: 'unwrap',
         });
-    }, [account, amount, device, nativeToken, unsignedTransaction]);
+    }, [account, amount, device, unsignedTransaction, wrappedToken]);
 
-    if (!account || !wrappedNative || !nativeToken || !preview) {
+    if (!account || !wrappedToken || !preview) {
         return null;
     }
 
@@ -69,9 +69,9 @@ export const WrapNativeTokenReviewScreen = () => {
         <WrappedNativeTokenReviewContent
             account={account}
             amount={amount}
-            flowType="wrap"
+            flowType="unwrap"
             preview={preview}
-            spentToken={nativeToken}
+            spentToken={wrappedToken}
             unsignedTransaction={unsignedTransaction}
         />
     );

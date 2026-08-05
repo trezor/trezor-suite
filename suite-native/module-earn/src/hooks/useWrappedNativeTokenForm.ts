@@ -1,6 +1,5 @@
 import { useState } from 'react';
 
-import { getWrappableNativeBalance } from '@suite-common/wallet-core';
 import { useForm, useWatch } from '@suite-native/forms';
 import { useTranslate } from '@suite-native/intl';
 
@@ -9,23 +8,22 @@ import {
     yieldDepositFormValidationSchema,
 } from '../yieldDepositFormSchema';
 
-type UseWrapNativeTokenFormParams = {
+type UseWrappedNativeTokenFormParams = {
     availableBalance: string;
     decimals: number;
+    /** What the Max switch fills in; defaults to the full available balance. */
+    maxAmount?: string;
     tokenSymbol: string;
 };
 
-export const useWrapNativeTokenForm = ({
+export const useWrappedNativeTokenForm = ({
     availableBalance,
     decimals,
+    maxAmount,
     tokenSymbol,
-}: UseWrapNativeTokenFormParams) => {
+}: UseWrappedNativeTokenFormParams) => {
     const { translate } = useTranslate();
     const [isMaxSelected, setIsMaxSelected] = useState(false);
-
-    // Max leaves the gas reserve aside; the field still accepts up to the full balance and eating
-    // into the reserve only triggers a non-blocking recommendation.
-    const maxWrapAmount = getWrappableNativeBalance(availableBalance);
 
     const form = useForm<YieldDepositFormValues>({
         validation: yieldDepositFormValidationSchema,
@@ -43,7 +41,9 @@ export const useWrapNativeTokenForm = ({
 
     const handleMaxChange = (value: boolean) => {
         setIsMaxSelected(value);
-        form.setValue('amount', value ? maxWrapAmount : '', { shouldValidate: true });
+        form.setValue('amount', value ? (maxAmount ?? availableBalance) : '', {
+            shouldValidate: true,
+        });
     };
 
     const handleAmountChange = () => {

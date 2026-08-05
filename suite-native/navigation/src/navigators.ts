@@ -170,6 +170,9 @@ export type WrappedNativeTokenStackParamList = {
     [WrappedNativeTokenStackRoutes.WrapNativeToken]: WrappedNativeTokenFormParams;
     [WrappedNativeTokenStackRoutes.WrapNativeTokenReview]: WrappedNativeTokenReviewParams;
     [WrappedNativeTokenStackRoutes.WrapNativeTokenComplete]: WrappedNativeTokenCompleteParams;
+    [WrappedNativeTokenStackRoutes.UnwrapNativeToken]: WrappedNativeTokenFormParams;
+    [WrappedNativeTokenStackRoutes.UnwrapNativeTokenReview]: WrappedNativeTokenReviewParams;
+    [WrappedNativeTokenStackRoutes.UnwrapNativeTokenComplete]: WrappedNativeTokenCompleteParams;
 };
 
 export type HomeStackParamList = {

@@ -1,10 +1,11 @@
-import { type YieldFlowDisplayToken } from '@suite-common/wallet-core';
+import { type WrappedNativeFlowType, type YieldFlowDisplayToken } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
+import { type TxKeyPath } from '@suite-native/intl';
 
 import { EarnReviewSubmittedCard } from './EarnReviewSubmittedCard';
 import { YieldReviewScreenLayout } from './YieldReviewScreenLayout';
 import { YieldTransactionReviewOutputList } from './YieldTransactionReviewOutputList';
-import { useWrapNativeTokenReview } from '../hooks/useWrapNativeTokenReview';
+import { useWrappedNativeTokenReview } from '../hooks/useWrappedNativeTokenReview';
 import { useYieldReviewActiveStep } from '../hooks/useYieldReviewActiveStep';
 import {
     useYieldReviewScreenControls,
@@ -12,21 +13,34 @@ import {
 } from '../hooks/useYieldReviewScreenControls';
 import { type YieldReviewPreview } from '../utils/yieldReviewOutputUtils';
 
-type WrapNativeTokenReviewContentProps = {
+type WrappedNativeTokenReviewContentProps = {
     account: Account;
     amount: string;
-    nativeToken: YieldFlowDisplayToken;
+    flowType: WrappedNativeFlowType;
     preview: YieldReviewPreview;
+    spentToken: YieldFlowDisplayToken;
     unsignedTransaction: string;
 };
 
-export const WrapNativeTokenReviewContent = ({
+const flowMessages = {
+    wrap: {
+        submitButton: 'earn.wrapNativeToken.review.submitButton',
+        title: 'earn.wrapNativeToken.review.title',
+    },
+    unwrap: {
+        submitButton: 'earn.unwrapNativeToken.review.submitButton',
+        title: 'earn.unwrapNativeToken.review.title',
+    },
+} satisfies Record<WrappedNativeFlowType, { submitButton: TxKeyPath; title: TxKeyPath }>;
+
+export const WrappedNativeTokenReviewContent = ({
     account,
     amount,
-    nativeToken,
+    flowType,
     preview,
+    spentToken,
     unsignedTransaction,
-}: WrapNativeTokenReviewContentProps) => {
+}: WrappedNativeTokenReviewContentProps) => {
     const {
         closeSheet,
         confirmOnTrezorRef,
@@ -34,37 +48,38 @@ export const WrapNativeTokenReviewContent = ({
         markReviewLeave,
         revealConfirmOnTrezorSheet,
     } = useYieldReviewScreenControls();
-    const { handleWrapSubmitted, leaveReviewFromDeviceCancel, startWrapReview, wrapStatus } =
-        useWrapNativeTokenReview({
+    const { handleSubmitted, leaveReviewFromDeviceCancel, startReview, status } =
+        useWrappedNativeTokenReview({
             account,
-            token: nativeToken,
+            flowType,
+            token: spentToken,
             amount,
             unsignedTransaction,
             onReviewLeave: markReviewLeave,
         });
-    const isWrapSigned = wrapStatus === 'signed' || wrapStatus === 'sending';
+    const isSigned = status === 'signed' || status === 'sending';
     const activeStep = useYieldReviewActiveStep(account.symbol);
 
     useYieldReviewSheetAutoStart({
         closeSheet,
         hasLeftReview,
-        isSigned: isWrapSigned,
+        isSigned,
         leaveReviewFromDeviceCancel,
         revealConfirmOnTrezorSheet,
-        shouldAutoStartReview: wrapStatus === 'idle',
-        startReview: startWrapReview,
+        shouldAutoStartReview: status === 'idle',
+        startReview,
     });
 
     return (
         <YieldReviewScreenLayout
             confirmOnTrezorRef={confirmOnTrezorRef}
-            titleTranslationId="earn.wrapNativeToken.review.title"
+            titleTranslationId={flowMessages[flowType].title}
             submittedCard={
-                isWrapSigned ? (
+                isSigned ? (
                     <EarnReviewSubmittedCard
-                        buttonTranslationId="earn.wrapNativeToken.review.submitButton"
-                        isButtonLoading={wrapStatus === 'sending'}
-                        onButtonPress={handleWrapSubmitted}
+                        buttonTranslationId={flowMessages[flowType].submitButton}
+                        isButtonLoading={status === 'sending'}
+                        onButtonPress={handleSubmitted}
                     />
                 ) : undefined
             }
@@ -72,7 +87,7 @@ export const WrapNativeTokenReviewContent = ({
             <YieldTransactionReviewOutputList
                 accountKey={account.key}
                 activeStep={activeStep}
-                isSigned={isWrapSigned}
+                isSigned={isSigned}
                 preview={preview}
             />
         </YieldReviewScreenLayout>

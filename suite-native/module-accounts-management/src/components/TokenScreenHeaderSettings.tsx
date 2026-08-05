@@ -12,7 +12,7 @@ export const TokenScreenHeaderSettings = ({
     accountKey,
     tokenContract,
 }: TokenScreenHeaderSettingsProps) => {
-    const { bottomSheetRef, openModal } = useBottomSheetModal();
+    const { bottomSheetRef, closeModal, openModal } = useBottomSheetModal();
 
     return (
         <Box>
@@ -28,6 +28,7 @@ export const TokenScreenHeaderSettings = ({
                 ref={bottomSheetRef}
                 accountKey={accountKey}
                 tokenContract={tokenContract}
+                onNavigateAway={closeModal}
             />
         </Box>
     );

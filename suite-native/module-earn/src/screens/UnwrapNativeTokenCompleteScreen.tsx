@@ -19,10 +19,10 @@ import { getWrappedNativeCompleteRows } from '../components/YieldCompleteScreenP
 
 type RouteProps = RouteProp<
     WrappedNativeTokenStackParamList,
-    WrappedNativeTokenStackRoutes.WrapNativeTokenComplete
+    WrappedNativeTokenStackRoutes.UnwrapNativeTokenComplete
 >;
 
-export const WrapNativeTokenCompleteScreen = () => {
+export const UnwrapNativeTokenCompleteScreen = () => {
     const route = useRoute<RouteProps>();
     const navigateToInitialScreen = useNavigateToInitialScreen();
     const { CryptoAmountFormatter } = useFormatters();
@@ -34,7 +34,7 @@ export const WrapNativeTokenCompleteScreen = () => {
     const wrappedNative = account ? WRAPPED_NATIVE[account.symbol] : undefined;
     const nativeSymbol = account ? getNetworkDisplaySymbol(account.symbol) : '';
 
-    // The wrap form replaced itself with this screen, so this stack holds it alone — any back
+    // The unwrap form replaced itself with this screen, so this stack holds it alone — any back
     // navigation leaves the whole flow, which is what closing should do. Intercepting it (as the
     // session-driven complete screens do) would only make the interceptor catch its own GO_BACK.
     const handleClose = useCallback(() => {
@@ -49,20 +49,20 @@ export const WrapNativeTokenCompleteScreen = () => {
         return getWrappedNativeCompleteRows({
             accountSymbol: account.symbol,
             receivedAmount: CryptoAmountFormatter.format(amount, {
-                symbol: toTokenSymbol(wrappedNative.symbol),
-                isBalance: true,
-                withSymbol: true,
-                isEllipsisAppended: false,
-                maxDisplayedDecimals: 8,
-            }),
-            receivedTokenContract: wrappedNative.address,
-            sentAmount: CryptoAmountFormatter.format(amount, {
                 symbol: toTokenSymbol(nativeSymbol),
                 isBalance: true,
                 withSymbol: true,
                 isEllipsisAppended: false,
                 maxDisplayedDecimals: 8,
             }),
+            sentAmount: CryptoAmountFormatter.format(amount, {
+                symbol: toTokenSymbol(wrappedNative.symbol),
+                isBalance: true,
+                withSymbol: true,
+                isEllipsisAppended: false,
+                maxDisplayedDecimals: 8,
+            }),
+            sentTokenContract: wrappedNative.address,
         });
     }, [CryptoAmountFormatter, account, amount, nativeSymbol, wrappedNative]);
 
@@ -72,13 +72,13 @@ export const WrapNativeTokenCompleteScreen = () => {
 
     return (
         <YieldCompleteScreenContent
-            buttonTranslationId="earn.wrapNativeToken.closeButton"
+            buttonTranslationId="earn.unwrapNativeToken.closeButton"
             onButtonPress={handleClose}
             rows={rows}
-            title={<Translation id="earn.wrapNativeToken.complete.title" />}
+            title={<Translation id="earn.unwrapNativeToken.complete.title" />}
             subtitle={
                 <Translation
-                    id="earn.wrapNativeToken.complete.subtitle"
+                    id="earn.unwrapNativeToken.complete.subtitle"
                     values={{ nativeSymbol, wrappedSymbol: wrappedNative.symbol }}
                 />
             }

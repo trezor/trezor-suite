@@ -268,6 +268,9 @@ export enum WrappedNativeTokenStackRoutes {
     WrapNativeToken = 'WrapNativeToken',
     WrapNativeTokenReview = 'WrapNativeTokenReview',
     WrapNativeTokenComplete = 'WrapNativeTokenComplete',
+    UnwrapNativeToken = 'UnwrapNativeToken',
+    UnwrapNativeTokenReview = 'UnwrapNativeTokenReview',
+    UnwrapNativeTokenComplete = 'UnwrapNativeTokenComplete',
 }
 
 export enum ReceiveStackRoutes {
