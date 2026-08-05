@@ -149,13 +149,9 @@ export const recoveryRerunThunk = createThunk<
         return rejectWithValue('recovery not in progress');
     }
 
-    if (!features.initialized) {
-        dispatch(recoverDeviceThunk());
-    }
-
-    if (features.initialized) {
-        dispatch(checkSeedThunk());
-    }
-
+    // The seed-input flow (recoverDeviceThunk / checkSeedThunk) is intentionally NOT started here.
+    // The caller starts it AFTER navigating to the recovery/onboarding view. Starting it here would
+    // race the routerAppChanged -> resetReducer that the navigation triggers, wiping the freshly-set
+    // 'in-progress' status back to 'initial' (wrong "Start" screen) while the device call is in flight.
     return { initialized: features.initialized };
 });

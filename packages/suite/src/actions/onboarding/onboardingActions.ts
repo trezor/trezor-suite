@@ -1,7 +1,7 @@
 import { type DesktopAnalyticsDep, type OnboardingAnalytics, events } from '@suite/analytics';
 import { initialRunCompleted } from '@suite/flags';
 import { closeModal } from '@suite/modal';
-import { recoveryRerunThunk } from '@suite/recovery';
+import { checkSeedThunk, recoverDeviceThunk, recoveryRerunThunk } from '@suite/recovery';
 import { closeModalApp, goto } from '@suite/router';
 import {
     selectIsDeviceAuthenticityCheckEnabled,
@@ -259,14 +259,21 @@ const recoveryRerun = () => async (dispatch: Dispatch, getState: GetState) => {
     const { initialized } = result.payload;
     const { router } = getState();
 
+    // Navigate to the recovery view FIRST. The app change triggers routerAppChanged ->
+    // suiteMiddleware.resetReducer, which resets the recovery reducer to 'initial'. Only after that
+    // do we start the seed-input thunk, so its setStatus('in-progress') survives the reset. Starting
+    // it before navigation would let the reset wipe the in-progress status and drop the UI back to the
+    // "Start" screen while a recoveryDevice call is already in flight (allowing a double-dispatch).
     if (initialized) {
         dispatch(goto({ routeName: 'recovery-index' }));
+        dispatch(checkSeedThunk());
     } else {
         if (router.app !== 'onboarding') {
             dispatch(goto({ routeName: 'onboarding-index' }));
         }
         dispatch(goToStep('recovery'));
         dispatch(addPath('recovery'));
+        dispatch(recoverDeviceThunk());
     }
 };
 
