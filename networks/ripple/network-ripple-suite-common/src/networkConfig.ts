@@ -1,6 +1,7 @@
 import {
     type Explorer,
     type SuiteCommonNetworkConfig,
+    asNetworkDisplaySymbol,
     asProtocol,
 } from '@trezor/network-module-suite-common-types';
 import { RIPPLE_DECIMALS, type RippleNetworkSymbol } from '@trezor/network-ripple/constants';
@@ -15,7 +16,7 @@ const networkConfigBySymbol: Readonly<Record<RippleNetworkSymbol, SuiteCommonNet
     xrp: {
         color: '#24292e',
         protocols: [asProtocol('ripple'), asProtocol('xrp')],
-        displaySymbol: 'XRP',
+        displaySymbol: asNetworkDisplaySymbol('XRP'),
         name: 'XRP Ledger',
         networkType: 'ripple',
         bip43Path: "m/44'/144'/i'/0/0",
@@ -32,7 +33,7 @@ const networkConfigBySymbol: Readonly<Record<RippleNetworkSymbol, SuiteCommonNet
     txrp: {
         color: '#e75f5f',
         protocols: [asProtocol('txrp')],
-        displaySymbol: 'tXRP',
+        displaySymbol: asNetworkDisplaySymbol('tXRP'),
         name: 'XRP Testnet',
         networkType: 'ripple',
         bip43Path: "m/44'/144'/i'/0/0",

@@ -1,9 +1,11 @@
+import { asNetworkDisplaySymbol } from '@trezor/network-module-suite-common-types';
+
 import type { GetNetworkConfig } from '../src/createGetNetworkConfig';
 
 export const mockGetNetworkConfig: GetNetworkConfig = () => ({
     color: '#000000',
     protocols: [],
-    displaySymbol: 'BTC',
+    displaySymbol: asNetworkDisplaySymbol('BTC'),
     name: 'Bitcoin',
     networkType: 'bitcoin',
     bip43Path: "m/84'/0'/i'",

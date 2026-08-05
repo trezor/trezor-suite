@@ -1,9 +1,14 @@
 import type { Bip43PathTemplate } from '@trezor/crypto-utils';
 import type { DeviceModelInternal } from '@trezor/device-utils';
+import type { Branded } from '@trezor/type-utils';
 
 import type { Protocol } from './Protocol';
 
 export type NetworkColor = `#${string}`;
+export type NetworkDisplaySymbol = string & Branded<'NetworkDisplaySymbol'>;
+
+export const asNetworkDisplaySymbol = (displaySymbol: string): NetworkDisplaySymbol =>
+    displaySymbol as NetworkDisplaySymbol;
 
 /**
  * This closed union duplicates the set of registered network modules. Adding a network family
@@ -96,7 +101,7 @@ type NetworkDeviceSupport = Partial<Record<DeviceModelInternal, string>>;
 
 export type SuiteCommonNetworkConfig = {
     readonly settlementLayer?: string;
-    readonly displaySymbol: string;
+    readonly displaySymbol: NetworkDisplaySymbol;
     readonly displaySymbolName?: string;
     readonly name: string;
     readonly networkType: NetworkType;

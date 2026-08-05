@@ -5,6 +5,8 @@ import { Image } from 'expo-image';
 
 import { type CryptoIconName, cryptoIcons, genericTokenIcon } from '@suite-common/icons';
 import {
+    type NetworkDisplaySymbol,
+    type NetworkSymbol,
     getCoingeckoId,
     getNetworkDisplaySymbol,
     isNetworkSymbol,
@@ -92,7 +94,7 @@ const TokenIconPlaceholder = ({
 };
 
 interface TokenIconProps {
-    symbol: string;
+    symbol: NetworkSymbol | NetworkDisplaySymbol;
     contractAddress?: string;
     showNetworkIcon?: boolean;
     size?: TokenIconSize | number;
