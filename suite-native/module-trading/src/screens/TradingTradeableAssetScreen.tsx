@@ -88,6 +88,9 @@ export const TradingTradeableAssetScreen = ({
                 />
             }
             isScrollable={false}
+            noBottomPadding
+            noHorizontalPadding
+            hasBottomInset={false}
         >
             {tradingType === 'buy' && <BuyTradeableAssetList onAssetSelect={handleAssetSelect} />}
             {tradingType === 'exchange' && (
