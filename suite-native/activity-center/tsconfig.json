@@ -4,7 +4,7 @@
     "references": [
         { "path": "../atoms" },
         { "path": "../icons" },
-        { "path": "../toasts" },
+        { "path": "../navigation" },
         { "path": "../../packages/styles-native" }
     ]
 }

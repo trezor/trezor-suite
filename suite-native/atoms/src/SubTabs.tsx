@@ -16,6 +16,7 @@ export type SubTabItem<TValue> = {
     value: TValue;
     icon?: IconName;
     testID?: string;
+    accessory?: ReactNode;
 };
 
 export type SubTabsProps<TValue> = {
@@ -116,6 +117,7 @@ const SubTab = ({ isActive, item, onPress, size }: SubTabProps) => {
             >
                 {item.label}
             </Text>
+            {item.accessory}
         </PressableOpacity>
     );
 };

@@ -11417,9 +11417,11 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/activity-center@workspace:suite-native/activity-center"
   dependencies:
+    "@react-navigation/native": "npm:7.1.28"
+    "@react-navigation/native-stack": "npm:7.12.0"
     "@suite-native/atoms": "workspace:*"
     "@suite-native/icons": "workspace:*"
-    "@suite-native/toasts": "workspace:*"
+    "@suite-native/navigation": "workspace:*"
     "@trezor/styles-native": "workspace:*"
     react: "npm:19.2.3"
     react-native: "npm:0.85.3"
@@ -11611,6 +11613,7 @@ __metadata:
     "@suite-native/message-system": "workspace:*"
     "@suite-native/module-accounts-import": "workspace:*"
     "@suite-native/module-accounts-management": "workspace:*"
+    "@suite-native/module-activity-center": "workspace:*"
     "@suite-native/module-add-accounts": "workspace:*"
     "@suite-native/module-authenticity-checks": "workspace:*"
     "@suite-native/module-authorize-device": "workspace:*"
@@ -12073,6 +12076,7 @@ __metadata:
     "@suite-common/suite-sync": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/suite-utils": "workspace:*"
+    "@suite-common/toast-notifications": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
     "@suite-common/wallet-types": "workspace:^"
     "@suite-native/activity-center": "workspace:*"
@@ -12656,6 +12660,21 @@ __metadata:
     react-hook-form: "npm:^7.77.0"
     react-native: "npm:0.85.3"
     react-native-reanimated: "npm:4.3.1"
+    react-redux: "npm:9.3.0"
+  languageName: unknown
+  linkType: soft
+
+"@suite-native/module-activity-center@workspace:*, @suite-native/module-activity-center@workspace:suite-native/module-activity-center":
+  version: 0.0.0-use.local
+  resolution: "@suite-native/module-activity-center@workspace:suite-native/module-activity-center"
+  dependencies:
+    "@react-navigation/native-stack": "npm:7.12.0"
+    "@suite-common/toast-notifications": "workspace:*"
+    "@suite-native/activity-center": "workspace:*"
+    "@suite-native/atoms": "workspace:*"
+    "@suite-native/intl": "workspace:*"
+    "@suite-native/navigation": "workspace:*"
+    react: "npm:19.2.3"
     react-redux: "npm:9.3.0"
   languageName: unknown
   linkType: soft

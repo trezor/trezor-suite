@@ -19,6 +19,9 @@
             "path": "../../suite-common/suite-utils"
         },
         {
+            "path": "../../suite-common/toast-notifications"
+        },
+        {
             "path": "../../suite-common/wallet-core"
         },
         {
