@@ -133,7 +133,9 @@
         "### Force axios >=1.18.0 to fix GHSA-gcfj-64vw-6mp9 (nx@23.0.0 pins the vulnerable 1.16.0)": "1.0.0",
         "axios": "1.18.1",
         "### Force form-data >=4.0.6 to fix GHSA-hmw2-7cc7-3qxx (nx@23.0.0 pins the vulnerable 4.0.5)": "1.0.0",
-        "form-data": "4.0.6"
+        "form-data": "4.0.6",
+        "### Force the js-yaml 4.2.0 exact pin to patched 4.3.0 for GHSA-52cp-r559-cp3m (scoped so the 3.x line is untouched)": "1.0.0",
+        "js-yaml@4.2.0": "4.3.0"
     },
     "devDependencies": {
         "@arethetypeswrong/cli": "^0.18.2",
