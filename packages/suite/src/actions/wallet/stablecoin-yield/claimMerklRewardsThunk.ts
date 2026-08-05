@@ -9,6 +9,7 @@ import {
 } from '@suite-common/earn-stablecoin/src/signing';
 import { type StablecoinYieldTxSimulationParams } from '@suite-common/earn-stablecoin/src/tx-simulation';
 import { type YieldAccountsRewards } from '@suite-common/earn-stablecoin-api';
+import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
 import { createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { getEarnYieldClaimContractAddress, getNetwork } from '@suite-common/wallet-config';
@@ -246,11 +247,14 @@ export const claimMerklRewardsThunk = createThunk(
                 }
 
                 const isMevProtectionEnabled = selectIsMevProtectionEnabled(getState());
+                const isMevProtectionFeatureEnabled =
+                    selectIsMevProtectionFeatureEnabled(getState());
+
                 const pushResponse = await TrezorConnect.pushTransaction({
                     tx: getMevProtectedTxData(
                         account.symbol,
                         signingResponse.payload.serializedTx,
-                        isMevProtectionEnabled,
+                        isMevProtectionEnabled && isMevProtectionFeatureEnabled,
                     ),
                     coin: account.symbol,
                     identity: getAccountIdentity(account),
