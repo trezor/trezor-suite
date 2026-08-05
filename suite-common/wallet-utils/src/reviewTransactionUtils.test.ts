@@ -92,12 +92,13 @@ const buildEthereumAccount = (overrides: Partial<Account> = {}): Account =>
         ...overrides,
     });
 
-// >= 2.12.1: clear-signing-capable (clear signing is version-gated per selector).
+// Clear signing is version-gated per selector: swaps from 2.12.1, WETH wrap/unwrap from 2.12.4.
+// Use the highest threshold so every clear-signed flow is covered by one fixture.
 const buildUpdatedDevice = () =>
     mockSuiteDevice(undefined, {
         major_version: 2,
         minor_version: 12,
-        patch_version: 2,
+        patch_version: 4,
     });
 
 const buildPrecomposedTransaction = ({
@@ -237,6 +238,25 @@ describe('isClearSignedWrappedNativeTransaction', () => {
 
         expect(result).toBe(false);
     });
+
+    it.each([
+        { version: '2.12.1', firmware: { major_version: 2, minor_version: 12, patch_version: 1 } },
+        { version: '2.12.3', firmware: { major_version: 2, minor_version: 12, patch_version: 3 } },
+    ])(
+        'returns false on fw $version, which advertises clear signing but blind-signs WETH',
+        ({ firmware }) => {
+            const result = isClearSignedWrappedNativeTransaction({
+                // No unavailableCapabilities: evmClearSigning is genuinely available from 2.12.1,
+                // yet the WETH definition only ships in 2.12.4.
+                account,
+                device: mockSuiteDevice(undefined, firmware),
+                precomposedTx: buildPrecomposedTransaction({ to: WETH_MAINNET }),
+                transactionData: WETH_DEPOSIT_DATA,
+            });
+
+            expect(result).toBe(false);
+        },
+    );
 
     it('returns false for an unrelated contract call to the WETH address', () => {
         const result = isClearSignedWrappedNativeTransaction({

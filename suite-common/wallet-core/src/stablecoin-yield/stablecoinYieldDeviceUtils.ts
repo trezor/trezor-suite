@@ -1,15 +1,10 @@
 import type { TrezorDevice } from '@suite-common/suite-types';
+import { WRAPPED_NATIVE_MIN_FIRMWARE } from '@suite-common/wallet-constants';
 import { isWrappedNativeToken } from '@suite-common/wallet-utils';
 import { DeviceModelInternal, getFirmwareVersionArray } from '@trezor/device-utils';
 import { type VersionArray, versionUtils } from '@trezor/utils';
 
 import type { YieldFlowDisplayToken, YieldFlowType } from './stablecoinYieldTypes';
-
-/**
- * Wrap/unwrap and the wrapped-native (WETH) vault calldata are clear-signed only from this
- * firmware; older versions would show a raw function signature (trezor/trezor-suite#30848).
- */
-const WRAPPED_NATIVE_MIN_FIRMWARE: VersionArray = [2, 12, 4];
 
 const hasMinFirmware = (device: TrezorDevice | undefined, minVersion: VersionArray): boolean => {
     // The firmware gates target the T2+ line only; T1B1 versions its firmware as 1.x.
