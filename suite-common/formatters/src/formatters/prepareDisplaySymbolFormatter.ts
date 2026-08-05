@@ -1,5 +1,6 @@
-import { UNIT_ABBREVIATIONS } from '@suite-common/suite-constants';
+import { type UNIT_ABBREVIATION, UNIT_ABBREVIATIONS } from '@suite-common/suite-constants';
 import {
+    type NetworkDisplaySymbol,
     type NetworkSymbol,
     getNetwork,
     getNetworkDisplaySymbol,
@@ -10,6 +11,11 @@ import { type FormatterConfig } from '../types';
 
 export type DisplaySymbolFormatterDataContext = { areAmountUnitsEnabled?: boolean };
 
+type FormattedNetworkDisplaySymbol =
+    | NetworkDisplaySymbol
+    | UNIT_ABBREVIATION
+    | `${UNIT_ABBREVIATION} ${NetworkDisplaySymbol}`;
+
 export const prepareDisplaySymbolFormatter = (config: FormatterConfig) =>
     makeFormatter<NetworkSymbol, string, DisplaySymbolFormatterDataContext>(
         (symbol, dataContext) => {
@@ -18,7 +24,7 @@ export const prepareDisplaySymbolFormatter = (config: FormatterConfig) =>
 
             const { features: networkFeatures, testnet: isTestnet } = getNetwork(symbol);
             const areAmountUnitsSupported = !!networkFeatures?.includes('amount-unit');
-            let formattedSymbol = getNetworkDisplaySymbol(symbol);
+            let formattedSymbol: FormattedNetworkDisplaySymbol = getNetworkDisplaySymbol(symbol);
 
             // convert to different units if needed
             if (areAmountUnitsEnabled && areAmountUnitsSupported) {

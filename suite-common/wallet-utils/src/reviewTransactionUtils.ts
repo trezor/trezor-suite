@@ -220,7 +220,7 @@ export const isClearSignedWrappedNativeTransaction = ({
     }
 
     const network = networks[account.symbol];
-    if (!('chainId' in network)) {
+    if (network.chainId === undefined) {
         return false;
     }
 

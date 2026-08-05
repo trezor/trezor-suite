@@ -2,6 +2,7 @@ import { DeviceModelInternal } from '@trezor/device-utils';
 import {
     type Explorer,
     type SuiteCommonNetworkConfig,
+    asNetworkDisplaySymbol,
     asProtocol,
 } from '@trezor/network-module-suite-common-types';
 import { TRON_DECIMALS, type TronNetworkSymbol } from '@trezor/network-tron/constants';
@@ -18,7 +19,7 @@ const networkConfigBySymbol: Readonly<Record<TronNetworkSymbol, SuiteCommonNetwo
     trx: {
         color: '#ec002a',
         protocols: [asProtocol('tron'), asProtocol('trx')],
-        displaySymbol: 'TRX',
+        displaySymbol: asNetworkDisplaySymbol('TRX'),
         name: 'Tron',
         networkType: 'tron',
         bip43Path: "m/44'/195'/0'/0/i",
@@ -50,7 +51,7 @@ const networkConfigBySymbol: Readonly<Record<TronNetworkSymbol, SuiteCommonNetwo
     ttrx: {
         color: '#ec002a',
         protocols: [asProtocol('ttrx')],
-        displaySymbol: 'tTRX',
+        displaySymbol: asNetworkDisplaySymbol('tTRX'),
         name: 'Tron Nile',
         networkType: 'tron',
         bip43Path: "m/44'/195'/0'/0/i",

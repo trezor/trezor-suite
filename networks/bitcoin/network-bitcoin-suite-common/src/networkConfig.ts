@@ -2,6 +2,7 @@ import type { BitcoinNetworkSymbol } from '@trezor/network-bitcoin/constants';
 import {
     type Explorer,
     type SuiteCommonNetworkConfig,
+    asNetworkDisplaySymbol,
     asProtocol,
 } from '@trezor/network-module-suite-common-types';
 
@@ -15,7 +16,7 @@ const networkConfigBySymbol: Readonly<Record<BitcoinNetworkSymbol, SuiteCommonNe
     btc: {
         color: '#f29937',
         protocols: [asProtocol('bitcoin'), asProtocol('btc')],
-        displaySymbol: 'BTC',
+        displaySymbol: asNetworkDisplaySymbol('BTC'),
         name: 'Bitcoin',
         networkType: 'bitcoin',
         bip43Path: "m/84'/0'/i'",
@@ -53,7 +54,7 @@ const networkConfigBySymbol: Readonly<Record<BitcoinNetworkSymbol, SuiteCommonNe
     test: {
         color: '#e75f5f',
         protocols: [asProtocol('test')],
-        displaySymbol: 'TEST',
+        displaySymbol: asNetworkDisplaySymbol('TEST'),
         name: 'Bitcoin Testnet',
         networkType: 'bitcoin',
         bip43Path: "m/84'/1'/i'",
@@ -91,7 +92,7 @@ const networkConfigBySymbol: Readonly<Record<BitcoinNetworkSymbol, SuiteCommonNe
     regtest: {
         color: '#e75f5f',
         protocols: [asProtocol('regtest')],
-        displaySymbol: 'REGTEST',
+        displaySymbol: asNetworkDisplaySymbol('REGTEST'),
         name: 'Bitcoin Regtest',
         networkType: 'bitcoin',
         bip43Path: "m/84'/1'/i'",
@@ -129,7 +130,7 @@ const networkConfigBySymbol: Readonly<Record<BitcoinNetworkSymbol, SuiteCommonNe
     ltc: {
         color: '#a6a8a9',
         protocols: [asProtocol('litecoin'), asProtocol('ltc')],
-        displaySymbol: 'LTC',
+        displaySymbol: asNetworkDisplaySymbol('LTC'),
         name: 'Litecoin',
         networkType: 'bitcoin',
         bip43Path: "m/84'/2'/i'",
@@ -156,7 +157,7 @@ const networkConfigBySymbol: Readonly<Record<BitcoinNetworkSymbol, SuiteCommonNe
     doge: {
         color: '#c8af47',
         protocols: [asProtocol('dogecoin'), asProtocol('doge')],
-        displaySymbol: 'DOGE',
+        displaySymbol: asNetworkDisplaySymbol('DOGE'),
         name: 'Dogecoin',
         networkType: 'bitcoin',
         bip43Path: "m/44'/3'/i'",
@@ -174,7 +175,7 @@ const networkConfigBySymbol: Readonly<Record<BitcoinNetworkSymbol, SuiteCommonNe
     zec: {
         color: '#f5b300',
         protocols: [asProtocol('zcash'), asProtocol('zec')],
-        displaySymbol: 'ZEC',
+        displaySymbol: asNetworkDisplaySymbol('ZEC'),
         name: 'Zcash',
         networkType: 'bitcoin',
         bip43Path: "m/44'/133'/i'",
@@ -192,7 +193,7 @@ const networkConfigBySymbol: Readonly<Record<BitcoinNetworkSymbol, SuiteCommonNe
     bch: {
         color: '#0ac18e',
         protocols: [asProtocol('bitcoincash'), asProtocol('bch')],
-        displaySymbol: 'BCH',
+        displaySymbol: asNetworkDisplaySymbol('BCH'),
         name: 'Bitcoin Cash',
         networkType: 'bitcoin',
         bip43Path: "m/44'/145'/i'",

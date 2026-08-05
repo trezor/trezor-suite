@@ -11221,13 +11221,8 @@ __metadata:
     "@suite-common/earn-stablecoin-defs": "workspace:*"
     "@suite-common/networks": "workspace:*"
     "@suite-common/wallet-constants": "workspace:*"
-    "@trezor/crypto-utils": "workspace:*"
-    "@trezor/device-utils": "workspace:*"
-    "@trezor/network-cardano": "workspace:*"
-    "@trezor/network-ripple": "workspace:*"
+    "@trezor/network-module-suite-common-types": "workspace:*"
     "@trezor/network-solana": "workspace:*"
-    "@trezor/network-stellar": "workspace:*"
-    "@trezor/network-tron": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
   languageName: unknown
@@ -16729,6 +16724,7 @@ __metadata:
   resolution: "@trezor/network-cardano-suite-common@workspace:networks/cardano/network-cardano-suite-common"
   dependencies:
     "@scure/base": "npm:^2.0.0"
+    "@trezor/device-utils": "workspace:*"
     "@trezor/network-cardano": "workspace:*"
     "@trezor/network-module-suite-common-types": "workspace:*"
     cbor: "npm:^10.0.12"
@@ -16769,6 +16765,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/network-module-suite-common-types@workspace:networks/network-module/network-module-suite-common-types"
   dependencies:
+    "@trezor/crypto-utils": "workspace:*"
+    "@trezor/device-utils": "workspace:*"
     "@trezor/type-utils": "workspace:*"
   languageName: unknown
   linkType: soft
@@ -16798,6 +16796,7 @@ __metadata:
   resolution: "@trezor/network-solana-suite-common@workspace:networks/solana/network-solana-suite-common"
   dependencies:
     "@scure/base": "npm:^2.0.0"
+    "@trezor/device-utils": "workspace:*"
     "@trezor/network-module-suite-common-types": "workspace:*"
     "@trezor/network-solana": "workspace:*"
   languageName: unknown
@@ -16848,6 +16847,7 @@ __metadata:
   dependencies:
     "@noble/hashes": "npm:^2.0.1"
     "@scure/base": "npm:^2.0.0"
+    "@trezor/device-utils": "workspace:*"
     "@trezor/network-module-suite-common-types": "workspace:*"
     "@trezor/network-tron": "workspace:*"
   languageName: unknown
