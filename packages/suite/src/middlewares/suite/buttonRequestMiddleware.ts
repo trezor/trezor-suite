@@ -17,6 +17,11 @@ const SIGN_TX_ROUTES = [
     'earn-yield-deposit',
     'earn-yield-withdraw',
     'earn-yield-claim',
+    // The clear-signed wrap/unwrap review needs these too: firmware announces its provider and
+    // intent screens with ButtonRequest_Other (confirm_action's default), which without remapping
+    // would replace the review with ConfirmActionModal midway and reset its step tracking.
+    'earn-yield-wrap',
+    'earn-yield-unwrap',
     'earn-tron-stake',
     'earn-tron-vote',
     'earn-tron-unstake',
