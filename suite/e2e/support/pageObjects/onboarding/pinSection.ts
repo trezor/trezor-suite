@@ -8,7 +8,6 @@ export class PinSection {
     readonly skipConfirmButton: Locator;
     readonly pinButton = (pinNumber: number): Locator =>
         this.page.getByTestId(`@pin/input/${pinNumber}`);
-    readonly submitButton: Locator;
     readonly tryAgainButton: Locator;
     readonly pinMismatch: Locator;
 
@@ -16,7 +15,6 @@ export class PinSection {
         this.skipButton = this.page.getByTestId('@onboarding/skip-button');
         this.setPinButton = this.page.getByTestId('@onboarding/set-pin-button');
         this.skipConfirmButton = this.page.getByTestId('@onboarding/skip-button-confirm');
-        this.submitButton = this.page.getByTestId('@pin/submit-button');
         this.tryAgainButton = this.page.getByTestId('@pin-mismatch/try-again-button');
         this.pinMismatch = this.page.getByTestId('@pin-mismatch');
     }

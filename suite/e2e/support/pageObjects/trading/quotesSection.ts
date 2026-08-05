@@ -8,6 +8,7 @@ export class TradingQuotesSection {
     readonly provider: Locator;
     readonly providerOfQuote = (provider: string) =>
         this.page.getByTestId(`@trading/offers/quote-${provider}`);
+    readonly providerInList: Locator;
     readonly selectedProvider: Locator;
     readonly selectedProviderName: Locator;
     readonly loadingSpinner: Locator;
@@ -16,6 +17,7 @@ export class TradingQuotesSection {
     constructor(private readonly page: Page) {
         this.list = this.page.getByTestId('@trading/offers/quote');
         this.provider = this.page.getByTestId('@trading/offers/quote/provider');
+        this.providerInList = this.list.getByTestId('@trading/offers/quote/provider');
         this.selectedProvider = this.page.getByTestId('@trading/selected-offer-provider');
         this.selectedProviderName = this.selectedProvider.getByTestId(
             '@trading/offers/quote/provider',
@@ -60,9 +62,9 @@ export class TradingQuotesSection {
         await this.selectedProvider.click();
         await expect(this.list.first()).toBeVisible();
 
-        const offerProviderNames = (
-            await this.list.getByTestId('@trading/offers/quote/provider').allInnerTexts()
-        ).map(name => name.trim());
+        const offerProviderNames = (await this.providerInList.allInnerTexts()).map(name =>
+            name.trim(),
+        );
 
         let differentProvider: string | undefined;
         if (provider) {

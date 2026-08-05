@@ -104,7 +104,7 @@ test.describe('Trading - Sell inputs', { tag: ['@T3W1', '@T3T1'] }, () => {
 
         await test.step('Try all % inputs on Solana', async () => {
             await walletPage.openAccount({ symbol: 'sol', atIndex: 0 });
-            await walletPage.sellButton.click();
+            await tradingPage.sellTabButton.click();
             await expect(tradingPage.inputs.swapAmountCurrencyTicker).toHaveText('SOL');
             await tradingPage.inputs.selectFiatCurrency('eur');
 

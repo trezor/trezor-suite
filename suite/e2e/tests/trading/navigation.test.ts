@@ -61,7 +61,7 @@ test.describe('Trading - Navigation', { tag: ['@T3W1', '@T3T1'] }, () => {
 
             await test.step('Sell from account trade section', async () => {
                 await walletPage.openAccount({ symbol: 'btc' });
-                await walletPage.sellButton.click();
+                await tradingPage.sellTabButton.click();
                 await tradingPage.verifySellFormOpened(/Bitcoin/);
             });
 

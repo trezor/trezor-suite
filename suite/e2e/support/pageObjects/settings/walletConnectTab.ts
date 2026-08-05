@@ -20,7 +20,7 @@ export class WalletConnectTab {
         this.connectButton = page.getByTestId('@walletconnect/connect-button');
         this.confirmProposalButton = page.getByTestId('@walletconnect-proposal/confirm-button');
         this.cancelProposalButton = page.getByTestId('@walletconnect-proposal/cancel-button');
-        this.modal = page.getByTestId('@modal');
+        this.modal = page.modal;
         this.modalHeader = this.modal.getByTestId('@modal/header');
     }
 

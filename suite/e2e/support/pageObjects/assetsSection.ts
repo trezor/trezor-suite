@@ -56,15 +56,9 @@ export class AssetsSection {
 
     @step()
     async verifyAssetContents() {
-        await expect(
-            this.page.getByTestId('@dashboard/asset-item/btc').getByTestId('@dashboard/asset/name'),
-        ).toHaveText('Bitcoin');
-        await expect(
-            this.page.getByTestId('@dashboard/asset-item/eth').getByTestId('@dashboard/asset/name'),
-        ).toHaveText('Ethereum');
-        await expect(this.page.getByTestId('@dashboard/asset/btc/fiat-amount')).toHaveText('$0.00');
-        await expect(this.page.getByTestId('@dashboard/asset/eth/fiat-amount')).toContainText(
-            '$0.00',
-        );
+        await expect(this.assetName('btc')).toHaveText('Bitcoin');
+        await expect(this.assetName('eth')).toHaveText('Ethereum');
+        await expect(this.assetFiatAmount('btc')).toHaveText('$0.00');
+        await expect(this.assetFiatAmount('eth')).toContainText('$0.00');
     }
 }

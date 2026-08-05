@@ -128,7 +128,7 @@ export class SettingsPage {
         this.earlyAccessSkipButton = this.page.getByTestId('@settings/early-access-skip-button');
         this.settingsCloseButton = this.page.getByTestId('@suite/menu/suite-start');
         this.modal = this.page.modal;
-        this.modalCloseButton = this.page.getByTestId('@modal/close-button');
+        this.modalCloseButton = this.page.modalCloseButton;
         this.deviceLabelInput = this.page.getByTestId('@settings/device/label-input');
         this.deviceLabelSubmit = this.page.getByTestId('@settings/device/label-submit');
         this.confirmOnDevicePrompt = this.page.getByTestId('@prompts/confirm-on-device');
@@ -139,9 +139,7 @@ export class SettingsPage {
         this.checkSeedButton = this.page.getByTestId('@settings/device/check-seed-button');
         this.metadataSelectInput = this.page.getByTestId('@settings/labeling-select/input');
         this.analyticsSwitch = this.page.getByTestId('@analytics/toggle-switch');
-        this.analyticsSwitchInput = this.page
-            .getByTestId('@analytics/toggle-switch')
-            .locator('input');
+        this.analyticsSwitchInput = this.analyticsSwitch.locator('input');
         this.showLogButton = this.page.getByTestId('@settings/show-log-button');
         this.fiatCurrencyInput = this.page.getByTestId('@settings/fiat-select/input');
         this.btcUnitsInput = this.page.getByTestId('@settings/btc-units-select/input');
