@@ -209,7 +209,7 @@
         "@types/react-dom": "19.2.3",
         "@types/redux-logger": "^3.0.13",
         "@types/semver": "^7.7.0",
-        "jest-canvas-mock": "^2.5.2",
+        "jest-canvas-mock": "^2.5.8",
         "jest-watch-typeahead": "3.0.1",
         "postcss-styled-syntax": "^0.7.1",
         "stylelint": "^17.1.1",

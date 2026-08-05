@@ -36,8 +36,8 @@
         "zod": "4.3.6"
     },
     "devDependencies": {
-        "@anthropic-ai/claude-code": "^2.1.179",
-        "@currents/mcp": "^2.3.2",
+        "@anthropic-ai/claude-code": "2.1.216",
+        "@currents/mcp": "^2.3.3",
         "@currents/playwright": "^2.5.0",
         "@playwright/test": "1.61.1",
         "@trezor/node-utils": "workspace:*",
