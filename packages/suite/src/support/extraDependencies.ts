@@ -121,8 +121,6 @@ export type SuiteServices = CommonServices &
 
 export type SuiteExtra = ExtraDependenciesStatic & { services: SuiteServices };
 
-export const selectSuiteServices = (services: any): SuiteServices => services;
-
 export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteServices => {
     const { ensureDelegatedIdentityKey } = delegatedIdentityKeyCompositionRoot({
         dispatch: deps.dispatch,

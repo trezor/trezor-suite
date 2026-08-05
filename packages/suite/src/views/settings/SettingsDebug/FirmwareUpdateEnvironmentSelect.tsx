@@ -1,4 +1,4 @@
-import { useServices } from '@suite-common/dependency-injection';
+import { useGetter } from '@suite-common/dependency-injection';
 import { firmwareActions, selectEffectiveFirmwareChannel } from '@suite-common/firmware';
 import { selectGetAllowPrereleaseDep } from '@suite-common/suite-types';
 import { Column, Text } from '@trezor/components';
@@ -8,8 +8,7 @@ import { ActionColumn, ActionSelect, SectionItem, TextColumn } from '@trezor/pro
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
 export const FirmwareUpdateEnvironmentSelect = () => {
-    const { getAllowPrerelease } = useServices(selectGetAllowPrereleaseDep);
-    const isAllowPrerelease = useSelector(getAllowPrerelease.selector);
+    const isAllowPrerelease = useGetter(selectGetAllowPrereleaseDep);
     const firmwareChannel = useSelector(selectEffectiveFirmwareChannel(isAllowPrerelease));
     const dispatch = useDispatch();
 

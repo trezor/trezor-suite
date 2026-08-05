@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { useServices } from '@suite-common/dependency-injection';
+import { useGetter } from '@suite-common/dependency-injection';
 import {
     type DeviceRootState,
     deviceInvariabilityCheck,
@@ -35,8 +35,7 @@ const useCommonData = ({ device }: DeviceProps) => {
 };
 
 const useIsProductionFirmwareChannel = () => {
-    const { getAllowPrerelease } = useServices(selectGetAllowPrereleaseDep);
-    const allowPrerelease = useSelector(getAllowPrerelease.selector);
+    const allowPrerelease = useGetter(selectGetAllowPrereleaseDep);
 
     return useSelector(selectIsProductionFirmwareChannel(allowPrerelease));
 };

@@ -1,4 +1,4 @@
-import { toGetter } from './toGetter';
+import { type Getter, asGetter, toGetter } from './toGetter';
 
 type TestState = {
     relayUrl: string;
@@ -44,33 +44,25 @@ describe(toGetter.name, () => {
         expect(getRelayLabel('relay', 2)).toBe('relay:wss://relay.example.com:2');
     });
 
-    it('exposes a selector reading through getState, ignoring the state it is passed', () => {
+    it('reads the state at call time, not at creation time', () => {
         let currentRelayUrl = 'wss://relay.example.com';
         const getRelayUrl = toGetter(
             () => ({ relayUrl: currentRelayUrl }),
             currentState => currentState.relayUrl,
         );
 
-        // Whatever `useSelector` hands over is irrelevant, the getter's own getState decides.
-        expect(getRelayUrl.selector(undefined)).toBe('wss://relay.example.com');
-        expect(getRelayUrl.selector({ relayUrl: 'wss://ignored.example.com' })).toBe(
-            'wss://relay.example.com',
-        );
+        expect(getRelayUrl()).toBe('wss://relay.example.com');
 
-        // A store change is picked up, which is the point of subscribing through useSelector.
         currentRelayUrl = 'wss://other.example.com';
 
-        expect(getRelayUrl.selector(undefined)).toBe('wss://other.example.com');
+        expect(getRelayUrl()).toBe('wss://other.example.com');
     });
+});
 
-    it('forwards extra params through the selector', () => {
-        const isSelectedWallet = toGetter(
-            getState,
-            (currentState: TestState, walletDescriptor: string) =>
-                currentState.selectedWalletDescriptor === walletDescriptor,
-        );
+describe(asGetter.name, () => {
+    it('brands a function that does not come from a selector', () => {
+        const getRelayUrl: Getter<[], string> = asGetter(() => state.relayUrl);
 
-        expect(isSelectedWallet.selector(undefined, 'wallet-1')).toBe(true);
-        expect(isSelectedWallet.selector(undefined, 'wallet-2')).toBe(false);
+        expect(getRelayUrl()).toBe('wss://relay.example.com');
     });
 });

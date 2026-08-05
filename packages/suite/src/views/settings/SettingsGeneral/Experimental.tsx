@@ -9,7 +9,6 @@ import { feedbackRequested } from '@suite/feature-feedback';
 import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
 import { selectExperimentalFeatures, suiteSettingsActions } from '@suite/settings';
-import { useServices } from '@suite-common/dependency-injection';
 import { Banner, Button, Checkbox, Column, Row, Switch } from '@trezor/components';
 import { WarningIcon } from '@trezor/icons';
 import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
@@ -18,7 +17,6 @@ import { typedObjectKeys } from '@trezor/utils';
 
 import { EXPERIMENTAL_FEATURES } from 'src/constants/suite/experimental';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectSuiteServices } from 'src/support/extraDependencies';
 
 type FeatureLineProps = {
     feature: ExperimentalFeature;
@@ -27,7 +25,6 @@ type FeatureLineProps = {
 
 const FeatureLine = ({ feature, enabledFeatures }: FeatureLineProps) => {
     const dispatch = useDispatch();
-    const services = useServices(selectSuiteServices);
     const checked = enabledFeatures.includes(feature);
 
     const config = EXPERIMENTAL_FEATURES[feature];
@@ -38,7 +35,7 @@ const FeatureLine = ({ feature, enabledFeatures }: FeatureLineProps) => {
         const newValue = !checked;
 
         try {
-            await config?.onToggle?.({ services, newValue, dispatch });
+            await config?.onToggle?.({ newValue, dispatch });
             dispatch(
                 suiteSettingsActions.setExperimentalFeatures(
                     newValue
@@ -121,12 +118,10 @@ export const Experimental = () => {
     const isDebug = useSelector(selectIsDebugModeActive);
 
     const dispatch = useDispatch();
-    const services = useServices(selectSuiteServices);
 
     const onSwitchExperimental = () => {
         enabledFeatures?.forEach(feature =>
             EXPERIMENTAL_FEATURES[feature]?.onToggle?.({
-                services,
                 newValue: !isExperimentalEnabled,
                 dispatch,
             }),
