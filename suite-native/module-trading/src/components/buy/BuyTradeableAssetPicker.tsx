@@ -7,6 +7,7 @@ import { selectHasBitcoinOnlyFirmware } from '@suite-common/device';
 import { selectNetworkModuleRepositoryDep } from '@suite-common/networks';
 import { HStack } from '@suite-native/atoms';
 import type { FeatureFlagsRootState } from '@suite-native/feature-flags';
+import { useWatch } from '@suite-native/forms';
 import {
     type TradingRootState,
     buyActions,
@@ -16,10 +17,9 @@ import { type TradeableAsset } from '@suite-native/trading-types';
 import { noop } from '@trezor/utils';
 
 import { BuyCryptoAmountInput } from './BuyCryptoAmountInput';
-import { BuyTradeableAssetsSheet } from './BuyTradeableAssetsSheet';
 import { useBuyFormContext } from '../../hooks/buy/useBuyFormContext';
 import { useTradeableAssetChange } from '../../hooks/general/form/useTradeableAssetChange';
-import { useSheetControls } from '../../hooks/general/useSheetControls';
+import { useTradeableAssetPickerNavigation } from '../../hooks/general/useTradeableAssetPickerNavigation';
 import { SelectTradeableAssetButton } from '../general/SelectTradeableAssetButton';
 
 const ASSET_PICKER_TEST_ID = '@trading/buy/asset-receive-button';
@@ -28,8 +28,11 @@ export const BuyTradeableAssetPicker = () => {
     const inputRef = useRef<TextInput>(null);
     const form = useBuyFormContext();
     const [shouldFocusInput, setShouldFocusInput] = useState<boolean>(false);
-    const { isSheetVisible, hideSheet, showSheet, setSelectedValue, selectedValue } =
-        useSheetControls(form, 'asset');
+    const selectedValue = useWatch({ control: form.control, name: 'asset' });
+    const setSelectedValue = useCallback(
+        (asset: TradeableAsset) => form.setValue('asset', asset),
+        [form],
+    );
     const { networkModuleRepository } = useServices(selectNetworkModuleRepositoryDep);
     const hasBitcoinOnlyFirmware = useSelector(selectHasBitcoinOnlyFirmware);
     const supportedNetworks = networkModuleRepository.getSupportedNetworks();
@@ -70,10 +73,16 @@ export const BuyTradeableAssetPicker = () => {
         [changeAsset, shouldFocusInput],
     );
 
-    const showAssetsSheet = useCallback(() => {
+    const showAssetsScreen = useTradeableAssetPickerNavigation({
+        assets,
+        onAssetSelect,
+        tradingType: 'buy',
+    });
+
+    const showAssetsScreenAndFocusInput = useCallback(() => {
         setShouldFocusInput(true);
-        showSheet();
-    }, [showSheet]);
+        showAssetsScreen();
+    }, [showAssetsScreen]);
 
     if (hasBitcoinOnlyFirmware) {
         return (
@@ -85,22 +94,14 @@ export const BuyTradeableAssetPicker = () => {
     }
 
     return (
-        <>
-            <HStack justifyContent="space-between" alignItems="center">
-                <SelectTradeableAssetButton
-                    onPress={showSheet}
-                    selectedAsset={selectedValue}
-                    caret
-                    testID={ASSET_PICKER_TEST_ID}
-                />
-                <BuyCryptoAmountInput ref={inputRef} showAssetsSheet={showAssetsSheet} />
-            </HStack>
-            <BuyTradeableAssetsSheet
-                isVisible={isSheetVisible}
-                onClose={hideSheet}
-                onAssetSelect={onAssetSelect}
-                hideKeyboardOnAssetSelect={!shouldFocusInput}
+        <HStack justifyContent="space-between" alignItems="center">
+            <SelectTradeableAssetButton
+                onPress={showAssetsScreen}
+                selectedAsset={selectedValue}
+                caret
+                testID={ASSET_PICKER_TEST_ID}
             />
-        </>
+            <BuyCryptoAmountInput ref={inputRef} showAssetsSheet={showAssetsScreenAndFocusInput} />
+        </HStack>
     );
 };

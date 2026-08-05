@@ -594,6 +594,9 @@ export type RootStackParamList = {
     [RootStackRoutes.TradingConfirming]: {
         flowType: ConfirmingScreenFlowType;
     };
+    [RootStackRoutes.TradingTradeableAsset]: {
+        tradingType: Extract<TradingType, 'buy' | 'exchange'>;
+    };
     [RootStackRoutes.ReceiveAccounts]: {
         symbol: NetworkSymbol;
         tradingType: Exclude<TradingType, 'sell'>;
@@ -625,7 +628,10 @@ export type ConfirmingScreenFlowType = 'approve' | 'revoke' | 'revoke-and-approv
 export type ExchangeFlowType = 'swap' | 'sign-data' | ConfirmingScreenFlowType;
 
 export type TradingStackParamList = {
-    [TradingStackRoutes.Trading]: { tradingType?: TradingType };
+    [TradingStackRoutes.Trading]: {
+        tradingType?: TradingType;
+        selectedTradeableAssetCryptoId?: string;
+    };
 };
 
 export type StellarManageTokenStackParamList = {

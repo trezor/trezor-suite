@@ -8,4 +8,5 @@ export * from './screens/TradingOutputsReviewScreen';
 export * from './screens/TradingReceiveAccountsPickerScreen';
 export * from './screens/TradingSellPreviewScreen';
 export { TradingBuyPreviewScreen } from './screens/TradingBuyPreviewScreen';
+export * from './screens/TradingTradeableAssetScreen';
 export * from './thunks';

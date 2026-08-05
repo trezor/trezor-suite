@@ -61,6 +61,7 @@ import {
     TradingReceiveAccountsPickerScreen,
     TradingSellOutputsReviewScreen,
     TradingSellPreviewScreen,
+    TradingTradeableAssetScreen,
 } from '@suite-native/module-trading';
 import { TransactionDetailStackNavigator } from '@suite-native/module-transactions';
 import {
@@ -227,6 +228,11 @@ export const RootStackNavigator = () => {
                     options={{ title: RootStackRoutes.TradingExchangeOutputsReview }}
                     name={RootStackRoutes.TradingExchangeOutputsReview}
                     component={TradingExchangeOutputsReviewScreen}
+                />
+                <RootStack.Screen
+                    options={{ title: RootStackRoutes.TradingTradeableAsset }}
+                    name={RootStackRoutes.TradingTradeableAsset}
+                    component={TradingTradeableAssetScreen}
                 />
                 <RootStack.Screen
                     options={{ title: RootStackRoutes.ReceiveAccounts }}

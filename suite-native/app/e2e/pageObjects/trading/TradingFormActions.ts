@@ -8,7 +8,7 @@ export abstract class TradingFormActions extends TradingActions {
     abstract waitForQuotesToLoad(): Promise<void>;
 
     getSearchReceiveCryptoElement() {
-        return this.getElementById('receive-asset-sheet/header/search-input');
+        return this.getElementById('receive-asset-screen/search-input');
     }
 
     getSearchSendCryptoElement() {
@@ -41,6 +41,12 @@ export abstract class TradingFormActions extends TradingActions {
 
     async expectSheetHeaderTitle(title: string) {
         await waitForVisible(element(by.text(title).and(by.id('@trading/sheet-header-title'))));
+    }
+
+    async expectScreenHeaderTitle(title: string) {
+        await waitFor(element(by.id('@screen/sub-header/title')))
+            .toHaveText(title)
+            .withTimeout(this.SHORT_TIMEOUT);
     }
 
     async selectFiatCurrency(fiatCurrency: string) {
@@ -155,7 +161,7 @@ export abstract class TradingFormActions extends TradingActions {
         await waitForVisible(receiveAssetButton, { timeout: this.SHORT_TIMEOUT });
         await receiveAssetButton.tap();
 
-        await this.expectSheetHeaderTitle('Assets');
+        await this.expectScreenHeaderTitle('Assets');
 
         const searchReceiveCryptoInput = this.getSearchReceiveCryptoElement();
         await searchReceiveCryptoInput.tap();
@@ -165,7 +171,7 @@ export abstract class TradingFormActions extends TradingActions {
 
         if (network) {
             const networkFilterTab = element(
-                by.text(network).withAncestor(by.id(this.getTestId('receive-asset-sheet/header'))),
+                by.text(network).withAncestor(by.id(this.getTestId('receive-asset-screen'))),
             );
             await waitForVisible(networkFilterTab);
             await networkFilterTab.tap();

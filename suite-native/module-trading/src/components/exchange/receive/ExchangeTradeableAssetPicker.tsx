@@ -1,11 +1,22 @@
+import { useCallback } from 'react';
+import { useSelector } from 'react-redux';
+
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkModuleRepositoryDep } from '@suite-common/networks';
 import { HStack } from '@suite-native/atoms';
-import { exchangeActions } from '@suite-native/trading-state';
+import { type FeatureFlagsRootState } from '@suite-native/feature-flags';
+import { useWatch } from '@suite-native/forms';
+import {
+    type TradingRootState,
+    exchangeActions,
+    selectExchangeBuyTradeableAssets,
+} from '@suite-native/trading-state';
+import { type TradeableAsset } from '@suite-native/trading-types';
 
 import { ExchangeReceiveAmountInput } from './ExchangeReceiveAmountInput';
-import { ExchangeTradeableAssetsSheet } from './ExchangeTradeableAssetsSheet';
 import { useExchangeFormContext } from '../../../hooks/exchange/useExchangeFormContext';
 import { useTradeableAssetChange } from '../../../hooks/general/form/useTradeableAssetChange';
-import { useSheetControls } from '../../../hooks/general/useSheetControls';
+import { useTradeableAssetPickerNavigation } from '../../../hooks/general/useTradeableAssetPickerNavigation';
 import { SelectTradeableAssetButton } from '../../general/SelectTradeableAssetButton';
 
 const ASSET_PICKER_TEST_ID = '@trading/exchange/asset-receive-button';
@@ -21,8 +32,16 @@ const RECEIVE_ASSET_COLLISION = {
 
 export const ExchangeTradeableAssetPicker = () => {
     const form = useExchangeFormContext();
-    const { isSheetVisible, hideSheet, showSheet, setSelectedValue, selectedValue } =
-        useSheetControls(form, 'receiveAsset');
+    const { networkModuleRepository } = useServices(selectNetworkModuleRepositoryDep);
+    const supportedNetworks = networkModuleRepository.getSupportedNetworks();
+    const assets = useSelector((state: TradingRootState & FeatureFlagsRootState) =>
+        selectExchangeBuyTradeableAssets(state, supportedNetworks),
+    );
+    const selectedValue = useWatch({ control: form.control, name: 'receiveAsset' });
+    const setSelectedValue = useCallback(
+        (asset: TradeableAsset) => form.setValue('receiveAsset', asset),
+        [form],
+    );
 
     const handleAssetSelect = useTradeableAssetChange({
         form,
@@ -35,23 +54,22 @@ export const ExchangeTradeableAssetPicker = () => {
         collision: RECEIVE_ASSET_COLLISION,
     });
 
+    const showAssetsScreen = useTradeableAssetPickerNavigation({
+        assets,
+        onAssetSelect: handleAssetSelect,
+        tradingType: 'exchange',
+    });
+
     return (
-        <>
-            <HStack justifyContent="space-between" alignItems="center">
-                <SelectTradeableAssetButton
-                    onPress={showSheet}
-                    selectedAsset={selectedValue}
-                    buttonColorProps={{ intent: 'neutral', priority: 'secondary' }}
-                    caret
-                    testID={ASSET_PICKER_TEST_ID}
-                />
-                <ExchangeReceiveAmountInput showAssetsSheet={showSheet} />
-            </HStack>
-            <ExchangeTradeableAssetsSheet
-                onAssetSelect={handleAssetSelect}
-                onClose={hideSheet}
-                isVisible={isSheetVisible}
+        <HStack justifyContent="space-between" alignItems="center">
+            <SelectTradeableAssetButton
+                onPress={showAssetsScreen}
+                selectedAsset={selectedValue}
+                buttonColorProps={{ intent: 'neutral', priority: 'secondary' }}
+                caret
+                testID={ASSET_PICKER_TEST_ID}
             />
-        </>
+            <ExchangeReceiveAmountInput showAssetsSheet={showAssetsScreen} />
+        </HStack>
     );
 };
