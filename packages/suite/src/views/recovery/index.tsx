@@ -1,9 +1,9 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useIntl } from 'react-intl';
 
 import { useDevice } from '@suite/device';
 import { Translation, messages } from '@suite/intl';
-import { MODAL_CONTEXT_DEVICE, selectModalRequestId } from '@suite/modal';
+import { MODAL_CONTEXT_DEVICE, MODAL_CONTEXT_NONE, selectModalRequestId } from '@suite/modal';
 import {
     type RecoveryInputType,
     type SeedInputStatus,
@@ -43,6 +43,8 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
     const intl = useIntl();
     const pinRequestId = useSelector(selectModalRequestId);
     const { pin, setPin, handlePinSubmit } = usePin(device?.buttonRequests ?? [], pinRequestId);
+    // Set when the user cancels a running device request; the modal close is deferred (see effect below).
+    const cancelRequestedRef = useRef(false);
 
     const deviceModelInternal = device?.features?.internal_model;
     const isT1B1 = deviceModelInternal === DeviceModelInternal.T1B1;
@@ -61,14 +63,26 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
 
     const handleClose = () => {
         if (['in-progress', 'waiting-for-confirmation'].includes(recovery.status)) {
-            // Abort the running device call. The resulting Method_Cancel is handled by the recovery
-            // thunks (which reset the reducer), so the modal can close right away instead of leaving
-            // the user on a "seed check failed" screen.
+            // Navigation is blocked while a device request is active, so the modal cannot be closed
+            // synchronously here. Abort the request and defer the close to the effect below, which
+            // runs once the device becomes idle and the device modal context clears. The resulting
+            // Method_Cancel is handled by the recovery thunks (which reset the reducer), so no
+            // "seed check failed" screen is shown in the meantime.
+            cancelRequestedRef.current = true;
             TrezorConnect.cancel({ reason: intl.formatMessage(messages.TR_CANCELLED) });
+        } else {
+            onCancel();
         }
-
-        onCancel();
     };
+
+    // Close the modal once a requested cancel has settled: the device is idle again and the device
+    // modal context has cleared, which is exactly when closeModalApp (onCancel) can navigate away.
+    useEffect(() => {
+        if (cancelRequestedRef.current && !isLocked() && modal.context === MODAL_CONTEXT_NONE) {
+            cancelRequestedRef.current = false;
+            onCancel();
+        }
+    }, [isLocked, modal.context, onCancel]);
 
     const handleBackClick = () => {
         const currentIndex = statesInProgressBar.indexOf(recovery.status);
