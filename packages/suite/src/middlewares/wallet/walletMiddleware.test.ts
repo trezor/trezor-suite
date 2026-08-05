@@ -7,12 +7,16 @@ import {
 } from '@suite-common/test-utils';
 import {
     type SendState,
+    accountsRefreshTimeReducer,
+    blockchainActions,
     formDraftInitialState,
     prepareBlockchainMiddleware,
     prepareSendFormReducer,
 } from '@suite-common/wallet-core';
+import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
+import { updateWindowVisibility } from 'src/actions/suite/windowActions';
 import walletMiddleware from 'src/middlewares/wallet/walletMiddleware';
 import { accountsReducer, blockchainReducer, walletSettingsReducer } from 'src/reducers/wallet';
 import { extraDependencies } from 'src/support/extraDependencies';
@@ -32,9 +36,19 @@ interface Args {
     settings?: Partial<SettingsState>;
     selectedAccount?: Partial<SelectedAccountState>;
     send?: Partial<SendState>;
+    transactions?: Record<string, unknown[]>;
+    isWindowVisible?: boolean;
 }
 
-const getInitialState = ({ router, accounts, settings, selectedAccount, send }: Args = {}) => ({
+const getInitialState = ({
+    router,
+    accounts,
+    settings,
+    selectedAccount,
+    send,
+    transactions,
+    isWindowVisible = true,
+}: Args = {}) => ({
     router: {
         app: 'wallet',
         route: {
@@ -44,11 +58,22 @@ const getInitialState = ({ router, accounts, settings, selectedAccount, send }: 
     },
     suite: {},
     device: {
-        device: true, // device is irrelevant in this test
+        // matches the default deviceState of mockWalletAccount, so the accounts count as
+        // belonging to the selected device
+        selectedDevice: { state: { staticSessionId: '1stTestnetAddress@device_id:0' } },
+    },
+    window: {
+        isVisible: isWindowVisible,
     },
     wallet: {
         accounts: accounts || accountsReducer(undefined, { type: 'foo' } as any),
+        accountsRefreshTime: accountsRefreshTimeReducer(undefined, { type: 'foo' } as any),
         blockchain: blockchainReducer(undefined, { type: 'foo' } as any),
+        transactions: {
+            transactions: transactions || {},
+            phishing: {},
+            fetchStatusDetail: {},
+        },
         settings: {
             ...walletSettingsReducer(undefined, { type: 'foo' } as any),
             ...settings,
@@ -71,11 +96,17 @@ const mockStore = (preloadedState: State) =>
             walletMiddleware,
             prepareBlockchainMiddleware(() => extraDependenciesCommonMock),
         ],
+        // the synced action carries a live timer handle
+        serializableCheck: { ignoredActions: [blockchainActions.synced.type] },
         reducer: (state = preloadedState, action) => ({
             ...state,
             wallet: {
                 ...state.wallet,
                 accounts: accountsReducer(state.wallet.accounts, action),
+                accountsRefreshTime: accountsRefreshTimeReducer(
+                    state.wallet.accountsRefreshTime,
+                    action,
+                ),
                 blockchain: blockchainReducer(state.wallet.blockchain, action),
                 settings: walletSettingsReducer(state.wallet.settings, action),
                 selectedAccount: selectedAccountReducer(
@@ -128,6 +159,124 @@ describe('walletMiddleware', () => {
             if (disconnect) {
                 expect(TrezorConnect.blockchainDisconnect).toHaveBeenCalledTimes(disconnect.called);
             }
+        });
+    });
+
+    describe('window visibility regain', () => {
+        const account = mockWalletAccount({ symbol: 'eth' });
+        const pendingTx = { txid: 'abcd', blockHeight: -1, symbol: 'eth' };
+        const confirmedTx = { txid: 'abcd', blockHeight: 100, symbol: 'eth' };
+
+        it('refetches a visible account with a pending tx when the window becomes visible', () => {
+            const store = mockStore(
+                getInitialState({
+                    accounts: [account],
+                    transactions: { [account.key]: [pendingTx] },
+                    isWindowVisible: false,
+                }),
+            );
+
+            store.dispatch(updateWindowVisibility(true));
+
+            expect(TrezorConnect.getAccountInfo).toHaveBeenCalledTimes(1);
+        });
+
+        it('does nothing when there is no pending tx', () => {
+            const store = mockStore(
+                getInitialState({
+                    accounts: [account],
+                    transactions: { [account.key]: [confirmedTx] },
+                    isWindowVisible: false,
+                }),
+            );
+
+            store.dispatch(updateWindowVisibility(true));
+
+            expect(TrezorConnect.getAccountInfo).not.toHaveBeenCalled();
+        });
+
+        it('does nothing when the window was already visible', () => {
+            const store = mockStore(
+                getInitialState({
+                    accounts: [account],
+                    transactions: { [account.key]: [pendingTx] },
+                    isWindowVisible: true,
+                }),
+            );
+
+            store.dispatch(updateWindowVisibility(true));
+
+            expect(TrezorConnect.getAccountInfo).not.toHaveBeenCalled();
+        });
+
+        it('does nothing when the window is being hidden', () => {
+            const store = mockStore(
+                getInitialState({
+                    accounts: [account],
+                    transactions: { [account.key]: [pendingTx] },
+                    isWindowVisible: true,
+                }),
+            );
+
+            store.dispatch(updateWindowVisibility(false));
+
+            expect(TrezorConnect.getAccountInfo).not.toHaveBeenCalled();
+        });
+
+        it('re-checks sibling accounts of the network, so a receiver balance updates too', () => {
+            const receiver = mockWalletAccount({
+                symbol: 'eth',
+                descriptor: asAccountDescriptor('receiver'),
+            });
+            const store = mockStore(
+                getInitialState({
+                    accounts: [account, receiver],
+                    transactions: { [account.key]: [pendingTx] },
+                    isWindowVisible: false,
+                }),
+            );
+
+            store.dispatch(updateWindowVisibility(true));
+
+            expect(TrezorConnect.getAccountInfo).toHaveBeenCalledTimes(2);
+        });
+
+        it('kicks one sync per network even with multiple pending accounts', () => {
+            const secondAccount = mockWalletAccount({
+                symbol: 'eth',
+                descriptor: asAccountDescriptor('second'),
+            });
+            const store = mockStore(
+                getInitialState({
+                    accounts: [account, secondAccount],
+                    transactions: {
+                        [account.key]: [pendingTx],
+                        [secondAccount.key]: [{ txid: 'efgh', blockHeight: -1, symbol: 'eth' }],
+                    },
+                    isWindowVisible: false,
+                }),
+            );
+
+            store.dispatch(updateWindowVisibility(true));
+
+            // one sync of the deduped symbol -> one basic fetch per visible account,
+            // not one sync per pending account
+            expect(TrezorConnect.getAccountInfo).toHaveBeenCalledTimes(2);
+        });
+
+        it('skips accounts that are not visible', () => {
+            const hiddenAccount = mockWalletAccount({ symbol: 'eth', visible: false });
+            const store = mockStore(
+                getInitialState({
+                    accounts: [hiddenAccount],
+                    transactions: { [hiddenAccount.key]: [pendingTx] },
+                    isWindowVisible: false,
+                }),
+            );
+
+            store.dispatch(updateWindowVisibility(true));
+
+            expect(TrezorConnect.getAccountInfo).not.toHaveBeenCalled();
         });
     });
 

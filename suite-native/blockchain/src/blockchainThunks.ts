@@ -20,6 +20,9 @@ const BLOCKCHAIN_MODULE_PREFIX = '@suite-native/blockchain';
 const accountLastFetchTime: Record<AccountKey, number> = {};
 const ACCOUNT_LAST_FETCH_TIME_LIMIT_MS = 1000 * 10;
 
+// FIXME: This seem duplicit of `suite-common/wallet-core/src/accounts/accountsRefreshTimeReducer.ts`:
+// 1. Make sure it's possible to unify or otherwise document the reason why not.
+// 2. Also, `accountLastFetchTime` isn't ever cleared (e.g. when wallet is ejected).
 const shouldRefetchAccount = ({
     accountKey,
     refetchLimitMs = ACCOUNT_LAST_FETCH_TIME_LIMIT_MS,

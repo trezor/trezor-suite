@@ -11,14 +11,18 @@ import {
     accountsActions,
     blockchainActions,
     convertSendFormDraftsBtcAmountUnitsThunk,
+    selectAllNetworkSymbolsOfVisibleAccounts,
+    selectNetworksWithPendingTxs,
     sendFormActions,
     setCustomBackendThunk,
     stakeActions,
     subscribeBlockchainThunk,
+    syncAccountsWithBlockchainThunk,
     transactionsActions,
     unsubscribeBlockchainThunk,
 } from '@suite-common/wallet-core';
 
+import { updateWindowVisibility } from 'src/actions/suite/windowActions';
 import * as selectedAccountActions from 'src/actions/wallet/selectedAccountActions';
 import * as tradingCommonActions from 'src/actions/wallet/trading/tradingCommonActions';
 import type { Action, AppState, Dispatch } from 'src/types/suite';
@@ -64,6 +68,27 @@ const walletMiddleware =
         // Update custom backends
         if (blockchainActions.setBackend.match(action)) {
             api.dispatch(setCustomBackendThunk(action.payload.symbol));
+        }
+
+        /**
+         * Make sure to update pending txs for visible accounts when the window is focused again.
+         * Else the tx hangs there even though it has already been confirmed in the blockchain.
+         * - Updating only specific account doesn't trigger update of receiver account balance / txs.
+         */
+        if (
+            updateWindowVisibility.match(action) &&
+            action.payload.isVisible &&
+            !prevState.window.isVisible
+        ) {
+            const state = api.getState();
+            const visibleNetworks = new Set(selectAllNetworkSymbolsOfVisibleAccounts(state));
+            const networksWithPendingTxs = selectNetworksWithPendingTxs(state);
+
+            Array.from(networksWithPendingTxs)
+                .filter(symbol => visibleNetworks.has(symbol))
+                .forEach(symbol => {
+                    api.dispatch(syncAccountsWithBlockchainThunk(symbol));
+                });
         }
 
         const prevRouter = prevState.router;
