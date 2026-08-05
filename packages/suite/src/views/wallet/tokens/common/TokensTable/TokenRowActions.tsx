@@ -167,6 +167,10 @@ const TokenRowBasicActions = ({
         dispatch(goto(payload));
     };
 
+    // This table renders on both the Tokens and the DeFi tab, so the reported origin has to follow
+    // the tab it was rendered for. Unwrap in particular is offered on the Tokens tab.
+    const analyticsFrom = type === 'defi' ? 'account-defi-tokens' : 'account-tokens';
+
     const navigateToYieldDeposit = () => {
         if (!availableVault || !availableVaultAddress) return;
 
@@ -174,7 +178,7 @@ const TokenRowBasicActions = ({
             type: sharedEvents.yieldNavigateEvent.name,
             payload: {
                 action: 'continue',
-                from: 'account-defi-tokens',
+                from: analyticsFrom,
                 to: 'deposit-form',
                 networkSymbol: account.symbol,
                 vaultId: availableVault.id,
@@ -199,7 +203,7 @@ const TokenRowBasicActions = ({
             type: sharedEvents.yieldNavigateEvent.name,
             payload: {
                 action: 'continue',
-                from: 'account-defi-tokens',
+                from: analyticsFrom,
                 to: 'withdraw-form',
                 networkSymbol: account.symbol,
                 vaultId: availableVault.id,
@@ -320,7 +324,7 @@ const TokenRowBasicActions = ({
             type: sharedEvents.yieldNavigateEvent.name,
             payload: {
                 action: 'continue',
-                from: 'account-defi-tokens',
+                from: analyticsFrom,
                 to: 'unwrap-form',
                 networkSymbol: account.symbol,
             },
