@@ -1,10 +1,13 @@
 import { useMemo, useState } from 'react';
 
+import { selectAddressLabelsForAccount } from '@suite/address';
 import { Translation, useTranslation } from '@suite/intl';
+import { normalizeForSearch } from '@suite-common/suite-utils';
 import { type Address } from '@trezor/blockchain-link-types';
 import { Column, Modal } from '@trezor/components';
 import { SearchAsset } from '@trezor/product-components';
 
+import { useSelector } from 'src/hooks/suite';
 import { TradingReceiveAddressEmpty } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingReceiveAddress/TradingReceiveAddress';
 import { useReceiveAddressModalControls } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingReceiveAddress/useReceiveAddressModalControls';
 
@@ -12,6 +15,7 @@ import { TradingUtxoReceiveAddressList } from './TradingUtxoReceiveAddressList';
 import { useTradingReceiveAddressValues } from '../useTradingReceiveAddressValues';
 
 const MAX_UNUSED_ADDRESSES = 1;
+const EMPTY_ADDRESS_LABELS: Record<string, string | null> = {};
 
 export const TradingUtxoReceiveAddressModal = () => {
     const { tradingReceiveAddress } = useTradingReceiveAddressValues();
@@ -24,19 +28,36 @@ export const TradingUtxoReceiveAddressModal = () => {
 
     const addresses = account?.addresses;
 
-    const [usedAddresses, unusedAddresses] = useMemo(() => {
-        const used = addresses?.used ?? [];
-        const unused = addresses?.unused?.slice(0, MAX_UNUSED_ADDRESSES) ?? [];
-        const query = search.trim();
+    const accountAddresses = useMemo(
+        () =>
+            addresses
+                ? addresses.used
+                      .concat(addresses.unused.slice(0, MAX_UNUSED_ADDRESSES))
+                      .map(({ address }) => address)
+                : [],
+        [addresses],
+    );
 
-        const filterPredicate = (address: Address) =>
-            address.address.includes(query) || address.path.includes(query);
+    const addressLabels = useSelector(state =>
+        account
+            ? selectAddressLabelsForAccount(state, {
+                  addresses: accountAddresses,
+                  accountKey: account.key,
+                  deviceStaticId: account.deviceState,
+              })
+            : EMPTY_ADDRESS_LABELS,
+    );
 
-        const usedFiltered = used.filter(filterPredicate);
-        const unusedFiltered = unused.filter(filterPredicate);
+    const query = normalizeForSearch(search);
 
-        return [usedFiltered, unusedFiltered];
-    }, [addresses, search]);
+    const matchesQuery = ({ address, path }: Address) =>
+        normalizeForSearch(address).includes(query) ||
+        normalizeForSearch(path).includes(query) ||
+        normalizeForSearch(addressLabels[address] ?? '').includes(query);
+
+    const usedAddresses = addresses?.used.filter(matchesQuery) ?? [];
+    const unusedAddresses =
+        addresses?.unused.slice(0, MAX_UNUSED_ADDRESSES).filter(matchesQuery) ?? [];
 
     if (!account) return null;
 
@@ -76,12 +97,14 @@ export const TradingUtxoReceiveAddressModal = () => {
                         <TradingUtxoReceiveAddressList
                             account={account}
                             addresses={unusedAddresses}
+                            addressLabels={addressLabels}
                             title={<Translation id="TR_TRADING_RECEIVE_ADDRESS_NEW_ADDRESS" />}
                         />
 
                         <TradingUtxoReceiveAddressList
                             account={account}
                             addresses={usedAddresses}
+                            addressLabels={addressLabels}
                             title={<Translation id="TR_TRADING_RECEIVE_ADDRESS_USED_ADDRESSES" />}
                         />
                     </>
