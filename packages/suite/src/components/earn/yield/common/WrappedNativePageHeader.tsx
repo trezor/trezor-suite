@@ -20,6 +20,8 @@ type WrappedNativePageHeaderProps = {
     flow: WrappedNativeFlowType;
     account?: Account;
     contractAddress?: string;
+    /** Once the flow has finished, leaving via the back arrow is not abandoning it. */
+    isFlowComplete?: boolean;
 };
 
 export const WrappedNativePageHeader = ({
@@ -27,6 +29,7 @@ export const WrappedNativePageHeader = ({
     flow,
     account,
     contractAddress,
+    isFlowComplete = false,
 }: WrappedNativePageHeaderProps) => {
     const { analytics } = useServices(selectDesktopAnalyticsDep);
     const navigateToTokenOverview = useNavigateToAccountRoute(account, 'wallet-tokens');
@@ -36,7 +39,7 @@ export const WrappedNativePageHeader = ({
         analytics.report({
             type: events.yieldNavigateEvent.name,
             payload: {
-                action: 'cancel',
+                action: isFlowComplete ? 'continue' : 'cancel',
                 from: flow === 'wrap' ? 'wrap-form' : 'unwrap-form',
                 to: 'account-detail',
                 networkSymbol: account?.symbol,

@@ -37,6 +37,8 @@ type UnwrapNativeTokenProps = {
     tokenDecimals: number;
     tokenBalance: string;
     tokenContractAddress: string;
+    /** Reported upward because the page header lives outside this subtree, in the layout. */
+    onFlowCompleteChange?: (isComplete: boolean) => void;
 };
 
 type BroadcastUnwrap = {
@@ -50,6 +52,7 @@ export const UnwrapNativeToken = ({
     tokenDecimals,
     tokenBalance,
     tokenContractAddress,
+    onFlowCompleteChange,
 }: UnwrapNativeTokenProps) => {
     const dispatch = useDispatch();
     const ensureDeviceReady = useWrappedNativeDeviceGuard();
@@ -74,6 +77,11 @@ export const UnwrapNativeToken = ({
     });
 
     const pendingTxStatus = useWrappedNativePendingTx(account, broadcast?.txid ?? null, 'unwrap');
+    const isFlowComplete = !!broadcast && pendingTxStatus === 'confirmed';
+
+    useEffect(() => {
+        onFlowCompleteChange?.(isFlowComplete);
+    }, [isFlowComplete, onFlowCompleteChange]);
 
     const { reportSubmit, reportMaxClick } = useWrappedNativeFlowAnalytics({
         flowType: 'unwrap',
@@ -174,7 +182,7 @@ export const UnwrapNativeToken = ({
     };
 
     const renderContent = () => {
-        if (broadcast && pendingTxStatus === 'confirmed') {
+        if (broadcast && isFlowComplete) {
             return (
                 <WrappedNativeFlowComplete
                     account={account}
