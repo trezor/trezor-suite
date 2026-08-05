@@ -61,7 +61,7 @@ export const DeviceDisconnectedScreen = ({
             secondaryButtonTitle: translate('generic.buttons.cancel'),
             secondaryButtonColorProps: { intent: 'critical', priority: 'secondary' },
             onPressSecondaryButton: () => {
-                setWasDeviceOnboardingCancelled(true);
+                dispatch(setWasDeviceOnboardingCancelled(true));
                 navigateToHome();
             },
         });
