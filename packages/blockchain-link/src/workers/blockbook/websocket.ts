@@ -13,6 +13,7 @@ import type {
     BlockbookSend as Send,
 } from '@trezor/blockchain-link-types';
 import { type GetContractInfo } from '@trezor/blockchain-link-types/src/messages';
+import { type Push } from '@trezor/blockchain-link-types/src/blockbook';
 import { getSuiteVersion } from '@trezor/env-utils';
 
 import { BaseWebsocket } from '../baseWebsocket';
@@ -20,6 +21,23 @@ import { BaseWebsocket } from '../baseWebsocket';
 type GetCurrentFiatRates = MessageTypes.GetCurrentFiatRates;
 type GetFiatRatesForTimestamps = MessageTypes.GetFiatRatesForTimestamps;
 type GetFiatRatesTickersList = MessageTypes.GetFiatRatesTickersList;
+
+/**
+ * Broadcasting a transaction is the one request whose loss cannot be shrugged off: a timeout closes
+ * the socket and rejects the push, so the user is told the send failed — but blockbook may well have
+ * broadcast it, and re-sending then signs the *next* nonce and pays the recipient twice.
+ *
+ * The default 20s message deadline is shorter than blockbook's own budget for the call: EVM coins
+ * routed through a private/MEV relay allow `rpc_timeout` (25s) per relay URL for the broadcast
+ * itself, so a single slow relay outlasts the client and the answer arrives after we stopped
+ * listening. Wait long enough for blockbook to give up and answer instead.
+ *
+ * 60s is the largest deadline that is actually the push's own: the keep-alive ping fires after 50s of
+ * silence and carries the default 20s deadline, and any expiry rejects every in-flight request and
+ * closes the socket — so past ~70s the push would be killed by the ping rather than by its own
+ * deadline. It also means a genuinely dead socket is still detected on the ping, not held for 60s.
+ */
+const PUSH_TRANSACTION_TIMEOUT = 60 * 1000;
 
 interface BlockbookEvents {
     block: BlockNotification;
@@ -118,7 +136,12 @@ export class BlockbookAPI extends BaseWebsocket<BlockbookEvents> {
     }
 
     pushTransaction(hex: string, disableAlternativeRPC?: boolean) {
-        return this.send('sendTransaction', { hex, disableAlternativeRPC });
+        // sendMessage instead of send: only it takes a per-request timeout (see
+        // PUSH_TRANSACTION_TIMEOUT), which send's overloaded signature has no room for
+        return this.sendMessage(
+            { method: 'sendTransaction', params: { hex, disableAlternativeRPC } },
+            { timeout: PUSH_TRANSACTION_TIMEOUT },
+        ) as Promise<Push>;
     }
 
     estimateFee(payload: EstimateFeeParams) {
