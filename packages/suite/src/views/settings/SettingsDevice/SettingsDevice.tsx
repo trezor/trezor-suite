@@ -8,6 +8,7 @@ import { setConnectionModal, useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { ContextMessage } from '@suite/message-system';
 import { isRecoveryInProgress } from '@suite/recovery';
+import { isAdditionalShamirBackupInProgress } from '@suite-common/backup';
 import { selectIsDeviceAuthenticityCheckSupported } from '@suite-common/device';
 import { Context } from '@suite-common/message-system';
 import { getIsDeviceRemembered } from '@suite-common/suite-utils';
@@ -66,7 +67,12 @@ const deviceSettingsUnavailable = (device?: TrezorDevice) => {
     const wrongDeviceType = device?.type && ['unacquired', 'unreadable'].includes(device.type);
     const wrongDeviceMode =
         (device?.mode && ['seedless'].includes(device.mode)) ||
-        (device?.features !== undefined && isRecoveryInProgress(device?.features));
+        (device?.features !== undefined &&
+            // Both states leave the device mid-operation; device-management actions (e.g. Check
+            // Recovery Seed, which starts a DryRun recovery) would conflict with the firmware. The
+            // recovery case was already covered; additional-shamir backup needs the same guard.
+            (isRecoveryInProgress(device?.features) ||
+                isAdditionalShamirBackupInProgress(device?.features)));
     const firmwareUpdateRequired = device?.firmware === 'required';
 
     return wrongDeviceType || wrongDeviceMode || firmwareUpdateRequired;
