@@ -20,6 +20,7 @@ import {
 import { type Account, type TxSimulationAction } from '@suite-common/wallet-types';
 import { Banner, Card, Column, Modal } from '@trezor/components';
 import { WarningIcon } from '@trezor/icons';
+import { BigNumber } from '@trezor/utils';
 
 import { Fees } from 'src/components/wallet/Fees/Fees';
 
@@ -57,6 +58,10 @@ export function EarnYieldTxSimulationModalInner({
             ? action.payload.transaction.gasLimit
             : undefined,
         accountBalance: account.availableBalance,
+        // A wrap is payable, so its value competes with the fee for the same native balance.
+        txValue: areTxSimulationMethods(TX_METHODS_WITH_FEES, action)
+            ? new BigNumber(action.payload.transaction.value || 0).toFixed(0)
+            : undefined,
     });
 
     const [confirming, setConfirming] = useState<boolean>(false);
