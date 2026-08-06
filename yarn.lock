@@ -16429,7 +16429,7 @@ __metadata:
     nextra-theme-docs: "npm:^2.13.4"
     react: "npm:19.2.3"
     react-dom: "npm:19.2.3"
-    react-inspector: "npm:^6.0.2"
+    react-inspector: "npm:^9.0.0"
     react-markdown: "npm:^10.1.0"
     react-medium-image-zoom: "npm:^5.4.0"
     react-redux: "npm:9.3.0"
@@ -40302,12 +40302,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-inspector@npm:^6.0.2":
-  version: 6.0.2
-  resolution: "react-inspector@npm:6.0.2"
+"react-inspector@npm:^9.0.0":
+  version: 9.0.0
+  resolution: "react-inspector@npm:9.0.0"
   peerDependencies:
-    react: ^16.8.4 || ^17.0.0 || ^18.0.0
-  checksum: 10/5d23ad0f6f920458abd4c01af1b3cbdbe8846c254762fd6cfff4df119c54e08dd98ce8e91acacafb8173c19f07de2066df5b8e6cb19425751c1929a2620cbe77
+    react: ^18.0.0 || ^19.0.0
+  checksum: 10/4e5a65908d9daf5f3365389222e6ea8fc775375e57ef19ebfb2e43965f6e80bee2c2522a7d9093605abe11980d9c7f67b7d54114deea644b8742b98d80d25f06
   languageName: node
   linkType: hard
 

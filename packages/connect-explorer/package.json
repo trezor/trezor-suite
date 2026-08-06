@@ -39,7 +39,7 @@
         "nextra-theme-docs": "^2.13.4",
         "react": "19.2.3",
         "react-dom": "19.2.3",
-        "react-inspector": "^6.0.2",
+        "react-inspector": "^9.0.0",
         "react-markdown": "^10.1.0",
         "react-medium-image-zoom": "^5.4.0",
         "react-redux": "9.3.0",
