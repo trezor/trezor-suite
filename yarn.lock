@@ -16368,7 +16368,7 @@ __metadata:
     intersection-observer: "npm:^0.12.2"
     match-sorter: "npm:^8.3.0"
     next: "npm:15.5.21"
-    next-seo: "npm:^6.6.0"
+    next-seo: "npm:^7.2.0"
     next-themes: "npm:^0.4.6"
     nextra: "patch:nextra@npm%3A2.13.4#~/.yarn/patches/nextra-npm-2.13.4-f23661e7e1.patch"
     postcss: "npm:^8.5.9"
@@ -37143,7 +37143,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"next-seo@npm:^6.0.0, next-seo@npm:^6.6.0":
+"next-seo@npm:^6.0.0":
   version: 6.6.0
   resolution: "next-seo@npm:6.6.0"
   peerDependencies:
@@ -37151,6 +37151,16 @@ __metadata:
     react: ">=16.0.0"
     react-dom: ">=16.0.0"
   checksum: 10/c1998d90bcf11375c7c3d3c6877ce8b72f6a0252e41466c12b10f449ed60a5ebe2545bd423c5b0b1d7c11cb9b3a76b0435640510214149cad268296f52a8735c
+  languageName: node
+  linkType: hard
+
+"next-seo@npm:^7.2.0":
+  version: 7.2.0
+  resolution: "next-seo@npm:7.2.0"
+  peerDependencies:
+    next: ">=13.4.0"
+    react: ">=18.2.0"
+  checksum: 10/0a62948af6d3d609b9a20fbe950aaec9c68c74d42134be631fa8b872d9e5c519763ffefe522ceb26f6ea976e6b06355eba20c7c8be50f308270230d992662c7e
   languageName: node
   linkType: hard
 

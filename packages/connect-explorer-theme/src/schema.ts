@@ -1,7 +1,7 @@
 import { isValidElement } from 'react';
 import type { FC, ReactNode } from 'react';
 
-import type { NextSeoProps } from 'next-seo';
+import type { NextSeoProps } from 'next-seo/pages';
 import type { Item, MenuItem, PageItem } from 'nextra/normalize-pages';
 import { z } from 'zod';
 
