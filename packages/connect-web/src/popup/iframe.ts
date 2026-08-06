@@ -96,8 +96,21 @@ export const getIframeInstance = () => {
             });
     };
 
+    // Tear the iframe down completely so the next create() rebuilds it from
+    // scratch. The `.catch` above only clears state when the iframe *load*
+    // rejects; a later failure (e.g. the bootstrap handshake) leaves a resolved
+    // `initPromise` and a live iframe whose bootstrap/storage-access state is
+    // reused. Recreating it mirrors what a page reload does (the only thing that
+    // currently recovers such a failure).
+    const destroy = () => {
+        clearInitTimeout();
+        getIframeElement()?.remove();
+        initPromise = undefined;
+    };
+
     return {
         create,
         get: getIframeElement,
+        destroy,
     };
 };
