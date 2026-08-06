@@ -50,6 +50,7 @@
     },
     "dependencies": {
         "@fivebinaries/coin-selection": "3.0.0",
+        "@trezor/utils": "workspace:*",
         "cbor": "^10.0.12"
     }
 }

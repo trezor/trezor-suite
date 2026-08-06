@@ -44,8 +44,6 @@ export const tokenProgramsInfo = {
     },
 } as const;
 
-export const supportedSolanaNetworkSymbols = ['sol', 'dsol'] as const;
-
 export enum Network {
     Mainnet = 'mainnet-beta',
     Devnet = 'devnet',

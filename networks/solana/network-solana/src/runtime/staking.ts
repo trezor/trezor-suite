@@ -20,6 +20,7 @@ import {
     MAX_DEACTIVATE_ACCOUNTS_WITH_SPLIT,
     MIN_STAKE_DELEGATION,
     STAKE_ACCOUNT_V2_SIZE,
+    type SolanaNetworkSymbol,
     StakeState,
 } from '../constants';
 import type {
@@ -41,7 +42,6 @@ import type {
     StakeParams,
     StakeResponse,
     StakeStateAccount,
-    SupportedSolanaNetworkSymbols,
     UnstakeParams,
     UnstakeResponse,
 } from '../types';
@@ -513,12 +513,11 @@ export const prepareClaimSolTx = async ({
     }
 };
 
-export const selectSolanaValidator = (symbol: SupportedSolanaNetworkSymbols) => {
+export const selectSolanaValidator = (symbol: SolanaNetworkSymbol): Address => {
     switch (symbol) {
         case 'dsol':
             return address(EVERSTAKE_SOLANA_DEVNET_VALIDATOR);
         case 'sol':
-        default:
             return address(EVERSTAKE_SOLANA_MAINNET_VALIDATOR);
     }
 };

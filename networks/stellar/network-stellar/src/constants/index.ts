@@ -1,5 +1,12 @@
 import { BigNumber } from '@trezor/utils';
 
+export {
+    isSupportedStellarNetwork,
+    supportedStellarNetworks,
+    toStellarNetworkSymbol,
+} from './networkSymbol';
+export type { StellarNetworkSymbol } from './networkSymbol';
+
 export const STELLAR_DECIMALS = 7;
 
 // 0.5 XLM, https://developers.stellar.org/docs/learn/fundamentals/stellar-data-structures/accounts#base-reserves

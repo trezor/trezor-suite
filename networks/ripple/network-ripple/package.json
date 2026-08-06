@@ -49,6 +49,7 @@
         "build:lib": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../../scripts/publish/replace-imports.sh ./lib"
     },
     "dependencies": {
+        "@trezor/utils": "workspace:*",
         "xrpl": "4.6.0"
     }
 }
