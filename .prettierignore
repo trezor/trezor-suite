@@ -9,6 +9,7 @@ build-electron
 build-renderer
 .build-storybook
 *.cpuprofile
+.next
 
 # Dependency directory
 node_modules
