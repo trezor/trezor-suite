@@ -12,7 +12,7 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
-        "@codemirror/state": "^6.6.0",
+        "@codemirror/state": "^6.7.1",
         "@hbsnow/rehype-sectionize": "^1.0.7",
         "@sinclair/typebox": "^0.34.49",
         "@trezor/components": "workspace:^",
