@@ -15,6 +15,16 @@ import { type CustomThunkAPI } from '@suite-common/redux-extra-dependencies';
 type DefaultThunkAPI = { readonly __defaultThunkAPI: unique symbol };
 type CreateThunkDispatch = ThunkDispatch<any, any, UnknownAction>;
 
+/**
+ * Resolves the thunk API while thunks are migrated away from the global `CustomThunkAPI`:
+ * - omitted config keeps the complete global API;
+ * - `void` provides unknown state and no extra dependencies;
+ * - config with `state` opts into selective state and either explicit or no extra dependencies;
+ * - config without `state` overrides only its declared fields and keeps the remaining global API.
+ *
+ * Dispatch is always replaced with a broad thunk dispatch so selectively typed parent and child
+ * thunks remain composable during the migration.
+ */
 type ResolveThunkAPI<TThunkAPI> = [TThunkAPI] extends [DefaultThunkAPI]
     ? CustomThunkAPI & { dispatch: CreateThunkDispatch }
     : [TThunkAPI] extends [void]
