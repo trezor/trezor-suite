@@ -235,9 +235,9 @@ export const syncAccountsWithBlockchainThunk = createThunk(
         const accounts = selectAccounts(getState());
         const blockchain = selectBlockchainState(getState());
         const {
-            selectors: { selectIsWindowVisible },
+            services: { getIsWindowVisible },
         } = extra;
-        const isWindowVisible = selectIsWindowVisible(getState());
+        const isWindowVisible = getIsWindowVisible();
 
         // First clear, to cancel last planned sync
         tryClearTimeout(blockchain[symbol].syncTimeout);
@@ -366,8 +366,8 @@ export const onBlockchainNotificationThunk = createThunk(
         // with N accounts on the same network, hammering blockbook at ~10k connections.
         // Periodic background sync still runs on its own timer chain (seeded by
         // onBlockchainConnectThunk), so unrelated accounts stay up to date.
-        const { selectIsWindowVisible } = extra.selectors;
-        if (!selectIsWindowVisible(getState())) return;
+        const { getIsWindowVisible } = extra.services;
+        if (!getIsWindowVisible()) return;
 
         accounts.forEach(matchedAccount =>
             dispatch(fetchAndUpdateAccountThunk({ accountKey: matchedAccount.key })),

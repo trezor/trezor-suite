@@ -1,7 +1,6 @@
 import { type FC, type PropsWithChildren, useEffect } from 'react';
 
 import { selectShouldDisplayDeviceCompromisedOnRoute } from '@suite/authenticity-checks';
-import { selectDesktopUpdateAllowPrerelease } from '@suite/desktop-update';
 import { useDevice } from '@suite/device';
 import { KillswitchMessageScreen } from '@suite/message-system';
 import { selectIsAnalyticsConfirmed } from '@suite-common/analytics-redux';
@@ -59,10 +58,7 @@ export const Preloader = ({ children }: PropsWithChildren) => {
     const isAnalyticsConsentConfirmed = useSelector(selectIsAnalyticsConfirmed);
 
     const { device } = useDevice();
-    useReportDeviceCompromised({
-        device,
-        selectAllowPrerelease: selectDesktopUpdateAllowPrerelease,
-    });
+    useReportDeviceCompromised({ device });
     useDeviceCompromisedNotification();
 
     const dispatch = useDispatch();

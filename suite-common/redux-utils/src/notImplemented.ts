@@ -1,5 +1,7 @@
 import { createAction } from '@reduxjs/toolkit';
 
+import { asGetter } from '@suite-common/dependency-injection';
+
 import { createThunk } from './createThunk';
 
 const mockedConsoleAlreadyPrinted: string[] = [];
@@ -29,18 +31,22 @@ export const notImplementedThunk = (type: string) =>
         return thunkPayload;
     });
 
-export const notImplementedSelector =
-    <TReturn>(name: string, mockedReturnValue: TReturn, selectorArgs: any = {}) =>
-    () => {
+export const notImplementedGetter = <TReturn>(
+    name: string,
+    mockedReturnValue: TReturn,
+    getterArgs: any = {},
+) =>
+    // Branded as a getter, so it can stand in for a `toGetter` service.
+    asGetter(() => {
         mockedConsoleLog(
-            `Calling not implemented selector "${name}" with mocked value: `,
+            `Calling not implemented getter "${name}" with mocked value: `,
             mockedReturnValue,
             ' and args: ',
-            selectorArgs,
+            getterArgs,
         );
 
         return mockedReturnValue;
-    };
+    });
 
 export const notImplementedActionType = (type: string) => `actionType/notImplemented/${type}`;
 

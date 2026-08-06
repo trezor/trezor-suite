@@ -36,7 +36,7 @@ export const getTokenDefinitionThunk = createThunk<
 export const initTokenDefinitionsThunk = createThunk(
     `${TOKEN_DEFINITIONS_MODULE}/initTokenDefinitionsThunk`,
     (_, { getState, dispatch, extra }) => {
-        const enabledNetworks = extra.selectors.selectTokenDefinitionsEnabledNetworks(getState());
+        const enabledNetworks = extra.services.getTokenDefinitionsEnabledNetworks();
 
         const promises = enabledNetworks
             .map(symbol => {

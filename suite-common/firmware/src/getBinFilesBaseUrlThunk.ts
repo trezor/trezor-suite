@@ -8,6 +8,6 @@ import { FIRMWARE_MODULE_PREFIX } from './firmwareActions';
  */
 export const getBinFilesBaseUrlThunk = createThunk(
     `${FIRMWARE_MODULE_PREFIX}/getBinFilesBaseUrlThunk`,
-    (_params, { getState, extra }) =>
-        isDesktop() ? extra.selectors.selectDesktopBinDir(getState()) : resolveConnectPath('data'),
+    (_params, { extra }) =>
+        isDesktop() ? extra.services.getDesktopBinDir() : resolveConnectPath('data'),
 );

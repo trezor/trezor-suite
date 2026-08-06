@@ -8,6 +8,7 @@
         {
             "path": "../delegated-identity-key-types"
         },
+        { "path": "../dependency-injection" },
         { "path": "../metadata-types" },
         { "path": "../networks" },
         { "path": "../platform-encryption" },

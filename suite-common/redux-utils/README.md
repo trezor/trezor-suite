@@ -13,8 +13,8 @@ export type ExtraDependencies = {
     actions: {
         addTransaction: SuiteCompatibleActionCreatorWithPayload<Transaction>;
     };
-    selectors: {
-        selectTransactions: SuiteCompatibleSelector<Transactions[]>;
+    services: {
+        getTransactions: () => Transactions[];
     };
 };
 ```
@@ -23,16 +23,20 @@ Now you will use this type in desktop suite to construct object that will implem
 
 ```typescript
 import * as transactionsActions from '@wallet-actions/transactionsActions';
+import { toGetter } from '@suite-common/dependency-injection';
 import { AppState } from '../types/suite';
 
-export const extraDependencies: ExtraDependencies = {
+export const createExtraDependencies = (getState: () => AppState): ExtraDependencies => ({
     actions: {
         addTransaction: transactionsActions.add,
     },
-    selectors: {
-        selectTransactions: (state: AppState) => state.wallet.transactions.transactions,
+    services: {
+        getTransactions: toGetter(
+            getState,
+            (state: AppState) => state.wallet.transactions.transactions,
+        ),
     },
-};
+});
 ```
 
 And we do same thing for mobile app, but here you will actually use some mocked action and transaction data. We need to do this because that functionality is not moved to `@suite-common` package.
@@ -42,13 +46,13 @@ export const extraDependencies: ExtraDependencies = {
     actions: {
         addTransaction: createAction<any>('@suite-native/notImplemented/addTransaction'),
     },
-    selectors: {
-        selectTransactions: () => [...testMocks.getWalletTransaction()],
+    services: {
+        getTransactions: () => [...testMocks.getWalletTransaction()],
     },
 };
 ```
 
-In case someone will move that functionality to `@suite-common` we should remove it from extra dependencies. For example if someone will create `@suite-common/wallet-transactions` package we will remove `selectTransactions` from extra dependencies and import it from that package directly.
+In case someone will move that functionality to `@suite-common` we should remove it from extra dependencies. For example if someone will create `@suite-common/wallet-transactions` package we will remove `getTransactions` from extra dependencies and import it from that package directly.
 
 ## Platform specific APIs
 
@@ -98,14 +102,14 @@ This functions has exact same signature as `createAsyncThunk` but it will inject
 ```typescript
 export const exportTransactionsToFileThunk = createThunk(
     'exportAccountsToFileThunk',
-    (payload: string, { dispatch, extra, getState }) => {
+    (payload: string, { dispatch, extra }) => {
         const fileName = payload;
         const {
-            selectors: { selectTransactions },
+            services: { getTransactions },
             utils: { saveFile },
         } = extra;
 
-        const transactions = selectTransactions(getState());
+        const transactions = getTransactions();
 
         return saveFile(JSON.stringify(transactions), fileName);
     },
@@ -207,7 +211,7 @@ export const prepareSomeMiddleware = createMiddlewareWithExtraDeps(
     (action, { getState, extra, next }) => {
         const {
             actions: { addTransaction },
-            selectors: { selectTransactions },
+            services: { getTransactions },
         } = extra;
 
         switch (action.type) {
