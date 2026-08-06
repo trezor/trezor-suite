@@ -6,7 +6,7 @@ import {
     type SellFiatTrade,
 } from 'invity-api';
 
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
 import type { Account } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 
@@ -233,9 +233,9 @@ describe('isCrossChainTrade', () => {
 
 describe('toTokenCryptoId', () => {
     it('should return correct token cryptoId', () => {
-        expect(toTokenCryptoId('eth', '0x1234123412341234123412341234123412341234')).toBe(
-            'ethereum--0x1234123412341234123412341234123412341234',
-        );
+        expect(
+            toTokenCryptoId(asNetworkSymbol('eth'), '0x1234123412341234123412341234123412341234'),
+        ).toBe('ethereum--0x1234123412341234123412341234123412341234');
     });
 });
 

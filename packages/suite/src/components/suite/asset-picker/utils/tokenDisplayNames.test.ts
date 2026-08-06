@@ -4,12 +4,15 @@ import {
     type TradingAssetOption,
     type TradingAssetOptionWithContractAddress,
 } from '@suite-common/trading';
+import { toNetworkSymbolNonTestnet } from '@suite-common/wallet-config';
 
 import {
     type TokenDisplayNameSource,
     getTokenDisplaySymbolName,
     getTokensDisplaySymbolNames,
 } from './tokenDisplayNames';
+
+const ethSymbol = toNetworkSymbolNonTestnet('eth');
 
 const createAsset = (
     overrides: Partial<TradingAssetOptionWithContractAddress> &
@@ -26,7 +29,7 @@ const createAsset = (
         displaySymbol: 'ASSET',
         contractAddress: '0x1',
         networkName: 'Ethereum',
-        networkSymbol: 'eth',
+        networkSymbol: ethSymbol,
         ...assetOverrides,
     };
 };
@@ -34,7 +37,7 @@ const createAsset = (
 describe('tokenDisplayNames', () => {
     it('returns canonical displaySymbolName for matching token crypto id', () => {
         const tokenSource: TokenDisplayNameSource = {
-            account: { symbol: 'eth' },
+            account: { symbol: ethSymbol },
             token: { contract: '0x1', name: 'Discovered Name' },
         };
         const tokens = [tokenSource];
@@ -60,7 +63,7 @@ describe('tokenDisplayNames', () => {
 
     it('falls back to asset name when displaySymbolName is missing', () => {
         const tokenSource: TokenDisplayNameSource = {
-            account: { symbol: 'eth' },
+            account: { symbol: ethSymbol },
             token: { contract: '0x1', name: 'Discovered Name' },
         };
         const tokens = [tokenSource];
@@ -86,7 +89,7 @@ describe('tokenDisplayNames', () => {
 
     it('falls back to discovered token name for unmatched tokens', () => {
         const tokenSource: TokenDisplayNameSource = {
-            account: { symbol: 'eth' },
+            account: { symbol: ethSymbol },
             token: { contract: '0x1', name: 'Discovered Name' },
         };
         const tokens = [tokenSource];

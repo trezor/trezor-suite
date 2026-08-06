@@ -1,5 +1,6 @@
 import { Calldata, asEvmAddress } from '@suite-common/calldata';
 import type { YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 
 import type { YieldPendingTransactionState } from './stablecoinYieldTypes';
 import {
@@ -25,6 +26,7 @@ import {
 
 const ACCOUNT_DESCRIPTOR = asEvmAddress('0x9ea3721b5bf3b64b4418c38b603154d2d597fae3');
 const VAULT_ADDRESS = '0x58d97b57bb95320f9a05dc918aef65434969c2b2';
+const ethSymbol = asNetworkSymbol('eth');
 
 const account = {
     descriptor: ACCOUNT_DESCRIPTOR,
@@ -41,13 +43,13 @@ const flowData = {
         balance: '0',
         contractAddress: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
         decimals: 6,
-        networkSymbol: 'eth',
+        networkSymbol: ethSymbol,
         symbol: 'USDC',
     },
     receiptToken: {
         contractAddress: VAULT_ADDRESS,
         decimals: 18,
-        networkSymbol: 'eth',
+        networkSymbol: ethSymbol,
         symbol: 'trUSDC',
     },
 } as unknown as Parameters<typeof buildYieldWithdrawCalldata>[0]['flowData'];
@@ -357,7 +359,7 @@ describe('stablecoinYieldUtils', () => {
         it('returns only the matched token balance for a non-wrapped-native vault', () => {
             expect(
                 getYieldDepositableBalance({
-                    networkSymbol: 'eth',
+                    networkSymbol: ethSymbol,
                     nativeFormattedBalance: '5',
                     vaultTokenAddress: USDC_ADDRESS,
                     matchedTokenBalance: '100',
@@ -368,7 +370,7 @@ describe('stablecoinYieldUtils', () => {
         it('adds the full native balance for a wrapped-native vault', () => {
             expect(
                 getYieldDepositableBalance({
-                    networkSymbol: 'eth',
+                    networkSymbol: ethSymbol,
                     nativeFormattedBalance: '0.2',
                     vaultTokenAddress: WETH_ADDRESS,
                     matchedTokenBalance: '1.5',
@@ -379,7 +381,7 @@ describe('stablecoinYieldUtils', () => {
         it('counts the full native balance even below the gas reserve', () => {
             expect(
                 getYieldDepositableBalance({
-                    networkSymbol: 'eth',
+                    networkSymbol: ethSymbol,
                     nativeFormattedBalance: '0.003',
                     vaultTokenAddress: WETH_ADDRESS,
                     matchedTokenBalance: '1',
@@ -390,7 +392,7 @@ describe('stablecoinYieldUtils', () => {
         it('returns the full native balance when no token is matched', () => {
             expect(
                 getYieldDepositableBalance({
-                    networkSymbol: 'eth',
+                    networkSymbol: ethSymbol,
                     nativeFormattedBalance: '1',
                     vaultTokenAddress: WETH_ADDRESS,
                     matchedTokenBalance: undefined,
@@ -578,7 +580,7 @@ describe('stablecoinYieldUtils', () => {
                 expect(
                     getYieldVaultsForInputToken({
                         vaults: [usdcVault, usdtVault],
-                        networkSymbol: 'eth',
+                        networkSymbol: ethSymbol,
                         token: heldUsdc,
                     }),
                 ).toEqual([usdcVault]);
@@ -593,7 +595,7 @@ describe('stablecoinYieldUtils', () => {
                 expect(
                     getYieldVaultsForInputToken({
                         vaults: [polygonVault],
-                        networkSymbol: 'eth',
+                        networkSymbol: ethSymbol,
                         token: heldUsdc,
                     }),
                 ).toEqual([]);
@@ -612,7 +614,7 @@ describe('stablecoinYieldUtils', () => {
                 expect(
                     getYieldVaultsForInputToken({
                         vaults: [maintainedVault, deprecatedVault],
-                        networkSymbol: 'eth',
+                        networkSymbol: ethSymbol,
                         token: heldUsdc,
                     }),
                 ).toEqual([]);
@@ -627,7 +629,7 @@ describe('stablecoinYieldUtils', () => {
                 expect(
                     getYieldVaultsForInputToken({
                         vaults: [closedVault],
-                        networkSymbol: 'eth',
+                        networkSymbol: ethSymbol,
                         token: heldUsdc,
                     }),
                 ).toEqual([]);
@@ -639,7 +641,7 @@ describe('stablecoinYieldUtils', () => {
                 expect(
                     getYieldVaultsForInputToken({
                         vaults: [addresslessVault],
-                        networkSymbol: 'eth',
+                        networkSymbol: ethSymbol,
                         token: { address: USDC_ADDRESS, symbol: 'usdc', decimals: 6 },
                     }),
                 ).toEqual([addresslessVault]);
@@ -649,7 +651,7 @@ describe('stablecoinYieldUtils', () => {
                 expect(
                     getYieldVaultsForInputToken({
                         vaults: undefined,
-                        networkSymbol: 'eth',
+                        networkSymbol: ethSymbol,
                         token: heldUsdc,
                     }),
                 ).toEqual([]);
@@ -672,7 +674,7 @@ describe('stablecoinYieldUtils', () => {
             it('reports a position when the receipt token is held with a balance', () => {
                 expect(
                     hasYieldVaultPosition({
-                        networkSymbol: 'eth',
+                        networkSymbol: ethSymbol,
                         vault: vaultWithReceiptToken,
                         accountTokens: [createHeldReceiptToken(RECEIPT_ADDRESS, '1.5')],
                     }),
@@ -682,7 +684,7 @@ describe('stablecoinYieldUtils', () => {
             it('matches the receipt token regardless of address case', () => {
                 expect(
                     hasYieldVaultPosition({
-                        networkSymbol: 'eth',
+                        networkSymbol: ethSymbol,
                         vault: vaultWithReceiptToken,
                         accountTokens: [
                             createHeldReceiptToken(
@@ -697,7 +699,7 @@ describe('stablecoinYieldUtils', () => {
             it('reports no position when the receipt token balance is zero', () => {
                 expect(
                     hasYieldVaultPosition({
-                        networkSymbol: 'eth',
+                        networkSymbol: ethSymbol,
                         vault: vaultWithReceiptToken,
                         accountTokens: [createHeldReceiptToken(RECEIPT_ADDRESS, '0')],
                     }),
@@ -707,7 +709,7 @@ describe('stablecoinYieldUtils', () => {
             it('reports no position when the receipt token has no balance yet', () => {
                 expect(
                     hasYieldVaultPosition({
-                        networkSymbol: 'eth',
+                        networkSymbol: ethSymbol,
                         vault: vaultWithReceiptToken,
                         accountTokens: [createHeldReceiptToken(RECEIPT_ADDRESS, undefined)],
                     }),
@@ -717,7 +719,7 @@ describe('stablecoinYieldUtils', () => {
             it('does not treat holding the deposit token as a position', () => {
                 expect(
                     hasYieldVaultPosition({
-                        networkSymbol: 'eth',
+                        networkSymbol: ethSymbol,
                         vault: vaultWithReceiptToken,
                         accountTokens: [
                             {
@@ -734,7 +736,7 @@ describe('stablecoinYieldUtils', () => {
             it('reports no position for a vault without a receipt token', () => {
                 expect(
                     hasYieldVaultPosition({
-                        networkSymbol: 'eth',
+                        networkSymbol: ethSymbol,
                         vault: createVaultFixture({ tokenAddress: USDC_ADDRESS }),
                         accountTokens: [createHeldReceiptToken(RECEIPT_ADDRESS, '1')],
                     }),
@@ -744,7 +746,7 @@ describe('stablecoinYieldUtils', () => {
             it('reports no position when the account has no tokens', () => {
                 expect(
                     hasYieldVaultPosition({
-                        networkSymbol: 'eth',
+                        networkSymbol: ethSymbol,
                         vault: vaultWithReceiptToken,
                         accountTokens: undefined,
                     }),
@@ -764,7 +766,7 @@ describe('stablecoinYieldUtils', () => {
                 expect(
                     getYieldVaultForOutputToken({
                         vaults: [vault],
-                        networkSymbol: 'eth',
+                        networkSymbol: ethSymbol,
                         token: heldReceiptToken,
                     }),
                 ).toBe(vault);
@@ -779,7 +781,7 @@ describe('stablecoinYieldUtils', () => {
                 expect(
                     getYieldVaultForOutputToken({
                         vaults: [vault],
-                        networkSymbol: 'eth',
+                        networkSymbol: ethSymbol,
                         token: heldUsdc,
                     }),
                 ).toBeUndefined();
@@ -795,7 +797,7 @@ describe('stablecoinYieldUtils', () => {
                 expect(
                     getYieldVaultForOutputToken({
                         vaults: [vault],
-                        networkSymbol: 'eth',
+                        networkSymbol: ethSymbol,
                         token: heldReceiptToken,
                     }),
                 ).toBeUndefined();
@@ -811,7 +813,7 @@ describe('stablecoinYieldUtils', () => {
                 expect(
                     getYieldVaultForOutputToken({
                         vaults: [closedVault],
-                        networkSymbol: 'eth',
+                        networkSymbol: ethSymbol,
                         token: heldReceiptToken,
                     }),
                 ).toBe(closedVault);
@@ -821,7 +823,7 @@ describe('stablecoinYieldUtils', () => {
                 expect(
                     getYieldVaultForOutputToken({
                         vaults: undefined,
-                        networkSymbol: 'eth',
+                        networkSymbol: ethSymbol,
                         token: heldReceiptToken,
                     }),
                 ).toBeUndefined();

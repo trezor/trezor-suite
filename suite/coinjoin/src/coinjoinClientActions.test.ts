@@ -11,6 +11,7 @@ import {
     initPreloadedState,
     testMocks,
 } from '@suite-common/test-utils';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { prepareAccountsReducer, prepareWalletSettingsReducer } from '@suite-common/wallet-core';
 import '@suite-common/test-utils/globalOverrides';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
@@ -42,6 +43,10 @@ jest.mock('./coinjoinService', () => {
 const messageSystemReducer = prepareMessageSystemReducer(extraDependenciesCommonMock);
 
 const walletSettingsReducer = prepareWalletSettingsReducer(extraDependenciesCommonMock);
+const btcSymbol = asNetworkSymbol('btc');
+const testSymbol = asNetworkSymbol('test');
+const regtestSymbol = asNetworkSymbol('regtest');
+const ltcSymbol = asNetworkSymbol('ltc');
 
 const rootReducer = combineReducers({
     suite: createReducer({}, () => ({})),
@@ -215,8 +220,8 @@ describe('coinjoinClientActions', () => {
         } as any); // partial required state
 
         const spy = jest.spyOn(CoinjoinService, 'createInstance');
-        const cli1 = await store.dispatch(initCoinjoinService('btc'));
-        const cli2 = await store.dispatch(initCoinjoinService('btc'));
+        const cli1 = await store.dispatch(initCoinjoinService(btcSymbol));
+        const cli2 = await store.dispatch(initCoinjoinService(btcSymbol));
         expect(cli1).toEqual(cli2);
         expect(spy.mock.calls[0]?.[0]).toMatchObject({
             symbol: 'btc',
@@ -239,16 +244,16 @@ describe('coinjoinClientActions', () => {
 
         // for coverage, init same instance multiple times without waiting
         // eslint-disable-next-line jest/valid-expect-in-promise
-        store.dispatch(initCoinjoinService('test')).then(cli3 => {
+        store.dispatch(initCoinjoinService(testSymbol)).then(cli3 => {
             expect(cli3?.client.settings.network).toEqual('test');
         });
-        const cli3a = await store.dispatch(initCoinjoinService('test'));
+        const cli3a = await store.dispatch(initCoinjoinService(testSymbol));
         expect(cli3a).toBe(undefined); // undefined because cli3 is not loaded yet
     });
 
     it('initCoinjoinService and throw error', async () => {
         const store = initStore();
-        const cli = await store.dispatch(initCoinjoinService('ltc')); // ltc not supported
+        const cli = await store.dispatch(initCoinjoinService(ltcSymbol)); // ltc not supported
         expect(cli).toBe(undefined);
     });
 
@@ -262,7 +267,7 @@ describe('coinjoinClientActions', () => {
                     },
                 }) as any,
         );
-        const cli = await store.dispatch(initCoinjoinService('btc'));
+        const cli = await store.dispatch(initCoinjoinService(btcSymbol));
         expect(cli).toBe(undefined);
         spy.mockClear();
     });
@@ -271,7 +276,7 @@ describe('coinjoinClientActions', () => {
         it(`CoinjoinClient events: ${f.description}`, async () => {
             const store = initStore(f.state as Wallet);
 
-            const cli = await store.dispatch(initCoinjoinService('btc'));
+            const cli = await store.dispatch(initCoinjoinService(btcSymbol));
             cli?.client.emit(f.event as any, f.params);
 
             expect(store.getState().wallet.coinjoin).toMatchObject(f.result);
@@ -282,18 +287,22 @@ describe('coinjoinClientActions', () => {
         const store = initStore();
         expect(store.getState().wallet.coinjoin.debug).toBeUndefined();
 
-        store.dispatch(setDebugSettings({ coinjoinServerEnvironment: { test: 'public' } }));
+        store.dispatch(setDebugSettings({ coinjoinServerEnvironment: { [testSymbol]: 'public' } }));
 
         expect(store.getState().wallet.coinjoin.debug).toMatchObject({
             coinjoinServerEnvironment: { test: 'public' },
         });
 
-        store.dispatch(setDebugSettings({ coinjoinServerEnvironment: { regtest: 'localhost' } }));
+        store.dispatch(
+            setDebugSettings({ coinjoinServerEnvironment: { [regtestSymbol]: 'localhost' } }),
+        );
         expect(store.getState().wallet.coinjoin.debug).toMatchObject({
             coinjoinServerEnvironment: { test: 'public', regtest: 'localhost' },
         });
 
-        store.dispatch(setDebugSettings({ coinjoinServerEnvironment: { test: 'staging' } }));
+        store.dispatch(
+            setDebugSettings({ coinjoinServerEnvironment: { [testSymbol]: 'staging' } }),
+        );
         expect(store.getState().wallet.coinjoin.debug).toMatchObject({
             coinjoinServerEnvironment: { test: 'staging', regtest: 'localhost' },
         });
@@ -302,8 +311,8 @@ describe('coinjoinClientActions', () => {
     it('clientEmitException', async () => {
         const store = initStore();
 
-        const cli1 = await store.dispatch(initCoinjoinService('btc'));
-        const cli2 = await store.dispatch(initCoinjoinService('test'));
+        const cli1 = await store.dispatch(initCoinjoinService(btcSymbol));
+        const cli2 = await store.dispatch(initCoinjoinService(testSymbol));
 
         if (!cli1 || !cli2) throw new Error('Client not initialized');
 
@@ -316,7 +325,7 @@ describe('coinjoinClientActions', () => {
             payload: 'Some exception',
         });
 
-        store.dispatch(clientEmitException('Other exception', { symbol: 'btc' }));
+        store.dispatch(clientEmitException('Other exception', { symbol: btcSymbol }));
 
         expect(cli1.client.emit).toHaveBeenCalledTimes(2);
         expect(cli2.client.emit).toHaveBeenCalledTimes(1);
@@ -327,7 +336,7 @@ describe('coinjoinClientActions', () => {
             deviceState: '1stTestnetAddress@device_id:0',
             accountType: 'coinjoin',
             descriptor: asAccountDescriptor('account1'),
-            symbol: 'btc',
+            symbol: asNetworkSymbol('btc'),
         });
 
         const initializeStore = () =>
@@ -346,7 +355,7 @@ describe('coinjoinClientActions', () => {
 
         const store = initializeStore();
 
-        const cli = await store.dispatch(initCoinjoinService('btc'));
+        const cli = await store.dispatch(initCoinjoinService(btcSymbol));
 
         if (!cli) throw new Error('Client not initialized');
 
@@ -398,7 +407,7 @@ describe('coinjoinClientActions', () => {
 
         testMocks.setTrezorConnectFixtures([{ success: false }]);
 
-        await store.dispatch(initCoinjoinService('btc'));
+        await store.dispatch(initCoinjoinService(btcSymbol));
 
         store.dispatch(stopCoinjoinSession(accountAKey));
     });
@@ -419,7 +428,7 @@ describe('coinjoinClientActions', () => {
             { success: false, error: { message: 'Firmware error' } },
         ]);
 
-        await store.dispatch(initCoinjoinService('btc'));
+        await store.dispatch(initCoinjoinService(btcSymbol));
 
         store.dispatch(stopCoinjoinSession(accountAKey));
 
@@ -462,7 +471,7 @@ describe('coinjoinClientActions', () => {
             },
         } as any);
 
-        await store.dispatch(initCoinjoinService('btc'));
+        await store.dispatch(initCoinjoinService(btcSymbol));
 
         store.dispatch(stopCoinjoinSession(accountAKey));
 
@@ -471,7 +480,7 @@ describe('coinjoinClientActions', () => {
 
     it('CoinjoinClient events', async () => {
         const store = initStore();
-        const cli = await store.dispatch(initCoinjoinService('btc'));
+        const cli = await store.dispatch(initCoinjoinService(btcSymbol));
 
         // other requests are covered by fixtures.getOwnershipProof and fixtures.signCoinjoinTx
         cli?.client.emit('request', [{ type: 'unknown' } as any]);

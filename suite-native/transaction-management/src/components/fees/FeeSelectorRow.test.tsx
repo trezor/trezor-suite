@@ -1,3 +1,4 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type FormState } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { renderWithStoreProvider } from '@suite-native/test-utils-store';
@@ -6,6 +7,7 @@ import { FeeSelectorRow } from './FeeSelectorRow';
 import { BTC_ACCOUNT_KEY, getWalletState } from '../../__fixtures__/walletState';
 
 const noopThunk = jest.fn();
+const btcSymbol = asNetworkSymbol('btc');
 
 describe('FeeSelectorRow', () => {
     const getPreloadedState = () => ({
@@ -36,7 +38,10 @@ describe('FeeSelectorRow', () => {
     });
 
     it('should render nothing when the account is not in the store', () => {
-        const missingAccountKey = mockAccountKey({ symbol: 'btc', descriptor: 'unknownAccount' });
+        const missingAccountKey = mockAccountKey({
+            symbol: btcSymbol,
+            descriptor: 'unknownAccount',
+        });
 
         const { toJSON } = renderWithStoreProvider(
             <FeeSelectorRow

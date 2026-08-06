@@ -5,6 +5,7 @@ import { screen } from '@testing-library/react';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { configureMockStore } from '@suite-common/test-utils';
 import { initialState as tradingInitialState } from '@suite-common/trading';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type Account,
     type SelectedAccountStatus,
@@ -46,6 +47,7 @@ jest.mock('src/views/wallet/trading/common/TradingTransactions/TradingTransactio
 }));
 
 const DEVICE_SSID = 'btcAddress@deviceId:0' as const;
+const btcSymbol = asNetworkSymbol('btc');
 const SELECTED_DEVICE = mockSuiteDevice({
     connected: true,
     available: true,
@@ -54,7 +56,7 @@ const SELECTED_DEVICE = mockSuiteDevice({
 
 const ACCOUNT_KEY = createAccountKey({
     accountDescriptor: asAccountDescriptor('btcDescriptor'),
-    networkSymbol: 'btc',
+    networkSymbol: btcSymbol,
     deviceStaticSessionId: DEVICE_SSID,
 });
 

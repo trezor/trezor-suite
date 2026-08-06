@@ -1,5 +1,6 @@
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type Account,
     type FormState,
@@ -16,6 +17,9 @@ import {
     isClearSignedEvmTradingSwapTransaction,
     isClearSignedWrappedNativeTransaction,
 } from './reviewTransactionUtils';
+
+const ethSymbol = asNetworkSymbol('eth');
+const bscSymbol = asNetworkSymbol('bsc');
 
 const buildPrecomposedTx = (to: string | undefined): GeneralPrecomposedTransactionFinal =>
     ({
@@ -59,13 +63,13 @@ const buildTrading = (overrides: Partial<FormStateTrading> = {}): FormStateTradi
     send: {
         cryptoId: undefined,
         accountKey: 'eth-account' as Account['key'],
-        symbol: 'eth',
+        symbol: ethSymbol,
         amount: '1',
     },
     receive: {
         cryptoId: undefined,
         accountKey: 'eth-account' as Account['key'],
-        symbol: 'eth',
+        symbol: ethSymbol,
         amount: '0.97',
     },
     receiveAddress: '0x9eA3721B5Bf3b64b4418c38B603154d2D597FAE3',
@@ -87,7 +91,7 @@ const buildFormState = (overrides: Partial<FormState> = {}): FormState => ({
 
 const buildEthereumAccount = (overrides: Partial<Account> = {}): Account =>
     mockWalletAccount({
-        symbol: 'eth',
+        symbol: ethSymbol,
         accountType: 'normal',
         ...overrides,
     });
@@ -216,7 +220,7 @@ describe('isClearSignedWrappedNativeTransaction', () => {
 
     it('returns false for a wrapped native the firmware does not clear-sign (WBNB on BSC)', () => {
         const result = isClearSignedWrappedNativeTransaction({
-            account: buildEthereumAccount({ symbol: 'bsc' }),
+            account: buildEthereumAccount({ symbol: bscSymbol }),
             device,
             precomposedTx: buildPrecomposedTransaction({ to: WBNB_BSC }),
             transactionData: WETH_DEPOSIT_DATA,
@@ -528,7 +532,7 @@ describe('constructTransactionReviewOutputs', () => {
 
     it('keeps the raw data row for a wrapped native the firmware does not clear-sign (WBNB on BSC)', () => {
         const outputs = constructTransactionReviewOutputs({
-            account: buildEthereumAccount({ symbol: 'bsc' }),
+            account: buildEthereumAccount({ symbol: bscSymbol }),
             device,
             decreaseOutputId: undefined,
             precomposedForm: buildFormState({ transactionData: WETH_DEPOSIT_DATA }),

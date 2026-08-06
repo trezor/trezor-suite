@@ -1,4 +1,4 @@
-import { getNetwork } from '@suite-common/wallet-config';
+import { asNetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { localizeNumber } from '@suite-common/wallet-utils';
 import { TestCategory, TestPriority, TestStream } from '@trezor/e2e-utils';
 import { Model } from '@trezor/trezor-user-env-link';
@@ -12,7 +12,7 @@ import { transformAddress } from '../../support/testExtends/customMatchers';
 const RECIPIENT_ADDRESS = 'ENk2eeP4umP6cjAGRsVG4NEVKEVQmRn6JEpN8hubv2Hf';
 const FORMATTED_ADDRESS = formatAddressWithNewlines(RECIPIENT_ADDRESS);
 const TRANSFORMED_ADDRESS = transformAddress(RECIPIENT_ADDRESS, 'fourTetragrams');
-const SOL_DECIMALS = getNetwork('sol').decimals;
+const SOL_DECIMALS = getNetwork(asNetworkSymbol('sol')).decimals;
 
 test.describe('Send - Solana', { tag: ['@webOnly', '@T3T1', '@T3W1'] }, () => {
     test.use({

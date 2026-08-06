@@ -10633,6 +10633,7 @@ __metadata:
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/suite-utils": "workspace:*"
+    "@suite-common/wallet-config": "workspace:^"
     "@suite-common/wallet-core": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
     "@suite-common/wallet-utils": "workspace:*"
@@ -10748,6 +10749,7 @@ __metadata:
     "@reduxjs/toolkit": "npm:2.12.0"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/test-utils": "workspace:*"
+    "@suite-common/wallet-config": "workspace:^"
     "@suite-common/wallet-core": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
   languageName: unknown
@@ -11152,6 +11154,7 @@ __metadata:
   resolution: "@suite-common/transaction-search@workspace:suite-common/transaction-search"
   dependencies:
     "@suite-common/test-utils": "workspace:*"
+    "@suite-common/wallet-config": "workspace:^"
     "@suite-common/wallet-types": "workspace:*"
     "@suite-common/wallet-utils": "workspace:*"
     "@trezor/blockchain-link": "workspace:*"
@@ -15462,6 +15465,7 @@ __metadata:
     "@suite-common/networks": "workspace:*"
     "@suite-common/toast-notifications": "workspace:*"
     "@suite-common/transfer-uri": "workspace:*"
+    "@suite-common/wallet-config": "workspace:^"
     "@suite/analytics": "workspace:*"
     "@trezor/network-module-suite-common-types": "workspace:*"
   languageName: unknown

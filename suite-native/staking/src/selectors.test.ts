@@ -1,3 +1,4 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type StakeDataState } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
@@ -8,10 +9,14 @@ import {
     selectClaimableAmountByAccountKey,
 } from './selectors';
 
-const eth1Key = mockAccountKey({ symbol: 'eth', descriptor: 'eth1' });
-const sol1Key = mockAccountKey({ symbol: 'sol', descriptor: 'sol1' });
+const ethSymbol = asNetworkSymbol('eth');
+const solSymbol = asNetworkSymbol('sol');
+const adaSymbol = asNetworkSymbol('ada');
+
+const eth1Key = mockAccountKey({ symbol: ethSymbol, descriptor: 'eth1' });
+const sol1Key = mockAccountKey({ symbol: solSymbol, descriptor: 'sol1' });
 const etc1Key = mockAccountKey({ descriptor: 'etc1' });
-const ada1Key = mockAccountKey({ symbol: 'ada', descriptor: 'ada1' });
+const ada1Key = mockAccountKey({ symbol: adaSymbol, descriptor: 'ada1' });
 const nonExistentKey = mockAccountKey({ descriptor: 'nonExistent' });
 
 const ethAccountWithClaimableStake: Account = {
@@ -204,7 +209,7 @@ describe('main staking selectors', () => {
         it('should return ETH APY by networkSymbol', () => {
             const testState = getTestState([]);
 
-            const result = selectApy(testState as any, { networkSymbol: 'eth' });
+            const result = selectApy(testState as any, { networkSymbol: ethSymbol });
 
             expect(result).toBe(3.08);
         });
@@ -220,7 +225,7 @@ describe('main staking selectors', () => {
         it('should return SOL APY by networkSymbol', () => {
             const testState = getTestState([]);
 
-            const result = selectApy(testState as any, { networkSymbol: 'sol' });
+            const result = selectApy(testState as any, { networkSymbol: solSymbol });
 
             expect(result).toBe(6.24);
         });
@@ -228,7 +233,7 @@ describe('main staking selectors', () => {
         it('should return best pool APY for ADA by networkSymbol', () => {
             const testState = getTestState([]);
 
-            const result = selectApy(testState as any, { networkSymbol: 'ada' });
+            const result = selectApy(testState as any, { networkSymbol: adaSymbol });
 
             expect(result).toBe(1.96);
         });

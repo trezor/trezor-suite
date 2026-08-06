@@ -1,6 +1,6 @@
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type Account,
     type AccountFailureSpecific,
@@ -19,6 +19,7 @@ import { initialWalletSettingsState } from './settings/walletSettingsReducer';
 const STATIC_SESSION_ID: `${string}@${string}:${number}` =
     'mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q@ABC123:1';
 const DEVICE_PATH = 'device-path';
+const solSymbol = asNetworkSymbol('sol');
 
 const mockSolAccount = (
     account: Omit<Partial<Account>, 'failed' | 'error'>,
@@ -26,7 +27,7 @@ const mockSolAccount = (
 ) =>
     mockWalletAccount(
         {
-            symbol: 'sol',
+            symbol: solSymbol,
             deviceState: STATIC_SESSION_ID,
             ...account,
         },
@@ -53,7 +54,7 @@ const getState = ({
     accounts = [],
     device = mockDeviceWithPathAndState(),
     discovery,
-    enabledNetworks = ['sol'],
+    enabledNetworks = [solSymbol],
 }: GetStateOptions = {}): WalletCoreCompoundRootState => ({
     wallet: {
         accounts,

@@ -10,6 +10,7 @@ import {
     asSuiteSyncOwnerId,
     asSuiteSyncOwnerSecretHex,
 } from '@suite-common/suite-sync-storage';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { asWalletDescriptor } from '@trezor/device-utils';
 import { createDeferred } from '@trezor/utils';
@@ -17,6 +18,8 @@ import { createDeferred } from '@trezor/utils';
 import { createEvoluInstanceFactory } from './createEvoluInstance';
 import { createEvoluStorageFactory } from './evoluStorage';
 import { testCreateRunWithEvoluDeps } from '../mocks/testCreateRunWithEvoluDeps';
+
+const btcSymbol = asNetworkSymbol('btc');
 
 const suiteSyncOwner: SuiteSyncOwner = {
     ownerId: asSuiteSyncOwnerId('yg0UgROParTpm60ltI3hDw'),
@@ -82,7 +85,7 @@ describe(createEvoluStorageFactory.name, () => {
 
         const updateResult = storage.data.accounts.update({
             accountDescriptor: asAccountDescriptor('xpub123'),
-            networkSymbol: 'btc',
+            networkSymbol: btcSymbol,
             label: 'My Bitcoin Account',
         });
         expect(updateResult.success).toBe(true);
@@ -125,7 +128,7 @@ describe(createEvoluStorageFactory.name, () => {
             address: 'bc1test123',
             label: 'My Receive Address',
             accountDescriptor: asAccountDescriptor('xpub123'),
-            networkSymbol: 'btc',
+            networkSymbol: btcSymbol,
         });
         expect(updateResult.success).toBe(true);
 
@@ -169,7 +172,7 @@ describe(createEvoluStorageFactory.name, () => {
             txTargetId: '0',
             label: 'Payment to Alice',
             accountDescriptor: asAccountDescriptor('xpub123'),
-            networkSymbol: 'btc',
+            networkSymbol: btcSymbol,
         });
         expect(updateResult.success).toBe(true);
 

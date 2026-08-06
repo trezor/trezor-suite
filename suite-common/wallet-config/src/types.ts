@@ -5,6 +5,8 @@ import { type DeviceModelInternal } from '@trezor/device-utils';
 
 export type { NetworkSymbol };
 
+export const asNetworkSymbol = (symbol: string): NetworkSymbol => symbol as NetworkSymbol;
+
 /**
  * Used for some edge cases where extension of NetworkSymbol is necessary.
  * Autocomplete is working as expected but can be passed any string.

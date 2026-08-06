@@ -1,12 +1,16 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { getTranslation } from '@suite-native/intl';
 import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 
 import { FeeSummaryRow, type FeeSummaryRowProps } from './FeeSummaryRow';
 import { getWalletState } from '../../__fixtures__/walletState';
 
+const btcSymbol = asNetworkSymbol('btc');
+const ethSymbol = asNetworkSymbol('eth');
+
 const defaultProps: FeeSummaryRowProps = {
     fee: '1000',
-    symbol: 'btc',
+    symbol: btcSymbol,
     networkType: 'bitcoin',
     areFeesLoading: false,
 };
@@ -30,7 +34,7 @@ describe('FeeSummaryRow', () => {
     });
 
     it('should render ethereum-specific label for ethereum network', () => {
-        const { getByText } = renderRow({ networkType: 'ethereum', symbol: 'eth' });
+        const { getByText } = renderRow({ networkType: 'ethereum', symbol: ethSymbol });
 
         expect(
             getByText(getTranslation('transactionManagement.fees.description.title.ethereum')),

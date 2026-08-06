@@ -1,6 +1,7 @@
 import '@suite-common/test-utils/globalOverrides';
 import { type IDBPDatabase, deleteDB, openDB } from 'idb';
 
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
@@ -31,16 +32,16 @@ describe('migration 26.6.0.1', () => {
 
     test('delete sepolia and keep mainnet', async () => {
         const db = await openDB<SuiteDBSchema>(DB_NAME, INITIAL_VERSION, {
-            upgrade(db) {
-                const accountsStore = db.createObjectStore('accounts', {
+            upgrade(database) {
+                const accountsStore = database.createObjectStore('accounts', {
                     keyPath: ['descriptor', 'symbol', 'deviceState'],
                 });
                 accountsStore.createIndex('deviceState', 'deviceState', { unique: false });
             },
         });
 
-        const sep1 = mockWalletAccount({ symbol: 'tsep', accountType: 'normal' });
-        const eth1 = mockWalletAccount({ symbol: 'eth', accountType: 'normal' });
+        const sep1 = mockWalletAccount({ symbol: asNetworkSymbol('tsep'), accountType: 'normal' });
+        const eth1 = mockWalletAccount({ symbol: asNetworkSymbol('eth'), accountType: 'normal' });
 
         await db.put('accounts', sep1);
         await db.put('accounts', eth1);

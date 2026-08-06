@@ -1,4 +1,5 @@
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { accountsActions } from '@suite-common/wallet-core';
 import {
     type Account,
@@ -22,7 +23,7 @@ describe('logsUtils', () => {
         descriptor: asAccountDescriptor(
             'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
         ),
-        symbol: 'btc',
+        symbol: asNetworkSymbol('btc'),
     });
     const device = mockSuiteDevice();
 

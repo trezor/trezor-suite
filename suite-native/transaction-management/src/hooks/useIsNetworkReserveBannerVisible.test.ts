@@ -1,5 +1,6 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { initialWalletSettingsState } from '@suite-common/wallet-core';
 import { localeReducer } from '@suite-native/intl';
 import {
@@ -10,6 +11,10 @@ import {
 } from '@suite-native/test-utils-store';
 
 import { useIsNetworkReserveBannerVisible } from './useIsNetworkReserveBannerVisible';
+
+const solSymbol = asNetworkSymbol('sol');
+const btcSymbol = asNetworkSymbol('btc');
+const baseSymbol = asNetworkSymbol('base');
 
 // SOL nativeTokenReserve: "0.003"; base: "0.0002"
 describe('useIsNetworkReserveBannerVisible', () => {
@@ -36,13 +41,13 @@ describe('useIsNetworkReserveBannerVisible', () => {
         expect(renderHook({ symbol: undefined, amount: '1', balance: '2' }).result.current).toBe(
             false,
         );
-        expect(renderHook({ symbol: 'sol', amount: null, balance: '1' }).result.current).toBe(
+        expect(renderHook({ symbol: solSymbol, amount: null, balance: '1' }).result.current).toBe(
             false,
         );
-        expect(renderHook({ symbol: 'sol', amount: '1', balance: null }).result.current).toBe(
+        expect(renderHook({ symbol: solSymbol, amount: '1', balance: null }).result.current).toBe(
             false,
         );
-        expect(renderHook({ symbol: 'btc', amount: '0.5', balance: '1' }).result.current).toBe(
+        expect(renderHook({ symbol: btcSymbol, amount: '0.5', balance: '1' }).result.current).toBe(
             false,
         );
     });
@@ -50,7 +55,7 @@ describe('useIsNetworkReserveBannerVisible', () => {
     it('returns false for tokens (contractAddress set)', () => {
         expect(
             renderHook({
-                symbol: 'sol',
+                symbol: solSymbol,
                 contractAddress: 'some-token-contract',
                 amount: '0.998',
                 balance: '1.0',
@@ -60,29 +65,29 @@ describe('useIsNetworkReserveBannerVisible', () => {
 
     it('shows banner when remainder is at or below static network reserve (no maxAmount)', () => {
         // remainder = 1.0 - 0.997 = 0.003 = SOL reserve
-        expect(renderHook({ symbol: 'sol', amount: '0.997', balance: '1.0' }).result.current).toBe(
-            true,
-        );
+        expect(
+            renderHook({ symbol: solSymbol, amount: '0.997', balance: '1.0' }).result.current,
+        ).toBe(true);
         // remainder = 1.0 - 0.998 = 0.002 < 0.003
-        expect(renderHook({ symbol: 'sol', amount: '0.998', balance: '1.0' }).result.current).toBe(
-            true,
-        );
+        expect(
+            renderHook({ symbol: solSymbol, amount: '0.998', balance: '1.0' }).result.current,
+        ).toBe(true);
     });
 
     it('hides banner when amount is below reserve zone', () => {
-        expect(renderHook({ symbol: 'sol', amount: '0.5', balance: '1.0' }).result.current).toBe(
-            false,
-        );
+        expect(
+            renderHook({ symbol: solSymbol, amount: '0.5', balance: '1.0' }).result.current,
+        ).toBe(false);
     });
 
     it('hides banner when amount exceeds balance', () => {
-        expect(renderHook({ symbol: 'sol', amount: '1.1', balance: '1.0' }).result.current).toBe(
-            false,
-        );
+        expect(
+            renderHook({ symbol: solSymbol, amount: '1.1', balance: '1.0' }).result.current,
+        ).toBe(false);
     });
 
     it('hides banner for zero amount', () => {
-        expect(renderHook({ symbol: 'sol', amount: '0', balance: '1.0' }).result.current).toBe(
+        expect(renderHook({ symbol: solSymbol, amount: '0', balance: '1.0' }).result.current).toBe(
             false,
         );
     });
@@ -91,7 +96,7 @@ describe('useIsNetworkReserveBannerVisible', () => {
         // feeWithReserve = balance - maxAmount = 0.01; remainder = 0.01
         expect(
             renderHook({
-                symbol: 'sol',
+                symbol: solSymbol,
                 amount: '0.99',
                 balance: '1.0',
                 maxAmount: '0.99',
@@ -102,7 +107,7 @@ describe('useIsNetworkReserveBannerVisible', () => {
     it('hides banner when below composed maxAmount threshold', () => {
         expect(
             renderHook({
-                symbol: 'sol',
+                symbol: solSymbol,
                 amount: '0.5',
                 balance: '1.0',
                 maxAmount: '0.99',
@@ -113,7 +118,7 @@ describe('useIsNetworkReserveBannerVisible', () => {
     it('shows banner on base network at reserve boundary', () => {
         // remainder = 0.1 - 0.0999 = 0.0001 <= base reserve 0.0002
         expect(
-            renderHook({ symbol: 'base', amount: '0.0999', balance: '0.1' }).result.current,
+            renderHook({ symbol: baseSymbol, amount: '0.0999', balance: '0.1' }).result.current,
         ).toBe(true);
     });
 });

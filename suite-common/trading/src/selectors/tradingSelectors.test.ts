@@ -9,7 +9,7 @@ import {
     type SellFiatTrade,
 } from 'invity-api';
 
-import { type NetworkSymbol } from '@suite-common/networks';
+import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { type StaticSessionId } from '@trezor/connect';
@@ -120,7 +120,11 @@ import { type SellInfo, sellInitialState } from '../reducers/sellReducer';
 import { type TradingRootState, initialState } from '../reducers/tradingCommonReducer';
 import type { TradingTransactionExchange, TradingTransactionSell, TradingType } from '../types';
 
-const supportedCoins: readonly NetworkSymbol[] = ['btc', 'eth', 'base'];
+const supportedCoins: readonly NetworkSymbol[] = [
+    asNetworkSymbol('btc'),
+    asNetworkSymbol('eth'),
+    asNetworkSymbol('base'),
+];
 
 describe('tradingSelectors', () => {
     let state: TradingRootStateWithDeviceAndAccounts;

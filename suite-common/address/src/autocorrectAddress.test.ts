@@ -2,9 +2,14 @@ import {
     createNetworkModuleRepository,
     createNetworksCompositionRoot,
 } from '@suite-common/networks';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 
 import { createAddressValidator } from './AddressValidator';
 import { autocorrectAddress } from './autocorrectAddress';
+
+const btcSymbol = asNetworkSymbol('btc');
+const bchSymbol = asNetworkSymbol('bch');
+const ethSymbol = asNetworkSymbol('eth');
 
 describe('autocorrectAddress', () => {
     const networkModules = createNetworksCompositionRoot();
@@ -18,7 +23,7 @@ describe('autocorrectAddress', () => {
             autocorrectAddress({
                 addressValidator,
                 address: 'BC1QAFK4YHQVJ4WEP57M62DGRMUTLDUSQDE8ADH20D',
-                symbol: 'btc',
+                symbol: btcSymbol,
             }),
         ).toEqual({
             corrected: 'bc1qafk4yhqvj4wep57m62dgrmutldusqde8adh20d',
@@ -31,7 +36,7 @@ describe('autocorrectAddress', () => {
             autocorrectAddress({
                 addressValidator,
                 address: 'LTC1QKZYARPKHDECU5RZEUJ78PWPR5SFM798AFNY4N6',
-                symbol: 'ltc',
+                symbol: asNetworkSymbol('ltc'),
             }),
         ).toEqual({
             corrected: 'ltc1qkzyarpkhdecu5rzeuj78pwpr5sfm798afny4n6',
@@ -44,7 +49,7 @@ describe('autocorrectAddress', () => {
             autocorrectAddress({
                 addressValidator,
                 address: 'BITCOINCASH:QZ8GJEXL9X7GAG53XL08MT7QSKVJG8X2WUEEJJMTTC',
-                symbol: 'bch',
+                symbol: bchSymbol,
             }),
         ).toEqual({
             corrected: 'bitcoincash:qz8gjexl9x7gag53xl08mt7qskvjg8x2wueejjmttc',
@@ -56,7 +61,7 @@ describe('autocorrectAddress', () => {
         const result = autocorrectAddress({
             addressValidator,
             address: 'qz8gjexl9x7gag53xl08mt7qskvjg8x2wueejjmttc',
-            symbol: 'bch',
+            symbol: bchSymbol,
         });
         expect(result).toEqual({
             corrected: 'bitcoincash:qz8gjexl9x7gag53xl08mt7qskvjg8x2wueejjmttc',
@@ -68,7 +73,7 @@ describe('autocorrectAddress', () => {
         const result = autocorrectAddress({
             addressValidator,
             address: 'QZ8GJEXL9X7GAG53XL08MT7QSKVJG8X2WUEEJJMTTC',
-            symbol: 'bch',
+            symbol: bchSymbol,
         });
         expect(result).toEqual({
             corrected: 'bitcoincash:qz8gjexl9x7gag53xl08mt7qskvjg8x2wueejjmttc',
@@ -81,7 +86,7 @@ describe('autocorrectAddress', () => {
             autocorrectAddress({
                 addressValidator,
                 address: 'bc1qafk4yhqvj4wep57m62dgrmutldusqde8adh20d',
-                symbol: 'btc',
+                symbol: btcSymbol,
             }),
         ).toBeNull();
     });
@@ -91,7 +96,7 @@ describe('autocorrectAddress', () => {
             autocorrectAddress({
                 addressValidator,
                 address: 'bitcoincash:qz8gjexl9x7gag53xl08mt7qskvjg8x2wueejjmttc',
-                symbol: 'bch',
+                symbol: bchSymbol,
             }),
         ).toBeNull();
     });
@@ -101,7 +106,7 @@ describe('autocorrectAddress', () => {
             autocorrectAddress({
                 addressValidator,
                 address: '0xE37c0D48d68da5c5b14E5c1a9f1CFE802776D9FF',
-                symbol: 'eth',
+                symbol: ethSymbol,
             }),
         ).toBeNull();
     });
@@ -111,7 +116,7 @@ describe('autocorrectAddress', () => {
             autocorrectAddress({
                 addressValidator,
                 address: 'qz8gjexl9x7gag53xl08mt7qskvjg8x2wueejjmttc',
-                symbol: 'btc',
+                symbol: btcSymbol,
             }),
         ).toBeNull();
     });
@@ -121,7 +126,7 @@ describe('autocorrectAddress', () => {
             autocorrectAddress({
                 addressValidator,
                 address: 'BC1SW50QA3JX3S',
-                symbol: 'eth',
+                symbol: ethSymbol,
             }),
         ).toBeNull();
     });

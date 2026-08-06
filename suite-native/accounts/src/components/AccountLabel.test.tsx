@@ -3,6 +3,7 @@ import { type StateFromReducersMapObject, combineReducers } from '@reduxjs/toolk
 import { deviceInitialState } from '@suite-common/device';
 import { messageSystemInitialState } from '@suite-common/message-system';
 import { initialSuiteSyncDataState, initialSuiteSyncState } from '@suite-common/suite-sync';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { initialWalletSettingsState } from '@suite-common/wallet-core';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
@@ -17,11 +18,14 @@ import type { StaticSessionId } from '@trezor/connect';
 
 import { AccountLabel, type AccountLabelPropsWithAccount } from './AccountLabel';
 
+const ethSymbol = asNetworkSymbol('eth');
+const btcSymbol = asNetworkSymbol('btc');
+
 const MOCK_ACCOUNT_DEVICE_SESSION_ID: StaticSessionId = '1@2:3';
 
 describe('AccountLabel', () => {
     const ethAccount = mockWalletAccount({
-        symbol: 'eth',
+        symbol: ethSymbol,
         accountLabel: 'ETH Account #1',
         deviceState: MOCK_ACCOUNT_DEVICE_SESSION_ID,
 
@@ -31,7 +35,7 @@ describe('AccountLabel', () => {
     });
 
     const ethLedgerAccount = mockWalletAccount({
-        symbol: 'eth',
+        symbol: ethSymbol,
         accountLabel: 'ETH Ledger Account',
         deviceState: MOCK_ACCOUNT_DEVICE_SESSION_ID,
 
@@ -86,7 +90,7 @@ describe('AccountLabel', () => {
     it('should render nothing when accountLabel is not found', () => {
         const { toJSON } = renderAccountLabel({
             deviceStaticSessionId: ethAccount.deviceState,
-            networkSymbol: 'btc',
+            networkSymbol: btcSymbol,
             accountDescriptor: ethAccount.descriptor,
         });
 

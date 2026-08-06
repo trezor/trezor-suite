@@ -2,6 +2,7 @@ import type { CryptoId, ExchangeTrade } from 'invity-api';
 
 import { configureMockStore, renderHookWithStoreProvider } from '@suite-common/test-utils';
 import { exchangeInitialState, initialState as tradingInitialState } from '@suite-common/trading';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
@@ -30,7 +31,7 @@ jest.mock('@suite-common/trading', () => {
 
 const { tradingExchangeActions } = jest.requireActual('@suite-common/trading');
 
-const ACCOUNT = mockWalletAccount({ symbol: 'eth' });
+const ACCOUNT = mockWalletAccount({ symbol: asNetworkSymbol('eth') });
 const ETHEREUM_CRYPTO_ID = 'ethereum' as CryptoId;
 const BITCOIN_CRYPTO_ID = 'bitcoin' as CryptoId;
 

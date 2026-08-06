@@ -5,10 +5,14 @@ import {
     extraDependenciesCommonMock,
     wireEnabledNetworksMock,
 } from '@suite-common/test-utils';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 
 import { walletSettingsFixtures } from './__fixtures__/walletSettingsActions.fixtures';
 import { prepareWalletSettingsReducer } from './walletSettingsReducer';
 import { changeCoinVisibility } from './walletSettingsThunks';
+
+const btcSymbol = asNetworkSymbol('btc');
+const adaSymbol = asNetworkSymbol('ada');
 
 const settingsReducer = prepareWalletSettingsReducer(extraDependenciesCommonMock);
 
@@ -35,11 +39,14 @@ describe('walletSettings Actions', () => {
 
     describe('changeCoinVisibility declares the enabled coin to Connect', () => {
         it('pushes the coin when enabling a not-yet-enabled network', async () => {
-            const store = initStore({ enabledNetworks: ['btc'] });
+            const store = initStore({ enabledNetworks: [btcSymbol] });
             const { updateConnectSettings } = wireEnabledNetworksMock();
 
             await store.dispatch(
-                changeCoinVisibility({ symbol: 'ada', shouldBeVisible: true }) as any,
+                changeCoinVisibility({
+                    symbol: adaSymbol,
+                    shouldBeVisible: true,
+                }) as any,
             );
 
             expect(updateConnectSettings).toHaveBeenCalledTimes(1);
@@ -49,29 +56,35 @@ describe('walletSettings Actions', () => {
         });
 
         it('does not call Connect when disabling a coin (disable is one-way, not propagated)', async () => {
-            const store = initStore({ enabledNetworks: ['btc', 'ada'] });
+            const store = initStore({ enabledNetworks: [btcSymbol, adaSymbol] });
             const { updateConnectSettings } = wireEnabledNetworksMock();
 
             await store.dispatch(
-                changeCoinVisibility({ symbol: 'ada', shouldBeVisible: false }) as any,
+                changeCoinVisibility({
+                    symbol: adaSymbol,
+                    shouldBeVisible: false,
+                }) as any,
             );
 
             expect(updateConnectSettings).not.toHaveBeenCalled();
         });
 
         it('does not call Connect when the coin is already enabled', async () => {
-            const store = initStore({ enabledNetworks: ['btc', 'ada'] });
+            const store = initStore({ enabledNetworks: [btcSymbol, adaSymbol] });
             const { updateConnectSettings } = wireEnabledNetworksMock();
 
             await store.dispatch(
-                changeCoinVisibility({ symbol: 'ada', shouldBeVisible: true }) as any,
+                changeCoinVisibility({
+                    symbol: adaSymbol,
+                    shouldBeVisible: true,
+                }) as any,
             );
 
             expect(updateConnectSettings).not.toHaveBeenCalled();
         });
 
         it('updates Redux immediately, without waiting for the Connect declaration', async () => {
-            const store = initStore({ enabledNetworks: ['btc'] });
+            const store = initStore({ enabledNetworks: [btcSymbol] });
             // Hold the Connect call open: the Redux/UI toggle must NOT block on it.
             const TrezorConnect = require('@trezor/connect').default;
             let resolveUpdate: (value: unknown) => void = () => {};
@@ -83,7 +96,10 @@ describe('walletSettings Actions', () => {
             );
 
             const dispatched = store.dispatch(
-                changeCoinVisibility({ symbol: 'ada', shouldBeVisible: true }) as any,
+                changeCoinVisibility({
+                    symbol: adaSymbol,
+                    shouldBeVisible: true,
+                }) as any,
             );
 
             // Redux already reflects the toggle even though Connect hasn't confirmed.

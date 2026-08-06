@@ -1,4 +1,5 @@
 import { yup } from '@suite-common/validators';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type FormState } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { Form, useForm } from '@suite-native/forms';
@@ -8,6 +9,9 @@ import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 import { FeesContent, type FeesContentProps } from './FeesContent';
 import { createFeeLevels } from '../../__fixtures__/feeLevels';
 import { getWalletState } from '../../__fixtures__/walletState';
+
+const btcSymbol = asNetworkSymbol('btc');
+const ethSymbol = asNetworkSymbol('eth');
 
 // Create a simple validation schema for testing
 const testValidationSchema = yup.object({
@@ -31,7 +35,7 @@ const TestFormWrapper = ({ children }: { children: React.ReactNode }) => {
 };
 
 describe('FeesContent', () => {
-    const accountKey = mockAccountKey({ symbol: 'btc', descriptor: 'btc1' });
+    const accountKey = mockAccountKey({ symbol: btcSymbol, descriptor: 'btc1' });
     const mockOnSelectedFeeLevel = jest.fn();
     const mockOnCustomFeeSet = jest.fn();
 
@@ -45,7 +49,7 @@ describe('FeesContent', () => {
     const defaultProps: FeesContentProps = {
         selectedFeeLevel: 'normal',
         feeLevels: createMockFeeLevels(),
-        symbol: 'btc',
+        symbol: btcSymbol,
         networkType: 'bitcoin',
         accountKey,
         areFeesLoading: false,
@@ -126,7 +130,7 @@ describe('FeesContent', () => {
 
     it('should work with different network symbols', () => {
         const { getByText } = renderFeesContent({
-            symbol: 'eth',
+            symbol: ethSymbol,
         });
 
         expect(

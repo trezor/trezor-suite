@@ -1,4 +1,4 @@
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { Form } from '@suite-native/forms';
 import { getTranslation } from '@suite-native/intl';
@@ -24,11 +24,14 @@ const mockSelectConvertedNetworkFeeInfo = jest.requireMock(
     '@suite-common/wallet-core',
 ).selectConvertedNetworkFeeInfo;
 
+const btcSymbol = asNetworkSymbol('btc');
+const ethSymbol = asNetworkSymbol('eth');
+
 describe('CustomFeeInputs', () => {
     let store: TestStore;
 
     const defaultProps = {
-        symbol: 'btc' as NetworkSymbol,
+        symbol: btcSymbol,
     };
     const defaultState = {
         wallet: getWalletState(),
@@ -95,7 +98,7 @@ describe('CustomFeeInputs', () => {
             const form = renderUseFeesForm();
             const { getByText, getByTestId } = renderCustomFeeInputs({
                 form,
-                props: { symbol: 'eth' },
+                props: { symbol: ethSymbol },
             });
 
             expect(
@@ -110,7 +113,7 @@ describe('CustomFeeInputs', () => {
             const form = renderUseFeesForm();
             const { getByText, getByTestId } = renderCustomFeeInputs({
                 form,
-                props: { symbol: 'eth' },
+                props: { symbol: ethSymbol },
             });
 
             expect(
@@ -125,7 +128,7 @@ describe('CustomFeeInputs', () => {
             const form = renderUseFeesForm();
             const { queryByText, queryByTestId } = renderCustomFeeInputs({
                 form,
-                props: { symbol: 'btc' },
+                props: { symbol: btcSymbol },
             });
             expect(
                 queryByText(
@@ -139,13 +142,13 @@ describe('CustomFeeInputs', () => {
             const form = renderUseFeesForm();
             const { getByText } = renderCustomFeeInputs({
                 form,
-                props: { symbol: 'btc' },
+                props: { symbol: btcSymbol },
             });
             expect(getByText('sat/vB')).toBeTruthy();
 
             const { getByText: getByText2 } = renderCustomFeeInputs({
                 form,
-                props: { symbol: 'eth' },
+                props: { symbol: ethSymbol },
             });
             expect(getByText2('Gwei')).toBeTruthy();
         });
@@ -154,7 +157,7 @@ describe('CustomFeeInputs', () => {
             const form = renderUseFeesForm();
             const { getByText } = renderCustomFeeInputs({
                 form,
-                props: { symbol: 'btc' },
+                props: { symbol: btcSymbol },
             });
             expect(
                 getByText(
@@ -169,7 +172,7 @@ describe('CustomFeeInputs', () => {
             const form = renderUseFeesForm();
             const { queryByText } = renderCustomFeeInputs({
                 form,
-                props: { symbol: 'eth' },
+                props: { symbol: ethSymbol },
             });
             expect(
                 queryByText(

@@ -1,11 +1,14 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { getTranslation } from '@suite-native/intl';
 import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 
 import { TronFeeSummaryRow, type TronFeeSummaryRowProps } from './TronFeeSummaryRow';
 import { getWalletState } from '../../../__fixtures__/walletState';
 
+const trxSymbol = asNetworkSymbol('trx');
+
 const defaultProps: TronFeeSummaryRowProps = {
-    symbol: 'trx',
+    symbol: trxSymbol,
     networkType: 'tron',
     supportsAdjustableFees: false,
     trxBurned: '1000000',

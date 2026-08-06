@@ -1,7 +1,10 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
 import * as accountUtils from './accountUtils';
+
+const btcSymbol = asNetworkSymbol('btc');
 
 describe('account utils', () => {
     it('getSelectedAccount null', () => {
@@ -18,25 +21,25 @@ describe('account utils', () => {
                         descriptor: asAccountDescriptor(
                             'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
                         ),
-                        symbol: 'btc',
+                        symbol: btcSymbol,
                         index: 0,
                     }),
                     mockWalletAccount({
-                        symbol: 'btc',
+                        symbol: btcSymbol,
                         descriptor: asAccountDescriptor('123'),
                         accountType: 'normal',
                         index: 1,
                     }),
                 ],
                 {
-                    symbol: 'btc',
+                    symbol: btcSymbol,
                     accountIndex: 1,
                     accountType: 'normal',
                 },
             ),
         ).toEqual(
             mockWalletAccount({
-                symbol: 'btc',
+                symbol: btcSymbol,
                 descriptor: asAccountDescriptor('123'),
                 accountType: 'normal',
                 index: 1,
@@ -51,11 +54,11 @@ describe('account utils', () => {
                         descriptor: asAccountDescriptor(
                             'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
                         ),
-                        symbol: 'btc',
+                        symbol: btcSymbol,
                         index: 0,
                     }),
                     mockWalletAccount({
-                        symbol: 'btc',
+                        symbol: btcSymbol,
                         descriptor: asAccountDescriptor('123'),
                         accountType: 'normal',
                         index: 1,
@@ -73,18 +76,18 @@ describe('account utils', () => {
                         descriptor: asAccountDescriptor(
                             'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
                         ),
-                        symbol: 'btc',
+                        symbol: btcSymbol,
                         index: 0,
                     }),
                     mockWalletAccount({
-                        symbol: 'btc',
+                        symbol: btcSymbol,
                         descriptor: asAccountDescriptor('123'),
                         accountType: 'normal',
                         index: 1,
                     }),
                 ],
                 {
-                    symbol: 'btc',
+                    symbol: btcSymbol,
                     accountIndex: 1,
                     accountType: 'normal',
                 },
@@ -99,18 +102,18 @@ describe('account utils', () => {
                         descriptor: asAccountDescriptor(
                             'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
                         ),
-                        symbol: 'btc',
+                        symbol: btcSymbol,
                         index: 0,
                     }),
                     mockWalletAccount({
-                        symbol: 'btc',
+                        symbol: btcSymbol,
                         descriptor: asAccountDescriptor('123'),
                         accountType: 'normal',
                         index: 1,
                     }),
                 ],
                 {
-                    symbol: 'btc',
+                    symbol: btcSymbol,
                     accountIndex: 3,
                     accountType: 'normal',
                 },

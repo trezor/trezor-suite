@@ -1,9 +1,11 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { act, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 
 import { type UseFeesFormProps, useFeesForm } from './useFeesForm';
 
-const ETH_ACCOUNT_KEY = mockAccountKey({ symbol: 'eth', descriptor: 'eth1' });
+const ethSymbol = asNetworkSymbol('eth');
+const ETH_ACCOUNT_KEY = mockAccountKey({ symbol: ethSymbol, descriptor: 'eth1' });
 
 describe('useFeesForm', () => {
     const mockProps: UseFeesFormProps = {
@@ -53,7 +55,7 @@ describe('useFeesForm', () => {
                     },
                     accounts: [
                         {
-                            symbol: 'eth',
+                            symbol: ethSymbol,
                             networkType: 'ethereum',
                             key: ETH_ACCOUNT_KEY,
                             path: "m/44'/60'/0'/0/0",
@@ -119,7 +121,7 @@ describe('useFeesForm', () => {
                     },
                     accounts: [
                         {
-                            symbol: 'eth',
+                            symbol: ethSymbol,
                             networkType: 'ethereum',
                             key: ETH_ACCOUNT_KEY,
                             path: "m/44'/60'/0'/0/0",

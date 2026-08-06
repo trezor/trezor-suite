@@ -1,4 +1,5 @@
 import { configureMockStore } from '@suite-common/test-utils';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import type { WalletAccountTransaction } from '@suite-common/wallet-types';
 import TrezorConnect, { type PrecomposeResultFinal } from '@trezor/connect';
 
@@ -14,7 +15,7 @@ const FIRST_ACCOUNT_CHANGE_ADDRESS = 'bcrt1qte33uyyfzrdrm9nqk0uwlq9dqr6ezu2gurhr
 
 const account: ComposeCancelTransactionThunkParams['account'] = {
     path: "m/84'/1'/0'",
-    symbol: 'regtest',
+    symbol: asNetworkSymbol('regtest'),
     utxo: [],
     addresses: {
         change: [

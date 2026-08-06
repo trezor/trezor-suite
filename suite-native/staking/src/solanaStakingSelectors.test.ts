@@ -1,5 +1,6 @@
 import { initialSuiteSyncDataState, initialSuiteSyncState } from '@suite-common/suite-sync';
 import { type TrezorDevice } from '@suite-common/suite-types';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type StakeState, stakeInitialState } from '@suite-common/wallet-core';
 import { type Account, type Timestamp } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
@@ -19,12 +20,13 @@ import {
 import { type NativeStakingRootState } from './types';
 
 const staticStateString: StaticSessionId = 'device@state:1';
+const solSymbol = asNetworkSymbol('sol');
 
-const sol1Key = mockAccountKey({ symbol: 'sol', descriptor: 'sol1' });
-const sol2Key = mockAccountKey({ symbol: 'sol', descriptor: 'sol2' });
-const sol3Key = mockAccountKey({ symbol: 'sol', descriptor: 'sol3' });
-const sol4Key = mockAccountKey({ symbol: 'sol', descriptor: 'sol4' });
-const sol5Key = mockAccountKey({ symbol: 'sol', descriptor: 'sol5' });
+const sol1Key = mockAccountKey({ symbol: solSymbol, descriptor: 'sol1' });
+const sol2Key = mockAccountKey({ symbol: solSymbol, descriptor: 'sol2' });
+const sol3Key = mockAccountKey({ symbol: solSymbol, descriptor: 'sol3' });
+const sol4Key = mockAccountKey({ symbol: solSymbol, descriptor: 'sol4' });
+const sol5Key = mockAccountKey({ symbol: solSymbol, descriptor: 'sol5' });
 const etc1Key = mockAccountKey({ descriptor: 'etc1' });
 const nonExistentKey = mockAccountKey({ descriptor: 'nonExistentKey' });
 const nonExistentKey2 = mockAccountKey({ descriptor: 'nonExistent' });
@@ -237,7 +239,7 @@ describe('selectors', () => {
                     {
                         ...testState,
                     },
-                    'sol',
+                    solSymbol,
                 ),
             ).toEqual([]);
         });
@@ -252,7 +254,7 @@ describe('selectors', () => {
                     {
                         ...testState,
                     },
-                    'sol',
+                    solSymbol,
                 ),
             ).toEqual([solAccountWithStaking]);
         });
@@ -264,11 +266,11 @@ describe('selectors', () => {
 
             const first = selectVisibleDeviceSolanaAccountsWithStakingByNetworkSymbol(
                 testState,
-                'sol',
+                solSymbol,
             );
             const second = selectVisibleDeviceSolanaAccountsWithStakingByNetworkSymbol(
                 testState,
-                'sol',
+                solSymbol,
             );
 
             expect(first).toEqual([]);
@@ -282,11 +284,11 @@ describe('selectors', () => {
 
             const first = selectVisibleDeviceSolanaAccountsWithStakingByNetworkSymbol(
                 testState,
-                'sol',
+                solSymbol,
             );
             const second = selectVisibleDeviceSolanaAccountsWithStakingByNetworkSymbol(
                 testState,
-                'sol',
+                solSymbol,
             );
 
             expect(first).toBe(second);

@@ -4,6 +4,7 @@ import { messageSystemInitialState } from '@suite-common/message-system';
 import { buildStakeData } from '@suite-common/staking';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { WALLET_SDK_SOURCE_MOBILE } from '@suite-common/wallet-constants';
 import { prepareSendFormReducer } from '@suite-common/wallet-core';
 import {
@@ -92,13 +93,16 @@ jest.mock('@suite-native/device-mutex', () => ({
 }));
 
 const STATIC_SESSION_ID: StaticSessionId = '1stTestnetAddress@device_id:0';
+const ethSymbol = asNetworkSymbol('eth');
+const solSymbol = asNetworkSymbol('sol');
+const adaSymbol = asNetworkSymbol('ada');
 const ETH_ACCOUNT_KEY = mockAccountKey({
-    symbol: 'eth',
+    symbol: ethSymbol,
     descriptor: 'eth1',
     deviceStaticSessionId: STATIC_SESSION_ID,
 });
 const SOL_ACCOUNT_KEY = mockAccountKey({
-    symbol: 'sol',
+    symbol: solSymbol,
     descriptor: 'sol1',
     deviceStaticSessionId: STATIC_SESSION_ID,
 });
@@ -333,7 +337,7 @@ describe('signStakeTransactionNativeThunk', () => {
 
     it('rejects for unsupported networkType (cardano)', async () => {
         const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
-        const ada1Key = mockAccountKey({ symbol: 'ada', descriptor: 'ada1' });
+        const ada1Key = mockAccountKey({ symbol: adaSymbol, descriptor: 'ada1' });
         const cardanoAccount = {
             ...solAccount,
             symbol: 'ada',

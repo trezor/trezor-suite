@@ -1,4 +1,5 @@
 import { getCryptoId } from '@suite-common/trading';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { localizeNumber } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
@@ -48,7 +49,7 @@ test.describe('Trading - Swap fees', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, ()
                 buyAsset: {
                     searchFilter: 'Bitcoin',
                     networkFilter: 'btc',
-                    assetCryptoId: getCryptoId('btc'),
+                    assetCryptoId: getCryptoId(asNetworkSymbol('btc')),
                 },
             });
             await tradingPage.fees.setEthereumCustomFees({

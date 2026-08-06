@@ -18,5 +18,8 @@
         "@suite-common/transfer-uri": "workspace:*",
         "@suite/analytics": "workspace:*",
         "@trezor/network-module-suite-common-types": "workspace:*"
+    },
+    "devDependencies": {
+        "@suite-common/wallet-config": "workspace:^"
     }
 }

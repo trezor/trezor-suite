@@ -796,6 +796,9 @@ export type NetworkConfig = NetworksConfigs[keyof NetworksConfigs];
 
 export type NetworkConfigWithoutTestnets = Exclude<NetworkConfig, { testnet: true }>;
 
+export const toNetworkSymbolNonTestnet = (symbol: string): NetworkConfigWithoutTestnets['symbol'] =>
+    symbol as NetworkConfigWithoutTestnets['symbol'];
+
 export type NetworkDisplaySymbol = NetworkConfig['displaySymbol'];
 
 type NetworkWithFeature<TFeature extends NetworkFeature> = {

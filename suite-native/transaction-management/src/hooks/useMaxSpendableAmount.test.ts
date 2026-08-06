@@ -1,3 +1,4 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type FormState, type TokenAddress } from '@suite-common/wallet-types';
 import { renderHookWithStoreProvider, waitFor } from '@suite-native/test-utils-store';
 
@@ -5,6 +6,8 @@ import { useMaxSpendableAmount } from './useMaxSpendableAmount';
 import { BTC_ACCOUNT_KEY, ETH_ACCOUNT_KEY, getWalletState } from '../__fixtures__/walletState';
 
 const mockCalculateFeeLevelsMaxAmountThunk = jest.fn();
+const btcSymbol = asNetworkSymbol('btc');
+const etcSymbol = asNetworkSymbol('etc');
 
 jest.mock('../thunks', () => ({
     ...jest.requireActual('../thunks'),
@@ -100,7 +103,7 @@ describe('useMaxSpendableAmount', () => {
         const { result } = renderUseMaxSpendableAmount({
             accountKey: ethAccountKey,
             tokenContract: usdcTokenContract,
-            symbol: 'etc',
+            symbol: etcSymbol,
         });
 
         await waitFor(() => {
@@ -114,7 +117,7 @@ describe('useMaxSpendableAmount', () => {
         mockMaxAmountThunkResult({ normal: '0.009', economy: '0.008' });
         const { result } = renderUseMaxSpendableAmount({
             accountKey: btcAccountKey,
-            symbol: 'btc',
+            symbol: btcSymbol,
         });
 
         await waitFor(() => {
@@ -128,7 +131,7 @@ describe('useMaxSpendableAmount', () => {
         const { result } = renderUseMaxSpendableAmount({
             accountKey: btcAccountKey,
             formState: customFormState,
-            symbol: 'btc',
+            symbol: btcSymbol,
         });
 
         await waitFor(() => {
@@ -148,7 +151,7 @@ describe('useMaxSpendableAmount', () => {
 
         const { result } = renderUseMaxSpendableAmount({
             accountKey: btcAccountKey,
-            symbol: 'btc',
+            symbol: btcSymbol,
         });
 
         await waitFor(() => {
@@ -159,7 +162,7 @@ describe('useMaxSpendableAmount', () => {
     it('should skip native asset calculation when calculation is disabled', () => {
         const { result } = renderUseMaxSpendableAmount({
             accountKey: btcAccountKey,
-            symbol: 'btc',
+            symbol: btcSymbol,
             enabled: false,
         });
 

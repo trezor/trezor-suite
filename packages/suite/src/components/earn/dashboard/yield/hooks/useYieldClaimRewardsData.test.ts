@@ -1,5 +1,6 @@
 import { renderHook } from '@testing-library/react';
 
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type AccountWithNetworkType,
     asAccountDescriptor,
@@ -55,7 +56,7 @@ const createReward = ({ token, claimable, fiatClaimable }: CreateRewardProps): R
 
 const createAccount = (descriptor: string) =>
     mockWalletAccount({
-        symbol: 'eth',
+        symbol: asNetworkSymbol('eth'),
         descriptor: asAccountDescriptor(descriptor),
     }) as AccountWithNetworkType<'ethereum'>;
 

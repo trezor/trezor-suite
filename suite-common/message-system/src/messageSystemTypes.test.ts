@@ -3,9 +3,21 @@ import {
     type AccountType,
     type NetworkSymbol,
     type StakingNetworkSymbol,
+    asNetworkSymbol,
 } from '@suite-common/wallet-config';
 
 import { Context, type GeneralContextKey, type SettingsCategory } from './messageSystemTypes';
+
+const btcSymbol = asNetworkSymbol('btc');
+const ethSymbol = asNetworkSymbol('eth');
+
+type StakingContextCase = readonly [StakingNetworkSymbol, string];
+
+const stakingContextCases: readonly StakingContextCase[] = [
+    ['eth', 'accounts.eth.staking'],
+    ['sol', 'accounts.sol.staking'],
+    ['trx', 'accounts.trx.staking'],
+];
 
 describe('Message system types', () => {
     describe('Context', () => {
@@ -20,11 +32,11 @@ describe('Message system types', () => {
 
         describe('getAccount', () => {
             it.each([
-                ['btc', undefined, 'accounts.btc'],
-                ['btc', 'legacy', 'accounts.btc.legacy'],
-                ['eth', undefined, 'accounts.eth'],
-                ['eth', 'ledger', 'accounts.eth.ledger'],
-                ['base', undefined, 'accounts.base'],
+                [btcSymbol, undefined, 'accounts.btc'],
+                [btcSymbol, 'legacy', 'accounts.btc.legacy'],
+                [ethSymbol, undefined, 'accounts.eth'],
+                [ethSymbol, 'ledger', 'accounts.eth.ledger'],
+                [asNetworkSymbol('base'), undefined, 'accounts.base'],
             ] as const satisfies [NetworkSymbol, AccountType | undefined, string][])(
                 'getAccount(%s, %s) → %s',
                 (symbol, type, expected) => {
@@ -34,16 +46,9 @@ describe('Message system types', () => {
         });
 
         describe('getStaking', () => {
-            it.each([
-                ['eth', 'accounts.eth.staking'],
-                ['sol', 'accounts.sol.staking'],
-                ['trx', 'accounts.trx.staking'],
-            ] as const satisfies [StakingNetworkSymbol, string][])(
-                'getStaking(%s) → %s',
-                (symbol, expected) => {
-                    expect(Context.getStaking(symbol)).toBe(expected);
-                },
-            );
+            it.each(stakingContextCases)('getStaking(%s) → %s', (symbol, expected) => {
+                expect(Context.getStaking(symbol)).toBe(expected);
+            });
         });
 
         describe('getTrading', () => {

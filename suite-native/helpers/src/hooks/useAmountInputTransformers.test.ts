@@ -1,3 +1,4 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type WalletSettingsRootState } from '@suite-common/wallet-core';
 import { PROTO } from '@trezor/connect';
 import { type DeepPartial } from '@trezor/type-utils';
@@ -5,6 +6,9 @@ import { type DeepPartial } from '@trezor/type-utils';
 import { useAmountInputTransformers } from './useAmountInputTransformers';
 
 let mockState: DeepPartial<WalletSettingsRootState> | undefined;
+
+const btcSymbol = asNetworkSymbol('btc');
+const ethSymbol = asNetworkSymbol('eth');
 
 jest.mock('react-redux', () => ({
     useSelector: (fn: (state: unknown) => unknown) => fn(mockState),
@@ -21,7 +25,7 @@ describe('useAmountInputTransformers', () => {
                 wallet: { settings: { bitcoinAmountUnit: PROTO.AmountUnit.BITCOIN } },
             };
 
-            const { cryptoAmountTransformer } = useAmountInputTransformers('btc');
+            const { cryptoAmountTransformer } = useAmountInputTransformers(btcSymbol);
 
             expect(cryptoAmountTransformer('123.456')).toBe('123.456');
         });
@@ -31,7 +35,7 @@ describe('useAmountInputTransformers', () => {
                 wallet: { settings: { bitcoinAmountUnit: PROTO.AmountUnit.SATOSHI } },
             };
 
-            const { cryptoAmountTransformer } = useAmountInputTransformers('btc');
+            const { cryptoAmountTransformer } = useAmountInputTransformers(btcSymbol);
 
             expect(cryptoAmountTransformer('123.456')).toBe('123456');
         });
@@ -41,7 +45,7 @@ describe('useAmountInputTransformers', () => {
                 wallet: { settings: { bitcoinAmountUnit: PROTO.AmountUnit.BITCOIN } },
             };
 
-            const { cryptoAmountTransformer } = useAmountInputTransformers('eth');
+            const { cryptoAmountTransformer } = useAmountInputTransformers(ethSymbol);
 
             expect(cryptoAmountTransformer('123.456')).toBe('123.456');
         });
@@ -52,7 +56,7 @@ describe('useAmountInputTransformers', () => {
             wallet: { settings: { bitcoinAmountUnit: PROTO.AmountUnit.SATOSHI } },
         };
 
-        const { fiatAmountTransformer } = useAmountInputTransformers('btc');
+        const { fiatAmountTransformer } = useAmountInputTransformers(btcSymbol);
 
         expect(fiatAmountTransformer('123.456')).toBe('123.456');
     });
@@ -67,7 +71,7 @@ describe('useAmountInputTransformers', () => {
             },
         };
 
-        const { fiatAmountTransformer } = useAmountInputTransformers('btc');
+        const { fiatAmountTransformer } = useAmountInputTransformers(btcSymbol);
 
         expect(fiatAmountTransformer('123.456')).toBe('123456');
     });

@@ -8,10 +8,13 @@ import {
     type TradingFiatRatesReturn,
     type TradingSellFormProps,
 } from '@suite-common/trading';
+import { toNetworkSymbolNonTestnet } from '@suite-common/wallet-config';
 import { type Timestamp } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 
 import { useTradingFiatCryptoAmount } from './useTradingFiatCryptoAmount';
+
+const btcSymbol = toNetworkSymbolNonTestnet('btc');
 
 const SEND_CRYPTO_SELECT: TradingAssetSellOption = {
     id: 'bitcoin' as CryptoId,
@@ -19,11 +22,11 @@ const SEND_CRYPTO_SELECT: TradingAssetSellOption = {
     name: 'Bitcoin',
     coingeckoId: 'bitcoin',
     contractAddress: null,
-    symbol: 'btc',
+    symbol: btcSymbol,
     displaySymbol: 'BTC',
     networkName: 'Bitcoin',
-    networkSymbol: 'btc',
-    accountKey: mockAccountKey({ descriptor: 'descriptor123', symbol: 'btc' }),
+    networkSymbol: btcSymbol,
+    accountKey: mockAccountKey({ descriptor: 'descriptor123', symbol: btcSymbol }),
 };
 
 const DEFAULTS: TradingSellFormProps = {
@@ -72,11 +75,11 @@ const TRADING_FIAT_VALUES: TradingFiatRatesReturn = {
         lastSuccessfulFetchTimestamp: 0 as Timestamp,
         isLoading: false,
         error: null,
-        ticker: { symbol: 'btc' },
+        ticker: { symbol: btcSymbol },
     },
     accountBalance: '2',
     formattedBalance: '2',
-    symbol: 'btc',
+    symbol: btcSymbol,
     networkDecimals: 8,
     tokenAddress: undefined,
     fiatRatesUpdater: jest.fn(() => Promise.resolve(null)),

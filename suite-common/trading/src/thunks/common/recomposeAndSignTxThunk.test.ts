@@ -5,6 +5,7 @@ import { createThunk } from '@suite-common/redux-utils';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { composeSendFormTransactionFeeLevelsThunk } from '@suite-common/wallet-core';
 import { type Account, type FeesState } from '@suite-common/wallet-types';
 import { type TokenInfo } from '@trezor/connect';
@@ -26,6 +27,8 @@ jest.mock('@suite-common/wallet-core', () => {
 
 const deviceReducer = prepareDeviceReducer(extraDependenciesCommonMock);
 const tradingReducer = prepareTradingReducer(extraDependenciesCommonMock);
+const trxSymbol = asNetworkSymbol('trx');
+const ethSymbol = asNetworkSymbol('eth');
 const btcFeeData = {
     blockHeight: 890366,
     blockTime: 10,
@@ -56,7 +59,7 @@ const fees: FeesState = {
         status: 'loaded',
         data: btcFeeData,
     },
-    trx: {
+    [trxSymbol]: {
         status: 'loaded',
         data: btcFeeData,
     },
@@ -198,8 +201,8 @@ describe('recomposeAndSignTxThunk', () => {
             tradingThunks.recomposeAndSignTxThunk({
                 account: {
                     ...account,
-                    symbol: undefined as unknown,
-                } as Account,
+                    symbol: ethSymbol,
+                },
                 address: 'address',
                 amount: '0.1',
                 tradingFormState,

@@ -1,5 +1,9 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
+
 import * as fixtures from './__fixtures__/anchor';
 import * as anchorUtils from './anchorUtils';
+
+const ethSymbol = asNetworkSymbol('eth');
 
 describe('anchor utils', () => {
     test('getDefaultBackendType', () => {
@@ -10,7 +14,7 @@ describe('anchor utils', () => {
         it('identifies the row by network, account type and index — never by account key', () => {
             expect(
                 anchorUtils.getEarnYieldRowAnchor({
-                    symbol: 'eth',
+                    symbol: ethSymbol,
                     accountType: 'normal',
                     accountIndex: 0,
                     vaultId: 'ethereum:1:0x58d97b57bb95320f9a05dc918aef65434969c2b2',
@@ -25,14 +29,14 @@ describe('anchor utils', () => {
 
             expect(
                 anchorUtils.getEarnYieldRowAnchor({
-                    symbol: 'eth',
+                    symbol: ethSymbol,
                     accountType: 'normal',
                     accountIndex: 0,
                     vaultId,
                 }),
             ).not.toBe(
                 anchorUtils.getEarnYieldRowAnchor({
-                    symbol: 'eth',
+                    symbol: ethSymbol,
                     accountType: 'normal',
                     accountIndex: 1,
                     vaultId,

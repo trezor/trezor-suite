@@ -1,4 +1,4 @@
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
 import { type FeesStatus } from '@suite-common/wallet-types';
 import {
     type TestStore,
@@ -21,6 +21,7 @@ jest.mock('@suite-common/wallet-core', () => ({
 const mockUseFetchFeesOnce = jest.requireMock('@suite-common/wallet-core').useFetchFeesOnce;
 const mockUseRefetchFees = jest.requireMock('@suite-common/wallet-core').useRefetchFees;
 const mockSelectAreFeesLoading = jest.requireMock('@suite-common/wallet-core').selectAreFeesLoading;
+const btcSymbol = asNetworkSymbol('btc');
 
 // Add fees to the wallet state for testing
 const getWalletStateWithFees = () => ({
@@ -64,12 +65,12 @@ describe('useFeesFetching', () => {
 
     it('should select account by key from state', () => {
         const store = createStoreFromPreloadedState(createMockState());
-        const { result } = renderUseFeesFetching({ store, networkSymbol: 'btc' });
+        const { result } = renderUseFeesFetching({ store, networkSymbol: btcSymbol });
 
         expect(result.current.areFeesLoading).toBe(false);
-        expect(mockUseFetchFeesOnce).toHaveBeenCalledWith({ networkSymbol: 'btc' });
+        expect(mockUseFetchFeesOnce).toHaveBeenCalledWith({ networkSymbol: btcSymbol });
         expect(mockUseRefetchFees).toHaveBeenCalledWith({
-            networkSymbol: 'btc',
+            networkSymbol: btcSymbol,
             isDisabled: false,
         });
     });
@@ -77,12 +78,12 @@ describe('useFeesFetching', () => {
     it('should handle loading state correctly', () => {
         mockSelectAreFeesLoading.mockReturnValue(true);
         const store = createStoreFromPreloadedState(createMockState());
-        const { result } = renderUseFeesFetching({ store, networkSymbol: 'btc' });
+        const { result } = renderUseFeesFetching({ store, networkSymbol: btcSymbol });
 
         expect(result.current.areFeesLoading).toBe(true);
-        expect(mockUseFetchFeesOnce).toHaveBeenCalledWith({ networkSymbol: 'btc' });
+        expect(mockUseFetchFeesOnce).toHaveBeenCalledWith({ networkSymbol: btcSymbol });
         expect(mockUseRefetchFees).toHaveBeenCalledWith({
-            networkSymbol: 'btc',
+            networkSymbol: btcSymbol,
             isDisabled: false,
         });
     });
@@ -91,14 +92,14 @@ describe('useFeesFetching', () => {
         const store = createStoreFromPreloadedState(createMockState());
         const { result } = renderUseFeesFetching({
             store,
-            networkSymbol: 'btc',
+            networkSymbol: btcSymbol,
             isRefetchDisabled: true,
         });
 
         expect(result.current.areFeesLoading).toBe(false);
-        expect(mockUseFetchFeesOnce).toHaveBeenCalledWith({ networkSymbol: 'btc' });
+        expect(mockUseFetchFeesOnce).toHaveBeenCalledWith({ networkSymbol: btcSymbol });
         expect(mockUseRefetchFees).toHaveBeenCalledWith({
-            networkSymbol: 'btc',
+            networkSymbol: btcSymbol,
             isDisabled: true,
         });
     });

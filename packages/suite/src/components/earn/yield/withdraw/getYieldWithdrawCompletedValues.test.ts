@@ -1,11 +1,14 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type YieldFlowDisplayToken, type YieldFlowToken } from '@suite-common/wallet-core';
 
 import { getYieldWithdrawCompletedValues } from './getYieldWithdrawCompletedValues';
 
 type Params = Parameters<typeof getYieldWithdrawCompletedValues>[0];
 
+const ethSymbol = asNetworkSymbol('eth');
+
 const token: YieldFlowToken = {
-    networkSymbol: 'eth',
+    networkSymbol: ethSymbol,
     symbol: 'WETH',
     decimals: 18,
     contractAddress: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
@@ -13,7 +16,7 @@ const token: YieldFlowToken = {
 };
 
 const receiptToken: YieldFlowDisplayToken = {
-    networkSymbol: 'eth',
+    networkSymbol: ethSymbol,
     symbol: 'trSHETHp',
     decimals: 18,
     contractAddress: '0x1111111111111111111111111111111111111111',
@@ -27,7 +30,7 @@ const pricePerShareState: Params['pricePerShareState'] = {
 };
 
 const base = {
-    networkSymbol: 'eth',
+    networkSymbol: ethSymbol,
     token,
     receiptToken,
     pricePerShareState,

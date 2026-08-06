@@ -1,12 +1,16 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { getTranslation } from '@suite-native/intl';
 import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 
 import { FeeSummaryCard, type FeeSummaryCardProps } from './FeeSummaryCard';
 import { getWalletState } from '../../__fixtures__/walletState';
 
+const btcSymbol = asNetworkSymbol('btc');
+const ethSymbol = asNetworkSymbol('eth');
+
 const defaultProps: FeeSummaryCardProps = {
     fee: '1000',
-    symbol: 'btc',
+    symbol: btcSymbol,
     networkType: 'bitcoin',
     areFeesLoading: false,
     onPress: jest.fn(),
@@ -32,7 +36,7 @@ describe('FeeSummaryCard', () => {
     });
 
     it('should render ethereum-specific label for ethereum network', () => {
-        const { getByText } = renderCard({ networkType: 'ethereum', symbol: 'eth' });
+        const { getByText } = renderCard({ networkType: 'ethereum', symbol: ethSymbol });
 
         expect(
             getByText(getTranslation('transactionManagement.fees.description.title.ethereum')),

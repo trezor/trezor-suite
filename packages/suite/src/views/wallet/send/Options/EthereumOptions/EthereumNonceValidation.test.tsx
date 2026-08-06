@@ -6,6 +6,7 @@ import { act, fireEvent, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import { configureMockStore } from '@suite-common/test-utils';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
 import { SendContext } from 'src/hooks/wallet/useSendForm';
@@ -15,7 +16,7 @@ import { EthereumNonce } from './EthereumNonce';
 import { extraDependenciesDesktopMock } from '../../../../../../mocks/extraDependenciesDesktopMock';
 import { mockInitialAppState } from '../../../../../../mocks/mockInitialAppState';
 
-const ethAccount = mockWalletAccount({ symbol: 'eth' }) as any;
+const ethAccount = mockWalletAccount({ symbol: asNetworkSymbol('eth') }) as any;
 
 type Props = { displayNonce?: string; confirmedNonce?: string };
 

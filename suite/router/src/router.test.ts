@@ -1,3 +1,5 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
+
 import { type Route } from './route';
 import {
     getAppWithParams,
@@ -7,6 +9,9 @@ import {
     stripPrefixedURL,
 } from './router';
 import type { RouteParams } from './routes';
+
+const ethSymbol = asNetworkSymbol('eth');
+const btcSymbol = asNetworkSymbol('btc');
 
 const OLD_ENV = { ...process.env };
 
@@ -45,7 +50,7 @@ describe('router', () => {
             expect(test('wallet-index')).toEqual('/accounts');
             expect(
                 test('earn-yield-deposit', {
-                    symbol: 'eth',
+                    symbol: ethSymbol,
                     accountIndex: 0,
                     accountType: 'normal',
                     vaultAddress: '0xvault',
@@ -53,7 +58,7 @@ describe('router', () => {
             ).toEqual('/earn/yield/deposit#/eth/0/normal/0xvault');
             expect(
                 test('earn-yield-withdraw', {
-                    symbol: 'eth',
+                    symbol: ethSymbol,
                     accountIndex: 0,
                     accountType: 'normal',
                     vaultAddress: '0xvault',
@@ -61,7 +66,7 @@ describe('router', () => {
             ).toEqual('/earn/yield/withdraw#/eth/0/normal/0xvault');
             expect(
                 test('earn-yield-claim', {
-                    symbol: 'eth',
+                    symbol: ethSymbol,
                     accountIndex: 0,
                     accountType: 'normal',
                 }),
@@ -69,7 +74,7 @@ describe('router', () => {
             // tests below with intentionally mixed # params
             expect(
                 test('wallet-index', {
-                    symbol: 'btc',
+                    symbol: btcSymbol,
                     accountIndex: 0,
                     accountType: 'legacy',
                 }),
@@ -78,26 +83,26 @@ describe('router', () => {
                 test('wallet-index', {
                     accountIndex: 0,
                     accountType: 'segwit',
-                    symbol: 'btc',
+                    symbol: btcSymbol,
                 }),
             ).toEqual('/accounts#/btc/0/segwit');
             expect(
                 test('wallet-index', {
                     accountType: 'normal',
-                    symbol: 'btc',
+                    symbol: btcSymbol,
                     accountIndex: 0,
                 }),
             ).toEqual('/accounts#/btc/0/normal');
             expect(
                 test('wallet-index', {
                     accountIndex: 1,
-                    symbol: 'btc',
+                    symbol: btcSymbol,
                 }),
             ).toEqual('/accounts#/btc/1');
             // route shouldn't have params
             expect(
                 test('onboarding-index', {
-                    symbol: 'btc',
+                    symbol: btcSymbol,
                 }),
             ).toEqual('/onboarding');
         });

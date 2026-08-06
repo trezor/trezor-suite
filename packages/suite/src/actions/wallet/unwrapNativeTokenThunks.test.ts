@@ -1,6 +1,6 @@
 import { events } from '@suite-common/analytics';
 import { configureMockStore } from '@suite-common/test-utils';
-import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { asNetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { type YieldFlowDisplayToken } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
@@ -27,10 +27,11 @@ jest.mock('./stablecoin-yield/signingHelpers', () => ({
     getYieldSubmitErrorAnalyticsMessage: jest.fn(() => 'submit-failed'),
 }));
 
-const account = mockWalletAccount({ symbol: 'eth' }) as Account;
+const ethSymbol = asNetworkSymbol('eth');
+const account = mockWalletAccount({ symbol: ethSymbol }) as Account;
 
 const token: YieldFlowDisplayToken & { contractAddress: string } = {
-    networkSymbol: 'eth',
+    networkSymbol: ethSymbol,
     symbol: 'WETH',
     decimals: 18,
     contractAddress: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',

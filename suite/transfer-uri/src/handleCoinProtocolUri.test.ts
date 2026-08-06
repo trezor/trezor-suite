@@ -1,5 +1,6 @@
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
 import { type FindNetworkSymbolForProtocol } from '@suite-common/networks';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 
 import {
     type CoinProtocol,
@@ -8,8 +9,8 @@ import {
 } from './handleCoinProtocolUri';
 
 const findNetworkSymbolForProtocol: FindNetworkSymbolForProtocol = protocol => {
-    if (protocol === 'bitcoin') return 'btc';
-    if (protocol === 'ethereum') return 'eth';
+    if (protocol === 'bitcoin') return asNetworkSymbol('btc');
+    if (protocol === 'ethereum') return asNetworkSymbol('eth');
 
     return null;
 };

@@ -1,7 +1,7 @@
 import { type CryptoId, type ExchangeTrade } from 'invity-api';
 
 import { useTxSimulation } from '@suite-common/tx-simulation';
-import { getNetwork } from '@suite-common/wallet-config';
+import { asNetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { type TxSimulationAction } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
@@ -22,7 +22,8 @@ const mockedUseTxSimulation = jest.mocked(useTxSimulation);
 const mockedComposeDexTxSimulationAction = jest.mocked(composeDexTxSimulationAction);
 
 const SOURCE_ORIGIN = 'https://example.com';
-const account = mockWalletAccount({ symbol: 'eth' });
+const ethSymbol = asNetworkSymbol('eth');
+const account = mockWalletAccount({ symbol: ethSymbol });
 const quote: ExchangeTrade = {
     send: 'ethereum' as CryptoId,
     sendStringAmount: '1',
@@ -89,7 +90,7 @@ describe('useDexExchangeTxSimulation', () => {
         mockedComposeDexTxSimulationAction.mockReturnValue(action);
         mockedUseTxSimulation.mockReturnValue({
             txSimulationQuery,
-            network: getNetwork('eth'),
+            network: getNetwork(ethSymbol),
             targetContract: account.descriptor,
         } as unknown as NonNullable<ReturnType<typeof useTxSimulation>>);
 

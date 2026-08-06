@@ -2,6 +2,7 @@ import { type CryptoId } from 'invity-api';
 
 import { configureMockStore, renderHookWithStoreProvider } from '@suite-common/test-utils';
 import { type TradingAssetSellOption } from '@suite-common/trading';
+import { toNetworkSymbolNonTestnet } from '@suite-common/wallet-config';
 import { type BaseCurrencyOption } from '@suite-common/wallet-types';
 import {
     mockAccountKey,
@@ -11,6 +12,9 @@ import {
 
 import { useTradingSendAssetBalance } from './useTradingSendAssetBalance';
 
+const btcSymbol = toNetworkSymbolNonTestnet('btc');
+const ethSymbol = toNetworkSymbolNonTestnet('eth');
+
 jest.mock('src/hooks/wallet/trading/form/common/useTradingAssetDecimals', () => ({
     useTradingAssetDecimals: () => ({ getAssetDecimals: () => 8 }),
 }));
@@ -19,18 +23,18 @@ jest.mock('src/hooks/wallet/trading/form/common/useTradingFiatValues', () => ({
     useTradingFiatValues: () => ({ fiatRate: { rate: 50000 }, fiatRatesUpdater: jest.fn() }),
 }));
 
-const ACCOUNT = mockWalletAccount({ symbol: 'btc', formattedBalance: '2' });
-const EMPTY_ACCOUNT = mockWalletAccount({ symbol: 'btc', formattedBalance: '0' });
+const ACCOUNT = mockWalletAccount({ symbol: btcSymbol, formattedBalance: '2' });
+const EMPTY_ACCOUNT = mockWalletAccount({ symbol: btcSymbol, formattedBalance: '0' });
 
 const TOKEN_CONTRACT = '0x' + 'a'.repeat(40);
 
 const FUNDED_TOKEN_ACCOUNT = mockWalletAccount({
-    symbol: 'eth',
+    symbol: ethSymbol,
     formattedBalance: '0',
     tokens: [mockAccountToken({ contract: TOKEN_CONTRACT, balance: '100' })],
 });
 const EMPTY_TOKEN_ACCOUNT = mockWalletAccount({
-    symbol: 'eth',
+    symbol: ethSymbol,
     formattedBalance: '2',
     tokens: [mockAccountToken({ contract: TOKEN_CONTRACT, balance: '0' })],
 });
@@ -41,11 +45,11 @@ const SEND_CRYPTO_SELECT: TradingAssetSellOption = {
     name: 'Bitcoin',
     coingeckoId: 'bitcoin',
     contractAddress: null,
-    symbol: 'btc',
+    symbol: btcSymbol,
     displaySymbol: 'BTC',
     networkName: 'Bitcoin',
-    networkSymbol: 'btc',
-    accountKey: mockAccountKey({ descriptor: 'descriptor123', symbol: 'btc' }),
+    networkSymbol: btcSymbol,
+    accountKey: mockAccountKey({ descriptor: 'descriptor123', symbol: btcSymbol }),
 };
 
 const OUTPUT_CURRENCY: BaseCurrencyOption = { value: 'usd', label: 'USD' };

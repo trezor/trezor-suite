@@ -1,5 +1,6 @@
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { testMocks } from '@suite-common/test-utils';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account, type GeneralPrecomposedTransaction } from '@suite-common/wallet-types';
 import {
     type TronAccountExtraData,
@@ -94,14 +95,14 @@ const buildNonTronAccount = (): Account =>
 
 describe('isSupportedTronStakingNetworkSymbol', () => {
     it('returns true for trx', () => {
-        expect(isSupportedTronStakingNetworkSymbol('trx')).toBe(true);
+        expect(isSupportedTronStakingNetworkSymbol(asNetworkSymbol('trx'))).toBe(true);
     });
 
     it('returns false for non-Tron symbols', () => {
-        expect(isSupportedTronStakingNetworkSymbol('btc')).toBe(false);
-        expect(isSupportedTronStakingNetworkSymbol('eth')).toBe(false);
+        expect(isSupportedTronStakingNetworkSymbol(asNetworkSymbol('btc'))).toBe(false);
+        expect(isSupportedTronStakingNetworkSymbol(asNetworkSymbol('eth'))).toBe(false);
         // testnet Tron is not in the supported list
-        expect(isSupportedTronStakingNetworkSymbol('ttrx')).toBe(false);
+        expect(isSupportedTronStakingNetworkSymbol(asNetworkSymbol('ttrx'))).toBe(false);
     });
 });
 

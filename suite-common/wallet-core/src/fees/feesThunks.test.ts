@@ -1,6 +1,7 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
 import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type FeeInfo } from '@suite-common/wallet-types';
 
 import { DEFAULT_FEE_INFO } from './feesConstants';
@@ -9,6 +10,7 @@ import { updateFeeInfoThunk } from './feesThunks';
 import { blockchainInitialState, prepareBlockchainReducer } from '../blockchain/blockchainReducer';
 
 const blockchainReducer = prepareBlockchainReducer(extraDependenciesCommonMock);
+const trxSymbol = asNetworkSymbol('trx');
 
 const tronFeeInfo: FeeInfo = {
     blockHeight: 100,
@@ -38,16 +40,19 @@ const initStore = (feeInfo?: FeeInfo) =>
 describe(updateFeeInfoThunk.name, () => {
     it('fulfills with existing data for tron instead of fetching', async () => {
         const store = initStore(tronFeeInfo);
-        const response = await store.dispatch(updateFeeInfoThunk({ networkSymbol: 'trx' }));
+        const response = await store.dispatch(updateFeeInfoThunk({ networkSymbol: trxSymbol }));
 
         expect(response.meta.requestStatus).toBe('fulfilled');
         expect(response.payload).toEqual(tronFeeInfo);
-        expect(store.getState().wallet.fees.trx).toEqual({ status: 'loaded', data: tronFeeInfo });
+        expect(store.getState().wallet.fees[trxSymbol]).toEqual({
+            status: 'loaded',
+            data: tronFeeInfo,
+        });
     });
 
     it('fulfills with default fee info for tron when no data is stored', async () => {
         const store = initStore();
-        const response = await store.dispatch(updateFeeInfoThunk({ networkSymbol: 'trx' }));
+        const response = await store.dispatch(updateFeeInfoThunk({ networkSymbol: trxSymbol }));
 
         expect(response.meta.requestStatus).toBe('fulfilled');
         expect(response.payload).toEqual({ ...DEFAULT_FEE_INFO, blockHeight: 0 });

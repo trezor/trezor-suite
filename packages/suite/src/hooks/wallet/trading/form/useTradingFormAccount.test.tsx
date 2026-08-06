@@ -1,24 +1,27 @@
 import { configureMockStore, renderHookWithStoreProvider } from '@suite-common/test-utils';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import type { StaticSessionId } from '@trezor/connect';
 
 import { useTradingFormAccount } from './useTradingFormAccount';
 
+const ethSymbol = asNetworkSymbol('eth');
+
 const DEVICE_STATE: StaticSessionId = '1stTestnetAddress@device_id:0';
 
 const FIRST_ELIGIBLE_ACCOUNT: Account = mockWalletAccount({
-    symbol: 'eth',
+    symbol: ethSymbol,
     descriptor: asAccountDescriptor('0xFirstEligible'),
     balance: '1000000000000000000',
 });
 const TRADE_ACCOUNT: Account = mockWalletAccount({
-    symbol: 'eth',
+    symbol: ethSymbol,
     descriptor: asAccountDescriptor('0xTradeAccount'),
     balance: '2000000000000000000',
 });
 const INELIGIBLE_TRADE_ACCOUNT: Account = mockWalletAccount({
-    symbol: 'eth',
+    symbol: ethSymbol,
     descriptor: asAccountDescriptor('0xIneligibleTradeAccount'),
     balance: '0',
     tokens: [],

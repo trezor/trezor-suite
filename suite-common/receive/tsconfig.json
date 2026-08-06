@@ -5,6 +5,7 @@
         { "path": "../redux-utils" },
         { "path": "../wallet-core" },
         { "path": "../wallet-types" },
-        { "path": "../test-utils" }
+        { "path": "../test-utils" },
+        { "path": "../wallet-config" }
     ]
 }

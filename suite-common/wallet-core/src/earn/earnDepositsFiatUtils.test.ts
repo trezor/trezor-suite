@@ -1,3 +1,4 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type RatesByKey, type TokenAddress, toTokenAddress } from '@suite-common/wallet-types';
 import { getFiatRateKey } from '@suite-common/wallet-utils';
 
@@ -9,6 +10,7 @@ import {
 
 const USDC_CONTRACT_CHECKSUMMED = toTokenAddress('0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48');
 const USDC_CONTRACT_LOWERCASE = toTokenAddress('0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48');
+const ethSymbol = asNetworkSymbol('eth');
 
 const createRates = (rates: Record<string, number>) =>
     Object.fromEntries(Object.entries(rates).map(([key, rate]) => [key, { rate }])) as RatesByKey;
@@ -17,7 +19,7 @@ const createYieldDeposit = (
     tokenContractAddress: TokenAddress,
 ): EarnStablecoinYieldDepositFiatInput => ({
     id: 'yield-1',
-    networkSymbol: 'eth',
+    networkSymbol: ethSymbol,
     tokenContractAddress,
     balance: '4',
 });
@@ -28,8 +30,8 @@ describe(calculateEarnDepositsFiatData.name, () => {
             stakingDeposits: [{ id: 'staking-1', symbol: 'eth', balance: '2' }],
             stablecoinYieldDeposits: [createYieldDeposit(USDC_CONTRACT_LOWERCASE)],
             currentFiatRates: createRates({
-                [getFiatRateKey('eth', 'usd')]: 3_000,
-                [getFiatRateKey('eth', 'usd', USDC_CONTRACT_LOWERCASE)]: 1,
+                [getFiatRateKey(ethSymbol, 'usd')]: 3_000,
+                [getFiatRateKey(ethSymbol, 'usd', USDC_CONTRACT_LOWERCASE)]: 1,
             }),
             baseCurrencyCode: 'usd',
         });
@@ -45,7 +47,7 @@ describe(calculateEarnDepositsFiatData.name, () => {
             stakingDeposits: [],
             stablecoinYieldDeposits: [createYieldDeposit(USDC_CONTRACT_LOWERCASE)],
             currentFiatRates: createRates({
-                [getFiatRateKey('eth', 'usd', USDC_CONTRACT_CHECKSUMMED)]: 1,
+                [getFiatRateKey(ethSymbol, 'usd', USDC_CONTRACT_CHECKSUMMED)]: 1,
             }),
             baseCurrencyCode: 'usd',
         });
@@ -85,7 +87,7 @@ describe(calculateEarnDepositsFiatData.name, () => {
             stakingDeposits: [{ id: 'staking-1', symbol: 'eth', balance: '2' }],
             stablecoinYieldDeposits: [createYieldDeposit(USDC_CONTRACT_LOWERCASE)],
             currentFiatRates: createRates({
-                [getFiatRateKey('eth', 'usd', USDC_CONTRACT_LOWERCASE)]: 1,
+                [getFiatRateKey(ethSymbol, 'usd', USDC_CONTRACT_LOWERCASE)]: 1,
             }),
             baseCurrencyCode: 'usd',
         });
@@ -100,8 +102,8 @@ describe(calculateEarnDepositsFiatData.name, () => {
             stakingDeposits: [{ id: 'staking-1', symbol: 'eth', balance: '2' }],
             stablecoinYieldDeposits: [createYieldDeposit(USDC_CONTRACT_LOWERCASE)],
             currentFiatRates: createRates({
-                [getFiatRateKey('eth', 'usd')]: 0,
-                [getFiatRateKey('eth', 'usd', USDC_CONTRACT_LOWERCASE)]: 0,
+                [getFiatRateKey(ethSymbol, 'usd')]: 0,
+                [getFiatRateKey(ethSymbol, 'usd', USDC_CONTRACT_LOWERCASE)]: 0,
             }),
             baseCurrencyCode: 'usd',
         });
@@ -152,7 +154,7 @@ describe(getEarnDepositsFiatStatus.name, () => {
 
     it('reports a lower-bound total when only one deposit type has a rate', () => {
         const result = getEarnDepositsFiatStatus({
-            missingStakingRateTickers: [{ symbol: 'eth' }],
+            missingStakingRateTickers: [{ symbol: ethSymbol }],
             missingStablecoinYieldRateTickers: [],
             hasStakingFiatRate: false,
             hasStablecoinYieldFiatRate: true,
@@ -169,9 +171,9 @@ describe(getEarnDepositsFiatStatus.name, () => {
 
     it('reports an unavailable total when no deposit type has a rate', () => {
         const result = getEarnDepositsFiatStatus({
-            missingStakingRateTickers: [{ symbol: 'eth' }],
+            missingStakingRateTickers: [{ symbol: ethSymbol }],
             missingStablecoinYieldRateTickers: [
-                { symbol: 'eth', tokenAddress: USDC_CONTRACT_LOWERCASE },
+                { symbol: ethSymbol, tokenAddress: USDC_CONTRACT_LOWERCASE },
             ],
             hasStakingFiatRate: false,
             hasStablecoinYieldFiatRate: false,
@@ -184,7 +186,7 @@ describe(getEarnDepositsFiatStatus.name, () => {
 
     it('does not report an incomplete total while missing rates are loading', () => {
         const result = getEarnDepositsFiatStatus({
-            missingStakingRateTickers: [{ symbol: 'eth' }],
+            missingStakingRateTickers: [{ symbol: ethSymbol }],
             missingStablecoinYieldRateTickers: [],
             hasStakingFiatRate: false,
             hasStablecoinYieldFiatRate: false,

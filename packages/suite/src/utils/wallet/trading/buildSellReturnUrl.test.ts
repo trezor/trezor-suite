@@ -1,6 +1,7 @@
 import { type CryptoId, type SellFiatTrade } from 'invity-api';
 
 import { type TradingSellInfoSelector } from '@suite-common/trading';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
@@ -13,7 +14,7 @@ jest.mock('src/utils/wallet/trading/sellUtils', () => ({
 }));
 
 const ACCOUNT: Account = mockWalletAccount({
-    symbol: 'btc',
+    symbol: asNetworkSymbol('btc'),
     descriptor: asAccountDescriptor('btcAccount'),
 });
 

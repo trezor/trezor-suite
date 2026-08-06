@@ -1,4 +1,5 @@
 import { getCryptoId } from '@suite-common/trading';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { localizeNumber } from '@suite-common/wallet-utils';
 
 import { expect, test } from '../../support/fixtures';
@@ -103,7 +104,7 @@ test.describe(
                     },
                     buyAsset: {
                         searchFilter: receiveAssetName,
-                        assetCryptoId: getCryptoId('sol'),
+                        assetCryptoId: getCryptoId(asNetworkSymbol('sol')),
                     },
                     selectReceiveAddress: async () => {
                         await tradingPage.receiveAccount.selectSuiteReceiveAccount(1, 'sol');

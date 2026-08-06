@@ -1,3 +1,4 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { explorerInitialState } from '@suite-common/wallet-core';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { act } from '@suite-native/test-utils';
@@ -7,12 +8,14 @@ import { type WalletAccountTransaction, mockTransaction } from '@suite-native/to
 import { useTransactionDetails } from './useTransactionDetails';
 
 const mockOpenLink = jest.fn();
+const btcSymbol = asNetworkSymbol('btc');
+const ethSymbol = asNetworkSymbol('eth');
 
 jest.mock('@suite-native/link', () => ({
     useOpenLink: () => mockOpenLink,
 }));
 
-const ACCOUNT_KEY = mockAccountKey({ symbol: 'btc', descriptor: 'testDescriptor' });
+const ACCOUNT_KEY = mockAccountKey({ symbol: btcSymbol, descriptor: 'testDescriptor' });
 const TXID = 'abc123def456abc123def456abc123def456abc123def456abc123def456abc1';
 const TOKEN_CONTRACT = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
 
@@ -25,7 +28,7 @@ const pendingTransaction: WalletAccountTransaction = {
 
 const transactionWithToken: WalletAccountTransaction = {
     ...confirmedTransaction,
-    symbol: 'eth',
+    symbol: ethSymbol,
     tokens: [
         {
             contract: TOKEN_CONTRACT,

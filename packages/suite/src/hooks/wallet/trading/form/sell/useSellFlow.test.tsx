@@ -1,8 +1,11 @@
 import { configureMockStore, renderHookWithStoreProvider } from '@suite-common/test-utils';
 import { type TradingTransactionSell, tradingSellActions } from '@suite-common/trading';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 
 import { useSellFlow } from './useSellFlow';
+
+const btcSymbol = asNetworkSymbol('btc');
 
 jest.mock('@suite-common/trading', () => {
     const actual = jest.requireActual('@suite-common/trading');
@@ -20,7 +23,7 @@ const TRADE: TradingTransactionSell = {
     date: '2024-01-01',
     tradeType: 'sell',
     data: { paymentMethod: 'bankTransfer', exchange: 'provider-1' },
-    sendAccountKey: mockAccountKey({ descriptor: 'descriptor123', symbol: 'btc' }),
+    sendAccountKey: mockAccountKey({ descriptor: 'descriptor123', symbol: btcSymbol }),
 };
 
 type Props = {

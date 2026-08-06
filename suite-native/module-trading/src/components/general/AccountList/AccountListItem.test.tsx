@@ -1,3 +1,4 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { getTranslation } from '@suite-native/intl';
@@ -12,7 +13,7 @@ const DEVICE_SESSION_ID: StaticSessionId = '1@2:3';
 
 const btc10000000Account = mockWalletAccount({
     descriptor: asAccountDescriptor('abc'),
-    symbol: 'btc',
+    symbol: asNetworkSymbol('btc'),
     deviceState: '1@2:3',
     accountLabel: 'My BTC account',
     availableBalance: '10000000',

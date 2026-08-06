@@ -1,8 +1,12 @@
 import { createIntl } from 'react-intl';
 
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { PROTO } from '@trezor/connect';
 
 import { prepareCryptoAmountFormatter } from './prepareCryptoAmountFormatter';
+
+const btcSymbol = asNetworkSymbol('btc');
+const ethSymbol = asNetworkSymbol('eth');
 
 const intl = createIntl({ locale: 'en-US' });
 
@@ -27,7 +31,7 @@ describe('CryptoAmountFormatter', () => {
         it('BTC with symbol', () => {
             expect(
                 CryptoAmountFormatter.format('300', {
-                    symbol: 'btc',
+                    symbol: btcSymbol,
                 }),
             ).toBe('0.000003 BTC');
         });
@@ -35,7 +39,7 @@ describe('CryptoAmountFormatter', () => {
         it('BTC without symbol', () => {
             expect(
                 CryptoAmountFormatter.format('300', {
-                    symbol: 'btc',
+                    symbol: btcSymbol,
                     withSymbol: false,
                 }),
             ).toBe('0.000003');
@@ -55,7 +59,7 @@ describe('CryptoAmountFormatter', () => {
         ])('BTC balance with symbol, case %#', (inputValue, expectedValue) => {
             expect(
                 CryptoAmountFormatter.format(inputValue, {
-                    symbol: 'btc',
+                    symbol: btcSymbol,
                     isBalance: true,
                 }),
             ).toBe(expectedValue);
@@ -64,7 +68,7 @@ describe('CryptoAmountFormatter', () => {
         it('ETH balance with symbol + truncate decimals', () => {
             expect(
                 CryptoAmountFormatter.format('0.020638700284758254', {
-                    symbol: 'eth',
+                    symbol: ethSymbol,
                     isBalance: true,
                 }),
             ).toBe('0.0206387… ETH');
@@ -73,7 +77,7 @@ describe('CryptoAmountFormatter', () => {
         it('ETH balance with symbol + truncate decimals + hide ellipsis', () => {
             expect(
                 CryptoAmountFormatter.format('0.020638700284758254', {
-                    symbol: 'eth',
+                    symbol: ethSymbol,
                     isBalance: true,
                     isEllipsisAppended: false,
                 }),
@@ -83,7 +87,7 @@ describe('CryptoAmountFormatter', () => {
         it('ETH balance with units', () => {
             expect(
                 CryptoAmountFormatter.format('148985107694640', {
-                    symbol: 'eth',
+                    symbol: ethSymbol,
                     isBalance: false,
                 }),
             ).toBe('0.00014899… ETH');
@@ -92,7 +96,7 @@ describe('CryptoAmountFormatter', () => {
         it('ETH fee preserves all 18 decimals without Number precision loss', () => {
             expect(
                 CryptoAmountFormatter.format('1005309106970022', {
-                    symbol: 'eth',
+                    symbol: ethSymbol,
                     isBalance: false,
                     maxDisplayedDecimals: 18,
                 }),
@@ -103,7 +107,7 @@ describe('CryptoAmountFormatter', () => {
             it('BTC sats with symbol', () => {
                 expect(
                     CryptoAmountFormatterSats.format('300', {
-                        symbol: 'btc',
+                        symbol: btcSymbol,
                     }),
                 ).toBe('300 sat');
             });
@@ -111,7 +115,7 @@ describe('CryptoAmountFormatter', () => {
             it('BTC sats without symbol', () => {
                 expect(
                     CryptoAmountFormatterSats.format('300', {
-                        symbol: 'btc',
+                        symbol: btcSymbol,
                         withSymbol: false,
                     }),
                 ).toBe('300');
@@ -120,7 +124,7 @@ describe('CryptoAmountFormatter', () => {
             it('BTC sats balance with symbol', () => {
                 expect(
                     CryptoAmountFormatterSats.format('0.3', {
-                        symbol: 'btc',
+                        symbol: btcSymbol,
                         isBalance: true,
                     }),
                 ).toBe('30,000,000 sat');
@@ -129,7 +133,7 @@ describe('CryptoAmountFormatter', () => {
             it('TEST sats with symbol', () => {
                 expect(
                     CryptoAmountFormatterSats.format('300', {
-                        symbol: 'test',
+                        symbol: asNetworkSymbol('test'),
                     }),
                 ).toBe('300 sat TEST');
             });

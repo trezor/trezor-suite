@@ -1,4 +1,5 @@
 import { testMocks } from '@suite-common/test-utils';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type WalletAccountTransaction, asAccountDescriptor } from '@suite-common/wallet-types';
 
 import * as fixtures from './__fixtures__/transactionUtils';
@@ -27,6 +28,9 @@ import {
     parseTransactionMonthKey,
 } from './transactionUtils';
 
+const ethSymbol = asNetworkSymbol('eth');
+const btcSymbol = asNetworkSymbol('btc');
+
 const { getWalletTransaction } = testMocks;
 
 const ACCOUNT_DESCRIPTOR = '0x37567E60ab231b7D7f26B5b34FDD719098E4Ee1b';
@@ -49,7 +53,7 @@ const getEvmTransaction = (
 ) =>
     getWalletTransaction({
         descriptor: asAccountDescriptor(ACCOUNT_DESCRIPTOR),
-        symbol: 'eth',
+        symbol: ethSymbol,
         type,
         blockHeight,
         ...(txid ? { txid } : {}),
@@ -340,11 +344,11 @@ describe('transaction utils', () => {
     describe('groupTokensTransactionsByContractAddress', () => {
         it('groups tokens by contract address', () => {
             const groupedTokensTxs = groupTokensTransactionsByContractAddress([
-                getWalletTransaction({ symbol: 'eth' }),
-                getWalletTransaction({ symbol: 'eth' }),
-                getWalletTransaction({ symbol: 'eth' }),
+                getWalletTransaction({ symbol: ethSymbol }),
+                getWalletTransaction({ symbol: ethSymbol }),
+                getWalletTransaction({ symbol: ethSymbol }),
                 getWalletTransaction({
-                    symbol: 'eth',
+                    symbol: ethSymbol,
                     tokens: [
                         {
                             ...fixtures.token,
@@ -353,7 +357,7 @@ describe('transaction utils', () => {
                     ],
                 }),
                 getWalletTransaction({
-                    symbol: 'eth',
+                    symbol: ethSymbol,
                     tokens: [
                         {
                             ...fixtures.token,
@@ -362,7 +366,7 @@ describe('transaction utils', () => {
                     ],
                 }),
                 getWalletTransaction({
-                    symbol: 'eth',
+                    symbol: ethSymbol,
                     tokens: [
                         {
                             ...fixtures.token,
@@ -374,7 +378,7 @@ describe('transaction utils', () => {
             expect(groupedTokensTxs).toEqual({
                 '0x01': [
                     getWalletTransaction({
-                        symbol: 'eth',
+                        symbol: ethSymbol,
                         tokens: [
                             {
                                 ...fixtures.token,
@@ -385,7 +389,7 @@ describe('transaction utils', () => {
                 ],
                 '0x02': [
                     getWalletTransaction({
-                        symbol: 'eth',
+                        symbol: ethSymbol,
                         tokens: [
                             {
                                 ...fixtures.token,
@@ -394,7 +398,7 @@ describe('transaction utils', () => {
                         ],
                     }),
                     getWalletTransaction({
-                        symbol: 'eth',
+                        symbol: ethSymbol,
                         tokens: [
                             {
                                 ...fixtures.token,
@@ -927,7 +931,10 @@ describe('transaction utils', () => {
         });
 
         it('returns the formatted transaction amount when there is no target', () => {
-            const transaction = getWalletTransaction({ symbol: 'btc', amount: '1000' });
+            const transaction = getWalletTransaction({
+                symbol: btcSymbol,
+                amount: '1000',
+            });
 
             expect(getTargetAmount(undefined, transaction)).toBe('0.00001');
         });
@@ -935,7 +942,7 @@ describe('transaction utils', () => {
         it('returns the formatted target amount for a non "sent to self" target', () => {
             const target = buildTarget({ amount: '2000', isAccountTarget: true });
             const transaction = getWalletTransaction({
-                symbol: 'btc',
+                symbol: btcSymbol,
                 type: 'recv',
                 amount: '1000',
                 targets: [target],
@@ -947,7 +954,7 @@ describe('transaction utils', () => {
         it('returns the formatted amount of an external target in a sent transaction', () => {
             const externalTarget = buildTarget({ amount: '500', isAccountTarget: false });
             const transaction = getWalletTransaction({
-                symbol: 'btc',
+                symbol: btcSymbol,
                 type: 'sent',
                 amount: '1000',
                 targets: [externalTarget],
@@ -959,7 +966,7 @@ describe('transaction utils', () => {
         it('returns the transaction amount for a "sent to self" target when there is no external target', () => {
             const selfTarget = buildTarget({ amount: '1000', isAccountTarget: true, n: 1 });
             const transaction = getWalletTransaction({
-                symbol: 'btc',
+                symbol: btcSymbol,
                 type: 'sent',
                 amount: '1000',
                 targets: [selfTarget],
@@ -972,7 +979,7 @@ describe('transaction utils', () => {
             const selfTarget = buildTarget({ amount: '1000', isAccountTarget: true, n: 1 });
             const externalTarget = buildTarget({ amount: '500', isAccountTarget: false, n: 0 });
             const transaction = getWalletTransaction({
-                symbol: 'btc',
+                symbol: btcSymbol,
                 type: 'sent',
                 amount: '1000',
                 targets: [selfTarget, externalTarget],

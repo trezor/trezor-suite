@@ -1,4 +1,5 @@
 import { type EthValidatorsQueue } from '@suite-common/earn-staking-api';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type WalletAccountTransaction } from '@suite-common/wallet-types';
 import TrezorConnect, {
     type AccountInfo,
@@ -58,6 +59,8 @@ import {
     type GetStakeTxGasLimitParams,
     type StakeTxBaseArgs,
 } from './types';
+
+const ethSymbol = asNetworkSymbol('eth');
 
 describe('transformTx', () => {
     transformTxFixtures.forEach(test => {
@@ -235,7 +238,11 @@ describe('getAdjustedGasLimitConsumption', () => {
 describe('getEthNetworkForWalletSdk', () => {
     getEthNetworkForWalletSdkFixture.forEach(test => {
         it(test.description, () => {
-            const result = getEthNetworkForWalletSdk(test.args.symbol);
+            const result = getEthNetworkForWalletSdk(
+                test.args.symbol && test.args.symbol !== 'unknown'
+                    ? asNetworkSymbol(test.args.symbol)
+                    : test.args.symbol,
+            );
             expect(result).toEqual(test.result);
         });
     });
@@ -247,7 +254,7 @@ describe('getInstantStakeType', () => {
             const result = getInstantStakeType(
                 test.args.internalTransfer as InternalTransfer,
                 test.args.address,
-                test.args.symbol,
+                test.args.symbol && asNetworkSymbol(test.args.symbol),
             );
             expect(result).toEqual(test.result);
         });
@@ -261,7 +268,7 @@ describe('getChangedInternalTx', () => {
                 test.args.prevTxs as WalletAccountTransaction[],
                 test.args.currentTxs as WalletAccountTransaction[],
                 test.args.selectedAccountAddress,
-                test.args.symbol,
+                test.args.symbol && asNetworkSymbol(test.args.symbol),
             );
             expect(result).toEqual(test.result);
         });
@@ -277,7 +284,10 @@ describe('simulateUnstake', () => {
             jest.spyOn(TrezorConnect, 'blockchainEvmRpcCall').mockImplementation(() =>
                 Promise.resolve(test.blockchainEvmRpcCallResult as BlockchainEvmRpcCallResult),
             );
-            const result = await simulateUnstake(test.args as SimulateUnstakeArgs);
+            const result = await simulateUnstake({
+                ...test.args,
+                symbol: test.args.symbol ? asNetworkSymbol(test.args.symbol) : test.args.symbol,
+            } as unknown as SimulateUnstakeArgs);
             expect(result).toEqual(test.result);
         });
     });
@@ -376,7 +386,7 @@ describe('verifyEthereumStakingLiveState', () => {
         const result = await verifyEthereumStakingLiveState({
             stakeType: 'stake',
             from: '0xabc',
-            symbol: 'eth',
+            symbol: ethSymbol,
         });
 
         expect(result).toEqual({ isValid: true });
@@ -396,7 +406,7 @@ describe('verifyEthereumStakingLiveState', () => {
         const result = await verifyEthereumStakingLiveState({
             stakeType: 'unstake',
             from: '0xabc',
-            symbol: 'eth',
+            symbol: ethSymbol,
             amount: '1.5',
         });
 
@@ -416,7 +426,7 @@ describe('verifyEthereumStakingLiveState', () => {
         const result = await verifyEthereumStakingLiveState({
             stakeType: 'unstake',
             from: '0xabc',
-            symbol: 'eth',
+            symbol: ethSymbol,
         });
 
         expect(result).toEqual({
@@ -445,7 +455,7 @@ describe('verifyEthereumStakingLiveState', () => {
         const result = await verifyEthereumStakingLiveState({
             stakeType: 'claim',
             from: '0xabc',
-            symbol: 'eth',
+            symbol: ethSymbol,
         });
 
         expect(result).toEqual({ isValid: true });
@@ -459,7 +469,7 @@ describe('verifyEthereumStakingLiveState', () => {
         const result = await verifyEthereumStakingLiveState({
             stakeType: 'claim',
             from: '0xabc',
-            symbol: 'eth',
+            symbol: ethSymbol,
         });
 
         expect(result).toEqual({

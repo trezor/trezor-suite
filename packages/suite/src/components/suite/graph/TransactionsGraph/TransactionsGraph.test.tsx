@@ -1,4 +1,5 @@
 import { configureMockStore } from '@suite-common/test-utils';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
 import { type AppState } from 'src/reducers/store';
@@ -15,7 +16,7 @@ global.ResizeObserver = class MockedResizeObserver {
     disconnect = jest.fn();
 };
 
-const ACCOUNT = mockWalletAccount({ symbol: 'btc' });
+const ACCOUNT = mockWalletAccount({ symbol: asNetworkSymbol('btc') });
 
 // A single day interval (the '1d' range), which is empty for any account without a transaction today.
 const DAY_RANGE: GraphRange = {

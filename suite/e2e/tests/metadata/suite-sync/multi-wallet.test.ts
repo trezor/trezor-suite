@@ -6,6 +6,7 @@ import {
     mnemonic12Fixtures,
 } from '@suite-common/e2e-evolu-client';
 import { asSuiteSyncOwnerSecretHex } from '@suite-common/suite-sync-storage';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { asWalletDescriptor } from '@trezor/device-utils';
 
@@ -51,7 +52,7 @@ const expectedAccountLabelWalletOne = {
         asAccountDescriptor(
             'zpub6r4imip23CwVmWTfqudEXK2PKZaw2bn8PEC1tju3d4oxQMfLK1QME9aN2o8t7potfCfz6f8T4jNafTyBVfEnqfXVUT8y4PWZ1JSc2HR8pRB',
         ),
-        'btc',
+        asNetworkSymbol('btc'),
     ),
     updatedAt: null,
     isDeleted: null,

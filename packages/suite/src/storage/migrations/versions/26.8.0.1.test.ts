@@ -2,6 +2,7 @@ import '@suite-common/test-utils/globalOverrides';
 import { type IDBPDatabase, deleteDB, openDB } from 'idb';
 
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { type StaticSessionId } from '@trezor/connect';
@@ -10,6 +11,8 @@ import { type SuiteDBSchema } from 'src/storage/definitions';
 import { serializeDevice } from 'src/utils/suite/storage';
 
 import migration from './26.8.0.1';
+
+const btcSymbol = asNetworkSymbol('btc');
 
 const DB_NAME = 'suite-idb-test-26.8.0.1';
 const INITIAL_VERSION = 1;
@@ -51,17 +54,17 @@ describe('migration 26.8.0.1', () => {
 
         const rememberedAccount = mockWalletAccount({
             descriptor: asAccountDescriptor('rememberedAccount'),
-            symbol: 'btc',
+            symbol: btcSymbol,
             deviceState: REMEMBERED_DEVICE_STATE,
         });
         const unrememberedAccount = mockWalletAccount({
             descriptor: asAccountDescriptor('unrememberedAccount'),
-            symbol: 'btc',
+            symbol: btcSymbol,
             deviceState: UNREMEMBERED_DEVICE_STATE,
         });
         const orphanedAccount = mockWalletAccount({
             descriptor: asAccountDescriptor('orphanedAccount'),
-            symbol: 'btc',
+            symbol: btcSymbol,
             deviceState: ORPHANED_DEVICE_STATE,
         });
 
