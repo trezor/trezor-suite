@@ -48,6 +48,7 @@ test.describe('Passphrase reconnection', { tag: ['@T3W1', '@T3T1'] }, () => {
             await device.powerOff();
             await expect(walletPage.deviceDisconnectedStatus).toBeVisible({ timeout: 30_000 });
             await device.powerOn();
+            await expect(walletPage.deviceConnectedStatus).toBeVisible({ timeout: 30_000 });
         });
 
         await test.step('Check passphrase wallet "abc" is still cached and connected', async () => {
