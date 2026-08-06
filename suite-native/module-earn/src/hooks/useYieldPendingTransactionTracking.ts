@@ -16,11 +16,9 @@ import {
     stablecoinYieldActions,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
-import { getApyBreakdown, isPending } from '@suite-common/wallet-utils';
+import { getApyBreakdown, getPollIntervalMs, isPending } from '@suite-common/wallet-utils';
 import { type NativeAnalyticsDep, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { exhaustive } from '@trezor/type-utils';
-
-import { getPollIntervalMs } from '../utils/getPollIntervalMs';
 
 type YieldPendingTrackingRootState = TransactionsRootState & AccountsRootState & FeesRootState;
 

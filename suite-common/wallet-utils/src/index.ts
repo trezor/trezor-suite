@@ -27,6 +27,7 @@ export * from './solanaStakingLimitUtils';
 export * from './solanaStakingUtils';
 export * from './stakingUtils';
 export * from './tokenUtils';
+export * from './pollingUtils';
 export * from './transactionUtils';
 export * from './validationUtils';
 export * from './wrappedNativePendingTxUtils';

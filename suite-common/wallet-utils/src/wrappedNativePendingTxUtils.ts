@@ -10,15 +10,17 @@ export type TrackedWrappedNativeTransaction = {
     isReplacement: boolean;
 };
 
+type FindTrackedWrappedNativeTransactionParams = {
+    transactions: WalletAccountTransaction[];
+    txid: string;
+    nonce?: number;
+};
+
 export const findTrackedWrappedNativeTransaction = ({
     transactions,
     txid,
     nonce,
-}: {
-    transactions: WalletAccountTransaction[];
-    txid: string;
-    nonce?: number;
-}): TrackedWrappedNativeTransaction | undefined => {
+}: FindTrackedWrappedNativeTransactionParams): TrackedWrappedNativeTransaction | undefined => {
     const originalTransaction = transactions.find(transaction => transaction.txid === txid);
 
     if (originalTransaction) {
@@ -38,15 +40,17 @@ export const findTrackedWrappedNativeTransaction = ({
         : undefined;
 };
 
+type GetWrappedNativePendingTxStatusParams = {
+    txid: string | null;
+    trackedTransaction?: TrackedWrappedNativeTransaction;
+    flowType: 'wrap' | 'unwrap';
+};
+
 export const getWrappedNativePendingTxStatus = ({
     txid,
     trackedTransaction,
     flowType,
-}: {
-    txid: string | null;
-    trackedTransaction?: TrackedWrappedNativeTransaction;
-    flowType: 'wrap' | 'unwrap';
-}): WrappedNativePendingTxStatus | null => {
+}: GetWrappedNativePendingTxStatusParams): WrappedNativePendingTxStatus | null => {
     if (!txid) {
         return null;
     }

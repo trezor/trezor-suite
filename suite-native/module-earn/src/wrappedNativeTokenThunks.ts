@@ -8,14 +8,12 @@ import {
 } from '@suite-common/wallet-core';
 import {
     type Account,
-    AddressDisplayOptions,
     type FormState,
     type PrecomposedTransactionFinal,
 } from '@suite-common/wallet-types';
-import { getAccountIdentity } from '@suite-common/wallet-utils';
-import TrezorConnect from '@trezor/connect';
 
 import { EARN_MODULE_PREFIX } from './constants';
+import { pushYieldTransaction, signYieldTransactionOnDevice } from './utils/deviceTransactionUtils';
 import { getPushErrorType } from './yieldTransactionThunks';
 
 const WRAPPED_NATIVE_TOKEN_THUNK_PREFIX = `${EARN_MODULE_PREFIX}/wrapped-native-token`;
@@ -96,16 +94,11 @@ export const signWrappedNativeTokenThunk = createThunk<
         const { formState, precomposedTransaction, transactionForSigning } = transactionReview;
         const addressDisplayType = selectAddressDisplayType(getState());
 
-        const signingResponse = await TrezorConnect.ethereumSignTransaction({
-            device: {
-                path: device.path,
-                instance: device.instance,
-                state: device.state,
-                useEmptyPassphrase: device.useEmptyPassphrase,
-            },
+        const signingResponse = await signYieldTransactionOnDevice({
+            device,
             path: account.path,
             transaction: transactionForSigning,
-            chunkify: addressDisplayType === AddressDisplayOptions.CHUNKED,
+            addressDisplayType,
         });
 
         if (!signingResponse.success) {
@@ -131,10 +124,9 @@ export const pushWrappedNativeTokenThunk = createThunk<
 >(
     `${WRAPPED_NATIVE_TOKEN_THUNK_PREFIX}/push`,
     async ({ account, signedTransaction }, { dispatch, rejectWithValue }) => {
-        const pushResponse = await TrezorConnect.pushTransaction({
+        const pushResponse = await pushYieldTransaction({
             tx: signedTransaction.serializedTx,
-            coin: account.symbol,
-            identity: getAccountIdentity(account),
+            account,
         });
 
         if (!pushResponse.success) {

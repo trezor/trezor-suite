@@ -15,6 +15,7 @@ import {
     sendFormActions,
 } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
+import { getPollIntervalMs } from '@suite-common/wallet-utils';
 import {
     AppTabsRoutes,
     type RootStackParamList,
@@ -23,7 +24,6 @@ import {
     TransactionDetailStackRoutes,
 } from '@suite-native/navigation';
 
-import { getPollIntervalMs } from '../utils/getPollIntervalMs';
 import { resolveStakingTargetRoute } from '../utils/resolveStakingTargetRoute';
 
 type NavigationProps = StackNavigationProps<RootStackParamList, RootStackRoutes>;
