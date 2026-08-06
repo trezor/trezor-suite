@@ -45,7 +45,6 @@ import {
     type SelectedAccountStatus,
 } from '@suite-common/wallet-types';
 import { type BluetoothDeviceId, type CreateLoggerDep, type ThpSettings } from '@trezor/connect';
-import { type KeyedThrottle } from '@trezor/utils';
 
 // TODO: Replace with a generic shared `Thunk` type from @suite-common/redux-utils after
 // https://github.com/trezor/trezor-suite/issues/30770 is completed.
@@ -87,7 +86,6 @@ export type CommonServices = SuiteSyncDep &
     GetLanguageDep &
     GetTradedAccountKeysDep & {
         saveAs: (data: Blob, fileName: string) => void;
-        accountRefreshThrottle: KeyedThrottle<Account['key']>;
         // Getters, so a component cannot read them during render and miss later state changes.
         // See `toGetter`/`useGetter` in @suite-common/dependency-injection.
         getTokenDefinitionsEnabledNetworks: Getter<[], NetworkSymbol[]>;

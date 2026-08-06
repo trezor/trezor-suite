@@ -7,7 +7,7 @@ import {
     type AccountsRefreshTimeState,
     accountRefreshed,
     accountsRefreshTimeReducer,
-    selectAccountRefreshTime,
+    isAccountStaleSelector,
 } from './accountsRefreshTimeReducer';
 
 const btcSymbol = asNetworkSymbol('btc');
@@ -66,9 +66,9 @@ describe('accountsRefreshTimeReducer', () => {
         expect(next[otherAccount.key]).toBe(NOW);
     });
 
-    it('selector reads the timestamp for an account', () => {
+    it('selector returns if an account is stale and needs refresh', () => {
         const wallet = { accountsRefreshTime: { [account.key]: NOW } };
-        expect(selectAccountRefreshTime({ wallet }, account.key)).toBe(NOW);
-        expect(selectAccountRefreshTime({ wallet }, otherAccount.key)).toBeUndefined();
+        expect(isAccountStaleSelector({ wallet }, account.key)).toBe(false);
+        expect(isAccountStaleSelector({ wallet }, otherAccount.key)).toBe(true);
     });
 });

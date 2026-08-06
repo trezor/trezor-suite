@@ -10991,7 +10991,6 @@ __metadata:
     "@trezor/analytics-uploader": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/type-utils": "workspace:*"
-    "@trezor/utils": "workspace:*"
   languageName: unknown
   linkType: soft
 
@@ -12139,7 +12138,6 @@ __metadata:
     "@suite-common/wallet-types": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/connect-common": "workspace:*"
-    "@trezor/utils": "workspace:*"
     react: "npm:19.2.3"
     react-native: "npm:0.86.0"
     react-redux: "npm:9.3.0"

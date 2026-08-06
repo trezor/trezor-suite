@@ -49,7 +49,16 @@ const accountsRefreshTimeSlice = createSlice({
 export const { accountRefreshed } = accountsRefreshTimeSlice.actions;
 export const accountsRefreshTimeReducer = accountsRefreshTimeSlice.reducer;
 
-export const selectAccountRefreshTime = (
+export const isAccountStaleSelector = (
     state: AccountsRefreshTimeRootState,
     accountKey: Account['key'],
-): number | undefined => state.wallet.accountsRefreshTime[accountKey];
+) => {
+    const accountLastRefreshTime = state.wallet.accountsRefreshTime[accountKey];
+
+    if (accountLastRefreshTime === undefined) return true;
+
+    const minRefreshRate = 5_000;
+    const durationSinceLastRefresh = Date.now() - accountLastRefreshTime;
+
+    return durationSinceLastRefresh >= minRefreshRate;
+};

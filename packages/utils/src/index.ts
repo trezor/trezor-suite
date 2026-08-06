@@ -21,7 +21,6 @@ export * from './countBytesInString';
 export * from './createCooldown';
 export * from './createDeferred';
 export * from './createDeferredManager';
-export * from './createKeyedThrottle';
 export * from './createLazy';
 export * from './extractUrlsFromText';
 export * from './formatBigUintToLE';
