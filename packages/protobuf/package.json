@@ -45,7 +45,7 @@
         "@trezor/schema-utils": "workspace:*"
     },
     "devDependencies": {
-        "@bufbuild/buf": "^1.67.0",
+        "@bufbuild/buf": "^1.72.0",
         "@bufbuild/protoc-gen-es": "2.11.0",
         "@bufbuild/protoplugin": "2.11.0",
         "@trezor/eslint": "workspace:*",
