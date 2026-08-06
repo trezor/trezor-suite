@@ -11,6 +11,9 @@
             "path": "../../networks/cardano/network-cardano"
         },
         {
+            "path": "../../networks/ethereum/network-ethereum"
+        },
+        {
             "path": "../../networks/ripple/network-ripple"
         },
         {

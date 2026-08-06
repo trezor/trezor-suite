@@ -1,12 +1,7 @@
-import { checksumAddress, isAddress } from 'viem';
-
-import { typedObjectKeys } from '@trezor/utils';
-
-import { getNetworkType } from './utils';
 import {
-    WRAPPED_NATIVE,
     getWrappedNativeAddress,
     getWrappedNativeSymbol,
+    isWrappedNativeToken,
 } from './wrappedNativeToken';
 
 describe(getWrappedNativeAddress.name, () => {
@@ -34,15 +29,16 @@ describe(getWrappedNativeSymbol.name, () => {
     });
 });
 
-describe('WRAPPED_NATIVE', () => {
-    it('only maps EVM (ethereum) networks', () => {
-        typedObjectKeys(WRAPPED_NATIVE).forEach(networkSymbol => {
-            expect(getNetworkType(networkSymbol)).toBe('ethereum');
-        });
+describe(isWrappedNativeToken.name, () => {
+    it('returns false for a network without a wrapped native token', () => {
+        expect(isWrappedNativeToken('btc', '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2')).toBe(
+            false,
+        );
     });
 
-    it.each(Object.entries(WRAPPED_NATIVE))('has a valid checksummed address: %s', (_, token) => {
-        expect(isAddress(token.address, { strict: false })).toBe(true);
-        expect(token.address).toBe(checksumAddress(token.address));
+    it('delegates supported Ethereum networks', () => {
+        expect(isWrappedNativeToken('eth', '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2')).toBe(
+            true,
+        );
     });
 });

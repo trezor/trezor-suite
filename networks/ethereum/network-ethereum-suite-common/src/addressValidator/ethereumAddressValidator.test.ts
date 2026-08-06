@@ -1,6 +1,9 @@
+import {
+    type EthereumNetworkSymbol,
+    supportedEthereumNetworks,
+} from '@trezor/network-ethereum/constants';
 import { type AddressType, addressType } from '@trezor/network-module-suite-common-types';
 
-import { type EthereumNetworkSymbol, getSupportedNetworks } from '../supportedNetworks';
 import { ethereumValidator } from './ethereumAddressValidator';
 
 type EthereumIsAddressValidCase = {
@@ -253,7 +256,7 @@ const ethereumAddressTypeCases: EthereumAddressTypeCase[] = [
 
 describe('ethereum validator', () => {
     it('supports HyperEVM', () => {
-        expect(getSupportedNetworks()).toContain('hype');
+        expect(supportedEthereumNetworks).toContain('hype');
     });
 
     it.each(ethereumIsAddressValidCases)('validates $symbol address $address', testCase => {

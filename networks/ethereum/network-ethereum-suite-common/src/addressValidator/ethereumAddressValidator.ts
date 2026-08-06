@@ -1,9 +1,8 @@
 import { keccak_256 } from '@noble/hashes/sha3.js';
 import { bytesToHex, utf8ToBytes } from '@noble/hashes/utils.js';
 
+import type { EthereumNetworkSymbol } from '@trezor/network-ethereum/constants';
 import { type AddressValidator, addressType } from '@trezor/network-module-suite-common-types';
-
-import type { EthereumNetworkSymbol } from '../supportedNetworks';
 
 function verifyChecksum(address: string): boolean {
     const stripped = address.replace('0x', '');
