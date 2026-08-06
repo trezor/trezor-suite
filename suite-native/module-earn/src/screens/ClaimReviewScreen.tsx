@@ -14,7 +14,6 @@ import {
     isSupportedSolStakingNetworkSymbol,
     subunitsToUnits,
 } from '@suite-common/wallet-utils';
-import { AccountDetailsCard } from '@suite-native/accounts';
 import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { Box, Button, FullAlertBox, InlineAlertBox, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
@@ -34,6 +33,7 @@ import { FeeSelector } from '@suite-native/transaction-management';
 import { MAX_DEACTIVATE_ACCOUNTS_WITH_SPLIT } from '@trezor/network-solana/constants';
 import { BigNumber } from '@trezor/utils';
 
+import { EarnAmountCard } from '../components/EarnAmountCard';
 import { useComposeEarnFees } from '../hooks/useComposeEarnFees';
 import { useNavigateBackAnalytics } from '../hooks/useNavigateBackAnalytics';
 import { useSolanaStakingLimit } from '../hooks/useSolanaStakingLimit';
@@ -152,10 +152,9 @@ export const ClaimReviewScreen = () => {
             }
         >
             <VStack spacing="sp16">
-                <AccountDetailsCard
+                <EarnAmountCard
                     accountKey={accountKey}
-                    isStakeVariant={true}
-                    titleLabel={<Translation id="earn.claimReviewScreen.amountLabel" />}
+                    label={<Translation id="earn.claimReviewScreen.amountLabel" />}
                     cryptoAmount={claimableAmount}
                 />
                 <FeeSelector

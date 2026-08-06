@@ -5,7 +5,6 @@ import { type RouteProp, useNavigation, useRoute } from '@react-navigation/nativ
 
 import { useServices } from '@suite-common/dependency-injection';
 import { type AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
-import { AccountDetailsCard } from '@suite-native/accounts';
 import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { type ActiveView, Box } from '@suite-native/atoms';
 import { Form } from '@suite-native/forms';
@@ -17,6 +16,7 @@ import {
 } from '@suite-native/navigation';
 import { FeeSelector } from '@suite-native/transaction-management';
 
+import { EarnAmountCard } from '../components/EarnAmountCard';
 import { EarnFormScreenFooter } from '../components/EarnFormScreenFooter';
 import { EarnFormScreenHeader } from '../components/EarnFormScreenHeader';
 import { EarnInsufficientBalanceBanner } from '../components/EarnInsufficientBalanceBanner';
@@ -97,7 +97,7 @@ export const EarnFormScreen = () => {
                 />
             }
         >
-            <AccountDetailsCard accountKey={accountKey} isStakeVariant />
+            <EarnAmountCard accountKey={accountKey} />
             <Box marginTop="sp16">
                 <Form form={form}>
                     <EarnOutputFields

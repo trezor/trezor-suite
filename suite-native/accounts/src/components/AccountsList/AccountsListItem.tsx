@@ -35,8 +35,6 @@ type AccountListItemProps = {
     isFirst?: boolean;
     isLast?: boolean;
     showDivider?: boolean;
-    titleLabel?: React.ReactNode;
-    cryptoAmount?: string;
 };
 
 const TokenBadge = React.memo(({ accountKey }: { accountKey: AccountKey }) => {
@@ -61,8 +59,6 @@ const AccountsListItemComponent = ({
     isFirst = false,
     isLast = false,
     showDivider = false,
-    titleLabel,
-    cryptoAmount,
 }: AccountListItemProps) => {
     const formattedAccountType = useSelector((state: AccountsRootState) =>
         selectFormattedAccountType(state, account.key),
@@ -95,7 +91,6 @@ const AccountsListItemComponent = ({
     const shouldShowAccountLabel = !isNetworkSupportingTokens || !isNativeCoinOnly;
     const shouldShowTokenBadge = accountHasKnownTokensWithBalance && !isNativeCoinOnly;
     const shouldShowStakingBadge = accountHasStaking && !isNativeCoinOnly;
-    const balanceValue = cryptoAmount ?? account.formattedBalance;
     const fiatBalanceValue =
         shouldShowTokenBadge && fiatBalance !== undefined ? (
             <BaseCurrencyAmountFormatter
@@ -105,14 +100,14 @@ const AccountsListItemComponent = ({
             />
         ) : (
             <CryptoToFiatAmountFormatter
-                value={balanceValue}
+                value={account.formattedBalance}
                 isBalance={true}
                 symbol={account.symbol}
             />
         );
     const cryptoBalanceValue = (
         <CryptoAmountFormatter
-            value={balanceValue}
+            value={account.formattedBalance}
             symbol={account.symbol}
             numberOfLines={1}
             adjustsFontSizeToFit
@@ -121,19 +116,11 @@ const AccountsListItemComponent = ({
 
     const isFailed = isAccountFailed(account);
 
-    const getTitle = () => {
-        if (titleLabel) {
-            return titleLabel;
-        }
-
-        if (shouldShowAccountLabel) {
-            return <AccountLabel account={account} />;
-        }
-
-        return <NetworkDisplaySymbolNameFormatter value={account.symbol} />;
-    };
-
-    const title = getTitle();
+    const title = shouldShowAccountLabel ? (
+        <AccountLabel account={account} />
+    ) : (
+        <NetworkDisplaySymbolNameFormatter value={account.symbol} />
+    );
 
     return (
         <AccountsListItemBase
