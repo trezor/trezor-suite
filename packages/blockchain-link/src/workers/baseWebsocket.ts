@@ -15,8 +15,9 @@ export abstract class BaseWebsocket<T extends Record<string, any>> extends Webso
     private readonly subscriptions: Subscription<keyof T & string>[] = [];
 
     async onPing() {
-        // make sure that connection is alive if there are subscriptions
-        if (this.subscriptions.length > 0 || this.options.keepAlive) {
+        // make sure that connection is alive if there are subscriptions or in-flight requests
+        // (a pending pushTransaction must be answered, not hung up on; see PUSH_TRANSACTION_TIMEOUT)
+        if (this.subscriptions.length > 0 || this.options.keepAlive || this.messages.length() > 0) {
             await this.ping().catch(error => {
                 throw new CustomError('websocket_runtime_error', error.message);
             });

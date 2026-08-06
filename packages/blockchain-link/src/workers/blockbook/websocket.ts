@@ -23,14 +23,15 @@ type GetFiatRatesForTimestamps = MessageTypes.GetFiatRatesForTimestamps;
 type GetFiatRatesTickersList = MessageTypes.GetFiatRatesTickersList;
 
 /**
- * A push rejected by the default 20s deadline closes the socket and reports "send failed" while
- * blockbook may still broadcast the transaction — a retry then pays the recipient twice. Blockbook's
- * own budget for the call is longer (one 25s rpc_timeout for the relay broadcast, 3–4x that without
- * a relay acceptance; see its docs/evm-send.md), so wait for its answer instead. 60s is the most a
- * request can own: after 50s of silence the keep-alive ping fires with the 20s default, and any
- * expiry tears the socket down.
+ * A push rejected by our deadline reports "send failed" while blockbook may still broadcast the
+ * transaction — a retry then pays the recipient twice — so the deadline must outlast blockbook's own
+ * budget for the call: up to 4x its 25s rpc_timeout (the relay fall-through on ETH, the synchronous
+ * mempool add on disableMempoolSync coins; see its docs/evm-send.md). The keep-alive ping does not
+ * cap this: every message resets the 50s ping timer and a live blockbook answers pings while a send
+ * is in flight, while a genuinely dead socket is torn down by the unanswered ping regardless of this
+ * value.
  */
-const PUSH_TRANSACTION_TIMEOUT = 60 * 1000;
+const PUSH_TRANSACTION_TIMEOUT = 110 * 1000;
 
 interface BlockbookEvents {
     block: BlockNotification;
@@ -128,12 +129,12 @@ export class BlockbookAPI extends BaseWebsocket<BlockbookEvents> {
         return this.send('getTransaction', { txid });
     }
 
-    pushTransaction(hex: string, disableAlternativeRPC?: boolean) {
+    pushTransaction(hex: string, disableAlternativeRPC?: boolean): Promise<Push> {
         // Only sendMessage takes a per-request timeout; the send overloads have no room for one.
         return this.sendMessage(
             { method: 'sendTransaction', params: { hex, disableAlternativeRPC } },
             { timeout: PUSH_TRANSACTION_TIMEOUT },
-        ) as Promise<Push>;
+        );
     }
 
     estimateFee(payload: EstimateFeeParams) {
